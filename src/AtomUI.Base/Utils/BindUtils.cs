@@ -12,9 +12,7 @@ public static class BindUtils
                                        BindingMode mode = BindingMode.OneWay)
    {
       // TODO 看看这里的 sourcePropertyName 能不能优化掉
-      if (targetPropertyName == null) {
-         targetPropertyName = sourcePropertyName;
-      }
+      targetPropertyName ??= sourcePropertyName;
 
       Type targetType = target.GetType();
       var targetUnderlyingPropertyName = $"{targetPropertyName}Property";

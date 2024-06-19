@@ -4,7 +4,6 @@ using Avalonia.Media;
 
 namespace AtomUI.ColorSystem;
 
-
 public static class ColorExtensions
 {
    public static double GetRedF(this Color color)
