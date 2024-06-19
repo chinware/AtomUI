@@ -1,0 +1,29 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:AtomUI.Demo.Desktop.Controls"
+    xmlns:viewModels="clr-namespace:AtomUI.Demo.Desktop.ViewModels"
+    x:CompileBindings="True"
+    x:DataType="viewModels:ColorGroupViewModel">
+
+    <ControlTheme x:Key="{x:Type controls:ColorListGroupControl}" TargetType="controls:ColorListGroupControl">
+        <Setter Property="controls:ColorListGroupControl.Template">
+            <ControlTemplate TargetType="controls:ColorListGroupControl">
+                <ItemsControl ItemsSource="{Binding ColorList }">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Rows="1" Columns="2"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="viewModels:ColorListViewModel">
+                            <controls:ColorListControl ListData="{Binding}"
+                                                       Margin="10"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ControlTemplate>
+        </Setter>
+        
+    </ControlTheme>
+</ResourceDictionary>

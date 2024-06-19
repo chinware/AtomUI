@@ -1,0 +1,22 @@
+<UserControl
+    x:Class="AtomUI.Demo.Desktop.ShowCase.EmptyShowCase"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:atom="https://atomui.net"
+    xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
+    mc:Ignorable="d">
+    <showcase:ShowCasePanel>
+        <showcase:ShowCaseItem
+            Title="Demo演示一"
+            Description="There are primary button, default button, dashed button, text button and link button in antd.">
+            <StackPanel HorizontalAlignment="Left" Spacing="10" Orientation="Horizontal">
+                <atom:Button ButtonType="Primary">Primary Button</atom:Button>
+                <atom:Button>Default Button</atom:Button>
+                <atom:Button ButtonType="Text">Text Button</atom:Button>
+                <atom:Button ButtonType="Link">Link Button</atom:Button>
+            </StackPanel>
+        </showcase:ShowCaseItem>
+    </showcase:ShowCasePanel>
+</UserControl>

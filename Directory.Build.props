@@ -1,0 +1,20 @@
+<Project>
+    <PropertyGroup>
+        <IsTestProject Condition="$(MSBuildProjectFullPath.Contains('test')) and ($(MSBuildProjectName.EndsWith('.Tests')) or $(MSBuildProjectName.EndsWith('.TestBase')))">true</IsTestProject>
+        <AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>
+        <NoWarn>$(NoWarn);CS1591;CS0436</NoWarn>
+        <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+        <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+        <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+        <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+        <WarningsAsErrors>Nullable</WarningsAsErrors>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <LangVersion>latest</LangVersion>
+        <Version>0.0.1-preview</Version>
+        <Company>Chinware Technologies Ltd.</Company>
+        <PackageProjectUrl>https://atomui.net/</PackageProjectUrl>
+        <AvaloniaVersion>11.1.0-rc1</AvaloniaVersion>
+    </PropertyGroup>
+</Project>

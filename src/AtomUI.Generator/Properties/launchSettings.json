@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "AtomUIGenerators": {
+      "commandName": "DebugRoslynComponent",
+      "targetProject": "../AtomUI/AtomUI.csproj"
+    },
+    "AtomUIControlsGenerators": {
+      "commandName": "DebugRoslynComponent",
+      "targetProject": "../AtomUI.Controls/AtomUI.Controls.csproj"
+    }
+  }
+}

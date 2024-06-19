@@ -1,0 +1,16 @@
+<Window
+    x:Class="AtomUI.Demo.Desktop.Views.MainWindow"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:views="clr-namespace:AtomUI.Demo.Desktop.Views"
+    Title="AtomUI Demo"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    x:CompileBindings="True"
+    Icon="/Assets/avalonia-logo.ico"
+    MinWidth="800"
+    mc:Ignorable="d">
+    <views:MainView />
+</Window>

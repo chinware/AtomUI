@@ -1,0 +1,23 @@
+<UserControl
+    x:Class="AtomUI.Demo.Desktop.ShowCase.ProgressBarShowCase"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:atom="https://atomui.net"
+    xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
+    mc:Ignorable="d">
+    <showcase:ShowCasePanel>
+        <showcase:ShowCaseItem
+            Title="Progress bar"
+            Description="A standard progress bar.">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:ProgressBar Value="30" Minimum="0" Maximum="100"/>
+                <atom:ProgressBar Value="50" Minimum="0" Maximum="100"/>
+                <atom:ProgressBar Value="70" Minimum="0" Maximum="100" Status="Exception"/>
+                <atom:ProgressBar Value="100" Minimum="0" Maximum="100"/>
+                <atom:ProgressBar Value="50" Minimum="0" Maximum="100" ShowProgressInfo="False"/>
+            </StackPanel>
+        </showcase:ShowCaseItem>
+    </showcase:ShowCasePanel>
+</UserControl>

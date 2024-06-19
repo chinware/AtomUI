@@ -1,0 +1,144 @@
+<UserControl
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d"
+    x:Class="AtomUI.Demo.Desktop.Views.MainView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:showcases="using:AtomUI.Demo.Desktop.ShowCase"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceInclude Source="../Themes/TabMenu.axaml" />
+                <ResourceInclude Source="../Themes/ToggleButton.axaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+
+    </UserControl.Resources>
+    <UserControl.Styles>
+        <Style Selector="showcases|ShowCasePanel">
+            <Setter Property="Margin" Value="0, 30, 0, 0" />
+        </Style>
+        <Style Selector="showcases|ShowCaseItem">
+            <Setter Property="Margin" Value="0, 0, 0, 50" />
+        </Style>
+    </UserControl.Styles>
+    <Grid RowDefinitions="Auto, *">
+        <TabControl
+            Grid.Row="1"
+            HorizontalAlignment="Stretch"
+            Margin="8"
+            Name="tab"
+            Padding="20,0,0,0"
+            TabStripPlacement="Left"
+            FontSize="13"
+            x:Name="ShowCaseNav"
+            Theme="{DynamicResource NavigationTab}">
+            <TabControl.Styles>
+                <Style Selector="#ShowCaseNav > TabItem">
+                    <Setter Property="FontSize" Value="18" />
+                    <Setter Property="Width" Value="230" />
+                </Style>
+            </TabControl.Styles>
+            <TabItem Header="Overview">
+                <showcases:Overview />
+            </TabItem>
+            <TabItem Header="Palette">
+                <showcases:PaletteShowCase />
+            </TabItem>
+            <TabItem Header="PathIcon">
+                <showcases:IconShowCase />
+            </TabItem>
+            <TabItem Header="Button">
+                <showcases:ButtonShowCase />
+            </TabItem>
+            <TabItem Header="RadioButton">
+                <showcases:RadioButtonShowCase />
+            </TabItem>
+            <TabItem Header="CheckBox">
+                <showcases:CheckBoxShowCase />
+            </TabItem>
+            <TabItem Header="ToggleSwitch">
+                <showcases:SwitchShowCase />
+            </TabItem>
+            <TabItem Header="Tag">
+                <showcases:TagShowCase />
+            </TabItem>
+            <TabItem Header="Alert">
+                <showcases:AlertShowCase />
+            </TabItem>
+            <TabItem Header="Tooltip">
+                <showcases:TooltipShowCase />
+            </TabItem>
+            <TabItem Header="Separator">
+                <showcases:SeparatorShowCase />
+            </TabItem>
+            <TabItem Header="Popover">
+                <showcases:PopoverShowCase />
+            </TabItem>
+            <TabItem Header="ProgressBar">
+                <showcases:ProgressBarShowCase />
+            </TabItem>
+            <TabItem Header="ProgressIndicator">
+                <showcases:ProgressIndicatorShowCase />
+            </TabItem>
+            <TabItem Header="Segmented">
+                <showcases:SegmentedShowCase />
+            </TabItem>
+            <TabItem Header="Menu">
+                <showcases:MenuShowCase />
+            </TabItem>
+            <TabItem Header="Expander">
+                <showcases:ExpanderShowCase />
+            </TabItem>
+            <TabItem Header="ComboBox">
+                <showcases:ComboBoxShowCase />
+            </TabItem>
+            <TabItem Header="ListBox">
+                <showcases:ListBoxShowCase />
+            </TabItem>
+            <TabItem Header="Slider">
+                <showcases:SliderShowCase />
+            </TabItem>
+            <TabItem Header="TreeView">
+                <showcases:TreeViewShowCase />
+            </TabItem>
+            <TabItem Header="LineEdit">
+                <showcases:LineEditShowCase />
+            </TabItem>
+            <TabItem Header="InputNumber">
+                <showcases:InputNumberShowCase />
+            </TabItem>
+            <TabItem Header="SpinIndicator">
+                <showcases:SpinIndicatorShowCase />
+            </TabItem>
+            <TabItem Header="TitleBar">
+                <showcases:TitleBarShowCase />
+            </TabItem>
+            <TabItem Header="Pagination">
+                <showcases:PaginationShowCase />
+            </TabItem>
+            <TabItem Header="Avatar">
+                <showcases:AvatarShowCase />
+            </TabItem>
+            <TabItem Header="Badge">
+                <showcases:BadgeShowCase />
+            </TabItem>
+            <TabItem Header="Card">
+                <showcases:CardShowCase />
+            </TabItem>
+            <TabItem Header="Empty">
+                <showcases:EmptyShowCase />
+            </TabItem>
+            <TabItem Header="Timeline">
+                <showcases:TimelineShowCase />
+            </TabItem>
+            <TabItem Header="TabControl">
+                <showcases:TabControlShowCase />
+            </TabItem>
+        </TabControl>
+    </Grid>
+
+</UserControl>

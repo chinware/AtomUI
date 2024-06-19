@@ -1,0 +1,126 @@
+<UserControl
+    x:Class="AtomUI.Demo.Desktop.ShowCase.CheckBoxShowCase"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:atom="https://atomui.net"
+    xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
+    mc:Ignorable="d">
+    <showcase:ShowCasePanel>
+        <showcase:ShowCasePanel.Styles>
+            <Style Selector="atom|CheckBox">
+                <Setter Property="Margin" Value="0, 0, 5, 5"></Setter>
+            </Style>
+        </showcase:ShowCasePanel.Styles>
+        <showcase:ShowCaseItem
+            Title="Basic"
+            Description="The simplest use.">
+            <StackPanel HorizontalAlignment="Left" Spacing="10">
+                <atom:CheckBox>Checkbox</atom:CheckBox>
+            </StackPanel>
+        </showcase:ShowCaseItem>
+
+        <showcase:ShowCaseItem
+            Title="Disabled"
+            Description="Disabled checkbox.">
+            <StackPanel HorizontalAlignment="Left" Spacing="10" Orientation="Vertical">
+                <atom:CheckBox IsChecked="False" IsEnabled="False">UnChecked</atom:CheckBox>
+                <atom:CheckBox IsChecked="{x:Null}" IsEnabled="False">Indeterminate</atom:CheckBox>
+                <atom:CheckBox IsChecked="True" IsEnabled="False">Checked</atom:CheckBox>
+            </StackPanel>
+        </showcase:ShowCaseItem>
+
+        <showcase:ShowCaseItem
+            Title="Controlled Checkbox"
+            Description="Communicated with other components.">
+            <StackPanel HorizontalAlignment="Left" Spacing="10" Orientation="Vertical">
+                <atom:CheckBox IsChecked="{Binding ControlledCheckBoxCheckedStatus}"
+                               IsEnabled="{Binding ControlledCheckBoxEnabledStatus}"
+                               Command="{Binding CheckBoxHandler}"
+                               Content="{Binding ControlledCheckBoxText}" />
+                <StackPanel Orientation="Horizontal" Spacing="10" Margin="0, 10, 0, 0">
+                    <atom:Button SizeType="Small" ButtonType="Primary"
+                                 x:Name="CheckStatusBtn"
+                                 Command="{Binding CheckStatusHandler}"
+                                 CommandParameter="{Binding ElementName=CheckStatusBtn}"
+                                 Text="{Binding CheckStatusBtnText}" />
+                    <atom:Button SizeType="Small" ButtonType="Primary"
+                                 x:Name="EnableStatusBtn"
+                                 CommandParameter="{Binding ElementName=EnableStatusBtn}"
+                                 Command="{Binding EnableStatusHandler}"
+                                 Text="{Binding EnableStatusBtnText}" />
+                </StackPanel>
+            </StackPanel>
+        </showcase:ShowCaseItem>
+
+        <showcase:ShowCaseItem
+            Title="Checkbox Group"
+            Description="Generate a group of checkboxes from an array.">
+            <StackPanel HorizontalAlignment="Left" Spacing="10" Orientation="Vertical">
+                <WrapPanel Margin="0, 0, 0, 10">
+                    <atom:CheckBox IsChecked="True">Apple</atom:CheckBox>
+                    <atom:CheckBox IsChecked="True">Pear</atom:CheckBox>
+                    <atom:CheckBox IsChecked="True">Orange</atom:CheckBox>
+                </WrapPanel>
+                <WrapPanel Margin="0, 0, 0, 10">
+                    <atom:CheckBox>Apple</atom:CheckBox>
+                    <atom:CheckBox IsChecked="True">Pear</atom:CheckBox>
+                    <atom:CheckBox>Orange</atom:CheckBox>
+                </WrapPanel>
+                <WrapPanel Margin="0, 0, 0, 10">
+                    <atom:CheckBox IsChecked="True" IsEnabled="False">Apple</atom:CheckBox>
+                    <atom:CheckBox IsEnabled="False">Pear</atom:CheckBox>
+                    <atom:CheckBox IsEnabled="False">Orange</atom:CheckBox>
+                </WrapPanel>
+            </StackPanel>
+        </showcase:ShowCaseItem>
+
+
+        <showcase:ShowCaseItem
+            Title="Check all"
+            Description="The indeterminate property can help you to achieve a 'check all' effect.">
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Spacing="10">
+                <StackPanel>
+                    <atom:CheckBox IsChecked="{Binding CheckedAllStatus}"
+                                   Command="{Binding CheckedAllStatusHandler}">
+                        Check all
+                    </atom:CheckBox>
+                </StackPanel>
+                <Separator Width="200" />
+                <WrapPanel Margin="0, 20, 0, 0">
+                    <atom:CheckBox x:Name="AppleCheckBox"
+                                   IsChecked="{Binding AppleCheckedStatus}"
+                                   Command="{Binding CheckedItemStatusHandler}"
+                                   CommandParameter="{Binding ElementName=AppleCheckBox}">
+                        Apple
+                    </atom:CheckBox>
+                    <atom:CheckBox x:Name="PearCheckBox" 
+                                   IsChecked="{Binding PearCheckedStatus}"
+                                   Command="{Binding CheckedItemStatusHandler}"
+                                   CommandParameter="{Binding ElementName=PearCheckBox}">
+                        Pear
+                    </atom:CheckBox>
+                    <atom:CheckBox x:Name="OrangeCheckBox" 
+                                   IsChecked="{Binding OrangeCheckedStatus}"
+                                   Command="{Binding CheckedItemStatusHandler}"
+                                   CommandParameter="{Binding ElementName=OrangeCheckBox}">
+                        Orange
+                    </atom:CheckBox>
+                </WrapPanel>
+            </StackPanel>
+        </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="Use with Grid"
+            Description="We can use Checkbox and Grid in Checkbox.Group, to implement complex layout.">
+            <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto,Auto"  Margin="10">
+                <atom:CheckBox Grid.Row="0" Grid.Column="0">A</atom:CheckBox>
+                <atom:CheckBox Grid.Row="0" Grid.Column="1">B</atom:CheckBox>
+                <atom:CheckBox Grid.Row="0" Grid.Column="2">C</atom:CheckBox>
+                <atom:CheckBox Grid.Row="1" Grid.Column="0">D</atom:CheckBox>
+                <atom:CheckBox Grid.Row="1" Grid.Column="1">D</atom:CheckBox>
+            </Grid>
+        </showcase:ShowCaseItem>
+    </showcase:ShowCasePanel>
+</UserControl>
