@@ -69,6 +69,14 @@ public class DashboardProgress : AbstractCircleProgress
          LineCap = StrokeLineCap
       };
       context.DrawArc(pen, _currentGrooveRect, _anglePair.Item1, IndicatorAngle);
+      
+      if (!double.IsNaN(SuccessThreshold)) {
+         var successPen = new Pen(SuccessThresholdBrush, StrokeThickness)
+         {
+            LineCap = StrokeLineCap
+         };
+         context.DrawArc(successPen, _currentGrooveRect, _anglePair.Item1, CalculateAngle(SuccessThreshold));
+      }
    }
 
    private (double, double) CalculateAngle(DashboardGapPosition position, double gapDegree)
@@ -100,7 +108,17 @@ public class DashboardProgress : AbstractCircleProgress
    protected override void NotifyUpdateProgress()
    {
       base.NotifyUpdateProgress();
-      var percentage = Percentage / 100;
-      IndicatorAngle = (360 - GapDegree) * percentage;
+      IndicatorAngle = CalculateAngle(Value);
+   }
+
+   protected override void NotifyUiStructureReady()
+   {
+      base.NotifyUiStructureReady();
+      _anglePair = CalculateAngle(DashboardGapPosition, GapDegree);
+   }
+   
+   private double CalculateAngle(double value)
+   {
+      return (360 - GapDegree) * value / (Maximum - Minimum);
    }
 }

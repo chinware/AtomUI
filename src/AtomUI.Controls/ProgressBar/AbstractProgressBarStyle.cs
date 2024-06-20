@@ -97,7 +97,11 @@ public partial class AbstractProgressBar : IControlCustomStyle
    }
 
    protected abstract void CreateCompletedIcons();
-   protected virtual void NotifyApplyFixedStyleConfig() {}
+
+   protected virtual void NotifyApplyFixedStyleConfig()
+   {
+      _tokenResourceBinder.AddBinding(SuccessThresholdBrushProperty, GlobalResourceKey.ColorSuccess);
+   }
 
    protected virtual void NotifyPropertyChanged(AvaloniaPropertyChangedEventArgs e)
    {

@@ -211,6 +211,7 @@ public abstract partial class AbstractCircleProgress : AbstractProgressBar
    
    protected override void NotifyApplyFixedStyleConfig()
    {
+      base.NotifyApplyFixedStyleConfig();
       _tokenResourceBinder.AddBinding(CircleMinimumTextFontSizeTokenProperty, ProgressBarResourceKey.CircleMinimumTextFontSize);
       _tokenResourceBinder.AddBinding(CircleMinimumIconSizeTokenProperty, ProgressBarResourceKey.CircleMinimumIconSize);
    }

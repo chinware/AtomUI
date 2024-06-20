@@ -18,33 +18,10 @@ public enum ProgressStatus
    Active,
 }
 
-public enum GradientStopDirection
-{
-   Forward,
-   Reverse
-}
-
-public record ProgressSuccessInfo
-{
-   public double Percent { get; set; }
-   public Color StrokeColor { get; set; }
-}
-
-public record class GradientStrokeColor
-{
-   public GradientStopDirection Direction { get; set; }
-   public List<GradientStop> Stops { get; set; }
-
-   public GradientStrokeColor()
-   {
-      Stops = new List<GradientStop>();
-   }
-}
-
 public abstract partial class AbstractProgressBar : RangeBaseControl, ISizeTypeAware, ITokenIdProvider
 {
    string ITokenIdProvider.TokenId => ProgressBarToken.ID;
-   
+
    protected const double LARGE_STROKE_THICKNESS = 8;
    protected const double MIDDLE_STROKE_THICKNESS = 6;
    protected const double SMALL_STROKE_THICKNESS = 4;
@@ -88,14 +65,17 @@ public abstract partial class AbstractProgressBar : RangeBaseControl, ISizeTypeA
    public static readonly StyledProperty<ProgressStatus> StatusProperty =
       AvaloniaProperty.Register<AbstractProgressBar, ProgressStatus>(nameof(Status), ProgressStatus.Normal);
 
-   public static readonly StyledProperty<ProgressSuccessInfo?> SuccessInfoProperty =
-      AvaloniaProperty.Register<AbstractProgressBar, ProgressSuccessInfo?>(nameof(SuccessInfo));
-
    public static readonly StyledProperty<IBrush?> IndicatorBarBrushProperty =
       AvaloniaProperty.Register<AbstractProgressBar, IBrush?>(nameof(IndicatorBarBrush));
-   
+
    public static readonly StyledProperty<double> IndicatorThicknessProperty =
       AvaloniaProperty.Register<ProgressBar, double>(nameof(IndicatorThickness), double.NaN);
+
+   public static readonly StyledProperty<double> SuccessThresholdProperty =
+      AvaloniaProperty.Register<ProgressBar, double>(nameof(SuccessThreshold), double.NaN);
+
+   public static readonly StyledProperty<IBrush?> SuccessThresholdBrushProperty =
+      AvaloniaProperty.Register<ProgressBar, IBrush?>(nameof(SuccessThresholdBrush));
 
    protected static readonly DirectProperty<AbstractProgressBar, SizeType> EffectiveSizeTypeProperty =
       AvaloniaProperty.RegisterDirect<AbstractProgressBar, SizeType>(nameof(EffectiveSizeType),
@@ -106,7 +86,7 @@ public abstract partial class AbstractProgressBar : RangeBaseControl, ISizeTypeA
       AvaloniaProperty.RegisterDirect<AbstractProgressBar, double>(nameof(StrokeThickness),
                                                                    o => o.StrokeThickness,
                                                                    (o, v) => o.StrokeThickness = v);
-   
+
    /// <summary>
    /// Gets or sets a value indicating whether the progress bar shows the actual value or a generic,
    /// continues progress indicator (indeterminate state).
@@ -158,13 +138,7 @@ public abstract partial class AbstractProgressBar : RangeBaseControl, ISizeTypeA
       get => GetValue(StatusProperty);
       set => SetValue(StatusProperty, value);
    }
-
-   public ProgressSuccessInfo? SuccessInfo
-   {
-      get => GetValue(SuccessInfoProperty);
-      set => SetValue(SuccessInfoProperty, value);
-   }
-
+   
    protected double _percentage;
 
    /// <summary>
@@ -185,11 +159,23 @@ public abstract partial class AbstractProgressBar : RangeBaseControl, ISizeTypeA
       get => GetValue(IndicatorBarBrushProperty);
       set => SetValue(IndicatorBarBrushProperty, value);
    }
-   
+
    public double IndicatorThickness
    {
       get => GetValue(IndicatorThicknessProperty);
       set => SetValue(IndicatorThicknessProperty, value);
+   }
+
+   public IBrush? SuccessThresholdBrush
+   {
+      get => GetValue(SuccessThresholdBrushProperty);
+      set => SetValue(SuccessThresholdBrushProperty, value);
+   }
+
+   public double SuccessThreshold
+   {
+      get => GetValue(SuccessThresholdProperty);
+      set => SetValue(SuccessThresholdProperty, value);
    }
 
    private SizeType _effectiveSizeType;
@@ -216,7 +202,9 @@ public abstract partial class AbstractProgressBar : RangeBaseControl, ISizeTypeA
       AffectsRender<AbstractProgressBar>(IndicatorBarBrushProperty,
                                          StrokeLineCapProperty,
                                          TrailColorProperty,
-                                         StrokeThicknessProperty);
+                                         StrokeThicknessProperty,
+                                         SuccessThresholdBrushProperty,
+                                         SuccessThresholdProperty);
    }
 
    public AbstractProgressBar()
@@ -224,23 +212,6 @@ public abstract partial class AbstractProgressBar : RangeBaseControl, ISizeTypeA
       _tokenResourceBinder = new TokenResourceBinder(this);
       _customStyle = this;
       _effectiveSizeType = SizeType;
-   }
-
-   public void SetStrokeColor(Color color)
-   {
-      IndicatorBarBrush = new SolidColorBrush(color);
-   }
-
-   public void SetStrokeColor(GradientStrokeColor gradientStrokeColor)
-   {
-      var steps = gradientStrokeColor.Stops;
-      if (gradientStrokeColor.Direction == GradientStopDirection.Reverse) {
-         steps.Reverse();
-      }
-
-      var gradientBrush = new LinearGradientBrush();
-      gradientBrush.GradientStops.AddRange(steps);
-      IndicatorBarBrush = gradientBrush;
    }
 
    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)

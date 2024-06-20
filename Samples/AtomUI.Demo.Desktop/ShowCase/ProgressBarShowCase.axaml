@@ -80,5 +80,48 @@
             </WrapPanel>
         </showcase:ShowCaseItem>
         
+        <showcase:ShowCaseItem
+            Title="Dashboard"
+            Description="By setting type=dashboard, you can get a dashboard style of progress easily. Modify gapDegree to set the degree of gap.">
+          <StackPanel Orientation="Vertical" Spacing="10">
+              <atom:ProgressBar Value="60" Minimum="0" Maximum="100" SuccessThreshold="30"/>
+              <WrapPanel Orientation="Horizontal">
+                  <atom:CircleProgress Value="60" Minimum="0" Maximum="100" SuccessThreshold="30"/>
+                  <atom:DashboardProgress Value="60" Minimum="0" Maximum="100" SuccessThreshold="30" SuccessThresholdBrush="Chocolate"/>
+              </WrapPanel>
+          </StackPanel>
+        </showcase:ShowCaseItem>
+        
+           
+        <showcase:ShowCaseItem
+            Title="Stroke Linecap"
+            Description="By setting strokeLinecap='butt', you can change the linecaps from round to butt, see stroke-linecap for more information.">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:ProgressBar Value="75" Minimum="0" Maximum="100" StrokeLineCap="Square"/>
+                <WrapPanel Orientation="Horizontal">
+                    <atom:CircleProgress Value="75" Minimum="0" Maximum="100"  StrokeLineCap="Square"/>
+                    <atom:DashboardProgress Value="75" Minimum="0" Maximum="100" StrokeLineCap="Square"/>
+                </WrapPanel>
+            </StackPanel>
+        </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="Custom line gradient"
+            Description="Gradient encapsulation, circle and dashboard will ignore strokeLinecap when setting gradient.">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:ProgressBar Value="99" Minimum="0" Maximum="100" IndicatorBarBrush="{Binding TwoStopsGradientStrokeColor}"/>
+                <atom:ProgressBar Value="50" Minimum="0" Maximum="100" IndicatorBarBrush="{Binding TwoStopsGradientStrokeColor}" Status="Active"/>
+                <WrapPanel Orientation="Horizontal">
+                    <atom:CircleProgress Value="90" Minimum="0" Maximum="100" IndicatorBarBrush="{Binding TwoStopsGradientStrokeColor}"/>
+                    <atom:CircleProgress Value="100" Minimum="0" Maximum="100" IndicatorBarBrush="{Binding TwoStopsGradientStrokeColor}"/>
+                    <atom:CircleProgress Value="93" Minimum="0" Maximum="100" IndicatorBarBrush="{Binding ThreeStopsGradientStrokeColor}"/>
+                </WrapPanel>
+                <WrapPanel Orientation="Horizontal">
+                    <atom:DashboardProgress Value="90" Minimum="0" Maximum="100" StrokeLineCap="Square" IndicatorBarBrush="{Binding TwoStopsGradientStrokeColor}"/>
+                    <atom:DashboardProgress Value="100" Minimum="0" Maximum="100" StrokeLineCap="Square" IndicatorBarBrush="{Binding TwoStopsGradientStrokeColor}"/>
+                    <atom:DashboardProgress Value="93" Minimum="0" Maximum="100" StrokeLineCap="Square" IndicatorBarBrush="{Binding ThreeStopsGradientStrokeColor}"/>
+                </WrapPanel>
+            </StackPanel>
+        </showcase:ShowCaseItem>
     </showcase:ShowCasePanel>
 </UserControl>

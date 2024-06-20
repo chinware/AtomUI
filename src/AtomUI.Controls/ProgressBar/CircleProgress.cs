@@ -25,12 +25,24 @@ public class CircleProgress : AbstractCircleProgress
       };
       double startAngle = -90;
       context.DrawArc(pen, _currentGrooveRect, startAngle, IndicatorAngle);
+
+      if (!double.IsNaN(SuccessThreshold)) {
+         var successPen = new Pen(SuccessThresholdBrush, StrokeThickness)
+         {
+            LineCap = StrokeLineCap
+         };
+         context.DrawArc(successPen, _currentGrooveRect, startAngle, CalculateAngle(SuccessThreshold));
+      }
    }
    
    protected override void NotifyUpdateProgress()
    {
       base.NotifyUpdateProgress();
-      var percentage = Percentage / 100;
-      IndicatorAngle = 360 * percentage;
+      IndicatorAngle = CalculateAngle(Value);
+   }
+
+   private double CalculateAngle(double value)
+   {
+      return 360 * value / (Maximum - Minimum);
    }
 }

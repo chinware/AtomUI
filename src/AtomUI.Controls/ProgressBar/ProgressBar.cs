@@ -100,6 +100,18 @@ public partial class ProgressBar : AbstractLineProgress
       }
 
       deflateValue = range * (1 - _percentage / 100);
+      DrawIndicatorBar(context, deflateValue, IndicatorBarBrush!);
+      
+      // 绘制成功阈值
+      if (!double.IsNaN(SuccessThreshold)) {
+         var successThreshold = NumberUtils.Clamp(SuccessThreshold, Minimum, Maximum);
+         var successThresholdDeflateValue = range * (1 - successThreshold / (Maximum - Minimum));
+         DrawIndicatorBar(context, successThresholdDeflateValue, SuccessThresholdBrush!);
+      }
+   }
+
+   protected void DrawIndicatorBar(DrawingContext context, double deflateValue, IBrush brush)
+   {
       Rect indicatorRect = default;
       if (Orientation == Orientation.Horizontal) {
          indicatorRect = _grooveRect.Deflate(new Thickness(0, 0, deflateValue, 0));
@@ -107,9 +119,9 @@ public partial class ProgressBar : AbstractLineProgress
          indicatorRect = _grooveRect.Deflate(new Thickness(0, 0, 0, deflateValue));
       }
       if (StrokeLineCap == PenLineCap.Round) {
-         context.DrawPilledRect(IndicatorBarBrush!, null, indicatorRect, Orientation);
+         context.DrawPilledRect(brush, null, indicatorRect, Orientation);
       } else {
-         context.FillRectangle(IndicatorBarBrush!, indicatorRect);
+         context.FillRectangle(brush, indicatorRect);
       }
    }
    
