@@ -71,7 +71,9 @@ public partial class AbstractProgressBar : IControlCustomStyle
       if (e.Property == SizeTypeProperty) {
          EffectiveSizeType = e.GetNewValue<SizeType>();
       } else if (e.Property == EffectiveSizeTypeProperty) {
-         NotifyEffectSizeTypeChanged();
+         if (_initialized) {
+            NotifyEffectSizeTypeChanged();
+         }
       }
 
       if (e.Property == IsEnabledProperty || 

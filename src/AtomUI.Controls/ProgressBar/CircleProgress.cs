@@ -19,12 +19,18 @@ public class CircleProgress : AbstractCircleProgress
 
    protected override void RenderIndicatorBar(DrawingContext context)
    {
-      // 可以复用
       var pen = new Pen(IndicatorBarBrush, StrokeThickness)
       {
          LineCap = StrokeLineCap
       };
       double startAngle = -90;
       context.DrawArc(pen, _currentGrooveRect, startAngle, IndicatorAngle);
+   }
+   
+   protected override void NotifyUpdateProgress()
+   {
+      base.NotifyUpdateProgress();
+      var percentage = Percentage / 100;
+      IndicatorAngle = 360 * percentage;
    }
 }

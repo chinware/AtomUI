@@ -18,7 +18,6 @@ public abstract partial class AbstractCircleProgress : AbstractProgressBar
 
    static AbstractCircleProgress()
    {
-      SizeTypeProperty.OverrideDefaultValue<AbstractCircleProgress>(SizeType.Large);
       HorizontalAlignmentProperty.OverrideDefaultValue<AbstractCircleProgress>(HorizontalAlignment.Left);
       VerticalAlignmentProperty.OverrideDefaultValue<AbstractCircleProgress>(VerticalAlignment.Top);
       AffectsRender<AbstractCircleProgress>(IndicatorAngleProperty);
@@ -221,12 +220,5 @@ public abstract partial class AbstractCircleProgress : AbstractProgressBar
       base.NotifyEffectSizeTypeChanged();
       SetupExtraInfoFontSize();
       SetupExtraInfoIconSize();
-   }
-
-   protected override void NotifyUpdateProgress()
-   {
-      base.NotifyUpdateProgress();
-      var percentage = Percentage / 100;
-      IndicatorAngle = 360 * percentage;
    }
 }

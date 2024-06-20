@@ -83,7 +83,7 @@ public abstract partial class AbstractProgressBar : RangeBaseControl, ISizeTypeA
       AvaloniaProperty.Register<AbstractProgressBar, PenLineCap>(nameof(StrokeLineCap), PenLineCap.Round);
 
    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-      AvaloniaProperty.Register<AbstractProgressBar, SizeType>(nameof(SizeType), SizeType.Middle);
+      AvaloniaProperty.Register<AbstractProgressBar, SizeType>(nameof(SizeType), SizeType.Large);
 
    public static readonly StyledProperty<ProgressStatus> StatusProperty =
       AvaloniaProperty.Register<AbstractProgressBar, ProgressStatus>(nameof(Status), ProgressStatus.Normal);
@@ -259,7 +259,8 @@ public abstract partial class AbstractProgressBar : RangeBaseControl, ISizeTypeA
       if (e.Property == ValueProperty ||
           e.Property == MinimumProperty ||
           e.Property == MaximumProperty ||
-          e.Property == IsIndeterminateProperty) {
+          e.Property == IsIndeterminateProperty ||
+          e.Property == ProgressTextFormatProperty) {
          UpdateProgress();
       }
 

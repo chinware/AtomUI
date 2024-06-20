@@ -12,6 +12,9 @@
             <Style Selector="atom|CircleProgress">
                 <Setter Property="Margin" Value="5"></Setter>
             </Style>
+            <Style Selector="atom|DashboardProgress">
+                <Setter Property="Margin" Value="5"></Setter>
+            </Style>
         </showcase:ShowCasePanel.Styles>
         <showcase:ShowCaseItem
             Title="Progress bar"
@@ -34,5 +37,48 @@
                 <atom:CircleProgress Value="100" Minimum="0" Maximum="100"/>
             </WrapPanel>
         </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="Mini size progress bar"
+            Description="Appropriate for a narrow area.">
+            <WrapPanel Orientation="Horizontal" Width="180" HorizontalAlignment="Left">
+                <atom:ProgressBar Value="30" Minimum="0" Maximum="100" SizeType="Middle"/>
+                <atom:ProgressBar Value="50" Minimum="0" Maximum="100" SizeType="Middle"/>
+                <atom:ProgressBar Value="70" Minimum="0" Maximum="100" Status="Exception" SizeType="Middle"/>
+                <atom:ProgressBar Value="100" Minimum="0" Maximum="100" SizeType="Middle"/>
+                <atom:ProgressBar Value="50" Minimum="0" Maximum="100" ShowProgressInfo="False" SizeType="Middle"/>
+            </WrapPanel>
+        </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="A smaller circular progress bar."
+            Description="A smaller circular progress bar.">
+            <WrapPanel Orientation="Horizontal">
+                <atom:CircleProgress Value="75" Minimum="0" Maximum="100" SizeType="Middle"/>
+                <atom:CircleProgress Value="70" Minimum="0" Maximum="100" Status="Exception" SizeType="Middle"/>
+                <atom:CircleProgress Value="100" Minimum="0" Maximum="100" SizeType="Middle"/>
+            </WrapPanel>
+        </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="Custom text format"
+            Description="You can set a custom text by setting the format prop.">
+            <WrapPanel Orientation="Horizontal">
+                <atom:CircleProgress Value="75" Minimum="0" Maximum="100" ProgressTextFormat="\{0\} Days"/>
+                <atom:CircleProgress Value="100" Minimum="0" Maximum="100"/>
+            </WrapPanel>
+        </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="Dashboard"
+            Description="By setting type=dashboard, you can get a dashboard style of progress easily. Modify gapDegree to set the degree of gap.">
+            <WrapPanel Orientation="Horizontal">
+                <atom:DashboardProgress Value="75" Minimum="0" Maximum="100" DashboardGapPosition="Left"/>
+                <atom:DashboardProgress Value="60" Minimum="0" Maximum="100" DashboardGapPosition="Top"/>
+                <atom:DashboardProgress Value="75" Minimum="0" Maximum="100" DashboardGapPosition="Right" GapDegree="40"/>
+                <atom:DashboardProgress Value="100" Minimum="0" Maximum="100" DashboardGapPosition="Bottom" GapDegree="40"/>
+            </WrapPanel>
+        </showcase:ShowCaseItem>
+        
     </showcase:ShowCasePanel>
 </UserControl>

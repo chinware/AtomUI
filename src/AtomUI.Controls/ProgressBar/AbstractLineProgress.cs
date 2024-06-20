@@ -155,27 +155,31 @@ public abstract partial class AbstractLineProgress : AbstractProgressBar
    protected override void NotifyEffectSizeTypeChanged()
    {
       base.NotifyEffectSizeTypeChanged();
-      if (EffectiveSizeType == SizeType.Large || EffectiveSizeType == SizeType.Middle) {
-         _tokenResourceBinder.AddBinding(_exceptionCompletedIcon!, WidthProperty, 
-                                         ProgressBarResourceKey.LineInfoIconSize, BindingPriority.LocalValue);
+      if (_initialized) {
+         if (EffectiveSizeType == SizeType.Large) {
+            _tokenResourceBinder.AddBinding(_exceptionCompletedIcon!, WidthProperty, 
+                                            ProgressBarResourceKey.LineInfoIconSize, BindingPriority.LocalValue);
         
-         _tokenResourceBinder.AddBinding(_exceptionCompletedIcon!, HeightProperty, 
-                                         ProgressBarResourceKey.LineInfoIconSize, BindingPriority.LocalValue);
+            _tokenResourceBinder.AddBinding(_exceptionCompletedIcon!, HeightProperty, 
+                                            ProgressBarResourceKey.LineInfoIconSize, BindingPriority.LocalValue);
      
-         _tokenResourceBinder.AddBinding(_successCompletedIcon!, WidthProperty, 
-                                         ProgressBarResourceKey.LineInfoIconSize, BindingPriority.LocalValue);
-         _tokenResourceBinder.AddBinding(_successCompletedIcon!, HeightProperty, 
-                                         ProgressBarResourceKey.LineInfoIconSize, BindingPriority.LocalValue);
+            _tokenResourceBinder.AddBinding(_successCompletedIcon!, WidthProperty, 
+                                            ProgressBarResourceKey.LineInfoIconSize, BindingPriority.LocalValue);
+            _tokenResourceBinder.AddBinding(_successCompletedIcon!, HeightProperty, 
+                                            ProgressBarResourceKey.LineInfoIconSize, BindingPriority.LocalValue);
+            _tokenResourceBinder.AddBinding(FontSizeProperty, GlobalResourceKey.FontSize);
          
-      } else {
-         _tokenResourceBinder.AddBinding(_exceptionCompletedIcon!, WidthProperty,
-                                         ProgressBarResourceKey.LineInfoIconSizeSM, BindingPriority.LocalValue);
-         _tokenResourceBinder.AddBinding(_exceptionCompletedIcon!, HeightProperty, 
-                                         ProgressBarResourceKey.LineInfoIconSizeSM, BindingPriority.LocalValue);
-         _tokenResourceBinder.AddBinding(_successCompletedIcon!, WidthProperty,
-                                         ProgressBarResourceKey.LineInfoIconSizeSM, BindingPriority.LocalValue);
-         _tokenResourceBinder.AddBinding(_successCompletedIcon!, HeightProperty,
-                                         ProgressBarResourceKey.LineInfoIconSizeSM, BindingPriority.LocalValue);
+         } else {
+            _tokenResourceBinder.AddBinding(_exceptionCompletedIcon!, WidthProperty,
+                                            ProgressBarResourceKey.LineInfoIconSizeSM, BindingPriority.LocalValue);
+            _tokenResourceBinder.AddBinding(_exceptionCompletedIcon!, HeightProperty, 
+                                            ProgressBarResourceKey.LineInfoIconSizeSM, BindingPriority.LocalValue);
+            _tokenResourceBinder.AddBinding(_successCompletedIcon!, WidthProperty,
+                                            ProgressBarResourceKey.LineInfoIconSizeSM, BindingPriority.LocalValue);
+            _tokenResourceBinder.AddBinding(_successCompletedIcon!, HeightProperty,
+                                            ProgressBarResourceKey.LineInfoIconSizeSM, BindingPriority.LocalValue);
+            _tokenResourceBinder.AddBinding(FontSizeProperty, GlobalResourceKey.FontSizeSM);
+         }
       }
    }
    
