@@ -64,10 +64,7 @@ public class TokenResourceBinder : IDisposable
             resourceKey = $"{tokenIdProvider.TokenId}.{resourceKey}";
          }
       }
-
-      if (bindingName is null) {
-         bindingName = $"{target.GetType().Name}-{targetProperty.Name}-{resourceKey}";
-      }
+      bindingName ??= $"{target.GetType().Name}-{target.GetHashCode()}-{targetProperty.Name}-{resourceKey}";
       
       var bindingInfo = new BindingInfo
       {

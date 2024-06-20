@@ -1,5 +1,6 @@
 using AtomUI.Data;
 using AtomUI.TokenSystem;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -43,6 +44,7 @@ public record class GradientStrokeColor
 public abstract partial class AbstractProgressBar : RangeBaseControl, ISizeTypeAware, ITokenIdProvider
 {
    string ITokenIdProvider.TokenId => ProgressBarToken.ID;
+
    /// <summary>
    /// Defines the <see cref="IsIndeterminate"/> property.
    /// </summary>
@@ -81,7 +83,7 @@ public abstract partial class AbstractProgressBar : RangeBaseControl, ISizeTypeA
 
    public static readonly StyledProperty<ProgressStatus> StatusProperty =
       AvaloniaProperty.Register<AbstractProgressBar, ProgressStatus>(nameof(Status), ProgressStatus.Normal);
-   
+
    public static readonly StyledProperty<ProgressSuccessInfo?> SuccessInfoProperty =
       AvaloniaProperty.Register<AbstractProgressBar, ProgressSuccessInfo?>(nameof(SuccessInfo));
 
@@ -90,9 +92,9 @@ public abstract partial class AbstractProgressBar : RangeBaseControl, ISizeTypeA
 
    protected static readonly DirectProperty<AbstractProgressBar, SizeType> EffectiveSizeTypeProperty =
       AvaloniaProperty.RegisterDirect<AbstractProgressBar, SizeType>(nameof(EffectiveSizeType),
-         o => o.EffectiveSizeType,
-         (o, v) => o.EffectiveSizeType = v);
-   
+                                                                     o => o.EffectiveSizeType,
+                                                                     (o, v) => o.EffectiveSizeType = v);
+
    protected static readonly DirectProperty<AbstractProgressBar, double> StrokeThicknessProperty =
       AvaloniaProperty.RegisterDirect<AbstractProgressBar, double>(nameof(StrokeThickness),
                                                                    o => o.StrokeThickness,
@@ -125,7 +127,7 @@ public abstract partial class AbstractProgressBar : RangeBaseControl, ISizeTypeA
       get => GetValue(ProgressTextFormatProperty);
       set => SetValue(ProgressTextFormatProperty, value);
    }
-   
+
    public Color? TrailColor
    {
       get => GetValue(TrailColorProperty);
@@ -143,13 +145,13 @@ public abstract partial class AbstractProgressBar : RangeBaseControl, ISizeTypeA
       get => GetValue(SizeTypeProperty);
       set => SetValue(SizeTypeProperty, value);
    }
-   
+
    public ProgressStatus Status
    {
       get => GetValue(StatusProperty);
       set => SetValue(StatusProperty, value);
    }
-   
+
    public ProgressSuccessInfo? SuccessInfo
    {
       get => GetValue(SuccessInfoProperty);
@@ -186,6 +188,7 @@ public abstract partial class AbstractProgressBar : RangeBaseControl, ISizeTypeA
    }
 
    private double _strokeThickness;
+
    protected double StrokeThickness
    {
       get => _strokeThickness;
@@ -197,8 +200,8 @@ public abstract partial class AbstractProgressBar : RangeBaseControl, ISizeTypeA
       AffectsMeasure<AbstractProgressBar>(EffectiveSizeTypeProperty,
                                           ShowProgressInfoProperty,
                                           ProgressTextFormatProperty);
-      AffectsRender<AbstractProgressBar>(IndicatorBarBrushProperty, 
-                                         StrokeLineCapProperty, 
+      AffectsRender<AbstractProgressBar>(IndicatorBarBrushProperty,
+                                         StrokeLineCapProperty,
                                          TrailColorProperty,
                                          StrokeThicknessProperty);
    }
@@ -209,7 +212,7 @@ public abstract partial class AbstractProgressBar : RangeBaseControl, ISizeTypeA
       _customStyle = this;
       _effectiveSizeType = SizeType;
    }
-   
+
    public void SetStrokeColor(Color color)
    {
       IndicatorBarBrush = new SolidColorBrush(color);
@@ -226,26 +229,27 @@ public abstract partial class AbstractProgressBar : RangeBaseControl, ISizeTypeA
       gradientBrush.GradientStops.AddRange(steps);
       IndicatorBarBrush = gradientBrush;
    }
-   
+
    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
    {
       base.OnAttachedToLogicalTree(e);
       if (!_initialized) {
          _customStyle.SetupUi();
-         _initialized = true;
+         _customStyle.AfterUiStructureReady();
       }
    }
-   
+
    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
    {
       base.OnPropertyChanged(e);
-      
+
       if (e.Property == ValueProperty ||
           e.Property == MinimumProperty ||
           e.Property == MaximumProperty ||
           e.Property == IsIndeterminateProperty) {
          UpdateProgress();
       }
+
       _customStyle.HandlePropertyChangedForStyle(e);
    }
 
@@ -255,13 +259,13 @@ public abstract partial class AbstractProgressBar : RangeBaseControl, ISizeTypeA
          _percentageLabel = new Label
          {
             Padding = new Thickness(0),
-            VerticalContentAlignment = VerticalAlignment.Center
+            VerticalContentAlignment = VerticalAlignment.Center,
          };
       }
 
       return _percentageLabel;
    }
-   
+
    protected abstract SizeType CalculateEffectiveSizeType(double size);
    protected abstract Rect GetProgressBarRect(Rect controlRect);
    protected abstract Rect GetExtraInfoRect(Rect controlRect);
@@ -277,12 +281,32 @@ public abstract partial class AbstractProgressBar : RangeBaseControl, ISizeTypeA
 
    private void UpdateProgress()
    {
-      var percent = Math.Abs(Maximum - Minimum) < double.Epsilon ?
-         1.0 :
-         (Value - Minimum) / (Maximum - Minimum);
+      var percent = Math.Abs(Maximum - Minimum) < double.Epsilon ? 1.0 : (Value - Minimum) / (Maximum - Minimum);
       Percentage = percent * 100;
-      if (ShowProgressInfo && _percentageLabel is not null) {
-         _percentageLabel.Content = string.Format(ProgressTextFormat, Percentage);
+      NotifyUpdateProgress();
+   }
+
+   protected virtual void NotifyUpdateProgress()
+   {
+      if (ShowProgressInfo &&
+          _percentageLabel != null &&
+          _exceptionCompletedIcon != null &&
+          _successCompletedIcon != null) {
+         if (Status == ProgressStatus.Exception) {
+            _percentageLabel.IsVisible = false;
+            _exceptionCompletedIcon.IsVisible = true;
+            _successCompletedIcon.IsVisible = false;
+         } else {
+            if (NumberUtils.FuzzyCompare(100, Percentage)) {
+               _percentageLabel.IsVisible = false;
+               _successCompletedIcon.IsVisible = true;
+            } else {
+               _successCompletedIcon.IsVisible = false;
+               _exceptionCompletedIcon.IsVisible = false;
+               _percentageLabel.Content = string.Format(ProgressTextFormat, _percentage);
+               _percentageLabel.IsVisible = true;
+            }
+         }
       }
    }
 }

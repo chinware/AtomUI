@@ -74,6 +74,13 @@ public partial class ProgressBar : AbstractLineProgress
          if (_percentageLabel!.IsVisible) {
             _percentageLabel.Arrange(extraInfoRect);
          }
+
+         if (_successCompletedIcon != null && _successCompletedIcon.IsVisible) {
+            _successCompletedIcon.Arrange(extraInfoRect);
+         }
+         if (_exceptionCompletedIcon != null && _exceptionCompletedIcon.IsVisible) {
+            _exceptionCompletedIcon.Arrange(extraInfoRect);
+         }
       }
       
       return finalSize;
@@ -277,6 +284,7 @@ public partial class ProgressBar : AbstractLineProgress
          targetWidth = extraInfoSize.Width;
          targetHeight = extraInfoSize.Height;
       }
+      
       if (Orientation == Orientation.Horizontal) {
          if (ShowProgressInfo) {
             if (PercentPosition.IsInner) {
@@ -310,6 +318,61 @@ public partial class ProgressBar : AbstractLineProgress
    {
       base.NotifyEffectSizeTypeChanged();
       CalculateMinBarThickness();
+   }
+
+   protected override void NotifyOrientationChanged()
+   {
+      base.NotifyOrientationChanged();
+      CalculateMinBarThickness();
+      HandlePercentPositionChanged();
+   }
+
+   // TODO 当时 inner 的时候要选中 label 的渲染坐标系
+   private void HandlePercentPositionChanged()
+   {
+      if (ShowProgressInfo) {
+         if (Orientation == Orientation.Horizontal) {
+            if (!PercentPosition.IsInner) {
+               if (PercentPosition.Alignment == LinePercentAlignment.Start) {
+                  _percentageLabel!.HorizontalAlignment = HorizontalAlignment.Right;
+                  _exceptionCompletedIcon!.HorizontalAlignment = HorizontalAlignment.Right;
+                  _successCompletedIcon!.HorizontalAlignment = HorizontalAlignment.Right;
+               } else if (PercentPosition.Alignment == LinePercentAlignment.End) {
+                  _percentageLabel!.HorizontalAlignment = HorizontalAlignment.Left;
+                  _exceptionCompletedIcon!.HorizontalAlignment = HorizontalAlignment.Left;
+                  _successCompletedIcon!.HorizontalAlignment = HorizontalAlignment.Left;
+               } else {
+                  _percentageLabel!.HorizontalAlignment = HorizontalAlignment.Center;
+                  _exceptionCompletedIcon!.HorizontalAlignment = HorizontalAlignment.Center;
+                  _successCompletedIcon!.HorizontalAlignment = HorizontalAlignment.Center;
+               }
+            }
+         } else {
+            if (!PercentPosition.IsInner) {
+               if (PercentPosition.Alignment == LinePercentAlignment.Start) {
+                  _percentageLabel!.VerticalAlignment = VerticalAlignment.Bottom;
+                  _exceptionCompletedIcon!.VerticalAlignment = VerticalAlignment.Bottom;
+                  _successCompletedIcon!.VerticalAlignment = VerticalAlignment.Bottom;
+               } else if (PercentPosition.Alignment == LinePercentAlignment.End) {
+                  _percentageLabel!.VerticalAlignment = VerticalAlignment.Top;
+                  _exceptionCompletedIcon!.VerticalAlignment = VerticalAlignment.Top;
+                  _successCompletedIcon!.VerticalAlignment = VerticalAlignment.Top;
+               } else {
+                  _percentageLabel!.VerticalAlignment = VerticalAlignment.Center;
+                  _exceptionCompletedIcon!.VerticalAlignment = VerticalAlignment.Center;
+                  _successCompletedIcon!.VerticalAlignment = VerticalAlignment.Center;
+               }
+            }
+         }
+      }
+   }
+
+   protected override void NotifyPropertyChanged(AvaloniaPropertyChangedEventArgs e)
+   {
+      base.NotifyPropertyChanged(e);
+       if (e.Property == PercentPositionProperty) {
+         HandlePercentPositionChanged();
+      }
    }
 
    // 需要评估是否需要

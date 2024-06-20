@@ -417,7 +417,9 @@ public sealed class PathIcon : Control, ICustomHitTest
 
    public sealed override void Render(DrawingContext context)
    {
-      if (_sourceGeometriesData.Count > 0) {
+      if (_sourceGeometriesData.Count > 0 &&
+          DesiredSize.Width > 0 &&
+          DesiredSize.Width > 0) {
          for (int i = 0; i < _sourceGeometriesData.Count; i++) {
             var renderedGeometry = _sourceGeometriesData[i];
             var geometryData = _iconInfo!.Data[i];

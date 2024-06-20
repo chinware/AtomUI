@@ -26,9 +26,21 @@ public partial class AbstractProgressBar : IControlCustomStyle
       _customStyle.ApplySizeTypeStyleConfig();
       _customStyle.SetupTransitions();
       
-      CalculateStrokeThickness();
       NotifySetupUi();
-      UpdateProgress(); // 创建完更新一次
+      
+      _initialized = true;
+   }
+
+   void IControlCustomStyle.AfterUiStructureReady()
+   {
+      NotifyUiStructureReady();
+   }
+
+   protected virtual void NotifyUiStructureReady()
+   {
+      // 创建完更新调用一次
+      NotifyEffectSizeTypeChanged();
+      UpdateProgress(); 
    }
 
    void IControlCustomStyle.SetupTransitions()

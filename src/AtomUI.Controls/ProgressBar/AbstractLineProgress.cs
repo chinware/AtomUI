@@ -1,6 +1,7 @@
 using AtomUI.Media;
 using AtomUI.Styling;
 using Avalonia;
+using Avalonia.Data;
 using Avalonia.Layout;
 
 namespace AtomUI.Controls;
@@ -67,9 +68,9 @@ public abstract partial class AbstractLineProgress : AbstractProgressBar
       }
    }
 
-   protected override void NotifySetupUi()
+   protected override void NotifyUiStructureReady()
    {
-      base.NotifySetupUi();
+      base.NotifyUiStructureReady();
       var calculateEffectiveSize = false;
       double sizeValue = 0;
       if (Orientation == Orientation.Horizontal && !double.IsNaN(Height)) {
@@ -86,8 +87,9 @@ public abstract partial class AbstractLineProgress : AbstractProgressBar
 
       _extraInfoSize = CalculateExtraInfoSize(FontSize);
       SetupAlignment();
+      NotifyOrientationChanged();
    }
-
+   
    private void SetupAlignment()
    {
       if (Orientation == Orientation.Horizontal) {
@@ -118,6 +120,8 @@ public abstract partial class AbstractLineProgress : AbstractProgressBar
             CalculateStrokeThickness();
          } else if (e.Property == EffectiveSizeTypeProperty) {
             _extraInfoSize = CalculateExtraInfoSize(FontSize);
+         } else if (e.Property == OrientationProperty) {
+            NotifyOrientationChanged();
          }
       }
    }
@@ -134,11 +138,50 @@ public abstract partial class AbstractLineProgress : AbstractProgressBar
    {
       _exceptionCompletedIcon = new PathIcon
       {
-         Kind = "CheckCircleFilled",
+         Kind = "CloseCircleFilled",
+         HorizontalAlignment = HorizontalAlignment.Left
       };
+      _tokenResourceBinder.AddBinding(_exceptionCompletedIcon, PathIcon.NormalFillBrushProperty, GlobalResourceKey.ColorError);
+      _tokenResourceBinder.AddBinding(_exceptionCompletedIcon, PathIcon.DisabledFilledBrushProperty, GlobalResourceKey.ControlItemBgActiveDisabled);
       _successCompletedIcon = new PathIcon
       {
-         Kind = "CloseCircleFilled"
+         Kind = "CheckCircleFilled",
+         HorizontalAlignment = HorizontalAlignment.Left
       };
+      _tokenResourceBinder.AddBinding(_successCompletedIcon, PathIcon.NormalFillBrushProperty, GlobalResourceKey.ColorSuccess);
+      _tokenResourceBinder.AddBinding(_successCompletedIcon, PathIcon.DisabledFilledBrushProperty, GlobalResourceKey.ControlItemBgActiveDisabled);
+      _successCompletedIcon.IsVisible = false;
+      _exceptionCompletedIcon.IsVisible = false;
+      AddChildControl(_exceptionCompletedIcon);
+      AddChildControl(_successCompletedIcon);
    }
+   
+   protected override void NotifyEffectSizeTypeChanged()
+   {
+      base.NotifyEffectSizeTypeChanged();
+      if (EffectiveSizeType == SizeType.Large || EffectiveSizeType == SizeType.Middle) {
+         _tokenResourceBinder.AddBinding(_exceptionCompletedIcon!, WidthProperty, 
+                                         ProgressBarResourceKey.LineInfoIconSize, BindingPriority.LocalValue);
+        
+         _tokenResourceBinder.AddBinding(_exceptionCompletedIcon!, HeightProperty, 
+                                         ProgressBarResourceKey.LineInfoIconSize, BindingPriority.LocalValue);
+     
+         _tokenResourceBinder.AddBinding(_successCompletedIcon!, WidthProperty, 
+                                         ProgressBarResourceKey.LineInfoIconSize, BindingPriority.LocalValue);
+         _tokenResourceBinder.AddBinding(_successCompletedIcon!, HeightProperty, 
+                                         ProgressBarResourceKey.LineInfoIconSize, BindingPriority.LocalValue);
+         
+      } else {
+         _tokenResourceBinder.AddBinding(_exceptionCompletedIcon!, WidthProperty,
+                                         ProgressBarResourceKey.LineInfoIconSizeSM, BindingPriority.LocalValue);
+         _tokenResourceBinder.AddBinding(_exceptionCompletedIcon!, HeightProperty, 
+                                         ProgressBarResourceKey.LineInfoIconSizeSM, BindingPriority.LocalValue);
+         _tokenResourceBinder.AddBinding(_successCompletedIcon!, WidthProperty,
+                                         ProgressBarResourceKey.LineInfoIconSizeSM, BindingPriority.LocalValue);
+         _tokenResourceBinder.AddBinding(_successCompletedIcon!, HeightProperty,
+                                         ProgressBarResourceKey.LineInfoIconSizeSM, BindingPriority.LocalValue);
+      }
+   }
+   
+   protected virtual void NotifyOrientationChanged() {}
 }

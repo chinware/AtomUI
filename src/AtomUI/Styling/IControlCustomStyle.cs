@@ -6,6 +6,7 @@ internal interface IControlCustomStyle
 {
    void InitOnConstruct() {}
    void SetupUi();
+   void AfterUiStructureReady() {}
    void SetupTransitions() {}
    void CollectStyleState() {}
    void ApplyVariableStyleConfig() {}
