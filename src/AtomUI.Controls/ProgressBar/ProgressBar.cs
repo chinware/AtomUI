@@ -28,11 +28,10 @@ public partial class ProgressBar : AbstractLineProgress
       AffectsMeasure<ProgressBar>(IndicatorThicknessProperty,
                                   PercentPositionProperty);
    }
-
-   private Rect _grooveRect;
    
    protected override Size MeasureOverride(Size availableSize)
    {
+      // TODO 实现有问题
       double targetWidth = 0;
       double targetHeight = 0;
       if (ShowProgressInfo) {
@@ -374,8 +373,10 @@ public partial class ProgressBar : AbstractLineProgress
    protected override void NotifyPropertyChanged(AvaloniaPropertyChangedEventArgs e)
    {
       base.NotifyPropertyChanged(e);
-       if (e.Property == PercentPositionProperty) {
-         HandlePercentPositionChanged();
+      if (_initialized) {
+         if (e.Property == PercentPositionProperty) {
+            HandlePercentPositionChanged();
+         }
       }
    }
 

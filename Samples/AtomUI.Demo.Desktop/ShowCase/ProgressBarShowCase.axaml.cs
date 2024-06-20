@@ -17,6 +17,12 @@ public partial class ProgressBarShowCase : UserControl
       get;
       set;
    }
+
+   public List<IBrush> StepsChunkBrushes
+   {
+      get;
+      set;
+   }
    
    public ProgressBarShowCase()
    {
@@ -39,6 +45,12 @@ public partial class ProgressBarShowCase : UserControl
             new GradientStop(Color.Parse("#ffe58f"), 0.5),
             new GradientStop(Color.Parse("#ffccc7"), 1)
          }
+      };
+      StepsChunkBrushes = new List<IBrush>()
+      {
+         new SolidColorBrush(Colors.Green),
+         new SolidColorBrush(Colors.Green),
+         new SolidColorBrush(Colors.Red)
       };
    }
    

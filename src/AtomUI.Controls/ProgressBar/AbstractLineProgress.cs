@@ -38,6 +38,7 @@ public abstract partial class AbstractLineProgress : AbstractProgressBar
    
    internal Dictionary<SizeType, SizeTypeThresholdValue> _sizeTypeThresholdValue;
    protected Size _extraInfoSize;
+   protected Rect _grooveRect;
 
    public AbstractLineProgress()
    {
@@ -86,7 +87,7 @@ public abstract partial class AbstractLineProgress : AbstractProgressBar
       NotifyOrientationChanged();
    }
    
-   private void SetupAlignment()
+   protected virtual void SetupAlignment()
    {
       if (Orientation == Orientation.Horizontal) {
          if (!double.IsNaN(Width)) {

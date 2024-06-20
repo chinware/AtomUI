@@ -92,7 +92,7 @@
           </StackPanel>
         </showcase:ShowCaseItem>
         
-           
+        
         <showcase:ShowCaseItem
             Title="Stroke Linecap"
             Description="By setting strokeLinecap='butt', you can change the linecaps from round to butt, see stroke-linecap for more information.">
@@ -121,6 +121,19 @@
                     <atom:DashboardProgress Value="100" Minimum="0" Maximum="100" StrokeLineCap="Square" IndicatorBarBrush="{Binding TwoStopsGradientStrokeColor}"/>
                     <atom:DashboardProgress Value="93" Minimum="0" Maximum="100" StrokeLineCap="Square" IndicatorBarBrush="{Binding ThreeStopsGradientStrokeColor}"/>
                 </WrapPanel>
+            </StackPanel>
+        </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="Progress bar with steps"
+            Description="A progress bar with steps.">
+            <StackPanel Orientation="Vertical" Spacing="5">
+                <atom:StepsProgressBar Value="50" Minimum="0" Maximum="100" Steps="3"/>
+                <atom:StepsProgressBar Value="30" Minimum="0" Maximum="100" Steps="5"/>
+                <atom:StepsProgressBar Value="100" Minimum="0" Maximum="100" Steps="5" SizeType="Middle"/>
+                <atom:StepsProgressBar Value="80" Minimum="0" Maximum="100" Steps="8" SizeType="Small"/>
+                <atom:StepsProgressBar Value="60" Minimum="0" Maximum="100" Steps="5"
+                                       StepsStrokeBrush="{Binding StepsChunkBrushes}"/>
             </StackPanel>
         </showcase:ShowCaseItem>
     </showcase:ShowCasePanel>

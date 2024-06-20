@@ -1,48 +1,428 @@
+using AtomUI.Utils;
 using Avalonia;
+using Avalonia.Layout;
 using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
 public class StepsProgressBar : AbstractLineProgress
 {
+   protected const double LARGE_CHUNK_WIDTH = 14;
+   protected const double MIDDLE_CHUNK_WIDTH = 6;
+   protected const double SMALL_CHUNK_WIDTH = 2;
+   protected const double DEFAULT_CHUNK_SPACE = 2;
+
    public static readonly StyledProperty<LinePercentAlignment> PercentPositionProperty =
-      AvaloniaProperty.Register<ProgressBar, LinePercentAlignment>(nameof(PercentPosition));
-   
+      AvaloniaProperty.Register<ProgressBar, LinePercentAlignment>(nameof(PercentPosition), LinePercentAlignment.End);
+
+   public static readonly StyledProperty<List<IBrush>?> StepsStrokeBrushProperty =
+      AvaloniaProperty.Register<ProgressBar, List<IBrush>?>(nameof(StepsStrokeBrush));
+
+   public static readonly StyledProperty<int> StepsProperty =
+      AvaloniaProperty.Register<ProgressBar, int>(nameof(Steps), 1, coerce:(o, v) => Math.Max(v, 1));
+
+   public static readonly StyledProperty<double> ChunkWidthProperty =
+      AvaloniaProperty.Register<ProgressBar, double>(nameof(ChunkWidth), double.NaN, coerce:(o, v) => Math.Max(v, 1));
+
+   public static readonly StyledProperty<double> ChunkHeightProperty =
+      AvaloniaProperty.Register<ProgressBar, double>(nameof(ChunkHeight), double.NaN, coerce:(o, v) => Math.Max(v, 1));
+
    public LinePercentAlignment PercentPosition
    {
       get => GetValue(PercentPositionProperty);
       set => SetValue(PercentPositionProperty, value);
    }
-   
-   public void SetStepsStrokeColor(List<Color> colors)
+
+   public List<IBrush>? StepsStrokeBrush
    {
-      
+      get => GetValue(StepsStrokeBrushProperty);
+      set => SetValue(StepsStrokeBrushProperty, value);
    }
-   
+
+   public int Steps
+   {
+      get => GetValue(StepsProperty);
+      set => SetValue(StepsProperty, value);
+   }
+
+   public double ChunkWidth
+   {
+      get => GetValue(ChunkWidthProperty);
+      set => SetValue(ChunkWidthProperty, value);
+   }
+
+   public double ChunkHeight
+   {
+      get => GetValue(ChunkHeightProperty);
+      set => SetValue(ChunkHeightProperty, value);
+   }
+
+   static StepsProgressBar()
+   {
+      AffectsMeasure<StepsProgressBar>(StepsProperty, ChunkWidthProperty, ChunkHeightProperty);
+      AffectsArrange<StepsProgressBar>(PercentPositionProperty);
+      AffectsRender<StepsProgressBar>(StepsStrokeBrushProperty);
+   }
+
+   protected override void SetupAlignment()
+   {
+      if (Orientation == Orientation.Horizontal) {
+         HorizontalAlignment = HorizontalAlignment.Left;
+      } else {
+         VerticalAlignment = VerticalAlignment.Top;
+      }
+   }
+
    protected override void RenderGroove(DrawingContext context)
    {
-      
+      _grooveRect = GetProgressBarRect(new Rect(new Point(0, 0), DesiredSize));
+      var chunkWidth = GetChunkWidth();
+      var chunkHeight = GetChunkHeight();
+      if (Orientation == Orientation.Horizontal) {
+         var offsetX = _grooveRect.X;
+         var offsetY = _grooveRect.Y;
+         for (int i = 0; i < Steps; ++i) {
+            var chunkRect = new Rect(offsetX, offsetY, chunkWidth, chunkHeight);
+            context.FillRectangle(GrooveBrush!, chunkRect);
+            offsetX += chunkWidth + DEFAULT_CHUNK_SPACE;
+         }
+      }
+   }
+
+   private IBrush GetChunkBrush(int i)
+   {
+      if (StepsStrokeBrush is not null) {
+         if (i >= 0 && i < StepsStrokeBrush.Count) {
+            return StepsStrokeBrush[i];
+         }
+      }
+
+      return IndicatorBarBrush!;
    }
 
    protected override void RenderIndicatorBar(DrawingContext context)
    {
+      var chunkWidth = GetChunkWidth();
+      var chunkHeight = GetChunkHeight();
+
+      var filledSteps = (int)Math.Round(Steps * Percentage / 100);
       
+      if (Orientation == Orientation.Horizontal) {
+         var offsetX = _grooveRect.X;
+         var offsetY = _grooveRect.Y;
+         for (int i = 0; i < filledSteps; ++i) {
+            var chunkRect = new Rect(offsetX, offsetY, chunkWidth, chunkHeight);
+            context.FillRectangle(GetChunkBrush(i), chunkRect);
+            offsetX += chunkWidth + DEFAULT_CHUNK_SPACE;
+         }
+      }
+   }
+   
+   protected override void CalculateStrokeThickness()
+   {
+      // 不改变高度
+      double strokeThickness = LARGE_STROKE_THICKNESS;
+      if (!double.IsNaN(ChunkHeight)) {
+         strokeThickness = ChunkHeight;
+      }
+      StrokeThickness = strokeThickness;
    }
 
-   protected override void CalculateStrokeThickness() { }
-   
+   protected override void NotifySetupUi()
+   {
+      CalculateSizeTypeThresholdValue();
+      CalculateMinBarThickness();
+      base.NotifySetupUi();
+   }
+
+   // 需要评估是否需要
+   private void CalculateMinBarThickness()
+   {
+      var thickness = 0d;
+      var extraInfoSize = CalculateExtraInfoSize(FontSize);
+      if (Orientation == Orientation.Horizontal) {
+         thickness += extraInfoSize.Height;
+         MinHeight = thickness;
+      } else {
+         thickness += extraInfoSize.Width;
+         MinWidth = thickness;
+      }
+   }
+
+   protected void CalculateSizeTypeThresholdValue()
+   {
+      var defaultExtraInfoSize = CalculateExtraInfoSize(_fontSize);
+      var smallExtraInfoSize = CalculateExtraInfoSize(_fontSizeSM);
+      if (Orientation == Orientation.Horizontal) {
+         var largeSizeTypeThresholdValue = new SizeTypeThresholdValue
+         {
+            NormalStateValue = Math.Max(LARGE_STROKE_THICKNESS, defaultExtraInfoSize.Height)
+         };
+         _sizeTypeThresholdValue.Add(SizeType.Large, largeSizeTypeThresholdValue);
+         var middleSizeTypeThresholdValue = new SizeTypeThresholdValue
+         {
+            NormalStateValue = Math.Max(MIDDLE_STROKE_THICKNESS, defaultExtraInfoSize.Height)
+         };
+         _sizeTypeThresholdValue.Add(SizeType.Middle, middleSizeTypeThresholdValue);
+
+         var smallSizeTypeThresholdValue = new SizeTypeThresholdValue
+         {
+            NormalStateValue = Math.Max(SMALL_STROKE_THICKNESS, smallExtraInfoSize.Height)
+         };
+         _sizeTypeThresholdValue.Add(SizeType.Small, smallSizeTypeThresholdValue);
+      } else {
+         var largeSizeTypeThresholdValue = new SizeTypeThresholdValue
+         {
+            NormalStateValue = Math.Max(LARGE_STROKE_THICKNESS, defaultExtraInfoSize.Width)
+         };
+         _sizeTypeThresholdValue.Add(SizeType.Large, largeSizeTypeThresholdValue);
+         var middleSizeTypeThresholdValue = new SizeTypeThresholdValue
+         {
+            NormalStateValue = Math.Max(MIDDLE_STROKE_THICKNESS, defaultExtraInfoSize.Width)
+         };
+         _sizeTypeThresholdValue.Add(SizeType.Middle, middleSizeTypeThresholdValue);
+
+         var smallSizeTypeThresholdValue = new SizeTypeThresholdValue
+         {
+            NormalStateValue = Math.Max(SMALL_STROKE_THICKNESS, smallExtraInfoSize.Width)
+         };
+         _sizeTypeThresholdValue.Add(SizeType.Small, smallSizeTypeThresholdValue);
+      }
+   }
+
    protected override SizeType CalculateEffectiveSizeType(double size)
    {
-      return SizeType.Large;
+      var largeThresholdValue = _sizeTypeThresholdValue[SizeType.Large];
+      var middleThresholdValue = _sizeTypeThresholdValue[SizeType.Middle];
+      var sizeType = SizeType.Middle;
+      if (NumberUtils.FuzzyGreaterOrEqual(size, largeThresholdValue.NormalStateValue)) {
+         sizeType = SizeType.Large;
+      } else if (NumberUtils.FuzzyGreaterOrEqual(size, middleThresholdValue.NormalStateValue)) {
+         sizeType = SizeType.Middle;
+      } else {
+         sizeType = SizeType.Small;
+      }
+      return sizeType;
+   }
+   
+   protected override void NotifyEffectSizeTypeChanged()
+   {
+      base.NotifyEffectSizeTypeChanged();
+      CalculateMinBarThickness();
+      
+      // 计算 chunk width
+      if (double.IsNaN(ChunkWidth)) {
+         if (EffectiveSizeType == SizeType.Large) {
+            ChunkWidth = LARGE_CHUNK_WIDTH;
+         } else if (EffectiveSizeType == SizeType.Middle) {
+            ChunkWidth = MIDDLE_CHUNK_WIDTH;
+         } else {
+            ChunkWidth = SMALL_CHUNK_WIDTH;
+         }
+      }
+   }
+
+   protected override void NotifyOrientationChanged()
+   {
+      base.NotifyOrientationChanged();
+      CalculateMinBarThickness();
+      HandlePercentPositionChanged();
+   }
+   
+    // TODO 当时 inner 的时候要选中 label 的渲染坐标系
+   private void HandlePercentPositionChanged()
+   {
+      if (ShowProgressInfo) {
+         if (Orientation == Orientation.Horizontal) {
+            if (PercentPosition == LinePercentAlignment.Start) {
+               _percentageLabel!.HorizontalAlignment = HorizontalAlignment.Right;
+               _exceptionCompletedIcon!.HorizontalAlignment = HorizontalAlignment.Right;
+               _successCompletedIcon!.HorizontalAlignment = HorizontalAlignment.Right;
+            } else if (PercentPosition == LinePercentAlignment.End) {
+               _percentageLabel!.HorizontalAlignment = HorizontalAlignment.Left;
+               _exceptionCompletedIcon!.HorizontalAlignment = HorizontalAlignment.Left;
+               _successCompletedIcon!.HorizontalAlignment = HorizontalAlignment.Left;
+            } else {
+               _percentageLabel!.HorizontalAlignment = HorizontalAlignment.Center;
+               _exceptionCompletedIcon!.HorizontalAlignment = HorizontalAlignment.Center;
+               _successCompletedIcon!.HorizontalAlignment = HorizontalAlignment.Center;
+            }
+         } else {
+            if (PercentPosition == LinePercentAlignment.Start) {
+               _percentageLabel!.VerticalAlignment = VerticalAlignment.Bottom;
+               _exceptionCompletedIcon!.VerticalAlignment = VerticalAlignment.Bottom;
+               _successCompletedIcon!.VerticalAlignment = VerticalAlignment.Bottom;
+            } else if (PercentPosition == LinePercentAlignment.End) {
+               _percentageLabel!.VerticalAlignment = VerticalAlignment.Top;
+               _exceptionCompletedIcon!.VerticalAlignment = VerticalAlignment.Top;
+               _successCompletedIcon!.VerticalAlignment = VerticalAlignment.Top;
+            } else {
+               _percentageLabel!.VerticalAlignment = VerticalAlignment.Center;
+               _exceptionCompletedIcon!.VerticalAlignment = VerticalAlignment.Center;
+               _successCompletedIcon!.VerticalAlignment = VerticalAlignment.Center;
+            }
+         }
+      }
+   }
+   protected override void NotifyPropertyChanged(AvaloniaPropertyChangedEventArgs e)
+   {
+      base.NotifyPropertyChanged(e);
+      if (_initialized) {
+         if (e.Property == PercentPositionProperty) {
+            HandlePercentPositionChanged();
+         }
+      }
+      if (e.Property == ChunkHeightProperty) {
+         IndicatorThickness = e.GetNewValue<double>();
+      } else if (e.Property == IndicatorThicknessProperty) {
+         ChunkHeight = e.GetNewValue<double>();
+      }
+   }
+
+   protected override Size MeasureOverride(Size availableSize)
+   {
+      double targetWidth = 0;
+      double targetHeight = 0;
+      if (ShowProgressInfo) {
+         _percentageLabel!.Measure(availableSize);
+         // 其他两个 Icon 都是固定的
+      }
+      
+      var chunkWidth = GetChunkWidth();
+      var chunkHeight = GetChunkHeight();
+      if (Orientation == Orientation.Horizontal) {
+         targetWidth = chunkWidth * Steps + DEFAULT_CHUNK_SPACE * (Steps - 1);
+         if (ShowProgressInfo) {
+            targetWidth += _extraInfoSize.Width + _lineExtraInfoMargin;
+         }
+         targetHeight = Math.Max(chunkHeight, MinHeight);
+      } else {
+         targetHeight = chunkHeight * Steps + DEFAULT_CHUNK_SPACE * (Steps - 1);
+         if (ShowProgressInfo) {
+            targetHeight += _extraInfoSize.Height;
+         }
+         targetWidth = Math.Max(chunkWidth, MinWidth);
+      }
+      return new Size(targetWidth, targetHeight);
+   }
+
+   protected override Size ArrangeOverride(Size finalSize)
+   {
+      if (ShowProgressInfo) {
+         var extraInfoRect = GetExtraInfoRect(new Rect(new Point(0, 0), DesiredSize));
+         if (_percentageLabel!.IsVisible) {
+            _percentageLabel.Arrange(extraInfoRect);
+         }
+
+         if (_successCompletedIcon != null && _successCompletedIcon.IsVisible) {
+            _successCompletedIcon.Arrange(extraInfoRect);
+         }
+         if (_exceptionCompletedIcon != null && _exceptionCompletedIcon.IsVisible) {
+            _exceptionCompletedIcon.Arrange(extraInfoRect);
+         }
+      }
+      
+      return finalSize;
+   }
+
+   private double GetChunkWidth()
+   {
+      var chunkWidth = 0d;
+      if (!double.IsNaN(ChunkWidth)) {
+         chunkWidth = ChunkWidth;
+      } else {
+         if (EffectiveSizeType == SizeType.Large) {
+            chunkWidth = LARGE_CHUNK_WIDTH;
+         } else if (EffectiveSizeType == SizeType.Middle) {
+            chunkWidth = MIDDLE_CHUNK_WIDTH;
+         } else {
+            chunkWidth = SMALL_CHUNK_WIDTH;
+         }
+      }
+
+      return chunkWidth;
+   }
+   
+   private double GetChunkHeight()
+   {
+      var chunkHeight = 0d;
+      if (!double.IsNaN(ChunkHeight)) {
+         chunkHeight = ChunkHeight;
+      } else {
+         chunkHeight = StrokeThickness;
+      }
+      return chunkHeight;
    }
    
    protected override Rect GetProgressBarRect(Rect controlRect)
    {
-      return new Rect();
+      double deflateLeft = 0;
+      double deflateTop = 0;
+      double deflateRight = 0;
+      double deflateBottom = 0;
+      var strokeThickness = StrokeThickness;
+      var contentRect = controlRect.Deflate(Margin);
+      if (Orientation == Orientation.Horizontal) {
+         if (ShowProgressInfo) {
+            var percentLabelWidth = _extraInfoSize.Width;
+            var percentLabelHeight = _extraInfoSize.Height;
+            if (PercentPosition == LinePercentAlignment.Start) {
+               deflateLeft = percentLabelWidth + _lineExtraInfoMargin;
+            } else if (PercentPosition == LinePercentAlignment.Center) {
+               deflateBottom = percentLabelHeight;
+            } else if (PercentPosition == LinePercentAlignment.End) {
+               deflateRight = percentLabelWidth + _lineExtraInfoMargin;
+            }
+         }
+      } else {
+         if (ShowProgressInfo) {
+            var percentLabelWidth = _extraInfoSize.Width;
+            var percentLabelHeight = _extraInfoSize.Height;
+            if (PercentPosition == LinePercentAlignment.Start) {
+               deflateTop = percentLabelHeight + _lineExtraInfoMargin;
+            } else if (PercentPosition == LinePercentAlignment.Center) {
+               deflateRight = percentLabelWidth;
+            } else if (PercentPosition == LinePercentAlignment.End) {
+               deflateBottom = percentLabelHeight + _lineExtraInfoMargin;;
+            }
+         }
+      }
+
+      var deflatedControlRect = contentRect.Deflate(new Thickness(deflateLeft, deflateTop, deflateRight, deflateBottom));
+      if (Orientation == Orientation.Horizontal) {
+         return new Rect(new Point(0, (deflatedControlRect.Height - strokeThickness) / 2), new Size(deflatedControlRect.Width, strokeThickness));
+      }
+      return new Rect(new Point((deflatedControlRect.Width - strokeThickness) / 2, 0), new Size(strokeThickness, deflatedControlRect.Height));
    }
 
    protected override Rect GetExtraInfoRect(Rect controlRect)
    {
-      return new Rect();
+      var contentRect = controlRect.Deflate(Margin);
+      double offsetX = 0;
+      double offsetY = 0;
+      double targetWidth = 0;
+      double targetHeight = 0;
+      var extraInfoSize = CalculateExtraInfoSize(FontSize);
+      if (ShowProgressInfo) {
+         targetWidth = extraInfoSize.Width;
+         targetHeight = extraInfoSize.Height;
+      }
+      
+      if (Orientation == Orientation.Horizontal) {
+         if (ShowProgressInfo) {
+            if (PercentPosition == LinePercentAlignment.Start) {
+               offsetX = 0;
+               offsetY = (contentRect.Height - targetHeight) / 2;
+            } else if (PercentPosition == LinePercentAlignment.Center) {
+               offsetX = (contentRect.Width - targetWidth) / 2;
+               offsetY = contentRect.Bottom - targetHeight;
+            } else if (PercentPosition == LinePercentAlignment.End) {
+               offsetX = (contentRect.Right - targetWidth);
+               offsetY = (contentRect.Height - targetHeight) / 2;
+            }
+         }
+      }
+
+      return new Rect(new Point(offsetX, offsetY), extraInfoSize);
    }
 }
