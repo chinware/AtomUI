@@ -276,7 +276,7 @@ internal class SwitchKnob : Control, IControlCustomStyle, ITokenIdProvider
    public sealed override void Render(DrawingContext context)
    {
       var targetRect = new Rect(new Point(0, 0), KnobSize);
-      if (NumberUtils.FuzzyCompare(KnobSize.Width, KnobSize.Height)) {
+      if (NumberUtils.FuzzyEqual(KnobSize.Width, KnobSize.Height)) {
          context.DrawEllipse(KnobBackgroundColor, null, targetRect);
       } else {
          context.DrawPilledRect(KnobBackgroundColor, null, targetRect);
@@ -292,9 +292,8 @@ internal class SwitchKnob : Control, IControlCustomStyle, ITokenIdProvider
          using var translateToCenterState = context.PushTransform(translateToCenterMatrix);
          using var rotationMatrixState = context.PushTransform(rotationMatrix);
          using var bgOpacity = context.PushOpacity(_loadingBgOpacity);
-      
-         var loadingArc = CommonShapeBuilder.BuildArc(loadingRect, 0, 90);
-         context.DrawGeometry(null, pen, loadingArc);
+         
+         context.DrawArc(pen, loadingRect, 0, 90);
       }
    }
    

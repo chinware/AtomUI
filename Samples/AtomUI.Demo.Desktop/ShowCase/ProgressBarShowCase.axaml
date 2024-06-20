@@ -8,6 +8,11 @@
     xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
     mc:Ignorable="d">
     <showcase:ShowCasePanel>
+        <showcase:ShowCasePanel.Styles>
+            <Style Selector="atom|CircleProgress">
+                <Setter Property="Margin" Value="5"></Setter>
+            </Style>
+        </showcase:ShowCasePanel.Styles>
         <showcase:ShowCaseItem
             Title="Progress bar"
             Description="A standard progress bar.">
@@ -18,6 +23,16 @@
                 <atom:ProgressBar Value="100" Minimum="0" Maximum="100"/>
                 <atom:ProgressBar Value="50" Minimum="0" Maximum="100" ShowProgressInfo="False"/>
             </StackPanel>
+        </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="Circular progress bar"
+            Description="A circular progress bar.">
+            <WrapPanel Orientation="Horizontal">
+                <atom:CircleProgress Value="75" Minimum="0" Maximum="100"/>
+                <atom:CircleProgress Value="70" Minimum="0" Maximum="100" Status="Exception"/>
+                <atom:CircleProgress Value="100" Minimum="0" Maximum="100"/>
+            </WrapPanel>
         </showcase:ShowCaseItem>
     </showcase:ShowCasePanel>
 </UserControl>

@@ -218,16 +218,16 @@ internal class ButtonToken : AbstractControlDesignToken
       var fontSize = _globalToken.FontToken.FontSize;
       var fontSizeLG = _globalToken.FontToken.FontSizeLG;
       
-      ContentFontSize = !NumberUtils.FuzzyCompare(ContentFontSize, -1) ? ContentFontSize : fontSize;
-      ContentFontSizeSM = !NumberUtils.FuzzyCompare(ContentFontSizeSM, -1) ? ContentFontSizeSM : fontSize;
-      ContentFontSizeLG = !NumberUtils.FuzzyCompare(ContentFontSizeLG, -1) ? ContentFontSizeLG : fontSizeLG;
-      ContentLineHeight = !NumberUtils.FuzzyCompare(ContentLineHeight, -1)
+      ContentFontSize = !NumberUtils.FuzzyEqual(ContentFontSize, -1) ? ContentFontSize : fontSize;
+      ContentFontSizeSM = !NumberUtils.FuzzyEqual(ContentFontSizeSM, -1) ? ContentFontSizeSM : fontSize;
+      ContentFontSizeLG = !NumberUtils.FuzzyEqual(ContentFontSizeLG, -1) ? ContentFontSizeLG : fontSizeLG;
+      ContentLineHeight = !NumberUtils.FuzzyEqual(ContentLineHeight, -1)
          ? ContentLineHeight
          : CalculatorUtils.CalculateLineHeight(ContentFontSize);
-      ContentLineHeightSM =  !NumberUtils.FuzzyCompare(ContentLineHeightSM, -1)
+      ContentLineHeightSM =  !NumberUtils.FuzzyEqual(ContentLineHeightSM, -1)
          ? ContentLineHeightSM
          : CalculatorUtils.CalculateLineHeight(ContentFontSizeSM);
-      ContentLineHeightLG = !NumberUtils.FuzzyCompare(ContentLineHeightLG, -1)
+      ContentLineHeightLG = !NumberUtils.FuzzyEqual(ContentLineHeightLG, -1)
          ? ContentLineHeightLG
          : CalculatorUtils.CalculateLineHeight(ContentFontSizeLG);
 

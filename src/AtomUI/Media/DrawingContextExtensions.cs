@@ -17,4 +17,11 @@ public static class DrawingContextExtensions
       }
       context.DrawRectangle(brush, pen, rect, pillRadius, pillRadius);
    }
+
+   public static void DrawArc(this DrawingContext context, IPen? pen,
+                              Rect rect, double startAngle, double sweepAngle)
+   {
+      var geometry = CommonShapeBuilder.BuildArc(rect, startAngle, sweepAngle);
+      context.DrawGeometry(null, pen, geometry);
+   }
 }

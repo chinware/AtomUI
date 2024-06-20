@@ -21,10 +21,6 @@ internal class SizeTypeThresholdValue
 
 public abstract partial class AbstractLineProgress : AbstractProgressBar
 {
-   protected const double LARGE_STROKE_THICKNESS = 10;
-   protected const double MIDDLE_STROKE_THICKNESS = 8;
-   protected const double SMALL_STROKE_THICKNESS = 6;
-   
    /// <summary>
    /// Defines the <see cref="Orientation"/> property.
    /// </summary>

@@ -17,21 +17,12 @@ public partial class ProgressBar : AbstractLineProgress
    public static readonly StyledProperty<PercentPosition> PercentPositionProperty =
       AvaloniaProperty.Register<ProgressBar, PercentPosition>(nameof(PercentPosition), new PercentPosition());
    
-   public static readonly StyledProperty<double> IndicatorThicknessProperty =
-      AvaloniaProperty.Register<ProgressBar, double>(nameof(IndicatorThickness), double.NaN);
-   
    public PercentPosition PercentPosition
    {
       get => GetValue(PercentPositionProperty);
       set => SetValue(PercentPositionProperty, value);
    }
    
-   public double IndicatorThickness
-   {
-      get => GetValue(IndicatorThicknessProperty);
-      set => SetValue(IndicatorThicknessProperty, value);
-   }
-
    static ProgressBar()
    {
       AffectsMeasure<ProgressBar>(IndicatorThicknessProperty,
@@ -46,6 +37,7 @@ public partial class ProgressBar : AbstractLineProgress
       double targetHeight = 0;
       if (ShowProgressInfo) {
          _percentageLabel!.Measure(availableSize);
+         // 其他两个 Icon 都是固定的
       }
       if (Orientation == Orientation.Horizontal) {
          targetHeight = StrokeThickness;
@@ -160,20 +152,20 @@ public partial class ProgressBar : AbstractLineProgress
       var sizeType = SizeType.Middle;
       if (PercentPosition.IsInner) {
          if (size < smallThresholdValue.InnerStateValue ||
-             NumberUtils.FuzzyCompare(size, smallThresholdValue.InnerStateValue)) {
+             NumberUtils.FuzzyEqual(size, smallThresholdValue.InnerStateValue)) {
             sizeType = SizeType.Small;
          } else if (size > smallThresholdValue.InnerStateValue && (size < middleThresholdValue.InnerStateValue ||
-                                                                   NumberUtils.FuzzyCompare(size, middleThresholdValue.InnerStateValue))) {
+                                                                   NumberUtils.FuzzyEqual(size, middleThresholdValue.InnerStateValue))) {
             sizeType = SizeType.Middle;
          } else {
             sizeType = SizeType.Large;
          }
       } else {
          if (size < smallThresholdValue.NormalStateValue ||
-             NumberUtils.FuzzyCompare(size, smallThresholdValue.NormalStateValue)) {
+             NumberUtils.FuzzyEqual(size, smallThresholdValue.NormalStateValue)) {
             sizeType = SizeType.Small;
          } else if (size > smallThresholdValue.NormalStateValue && (size < middleThresholdValue.NormalStateValue ||
-                                                                    NumberUtils.FuzzyCompare(size, middleThresholdValue.NormalStateValue))) {
+                                                                    NumberUtils.FuzzyEqual(size, middleThresholdValue.NormalStateValue))) {
             sizeType = SizeType.Middle;
          } else {
             sizeType = SizeType.Large;

@@ -3,7 +3,7 @@ using Avalonia;
 using Avalonia.Media;
 using Avalonia.Utilities;
 
-namespace AtomUI.Controls.Utils;
+namespace AtomUI.Media;
 
 public static class CommonShapeBuilder
 {
@@ -33,7 +33,7 @@ public static class CommonShapeBuilder
    /// <returns></returns>
    public static Geometry BuildArc(Rect rect, double startAngle, double sweepAngle)
    {
-      if (NumberUtils.FuzzyCompare(sweepAngle, 0)) {
+      if (NumberUtils.FuzzyEqual(sweepAngle, 0)) {
          return new StreamGeometry();
       }
       
@@ -46,7 +46,7 @@ public static class CommonShapeBuilder
       var normStart = RadToNormRad(startAngle);
       var normEnd = RadToNormRad(sweepAngle);
 
-      if (NumberUtils.FuzzyCompare(normStart, normEnd) && !NumberUtils.FuzzyCompare(startAngle, sweepAngle)) {
+      if (NumberUtils.FuzzyEqual(normStart, normEnd) && !NumberUtils.FuzzyEqual(startAngle, sweepAngle)) {
          // Complete ring.
          return new EllipseGeometry(rect);
       }

@@ -120,7 +120,7 @@ public static class PaletteGenerator
 
       if (hue < 0) {
          hue += 360d;
-      } else if (hue > 360d || NumberUtils.FuzzyCompare(hue, 360d)) {
+      } else if (NumberUtils.FuzzyGreaterOrEqual(hue, 360d)) {
          hue -= 360d;
       }
       return hue;
@@ -129,7 +129,7 @@ public static class PaletteGenerator
    private static double GetHsvSaturation(HsvColor hsvColor, int index, bool isLight)
    {
       // grey color don't change saturation
-      if (NumberUtils.FuzzyCompare(hsvColor.H, 0d) && NumberUtils.FuzzyCompare(hsvColor.S, 0d)) {
+      if (NumberUtils.FuzzyEqual(hsvColor.H, 0d) && NumberUtils.FuzzyEqual(hsvColor.S, 0d)) {
          return hsvColor.S;
       }
 

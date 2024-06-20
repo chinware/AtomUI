@@ -44,6 +44,10 @@ public record class GradientStrokeColor
 public abstract partial class AbstractProgressBar : RangeBaseControl, ISizeTypeAware, ITokenIdProvider
 {
    string ITokenIdProvider.TokenId => ProgressBarToken.ID;
+   
+   protected const double LARGE_STROKE_THICKNESS = 8;
+   protected const double MIDDLE_STROKE_THICKNESS = 6;
+   protected const double SMALL_STROKE_THICKNESS = 4;
 
    /// <summary>
    /// Defines the <see cref="IsIndeterminate"/> property.
@@ -89,6 +93,9 @@ public abstract partial class AbstractProgressBar : RangeBaseControl, ISizeTypeA
 
    public static readonly StyledProperty<IBrush?> IndicatorBarBrushProperty =
       AvaloniaProperty.Register<AbstractProgressBar, IBrush?>(nameof(IndicatorBarBrush));
+   
+   public static readonly StyledProperty<double> IndicatorThicknessProperty =
+      AvaloniaProperty.Register<ProgressBar, double>(nameof(IndicatorThickness), double.NaN);
 
    protected static readonly DirectProperty<AbstractProgressBar, SizeType> EffectiveSizeTypeProperty =
       AvaloniaProperty.RegisterDirect<AbstractProgressBar, SizeType>(nameof(EffectiveSizeType),
@@ -99,7 +106,7 @@ public abstract partial class AbstractProgressBar : RangeBaseControl, ISizeTypeA
       AvaloniaProperty.RegisterDirect<AbstractProgressBar, double>(nameof(StrokeThickness),
                                                                    o => o.StrokeThickness,
                                                                    (o, v) => o.StrokeThickness = v);
-
+   
    /// <summary>
    /// Gets or sets a value indicating whether the progress bar shows the actual value or a generic,
    /// continues progress indicator (indeterminate state).
@@ -177,6 +184,12 @@ public abstract partial class AbstractProgressBar : RangeBaseControl, ISizeTypeA
    {
       get => GetValue(IndicatorBarBrushProperty);
       set => SetValue(IndicatorBarBrushProperty, value);
+   }
+   
+   public double IndicatorThickness
+   {
+      get => GetValue(IndicatorThicknessProperty);
+      set => SetValue(IndicatorThicknessProperty, value);
    }
 
    private SizeType _effectiveSizeType;
@@ -297,7 +310,7 @@ public abstract partial class AbstractProgressBar : RangeBaseControl, ISizeTypeA
             _exceptionCompletedIcon.IsVisible = true;
             _successCompletedIcon.IsVisible = false;
          } else {
-            if (NumberUtils.FuzzyCompare(100, Percentage)) {
+            if (NumberUtils.FuzzyEqual(100, Percentage)) {
                _percentageLabel.IsVisible = false;
                _successCompletedIcon.IsVisible = true;
             } else {

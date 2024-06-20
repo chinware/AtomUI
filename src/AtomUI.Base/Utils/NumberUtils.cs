@@ -28,14 +28,34 @@ public static class NumberUtils
       return Math.Round(value * factor) / factor;
    }
 
-   public static bool FuzzyCompare(double p1, double p2)
+   public static bool FuzzyEqual(double p1, double p2)
    {
       return Math.Abs(p1 - p2) * 1000000000000d <= Math.Min(Math.Abs(p1), Math.Abs(p2));
    }
    
-   public static bool FuzzyCompare(float p1, float p2)
+   public static bool FuzzyGreaterOrEqual(double p1, double p2)
+   {
+      return p1 > p2 || Math.Abs(p1 - p2) * 1000000000000d <= Math.Min(Math.Abs(p1), Math.Abs(p2));
+   }
+   
+   public static bool FuzzyLessOrEqual(double p1, double p2)
+   {
+      return p1 < p2 || Math.Abs(p1 - p2) * 1000000000000d <= Math.Min(Math.Abs(p1), Math.Abs(p2));
+   }
+   
+   public static bool FuzzyEqual(float p1, float p2)
    {
       return Math.Abs(p1 - p2) * 100000f <= Math.Min(Math.Abs(p1), Math.Abs(p2));
+   }
+   
+   public static bool FuzzyGreaterOrEqual(float p1, float p2)
+   {
+      return p1 > p2 || Math.Abs(p1 - p2) * 100000f <= Math.Min(Math.Abs(p1), Math.Abs(p2));
+   }
+   
+   public static bool FuzzyLessOrEqual(float p1, float p2)
+   {
+      return p1 < p2 || Math.Abs(p1 - p2) * 100000f <= Math.Min(Math.Abs(p1), Math.Abs(p2));
    }
 
    public static bool FuzzyIsNull(double d)

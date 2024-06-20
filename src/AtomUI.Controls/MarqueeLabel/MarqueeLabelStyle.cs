@@ -60,7 +60,7 @@ public partial class MarqueeLabel : IControlCustomStyle
                _pivotOffsetStartValue = PivotOffset;
                HandleCleanupMarqueeAnimation();
             } else {
-               if (DesiredSize.Width < _lastDesiredWidth || NumberUtils.FuzzyCompare(DesiredSize.Width, _lastDesiredWidth)) {
+               if (DesiredSize.Width < _lastDesiredWidth || NumberUtils.FuzzyEqual(DesiredSize.Width, _lastDesiredWidth)) {
                   ReConfigureAnimation();
                   HandleStartupMarqueeAnimation();
                }
@@ -98,15 +98,15 @@ public partial class MarqueeLabel : IControlCustomStyle
 
    private void HandleLayoutUpdated(Size size, Size availableSize)
    {
-      if (availableSize.Width > size.Width || NumberUtils.FuzzyCompare(availableSize.Width, size.Width)) {
+      if (availableSize.Width > size.Width || NumberUtils.FuzzyEqual(availableSize.Width, size.Width)) {
          HandleCleanupMarqueeAnimation();
          PivotOffset = 0;
          _lastDesiredWidth = 0;
          _pivotOffsetStartValue = 0;
       } else {
-         if (!NumberUtils.FuzzyCompare(_lastDesiredWidth, size.Width)) {
+         if (!NumberUtils.FuzzyEqual(_lastDesiredWidth, size.Width)) {
             _lastDesiredWidth = size.Width;
-            if (!NumberUtils.FuzzyCompare(_lastTextWidth, TextLayout.Width)) {
+            if (!NumberUtils.FuzzyEqual(_lastTextWidth, TextLayout.Width)) {
                _lastTextWidth = TextLayout.Width;
             }
          }
