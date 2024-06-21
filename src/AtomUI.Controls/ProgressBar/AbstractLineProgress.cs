@@ -1,5 +1,6 @@
 using AtomUI.Media;
 using AtomUI.Styling;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Data;
 using Avalonia.Layout;
@@ -45,9 +46,17 @@ public abstract partial class AbstractLineProgress : AbstractProgressBar
       _sizeTypeThresholdValue = new Dictionary<SizeType, SizeTypeThresholdValue>();
    }
    
-   protected Size CalculateExtraInfoSize(double fontSize)
+   // 根据当前的状态进行计算
+   protected virtual Size CalculateExtraInfoSize(double fontSize)
    {
-      var textSize = TextUtils.CalculateTextSize(string.Format(ProgressTextFormat, 100), FontFamily, fontSize);
+      if (Status == ProgressStatus.Exception || NumberUtils.FuzzyEqual(Value, Maximum)) {
+         // 只要图标
+         if (EffectiveSizeType == SizeType.Large || EffectiveSizeType == SizeType.Middle) {
+            return new Size(_lineInfoIconSize, _lineInfoIconSize);
+         } 
+         return new Size(_lineInfoIconSizeSM, _lineInfoIconSizeSM);
+      }
+      var textSize = TextUtils.CalculateTextSize(string.Format(ProgressTextFormat, Value), FontFamily, fontSize);
       if (Orientation == Orientation.Vertical) {
          textSize = new Size(textSize.Height, textSize.Width);
       }
@@ -130,6 +139,9 @@ public abstract partial class AbstractLineProgress : AbstractProgressBar
       _tokenResourceBinder.AddBinding(LineExtraInfoMarginTokenProperty, ProgressBarResourceKey.LineExtraInfoMargin);
       _tokenResourceBinder.AddBinding(FontSizeTokenProperty, GlobalResourceKey.FontSize);
       _tokenResourceBinder.AddBinding(FontSizeSMTokenProperty, GlobalResourceKey.FontSizeSM);
+      
+      _tokenResourceBinder.AddBinding(LineInfoIconSizeTokenProperty, ProgressBarResourceKey.LineInfoIconSize);
+      _tokenResourceBinder.AddBinding(LineInfoIconSizeSMTokenProperty, ProgressBarResourceKey.LineInfoIconSizeSM);
    }
 
    protected override void CreateCompletedIcons()

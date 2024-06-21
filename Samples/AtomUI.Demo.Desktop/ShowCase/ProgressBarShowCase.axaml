@@ -236,6 +236,7 @@
             Description="Change the position of the progress value, you can use percentPosition to adjust it so that the progress bar value is inside, outside or at the bottom of the progress bar.">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:StepsProgressBar Value="100" Minimum="0" Maximum="100" Steps="8" PercentPosition="Start"/>
+                <atom:StepsProgressBar Value="100" Minimum="0" Maximum="100" Steps="8" PercentPosition="Center"/>
                 <atom:StepsProgressBar Value="60" Minimum="0" Maximum="100" Steps="8" PercentPosition="Center" SizeType="Middle"/>
                 <atom:StepsProgressBar Value="60" Minimum="0" Maximum="100" Steps="8" PercentPosition="Center" SizeType="Small"/>
                 <atom:StepsProgressBar Value="55" Minimum="0" Maximum="100" Steps="8" PercentPosition="Center"/>

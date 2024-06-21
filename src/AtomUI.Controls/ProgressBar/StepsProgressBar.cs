@@ -294,7 +294,7 @@ public class StepsProgressBar : AbstractLineProgress
          targetWidth = chunkWidth * Steps + DEFAULT_CHUNK_SPACE * (Steps - 1);
          if (ShowProgressInfo) {
             if (PercentPosition == LinePercentAlignment.Center) {
-               chunkHeight += _extraInfoSize.Height + _lineProgressPadding;
+               chunkHeight += _extraInfoSize.Height + _lineExtraInfoMargin;
             } else {
                targetWidth += _extraInfoSize.Width + _lineExtraInfoMargin;
             }

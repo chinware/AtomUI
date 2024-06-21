@@ -43,7 +43,7 @@ public partial class ProgressBar : AbstractLineProgress
       if (Orientation == Orientation.Horizontal) {
          targetHeight = StrokeThickness;
          if (!PercentPosition.IsInner && ShowProgressInfo) {
-            targetHeight += _percentageLabel!.DesiredSize.Height + _lineProgressPadding;
+            targetHeight += _extraInfoSize.Height + _lineExtraInfoMargin;
          }
 
          targetWidth = availableSize.Width;
@@ -51,7 +51,7 @@ public partial class ProgressBar : AbstractLineProgress
       } else {
          targetWidth = StrokeThickness;
          if (!PercentPosition.IsInner && ShowProgressInfo) {
-            targetWidth += _percentageLabel!.DesiredSize.Height + _lineProgressPadding;
+            targetWidth += _extraInfoSize.Height + _lineProgressPadding;
          }
 
          targetWidth = Math.Max(targetWidth, MinWidth);
@@ -320,7 +320,7 @@ public partial class ProgressBar : AbstractLineProgress
                   offsetY = (contentRect.Height - targetHeight) / 2;
                } else if (PercentPosition.Alignment == LinePercentAlignment.Center) {
                   offsetX = (contentRect.Width - targetWidth) / 2;
-                  offsetY = contentRect.Bottom - targetHeight + _lineProgressPadding;
+                  offsetY = contentRect.Bottom - targetHeight;
                } else if (PercentPosition.Alignment == LinePercentAlignment.End) {
                   offsetX = contentRect.Right - targetWidth;
                   offsetY = (contentRect.Height - targetHeight) / 2;
@@ -330,6 +330,25 @@ public partial class ProgressBar : AbstractLineProgress
       }
 
       return new Rect(new Point(offsetX, offsetY), extraInfoSize);
+   }
+   
+   protected override Size CalculateExtraInfoSize(double fontSize)
+   {
+      if ((Status == ProgressStatus.Exception ||
+           NumberUtils.FuzzyEqual(Value, Maximum)) &&
+          !PercentPosition.IsInner) {
+         // 只要图标
+         if (EffectiveSizeType == SizeType.Large || EffectiveSizeType == SizeType.Middle) {
+            return new Size(_lineInfoIconSize, _lineInfoIconSize);
+         } 
+         return new Size(_lineInfoIconSizeSM, _lineInfoIconSizeSM);
+      }
+      var textSize = TextUtils.CalculateTextSize(string.Format(ProgressTextFormat, Value), FontFamily, fontSize);
+      if (Orientation == Orientation.Vertical) {
+         textSize = new Size(textSize.Height, textSize.Width);
+      }
+
+      return textSize;
    }
    
    protected override void NotifyEffectSizeTypeChanged()
