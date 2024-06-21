@@ -14,13 +14,33 @@ public abstract partial class AbstractCircleProgress : AbstractProgressBar
    protected const double SMALL_CIRCLE_SIZE           = 60;
    protected const double CIRCLE_MIN_STROKE_THICKNESS = 3;
    
+   public static readonly StyledProperty<int> StepCountProperty =
+      AvaloniaProperty.Register<ProgressBar, int>(nameof(StepCount), 0, coerce:(o, v) => Math.Max(v, 0));
+   
+   public static readonly StyledProperty<double> StepGapProperty =
+      AvaloniaProperty.Register<ProgressBar, double>(nameof(StepGap), 2, coerce:(o, v) => Math.Max(v, 0));
+   
+   public int StepCount
+   {
+      get => GetValue(StepCountProperty);
+      set => SetValue(StepCountProperty, value);
+   }
+   
+   public double StepGap
+   {
+      get => GetValue(StepGapProperty);
+      set => SetValue(StepGapProperty, value);
+   }
+   
    internal Dictionary<SizeType, double> _sizeTypeThresholdValue;
 
    static AbstractCircleProgress()
    {
       HorizontalAlignmentProperty.OverrideDefaultValue<AbstractCircleProgress>(HorizontalAlignment.Left);
       VerticalAlignmentProperty.OverrideDefaultValue<AbstractCircleProgress>(VerticalAlignment.Top);
-      AffectsRender<AbstractCircleProgress>(IndicatorAngleProperty);
+      AffectsRender<AbstractCircleProgress>(IndicatorAngleProperty,
+                                            StepCountProperty,
+                                            StepGapProperty);
    }
    
    public AbstractCircleProgress()

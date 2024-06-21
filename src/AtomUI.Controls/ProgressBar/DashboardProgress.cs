@@ -53,16 +53,48 @@ public class DashboardProgress : AbstractCircleProgress
    {
       var controlRect = new Rect(new Point(0, 0), DesiredSize); 
       _currentGrooveRect = GetProgressBarRect(controlRect).Deflate(StrokeThickness / 2);
+      _currentGrooveRect = new Rect(_currentGrooveRect.Position, new Size(Math.Floor(_currentGrooveRect.Size.Width), 
+                                                                          Math.Floor(_currentGrooveRect.Size.Height)));
+      if (StepCount > 0 && StepGap > 0) {
+         DrawGrooveStep(context);
+      } else {
+         DrawGrooveNormal(context);
+      }
+   }
+
+   private void DrawGrooveNormal(DrawingContext context)
+   {
       var pen = new Pen(GrooveBrush, StrokeThickness)  
       {
          LineCap = StrokeLineCap
       };
-      _currentGrooveRect = new Rect(_currentGrooveRect.Position, new Size(Math.Floor(_currentGrooveRect.Size.Width), 
-                                                                          Math.Floor(_currentGrooveRect.Size.Height)));
       context.DrawArc(pen, _currentGrooveRect, _anglePair.Item1, _anglePair.Item2);
    }
 
+   private void DrawGrooveStep(DrawingContext context)
+   {
+      var pen = new Pen(GrooveBrush, StrokeThickness)
+      {
+         LineCap = PenLineCap.Flat
+      };
+      var spanAngle = (360 - GapDegree - StepGap * StepCount) / StepCount;
+      var startAngle = _anglePair.Item1;
+      for (int i = 0; i < StepCount; ++i) {
+         context.DrawArc(pen, _currentGrooveRect, startAngle, spanAngle);
+         startAngle += StepGap + spanAngle;
+      }
+   }
+   
    protected override void RenderIndicatorBar(DrawingContext context)
+   {
+      if (StepCount > 0 && StepGap > 0) {
+         DrawIndicatorBarStep(context);
+      } else {
+         DrawIndicatorBarNormal(context);
+      }
+   }
+   
+   private void DrawIndicatorBarNormal(DrawingContext context)
    {
       var pen = new Pen(IndicatorBarBrush, StrokeThickness)  
       {
@@ -76,6 +108,40 @@ public class DashboardProgress : AbstractCircleProgress
             LineCap = StrokeLineCap
          };
          context.DrawArc(successPen, _currentGrooveRect, _anglePair.Item1, CalculateAngle(SuccessThreshold));
+      }
+   }
+
+   private void DrawIndicatorBarStep(DrawingContext context)
+   {
+      var pen = new Pen(IndicatorBarBrush, StrokeThickness)
+      {
+         LineCap = PenLineCap.Flat
+      };
+      var spanAngle = (360 - GapDegree - StepGap * StepCount) / StepCount;
+      var startAngle = _anglePair.Item1;
+      
+      var filledSteps = (int)Math.Round(StepCount * Percentage / 100);
+      int? successSteps = null;
+      IPen? successPen = null;
+      
+      if (!double.IsNaN(SuccessThreshold)) { 
+         successPen = new Pen(SuccessThresholdBrush, StrokeThickness)
+         {
+            LineCap = PenLineCap.Flat
+         };
+         successSteps = (int)Math.Round(StepCount * SuccessThreshold / (Maximum - Minimum));
+      }
+      
+      IPen? currentPen;
+      for (int i = 0; i < filledSteps; ++i) {
+         currentPen = pen;
+         if (successSteps.HasValue) {
+            if (i < successSteps) {
+               currentPen = successPen;
+            }
+         }
+         context.DrawArc(currentPen, _currentGrooveRect, startAngle, spanAngle);
+         startAngle += StepGap + spanAngle;
       }
    }
 

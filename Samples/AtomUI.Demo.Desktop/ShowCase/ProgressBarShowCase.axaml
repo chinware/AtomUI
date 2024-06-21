@@ -136,5 +136,26 @@
                                        StepsStrokeBrush="{Binding StepsChunkBrushes}"/>
             </StackPanel>
         </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="Circular progress bar whit steps"
+            Description="A circular progress bar that support steps and color segments, default gap is 2px.">
+            <StackPanel Orientation="Vertical" Spacing="5">
+               <WrapPanel Orientation="Horizontal">
+                   <atom:CircleProgress Value="50" Minimum="0" Maximum="100" StepCount="4" StepGap="8" IndicatorThickness="20"/>
+                   <atom:CircleProgress Value="100" Minimum="0" Maximum="100" StepCount="10" StepGap="8" IndicatorThickness="20"/>
+                   <atom:CircleProgress Value="77" Minimum="0" Maximum="100" StepCount="8" StepGap="10" IndicatorThickness="20" Status="Exception"/>
+                   <atom:CircleProgress Value="77" Minimum="0" Maximum="100" StepCount="8" StepGap="10" IndicatorThickness="20"
+                                        SuccessThreshold="30"/>
+               </WrapPanel>
+                <WrapPanel Orientation="Horizontal">
+                    <atom:DashboardProgress Value="50" Minimum="0" Maximum="100" StepCount="4" StepGap="8" IndicatorThickness="20"/>
+                    <atom:DashboardProgress Value="70" Minimum="0" Maximum="100" StepCount="10" StepGap="8" IndicatorThickness="20"/>
+                    <atom:DashboardProgress Value="77" Minimum="0" Maximum="100" StepCount="8" StepGap="10" IndicatorThickness="20" Status="Exception"/>
+                    <atom:DashboardProgress Value="77" Minimum="0" Maximum="100" StepCount="8" StepGap="10" IndicatorThickness="20"
+                                            SuccessThreshold="30"/>
+                </WrapPanel>
+            </StackPanel>
+        </showcase:ShowCaseItem>
     </showcase:ShowCasePanel>
 </UserControl>
