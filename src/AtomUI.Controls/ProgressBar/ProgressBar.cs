@@ -43,19 +43,32 @@ public partial class ProgressBar : AbstractLineProgress
       if (Orientation == Orientation.Horizontal) {
          targetHeight = StrokeThickness;
          if (!PercentPosition.IsInner && ShowProgressInfo) {
-            targetHeight += _extraInfoSize.Height + _lineExtraInfoMargin;
+            if (PercentPosition.Alignment == LinePercentAlignment.Center) {
+               targetHeight += _extraInfoSize.Height + _lineExtraInfoMargin;
+            }
          }
-
-         targetWidth = availableSize.Width;
+         
+         if (!double.IsInfinity(availableSize.Width)) {
+            targetWidth = availableSize.Width;
+         } else if (!double.IsNaN(MinWidth)) {
+            targetWidth = MinHeight;
+         }
+         
          targetHeight = Math.Max(targetHeight, MinHeight);
       } else {
          targetWidth = StrokeThickness;
          if (!PercentPosition.IsInner && ShowProgressInfo) {
-            targetWidth += _extraInfoSize.Height + _lineProgressPadding;
+            if (PercentPosition.Alignment == LinePercentAlignment.Center) {
+               targetWidth += _extraInfoSize.Width + _lineExtraInfoMargin;
+            }
          }
 
          targetWidth = Math.Max(targetWidth, MinWidth);
-         targetHeight = availableSize.Height;
+         if (!double.IsInfinity(availableSize.Height)) {
+            targetHeight = availableSize.Height;
+         } else if (!double.IsNaN(MinHeight)) {
+            targetHeight = MinHeight;
+         }
       }
       return new Size(targetWidth, targetHeight);
    }
@@ -145,7 +158,15 @@ public partial class ProgressBar : AbstractLineProgress
          if (Orientation == Orientation.Horizontal) {
             strokeThickness = MinHeight;
          } else {
-            strokeThickness = MinWidth;
+            if (_extraInfoSize == Size.Infinity) {
+               _extraInfoSize = CalculateExtraInfoSize(FontSize);
+            }
+
+            if (PercentPosition.IsInner) {
+               strokeThickness = _extraInfoSize.Width;
+            } else {
+               strokeThickness = MinWidth;
+            }
          }
       }
       StrokeThickness = strokeThickness;
@@ -327,6 +348,32 @@ public partial class ProgressBar : AbstractLineProgress
                }
             }
          }
+      } else {
+         if (PercentPosition.IsInner) {
+            var grooveRect = GetProgressBarRect(contentRect);
+            offsetX = grooveRect.X + (grooveRect.Width - targetWidth) / 2;
+            var range = grooveRect.Height;
+            var deflateValue = range * (1 - Value / (Maximum - Minimum));
+            var indicatorRect = grooveRect.Deflate(new Thickness(0, 0, 0, deflateValue));
+            if (PercentPosition.Alignment == LinePercentAlignment.Start) {
+               offsetY = _lineExtraInfoMargin;
+            } else if (PercentPosition.Alignment == LinePercentAlignment.Center) {
+               offsetY = (indicatorRect.Height - targetHeight) / 2;
+            } else if (PercentPosition.Alignment == LinePercentAlignment.End) {
+               offsetY = indicatorRect.Bottom - targetHeight - _lineExtraInfoMargin;
+            }
+         } else {
+            if (PercentPosition.Alignment == LinePercentAlignment.Start) {
+               offsetX = (contentRect.Width - targetWidth) / 2;
+               offsetY = 0;
+            } else if (PercentPosition.Alignment == LinePercentAlignment.Center) {
+               offsetX = contentRect.Right - targetWidth;
+               offsetY = (contentRect.Height - targetHeight) / 2;
+            } else if (PercentPosition.Alignment == LinePercentAlignment.End) {
+               offsetX = (contentRect.Width - targetWidth) / 2;
+               offsetY = contentRect.Bottom - targetHeight;
+            }
+         }
       }
 
       return new Rect(new Point(offsetX, offsetY), extraInfoSize);
@@ -344,10 +391,11 @@ public partial class ProgressBar : AbstractLineProgress
          return new Size(_lineInfoIconSizeSM, _lineInfoIconSizeSM);
       }
       var textSize = TextUtils.CalculateTextSize(string.Format(ProgressTextFormat, Value), FontFamily, fontSize);
-      if (Orientation == Orientation.Vertical) {
-         textSize = new Size(textSize.Height, textSize.Width);
+      if (ShowProgressInfo && PercentPosition.IsInner) {
+         if (Orientation == Orientation.Vertical) {
+            textSize = new Size(textSize.Height, textSize.Width);
+         }
       }
-
       return textSize;
    }
    
@@ -373,6 +421,7 @@ public partial class ProgressBar : AbstractLineProgress
                if (PercentPosition.Alignment == LinePercentAlignment.Start) {
                   _percentageLabel!.HorizontalAlignment = HorizontalAlignment.Right;
                   _exceptionCompletedIcon!.HorizontalAlignment = HorizontalAlignment.Right;
+                  _successCompletedIcon!.HorizontalAlignment = HorizontalAlignment.Right;
                   _successCompletedIcon!.HorizontalAlignment = HorizontalAlignment.Right;
                } else if (PercentPosition.Alignment == LinePercentAlignment.End) {
                   _percentageLabel!.HorizontalAlignment = HorizontalAlignment.Left;
@@ -412,6 +461,8 @@ public partial class ProgressBar : AbstractLineProgress
             SetupPercentLabelForegroundBrush();
          } else if (e.Property == PercentPositionProperty) {
             HandlePercentPositionChanged();
+         } else if (e.Property == PercentPositionProperty) {
+            SetupRenderRotate();
          }
       }
    }
@@ -424,9 +475,11 @@ public partial class ProgressBar : AbstractLineProgress
       if (Orientation == Orientation.Horizontal) {
          thickness += extraInfoSize.Height;
          MinHeight = thickness;
+         MinWidth = extraInfoSize.Width;
       } else {
          thickness += extraInfoSize.Width;
          MinWidth = thickness;
+         MinHeight = extraInfoSize.Height;
       }
    }
 
@@ -434,6 +487,24 @@ public partial class ProgressBar : AbstractLineProgress
    {
       base.NotifyUiStructureReady();
       SetupPercentLabelForegroundBrush();
+      SetupRenderRotate();
+   }
+
+   private void SetupRenderRotate()
+   {
+      if (ShowProgressInfo && PercentPosition.IsInner && Orientation == Orientation.Vertical) {
+         _percentageLabel!.RenderTransform = new RotateTransform()
+         {
+            Angle = 90
+         };
+         _percentageLabel!.RenderTransformOrigin = RelativePoint.Center;
+         _percentageLabel!.Width = _extraInfoSize.Height;
+         _percentageLabel!.Height = _extraInfoSize.Width;
+      } else {
+         _percentageLabel!.Width = double.NaN;
+         _percentageLabel!.Height = double.NaN;
+         _percentageLabel!.RenderTransform = null;
+      }
    }
 
    private void SetupPercentLabelForegroundBrush()

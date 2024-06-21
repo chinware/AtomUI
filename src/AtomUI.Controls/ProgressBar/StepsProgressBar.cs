@@ -76,15 +76,26 @@ public class StepsProgressBar : AbstractLineProgress
    protected override void RenderGroove(DrawingContext context)
    {
       _grooveRect = GetProgressBarRect(new Rect(new Point(0, 0), DesiredSize));
-      var chunkWidth = GetChunkWidth();
-      var chunkHeight = GetChunkHeight();
+  
       if (Orientation == Orientation.Horizontal) {
+         var chunkWidth = GetChunkWidth();
+         var chunkHeight = GetChunkHeight();
          var offsetX = _grooveRect.X;
          var offsetY = _grooveRect.Y;
          for (int i = 0; i < Steps; ++i) {
             var chunkRect = new Rect(offsetX, offsetY, chunkWidth, chunkHeight);
             context.FillRectangle(GrooveBrush!, chunkRect);
             offsetX += chunkWidth + DEFAULT_CHUNK_SPACE;
+         }
+      } else {
+         var chunkWidth = GetChunkHeight();
+         var chunkHeight = GetChunkWidth();
+         var offsetX = _grooveRect.X;
+         var offsetY = _grooveRect.Y;
+         for (int i = 0; i < Steps; ++i) {
+            var chunkRect = new Rect(offsetX, offsetY, chunkWidth, chunkHeight);
+            context.FillRectangle(GrooveBrush!, chunkRect);
+            offsetY += chunkHeight + DEFAULT_CHUNK_SPACE;
          }
       }
    }
@@ -102,18 +113,27 @@ public class StepsProgressBar : AbstractLineProgress
 
    protected override void RenderIndicatorBar(DrawingContext context)
    {
-      var chunkWidth = GetChunkWidth();
-      var chunkHeight = GetChunkHeight();
-
       var filledSteps = (int)Math.Round(Steps * Percentage / 100);
       
       if (Orientation == Orientation.Horizontal) {
+         var chunkWidth = GetChunkWidth();
+         var chunkHeight = GetChunkHeight();
          var offsetX = _grooveRect.X;
          var offsetY = _grooveRect.Y;
          for (int i = 0; i < filledSteps; ++i) {
             var chunkRect = new Rect(offsetX, offsetY, chunkWidth, chunkHeight);
             context.FillRectangle(GetChunkBrush(i), chunkRect);
             offsetX += chunkWidth + DEFAULT_CHUNK_SPACE;
+         }
+      } else {
+         var chunkWidth = GetChunkHeight();
+         var chunkHeight = GetChunkWidth();
+         var offsetX = _grooveRect.X;
+         var offsetY = _grooveRect.Y;
+         for (int i = 0; i < filledSteps; ++i) {
+            var chunkRect = new Rect(offsetX, offsetY, chunkWidth, chunkHeight);
+            context.FillRectangle(GetChunkBrush(i), chunkRect);
+            offsetY += chunkHeight + DEFAULT_CHUNK_SPACE;
          }
       }
    }
@@ -288,9 +308,9 @@ public class StepsProgressBar : AbstractLineProgress
          // 其他两个 Icon 都是固定的
       }
       
-      var chunkWidth = GetChunkWidth();
-      var chunkHeight = GetChunkHeight();
       if (Orientation == Orientation.Horizontal) {
+         var chunkWidth = GetChunkWidth();
+         var chunkHeight = GetChunkHeight();
          targetWidth = chunkWidth * Steps + DEFAULT_CHUNK_SPACE * (Steps - 1);
          if (ShowProgressInfo) {
             if (PercentPosition == LinePercentAlignment.Center) {
@@ -301,9 +321,15 @@ public class StepsProgressBar : AbstractLineProgress
          }
          targetHeight = Math.Max(chunkHeight, MinHeight);
       } else {
+         var chunkWidth = GetChunkHeight();
+         var chunkHeight = GetChunkWidth();
          targetHeight = chunkHeight * Steps + DEFAULT_CHUNK_SPACE * (Steps - 1);
          if (ShowProgressInfo) {
-            targetHeight += _extraInfoSize.Height + _lineExtraInfoMargin;
+            if (PercentPosition == LinePercentAlignment.Center) {
+               chunkWidth += _extraInfoSize.Width + _lineExtraInfoMargin;
+            } else {
+               targetHeight += _extraInfoSize.Height + _lineExtraInfoMargin;
+            }
          }
          targetWidth = Math.Max(chunkWidth, MinWidth);
       }
@@ -388,7 +414,7 @@ public class StepsProgressBar : AbstractLineProgress
             } else if (PercentPosition == LinePercentAlignment.Center) {
                deflateRight = percentLabelWidth;
             } else if (PercentPosition == LinePercentAlignment.End) {
-               deflateBottom = percentLabelHeight + _lineExtraInfoMargin;;
+               deflateBottom = percentLabelHeight + _lineExtraInfoMargin;
             }
          }
       }
@@ -407,10 +433,9 @@ public class StepsProgressBar : AbstractLineProgress
       double offsetY = 0;
       double targetWidth = 0;
       double targetHeight = 0;
-      var extraInfoSize = CalculateExtraInfoSize(FontSize);
       if (ShowProgressInfo) {
-         targetWidth = extraInfoSize.Width;
-         targetHeight = extraInfoSize.Height;
+         targetWidth = _extraInfoSize.Width;
+         targetHeight = _extraInfoSize.Height;
       }
       
       if (Orientation == Orientation.Horizontal) {
@@ -426,8 +451,21 @@ public class StepsProgressBar : AbstractLineProgress
                offsetY = (contentRect.Height - targetHeight) / 2;
             }
          }
+      } else {
+         if (ShowProgressInfo) {
+            if (PercentPosition == LinePercentAlignment.Start) {
+               offsetX = (contentRect.Width - targetWidth) / 2;
+               offsetY = 0;
+            } else if (PercentPosition == LinePercentAlignment.Center) {
+               offsetX = contentRect.Right - targetWidth;
+               offsetY = (contentRect.Height - targetHeight) / 2;
+            } else if (PercentPosition == LinePercentAlignment.End) {
+               offsetX = (contentRect.Width - targetWidth) / 2;
+               offsetY = contentRect.Bottom - targetHeight;
+            }
+         }
       }
 
-      return new Rect(new Point(offsetX, offsetY), extraInfoSize);
+      return new Rect(new Point(offsetX, offsetY), _extraInfoSize);
    }
 }

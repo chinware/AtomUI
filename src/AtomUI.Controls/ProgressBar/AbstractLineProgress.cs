@@ -38,7 +38,7 @@ public abstract partial class AbstractLineProgress : AbstractProgressBar
    }
    
    internal Dictionary<SizeType, SizeTypeThresholdValue> _sizeTypeThresholdValue;
-   protected Size _extraInfoSize;
+   protected Size _extraInfoSize = Size.Infinity;
    protected Rect _grooveRect;
 
    public AbstractLineProgress()
@@ -57,10 +57,6 @@ public abstract partial class AbstractLineProgress : AbstractProgressBar
          return new Size(_lineInfoIconSizeSM, _lineInfoIconSizeSM);
       }
       var textSize = TextUtils.CalculateTextSize(string.Format(ProgressTextFormat, Value), FontFamily, fontSize);
-      if (Orientation == Orientation.Vertical) {
-         textSize = new Size(textSize.Height, textSize.Width);
-      }
-
       return textSize;
    }
 
@@ -91,26 +87,17 @@ public abstract partial class AbstractLineProgress : AbstractProgressBar
          EffectiveSizeType = CalculateEffectiveSizeType(sizeValue);
       }
 
-      _extraInfoSize = CalculateExtraInfoSize(FontSize);
+      if (_extraInfoSize == Size.Infinity) {
+         _extraInfoSize = CalculateExtraInfoSize(FontSize);
+      }
       SetupAlignment();
       NotifyOrientationChanged();
    }
    
    protected virtual void SetupAlignment()
    {
-      if (Orientation == Orientation.Horizontal) {
-         if (!double.IsNaN(Width)) {
-            HorizontalAlignment = HorizontalAlignment.Left;
-         } else {
-            HorizontalAlignment = HorizontalAlignment.Stretch;
-         }
-      } else {
-         if (!double.IsNaN(Height)) {
-            VerticalAlignment = VerticalAlignment.Top;
-         } else {
-            VerticalAlignment = VerticalAlignment.Center;
-         }
-      }
+      HorizontalAlignment = HorizontalAlignment.Left;
+      VerticalAlignment = VerticalAlignment.Top;
    }
 
    protected override void NotifyPropertyChanged(AvaloniaPropertyChangedEventArgs e)
@@ -125,7 +112,9 @@ public abstract partial class AbstractLineProgress : AbstractProgressBar
             EffectiveSizeType = CalculateEffectiveSizeType(e.GetNewValue<double>());
             CalculateStrokeThickness();
          } else if (e.Property == EffectiveSizeTypeProperty) {
-            _extraInfoSize = CalculateExtraInfoSize(FontSize);
+            if (_extraInfoSize == Size.Infinity) {
+               _extraInfoSize = CalculateExtraInfoSize(FontSize);
+            }
          } else if (e.Property == OrientationProperty) {
             NotifyOrientationChanged();
          }
