@@ -43,7 +43,7 @@ public partial class ProgressBar : AbstractLineProgress
       if (Orientation == Orientation.Horizontal) {
          targetHeight = StrokeThickness;
          if (!PercentPosition.IsInner && ShowProgressInfo) {
-            targetHeight += _percentageLabel!.DesiredSize.Height;
+            targetHeight += _percentageLabel!.DesiredSize.Height + _lineProgressPadding;
          }
 
          targetWidth = availableSize.Width;
@@ -63,7 +63,7 @@ public partial class ProgressBar : AbstractLineProgress
    protected override Size ArrangeOverride(Size finalSize)
    {
       if (ShowProgressInfo) {
-         var extraInfoRect = GetExtraInfoRect(new Rect(new Point(0, 0), finalSize));
+         var extraInfoRect = GetExtraInfoRect(new Rect(new Point(0, 0), DesiredSize));
          if (_percentageLabel!.IsVisible) {
             _percentageLabel.Arrange(extraInfoRect);
          }
@@ -243,6 +243,7 @@ public partial class ProgressBar : AbstractLineProgress
 
    protected override Rect GetProgressBarRect(Rect controlRect)
    {
+      var contentRect = new Rect(new Point(0, 0), controlRect.Size.Deflate(Margin));
       double deflateLeft = 0;
       double deflateTop = 0;
       double deflateRight = 0;
@@ -268,7 +269,7 @@ public partial class ProgressBar : AbstractLineProgress
                var percentLabelWidth = _extraInfoSize.Width;
                var percentLabelHeight = _extraInfoSize.Height;
                if (PercentPosition.Alignment == LinePercentAlignment.Start) {
-                  deflateTop = percentLabelHeight + _lineExtraInfoMargin;;
+                  deflateTop = percentLabelHeight + _lineExtraInfoMargin;
                } else if (PercentPosition.Alignment == LinePercentAlignment.Center) {
                   deflateRight = percentLabelWidth;
                } else if (PercentPosition.Alignment == LinePercentAlignment.End) {
@@ -278,7 +279,7 @@ public partial class ProgressBar : AbstractLineProgress
          }
       }
 
-      var deflatedControlRect = controlRect.Deflate(new Thickness(deflateLeft, deflateTop, deflateRight, deflateBottom));
+      var deflatedControlRect = contentRect.Deflate(new Thickness(deflateLeft, deflateTop, deflateRight, deflateBottom));
       if (Orientation == Orientation.Horizontal) {
          return new Rect(new Point(deflatedControlRect.X, (deflatedControlRect.Height - strokeThickness) / 2), new Size(deflatedControlRect.Width, strokeThickness));
       }
@@ -287,6 +288,7 @@ public partial class ProgressBar : AbstractLineProgress
 
    protected override Rect GetExtraInfoRect(Rect controlRect)
    {
+      var contentRect = new Rect(new Point(0, 0), controlRect.Size.Deflate(Margin));
       double offsetX = 0;
       double offsetY = 0;
       double targetWidth = 0;
@@ -300,7 +302,7 @@ public partial class ProgressBar : AbstractLineProgress
       if (Orientation == Orientation.Horizontal) {
          if (ShowProgressInfo) {
             if (PercentPosition.IsInner) {
-               var grooveRect = GetProgressBarRect(controlRect);
+               var grooveRect = GetProgressBarRect(contentRect);
                offsetY = grooveRect.Y + (grooveRect.Height - targetHeight) / 2;
                var range = grooveRect.Width;
                var deflateValue = range * (1 - Value / (Maximum - Minimum));
@@ -315,13 +317,13 @@ public partial class ProgressBar : AbstractLineProgress
             } else {
                if (PercentPosition.Alignment == LinePercentAlignment.Start) {
                   offsetX = 0;
-                  offsetY = (controlRect.Height - targetHeight) / 2;
+                  offsetY = (contentRect.Height - targetHeight) / 2;
                } else if (PercentPosition.Alignment == LinePercentAlignment.Center) {
-                  offsetX = (controlRect.Width - targetWidth) / 2;
-                  offsetY = controlRect.Bottom - targetHeight + _lineProgressPadding;
+                  offsetX = (contentRect.Width - targetWidth) / 2;
+                  offsetY = contentRect.Bottom - targetHeight + _lineProgressPadding;
                } else if (PercentPosition.Alignment == LinePercentAlignment.End) {
-                  offsetX = controlRect.Right - targetWidth;
-                  offsetY = (controlRect.Height - targetHeight) / 2;
+                  offsetX = contentRect.Right - targetWidth;
+                  offsetY = (contentRect.Height - targetHeight) / 2;
                }
             }
          }

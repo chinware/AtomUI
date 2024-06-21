@@ -293,16 +293,21 @@ public class StepsProgressBar : AbstractLineProgress
       if (Orientation == Orientation.Horizontal) {
          targetWidth = chunkWidth * Steps + DEFAULT_CHUNK_SPACE * (Steps - 1);
          if (ShowProgressInfo) {
-            targetWidth += _extraInfoSize.Width + _lineExtraInfoMargin;
+            if (PercentPosition == LinePercentAlignment.Center) {
+               chunkHeight += _extraInfoSize.Height + _lineProgressPadding;
+            } else {
+               targetWidth += _extraInfoSize.Width + _lineExtraInfoMargin;
+            }
          }
          targetHeight = Math.Max(chunkHeight, MinHeight);
       } else {
          targetHeight = chunkHeight * Steps + DEFAULT_CHUNK_SPACE * (Steps - 1);
          if (ShowProgressInfo) {
-            targetHeight += _extraInfoSize.Height;
+            targetHeight += _extraInfoSize.Height + _lineExtraInfoMargin;
          }
          targetWidth = Math.Max(chunkWidth, MinWidth);
       }
+
       return new Size(targetWidth, targetHeight);
    }
 
@@ -361,7 +366,7 @@ public class StepsProgressBar : AbstractLineProgress
       double deflateRight = 0;
       double deflateBottom = 0;
       var strokeThickness = StrokeThickness;
-      var contentRect = controlRect.Deflate(Margin);
+      var contentRect = new Rect(new Point(0, 0), controlRect.Size.Deflate(Margin));
       if (Orientation == Orientation.Horizontal) {
          if (ShowProgressInfo) {
             var percentLabelWidth = _extraInfoSize.Width;
@@ -390,14 +395,14 @@ public class StepsProgressBar : AbstractLineProgress
 
       var deflatedControlRect = contentRect.Deflate(new Thickness(deflateLeft, deflateTop, deflateRight, deflateBottom));
       if (Orientation == Orientation.Horizontal) {
-         return new Rect(new Point(0, (deflatedControlRect.Height - strokeThickness) / 2), new Size(deflatedControlRect.Width, strokeThickness));
+         return new Rect(new Point(deflatedControlRect.X, (deflatedControlRect.Height - strokeThickness) / 2), new Size(deflatedControlRect.Width, strokeThickness));
       }
-      return new Rect(new Point((deflatedControlRect.Width - strokeThickness) / 2, 0), new Size(strokeThickness, deflatedControlRect.Height));
+      return new Rect(new Point((deflatedControlRect.Width - strokeThickness) / 2, deflatedControlRect.Y), new Size(strokeThickness, deflatedControlRect.Height));
    }
 
    protected override Rect GetExtraInfoRect(Rect controlRect)
    {
-      var contentRect = controlRect.Deflate(Margin);
+      var contentRect = new Rect(new Point(0, 0), controlRect.Size.Deflate(Margin));
       double offsetX = 0;
       double offsetY = 0;
       double targetWidth = 0;

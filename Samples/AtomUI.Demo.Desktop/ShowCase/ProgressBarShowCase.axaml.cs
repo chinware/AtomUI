@@ -19,7 +19,7 @@ public partial class ProgressBarShowCase : UserControl
    public PercentPosition OutterStartPercentPosition { get; set; }
    public PercentPosition OutterCenterPercentPosition { get; set; }
    public PercentPosition OutterEndPercentPosition { get; set; }
-
+   
    public ProgressBarShowCase()
    {
       InitializeComponent();

@@ -15,6 +15,9 @@
             <Style Selector="atom|DashboardProgress">
                 <Setter Property="Margin" Value="5"></Setter>
             </Style>
+            <Style Selector="#CircleWithStep atom|StepsProgressBar">
+                <Setter Property="Margin" Value="5"></Setter>
+            </Style>
         </showcase:ShowCasePanel.Styles>
         <showcase:ShowCaseItem
             Title="Progress bar"
@@ -180,7 +183,7 @@
         <showcase:ShowCaseItem
             Title="Circular progress bar whit steps"
             Description="A circular progress bar that support steps and color segments, default gap is 2px.">
-            <StackPanel Orientation="Vertical" Spacing="5">
+            <StackPanel Orientation="Vertical" Spacing="5" x:Name="CircleWithStep">
                 <StackPanel Orientation="Vertical" Spacing="5">
                     <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Width="300">
                         <atom:ProgressBar Value="50" Minimum="0" Maximum="100" SizeType="Large" />
@@ -215,7 +218,7 @@
         <showcase:ShowCaseItem
             Title="Change progress value position"
             Description="Change the position of the progress value, you can use percentPosition to adjust it so that the progress bar value is inside, outside or at the bottom of the progress bar.">
-            <StackPanel Orientation="Vertical" Spacing="5">
+            <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:ProgressBar Value="30" Minimum="0" Maximum="100" Width="300" PercentPosition="{Binding InnerStartPercentPosition}"/>
                 <atom:ProgressBar Value="60" Minimum="0" Maximum="100" Width="300" PercentPosition="{Binding InnerCenterPercentPosition}"/>
                 <atom:ProgressBar Value="50" Minimum="0" Maximum="100" Width="300" PercentPosition="{Binding InnerEndPercentPosition}"/>
@@ -225,6 +228,20 @@
                 <atom:ProgressBar Value="60" Minimum="0" Maximum="100" PercentPosition="{Binding OutterCenterPercentPosition}" SizeType="Small"/>
                 <atom:ProgressBar Value="100" Minimum="0" Maximum="100" PercentPosition="{Binding OutterCenterPercentPosition}"/>
                 <atom:ProgressBar Value="55" Minimum="0" Maximum="100" PercentPosition="{Binding OutterEndPercentPosition}"/>
+            </StackPanel>
+        </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="Change progress value position for StepsProgressBar"
+            Description="Change the position of the progress value, you can use percentPosition to adjust it so that the progress bar value is inside, outside or at the bottom of the progress bar.">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:StepsProgressBar Value="100" Minimum="0" Maximum="100" Steps="8" PercentPosition="Start"/>
+                <atom:StepsProgressBar Value="60" Minimum="0" Maximum="100" Steps="8" PercentPosition="Center" SizeType="Middle"/>
+                <atom:StepsProgressBar Value="60" Minimum="0" Maximum="100" Steps="8" PercentPosition="Center" SizeType="Small"/>
+                <atom:StepsProgressBar Value="55" Minimum="0" Maximum="100" Steps="8" PercentPosition="Center"/>
+                <atom:StepsProgressBar Value="100" Minimum="0" Maximum="100" Steps="8" PercentPosition="End"/>
+                <atom:StepsProgressBar Value="55" Minimum="0" Maximum="100" Steps="8" PercentPosition="End" Status="Exception"/>
+                <atom:StepsProgressBar Value="99" Minimum="0" Maximum="100" Steps="8" PercentPosition="Start"/>
             </StackPanel>
         </showcase:ShowCaseItem>
         
