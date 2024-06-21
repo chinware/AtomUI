@@ -1,3 +1,4 @@
+using AtomUI.ColorSystem;
 using AtomUI.Media;
 using AtomUI.Utils;
 using Avalonia;
@@ -31,6 +32,7 @@ public partial class ProgressBar : AbstractLineProgress
    
    protected override Size MeasureOverride(Size availableSize)
    {
+      Console.Write(ColorUtils.OnBackground(Colors.Black, Color.Parse(IndicatorBarBrush!.ToString()!)));
       // TODO 实现有问题
       double targetWidth = 0;
       double targetHeight = 0;

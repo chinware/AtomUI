@@ -103,4 +103,50 @@ public static class ColorExtensions
       h = h < 0 ? 360 + h : h;
       return HslColor.FromHsl(h, hslColor.S, hslColor.L).ToRgb();
    }
+   
+   /// <summary>
+   /// Returns the perceived brightness of the color, from 0-255.
+   /// </summary>
+   /// <param name="color"></param>
+   /// <returns></returns>
+   public static int GetBrightness(this Color color)
+   {
+      return (color.R * 299 + color.G * 587 + color.B * 114) / 1000;
+   }
+
+   /// <summary>
+   /// Returns the perceived luminance of a color, from 0-1.
+   /// </summary>
+   /// <returns></returns>
+   public static double GetLuminance(this Color color)
+   {
+      // http://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef
+      var rsRGB = color.R / 255;
+      var gsRGB = color.G / 255;
+      var bsRGB = color.B / 255;
+      double r = 0;
+      double g = 0;
+      double b = 0;
+      if (NumberUtils.FuzzyLessOrEqual(rsRGB, 0.03928)) {
+         r = rsRGB / 12.92;
+      } else {
+         // eslint-disable-next-line prefer-exponentiation-operator
+         r = Math.Pow((rsRGB + 0.055) / 1.055, 2.4);
+      }
+      if (gsRGB <= 0.03928) {
+         g = gsRGB / 12.92;
+      } else {
+         // eslint-disable-next-line prefer-exponentiation-operator
+         g = Math.Pow((gsRGB + 0.055) / 1.055, 2.4);
+      }
+
+      if (bsRGB <= 0.03928) {
+         b = bsRGB / 12.92;
+      } else {
+         // eslint-disable-next-line prefer-exponentiation-operator
+         b = Math.Pow((bsRGB + 0.055) / 1.055, 2.4);
+      }
+
+      return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+   }
 }

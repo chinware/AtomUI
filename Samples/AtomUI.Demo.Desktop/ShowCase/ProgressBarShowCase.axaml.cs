@@ -6,24 +6,14 @@ namespace AtomUI.Demo.Desktop.ShowCase;
 
 public partial class ProgressBarShowCase : UserControl
 {
-   public LinearGradientBrush TwoStopsGradientStrokeColor
-   {
-      get;
-      set;
-   }
-   
-   public LinearGradientBrush ThreeStopsGradientStrokeColor
-   {
-      get;
-      set;
-   }
+   public LinearGradientBrush TwoStopsGradientStrokeColor { get; set; }
 
-   public List<IBrush> StepsChunkBrushes
-   {
-      get;
-      set;
-   }
-   
+   public LinearGradientBrush ThreeStopsGradientStrokeColor { get; set; }
+
+   public List<IBrush> StepsChunkBrushes { get; set; }
+
+   public PercentPosition InnerLeftPercentPosition { get; set; }
+
    public ProgressBarShowCase()
    {
       InitializeComponent();
@@ -31,7 +21,7 @@ public partial class ProgressBarShowCase : UserControl
 
       TwoStopsGradientStrokeColor = new LinearGradientBrush()
       {
-         GradientStops = 
+         GradientStops =
          {
             new GradientStop(Color.Parse("#108ee9"), 0),
             new GradientStop(Color.Parse("#87d068"), 1)
@@ -52,6 +42,11 @@ public partial class ProgressBarShowCase : UserControl
          new SolidColorBrush(Colors.Green),
          new SolidColorBrush(Colors.Red)
       };
+
+      InnerLeftPercentPosition = new PercentPosition()
+      {
+         IsInner = true,
+         Alignment = LinePercentAlignment.Start
+      };
    }
-   
 }

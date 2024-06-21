@@ -176,40 +176,49 @@
         <!--         </WrapPanel> -->
         <!--     </StackPanel> -->
         <!-- </showcase:ShowCaseItem> -->
-
+        <!-- -->
+        <!-- <showcase:ShowCaseItem -->
+        <!--     Title="Circular progress bar whit steps" -->
+        <!--     Description="A circular progress bar that support steps and color segments, default gap is 2px."> -->
+        <!--     <StackPanel Orientation="Vertical" Spacing="5"> -->
+        <!--         <StackPanel Orientation="Vertical" Spacing="5"> -->
+        <!--             <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Width="300"> -->
+        <!--                 <atom:ProgressBar Value="50" Minimum="0" Maximum="100" SizeType="Large" /> -->
+        <!--                 <atom:ProgressBar Value="50" Minimum="0" Maximum="100" SizeType="Middle" /> -->
+        <!--                 <atom:ProgressBar Value="50" Minimum="0" Maximum="100" SizeType="Small" /> -->
+        <!--                 <atom:ProgressBar Value="50" Minimum="0" Maximum="100" IndicatorThickness="20" /> -->
+        <!--             </StackPanel> -->
+        <!--             <WrapPanel Orientation="Horizontal"> -->
+        <!--                 <atom:CircleProgress Value="50" Minimum="0" Maximum="100" SizeType="Large"/> -->
+        <!--                 <atom:CircleProgress Value="50" Minimum="0" Maximum="100" SizeType="Middle"/> -->
+        <!--                 <atom:CircleProgress Value="50" Minimum="0" Maximum="100" SizeType="Small"/> -->
+        <!--                 <atom:CircleProgress Value="50" Minimum="0" Maximum="100" Width="20" Height="20"/> -->
+        <!--             </WrapPanel> -->
+        <!--             <WrapPanel Orientation="Horizontal"> -->
+        <!--                 <atom:DashboardProgress Value="50" Minimum="0" Maximum="100" SizeType="Large"/> -->
+        <!--                 <atom:DashboardProgress Value="50" Minimum="0" Maximum="100" SizeType="Middle"/> -->
+        <!--                 <atom:DashboardProgress Value="50" Minimum="0" Maximum="100" SizeType="Small"/> -->
+        <!--                 <atom:DashboardProgress Value="50" Minimum="0" Maximum="100" Width="20" Height="20"/> -->
+        <!--             </WrapPanel> -->
+        <!--              -->
+        <!--             <WrapPanel Orientation="Horizontal"> -->
+        <!--                 <atom:StepsProgressBar Value="50" Minimum="0" Maximum="100" Steps="3" SizeType="Large"/> -->
+        <!--                 <atom:StepsProgressBar Value="50" Minimum="0" Maximum="100" Steps="3" SizeType="Middle"/> -->
+        <!--                 <atom:StepsProgressBar Value="50" Minimum="0" Maximum="100" Steps="3" SizeType="Small"/> -->
+        <!--                 <atom:StepsProgressBar Value="50" Minimum="0" Maximum="100" Steps="3" ChunkHeight="20" ChunkWidth="20"/> -->
+        <!--                 <atom:StepsProgressBar Value="50" Minimum="0" Maximum="100" Steps="3" ChunkHeight="30" ChunkWidth="20"/> -->
+        <!--             </WrapPanel> -->
+        <!--         </StackPanel> -->
+        <!--     </StackPanel> -->
+        <!-- </showcase:ShowCaseItem> -->
+        
         <showcase:ShowCaseItem
-            Title="Circular progress bar whit steps"
-            Description="A circular progress bar that support steps and color segments, default gap is 2px.">
+            Title="Change progress value position"
+            Description="Change the position of the progress value, you can use percentPosition to adjust it so that the progress bar value is inside, outside or at the bottom of the progress bar.">
             <StackPanel Orientation="Vertical" Spacing="5">
-                <StackPanel Orientation="Vertical" Spacing="5">
-                    <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Width="300">
-                        <atom:ProgressBar Value="50" Minimum="0" Maximum="100" SizeType="Large" />
-                        <atom:ProgressBar Value="50" Minimum="0" Maximum="100" SizeType="Middle" />
-                        <atom:ProgressBar Value="50" Minimum="0" Maximum="100" SizeType="Small" />
-                        <atom:ProgressBar Value="50" Minimum="0" Maximum="100" IndicatorThickness="20" />
-                    </StackPanel>
-                    <WrapPanel Orientation="Horizontal">
-                        <atom:CircleProgress Value="50" Minimum="0" Maximum="100" SizeType="Large"/>
-                        <atom:CircleProgress Value="50" Minimum="0" Maximum="100" SizeType="Middle"/>
-                        <atom:CircleProgress Value="50" Minimum="0" Maximum="100" SizeType="Small"/>
-                        <atom:CircleProgress Value="50" Minimum="0" Maximum="100" Width="20" Height="20"/>
-                    </WrapPanel>
-                    <WrapPanel Orientation="Horizontal">
-                        <atom:DashboardProgress Value="50" Minimum="0" Maximum="100" SizeType="Large"/>
-                        <atom:DashboardProgress Value="50" Minimum="0" Maximum="100" SizeType="Middle"/>
-                        <atom:DashboardProgress Value="50" Minimum="0" Maximum="100" SizeType="Small"/>
-                        <atom:DashboardProgress Value="50" Minimum="0" Maximum="100" Width="20" Height="20"/>
-                    </WrapPanel>
-                    
-                    <WrapPanel Orientation="Horizontal">
-                        <atom:StepsProgressBar Value="50" Minimum="0" Maximum="100" Steps="3" SizeType="Large"/>
-                        <atom:StepsProgressBar Value="50" Minimum="0" Maximum="100" Steps="3" SizeType="Middle"/>
-                        <atom:StepsProgressBar Value="50" Minimum="0" Maximum="100" Steps="3" SizeType="Small"/>
-                        <atom:StepsProgressBar Value="50" Minimum="0" Maximum="100" Steps="3" ChunkHeight="20" ChunkWidth="20"/>
-                        <atom:StepsProgressBar Value="50" Minimum="0" Maximum="100" Steps="3" ChunkHeight="30" ChunkWidth="20"/>
-                    </WrapPanel>
-                </StackPanel>
+                <atom:ProgressBar Value="0" Minimum="0" Maximum="100" Width="300" PercentPosition="{Binding InnerLeftPercentPosition}"/>
             </StackPanel>
         </showcase:ShowCaseItem>
+        
     </showcase:ShowCasePanel>
 </UserControl>
