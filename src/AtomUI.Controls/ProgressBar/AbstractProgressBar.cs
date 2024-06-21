@@ -292,6 +292,10 @@ public abstract partial class AbstractProgressBar : RangeBaseControl, ISizeTypeA
                _percentageLabel.IsVisible = true;
             }
          }
+
+         NotifyHandleExtraInfoVisibility();
       }
    }
+
+   protected virtual void NotifyHandleExtraInfoVisibility() {}
 }

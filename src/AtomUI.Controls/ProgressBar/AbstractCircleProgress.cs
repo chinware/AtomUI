@@ -1,3 +1,4 @@
+using AtomUI.Media;
 using AtomUI.Styling;
 using AtomUI.Utils;
 using Avalonia;
@@ -130,13 +131,45 @@ public abstract partial class AbstractCircleProgress : AbstractProgressBar
 
       return targetSize;
    }
+
+   protected override void NotifyHandleExtraInfoVisibility()
+   {
+      // TODO 可能存在重复计算
+      var circleSize = CalculateCircleSize();
+      CalculateStrokeThickness();
+      var extraInfoSize = circleSize - StrokeThickness - 1; // 写死一个像素的 padding 吧
+      var extraInfo = TextUtils.CalculateTextSize(string.Format(ProgressTextFormat, 100), FontFamily, FontSize);
+      if (_percentageLabel!.IsVisible) {
+         if (extraInfo.Width > extraInfoSize || extraInfo.Height > extraInfoSize) {
+            _percentageLabel!.IsVisible = false;
+         }
+      }
+
+      if (_exceptionCompletedIcon!.IsVisible) {
+         var exceptionIconWidth = _exceptionCompletedIcon!.Width;
+         var exceptionIconHeight = _exceptionCompletedIcon!.Height;
+         if (exceptionIconWidth > extraInfoSize || exceptionIconHeight > extraInfoSize) {
+            _exceptionCompletedIcon!.IsVisible = false;
+         }
+      }
+
+      if (_successCompletedIcon!.IsVisible) {
+         var successIconWidth = _successCompletedIcon!.Width;
+         var successIconHeight = _successCompletedIcon!.Height;
+         if (successIconWidth > extraInfoSize || successIconHeight > extraInfoSize) {
+            _successCompletedIcon!.IsVisible = false;
+         }
+      }
+
+   }
    
    protected override void NotifyPropertyChanged(AvaloniaPropertyChangedEventArgs e)
    {
       base.NotifyPropertyChanged(e);
-      if (_initialized) {
-         if (e.Property == WidthProperty || 
-             e.Property == HeightProperty) {
+     
+      if (e.Property == WidthProperty || 
+          e.Property == HeightProperty) {
+         if (_initialized) {
             CalculateStrokeThickness();
             SetupExtraInfoFontSize();
             SetupExtraInfoIconSize();
