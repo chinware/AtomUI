@@ -282,13 +282,13 @@ public abstract partial class AbstractProgressBar : RangeBaseControl, ISizeTypeA
             _exceptionCompletedIcon.IsVisible = true;
             _successCompletedIcon.IsVisible = false;
          } else {
+            _percentageLabel.Content = string.Format(ProgressTextFormat, _percentage);
             if (NumberUtils.FuzzyEqual(100, Percentage)) {
                _percentageLabel.IsVisible = false;
                _successCompletedIcon.IsVisible = true;
             } else {
                _successCompletedIcon.IsVisible = false;
                _exceptionCompletedIcon.IsVisible = false;
-               _percentageLabel.Content = string.Format(ProgressTextFormat, _percentage);
                _percentageLabel.IsVisible = true;
             }
          }

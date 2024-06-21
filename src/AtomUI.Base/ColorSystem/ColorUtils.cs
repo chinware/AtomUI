@@ -212,8 +212,8 @@ public static class ColorUtils
    ///  Analyze the 2 colors and returns the color contrast defined by (WCAG Version 2)
    public static double Readability(Color color1, Color color2)
    {
-      return Math.Max(color1.GetLuminance(), color2.GetLuminance() + 0.05) /
-             Math.Min(color1.GetLuminance(), color2.GetLuminance() + 0.05);
+      return (Math.Max(color1.GetLuminance(), color2.GetLuminance()) + 0.05) /
+             (Math.Min(color1.GetLuminance(), color2.GetLuminance()) + 0.05);
    }
 
    ///
@@ -234,11 +234,13 @@ public static class ColorUtils
          if (wcag2.Size == WCAG2Size.Large) {
             return NumberUtils.FuzzyGreaterOrEqual(readabilityLevel, 3);
          }
+
          return NumberUtils.FuzzyGreaterOrEqual(readabilityLevel, 4.5);
       } else if (wcag2.Level == WCAG2Level.AAA) {
          if (wcag2.Size == WCAG2Size.Large) {
             return NumberUtils.FuzzyGreaterOrEqual(readabilityLevel, 4.5);
          }
+
          return NumberUtils.FuzzyGreaterOrEqual(readabilityLevel, 7);
       }
 
@@ -260,7 +262,7 @@ public static class ColorUtils
    /// new Color().mostReadable('#a8015a', ["#faf3f3"], { includeFallbackColors:true, level: 'AAA', size: 'large' }).toHexString(); // "#faf3f3"
    /// new Color().mostReadable('#a8015a', ["#faf3f3"], { includeFallbackColors:true, level: 'AAA', size: 'small' }).toHexString(); // "#ffffff"
    ///
-   public static Color? MostReadable(Color baseColor, List<Color> colorList, WCAG2FallbackParms? args)
+   public static Color? MostReadable(Color baseColor, List<Color> colorList, WCAG2FallbackParms? args = null)
    {
       args ??= new WCAG2FallbackParms()
       {
@@ -277,9 +279,12 @@ public static class ColorUtils
             bestColor = color;
          }
       }
-      if (IsReadable(baseColor, bestColor!.Value, new WCAG2Parms() { Level = args.Level, Size = args.Size }) || !args.IncludeFallbackColors) {
+
+      if (IsReadable(baseColor, bestColor!.Value, new WCAG2Parms() { Level = args.Level, Size = args.Size }) ||
+          !args.IncludeFallbackColors) {
          return bestColor;
       }
+
       args.IncludeFallbackColors = false;
       return MostReadable(baseColor, new List<Color>()
       {

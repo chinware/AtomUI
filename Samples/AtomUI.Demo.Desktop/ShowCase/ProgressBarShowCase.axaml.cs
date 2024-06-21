@@ -12,7 +12,13 @@ public partial class ProgressBarShowCase : UserControl
 
    public List<IBrush> StepsChunkBrushes { get; set; }
 
-   public PercentPosition InnerLeftPercentPosition { get; set; }
+   public PercentPosition InnerStartPercentPosition { get; set; }
+   public PercentPosition InnerCenterPercentPosition { get; set; }
+   public PercentPosition InnerEndPercentPosition { get; set; }
+   
+   public PercentPosition OutterStartPercentPosition { get; set; }
+   public PercentPosition OutterCenterPercentPosition { get; set; }
+   public PercentPosition OutterEndPercentPosition { get; set; }
 
    public ProgressBarShowCase()
    {
@@ -43,10 +49,36 @@ public partial class ProgressBarShowCase : UserControl
          new SolidColorBrush(Colors.Red)
       };
 
-      InnerLeftPercentPosition = new PercentPosition()
+      InnerStartPercentPosition = new PercentPosition()
       {
          IsInner = true,
          Alignment = LinePercentAlignment.Start
+      };
+      InnerCenterPercentPosition = new PercentPosition()
+      {
+         IsInner = true,
+         Alignment = LinePercentAlignment.Center
+      };
+      InnerEndPercentPosition = new PercentPosition()
+      {
+         IsInner = true,
+         Alignment = LinePercentAlignment.End
+      };
+      
+      OutterStartPercentPosition = new PercentPosition()
+      {
+         IsInner = false,
+         Alignment = LinePercentAlignment.Start
+      };
+      OutterCenterPercentPosition = new PercentPosition()
+      {
+         IsInner = false,
+         Alignment = LinePercentAlignment.Center
+      };
+      OutterEndPercentPosition = new PercentPosition()
+      {
+         IsInner = false,
+         Alignment = LinePercentAlignment.End
       };
    }
 }

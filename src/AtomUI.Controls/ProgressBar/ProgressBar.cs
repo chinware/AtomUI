@@ -1,5 +1,6 @@
 using AtomUI.ColorSystem;
 using AtomUI.Media;
+using AtomUI.Styling;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Layout;
@@ -32,7 +33,6 @@ public partial class ProgressBar : AbstractLineProgress
    
    protected override Size MeasureOverride(Size availableSize)
    {
-      Console.Write(ColorUtils.OnBackground(Colors.Black, Color.Parse(IndicatorBarBrush!.ToString()!)));
       // TODO 实现有问题
       double targetWidth = 0;
       double targetHeight = 0;
@@ -51,7 +51,7 @@ public partial class ProgressBar : AbstractLineProgress
       } else {
          targetWidth = StrokeThickness;
          if (!PercentPosition.IsInner && ShowProgressInfo) {
-            targetWidth += _percentageLabel!.DesiredSize.Height;
+            targetWidth += _percentageLabel!.DesiredSize.Height + _lineProgressPadding;
          }
 
          targetWidth = Math.Max(targetWidth, MinWidth);
@@ -99,7 +99,7 @@ public partial class ProgressBar : AbstractLineProgress
       } else {
          range = _grooveRect.Height;
       }
-
+      
       deflateValue = range * (1 - _percentage / 100);
       DrawIndicatorBar(context, deflateValue, IndicatorBarBrush!);
       
@@ -156,6 +156,13 @@ public partial class ProgressBar : AbstractLineProgress
       CalculateSizeTypeThresholdValue();
       CalculateMinBarThickness();
       base.NotifySetupUi();
+   }
+
+   protected override void NotifyApplyFixedStyleConfig()
+   {
+      base.NotifyApplyFixedStyleConfig();
+      _tokenResourceBinder.AddBinding(ColorTextLabelTokenProperty, GlobalResourceKey.ColorTextLabel);
+      _tokenResourceBinder.AddBinding(ColorTextLightSolidTokenProperty, GlobalResourceKey.ColorTextLightSolid);
    }
    
    protected override SizeType CalculateEffectiveSizeType(double size)
@@ -273,9 +280,9 @@ public partial class ProgressBar : AbstractLineProgress
 
       var deflatedControlRect = controlRect.Deflate(new Thickness(deflateLeft, deflateTop, deflateRight, deflateBottom));
       if (Orientation == Orientation.Horizontal) {
-         return new Rect(new Point(0, (deflatedControlRect.Height - strokeThickness) / 2), new Size(deflatedControlRect.Width, strokeThickness));
+         return new Rect(new Point(deflatedControlRect.X, (deflatedControlRect.Height - strokeThickness) / 2), new Size(deflatedControlRect.Width, strokeThickness));
       }
-      return new Rect(new Point((deflatedControlRect.Width - strokeThickness) / 2, 0), new Size(strokeThickness, deflatedControlRect.Height));
+      return new Rect(new Point((deflatedControlRect.Width - strokeThickness) / 2, deflatedControlRect.Y), new Size(strokeThickness, deflatedControlRect.Height));
    }
 
    protected override Rect GetExtraInfoRect(Rect controlRect)
@@ -294,12 +301,16 @@ public partial class ProgressBar : AbstractLineProgress
          if (ShowProgressInfo) {
             if (PercentPosition.IsInner) {
                var grooveRect = GetProgressBarRect(controlRect);
+               offsetY = grooveRect.Y + (grooveRect.Height - targetHeight) / 2;
+               var range = grooveRect.Width;
+               var deflateValue = range * (1 - Value / (Maximum - Minimum));
+               var indicatorRect = grooveRect.Deflate(new Thickness(0, 0, deflateValue, 0));
                if (PercentPosition.Alignment == LinePercentAlignment.Start) {
-                  
+                  offsetX = _lineProgressPadding * 2;
                } else if (PercentPosition.Alignment == LinePercentAlignment.Center) {
-                  
+                  offsetX = (indicatorRect.Width - targetWidth) / 2;
                } else if (PercentPosition.Alignment == LinePercentAlignment.End) {
-                  
+                  offsetX = indicatorRect.Right - targetWidth - _lineProgressPadding * 2;
                }
             } else {
                if (PercentPosition.Alignment == LinePercentAlignment.Start) {
@@ -307,9 +318,9 @@ public partial class ProgressBar : AbstractLineProgress
                   offsetY = (controlRect.Height - targetHeight) / 2;
                } else if (PercentPosition.Alignment == LinePercentAlignment.Center) {
                   offsetX = (controlRect.Width - targetWidth) / 2;
-                  offsetY = controlRect.Bottom - targetHeight;
+                  offsetY = controlRect.Bottom - targetHeight + _lineProgressPadding;
                } else if (PercentPosition.Alignment == LinePercentAlignment.End) {
-                  offsetX = (controlRect.Right - targetWidth);
+                  offsetX = controlRect.Right - targetWidth;
                   offsetY = (controlRect.Height - targetHeight) / 2;
                }
             }
@@ -376,7 +387,9 @@ public partial class ProgressBar : AbstractLineProgress
    {
       base.NotifyPropertyChanged(e);
       if (_initialized) {
-         if (e.Property == PercentPositionProperty) {
+         if (e.Property == IndicatorBarBrushProperty) {
+            SetupPercentLabelForegroundBrush();
+         } else if (e.Property == PercentPositionProperty) {
             HandlePercentPositionChanged();
          }
       }
@@ -393,6 +406,49 @@ public partial class ProgressBar : AbstractLineProgress
       } else {
          thickness += extraInfoSize.Width;
          MinWidth = thickness;
+      }
+   }
+
+   protected override void NotifyUiStructureReady()
+   {
+      base.NotifyUiStructureReady();
+      SetupPercentLabelForegroundBrush();
+   }
+
+   private void SetupPercentLabelForegroundBrush()
+   {
+      if (!PercentPosition.IsInner) {
+         _percentageLabel!.Foreground = Foreground;
+      } else {
+         // 根据当前的 Stroke 笔刷计算可读性
+         // 但是渐变笔刷就麻烦了，暂时不支持吧
+         var colorTextLabel = (_colorTextLabel as SolidColorBrush)!.Color;
+         var colorTextLightSolid = (_colorTextLightSolid as SolidColorBrush)!.Color;
+         var colors = new List<Color> { colorTextLabel, colorTextLightSolid };
+         if (NumberUtils.FuzzyEqual(Value, 0)) {
+            if (GrooveBrush is ISolidColorBrush grooveBrush) {
+               var mostReadable = ColorUtils.MostReadable(grooveBrush.Color, colors);
+               if (mostReadable.HasValue) {
+                  _percentageLabel!.Foreground = new SolidColorBrush(mostReadable.Value);
+               }
+            }
+         } else {
+            if (IndicatorBarBrush is ISolidColorBrush indicatorBarBrush) {
+               var mostReadable = ColorUtils.MostReadable(indicatorBarBrush.Color, colors);
+               if (mostReadable.HasValue) {
+                  _percentageLabel!.Foreground = new SolidColorBrush(mostReadable.Value);
+               }
+            }
+         }
+      }
+   }
+
+   protected override void NotifyHandleExtraInfoVisibility()
+   {
+      if (PercentPosition.IsInner) {
+         _exceptionCompletedIcon!.IsVisible = false;
+         _successCompletedIcon!.IsVisible = false;
+         _percentageLabel!.IsVisible = true;
       }
    }
 }
