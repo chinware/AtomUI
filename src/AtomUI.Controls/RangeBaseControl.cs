@@ -31,7 +31,7 @@ public abstract class RangeBaseControl : StyledControl
    /// </summary>
    public static readonly StyledProperty<double> ValueProperty =
       AvaloniaProperty.Register<RangeBaseControl, double>(nameof(Value),
-                                                   defaultBindingMode: BindingMode.TwoWay,
+                                                   defaultBindingMode: BindingMode.OneWay,
                                                    coerce: CoerceValue);
 
    /// <summary>

@@ -280,7 +280,7 @@ public partial class ProgressBar : AbstractLineProgress
                } else if (PercentPosition.Alignment == LinePercentAlignment.Center) {
                   deflateBottom = percentLabelHeight;
                } else if (PercentPosition.Alignment == LinePercentAlignment.End) {
-                  deflateRight = percentLabelWidth + _lineExtraInfoMargin;;
+                  deflateRight = percentLabelWidth + _lineExtraInfoMargin;
                }
             }
          }
@@ -537,6 +537,7 @@ public partial class ProgressBar : AbstractLineProgress
 
    protected override void NotifyHandleExtraInfoVisibility()
    {
+      base.NotifyHandleExtraInfoVisibility();
       if (PercentPosition.IsInner) {
          _exceptionCompletedIcon!.IsVisible = false;
          _successCompletedIcon!.IsVisible = false;

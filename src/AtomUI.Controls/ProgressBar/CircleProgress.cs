@@ -10,6 +10,7 @@ public class CircleProgress : AbstractCircleProgress
    protected override void RenderGroove(DrawingContext context)
    {
       var controlRect = new Rect(new Point(0, 0), DesiredSize); 
+     
       _currentGrooveRect = GetProgressBarRect(controlRect).Deflate(StrokeThickness / 2);
       _currentGrooveRect = new Rect(_currentGrooveRect.Position, new Size(Math.Floor(_currentGrooveRect.Size.Width), 
                                                                           Math.Floor(_currentGrooveRect.Size.Height)));
@@ -55,6 +56,7 @@ public class CircleProgress : AbstractCircleProgress
       {
          LineCap = StrokeLineCap
       };
+
       double startAngle = -90;
       context.DrawArc(pen, _currentGrooveRect, startAngle, IndicatorAngle);
 

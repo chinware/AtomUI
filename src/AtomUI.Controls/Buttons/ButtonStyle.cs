@@ -25,6 +25,8 @@ public partial class Button : IWaveAdornerInfoProvider, IControlCustomStyle
 
    void IControlCustomStyle.SetupUi()
    {
+      HorizontalAlignment = HorizontalAlignment.Left;
+      VerticalAlignment = VerticalAlignment.Bottom;
       Cursor = new Cursor(StandardCursorType.Hand);
       _customStyle.CollectStyleState();
       CreateMainLayout();

@@ -1,4 +1,5 @@
 ﻿using AtomUI.ColorSystem;
+using AtomUI.Media;
 using AtomUI.Styling;
 using Avalonia;
 using Avalonia.Animation;
@@ -94,7 +95,8 @@ public static class AnimationUtils
       var transition = new T()
       {
          Property = targetProperty,
-         Easing = easing
+         Easing = easing,
+         
       };
       var application = Application.Current;
       if (application is not null) {

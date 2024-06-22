@@ -1,9 +1,13 @@
 using AtomUI.Data;
+using AtomUI.Icon;
+using AtomUI.Media;
 using AtomUI.Styling;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
+using Avalonia.Animation.Easings;
 using Avalonia.Controls;
+using Avalonia.Data;
 using Avalonia.Media;
 
 namespace AtomUI.Controls;
@@ -46,6 +50,10 @@ public partial class AbstractProgressBar : IControlCustomStyle
    void IControlCustomStyle.SetupTransitions()
    {
       var transitions = new Transitions();
+      
+      transitions.Add(AnimationUtils.CreateTransition<DoubleTransition>(ValueProperty, GlobalResourceKey.MotionDurationVerySlow, new ExponentialEaseOut()));
+      transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(IndicatorBarBrushProperty, GlobalResourceKey.MotionDurationFast));
+      
       NotifySetupTransitions(ref transitions);
       Transitions = transitions;
    }
@@ -121,15 +129,28 @@ public partial class AbstractProgressBar : IControlCustomStyle
          } else {
             _tokenResourceBinder.AddBinding(GrooveBrushProperty, ProgressBarResourceKey.RemainingColor);
          }
-         _tokenResourceBinder.AddBinding(IndicatorBarBrushProperty, ProgressBarResourceKey.DefaultColor);
+       
          if (Status == ProgressStatus.Success || NumberUtils.FuzzyEqual(Value, Maximum)) {
             _tokenResourceBinder.AddBinding(IndicatorBarBrushProperty, GlobalResourceKey.ColorSuccess);
          } else if (Status == ProgressStatus.Exception) {
             _tokenResourceBinder.AddBinding(IndicatorBarBrushProperty, GlobalResourceKey.ColorError);
+         } else {
+              _tokenResourceBinder.AddBinding(IndicatorBarBrushProperty, ProgressBarResourceKey.DefaultColor);
          }
+         _tokenResourceBinder.AddBinding(ForegroundProperty, GlobalResourceKey.ColorTextLabel);
+         if (_initialized) {
+            _exceptionCompletedIcon!.IconMode = IconMode.Normal;
+            _successCompletedIcon!.IconMode = IconMode.Normal;
+         }
+   
       } else {
          _tokenResourceBinder.AddBinding(GrooveBrushProperty, GlobalResourceKey.ColorBgContainerDisabled);
          _tokenResourceBinder.AddBinding(IndicatorBarBrushProperty, GlobalResourceKey.ControlItemBgActiveDisabled);
+         _tokenResourceBinder.AddBinding(ForegroundProperty, GlobalResourceKey.ColorTextDisabled);
+         if (_initialized) {
+            _exceptionCompletedIcon!.IconMode = IconMode.Disabled;
+            _successCompletedIcon!.IconMode = IconMode.Disabled;
+         }
       }
    }
 

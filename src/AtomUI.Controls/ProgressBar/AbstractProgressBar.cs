@@ -7,6 +7,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
+using Avalonia.Threading;
 
 namespace AtomUI.Controls;
 
@@ -138,7 +139,7 @@ public abstract partial class AbstractProgressBar : RangeBaseControl, ISizeTypeA
       get => GetValue(StatusProperty);
       set => SetValue(StatusProperty, value);
    }
-   
+
    protected double _percentage;
 
    /// <summary>
@@ -204,7 +205,8 @@ public abstract partial class AbstractProgressBar : RangeBaseControl, ISizeTypeA
                                          TrailColorProperty,
                                          StrokeThicknessProperty,
                                          SuccessThresholdBrushProperty,
-                                         SuccessThresholdProperty);
+                                         SuccessThresholdProperty,
+                                         ValueProperty);
    }
 
    public AbstractProgressBar()
@@ -246,6 +248,7 @@ public abstract partial class AbstractProgressBar : RangeBaseControl, ISizeTypeA
             Padding = new Thickness(0),
             VerticalContentAlignment = VerticalAlignment.Center,
          };
+         BindUtils.RelayBind(this, "IsEnabled", _percentageLabel);
       }
 
       return _percentageLabel;
@@ -282,7 +285,6 @@ public abstract partial class AbstractProgressBar : RangeBaseControl, ISizeTypeA
             _exceptionCompletedIcon.IsVisible = true;
             _successCompletedIcon.IsVisible = false;
          } else {
-            _percentageLabel.Content = string.Format(ProgressTextFormat, _percentage);
             if (NumberUtils.FuzzyEqual(100, Percentage)) {
                _percentageLabel.IsVisible = false;
                _successCompletedIcon.IsVisible = true;
@@ -291,11 +293,12 @@ public abstract partial class AbstractProgressBar : RangeBaseControl, ISizeTypeA
                _exceptionCompletedIcon.IsVisible = false;
                _percentageLabel.IsVisible = true;
             }
+            _percentageLabel.Content = string.Format(ProgressTextFormat, _percentage);
          }
 
          NotifyHandleExtraInfoVisibility();
       }
    }
 
-   protected virtual void NotifyHandleExtraInfoVisibility() {}
+   protected virtual void NotifyHandleExtraInfoVisibility() { }
 }

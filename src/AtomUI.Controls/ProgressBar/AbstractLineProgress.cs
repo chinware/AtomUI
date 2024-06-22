@@ -87,9 +87,7 @@ public abstract partial class AbstractLineProgress : AbstractProgressBar
          EffectiveSizeType = CalculateEffectiveSizeType(sizeValue);
       }
 
-      if (_extraInfoSize == Size.Infinity) {
-         _extraInfoSize = CalculateExtraInfoSize(FontSize);
-      }
+      _extraInfoSize = CalculateExtraInfoSize(FontSize);
       SetupAlignment();
       NotifyOrientationChanged();
    }
@@ -112,9 +110,7 @@ public abstract partial class AbstractLineProgress : AbstractProgressBar
             EffectiveSizeType = CalculateEffectiveSizeType(e.GetNewValue<double>());
             CalculateStrokeThickness();
          } else if (e.Property == EffectiveSizeTypeProperty) {
-            if (_extraInfoSize == Size.Infinity) {
-               _extraInfoSize = CalculateExtraInfoSize(FontSize);
-            }
+            _extraInfoSize = CalculateExtraInfoSize(FontSize);
          } else if (e.Property == OrientationProperty) {
             NotifyOrientationChanged();
          }
@@ -187,4 +183,21 @@ public abstract partial class AbstractLineProgress : AbstractProgressBar
    }
    
    protected virtual void NotifyOrientationChanged() {}
+   private bool _lastCompletedStatus = false;
+   protected override void NotifyHandleExtraInfoVisibility()
+   {
+      base.NotifyHandleExtraInfoVisibility();
+      var currentStatus = false;
+      if (NumberUtils.FuzzyEqual(Value, Maximum)) {
+         currentStatus = true;
+        
+      } else {
+         currentStatus = false;
+      }
+
+      if (currentStatus != _lastCompletedStatus) {
+         _lastCompletedStatus = currentStatus;
+         _extraInfoSize = CalculateExtraInfoSize(FontSize);
+      }
+   }
 }

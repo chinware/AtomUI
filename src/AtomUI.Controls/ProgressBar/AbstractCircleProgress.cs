@@ -39,8 +39,7 @@ public abstract partial class AbstractCircleProgress : AbstractProgressBar
    {
       HorizontalAlignmentProperty.OverrideDefaultValue<AbstractCircleProgress>(HorizontalAlignment.Left);
       VerticalAlignmentProperty.OverrideDefaultValue<AbstractCircleProgress>(VerticalAlignment.Top);
-      AffectsRender<AbstractCircleProgress>(IndicatorAngleProperty,
-                                            StepCountProperty,
+      AffectsMeasure<AbstractCircleProgress>(StepCountProperty,
                                             StepGapProperty);
    }
    
@@ -106,7 +105,6 @@ public abstract partial class AbstractCircleProgress : AbstractProgressBar
       if (ShowProgressInfo) {
          _percentageLabel!.Measure(availableSize);
       }
-
       return new Size(targetSize, targetSize);
    }
 

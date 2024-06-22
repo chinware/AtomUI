@@ -64,6 +64,19 @@
         </showcase:ShowCaseItem>
         
         <showcase:ShowCaseItem
+            Title="Dynamic"
+            Description="A dynamic progress bar is better.">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:ProgressBar Value="{Binding ProgressValue}" Minimum="0" Maximum="100"/>
+                <atom:CircleProgress Value="{Binding ProgressValue}" Minimum="0" Maximum="100"/>
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <atom:Button SizeType="Small" Command="{Binding SubProgressValue}">Sub</atom:Button>
+                    <atom:Button SizeType="Small" Command="{Binding AddProgressValue}">Add</atom:Button>
+                </StackPanel>
+            </StackPanel>
+        </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
             Title="Custom text format"
             Description="You can set a custom text by setting the format prop.">
             <WrapPanel Orientation="Horizontal">
@@ -86,8 +99,8 @@
         </showcase:ShowCaseItem>
         
         <showcase:ShowCaseItem
-            Title="Dashboard"
-            Description="By setting type=dashboard, you can get a dashboard style of progress easily. Modify gapDegree to set the degree of gap.">
+            Title="Progress bar with success segment"
+            Description="Show several parts of progress with different status.">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:ProgressBar Value="60" Minimum="0" Maximum="100" SuccessThreshold="30" />
                 <WrapPanel Orientation="Horizontal">
@@ -274,6 +287,51 @@
                 <atom:StepsProgressBar Value="55" Minimum="0" Maximum="100" Steps="6" Orientation="Vertical" PercentPosition="Start"/>
                 <atom:StepsProgressBar Value="55" Minimum="0" Maximum="100" Steps="6"  Orientation="Vertical" PercentPosition="Center"/>
                 <atom:StepsProgressBar Value="100" Minimum="0" Maximum="100" Steps="6" Orientation="Vertical" PercentPosition="Start"/>
+            </StackPanel>
+        </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="Vertical progress bar"
+            Description="Ordinary step progress bar, supports position specification of additional areas">
+            <StackPanel Orientation="Horizontal" Spacing="10" Height="300">
+                <atom:StepsProgressBar Value="100" Minimum="0" Maximum="100" Steps="10" Orientation="Vertical" PercentPosition="End"/>
+                <atom:StepsProgressBar Value="55" Minimum="0" Maximum="100" Steps="5" Orientation="Vertical"/>
+                <atom:StepsProgressBar Value="55" Minimum="0" Maximum="100" Steps="10" Orientation="Vertical" SizeType="Small"/>
+                <atom:StepsProgressBar Value="55" Minimum="0" Maximum="100" Steps="6" Orientation="Vertical" PercentPosition="Start"/>
+                <atom:StepsProgressBar Value="55" Minimum="0" Maximum="100" Steps="6"  Orientation="Vertical" PercentPosition="Center"/>
+                <atom:StepsProgressBar Value="100" Minimum="0" Maximum="100" Steps="6" Orientation="Vertical" PercentPosition="Start"/>
+            </StackPanel>
+        </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="toggle disabled status"
+            Description="The progress bar is in the disabled state and uses the disabled style.">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:ProgressBar Value="30" Minimum="0" Maximum="100" IsEnabled="{Binding ToggleStatus}"/>
+                <atom:ProgressBar Value="50" Minimum="0" Maximum="100" IsEnabled="{Binding ToggleStatus}"/>
+                <atom:ProgressBar Value="70" Minimum="0" Maximum="100" Status="Exception" IsEnabled="{Binding ToggleStatus}"/>
+                <atom:ProgressBar Value="100" Minimum="0" Maximum="100" IsEnabled="{Binding ToggleStatus}"/>
+                
+                <atom:StepsProgressBar Value="30" Minimum="0" Maximum="100" Steps="10" IsEnabled="{Binding ToggleStatus}"/>
+                <atom:StepsProgressBar Value="50" Minimum="0" Maximum="100" Steps="10" IsEnabled="{Binding ToggleStatus}"/>
+                <atom:StepsProgressBar Value="70" Minimum="0" Maximum="100" Steps="10" Status="Exception" IsEnabled="{Binding ToggleStatus}"/>
+                <atom:StepsProgressBar Value="100" Minimum="0" Maximum="100" Steps="10" IsEnabled="{Binding ToggleStatus}"/>
+                
+                <WrapPanel Orientation="Horizontal">
+                    <atom:CircleProgress Value="75" Minimum="0" Maximum="100" SizeType="Middle" IsEnabled="{Binding ToggleStatus}"/>
+                    <atom:CircleProgress Value="70" Minimum="0" Maximum="100" SizeType="Middle" Status="Exception" IsEnabled="{Binding ToggleStatus}"/>
+                    <atom:CircleProgress Value="100" Minimum="0" Maximum="100" SizeType="Middle" IsEnabled="{Binding ToggleStatus}"/>
+                </WrapPanel>
+                
+                <WrapPanel Orientation="Horizontal">
+                    <atom:DashboardProgress Value="75" Minimum="0" Maximum="100" SizeType="Middle" IsEnabled="{Binding ToggleStatus}"/>
+                    <atom:DashboardProgress Value="70" Minimum="0" Maximum="100" SizeType="Middle" Status="Exception" IsEnabled="{Binding ToggleStatus}"/>
+                    <atom:DashboardProgress Value="100" Minimum="0" Maximum="100" SizeType="Middle" IsEnabled="{Binding ToggleStatus}"/>
+                </WrapPanel>
+                
+                <atom:Button Margin="0, 10, 0, 0" 
+                             Text="{Binding ToggleDisabledText}"
+                             Command="{Binding ToggleEnabledStatus}"/>
             </StackPanel>
         </showcase:ShowCaseItem>
         

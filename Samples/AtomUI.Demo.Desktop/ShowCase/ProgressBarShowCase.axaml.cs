@@ -1,6 +1,8 @@
 using AtomUI.Controls;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace AtomUI.Demo.Desktop.ShowCase;
 
@@ -19,6 +21,33 @@ public partial class ProgressBarShowCase : UserControl
    public PercentPosition OutterStartPercentPosition { get; set; }
    public PercentPosition OutterCenterPercentPosition { get; set; }
    public PercentPosition OutterEndPercentPosition { get; set; }
+
+   public static readonly StyledProperty<double> ProgressValueProperty =
+      AvaloniaProperty.Register<ProgressBarShowCase, double>(nameof(ProgressValue), 30);
+   
+   public static readonly StyledProperty<string> ToggleDisabledTextProperty =
+      AvaloniaProperty.Register<ProgressBarShowCase, string>(nameof(ToggleDisabledText), "Disable");
+   
+   public static readonly StyledProperty<bool> ToggleStatusProperty =
+      AvaloniaProperty.Register<ProgressBarShowCase, bool>(nameof(ToggleStatus), true);
+   
+   public double ProgressValue
+   {
+      get => GetValue(ProgressValueProperty);
+      set => SetValue(ProgressValueProperty, value);
+   }
+   
+   public string ToggleDisabledText
+   {
+      get => GetValue(ToggleDisabledTextProperty);
+      set => SetValue(ToggleDisabledTextProperty, value);
+   }
+   
+   public bool ToggleStatus
+   {
+      get => GetValue(ToggleStatusProperty);
+      set => SetValue(ToggleStatusProperty, value);
+   }
    
    public ProgressBarShowCase()
    {
@@ -80,5 +109,29 @@ public partial class ProgressBarShowCase : UserControl
          IsInner = false,
          Alignment = LinePercentAlignment.End
       };
+   }
+
+   public void AddProgressValue()
+   {
+      var value = ProgressValue;
+      value += 10;
+      ProgressValue = Math.Min(value, 100);
+   }
+
+   public void SubProgressValue()
+   {
+      var value = ProgressValue;
+      value -= 10;
+      ProgressValue = Math.Max(value, 0);
+   }
+
+   public void ToggleEnabledStatus()
+   {
+      ToggleStatus = !ToggleStatus;
+      if (ToggleStatus) {
+         ToggleDisabledText = "Disable";
+      } else {
+         ToggleDisabledText = "Enable";
+      }
    }
 }
