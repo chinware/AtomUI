@@ -36,7 +36,7 @@ public class OptionButtonPointerEventArgs : EventArgs
 
 public partial class OptionButton : AvaloniaRadioButton, ITokenIdProvider, ISizeTypeAware
 {
-   string ITokenIdProvider.TokenId => nameof(OptionButton);
+   string ITokenIdProvider.TokenId => OptionButtonToken.ID;
    
    public static readonly StyledProperty<ButtonSizeType> SizeTypeProperty =
       AvaloniaProperty.Register<OptionButton, ButtonSizeType>(nameof(SizeType), ButtonSizeType.Middle);

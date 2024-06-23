@@ -37,7 +37,7 @@ public enum TagStatus {
 public partial class Tag : Label, ITokenIdProvider
 {
    private bool _initialized = false;
-   string ITokenIdProvider.TokenId => nameof(Tag);
+   string ITokenIdProvider.TokenId => TagToken.ID;
    
    static Tag()
    {

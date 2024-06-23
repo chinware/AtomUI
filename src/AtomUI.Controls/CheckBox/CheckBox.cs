@@ -15,7 +15,7 @@ using AvaloniaCheckBox = Avalonia.Controls.CheckBox;
 
 public partial class CheckBox : AvaloniaCheckBox, ITokenIdProvider, ICustomHitTest
 {
-   string ITokenIdProvider.TokenId => nameof(CheckBox);
+   string ITokenIdProvider.TokenId => CheckBoxToken.ID;
    
    public CheckBox()
    {

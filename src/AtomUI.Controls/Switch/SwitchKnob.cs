@@ -39,7 +39,7 @@ internal class SwitchKnob : Control, IControlCustomStyle, ITokenIdProvider
       set => SetValue(LoadIndicatorBrushProperty, value);
    }
    
-   string ITokenIdProvider.TokenId => nameof(ToggleSwitch);
+   string ITokenIdProvider.TokenId => ToggleSwitchToken.ID;
    
    private TokenResourceBinder _tokenResourceBinder;
 

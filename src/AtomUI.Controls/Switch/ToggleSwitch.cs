@@ -18,7 +18,7 @@ public partial class ToggleSwitch : ToggleButton, ITokenIdProvider, ISizeTypeAwa
 {
    private bool _initialized = false;
    private bool _transitionInitialized = false;
-   string ITokenIdProvider.TokenId => nameof(ToggleSwitch);
+   string ITokenIdProvider.TokenId => ToggleSwitchToken.ID;
    private const double STRETCH_FACTOR = 1.3d;
 
    private SwitchKnob _switchKnob;

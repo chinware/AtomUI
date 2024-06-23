@@ -53,7 +53,7 @@ public class SegmentedMovedEventArgs : RoutedEventArgs
 /// </summary>
 public partial class Segmented : StyledControl, ITokenIdProvider
 {
-   string ITokenIdProvider.TokenId => nameof(Segmented);
+   string ITokenIdProvider.TokenId => SegmentedToken.ID;
 
    public static readonly StyledProperty<SegmentedSizeType> SizeTypeProperty =
       AvaloniaProperty.Register<OptionButtonGroup, SegmentedSizeType>(nameof(SizeType), SegmentedSizeType.Middle);

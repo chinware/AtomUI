@@ -1,3 +1,4 @@
+using AtomUI.Controls.Controls;
 using AtomUI.Data;
 using AtomUI.TokenSystem;
 using Avalonia;
@@ -21,7 +22,7 @@ public class CaptionButton : AvaloniaButton, ITokenIdProvider
 
    private TokenResourceBinder _tokenResourceBinder;
    
-   string ITokenIdProvider.TokenId => nameof(CaptionButton);
+   string ITokenIdProvider.TokenId => CaptionButtonToken.ID;
 
    public CaptionButton()
    {

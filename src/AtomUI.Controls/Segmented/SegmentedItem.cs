@@ -9,7 +9,7 @@ namespace AtomUI.Controls;
 
 public partial class SegmentedItem : StyledControl, ITokenIdProvider
 {
-   string ITokenIdProvider.TokenId => nameof(Segmented);
+   string ITokenIdProvider.TokenId => SegmentedToken.ID;
 
    public static readonly StyledProperty<SizeType> SizeTypeProperty =
       AvaloniaProperty.Register<SegmentedItem, SizeType>(nameof(SizeType), SizeType.Middle);

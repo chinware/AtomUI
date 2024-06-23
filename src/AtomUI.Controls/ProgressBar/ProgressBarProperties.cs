@@ -29,11 +29,5 @@ public partial class ProgressBar
       get => _colorTextLightSolid;
       set => SetAndRaise(ColorTextLightSolidTokenProperty, ref _colorTextLightSolid, value);
    }
-
-   protected IBrush? GrooveBrush
-   {
-      get => GetValue(GrooveBrushProperty);
-      set => SetValue(GrooveBrushProperty, value);
-   }
    // 获取 Token 值属性结束
 }

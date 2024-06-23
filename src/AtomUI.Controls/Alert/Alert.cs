@@ -17,7 +17,7 @@ public enum AlertType
 
 public partial class Alert : BorderedStyleControl, ITokenIdProvider
 {
-   string ITokenIdProvider.TokenId => nameof(Alert);
+   string ITokenIdProvider.TokenId => AlertToken.ID;
 
    public static readonly DirectProperty<Alert, AlertType> TypeProperty =
       AvaloniaProperty.RegisterDirect<Alert, AlertType>(nameof(AlertType),

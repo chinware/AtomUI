@@ -14,7 +14,7 @@ using OptionButtons = AvaloniaList<OptionButton>;
 
 public partial class OptionButtonGroup : StyledControl, ITokenIdProvider, ISizeTypeAware
 {
-   string ITokenIdProvider.TokenId => nameof(OptionButton);
+   string ITokenIdProvider.TokenId => OptionButtonToken.ID;
 
    public static readonly StyledProperty<ButtonSizeType> SizeTypeProperty =
       AvaloniaProperty.Register<OptionButtonGroup, ButtonSizeType>(nameof(SizeType), ButtonSizeType.Middle);

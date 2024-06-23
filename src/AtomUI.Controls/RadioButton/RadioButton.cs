@@ -2,6 +2,7 @@ using AtomUI.Data;
 using AtomUI.Media;
 using AtomUI.TokenSystem;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
@@ -13,7 +14,7 @@ using AvaloniaRadioButton = Avalonia.Controls.RadioButton;
 
 public partial class RadioButton : AvaloniaRadioButton, ITokenIdProvider, ICustomHitTest
 {
-   string ITokenIdProvider.TokenId => nameof(RadioButton);
+   string ITokenIdProvider.TokenId => RadioButtonToken.ID;
 
    static RadioButton()
    {
@@ -81,6 +82,7 @@ public partial class RadioButton : AvaloniaRadioButton, ITokenIdProvider, ICusto
          var dotDiameter = RadioDotEffectSize / 2;
          context.DrawEllipse(RadioInnerBackground, null, radioRect.Center, dotDiameter, dotDiameter);
       }
+      
    }
 
    public bool HitTest(Point point)

@@ -6,6 +6,8 @@ namespace AtomUI.Controls.Controls;
 [ControlDesignToken]
 internal class CaptionButtonToken : AbstractControlDesignToken
 {
+   public const string ID = "CaptionButton";
+   
    /// <summary>
    /// Hover 的背景色
    /// </summary>

@@ -168,6 +168,13 @@
         public const string TagBorderlessBg = "TagBorderlessBg";
     }
 
+    public static class TooltipResourceKey
+    {
+        public const string TooltipMaxWidth = "TooltipMaxWidth";
+        public const string TooltipColor = "TooltipColor";
+        public const string TooltipBackground = "TooltipBackground";
+    }
+
     public static class CaptionButtonResourceKey
     {
         public const string HoverBackgroundColor = "HoverBackgroundColor";

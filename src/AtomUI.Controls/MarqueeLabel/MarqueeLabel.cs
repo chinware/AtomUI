@@ -8,7 +8,7 @@ namespace AtomUI.Controls;
 
 public partial class MarqueeLabel : TextBlock, ITokenIdProvider
 {
-   string ITokenIdProvider.TokenId => nameof(MarqueeLabel);
+   string ITokenIdProvider.TokenId => MarqueeLabelToken.ID;
    
    public static readonly DirectProperty<MarqueeLabel, double> CycleSpaceProperty =
       AvaloniaProperty.RegisterDirect<MarqueeLabel, double>(nameof(CycleSpace),

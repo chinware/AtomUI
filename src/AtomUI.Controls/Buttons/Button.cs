@@ -123,7 +123,7 @@ public partial class Button : AvaloniaButton, ITokenIdProvider, ISizeTypeAware
       set => SetAndRaise(TextProperty, ref _text, value);
    }
 
-   string ITokenIdProvider.TokenId => nameof(Button);
+   string ITokenIdProvider.TokenId => ButtonToken.ID;
 
    static Button()
    {

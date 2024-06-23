@@ -6,6 +6,7 @@ namespace AtomUI.Controls.Window;
 [ControlDesignToken]
 public class WindowToken : AbstractControlDesignToken
 {
+   public const string ID = "Window";
    /// <summary>
    /// 窗口默认的背景色
    /// </summary>
