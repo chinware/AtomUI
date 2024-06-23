@@ -9,6 +9,9 @@ public class CollapseMotion : AbstractMotion
       : base(target)
    {}
 
+   public MotionConfig? HeightConfig => GetMotionConfig(MotionHeightProperty);
+   public MotionConfig? WidthConfig => GetMotionConfig(MotionWidthProperty);
+
    public void ConfigureHeight(double originHeight, TimeSpan duration, Easing? easing = null)
    {
       easing ??= new CubicEaseInOut();
@@ -34,5 +37,6 @@ public class CollapseMotion : AbstractMotion
          MotionDuration = duration,
          MotionEasing = easing
       };
+      AddMotionConfig(config);
    }
 }
