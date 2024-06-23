@@ -1,4 +1,5 @@
-﻿using Avalonia.Animation.Easings;
+﻿using AtomUI.Utils;
+using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 
 namespace AtomUI.Media;
@@ -13,6 +14,7 @@ public class FadeInMotion : AbstractMotion
    public void ConfigureOpacity(double originOpacity, TimeSpan duration, Easing? easing = null)
    {
       easing ??= new LinearEasing();
+      originOpacity = NumberUtils.Clamp(originOpacity, 0, 1);
       var config = new MotionConfig(MotionOpacityProperty)
       {
          TransitionKind = TransitionKind.Double,
@@ -36,6 +38,7 @@ public class FadeOutMotion : AbstractMotion
    public void ConfigureOpacity(double originOpacity, TimeSpan duration, Easing? easing = null)
    {
       easing ??= new LinearEasing();
+      originOpacity = NumberUtils.Clamp(originOpacity, 0, 1);
       var config = new MotionConfig(MotionOpacityProperty)
       {
          TransitionKind = TransitionKind.Double,

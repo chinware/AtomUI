@@ -1,4 +1,5 @@
-﻿using Avalonia;
+﻿using AtomUI.Utils;
+using Avalonia;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 
@@ -6,17 +7,20 @@ namespace AtomUI.Media;
 
 public class MoveDownInMotion : AbstractMotion
 {
+   public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
+   public MotionConfig? OffsetConfig => GetMotionConfig(MotionRenderOffsetProperty);
+   
    public MoveDownInMotion(Control target)
       : base(target)
    {}
 
-   public void ConfigureOpacity(double originOpacity, TimeSpan duration, Easing? easing = null)
+   public void ConfigureOpacity(TimeSpan duration, Easing? easing = null)
    {
       easing ??= new CircularEaseOut();
       var config = new MotionConfig(MotionOpacityProperty)
       {
          TransitionKind = TransitionKind.Double,
-         StartValue = originOpacity,
+         StartValue = 0d,
          EndValue = 1d,
          MotionDuration = duration,
          MotionEasing = easing
@@ -42,17 +46,20 @@ public class MoveDownInMotion : AbstractMotion
 
 public class MoveDownOutMotion : AbstractMotion
 {
+   public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
+   public MotionConfig? OffsetConfig => GetMotionConfig(MotionRenderOffsetProperty);
+   
    public MoveDownOutMotion(Control target)
       : base(target)
    {}
    
-   public void ConfigureOpacity(double originOpacity, TimeSpan duration, Easing? easing = null)
+   public void ConfigureOpacity(TimeSpan duration, Easing? easing = null)
    {
       easing ??= new CircularEaseInOut();
       var config = new MotionConfig(MotionOpacityProperty)
       {
          TransitionKind = TransitionKind.Double,
-         StartValue = originOpacity,
+         StartValue = 1d,
          EndValue = 0d,
          MotionDuration = duration,
          MotionEasing = easing
@@ -78,17 +85,20 @@ public class MoveDownOutMotion : AbstractMotion
 
 public class MoveLeftInMotion : AbstractMotion
 {
+   public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
+   public MotionConfig? OffsetConfig => GetMotionConfig(MotionRenderOffsetProperty);
+   
    public MoveLeftInMotion(Control target)
       : base(target)
    {}
 
-   public void ConfigureOpacity(double originOpacity, TimeSpan duration, Easing? easing = null)
+   public void ConfigureOpacity(TimeSpan duration, Easing? easing = null)
    {
       easing ??= new CircularEaseOut();
       var config = new MotionConfig(MotionOpacityProperty)
       {
          TransitionKind = TransitionKind.Double,
-         StartValue = originOpacity,
+         StartValue = 0d,
          EndValue = 1d,
          MotionDuration = duration,
          MotionEasing = easing
@@ -114,17 +124,20 @@ public class MoveLeftInMotion : AbstractMotion
 
 public class MoveLeftOutMotion : AbstractMotion
 {
+   public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
+   public MotionConfig? OffsetConfig => GetMotionConfig(MotionRenderOffsetProperty);
+   
    public MoveLeftOutMotion(Control target)
       : base(target)
    {}
 
-   public void ConfigureOpacity(double originOpacity, TimeSpan duration, Easing? easing = null)
+   public void ConfigureOpacity(TimeSpan duration, Easing? easing = null)
    {
       easing ??= new CircularEaseInOut();
       var config = new MotionConfig(MotionOpacityProperty)
       {
          TransitionKind = TransitionKind.Double,
-         StartValue = originOpacity,
+         StartValue = 1d,
          EndValue = 0d,
          MotionDuration = duration,
          MotionEasing = easing
@@ -150,17 +163,20 @@ public class MoveLeftOutMotion : AbstractMotion
 
 public class MoveRightInMotion : AbstractMotion
 {
+   public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
+   public MotionConfig? OffsetConfig => GetMotionConfig(MotionRenderOffsetProperty);
+   
    public MoveRightInMotion(Control target)
       : base(target)
    {}
 
-   public void ConfigureOpacity(double originOpacity, TimeSpan duration, Easing? easing = null)
+   public void ConfigureOpacity(TimeSpan duration, Easing? easing = null)
    {
       easing ??= new CircularEaseOut();
       var config = new MotionConfig(MotionOpacityProperty)
       {
          TransitionKind = TransitionKind.Double,
-         StartValue = originOpacity,
+         StartValue = 0d,
          EndValue = 1d,
          MotionDuration = duration,
          MotionEasing = easing
@@ -186,17 +202,20 @@ public class MoveRightInMotion : AbstractMotion
 
 public class MoveRightOutMotion : AbstractMotion
 {
+   public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
+   public MotionConfig? OffsetConfig => GetMotionConfig(MotionRenderOffsetProperty);
+   
    public MoveRightOutMotion(Control target)
       : base(target)
    {}
 
-   public void ConfigureOpacity(double originOpacity, TimeSpan duration, Easing? easing = null)
+   public void ConfigureOpacity(TimeSpan duration, Easing? easing = null)
    {
       easing ??= new CircularEaseInOut();
       var config = new MotionConfig(MotionOpacityProperty)
       {
          TransitionKind = TransitionKind.Double,
-         StartValue = originOpacity,
+         StartValue = 1d,
          EndValue = 0d,
          MotionDuration = duration,
          MotionEasing = easing

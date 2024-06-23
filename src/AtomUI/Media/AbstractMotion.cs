@@ -4,6 +4,7 @@ using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Layout;
+using Avalonia.Media;
 using Microsoft.CSharp.RuntimeBinder;
 
 namespace AtomUI.Media;
@@ -72,6 +73,9 @@ public abstract class AbstractMotion : AvaloniaObject, IMotion
 
    protected static readonly StyledProperty<Rect> MotionRenderBoundsProperty =
       AvaloniaProperty.Register<AbstractMotion, Rect>(nameof(MotionRenderBounds));
+   
+   protected static readonly StyledProperty<ITransform> MotionRenderTransformProperty =
+      AvaloniaProperty.Register<AbstractMotion, ITransform>(nameof(MotionRenderTransform));
 
    protected double MotionWidth
    {
@@ -108,7 +112,13 @@ public abstract class AbstractMotion : AvaloniaObject, IMotion
       get => GetValue(MotionRenderBoundsProperty);
       set => SetValue(MotionRenderBoundsProperty, value);
    }
-
+   
+   protected ITransform MotionRenderTransform
+   {
+      get => GetValue(MotionRenderTransformProperty);
+      set => SetValue(MotionRenderTransformProperty, value);
+   }
+   
    public AbstractMotion(Control target)
    {
       if (target is not IMotionAbilityTarget) {

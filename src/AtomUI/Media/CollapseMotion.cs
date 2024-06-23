@@ -1,4 +1,5 @@
-﻿using Avalonia.Animation.Easings;
+﻿using AtomUI.Utils;
+using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 
 namespace AtomUI.Media;
@@ -29,6 +30,7 @@ public class CollapseMotion : AbstractMotion
    public void ConfigureOpacity(double originOpacity, TimeSpan duration, Easing? easing = null)
    {
       easing ??= new CubicEaseInOut();
+      originOpacity = NumberUtils.Clamp(originOpacity, 0, 1);
       var config = new MotionConfig(MotionOpacityProperty)
       {
          TransitionKind = TransitionKind.Double,
