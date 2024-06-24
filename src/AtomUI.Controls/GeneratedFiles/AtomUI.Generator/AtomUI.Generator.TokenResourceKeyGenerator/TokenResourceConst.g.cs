@@ -168,7 +168,7 @@
         public const string TagBorderlessBg = "TagBorderlessBg";
     }
 
-    public static class TooltipResourceKey
+    public static class ToolTipResourceKey
     {
         public const string TooltipMaxWidth = "TooltipMaxWidth";
         public const string TooltipColor = "TooltipColor";

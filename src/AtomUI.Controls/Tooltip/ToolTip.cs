@@ -2,7 +2,7 @@
 
 using AvaloniaTooltip = Avalonia.Controls.ToolTip;
 
-public partial class Tooltip : AvaloniaTooltip
+public partial class ToolTip : AvaloniaTooltip
 {
    
 }

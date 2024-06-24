@@ -1,6 +1,6 @@
 ﻿namespace AtomUI.Controls.Tooltip;
 
-public class TooltipService
+public partial class ToolTip
 {
    
 }

@@ -4,11 +4,11 @@ using Avalonia.Media;
 namespace AtomUI.Controls.Tooltip;
 
 [ControlDesignToken]
-internal class TooltipToken : AbstractControlDesignToken
+internal class ToolTipToken : AbstractControlDesignToken
 {
    public const string ID = "Tooltip";
    
-   public TooltipToken()
+   public ToolTipToken()
       : base(ID)
    {
    }
