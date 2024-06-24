@@ -21,15 +21,15 @@ internal static class InputManagerEx
    static InputManagerEx()
    {
       // Input
-      RootInfo = typeof(RawInputEventArgs).GetPropertyInfoOrThrow("Root", BindingFlags.Public | BindingFlags.Instance);
+      RootInfo = typeof(RawInputEventArgs).GetPropertyInfoOrThrow("Root");
         
       // Key
-      KeyInfo = typeof(RawKeyEventArgs).GetPropertyInfoOrThrow("Key", BindingFlags.Public | BindingFlags.Instance);
-      ModifiersInfo = typeof(RawKeyEventArgs).GetPropertyInfoOrThrow("Modifiers", BindingFlags.Public | BindingFlags.Instance);
-      TypeInfo = typeof(RawKeyEventArgs).GetPropertyInfoOrThrow("Type", BindingFlags.Public | BindingFlags.Instance);
+      KeyInfo = typeof(RawKeyEventArgs).GetPropertyInfoOrThrow("Key");
+      ModifiersInfo = typeof(RawKeyEventArgs).GetPropertyInfoOrThrow("Modifiers");
+      TypeInfo = typeof(RawKeyEventArgs).GetPropertyInfoOrThrow("Type");
 
       // Pointer
-      PositionInfo = typeof(RawPointerEventArgs).GetPropertyInfoOrThrow("Position", BindingFlags.Public | BindingFlags.Instance);
+      PositionInfo = typeof(RawPointerEventArgs).GetPropertyInfoOrThrow("Position");
    }
    
    public static IInputRoot? Root(this RawInputEventArgs e) => RootInfo.GetValue(e) as IInputRoot;

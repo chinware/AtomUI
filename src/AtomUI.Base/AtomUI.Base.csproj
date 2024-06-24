@@ -11,4 +11,10 @@
         <PackageReference Include="Avalonia"/>
         <PackageReference Include="System.Reactive" />
     </ItemGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="AtomUI" />
+        <InternalsVisibleTo Include="AtomUI.Controls" />
+    </ItemGroup>
+
 </Project>

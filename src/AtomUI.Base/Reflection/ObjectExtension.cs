@@ -9,7 +9,7 @@ public static class ObjectExtension
       this object source,
       string name,
       out T? result,
-      BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic)
+      BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.FlattenHierarchy)
    {
       PropertyInfo? property = source.GetType().GetProperty(name, flags);
       if (property is not null && property.GetValue(source) is T obj) {
@@ -26,7 +26,7 @@ public static class ObjectExtension
       Type declareType,
       string name,
       out T? result,
-      BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic)
+      BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
    {
       PropertyInfo? property = declareType.GetProperty(name, flags);
       if (property is not null && property.GetValue(source) is T obj) {
@@ -50,7 +50,7 @@ public static class ObjectExtension
    }
 
    public static T? GetPropertyOrThrow<T>(this object source, string name,
-                                          BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic)
+                                          BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.FlattenHierarchy)
    {
       object? obj = source.GetType().GetPropertyInfoOrThrow(name, flags).GetValue(source);
       if (obj is T propertyOrThrow) {
@@ -78,7 +78,7 @@ public static class ObjectExtension
       this object source,
       Type declareType,
       string name,
-      BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic)
+      BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
    {
       object? obj = declareType.GetPropertyInfoOrThrow(name, flags).GetValue(source);
       if (obj is T propertyOrThrow) {
@@ -123,7 +123,7 @@ public static class ObjectExtension
       this object source,
       string name,
       out T? result,
-      BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic)
+      BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.FlattenHierarchy)
    {
       FieldInfo? field = source.GetType().GetField(name, flags);
       if (field is not null && field.GetValue(source) is T obj) {
@@ -140,7 +140,7 @@ public static class ObjectExtension
       Type declareType,
       string name,
       out T? result,
-      BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic)
+      BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
    {
       FieldInfo? field = declareType.GetField(name, flags);
       if (field is not null && field.GetValue(source) is T obj) {
@@ -164,7 +164,7 @@ public static class ObjectExtension
    }
 
    public static T? GetFieldOrThrow<T>(this object source, string name,
-                                       BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic)
+                                       BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.FlattenHierarchy)
    {
       object? obj = source.GetType().GetFieldInfoOrThrow(name, flags).GetValue(source);
       if (obj is T fieldOrThrow) {
@@ -193,7 +193,7 @@ public static class ObjectExtension
       this object source,
       Type declareType,
       string name,
-      BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic)
+      BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
    {
       object? obj = declareType.GetFieldInfoOrThrow(name, flags).GetValue(source);
       if (obj is T fieldOrThrow) return fieldOrThrow;
@@ -220,7 +220,7 @@ public static class ObjectExtension
       Type declareType,
       string name,
       T? value,
-      BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic)
+      BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
    {
       FieldInfo? field = declareType.GetField(name, flags);
       if (field is null) {
@@ -238,7 +238,7 @@ public static class ObjectExtension
       out object? result,
       params object[] parameters)
    {
-      MethodInfo? method = declareType.GetMethod(name, BindingFlags.Instance | BindingFlags.NonPublic);
+      MethodInfo? method = declareType.GetMethod(name, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
       if (method is null) {
          result = null;
          return false;

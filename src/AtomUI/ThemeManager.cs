@@ -1,4 +1,6 @@
-﻿using Avalonia.Platform;
+﻿using System.Reflection;
+using AtomUI.Utils;
+using Avalonia.Platform;
 using Avalonia.Styling;
 
 namespace AtomUI;
@@ -11,13 +13,13 @@ public class ThemeManager : Styles, IThemeManager
    public const string THEME_DIR = "Themes";
    public const string DEFAULT_THEME_ID = "DaybreakBlueLight";
    public const string DEFAULT_THEME_RES_PATH = $"avares://AtomUI/Assets/{THEME_DIR}";
-   
+
    private Theme? _activatedTheme;
    private Dictionary<string, Theme> _themePool;
    private List<string> _customThemeDirs;
    private List<string> _builtInThemeDirs;
    private string DefaultThemeId { get; set; }
-   
+
    public ITheme? ActivatedTheme => _activatedTheme;
    public IReadOnlyList<string> CustomThemeDirs => _customThemeDirs;
    public static ThemeManager Current { get; }
@@ -54,10 +56,11 @@ public class ThemeManager : Styles, IThemeManager
          if (_themePool.Count == 0) {
             ScanThemes();
          }
+
          return _themePool.Values;
       }
    }
-   
+
    public ITheme LoadTheme(string id)
    {
       if (_themePool.Count == 0) {
@@ -73,7 +76,7 @@ public class ThemeManager : Styles, IThemeManager
          // TODO 这里记录一个日志
          return theme;
       }
-      
+
       theme.NotifyAboutToLoad();
       ThemeAboutToLoadEvent?.Invoke(this, new ThemeOperateEventArgs(theme));
       try {
@@ -130,10 +133,11 @@ public class ThemeManager : Styles, IThemeManager
 
       ThemeVariant themeVariant = _activatedTheme.ThemeVariant;
       Resources.ThemeDictionaries[themeVariant] = theme.ThemeResource;
-      
+
       if (oldTheme is not null) {
          oldTheme.NotifyDeActivated();
       }
+
       ThemeChangedEvent?.Invoke(this, new ThemeChangedEventArgs(theme, oldTheme));
    }
 
@@ -143,6 +147,7 @@ public class ThemeManager : Styles, IThemeManager
          // TODO 需要记录一个日志
          return;
       }
+
       _themePool.Add(dynamicTheme.Id, dynamicTheme);
       dynamicTheme.NotifyRegistered();
    }
@@ -153,15 +158,15 @@ public class ThemeManager : Styles, IThemeManager
       foreach (var path in _customThemeDirs) {
          AddThemesFromPath(path, _themePool);
       }
-      
+
       // 优先级从高到低
       foreach (var path in _builtInThemeDirs) {
          AddThemesFromPath(path, _themePool);
       }
-      
+
       // Assets 中的默认主题
       AddThemesFromAssets(_themePool);
-      
+
       // TODO 如果这里为空的化需要记录一个日志
    }
 
@@ -199,17 +204,51 @@ public class ThemeManager : Styles, IThemeManager
          if (themes.ContainsKey(themeId)) {
             continue;
          }
+
          var theme = new StaticTheme(themeId, filePath);
          ThemeCreatedEvent?.Invoke(this, new ThemeOperateEventArgs(theme));
          themes.Add(themeId, theme);
          theme.NotifyRegistered();
       }
    }
+
+   internal void Initialize()
+   {
+      RegisterServices();
+      // 收集控件全局初始化接口
+      InvokeBootstrapInitializers();
+   }
+
+   internal void InvokeBootstrapInitializers()
+   {
+      // 暂时就初始化自己的
+      var assemblies = Assembly.GetEntryAssembly()?.GetReferencedAssemblies().Where(assembly =>
+      {
+         if (assembly.Name is null) {
+            return false;
+         }
+
+         return assembly.Name.StartsWith("AtomUI.Controls");
+      }).Select(assemblyName => Assembly.Load(assemblyName));
+      var initializers = assemblies?.SelectMany(assembly => assembly.GetTypes())
+                                   .Where(type => typeof(IBootstrapInitializer).IsAssignableFrom(type))
+                                   .Select(type => (IBootstrapInitializer)Activator.CreateInstance(type)!);
+      if (initializers is not null) {
+         foreach (var initializer in initializers) {
+            initializer.Init();
+         }
+      }
+   }
+
+   internal void RegisterServices()
+   {
+   }
 }
 
 public class ThemeOperateEventArgs : EventArgs
 {
    public ITheme? Theme { get; }
+
    public ThemeOperateEventArgs(ITheme? theme)
    {
       Theme = theme;
