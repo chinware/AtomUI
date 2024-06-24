@@ -8,6 +8,14 @@
     xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
     mc:Ignorable="d">
     <showcase:ShowCasePanel>
-     
+        <showcase:ShowCaseItem
+            Title="Basic"
+            Description="The simplest usage.">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <TextBlock atom:ToolTip.Tip="Tooltip will show on mouse enter.">
+                    Tooltip will show on mouse enter.
+                </TextBlock>
+            </StackPanel>
+        </showcase:ShowCaseItem>
     </showcase:ShowCasePanel>
 </UserControl>

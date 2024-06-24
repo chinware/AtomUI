@@ -1,4 +1,5 @@
 ﻿using System.Reactive.Disposables;
+using System.Reflection;
 using AtomUI.Input;
 using AtomUI.Reflection;
 using Avalonia;
@@ -23,8 +24,21 @@ internal sealed class ToolTipService : IDisposable
    private ulong _lastTipEventTime;
    private ulong _lastWindowEventTime;
    
+   private static readonly PropertyInfo RootInfo;
+   private static readonly PropertyInfo TimestampInfo;
+   private static readonly PropertyInfo VisualRootInfo;
+   private static readonly PropertyInfo EventTypeInfo;
+   private static readonly PropertyInfo VisualParentInfo;
+   private static readonly PropertyInfo IsAttachedToVisualTreeInfo;
+   
    static ToolTipService()
    {
+      RootInfo = typeof(RawPointerEventArgs).GetPropertyInfoOrThrow("Root");
+      TimestampInfo = typeof(RawPointerEventArgs).GetPropertyInfoOrThrow("Timestamp");
+      VisualRootInfo = typeof(Control).GetPropertyInfoOrThrow("VisualRoot");
+      EventTypeInfo = typeof(RawPointerEventArgs).GetPropertyInfoOrThrow("Type");
+      VisualParentInfo = typeof(Visual).GetPropertyInfoOrThrow("VisualParent");
+      IsAttachedToVisualTreeInfo = typeof(Control).GetPropertyInfoOrThrow("IsAttachedToVisualTree");
    }
 
    public ToolTipService()
@@ -40,30 +54,34 @@ internal sealed class ToolTipService : IDisposable
       StopTimer();
       _subscriptions.Dispose();
    }
-
+   
+   public static IInputRoot? Root(RawPointerEventArgs e) => RootInfo.GetValue(e) as IInputRoot;
+   public static ulong Timestamp(RawPointerEventArgs e) => (ulong)TimestampInfo.GetValue(e)!;
+   public static IRenderRoot? VisualRoot(Control? control) => control is not null ? VisualRootInfo.GetValue(control) as IRenderRoot : null;
+   public static RawPointerEventType EventType(RawPointerEventArgs e) => (RawPointerEventType)EventTypeInfo.GetValue(e)!;
+   public static Visual? VisualParent(Visual? visual) => VisualParentInfo.GetValue(visual) as Visual;
+   public static bool IsAttachedToVisualTree(Control control) => (bool)IsAttachedToVisualTreeInfo.GetValue(control)!;
+   
    private void HandleInputManagerOnProcess(RawPointerEventArgs pointerEvent)
    {
-      var root = pointerEvent.GetPropertyOrThrow<IInputRoot>("Root");
-      var timestamp = pointerEvent.GetPropertyOrThrow<ulong>("Timestamp");
-      var visualRoot = _tipControl?.GetPropertyOrThrow<IRenderRoot?>("VisualRoot");
       bool isTooltipEvent = false;
-      if (_tipControl?.GetValue(ToolTip.ToolTipProperty) is { } currentTip && root == currentTip.PopupHost) {
+      if (_tipControl?.GetValue(ToolTip.ToolTipProperty) is { } currentTip && Root(pointerEvent) == currentTip.PopupHost) {
          isTooltipEvent = true;
-         _lastTipEventTime = timestamp;
-      } else if (root == _tipControl?.GetPropertyOrThrow<IRenderRoot?>("VisualRoot")) {
-         _lastWindowEventTime = timestamp;
+         _lastTipEventTime = Timestamp(pointerEvent);
+      } else if (Root(pointerEvent) == VisualRoot(_tipControl)) {
+         _lastWindowEventTime = Timestamp(pointerEvent);
       }
 
-      var eventType = pointerEvent.GetPropertyOrThrow<RawPointerEventType>("Type");
+      var eventType = EventType(pointerEvent);
       switch (eventType) {
          case RawPointerEventType.Move:
             var inputHitTestResult =
                pointerEvent.GetPropertyOrThrow<(IInputElement? element, IInputElement? firstEnabledAncestor)>("InputHitTestResult");
-            Update(root!, inputHitTestResult.element as Visual);
+            Update(Root(pointerEvent)!, inputHitTestResult.element as Visual);
             break;
          case RawPointerEventType.LeaveWindow
-            when (root == visualRoot && _lastTipEventTime != timestamp) ||
-                 (isTooltipEvent && _lastWindowEventTime != timestamp):
+            when (Root(pointerEvent) == VisualRoot(_tipControl) && _lastTipEventTime != Timestamp(pointerEvent)) ||
+                 (isTooltipEvent && _lastWindowEventTime != Timestamp(pointerEvent)):
             ClearTip();
             _tipControl = null;
             break;
@@ -87,7 +105,7 @@ internal sealed class ToolTipService : IDisposable
    {
       var currentToolTip = _tipControl?.GetValue(ToolTip.ToolTipProperty);
 
-      var visualRoot = currentToolTip?.GetPropertyOrThrow<IRenderRoot?>("VisualRoot");
+      var visualRoot = VisualRoot(currentToolTip);
       if (root == visualRoot) {
          // Don't update while the pointer is over a tooltip
          return;
@@ -108,7 +126,8 @@ internal sealed class ToolTipService : IDisposable
                break;
             }
          }
-         var candidateToolTipHostVisualRoot = candidateToolTipHost?.GetPropertyOrThrow<Visual?>("VisualParent");
+
+         var candidateToolTipHostVisualRoot = VisualParent(candidateToolTipHost);
          candidateToolTipHost = candidateToolTipHostVisualRoot;
       }
 
@@ -211,7 +230,7 @@ internal sealed class ToolTipService : IDisposable
    private void Open(Control control)
    {
       StopTimer();
-      var isAttachedToVisualTree = control.GetPropertyOrThrow<bool>("IsAttachedToVisualTree");
+      var isAttachedToVisualTree = IsAttachedToVisualTree(control);
       if (isAttachedToVisualTree) {
          ToolTip.SetIsOpen(control, true);
 
