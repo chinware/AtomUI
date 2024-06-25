@@ -28,10 +28,16 @@ using AvaloniaWin = Avalonia.Controls.Window;
 /// assigning the content that you want displayed.
 /// </remarks>
 [PseudoClasses(":open")]
-public partial class ToolTip : ContentControl, ITokenIdProvider
+public partial class ToolTip : BorderedStyleControl, ITokenIdProvider
 {
    string ITokenIdProvider.TokenId => ToolTipToken.ID;
 
+   /// <summary>
+   /// Defines the <see cref="Content"/> property.
+   /// </summary>
+   public static readonly StyledProperty<object?> ContentProperty =
+      AvaloniaProperty.Register<ContentControl, object?>(nameof(Content));
+   
    /// <summary>
    /// Defines the ToolTip.Tip attached property.
    /// </summary>
@@ -98,6 +104,12 @@ public partial class ToolTip : ContentControl, ITokenIdProvider
    /// </summary>
    internal static readonly AttachedProperty<ToolTip?> ToolTipProperty =
       AvaloniaProperty.RegisterAttached<ToolTip, Control, ToolTip?>("ToolTip");
+   
+   public object? Content
+   {
+      get => GetValue(ContentProperty);
+      set => SetValue(ContentProperty, value);
+   }
 
    private Popup? _popup;
    private Action<IPopupHost?>? _popupHostChangedHandler;
@@ -439,7 +451,10 @@ public partial class ToolTip : ContentControl, ITokenIdProvider
 
          PlacementType.Bottom => PlacementType.Top,
          PlacementType.BottomEdgeAlignedLeft => PlacementType.TopEdgeAlignedLeft,
-         PlacementType.BottomEdgeAlignedRight => PlacementType.TopEdgeAlignedRight
+         PlacementType.BottomEdgeAlignedRight => PlacementType.TopEdgeAlignedRight,
+         
+         _ => throw new ArgumentOutOfRangeException(nameof(placement), placement,
+                                                    "Invalid value for PlacementType")
       };
    }
 
@@ -448,7 +463,7 @@ public partial class ToolTip : ContentControl, ITokenIdProvider
       var offsetX = 0d;
       var offsetY = 0d;
       var direction = GetDirection(placementType);
-      var margin = Math.Max(GetMarginToAnchor(AdornedControl!), _sizePopupArrow / 2);
+      var margin = Math.Max(GetMarginToAnchor(AdornedControl!), _marginXXS);
       if (direction == Direction.Bottom) {
          offsetY += margin;
       } else if (direction == Direction.Top) {
@@ -462,9 +477,9 @@ public partial class ToolTip : ContentControl, ITokenIdProvider
       return new Point(offsetX, offsetY);
    }
 
-   private Direction GetDirection(PlacementType placementType)
+   private Direction GetDirection(PlacementType placement)
    {
-      return placementType switch
+      return placement switch
       {
          PlacementType.Left => Direction.Left,
          PlacementType.LeftEdgeAlignedBottom => Direction.Left,
@@ -481,6 +496,8 @@ public partial class ToolTip : ContentControl, ITokenIdProvider
          PlacementType.Bottom => Direction.Bottom,
          PlacementType.BottomEdgeAlignedLeft => Direction.Bottom,
          PlacementType.BottomEdgeAlignedRight => Direction.Bottom,
+         _ => throw new ArgumentOutOfRangeException(nameof(placement), placement,
+                                                    "Invalid value for PlacementType")
       };
    }
 
@@ -721,7 +738,6 @@ public partial class ToolTip : ContentControl, ITokenIdProvider
          _initialized = true;
       }
    }
-   
       
    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
    {

@@ -16,12 +16,19 @@ public partial class ToolTip
                                                           (o) => o._defaultBackground,
                                                           (o, v) => o._defaultBackground = v);
 
-   private double _sizePopupArrow;
+   private double _toolTipArrowSize;
 
-   private static readonly DirectProperty<ToolTip, double> SizePopupArrowTokenProperty
-      = AvaloniaProperty.RegisterDirect<ToolTip, double>(nameof(_sizePopupArrow),
-                                                         (o) => o._sizePopupArrow,
-                                                         (o, v) => o._sizePopupArrow = v);
+   private static readonly DirectProperty<ToolTip, double> ToolTipArrowSizeTokenProperty
+      = AvaloniaProperty.RegisterDirect<ToolTip, double>(nameof(_toolTipArrowSize),
+                                                         (o) => o._toolTipArrowSize,
+                                                         (o, v) => o._toolTipArrowSize = v);
+   
+   private double _marginXXS;
+
+   private static readonly DirectProperty<ToolTip, double> MarginXXSTokenProperty
+      = AvaloniaProperty.RegisterDirect<ToolTip, double>(nameof(_marginXXS),
+                                                         (o) => o._marginXXS,
+                                                         (o, v) => o._marginXXS = v);
 
    // 组件的 Token 绑定属性
 }

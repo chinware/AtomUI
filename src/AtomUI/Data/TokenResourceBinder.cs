@@ -40,7 +40,7 @@ public class TokenResourceBinder : IDisposable
                           Func<IObservable<object?>, IObservable<object?>>? observableConfigure = null,
                           string? bindingName = null)
    {
-      var visualParent = _hostControl.GetVisualParent();
+      var parent = _hostControl.GetLogicalParent();
       var activeTheme = ThemeManager.Current.ActivatedTheme!;
       // 探测绑定目标
       var tokenIdProvider = _hostControl as ITokenIdProvider;
@@ -75,7 +75,7 @@ public class TokenResourceBinder : IDisposable
          BindingName = bindingName
       };
       
-      if (visualParent is not null) {
+      if (parent is not null) {
          var bindingObservable = _hostControl.GetResourceObservable(resourceKey);
          if (observableConfigure is not null) {
             bindingObservable = observableConfigure(bindingObservable);
