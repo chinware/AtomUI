@@ -51,19 +51,25 @@ public partial class ToolTip : IControlCustomStyle
 
    public sealed override void Render(DrawingContext context)
    {
+      // context.FillRectangle(new SolidColorBrush(Colors.Aqua), new Rect(default, DesiredSize));
       var arrowRect = GetArrowRect(DesiredSize);
       if (IsShowArrow(AdornedControl!)) {
          var direction = GetDirection(GetPlacement(AdornedControl!));
          var arrowSize = _toolTipArrowSize;
-         var matrix = Matrix.CreateTranslation(-arrowSize/2, -arrowSize/2);
+         var matrix = Matrix.CreateTranslation(-arrowSize / 2, -arrowSize / 2);
          if (direction == Direction.Right) {
-            matrix *= Matrix.CreateRotation(90);
+            matrix *= Matrix.CreateRotation(MathUtils.Deg2Rad(-90));
+            matrix *= Matrix.CreateTranslation(0, arrowSize / 2);
          } else if (direction == Direction.Top) {
             matrix *= Matrix.CreateRotation(MathUtils.Deg2Rad(180));
+            matrix *= Matrix.CreateTranslation(arrowSize / 2, arrowSize / 2);
          } else if (direction == Direction.Left) {
-            matrix *= Matrix.CreateRotation(270);
+            matrix *= Matrix.CreateRotation(MathUtils.Deg2Rad(90));
+            matrix *= Matrix.CreateTranslation(arrowSize / 2, arrowSize / 2);
+         } else {
+            matrix *= Matrix.CreateTranslation(arrowSize / 2, 0);
          }
-         matrix *= Matrix.CreateTranslation(arrowSize/2, arrowSize/2);
+  
          matrix *= Matrix.CreateTranslation(arrowRect.X, arrowRect.Y);
          _arrowGeometry!.Transform = new MatrixTransform(matrix);
          context.DrawGeometry(Background, null, _arrowGeometry);
@@ -78,12 +84,12 @@ public partial class ToolTip : IControlCustomStyle
       targetHeight = Math.Max(MinHeight, targetHeight);
       var adornedControl = AdornedControl!;
       if (IsShowArrow(adornedControl)) {
-         var arrowSize = _arrowGeometry!.Bounds.Size;
+         var arrowSize = Math.Min(_arrowGeometry!.Bounds.Size.Height, _arrowGeometry!.Bounds.Size.Width);
          var direction = GetDirection(GetPlacement(adornedControl));
          if (direction == Direction.Left || direction == Direction.Right) {
-            targetWidth += arrowSize.Width;
+            targetWidth += arrowSize;
          } else {
-            targetHeight += arrowSize.Height;
+            targetHeight += arrowSize;
          }
       }
 
@@ -114,18 +120,18 @@ public partial class ToolTip : IControlCustomStyle
       var targetHeight = finalSize.Height;
       var adornedControl = AdornedControl!;
       if (IsShowArrow(adornedControl)) {
-         var size = _arrowGeometry!.Bounds.Size;
+         var arrowSize = Math.Min(_arrowGeometry!.Bounds.Size.Height, _arrowGeometry!.Bounds.Size.Width);
          var direction = GetDirection(GetPlacement(adornedControl));
          if (direction == Direction.Left || direction == Direction.Right) {
-            targetWidth -= size.Width;
+            targetWidth -= arrowSize;
          } else {
-            targetHeight -= size.Height;
+            targetHeight -= arrowSize;
          }
 
          if (direction == Direction.Right) {
-            offsetX = size.Width;
+            offsetX = arrowSize;
          } else if (direction == Direction.Bottom) {
-            offsetY = size.Height;
+            offsetY = arrowSize;
          }
       }
 
@@ -138,24 +144,35 @@ public partial class ToolTip : IControlCustomStyle
       var offsetY = 0d;
       var adornedControl = AdornedControl!;
       var size = _arrowGeometry!.Bounds.Size;
+      var targetWidth = 0d;
+      var targetHeight = 0d;
       if (IsShowArrow(adornedControl)) {
+         var minValue = Math.Min(size.Width, size.Height);
+         var maxValue = Math.Max(size.Width, size.Height);
          var direction = GetDirection(GetPlacement(adornedControl));
          if (direction == Direction.Left) {
-            offsetY = (finalSize.Height - size.Height) / 2;
+            offsetX = finalSize.Width - minValue;
+            offsetY = (finalSize.Height - maxValue) / 2;
+            targetWidth = minValue;
+            targetHeight = maxValue;
          } else if (direction == Direction.Top) {
-            offsetX = (finalSize.Width - size.Width) / 2;
-            offsetY = finalSize.Height - size.Height;
+            offsetX = (finalSize.Width - maxValue) / 2;
+            offsetY = finalSize.Height - minValue;
+            targetWidth = maxValue;
+            targetHeight = minValue;
          } else if (direction == Direction.Right) {
-            offsetX = finalSize.Width - size.Width;
-            offsetY = (finalSize.Height - size.Height) / 2;
+            offsetY = (finalSize.Height - maxValue) / 2;
+            targetWidth = minValue;
+            targetHeight = maxValue;
          } else {
-            offsetX = (finalSize.Width - size.Width) / 2;
+            offsetX = (finalSize.Width - maxValue) / 2;
+            targetWidth = maxValue;
+            targetHeight = minValue;
          }
       }
 
-      return new Rect(offsetX, offsetY, size.Width, size.Height);
+      return new Rect(offsetX, offsetY, targetWidth, targetHeight);
    }
-
    
    private void BuildGeometry(Direction direction)
    {

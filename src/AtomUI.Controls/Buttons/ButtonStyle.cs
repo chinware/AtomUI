@@ -100,8 +100,6 @@ public partial class Button : IWaveAdornerInfoProvider, IControlCustomStyle
       };
       _stackPanel.Children.Add(_label);
       Content = _stackPanel;
-      BindUtils.RelayBind(this, "Width", _stackPanel);
-      BindUtils.RelayBind(this, "Height", _stackPanel);
    }
 
    void IControlCustomStyle.ApplyVariableStyleConfig()

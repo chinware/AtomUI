@@ -127,7 +127,11 @@ public partial class Button : AvaloniaButton, ITokenIdProvider, ISizeTypeAware
 
    static Button()
    {
-      AffectsMeasure<Button>(SizeTypeProperty, ButtonShapeProperty, IconProperty);
+      AffectsMeasure<Button>(SizeTypeProperty,
+                             ButtonShapeProperty,
+                             IconProperty, 
+                             WidthProperty, 
+                             HeightProperty);
       AffectsRender<Button>(ButtonTypeProperty,
                             IsDangerProperty,
                             IsGhostProperty);
