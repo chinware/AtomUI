@@ -2,71 +2,73 @@
 
 namespace AtomUI.ColorSystem;
 
+public enum PresetColorType
+{
+   Red,
+   Volcano,
+   Orange,
+   Gold,
+   Yellow,
+   Lime,
+   Green,
+   Cyan,
+   Blue,
+   GeekBlue,
+   Purple,
+   Pink,
+   Magenta,
+   Grey,
+}
+
 public class PresetPrimaryColor : IEquatable<PresetPrimaryColor>
 {
-   public enum ColorType
-   {
-      Red,
-      Volcano,
-      Orange,
-      Gold,
-      Yellow,
-      Lime,
-      Green,
-      Cyan,
-      Blue,
-      GeekBlue,
-      Purple,
-      Pink,
-      Magenta,
-      Grey,
-   }
 
-   public static readonly PresetPrimaryColor Red = new PresetPrimaryColor(ColorType.Red);
-   public static readonly PresetPrimaryColor Volcano = new PresetPrimaryColor(ColorType.Volcano);
-   public static readonly PresetPrimaryColor Orange = new PresetPrimaryColor(ColorType.Orange);
-   public static readonly PresetPrimaryColor Gold = new PresetPrimaryColor(ColorType.Gold);
-   public static readonly PresetPrimaryColor Yellow = new PresetPrimaryColor(ColorType.Yellow);
-   public static readonly PresetPrimaryColor Lime = new PresetPrimaryColor(ColorType.Lime);
-   public static readonly PresetPrimaryColor Green = new PresetPrimaryColor(ColorType.Green);
-   public static readonly PresetPrimaryColor Cyan = new PresetPrimaryColor(ColorType.Cyan);
-   public static readonly PresetPrimaryColor Blue = new PresetPrimaryColor(ColorType.Blue);
-   public static readonly PresetPrimaryColor GeekBlue = new PresetPrimaryColor(ColorType.GeekBlue);
-   public static readonly PresetPrimaryColor Purple = new PresetPrimaryColor(ColorType.Purple);
-   public static readonly PresetPrimaryColor Pink = new PresetPrimaryColor(ColorType.Pink);
-   public static readonly PresetPrimaryColor Magenta = new PresetPrimaryColor(ColorType.Magenta);
-   public static readonly PresetPrimaryColor Grey = new PresetPrimaryColor(ColorType.Grey);
+
+   public static readonly PresetPrimaryColor Red = new PresetPrimaryColor(PresetColorType.Red);
+   public static readonly PresetPrimaryColor Volcano = new PresetPrimaryColor(PresetColorType.Volcano);
+   public static readonly PresetPrimaryColor Orange = new PresetPrimaryColor(PresetColorType.Orange);
+   public static readonly PresetPrimaryColor Gold = new PresetPrimaryColor(PresetColorType.Gold);
+   public static readonly PresetPrimaryColor Yellow = new PresetPrimaryColor(PresetColorType.Yellow);
+   public static readonly PresetPrimaryColor Lime = new PresetPrimaryColor(PresetColorType.Lime);
+   public static readonly PresetPrimaryColor Green = new PresetPrimaryColor(PresetColorType.Green);
+   public static readonly PresetPrimaryColor Cyan = new PresetPrimaryColor(PresetColorType.Cyan);
+   public static readonly PresetPrimaryColor Blue = new PresetPrimaryColor(PresetColorType.Blue);
+   public static readonly PresetPrimaryColor GeekBlue = new PresetPrimaryColor(PresetColorType.GeekBlue);
+   public static readonly PresetPrimaryColor Purple = new PresetPrimaryColor(PresetColorType.Purple);
+   public static readonly PresetPrimaryColor Pink = new PresetPrimaryColor(PresetColorType.Pink);
+   public static readonly PresetPrimaryColor Magenta = new PresetPrimaryColor(PresetColorType.Magenta);
+   public static readonly PresetPrimaryColor Grey = new PresetPrimaryColor(PresetColorType.Grey);
    
-   public ColorType Type { get; }
+   public PresetColorType Type { get; }
 
-   public PresetPrimaryColor(ColorType colorType)
+   public PresetPrimaryColor(PresetColorType colorType)
    {
       Type = colorType;
    }
 
    public string Name()
    {
-      return Enum.GetName(typeof(ColorType), Type)!;
+      return Enum.GetName(typeof(PresetColorType), Type)!;
    }
 
    public string RgbHex()
    {
       return Type switch
       {
-         ColorType.Red => "#F5222D",
-         ColorType.Volcano => "#FA541C",
-         ColorType.Orange => "#FA8C16",
-         ColorType.Gold => "#FAAD14",
-         ColorType.Yellow => "#FADB14",
-         ColorType.Lime => "#A0D911",
-         ColorType.Green => "#52C41A",
-         ColorType.Cyan => "#13C2C2",
-         ColorType.Blue => "#1677FF",
-         ColorType.GeekBlue => "#2F54EB",
-         ColorType.Purple => "#722ED1",
-         ColorType.Magenta => "#EB2F96",
-         ColorType.Pink => "#EB2F96",
-         ColorType.Grey => "#666666",
+         PresetColorType.Red => "#F5222D",
+         PresetColorType.Volcano => "#FA541C",
+         PresetColorType.Orange => "#FA8C16",
+         PresetColorType.Gold => "#FAAD14",
+         PresetColorType.Yellow => "#FADB14",
+         PresetColorType.Lime => "#A0D911",
+         PresetColorType.Green => "#52C41A",
+         PresetColorType.Cyan => "#13C2C2",
+         PresetColorType.Blue => "#1677FF",
+         PresetColorType.GeekBlue => "#2F54EB",
+         PresetColorType.Purple => "#722ED1",
+         PresetColorType.Magenta => "#EB2F96",
+         PresetColorType.Pink => "#EB2F96",
+         PresetColorType.Grey => "#666666",
          _ => "#666666"
       };
    }
@@ -80,20 +82,20 @@ public class PresetPrimaryColor : IEquatable<PresetPrimaryColor>
    {
       return new List<PresetPrimaryColor>
       {
-         new PresetPrimaryColor(ColorType.Red),
-         new PresetPrimaryColor(ColorType.Volcano),
-         new PresetPrimaryColor(ColorType.Orange),
-         new PresetPrimaryColor(ColorType.Gold),
-         new PresetPrimaryColor(ColorType.Yellow),
-         new PresetPrimaryColor(ColorType.Lime),
-         new PresetPrimaryColor(ColorType.Green),
-         new PresetPrimaryColor(ColorType.Cyan),
-         new PresetPrimaryColor(ColorType.Blue),
-         new PresetPrimaryColor(ColorType.GeekBlue),
-         new PresetPrimaryColor(ColorType.Purple),
-         new PresetPrimaryColor(ColorType.Pink),
-         new PresetPrimaryColor(ColorType.Magenta),
-         new PresetPrimaryColor(ColorType.Grey),
+         new PresetPrimaryColor(PresetColorType.Red),
+         new PresetPrimaryColor(PresetColorType.Volcano),
+         new PresetPrimaryColor(PresetColorType.Orange),
+         new PresetPrimaryColor(PresetColorType.Gold),
+         new PresetPrimaryColor(PresetColorType.Yellow),
+         new PresetPrimaryColor(PresetColorType.Lime),
+         new PresetPrimaryColor(PresetColorType.Green),
+         new PresetPrimaryColor(PresetColorType.Cyan),
+         new PresetPrimaryColor(PresetColorType.Blue),
+         new PresetPrimaryColor(PresetColorType.GeekBlue),
+         new PresetPrimaryColor(PresetColorType.Purple),
+         new PresetPrimaryColor(PresetColorType.Pink),
+         new PresetPrimaryColor(PresetColorType.Magenta),
+         new PresetPrimaryColor(PresetColorType.Grey),
       };
    }
 

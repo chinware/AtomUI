@@ -36,7 +36,7 @@ public partial class Tag : IControlCustomStyle
    private bool _hasColorSet = false;
    private static Dictionary<TagPresetColor, TagCalcColor> _presetColorMap;
    private static Dictionary<TagStatus, TagStatusCalcColor> _statusColorMap;
-   private static Dictionary<TagPresetColor, PresetPrimaryColor.ColorType> _colorCodeMap;
+   private static Dictionary<TagPresetColor, PresetColorType> _colorCodeMap;
    private Panel? _layoutPanel;
    private TextBlock? _textBlock;
 
@@ -189,19 +189,19 @@ public partial class Tag : IControlCustomStyle
 
    private static void SetupColorCodeMap()
    {
-      _colorCodeMap.Add(TagPresetColor.Red, PresetPrimaryColor.ColorType.Red);
-      _colorCodeMap.Add(TagPresetColor.Volcano, PresetPrimaryColor.ColorType.Volcano);
-      _colorCodeMap.Add(TagPresetColor.Orange, PresetPrimaryColor.ColorType.Orange);
-      _colorCodeMap.Add(TagPresetColor.Gold, PresetPrimaryColor.ColorType.Gold);
-      _colorCodeMap.Add(TagPresetColor.Yellow, PresetPrimaryColor.ColorType.Yellow);
-      _colorCodeMap.Add(TagPresetColor.Lime, PresetPrimaryColor.ColorType.Lime);
-      _colorCodeMap.Add(TagPresetColor.Green, PresetPrimaryColor.ColorType.Green);
-      _colorCodeMap.Add(TagPresetColor.Cyan, PresetPrimaryColor.ColorType.Cyan);
-      _colorCodeMap.Add(TagPresetColor.Blue, PresetPrimaryColor.ColorType.Blue);
-      _colorCodeMap.Add(TagPresetColor.GeekBlue, PresetPrimaryColor.ColorType.GeekBlue);
-      _colorCodeMap.Add(TagPresetColor.Purple, PresetPrimaryColor.ColorType.Purple);
-      _colorCodeMap.Add(TagPresetColor.Pink, PresetPrimaryColor.ColorType.Pink);
-      _colorCodeMap.Add(TagPresetColor.Magenta, PresetPrimaryColor.ColorType.Magenta);
+      _colorCodeMap.Add(TagPresetColor.Red, PresetColorType.Red);
+      _colorCodeMap.Add(TagPresetColor.Volcano, PresetColorType.Volcano);
+      _colorCodeMap.Add(TagPresetColor.Orange, PresetColorType.Orange);
+      _colorCodeMap.Add(TagPresetColor.Gold, PresetColorType.Gold);
+      _colorCodeMap.Add(TagPresetColor.Yellow, PresetColorType.Yellow);
+      _colorCodeMap.Add(TagPresetColor.Lime, PresetColorType.Lime);
+      _colorCodeMap.Add(TagPresetColor.Green, PresetColorType.Green);
+      _colorCodeMap.Add(TagPresetColor.Cyan, PresetColorType.Cyan);
+      _colorCodeMap.Add(TagPresetColor.Blue, PresetColorType.Blue);
+      _colorCodeMap.Add(TagPresetColor.GeekBlue, PresetColorType.GeekBlue);
+      _colorCodeMap.Add(TagPresetColor.Purple, PresetColorType.Purple);
+      _colorCodeMap.Add(TagPresetColor.Pink, PresetColorType.Pink);
+      _colorCodeMap.Add(TagPresetColor.Magenta, PresetColorType.Magenta);
    }
 
    private Rect IconRect(Size controlSize)

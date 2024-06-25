@@ -25,8 +25,8 @@
             <Grid>
                 <Grid.Styles>
                     <Style Selector="atom|Button">
-                        <Setter Property="Margin" Value="5"/>
-                        <Setter Property="Width" Value="80"/>
+                        <Setter Property="Margin" Value="5" />
+                        <Setter Property="Width" Value="80" />
                     </Style>
                 </Grid.Styles>
                 <Grid.RowDefinitions>
@@ -56,7 +56,7 @@
                     <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
                     <atom:ToolTip.Placement>LeftEdgeAlignedBottom</atom:ToolTip.Placement>
                 </atom:Button>
-                
+
                 <atom:Button Grid.Row="0" Grid.Column="1" Text="TL">
                     <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
                     <atom:ToolTip.Placement>TopEdgeAlignedLeft</atom:ToolTip.Placement>
@@ -69,7 +69,7 @@
                     <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
                     <atom:ToolTip.Placement>TopEdgeAlignedRight</atom:ToolTip.Placement>
                 </atom:Button>
-                
+
                 <atom:Button Grid.Row="1" Grid.Column="4" Text="RT">
                     <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
                     <atom:ToolTip.Placement>RightEdgeAlignedTop</atom:ToolTip.Placement>
@@ -82,7 +82,7 @@
                     <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
                     <atom:ToolTip.Placement>RightEdgeAlignedBottom</atom:ToolTip.Placement>
                 </atom:Button>
-                
+
                 <atom:Button Grid.Row="4" Grid.Column="1" Text="BL">
                     <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
                     <atom:ToolTip.Placement>BottomEdgeAlignedLeft</atom:ToolTip.Placement>
@@ -97,6 +97,110 @@
                 </atom:Button>
 
             </Grid>
+        </showcase:ShowCaseItem>
+
+        <showcase:ShowCaseItem
+            Title="Arrow"
+            Description="Support show, hide or keep arrow in the center.">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:Segmented>
+                    <atom:SegmentedItem>Show</atom:SegmentedItem>
+                    <atom:SegmentedItem>Hide</atom:SegmentedItem>
+                    <atom:SegmentedItem>Center</atom:SegmentedItem>
+                </atom:Segmented>
+                <Grid>
+                    <Grid.Styles>
+                        <Style Selector="atom|Button">
+                            <Setter Property="Margin" Value="5" />
+                            <Setter Property="Width" Value="80" />
+                        </Style>
+                    </Grid.Styles>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+                    <atom:Button Grid.Row="1" Grid.Column="0" Text="LT">
+                        <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
+                        <atom:ToolTip.Placement>LeftEdgeAlignedTop</atom:ToolTip.Placement>
+                    </atom:Button>
+                    <atom:Button Grid.Row="2" Grid.Column="0" Text="Left">
+                        <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
+                        <atom:ToolTip.Placement>Left</atom:ToolTip.Placement>
+                    </atom:Button>
+                    <atom:Button Grid.Row="3" Grid.Column="0" Text="LB">
+                        <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
+                        <atom:ToolTip.Placement>LeftEdgeAlignedBottom</atom:ToolTip.Placement>
+                    </atom:Button>
+
+                    <atom:Button Grid.Row="0" Grid.Column="1" Text="TL">
+                        <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
+                        <atom:ToolTip.Placement>TopEdgeAlignedLeft</atom:ToolTip.Placement>
+                    </atom:Button>
+                    <atom:Button Grid.Row="0" Grid.Column="2" Text="Top">
+                        <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
+                        <atom:ToolTip.Placement>Top</atom:ToolTip.Placement>
+                    </atom:Button>
+                    <atom:Button Grid.Row="0" Grid.Column="3" Text="TR">
+                        <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
+                        <atom:ToolTip.Placement>TopEdgeAlignedRight</atom:ToolTip.Placement>
+                    </atom:Button>
+
+                    <atom:Button Grid.Row="1" Grid.Column="4" Text="RT">
+                        <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
+                        <atom:ToolTip.Placement>RightEdgeAlignedTop</atom:ToolTip.Placement>
+                    </atom:Button>
+                    <atom:Button Grid.Row="2" Grid.Column="4" Text="Right">
+                        <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
+                        <atom:ToolTip.Placement>Right</atom:ToolTip.Placement>
+                    </atom:Button>
+                    <atom:Button Grid.Row="3" Grid.Column="4" Text="RB">
+                        <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
+                        <atom:ToolTip.Placement>RightEdgeAlignedBottom</atom:ToolTip.Placement>
+                    </atom:Button>
+
+                    <atom:Button Grid.Row="4" Grid.Column="1" Text="BL">
+                        <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
+                        <atom:ToolTip.Placement>BottomEdgeAlignedLeft</atom:ToolTip.Placement>
+                    </atom:Button>
+                    <atom:Button Grid.Row="4" Grid.Column="2" Text="Bottom">
+                        <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
+                        <atom:ToolTip.Placement>Bottom</atom:ToolTip.Placement>
+                    </atom:Button>
+                    <atom:Button Grid.Row="4" Grid.Column="3" Text="BR">
+                        <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
+                        <atom:ToolTip.Placement>BottomEdgeAlignedRight</atom:ToolTip.Placement>
+                    </atom:Button>
+
+                </Grid>
+            </StackPanel>
+        </showcase:ShowCaseItem>
+
+
+        <showcase:ShowCaseItem
+            Title="Colorful Tooltip"
+            Description="We preset a series of colorful Tooltip styles for use in different situations.">
+            <StackPanel Orientation="Vertical">
+                <TextBlock FontWeight="Bold" FontSize="14" Margin="0, 0, 0, 10">Presets</TextBlock>
+                <WrapPanel HorizontalAlignment="Left">
+      
+                </WrapPanel>
+
+                <TextBlock FontWeight="Bold" FontSize="14" Margin="0, 20, 0, 10">Custom</TextBlock>
+                <WrapPanel HorizontalAlignment="Left">
+                
+                </WrapPanel>
+            </StackPanel>
         </showcase:ShowCaseItem>
     </showcase:ShowCasePanel>
 </UserControl>

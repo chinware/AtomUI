@@ -171,7 +171,7 @@ public class SeedDesignToken : AbstractDesignToken
    /// <summary>
    /// 现在这里的实现是写死的主色，后面是不是可以读取配置
    /// </summary>
-   private IDictionary<PresetPrimaryColor.ColorType, PresetPrimaryColor> _defaultPresetColors;
+   private IDictionary<PresetColorType, PresetPrimaryColor> _defaultPresetColors;
 
    public SeedDesignToken()
    {
@@ -204,7 +204,7 @@ public class SeedDesignToken : AbstractDesignToken
          "Courier",
          "monospace"
       };
-      _defaultPresetColors = new Dictionary<PresetPrimaryColor.ColorType, PresetPrimaryColor>();
+      _defaultPresetColors = new Dictionary<PresetColorType, PresetPrimaryColor>();
       IList<PresetPrimaryColor> allColors = PresetPrimaryColor.AllColorTypes();
       foreach (PresetPrimaryColor color in allColors) {
          _defaultPresetColors[color.Type] = color;
@@ -214,7 +214,7 @@ public class SeedDesignToken : AbstractDesignToken
       ColorTransparent = Colors.Transparent;
    }
 
-   public PresetPrimaryColor GetPresetPrimaryColor(PresetPrimaryColor.ColorType colorType)
+   public PresetPrimaryColor GetPresetPrimaryColor(PresetColorType colorType)
    {
       return _defaultPresetColors[colorType];
    }

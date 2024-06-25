@@ -92,7 +92,6 @@ public partial class ToolTip : IControlCustomStyle
             targetHeight += arrowSize;
          }
       }
-
       return new Size(targetWidth, targetHeight);
    }
 
@@ -101,7 +100,6 @@ public partial class ToolTip : IControlCustomStyle
       var visualChildren = VisualChildren;
       var visualCount = visualChildren.Count;
       var contentRect = GetContentRect(finalSize);
-
       for (int i = 0; i < visualCount; ++i) {
          var child = visualChildren[i];
          if (child is Layoutable layoutable) {
@@ -125,13 +123,15 @@ public partial class ToolTip : IControlCustomStyle
          if (direction == Direction.Left || direction == Direction.Right) {
             targetWidth -= arrowSize;
          } else {
-            targetHeight -= arrowSize;
+            targetHeight -= arrowSize + 0.5;
          }
 
          if (direction == Direction.Right) {
             offsetX = arrowSize;
          } else if (direction == Direction.Bottom) {
             offsetY = arrowSize;
+         } else if (direction == Direction.Top) {
+            offsetY = 0.5;
          }
       }
 
@@ -149,23 +149,71 @@ public partial class ToolTip : IControlCustomStyle
       if (IsShowArrow(adornedControl)) {
          var minValue = Math.Min(size.Width, size.Height);
          var maxValue = Math.Max(size.Width, size.Height);
-         var direction = GetDirection(GetPlacement(adornedControl));
-         if (direction == Direction.Left) {
+         var placement = GetPlacement(adornedControl);
+         if (placement == PlacementType.Left ||
+             placement == PlacementType.LeftEdgeAlignedTop ||
+             placement == PlacementType.LeftEdgeAlignedBottom) {
             offsetX = finalSize.Width - minValue;
-            offsetY = (finalSize.Height - maxValue) / 2;
+            if (placement == PlacementType.Left) {
+               offsetY = (finalSize.Height - maxValue) / 2;
+            } else if (placement == PlacementType.LeftEdgeAlignedTop) {
+               if (maxValue * 2 > finalSize.Height / 2) {
+                  offsetY = minValue;
+               } else {
+                  offsetY = maxValue;
+               }
+            } else {
+               if (maxValue * 2 > finalSize.Height / 2) {
+                  offsetY = finalSize.Height - minValue - maxValue;
+               } else {
+                  offsetY = finalSize.Height - maxValue * 2;
+               }
+            }
+          
             targetWidth = minValue;
             targetHeight = maxValue;
-         } else if (direction == Direction.Top) {
-            offsetX = (finalSize.Width - maxValue) / 2;
+         } else if (placement == PlacementType.Top ||
+                    placement == PlacementType.TopEdgeAlignedLeft ||
+                    placement == PlacementType.TopEdgeAlignedRight) {
             offsetY = finalSize.Height - minValue;
             targetWidth = maxValue;
             targetHeight = minValue;
-         } else if (direction == Direction.Right) {
-            offsetY = (finalSize.Height - maxValue) / 2;
+            if (placement == PlacementType.TopEdgeAlignedLeft) {
+               offsetX = maxValue;
+            } else if (placement == PlacementType.Top) {
+               offsetX = (finalSize.Width - maxValue) / 2;
+            } else {
+               offsetX = finalSize.Width - maxValue * 2;
+            }
+         } else if (placement == PlacementType.Right ||
+                    placement == PlacementType.RightEdgeAlignedTop ||
+                    placement == PlacementType.RightEdgeAlignedBottom) {
             targetWidth = minValue;
             targetHeight = maxValue;
+            if (placement == PlacementType.Right) {
+               offsetY = (finalSize.Height - maxValue) / 2;
+            } else if (placement == PlacementType.RightEdgeAlignedTop) {
+               if (maxValue * 2 > finalSize.Height / 2) {
+                  offsetY = minValue;
+               } else {
+                  offsetY = maxValue;
+               }
+            } else {
+               if (maxValue * 2 > finalSize.Height / 2) {
+                  offsetY = finalSize.Height - minValue - maxValue;
+               } else {
+                  offsetY = finalSize.Height - maxValue * 2;
+               }
+           
+            }
          } else {
-            offsetX = (finalSize.Width - maxValue) / 2;
+            if (placement == PlacementType.BottomEdgeAlignedLeft) {
+               offsetX = maxValue;
+            } else if (placement == PlacementType.Bottom) {
+               offsetX = (finalSize.Width - maxValue) / 2;
+            } else {
+               offsetX = finalSize.Width - maxValue * 2;
+            }
             targetWidth = maxValue;
             targetHeight = minValue;
          }

@@ -42,7 +42,7 @@ public partial class Tag : Label, ITokenIdProvider
    {
       _presetColorMap = new Dictionary<TagPresetColor, TagCalcColor>();
       _statusColorMap = new Dictionary<TagStatus, TagStatusCalcColor>();
-      _colorCodeMap = new Dictionary<TagPresetColor, PresetPrimaryColor.ColorType>();
+      _colorCodeMap = new Dictionary<TagPresetColor, PresetColorType>();
       SetupColorCodeMap();
       AffectsMeasure<Tag>(BorderedProperty,
          IconProperty,
