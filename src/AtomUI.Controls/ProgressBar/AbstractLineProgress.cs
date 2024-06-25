@@ -49,7 +49,7 @@ public abstract partial class AbstractLineProgress : AbstractProgressBar
    // 根据当前的状态进行计算
    protected virtual Size CalculateExtraInfoSize(double fontSize)
    {
-      if (Status == ProgressStatus.Exception || NumberUtils.FuzzyEqual(Value, Maximum)) {
+      if (Status == ProgressStatus.Exception || MathUtils.AreClose(Value, Maximum)) {
          // 只要图标
          if (EffectiveSizeType == SizeType.Large || EffectiveSizeType == SizeType.Middle) {
             return new Size(_lineInfoIconSize, _lineInfoIconSize);
@@ -188,7 +188,7 @@ public abstract partial class AbstractLineProgress : AbstractProgressBar
    {
       base.NotifyHandleExtraInfoVisibility();
       var currentStatus = false;
-      if (NumberUtils.FuzzyEqual(Value, Maximum)) {
+      if (MathUtils.AreClose(Value, Maximum)) {
          currentStatus = true;
         
       } else {

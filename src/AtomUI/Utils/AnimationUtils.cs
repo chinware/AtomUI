@@ -73,10 +73,10 @@ public static class AnimationUtils
       }
 
       // 防止颜色分量超出范围
-      r = NumberUtils.Clamp(r, 0.0f, 1.0f);
-      g = NumberUtils.Clamp(g, 0.0f, 1.0f);
-      b = NumberUtils.Clamp(b, 0.0f, 1.0f);
-      a = NumberUtils.Clamp(a, 0.0f, 1.0f);
+      r = Math.Clamp(r, 0.0f, 1.0f);
+      g = Math.Clamp(g, 0.0f, 1.0f);
+      b = Math.Clamp(b, 0.0f, 1.0f);
+      a = Math.Clamp(a, 0.0f, 1.0f);
       
       return ColorUtils.FromRgbF(a, r, g, b);
    }

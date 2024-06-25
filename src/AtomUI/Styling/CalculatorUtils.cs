@@ -50,8 +50,8 @@ internal static class CalculatorUtils
 
    public static SizeMapDesignToken GenerateSizeMapToken(SeedDesignToken seedToken)
    {
-      int sizeUnit = seedToken.SizeUnit;
-      int sizeStep = seedToken.SizeStep;
+      double sizeUnit = seedToken.SizeUnit;
+      double sizeStep = seedToken.SizeStep;
 
       var sizeMapToken = new SizeMapDesignToken()
       {
@@ -98,9 +98,9 @@ internal static class CalculatorUtils
          LineHeightLG = lineHeightLG,
          LineHeightSM = lineHeightSM,
          
-         FontHeight = (int)Math.Round(lineHeight * fontSizeMD),
-         FontHeightLG = (int)Math.Round(lineHeightLG * fontSizeLG),
-         FontHeightSM = (int)Math.Round(lineHeightSM * fontSizeSM),
+         FontHeight = Math.Round(lineHeight * fontSizeMD),
+         FontHeightLG = Math.Round(lineHeightLG * fontSizeLG),
+         FontHeightSM = Math.Round(lineHeightSM * fontSizeSM),
          
          LineHeightHeading1 = lineHeights[6],
          LineHeightHeading2 = lineHeights[5],
@@ -116,9 +116,9 @@ internal static class CalculatorUtils
       double controlHeight = seedToken.ControlHeight;
       var token = new HeightMapDesignToken
       {
-         ControlHeightSM = (int)(controlHeight * 0.75),
-         ControlHeightXS = (int)(controlHeight * 0.5),
-         ControlHeightLG = (int)(controlHeight * 1.25),
+         ControlHeightSM = controlHeight * 0.75,
+         ControlHeightXS = controlHeight * 0.5,
+         ControlHeightLG = controlHeight * 1.25,
       };
       return token;
    }

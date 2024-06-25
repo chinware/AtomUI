@@ -103,19 +103,19 @@ public class SeedDesignToken : AbstractDesignToken
    /// 尺寸变化单位
    /// 用于控制组件尺寸的变化单位，在 Ant Design 中我们的基础单位为 4 ，便于更加细致地控制尺寸梯度
    /// </summary>
-   public int SizeUnit { get; set; } = 4;
+   public double SizeUnit { get; set; } = 4;
 
    /// <summary>
    /// 尺寸步长
    /// 用于控制组件尺寸的基础步长，尺寸步长结合尺寸变化单位，就可以派生各种尺寸梯度。通过调整步长即可得到不同的布局模式，例如 V5 紧凑模式下的尺寸步长为 2
    /// </summary>
-   public int SizeStep { get; set; } = 4;
+   public double SizeStep { get; set; } = 4;
 
    /// <summary>
    /// 基础高度
    /// Ant Design 中按钮和输入框等基础控件的高度
    /// </summary>
-   public int SizePopupArrow { get; set; } = 16;
+   public double SizePopupArrow { get; set; } = 16;
 
    /// <summary>
    /// 基础高度

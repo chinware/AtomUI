@@ -234,15 +234,7 @@ internal class SwitchKnob : Control, IControlCustomStyle, ITokenIdProvider
       base.OnPropertyChanged(e);
       _customStyle.HandlePropertyChangedForStyle(e);
    }
-
-   void IControlCustomStyle.CollectStyleState()
-   {
-   }
-
-   void IControlCustomStyle.ApplyVariableStyleConfig()
-   {
-   }
-
+   
    void IControlCustomStyle.ApplyFixedStyleConfig()
    {
       _tokenResourceBinder.AddBinding(MotionDurationTokenProperty, "MotionDurationMid");
@@ -276,7 +268,7 @@ internal class SwitchKnob : Control, IControlCustomStyle, ITokenIdProvider
    public sealed override void Render(DrawingContext context)
    {
       var targetRect = new Rect(new Point(0, 0), KnobSize);
-      if (NumberUtils.FuzzyEqual(KnobSize.Width, KnobSize.Height)) {
+      if (MathUtils.AreClose(KnobSize.Width, KnobSize.Height)) {
          context.DrawEllipse(KnobBackgroundColor, null, targetRect);
       } else {
          context.DrawPilledRect(KnobBackgroundColor, null, targetRect);
@@ -287,7 +279,7 @@ internal class SwitchKnob : Control, IControlCustomStyle, ITokenIdProvider
          var loadingRectSize = targetRect.Size.Deflate(new Thickness(delta));
          var loadingRect = new Rect(new Point(-loadingRectSize.Width / 2, -loadingRectSize.Height / 2), loadingRectSize);
          var pen = new Pen(LoadIndicatorBrush, 1, null, PenLineCap.Round);
-         var translateToCenterMatrix = Matrix.CreateTranslation(targetRect.Center.X,targetRect.Center.Y);
+         var translateToCenterMatrix = Matrix.CreateTranslation(targetRect.Center.X, targetRect.Center.Y);
          var rotationMatrix = Matrix.CreateRotation(Rotation * Math.PI / 180);
          using var translateToCenterState = context.PushTransform(translateToCenterMatrix);
          using var rotationMatrixState = context.PushTransform(rotationMatrix);

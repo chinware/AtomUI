@@ -30,7 +30,7 @@ public class CollapseMotion : AbstractMotion
    public void ConfigureOpacity(double originOpacity, TimeSpan duration, Easing? easing = null)
    {
       easing ??= new CubicEaseInOut();
-      originOpacity = NumberUtils.Clamp(originOpacity, 0, 1);
+      originOpacity = Math.Clamp(originOpacity, 0, 1);
       var config = new MotionConfig(MotionOpacityProperty)
       {
          TransitionKind = TransitionKind.Double,

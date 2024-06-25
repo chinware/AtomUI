@@ -130,7 +130,7 @@ public partial class AbstractProgressBar : IControlCustomStyle
             _tokenResourceBinder.AddBinding(GrooveBrushProperty, ProgressBarResourceKey.RemainingColor);
          }
        
-         if (Status == ProgressStatus.Success || NumberUtils.FuzzyEqual(Value, Maximum)) {
+         if (Status == ProgressStatus.Success || MathUtils.AreClose(Value, Maximum)) {
             _tokenResourceBinder.AddBinding(IndicatorBarBrushProperty, GlobalResourceKey.ColorSuccess);
          } else if (Status == ProgressStatus.Exception) {
             _tokenResourceBinder.AddBinding(IndicatorBarBrushProperty, GlobalResourceKey.ColorError);

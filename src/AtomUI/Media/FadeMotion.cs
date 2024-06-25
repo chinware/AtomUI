@@ -14,7 +14,7 @@ public class FadeInMotion : AbstractMotion
    public void ConfigureOpacity(double originOpacity, TimeSpan duration, Easing? easing = null)
    {
       easing ??= new LinearEasing();
-      originOpacity = NumberUtils.Clamp(originOpacity, 0, 1);
+      originOpacity = Math.Clamp(originOpacity, 0d, 1d);
       var config = new MotionConfig(MotionOpacityProperty)
       {
          TransitionKind = TransitionKind.Double,
@@ -38,7 +38,7 @@ public class FadeOutMotion : AbstractMotion
    public void ConfigureOpacity(double originOpacity, TimeSpan duration, Easing? easing = null)
    {
       easing ??= new LinearEasing();
-      originOpacity = NumberUtils.Clamp(originOpacity, 0, 1);
+      originOpacity = Math.Clamp(originOpacity, 0d, 1d);
       var config = new MotionConfig(MotionOpacityProperty)
       {
          TransitionKind = TransitionKind.Double,

@@ -215,9 +215,9 @@ public class StepsProgressBar : AbstractLineProgress
       var largeThresholdValue = _sizeTypeThresholdValue[SizeType.Large];
       var middleThresholdValue = _sizeTypeThresholdValue[SizeType.Middle];
       var sizeType = SizeType.Middle;
-      if (NumberUtils.FuzzyGreaterOrEqual(size, largeThresholdValue.NormalStateValue)) {
+      if (MathUtils.GreaterThanOrClose(size, largeThresholdValue.NormalStateValue)) {
          sizeType = SizeType.Large;
-      } else if (NumberUtils.FuzzyGreaterOrEqual(size, middleThresholdValue.NormalStateValue)) {
+      } else if (MathUtils.GreaterThanOrClose(size, middleThresholdValue.NormalStateValue)) {
          sizeType = SizeType.Middle;
       } else {
          sizeType = SizeType.Small;

@@ -173,6 +173,8 @@
         public const string TooltipMaxWidth = "TooltipMaxWidth";
         public const string TooltipColor = "TooltipColor";
         public const string TooltipBackground = "TooltipBackground";
+        public const string BorderRadiusOuter = "BorderRadiusOuter";
+        public const string ToolTipPadding = "ToolTipPadding";
     }
 
     public static class CaptionButtonResourceKey

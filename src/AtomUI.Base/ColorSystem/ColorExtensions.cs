@@ -39,21 +39,21 @@ public static class ColorExtensions
    
    public static Color Desaturate(this Color color, int amount = 10)
    {
-      amount = NumberUtils.Clamp(amount, 0, 100);
+      amount = Math.Clamp(amount, 0, 100);
       HslColor hslColor = color.ToHsl();
       double s = hslColor.S;
       s -= amount / 100d;
-      s = NumberUtils.Clamp(s, 0d, 1d);
+      s = Math.Clamp(s, 0d, 1d);
       return HslColor.FromHsl(hslColor.H, s, hslColor.L).ToRgb();
    }
    
    public static Color Saturate(this Color color, int amount = 10)
    {
-      amount = NumberUtils.Clamp(amount, 0, 100);
+      amount = Math.Clamp(amount, 0, 100);
       HslColor hslColor = color.ToHsl();
       double s = hslColor.S;
       s += amount / 100d;
-      s = NumberUtils.Clamp(s, 0d, 1d);
+      s = Math.Clamp(s, 0d, 1d);
       return HslColor.FromHsl(hslColor.H, s, hslColor.L).ToRgb();
    }
    
@@ -64,17 +64,17 @@ public static class ColorExtensions
    
    public static Color Lighten(this Color color, int amount = 10)
    {
-      amount = NumberUtils.Clamp(amount, 0, 100);
+      amount = Math.Clamp(amount, 0, 100);
       HslColor hslColor = color.ToHsl();
       double l = hslColor.L;
       l += amount / 100d;
-      l = NumberUtils.Clamp(l, 0d, 1d);
+      l = Math.Clamp(l, 0d, 1d);
       return HslColor.FromHsl(hslColor.H, hslColor.S, l).ToRgb();
    }
    
    public static Color Brighten(this Color color, int amount = 10)
    {
-      amount = NumberUtils.Clamp(amount, 0, 100);
+      amount = Math.Clamp(amount, 0, 100);
       int r = color.R;
       int g = color.G;
       int b = color.B;
@@ -87,11 +87,11 @@ public static class ColorExtensions
    
    public static Color Darken(this Color color, int amount = 10)
    {
-      amount = NumberUtils.Clamp(amount, 0, 100);
+      amount = Math.Clamp(amount, 0, 100);
       HslColor hslColor = color.ToHsl();
       double l = hslColor.L;
       l -= amount / 100d;
-      l = NumberUtils.Clamp(l, 0d, 1d);
+      l = Math.Clamp(l, 0d, 1d);
       return HslColor.FromHsl(hslColor.H, hslColor.S, l).ToRgb();
    }
    
@@ -127,7 +127,7 @@ public static class ColorExtensions
       double r = 0;
       double g = 0;
       double b = 0;
-      if (NumberUtils.FuzzyLessOrEqual(rsRGB, 0.03928)) {
+      if (MathUtils.LessThanOrClose(rsRGB, 0.03928)) {
          r = rsRGB / 12.92;
       } else {
          // eslint-disable-next-line prefer-exponentiation-operator

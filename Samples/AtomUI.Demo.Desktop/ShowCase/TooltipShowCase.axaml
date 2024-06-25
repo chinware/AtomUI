@@ -12,8 +12,9 @@
             Title="Basic"
             Description="The simplest usage.">
             <StackPanel Orientation="Vertical" Spacing="10">
-                <TextBlock atom:ToolTip.Tip="Tooltip will show on mouse enter.">
+                <TextBlock  atom:ToolTip.Placement="Top" HorizontalAlignment="Left">
                     Tooltip will show on mouse enter.
+                    <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
                 </TextBlock>
             </StackPanel>
         </showcase:ShowCaseItem>

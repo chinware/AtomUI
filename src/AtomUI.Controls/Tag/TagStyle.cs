@@ -28,6 +28,7 @@ internal struct TagStatusCalcColor
 
 public partial class Tag : IControlCustomStyle
 {
+   private bool _initialized = false;
    private IControlCustomStyle _customStyle;
    private TokenResourceBinder _tokenResourceBinder;
    private ControlStyleState _styleState;

@@ -64,7 +64,7 @@ public static class ObjectExtension
          return default;
       }
 
-      var stringBuilder = new StringBuilder(30, 3);
+      var stringBuilder = new StringBuilder(30);
       stringBuilder.Append(name);
       stringBuilder.Append("'s type is ");
       stringBuilder.Append(source.GetType().Name);
@@ -93,7 +93,7 @@ public static class ObjectExtension
          return default;
       }
 
-      var stringHandler = new StringBuilder(30, 3);
+      var stringHandler = new StringBuilder(30);
       stringHandler.Append(name);
       stringHandler.Append("'s type is ");
       stringHandler.Append(declareType.Name);
@@ -179,7 +179,7 @@ public static class ObjectExtension
          return default;
       }
 
-      var stringBuilder = new StringBuilder(30, 3);
+      var stringBuilder = new StringBuilder(30);
       stringBuilder.Append(name);
       stringBuilder.Append("'s type is ");
       stringBuilder.Append(source.GetType().Name);
@@ -205,7 +205,7 @@ public static class ObjectExtension
          return default;
       }
 
-      var stringBuilder = new StringBuilder(30, 3);
+      var stringBuilder = new StringBuilder(30);
       stringBuilder.Append(name);
       stringBuilder.Append("'s type is ");
       stringBuilder.Append(declareType);

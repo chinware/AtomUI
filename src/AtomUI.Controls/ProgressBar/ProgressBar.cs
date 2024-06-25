@@ -118,7 +118,7 @@ public partial class ProgressBar : AbstractLineProgress
       
       // 绘制成功阈值
       if (!double.IsNaN(SuccessThreshold)) {
-         var successThreshold = NumberUtils.Clamp(SuccessThreshold, Minimum, Maximum);
+         var successThreshold = Math.Clamp(SuccessThreshold, Minimum, Maximum);
          var successThresholdDeflateValue = range * (1 - successThreshold / (Maximum - Minimum));
          DrawIndicatorBar(context, successThresholdDeflateValue, SuccessThresholdBrush!);
       }
@@ -193,20 +193,20 @@ public partial class ProgressBar : AbstractLineProgress
       var sizeType = SizeType.Middle;
       if (PercentPosition.IsInner) {
          if (size < smallThresholdValue.InnerStateValue ||
-             NumberUtils.FuzzyEqual(size, smallThresholdValue.InnerStateValue)) {
+             MathUtils.AreClose(size, smallThresholdValue.InnerStateValue)) {
             sizeType = SizeType.Small;
          } else if (size > smallThresholdValue.InnerStateValue && (size < middleThresholdValue.InnerStateValue ||
-                                                                   NumberUtils.FuzzyEqual(size, middleThresholdValue.InnerStateValue))) {
+                                                                   MathUtils.AreClose(size, middleThresholdValue.InnerStateValue))) {
             sizeType = SizeType.Middle;
          } else {
             sizeType = SizeType.Large;
          }
       } else {
          if (size < smallThresholdValue.NormalStateValue ||
-             NumberUtils.FuzzyEqual(size, smallThresholdValue.NormalStateValue)) {
+             MathUtils.AreClose(size, smallThresholdValue.NormalStateValue)) {
             sizeType = SizeType.Small;
          } else if (size > smallThresholdValue.NormalStateValue && (size < middleThresholdValue.NormalStateValue ||
-                                                                    NumberUtils.FuzzyEqual(size, middleThresholdValue.NormalStateValue))) {
+                                                                    MathUtils.AreClose(size, middleThresholdValue.NormalStateValue))) {
             sizeType = SizeType.Middle;
          } else {
             sizeType = SizeType.Large;
@@ -382,7 +382,7 @@ public partial class ProgressBar : AbstractLineProgress
    protected override Size CalculateExtraInfoSize(double fontSize)
    {
       if ((Status == ProgressStatus.Exception ||
-           NumberUtils.FuzzyEqual(Value, Maximum)) &&
+           MathUtils.AreClose(Value, Maximum)) &&
           !PercentPosition.IsInner) {
          // 只要图标
          if (EffectiveSizeType == SizeType.Large || EffectiveSizeType == SizeType.Middle) {
@@ -517,7 +517,7 @@ public partial class ProgressBar : AbstractLineProgress
          var colorTextLabel = (_colorTextLabel as SolidColorBrush)!.Color;
          var colorTextLightSolid = (_colorTextLightSolid as SolidColorBrush)!.Color;
          var colors = new List<Color> { colorTextLabel, colorTextLightSolid };
-         if (NumberUtils.FuzzyEqual(Value, 0)) {
+         if (MathUtils.AreClose(Value, 0)) {
             if (GrooveBrush is ISolidColorBrush grooveBrush) {
                var mostReadable = ColorUtils.MostReadable(grooveBrush.Color, colors);
                if (mostReadable.HasValue) {

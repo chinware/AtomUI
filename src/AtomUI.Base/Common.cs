@@ -20,25 +20,6 @@ public enum LineStyle
    Wavy,
 }
 
-public enum Placement
-{
-   LeftTop,
-   Left,
-   LeftBottom,
-
-   TopLeft,
-   Top,
-   TopRight,
-
-   RightTop,
-   Right,
-   RightBottom,
-
-   BottomLeft,
-   Bottom,
-   BottomRight,
-}
-
 public enum Direction
 {
    Left,

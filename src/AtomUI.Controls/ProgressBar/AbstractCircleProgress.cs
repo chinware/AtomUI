@@ -53,9 +53,9 @@ public abstract partial class AbstractCircleProgress : AbstractProgressBar
       var sizeType = SizeType.Large;
       var largeThresholdValue = _sizeTypeThresholdValue[SizeType.Large];
       var middleThresholdValue = _sizeTypeThresholdValue[SizeType.Middle];
-      if (NumberUtils.FuzzyGreaterOrEqual(size, largeThresholdValue)) {
+      if (MathUtils.GreaterThanOrClose(size, largeThresholdValue)) {
          sizeType = SizeType.Large;
-      } else if (NumberUtils.FuzzyGreaterOrEqual(size, middleThresholdValue)) {
+      } else if (MathUtils.GreaterThanOrClose(size, middleThresholdValue)) {
          sizeType = SizeType.Middle;
       } else {
          sizeType = SizeType.Small;

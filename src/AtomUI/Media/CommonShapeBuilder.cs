@@ -33,7 +33,7 @@ public static class CommonShapeBuilder
    /// <returns></returns>
    public static Geometry BuildArc(Rect rect, double startAngle, double sweepAngle)
    {
-      if (NumberUtils.FuzzyEqual(sweepAngle, 0)) {
+      if (MathUtils.IsZero(sweepAngle)) {
          return new StreamGeometry();
       }
       
@@ -46,7 +46,7 @@ public static class CommonShapeBuilder
       var normStart = RadToNormRad(startAngle);
       var normEnd = RadToNormRad(sweepAngle);
 
-      if (NumberUtils.FuzzyEqual(normStart, normEnd) && !NumberUtils.FuzzyEqual(startAngle, sweepAngle)) {
+      if (MathUtils.AreClose(normStart, normEnd) && !MathUtils.AreClose(startAngle, sweepAngle)) {
          // Complete ring.
          return new EllipseGeometry(rect);
       }
@@ -84,4 +84,30 @@ public static class CommonShapeBuilder
    private static double RadToNormRad(double inAngle) => ((inAngle % (Math.PI * 2)) + (Math.PI * 2)) % (Math.PI * 2);
    private static Point GetRingPoint(double radiusX, double radiusY, double centerX, double centerY, double angle) =>
       new Point((radiusX * Math.Cos(angle)) + centerX, (radiusY * Math.Sin(angle)) + centerY);
+
+   public static Geometry BuildArrow(double size, double radius)
+   {
+      var geometryStream = new StreamGeometry();
+      using var context = geometryStream.Open();
+      
+      // 假设 p1 是原始圆角顶点，p2 和 p3 是原始底边的顶点
+      var p1 = new Point(size / 2.0, size / 2.0 + 1);
+      var p2 = new Point(0, size);
+      var p3 = new Point(size, size);
+      // 假设 r 是圆角的半径
+      var controlPoint = new Point(p1.X, p1.Y - radius);
+      // 移动到调整后的底边左顶点
+      context.BeginFigure(p2, true);
+      // 绘制左边的直线到圆角的起始点
+      context.LineTo(new Point(p1.X - radius, p1.Y));
+      // 绘制圆角
+      context.QuadraticBezierTo(controlPoint, new Point(p1.X + radius, p1.Y));
+      // 绘制右边的直线到调整后的底边右顶点
+      context.LineTo(p3);
+      // 绘制底边，闭合路径
+      context.LineTo(p2);
+      context.EndFigure(true);
+      
+      return geometryStream;
+   }
 }

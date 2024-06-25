@@ -285,7 +285,7 @@ public abstract partial class AbstractProgressBar : RangeBaseControl, ISizeTypeA
             _exceptionCompletedIcon.IsVisible = true;
             _successCompletedIcon.IsVisible = false;
          } else {
-            if (NumberUtils.FuzzyEqual(100, Percentage)) {
+            if (MathUtils.AreClose(100, Percentage)) {
                _percentageLabel.IsVisible = false;
                _successCompletedIcon.IsVisible = true;
             } else {

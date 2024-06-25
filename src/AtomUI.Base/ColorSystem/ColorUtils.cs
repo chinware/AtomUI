@@ -232,16 +232,16 @@ public static class ColorUtils
       var readabilityLevel = Readability(color1, color2);
       if (wcag2.Level == WCAG2Level.AA) {
          if (wcag2.Size == WCAG2Size.Large) {
-            return NumberUtils.FuzzyGreaterOrEqual(readabilityLevel, 3);
+            return MathUtils.GreaterThanOrClose(readabilityLevel, 3);
          }
 
-         return NumberUtils.FuzzyGreaterOrEqual(readabilityLevel, 4.5);
+         return MathUtils.GreaterThanOrClose(readabilityLevel, 4.5);
       } else if (wcag2.Level == WCAG2Level.AAA) {
          if (wcag2.Size == WCAG2Size.Large) {
-            return NumberUtils.FuzzyGreaterOrEqual(readabilityLevel, 4.5);
+            return MathUtils.GreaterThanOrClose(readabilityLevel, 4.5);
          }
 
-         return NumberUtils.FuzzyGreaterOrEqual(readabilityLevel, 7);
+         return MathUtils.GreaterThanOrClose(readabilityLevel, 7);
       }
 
       return false;

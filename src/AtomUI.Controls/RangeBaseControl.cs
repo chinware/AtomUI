@@ -120,7 +120,7 @@ public abstract class RangeBaseControl : StyledControl
    private static double CoerceValue(AvaloniaObject sender, double value)
    {
       return ValidateDouble(value)
-         ? NumberUtils.Clamp(value, sender.GetValue(MinimumProperty), sender.GetValue(MaximumProperty))
+         ? Math.Clamp(value, sender.GetValue(MinimumProperty), sender.GetValue(MaximumProperty))
          : sender.GetValue(ValueProperty);
    }
 

@@ -171,12 +171,12 @@ public partial class Segmented : IControlCustomStyle
                }
 
                if (!IsValidIndex(newIndex) || !IsItemVisible(newIndex)) {
-                  newIndex = NumberUtils.Clamp(index, _firstVisible, _lastVisible);
+                  newIndex = Math.Clamp(index, _firstVisible, _lastVisible);
                }
             } else if (SelectionBehaviorOnRemove == SegmentedSelectionBehavior.SelectRightItem) {
-               newIndex = NumberUtils.Clamp(index, _firstVisible, _lastVisible);
+               newIndex = Math.Clamp(index, _firstVisible, _lastVisible);
             } else if (SelectionBehaviorOnRemove == SegmentedSelectionBehavior.SelectLeftItem) {
-               newIndex = NumberUtils.Clamp(index - 1, _firstVisible, _lastVisible);
+               newIndex = Math.Clamp(index - 1, _firstVisible, _lastVisible);
             }
 
             if (IsItemVisible(newIndex)) {

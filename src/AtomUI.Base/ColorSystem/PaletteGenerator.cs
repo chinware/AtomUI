@@ -120,7 +120,7 @@ public static class PaletteGenerator
 
       if (hue < 0) {
          hue += 360d;
-      } else if (NumberUtils.FuzzyGreaterOrEqual(hue, 360d)) {
+      } else if (MathUtils.GreaterThanOrClose(hue, 360d)) {
          hue -= 360d;
       }
       return hue;
@@ -129,7 +129,7 @@ public static class PaletteGenerator
    private static double GetHsvSaturation(HsvColor hsvColor, int index, bool isLight)
    {
       // grey color don't change saturation
-      if (NumberUtils.FuzzyEqual(hsvColor.H, 0d) && NumberUtils.FuzzyEqual(hsvColor.S, 0d)) {
+      if (MathUtils.IsZero(hsvColor.H) && MathUtils.IsZero(hsvColor.S)) {
          return hsvColor.S;
       }
 
@@ -150,7 +150,7 @@ public static class PaletteGenerator
       }
 
       saturation = Math.Max(saturation, 0.06d);
-      return NumberUtils.RoundToFixedPoint(saturation, 2);
+      return MathUtils.RoundToFixedPoint(saturation, 2);
    }
 
    private static double GetHsvValue(HsvColor hsvColor, int index, bool isLight)
@@ -162,7 +162,7 @@ public static class PaletteGenerator
          value = hsvColor.V - BRIGHTNESS_STEP2 * index;
       }
       value = Math.Min(value, 1d);
-      return NumberUtils.RoundToFixedPoint(value, 2);;
+      return MathUtils.RoundToFixedPoint(value, 2);;
    }
    
    internal struct DarkColorMapItem

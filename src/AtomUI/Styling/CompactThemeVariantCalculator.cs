@@ -31,9 +31,9 @@ public class CompactThemeVariantCalculator : AbstractThemeVariantCalculator
 
    private SizeMapDesignToken GenerateCompactSizeMapToken(SeedDesignToken seedToken)
    {
-      int sizeUnit = seedToken.SizeUnit;
-      int sizeStep = seedToken.SizeStep;
-      int compactSizeStep = sizeStep - 2;
+      double sizeUnit = seedToken.SizeUnit;
+      double sizeStep = seedToken.SizeStep;
+      double compactSizeStep = sizeStep - 2;
 
       var token = new SizeMapDesignToken
       {
