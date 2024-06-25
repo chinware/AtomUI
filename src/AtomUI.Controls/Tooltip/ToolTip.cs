@@ -1,6 +1,7 @@
 ﻿using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reflection;
+using AtomUI.ColorSystem;
 using AtomUI.Data;
 using AtomUI.Reflection;
 using AtomUI.TokenSystem;
@@ -9,7 +10,9 @@ using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Primitives.PopupPositioning;
+using Avalonia.Data;
 using Avalonia.LogicalTree;
+using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.VisualTree;
 
@@ -48,6 +51,19 @@ public partial class ToolTip : BorderedStyleControl, ITokenIdProvider
    /// </summary>
    public static readonly AttachedProperty<bool> IsOpenProperty =
       AvaloniaProperty.RegisterAttached<ToolTip, Control, bool>("IsOpen");
+   
+   
+   /// <summary>
+   /// Defines the ToolTip.PresetColor attached property.
+   /// </summary>
+   public static readonly AttachedProperty<PresetColorType?> PresetColorProperty =
+      AvaloniaProperty.RegisterAttached<ToolTip, Control, PresetColorType?>("PresetColor");
+   
+   /// <summary>
+   /// Defines the ToolTip.PresetColor attached property.
+   /// </summary>
+   public static readonly AttachedProperty<Color?> ColorProperty =
+      AvaloniaProperty.RegisterAttached<ToolTip, Control, Color?>("Color");
 
    /// <summary>
    /// 是否显示指示箭头
@@ -127,7 +143,8 @@ public partial class ToolTip : BorderedStyleControl, ITokenIdProvider
                                                   BindingFlags.Static | BindingFlags.NonPublic);
       RequestedThemeVariantProperty = (StyledProperty<ThemeVariant?>)requestedThemeVariantProperty.GetValue(null)!;
       AffectsRender<ToolTip>(DefaultBgTokenProperty,
-                             ForegroundProperty);
+                             ForegroundProperty,
+                             BackgroundProperty);
    }
 
    public ToolTip()
@@ -210,7 +227,7 @@ public partial class ToolTip : BorderedStyleControl, ITokenIdProvider
    /// </summary>
    /// <param name="element"></param>
    /// <returns></returns>
-   public static bool IsShowArrow(Control element)
+   public static bool GetIsShowArrow(Control element)
    {
       return element.GetValue(IsShowArrowProperty);
    }
@@ -220,7 +237,7 @@ public partial class ToolTip : BorderedStyleControl, ITokenIdProvider
    /// </summary>
    /// <param name="element"></param>
    /// <param name="flag"></param>
-   public static void SetShowArrow(Control element, bool flag)
+   public static void SetIsShowArrow(Control element, bool flag)
    {
       element.SetValue(IsShowArrowProperty, flag);
    }
@@ -336,6 +353,46 @@ public partial class ToolTip : BorderedStyleControl, ITokenIdProvider
    public static void SetServiceEnabled(Control element, bool value) =>
       element.SetValue(ServiceEnabledProperty, value);
 
+   /// <summary>
+   /// 获取预设置的颜色
+   /// </summary>
+   /// <param name="element"></param>
+   /// <returns></returns>
+   public static PresetColorType? GetPresetColor(Control element)
+   {
+      return element.GetValue(PresetColorProperty);
+   }
+   
+   /// <summary>
+   /// 设置预设颜色
+   /// </summary>
+   /// <param name="element"></param>
+   /// <param name="color"></param>
+   public static void SetPresetColor(Control element, PresetColorType color)
+   { 
+      element.SetValue(PresetColorProperty, color);
+   }
+   
+   /// <summary>
+   /// 获取预设置的颜色
+   /// </summary>
+   /// <param name="element"></param>
+   /// <returns></returns>
+   public static Color? GetColor(Control element)
+   {
+      return element.GetValue(ColorProperty);
+   }
+   
+   /// <summary>
+   /// 设置预设颜色
+   /// </summary>
+   /// <param name="element"></param>
+   /// <param name="color"></param>
+   public static void SetColor(Control element, Color color)
+   { 
+      element.SetValue(ColorProperty, color);
+   }
+
    private static void IsOpenChanged(AvaloniaPropertyChangedEventArgs e)
    {
       var control = (Control)e.Sender;
@@ -348,8 +405,10 @@ public partial class ToolTip : BorderedStyleControl, ITokenIdProvider
          var toolTip = control.GetValue(ToolTipProperty);
          if (toolTip == null || (tip != toolTip && tip != toolTip.Content)) {
             toolTip?.Close();
-
-            toolTip = tip as ToolTip ?? new ToolTip { Content = tip };
+            toolTip = tip as ToolTip ?? new ToolTip
+            {
+               Content = tip
+            };
             control.SetValue(ToolTipProperty, toolTip);
             toolTip.SetValue(RequestedThemeVariantProperty, control.ActualThemeVariant);
          }
@@ -392,8 +451,11 @@ public partial class ToolTip : BorderedStyleControl, ITokenIdProvider
                             .Select(value => GetAnchorAndGravity(value.Value).Item1)),
          _popup.Bind(Popup.PlacementGravityProperty,
                      control.GetBindingObservable(PlacementProperty)
-                            .Select(value => GetAnchorAndGravity(value.Value).Item2))
+                            .Select(value => GetAnchorAndGravity(value.Value).Item2)),
       });
+
+      SetToolTipColor(control);
+      
       _popup.Placement = PlacementMode.AnchorAndGravity;
       _popup.PlacementTarget = control;
       SetPopupParent(_popup, control);
@@ -430,6 +492,19 @@ public partial class ToolTip : BorderedStyleControl, ITokenIdProvider
          effectPlacement = flipPlacement;
       }
       BuildGeometry(GetDirection(effectPlacement));
+   }
+
+   private void SetToolTipColor(Control control)
+   {
+      // Preset 优先级高
+      var presetColorType = GetPresetColor(control);
+      var color = GetColor(control);
+      if (presetColorType is not null) {
+         var presetColor = new PresetPrimaryColor(presetColorType.Value);
+         SetValue(BackgroundProperty, new SolidColorBrush(presetColor.Color()), BindingPriority.LocalValue);
+      } else if (color is not null) {
+         SetValue(BackgroundProperty, new SolidColorBrush(color.Value), BindingPriority.LocalValue);
+      }
    }
 
    protected PlacementType FlipPlacementType(PlacementType placement)

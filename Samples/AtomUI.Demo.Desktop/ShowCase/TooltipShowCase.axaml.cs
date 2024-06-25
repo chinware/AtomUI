@@ -1,14 +1,37 @@
+using AtomUI.Controls;
+using Avalonia;
 using Avalonia.Controls;
-using Button = AtomUI.Controls.Button;
-using ToggleSwitch = AtomUI.Controls.ToggleSwitch;
 
 namespace AtomUI.Demo.Desktop.ShowCase;
 
 public partial class TooltipShowCase : UserControl
 {
+   
+   public static readonly StyledProperty<bool> ShowArrowProperty =
+      AvaloniaProperty.Register<TooltipShowCase, bool>(nameof(ShowArrow), true);
+
+   private Segmented _segmented;
+   
+   public bool ShowArrow
+   {
+      get => GetValue(ShowArrowProperty);
+      set => SetValue(ShowArrowProperty, value);
+   }
+   
    public TooltipShowCase()
    {
+      DataContext = this;
       InitializeComponent();
+      var control = this as Control;
+      _segmented = control.FindControl<Segmented>("ArrowSegmented")!;
+      _segmented.CurrentChanged += (sender, args) =>
+      {
+         if (args.ItemIndex == 0) {
+            ShowArrow = true;
+         } else if (args.ItemIndex == 1) {
+            ShowArrow = false;
+         }
+      };
    }
    
 }

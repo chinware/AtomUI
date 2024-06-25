@@ -53,7 +53,7 @@ public partial class ToolTip : IControlCustomStyle
    {
       // context.FillRectangle(new SolidColorBrush(Colors.Aqua), new Rect(default, DesiredSize));
       var arrowRect = GetArrowRect(DesiredSize);
-      if (IsShowArrow(AdornedControl!)) {
+      if (GetIsShowArrow(AdornedControl!)) {
          var direction = GetDirection(GetPlacement(AdornedControl!));
          var arrowSize = _toolTipArrowSize;
          var matrix = Matrix.CreateTranslation(-arrowSize / 2, -arrowSize / 2);
@@ -83,7 +83,7 @@ public partial class ToolTip : IControlCustomStyle
       var targetHeight = size.Height;
       targetHeight = Math.Max(MinHeight, targetHeight);
       var adornedControl = AdornedControl!;
-      if (IsShowArrow(adornedControl)) {
+      if (GetIsShowArrow(adornedControl)) {
          var arrowSize = Math.Min(_arrowGeometry!.Bounds.Size.Height, _arrowGeometry!.Bounds.Size.Width);
          var direction = GetDirection(GetPlacement(adornedControl));
          if (direction == Direction.Left || direction == Direction.Right) {
@@ -117,21 +117,23 @@ public partial class ToolTip : IControlCustomStyle
       var targetWidth = finalSize.Width;
       var targetHeight = finalSize.Height;
       var adornedControl = AdornedControl!;
-      if (IsShowArrow(adornedControl)) {
-         var arrowSize = Math.Min(_arrowGeometry!.Bounds.Size.Height, _arrowGeometry!.Bounds.Size.Width);
+      if (GetIsShowArrow(adornedControl)) {
+         var arrowSize = Math.Min(_arrowGeometry!.Bounds.Size.Height, _arrowGeometry!.Bounds.Size.Width) + 0.5;
          var direction = GetDirection(GetPlacement(adornedControl));
          if (direction == Direction.Left || direction == Direction.Right) {
             targetWidth -= arrowSize;
          } else {
-            targetHeight -= arrowSize + 0.5;
+            targetHeight -= arrowSize;
          }
 
          if (direction == Direction.Right) {
-            offsetX = arrowSize;
+            offsetX = arrowSize - 0.5;
          } else if (direction == Direction.Bottom) {
-            offsetY = arrowSize;
+            offsetY = arrowSize - 0.5;
          } else if (direction == Direction.Top) {
             offsetY = 0.5;
+         } else {
+            offsetX = 0.5;
          }
       }
 
@@ -146,7 +148,7 @@ public partial class ToolTip : IControlCustomStyle
       var size = _arrowGeometry!.Bounds.Size;
       var targetWidth = 0d;
       var targetHeight = 0d;
-      if (IsShowArrow(adornedControl)) {
+      if (GetIsShowArrow(adornedControl)) {
          var minValue = Math.Min(size.Width, size.Height);
          var maxValue = Math.Max(size.Width, size.Height);
          var placement = GetPlacement(adornedControl);
@@ -228,6 +230,13 @@ public partial class ToolTip : IControlCustomStyle
          var arrowSize = _toolTipArrowSize;
          _arrowGeometry = CommonShapeBuilder.BuildArrow(arrowSize, 1.5);
          _lastDirection = direction;
+      }
+   }
+   
+   void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
+   {
+      if (e.Property == BackgroundProperty) {
+         //Console.WriteLine(e.GetNewValue<IBrush>());
       }
    }
 }
