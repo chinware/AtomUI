@@ -2,8 +2,10 @@
 using System.Reflection;
 using AtomUI.Reflection;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Input.Raw;
+using Avalonia.Layout;
 
 namespace AtomUI.Input;
 
@@ -59,7 +61,7 @@ internal static class InputManagerEx
       // InputManager.PreProcess | InputManager.Process | InputManager.PostProcess
       var process = manager.GetPropertyOrThrow<IObservable<RawInputEventArgs>>(type, processName, BindingFlags.Public | BindingFlags.Instance)
                     ?? throw new NotSupportedException($"Can not find the '{processName}' in InputManager.");
-
+      
       return process.OfType<TInputArgs>();
    }
 

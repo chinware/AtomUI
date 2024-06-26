@@ -19,6 +19,7 @@ using Avalonia.VisualTree;
 namespace AtomUI.Controls;
 
 using AvaloniaWin = Avalonia.Controls.Window;
+using AvaloniaPopup = Avalonia.Controls.Primitives.Popup;
 
 /// <summary>
 /// A control which pops up a hint when a control is hovered.
@@ -126,7 +127,7 @@ public partial class ToolTip : BorderedStyleControl, ITokenIdProvider
       set => SetValue(ContentProperty, value);
    }
 
-   private Popup? _popup;
+   private AvaloniaPopup? _popup;
    private Action<IPopupHost?>? _popupHostChangedHandler;
    private CompositeDisposable? _subscriptions;
    private AvaloniaWin? _currentAnchorWindow;
@@ -437,23 +438,13 @@ public partial class ToolTip : BorderedStyleControl, ITokenIdProvider
       Close();
 
       if (_popup is null) {
-         _popup = new Popup();
+         _popup = new AvaloniaPopup();
          _popup.Child = this;
          _popup.WindowManagerAddShadowHint = false;
 
          _popup.Opened += OnPopupOpened;
          _popup.Closed += OnPopupClosed;
       }
-
-      _subscriptions = new CompositeDisposable(new[]
-      {
-         _popup.Bind(Popup.PlacementAnchorProperty,
-                     control.GetBindingObservable(PlacementProperty)
-                            .Select(value => GetAnchorAndGravity(value.Value).Item1)),
-         _popup.Bind(Popup.PlacementGravityProperty,
-                     control.GetBindingObservable(PlacementProperty)
-                            .Select(value => GetAnchorAndGravity(value.Value).Item2)),
-      });
 
       SetToolTipColor(control);
       
@@ -470,6 +461,8 @@ public partial class ToolTip : BorderedStyleControl, ITokenIdProvider
       anchorRect = anchorRect.Translate(parentGeometry.TopLeft);
       var placement = GetPlacement(control);
       var anchorAndGravity = GetAnchorAndGravity(placement);
+      _popup.PlacementAnchor = anchorAndGravity.Item1;
+      _popup.PlacementGravity = anchorAndGravity.Item2;
 
       _popup.IsOpen = true;
       
@@ -604,7 +597,7 @@ public partial class ToolTip : BorderedStyleControl, ITokenIdProvider
    /// <summary>
    /// Helper method to set popup's styling and templated parent.
    /// </summary>
-   internal void SetPopupParent(Popup popup, Control? newParent)
+   internal void SetPopupParent(AvaloniaPopup popup, Control? newParent)
    {
       if (popup.Parent != null && popup.Parent != newParent) {
          ((ISetLogicalParent)popup).SetParent(null);
@@ -799,7 +792,6 @@ public partial class ToolTip : BorderedStyleControl, ITokenIdProvider
 
    private void Close()
    {
-      _subscriptions?.Dispose();
 
       if (_popup is not null) {
          _popup.IsOpen = false;
@@ -822,7 +814,7 @@ public partial class ToolTip : BorderedStyleControl, ITokenIdProvider
 
    private void OnPopupOpened(object? sender, EventArgs e)
    {
-      _popupHostChangedHandler?.Invoke(((Popup)sender!).Host);
+      _popupHostChangedHandler?.Invoke(((AvaloniaPopup)sender!).Host);
    }
 
    private void UpdatePseudoClasses(bool newValue)

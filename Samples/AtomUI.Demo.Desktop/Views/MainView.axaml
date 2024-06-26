@@ -75,7 +75,7 @@
             <TabItem Header="Separator">
                 <showcases:SeparatorShowCase />
             </TabItem>
-            <TabItem Header="Popover">
+            <TabItem Header="Popup">
                 <showcases:PopoverShowCase />
             </TabItem>
             <TabItem Header="ProgressBar">
