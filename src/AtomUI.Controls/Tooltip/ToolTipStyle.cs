@@ -19,7 +19,7 @@ public partial class ToolTip : IControlCustomStyle
    private Rect _contentRect;
    private Rect _arrowRect;
    
-   internal Point? ArrowPoint { get; private set; }
+   internal (double, double) ArrowPosition { get; private set; }
 
    void IControlCustomStyle.SetupUi()
    {
@@ -152,10 +152,10 @@ public partial class ToolTip : IControlCustomStyle
       var size = _arrowGeometry!.Bounds.Size;
       var targetWidth = 0d;
       var targetHeight = 0d;
+      var placement = GetEffectPlacement();
       if (GetIsShowArrow(adornedControl)) {
          var minValue = Math.Min(size.Width, size.Height);
          var maxValue = Math.Max(size.Width, size.Height);
-         var placement = GetEffectPlacement();
          if (placement == PlacementType.Left ||
              placement == PlacementType.LeftEdgeAlignedTop ||
              placement == PlacementType.LeftEdgeAlignedBottom) {
@@ -178,7 +178,6 @@ public partial class ToolTip : IControlCustomStyle
           
             targetWidth = minValue;
             targetHeight = maxValue;
-            ArrowPoint = new Point(offsetX + targetWidth, offsetY + targetHeight / 2);
          } else if (placement == PlacementType.Top ||
                     placement == PlacementType.TopEdgeAlignedLeft ||
                     placement == PlacementType.TopEdgeAlignedRight) {
@@ -192,7 +191,6 @@ public partial class ToolTip : IControlCustomStyle
             } else {
                offsetX = finalSize.Width - maxValue * 2;
             }
-            ArrowPoint = new Point(offsetX + targetWidth / 2, offsetY + targetHeight);
          } else if (placement == PlacementType.Right ||
                     placement == PlacementType.RightEdgeAlignedTop ||
                     placement == PlacementType.RightEdgeAlignedBottom) {
@@ -214,7 +212,6 @@ public partial class ToolTip : IControlCustomStyle
                }
            
             }
-            ArrowPoint = new Point(offsetX, offsetY + targetHeight / 2);
          } else {
             if (placement == PlacementType.BottomEdgeAlignedLeft) {
                offsetX = maxValue;
@@ -225,14 +222,20 @@ public partial class ToolTip : IControlCustomStyle
             }
             targetWidth = maxValue;
             targetHeight = minValue;
-            ArrowPoint = new Point(offsetX + targetWidth / 2, offsetY);
          }
-
-         var globalPos = this.PointToScreen(ArrowPoint.Value);
-         ArrowPoint = new Point(globalPos.X, globalPos.Y);
       }
 
-      return new Rect(offsetX, offsetY, targetWidth, targetHeight);
+      var targetRect = new Rect(offsetX, offsetY, targetWidth, targetHeight);
+      var center = targetRect.Center;
+      // 计算中点
+      var direction = GetDirection(placement);
+      if (direction == Direction.Left || direction == Direction.Right) {
+         ArrowPosition = (center.Y, finalSize.Height - center.Y);
+      } else if (direction == Direction.Top || direction == Direction.Bottom) {
+         ArrowPosition = (center.X, finalSize.Width - center.X);
+      }
+
+      return targetRect;
    }
    
    private void BuildGeometry(Direction direction)

@@ -479,12 +479,10 @@ public partial class ToolTip : BorderedStyleControl, ITokenIdProvider
       _popup.VerticalOffset = offset.Y;
       
       var translatedSize = (_popup!.Host as WindowBase)!.ClientSize * scaling;
-
       var flipInfo = CalculateFlipInfo(translatedSize, anchorRect, anchorAndGravity.Item1, anchorAndGravity.Item2,
                                        offset);
       var effectPlacement = placement;
       if (flipInfo.Item1 || flipInfo.Item2) {
-
          var flipPlacement = FlipPlacementType(placement);
          var flipAnchorAndGravity = GetAnchorAndGravity(flipPlacement);
          var flipOffset = CalculateOffset(flipPlacement, control);
@@ -497,7 +495,6 @@ public partial class ToolTip : BorderedStyleControl, ITokenIdProvider
          FlipPlacement = flipPlacement;
          _popup.HorizontalOffset = flipOffset.X;
          _popup.VerticalOffset = flipOffset.Y;
-         Console.WriteLine($"flip {CalculateOffset(flipPlacement, control)}");
       } else {
          FlipPlacement = null;
       }
@@ -559,24 +556,23 @@ public partial class ToolTip : BorderedStyleControl, ITokenIdProvider
       }
 
       if (GetIsShowArrow(control) && GetIsPointAtCenter(control)) {
-         Point anchorCenterPosition = default;
          var anchorSize = control.Bounds.Size;
          var centerX = anchorSize.Width / 2;
          var centerY = anchorSize.Height / 2;
-         if (direction == Direction.Top) {
-            anchorCenterPosition = new Point(centerX, 0);
-         } else if (direction == Direction.Bottom) {
-            anchorCenterPosition = new Point(centerX, anchorSize.Height);
-         } else if (direction == Direction.Left) {
-            anchorCenterPosition = new Point(0, centerY);
-         } else {
-            anchorCenterPosition = new Point(anchorSize.Width, centerY);
+         // 这里计算不需要全局坐标
+         if (placementType == PlacementType.TopEdgeAlignedLeft ||
+             placementType == PlacementType.BottomEdgeAlignedLeft) {
+            offsetX += centerX - ArrowPosition.Item1;
+         } else if (placementType == PlacementType.TopEdgeAlignedRight ||
+                    placementType == PlacementType.BottomEdgeAlignedRight) {
+            offsetX -= centerX - ArrowPosition.Item2;
+         } else if (placementType == PlacementType.RightEdgeAlignedTop ||
+                    placementType == PlacementType.LeftEdgeAlignedTop) {
+            offsetY += centerY - ArrowPosition.Item1;
+         } else if (placementType == PlacementType.RightEdgeAlignedBottom ||
+                    placementType == PlacementType.LeftEdgeAlignedBottom) {
+            offsetY -= centerY - ArrowPosition.Item2;
          }
-         
-         var globalAnchorCenterPos = control.PointToScreen(anchorCenterPosition);
-         anchorCenterPosition = new Point(globalAnchorCenterPos.X, globalAnchorCenterPos.Y);
-         
-         // Console.WriteLine($"{anchorCenterPosition}-{ArrowPoint}");
       }
       return new Point(offsetX, offsetY);
    }
@@ -662,7 +658,7 @@ public partial class ToolTip : BorderedStyleControl, ITokenIdProvider
          throw new InvalidOperationException("Target control is not in the same tree as the popup parent");
       }
 
-      var anchorRect = new Rect(anchor.Bounds.Position, anchor.Bounds.Size);
+      var anchorRect = new Rect(default, anchor.Bounds.Size);
       return anchorRect.TransformToAABB(matrix.Value);
    }
 
