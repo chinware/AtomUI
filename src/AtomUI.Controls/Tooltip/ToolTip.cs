@@ -145,6 +145,7 @@ public partial class ToolTip : BorderedStyleControl, ITokenIdProvider
       AffectsRender<ToolTip>(DefaultBgTokenProperty,
                              ForegroundProperty,
                              BackgroundProperty);
+      AffectsArrange<ToolTip>(FlipPlacementProperty);
    }
 
    public ToolTip()
@@ -247,7 +248,7 @@ public partial class ToolTip : BorderedStyleControl, ITokenIdProvider
    /// </summary>
    /// <param name="element"></param>
    /// <returns></returns>
-   public static bool IsPointAtCenter(Control element)
+   public static bool GetIsPointAtCenter(Control element)
    {
       return element.GetValue(IsPointAtCenterProperty);
    }
@@ -257,7 +258,7 @@ public partial class ToolTip : BorderedStyleControl, ITokenIdProvider
    /// </summary>
    /// <param name="element"></param>
    /// <param name="flag"></param>
-   public static void SetPointAtCenter(Control element, bool flag)
+   public static void SetIsPointAtCenter(Control element, bool flag)
    {
       element.SetValue(IsPointAtCenterProperty, flag);
    }
@@ -470,26 +471,35 @@ public partial class ToolTip : BorderedStyleControl, ITokenIdProvider
       var placement = GetPlacement(control);
       var anchorAndGravity = GetAnchorAndGravity(placement);
 
-      var offset = CalculateOffset(placement);
+      _popup.IsOpen = true;
+      
+      var offset = CalculateOffset(placement, control);
 
       _popup.HorizontalOffset = offset.X;
       _popup.VerticalOffset = offset.Y;
-
-      _popup.IsOpen = true;
+      
       var translatedSize = (_popup!.Host as WindowBase)!.ClientSize * scaling;
 
       var flipInfo = CalculateFlipInfo(translatedSize, anchorRect, anchorAndGravity.Item1, anchorAndGravity.Item2,
                                        offset);
       var effectPlacement = placement;
-      if (flipInfo.Item2) {
+      if (flipInfo.Item1 || flipInfo.Item2) {
+
          var flipPlacement = FlipPlacementType(placement);
          var flipAnchorAndGravity = GetAnchorAndGravity(flipPlacement);
+         var flipOffset = CalculateOffset(flipPlacement, control);
          _popup.Host!.ConfigurePosition(control,
                                         PlacementMode.AnchorAndGravity,
-                                        offset: CalculateOffset(flipPlacement),
+                                        offset: flipOffset,
                                         anchor: flipAnchorAndGravity.Item1,
                                         gravity: flipAnchorAndGravity.Item2);
          effectPlacement = flipPlacement;
+         FlipPlacement = flipPlacement;
+         _popup.HorizontalOffset = flipOffset.X;
+         _popup.VerticalOffset = flipOffset.Y;
+         Console.WriteLine($"flip {CalculateOffset(flipPlacement, control)}");
+      } else {
+         FlipPlacement = null;
       }
       BuildGeometry(GetDirection(effectPlacement));
    }
@@ -532,7 +542,7 @@ public partial class ToolTip : BorderedStyleControl, ITokenIdProvider
       };
    }
 
-   private Point CalculateOffset(PlacementType placementType)
+   private Point CalculateOffset(PlacementType placementType, Control control)
    {
       var offsetX = 0d;
       var offsetY = 0d;
@@ -548,6 +558,26 @@ public partial class ToolTip : BorderedStyleControl, ITokenIdProvider
          offsetX += margin;
       }
 
+      if (GetIsShowArrow(control) && GetIsPointAtCenter(control)) {
+         Point anchorCenterPosition = default;
+         var anchorSize = control.Bounds.Size;
+         var centerX = anchorSize.Width / 2;
+         var centerY = anchorSize.Height / 2;
+         if (direction == Direction.Top) {
+            anchorCenterPosition = new Point(centerX, 0);
+         } else if (direction == Direction.Bottom) {
+            anchorCenterPosition = new Point(centerX, anchorSize.Height);
+         } else if (direction == Direction.Left) {
+            anchorCenterPosition = new Point(0, centerY);
+         } else {
+            anchorCenterPosition = new Point(anchorSize.Width, centerY);
+         }
+         
+         var globalAnchorCenterPos = control.PointToScreen(anchorCenterPosition);
+         anchorCenterPosition = new Point(globalAnchorCenterPos.X, globalAnchorCenterPos.Y);
+         
+         // Console.WriteLine($"{anchorCenterPosition}-{ArrowPoint}");
+      }
       return new Point(offsetX, offsetY);
    }
 

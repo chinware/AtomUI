@@ -29,6 +29,17 @@ public partial class ToolTip
       = AvaloniaProperty.RegisterDirect<ToolTip, double>(nameof(_marginXXS),
                                                          (o) => o._marginXXS,
                                                          (o, v) => o._marginXXS = v);
-
    // 组件的 Token 绑定属性
+   
+   internal static readonly DirectProperty<ToolTip, PlacementType?> FlipPlacementProperty =
+      AvaloniaProperty.RegisterDirect<ToolTip, PlacementType?>(nameof(FlipPlacement),
+         o => o.FlipPlacement,
+         (o, v) => o.FlipPlacement = v);
+
+   private PlacementType? _flipPlacement;
+   internal PlacementType? FlipPlacement
+   {
+      get => _flipPlacement;
+      set => SetAndRaise(FlipPlacementProperty, ref _flipPlacement, value);
+   }
 }

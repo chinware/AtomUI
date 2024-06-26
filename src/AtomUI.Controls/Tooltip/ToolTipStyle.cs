@@ -16,6 +16,10 @@ public partial class ToolTip : IControlCustomStyle
    private TokenResourceBinder _tokenResourceBinder;
    private Geometry? _arrowGeometry;
    private Direction? _lastDirection;
+   private Rect _contentRect;
+   private Rect _arrowRect;
+   
+   internal Point? ArrowPoint { get; private set; }
 
    void IControlCustomStyle.SetupUi()
    {
@@ -33,7 +37,7 @@ public partial class ToolTip : IControlCustomStyle
       }
 
       _customStyle.ApplyFixedStyleConfig();
-      BuildGeometry(GetDirection(GetPlacement(AdornedControl!)));
+      BuildGeometry(GetDirection(GetEffectPlacement()));
    }
 
    void IControlCustomStyle.ApplyFixedStyleConfig()
@@ -52,9 +56,8 @@ public partial class ToolTip : IControlCustomStyle
    public sealed override void Render(DrawingContext context)
    {
       // context.FillRectangle(new SolidColorBrush(Colors.Aqua), new Rect(default, DesiredSize));
-      var arrowRect = GetArrowRect(DesiredSize);
       if (GetIsShowArrow(AdornedControl!)) {
-         var direction = GetDirection(GetPlacement(AdornedControl!));
+         var direction = GetDirection(GetEffectPlacement());
          var arrowSize = _toolTipArrowSize;
          var matrix = Matrix.CreateTranslation(-arrowSize / 2, -arrowSize / 2);
          if (direction == Direction.Right) {
@@ -70,7 +73,7 @@ public partial class ToolTip : IControlCustomStyle
             matrix *= Matrix.CreateTranslation(arrowSize / 2, 0);
          }
   
-         matrix *= Matrix.CreateTranslation(arrowRect.X, arrowRect.Y);
+         matrix *= Matrix.CreateTranslation(_arrowRect.X, _arrowRect.Y);
          _arrowGeometry!.Transform = new MatrixTransform(matrix);
          context.DrawGeometry(Background, null, _arrowGeometry);
       }
@@ -85,7 +88,7 @@ public partial class ToolTip : IControlCustomStyle
       var adornedControl = AdornedControl!;
       if (GetIsShowArrow(adornedControl)) {
          var arrowSize = Math.Min(_arrowGeometry!.Bounds.Size.Height, _arrowGeometry!.Bounds.Size.Width);
-         var direction = GetDirection(GetPlacement(adornedControl));
+         var direction = GetDirection(GetEffectPlacement());
          if (direction == Direction.Left || direction == Direction.Right) {
             targetWidth += arrowSize;
          } else {
@@ -99,11 +102,12 @@ public partial class ToolTip : IControlCustomStyle
    {
       var visualChildren = VisualChildren;
       var visualCount = visualChildren.Count;
-      var contentRect = GetContentRect(finalSize);
+      _contentRect = GetContentRect(finalSize);
+      _arrowRect = GetArrowRect(finalSize);
       for (int i = 0; i < visualCount; ++i) {
          var child = visualChildren[i];
          if (child is Layoutable layoutable) {
-            layoutable.Arrange(contentRect);
+            layoutable.Arrange(_contentRect);
          }
       }
       
@@ -119,7 +123,7 @@ public partial class ToolTip : IControlCustomStyle
       var adornedControl = AdornedControl!;
       if (GetIsShowArrow(adornedControl)) {
          var arrowSize = Math.Min(_arrowGeometry!.Bounds.Size.Height, _arrowGeometry!.Bounds.Size.Width) + 0.5;
-         var direction = GetDirection(GetPlacement(adornedControl));
+         var direction = GetDirection(GetEffectPlacement());
          if (direction == Direction.Left || direction == Direction.Right) {
             targetWidth -= arrowSize;
          } else {
@@ -151,7 +155,7 @@ public partial class ToolTip : IControlCustomStyle
       if (GetIsShowArrow(adornedControl)) {
          var minValue = Math.Min(size.Width, size.Height);
          var maxValue = Math.Max(size.Width, size.Height);
-         var placement = GetPlacement(adornedControl);
+         var placement = GetEffectPlacement();
          if (placement == PlacementType.Left ||
              placement == PlacementType.LeftEdgeAlignedTop ||
              placement == PlacementType.LeftEdgeAlignedBottom) {
@@ -174,6 +178,7 @@ public partial class ToolTip : IControlCustomStyle
           
             targetWidth = minValue;
             targetHeight = maxValue;
+            ArrowPoint = new Point(offsetX + targetWidth, offsetY + targetHeight / 2);
          } else if (placement == PlacementType.Top ||
                     placement == PlacementType.TopEdgeAlignedLeft ||
                     placement == PlacementType.TopEdgeAlignedRight) {
@@ -187,6 +192,7 @@ public partial class ToolTip : IControlCustomStyle
             } else {
                offsetX = finalSize.Width - maxValue * 2;
             }
+            ArrowPoint = new Point(offsetX + targetWidth / 2, offsetY + targetHeight);
          } else if (placement == PlacementType.Right ||
                     placement == PlacementType.RightEdgeAlignedTop ||
                     placement == PlacementType.RightEdgeAlignedBottom) {
@@ -208,6 +214,7 @@ public partial class ToolTip : IControlCustomStyle
                }
            
             }
+            ArrowPoint = new Point(offsetX, offsetY + targetHeight / 2);
          } else {
             if (placement == PlacementType.BottomEdgeAlignedLeft) {
                offsetX = maxValue;
@@ -218,7 +225,11 @@ public partial class ToolTip : IControlCustomStyle
             }
             targetWidth = maxValue;
             targetHeight = minValue;
+            ArrowPoint = new Point(offsetX + targetWidth / 2, offsetY);
          }
+
+         var globalPos = this.PointToScreen(ArrowPoint.Value);
+         ArrowPoint = new Point(globalPos.X, globalPos.Y);
       }
 
       return new Rect(offsetX, offsetY, targetWidth, targetHeight);
@@ -232,11 +243,13 @@ public partial class ToolTip : IControlCustomStyle
          _lastDirection = direction;
       }
    }
-   
-   void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
+
+   private PlacementType GetEffectPlacement()
    {
-      if (e.Property == BackgroundProperty) {
-         //Console.WriteLine(e.GetNewValue<IBrush>());
+      if (_flipPlacement.HasValue) {
+         return _flipPlacement.Value;
       }
+
+      return GetPlacement(AdornedControl!);
    }
 }

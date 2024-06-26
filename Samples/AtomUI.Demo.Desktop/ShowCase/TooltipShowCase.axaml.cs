@@ -9,6 +9,9 @@ public partial class TooltipShowCase : UserControl
    
    public static readonly StyledProperty<bool> ShowArrowProperty =
       AvaloniaProperty.Register<TooltipShowCase, bool>(nameof(ShowArrow), true);
+   
+   public static readonly StyledProperty<bool> IsPointAtCenterProperty =
+      AvaloniaProperty.Register<TooltipShowCase, bool>(nameof(IsPointAtCenter), false);
 
    private Segmented _segmented;
    
@@ -16,6 +19,12 @@ public partial class TooltipShowCase : UserControl
    {
       get => GetValue(ShowArrowProperty);
       set => SetValue(ShowArrowProperty, value);
+   }
+   
+   public bool IsPointAtCenter
+   {
+      get => GetValue(IsPointAtCenterProperty);
+      set => SetValue(IsPointAtCenterProperty, value);
    }
    
    public TooltipShowCase()
@@ -28,8 +37,13 @@ public partial class TooltipShowCase : UserControl
       {
          if (args.ItemIndex == 0) {
             ShowArrow = true;
+            IsPointAtCenter = false;
          } else if (args.ItemIndex == 1) {
             ShowArrow = false;
+            IsPointAtCenter = false;
+         } else if (args.ItemIndex == 2) {
+            IsPointAtCenter = true;
+            ShowArrow = true;
          }
       };
    }
