@@ -13,7 +13,7 @@ public partial class ToolTip : IControlCustomStyle
 {
    private bool _initialized = false;
    private IControlCustomStyle _customStyle;
-   private TokenResourceBinder _tokenResourceBinder;
+   private ControlTokenBinder _controlTokenBinder;
    private Geometry? _arrowGeometry;
    private Direction? _lastDirection;
    private Rect _contentRect;
@@ -42,15 +42,15 @@ public partial class ToolTip : IControlCustomStyle
 
    void IControlCustomStyle.ApplyFixedStyleConfig()
    {
-      _tokenResourceBinder.AddBinding(FontSizeProperty, GlobalResourceKey.FontSize);
-      _tokenResourceBinder.AddBinding(MaxWidthProperty, ToolTipResourceKey.ToolTipMaxWidth);
-      _tokenResourceBinder.AddBinding(BackgroundProperty, ToolTipResourceKey.ToolTipBackground);
-      _tokenResourceBinder.AddBinding(ForegroundProperty, ToolTipResourceKey.ToolTipColor);
-      _tokenResourceBinder.AddBinding(CornerRadiusProperty, ToolTipResourceKey.BorderRadiusOuter);
-      _tokenResourceBinder.AddBinding(MinHeightProperty, GlobalResourceKey.ControlHeight);
-      _tokenResourceBinder.AddBinding(PaddingProperty, ToolTipResourceKey.ToolTipPadding);
-      _tokenResourceBinder.AddBinding(ToolTipArrowSizeTokenProperty, ToolTipResourceKey.ToolTipArrowSize);
-      _tokenResourceBinder.AddBinding(MarginXXSTokenProperty, GlobalResourceKey.MarginXXS);
+      _controlTokenBinder.AddControlBinding(FontSizeProperty, GlobalResourceKey.FontSize);
+      _controlTokenBinder.AddControlBinding(MaxWidthProperty, ToolTipResourceKey.ToolTipMaxWidth);
+      _controlTokenBinder.AddControlBinding(BackgroundProperty, ToolTipResourceKey.ToolTipBackground);
+      _controlTokenBinder.AddControlBinding(ForegroundProperty, ToolTipResourceKey.ToolTipColor);
+      _controlTokenBinder.AddControlBinding(CornerRadiusProperty, ToolTipResourceKey.BorderRadiusOuter);
+      _controlTokenBinder.AddControlBinding(MinHeightProperty, GlobalResourceKey.ControlHeight);
+      _controlTokenBinder.AddControlBinding(PaddingProperty, ToolTipResourceKey.ToolTipPadding);
+      _controlTokenBinder.AddControlBinding(ToolTipArrowSizeTokenProperty, ToolTipResourceKey.ToolTipArrowSize);
+      _controlTokenBinder.AddControlBinding(MarginXXSTokenProperty, GlobalResourceKey.MarginXXS);
    }
 
    public sealed override void Render(DrawingContext context)

@@ -1,0 +1,155 @@
+<UserControl
+    x:Class="AtomUI.Demo.Desktop.ShowCase.InfoFlyoutShowCase"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:atom="https://atomui.net"
+    xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
+    mc:Ignorable="d">
+    <showcase:ShowCasePanel>
+        <showcase:ShowCaseItem
+            Title="Basic"
+            Description="The most basic example. The size of the floating layer depends on the contents region.">
+            <atom:FlyoutHost Trigger="Focus">
+                <atom:FlyoutHost.Flyout>
+                    <atom:InfoFlyout>
+                        
+                    </atom:InfoFlyout>
+                </atom:FlyoutHost.Flyout>
+                <atom:Button ButtonType="Primary">Hover me</atom:Button>
+            </atom:FlyoutHost>
+        </showcase:ShowCaseItem>
+
+        <showcase:ShowCaseItem
+            Title="Three ways to trigger"
+            Description="Mouse to click, focus and move in.">
+            <StackPanel Orientation="Horizontal" Spacing="10">
+                <atom:Button>Hover me</atom:Button>
+                <atom:Button>Focus me</atom:Button>
+                <atom:Button>Click me</atom:Button>
+            </StackPanel>
+        </showcase:ShowCaseItem>
+
+        <showcase:ShowCaseItem
+            Title="Placement"
+            Description="There are 12 placement options available.">
+            <Grid>
+                <Grid.Styles>
+                    <Style Selector="atom|Button">
+                        <Setter Property="Margin" Value="5" />
+                        <Setter Property="Width" Value="80" />
+                    </Style>
+                </Grid.Styles>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <atom:Button Grid.Row="1" Grid.Column="0" Text="LT">
+                </atom:Button>
+                <atom:Button Grid.Row="2" Grid.Column="0" Text="Left">
+                </atom:Button>
+                <atom:Button Grid.Row="3" Grid.Column="0" Text="LB">
+                </atom:Button>
+
+                <atom:Button Grid.Row="0" Grid.Column="1" Text="TL">
+                </atom:Button>
+                <atom:Button Grid.Row="0" Grid.Column="2" Text="Top">
+                </atom:Button>
+                <atom:Button Grid.Row="0" Grid.Column="3" Text="TR">
+                </atom:Button>
+
+                <atom:Button Grid.Row="1" Grid.Column="4" Text="RT">
+                </atom:Button>
+                <atom:Button Grid.Row="2" Grid.Column="4" Text="Right">
+                </atom:Button>
+                <atom:Button Grid.Row="3" Grid.Column="4" Text="RB">
+                </atom:Button>
+
+                <atom:Button Grid.Row="4" Grid.Column="1" Text="BL">
+                </atom:Button>
+                <atom:Button Grid.Row="4" Grid.Column="2" Text="Bottom">
+                </atom:Button>
+                <atom:Button Grid.Row="4" Grid.Column="3" Text="BR">
+                </atom:Button>
+
+            </Grid>
+        </showcase:ShowCaseItem>
+
+        <showcase:ShowCaseItem
+            Title="Arrow"
+            Description="Support show, hide or keep arrow in the center.">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:Segmented x:Name="ArrowSegmented">
+                    <atom:SegmentedItem>Show</atom:SegmentedItem>
+                    <atom:SegmentedItem>Hide</atom:SegmentedItem>
+                    <atom:SegmentedItem>Center</atom:SegmentedItem>
+                </atom:Segmented>
+                <Grid>
+                    <Grid.Styles>
+                        <Style Selector="atom|Button">
+                            <Setter Property="Margin" Value="5" />
+                            <Setter Property="Width" Value="80" />
+                        </Style>
+                    </Grid.Styles>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+
+                    <atom:Button Grid.Row="1" Grid.Column="0" Text="LT">
+                    </atom:Button>
+                    <atom:Button Grid.Row="2" Grid.Column="0" Text="Left">
+                    </atom:Button>
+                    <atom:Button Grid.Row="3" Grid.Column="0" Text="LB">
+                    </atom:Button>
+
+                    <atom:Button Grid.Row="0" Grid.Column="1" Text="TL">
+                    </atom:Button>
+                    <atom:Button Grid.Row="0" Grid.Column="2" Text="Top">
+                    </atom:Button>
+                    <atom:Button Grid.Row="0" Grid.Column="3" Text="TR">
+                    </atom:Button>
+
+                    <atom:Button Grid.Row="1" Grid.Column="4" Text="RT">
+                    </atom:Button>
+                    <atom:Button Grid.Row="2" Grid.Column="4" Text="Right">
+                    </atom:Button>
+                    <atom:Button Grid.Row="3" Grid.Column="4" Text="RB">
+                    </atom:Button>
+
+                    <atom:Button Grid.Row="4" Grid.Column="1" Text="BL">
+                    </atom:Button>
+                    <atom:Button Grid.Row="4" Grid.Column="2" Text="Bottom">
+                    </atom:Button>
+                    <atom:Button Grid.Row="4" Grid.Column="3" Text="BR">
+                    </atom:Button>
+
+                </Grid>
+            </StackPanel>
+        </showcase:ShowCaseItem>
+
+    </showcase:ShowCasePanel>
+</UserControl>

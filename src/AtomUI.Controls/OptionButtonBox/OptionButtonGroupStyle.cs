@@ -14,7 +14,7 @@ public partial class OptionButtonGroup : IControlCustomStyle
    private bool _initialized = false;
    private ControlStyleState _styleState;
    private IControlCustomStyle _customStyle;
-   private TokenResourceBinder _tokenResourceBinder;
+   private ControlTokenBinder _controlTokenBinder;
    private StackPanel? _layout;
    private readonly BorderRenderHelper _borderRenderHelper = new BorderRenderHelper();
 
@@ -50,17 +50,17 @@ public partial class OptionButtonGroup : IControlCustomStyle
 
    void IControlCustomStyle.ApplyFixedStyleConfig()
    {
-      _tokenResourceBinder.AddBinding(MotionDurationTokenProperty, GlobalResourceKey.MotionDurationMid);
-      _tokenResourceBinder.AddBinding(ColorBorderTokenProperty, GlobalResourceKey.ColorBorder);
-      _tokenResourceBinder.AddBinding(ColorPrimaryTokenProperty, GlobalResourceKey.ColorPrimary);
-      _tokenResourceBinder.AddBinding(ColorPrimaryHoverTokenProperty, GlobalResourceKey.ColorPrimaryHover);
-      _tokenResourceBinder.AddBinding(ColorPrimaryActiveTokenProperty, GlobalResourceKey.ColorPrimaryActive);
-      _tokenResourceBinder.AddBinding(SelectedOptionBorderColorProperty, GlobalResourceKey.ColorPrimary);
+      _controlTokenBinder.AddControlBinding(MotionDurationTokenProperty, GlobalResourceKey.MotionDurationMid);
+      _controlTokenBinder.AddControlBinding(ColorBorderTokenProperty, GlobalResourceKey.ColorBorder);
+      _controlTokenBinder.AddControlBinding(ColorPrimaryTokenProperty, GlobalResourceKey.ColorPrimary);
+      _controlTokenBinder.AddControlBinding(ColorPrimaryHoverTokenProperty, GlobalResourceKey.ColorPrimaryHover);
+      _controlTokenBinder.AddControlBinding(ColorPrimaryActiveTokenProperty, GlobalResourceKey.ColorPrimaryActive);
+      _controlTokenBinder.AddControlBinding(SelectedOptionBorderColorProperty, GlobalResourceKey.ColorPrimary);
    }
 
    void IControlCustomStyle.ApplyRenderScalingAwareStyleConfig()
    {
-      _tokenResourceBinder.AddBinding(BorderThicknessProperty, GlobalResourceKey.BorderThickness, BindingPriority.Style,
+      _controlTokenBinder.AddControlBinding(BorderThicknessProperty, GlobalResourceKey.BorderThickness, BindingPriority.Style,
          new RenderScaleAwareThicknessConfigure(this));
    }
 
@@ -76,14 +76,14 @@ public partial class OptionButtonGroup : IControlCustomStyle
    void IControlCustomStyle.ApplySizeTypeStyleConfig()
    {
       if (SizeType == SizeType.Small) {
-         _tokenResourceBinder.AddBinding(CornerRadiusProperty, GlobalResourceKey.BorderRadiusSM);
-         _tokenResourceBinder.AddBinding(ControlHeightTokenProperty, GlobalResourceKey.ControlHeightSM);
+         _controlTokenBinder.AddControlBinding(CornerRadiusProperty, GlobalResourceKey.BorderRadiusSM);
+         _controlTokenBinder.AddControlBinding(ControlHeightTokenProperty, GlobalResourceKey.ControlHeightSM);
       } else if (SizeType == SizeType.Middle) {
-         _tokenResourceBinder.AddBinding(CornerRadiusProperty, GlobalResourceKey.BorderRadius);
-         _tokenResourceBinder.AddBinding(ControlHeightTokenProperty, GlobalResourceKey.ControlHeight);
+         _controlTokenBinder.AddControlBinding(CornerRadiusProperty, GlobalResourceKey.BorderRadius);
+         _controlTokenBinder.AddControlBinding(ControlHeightTokenProperty, GlobalResourceKey.ControlHeight);
       } else if (SizeType == SizeType.Large) {
-         _tokenResourceBinder.AddBinding(CornerRadiusProperty, GlobalResourceKey.BorderRadiusLG);
-         _tokenResourceBinder.AddBinding(ControlHeightTokenProperty, GlobalResourceKey.ControlHeightLG);
+         _controlTokenBinder.AddControlBinding(CornerRadiusProperty, GlobalResourceKey.BorderRadiusLG);
+         _controlTokenBinder.AddControlBinding(ControlHeightTokenProperty, GlobalResourceKey.ControlHeightLG);
       }
 
       ApplyButtonSizeConfig();
@@ -167,11 +167,11 @@ public partial class OptionButtonGroup : IControlCustomStyle
    private void HandleOptionPointerEvent(object? sender, OptionButtonPointerEventArgs args)
    {
       if (args.Button == SelectedOption) {
-         _tokenResourceBinder.ReleaseTriggerBindings(this);
+         _controlTokenBinder.ReleaseTriggerBindings(this);
          if (args.IsPressed) {
-            _tokenResourceBinder.AddBinding(SelectedOptionBorderColorProperty, GlobalResourceKey.ColorPrimaryActive, BindingPriority.StyleTrigger);
+            _controlTokenBinder.AddControlBinding(SelectedOptionBorderColorProperty, GlobalResourceKey.ColorPrimaryActive, BindingPriority.StyleTrigger);
          } else if (args.IsHovering) {
-            _tokenResourceBinder.AddBinding(SelectedOptionBorderColorProperty, GlobalResourceKey.ColorPrimaryHover, BindingPriority.StyleTrigger);
+            _controlTokenBinder.AddControlBinding(SelectedOptionBorderColorProperty, GlobalResourceKey.ColorPrimaryHover, BindingPriority.StyleTrigger);
          }
       }
    }

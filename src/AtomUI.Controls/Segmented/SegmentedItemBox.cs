@@ -57,7 +57,7 @@ internal partial class SegmentedItemBox : BorderedStyleControl, ITokenIdProvider
    
    public SegmentedItemBox(Control item)
    {
-      _tokenResourceBinder = new TokenResourceBinder(this);
+      _controlTokenBinder = new ControlTokenBinder(this);
       _customStyle = this;
       Item = item;
       Child = Item;

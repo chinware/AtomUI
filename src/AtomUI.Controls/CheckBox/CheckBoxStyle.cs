@@ -17,7 +17,7 @@ public partial class CheckBox : IWaveAdornerInfoProvider,
 {
    private IPen? _cachedPen;
    private IControlCustomStyle _customStyle;
-   private TokenResourceBinder _tokenResourceBinder;
+   private ControlTokenBinder _controlTokenBinder;
    private ControlStyleState _styleState;
    private bool _initialized = false;
    
@@ -80,57 +80,57 @@ public partial class CheckBox : IWaveAdornerInfoProvider,
 
    void IControlCustomStyle.ApplyFixedStyleConfig()
    {
-      _tokenResourceBinder.AddBinding(CheckIndicatorSizeProperty, CheckBoxResourceKey.CheckIndicatorSize);
-      _tokenResourceBinder.AddBinding(PaddingInlineProperty, GlobalResourceKey.PaddingXS);
-      _tokenResourceBinder.AddBinding(IndicatorBorderRadiusProperty, GlobalResourceKey.BorderRadiusSM);
-      _tokenResourceBinder.AddBinding(IndicatorTristateMarkSizeProperty, CheckBoxResourceKey.IndicatorTristateMarkSize);
-      _tokenResourceBinder.AddBinding(IndicatorTristateMarkBrushProperty, GlobalResourceKey.ColorPrimary);
-      _tokenResourceBinder.AddBinding(IndicatorBorderThicknessProperty, GlobalResourceKey.BorderThickness);
+      _controlTokenBinder.AddControlBinding(CheckIndicatorSizeProperty, CheckBoxResourceKey.CheckIndicatorSize);
+      _controlTokenBinder.AddControlBinding(PaddingInlineProperty, GlobalResourceKey.PaddingXS);
+      _controlTokenBinder.AddControlBinding(IndicatorBorderRadiusProperty, GlobalResourceKey.BorderRadiusSM);
+      _controlTokenBinder.AddControlBinding(IndicatorTristateMarkSizeProperty, CheckBoxResourceKey.IndicatorTristateMarkSize);
+      _controlTokenBinder.AddControlBinding(IndicatorTristateMarkBrushProperty, GlobalResourceKey.ColorPrimary);
+      _controlTokenBinder.AddControlBinding(IndicatorBorderThicknessProperty, GlobalResourceKey.BorderThickness);
    }
 
    void IControlCustomStyle.ApplyVariableStyleConfig()
    {
-      _tokenResourceBinder.ReleaseTriggerBindings(this);
+      _controlTokenBinder.ReleaseTriggerBindings(this);
       if (_styleState.HasFlag(ControlStyleState.Enabled)) {
-         _tokenResourceBinder.AddBinding(ForegroundProperty, GlobalResourceKey.ColorText);
-         _tokenResourceBinder.AddBinding(IndicatorBackgroundProperty, GlobalResourceKey.ColorBgContainer);
-         _tokenResourceBinder.AddBinding(IndicatorCheckedMarkBrushProperty, GlobalResourceKey.ColorBgContainer);
-         _tokenResourceBinder.AddBinding(IndicatorBorderBrushProperty, GlobalResourceKey.ColorBorder);
+         _controlTokenBinder.AddControlBinding(ForegroundProperty, GlobalResourceKey.ColorText);
+         _controlTokenBinder.AddControlBinding(IndicatorBackgroundProperty, GlobalResourceKey.ColorBgContainer);
+         _controlTokenBinder.AddControlBinding(IndicatorCheckedMarkBrushProperty, GlobalResourceKey.ColorBgContainer);
+         _controlTokenBinder.AddControlBinding(IndicatorBorderBrushProperty, GlobalResourceKey.ColorBorder);
          if (_styleState.HasFlag(ControlStyleState.On)) {
             IndicatorCheckedMarkEffectSize = CheckIndicatorSize;
-            _tokenResourceBinder.AddBinding(IndicatorBackgroundProperty, GlobalResourceKey.ColorPrimary, 
+            _controlTokenBinder.AddControlBinding(IndicatorBackgroundProperty, GlobalResourceKey.ColorPrimary, 
                BindingPriority.StyleTrigger);
-            _tokenResourceBinder.AddBinding(IndicatorBorderBrushProperty, GlobalResourceKey.ColorPrimary,
+            _controlTokenBinder.AddControlBinding(IndicatorBorderBrushProperty, GlobalResourceKey.ColorPrimary,
                BindingPriority.StyleTrigger);
             if (_styleState.HasFlag(ControlStyleState.MouseOver)) {
-               _tokenResourceBinder.AddBinding(IndicatorBackgroundProperty, GlobalResourceKey.ColorPrimaryHover,
+               _controlTokenBinder.AddControlBinding(IndicatorBackgroundProperty, GlobalResourceKey.ColorPrimaryHover,
                   BindingPriority.StyleTrigger);
-               _tokenResourceBinder.AddBinding(IndicatorBorderBrushProperty, GlobalResourceKey.ColorPrimaryHover,
+               _controlTokenBinder.AddControlBinding(IndicatorBorderBrushProperty, GlobalResourceKey.ColorPrimaryHover,
                   BindingPriority.StyleTrigger);
             }
          } else if (_styleState.HasFlag(ControlStyleState.Off)) {
             if (_styleState.HasFlag(ControlStyleState.MouseOver)) {
-               _tokenResourceBinder.AddBinding(IndicatorBorderBrushProperty, GlobalResourceKey.ColorPrimaryHover,
+               _controlTokenBinder.AddControlBinding(IndicatorBorderBrushProperty, GlobalResourceKey.ColorPrimaryHover,
                   BindingPriority.StyleTrigger);
             }
             IndicatorCheckedMarkEffectSize = CheckIndicatorSize * 0.7;
          } else if (_styleState.HasFlag(ControlStyleState.Indeterminate)) {
             IndicatorCheckedMarkEffectSize = CheckIndicatorSize * 0.7;
             if (_styleState.HasFlag(ControlStyleState.MouseOver)) {
-               _tokenResourceBinder.AddBinding(IndicatorBorderBrushProperty, GlobalResourceKey.ColorPrimaryHover,
+               _controlTokenBinder.AddControlBinding(IndicatorBorderBrushProperty, GlobalResourceKey.ColorPrimaryHover,
                   BindingPriority.StyleTrigger);
             }
          }
       } else {
-         _tokenResourceBinder.AddBinding(IndicatorBackgroundProperty, GlobalResourceKey.ColorBgContainerDisabled);
-         _tokenResourceBinder.AddBinding(IndicatorBorderBrushProperty, GlobalResourceKey.ColorBorder);
-         _tokenResourceBinder.AddBinding(ForegroundProperty, GlobalResourceKey.ColorTextDisabled);
+         _controlTokenBinder.AddControlBinding(IndicatorBackgroundProperty, GlobalResourceKey.ColorBgContainerDisabled);
+         _controlTokenBinder.AddControlBinding(IndicatorBorderBrushProperty, GlobalResourceKey.ColorBorder);
+         _controlTokenBinder.AddControlBinding(ForegroundProperty, GlobalResourceKey.ColorTextDisabled);
          if (_styleState.HasFlag(ControlStyleState.On)) {
             IndicatorCheckedMarkEffectSize = CheckIndicatorSize;
-            _tokenResourceBinder.AddBinding(IndicatorCheckedMarkBrushProperty, GlobalResourceKey.ColorTextDisabled,
+            _controlTokenBinder.AddControlBinding(IndicatorCheckedMarkBrushProperty, GlobalResourceKey.ColorTextDisabled,
                BindingPriority.StyleTrigger);
          } else if (_styleState.HasFlag(ControlStyleState.Indeterminate)) {
-            _tokenResourceBinder.AddBinding(IndicatorTristateMarkBrushProperty, GlobalResourceKey.ColorTextDisabled,
+            _controlTokenBinder.AddControlBinding(IndicatorTristateMarkBrushProperty, GlobalResourceKey.ColorTextDisabled,
                BindingPriority.StyleTrigger);
          }
       }

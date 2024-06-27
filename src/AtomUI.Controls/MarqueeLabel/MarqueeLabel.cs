@@ -39,7 +39,7 @@ public partial class MarqueeLabel : TextBlock, ITokenIdProvider
    
    public MarqueeLabel()
    {
-      _tokenResourceBinder = new TokenResourceBinder(this);
+      _controlTokenBinder = new ControlTokenBinder(this);
       _customStyle = this;
    }
 

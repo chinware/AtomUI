@@ -2,9 +2,9 @@
 using Avalonia.Controls;
 using Avalonia.Media;
 
-namespace AtomUI.Controls.Utils;
+namespace AtomUI.Controls;
 
-public sealed class ShadowLayer : AvaloniaObject, IShadowLayer
+public partial class PopupShadowLayer
 {
    public void AttachToTarget(Control control)
    {

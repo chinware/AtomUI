@@ -182,8 +182,8 @@ public partial class ProgressBar : AbstractLineProgress
    protected override void NotifyApplyFixedStyleConfig()
    {
       base.NotifyApplyFixedStyleConfig();
-      _tokenResourceBinder.AddBinding(ColorTextLabelTokenProperty, GlobalResourceKey.ColorTextLabel);
-      _tokenResourceBinder.AddBinding(ColorTextLightSolidTokenProperty, GlobalResourceKey.ColorTextLightSolid);
+      _controlTokenBinder.AddControlBinding(ColorTextLabelTokenProperty, GlobalResourceKey.ColorTextLabel);
+      _controlTokenBinder.AddControlBinding(ColorTextLightSolidTokenProperty, GlobalResourceKey.ColorTextLightSolid);
    }
    
    protected override SizeType CalculateEffectiveSizeType(double size)

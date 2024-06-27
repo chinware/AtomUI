@@ -17,7 +17,7 @@ namespace AtomUI.Controls;
 public partial class Button : IWaveAdornerInfoProvider, IControlCustomStyle
 {
    private ControlStyleState _styleState;
-   private TokenResourceBinder _tokenResourceBinder;
+   private ControlTokenBinder _controlTokenBinder;
    private IControlCustomStyle _customStyle;
    private StackPanel? _stackPanel;
    private Label? _label;
@@ -104,7 +104,7 @@ public partial class Button : IWaveAdornerInfoProvider, IControlCustomStyle
 
    void IControlCustomStyle.ApplyVariableStyleConfig()
    {
-      _tokenResourceBinder.ReleaseTriggerBindings(this);
+      _controlTokenBinder.ReleaseTriggerBindings(this);
       if (ButtonType == ButtonType.Primary) {
          ApplyPrimaryStyle();
       } else if (ButtonType == ButtonType.Default) {
@@ -119,16 +119,16 @@ public partial class Button : IWaveAdornerInfoProvider, IControlCustomStyle
    void ApplyShapeStyleConfig()
    {
       if (Shape == ButtonShape.Circle) {
-         _tokenResourceBinder.AddBinding(PaddingProperty, "CirclePadding");
+         _controlTokenBinder.AddControlBinding(PaddingProperty, "CirclePadding");
       }
    }
 
    void IControlCustomStyle.ApplyFixedStyleConfig()
    {
-      _tokenResourceBinder.AddBinding(PaddingXXSTokenProperty, "PaddingXXS");
-      _tokenResourceBinder.AddBinding(DefaultShadowTokenProperty, "DefaultShadow");
-      _tokenResourceBinder.AddBinding(PrimaryShadowTokenProperty, "PrimaryShadow");
-      _tokenResourceBinder.AddBinding(DangerShadowTokenProperty, "DangerShadow");
+      _controlTokenBinder.AddControlBinding(PaddingXXSTokenProperty, "PaddingXXS");
+      _controlTokenBinder.AddControlBinding(DefaultShadowTokenProperty, "DefaultShadow");
+      _controlTokenBinder.AddControlBinding(PrimaryShadowTokenProperty, "PrimaryShadow");
+      _controlTokenBinder.AddControlBinding(DangerShadowTokenProperty, "DangerShadow");
    }
 
    void IControlCustomStyle.CollectStyleState()
@@ -145,7 +145,7 @@ public partial class Button : IWaveAdornerInfoProvider, IControlCustomStyle
    {
       if (ButtonType == ButtonType.Default || 
           (ButtonType == ButtonType.Primary && (IsGhost || !IsEnabled))) {
-         _tokenResourceBinder.AddBinding(BorderThicknessProperty, GlobalResourceKey.BorderThickness, BindingPriority.Style,
+         _controlTokenBinder.AddControlBinding(BorderThicknessProperty, GlobalResourceKey.BorderThickness, BindingPriority.Style,
                                          new RenderScaleAwareThicknessConfigure(this));
       }
    }
@@ -174,32 +174,32 @@ public partial class Button : IWaveAdornerInfoProvider, IControlCustomStyle
    void IControlCustomStyle.ApplySizeTypeStyleConfig()
    {
       if (SizeType == SizeType.Small) {
-         _tokenResourceBinder.AddBinding(ControlHeightTokenProperty, GlobalResourceKey.ControlHeightSM);
-         _tokenResourceBinder.AddBinding(FontSizeProperty, ButtonResourceKey.ContentFontSizeSM);
-         _tokenResourceBinder.AddBinding(PaddingProperty, ButtonResourceKey.PaddingSM);
-         _tokenResourceBinder.AddBinding(CornerRadiusProperty, GlobalResourceKey.BorderRadiusSM);
+         _controlTokenBinder.AddControlBinding(ControlHeightTokenProperty, GlobalResourceKey.ControlHeightSM);
+         _controlTokenBinder.AddControlBinding(FontSizeProperty, ButtonResourceKey.ContentFontSizeSM);
+         _controlTokenBinder.AddControlBinding(PaddingProperty, ButtonResourceKey.PaddingSM);
+         _controlTokenBinder.AddControlBinding(CornerRadiusProperty, GlobalResourceKey.BorderRadiusSM);
       } else if (SizeType == SizeType.Middle) {
-         _tokenResourceBinder.AddBinding(ControlHeightTokenProperty, GlobalResourceKey.ControlHeight);
-         _tokenResourceBinder.AddBinding(FontSizeProperty, ButtonResourceKey.ContentFontSize);
-         _tokenResourceBinder.AddBinding(PaddingProperty, GlobalResourceKey.Padding);
-         _tokenResourceBinder.AddBinding(CornerRadiusProperty, GlobalResourceKey.BorderRadius);
+         _controlTokenBinder.AddControlBinding(ControlHeightTokenProperty, GlobalResourceKey.ControlHeight);
+         _controlTokenBinder.AddControlBinding(FontSizeProperty, ButtonResourceKey.ContentFontSize);
+         _controlTokenBinder.AddControlBinding(PaddingProperty, GlobalResourceKey.Padding);
+         _controlTokenBinder.AddControlBinding(CornerRadiusProperty, GlobalResourceKey.BorderRadius);
       } else if (SizeType == SizeType.Large) {
-         _tokenResourceBinder.AddBinding(ControlHeightTokenProperty, GlobalResourceKey.ControlHeightLG);
-         _tokenResourceBinder.AddBinding(FontSizeProperty, ButtonResourceKey.ContentFontSizeLG);
-         _tokenResourceBinder.AddBinding(PaddingProperty, ButtonResourceKey.PaddingLG);
-         _tokenResourceBinder.AddBinding(CornerRadiusProperty, GlobalResourceKey.BorderRadiusLG);
+         _controlTokenBinder.AddControlBinding(ControlHeightTokenProperty, GlobalResourceKey.ControlHeightLG);
+         _controlTokenBinder.AddControlBinding(FontSizeProperty, ButtonResourceKey.ContentFontSizeLG);
+         _controlTokenBinder.AddControlBinding(PaddingProperty, ButtonResourceKey.PaddingLG);
+         _controlTokenBinder.AddControlBinding(CornerRadiusProperty, GlobalResourceKey.BorderRadiusLG);
       }
 
       if (Icon is not null) {
          if (SizeType == SizeType.Small) {
-            _tokenResourceBinder.AddBinding(Icon, WidthProperty, ButtonResourceKey.IconSizeSM);
-            _tokenResourceBinder.AddBinding(Icon, HeightProperty, ButtonResourceKey.IconSizeSM);
+            _controlTokenBinder.AddControlBinding(Icon, WidthProperty, ButtonResourceKey.IconSizeSM);
+            _controlTokenBinder.AddControlBinding(Icon, HeightProperty, ButtonResourceKey.IconSizeSM);
          } else if (SizeType == SizeType.Middle) {
-            _tokenResourceBinder.AddBinding(Icon, WidthProperty, ButtonResourceKey.IconSize);
-            _tokenResourceBinder.AddBinding(Icon, HeightProperty, ButtonResourceKey.IconSize);
+            _controlTokenBinder.AddControlBinding(Icon, WidthProperty, ButtonResourceKey.IconSize);
+            _controlTokenBinder.AddControlBinding(Icon, HeightProperty, ButtonResourceKey.IconSize);
          } else if (SizeType == SizeType.Large) {
-            _tokenResourceBinder.AddBinding(Icon, WidthProperty, ButtonResourceKey.IconSizeLG);
-            _tokenResourceBinder.AddBinding(Icon, HeightProperty, ButtonResourceKey.IconSizeLG);
+            _controlTokenBinder.AddControlBinding(Icon, WidthProperty, ButtonResourceKey.IconSizeLG);
+            _controlTokenBinder.AddControlBinding(Icon, HeightProperty, ButtonResourceKey.IconSizeLG);
          }
       }
    }
@@ -211,154 +211,154 @@ public partial class Button : IWaveAdornerInfoProvider, IControlCustomStyle
          if (IsGhost) {
             Background = new SolidColorBrush(Colors.Transparent);
             if (IsDanger) {
-               _tokenResourceBinder.AddBinding(BorderBrushProperty, GlobalResourceKey.ColorError);
-               _tokenResourceBinder.AddBinding(ForegroundProperty, GlobalResourceKey.ColorError);
+               _controlTokenBinder.AddControlBinding(BorderBrushProperty, GlobalResourceKey.ColorError);
+               _controlTokenBinder.AddControlBinding(ForegroundProperty, GlobalResourceKey.ColorError);
 
                if (_styleState.HasFlag(ControlStyleState.Sunken)) {
-                  _tokenResourceBinder.AddBinding(BorderBrushProperty, GlobalResourceKey.ColorErrorActive,
+                  _controlTokenBinder.AddControlBinding(BorderBrushProperty, GlobalResourceKey.ColorErrorActive,
                      BindingPriority.StyleTrigger);
-                  _tokenResourceBinder.AddBinding(ForegroundProperty, GlobalResourceKey.ColorErrorActive,
+                  _controlTokenBinder.AddControlBinding(ForegroundProperty, GlobalResourceKey.ColorErrorActive,
                      BindingPriority.StyleTrigger);
                } else if (_styleState.HasFlag(ControlStyleState.MouseOver)) {
-                  _tokenResourceBinder.AddBinding(BorderBrushProperty, GlobalResourceKey.ColorErrorBorderHover,
+                  _controlTokenBinder.AddControlBinding(BorderBrushProperty, GlobalResourceKey.ColorErrorBorderHover,
                      BindingPriority.StyleTrigger);
-                  _tokenResourceBinder.AddBinding(ForegroundProperty, GlobalResourceKey.ColorErrorBorderHover,
+                  _controlTokenBinder.AddControlBinding(ForegroundProperty, GlobalResourceKey.ColorErrorBorderHover,
                      BindingPriority.StyleTrigger);
                }
             } else {
-               _tokenResourceBinder.AddBinding(ForegroundProperty, GlobalResourceKey.ColorPrimary);
-               _tokenResourceBinder.AddBinding(BorderBrushProperty, GlobalResourceKey.ColorPrimary);
+               _controlTokenBinder.AddControlBinding(ForegroundProperty, GlobalResourceKey.ColorPrimary);
+               _controlTokenBinder.AddControlBinding(BorderBrushProperty, GlobalResourceKey.ColorPrimary);
 
                if (_styleState.HasFlag(ControlStyleState.Sunken)) {
-                  _tokenResourceBinder.AddBinding(ForegroundProperty, GlobalResourceKey.ColorPrimaryActive,
+                  _controlTokenBinder.AddControlBinding(ForegroundProperty, GlobalResourceKey.ColorPrimaryActive,
                      BindingPriority.StyleTrigger);
-                  _tokenResourceBinder.AddBinding(BorderBrushProperty, GlobalResourceKey.ColorPrimaryActive,
+                  _controlTokenBinder.AddControlBinding(BorderBrushProperty, GlobalResourceKey.ColorPrimaryActive,
                      BindingPriority.StyleTrigger);
                } else if (_styleState.HasFlag(ControlStyleState.MouseOver)) {
-                  _tokenResourceBinder.AddBinding(ForegroundProperty, GlobalResourceKey.ColorPrimaryHover,
+                  _controlTokenBinder.AddControlBinding(ForegroundProperty, GlobalResourceKey.ColorPrimaryHover,
                      BindingPriority.StyleTrigger);
-                  _tokenResourceBinder.AddBinding(BorderBrushProperty, GlobalResourceKey.ColorPrimaryHover,
+                  _controlTokenBinder.AddControlBinding(BorderBrushProperty, GlobalResourceKey.ColorPrimaryHover,
                      BindingPriority.StyleTrigger);
                }
             }
          } else {
-            _tokenResourceBinder.AddBinding(ForegroundProperty, ButtonResourceKey.PrimaryColor);
+            _controlTokenBinder.AddControlBinding(ForegroundProperty, ButtonResourceKey.PrimaryColor);
             if (IsDanger) {
-               _tokenResourceBinder.AddBinding(BackgroundProperty, GlobalResourceKey.ColorError);
+               _controlTokenBinder.AddControlBinding(BackgroundProperty, GlobalResourceKey.ColorError);
                if (_styleState.HasFlag(ControlStyleState.Sunken)) {
-                  _tokenResourceBinder.AddBinding(BackgroundProperty, GlobalResourceKey.ColorErrorActive,
+                  _controlTokenBinder.AddControlBinding(BackgroundProperty, GlobalResourceKey.ColorErrorActive,
                      BindingPriority.StyleTrigger);
                } else if (_styleState.HasFlag(ControlStyleState.MouseOver)) {
-                  _tokenResourceBinder.AddBinding(BackgroundProperty, GlobalResourceKey.ColorErrorHover,
+                  _controlTokenBinder.AddControlBinding(BackgroundProperty, GlobalResourceKey.ColorErrorHover,
                      BindingPriority.StyleTrigger);
                }
             } else {
-               _tokenResourceBinder.AddBinding(BackgroundProperty, GlobalResourceKey.ColorPrimary);
+               _controlTokenBinder.AddControlBinding(BackgroundProperty, GlobalResourceKey.ColorPrimary);
                if (_styleState.HasFlag(ControlStyleState.Sunken)) {
-                  _tokenResourceBinder.AddBinding(BackgroundProperty, GlobalResourceKey.ColorPrimaryActive,
+                  _controlTokenBinder.AddControlBinding(BackgroundProperty, GlobalResourceKey.ColorPrimaryActive,
                      BindingPriority.StyleTrigger);
                } else if (_styleState.HasFlag(ControlStyleState.MouseOver)) {
-                  _tokenResourceBinder.AddBinding(BackgroundProperty, GlobalResourceKey.ColorPrimaryHover,
+                  _controlTokenBinder.AddControlBinding(BackgroundProperty, GlobalResourceKey.ColorPrimaryHover,
                      BindingPriority.StyleTrigger);
                }
             }
          }
       } else {
-         _tokenResourceBinder.AddBinding(ForegroundProperty, GlobalResourceKey.ColorTextDisabled);
-         _tokenResourceBinder.AddBinding(BorderBrushProperty, ButtonResourceKey.BorderColorDisabled);
-         _tokenResourceBinder.AddBinding(BackgroundProperty, GlobalResourceKey.ColorBgContainerDisabled);
+         _controlTokenBinder.AddControlBinding(ForegroundProperty, GlobalResourceKey.ColorTextDisabled);
+         _controlTokenBinder.AddControlBinding(BorderBrushProperty, ButtonResourceKey.BorderColorDisabled);
+         _controlTokenBinder.AddControlBinding(BackgroundProperty, GlobalResourceKey.ColorBgContainerDisabled);
       }
    }
 
    private void ApplyDefaultStyle()
    {
       if (_styleState.HasFlag(ControlStyleState.Enabled)) {
-         _tokenResourceBinder.AddBinding(BackgroundProperty, ButtonResourceKey.DefaultBg);
+         _controlTokenBinder.AddControlBinding(BackgroundProperty, ButtonResourceKey.DefaultBg);
          if (IsDanger) {
-            _tokenResourceBinder.AddBinding(BorderBrushProperty, GlobalResourceKey.ColorError);
-            _tokenResourceBinder.AddBinding(ForegroundProperty, GlobalResourceKey.ColorError);
+            _controlTokenBinder.AddControlBinding(BorderBrushProperty, GlobalResourceKey.ColorError);
+            _controlTokenBinder.AddControlBinding(ForegroundProperty, GlobalResourceKey.ColorError);
 
             if (IsGhost) {
-               _tokenResourceBinder.AddBinding(BackgroundProperty, GlobalResourceKey.ColorTransparent);
+               _controlTokenBinder.AddControlBinding(BackgroundProperty, GlobalResourceKey.ColorTransparent);
             }
 
             if (_styleState.HasFlag(ControlStyleState.Sunken)) {
-               _tokenResourceBinder.AddBinding(BorderBrushProperty, GlobalResourceKey.ColorErrorActive,
+               _controlTokenBinder.AddControlBinding(BorderBrushProperty, GlobalResourceKey.ColorErrorActive,
                   BindingPriority.StyleTrigger);
-               _tokenResourceBinder.AddBinding(ForegroundProperty, GlobalResourceKey.ColorErrorActive,
+               _controlTokenBinder.AddControlBinding(ForegroundProperty, GlobalResourceKey.ColorErrorActive,
                   BindingPriority.StyleTrigger);
             } else if (_styleState.HasFlag(ControlStyleState.MouseOver)) {
-               _tokenResourceBinder.AddBinding(BorderBrushProperty, GlobalResourceKey.ColorErrorBorderHover,
+               _controlTokenBinder.AddControlBinding(BorderBrushProperty, GlobalResourceKey.ColorErrorBorderHover,
                   BindingPriority.StyleTrigger);
-               _tokenResourceBinder.AddBinding(ForegroundProperty, GlobalResourceKey.ColorErrorBorderHover,
+               _controlTokenBinder.AddControlBinding(ForegroundProperty, GlobalResourceKey.ColorErrorBorderHover,
                   BindingPriority.StyleTrigger);
             }
          } else {
             if (IsGhost) {
-               _tokenResourceBinder.AddBinding(ForegroundProperty, GlobalResourceKey.ColorTextLightSolid);
-               _tokenResourceBinder.AddBinding(BorderBrushProperty, GlobalResourceKey.ColorTextLightSolid);
-               _tokenResourceBinder.AddBinding(BackgroundProperty, GlobalResourceKey.ColorTransparent);
+               _controlTokenBinder.AddControlBinding(ForegroundProperty, GlobalResourceKey.ColorTextLightSolid);
+               _controlTokenBinder.AddControlBinding(BorderBrushProperty, GlobalResourceKey.ColorTextLightSolid);
+               _controlTokenBinder.AddControlBinding(BackgroundProperty, GlobalResourceKey.ColorTransparent);
                
                if (_styleState.HasFlag(ControlStyleState.Sunken)) {
-                  _tokenResourceBinder.AddBinding(ForegroundProperty, GlobalResourceKey.ColorPrimaryActive,
+                  _controlTokenBinder.AddControlBinding(ForegroundProperty, GlobalResourceKey.ColorPrimaryActive,
                      BindingPriority.StyleTrigger);
-                  _tokenResourceBinder.AddBinding(BorderBrushProperty, GlobalResourceKey.ColorPrimaryActive,
+                  _controlTokenBinder.AddControlBinding(BorderBrushProperty, GlobalResourceKey.ColorPrimaryActive,
                      BindingPriority.StyleTrigger);
                } else if (_styleState.HasFlag(ControlStyleState.MouseOver)) {
-                  _tokenResourceBinder.AddBinding(ForegroundProperty, GlobalResourceKey.ColorPrimaryHover,
+                  _controlTokenBinder.AddControlBinding(ForegroundProperty, GlobalResourceKey.ColorPrimaryHover,
                      BindingPriority.StyleTrigger);
-                  _tokenResourceBinder.AddBinding(BorderBrushProperty, GlobalResourceKey.ColorPrimaryHover,
+                  _controlTokenBinder.AddControlBinding(BorderBrushProperty, GlobalResourceKey.ColorPrimaryHover,
                      BindingPriority.StyleTrigger);
                }
             } else {
-               _tokenResourceBinder.AddBinding(BorderBrushProperty, ButtonResourceKey.DefaultBorderColor);
-               _tokenResourceBinder.AddBinding(ForegroundProperty, ButtonResourceKey.DefaultColor);
+               _controlTokenBinder.AddControlBinding(BorderBrushProperty, ButtonResourceKey.DefaultBorderColor);
+               _controlTokenBinder.AddControlBinding(ForegroundProperty, ButtonResourceKey.DefaultColor);
                if (_styleState.HasFlag(ControlStyleState.Sunken)) {
-                  _tokenResourceBinder.AddBinding(BorderBrushProperty, ButtonResourceKey.DefaultActiveBorderColor,
+                  _controlTokenBinder.AddControlBinding(BorderBrushProperty, ButtonResourceKey.DefaultActiveBorderColor,
                      BindingPriority.StyleTrigger);
-                  _tokenResourceBinder.AddBinding(ForegroundProperty, ButtonResourceKey.DefaultActiveColor,
+                  _controlTokenBinder.AddControlBinding(ForegroundProperty, ButtonResourceKey.DefaultActiveColor,
                      BindingPriority.StyleTrigger);
                } else if (_styleState.HasFlag(ControlStyleState.MouseOver)) {
-                  _tokenResourceBinder.AddBinding(BorderBrushProperty, ButtonResourceKey.DefaultHoverBorderColor,
+                  _controlTokenBinder.AddControlBinding(BorderBrushProperty, ButtonResourceKey.DefaultHoverBorderColor,
                      BindingPriority.StyleTrigger);
-                  _tokenResourceBinder.AddBinding(ForegroundProperty, ButtonResourceKey.DefaultHoverColor,
+                  _controlTokenBinder.AddControlBinding(ForegroundProperty, ButtonResourceKey.DefaultHoverColor,
                      BindingPriority.StyleTrigger);
                }
             }
          }
       } else {
-         _tokenResourceBinder.AddBinding(ForegroundProperty, GlobalResourceKey.ColorTextDisabled);
-         _tokenResourceBinder.AddBinding(BorderBrushProperty, ButtonResourceKey.BorderColorDisabled);
-         _tokenResourceBinder.AddBinding(BackgroundProperty, GlobalResourceKey.ColorBgContainerDisabled);
+         _controlTokenBinder.AddControlBinding(ForegroundProperty, GlobalResourceKey.ColorTextDisabled);
+         _controlTokenBinder.AddControlBinding(BorderBrushProperty, ButtonResourceKey.BorderColorDisabled);
+         _controlTokenBinder.AddControlBinding(BackgroundProperty, GlobalResourceKey.ColorBgContainerDisabled);
       }
    }
 
    private void ApplyTextStyle()
    {
       if (_styleState.HasFlag(ControlStyleState.Enabled)) {
-         _tokenResourceBinder.AddBinding(BackgroundProperty, GlobalResourceKey.ColorTransparent);
+         _controlTokenBinder.AddControlBinding(BackgroundProperty, GlobalResourceKey.ColorTransparent);
 
          if (IsDanger) {
-            _tokenResourceBinder.AddBinding(ForegroundProperty, GlobalResourceKey.ColorError);
+            _controlTokenBinder.AddControlBinding(ForegroundProperty, GlobalResourceKey.ColorError);
             if (_styleState.HasFlag(ControlStyleState.Sunken)) {
-               _tokenResourceBinder.AddBinding(BackgroundProperty, GlobalResourceKey.ColorErrorBgActive,
+               _controlTokenBinder.AddControlBinding(BackgroundProperty, GlobalResourceKey.ColorErrorBgActive,
                   BindingPriority.StyleTrigger);
             } else if (_styleState.HasFlag(ControlStyleState.MouseOver)) {
-               _tokenResourceBinder.AddBinding(BackgroundProperty, GlobalResourceKey.ColorErrorBgHover,
+               _controlTokenBinder.AddControlBinding(BackgroundProperty, GlobalResourceKey.ColorErrorBgHover,
                   BindingPriority.StyleTrigger);
             }
          } else {
-            _tokenResourceBinder.AddBinding(ForegroundProperty, ButtonResourceKey.DefaultColor);
+            _controlTokenBinder.AddControlBinding(ForegroundProperty, ButtonResourceKey.DefaultColor);
             if (_styleState.HasFlag(ControlStyleState.Sunken)) {
-               _tokenResourceBinder.AddBinding(BackgroundProperty, GlobalResourceKey.ColorBgTextActive,
+               _controlTokenBinder.AddControlBinding(BackgroundProperty, GlobalResourceKey.ColorBgTextActive,
                   BindingPriority.StyleTrigger);
             } else if (_styleState.HasFlag(ControlStyleState.MouseOver)) {
-               _tokenResourceBinder.AddBinding(BackgroundProperty, ButtonResourceKey.TextHoverBg,
+               _controlTokenBinder.AddControlBinding(BackgroundProperty, ButtonResourceKey.TextHoverBg,
                   BindingPriority.StyleTrigger);
             }
          }
       } else {
-         _tokenResourceBinder.AddBinding(ForegroundProperty, GlobalResourceKey.ColorTextDisabled);
+         _controlTokenBinder.AddControlBinding(ForegroundProperty, GlobalResourceKey.ColorTextDisabled);
       }
    }
 
@@ -366,34 +366,34 @@ public partial class Button : IWaveAdornerInfoProvider, IControlCustomStyle
    {
       if (_styleState.HasFlag(ControlStyleState.Enabled)) {
          if (IsGhost) {
-            _tokenResourceBinder.AddBinding(BackgroundProperty, GlobalResourceKey.ColorTransparent);
+            _controlTokenBinder.AddControlBinding(BackgroundProperty, GlobalResourceKey.ColorTransparent);
          } else {
-            _tokenResourceBinder.AddBinding(BackgroundProperty, ButtonResourceKey.DefaultBg);
+            _controlTokenBinder.AddControlBinding(BackgroundProperty, ButtonResourceKey.DefaultBg);
          }
 
          if (IsDanger) {
-            _tokenResourceBinder.AddBinding(ForegroundProperty, GlobalResourceKey.ColorError);
+            _controlTokenBinder.AddControlBinding(ForegroundProperty, GlobalResourceKey.ColorError);
 
             if (_styleState.HasFlag(ControlStyleState.Sunken)) {
-               _tokenResourceBinder.AddBinding(ForegroundProperty, GlobalResourceKey.ColorErrorActive,
+               _controlTokenBinder.AddControlBinding(ForegroundProperty, GlobalResourceKey.ColorErrorActive,
                   BindingPriority.StyleTrigger);
             } else if (_styleState.HasFlag(ControlStyleState.MouseOver)) {
-               _tokenResourceBinder.AddBinding(ForegroundProperty, GlobalResourceKey.ColorErrorHover,
+               _controlTokenBinder.AddControlBinding(ForegroundProperty, GlobalResourceKey.ColorErrorHover,
                   BindingPriority.StyleTrigger);
             }
          } else {
-            _tokenResourceBinder.AddBinding(ForegroundProperty, GlobalResourceKey.ColorLink);
+            _controlTokenBinder.AddControlBinding(ForegroundProperty, GlobalResourceKey.ColorLink);
 
             if (_styleState.HasFlag(ControlStyleState.Sunken)) {
-               _tokenResourceBinder.AddBinding(ForegroundProperty, GlobalResourceKey.ColorLinkActive,
+               _controlTokenBinder.AddControlBinding(ForegroundProperty, GlobalResourceKey.ColorLinkActive,
                   BindingPriority.StyleTrigger);
             } else if (_styleState.HasFlag(ControlStyleState.MouseOver)) {
-               _tokenResourceBinder.AddBinding(ForegroundProperty, GlobalResourceKey.ColorLinkHover,
+               _controlTokenBinder.AddControlBinding(ForegroundProperty, GlobalResourceKey.ColorLinkHover,
                   BindingPriority.StyleTrigger);
             }
          }
       } else {
-         _tokenResourceBinder.AddBinding(ForegroundProperty, GlobalResourceKey.ColorTextDisabled);
+         _controlTokenBinder.AddControlBinding(ForegroundProperty, GlobalResourceKey.ColorTextDisabled);
       }
    }
 
@@ -404,27 +404,27 @@ public partial class Button : IWaveAdornerInfoProvider, IControlCustomStyle
          _stackPanel!.Children.Insert(0, Icon);
          if (Text.Length != 0) {
             if (SizeType == SizeType.Small) {
-               _tokenResourceBinder.AddBinding(Icon, WidthProperty, GlobalResourceKey.IconSizeSM);
-               _tokenResourceBinder.AddBinding(Icon, HeightProperty, GlobalResourceKey.IconSizeSM);
+               _controlTokenBinder.AddControlBinding(Icon, WidthProperty, GlobalResourceKey.IconSizeSM);
+               _controlTokenBinder.AddControlBinding(Icon, HeightProperty, GlobalResourceKey.IconSizeSM);
             } else if (SizeType == SizeType.Middle) {
-               _tokenResourceBinder.AddBinding(Icon, WidthProperty, GlobalResourceKey.IconSize);
-               _tokenResourceBinder.AddBinding(Icon, HeightProperty, GlobalResourceKey.IconSize);
+               _controlTokenBinder.AddControlBinding(Icon, WidthProperty, GlobalResourceKey.IconSize);
+               _controlTokenBinder.AddControlBinding(Icon, HeightProperty, GlobalResourceKey.IconSize);
             } else if (SizeType == SizeType.Large) {
-               _tokenResourceBinder.AddBinding(Icon, WidthProperty, GlobalResourceKey.IconSizeLG);
-               _tokenResourceBinder.AddBinding(Icon, HeightProperty, GlobalResourceKey.IconSizeLG);
+               _controlTokenBinder.AddControlBinding(Icon, WidthProperty, GlobalResourceKey.IconSizeLG);
+               _controlTokenBinder.AddControlBinding(Icon, HeightProperty, GlobalResourceKey.IconSizeLG);
             }
 
             Icon.Margin = new Thickness(0, 0, _paddingXXS, 0);
          } else {
             if (SizeType == SizeType.Small) {
-               _tokenResourceBinder.AddBinding(Icon, WidthProperty, ButtonResourceKey.OnlyIconSizeSM);
-               _tokenResourceBinder.AddBinding(Icon, HeightProperty, ButtonResourceKey.OnlyIconSizeSM);
+               _controlTokenBinder.AddControlBinding(Icon, WidthProperty, ButtonResourceKey.OnlyIconSizeSM);
+               _controlTokenBinder.AddControlBinding(Icon, HeightProperty, ButtonResourceKey.OnlyIconSizeSM);
             } else if (SizeType == SizeType.Middle) {
-               _tokenResourceBinder.AddBinding(Icon, WidthProperty, ButtonResourceKey.OnlyIconSize);
-               _tokenResourceBinder.AddBinding(Icon, HeightProperty, ButtonResourceKey.OnlyIconSize);
+               _controlTokenBinder.AddControlBinding(Icon, WidthProperty, ButtonResourceKey.OnlyIconSize);
+               _controlTokenBinder.AddControlBinding(Icon, HeightProperty, ButtonResourceKey.OnlyIconSize);
             } else if (SizeType == SizeType.Large) {
-               _tokenResourceBinder.AddBinding(Icon, WidthProperty, ButtonResourceKey.OnlyIconSizeLG);
-               _tokenResourceBinder.AddBinding(Icon, HeightProperty, ButtonResourceKey.OnlyIconSizeLG);
+               _controlTokenBinder.AddControlBinding(Icon, WidthProperty, ButtonResourceKey.OnlyIconSizeLG);
+               _controlTokenBinder.AddControlBinding(Icon, HeightProperty, ButtonResourceKey.OnlyIconSizeLG);
             }
          }
 
@@ -444,18 +444,18 @@ public partial class Button : IWaveAdornerInfoProvider, IControlCustomStyle
       // IsGhost 优先级最高
       if (IsGhost) {
          if (IsDanger) {
-            _tokenResourceBinder.AddBinding(Icon, PathIcon.NormalFillBrushProperty, GlobalResourceKey.ColorError);
-            _tokenResourceBinder.AddBinding(Icon, PathIcon.SelectedFilledBrushProperty, GlobalResourceKey.ColorErrorActive);
-            _tokenResourceBinder.AddBinding(Icon, PathIcon.ActiveFilledBrushProperty, GlobalResourceKey.ColorErrorBorderHover);
+            _controlTokenBinder.AddControlBinding(Icon, PathIcon.NormalFillBrushProperty, GlobalResourceKey.ColorError);
+            _controlTokenBinder.AddControlBinding(Icon, PathIcon.SelectedFilledBrushProperty, GlobalResourceKey.ColorErrorActive);
+            _controlTokenBinder.AddControlBinding(Icon, PathIcon.ActiveFilledBrushProperty, GlobalResourceKey.ColorErrorBorderHover);
          } else {
-            _tokenResourceBinder.AddBinding(Icon, PathIcon.NormalFillBrushProperty, GlobalResourceKey.ColorPrimary);
-            _tokenResourceBinder.AddBinding(Icon, PathIcon.SelectedFilledBrushProperty, GlobalResourceKey.ColorPrimaryActive);
-            _tokenResourceBinder.AddBinding(Icon, PathIcon.ActiveFilledBrushProperty, GlobalResourceKey.ColorPrimaryHover);
+            _controlTokenBinder.AddControlBinding(Icon, PathIcon.NormalFillBrushProperty, GlobalResourceKey.ColorPrimary);
+            _controlTokenBinder.AddControlBinding(Icon, PathIcon.SelectedFilledBrushProperty, GlobalResourceKey.ColorPrimaryActive);
+            _controlTokenBinder.AddControlBinding(Icon, PathIcon.ActiveFilledBrushProperty, GlobalResourceKey.ColorPrimaryHover);
          }
       } else {
-         _tokenResourceBinder.AddBinding(Icon, PathIcon.NormalFillBrushProperty, ButtonResourceKey.PrimaryColor);
+         _controlTokenBinder.AddControlBinding(Icon, PathIcon.NormalFillBrushProperty, ButtonResourceKey.PrimaryColor);
       }
-      _tokenResourceBinder.AddBinding(Icon, PathIcon.DisabledFilledBrushProperty, GlobalResourceKey.ColorTextDisabled);
+      _controlTokenBinder.AddControlBinding(Icon, PathIcon.DisabledFilledBrushProperty, GlobalResourceKey.ColorTextDisabled);
    }
 
    private void SetupDefaultOrLinkIconStyle()
@@ -465,26 +465,26 @@ public partial class Button : IWaveAdornerInfoProvider, IControlCustomStyle
       }
       
       if (IsDanger) {
-         _tokenResourceBinder.AddBinding(Icon, PathIcon.NormalFillBrushProperty, GlobalResourceKey.ColorError);
-         _tokenResourceBinder.AddBinding(Icon, PathIcon.SelectedFilledBrushProperty, GlobalResourceKey.ColorErrorActive);
-         _tokenResourceBinder.AddBinding(Icon, PathIcon.ActiveFilledBrushProperty, GlobalResourceKey.ColorErrorBorderHover);
+         _controlTokenBinder.AddControlBinding(Icon, PathIcon.NormalFillBrushProperty, GlobalResourceKey.ColorError);
+         _controlTokenBinder.AddControlBinding(Icon, PathIcon.SelectedFilledBrushProperty, GlobalResourceKey.ColorErrorActive);
+         _controlTokenBinder.AddControlBinding(Icon, PathIcon.ActiveFilledBrushProperty, GlobalResourceKey.ColorErrorBorderHover);
       } else {
          if (IsGhost) {
-            _tokenResourceBinder.AddBinding(Icon, PathIcon.NormalFillBrushProperty, GlobalResourceKey.ColorTextLightSolid);
-            _tokenResourceBinder.AddBinding(Icon, PathIcon.SelectedFilledBrushProperty, GlobalResourceKey.ColorPrimaryActive);
-            _tokenResourceBinder.AddBinding(Icon, PathIcon.ActiveFilledBrushProperty, GlobalResourceKey.ColorPrimaryHover);
+            _controlTokenBinder.AddControlBinding(Icon, PathIcon.NormalFillBrushProperty, GlobalResourceKey.ColorTextLightSolid);
+            _controlTokenBinder.AddControlBinding(Icon, PathIcon.SelectedFilledBrushProperty, GlobalResourceKey.ColorPrimaryActive);
+            _controlTokenBinder.AddControlBinding(Icon, PathIcon.ActiveFilledBrushProperty, GlobalResourceKey.ColorPrimaryHover);
          } else {
             if (ButtonType == ButtonType.Link) {
-               _tokenResourceBinder.AddBinding(Icon, PathIcon.NormalFillBrushProperty, GlobalResourceKey.ColorLink);
+               _controlTokenBinder.AddControlBinding(Icon, PathIcon.NormalFillBrushProperty, GlobalResourceKey.ColorLink);
             } else {
-               _tokenResourceBinder.AddBinding(Icon, PathIcon.NormalFillBrushProperty, ButtonResourceKey.DefaultColor);
+               _controlTokenBinder.AddControlBinding(Icon, PathIcon.NormalFillBrushProperty, ButtonResourceKey.DefaultColor);
             }
             
-            _tokenResourceBinder.AddBinding(Icon, PathIcon.SelectedFilledBrushProperty, ButtonResourceKey.DefaultActiveColor);
-            _tokenResourceBinder.AddBinding(Icon, PathIcon.ActiveFilledBrushProperty, ButtonResourceKey.DefaultHoverColor);
+            _controlTokenBinder.AddControlBinding(Icon, PathIcon.SelectedFilledBrushProperty, ButtonResourceKey.DefaultActiveColor);
+            _controlTokenBinder.AddControlBinding(Icon, PathIcon.ActiveFilledBrushProperty, ButtonResourceKey.DefaultHoverColor);
          }
       }
-      _tokenResourceBinder.AddBinding(Icon, PathIcon.DisabledFilledBrushProperty, GlobalResourceKey.ColorTextDisabled);
+      _controlTokenBinder.AddControlBinding(Icon, PathIcon.DisabledFilledBrushProperty, GlobalResourceKey.ColorTextDisabled);
    }
 
    private void ApplyIconModeStyleConfig()

@@ -13,7 +13,7 @@ namespace AtomUI.Controls;
 public partial class MarqueeLabel : IControlCustomStyle
 {
    private IControlCustomStyle? _customStyle;
-   private TokenResourceBinder _tokenResourceBinder;
+   private ControlTokenBinder _controlTokenBinder;
    private ControlStyleState _styleState;
    private CancellationTokenSource? _cancellationTokenSource;
    private bool _initialized = false;
@@ -46,8 +46,8 @@ public partial class MarqueeLabel : IControlCustomStyle
 
    void IControlCustomStyle.ApplyFixedStyleConfig()
    {
-      _tokenResourceBinder.AddBinding(CycleSpaceProperty, MarqueeLabelResourceKey.CycleSpace);
-      _tokenResourceBinder.AddBinding(MoveSpeedProperty, MarqueeLabelResourceKey.DefaultSpeed);
+      _controlTokenBinder.AddControlBinding(CycleSpaceProperty, MarqueeLabelResourceKey.CycleSpace);
+      _controlTokenBinder.AddControlBinding(MoveSpeedProperty, MarqueeLabelResourceKey.DefaultSpeed);
    }
 
    void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)

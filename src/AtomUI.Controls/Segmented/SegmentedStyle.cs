@@ -13,7 +13,7 @@ public partial class Segmented : IControlCustomStyle
 {
    private bool _initialized = false;
    private IControlCustomStyle _customStyle;
-   private TokenResourceBinder _tokenResourceBinder;
+   private ControlTokenBinder _controlTokenBinder;
    private int _firstVisible = 0;
    private int _lastVisible = -1;
    
@@ -38,14 +38,14 @@ public partial class Segmented : IControlCustomStyle
    void IControlCustomStyle.ApplySizeTypeStyleConfig()
    {
       if (SizeType == SizeType.Large) {
-         _tokenResourceBinder.AddBinding(CornerRadiusProperty, GlobalResourceKey.BorderRadiusLG);
-         _tokenResourceBinder.AddBinding(this, SelectedThumbCornerRadiusProperty, GlobalResourceKey.BorderRadius);
+         _controlTokenBinder.AddControlBinding(CornerRadiusProperty, GlobalResourceKey.BorderRadiusLG);
+         _controlTokenBinder.AddControlBinding(this, SelectedThumbCornerRadiusProperty, GlobalResourceKey.BorderRadius);
       } else if (SizeType == SizeType.Middle) {
-         _tokenResourceBinder.AddBinding(this, CornerRadiusProperty, GlobalResourceKey.BorderRadius);
-         _tokenResourceBinder.AddBinding(this, SelectedThumbCornerRadiusProperty, GlobalResourceKey.BorderRadiusSM);
+         _controlTokenBinder.AddControlBinding(this, CornerRadiusProperty, GlobalResourceKey.BorderRadius);
+         _controlTokenBinder.AddControlBinding(this, SelectedThumbCornerRadiusProperty, GlobalResourceKey.BorderRadiusSM);
       } else if (SizeType == SizeType.Small) {
-         _tokenResourceBinder.AddBinding(this, CornerRadiusProperty, GlobalResourceKey.BorderRadiusSM);
-         _tokenResourceBinder.AddBinding(this, SelectedThumbCornerRadiusProperty, GlobalResourceKey.BorderRadiusXS);
+         _controlTokenBinder.AddControlBinding(this, CornerRadiusProperty, GlobalResourceKey.BorderRadiusSM);
+         _controlTokenBinder.AddControlBinding(this, SelectedThumbCornerRadiusProperty, GlobalResourceKey.BorderRadiusXS);
       }
 
       ApplyItemSizeConfig();
@@ -62,10 +62,10 @@ public partial class Segmented : IControlCustomStyle
 
    void IControlCustomStyle.ApplyFixedStyleConfig()
    {
-      _tokenResourceBinder.AddBinding(this, BackgroundProperty, SegmentedResourceKey.TrackBg);
-      _tokenResourceBinder.AddBinding(this, TrackPaddingTokenProperty, SegmentedResourceKey.TrackPadding);
-      _tokenResourceBinder.AddBinding(this, ItemSelectedBgTokenProperty, SegmentedResourceKey.ItemSelectedBg);
-      _tokenResourceBinder.AddBinding(this, BoxShadowsTertiaryTokenProperty, GlobalResourceKey.BoxShadowsTertiary);
+      _controlTokenBinder.AddControlBinding(this, BackgroundProperty, SegmentedResourceKey.TrackBg);
+      _controlTokenBinder.AddControlBinding(this, TrackPaddingTokenProperty, SegmentedResourceKey.TrackPadding);
+      _controlTokenBinder.AddControlBinding(this, ItemSelectedBgTokenProperty, SegmentedResourceKey.ItemSelectedBg);
+      _controlTokenBinder.AddControlBinding(this, BoxShadowsTertiaryTokenProperty, GlobalResourceKey.BoxShadowsTertiary);
    }
 
    void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)

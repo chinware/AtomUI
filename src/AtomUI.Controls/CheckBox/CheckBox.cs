@@ -19,7 +19,7 @@ public partial class CheckBox : AvaloniaCheckBox, ITokenIdProvider, ICustomHitTe
    
    public CheckBox()
    {
-      _tokenResourceBinder = new TokenResourceBinder(this);
+      _controlTokenBinder = new ControlTokenBinder(this);
       _customStyle = this;
    }
    

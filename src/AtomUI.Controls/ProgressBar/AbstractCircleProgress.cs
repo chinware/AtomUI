@@ -244,16 +244,16 @@ public abstract partial class AbstractCircleProgress : AbstractProgressBar
          HorizontalAlignment = HorizontalAlignment.Center,
          VerticalAlignment = VerticalAlignment.Center
       };
-      _tokenResourceBinder.AddBinding(_exceptionCompletedIcon, PathIcon.NormalFillBrushProperty, GlobalResourceKey.ColorError);
-      _tokenResourceBinder.AddBinding(_exceptionCompletedIcon, PathIcon.DisabledFilledBrushProperty, GlobalResourceKey.ControlItemBgActiveDisabled);
+      _controlTokenBinder.AddControlBinding(_exceptionCompletedIcon, PathIcon.NormalFillBrushProperty, GlobalResourceKey.ColorError);
+      _controlTokenBinder.AddControlBinding(_exceptionCompletedIcon, PathIcon.DisabledFilledBrushProperty, GlobalResourceKey.ControlItemBgActiveDisabled);
       _successCompletedIcon = new PathIcon
       {
          Kind = "CheckOutlined",
          HorizontalAlignment = HorizontalAlignment.Center,
          VerticalAlignment = VerticalAlignment.Center
       };
-      _tokenResourceBinder.AddBinding(_successCompletedIcon, PathIcon.NormalFillBrushProperty, GlobalResourceKey.ColorSuccess);
-      _tokenResourceBinder.AddBinding(_successCompletedIcon, PathIcon.DisabledFilledBrushProperty, GlobalResourceKey.ControlItemBgActiveDisabled);
+      _controlTokenBinder.AddControlBinding(_successCompletedIcon, PathIcon.NormalFillBrushProperty, GlobalResourceKey.ColorSuccess);
+      _controlTokenBinder.AddControlBinding(_successCompletedIcon, PathIcon.DisabledFilledBrushProperty, GlobalResourceKey.ControlItemBgActiveDisabled);
       _successCompletedIcon.IsVisible = false;
       _exceptionCompletedIcon.IsVisible = false;
       AddChildControl(_exceptionCompletedIcon);
@@ -263,8 +263,8 @@ public abstract partial class AbstractCircleProgress : AbstractProgressBar
    protected override void NotifyApplyFixedStyleConfig()
    {
       base.NotifyApplyFixedStyleConfig();
-      _tokenResourceBinder.AddBinding(CircleMinimumTextFontSizeTokenProperty, ProgressBarResourceKey.CircleMinimumTextFontSize);
-      _tokenResourceBinder.AddBinding(CircleMinimumIconSizeTokenProperty, ProgressBarResourceKey.CircleMinimumIconSize);
+      _controlTokenBinder.AddControlBinding(CircleMinimumTextFontSizeTokenProperty, ProgressBarResourceKey.CircleMinimumTextFontSize);
+      _controlTokenBinder.AddControlBinding(CircleMinimumIconSizeTokenProperty, ProgressBarResourceKey.CircleMinimumIconSize);
    }
 
    protected override void NotifyEffectSizeTypeChanged()

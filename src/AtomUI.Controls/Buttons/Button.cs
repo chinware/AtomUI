@@ -139,7 +139,7 @@ public partial class Button : AvaloniaButton, ITokenIdProvider, ISizeTypeAware
 
    public Button()
    {
-      _tokenResourceBinder = new TokenResourceBinder(this);
+      _controlTokenBinder = new ControlTokenBinder(this);
       _customStyle = this;
    }
 

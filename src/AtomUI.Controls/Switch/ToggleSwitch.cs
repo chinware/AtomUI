@@ -59,7 +59,7 @@ public partial class ToggleSwitch : ToggleButton, ITokenIdProvider, ISizeTypeAwa
    public ToggleSwitch()
    {
       _customStyle = this;
-      _tokenResourceBinder = new TokenResourceBinder(this);
+      _controlTokenBinder = new ControlTokenBinder(this);
       _switchKnob = new SwitchKnob();
       LayoutUpdated += HandleLayoutUpdated;
    }

@@ -28,7 +28,7 @@ public partial class RadioButton : AvaloniaRadioButton, ITokenIdProvider, ICusto
 
    public RadioButton()
    {
-      _tokenResourceBinder = new TokenResourceBinder(this);
+      _controlTokenBinder = new ControlTokenBinder(this);
       _customStyle = this;
    }
 

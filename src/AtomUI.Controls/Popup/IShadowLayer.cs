@@ -1,7 +1,7 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Media;
 
-namespace AtomUI.Controls.Utils;
+namespace AtomUI.Controls;
 
 public interface IShadowLayer
 {

@@ -68,7 +68,7 @@ public partial class SegmentedItem : StyledControl, ITokenIdProvider
 
    public SegmentedItem()
    {
-      _tokenResourceBinder = new TokenResourceBinder(this);
+      _controlTokenBinder = new ControlTokenBinder(this);
       _customStyle = this;
    }
 

@@ -139,7 +139,7 @@ public partial class Alert : BorderedStyleControl, ITokenIdProvider
 
    public Alert()
    {
-      _tokenResourceBinder = new TokenResourceBinder(this);
+      _controlTokenBinder = new ControlTokenBinder(this);
       _customStyle = this;
       _customStyle.InitOnConstruct();
    }

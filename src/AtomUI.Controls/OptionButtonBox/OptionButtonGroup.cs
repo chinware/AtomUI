@@ -88,7 +88,7 @@ public partial class OptionButtonGroup : StyledControl, ITokenIdProvider, ISizeT
 
    public OptionButtonGroup()
    {
-      _tokenResourceBinder = new TokenResourceBinder(this);
+      _controlTokenBinder = new ControlTokenBinder(this);
       _customStyle = this;
       _customStyle.InitOnConstruct();
       Options.CollectionChanged += OptionsChanged;

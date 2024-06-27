@@ -106,7 +106,7 @@ public partial class OptionButton : AvaloniaRadioButton, ITokenIdProvider, ISize
    
    public OptionButton()
    {
-      _tokenResourceBinder = new TokenResourceBinder(this);
+      _controlTokenBinder = new ControlTokenBinder(this);
       _customStyle = this;
    }
    

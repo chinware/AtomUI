@@ -176,7 +176,7 @@ public partial class Segmented : StyledControl, ITokenIdProvider
 
    public Segmented()
    {
-      _tokenResourceBinder = new TokenResourceBinder(this);
+      _controlTokenBinder = new ControlTokenBinder(this);
       _customStyle = this;
       _customStyle.InitOnConstruct();
       Items.CollectionChanged += HandleItemsChanged;

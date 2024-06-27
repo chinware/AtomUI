@@ -17,7 +17,7 @@ public partial class RadioButton : IWaveAdornerInfoProvider, IControlCustomStyle
    private IPen? _cachedPen;
    private ControlStyleState _styleState;
    private IControlCustomStyle _customStyle;
-   private TokenResourceBinder _tokenResourceBinder;
+   private ControlTokenBinder _controlTokenBinder;
    
    void IControlCustomStyle.SetupUi()
    {
@@ -30,26 +30,26 @@ public partial class RadioButton : IWaveAdornerInfoProvider, IControlCustomStyle
    
    void IControlCustomStyle.ApplyVariableStyleConfig()
    {
-      _tokenResourceBinder.ReleaseTriggerBindings(this);
-      _tokenResourceBinder.AddBinding(RadioBorderBrushProperty, GlobalResourceKey.ColorBorder);
+      _controlTokenBinder.ReleaseTriggerBindings(this);
+      _controlTokenBinder.AddControlBinding(RadioBorderBrushProperty, GlobalResourceKey.ColorBorder);
       if (_styleState.HasFlag(ControlStyleState.Enabled)) {
          // 暂时启用和禁用状态不归为 style trigger
-         _tokenResourceBinder.AddBinding(RadioInnerBackgroundProperty, RadioButtonResourceKey.RadioColor);
+         _controlTokenBinder.AddControlBinding(RadioInnerBackgroundProperty, RadioButtonResourceKey.RadioColor);
          if (_styleState.HasFlag(ControlStyleState.On)) {
-            _tokenResourceBinder.AddBinding(RadioBorderBrushProperty, GlobalResourceKey.ColorPrimary);
-            _tokenResourceBinder.AddBinding(RadioBackgroundProperty, GlobalResourceKey.ColorPrimary);
+            _controlTokenBinder.AddControlBinding(RadioBorderBrushProperty, GlobalResourceKey.ColorPrimary);
+            _controlTokenBinder.AddControlBinding(RadioBackgroundProperty, GlobalResourceKey.ColorPrimary);
          } else {
-            _tokenResourceBinder.AddBinding(RadioBackgroundProperty, GlobalResourceKey.ColorBgContainer);
+            _controlTokenBinder.AddControlBinding(RadioBackgroundProperty, GlobalResourceKey.ColorBgContainer);
             if (_styleState.HasFlag(ControlStyleState.MouseOver)) {
-               _tokenResourceBinder.AddBinding(RadioBorderBrushProperty, GlobalResourceKey.ColorPrimary, 
+               _controlTokenBinder.AddControlBinding(RadioBorderBrushProperty, GlobalResourceKey.ColorPrimary, 
                   BindingPriority.StyleTrigger);
             }
          }
       } else {
-         _tokenResourceBinder.AddBinding(ForegroundProperty, GlobalResourceKey.ColorTextDisabled);
-         _tokenResourceBinder.AddBinding(RadioBackgroundProperty, GlobalResourceKey.ColorBgContainerDisabled, 
+         _controlTokenBinder.AddControlBinding(ForegroundProperty, GlobalResourceKey.ColorTextDisabled);
+         _controlTokenBinder.AddControlBinding(RadioBackgroundProperty, GlobalResourceKey.ColorBgContainerDisabled, 
             BindingPriority.StyleTrigger);
-         _tokenResourceBinder.AddBinding(RadioInnerBackgroundProperty, RadioButtonResourceKey.DotColorDisabled, 
+         _controlTokenBinder.AddControlBinding(RadioInnerBackgroundProperty, RadioButtonResourceKey.DotColorDisabled, 
             BindingPriority.StyleTrigger);
       }
       RadioDotEffectSize = CalculateDotSize(IsEnabled, IsChecked.HasValue && IsChecked.Value);
@@ -57,11 +57,11 @@ public partial class RadioButton : IWaveAdornerInfoProvider, IControlCustomStyle
    
    void IControlCustomStyle.ApplyFixedStyleConfig()
    {
-      _tokenResourceBinder.AddBinding(RadioSizeProperty, RadioButtonResourceKey.RadioSize);
-      _tokenResourceBinder.AddBinding(DotSizeValueProperty, RadioButtonResourceKey.DotSize);
-      _tokenResourceBinder.AddBinding(DotPaddingValueProperty, RadioButtonResourceKey.DotPadding);
-      _tokenResourceBinder.AddBinding(PaddingInlineProperty, GlobalResourceKey.PaddingXS);
-      _tokenResourceBinder.AddBinding(RadioBorderThicknessProperty, GlobalResourceKey.BorderThickness);
+      _controlTokenBinder.AddControlBinding(RadioSizeProperty, RadioButtonResourceKey.RadioSize);
+      _controlTokenBinder.AddControlBinding(DotSizeValueProperty, RadioButtonResourceKey.DotSize);
+      _controlTokenBinder.AddControlBinding(DotPaddingValueProperty, RadioButtonResourceKey.DotPadding);
+      _controlTokenBinder.AddControlBinding(PaddingInlineProperty, GlobalResourceKey.PaddingXS);
+      _controlTokenBinder.AddControlBinding(RadioBorderThicknessProperty, GlobalResourceKey.BorderThickness);
    }
 
    void IControlCustomStyle.CollectStyleState()

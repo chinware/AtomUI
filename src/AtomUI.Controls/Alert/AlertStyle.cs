@@ -13,7 +13,7 @@ namespace AtomUI.Controls;
 public partial class Alert : IControlCustomStyle
 {
    private IControlCustomStyle _customStyle;
-   private TokenResourceBinder _tokenResourceBinder;
+   private ControlTokenBinder _controlTokenBinder;
    private bool _initialized = false;
    private Grid? _mainLayout;
    private Label? _messageLabel;
@@ -62,7 +62,7 @@ public partial class Alert : IControlCustomStyle
          Padding = new Thickness(0)
       };
       TextBlock.SetTextWrapping(_descriptionLabel, TextWrapping.Wrap);
-      _tokenResourceBinder.AddBinding(_descriptionLabel!, Label.MarginProperty, GlobalResourceKey.MarginXS);
+      _controlTokenBinder.AddControlBinding(_descriptionLabel!, Label.MarginProperty, GlobalResourceKey.MarginXS);
       _descriptionLabel.IsVisible = !string.IsNullOrEmpty(Description);
       _infoStack = new StackPanel()
       {
@@ -85,7 +85,7 @@ public partial class Alert : IControlCustomStyle
          _extraAction.VerticalAlignment = VerticalAlignment.Top;
          Grid.SetColumn(_extraAction, 2);
          Grid.SetRow(_extraAction, 0);
-         _tokenResourceBinder.AddBinding(_extraAction, MarginProperty, AlertResourceKey.ExtraElementMargin);
+         _controlTokenBinder.AddControlBinding(_extraAction, MarginProperty, AlertResourceKey.ExtraElementMargin);
          _mainLayout!.Children.Add(_extraAction);
       }
    }
@@ -107,17 +107,17 @@ public partial class Alert : IControlCustomStyle
             {
                Kind = "CloseOutlined",
             };
-            _tokenResourceBinder.AddBinding(_closeIcon, PathIcon.NormalFillBrushProperty, GlobalResourceKey.ColorIcon);
-            _tokenResourceBinder.AddBinding(_closeIcon, PathIcon.ActiveFilledBrushProperty, GlobalResourceKey.ColorIconHover);
+            _controlTokenBinder.AddControlBinding(_closeIcon, PathIcon.NormalFillBrushProperty, GlobalResourceKey.ColorIcon);
+            _controlTokenBinder.AddControlBinding(_closeIcon, PathIcon.ActiveFilledBrushProperty, GlobalResourceKey.ColorIconHover);
          }
 
          _closeButton = new IconButton
          {
             VerticalAlignment = VerticalAlignment.Top,
          };
-         _tokenResourceBinder.AddBinding(_closeButton, WidthProperty, GlobalResourceKey.IconSizeSM);
-         _tokenResourceBinder.AddBinding(_closeButton, HeightProperty, GlobalResourceKey.IconSizeSM);
-         _tokenResourceBinder.AddBinding(_closeButton, MarginProperty, AlertResourceKey.ExtraElementMargin);
+         _controlTokenBinder.AddControlBinding(_closeButton, WidthProperty, GlobalResourceKey.IconSizeSM);
+         _controlTokenBinder.AddControlBinding(_closeButton, HeightProperty, GlobalResourceKey.IconSizeSM);
+         _controlTokenBinder.AddControlBinding(_closeButton, MarginProperty, AlertResourceKey.ExtraElementMargin);
          Grid.SetRow(_closeButton, 0);
          Grid.SetColumn(_closeButton, 3);
          _mainLayout!.Children.Add(_closeButton);
@@ -130,39 +130,39 @@ public partial class Alert : IControlCustomStyle
    void IControlCustomStyle.ApplyFixedStyleConfig()
    {
       ApplyAlertTypeStyleConfig();
-      _tokenResourceBinder.AddBinding(FontSizeProperty, GlobalResourceKey.FontSize);
+      _controlTokenBinder.AddControlBinding(FontSizeProperty, GlobalResourceKey.FontSize);
    }
 
    private void SetupPaddingStyleConfig()
    {
       if (_descriptionLabel!.IsVisible) {
-         _tokenResourceBinder.AddBinding(PaddingProperty, AlertResourceKey.WithDescriptionPadding);
+         _controlTokenBinder.AddControlBinding(PaddingProperty, AlertResourceKey.WithDescriptionPadding);
       } else {
-         _tokenResourceBinder.AddBinding(PaddingProperty, AlertResourceKey.DefaultPadding);
+         _controlTokenBinder.AddControlBinding(PaddingProperty, AlertResourceKey.DefaultPadding);
       }
    }
 
    private void ApplyAlertTypeStyleConfig()
    {
       if (Type == AlertType.Success) {
-         _tokenResourceBinder.AddBinding(BackgroundProperty, GlobalResourceKey.ColorSuccessBg);
-         _tokenResourceBinder.AddBinding(BorderBrushProperty, GlobalResourceKey.ColorSuccessBorder);
+         _controlTokenBinder.AddControlBinding(BackgroundProperty, GlobalResourceKey.ColorSuccessBg);
+         _controlTokenBinder.AddControlBinding(BorderBrushProperty, GlobalResourceKey.ColorSuccessBorder);
       } else if (Type == AlertType.Info) {
-         _tokenResourceBinder.AddBinding(BackgroundProperty, GlobalResourceKey.ColorInfoBg);
-         _tokenResourceBinder.AddBinding(BorderBrushProperty, GlobalResourceKey.ColorInfoBorder);
+         _controlTokenBinder.AddControlBinding(BackgroundProperty, GlobalResourceKey.ColorInfoBg);
+         _controlTokenBinder.AddControlBinding(BorderBrushProperty, GlobalResourceKey.ColorInfoBorder);
       } else if (Type == AlertType.Warning) {
-         _tokenResourceBinder.AddBinding(BackgroundProperty, GlobalResourceKey.ColorWarningBg);
-         _tokenResourceBinder.AddBinding(BorderBrushProperty, GlobalResourceKey.ColorWarningBorder);
+         _controlTokenBinder.AddControlBinding(BackgroundProperty, GlobalResourceKey.ColorWarningBg);
+         _controlTokenBinder.AddControlBinding(BorderBrushProperty, GlobalResourceKey.ColorWarningBorder);
       } else if (Type == AlertType.Error) {
-         _tokenResourceBinder.AddBinding(BackgroundProperty, GlobalResourceKey.ColorErrorBg);
-         _tokenResourceBinder.AddBinding(BorderBrushProperty, GlobalResourceKey.ColorErrorBorder);
+         _controlTokenBinder.AddControlBinding(BackgroundProperty, GlobalResourceKey.ColorErrorBg);
+         _controlTokenBinder.AddControlBinding(BorderBrushProperty, GlobalResourceKey.ColorErrorBorder);
       }
-      _tokenResourceBinder.AddBinding(CornerRadiusProperty, GlobalResourceKey.BorderRadiusLG);
+      _controlTokenBinder.AddControlBinding(CornerRadiusProperty, GlobalResourceKey.BorderRadiusLG);
    }
 
    void IControlCustomStyle.ApplyRenderScalingAwareStyleConfig()
    {
-     _tokenResourceBinder.AddBinding(BorderThicknessProperty, GlobalResourceKey.BorderThickness, BindingPriority.Style, 
+     _controlTokenBinder.AddControlBinding(BorderThicknessProperty, GlobalResourceKey.BorderThickness, BindingPriority.Style, 
                                      new RenderScaleAwareThicknessConfigure(this));
    }
 
@@ -186,14 +186,14 @@ public partial class Alert : IControlCustomStyle
    {
       var messageControl = GetMessageControl();
       if (enabled) {
-         _tokenResourceBinder.AddBinding(messageControl, FontSizeProperty, GlobalResourceKey.FontSizeLG);
-         _tokenResourceBinder.AddBinding(messageControl, MarginProperty, AlertResourceKey.MessageWithDescriptionMargin);
+         _controlTokenBinder.AddControlBinding(messageControl, FontSizeProperty, GlobalResourceKey.FontSizeLG);
+         _controlTokenBinder.AddControlBinding(messageControl, MarginProperty, AlertResourceKey.MessageWithDescriptionMargin);
          if (_closeButton is not null) {
             _closeButton.VerticalAlignment = VerticalAlignment.Top;
          }
          messageControl.VerticalAlignment = VerticalAlignment.Top;
       } else {
-         _tokenResourceBinder.AddBinding(messageControl, FontSizeProperty, GlobalResourceKey.FontSize);
+         _controlTokenBinder.AddControlBinding(messageControl, FontSizeProperty, GlobalResourceKey.FontSize);
          messageControl.Margin = new Thickness();
          if (_closeButton is not null) {
             _closeButton.VerticalAlignment = VerticalAlignment.Center;
@@ -206,14 +206,14 @@ public partial class Alert : IControlCustomStyle
    {
       if (_icon is not null && _isShowIcon) {
          if (enabled) {
-            _tokenResourceBinder.AddBinding(_icon, WidthProperty, AlertResourceKey.WithDescriptionIconSize);
-            _tokenResourceBinder.AddBinding(_icon, HeightProperty, AlertResourceKey.WithDescriptionIconSize);
-            _tokenResourceBinder.AddBinding(_icon, MarginProperty, AlertResourceKey.IconWithDescriptionMargin);
+            _controlTokenBinder.AddControlBinding(_icon, WidthProperty, AlertResourceKey.WithDescriptionIconSize);
+            _controlTokenBinder.AddControlBinding(_icon, HeightProperty, AlertResourceKey.WithDescriptionIconSize);
+            _controlTokenBinder.AddControlBinding(_icon, MarginProperty, AlertResourceKey.IconWithDescriptionMargin);
             _icon.VerticalAlignment = VerticalAlignment.Top;
          } else {
-            _tokenResourceBinder.AddBinding(_icon, WidthProperty, AlertResourceKey.IconSize);
-            _tokenResourceBinder.AddBinding(_icon, HeightProperty, AlertResourceKey.IconSize);
-            _tokenResourceBinder.AddBinding(_icon, MarginProperty, AlertResourceKey.IconDefaultMargin);
+            _controlTokenBinder.AddControlBinding(_icon, WidthProperty, AlertResourceKey.IconSize);
+            _controlTokenBinder.AddControlBinding(_icon, HeightProperty, AlertResourceKey.IconSize);
+            _controlTokenBinder.AddControlBinding(_icon, MarginProperty, AlertResourceKey.IconDefaultMargin);
             _icon.VerticalAlignment = VerticalAlignment.Center;
          }
       }
@@ -244,7 +244,7 @@ public partial class Alert : IControlCustomStyle
                Kind = kind,
             };
             
-            _tokenResourceBinder.AddBinding(_icon, PathIcon.NormalFillBrushProperty, resourceKey);
+            _controlTokenBinder.AddControlBinding(_icon, PathIcon.NormalFillBrushProperty, resourceKey);
             
             HandleIconForDescriptionEnabled(_descriptionLabel!.IsVisible);
             

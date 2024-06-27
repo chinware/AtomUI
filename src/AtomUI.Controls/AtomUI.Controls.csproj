@@ -19,8 +19,5 @@
     <ItemGroup>
         <ProjectReference Include="..\AtomUI.Generator\AtomUI.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     </ItemGroup>
-    <ItemGroup>
-      <Folder Include="InfoFlayout\" />
-    </ItemGroup>
 
 </Project>

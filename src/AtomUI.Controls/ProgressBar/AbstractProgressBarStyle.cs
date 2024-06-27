@@ -16,7 +16,7 @@ public partial class AbstractProgressBar : IControlCustomStyle
 {
    protected bool _initialized = false;
    protected ControlStyleState _styleState;
-   protected TokenResourceBinder _tokenResourceBinder;
+   protected ControlTokenBinder _controlTokenBinder;
    internal IControlCustomStyle _customStyle;
    protected Label? _percentageLabel;
    protected PathIcon? _successCompletedIcon;
@@ -108,7 +108,7 @@ public partial class AbstractProgressBar : IControlCustomStyle
 
    protected virtual void NotifyApplyFixedStyleConfig()
    {
-      _tokenResourceBinder.AddBinding(SuccessThresholdBrushProperty, GlobalResourceKey.ColorSuccess);
+      _controlTokenBinder.AddControlBinding(SuccessThresholdBrushProperty, GlobalResourceKey.ColorSuccess);
    }
 
    protected virtual void NotifyPropertyChanged(AvaloniaPropertyChangedEventArgs e)
@@ -117,7 +117,7 @@ public partial class AbstractProgressBar : IControlCustomStyle
 
    void IControlCustomStyle.ApplyVariableStyleConfig()
    {
-      _tokenResourceBinder.ReleaseTriggerBindings(this);
+      _controlTokenBinder.ReleaseTriggerBindings(this);
       NotifyApplyVariableStyleConfig();
    }
 
@@ -127,26 +127,26 @@ public partial class AbstractProgressBar : IControlCustomStyle
          if (TrailColor.HasValue) {
             GrooveBrush = new SolidColorBrush(TrailColor.Value);
          } else {
-            _tokenResourceBinder.AddBinding(GrooveBrushProperty, ProgressBarResourceKey.RemainingColor);
+            _controlTokenBinder.AddControlBinding(GrooveBrushProperty, ProgressBarResourceKey.RemainingColor);
          }
        
          if (Status == ProgressStatus.Success || MathUtils.AreClose(Value, Maximum)) {
-            _tokenResourceBinder.AddBinding(IndicatorBarBrushProperty, GlobalResourceKey.ColorSuccess);
+            _controlTokenBinder.AddControlBinding(IndicatorBarBrushProperty, GlobalResourceKey.ColorSuccess);
          } else if (Status == ProgressStatus.Exception) {
-            _tokenResourceBinder.AddBinding(IndicatorBarBrushProperty, GlobalResourceKey.ColorError);
+            _controlTokenBinder.AddControlBinding(IndicatorBarBrushProperty, GlobalResourceKey.ColorError);
          } else {
-              _tokenResourceBinder.AddBinding(IndicatorBarBrushProperty, ProgressBarResourceKey.DefaultColor);
+              _controlTokenBinder.AddControlBinding(IndicatorBarBrushProperty, ProgressBarResourceKey.DefaultColor);
          }
-         _tokenResourceBinder.AddBinding(ForegroundProperty, GlobalResourceKey.ColorTextLabel);
+         _controlTokenBinder.AddControlBinding(ForegroundProperty, GlobalResourceKey.ColorTextLabel);
          if (_initialized) {
             _exceptionCompletedIcon!.IconMode = IconMode.Normal;
             _successCompletedIcon!.IconMode = IconMode.Normal;
          }
    
       } else {
-         _tokenResourceBinder.AddBinding(GrooveBrushProperty, GlobalResourceKey.ColorBgContainerDisabled);
-         _tokenResourceBinder.AddBinding(IndicatorBarBrushProperty, GlobalResourceKey.ControlItemBgActiveDisabled);
-         _tokenResourceBinder.AddBinding(ForegroundProperty, GlobalResourceKey.ColorTextDisabled);
+         _controlTokenBinder.AddControlBinding(GrooveBrushProperty, GlobalResourceKey.ColorBgContainerDisabled);
+         _controlTokenBinder.AddControlBinding(IndicatorBarBrushProperty, GlobalResourceKey.ControlItemBgActiveDisabled);
+         _controlTokenBinder.AddControlBinding(ForegroundProperty, GlobalResourceKey.ColorTextDisabled);
          if (_initialized) {
             _exceptionCompletedIcon!.IconMode = IconMode.Disabled;
             _successCompletedIcon!.IconMode = IconMode.Disabled;

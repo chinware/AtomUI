@@ -211,7 +211,7 @@ public abstract partial class AbstractProgressBar : RangeBaseControl, ISizeTypeA
 
    public AbstractProgressBar()
    {
-      _tokenResourceBinder = new TokenResourceBinder(this);
+      _controlTokenBinder = new ControlTokenBinder(this);
       _customStyle = this;
       _effectiveSizeType = SizeType;
    }

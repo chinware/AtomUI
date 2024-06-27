@@ -60,7 +60,7 @@ public partial class Tag : Label, ITokenIdProvider
    public Tag()
    {
       _customStyle = this;
-      _tokenResourceBinder = new TokenResourceBinder(this);
+      _controlTokenBinder = new ControlTokenBinder(this);
       SetupPresetColorMap();
       SetupStatusColorMap();
       _customStyle.InitOnConstruct();

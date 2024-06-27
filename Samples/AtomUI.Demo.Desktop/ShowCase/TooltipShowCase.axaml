@@ -215,7 +215,6 @@
             </StackPanel>
         </showcase:ShowCaseItem>
 
-
         <showcase:ShowCaseItem
             Title="Colorful Tooltip"
             Description="We preset a series of colorful Tooltip styles for use in different situations.">

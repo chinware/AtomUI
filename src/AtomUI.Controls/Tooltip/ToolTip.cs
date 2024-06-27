@@ -1,5 +1,4 @@
 ﻿using System.Reactive.Disposables;
-using System.Reactive.Linq;
 using System.Reflection;
 using AtomUI.ColorSystem;
 using AtomUI.Data;
@@ -19,7 +18,6 @@ using Avalonia.VisualTree;
 namespace AtomUI.Controls;
 
 using AvaloniaWin = Avalonia.Controls.Window;
-using AvaloniaPopup = Avalonia.Controls.Primitives.Popup;
 
 /// <summary>
 /// A control which pops up a hint when a control is hovered.
@@ -52,7 +50,6 @@ public partial class ToolTip : BorderedStyleControl, ITokenIdProvider
    /// </summary>
    public static readonly AttachedProperty<bool> IsOpenProperty =
       AvaloniaProperty.RegisterAttached<ToolTip, Control, bool>("IsOpen");
-   
    
    /// <summary>
    /// Defines the ToolTip.PresetColor attached property.
@@ -127,7 +124,7 @@ public partial class ToolTip : BorderedStyleControl, ITokenIdProvider
       set => SetValue(ContentProperty, value);
    }
 
-   private AvaloniaPopup? _popup;
+   private Popup? _popup;
    private Action<IPopupHost?>? _popupHostChangedHandler;
    private CompositeDisposable? _subscriptions;
    private AvaloniaWin? _currentAnchorWindow;
@@ -152,7 +149,7 @@ public partial class ToolTip : BorderedStyleControl, ITokenIdProvider
    public ToolTip()
    {
       _customStyle = this;
-      _tokenResourceBinder = new TokenResourceBinder(this);
+      _controlTokenBinder = new ControlTokenBinder(this);
    }
 
    internal Control? AdornedControl { get; private set; }
@@ -438,7 +435,7 @@ public partial class ToolTip : BorderedStyleControl, ITokenIdProvider
       Close();
 
       if (_popup is null) {
-         _popup = new AvaloniaPopup();
+         _popup = new Popup();
          _popup.Child = this;
          _popup.WindowManagerAddShadowHint = false;
 
@@ -597,7 +594,7 @@ public partial class ToolTip : BorderedStyleControl, ITokenIdProvider
    /// <summary>
    /// Helper method to set popup's styling and templated parent.
    /// </summary>
-   internal void SetPopupParent(AvaloniaPopup popup, Control? newParent)
+   internal void SetPopupParent(Popup popup, Control? newParent)
    {
       if (popup.Parent != null && popup.Parent != newParent) {
          ((ISetLogicalParent)popup).SetParent(null);
@@ -814,7 +811,7 @@ public partial class ToolTip : BorderedStyleControl, ITokenIdProvider
 
    private void OnPopupOpened(object? sender, EventArgs e)
    {
-      _popupHostChangedHandler?.Invoke(((AvaloniaPopup)sender!).Host);
+      _popupHostChangedHandler?.Invoke(((Popup)sender!).Host);
    }
 
    private void UpdatePseudoClasses(bool newValue)

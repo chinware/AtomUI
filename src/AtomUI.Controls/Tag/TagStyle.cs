@@ -30,7 +30,7 @@ public partial class Tag : IControlCustomStyle
 {
    private bool _initialized = false;
    private IControlCustomStyle _customStyle;
-   private TokenResourceBinder _tokenResourceBinder;
+   private ControlTokenBinder _controlTokenBinder;
    private ControlStyleState _styleState;
    private bool _isPresetColorTag = false;
    private bool _hasColorSet = false;
@@ -74,18 +74,18 @@ public partial class Tag : IControlCustomStyle
 
    void IControlCustomStyle.ApplyFixedStyleConfig()
    {
-      _tokenResourceBinder.AddBinding(DefaultBgTokenProperty, TagResourceKey.DefaultBg);
-      _tokenResourceBinder.AddBinding(DefaultForegroundTokenProperty, TagResourceKey.DefaultColor);
-      _tokenResourceBinder.AddBinding(FontSizeProperty, TagResourceKey.TagFontSize);
-      _tokenResourceBinder.AddBinding(TagLineHeightTokenProperty, TagResourceKey.TagLineHeight);
-      _tokenResourceBinder.AddBinding(TagIconSizeTokenProperty, TagResourceKey.TagIconSize);
-      _tokenResourceBinder.AddBinding(TagCloseIconSizeTokenProperty, TagResourceKey.TagCloseIconSize);
-      _tokenResourceBinder.AddBinding(PaddingXXSTokenProperty, GlobalResourceKey.PaddingXXS);
-      _tokenResourceBinder.AddBinding(PaddingProperty, TagResourceKey.TagPadding);
-      _tokenResourceBinder.AddBinding(TagBorderlessBgTokenProperty, TagResourceKey.TagBorderlessBg);
-      _tokenResourceBinder.AddBinding(BorderBrushProperty, GlobalResourceKey.ColorBorder);
-      _tokenResourceBinder.AddBinding(CornerRadiusProperty, GlobalResourceKey.BorderRadiusSM);
-      _tokenResourceBinder.AddBinding(ColorTextLightSolidTokenProperty, GlobalResourceKey.ColorTextLightSolid);
+      _controlTokenBinder.AddControlBinding(DefaultBgTokenProperty, TagResourceKey.DefaultBg);
+      _controlTokenBinder.AddControlBinding(DefaultForegroundTokenProperty, TagResourceKey.DefaultColor);
+      _controlTokenBinder.AddControlBinding(FontSizeProperty, TagResourceKey.TagFontSize);
+      _controlTokenBinder.AddControlBinding(TagLineHeightTokenProperty, TagResourceKey.TagLineHeight);
+      _controlTokenBinder.AddControlBinding(TagIconSizeTokenProperty, TagResourceKey.TagIconSize);
+      _controlTokenBinder.AddControlBinding(TagCloseIconSizeTokenProperty, TagResourceKey.TagCloseIconSize);
+      _controlTokenBinder.AddControlBinding(PaddingXXSTokenProperty, GlobalResourceKey.PaddingXXS);
+      _controlTokenBinder.AddControlBinding(PaddingProperty, TagResourceKey.TagPadding);
+      _controlTokenBinder.AddControlBinding(TagBorderlessBgTokenProperty, TagResourceKey.TagBorderlessBg);
+      _controlTokenBinder.AddControlBinding(BorderBrushProperty, GlobalResourceKey.ColorBorder);
+      _controlTokenBinder.AddControlBinding(CornerRadiusProperty, GlobalResourceKey.BorderRadiusSM);
+      _controlTokenBinder.AddControlBinding(ColorTextLightSolidTokenProperty, GlobalResourceKey.ColorTextLightSolid);
 
       Background = _defaultBackground;
       Foreground = _defaultForeground;
@@ -93,7 +93,7 @@ public partial class Tag : IControlCustomStyle
 
    void IControlCustomStyle.ApplyRenderScalingAwareStyleConfig()
    {
-      _tokenResourceBinder.AddBinding(BorderThicknessProperty, "BorderThickness", BindingPriority.Style,
+      _controlTokenBinder.AddControlBinding(BorderThicknessProperty, "BorderThickness", BindingPriority.Style,
                                       new RenderScaleAwareThicknessConfigure(this, thickness =>
                                       {
                                          if (!Bordered) {
@@ -290,20 +290,20 @@ public partial class Tag : IControlCustomStyle
             };
 
             if (_hasColorSet && !_isPresetColorTag) {
-               _tokenResourceBinder.AddBinding(CloseIcon, PathIcon.NormalFillBrushProperty, GlobalResourceKey.ColorTextLightSolid);
+               _controlTokenBinder.AddControlBinding(CloseIcon, PathIcon.NormalFillBrushProperty, GlobalResourceKey.ColorTextLightSolid);
             } else {
-               _tokenResourceBinder.AddBinding(CloseIcon, PathIcon.NormalFillBrushProperty, GlobalResourceKey.ColorIcon);
-               _tokenResourceBinder.AddBinding(CloseIcon, PathIcon.ActiveFilledBrushProperty, GlobalResourceKey.ColorIconHover);
+               _controlTokenBinder.AddControlBinding(CloseIcon, PathIcon.NormalFillBrushProperty, GlobalResourceKey.ColorIcon);
+               _controlTokenBinder.AddControlBinding(CloseIcon, PathIcon.ActiveFilledBrushProperty, GlobalResourceKey.ColorIconHover);
             }
          } else {
             CloseIcon.Width = _tagCloseIconSize;
             CloseIcon.Height = _tagCloseIconSize;
             if (CloseIcon.ThemeType != IconThemeType.TwoTone) {
                if (_hasColorSet && !_isPresetColorTag) {
-                  _tokenResourceBinder.AddBinding(CloseIcon, PathIcon.NormalFillBrushProperty, GlobalResourceKey.ColorTextLightSolid);
+                  _controlTokenBinder.AddControlBinding(CloseIcon, PathIcon.NormalFillBrushProperty, GlobalResourceKey.ColorTextLightSolid);
                } else {
-                  _tokenResourceBinder.AddBinding(CloseIcon, PathIcon.NormalFillBrushProperty, GlobalResourceKey.ColorIcon);
-                  _tokenResourceBinder.AddBinding(CloseIcon, PathIcon.ActiveFilledBrushProperty, GlobalResourceKey.ColorIconHover);
+                  _controlTokenBinder.AddControlBinding(CloseIcon, PathIcon.NormalFillBrushProperty, GlobalResourceKey.ColorIcon);
+                  _controlTokenBinder.AddControlBinding(CloseIcon, PathIcon.ActiveFilledBrushProperty, GlobalResourceKey.ColorIconHover);
                }
             }
          }
@@ -325,7 +325,7 @@ public partial class Tag : IControlCustomStyle
          Icon.Height = _tagIconSize;
          _layoutPanel?.Children.Insert(0, Icon);
          if (_hasColorSet) {
-            _tokenResourceBinder.AddBinding(Icon, PathIcon.NormalFillBrushProperty, GlobalResourceKey.ColorTextLightSolid);
+            _controlTokenBinder.AddControlBinding(Icon, PathIcon.NormalFillBrushProperty, GlobalResourceKey.ColorTextLightSolid);
          } else if (_isPresetColorTag) {
             Icon.NormalFilledBrush = Foreground;
          }

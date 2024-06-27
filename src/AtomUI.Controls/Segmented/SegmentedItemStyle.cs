@@ -14,7 +14,7 @@ public partial class SegmentedItem : IControlCustomStyle
 {
    private bool _initialized = false;
    private IControlCustomStyle _customStyle;
-   private TokenResourceBinder _tokenResourceBinder;
+   private ControlTokenBinder _controlTokenBinder;
    private Label? _label;
    private bool _isPressed = false;
    private ControlStyleState _styleState;
@@ -46,8 +46,7 @@ public partial class SegmentedItem : IControlCustomStyle
    {
       Transitions = new Transitions()
       {
-         AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty,
-            GlobalResourceKey.MotionDurationMid)
+         AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty)
       };
    }
 
@@ -67,17 +66,17 @@ public partial class SegmentedItem : IControlCustomStyle
 
    void IControlCustomStyle.ApplyFixedStyleConfig()
    {
-      _tokenResourceBinder.AddBinding(PaddingXXSTokenProperty, GlobalResourceKey.PaddingXXS);
+      _controlTokenBinder.AddControlBinding(PaddingXXSTokenProperty, GlobalResourceKey.PaddingXXS);
    }
 
    void IControlCustomStyle.ApplySizeTypeStyleConfig()
    {
       if (SizeType == SizeType.Small) {
-         _tokenResourceBinder.AddBinding(ControlHeightTokenProperty, GlobalResourceKey.ControlHeightSM);
+         _controlTokenBinder.AddControlBinding(ControlHeightTokenProperty, GlobalResourceKey.ControlHeightSM);
       } else if (SizeType == SizeType.Middle) {
-         _tokenResourceBinder.AddBinding(ControlHeightTokenProperty, GlobalResourceKey.ControlHeight);
+         _controlTokenBinder.AddControlBinding(ControlHeightTokenProperty, GlobalResourceKey.ControlHeight);
       } else if (SizeType == SizeType.Large) {
-         _tokenResourceBinder.AddBinding(ControlHeightTokenProperty, GlobalResourceKey.ControlHeightLG);
+         _controlTokenBinder.AddControlBinding(ControlHeightTokenProperty, GlobalResourceKey.ControlHeightLG);
       }
    }
 
@@ -96,7 +95,7 @@ public partial class SegmentedItem : IControlCustomStyle
          } else if (e.Property == IconProperty) {
             var oldIcon = e.GetOldValue<PathIcon?>();
             if (oldIcon is not null) {
-               _tokenResourceBinder.ReleaseBindings(oldIcon);
+               _controlTokenBinder.ReleaseBindings(oldIcon);
                LogicalChildren.Remove(oldIcon);
                VisualChildren.Remove(oldIcon);
             }
@@ -111,20 +110,20 @@ public partial class SegmentedItem : IControlCustomStyle
    {
       if (Icon is not null) {
          if (Icon.ThemeType != IconThemeType.TwoTone) {
-            _tokenResourceBinder.AddBinding(Icon, PathIcon.NormalFillBrushProperty, SegmentedResourceKey.ItemColor);
-            _tokenResourceBinder.AddBinding(Icon, PathIcon.ActiveFilledBrushProperty, SegmentedResourceKey.ItemHoverColor);
-            _tokenResourceBinder.AddBinding(Icon, PathIcon.SelectedFilledBrushProperty, SegmentedResourceKey.ItemSelectedColor);
+            _controlTokenBinder.AddControlBinding(Icon, PathIcon.NormalFillBrushProperty, SegmentedResourceKey.ItemColor);
+            _controlTokenBinder.AddControlBinding(Icon, PathIcon.ActiveFilledBrushProperty, SegmentedResourceKey.ItemHoverColor);
+            _controlTokenBinder.AddControlBinding(Icon, PathIcon.SelectedFilledBrushProperty, SegmentedResourceKey.ItemSelectedColor);
          }
 
          if (SizeType == SizeType.Small) {
-            _tokenResourceBinder.AddBinding(Icon, WidthProperty, GlobalResourceKey.IconSizeSM);
-            _tokenResourceBinder.AddBinding(Icon, HeightProperty, GlobalResourceKey.IconSizeSM);
+            _controlTokenBinder.AddControlBinding(Icon, WidthProperty, GlobalResourceKey.IconSizeSM);
+            _controlTokenBinder.AddControlBinding(Icon, HeightProperty, GlobalResourceKey.IconSizeSM);
          } else if (SizeType == SizeType.Middle) {
-            _tokenResourceBinder.AddBinding(Icon, WidthProperty, GlobalResourceKey.IconSize);
-            _tokenResourceBinder.AddBinding(Icon, HeightProperty, GlobalResourceKey.IconSize);
+            _controlTokenBinder.AddControlBinding(Icon, WidthProperty, GlobalResourceKey.IconSize);
+            _controlTokenBinder.AddControlBinding(Icon, HeightProperty, GlobalResourceKey.IconSize);
          } else if (SizeType == SizeType.Large) {
-            _tokenResourceBinder.AddBinding(Icon, WidthProperty, GlobalResourceKey.IconSizeLG);
-            _tokenResourceBinder.AddBinding(Icon, HeightProperty, GlobalResourceKey.IconSizeLG);
+            _controlTokenBinder.AddControlBinding(Icon, WidthProperty, GlobalResourceKey.IconSizeLG);
+            _controlTokenBinder.AddControlBinding(Icon, HeightProperty, GlobalResourceKey.IconSizeLG);
          }
 
          LogicalChildren.Add(Icon);
