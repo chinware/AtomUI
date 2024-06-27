@@ -60,9 +60,8 @@ public static class ThemeResourceUtils
       if (application is null) {
          return null;
       }
-      if (themeVariant is null) {
-         themeVariant = (application as IThemeVariantHost).ActualThemeVariant;
-      }
+
+      themeVariant ??= (application as IThemeVariantHost).ActualThemeVariant;
       if (Application.Current!.TryFindResource(resourceKey, themeVariant, out var value)) {
          return value;
       }
@@ -85,9 +84,8 @@ public static class ThemeResourceUtils
       if (application is null) {
          throw new ApplicationException("The application instance does not exist");
       }
-      if (themeVariant is null) {
-         themeVariant = (application as IThemeVariantHost).ActualThemeVariant;
-      }
+
+      themeVariant ??= (application as IThemeVariantHost).ActualThemeVariant;
       return application.Styles.GetResourceObservable(resourceKey, themeVariant, converter);
    }
 }

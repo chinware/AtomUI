@@ -13,6 +13,11 @@
         public const string ExtraElementMargin = "ExtraElementMargin";
     }
 
+    public static class ArrowDecoratedBoxResourceKey
+    {
+        public const string ArrowSize = "ArrowSize";
+    }
+
     public static class ButtonResourceKey
     {
         public const string FontWeight = "FontWeight";

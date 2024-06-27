@@ -1,4 +1,5 @@
-﻿using AtomUI.Input;
+﻿using System.Reactive.Disposables;
+using AtomUI.Input;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -48,9 +49,9 @@ public class FlyoutHost : Control
    /// <summary>
    /// Defines the ToolTip.Placement property.
    /// </summary>
-   public static readonly StyledProperty<PlacementType> PlacementProperty =
-      AvaloniaProperty.Register<FlyoutHost, PlacementType>(
-         nameof(Placement), defaultValue: PlacementType.Top);
+   public static readonly StyledProperty<PlacementMode> PlacementProperty =
+      AvaloniaProperty.Register<FlyoutHost, PlacementMode>(
+         nameof(Placement), defaultValue: PlacementMode.Top);
 
    /// <summary>
    /// 距离 anchor 的边距，根据垂直和水平进行设置
@@ -104,7 +105,7 @@ public class FlyoutHost : Control
       set => SetValue(IsPointAtCenterProperty, value);
    }
 
-   public PlacementType Placement
+   public PlacementMode Placement
    {
       get => GetValue(PlacementProperty);
       set => SetValue(PlacementProperty, value);
@@ -135,7 +136,12 @@ public class FlyoutHost : Control
    }
 
    private bool _initialized = false;
-   private IDisposable? _triggerDisposable;
+   private CompositeDisposable _compositeDisposable;
+
+   public FlyoutHost()
+   {
+      _compositeDisposable = new CompositeDisposable();
+   }
 
    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
    {
@@ -150,7 +156,6 @@ public class FlyoutHost : Control
             ((ISetLogicalParent)AnchorTarget).SetParent(this);
             VisualChildren.Add(AnchorTarget);
          }
-
          _initialized = true;
       }
    }
@@ -159,12 +164,18 @@ public class FlyoutHost : Control
    {
       base.OnAttachedToVisualTree(e);
       SetupTriggerHandler();
+      SetupFlyoutProperties();
    }
 
    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
    {
       base.OnDetachedFromVisualTree(e);
-      _triggerDisposable?.Dispose();
+      _compositeDisposable?.Dispose();
+   }
+
+   private void SetupFlyoutProperties()
+   {
+      
    }
 
    private void SetupTriggerHandler()
@@ -174,33 +185,46 @@ public class FlyoutHost : Control
       }
 
       if (Trigger == FlyoutTriggerType.Hover) {
-         _triggerDisposable = IsPointAtCenterProperty.Changed.Subscribe(args =>
+         _compositeDisposable.Add(IsPointAtCenterProperty.Changed.Subscribe(args =>
          {
             if (args.Sender == AnchorTarget) {
                HandleAnchorTargetHover(args);
             }
-         });
+         }));
       } else if (Trigger == FlyoutTriggerType.Focus) {
-         _triggerDisposable = IsFocusedProperty.Changed.Subscribe(args =>
+         _compositeDisposable.Add(IsFocusedProperty.Changed.Subscribe(args =>
          {
             if (args.Sender == AnchorTarget) {
                HandleAnchorTargetFocus(args);
             }
-         });
+         }));
       } else if (Trigger == FlyoutTriggerType.Click) {
-         _triggerDisposable = InputManagerEx.SubscribeRawPointerEvent(type => type == RawPointerEventType.LeftButtonUp,
-                                                                      HandleAnchorTargetClick);
+         _compositeDisposable.Add(InputManagerEx.SubscribeRawPointerEvent(
+                                     type => type == RawPointerEventType.LeftButtonUp,
+                                     HandleAnchorTargetClick));
       }
    }
 
    private void HandleAnchorTargetHover(AvaloniaPropertyChangedEventArgs<bool> e)
    {
-      Console.WriteLine(e.NewValue);
+      if (Flyout is not null) {
+         if (e.GetNewValue<bool>()) {
+            ShowFlyout();
+         } else {
+            HideFlyout();
+         }
+      }
    }
 
    private void HandleAnchorTargetFocus(AvaloniaPropertyChangedEventArgs<bool> e)
    {
-      Console.WriteLine(e.NewValue);
+      if (Flyout is not null) {
+         if (e.GetNewValue<bool>()) {
+            ShowFlyout();
+         } else {
+            HideFlyout();
+         }
+      }
    }
 
    private void HandleAnchorTargetClick(RawPointerEventArgs e)
@@ -210,9 +234,27 @@ public class FlyoutHost : Control
          if (!pos.HasValue) {
             return;
          }
+
          var bounds = new Rect(pos.Value, AnchorTarget.Bounds.Size);
          if (bounds.Contains(e.Position())) {
+            if (Flyout is not null) {
+               if (Flyout.IsOpen) {
+                  HideFlyout();
+               } else {
+                  ShowFlyout();
+               }
+            }
          }
       }
+   }
+
+   public void ShowFlyout()
+   {
+      HideFlyout();
+   }
+
+   public void HideFlyout()
+   {
+      
    }
 }

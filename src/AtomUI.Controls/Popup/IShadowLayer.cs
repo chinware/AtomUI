@@ -3,7 +3,7 @@ using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
-public interface IShadowLayer
+public interface IShadowDecorator
 {
    public void AttachToTarget(Control control);
    public void SetShadowMaskGeometry(Geometry geometry);

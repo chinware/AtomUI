@@ -78,7 +78,7 @@ public class BorderedStyleControl : StyledControl
    /// Gets or sets the decorated control.
    /// </summary>
    [Content]
-   protected Control? Child
+   public Control? Child
    {
       get => GetValue(ChildProperty);
       set => SetValue(ChildProperty, value);

@@ -126,7 +126,6 @@ public partial class ToolTip : BorderedStyleControl, ITokenIdProvider
 
    private Popup? _popup;
    private Action<IPopupHost?>? _popupHostChangedHandler;
-   private CompositeDisposable? _subscriptions;
    private AvaloniaWin? _currentAnchorWindow;
 
    /// <summary>
@@ -789,7 +788,6 @@ public partial class ToolTip : BorderedStyleControl, ITokenIdProvider
 
    private void Close()
    {
-
       if (_popup is not null) {
          _popup.IsOpen = false;
          SetPopupParent(_popup, null);
