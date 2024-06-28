@@ -7,6 +7,7 @@ namespace AtomUI.Platform.Windows;
 internal static class WindowExt
 {
    public const uint WS_EX_TRANSPARENT = 32; // 0x00000020
+   public const uint WS_EX_LAYERED = 0x00080000;
    private static readonly Type WindowImplType;
    private static readonly MethodInfo GetExtendedStyleInfo;
    private static readonly MethodInfo SetExtendedStyleInfo;
@@ -23,12 +24,12 @@ internal static class WindowExt
    {
       var impl = window.PlatformImpl!;
       var currentStyles = GetExtendedStyle(impl);
+      // 不是确定这样处理是否合适
       if (flag) {
-         currentStyles |= WS_EX_TRANSPARENT;
+         currentStyles |= WS_EX_TRANSPARENT | WS_EX_LAYERED;
       } else {
-         currentStyles &= ~WS_EX_TRANSPARENT;
+         currentStyles &= ~(WS_EX_TRANSPARENT | WS_EX_LAYERED);
       }
-      
       SetExtendedStyle(impl, currentStyles, false);
    }
 

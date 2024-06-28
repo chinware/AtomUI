@@ -1,5 +1,8 @@
-﻿using AtomUI.Utils;
+﻿using AtomUI.Data;
+using AtomUI.Styling;
+using AtomUI.Utils;
 using Avalonia;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 
 namespace AtomUI.Controls;
@@ -20,25 +23,26 @@ public class Popup : AbstractPopup
       set => SetAndRaise(MaskShadowsProperty, ref _maskShadows, value);
    }
    
-   // private PopupShadowLayer _shadowLayer;
+   private PopupShadowLayer _shadowLayer;
+   private GlobalTokenBinder _globalTokenBinder;
+   private bool _initialized;
 
    public Popup()
    {
-      // _shadowLayer = new PopupShadowLayer();
-      // _shadowLayer.AttachToTarget(this);
-      // // TODO 是否需要释放
-      // BindUtils.RelayBind(this, "MaskShadows", _shadowLayer);
-      // SetupPopup();
+      IsLightDismissEnabled = false;
+      _shadowLayer = new PopupShadowLayer();
+      _shadowLayer.AttachToTarget(this);
+      // TODO 是否需要释放
+      BindUtils.RelayBind(this, "MaskShadows", _shadowLayer);
+      _globalTokenBinder = new GlobalTokenBinder();
    }
-
-   private void SetupPopup()
+   
+   protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
    {
-      // _popup.IsLightDismissEnabled = false;
-      // _popup.Opened += HandlePopupOpened;
-   }
-
-   private void HandlePopupOpened(object? sender, EventArgs args)
-   {
-      // _shadowLayer.ShowShadows();
+      base.OnAttachedToLogicalTree(e);
+      if (!_initialized) {
+          _globalTokenBinder.AddGlobalBinding(this, MaskShadowsProperty, GlobalResourceKey.BoxShadowsSecondary);
+         _initialized = true;
+      }
    }
 }

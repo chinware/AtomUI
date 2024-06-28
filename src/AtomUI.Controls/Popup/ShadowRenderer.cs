@@ -117,8 +117,8 @@ internal class ShadowRenderer : Control
       return maskContent;
    }
    
-   public override void Render(DrawingContext context)
-   {
-      context.FillRectangle(new SolidColorBrush(Colors.Transparent), new Rect(new Point(0, 0), DesiredSize));
-   }
+   // public override void Render(DrawingContext context)
+   // {
+   //    context.FillRectangle(new SolidColorBrush(Colors.Transparent), new Rect(new Point(0, 0), DesiredSize));
+   // }
 }

@@ -261,7 +261,6 @@ public class FlyoutHost : Control
       if (Flyout is null) {
          return;
       }
-      Console.WriteLine("HideFlyout");
       Flyout.Hide();
    }
 }
