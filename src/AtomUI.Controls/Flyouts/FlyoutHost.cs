@@ -1,7 +1,7 @@
 ﻿using System.Reactive.Disposables;
-using AtomUI.Input;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Input.Raw;
 using Avalonia.LogicalTree;
 using Avalonia.Metadata;
@@ -31,8 +31,7 @@ public class FlyoutHost : Control
    /// </summary>
    public static readonly StyledProperty<FlyoutTriggerType> TriggerProperty =
       AvaloniaProperty.Register<FlyoutHost, FlyoutTriggerType>(nameof(Trigger), FlyoutTriggerType.Click);
-
-
+   
    /// <summary>
    /// 是否显示指示箭头
    /// </summary>
@@ -198,9 +197,8 @@ public class FlyoutHost : Control
             }
          }));
       } else if (Trigger == FlyoutTriggerType.Click) {
-         _compositeDisposable.Add(InputManagerEx.SubscribeRawPointerEvent(
-                                     type => type == RawPointerEventType.LeftButtonUp,
-                                     HandleAnchorTargetClick));
+         var inputManager = AvaloniaLocator.Current.GetService<IInputManager>()!;
+         _compositeDisposable.Add(inputManager.Process.Subscribe(HandleAnchorTargetClick));
       }
    }
 
@@ -226,21 +224,23 @@ public class FlyoutHost : Control
       }
    }
 
-   private void HandleAnchorTargetClick(RawPointerEventArgs e)
+   private void HandleAnchorTargetClick(RawInputEventArgs args)
    {
-      if (AnchorTarget is not null) {
-         var pos = AnchorTarget.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(AnchorTarget)!);
-         if (!pos.HasValue) {
-            return;
-         }
+      if (args is RawPointerEventArgs pointerEventArgs) {
+         if (AnchorTarget is not null) {
+            var pos = AnchorTarget.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(AnchorTarget)!);
+            if (!pos.HasValue) {
+               return;
+            }
 
-         var bounds = new Rect(pos.Value, AnchorTarget.Bounds.Size);
-         if (bounds.Contains(e.Position())) {
-            if (Flyout is not null) {
-               if (Flyout.IsOpen) {
-                  HideFlyout();
-               } else {
-                  ShowFlyout();
+            var bounds = new Rect(pos.Value, AnchorTarget.Bounds.Size);
+            if (bounds.Contains(pointerEventArgs.Position)) {
+               if (Flyout is not null) {
+                  if (Flyout.IsOpen) {
+                     HideFlyout();
+                  } else {
+                     ShowFlyout();
+                  }
                }
             }
          }

@@ -69,7 +69,7 @@ internal class PopupShadowLayer : AbstractPopup, IShadowDecorator
    private void HandleTargetOpened(object? sender, EventArgs args)
    {
       SetupShadowRenderer();
-      Open();
+      // Open();
    }
    
    private void HandleTargetClosed(object? sender, EventArgs args)
