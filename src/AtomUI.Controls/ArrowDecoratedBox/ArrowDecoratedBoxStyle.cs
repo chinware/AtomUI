@@ -56,6 +56,8 @@ public partial class ArrowDecoratedBox : IControlCustomStyle
       _controlTokenBinder.AddControlBinding(MinHeightProperty, GlobalResourceKey.ControlHeight);
       _controlTokenBinder.AddControlBinding(PaddingProperty, GlobalResourceKey.PaddingXS);
       _controlTokenBinder.AddControlBinding(ArrowSizeTokenProperty, ArrowDecoratedBoxResourceKey.ArrowSize);
+      _controlTokenBinder.AddControlBinding(BackgroundProperty, GlobalResourceKey.ColorBgContainer);
+      _controlTokenBinder.AddControlBinding(CornerRadiusProperty, GlobalResourceKey.BorderRadius);
    }
 
    public sealed override void Render(DrawingContext context)

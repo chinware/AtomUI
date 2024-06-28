@@ -6,7 +6,7 @@
         <Nullable>enable</Nullable>
         <RootNamespace>AtomUI</RootNamespace>
     </PropertyGroup>
-
+    
     <ItemGroup>
         <PackageReference Include="Avalonia"/>
         <PackageReference Include="System.Reactive" />

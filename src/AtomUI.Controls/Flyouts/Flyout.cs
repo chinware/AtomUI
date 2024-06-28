@@ -50,7 +50,7 @@ public class Flyout : PopupFlyoutBase
    {
       return new FlyoutPresenter
       {
-         [!ContentControl.ContentProperty] = this[!ContentProperty]
+         [!BorderedStyleControl.ChildProperty] = this[!ContentProperty]
       };
    }
 

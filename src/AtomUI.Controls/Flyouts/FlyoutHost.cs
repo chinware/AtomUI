@@ -2,7 +2,6 @@
 using AtomUI.Input;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
 using Avalonia.Input.Raw;
 using Avalonia.LogicalTree;
 using Avalonia.Metadata;
@@ -24,14 +23,14 @@ public class FlyoutHost : Control
    /// <summary>
    /// Defines the <see cref="Flyout"/> property
    /// </summary>
-   public static readonly StyledProperty<FlyoutBase?> FlyoutProperty =
-      AvaloniaProperty.Register<FlyoutHost, FlyoutBase?>(nameof(Flyout));
+   public static readonly StyledProperty<PopupFlyoutBase?> FlyoutProperty =
+      AvaloniaProperty.Register<FlyoutHost, PopupFlyoutBase?>(nameof(Flyout));
 
    /// <summary>
    /// 触发方式
    /// </summary>
    public static readonly StyledProperty<FlyoutTriggerType> TriggerProperty =
-      AvaloniaProperty.Register<FlyoutHost, FlyoutTriggerType>(nameof(Trigger), FlyoutTriggerType.Hover);
+      AvaloniaProperty.Register<FlyoutHost, FlyoutTriggerType>(nameof(Trigger), FlyoutTriggerType.Click);
 
 
    /// <summary>
@@ -81,7 +80,7 @@ public class FlyoutHost : Control
    /// <summary>
    /// Gets or sets the Flyout that should be shown with this button.
    /// </summary>
-   public FlyoutBase? Flyout
+   public PopupFlyoutBase? Flyout
    {
       get => GetValue(FlyoutProperty);
       set => SetValue(FlyoutProperty, value);
@@ -185,7 +184,7 @@ public class FlyoutHost : Control
       }
 
       if (Trigger == FlyoutTriggerType.Hover) {
-         _compositeDisposable.Add(IsPointAtCenterProperty.Changed.Subscribe(args =>
+         _compositeDisposable.Add(IsPointerOverProperty.Changed.Subscribe(args =>
          {
             if (args.Sender == AnchorTarget) {
                HandleAnchorTargetHover(args);
@@ -250,11 +249,19 @@ public class FlyoutHost : Control
 
    public void ShowFlyout()
    {
-      HideFlyout();
+      if (Flyout is null || AnchorTarget is null) {
+         return;
+      }
+      
+      Flyout.ShowAt(AnchorTarget);
    }
 
    public void HideFlyout()
    {
-      
+      if (Flyout is null) {
+         return;
+      }
+      Console.WriteLine("HideFlyout");
+      Flyout.Hide();
    }
 }

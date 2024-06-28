@@ -1,13 +1,24 @@
-﻿using AtomUI.TokenSystem;
-using Avalonia;
+﻿using Avalonia.Controls.Primitives;
+using Avalonia.Input;
+using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
 
-using AvaloniaFlyoutPresenter = Avalonia.Controls.FlyoutPresenter;
-
-public partial class FlyoutPresenter : AvaloniaFlyoutPresenter, ITokenIdProvider
-{
-   string ITokenIdProvider.TokenId => FlyoutPresenterToken.ID;
+public class FlyoutPresenter : ArrowDecoratedBox
+{ 
+   string TokenId => FlyoutPresenterToken.ID;
    
-
+   protected override void OnKeyDown(KeyEventArgs e)
+   {
+      if (e.Key == Key.Escape)
+      {
+         var host = this.FindLogicalAncestorOfType<AbstractPopup>();
+         if (host != null)
+         {
+            host.IsOpen = false;
+            e.Handled = true;
+         }
+      }
+      base.OnKeyDown(e);
+   }
 }

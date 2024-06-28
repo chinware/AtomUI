@@ -124,7 +124,7 @@ public partial class ToolTip : BorderedStyleControl, ITokenIdProvider
       set => SetValue(ContentProperty, value);
    }
 
-   private Popup? _popup;
+   private AbstractPopup? _popup;
    private Action<IPopupHost?>? _popupHostChangedHandler;
    private AvaloniaWin? _currentAnchorWindow;
 
@@ -593,7 +593,7 @@ public partial class ToolTip : BorderedStyleControl, ITokenIdProvider
    /// <summary>
    /// Helper method to set popup's styling and templated parent.
    /// </summary>
-   internal void SetPopupParent(Popup popup, Control? newParent)
+   internal void SetPopupParent(AbstractPopup popup, Control? newParent)
    {
       if (popup.Parent != null && popup.Parent != newParent) {
          ((ISetLogicalParent)popup).SetParent(null);
@@ -809,7 +809,7 @@ public partial class ToolTip : BorderedStyleControl, ITokenIdProvider
 
    private void OnPopupOpened(object? sender, EventArgs e)
    {
-      _popupHostChangedHandler?.Invoke(((Popup)sender!).Host);
+      _popupHostChangedHandler?.Invoke(((AbstractPopup)sender!).Host);
    }
 
    private void UpdatePseudoClasses(bool newValue)

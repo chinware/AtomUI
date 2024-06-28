@@ -7,7 +7,7 @@ namespace AtomUI.Utils;
 
 public static class BindUtils
 {
-   public static IDisposable RelayBind(Control source, string sourcePropertyName, Control target,
+   public static IDisposable RelayBind(AvaloniaObject source, string sourcePropertyName, AvaloniaObject target,
                                        string? targetPropertyName = null,
                                        BindingMode mode = BindingMode.OneWay)
    {

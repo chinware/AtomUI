@@ -11,14 +11,17 @@
         <showcase:ShowCaseItem
             Title="Basic"
             Description="The most basic example. The size of the floating layer depends on the contents region.">
-            <atom:FlyoutHost Trigger="Focus">
-                <atom:FlyoutHost.Flyout>
-                    <atom:InfoFlyout>
-                        
-                    </atom:InfoFlyout>
-                </atom:FlyoutHost.Flyout>
-                <atom:Button ButtonType="Primary">Hover me</atom:Button>
-            </atom:FlyoutHost>
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:FlyoutHost Trigger="Hover">
+                    <atom:FlyoutHost.Flyout>
+                        <atom:Flyout>
+                            <TextBlock Width="200" Height="120" Padding="20">The most basic example.</TextBlock>
+                        </atom:Flyout>
+                    </atom:FlyoutHost.Flyout>
+                    <atom:Button ButtonType="Primary">Hover me</atom:Button>
+                </atom:FlyoutHost>
+                <atom:Button HorizontalAlignment="Center" Margin="30, 0, 0, 0">xxxxxxx</atom:Button>
+            </StackPanel>
         </showcase:ShowCaseItem>
 
         <showcase:ShowCaseItem

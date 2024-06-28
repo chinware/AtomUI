@@ -2,12 +2,18 @@
 using System.Reflection;
 using AtomUI.Reflection;
 using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Input.Raw;
-using Avalonia.Layout;
+using Avalonia.Media;
 
 namespace AtomUI.Input;
+
+public class MyBrush : IBrush
+{
+   public double        Opacity         { get; }
+   public ITransform?   Transform       { get; }
+   public RelativePoint TransformOrigin { get; }
+}
 
 /// <summary>
 /// See <see cref="InputManager"/>.
@@ -49,7 +55,6 @@ internal static class InputManagerEx
    {
       // Avalonia.Base
       var assembly = Assembly.GetAssembly(typeof(RawInputEventArgs));
-
       // InputManager Type
       var type = assembly?.GetType("Avalonia.Input.InputManager")
                  ?? throw new NotSupportedException($"Can not find the type InputManager in assembly {assembly}.");
@@ -112,5 +117,5 @@ internal static class InputManagerEx
    {
       return SubscribeRawInputEventCore("PostProcess", filter, next);
    }
-    
+   
 }

@@ -35,26 +35,22 @@ public class GlobalTokenBinder : IDisposable
       }
 
       // 探测绑定目标
-      var tokenIdProvider = target as ITokenIdProvider;
-      if (tokenIdProvider is null) {
-         throw new ArgumentException("Add a binding to design token, but target is not a ITokenIdProvider.");
-      }
-
-      var controlToken = activeTheme.GetControlToken(tokenIdProvider.TokenId);
-      if (controlToken is null) {
-         throw new ArgumentException(
-            $"Control token {tokenIdProvider.TokenId} for token provider {nameof(target)} is not exist.");
-      }
-
-      // 全局也是有 control 的 token 存在的，只不过直接读取的全局的值，有些绑定对象可能不是 control
-      if (controlToken.IsCustomTokenConfig) {
-         // 自定义某些 token 值，有可能全局的 Token 也会被重定义
-         if (controlToken.HasToken(resourceKey) || controlToken.CustomTokens.Contains(resourceKey)) {
-            resourceKey = $"{tokenIdProvider.TokenId}.{resourceKey}";
+      if (target is ITokenIdProvider tokenIdProvider) {
+         var controlToken = activeTheme.GetControlToken(tokenIdProvider.TokenId);
+         if (controlToken is null) {
+            throw new ArgumentException(
+               $"Control token {tokenIdProvider.TokenId} for token provider {nameof(target)} is not exist.");
          }
-      } else {
-         if (controlToken.HasToken(resourceKey)) {
-            resourceKey = $"{tokenIdProvider.TokenId}.{resourceKey}";
+         // 全局也是有 control 的 token 存在的，只不过直接读取的全局的值，有些绑定对象可能不是 control
+         if (controlToken.IsCustomTokenConfig) {
+            // 自定义某些 token 值，有可能全局的 Token 也会被重定义
+            if (controlToken.HasToken(resourceKey) || controlToken.CustomTokens.Contains(resourceKey)) {
+               resourceKey = $"{tokenIdProvider.TokenId}.{resourceKey}";
+            }
+         } else {
+            if (controlToken.HasToken(resourceKey)) {
+               resourceKey = $"{tokenIdProvider.TokenId}.{resourceKey}";
+            }
          }
       }
 
