@@ -50,10 +50,6 @@ public abstract class PopupFlyoutBase : AvaloniaPopupFlyoutBase
       set => SetValue(MarginToAnchorProperty, value);
    }
    
-   public PopupFlyoutBase()
-   {
-   }
-   
    internal static void SetPresenterClasses(Control? presenter, Classes classes)
    {
       if (presenter is null) {

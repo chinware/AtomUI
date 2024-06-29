@@ -1,5 +1,6 @@
 ﻿using AtomUI.Controls.Interceptors;
 using AtomUI.Utils;
+using Avalonia;
 using HarmonyLib;
 
 namespace AtomUI.Controls;
@@ -8,7 +9,7 @@ public class BootstrapInitializer : IBootstrapInitializer
 {
    public void Init()
    {
-      SimpleServiceLocator.CurrentMutable.BindToSelf(new ToolTipService());
+      AvaloniaLocator.CurrentMutable.BindToSelf(new ToolTipService());
       InitInterceptors();
    }
 
