@@ -67,6 +67,12 @@ internal static class PopupFlyoutBaseInterceptor
    {
       __instance.NotifyPopupHostPositionUpdated(popupHost, placementTarget);
    }
+
+   public static bool PositionPopupInterceptor(PopupFlyoutBase __instance, bool showAtPointer)
+   {
+      __instance.NotifyPositionPopup(showAtPointer);
+      return false;
+   }
 }
 
 internal static class PopupFlyoutBaseInterceptorRegister
@@ -75,6 +81,7 @@ internal static class PopupFlyoutBaseInterceptorRegister
    {
       RegisterPopupFlyoutBaseCreatePopup(harmony);
       RegisterPopupUpdateHostPosition(harmony);
+      RegisterPopupPositionPopup(harmony);
    }
    
    private static void RegisterPopupFlyoutBaseCreatePopup(Harmony harmony)
@@ -93,5 +100,14 @@ internal static class PopupFlyoutBaseInterceptorRegister
          .GetMethod(nameof(PopupFlyoutBaseInterceptor.UpdateHostPositionInterceptor),
                     BindingFlags.Static | BindingFlags.Public);
       harmony.Patch(origin, postfix: new HarmonyMethod(postfixInterceptor));
+   }
+
+   private static void RegisterPopupPositionPopup(Harmony harmony)
+   {
+      var origin = typeof(AvaloniaPopupFlyoutBase).GetMethod("PositionPopup", BindingFlags.Instance | BindingFlags.NonPublic);
+      var prefixInterceptor = typeof(PopupFlyoutBaseInterceptor)
+         .GetMethod(nameof(PopupFlyoutBaseInterceptor.PositionPopupInterceptor),
+                    BindingFlags.Static | BindingFlags.Public);
+      harmony.Patch(origin, prefix: new HarmonyMethod(prefixInterceptor));
    }
 }

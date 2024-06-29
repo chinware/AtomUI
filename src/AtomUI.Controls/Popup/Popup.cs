@@ -1,4 +1,5 @@
-﻿using AtomUI.Data;
+﻿using System.Reactive.Disposables;
+using AtomUI.Data;
 using AtomUI.Styling;
 using AtomUI.Utils;
 using Avalonia;
@@ -21,6 +22,7 @@ public class Popup : AbstractPopup
    
    private PopupShadowLayer _shadowLayer;
    private GlobalTokenBinder _globalTokenBinder;
+   private CompositeDisposable _compositeDisposable;
    private bool _initialized;
 
    public Popup()
@@ -28,9 +30,8 @@ public class Popup : AbstractPopup
       IsLightDismissEnabled = false;
       _shadowLayer = new PopupShadowLayer();
       _shadowLayer.AttachToTarget(this);
-      // TODO 是否需要释放
-      BindUtils.RelayBind(this, MaskShadowsProperty, _shadowLayer);
       _globalTokenBinder = new GlobalTokenBinder();
+      _compositeDisposable = new CompositeDisposable();
    }
    
    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -38,7 +39,19 @@ public class Popup : AbstractPopup
       base.OnAttachedToLogicalTree(e);
       if (!_initialized) {
           _globalTokenBinder.AddGlobalBinding(this, MaskShadowsProperty, GlobalResourceKey.BoxShadowsSecondary);
+          _compositeDisposable.Add(BindUtils.RelayBind(this, MaskShadowsProperty, _shadowLayer));
          _initialized = true;
       }
+   }
+   
+   protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+   {
+      base.OnDetachedFromLogicalTree(e);
+      _compositeDisposable.Dispose();
+   }
+
+   private PopupShadowLayer CreateShadowLayer()
+   {
+      return default!;
    }
 }

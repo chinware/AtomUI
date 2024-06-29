@@ -4,7 +4,7 @@ using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Media;
 
-namespace AtomUI.Media;
+namespace AtomUI.MotionScene;
 
 public class SlideUpInMotion : AbstractMotion
 {

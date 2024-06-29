@@ -1,7 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 
-namespace AtomUI.Media;
+namespace AtomUI.MotionScene;
 
 public interface IMotionAbilityTarget
 {

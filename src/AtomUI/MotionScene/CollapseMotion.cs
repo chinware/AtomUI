@@ -2,7 +2,7 @@
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 
-namespace AtomUI.Media;
+namespace AtomUI.MotionScene;
 
 public class CollapseMotion : AbstractMotion
 {

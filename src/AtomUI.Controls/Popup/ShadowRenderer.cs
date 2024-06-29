@@ -1,4 +1,5 @@
-﻿using AtomUI.Utils;
+﻿using AtomUI.Media;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
@@ -9,76 +10,38 @@ namespace AtomUI.Controls;
 
 internal class ShadowRenderer : Control
 {
-   public static readonly DirectProperty<ShadowRenderer, BoxShadows> ShadowsProperty =
-      AvaloniaProperty.RegisterDirect<ShadowRenderer, BoxShadows>(
-         nameof(Shadows),
-         o => o.Shadows,
-         (o, v) => o.Shadows = v);
+   public static readonly StyledProperty<BoxShadows> ShadowsProperty =
+      Border.BoxShadowProperty.AddOwner<ShadowRenderer>();
 
-   public static readonly DirectProperty<ShadowRenderer, Point> MaskOffsetProperty =
-      AvaloniaProperty.RegisterDirect<ShadowRenderer, Point>(
-         nameof(MaskOffset),
-         o => o.MaskOffset,
-         (o, v) => o.MaskOffset = v);
-
-   public static readonly DirectProperty<ShadowRenderer, Size> MaskSizeProperty =
-      AvaloniaProperty.RegisterDirect<ShadowRenderer, Size>(
-         nameof(MaskSize),
-         o => o.MaskSize,
-         (o, v) => o.MaskSize = v);
-
-   public static readonly DirectProperty<ShadowRenderer, CornerRadius> MaskCornerRadiusProperty =
-      AvaloniaProperty.RegisterDirect<ShadowRenderer, CornerRadius>(
-         nameof(MaskCornerRadius),
-         o => o.MaskCornerRadius,
-         (o, v) => o.MaskCornerRadius = v);
-
-   private BoxShadows _shadows;
+   public static readonly StyledProperty<CornerRadius> MaskCornerRadiusProperty =
+      Border.CornerRadiusProperty.AddOwner<ShadowRenderer>();
 
    /// <summary>
    /// 渲染的阴影值
    /// </summary>
    public BoxShadows Shadows
    {
-      get => _shadows;
-      set => SetAndRaise(ShadowsProperty, ref _shadows, value);
+      get => GetValue(ShadowsProperty);
+      set => SetValue(ShadowsProperty, value);
    }
-
-   private Point _maskOffset;
-
-   /// <summary>
-   /// mask 渲染的位移
-   /// </summary>
-   public Point MaskOffset
-   {
-      get => _maskOffset;
-      set => SetAndRaise(MaskOffsetProperty, ref _maskOffset, value);
-   }
-
-   private Size _maskSize;
-
-   /// <summary>
-   /// mask 渲染大小
-   /// </summary>
-   public Size MaskSize
-   {
-      get => _maskSize;
-      set => SetAndRaise(MaskSizeProperty, ref _maskSize, value);
-   }
-
-   private CornerRadius _maskCornerRadius;
+   
    /// <summary>
    /// mask 的圆角大小
    /// </summary>
    public CornerRadius MaskCornerRadius
    {
-      get => _maskCornerRadius;
-      set => SetAndRaise(MaskCornerRadiusProperty, ref _maskCornerRadius, value);
+      get => GetValue(MaskCornerRadiusProperty);
+      set => SetValue(MaskCornerRadiusProperty, value);
    }
 
    private Border? _maskContent;
    private bool _initialized = false;
    private Canvas? _layout;
+
+   static ShadowRenderer()
+   {
+      AffectsMeasure<ShadowRenderer>(ShadowsProperty);
+   }
 
    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
    {
@@ -92,6 +55,7 @@ internal class ShadowRenderer : Control
          VisualChildren.Add(_layout);
          ((ISetLogicalParent)_layout).SetParent(this);
          _maskContent = CreateMaskContent();
+         SetupContentSizeAndPos();
          _layout.Children.Add(_maskContent);
          _initialized = true;
       }
@@ -99,21 +63,44 @@ internal class ShadowRenderer : Control
 
    private Border CreateMaskContent()
    {
-      var maskContent = new Border()
+      var maskContent = new Border
       {
-         Width = 100,
-         Height = 40,
          BorderThickness = new Thickness(0),
-         Background = new SolidColorBrush(Colors.White)
+         Background = new SolidColorBrush(Colors.Red),
+         HorizontalAlignment = HorizontalAlignment.Stretch,
+         VerticalAlignment = VerticalAlignment.Stretch
       };
-      
-      Canvas.SetLeft(maskContent,30);
-      Canvas.SetTop(maskContent, 20);
-      
-      // TODO 需要考虑释放
-      BindUtils.RelayBind(this, ShadowsProperty, maskContent, Border.BoxShadowProperty);
+      // TODO 这个是否需要资源管理起来
+      BindUtils.RelayBind(this, ShadowsProperty, maskContent, ShadowsProperty);
       BindUtils.RelayBind(this, MaskCornerRadiusProperty, maskContent, Border.CornerRadiusProperty);
-      
       return maskContent;
    }
+   
+   protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
+   {
+      base.OnPropertyChanged(e);
+      if (e.Property == ShadowsProperty ||
+          e.Property == WidthProperty ||
+          e.Property == HeightProperty) {
+         SetupContentSizeAndPos();
+      }
+   }
+
+   private void SetupContentSizeAndPos()
+   {
+      if (_maskContent is not null) {
+         var shadowThickness = Shadows.Thickness();
+         var targetWidth = Width - shadowThickness.Left - shadowThickness.Right;
+         var targetHeight = Height - shadowThickness.Top - shadowThickness.Bottom;
+         _maskContent.Width = targetWidth;
+         _maskContent.Height = targetHeight;
+         Canvas.SetLeft(_maskContent, shadowThickness.Left);
+         Canvas.SetTop(_maskContent, shadowThickness.Top);
+      }
+   }
+
+   // public sealed override void Render(DrawingContext context)
+   // {
+   //    context.FillRectangle(new SolidColorBrush(Colors.Bisque), new Rect(new Point(0, 0), DesiredSize));
+   // }
 }

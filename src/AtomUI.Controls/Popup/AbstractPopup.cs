@@ -22,7 +22,7 @@ public abstract class AbstractPopup : AvaloniaPopup
       }
    }
 
-   internal virtual void NotifyPopupHostPositionUpdated(IPopupHost popupHost, Control placementTarget)
+   protected internal virtual void NotifyPopupHostPositionUpdated(IPopupHost popupHost, Control placementTarget)
    {
       if (_popupHost is null) {
          _popupHost = new WeakReference<IPopupHost>(popupHost);

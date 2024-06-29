@@ -1,7 +1,7 @@
 ﻿using Avalonia.Animation;
 using Avalonia.Controls;
 
-namespace AtomUI.Media;
+namespace AtomUI.MotionScene;
 
 public interface IMotion
 {

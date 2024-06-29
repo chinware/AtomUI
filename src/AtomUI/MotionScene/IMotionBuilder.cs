@@ -1,6 +1,6 @@
 ﻿using Avalonia.Animation;
 
-namespace AtomUI.Media;
+namespace AtomUI.MotionScene;
 
 public interface IMotionBuilder
 {

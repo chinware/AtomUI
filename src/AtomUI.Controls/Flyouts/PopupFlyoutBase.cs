@@ -1,6 +1,6 @@
-﻿using AtomUI.Data;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Layout;
 
 
 namespace AtomUI.Controls;
@@ -23,7 +23,7 @@ public abstract class PopupFlyoutBase : AvaloniaPopupFlyoutBase
    /// </summary>
    public static readonly StyledProperty<bool> IsPointAtCenterProperty =
       AvaloniaProperty.Register<PopupFlyoutBase, bool>(nameof(IsPointAtCenter), false);
-   
+
    /// <summary>
    /// 距离 anchor 的边距，根据垂直和水平进行设置
    /// 但是对某些组合无效，比如跟随鼠标的情况
@@ -31,7 +31,7 @@ public abstract class PopupFlyoutBase : AvaloniaPopupFlyoutBase
    /// </summary>
    public static readonly StyledProperty<double> MarginToAnchorProperty =
       AvaloniaProperty.Register<PopupFlyoutBase, double>(nameof(MarginToAnchor), 0);
-   
+
    public bool IsShowArrow
    {
       get => GetValue(IsShowArrowProperty);
@@ -43,13 +43,13 @@ public abstract class PopupFlyoutBase : AvaloniaPopupFlyoutBase
       get => GetValue(IsPointAtCenterProperty);
       set => SetValue(IsPointAtCenterProperty, value);
    }
-   
+
    public double MarginToAnchor
    {
       get => GetValue(MarginToAnchorProperty);
       set => SetValue(MarginToAnchorProperty, value);
    }
-   
+
    internal static void SetPresenterClasses(Control? presenter, Classes classes)
    {
       if (presenter is null) {
@@ -68,5 +68,38 @@ public abstract class PopupFlyoutBase : AvaloniaPopupFlyoutBase
       presenter.Classes.AddRange(classes);
    }
 
-   internal virtual void NotifyPopupCreated(Popup popup) { }
+   protected internal virtual void NotifyPopupCreated(Popup popup) { }
+
+   protected internal virtual void NotifyPositionPopup(bool showAtPointer)
+   {
+      Size sz;
+      // Popup.Child can't be null here, it was set in ShowAtCore.
+      if (Popup.Child!.DesiredSize == default) {
+         // Popup may not have been shown yet. Measure content
+         sz = LayoutHelper.MeasureChild(Popup.Child, Size.Infinity, new Thickness());
+      } else {
+         sz = Popup.Child.DesiredSize;
+      }
+
+      Popup.VerticalOffset = VerticalOffset;
+      Popup.HorizontalOffset = HorizontalOffset;
+      Popup.PlacementAnchor = PlacementAnchor;
+      Popup.PlacementGravity = PlacementGravity;
+      if (showAtPointer) {
+         Popup.Placement = PlacementMode.Pointer;
+      } else {
+         Popup.Placement = Placement;
+         Popup.PlacementConstraintAdjustment = PlacementConstraintAdjustment;
+      }
+   }
+
+   protected override void OnOpened()
+   {
+      base.OnOpened();
+   }
+
+   protected override void OnClosed()
+   {
+      base.OnClosed();
+   }
 }

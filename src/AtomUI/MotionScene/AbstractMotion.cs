@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using AtomUI.Media;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
@@ -6,8 +7,9 @@ using Avalonia.Controls;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Microsoft.CSharp.RuntimeBinder;
+using ColorTransition = Avalonia.Animation.ColorTransition;
 
-namespace AtomUI.Media;
+namespace AtomUI.MotionScene;
 
 public enum TransitionKind
 {
