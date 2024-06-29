@@ -2,6 +2,7 @@
 using AtomUI.Styling;
 using AtomUI.Utils;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 
@@ -9,18 +10,13 @@ namespace AtomUI.Controls;
 
 public class Popup : AbstractPopup
 {
-   public static readonly DirectProperty<Popup, BoxShadows> MaskShadowsProperty =
-      AvaloniaProperty.RegisterDirect<Popup, BoxShadows>(
-         nameof(MaskShadows),
-         o => o.MaskShadows,
-         (o, v) => o.MaskShadows = v);
-
-   private BoxShadows _maskShadows;
+   public static readonly StyledProperty<BoxShadows> MaskShadowsProperty =
+      Border.BoxShadowProperty.AddOwner<Popup>();
 
    public BoxShadows MaskShadows
    {
-      get => _maskShadows;
-      set => SetAndRaise(MaskShadowsProperty, ref _maskShadows, value);
+      get => GetValue(MaskShadowsProperty);
+      set => SetValue(MaskShadowsProperty, value);
    }
    
    private PopupShadowLayer _shadowLayer;

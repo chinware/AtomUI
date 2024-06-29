@@ -9,18 +9,13 @@ namespace AtomUI.Controls;
 
 internal class PopupShadowLayer : AbstractPopup, IShadowDecorator
 {
-   public static readonly DirectProperty<PopupShadowLayer, BoxShadows> MaskShadowsProperty =
-      AvaloniaProperty.RegisterDirect<PopupShadowLayer, BoxShadows>(
-         nameof(MaskShadows),
-         o => o.MaskShadows,
-         (o, v) => o.MaskShadows = v);
-
-   private BoxShadows _maskShadows;
+   public static readonly StyledProperty<BoxShadows> MaskShadowsProperty = 
+         Border.BoxShadowProperty.AddOwner<PopupShadowLayer>();
 
    public BoxShadows MaskShadows
    {
-      get => _maskShadows;
-      set => SetAndRaise(MaskShadowsProperty, ref _maskShadows, value);
+      get => GetValue(MaskShadowsProperty);
+      set => SetValue(MaskShadowsProperty, value);
    }
 
    public PopupShadowLayer()

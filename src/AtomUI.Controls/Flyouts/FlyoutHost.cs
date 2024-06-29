@@ -33,25 +33,22 @@ public class FlyoutHost : Control
    /// </summary>
    public static readonly StyledProperty<FlyoutTriggerType> TriggerProperty =
       AvaloniaProperty.Register<FlyoutHost, FlyoutTriggerType>(nameof(Trigger), FlyoutTriggerType.Click);
-   
+
    /// <summary>
    /// 是否显示指示箭头
    /// </summary>
    public static readonly StyledProperty<bool> IsShowArrowProperty =
-      AvaloniaProperty.Register<FlyoutHost, bool>(nameof(IsShowArrow), true);
+      ArrowDecoratedBox.IsShowArrowProperty.AddOwner<FlyoutHost>();
 
    /// <summary>
    /// 箭头是否始终指向中心
    /// </summary>
    public static readonly StyledProperty<bool> IsPointAtCenterProperty =
-      AvaloniaProperty.Register<FlyoutHost, bool>(nameof(IsPointAtCenter), false);
+      PopupFlyoutBase.IsPointAtCenterProperty.AddOwner<FlyoutHost>();
 
    /// <summary>
    /// Defines the ToolTip.Placement property.
    /// </summary>
-   // public static readonly StyledProperty<PlacementMode> PlacementProperty =
-   //    AvaloniaProperty.Register<FlyoutHost, PlacementMode>(
-   //       nameof(Placement), defaultValue: PlacementMode.Top);
    public static readonly StyledProperty<PlacementMode> PlacementProperty = 
       Popup.PlacementProperty.AddOwner<FlyoutHost>();
    
@@ -197,11 +194,12 @@ public class FlyoutHost : Control
 
    private void SetupFlyoutProperties()
    {
-      Console.WriteLine(AnchorTargetProperty.Name);
       if (Flyout is not null) {
          _compositeDisposable.Add(BindUtils.RelayBind(this, PlacementProperty, Flyout));
          _compositeDisposable.Add(BindUtils.RelayBind(this, PlacementAnchorProperty, Flyout));
          _compositeDisposable.Add(BindUtils.RelayBind(this, PlacementGravityProperty, Flyout));
+         _compositeDisposable.Add(BindUtils.RelayBind(this, IsShowArrowProperty, Flyout));
+         _compositeDisposable.Add(BindUtils.RelayBind(this, IsPointAtCenterProperty, Flyout));
       }
    }
 

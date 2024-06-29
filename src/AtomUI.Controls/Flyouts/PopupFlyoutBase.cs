@@ -16,13 +16,13 @@ public abstract class PopupFlyoutBase : AvaloniaPopupFlyoutBase
    /// 是否显示指示箭头
    /// </summary>
    public static readonly StyledProperty<bool> IsShowArrowProperty =
-      AvaloniaProperty.Register<FlyoutHost, bool>(nameof(IsShowArrow), true);
+      ArrowDecoratedBox.IsShowArrowProperty.AddOwner<PopupFlyoutBase>();
 
    /// <summary>
    /// 箭头是否始终指向中心
    /// </summary>
    public static readonly StyledProperty<bool> IsPointAtCenterProperty =
-      AvaloniaProperty.Register<FlyoutHost, bool>(nameof(IsPointAtCenter), false);
+      AvaloniaProperty.Register<PopupFlyoutBase, bool>(nameof(IsPointAtCenter), false);
    
    /// <summary>
    /// 距离 anchor 的边距，根据垂直和水平进行设置
@@ -30,7 +30,7 @@ public abstract class PopupFlyoutBase : AvaloniaPopupFlyoutBase
    /// 还有些 anchor 和 gravity 的组合也没有用 
    /// </summary>
    public static readonly StyledProperty<double> MarginToAnchorProperty =
-      AvaloniaProperty.Register<FlyoutHost, double>(nameof(MarginToAnchor), 0);
+      AvaloniaProperty.Register<PopupFlyoutBase, double>(nameof(MarginToAnchor), 0);
    
    public bool IsShowArrow
    {
