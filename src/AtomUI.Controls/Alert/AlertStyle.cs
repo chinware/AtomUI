@@ -121,7 +121,7 @@ public partial class Alert : IControlCustomStyle
          Grid.SetRow(_closeButton, 0);
          Grid.SetColumn(_closeButton, 3);
          _mainLayout!.Children.Add(_closeButton);
-        BindUtils.RelayBind(this, "CloseIcon", _closeButton, "Icon");
+        BindUtils.RelayBind(this, CloseIconProperty, _closeButton, IconButton.IconProperty);
       } else if (_closeButton is not null) {
          _closeButton.IsVisible = _isClosable;
       }

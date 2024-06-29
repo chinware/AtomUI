@@ -59,6 +59,7 @@ internal static class PopupFlyoutBaseInterceptor
       ClosedEventInfo.AddEventHandler(popup, Delegate.CreateDelegate(typeof(EventHandler<EventArgs>), __instance, OnPopupClosedMemberInfo));
       KeyUpEventInfo.AddEventHandler(popup, Delegate.CreateDelegate(typeof(EventHandler<KeyEventArgs>), __instance, OnPlacementTargetOrPopupKeyUpMethodInfo));
       __result = popup;
+      __instance.NotifyPopupCreated(popup);
       return false;
    }
 

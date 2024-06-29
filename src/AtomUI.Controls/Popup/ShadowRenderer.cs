@@ -111,8 +111,8 @@ internal class ShadowRenderer : Control
       Canvas.SetTop(maskContent, 20);
       
       // TODO 需要考虑释放
-      BindUtils.RelayBind(this, "Shadows", maskContent, "BoxShadow");
-      BindUtils.RelayBind(this, "MaskCornerRadius", maskContent, "CornerRadius");
+      BindUtils.RelayBind(this, ShadowsProperty, maskContent, Border.BoxShadowProperty);
+      BindUtils.RelayBind(this, MaskCornerRadiusProperty, maskContent, Border.CornerRadiusProperty);
       
       return maskContent;
    }

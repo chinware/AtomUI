@@ -248,7 +248,7 @@ public abstract partial class AbstractProgressBar : RangeBaseControl, ISizeTypeA
             Padding = new Thickness(0),
             VerticalContentAlignment = VerticalAlignment.Center,
          };
-         BindUtils.RelayBind(this, "IsEnabled", _percentageLabel);
+         BindUtils.RelayBind(this, IsEnabledProperty, _percentageLabel);
       }
 
       return _percentageLabel;

@@ -1,6 +1,8 @@
 ﻿using System.Reactive.Disposables;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Input;
 using Avalonia.Input.Raw;
 using Avalonia.LogicalTree;
@@ -47,12 +49,24 @@ public class FlyoutHost : Control
    /// <summary>
    /// Defines the ToolTip.Placement property.
    /// </summary>
-   public static readonly StyledProperty<PlacementMode> PlacementProperty =
-      AvaloniaProperty.Register<FlyoutHost, PlacementMode>(
-         nameof(Placement), defaultValue: PlacementMode.Top);
+   // public static readonly StyledProperty<PlacementMode> PlacementProperty =
+   //    AvaloniaProperty.Register<FlyoutHost, PlacementMode>(
+   //       nameof(Placement), defaultValue: PlacementMode.Top);
+   public static readonly StyledProperty<PlacementMode> PlacementProperty = 
+      Popup.PlacementProperty.AddOwner<FlyoutHost>();
+   
+   /// <inheritdoc cref="Popup.PlacementAnchorProperty"/>
+   public static readonly StyledProperty<PopupAnchor> PlacementAnchorProperty =
+      Popup.PlacementAnchorProperty.AddOwner<FlyoutHost>();
+        
+   /// <inheritdoc cref="Popup.PlacementAnchorProperty"/>
+   public static readonly StyledProperty<PopupGravity> PlacementGravityProperty =
+      Popup.PlacementGravityProperty.AddOwner<FlyoutHost>();
 
    /// <summary>
    /// 距离 anchor 的边距，根据垂直和水平进行设置
+   /// 但是对某些组合无效，比如跟随鼠标的情况
+   /// 还有些 anchor 和 gravity 的组合也没有用 
    /// </summary>
    public static readonly StyledProperty<double> MarginToAnchorProperty =
       AvaloniaProperty.Register<FlyoutHost, double>(nameof(MarginToAnchor), 0);
@@ -62,9 +76,6 @@ public class FlyoutHost : Control
 
    public static readonly StyledProperty<int> BetweenShowDelayProperty =
       AvaloniaProperty.Register<FlyoutHost, int>(nameof(BetweenShowDelay), 100);
-
-   public static readonly StyledProperty<bool> ShowOnDisabledProperty =
-      AvaloniaProperty.Register<FlyoutHost, bool>(nameof(ShowOnDisabled), defaultValue: false, inherits: true);
 
    /// <summary>
    /// 装饰的目标控件
@@ -109,6 +120,20 @@ public class FlyoutHost : Control
       set => SetValue(PlacementProperty, value);
    }
 
+   /// <inheritdoc cref="Popup.PlacementGravity"/>
+   public PopupGravity PlacementGravity
+   {
+      get => GetValue(PlacementGravityProperty);
+      set => SetValue(PlacementGravityProperty, value);
+   }
+
+   /// <inheritdoc cref="Popup.PlacementAnchor"/>
+   public PopupAnchor PlacementAnchor
+   {
+      get => GetValue(PlacementAnchorProperty);
+      set => SetValue(PlacementAnchorProperty, value);
+   }
+
    public double MarginToAnchor
    {
       get => GetValue(MarginToAnchorProperty);
@@ -127,15 +152,14 @@ public class FlyoutHost : Control
       set => SetValue(BetweenShowDelayProperty, value);
    }
 
-   public bool ShowOnDisabled
-   {
-      get => GetValue(ShowOnDisabledProperty);
-      set => SetValue(ShowOnDisabledProperty, value);
-   }
-
    private bool _initialized = false;
    private CompositeDisposable _compositeDisposable;
 
+   static FlyoutHost()
+   {
+      PlacementProperty.OverrideDefaultValue<FlyoutHost>(PlacementMode.Top);
+   }
+   
    public FlyoutHost()
    {
       _compositeDisposable = new CompositeDisposable();
@@ -168,12 +192,17 @@ public class FlyoutHost : Control
    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
    {
       base.OnDetachedFromVisualTree(e);
-      _compositeDisposable?.Dispose();
+      _compositeDisposable.Dispose();
    }
 
    private void SetupFlyoutProperties()
    {
-      
+      Console.WriteLine(AnchorTargetProperty.Name);
+      if (Flyout is not null) {
+         _compositeDisposable.Add(BindUtils.RelayBind(this, PlacementProperty, Flyout));
+         _compositeDisposable.Add(BindUtils.RelayBind(this, PlacementAnchorProperty, Flyout));
+         _compositeDisposable.Add(BindUtils.RelayBind(this, PlacementGravityProperty, Flyout));
+      }
    }
 
    private void SetupTriggerHandler()

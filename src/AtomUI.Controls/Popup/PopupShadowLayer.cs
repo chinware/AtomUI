@@ -53,10 +53,10 @@ internal class PopupShadowLayer : AbstractPopup, IShadowDecorator
       VerticalOffset = offset.Y;
       // // 绑定资源要管理起来
       if (_target is not null) {
-         BindUtils.RelayBind(_target, "Placement", this);
-         BindUtils.RelayBind(_target, "PlacementGravity", this);
-         BindUtils.RelayBind(_target, "PlacementAnchor", this);
-         BindUtils.RelayBind(_target, "PlacementTarget", this);
+         BindUtils.RelayBind(_target, PlacementProperty, this);
+         BindUtils.RelayBind(_target, PlacementGravityProperty, this);
+         BindUtils.RelayBind(_target, PlacementAnchorProperty, this);
+         BindUtils.RelayBind(_target, PlacementTargetProperty, this);
          _target.Opened += HandleTargetOpened;
          _target.Closed += HandleTargetClosed;
       }

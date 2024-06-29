@@ -61,7 +61,7 @@ internal partial class SegmentedItemBox : BorderedStyleControl, ITokenIdProvider
       _customStyle = this;
       Item = item;
       Child = Item;
-      BindUtils.RelayBind(Item, "IsEnabled", this);
+      BindUtils.RelayBind(Item, IsEnabledProperty, this);
    }
    
    protected override Size MeasureOverride(Size availableSize)

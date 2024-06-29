@@ -12,31 +12,31 @@ public class BorderedStyleControl : StyledControl
    /// Defines the <see cref="Child"/> property.
    /// </summary>
    public static readonly StyledProperty<Control?> ChildProperty =
-      AvaloniaProperty.Register<BorderedStyleControl, Control?>(nameof(Child));
+      Border.ChildProperty.AddOwner<BorderedStyleControl>();
 
    /// <summary>
    /// Defines the <see cref="BorderBrush"/> property.
    /// </summary>
    public static readonly StyledProperty<IBrush?> BorderBrushProperty =
-      AvaloniaProperty.Register<BorderedStyleControl, IBrush?>(nameof(BorderBrush));
+      Border.BorderBrushProperty.AddOwner<BorderedStyleControl>();
 
    /// <summary>
    /// Defines the <see cref="BorderThickness"/> property.
    /// </summary>
    public static readonly StyledProperty<Thickness> BorderThicknessProperty =
-      AvaloniaProperty.Register<BorderedStyleControl, Thickness>(nameof(BorderThickness));
+      Border.BorderThicknessProperty.AddOwner<BorderedStyleControl>();
 
    /// <summary>
    /// Defines the <see cref="CornerRadius"/> property.
    /// </summary>
    public static readonly StyledProperty<CornerRadius> CornerRadiusProperty =
-      AvaloniaProperty.Register<BorderedStyleControl, CornerRadius>(nameof(CornerRadius));
+      Border.CornerRadiusProperty.AddOwner<BorderedStyleControl>();
 
    /// <summary>
    /// Defines the <see cref="BoxShadow"/> property.
    /// </summary>
    public static readonly StyledProperty<BoxShadows> BoxShadowProperty =
-      AvaloniaProperty.Register<BorderedStyleControl, BoxShadows>(nameof(BoxShadow));
+      Border.BoxShadowProperty.AddOwner<BorderedStyleControl>();
 
    /// <summary>
    /// Gets or sets a brush with which to paint the border.
@@ -97,14 +97,14 @@ public class BorderedStyleControl : StyledControl
       _border = new Border();
       LogicalChildren.Add(_border);
       VisualChildren.Add(_border);
-
-      BindUtils.RelayBind(this, "Background", _border);
-      BindUtils.RelayBind(this, "BackgroundSizing", _border);
-      BindUtils.RelayBind(this, "BorderBrush", _border);
-      BindUtils.RelayBind(this, "BorderThickness", _border);
-      BindUtils.RelayBind(this, "CornerRadius", _border);
-      BindUtils.RelayBind(this, "Child", _border);
-      BindUtils.RelayBind(this, "Padding", _border);
+      // TODO 这些资源要管理起来
+      BindUtils.RelayBind(this, BackgroundProperty, _border);
+      BindUtils.RelayBind(this, BackgroundSizingProperty, _border);
+      BindUtils.RelayBind(this, BorderBrushProperty, _border);
+      BindUtils.RelayBind(this, BorderThicknessProperty, _border);
+      BindUtils.RelayBind(this, CornerRadiusProperty, _border);
+      BindUtils.RelayBind(this, ChildProperty, _border);
+      BindUtils.RelayBind(this, PaddingProperty, _border);
    }
 
    protected override Size ArrangeOverride(Size finalSize)

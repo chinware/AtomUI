@@ -12,15 +12,13 @@ public class StyledControl : Control
    /// Defines the <see cref="Background"/> property.
    /// </summary>
    public static readonly StyledProperty<IBrush?> BackgroundProperty =
-      AvaloniaProperty.Register<StyledControl, IBrush?>(nameof(Background));
+      Border.BackgroundProperty.AddOwner<StyledControl>();
 
    /// <summary>
    /// Defines the <see cref="BackgroundSizing"/> property.
    /// </summary>
    public static readonly StyledProperty<BackgroundSizing> BackgroundSizingProperty =
-      AvaloniaProperty.Register<StyledControl, BackgroundSizing>(
-         nameof(BackgroundSizing),
-         BackgroundSizing.CenterBorder);
+      Border.BackgroundSizingProperty.AddOwner<StyledControl>();
    
    /// <summary>
    /// Defines the <see cref="FontFamily"/> property.
@@ -63,12 +61,13 @@ public class StyledControl : Control
    /// </summary>
    public static readonly StyledProperty<IBrush?> ForegroundProperty =
       TextElement.ForegroundProperty.AddOwner<StyledControl>();
-   
+
    /// <summary>
    /// Defines the <see cref="Padding"/> property.
    /// </summary>
    public static readonly StyledProperty<Thickness> PaddingProperty =
-      AvaloniaProperty.Register<Decorator, Thickness>(nameof(Padding));
+      Border.PaddingProperty.AddOwner<StyledControl>();
+   
    
    /// <summary>
    /// Gets or sets a brush with which to paint the background.
@@ -167,6 +166,7 @@ public class StyledControl : Control
    {
       AffectsMeasure<Decorator>(PaddingProperty);
       ClipToBoundsProperty.OverrideDefaultValue<StyledControl>(true);
+      BackgroundSizingProperty.OverrideDefaultValue<StyledControl>(BackgroundSizing.CenterBorder);
    }
    
    public StyledControl()

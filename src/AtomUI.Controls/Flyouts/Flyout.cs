@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Metadata;
 using Avalonia.Styling;
 
@@ -67,5 +68,17 @@ public class Flyout : PopupFlyoutBase
       }
 
       base.OnOpening(args);
+   }
+
+   /// <summary>
+   /// 判断是否可以启用箭头，有些组合是不能启用箭头绘制的，因为没有意义
+   /// </summary>
+   /// <param name="placementMode"></param>
+   /// <param name="anchor"></param>
+   /// <param name="gravity"></param>
+   /// <returns></returns>
+   private bool CanEnabledArrow(PlacementMode placementMode, PopupAnchor? anchor, PopupGravity? gravity)
+   {
+      return true;
    }
 }

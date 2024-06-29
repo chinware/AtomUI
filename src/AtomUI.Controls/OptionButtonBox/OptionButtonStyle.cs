@@ -70,8 +70,8 @@ public partial class OptionButton : IWaveAdornerInfoProvider, IControlCustomStyl
       };
       _stackPanel.Children.Add(_label);
       Content = _stackPanel;
-      BindUtils.RelayBind(this, "Width", _stackPanel);
-      BindUtils.RelayBind(this, "Height", _stackPanel);
+      BindUtils.RelayBind(this, WidthProperty, _stackPanel);
+      BindUtils.RelayBind(this, HeightProperty, _stackPanel);
    }
 
    void IControlCustomStyle.SetupTransitions()

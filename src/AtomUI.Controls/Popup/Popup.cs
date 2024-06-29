@@ -33,7 +33,7 @@ public class Popup : AbstractPopup
       _shadowLayer = new PopupShadowLayer();
       _shadowLayer.AttachToTarget(this);
       // TODO 是否需要释放
-      BindUtils.RelayBind(this, "MaskShadows", _shadowLayer);
+      BindUtils.RelayBind(this, MaskShadowsProperty, _shadowLayer);
       _globalTokenBinder = new GlobalTokenBinder();
    }
    
