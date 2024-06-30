@@ -63,9 +63,15 @@ internal static class PopupFlyoutBaseInterceptor
       return false;
    }
 
-   public static void UpdateHostPositionInterceptor(AbstractPopup __instance, IPopupHost popupHost, Control placementTarget)
+   public static void UpdateHostPositionPostfixInterceptor(AbstractPopup __instance, IPopupHost popupHost, Control placementTarget)
    {
-      __instance.NotifyPopupHostPositionUpdated(popupHost, placementTarget);
+      __instance.NotifyHostPositionUpdated(popupHost, placementTarget);
+   }
+   
+   public static bool UpdateHostPositionPrefixInterceptor(AbstractPopup __instance, IPopupHost popupHost, Control placementTarget)
+   {
+      __instance.NotifyAboutToUpdateHostPosition(popupHost, placementTarget);
+      return true;
    }
 
    public static bool PositionPopupInterceptor(PopupFlyoutBase __instance, bool showAtPointer)
@@ -80,7 +86,8 @@ internal static class PopupFlyoutBaseInterceptorRegister
    public static void Register(Harmony harmony)
    {
       RegisterPopupFlyoutBaseCreatePopup(harmony);
-      RegisterPopupUpdateHostPosition(harmony);
+      RegisterPopupUpdateHostPositionPrefix(harmony);
+      RegisterPopupUpdateHostPositionPostfix(harmony);
       RegisterPopupPositionPopup(harmony);
    }
    
@@ -93,11 +100,20 @@ internal static class PopupFlyoutBaseInterceptorRegister
       harmony.Patch(origin, prefix: new HarmonyMethod(prefixInterceptor));
    }
 
-   private static void RegisterPopupUpdateHostPosition(Harmony harmony)
+   private static void RegisterPopupUpdateHostPositionPrefix(Harmony harmony)
+   {
+      var origin = typeof(AvaloniaPopup).GetMethod("UpdateHostPosition", BindingFlags.Instance | BindingFlags.NonPublic);
+      var prefixInterceptor = typeof(PopupFlyoutBaseInterceptor)
+         .GetMethod(nameof(PopupFlyoutBaseInterceptor.UpdateHostPositionPrefixInterceptor),
+                    BindingFlags.Static | BindingFlags.Public);
+      harmony.Patch(origin, prefix: new HarmonyMethod(prefixInterceptor));
+   }
+   
+   private static void RegisterPopupUpdateHostPositionPostfix(Harmony harmony)
    {
       var origin = typeof(AvaloniaPopup).GetMethod("UpdateHostPosition", BindingFlags.Instance | BindingFlags.NonPublic);
       var postfixInterceptor = typeof(PopupFlyoutBaseInterceptor)
-         .GetMethod(nameof(PopupFlyoutBaseInterceptor.UpdateHostPositionInterceptor),
+         .GetMethod(nameof(PopupFlyoutBaseInterceptor.UpdateHostPositionPostfixInterceptor),
                     BindingFlags.Static | BindingFlags.Public);
       harmony.Patch(origin, postfix: new HarmonyMethod(postfixInterceptor));
    }

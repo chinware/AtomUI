@@ -2,7 +2,6 @@
 using System.Reflection;
 using AtomUI.Media;
 using AtomUI.Platform.Windows;
-using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -11,76 +10,65 @@ using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
-internal class PopupShadowLayer : AbstractPopup, IShadowDecorator
+internal class PopupShadowLayer : LiteWindow, IShadowDecorator
 {
-   public static readonly StyledProperty<BoxShadows> MaskShadowsProperty = 
-         Border.BoxShadowProperty.AddOwner<PopupShadowLayer>();
+   public static readonly StyledProperty<BoxShadows> MaskShadowsProperty =
+      Border.BoxShadowProperty.AddOwner<PopupShadowLayer>();
 
    public BoxShadows MaskShadows
    {
       get => GetValue(MaskShadowsProperty);
       set => SetValue(MaskShadowsProperty, value);
    }
-
+   
    private static readonly FieldInfo ManagedPopupPositionerPopupInfo;
-   private IManagedPopupPositionerPopup? _managedPopupPositionerPopup;
 
    static PopupShadowLayer()
    {
-      ManagedPopupPositionerPopupInfo = typeof(ManagedPopupPositioner).GetField("_popup", 
+      ManagedPopupPositionerPopupInfo = typeof(ManagedPopupPositioner).GetField("_popup",
          BindingFlags.Instance | BindingFlags.NonPublic)!;
    }
 
-   public PopupShadowLayer()
-   {
-      WindowManagerAddShadowHint = false;
-      IsLightDismissEnabled = false;
-      _compositeDisposable = new CompositeDisposable();
-   }
-   
    private Popup? _target;
    private ShadowRenderer? _shadowRenderer;
-   private CompositeDisposable _compositeDisposable;
+   private CompositeDisposable? _compositeDisposable;
+   private IManagedPopupPositionerPopup? _managedPopupPositionerPopup;
+   private TopLevel? _topLevel;
+   private bool _isOpened = false;
+
+   public PopupShadowLayer(TopLevel topLevel)
+      : base(topLevel, topLevel.PlatformImpl?.CreatePopup()!)
+   {
+      _topLevel = topLevel;
+      Background = new SolidColorBrush(Colors.Transparent);
+      if (this is WindowBase window) {
+         window.SetTransparentForMouseEvents(true);
+      }
+
+      if (PlatformImpl?.PopupPositioner is ManagedPopupPositioner managedPopupPositioner) {
+         _managedPopupPositionerPopup =
+            ManagedPopupPositionerPopupInfo.GetValue(managedPopupPositioner) as IManagedPopupPositionerPopup;
+      }
+   }
 
    public void AttachToTarget(Popup popup)
    {
-      if (_target is not null && _target != popup) {
-         // 释放资源
-         _compositeDisposable.Dispose();
-      }
       _target = popup;
       ConfigureShadowPopup();
    }
 
    public void DetachedFromTarget(Popup popup) { }
-   
-   public void ShowShadows() { }
-   public void HideShadows() {}
 
    private void ConfigureShadowPopup()
    {
-      var offset = CalculatePopupOffset();
-      HorizontalOffset = offset.X;
-      VerticalOffset = offset.Y;
-      // // 绑定资源要管理起来
       if (_target is not null) {
          _target.Opened += HandleTargetOpened;
          _target.Closed += HandleTargetClosed;
-         SetupRelayBindings();
       }
+
       if (_shadowRenderer is null) {
          _shadowRenderer ??= new ShadowRenderer();
-         Child = _shadowRenderer;
-      }
-   }
-
-   private void SetupRelayBindings()
-   {
-      if (_target is not null) {
-         // _compositeDisposable.Add(BindUtils.RelayBind(_target, PlacementProperty, this));
-         // _compositeDisposable.Add(BindUtils.RelayBind(_target, PlacementGravityProperty, this));
-         // _compositeDisposable.Add(BindUtils.RelayBind(_target, PlacementAnchorProperty, this));
-         _compositeDisposable.Add(BindUtils.RelayBind(_target, PlacementTargetProperty, this));
+         SetChild(_shadowRenderer);
       }
    }
 
@@ -89,22 +77,62 @@ internal class PopupShadowLayer : AbstractPopup, IShadowDecorator
       SetupShadowRenderer();
       Open();
    }
-   
-   private void HandleTargetClosed(object? sender, EventArgs args)
+
+   private void Open()
    {
-      _compositeDisposable.Dispose();
-      Close();
+      if (_isOpened) {
+         return;
+      }
+      
+      _compositeDisposable = new CompositeDisposable();
+      if (_topLevel is Avalonia.Controls.Window window && window.PlatformImpl != null) {
+         
+      }
+
+      if (_target?.Host is PopupRoot popupRoot) {
+         popupRoot.PositionChanged += TargetPopupPositionChanged;
+      }
+
+      _compositeDisposable.Add(Disposable.Create(this, state =>
+      {
+         state.SetChild(null);
+         Hide();
+         ((ISetLogicalParent)state).SetParent(null);
+         Dispose();
+      }));
+      ((ISetLogicalParent)this).SetParent(_target);
+      SetupPositionAndSize();
+      _isOpened = true;
+      Show();
    }
 
-   protected override void NotifyClosed()
+   private void TargetPopupPositionChanged(object? sender, PixelPointEventArgs e)
    {
-      base.NotifyClosed();
-      _managedPopupPositionerPopup = null;
+      SetupPositionAndSize();
    }
-   
+
+   private static IDisposable SubscribeToEventHandler<T, TEventHandler>(T target, TEventHandler handler,
+                                                                        Action<T, TEventHandler> subscribe,
+                                                                        Action<T, TEventHandler> unsubscribe)
+   {
+      subscribe(target, handler);
+      return Disposable.Create((unsubscribe, target, handler),
+                               state => state.unsubscribe(state.target, state.handler));
+   }
+
+   private void HandleTargetClosed(object? sender, EventArgs args)
+   {
+      if (_target is not null) {
+         _target.Opened -= HandleTargetOpened;
+         _target.Closed -= HandleTargetClosed;
+      }
+
+      _compositeDisposable?.Dispose();
+      _compositeDisposable = null;
+   }
+
    private void SetupShadowRenderer()
    {
-      SetupRelayBindings();
       if (_target?.Child is not null && _shadowRenderer is not null) {
          // 理论上现在已经有大小了
          var content = _target?.Child!;
@@ -123,22 +151,6 @@ internal class PopupShadowLayer : AbstractPopup, IShadowDecorator
       }
    }
 
-   protected override void NotifyPopupHostCreated(IPopupHost popupHost)
-   {
-      base.NotifyPopupHostCreated(popupHost);
-      if (popupHost is WindowBase window) {
-         window.Background = new SolidColorBrush(Colors.Transparent);
-         window.SetTransparentForMouseEvents(true);
-         if (_managedPopupPositionerPopup is null) {
-            if (popupHost is PopupRoot popupRoot) {
-               if (popupRoot.PlatformImpl?.PopupPositioner is ManagedPopupPositioner managedPopupPositioner) {
-                  _managedPopupPositionerPopup = ManagedPopupPositionerPopupInfo.GetValue(managedPopupPositioner) as IManagedPopupPositionerPopup;
-               }
-            }
-         }
-      }
-   }
-
    private Size CalculateShadowRendererSize(Control content)
    {
       var shadowThickness = MaskShadows.Thickness();
@@ -147,18 +159,19 @@ internal class PopupShadowLayer : AbstractPopup, IShadowDecorator
       return new Size(targetWidth, targetHeight);
    }
 
-   private Point CalculatePopupOffset()
+   private void SetupPositionAndSize()
    {
-      return default;
-   }
-   
-   protected internal override void NotifyPopupHostPositionUpdated(IPopupHost popupHost, Control placementTarget)
-   {
-      base.NotifyPopupHostPositionUpdated(popupHost, placementTarget);
-      popupHost.ConfigurePosition(placementTarget,
-                                  PlacementMode.Pointer,
-                                  offset: new Point(-40, 1),
-                                  anchor: PopupAnchor.Top,
-                                  gravity: PopupGravity.Top);
+      if (_target?.Host is PopupRoot popupRoot) {
+         var impl = popupRoot.PlatformImpl!;
+         var targetPosition = impl.Position;
+         double offsetX = targetPosition.X;
+         double offsetY = targetPosition.Y;
+         double scaling = _managedPopupPositionerPopup!.Scaling;
+         var shadowThickness = MaskShadows.Thickness();
+         offsetX -= shadowThickness.Left * scaling;
+         offsetY -= shadowThickness.Top * scaling;
+         _managedPopupPositionerPopup?.MoveAndResize(new Point(offsetX, offsetY),
+                                                     new Size(_shadowRenderer!.Width, _shadowRenderer.Height));
+      }
    }
 }

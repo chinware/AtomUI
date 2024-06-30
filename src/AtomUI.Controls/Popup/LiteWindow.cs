@@ -13,7 +13,7 @@ public class LiteWindow : WindowBase, IHostedVisualTreeRoot, IDisposable
    {
       BackgroundProperty.OverrideDefaultValue(typeof(LiteWindow), Brushes.White);
    }
-   
+
    public LiteWindow(TopLevel parent, IPopupImpl impl)
       : this(parent, impl, null) { }
 
@@ -36,7 +36,7 @@ public class LiteWindow : WindowBase, IHostedVisualTreeRoot, IDisposable
    /// Gets the platform-specific window implementation.
    /// </summary>
    public new IPopupImpl? PlatformImpl => (IPopupImpl?)base.PlatformImpl;
-   
+
    /// <summary>
    /// Gets the control that is hosting the popup root.
    /// </summary>
@@ -57,7 +57,6 @@ public class LiteWindow : WindowBase, IHostedVisualTreeRoot, IDisposable
 
    public TopLevel ParentTopLevel { get; }
 
-   /// <inheritdoc/>
    public void Dispose()
    {
       PlatformImpl?.Dispose();

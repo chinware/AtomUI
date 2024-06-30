@@ -66,7 +66,7 @@ internal class ShadowRenderer : Control
       var maskContent = new Border
       {
          BorderThickness = new Thickness(0),
-         Background = new SolidColorBrush(Colors.Red),
+         Background = new SolidColorBrush(Colors.Transparent),
          HorizontalAlignment = HorizontalAlignment.Stretch,
          VerticalAlignment = VerticalAlignment.Stretch
       };
@@ -98,9 +98,4 @@ internal class ShadowRenderer : Control
          Canvas.SetTop(_maskContent, shadowThickness.Top);
       }
    }
-
-   // public sealed override void Render(DrawingContext context)
-   // {
-   //    context.FillRectangle(new SolidColorBrush(Colors.Bisque), new Rect(new Point(0, 0), DesiredSize));
-   // }
 }

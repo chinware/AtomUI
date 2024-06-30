@@ -1,4 +1,6 @@
 ﻿using System.Reactive.Disposables;
+using AtomUI.Data;
+using AtomUI.Styling;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -9,6 +11,8 @@ using Avalonia.LogicalTree;
 using Avalonia.Metadata;
 
 namespace AtomUI.Controls;
+
+using FlyoutControl = Flyout;
 
 public enum FlyoutTriggerType
 {
@@ -44,19 +48,14 @@ public class FlyoutHost : Control
    /// 箭头是否始终指向中心
    /// </summary>
    public static readonly StyledProperty<bool> IsPointAtCenterProperty =
-      PopupFlyoutBase.IsPointAtCenterProperty.AddOwner<FlyoutHost>();
-
-   /// <summary>
-   /// Defines the ToolTip.Placement property.
-   /// </summary>
+      FlyoutControl.IsPointAtCenterProperty.AddOwner<FlyoutHost>();
+   
    public static readonly StyledProperty<PlacementMode> PlacementProperty = 
       Popup.PlacementProperty.AddOwner<FlyoutHost>();
    
-   /// <inheritdoc cref="Popup.PlacementAnchorProperty"/>
    public static readonly StyledProperty<PopupAnchor> PlacementAnchorProperty =
       Popup.PlacementAnchorProperty.AddOwner<FlyoutHost>();
-        
-   /// <inheritdoc cref="Popup.PlacementAnchorProperty"/>
+   
    public static readonly StyledProperty<PopupGravity> PlacementGravityProperty =
       Popup.PlacementGravityProperty.AddOwner<FlyoutHost>();
 
@@ -66,7 +65,7 @@ public class FlyoutHost : Control
    /// 还有些 anchor 和 gravity 的组合也没有用 
    /// </summary>
    public static readonly StyledProperty<double> MarginToAnchorProperty =
-      AvaloniaProperty.Register<FlyoutHost, double>(nameof(MarginToAnchor), 0);
+      Popup.MarginToAnchorProperty.AddOwner<FlyoutHost>();
 
    public static readonly StyledProperty<int> ShowDelayProperty =
       AvaloniaProperty.Register<FlyoutHost, int>(nameof(ShowDelay), 400);
@@ -83,10 +82,7 @@ public class FlyoutHost : Control
       get => GetValue(AnchorTargetProperty);
       set => SetValue(AnchorTargetProperty, value);
    }
-
-   /// <summary>
-   /// Gets or sets the Flyout that should be shown with this button.
-   /// </summary>
+   
    public PopupFlyoutBase? Flyout
    {
       get => GetValue(FlyoutProperty);
@@ -116,15 +112,13 @@ public class FlyoutHost : Control
       get => GetValue(PlacementProperty);
       set => SetValue(PlacementProperty, value);
    }
-
-   /// <inheritdoc cref="Popup.PlacementGravity"/>
+   
    public PopupGravity PlacementGravity
    {
       get => GetValue(PlacementGravityProperty);
       set => SetValue(PlacementGravityProperty, value);
    }
 
-   /// <inheritdoc cref="Popup.PlacementAnchor"/>
    public PopupAnchor PlacementAnchor
    {
       get => GetValue(PlacementAnchorProperty);
@@ -151,6 +145,7 @@ public class FlyoutHost : Control
 
    private bool _initialized = false;
    private CompositeDisposable _compositeDisposable;
+   private GlobalTokenBinder _globalTokenBinder;
 
    static FlyoutHost()
    {
@@ -160,11 +155,7 @@ public class FlyoutHost : Control
    public FlyoutHost()
    {
       _compositeDisposable = new CompositeDisposable();
-   }
-
-   protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
-   {
-      base.OnPropertyChanged(e);
+      _globalTokenBinder = new GlobalTokenBinder();
    }
 
    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -175,6 +166,7 @@ public class FlyoutHost : Control
             ((ISetLogicalParent)AnchorTarget).SetParent(this);
             VisualChildren.Add(AnchorTarget);
          }
+         _globalTokenBinder.AddGlobalBinding(this, MarginToAnchorProperty, GlobalResourceKey.MarginXXS);
          _initialized = true;
       }
    }
@@ -200,6 +192,7 @@ public class FlyoutHost : Control
          _compositeDisposable.Add(BindUtils.RelayBind(this, PlacementGravityProperty, Flyout));
          _compositeDisposable.Add(BindUtils.RelayBind(this, IsShowArrowProperty, Flyout));
          _compositeDisposable.Add(BindUtils.RelayBind(this, IsPointAtCenterProperty, Flyout));
+         _compositeDisposable.Add(BindUtils.RelayBind(this, MarginToAnchorProperty, Flyout));
       }
    }
 

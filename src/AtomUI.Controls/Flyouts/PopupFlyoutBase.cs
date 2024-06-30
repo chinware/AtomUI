@@ -1,11 +1,12 @@
-﻿using Avalonia;
+﻿using AtomUI.Utils;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
-
 
 namespace AtomUI.Controls;
 
 using AvaloniaPopupFlyoutBase = Avalonia.Controls.Primitives.PopupFlyoutBase;
+using PopupControl = Popup;
 
 /// <summary>
 /// 最基本得弹窗 Flyout，在这里不处理那种带箭头得
@@ -13,37 +14,13 @@ using AvaloniaPopupFlyoutBase = Avalonia.Controls.Primitives.PopupFlyoutBase;
 public abstract class PopupFlyoutBase : AvaloniaPopupFlyoutBase
 {
    /// <summary>
-   /// 是否显示指示箭头
-   /// </summary>
-   public static readonly StyledProperty<bool> IsShowArrowProperty =
-      ArrowDecoratedBox.IsShowArrowProperty.AddOwner<PopupFlyoutBase>();
-
-   /// <summary>
-   /// 箭头是否始终指向中心
-   /// </summary>
-   public static readonly StyledProperty<bool> IsPointAtCenterProperty =
-      AvaloniaProperty.Register<PopupFlyoutBase, bool>(nameof(IsPointAtCenter), false);
-
-   /// <summary>
    /// 距离 anchor 的边距，根据垂直和水平进行设置
    /// 但是对某些组合无效，比如跟随鼠标的情况
    /// 还有些 anchor 和 gravity 的组合也没有用 
    /// </summary>
    public static readonly StyledProperty<double> MarginToAnchorProperty =
-      AvaloniaProperty.Register<PopupFlyoutBase, double>(nameof(MarginToAnchor), 0);
-
-   public bool IsShowArrow
-   {
-      get => GetValue(IsShowArrowProperty);
-      set => SetValue(IsShowArrowProperty, value);
-   }
-
-   public bool IsPointAtCenter
-   {
-      get => GetValue(IsPointAtCenterProperty);
-      set => SetValue(IsPointAtCenterProperty, value);
-   }
-
+      PopupControl.MarginToAnchorProperty.AddOwner<PopupFlyoutBase>();
+   
    public double MarginToAnchor
    {
       get => GetValue(MarginToAnchorProperty);
@@ -68,8 +45,11 @@ public abstract class PopupFlyoutBase : AvaloniaPopupFlyoutBase
       presenter.Classes.AddRange(classes);
    }
 
-   protected internal virtual void NotifyPopupCreated(Popup popup) { }
-
+   protected internal virtual void NotifyPopupCreated(Popup popup)
+   {
+      BindUtils.RelayBind(this, MarginToAnchorProperty, popup);
+   }
+   
    protected internal virtual void NotifyPositionPopup(bool showAtPointer)
    {
       Size sz;
@@ -83,23 +63,15 @@ public abstract class PopupFlyoutBase : AvaloniaPopupFlyoutBase
 
       Popup.VerticalOffset = VerticalOffset;
       Popup.HorizontalOffset = HorizontalOffset;
+      
       Popup.PlacementAnchor = PlacementAnchor;
       Popup.PlacementGravity = PlacementGravity;
+      
       if (showAtPointer) {
          Popup.Placement = PlacementMode.Pointer;
       } else {
          Popup.Placement = Placement;
          Popup.PlacementConstraintAdjustment = PlacementConstraintAdjustment;
       }
-   }
-
-   protected override void OnOpened()
-   {
-      base.OnOpened();
-   }
-
-   protected override void OnClosed()
-   {
-      base.OnClosed();
    }
 }

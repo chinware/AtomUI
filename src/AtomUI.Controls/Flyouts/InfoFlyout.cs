@@ -1,6 +1,4 @@
-﻿using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Metadata;
+﻿using Avalonia.Controls;
 
 namespace AtomUI.Controls;
 
