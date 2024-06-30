@@ -29,10 +29,8 @@ using AvaloniaWin = Avalonia.Controls.Window;
 /// assigning the content that you want displayed.
 /// </remarks>
 [PseudoClasses(":open")]
-public partial class ToolTip : BorderedStyleControl, ITokenIdProvider
+public partial class ToolTip : BorderedStyleControl
 {
-   string ITokenIdProvider.TokenId => ToolTipToken.ID;
-
    /// <summary>
    /// Defines the <see cref="Content"/> property.
    /// </summary>
@@ -148,7 +146,7 @@ public partial class ToolTip : BorderedStyleControl, ITokenIdProvider
    public ToolTip()
    {
       _customStyle = this;
-      _controlTokenBinder = new ControlTokenBinder(this);
+      _controlTokenBinder = new ControlTokenBinder(this, ToolTipToken.ID);
    }
 
    internal Control? AdornedControl { get; private set; }

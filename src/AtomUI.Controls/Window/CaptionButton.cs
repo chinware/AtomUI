@@ -10,7 +10,7 @@ namespace AtomUI.Controls.Window;
 
 using AvaloniaButton = Avalonia.Controls.Button;
 
-public class CaptionButton : AvaloniaButton, ITokenIdProvider
+public class CaptionButton : AvaloniaButton
 {
    public static readonly StreamGeometry WindowCloseIconGlyph = StreamGeometry.Parse(
       "M13.46,12L19,17.54V19H17.54L12,13.46L6.46,19H5V17.54L10.54,12L5,6.46V5H6.46L12,10.54L17.54,5H19V6.46L13.46,12Z");
@@ -21,12 +21,10 @@ public class CaptionButton : AvaloniaButton, ITokenIdProvider
    public static readonly StreamGeometry WindowCollapseGlyph = StreamGeometry.Parse("M19.5,3.09L15,7.59V4H13V11H20V9H16.41L20.91,4.5L19.5,3.09M4,13V15H7.59L3.09,19.5L4.5,20.91L9,16.41V20H11V13H4Z");
 
    private ControlTokenBinder _controlTokenBinder;
-   
-   string ITokenIdProvider.TokenId => CaptionButtonToken.ID;
 
    public CaptionButton()
    {
-      _controlTokenBinder = new ControlTokenBinder(this);
+      _controlTokenBinder = new ControlTokenBinder(this, CaptionButtonToken.ID);
    }
    
    protected override Size MeasureCore(Size availableSize)

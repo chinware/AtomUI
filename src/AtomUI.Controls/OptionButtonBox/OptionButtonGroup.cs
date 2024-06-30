@@ -12,10 +12,8 @@ namespace AtomUI.Controls;
 using ButtonSizeType = SizeType;
 using OptionButtons = AvaloniaList<OptionButton>;
 
-public partial class OptionButtonGroup : StyledControl, ITokenIdProvider, ISizeTypeAware
+public partial class OptionButtonGroup : StyledControl, ISizeTypeAware
 {
-   string ITokenIdProvider.TokenId => OptionButtonToken.ID;
-
    public static readonly StyledProperty<ButtonSizeType> SizeTypeProperty =
       AvaloniaProperty.Register<OptionButtonGroup, ButtonSizeType>(nameof(SizeType), ButtonSizeType.Middle);
 
@@ -88,7 +86,7 @@ public partial class OptionButtonGroup : StyledControl, ITokenIdProvider, ISizeT
 
    public OptionButtonGroup()
    {
-      _controlTokenBinder = new ControlTokenBinder(this);
+      _controlTokenBinder = new ControlTokenBinder(this, OptionButtonToken.ID);
       _customStyle = this;
       _customStyle.InitOnConstruct();
       Options.CollectionChanged += OptionsChanged;

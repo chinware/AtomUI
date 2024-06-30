@@ -5,8 +5,6 @@ namespace AtomUI.Controls;
 
 public class FlyoutPresenter : ArrowDecoratedBox
 { 
-   string TokenId => FlyoutPresenterToken.ID;
-   
    protected override void OnKeyDown(KeyEventArgs e)
    {
       if (e.Key == Key.Escape)

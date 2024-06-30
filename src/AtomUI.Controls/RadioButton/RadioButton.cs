@@ -12,10 +12,8 @@ namespace AtomUI.Controls;
 
 using AvaloniaRadioButton = Avalonia.Controls.RadioButton;
 
-public partial class RadioButton : AvaloniaRadioButton, ITokenIdProvider, ICustomHitTest
+public partial class RadioButton : AvaloniaRadioButton, ICustomHitTest
 {
-   string ITokenIdProvider.TokenId => RadioButtonToken.ID;
-
    static RadioButton()
    {
       AffectsRender<RadioButton>(
@@ -28,7 +26,7 @@ public partial class RadioButton : AvaloniaRadioButton, ITokenIdProvider, ICusto
 
    public RadioButton()
    {
-      _controlTokenBinder = new ControlTokenBinder(this);
+      _controlTokenBinder = new ControlTokenBinder(this, RadioButtonToken.ID);
       _customStyle = this;
    }
 

@@ -6,10 +6,8 @@ using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
 
-public partial class MarqueeLabel : TextBlock, ITokenIdProvider
+public partial class MarqueeLabel : TextBlock
 {
-   string ITokenIdProvider.TokenId => MarqueeLabelToken.ID;
-   
    public static readonly DirectProperty<MarqueeLabel, double> CycleSpaceProperty =
       AvaloniaProperty.RegisterDirect<MarqueeLabel, double>(nameof(CycleSpace),
                                                             o => o.CycleSpace,
@@ -39,7 +37,7 @@ public partial class MarqueeLabel : TextBlock, ITokenIdProvider
    
    public MarqueeLabel()
    {
-      _controlTokenBinder = new ControlTokenBinder(this);
+      _controlTokenBinder = new ControlTokenBinder(this, MarqueeLabelToken.ID);
       _customStyle = this;
    }
 

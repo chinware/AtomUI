@@ -10,9 +10,9 @@ namespace AtomUI.Data;
 /// </summary>
 public static class ThemeResourceUtils
 {
-   public static object FindTokenResource(Control control, string resourceKey, ThemeVariant? themeVariant = null)
+   public static object FindTokenResource(Control control, string controlTokenId, string resourceKey, ThemeVariant? themeVariant = null)
    {
-      resourceKey = ProcessResourceKey(control, resourceKey);
+      resourceKey = ProcessResourceKey(controlTokenId, resourceKey);
       themeVariant ??= (control as IThemeVariantHost).ActualThemeVariant;
       if (control.TryFindResource(resourceKey, themeVariant, out var value)) {
          return value!;
@@ -21,33 +21,28 @@ public static class ThemeResourceUtils
       return AvaloniaProperty.UnsetValue;
    }
 
-   public static IObservable<object?> GetTokenResourceObservable(Control control, string resourceKey, Func<object?, object?>? converter = null)
+   public static IObservable<object?> GetTokenResourceObservable(Control control, string controlTokenId, string resourceKey, Func<object?, object?>? converter = null)
    {
-      resourceKey = ProcessResourceKey(control, resourceKey);
+      resourceKey = ProcessResourceKey(controlTokenId, resourceKey);
       return control.GetResourceObservable(resourceKey, converter);
    }
 
-   private static string ProcessResourceKey(Control control, string resourceKey)
+   private static string ProcessResourceKey(string controlTokenId, string resourceKey)
    {
-      var tokenIdProvider = control as ITokenIdProvider;
-      if (tokenIdProvider is null) {
-         throw new ArgumentException($"{nameof(control)} is not ITokenIdProvider");
-      }
-      var tokenId = tokenIdProvider.TokenId;
       var activeTheme = ThemeManager.Current.ActivatedTheme!;
-      var controlToken = activeTheme.GetControlToken(tokenId);
+      var controlToken = activeTheme.GetControlToken(controlTokenId);
       if (controlToken is null) {
-         throw new ArgumentException($"Control token {tokenId} for Control token id provider {nameof(control)} is not exist.");
+         throw new ArgumentException($"Control token for token id {nameof(controlTokenId)} is not exist.");
       }
       
       if (controlToken.IsCustomTokenConfig) {
          // 自定义某些 token 值，有可能全局的 Token 也会被重定义
          if (controlToken.HasToken(resourceKey) || controlToken.CustomTokens.Contains(resourceKey)) {
-            resourceKey = $"{tokenIdProvider.TokenId}.{resourceKey}";
+            resourceKey = $"{controlTokenId}.{resourceKey}";
          }
       } else {
          if (controlToken.HasToken(resourceKey)) {
-            resourceKey = $"{tokenIdProvider.TokenId}.{resourceKey}";
+            resourceKey = $"{controlTokenId}.{resourceKey}";
          }
       }
 

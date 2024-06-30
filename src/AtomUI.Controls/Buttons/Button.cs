@@ -23,7 +23,7 @@ public enum ButtonShape
    Round,
 }
 
-public partial class Button : AvaloniaButton, ITokenIdProvider, ISizeTypeAware
+public partial class Button : AvaloniaButton, ISizeTypeAware
 {
    // 需要改造
    public static readonly DirectProperty<Button, ButtonType> ButtonTypeProperty =
@@ -123,8 +123,6 @@ public partial class Button : AvaloniaButton, ITokenIdProvider, ISizeTypeAware
       set => SetAndRaise(TextProperty, ref _text, value);
    }
 
-   string ITokenIdProvider.TokenId => ButtonToken.ID;
-
    static Button()
    {
       AffectsMeasure<Button>(SizeTypeProperty,
@@ -139,7 +137,7 @@ public partial class Button : AvaloniaButton, ITokenIdProvider, ISizeTypeAware
 
    public Button()
    {
-      _controlTokenBinder = new ControlTokenBinder(this);
+      _controlTokenBinder = new ControlTokenBinder(this, ButtonToken.ID);
       _customStyle = this;
    }
 

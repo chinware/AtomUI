@@ -1,7 +1,6 @@
 using AtomUI.ColorSystem;
 using AtomUI.Data;
 using AtomUI.Icon;
-using AtomUI.TokenSystem;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -34,10 +33,8 @@ public enum TagStatus {
    Warning
 }
 
-public partial class Tag : Label, ITokenIdProvider
+public partial class Tag : Label
 {
-   string ITokenIdProvider.TokenId => TagToken.ID;
-   
    static Tag()
    {
       _presetColorMap = new Dictionary<TagPresetColor, TagCalcColor>();
@@ -60,7 +57,7 @@ public partial class Tag : Label, ITokenIdProvider
    public Tag()
    {
       _customStyle = this;
-      _controlTokenBinder = new ControlTokenBinder(this);
+      _controlTokenBinder = new ControlTokenBinder(this, TagToken.ID);
       SetupPresetColorMap();
       SetupStatusColorMap();
       _customStyle.InitOnConstruct();

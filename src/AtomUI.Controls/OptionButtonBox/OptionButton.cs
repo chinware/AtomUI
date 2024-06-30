@@ -1,5 +1,4 @@
 using AtomUI.Data;
-using AtomUI.TokenSystem;
 using Avalonia;
 using Avalonia.LogicalTree;
 
@@ -34,10 +33,8 @@ public class OptionButtonPointerEventArgs : EventArgs
    }
 }
 
-public partial class OptionButton : AvaloniaRadioButton, ITokenIdProvider, ISizeTypeAware
+public partial class OptionButton : AvaloniaRadioButton, ISizeTypeAware
 {
-   string ITokenIdProvider.TokenId => OptionButtonToken.ID;
-   
    public static readonly StyledProperty<ButtonSizeType> SizeTypeProperty =
       AvaloniaProperty.Register<OptionButton, ButtonSizeType>(nameof(SizeType), ButtonSizeType.Middle);
    
@@ -106,7 +103,7 @@ public partial class OptionButton : AvaloniaRadioButton, ITokenIdProvider, ISize
    
    public OptionButton()
    {
-      _controlTokenBinder = new ControlTokenBinder(this);
+      _controlTokenBinder = new ControlTokenBinder(this, OptionButtonToken.ID);
       _customStyle = this;
    }
    

@@ -13,12 +13,10 @@ using Avalonia.Rendering;
 
 namespace AtomUI.Controls;
 
-public partial class ToggleSwitch : ToggleButton, ITokenIdProvider, ISizeTypeAware,
-                                    ICustomHitTest
+public partial class ToggleSwitch : ToggleButton, ISizeTypeAware, ICustomHitTest
 {
    private bool _initialized = false;
    private bool _transitionInitialized = false;
-   string ITokenIdProvider.TokenId => ToggleSwitchToken.ID;
    private const double STRETCH_FACTOR = 1.3d;
 
    private SwitchKnob _switchKnob;
@@ -59,7 +57,7 @@ public partial class ToggleSwitch : ToggleButton, ITokenIdProvider, ISizeTypeAwa
    public ToggleSwitch()
    {
       _customStyle = this;
-      _controlTokenBinder = new ControlTokenBinder(this);
+      _controlTokenBinder = new ControlTokenBinder(this, ToggleSwitchToken.ID);
       _switchKnob = new SwitchKnob();
       LayoutUpdated += HandleLayoutUpdated;
    }

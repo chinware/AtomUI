@@ -7,10 +7,8 @@ using Avalonia.Metadata;
 
 namespace AtomUI.Controls;
 
-public partial class SegmentedItem : StyledControl, ITokenIdProvider
+public partial class SegmentedItem : StyledControl
 {
-   string ITokenIdProvider.TokenId => SegmentedToken.ID;
-
    public static readonly StyledProperty<SizeType> SizeTypeProperty =
       AvaloniaProperty.Register<SegmentedItem, SizeType>(nameof(SizeType), SizeType.Middle);
 
@@ -68,7 +66,7 @@ public partial class SegmentedItem : StyledControl, ITokenIdProvider
 
    public SegmentedItem()
    {
-      _controlTokenBinder = new ControlTokenBinder(this);
+      _controlTokenBinder = new ControlTokenBinder(this, SegmentedToken.ID);
       _customStyle = this;
    }
 

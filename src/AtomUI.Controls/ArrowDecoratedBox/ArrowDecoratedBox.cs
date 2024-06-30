@@ -72,10 +72,8 @@ public enum ArrowPosition
    RightEdgeAlignedBottom
 }
 
-public partial class ArrowDecoratedBox : StyledControl, ITokenIdProvider
+public partial class ArrowDecoratedBox : StyledControl
 {
-   string ITokenIdProvider.TokenId => ToolTipToken.ID;
-
    public static readonly StyledProperty<bool> IsShowArrowProperty =
       AvaloniaProperty.Register<ArrowDecoratedBox, bool>(nameof(IsShowArrow), true);
 
@@ -144,7 +142,7 @@ public partial class ArrowDecoratedBox : StyledControl, ITokenIdProvider
    public ArrowDecoratedBox()
    {
       _customStyle = this;
-      _controlTokenBinder = new ControlTokenBinder<ArrowDecoratedBox>(this);
+      _controlTokenBinder = new ControlTokenBinder(this, ArrowDecoratedBoxToken.ID);
    }
 
    public static Direction GetDirection(ArrowPosition arrowPosition)

@@ -13,7 +13,7 @@ public partial class ArrowDecoratedBox : IControlCustomStyle
 {
    private bool _initialized = false;
    private IControlCustomStyle _customStyle;
-   private ControlTokenBinder<ArrowDecoratedBox> _controlTokenBinder;
+   private ControlTokenBinder _controlTokenBinder;
    private Geometry? _arrowGeometry;
    private Direction? _lastDirection;
    private Rect _contentRect;

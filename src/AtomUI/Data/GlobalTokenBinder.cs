@@ -25,6 +25,7 @@ public class GlobalTokenBinder : IDisposable
    public void AddGlobalBinding(AvaloniaObject target,
                                 AvaloniaProperty targetProperty,
                                 string resourceKey,
+                                string? controlTokenId = null,
                                 BindingPriority priority = BindingPriority.Style,
                                 Func<IObservable<object?>, IObservable<object?>>? observableConfigure = null,
                                 string? bindingName = null)
@@ -34,22 +35,22 @@ public class GlobalTokenBinder : IDisposable
          throw new ArgumentException("There are currently no active theme.");
       }
 
-      // 探测绑定目标
-      if (target is ITokenIdProvider tokenIdProvider) {
-         var controlToken = activeTheme.GetControlToken(tokenIdProvider.TokenId);
+      if (controlTokenId != null) {
+         // 探测绑定目标
+         var controlToken = activeTheme.GetControlToken(controlTokenId);
          if (controlToken is null) {
             throw new ArgumentException(
-               $"Control token {tokenIdProvider.TokenId} for token provider {nameof(target)} is not exist.");
+               $"Control token {controlTokenId} for token provider {nameof(target)} is not exist.");
          }
          // 全局也是有 control 的 token 存在的，只不过直接读取的全局的值，有些绑定对象可能不是 control
          if (controlToken.IsCustomTokenConfig) {
             // 自定义某些 token 值，有可能全局的 Token 也会被重定义
             if (controlToken.HasToken(resourceKey) || controlToken.CustomTokens.Contains(resourceKey)) {
-               resourceKey = $"{tokenIdProvider.TokenId}.{resourceKey}";
+               resourceKey = $"{controlTokenId}.{resourceKey}";
             }
          } else {
             if (controlToken.HasToken(resourceKey)) {
-               resourceKey = $"{tokenIdProvider.TokenId}.{resourceKey}";
+               resourceKey = $"{controlTokenId}.{resourceKey}";
             }
          }
       }

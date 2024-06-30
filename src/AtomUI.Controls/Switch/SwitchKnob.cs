@@ -1,8 +1,6 @@
-using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.Media;
 using AtomUI.Styling;
-using AtomUI.TokenSystem;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
@@ -14,7 +12,7 @@ using Avalonia.Styling;
 
 namespace AtomUI.Controls.Switch;
 
-internal class SwitchKnob : Control, IControlCustomStyle, ITokenIdProvider
+internal class SwitchKnob : Control, IControlCustomStyle
 {
    private bool _initialized = false;
    private IControlCustomStyle _customStyle;
@@ -38,8 +36,6 @@ internal class SwitchKnob : Control, IControlCustomStyle, ITokenIdProvider
       get => GetValue(LoadIndicatorBrushProperty);
       set => SetValue(LoadIndicatorBrushProperty, value);
    }
-   
-   string ITokenIdProvider.TokenId => ToggleSwitchToken.ID;
    
    private ControlTokenBinder _controlTokenBinder;
 
@@ -111,7 +107,7 @@ internal class SwitchKnob : Control, IControlCustomStyle, ITokenIdProvider
    
    public SwitchKnob()
    {
-      _controlTokenBinder = new ControlTokenBinder(this);
+      _controlTokenBinder = new ControlTokenBinder(this, ToggleSwitchToken.ID);
       _customStyle = this;
    }
 

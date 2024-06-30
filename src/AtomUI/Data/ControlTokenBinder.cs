@@ -1,22 +1,23 @@
-﻿using AtomUI.TokenSystem;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.LogicalTree;
 
 namespace AtomUI.Data;
 
-public class ControlTokenBinder<T> : GlobalTokenBinder
-   where T : Control
+public class ControlTokenBinder : GlobalTokenBinder
 {
    /// <summary>
    /// 用于管理生命周期
    /// </summary>
    private Control _hostControl;
 
-   public ControlTokenBinder(Control hostControl)
+   private string _tokenId;
+
+   public ControlTokenBinder(Control hostControl, string tokenId)
    {
       _hostControl = hostControl;
+      _tokenId = tokenId;
       _hostControl.AttachedToLogicalTree += HandleAttachedToLogicalTree;
       _hostControl.DetachedFromLogicalTree += HandleDetachedFromLogicalTree;
    }
@@ -39,27 +40,23 @@ public class ControlTokenBinder<T> : GlobalTokenBinder
    {
       var parent = _hostControl.GetLogicalParent();
       var activeTheme = ThemeManager.Current.ActivatedTheme!;
+      
       // 探测绑定目标
-      var tokenIdProvider = _hostControl as ITokenIdProvider;
-      if (tokenIdProvider is null) {
-         throw new ArgumentException("Add a binding to Control design token, " +
-                                     "but host control is not a ITokenIdProvider");
-      }
 
-      var controlToken = activeTheme.GetControlToken(tokenIdProvider.TokenId);
+      var controlToken = activeTheme.GetControlToken(_tokenId);
       if (controlToken is null) {
          throw new ArgumentException(
-            $"Control token {tokenIdProvider.TokenId} for Control token id provider {nameof(target)} is not exist.");
+            $"Control token {_tokenId} for Control token id provider {nameof(target)} is not exist.");
       }
 
       if (controlToken.IsCustomTokenConfig) {
          // 自定义某些 token 值，有可能全局的 Token 也会被重定义
          if (controlToken.HasToken(resourceKey) || controlToken.CustomTokens.Contains(resourceKey)) {
-            resourceKey = $"{tokenIdProvider.TokenId}.{resourceKey}";
+            resourceKey = $"{_tokenId}.{resourceKey}";
          }
       } else {
          if (controlToken.HasToken(resourceKey)) {
-            resourceKey = $"{tokenIdProvider.TokenId}.{resourceKey}";
+            resourceKey = $"{_tokenId}.{resourceKey}";
          }
       }
 

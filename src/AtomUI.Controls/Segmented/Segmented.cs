@@ -51,10 +51,8 @@ public class SegmentedMovedEventArgs : RoutedEventArgs
 /// <summary>
 /// TODO 现在还没有支持 Tooltip, 还没有做点击事件
 /// </summary>
-public partial class Segmented : StyledControl, ITokenIdProvider
+public partial class Segmented : StyledControl
 {
-   string ITokenIdProvider.TokenId => SegmentedToken.ID;
-
    public static readonly StyledProperty<SegmentedSizeType> SizeTypeProperty =
       AvaloniaProperty.Register<OptionButtonGroup, SegmentedSizeType>(nameof(SizeType), SegmentedSizeType.Middle);
    
@@ -176,7 +174,7 @@ public partial class Segmented : StyledControl, ITokenIdProvider
 
    public Segmented()
    {
-      _controlTokenBinder = new ControlTokenBinder(this);
+      _controlTokenBinder = new ControlTokenBinder(this, SegmentedToken.ID);
       _customStyle = this;
       _customStyle.InitOnConstruct();
       Items.CollectionChanged += HandleItemsChanged;

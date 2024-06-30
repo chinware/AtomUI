@@ -1,8 +1,6 @@
-using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.Media;
 using AtomUI.Styling;
-using AtomUI.TokenSystem;
 using Avalonia;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
@@ -13,13 +11,11 @@ namespace AtomUI.Controls;
 
 using AvaloniaCheckBox = Avalonia.Controls.CheckBox;
 
-public partial class CheckBox : AvaloniaCheckBox, ITokenIdProvider, ICustomHitTest
+public partial class CheckBox : AvaloniaCheckBox, ICustomHitTest
 {
-   string ITokenIdProvider.TokenId => CheckBoxToken.ID;
-   
    public CheckBox()
    {
-      _controlTokenBinder = new ControlTokenBinder(this);
+      _controlTokenBinder = new ControlTokenBinder(this, CheckBoxToken.ID);
       _customStyle = this;
    }
    

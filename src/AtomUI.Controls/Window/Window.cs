@@ -4,7 +4,6 @@ namespace AtomUI.Controls.Window;
 
 using AvaloniaWindow = Avalonia.Controls.Window;
 
-public class Window : AvaloniaWindow, ITokenIdProvider
+public class Window : AvaloniaWindow
 {
-   string ITokenIdProvider.TokenId => WindowToken.ID;
 }

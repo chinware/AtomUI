@@ -12,10 +12,9 @@ namespace AtomUI.Controls;
 /// <summary>
 /// 在内部维护一些额外信息的控件，用户无感知
 /// </summary>
-internal partial class SegmentedItemBox : BorderedStyleControl, ITokenIdProvider, ICustomHitTest
+internal partial class SegmentedItemBox : BorderedStyleControl, ICustomHitTest
 {
    internal Control Item { get; }
-   string ITokenIdProvider.TokenId => SegmentedToken.ID;
    
    public static readonly StyledProperty<SizeType> SizeTypeProperty =
       AvaloniaProperty.Register<SegmentedItem, SizeType>(nameof(SizeType), SizeType.Middle);
@@ -57,7 +56,7 @@ internal partial class SegmentedItemBox : BorderedStyleControl, ITokenIdProvider
    
    public SegmentedItemBox(Control item)
    {
-      _controlTokenBinder = new ControlTokenBinder(this);
+      _controlTokenBinder = new ControlTokenBinder(this, SegmentedToken.ID);
       _customStyle = this;
       Item = item;
       Child = Item;

@@ -15,10 +15,8 @@ public enum AlertType
    Error
 }
 
-public partial class Alert : BorderedStyleControl, ITokenIdProvider
+public partial class Alert : BorderedStyleControl
 {
-   string ITokenIdProvider.TokenId => AlertToken.ID;
-
    public static readonly DirectProperty<Alert, AlertType> TypeProperty =
       AvaloniaProperty.RegisterDirect<Alert, AlertType>(nameof(AlertType),
                                                         o => o.Type,
@@ -139,7 +137,7 @@ public partial class Alert : BorderedStyleControl, ITokenIdProvider
 
    public Alert()
    {
-      _controlTokenBinder = new ControlTokenBinder(this);
+      _controlTokenBinder = new ControlTokenBinder(this, AlertToken.ID);
       _customStyle = this;
       _customStyle.InitOnConstruct();
    }

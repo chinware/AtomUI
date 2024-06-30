@@ -1,5 +1,4 @@
 using AtomUI.Data;
-using AtomUI.TokenSystem;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -7,7 +6,6 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
-using Avalonia.Threading;
 
 namespace AtomUI.Controls;
 
@@ -19,10 +17,8 @@ public enum ProgressStatus
    Active,
 }
 
-public abstract partial class AbstractProgressBar : RangeBaseControl, ISizeTypeAware, ITokenIdProvider
+public abstract partial class AbstractProgressBar : RangeBaseControl, ISizeTypeAware
 {
-   string ITokenIdProvider.TokenId => ProgressBarToken.ID;
-
    protected const double LARGE_STROKE_THICKNESS = 8;
    protected const double MIDDLE_STROKE_THICKNESS = 6;
    protected const double SMALL_STROKE_THICKNESS = 4;
@@ -211,7 +207,7 @@ public abstract partial class AbstractProgressBar : RangeBaseControl, ISizeTypeA
 
    public AbstractProgressBar()
    {
-      _controlTokenBinder = new ControlTokenBinder(this);
+      _controlTokenBinder = new ControlTokenBinder(this, ProgressBarToken.ID);
       _customStyle = this;
       _effectiveSizeType = SizeType;
    }
