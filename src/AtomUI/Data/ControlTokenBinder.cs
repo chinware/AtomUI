@@ -6,7 +6,8 @@ using Avalonia.LogicalTree;
 
 namespace AtomUI.Data;
 
-public class ControlTokenBinder : GlobalTokenBinder
+public class ControlTokenBinder<T> : GlobalTokenBinder
+   where T : Control
 {
    /// <summary>
    /// 用于管理生命周期

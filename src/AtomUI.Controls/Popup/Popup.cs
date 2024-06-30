@@ -15,11 +15,17 @@ namespace AtomUI.Controls;
 
 public class Popup : AbstractPopup
 {
+   
    public static readonly StyledProperty<BoxShadows> MaskShadowsProperty =
       Border.BoxShadowProperty.AddOwner<Popup>();
 
    public static readonly StyledProperty<double> MarginToAnchorProperty =
       AvaloniaProperty.Register<Popup, double>(nameof(MarginToAnchor));
+   
+   public static readonly DirectProperty<Popup, bool> IsFlippedProperty =
+      AvaloniaProperty.RegisterDirect<Popup, bool>(nameof(IsFlipped),
+                                                   o => o.IsFlipped,
+                                                   (o, v) => o.IsFlipped = v);
    
    public BoxShadows MaskShadows
    {
@@ -31,6 +37,13 @@ public class Popup : AbstractPopup
    {
       get => GetValue(MarginToAnchorProperty);
       set => SetValue(MarginToAnchorProperty, value);
+   }
+
+   private bool _isFlipped = false;
+   public bool IsFlipped
+   {
+      get => _isFlipped;
+      private set => SetAndRaise(IsFlippedProperty, ref _isFlipped, value);
    }
    
    private static readonly MethodInfo ConfigurePositionMethodInfo;
@@ -356,12 +369,15 @@ public class Popup : AbstractPopup
                PlacementGravity = flipAnchorAndGravity.Item2;
                HorizontalOffset = flipOffset.X;
                VerticalOffset = flipOffset.Y;
+               IsFlipped = true;
+            } else {
+               IsFlipped = false;
             }
          }
       }
    }
    
-   private (PopupAnchor, PopupGravity) GetAnchorAndGravity(PlacementMode placement)
+   internal static (PopupAnchor, PopupGravity) GetAnchorAndGravity(PlacementMode placement)
    {
       return placement switch
       {

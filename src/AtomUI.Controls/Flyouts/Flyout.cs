@@ -1,8 +1,10 @@
 ﻿using System.ComponentModel;
+using System.Reactive.Disposables;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives.PopupPositioning;
+using Avalonia.Layout;
 using Avalonia.Metadata;
 using Avalonia.Styling;
 
@@ -17,7 +19,7 @@ public class Flyout : PopupFlyoutBase
    /// </summary>
    public static readonly StyledProperty<bool> IsShowArrowProperty =
       ArrowDecoratedBox.IsShowArrowProperty.AddOwner<PopupFlyoutBase>();
-   
+
    public static readonly StyledProperty<bool> IsShowArrowEffectiveProperty =
       ArrowDecoratedBox.IsShowArrowProperty.AddOwner<PopupFlyoutBase>();
 
@@ -51,7 +53,7 @@ public class Flyout : PopupFlyoutBase
       get => GetValue(IsShowArrowProperty);
       set => SetValue(IsShowArrowProperty, value);
    }
-   
+
    /// <summary>
    /// 是否实际显示箭头
    /// </summary>
@@ -86,14 +88,99 @@ public class Flyout : PopupFlyoutBase
       set => SetValue(ContentProperty, value);
    }
 
+   static Flyout()
+   {
+      IsShowArrowProperty.OverrideDefaultValue<Flyout>(true);
+   }
+
+   private CompositeDisposable? _compositeDisposable;
+   private FlyoutPresenter? _presenter;
+
+   private void HandlePopupPropertyChanged(AvaloniaPropertyChangedEventArgs args)
+   {
+      SetupArrowPosition(Popup.Placement, Popup.PlacementAnchor, Popup.PlacementGravity);
+   }
+
+   private void SetupArrowPosition(PlacementMode placement, PopupAnchor? anchor, PopupGravity? gravity)
+   {
+      var arrowPosition = CalculateArrowPosition(placement, anchor, gravity);
+      if (_presenter is not null && arrowPosition is not null) {
+         _presenter.ArrowPosition = arrowPosition.Value;
+      }
+   }
+
    protected override Control CreatePresenter()
    {
-      var presenter = new FlyoutPresenter
+      _presenter = new FlyoutPresenter
       {
          [!BorderedStyleControl.ChildProperty] = this[!ContentProperty]
       };
-      BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, presenter, IsShowArrowProperty);
-      return presenter;
+      BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, _presenter, IsShowArrowProperty);
+      return _presenter;
+   }
+   
+   protected internal override void NotifyPopupCreated(Popup popup)
+   {
+      base.NotifyPopupCreated(popup);
+      SetupArrowPosition(popup.Placement, popup.PlacementAnchor, popup.PlacementGravity);
+   }
+
+   private ArrowPosition? CalculateArrowPosition(PlacementMode placement, PopupAnchor? anchor, PopupGravity? gravity)
+   {
+      if (!CanEnabledArrow(placement, anchor, gravity)) {
+         return null;
+      }
+      
+      if (placement != PlacementMode.AnchorAndGravity) {
+         var ret = PopupControl.GetAnchorAndGravity(placement);
+         anchor = ret.Item1;
+         gravity = ret.Item2;
+      }
+
+      ArrowPosition? arrowPosition;
+      switch (anchor, gravity) {
+         case (PopupAnchor.Bottom, PopupGravity.Bottom):
+            arrowPosition = ArrowPosition.Top;
+            break;
+         case (PopupAnchor.Right, PopupGravity.Right):
+            arrowPosition = ArrowPosition.Left;
+            break;
+         case (PopupAnchor.Left, PopupGravity.Left):
+            arrowPosition = ArrowPosition.Right;
+            break;
+         case (PopupAnchor.Top, PopupGravity.Top):
+            arrowPosition = ArrowPosition.Bottom;
+            break;
+         case (PopupAnchor.TopRight, PopupGravity.TopLeft):
+            arrowPosition = ArrowPosition.BottomEdgeAlignedRight;
+            break;
+         case (PopupAnchor.TopLeft, PopupGravity.TopRight):
+            arrowPosition = ArrowPosition.BottomEdgeAlignedLeft;
+            break;
+         case (PopupAnchor.BottomLeft, PopupGravity.BottomRight):
+            arrowPosition = ArrowPosition.TopEdgeAlignedLeft;
+            break;
+         case (PopupAnchor.BottomRight, PopupGravity.BottomLeft):
+            arrowPosition = ArrowPosition.TopEdgeAlignedRight;
+            break;
+         case (PopupAnchor.TopLeft, PopupGravity.BottomLeft):
+            arrowPosition = ArrowPosition.RightEdgeAlignedTop;
+            break;
+         case (PopupAnchor.BottomLeft, PopupGravity.TopLeft):
+            arrowPosition = ArrowPosition.RightEdgeAlignedBottom;
+            break;
+         case (PopupAnchor.TopRight, PopupGravity.BottomRight):
+            arrowPosition = ArrowPosition.LeftEdgeAlignedTop;
+            break;
+         case (PopupAnchor.BottomRight, PopupGravity.TopRight):
+            arrowPosition = ArrowPosition.LeftEdgeAlignedBottom;
+            break;
+         default:
+            arrowPosition = null;
+            break;
+      }
+
+      return arrowPosition;
    }
 
    protected override void OnOpening(CancelEventArgs args)
@@ -109,6 +196,16 @@ public class Flyout : PopupFlyoutBase
       }
 
       base.OnOpening(args);
+      if (!args.Cancel) {
+         _compositeDisposable = new CompositeDisposable();
+         _compositeDisposable.Add(PopupControl.IsFlippedProperty.Changed.Subscribe(HandlePopupPropertyChanged));
+      }
+   }
+
+   protected override void OnClosed()
+   {
+      base.OnClosed();
+      _compositeDisposable?.Dispose();
    }
 
    /// <summary>
@@ -160,7 +257,7 @@ public class Flyout : PopupFlyoutBase
 
       return new Point(offsetX, offsetY);
    }
-   
+
    // 因为在某些 placement 下箭头是不能显示的
    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
    {
@@ -169,11 +266,53 @@ public class Flyout : PopupFlyoutBase
           e.Property == PlacementProperty ||
           e.Property == PlacementAnchorProperty ||
           e.Property == PlacementGravityProperty) {
-         if (IsShowArrow == false) {
-            IsShowArrowEffective = false;
-         } else {
-            IsShowArrowEffective = CanEnabledArrow(Placement, PlacementAnchor, PlacementGravity);
-         }
+         CalculateShowArrowEffective();
       }
+   }
+
+   private void CalculateShowArrowEffective()
+   {
+      if (IsShowArrow == false) {
+         IsShowArrowEffective = false;
+      } else {
+         IsShowArrowEffective = CanEnabledArrow(Placement, PlacementAnchor, PlacementGravity);
+      }
+   }
+
+   protected internal override void NotifyPositionPopup(bool showAtPointer)
+   {
+      Size sz;
+      // Popup.Child can't be null here, it was set in ShowAtCore.
+      if (Popup.Child!.DesiredSize == default) {
+         // Popup may not have been shown yet. Measure content
+         sz = LayoutHelper.MeasureChild(Popup.Child, Size.Infinity, new Thickness());
+      } else {
+         sz = Popup.Child.DesiredSize;
+      }
+
+      Popup.PlacementAnchor = PlacementAnchor;
+      Popup.PlacementGravity = PlacementGravity;
+
+      if (showAtPointer) {
+         Popup.Placement = PlacementMode.Pointer;
+      } else {
+         Popup.Placement = Placement;
+         Popup.PlacementConstraintAdjustment = PlacementConstraintAdjustment;
+      }
+
+      var offsetX = HorizontalOffset;
+      var offsetY = VerticalOffset;
+
+      var offset = CalculatePopupPositionDelta(Target!, Placement, PlacementAnchor, PlacementGravity);
+      offsetX += offset.X;
+      offsetY += offset.Y;
+      Popup.VerticalOffset = offsetX;
+      Popup.HorizontalOffset = offsetY;
+   }
+
+   protected override bool ShowAtCore(Control placementTarget, bool showAtPointer = false)
+   {
+      CalculateShowArrowEffective();
+      return base.ShowAtCore(placementTarget, showAtPointer);
    }
 }

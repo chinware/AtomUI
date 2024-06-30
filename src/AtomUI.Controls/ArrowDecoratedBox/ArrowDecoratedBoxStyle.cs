@@ -3,6 +3,7 @@ using AtomUI.Media;
 using AtomUI.Styling;
 using AtomUI.Utils;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Layout;
 using Avalonia.Media;
 
@@ -12,11 +13,12 @@ public partial class ArrowDecoratedBox : IControlCustomStyle
 {
    private bool _initialized = false;
    private IControlCustomStyle _customStyle;
-   private ControlTokenBinder _controlTokenBinder;
+   private ControlTokenBinder<ArrowDecoratedBox> _controlTokenBinder;
    private Geometry? _arrowGeometry;
    private Direction? _lastDirection;
    private Rect _contentRect;
    private Rect _arrowRect;
+   private Border? _container;
 
    // 组件的 Token 绑定属性
    private double _arrowSize;
@@ -29,9 +31,22 @@ public partial class ArrowDecoratedBox : IControlCustomStyle
 
    void IControlCustomStyle.SetupUi()
    {
+      _container = new Border();
       NotifyCreateUi();
       _customStyle.ApplyFixedStyleConfig();
-      BuildGeometry(GetDirection(GetEffectiveArrowPosition()));
+      if (IsShowArrow) {
+         BuildGeometry(GetDirection(ArrowPosition));
+      }
+      LogicalChildren.Add(_container);
+      VisualChildren.Add(_container);
+      // 生命周期一样，可以不用管理
+      BindUtils.RelayBind(this, BackgroundSizingProperty, _container);
+      BindUtils.RelayBind(this, CornerRadiusProperty, _container);
+      BindUtils.RelayBind(this, ChildProperty, _container);
+      BindUtils.RelayBind(this, PaddingProperty, _container);
+      BindUtils.RelayBind(this, ChildProperty, _container);
+      _controlTokenBinder.AddControlBinding(_container, BackgroundProperty, GlobalResourceKey.ColorBgContainer);
+      
       _initialized = true;
    }
 
@@ -40,7 +55,13 @@ public partial class ArrowDecoratedBox : IControlCustomStyle
       NotifyApplyFixedStyleConfig();
    }
 
-   void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e) { }
+   void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
+   {
+      if (e.Property == IsShowArrowProperty ||
+          e.Property == ArrowPositionProperty) {
+         BuildGeometry(GetDirection(ArrowPosition));
+      } 
+   }
 
    private void BuildGeometry(Direction direction)
    {
@@ -56,14 +77,13 @@ public partial class ArrowDecoratedBox : IControlCustomStyle
       _controlTokenBinder.AddControlBinding(MinHeightProperty, GlobalResourceKey.ControlHeight);
       _controlTokenBinder.AddControlBinding(PaddingProperty, GlobalResourceKey.PaddingXS);
       _controlTokenBinder.AddControlBinding(ArrowSizeTokenProperty, ArrowDecoratedBoxResourceKey.ArrowSize);
-      _controlTokenBinder.AddControlBinding(BackgroundProperty, GlobalResourceKey.ColorBgContainer);
       _controlTokenBinder.AddControlBinding(CornerRadiusProperty, GlobalResourceKey.BorderRadius);
    }
 
    public sealed override void Render(DrawingContext context)
    {
       if (IsShowArrow) {
-         var direction = GetDirection(GetEffectiveArrowPosition());
+         var direction = GetDirection(ArrowPosition);
          var matrix = Matrix.CreateTranslation(-_arrowSize / 2, -_arrowSize / 2);
          if (direction == Direction.Right) {
             matrix *= Matrix.CreateRotation(MathUtils.Deg2Rad(-90));
@@ -92,7 +112,7 @@ public partial class ArrowDecoratedBox : IControlCustomStyle
       targetHeight = Math.Max(MinHeight, targetHeight);
       if (IsShowArrow) {
          var realArrowSize = Math.Min(_arrowGeometry!.Bounds.Size.Height, _arrowGeometry!.Bounds.Size.Width);
-         var direction = GetDirection(GetEffectiveArrowPosition());
+         var direction = GetDirection(ArrowPosition);
          if (direction == Direction.Left || direction == Direction.Right) {
             targetWidth += realArrowSize;
          } else {
@@ -127,7 +147,7 @@ public partial class ArrowDecoratedBox : IControlCustomStyle
       var targetHeight = finalSize.Height;
       if (IsShowArrow) {
          var arrowSize = Math.Min(_arrowGeometry!.Bounds.Size.Height, _arrowGeometry!.Bounds.Size.Width) + 0.5;
-         var direction = GetDirection(GetEffectiveArrowPosition());
+         var direction = GetDirection(ArrowPosition);
          if (direction == Direction.Left || direction == Direction.Right) {
             targetWidth -= arrowSize;
          } else {
@@ -155,7 +175,7 @@ public partial class ArrowDecoratedBox : IControlCustomStyle
       var size = _arrowGeometry!.Bounds.Size;
       var targetWidth = 0d;
       var targetHeight = 0d;
-      var position = GetEffectiveArrowPosition();
+      var position = ArrowPosition;
       if (IsShowArrow) {
          var minValue = Math.Min(size.Width, size.Height);
          var maxValue = Math.Max(size.Width, size.Height);

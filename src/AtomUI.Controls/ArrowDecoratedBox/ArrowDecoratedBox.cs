@@ -1,7 +1,10 @@
 ﻿using AtomUI.Data;
 using AtomUI.TokenSystem;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.LogicalTree;
+using Avalonia.Media;
+using Avalonia.Metadata;
 
 namespace AtomUI.Controls;
 
@@ -69,19 +72,28 @@ public enum ArrowPosition
    RightEdgeAlignedBottom
 }
 
-public partial class ArrowDecoratedBox : BorderedStyleControl, ITokenIdProvider
+public partial class ArrowDecoratedBox : StyledControl, ITokenIdProvider
 {
    string ITokenIdProvider.TokenId => ToolTipToken.ID;
 
    public static readonly StyledProperty<bool> IsShowArrowProperty =
-      AvaloniaProperty.Register<FlyoutPresenter, bool>(nameof(IsShowArrow), true);
+      AvaloniaProperty.Register<ArrowDecoratedBox, bool>(nameof(IsShowArrow), true);
 
    public static readonly StyledProperty<ArrowPosition> ArrowPositionProperty =
-      AvaloniaProperty.Register<FlyoutHost, ArrowPosition>(
+      AvaloniaProperty.Register<ArrowDecoratedBox, ArrowPosition>(
          nameof(ArrowPosition), defaultValue: ArrowPosition.Bottom);
-
-   public static readonly StyledProperty<bool> IsFlippedProperty =
-      AvaloniaProperty.Register<FlyoutHost, bool>(nameof(IsFlipped), false);
+   
+   /// <summary>
+   /// Defines the <see cref="Child"/> property.
+   /// </summary>
+   public static readonly StyledProperty<Control?> ChildProperty =
+      Border.ChildProperty.AddOwner<ArrowDecoratedBox>();
+   
+   /// <summary>
+   /// Defines the <see cref="CornerRadius"/> property.
+   /// </summary>
+   public static readonly StyledProperty<CornerRadius> CornerRadiusProperty =
+      Border.CornerRadiusProperty.AddOwner<ArrowDecoratedBox>();
    
    // 指针最顶点位置
    internal (double, double) ArrowVertexPoint { get; private set; }
@@ -104,23 +116,35 @@ public partial class ArrowDecoratedBox : BorderedStyleControl, ITokenIdProvider
       set => SetValue(ArrowPositionProperty, value);
    }
    
-   public bool IsFlipped
+   /// <summary>
+   /// Gets or sets the radius of the border rounded corners.
+   /// </summary>
+   public CornerRadius CornerRadius
    {
-      get => GetValue(IsFlippedProperty);
-      set => SetValue(IsFlippedProperty, value);
+      get => GetValue(CornerRadiusProperty);
+      set => SetValue(CornerRadiusProperty, value);
    }
-
+   
+   /// <summary>
+   /// Gets or sets the decorated control.
+   /// </summary>
+   [Content]
+   public Control? Child
+   {
+      get => GetValue(ChildProperty);
+      set => SetValue(ChildProperty, value);
+   }
+   
    static ArrowDecoratedBox()
    {
-      AffectsArrange<ArrowDecoratedBox>(ArrowPositionProperty,
-         IsFlippedProperty);
       AffectsMeasure<ArrowDecoratedBox>(IsShowArrowProperty);
+      AffectsArrange<ArrowDecoratedBox>(ArrowPositionProperty);
    }
    
    public ArrowDecoratedBox()
    {
       _customStyle = this;
-      _controlTokenBinder = new ControlTokenBinder(this);
+      _controlTokenBinder = new ControlTokenBinder<ArrowDecoratedBox>(this);
    }
 
    public static Direction GetDirection(ArrowPosition arrowPosition)
@@ -145,39 +169,6 @@ public partial class ArrowDecoratedBox : BorderedStyleControl, ITokenIdProvider
          _ => throw new ArgumentOutOfRangeException(nameof(arrowPosition), arrowPosition,
                                                     "Invalid value for ArrowPosition")
       };
-   }
-
-   public static ArrowPosition GetFlipArrowPosition(ArrowPosition arrowPosition)
-   {
-      return arrowPosition switch
-      {
-         ArrowPosition.Left => ArrowPosition.Right,
-         ArrowPosition.LeftEdgeAlignedTop => ArrowPosition.RightEdgeAlignedTop,
-         ArrowPosition.LeftEdgeAlignedBottom => ArrowPosition.RightEdgeAlignedBottom,
-
-         ArrowPosition.Top => ArrowPosition.Bottom,
-         ArrowPosition.TopEdgeAlignedLeft => ArrowPosition.BottomEdgeAlignedLeft,
-         ArrowPosition.TopEdgeAlignedRight => ArrowPosition.BottomEdgeAlignedRight,
-
-         ArrowPosition.Right => ArrowPosition.Left,
-         ArrowPosition.RightEdgeAlignedTop => ArrowPosition.LeftEdgeAlignedTop,
-         ArrowPosition.RightEdgeAlignedBottom => ArrowPosition.LeftEdgeAlignedBottom,
-
-         ArrowPosition.Bottom => ArrowPosition.Top,
-         ArrowPosition.BottomEdgeAlignedLeft => ArrowPosition.TopEdgeAlignedLeft,
-         ArrowPosition.BottomEdgeAlignedRight => ArrowPosition.TopEdgeAlignedRight,
-         _ => throw new ArgumentOutOfRangeException(nameof(arrowPosition), arrowPosition,
-                                                    "Invalid value for ArrowPosition")
-      };
-   }
-
-   protected ArrowPosition GetEffectiveArrowPosition()
-   {
-      if (IsFlipped) {
-         return GetFlipArrowPosition(ArrowPosition);
-      }
-
-      return ArrowPosition;
    }
 
    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
