@@ -55,7 +55,6 @@ internal class ToolTipToken : AbstractControlDesignToken
                                            Math.Max(BorderRadiusOuter.TopRight, 4),
                                            Math.Max(BorderRadiusOuter.BottomLeft, 4),
                                            Math.Max(BorderRadiusOuter.BottomRight, 4));
-      ToolTipArrowSize = _globalToken.SeedToken.SizePopupArrow / 1.3;
-      ToolTipPadding = new Thickness(_globalToken.PaddingSM, _globalToken.PaddingSM / 2);
+      ToolTipPadding = new Thickness(_globalToken.PaddingSM, _globalToken.PaddingSM / 2 + 2);
    }
 }

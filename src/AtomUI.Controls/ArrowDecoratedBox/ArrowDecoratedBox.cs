@@ -1,9 +1,7 @@
 ﻿using AtomUI.Data;
-using AtomUI.TokenSystem;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.LogicalTree;
-using Avalonia.Media;
 using Avalonia.Metadata;
 
 namespace AtomUI.Controls;
@@ -191,6 +189,6 @@ public partial class ArrowDecoratedBox : StyledControl, IShadowMaskInfoProvider
 
    public Rect GetMaskBounds()
    {
-      return GetContentRect(DesiredSize);
+      return GetContentRect(DesiredSize).Deflate(0.5);
    }
 }

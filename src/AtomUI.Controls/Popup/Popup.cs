@@ -15,7 +15,6 @@ namespace AtomUI.Controls;
 
 public class Popup : AbstractPopup
 {
-   
    public static readonly StyledProperty<BoxShadows> MaskShadowsProperty =
       Border.BoxShadowProperty.AddOwner<Popup>();
 
@@ -267,7 +266,7 @@ public class Popup : AbstractPopup
       var offsetY = 0d;
       if (placement != PlacementMode.Center && 
           placement != PlacementMode.Pointer &&
-          IsCanonicalAnchorType(placement, PlacementAnchor, PlacementGravity)) {
+          PopupUtils.IsCanonicalAnchorType(placement, PlacementAnchor, PlacementGravity)) {
          var direction = GetDirection(placement);
          if (direction == Direction.Bottom) {
             offsetY += MarginToAnchor;
@@ -285,38 +284,6 @@ public class Popup : AbstractPopup
       return new Point(offsetX, offsetY);
    }
    
-   /// <summary>
-   /// 是否为标准的 anchor 类型
-   /// </summary>
-   /// <param name="placement"></param>
-   /// <param name="anchor"></param>
-   /// <param name="gravity"></param>
-   /// <returns></returns>
-   internal static bool IsCanonicalAnchorType(PlacementMode placement, PopupAnchor? anchor, PopupGravity? gravity)
-   {
-      if (placement == PlacementMode.AnchorAndGravity) {
-         switch (anchor, gravity) {
-            case (PopupAnchor.Bottom, PopupGravity.Bottom):
-            case (PopupAnchor.Right, PopupGravity.Right):
-            case (PopupAnchor.Left, PopupGravity.Left):
-            case (PopupAnchor.Top, PopupGravity.Top):
-            case (PopupAnchor.TopRight, PopupGravity.TopLeft):
-            case (PopupAnchor.TopLeft, PopupGravity.TopRight):
-            case (PopupAnchor.BottomLeft, PopupGravity.BottomRight):
-            case (PopupAnchor.BottomRight, PopupGravity.BottomLeft):
-            case (PopupAnchor.TopLeft, PopupGravity.BottomLeft):
-            case (PopupAnchor.BottomLeft, PopupGravity.TopLeft):
-            case (PopupAnchor.TopRight, PopupGravity.BottomRight):
-            case (PopupAnchor.BottomRight, PopupGravity.TopRight):
-               break;
-            default:
-               return false;
-         }
-      }
-
-      return true;
-   }
-
    protected internal override void NotifyPopupRootAboutToShow(PopupRoot popupRoot)
    {
       base.NotifyPopupRootAboutToShow(popupRoot);

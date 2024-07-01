@@ -103,7 +103,7 @@ public class Flyout : PopupFlyoutBase
 
    private void SetupArrowPosition(PlacementMode placement, PopupAnchor? anchor, PopupGravity? gravity)
    {
-      var arrowPosition = CalculateArrowPosition(placement, anchor, gravity);
+      var arrowPosition = PopupUtils.CalculateArrowPosition(placement, anchor, gravity);
       if (_presenter is not null && arrowPosition is not null) {
          _presenter.ArrowPosition = arrowPosition.Value;
       }
@@ -130,65 +130,7 @@ public class Flyout : PopupFlyoutBase
       BindUtils.RelayBind(this, VerticalOffsetProperty, popup);
       SetupArrowPosition(popup.Placement, popup.PlacementAnchor, popup.PlacementGravity);
    }
-
-   private ArrowPosition? CalculateArrowPosition(PlacementMode placement, PopupAnchor? anchor, PopupGravity? gravity)
-   {
-      if (!CanEnabledArrow(placement, anchor, gravity)) {
-         return null;
-      }
-      
-      if (placement != PlacementMode.AnchorAndGravity) {
-         var ret = PopupControl.GetAnchorAndGravity(placement);
-         anchor = ret.Item1;
-         gravity = ret.Item2;
-      }
-
-      ArrowPosition? arrowPosition;
-      switch (anchor, gravity) {
-         case (PopupAnchor.Bottom, PopupGravity.Bottom):
-            arrowPosition = ArrowPosition.Top;
-            break;
-         case (PopupAnchor.Right, PopupGravity.Right):
-            arrowPosition = ArrowPosition.Left;
-            break;
-         case (PopupAnchor.Left, PopupGravity.Left):
-            arrowPosition = ArrowPosition.Right;
-            break;
-         case (PopupAnchor.Top, PopupGravity.Top):
-            arrowPosition = ArrowPosition.Bottom;
-            break;
-         case (PopupAnchor.TopRight, PopupGravity.TopLeft):
-            arrowPosition = ArrowPosition.BottomEdgeAlignedRight;
-            break;
-         case (PopupAnchor.TopLeft, PopupGravity.TopRight):
-            arrowPosition = ArrowPosition.BottomEdgeAlignedLeft;
-            break;
-         case (PopupAnchor.BottomLeft, PopupGravity.BottomRight):
-            arrowPosition = ArrowPosition.TopEdgeAlignedLeft;
-            break;
-         case (PopupAnchor.BottomRight, PopupGravity.BottomLeft):
-            arrowPosition = ArrowPosition.TopEdgeAlignedRight;
-            break;
-         case (PopupAnchor.TopLeft, PopupGravity.BottomLeft):
-            arrowPosition = ArrowPosition.RightEdgeAlignedTop;
-            break;
-         case (PopupAnchor.BottomLeft, PopupGravity.TopLeft):
-            arrowPosition = ArrowPosition.RightEdgeAlignedBottom;
-            break;
-         case (PopupAnchor.TopRight, PopupGravity.BottomRight):
-            arrowPosition = ArrowPosition.LeftEdgeAlignedTop;
-            break;
-         case (PopupAnchor.BottomRight, PopupGravity.TopRight):
-            arrowPosition = ArrowPosition.LeftEdgeAlignedBottom;
-            break;
-         default:
-            arrowPosition = null;
-            break;
-      }
-
-      return arrowPosition;
-   }
-
+   
    protected override void OnOpening(CancelEventArgs args)
    {
       if (Popup.Child is { } presenter) {
@@ -214,30 +156,13 @@ public class Flyout : PopupFlyoutBase
       _compositeDisposable?.Dispose();
    }
 
-   /// <summary>
-   /// 判断是否可以启用箭头，有些组合是不能启用箭头绘制的，因为没有意义
-   /// </summary>
-   /// <param name="placement"></param>
-   /// <param name="anchor"></param>
-   /// <param name="gravity"></param>
-   /// <returns></returns>
-   private bool CanEnabledArrow(PlacementMode placement, PopupAnchor? anchor, PopupGravity? gravity)
-   {
-      if (placement == PlacementMode.Center ||
-          placement == PlacementMode.Pointer) {
-         return false;
-      }
-
-      return PopupControl.IsCanonicalAnchorType(placement, anchor, gravity);
-   }
-
    private Point CalculatePopupPositionDelta(Control anchorTarget, PlacementMode placement, PopupAnchor? anchor = null,
                                              PopupGravity? gravity = null)
    {
       var offsetX = 0d;
       var offsetY = 0d;
       if (IsShowArrow && IsPointAtCenter) {
-         if (CanEnabledArrow(placement, anchor, gravity)) {
+         if (PopupUtils.CanEnabledArrow(placement, anchor, gravity)) {
             if (Popup.Child is ArrowDecoratedBox arrowDecoratedBox) {
                var arrowVertexPoint = arrowDecoratedBox.ArrowVertexPoint;
                var anchorSize = anchorTarget.Bounds.Size;
@@ -281,7 +206,7 @@ public class Flyout : PopupFlyoutBase
       if (IsShowArrow == false) {
          IsShowArrowEffective = false;
       } else {
-         IsShowArrowEffective = CanEnabledArrow(Placement, PlacementAnchor, PlacementGravity);
+         IsShowArrowEffective = PopupUtils.CanEnabledArrow(Placement, PlacementAnchor, PlacementGravity);
       }
    }
 

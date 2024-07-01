@@ -1,42 +1,30 @@
-﻿using System.Reactive.Disposables;
-using System.Reflection;
+﻿using System.Reflection;
 using AtomUI.ColorSystem;
 using AtomUI.Data;
 using AtomUI.Reflection;
-using AtomUI.TokenSystem;
+using AtomUI.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
-using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Data;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Styling;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
 using AvaloniaWin = Avalonia.Controls.Window;
 
-/// <summary>
-/// A control which pops up a hint when a control is hovered.
-/// </summary>
-/// <remarks>
-/// You will probably not want to create a <see cref="ToolTip"/> control directly: if added to
-/// the tree it will act as a simple <see cref="ContentControl"/> styled to look like a tooltip.
-/// To add a tooltip to a control, use the <see cref="TipProperty"/> attached property,
-/// assigning the content that you want displayed.
-/// </remarks>
 [PseudoClasses(":open")]
-public partial class ToolTip : BorderedStyleControl
+public partial class ToolTip : StyledControl, IShadowMaskInfoProvider
 {
    /// <summary>
    /// Defines the <see cref="Content"/> property.
    /// </summary>
    public static readonly StyledProperty<object?> ContentProperty =
-      AvaloniaProperty.Register<ContentControl, object?>(nameof(Content));
-   
+      AvaloniaProperty.Register<ToolTip, object?>(nameof(Content));
+
    /// <summary>
    /// Defines the ToolTip.Tip attached property.
    /// </summary>
@@ -48,13 +36,13 @@ public partial class ToolTip : BorderedStyleControl
    /// </summary>
    public static readonly AttachedProperty<bool> IsOpenProperty =
       AvaloniaProperty.RegisterAttached<ToolTip, Control, bool>("IsOpen");
-   
+
    /// <summary>
    /// Defines the ToolTip.PresetColor attached property.
    /// </summary>
    public static readonly AttachedProperty<PresetColorType?> PresetColorProperty =
       AvaloniaProperty.RegisterAttached<ToolTip, Control, PresetColorType?>("PresetColor");
-   
+
    /// <summary>
    /// Defines the ToolTip.PresetColor attached property.
    /// </summary>
@@ -76,15 +64,27 @@ public partial class ToolTip : BorderedStyleControl
    /// <summary>
    /// Defines the ToolTip.Placement property.
    /// </summary>
-   public static readonly AttachedProperty<PlacementType> PlacementProperty =
-      AvaloniaProperty.RegisterAttached<ToolTip, Control, PlacementType>(
-         "Placement", defaultValue: PlacementType.Top);
+   public static readonly AttachedProperty<PlacementMode> PlacementProperty =
+      AvaloniaProperty.RegisterAttached<ToolTip, Control, PlacementMode>(
+         "Placement", defaultValue: PlacementMode.Top);
 
+   /// <summary>
+   /// Defines the ToolTip.HorizontalOffset property.
+   /// </summary>
+   public static readonly AttachedProperty<double> HorizontalOffsetProperty =
+      AvaloniaProperty.RegisterAttached<ToolTip, Control, double>("HorizontalOffset");
+
+   /// <summary>
+   /// Defines the ToolTip.VerticalOffset property.
+   /// </summary>
+   public static readonly AttachedProperty<double> VerticalOffsetProperty =
+      AvaloniaProperty.RegisterAttached<ToolTip, Control, double>("VerticalOffset");
+   
    /// <summary>
    /// 距离 anchor 的边距，根据垂直和水平进行设置
    /// </summary>
    public static readonly AttachedProperty<double> MarginToAnchorProperty =
-      AvaloniaProperty.RegisterAttached<ToolTip, Control, double>("MarginToAnchor", 0);
+      AvaloniaProperty.RegisterAttached<ToolTip, Control, double>("MarginToAnchor", double.NaN);
 
    /// <summary>
    /// Defines the ToolTip.ShowDelay property.
@@ -115,19 +115,19 @@ public partial class ToolTip : BorderedStyleControl
    /// </summary>
    internal static readonly AttachedProperty<ToolTip?> ToolTipProperty =
       AvaloniaProperty.RegisterAttached<ToolTip, Control, ToolTip?>("ToolTip");
-   
+
    public object? Content
    {
       get => GetValue(ContentProperty);
       set => SetValue(ContentProperty, value);
    }
 
-   private AbstractPopup? _popup;
+   private Popup? _popup;
    private Action<IPopupHost?>? _popupHostChangedHandler;
    private AvaloniaWin? _currentAnchorWindow;
 
    /// <summary>
-   /// Initializes static members of the <see cref="ToolTip"/> class.
+   /// Initializes static members of the <see cref="ToolTipOld"/> class.
    /// </summary>
    static ToolTip()
    {
@@ -138,11 +138,11 @@ public partial class ToolTip : BorderedStyleControl
                                                   BindingFlags.Static | BindingFlags.NonPublic);
       RequestedThemeVariantProperty = (StyledProperty<ThemeVariant?>)requestedThemeVariantProperty.GetValue(null)!;
       AffectsRender<ToolTip>(DefaultBgTokenProperty,
-                             ForegroundProperty,
-                             BackgroundProperty);
+                                ForegroundProperty,
+                                BackgroundProperty);
       AffectsArrange<ToolTip>(FlipPlacementProperty);
    }
-
+   
    public ToolTip()
    {
       _customStyle = this;
@@ -153,7 +153,7 @@ public partial class ToolTip : BorderedStyleControl
    internal event EventHandler? Closed;
 
    /// <summary>
-   /// Gets the value of the ToolTip.Tip attached property.
+   /// Gets the value of the ToolTipOld.Tip attached property.
    /// </summary>
    /// <param name="element">The control to get the property from.</param>
    /// <returns>
@@ -165,7 +165,7 @@ public partial class ToolTip : BorderedStyleControl
    }
 
    /// <summary>
-   /// Sets the value of the ToolTip.Tip attached property.
+   /// Sets the value of the ToolTipOld.Tip attached property.
    /// </summary>
    /// <param name="element">The control to get the property from.</param>
    /// <param name="value">The content to be displayed in the control's tooltip.</param>
@@ -175,7 +175,7 @@ public partial class ToolTip : BorderedStyleControl
    }
 
    /// <summary>
-   /// Gets the value of the ToolTip.IsOpen attached property.
+   /// Gets the value of the ToolTipOld.IsOpen attached property.
    /// </summary>
    /// <param name="element">The control to get the property from.</param>
    /// <returns>
@@ -187,7 +187,7 @@ public partial class ToolTip : BorderedStyleControl
    }
 
    /// <summary>
-   /// Sets the value of the ToolTip.IsOpen attached property.
+   /// Sets the value of the ToolTipOld.IsOpen attached property.
    /// </summary>
    /// <param name="element">The control to get the property from.</param>
    /// <param name="value">A value indicating whether the tool tip is visible.</param>
@@ -197,25 +197,69 @@ public partial class ToolTip : BorderedStyleControl
    }
 
    /// <summary>
-   /// Gets the value of the ToolTip.Placement attached property.
+   /// Gets the value of the ToolTipOld.Placement attached property.
    /// </summary>
    /// <param name="element">The control to get the property from.</param>
    /// <returns>
    /// A value indicating how the tool tip is positioned.
    /// </returns>
-   public static PlacementType GetPlacement(Control element)
+   public static PlacementMode GetPlacement(Control element)
    {
       return element.GetValue(PlacementProperty);
    }
 
    /// <summary>
-   /// Sets the value of the ToolTip.Placement attached property.
+   /// Sets the value of the ToolTipOld.Placement attached property.
    /// </summary>
    /// <param name="element">The control to get the property from.</param>
    /// <param name="value">A value indicating how the tool tip is positioned.</param>
-   public static void SetPlacement(Control element, PlacementType value)
+   public static void SetPlacement(Control element, PlacementMode value)
    {
       element.SetValue(PlacementProperty, value);
+   }
+   
+   /// <summary>
+   /// Gets the value of the ToolTip.HorizontalOffset attached property.
+   /// </summary>
+   /// <param name="element">The control to get the property from.</param>
+   /// <returns>
+   /// A value indicating how the tool tip is positioned.
+   /// </returns>
+   public static double GetHorizontalOffset(Control element)
+   {
+      return element.GetValue(HorizontalOffsetProperty);
+   }
+
+   /// <summary>
+   /// Sets the value of the ToolTip.HorizontalOffset attached property.
+   /// </summary>
+   /// <param name="element">The control to get the property from.</param>
+   /// <param name="value">A value indicating how the tool tip is positioned.</param>
+   public static void SetHorizontalOffset(Control element, double value)
+   {
+      element.SetValue(HorizontalOffsetProperty, value);
+   }
+
+   /// <summary>
+   /// Gets the value of the ToolTip.VerticalOffset attached property.
+   /// </summary>
+   /// <param name="element">The control to get the property from.</param>
+   /// <returns>
+   /// A value indicating how the tool tip is positioned.
+   /// </returns>
+   public static double GetVerticalOffset(Control element)
+   {
+      return element.GetValue(VerticalOffsetProperty);
+   }
+
+   /// <summary>
+   /// Sets the value of the ToolTip.VerticalOffset attached property.
+   /// </summary>
+   /// <param name="element">The control to get the property from.</param>
+   /// <param name="value">A value indicating how the tool tip is positioned.</param>
+   public static void SetVerticalOffset(Control element, double value)
+   {
+      element.SetValue(VerticalOffsetProperty, value);
    }
 
    /// <summary>
@@ -259,7 +303,7 @@ public partial class ToolTip : BorderedStyleControl
    }
 
    /// <summary>
-   /// ToolTip Anchor 目标控件的边距
+   /// ToolTipOld Anchor 目标控件的边距
    /// </summary>
    /// <param name="element"></param>
    /// <returns></returns>
@@ -269,7 +313,7 @@ public partial class ToolTip : BorderedStyleControl
    }
 
    /// <summary>
-   /// 设置 ToolTip Anchor 目标控件的边距
+   /// 设置 ToolTipOld Anchor 目标控件的边距
    /// </summary>
    /// <param name="element"></param>
    /// <param name="margin"></param>
@@ -279,7 +323,7 @@ public partial class ToolTip : BorderedStyleControl
    }
 
    /// <summary>
-   /// Gets the value of the ToolTip.ShowDelay attached property.
+   /// Gets the value of the ToolTipOld.ShowDelay attached property.
    /// </summary>
    /// <param name="element">The control to get the property from.</param>
    /// <returns>
@@ -291,7 +335,7 @@ public partial class ToolTip : BorderedStyleControl
    }
 
    /// <summary>
-   /// Sets the value of the ToolTip.ShowDelay attached property.
+   /// Sets the value of the ToolTipOld.ShowDelay attached property.
    /// </summary>
    /// <param name="element">The control to get the property from.</param>
    /// <param name="value">A value indicating the time, in milliseconds, before a tool tip opens.</param>
@@ -358,17 +402,17 @@ public partial class ToolTip : BorderedStyleControl
    {
       return element.GetValue(PresetColorProperty);
    }
-   
+
    /// <summary>
    /// 设置预设颜色
    /// </summary>
    /// <param name="element"></param>
    /// <param name="color"></param>
    public static void SetPresetColor(Control element, PresetColorType color)
-   { 
+   {
       element.SetValue(PresetColorProperty, color);
    }
-   
+
    /// <summary>
    /// 获取预设置的颜色
    /// </summary>
@@ -378,14 +422,14 @@ public partial class ToolTip : BorderedStyleControl
    {
       return element.GetValue(ColorProperty);
    }
-   
+
    /// <summary>
    /// 设置预设颜色
    /// </summary>
    /// <param name="element"></param>
    /// <param name="color"></param>
    public static void SetColor(Control element, Color color)
-   { 
+   {
       element.SetValue(ColorProperty, color);
    }
 
@@ -427,67 +471,6 @@ public partial class ToolTip : BorderedStyleControl
       remove => _popupHostChangedHandler -= value;
    }
 
-   private void Open(Control control)
-   {
-      Close();
-
-      if (_popup is null) {
-         _popup = new Popup();
-         _popup.Child = this;
-         _popup.WindowManagerAddShadowHint = false;
-
-         _popup.Opened += OnPopupOpened;
-         _popup.Closed += OnPopupClosed;
-      }
-
-      SetToolTipColor(control);
-      
-      _popup.Placement = PlacementMode.AnchorAndGravity;
-      _popup.PlacementTarget = control;
-      SetPopupParent(_popup, control);
-      _currentAnchorWindow = (TopLevel.GetTopLevel(control) as AvaloniaWin)!;
-      var scaling = _currentAnchorWindow.DesktopScaling;
-      var anchorRectangle = GetAnchorRectangle(control);
-      var anchorRect = new Rect(
-         anchorRectangle.TopLeft * scaling,
-         anchorRectangle.Size * scaling);
-      var parentGeometry = GetParentClientAreaScreenGeometry();
-      anchorRect = anchorRect.Translate(parentGeometry.TopLeft);
-      var placement = GetPlacement(control);
-      var anchorAndGravity = GetAnchorAndGravity(placement);
-      _popup.PlacementAnchor = anchorAndGravity.Item1;
-      _popup.PlacementGravity = anchorAndGravity.Item2;
-
-      _popup.IsOpen = true;
-      
-      var offset = CalculateOffset(placement, control);
-
-      _popup.HorizontalOffset = offset.X;
-      _popup.VerticalOffset = offset.Y;
-      
-      var translatedSize = (_popup!.Host as WindowBase)!.ClientSize * scaling;
-      var flipInfo = CalculateFlipInfo(translatedSize, anchorRect, anchorAndGravity.Item1, anchorAndGravity.Item2,
-                                       offset);
-      var effectPlacement = placement;
-      if (flipInfo.Item1 || flipInfo.Item2) {
-         var flipPlacement = FlipPlacementType(placement);
-         var flipAnchorAndGravity = GetAnchorAndGravity(flipPlacement);
-         var flipOffset = CalculateOffset(flipPlacement, control);
-         _popup.Host!.ConfigurePosition(control,
-                                        PlacementMode.AnchorAndGravity,
-                                        offset: flipOffset,
-                                        anchor: flipAnchorAndGravity.Item1,
-                                        gravity: flipAnchorAndGravity.Item2);
-         effectPlacement = flipPlacement;
-         FlipPlacement = flipPlacement;
-         _popup.HorizontalOffset = flipOffset.X;
-         _popup.VerticalOffset = flipOffset.Y;
-      } else {
-         FlipPlacement = null;
-      }
-      BuildGeometry(GetDirection(effectPlacement));
-   }
-
    private void SetToolTipColor(Control control)
    {
       // Preset 优先级高
@@ -495,97 +478,10 @@ public partial class ToolTip : BorderedStyleControl
       var color = GetColor(control);
       if (presetColorType is not null) {
          var presetColor = new PresetPrimaryColor(presetColorType.Value);
-         SetValue(BackgroundProperty, new SolidColorBrush(presetColor.Color()), BindingPriority.LocalValue);
+         _arrowDecoratedBox?.SetValue(BackgroundProperty, new SolidColorBrush(presetColor.Color()), BindingPriority.LocalValue);
       } else if (color is not null) {
-         SetValue(BackgroundProperty, new SolidColorBrush(color.Value), BindingPriority.LocalValue);
+         _arrowDecoratedBox?.SetValue(BackgroundProperty, new SolidColorBrush(color.Value), BindingPriority.LocalValue);
       }
-   }
-
-   protected PlacementType FlipPlacementType(PlacementType placement)
-   {
-      return placement switch
-      {
-         PlacementType.Left => PlacementType.Right,
-         PlacementType.LeftEdgeAlignedTop => PlacementType.RightEdgeAlignedTop,
-         PlacementType.LeftEdgeAlignedBottom => PlacementType.RightEdgeAlignedBottom,
-
-         PlacementType.Top => PlacementType.Bottom,
-         PlacementType.TopEdgeAlignedLeft => PlacementType.BottomEdgeAlignedLeft,
-         PlacementType.TopEdgeAlignedRight => PlacementType.BottomEdgeAlignedRight,
-
-         PlacementType.Right => PlacementType.Left,
-         PlacementType.RightEdgeAlignedTop => PlacementType.LeftEdgeAlignedTop,
-         PlacementType.RightEdgeAlignedBottom => PlacementType.LeftEdgeAlignedBottom,
-
-         PlacementType.Bottom => PlacementType.Top,
-         PlacementType.BottomEdgeAlignedLeft => PlacementType.TopEdgeAlignedLeft,
-         PlacementType.BottomEdgeAlignedRight => PlacementType.TopEdgeAlignedRight,
-         
-         _ => throw new ArgumentOutOfRangeException(nameof(placement), placement,
-                                                    "Invalid value for PlacementType")
-      };
-   }
-
-   private Point CalculateOffset(PlacementType placementType, Control control)
-   {
-      var offsetX = 0d;
-      var offsetY = 0d;
-      var direction = GetDirection(placementType);
-      var margin = Math.Max(GetMarginToAnchor(AdornedControl!), _marginXXS);
-      if (direction == Direction.Bottom) {
-         offsetY += margin;
-      } else if (direction == Direction.Top) {
-         offsetY += -margin;
-      } else if (direction == Direction.Left) {
-         offsetX += -margin;
-      } else {
-         offsetX += margin;
-      }
-
-      if (GetIsShowArrow(control) && GetIsPointAtCenter(control)) {
-         var anchorSize = control.Bounds.Size;
-         var centerX = anchorSize.Width / 2;
-         var centerY = anchorSize.Height / 2;
-         // 这里计算不需要全局坐标
-         if (placementType == PlacementType.TopEdgeAlignedLeft ||
-             placementType == PlacementType.BottomEdgeAlignedLeft) {
-            offsetX += centerX - ArrowPosition.Item1;
-         } else if (placementType == PlacementType.TopEdgeAlignedRight ||
-                    placementType == PlacementType.BottomEdgeAlignedRight) {
-            offsetX -= centerX - ArrowPosition.Item2;
-         } else if (placementType == PlacementType.RightEdgeAlignedTop ||
-                    placementType == PlacementType.LeftEdgeAlignedTop) {
-            offsetY += centerY - ArrowPosition.Item1;
-         } else if (placementType == PlacementType.RightEdgeAlignedBottom ||
-                    placementType == PlacementType.LeftEdgeAlignedBottom) {
-            offsetY -= centerY - ArrowPosition.Item2;
-         }
-      }
-      return new Point(offsetX, offsetY);
-   }
-
-   private Direction GetDirection(PlacementType placement)
-   {
-      return placement switch
-      {
-         PlacementType.Left => Direction.Left,
-         PlacementType.LeftEdgeAlignedBottom => Direction.Left,
-         PlacementType.LeftEdgeAlignedTop => Direction.Left,
-
-         PlacementType.Top => Direction.Top,
-         PlacementType.TopEdgeAlignedLeft => Direction.Top,
-         PlacementType.TopEdgeAlignedRight => Direction.Top,
-
-         PlacementType.Right => Direction.Right,
-         PlacementType.RightEdgeAlignedBottom => Direction.Right,
-         PlacementType.RightEdgeAlignedTop => Direction.Right,
-
-         PlacementType.Bottom => Direction.Bottom,
-         PlacementType.BottomEdgeAlignedLeft => Direction.Bottom,
-         PlacementType.BottomEdgeAlignedRight => Direction.Bottom,
-         _ => throw new ArgumentOutOfRangeException(nameof(placement), placement,
-                                                    "Invalid value for PlacementType")
-      };
    }
 
    /// <summary>
@@ -600,53 +496,6 @@ public partial class ToolTip : BorderedStyleControl
       if (popup.Parent == null || popup.PlacementTarget != newParent) {
          ((ISetLogicalParent)popup).SetParent(newParent);
       }
-   }
-
-   private (PopupAnchor, PopupGravity) GetAnchorAndGravity(PlacementType placement)
-   {
-      return placement switch
-      {
-         PlacementType.Bottom => (PopupAnchor.Bottom, PopupGravity.Bottom),
-         PlacementType.Right => (PopupAnchor.Right, PopupGravity.Right),
-         PlacementType.Left => (PopupAnchor.Left, PopupGravity.Left),
-         PlacementType.Top => (PopupAnchor.Top, PopupGravity.Top),
-         PlacementType.TopEdgeAlignedRight => (PopupAnchor.TopRight, PopupGravity.TopLeft),
-         PlacementType.TopEdgeAlignedLeft => (PopupAnchor.TopLeft, PopupGravity.TopRight),
-         PlacementType.BottomEdgeAlignedLeft => (PopupAnchor.BottomLeft, PopupGravity.BottomRight),
-         PlacementType.BottomEdgeAlignedRight => (PopupAnchor.BottomRight, PopupGravity.BottomLeft),
-         PlacementType.LeftEdgeAlignedTop => (PopupAnchor.TopLeft, PopupGravity.BottomLeft),
-         PlacementType.LeftEdgeAlignedBottom => (PopupAnchor.BottomLeft, PopupGravity.TopLeft),
-         PlacementType.RightEdgeAlignedTop => (PopupAnchor.TopRight, PopupGravity.BottomRight),
-         PlacementType.RightEdgeAlignedBottom => (PopupAnchor.BottomRight, PopupGravity.TopRight),
-         _ => throw new ArgumentOutOfRangeException(nameof(placement), placement,
-                                                    "Invalid value for PlacementType")
-      };
-   }
-
-   private Rect GetAnchorRectangle(Control anchor)
-   {
-      if (anchor == null) {
-         throw new InvalidOperationException("Placement mode is not Pointer and PlacementTarget is null");
-      }
-
-      var topLevel = TopLevel.GetTopLevel(anchor)!;
-      Matrix? matrix;
-      if (TryGetAdorner(anchor, out var adorned, out var adornerLayer)) {
-         matrix = adorned!.TransformToVisual(topLevel) * anchor.TransformToVisual(adornerLayer!);
-      } else {
-         matrix = anchor.TransformToVisual(topLevel);
-      }
-
-      if (matrix == null) {
-         if (anchor.GetVisualRoot() == null) {
-            throw new InvalidOperationException("Target control is not attached to the visual tree");
-         }
-
-         throw new InvalidOperationException("Target control is not in the same tree as the popup parent");
-      }
-
-      var anchorRect = new Rect(default, anchor.Bounds.Size);
-      return anchorRect.TransformToAABB(matrix.Value);
    }
 
    private static bool TryGetAdorner(Visual target, out Visual? adorned, out Visual? adornerLayer)
@@ -667,121 +516,39 @@ public partial class ToolTip : BorderedStyleControl
       return false;
    }
 
-   private (bool, bool) CalculateFlipInfo(Size translatedSize, Rect anchorRect, PopupAnchor anchor,
-                                          PopupGravity gravity,
-                                          Point offset)
+   private void Open(Control control)
    {
-      var result = (false, false);
-      var bounds = GetBounds(anchorRect);
-      offset *= _currentAnchorWindow!.DesktopScaling;
+      Close();
 
-      bool FitsInBounds(Rect rc, PopupAnchor edge = PopupAnchor.AllMask)
-      {
-         if (edge.HasFlag(PopupAnchor.Left) && rc.X < bounds.X ||
-             edge.HasFlag(PopupAnchor.Top) && rc.Y < bounds.Y ||
-             edge.HasFlag(PopupAnchor.Right) && rc.Right > bounds.Right ||
-             edge.HasFlag(PopupAnchor.Bottom) && rc.Bottom > bounds.Bottom) {
-            return false;
-         }
+      if (_popup is null) {
+         _popup = new Popup();
+         _popup.Child = this;
+         _popup.WindowManagerAddShadowHint = false;
 
-         return true;
+         _popup.Opened += OnPopupOpened;
+         _popup.Closed += OnPopupClosed;
+      }
+      SetPopupParent(_popup, control);
+      _controlTokenBinder.AddControlBinding(_popup, Popup.MaskShadowsProperty, GlobalResourceKey.BoxShadowsSecondary);
+      
+      SetToolTipColor(control);
+      _popup.Placement = GetPlacement(control);
+      _popup.PlacementTarget = control;
+      _popup.HorizontalOffset = GetHorizontalOffset(control);
+      _popup.VerticalOffset = GetVerticalOffset(control);
+      var marginToAnchor = GetMarginToAnchor(control);
+      if (double.IsNaN(marginToAnchor)) {
+         marginToAnchor = _marginXXS / 2;
       }
 
-      Rect GetUnconstrained(PopupAnchor a, PopupGravity g) =>
-         new Rect(Gravitate(GetAnchorPoint(anchorRect, a), translatedSize, g) + offset, translatedSize);
-
-      var geo = GetUnconstrained(anchor, gravity);
-      // If flipping geometry and anchor is allowed and helps, use the flipped one,
-      // otherwise leave it as is
-      if (!FitsInBounds(geo, PopupAnchor.HorizontalMask)) {
-         result.Item1 = true;
-      }
-
-      if (!FitsInBounds(geo, PopupAnchor.VerticalMask)) {
-         result.Item2 = true;
-      }
-
-      return result;
-   }
-
-   private static Point GetAnchorPoint(Rect anchorRect, PopupAnchor edge)
-   {
-      double x, y;
-      if (edge.HasFlag(PopupAnchor.Left)) {
-         x = anchorRect.X;
-      } else if (edge.HasFlag(PopupAnchor.Right)) {
-         x = anchorRect.Right;
-      } else {
-         x = anchorRect.X + anchorRect.Width / 2;
-      }
-
-      if (edge.HasFlag(PopupAnchor.Top)) {
-         y = anchorRect.Y;
-      } else if (edge.HasFlag(PopupAnchor.Bottom)) {
-         y = anchorRect.Bottom;
-      } else {
-         y = anchorRect.Y + anchorRect.Height / 2;
-      }
-
-      return new Point(x, y);
-   }
-
-   private static Point Gravitate(Point anchorPoint, Size size, PopupGravity gravity)
-   {
-      double x, y;
-      if (gravity.HasFlag(PopupGravity.Left)) {
-         x = -size.Width;
-      } else if (gravity.HasFlag(PopupGravity.Right)) {
-         x = 0;
-      } else {
-         x = -size.Width / 2;
-      }
-
-      if (gravity.HasFlag(PopupGravity.Top)) {
-         y = -size.Height;
-      } else if (gravity.HasFlag(PopupGravity.Bottom)) {
-         y = 0;
-      } else {
-         y = -size.Height / 2;
-      }
-
-      return anchorPoint + new Point(x, y);
-   }
-
-   private Rect GetBounds(Rect anchorRect)
-   {
-      // 暂时只支持窗口的方式
-      var parentGeometry = GetParentClientAreaScreenGeometry();
-      var screens = GetScreens();
-
-      var targetScreen = screens.FirstOrDefault(s => s.Bounds.ContainsExclusive(anchorRect.TopLeft))
-                         ?? screens.FirstOrDefault(s => s.Bounds.Intersects(anchorRect))
-                         ?? screens.FirstOrDefault(s => s.Bounds.ContainsExclusive(parentGeometry.TopLeft))
-                         ?? screens.FirstOrDefault(s => s.Bounds.Intersects(parentGeometry))
-                         ?? screens.FirstOrDefault();
-
-      if (targetScreen != null &&
-          (targetScreen.WorkingArea.Width == 0 && targetScreen.WorkingArea.Height == 0)) {
-         return targetScreen.Bounds;
-      }
-
-      return targetScreen?.WorkingArea
-             ?? new Rect(0, 0, double.MaxValue, double.MaxValue);
-   }
-
-   private Rect GetParentClientAreaScreenGeometry()
-   {
-      var point = _currentAnchorWindow!.PointToScreen(default);
-      var size = _currentAnchorWindow!.ClientSize * _currentAnchorWindow.DesktopScaling;
-      return new Rect(point.X, point.Y, size.Width, size.Height);
-   }
-
-   private IReadOnlyList<ManagedPopupPositionerScreenInfo> GetScreens()
-   {
-      return _currentAnchorWindow!.Screens.All
-                                  .Select(s => new ManagedPopupPositionerScreenInfo(
-                                             s.Bounds.ToRect(1), s.WorkingArea.ToRect(1)))
-                                  .ToArray();
+      _popup.MarginToAnchor = marginToAnchor;
+      _arrowDecoratedBox!.IsShowArrow = GetIsShowArrow(control);
+      _currentAnchorWindow = (TopLevel.GetTopLevel(control) as AvaloniaWin)!;
+      
+      SetupArrowPosition(_popup.Placement);
+      SetupPointCenterOffset();
+      
+      _popup.IsOpen = true;
    }
 
    private void Close()
@@ -792,10 +559,10 @@ public partial class ToolTip : BorderedStyleControl
          _popup.PlacementTarget = null;
       }
    }
-
+   
    private void OnPopupClosed(object? sender, EventArgs e)
    {
-      // This condition is true, when Popup was closed by any other reason outside of ToolTipService/ToolTip, keeping IsOpen=true.
+      // This condition is true, when Popup was closed by any other reason outside of ToolTipService/ToolTipOld, keeping IsOpen=true.
       if (AdornedControl is { } adornedControl
           && GetIsOpen(adornedControl)) {
          adornedControl.SetCurrentValue(IsOpenProperty, false);
@@ -828,17 +595,5 @@ public partial class ToolTip : BorderedStyleControl
    {
       base.OnPropertyChanged(e);
       _customStyle.HandlePropertyChangedForStyle(e);
-   }
-}
-
-internal class ManagedPopupPositionerScreenInfo
-{
-   public Rect Bounds { get; }
-   public Rect WorkingArea { get; }
-
-   public ManagedPopupPositionerScreenInfo(Rect bounds, Rect workingArea)
-   {
-      Bounds = bounds;
-      WorkingArea = workingArea;
    }
 }

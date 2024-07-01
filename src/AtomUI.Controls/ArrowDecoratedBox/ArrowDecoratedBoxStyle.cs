@@ -40,11 +40,12 @@ public partial class ArrowDecoratedBox : IControlCustomStyle
       VisualChildren.Add(_container);
       // 生命周期一样，可以不用管理
       BindUtils.RelayBind(this, BackgroundSizingProperty, _container);
+      BindUtils.RelayBind(this, BackgroundProperty, _container);
       BindUtils.RelayBind(this, CornerRadiusProperty, _container);
       BindUtils.RelayBind(this, ChildProperty, _container);
       BindUtils.RelayBind(this, PaddingProperty, _container);
       BindUtils.RelayBind(this, ChildProperty, _container);
-      _controlTokenBinder.AddControlBinding(_container, BackgroundProperty, GlobalResourceKey.ColorBgContainer);
+      _controlTokenBinder.AddControlBinding(BackgroundProperty, GlobalResourceKey.ColorBgContainer);
       
       _initialized = true;
    }

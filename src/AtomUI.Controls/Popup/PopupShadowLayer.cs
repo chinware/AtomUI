@@ -98,9 +98,6 @@ internal class PopupShadowLayer : LiteWindow, IShadowDecorator
       }
       
       _compositeDisposable = new CompositeDisposable();
-      if (_topLevel is Avalonia.Controls.Window window && window.PlatformImpl != null) {
-         
-      }
 
       var popupRoot = _target?.Host as PopupRoot;
       if (popupRoot is not null) {
@@ -162,7 +159,11 @@ internal class PopupShadowLayer : LiteWindow, IShadowDecorator
             _shadowRenderer.Height = rendererSize.Height;
          } else if (content is TemplatedControl templatedControl) {
             cornerRadius = templatedControl.CornerRadius;
-            var rendererSize = CalculateShadowRendererSize(content.DesiredSize);
+            var rendererSize = CalculateShadowRendererSize(templatedControl.DesiredSize);
+            _shadowRenderer.Width = rendererSize.Width;
+            _shadowRenderer.Height = rendererSize.Height;
+         } else if (content is StyledControl styledControl) {
+            var rendererSize = CalculateShadowRendererSize(styledControl.DesiredSize);
             _shadowRenderer.Width = rendererSize.Width;
             _shadowRenderer.Height = rendererSize.Height;
          }
