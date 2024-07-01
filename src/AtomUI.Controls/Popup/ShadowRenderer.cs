@@ -66,7 +66,7 @@ internal class ShadowRenderer : Control
       var maskContent = new Border
       {
          BorderThickness = new Thickness(0),
-         Background = new SolidColorBrush(Colors.Transparent),
+         Background = new SolidColorBrush(Colors.White),
          HorizontalAlignment = HorizontalAlignment.Stretch,
          VerticalAlignment = VerticalAlignment.Stretch
       };

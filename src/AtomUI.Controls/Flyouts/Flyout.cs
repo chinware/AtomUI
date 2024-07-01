@@ -116,12 +116,18 @@ public class Flyout : PopupFlyoutBase
          [!BorderedStyleControl.ChildProperty] = this[!ContentProperty]
       };
       BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, _presenter, IsShowArrowProperty);
+      SetupArrowPosition(Placement, PlacementAnchor, PlacementGravity);
       return _presenter;
    }
    
-   protected internal override void NotifyPopupCreated(Popup popup)
+   protected internal override void NotifyPopupCreated(Popup popup) 
    {
       base.NotifyPopupCreated(popup);
+      BindUtils.RelayBind(this, PlacementProperty, popup);
+      BindUtils.RelayBind(this, PlacementAnchorProperty, popup);
+      BindUtils.RelayBind(this, PlacementGravityProperty, popup);
+      BindUtils.RelayBind(this, HorizontalOffsetProperty, popup);
+      BindUtils.RelayBind(this, VerticalOffsetProperty, popup);
       SetupArrowPosition(popup.Placement, popup.PlacementAnchor, popup.PlacementGravity);
    }
 
@@ -267,6 +273,7 @@ public class Flyout : PopupFlyoutBase
           e.Property == PlacementAnchorProperty ||
           e.Property == PlacementGravityProperty) {
          CalculateShowArrowEffective();
+         SetupArrowPosition(Placement, PlacementAnchor, PlacementGravity);
       }
    }
 

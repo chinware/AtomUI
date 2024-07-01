@@ -59,7 +59,9 @@ public partial class ArrowDecoratedBox : IControlCustomStyle
    {
       if (e.Property == IsShowArrowProperty ||
           e.Property == ArrowPositionProperty) {
-         BuildGeometry(GetDirection(ArrowPosition));
+         if (_initialized) {
+            BuildGeometry(GetDirection(ArrowPosition));
+         }
       } 
    }
 
@@ -85,22 +87,23 @@ public partial class ArrowDecoratedBox : IControlCustomStyle
       if (IsShowArrow) {
          var direction = GetDirection(ArrowPosition);
          var matrix = Matrix.CreateTranslation(-_arrowSize / 2, -_arrowSize / 2);
+         
          if (direction == Direction.Right) {
-            matrix *= Matrix.CreateRotation(MathUtils.Deg2Rad(-90));
-            matrix *= Matrix.CreateTranslation(0, _arrowSize / 2);
-         } else if (direction == Direction.Top) {
-            matrix *= Matrix.CreateRotation(MathUtils.Deg2Rad(180));
-            matrix *= Matrix.CreateTranslation(_arrowSize / 2, _arrowSize / 2);
-         } else if (direction == Direction.Left) {
             matrix *= Matrix.CreateRotation(MathUtils.Deg2Rad(90));
             matrix *= Matrix.CreateTranslation(_arrowSize / 2, _arrowSize / 2);
-         } else {
+         } else if (direction == Direction.Top) {
             matrix *= Matrix.CreateTranslation(_arrowSize / 2, 0);
+         } else if (direction == Direction.Left) {
+            matrix *= Matrix.CreateRotation(MathUtils.Deg2Rad(-90));
+            matrix *= Matrix.CreateTranslation(0, _arrowSize / 2);
+         } else {
+            matrix *= Matrix.CreateRotation(MathUtils.Deg2Rad(180));
+            matrix *= Matrix.CreateTranslation(_arrowSize / 2, _arrowSize / 2);
          }
 
          matrix *= Matrix.CreateTranslation(_arrowRect.X, _arrowRect.Y);
          _arrowGeometry!.Transform = new MatrixTransform(matrix);
-         context.DrawGeometry(Background, null, _arrowGeometry);
+         context.DrawGeometry(_container?.Background, null, _arrowGeometry);
       }
    }
 
@@ -155,13 +158,13 @@ public partial class ArrowDecoratedBox : IControlCustomStyle
          }
 
          if (direction == Direction.Right) {
-            offsetX = arrowSize - 0.5;
-         } else if (direction == Direction.Bottom) {
-            offsetY = arrowSize - 0.5;
-         } else if (direction == Direction.Top) {
-            offsetY = 0.5;
-         } else {
             offsetX = 0.5;
+         } else if (direction == Direction.Bottom) {
+            offsetY = 0.5;
+         } else if (direction == Direction.Top) {
+            offsetY = arrowSize - 0.5;
+         } else {
+            offsetX = arrowSize - 0.5;
          }
       }
 
@@ -182,7 +185,8 @@ public partial class ArrowDecoratedBox : IControlCustomStyle
          if (position == ArrowPosition.Left ||
              position == ArrowPosition.LeftEdgeAlignedTop ||
              position == ArrowPosition.LeftEdgeAlignedBottom) {
-            offsetX = finalSize.Width - minValue;
+            targetWidth = minValue;
+            targetHeight = maxValue;
             if (position == ArrowPosition.Left) {
                offsetY = (finalSize.Height - maxValue) / 2;
             } else if (position == ArrowPosition.LeftEdgeAlignedTop) {
@@ -198,15 +202,9 @@ public partial class ArrowDecoratedBox : IControlCustomStyle
                   offsetY = finalSize.Height - maxValue * 2;
                }
             }
-
-            targetWidth = minValue;
-            targetHeight = maxValue;
          } else if (position == ArrowPosition.Top ||
                     position == ArrowPosition.TopEdgeAlignedLeft ||
                     position == ArrowPosition.TopEdgeAlignedRight) {
-            offsetY = finalSize.Height - minValue;
-            targetWidth = maxValue;
-            targetHeight = minValue;
             if (position == ArrowPosition.TopEdgeAlignedLeft) {
                offsetX = maxValue;
             } else if (position == ArrowPosition.Top) {
@@ -214,11 +212,13 @@ public partial class ArrowDecoratedBox : IControlCustomStyle
             } else {
                offsetX = finalSize.Width - maxValue * 2;
             }
+
+            targetWidth = maxValue;
+            targetHeight = minValue;
          } else if (position == ArrowPosition.Right ||
                     position == ArrowPosition.RightEdgeAlignedTop ||
                     position == ArrowPosition.RightEdgeAlignedBottom) {
-            targetWidth = minValue;
-            targetHeight = maxValue;
+            offsetX = finalSize.Width - minValue;
             if (position == ArrowPosition.Right) {
                offsetY = (finalSize.Height - maxValue) / 2;
             } else if (position == ArrowPosition.RightEdgeAlignedTop) {
@@ -234,7 +234,13 @@ public partial class ArrowDecoratedBox : IControlCustomStyle
                   offsetY = finalSize.Height - maxValue * 2;
                }
             }
+
+            targetWidth = minValue;
+            targetHeight = maxValue;
          } else {
+            offsetY = finalSize.Height - minValue;
+            targetWidth = maxValue;
+            targetHeight = minValue;
             if (position == ArrowPosition.BottomEdgeAlignedLeft) {
                offsetX = maxValue;
             } else if (position == ArrowPosition.Bottom) {
@@ -242,9 +248,6 @@ public partial class ArrowDecoratedBox : IControlCustomStyle
             } else {
                offsetX = finalSize.Width - maxValue * 2;
             }
-
-            targetWidth = maxValue;
-            targetHeight = minValue;
          }
       }
 

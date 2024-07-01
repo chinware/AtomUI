@@ -167,7 +167,7 @@ public static class AliasDesignTokenExtensions
          OffsetY = 6,
          Blur = 16,
          Spread = 0,
-         Color = ColorUtils.FromRgbF(0.08, 0, 0, 0)
+         Color = ColorUtils.FromRgbF(0.10, 0, 0, 0)
       }, new []
       {
          new BoxShadow
@@ -184,7 +184,7 @@ public static class AliasDesignTokenExtensions
             OffsetY = 9,
             Blur = 28,
             Spread = 8,
-            Color = ColorUtils.FromRgbF(0.05, 0, 0, 0)
+            Color = ColorUtils.FromRgbF(0.07, 0, 0, 0)
          }
       });
       

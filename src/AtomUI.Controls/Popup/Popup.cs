@@ -56,6 +56,9 @@ public class Popup : AbstractPopup
    {
       var type = typeof(IPopupPositioner).Assembly.GetType("Avalonia.Controls.Primitives.PopupPositioning.PopupPositionerExtensions")!;
       ConfigurePositionMethodInfo = type.GetMethod("ConfigurePosition", BindingFlags.Public | BindingFlags.Static)!;
+      AffectsMeasure<Popup>(PlacementProperty);
+      AffectsMeasure<Popup>(PlacementAnchorProperty);
+      AffectsMeasure<Popup>(PlacementGravityProperty);
    }
 
    public Popup()

@@ -72,7 +72,7 @@ public enum ArrowPosition
    RightEdgeAlignedBottom
 }
 
-public partial class ArrowDecoratedBox : StyledControl
+public partial class ArrowDecoratedBox : StyledControl, IShadowMaskInfoProvider
 {
    public static readonly StyledProperty<bool> IsShowArrowProperty =
       AvaloniaProperty.Register<ArrowDecoratedBox, bool>(nameof(IsShowArrow), true);
@@ -184,4 +184,14 @@ public partial class ArrowDecoratedBox : StyledControl
    }
 
    protected virtual void NotifyCreateUi() { }
+
+   public CornerRadius GetMaskCornerRadius()
+   {
+      return CornerRadius;
+   }
+
+   public Rect GetMaskBounds()
+   {
+      return GetContentRect(DesiredSize);
+   }
 }

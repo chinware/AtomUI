@@ -30,6 +30,7 @@ internal class PopupShadowLayer : LiteWindow, IShadowDecorator
    }
 
    private Popup? _target;
+   private Canvas? _layout;
    private ShadowRenderer? _shadowRenderer;
    private CompositeDisposable? _compositeDisposable;
    private IManagedPopupPositionerPopup? _managedPopupPositionerPopup;
@@ -68,7 +69,9 @@ internal class PopupShadowLayer : LiteWindow, IShadowDecorator
 
       if (_shadowRenderer is null) {
          _shadowRenderer ??= new ShadowRenderer();
-         SetChild(_shadowRenderer);
+         _layout = new Canvas();
+         _layout.Children.Add(_shadowRenderer);
+         SetChild(_layout);
       }
    }
 
@@ -76,6 +79,16 @@ internal class PopupShadowLayer : LiteWindow, IShadowDecorator
    {
       SetupShadowRenderer();
       Open();
+   }
+   
+   protected override Size MeasureOverride(Size availableSize)
+   {
+      var content = _target?.Child;
+      Size size = default;
+      if (content is not null) {
+         size = content.DesiredSize;
+      }
+      return CalculateShadowRendererSize(size);
    }
 
    private void Open()
@@ -89,7 +102,8 @@ internal class PopupShadowLayer : LiteWindow, IShadowDecorator
          
       }
 
-      if (_target?.Host is PopupRoot popupRoot) {
+      var popupRoot = _target?.Host as PopupRoot;
+      if (popupRoot is not null) {
          popupRoot.PositionChanged += TargetPopupPositionChanged;
       }
 
@@ -104,20 +118,14 @@ internal class PopupShadowLayer : LiteWindow, IShadowDecorator
       SetupPositionAndSize();
       _isOpened = true;
       Show();
+      if (popupRoot is not null) {
+         popupRoot.PlatformImpl!.SetTopmost(true);
+      }
    }
 
    private void TargetPopupPositionChanged(object? sender, PixelPointEventArgs e)
    {
       SetupPositionAndSize();
-   }
-
-   private static IDisposable SubscribeToEventHandler<T, TEventHandler>(T target, TEventHandler handler,
-                                                                        Action<T, TEventHandler> subscribe,
-                                                                        Action<T, TEventHandler> unsubscribe)
-   {
-      subscribe(target, handler);
-      return Disposable.Create((unsubscribe, target, handler),
-                               state => state.unsubscribe(state.target, state.handler));
    }
 
    private void HandleTargetClosed(object? sender, EventArgs args)
@@ -136,26 +144,39 @@ internal class PopupShadowLayer : LiteWindow, IShadowDecorator
       if (_target?.Child is not null && _shadowRenderer is not null) {
          // 理论上现在已经有大小了
          var content = _target?.Child!;
-         var rendererSize = CalculateShadowRendererSize(content);
          _shadowRenderer.Shadows = MaskShadows;
-         _shadowRenderer.Width = rendererSize.Width;
-         _shadowRenderer.Height = rendererSize.Height;
-
+   
+         CornerRadius cornerRadius = default;
          if (content is IShadowMaskInfoProvider shadowMaskInfoProvider) {
-            _shadowRenderer.MaskCornerRadius = shadowMaskInfoProvider.GetMaskCornerRadius();
+            cornerRadius = shadowMaskInfoProvider.GetMaskCornerRadius();
+            var maskBounds = shadowMaskInfoProvider.GetMaskBounds();
+            var rendererSize = CalculateShadowRendererSize(maskBounds.Size);
+            Canvas.SetLeft(_shadowRenderer, maskBounds.Left);
+            Canvas.SetTop(_shadowRenderer, maskBounds.Top);
+            _shadowRenderer.Width = rendererSize.Width;
+            _shadowRenderer.Height = rendererSize.Height;
          } else if (content is BorderedStyleControl bordered) {
-            _shadowRenderer.MaskCornerRadius = bordered.CornerRadius;
+            cornerRadius = bordered.CornerRadius;
+            var rendererSize = CalculateShadowRendererSize(content.DesiredSize);
+            _shadowRenderer.Width = rendererSize.Width;
+            _shadowRenderer.Height = rendererSize.Height;
          } else if (content is TemplatedControl templatedControl) {
-            _shadowRenderer.MaskCornerRadius = templatedControl.CornerRadius;
+            cornerRadius = templatedControl.CornerRadius;
+            var rendererSize = CalculateShadowRendererSize(content.DesiredSize);
+            _shadowRenderer.Width = rendererSize.Width;
+            _shadowRenderer.Height = rendererSize.Height;
          }
+         _shadowRenderer.MaskCornerRadius = cornerRadius;
       }
    }
 
-   private Size CalculateShadowRendererSize(Control content)
+   private Size CalculateShadowRendererSize(Size content)
    {
       var shadowThickness = MaskShadows.Thickness();
-      var targetWidth = content.DesiredSize.Width + shadowThickness.Left + shadowThickness.Right;
-      var targetHeight = content.DesiredSize.Height + shadowThickness.Top + shadowThickness.Bottom;
+      var targetWidth = shadowThickness.Left + shadowThickness.Right;
+      var targetHeight = shadowThickness.Top + shadowThickness.Bottom;
+      targetWidth += content.Width;
+      targetHeight += content.Height;
       return new Size(targetWidth, targetHeight);
    }
 
