@@ -184,6 +184,10 @@ internal class WaveSpiritAdorner : Control
 
    public sealed override void Render(DrawingContext context)
    {
+      // TODO 有时候会被合成器触发渲染
+      if (!IsPlaying) {
+         return;
+      }
       object currentSize = default!;
       if (_wavePainter.WaveType == WaveType.CircleWave) {
          currentSize = LastWaveRadius;
