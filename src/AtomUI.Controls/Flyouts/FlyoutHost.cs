@@ -4,6 +4,8 @@ using AtomUI.Styling;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Diagnostics;
+using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Input;
 using Avalonia.Input.Raw;
@@ -248,18 +250,24 @@ public class FlyoutHost : Control
    {
       if (args is RawPointerEventArgs pointerEventArgs) {
          if (AnchorTarget is not null && pointerEventArgs.Type == RawPointerEventType.LeftButtonUp) {
-            var pos = AnchorTarget.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(AnchorTarget)!);
-            if (!pos.HasValue) {
+
+            if (Flyout is null) {
                return;
             }
 
-            var bounds = new Rect(pos.Value, AnchorTarget.Bounds.Size);
-            if (bounds.Contains(pointerEventArgs.Position)) {
-               if (Flyout is not null) {
-                  if (Flyout.IsOpen) {
+            if (!Flyout.IsOpen) {
+               var pos = AnchorTarget.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(AnchorTarget)!);
+               if (!pos.HasValue) {
+                  return;
+               }
+               var bounds = new Rect(pos.Value, AnchorTarget.Bounds.Size);
+               if (bounds.Contains(pointerEventArgs.Position)) {
+                  ShowFlyout();
+               }
+            } else {
+               if (Flyout is IPopupHostProvider popupHostProvider) {
+                  if (popupHostProvider.PopupHost != pointerEventArgs.Root) {
                      HideFlyout();
-                  } else {
-                     ShowFlyout();
                   }
                }
             }

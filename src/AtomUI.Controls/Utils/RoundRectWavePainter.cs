@@ -81,7 +81,6 @@ internal class RoundRectWavePainter : AbstractWavePainter
    {
       animation.Duration = SizeMotionDuration;
       animation.Easing = SizeEasingCurve;
-      Console.WriteLine($"NotifyBuildSizeAnimation-{OriginSize}");
       animation.Children.Add(new KeyFrame
       {
          Setters =
