@@ -15,7 +15,6 @@ public partial class ArrowDecoratedBox : IControlCustomStyle
    private IControlCustomStyle _customStyle;
    private ControlTokenBinder _controlTokenBinder;
    private Geometry? _arrowGeometry;
-   private Direction? _lastDirection;
    private Rect _contentRect;
    private Rect _arrowRect;
    private Border? _container;
@@ -35,7 +34,7 @@ public partial class ArrowDecoratedBox : IControlCustomStyle
       NotifyCreateUi();
       _customStyle.ApplyFixedStyleConfig();
       if (IsShowArrow) {
-         BuildGeometry(GetDirection(ArrowPosition));
+         BuildGeometry();
       }
       LogicalChildren.Add(_container);
       VisualChildren.Add(_container);
@@ -58,20 +57,20 @@ public partial class ArrowDecoratedBox : IControlCustomStyle
    void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
    {
       if (e.Property == IsShowArrowProperty ||
-          e.Property == ArrowPositionProperty) {
+          e.Property == ArrowPositionProperty ||
+          e.Property == ArrowSizeTokenProperty ||
+          e.Property == VisualParentProperty) {
          if (_initialized) {
-            BuildGeometry(GetDirection(ArrowPosition));
+            if (IsShowArrow) {
+               BuildGeometry();
+            }
          }
       } 
    }
 
-   private void BuildGeometry(Direction direction)
+   private void BuildGeometry()
    {
-      if (_lastDirection != direction) {
-         var arrowSize = _arrowSize;
-         _arrowGeometry = CommonShapeBuilder.BuildArrow(arrowSize, 1.5);
-         _lastDirection = direction;
-      }
+      _arrowGeometry = CommonShapeBuilder.BuildArrow(_arrowSize, 1.5);
    }
 
    protected virtual void NotifyApplyFixedStyleConfig()
@@ -113,6 +112,7 @@ public partial class ArrowDecoratedBox : IControlCustomStyle
       var targetWidth = size.Width;
       var targetHeight = size.Height;
       targetHeight = Math.Max(MinHeight, targetHeight);
+     
       if (IsShowArrow) {
          var realArrowSize = Math.Min(_arrowGeometry!.Bounds.Size.Height, _arrowGeometry!.Bounds.Size.Width);
          var direction = GetDirection(ArrowPosition);
@@ -123,7 +123,9 @@ public partial class ArrowDecoratedBox : IControlCustomStyle
          }
       }
 
-      return new Size(targetWidth, targetHeight);
+      var targetSize = new Size(targetWidth, targetHeight);
+      _arrowRect = GetArrowRect(targetSize);
+      return targetSize;
    }
 
    protected override Size ArrangeOverride(Size finalSize)
@@ -131,7 +133,6 @@ public partial class ArrowDecoratedBox : IControlCustomStyle
       var visualChildren = VisualChildren;
       var visualCount = visualChildren.Count;
       _contentRect = GetContentRect(finalSize);
-      _arrowRect = GetArrowRect(finalSize);
       for (int i = 0; i < visualCount; ++i) {
          var child = visualChildren[i];
          if (child is Layoutable layoutable) {
@@ -175,11 +176,11 @@ public partial class ArrowDecoratedBox : IControlCustomStyle
    {
       var offsetX = 0d;
       var offsetY = 0d;
-      var size = _arrowGeometry!.Bounds.Size;
       var targetWidth = 0d;
       var targetHeight = 0d;
       var position = ArrowPosition;
       if (IsShowArrow) {
+         var size = _arrowGeometry!.Bounds.Size;
          var minValue = Math.Min(size.Width, size.Height);
          var maxValue = Math.Max(size.Width, size.Height);
          if (position == ArrowPosition.Left ||

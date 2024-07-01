@@ -260,7 +260,6 @@ public class Flyout : PopupFlyoutBase
             }
          }
       }
-
       return new Point(offsetX, offsetY);
    }
 
@@ -313,8 +312,8 @@ public class Flyout : PopupFlyoutBase
       var offset = CalculatePopupPositionDelta(Target!, Placement, PlacementAnchor, PlacementGravity);
       offsetX += offset.X;
       offsetY += offset.Y;
-      Popup.VerticalOffset = offsetX;
-      Popup.HorizontalOffset = offsetY;
+      Popup.HorizontalOffset = offsetX;
+      Popup.VerticalOffset = offsetY;
    }
 
    protected override bool ShowAtCore(Control placementTarget, bool showAtPointer = false)

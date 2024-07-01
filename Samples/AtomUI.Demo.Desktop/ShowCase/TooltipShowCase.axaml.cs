@@ -6,7 +6,6 @@ namespace AtomUI.Demo.Desktop.ShowCase;
 
 public partial class TooltipShowCase : UserControl
 {
-   
    public static readonly StyledProperty<bool> ShowArrowProperty =
       AvaloniaProperty.Register<TooltipShowCase, bool>(nameof(ShowArrow), true);
    

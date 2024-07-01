@@ -5,7 +5,6 @@ using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Diagnostics;
-using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Input;
 using Avalonia.Input.Raw;
