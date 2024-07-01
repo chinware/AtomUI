@@ -1,12 +1,12 @@
 ﻿using Avalonia.Animation;
-using Avalonia.Controls;
 
 namespace AtomUI.MotionScene;
 
 public interface IMotion
 {
-   IMotionAbilityTarget? MotionTarget { get; }
+   MotionActor? Actor { get; }
    bool IsRunning { get; }
+   
    List<ITransition> BuildTransitions();
    
    // 生命周期接口

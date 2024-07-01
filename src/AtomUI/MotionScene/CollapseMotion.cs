@@ -6,8 +6,8 @@ namespace AtomUI.MotionScene;
 
 public class CollapseMotion : AbstractMotion
 {
-   public CollapseMotion(Control target)
-      : base(target)
+   public CollapseMotion(MotionActor actor)
+      : base(actor)
    {}
 
    public MotionConfig? HeightConfig => GetMotionConfig(MotionHeightProperty);

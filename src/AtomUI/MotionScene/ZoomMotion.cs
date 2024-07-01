@@ -1,6 +1,5 @@
 ﻿using Avalonia;
 using Avalonia.Animation.Easings;
-using Avalonia.Controls;
 using Avalonia.Media;
 
 namespace AtomUI.MotionScene;
@@ -10,8 +9,8 @@ public class ZoomInMotion : AbstractMotion
    public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
    public MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
    
-   public ZoomInMotion(Control target)
-      : base(target)
+   public ZoomInMotion(MotionActor actor)
+      : base(actor)
    {}
    
    public void ConfigureOpacity(TimeSpan duration, Easing? easing = null)
@@ -48,8 +47,8 @@ public class ZoomOutMotion : AbstractMotion
    public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
    public MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
    
-   public ZoomOutMotion(Control target)
-      : base(target)
+   public ZoomOutMotion(MotionActor actor)
+      : base(actor)
    {}
    
    public void ConfigureOpacity(TimeSpan duration, Easing? easing = null)
@@ -86,8 +85,8 @@ public class ZoomBigInMotion : AbstractMotion
    public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
    public MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
    
-   public ZoomBigInMotion(Control target)
-      : base(target)
+   public ZoomBigInMotion(MotionActor actor)
+      : base(actor)
    {}
    
    public void ConfigureOpacity(TimeSpan duration, Easing? easing = null)
@@ -124,8 +123,8 @@ public class ZoomBigOutMotion : AbstractMotion
    public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
    public MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
    
-   public ZoomBigOutMotion(Control target)
-      : base(target)
+   public ZoomBigOutMotion(MotionActor actor)
+      : base(actor)
    {}
    
    public void ConfigureOpacity(TimeSpan duration, Easing? easing = null)
@@ -163,8 +162,8 @@ public class ZoomUpInMotion : AbstractMotion
    public MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
    private RelativePoint _renderTransformBackup;
    
-   public ZoomUpInMotion(Control target)
-      : base(target)
+   public ZoomUpInMotion(MotionActor actor)
+      : base(actor)
    {}
    
    public void ConfigureOpacity(TimeSpan duration, Easing? easing = null)
@@ -197,19 +196,15 @@ public class ZoomUpInMotion : AbstractMotion
 
    public override void NotifyPreStart()
    {
-      var target = GetControlTarget();
-      if (target is not null) {
-         _renderTransformBackup = target.RenderTransformOrigin;
-         target.RenderTransformOrigin = new RelativePoint(0.5, 0, RelativeUnit.Relative);
-      }
+      var motionEntity = GetMotionEntity();
+      _renderTransformBackup = motionEntity.RenderTransformOrigin;
+      motionEntity.RenderTransformOrigin = new RelativePoint(0.5, 0, RelativeUnit.Relative);
    }
 
    public override void NotifyStopped()
    {
-      var target = GetControlTarget();
-      if (target is not null) {
-         target.RenderTransformOrigin = _renderTransformBackup;
-      }
+      var motionEntity = GetMotionEntity();
+      motionEntity.RenderTransformOrigin = _renderTransformBackup;
    }
 }
 
@@ -219,8 +214,8 @@ public class ZoomUpOutMotion : AbstractMotion
    public MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
    private RelativePoint _renderTransformBackup;
    
-   public ZoomUpOutMotion(Control target)
-      : base(target)
+   public ZoomUpOutMotion(MotionActor actor)
+      : base(actor)
    {}
    
    public void ConfigureOpacity(TimeSpan duration, Easing? easing = null)
@@ -253,19 +248,15 @@ public class ZoomUpOutMotion : AbstractMotion
 
    public override void NotifyPreStart()
    {
-      var target = GetControlTarget();
-      if (target is not null) {
-         _renderTransformBackup = target.RenderTransformOrigin;
-         target.RenderTransformOrigin = new RelativePoint(0.5, 0, RelativeUnit.Relative);
-      }
+      var motionEntity = GetMotionEntity();
+      _renderTransformBackup = motionEntity.RenderTransformOrigin;
+      motionEntity.RenderTransformOrigin = new RelativePoint(0.5, 0, RelativeUnit.Relative);
    }
 
    public override void NotifyStopped()
    {
-      var target = GetControlTarget();
-      if (target is not null) {
-         target.RenderTransformOrigin = _renderTransformBackup;
-      }
+      var motionEntity = GetMotionEntity();
+      motionEntity.RenderTransformOrigin = _renderTransformBackup;
    }
 }
 
@@ -275,8 +266,8 @@ public class ZoomLeftInMotion : AbstractMotion
    public MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
    private RelativePoint _renderTransformBackup;
    
-   public ZoomLeftInMotion(Control target)
-      : base(target)
+   public ZoomLeftInMotion(MotionActor actor)
+      : base(actor)
    {}
    
    public void ConfigureOpacity(TimeSpan duration, Easing? easing = null)
@@ -309,19 +300,15 @@ public class ZoomLeftInMotion : AbstractMotion
 
    public override void NotifyPreStart()
    {
-      var target = GetControlTarget();
-      if (target is not null) {
-         _renderTransformBackup = target.RenderTransformOrigin;
-         target.RenderTransformOrigin = new RelativePoint(0, 0.5, RelativeUnit.Relative);
-      }
+      var motionEntity = GetMotionEntity();
+      _renderTransformBackup = motionEntity.RenderTransformOrigin;
+      motionEntity.RenderTransformOrigin = new RelativePoint(0, 0.5, RelativeUnit.Relative);
    }
 
    public override void NotifyStopped()
    {
-      var target = GetControlTarget();
-      if (target is not null) {
-         target.RenderTransformOrigin = _renderTransformBackup;
-      }
+      var motionEntity = GetMotionEntity();
+      motionEntity.RenderTransformOrigin = _renderTransformBackup;
    }
 }
 
@@ -331,8 +318,8 @@ public class ZoomLeftOutMotion : AbstractMotion
    public MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
    private RelativePoint _renderTransformBackup;
    
-   public ZoomLeftOutMotion(Control target)
-      : base(target)
+   public ZoomLeftOutMotion(MotionActor actor)
+      : base(actor)
    {}
    
    public void ConfigureOpacity(TimeSpan duration, Easing? easing = null)
@@ -365,19 +352,15 @@ public class ZoomLeftOutMotion : AbstractMotion
 
    public override void NotifyPreStart()
    {
-      var target = GetControlTarget();
-      if (target is not null) {
-         _renderTransformBackup = target.RenderTransformOrigin;
-         target.RenderTransformOrigin = new RelativePoint(0, 0.5, RelativeUnit.Relative);
-      }
+      var motionEntity = GetMotionEntity();
+      _renderTransformBackup = motionEntity.RenderTransformOrigin;
+      motionEntity.RenderTransformOrigin = new RelativePoint(0, 0.5, RelativeUnit.Relative);
    }
 
    public override void NotifyStopped()
    {
-      var target = GetControlTarget();
-      if (target is not null) {
-         target.RenderTransformOrigin = _renderTransformBackup;
-      }
+      var motionEntity = GetMotionEntity();
+      motionEntity.RenderTransformOrigin = _renderTransformBackup;
    }
 }
 
@@ -387,8 +370,8 @@ public class ZoomRightInMotion : AbstractMotion
    public MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
    private RelativePoint _renderTransformBackup;
    
-   public ZoomRightInMotion(Control target)
-      : base(target)
+   public ZoomRightInMotion(MotionActor actor)
+      : base(actor)
    {}
    
    public void ConfigureOpacity(TimeSpan duration, Easing? easing = null)
@@ -421,19 +404,15 @@ public class ZoomRightInMotion : AbstractMotion
 
    public override void NotifyPreStart()
    {
-      var target = GetControlTarget();
-      if (target is not null) {
-         _renderTransformBackup = target.RenderTransformOrigin;
-         target.RenderTransformOrigin = new RelativePoint(1, 0.5, RelativeUnit.Relative);
-      }
+      var motionEntity = GetMotionEntity();
+      _renderTransformBackup = motionEntity.RenderTransformOrigin;
+      motionEntity.RenderTransformOrigin = new RelativePoint(1, 0.5, RelativeUnit.Relative);
    }
 
    public override void NotifyStopped()
    {
-      var target = GetControlTarget();
-      if (target is not null) {
-         target.RenderTransformOrigin = _renderTransformBackup;
-      }
+      var motionEntity = GetMotionEntity();
+      motionEntity.RenderTransformOrigin = _renderTransformBackup;
    }
 }
 
@@ -443,8 +422,8 @@ public class ZoomRightOutMotion : AbstractMotion
    public MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
    private RelativePoint _renderTransformBackup;
    
-   public ZoomRightOutMotion(Control target)
-      : base(target)
+   public ZoomRightOutMotion(MotionActor actor)
+      : base(actor)
    {}
    
    public void ConfigureOpacity(TimeSpan duration, Easing? easing = null)
@@ -477,19 +456,15 @@ public class ZoomRightOutMotion : AbstractMotion
 
    public override void NotifyPreStart()
    {
-      var target = GetControlTarget();
-      if (target is not null) {
-         _renderTransformBackup = target.RenderTransformOrigin;
-         target.RenderTransformOrigin = new RelativePoint(1, 0.5, RelativeUnit.Relative);
-      }
+      var motionEntity = GetMotionEntity();
+      _renderTransformBackup = motionEntity.RenderTransformOrigin;
+      motionEntity.RenderTransformOrigin = new RelativePoint(1, 0.5, RelativeUnit.Relative);
    }
 
    public override void NotifyStopped()
    {
-      var target = GetControlTarget();
-      if (target is not null) {
-         target.RenderTransformOrigin = _renderTransformBackup;
-      }
+      var motionEntity = GetMotionEntity();
+      motionEntity.RenderTransformOrigin = _renderTransformBackup;
    }
 }
 
@@ -499,8 +474,8 @@ public class ZoomDownInMotion : AbstractMotion
    public MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
    private RelativePoint _renderTransformBackup;
    
-   public ZoomDownInMotion(Control target)
-      : base(target)
+   public ZoomDownInMotion(MotionActor actor)
+      : base(actor)
    {}
    
    public void ConfigureOpacity(TimeSpan duration, Easing? easing = null)
@@ -533,19 +508,15 @@ public class ZoomDownInMotion : AbstractMotion
 
    public override void NotifyPreStart()
    {
-      var target = GetControlTarget();
-      if (target is not null) {
-         _renderTransformBackup = target.RenderTransformOrigin;
-         target.RenderTransformOrigin = new RelativePoint(0.5, 1, RelativeUnit.Relative);
-      }
+      var motionEntity = GetMotionEntity();
+      _renderTransformBackup = motionEntity.RenderTransformOrigin;
+      motionEntity.RenderTransformOrigin = new RelativePoint(0.5, 1, RelativeUnit.Relative);
    }
 
    public override void NotifyStopped()
    {
-      var target = GetControlTarget();
-      if (target is not null) {
-         target.RenderTransformOrigin = _renderTransformBackup;
-      }
+      var motionEntity = GetMotionEntity();
+      motionEntity.RenderTransformOrigin = _renderTransformBackup;
    }
 }
 
@@ -555,8 +526,8 @@ public class ZoomDownOutMotion : AbstractMotion
    public MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
    private RelativePoint _renderTransformBackup;
    
-   public ZoomDownOutMotion(Control target)
-      : base(target)
+   public ZoomDownOutMotion(MotionActor actor)
+      : base(actor)
    {}
    
    public void ConfigureOpacity(TimeSpan duration, Easing? easing = null)
@@ -589,19 +560,14 @@ public class ZoomDownOutMotion : AbstractMotion
 
    public override void NotifyPreStart()
    {
-      var target = GetControlTarget();
-      if (target is not null) {
-         _renderTransformBackup = target.RenderTransformOrigin;
-         target.RenderTransformOrigin = new RelativePoint(0.5, 1, RelativeUnit.Relative);
-      }
+      var motionEntity = GetMotionEntity();
+      _renderTransformBackup = motionEntity.RenderTransformOrigin;
+      motionEntity.RenderTransformOrigin = new RelativePoint(0.5, 1, RelativeUnit.Relative);
    }
 
    public override void NotifyStopped()
    {
-      var target = GetControlTarget();
-      if (target is not null) {
-         target.RenderTransformOrigin = _renderTransformBackup;
-      }
+      var motionEntity = GetMotionEntity();
+      motionEntity.RenderTransformOrigin = _renderTransformBackup;
    }
 }
-

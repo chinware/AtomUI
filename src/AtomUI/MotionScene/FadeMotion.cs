@@ -1,14 +1,12 @@
-﻿using AtomUI.Utils;
-using Avalonia.Animation.Easings;
-using Avalonia.Controls;
+﻿using Avalonia.Animation.Easings;
 
 namespace AtomUI.MotionScene;
 
 public class FadeInMotion : AbstractMotion
 {
    public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
-   public FadeInMotion(Control target)
-      : base(target)
+   public FadeInMotion(MotionActor actor)
+      : base(actor)
    {}
 
    public void ConfigureOpacity(double originOpacity, TimeSpan duration, Easing? easing = null)
@@ -31,8 +29,8 @@ public class FadeOutMotion : AbstractMotion
 {
    public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
    
-   public FadeOutMotion(Control target)
-      : base(target)
+   public FadeOutMotion(MotionActor actor)
+      : base(actor)
    {}
    
    public void ConfigureOpacity(double originOpacity, TimeSpan duration, Easing? easing = null)

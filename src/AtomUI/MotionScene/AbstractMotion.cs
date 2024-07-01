@@ -51,8 +51,8 @@ public abstract class AbstractMotion : AvaloniaObject, IMotion
    private bool _isRunning = false;
    public bool IsRunning => _isRunning;
 
-   private WeakReference<Control> _target;
-   public IMotionAbilityTarget? MotionTarget => GetMotionTarget();
+   private WeakReference<MotionActor> _actor;
+   public MotionActor? Actor => GetMotionActor();
 
    private Dictionary<AvaloniaProperty, MotionConfig> _motionConfigs;
    private List<ITransition> _transitions;
@@ -121,46 +121,30 @@ public abstract class AbstractMotion : AvaloniaObject, IMotion
       set => SetValue(MotionRenderTransformProperty, value);
    }
    
-   public AbstractMotion(Control target)
+   public AbstractMotion(MotionActor motionActor)
    {
-      if (target is not IMotionAbilityTarget) {
-         throw new ArgumentException("argument target must the type of IMotionAbilityTarget");
-      }
-
-      _target = new WeakReference<Control>(target);
+      _actor = new WeakReference<MotionActor>(motionActor);
       _motionConfigs = new Dictionary<AvaloniaProperty, MotionConfig>();
       _transitions = new List<ITransition>();
    }
 
-   public IMotionAbilityTarget? GetMotionTarget()
+   public MotionActor GetMotionActor()
    {
-      if (_target.TryGetTarget(out var target)) {
-         return (IMotionAbilityTarget)target;
-      }
-
-      return null;
-   }
-
-   protected Control? GetControlTarget()
-   {
-      if (_target.TryGetTarget(out var target)) {
+      if (_actor.TryGetTarget(out var target)) {
          return target;
       }
 
-      return null;
+      throw new InvalidOperationException("Motion actor is null");
    }
 
    public List<ITransition> BuildTransitions()
    {
-      var target = GetMotionTarget();
-      if (target is null) {
-         return _transitions;
-      }
+      var actor = GetMotionActor();
 
-      NotifyConfigureTarget(target);
+      NotifyConfigureTarget(actor);
       foreach (var entry in _motionConfigs) {
          var config = entry.Value;
-         if (!target.IsSupportMotionProperty(config.Property)) {
+         if (!actor.IsSupportMotionProperty(config.Property)) {
             throw new RuntimeBinderException(
                $"Motion target does not support animation property: {config.Property.Name}");
          }
@@ -178,7 +162,7 @@ public abstract class AbstractMotion : AvaloniaObject, IMotion
    public virtual void NotifyStarted() { }
    public virtual void NotifyStopped() { }
 
-   protected virtual void NotifyConfigureTarget(IMotionAbilityTarget target) { }
+   protected virtual void NotifyConfigureTarget(MotionActor motionActor) { }
    protected virtual void NotifyPreBuildTransition(MotionConfig config) { }
 
    protected virtual ITransition NotifyBuildTransition(MotionConfig config)
@@ -233,5 +217,10 @@ public abstract class AbstractMotion : AvaloniaObject, IMotion
    {
       Debug.Assert(!_motionConfigs.ContainsKey(config.Property));
       _motionConfigs.Add(config.Property, config);
+   }
+
+   protected Control GetMotionEntity()
+   {
+      return GetMotionActor().Entity;
    }
 }

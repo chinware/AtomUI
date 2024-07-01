@@ -1,6 +1,8 @@
-﻿namespace AtomUI.Controls.MotionScene;
+﻿using AtomUI.MotionScene;
 
-public class Director
+namespace AtomUI.Controls.MotionScene;
+
+public class Director : IDirector
 {
    
 }
