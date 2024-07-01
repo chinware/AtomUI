@@ -63,6 +63,7 @@ public partial class ArrowDecoratedBox : IControlCustomStyle
           e.Property == VisualParentProperty) {
          if (_initialized) {
             if (IsShowArrow) {
+               GetArrowRect(DesiredSize);
                BuildGeometry();
             }
          }
