@@ -316,10 +316,10 @@ public class Popup : AbstractPopup
 
       return true;
    }
-   
-   protected internal override void NotifyAboutToUpdateHostPosition(IPopupHost popupHost, Control placementTarget)
+
+   protected internal override void NotifyPopupRootAboutToShow(PopupRoot popupRoot)
    {
-      base.NotifyAboutToUpdateHostPosition(popupHost, placementTarget);
+      base.NotifyPopupRootAboutToShow(popupRoot);
       var offsetX = HorizontalOffset;
       var offsetY = VerticalOffset;
       var marginToAnchorOffset = CalculateMarginToAnchorOffset(Placement);
@@ -332,54 +332,52 @@ public class Popup : AbstractPopup
           Placement != PlacementMode.Pointer) {
          // 计算是否 flip
          PopupPositionerParameters parameters = new PopupPositionerParameters();
-         if (popupHost is PopupRoot popupRoot) {
-            var offset = new Point(HorizontalOffset, VerticalOffset);
-            ConfigurePosition(ref parameters, popupRoot.ParentTopLevel,
-                              PlacementTarget!,
-                              Placement,
-                              offset,
-                              PlacementAnchor,
-                              PlacementGravity,
-                              PopupPositionerConstraintAdjustment.All,
-                              null,
-                              FlowDirection);
+         var offset = new Point(HorizontalOffset, VerticalOffset);
+         ConfigurePosition(ref parameters, popupRoot.ParentTopLevel,
+                           PlacementTarget!,
+                           Placement,
+                           offset,
+                           PlacementAnchor,
+                           PlacementGravity,
+                           PopupPositionerConstraintAdjustment.All,
+                           null,
+                           FlowDirection);
             
-            Size popupSize;
-            // Popup.Child can't be null here, it was set in ShowAtCore.
-            if (Child!.DesiredSize == default) {
-               // Popup may not have been shown yet. Measure content
-               popupSize = LayoutHelper.MeasureChild(Child, Size.Infinity, new Thickness());
-            } else {
-               popupSize = Child.DesiredSize;
-            }
-            var scaling = _managedPopupPositioner!.Scaling;
-            var anchorRect = new Rect(
-               parameters.AnchorRectangle.TopLeft * scaling,
-               parameters.AnchorRectangle.Size * scaling);
-            anchorRect = anchorRect.Translate(_managedPopupPositioner.ParentClientAreaScreenGeometry.TopLeft);
+         Size popupSize;
+         // Popup.Child can't be null here, it was set in ShowAtCore.
+         if (Child!.DesiredSize == default) {
+            // Popup may not have been shown yet. Measure content
+            popupSize = LayoutHelper.MeasureChild(Child, Size.Infinity, new Thickness());
+         } else {
+            popupSize = Child.DesiredSize;
+         }
+         var scaling = _managedPopupPositioner!.Scaling;
+         var anchorRect = new Rect(
+            parameters.AnchorRectangle.TopLeft * scaling,
+            parameters.AnchorRectangle.Size * scaling);
+         anchorRect = anchorRect.Translate(_managedPopupPositioner.ParentClientAreaScreenGeometry.TopLeft);
             
-            var flipInfo = CalculateFlipInfo(popupSize * scaling,
-                                             anchorRect,
-                                             parameters.Anchor,
-                                             parameters.Gravity,
-                                             offset);
-            if (flipInfo.Item1 || flipInfo.Item2) {
-               var flipPlacement = GetFlipPlacement(Placement);
-               var flipAnchorAndGravity = GetAnchorAndGravity(flipPlacement);
-               var flipOffset = CalculateMarginToAnchorOffset(flipPlacement);
-               Placement = flipPlacement;
-               PlacementAnchor = flipAnchorAndGravity.Item1;
-               PlacementGravity = flipAnchorAndGravity.Item2;
-               HorizontalOffset = flipOffset.X;
-               VerticalOffset = flipOffset.Y;
-               IsFlipped = true;
-            } else {
-               IsFlipped = false;
-            }
+         var flipInfo = CalculateFlipInfo(popupSize * scaling,
+                                          anchorRect,
+                                          parameters.Anchor,
+                                          parameters.Gravity,
+                                          offset);
+         if (flipInfo.Item1 || flipInfo.Item2) {
+            var flipPlacement = GetFlipPlacement(Placement);
+            var flipAnchorAndGravity = GetAnchorAndGravity(flipPlacement);
+            var flipOffset = CalculateMarginToAnchorOffset(flipPlacement);
+            Placement = flipPlacement;
+            PlacementAnchor = flipAnchorAndGravity.Item1;
+            PlacementGravity = flipAnchorAndGravity.Item2;
+            HorizontalOffset = flipOffset.X;
+            VerticalOffset = flipOffset.Y;
+            IsFlipped = true;
+         } else {
+            IsFlipped = false;
          }
       }
    }
-   
+
    internal static (PopupAnchor, PopupGravity) GetAnchorAndGravity(PlacementMode placement)
    {
       return placement switch

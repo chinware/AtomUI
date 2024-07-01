@@ -66,6 +66,7 @@ public abstract class AbstractPopup : AvaloniaPopup
    }
    
    protected virtual void NotifyClosed() {}
+   protected internal virtual void NotifyPopupRootAboutToShow(PopupRoot popupRoot) {}
 }
 
 public class PopupHostCreatedEventArgs : EventArgs

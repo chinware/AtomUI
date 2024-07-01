@@ -247,7 +247,7 @@ public class FlyoutHost : Control
    private void HandleAnchorTargetClick(RawInputEventArgs args)
    {
       if (args is RawPointerEventArgs pointerEventArgs) {
-         if (AnchorTarget is not null) {
+         if (AnchorTarget is not null && pointerEventArgs.Type == RawPointerEventType.LeftButtonUp) {
             var pos = AnchorTarget.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(AnchorTarget)!);
             if (!pos.HasValue) {
                return;

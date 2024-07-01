@@ -16,6 +16,6 @@ public class BootstrapInitializer : IBootstrapInitializer
    private void InitInterceptors()
    {
       Harmony harmony = new Harmony("net.atomui.controls");
-      PopupFlyoutBaseInterceptorRegister.Register(harmony);
+      PopupInterceptorsRegister.Register(harmony);
    }
 }

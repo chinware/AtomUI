@@ -81,7 +81,19 @@ internal static class PopupFlyoutBaseInterceptor
    }
 }
 
-internal static class PopupFlyoutBaseInterceptorRegister
+internal static class PopupRootInterceptor
+{
+   public static bool ShowPrefixInterceptor(PopupRoot __instance)
+   {
+      // TODO 这个范围有点广，需要评估
+      if (__instance.Parent is Popup popup) {
+         popup.NotifyPopupRootAboutToShow(__instance);
+      }
+      return true;
+   }
+}
+
+internal static class PopupInterceptorsRegister
 {
    public static void Register(Harmony harmony)
    {
@@ -89,6 +101,7 @@ internal static class PopupFlyoutBaseInterceptorRegister
       RegisterPopupUpdateHostPositionPrefix(harmony);
       RegisterPopupUpdateHostPositionPostfix(harmony);
       RegisterPopupPositionPopup(harmony);
+      RegisterPopupRootShow(harmony);
    }
    
    private static void RegisterPopupFlyoutBaseCreatePopup(Harmony harmony)
@@ -123,6 +136,15 @@ internal static class PopupFlyoutBaseInterceptorRegister
       var origin = typeof(AvaloniaPopupFlyoutBase).GetMethod("PositionPopup", BindingFlags.Instance | BindingFlags.NonPublic);
       var prefixInterceptor = typeof(PopupFlyoutBaseInterceptor)
          .GetMethod(nameof(PopupFlyoutBaseInterceptor.PositionPopupInterceptor),
+                    BindingFlags.Static | BindingFlags.Public);
+      harmony.Patch(origin, prefix: new HarmonyMethod(prefixInterceptor));
+   }
+   
+   private static void RegisterPopupRootShow(Harmony harmony)
+   {
+      var origin = typeof(WindowBase).GetMethod("Show", BindingFlags.Instance | BindingFlags.Public);
+      var prefixInterceptor = typeof(PopupRootInterceptor)
+         .GetMethod(nameof(PopupRootInterceptor.ShowPrefixInterceptor),
                     BindingFlags.Static | BindingFlags.Public);
       harmony.Patch(origin, prefix: new HarmonyMethod(prefixInterceptor));
    }
