@@ -39,19 +39,19 @@ public abstract class AbstractMotion : AvaloniaObject, IMotion
    private List<ITransition> _transitions;
 
    // 定义我们目前支持的动效属性
-   protected static readonly StyledProperty<double> MotionOpacityProperty =
+   public static readonly StyledProperty<double> MotionOpacityProperty =
       Visual.OpacityProperty.AddOwner<AbstractMotion>();
    
-   protected static readonly StyledProperty<double> MotionWidthProperty =
+   public static readonly StyledProperty<double> MotionWidthProperty =
       Visual.OpacityProperty.AddOwner<AbstractMotion>();
    
-   protected static readonly StyledProperty<double> MotionHeightProperty =
+   public static readonly StyledProperty<double> MotionHeightProperty =
       Visual.OpacityProperty.AddOwner<AbstractMotion>();
 
-   protected static readonly StyledProperty<RelativePoint> MotionRenderTransformOriginProperty =
+   public static readonly StyledProperty<RelativePoint> MotionRenderTransformOriginProperty =
       AvaloniaProperty.Register<AbstractMotion, RelativePoint>(nameof(MotionRenderTransformOrigin));
    
-   protected static readonly StyledProperty<ITransform> MotionRenderTransformProperty =
+   public static readonly StyledProperty<ITransform> MotionRenderTransformProperty =
       AvaloniaProperty.Register<AbstractMotion, ITransform>(nameof(MotionRenderTransform));
 
    protected double MotionOpacity
@@ -138,5 +138,15 @@ public abstract class AbstractMotion : AvaloniaObject, IMotion
    {
       Debug.Assert(!_motionConfigs.ContainsKey(config.Property));
       _motionConfigs.Add(config.Property, config);
+   }
+
+   public virtual Size CalculateSceneSize(Size motionTargetSize)
+   {
+      return motionTargetSize;
+   }
+
+   public virtual Point CalculateScenePosition(Point motionTargetPosition)
+   {
+      return motionTargetPosition;
    }
 }

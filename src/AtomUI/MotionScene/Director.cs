@@ -19,7 +19,7 @@ public class Director : IDirector
       _actors.Add(actor);
    }
 
-   private Size CalculateSceneLayerSize(Control ghost, IMotion motion)
+   private Size CalculateSceneLayerOffset(Control ghost, IMotion motion)
    {
       return default;
    }

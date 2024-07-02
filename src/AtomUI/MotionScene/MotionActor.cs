@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
+using Avalonia.VisualTree;
 
 namespace AtomUI.MotionScene;
 
@@ -24,7 +25,13 @@ public class MotionActor : Animatable, IMotionActor
 
    public bool IsSupportMotionProperty(AvaloniaProperty property)
    {
-      return true;
+      if (property == AbstractMotion.MotionOpacityProperty ||
+          property == AbstractMotion.MotionWidthProperty ||
+          property == AbstractMotion.MotionHeightProperty ||
+          property == AbstractMotion.MotionRenderTransformProperty) {
+         return true;
+      }
+      return false;
    }
 
    public MotionActor(Control motionTarget, IMotion motion)
@@ -35,7 +42,35 @@ public class MotionActor : Animatable, IMotionActor
    
    public virtual Control BuildGhost()
    {
-      return default!;
+      return MotionTarget;
+   }
+
+   /// <summary>
+   /// 当在 DispatchInSceneLayer 渲染的时候，Ghost 的全局坐标
+   /// </summary>
+   /// <returns></returns>
+   public Point CalculateGhostPosition()
+   {
+      Point point = default;
+      if (!DispatchInSceneLayer) {
+         var visualParent = MotionTarget.GetVisualParent();
+         if (visualParent is not null) {
+            var parentPoint = MotionTarget.TranslatePoint(new Point(0, 0), visualParent);
+            if (parentPoint.HasValue) {
+               point = parentPoint.Value;
+            } else {
+               point = MotionTarget.Bounds.Position;
+            }
+         }
+      } else {
+         point = CalculateTopLevelGhostPosition();
+      }
+      return point;
+   }
+
+   protected virtual Point CalculateTopLevelGhostPosition()
+   {
+      return default;
    }
 
    public virtual void NotifySceneLayerCreated(SceneLayer sceneLayer)

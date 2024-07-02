@@ -2,6 +2,7 @@
 using System.Reactive.Disposables;
 using AtomUI.Controls.MotionScene;
 using AtomUI.Data;
+using AtomUI.Media;
 using AtomUI.MotionScene;
 using AtomUI.Styling;
 using AtomUI.Utils;
@@ -10,6 +11,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Layout;
+using Avalonia.Media;
 using Avalonia.Metadata;
 using Avalonia.Styling;
 
@@ -278,8 +280,11 @@ public class Flyout : PopupFlyoutBase
          var motion = new ZoomBigInMotion();
          motion.ConfigureOpacity(_motionDuration);
          motion.ConfigureRenderTransform(_motionDuration);
-         
-         var motionActor = new PopupMotionActor(popupRoot, motion);
+         BoxShadows boxShadows = default;
+         if (Popup is Popup shadowAwarePopup) {
+            boxShadows = shadowAwarePopup.MaskShadows;
+         }
+         var motionActor = new PopupMotionActor(boxShadows.Thickness(), popupRoot, motion);
          motionActor.DispatchInSceneLayer = true;
          motionActor.Finished += (sender, args) =>
          {
