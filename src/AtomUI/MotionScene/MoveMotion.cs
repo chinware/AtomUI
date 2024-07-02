@@ -1,5 +1,5 @@
-﻿using Avalonia;
-using Avalonia.Animation.Easings;
+﻿using Avalonia.Animation.Easings;
+using Avalonia.Controls;
 using Avalonia.Media;
 
 namespace AtomUI.MotionScene;
@@ -8,10 +8,6 @@ public class MoveDownInMotion : AbstractMotion
 {
    public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
    public MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
-   
-   public MoveDownInMotion(MotionActor actor)
-      : base(actor)
-   {}
 
    public void ConfigureOpacity(TimeSpan duration, Easing? easing = null)
    {
@@ -30,17 +26,23 @@ public class MoveDownInMotion : AbstractMotion
    public void ConfigureTransform(TimeSpan duration, Easing? easing = null)
    {
       easing ??= new CircularEaseOut();
-      var motionEntity = GetMotionActor().Entity;
       var config = new MotionConfig(MotionRenderTransformProperty)
       {
          TransitionKind = TransitionKind.TransformOperations,
-         StartValue = new TranslateTransform(0, motionEntity.Bounds.Bottom),
          EndValue = new TranslateTransform(0, 0),
          MotionDuration = duration,
          MotionEasing = easing
       };
       
       AddMotionConfig(config);
+   }
+
+   protected override void NotifyPreBuildTransition(MotionConfig config, Control motionTarget)
+   {
+      base.NotifyPreBuildTransition(config, motionTarget);
+      if (config.Property == MotionRenderTransformProperty) {
+         config.StartValue = new TranslateTransform(0, motionTarget.DesiredSize.Height);
+      }
    }
 }
 
@@ -49,10 +51,6 @@ public class MoveDownOutMotion : AbstractMotion
    public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
    public MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
    
-   public MoveDownOutMotion(MotionActor actor)
-      : base(actor)
-   {}
-   
    public void ConfigureOpacity(TimeSpan duration, Easing? easing = null)
    {
       easing ??= new CircularEaseInOut();
@@ -70,17 +68,23 @@ public class MoveDownOutMotion : AbstractMotion
    public void ConfigureTransform(TimeSpan duration, Easing? easing = null)
    {
       easing ??= new CircularEaseInOut();
-      var motionEntity = GetMotionEntity();
       
       var config = new MotionConfig(MotionRenderTransformProperty)
       {
          TransitionKind = TransitionKind.TransformOperations,
          StartValue = new TranslateTransform(0, 0),
-         EndValue = new TranslateTransform(0, motionEntity.Bounds.Bottom),
          MotionDuration = duration,
          MotionEasing = easing
       };
       AddMotionConfig(config);
+   }
+   
+   protected override void NotifyPreBuildTransition(MotionConfig config, Control motionTarget)
+   {
+      base.NotifyPreBuildTransition(config, motionTarget);
+      if (config.Property == MotionRenderTransformProperty) {
+         config.EndValue = new TranslateTransform(0, motionTarget.DesiredSize.Height);
+      }
    }
 }
 
@@ -88,10 +92,6 @@ public class MoveLeftInMotion : AbstractMotion
 {
    public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
    public MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
-   
-   public MoveLeftInMotion(MotionActor actor)
-      : base(actor)
-   {}
 
    public void ConfigureOpacity(TimeSpan duration, Easing? easing = null)
    {
@@ -110,16 +110,22 @@ public class MoveLeftInMotion : AbstractMotion
    public void ConfigureTransform(TimeSpan duration, Easing? easing = null)
    {
       easing ??= new CircularEaseOut();
-      var motionEntity = GetMotionEntity();
       var config = new MotionConfig(MotionRenderTransformProperty)
       {
          TransitionKind = TransitionKind.TransformOperations,
-         StartValue = new TranslateTransform(- motionEntity.Bounds.Width, 0),
          EndValue = new TranslateTransform(0, 0),
          MotionDuration = duration,
          MotionEasing = easing
       };
       AddMotionConfig(config);
+   }
+   
+   protected override void NotifyPreBuildTransition(MotionConfig config, Control motionTarget)
+   {
+      base.NotifyPreBuildTransition(config, motionTarget);
+      if (config.Property == MotionRenderTransformProperty) {
+         config.StartValue = new TranslateTransform(-motionTarget.DesiredSize.Width, 0);
+      }
    }
 }
 
@@ -128,10 +134,6 @@ public class MoveLeftOutMotion : AbstractMotion
    public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
    public MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
    
-   public MoveLeftOutMotion(MotionActor actor)
-      : base(actor)
-   {}
-
    public void ConfigureOpacity(TimeSpan duration, Easing? easing = null)
    {
       easing ??= new CircularEaseInOut();
@@ -149,18 +151,23 @@ public class MoveLeftOutMotion : AbstractMotion
    public void ConfigureTransform(TimeSpan duration, Easing? easing = null)
    {
       easing ??= new CircularEaseInOut();
-      var motionEntity = GetMotionEntity();
-      
       var config = new MotionConfig(MotionRenderTransformProperty)
       {
          TransitionKind = TransitionKind.TransformOperations,
          StartValue = new TranslateTransform(0, 0),
-         EndValue = new TranslateTransform( - motionEntity.Bounds.Width, 0),
          MotionDuration = duration,
          MotionEasing = easing
       };
       
       AddMotionConfig(config);
+   }
+   
+   protected override void NotifyPreBuildTransition(MotionConfig config, Control motionTarget)
+   {
+      base.NotifyPreBuildTransition(config, motionTarget);
+      if (config.Property == MotionRenderTransformProperty) {
+         config.EndValue = new TranslateTransform(-motionTarget.DesiredSize.Width, 0);
+      }
    }
 }
 
@@ -169,10 +176,6 @@ public class MoveRightInMotion : AbstractMotion
    public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
    public MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
    
-   public MoveRightInMotion(MotionActor actor)
-      : base(actor)
-   {}
-
    public void ConfigureOpacity(TimeSpan duration, Easing? easing = null)
    {
       easing ??= new CircularEaseOut();
@@ -190,16 +193,22 @@ public class MoveRightInMotion : AbstractMotion
    public void ConfigureTransform(TimeSpan duration, Easing? easing = null)
    {
       easing ??= new CircularEaseOut();
-      var motionEntity = GetMotionEntity();
       var config = new MotionConfig(MotionRenderTransformProperty)
       {
          TransitionKind = TransitionKind.TransformOperations,
-         StartValue = new TranslateTransform(motionEntity.Bounds.Right, 0),
          EndValue = new TranslateTransform(0, 0),
          MotionDuration = duration,
          MotionEasing = easing
       };
       AddMotionConfig(config);
+   }
+   
+   protected override void NotifyPreBuildTransition(MotionConfig config, Control motionTarget)
+   {
+      base.NotifyPreBuildTransition(config, motionTarget);
+      if (config.Property == MotionRenderTransformProperty) {
+         config.StartValue = new TranslateTransform(motionTarget.DesiredSize.Width, 0);
+      }
    }
 }
 
@@ -207,10 +216,6 @@ public class MoveRightOutMotion : AbstractMotion
 {
    public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
    public MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
-   
-   public MoveRightOutMotion(MotionActor actor)
-      : base(actor)
-   {}
 
    public void ConfigureOpacity(TimeSpan duration, Easing? easing = null)
    {
@@ -229,15 +234,21 @@ public class MoveRightOutMotion : AbstractMotion
    public void ConfigureTransform(TimeSpan duration, Easing? easing = null)
    {
       easing ??= new CircularEaseInOut();
-      var motionEntity = GetMotionEntity();
       var config = new MotionConfig(MotionRenderTransformProperty)
       {
          TransitionKind = TransitionKind.TransformOperations,
          StartValue = new TranslateTransform(0, 0),
-         EndValue = new TranslateTransform(motionEntity.Bounds.Right, 0),
          MotionDuration = duration,
          MotionEasing = easing
       };
       AddMotionConfig(config);
+   }
+   
+   protected override void NotifyPreBuildTransition(MotionConfig config, Control motionTarget)
+   {
+      base.NotifyPreBuildTransition(config, motionTarget);
+      if (config.Property == MotionRenderTransformProperty) {
+         config.EndValue = new TranslateTransform(motionTarget.DesiredSize.Width, 0);
+      }
    }
 }

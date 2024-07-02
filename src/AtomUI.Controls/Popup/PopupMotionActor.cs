@@ -5,8 +5,8 @@ namespace AtomUI.Controls;
 
 public class PopupMotionActor : MotionActor
 {
-   public PopupMotionActor(Control entity)
-      : base(entity)
+   public PopupMotionActor(Control entity, IMotion motion)
+      : base(entity, motion)
    {
    }
 }

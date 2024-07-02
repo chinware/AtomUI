@@ -4,6 +4,9 @@ using Avalonia.Controls;
 
 namespace AtomUI.MotionScene;
 
+/// <summary>
+/// 动效配置类，只要给 Director 提供动效相关信息
+/// </summary>
 public class MotionActor : Animatable, IMotionActor
 {
    public event EventHandler? PreStart;
@@ -13,9 +16,9 @@ public class MotionActor : Animatable, IMotionActor
    /// <summary>
    /// 动画实体
    /// </summary>
-   public Control Entity { get; set; }
-   public IMotion? Motion { get; set; }
-   public bool DispatchInGlobalScene { get; set; } = false;
+   public Control MotionTarget { get; set; }
+   public IMotion Motion { get; }
+   public bool DispatchInSceneLayer { get; set; } = true;
    
    private Control? _ghost;
 
@@ -24,18 +27,18 @@ public class MotionActor : Animatable, IMotionActor
       return true;
    }
 
-   public MotionActor(Control entity)
+   public MotionActor(Control motionTarget, IMotion motion)
    {
-      Entity = entity;
+      MotionTarget = motionTarget;
+      Motion = motion;
    }
-
-   protected virtual Control BuildGhost()
+   
+   public virtual Control BuildGhost()
    {
       return default!;
    }
 
-   public void Action()
+   public virtual void NotifySceneLayerCreated(SceneLayer sceneLayer)
    {
-      
    }
 }

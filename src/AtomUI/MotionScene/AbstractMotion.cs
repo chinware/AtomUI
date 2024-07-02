@@ -4,7 +4,6 @@ using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Media;
-using Microsoft.CSharp.RuntimeBinder;
 
 namespace AtomUI.MotionScene;
 
@@ -35,9 +34,6 @@ public abstract class AbstractMotion : AvaloniaObject, IMotion
 {
    private bool _isRunning = false;
    public bool IsRunning => _isRunning;
-
-   private WeakReference<MotionActor> _actor;
-   public MotionActor? Actor => GetMotionActor();
 
    private Dictionary<AvaloniaProperty, MotionConfig> _motionConfigs;
    private List<ITransition> _transitions;
@@ -88,50 +84,32 @@ public abstract class AbstractMotion : AvaloniaObject, IMotion
       set => SetValue(MotionRenderTransformProperty, value);
    }
    
-   public AbstractMotion(MotionActor motionActor)
+   public AbstractMotion()
    {
-      _actor = new WeakReference<MotionActor>(motionActor);
       _motionConfigs = new Dictionary<AvaloniaProperty, MotionConfig>();
       _transitions = new List<ITransition>();
    }
 
-   public MotionActor GetMotionActor()
+   public List<ITransition> BuildTransitions(Control motionTarget)
    {
-      if (_actor.TryGetTarget(out var target)) {
-         return target;
-      }
-
-      throw new InvalidOperationException("Motion actor is null");
-   }
-
-   public List<ITransition> BuildTransitions()
-   {
-      var actor = GetMotionActor();
-
-      NotifyConfigureTarget(actor);
       foreach (var entry in _motionConfigs) {
          var config = entry.Value;
-         if (!actor.IsSupportMotionProperty(config.Property)) {
-            throw new RuntimeBinderException(
-               $"Motion target does not support animation property: {config.Property.Name}");
-         }
-
-         NotifyPreBuildTransition(config);
+         NotifyPreBuildTransition(config, motionTarget);
          var transition = NotifyBuildTransition(config);
          _transitions.Add(transition);
       }
-
       return _transitions;
    }
 
    // 生命周期接口
-   public virtual void NotifyPreStart() { }
-   public virtual void NotifyStarted() { }
-   public virtual void NotifyStopped() { }
+   public virtual void NotifyPreStart() {}
+   public virtual void NotifyStarted() {}
+   public virtual void NotifyStopped() {}
 
-   protected virtual void NotifyConfigureTarget(MotionActor motionActor) { }
-   protected virtual void NotifyPreBuildTransition(MotionConfig config) { }
-
+   public virtual void NotifyConfigMotionTarget(Control motionTarget) {}
+   public virtual void NotifyRestoreMotionTarget(Control motionTarget) {}
+   
+   protected virtual void NotifyPreBuildTransition(MotionConfig config, Control motionTarget) {}
    protected virtual ITransition NotifyBuildTransition(MotionConfig config)
    {
       TransitionBase transition = default!;
@@ -160,10 +138,5 @@ public abstract class AbstractMotion : AvaloniaObject, IMotion
    {
       Debug.Assert(!_motionConfigs.ContainsKey(config.Property));
       _motionConfigs.Add(config.Property, config);
-   }
-
-   protected Control GetMotionEntity()
-   {
-      return GetMotionActor().Entity;
    }
 }

@@ -5,10 +5,6 @@ namespace AtomUI.MotionScene;
 public class FadeInMotion : AbstractMotion
 {
    public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
-   public FadeInMotion(MotionActor actor)
-      : base(actor)
-   {}
-
    public void ConfigureOpacity(double originOpacity, TimeSpan duration, Easing? easing = null)
    {
       easing ??= new LinearEasing();
@@ -28,10 +24,6 @@ public class FadeInMotion : AbstractMotion
 public class FadeOutMotion : AbstractMotion
 {
    public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
-   
-   public FadeOutMotion(MotionActor actor)
-      : base(actor)
-   {}
    
    public void ConfigureOpacity(double originOpacity, TimeSpan duration, Easing? easing = null)
    {

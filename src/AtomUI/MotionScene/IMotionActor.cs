@@ -8,9 +8,10 @@ public interface IMotionActor
    public event EventHandler? Started;
    public event EventHandler? Finished;
    
-   public Control Entity { get; set; }
-   public IMotion? Motion { get; set; }
-   public bool DispatchInGlobalScene { get; set; }
-
-   public void Action();
+   public Control MotionTarget { get; set; }
+   public IMotion Motion { get; }
+   public bool DispatchInSceneLayer { get; set; }
+   
+   public Control BuildGhost();
+   public void NotifySceneLayerCreated(SceneLayer sceneLayer);
 }

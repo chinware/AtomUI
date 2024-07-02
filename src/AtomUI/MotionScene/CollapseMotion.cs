@@ -1,26 +1,19 @@
-﻿using AtomUI.Utils;
-using Avalonia.Animation.Easings;
+﻿using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 
 namespace AtomUI.MotionScene;
 
 public class CollapseMotion : AbstractMotion
 {
-   public CollapseMotion(MotionActor actor)
-      : base(actor)
-   {}
-
    public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
    public MotionConfig? HeightConfig => GetMotionConfig(MotionHeightProperty);
 
    public void ConfigureHeight(TimeSpan duration, Easing? easing = null)
    {
       easing ??= new CubicEaseInOut();
-      var motionEntity = GetMotionEntity();
       var config = new MotionConfig(MotionHeightProperty)
       {
          TransitionKind = TransitionKind.Double,
-         StartValue = motionEntity.Bounds.Height,
          EndValue = 0,
          MotionDuration = duration,
          MotionEasing = easing
@@ -41,26 +34,28 @@ public class CollapseMotion : AbstractMotion
       };
       AddMotionConfig(config);
    }
+
+   protected override void NotifyPreBuildTransition(MotionConfig config, Control motionTarget)
+   {
+      base.NotifyPreBuildTransition(config, motionTarget);
+      if (config.Property == MotionHeightProperty) {
+         config.StartValue = motionTarget.DesiredSize.Height;
+      }
+   }
 }
 
 public class ExpandMotion : AbstractMotion
 {
-   public ExpandMotion(MotionActor actor)
-      : base(actor)
-   {}
-
    public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
    public MotionConfig? HeightConfig => GetMotionConfig(MotionHeightProperty);
 
    public void ConfigureHeight(double originHeight, TimeSpan duration, Easing? easing = null)
    {
       easing ??= new CubicEaseInOut();
-      var motionEntity = GetMotionEntity();
       var config = new MotionConfig(MotionHeightProperty)
       {
          TransitionKind = TransitionKind.Double,
          StartValue = 0,
-         EndValue = motionEntity.Bounds.Height,
          MotionDuration = duration,
          MotionEasing = easing
       };
@@ -79,5 +74,13 @@ public class ExpandMotion : AbstractMotion
          MotionEasing = easing
       };
       AddMotionConfig(config);
+   }
+   
+   protected override void NotifyPreBuildTransition(MotionConfig config, Control motionTarget)
+   {
+      base.NotifyPreBuildTransition(config, motionTarget);
+      if (config.Property == MotionHeightProperty) {
+         config.EndValue = motionTarget.DesiredSize.Height;
+      }
    }
 }

@@ -1,6 +1,9 @@
 ﻿using System.ComponentModel;
 using System.Reactive.Disposables;
 using AtomUI.Controls.MotionScene;
+using AtomUI.Data;
+using AtomUI.MotionScene;
+using AtomUI.Styling;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -89,15 +92,28 @@ public class Flyout : PopupFlyoutBase
       get => GetValue(ContentProperty);
       set => SetValue(ContentProperty, value);
    }
+   
+   private TimeSpan _motionDuration;
+   private static readonly DirectProperty<Flyout, TimeSpan> MotionDurationTokenProperty
+      = AvaloniaProperty.RegisterDirect<Flyout, TimeSpan>(nameof(_motionDuration),
+                                                          (o) => o._motionDuration,
+                                                          (o, v) => o._motionDuration = v);
 
+   private CompositeDisposable? _compositeDisposable;
+   private FlyoutPresenter? _presenter;
+   private bool _animating = false;
+   private GlobalTokenBinder _globalTokenBinder;
+   
    static Flyout()
    {
       IsShowArrowProperty.OverrideDefaultValue<Flyout>(true);
    }
 
-   private CompositeDisposable? _compositeDisposable;
-   private FlyoutPresenter? _presenter;
-   private bool _animating = false;
+   public Flyout()
+   {
+      _globalTokenBinder = new GlobalTokenBinder();
+      _globalTokenBinder.AddGlobalBinding(this, MotionDurationTokenProperty, GlobalResourceKey.MotionDurationMid);
+   }
 
    private void HandlePopupPropertyChanged(AvaloniaPropertyChangedEventArgs args)
    {
@@ -259,8 +275,19 @@ public class Flyout : PopupFlyoutBase
    {
       if (Popup.Host is PopupRoot popupRoot) {
          var director = Director.Instance;
-         var motionActor = new PopupMotionActor(popupRoot);
+         var motion = new ZoomBigInMotion();
+         motion.ConfigureOpacity(_motionDuration);
+         motion.ConfigureRenderTransform(_motionDuration);
+         
+         var motionActor = new PopupMotionActor(popupRoot, motion);
+         motionActor.DispatchInSceneLayer = true;
+         motionActor.Finished += (sender, args) =>
+         {
+            _animating = false;
+         };
+         
          director?.Schedule(motionActor);
+         _animating = true;
       }
    }
 }
