@@ -1,32 +1,17 @@
 ﻿using System.Diagnostics;
-using AtomUI.Media;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
-using Avalonia.Layout;
 using Avalonia.Media;
 using Microsoft.CSharp.RuntimeBinder;
-using ColorTransition = Avalonia.Animation.ColorTransition;
 
 namespace AtomUI.MotionScene;
 
 public enum TransitionKind
 {
-   BoxShadows,
-   Brush,
-   Color,
-   CornerRadius,
    Double,
-   Float,
-   Integer,
-   Point,
-   PixelPoint,
-   RelativePoint,
-   Size,
-   Thickness,
    TransformOperations,
-   Vector,
 }
 
 public record class MotionConfig
@@ -58,27 +43,27 @@ public abstract class AbstractMotion : AvaloniaObject, IMotion
    private List<ITransition> _transitions;
 
    // 定义我们目前支持的动效属性
-   protected static readonly StyledProperty<double> MotionWidthProperty =
-      Layoutable.WidthProperty.AddOwner<AbstractMotion>();
-
-   protected static readonly StyledProperty<double> MotionHeightProperty =
-      Layoutable.HeightProperty.AddOwner<AbstractMotion>();
-
-   protected static readonly StyledProperty<PixelPoint> MotionWindowPositionProperty =
-      AvaloniaProperty.Register<AbstractMotion, PixelPoint>(nameof(MotionWindowPosition));
-
    protected static readonly StyledProperty<double> MotionOpacityProperty =
       Visual.OpacityProperty.AddOwner<AbstractMotion>();
+   
+   protected static readonly StyledProperty<double> MotionWidthProperty =
+      Visual.OpacityProperty.AddOwner<AbstractMotion>();
+   
+   protected static readonly StyledProperty<double> MotionHeightProperty =
+      Visual.OpacityProperty.AddOwner<AbstractMotion>();
 
-   protected static readonly StyledProperty<Point> MotionRenderOffsetProperty =
-      AvaloniaProperty.Register<AbstractMotion, Point>(nameof(MotionRenderOffset));
-
-   protected static readonly StyledProperty<Rect> MotionRenderBoundsProperty =
-      AvaloniaProperty.Register<AbstractMotion, Rect>(nameof(MotionRenderBounds));
+   protected static readonly StyledProperty<RelativePoint> MotionRenderTransformOriginProperty =
+      AvaloniaProperty.Register<AbstractMotion, RelativePoint>(nameof(MotionRenderTransformOrigin));
    
    protected static readonly StyledProperty<ITransform> MotionRenderTransformProperty =
       AvaloniaProperty.Register<AbstractMotion, ITransform>(nameof(MotionRenderTransform));
 
+   protected double MotionOpacity
+   {
+      get => GetValue(MotionOpacityProperty);
+      set => SetValue(MotionOpacityProperty, value);
+   }
+   
    protected double MotionWidth
    {
       get => GetValue(MotionWidthProperty);
@@ -91,28 +76,10 @@ public abstract class AbstractMotion : AvaloniaObject, IMotion
       set => SetValue(MotionHeightProperty, value);
    }
 
-   protected PixelPoint MotionWindowPosition
+   protected RelativePoint MotionRenderTransformOrigin
    {
-      get => GetValue(MotionWindowPositionProperty);
-      set => SetValue(MotionWindowPositionProperty, value);
-   }
-
-   protected double MotionOpacity
-   {
-      get => GetValue(MotionOpacityProperty);
-      set => SetValue(MotionOpacityProperty, value);
-   }
-
-   protected Point MotionRenderOffset
-   {
-      get => GetValue(MotionRenderOffsetProperty);
-      set => SetValue(MotionRenderOffsetProperty, value);
-   }
-
-   protected Rect MotionRenderBounds
-   {
-      get => GetValue(MotionRenderBoundsProperty);
-      set => SetValue(MotionRenderBoundsProperty, value);
+      get => GetValue(MotionRenderTransformOriginProperty);
+      set => SetValue(MotionRenderTransformOriginProperty, value);
    }
    
    protected ITransform MotionRenderTransform
@@ -168,32 +135,8 @@ public abstract class AbstractMotion : AvaloniaObject, IMotion
    protected virtual ITransition NotifyBuildTransition(MotionConfig config)
    {
       TransitionBase transition = default!;
-      if (config.TransitionKind == TransitionKind.Brush) {
-         transition = new SolidColorBrushTransition();
-      } else if (config.TransitionKind == TransitionKind.Color) {
-         transition = new ColorTransition();
-      } else if (config.TransitionKind == TransitionKind.Double) {
+      if (config.TransitionKind == TransitionKind.Double) {
          transition = new DoubleTransition();
-      } else if (config.TransitionKind == TransitionKind.Float) {
-         transition = new FloatTransition();
-      } else if (config.TransitionKind == TransitionKind.Integer) {
-         transition = new IntegerTransition();
-      } else if (config.TransitionKind == TransitionKind.Point) {
-         transition = new PointTransition();
-      } else if (config.TransitionKind == TransitionKind.PixelPoint) {
-         transition = new PixelPointTransition();
-      } else if (config.TransitionKind == TransitionKind.Size) {
-         transition = new SizeTransition();
-      } else if (config.TransitionKind == TransitionKind.Thickness) {
-         transition = new ThicknessTransition();
-      } else if (config.TransitionKind == TransitionKind.Vector) {
-         transition = new VectorTransition();
-      } else if (config.TransitionKind == TransitionKind.BoxShadows) {
-         transition = new BoxShadowsTransition();
-      } else if (config.TransitionKind == TransitionKind.CornerRadius) {
-         transition = new CornerRadiusTransition();
-      } else if (config.TransitionKind == TransitionKind.RelativePoint) {
-         transition = new RelativePointTransition();
       } else if (config.TransitionKind == TransitionKind.TransformOperations) {
          transition = new TransformOperationsTransition();
       }
