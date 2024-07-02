@@ -15,7 +15,7 @@ public class BootstrapInitializer : IBootstrapInitializer
 
    private void InitInterceptors()
    {
-      Harmony harmony = new Harmony("net.atomui.controls");
+      var harmony = AvaloniaLocator.Current.GetService<Harmony>()!;
       PopupInterceptorsRegister.Register(harmony);
    }
 }

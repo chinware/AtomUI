@@ -1,5 +1,4 @@
 ﻿using AtomUI.ColorSystem;
-using AtomUI.Media;
 using AtomUI.Styling;
 using Avalonia;
 using Avalonia.Animation;

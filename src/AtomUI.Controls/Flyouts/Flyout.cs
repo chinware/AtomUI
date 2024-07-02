@@ -1,8 +1,10 @@
 ﻿using System.ComponentModel;
 using System.Reactive.Disposables;
+using AtomUI.Controls.MotionScene;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Layout;
 using Avalonia.Metadata;
@@ -95,6 +97,7 @@ public class Flyout : PopupFlyoutBase
 
    private CompositeDisposable? _compositeDisposable;
    private FlyoutPresenter? _presenter;
+   private bool _animating = false;
 
    private void HandlePopupPropertyChanged(AvaloniaPropertyChangedEventArgs args)
    {
@@ -243,7 +246,21 @@ public class Flyout : PopupFlyoutBase
 
    protected override bool ShowAtCore(Control placementTarget, bool showAtPointer = false)
    {
+      if (_animating) {
+         return false;
+      }
       CalculateShowArrowEffective();
-      return base.ShowAtCore(placementTarget, showAtPointer);
+      var result = base.ShowAtCore(placementTarget, showAtPointer);
+      PlayShowUpMotion();
+      return result;
+   }
+
+   private void PlayShowUpMotion()
+   {
+      if (Popup.Host is PopupRoot popupRoot) {
+         var director = Director.Instance;
+         var motionActor = new PopupMotionActor(popupRoot);
+         director?.Schedule(motionActor);
+      }
    }
 }

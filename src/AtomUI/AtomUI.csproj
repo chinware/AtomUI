@@ -42,6 +42,10 @@
         <Compile Include="Platform\Windows\*.cs"/>
         <PackageReference Include="Avalonia.Win32"/>
     </ItemGroup>
+    
+    <ItemGroup>
+      <Folder Include="Transitions\" />
+    </ItemGroup>
 
     <PropertyGroup>
         <!-- enable private APIs -->

@@ -7,7 +7,6 @@ using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
-using Avalonia.Data;
 using Avalonia.Media;
 
 namespace AtomUI.Controls;
