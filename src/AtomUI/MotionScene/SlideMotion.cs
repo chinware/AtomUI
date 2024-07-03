@@ -112,14 +112,14 @@ public class SlideDownInMotion : AbstractMotion
       AddMotionConfig(config);
    }
 
-   public override void NotifyConfigMotionTarget(Control motionTarget)
+   internal override void NotifyConfigMotionTarget(Control motionTarget)
    {
       base.NotifyConfigMotionTarget(motionTarget);
       _renderTransformBackup = motionTarget.RenderTransformOrigin;
       motionTarget.RenderTransformOrigin = MotionRenderTransformOrigin;
    }
 
-   public override void NotifyRestoreMotionTarget(Control motionTarget)
+   internal override void NotifyRestoreMotionTarget(Control motionTarget)
    {
       base.NotifyRestoreMotionTarget(motionTarget);
       motionTarget.RenderTransformOrigin = _renderTransformBackup;
@@ -165,14 +165,14 @@ public class SlideDownOutMotion : AbstractMotion
       AddMotionConfig(config);
    }
 
-   public override void NotifyConfigMotionTarget(Control motionTarget)
+   internal override void NotifyConfigMotionTarget(Control motionTarget)
    {
       base.NotifyConfigMotionTarget(motionTarget);
       _renderTransformBackup = motionTarget.RenderTransformOrigin;
       motionTarget.RenderTransformOrigin = MotionRenderTransformOrigin;
    }
 
-   public override void NotifyRestoreMotionTarget(Control motionTarget)
+   internal override void NotifyRestoreMotionTarget(Control motionTarget)
    {
       base.NotifyRestoreMotionTarget(motionTarget);
       motionTarget.RenderTransformOrigin = _renderTransformBackup;
@@ -289,14 +289,14 @@ public class SlideRightInMotion : AbstractMotion
       AddMotionConfig(config);
    }
    
-   public override void NotifyConfigMotionTarget(Control motionTarget)
+   internal override void NotifyConfigMotionTarget(Control motionTarget)
    {
       base.NotifyConfigMotionTarget(motionTarget);
       _renderTransformBackup = motionTarget.RenderTransformOrigin;
       motionTarget.RenderTransformOrigin = MotionRenderTransformOrigin;
    }
 
-   public override void NotifyRestoreMotionTarget(Control motionTarget)
+   internal override void NotifyRestoreMotionTarget(Control motionTarget)
    {
       base.NotifyRestoreMotionTarget(motionTarget);
       motionTarget.RenderTransformOrigin = _renderTransformBackup;
@@ -342,14 +342,14 @@ public class SlideRightOutMotion : AbstractMotion
       AddMotionConfig(config);
    }
 
-   public override void NotifyConfigMotionTarget(Control motionTarget)
+   internal override void NotifyConfigMotionTarget(Control motionTarget)
    {
       base.NotifyConfigMotionTarget(motionTarget);
       _renderTransformBackup = motionTarget.RenderTransformOrigin;
       motionTarget.RenderTransformOrigin = MotionRenderTransformOrigin;
    }
 
-   public override void NotifyRestoreMotionTarget(Control motionTarget)
+   internal override void NotifyRestoreMotionTarget(Control motionTarget)
    {
       base.NotifyRestoreMotionTarget(motionTarget);
       motionTarget.RenderTransformOrigin = _renderTransformBackup;

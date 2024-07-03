@@ -46,12 +46,12 @@ public class MoveDownInMotion : AbstractMotion
       }
    }
 
-   public override Size CalculateSceneSize(Size motionTargetSize)
+   internal override Size CalculateSceneSize(Size motionTargetSize)
    {
       return motionTargetSize.WithHeight(motionTargetSize.Height * 2);
    }
    
-   public override Point CalculateScenePosition(Size motionTargetSize, Point motionTargetPosition)
+   internal override Point CalculateScenePosition(Size motionTargetSize, Point motionTargetPosition)
    {
       return motionTargetPosition.WithY(motionTargetPosition.Y - motionTargetSize.Height);
    }
@@ -98,12 +98,12 @@ public class MoveDownOutMotion : AbstractMotion
       }
    }
    
-   public override Size CalculateSceneSize(Size motionTargetSize)
+   internal override Size CalculateSceneSize(Size motionTargetSize)
    {
       return motionTargetSize.WithHeight(motionTargetSize.Height * 2);
    }
    
-   public override Point CalculateScenePosition(Size motionTargetSize, Point motionTargetPosition)
+   internal override Point CalculateScenePosition(Size motionTargetSize, Point motionTargetPosition)
    {
       return motionTargetPosition.WithY(motionTargetPosition.Y - motionTargetSize.Height);
    }
@@ -149,12 +149,12 @@ public class MoveLeftInMotion : AbstractMotion
       }
    }
    
-   public override Size CalculateSceneSize(Size motionTargetSize)
+   internal override Size CalculateSceneSize(Size motionTargetSize)
    {
       return motionTargetSize.WithHeight(motionTargetSize.Width * 2);
    }
    
-   public override Point CalculateScenePosition(Size motionTargetSize, Point motionTargetPosition)
+   internal override Point CalculateScenePosition(Size motionTargetSize, Point motionTargetPosition)
    {
       return motionTargetPosition.WithX(motionTargetPosition.X - motionTargetSize.Width);
    }
@@ -201,12 +201,12 @@ public class MoveLeftOutMotion : AbstractMotion
       }
    }
    
-   public override Size CalculateSceneSize(Size motionTargetSize)
+   internal override Size CalculateSceneSize(Size motionTargetSize)
    {
       return motionTargetSize.WithHeight(motionTargetSize.Width * 2);
    }
    
-   public override Point CalculateScenePosition(Size motionTargetSize, Point motionTargetPosition)
+   internal override Point CalculateScenePosition(Size motionTargetSize, Point motionTargetPosition)
    {
       return motionTargetPosition.WithX(motionTargetPosition.X - motionTargetSize.Width);
    }
@@ -252,7 +252,7 @@ public class MoveRightInMotion : AbstractMotion
       }
    }
    
-   public override Size CalculateSceneSize(Size motionTargetSize)
+   internal override Size CalculateSceneSize(Size motionTargetSize)
    {
       return motionTargetSize.WithHeight(motionTargetSize.Width * 2);
    }
@@ -298,7 +298,7 @@ public class MoveRightOutMotion : AbstractMotion
       }
    }
    
-   public override Size CalculateSceneSize(Size motionTargetSize)
+   internal override Size CalculateSceneSize(Size motionTargetSize)
    {
       return motionTargetSize.WithHeight(motionTargetSize.Width * 2);
    }
@@ -345,7 +345,7 @@ public class MoveUpInMotion : AbstractMotion
       }
    }
 
-   public override Size CalculateSceneSize(Size motionTargetSize)
+   internal override Size CalculateSceneSize(Size motionTargetSize)
    {
       return motionTargetSize.WithHeight(motionTargetSize.Height * 2);
    }
@@ -392,7 +392,7 @@ public class MoveUpOutMotion : AbstractMotion
       }
    }
    
-   public override Size CalculateSceneSize(Size motionTargetSize)
+   internal override Size CalculateSceneSize(Size motionTargetSize)
    {
       return motionTargetSize.WithHeight(motionTargetSize.Height * 2);
    }

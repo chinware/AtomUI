@@ -1,9 +1,8 @@
-﻿using Avalonia;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 
 namespace AtomUI.MotionScene;
 
-public interface IMotionActor
+internal interface IMotionActor
 {
    public event EventHandler? PreStart;
    public event EventHandler? Started;
@@ -12,8 +11,4 @@ public interface IMotionActor
    public Control MotionTarget { get; set; }
    public IMotion Motion { get; }
    public bool DispatchInSceneLayer { get; set; }
-   
-   public Control BuildGhost();
-   public Point CalculateGhostPosition();
-   public void NotifySceneLayerCreated(SceneLayer sceneLayer);
 }

@@ -180,14 +180,14 @@ public class ZoomUpInMotion : AbstractMotion
       AddMotionConfig(config);
    }
 
-   public override void NotifyConfigMotionTarget(Control motionTarget)
+   internal override void NotifyConfigMotionTarget(Control motionTarget)
    {
       base.NotifyConfigMotionTarget(motionTarget);
       _renderTransformBackup = motionTarget.RenderTransformOrigin;
       motionTarget.RenderTransformOrigin = MotionRenderTransformOrigin;
    }
 
-   public override void NotifyRestoreMotionTarget(Control motionTarget)
+   internal override void NotifyRestoreMotionTarget(Control motionTarget)
    {
       base.NotifyRestoreMotionTarget(motionTarget);
       motionTarget.RenderTransformOrigin = _renderTransformBackup;
@@ -233,14 +233,14 @@ public class ZoomUpOutMotion : AbstractMotion
       AddMotionConfig(config);
    }
 
-   public override void NotifyConfigMotionTarget(Control motionTarget)
+   internal override void NotifyConfigMotionTarget(Control motionTarget)
    {
       base.NotifyConfigMotionTarget(motionTarget);
       _renderTransformBackup = motionTarget.RenderTransformOrigin;
       motionTarget.RenderTransformOrigin = MotionRenderTransformOrigin;
    }
 
-   public override void NotifyRestoreMotionTarget(Control motionTarget)
+   internal override void NotifyRestoreMotionTarget(Control motionTarget)
    {
       base.NotifyRestoreMotionTarget(motionTarget);
       motionTarget.RenderTransformOrigin = _renderTransformBackup;
@@ -286,14 +286,14 @@ public class ZoomLeftInMotion : AbstractMotion
       AddMotionConfig(config);
    }
 
-   public override void NotifyConfigMotionTarget(Control motionTarget)
+   internal override void NotifyConfigMotionTarget(Control motionTarget)
    {
       base.NotifyConfigMotionTarget(motionTarget);
       _renderTransformBackup = motionTarget.RenderTransformOrigin;
       motionTarget.RenderTransformOrigin = MotionRenderTransformOrigin;
    }
 
-   public override void NotifyRestoreMotionTarget(Control motionTarget)
+   internal override void NotifyRestoreMotionTarget(Control motionTarget)
    {
       base.NotifyRestoreMotionTarget(motionTarget);
       motionTarget.RenderTransformOrigin = _renderTransformBackup;
@@ -339,14 +339,14 @@ public class ZoomLeftOutMotion : AbstractMotion
       AddMotionConfig(config);
    }
 
-   public override void NotifyConfigMotionTarget(Control motionTarget)
+   internal override void NotifyConfigMotionTarget(Control motionTarget)
    {
       base.NotifyConfigMotionTarget(motionTarget);
       _renderTransformBackup = motionTarget.RenderTransformOrigin;
       motionTarget.RenderTransformOrigin = MotionRenderTransformOrigin;
    }
 
-   public override void NotifyRestoreMotionTarget(Control motionTarget)
+   internal override void NotifyRestoreMotionTarget(Control motionTarget)
    {
       base.NotifyRestoreMotionTarget(motionTarget);
       motionTarget.RenderTransformOrigin = _renderTransformBackup;
@@ -392,14 +392,14 @@ public class ZoomRightInMotion : AbstractMotion
       AddMotionConfig(config);
    }
 
-   public override void NotifyConfigMotionTarget(Control motionTarget)
+   internal override void NotifyConfigMotionTarget(Control motionTarget)
    {
       base.NotifyConfigMotionTarget(motionTarget);
       _renderTransformBackup = motionTarget.RenderTransformOrigin;
       motionTarget.RenderTransformOrigin = MotionRenderTransformOrigin;
    }
 
-   public override void NotifyRestoreMotionTarget(Control motionTarget)
+   internal override void NotifyRestoreMotionTarget(Control motionTarget)
    {
       base.NotifyRestoreMotionTarget(motionTarget);
       motionTarget.RenderTransformOrigin = _renderTransformBackup;
@@ -445,14 +445,14 @@ public class ZoomRightOutMotion : AbstractMotion
       AddMotionConfig(config);
    }
 
-   public override void NotifyConfigMotionTarget(Control motionTarget)
+   internal override void NotifyConfigMotionTarget(Control motionTarget)
    {
       base.NotifyConfigMotionTarget(motionTarget);
       _renderTransformBackup = motionTarget.RenderTransformOrigin;
       motionTarget.RenderTransformOrigin = MotionRenderTransformOrigin;
    }
 
-   public override void NotifyRestoreMotionTarget(Control motionTarget)
+   internal override void NotifyRestoreMotionTarget(Control motionTarget)
    {
       base.NotifyRestoreMotionTarget(motionTarget);
       motionTarget.RenderTransformOrigin = _renderTransformBackup;
@@ -498,14 +498,14 @@ public class ZoomDownInMotion : AbstractMotion
       AddMotionConfig(config);
    }
 
-   public override void NotifyConfigMotionTarget(Control motionTarget)
+   internal override void NotifyConfigMotionTarget(Control motionTarget)
    {
       base.NotifyConfigMotionTarget(motionTarget);
       _renderTransformBackup = motionTarget.RenderTransformOrigin;
       motionTarget.RenderTransformOrigin = MotionRenderTransformOrigin;
    }
 
-   public override void NotifyRestoreMotionTarget(Control motionTarget)
+   internal override void NotifyRestoreMotionTarget(Control motionTarget)
    {
       base.NotifyRestoreMotionTarget(motionTarget);
       motionTarget.RenderTransformOrigin = _renderTransformBackup;
@@ -551,14 +551,14 @@ public class ZoomDownOutMotion : AbstractMotion
       AddMotionConfig(config);
    }
 
-   public override void NotifyConfigMotionTarget(Control motionTarget)
+   internal override void NotifyConfigMotionTarget(Control motionTarget)
    {
       base.NotifyConfigMotionTarget(motionTarget);
       _renderTransformBackup = motionTarget.RenderTransformOrigin;
       motionTarget.RenderTransformOrigin = MotionRenderTransformOrigin;
    }
 
-   public override void NotifyRestoreMotionTarget(Control motionTarget)
+   internal override void NotifyRestoreMotionTarget(Control motionTarget)
    {
       base.NotifyRestoreMotionTarget(motionTarget);
       motionTarget.RenderTransformOrigin = _renderTransformBackup;

@@ -8,7 +8,7 @@ public class PopupMotionActor : MotionActor
 {
    private Thickness _boxShadowsThickness;
    
-   public PopupMotionActor(Thickness boxShadowsThickness, PopupRoot entity, IMotion motion)
+   public PopupMotionActor(Thickness boxShadowsThickness, PopupRoot entity, AbstractMotion motion)
       : base(entity, motion)
    {
       _boxShadowsThickness = boxShadowsThickness;

@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using AtomUI.Media;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
@@ -49,10 +50,10 @@ public abstract class AbstractMotion : AvaloniaObject, IMotion
       Visual.OpacityProperty.AddOwner<AbstractMotion>();
 
    public static readonly StyledProperty<RelativePoint> MotionRenderTransformOriginProperty =
-      AvaloniaProperty.Register<AbstractMotion, RelativePoint>(nameof(MotionRenderTransformOrigin));
-   
-   public static readonly StyledProperty<ITransform> MotionRenderTransformProperty =
-      AvaloniaProperty.Register<AbstractMotion, ITransform>(nameof(MotionRenderTransform));
+      Visual.RenderTransformOriginProperty.AddOwner<AbstractMotion>();
+
+   public static readonly StyledProperty<ITransform?> MotionRenderTransformProperty =
+      Visual.RenderTransformProperty.AddOwner<AbstractMotion>();
 
    protected double MotionOpacity
    {
@@ -78,7 +79,7 @@ public abstract class AbstractMotion : AvaloniaObject, IMotion
       set => SetValue(MotionRenderTransformOriginProperty, value);
    }
    
-   protected ITransform MotionRenderTransform
+   protected ITransform? MotionRenderTransform
    {
       get => GetValue(MotionRenderTransformProperty);
       set => SetValue(MotionRenderTransformProperty, value);
@@ -90,7 +91,12 @@ public abstract class AbstractMotion : AvaloniaObject, IMotion
       _transitions = new List<ITransition>();
    }
 
-   public List<ITransition> BuildTransitions(Control motionTarget)
+   /// <summary>
+   /// 创建动效动画对象
+   /// </summary>
+   /// <param name="motionTarget"></param>
+   /// <returns></returns>
+   internal List<ITransition> BuildTransitions(Control motionTarget)
    {
       foreach (var entry in _motionConfigs) {
          var config = entry.Value;
@@ -102,21 +108,21 @@ public abstract class AbstractMotion : AvaloniaObject, IMotion
    }
 
    // 生命周期接口
-   public virtual void NotifyPreStart() {}
-   public virtual void NotifyStarted() {}
-   public virtual void NotifyStopped() {}
+   internal virtual void NotifyPreStart() {}
+   internal virtual void NotifyStarted() {}
+   internal virtual void NotifyStopped() {}
 
-   public virtual void NotifyConfigMotionTarget(Control motionTarget) {}
-   public virtual void NotifyRestoreMotionTarget(Control motionTarget) {}
+   internal virtual void NotifyConfigMotionTarget(Control motionTarget) {}
+   internal virtual void NotifyRestoreMotionTarget(Control motionTarget) {}
    
    protected virtual void NotifyPreBuildTransition(MotionConfig config, Control motionTarget) {}
    protected virtual ITransition NotifyBuildTransition(MotionConfig config)
    {
       TransitionBase transition = default!;
       if (config.TransitionKind == TransitionKind.Double) {
-         transition = new DoubleTransition();
+         transition = new NotifiableDoubleTransition();
       } else if (config.TransitionKind == TransitionKind.TransformOperations) {
-         transition = new TransformOperationsTransition();
+         transition = new NotifiableTransformOperationsTransition();
       }
 
       transition.Property = config.Property;
@@ -130,7 +136,6 @@ public abstract class AbstractMotion : AvaloniaObject, IMotion
       if (_motionConfigs.TryGetValue(property, out var motionConfig)) {
          return motionConfig;
       }
-
       return null;
    }
 
@@ -140,13 +145,33 @@ public abstract class AbstractMotion : AvaloniaObject, IMotion
       _motionConfigs.Add(config.Property, config);
    }
 
-   public virtual Size CalculateSceneSize(Size motionTargetSize)
+   /// <summary>
+   /// 计算顶层动画渲染层的大小
+   /// </summary>
+   /// <param name="motionTargetSize">
+   /// 动画目标控件的大小，如果动画直接调度到控件本身，则是控件本身的大小，如果是顶层动画渲染，那么就是 ghost
+   /// 的大小，如果有阴影这个大小包含阴影的 thickness
+   /// 目前的实现没有加一个固定的 Padding
+   /// </param>
+   /// <returns></returns>
+   internal virtual Size CalculateSceneSize(Size motionTargetSize)
    {
       return motionTargetSize;
    }
 
-   public virtual Point CalculateScenePosition(Size motionTargetSize, Point motionTargetPosition)
+   /// <summary>
+   /// 计算动画层的全局坐标
+   /// </summary>
+   /// <param name="motionTargetSize">动画目标控件的大小，包含阴影</param>
+   /// <param name="motionTargetPosition">动画目标控件的最终全局坐标位置</param>
+   /// <returns></returns>
+   internal virtual Point CalculateScenePosition(Size motionTargetSize, Point motionTargetPosition)
    {
       return motionTargetPosition;
+   }
+
+   public IList<AvaloniaProperty> GetActivatedProperties()
+   {
+      return _motionConfigs.Keys.ToList();
    }
 }

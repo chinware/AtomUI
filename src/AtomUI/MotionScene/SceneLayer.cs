@@ -1,5 +1,7 @@
-﻿using Avalonia;
+﻿using System.Reflection;
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Media;
 using Avalonia.Platform;
 using Avalonia.VisualTree;
@@ -8,9 +10,15 @@ namespace AtomUI.MotionScene;
 
 public class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
 {
+   private IManagedPopupPositionerPopup? _managedPopupPositionerPopup;
+   private static readonly FieldInfo ManagedPopupPositionerPopupInfo;
+   private Canvas _layout;
+   
    static SceneLayer()
    {
       BackgroundProperty.OverrideDefaultValue(typeof(SceneLayer), Brushes.Transparent);
+      ManagedPopupPositionerPopupInfo = typeof(ManagedPopupPositioner).GetField("_popup",
+         BindingFlags.Instance | BindingFlags.NonPublic)!;
    }
 
    public SceneLayer(TopLevel parent, IPopupImpl impl)
@@ -27,6 +35,14 @@ public class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
    {
       ParentTopLevel = parent;
       impl.SetWindowManagerAddShadowHint(false);
+      
+      if (PlatformImpl?.PopupPositioner is ManagedPopupPositioner managedPopupPositioner) {
+         _managedPopupPositionerPopup =
+            ManagedPopupPositionerPopupInfo.GetValue(managedPopupPositioner) as IManagedPopupPositionerPopup;
+      }
+
+      _layout = new Canvas();
+      Content = _layout;
    }
 
    /// <summary>
@@ -57,6 +73,11 @@ public class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
    public void Dispose()
    {
       PlatformImpl?.Dispose();
+   }
+
+   public void SetMotionTarget(Control motionTarget)
+   {
+      _layout.Children.Add(motionTarget);
    }
 
    // 这个地方我们可以需要定制
@@ -99,5 +120,10 @@ public class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
    protected override Size ArrangeSetBounds(Size size)
    {
       return ClientSize;
+   }
+
+   public void MoveAndResize(Point point, Size size)
+   {
+      _managedPopupPositionerPopup?.MoveAndResize(point, size);
    }
 }
