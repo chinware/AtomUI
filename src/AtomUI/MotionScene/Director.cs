@@ -8,9 +8,9 @@ namespace AtomUI.Controls.MotionScene;
 
 public class Director : IDirector
 {
-   public event EventHandler<MotionEventArgs>? PreStart;
-   public event EventHandler<MotionEventArgs>? Started;
-   public event EventHandler<MotionEventArgs>? Finished;
+   public event EventHandler<MotionEventArgs>? MotionPreStart;
+   public event EventHandler<MotionEventArgs>? MotionStarted;
+   public event EventHandler<MotionEventArgs>? MotionCompleted;
    
    public static IDirector? Instance => AvaloniaLocator.Current.GetService<IDirector>();
    private Dictionary<IMotionActor, MotionActorState> _states;
@@ -48,7 +48,11 @@ public class Director : IDirector
          var ghost = actor.BuildGhost();
          sceneLayer!.SetMotionTarget(ghost);
          actor.NotifyMotionTargetAddedToScene(ghost);
+         ghost.IsVisible = false; // 默认是不显示的
+         sceneLayer.Show();
       }
+      HandleMotionPreStart(actor);
+      HandleMotionStarted(actor);
    }
 
    private SceneLayer PrepareSceneLayer(MotionActor actor)
@@ -88,6 +92,27 @@ public class Director : IDirector
       }
 
       _states.Remove(actor);
+   }
+
+   private void HandleMotionPreStart(MotionActor actor)
+   {
+      actor.NotifyMotionPreStart();
+      MotionPreStart?.Invoke(this, new MotionEventArgs(actor));
+      
+      // 设置相关的完成检测
+      
+   }
+
+   private void HandleMotionStarted(MotionActor actor)
+   {
+      actor.NotifyMotionStarted();
+      MotionStarted?.Invoke(this, new MotionEventArgs(actor));
+   }
+
+   private void HandleMotionCompleted(MotionActor actor)
+   {
+      actor.NotifyMotionCompleted();
+      MotionCompleted?.Invoke(this, new MotionEventArgs(actor));
    }
 }
 

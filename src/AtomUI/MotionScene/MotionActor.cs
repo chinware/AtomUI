@@ -1,4 +1,5 @@
-﻿using AtomUI.Utils;
+﻿using System.Reflection;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
@@ -15,7 +16,7 @@ public class MotionActor : Animatable, IMotionActor
 {
    public event EventHandler? PreStart;
    public event EventHandler? Started;
-   public event EventHandler? Finished;
+   public event EventHandler? Completed;
    
    public static readonly StyledProperty<double> MotionOpacityProperty =
       Visual.OpacityProperty.AddOwner<MotionActor>();
@@ -28,6 +29,9 @@ public class MotionActor : Animatable, IMotionActor
 
    public static readonly StyledProperty<ITransform?> MotionRenderTransformProperty =
       Visual.RenderTransformProperty.AddOwner<MotionActor>();
+
+   private static readonly MethodInfo EnableTransitionsMethodInfo;
+   private static readonly MethodInfo DisableTransitionsMethodInfo;
    
    protected double MotionOpacity
    {
@@ -64,6 +68,19 @@ public class MotionActor : Animatable, IMotionActor
    private Control? _ghost;
    private AbstractMotion _motion;
 
+   static MotionActor()
+   {
+      EnableTransitionsMethodInfo = typeof(Animatable).GetMethod("EnableTransitions",BindingFlags.Instance | BindingFlags.NonPublic)!;
+      DisableTransitionsMethodInfo =
+         typeof(Animatable).GetMethod("DisableTransitions", BindingFlags.Instance | BindingFlags.NonPublic)!;
+   }
+
+   public MotionActor(Control motionTarget, AbstractMotion motion)
+   {
+      MotionTarget = motionTarget;
+      _motion = motion;
+   }
+   
    public bool IsSupportMotionProperty(AvaloniaProperty property)
    {
       if (property == AbstractMotion.MotionOpacityProperty ||
@@ -73,12 +90,6 @@ public class MotionActor : Animatable, IMotionActor
          return true;
       }
       return false;
-   }
-
-   public MotionActor(Control motionTarget, AbstractMotion motion)
-   {
-      MotionTarget = motionTarget;
-      _motion = motion;
    }
    
    public virtual Control BuildGhost()
@@ -142,6 +153,7 @@ public class MotionActor : Animatable, IMotionActor
 
    public virtual void NotifyPostedToDirector()
    {
+      DisableMotion();
       BuildGhost();
       RelayMotionProperties();
       var transitions = new Transitions();
@@ -169,7 +181,21 @@ public class MotionActor : Animatable, IMotionActor
    /// <param name="motionTarget"></param>
    public virtual void NotifyMotionTargetAddedToScene(Control motionTarget)
    {
-      
+      Canvas.SetLeft(motionTarget, 0);
+      Canvas.SetTop(motionTarget, 0);
+   }
+
+   internal void EnableMotion()
+   {
+      EnableTransitionsMethodInfo.Invoke(this, new object[]{});
+   }
+
+   internal void DisableMotion()
+   {
+      DisableTransitionsMethodInfo.Invoke(this, new object[]{});
    }
    
+   internal virtual void NotifyMotionPreStart() {}
+   internal virtual void NotifyMotionStarted() {}
+   internal virtual void NotifyMotionCompleted() {}
 }

@@ -15,6 +15,6 @@
         <Version>0.0.1-preview</Version>
         <Company>Chinware Technologies Ltd.</Company>
         <PackageProjectUrl>https://atomui.net/</PackageProjectUrl>
-        <AvaloniaVersion>11.1.0-rc1</AvaloniaVersion>
+        <AvaloniaVersion>11.1.0-rc2</AvaloniaVersion>
     </PropertyGroup>
 </Project>

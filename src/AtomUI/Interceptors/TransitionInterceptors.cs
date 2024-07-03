@@ -29,10 +29,7 @@ internal static class TransitionInterceptor<TTransition, TValue>
 
    private static void HandleCompleted(INotifyTransitionCompleted notifier, bool succeed)
    {
-      if (succeed) {
-         notifier.NotifyTransitionCompleted();
-      }
-
+      notifier.NotifyTransitionCompleted(succeed);
       _disposables[notifier].Dispose();
       _disposables.Remove(notifier);
    }

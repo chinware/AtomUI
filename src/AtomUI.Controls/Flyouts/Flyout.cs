@@ -286,7 +286,7 @@ public class Flyout : PopupFlyoutBase
          }
          var motionActor = new PopupMotionActor(boxShadows.Thickness(), popupRoot, motion);
          motionActor.DispatchInSceneLayer = true;
-         motionActor.Finished += (sender, args) =>
+         motionActor.Completed += (sender, args) =>
          {
             _animating = false;
          };

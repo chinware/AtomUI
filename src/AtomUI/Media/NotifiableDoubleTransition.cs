@@ -1,26 +1,27 @@
-﻿using Avalonia.Animation;
+﻿using System.Reactive.Subjects;
+using Avalonia.Animation;
 
 namespace AtomUI.Media;
 
 public class NotifiableDoubleTransition : DoubleTransition
 {
-   public event EventHandler? TransitionCompleted;
-   private bool _completed = false;
-   
-   internal protected void NotifyTransitionCompleted()
+   public event EventHandler<TransitionCompletedEventArgs>? TransitionCompleted;
+   private Subject<bool> _subject;
+
+   public NotifiableDoubleTransition()
    {
-      _completed = true;
-      TransitionCompleted?.Invoke(this, EventArgs.Empty);
+      _subject = new Subject<bool>();
+   }
+   
+   internal protected void NotifyTransitionCompleted(bool status)
+   {
+      _subject.OnNext(status);
+      _subject.OnCompleted();
+      TransitionCompleted?.Invoke(this, new TransitionCompletedEventArgs(status));
    }
 
-   internal async Task StatusCheckTask()
+   internal IObservable<bool> GetCompletedObservable()
    {
-      if (_completed) {
-         return;
-      }
-
-      while (!_completed) {
-         await Task.Delay(50);
-      }
+      return _subject;
    }
 }

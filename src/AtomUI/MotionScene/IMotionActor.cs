@@ -6,7 +6,7 @@ internal interface IMotionActor
 {
    public event EventHandler? PreStart;
    public event EventHandler? Started;
-   public event EventHandler? Finished;
+   public event EventHandler? Completed;
    
    public Control MotionTarget { get; set; }
    public IMotion Motion { get; }
