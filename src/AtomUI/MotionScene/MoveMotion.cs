@@ -42,13 +42,18 @@ public class MoveDownInMotion : AbstractMotion
    {
       base.NotifyPreBuildTransition(config, motionTarget);
       if (config.Property == MotionRenderTransformProperty) {
-         config.StartValue = new TranslateTransform(0, motionTarget.DesiredSize.Height);
+         config.StartValue = new TranslateTransform(0, -motionTarget.DesiredSize.Height);
       }
    }
 
    public override Size CalculateSceneSize(Size motionTargetSize)
    {
       return motionTargetSize.WithHeight(motionTargetSize.Height * 2);
+   }
+   
+   public override Point CalculateScenePosition(Size motionTargetSize, Point motionTargetPosition)
+   {
+      return motionTargetPosition.WithY(motionTargetPosition.Y - motionTargetSize.Height);
    }
 }
 
@@ -89,13 +94,18 @@ public class MoveDownOutMotion : AbstractMotion
    {
       base.NotifyPreBuildTransition(config, motionTarget);
       if (config.Property == MotionRenderTransformProperty) {
-         config.EndValue = new TranslateTransform(0, motionTarget.DesiredSize.Height);
+         config.EndValue = new TranslateTransform(0, -motionTarget.DesiredSize.Height);
       }
    }
    
    public override Size CalculateSceneSize(Size motionTargetSize)
    {
       return motionTargetSize.WithHeight(motionTargetSize.Height * 2);
+   }
+   
+   public override Point CalculateScenePosition(Size motionTargetSize, Point motionTargetPosition)
+   {
+      return motionTargetPosition.WithY(motionTargetPosition.Y - motionTargetSize.Height);
    }
 }
 
@@ -143,6 +153,11 @@ public class MoveLeftInMotion : AbstractMotion
    {
       return motionTargetSize.WithHeight(motionTargetSize.Width * 2);
    }
+   
+   public override Point CalculateScenePosition(Size motionTargetSize, Point motionTargetPosition)
+   {
+      return motionTargetPosition.WithX(motionTargetPosition.X - motionTargetSize.Width);
+   }
 }
 
 public class MoveLeftOutMotion : AbstractMotion
@@ -189,6 +204,11 @@ public class MoveLeftOutMotion : AbstractMotion
    public override Size CalculateSceneSize(Size motionTargetSize)
    {
       return motionTargetSize.WithHeight(motionTargetSize.Width * 2);
+   }
+   
+   public override Point CalculateScenePosition(Size motionTargetSize, Point motionTargetPosition)
+   {
+      return motionTargetPosition.WithX(motionTargetPosition.X - motionTargetSize.Width);
    }
 }
 
@@ -321,7 +341,7 @@ public class MoveUpInMotion : AbstractMotion
    {
       base.NotifyPreBuildTransition(config, motionTarget);
       if (config.Property == MotionRenderTransformProperty) {
-         config.StartValue = new TranslateTransform(0, -motionTarget.DesiredSize.Height);
+         config.StartValue = new TranslateTransform(0, motionTarget.DesiredSize.Height);
       }
    }
 
@@ -368,7 +388,7 @@ public class MoveUpOutMotion : AbstractMotion
    {
       base.NotifyPreBuildTransition(config, motionTarget);
       if (config.Property == MotionRenderTransformProperty) {
-         config.EndValue = new TranslateTransform(0, -motionTarget.DesiredSize.Height);
+         config.EndValue = new TranslateTransform(0, motionTarget.DesiredSize.Height);
       }
    }
    

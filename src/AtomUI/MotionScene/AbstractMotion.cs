@@ -145,7 +145,7 @@ public abstract class AbstractMotion : AvaloniaObject, IMotion
       return motionTargetSize;
    }
 
-   public virtual Point CalculateScenePosition(Point motionTargetPosition)
+   public virtual Point CalculateScenePosition(Size motionTargetSize, Point motionTargetPosition)
    {
       return motionTargetPosition;
    }
