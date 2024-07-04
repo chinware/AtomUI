@@ -3,7 +3,7 @@ using Avalonia.Animation;
 
 namespace AtomUI.Media;
 
-public class NotifiableDoubleTransition : DoubleTransition
+public class NotifiableDoubleTransition : DoubleTransition, INotifyTransitionCompleted
 {
    public event EventHandler<TransitionCompletedEventArgs>? TransitionCompleted;
    private Subject<bool> _subject;
@@ -13,15 +13,12 @@ public class NotifiableDoubleTransition : DoubleTransition
       _subject = new Subject<bool>();
    }
    
-   internal protected void NotifyTransitionCompleted(bool status)
+   void INotifyTransitionCompleted.NotifyTransitionCompleted(bool status)
    {
       _subject.OnNext(status);
       _subject.OnCompleted();
       TransitionCompleted?.Invoke(this, new TransitionCompletedEventArgs(status));
    }
-
-   internal IObservable<bool> GetCompletedObservable()
-   {
-      return _subject;
-   }
+   
+   IObservable<bool> INotifyTransitionCompleted.CompletedObservable => _subject;
 }

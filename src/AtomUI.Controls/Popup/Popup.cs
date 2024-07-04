@@ -95,6 +95,8 @@ public class Popup : AbstractPopup
          _compositeDisposable = new CompositeDisposable();
          _shadowLayer = new PopupShadowLayer(toplevel);
          _compositeDisposable?.Add(BindUtils.RelayBind(this, MaskShadowsProperty, _shadowLayer!));
+         _compositeDisposable?.Add(BindUtils.RelayBind(this, OpacityProperty, _shadowLayer!));
+         _compositeDisposable?.Add(BindUtils.RelayBind(this, OpacityProperty, (popupHost as Control)!));
          _shadowLayer.AttachToTarget(this);
       }
    }

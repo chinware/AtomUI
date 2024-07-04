@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Reactive.Linq;
 using AtomUI.Media;
 using Avalonia;
 using Avalonia.Animation;
@@ -38,6 +39,7 @@ public abstract class AbstractMotion : AvaloniaObject, IMotion
 
    private Dictionary<AvaloniaProperty, MotionConfig> _motionConfigs;
    private List<ITransition> _transitions;
+   public IObservable<bool>? CompletedObservable { get; private set; }
 
    // 定义我们目前支持的动效属性
    public static readonly StyledProperty<double> MotionOpacityProperty =
@@ -103,14 +105,27 @@ public abstract class AbstractMotion : AvaloniaObject, IMotion
          NotifyPreBuildTransition(config, motionTarget);
          var transition = NotifyBuildTransition(config);
          _transitions.Add(transition);
+        
       }
+      var completedObservables = new IObservable<bool>[_transitions.Count];
+      for (int i = 0; i < _transitions.Count; ++i) {
+         var transition = _transitions[i];
+         if (transition is INotifyTransitionCompleted notifyTransitionCompleted) {
+            completedObservables[i] = (notifyTransitionCompleted.CompletedObservable);
+         }
+      }
+      
+      CompletedObservable = Observable.CombineLatest(completedObservables).Select(list =>
+      {
+         return list.All(v=> v);
+      });
       return _transitions;
    }
 
    // 生命周期接口
    internal virtual void NotifyPreStart() {}
    internal virtual void NotifyStarted() {}
-   internal virtual void NotifyStopped() {}
+   internal virtual void NotifyCompleted() {}
 
    internal virtual void NotifyConfigMotionTarget(Control motionTarget) {}
    internal virtual void NotifyRestoreMotionTarget(Control motionTarget) {}
@@ -173,5 +188,10 @@ public abstract class AbstractMotion : AvaloniaObject, IMotion
    public IList<AvaloniaProperty> GetActivatedProperties()
    {
       return _motionConfigs.Keys.ToList();
+   }
+
+   public IList<MotionConfig> GetMotionConfigs()
+   {
+      return _motionConfigs.Values.ToList();
    }
 }

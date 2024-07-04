@@ -11,4 +11,6 @@ public interface IMotion
    /// </summary>
    /// <returns></returns>
    public IList<AvaloniaProperty> GetActivatedProperties();
+   public IList<MotionConfig> GetMotionConfigs();
+   public IObservable<bool>? CompletedObservable { get; }
 }

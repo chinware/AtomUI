@@ -14,7 +14,8 @@ public class Director : IDirector
    
    public static IDirector? Instance => AvaloniaLocator.Current.GetService<IDirector>();
    private Dictionary<IMotionActor, MotionActorState> _states;
-
+   private CompositeDisposable? _compositeDisposable;
+   
    public Director()
    {
       _states = new Dictionary<IMotionActor, MotionActorState>();
@@ -34,36 +35,52 @@ public class Director : IDirector
       if (actor.DispatchInSceneLayer) {
          sceneLayer = PrepareSceneLayer(actor);
       }
-      var cleanupPopup = Disposable.Create((sceneLayer), state =>
+      _compositeDisposable = new CompositeDisposable();
+      _compositeDisposable.Add(Disposable.Create((sceneLayer), state =>
       {
-         if (sceneLayer is not null) {
-            sceneLayer.Hide();
-            sceneLayer.Dispose();
-         }
-      });
-      var state = new MotionActorState(actor, cleanupPopup);
+         // if (sceneLayer is not null) {
+         //    sceneLayer.Hide();
+         //    sceneLayer.Dispose();
+         // }
+      }));
+      var state = new MotionActorState(actor, _compositeDisposable);
       _states.Add(actor, state);
 
       if (actor.DispatchInSceneLayer) {
-         var ghost = actor.BuildGhost();
+         var ghost = actor.GetAnimatableGhost();
          sceneLayer!.SetMotionTarget(ghost);
          actor.NotifyMotionTargetAddedToScene(ghost);
          ghost.IsVisible = false; // 默认是不显示的
-         sceneLayer.Show();
+         sceneLayer!.Show();
       }
       HandleMotionPreStart(actor);
+      ExecuteMotionAction(actor);
       HandleMotionStarted(actor);
    }
 
    private SceneLayer PrepareSceneLayer(MotionActor actor)
    {
-      var motionTarget = actor.MotionTarget;
-      var topLevel = (TopLevel.GetTopLevel(motionTarget) as PopupRoot)!;
+      if (actor.SceneParent is null) {
+         throw new ArgumentException("When the DispatchInSceneLayer property is true, the SceneParent property cannot be null.");
+      }
       // TODO 这里除了 Popup 这种顶层元素以外，还会不会有其他的顶层元素种类
       // 暂时先处理 Popup 这种情况
-      var sceneLayer = new SceneLayer(topLevel, topLevel.PlatformImpl!);
+      var sceneLayer = new SceneLayer(actor.SceneParent, actor.SceneParent.PlatformImpl!.CreatePopup()!);
       actor.NotifySceneLayerCreated(sceneLayer);
       return sceneLayer;
+   }
+
+   private void ExecuteMotionAction(MotionActor actor)
+   {
+      // 根据 Motion 配置的对 Actor 对象的属性赋值
+      actor.EnableMotion();
+      var ghost = actor.GetAnimatableGhost();
+      ghost.IsVisible = true;
+      foreach (var motionConfig in actor.Motion.GetMotionConfigs()) {
+         var property = motionConfig.Property;
+         var endValue = motionConfig.EndValue;
+         actor.SetValue(property, endValue);
+      }
    }
 
    private class MotionActorState : IDisposable
@@ -85,22 +102,28 @@ public class Director : IDirector
       }
    }
 
-   protected void HandleMotionActionCompleted(MotionActor actor)
-   {
-      if (_states.TryGetValue(actor, out var state)) {
-         state.Dispose();
-      }
-
-      _states.Remove(actor);
-   }
-
    private void HandleMotionPreStart(MotionActor actor)
    {
       actor.NotifyMotionPreStart();
       MotionPreStart?.Invoke(this, new MotionEventArgs(actor));
-      
+      if (actor.Motion.CompletedObservable is null) {
+         throw new InvalidOperationException("The CompletedObservable property of the Motion is empty.");
+      }
       // 设置相关的完成检测
+      _compositeDisposable?.Add(actor.Motion.CompletedObservable.Subscribe(status =>
+      {
+         actor.CompletedStatus = status;
+      }, onCompleted: () =>
+      {
+         HandleMotionCompleted(actor);
+      }));
       
+      // 设置动画对象初始值
+      foreach (var motionConfig in actor.Motion.GetMotionConfigs()) {
+         var property = motionConfig.Property;
+         var startValue = motionConfig.StartValue;
+         actor.SetValue(property, startValue);
+      }
    }
 
    private void HandleMotionStarted(MotionActor actor)
@@ -113,6 +136,12 @@ public class Director : IDirector
    {
       actor.NotifyMotionCompleted();
       MotionCompleted?.Invoke(this, new MotionEventArgs(actor));
+      
+      if (_states.TryGetValue(actor, out var state)) {
+         state.Dispose();
+      }
+
+      _states.Remove(actor);
    }
 }
 

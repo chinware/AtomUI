@@ -6,7 +6,7 @@ using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Controls.Primitives;
 
 internal class ShadowRenderer : Control
 {
@@ -15,6 +15,9 @@ internal class ShadowRenderer : Control
 
    public static readonly StyledProperty<CornerRadius> MaskCornerRadiusProperty =
       Border.CornerRadiusProperty.AddOwner<ShadowRenderer>();
+   
+   public static readonly StyledProperty<IBrush?> MaskContentBackgroundProperty =
+      Border.BackgroundProperty.AddOwner<ShadowRenderer>();
 
    /// <summary>
    /// 渲染的阴影值
@@ -34,13 +37,20 @@ internal class ShadowRenderer : Control
       set => SetValue(MaskCornerRadiusProperty, value);
    }
 
-   private Border? _maskContent;
-   private bool _initialized = false;
-   private Canvas? _layout;
+   public IBrush? MaskContentBackground
+   {
+      get => GetValue(MaskContentBackgroundProperty);
+      set => SetValue(MaskContentBackgroundProperty, value);
+   }
+
+   protected Border? _maskContent;
+   protected bool _initialized = false;
+   protected Canvas? _layout;
 
    static ShadowRenderer()
    {
       AffectsMeasure<ShadowRenderer>(ShadowsProperty);
+      MaskContentBackgroundProperty.OverrideDefaultValue<ShadowRenderer>(new SolidColorBrush(Colors.White));
    }
 
    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -66,13 +76,13 @@ internal class ShadowRenderer : Control
       var maskContent = new Border
       {
          BorderThickness = new Thickness(0),
-         Background = new SolidColorBrush(Colors.White),
          HorizontalAlignment = HorizontalAlignment.Stretch,
          VerticalAlignment = VerticalAlignment.Stretch
       };
       // TODO 这个是否需要资源管理起来
       BindUtils.RelayBind(this, ShadowsProperty, maskContent, ShadowsProperty);
       BindUtils.RelayBind(this, MaskCornerRadiusProperty, maskContent, Border.CornerRadiusProperty);
+      BindUtils.RelayBind(this, MaskContentBackgroundProperty, maskContent, Border.BackgroundProperty);
       return maskContent;
    }
    

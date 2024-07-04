@@ -32,6 +32,20 @@ internal static class WindowExt
       }
       SetExtendedStyle(impl, currentStyles, false);
    }
+   
+      
+   public static void SetTransparentForMouseEvents(this Window window, bool flag)
+   {
+      var impl = window.PlatformImpl!;
+      var currentStyles = GetExtendedStyle(impl);
+      // 不是确定这样处理是否合适
+      if (flag) {
+         currentStyles |= WS_EX_TRANSPARENT | WS_EX_LAYERED;
+      } else {
+         currentStyles &= ~(WS_EX_TRANSPARENT | WS_EX_LAYERED);
+      }
+      SetExtendedStyle(impl, currentStyles, false);
+   }
 
    private static uint GetExtendedStyle(object instance)
    {

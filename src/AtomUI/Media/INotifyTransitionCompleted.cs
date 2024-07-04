@@ -12,6 +12,7 @@ public class TransitionCompletedEventArgs : EventArgs
 
 internal interface INotifyTransitionCompleted
 {
-   internal event EventHandler<TransitionCompletedEventArgs>? TransitionCompleted;
-   internal void NotifyTransitionCompleted(bool status);
+   public IObservable<bool> CompletedObservable { get; }
+   public event EventHandler<TransitionCompletedEventArgs>? TransitionCompleted;
+   public void NotifyTransitionCompleted(bool status);
 }

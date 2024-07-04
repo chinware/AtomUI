@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using AtomUI.Platform.Windows;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives.PopupPositioning;
@@ -19,6 +20,7 @@ public class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
       BackgroundProperty.OverrideDefaultValue(typeof(SceneLayer), Brushes.Transparent);
       ManagedPopupPositionerPopupInfo = typeof(ManagedPopupPositioner).GetField("_popup",
          BindingFlags.Instance | BindingFlags.NonPublic)!;
+      
    }
 
    public SceneLayer(TopLevel parent, IPopupImpl impl)
@@ -35,6 +37,9 @@ public class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
    {
       ParentTopLevel = parent;
       impl.SetWindowManagerAddShadowHint(false);
+      if (this is WindowBase window) {
+         //window.SetTransparentForMouseEvents(true);
+      }
       
       if (PlatformImpl?.PopupPositioner is ManagedPopupPositioner managedPopupPositioner) {
          _managedPopupPositionerPopup =
@@ -43,6 +48,12 @@ public class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
 
       _layout = new Canvas();
       Content = _layout;
+#if DEBUG
+      if (this is TopLevel topLevel) {
+         topLevel.AttachDevTools();
+      }
+#endif
+      Focusable = true;
    }
 
    /// <summary>

@@ -269,30 +269,37 @@ public class Flyout : PopupFlyoutBase
       }
       CalculateShowArrowEffective();
       var result = base.ShowAtCore(placementTarget, showAtPointer);
-      PlayShowUpMotion();
+      PlayShowUpMotion(placementTarget);
       return result;
    }
 
-   private void PlayShowUpMotion()
+   private void PlayShowUpMotion(Control placementTarget)
    {
       if (Popup.Host is PopupRoot popupRoot) {
-         var director = Director.Instance;
-         var motion = new ZoomBigInMotion();
-         motion.ConfigureOpacity(_motionDuration);
-         motion.ConfigureRenderTransform(_motionDuration);
-         BoxShadows boxShadows = default;
-         if (Popup is Popup shadowAwarePopup) {
-            boxShadows = shadowAwarePopup.MaskShadows;
+         if (popupRoot.Content is Control content) {
+            Popup.Opacity = 0;
+            var director = Director.Instance;
+            var motion = new ZoomBigInMotion();
+            motion.ConfigureOpacity(_motionDuration);
+            motion.ConfigureRenderTransform(_motionDuration);
+            BoxShadows boxShadows = default;
+            if (Popup is Popup shadowAwarePopup) {
+               boxShadows = shadowAwarePopup.MaskShadows;
+            }
+
+            var topLevel = TopLevel.GetTopLevel(placementTarget);
+            var motionActor = new PopupMotionActor(boxShadows, popupRoot, content, motion);
+            motionActor.DispatchInSceneLayer = true;
+            motionActor.SceneParent = topLevel;
+            motionActor.Completed += (sender, args) =>
+            {
+               _animating = false;
+               // Popup.Opacity = 1;
+            };
+            
+            director?.Schedule(motionActor);
+            _animating = true;
          }
-         var motionActor = new PopupMotionActor(boxShadows.Thickness(), popupRoot, motion);
-         motionActor.DispatchInSceneLayer = true;
-         motionActor.Completed += (sender, args) =>
-         {
-            _animating = false;
-         };
-         
-         director?.Schedule(motionActor);
-         _animating = true;
       }
    }
 }

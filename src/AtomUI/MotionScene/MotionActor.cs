@@ -11,6 +11,7 @@ namespace AtomUI.MotionScene;
 
 /// <summary>
 /// 动效配置类，只要给 Director 提供动效相关信息
+/// 动效驱动 Actor 的属性，然后由 Actor 驱动动画控件，防止污染动画控件的 Transitions 配置
 /// </summary>
 public class MotionActor : Animatable, IMotionActor
 {
@@ -32,6 +33,8 @@ public class MotionActor : Animatable, IMotionActor
 
    private static readonly MethodInfo EnableTransitionsMethodInfo;
    private static readonly MethodInfo DisableTransitionsMethodInfo;
+
+   public bool CompletedStatus { get; internal set; } = true;
    
    protected double MotionOpacity
    {
@@ -61,12 +64,17 @@ public class MotionActor : Animatable, IMotionActor
    /// 动画实体
    /// </summary>
    public Control MotionTarget { get; set; }
+   
+   /// <summary>
+   /// 当 DispatchInSceneLayer 为 true 的时候，必须指定一个动画 SceneLayer 的父窗口，最好不要是 Popup
+   /// </summary>
+   public TopLevel? SceneParent { get; set; }
 
    public IMotion Motion => _motion;
    public bool DispatchInSceneLayer { get; set; } = true;
    
-   private Control? _ghost;
-   private AbstractMotion _motion;
+   protected Control? _ghost;
+   protected AbstractMotion _motion;
 
    static MotionActor()
    {
@@ -92,10 +100,11 @@ public class MotionActor : Animatable, IMotionActor
       return false;
    }
    
-   public virtual Control BuildGhost()
+   protected virtual void BuildGhost() {}
+   
+   public Control GetAnimatableGhost()
    {
-      _ghost = MotionTarget;
-      return MotionTarget;
+      return _ghost ?? MotionTarget;
    }
 
    /// <summary>
@@ -136,7 +145,8 @@ public class MotionActor : Animatable, IMotionActor
          return;
       }
 
-      var ghost = BuildGhost();
+      var ghost = GetAnimatableGhost();
+      
       Size motionTargetSize;
       // Popup.Child can't be null here, it was set in ShowAtCore.
       if (ghost.DesiredSize == default) {
@@ -154,7 +164,10 @@ public class MotionActor : Animatable, IMotionActor
    public virtual void NotifyPostedToDirector()
    {
       DisableMotion();
-      BuildGhost();
+      if (DispatchInSceneLayer) {
+         BuildGhost();
+      }
+      
       RelayMotionProperties();
       var transitions = new Transitions();
       foreach (var transition in _motion.BuildTransitions(_ghost!)) {
@@ -169,9 +182,15 @@ public class MotionActor : Animatable, IMotionActor
          return;
       }
       // TODO 这个看是否需要管理起来
+      
       var motionProperties = Motion.GetActivatedProperties();
       foreach (var property in motionProperties) {
-         BindUtils.RelayBind(this, property, _ghost, property);
+         if (property == MotionRenderTransformProperty) {
+            BindUtils.RelayBind(this, property, _ghost, Visual.RenderTransformProperty);
+         } else {
+            BindUtils.RelayBind(this, property, _ghost, property);
+         }
+
       }
    }
 
@@ -194,8 +213,31 @@ public class MotionActor : Animatable, IMotionActor
    {
       DisableTransitionsMethodInfo.Invoke(this, new object[]{});
    }
+
+   internal virtual void NotifyMotionPreStart()
+   {
+      _motion.NotifyPreStart();
+      _motion.NotifyConfigMotionTarget(_ghost!);
+      PreStart?.Invoke(this, EventArgs.Empty);
+   }
+
+   internal virtual void NotifyMotionStarted()
+   {
+      _motion.NotifyStarted();
+      Started?.Invoke(this, EventArgs.Empty);
+   }
+
+   internal virtual void NotifyMotionCompleted()
+   {
+      _motion.NotifyCompleted();
+      _motion.NotifyRestoreMotionTarget(_ghost!);
+      Completed?.Invoke(this, EventArgs.Empty);
+      
+   }
    
-   internal virtual void NotifyMotionPreStart() {}
-   internal virtual void NotifyMotionStarted() {}
-   internal virtual void NotifyMotionCompleted() {}
+   protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+   {
+      base.OnPropertyChanged(change);
+      Console.WriteLine($"{change.Property.Name}-{change.NewValue}");
+   }
 }

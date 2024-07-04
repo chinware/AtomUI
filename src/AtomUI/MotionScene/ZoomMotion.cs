@@ -86,7 +86,7 @@ public class ZoomBigInMotion : AbstractMotion
          TransitionKind = TransitionKind.Double,
          StartValue = 0d,
          EndValue = 1d,
-         MotionDuration = duration,
+         MotionDuration = TimeSpan.FromMilliseconds(2000),
          MotionEasing = easing
       };
       AddMotionConfig(config);
@@ -98,9 +98,9 @@ public class ZoomBigInMotion : AbstractMotion
       var config = new MotionConfig(MotionRenderTransformProperty)
       {
          TransitionKind = TransitionKind.TransformOperations,
-         StartValue = new ScaleTransform(0.8, 0.8),
+         StartValue = new ScaleTransform(0.2, 0.2),
          EndValue = new ScaleTransform(1, 1),
-         MotionDuration = duration,
+         MotionDuration = TimeSpan.FromMilliseconds(3000),
          MotionEasing = easing
       };
       AddMotionConfig(config);
