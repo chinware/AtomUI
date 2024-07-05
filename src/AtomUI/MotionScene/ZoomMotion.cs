@@ -2,6 +2,7 @@
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Media;
+using Avalonia.Media.Transformation;
 
 namespace AtomUI.MotionScene;
 
@@ -86,7 +87,7 @@ public class ZoomBigInMotion : AbstractMotion
          TransitionKind = TransitionKind.Double,
          StartValue = 0d,
          EndValue = 1d,
-         MotionDuration = TimeSpan.FromMilliseconds(2000),
+         MotionDuration = duration,
          MotionEasing = easing
       };
       AddMotionConfig(config);
@@ -95,14 +96,23 @@ public class ZoomBigInMotion : AbstractMotion
    public void ConfigureRenderTransform(TimeSpan duration, Easing? easing = null)
    {
       easing ??= new CircularEaseOut();
+      var startValueBuilder = new TransformOperations.Builder(1);
+      startValueBuilder.AppendScale(0.8, 0.8);
+      var startValue = startValueBuilder.Build();
+      
+      var endValueBuilder = new TransformOperations.Builder(1);
+      endValueBuilder.AppendScale(1, 1);
+      var endValue = endValueBuilder.Build();
+      
       var config = new MotionConfig(MotionRenderTransformProperty)
       {
          TransitionKind = TransitionKind.TransformOperations,
-         StartValue = new ScaleTransform(0.2, 0.2),
-         EndValue = new ScaleTransform(1, 1),
-         MotionDuration = TimeSpan.FromMilliseconds(3000),
+         StartValue = startValue,
+         EndValue = endValue,
+         MotionDuration = duration,
          MotionEasing = easing
       };
+      
       AddMotionConfig(config);
    }
 }

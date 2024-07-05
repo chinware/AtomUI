@@ -294,7 +294,9 @@ public class Flyout : PopupFlyoutBase
             motionActor.Completed += (sender, args) =>
             {
                _animating = false;
-               // Popup.Opacity = 1;
+               Console.WriteLine(" motionActor.Completed");
+               popupRoot.PlatformImpl?.SetTopmost(true);
+               Popup.Opacity = 1;
             };
             
             director?.Schedule(motionActor);

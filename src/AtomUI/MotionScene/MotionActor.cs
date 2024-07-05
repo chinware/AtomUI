@@ -5,6 +5,7 @@ using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Layout;
 using Avalonia.Media;
+using Avalonia.Media.Transformation;
 using Avalonia.VisualTree;
 
 namespace AtomUI.MotionScene;
@@ -229,15 +230,17 @@ public class MotionActor : Animatable, IMotionActor
 
    internal virtual void NotifyMotionCompleted()
    {
+      Completed?.Invoke(this, EventArgs.Empty);
       _motion.NotifyCompleted();
       _motion.NotifyRestoreMotionTarget(_ghost!);
-      Completed?.Invoke(this, EventArgs.Empty);
-      
    }
    
-   protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
-   {
-      base.OnPropertyChanged(change);
-      Console.WriteLine($"{change.Property.Name}-{change.NewValue}");
-   }
+   // protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+   // {
+   //    base.OnPropertyChanged(change);
+   //    Console.WriteLine($"{change.Property.Name}-{change.NewValue}");
+   //    if (change.NewValue is TransformOperations operations) {
+   //       Console.WriteLine(operations.Operations.Count);
+   //    }
+   // }
 }

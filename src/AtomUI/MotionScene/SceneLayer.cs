@@ -38,7 +38,7 @@ public class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
       ParentTopLevel = parent;
       impl.SetWindowManagerAddShadowHint(false);
       if (this is WindowBase window) {
-         //window.SetTransparentForMouseEvents(true);
+         window.SetTransparentForMouseEvents(true);
       }
       
       if (PlatformImpl?.PopupPositioner is ManagedPopupPositioner managedPopupPositioner) {

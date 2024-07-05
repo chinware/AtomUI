@@ -3,6 +3,8 @@ using AtomUI.MotionScene;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Data;
+using Avalonia.Threading;
 
 namespace AtomUI.Controls.MotionScene;
 
@@ -38,10 +40,15 @@ public class Director : IDirector
       _compositeDisposable = new CompositeDisposable();
       _compositeDisposable.Add(Disposable.Create((sceneLayer), state =>
       {
-         // if (sceneLayer is not null) {
-         //    sceneLayer.Hide();
-         //    sceneLayer.Dispose();
-         // }
+         if (sceneLayer is not null) {
+            sceneLayer.Opacity = 0;
+            Dispatcher.UIThread.InvokeAsync(async () =>
+            {
+               await Task.Delay(100);
+               sceneLayer.Hide();
+               sceneLayer.Dispose();
+            });
+         }
       }));
       var state = new MotionActorState(actor, _compositeDisposable);
       _states.Add(actor, state);
@@ -134,14 +141,13 @@ public class Director : IDirector
 
    private void HandleMotionCompleted(MotionActor actor)
    {
-      actor.NotifyMotionCompleted();
+
       MotionCompleted?.Invoke(this, new MotionEventArgs(actor));
-      
+      actor.NotifyMotionCompleted();
       if (_states.TryGetValue(actor, out var state)) {
          state.Dispose();
+         _states.Remove(actor);
       }
-
-      _states.Remove(actor);
    }
 }
 
