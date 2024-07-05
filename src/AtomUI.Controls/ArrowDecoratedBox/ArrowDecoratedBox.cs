@@ -172,6 +172,13 @@ public partial class ArrowDecoratedBox : StyledControl, IShadowMaskInfoProvider
       if (!_initialized) {
          _customStyle.SetupUi();
       }
+      SetupRelayProperties();
+   }
+
+   protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+   {
+      base.OnDetachedFromLogicalTree(e);
+      _compositeDisposable?.Dispose();
    }
 
    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)

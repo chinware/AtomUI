@@ -74,4 +74,6 @@ public abstract class PopupFlyoutBase : AvaloniaPopupFlyoutBase
          Popup.PlacementConstraintAdjustment = PlacementConstraintAdjustment;
       }
    }
+   
+   protected Popup AtomPopup => (Popup as Popup)!;
 }

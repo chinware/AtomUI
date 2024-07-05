@@ -1,4 +1,5 @@
-﻿using AtomUI.Data;
+﻿using System.Reactive.Disposables;
+using AtomUI.Data;
 using AtomUI.Media;
 using AtomUI.Styling;
 using AtomUI.Utils;
@@ -18,6 +19,7 @@ public partial class ArrowDecoratedBox : IControlCustomStyle
    private Rect _contentRect;
    private Rect _arrowRect;
    private Border? _container;
+   private CompositeDisposable? _compositeDisposable;
 
    // 组件的 Token 绑定属性
    private double _arrowSize;
@@ -34,20 +36,26 @@ public partial class ArrowDecoratedBox : IControlCustomStyle
       NotifyCreateUi();
       _customStyle.ApplyFixedStyleConfig();
       if (IsShowArrow) {
-         BuildGeometry();
+         BuildGeometry(true);
       }
       LogicalChildren.Add(_container);
       VisualChildren.Add(_container);
-      // 生命周期一样，可以不用管理
-      BindUtils.RelayBind(this, BackgroundSizingProperty, _container);
-      BindUtils.RelayBind(this, BackgroundProperty, _container);
-      BindUtils.RelayBind(this, CornerRadiusProperty, _container);
-      BindUtils.RelayBind(this, ChildProperty, _container);
-      BindUtils.RelayBind(this, PaddingProperty, _container);
-      BindUtils.RelayBind(this, ChildProperty, _container);
-      _controlTokenBinder.AddControlBinding(BackgroundProperty, GlobalResourceKey.ColorBgContainer);
       
+      _controlTokenBinder.AddControlBinding(BackgroundProperty, GlobalResourceKey.ColorBgContainer);
       _initialized = true;
+   }
+
+   private void SetupRelayProperties()
+   {
+      _compositeDisposable = new CompositeDisposable();
+      // 生命周期一样，可以不用管理
+      if (_container is not null) {
+         _compositeDisposable.Add(BindUtils.RelayBind(this, BackgroundSizingProperty, _container));
+         _compositeDisposable.Add(BindUtils.RelayBind(this, BackgroundProperty, _container));
+         _compositeDisposable.Add(BindUtils.RelayBind(this, CornerRadiusProperty, _container));
+         _compositeDisposable.Add(BindUtils.RelayBind(this, ChildProperty, _container));
+         _compositeDisposable.Add(BindUtils.RelayBind(this, PaddingProperty, _container));
+      }
    }
 
    void IControlCustomStyle.ApplyFixedStyleConfig()
@@ -63,16 +71,18 @@ public partial class ArrowDecoratedBox : IControlCustomStyle
           e.Property == VisualParentProperty) {
          if (_initialized) {
             if (IsShowArrow) {
-               BuildGeometry();
+               BuildGeometry(true);
                GetArrowRect(DesiredSize);
             }
          }
       } 
    }
 
-   private void BuildGeometry()
+   private void BuildGeometry(bool force = false)
    {
-      _arrowGeometry = CommonShapeBuilder.BuildArrow(_arrowSize, 1.5);
+      if (_arrowGeometry is null || force) {
+         _arrowGeometry = CommonShapeBuilder.BuildArrow(_arrowSize, 1.5);
+      }
    }
 
    protected virtual void NotifyApplyFixedStyleConfig()
@@ -116,6 +126,7 @@ public partial class ArrowDecoratedBox : IControlCustomStyle
       targetHeight = Math.Max(MinHeight, targetHeight);
      
       if (IsShowArrow) {
+         BuildGeometry();
          var realArrowSize = Math.Min(_arrowGeometry!.Bounds.Size.Height, _arrowGeometry!.Bounds.Size.Width);
          var direction = GetDirection(ArrowPosition);
          if (direction == Direction.Left || direction == Direction.Right) {

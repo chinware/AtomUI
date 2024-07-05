@@ -36,8 +36,7 @@ public class PopupMotionActor : MotionActor
       if (_ghost is null) {
          _ghost = new MotionGhostControl(MotionTarget)
          {
-            Shadows = _boxShadows,
-            MaskCornerRadius = new CornerRadius(6)
+            Shadows = _boxShadows
          };
       }
    }

@@ -10,6 +10,7 @@ using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
+using Avalonia.Platform;
 
 namespace AtomUI.Controls;
 
@@ -112,9 +113,15 @@ public class Popup : AbstractPopup
                                            PopupGravity gravity,
                                            Point offset)
    {
-      var result = (false, false);
       var bounds = GetBounds(anchorRect);
-      offset *= _managedPopupPositioner!.Scaling;
+      return CalculateFlipInfo(bounds, translatedSize, anchorRect, anchor, gravity, offset);
+   }
+
+   internal (bool, bool) CalculateFlipInfo(Rect bounds, Size translatedSize, Rect anchorRect, PopupAnchor anchor,
+                                           PopupGravity gravity,
+                                           Point offset)
+   {
+      var result = (false, false);
 
       bool FitsInBounds(Rect rc, PopupAnchor edge = PopupAnchor.AllMask)
       {
@@ -198,7 +205,11 @@ public class Popup : AbstractPopup
 
       var parentGeometry = _managedPopupPositioner.ParentClientAreaScreenGeometry;
       var screens = _managedPopupPositioner.Screens;
+      return GetBounds(anchorRect, parentGeometry, screens);
+   }
 
+   private Rect GetBounds(Rect anchorRect, Rect parentGeometry, IReadOnlyList<ManagedPopupPositionerScreenInfo> screens)
+   {
       var targetScreen = screens.FirstOrDefault(s => s.Bounds.ContainsExclusive(anchorRect.TopLeft))
                          ?? screens.FirstOrDefault(s => s.Bounds.Intersects(anchorRect))
                          ?? screens.FirstOrDefault(s => s.Bounds.ContainsExclusive(parentGeometry.TopLeft))
@@ -212,6 +223,25 @@ public class Popup : AbstractPopup
 
       return targetScreen?.WorkingArea
              ?? new Rect(0, 0, double.MaxValue, double.MaxValue);
+   }
+
+   private IReadOnlyList<ManagedPopupPositionerScreenInfo> GetScreenInfos(TopLevel topLevel)
+   {
+      if (topLevel is WindowBase window) {
+         var windowImpl = window.PlatformImpl!;
+         return windowImpl.Screen.AllScreens
+                   .Select(s => new ManagedPopupPositionerScreenInfo(s.Bounds.ToRect(1), s.WorkingArea.ToRect(1)))
+                   .ToArray();
+      }
+      return Array.Empty<ManagedPopupPositionerScreenInfo>();
+   }
+
+   private Rect GetParentClientAreaScreenGeometry(TopLevel topLevel)
+   {
+      // Popup positioner operates with abstract coordinates, but in our case they are pixel ones
+      var point = topLevel.PointToScreen(default);
+      var size = topLevel.ClientSize * topLevel.RenderScaling;
+      return new Rect(point.X, point.Y, size.Width, size.Height);
    }
 
    public static void ConfigurePosition(ref PopupPositionerParameters positionerParameters,
@@ -330,7 +360,7 @@ public class Popup : AbstractPopup
                                           anchorRect,
                                           parameters.Anchor,
                                           parameters.Gravity,
-                                          offset);
+                                          offset * scaling);
          if (flipInfo.Item1 || flipInfo.Item2) {
             var flipPlacement = GetFlipPlacement(Placement);
             var flipAnchorAndGravity = GetAnchorAndGravity(flipPlacement);
@@ -345,6 +375,86 @@ public class Popup : AbstractPopup
             IsFlipped = false;
          }
       }
+   }
+
+   internal PositionInfo CalculatePositionInfo(Control placementTarget, Control popupContent)
+   {
+      var offsetX = HorizontalOffset;
+      var offsetY = VerticalOffset;
+      var marginToAnchorOffset = CalculateMarginToAnchorOffset(Placement);
+      offsetX += marginToAnchorOffset.X;
+      offsetY += marginToAnchorOffset.Y;
+      HorizontalOffset = offsetX;
+      VerticalOffset = offsetY;
+      Point offset = default;
+      PopupPositionerParameters parameters = new PopupPositionerParameters();
+      var parentTopLevel = TopLevel.GetTopLevel(placementTarget)!;
+      
+      // Popup.Child can't be null here, it was set in ShowAtCore.
+      if (popupContent.DesiredSize == default) {
+         // Popup may not have been shown yet. Measure content
+         parameters.Size = LayoutHelper.MeasureChild(popupContent, Size.Infinity, new Thickness());
+      } else {
+         parameters.Size = popupContent.DesiredSize;
+      }
+      
+      if (Placement != PlacementMode.Center &&
+          Placement != PlacementMode.Pointer) {
+         offset = new Point(HorizontalOffset, VerticalOffset);
+      }
+
+      ConfigurePosition(ref parameters, parentTopLevel,
+                        placementTarget,
+                        Placement,
+                        offset,
+                        PlacementAnchor,
+                        PlacementGravity,
+                        PopupPositionerConstraintAdjustment.All,
+                        PlacementRect ?? new Rect(default, placementTarget.Bounds.Size),
+                        FlowDirection);
+      
+      var positionInfo = new PositionInfo();
+      positionInfo.EffectivePlacement = Placement;
+      positionInfo.EffectivePlacementAnchor = PlacementAnchor;
+      positionInfo.EffectivePlacementGravity = PlacementGravity;
+      positionInfo.Size = parameters.Size;
+      positionInfo.Offset = parameters.Offset;
+      
+      if (Placement != PlacementMode.Center &&
+          Placement != PlacementMode.Pointer) {
+         // 计算是否 flip
+         var scaling = parentTopLevel.RenderScaling;
+         var anchorRect = new Rect(
+            parameters.AnchorRectangle.TopLeft * scaling,
+            parameters.AnchorRectangle.Size * scaling);
+         
+         var parentOffsetPoint = parentTopLevel.PointToScreen(default);
+      
+         anchorRect = anchorRect.Translate(new Point(parentOffsetPoint.X, parentOffsetPoint.Y));
+         var parentGeometry = GetParentClientAreaScreenGeometry(parentTopLevel);
+         var bounds = GetBounds(anchorRect, parentGeometry,GetScreenInfos(parentTopLevel));
+         var flipInfo = CalculateFlipInfo(bounds, 
+                                          parameters.Size * scaling,
+                                          anchorRect,
+                                          parameters.Anchor,
+                                          parameters.Gravity,
+                                          offset * scaling);
+         if (flipInfo.Item1 || flipInfo.Item2) {
+            var flipPlacement = GetFlipPlacement(Placement);
+            var flipAnchorAndGravity = GetAnchorAndGravity(flipPlacement);
+            var flipOffset = CalculateMarginToAnchorOffset(flipPlacement);
+            positionInfo.EffectivePlacement = flipPlacement;
+            positionInfo.EffectivePlacementAnchor = flipAnchorAndGravity.Item1;
+            positionInfo.EffectivePlacementGravity = flipAnchorAndGravity.Item2;
+            positionInfo.Offset = flipOffset;
+            positionInfo.IsFlipped = false;
+            
+         } else {
+            positionInfo.IsFlipped = false;
+         }
+      }
+      Console.WriteLine($"{positionInfo.IsFlipped}-{positionInfo.Offset}-{positionInfo.Size}");
+      return positionInfo;
    }
 
    internal static (PopupAnchor, PopupGravity) GetAnchorAndGravity(PlacementMode placement)
@@ -389,5 +499,15 @@ public class Popup : AbstractPopup
          
          _ => throw new ArgumentOutOfRangeException(nameof(placement), placement, "Invalid value for PlacementMode")
       };
+   }
+
+   internal class PositionInfo
+   {
+      public Point Offset { get; set; }
+      public bool IsFlipped { get; set; }
+      public Size Size { get; set; }
+      public PlacementMode EffectivePlacement { get; set; }
+      public PopupAnchor EffectivePlacementAnchor { get; set; }
+      public PopupGravity EffectivePlacementGravity { get; set; }
    }
 }
