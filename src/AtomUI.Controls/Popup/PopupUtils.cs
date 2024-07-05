@@ -1,16 +1,19 @@
-﻿using Avalonia.Controls;
+﻿using AtomUI.Utils;
+using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.Primitives.PopupPositioning;
 
 namespace AtomUI.Controls;
 
 internal static class PopupUtils
 {
-   internal static ArrowPosition? CalculateArrowPosition(PlacementMode placement, PopupAnchor? anchor, PopupGravity? gravity)
+   internal static ArrowPosition? CalculateArrowPosition(PlacementMode placement, PopupAnchor? anchor,
+                                                         PopupGravity? gravity)
    {
       if (!CanEnabledArrow(placement, anchor, gravity)) {
          return null;
       }
-      
+
       if (placement != PlacementMode.AnchorAndGravity) {
          var ret = Popup.GetAnchorAndGravity(placement);
          anchor = ret.Item1;
@@ -62,7 +65,7 @@ internal static class PopupUtils
 
       return arrowPosition;
    }
-   
+
    /// <summary>
    /// 判断是否可以启用箭头，有些组合是不能启用箭头绘制的，因为没有意义
    /// </summary>
@@ -79,7 +82,7 @@ internal static class PopupUtils
 
       return IsCanonicalAnchorType(placement, anchor, gravity);
    }
-   
+
    /// <summary>
    /// 是否为标准的 anchor 类型
    /// </summary>
@@ -108,6 +111,215 @@ internal static class PopupUtils
                return false;
          }
       }
+
       return true;
+   }
+
+   internal static Rect Calculate(Size translatedSize,
+                                Rect anchorRect, PopupAnchor anchor, PopupGravity gravity,
+                                PopupPositionerConstraintAdjustment constraintAdjustment, Point offset,
+                                Rect parentGeometry,
+                                IReadOnlyList<ManagedPopupPositionerScreenInfo> screens)
+   {
+      anchorRect = anchorRect.Translate(parentGeometry.TopLeft);
+
+      Rect GetBounds()
+      {
+         var targetScreen = screens.FirstOrDefault(s => s.Bounds.ContainsExclusive(anchorRect.TopLeft))
+                            ?? screens.FirstOrDefault(s => s.Bounds.Intersects(anchorRect))
+                            ?? screens.FirstOrDefault(s => s.Bounds.ContainsExclusive(parentGeometry.TopLeft))
+                            ?? screens.FirstOrDefault(s => s.Bounds.Intersects(parentGeometry))
+                            ?? screens.FirstOrDefault();
+
+         if (targetScreen != null &&
+             (targetScreen.WorkingArea.Width == 0 && targetScreen.WorkingArea.Height == 0)) {
+            return targetScreen.Bounds;
+         }
+
+         return targetScreen?.WorkingArea
+                ?? new Rect(0, 0, double.MaxValue, double.MaxValue);
+      }
+
+      var bounds = GetBounds();
+
+      bool FitsInBounds(Rect rc, PopupAnchor edge = PopupAnchor.AllMask)
+      {
+         if (edge.HasAllFlags(PopupAnchor.Left) && rc.X < bounds.X ||
+             edge.HasAllFlags(PopupAnchor.Top) && rc.Y < bounds.Y ||
+             edge.HasAllFlags(PopupAnchor.Right) && rc.Right > bounds.Right ||
+             edge.HasAllFlags(PopupAnchor.Bottom) && rc.Bottom > bounds.Bottom) {
+            return false;
+         }
+
+         return true;
+      }
+
+      static bool IsValid(in Rect rc) => rc.Width > 0 && rc.Height > 0;
+
+      Rect GetUnconstrained(PopupAnchor a, PopupGravity g) =>
+         new Rect(Gravitate(GetAnchorPoint(anchorRect, a), translatedSize, g) + offset, translatedSize);
+
+      var geo = GetUnconstrained(anchor, gravity);
+
+      // If flipping geometry and anchor is allowed and helps, use the flipped one,
+      // otherwise leave it as is
+      if (!FitsInBounds(geo, PopupAnchor.HorizontalMask)
+          && constraintAdjustment.HasAllFlags(PopupPositionerConstraintAdjustment.FlipX)) {
+         var flipped = GetUnconstrained(anchor.FlipX(), gravity.FlipX());
+         if (FitsInBounds(flipped, PopupAnchor.HorizontalMask)) geo = geo.WithX(flipped.X);
+      }
+
+      // If sliding is allowed, try moving the rect into the bounds
+      if (constraintAdjustment.HasAllFlags(PopupPositionerConstraintAdjustment.SlideX)) {
+         geo = geo.WithX(Math.Max(geo.X, bounds.X));
+         if (geo.Right > bounds.Right) geo = geo.WithX(bounds.Right - geo.Width);
+      }
+
+      // Resize the rect horizontally if allowed.
+      if (constraintAdjustment.HasAllFlags(PopupPositionerConstraintAdjustment.ResizeX)) {
+         var unconstrainedRect = geo;
+
+         if (!FitsInBounds(unconstrainedRect, PopupAnchor.Left)) {
+            unconstrainedRect = unconstrainedRect.WithX(bounds.X);
+         }
+
+         if (!FitsInBounds(unconstrainedRect, PopupAnchor.Right)) {
+            unconstrainedRect = unconstrainedRect.WithWidth(bounds.Width - unconstrainedRect.X);
+         }
+
+         if (IsValid(unconstrainedRect)) {
+            geo = unconstrainedRect;
+         }
+      }
+
+      // If flipping geometry and anchor is allowed and helps, use the flipped one,
+      // otherwise leave it as is
+      if (!FitsInBounds(geo, PopupAnchor.VerticalMask)
+          && constraintAdjustment.HasAllFlags(PopupPositionerConstraintAdjustment.FlipY)) {
+         var flipped = GetUnconstrained(anchor.FlipY(), gravity.FlipY());
+         if (FitsInBounds(flipped, PopupAnchor.VerticalMask)) geo = geo.WithY(flipped.Y);
+      }
+
+      // If sliding is allowed, try moving the rect into the bounds
+      if (constraintAdjustment.HasAllFlags(PopupPositionerConstraintAdjustment.SlideY)) {
+         geo = geo.WithY(Math.Max(geo.Y, bounds.Y));
+         if (geo.Bottom > bounds.Bottom) geo = geo.WithY(bounds.Bottom - geo.Height);
+      }
+
+      // Resize the rect vertically if allowed.
+      if (constraintAdjustment.HasAllFlags(PopupPositionerConstraintAdjustment.ResizeY)) {
+         var unconstrainedRect = geo;
+
+         if (!FitsInBounds(unconstrainedRect, PopupAnchor.Top)) {
+            unconstrainedRect = unconstrainedRect.WithY(bounds.Y);
+         }
+
+         if (!FitsInBounds(unconstrainedRect, PopupAnchor.Bottom)) {
+            unconstrainedRect = unconstrainedRect.WithHeight(bounds.Bottom - unconstrainedRect.Y);
+         }
+
+         if (IsValid(unconstrainedRect)) {
+            geo = unconstrainedRect;
+         }
+      }
+
+      return geo;
+   }
+   
+   public static void ValidateEdge(this PopupAnchor edge)
+   {
+      if (edge.HasAllFlags(PopupAnchor.Left | PopupAnchor.Right) ||
+          edge.HasAllFlags(PopupAnchor.Top | PopupAnchor.Bottom)) {
+         throw new ArgumentException("Opposite edges specified");
+      }
+   }
+
+   public static void ValidateGravity(this PopupGravity gravity)
+   {
+      ValidateEdge((PopupAnchor)gravity);
+   }
+
+   public static PopupAnchor Flip(this PopupAnchor edge)
+   {
+      if (edge.HasAnyFlag(PopupAnchor.HorizontalMask)) {
+         edge ^= PopupAnchor.HorizontalMask;
+      }
+      
+      if (edge.HasAnyFlag(PopupAnchor.VerticalMask)) {
+         edge ^= PopupAnchor.VerticalMask;
+      }
+      return edge;
+   }
+
+   public static PopupAnchor FlipX(this PopupAnchor edge)
+   {
+      if (edge.HasAnyFlag(PopupAnchor.HorizontalMask)) {
+         edge ^= PopupAnchor.HorizontalMask;
+      }
+      return edge;
+   }
+        
+   public static PopupAnchor FlipY(this PopupAnchor edge)
+   {
+      if (edge.HasAnyFlag(PopupAnchor.VerticalMask)) {
+         edge ^= PopupAnchor.VerticalMask;
+      }
+      return edge;
+   }
+
+   public static PopupGravity FlipX(this PopupGravity gravity)
+   {
+      return (PopupGravity)FlipX((PopupAnchor)gravity);
+   }
+
+   public static PopupGravity FlipY(this PopupGravity gravity)
+   {
+      return (PopupGravity)FlipY((PopupAnchor)gravity);
+   }
+   
+   internal static Point GetAnchorPoint(Rect anchorRect, PopupAnchor edge)
+   {
+      double x, y;
+      if (edge.HasAllFlags(PopupAnchor.Left)) {
+         x = anchorRect.X;
+      }
+      else if (edge.HasAllFlags(PopupAnchor.Right)) {
+         x = anchorRect.Right;
+      } else {
+         x = anchorRect.X + anchorRect.Width / 2;
+      }
+
+
+      if (edge.HasAllFlags(PopupAnchor.Top)) {
+         y = anchorRect.Y;
+      } else if (edge.HasAllFlags(PopupAnchor.Bottom)) {
+         y = anchorRect.Bottom;
+      } else {
+         y = anchorRect.Y + anchorRect.Height / 2;
+      }
+      return new Point(x, y);
+   }
+
+   
+   internal static Point Gravitate(Point anchorPoint, Size size, PopupGravity gravity)
+   {
+      double x, y;
+      if (gravity.HasAllFlags(PopupGravity.Left)) {
+         x = -size.Width;
+      } else if (gravity.HasAllFlags(PopupGravity.Right)) {
+         x = 0;
+      } else {
+         x = -size.Width / 2;
+      }
+
+      if (gravity.HasAllFlags(PopupGravity.Top)) {
+         y = -size.Height;
+      } else if (gravity.HasAllFlags(PopupGravity.Bottom)) {
+         y = 0;
+      } else {
+         y = -size.Height / 2;
+      }
+       
+      return anchorPoint + new Point(x, y);
    }
 }

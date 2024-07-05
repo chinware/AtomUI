@@ -101,7 +101,6 @@ public class Flyout : PopupFlyoutBase
                                                           (o, v) => o._motionDuration = v);
 
    private CompositeDisposable? _compositeDisposable;
-   private FlyoutPresenter? _presenter;
    private bool _animating = false;
    private GlobalTokenBinder _globalTokenBinder;
    
@@ -118,26 +117,36 @@ public class Flyout : PopupFlyoutBase
 
    private void HandlePopupPropertyChanged(AvaloniaPropertyChangedEventArgs args)
    {
-      SetupArrowPosition(Popup.Placement, Popup.PlacementAnchor, Popup.PlacementGravity);
+      SetupArrowPosition(AtomPopup);
    }
 
-   private void SetupArrowPosition(PlacementMode placement, PopupAnchor? anchor, PopupGravity? gravity)
+   private void SetupArrowPosition(Popup popup, FlyoutPresenter? flyoutPresenter = null)
    {
-      var arrowPosition = PopupUtils.CalculateArrowPosition(placement, anchor, gravity);
-      if (_presenter is not null && arrowPosition is not null) {
-         _presenter.ArrowPosition = arrowPosition.Value;
+      if (flyoutPresenter is null) {
+         var child = popup.Child;
+         if (child is FlyoutPresenter childPresenter) {
+            flyoutPresenter = childPresenter;
+         }
       }
+
+      if (flyoutPresenter is not null) {
+         var arrowPosition = PopupUtils.CalculateArrowPosition(popup.Placement, popup.PlacementAnchor, popup.PlacementGravity);
+         if (arrowPosition.HasValue) {
+            flyoutPresenter.ArrowPosition = arrowPosition.Value;
+         }
+      }
+
    }
 
    protected override Control CreatePresenter()
    {
-      _presenter = new FlyoutPresenter
+      var presenter = new FlyoutPresenter
       {
          [!BorderedStyleControl.ChildProperty] = this[!ContentProperty]
       };
-      BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, _presenter, IsShowArrowProperty);
-      SetupArrowPosition(Placement, PlacementAnchor, PlacementGravity);
-      return _presenter;
+      BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, presenter, IsShowArrowProperty);
+      SetupArrowPosition(AtomPopup, presenter);
+      return presenter;
    }
    
    protected internal override void NotifyPopupCreated(Popup popup) 
@@ -148,7 +157,7 @@ public class Flyout : PopupFlyoutBase
       BindUtils.RelayBind(this, PlacementGravityProperty, popup);
       BindUtils.RelayBind(this, HorizontalOffsetProperty, popup);
       BindUtils.RelayBind(this, VerticalOffsetProperty, popup);
-      SetupArrowPosition(popup.Placement, popup.PlacementAnchor, popup.PlacementGravity);
+      SetupArrowPosition(popup);
    }
    
    protected override void OnOpening(CancelEventArgs args)
@@ -217,7 +226,6 @@ public class Flyout : PopupFlyoutBase
           e.Property == PlacementAnchorProperty ||
           e.Property == PlacementGravityProperty) {
          CalculateShowArrowEffective();
-         SetupArrowPosition(Placement, PlacementAnchor, PlacementGravity);
       }
    }
 
@@ -267,14 +275,14 @@ public class Flyout : PopupFlyoutBase
          return false;
       }
       CalculateShowArrowEffective();
-      //var presenter = CreatePresenter();
-      // if (presenter is FlyoutPresenter flyoutPresenter) {
-      //    // 为了获取 token 资源
-      //    ((ISetLogicalParent)flyoutPresenter).SetParent(placementTarget);
-      //    AtomPopup.CalculatePositionInfo(placementTarget, presenter);
-      //    ((ISetLogicalParent)flyoutPresenter).SetParent(null);
-      // }
-
+      var presenter = CreatePresenter();
+       if (presenter is FlyoutPresenter flyoutPresenter) {
+          // 为了获取 token 资源
+          ((ISetLogicalParent)flyoutPresenter).SetParent(placementTarget);
+          AtomPopup.CalculatePositionInfo(placementTarget, presenter);
+          ((ISetLogicalParent)flyoutPresenter).SetParent(null);
+       }
+       
       var result = base.ShowAtCore(placementTarget, showAtPointer);
      // PlayShowUpMotion(placementTarget);
       return result;

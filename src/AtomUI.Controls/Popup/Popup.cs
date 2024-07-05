@@ -140,7 +140,7 @@ public class Popup : AbstractPopup
       }
 
       Rect GetUnconstrained(PopupAnchor a, PopupGravity g) =>
-         new Rect(Gravitate(GetAnchorPoint(anchorRect, a), translatedSize, g) + offset, translatedSize);
+         new Rect(PopupUtils.Gravitate(PopupUtils.GetAnchorPoint(anchorRect, a), translatedSize, g) + offset, translatedSize);
 
       var geo = GetUnconstrained(anchor, gravity);
       // If flipping geometry and anchor is allowed and helps, use the flipped one,
@@ -155,51 +155,7 @@ public class Popup : AbstractPopup
 
       return result;
    }
-
-   private static Point Gravitate(Point anchorPoint, Size size, PopupGravity gravity)
-   {
-      double x, y;
-      if (gravity.HasFlag(PopupGravity.Left)) {
-         x = -size.Width;
-      } else if (gravity.HasFlag(PopupGravity.Right)) {
-         x = 0;
-      } else {
-         x = -size.Width / 2;
-      }
-
-      if (gravity.HasFlag(PopupGravity.Top)) {
-         y = -size.Height;
-      } else if (gravity.HasFlag(PopupGravity.Bottom)) {
-         y = 0;
-      } else {
-         y = -size.Height / 2;
-      }
-
-      return anchorPoint + new Point(x, y);
-   }
-
-   private static Point GetAnchorPoint(Rect anchorRect, PopupAnchor edge)
-   {
-      double x, y;
-      if (edge.HasFlag(PopupAnchor.Left)) {
-         x = anchorRect.X;
-      } else if (edge.HasFlag(PopupAnchor.Right)) {
-         x = anchorRect.Right;
-      } else {
-         x = anchorRect.X + anchorRect.Width / 2;
-      }
-
-      if (edge.HasFlag(PopupAnchor.Top)) {
-         y = anchorRect.Y;
-      } else if (edge.HasFlag(PopupAnchor.Bottom)) {
-         y = anchorRect.Bottom;
-      } else {
-         y = anchorRect.Y + anchorRect.Height / 2;
-      }
-
-      return new Point(x, y);
-   }
-
+   
    private Rect GetBounds(Rect anchorRect)
    {
       // 暂时只支持窗口的方式
@@ -354,12 +310,14 @@ public class Popup : AbstractPopup
          } else {
             popupSize = Child.DesiredSize;
          }
+         
          var scaling = _managedPopupPositioner!.Scaling;
          var anchorRect = new Rect(
             parameters.AnchorRectangle.TopLeft * scaling,
             parameters.AnchorRectangle.Size * scaling);
          anchorRect = anchorRect.Translate(_managedPopupPositioner.ParentClientAreaScreenGeometry.TopLeft);
-            
+         
+        
          var flipInfo = CalculateFlipInfo(popupSize * scaling,
                                           anchorRect,
                                           parameters.Anchor,
@@ -446,10 +404,14 @@ public class Popup : AbstractPopup
       positionInfo.Size = parameters.Size;
       positionInfo.Offset = parameters.Offset;
       
+      var scaling = parentTopLevel.RenderScaling;
+      var parentGeometry = GetParentClientAreaScreenGeometry(parentTopLevel);
+      var screens = GetScreenInfos(parentTopLevel);
+      
       if (Placement != PlacementMode.Center &&
           Placement != PlacementMode.Pointer) {
          // 计算是否 flip
-         var scaling = parentTopLevel.RenderScaling;
+ 
          var anchorRect = new Rect(
             parameters.AnchorRectangle.TopLeft * scaling,
             parameters.AnchorRectangle.Size * scaling);
@@ -457,8 +419,8 @@ public class Popup : AbstractPopup
          var parentOffsetPoint = parentTopLevel.PointToScreen(default);
       
          anchorRect = anchorRect.Translate(new Point(parentOffsetPoint.X, parentOffsetPoint.Y));
-         var parentGeometry = GetParentClientAreaScreenGeometry(parentTopLevel);
-         var bounds = GetBounds(anchorRect, parentGeometry,GetScreenInfos(parentTopLevel));
+   
+         var bounds = GetBounds(anchorRect, parentGeometry,screens);
          var flipInfo = CalculateFlipInfo(bounds, 
                                           parameters.Size * scaling,
                                           anchorRect,
@@ -474,16 +436,31 @@ public class Popup : AbstractPopup
             positionInfo.EffectivePlacementAnchor = flipAnchorAndGravity.Item1;
             positionInfo.EffectivePlacementGravity = flipAnchorAndGravity.Item2;
             positionInfo.Offset = flipOffset;
-            positionInfo.IsFlipped = false;
+            positionInfo.IsFlipped = true;
          } else {
             positionInfo.IsFlipped = false;
-            
          }
       }
-     Console.WriteLine($"{positionInfo.IsFlipped}-{positionInfo.Offset}-{positionInfo.Size}");
+      
+      var rect = PopupUtils.Calculate(
+         parameters.Size * scaling,
+         new Rect(
+            parameters.AnchorRectangle.TopLeft * scaling,
+            parameters.AnchorRectangle.Size * scaling),
+         parameters.Anchor,
+         parameters.Gravity,
+         parameters.ConstraintAdjustment,
+         parameters.Offset * scaling,
+         parentGeometry,
+         screens);
+
+      positionInfo.Offset = rect.Position;
+      positionInfo.Size = rect.Size;
+      positionInfo.Scaling = scaling;
+      
       return positionInfo;
    }
-
+   
    internal static (PopupAnchor, PopupGravity) GetAnchorAndGravity(PlacementMode placement)
    {
       return placement switch
@@ -533,6 +510,7 @@ public class Popup : AbstractPopup
       public Point Offset { get; set; }
       public bool IsFlipped { get; set; }
       public Size Size { get; set; }
+      public double Scaling { get; set; }
       public PlacementMode EffectivePlacement { get; set; }
       public PopupAnchor EffectivePlacementAnchor { get; set; }
       public PopupGravity EffectivePlacementGravity { get; set; }
