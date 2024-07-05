@@ -234,13 +234,4 @@ public class MotionActor : Animatable, IMotionActor
       _motion.NotifyCompleted();
       _motion.NotifyRestoreMotionTarget(_ghost!);
    }
-   
-   // protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
-   // {
-   //    base.OnPropertyChanged(change);
-   //    Console.WriteLine($"{change.Property.Name}-{change.NewValue}");
-   //    if (change.NewValue is TransformOperations operations) {
-   //       Console.WriteLine(operations.Operations.Count);
-   //    }
-   // }
 }

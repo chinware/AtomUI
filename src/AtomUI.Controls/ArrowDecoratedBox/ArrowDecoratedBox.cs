@@ -133,7 +133,7 @@ public partial class ArrowDecoratedBox : StyledControl, IShadowMaskInfoProvider
    
    static ArrowDecoratedBox()
    {
-      AffectsArrange<ArrowDecoratedBox>(ArrowPositionProperty, IsShowArrowProperty);
+      AffectsMeasure<ArrowDecoratedBox>(ArrowPositionProperty, IsShowArrowProperty);
    }
    
    public ArrowDecoratedBox()

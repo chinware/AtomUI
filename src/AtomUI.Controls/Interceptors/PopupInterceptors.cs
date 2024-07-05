@@ -83,11 +83,14 @@ internal static class PopupFlyoutBaseInterceptor
 
 internal static class PopupRootInterceptor
 {
+   private static readonly Type PopupRootType = typeof(PopupRoot);
    public static bool ShowPrefixInterceptor(PopupRoot __instance)
    {
       // TODO 这个范围有点广，需要评估
-      if (__instance.Parent is Popup popup) {
-         popup.NotifyPopupRootAboutToShow(__instance);
+      if (PopupRootType.IsInstanceOfType(__instance)) {
+         if (__instance.Parent is Popup popup) {
+            popup.NotifyPopupRootAboutToShow(__instance);
+         }
       }
       return true;
    }

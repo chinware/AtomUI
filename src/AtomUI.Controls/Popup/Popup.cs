@@ -52,6 +52,10 @@ public class Popup : AbstractPopup
    private CompositeDisposable? _compositeDisposable;
    private bool _initialized;
 
+   private PlacementMode? _originPlacementMode;
+   private PopupAnchor? _originPlacementAnchor;
+   private PopupGravity? _originPlacementGravity;
+
    static Popup()
    {
       var type = typeof(IPopupPositioner).Assembly.GetType("Avalonia.Controls.Primitives.PopupPositioning.PopupPositionerExtensions")!;
@@ -365,14 +369,36 @@ public class Popup : AbstractPopup
             var flipPlacement = GetFlipPlacement(Placement);
             var flipAnchorAndGravity = GetAnchorAndGravity(flipPlacement);
             var flipOffset = CalculateMarginToAnchorOffset(flipPlacement);
+            
+            _originPlacementMode = Placement;
+            _originPlacementAnchor = PlacementAnchor;
+            _originPlacementGravity = PlacementGravity;
+            
             Placement = flipPlacement;
             PlacementAnchor = flipAnchorAndGravity.Item1;
             PlacementGravity = flipAnchorAndGravity.Item2;
             HorizontalOffset = flipOffset.X;
             VerticalOffset = flipOffset.Y;
             IsFlipped = true;
+            
          } else {
             IsFlipped = false;
+           
+            if (_originPlacementMode.HasValue) {
+               Placement = _originPlacementMode.Value;
+            }
+
+            if (_originPlacementAnchor.HasValue) {
+               PlacementAnchor = _originPlacementAnchor.Value;
+            }
+
+            if (_originPlacementGravity.HasValue) {
+               PlacementGravity = _originPlacementGravity.Value;
+            }
+
+            _originPlacementMode = null;
+            _originPlacementAnchor = null;
+            _originPlacementGravity = null;
          }
       }
    }
@@ -443,17 +469,18 @@ public class Popup : AbstractPopup
             var flipPlacement = GetFlipPlacement(Placement);
             var flipAnchorAndGravity = GetAnchorAndGravity(flipPlacement);
             var flipOffset = CalculateMarginToAnchorOffset(flipPlacement);
+            
             positionInfo.EffectivePlacement = flipPlacement;
             positionInfo.EffectivePlacementAnchor = flipAnchorAndGravity.Item1;
             positionInfo.EffectivePlacementGravity = flipAnchorAndGravity.Item2;
             positionInfo.Offset = flipOffset;
             positionInfo.IsFlipped = false;
-            
          } else {
             positionInfo.IsFlipped = false;
+            
          }
       }
-      Console.WriteLine($"{positionInfo.IsFlipped}-{positionInfo.Offset}-{positionInfo.Size}");
+     Console.WriteLine($"{positionInfo.IsFlipped}-{positionInfo.Offset}-{positionInfo.Size}");
       return positionInfo;
    }
 

@@ -1,14 +1,11 @@
 ﻿using System.ComponentModel;
 using System.Reactive.Disposables;
-using System.Reflection;
 using AtomUI.Controls.MotionScene;
 using AtomUI.Data;
 using AtomUI.MotionScene;
-using AtomUI.Reflection;
 using AtomUI.Styling;
 using AtomUI.Utils;
 using Avalonia;
-using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Primitives.PopupPositioning;
@@ -16,7 +13,6 @@ using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Metadata;
 using Avalonia.Styling;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -271,13 +267,13 @@ public class Flyout : PopupFlyoutBase
          return false;
       }
       CalculateShowArrowEffective();
-      var presenter = CreatePresenter();
-      if (presenter is FlyoutPresenter flyoutPresenter) {
-         // 为了获取 token 资源
-         ((ISetLogicalParent)flyoutPresenter).SetParent(placementTarget);
-         AtomPopup.CalculatePositionInfo(placementTarget, presenter);
-         ((ISetLogicalParent)flyoutPresenter).SetParent(null);
-      }
+      //var presenter = CreatePresenter();
+      // if (presenter is FlyoutPresenter flyoutPresenter) {
+      //    // 为了获取 token 资源
+      //    ((ISetLogicalParent)flyoutPresenter).SetParent(placementTarget);
+      //    AtomPopup.CalculatePositionInfo(placementTarget, presenter);
+      //    ((ISetLogicalParent)flyoutPresenter).SetParent(null);
+      // }
 
       var result = base.ShowAtCore(placementTarget, showAtPointer);
      // PlayShowUpMotion(placementTarget);
