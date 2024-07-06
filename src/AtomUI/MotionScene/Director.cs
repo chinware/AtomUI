@@ -38,12 +38,12 @@ public class Director : IDirector
       _compositeDisposable.Add(Disposable.Create((sceneLayer), state =>
       {
          if (sceneLayer is not null) {
-            sceneLayer.Opacity = 0;
+            //sceneLayer.Opacity = 0;
             Dispatcher.UIThread.InvokeAsync(async () =>
             {
-               await Task.Delay(60);
-               sceneLayer.Hide();
-               sceneLayer.Dispose();
+               // await Task.Delay(60);
+               // sceneLayer.Hide();
+               // sceneLayer.Dispose();
             });
          }
       }));
@@ -54,9 +54,9 @@ public class Director : IDirector
          var ghost = actor.GetAnimatableGhost();
          sceneLayer!.SetMotionTarget(ghost);
          actor.NotifyMotionTargetAddedToScene(ghost);
-         ghost.IsVisible = true; // 默认是不显示的
          sceneLayer.Show();
       }
+      
       HandleMotionPreStart(actor);
       ExecuteMotionAction(actor);
       HandleMotionStarted(actor);
@@ -78,8 +78,6 @@ public class Director : IDirector
    {
       // 根据 Motion 配置的对 Actor 对象的属性赋值
       actor.EnableMotion();
-      var ghost = actor.GetAnimatableGhost();
-      ghost.IsVisible = true;
       foreach (var motionConfig in actor.Motion.GetMotionConfigs()) {
          var property = motionConfig.Property;
          var endValue = motionConfig.EndValue;

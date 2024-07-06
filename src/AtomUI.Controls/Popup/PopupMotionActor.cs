@@ -3,7 +3,6 @@ using AtomUI.Media;
 using AtomUI.MotionScene;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Layout;
 using Avalonia.Media;
 
 namespace AtomUI.Controls;
@@ -34,24 +33,9 @@ internal class PopupMotionActor : MotionActor
    protected override void BuildGhost()
    {
       if (_ghost is null) {
-         var ghostBrush = new VisualBrush
-         {
-            Visual = MotionTarget,
-            Stretch = Stretch.None,
-            AlignmentX = AlignmentX.Left,
-         };
-         Size motionTargetSize;
-         // Popup.Child can't be null here, it was set in ShowAtCore.
-         if (MotionTarget.DesiredSize == default) {
-            // Popup may not have been shown yet. Measure content
-            motionTargetSize = LayoutHelper.MeasureChild(MotionTarget, Size.Infinity, new Thickness());
-         } else {
-            motionTargetSize = MotionTarget.DesiredSize;
-         }
-         _ghost = new MotionGhostControl(ghostBrush)
+         _ghost = new MotionGhostControl(MotionTarget, _boxShadows)
          {
             Shadows = _boxShadows,
-            MaskContentSize = motionTargetSize
          };
       }
    }
