@@ -10,7 +10,6 @@ using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
-using Avalonia.Platform;
 
 namespace AtomUI.Controls;
 
@@ -361,15 +360,13 @@ public class Popup : AbstractPopup
       }
    }
 
-   internal PositionInfo CalculatePositionInfo(Control placementTarget, Control popupContent)
+   internal PopupPositionInfo CalculatePositionInfo(Control placementTarget, Control popupContent)
    {
       var offsetX = HorizontalOffset;
       var offsetY = VerticalOffset;
       var marginToAnchorOffset = CalculateMarginToAnchorOffset(Placement);
       offsetX += marginToAnchorOffset.X;
       offsetY += marginToAnchorOffset.Y;
-      HorizontalOffset = offsetX;
-      VerticalOffset = offsetY;
       Point offset = default;
       PopupPositionerParameters parameters = new PopupPositionerParameters();
       var parentTopLevel = TopLevel.GetTopLevel(placementTarget)!;
@@ -384,7 +381,7 @@ public class Popup : AbstractPopup
       
       if (Placement != PlacementMode.Center &&
           Placement != PlacementMode.Pointer) {
-         offset = new Point(HorizontalOffset, VerticalOffset);
+         offset = new Point(offsetX, offsetY);
       }
 
       ConfigurePosition(ref parameters, parentTopLevel,
@@ -397,7 +394,7 @@ public class Popup : AbstractPopup
                         PlacementRect ?? new Rect(default, placementTarget.Bounds.Size),
                         FlowDirection);
       
-      var positionInfo = new PositionInfo();
+      var positionInfo = new PopupPositionInfo();
       positionInfo.EffectivePlacement = Placement;
       positionInfo.EffectivePlacementAnchor = PlacementAnchor;
       positionInfo.EffectivePlacementGravity = PlacementGravity;
@@ -441,7 +438,7 @@ public class Popup : AbstractPopup
             positionInfo.IsFlipped = false;
          }
       }
-      
+
       var rect = PopupUtils.Calculate(
          parameters.Size * scaling,
          new Rect(
@@ -504,15 +501,15 @@ public class Popup : AbstractPopup
          _ => throw new ArgumentOutOfRangeException(nameof(placement), placement, "Invalid value for PlacementMode")
       };
    }
+}
 
-   internal class PositionInfo
-   {
-      public Point Offset { get; set; }
-      public bool IsFlipped { get; set; }
-      public Size Size { get; set; }
-      public double Scaling { get; set; }
-      public PlacementMode EffectivePlacement { get; set; }
-      public PopupAnchor EffectivePlacementAnchor { get; set; }
-      public PopupGravity EffectivePlacementGravity { get; set; }
-   }
+internal class PopupPositionInfo
+{
+   public Point Offset { get; set; }
+   public bool IsFlipped { get; set; }
+   public Size Size { get; set; }
+   public double Scaling { get; set; }
+   public PlacementMode EffectivePlacement { get; set; }
+   public PopupAnchor EffectivePlacementAnchor { get; set; }
+   public PopupGravity EffectivePlacementGravity { get; set; }
 }

@@ -55,7 +55,7 @@ public class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
 #endif
       Focusable = true;
    }
-
+   
    /// <summary>
    /// Gets the platform-specific window implementation.
    /// </summary>
@@ -135,6 +135,13 @@ public class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
 
    public void MoveAndResize(Point point, Size size)
    {
+      Width = size.Width;
+      Height = size.Height;
       _managedPopupPositionerPopup?.MoveAndResize(point, size);
    }
+
+   // public override void Render(DrawingContext context)
+   // {
+   //    context.FillRectangle(new SolidColorBrush(Colors.Aqua), new Rect(new Point(0, 0), DesiredSize));
+   // }
 }

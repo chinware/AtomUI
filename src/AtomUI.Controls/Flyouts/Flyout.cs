@@ -1,13 +1,13 @@
 ﻿using System.ComponentModel;
 using System.Reactive.Disposables;
 using AtomUI.Controls.MotionScene;
+using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.MotionScene;
 using AtomUI.Styling;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Layout;
 using Avalonia.Media;
@@ -28,6 +28,9 @@ public class Flyout : PopupFlyoutBase
 
    public static readonly StyledProperty<bool> IsShowArrowEffectiveProperty =
       ArrowDecoratedBox.IsShowArrowProperty.AddOwner<PopupFlyoutBase>();
+   
+   public static readonly StyledProperty<BoxShadows> MaskShadowsProperty =
+      Border.BoxShadowProperty.AddOwner<Flyout>();
 
    /// <summary>
    /// 箭头是否始终指向中心
@@ -94,6 +97,12 @@ public class Flyout : PopupFlyoutBase
       set => SetValue(ContentProperty, value);
    }
    
+   public BoxShadows MaskShadows
+   {
+      get => GetValue(MaskShadowsProperty);
+      set => SetValue(MaskShadowsProperty, value);
+   }
+   
    private TimeSpan _motionDuration;
    private static readonly DirectProperty<Flyout, TimeSpan> MotionDurationTokenProperty
       = AvaloniaProperty.RegisterDirect<Flyout, TimeSpan>(nameof(_motionDuration),
@@ -113,6 +122,7 @@ public class Flyout : PopupFlyoutBase
    {
       _globalTokenBinder = new GlobalTokenBinder();
       _globalTokenBinder.AddGlobalBinding(this, MotionDurationTokenProperty, GlobalResourceKey.MotionDurationMid);
+      _globalTokenBinder.AddGlobalBinding(this, MaskShadowsProperty, GlobalResourceKey.BoxShadowsSecondary);
    }
 
    private void HandlePopupPropertyChanged(AvaloniaPropertyChangedEventArgs args)
@@ -157,6 +167,7 @@ public class Flyout : PopupFlyoutBase
       BindUtils.RelayBind(this, PlacementGravityProperty, popup);
       BindUtils.RelayBind(this, HorizontalOffsetProperty, popup);
       BindUtils.RelayBind(this, VerticalOffsetProperty, popup);
+      popup.MaskShadows = MaskShadows;
       SetupArrowPosition(popup);
    }
    
@@ -276,46 +287,54 @@ public class Flyout : PopupFlyoutBase
       }
       CalculateShowArrowEffective();
       var presenter = CreatePresenter();
-       if (presenter is FlyoutPresenter flyoutPresenter) {
-          // 为了获取 token 资源
-          ((ISetLogicalParent)flyoutPresenter).SetParent(placementTarget);
-          AtomPopup.CalculatePositionInfo(placementTarget, presenter);
-          ((ISetLogicalParent)flyoutPresenter).SetParent(null);
-       }
-       
-      var result = base.ShowAtCore(placementTarget, showAtPointer);
-     // PlayShowUpMotion(placementTarget);
+      bool result = default;
+      if (presenter is FlyoutPresenter flyoutPresenter) {
+         _animating = true;
+         if (flyoutPresenter.Child?.Parent is null) {
+            // 为了获取 token 资源
+            UiStructureUtils.SetLogicalParent(flyoutPresenter, placementTarget);
+         }
+         var positionInfo = AtomPopup.CalculatePositionInfo(placementTarget, presenter);
+         PlayShowUpMotion(positionInfo, placementTarget, flyoutPresenter, showAtPointer);
+         result = true;
+      } else { 
+         result = base.ShowAtCore(placementTarget, showAtPointer);
+      }
       return result;
    }
 
-   private void PlayShowUpMotion(Control placementTarget)
-   {
-      if (Popup.Host is PopupRoot popupRoot) {
-         if (popupRoot.Content is Control content) {
-            Popup.Opacity = 0;
-            var director = Director.Instance;
-            var motion = new ZoomBigInMotion();
-            motion.ConfigureOpacity(_motionDuration);
-            motion.ConfigureRenderTransform(_motionDuration);
-            BoxShadows boxShadows = default;
-            if (Popup is Popup shadowAwarePopup) {
-               boxShadows = shadowAwarePopup.MaskShadows;
-            }
+   // protected override bool HideCore(bool canCancel = true)
+   // {
+   //    if (_animating) {
+   //       return false;
+   //    } else {
+   //       return base.HideCore(canCancel);
+   //    }
+   // }
 
-            var topLevel = TopLevel.GetTopLevel(placementTarget);
-            var motionActor = new PopupMotionActor(boxShadows, popupRoot, content, motion);
-            motionActor.DispatchInSceneLayer = true;
-            motionActor.SceneParent = topLevel;
-            motionActor.Completed += (sender, args) =>
-            {
-               _animating = false;
-               popupRoot.PlatformImpl?.SetTopmost(true);
-               Popup.Opacity = 1;
-            };
-            
-            director?.Schedule(motionActor);
-            _animating = true;
+   private void PlayShowUpMotion(PopupPositionInfo positionInfo, Control placementTarget, FlyoutPresenter flyoutPresenter, 
+                                 bool showAtPointer)
+   {
+      var director = Director.Instance;
+      var motion = new ZoomBigInMotion();
+      motion.ConfigureOpacity(_motionDuration);
+      motion.ConfigureRenderTransform(_motionDuration);
+      var topLevel = TopLevel.GetTopLevel(placementTarget);
+      var motionActor = new PopupMotionActor(MaskShadows, positionInfo, flyoutPresenter, motion);
+      motionActor.DispatchInSceneLayer = true;
+      motionActor.SceneParent = topLevel;
+      motionActor.Completed += (sender, args) =>
+      {
+         if (flyoutPresenter.Child is not null) {
+            var child = flyoutPresenter.Child;
+            UiStructureUtils.ClearLogicalParentRecursive(child, null);
+            UiStructureUtils.ClearVisualParentRecursive(child, null);
          }
-      }
+         _animating = false;
+        // base.ShowAtCore(placementTarget, showAtPointer);
+      };
+  
+      director?.Schedule(motionActor);
+    
    }
 }

@@ -53,7 +53,7 @@ public partial class ArrowDecoratedBox : IControlCustomStyle
          _compositeDisposable.Add(BindUtils.RelayBind(this, BackgroundSizingProperty, _container));
          _compositeDisposable.Add(BindUtils.RelayBind(this, BackgroundProperty, _container));
          _compositeDisposable.Add(BindUtils.RelayBind(this, CornerRadiusProperty, _container));
-         _compositeDisposable.Add(BindUtils.RelayBind(this, ChildProperty, _container));
+        _compositeDisposable.Add(BindUtils.RelayBind(this, ChildProperty, _container));
          _compositeDisposable.Add(BindUtils.RelayBind(this, PaddingProperty, _container));
       }
    }

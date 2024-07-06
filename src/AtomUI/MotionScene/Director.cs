@@ -1,9 +1,6 @@
 ﻿using System.Reactive.Disposables;
 using AtomUI.MotionScene;
 using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
-using Avalonia.Data;
 using Avalonia.Threading;
 
 namespace AtomUI.Controls.MotionScene;
@@ -44,7 +41,7 @@ public class Director : IDirector
             sceneLayer.Opacity = 0;
             Dispatcher.UIThread.InvokeAsync(async () =>
             {
-               await Task.Delay(100);
+               await Task.Delay(60);
                sceneLayer.Hide();
                sceneLayer.Dispose();
             });
@@ -57,8 +54,8 @@ public class Director : IDirector
          var ghost = actor.GetAnimatableGhost();
          sceneLayer!.SetMotionTarget(ghost);
          actor.NotifyMotionTargetAddedToScene(ghost);
-         ghost.IsVisible = false; // 默认是不显示的
-         sceneLayer!.Show();
+         ghost.IsVisible = true; // 默认是不显示的
+         sceneLayer.Show();
       }
       HandleMotionPreStart(actor);
       ExecuteMotionAction(actor);
@@ -141,9 +138,8 @@ public class Director : IDirector
 
    private void HandleMotionCompleted(MotionActor actor)
    {
-
-      MotionCompleted?.Invoke(this, new MotionEventArgs(actor));
       actor.NotifyMotionCompleted();
+      MotionCompleted?.Invoke(this, new MotionEventArgs(actor));
       if (_states.TryGetValue(actor, out var state)) {
          state.Dispose();
          _states.Remove(actor);
