@@ -278,7 +278,6 @@ public class Flyout : PopupFlyoutBase
       offsetY += offset.Y;
       Popup.HorizontalOffset = offsetX;
       Popup.VerticalOffset = offsetY;
-      Console.WriteLine($"NotifyPositionPopup-{offsetY}");
    }
 
    protected override bool ShowAtCore(Control placementTarget, bool showAtPointer = false)
@@ -291,13 +290,16 @@ public class Flyout : PopupFlyoutBase
       bool result = default;
       if (presenter is FlyoutPresenter flyoutPresenter) {
          _animating = true;
-         if (flyoutPresenter.Child?.Parent is null) {
-            // 为了获取 token 资源
-            UiStructureUtils.SetLogicalParent(flyoutPresenter, placementTarget);
+         flyoutPresenter.Opacity = 0;
+         if (flyoutPresenter.Child is not null) {
+            var placementToplevel = TopLevel.GetTopLevel(placementTarget);
+            UiStructureUtils.ClearLogicalParentRecursive(flyoutPresenter, null);
+            UiStructureUtils.ClearVisualParentRecursive(flyoutPresenter, null);
+            UiStructureUtils.SetLogicalParent(flyoutPresenter, placementToplevel);
+            var positionInfo = AtomPopup.CalculatePositionInfo(placementTarget, presenter);
+            flyoutPresenter.Opacity = 1;
+            PlayShowUpMotion(positionInfo, placementTarget, flyoutPresenter, showAtPointer);
          }
-         var positionInfo = AtomPopup.CalculatePositionInfo(placementTarget, presenter);
-         Console.WriteLine(positionInfo.Offset);
-         PlayShowUpMotion(positionInfo, placementTarget, flyoutPresenter, showAtPointer);
          result = true;
       } else { 
          result = base.ShowAtCore(placementTarget, showAtPointer);
@@ -332,8 +334,11 @@ public class Flyout : PopupFlyoutBase
             UiStructureUtils.ClearLogicalParentRecursive(child, null);
             UiStructureUtils.ClearVisualParentRecursive(child, null);
          }
+         base.ShowAtCore(placementTarget, showAtPointer);
+         if (Popup.Host is WindowBase window) {
+            window.PlatformImpl!.SetTopmost(true);
+         }
          _animating = false;
-        base.ShowAtCore(placementTarget, showAtPointer);
       };
   
       director?.Schedule(motionActor);

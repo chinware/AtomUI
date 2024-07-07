@@ -1,8 +1,6 @@
 ﻿using System.Reactive.Disposables;
 using AtomUI.MotionScene;
 using Avalonia;
-using Avalonia.Animation;
-using Avalonia.Styling;
 using Avalonia.Threading;
 
 namespace AtomUI.Controls.MotionScene;
@@ -42,7 +40,7 @@ public class Director : IDirector
          if (sceneLayer is not null) {
             Dispatcher.UIThread.InvokeAsync(async () =>
             {
-               await Task.Delay(100);
+               await Task.Delay(300);
                sceneLayer.Hide();
                sceneLayer.Dispose();
             });

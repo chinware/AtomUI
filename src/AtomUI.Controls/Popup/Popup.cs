@@ -388,12 +388,9 @@ public class Popup : AbstractPopup
    {
       using var ignoreSyncOriginHandling = IgnoreSyncOriginValueHandling();
       var offsetX = _originOffsetX;
-      var offsetY = _originOffsetY;
-      
-      Console.WriteLine(offsetY);
+      var offsetY = _originOffsetY + 0.5; // TODO 不知道为什么会出现 0.5 的误差
       
       var marginToAnchorOffset = CalculateMarginToAnchorOffset(Placement);
-      Console.WriteLine(marginToAnchorOffset);
       offsetX += marginToAnchorOffset.X;
       offsetY += marginToAnchorOffset.Y;
       Point offset = default;

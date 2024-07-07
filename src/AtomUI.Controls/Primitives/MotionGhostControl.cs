@@ -164,6 +164,7 @@ internal class MotionGhostControl : Control, INotifyCaptureGhostBitmap
    {
       if (_ghostBitmap is not null) {
          var scaling = TopLevel.GetTopLevel(this)?.RenderScaling ?? 1.0;
+    
          context.DrawImage(_ghostBitmap, new Rect(new Point(0, 0), DesiredSize * scaling), 
                            new Rect(new Point(0, 0), DesiredSize));
       }
