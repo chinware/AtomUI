@@ -1,7 +1,6 @@
 ﻿using System.Reflection;
 using AtomUI.Platform.Windows;
 using Avalonia;
-using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Media;

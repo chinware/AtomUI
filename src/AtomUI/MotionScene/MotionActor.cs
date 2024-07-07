@@ -18,6 +18,7 @@ public class MotionActor : Animatable, IMotionActor
    public event EventHandler? PreStart;
    public event EventHandler? Started;
    public event EventHandler? Completed;
+   public event EventHandler? SceneShowed;
    
    public static readonly StyledProperty<double> MotionOpacityProperty =
       Visual.OpacityProperty.AddOwner<MotionActor>();
@@ -202,6 +203,11 @@ public class MotionActor : Animatable, IMotionActor
    {
       Canvas.SetLeft(motionTarget, 0);
       Canvas.SetTop(motionTarget, 0);
+   }
+
+   public virtual void NotifySceneShowed()
+   {
+      SceneShowed?.Invoke(this, EventArgs.Empty);
    }
 
    internal void EnableMotion()

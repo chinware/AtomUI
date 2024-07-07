@@ -55,6 +55,8 @@ public class Director : IDirector
          sceneLayer!.SetMotionTarget(ghost);
          actor.NotifyMotionTargetAddedToScene(ghost);
          sceneLayer.Show();
+         sceneLayer.Topmost = true;
+         actor.NotifySceneShowed();
       }
       
       HandleMotionPreStart(actor);

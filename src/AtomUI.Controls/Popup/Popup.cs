@@ -47,7 +47,7 @@ public class Popup : AbstractPopup
    
    private static readonly MethodInfo ConfigurePositionMethodInfo;
    private PopupShadowLayer? _shadowLayer;
-   private GlobalTokenBinder _globalTokenBinder;
+   private readonly GlobalTokenBinder _globalTokenBinder;
    private CompositeDisposable? _compositeDisposable;
    private bool _initialized;
 
@@ -531,7 +531,7 @@ public class Popup : AbstractPopup
       };
    }
    
-   private protected IDisposable IgnoreSyncOriginValueHandling()
+   private IDisposable IgnoreSyncOriginValueHandling()
    {
       return new IgnoreSyncOriginValueDisposable(this);
    }
@@ -549,6 +549,13 @@ public class Popup : AbstractPopup
       public void Dispose()
       {
          _popup._ignoreSyncOriginValues = false;
+      }
+   }
+
+   public void HideShadowLayer()
+   {
+      if (_shadowLayer is not null) {
+         _shadowLayer.Opacity = 0;
       }
    }
 }

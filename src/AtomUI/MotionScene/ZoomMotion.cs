@@ -139,11 +139,20 @@ public class ZoomBigOutMotion : AbstractMotion
    public void ConfigureRenderTransform(TimeSpan duration, Easing? easing = null)
    {
       easing ??= new CircularEaseInOut();
+      
+      var startValueBuilder = new TransformOperations.Builder(1);
+      startValueBuilder.AppendScale(1, 1);
+      var startValue = startValueBuilder.Build();
+      
+      var endValueBuilder = new TransformOperations.Builder(1);
+      endValueBuilder.AppendScale(0.8, 0.8);
+      var endValue = endValueBuilder.Build();
+      
       var config = new MotionConfig(MotionRenderTransformProperty)
       {
          TransitionKind = TransitionKind.TransformOperations,
-         StartValue = new ScaleTransform(1, 1),
-         EndValue = new ScaleTransform(0.8, 0.8),
+         StartValue = startValue,
+         EndValue = endValue,
          MotionDuration = duration,
          MotionEasing = easing
       };

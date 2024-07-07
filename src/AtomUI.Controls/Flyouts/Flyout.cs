@@ -8,11 +8,13 @@ using AtomUI.Styling;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Metadata;
 using Avalonia.Styling;
+using Avalonia.Threading;
 
 namespace AtomUI.Controls;
 
@@ -112,6 +114,8 @@ public class Flyout : PopupFlyoutBase
    private CompositeDisposable? _compositeDisposable;
    private bool _animating = false;
    private GlobalTokenBinder _globalTokenBinder;
+   internal bool RequestCloseWhereAnimationCompleted { get; set; } = false;
+   private PopupPositionInfo? _popupPositionInfo; // 这个信息在隐藏动画的时候会用到
    
    static Flyout()
    {
@@ -293,6 +297,7 @@ public class Flyout : PopupFlyoutBase
       if (_animating) {
          return false;
       }
+      RequestCloseWhereAnimationCompleted = false;
       CalculateShowArrowEffective();
       var presenter = CreatePresenter();
       bool result = default;
@@ -303,14 +308,14 @@ public class Flyout : PopupFlyoutBase
             UiStructureUtils.ClearLogicalParentRecursive(flyoutPresenter, null);
             UiStructureUtils.ClearVisualParentRecursive(flyoutPresenter, null);
             UiStructureUtils.SetLogicalParent(flyoutPresenter, placementToplevel);
-            var positionInfo = AtomPopup.CalculatePositionInfo(placementTarget, presenter);
+            _popupPositionInfo = AtomPopup.CalculatePositionInfo(placementTarget, presenter);
             
             // 重新设置箭头位置
             SetupArrowPosition(flyoutPresenter, 
-                               positionInfo.EffectivePlacement, 
-                               positionInfo.EffectivePlacementAnchor,
-                               positionInfo.EffectivePlacementGravity);
-            PlayShowUpMotion(positionInfo, placementTarget, flyoutPresenter, showAtPointer);
+                               _popupPositionInfo.EffectivePlacement, 
+                               _popupPositionInfo.EffectivePlacementAnchor,
+                               _popupPositionInfo.EffectivePlacementGravity);
+            PlayShowMotion(_popupPositionInfo, placementTarget, flyoutPresenter, showAtPointer);
          }
          result = true;
       } else { 
@@ -321,15 +326,30 @@ public class Flyout : PopupFlyoutBase
 
    protected override bool HideCore(bool canCancel = true)
    {
-      if (_animating) {
+      // 在这里我们需要自己实现是否能关闭的逻辑了
+      if (!IsOpen || _animating) {
          return false;
-      } else {
-         return base.HideCore(canCancel);
       }
+      
+      if (canCancel) {
+         if (CancelClosing()) {
+            return false;
+         }
+      }
+      // 后期加上是否有动画的开关
+      PlayHideMotion();
+      return true;
+   }
+   
+   private bool CancelClosing()
+   {
+      var eventArgs = new CancelEventArgs();
+      OnClosing(eventArgs);
+      return eventArgs.Cancel;
    }
 
-   private void PlayShowUpMotion(PopupPositionInfo positionInfo, Control placementTarget, FlyoutPresenter flyoutPresenter, 
-                                 bool showAtPointer)
+   private void PlayShowMotion(PopupPositionInfo positionInfo, Control placementTarget, FlyoutPresenter flyoutPresenter, 
+                               bool showAtPointer)
    {
       var director = Director.Instance;
       var motion = new ZoomBigInMotion();
@@ -351,9 +371,59 @@ public class Flyout : PopupFlyoutBase
             window.PlatformImpl!.SetTopmost(true);
          }
          _animating = false;
+         if (RequestCloseWhereAnimationCompleted) {
+            Dispatcher.UIThread.Post(() =>
+            {
+               Hide();
+            });
+         }
       };
   
       director?.Schedule(motionActor);
-    
+   }
+
+   private void PlayHideMotion()
+   {
+      var popup = AtomPopup;
+      var placementToplevel = TopLevel.GetTopLevel(popup.PlacementTarget);
+      if (_popupPositionInfo is null || 
+          popup.Child is null || 
+          placementToplevel is null) {
+         // 没有动画位置信息，直接关闭
+         base.HideCore(false);
+         return;
+      }
+      _animating = true;
+      var director = Director.Instance;
+      var motion = new ZoomBigOutMotion();
+      motion.ConfigureOpacity(_motionDuration);
+      motion.ConfigureRenderTransform(_motionDuration);
+      
+      UiStructureUtils.SetVisualParent(popup.Child, null);
+      UiStructureUtils.SetVisualParent(popup.Child, null);
+      
+      var motionActor = new PopupMotionActor(MaskShadows, _popupPositionInfo, popup.Child, motion);
+      motionActor.DispatchInSceneLayer = true;
+      motionActor.SceneParent = placementToplevel;
+      
+      motionActor.SceneShowed += (sender, args) =>
+      {
+         if (popup.Host is WindowBase window) {
+            window.Opacity = 0;
+            popup.HideShadowLayer();
+         }
+         Dispatcher.UIThread.InvokeAsync(async () =>
+         {
+            await Task.Delay(50);
+            base.HideCore(false);
+         });
+      };
+      
+      motionActor.Completed += (sender, args) =>
+      {
+         _animating = false;
+      };
+      
+      director?.Schedule(motionActor);
    }
 }

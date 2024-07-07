@@ -288,6 +288,10 @@ public class FlyoutHost : Control
       if (Flyout is null) {
          return;
       }
+
+      if (Flyout is Flyout atomFlyout) {
+         atomFlyout.RequestCloseWhereAnimationCompleted = true;
+      }
       Flyout.Hide();
    }
 }
