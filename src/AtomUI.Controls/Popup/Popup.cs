@@ -75,15 +75,17 @@ public class Popup : AbstractPopup
       _originOffsetY = VerticalOffset;
    }
 
+   internal void UpdateOriginOffset(double offsetX, double offsetY)
+   {
+      _originOffsetX = offsetX;
+      _originOffsetY = offsetY;
+   }
+
    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
    {
       base.OnPropertyChanged(e);
       if (!_ignoreSyncOriginValues) {
-         if (e.Property == HorizontalOffsetProperty) {
-            _originOffsetX = e.GetNewValue<double>();
-         } else if (e.Property == VerticalOffsetProperty) {
-            _originOffsetY = e.GetNewValue<double>();
-         } else if (e.Property == PlacementProperty) {
+         if (e.Property == PlacementProperty) {
             _originPlacementMode = e.GetNewValue<PlacementMode>();
          } else if (e.Property == PlacementAnchorProperty) {
             _originPlacementAnchor = e.GetNewValue<PopupAnchor>();
@@ -389,8 +391,9 @@ public class Popup : AbstractPopup
       using var ignoreSyncOriginHandling = IgnoreSyncOriginValueHandling();
       var offsetX = _originOffsetX;
       var offsetY = _originOffsetY + 0.5; // TODO 不知道为什么会出现 0.5 的误差
+      var placement = _originPlacementMode ?? Placement;
       
-      var marginToAnchorOffset = CalculateMarginToAnchorOffset(Placement);
+      var marginToAnchorOffset = CalculateMarginToAnchorOffset(placement);
       offsetX += marginToAnchorOffset.X;
       offsetY += marginToAnchorOffset.Y;
       Point offset = default;
@@ -405,14 +408,14 @@ public class Popup : AbstractPopup
          parameters.Size = popupContent.DesiredSize;
       }
       
-      if (Placement != PlacementMode.Center &&
-          Placement != PlacementMode.Pointer) {
+      if (placement != PlacementMode.Center &&
+          placement != PlacementMode.Pointer) {
          offset = new Point(offsetX, offsetY);
       }
-
+      
       ConfigurePosition(ref parameters, parentTopLevel,
                         placementTarget,
-                        Placement,
+                        placement,
                         offset,
                         PlacementAnchor,
                         PlacementGravity,
@@ -420,8 +423,10 @@ public class Popup : AbstractPopup
                         PlacementRect ?? new Rect(default, placementTarget.Bounds.Size),
                         FlowDirection);
       
+   
+      
       var positionInfo = new PopupPositionInfo();
-      positionInfo.EffectivePlacement = Placement;
+      positionInfo.EffectivePlacement = placement;
       positionInfo.EffectivePlacementAnchor = PlacementAnchor;
       positionInfo.EffectivePlacementGravity = PlacementGravity;
       positionInfo.Size = parameters.Size;
@@ -431,10 +436,9 @@ public class Popup : AbstractPopup
       var parentGeometry = GetParentClientAreaScreenGeometry(parentTopLevel);
       var screens = GetScreenInfos(parentTopLevel);
       
-      if (Placement != PlacementMode.Center &&
-          Placement != PlacementMode.Pointer) {
+      if (placement != PlacementMode.Center &&
+          placement != PlacementMode.Pointer) {
          // 计算是否 flip
- 
          var anchorRect = new Rect(
             parameters.AnchorRectangle.TopLeft * scaling,
             parameters.AnchorRectangle.Size * scaling);
@@ -451,10 +455,9 @@ public class Popup : AbstractPopup
                                           parameters.Gravity,
                                           offset * scaling);
          if (flipInfo.Item1 || flipInfo.Item2) {
-            var flipPlacement = GetFlipPlacement(Placement);
+            var flipPlacement = GetFlipPlacement(placement);
             var flipAnchorAndGravity = GetAnchorAndGravity(flipPlacement);
             var flipOffset = CalculateMarginToAnchorOffset(flipPlacement);
-            
             positionInfo.EffectivePlacement = flipPlacement;
             positionInfo.EffectivePlacementAnchor = flipAnchorAndGravity.Item1;
             positionInfo.EffectivePlacementGravity = flipAnchorAndGravity.Item2;
@@ -473,7 +476,7 @@ public class Popup : AbstractPopup
          parameters.Anchor,
          parameters.Gravity,
          parameters.ConstraintAdjustment,
-         parameters.Offset * scaling,
+         positionInfo.Offset * scaling,
          parentGeometry,
          screens);
 

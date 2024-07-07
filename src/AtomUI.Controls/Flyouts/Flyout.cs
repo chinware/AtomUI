@@ -145,7 +145,15 @@ public class Flyout : PopupFlyoutBase
             flyoutPresenter.ArrowPosition = arrowPosition.Value;
          }
       }
+   }
 
+   private void SetupArrowPosition(FlyoutPresenter flyoutPresenter, PlacementMode placement, PopupAnchor? anchor,
+                                   PopupGravity? gravity)
+   {
+      var arrowPosition = PopupUtils.CalculateArrowPosition(placement, anchor, gravity);
+      if (arrowPosition.HasValue) {
+         flyoutPresenter.ArrowPosition = arrowPosition.Value;
+      }
    }
 
    protected override Control CreatePresenter()
@@ -290,14 +298,18 @@ public class Flyout : PopupFlyoutBase
       bool result = default;
       if (presenter is FlyoutPresenter flyoutPresenter) {
          _animating = true;
-         flyoutPresenter.Opacity = 0;
          if (flyoutPresenter.Child is not null) {
             var placementToplevel = TopLevel.GetTopLevel(placementTarget);
             UiStructureUtils.ClearLogicalParentRecursive(flyoutPresenter, null);
             UiStructureUtils.ClearVisualParentRecursive(flyoutPresenter, null);
             UiStructureUtils.SetLogicalParent(flyoutPresenter, placementToplevel);
             var positionInfo = AtomPopup.CalculatePositionInfo(placementTarget, presenter);
-            flyoutPresenter.Opacity = 1;
+            
+            // 重新设置箭头位置
+            SetupArrowPosition(flyoutPresenter, 
+                               positionInfo.EffectivePlacement, 
+                               positionInfo.EffectivePlacementAnchor,
+                               positionInfo.EffectivePlacementGravity);
             PlayShowUpMotion(positionInfo, placementTarget, flyoutPresenter, showAtPointer);
          }
          result = true;
@@ -307,14 +319,14 @@ public class Flyout : PopupFlyoutBase
       return result;
    }
 
-   // protected override bool HideCore(bool canCancel = true)
-   // {
-   //    if (_animating) {
-   //       return false;
-   //    } else {
-   //       return base.HideCore(canCancel);
-   //    }
-   // }
+   protected override bool HideCore(bool canCancel = true)
+   {
+      if (_animating) {
+         return false;
+      } else {
+         return base.HideCore(canCancel);
+      }
+   }
 
    private void PlayShowUpMotion(PopupPositionInfo positionInfo, Control placementTarget, FlyoutPresenter flyoutPresenter, 
                                  bool showAtPointer)
