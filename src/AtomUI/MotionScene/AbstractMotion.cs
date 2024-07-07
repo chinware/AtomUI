@@ -6,6 +6,7 @@ using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Media;
+using Avalonia.Media.Transformation;
 
 namespace AtomUI.MotionScene;
 
@@ -193,5 +194,34 @@ public abstract class AbstractMotion : AvaloniaObject, IMotion
    public IList<MotionConfig> GetMotionConfigs()
    {
       return _motionConfigs.Values.ToList();
+   }
+
+   protected TransformOperations BuildScaleTransform(double scaleX, double scaleY)
+   {
+      var builder = new TransformOperations.Builder(1);
+      builder.AppendScale(scaleX, scaleY);
+      return builder.Build();
+   }
+   
+   protected TransformOperations BuildScaleTransform(double scale)
+   {
+      return BuildScaleTransform(scale, scale);
+   }
+   
+   protected TransformOperations BuildScaleXTransform(double scale)
+   {
+      return BuildScaleTransform(scale, 1.0);
+   }
+   
+   protected TransformOperations BuildScaleYTransform(double scale)
+   {
+      return BuildScaleTransform(1.0, scale);
+   }
+
+   protected TransformOperations BuildTranslateTransform(double offsetX, double offsetY)
+   {
+      var builder = new TransformOperations.Builder(1);
+      builder.AppendTranslate(offsetX, offsetY);
+      return builder.Build();
    }
 }

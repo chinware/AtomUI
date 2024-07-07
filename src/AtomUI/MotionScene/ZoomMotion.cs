@@ -1,7 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
-using Avalonia.Media;
 using Avalonia.Media.Transformation;
 
 namespace AtomUI.MotionScene;
@@ -28,11 +27,12 @@ public class ZoomInMotion : AbstractMotion
    public void ConfigureRenderTransform(TimeSpan duration, Easing? easing = null)
    {
       easing ??= new CircularEaseOut();
+      
       var config = new MotionConfig(MotionRenderTransformProperty)
       {
          TransitionKind = TransitionKind.TransformOperations,
-         StartValue = new ScaleTransform(0.2, 0.2),
-         EndValue = new ScaleTransform(1, 1),
+         StartValue = BuildScaleTransform(0.2),
+         EndValue = BuildScaleTransform(1),
          MotionDuration = duration,
          MotionEasing = easing
       };
@@ -62,11 +62,12 @@ public class ZoomOutMotion : AbstractMotion
    public void ConfigureRenderTransform(TimeSpan duration, Easing? easing = null)
    {
       easing ??= new CircularEaseInOut();
+      
       var config = new MotionConfig(MotionRenderTransformProperty)
       {
          TransitionKind = TransitionKind.TransformOperations,
-         StartValue = new ScaleTransform(1, 1),
-         EndValue = new ScaleTransform(0.2, 0.2),
+         StartValue = BuildScaleTransform(1),
+         EndValue = BuildScaleTransform(0.2),
          MotionDuration = duration,
          MotionEasing = easing
       };
@@ -96,19 +97,12 @@ public class ZoomBigInMotion : AbstractMotion
    public void ConfigureRenderTransform(TimeSpan duration, Easing? easing = null)
    {
       easing ??= new CircularEaseOut();
-      var startValueBuilder = new TransformOperations.Builder(1);
-      startValueBuilder.AppendScale(0.8, 0.8);
-      var startValue = startValueBuilder.Build();
-      
-      var endValueBuilder = new TransformOperations.Builder(1);
-      endValueBuilder.AppendScale(1, 1);
-      var endValue = endValueBuilder.Build();
-      
+
       var config = new MotionConfig(MotionRenderTransformProperty)
       {
          TransitionKind = TransitionKind.TransformOperations,
-         StartValue = startValue,
-         EndValue = endValue,
+         StartValue = BuildScaleTransform(0.8),
+         EndValue = BuildScaleTransform(1),
          MotionDuration = duration,
          MotionEasing = easing
       };
@@ -140,19 +134,11 @@ public class ZoomBigOutMotion : AbstractMotion
    {
       easing ??= new CircularEaseInOut();
       
-      var startValueBuilder = new TransformOperations.Builder(1);
-      startValueBuilder.AppendScale(1, 1);
-      var startValue = startValueBuilder.Build();
-      
-      var endValueBuilder = new TransformOperations.Builder(1);
-      endValueBuilder.AppendScale(0.8, 0.8);
-      var endValue = endValueBuilder.Build();
-      
       var config = new MotionConfig(MotionRenderTransformProperty)
       {
          TransitionKind = TransitionKind.TransformOperations,
-         StartValue = startValue,
-         EndValue = endValue,
+         StartValue = BuildScaleTransform(1),
+         EndValue = BuildScaleTransform(0.8),
          MotionDuration = duration,
          MotionEasing = easing
       };
@@ -188,11 +174,12 @@ public class ZoomUpInMotion : AbstractMotion
    public void ConfigureRenderTransform(TimeSpan duration, Easing? easing = null)
    {
       easing ??= new CircularEaseOut();
+      
       var config = new MotionConfig(MotionRenderTransformProperty)
       {
          TransitionKind = TransitionKind.TransformOperations,
-         StartValue = new ScaleTransform(0.8, 0.8),
-         EndValue = new ScaleTransform(1, 1),
+         StartValue = BuildScaleTransform(0.8),
+         EndValue = BuildScaleTransform(1),
          MotionDuration = duration,
          MotionEasing = easing
       };
@@ -241,11 +228,12 @@ public class ZoomUpOutMotion : AbstractMotion
    public void ConfigureRenderTransform(TimeSpan duration, Easing? easing = null)
    {
       easing ??= new CircularEaseInOut();
+      
       var config = new MotionConfig(MotionRenderTransformProperty)
       {
          TransitionKind = TransitionKind.TransformOperations,
-         StartValue = new ScaleTransform(1, 1),
-         EndValue = new ScaleTransform(0.8, 0.8),
+         StartValue = BuildScaleTransform(1),
+         EndValue = BuildScaleTransform(0.8),
          MotionDuration = duration,
          MotionEasing = easing
       };
@@ -294,11 +282,12 @@ public class ZoomLeftInMotion : AbstractMotion
    public void ConfigureRenderTransform(TimeSpan duration, Easing? easing = null)
    {
       easing ??= new CircularEaseOut();
+      
       var config = new MotionConfig(MotionRenderTransformProperty)
       {
          TransitionKind = TransitionKind.TransformOperations,
-         StartValue = new ScaleTransform(0.8, 0.8),
-         EndValue = new ScaleTransform(1, 1),
+         StartValue = BuildScaleTransform(0.8),
+         EndValue = BuildScaleTransform(1),
          MotionDuration = duration,
          MotionEasing = easing
       };
@@ -347,11 +336,12 @@ public class ZoomLeftOutMotion : AbstractMotion
    public void ConfigureRenderTransform(TimeSpan duration, Easing? easing = null)
    {
       easing ??= new CircularEaseInOut();
+      
       var config = new MotionConfig(MotionRenderTransformProperty)
       {
          TransitionKind = TransitionKind.TransformOperations,
-         StartValue = new ScaleTransform(1, 1),
-         EndValue = new ScaleTransform(0.8, 0.8),
+         StartValue = BuildScaleTransform(1),
+         EndValue = BuildScaleTransform(0.8),
          MotionDuration = duration,
          MotionEasing = easing
       };
@@ -400,11 +390,12 @@ public class ZoomRightInMotion : AbstractMotion
    public void ConfigureRenderTransform(TimeSpan duration, Easing? easing = null)
    {
       easing ??= new CircularEaseOut();
+      
       var config = new MotionConfig(MotionRenderTransformProperty)
       {
          TransitionKind = TransitionKind.TransformOperations,
-         StartValue = new ScaleTransform(0.8, 0.8),
-         EndValue = new ScaleTransform(1, 1),
+         StartValue = BuildScaleTransform(0.8),
+         EndValue = BuildScaleTransform(1),
          MotionDuration = duration,
          MotionEasing = easing
       };
@@ -453,11 +444,12 @@ public class ZoomRightOutMotion : AbstractMotion
    public void ConfigureRenderTransform(TimeSpan duration, Easing? easing = null)
    {
       easing ??= new CircularEaseInOut();
+      
       var config = new MotionConfig(MotionRenderTransformProperty)
       {
          TransitionKind = TransitionKind.TransformOperations,
-         StartValue = new ScaleTransform(1, 1),
-         EndValue = new ScaleTransform(0.8, 0.8),
+         StartValue = BuildScaleTransform(1),
+         EndValue = BuildScaleTransform(0.8),
          MotionDuration = duration,
          MotionEasing = easing
       };
@@ -506,11 +498,12 @@ public class ZoomDownInMotion : AbstractMotion
    public void ConfigureRenderTransform(TimeSpan duration, Easing? easing = null)
    {
       easing ??= new CircularEaseOut();
+      
       var config = new MotionConfig(MotionRenderTransformProperty)
       {
          TransitionKind = TransitionKind.TransformOperations,
-         StartValue = new ScaleTransform(0.8, 0.8),
-         EndValue = new ScaleTransform(1, 1),
+         StartValue = BuildScaleTransform(0.8),
+         EndValue = BuildScaleTransform(1),
          MotionDuration = duration,
          MotionEasing = easing
       };
@@ -559,11 +552,12 @@ public class ZoomDownOutMotion : AbstractMotion
    public void ConfigureRenderTransform(TimeSpan duration, Easing? easing = null)
    {
       easing ??= new CircularEaseInOut();
+      
       var config = new MotionConfig(MotionRenderTransformProperty)
       {
          TransitionKind = TransitionKind.TransformOperations,
-         StartValue = new ScaleTransform(1, 1),
-         EndValue = new ScaleTransform(0.8, 0.8),
+         StartValue = BuildScaleTransform(1),
+         EndValue = BuildScaleTransform(0.8),
          MotionDuration = duration,
          MotionEasing = easing
       };

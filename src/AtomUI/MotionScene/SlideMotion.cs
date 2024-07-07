@@ -1,7 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
-using Avalonia.Media;
+using Avalonia.Media.Transformation;
 
 namespace AtomUI.MotionScene;
 
@@ -27,11 +27,12 @@ public class SlideUpInMotion : AbstractMotion
    public void ConfigureRenderTransform(TimeSpan duration, Easing? easing = null)
    {
       easing ??= new QuinticEaseOut();
+      
       var config = new MotionConfig(MotionRenderTransformProperty)
       {
          TransitionKind = TransitionKind.TransformOperations,
-         StartValue = new ScaleTransform(1, 0.8),
-         EndValue = new ScaleTransform(1, 1),
+         StartValue = BuildScaleYTransform(0.8),
+         EndValue = BuildScaleYTransform(1.0),
          MotionDuration = duration,
          MotionEasing = easing
       };
@@ -61,11 +62,12 @@ public class SlideUpOutMotion : AbstractMotion
    public void ConfigureRenderTransform(TimeSpan duration, Easing? easing = null)
    {
       easing ??= new QuinticEaseIn();
+      
       var config = new MotionConfig(MotionRenderTransformProperty)
       {
          TransitionKind = TransitionKind.Double,
-         StartValue = new ScaleTransform(1, 1),
-         EndValue = new ScaleTransform(1, 0.8),
+         StartValue = BuildScaleYTransform(1.0),
+         EndValue = BuildScaleYTransform(0.8),
          MotionDuration = duration,
          MotionEasing = easing
       };
@@ -101,11 +103,12 @@ public class SlideDownInMotion : AbstractMotion
    public void ConfigureRenderTransform(TimeSpan duration, Easing? easing = null)
    {
       easing ??= new QuinticEaseOut();
+      
       var config = new MotionConfig(MotionRenderTransformProperty)
       {
          TransitionKind = TransitionKind.TransformOperations,
-         StartValue = new ScaleTransform(1, 0.8),
-         EndValue = new ScaleTransform(1, 1),
+         StartValue = BuildScaleYTransform(0.8),
+         EndValue = BuildScaleYTransform(1.0),
          MotionDuration = duration,
          MotionEasing = easing
       };
@@ -154,11 +157,12 @@ public class SlideDownOutMotion : AbstractMotion
    public void ConfigureRenderTransform(TimeSpan duration, Easing? easing = null)
    {
       easing ??= new QuinticEaseIn();
+      
       var config = new MotionConfig(MotionRenderTransformProperty)
       {
          TransitionKind = TransitionKind.TransformOperations,
-         StartValue = new ScaleTransform(1, 1),
-         EndValue = new ScaleTransform(1, 0.8),
+         StartValue = BuildScaleYTransform(1.0),
+         EndValue = BuildScaleYTransform(0.8),
          MotionDuration = duration,
          MotionEasing = easing
       };
@@ -204,11 +208,12 @@ public class SlideLeftInMotion : AbstractMotion
    public void ConfigureRenderTransform(TimeSpan duration, Easing? easing = null)
    {
       easing ??= new QuinticEaseOut();
+      
       var config = new MotionConfig(MotionRenderTransformProperty)
       {
          TransitionKind = TransitionKind.TransformOperations,
-         StartValue = new ScaleTransform(0.8, 1),
-         EndValue = new ScaleTransform(1, 1),
+         StartValue = BuildScaleXTransform(0.8),
+         EndValue = BuildScaleXTransform(1.0),
          MotionDuration = duration,
          MotionEasing = easing
       };
@@ -238,11 +243,12 @@ public class SlideLeftOutMotion : AbstractMotion
    public void ConfigureRenderTransform(TimeSpan duration, Easing? easing = null)
    {
       easing ??= new QuinticEaseIn();
+
       var config = new MotionConfig(MotionRenderTransformProperty)
       {
          TransitionKind = TransitionKind.Double,
-         StartValue = new ScaleTransform(1, 1),
-         EndValue = new ScaleTransform(0.8, 1),
+         StartValue = BuildScaleXTransform(1.0),
+         EndValue = BuildScaleXTransform(0.8),
          MotionDuration = duration,
          MotionEasing = easing
       };
@@ -278,11 +284,12 @@ public class SlideRightInMotion : AbstractMotion
    public void ConfigureRenderTransform(TimeSpan duration, Easing? easing = null)
    {
       easing ??= new QuinticEaseOut();
+      
       var config = new MotionConfig(MotionRenderTransformProperty)
       {
          TransitionKind = TransitionKind.TransformOperations,
-         StartValue = new ScaleTransform(0.8, 1),
-         EndValue = new ScaleTransform(1, 1),
+         StartValue = BuildScaleXTransform(0.8),
+         EndValue = BuildScaleXTransform(1.0),
          MotionDuration = duration,
          MotionEasing = easing
       };
@@ -331,11 +338,12 @@ public class SlideRightOutMotion : AbstractMotion
    public void ConfigureRenderTransform(TimeSpan duration, Easing? easing = null)
    {
       easing ??= new QuinticEaseIn();
+      
       var config = new MotionConfig(MotionRenderTransformProperty)
       {
          TransitionKind = TransitionKind.TransformOperations,
-         StartValue = new ScaleTransform(1, 1),
-         EndValue = new ScaleTransform(0.8, 1),
+         StartValue = BuildScaleXTransform(1.0),
+         EndValue = BuildScaleXTransform(0.8),
          MotionDuration = duration,
          MotionEasing = easing
       };

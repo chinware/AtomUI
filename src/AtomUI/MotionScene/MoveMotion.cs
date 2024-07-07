@@ -2,6 +2,7 @@
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Media;
+using Avalonia.Media.Transformation;
 
 namespace AtomUI.MotionScene;
 
@@ -27,10 +28,11 @@ public class MoveDownInMotion : AbstractMotion
    public void ConfigureTransform(TimeSpan duration, Easing? easing = null)
    {
       easing ??= new CircularEaseOut();
+      
       var config = new MotionConfig(MotionRenderTransformProperty)
       {
          TransitionKind = TransitionKind.TransformOperations,
-         EndValue = new TranslateTransform(0, 0),
+         EndValue = BuildTranslateTransform(0, 0),
          MotionDuration = duration,
          MotionEasing = easing
       };
@@ -42,7 +44,7 @@ public class MoveDownInMotion : AbstractMotion
    {
       base.NotifyPreBuildTransition(config, motionTarget);
       if (config.Property == MotionRenderTransformProperty) {
-         config.StartValue = new TranslateTransform(0, -motionTarget.DesiredSize.Height);
+         config.StartValue = BuildTranslateTransform(0, -motionTarget.DesiredSize.Height);
       }
    }
 
@@ -83,7 +85,7 @@ public class MoveDownOutMotion : AbstractMotion
       var config = new MotionConfig(MotionRenderTransformProperty)
       {
          TransitionKind = TransitionKind.TransformOperations,
-         StartValue = new TranslateTransform(0, 0),
+         StartValue = BuildTranslateTransform(0, 0),
          MotionDuration = duration,
          MotionEasing = easing
       };
@@ -94,7 +96,7 @@ public class MoveDownOutMotion : AbstractMotion
    {
       base.NotifyPreBuildTransition(config, motionTarget);
       if (config.Property == MotionRenderTransformProperty) {
-         config.EndValue = new TranslateTransform(0, -motionTarget.DesiredSize.Height);
+         config.EndValue = BuildTranslateTransform(0, -motionTarget.DesiredSize.Height);
       }
    }
    
@@ -134,7 +136,7 @@ public class MoveLeftInMotion : AbstractMotion
       var config = new MotionConfig(MotionRenderTransformProperty)
       {
          TransitionKind = TransitionKind.TransformOperations,
-         EndValue = new TranslateTransform(0, 0),
+         EndValue = BuildTranslateTransform(0, 0),
          MotionDuration = duration,
          MotionEasing = easing
       };
@@ -145,7 +147,7 @@ public class MoveLeftInMotion : AbstractMotion
    {
       base.NotifyPreBuildTransition(config, motionTarget);
       if (config.Property == MotionRenderTransformProperty) {
-         config.StartValue = new TranslateTransform(-motionTarget.DesiredSize.Width, 0);
+         config.StartValue = BuildTranslateTransform(-motionTarget.DesiredSize.Width, 0);
       }
    }
    
@@ -185,7 +187,7 @@ public class MoveLeftOutMotion : AbstractMotion
       var config = new MotionConfig(MotionRenderTransformProperty)
       {
          TransitionKind = TransitionKind.TransformOperations,
-         StartValue = new TranslateTransform(0, 0),
+         StartValue = BuildTranslateTransform(0, 0),
          MotionDuration = duration,
          MotionEasing = easing
       };
@@ -197,7 +199,7 @@ public class MoveLeftOutMotion : AbstractMotion
    {
       base.NotifyPreBuildTransition(config, motionTarget);
       if (config.Property == MotionRenderTransformProperty) {
-         config.EndValue = new TranslateTransform(-motionTarget.DesiredSize.Width, 0);
+         config.EndValue = BuildTranslateTransform(-motionTarget.DesiredSize.Width, 0);
       }
    }
    
@@ -237,7 +239,7 @@ public class MoveRightInMotion : AbstractMotion
       var config = new MotionConfig(MotionRenderTransformProperty)
       {
          TransitionKind = TransitionKind.TransformOperations,
-         EndValue = new TranslateTransform(0, 0),
+         EndValue = BuildTranslateTransform(0, 0),
          MotionDuration = duration,
          MotionEasing = easing
       };
@@ -248,7 +250,7 @@ public class MoveRightInMotion : AbstractMotion
    {
       base.NotifyPreBuildTransition(config, motionTarget);
       if (config.Property == MotionRenderTransformProperty) {
-         config.StartValue = new TranslateTransform(motionTarget.DesiredSize.Width, 0);
+         config.StartValue = BuildTranslateTransform(motionTarget.DesiredSize.Width, 0);
       }
    }
    
@@ -283,7 +285,7 @@ public class MoveRightOutMotion : AbstractMotion
       var config = new MotionConfig(MotionRenderTransformProperty)
       {
          TransitionKind = TransitionKind.TransformOperations,
-         StartValue = new TranslateTransform(0, 0),
+         StartValue = BuildTranslateTransform(0, 0),
          MotionDuration = duration,
          MotionEasing = easing
       };
@@ -294,7 +296,7 @@ public class MoveRightOutMotion : AbstractMotion
    {
       base.NotifyPreBuildTransition(config, motionTarget);
       if (config.Property == MotionRenderTransformProperty) {
-         config.EndValue = new TranslateTransform(motionTarget.DesiredSize.Width, 0);
+         config.EndValue = BuildTranslateTransform(motionTarget.DesiredSize.Width, 0);
       }
    }
    
@@ -329,7 +331,7 @@ public class MoveUpInMotion : AbstractMotion
       var config = new MotionConfig(MotionRenderTransformProperty)
       {
          TransitionKind = TransitionKind.TransformOperations,
-         EndValue = new TranslateTransform(0, 0),
+         EndValue = BuildTranslateTransform(0, 0),
          MotionDuration = duration,
          MotionEasing = easing
       };
@@ -341,7 +343,7 @@ public class MoveUpInMotion : AbstractMotion
    {
       base.NotifyPreBuildTransition(config, motionTarget);
       if (config.Property == MotionRenderTransformProperty) {
-         config.StartValue = new TranslateTransform(0, motionTarget.DesiredSize.Height);
+         config.StartValue = BuildTranslateTransform(0, motionTarget.DesiredSize.Height);
       }
    }
 
@@ -377,7 +379,7 @@ public class MoveUpOutMotion : AbstractMotion
       var config = new MotionConfig(MotionRenderTransformProperty)
       {
          TransitionKind = TransitionKind.TransformOperations,
-         StartValue = new TranslateTransform(0, 0),
+         StartValue = BuildTranslateTransform(0, 0),
          MotionDuration = duration,
          MotionEasing = easing
       };
@@ -388,7 +390,7 @@ public class MoveUpOutMotion : AbstractMotion
    {
       base.NotifyPreBuildTransition(config, motionTarget);
       if (config.Property == MotionRenderTransformProperty) {
-         config.EndValue = new TranslateTransform(0, motionTarget.DesiredSize.Height);
+         config.EndValue = BuildTranslateTransform(0, motionTarget.DesiredSize.Height);
       }
    }
    
