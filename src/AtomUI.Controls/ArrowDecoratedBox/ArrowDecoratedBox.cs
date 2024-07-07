@@ -171,14 +171,8 @@ public partial class ArrowDecoratedBox : StyledControl, IShadowMaskInfoProvider
       base.OnAttachedToLogicalTree(e);
       if (!_initialized) {
          _customStyle.SetupUi();
+         SetupRelayProperties();
       }
-      SetupRelayProperties();
-   }
-   
-   protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-   {
-      base.OnDetachedFromLogicalTree(e);
-      _compositeDisposable?.Dispose();
    }
 
    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)

@@ -1,6 +1,8 @@
 ﻿using System.Reactive.Disposables;
 using AtomUI.MotionScene;
 using Avalonia;
+using Avalonia.Animation;
+using Avalonia.Styling;
 using Avalonia.Threading;
 
 namespace AtomUI.Controls.MotionScene;
@@ -38,12 +40,11 @@ public class Director : IDirector
       _compositeDisposable.Add(Disposable.Create((sceneLayer), state =>
       {
          if (sceneLayer is not null) {
-            //sceneLayer.Opacity = 0;
             Dispatcher.UIThread.InvokeAsync(async () =>
             {
-               // await Task.Delay(60);
-               // sceneLayer.Hide();
-               // sceneLayer.Dispose();
+               await Task.Delay(100);
+               sceneLayer.Hide();
+               sceneLayer.Dispose();
             });
          }
       }));
@@ -51,6 +52,7 @@ public class Director : IDirector
       _states.Add(actor, state);
 
       if (actor.DispatchInSceneLayer) {
+         state.SceneLayer = sceneLayer;
          var ghost = actor.GetAnimatableGhost();
          sceneLayer!.SetMotionTarget(ghost);
          actor.NotifyMotionTargetAddedToScene(ghost);
@@ -136,9 +138,12 @@ public class Director : IDirector
 
    private void HandleMotionCompleted(MotionActor actor)
    {
-      actor.NotifyMotionCompleted();
-      MotionCompleted?.Invoke(this, new MotionEventArgs(actor));
       if (_states.TryGetValue(actor, out var state)) {
+         if (state.SceneLayer is not null) {
+            state.SceneLayer.Opacity = 0;
+         }
+         actor.NotifyMotionCompleted();
+         MotionCompleted?.Invoke(this, new MotionEventArgs(actor));
          state.Dispose();
          _states.Remove(actor);
       }

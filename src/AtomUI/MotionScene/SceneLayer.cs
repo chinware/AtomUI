@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using AtomUI.Platform.Windows;
 using Avalonia;
+using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Media;
@@ -152,6 +153,6 @@ public class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
 
    public override void Render(DrawingContext context)
    {
-      //context.FillRectangle(new SolidColorBrush(Colors.Coral), new Rect(new Point(0, 0), DesiredSize));
+      //context.FillRectangle(new SolidColorBrush(Colors.Coral, 0.2), new Rect(new Point(0, 0), DesiredSize));
    }
 }

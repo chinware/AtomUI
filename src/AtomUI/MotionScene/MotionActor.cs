@@ -5,7 +5,6 @@ using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Layout;
 using Avalonia.Media;
-using Avalonia.Media.Transformation;
 using Avalonia.VisualTree;
 
 namespace AtomUI.MotionScene;

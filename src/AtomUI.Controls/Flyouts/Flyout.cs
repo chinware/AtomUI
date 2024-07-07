@@ -278,6 +278,7 @@ public class Flyout : PopupFlyoutBase
       offsetY += offset.Y;
       Popup.HorizontalOffset = offsetX;
       Popup.VerticalOffset = offsetY;
+      Console.WriteLine($"NotifyPositionPopup-{offsetY}");
    }
 
    protected override bool ShowAtCore(Control placementTarget, bool showAtPointer = false)
@@ -295,6 +296,7 @@ public class Flyout : PopupFlyoutBase
             UiStructureUtils.SetLogicalParent(flyoutPresenter, placementTarget);
          }
          var positionInfo = AtomPopup.CalculatePositionInfo(placementTarget, presenter);
+         Console.WriteLine(positionInfo.Offset);
          PlayShowUpMotion(positionInfo, placementTarget, flyoutPresenter, showAtPointer);
          result = true;
       } else { 
@@ -331,7 +333,7 @@ public class Flyout : PopupFlyoutBase
             UiStructureUtils.ClearVisualParentRecursive(child, null);
          }
          _animating = false;
-        // base.ShowAtCore(placementTarget, showAtPointer);
+        base.ShowAtCore(placementTarget, showAtPointer);
       };
   
       director?.Schedule(motionActor);

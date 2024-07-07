@@ -1,4 +1,5 @@
 ﻿using System.Reactive.Disposables;
+using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.Media;
 using AtomUI.Styling;
@@ -38,9 +39,10 @@ public partial class ArrowDecoratedBox : IControlCustomStyle
       if (IsShowArrow) {
          BuildGeometry(true);
       }
+
       LogicalChildren.Add(_container);
       VisualChildren.Add(_container);
-      
+
       _controlTokenBinder.AddControlBinding(BackgroundProperty, GlobalResourceKey.ColorBgContainer);
       _initialized = true;
    }
@@ -50,10 +52,14 @@ public partial class ArrowDecoratedBox : IControlCustomStyle
       _compositeDisposable = new CompositeDisposable();
       // 生命周期一样，可以不用管理
       if (_container is not null) {
+         if (Child?.Parent is not null) {
+            UiStructureUtils.SetLogicalParent(Child, null);
+            UiStructureUtils.SetVisualParent(Child, null);
+         }
          _compositeDisposable.Add(BindUtils.RelayBind(this, BackgroundSizingProperty, _container));
          _compositeDisposable.Add(BindUtils.RelayBind(this, BackgroundProperty, _container));
          _compositeDisposable.Add(BindUtils.RelayBind(this, CornerRadiusProperty, _container));
-        _compositeDisposable.Add(BindUtils.RelayBind(this, ChildProperty, _container));
+         _compositeDisposable.Add(BindUtils.RelayBind(this, ChildProperty, _container));
          _compositeDisposable.Add(BindUtils.RelayBind(this, PaddingProperty, _container));
       }
    }
@@ -75,7 +81,7 @@ public partial class ArrowDecoratedBox : IControlCustomStyle
                GetArrowRect(DesiredSize);
             }
          }
-      } 
+      }
    }
 
    private void BuildGeometry(bool force = false)
@@ -98,7 +104,7 @@ public partial class ArrowDecoratedBox : IControlCustomStyle
       if (IsShowArrow) {
          var direction = GetDirection(ArrowPosition);
          var matrix = Matrix.CreateTranslation(-_arrowSize / 2, -_arrowSize / 2);
-         
+
          if (direction == Direction.Right) {
             matrix *= Matrix.CreateRotation(MathUtils.Deg2Rad(90));
             matrix *= Matrix.CreateTranslation(_arrowSize / 2, _arrowSize / 2);
@@ -124,7 +130,7 @@ public partial class ArrowDecoratedBox : IControlCustomStyle
       var targetWidth = size.Width;
       var targetHeight = size.Height;
       targetHeight = Math.Max(MinHeight, targetHeight);
-     
+
       if (IsShowArrow) {
          BuildGeometry();
          var realArrowSize = Math.Min(_arrowGeometry!.Bounds.Size.Height, _arrowGeometry!.Bounds.Size.Width);

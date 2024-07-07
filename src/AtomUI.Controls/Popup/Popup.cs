@@ -54,6 +54,9 @@ public class Popup : AbstractPopup
    private PlacementMode? _originPlacementMode;
    private PopupAnchor? _originPlacementAnchor;
    private PopupGravity? _originPlacementGravity;
+   private double _originOffsetX;
+   private double _originOffsetY;
+   private bool _ignoreSyncOriginValues = false;
 
    static Popup()
    {
@@ -68,8 +71,28 @@ public class Popup : AbstractPopup
    {
       IsLightDismissEnabled = false;
       _globalTokenBinder = new GlobalTokenBinder();
+      _originOffsetX = HorizontalOffset;
+      _originOffsetY = VerticalOffset;
    }
 
+   protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
+   {
+      base.OnPropertyChanged(e);
+      if (!_ignoreSyncOriginValues) {
+         if (e.Property == HorizontalOffsetProperty) {
+            _originOffsetX = e.GetNewValue<double>();
+         } else if (e.Property == VerticalOffsetProperty) {
+            _originOffsetY = e.GetNewValue<double>();
+         } else if (e.Property == PlacementProperty) {
+            _originPlacementMode = e.GetNewValue<PlacementMode>();
+         } else if (e.Property == PlacementAnchorProperty) {
+            _originPlacementAnchor = e.GetNewValue<PopupAnchor>();
+         } else if (e.Property == PlacementGravityProperty) {
+            _originPlacementGravity = e.GetNewValue<PopupGravity>();
+         }
+      }
+   }
+   
    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
    {
       base.OnAttachedToLogicalTree(e);
@@ -278,8 +301,9 @@ public class Popup : AbstractPopup
    protected internal override void NotifyPopupRootAboutToShow(PopupRoot popupRoot)
    {
       base.NotifyPopupRootAboutToShow(popupRoot);
-      var offsetX = HorizontalOffset;
-      var offsetY = VerticalOffset;
+      using var ignoreSyncOriginHandling = IgnoreSyncOriginValueHandling();
+      var offsetX = _originOffsetX;
+      var offsetY = _originOffsetY;
       var marginToAnchorOffset = CalculateMarginToAnchorOffset(Placement);
       offsetX += marginToAnchorOffset.X;
       offsetY += marginToAnchorOffset.Y;
@@ -362,9 +386,14 @@ public class Popup : AbstractPopup
 
    internal PopupPositionInfo CalculatePositionInfo(Control placementTarget, Control popupContent)
    {
-      var offsetX = HorizontalOffset;
-      var offsetY = VerticalOffset;
+      using var ignoreSyncOriginHandling = IgnoreSyncOriginValueHandling();
+      var offsetX = _originOffsetX;
+      var offsetY = _originOffsetY;
+      
+      Console.WriteLine(offsetY);
+      
       var marginToAnchorOffset = CalculateMarginToAnchorOffset(Placement);
+      Console.WriteLine(marginToAnchorOffset);
       offsetX += marginToAnchorOffset.X;
       offsetY += marginToAnchorOffset.Y;
       Point offset = default;
@@ -438,7 +467,7 @@ public class Popup : AbstractPopup
             positionInfo.IsFlipped = false;
          }
       }
-
+      
       var rect = PopupUtils.Calculate(
          parameters.Size * scaling,
          new Rect(
@@ -500,6 +529,27 @@ public class Popup : AbstractPopup
          
          _ => throw new ArgumentOutOfRangeException(nameof(placement), placement, "Invalid value for PlacementMode")
       };
+   }
+   
+   private protected IDisposable IgnoreSyncOriginValueHandling()
+   {
+      return new IgnoreSyncOriginValueDisposable(this);
+   }
+   
+   private readonly struct IgnoreSyncOriginValueDisposable : IDisposable
+   {
+      private readonly Popup _popup;
+
+      public IgnoreSyncOriginValueDisposable(Popup popup)
+      {
+         _popup = popup;
+         _popup._ignoreSyncOriginValues = true;
+      }
+            
+      public void Dispose()
+      {
+         _popup._ignoreSyncOriginValues = false;
+      }
    }
 }
 
