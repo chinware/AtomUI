@@ -8,6 +8,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
+using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Styling;
@@ -22,6 +23,7 @@ public partial class ToolTip : StyledControl, IShadowMaskInfoProvider
    private Popup? _popup;
    private Action<IPopupHost?>? _popupHostChangedHandler;
    private AvaloniaWin? _currentAnchorWindow;
+   private PopupPositionInfo? _popupPositionInfo; // 这个信息在隐藏动画的时候会用到
 
    /// <summary>
    /// Initializes static members of the <see cref="ToolTipOld"/> class.
@@ -419,10 +421,10 @@ public partial class ToolTip : StyledControl, IShadowMaskInfoProvider
    {
       Close();
 
-      if (_animating) {
-         return;
-      }
-      
+      // if (_animating) {
+      //    return;
+      // }
+      // _animating = true;
       if (_popup is null) {
          _popup = new Popup();
          _popup.Child = this;
@@ -432,37 +434,72 @@ public partial class ToolTip : StyledControl, IShadowMaskInfoProvider
          _popup.Closed += OnPopupClosed;
          _popup.PositionFlipped += OnPopupPositionFlipped;
       }
+      
       SetPopupParent(_popup, control);
       _controlTokenBinder.AddControlBinding(_popup, Popup.MaskShadowsProperty, GlobalResourceKey.BoxShadowsSecondary);
-      
       SetToolTipColor(control);
-      _popup.Placement = GetPlacement(control);
-      _popup.PlacementTarget = control;
-      _popup.HorizontalOffset = GetHorizontalOffset(control);
-      _popup.VerticalOffset = GetVerticalOffset(control);
+      
       var marginToAnchor = GetMarginToAnchor(control);
       if (double.IsNaN(marginToAnchor)) {
          marginToAnchor = _marginXXS / 2;
       }
-
+      
+      var placement = GetPlacement(control);
+      var offsetX = GetHorizontalOffset(control);
+      var offsetY = GetVerticalOffset(control);
+     
+      
+      Console.WriteLine(marginToAnchor);
+      
+      // 计算动画相关的数据
+      _popupPositionInfo = _popup.CalculatePositionInfo(control,
+                                                        this,
+                                                        new Point(offsetX, offsetY),
+                                                        placement);
+      // offsetX = _popupPositionInfo
+      
+      var direction = PopupUtils.GetDirection(_popupPositionInfo.EffectivePlacement);
+      if (direction == Direction.Top) {
+         offsetY += -marginToAnchor;
+      } else if (direction == Direction.Bottom) {
+         offsetY += -marginToAnchor;
+      } else if (direction == Direction.Left) {
+         offsetX -= marginToAnchor;
+      } else {
+         offsetX += marginToAnchor;
+      }
+      
+      Console.WriteLine($"{_popupPositionInfo.IsFlipped}-{_popupPositionInfo.Offset}-{_popupPositionInfo.Size}");
+      
       _popup.MarginToAnchor = marginToAnchor;
-      _arrowDecoratedBox!.IsShowArrow = GetIsShowArrow(control);
+      _popup.Placement = placement;
+      _popup.PlacementTarget = control;
+      _popup.HorizontalOffset = offsetX;
+      _popup.VerticalOffset = offsetY; 
+      // 后期看能不能检测对应字段的改变
+      _arrowDecoratedBox!.IsShowArrow = CalculateShowArrowEffective(control);
       _currentAnchorWindow = (TopLevel.GetTopLevel(control) as AvaloniaWin)!;
       
       // TODO 可能是多余的，因为有那个对反转事件的处理
-      SetupArrowPosition(_popup.Placement);
+      SetupArrowPosition(placement);
       SetupPointCenterOffset();
       
       _popup.IsOpen = true;
+
+      if (_popup.Host is WindowBase window) {
+         Console.WriteLine($"{window.PlatformImpl!.Position}-{DesiredSize * window.RenderScaling}");
+      }
    }
    
-   private void CalculateShowArrowEffective(Control control)
+   private bool CalculateShowArrowEffective(Control control)
    {
       if (GetIsShowArrow(control) == false) {
          IsShowArrowEffective = false;
       } else {
          IsShowArrowEffective = PopupUtils.CanEnabledArrow(GetPlacement(control));
       }
+
+      return IsShowArrowEffective;
    }
 
    private void Close()

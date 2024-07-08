@@ -187,7 +187,7 @@ public class FlyoutHost : Control
       base.OnDetachedFromVisualTree(e);
       _compositeDisposable.Dispose();
       StopMouseLeaveTimer();
-      StartMouseEnterTimer();
+      StopMouseEnterTimer();
    }
 
    private void SetupFlyoutProperties()

@@ -229,66 +229,19 @@ public class Popup : AbstractPopup
       ConfigurePositionMethodInfo.Invoke(null, arguments);
       positionerParameters = (PopupPositionerParameters)arguments[0]!;
    }
-
-   internal static Direction GetDirection(PlacementMode placement)
-   {
-      return placement switch
-      {
-         PlacementMode.Left => Direction.Left,
-         PlacementMode.LeftEdgeAlignedBottom => Direction.Left,
-         PlacementMode.LeftEdgeAlignedTop => Direction.Left,
-
-         PlacementMode.Top => Direction.Top,
-         PlacementMode.TopEdgeAlignedLeft => Direction.Top,
-         PlacementMode.TopEdgeAlignedRight => Direction.Top,
-
-         PlacementMode.Right => Direction.Right,
-         PlacementMode.RightEdgeAlignedBottom => Direction.Right,
-         PlacementMode.RightEdgeAlignedTop => Direction.Right,
-
-         PlacementMode.Bottom => Direction.Bottom,
-         PlacementMode.BottomEdgeAlignedLeft => Direction.Bottom,
-         PlacementMode.BottomEdgeAlignedRight => Direction.Bottom,
-         _ => throw new ArgumentOutOfRangeException(nameof(placement), placement, "Invalid value for PlacementMode")
-      };
-   }
-   
-   private Point CalculateMarginToAnchorOffset(PlacementMode placement)
-   {
-      var offsetX = 0d;
-      var offsetY = 0d;
-      if (placement != PlacementMode.Center && 
-          placement != PlacementMode.Pointer &&
-          PopupUtils.IsCanonicalAnchorType(placement, PlacementAnchor, PlacementGravity)) {
-         var direction = GetDirection(placement);
-         if (direction == Direction.Bottom) {
-            offsetY += MarginToAnchor;
-         } else if (direction == Direction.Top) {
-            offsetY += -MarginToAnchor;
-         } else if (direction == Direction.Left) {
-            offsetX += -MarginToAnchor;
-         } else {
-            offsetX += MarginToAnchor;
-         }
-      } else if (placement == PlacementMode.Pointer) {
-         offsetX += MarginToAnchor;
-         offsetY += MarginToAnchor;
-      }
-      return new Point(offsetX, offsetY);
-   }
    
    protected internal override void NotifyPopupRootAboutToShow(PopupRoot popupRoot)
    {
       base.NotifyPopupRootAboutToShow(popupRoot);
       var offsetX = HorizontalOffset;
       var offsetY = VerticalOffset;
-      var marginToAnchorOffset = CalculateMarginToAnchorOffset(Placement);
+      var marginToAnchorOffset = PopupUtils.CalculateMarginToAnchorOffset(Placement, MarginToAnchor, PlacementAnchor, PlacementGravity);
       offsetX += marginToAnchorOffset.X;
       offsetY += marginToAnchorOffset.Y;
       HorizontalOffset = offsetX;
       VerticalOffset = offsetY;
 
-      var direction = GetDirection(Placement);
+      var direction = PopupUtils.GetDirection(Placement);
       
       if (Placement != PlacementMode.Center &&
           Placement != PlacementMode.Pointer) {
@@ -328,7 +281,7 @@ public class Popup : AbstractPopup
          if (flipInfo.Item1 || flipInfo.Item2) {
             var flipPlacement = GetFlipPlacement(Placement);
             var flipAnchorAndGravity = GetAnchorAndGravity(flipPlacement);
-            var flipOffset = CalculateMarginToAnchorOffset(flipPlacement);
+            var flipOffset = PopupUtils.CalculateMarginToAnchorOffset(flipPlacement, MarginToAnchor, PlacementAnchor, PlacementGravity);
             
             Placement = flipPlacement;
             PlacementAnchor = flipAnchorAndGravity.Item1;
@@ -354,13 +307,13 @@ public class Popup : AbstractPopup
                                                     PlacementMode placement)
    {
       var offsetX = offset.X;
-      var offsetY = offset.Y + 0.5; // TODO 不知道为什么会出现 0.5 的误差
+      var offsetY = offset.Y + 0.5;
       
-      var marginToAnchorOffset = CalculateMarginToAnchorOffset(placement);
+      var marginToAnchorOffset = PopupUtils.CalculateMarginToAnchorOffset(placement, MarginToAnchor, PlacementAnchor, PlacementGravity);
       offsetX += marginToAnchorOffset.X;
       offsetY += marginToAnchorOffset.Y;
 
-      var direction = GetDirection(placement);
+      var direction = PopupUtils.GetDirection(placement);
   
       PopupPositionerParameters parameters = new PopupPositionerParameters();
       var parentTopLevel = TopLevel.GetTopLevel(placementTarget)!;
@@ -420,7 +373,7 @@ public class Popup : AbstractPopup
          if (flipInfo.Item1 || flipInfo.Item2) {
             var flipPlacement = GetFlipPlacement(placement);
             var flipAnchorAndGravity = GetAnchorAndGravity(flipPlacement);
-            var flipOffset = CalculateMarginToAnchorOffset(flipPlacement);
+            var flipOffset = PopupUtils.CalculateMarginToAnchorOffset(flipPlacement, MarginToAnchor, PlacementAnchor, PlacementGravity);
             positionInfo.EffectivePlacement = flipPlacement;
             positionInfo.EffectivePlacementAnchor = flipAnchorAndGravity.Item1;
             positionInfo.EffectivePlacementGravity = flipAnchorAndGravity.Item2;
