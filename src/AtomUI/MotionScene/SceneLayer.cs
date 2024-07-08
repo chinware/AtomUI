@@ -137,7 +137,7 @@ public class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
    {
       Width = size.Width;
       Height = size.Height;
-      _managedPopupPositionerPopup?.MoveAndResize(point, size);
+      _managedPopupPositionerPopup?.MoveAndResize(new Point(Math.Round(point.X), Math.Floor(point.Y + 0.5)), size);
    }
 
    protected override void OnOpened(EventArgs e)
@@ -148,10 +148,5 @@ public class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
             captureGhost.NotifyCaptureGhostBitmap();
          }
       }
-   }
-
-   public override void Render(DrawingContext context)
-   {
-      //context.FillRectangle(new SolidColorBrush(Colors.Coral, 0.2), new Rect(new Point(0, 0), DesiredSize));
    }
 }

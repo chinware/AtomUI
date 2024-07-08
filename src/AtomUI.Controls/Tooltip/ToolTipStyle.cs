@@ -1,5 +1,6 @@
 ﻿using AtomUI.Data;
 using AtomUI.Styling;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives.PopupPositioning;
@@ -46,7 +47,11 @@ public partial class ToolTip : IControlCustomStyle
          _controlTokenBinder.AddControlBinding(_arrowDecoratedBox, MinHeightProperty, GlobalResourceKey.ControlHeight);
          _controlTokenBinder.AddControlBinding(_arrowDecoratedBox, PaddingProperty, ToolTipResourceKey.ToolTipPadding);
          _controlTokenBinder.AddControlBinding(MarginXXSTokenProperty, GlobalResourceKey.MarginXXS);
+         _controlTokenBinder.AddControlBinding(MotionDurationTokenProperty, GlobalResourceKey.MotionDurationMid);
+         _controlTokenBinder.AddControlBinding(ShadowsTokenProperty, GlobalResourceKey.BoxShadowsSecondary);
          _controlTokenBinder.AddControlBinding(_arrowDecoratedBox, ArrowDecoratedBox.CornerRadiusProperty, ToolTipResourceKey.BorderRadiusOuter);
+         // TODO 生命周期一样还需要管理起来吗？
+         BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, _arrowDecoratedBox, ArrowDecoratedBox.IsShowArrowProperty);
       }
    }
    
@@ -68,11 +73,11 @@ public partial class ToolTip : IControlCustomStyle
       }
    }
 
-   private void SetupPointCenterOffset()
+   private void SetupPointCenterOffset(Control placementTarget, PlacementMode placement, PopupAnchor? anchor = null, PopupGravity? gravity = null)
    {
       var offset =
-         CalculatePopupPositionDelta(_popup!.PlacementTarget!, _popup.Placement, _popup.PlacementAnchor, _popup.PlacementGravity);
-      _popup.HorizontalOffset += offset.X;
+         CalculatePopupPositionDelta(placementTarget, placement, anchor, gravity);
+      _popup!.HorizontalOffset += offset.X;
       _popup.VerticalOffset += offset.Y;
    }
    
@@ -81,7 +86,7 @@ public partial class ToolTip : IControlCustomStyle
    {
       var offsetX = 0d;
       var offsetY = 0d;
-      if (GetIsShowArrow(AdornedControl!) && GetIsPointAtCenter(AdornedControl!)) {
+      if (GetIsShowArrow(anchorTarget) && GetIsPointAtCenter(anchorTarget)) {
          if (PopupUtils.CanEnabledArrow(placement, anchor, gravity)) {
             var arrowVertexPoint = _arrowDecoratedBox!.ArrowVertexPoint;
             var anchorSize = anchorTarget.Bounds.Size;

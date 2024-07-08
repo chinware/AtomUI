@@ -147,6 +147,21 @@ public partial class ToolTip
       = AvaloniaProperty.RegisterDirect<ToolTip, double>(nameof(_marginXXS),
                                                          (o) => o._marginXXS,
                                                          (o, v) => o._marginXXS = v);
+   
+   private TimeSpan _motionDuration;
+
+   private static readonly DirectProperty<ToolTip, TimeSpan> MotionDurationTokenProperty
+      = AvaloniaProperty.RegisterDirect<ToolTip, TimeSpan>(nameof(_motionDuration),
+                                                           (o) => o._motionDuration,
+                                                           (o, v) => o._motionDuration = v);
+
+   // 暂时不支持自定义
+   private BoxShadows _shadows;
+   
+   private static readonly DirectProperty<ToolTip, BoxShadows> ShadowsTokenProperty
+      = AvaloniaProperty.RegisterDirect<ToolTip, BoxShadows>(nameof(_shadows),
+                                                             (o) => o._shadows,
+                                                             (o, v) => o._shadows = v);
    // 组件的 Token 绑定属性
 
    internal static readonly DirectProperty<ToolTip, PlacementMode?> FlipPlacementProperty =

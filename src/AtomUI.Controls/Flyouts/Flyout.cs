@@ -114,6 +114,8 @@ public class Flyout : PopupFlyoutBase
    private CompositeDisposable? _compositeDisposable;
    private bool _animating = false;
    private GlobalTokenBinder _globalTokenBinder;
+
+   // 当鼠标移走了，但是打开动画还没完成，我们需要记录下来这个信号
    internal bool RequestCloseWhereAnimationCompleted { get; set; } = false;
    private PopupPositionInfo? _popupPositionInfo; // 这个信息在隐藏动画的时候会用到
 
@@ -309,11 +311,15 @@ public class Flyout : PopupFlyoutBase
             UiStructureUtils.ClearVisualParentRecursive(flyoutPresenter, null);
             UiStructureUtils.SetLogicalParent(flyoutPresenter, placementToplevel);
 
-            _popupPositionInfo = AtomPopup.CalculatePositionInfo(placementTarget,
-                                                                 presenter,
-                                                                 new Point(HorizontalOffset, VerticalOffset),
-                                                                 Placement);
-
+            _popupPositionInfo = PopupControl.CalculatePositionInfo(placementTarget,
+                                                                    MarginToAnchor,
+                                                                    presenter,
+                                                                    new Point(HorizontalOffset, VerticalOffset),
+                                                                    Placement,
+                                                                    Popup.PlacementAnchor,
+                                                                    Popup.PlacementGravity,
+                                                                    null,
+                                                                    Popup.FlowDirection);
             // 重新设置箭头位置
             // 因为可能有 flip 的情况
             var arrowPosition = PopupUtils.CalculateArrowPosition(_popupPositionInfo.EffectivePlacement,
@@ -331,8 +337,8 @@ public class Flyout : PopupFlyoutBase
                                                                   _popupPositionInfo.EffectivePlacementGravity);
             if (IsPointAtCenter) {
                _popupPositionInfo.Offset = new Point(
-                  _popupPositionInfo.Offset.X + pointAtCenterOffset.X * _popupPositionInfo.Scaling,
-                  _popupPositionInfo.Offset.Y + pointAtCenterOffset.Y * _popupPositionInfo.Scaling);
+                  Math.Floor(_popupPositionInfo.Offset.X + pointAtCenterOffset.X * _popupPositionInfo.Scaling),
+                  Math.Floor(_popupPositionInfo.Offset.Y + pointAtCenterOffset.Y * _popupPositionInfo.Scaling));
             }
 
             PlayShowMotion(_popupPositionInfo, placementTarget, flyoutPresenter, showAtPointer);

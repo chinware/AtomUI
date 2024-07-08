@@ -1,6 +1,9 @@
 ﻿using System.Reflection;
 using AtomUI.ColorSystem;
+using AtomUI.Controls.MotionScene;
+using AtomUI.Controls.Utils;
 using AtomUI.Data;
+using AtomUI.MotionScene;
 using AtomUI.Reflection;
 using AtomUI.Styling;
 using Avalonia;
@@ -12,6 +15,7 @@ using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Styling;
+using Avalonia.Threading;
 
 namespace AtomUI.Controls;
 
@@ -24,13 +28,14 @@ public partial class ToolTip : StyledControl, IShadowMaskInfoProvider
    private Action<IPopupHost?>? _popupHostChangedHandler;
    private AvaloniaWin? _currentAnchorWindow;
    private PopupPositionInfo? _popupPositionInfo; // 这个信息在隐藏动画的时候会用到
+   
+   // 当鼠标移走了，但是打开动画还没完成，我们需要记录下来这个信号
+   internal bool RequestCloseWhereAnimationCompleted { get; set; } = false;
 
-   /// <summary>
-   /// Initializes static members of the <see cref="ToolTipOld"/> class.
-   /// </summary>
    static ToolTip()
    {
       IsOpenProperty.Changed.Subscribe(IsOpenChanged);
+      IsShowArrowProperty.Changed.Subscribe(IsShowArrowChanged);
 
       var requestedThemeVariantProperty =
          typeof(ThemeVariant).GetFieldInfoOrThrow("RequestedThemeVariantProperty",
@@ -360,7 +365,18 @@ public partial class ToolTip : StyledControl, IShadowMaskInfoProvider
       } else if (control.GetValue(ToolTipProperty) is { } toolTip) {
          toolTip.AdornedControl = null;
          toolTip.Close();
-         toolTip?.UpdatePseudoClasses(newValue);
+         toolTip.UpdatePseudoClasses(newValue);
+      }
+   }
+
+   private static void IsShowArrowChanged(AvaloniaPropertyChangedEventArgs e)
+   {
+      var control = (Control)e.Sender;
+      var toolTip = control.GetValue(ToolTipProperty);
+      if (toolTip is not null) {
+         // 重新配置
+         toolTip.Close();
+         control.SetValue(ToolTipProperty, null);
       }
    }
 
@@ -417,14 +433,16 @@ public partial class ToolTip : StyledControl, IShadowMaskInfoProvider
       return false;
    }
 
+   // TODO 当设置跟随鼠标的时候，需要特殊处理
    private void Open(Control control)
    {
       Close();
 
-      // if (_animating) {
-      //    return;
-      // }
-      // _animating = true;
+      if (_animating) {
+         return;
+      }
+      RequestCloseWhereAnimationCompleted = false;
+      _animating = true;
       if (_popup is null) {
          _popup = new Popup();
          _popup.Child = this;
@@ -436,6 +454,7 @@ public partial class ToolTip : StyledControl, IShadowMaskInfoProvider
       }
       
       SetPopupParent(_popup, control);
+
       _controlTokenBinder.AddControlBinding(_popup, Popup.MaskShadowsProperty, GlobalResourceKey.BoxShadowsSecondary);
       SetToolTipColor(control);
       
@@ -445,50 +464,100 @@ public partial class ToolTip : StyledControl, IShadowMaskInfoProvider
       }
       
       var placement = GetPlacement(control);
+      var isPointAtCenter = GetIsPointAtCenter(control);
+      
       var offsetX = GetHorizontalOffset(control);
       var offsetY = GetVerticalOffset(control);
-     
       
-      Console.WriteLine(marginToAnchor);
-      
-      // 计算动画相关的数据
-      _popupPositionInfo = _popup.CalculatePositionInfo(control,
-                                                        this,
-                                                        new Point(offsetX, offsetY),
-                                                        placement);
-      // offsetX = _popupPositionInfo
-      
-      var direction = PopupUtils.GetDirection(_popupPositionInfo.EffectivePlacement);
-      if (direction == Direction.Top) {
-         offsetY += -marginToAnchor;
-      } else if (direction == Direction.Bottom) {
-         offsetY += -marginToAnchor;
-      } else if (direction == Direction.Left) {
-         offsetX -= marginToAnchor;
-      } else {
-         offsetX += marginToAnchor;
-      }
-      
-      Console.WriteLine($"{_popupPositionInfo.IsFlipped}-{_popupPositionInfo.Offset}-{_popupPositionInfo.Size}");
-      
-      _popup.MarginToAnchor = marginToAnchor;
-      _popup.Placement = placement;
-      _popup.PlacementTarget = control;
       _popup.HorizontalOffset = offsetX;
       _popup.VerticalOffset = offsetY; 
-      // 后期看能不能检测对应字段的改变
-      _arrowDecoratedBox!.IsShowArrow = CalculateShowArrowEffective(control);
-      _currentAnchorWindow = (TopLevel.GetTopLevel(control) as AvaloniaWin)!;
+      
+      var anchorAndGravity = PopupUtils.GetAnchorAndGravity(placement);
       
       // TODO 可能是多余的，因为有那个对反转事件的处理
       SetupArrowPosition(placement);
-      SetupPointCenterOffset();
+      SetupPointCenterOffset(control, 
+                             placement,
+                             anchorAndGravity.Item1,
+                             anchorAndGravity.Item2);
       
-      _popup.IsOpen = true;
-
-      if (_popup.Host is WindowBase window) {
-         Console.WriteLine($"{window.PlatformImpl!.Position}-{DesiredSize * window.RenderScaling}");
+      // 后期看能不能检测对应字段的改变
+      CalculateShowArrowEffective(control);
+      
+      // 计算动画相关的数据
+      _popupPositionInfo = Popup.CalculatePositionInfo(control,
+                                                       marginToAnchor,
+                                                       this,
+                                                       new Point(offsetX, offsetY),
+                                                       placement,
+                                                       anchorAndGravity.Item1,
+                                                       anchorAndGravity.Item2,
+                                                       null,
+                                                       _popup.FlowDirection);
+      
+      // 重新设置箭头位置
+      // 因为可能有 flip 的情况
+      var arrowPosition = PopupUtils.CalculateArrowPosition(_popupPositionInfo.EffectivePlacement,
+                                                            _popupPositionInfo.EffectivePlacementAnchor,
+                                                            _popupPositionInfo.EffectivePlacementGravity);
+      if (arrowPosition.HasValue) {
+         _arrowDecoratedBox!.ArrowPosition = arrowPosition.Value;
       }
+
+      // 获取是否在指向中点
+      var pointAtCenterOffset = CalculatePopupPositionDelta(control,
+                                                            _popupPositionInfo.EffectivePlacement,
+                                                            _popupPositionInfo.EffectivePlacementAnchor,
+                                                            _popupPositionInfo.EffectivePlacementGravity);
+      if (isPointAtCenter) {
+         _popupPositionInfo.Offset = new Point(
+            Math.Floor(_popupPositionInfo.Offset.X + pointAtCenterOffset.X * _popupPositionInfo.Scaling),
+            Math.Floor(_popupPositionInfo.Offset.Y + pointAtCenterOffset.Y * _popupPositionInfo.Scaling));
+      }
+
+      _popup.MarginToAnchor = marginToAnchor;
+      _popup.Placement = placement;
+      _popup.PlacementTarget = control;
+
+      _currentAnchorWindow = (TopLevel.GetTopLevel(control) as AvaloniaWin)!;
+      
+      // 开始动画
+      PlayShowMotion(_popupPositionInfo, control, this);
+   }
+   
+   private void PlayShowMotion(PopupPositionInfo positionInfo, Control placementTarget, Control contentControl)
+   {
+      var director = Director.Instance;
+      var motion = new ZoomBigInMotion();
+      motion.ConfigureOpacity(_motionDuration);
+      motion.ConfigureRenderTransform(_motionDuration);
+      var topLevel = TopLevel.GetTopLevel(placementTarget);
+
+      var motionActor =
+         new PopupMotionActor(_shadows, positionInfo.Offset, positionInfo.Scaling, contentControl, motion);
+      motionActor.DispatchInSceneLayer = true;
+      motionActor.SceneParent = topLevel;
+      motionActor.Completed += (sender, args) =>
+      {
+         if (_popup is not null) {
+            _popup.IsOpen = true;
+            if (_popup?.Host is WindowBase window) {
+               window.PlatformImpl!.SetTopmost(true);
+            }
+         }
+
+         _animating = false;
+         if (RequestCloseWhereAnimationCompleted) {
+            Dispatcher.UIThread.Post(() =>
+            {
+               if (_popup is not null) {
+                  _popup.IsOpen = false;
+               }
+            });
+         }
+      };
+
+      director?.Schedule(motionActor);
    }
    
    private bool CalculateShowArrowEffective(Control control)
@@ -498,17 +567,60 @@ public partial class ToolTip : StyledControl, IShadowMaskInfoProvider
       } else {
          IsShowArrowEffective = PopupUtils.CanEnabledArrow(GetPlacement(control));
       }
-
       return IsShowArrowEffective;
    }
 
    private void Close()
    {
-      if (_popup is not null) {
-         _popup.IsOpen = false;
-         SetPopupParent(_popup, null);
-         _popup.PlacementTarget = null;
+      if (_popup is null || !_popup.IsOpen || _animating) {
+         RequestCloseWhereAnimationCompleted = true;
+         return;
       }
+      PlayHideMotion(_popup);
+   }
+   
+   private void PlayHideMotion(Popup popup)
+   {
+      var placementToplevel = TopLevel.GetTopLevel(popup.PlacementTarget);
+      if (_popupPositionInfo is null ||
+          popup.Child is null ||
+          placementToplevel is null) {
+         // 没有动画位置信息，直接关闭
+         popup.IsOpen = false;
+         return;
+      }
+
+      _animating = true;
+      var director = Director.Instance;
+      var motion = new ZoomBigOutMotion();
+      motion.ConfigureOpacity(_motionDuration);
+      motion.ConfigureRenderTransform(_motionDuration);
+
+      UiStructureUtils.SetVisualParent(popup.Child, null);
+      UiStructureUtils.SetVisualParent(popup.Child, null);
+
+      var motionActor = new PopupMotionActor(_shadows, _popupPositionInfo.Offset, _popupPositionInfo.Scaling,
+                                             popup.Child, motion);
+      motionActor.DispatchInSceneLayer = true;
+      motionActor.SceneParent = placementToplevel;
+
+      motionActor.SceneShowed += (sender, args) =>
+      {
+         if (popup.Host is WindowBase window) {
+            window.Opacity = 0;
+            popup.HideShadowLayer();
+         }
+      };
+
+      motionActor.Completed += (sender, args) =>
+      {
+         popup.IsOpen = false;
+         SetPopupParent(popup, null);
+         popup.PlacementTarget = null;
+         _animating = false;
+      };
+
+      director?.Schedule(motionActor);
    }
 
    private void OnPopupPositionFlipped(object? sender, PopupFlippedEventArgs e)
@@ -547,11 +659,5 @@ public partial class ToolTip : StyledControl, IShadowMaskInfoProvider
          _customStyle.SetupUi();
          _initialized = true;
       }
-   }
-   
-   protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
-   {
-      base.OnPropertyChanged(e);
-      _customStyle.HandlePropertyChangedForStyle(e);
    }
 }

@@ -122,9 +122,9 @@ public class Popup : AbstractPopup
       return CalculateFlipInfo(bounds, translatedSize, anchorRect, anchor, gravity, offset);
    }
 
-   internal (bool, bool) CalculateFlipInfo(Rect bounds, Size translatedSize, Rect anchorRect, PopupAnchor anchor,
-                                           PopupGravity gravity,
-                                           Point offset)
+   internal static (bool, bool) CalculateFlipInfo(Rect bounds, Size translatedSize, Rect anchorRect, PopupAnchor anchor,
+                                                 PopupGravity gravity,
+                                                 Point offset)
    {
       var result = (false, false);
 
@@ -169,7 +169,7 @@ public class Popup : AbstractPopup
       return GetBounds(anchorRect, parentGeometry, screens);
    }
 
-   private Rect GetBounds(Rect anchorRect, Rect parentGeometry, IReadOnlyList<ManagedPopupPositionerScreenInfo> screens)
+   private static Rect GetBounds(Rect anchorRect, Rect parentGeometry, IReadOnlyList<ManagedPopupPositionerScreenInfo> screens)
    {
       var targetScreen = screens.FirstOrDefault(s => s.Bounds.ContainsExclusive(anchorRect.TopLeft))
                          ?? screens.FirstOrDefault(s => s.Bounds.Intersects(anchorRect))
@@ -186,7 +186,7 @@ public class Popup : AbstractPopup
              ?? new Rect(0, 0, double.MaxValue, double.MaxValue);
    }
 
-   private IReadOnlyList<ManagedPopupPositionerScreenInfo> GetScreenInfos(TopLevel topLevel)
+   private static IReadOnlyList<ManagedPopupPositionerScreenInfo> GetScreenInfos(TopLevel topLevel)
    {
       if (topLevel is WindowBase window) {
          var windowImpl = window.PlatformImpl!;
@@ -197,7 +197,7 @@ public class Popup : AbstractPopup
       return Array.Empty<ManagedPopupPositionerScreenInfo>();
    }
 
-   private Rect GetParentClientAreaScreenGeometry(TopLevel topLevel)
+   private static Rect GetParentClientAreaScreenGeometry(TopLevel topLevel)
    {
       // Popup positioner operates with abstract coordinates, but in our case they are pixel ones
       var point = topLevel.PointToScreen(default);
@@ -280,7 +280,7 @@ public class Popup : AbstractPopup
                                           offset * scaling);
          if (flipInfo.Item1 || flipInfo.Item2) {
             var flipPlacement = GetFlipPlacement(Placement);
-            var flipAnchorAndGravity = GetAnchorAndGravity(flipPlacement);
+            var flipAnchorAndGravity = PopupUtils.GetAnchorAndGravity(flipPlacement);
             var flipOffset = PopupUtils.CalculateMarginToAnchorOffset(flipPlacement, MarginToAnchor, PlacementAnchor, PlacementGravity);
             
             Placement = flipPlacement;
@@ -302,14 +302,21 @@ public class Popup : AbstractPopup
          PositionFlipped?.Invoke(this, new PopupFlippedEventArgs(IsFlipped));
       }
    }
-
-   internal PopupPositionInfo CalculatePositionInfo(Control placementTarget, Control popupContent, Point offset,
-                                                    PlacementMode placement)
+   
+   internal static PopupPositionInfo CalculatePositionInfo(Control placementTarget, 
+                                                           double marginToAnchor,
+                                                           Control popupContent, 
+                                                           Point offset,
+                                                           PlacementMode placement,
+                                                           PopupAnchor placementAnchor,
+                                                           PopupGravity placementGravity,
+                                                           Rect? placementRect,
+                                                           FlowDirection flowDirection)
    {
       var offsetX = offset.X;
-      var offsetY = offset.Y + 0.5;
+      var offsetY = offset.Y;
       
-      var marginToAnchorOffset = PopupUtils.CalculateMarginToAnchorOffset(placement, MarginToAnchor, PlacementAnchor, PlacementGravity);
+      var marginToAnchorOffset = PopupUtils.CalculateMarginToAnchorOffset(placement, marginToAnchor, placementAnchor, placementGravity);
       offsetX += marginToAnchorOffset.X;
       offsetY += marginToAnchorOffset.Y;
 
@@ -335,16 +342,16 @@ public class Popup : AbstractPopup
                         placementTarget,
                         placement,
                         offset,
-                        PlacementAnchor,
-                        PlacementGravity,
+                        placementAnchor,
+                        placementGravity,
                         PopupPositionerConstraintAdjustment.All,
-                        PlacementRect ?? new Rect(default, placementTarget.Bounds.Size),
-                        FlowDirection);
+                        placementRect ?? new Rect(default, placementTarget.Bounds.Size),
+                        flowDirection);
       
       var positionInfo = new PopupPositionInfo();
       positionInfo.EffectivePlacement = placement;
-      positionInfo.EffectivePlacementAnchor = PlacementAnchor;
-      positionInfo.EffectivePlacementGravity = PlacementGravity;
+      positionInfo.EffectivePlacementAnchor = placementAnchor;
+      positionInfo.EffectivePlacementGravity = placementGravity;
       positionInfo.Size = parameters.Size;
       positionInfo.Offset = parameters.Offset;
       
@@ -372,8 +379,8 @@ public class Popup : AbstractPopup
                                           offset * scaling);
          if (flipInfo.Item1 || flipInfo.Item2) {
             var flipPlacement = GetFlipPlacement(placement);
-            var flipAnchorAndGravity = GetAnchorAndGravity(flipPlacement);
-            var flipOffset = PopupUtils.CalculateMarginToAnchorOffset(flipPlacement, MarginToAnchor, PlacementAnchor, PlacementGravity);
+            var flipAnchorAndGravity = PopupUtils.GetAnchorAndGravity(flipPlacement);
+            var flipOffset = PopupUtils.CalculateMarginToAnchorOffset(flipPlacement, marginToAnchor, placementAnchor, placementGravity);
             positionInfo.EffectivePlacement = flipPlacement;
             positionInfo.EffectivePlacementAnchor = flipAnchorAndGravity.Item1;
             positionInfo.EffectivePlacementGravity = flipAnchorAndGravity.Item2;
@@ -402,34 +409,14 @@ public class Popup : AbstractPopup
          parentGeometry,
          screens);
 
-      positionInfo.Offset = rect.Position;
+      positionInfo.Offset = new Point(Math.Round(rect.Position.X), Math.Floor(rect.Position.Y + 0.5));
       positionInfo.Size = rect.Size;
       positionInfo.Scaling = scaling;
       
       return positionInfo;
    }
-   
-   internal static (PopupAnchor, PopupGravity) GetAnchorAndGravity(PlacementMode placement)
-   {
-      return placement switch
-      {
-         PlacementMode.Bottom => (PopupAnchor.Bottom, PopupGravity.Bottom),
-         PlacementMode.Right => (PopupAnchor.Right, PopupGravity.Right),
-         PlacementMode.Left => (PopupAnchor.Left, PopupGravity.Left),
-         PlacementMode.Top => (PopupAnchor.Top, PopupGravity.Top),
-         PlacementMode.TopEdgeAlignedRight => (PopupAnchor.TopRight, PopupGravity.TopLeft),
-         PlacementMode.TopEdgeAlignedLeft => (PopupAnchor.TopLeft, PopupGravity.TopRight),
-         PlacementMode.BottomEdgeAlignedLeft => (PopupAnchor.BottomLeft, PopupGravity.BottomRight),
-         PlacementMode.BottomEdgeAlignedRight => (PopupAnchor.BottomRight, PopupGravity.BottomLeft),
-         PlacementMode.LeftEdgeAlignedTop => (PopupAnchor.TopLeft, PopupGravity.BottomLeft),
-         PlacementMode.LeftEdgeAlignedBottom => (PopupAnchor.BottomLeft, PopupGravity.TopLeft),
-         PlacementMode.RightEdgeAlignedTop => (PopupAnchor.TopRight, PopupGravity.BottomRight),
-         PlacementMode.RightEdgeAlignedBottom => (PopupAnchor.BottomRight, PopupGravity.TopRight),
-         _ => throw new ArgumentOutOfRangeException(nameof(placement), placement, "Invalid value for PlacementMode")
-      };
-   }
-   
-   protected PlacementMode GetFlipPlacement(PlacementMode placement)
+
+   protected static PlacementMode GetFlipPlacement(PlacementMode placement)
    {
       return placement switch
       {

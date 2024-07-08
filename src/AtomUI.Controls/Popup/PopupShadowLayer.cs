@@ -194,6 +194,10 @@ internal class PopupShadowLayer : LiteWindow, IShadowDecorator
          var shadowThickness = MaskShadows.Thickness();
          offsetX -= shadowThickness.Left * scaling;
          offsetY -= shadowThickness.Top * scaling;
+
+         offsetX = Math.Round(offsetX);
+         offsetY = Math.Floor(offsetY + 0.5);
+         
          _managedPopupPositionerPopup?.MoveAndResize(new Point(offsetX, offsetY),
                                                      new Size(_shadowRenderer!.Width, _shadowRenderer.Height));
       }

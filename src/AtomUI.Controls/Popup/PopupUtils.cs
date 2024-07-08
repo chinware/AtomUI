@@ -15,7 +15,7 @@ internal static class PopupUtils
       }
 
       if (placement != PlacementMode.AnchorAndGravity) {
-         var ret = Popup.GetAnchorAndGravity(placement);
+         var ret = GetAnchorAndGravity(placement);
          anchor = ret.Item1;
          gravity = ret.Item2;
       }
@@ -325,14 +325,14 @@ internal static class PopupUtils
    
    internal static Point CalculateMarginToAnchorOffset(PlacementMode placement, 
                                                        double margin, 
-                                                       PopupAnchor? popupAnchor, 
-                                                       PopupGravity? popupGravity)
+                                                       PopupAnchor? popupAnchor = null, 
+                                                       PopupGravity? popupGravity = null)
    {
       var offsetX = 0d;
       var offsetY = 0d;
       if (placement != PlacementMode.Center && 
-          placement != PlacementMode.Pointer &&
-          PopupUtils.IsCanonicalAnchorType(placement, popupAnchor, popupGravity)) {
+          placement != PlacementMode.Pointer && 
+          IsCanonicalAnchorType(placement, popupAnchor, popupGravity)) {
          var direction = GetDirection(placement);
          if (direction == Direction.Bottom) {
             offsetY += margin;
@@ -372,4 +372,25 @@ internal static class PopupUtils
          _ => throw new ArgumentOutOfRangeException(nameof(placement), placement, "Invalid value for PlacementMode")
       };
    }
+   
+   internal static (PopupAnchor, PopupGravity) GetAnchorAndGravity(PlacementMode placement)
+   {
+      return placement switch
+      {
+         PlacementMode.Bottom => (PopupAnchor.Bottom, PopupGravity.Bottom),
+         PlacementMode.Right => (PopupAnchor.Right, PopupGravity.Right),
+         PlacementMode.Left => (PopupAnchor.Left, PopupGravity.Left),
+         PlacementMode.Top => (PopupAnchor.Top, PopupGravity.Top),
+         PlacementMode.TopEdgeAlignedRight => (PopupAnchor.TopRight, PopupGravity.TopLeft),
+         PlacementMode.TopEdgeAlignedLeft => (PopupAnchor.TopLeft, PopupGravity.TopRight),
+         PlacementMode.BottomEdgeAlignedLeft => (PopupAnchor.BottomLeft, PopupGravity.BottomRight),
+         PlacementMode.BottomEdgeAlignedRight => (PopupAnchor.BottomRight, PopupGravity.BottomLeft),
+         PlacementMode.LeftEdgeAlignedTop => (PopupAnchor.TopLeft, PopupGravity.BottomLeft),
+         PlacementMode.LeftEdgeAlignedBottom => (PopupAnchor.BottomLeft, PopupGravity.TopLeft),
+         PlacementMode.RightEdgeAlignedTop => (PopupAnchor.TopRight, PopupGravity.BottomRight),
+         PlacementMode.RightEdgeAlignedBottom => (PopupAnchor.BottomRight, PopupGravity.TopRight),
+         _ => throw new ArgumentOutOfRangeException(nameof(placement), placement, "Invalid value for PlacementMode")
+      };
+   }
+
 }
