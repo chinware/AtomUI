@@ -10,6 +10,7 @@ using Avalonia.Input;
 using Avalonia.Input.Raw;
 using Avalonia.LogicalTree;
 using Avalonia.Metadata;
+using Avalonia.Threading;
 
 namespace AtomUI.Controls;
 
@@ -68,11 +69,11 @@ public class FlyoutHost : Control
    public static readonly StyledProperty<double> MarginToAnchorProperty =
       Popup.MarginToAnchorProperty.AddOwner<FlyoutHost>();
 
-   public static readonly StyledProperty<int> ShowDelayProperty =
-      AvaloniaProperty.Register<FlyoutHost, int>(nameof(ShowDelay), 400);
-
-   public static readonly StyledProperty<int> BetweenShowDelayProperty =
-      AvaloniaProperty.Register<FlyoutHost, int>(nameof(BetweenShowDelay), 100);
+   public static readonly StyledProperty<int> MouseEnterDelayProperty =
+      AvaloniaProperty.Register<FlyoutHost, int>(nameof(MouseEnterDelay), 100);
+   
+   public static readonly StyledProperty<int> MouseLeaveDelayProperty =
+      AvaloniaProperty.Register<FlyoutHost, int>(nameof(MouseLeaveDelay), 100);
 
    /// <summary>
    /// 装饰的目标控件
@@ -132,21 +133,23 @@ public class FlyoutHost : Control
       set => SetValue(MarginToAnchorProperty, value);
    }
 
-   public int ShowDelay
+   public int MouseEnterDelay
    {
-      get => GetValue(ShowDelayProperty);
-      set => SetValue(ShowDelayProperty, value);
+      get => GetValue(MouseEnterDelayProperty);
+      set => SetValue(MouseEnterDelayProperty, value);
    }
-
-   public int BetweenShowDelay
+   
+   public int MouseLeaveDelay
    {
-      get => GetValue(BetweenShowDelayProperty);
-      set => SetValue(BetweenShowDelayProperty, value);
+      get => GetValue(MouseLeaveDelayProperty);
+      set => SetValue(MouseLeaveDelayProperty, value);
    }
 
    private bool _initialized = false;
    private CompositeDisposable _compositeDisposable;
    private GlobalTokenBinder _globalTokenBinder;
+   private DispatcherTimer? _mouseEnterDelayTimer;
+   private DispatcherTimer? _mouseLeaveDelayTimer;
 
    static FlyoutHost()
    {
@@ -183,6 +186,8 @@ public class FlyoutHost : Control
    {
       base.OnDetachedFromVisualTree(e);
       _compositeDisposable.Dispose();
+      StopMouseLeaveTimer();
+      StartMouseEnterTimer();
    }
 
    private void SetupFlyoutProperties()
@@ -279,8 +284,14 @@ public class FlyoutHost : Control
       if (Flyout is null || AnchorTarget is null) {
          return;
       }
-      
-      Flyout.ShowAt(AnchorTarget);
+      StopMouseEnterTimer();
+      StopMouseLeaveTimer();
+      Flyout.Hide();
+      if (MouseEnterDelay == 0) {
+         Flyout.ShowAt(AnchorTarget);
+      } else {
+         StartMouseEnterTimer();
+      }
    }
 
    public void HideFlyout()
@@ -288,10 +299,60 @@ public class FlyoutHost : Control
       if (Flyout is null) {
          return;
       }
+      StopMouseEnterTimer();
 
       if (Flyout is Flyout atomFlyout) {
          atomFlyout.RequestCloseWhereAnimationCompleted = true;
       }
-      Flyout.Hide();
+      
+      if (MouseLeaveDelay == 0) {
+         Flyout.Hide();
+      } else {
+         StartMouseLeaveTimer();
+      }
+   }
+
+   private void StartMouseEnterTimer()
+   {
+      _mouseEnterDelayTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(MouseEnterDelay), Tag = this };
+      _mouseEnterDelayTimer.Tick += (sender, args) =>
+      {
+         if (_mouseEnterDelayTimer != null) {
+            StopMouseEnterTimer();
+            if (Flyout is null || AnchorTarget is null) {
+               return;
+            }
+            Flyout.ShowAt(AnchorTarget);
+         }
+      };
+      _mouseEnterDelayTimer.Start();
+   }
+   
+   private void StopMouseEnterTimer()
+   {
+      _mouseEnterDelayTimer?.Stop();
+      _mouseEnterDelayTimer = null;
+   }
+
+   private void StopMouseLeaveTimer()
+   {
+      _mouseLeaveDelayTimer?.Stop();
+      _mouseLeaveDelayTimer = null;
+   }
+   
+   private void StartMouseLeaveTimer()
+   {
+      _mouseLeaveDelayTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(MouseLeaveDelay), Tag = this };
+      _mouseLeaveDelayTimer.Tick += (sender, args) =>
+      {
+         if (_mouseLeaveDelayTimer != null) {
+            StopMouseLeaveTimer();
+            if (Flyout is null) {
+               return;
+            }
+            Flyout.Hide();
+         }
+      };
+      _mouseLeaveDelayTimer.Start();
    }
 }
