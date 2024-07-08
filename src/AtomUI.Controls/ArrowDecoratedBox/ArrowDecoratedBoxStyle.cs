@@ -21,6 +21,7 @@ public partial class ArrowDecoratedBox : IControlCustomStyle
    private Rect _arrowRect;
    private Border? _container;
    private CompositeDisposable? _compositeDisposable;
+   private bool _needGenerateArrowVertexPoint = true;
 
    // 组件的 Token 绑定属性
    private double _arrowSize;
@@ -69,17 +70,30 @@ public partial class ArrowDecoratedBox : IControlCustomStyle
       NotifyApplyFixedStyleConfig();
    }
 
+   private (double, double) GetArrowVertexPoint()
+   {
+      if (_needGenerateArrowVertexPoint) {
+         BuildGeometry(true);
+         _arrowRect = GetArrowRect(DesiredSize);
+         _needGenerateArrowVertexPoint = false;
+      }
+
+      return _arrowVertexPoint;
+   }
+   
    void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
    {
       if (e.Property == IsShowArrowProperty ||
           e.Property == ArrowPositionProperty ||
           e.Property == ArrowSizeTokenProperty ||
           e.Property == VisualParentProperty) {
-         if (_initialized) {
-            if (IsShowArrow) {
-               BuildGeometry(true);
-               GetArrowRect(DesiredSize);
-            }
+         if (e.Property == IsShowArrowProperty && VisualRoot is null) {
+            // 当开启的时候，但是还没有加入的渲染树，这个时候我们取不到 Token 需要在取值的时候重新生成一下
+            _needGenerateArrowVertexPoint = true;
+         }
+         if (_initialized && VisualRoot is not null) {
+            BuildGeometry(true);
+            _arrowRect = GetArrowRect(DesiredSize);
          }
       }
    }
@@ -200,6 +214,7 @@ public partial class ArrowDecoratedBox : IControlCustomStyle
       var position = ArrowPosition;
       if (IsShowArrow) {
          var size = _arrowGeometry!.Bounds.Size;
+
          var minValue = Math.Min(size.Width, size.Height);
          var maxValue = Math.Max(size.Width, size.Height);
          if (position == ArrowPosition.Left ||
@@ -270,17 +285,17 @@ public partial class ArrowDecoratedBox : IControlCustomStyle
             }
          }
       }
-
+      
       var targetRect = new Rect(offsetX, offsetY, targetWidth, targetHeight);
       var center = targetRect.Center;
+      
       // 计算中点
       var direction = GetDirection(position);
       if (direction == Direction.Left || direction == Direction.Right) {
-         ArrowVertexPoint = (center.Y, finalSize.Height - center.Y);
+         _arrowVertexPoint = (center.Y, finalSize.Height - center.Y);
       } else if (direction == Direction.Top || direction == Direction.Bottom) {
-         ArrowVertexPoint = (center.X, finalSize.Width - center.X);
+         _arrowVertexPoint = (center.X, finalSize.Width - center.X);
       }
-
       return targetRect;
    }
 }

@@ -10,23 +10,26 @@ namespace AtomUI.Controls;
 internal class PopupMotionActor : MotionActor
 {
    private BoxShadows _boxShadows;
-   private PopupPositionInfo _popupPositionInfo;
+   private Point _offset;
+   private double _scaling;
    
    public PopupMotionActor(BoxShadows boxShadows, 
-                           PopupPositionInfo popupPositionInfo, 
+                           Point offset,
+                           double scaling,
                            Control motionTarget, 
                            AbstractMotion motion)
       : base(motionTarget, motion)
    {
-      _popupPositionInfo = popupPositionInfo;
+      _offset = offset;
+      _scaling = scaling;
       _boxShadows = boxShadows;
    }
    
    protected override Point CalculateTopLevelGhostPosition()
    {
       var boxShadowsThickness = _boxShadows.Thickness();
-      var winPos = _popupPositionInfo.Offset; // TODO 可能需要乘以 scaling
-      var scaledThickness = boxShadowsThickness * _popupPositionInfo.Scaling;
+      var winPos = _offset; // TODO 可能需要乘以 scaling
+      var scaledThickness = boxShadowsThickness * _scaling;
       return new Point(winPos.X - scaledThickness.Left, winPos.Y - scaledThickness.Top);
    }
 

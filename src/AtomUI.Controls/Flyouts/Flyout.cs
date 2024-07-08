@@ -142,20 +142,15 @@ public class Flyout : PopupFlyoutBase
          }
       }
 
+      var placement = popup.Placement;
+      var anchor = popup.PlacementAnchor;
+      var gravity = popup.PlacementGravity;
+      
       if (flyoutPresenter is not null) {
-         var arrowPosition = PopupUtils.CalculateArrowPosition(popup.Placement, popup.PlacementAnchor, popup.PlacementGravity);
+         var arrowPosition = PopupUtils.CalculateArrowPosition(placement, anchor, gravity);
          if (arrowPosition.HasValue) {
             flyoutPresenter.ArrowPosition = arrowPosition.Value;
          }
-      }
-   }
-
-   private void SetupArrowPosition(FlyoutPresenter flyoutPresenter, PlacementMode placement, PopupAnchor? anchor,
-                                   PopupGravity? gravity)
-   {
-      var arrowPosition = PopupUtils.CalculateArrowPosition(placement, anchor, gravity);
-      if (arrowPosition.HasValue) {
-         flyoutPresenter.ArrowPosition = arrowPosition.Value;
       }
    }
 
@@ -176,9 +171,7 @@ public class Flyout : PopupFlyoutBase
       BindUtils.RelayBind(this, PlacementProperty, popup);
       BindUtils.RelayBind(this, PlacementAnchorProperty, popup);
       BindUtils.RelayBind(this, PlacementGravityProperty, popup);
-      BindUtils.RelayBind(this, HorizontalOffsetProperty, popup);
-      BindUtils.RelayBind(this, VerticalOffsetProperty, popup);
-      popup.MaskShadows = MaskShadows;
+      BindUtils.RelayBind(this, MaskShadowsProperty, popup);
       SetupArrowPosition(popup);
    }
    
@@ -207,15 +200,19 @@ public class Flyout : PopupFlyoutBase
       _compositeDisposable?.Dispose();
    }
 
-   private Point CalculatePopupPositionDelta(Control anchorTarget, PlacementMode placement, PopupAnchor? anchor = null,
+   private Point CalculatePopupPositionDelta(Control anchorTarget,
+                                             Control? flyoutPresenter,
+                                             PlacementMode placement, 
+                                             PopupAnchor? anchor = null,
                                              PopupGravity? gravity = null)
    {
       var offsetX = 0d;
       var offsetY = 0d;
       if (IsShowArrow && IsPointAtCenter) {
          if (PopupUtils.CanEnabledArrow(placement, anchor, gravity)) {
-            if (Popup.Child is ArrowDecoratedBox arrowDecoratedBox) {
+            if (flyoutPresenter is ArrowDecoratedBox arrowDecoratedBox) {
                var arrowVertexPoint = arrowDecoratedBox.ArrowVertexPoint;
+               
                var anchorSize = anchorTarget.Bounds.Size;
                var centerX = anchorSize.Width / 2;
                var centerY = anchorSize.Height / 2;
@@ -262,15 +259,11 @@ public class Flyout : PopupFlyoutBase
 
    protected internal override void NotifyPositionPopup(bool showAtPointer)
    {
-      Size sz;
-      // Popup.Child can't be null here, it was set in ShowAtCore.
+      
       if (Popup.Child!.DesiredSize == default) {
-         // Popup may not have been shown yet. Measure content
-         sz = LayoutHelper.MeasureChild(Popup.Child, Size.Infinity, new Thickness());
-      } else {
-         sz = Popup.Child.DesiredSize;
+         LayoutHelper.MeasureChild(Popup.Child, Size.Infinity, new Thickness());
       }
-
+      
       Popup.PlacementAnchor = PlacementAnchor;
       Popup.PlacementGravity = PlacementGravity;
 
@@ -280,13 +273,16 @@ public class Flyout : PopupFlyoutBase
          Popup.Placement = Placement;
          Popup.PlacementConstraintAdjustment = PlacementConstraintAdjustment;
       }
-
+    
+      var pointAtCenterOffset = CalculatePopupPositionDelta(Target!, Popup.Child, Popup.Placement, Popup.PlacementAnchor, Popup.PlacementGravity);
+      
       var offsetX = HorizontalOffset;
       var offsetY = VerticalOffset;
-
-      var offset = CalculatePopupPositionDelta(Target!, Placement, PlacementAnchor, PlacementGravity);
-      offsetX += offset.X;
-      offsetY += offset.Y;
+      if (IsPointAtCenter) {
+         offsetX += pointAtCenterOffset.X;
+         offsetY += pointAtCenterOffset.Y;
+      }
+      // 更新弹出信息是否指向中点
       Popup.HorizontalOffset = offsetX;
       Popup.VerticalOffset = offsetY;
    }
@@ -307,13 +303,32 @@ public class Flyout : PopupFlyoutBase
             UiStructureUtils.ClearLogicalParentRecursive(flyoutPresenter, null);
             UiStructureUtils.ClearVisualParentRecursive(flyoutPresenter, null);
             UiStructureUtils.SetLogicalParent(flyoutPresenter, placementToplevel);
-            _popupPositionInfo = AtomPopup.CalculatePositionInfo(placementTarget, presenter);
+            
+            _popupPositionInfo = AtomPopup.CalculatePositionInfo(placementTarget,
+                                                                 presenter,
+                                                                 new Point(HorizontalOffset, VerticalOffset), 
+                                                                 Placement);
             
             // 重新设置箭头位置
-            SetupArrowPosition(flyoutPresenter, 
-                               _popupPositionInfo.EffectivePlacement, 
-                               _popupPositionInfo.EffectivePlacementAnchor,
-                               _popupPositionInfo.EffectivePlacementGravity);
+            // 因为可能有 flip 的情况
+            var arrowPosition = PopupUtils.CalculateArrowPosition(_popupPositionInfo.EffectivePlacement,
+                                                                  _popupPositionInfo.EffectivePlacementAnchor,
+                                                                  _popupPositionInfo.EffectivePlacementGravity);
+            if (arrowPosition.HasValue) {
+               flyoutPresenter.ArrowPosition = arrowPosition.Value;
+            }
+            
+            // 获取是否在指向中点
+            var pointAtCenterOffset = CalculatePopupPositionDelta(placementTarget,
+                                                                  presenter,
+                                                                  _popupPositionInfo.EffectivePlacement,
+                                                                  _popupPositionInfo.EffectivePlacementAnchor,
+                                                                  _popupPositionInfo.EffectivePlacementGravity);
+            if (IsPointAtCenter) {
+               _popupPositionInfo.Offset = new Point(_popupPositionInfo.Offset.X + pointAtCenterOffset.X * _popupPositionInfo.Scaling,
+                                                     _popupPositionInfo.Offset.Y + pointAtCenterOffset.Y * _popupPositionInfo.Scaling);
+            }
+ 
             PlayShowMotion(_popupPositionInfo, placementTarget, flyoutPresenter, showAtPointer);
          }
          result = true;
@@ -355,7 +370,8 @@ public class Flyout : PopupFlyoutBase
       motion.ConfigureOpacity(_motionDuration);
       motion.ConfigureRenderTransform(_motionDuration);
       var topLevel = TopLevel.GetTopLevel(placementTarget);
-      var motionActor = new PopupMotionActor(MaskShadows, positionInfo, flyoutPresenter, motion);
+      
+      var motionActor = new PopupMotionActor(MaskShadows, positionInfo.Offset, positionInfo.Scaling, flyoutPresenter, motion);
       motionActor.DispatchInSceneLayer = true;
       motionActor.SceneParent = topLevel;
       motionActor.Completed += (sender, args) =>
@@ -401,7 +417,7 @@ public class Flyout : PopupFlyoutBase
       UiStructureUtils.SetVisualParent(popup.Child, null);
       UiStructureUtils.SetVisualParent(popup.Child, null);
       
-      var motionActor = new PopupMotionActor(MaskShadows, _popupPositionInfo, popup.Child, motion);
+      var motionActor = new PopupMotionActor(MaskShadows, _popupPositionInfo.Offset, _popupPositionInfo.Scaling, popup.Child, motion);
       motionActor.DispatchInSceneLayer = true;
       motionActor.SceneParent = placementToplevel;
       

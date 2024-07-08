@@ -50,13 +50,9 @@ public class Popup : AbstractPopup
    private readonly GlobalTokenBinder _globalTokenBinder;
    private CompositeDisposable? _compositeDisposable;
    private bool _initialized;
-
-   private PlacementMode? _originPlacementMode;
-   private PopupAnchor? _originPlacementAnchor;
-   private PopupGravity? _originPlacementGravity;
-   private double _originOffsetX;
-   private double _originOffsetY;
+   
    private bool _ignoreSyncOriginValues = false;
+   private Point _pointAtCenterOffset;
 
    static Popup()
    {
@@ -71,28 +67,6 @@ public class Popup : AbstractPopup
    {
       IsLightDismissEnabled = false;
       _globalTokenBinder = new GlobalTokenBinder();
-      _originOffsetX = HorizontalOffset;
-      _originOffsetY = VerticalOffset;
-   }
-
-   internal void UpdateOriginOffset(double offsetX, double offsetY)
-   {
-      _originOffsetX = offsetX;
-      _originOffsetY = offsetY;
-   }
-
-   protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
-   {
-      base.OnPropertyChanged(e);
-      if (!_ignoreSyncOriginValues) {
-         if (e.Property == PlacementProperty) {
-            _originPlacementMode = e.GetNewValue<PlacementMode>();
-         } else if (e.Property == PlacementAnchorProperty) {
-            _originPlacementAnchor = e.GetNewValue<PopupAnchor>();
-         } else if (e.Property == PlacementGravityProperty) {
-            _originPlacementGravity = e.GetNewValue<PopupGravity>();
-         }
-      }
    }
    
    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -303,15 +277,16 @@ public class Popup : AbstractPopup
    protected internal override void NotifyPopupRootAboutToShow(PopupRoot popupRoot)
    {
       base.NotifyPopupRootAboutToShow(popupRoot);
-      using var ignoreSyncOriginHandling = IgnoreSyncOriginValueHandling();
-      var offsetX = _originOffsetX;
-      var offsetY = _originOffsetY;
+      var offsetX = HorizontalOffset;
+      var offsetY = VerticalOffset;
       var marginToAnchorOffset = CalculateMarginToAnchorOffset(Placement);
       offsetX += marginToAnchorOffset.X;
       offsetY += marginToAnchorOffset.Y;
       HorizontalOffset = offsetX;
       VerticalOffset = offsetY;
 
+      var direction = GetDirection(Placement);
+      
       if (Placement != PlacementMode.Center &&
           Placement != PlacementMode.Pointer) {
          // 计算是否 flip
@@ -342,7 +317,6 @@ public class Popup : AbstractPopup
             parameters.AnchorRectangle.Size * scaling);
          anchorRect = anchorRect.Translate(_managedPopupPositioner.ParentClientAreaScreenGeometry.TopLeft);
          
-        
          var flipInfo = CalculateFlipInfo(popupSize * scaling,
                                           anchorRect,
                                           parameters.Anchor,
@@ -353,50 +327,37 @@ public class Popup : AbstractPopup
             var flipAnchorAndGravity = GetAnchorAndGravity(flipPlacement);
             var flipOffset = CalculateMarginToAnchorOffset(flipPlacement);
             
-            _originPlacementMode = Placement;
-            _originPlacementAnchor = PlacementAnchor;
-            _originPlacementGravity = PlacementGravity;
-            
             Placement = flipPlacement;
             PlacementAnchor = flipAnchorAndGravity.Item1;
             PlacementGravity = flipAnchorAndGravity.Item2;
-            HorizontalOffset = flipOffset.X;
-            VerticalOffset = flipOffset.Y;
+
+            // 这里有个问题，目前需要重新看看，就是 X 轴 和 Y 轴会不会同时被反转呢？
+            
+            if (direction == Direction.Top || direction == Direction.Bottom) {
+               VerticalOffset = flipOffset.Y;
+            } else {
+               HorizontalOffset = flipOffset.X;
+            }
             IsFlipped = true;
             
          } else {
             IsFlipped = false;
-           
-            if (_originPlacementMode.HasValue) {
-               Placement = _originPlacementMode.Value;
-            }
-
-            if (_originPlacementAnchor.HasValue) {
-               PlacementAnchor = _originPlacementAnchor.Value;
-            }
-
-            if (_originPlacementGravity.HasValue) {
-               PlacementGravity = _originPlacementGravity.Value;
-            }
-
-            _originPlacementMode = null;
-            _originPlacementAnchor = null;
-            _originPlacementGravity = null;
          }
       }
    }
 
-   internal PopupPositionInfo CalculatePositionInfo(Control placementTarget, Control popupContent)
+   internal PopupPositionInfo CalculatePositionInfo(Control placementTarget, Control popupContent, Point offset,
+                                                    PlacementMode placement)
    {
-      using var ignoreSyncOriginHandling = IgnoreSyncOriginValueHandling();
-      var offsetX = _originOffsetX;
-      var offsetY = _originOffsetY + 0.5; // TODO 不知道为什么会出现 0.5 的误差
-      var placement = _originPlacementMode ?? Placement;
+      var offsetX = offset.X;
+      var offsetY = offset.Y + 0.5; // TODO 不知道为什么会出现 0.5 的误差
       
       var marginToAnchorOffset = CalculateMarginToAnchorOffset(placement);
       offsetX += marginToAnchorOffset.X;
       offsetY += marginToAnchorOffset.Y;
-      Point offset = default;
+
+      var direction = GetDirection(placement);
+  
       PopupPositionerParameters parameters = new PopupPositionerParameters();
       var parentTopLevel = TopLevel.GetTopLevel(placementTarget)!;
       
@@ -422,8 +383,6 @@ public class Popup : AbstractPopup
                         PopupPositionerConstraintAdjustment.All,
                         PlacementRect ?? new Rect(default, placementTarget.Bounds.Size),
                         FlowDirection);
-      
-   
       
       var positionInfo = new PopupPositionInfo();
       positionInfo.EffectivePlacement = placement;
@@ -461,7 +420,13 @@ public class Popup : AbstractPopup
             positionInfo.EffectivePlacement = flipPlacement;
             positionInfo.EffectivePlacementAnchor = flipAnchorAndGravity.Item1;
             positionInfo.EffectivePlacementGravity = flipAnchorAndGravity.Item2;
-            positionInfo.Offset = flipOffset;
+                        
+            if (direction == Direction.Top || direction == Direction.Bottom) {
+               positionInfo.Offset = positionInfo.Offset.WithY(flipOffset.Y);
+            } else {
+               positionInfo.Offset = positionInfo.Offset.WithX(flipOffset.X);
+            }
+            
             positionInfo.IsFlipped = true;
          } else {
             positionInfo.IsFlipped = false;
@@ -529,27 +494,6 @@ public class Popup : AbstractPopup
          
          _ => throw new ArgumentOutOfRangeException(nameof(placement), placement, "Invalid value for PlacementMode")
       };
-   }
-   
-   private IDisposable IgnoreSyncOriginValueHandling()
-   {
-      return new IgnoreSyncOriginValueDisposable(this);
-   }
-   
-   private readonly struct IgnoreSyncOriginValueDisposable : IDisposable
-   {
-      private readonly Popup _popup;
-
-      public IgnoreSyncOriginValueDisposable(Popup popup)
-      {
-         _popup = popup;
-         _popup._ignoreSyncOriginValues = true;
-      }
-            
-      public void Dispose()
-      {
-         _popup._ignoreSyncOriginValues = false;
-      }
    }
 
    public void HideShadowLayer()

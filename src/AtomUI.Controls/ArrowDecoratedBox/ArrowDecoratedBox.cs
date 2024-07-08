@@ -92,7 +92,9 @@ public partial class ArrowDecoratedBox : StyledControl, IShadowMaskInfoProvider
       Border.CornerRadiusProperty.AddOwner<ArrowDecoratedBox>();
    
    // 指针最顶点位置
-   internal (double, double) ArrowVertexPoint { get; private set; }
+   // 相对坐标
+   private (double, double) _arrowVertexPoint;
+   internal (double, double) ArrowVertexPoint => GetArrowVertexPoint();
 
    /// <summary>
    /// 是否显示指示箭头
