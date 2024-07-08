@@ -19,109 +19,6 @@ using AvaloniaWin = Avalonia.Controls.Window;
 [PseudoClasses(":open")]
 public partial class ToolTip : StyledControl, IShadowMaskInfoProvider
 {
-   /// <summary>
-   /// Defines the <see cref="Content"/> property.
-   /// </summary>
-   public static readonly StyledProperty<object?> ContentProperty =
-      AvaloniaProperty.Register<ToolTip, object?>(nameof(Content));
-
-   /// <summary>
-   /// Defines the ToolTip.Tip attached property.
-   /// </summary>
-   public static readonly AttachedProperty<object?> TipProperty =
-      AvaloniaProperty.RegisterAttached<ToolTip, Control, object?>("Tip");
-
-   /// <summary>
-   /// Defines the ToolTip.IsOpen attached property.
-   /// </summary>
-   public static readonly AttachedProperty<bool> IsOpenProperty =
-      AvaloniaProperty.RegisterAttached<ToolTip, Control, bool>("IsOpen");
-
-   /// <summary>
-   /// Defines the ToolTip.PresetColor attached property.
-   /// </summary>
-   public static readonly AttachedProperty<PresetColorType?> PresetColorProperty =
-      AvaloniaProperty.RegisterAttached<ToolTip, Control, PresetColorType?>("PresetColor");
-
-   /// <summary>
-   /// Defines the ToolTip.PresetColor attached property.
-   /// </summary>
-   public static readonly AttachedProperty<Color?> ColorProperty =
-      AvaloniaProperty.RegisterAttached<ToolTip, Control, Color?>("Color");
-
-   /// <summary>
-   /// 是否显示指示箭头
-   /// </summary>
-   public static readonly AttachedProperty<bool> IsShowArrowProperty =
-      AvaloniaProperty.RegisterAttached<ToolTip, Control, bool>("IsShowArrow", true);
-
-   /// <summary>
-   /// 箭头是否始终指向中心
-   /// </summary>
-   public static readonly AttachedProperty<bool> IsPointAtCenterProperty =
-      AvaloniaProperty.RegisterAttached<ToolTip, Control, bool>("IsPointAtCenter", false);
-
-   /// <summary>
-   /// Defines the ToolTip.Placement property.
-   /// </summary>
-   public static readonly AttachedProperty<PlacementMode> PlacementProperty =
-      AvaloniaProperty.RegisterAttached<ToolTip, Control, PlacementMode>(
-         "Placement", defaultValue: PlacementMode.Top);
-
-   /// <summary>
-   /// Defines the ToolTip.HorizontalOffset property.
-   /// </summary>
-   public static readonly AttachedProperty<double> HorizontalOffsetProperty =
-      AvaloniaProperty.RegisterAttached<ToolTip, Control, double>("HorizontalOffset");
-
-   /// <summary>
-   /// Defines the ToolTip.VerticalOffset property.
-   /// </summary>
-   public static readonly AttachedProperty<double> VerticalOffsetProperty =
-      AvaloniaProperty.RegisterAttached<ToolTip, Control, double>("VerticalOffset");
-   
-   /// <summary>
-   /// 距离 anchor 的边距，根据垂直和水平进行设置
-   /// </summary>
-   public static readonly AttachedProperty<double> MarginToAnchorProperty =
-      AvaloniaProperty.RegisterAttached<ToolTip, Control, double>("MarginToAnchor", double.NaN);
-
-   /// <summary>
-   /// Defines the ToolTip.ShowDelay property.
-   /// </summary>
-   public static readonly AttachedProperty<int> ShowDelayProperty =
-      AvaloniaProperty.RegisterAttached<ToolTip, Control, int>("ShowDelay", 400);
-
-   /// <summary>
-   /// Defines the ToolTip.BetweenShowDelay property.
-   /// </summary>
-   public static readonly AttachedProperty<int> BetweenShowDelayProperty =
-      AvaloniaProperty.RegisterAttached<ToolTip, Control, int>("BetweenShowDelay", 100);
-
-   /// <summary>
-   /// Defines the ToolTip.ShowOnDisabled property.
-   /// </summary>
-   public static readonly AttachedProperty<bool> ShowOnDisabledProperty =
-      AvaloniaProperty.RegisterAttached<ToolTip, Control, bool>("ShowOnDisabled", defaultValue: false, inherits: true);
-
-   /// <summary>
-   /// Defines the ToolTip.ServiceEnabled property.
-   /// </summary>
-   public static readonly AttachedProperty<bool> ServiceEnabledProperty =
-      AvaloniaProperty.RegisterAttached<ToolTip, Control, bool>("ServiceEnabled", defaultValue: true, inherits: true);
-
-   /// <summary>
-   /// Stores the current <see cref="ToolTip"/> instance in the control.
-   /// </summary>
-   internal static readonly AttachedProperty<ToolTip?> ToolTipProperty =
-      AvaloniaProperty.RegisterAttached<ToolTip, Control, ToolTip?>("ToolTip");
-
-   public object? Content
-   {
-      get => GetValue(ContentProperty);
-      set => SetValue(ContentProperty, value);
-   }
-
    private Popup? _popup;
    private Action<IPopupHost?>? _popupHostChangedHandler;
    private AvaloniaWin? _currentAnchorWindow;
@@ -423,6 +320,8 @@ public partial class ToolTip : StyledControl, IShadowMaskInfoProvider
       return element.GetValue(ColorProperty);
    }
 
+   private bool _animating;
+
    /// <summary>
    /// 设置预设颜色
    /// </summary>
@@ -520,6 +419,10 @@ public partial class ToolTip : StyledControl, IShadowMaskInfoProvider
    {
       Close();
 
+      if (_animating) {
+         return;
+      }
+      
       if (_popup is null) {
          _popup = new Popup();
          _popup.Child = this;
@@ -527,6 +430,7 @@ public partial class ToolTip : StyledControl, IShadowMaskInfoProvider
 
          _popup.Opened += OnPopupOpened;
          _popup.Closed += OnPopupClosed;
+         _popup.PositionFlipped += OnPopupPositionFlipped;
       }
       SetPopupParent(_popup, control);
       _controlTokenBinder.AddControlBinding(_popup, Popup.MaskShadowsProperty, GlobalResourceKey.BoxShadowsSecondary);
@@ -545,10 +449,20 @@ public partial class ToolTip : StyledControl, IShadowMaskInfoProvider
       _arrowDecoratedBox!.IsShowArrow = GetIsShowArrow(control);
       _currentAnchorWindow = (TopLevel.GetTopLevel(control) as AvaloniaWin)!;
       
+      // TODO 可能是多余的，因为有那个对反转事件的处理
       SetupArrowPosition(_popup.Placement);
       SetupPointCenterOffset();
       
       _popup.IsOpen = true;
+   }
+   
+   private void CalculateShowArrowEffective(Control control)
+   {
+      if (GetIsShowArrow(control) == false) {
+         IsShowArrowEffective = false;
+      } else {
+         IsShowArrowEffective = PopupUtils.CanEnabledArrow(GetPlacement(control));
+      }
    }
 
    private void Close()
@@ -557,6 +471,13 @@ public partial class ToolTip : StyledControl, IShadowMaskInfoProvider
          _popup.IsOpen = false;
          SetPopupParent(_popup, null);
          _popup.PlacementTarget = null;
+      }
+   }
+
+   private void OnPopupPositionFlipped(object? sender, PopupFlippedEventArgs e)
+   {
+      if (sender is Popup popup) {
+         SetupArrowPosition(popup.Placement);
       }
    }
    
@@ -590,7 +511,7 @@ public partial class ToolTip : StyledControl, IShadowMaskInfoProvider
          _initialized = true;
       }
    }
-      
+   
    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
    {
       base.OnPropertyChanged(e);

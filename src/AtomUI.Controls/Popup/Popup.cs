@@ -15,6 +15,9 @@ namespace AtomUI.Controls;
 
 public class Popup : AbstractPopup
 {
+
+   public event EventHandler<PopupFlippedEventArgs>? PositionFlipped;
+   
    public static readonly StyledProperty<BoxShadows> MaskShadowsProperty =
       Border.BoxShadowProperty.AddOwner<Popup>();
 
@@ -343,6 +346,7 @@ public class Popup : AbstractPopup
          } else {
             IsFlipped = false;
          }
+         PositionFlipped?.Invoke(this, new PopupFlippedEventArgs(IsFlipped));
       }
    }
 
@@ -513,4 +517,13 @@ internal class PopupPositionInfo
    public PlacementMode EffectivePlacement { get; set; }
    public PopupAnchor EffectivePlacementAnchor { get; set; }
    public PopupGravity EffectivePlacementGravity { get; set; }
+}
+
+public class PopupFlippedEventArgs : EventArgs
+{
+   public bool Flipped { get; set; }
+   public PopupFlippedEventArgs(bool flipped)
+   {
+      Flipped = flipped;
+   }
 }

@@ -73,7 +73,7 @@ internal static class PopupUtils
    /// <param name="anchor"></param>
    /// <param name="gravity"></param>
    /// <returns></returns>
-   internal static bool CanEnabledArrow(PlacementMode placement, PopupAnchor? anchor, PopupGravity? gravity)
+   internal static bool CanEnabledArrow(PlacementMode placement, PopupAnchor? anchor = null, PopupGravity? gravity = null)
    {
       if (placement == PlacementMode.Center ||
           placement == PlacementMode.Pointer) {
