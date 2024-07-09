@@ -22,8 +22,6 @@ public enum PresetColorType
 
 public class PresetPrimaryColor : IEquatable<PresetPrimaryColor>
 {
-
-
    public static readonly PresetPrimaryColor Red = new PresetPrimaryColor(PresetColorType.Red);
    public static readonly PresetPrimaryColor Volcano = new PresetPrimaryColor(PresetColorType.Volcano);
    public static readonly PresetPrimaryColor Orange = new PresetPrimaryColor(PresetColorType.Orange);
@@ -41,7 +39,7 @@ public class PresetPrimaryColor : IEquatable<PresetPrimaryColor>
    
    public PresetColorType Type { get; }
 
-   public PresetPrimaryColor(PresetColorType colorType)
+   private PresetPrimaryColor(PresetColorType colorType)
    {
       Type = colorType;
    }
@@ -78,24 +76,43 @@ public class PresetPrimaryColor : IEquatable<PresetPrimaryColor>
       return Avalonia.Media.Color.Parse(RgbHex());
    }
 
-   public static IList<PresetPrimaryColor> AllColorTypes()
+   public static IEnumerable<PresetPrimaryColor> AllColorTypes()
    {
-      return new List<PresetPrimaryColor>
+      yield return Red;
+      yield return Volcano;
+      yield return Orange;
+      yield return Gold;
+      yield return Yellow;
+      yield return Lime;
+      yield return Green;
+      yield return Cyan;
+      yield return Blue;
+      yield return GeekBlue;
+      yield return Purple;
+      yield return Pink;
+      yield return Magenta;
+      yield return Grey;
+   }
+
+   public static PresetPrimaryColor GetColor(PresetColorType type)
+   {
+      return type switch
       {
-         new PresetPrimaryColor(PresetColorType.Red),
-         new PresetPrimaryColor(PresetColorType.Volcano),
-         new PresetPrimaryColor(PresetColorType.Orange),
-         new PresetPrimaryColor(PresetColorType.Gold),
-         new PresetPrimaryColor(PresetColorType.Yellow),
-         new PresetPrimaryColor(PresetColorType.Lime),
-         new PresetPrimaryColor(PresetColorType.Green),
-         new PresetPrimaryColor(PresetColorType.Cyan),
-         new PresetPrimaryColor(PresetColorType.Blue),
-         new PresetPrimaryColor(PresetColorType.GeekBlue),
-         new PresetPrimaryColor(PresetColorType.Purple),
-         new PresetPrimaryColor(PresetColorType.Pink),
-         new PresetPrimaryColor(PresetColorType.Magenta),
-         new PresetPrimaryColor(PresetColorType.Grey),
+         PresetColorType.Red => Red,
+         PresetColorType.Volcano => Volcano,
+         PresetColorType.Orange => Orange,
+         PresetColorType.Gold => Gold,
+         PresetColorType.Yellow => Yellow,
+         PresetColorType.Lime => Lime,
+         PresetColorType.Green => Green,
+         PresetColorType.Cyan => Cyan,
+         PresetColorType.Blue => Blue,
+         PresetColorType.GeekBlue => GeekBlue,
+         PresetColorType.Purple => Purple,
+         PresetColorType.Pink => Pink,
+         PresetColorType.Magenta => Magenta,
+         PresetColorType.Grey => Grey,
+         _ => throw new ArgumentOutOfRangeException(nameof(type), type, "Invalid value for PresetColorType")
       };
    }
 

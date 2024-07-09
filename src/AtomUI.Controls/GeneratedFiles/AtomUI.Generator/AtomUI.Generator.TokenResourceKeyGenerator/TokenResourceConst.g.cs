@@ -18,6 +18,27 @@
         public const string ArrowSize = "ArrowSize";
     }
 
+    public static class BadgeResourceKey
+    {
+        public const string IndicatorHeight = "IndicatorHeight";
+        public const string IndicatorHeightSM = "IndicatorHeightSM";
+        public const string DotSize = "DotSize";
+        public const string TextFontSize = "TextFontSize";
+        public const string TextFontSizeSM = "TextFontSizeSM";
+        public const string TextFontWeight = "TextFontWeight";
+        public const string StatusSize = "StatusSize";
+        public const string BadgeFontHeight = "BadgeFontHeight";
+        public const string BadgeTextColor = "BadgeTextColor";
+        public const string BadgeColor = "BadgeColor";
+        public const string BadgeColorHover = "BadgeColorHover";
+        public const string BadgeShadowSize = "BadgeShadowSize";
+        public const string BadgeShadowColor = "BadgeShadowColor";
+        public const string BadgeProcessingDuration = "BadgeProcessingDuration";
+        public const string BadgeRibbonOffset = "BadgeRibbonOffset";
+        public const string BadgeRibbonCornerTransform = "BadgeRibbonCornerTransform";
+        public const string BadgeRibbonCornerBrightness = "BadgeRibbonCornerBrightness";
+    }
+
     public static class ButtonResourceKey
     {
         public const string FontWeight = "FontWeight";

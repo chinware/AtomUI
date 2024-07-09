@@ -8,23 +8,6 @@ using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
 
-public enum TagPresetColor
-{
-   Red,
-   Volcano,
-   Orange,
-   Gold,
-   Yellow,
-   Lime,
-   Green,
-   Cyan,
-   Blue,
-   GeekBlue,
-   Purple,
-   Pink,
-   Magenta,
-}
-
 public enum TagStatus {
    // 状态
    Success,
@@ -37,10 +20,8 @@ public partial class Tag : Label
 {
    static Tag()
    {
-      _presetColorMap = new Dictionary<TagPresetColor, TagCalcColor>();
+      _presetColorMap = new Dictionary<PresetColorType, TagCalcColor>();
       _statusColorMap = new Dictionary<TagStatus, TagStatusCalcColor>();
-      _colorCodeMap = new Dictionary<TagPresetColor, PresetColorType>();
-      SetupColorCodeMap();
       AffectsMeasure<Tag>(BorderedProperty,
          IconProperty,
          ClosableProperty,

@@ -205,8 +205,7 @@ public class SeedDesignToken : AbstractDesignToken
          "monospace"
       };
       _defaultPresetColors = new Dictionary<PresetColorType, PresetPrimaryColor>();
-      IList<PresetPrimaryColor> allColors = PresetPrimaryColor.AllColorTypes();
-      foreach (PresetPrimaryColor color in allColors) {
+      foreach (PresetPrimaryColor color in PresetPrimaryColor.AllColorTypes()) {
          _defaultPresetColors[color.Type] = color;
       }
 

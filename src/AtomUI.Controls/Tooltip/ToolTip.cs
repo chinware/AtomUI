@@ -394,7 +394,7 @@ public partial class ToolTip : StyledControl, IShadowMaskInfoProvider
       var presetColorType = GetPresetColor(control);
       var color = GetColor(control);
       if (presetColorType is not null) {
-         var presetColor = new PresetPrimaryColor(presetColorType.Value);
+         var presetColor = PresetPrimaryColor.GetColor(presetColorType.Value);
          _arrowDecoratedBox?.SetValue(BackgroundProperty, new SolidColorBrush(presetColor.Color()), BindingPriority.LocalValue);
       } else if (color is not null) {
          _arrowDecoratedBox?.SetValue(BackgroundProperty, new SolidColorBrush(color.Value), BindingPriority.LocalValue);

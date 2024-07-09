@@ -21,7 +21,6 @@
     </ItemGroup>
     <ItemGroup>
       <Folder Include="Avatar\" />
-      <Folder Include="Badge\" />
       <Folder Include="Collapse\" />
       <Folder Include="ComboBox\" />
       <Folder Include="EmptyIndicator\" />

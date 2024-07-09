@@ -101,8 +101,7 @@ public class DefaultThemeVariantCalculator : AbstractThemeVariantCalculator
    private void SetupColorPalettes(SeedDesignToken seedToken, MapDesignToken sourceToken)
    {
       // 生成所有预置颜色的色系
-      IList<PresetPrimaryColor> allPresetColors = PresetPrimaryColor.AllColorTypes();
-      foreach (var presetColor in allPresetColors) {
+      foreach (var presetColor in PresetPrimaryColor.AllColorTypes()) {
          var colors = PaletteGenerator.GeneratePalette(seedToken.GetPresetPrimaryColor(presetColor.Type).Color());
          ColorMap colorMap = ColorMap.FromColors(colors);
          sourceToken.SetColorPalette(presetColor, colorMap);
