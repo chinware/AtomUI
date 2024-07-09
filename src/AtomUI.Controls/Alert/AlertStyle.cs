@@ -1,5 +1,4 @@
 using AtomUI.Data;
-using AtomUI.Icon;
 using AtomUI.Styling;
 using AtomUI.Utils;
 using Avalonia;
@@ -22,6 +21,7 @@ public partial class Alert : IControlCustomStyle
    private PathIcon? _icon;
    private IconButton? _closeButton;
    private StackPanel? _infoStack;
+   private bool _scalingAwareConfigApplied = false;
 
    void IControlCustomStyle.InitOnConstruct()
    {
@@ -47,7 +47,7 @@ public partial class Alert : IControlCustomStyle
       _customStyle.ApplyFixedStyleConfig();
       CreateStructure();
       SetupPaddingStyleConfig();
-      HandleDescriptionEnabled(!string.IsNullOrEmpty(_description));
+      HandleDescriptionEnabled(!string.IsNullOrEmpty(Description));
       Child = _mainLayout;
    }
 
@@ -70,7 +70,7 @@ public partial class Alert : IControlCustomStyle
          VerticalAlignment = VerticalAlignment.Center
       };
 
-      HandleMessageMarqueEnabled(_isMessageMarqueEnabled);
+      HandleMessageMarqueEnabled(IsMessageMarqueEnabled);
       SetupCloseButton();
       SetupTypeIcon();
       
@@ -81,18 +81,18 @@ public partial class Alert : IControlCustomStyle
       _mainLayout!.Children.Add(_infoStack);
 
       
-      if (_extraAction is not null) {
-         _extraAction.VerticalAlignment = VerticalAlignment.Top;
-         Grid.SetColumn(_extraAction, 2);
-         Grid.SetRow(_extraAction, 0);
-         _controlTokenBinder.AddControlBinding(_extraAction, MarginProperty, AlertResourceKey.ExtraElementMargin);
-         _mainLayout!.Children.Add(_extraAction);
+      if (ExtraAction is not null) {
+         ExtraAction.VerticalAlignment = VerticalAlignment.Top;
+         Grid.SetColumn(ExtraAction, 2);
+         Grid.SetRow(ExtraAction, 0);
+         _controlTokenBinder.AddControlBinding(ExtraAction, MarginProperty, AlertResourceKey.ExtraElementMargin);
+         _mainLayout!.Children.Add(ExtraAction);
       }
    }
 
    private Control GetMessageControl()
    {
-      if (_isMessageMarqueEnabled) {
+      if (IsMessageMarqueEnabled) {
          return _messageMarqueeLabel!;
       }
 
@@ -101,14 +101,14 @@ public partial class Alert : IControlCustomStyle
 
    public void SetupCloseButton()
    {
-      if (_isClosable && _closeButton is null) {
-         if (_closeIcon is null) {
-            _closeIcon = new PathIcon
+      if (IsClosable && _closeButton is null) {
+         if (CloseIcon is null) {
+            CloseIcon = new PathIcon
             {
                Kind = "CloseOutlined",
             };
-            _controlTokenBinder.AddControlBinding(_closeIcon, PathIcon.NormalFillBrushProperty, GlobalResourceKey.ColorIcon);
-            _controlTokenBinder.AddControlBinding(_closeIcon, PathIcon.ActiveFilledBrushProperty, GlobalResourceKey.ColorIconHover);
+            _controlTokenBinder.AddControlBinding(CloseIcon, PathIcon.NormalFillBrushProperty, GlobalResourceKey.ColorIcon);
+            _controlTokenBinder.AddControlBinding(CloseIcon, PathIcon.ActiveFilledBrushProperty, GlobalResourceKey.ColorIconHover);
          }
 
          _closeButton = new IconButton
@@ -123,7 +123,7 @@ public partial class Alert : IControlCustomStyle
          _mainLayout!.Children.Add(_closeButton);
         BindUtils.RelayBind(this, CloseIconProperty, _closeButton, IconButton.IconProperty);
       } else if (_closeButton is not null) {
-         _closeButton.IsVisible = _isClosable;
+         _closeButton.IsVisible = IsClosable;
       }
    }
    
@@ -162,8 +162,11 @@ public partial class Alert : IControlCustomStyle
 
    void IControlCustomStyle.ApplyRenderScalingAwareStyleConfig()
    {
-     _controlTokenBinder.AddControlBinding(BorderThicknessProperty, GlobalResourceKey.BorderThickness, BindingPriority.Style, 
-                                     new RenderScaleAwareThicknessConfigure(this));
+      if (!_scalingAwareConfigApplied) {
+         _scalingAwareConfigApplied = true;
+         _controlTokenBinder.AddControlBinding(BorderThicknessProperty, GlobalResourceKey.BorderThickness, BindingPriority.Style, 
+                                               new RenderScaleAwareThicknessConfigure(this));
+      }
    }
 
    void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
@@ -204,7 +207,7 @@ public partial class Alert : IControlCustomStyle
 
    private void HandleIconForDescriptionEnabled(bool enabled)
    {
-      if (_icon is not null && _isShowIcon) {
+      if (_icon is not null && IsShowIcon) {
          if (enabled) {
             _controlTokenBinder.AddControlBinding(_icon, WidthProperty, AlertResourceKey.WithDescriptionIconSize);
             _controlTokenBinder.AddControlBinding(_icon, HeightProperty, AlertResourceKey.WithDescriptionIconSize);
@@ -221,7 +224,7 @@ public partial class Alert : IControlCustomStyle
 
    private void SetupTypeIcon()
    {
-      if (_isShowIcon) {
+      if (IsShowIcon) {
          if (_icon is null) {
             var kind = string.Empty;
             var resourceKey = string.Empty;

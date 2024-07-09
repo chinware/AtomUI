@@ -40,7 +40,7 @@ internal class RadioButtonToken : AbstractControlDesignToken
       var colorPrimaryToken = _globalToken.ColorToken.ColorPrimaryToken;
       var seedToken = _globalToken.SeedToken;
       bool wireFrame = seedToken.Wireframe;
-      int lineWidth = seedToken.LineWidth;
+      double lineWidth = seedToken.LineWidth;
       double fontSizeLG = _globalToken.FontToken.FontSizeLG;
       Color colorBgContainer = colorNeutralToken.ColorBgContainer;
       Color colorPrimary = colorPrimaryToken.ColorPrimary;

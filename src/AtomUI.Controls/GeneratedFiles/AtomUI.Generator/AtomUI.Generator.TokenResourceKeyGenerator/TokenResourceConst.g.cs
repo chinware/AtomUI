@@ -137,6 +137,13 @@
         public const string SegmentedItemPaddingSM = "SegmentedItemPaddingSM";
     }
 
+    public static class SeparatorResourceKey
+    {
+        public const string TextPaddingInline = "TextPaddingInline";
+        public const string OrientationMarginPercent = "OrientationMarginPercent";
+        public const string VerticalMarginInline = "VerticalMarginInline";
+    }
+
     public static class ToggleSwitchResourceKey
     {
         public const string TrackHeight = "TrackHeight";

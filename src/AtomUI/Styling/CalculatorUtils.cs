@@ -25,7 +25,7 @@ internal static class CalculatorUtils
       int motionUnit = seedToken.MotionUnit;
       int motionBase = seedToken.MotionBase;
       double borderRadius = seedToken.BorderRadius.TopLeft;
-      int lineWidth = seedToken.LineWidth;
+      double lineWidth = seedToken.LineWidth;
       
       RadiusInfo radiusInfo = CalculateRadius(borderRadius);
 

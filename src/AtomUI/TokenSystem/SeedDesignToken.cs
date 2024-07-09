@@ -84,7 +84,7 @@ public class SeedDesignToken : AbstractDesignToken
    /// 基础线宽
    /// 用于控制组件边框、分割线等的宽度
    /// </summary>
-   public int LineWidth { get; set; } = 1;
+   public double LineWidth { get; set; } = 1;
 
    /// <summary>
    /// 线条样式

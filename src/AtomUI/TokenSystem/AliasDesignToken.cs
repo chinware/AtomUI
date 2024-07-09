@@ -165,7 +165,7 @@ public class AliasDesignToken : MapDesignToken
    /// 输入组件的外轮廓线宽度
    /// 控制标题类组件（如 h1、h2、h3）或选中项的字体粗细。
    /// </summary>
-   public int ControlOutlineWidth { get; set; }
+   public double ControlOutlineWidth { get; set; }
    
    /// <summary>
    /// 控制组件项在鼠标悬浮时的背景颜色

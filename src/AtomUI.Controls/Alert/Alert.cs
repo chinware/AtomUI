@@ -17,109 +17,78 @@ public enum AlertType
 
 public partial class Alert : BorderedStyleControl
 {
-   public static readonly DirectProperty<Alert, AlertType> TypeProperty =
-      AvaloniaProperty.RegisterDirect<Alert, AlertType>(nameof(AlertType),
-                                                        o => o.Type,
-                                                        (o, v) => o.Type = v);
+   public static readonly StyledProperty<AlertType> TypeProperty =
+      AvaloniaProperty.Register<Alert, AlertType>(nameof(AlertType));
 
-   public static readonly DirectProperty<Alert, bool> IsShowIconProperty =
-      AvaloniaProperty.RegisterDirect<Alert, bool>(nameof(IsShowIcon),
-                                                   o => o.IsShowIcon,
-                                                   (o, v) => o.IsShowIcon = v);
+   public static readonly StyledProperty<bool> IsShowIconProperty =
+      AvaloniaProperty.Register<Alert, bool>(nameof(IsShowIcon));
 
-   public static readonly DirectProperty<Alert, bool> IsMessageMarqueEnabledProperty =
-      AvaloniaProperty.RegisterDirect<Alert, bool>(nameof(IsMessageMarqueEnabled),
-                                                   o => o.IsMessageMarqueEnabled,
-                                                   (o, v) => o.IsMessageMarqueEnabled = v);
+   public static readonly StyledProperty<bool> IsMessageMarqueEnabledProperty =
+      AvaloniaProperty.Register<Alert, bool>(nameof(IsMessageMarqueEnabled));
 
-   public static readonly DirectProperty<Alert, bool> IsClosableProperty =
-      AvaloniaProperty.RegisterDirect<Alert, bool>(nameof(IsClosable),
-                                                   o => o.IsClosable,
-                                                   (o, v) => o.IsClosable = v);
+   public static readonly StyledProperty<bool> IsClosableProperty =
+      AvaloniaProperty.Register<Alert, bool>(nameof(IsClosable));
    
       
-   public static readonly DirectProperty<Alert, PathIcon?> CloseIconProperty =
-      AvaloniaProperty.RegisterDirect<Alert, PathIcon?>(nameof(CloseIcon),
-                                                        o => o.CloseIcon,
-                                                        (o, v) => o.CloseIcon = v);
+   public static readonly StyledProperty<PathIcon?> CloseIconProperty =
+      AvaloniaProperty.Register<Alert, PathIcon?>(nameof(CloseIcon));
 
-   public static readonly DirectProperty<Alert, string> MessageProperty =
-      AvaloniaProperty.RegisterDirect<Alert, string>(nameof(Message),
-                                                     o => o.Message,
-                                                     (o, v) => o.Message = v);
+   public static readonly StyledProperty<string> MessageProperty =
+      AvaloniaProperty.Register<Alert, string>(nameof(Message));
 
-   public static readonly DirectProperty<Alert, string?> DescriptionProperty =
-      AvaloniaProperty.RegisterDirect<Alert, string?>(nameof(Description),
-                                                      o => o.Description,
-                                                      (o, v) => o.Description = v);
+   public static readonly StyledProperty<string?> DescriptionProperty =
+      AvaloniaProperty.Register<Alert, string?>(nameof(Description));
    
-   public static readonly DirectProperty<Alert, Control?> ExtraActionProperty =
-      AvaloniaProperty.RegisterDirect<Alert, Control?>(nameof(Description),
-                                                       o => o._extraAction,
-                                                       (o, v) => o._extraAction = v);
-
-   private AlertType _alertType = AlertType.Success;
-
+   public static readonly StyledProperty<Control?> ExtraActionProperty =
+      AvaloniaProperty.Register<Alert, Control?>(nameof(Description));
+   
    public AlertType Type
    {
-      get => _alertType;
-      set => SetAndRaise(TypeProperty, ref _alertType, value);
+      get => GetValue(TypeProperty);
+      set => SetValue(TypeProperty, value);
    }
-
-   private bool _isShowIcon = false;
 
    public bool IsShowIcon
    {
-      get => _isShowIcon;
-      set => SetAndRaise(IsShowIconProperty, ref _isShowIcon, value);
+      get => GetValue(IsShowIconProperty);
+      set => SetValue(IsShowIconProperty, value);
    }
-
-   private bool _isMessageMarqueEnabled = false;
 
    public bool IsMessageMarqueEnabled
    {
-      get => _isMessageMarqueEnabled;
-      set => SetAndRaise(IsMessageMarqueEnabledProperty, ref _isMessageMarqueEnabled, value);
+      get => GetValue(IsMessageMarqueEnabledProperty);
+      set => SetValue(IsMessageMarqueEnabledProperty, value);
    }
-
-   private bool _isClosable = false;
 
    public bool IsClosable
    {
-      get => _isClosable;
-      set => SetAndRaise(IsClosableProperty, ref _isClosable, value);
+      get => GetValue(IsClosableProperty);
+      set => SetValue(IsClosableProperty, value);
    }
-
-   private PathIcon? _closeIcon;
-
+   
    public PathIcon? CloseIcon
    {
-      get => _closeIcon;
-      set => SetAndRaise(CloseIconProperty, ref _closeIcon, value);
+      get => GetValue(CloseIconProperty);
+      set => SetValue(CloseIconProperty, value);
    }
-
-   private string _message = string.Empty;
 
    [Content]
    public string Message
    {
-      get => _message;
-      set => SetAndRaise(MessageProperty, ref _message, value);
+      get => GetValue(MessageProperty);
+      set => SetValue(MessageProperty, value);
    }
-
-   private string? _description;
 
    public string? Description
    {
-      get => _description;
-      set => SetAndRaise(DescriptionProperty, ref _description, value);
+      get => GetValue(DescriptionProperty);
+      set => SetValue(DescriptionProperty, value);
    }
-
-   private Control? _extraAction;
+   
    public Control? ExtraAction
    {
-      get => _extraAction;
-      set => SetAndRaise(ExtraActionProperty, ref _extraAction, value);
+      get => GetValue(ExtraActionProperty);
+      set => SetValue(ExtraActionProperty, value);
    }
 
    static Alert()

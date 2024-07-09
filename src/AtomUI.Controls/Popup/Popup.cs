@@ -53,9 +53,6 @@ public class Popup : AbstractPopup
    private readonly GlobalTokenBinder _globalTokenBinder;
    private CompositeDisposable? _compositeDisposable;
    private bool _initialized;
-   
-   private bool _ignoreSyncOriginValues = false;
-   private Point _pointAtCenterOffset;
 
    static Popup()
    {

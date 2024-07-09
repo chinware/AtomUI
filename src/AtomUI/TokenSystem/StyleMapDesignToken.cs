@@ -9,7 +9,7 @@ public class StyleMapDesignToken : AbstractDesignToken
    /// 线宽
    /// 描边类组件的默认线宽，如 Button、Input、Select 等输入类控件。
    /// </summary>
-   public int LineWidthBold { get; set; } = 1;
+   public double LineWidthBold { get; set; } = 1;
    
    /// <summary>
    /// 边框的宽细
