@@ -1,5 +1,10 @@
-﻿using Avalonia;
+﻿using AtomUI.ColorSystem;
+using AtomUI.Styling;
+using AtomUI.Utils;
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.LogicalTree;
+using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
@@ -12,7 +17,7 @@ public enum DotBadgeStatus
    Warning
 }
 
-public class DotBadge : Control
+public class DotBadge : Control, IControlCustomStyle
 {
    public static readonly StyledProperty<string?> DotColorProperty 
       = AvaloniaProperty.Register<DotBadge, string?>(
@@ -53,5 +58,83 @@ public class DotBadge : Control
       set => SetValue(DecoratedTargetProperty, value);
    }
    
+   private bool _initialized = false;
+   private IControlCustomStyle _customStyle;
+   private DotBadgeAdorner? _dotBadgeAdorner;
    
+   public DotBadge()
+   {
+      _customStyle = this;
+   }
+
+   static DotBadge()
+   {
+      AffectsMeasure<DotBadge>(DecoratedTargetProperty,
+                               TextProperty);
+      AffectsRender<DotBadge>(DotColorProperty, StatusProperty);
+   }
+
+   protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+   {
+      base.OnAttachedToLogicalTree(e);
+      if (!_initialized) {
+         _customStyle.SetupUi();
+         _initialized = true;
+      }
+   }
+   
+   void IControlCustomStyle.SetupUi()
+   {
+      _dotBadgeAdorner = new DotBadgeAdorner();
+      _customStyle.ApplyFixedStyleConfig();
+      HandleDecoratedTargetChanged();
+      if (DotColor is not null) {
+         SetupTagColorInfo(DotColor);
+      }
+   }
+
+   void IControlCustomStyle.ApplyFixedStyleConfig()
+   {
+      if (_dotBadgeAdorner is not null) {
+         BindUtils.RelayBind(this, StatusProperty, _dotBadgeAdorner, DotBadgeAdorner.StatusProperty);
+         BindUtils.RelayBind(this, TextProperty, _dotBadgeAdorner, DotBadgeAdorner.TextProperty);
+      }
+   }
+
+   private void HandleDecoratedTargetChanged()
+   {
+      if (DecoratedTarget is null && _dotBadgeAdorner is not null) {
+         VisualChildren.Add(_dotBadgeAdorner);
+         LogicalChildren.Add(_dotBadgeAdorner);
+      }
+   }
+   
+   protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
+   {
+      base.OnPropertyChanged(e);
+      if (_initialized) {
+         if (e.Property == DecoratedTargetProperty) {
+            HandleDecoratedTargetChanged();
+         }
+         
+         if (e.Property == DotColorProperty) {
+            SetupTagColorInfo(e.GetNewValue<string>());
+         }
+      }
+   }
+   
+   private void SetupTagColorInfo(string colorStr)
+   {
+      colorStr = colorStr.Trim().ToLower();
+      
+      foreach (var presetColor in PresetPrimaryColor.AllColorTypes()) {
+         if (presetColor.Type.ToString().ToLower() == colorStr) {
+            _dotBadgeAdorner!.DotColor = new SolidColorBrush(presetColor.Color());
+            return;
+         }
+      }
+      if (Color.TryParse(colorStr, out Color color)) {
+         _dotBadgeAdorner!.DotColor = new SolidColorBrush(color);
+      }
+   }
 }

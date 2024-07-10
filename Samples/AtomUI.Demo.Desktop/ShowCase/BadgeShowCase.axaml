@@ -8,6 +8,55 @@
     xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
     mc:Ignorable="d">
     <showcase:ShowCasePanel>
-     
+        <showcase:ShowCaseItem
+            Title="Status"
+            Description="Standalone badge with status.">
+            <StackPanel Orientation="Vertical" Spacing="20">
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <atom:DotBadge Status="Success"/>
+                    <atom:DotBadge Status="Error"/>
+                    <atom:DotBadge Status="Default"/>
+                    <atom:DotBadge Status="Processing"/>
+                    <atom:DotBadge Status="Warning"/>
+                </StackPanel>
+                <StackPanel Orientation="Vertical" Spacing="10">
+                    <atom:DotBadge Status="Success" Text="Success"/>
+                    <atom:DotBadge Status="Error" Text="Error"/>
+                    <atom:DotBadge Status="Default" Text="Default"/>
+                    <atom:DotBadge Status="Processing" Text="Processing"/>
+                    <atom:DotBadge Status="Warning" Text="Warning"/>
+                </StackPanel>
+            </StackPanel>
+        </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="Colorful Badge"
+            Description="We preset a series of colorful Badge styles for use in different situations. You can also set it to a hex color string for custom color.">
+            <StackPanel Orientation="Vertical" Spacing="20">
+               <atom:Separator Title="Presets" FontWeight="SemiBold" TitlePosition="Left"/>
+                <StackPanel Orientation="Vertical" Spacing="10">
+                    <atom:DotBadge Text="Pink" DotColor="Pink"/>
+                    <atom:DotBadge Text="Red" DotColor="Red"/>
+                    <atom:DotBadge Text="Yellow" DotColor="Yellow"/>
+                    <atom:DotBadge Text="Orange" DotColor="Orange"/>
+                    <atom:DotBadge Text="Cyan" DotColor="Cyan"/>
+                    <atom:DotBadge Text="Green" DotColor="Green"/>
+                    <atom:DotBadge Text="Blue" DotColor="Blue"/>
+                    <atom:DotBadge Text="Purple" DotColor="Purple"/>
+                    <atom:DotBadge Text="GeekBlue" DotColor="GeekBlue"/>
+                    <atom:DotBadge Text="Magenta" DotColor="Magenta"/>
+                    <atom:DotBadge Text="Volcano" DotColor="Volcano"/>
+                    <atom:DotBadge Text="Gold" DotColor="Gold"/>
+                    <atom:DotBadge Text="Lime" DotColor="Lime"/>
+                </StackPanel>
+               <atom:Separator Title="Custom" FontWeight="SemiBold" TitlePosition="Left"/>
+               <StackPanel Orientation="Vertical" Spacing="10">
+                   <atom:DotBadge Text="#f50" DotColor="#f50"/>
+                   <atom:DotBadge Text="rgb(45, 183, 245)" DotColor="rgb(45, 183, 245)"/>
+                   <atom:DotBadge Text="hsl(102, 53%, 61%)" DotColor="hsl(102, 53%, 61%)"/>
+                   <atom:DotBadge Text="rgb(15, 141, 230)" DotColor="rgb(15, 141, 230)"/>
+               </StackPanel>
+            </StackPanel>
+        </showcase:ShowCaseItem>
     </showcase:ShowCasePanel>
 </UserControl>

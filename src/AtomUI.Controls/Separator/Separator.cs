@@ -116,6 +116,17 @@ public partial class Separator : StyledControl
       set => SetValue(LineWidthProperty, value);
    }
 
+   static Separator()
+   {
+      AffectsMeasure<Separator>(OrientationProperty, 
+                                LineWidthProperty,
+                                TitleProperty);
+      AffectsArrange<Separator>(TitlePositionProperty);
+      AffectsRender<Separator>(TitleColorProperty, 
+                               LineColorProperty,
+                               IsDashedLineProperty);
+   }
+   
    public Separator()
    {
       _controlTokenBinder = new ControlTokenBinder(this, SeparatorToken.ID);
@@ -142,17 +153,6 @@ public partial class Separator : StyledControl
    {
       base.OnAttachedToVisualTree(e);
       _customStyle.ApplyRenderScalingAwareStyleConfig();
-   }
-
-   static Separator()
-   {
-      AffectsMeasure<Separator>(OrientationProperty, 
-                                LineWidthProperty,
-                                TitleProperty);
-      AffectsArrange<Separator>(TitlePositionProperty);
-      AffectsRender<Separator>(TitleColorProperty, 
-                               LineColorProperty,
-                               IsDashedLineProperty);
    }
 }
 
