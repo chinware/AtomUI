@@ -23,14 +23,14 @@ internal partial class DotBadgeAdorner : Control, IControlCustomStyle
       set => SetAndRaise(DotColorProperty, ref _dotColor, value);
    }
    
-   public static readonly DirectProperty<DotBadgeAdorner, DotBadgeStatus> StatusProperty =
-      AvaloniaProperty.RegisterDirect<DotBadgeAdorner, DotBadgeStatus>(
+   public static readonly DirectProperty<DotBadgeAdorner, DotBadgeStatus?> StatusProperty =
+      AvaloniaProperty.RegisterDirect<DotBadgeAdorner, DotBadgeStatus?>(
          nameof(Status),
          o => o.Status,
          (o, v) => o.Status = v);
 
-   private DotBadgeStatus _status;
-   public DotBadgeStatus Status
+   private DotBadgeStatus? _status;
+   public DotBadgeStatus? Status
    {
       get => _status;
       set => SetAndRaise(StatusProperty, ref _status, value);
@@ -65,8 +65,8 @@ internal partial class DotBadgeAdorner : Control, IControlCustomStyle
    public static readonly DirectProperty<DotBadgeAdorner, IBrush?> EffectiveDotColorProperty =
       AvaloniaProperty.RegisterDirect<DotBadgeAdorner, IBrush?>(
          nameof(EffectiveDotColor),
-         o => o._effectiveDotColor,
-         (o, v) => o._effectiveDotColor = v);
+         o => o.EffectiveDotColor,
+         (o, v) => o.EffectiveDotColor = v);
    
    private IBrush? _effectiveDotColor;
    
@@ -75,6 +75,20 @@ internal partial class DotBadgeAdorner : Control, IControlCustomStyle
    {
       get => _effectiveDotColor;
       set => SetAndRaise(EffectiveDotColorProperty, ref _effectiveDotColor, value);
+   }
+   
+   public static readonly DirectProperty<DotBadgeAdorner, Point> OffsetProperty =
+      AvaloniaProperty.RegisterDirect<DotBadgeAdorner, Point>(
+         nameof(Offset),
+         o => o.Offset,
+         (o, v) => o.Offset = v);
+   
+   private Point _offset;
+
+   public Point Offset
+   {
+      get => _offset;
+      set => SetAndRaise(OffsetProperty, ref _offset, value);
    }
    
    private bool _initialized = false;
@@ -158,8 +172,8 @@ internal partial class DotBadgeAdorner : Control, IControlCustomStyle
    {
       if (_dotColor is not null) {
          EffectiveDotColor = _dotColor;
-      } else {
-         EffectiveDotColor = GetStatusColor(Status);
+      } else if (Status.HasValue) {
+         EffectiveDotColor = GetStatusColor(Status.Value);
       }
 
       if (EffectiveDotColor is null) {
@@ -169,14 +183,11 @@ internal partial class DotBadgeAdorner : Control, IControlCustomStyle
 
    protected override Size MeasureOverride(Size availableSize)
    {
-
       var targetWidth = 0d;
       var targetHeight = 0d;
       if (IsAdornerMode) {
-         targetWidth += _dotSize;
-         targetWidth += 2;
-         targetHeight += 2;
-         // 加默认的1像素 padding
+         targetWidth = availableSize.Width;
+         targetHeight = availableSize.Height;
       } else {
          var textSize = base.MeasureOverride(availableSize);
          targetWidth += _statusSize;
@@ -236,12 +247,17 @@ internal partial class DotBadgeAdorner : Control, IControlCustomStyle
          dotSize = _statusSize;
       }
       
-      var offsetX = 0d; // 距离边缘加一像素
+      var offsetX = 0d;
+      var offsetY = 0d;
       if (IsAdornerMode) {
-         offsetX += 1;
+         offsetX = DesiredSize.Width - dotSize / 2;
+         offsetY = -dotSize / 2;
+         offsetX -= Offset.X;
+         offsetY += Offset.Y;
+      } else { 
+         offsetY = (DesiredSize.Height - dotSize) / 2;
       }
-
-      var offsetY = (DesiredSize.Height - dotSize) / 2;
+      
       var dotRect = new Rect(new Point(offsetX, offsetY), new Size(dotSize, dotSize));
       context.DrawRectangle(EffectiveDotColor, null, dotRect, dotSize, dotSize, _boxShadows);
    }

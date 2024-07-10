@@ -3,8 +3,10 @@ using AtomUI.Styling;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
+using Avalonia.Metadata;
 
 namespace AtomUI.Controls;
 
@@ -23,16 +25,19 @@ public class DotBadge : Control, IControlCustomStyle
       = AvaloniaProperty.Register<DotBadge, string?>(
          nameof(DotColor));
    
-   public static readonly StyledProperty<DotBadgeStatus> StatusProperty 
-      = AvaloniaProperty.Register<DotBadge, DotBadgeStatus>(
+   public static readonly StyledProperty<DotBadgeStatus?> StatusProperty 
+      = AvaloniaProperty.Register<DotBadge, DotBadgeStatus?>(
          nameof(Status));
    
    public static readonly StyledProperty<string?> TextProperty 
       = AvaloniaProperty.Register<DotBadge, string?>(
-         nameof(Status));
+         nameof(Text));
    
    public static readonly StyledProperty<Control?> DecoratedTargetProperty =
-      AvaloniaProperty.Register<Decorator, Control?>(nameof(DotBadge));
+      AvaloniaProperty.Register<DotBadge, Control?>(nameof(DotBadge));
+   
+   public static readonly StyledProperty<Point> OffsetProperty =
+      AvaloniaProperty.Register<DotBadge, Point>(nameof(Offset));
    
    public string? DotColor
    {
@@ -40,7 +45,7 @@ public class DotBadge : Control, IControlCustomStyle
       set => SetValue(DotColorProperty, value);
    }
 
-   public DotBadgeStatus Status
+   public DotBadgeStatus? Status
    {
       get => GetValue(StatusProperty);
       set => SetValue(StatusProperty, value);
@@ -52,10 +57,17 @@ public class DotBadge : Control, IControlCustomStyle
       set => SetValue(TextProperty, value);
    }
 
+   [Content]
    public Control? DecoratedTarget
    {
       get => GetValue(DecoratedTargetProperty);
       set => SetValue(DecoratedTargetProperty, value);
+   }
+   
+   public Point Offset
+   {
+      get => GetValue(OffsetProperty);
+      set => SetValue(OffsetProperty, value);
    }
    
    private bool _initialized = false;
@@ -83,6 +95,35 @@ public class DotBadge : Control, IControlCustomStyle
       }
    }
    
+   protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+   {
+      base.OnAttachedToVisualTree(e);
+      if (DecoratedTarget is not null && _dotBadgeAdorner is not null) {
+         var adornerLayer = AdornerLayer.GetAdornerLayer(this);
+         // 这里需要抛出异常吗？
+         if (adornerLayer == null) {
+            return;
+         }
+         AdornerLayer.SetAdornedElement(_dotBadgeAdorner, this);
+         AdornerLayer.SetIsClipEnabled(_dotBadgeAdorner, false);
+         adornerLayer.Children.Add(_dotBadgeAdorner);
+      }
+   }
+
+   protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+   {
+      base.OnDetachedFromVisualTree(e);
+      if (DecoratedTarget is not null && _dotBadgeAdorner is not null) {
+         var adornerLayer = AdornerLayer.GetAdornerLayer(this);
+         // 这里需要抛出异常吗？
+         if (adornerLayer == null) {
+            return;
+         }
+
+         adornerLayer.Children.Remove(_dotBadgeAdorner);
+      }
+   }
+
    void IControlCustomStyle.SetupUi()
    {
       _dotBadgeAdorner = new DotBadgeAdorner();
@@ -98,14 +139,22 @@ public class DotBadge : Control, IControlCustomStyle
       if (_dotBadgeAdorner is not null) {
          BindUtils.RelayBind(this, StatusProperty, _dotBadgeAdorner, DotBadgeAdorner.StatusProperty);
          BindUtils.RelayBind(this, TextProperty, _dotBadgeAdorner, DotBadgeAdorner.TextProperty);
+         BindUtils.RelayBind(this, OffsetProperty, _dotBadgeAdorner, DotBadgeAdorner.OffsetProperty);
       }
    }
 
    private void HandleDecoratedTargetChanged()
    {
-      if (DecoratedTarget is null && _dotBadgeAdorner is not null) {
-         VisualChildren.Add(_dotBadgeAdorner);
-         LogicalChildren.Add(_dotBadgeAdorner);
+      if (_dotBadgeAdorner is not null) {
+         if (DecoratedTarget is null) {
+            VisualChildren.Add(_dotBadgeAdorner);
+            LogicalChildren.Add(_dotBadgeAdorner);
+            _dotBadgeAdorner.IsAdornerMode = false;
+         } else if (DecoratedTarget is not null) {
+            _dotBadgeAdorner.IsAdornerMode = true;
+            VisualChildren.Add(DecoratedTarget);
+            LogicalChildren.Add(DecoratedTarget);
+         }
       }
    }
    
