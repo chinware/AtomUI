@@ -105,7 +105,7 @@ internal class CountBadgeNoWrapperZoomBadgeIn : AbstractMotion
    
    public void ConfigureOpacity(TimeSpan duration, Easing? easing = null)
    {
-      easing ??= new BackEaseOut();
+      easing ??= new QuarticEaseOut();
       var config = new MotionConfig(MotionOpacityProperty)
       {
          TransitionKind = TransitionKind.Double,
@@ -119,7 +119,7 @@ internal class CountBadgeNoWrapperZoomBadgeIn : AbstractMotion
 
    public void ConfigureRenderTransform(TimeSpan duration, Easing? easing = null)
    {
-      easing ??= new BackEaseOut();
+      easing ??= new QuarticEaseOut();
       
       var config = new MotionConfig(MotionRenderTransformProperty)
       {
@@ -140,7 +140,7 @@ internal class CountBadgeNoWrapperZoomBadgeOut : AbstractMotion
    
    public void ConfigureOpacity(TimeSpan duration, Easing? easing = null)
    {
-      easing ??= new BackEaseOut();
+      easing ??= new CircularEaseIn();
       var config = new MotionConfig(MotionOpacityProperty)
       {
          TransitionKind = TransitionKind.Double,
@@ -154,7 +154,7 @@ internal class CountBadgeNoWrapperZoomBadgeOut : AbstractMotion
 
    public void ConfigureRenderTransform(TimeSpan duration, Easing? easing = null)
    {
-      easing ??= new BackEaseOut();
+      easing ??= new CircularEaseIn();
       
       var config = new MotionConfig(MotionRenderTransformProperty)
       {

@@ -1,10 +1,13 @@
 ﻿using AtomUI.ColorSystem;
+using AtomUI.Controls.Badge;
+using AtomUI.Controls.MotionScene;
+using AtomUI.Data;
+using AtomUI.MotionScene;
 using AtomUI.Styling;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.Data;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Metadata;
@@ -20,7 +23,7 @@ public enum DotBadgeStatus
    Warning
 }
 
-public class DotBadge : Control, IControlCustomStyle
+public partial class DotBadge : Control, IControlCustomStyle
 {
    public static readonly StyledProperty<string?> DotColorProperty 
       = AvaloniaProperty.Register<DotBadge, string?>(
@@ -82,12 +85,15 @@ public class DotBadge : Control, IControlCustomStyle
    
    private bool _initialized = false;
    private IControlCustomStyle _customStyle;
+   private ControlTokenBinder _controlTokenBinder;
    private DotBadgeAdorner? _dotBadgeAdorner;
    private AdornerLayer? _adornerLayer;
+   private bool _animating = false;
    
    public DotBadge()
    {
       _customStyle = this;
+      _controlTokenBinder = new ControlTokenBinder(this, BadgeToken.ID);
    }
 
    static DotBadge()
@@ -128,6 +134,29 @@ public class DotBadge : Control, IControlCustomStyle
       }
    }
 
+   private void PrepareAdornerWithMotion()
+   {
+      PrepareAdorner();
+     
+      if (VisualRoot is null || _animating) {
+         return;
+      }
+      _animating = true;
+      var director = Director.Instance;
+      var motion = new CountBadgeZoomBadgeIn();
+      motion.ConfigureOpacity(_motionDurationSlow);
+      motion.ConfigureRenderTransform(_motionDurationSlow);
+      _dotBadgeAdorner!.AnimationRenderTransformOrigin = motion.MotionRenderTransformOrigin;
+      var motionActor = new MotionActor(_dotBadgeAdorner, motion);
+      motionActor.DispatchInSceneLayer = false;
+      motionActor.Completed += (sender, args) =>
+      {
+         _dotBadgeAdorner.AnimationRenderTransformOrigin = null;
+         _animating = false;
+      };
+      director?.Schedule(motionActor);
+   }
+
    private void HideAdorner()
    {
       // 这里需要抛出异常吗？
@@ -138,6 +167,29 @@ public class DotBadge : Control, IControlCustomStyle
       _adornerLayer.Children.Remove(_dotBadgeAdorner);
       _adornerLayer = null;
    }
+   
+   private void HideAdornerWithMotion()
+   {
+      if (VisualRoot is null || _animating) {
+         return;
+      }
+      _animating = true;
+      var director = Director.Instance;
+      var motion = new CountBadgeZoomBadgeOut();
+      motion.ConfigureOpacity(_motionDurationSlow);
+      motion.ConfigureRenderTransform(_motionDurationSlow);
+      _dotBadgeAdorner!.AnimationRenderTransformOrigin = motion.MotionRenderTransformOrigin;
+      var motionActor = new MotionActor(_dotBadgeAdorner, motion);
+      motionActor.DispatchInSceneLayer = false;
+      motionActor.Completed += (sender, args) =>
+      {
+         HideAdorner();
+         _dotBadgeAdorner.AnimationRenderTransformOrigin = null;
+         _animating = false;
+      };
+      director?.Schedule(motionActor);
+   }
+
 
    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
    {
@@ -162,6 +214,7 @@ public class DotBadge : Control, IControlCustomStyle
          BindUtils.RelayBind(this, TextProperty, _dotBadgeAdorner, DotBadgeAdorner.TextProperty);
          BindUtils.RelayBind(this, OffsetProperty, _dotBadgeAdorner, DotBadgeAdorner.OffsetProperty);
       }
+      _controlTokenBinder.AddControlBinding(MotionDurationSlowTokenProperty, GlobalResourceKey.MotionDurationSlow);
    }
 
    private void HandleDecoratedTargetChanged()
@@ -182,8 +235,7 @@ public class DotBadge : Control, IControlCustomStyle
    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
    {
       base.OnPropertyChanged(e);
-      if (e.Property == IsVisibleProperty ||
-          e.Property == BadgeIsVisibleProperty) {
+      if (e.Property == IsVisibleProperty) {
          var badgeIsVisible = e.GetNewValue<bool>();
          if (badgeIsVisible) {
             if (_adornerLayer is not null) {
@@ -192,6 +244,26 @@ public class DotBadge : Control, IControlCustomStyle
             PrepareAdorner();
          } else {
             HideAdorner();
+         }
+      } else if (e.Property == BadgeIsVisibleProperty) {
+         var badgeIsVisible = e.GetNewValue<bool>();
+         if (badgeIsVisible) {
+            if (_adornerLayer is not null) {
+               return;
+            }
+
+            if (DecoratedTarget is not null) {
+               PrepareAdornerWithMotion();
+            } else {
+               PrepareAdorner();
+            }
+           
+         } else {
+            if (DecoratedTarget is not null) {
+               HideAdornerWithMotion();
+            } else {
+               HideAdorner();
+            }
          }
       }
       if (_initialized) {

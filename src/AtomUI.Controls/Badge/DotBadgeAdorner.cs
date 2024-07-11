@@ -96,6 +96,9 @@ internal partial class DotBadgeAdorner : Control, IControlCustomStyle
    private ControlTokenBinder _controlTokenBinder;
    private Label? _textLabel;
    private BoxShadows _boxShadows;
+   // 不知道为什么这个值会被 AdornerLayer 重写
+   // 非常不优美，但是能工作
+   internal RelativePoint? AnimationRenderTransformOrigin;
 
    static DotBadgeAdorner()
    {
@@ -259,6 +262,20 @@ internal partial class DotBadgeAdorner : Control, IControlCustomStyle
       }
       
       var dotRect = new Rect(new Point(offsetX, offsetY), new Size(dotSize, dotSize));
+      
+      if (RenderTransform is not null) {
+         Point origin;
+         if (AnimationRenderTransformOrigin.HasValue) {
+            origin = AnimationRenderTransformOrigin.Value.ToPixels(dotRect.Size);
+         } else {
+            origin = RenderTransformOrigin.ToPixels(dotRect.Size);
+         }
+         
+         var offset = Matrix.CreateTranslation(new Point(origin.X + offsetX, origin.Y + offsetY));
+         var renderTransform = (-offset) * RenderTransform.Value * (offset);
+         context.PushTransform(renderTransform);
+      }
+      
       context.DrawRectangle(EffectiveDotColor, null, dotRect, dotSize, dotSize, _boxShadows);
    }
 

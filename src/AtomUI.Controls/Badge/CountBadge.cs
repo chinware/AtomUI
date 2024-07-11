@@ -154,15 +154,27 @@ public partial class CountBadge : Control, IControlCustomStyle
       }
       _animating = true;
       var director = Director.Instance;
-      var motion = new CountBadgeZoomBadgeIn();
-      motion.ConfigureOpacity(_motionDurationSlow);
-      motion.ConfigureRenderTransform(_motionDurationSlow);
-      _badgeAdorner!.AnimationRenderTransformOrigin = motion.MotionRenderTransformOrigin;
-      var motionActor = new MotionActor(_badgeAdorner, motion);
+    
+      AbstractMotion motion;
+      var adorner = _badgeAdorner!;
+      if (DecoratedTarget is not null) {
+         var countBadgeZoomBadgeIn = new CountBadgeZoomBadgeIn();
+         countBadgeZoomBadgeIn.ConfigureOpacity(_motionDurationSlow);
+         countBadgeZoomBadgeIn.ConfigureRenderTransform(_motionDurationSlow);
+         motion = countBadgeZoomBadgeIn;
+         adorner.AnimationRenderTransformOrigin = motion.MotionRenderTransformOrigin;
+      } else {
+         var countBadgeNoWrapperZoomBadgeIn = new CountBadgeNoWrapperZoomBadgeIn();
+         countBadgeNoWrapperZoomBadgeIn.ConfigureOpacity(_motionDurationSlow);
+         countBadgeNoWrapperZoomBadgeIn.ConfigureRenderTransform(_motionDurationSlow);
+         motion = countBadgeNoWrapperZoomBadgeIn;
+      }
+      
+      var motionActor = new MotionActor(adorner, motion);
       motionActor.DispatchInSceneLayer = false;
       motionActor.Completed += (sender, args) =>
       {
-         _badgeAdorner.AnimationRenderTransformOrigin = null;
+         adorner.AnimationRenderTransformOrigin = null;
          _animating = false;
       };
       director?.Schedule(motionActor);
@@ -185,16 +197,27 @@ public partial class CountBadge : Control, IControlCustomStyle
       }
       _animating = true;
       var director = Director.Instance;
-      var motion = new CountBadgeZoomBadgeOut();
-      motion.ConfigureOpacity(_motionDurationSlow);
-      motion.ConfigureRenderTransform(_motionDurationSlow);
-      _badgeAdorner!.AnimationRenderTransformOrigin = motion.MotionRenderTransformOrigin;
-      var motionActor = new MotionActor(_badgeAdorner, motion);
+      AbstractMotion motion;
+      var adorner = _badgeAdorner!;
+      if (DecoratedTarget is not null) {
+          var countBadgeZoomBadgeOut = new CountBadgeZoomBadgeOut();
+          countBadgeZoomBadgeOut.ConfigureOpacity(_motionDurationSlow);
+          countBadgeZoomBadgeOut.ConfigureRenderTransform(_motionDurationSlow);
+          motion = countBadgeZoomBadgeOut;
+          adorner.AnimationRenderTransformOrigin = motion.MotionRenderTransformOrigin;
+      } else {
+         var countBadgeNoWrapperZoomBadgeOut = new CountBadgeNoWrapperZoomBadgeOut();
+         countBadgeNoWrapperZoomBadgeOut.ConfigureOpacity(_motionDurationSlow);
+         countBadgeNoWrapperZoomBadgeOut.ConfigureRenderTransform(_motionDurationSlow);
+         motion = countBadgeNoWrapperZoomBadgeOut;
+      }
+
+      var motionActor = new MotionActor(adorner, motion);
       motionActor.DispatchInSceneLayer = false;
       motionActor.Completed += (sender, args) =>
       {
          HideAdorner();
-         _badgeAdorner.AnimationRenderTransformOrigin = null;
+         adorner.AnimationRenderTransformOrigin = null;
          _animating = false;
       };
       director?.Schedule(motionActor);
@@ -285,17 +308,9 @@ public partial class CountBadge : Control, IControlCustomStyle
       if (e.Property == CountProperty) {
          var newCount = e.GetNewValue<int>();
          if (newCount == 0 && !ShowZero) {
-            if (DecoratedTarget is not null) {
-               BadgeIsVisible = false;
-            } else {
-               IsVisible = false;
-            }
+            BadgeIsVisible = false;
          } else if (newCount > 0) {
-            if (DecoratedTarget is not null) {
-               BadgeIsVisible = true;
-            } else {
-               IsVisible = true;
-            }
+            BadgeIsVisible = true;
          }
       }
    }
