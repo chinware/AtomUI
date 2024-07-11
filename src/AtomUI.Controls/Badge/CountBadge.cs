@@ -200,9 +200,8 @@ public partial class CountBadge : Control, IControlCustomStyle
    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
    {
       base.OnPropertyChanged(e);
-      if (e.Property == IsVisibleProperty) {
-         SetValue(BadgeIsVisibleProperty, IsVisible, BindingPriority.Inherited);
-      } else if (e.Property == BadgeIsVisibleProperty) {
+      if (e.Property == IsVisibleProperty ||
+          e.Property == BadgeIsVisibleProperty) {
          var badgeIsVisible = e.GetNewValue<bool>();
          if (badgeIsVisible) {
             if (_adornerLayer is not null) {
@@ -220,6 +219,23 @@ public partial class CountBadge : Control, IControlCustomStyle
          
          if (e.Property == BadgeColorProperty) {
             SetupBadgeColor(e.GetNewValue<string>());
+         }
+      }
+
+      if (e.Property == CountProperty) {
+         var newCount = e.GetNewValue<int>();
+         if (newCount == 0 && !ShowZero) {
+            if (DecoratedTarget is not null) {
+               BadgeIsVisible = false;
+            } else {
+               IsVisible = false;
+            }
+         } else if (newCount > 0) {
+            if (DecoratedTarget is not null) {
+               BadgeIsVisible = true;
+            } else {
+               IsVisible = true;
+            }
          }
       }
    }

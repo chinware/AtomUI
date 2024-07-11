@@ -68,10 +68,10 @@
             Title="Standalone"
             Description="Used in standalone when children is empty.">
             <StackPanel Orientation="Horizontal" Spacing="10">
-                <atom:ToggleSwitch/>
-                <atom:CountBadge Count="11" BadgeColor="#faad14" />
-                <atom:CountBadge Count="25"/>
-                <atom:CountBadge Count="100" BadgeColor="#52c41a"/>
+                <atom:ToggleSwitch IsChecked="{Binding StandaloneSwitchChecked}"/>
+                <atom:CountBadge Count="{Binding StandaloneBadgeCount1}" BadgeColor="#faad14" ShowZero="True"/>
+                <atom:CountBadge Count="{Binding StandaloneBadgeCount2}"/>
+                <atom:CountBadge Count="{Binding StandaloneBadgeCount3}" BadgeColor="#52c41a"/>
             </StackPanel>
         </showcase:ShowCaseItem>
         
