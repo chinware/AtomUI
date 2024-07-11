@@ -73,6 +73,7 @@ public class DotBadge : Control, IControlCustomStyle
    private bool _initialized = false;
    private IControlCustomStyle _customStyle;
    private DotBadgeAdorner? _dotBadgeAdorner;
+   private AdornerLayer? _adornerLayer;
    
    public DotBadge()
    {
@@ -99,14 +100,14 @@ public class DotBadge : Control, IControlCustomStyle
    {
       base.OnAttachedToVisualTree(e);
       if (DecoratedTarget is not null && _dotBadgeAdorner is not null) {
-         var adornerLayer = AdornerLayer.GetAdornerLayer(this);
+         _adornerLayer = AdornerLayer.GetAdornerLayer(this);
          // 这里需要抛出异常吗？
-         if (adornerLayer == null) {
+         if (_adornerLayer == null) {
             return;
          }
          AdornerLayer.SetAdornedElement(_dotBadgeAdorner, this);
          AdornerLayer.SetIsClipEnabled(_dotBadgeAdorner, false);
-         adornerLayer.Children.Add(_dotBadgeAdorner);
+         _adornerLayer.Children.Add(_dotBadgeAdorner);
       }
    }
 
@@ -114,13 +115,12 @@ public class DotBadge : Control, IControlCustomStyle
    {
       base.OnDetachedFromVisualTree(e);
       if (DecoratedTarget is not null && _dotBadgeAdorner is not null) {
-         var adornerLayer = AdornerLayer.GetAdornerLayer(this);
          // 这里需要抛出异常吗？
-         if (adornerLayer == null) {
+         if (_adornerLayer == null) {
             return;
          }
-
-         adornerLayer.Children.Remove(_dotBadgeAdorner);
+      
+         _adornerLayer.Children.Remove(_dotBadgeAdorner);
       }
    }
 

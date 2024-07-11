@@ -45,8 +45,6 @@
             </StackPanel>
         </showcase:ShowCaseItem>
         
-      
-
         <showcase:ShowCaseItem
             Title="Ribbon"
             Description="Use ribbon badge.">

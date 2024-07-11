@@ -81,6 +81,7 @@ public class RibbonBadge : Control, IControlCustomStyle
    private bool _initialized = false;
    private IControlCustomStyle _customStyle;
    private RibbonBadgeAdorner? _ribbonBadgeAdorner;
+   private AdornerLayer? _adornerLayer;
 
    void IControlCustomStyle.SetupUi()
    {
@@ -159,14 +160,14 @@ public class RibbonBadge : Control, IControlCustomStyle
    {
       base.OnAttachedToVisualTree(e);
       if (DecoratedTarget is not null && _ribbonBadgeAdorner is not null) {
-         var adornerLayer = AdornerLayer.GetAdornerLayer(this);
+         _adornerLayer = AdornerLayer.GetAdornerLayer(this);
          // 这里需要抛出异常吗？
-         if (adornerLayer == null) {
+         if (_adornerLayer == null) {
             return;
          }
          AdornerLayer.SetAdornedElement(_ribbonBadgeAdorner, this);
          AdornerLayer.SetIsClipEnabled(_ribbonBadgeAdorner, false);
-         adornerLayer.Children.Add(_ribbonBadgeAdorner);
+         _adornerLayer.Children.Add(_ribbonBadgeAdorner);
       }
    }
 
@@ -174,13 +175,11 @@ public class RibbonBadge : Control, IControlCustomStyle
    {
       base.OnDetachedFromVisualTree(e);
       if (DecoratedTarget is not null && _ribbonBadgeAdorner is not null) {
-         var adornerLayer = AdornerLayer.GetAdornerLayer(this);
-         // 这里需要抛出异常吗？
-         if (adornerLayer == null) {
+         if (_adornerLayer == null) {
             return;
          }
-
-         adornerLayer.Children.Remove(_ribbonBadgeAdorner);
+      
+         _adornerLayer.Children.Remove(_ribbonBadgeAdorner);
       }
    }
 }
