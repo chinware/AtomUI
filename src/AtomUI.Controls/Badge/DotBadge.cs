@@ -109,10 +109,10 @@ public class DotBadge : Control, IControlCustomStyle
    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
    {
       base.OnAttachedToVisualTree(e);
-      SetupAdorner();
+      PrepareAdorner();
    }
 
-   private void SetupAdorner()
+   private void PrepareAdorner()
    {
       if (_adornerLayer is null && 
           DecoratedTarget is not null &&
@@ -128,18 +128,21 @@ public class DotBadge : Control, IControlCustomStyle
       }
    }
 
+   private void HideAdorner()
+   {
+      // 这里需要抛出异常吗？
+      if (_adornerLayer is null || _dotBadgeAdorner is null) {
+         return;
+      }
+      
+      _adornerLayer.Children.Remove(_dotBadgeAdorner);
+      _adornerLayer = null;
+   }
+
    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
    {
       base.OnDetachedFromVisualTree(e);
-      if (DecoratedTarget is not null && _dotBadgeAdorner is not null) {
-         // 这里需要抛出异常吗？
-         if (_adornerLayer == null) {
-            return;
-         }
-      
-         _adornerLayer.Children.Remove(_dotBadgeAdorner);
-         _adornerLayer = null;
-      }
+      HideAdorner();
    }
 
    void IControlCustomStyle.SetupUi()
@@ -187,14 +190,9 @@ public class DotBadge : Control, IControlCustomStyle
             if (_adornerLayer is not null) {
                return;
             }
-            SetupAdorner();
+            PrepareAdorner();
          } else {
-            if (_adornerLayer is null || _dotBadgeAdorner is null) {
-               return;
-            }
-      
-            _adornerLayer.Children.Remove(_dotBadgeAdorner);
-            _adornerLayer = null;
+           HideAdorner();
          }
       }
       if (_initialized) {
@@ -204,19 +202,6 @@ public class DotBadge : Control, IControlCustomStyle
          
          if (e.Property == DotColorProperty) {
             SetupDotColor(e.GetNewValue<string>());
-         }
-
-         if (e.Property == IsVisibleProperty) {
-            if (!IsVisible) {
-               if (_adornerLayer is null || _dotBadgeAdorner is null) {
-                  return;
-               }
-      
-               _adornerLayer.Children.Remove(_dotBadgeAdorner);
-               _adornerLayer = null;
-            } else {
-               SetupAdorner();
-            }
          }
       }
    }

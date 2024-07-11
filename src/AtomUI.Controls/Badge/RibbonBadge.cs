@@ -4,6 +4,7 @@ using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Data;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Metadata;
@@ -34,6 +35,9 @@ public class RibbonBadge : Control, IControlCustomStyle
       = AvaloniaProperty.Register<RibbonBadge, RibbonBadgePlacement>(
          nameof(Text),
          RibbonBadgePlacement.End);
+   
+   public static readonly StyledProperty<bool> BadgeIsVisibleProperty =
+      AvaloniaProperty.Register<RibbonBadge, bool>(nameof(BadgeIsVisible));
 
    [Content]
    public Control? DecoratedTarget
@@ -64,6 +68,12 @@ public class RibbonBadge : Control, IControlCustomStyle
    {
       get => GetValue(PlacementProperty);
       set => SetValue(PlacementProperty, value);
+   }
+   
+   public bool BadgeIsVisible
+   {
+      get => GetValue(BadgeIsVisibleProperty);
+      set => SetValue(BadgeIsVisibleProperty, value);
    }
 
    public RibbonBadge()
@@ -136,6 +146,19 @@ public class RibbonBadge : Control, IControlCustomStyle
    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
    {
       base.OnPropertyChanged(e);
+      if (e.Property == IsVisibleProperty) {
+         SetValue(BadgeIsVisibleProperty, IsVisible, BindingPriority.Inherited);
+      } else if (e.Property == BadgeIsVisibleProperty) {
+         var badgeIsVisible = e.GetNewValue<bool>();
+         if (badgeIsVisible) {
+            if (_adornerLayer is not null) {
+               return;
+            }
+            PrepareAdorner();
+         } else {
+            HideAdorner();
+         }
+      }
       if (_initialized) {
          if (e.Property == DecoratedTargetProperty) {
             HandleDecoratedTargetChanged();
@@ -155,11 +178,12 @@ public class RibbonBadge : Control, IControlCustomStyle
          _initialized = true;
       }
    }
-   
-   protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+
+   private void PrepareAdorner()
    {
-      base.OnAttachedToVisualTree(e);
-      if (DecoratedTarget is not null && _ribbonBadgeAdorner is not null) {
+      if (_adornerLayer is null &&
+          DecoratedTarget is not null && 
+          _ribbonBadgeAdorner is not null) {
          _adornerLayer = AdornerLayer.GetAdornerLayer(this);
          // 这里需要抛出异常吗？
          if (_adornerLayer == null) {
@@ -170,16 +194,27 @@ public class RibbonBadge : Control, IControlCustomStyle
          _adornerLayer.Children.Add(_ribbonBadgeAdorner);
       }
    }
+   
+   private void HideAdorner()
+   {
+      // 这里需要抛出异常吗？
+      if (_adornerLayer is null || _ribbonBadgeAdorner is null) {
+         return;
+      }
+      
+      _adornerLayer.Children.Remove(_ribbonBadgeAdorner);
+      _adornerLayer = null;
+   }
+
+   protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+   {
+      base.OnAttachedToVisualTree(e);
+      PrepareAdorner();
+   }
 
    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
    {
       base.OnDetachedFromVisualTree(e);
-      if (DecoratedTarget is not null && _ribbonBadgeAdorner is not null) {
-         if (_adornerLayer == null) {
-            return;
-         }
-      
-         _adornerLayer.Children.Remove(_ribbonBadgeAdorner);
-      }
+      HideAdorner();
    }
 }

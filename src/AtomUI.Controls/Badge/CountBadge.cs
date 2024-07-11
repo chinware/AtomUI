@@ -4,6 +4,7 @@ using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Data;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Metadata;
@@ -41,6 +42,9 @@ public partial class CountBadge : Control, IControlCustomStyle
       
    public static readonly StyledProperty<CountBadgeSize> SizeProperty =
       AvaloniaProperty.Register<CountBadge, CountBadgeSize>(nameof(Size), CountBadgeSize.Default);
+   
+   public static readonly StyledProperty<bool> BadgeIsVisibleProperty =
+      AvaloniaProperty.Register<CountBadge, bool>(nameof(BadgeIsVisible));
    
    public string? BadgeColor
    {
@@ -85,6 +89,12 @@ public partial class CountBadge : Control, IControlCustomStyle
       set => SetValue(SizeProperty, value);
    }
    
+   public bool BadgeIsVisible
+   {
+      get => GetValue(BadgeIsVisibleProperty);
+      set => SetValue(BadgeIsVisibleProperty, value);
+   }
+   
    private bool _initialized = false;
    private IControlCustomStyle _customStyle;
    private CountBadgeAdorner? _badgeAdorner;
@@ -112,11 +122,12 @@ public partial class CountBadge : Control, IControlCustomStyle
          _initialized = true;
       }
    }
-   
-   protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+
+   private void PrepareAdorner()
    {
-      base.OnAttachedToVisualTree(e);
-      if (DecoratedTarget is not null && _badgeAdorner is not null) {
+      if (_adornerLayer is null && 
+          DecoratedTarget is not null && 
+          _badgeAdorner is not null) {
          _adornerLayer = AdornerLayer.GetAdornerLayer(this);
          // 这里需要抛出异常吗？
          if (_adornerLayer == null) {
@@ -128,17 +139,27 @@ public partial class CountBadge : Control, IControlCustomStyle
       }
    }
 
+   private void HideAdorner()
+   {
+      // 这里需要抛出异常吗？
+      if (_adornerLayer is null || _badgeAdorner is null) {
+         return;
+      }
+      
+      _adornerLayer.Children.Remove(_badgeAdorner);
+      _adornerLayer = null;
+   }
+
+   protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+   {
+      base.OnAttachedToVisualTree(e);
+      PrepareAdorner();
+   }
+
    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
    {
       base.OnDetachedFromVisualTree(e);
-      if (DecoratedTarget is not null && _badgeAdorner is not null) {
-         // 这里需要抛出异常吗？
-         if (_adornerLayer == null) {
-            return;
-         }
-      
-         _adornerLayer.Children.Remove(_badgeAdorner);
-      }
+      HideAdorner();
    }
 
    void IControlCustomStyle.SetupUi()
@@ -179,6 +200,19 @@ public partial class CountBadge : Control, IControlCustomStyle
    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
    {
       base.OnPropertyChanged(e);
+      if (e.Property == IsVisibleProperty) {
+         SetValue(BadgeIsVisibleProperty, IsVisible, BindingPriority.Inherited);
+      } else if (e.Property == BadgeIsVisibleProperty) {
+         var badgeIsVisible = e.GetNewValue<bool>();
+         if (badgeIsVisible) {
+            if (_adornerLayer is not null) {
+               return;
+            }
+            PrepareAdorner();
+         } else {
+            HideAdorner();
+         }
+      }
       if (_initialized) {
          if (e.Property == DecoratedTargetProperty) {
             HandleDecoratedTargetChanged();
