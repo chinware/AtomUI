@@ -98,8 +98,8 @@ public partial class Separator : IControlCustomStyle
       var targetHeight = size.Height;
       var targetWidth = size.Width;
       if (Orientation == Orientation.Horizontal) {
-         if (Title?.Length == 0) {
-            targetHeight = FontUtils.ConvertEmToPixel(1, FontSize, TopLevel.GetTopLevel(this)?.RenderScaling ?? 1.0);
+         if (Title is null || Title?.Length == 0) {
+            targetHeight = LineWidth * 3;
          }
 
          if (!double.IsInfinity(availableSize.Width)) {

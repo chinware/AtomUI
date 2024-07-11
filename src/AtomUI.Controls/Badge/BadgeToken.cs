@@ -1,7 +1,6 @@
 ﻿using AtomUI.TokenSystem;
 using Avalonia;
 using Avalonia.Media;
-using Avalonia.Media.Transformation;
 
 namespace AtomUI.Controls;
 
@@ -59,8 +58,8 @@ public class BadgeToken : AbstractControlDesignToken
    public Color BadgeShadowColor { get; set; }
    public TimeSpan BadgeProcessingDuration { get; set; }
    public Point BadgeRibbonOffset { get; set; }
-   public ITransform? BadgeRibbonCornerTransform { get; set; }
-   public double BadgeRibbonCornerBrightness { get; set; }
+   public Transform? BadgeRibbonCornerTransform { get; set; }
+   public int BadgeRibbonCornerDarkenAmount { get; set; }
    #endregion
 
    internal override void CalculateFromAlias()
@@ -87,9 +86,7 @@ public class BadgeToken : AbstractControlDesignToken
       BadgeProcessingDuration = TimeSpan.FromMilliseconds(1200);
       BadgeRibbonOffset = new Point(_globalToken.MarginXS, _globalToken.MarginXS);
       
-      var builder = new TransformOperations.Builder(1);
-      builder.AppendScale(1, 0.75);
-      BadgeRibbonCornerTransform = builder.Build();
-      BadgeRibbonCornerBrightness = 0.75;
+      BadgeRibbonCornerTransform = new ScaleTransform(1, 0.75);
+      BadgeRibbonCornerDarkenAmount = 15;
    }
 }

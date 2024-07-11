@@ -38,7 +38,7 @@ internal partial class DotBadgeAdorner : Control, IControlCustomStyle
    
    public static readonly DirectProperty<DotBadgeAdorner, string?> TextProperty =
       AvaloniaProperty.RegisterDirect<DotBadgeAdorner, string?>(
-         nameof(Status),
+         nameof(Text),
          o => o.Text,
          (o, v) => o.Text = v);
 
@@ -96,6 +96,7 @@ internal partial class DotBadgeAdorner : Control, IControlCustomStyle
    private ControlTokenBinder _controlTokenBinder;
    private Label? _textLabel;
    private BoxShadows _boxShadows;
+   
 
    static DotBadgeAdorner()
    {
@@ -118,7 +119,7 @@ internal partial class DotBadgeAdorner : Control, IControlCustomStyle
          VerticalAlignment = VerticalAlignment.Center,
          HorizontalContentAlignment = HorizontalAlignment.Center,
          VerticalContentAlignment = VerticalAlignment.Center,
-         Padding = new Thickness(0)
+         Padding = new Thickness(0),
       };
       
       LogicalChildren.Add(_textLabel);

@@ -34,7 +34,7 @@ public class DotBadge : Control, IControlCustomStyle
          nameof(Text));
    
    public static readonly StyledProperty<Control?> DecoratedTargetProperty =
-      AvaloniaProperty.Register<DotBadge, Control?>(nameof(DotBadge));
+      AvaloniaProperty.Register<DotBadge, Control?>(nameof(DecoratedTarget));
    
    public static readonly StyledProperty<Point> OffsetProperty =
       AvaloniaProperty.Register<DotBadge, Point>(nameof(Offset));
@@ -130,7 +130,7 @@ public class DotBadge : Control, IControlCustomStyle
       _customStyle.ApplyFixedStyleConfig();
       HandleDecoratedTargetChanged();
       if (DotColor is not null) {
-         SetupTagColorInfo(DotColor);
+         SetupDotColor(DotColor);
       }
    }
 
@@ -167,12 +167,12 @@ public class DotBadge : Control, IControlCustomStyle
          }
          
          if (e.Property == DotColorProperty) {
-            SetupTagColorInfo(e.GetNewValue<string>());
+            SetupDotColor(e.GetNewValue<string>());
          }
       }
    }
    
-   private void SetupTagColorInfo(string colorStr)
+   private void SetupDotColor(string colorStr)
    {
       colorStr = colorStr.Trim().ToLower();
       

@@ -36,7 +36,7 @@
         public const string BadgeProcessingDuration = "BadgeProcessingDuration";
         public const string BadgeRibbonOffset = "BadgeRibbonOffset";
         public const string BadgeRibbonCornerTransform = "BadgeRibbonCornerTransform";
-        public const string BadgeRibbonCornerBrightness = "BadgeRibbonCornerBrightness";
+        public const string BadgeRibbonCornerDarkenAmount = "BadgeRibbonCornerDarkenAmount";
     }
 
     public static class ButtonResourceKey
