@@ -107,6 +107,10 @@ internal partial class CountBadgeAdorner : Control, IControlCustomStyle
       set => SetValue(FontFamilyProperty, value);
    }
 
+   // 不知道为什么这个值会被 AdornerLayer 重写
+   // 非常不优美，但是能工作
+   internal RelativePoint? AnimationRenderTransformOrigin;
+
    static CountBadgeAdorner()
    {
       AffectsMeasure<CountBadgeAdorner>(OverflowCountProperty,
@@ -159,7 +163,7 @@ internal partial class CountBadgeAdorner : Control, IControlCustomStyle
       _controlTokenBinder.AddControlBinding(BadgeShadowSizeTokenProperty, BadgeResourceKey.BadgeShadowSize);
       _controlTokenBinder.AddControlBinding(BadgeShadowColorTokenProperty, BadgeResourceKey.BadgeShadowColor);
       _controlTokenBinder.AddControlBinding(BadgeTextColorTokenProperty, BadgeResourceKey.BadgeTextColor);
-      _controlTokenBinder.AddControlBinding(PaddingXSTokenTokenProperty, GlobalResourceKey.PaddingXS);
+      _controlTokenBinder.AddControlBinding(PaddingXSTokenProperty, GlobalResourceKey.PaddingXS);
    }
 
    private void BuildBoxShadow()
@@ -182,7 +186,7 @@ internal partial class CountBadgeAdorner : Control, IControlCustomStyle
              e.Property == BadgeShadowColorTokenProperty) {
             BuildBoxShadow();
          }
-         if (e.Property == CountProperty || e.Property == OverflowCountProperty) {
+         if (Parent is not null && (e.Property == CountProperty || e.Property == OverflowCountProperty)) {
             BuildCountText();
             CalculateCountTextSize(true);
             BuildFormattedTexts(true);
@@ -195,7 +199,6 @@ internal partial class CountBadgeAdorner : Control, IControlCustomStyle
       if (IsAdornerMode) {
          return availableSize;
       }
-
       return GetBadgePillSize();
    }
 
@@ -259,6 +262,7 @@ internal partial class CountBadgeAdorner : Control, IControlCustomStyle
 
    public override void Render(DrawingContext context)
    {
+   
       var offsetX = 0d;
       var offsetY = 0d;
       var badgeSize = GetBadgePillSize();
@@ -269,6 +273,20 @@ internal partial class CountBadgeAdorner : Control, IControlCustomStyle
          offsetY += Offset.Y;
       }
       var badgeRect = new Rect(new Point(offsetX, offsetY), badgeSize);
+      
+      if (RenderTransform is not null) {
+         Point origin;
+         if (AnimationRenderTransformOrigin.HasValue) {
+            origin = AnimationRenderTransformOrigin.Value.ToPixels(badgeRect.Size);
+         } else {
+            origin = RenderTransformOrigin.ToPixels(badgeRect.Size);
+         }
+         
+         var offset = Matrix.CreateTranslation(new Point(origin.X + offsetX, origin.Y + offsetY));
+         var renderTransform = (-offset) * RenderTransform.Value * (offset);
+         context.PushTransform(renderTransform);
+      }
+      
       context.DrawPilledRect(BadgeColor ?? _badgeColorToken, null, badgeRect, Orientation.Horizontal, _boxShadows);
       // 计算合适的文字 x 坐标
       var textOffsetX = offsetX + (badgeSize.Width - _countTextSize.Width) / 2;

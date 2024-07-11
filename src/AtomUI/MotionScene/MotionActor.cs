@@ -24,10 +24,10 @@ public class MotionActor : Animatable, IMotionActor
       Visual.OpacityProperty.AddOwner<MotionActor>();
    
    public static readonly StyledProperty<double> MotionWidthProperty =
-      Visual.OpacityProperty.AddOwner<MotionActor>();
+      Layoutable.WidthProperty.AddOwner<MotionActor>();
    
    public static readonly StyledProperty<double> MotionHeightProperty =
-      Visual.OpacityProperty.AddOwner<MotionActor>();
+      Layoutable.HeightProperty.AddOwner<MotionActor>();
 
    public static readonly StyledProperty<ITransform?> MotionRenderTransformProperty =
       Visual.RenderTransformProperty.AddOwner<MotionActor>();
@@ -60,6 +60,12 @@ public class MotionActor : Animatable, IMotionActor
       get => GetValue(MotionRenderTransformProperty);
       set => SetValue(MotionRenderTransformProperty, value);
    }
+
+   private double _originOpacity;
+   private double _originWidth;
+   private double _originHeight;
+   private ITransform? _originRenderTransform;
+   private RelativePoint _originRenderTransformOrigin;
    
    /// <summary>
    /// 动画实体
@@ -171,7 +177,7 @@ public class MotionActor : Animatable, IMotionActor
       
       RelayMotionProperties();
       var transitions = new Transitions();
-      foreach (var transition in _motion.BuildTransitions(_ghost!)) {
+      foreach (var transition in _motion.BuildTransitions(GetAnimatableGhost())) {
          transitions.Add(transition);
       }
       Transitions = transitions;
@@ -179,17 +185,15 @@ public class MotionActor : Animatable, IMotionActor
 
    protected void RelayMotionProperties()
    {
-      if (_ghost is null) {
-         return;
-      }
+      var ghost = GetAnimatableGhost();
       // TODO 这个看是否需要管理起来
       
       var motionProperties = Motion.GetActivatedProperties();
       foreach (var property in motionProperties) {
          if (property == MotionRenderTransformProperty) {
-            BindUtils.RelayBind(this, property, _ghost, Visual.RenderTransformProperty);
+            BindUtils.RelayBind(this, property, ghost, Visual.RenderTransformProperty);
          } else {
-            BindUtils.RelayBind(this, property, _ghost, property);
+            BindUtils.RelayBind(this, property, ghost, property);
          }
 
       }
@@ -222,8 +226,9 @@ public class MotionActor : Animatable, IMotionActor
 
    internal virtual void NotifyMotionPreStart()
    {
+      SaveMotionTargetState();
       _motion.NotifyPreStart();
-      _motion.NotifyConfigMotionTarget(_ghost!);
+      _motion.NotifyConfigMotionTarget(GetAnimatableGhost());
       PreStart?.Invoke(this, EventArgs.Empty);
    }
 
@@ -235,8 +240,43 @@ public class MotionActor : Animatable, IMotionActor
 
    internal virtual void NotifyMotionCompleted()
    {
+      RestoreMotionTargetState();
       Completed?.Invoke(this, EventArgs.Empty);
       _motion.NotifyCompleted();
-      _motion.NotifyRestoreMotionTarget(_ghost!);
+      _motion.NotifyRestoreMotionTarget(GetAnimatableGhost());
+   }
+
+   private void SaveMotionTargetState()
+   {
+      var target = GetAnimatableGhost();
+      foreach (var motionConfig in _motion.GetMotionConfigs()) {
+         if (motionConfig.Property == MotionHeightProperty) {
+            _originHeight = target.Height;
+         } else if (motionConfig.Property == MotionWidthProperty) {
+            _originWidth = target.Width;
+         } else if (motionConfig.Property == MotionOpacityProperty) {
+            _originOpacity = target.Opacity;
+         } else if (motionConfig.Property == MotionRenderTransformProperty) {
+            _originRenderTransform = target.RenderTransform;
+            _originRenderTransformOrigin = target.RenderTransformOrigin;
+         }
+      }
+   }
+
+   private void RestoreMotionTargetState()
+   {
+      var target = GetAnimatableGhost();
+      foreach (var motionConfig in _motion.GetMotionConfigs()) {
+         if (motionConfig.Property == MotionHeightProperty) {
+            target.Height = _originHeight;
+         } else if (motionConfig.Property == MotionWidthProperty) {
+            target.Width = _originWidth;
+         } else if (motionConfig.Property == MotionOpacityProperty) {
+            target.Opacity = _originOpacity;
+         } else if (motionConfig.Property == MotionRenderTransformProperty) {
+            target.RenderTransform = _originRenderTransform;
+            target.RenderTransformOrigin = _originRenderTransformOrigin;
+         }
+      }
    }
 }

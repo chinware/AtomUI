@@ -1,10 +1,13 @@
 ﻿using AtomUI.ColorSystem;
+using AtomUI.Controls.Badge;
+using AtomUI.Controls.MotionScene;
+using AtomUI.Data;
+using AtomUI.MotionScene;
 using AtomUI.Styling;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.Data;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Metadata;
@@ -97,12 +100,15 @@ public partial class CountBadge : Control, IControlCustomStyle
    
    private bool _initialized = false;
    private IControlCustomStyle _customStyle;
+   private ControlTokenBinder _controlTokenBinder;
    private CountBadgeAdorner? _badgeAdorner;
    private AdornerLayer? _adornerLayer;
+   private bool _animating = false;
    
    public CountBadge()
    {
       _customStyle = this;
+      _controlTokenBinder = new ControlTokenBinder(this, BadgeToken.ID);
    }
 
    static CountBadge()
@@ -139,15 +145,59 @@ public partial class CountBadge : Control, IControlCustomStyle
       }
    }
 
+   private void PrepareAdornerWithMotion()
+   {
+      PrepareAdorner();
+     
+      if (VisualRoot is null || _animating) {
+         return;
+      }
+      _animating = true;
+      var director = Director.Instance;
+      var motion = new CountBadgeZoomBadgeIn();
+      motion.ConfigureOpacity(_motionDurationSlow);
+      motion.ConfigureRenderTransform(_motionDurationSlow);
+      _badgeAdorner!.AnimationRenderTransformOrigin = motion.MotionRenderTransformOrigin;
+      var motionActor = new MotionActor(_badgeAdorner, motion);
+      motionActor.DispatchInSceneLayer = false;
+      motionActor.Completed += (sender, args) =>
+      {
+         _badgeAdorner.AnimationRenderTransformOrigin = null;
+         _animating = false;
+      };
+      director?.Schedule(motionActor);
+   }
+
    private void HideAdorner()
    {
       // 这里需要抛出异常吗？
       if (_adornerLayer is null || _badgeAdorner is null) {
          return;
       }
-      
       _adornerLayer.Children.Remove(_badgeAdorner);
       _adornerLayer = null;
+   }
+
+   private void HideAdornerWithMotion()
+   {
+      if (VisualRoot is null || _animating) {
+         return;
+      }
+      _animating = true;
+      var director = Director.Instance;
+      var motion = new CountBadgeZoomBadgeOut();
+      motion.ConfigureOpacity(_motionDurationSlow);
+      motion.ConfigureRenderTransform(_motionDurationSlow);
+      _badgeAdorner!.AnimationRenderTransformOrigin = motion.MotionRenderTransformOrigin;
+      var motionActor = new MotionActor(_badgeAdorner, motion);
+      motionActor.DispatchInSceneLayer = false;
+      motionActor.Completed += (sender, args) =>
+      {
+         HideAdorner();
+         _badgeAdorner.AnimationRenderTransformOrigin = null;
+         _animating = false;
+      };
+      director?.Schedule(motionActor);
    }
 
    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -180,6 +230,7 @@ public partial class CountBadge : Control, IControlCustomStyle
          BindUtils.RelayBind(this, OverflowCountProperty, _badgeAdorner, CountBadgeAdorner.OverflowCountProperty);
          BindUtils.RelayBind(this, CountProperty, _badgeAdorner, CountBadgeAdorner.CountProperty);
       }
+      _controlTokenBinder.AddControlBinding(MotionDurationSlowTokenProperty, GlobalResourceKey.MotionDurationSlow);
    }
    
    private void HandleDecoratedTargetChanged()
@@ -200,8 +251,7 @@ public partial class CountBadge : Control, IControlCustomStyle
    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
    {
       base.OnPropertyChanged(e);
-      if (e.Property == IsVisibleProperty ||
-          e.Property == BadgeIsVisibleProperty) {
+      if (e.Property == IsVisibleProperty) {
          var badgeIsVisible = e.GetNewValue<bool>();
          if (badgeIsVisible) {
             if (_adornerLayer is not null) {
@@ -210,6 +260,16 @@ public partial class CountBadge : Control, IControlCustomStyle
             PrepareAdorner();
          } else {
             HideAdorner();
+         }
+      } else if (e.Property == BadgeIsVisibleProperty) {
+         var badgeIsVisible = e.GetNewValue<bool>();
+         if (badgeIsVisible) {
+            if (_adornerLayer is not null) {
+               return;
+            }
+            PrepareAdornerWithMotion();
+         } else {
+            HideAdornerWithMotion();
          }
       }
       if (_initialized) {

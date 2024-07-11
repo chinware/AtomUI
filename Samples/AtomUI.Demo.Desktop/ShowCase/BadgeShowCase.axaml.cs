@@ -72,7 +72,10 @@ public partial class BadgeShowCase : UserControl
 
    public void SubDynamicBadgeCount()
    {
-      DynamicBadgeCount -= 1;
+      var value = DynamicBadgeCount;
+      value -= 1;
+      value = Math.Max(value, 0);
+      DynamicBadgeCount = value;
    }
    
    public void RandomDynamicBadgeCount()

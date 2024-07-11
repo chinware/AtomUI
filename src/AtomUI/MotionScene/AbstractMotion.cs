@@ -76,7 +76,7 @@ public abstract class AbstractMotion : AvaloniaObject, IMotion
       set => SetValue(MotionHeightProperty, value);
    }
 
-   protected RelativePoint MotionRenderTransformOrigin
+   internal RelativePoint MotionRenderTransformOrigin
    {
       get => GetValue(MotionRenderTransformOriginProperty);
       set => SetValue(MotionRenderTransformOriginProperty, value);

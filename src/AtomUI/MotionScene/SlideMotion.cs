@@ -1,7 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
-using Avalonia.Media.Transformation;
 
 namespace AtomUI.MotionScene;
 
@@ -79,7 +78,6 @@ public class SlideDownInMotion : AbstractMotion
 {
    public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
    public MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
-   private RelativePoint _renderTransformBackup;
 
    public SlideDownInMotion()
    {
@@ -118,14 +116,7 @@ public class SlideDownInMotion : AbstractMotion
    internal override void NotifyConfigMotionTarget(Control motionTarget)
    {
       base.NotifyConfigMotionTarget(motionTarget);
-      _renderTransformBackup = motionTarget.RenderTransformOrigin;
       motionTarget.RenderTransformOrigin = MotionRenderTransformOrigin;
-   }
-
-   internal override void NotifyRestoreMotionTarget(Control motionTarget)
-   {
-      base.NotifyRestoreMotionTarget(motionTarget);
-      motionTarget.RenderTransformOrigin = _renderTransformBackup;
    }
 }
 
@@ -133,7 +124,6 @@ public class SlideDownOutMotion : AbstractMotion
 {
    public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
    public MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
-   private RelativePoint _renderTransformBackup;
 
    public SlideDownOutMotion()
    {
@@ -172,14 +162,7 @@ public class SlideDownOutMotion : AbstractMotion
    internal override void NotifyConfigMotionTarget(Control motionTarget)
    {
       base.NotifyConfigMotionTarget(motionTarget);
-      _renderTransformBackup = motionTarget.RenderTransformOrigin;
       motionTarget.RenderTransformOrigin = MotionRenderTransformOrigin;
-   }
-
-   internal override void NotifyRestoreMotionTarget(Control motionTarget)
-   {
-      base.NotifyRestoreMotionTarget(motionTarget);
-      motionTarget.RenderTransformOrigin = _renderTransformBackup;
    }
 }
 
@@ -260,7 +243,6 @@ public class SlideRightInMotion : AbstractMotion
 {
    public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
    public MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
-   private RelativePoint _renderTransformBackup;
 
    public SlideRightInMotion()
    {
@@ -299,14 +281,7 @@ public class SlideRightInMotion : AbstractMotion
    internal override void NotifyConfigMotionTarget(Control motionTarget)
    {
       base.NotifyConfigMotionTarget(motionTarget);
-      _renderTransformBackup = motionTarget.RenderTransformOrigin;
       motionTarget.RenderTransformOrigin = MotionRenderTransformOrigin;
-   }
-
-   internal override void NotifyRestoreMotionTarget(Control motionTarget)
-   {
-      base.NotifyRestoreMotionTarget(motionTarget);
-      motionTarget.RenderTransformOrigin = _renderTransformBackup;
    }
 }
 
@@ -314,7 +289,6 @@ public class SlideRightOutMotion : AbstractMotion
 {
    public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
    public MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
-   private RelativePoint _renderTransformBackup;
 
    public SlideRightOutMotion()
    {
@@ -353,13 +327,6 @@ public class SlideRightOutMotion : AbstractMotion
    internal override void NotifyConfigMotionTarget(Control motionTarget)
    {
       base.NotifyConfigMotionTarget(motionTarget);
-      _renderTransformBackup = motionTarget.RenderTransformOrigin;
       motionTarget.RenderTransformOrigin = MotionRenderTransformOrigin;
-   }
-
-   internal override void NotifyRestoreMotionTarget(Control motionTarget)
-   {
-      base.NotifyRestoreMotionTarget(motionTarget);
-      motionTarget.RenderTransformOrigin = _renderTransformBackup;
    }
 }

@@ -80,11 +80,12 @@ internal partial class CountBadgeAdorner
    
    private double _paddingXSToken;
 
-   private static readonly DirectProperty<CountBadgeAdorner, double> PaddingXSTokenTokenProperty =
+   private static readonly DirectProperty<CountBadgeAdorner, double> PaddingXSTokenProperty =
       AvaloniaProperty.RegisterDirect<CountBadgeAdorner, double>(
          nameof(_paddingXSToken),
          o => o._paddingXSToken,
          (o, v) => o._paddingXSToken = v);
    
+
    #endregion
 }
