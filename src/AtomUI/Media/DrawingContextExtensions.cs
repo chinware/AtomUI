@@ -7,7 +7,8 @@ namespace AtomUI.Media;
 public static class DrawingContextExtensions
 {
    public static void DrawPilledRect(this DrawingContext context, IBrush? brush, IPen? pen, Rect rect,
-                                     Orientation orientation = Orientation.Horizontal)
+                                     Orientation orientation = Orientation.Horizontal,
+                                     BoxShadows boxShadows = default)
    {
       double pillRadius;
       if (orientation == Orientation.Horizontal) {
@@ -15,7 +16,7 @@ public static class DrawingContextExtensions
       } else {
          pillRadius = rect.Width / 2;
       }
-      context.DrawRectangle(brush, pen, rect, pillRadius, pillRadius);
+      context.DrawRectangle(brush, pen, rect, pillRadius, pillRadius, boxShadows);
    }
 
    public static void DrawArc(this DrawingContext context, IPen? pen,

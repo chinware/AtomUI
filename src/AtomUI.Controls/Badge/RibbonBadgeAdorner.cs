@@ -96,7 +96,7 @@ internal partial class RibbonBadgeAdorner : Control, IControlCustomStyle
    {
       AffectsMeasure<RibbonBadgeAdorner>(TextProperty, IsAdornerModeProperty);
       AffectsMeasure<RibbonBadgeAdorner>(PlacementProperty);
-      AffectsRender<RibbonBadgeAdorner>(RibbonColorProperty);
+      AffectsRender<RibbonBadgeAdorner>(RibbonColorProperty, OffsetProperty);
    }
 
    public RibbonBadgeAdorner()
@@ -198,7 +198,7 @@ internal partial class RibbonBadgeAdorner : Control, IControlCustomStyle
    public override void Render(DrawingContext context)
    {
      
-      var backgroundBrush = (SolidColorBrush)(RibbonColor ?? _colorPrimary)!;
+      var backgroundBrush = (SolidColorBrush)(RibbonColor ?? _colorPrimaryToken)!;
       {
          var textRect = GetTextRect();
          using var state = context.PushTransform(Matrix.CreateTranslation(textRect.X, textRect.Y));
@@ -207,10 +207,10 @@ internal partial class RibbonBadgeAdorner : Control, IControlCustomStyle
                                     borderThickness: new Thickness(0),
                                     backgroundSizing: BackgroundSizing.OuterBorderEdge,
                                     finalSize: textRect.Size,
-                                    cornerRadius: new CornerRadius(topLeft: _borderRadiusSM.TopLeft,
-                                                                   topRight: _borderRadiusSM.TopRight,
-                                                                   bottomLeft: Placement == RibbonBadgePlacement.Start ? 0 : _borderRadiusSM.BottomLeft,
-                                                                   bottomRight: Placement == RibbonBadgePlacement.End ? 0 : _borderRadiusSM.BottomRight),
+                                    cornerRadius: new CornerRadius(topLeft: _borderRadiusSMToken.TopLeft,
+                                                                   topRight: _borderRadiusSMToken.TopRight,
+                                                                   bottomLeft: Placement == RibbonBadgePlacement.Start ? 0 : _borderRadiusSMToken.BottomLeft,
+                                                                   bottomRight: Placement == RibbonBadgePlacement.End ? 0 : _borderRadiusSMToken.BottomRight),
                                     background: backgroundBrush,
                                     borderBrush: null,
                                     boxShadows: new BoxShadows());
@@ -220,7 +220,7 @@ internal partial class RibbonBadgeAdorner : Control, IControlCustomStyle
          var cornerRect = GetCornerRect();
          using var state = context.PushTransform(Matrix.CreateTranslation(cornerRect.X, cornerRect.Y));
          var backgroundColor = backgroundBrush.Color;
-         var cornerBrush = new SolidColorBrush(backgroundColor.Darken(_badgeRibbonCornerDarkenAmount));
+         var cornerBrush = new SolidColorBrush(backgroundColor.Darken(_badgeRibbonCornerDarkenAmountToken));
          context.DrawGeometry(cornerBrush, null, _cornerGeometry!);
       }
    }
@@ -234,11 +234,11 @@ internal partial class RibbonBadgeAdorner : Control, IControlCustomStyle
       var offsetX = 0d;
       var offsetY = 0d;
       if (IsAdornerMode) {
-         offsetY += _badgeRibbonOffset.Y;
+         offsetY += _badgeRibbonOffsetToken.Y;
          if (Placement == RibbonBadgePlacement.End) {
-            offsetX = DesiredSize.Width - _textBlock.DesiredSize.Width + _badgeRibbonOffset.X;
+            offsetX = DesiredSize.Width - _textBlock.DesiredSize.Width + _badgeRibbonOffsetToken.X;
          } else {
-            offsetX = -_badgeRibbonOffset.X;
+            offsetX = -_badgeRibbonOffsetToken.X;
          }
       }
 
@@ -274,8 +274,8 @@ internal partial class RibbonBadgeAdorner : Control, IControlCustomStyle
    private void BuildCornerGeometry(bool force = false)
    {
       if (force || _cornerGeometry is null) {
-         var width = _badgeRibbonOffset.X;
-         var height = _badgeRibbonOffset.Y;
+         var width = _badgeRibbonOffsetToken.X;
+         var height = _badgeRibbonOffsetToken.Y;
          var geometryStream = new StreamGeometry();
          using var context = geometryStream.Open();
          var p1 = new Point(0, 0);
@@ -287,8 +287,8 @@ internal partial class RibbonBadgeAdorner : Control, IControlCustomStyle
          context.EndFigure(true);
          _cornerGeometry = geometryStream;
          var transforms = new TransformGroup();
-         if (_badgeRibbonCornerTransform is not null) {
-            transforms.Children.Add(_badgeRibbonCornerTransform);
+         if (_badgeRibbonCornerTransformToken is not null) {
+            transforms.Children.Add(_badgeRibbonCornerTransformToken);
          }
          if (Placement == RibbonBadgePlacement.Start) {
             transforms.Children.Add(new ScaleTransform(-1, 1));

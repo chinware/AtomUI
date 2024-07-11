@@ -4,6 +4,7 @@ using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Data;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Metadata;
@@ -39,6 +40,9 @@ public class DotBadge : Control, IControlCustomStyle
    public static readonly StyledProperty<Point> OffsetProperty =
       AvaloniaProperty.Register<DotBadge, Point>(nameof(Offset));
    
+   public static readonly StyledProperty<bool> BadgeIsVisibleProperty =
+      AvaloniaProperty.Register<DotBadge, bool>(nameof(BadgeIsVisible));
+   
    public string? DotColor
    {
       get => GetValue(DotColorProperty);
@@ -70,6 +74,12 @@ public class DotBadge : Control, IControlCustomStyle
       set => SetValue(OffsetProperty, value);
    }
    
+   public bool BadgeIsVisible
+   {
+      get => GetValue(BadgeIsVisibleProperty);
+      set => SetValue(BadgeIsVisibleProperty, value);
+   }
+   
    private bool _initialized = false;
    private IControlCustomStyle _customStyle;
    private DotBadgeAdorner? _dotBadgeAdorner;
@@ -99,7 +109,14 @@ public class DotBadge : Control, IControlCustomStyle
    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
    {
       base.OnAttachedToVisualTree(e);
-      if (DecoratedTarget is not null && _dotBadgeAdorner is not null) {
+      SetupAdorner();
+   }
+
+   private void SetupAdorner()
+   {
+      if (_adornerLayer is null && 
+          DecoratedTarget is not null &&
+          _dotBadgeAdorner is not null) {
          _adornerLayer = AdornerLayer.GetAdornerLayer(this);
          // 这里需要抛出异常吗？
          if (_adornerLayer == null) {
@@ -121,6 +138,7 @@ public class DotBadge : Control, IControlCustomStyle
          }
       
          _adornerLayer.Children.Remove(_dotBadgeAdorner);
+         _adornerLayer = null;
       }
    }
 
@@ -161,6 +179,24 @@ public class DotBadge : Control, IControlCustomStyle
    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
    {
       base.OnPropertyChanged(e);
+      if (e.Property == IsVisibleProperty) {
+         SetValue(BadgeIsVisibleProperty, IsVisible, BindingPriority.Inherited);
+      } else if (e.Property == BadgeIsVisibleProperty) {
+         var badgeIsVisible = e.GetNewValue<bool>();
+         if (badgeIsVisible) {
+            if (_adornerLayer is not null) {
+               return;
+            }
+            SetupAdorner();
+         } else {
+            if (_adornerLayer is null || _dotBadgeAdorner is null) {
+               return;
+            }
+      
+            _adornerLayer.Children.Remove(_dotBadgeAdorner);
+            _adornerLayer = null;
+         }
+      }
       if (_initialized) {
          if (e.Property == DecoratedTargetProperty) {
             HandleDecoratedTargetChanged();
@@ -168,6 +204,19 @@ public class DotBadge : Control, IControlCustomStyle
          
          if (e.Property == DotColorProperty) {
             SetupDotColor(e.GetNewValue<string>());
+         }
+
+         if (e.Property == IsVisibleProperty) {
+            if (!IsVisible) {
+               if (_adornerLayer is null || _dotBadgeAdorner is null) {
+                  return;
+               }
+      
+               _adornerLayer.Children.Remove(_dotBadgeAdorner);
+               _adornerLayer = null;
+            } else {
+               SetupAdorner();
+            }
          }
       }
    }

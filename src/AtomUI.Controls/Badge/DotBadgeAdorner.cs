@@ -96,12 +96,11 @@ internal partial class DotBadgeAdorner : Control, IControlCustomStyle
    private ControlTokenBinder _controlTokenBinder;
    private Label? _textLabel;
    private BoxShadows _boxShadows;
-   
 
    static DotBadgeAdorner()
    {
       AffectsMeasure<DotBadge>(TextProperty, IsAdornerModeProperty);
-      AffectsRender<DotBadge>(EffectiveDotColorProperty);
+      AffectsRender<DotBadge>(EffectiveDotColorProperty, OffsetProperty);
    }
 
    public DotBadgeAdorner()
@@ -157,15 +156,15 @@ internal partial class DotBadgeAdorner : Control, IControlCustomStyle
    private IBrush? GetStatusColor(DotBadgeStatus status)
    {
       if (status == DotBadgeStatus.Error) {
-         return _colorError;
+         return _colorErrorToken;
       } else if (status == DotBadgeStatus.Processing) {
-         return _colorInfo;
+         return _colorInfoToken;
       } else if (status == DotBadgeStatus.Success) {
-         return _colorSuccess;
+         return _colorSuccessToken;
       } else if (status == DotBadgeStatus.Warning) {
-         return _colorWarning;
+         return _colorWarningToken;
       } else {
-         return _colorTextPlaceholder;
+         return _colorTextPlaceholderToken;
       }
    }
 
@@ -178,7 +177,7 @@ internal partial class DotBadgeAdorner : Control, IControlCustomStyle
       }
 
       if (EffectiveDotColor is null) {
-         EffectiveDotColor = _badgeColor;
+         EffectiveDotColor = _badgeColorToken;
       }
    }
 
@@ -191,11 +190,11 @@ internal partial class DotBadgeAdorner : Control, IControlCustomStyle
          targetHeight = availableSize.Height;
       } else {
          var textSize = base.MeasureOverride(availableSize);
-         targetWidth += _statusSize;
+         targetWidth += _statusSizeToken;
          targetWidth += textSize.Width;
-         targetHeight += Math.Max(textSize.Height, _statusSize);
+         targetHeight += Math.Max(textSize.Height, _statusSizeToken);
          if (textSize.Width > 0) {
-            targetWidth += _marginXS;
+            targetWidth += _marginXSToken;
          }
       }
       return new Size(targetWidth, targetHeight);
@@ -206,12 +205,12 @@ internal partial class DotBadgeAdorner : Control, IControlCustomStyle
       if (!IsAdornerMode) {
          double textOffsetX = 0;
          if (IsAdornerMode) {
-            textOffsetX += _dotSize;
+            textOffsetX += _dotSizeToken;
          } else {
-            textOffsetX += _statusSize;
+            textOffsetX += _statusSizeToken;
          }
 
-         textOffsetX += _marginXS;
+         textOffsetX += _marginXSToken;
          var textRect = new Rect(new Point(textOffsetX, 0), _textLabel!.DesiredSize);
          _textLabel.Arrange(textRect);
       }
@@ -243,9 +242,9 @@ internal partial class DotBadgeAdorner : Control, IControlCustomStyle
    {
       var dotSize = 0d;
       if (IsAdornerMode) {
-         dotSize = _dotSize;
+         dotSize = _dotSizeToken;
       } else {
-         dotSize = _statusSize;
+         dotSize = _statusSizeToken;
       }
       
       var offsetX = 0d;
@@ -270,8 +269,8 @@ internal partial class DotBadgeAdorner : Control, IControlCustomStyle
          OffsetX = 0,
          OffsetY = 0,
          Blur = 0,
-         Spread = _badgeShadowSize,
-         Color = ((SolidColorBrush)_badgeShadowColor!).Color
+         Spread = _badgeShadowSizeToken,
+         Color = ((SolidColorBrush)_badgeShadowColorToken!).Color
       });
    }
 }

@@ -6,85 +6,85 @@ namespace AtomUI.Controls;
 internal partial class DotBadgeAdorner
 {
    #region Control token 值绑定属性定义
-   private IBrush? _colorTextPlaceholder;
+   private IBrush? _colorTextPlaceholderToken;
 
    private static readonly DirectProperty<DotBadgeAdorner, IBrush?> ColorTextPlaceholderTokenProperty =
       AvaloniaProperty.RegisterDirect<DotBadgeAdorner, IBrush?>(
-         nameof(_colorTextPlaceholder),
-         o => o._colorTextPlaceholder,
-         (o, v) => o._colorTextPlaceholder = v);
+         nameof(_colorTextPlaceholderToken),
+         o => o._colorTextPlaceholderToken,
+         (o, v) => o._colorTextPlaceholderToken = v);
    
-   private IBrush? _colorError;
+   private IBrush? _colorErrorToken;
 
    private static readonly DirectProperty<DotBadgeAdorner, IBrush?> ColorErrorTokenProperty =
       AvaloniaProperty.RegisterDirect<DotBadgeAdorner, IBrush?>(
-         nameof(_colorError),
-         o => o._colorError,
-         (o, v) => o._colorError = v);
+         nameof(_colorErrorToken),
+         o => o._colorErrorToken,
+         (o, v) => o._colorErrorToken = v);
    
-   private IBrush? _colorWarning;
+   private IBrush? _colorWarningToken;
    private static readonly DirectProperty<DotBadgeAdorner, IBrush?> ColorWarningTokenProperty =
       AvaloniaProperty.RegisterDirect<DotBadgeAdorner, IBrush?>(
-         nameof(_colorWarning),
-         o => o._colorWarning,
-         (o, v) => o._colorWarning = v);
+         nameof(_colorWarningToken),
+         o => o._colorWarningToken,
+         (o, v) => o._colorWarningToken = v);
    
-   private IBrush? _colorSuccess;
+   private IBrush? _colorSuccessToken;
    private static readonly DirectProperty<DotBadgeAdorner, IBrush?> ColorSuccessTokenProperty =
       AvaloniaProperty.RegisterDirect<DotBadgeAdorner, IBrush?>(
-         nameof(_colorSuccess),
-         o => o._colorSuccess,
-         (o, v) => o._colorSuccess = v);
+         nameof(_colorSuccessToken),
+         o => o._colorSuccessToken,
+         (o, v) => o._colorSuccessToken = v);
    
-   private IBrush? _colorInfo;
+   private IBrush? _colorInfoToken;
    private static readonly DirectProperty<DotBadgeAdorner, IBrush?> ColorInfoTokenProperty =
       AvaloniaProperty.RegisterDirect<DotBadgeAdorner, IBrush?>(
-         nameof(_colorInfo),
-         o => o._colorInfo,
-         (o, v) => o._colorInfo = v);
+         nameof(_colorInfoToken),
+         o => o._colorInfoToken,
+         (o, v) => o._colorInfoToken = v);
    
-   private double _dotSize;
+   private double _dotSizeToken;
    private static readonly DirectProperty<DotBadgeAdorner, double> DotSizeTokenProperty =
       AvaloniaProperty.RegisterDirect<DotBadgeAdorner, double>(
-         nameof(_dotSize),
-         o => o._dotSize,
-         (o, v) => o._dotSize = v);
+         nameof(_dotSizeToken),
+         o => o._dotSizeToken,
+         (o, v) => o._dotSizeToken = v);
    
-   private double _statusSize;
+   private double _statusSizeToken;
    private static readonly DirectProperty<DotBadgeAdorner, double> StatusSizeTokenProperty =
       AvaloniaProperty.RegisterDirect<DotBadgeAdorner, double>(
-         nameof(_statusSize),
-         o => o._statusSize,
-         (o, v) => o._statusSize = v);
+         nameof(_statusSizeToken),
+         o => o._statusSizeToken,
+         (o, v) => o._statusSizeToken = v);
    
-   private double _marginXS;
+   private double _marginXSToken;
    private static readonly DirectProperty<DotBadgeAdorner, double> MarginXSTokenProperty =
       AvaloniaProperty.RegisterDirect<DotBadgeAdorner, double>(
-         nameof(_marginXS),
-         o => o._marginXS,
-         (o, v) => o._marginXS = v);
+         nameof(_marginXSToken),
+         o => o._marginXSToken,
+         (o, v) => o._marginXSToken = v);
    
-   private IBrush? _badgeColor;
+   private IBrush? _badgeColorToken;
    private static readonly DirectProperty<DotBadgeAdorner, IBrush?> BadgeColorTokenProperty =
       AvaloniaProperty.RegisterDirect<DotBadgeAdorner, IBrush?>(
-         nameof(_badgeColor),
-         o => o._badgeColor,
-         (o, v) => o._badgeColor = v);
+         nameof(_badgeColorToken),
+         o => o._badgeColorToken,
+         (o, v) => o._badgeColorToken = v);
    
-   private IBrush? _badgeShadowColor;
+   private IBrush? _badgeShadowColorToken;
    private static readonly DirectProperty<DotBadgeAdorner, IBrush?> BadgeShadowColorTokenProperty =
       AvaloniaProperty.RegisterDirect<DotBadgeAdorner, IBrush?>(
-         nameof(_badgeShadowColor),
-         o => o._badgeShadowColor,
-         (o, v) => o._badgeShadowColor = v);
+         nameof(_badgeShadowColorToken),
+         o => o._badgeShadowColorToken,
+         (o, v) => o._badgeShadowColorToken = v);
    
    
-   private double _badgeShadowSize;
+   private double _badgeShadowSizeToken;
    private static readonly DirectProperty<DotBadgeAdorner, double> BadgeShadowSizeTokenProperty =
       AvaloniaProperty.RegisterDirect<DotBadgeAdorner, double>(
-         nameof(_badgeShadowSize),
-         o => o._badgeShadowSize,
-         (o, v) => o._badgeShadowSize = v);
+         nameof(_badgeShadowSizeToken),
+         o => o._badgeShadowSizeToken,
+         (o, v) => o._badgeShadowSizeToken = v);
    
    #endregion
 }
