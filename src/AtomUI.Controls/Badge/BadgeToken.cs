@@ -5,7 +5,7 @@ using Avalonia.Media;
 namespace AtomUI.Controls;
 
 [ControlDesignToken]
-public class BadgeToken : AbstractControlDesignToken
+internal class BadgeToken : AbstractControlDesignToken
 {
    public const string ID = "Badge";
 

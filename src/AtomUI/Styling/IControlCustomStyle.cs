@@ -14,4 +14,5 @@ internal interface IControlCustomStyle
    void ApplyRenderScalingAwareStyleConfig() {}
    void ApplySizeTypeStyleConfig() {}
    void HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e) {}
+   void PrepareRenderInfo() {}
 }

@@ -81,8 +81,8 @@
             <TabItem Header="ProgressBar">
                 <showcases:ProgressBarShowCase />
             </TabItem>
-            <TabItem Header="ProgressIndicator">
-                <showcases:ProgressIndicatorShowCase />
+            <TabItem Header="LoadingIndicator">
+                <showcases:LoadingIndicatorShowCase />
             </TabItem>
             <TabItem Header="Segmented">
                 <showcases:SegmentedShowCase />
@@ -110,9 +110,6 @@
             </TabItem>
             <TabItem Header="InputNumber">
                 <showcases:InputNumberShowCase />
-            </TabItem>
-            <TabItem Header="SpinIndicator">
-                <showcases:SpinIndicatorShowCase />
             </TabItem>
             <TabItem Header="TitleBar">
                 <showcases:TitleBarShowCase />

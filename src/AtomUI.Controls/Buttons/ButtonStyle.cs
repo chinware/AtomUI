@@ -79,7 +79,7 @@ public partial class Button : IWaveAdornerInfoProvider, IControlCustomStyle
 
    private void CreateMainLayout()
    {
-      if (Text.Length == 0 && Content is string content) {
+      if (Text is null && Content is string content) {
          Text = content;
       }
       _label = new Label()
@@ -402,7 +402,7 @@ public partial class Button : IWaveAdornerInfoProvider, IControlCustomStyle
    {
       if (Icon is not null) {
          _stackPanel!.Children.Insert(0, Icon);
-         if (Text.Length != 0) {
+         if (Text is not null) {
             if (SizeType == SizeType.Small) {
                _controlTokenBinder.AddControlBinding(Icon, WidthProperty, GlobalResourceKey.IconSizeSM);
                _controlTokenBinder.AddControlBinding(Icon, HeightProperty, GlobalResourceKey.IconSizeSM);

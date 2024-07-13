@@ -1,0 +1,43 @@
+<UserControl
+    x:Class="AtomUI.Demo.Desktop.ShowCase.LoadingIndicatorShowCase"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:atom="https://atomui.net"
+    xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
+    mc:Ignorable="d">
+    <showcase:ShowCasePanel>
+        <showcase:ShowCaseItem
+            Title="Basic Usage"
+            Description="A simple loading status.">
+            <atom:LoadingIndicator/>
+        </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="Size"
+            Description="A small LoadingIndicator is used for loading text, default sized LoadingIndicator for loading a card-level block, and large LoadingIndicator used for loading a page.">
+            <StackPanel Orientation="Horizontal">
+                <atom:LoadingIndicator SizeType="Small" VerticalAlignment="Center"/>
+                <atom:LoadingIndicator SizeType="Middle" VerticalAlignment="Center"/>
+                <atom:LoadingIndicator SizeType="Large" VerticalAlignment="Center"/>
+            </StackPanel>
+        </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="Custom spinning indicator"
+            Description="Use custom loading indicator.">
+            <StackPanel Orientation="Horizontal">
+                <atom:LoadingIndicator SizeType="Small" 
+                                       VerticalAlignment="Center"
+                                       CustomIndicatorIcon="{atom:IconProvider Kind=LoadingOutlined,NormalFilledColor=#1677ff}"/>
+                <atom:LoadingIndicator SizeType="Middle" 
+                                       VerticalAlignment="Center"
+                                       CustomIndicatorIcon="{atom:IconProvider Kind=LoadingOutlined,NormalFilledColor=#1677ff}"/>
+                <atom:LoadingIndicator SizeType="Large" 
+                                       VerticalAlignment="Center"
+                                       CustomIndicatorIcon="{atom:IconProvider Kind=LoadingOutlined,NormalFilledColor=#1677ff}"/>
+            </StackPanel>
+        </showcase:ShowCaseItem>
+    </showcase:ShowCasePanel>
+</UserControl>

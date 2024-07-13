@@ -19,21 +19,7 @@
     <ItemGroup>
         <ProjectReference Include="..\AtomUI.Generator\AtomUI.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     </ItemGroup>
-    <ItemGroup>
-      <Folder Include="Avatar\" />
-      <Folder Include="Collapse\" />
-      <Folder Include="ComboBox\" />
-      <Folder Include="EmptyIndicator\" />
-      <Folder Include="Expander\" />
-      <Folder Include="Input\" />
-      <Folder Include="Menu\" />
-      <Folder Include="Pagination\" />
-      <Folder Include="ProgressIndicator\" />
-      <Folder Include="Slider\" />
-      <Folder Include="TabBar\" />
-      <Folder Include="TabControl\" />
-    </ItemGroup>
-
+    
     <PropertyGroup>
         <!-- enable private APIs -->
         <AvaloniaAccessUnstablePrivateApis>true</AvaloniaAccessUnstablePrivateApis>

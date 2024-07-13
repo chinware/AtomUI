@@ -2,9 +2,9 @@ using Avalonia.Controls;
 
 namespace AtomUI.Demo.Desktop.ShowCase;
 
-public partial class ProgressIndicatorShowCase : UserControl
+public partial class LoadingIndicatorShowCase : UserControl
 {
-   public ProgressIndicatorShowCase()
+   public LoadingIndicatorShowCase()
    {
       InitializeComponent();
    }

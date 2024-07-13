@@ -25,110 +25,78 @@ public enum ButtonShape
 
 public partial class Button : AvaloniaButton, ISizeTypeAware
 {
-   // 需要改造
-   public static readonly DirectProperty<Button, ButtonType> ButtonTypeProperty =
-      AvaloniaProperty.RegisterDirect<Button, ButtonType>(nameof(ButtonType),
-                                                          o => o.ButtonType,
-                                                          (o, v) => o.ButtonType = v,
-                                                          ButtonType.Default);
+   #region 公共属性定义
+   public static readonly StyledProperty<ButtonType> ButtonTypeProperty =
+      AvaloniaProperty.Register<Button, ButtonType>(nameof(ButtonType), ButtonType.Default);
 
-   public static readonly DirectProperty<Button, ButtonShape> ButtonShapeProperty =
-      AvaloniaProperty.RegisterDirect<Button, ButtonShape>(nameof(Shape),
-                                                           o => o.Shape,
-                                                           (o, v) => o.Shape = v,
-                                                           ButtonShape.Default);
+   public static readonly StyledProperty<ButtonShape> ButtonShapeProperty =
+      AvaloniaProperty.Register<Button, ButtonShape>(nameof(Shape), ButtonShape.Default);
 
-   public static readonly DirectProperty<Button, bool> IsDangerProperty =
-      AvaloniaProperty.RegisterDirect<Button, bool>(nameof(IsDanger),
-                                                    o => o.IsDanger,
-                                                    (o, v) => o.IsDanger = v,
-                                                    false);
+   public static readonly StyledProperty<bool> IsDangerProperty =
+      AvaloniaProperty.Register<Button, bool>(nameof(IsDanger), false);
 
-   public static readonly DirectProperty<Button, bool> IsGhostProperty =
-      AvaloniaProperty.RegisterDirect<Button, bool>(nameof(IsGhost),
-                                                    o => o.IsGhost,
-                                                    (o, v) => o.IsGhost = v,
-                                                    false);
+   public static readonly StyledProperty<bool> IsGhostProperty =
+      AvaloniaProperty.Register<Button, bool>(nameof(IsGhost), false);
 
-   public static readonly DirectProperty<Button, ButtonSizeType> SizeTypeProperty =
-      AvaloniaProperty.RegisterDirect<Button, ButtonSizeType>(nameof(SizeType),
-                                                              o => o.SizeType,
-                                                              (o, v) => o.SizeType = v,
-                                                              ButtonSizeType.Middle);
+   public static readonly StyledProperty<ButtonSizeType> SizeTypeProperty =
+      AvaloniaProperty.Register<Button, ButtonSizeType>(nameof(SizeType), ButtonSizeType.Middle);
 
-   public static readonly DirectProperty<Button, PathIcon?> IconProperty
-      = AvaloniaProperty.RegisterDirect<Button, PathIcon?>(nameof(Icon),
-                                                           o => o.Icon,
-                                                           (o, v) => o.Icon = v);
+   public static readonly StyledProperty<PathIcon?> IconProperty
+      = AvaloniaProperty.Register<Button, PathIcon?>(nameof(Icon));
 
-   public static readonly DirectProperty<Button, string> TextProperty
-      = AvaloniaProperty.RegisterDirect<Button, string>(nameof(Text),
-                                                        o => o.Text,
-                                                        (o, v) => o.Text = v,
-                                                        string.Empty);
-
-   private ButtonType _buttonType = ButtonType.Default;
+   public static readonly StyledProperty<string?> TextProperty
+      = AvaloniaProperty.Register<Button, string?>(nameof(Text));
 
    public ButtonType ButtonType
    {
-      get => _buttonType;
-      set => SetAndRaise(ButtonTypeProperty, ref _buttonType, value);
+      get => GetValue(ButtonTypeProperty);
+      set => SetValue(ButtonTypeProperty, value);
    }
-
-   private ButtonShape _shape = ButtonShape.Default;
 
    public ButtonShape Shape
    {
-      get => _shape;
-      set => SetAndRaise(ButtonShapeProperty, ref _shape, value);
+      get => GetValue(ButtonShapeProperty);
+      set => SetValue(ButtonShapeProperty, value);
    }
-
-   private bool _isDanger = false;
-
+   
    public bool IsDanger
    {
-      get => _isDanger;
-      set => SetAndRaise(IsDangerProperty, ref _isDanger, value);
+      get => GetValue(IsDangerProperty);
+      set => SetValue(IsDangerProperty, value);
    }
-
-   private bool _isGhost = false;
-
+   
    public bool IsGhost
    {
-      get => _isGhost;
-      set => SetAndRaise(IsGhostProperty, ref _isGhost, value);
+      get => GetValue(IsGhostProperty);
+      set => SetValue(IsGhostProperty, value);
    }
-
-   private ButtonSizeType _sizeType = ButtonSizeType.Middle;
-
+   
    public ButtonSizeType SizeType
    {
-      get => _sizeType;
-      set => SetAndRaise(SizeTypeProperty, ref _sizeType, value);
+      get => GetValue(SizeTypeProperty);
+      set => SetValue(SizeTypeProperty, value);
    }
-
-   private PathIcon? _icon;
-
+   
    public PathIcon? Icon
    {
-      get => _icon;
-      set => SetAndRaise(IconProperty, ref _icon, value);
+      get => GetValue(IconProperty);
+      set => SetValue(IconProperty, value);
    }
-
-   private string _text = string.Empty;
-
-   public string Text
+   
+   public string? Text
    {
-      get => _text;
-      set => SetAndRaise(TextProperty, ref _text, value);
+      get => GetValue(TextProperty);
+      set => SetValue(TextProperty, value);
    }
+
+   #endregion
 
    static Button()
    {
       AffectsMeasure<Button>(SizeTypeProperty,
                              ButtonShapeProperty,
-                             IconProperty, 
-                             WidthProperty, 
+                             IconProperty,
+                             WidthProperty,
                              HeightProperty);
       AffectsRender<Button>(ButtonTypeProperty,
                             IsDangerProperty,

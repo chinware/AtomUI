@@ -88,6 +88,14 @@
         public const string IndicatorTristateMarkSize = "IndicatorTristateMarkSize";
     }
 
+    public static class LoadingIndicatorResourceKey
+    {
+        public const string DotSize = "DotSize";
+        public const string DotSizeSM = "DotSizeSM";
+        public const string DotSizeLG = "DotSizeLG";
+        public const string IndicatorDuration = "IndicatorDuration";
+    }
+
     public static class MarqueeLabelResourceKey
     {
         public const string CycleSpace = "CycleSpace";
