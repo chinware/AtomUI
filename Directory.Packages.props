@@ -8,6 +8,7 @@
         <PackageVersion Include="Avalonia.Diagnostics" Version="$(AvaloniaVersion)"/>
         <PackageVersion Include="Avalonia.Controls.ColorPicker" Version="$(AvaloniaVersion)"/>
         <PackageVersion Include="Avalonia.Controls.DataGrid" Version="$(AvaloniaVersion)"/>
+        <PackageVersion Include="Avalonia.Svg" Version="$(AvaloniaVersion)"/>
         <PackageVersion Include="Avalonia.Controls.TreeDataGrid" Version="11.0.10"/>
         <PackageVersion Include="Avalonia.Themes.Fluent" Version="$(AvaloniaVersion)"/>
         <PackageVersion Include="Avalonia.Win32" Version="$(AvaloniaVersion)"/>

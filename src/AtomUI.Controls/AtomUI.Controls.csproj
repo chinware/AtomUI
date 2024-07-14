@@ -17,6 +17,10 @@
       <ProjectReference Include="..\AtomUI\AtomUI.csproj" />
     </ItemGroup>
     <ItemGroup>
+        <PackageReference Include="Avalonia.Svg"/>
+    </ItemGroup>
+    
+    <ItemGroup>
         <ProjectReference Include="..\AtomUI.Generator\AtomUI.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     </ItemGroup>
     
