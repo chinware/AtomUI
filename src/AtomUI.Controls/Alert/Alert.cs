@@ -22,7 +22,7 @@ public enum AlertType
 public class Alert : BorderedStyleControl, IControlCustomStyle
 {
    public static readonly StyledProperty<AlertType> TypeProperty =
-      AvaloniaProperty.Register<Alert, AlertType>(nameof(AlertType));
+      AvaloniaProperty.Register<Alert, AlertType>(nameof(Type));
 
    public static readonly StyledProperty<bool> IsShowIconProperty =
       AvaloniaProperty.Register<Alert, bool>(nameof(IsShowIcon));

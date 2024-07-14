@@ -9,14 +9,37 @@
     mc:Ignorable="d">
     <showcase:ShowCasePanel>
         <showcase:ShowCaseItem
-            Title="Demo演示一"
-            Description="There are primary button, default button, dashed button, text button and link button in antd.">
-            <StackPanel HorizontalAlignment="Left" Spacing="10" Orientation="Horizontal">
-                <atom:Button ButtonType="Primary">Primary Button</atom:Button>
-                <atom:Button>Default Button</atom:Button>
-                <atom:Button ButtonType="Text">Text Button</atom:Button>
-                <atom:Button ButtonType="Link">Link Button</atom:Button>
+            Title="Basic"
+            Description="Simplest Usage.">
+            <atom:EmptyIndicator PresetImage="Default"/>
+        </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="Size"
+            Description="AtomUI supports three sizes of buttons: small, default and large.">
+            <StackPanel Orientation="Vertical">
+                <StackPanel Orientation="Horizontal">
+                    <atom:EmptyIndicator PresetImage="Simple" SizeType="Small"/>
+                    <atom:EmptyIndicator PresetImage="Simple" SizeType="Middle"/>
+                    <atom:EmptyIndicator PresetImage="Simple" SizeType="Large"/>
+                </StackPanel>
             </StackPanel>
+        </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="Customize"
+            Description="Customize image source, image size, description and extra content.">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:EmptyIndicator ImagePath="avares://AtomUI.Demo.Desktop/Assets/EmptyShowCase/empty.svg" SizeType="Large"
+                                     Description="Customize Description"/>
+                <atom:Button HorizontalAlignment="Center" ButtonType="Primary">Create Now</atom:Button>
+            </StackPanel>
+        </showcase:ShowCaseItem>
+
+        <showcase:ShowCaseItem
+            Title="No description"
+            Description="Simplest Usage with no description.">
+            <atom:EmptyIndicator PresetImage="Default" IsShowDescription="False"/>
         </showcase:ShowCaseItem>
     </showcase:ShowCasePanel>
 </UserControl>

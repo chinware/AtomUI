@@ -168,8 +168,10 @@ public partial class Button : AvaloniaButton,
    #region IControlCustomStyle 实现
     void IControlCustomStyle.SetupUi()
    {
-      HorizontalAlignment = HorizontalAlignment.Left;
-      VerticalAlignment = VerticalAlignment.Bottom;
+
+      SetValue(HorizontalAlignmentProperty, HorizontalAlignment.Left, BindingPriority.Template);
+      SetValue(VerticalAlignmentProperty, VerticalAlignment.Bottom, BindingPriority.Template);
+      
       Cursor = new Cursor(StandardCursorType.Hand);
       _customStyle.CollectStyleState();
       CreateMainLayout();

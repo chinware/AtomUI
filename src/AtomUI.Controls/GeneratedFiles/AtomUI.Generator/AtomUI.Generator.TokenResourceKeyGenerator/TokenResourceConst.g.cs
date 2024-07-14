@@ -88,6 +88,13 @@
         public const string IndicatorTristateMarkSize = "IndicatorTristateMarkSize";
     }
 
+    public static class EmptyIndicatorResourceKey
+    {
+        public const string EmptyImgHeight = "EmptyImgHeight";
+        public const string EmptyImgHeightSM = "EmptyImgHeightSM";
+        public const string EmptyImgHeightMD = "EmptyImgHeightMD";
+    }
+
     public static class LoadingIndicatorResourceKey
     {
         public const string DotSize = "DotSize";
