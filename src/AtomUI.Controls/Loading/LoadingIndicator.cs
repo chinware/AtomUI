@@ -274,6 +274,7 @@ public partial class LoadingIndicator : Control, ISizeTypeAware, IControlCustomS
       _controlTokenBinder.AddControlBinding(FontSizeTokenProperty, GlobalResourceKey.FontSize);
       _controlTokenBinder.AddControlBinding(MarginXXSTokenProperty, GlobalResourceKey.MarginXXS);
       _controlTokenBinder.AddControlBinding(ColorPrimaryTokenProperty, GlobalResourceKey.ColorPrimary);
+      _controlTokenBinder.AddControlBinding(_textBlock!, TextBlock.ForegroundProperty, GlobalResourceKey.ColorPrimary);
    }
 
    private void BuildIndicatorAnimation(bool force = false)
@@ -369,14 +370,14 @@ public partial class LoadingIndicator : Control, ISizeTypeAware, IControlCustomS
          
          var rightItemOffset = new Point(indicatorRect.Right - itemEdgeMargin - itemSize, centerPoint.Y - itemSize / 2);
          var bottomItemOffset = new Point(centerPoint.X - itemSize / 2, indicatorRect.Bottom - itemEdgeMargin - itemSize);
-         var leftItemOffset = new Point(itemEdgeMargin, centerPoint.Y - itemSize / 2);
-         var topItemOffset = new Point(centerPoint.X - itemSize / 2, itemEdgeMargin);
+         var leftItemOffset = new Point(indicatorRect.Left + itemEdgeMargin, centerPoint.Y - itemSize / 2);
+         var topItemOffset = new Point(centerPoint.X - itemSize / 2, indicatorRect.Top + itemEdgeMargin);
    
          var matrix = Matrix.CreateTranslation(-indicatorRect.Center.X, -indicatorRect.Center.Y);
          matrix *= Matrix.CreateRotation(MathUtils.Deg2Rad(IndicatorAngle));
          matrix *= Matrix.CreateTranslation(indicatorRect.Center.X, indicatorRect.Center.Y);
          using var translateState = context.PushTransform(matrix);
-      
+         
          {
             using var opacityState = context.PushOpacity(rightItemOpacity);
             var itemRect = new Rect(rightItemOffset, new Size(itemSize, itemSize));

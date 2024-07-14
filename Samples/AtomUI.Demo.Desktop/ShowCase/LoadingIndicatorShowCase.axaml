@@ -28,15 +28,64 @@
             Title="Custom spinning indicator"
             Description="Use custom loading indicator.">
             <StackPanel Orientation="Horizontal">
-                <atom:LoadingIndicator SizeType="Small" 
+                <atom:LoadingIndicator SizeType="Small"
                                        VerticalAlignment="Center"
                                        CustomIndicatorIcon="{atom:IconProvider Kind=LoadingOutlined,NormalFilledColor=#1677ff}"/>
-                <atom:LoadingIndicator SizeType="Middle" 
+                <atom:LoadingIndicator SizeType="Middle"
                                        VerticalAlignment="Center"
                                        CustomIndicatorIcon="{atom:IconProvider Kind=LoadingOutlined,NormalFilledColor=#1677ff}"/>
-                <atom:LoadingIndicator SizeType="Large" 
+                <atom:LoadingIndicator SizeType="Large"
                                        VerticalAlignment="Center"
                                        CustomIndicatorIcon="{atom:IconProvider Kind=LoadingOutlined,NormalFilledColor=#1677ff}"/>
+            </StackPanel>
+        </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="Customized description"
+            Description="Customized description">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <atom:LoadingMaskHost IsLoading="True" SizeType="Small"
+                                          IsShowLoadingMsg="True"
+                                          LoadingMsg="Loading...">
+                        <Border Width="100" Height="100" Background="rgb(251, 251, 251)" />
+                    </atom:LoadingMaskHost>
+                    <atom:LoadingMaskHost IsLoading="True" SizeType="Middle"
+                                          IsShowLoadingMsg="True"
+                                          LoadingMsg="Loading...">
+                        <Border Width="100" Height="100" Background="rgb(251, 251, 251)"/>
+                    </atom:LoadingMaskHost>
+                    <atom:LoadingMaskHost IsLoading="True" SizeType="Large"
+                                          IsShowLoadingMsg="True"
+                                          LoadingMsg="Loading...">
+                        <Border Width="100" Height="100" Background="rgb(251, 251, 251)"/>
+                    </atom:LoadingMaskHost>
+                </StackPanel>
+                <atom:LoadingMaskHost IsLoading="True" 
+                                      IsShowLoadingMsg="True"
+                                      LoadingMsg="Loading...">
+                    <atom:Alert Message="Alert message title"
+                                Description="Further details about the context of this alert."
+                                Type="Info"/>
+                </atom:LoadingMaskHost>
+            </StackPanel>
+        </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="Customized description"
+            Description="Customized description">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:LoadingMaskHost IsLoading="{Binding IsLoadingSwitchChecked}" 
+                                      IsShowLoadingMsg="True"
+                                      LoadingMsg="Loading...">
+                    <atom:Alert Message="Alert message title"
+                                Description="Further details about the context of this alert."
+                                Type="Info"/>
+                </atom:LoadingMaskHost>
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <TextBlock>Loading state：</TextBlock>
+                    <atom:ToggleSwitch IsChecked="{Binding IsLoadingSwitchChecked}"/>
+                </StackPanel>
             </StackPanel>
         </showcase:ShowCaseItem>
     </showcase:ShowCasePanel>
