@@ -157,11 +157,18 @@ internal partial class RibbonBadgeAdorner : Control, IControlCustomStyle
                                                         var value = (double)o;
                                                         return new Thickness(value, 0);
                                                      }
-
+                                                
                                                      return o;
                                                   });
                                                });
       }
+   }
+   
+   protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+   {
+      base.OnAttachedToVisualTree(e);
+      // TODO 这里是否需要增加一个什么判断？
+      _customStyle.ApplyFixedStyleConfig();
    }
 
    protected override Size MeasureOverride(Size availableSize)

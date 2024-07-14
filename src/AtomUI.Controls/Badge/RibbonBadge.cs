@@ -8,6 +8,7 @@ using Avalonia.Data;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Metadata;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -189,6 +190,7 @@ public class RibbonBadge : Control, IControlCustomStyle
          }
          AdornerLayer.SetAdornedElement(_ribbonBadgeAdorner, this);
          AdornerLayer.SetIsClipEnabled(_ribbonBadgeAdorner, false);
+         Console.WriteLine(_ribbonBadgeAdorner.GetVisualParent());
          _adornerLayer.Children.Add(_ribbonBadgeAdorner);
       }
    }
