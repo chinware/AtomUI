@@ -6,10 +6,12 @@ using AtomUI.Data;
 using AtomUI.MotionScene;
 using AtomUI.Reflection;
 using AtomUI.Styling;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
+using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
@@ -22,12 +24,18 @@ namespace AtomUI.Controls;
 using AvaloniaWin = Avalonia.Controls.Window;
 
 [PseudoClasses(":open")]
-public partial class ToolTip : StyledControl, IShadowMaskInfoProvider
+public partial class ToolTip : StyledControl, 
+                               IShadowMaskInfoProvider,
+                               IControlCustomStyle
 {
    private Popup? _popup;
    private Action<IPopupHost?>? _popupHostChangedHandler;
    private AvaloniaWin? _currentAnchorWindow;
    private PopupPositionInfo? _popupPositionInfo; // 这个信息在隐藏动画的时候会用到
+   private bool _initialized = false;
+   private IControlCustomStyle _customStyle;
+   private ControlTokenBinder _controlTokenBinder;
+   private ArrowDecoratedBox? _arrowDecoratedBox;
    
    // 当鼠标移走了，但是打开动画还没完成，我们需要记录下来这个信号
    internal bool RequestCloseWhereAnimationCompleted { get; set; } = false;
@@ -660,4 +668,101 @@ public partial class ToolTip : StyledControl, IShadowMaskInfoProvider
          _initialized = true;
       }
    }
+   
+   #region IControlCustomStyle 实现
+   void IControlCustomStyle.SetupUi()
+   {
+      Background = new SolidColorBrush(Colors.Transparent);
+      _arrowDecoratedBox = new ArrowDecoratedBox();
+      if (Content is string text) {
+         _arrowDecoratedBox.Child = new TextBlock
+         {
+            Text = text,
+            VerticalAlignment = VerticalAlignment.Center,
+            HorizontalAlignment = HorizontalAlignment.Center,
+            TextWrapping = TextWrapping.Wrap,
+         };
+      } else if (Content is Control control) {
+         _arrowDecoratedBox.Child = control;
+      }
+
+      ((ISetLogicalParent)_arrowDecoratedBox).SetParent(this);
+      VisualChildren.Add(_arrowDecoratedBox);
+      _customStyle.ApplyFixedStyleConfig();
+   }
+
+   void IControlCustomStyle.ApplyFixedStyleConfig()
+   {
+      if (_arrowDecoratedBox is not null) {
+         _controlTokenBinder.AddControlBinding(_arrowDecoratedBox, FontSizeProperty, GlobalResourceKey.FontSize);
+         _controlTokenBinder.AddControlBinding(_arrowDecoratedBox, MaxWidthProperty, ToolTipResourceKey.ToolTipMaxWidth);
+         _controlTokenBinder.AddControlBinding(_arrowDecoratedBox, BackgroundProperty, ToolTipResourceKey.ToolTipBackground);
+         _controlTokenBinder.AddControlBinding(_arrowDecoratedBox, ForegroundProperty, ToolTipResourceKey.ToolTipColor);
+         _controlTokenBinder.AddControlBinding(_arrowDecoratedBox, MinHeightProperty, GlobalResourceKey.ControlHeight);
+         _controlTokenBinder.AddControlBinding(_arrowDecoratedBox, PaddingProperty, ToolTipResourceKey.ToolTipPadding);
+         _controlTokenBinder.AddControlBinding(MarginXXSTokenProperty, GlobalResourceKey.MarginXXS);
+         _controlTokenBinder.AddControlBinding(MotionDurationTokenProperty, GlobalResourceKey.MotionDurationMid);
+         _controlTokenBinder.AddControlBinding(ShadowsTokenProperty, GlobalResourceKey.BoxShadowsSecondary);
+         _controlTokenBinder.AddControlBinding(_arrowDecoratedBox, ArrowDecoratedBox.CornerRadiusProperty, ToolTipResourceKey.BorderRadiusOuter);
+         // TODO 生命周期一样还需要管理起来吗？
+         BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, _arrowDecoratedBox, ArrowDecoratedBox.IsShowArrowProperty);
+      }
+   }
+   
+   public CornerRadius GetMaskCornerRadius()
+   {
+      return _arrowDecoratedBox!.GetMaskCornerRadius();
+   }
+
+   public Rect GetMaskBounds()
+   {
+      return _arrowDecoratedBox!.GetMaskBounds();
+   }
+   
+   private void SetupArrowPosition(PlacementMode placement, PopupAnchor? anchor = null, PopupGravity? gravity = null)
+   {
+      var arrowPosition = PopupUtils.CalculateArrowPosition(placement, anchor, gravity);
+      if (_arrowDecoratedBox is not null && arrowPosition is not null) {
+         _arrowDecoratedBox.ArrowPosition = arrowPosition.Value;
+      }
+   }
+
+   private void SetupPointCenterOffset(Control placementTarget, PlacementMode placement, PopupAnchor? anchor = null, PopupGravity? gravity = null)
+   {
+      var offset =
+         CalculatePopupPositionDelta(placementTarget, placement, anchor, gravity);
+      _popup!.HorizontalOffset += offset.X;
+      _popup.VerticalOffset += offset.Y;
+   }
+   
+   private Point CalculatePopupPositionDelta(Control anchorTarget, PlacementMode placement, PopupAnchor? anchor = null,
+                                             PopupGravity? gravity = null)
+   {
+      var offsetX = 0d;
+      var offsetY = 0d;
+      if (GetIsShowArrow(anchorTarget) && GetIsPointAtCenter(anchorTarget)) {
+         if (PopupUtils.CanEnabledArrow(placement, anchor, gravity)) {
+            var arrowVertexPoint = _arrowDecoratedBox!.ArrowVertexPoint;
+            var anchorSize = anchorTarget.Bounds.Size;
+            var centerX = anchorSize.Width / 2;
+            var centerY = anchorSize.Height / 2;
+            // 这里计算不需要全局坐标
+            if (placement == PlacementMode.TopEdgeAlignedLeft ||
+                placement == PlacementMode.BottomEdgeAlignedLeft) {
+               offsetX += centerX - arrowVertexPoint.Item1;
+            } else if (placement == PlacementMode.TopEdgeAlignedRight ||
+                       placement == PlacementMode.BottomEdgeAlignedRight) {
+               offsetX -= centerX - arrowVertexPoint.Item2;
+            } else if (placement == PlacementMode.RightEdgeAlignedTop ||
+                       placement == PlacementMode.LeftEdgeAlignedTop) {
+               offsetY += centerY - arrowVertexPoint.Item1;
+            } else if (placement == PlacementMode.RightEdgeAlignedBottom ||
+                       placement == PlacementMode.LeftEdgeAlignedBottom) {
+               offsetY -= centerY - arrowVertexPoint.Item2;
+            }
+         }
+      }
+      return new Point(offsetX, offsetY);
+   }
+   #endregion
 }
