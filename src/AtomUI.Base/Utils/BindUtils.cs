@@ -1,5 +1,7 @@
 ﻿using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Data;
+using Avalonia.Markup.Xaml.MarkupExtensions;
 
 namespace AtomUI.Utils;
 
@@ -27,5 +29,25 @@ public static class BindUtils
          Mode = mode
       };
       return target.Bind(targetProperty, descriptor);
+   }
+
+   public static IDisposable CreateTokenBinding(AvaloniaObject target,
+                                                AvaloniaProperty targetProperty,
+                                                string resourceKey)
+   {
+      return target.Bind(targetProperty, new DynamicResourceExtension(resourceKey));
+   }
+   
+   public static IDisposable CreateTokenBinding(Control target,
+                                                AvaloniaProperty targetProperty,
+                                                string resourceKey,
+                                                BindingPriority priority = BindingPriority.Style,
+                                                Func<IObservable<object?>, IObservable<object?>>? observableConfigure = null)
+   {
+      var bindingObservable = target.GetResourceObservable(resourceKey);
+      if (observableConfigure is not null) {
+         bindingObservable = observableConfigure(bindingObservable);
+      }
+      return target.Bind(targetProperty, bindingObservable, priority);
    }
 }

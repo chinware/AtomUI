@@ -137,22 +137,22 @@ public class AliasDesignToken : MapDesignToken
    /// <summary>
    /// 内联 PathIcon 大小定义, 最小的尺寸
    /// </summary>
-   public int IconSizeXS { get; set; }
+   public double IconSizeXS { get; set; }
    
    /// <summary>
    /// 内联 PathIcon 大小定义
    /// </summary>
-   public int IconSizeSM { get; set; }
+   public double IconSizeSM { get; set; }
    
    /// <summary>
    /// 内联 PathIcon 大小定义, 正常的尺寸
    /// </summary>
-   public int IconSize { get; set; }
+   public double IconSize { get; set; }
    
    /// <summary>
    /// 内联 PathIcon 大小定义, 最大的尺寸
    /// </summary>
-   public int IconSizeLG { get; set; }
+   public double IconSizeLG { get; set; }
    
    /// <summary>
    /// 标题类组件（如 h1、h2、h3）或选中项的字体粗细

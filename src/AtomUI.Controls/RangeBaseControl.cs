@@ -1,9 +1,7 @@
-using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Interactivity;
-using Avalonia.Media;
 
 namespace AtomUI.Controls;
 

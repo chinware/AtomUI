@@ -73,11 +73,13 @@ public class ResourceKeyClassSourceWriter
    private ClassDeclarationSyntax BuildControlResourceKeyClassSyntax(ControlTokenInfo controlTokenInfo)
    {
       var className = controlTokenInfo.ControlName;
+      var tokenId = className.Replace("Token", "");
       className = className.Replace("Token", "ResourceKey");
+      
       var controlClassSyntax = BuildClassSyntax(className);
       var resourceKeyFields = new List<MemberDeclarationSyntax>();
       foreach (var tokenName in controlTokenInfo.Tokens) {
-         resourceKeyFields.Add(BuildResourceKeyFieldSyntax(tokenName));
+         resourceKeyFields.Add(BuildResourceKeyFieldSyntax(tokenName, $"{tokenId}.{tokenName}"));
       }
 
       controlClassSyntax = controlClassSyntax.AddMembers(resourceKeyFields.ToArray());

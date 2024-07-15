@@ -11,18 +11,15 @@ using AvaloniaButton = Avalonia.Controls.Button;
 
 public class IconButton : AvaloniaButton, ICustomHitTest
 {
-   public static readonly DirectProperty<IconButton, PathIcon?> IconProperty
-      = AvaloniaProperty.RegisterDirect<IconButton, PathIcon?>(nameof(Icon),
-         o => o.Icon,
-         (o, v) => o.Icon = v);
+   public static readonly StyledProperty<PathIcon?> IconProperty
+      = AvaloniaProperty.Register<IconButton, PathIcon?>(nameof(Icon));
    
    private ControlStyleState _styleState;
-
-   private PathIcon? _icon;
+   
    public PathIcon? Icon
    {
-      get => _icon;
-      set => SetAndRaise(IconProperty, ref _icon, value);
+      get => GetValue(IconProperty);
+      set => SetValue(IconProperty, value);
    }
 
    private bool _initialized = false;
@@ -41,8 +38,8 @@ public class IconButton : AvaloniaButton, ICustomHitTest
    {
       base.OnAttachedToLogicalTree(e);
       if (!_initialized) {
-         if (_icon is not null) {
-            Content = _icon;
+         if (Icon is not null) {
+            Content = Icon;
          }
          _initialized = true;
       }
@@ -57,16 +54,16 @@ public class IconButton : AvaloniaButton, ICustomHitTest
          } else if (e.Property == IsPressedProperty ||
                     e.Property == IsPointerOverProperty) {
             CollectStyleState();
-            if (_icon is not null) {
+            if (Icon is not null) {
                if (_styleState.HasFlag(ControlStyleState.Enabled)) {
-                  _icon.IconMode = IconMode.Normal;
+                  Icon.IconMode = IconMode.Normal;
                   if (_styleState.HasFlag(ControlStyleState.Active)) {
-                     _icon.IconMode = IconMode.Selected;
+                     Icon.IconMode = IconMode.Selected;
                   } else if (_styleState.HasFlag(ControlStyleState.MouseOver)) {
-                     _icon.IconMode = IconMode.Active;
+                     Icon.IconMode = IconMode.Active;
                   }
                } else {
-                  _icon.IconMode = IconMode.Disabled;
+                  Icon.IconMode = IconMode.Disabled;
                }
             }
          }

@@ -1,11 +1,12 @@
 ﻿using Avalonia;
+using Avalonia.Controls;
 
 namespace AtomUI.Styling;
 
 internal interface IControlCustomStyle
 {
    void InitOnConstruct() {}
-   void SetupUi();
+   void SetupUi() {}
    void AfterUiStructureReady() {}
    void SetupTransitions() {}
    void CollectStyleState() {}
@@ -14,5 +15,6 @@ internal interface IControlCustomStyle
    void ApplyRenderScalingAwareStyleConfig() {}
    void ApplySizeTypeStyleConfig() {}
    void HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e) {}
+   void HandleTemplateApplied(INameScope scope) {}
    void PrepareRenderInfo() {}
 }
