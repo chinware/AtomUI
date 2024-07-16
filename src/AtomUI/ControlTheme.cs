@@ -9,12 +9,10 @@ public class ControlTheme : AvaloniaControlTheme
    
    public void Build()
    {
-      BuildDefaultStyles();
-      BuildTriggerStyles();
+      BuildStyles();
       BuildControlTemplate();
    }
    
    public virtual void BuildControlTemplate() {}
-   public virtual void BuildDefaultStyles() {}
-   public virtual void BuildTriggerStyles() {}
+   public virtual void BuildStyles() {}
 }

@@ -97,12 +97,7 @@ public class Alert : TemplatedControl, IControlCustomStyle
    private readonly IControlCustomStyle _customStyle;
    private readonly ControlTokenBinder _controlTokenBinder;
    private bool _initialized = false;
-
-   private Label? _messageLabel;
-   private MarqueeLabel? _messageMarqueeLabel;
-   private Label? _descriptionLabel;
-   private PathIcon? _icon;
-   private IconButton? _closeButton;
+   
    private bool _scalingAwareConfigApplied = false;
 
    static Alert()
@@ -154,12 +149,6 @@ public class Alert : TemplatedControl, IControlCustomStyle
 
    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
    {
-      _closeButton = scope.Find<IconButton>(AlertTheme.CloseBtnPart);
-      _icon = scope.Find<PathIcon>(AlertTheme.InfoIconPart);
-      _descriptionLabel = scope.Find<Label>(AlertTheme.DescriptionLabelPart);
-      _messageLabel = scope.Find<Label>(AlertTheme.MessageLabelPart);
-      _messageMarqueeLabel = scope.Find<MarqueeLabel>(AlertTheme.MarqueeLabelPart);
-
       _customStyle.ApplyFixedStyleConfig();
       _customStyle.ApplyRenderScalingAwareStyleConfig();
 
@@ -198,15 +187,6 @@ public class Alert : TemplatedControl, IControlCustomStyle
          BindUtils.CreateTokenBinding(CloseIcon, PathIcon.ActiveFilledBrushProperty, GlobalResourceKey.ColorIconHover);
       }
    }
-
-   private Control GetMessageControl()
-   {
-      if (IsMessageMarqueEnabled) {
-         return _messageMarqueeLabel!;
-      }
-
-      return _messageLabel!;
-   }
-
+   
    #endregion
 }

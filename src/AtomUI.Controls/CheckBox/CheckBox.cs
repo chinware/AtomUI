@@ -140,10 +140,10 @@ public partial class CheckBox : AvaloniaCheckBox,
 
    void IControlCustomStyle.SetupUi()
    {
+      HorizontalAlignment = HorizontalAlignment.Left;
       Cursor = new Cursor(StandardCursorType.Hand);
       _customStyle.CollectStyleState();
-      _customStyle.ApplyFixedStyleConfig();
-      _customStyle.ApplyVariableStyleConfig();
+      SetupIndicatorCheckedMarkEffectSize();
       _customStyle.SetupTransitions();
    }
 
@@ -172,7 +172,7 @@ public partial class CheckBox : AvaloniaCheckBox,
    // Measure 之后才有值
    private Rect IndicatorRect()
    {
-      var offsetY = (DesiredSize.Height - Margin.Top - Margin.Bottom - CheckIndicatorSize) / 2;
+      var offsetY = Math.Ceiling((DesiredSize.Height - Margin.Top - Margin.Bottom - CheckIndicatorSize) / 2);
       return new Rect(0d, offsetY, CheckIndicatorSize, CheckIndicatorSize);
    }
 
@@ -181,16 +181,6 @@ public partial class CheckBox : AvaloniaCheckBox,
       var offsetX = CheckIndicatorSize + PaddingInline;
       return new Rect(offsetX, 0d, DesiredSize.Width - offsetX, DesiredSize.Height);
    }
-
-   void IControlCustomStyle.ApplyFixedStyleConfig()
-   {
-      _controlTokenBinder.AddControlBinding(CheckIndicatorSizeProperty, CheckBoxResourceKey.CheckIndicatorSize);
-      _controlTokenBinder.AddControlBinding(PaddingInlineProperty, GlobalResourceKey.PaddingXS);
-      _controlTokenBinder.AddControlBinding(IndicatorBorderRadiusProperty, GlobalResourceKey.BorderRadiusSM);
-      _controlTokenBinder.AddControlBinding(IndicatorTristateMarkSizeProperty,
-                                            CheckBoxResourceKey.IndicatorTristateMarkSize);
-      _controlTokenBinder.AddControlBinding(IndicatorTristateMarkBrushProperty, GlobalResourceKey.ColorPrimary);
-   }
    
    void IControlCustomStyle.ApplyRenderScalingAwareStyleConfig()
    {
@@ -198,53 +188,19 @@ public partial class CheckBox : AvaloniaCheckBox,
                                             new RenderScaleAwareThicknessConfigure(this));
    }
 
-   void IControlCustomStyle.ApplyVariableStyleConfig()
+   private void SetupIndicatorCheckedMarkEffectSize()
    {
-      _controlTokenBinder.ReleaseTriggerBindings(this);
       if (_styleState.HasFlag(ControlStyleState.Enabled)) {
-         _controlTokenBinder.AddControlBinding(ForegroundProperty, GlobalResourceKey.ColorText);
-         _controlTokenBinder.AddControlBinding(IndicatorBackgroundProperty, GlobalResourceKey.ColorBgContainer);
-         _controlTokenBinder.AddControlBinding(IndicatorCheckedMarkBrushProperty, GlobalResourceKey.ColorBgContainer);
-         _controlTokenBinder.AddControlBinding(IndicatorBorderBrushProperty, GlobalResourceKey.ColorBorder);
          if (_styleState.HasFlag(ControlStyleState.On)) {
             IndicatorCheckedMarkEffectSize = CheckIndicatorSize;
-            _controlTokenBinder.AddControlBinding(IndicatorBackgroundProperty, GlobalResourceKey.ColorPrimary,
-                                                  BindingPriority.StyleTrigger);
-            _controlTokenBinder.AddControlBinding(IndicatorBorderBrushProperty, GlobalResourceKey.ColorPrimary,
-                                                  BindingPriority.StyleTrigger);
-            if (_styleState.HasFlag(ControlStyleState.MouseOver)) {
-               _controlTokenBinder.AddControlBinding(IndicatorBackgroundProperty, GlobalResourceKey.ColorPrimaryHover,
-                                                     BindingPriority.StyleTrigger);
-               _controlTokenBinder.AddControlBinding(IndicatorBorderBrushProperty, GlobalResourceKey.ColorPrimaryHover,
-                                                     BindingPriority.StyleTrigger);
-            }
          } else if (_styleState.HasFlag(ControlStyleState.Off)) {
-            if (_styleState.HasFlag(ControlStyleState.MouseOver)) {
-               _controlTokenBinder.AddControlBinding(IndicatorBorderBrushProperty, GlobalResourceKey.ColorPrimaryHover,
-                                                     BindingPriority.StyleTrigger);
-            }
-
             IndicatorCheckedMarkEffectSize = CheckIndicatorSize * 0.7;
          } else if (_styleState.HasFlag(ControlStyleState.Indeterminate)) {
             IndicatorCheckedMarkEffectSize = CheckIndicatorSize * 0.7;
-            if (_styleState.HasFlag(ControlStyleState.MouseOver)) {
-               _controlTokenBinder.AddControlBinding(IndicatorBorderBrushProperty, GlobalResourceKey.ColorPrimaryHover,
-                                                     BindingPriority.StyleTrigger);
-            }
          }
       } else {
-         _controlTokenBinder.AddControlBinding(IndicatorBackgroundProperty, GlobalResourceKey.ColorBgContainerDisabled);
-         _controlTokenBinder.AddControlBinding(IndicatorBorderBrushProperty, GlobalResourceKey.ColorBorder);
-         _controlTokenBinder.AddControlBinding(ForegroundProperty, GlobalResourceKey.ColorTextDisabled);
          if (_styleState.HasFlag(ControlStyleState.On)) {
             IndicatorCheckedMarkEffectSize = CheckIndicatorSize;
-            _controlTokenBinder.AddControlBinding(IndicatorCheckedMarkBrushProperty,
-                                                  GlobalResourceKey.ColorTextDisabled,
-                                                  BindingPriority.StyleTrigger);
-         } else if (_styleState.HasFlag(ControlStyleState.Indeterminate)) {
-            _controlTokenBinder.AddControlBinding(IndicatorTristateMarkBrushProperty,
-                                                  GlobalResourceKey.ColorTextDisabled,
-                                                  BindingPriority.StyleTrigger);
          }
       }
    }
@@ -267,7 +223,7 @@ public partial class CheckBox : AvaloniaCheckBox,
           e.Property == IsCheckedProperty ||
           e.Property == IsEnabledProperty) {
          _customStyle.CollectStyleState();
-         _customStyle.ApplyVariableStyleConfig();
+         SetupIndicatorCheckedMarkEffectSize();
          if (e.Property == IsCheckedProperty &&
              _styleState.HasFlag(ControlStyleState.Enabled) &&
              _styleState.HasFlag(ControlStyleState.On)) {

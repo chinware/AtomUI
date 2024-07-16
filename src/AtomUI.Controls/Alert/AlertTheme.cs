@@ -31,7 +31,7 @@ internal class AlertTheme : ControlTheme
    {
    }
 
-   public override void BuildDefaultStyles()
+   public override void BuildStyles()
    {
       BuildAlertTypeStyle();
       BuildMessageLabelStyle();
@@ -271,7 +271,6 @@ internal class AlertTheme : ControlTheme
       BindUtils.RelayBind(alert, Alert.BorderThicknessProperty, borderContainer, ContentPresenter.BorderThicknessProperty);
       BindUtils.RelayBind(alert, Alert.PaddingProperty, borderContainer, ContentPresenter.PaddingProperty);
       
-      borderContainer.RegisterInNameScope(scope);
       return borderContainer;
    }
 
@@ -303,7 +302,6 @@ internal class AlertTheme : ControlTheme
       
       Grid.SetRow(closeBtn, 0);
       Grid.SetColumn(closeBtn, 3);
-      closeBtn.RegisterInNameScope(scope);
       return closeBtn;
    }
 
@@ -322,7 +320,6 @@ internal class AlertTheme : ControlTheme
       });
       Grid.SetRow(infoIcon, 0);
       Grid.SetColumn(infoIcon, 0);
-      infoIcon.RegisterInNameScope(scope);
       return infoIcon;
    }
 
@@ -338,7 +335,6 @@ internal class AlertTheme : ControlTheme
       };
       TextBlock.SetTextWrapping(label, TextWrapping.Wrap);
       BindUtils.RelayBind(alert, Alert.MessageProperty, label, Label.ContentProperty);
-      label.RegisterInNameScope(scope);
       return label;
    }
 
@@ -358,7 +354,6 @@ internal class AlertTheme : ControlTheme
          }
       });
       BindUtils.RelayBind(alert, Alert.MessageProperty, label, MarqueeLabel.TextProperty);
-      label.RegisterInNameScope(scope);
       return label;
    }
 
@@ -387,7 +382,6 @@ internal class AlertTheme : ControlTheme
                                    });
       BindUtils.RelayBind(alert, Alert.DescriptionProperty, descriptionLabel, Label.ContentProperty);
       TextBlock.SetTextWrapping(descriptionLabel, TextWrapping.Wrap);
-      descriptionLabel.RegisterInNameScope(scope);
       return descriptionLabel;
    }
    

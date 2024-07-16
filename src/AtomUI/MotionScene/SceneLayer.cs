@@ -48,11 +48,6 @@ public class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
 
       _layout = new Canvas();
       Content = _layout;
-#if DEBUG
-      if (this is TopLevel topLevel) {
-         topLevel.AttachDevTools();
-      }
-#endif
       Focusable = true;
    }
    

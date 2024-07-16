@@ -65,7 +65,9 @@ internal static class PopupFlyoutBaseInterceptor
 
    public static void UpdateHostPositionPostfixInterceptor(AbstractPopup __instance, IPopupHost popupHost, Control placementTarget)
    {
-      __instance.NotifyHostPositionUpdated(popupHost, placementTarget);
+      if (__instance is Popup) {
+         __instance.NotifyHostPositionUpdated(popupHost, placementTarget);
+      } 
    }
    
    public static bool UpdateHostPositionPrefixInterceptor(AbstractPopup __instance, IPopupHost popupHost, Control placementTarget)
@@ -100,6 +102,7 @@ internal static class PopupInterceptorsRegister
 {
    public static void Register(Harmony harmony)
    {
+      Console.WriteLine("Register");
       RegisterPopupFlyoutBaseCreatePopup(harmony);
       RegisterPopupUpdateHostPositionPrefix(harmony);
       RegisterPopupUpdateHostPositionPostfix(harmony);
