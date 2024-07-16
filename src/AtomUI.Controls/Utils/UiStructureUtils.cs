@@ -7,12 +7,12 @@ using Avalonia.VisualTree;
 
 namespace AtomUI.Controls.Utils;
 
-internal static class UiStructureUtils
+internal static class UIStructureUtils
 {
    private static readonly MethodInfo SetVisualParentMethodInfo;
    private static readonly PropertyInfo LogicalChildrenInfo;
 
-   static UiStructureUtils()
+   static UIStructureUtils()
    {
       SetVisualParentMethodInfo = typeof(Visual).GetMethod("SetVisualParent", BindingFlags.Instance | BindingFlags.NonPublic)!;
       LogicalChildrenInfo = typeof(StyledElement).GetProperty("LogicalChildren", BindingFlags.Instance | BindingFlags.NonPublic)!;

@@ -604,8 +604,8 @@ public partial class ToolTip : StyledControl,
       motion.ConfigureOpacity(_motionDuration);
       motion.ConfigureRenderTransform(_motionDuration);
 
-      UiStructureUtils.SetVisualParent(popup.Child, null);
-      UiStructureUtils.SetVisualParent(popup.Child, null);
+      UIStructureUtils.SetVisualParent(popup.Child, null);
+      UIStructureUtils.SetVisualParent(popup.Child, null);
 
       var motionActor = new PopupMotionActor(_shadows, _popupPositionInfo.Offset, _popupPositionInfo.Scaling,
                                              popup.Child, motion);

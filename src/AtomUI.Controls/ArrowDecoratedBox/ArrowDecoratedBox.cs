@@ -258,8 +258,8 @@ public partial class ArrowDecoratedBox : StyledControl,
       // 生命周期一样，可以不用管理
       if (_container is not null) {
          if (Child?.Parent is not null) {
-            UiStructureUtils.ClearLogicalParentRecursive(Child, null);
-            UiStructureUtils.ClearVisualParentRecursive(Child, null);
+            UIStructureUtils.ClearLogicalParentRecursive(Child, null);
+            UIStructureUtils.ClearVisualParentRecursive(Child, null);
          }
          _compositeDisposable.Add(BindUtils.RelayBind(this, BackgroundSizingProperty, _container));
          _compositeDisposable.Add(BindUtils.RelayBind(this, BackgroundProperty, _container));

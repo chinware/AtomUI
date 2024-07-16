@@ -139,8 +139,9 @@ public sealed class PathIcon : Control, ICustomHitTest
 
    static PathIcon()
    {
-      AffectsGeometry(KindProperty, PackageProviderProperty);
+      AffectsGeometry(KindProperty, PackageProviderProperty, HeightProperty, WidthProperty);
       AffectsRender<PathIcon>(IconModeProperty,
+                              NormalFillBrushProperty,
                               FilledBrushProperty,
                               PrimaryFilledBrushProperty,
                               SecondaryFilledBrushProperty);

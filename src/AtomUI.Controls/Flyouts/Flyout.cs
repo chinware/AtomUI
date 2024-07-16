@@ -307,9 +307,9 @@ public class Flyout : PopupFlyoutBase
          _animating = true;
          if (flyoutPresenter.Child is not null) {
             var placementToplevel = TopLevel.GetTopLevel(placementTarget);
-            UiStructureUtils.ClearLogicalParentRecursive(flyoutPresenter, null);
-            UiStructureUtils.ClearVisualParentRecursive(flyoutPresenter, null);
-            UiStructureUtils.SetLogicalParent(flyoutPresenter, placementToplevel);
+            UIStructureUtils.ClearLogicalParentRecursive(flyoutPresenter, null);
+            UIStructureUtils.ClearVisualParentRecursive(flyoutPresenter, null);
+            UIStructureUtils.SetLogicalParent(flyoutPresenter, placementToplevel);
 
             _popupPositionInfo = PopupControl.CalculatePositionInfo(placementTarget,
                                                                     MarginToAnchor,
@@ -394,8 +394,8 @@ public class Flyout : PopupFlyoutBase
       {
          if (flyoutPresenter.Child is not null) {
             var child = flyoutPresenter.Child;
-            UiStructureUtils.ClearLogicalParentRecursive(child, null);
-            UiStructureUtils.ClearVisualParentRecursive(child, null);
+            UIStructureUtils.ClearLogicalParentRecursive(child, null);
+            UIStructureUtils.ClearVisualParentRecursive(child, null);
          }
 
          base.ShowAtCore(placementTarget, showAtPointer);
@@ -430,8 +430,8 @@ public class Flyout : PopupFlyoutBase
       motion.ConfigureOpacity(_motionDuration);
       motion.ConfigureRenderTransform(_motionDuration);
 
-      UiStructureUtils.SetVisualParent(popup.Child, null);
-      UiStructureUtils.SetVisualParent(popup.Child, null);
+      UIStructureUtils.SetVisualParent(popup.Child, null);
+      UIStructureUtils.SetVisualParent(popup.Child, null);
 
       var motionActor = new PopupMotionActor(MaskShadows, _popupPositionInfo.Offset, _popupPositionInfo.Scaling,
                                              popup.Child, motion);

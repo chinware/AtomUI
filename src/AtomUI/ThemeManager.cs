@@ -2,8 +2,10 @@
 using AtomUI.Controls.MotionScene;
 using AtomUI.Interceptors;
 using AtomUI.MotionScene;
+using AtomUI.Styling;
 using AtomUI.Utils;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Platform;
 using Avalonia.Styling;
 using HarmonyLib;
@@ -137,7 +139,9 @@ public class ThemeManager : Styles, IThemeManager
       _activatedTheme = theme;
 
       ThemeVariant themeVariant = _activatedTheme.ThemeVariant;
-      Resources.ThemeDictionaries[themeVariant] = theme.ThemeResource;
+      var themeResource = new ResourceDictionary();
+      themeResource.ThemeDictionaries[themeVariant] = theme.ThemeResource;
+      Resources.MergedDictionaries.Add(themeResource);
 
       if (oldTheme is not null) {
          oldTheme.NotifyDeActivated();
@@ -223,6 +227,7 @@ public class ThemeManager : Styles, IThemeManager
       // 收集控件全局初始化接口
       InvokeBootstrapInitializers();
       InitInterceptors();
+      RegisterControlThemes();
    }
 
    internal void InvokeBootstrapInitializers()
@@ -244,6 +249,25 @@ public class ThemeManager : Styles, IThemeManager
             initializer.Init();
          }
       }
+   }
+
+   internal void RegisterControlThemes()
+   {
+      var controlThemeProviders = Assembly.GetEntryAssembly()?
+                                          .GetReferencedAssemblies().Select(assemblyName => Assembly.Load(assemblyName))
+                                          .SelectMany(assembly => assembly.GetTypes())
+                                          .Where(type => type.IsDefined(typeof(ControlThemeProviderAttribute)) && typeof(ControlTheme).IsAssignableFrom(type))
+                                          .Select(type => Activator.CreateInstance(type));
+      var resources = new ResourceDictionary();
+      if (controlThemeProviders is not null) {
+         foreach (var item in controlThemeProviders) {
+            if (item is ControlTheme controlTheme) {
+               controlTheme.Build();
+               resources.Add(controlTheme.TargetType!, controlTheme);
+            }
+         }
+      }
+      Resources.MergedDictionaries.Add(resources);
    }
 
    private void RegisterServices()

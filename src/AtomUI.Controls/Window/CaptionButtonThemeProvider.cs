@@ -4,8 +4,7 @@ using Avalonia.Styling;
 
 namespace AtomUI.Controls.Controls.Window;
 
-[ControlThemeProvider]
-public class CaptionButtonThemeProvider : IControlThemeProvider
+public class CaptionButtonThemeProvider
 {
    public object Key { get; } = typeof(CaptionButton);
    public Type TargetType { get; } = typeof(Button);
