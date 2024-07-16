@@ -2,6 +2,7 @@ using AtomUI.ColorSystem;
 using AtomUI.Data;
 using AtomUI.Icon;
 using AtomUI.Styling;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
@@ -208,7 +209,7 @@ public partial class Tag : Label, IControlCustomStyle
 
    void IControlCustomStyle.ApplyRenderScalingAwareStyleConfig()
    {
-      _controlTokenBinder.AddControlBinding(BorderThicknessProperty, "BorderThickness", BindingPriority.Style,
+      BindUtils.CreateTokenBinding(this, BorderThicknessProperty, "BorderThickness", BindingPriority.Style,
                                             new RenderScaleAwareThicknessConfigure(this, thickness =>
                                             {
                                                if (!Bordered) {

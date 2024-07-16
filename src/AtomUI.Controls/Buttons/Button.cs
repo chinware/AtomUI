@@ -290,8 +290,8 @@ public partial class Button : AvaloniaButton,
    {
       if (ButtonType == ButtonType.Default || 
           (ButtonType == ButtonType.Primary && (IsGhost || !IsEnabled))) {
-         _controlTokenBinder.AddControlBinding(BorderThicknessProperty, GlobalResourceKey.BorderThickness, BindingPriority.Style,
-                                         new RenderScaleAwareThicknessConfigure(this));
+         BindUtils.CreateTokenBinding(this, BorderThicknessProperty, GlobalResourceKey.BorderThickness, BindingPriority.Style,
+                                      new RenderScaleAwareThicknessConfigure(this));
       }
    }
 

@@ -255,7 +255,7 @@ public partial class OptionButton : AvaloniaRadioButton,
 
    void IControlCustomStyle.ApplyRenderScalingAwareStyleConfig()
    {
-      _controlTokenBinder.AddControlBinding(BorderThicknessProperty, GlobalResourceKey.BorderThickness, BindingPriority.Style,
+      BindUtils.CreateTokenBinding(this, BorderThicknessProperty, GlobalResourceKey.BorderThickness, BindingPriority.Style,
                                       new RenderScaleAwareThicknessConfigure(this, thickness =>
                                       {
                                          if (InOptionGroup) {

@@ -23,7 +23,6 @@ public partial class CheckBox : AvaloniaCheckBox,
                                 IControlCustomStyle
 {
    private IControlCustomStyle _customStyle;
-   private ControlTokenBinder _controlTokenBinder;
    private ControlStyleState _styleState;
    private BorderRenderHelper _borderRenderHelper;
    private bool _initialized = false;
@@ -44,7 +43,6 @@ public partial class CheckBox : AvaloniaCheckBox,
    
    public CheckBox()
    {
-      _controlTokenBinder = new ControlTokenBinder(this, CheckBoxToken.ID);
       _customStyle = this;
       _borderRenderHelper = new BorderRenderHelper();
    }
@@ -184,8 +182,8 @@ public partial class CheckBox : AvaloniaCheckBox,
    
    void IControlCustomStyle.ApplyRenderScalingAwareStyleConfig()
    {
-      _controlTokenBinder.AddControlBinding(IndicatorBorderThicknessProperty, GlobalResourceKey.BorderThickness, BindingPriority.Style,
-                                            new RenderScaleAwareThicknessConfigure(this));
+      BindUtils.CreateTokenBinding(this, IndicatorBorderThicknessProperty, GlobalResourceKey.BorderThickness, BindingPriority.Template,
+                                   new RenderScaleAwareThicknessConfigure(this));
    }
 
    private void SetupIndicatorCheckedMarkEffectSize()

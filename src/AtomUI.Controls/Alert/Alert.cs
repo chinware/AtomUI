@@ -94,8 +94,7 @@ public class Alert : TemplatedControl, IControlCustomStyle
    }
 
    private readonly IControlCustomStyle _customStyle;
-   private readonly ControlTokenBinder _controlTokenBinder;
-   
+
    private bool _scalingAwareConfigApplied = false;
 
    static Alert()
@@ -113,7 +112,6 @@ public class Alert : TemplatedControl, IControlCustomStyle
 
    public Alert()
    {
-      _controlTokenBinder = new ControlTokenBinder(this, AlertToken.ID);
       _customStyle = this;
       _customStyle.InitOnConstruct();
    }
@@ -150,9 +148,9 @@ public class Alert : TemplatedControl, IControlCustomStyle
    {
       if (!_scalingAwareConfigApplied) {
          _scalingAwareConfigApplied = true;
-         _controlTokenBinder.AddControlBinding(BorderThicknessProperty, GlobalResourceKey.BorderThickness,
-                                               BindingPriority.Style,
-                                               new RenderScaleAwareThicknessConfigure(this));
+         BindUtils.CreateTokenBinding(this, BorderThicknessProperty, GlobalResourceKey.BorderThickness,
+                                      BindingPriority.Style,
+                                      new RenderScaleAwareThicknessConfigure(this));
       }
    }
 
@@ -176,6 +174,6 @@ public class Alert : TemplatedControl, IControlCustomStyle
          BindUtils.CreateTokenBinding(CloseIcon, PathIcon.ActiveFilledBrushProperty, GlobalResourceKey.ColorIconHover);
       }
    }
-   
+
    #endregion
 }

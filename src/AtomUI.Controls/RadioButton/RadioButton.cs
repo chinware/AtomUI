@@ -25,7 +25,6 @@ public partial class RadioButton : AvaloniaRadioButton,
    private IPen? _cachedPen;
    private ControlStyleState _styleState;
    private IControlCustomStyle _customStyle;
-   private ControlTokenBinder _controlTokenBinder;
    
    static RadioButton()
    {
@@ -39,7 +38,6 @@ public partial class RadioButton : AvaloniaRadioButton,
 
    public RadioButton()
    {
-      _controlTokenBinder = new ControlTokenBinder(this, RadioButtonToken.ID);
       _customStyle = this;
    }
 
@@ -120,9 +118,8 @@ public partial class RadioButton : AvaloniaRadioButton,
    
    void IControlCustomStyle.ApplyRenderScalingAwareStyleConfig()
    {
-      _controlTokenBinder.AddControlBinding(RadioBorderThicknessProperty, GlobalResourceKey.BorderThickness, BindingPriority.Style,
+      BindUtils.CreateTokenBinding(this, RadioBorderThicknessProperty, GlobalResourceKey.BorderThickness, BindingPriority.Style,
                                             new RenderScaleAwareThicknessConfigure(this));
-      BindUtils.CreateTokenBinding(this, RadioBorderThicknessProperty, GlobalResourceKey.BorderThickness, BindingPriority.Template);
    }
    
    void IControlCustomStyle.ApplyFixedStyleConfig()

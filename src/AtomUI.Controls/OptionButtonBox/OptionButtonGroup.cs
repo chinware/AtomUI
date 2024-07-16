@@ -2,6 +2,7 @@ using System.Collections.Specialized;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.Styling;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;
@@ -262,7 +263,7 @@ public partial class OptionButtonGroup : StyledControl,
 
    void IControlCustomStyle.ApplyRenderScalingAwareStyleConfig()
    {
-      _controlTokenBinder.AddControlBinding(BorderThicknessProperty, GlobalResourceKey.BorderThickness, BindingPriority.Style,
+      BindUtils.CreateTokenBinding(this, BorderThicknessProperty, GlobalResourceKey.BorderThickness, BindingPriority.Style,
          new RenderScaleAwareThicknessConfigure(this));
    }
 
