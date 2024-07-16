@@ -367,10 +367,8 @@ internal class AlertTheme : ControlTheme
          Padding = new Thickness(0),
          IsVisible = !string.IsNullOrEmpty(alert.Description)
       };
-      BindUtils.CreateTokenBinding(descriptionLabel, Label.MarginProperty, GlobalResourceKey.MarginXS, BindingPriority.Template,
-                                   observable =>
-                                   {
-                                      return observable.Select(o =>
+      BindUtils.CreateTokenBinding(descriptionLabel, Label.MarginProperty, GlobalResourceKey.MarginXS, BindingPriority.Template, 
+                                      o =>
                                       {
                                          if (o is double value) {
                                             return new Thickness(0, value, 0, 0);
@@ -378,7 +376,6 @@ internal class AlertTheme : ControlTheme
 
                                          return o;
                                       });
-                                   });
       BindUtils.RelayBind(alert, Alert.DescriptionProperty, descriptionLabel, Label.ContentProperty);
       TextBlock.SetTextWrapping(descriptionLabel, TextWrapping.Wrap);
       return descriptionLabel;

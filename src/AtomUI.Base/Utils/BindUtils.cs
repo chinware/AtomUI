@@ -58,13 +58,9 @@ public static class BindUtils
    public static IDisposable CreateTokenBinding(Control target,
                                                 AvaloniaProperty targetProperty,
                                                 string resourceKey,
-                                                BindingPriority priority = BindingPriority.Style,
-                                                Func<IObservable<object?>, IObservable<object?>>? observableConfigure = null)
+                                                BindingPriority priority = BindingPriority.Template,
+                                                Func<object?, object?>? converter = null)
    {
-      var bindingObservable = target.GetResourceObservable(resourceKey);
-      if (observableConfigure is not null) {
-         bindingObservable = observableConfigure(bindingObservable);
-      }
-      return target.Bind(targetProperty, bindingObservable, priority);
+      return target.Bind(targetProperty, target.GetResourceObservable(resourceKey, converter), priority);
    }
 }

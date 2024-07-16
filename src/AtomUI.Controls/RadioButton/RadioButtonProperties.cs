@@ -5,84 +5,83 @@ namespace AtomUI.Controls;
 
 public partial class RadioButton
 {
-   protected static readonly StyledProperty<double> RadioSizeProperty =
+   internal static readonly StyledProperty<double> RadioSizeProperty =
       AvaloniaProperty.Register<Button, double>(nameof(RadioSize), 0);
 
-   protected double RadioSize
+   internal double RadioSize
    {
       get => GetValue(RadioSizeProperty);
       set => SetValue(RadioSizeProperty, value);
    }
    
-   protected static readonly StyledProperty<double> PaddingInlineProperty =
+   internal static readonly StyledProperty<double> PaddingInlineProperty =
       AvaloniaProperty.Register<Button, double>(nameof(PaddingInline), 0);
    
-   protected double PaddingInline
+   internal double PaddingInline
    {
       get => GetValue(PaddingInlineProperty);
       set => SetValue(PaddingInlineProperty, value);
    }
    
-   protected static readonly StyledProperty<IBrush?> RadioBorderBrushProperty =
+   internal static readonly StyledProperty<IBrush?> RadioBorderBrushProperty =
       AvaloniaProperty.Register<Button, IBrush?>(nameof(RadioBorderBrush));
    
-   protected IBrush? RadioBorderBrush
+   internal IBrush? RadioBorderBrush
    {
       get => GetValue(RadioBorderBrushProperty);
       set => SetValue(RadioBorderBrushProperty, value);
    }
    
-   protected static readonly StyledProperty<IBrush?> RadioInnerBackgroundProperty =
+   internal static readonly StyledProperty<IBrush?> RadioInnerBackgroundProperty =
       AvaloniaProperty.Register<Button, IBrush?>(nameof(RadioInnerBackground));
    
-   protected IBrush? RadioInnerBackground
+   internal IBrush? RadioInnerBackground
    {
       get => GetValue(RadioInnerBackgroundProperty);
       set => SetValue(RadioInnerBackgroundProperty, value);
    }
    
-   protected static readonly StyledProperty<IBrush?> RadioBackgroundProperty =
+   internal static readonly StyledProperty<IBrush?> RadioBackgroundProperty =
       AvaloniaProperty.Register<Button, IBrush?>(nameof(RadioBackground));
    
-   protected IBrush? RadioBackground
+   internal IBrush? RadioBackground
    {
       get => GetValue(RadioBackgroundProperty);
       set => SetValue(RadioBackgroundProperty, value);
    }
    
-   protected static readonly StyledProperty<Thickness> RadioBorderThicknessProperty =
+   internal static readonly StyledProperty<Thickness> RadioBorderThicknessProperty =
       AvaloniaProperty.Register<Button, Thickness>(nameof(RadioBorderThickness));
    
-   protected Thickness RadioBorderThickness
+   internal Thickness RadioBorderThickness
    {
       get => GetValue(RadioBorderThicknessProperty);
       set => SetValue(RadioBorderThicknessProperty, value);
    }
    
-   protected static readonly StyledProperty<double> RadioDotEffectSizeProperty =
+   internal static readonly StyledProperty<double> RadioDotEffectSizeProperty =
       AvaloniaProperty.Register<Button, double>(nameof(RadioDotEffectSize));
    
-   protected double RadioDotEffectSize
+   internal double RadioDotEffectSize
    {
       get => GetValue(RadioDotEffectSizeProperty);
       set => SetValue(RadioDotEffectSizeProperty, value);
    }
    
    // 获取 Token 值属性开始
-   private double _dotSizeValue;
-
-   private static readonly DirectProperty<RadioButton, double> DotSizeValueProperty =
+   private double _dotSizeValueToken;
+   private static readonly DirectProperty<RadioButton, double> DotSizeValueTokenProperty =
       AvaloniaProperty.RegisterDirect<RadioButton, double>(
-         nameof(_dotSizeValue),
-         o => o._dotSizeValue,
-         (o, v) => o._dotSizeValue = v);
+         nameof(_dotSizeValueToken),
+         o => o._dotSizeValueToken,
+         (o, v) => o._dotSizeValueToken = v);
    
-   private double _dotPaddingValue;
-   private static readonly DirectProperty<RadioButton, double> DotPaddingValueProperty =
+   private double _dotPaddingValueToken;
+   private static readonly DirectProperty<RadioButton, double> DotPaddingValueTokenProperty =
       AvaloniaProperty.RegisterDirect<RadioButton, double>(
-         nameof(_dotPaddingValue),
-         o => o._dotPaddingValue,
-         (o, v) => o._dotPaddingValue = v);
+         nameof(_dotPaddingValueToken),
+         o => o._dotPaddingValueToken,
+         (o, v) => o._dotPaddingValueToken = v);
    
    // 获取 Token 值属性结束
 }

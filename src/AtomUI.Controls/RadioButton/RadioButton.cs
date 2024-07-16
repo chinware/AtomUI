@@ -113,34 +113,8 @@ public partial class RadioButton : AvaloniaRadioButton,
       Cursor = new Cursor(StandardCursorType.Hand);
       _customStyle.CollectStyleState();
       _customStyle.ApplyFixedStyleConfig();
-      _customStyle.ApplyVariableStyleConfig();
       _customStyle.SetupTransitions();
-   }
-   
-   void IControlCustomStyle.ApplyVariableStyleConfig()
-   {
-      _controlTokenBinder.ReleaseTriggerBindings(this);
-      _controlTokenBinder.AddControlBinding(RadioBorderBrushProperty, GlobalResourceKey.ColorBorder);
-      if (_styleState.HasFlag(ControlStyleState.Enabled)) {
-         // 暂时启用和禁用状态不归为 style trigger
-         _controlTokenBinder.AddControlBinding(RadioInnerBackgroundProperty, RadioButtonResourceKey.RadioColor);
-         if (_styleState.HasFlag(ControlStyleState.On)) {
-            _controlTokenBinder.AddControlBinding(RadioBorderBrushProperty, GlobalResourceKey.ColorPrimary);
-            _controlTokenBinder.AddControlBinding(RadioBackgroundProperty, GlobalResourceKey.ColorPrimary);
-         } else {
-            _controlTokenBinder.AddControlBinding(RadioBackgroundProperty, GlobalResourceKey.ColorBgContainer);
-            if (_styleState.HasFlag(ControlStyleState.MouseOver)) {
-               _controlTokenBinder.AddControlBinding(RadioBorderBrushProperty, GlobalResourceKey.ColorPrimary, 
-                  BindingPriority.StyleTrigger);
-            }
-         }
-      } else {
-         _controlTokenBinder.AddControlBinding(ForegroundProperty, GlobalResourceKey.ColorTextDisabled);
-         _controlTokenBinder.AddControlBinding(RadioBackgroundProperty, GlobalResourceKey.ColorBgContainerDisabled, 
-            BindingPriority.StyleTrigger);
-         _controlTokenBinder.AddControlBinding(RadioInnerBackgroundProperty, RadioButtonResourceKey.DotColorDisabled, 
-            BindingPriority.StyleTrigger);
-      }
+      
       RadioDotEffectSize = CalculateDotSize(IsEnabled, IsChecked.HasValue && IsChecked.Value);
    }
    
@@ -148,14 +122,13 @@ public partial class RadioButton : AvaloniaRadioButton,
    {
       _controlTokenBinder.AddControlBinding(RadioBorderThicknessProperty, GlobalResourceKey.BorderThickness, BindingPriority.Style,
                                             new RenderScaleAwareThicknessConfigure(this));
+      BindUtils.CreateTokenBinding(this, RadioBorderThicknessProperty, GlobalResourceKey.BorderThickness, BindingPriority.Template);
    }
    
    void IControlCustomStyle.ApplyFixedStyleConfig()
    {
-      _controlTokenBinder.AddControlBinding(RadioSizeProperty, RadioButtonResourceKey.RadioSize);
-      _controlTokenBinder.AddControlBinding(DotSizeValueProperty, RadioButtonResourceKey.DotSize);
-      _controlTokenBinder.AddControlBinding(DotPaddingValueProperty, RadioButtonResourceKey.DotPadding);
-      _controlTokenBinder.AddControlBinding(PaddingInlineProperty, GlobalResourceKey.PaddingXS);
+      BindUtils.CreateTokenBinding(this, DotSizeValueTokenProperty, RadioButtonResourceKey.DotSize);
+      BindUtils.CreateTokenBinding(this, DotPaddingValueTokenProperty, RadioButtonResourceKey.DotPadding);
    }
 
    void IControlCustomStyle.CollectStyleState()
@@ -179,14 +152,13 @@ public partial class RadioButton : AvaloniaRadioButton,
       double targetValue;
       if (isChecked) {
          if (isEnabled) {
-            targetValue = _dotSizeValue;
+            targetValue = _dotSizeValueToken;
          } else {
-            targetValue = RadioSize - _dotPaddingValue * 2;
+            targetValue = RadioSize - _dotPaddingValueToken * 2;
          }
       } else {
-         targetValue = _dotSizeValue * 0.6;
+         targetValue = _dotSizeValueToken * 0.6;
       }
-
       return targetValue;
    }
 
@@ -219,7 +191,9 @@ public partial class RadioButton : AvaloniaRadioButton,
           e.Property == IsCheckedProperty ||
           e.Property == IsEnabledProperty) {
          _customStyle.CollectStyleState();
-         _customStyle.ApplyVariableStyleConfig();
+         if (VisualRoot is not null) {
+            RadioDotEffectSize = CalculateDotSize(IsEnabled, IsChecked.HasValue && IsChecked.Value);
+         }
          if (e.Property == IsCheckedProperty && 
              _styleState.HasFlag(ControlStyleState.Enabled) &&
              _styleState.HasFlag(ControlStyleState.On)) {
