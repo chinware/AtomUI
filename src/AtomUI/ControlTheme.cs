@@ -1,18 +1,24 @@
-﻿namespace AtomUI;
+﻿using Avalonia.Controls.Primitives;
+using Avalonia.Controls.Templates;
+using Avalonia.Styling;
+
+namespace AtomUI;
 
 using AvaloniaControlTheme = Avalonia.Styling.ControlTheme;
 
 public class ControlTheme : AvaloniaControlTheme
 {
-   public ControlTheme() { }
    public ControlTheme(Type targetType) : base(targetType) {}
    
    public void Build()
    {
       BuildStyles();
-      BuildControlTemplate();
+      var template = BuildControlTemplate();
+      if (template is not null) {
+         Add(new Setter(TemplatedControl.TemplateProperty, template));
+      }
    }
-   
-   public virtual void BuildControlTemplate() {}
-   public virtual void BuildStyles() {}
+
+   protected virtual IControlTemplate? BuildControlTemplate() { return default; }
+   protected virtual void BuildStyles() {}
 }

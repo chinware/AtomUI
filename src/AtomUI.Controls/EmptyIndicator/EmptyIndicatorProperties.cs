@@ -5,12 +5,15 @@ namespace AtomUI.Controls;
 
 public partial class EmptyIndicator
 {
-   private double _descriptionMargin;
-   private static readonly DirectProperty<EmptyIndicator, double> DescriptionMarginProperty =
-      AvaloniaProperty.RegisterDirect<EmptyIndicator, double>(
-         nameof(_descriptionMargin),
-         o => o._descriptionMargin,
-         (o, v) => o._descriptionMargin = v);
+   internal static readonly StyledProperty<double> DescriptionMarginProperty =
+      AvaloniaProperty.Register<EmptyIndicator, double>(
+         nameof(DescriptionMargin));
+
+   internal double DescriptionMargin
+   {
+      get => GetValue(DescriptionMarginProperty);
+      set => SetValue(DescriptionMarginProperty, value);
+   }
    
    #region Control token 值绑定属性
    

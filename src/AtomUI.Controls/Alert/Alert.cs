@@ -96,7 +96,6 @@ public class Alert : TemplatedControl, IControlCustomStyle
 
    private readonly IControlCustomStyle _customStyle;
    private readonly ControlTokenBinder _controlTokenBinder;
-   private bool _initialized = false;
    
    private bool _scalingAwareConfigApplied = false;
 
@@ -118,15 +117,6 @@ public class Alert : TemplatedControl, IControlCustomStyle
       _controlTokenBinder = new ControlTokenBinder(this, AlertToken.ID);
       _customStyle = this;
       _customStyle.InitOnConstruct();
-   }
-
-   protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-   {
-      base.OnAttachedToLogicalTree(e);
-      if (!_initialized) {
-         _customStyle.SetupUi();
-         _initialized = true;
-      }
    }
 
    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
@@ -169,7 +159,7 @@ public class Alert : TemplatedControl, IControlCustomStyle
 
    void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
    {
-      if (_initialized) {
+      if (VisualRoot is not null) {
          if (e.Property == IsClosableProperty) {
             SetupCloseButton();
          }

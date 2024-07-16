@@ -31,7 +31,7 @@ internal class AlertTheme : ControlTheme
    {
    }
 
-   public override void BuildStyles()
+   protected override void BuildStyles()
    {
       BuildAlertTypeStyle();
       BuildMessageLabelStyle();
@@ -196,7 +196,7 @@ internal class AlertTheme : ControlTheme
       }
    }
    
-   public override void BuildControlTemplate()
+   protected override IControlTemplate BuildControlTemplate()
    {
       var controlTemplate = new FuncControlTemplate<Alert>((alert, scope) =>
       {
@@ -253,9 +253,8 @@ internal class AlertTheme : ControlTheme
          
          return borderContainer;
       });
-      
-      var setter = new Setter(TemplatedControl.TemplateProperty, controlTemplate);
-      Add(setter);
+
+      return controlTemplate;
    }
 
    private Border CreateBorderContainer(Alert alert, INameScope scope)

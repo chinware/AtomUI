@@ -1,12 +1,10 @@
 ﻿using AtomUI.ColorSystem;
 using AtomUI.Data;
 using AtomUI.Styling;
-using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Documents;
+using Avalonia.Controls.Primitives;
 using Avalonia.Layout;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 
 namespace AtomUI.Controls;
@@ -17,7 +15,7 @@ public enum PresetEmptyImage
    Default,
 }
 
-public partial class EmptyIndicator : Control,
+public partial class EmptyIndicator : TemplatedControl,
                                       IControlCustomStyle
 
 {
@@ -96,42 +94,7 @@ public partial class EmptyIndicator : Control,
       _customStyle = this;
       _controlTokenBinder = new ControlTokenBinder(this, EmptyIndicatorToken.ID);
    }
-
-   protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-   {
-      base.OnAttachedToLogicalTree(e);
-      if (!_initialized) {
-         _customStyle.SetupUi();
-         _initialized = true;
-      }
-   }
-
-   protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
-   {
-      base.OnPropertyChanged(change);
-      if (_initialized) {
-         if (change.Property == SizeTypeProperty) {
-            HandleSizeTypeChanged();
-         } else if (change.Property == DescriptionMarginProperty) {
-            _description!.Margin = new Thickness(0, _descriptionMargin, 0, 0);
-         }
-      }
-   }
-
-   private void HandleSizeTypeChanged()
-   {
-      _customStyle.ApplySizeTypeStyleConfig();
-      if (_svg is not null) {
-         if (SizeType == SizeType.Large) {
-            _svg.Height = _emptyImgHeightToken;
-         } else if (SizeType == SizeType.Middle) {
-            _svg.Height = _emptyImgHeightMDToken;
-         } else {
-            _svg.Height = _emptyImgHeightSMToken;
-         }
-      }
-   }
-
+   
    private void CheckImageSource()
    {
       var imageSettedCount = 0;
@@ -163,18 +126,6 @@ public partial class EmptyIndicator : Control,
       _controlTokenBinder.AddControlBinding(ColorFillTertiaryTokenProperty, GlobalResourceKey.ColorFillTertiary);
       _controlTokenBinder.AddControlBinding(ColorFillQuaternaryTokenProperty, GlobalResourceKey.ColorFillQuaternary);
       _controlTokenBinder.AddControlBinding(ColorBgContainerTokenProperty, GlobalResourceKey.ColorBgContainer);
-      _controlTokenBinder.AddControlBinding(_description!, TextElement.ForegroundProperty,
-                                            GlobalResourceKey.ColorTextDescription);
-   }
-
-   void IControlCustomStyle.ApplySizeTypeStyleConfig()
-   {
-      if (SizeType == SizeType.Small ||
-          SizeType == SizeType.Middle) {
-         _controlTokenBinder.AddControlBinding(DescriptionMarginProperty, GlobalResourceKey.MarginXS);
-      } else {
-         _controlTokenBinder.AddControlBinding(DescriptionMarginProperty, GlobalResourceKey.MarginSM);
-      }
    }
 
    void IControlCustomStyle.SetupUi()
@@ -182,31 +133,6 @@ public partial class EmptyIndicator : Control,
       HorizontalAlignment = HorizontalAlignment.Center;
       VerticalAlignment = VerticalAlignment.Center;
       CheckImageSource();
-      _layout = new StackPanel()
-      {
-         Orientation = Orientation.Vertical
-      };
-
-      LogicalChildren.Add(_layout);
-      VisualChildren.Add(_layout);
-
-      _svg = new Avalonia.Svg.Svg(new Uri("https://github.com/avaloniaui"));
-      _layout.Children.Add(_svg);
-      _description = new TextBlock()
-      {
-         HorizontalAlignment = HorizontalAlignment.Center,
-         TextWrapping = TextWrapping.Wrap,
-         Text = Description ?? "No data"
-      };
-      BindUtils.RelayBind(this, IsShowDescriptionProperty, _description, TextBlock.IsVisibleProperty);
-      
-      _layout.Children.Add(_description);
-      _customStyle.ApplyFixedStyleConfig();
-      _customStyle.ApplySizeTypeStyleConfig();
-
-      _description.Margin = new Thickness(0, _descriptionMargin, 0, 0);
-      SetupImage();
-      HandleSizeTypeChanged();
    }
 
    private void SetupImage()
@@ -233,6 +159,19 @@ public partial class EmptyIndicator : Control,
       } else if (ImagePath is not null) {
          _svg.Path = ImagePath;
       }
+   }
+   
+   protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+   {
+      base.OnApplyTemplate(e);
+      _customStyle.ApplyFixedStyleConfig();
+      _customStyle.HandleTemplateApplied(e.NameScope);
+   }
+
+   void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
+   {
+      _svg = scope.Find<Avalonia.Svg.Svg>(EmptyIndicatorTheme.SvgImagePart);
+      SetupImage();
    }
 
    #endregion

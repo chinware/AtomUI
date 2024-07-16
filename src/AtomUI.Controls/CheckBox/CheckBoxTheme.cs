@@ -12,7 +12,7 @@ public class CheckBoxTheme : ControlTheme
    {
    }
    
-   public override void BuildStyles()
+   protected override void BuildStyles()
    {
       Add(new Setter(CheckBox.CheckIndicatorSizeProperty, new DynamicResourceExtension(CheckBoxResourceKey.CheckIndicatorSize)));
       Add(new Setter(CheckBox.PaddingInlineProperty, new DynamicResourceExtension(GlobalResourceKey.PaddingXS)));

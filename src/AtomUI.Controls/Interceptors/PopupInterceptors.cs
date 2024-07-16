@@ -102,7 +102,6 @@ internal static class PopupInterceptorsRegister
 {
    public static void Register(Harmony harmony)
    {
-      Console.WriteLine("Register");
       RegisterPopupFlyoutBaseCreatePopup(harmony);
       RegisterPopupUpdateHostPositionPrefix(harmony);
       RegisterPopupUpdateHostPositionPostfix(harmony);
