@@ -18,7 +18,6 @@ namespace AtomUI.Controls;
 [ControlThemeProvider]
 internal class AlertTheme : ControlTheme
 {
-   public const string ContentPresenterPart = "PART_ContentPresenter";
    public const string CloseBtnPart = "PART_CloseBtn";
    public const string InfoIconPart = "PART_InfoIcon";
    public const string DescriptionLabelPart = "PART_DescriptionLabel";
@@ -258,10 +257,7 @@ internal class AlertTheme : ControlTheme
 
    private Border CreateBorderContainer(Alert alert, INameScope scope)
    {
-      var borderContainer = new Border()
-      {
-         Name = ContentPresenterPart
-      };
+      var borderContainer = new Border();
       
       BindUtils.RelayBind(alert, Alert.BackgroundProperty, borderContainer, ContentPresenter.BackgroundProperty);
       BindUtils.RelayBind(alert, Alert.BorderBrushProperty, borderContainer, ContentPresenter.BorderBrushProperty);
@@ -282,21 +278,9 @@ internal class AlertTheme : ControlTheme
       BindUtils.CreateTokenBinding(closeBtn, IconButton.WidthProperty, GlobalResourceKey.IconSizeSM);
       BindUtils.CreateTokenBinding(closeBtn, IconButton.HeightProperty, GlobalResourceKey.IconSizeSM);
       BindUtils.CreateTokenBinding(closeBtn, IconButton.MarginProperty, AlertResourceKey.ExtraElementMargin);
-      
-      closeBtn.Bind(IconButton.IsVisibleProperty, new Binding("IsClosable")
-      {
-         RelativeSource = new RelativeSource()
-         {
-            Mode = RelativeSourceMode.TemplatedParent
-         }
-      });
-      closeBtn.Bind(IconButton.IconProperty, new Binding("CloseIcon")
-      {
-         RelativeSource = new RelativeSource()
-         {
-            Mode = RelativeSourceMode.TemplatedParent
-         }
-      });
+
+      CreateTemplateParentBinding(closeBtn, IconButton.IsVisibleProperty, Alert.IsClosableProperty);
+      CreateTemplateParentBinding(closeBtn, IconButton.IconProperty, Alert.CloseIconProperty);
       
       Grid.SetRow(closeBtn, 0);
       Grid.SetColumn(closeBtn, 3);

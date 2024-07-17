@@ -146,6 +146,7 @@ public class RibbonBadge : Control, IControlCustomStyle
    
    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
    {
+      base.OnPropertyChanged(e);
       if (e.Property == IsVisibleProperty ||
           e.Property == BadgeIsVisibleProperty) {
          var badgeIsVisible = e.GetNewValue<bool>();

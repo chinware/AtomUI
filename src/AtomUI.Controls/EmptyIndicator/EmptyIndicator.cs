@@ -1,6 +1,7 @@
 ﻿using AtomUI.ColorSystem;
 using AtomUI.Data;
 using AtomUI.Styling;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -74,11 +75,7 @@ public partial class EmptyIndicator : TemplatedControl,
    }
 
    private IControlCustomStyle _customStyle;
-   private ControlTokenBinder _controlTokenBinder;
-   private bool _initialized = false;
-   private StackPanel? _layout;
    private Avalonia.Svg.Svg? _svg;
-   private TextBlock? _description;
 
    static EmptyIndicator()
    {
@@ -92,7 +89,6 @@ public partial class EmptyIndicator : TemplatedControl,
    public EmptyIndicator()
    {
       _customStyle = this;
-      _controlTokenBinder = new ControlTokenBinder(this, EmptyIndicatorToken.ID);
    }
    
    private void CheckImageSource()
@@ -119,13 +115,13 @@ public partial class EmptyIndicator : TemplatedControl,
 
    void IControlCustomStyle.ApplyFixedStyleConfig()
    {
-      _controlTokenBinder.AddControlBinding(EmptyImgHeightTokenProperty, EmptyIndicatorResourceKey.EmptyImgHeight);
-      _controlTokenBinder.AddControlBinding(EmptyImgHeightSMTokenProperty, EmptyIndicatorResourceKey.EmptyImgHeightSM);
-      _controlTokenBinder.AddControlBinding(EmptyImgHeightMDTokenProperty, EmptyIndicatorResourceKey.EmptyImgHeightMD);
-      _controlTokenBinder.AddControlBinding(ColorFillTokenProperty, GlobalResourceKey.ColorFill);
-      _controlTokenBinder.AddControlBinding(ColorFillTertiaryTokenProperty, GlobalResourceKey.ColorFillTertiary);
-      _controlTokenBinder.AddControlBinding(ColorFillQuaternaryTokenProperty, GlobalResourceKey.ColorFillQuaternary);
-      _controlTokenBinder.AddControlBinding(ColorBgContainerTokenProperty, GlobalResourceKey.ColorBgContainer);
+      BindUtils.CreateTokenBinding(this, EmptyImgHeightTokenProperty, EmptyIndicatorResourceKey.EmptyImgHeight);
+      BindUtils.CreateTokenBinding(this, EmptyImgHeightSMTokenProperty, EmptyIndicatorResourceKey.EmptyImgHeightSM);
+      BindUtils.CreateTokenBinding(this, EmptyImgHeightMDTokenProperty, EmptyIndicatorResourceKey.EmptyImgHeightMD);
+      BindUtils.CreateTokenBinding(this, ColorFillTokenProperty, GlobalResourceKey.ColorFill);
+      BindUtils.CreateTokenBinding(this, ColorFillTertiaryTokenProperty, GlobalResourceKey.ColorFillTertiary);
+      BindUtils.CreateTokenBinding(this, ColorFillQuaternaryTokenProperty, GlobalResourceKey.ColorFillQuaternary);
+      BindUtils.CreateTokenBinding(this, ColorBgContainerTokenProperty, GlobalResourceKey.ColorBgContainer);
    }
 
    void IControlCustomStyle.SetupUi()

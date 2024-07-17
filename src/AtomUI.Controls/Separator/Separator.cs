@@ -125,8 +125,6 @@ public partial class Separator : TemplatedControl, IControlCustomStyle
    }
    
    private IControlCustomStyle _customStyle;
-   private ControlTokenBinder _controlTokenBinder;
-   private bool _initialized = false;
    private bool _scalingAwareConfigApplied = false;
    private Label? _titleLabel;
    private const double SEPARATOR_LINE_MIN_PROPORTION = 0.25;
@@ -145,7 +143,6 @@ public partial class Separator : TemplatedControl, IControlCustomStyle
 
    public Separator()
    {
-      _controlTokenBinder = new ControlTokenBinder(this, SeparatorToken.ID);
       _customStyle = this;
       _customStyle.InitOnConstruct();
    }
@@ -174,19 +171,16 @@ public partial class Separator : TemplatedControl, IControlCustomStyle
 
    void IControlCustomStyle.ApplyFixedStyleConfig()
    {
-      _controlTokenBinder.AddControlBinding(TextPaddingInlineTokenProperty, SeparatorResourceKey.TextPaddingInline);
-      _controlTokenBinder.AddControlBinding(OrientationMarginPercentTokenProperty,
-                                            SeparatorResourceKey.OrientationMarginPercent);
-      _controlTokenBinder.AddControlBinding(VerticalMarginInlineTokenProperty,
-                                            SeparatorResourceKey.VerticalMarginInline);
+      BindUtils.CreateTokenBinding(this, TextPaddingInlineTokenProperty, SeparatorResourceKey.TextPaddingInline);
+      BindUtils.CreateTokenBinding(this, OrientationMarginPercentTokenProperty, SeparatorResourceKey.OrientationMarginPercent);
+      BindUtils.CreateTokenBinding(this, VerticalMarginInlineTokenProperty, SeparatorResourceKey.VerticalMarginInline);
    }
 
    void IControlCustomStyle.ApplyRenderScalingAwareStyleConfig()
    {
       if (!_scalingAwareConfigApplied) {
          _scalingAwareConfigApplied = true;
-         _controlTokenBinder.AddControlBinding(LineWidthProperty, GlobalResourceKey.LineWidth, BindingPriority.Style,
-                                               new RenderScaleAwareDoubleConfigure(this));
+         BindUtils.CreateTokenBinding(this, LineWidthProperty, GlobalResourceKey.LineWidth, BindingPriority.Style,new RenderScaleAwareDoubleConfigure(this));
       }
    }
 
