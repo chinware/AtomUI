@@ -3,7 +3,6 @@ using AtomUI.TokenSystem;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Media;
-using Math = System.Math;
 
 namespace AtomUI.Controls;
 
@@ -236,7 +235,7 @@ internal class ButtonToken : AbstractControlDesignToken
       DefaultShadow = new BoxShadow
       {
          OffsetX = 0,
-         OffsetY = controlOutlineWidth,
+         OffsetY = controlOutlineWidth / 2,
          Blur = 3,
          Spread = 0,
          Color = _globalToken.ColorControlOutline

@@ -5,15 +5,18 @@ namespace AtomUI.Controls;
 
 public partial class Button
 {
+   internal static readonly StyledProperty<double> ControlHeightTokenProperty =
+      AvaloniaProperty.Register<Button, double>(
+         nameof(ControlHeight));
+
+   internal double ControlHeight
+   {
+      get => GetValue(ControlHeightTokenProperty);
+      set => SetValue(ControlHeightTokenProperty, value);
+   }
+   
    // Control token 值绑定属性
    // 影响大小的参数，一般不变化，变化了通过触发重新计算大小
-
-   private double _controlHeight;
-   private static readonly DirectProperty<Button, double> ControlHeightTokenProperty =
-      AvaloniaProperty.RegisterDirect<Button, double>(
-         nameof(_controlHeight),
-         o => o._controlHeight,
-         (o, v) => o._controlHeight = v);
    
    private double _paddingXXS;
    private static readonly DirectProperty<Button, double> PaddingXXSTokenProperty =

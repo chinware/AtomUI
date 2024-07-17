@@ -139,9 +139,9 @@ public sealed class PathIcon : Control, ICustomHitTest
 
    static PathIcon()
    {
-      AffectsGeometry(KindProperty, PackageProviderProperty, HeightProperty, WidthProperty);
+      AffectsGeometry(KindProperty, PackageProviderProperty);
+      AffectsMeasure<PathIcon>(HeightProperty, WidthProperty);
       AffectsRender<PathIcon>(IconModeProperty,
-                              NormalFillBrushProperty,
                               FilledBrushProperty,
                               PrimaryFilledBrushProperty,
                               SecondaryFilledBrushProperty);
@@ -204,16 +204,20 @@ public sealed class PathIcon : Control, ICustomHitTest
             _animation = null;
             _animationCancellationTokenSource = null;
          }
-      } else if (change.Property == IconModeProperty) {
-         if (VisualRoot is not null) {
-            SetupFilledBrush();
-         }
+      } else if (change.Property == NormalFillBrushProperty ||
+                 change.Property == ActiveFilledBrushProperty ||
+                 change.Property == SelectedFilledBrushProperty ||
+                 change.Property == DisabledFilledBrushProperty ||
+                 change.Property == PrimaryFilledBrushProperty ||
+                 change.Property == SecondaryFilledBrushProperty ||
+                 change.Property == IconModeProperty) {
+         SetupFilledBrush();
       }
    }
 
    private void SetupFilledBrush()
    {
-      var colorInfo = _iconInfo!.ColorInfo;
+      var colorInfo = _iconInfo?.ColorInfo;
       if (IconMode == IconMode.Normal) {
          if (NormalFilledBrush is not null) {
             FilledBrush = NormalFilledBrush;
@@ -363,9 +367,9 @@ public sealed class PathIcon : Control, ICustomHitTest
       if (_sourceGeometriesData.Count == 0) {
          BuildSourceRenderData();
          SetupFilledBrush();
-         if (Transitions is null) {
-            SetupTransitions();
-         }
+      }
+      if (Transitions is null) {
+         SetupTransitions();
       }
    }
 

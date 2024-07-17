@@ -1,6 +1,5 @@
 ﻿using AtomUI.Styling;
 using Avalonia.Markup.Xaml.MarkupExtensions;
-using Avalonia.Media;
 using Avalonia.Styling;
 
 namespace AtomUI.Controls;
