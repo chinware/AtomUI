@@ -17,10 +17,10 @@
             Title="Type"
             Description="There are primary button, default button, dashed button, text button and link button in antd.">
             <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal">
-                <atom:Button ButtonType="Primary">Primary</atom:Button>
-                <atom:Button>Default</atom:Button>
-                <atom:Button ButtonType="Text">Text</atom:Button>
-                <atom:Button ButtonType="Link">Link</atom:Button>
+                <atom:Button ButtonType="Primary">Primary Button</atom:Button>
+                <atom:Button>Default Button</atom:Button>
+                <atom:Button ButtonType="Text">Text Button</atom:Button>
+                <atom:Button ButtonType="Link">Link Button</atom:Button>
             </WrapPanel>
         </showcase:ShowCaseItem>
         
@@ -98,16 +98,16 @@
             Title="Block Button"
             Description="block property will make the button fit to its parent width.">
             <StackPanel HorizontalAlignment="Stretch" Orientation="Vertical" Margin="10">
-                <atom:Button ButtonType="Primary">
+                <atom:Button ButtonType="Primary" HorizontalAlignment="Stretch">
                     Primary
                 </atom:Button>
-                <atom:Button ButtonType="Default">
+                <atom:Button ButtonType="Default" HorizontalAlignment="Stretch">
                     Default
                 </atom:Button>
-                <atom:Button ButtonType="Text">
+                <atom:Button ButtonType="Text" HorizontalAlignment="Stretch">
                     Text
                 </atom:Button>
-                <atom:Button ButtonType="Link">
+                <atom:Button ButtonType="Link" HorizontalAlignment="Stretch">
                     Link
                 </atom:Button>
             </StackPanel>
