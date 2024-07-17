@@ -1,5 +1,8 @@
-﻿using Avalonia.Controls.Primitives;
+﻿using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
 using Avalonia.Styling;
 
 namespace AtomUI;
@@ -31,4 +34,17 @@ public class ControlTheme : AvaloniaControlTheme
    protected virtual void BuildStyles() {}
    protected virtual void NotifyPreBuild() {}
    protected virtual void NotifyBuildCompleted() {}
+
+   protected static IDisposable CreateTemplateParentBinding(Control control, AvaloniaProperty property, string templateParentPath)
+   {
+      return control.Bind(property, new Binding(templateParentPath)
+      {
+         RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent)
+      });
+   }
+   
+   protected static IDisposable CreateTemplateParentBinding(Control control, AvaloniaProperty property, AvaloniaProperty templateParentProperty)
+   {
+      return CreateTemplateParentBinding(control, property, templateParentProperty.Name);
+   }
 }

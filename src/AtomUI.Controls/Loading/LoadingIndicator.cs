@@ -76,7 +76,6 @@ public partial class LoadingIndicator : Control, ISizeTypeAware, IControlCustomS
 
    private bool _initialized = false;
    private IControlCustomStyle _customStyle;
-   private ControlTokenBinder _controlTokenBinder;
    private Animation? _animation;
    private TextBlock? _textBlock;
    private RenderInfo? _renderInfo;
@@ -101,7 +100,6 @@ public partial class LoadingIndicator : Control, ISizeTypeAware, IControlCustomS
    public LoadingIndicator()
    {
       _customStyle = this;
-      _controlTokenBinder = new ControlTokenBinder(this, LoadingIndicatorToken.ID);
    }
    
    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -267,14 +265,14 @@ public partial class LoadingIndicator : Control, ISizeTypeAware, IControlCustomS
    
    void IControlCustomStyle.ApplyFixedStyleConfig()
    {
-      _controlTokenBinder.AddControlBinding(DotSizeTokenProperty, LoadingIndicatorResourceKey.DotSize);
-      _controlTokenBinder.AddControlBinding(DotSizeSMTokenProperty, LoadingIndicatorResourceKey.DotSizeSM);
-      _controlTokenBinder.AddControlBinding(DotSizeLGTokenProperty, LoadingIndicatorResourceKey.DotSizeLG);
-      _controlTokenBinder.AddControlBinding(IndicatorDurationTokenProperty, LoadingIndicatorResourceKey.IndicatorDuration);
-      _controlTokenBinder.AddControlBinding(FontSizeTokenProperty, GlobalResourceKey.FontSize);
-      _controlTokenBinder.AddControlBinding(MarginXXSTokenProperty, GlobalResourceKey.MarginXXS);
-      _controlTokenBinder.AddControlBinding(ColorPrimaryTokenProperty, GlobalResourceKey.ColorPrimary);
-      _controlTokenBinder.AddControlBinding(_textBlock!, TextBlock.ForegroundProperty, GlobalResourceKey.ColorPrimary);
+      BindUtils.CreateTokenBinding(this, DotSizeTokenProperty, LoadingIndicatorResourceKey.DotSize);
+      BindUtils.CreateTokenBinding(this, DotSizeSMTokenProperty, LoadingIndicatorResourceKey.DotSizeSM);
+      BindUtils.CreateTokenBinding(this, DotSizeLGTokenProperty, LoadingIndicatorResourceKey.DotSizeLG);
+      BindUtils.CreateTokenBinding(this, IndicatorDurationTokenProperty, LoadingIndicatorResourceKey.IndicatorDuration);
+      BindUtils.CreateTokenBinding(this, FontSizeTokenProperty, GlobalResourceKey.FontSize);
+      BindUtils.CreateTokenBinding(this, MarginXXSTokenProperty, GlobalResourceKey.MarginXXS);
+      BindUtils.CreateTokenBinding(this, ColorPrimaryTokenProperty, GlobalResourceKey.ColorPrimary);
+      BindUtils.CreateTokenBinding(_textBlock!, TextBlock.ForegroundProperty, GlobalResourceKey.ColorPrimary);
    }
 
    private void BuildIndicatorAnimation(bool force = false)
@@ -399,11 +397,6 @@ public partial class LoadingIndicator : Control, ISizeTypeAware, IControlCustomS
             context.DrawEllipse(_renderInfo.DotBgBrush, null, itemRect);
          }
       }
-   }
-
-   private void RenderCustomIndicator(DrawingContext context)
-   {
-      
    }
 
    void IControlCustomStyle.PrepareRenderInfo()

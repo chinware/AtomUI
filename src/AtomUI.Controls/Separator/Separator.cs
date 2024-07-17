@@ -4,9 +4,11 @@ using AtomUI.Styling;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
+using Avalonia.Markup.Xaml.Templates;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Metadata;
@@ -20,7 +22,7 @@ public enum SeparatorTitlePosition
    Center
 }
 
-public partial class Separator : StyledControl, IControlCustomStyle
+public partial class Separator : TemplatedControl, IControlCustomStyle
 {
    public static readonly StyledProperty<string?> TitleProperty =
       AvaloniaProperty.Register<Separator, string?>(nameof(Title));
@@ -148,79 +150,35 @@ public partial class Separator : StyledControl, IControlCustomStyle
       _customStyle.InitOnConstruct();
    }
 
-   protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-   {
-      base.OnAttachedToLogicalTree(e);
-      if (!_initialized) {
-         _customStyle.SetupUi();
-         _initialized = true;
-      }
-   }
-
    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
    {
       base.OnPropertyChanged(e);
       _customStyle.HandlePropertyChangedForStyle(e);
    }
-
-   protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+   
+   protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
    {
-      base.OnAttachedToVisualTree(e);
+      base.OnApplyTemplate(e);
+      _customStyle.HandleTemplateApplied(e.NameScope);
+   }
+
+   void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
+   {
+      _titleLabel = scope.Find<Label>(SeparatorTheme.TitlePart);
+      
+      _customStyle.ApplyFixedStyleConfig();
       _customStyle.ApplyRenderScalingAwareStyleConfig();
    }
 
    #region IControlCustomStyle 实现
 
-   void IControlCustomStyle.SetupUi()
-   {
-      _titleLabel = new Label
-      {
-         Content = Title,
-         HorizontalAlignment = HorizontalAlignment.Left,
-         VerticalAlignment = VerticalAlignment.Center,
-         HorizontalContentAlignment = HorizontalAlignment.Center,
-         VerticalContentAlignment = VerticalAlignment.Center,
-         Padding = new Thickness(0)
-      };
-
-      LogicalChildren.Add(_titleLabel);
-      VisualChildren.Add(_titleLabel);
-
-      _customStyle.ApplyFixedStyleConfig();
-   }
-
    void IControlCustomStyle.ApplyFixedStyleConfig()
    {
-      HandleForOrientation();
-      _controlTokenBinder.AddControlBinding(TitleColorProperty, GlobalResourceKey.ColorText);
-      _controlTokenBinder.AddControlBinding(FontSizeProperty, GlobalResourceKey.FontSize);
-      _controlTokenBinder.AddControlBinding(LineColorProperty, GlobalResourceKey.ColorSplit);
-
       _controlTokenBinder.AddControlBinding(TextPaddingInlineTokenProperty, SeparatorResourceKey.TextPaddingInline);
       _controlTokenBinder.AddControlBinding(OrientationMarginPercentTokenProperty,
                                             SeparatorResourceKey.OrientationMarginPercent);
       _controlTokenBinder.AddControlBinding(VerticalMarginInlineTokenProperty,
                                             SeparatorResourceKey.VerticalMarginInline);
-
-      if (_titleLabel is not null) {
-         BindUtils.RelayBind(this, FontSizeProperty, _titleLabel);
-         BindUtils.RelayBind(this, TitleColorProperty, _titleLabel, ForegroundProperty);
-         BindUtils.RelayBind(this, FontStyleProperty, _titleLabel, FontStyleProperty);
-         BindUtils.RelayBind(this, FontWeightProperty, _titleLabel, FontWeightProperty);
-      }
-   }
-
-   private void HandleForOrientation()
-   {
-      if (Orientation == Orientation.Horizontal) {
-         HorizontalAlignment = HorizontalAlignment.Stretch;
-         VerticalAlignment = VerticalAlignment.Center;
-         _titleLabel!.IsVisible = true;
-      } else {
-         HorizontalAlignment = HorizontalAlignment.Center;
-         VerticalAlignment = VerticalAlignment.Center;
-         _titleLabel!.IsVisible = false;
-      }
    }
 
    void IControlCustomStyle.ApplyRenderScalingAwareStyleConfig()
@@ -229,15 +187,6 @@ public partial class Separator : StyledControl, IControlCustomStyle
          _scalingAwareConfigApplied = true;
          _controlTokenBinder.AddControlBinding(LineWidthProperty, GlobalResourceKey.LineWidth, BindingPriority.Style,
                                                new RenderScaleAwareDoubleConfigure(this));
-      }
-   }
-
-   void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
-   {
-      if (e.Property == OrientationProperty) {
-         if (_initialized) {
-            HandleForOrientation();
-         }
       }
    }
 
@@ -341,7 +290,6 @@ public partial class Separator : StyledControl, IControlCustomStyle
          BitmapInterpolationMode = BitmapInterpolationMode.LowQuality,
          TextRenderingMode = TextRenderingMode.Alias
       });
-
       var linePen = new Pen(LineColor, LineWidth);
       var controlRect = new Rect(new Point(0, 0), DesiredSize);
       if (IsDashedLine) {
@@ -392,4 +340,6 @@ public class VerticalSeparator : Separator
    {
       OrientationProperty.OverrideDefaultValue<VerticalSeparator>(Orientation.Vertical);
    }
+   
+   protected override Type StyleKeyOverride => typeof(Separator);
 }

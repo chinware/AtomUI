@@ -17,7 +17,6 @@ public partial class MarqueeLabel : TextBlock,
                                     IControlCustomStyle
 {
    private IControlCustomStyle? _customStyle;
-   private ControlTokenBinder _controlTokenBinder;
    private ControlStyleState _styleState;
    private CancellationTokenSource? _cancellationTokenSource;
    private bool _initialized = false;
@@ -58,7 +57,6 @@ public partial class MarqueeLabel : TextBlock,
    
    public MarqueeLabel()
    {
-      _controlTokenBinder = new ControlTokenBinder(this, MarqueeLabelToken.ID);
       _customStyle = this;
    }
 
@@ -119,8 +117,8 @@ public partial class MarqueeLabel : TextBlock,
 
    void IControlCustomStyle.ApplyFixedStyleConfig()
    {
-      _controlTokenBinder.AddControlBinding(CycleSpaceProperty, MarqueeLabelResourceKey.CycleSpace);
-      _controlTokenBinder.AddControlBinding(MoveSpeedProperty, MarqueeLabelResourceKey.DefaultSpeed);
+      BindUtils.CreateTokenBinding(this, CycleSpaceProperty, MarqueeLabelResourceKey.CycleSpace);
+      BindUtils.CreateTokenBinding(this, MoveSpeedProperty, MarqueeLabelResourceKey.DefaultSpeed);
    }
 
    void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)

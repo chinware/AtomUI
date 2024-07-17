@@ -87,7 +87,7 @@
                 <TextBlock>
                     Item1
                 </TextBlock>
-                <atom:VerticalSeparator/>
+                <atom:VerticalSeparator Title="Right text"/>
                 <TextBlock>
                     Item2
                 </TextBlock>
