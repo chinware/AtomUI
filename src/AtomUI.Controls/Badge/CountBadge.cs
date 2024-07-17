@@ -100,7 +100,6 @@ public partial class CountBadge : Control, IControlCustomStyle
    
    private bool _initialized = false;
    private IControlCustomStyle _customStyle;
-   private ControlTokenBinder _controlTokenBinder;
    private CountBadgeAdorner? _badgeAdorner;
    private AdornerLayer? _adornerLayer;
    private bool _animating = false;
@@ -108,7 +107,6 @@ public partial class CountBadge : Control, IControlCustomStyle
    public CountBadge()
    {
       _customStyle = this;
-      _controlTokenBinder = new ControlTokenBinder(this, BadgeToken.ID);
    }
 
    static CountBadge()
@@ -253,7 +251,7 @@ public partial class CountBadge : Control, IControlCustomStyle
          BindUtils.RelayBind(this, OverflowCountProperty, _badgeAdorner, CountBadgeAdorner.OverflowCountProperty);
          BindUtils.RelayBind(this, CountProperty, _badgeAdorner, CountBadgeAdorner.CountProperty);
       }
-      _controlTokenBinder.AddControlBinding(MotionDurationSlowTokenProperty, GlobalResourceKey.MotionDurationSlow);
+      BindUtils.CreateTokenBinding(this, MotionDurationSlowTokenProperty, GlobalResourceKey.MotionDurationSlow);
    }
    
    private void HandleDecoratedTargetChanged()

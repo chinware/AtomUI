@@ -2,6 +2,7 @@
 using AtomUI.Data;
 using AtomUI.Media;
 using AtomUI.Styling;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Documents;
@@ -121,7 +122,6 @@ internal partial class CountBadgeAdorner : Control, IControlCustomStyle
 
    private bool _initialized = false;
    private IControlCustomStyle _customStyle;
-   private ControlTokenBinder _controlTokenBinder;
    private BoxShadows _boxShadows;
    private Size _countTextSize;
    private string? _countText;
@@ -130,7 +130,6 @@ internal partial class CountBadgeAdorner : Control, IControlCustomStyle
    public CountBadgeAdorner()
    {
       _customStyle = this;
-      _controlTokenBinder = new ControlTokenBinder(this, BadgeToken.ID);
       _formattedTexts = new List<FormattedText>();
    }
 
@@ -154,16 +153,16 @@ internal partial class CountBadgeAdorner : Control, IControlCustomStyle
 
    void IControlCustomStyle.ApplyFixedStyleConfig()
    {
-      _controlTokenBinder.AddControlBinding(IndicatorHeightTokenProperty, BadgeResourceKey.IndicatorHeight);
-      _controlTokenBinder.AddControlBinding(IndicatorHeightSMTokenProperty, BadgeResourceKey.IndicatorHeightSM);
-      _controlTokenBinder.AddControlBinding(TextFontSizeTokenProperty, BadgeResourceKey.TextFontSize);
-      _controlTokenBinder.AddControlBinding(TextFontSizeSMTokenProperty, BadgeResourceKey.TextFontSizeSM);
-      _controlTokenBinder.AddControlBinding(TextFontWeightTokenProperty, BadgeResourceKey.TextFontWeight);
-      _controlTokenBinder.AddControlBinding(BadgeColorTokenProperty, BadgeResourceKey.BadgeColor);
-      _controlTokenBinder.AddControlBinding(BadgeShadowSizeTokenProperty, BadgeResourceKey.BadgeShadowSize);
-      _controlTokenBinder.AddControlBinding(BadgeShadowColorTokenProperty, BadgeResourceKey.BadgeShadowColor);
-      _controlTokenBinder.AddControlBinding(BadgeTextColorTokenProperty, BadgeResourceKey.BadgeTextColor);
-      _controlTokenBinder.AddControlBinding(PaddingXSTokenProperty, GlobalResourceKey.PaddingXS);
+      BindUtils.CreateTokenBinding(this, IndicatorHeightTokenProperty, BadgeResourceKey.IndicatorHeight);
+      BindUtils.CreateTokenBinding(this, IndicatorHeightSMTokenProperty, BadgeResourceKey.IndicatorHeightSM);
+      BindUtils.CreateTokenBinding(this, TextFontSizeTokenProperty, BadgeResourceKey.TextFontSize);
+      BindUtils.CreateTokenBinding(this, TextFontSizeSMTokenProperty, BadgeResourceKey.TextFontSizeSM);
+      BindUtils.CreateTokenBinding(this, TextFontWeightTokenProperty, BadgeResourceKey.TextFontWeight);
+      BindUtils.CreateTokenBinding(this, BadgeColorTokenProperty, BadgeResourceKey.BadgeColor);
+      BindUtils.CreateTokenBinding(this, BadgeShadowSizeTokenProperty, BadgeResourceKey.BadgeShadowSize);
+      BindUtils.CreateTokenBinding(this, BadgeShadowColorTokenProperty, BadgeResourceKey.BadgeShadowColor);
+      BindUtils.CreateTokenBinding(this, BadgeTextColorTokenProperty, BadgeResourceKey.BadgeTextColor);
+      BindUtils.CreateTokenBinding(this, PaddingXSTokenProperty, GlobalResourceKey.PaddingXS);
    }
 
    private void BuildBoxShadow()

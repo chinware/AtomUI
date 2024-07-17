@@ -85,7 +85,6 @@ public partial class DotBadge : Control, IControlCustomStyle
    
    private bool _initialized = false;
    private IControlCustomStyle _customStyle;
-   private ControlTokenBinder _controlTokenBinder;
    private DotBadgeAdorner? _dotBadgeAdorner;
    private AdornerLayer? _adornerLayer;
    private bool _animating = false;
@@ -93,7 +92,6 @@ public partial class DotBadge : Control, IControlCustomStyle
    public DotBadge()
    {
       _customStyle = this;
-      _controlTokenBinder = new ControlTokenBinder(this, BadgeToken.ID);
    }
 
    static DotBadge()
@@ -214,7 +212,7 @@ public partial class DotBadge : Control, IControlCustomStyle
          BindUtils.RelayBind(this, TextProperty, _dotBadgeAdorner, DotBadgeAdorner.TextProperty);
          BindUtils.RelayBind(this, OffsetProperty, _dotBadgeAdorner, DotBadgeAdorner.OffsetProperty);
       }
-      _controlTokenBinder.AddControlBinding(MotionDurationSlowTokenProperty, GlobalResourceKey.MotionDurationSlow);
+      BindUtils.CreateTokenBinding(this, MotionDurationSlowTokenProperty, GlobalResourceKey.MotionDurationSlow);
    }
 
    private void HandleDecoratedTargetChanged()

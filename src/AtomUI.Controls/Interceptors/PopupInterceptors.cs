@@ -37,30 +37,34 @@ internal static class PopupFlyoutBaseInterceptor
    
    public static bool CreatePopupPrefixInterceptor(PopupFlyoutBase __instance, ref AvaloniaPopup __result)
    {
-      var popup = new Popup
-      {
-         WindowManagerAddShadowHint = false,
-         IsLightDismissEnabled = false,
-      };
-      OpenedEventInfo.AddEventHandler(popup, Delegate.CreateDelegate(typeof(EventHandler), __instance, OnPopupOpenedMemberInfo));
-      EventHandler<CancelEventArgs> closingDelegate = (object? sender, CancelEventArgs e) =>
-      {
-         OnPopupClosingMethodInfo.Invoke(__instance, new object?[] { sender, e });
-         if (!e.Cancel) {
-            if (popup._popupHost is not null) {
-               popup.NotifyAboutToClosing();
+      if (typeof(PopupFlyoutBase).IsAssignableFrom(__instance.GetType())) {
+         var popup = new Popup
+         {
+            WindowManagerAddShadowHint = false,
+            IsLightDismissEnabled = false,
+         };
+         OpenedEventInfo.AddEventHandler(popup, Delegate.CreateDelegate(typeof(EventHandler), __instance, OnPopupOpenedMemberInfo));
+         EventHandler<CancelEventArgs> closingDelegate = (object? sender, CancelEventArgs e) =>
+         {
+            OnPopupClosingMethodInfo.Invoke(__instance, new object?[] { sender, e });
+            if (!e.Cancel) {
+               if (popup._popupHost is not null) {
+                  popup.NotifyAboutToClosing();
+               }
             }
-         }
-      };
-      ClosingEventInfo.AddMethod!.Invoke(popup, new object?[]
-      {
-         closingDelegate
-      });
-      ClosedEventInfo.AddEventHandler(popup, Delegate.CreateDelegate(typeof(EventHandler<EventArgs>), __instance, OnPopupClosedMemberInfo));
-      KeyUpEventInfo.AddEventHandler(popup, Delegate.CreateDelegate(typeof(EventHandler<KeyEventArgs>), __instance, OnPlacementTargetOrPopupKeyUpMethodInfo));
-      __result = popup;
-      __instance.NotifyPopupCreated(popup);
-      return false;
+         };
+         ClosingEventInfo.AddMethod!.Invoke(popup, new object?[]
+         {
+            closingDelegate
+         });
+         ClosedEventInfo.AddEventHandler(popup, Delegate.CreateDelegate(typeof(EventHandler<EventArgs>), __instance, OnPopupClosedMemberInfo));
+         KeyUpEventInfo.AddEventHandler(popup, Delegate.CreateDelegate(typeof(EventHandler<KeyEventArgs>), __instance, OnPlacementTargetOrPopupKeyUpMethodInfo));
+         __result = popup;
+         __instance.NotifyPopupCreated(popup);
+         return false;
+      }
+
+      return true;
    }
 
    public static void UpdateHostPositionPostfixInterceptor(AbstractPopup __instance, IPopupHost popupHost, Control placementTarget)
@@ -72,14 +76,20 @@ internal static class PopupFlyoutBaseInterceptor
    
    public static bool UpdateHostPositionPrefixInterceptor(AbstractPopup __instance, IPopupHost popupHost, Control placementTarget)
    {
-      __instance.NotifyAboutToUpdateHostPosition(popupHost, placementTarget);
+      if (typeof(AbstractPopup).IsAssignableFrom(__instance.GetType())) {
+        __instance.NotifyAboutToUpdateHostPosition(popupHost, placementTarget);
+      }
       return true;
    }
 
    public static bool PositionPopupInterceptor(PopupFlyoutBase __instance, bool showAtPointer)
    {
-      __instance.NotifyPositionPopup(showAtPointer);
-      return false;
+      if (typeof(PopupFlyoutBase).IsAssignableFrom(__instance.GetType())) {
+         __instance.NotifyPositionPopup(showAtPointer);
+         return false;
+      }
+
+      return true;
    }
 }
 

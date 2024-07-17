@@ -23,7 +23,7 @@ namespace AtomUI.Controls;
 
 using AvaloniaWin = Avalonia.Controls.Window;
 
-[PseudoClasses(":open")]
+[PseudoClasses(StdPseudoClass.Open)]
 public partial class ToolTip : StyledControl, 
                                IShadowMaskInfoProvider,
                                IControlCustomStyle
@@ -657,7 +657,7 @@ public partial class ToolTip : StyledControl,
 
    private void UpdatePseudoClasses(bool newValue)
    {
-      PseudoClasses.Set(":open", newValue);
+      PseudoClasses.Set(StdPseudoClass.Open, newValue);
    }
 
    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)

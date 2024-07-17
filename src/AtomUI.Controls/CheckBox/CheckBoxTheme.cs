@@ -49,24 +49,24 @@ public class CheckBoxTheme : ControlTheme
       enabledStyle.Add(new Setter(CheckBox.IndicatorBorderBrushProperty, new DynamicResourceExtension(GlobalResourceKey.ColorBorder)));
       
       // 选中
-      var checkedStyle = new Style(selector => selector.Nesting().Class(":checked"));
+      var checkedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Checked));
       checkedStyle.Setters.Add(new Setter(CheckBox.IndicatorBackgroundProperty, new DynamicResourceExtension(GlobalResourceKey.ColorPrimary)));
       checkedStyle.Setters.Add(new Setter(CheckBox.IndicatorBorderBrushProperty, new DynamicResourceExtension(GlobalResourceKey.ColorPrimary)));
       
       // 选中 hover
-      var checkedHoverStyle = new Style(selector => selector.Nesting().Class(":pointerover"));
+      var checkedHoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
       checkedHoverStyle.Setters.Add(new Setter(CheckBox.IndicatorBackgroundProperty, new DynamicResourceExtension(GlobalResourceKey.ColorPrimaryHover)));
       checkedHoverStyle.Setters.Add(new Setter(CheckBox.IndicatorBorderBrushProperty, new DynamicResourceExtension(GlobalResourceKey.ColorPrimaryHover)));
       checkedStyle.Add(checkedHoverStyle);
       enabledStyle.Add(checkedStyle);
       
       // 没选中
-      var unCheckedStyle = new Style(selector => selector.Nesting().Class(":pointerover"));
+      var unCheckedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
       unCheckedStyle.Setters.Add(new Setter(CheckBox.IndicatorBorderBrushProperty, new DynamicResourceExtension(GlobalResourceKey.ColorPrimaryHover)));
       enabledStyle.Add(unCheckedStyle);
       
       // 中间状态
-      var indeterminateStyle = new Style(selector => selector.Nesting().Class(":indeterminate:pointerover"));
+      var indeterminateStyle = new Style(selector => selector.Nesting().Class($"{StdPseudoClass.Indeterminate}{StdPseudoClass.PointerOver}"));
       indeterminateStyle.Setters.Add(new Setter(CheckBox.IndicatorBorderBrushProperty, new DynamicResourceExtension(GlobalResourceKey.ColorPrimaryHover)));
       enabledStyle.Add(indeterminateStyle);
       

@@ -81,7 +81,6 @@ public class PrimaryButtonTheme : BaseButtonTheme
       // 正常状态
       ghostStyle.Setters.Add(new Setter(Button.ForegroundProperty, new DynamicResourceExtension(GlobalResourceKey.ColorPrimary)));
       ghostStyle.Setters.Add(new Setter(Button.BorderBrushProperty, new DynamicResourceExtension(GlobalResourceKey.ColorPrimary)));
-      
        
       // 正常 hover
       {
@@ -102,7 +101,7 @@ public class PrimaryButtonTheme : BaseButtonTheme
       // 危险按钮状态
       var dangerStyle = new Style(selector => selector.Nesting().PropertyEquals(Button.IsDangerProperty, true));
       dangerStyle.Setters.Add(new Setter(Button.ForegroundProperty, new DynamicResourceExtension(GlobalResourceKey.ColorError)));
-      dangerStyle.Setters.Add(new Setter(Button.BackgroundProperty, new DynamicResourceExtension(GlobalResourceKey.ColorError)));
+      dangerStyle.Setters.Add(new Setter(Button.BorderBrushProperty, new DynamicResourceExtension(GlobalResourceKey.ColorError)));
       
       // 危险按钮状态 hover
       {

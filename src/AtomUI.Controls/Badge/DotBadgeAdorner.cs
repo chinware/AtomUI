@@ -1,5 +1,5 @@
-﻿using AtomUI.Data;
-using AtomUI.Styling;
+﻿using AtomUI.Styling;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
@@ -93,7 +93,6 @@ internal partial class DotBadgeAdorner : Control, IControlCustomStyle
    
    private bool _initialized = false;
    private IControlCustomStyle _customStyle;
-   private ControlTokenBinder _controlTokenBinder;
    private Label? _textLabel;
    private BoxShadows _boxShadows;
    // 不知道为什么这个值会被 AdornerLayer 重写
@@ -109,7 +108,6 @@ internal partial class DotBadgeAdorner : Control, IControlCustomStyle
    public DotBadgeAdorner()
    {
       _customStyle = this;
-      _controlTokenBinder = new ControlTokenBinder(this, BadgeToken.ID);
    }
    
    void IControlCustomStyle.SetupUi()
@@ -133,18 +131,18 @@ internal partial class DotBadgeAdorner : Control, IControlCustomStyle
 
    void IControlCustomStyle.ApplyFixedStyleConfig()
    {
-      _controlTokenBinder.AddControlBinding(ColorTextPlaceholderTokenProperty, GlobalResourceKey.ColorTextPlaceholder);
-      _controlTokenBinder.AddControlBinding(ColorErrorTokenProperty, GlobalResourceKey.ColorError);
-      _controlTokenBinder.AddControlBinding(ColorWarningTokenProperty, GlobalResourceKey.ColorWarning);
-      _controlTokenBinder.AddControlBinding(ColorSuccessTokenProperty, GlobalResourceKey.ColorSuccess);
-      _controlTokenBinder.AddControlBinding(ColorInfoTokenProperty, GlobalResourceKey.ColorInfo);
-      _controlTokenBinder.AddControlBinding(MarginXSTokenProperty, GlobalResourceKey.MarginXS);
+      BindUtils.CreateTokenBinding(this, ColorTextPlaceholderTokenProperty, GlobalResourceKey.ColorTextPlaceholder);
+      BindUtils.CreateTokenBinding(this, ColorErrorTokenProperty, GlobalResourceKey.ColorError);
+      BindUtils.CreateTokenBinding(this, ColorWarningTokenProperty, GlobalResourceKey.ColorWarning);
+      BindUtils.CreateTokenBinding(this, ColorSuccessTokenProperty, GlobalResourceKey.ColorSuccess);
+      BindUtils.CreateTokenBinding(this, ColorInfoTokenProperty, GlobalResourceKey.ColorInfo);
+      BindUtils.CreateTokenBinding(this, MarginXSTokenProperty, GlobalResourceKey.MarginXS);
       
-      _controlTokenBinder.AddControlBinding(DotSizeTokenProperty, BadgeResourceKey.DotSize);
-      _controlTokenBinder.AddControlBinding(StatusSizeTokenProperty, BadgeResourceKey.StatusSize);
-      _controlTokenBinder.AddControlBinding(BadgeColorTokenProperty, BadgeResourceKey.BadgeColor);
-      _controlTokenBinder.AddControlBinding(BadgeShadowSizeTokenProperty, BadgeResourceKey.BadgeShadowSize);
-      _controlTokenBinder.AddControlBinding(BadgeShadowColorTokenProperty, BadgeResourceKey.BadgeShadowColor);
+      BindUtils.CreateTokenBinding(this, DotSizeTokenProperty, BadgeResourceKey.DotSize);
+      BindUtils.CreateTokenBinding(this, StatusSizeTokenProperty, BadgeResourceKey.StatusSize);
+      BindUtils.CreateTokenBinding(this, BadgeColorTokenProperty, BadgeResourceKey.BadgeColor);
+      BindUtils.CreateTokenBinding(this, BadgeShadowSizeTokenProperty, BadgeResourceKey.BadgeShadowSize);
+      BindUtils.CreateTokenBinding(this, BadgeShadowColorTokenProperty, BadgeResourceKey.BadgeShadowColor);
    }
    
    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)

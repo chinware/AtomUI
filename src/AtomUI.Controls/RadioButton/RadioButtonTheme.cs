@@ -39,16 +39,16 @@ public class RadioButtonTheme : ControlTheme
 
       
       // 选中
-      var checkedStyle = new Style(selector => selector.Nesting().Class(":checked"));
+      var checkedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Checked));
       checkedStyle.Setters.Add(new Setter(RadioButton.RadioBorderBrushProperty, new DynamicResourceExtension(GlobalResourceKey.ColorPrimary)));
       checkedStyle.Setters.Add(new Setter(RadioButton.RadioBackgroundProperty, new DynamicResourceExtension(GlobalResourceKey.ColorPrimary)));
       
       enabledStyle.Add(checkedStyle);
       
       // 没选中
-      var unCheckedStyle = new Style(selector => selector.Nesting().Not(x=> x.Nesting().Class(":checked")));
+      var unCheckedStyle = new Style(selector => selector.Nesting().Not(x=> x.Nesting().Class(StdPseudoClass.Checked)));
       unCheckedStyle.Setters.Add(new Setter(RadioButton.RadioBackgroundProperty, new DynamicResourceExtension(GlobalResourceKey.ColorBgContainer)));
-      var unCheckedHoverStyle = new Style(selector => selector.Nesting().Class(":pointerover"));
+      var unCheckedHoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
       unCheckedHoverStyle.Setters.Add(new Setter(RadioButton.RadioBorderBrushProperty, new DynamicResourceExtension(GlobalResourceKey.ColorPrimary)));
       unCheckedStyle.Add(unCheckedHoverStyle);
       

@@ -3,6 +3,7 @@ using AtomUI.ColorSystem;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.Styling;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
@@ -16,7 +17,6 @@ internal partial class RibbonBadgeAdorner : Control, IControlCustomStyle
 {
    private bool _initialized = false;
    private IControlCustomStyle _customStyle;
-   private ControlTokenBinder _controlTokenBinder;
    private TextBlock? _textBlock;
    private Geometry? _cornerGeometry;
    private readonly BorderRenderHelper _borderRenderHelper;
@@ -102,7 +102,6 @@ internal partial class RibbonBadgeAdorner : Control, IControlCustomStyle
    public RibbonBadgeAdorner()
    {
       _customStyle = this;
-      _controlTokenBinder = new ControlTokenBinder(this, BadgeToken.ID);
       _borderRenderHelper = new BorderRenderHelper();
    }
 
@@ -133,37 +132,33 @@ internal partial class RibbonBadgeAdorner : Control, IControlCustomStyle
 
    void IControlCustomStyle.ApplyFixedStyleConfig()
    {
-      _controlTokenBinder.AddControlBinding(BadgeRibbonOffsetTokenProperty, BadgeResourceKey.BadgeRibbonOffset);
-      _controlTokenBinder.AddControlBinding(MarginXSTokenProperty, GlobalResourceKey.MarginXS);
-      _controlTokenBinder.AddControlBinding(ColorPrimaryTokenProperty, GlobalResourceKey.ColorPrimary);
-      _controlTokenBinder.AddControlBinding(BadgeRibbonCornerTransformTokenProperty,
-                                            BadgeResourceKey.BadgeRibbonCornerTransform);
-      _controlTokenBinder.AddControlBinding(BadgeRibbonCornerDarkenAmountTokenProperty,
-                                            BadgeResourceKey.BadgeRibbonCornerDarkenAmount);
-      _controlTokenBinder.AddControlBinding(BorderRadiusSMTokenProperty, GlobalResourceKey.BorderRadiusSM);
+      BindUtils.CreateTokenBinding(this, BadgeRibbonOffsetTokenProperty, BadgeResourceKey.BadgeRibbonOffset);
+      BindUtils.CreateTokenBinding(this, MarginXSTokenProperty, GlobalResourceKey.MarginXS);
+      BindUtils.CreateTokenBinding(this, ColorPrimaryTokenProperty, GlobalResourceKey.ColorPrimary);
+      BindUtils.CreateTokenBinding(this, BadgeRibbonCornerTransformTokenProperty,
+                                   BadgeResourceKey.BadgeRibbonCornerTransform);
+      BindUtils.CreateTokenBinding(this, BadgeRibbonCornerDarkenAmountTokenProperty,
+                                   BadgeResourceKey.BadgeRibbonCornerDarkenAmount);
+      BindUtils.CreateTokenBinding(this, BorderRadiusSMTokenProperty, GlobalResourceKey.BorderRadiusSM);
 
       if (_textBlock is not null) {
-         _controlTokenBinder.AddControlBinding(_textBlock, TextBlock.ForegroundProperty,
-                                               GlobalResourceKey.ColorTextLightSolid);
-         _controlTokenBinder.AddControlBinding(_textBlock, TextBlock.LineHeightProperty,
-                                               BadgeResourceKey.BadgeFontHeight);
-         _controlTokenBinder.AddControlBinding(_textBlock, TextBlock.PaddingProperty, GlobalResourceKey.PaddingXS,
-                                               BindingPriority.Style,
-                                               observable =>
-                                               {
-                                                  return observable.Select(o =>
-                                                  {
-                                                     if (o is not null) {
-                                                        var value = (double)o;
-                                                        return new Thickness(value, 0);
-                                                     }
-                                                
-                                                     return o;
-                                                  });
-                                               });
+         BindUtils.CreateTokenBinding(_textBlock, TextBlock.ForegroundProperty,
+                                      GlobalResourceKey.ColorTextLightSolid);
+         BindUtils.CreateTokenBinding(_textBlock, TextBlock.LineHeightProperty,
+                                      BadgeResourceKey.BadgeFontHeight);
+         BindUtils.CreateTokenBinding(_textBlock, TextBlock.PaddingProperty, GlobalResourceKey.PaddingXS,
+                                      BindingPriority.Template,
+                                      o =>
+                                      {
+                                         if (o is double value) {
+                                            return new Thickness(value, 0);
+                                         }
+
+                                         return o;
+                                      });
       }
    }
-   
+
    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
    {
       base.OnAttachedToVisualTree(e);
@@ -180,6 +175,7 @@ internal partial class RibbonBadgeAdorner : Control, IControlCustomStyle
          targetHeight = size.Height + _cornerGeometry?.Bounds.Height ?? 0;
          targetWidth = size.Width;
       }
+
       return new Size(targetWidth, targetHeight);
    }
 
@@ -204,24 +200,26 @@ internal partial class RibbonBadgeAdorner : Control, IControlCustomStyle
 
    public override void Render(DrawingContext context)
    {
-     
       var backgroundBrush = (SolidColorBrush)(RibbonColor ?? _colorPrimaryToken)!;
       {
          var textRect = GetTextRect();
          using var state = context.PushTransform(Matrix.CreateTranslation(textRect.X, textRect.Y));
-         
+
          _borderRenderHelper.Render(context,
                                     borderThickness: new Thickness(0),
                                     backgroundSizing: BackgroundSizing.OuterBorderEdge,
                                     finalSize: textRect.Size,
                                     cornerRadius: new CornerRadius(topLeft: _borderRadiusSMToken.TopLeft,
                                                                    topRight: _borderRadiusSMToken.TopRight,
-                                                                   bottomLeft: Placement == RibbonBadgePlacement.Start ? 0 : _borderRadiusSMToken.BottomLeft,
-                                                                   bottomRight: Placement == RibbonBadgePlacement.End ? 0 : _borderRadiusSMToken.BottomRight),
+                                                                   bottomLeft: Placement == RibbonBadgePlacement.Start
+                                                                      ? 0
+                                                                      : _borderRadiusSMToken.BottomLeft,
+                                                                   bottomRight: Placement == RibbonBadgePlacement.End
+                                                                      ? 0
+                                                                      : _borderRadiusSMToken.BottomRight),
                                     background: backgroundBrush,
                                     borderBrush: null,
                                     boxShadows: new BoxShadows());
-      
       }
       {
          var cornerRect = GetCornerRect();
@@ -263,7 +261,7 @@ internal partial class RibbonBadgeAdorner : Control, IControlCustomStyle
       var offsetX = 0d;
       var offsetY = 0d;
       if (!IsAdornerMode) {
-          offsetY = DesiredSize.Height - targetHeight;
+         offsetY = DesiredSize.Height - targetHeight;
          if (Placement == RibbonBadgePlacement.End) {
             offsetX = DesiredSize.Width - targetWidth;
          }
@@ -275,6 +273,7 @@ internal partial class RibbonBadgeAdorner : Control, IControlCustomStyle
 
          offsetY = textRect.Bottom;
       }
+
       return new Rect(new Point(offsetX, offsetY), new Size(targetWidth, targetHeight));
    }
 
@@ -297,9 +296,11 @@ internal partial class RibbonBadgeAdorner : Control, IControlCustomStyle
          if (_badgeRibbonCornerTransformToken is not null) {
             transforms.Children.Add(_badgeRibbonCornerTransformToken);
          }
+
          if (Placement == RibbonBadgePlacement.Start) {
             transforms.Children.Add(new ScaleTransform(-1, 1));
          }
+
          _cornerGeometry.Transform = transforms;
       }
    }

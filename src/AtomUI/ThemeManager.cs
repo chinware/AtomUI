@@ -263,7 +263,9 @@ public class ThemeManager : Styles, IThemeManager
          foreach (var item in controlThemeProviders) {
             if (item is ControlTheme controlTheme) {
                controlTheme.Build();
-               resources.Add(controlTheme.TargetType!, controlTheme);
+               object? resourceKey = controlTheme.ThemeResourceKey();
+               resourceKey ??= controlTheme.TargetType!;
+               resources.Add(resourceKey, controlTheme);
             }
          }
       }
