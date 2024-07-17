@@ -1,5 +1,4 @@
-﻿using AtomUI.Data;
-using AtomUI.Icon;
+﻿using AtomUI.Icon;
 using AtomUI.Styling;
 using AtomUI.Utils;
 using Avalonia;

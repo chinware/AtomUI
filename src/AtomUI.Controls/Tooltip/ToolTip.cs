@@ -24,7 +24,7 @@ namespace AtomUI.Controls;
 using AvaloniaWin = Avalonia.Controls.Window;
 
 [PseudoClasses(StdPseudoClass.Open)]
-public partial class ToolTip : StyledControl, 
+public partial class ToolTip : TemplatedControl, 
                                IShadowMaskInfoProvider,
                                IControlCustomStyle
 {
@@ -49,9 +49,8 @@ public partial class ToolTip : StyledControl,
          typeof(ThemeVariant).GetFieldInfoOrThrow("RequestedThemeVariantProperty",
                                                   BindingFlags.Static | BindingFlags.NonPublic);
       RequestedThemeVariantProperty = (StyledProperty<ThemeVariant?>)requestedThemeVariantProperty.GetValue(null)!;
-      AffectsRender<ToolTip>(DefaultBgTokenProperty,
-                                ForegroundProperty,
-                                BackgroundProperty);
+      AffectsRender<ToolTip>(ForegroundProperty,
+                             BackgroundProperty);
       AffectsArrange<ToolTip>(FlipPlacementProperty);
    }
    
@@ -468,7 +467,7 @@ public partial class ToolTip : StyledControl,
       
       var marginToAnchor = GetMarginToAnchor(control);
       if (double.IsNaN(marginToAnchor)) {
-         marginToAnchor = _marginXXS / 2;
+         marginToAnchor = _marginXXSToken / 2;
       }
       
       var placement = GetPlacement(control);
@@ -542,7 +541,7 @@ public partial class ToolTip : StyledControl,
       var topLevel = TopLevel.GetTopLevel(placementTarget);
 
       var motionActor =
-         new PopupMotionActor(_shadows, positionInfo.Offset, positionInfo.Scaling, contentControl, motion);
+         new PopupMotionActor(_shadowsToken, positionInfo.Offset, positionInfo.Scaling, contentControl, motion);
       motionActor.DispatchInSceneLayer = true;
       motionActor.SceneParent = topLevel;
       motionActor.Completed += (sender, args) =>
@@ -607,7 +606,7 @@ public partial class ToolTip : StyledControl,
       UIStructureUtils.SetVisualParent(popup.Child, null);
       UIStructureUtils.SetVisualParent(popup.Child, null);
 
-      var motionActor = new PopupMotionActor(_shadows, _popupPositionInfo.Offset, _popupPositionInfo.Scaling,
+      var motionActor = new PopupMotionActor(_shadowsToken, _popupPositionInfo.Offset, _popupPositionInfo.Scaling,
                                              popup.Child, motion);
       motionActor.DispatchInSceneLayer = true;
       motionActor.SceneParent = placementToplevel;
@@ -669,43 +668,34 @@ public partial class ToolTip : StyledControl,
       }
    }
    
+   protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+   {
+      base.OnApplyTemplate(e);
+      _customStyle.HandleTemplateApplied(e.NameScope);
+   }
+
+   void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
+   {
+      _arrowDecoratedBox = scope.Find<ArrowDecoratedBox>(ToolTipTheme.ToolTipContainerPart);
+      _customStyle.ApplyFixedStyleConfig();
+   }
+   
    #region IControlCustomStyle 实现
    void IControlCustomStyle.SetupUi()
    {
       Background = new SolidColorBrush(Colors.Transparent);
-      _arrowDecoratedBox = new ArrowDecoratedBox();
-      if (Content is string text) {
-         _arrowDecoratedBox.Child = new TextBlock
-         {
-            Text = text,
-            VerticalAlignment = VerticalAlignment.Center,
-            HorizontalAlignment = HorizontalAlignment.Center,
-            TextWrapping = TextWrapping.Wrap,
-         };
-      } else if (Content is Control control) {
-         _arrowDecoratedBox.Child = control;
-      }
-
-      ((ISetLogicalParent)_arrowDecoratedBox).SetParent(this);
-      VisualChildren.Add(_arrowDecoratedBox);
-      _customStyle.ApplyFixedStyleConfig();
+      BindUtils.CreateTokenBinding(this, ThemeProperty, typeof(ToolTip));
+      // 手动提前应用模板
+      ApplyStyling();
+      ApplyTemplate();
    }
 
    void IControlCustomStyle.ApplyFixedStyleConfig()
    {
       if (_arrowDecoratedBox is not null) {
-         _controlTokenBinder.AddControlBinding(_arrowDecoratedBox, FontSizeProperty, GlobalResourceKey.FontSize);
-         _controlTokenBinder.AddControlBinding(_arrowDecoratedBox, MaxWidthProperty, ToolTipResourceKey.ToolTipMaxWidth);
-         _controlTokenBinder.AddControlBinding(_arrowDecoratedBox, BackgroundProperty, ToolTipResourceKey.ToolTipBackground);
-         _controlTokenBinder.AddControlBinding(_arrowDecoratedBox, ForegroundProperty, ToolTipResourceKey.ToolTipColor);
-         _controlTokenBinder.AddControlBinding(_arrowDecoratedBox, MinHeightProperty, GlobalResourceKey.ControlHeight);
-         _controlTokenBinder.AddControlBinding(_arrowDecoratedBox, PaddingProperty, ToolTipResourceKey.ToolTipPadding);
          _controlTokenBinder.AddControlBinding(MarginXXSTokenProperty, GlobalResourceKey.MarginXXS);
          _controlTokenBinder.AddControlBinding(MotionDurationTokenProperty, GlobalResourceKey.MotionDurationMid);
          _controlTokenBinder.AddControlBinding(ShadowsTokenProperty, GlobalResourceKey.BoxShadowsSecondary);
-         _controlTokenBinder.AddControlBinding(_arrowDecoratedBox, ArrowDecoratedBox.CornerRadiusProperty, ToolTipResourceKey.BorderRadiusOuter);
-         // TODO 生命周期一样还需要管理起来吗？
-         BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, _arrowDecoratedBox, ArrowDecoratedBox.IsShowArrowProperty);
       }
    }
    

@@ -114,39 +114,26 @@ public partial class ToolTip
    // 私有属性
    private static StyledProperty<ThemeVariant?> RequestedThemeVariantProperty;
    
-   private static readonly StyledProperty<bool> IsShowArrowEffectiveProperty =
+   internal static readonly StyledProperty<bool> IsShowArrowEffectiveProperty =
       ArrowDecoratedBox.IsShowArrowProperty.AddOwner<ToolTip>();
    
    /// <summary>
    /// 是否实际显示箭头
    /// </summary>
-   public bool IsShowArrowEffective
+   internal bool IsShowArrowEffective
    {
       get => GetValue(IsShowArrowEffectiveProperty);
       set => SetValue(IsShowArrowEffectiveProperty, value);
    }
 
    // 组件的 Token 绑定属性
-   private IBrush? _defaultBackground;
-
-   private static readonly DirectProperty<ToolTip, IBrush?> DefaultBgTokenProperty
-      = AvaloniaProperty.RegisterDirect<ToolTip, IBrush?>(nameof(_defaultBackground),
-                                                          (o) => o._defaultBackground,
-                                                          (o, v) => o._defaultBackground = v);
-
-   private double _toolTipArrowSize;
-
-   private static readonly DirectProperty<ToolTip, double> ToolTipArrowSizeTokenProperty
-      = AvaloniaProperty.RegisterDirect<ToolTip, double>(nameof(_toolTipArrowSize),
-                                                         (o) => o._toolTipArrowSize,
-                                                         (o, v) => o._toolTipArrowSize = v);
-
-   private double _marginXXS;
+   
+   private double _marginXXSToken;
 
    private static readonly DirectProperty<ToolTip, double> MarginXXSTokenProperty
-      = AvaloniaProperty.RegisterDirect<ToolTip, double>(nameof(_marginXXS),
-                                                         (o) => o._marginXXS,
-                                                         (o, v) => o._marginXXS = v);
+      = AvaloniaProperty.RegisterDirect<ToolTip, double>(nameof(_marginXXSToken),
+                                                         (o) => o._marginXXSToken,
+                                                         (o, v) => o._marginXXSToken = v);
    
    private TimeSpan _motionDuration;
 
@@ -156,12 +143,12 @@ public partial class ToolTip
                                                            (o, v) => o._motionDuration = v);
 
    // 暂时不支持自定义
-   private BoxShadows _shadows;
+   private BoxShadows _shadowsToken;
    
    private static readonly DirectProperty<ToolTip, BoxShadows> ShadowsTokenProperty
-      = AvaloniaProperty.RegisterDirect<ToolTip, BoxShadows>(nameof(_shadows),
-                                                             (o) => o._shadows,
-                                                             (o, v) => o._shadows = v);
+      = AvaloniaProperty.RegisterDirect<ToolTip, BoxShadows>(nameof(_shadowsToken),
+                                                             (o) => o._shadowsToken,
+                                                             (o, v) => o._shadowsToken = v);
    // 组件的 Token 绑定属性
 
    internal static readonly DirectProperty<ToolTip, PlacementMode?> FlipPlacementProperty =

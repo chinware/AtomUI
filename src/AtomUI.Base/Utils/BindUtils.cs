@@ -50,7 +50,7 @@ public static class BindUtils
    
    public static IDisposable CreateTokenBinding(AvaloniaObject target,
                                                 AvaloniaProperty targetProperty,
-                                                string resourceKey)
+                                                object resourceKey)
    {
       return target.Bind(targetProperty, new DynamicResourceExtension(resourceKey));
    }
