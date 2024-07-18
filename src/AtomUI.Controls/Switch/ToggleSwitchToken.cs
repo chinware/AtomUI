@@ -54,12 +54,12 @@ internal class ToggleSwitchToken : AbstractControlDesignToken
    /// <summary>
    /// 开关把手大小
    /// </summary>
-   public double HandleSize { get; set; }
+   public Size HandleSize { get; set; }
    
    /// <summary>
    /// 小号开关把手大小
    /// </summary>
-   public double HandleSizeSM { get; set; }
+   public Size HandleSizeSM { get; set; }
    
    /// <summary>
    /// 内容区域最小边距
@@ -111,8 +111,8 @@ internal class ToggleSwitchToken : AbstractControlDesignToken
       TrackMinWidthSM = handleSizeSM * 2 + padding * 2;
       TrackPadding = padding; // Fixed value
       HandleBg = _globalToken.ColorToken.ColorWhite;
-      HandleSize = handleSize;
-      HandleSizeSM = handleSizeSM;
+      HandleSize = new Size(handleSize, handleSize);
+      HandleSizeSM = new Size(handleSizeSM, handleSizeSM);
       
       InnerMinMargin = handleSize / 2;
       InnerMaxMargin = handleSize + padding * 3;

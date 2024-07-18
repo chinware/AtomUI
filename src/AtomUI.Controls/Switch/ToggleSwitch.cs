@@ -1,10 +1,8 @@
 using AtomUI.Controls.Switch;
 using AtomUI.Controls.Utils;
-using AtomUI.Data;
 using AtomUI.Icon;
 using AtomUI.Media;
 using AtomUI.Styling;
-using AtomUI.TokenSystem;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
@@ -25,39 +23,87 @@ public partial class ToggleSwitch : ToggleButton,
                                     IWaveAdornerInfoProvider,
                                     IControlCustomStyle
 {
+   /// <summary>
+   /// Defines the <see cref="GrooveBackground"/> property.
+   /// </summary>
+   public static readonly StyledProperty<IBrush?> GrooveBackgroundProperty 
+      = AvaloniaProperty.Register<ToggleSwitch, IBrush?>(
+         nameof(GrooveBackground));
+   
+   /// <summary>
+   /// Defines the <see cref="OffContent"/> property.
+   /// </summary>
+   public static readonly StyledProperty<object?> OffContentProperty =
+      AvaloniaProperty.Register<ToggleSwitch, object?>(nameof(OffContent));
+
+   /// <summary>
+   /// Defines the <see cref="OnContent"/> property.
+   /// </summary>
+   public static readonly StyledProperty<object?> OnContentProperty =
+      AvaloniaProperty.Register<ToggleSwitch, object?>(nameof(OnContent));
+
+   /// <summary>
+   /// 设置预置的大小类型
+   /// </summary>
+   public static readonly StyledProperty<SizeType> SizeTypeProperty =
+      AvaloniaProperty.Register<Button, SizeType>(nameof(SizeType), SizeType.Middle);
+   
+   /// <summary>
+   /// 是否处于加载状态
+   /// </summary>
+   public static readonly StyledProperty<bool> IsLoadingProperty =
+      AvaloniaProperty.Register<Button, bool>(nameof(IsLoading), false);
+   
+   /// <summary>
+   /// Gets or Sets the Content that is displayed when in the On State.
+   /// </summary>
+   public object? OnContent
+   {
+      get => GetValue(OnContentProperty);
+      set => SetValue(OnContentProperty, value);
+   }
+
+   /// <summary>
+   /// Gets or Sets the Content that is displayed when in the Off State.
+   /// </summary>
+   public object? OffContent
+   {
+      get => GetValue(OffContentProperty);
+      set => SetValue(OffContentProperty, value);
+   }
+   
+   public SizeType SizeType
+   {
+      get => GetValue(SizeTypeProperty);
+      set => SetValue(SizeTypeProperty, value);
+   }
+   
+   /// <summary>
+   /// 是否处于加载状态
+   /// </summary>
+   public bool IsLoading
+   {
+      get => GetValue(IsLoadingProperty);
+      set => SetValue(IsLoadingProperty, value);
+   }
+   
+   public IBrush? GrooveBackground
+   {
+      get => GetValue(GrooveBackgroundProperty);
+      set => SetValue(GrooveBackgroundProperty, value);
+   }
+   
    private bool _initialized = false;
-   private bool _transitionInitialized = false;
    private const double STRETCH_FACTOR = 1.3d;
    private IControlCustomStyle _customStyle;
    private ControlStyleState _styleState;
    private Canvas? _togglePanel;
 
-   private SwitchKnob _switchKnob;
+   private SwitchKnob? _switchKnob;
 
    static ToggleSwitch()
    {
-      OffContentProperty.Changed.AddClassHandler<ToggleSwitch>((toggleSwitch, args) =>
-      {
-         toggleSwitch.OffContentChanged(args);
-      });
-      OnContentProperty.Changed.AddClassHandler<ToggleSwitch>((toggleSwitch, args) =>
-      {
-         toggleSwitch.OnContentChanged(args);
-      });
-
-      AffectsMeasure<ToggleSwitch>(SizeTypeProperty,
-         HandleSizeTokenProperty,
-         HandleSizeSMTokenProperty,
-         InnerMaxMarginTokenProperty,
-         InnerMaxMarginSMTokenProperty,
-         InnerMinMarginTokenProperty,
-         InnerMinMarginSMTokenProperty,
-         TrackHeightTokenProperty,
-         TrackHeightSMTokenProperty,
-         TrackMinWidthTokenProperty,
-         TrackMinWidthSMTokenProperty,
-         TrackPaddingTokenProperty
-      );
+      AffectsMeasure<ToggleSwitch>(SizeTypeProperty);
       AffectsArrange<ToggleSwitch>(
          IsPressedProperty,
          KnobOffsetProperty,
@@ -70,14 +116,12 @@ public partial class ToggleSwitch : ToggleButton,
    public ToggleSwitch()
    {
       _customStyle = this;
-      _switchKnob = new SwitchKnob();
       LayoutUpdated += HandleLayoutUpdated;
    }
    
    private void HandleLayoutUpdated(object? sender, EventArgs args)
    {
-      if (!_transitionInitialized) {
-         _transitionInitialized = true;
+      if (Transitions is null) {
          _customStyle.SetupTransitions();
       }
    }
@@ -117,9 +161,12 @@ public partial class ToggleSwitch : ToggleButton,
 
    protected override Size ArrangeOverride(Size finalSize)
    {
+      if (_switchKnob is not null) {
+         Canvas.SetLeft(_switchKnob, KnobOffset.X);
+         Canvas.SetTop(_switchKnob, KnobOffset.Y);
+      }
+ 
       base.ArrangeOverride(finalSize);
-      Canvas.SetLeft(_switchKnob, KnobOffset.X);
-      Canvas.SetTop(_switchKnob, KnobOffset.Y);
       AdjustExtraInfoOffset();
       return finalSize;
    }
@@ -141,7 +188,7 @@ public partial class ToggleSwitch : ToggleButton,
    {
       var handleRect = HandleRect();
       KnobOffset = handleRect.TopLeft;
-      var handleSize = HandleSize();
+      var handleSize = _switchKnob?.OriginKnobSize.Width ?? 0d;
       var delta = handleRect.Width - handleSize;
 
       var contentOffsetDelta = handleSize * (STRETCH_FACTOR - 1);
@@ -155,13 +202,18 @@ public partial class ToggleSwitch : ToggleButton,
       }
       
       var handleWidth = handleSize * STRETCH_FACTOR;
-      _switchKnob.KnobSize = new Size(handleWidth, handleSize);
+      if (_switchKnob is not null) {
+         _switchKnob.KnobSize = new Size(handleWidth, handleSize);
+      }
+
    }
 
    private void AdjustOffsetOnReleased()
    {
-      var handleSize = HandleSize();
-      _switchKnob.KnobSize = new Size(handleSize, handleSize);
+      var handleSize = _switchKnob?.OriginKnobSize.Width ?? 0d;
+      if (_switchKnob is not null) {
+         _switchKnob.KnobSize = new Size(handleSize, handleSize);
+      }
       CalculateElementsOffset(DesiredSize);
    }
 
@@ -187,27 +239,35 @@ public partial class ToggleSwitch : ToggleButton,
       base.OnPropertyChanged(e);
       _customStyle.HandlePropertyChangedForStyle(e);
    }
-
-   private void OffContentChanged(AvaloniaPropertyChangedEventArgs e)
+   
+   protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
    {
-      if (e.OldValue is ILogical oldChild) {
-         LogicalChildren.Remove(oldChild);
-      }
-
-      if (e.NewValue is ILogical newChild) {
-         LogicalChildren.Add(newChild);
-      }
+      base.OnApplyTemplate(e);
+      _customStyle.HandleTemplateApplied(e.NameScope);
    }
 
-   private void OnContentChanged(AvaloniaPropertyChangedEventArgs e)
+   void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
    {
-      if (e.OldValue is ILogical oldChild) {
-         LogicalChildren.Remove(oldChild);
-      }
+      _togglePanel = scope.Find<Canvas>(ToggleSwitchTheme.MainContainerPart);
+      _switchKnob = scope.Find<SwitchKnob>(ToggleSwitchTheme.SwitchKnobPart);
+      
+      _customStyle.ApplyFixedStyleConfig();
 
-      if (e.NewValue is ILogical newChild) {
-         LogicalChildren.Add(newChild);
+      var offControl = SetupContent(OffContent);
+      var onControl = SetupContent(OnContent);
+      
+      // 这里会调用属性函数进行添加到布局
+      if (offControl == OffContent && offControl is not null) {
+         _togglePanel?.Children.Add(offControl);
       }
+      
+      if (onControl == OnContent && onControl is not null) {
+         _togglePanel?.Children.Add(onControl);
+      }
+      OffContent = offControl;
+      OnContent = onControl;
+      
+      HandleLoadingState(IsLoading);
    }
 
    public sealed override void Render(DrawingContext context)
@@ -233,65 +293,34 @@ public partial class ToggleSwitch : ToggleButton,
       if (!IsLoading) {
          Cursor = new Cursor(StandardCursorType.Hand);
       }
-      
-      _customStyle.CollectStyleState();
-      _customStyle.ApplyFixedStyleConfig();
-      _customStyle.ApplyVariableStyleConfig();
-      _customStyle.ApplySizeTypeStyleConfig();
 
-      var handleSize = HandleSize();
-      _switchKnob.KnobSize = new Size(handleSize, handleSize);
-      
-      BindUtils.CreateTokenBinding(_switchKnob, SwitchKnob.KnobBackgroundColorProperty, ToggleSwitchResourceKey.HandleBg);
-      BindUtils.CreateTokenBinding(_switchKnob, SwitchKnob.KnobBoxShadowProperty, ToggleSwitchResourceKey.HandleShadow);
-     
-      _togglePanel = new Canvas();
-      _togglePanel.Children.Add(_switchKnob);
-      if (OffContent is Control offControl) {
-         _togglePanel.Children.Add(offControl);
-         if (OffContent is TemplatedControl templatedControl) {
+      HorizontalAlignment = HorizontalAlignment.Left;
+      _customStyle.CollectStyleState();
+   }
+
+   private Control? SetupContent(object? content)
+   {
+      Control? result = default;
+      if (content is Control offControl) {
+         if (content is TemplatedControl templatedControl) {
             templatedControl.Padding = new Thickness(0);
-         } else if (OffContent is PathIcon iconControl) {
+         } else if (content is PathIcon iconControl) {
             if (iconControl.ThemeType != IconThemeType.TwoTone) {
                iconControl.NormalFilledBrush ??= Foreground;
             }
          }
          offControl.Width = offControl.Height = IconSize();
-      } else if (OffContent is string offStr) {
+         result = offControl;
+      } else if (content is string offStr) {
          var label = new Label
          {
             Content = offStr,
             Padding = new Thickness(0)
          };
-         _togglePanel.Children.Add(label);
-         OffContent = label;
-      }
-      
-      // TODO 这里要不要限定支持的 control 类型呢？
-      if (OnContent is Control onControl) {
-         _togglePanel.Children.Add(onControl);
-         if (OnContent is TemplatedControl templatedControl) {
-            templatedControl.Padding = new Thickness(0);
-         } else if (OnContent is PathIcon iconControl) {
-            if (iconControl.ThemeType != IconThemeType.TwoTone) {
-               iconControl.NormalFilledBrush ??= Foreground;
-            }
-         }
-
-         onControl.Width = onControl.Height = IconSize();
-      } else if (OnContent is string onStr) {
-         var label = new Label
-         {
-            Content = onStr,
-            Padding = new Thickness(0)
-         };
-         _togglePanel.Children.Add(label);
-         OnContent = label;
+         result = label;
       }
 
-      HandleLoadingState(IsLoading);
-      
-      Content = _togglePanel;
+      return result;
    }
 
    private void CalculateElementsOffset(Size controlSize)
@@ -344,30 +373,8 @@ public partial class ToggleSwitch : ToggleButton,
       }
    }
 
-   void IControlCustomStyle.ApplyVariableStyleConfig()
-   {
-      if (_styleState.HasFlag(ControlStyleState.Enabled)) {
-         SwitchOpacity = 1.0;
-         if (_styleState.HasFlag(ControlStyleState.On)) {
-            BindUtils.CreateTokenBinding(this, GrooveBackgroundProperty, ToggleSwitchResourceKey.SwitchColor);
-            if (_styleState.HasFlag(ControlStyleState.MouseOver)) {
-               BindUtils.CreateTokenBinding(this, GrooveBackgroundProperty, GlobalResourceKey.ColorPrimaryHover, BindingPriority.StyleTrigger);
-            }
-         } else {
-            BindUtils.CreateTokenBinding(this, GrooveBackgroundProperty, GlobalResourceKey.ColorTextQuaternary);
-            if (_styleState.HasFlag(ControlStyleState.MouseOver)) {
-               BindUtils.CreateTokenBinding(this, GrooveBackgroundProperty, GlobalResourceKey.ColorTextTertiary, BindingPriority.StyleTrigger);
-            }
-         }
-      } else {
-         SwitchOpacity = _switchDisabledOpacity;
-      }
-   }
-
    void IControlCustomStyle.ApplyFixedStyleConfig()
    {
-      BindUtils.CreateTokenBinding(this, HandleSizeTokenProperty, ToggleSwitchResourceKey.HandleSize);
-      BindUtils.CreateTokenBinding(this, HandleSizeSMTokenProperty, ToggleSwitchResourceKey.HandleSizeSM);
       BindUtils.CreateTokenBinding(this, InnerMaxMarginTokenProperty, ToggleSwitchResourceKey.InnerMaxMargin);
       BindUtils.CreateTokenBinding(this, InnerMaxMarginSMTokenProperty, ToggleSwitchResourceKey.InnerMaxMarginSM);
       BindUtils.CreateTokenBinding(this, InnerMinMarginTokenProperty, ToggleSwitchResourceKey.InnerMinMargin);
@@ -377,48 +384,42 @@ public partial class ToggleSwitch : ToggleButton,
       BindUtils.CreateTokenBinding(this, TrackMinWidthTokenProperty, ToggleSwitchResourceKey.TrackMinWidth);
       BindUtils.CreateTokenBinding(this, TrackMinWidthSMTokenProperty, ToggleSwitchResourceKey.TrackMinWidthSM);
       BindUtils.CreateTokenBinding(this, TrackPaddingTokenProperty, ToggleSwitchResourceKey.TrackPadding);
-      BindUtils.CreateTokenBinding(this, SwitchDisabledOpacityTokenProperty, ToggleSwitchResourceKey.SwitchDisabledOpacity);
-      
-      BindUtils.CreateTokenBinding(this, ForegroundProperty, GlobalResourceKey.ColorTextLightSolid);
-
-      SwitchOpacity = 1d;
    }
    
-   void IControlCustomStyle.ApplySizeTypeStyleConfig()
-   {
-      if (IsDefaultSize()) {
-         BindUtils.CreateTokenBinding(this, FontSizeProperty, ToggleSwitchResourceKey.ExtraInfoFontSize);
-      } else {
-         BindUtils.CreateTokenBinding(this, FontSizeProperty, ToggleSwitchResourceKey.ExtraInfoFontSizeSM);
-      }
-   }
-
    void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
    {
-      if (e.Property == DesiredSizeProperty) {
-         var handleSize = HandleSize();
-         _switchKnob.KnobSize = new Size(handleSize, handleSize);
+      if (e.Property == IsLoadingProperty) {
+         HandleLoadingState(IsLoading);
+      } else if (e.Property == OffContentProperty || e.Property == OnContentProperty) {
+         if (VisualRoot is not null) {
+            if (e.OldValue is Control oldChild) {
+               _togglePanel?.Children.Remove(oldChild);
+            }
+         
+            var newControl = SetupContent(e.NewValue);
+         
+            if (e.Property == OffContentProperty) {
+               OffContent = newControl;
+            } else {
+               OnContent = newControl;
+            }
+         
+            if (newControl is not null) {
+               _togglePanel?.Children.Add(newControl);
+            }
+         }
       }
       if ((e.Property == IsPointerOverProperty && !IsLoading) ||
           e.Property == IsCheckedProperty ||
           e.Property == IsEnabledProperty) {
          
          _customStyle.CollectStyleState();
-         _customStyle.ApplyVariableStyleConfig();
          if (e.Property == IsCheckedProperty) {
             CalculateElementsOffset(DesiredSize);
             WaveSpiritAdorner.ShowWaveAdorner(this, WaveType.PillWave);
-            _switchKnob.IsCheckedState = IsChecked.HasValue && IsChecked.Value;
          }
       }
-      
-      if (e.Property == IsLoadingProperty) {
-         HandleLoadingState(IsLoading);
-      }
-      
-      if (e.Property == SizeTypeProperty) {
-         _customStyle.ApplySizeTypeStyleConfig();
-      }
+   
    }
 
    private bool IsDefaultSize()
@@ -430,74 +431,51 @@ public partial class ToggleSwitch : ToggleButton,
    {
       if (isLoading) {
          Cursor = new Cursor(StandardCursorType.Arrow);
-         SwitchOpacity = _switchDisabledOpacity;
-         _switchKnob.NotifyStartLoading();
+         _switchKnob?.NotifyStartLoading();
       } else {
          Cursor = new Cursor(StandardCursorType.Hand);
-         SwitchOpacity = 1d;
-         _switchKnob.NotifyStopLoading();
+         _switchKnob?.NotifyStopLoading();
       }
    }
-
-   private double HandleSize()
-   {
-      if (IsDefaultSize()) {
-         return _handleSize;
-      }
-      return _handleSizeSM;
-   }
-
+   
    private double InnerMaxMargin()
    {
       if (IsDefaultSize()) {
-         return _innerMaxMargin;
+         return _innerMaxMarginToken;
       } 
-      return _innerMaxMarginSM;
+      return _innerMaxMarginSMToken;
    }
    
    private double InnerMinMargin()
    {
       if (IsDefaultSize()) {
-         return _innerMinMargin;
+         return _innerMinMarginToken;
       }
-      return _innerMinMarginSM;
+      return _innerMinMarginSMToken;
    }
 
    private double TrackHeight()
    {
       if (IsDefaultSize()) {
-         return _trackHeight;
+         return _trackHeightToken;
       } 
-      return _trackHeightSM;
+      return _trackHeightSMToken;
    }
 
    private double TrackMinWidth()
    {
       if (IsDefaultSize()) {
-         return _trackMinWidth;
+         return _trackMinWidthToken;
       } 
-      return _trackMinWidthSM;
+      return _trackMinWidthSMToken;
    }
 
    private double IconSize()
    {
       if (IsDefaultSize()) {
-         return _trackHeightSM;
+         return _trackHeightSMToken;
       }
-      return _trackHeightSM - 4;
-   }
-
-   private double PressOffsetRange()
-   {
-      double value;
-      if (IsDefaultSize()) {
-         value = _handleSize;
-      } else {
-         value = _handleSizeSM;
-      }
-
-      value /= 3;
-      return value;
+      return _trackHeightSMToken - 4;
    }
 
    private Rect GrooveRect()
@@ -514,9 +492,9 @@ public partial class ToggleSwitch : ToggleButton,
    {
       double handlePosX;
       double handlePosY;
-      double handleSize = HandleSize();
-      double offsetX = _trackPadding;
-      double offsetY = _trackPadding;
+      double handleSize = _switchKnob?.OriginKnobSize.Width ?? 0d;
+      double offsetX = _trackPaddingToken;
+      double offsetY = _trackPaddingToken;
       if (!isChecked) {
          handlePosX = offsetX;
          handlePosY = offsetY;
@@ -529,11 +507,6 @@ public partial class ToggleSwitch : ToggleButton,
       }
 
       return new Rect(handlePosX, handlePosY, handleSize, handleSize);
-   }
-
-   private Rect ExtraInfoRect()
-   {
-      return ExtraInfoRect(IsChecked.HasValue && IsChecked.Value, DesiredSize);
    }
 
    private Rect ExtraInfoRect(bool isChecked, Size controlSize)

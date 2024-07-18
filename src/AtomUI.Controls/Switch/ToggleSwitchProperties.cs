@@ -1,174 +1,77 @@
 using Avalonia;
-using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
 public partial class ToggleSwitch
 {
-   /// <summary>
-   /// Defines the <see cref="GrooveBackground"/> property.
-   /// </summary>
-   private static readonly StyledProperty<IBrush?> GrooveBackgroundProperty 
-      = AvaloniaProperty.Register<ToggleSwitch, IBrush?>(
-      nameof(GrooveBackground));
-
-   public IBrush? GrooveBackground
-   {
-      get => GetValue(GrooveBackgroundProperty);
-      set => SetValue(GrooveBackgroundProperty, value);
-   }
-
-   /// <summary>
-   /// Defines the <see cref="OffContent"/> property.
-   /// </summary>
-   public static readonly StyledProperty<object?> OffContentProperty =
-      AvaloniaProperty.Register<ToggleSwitch, object?>(nameof(OffContent));
-
-   /// <summary>
-   /// Defines the <see cref="OnContent"/> property.
-   /// </summary>
-   public static readonly StyledProperty<object?> OnContentProperty =
-      AvaloniaProperty.Register<ToggleSwitch, object?>(nameof(OnContent));
-
-   /// <summary>
-   /// 设置预置的大小类型
-   /// </summary>
-   public static readonly StyledProperty<SizeType> SizeTypeProperty =
-      AvaloniaProperty.Register<Button, SizeType>(nameof(SizeType), SizeType.Middle);
-   
-   /// <summary>
-   /// 是否处于加载状态
-   /// </summary>
-   public static readonly StyledProperty<bool> IsLoadingProperty =
-      AvaloniaProperty.Register<Button, bool>(nameof(IsLoading), false);
-
-   /// <summary>
-   /// Gets or Sets the Content that is displayed when in the On State.
-   /// </summary>
-   public object? OnContent
-   {
-      get => GetValue(OnContentProperty);
-      set => SetValue(OnContentProperty, value);
-   }
-
-   /// <summary>
-   /// Gets or Sets the Content that is displayed when in the Off State.
-   /// </summary>
-   public object? OffContent
-   {
-      get => GetValue(OffContentProperty);
-      set => SetValue(OffContentProperty, value);
-   }
-   
-   public SizeType SizeType
-   {
-      get => GetValue(SizeTypeProperty);
-      set => SetValue(SizeTypeProperty, value);
-   }
-   
-   /// <summary>
-   /// 是否处于加载状态
-   /// </summary>
-   public bool IsLoading
-   {
-      get => GetValue(IsLoadingProperty);
-      set => SetValue(IsLoadingProperty, value);
-   }
-
    // 组件的 Token 绑定属性
-   private double _handleSize;
 
-   private static readonly DirectProperty<ToggleSwitch, double> HandleSizeTokenProperty
-      = AvaloniaProperty.RegisterDirect<ToggleSwitch, double>(nameof(_handleSize),
-         (o) => o._handleSize,
-         (o, v) => o._handleSize = v);
-
-   private double _handleSizeSM;
-
-   private static readonly DirectProperty<ToggleSwitch, double> HandleSizeSMTokenProperty
-      = AvaloniaProperty.RegisterDirect<ToggleSwitch, double>(nameof(_handleSizeSM),
-         (o) => o._handleSizeSM,
-         (o, v) => o._handleSizeSM = v);
-
-   private double _innerMaxMargin;
+   private double _innerMaxMarginToken;
 
    private static readonly DirectProperty<ToggleSwitch, double> InnerMaxMarginTokenProperty
-      = AvaloniaProperty.RegisterDirect<ToggleSwitch, double>(nameof(_innerMaxMargin),
-         (o) => o._innerMaxMargin,
-         (o, v) => o._innerMaxMargin = v);
+      = AvaloniaProperty.RegisterDirect<ToggleSwitch, double>(nameof(_innerMaxMarginToken),
+         (o) => o._innerMaxMarginToken,
+         (o, v) => o._innerMaxMarginToken = v);
 
-   private double _innerMaxMarginSM;
+   private double _innerMaxMarginSMToken;
 
    private static readonly DirectProperty<ToggleSwitch, double> InnerMaxMarginSMTokenProperty
-      = AvaloniaProperty.RegisterDirect<ToggleSwitch, double>(nameof(_innerMaxMarginSM),
-         (o) => o._innerMaxMarginSM,
-         (o, v) => o._innerMaxMarginSM = v);
+      = AvaloniaProperty.RegisterDirect<ToggleSwitch, double>(nameof(_innerMaxMarginSMToken),
+         (o) => o._innerMaxMarginSMToken,
+         (o, v) => o._innerMaxMarginSMToken = v);
 
-   private double _innerMinMargin;
+   private double _innerMinMarginToken;
 
    private static readonly DirectProperty<ToggleSwitch, double> InnerMinMarginTokenProperty
-      = AvaloniaProperty.RegisterDirect<ToggleSwitch, double>(nameof(_innerMinMargin),
-         (o) => o._innerMinMargin,
-         (o, v) => o._innerMinMargin = v);
+      = AvaloniaProperty.RegisterDirect<ToggleSwitch, double>(nameof(_innerMinMarginToken),
+         (o) => o._innerMinMarginToken,
+         (o, v) => o._innerMinMarginToken = v);
 
-   private double _innerMinMarginSM;
+   private double _innerMinMarginSMToken;
 
    private static readonly DirectProperty<ToggleSwitch, double> InnerMinMarginSMTokenProperty
-      = AvaloniaProperty.RegisterDirect<ToggleSwitch, double>(nameof(_innerMinMarginSM),
-         (o) => o._innerMinMarginSM,
-         (o, v) => o._innerMinMarginSM = v);
+      = AvaloniaProperty.RegisterDirect<ToggleSwitch, double>(nameof(_innerMinMarginSMToken),
+         (o) => o._innerMinMarginSMToken,
+         (o, v) => o._innerMinMarginSMToken = v);
 
-   private double _trackHeight;
+   private double _trackHeightToken;
 
    private static readonly DirectProperty<ToggleSwitch, double> TrackHeightTokenProperty
-      = AvaloniaProperty.RegisterDirect<ToggleSwitch, double>(nameof(_trackHeight),
-         (o) => o._trackHeight,
-         (o, v) => o._trackHeight = v);
+      = AvaloniaProperty.RegisterDirect<ToggleSwitch, double>(nameof(_trackHeightToken),
+         (o) => o._trackHeightToken,
+         (o, v) => o._trackHeightToken = v);
 
-   private double _trackHeightSM;
+   private double _trackHeightSMToken;
 
    private static readonly DirectProperty<ToggleSwitch, double> TrackHeightSMTokenProperty
-      = AvaloniaProperty.RegisterDirect<ToggleSwitch, double>(nameof(_trackHeightSM),
-         (o) => o._trackHeightSM,
-         (o, v) => o._trackHeightSM = v);
+      = AvaloniaProperty.RegisterDirect<ToggleSwitch, double>(nameof(_trackHeightSMToken),
+         (o) => o._trackHeightSMToken,
+         (o, v) => o._trackHeightSMToken = v);
 
-   private double _trackMinWidth;
+   private double _trackMinWidthToken;
 
    private static readonly DirectProperty<ToggleSwitch, double> TrackMinWidthTokenProperty
-      = AvaloniaProperty.RegisterDirect<ToggleSwitch, double>(nameof(_trackMinWidth),
-         (o) => o._trackMinWidth,
-         (o, v) => o._trackMinWidth = v);
+      = AvaloniaProperty.RegisterDirect<ToggleSwitch, double>(nameof(_trackMinWidthToken),
+         (o) => o._trackMinWidthToken,
+         (o, v) => o._trackMinWidthToken = v);
 
-   private double _trackMinWidthSM;
+   private double _trackMinWidthSMToken;
 
    private static readonly DirectProperty<ToggleSwitch, double> TrackMinWidthSMTokenProperty
-      = AvaloniaProperty.RegisterDirect<ToggleSwitch, double>(nameof(_trackMinWidthSM),
-         (o) => o._trackMinWidthSM,
-         (o, v) => o._trackMinWidthSM = v);
+      = AvaloniaProperty.RegisterDirect<ToggleSwitch, double>(nameof(_trackMinWidthSMToken),
+         (o) => o._trackMinWidthSMToken,
+         (o, v) => o._trackMinWidthSMToken = v);
 
-   private double _trackPadding;
+   private double _trackPaddingToken;
 
    private static readonly DirectProperty<ToggleSwitch, double> TrackPaddingTokenProperty
-      = AvaloniaProperty.RegisterDirect<ToggleSwitch, double>(nameof(_trackPadding),
-         (o) => o._trackPadding,
-         (o, v) => o._trackPadding = v);
-   
-   private double _switchDisabledOpacity;
-
-   private static readonly DirectProperty<ToggleSwitch, double> SwitchDisabledOpacityTokenProperty
-      = AvaloniaProperty.RegisterDirect<ToggleSwitch, double>(nameof(_switchDisabledOpacity),
-         (o) => o._switchDisabledOpacity,
-         (o, v) => o._switchDisabledOpacity = v);
+      = AvaloniaProperty.RegisterDirect<ToggleSwitch, double>(nameof(_trackPaddingToken),
+         (o) => o._trackPaddingToken,
+         (o, v) => o._trackPaddingToken = v);
    
    // 组件的 Token 绑定属性结束
-
-   private double _iconSize;
-
-   private static readonly DirectProperty<ToggleSwitch, double> IconSizeProperty
-      = AvaloniaProperty.RegisterDirect<ToggleSwitch, double>(nameof(_iconSize),
-         (o) => o._iconSize,
-         (o, v) => o._iconSize = v);
-
+   
+   // 这几个属性跟动画相关
    private static readonly StyledProperty<Point> KnobOffsetProperty
       = AvaloniaProperty.Register<ToggleSwitch, Point>(nameof(KnobOffset));
 
@@ -196,10 +99,10 @@ public partial class ToggleSwitch
       set => SetValue(OffContentOffsetProperty, value);
    }
    
-   private static readonly StyledProperty<double> SwitchOpacityProperty
-      = AvaloniaProperty.Register<ToggleSwitch, double>(nameof(SwitchOpacity));
+   internal static readonly StyledProperty<double> SwitchOpacityProperty
+      = AvaloniaProperty.Register<ToggleSwitch, double>(nameof(SwitchOpacity), 1d);
 
-   private double SwitchOpacity
+   internal double SwitchOpacity
    {
       get => GetValue(SwitchOpacityProperty);
       set => SetValue(SwitchOpacityProperty, value);

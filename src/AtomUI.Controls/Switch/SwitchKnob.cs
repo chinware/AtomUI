@@ -1,4 +1,3 @@
-using AtomUI.Data;
 using AtomUI.Media;
 using AtomUI.Styling;
 using AtomUI.Utils;
@@ -18,7 +17,7 @@ internal class SwitchKnob : Control, IControlCustomStyle
    private IControlCustomStyle _customStyle;
    private bool _isLoading = false;
    private CancellationTokenSource? _cancellationTokenSource;
-   
+
    private static readonly StyledProperty<int> RotationProperty
       = AvaloniaProperty.Register<SwitchKnob, int>(nameof(Rotation));
 
@@ -27,11 +26,11 @@ internal class SwitchKnob : Control, IControlCustomStyle
       get => GetValue(RotationProperty);
       set => SetValue(RotationProperty, value);
    }
-   
-   private static readonly StyledProperty<IBrush?> LoadIndicatorBrushProperty
+
+   internal static readonly StyledProperty<IBrush?> LoadIndicatorBrushProperty
       = AvaloniaProperty.Register<SwitchKnob, IBrush?>(nameof(LoadIndicatorBrush));
-   
-   private IBrush? LoadIndicatorBrush
+
+   internal IBrush? LoadIndicatorBrush
    {
       get => GetValue(LoadIndicatorBrushProperty);
       set => SetValue(LoadIndicatorBrushProperty, value);
@@ -40,12 +39,21 @@ internal class SwitchKnob : Control, IControlCustomStyle
    public static readonly StyledProperty<Size> KnobSizeProperty
       = AvaloniaProperty.Register<SwitchKnob, Size>(nameof(KnobSize));
 
+   internal static readonly StyledProperty<Size> OriginKnobSizeProperty
+      = AvaloniaProperty.Register<SwitchKnob, Size>(nameof(OriginKnobSize));
+
    public Size KnobSize
    {
       get => GetValue(KnobSizeProperty);
       set => SetValue(KnobSizeProperty, value);
    }
-   
+
+   internal Size OriginKnobSize
+   {
+      get => GetValue(OriginKnobSizeProperty);
+      set => SetValue(OriginKnobSizeProperty, value);
+   }
+
    public static readonly StyledProperty<bool> IsCheckedStateProperty
       = AvaloniaProperty.Register<SwitchKnob, bool>(nameof(IsCheckedState));
 
@@ -73,36 +81,15 @@ internal class SwitchKnob : Control, IControlCustomStyle
       set => SetValue(KnobBoxShadowProperty, value);
    }
 
-   private TimeSpan _motionDuration;
-
-   private static readonly DirectProperty<SwitchKnob, TimeSpan> MotionDurationTokenProperty
-      = AvaloniaProperty.RegisterDirect<SwitchKnob, TimeSpan>(nameof(_motionDuration),
-         (o) => o._motionDuration,
-         (o, v) => o._motionDuration = v);
-   
-   private IBrush? _colorTextQuaternaryTokenProperty;
-
-   private static readonly DirectProperty<SwitchKnob, IBrush?> ColorTextQuaternaryTokenProperty
-      = AvaloniaProperty.RegisterDirect<SwitchKnob, IBrush?>(nameof(_colorTextQuaternaryTokenProperty),
-         (o) => o._colorTextQuaternaryTokenProperty,
-         (o, v) => o._colorTextQuaternaryTokenProperty = v);
-   
-   private IBrush? _switchColorTokenProperty;
-
-   private static readonly DirectProperty<SwitchKnob, IBrush?> SwitchColorTokenProperty
-      = AvaloniaProperty.RegisterDirect<SwitchKnob, IBrush?>(nameof(_switchColorTokenProperty),
-         (o) => o._switchColorTokenProperty,
-         (o, v) => o._switchColorTokenProperty = v);
-   
    private double _loadingBgOpacity;
 
    private static readonly DirectProperty<SwitchKnob, double> LoadingBgOpacityTokenProperty
       = AvaloniaProperty.RegisterDirect<SwitchKnob, double>(nameof(_loadingBgOpacity),
-         (o) => o._loadingBgOpacity,
-         (o, v) => o._loadingBgOpacity = v);
-   
+                                                            (o) => o._loadingBgOpacity,
+                                                            (o, v) => o._loadingBgOpacity = v);
+
    private TimeSpan LoadingAnimationDuration { get; set; } = TimeSpan.FromMilliseconds(300);
-   
+
    public SwitchKnob()
    {
       _customStyle = this;
@@ -114,7 +101,7 @@ internal class SwitchKnob : Control, IControlCustomStyle
       AffectsRender<SwitchKnob>(
          RotationProperty);
    }
-   
+
    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
    {
       base.OnAttachedToLogicalTree(e);
@@ -123,7 +110,7 @@ internal class SwitchKnob : Control, IControlCustomStyle
          _initialized = true;
       }
    }
-   
+
    void IControlCustomStyle.SetupUi()
    {
       Effect = new DropShadowEffect
@@ -135,17 +122,12 @@ internal class SwitchKnob : Control, IControlCustomStyle
       };
       _customStyle.ApplyFixedStyleConfig();
       _customStyle.SetupTransitions();
-      AdjustLoadIndicatorBrush();
    }
 
    void IControlCustomStyle.SetupTransitions()
    {
       var transitions = new Transitions();
-      transitions.Add(new SizeTransition
-      {
-         Property = KnobSizeProperty,
-         Duration = _motionDuration
-      });
+      transitions.Add(AnimationUtils.CreateTransition<SizeTransition>(KnobSizeProperty));
       Transitions = transitions;
    }
 
@@ -154,6 +136,7 @@ internal class SwitchKnob : Control, IControlCustomStyle
       if (_isLoading) {
          return;
       }
+
       _isLoading = true;
       IsEnabled = false;
       if (VisualRoot != null) {
@@ -200,12 +183,13 @@ internal class SwitchKnob : Control, IControlCustomStyle
       if (!_isLoading) {
          return;
       }
+
       _cancellationTokenSource?.Cancel();
       _cancellationTokenSource = null;
       _isLoading = false;
       IsEnabled = true;
    }
-   
+
    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
    {
       base.OnAttachedToVisualTree(e);
@@ -213,7 +197,7 @@ internal class SwitchKnob : Control, IControlCustomStyle
          StartLoadingAnimation();
       }
    }
-   
+
    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
    {
       base.OnAttachedToVisualTree(e);
@@ -221,38 +205,13 @@ internal class SwitchKnob : Control, IControlCustomStyle
          _cancellationTokenSource?.Cancel();
       }
    }
-   
-   protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
-   {
-      base.OnPropertyChanged(e);
-      _customStyle.HandlePropertyChangedForStyle(e);
-   }
-   
+
    void IControlCustomStyle.ApplyFixedStyleConfig()
    {
-      BindUtils.CreateTokenBinding(this, MotionDurationTokenProperty, GlobalResourceKey.MotionDurationMid);
-      BindUtils.CreateTokenBinding(this, ColorTextQuaternaryTokenProperty, GlobalResourceKey.ColorTextQuaternary);
-      BindUtils.CreateTokenBinding(this, SwitchColorTokenProperty, ToggleSwitchResourceKey.SwitchColor);
       BindUtils.CreateTokenBinding(this, LoadingBgOpacityTokenProperty, ToggleSwitchResourceKey.SwitchDisabledOpacity);
       LoadingAnimationDuration = TimeSpan.FromMilliseconds(1200);
    }
-
-   void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
-   {
-      if (e.Property == IsEnabledProperty) {
-         AdjustLoadIndicatorBrush();
-      }
-   }
-
-   private void AdjustLoadIndicatorBrush()
-   {
-      if (IsCheckedState) {
-         LoadIndicatorBrush = _switchColorTokenProperty;
-      } else {
-         LoadIndicatorBrush = _colorTextQuaternaryTokenProperty;
-      }
-   }
-
+   
    protected override Size MeasureOverride(Size availableSize)
    {
       return KnobSize;
@@ -270,16 +229,16 @@ internal class SwitchKnob : Control, IControlCustomStyle
       if (_isLoading) {
          var delta = 2.5;
          var loadingRectSize = targetRect.Size.Deflate(new Thickness(delta));
-         var loadingRect = new Rect(new Point(-loadingRectSize.Width / 2, -loadingRectSize.Height / 2), loadingRectSize);
+         var loadingRect = new Rect(new Point(-loadingRectSize.Width / 2, -loadingRectSize.Height / 2),
+                                    loadingRectSize);
          var pen = new Pen(LoadIndicatorBrush, 1, null, PenLineCap.Round);
          var translateToCenterMatrix = Matrix.CreateTranslation(targetRect.Center.X, targetRect.Center.Y);
          var rotationMatrix = Matrix.CreateRotation(Rotation * Math.PI / 180);
          using var translateToCenterState = context.PushTransform(translateToCenterMatrix);
          using var rotationMatrixState = context.PushTransform(rotationMatrix);
          using var bgOpacity = context.PushOpacity(_loadingBgOpacity);
-         
+
          context.DrawArc(pen, loadingRect, 0, 90);
       }
    }
-   
 }
