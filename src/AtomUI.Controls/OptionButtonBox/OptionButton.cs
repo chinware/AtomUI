@@ -167,7 +167,6 @@ public partial class OptionButton : AvaloniaRadioButton,
 
    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
    {
-      _customStyle.ApplyFixedStyleConfig();
       _customStyle.SetupTransitions();
    }
 
@@ -203,24 +202,12 @@ public partial class OptionButton : AvaloniaRadioButton,
    {
       var transitions = new Transitions();
       if (ButtonStyle == OptionButtonStyle.Solid) {
-         transitions.Add(new SolidColorBrushTransition()
-         {
-            Property = BackgroundProperty,
-            Duration = _motionDuration
-         });
+         transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty));
       } else if (ButtonStyle == OptionButtonStyle.Outline) {
-         transitions.Add(new SolidColorBrushTransition()
-         {
-            Property = BorderBrushProperty,
-            Duration = _motionDuration
-         });
+         transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(BorderBrushProperty));
       }
-
-      transitions.Add(new SolidColorBrushTransition()
-      {
-         Property = ForegroundProperty,
-         Duration = _motionDuration
-      });
+      
+      transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty));
       Transitions = transitions;
    }
 
@@ -238,16 +225,9 @@ public partial class OptionButton : AvaloniaRadioButton,
       }
    }
 
-   void IControlCustomStyle.ApplyFixedStyleConfig()
-   {
-      BindUtils.CreateTokenBinding(this, MotionDurationTokenProperty, GlobalResourceKey.MotionDurationMid);
-      BindUtils.CreateTokenBinding(this, ColorPrimaryHoverTokenProperty, GlobalResourceKey.ColorPrimaryHover);
-      BindUtils.CreateTokenBinding(this, ColorPrimaryActiveTokenProperty, GlobalResourceKey.ColorPrimaryActive);
-   }
-
    void IControlCustomStyle.ApplyRenderScalingAwareStyleConfig()
    {
-      BindUtils.CreateTokenBinding(this, BorderThicknessProperty, GlobalResourceKey.BorderThickness, BindingPriority.Style,
+      BindUtils.CreateTokenBinding(this, BorderThicknessProperty, GlobalResourceKey.BorderThickness, BindingPriority.Template,
                                       new RenderScaleAwareThicknessConfigure(this, thickness =>
                                       {
                                          if (InOptionGroup) {

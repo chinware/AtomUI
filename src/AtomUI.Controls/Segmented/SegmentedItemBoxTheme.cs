@@ -53,6 +53,7 @@ public class SegmentedItemBoxTheme : ControlTheme
       // 选中状态
       var selectedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Selected));
       selectedStyle.Add(SegmentedItemBox.ForegroundProperty, SegmentedResourceKey.ItemSelectedColor);
+      selectedStyle.Add(SegmentedItemBox.BackgroundProperty, GlobalResourceKey.ColorTransparent);
       normalStyle.Add(selectedStyle);
       
       // 没有被选中的状态

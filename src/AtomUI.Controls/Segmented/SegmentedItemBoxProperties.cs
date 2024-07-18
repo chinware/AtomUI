@@ -27,7 +27,6 @@ internal partial class SegmentedItemBox
          o => o._controlHeightSMToken,
          (o, v) => o._controlHeightSMToken = v);
    
-   
    private Thickness _trackPaddingToken;
    private static readonly DirectProperty<SegmentedItemBox, Thickness> TrackPaddingTokenProperty
       = AvaloniaProperty.RegisterDirect<SegmentedItemBox, Thickness>(nameof(_trackPaddingToken),
