@@ -7,6 +7,7 @@ using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Metadata;
@@ -74,11 +75,8 @@ public partial class Segmented : Control, IControlCustomStyle
          o => o.CurrentIndex,
          (o, v) => o.CurrentIndex = v);
 
-   public static readonly DirectProperty<Segmented, bool> ExpandingProperty =
-      AvaloniaProperty.RegisterDirect<Segmented, bool>(
-         nameof(Expanding),
-         o => o.Expanding,
-         (o, v) => o.Expanding = v);
+   public static readonly StyledProperty<bool> IsExpandingProperty =
+      AvaloniaProperty.Register<Segmented, bool>(nameof(IsExpanding));
 
    /// <summary>
    /// 当前选中变化事件
@@ -164,12 +162,10 @@ public partial class Segmented : Control, IControlCustomStyle
       }
    }
 
-   private bool _expanding;
-
-   public bool Expanding
+   public bool IsExpanding
    {
-      get => _expanding;
-      set => SetAndRaise(ExpandingProperty, ref _expanding, value);
+      get => GetValue(IsExpandingProperty);
+      set => SetValue(IsExpandingProperty, value);
    }
 
    public SegmentedSelectionBehavior SelectionBehaviorOnRemove { get; set; }
@@ -202,7 +198,7 @@ public partial class Segmented : Control, IControlCustomStyle
 
    static Segmented()
    {
-      AffectsMeasure<Segmented>(ExpandingProperty, SizeTypeProperty);
+      AffectsMeasure<Segmented>(IsExpandingProperty, SizeTypeProperty);
       AffectsRender<Segmented>(CornerRadiusProperty, CurrentIndexProperty, SelectedThumbPosProperty,
                                SelectedThumbSizeProperty);
    }
@@ -423,7 +419,7 @@ public partial class Segmented : Control, IControlCustomStyle
    {
       Transitions = null;
       // 由内置的 Box 布局
-      if (!_expanding) {
+      if (!IsExpanding) {
          return MeasureOverrideNoExpanding(availableSize);
       }
 
@@ -479,7 +475,7 @@ public partial class Segmented : Control, IControlCustomStyle
 
    protected override Size ArrangeOverride(Size finalSize)
    {
-      if (!_expanding) {
+      if (!IsExpanding) {
          ArrangeOverrideNoExpanding(finalSize);
       } else {
          ArrangeOverrideExpanding(finalSize);
@@ -555,6 +551,11 @@ public partial class Segmented : Control, IControlCustomStyle
 
    void IControlCustomStyle.SetupUi()
    {
+      if (IsExpanding) {
+         HorizontalAlignment = HorizontalAlignment.Stretch;
+      } else {
+         HorizontalAlignment = HorizontalAlignment.Left;
+      }
       _customStyle.ApplySizeTypeStyleConfig();
       _customStyle.ApplyFixedStyleConfig();
       _customStyle.ApplyVariableStyleConfig();
@@ -610,6 +611,12 @@ public partial class Segmented : Control, IControlCustomStyle
       if (_initialized) {
          if (e.Property == SizeTypeProperty) {
             _customStyle.ApplySizeTypeStyleConfig();
+         } else if (e.Property == IsExpandingProperty) {
+            if (IsExpanding) {
+               HorizontalAlignment = HorizontalAlignment.Stretch;
+            } else {
+               HorizontalAlignment = HorizontalAlignment.Left;
+            }
          }
       }
    }

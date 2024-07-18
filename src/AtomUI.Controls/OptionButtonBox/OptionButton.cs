@@ -6,10 +6,11 @@ using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Input;
-using Avalonia.Layout;
 using Avalonia.LogicalTree;
+using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
@@ -53,17 +54,18 @@ public partial class OptionButton : AvaloniaRadioButton,
    private StackPanel? _stackPanel;
    private Label? _label;
    private CornerRadius? _originCornerRadius;
+   private readonly BorderRenderHelper _borderRenderHelper;
    
    public static readonly StyledProperty<ButtonSizeType> SizeTypeProperty =
       AvaloniaProperty.Register<OptionButton, ButtonSizeType>(nameof(SizeType), ButtonSizeType.Middle);
    
    public static readonly StyledProperty<OptionButtonStyle> ButtonStyleProperty =
-      AvaloniaProperty.Register<OptionButton, OptionButtonStyle>(nameof(SizeType), OptionButtonStyle.Outline);
+      AvaloniaProperty.Register<OptionButton, OptionButtonStyle>(nameof(ButtonStyle), OptionButtonStyle.Outline);
    
-   public static readonly StyledProperty<string> TextProperty
-      = AvaloniaProperty.Register<OptionButton, string>(nameof(Text), string.Empty);
-   
-   private static readonly DirectProperty<OptionButton, bool> InOptionGroupProperty =
+   public static readonly StyledProperty<string?> TextProperty
+      = AvaloniaProperty.Register<OptionButton, string?>(nameof(Text));
+
+   internal static readonly DirectProperty<OptionButton, bool> InOptionGroupProperty =
       AvaloniaProperty.RegisterDirect<OptionButton, bool>(
          nameof(InOptionGroup),
          o => o.InOptionGroup,
@@ -88,7 +90,7 @@ public partial class OptionButton : AvaloniaRadioButton,
       set => SetValue(ButtonStyleProperty, value);
    }
    
-   public string Text
+   public string? Text
    {
       get => GetValue(TextProperty);
       set => SetValue(TextProperty, value);
@@ -116,20 +118,23 @@ public partial class OptionButton : AvaloniaRadioButton,
    
    static OptionButton()
    {
-      AffectsMeasure<Button>(SizeTypeProperty, ButtonStyleProperty, InOptionGroupProperty);
-      AffectsRender<Button>(IsCheckedProperty, CornerRadiusProperty);
+      AffectsMeasure<OptionButton>(SizeTypeProperty, ButtonStyleProperty, InOptionGroupProperty);
+      AffectsRender<OptionButton>(IsCheckedProperty, CornerRadiusProperty, ForegroundProperty, BackgroundProperty);
    }
    
    public OptionButton()
    {
       _customStyle = this;
+      _borderRenderHelper = new BorderRenderHelper();
    }
    
    protected override Size MeasureOverride(Size availableSize)
    {
       var size = base.MeasureOverride(availableSize);
       var targetWidth = size.Width;
-      var targetHeight = Math.Max(size.Height, _controlHeight);
+      var targetHeight = size.Height;
+      targetHeight += Padding.Top + Padding.Bottom;
+      targetWidth += Padding.Left + Padding.Right;
       return new Size(targetWidth, targetHeight);
    }
    
@@ -154,6 +159,24 @@ public partial class OptionButton : AvaloniaRadioButton,
       _customStyle.ApplyRenderScalingAwareStyleConfig();
    }
    
+   protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+   {
+      base.OnApplyTemplate(e);
+      _customStyle.HandleTemplateApplied(e.NameScope);
+   }
+
+   void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
+   {
+      _customStyle.ApplyFixedStyleConfig();
+      _customStyle.SetupTransitions();
+   }
+
+   private void HandleSizeTypeChanged()
+   {
+      _originCornerRadius = CornerRadius;
+      CornerRadius = BuildCornerRadius(GroupPositionTrait, _originCornerRadius!.Value);
+   }
+   
    #region IControlCustomStyle 实现
    public Rect WaveGeometry()
    {
@@ -167,44 +190,15 @@ public partial class OptionButton : AvaloniaRadioButton,
 
    void IControlCustomStyle.SetupUi()
    {
-      Cursor = new Cursor(StandardCursorType.Hand);
-      VerticalAlignment = VerticalAlignment.Center;
-      _customStyle.CollectStyleState();
-      CreateMainLayout();
-      _customStyle.ApplySizeTypeStyleConfig();
-      _customStyle.ApplyVariableStyleConfig();
-      _customStyle.ApplyFixedStyleConfig();
-      _customStyle.SetupTransitions();
-   }
-
-   private void CreateMainLayout()
-   {
-      if (Text.Length == 0 && Content is string content) {
+      if (Text is null && Content is string content) {
          Text = content;
       }
-
-      _label = new Label()
-      {
-         Content = Text,
-         Padding = new Thickness(0),
-         VerticalContentAlignment = VerticalAlignment.Center,
-         HorizontalContentAlignment = HorizontalAlignment.Center,
-         VerticalAlignment = VerticalAlignment.Center
-      };
-      _stackPanel = new StackPanel()
-      {
-         UseLayoutRounding = false,
-         VerticalAlignment = VerticalAlignment.Center,
-         HorizontalAlignment = HorizontalAlignment.Center,
-         Orientation = Orientation.Horizontal,
-         ClipToBounds = true
-      };
-      _stackPanel.Children.Add(_label);
-      Content = _stackPanel;
-      BindUtils.RelayBind(this, WidthProperty, _stackPanel);
-      BindUtils.RelayBind(this, HeightProperty, _stackPanel);
+      
+      Cursor = new Cursor(StandardCursorType.Hand);
+      HandleSizeTypeChanged();
+      _customStyle.CollectStyleState();
    }
-
+   
    void IControlCustomStyle.SetupTransitions()
    {
       var transitions = new Transitions();
@@ -270,7 +264,6 @@ public partial class OptionButton : AvaloniaRadioButton,
           e.Property == IsPressedProperty ||
           e.Property == IsCheckedProperty) {
          _customStyle.CollectStyleState();
-         _customStyle.ApplyVariableStyleConfig();
          if (e.Property == IsPressedProperty) {
             if (_styleState.HasFlag(ControlStyleState.Raised)) {
                WaveSpiritAdorner.ShowWaveAdorner(this, WaveType.RoundRectWave);
@@ -283,28 +276,7 @@ public partial class OptionButton : AvaloniaRadioButton,
             CornerRadius = BuildCornerRadius(GroupPositionTrait, _originCornerRadius!.Value);
          }
       }
-
-      if (_initialized && e.Property == SizeTypeProperty) {
-         _customStyle.ApplySizeTypeStyleConfig();
-      }
-
-      if (_initialized && e.Property == ContentProperty) {
-         // 不推荐，尽最大能力还原
-         var oldText = (_label!.Content as string)!;
-         var newContent = e.GetNewValue<object?>();
-         if (newContent is string newText) {
-            if (oldText != newText) {
-               _label!.Content = newText;
-            }
-         }
-
-         Content = _stackPanel;
-      }
-
-      if (_initialized && e.Property == TextProperty) {
-         _label!.Content = Text;
-      }
-
+      
       if (e.Property == InOptionGroupProperty) {
          _customStyle.ApplyRenderScalingAwareStyleConfig();
       }
@@ -328,140 +300,7 @@ public partial class OptionButton : AvaloniaRadioButton,
 
       return cornerRadius;
    }
-
-   void IControlCustomStyle.ApplyVariableStyleConfig()
-   {
-      if (ButtonStyle == OptionButtonStyle.Outline) {
-         ApplyOutlineStyle();
-      } else if (ButtonStyle == OptionButtonStyle.Solid) {
-         ApplySolidStyle();
-      }
-   }
-
-   void IControlCustomStyle.ApplySizeTypeStyleConfig()
-   {
-      if (SizeType == ButtonSizeType.Small) {
-         BindUtils.CreateTokenBinding(this, ControlHeightTokenProperty, GlobalResourceKey.ControlHeightSM);
-         BindUtils.CreateTokenBinding(this, FontSizeProperty, OptionButtonResourceKey.ContentFontSizeSM);
-         BindUtils.CreateTokenBinding(this, PaddingProperty, OptionButtonResourceKey.PaddingSM);
-         BindUtils.CreateTokenBinding(this, CornerRadiusProperty, GlobalResourceKey.BorderRadiusSM);
-      } else if (SizeType == ButtonSizeType.Middle) {
-         BindUtils.CreateTokenBinding(this, ControlHeightTokenProperty, GlobalResourceKey.ControlHeight);
-         BindUtils.CreateTokenBinding(this, FontSizeProperty, OptionButtonResourceKey.ContentFontSize);
-         BindUtils.CreateTokenBinding(this, PaddingProperty, OptionButtonResourceKey.Padding);
-         BindUtils.CreateTokenBinding(this, CornerRadiusProperty, GlobalResourceKey.BorderRadius);
-      } else if (SizeType == ButtonSizeType.Large) {
-         BindUtils.CreateTokenBinding(this, ControlHeightTokenProperty, GlobalResourceKey.ControlHeightLG);
-         BindUtils.CreateTokenBinding(this, FontSizeProperty, OptionButtonResourceKey.ContentFontSizeLG);
-         BindUtils.CreateTokenBinding(this, PaddingProperty, OptionButtonResourceKey.PaddingLG);
-         BindUtils.CreateTokenBinding(this, CornerRadiusProperty, GlobalResourceKey.BorderRadiusLG);
-      }
-
-      _originCornerRadius = CornerRadius;
-      CornerRadius = BuildCornerRadius(GroupPositionTrait, _originCornerRadius!.Value);
-   }
-
-   private void ApplySolidStyle()
-   {
-      if (_styleState.HasFlag(ControlStyleState.Enabled)) {
-         if (_styleState.HasFlag(ControlStyleState.Selected)) {
-            BindUtils.CreateTokenBinding(this, ForegroundProperty, OptionButtonResourceKey.ButtonSolidCheckedColor);
-            BindUtils.CreateTokenBinding(this, BackgroundProperty, OptionButtonResourceKey.ButtonSolidCheckedBackground);
-            if (_styleState.HasFlag(ControlStyleState.Sunken)) {
-               BindUtils.CreateTokenBinding(this, BackgroundProperty,
-                                               OptionButtonResourceKey.ButtonSolidCheckedActiveBackground,
-                                               BindingPriority.StyleTrigger);
-            } else if (_styleState.HasFlag(ControlStyleState.MouseOver)) {
-               BindUtils.CreateTokenBinding(this, BackgroundProperty,
-                                               OptionButtonResourceKey.ButtonSolidCheckedHoverBackground,
-                                               BindingPriority.StyleTrigger);
-            }
-         } else {
-            BindUtils.CreateTokenBinding(this, ForegroundProperty, GlobalResourceKey.ColorText);
-            if (InOptionGroup) {
-               BindUtils.CreateTokenBinding(this, BackgroundProperty, GlobalResourceKey.ColorTransparent);
-            } else {
-               BindUtils.CreateTokenBinding(this, BackgroundProperty, GlobalResourceKey.ColorBgContainer);
-            }
-
-            if (_styleState.HasFlag(ControlStyleState.Sunken)) {
-               BindUtils.CreateTokenBinding(this, ForegroundProperty, GlobalResourceKey.ColorPrimaryActive,
-                                               BindingPriority.StyleTrigger);
-            } else if (_styleState.HasFlag(ControlStyleState.MouseOver)) {
-               BindUtils.CreateTokenBinding(this, ForegroundProperty, GlobalResourceKey.ColorPrimaryHover,
-                                               BindingPriority.StyleTrigger);
-            }
-         }
-      } else {
-         BindUtils.CreateTokenBinding(this, BorderBrushProperty, GlobalResourceKey.ColorBorder);
-         if (_styleState.HasFlag(ControlStyleState.Selected)) {
-            BindUtils.CreateTokenBinding(this, ForegroundProperty, OptionButtonResourceKey.ButtonCheckedColorDisabled);
-            BindUtils.CreateTokenBinding(this, BackgroundProperty, OptionButtonResourceKey.ButtonCheckedBgDisabled);
-         } else {
-            BindUtils.CreateTokenBinding(this, ForegroundProperty, GlobalResourceKey.ColorTextDisabled);
-            BindUtils.CreateTokenBinding(this, BackgroundProperty, GlobalResourceKey.ColorBgContainerDisabled);
-         }
-      }
-   }
-
-   private void ApplyOutlineStyle()
-   {
-      if (_styleState.HasFlag(ControlStyleState.Enabled)) {
-         if (_styleState.HasFlag(ControlStyleState.Selected)) {
-            if (InOptionGroup) {
-               BindUtils.CreateTokenBinding(this, BackgroundProperty, GlobalResourceKey.ColorTransparent);
-            } else {
-               BindUtils.CreateTokenBinding(this, BackgroundProperty, OptionButtonResourceKey.ButtonBackground);
-            }
-
-            BindUtils.CreateTokenBinding(this, BorderBrushProperty, GlobalResourceKey.ColorPrimary);
-            BindUtils.CreateTokenBinding(this, ForegroundProperty, GlobalResourceKey.ColorPrimary);
-            if (_styleState.HasFlag(ControlStyleState.Sunken)) {
-               BindUtils.CreateTokenBinding(this, BorderBrushProperty, GlobalResourceKey.ColorPrimaryActive,
-                                               BindingPriority.StyleTrigger);
-               BindUtils.CreateTokenBinding(this, ForegroundProperty, GlobalResourceKey.ColorPrimaryActive,
-                                               BindingPriority.StyleTrigger);
-            } else if (_styleState.HasFlag(ControlStyleState.MouseOver)) {
-               BindUtils.CreateTokenBinding(this, BorderBrushProperty, GlobalResourceKey.ColorPrimaryHover,
-                                               BindingPriority.StyleTrigger);
-               BindUtils.CreateTokenBinding(this, ForegroundProperty, GlobalResourceKey.ColorPrimaryHover,
-                                               BindingPriority.StyleTrigger);
-            }
-         } else {
-            if (InOptionGroup) {
-               BindUtils.CreateTokenBinding(this, BackgroundProperty, GlobalResourceKey.ColorTransparent);
-            } else {
-               BindUtils.CreateTokenBinding(this, BackgroundProperty,
-                                               OptionButtonResourceKey.ButtonCheckedBackground);
-            }
-
-            BindUtils.CreateTokenBinding(this, BorderBrushProperty, GlobalResourceKey.ColorBorder);
-            BindUtils.CreateTokenBinding(this, ForegroundProperty, OptionButtonResourceKey.ButtonColor);
-            if (_styleState.HasFlag(ControlStyleState.Sunken)) {
-               BindUtils.CreateTokenBinding(this, BorderBrushProperty, GlobalResourceKey.ColorPrimaryActive,
-                                               BindingPriority.StyleTrigger);
-               BindUtils.CreateTokenBinding(this, ForegroundProperty, GlobalResourceKey.ColorPrimaryActive,
-                                               BindingPriority.StyleTrigger);
-            } else if (_styleState.HasFlag(ControlStyleState.MouseOver)) {
-               BindUtils.CreateTokenBinding(this, BorderBrushProperty, GlobalResourceKey.ColorPrimaryHover,
-                                               BindingPriority.StyleTrigger);
-               BindUtils.CreateTokenBinding(this, ForegroundProperty, GlobalResourceKey.ColorPrimaryHover,
-                                               BindingPriority.StyleTrigger);
-            }
-         }
-      } else {
-         BindUtils.CreateTokenBinding(this, BorderBrushProperty, GlobalResourceKey.ColorBorder);
-         if (_styleState.HasFlag(ControlStyleState.Selected)) {
-            BindUtils.CreateTokenBinding(this, ForegroundProperty,
-                                            OptionButtonResourceKey.ButtonCheckedColorDisabled);
-            BindUtils.CreateTokenBinding(this, BackgroundProperty, OptionButtonResourceKey.ButtonCheckedBgDisabled);
-         } else {
-            BindUtils.CreateTokenBinding(this, ForegroundProperty, GlobalResourceKey.ColorTextDisabled);
-            BindUtils.CreateTokenBinding(this, BackgroundProperty, GlobalResourceKey.ColorBgContainerDisabled);
-         }
-      }
-   }
-
+ 
    protected override void OnPointerPressed(PointerPressedEventArgs e)
    {
       base.OnPointerPressed(e);
@@ -501,6 +340,19 @@ public partial class OptionButton : AvaloniaRadioButton,
          IsPressed = false
       });
    }
+
+   public override void Render(DrawingContext context)
+   {
+      _borderRenderHelper.Render(context, 
+                                 Bounds.Size, 
+                                 BorderThickness, 
+                                 CornerRadius, 
+                                 BackgroundSizing.InnerBorderEdge, 
+                                 Background,
+                                 BorderBrush,
+                                 default);
+   }
+
    #endregion
 
 }

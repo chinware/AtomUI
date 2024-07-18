@@ -8,8 +8,6 @@ namespace AtomUI.Controls;
 [ControlThemeProvider]
 public class SegmentedItemBoxTheme : ControlTheme
 {
-   public const string MainContainerPart = "PART_MainContainer";
-   
    public SegmentedItemBoxTheme()
       : base(typeof(SegmentedItemBox))
    {
@@ -21,10 +19,8 @@ public class SegmentedItemBoxTheme : ControlTheme
       {
          var border = new Border()
          {
-            Name = MainContainerPart,
             Child = box.Item
          };
-         border.RegisterInNameScope(scope);
          CreateTemplateParentBinding(border, Border.BackgroundProperty, SegmentedItemBox.BackgroundProperty);
          CreateTemplateParentBinding(border, Border.CornerRadiusProperty, SegmentedItemBox.CornerRadiusProperty);
          return border;
