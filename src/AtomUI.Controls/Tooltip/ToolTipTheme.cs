@@ -8,7 +8,7 @@ using Avalonia.Media;
 namespace AtomUI.Controls;
 
 [ControlThemeProvider]
-public class ToolTipTheme : ControlTheme
+internal class ToolTipTheme : ControlTheme
 {
    public const string ToolTipContainerPart = "PART_ToolTipContainer";
    

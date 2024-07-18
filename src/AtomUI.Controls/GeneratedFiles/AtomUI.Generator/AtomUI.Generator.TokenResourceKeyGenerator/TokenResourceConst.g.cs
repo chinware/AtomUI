@@ -171,6 +171,7 @@
         public const string TrackBg = "Segmented.TrackBg";
         public const string SegmentedItemPadding = "Segmented.SegmentedItemPadding";
         public const string SegmentedItemPaddingSM = "Segmented.SegmentedItemPaddingSM";
+        public const string SegmentedTextLabelMargin = "Segmented.SegmentedTextLabelMargin";
     }
 
     public static class SeparatorResourceKey

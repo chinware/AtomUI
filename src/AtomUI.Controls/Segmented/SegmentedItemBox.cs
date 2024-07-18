@@ -15,6 +15,7 @@ namespace AtomUI.Controls;
 
 /// <summary>
 /// 在内部维护一些额外信息的控件，用户无感知
+/// 绘制圆角什么的
 /// </summary>
 internal partial class SegmentedItemBox : BorderedStyleControl, 
                                           ICustomHitTest,
@@ -23,7 +24,7 @@ internal partial class SegmentedItemBox : BorderedStyleControl,
    internal Control Item { get; }
    
    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-      AvaloniaProperty.Register<SegmentedItem, SizeType>(nameof(SizeType), SizeType.Middle);
+      Segmented.SizeTypeProperty.AddOwner<SegmentedItemBox>();
    
    public static readonly DirectProperty<SegmentedItemBox, bool> IsPressedProperty =
       AvaloniaProperty.RegisterDirect<SegmentedItemBox, bool>(nameof(IsPressed), o => o.IsPressed);
@@ -72,6 +73,9 @@ internal partial class SegmentedItemBox : BorderedStyleControl,
       Item = item;
       Child = Item;
       BindUtils.RelayBind(Item, IsEnabledProperty, this);
+      if (item is SegmentedItem segmentedItem) {
+         BindUtils.RelayBind(this, SizeTypeProperty, segmentedItem);
+      }
    }
    
    protected override Size MeasureOverride(Size availableSize)

@@ -5,7 +5,7 @@ using Avalonia.Styling;
 namespace AtomUI.Controls;
 
 [ControlThemeProvider]
-public class LinkButtonTheme : BaseButtonTheme
+internal class LinkButtonTheme : BaseButtonTheme
 {   
    public const string ID = "LinkButton";
    public LinkButtonTheme()

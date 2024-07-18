@@ -11,7 +11,7 @@ using Avalonia.Styling;
 namespace AtomUI.Controls;
 
 [ControlThemeProvider]
-public class EmptyIndicatorTheme : ControlTheme
+internal class EmptyIndicatorTheme : ControlTheme
 {
    public const string SvgImagePart = "PART_SvgImage";
    

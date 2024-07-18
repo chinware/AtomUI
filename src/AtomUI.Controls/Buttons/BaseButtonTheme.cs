@@ -9,7 +9,7 @@ using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
-public abstract class BaseButtonTheme : ControlTheme
+internal abstract class BaseButtonTheme : ControlTheme
 {
    public const string LabelPart = "PART_Label";
    public const string StackPanelPart = "PART_StackPanel";

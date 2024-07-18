@@ -5,7 +5,7 @@ using Avalonia.Styling;
 namespace AtomUI.Controls;
 
 [ControlThemeProvider]
-public class CheckBoxTheme : ControlTheme
+internal class CheckBoxTheme : ControlTheme
 {
    public CheckBoxTheme()
       : base(typeof(CheckBox))

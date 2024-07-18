@@ -11,11 +11,14 @@ internal static class UIStructureUtils
 {
    private static readonly MethodInfo SetVisualParentMethodInfo;
    private static readonly PropertyInfo LogicalChildrenInfo;
+   private static readonly PropertyInfo TemplateParentInfo;
 
    static UIStructureUtils()
    {
       SetVisualParentMethodInfo = typeof(Visual).GetMethod("SetVisualParent", BindingFlags.Instance | BindingFlags.NonPublic)!;
       LogicalChildrenInfo = typeof(StyledElement).GetProperty("LogicalChildren", BindingFlags.Instance | BindingFlags.NonPublic)!;
+      TemplateParentInfo =
+         typeof(StyledElement).GetProperty("TemplatedParent", BindingFlags.Instance | BindingFlags.Public)!;
    }
 
    public static void SetVisualParent(Visual control, Control? parent)
@@ -50,5 +53,10 @@ internal static class UIStructureUtils
       if (value is IAvaloniaList<ILogical> logicalChildren) {
          logicalChildren.Add(child);
       }
+   }
+
+   public static void SetTemplateParent(StyledElement control, AvaloniaObject? templateParent)
+   {
+      TemplateParentInfo.SetValue(control, templateParent);
    }
 }

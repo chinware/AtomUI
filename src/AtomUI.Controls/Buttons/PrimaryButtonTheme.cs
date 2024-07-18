@@ -7,7 +7,7 @@ using Colors = Avalonia.Media.Colors;
 namespace AtomUI.Controls;
 
 [ControlThemeProvider]
-public class PrimaryButtonTheme : BaseButtonTheme
+internal class PrimaryButtonTheme : BaseButtonTheme
 {
    public const string ID = "PrimaryButton";
    

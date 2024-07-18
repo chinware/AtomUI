@@ -54,21 +54,4 @@ public partial class Segmented
       get => GetValue(SelectedThumbPosProperty);
       set => SetValue(SelectedThumbPosProperty, value);
    }
-   
-   public static readonly StyledProperty<CornerRadius> CornerRadiusProperty =
-      AvaloniaProperty.Register<Segmented, CornerRadius>(nameof(CornerRadius));
-
-   public CornerRadius CornerRadius
-   {
-      get => GetValue(CornerRadiusProperty);
-      set => SetValue(CornerRadiusProperty, value);
-   }
-   
-   public static readonly StyledProperty<CornerRadius> SelectedThumbCornerRadiusProperty =
-      AvaloniaProperty.Register<StyledControl, CornerRadius>(nameof(SelectedThumbCornerRadius));
-   public CornerRadius SelectedThumbCornerRadius
-   {
-      get => GetValue(SelectedThumbCornerRadiusProperty);
-      set => SetValue(SelectedThumbCornerRadiusProperty, value);
-   }
 }

@@ -30,11 +30,9 @@ public partial class ToolTip : TemplatedControl,
 {
    private Popup? _popup;
    private Action<IPopupHost?>? _popupHostChangedHandler;
-   private AvaloniaWin? _currentAnchorWindow;
    private PopupPositionInfo? _popupPositionInfo; // 这个信息在隐藏动画的时候会用到
    private bool _initialized = false;
    private IControlCustomStyle _customStyle;
-   private ControlTokenBinder _controlTokenBinder;
    private ArrowDecoratedBox? _arrowDecoratedBox;
    
    // 当鼠标移走了，但是打开动画还没完成，我们需要记录下来这个信号
@@ -57,7 +55,6 @@ public partial class ToolTip : TemplatedControl,
    public ToolTip()
    {
       _customStyle = this;
-      _controlTokenBinder = new ControlTokenBinder(this, ToolTipToken.ID);
    }
 
    internal Control? AdornedControl { get; private set; }
@@ -462,7 +459,7 @@ public partial class ToolTip : TemplatedControl,
       
       SetPopupParent(_popup, control);
 
-      _controlTokenBinder.AddControlBinding(_popup, Popup.MaskShadowsProperty, GlobalResourceKey.BoxShadowsSecondary);
+      BindUtils.CreateTokenBinding(_popup, Popup.MaskShadowsProperty, GlobalResourceKey.BoxShadowsSecondary);
       SetToolTipColor(control);
       
       var marginToAnchor = GetMarginToAnchor(control);
@@ -525,8 +522,6 @@ public partial class ToolTip : TemplatedControl,
       _popup.MarginToAnchor = marginToAnchor;
       _popup.Placement = placement;
       _popup.PlacementTarget = control;
-
-      _currentAnchorWindow = (TopLevel.GetTopLevel(control) as AvaloniaWin)!;
       
       // 开始动画
       PlayShowMotion(_popupPositionInfo, control, this);
@@ -693,9 +688,9 @@ public partial class ToolTip : TemplatedControl,
    void IControlCustomStyle.ApplyFixedStyleConfig()
    {
       if (_arrowDecoratedBox is not null) {
-         _controlTokenBinder.AddControlBinding(MarginXXSTokenProperty, GlobalResourceKey.MarginXXS);
-         _controlTokenBinder.AddControlBinding(MotionDurationTokenProperty, GlobalResourceKey.MotionDurationMid);
-         _controlTokenBinder.AddControlBinding(ShadowsTokenProperty, GlobalResourceKey.BoxShadowsSecondary);
+         BindUtils.CreateTokenBinding(this, MarginXXSTokenProperty, GlobalResourceKey.MarginXXS);
+         BindUtils.CreateTokenBinding(this, MotionDurationTokenProperty, GlobalResourceKey.MotionDurationMid);
+         BindUtils.CreateTokenBinding(this, ShadowsTokenProperty, GlobalResourceKey.BoxShadowsSecondary);
       }
    }
    

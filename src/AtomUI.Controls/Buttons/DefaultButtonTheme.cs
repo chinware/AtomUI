@@ -5,7 +5,7 @@ using Avalonia.Styling;
 namespace AtomUI.Controls;
 
 [ControlThemeProvider]
-public class DefaultButtonTheme : BaseButtonTheme
+internal class DefaultButtonTheme : BaseButtonTheme
 {
    public const string ID = "DefaultButton";
    

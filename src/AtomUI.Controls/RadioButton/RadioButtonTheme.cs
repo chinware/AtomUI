@@ -5,7 +5,7 @@ using Avalonia.Styling;
 namespace AtomUI.Controls;
 
 [ControlThemeProvider]
-public class RadioButtonTheme : ControlTheme
+internal class RadioButtonTheme : ControlTheme
 {
    public RadioButtonTheme()
       : base(typeof(RadioButton))

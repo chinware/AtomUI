@@ -9,7 +9,7 @@ using Avalonia.Styling;
 namespace AtomUI.Controls;
 
 [ControlThemeProvider]
-public class SeparatorTheme : ControlTheme
+internal class SeparatorTheme : ControlTheme
 {
    public const string TitlePart = "PART_CloseBtn";
    

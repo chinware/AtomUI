@@ -139,6 +139,25 @@
                     </atom:SegmentedItem>
                     
                 </atom:Segmented>
+                
+                <atom:Segmented SizeType="Large">
+                    <atom:SegmentedItem>
+                        <atom:SegmentedItem.Icon>
+                            <atom:PathIcon Kind="BarsOutlined"></atom:PathIcon>
+                        </atom:SegmentedItem.Icon>
+                        Ava 牛逼
+                    </atom:SegmentedItem>
+                    <atom:SegmentedItem Text="群主牛逼">
+                        <atom:SegmentedItem.Icon>
+                            <atom:PathIcon Kind="WechatOutlined"></atom:PathIcon>
+                        </atom:SegmentedItem.Icon>
+                    </atom:SegmentedItem>
+                    
+                    <atom:SegmentedItem Text="微软牛逼" 
+                                        Icon="{atom:IconProvider Kind=WindowsOutlined}">
+                    </atom:SegmentedItem>
+                    
+                </atom:Segmented>
 
             </StackPanel>
         </showcase:ShowCaseItem>

@@ -55,6 +55,7 @@ internal class SegmentedToken : AbstractControlDesignToken
    // 内部 token
    public Thickness SegmentedItemPadding { get; set; }
    public Thickness SegmentedItemPaddingSM { get; set; }
+   public Thickness SegmentedTextLabelMargin { get; set; }
 
    internal override void CalculateFromAlias()
    {
@@ -79,5 +80,6 @@ internal class SegmentedToken : AbstractControlDesignToken
          0,
          Math.Max(_globalToken.ControlPaddingSM - lineWidth, 0),
          0);
+      SegmentedTextLabelMargin = new Thickness(_globalToken.PaddingXXS, 0, 0, 0);
    }
 }

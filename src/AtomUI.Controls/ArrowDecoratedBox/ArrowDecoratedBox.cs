@@ -77,9 +77,9 @@ public enum ArrowPosition
    RightEdgeAlignedBottom
 }
 
-public partial class ArrowDecoratedBox : StyledControl,
-                                         IShadowMaskInfoProvider,
-                                         IControlCustomStyle
+public class ArrowDecoratedBox : StyledControl,
+                                 IShadowMaskInfoProvider,
+                                 IControlCustomStyle
 {
    public static readonly StyledProperty<bool> IsShowArrowProperty =
       AvaloniaProperty.Register<ArrowDecoratedBox, bool>(nameof(IsShowArrow), true);
@@ -87,19 +87,19 @@ public partial class ArrowDecoratedBox : StyledControl,
    public static readonly StyledProperty<ArrowPosition> ArrowPositionProperty =
       AvaloniaProperty.Register<ArrowDecoratedBox, ArrowPosition>(
          nameof(ArrowPosition), defaultValue: ArrowPosition.Bottom);
-   
+
    /// <summary>
    /// Defines the <see cref="Child"/> property.
    /// </summary>
    public static readonly StyledProperty<Control?> ChildProperty =
       Border.ChildProperty.AddOwner<ArrowDecoratedBox>();
-   
+
    /// <summary>
    /// Defines the <see cref="CornerRadius"/> property.
    /// </summary>
    public static readonly StyledProperty<CornerRadius> CornerRadiusProperty =
       Border.CornerRadiusProperty.AddOwner<ArrowDecoratedBox>();
-   
+
    // 指针最顶点位置
    // 相对坐标
    private (double, double) _arrowVertexPoint;
@@ -122,7 +122,7 @@ public partial class ArrowDecoratedBox : StyledControl,
       get => GetValue(ArrowPositionProperty);
       set => SetValue(ArrowPositionProperty, value);
    }
-   
+
    /// <summary>
    /// Gets or sets the radius of the border rounded corners.
    /// </summary>
@@ -131,7 +131,7 @@ public partial class ArrowDecoratedBox : StyledControl,
       get => GetValue(CornerRadiusProperty);
       set => SetValue(CornerRadiusProperty, value);
    }
-   
+
    /// <summary>
    /// Gets or sets the decorated control.
    /// </summary>
@@ -141,26 +141,24 @@ public partial class ArrowDecoratedBox : StyledControl,
       get => GetValue(ChildProperty);
       set => SetValue(ChildProperty, value);
    }
-   
+
    private bool _initialized = false;
    private IControlCustomStyle _customStyle;
-   private ControlTokenBinder _controlTokenBinder;
    private Geometry? _arrowGeometry;
    private Rect _contentRect;
    private Rect _arrowRect;
    private Border? _container;
    private CompositeDisposable? _compositeDisposable;
    private bool _needGenerateArrowVertexPoint = true;
-   
+
    static ArrowDecoratedBox()
    {
       AffectsMeasure<ArrowDecoratedBox>(ArrowPositionProperty, IsShowArrowProperty);
    }
-   
+
    public ArrowDecoratedBox()
    {
       _customStyle = this;
-      _controlTokenBinder = new ControlTokenBinder(this, ArrowDecoratedBoxToken.ID);
    }
 
    public static Direction GetDirection(ArrowPosition arrowPosition)
@@ -201,20 +199,18 @@ public partial class ArrowDecoratedBox : StyledControl,
       base.OnAttachedToVisualTree(e);
       SetupRelayProperties();
    }
-   
+
    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
    {
       base.OnDetachedFromVisualTree(e);
       _compositeDisposable?.Dispose();
    }
-   
+
    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
    {
       base.OnPropertyChanged(e);
       _customStyle.HandlePropertyChangedForStyle(e);
    }
-
-   protected virtual void NotifyCreateUi() { }
 
    public CornerRadius GetMaskCornerRadius()
    {
@@ -225,8 +221,9 @@ public partial class ArrowDecoratedBox : StyledControl,
    {
       return GetContentRect(DesiredSize).Deflate(0.5);
    }
-   
+
    #region IControlCustomStyle 实现
+
    // 组件的 Token 绑定属性
    private double _arrowSize;
 
@@ -239,7 +236,6 @@ public partial class ArrowDecoratedBox : StyledControl,
    void IControlCustomStyle.SetupUi()
    {
       _container = new Border();
-      NotifyCreateUi();
       _customStyle.ApplyFixedStyleConfig();
       if (IsShowArrow) {
          BuildGeometry(true);
@@ -248,7 +244,7 @@ public partial class ArrowDecoratedBox : StyledControl,
       LogicalChildren.Add(_container);
       VisualChildren.Add(_container);
 
-      _controlTokenBinder.AddControlBinding(BackgroundProperty, GlobalResourceKey.ColorBgContainer);
+      BindUtils.CreateTokenBinding(this, BackgroundProperty, GlobalResourceKey.ColorBgContainer);
       _initialized = true;
    }
 
@@ -261,6 +257,7 @@ public partial class ArrowDecoratedBox : StyledControl,
             UIStructureUtils.ClearLogicalParentRecursive(Child, null);
             UIStructureUtils.ClearVisualParentRecursive(Child, null);
          }
+
          _compositeDisposable.Add(BindUtils.RelayBind(this, BackgroundSizingProperty, _container));
          _compositeDisposable.Add(BindUtils.RelayBind(this, BackgroundProperty, _container));
          _compositeDisposable.Add(BindUtils.RelayBind(this, CornerRadiusProperty, _container));
@@ -284,7 +281,7 @@ public partial class ArrowDecoratedBox : StyledControl,
 
       return _arrowVertexPoint;
    }
-   
+
    void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
    {
       if (e.Property == IsShowArrowProperty ||
@@ -295,6 +292,7 @@ public partial class ArrowDecoratedBox : StyledControl,
             // 当开启的时候，但是还没有加入的渲染树，这个时候我们取不到 Token 需要在取值的时候重新生成一下
             _needGenerateArrowVertexPoint = true;
          }
+
          if (_initialized && VisualRoot is not null) {
             BuildGeometry(true);
             _arrowRect = GetArrowRect(DesiredSize);
@@ -311,10 +309,10 @@ public partial class ArrowDecoratedBox : StyledControl,
 
    protected virtual void NotifyApplyFixedStyleConfig()
    {
-      _controlTokenBinder.AddControlBinding(MinHeightProperty, GlobalResourceKey.ControlHeight);
-      _controlTokenBinder.AddControlBinding(PaddingProperty, GlobalResourceKey.PaddingXS);
-      _controlTokenBinder.AddControlBinding(ArrowSizeTokenProperty, ArrowDecoratedBoxResourceKey.ArrowSize);
-      _controlTokenBinder.AddControlBinding(CornerRadiusProperty, GlobalResourceKey.BorderRadius);
+      BindUtils.CreateTokenBinding(this, MinHeightProperty, GlobalResourceKey.ControlHeight);
+      BindUtils.CreateTokenBinding(this, PaddingProperty, GlobalResourceKey.PaddingXS);
+      BindUtils.CreateTokenBinding(this, ArrowSizeTokenProperty, ArrowDecoratedBoxResourceKey.ArrowSize);
+      BindUtils.CreateTokenBinding(this, CornerRadiusProperty, GlobalResourceKey.BorderRadius);
    }
 
    public sealed override void Render(DrawingContext context)
@@ -489,10 +487,10 @@ public partial class ArrowDecoratedBox : StyledControl,
             }
          }
       }
-      
+
       var targetRect = new Rect(offsetX, offsetY, targetWidth, targetHeight);
       var center = targetRect.Center;
-      
+
       // 计算中点
       var direction = GetDirection(position);
       if (direction == Direction.Left || direction == Direction.Right) {
@@ -500,7 +498,9 @@ public partial class ArrowDecoratedBox : StyledControl,
       } else if (direction == Direction.Top || direction == Direction.Bottom) {
          _arrowVertexPoint = (center.X, finalSize.Width - center.X);
       }
+
       return targetRect;
    }
+
    #endregion
 }

@@ -5,7 +5,7 @@ using Avalonia.Styling;
 namespace AtomUI.Controls;
 
 [ControlThemeProvider]
-public class TextButtonTheme : BaseButtonTheme
+internal class TextButtonTheme : BaseButtonTheme
 {
    public const string ID = "TextButton";
    

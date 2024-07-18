@@ -9,7 +9,7 @@ using Avalonia.Styling;
 namespace AtomUI.Controls;
 
 [ControlThemeProvider]
-public class TagTheme : ControlTheme
+internal class TagTheme : ControlTheme
 {
    public const string MainContainerPart = "PART_MainContainer";
    public const string CloseButtonPart = "PART_CloseButton";
