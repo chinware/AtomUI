@@ -20,11 +20,8 @@ public class CaptionButton : AvaloniaButton
    public static readonly StreamGeometry WindowExpandGlyph = StreamGeometry.Parse("M10,21V19H6.41L10.91,14.5L9.5,13.09L5,17.59V14H3V21H10M14.5,10.91L19,6.41V10H21V3H14V5H17.59L13.09,9.5L14.5,10.91Z");
    public static readonly StreamGeometry WindowCollapseGlyph = StreamGeometry.Parse("M19.5,3.09L15,7.59V4H13V11H20V9H16.41L20.91,4.5L19.5,3.09M4,13V15H7.59L3.09,19.5L4.5,20.91L9,16.41V20H11V13H4Z");
 
-   private ControlTokenBinder _controlTokenBinder;
-
    public CaptionButton()
    {
-      _controlTokenBinder = new ControlTokenBinder(this, CaptionButtonToken.ID);
    }
    
    protected override Size MeasureCore(Size availableSize)

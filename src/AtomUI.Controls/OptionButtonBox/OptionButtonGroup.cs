@@ -88,7 +88,6 @@ public partial class OptionButtonGroup : StyledControl,
    private bool _initialized = false;
    private ControlStyleState _styleState;
    private IControlCustomStyle _customStyle;
-   private ControlTokenBinder _controlTokenBinder;
    private StackPanel? _layout;
    private readonly BorderRenderHelper _borderRenderHelper = new BorderRenderHelper();
 
@@ -101,7 +100,6 @@ public partial class OptionButtonGroup : StyledControl,
 
    public OptionButtonGroup()
    {
-      _controlTokenBinder = new ControlTokenBinder(this, OptionButtonToken.ID);
       _customStyle = this;
       _customStyle.InitOnConstruct();
       Options.CollectionChanged += OptionsChanged;
@@ -248,17 +246,17 @@ public partial class OptionButtonGroup : StyledControl,
 
    void IControlCustomStyle.CollectStyleState()
    {
-      StyleUtils.InitCommonState(this, ref _styleState);
+      ControlStateUtils.InitCommonState(this, ref _styleState);
    }
 
    void IControlCustomStyle.ApplyFixedStyleConfig()
    {
-      _controlTokenBinder.AddControlBinding(MotionDurationTokenProperty, GlobalResourceKey.MotionDurationMid);
-      _controlTokenBinder.AddControlBinding(ColorBorderTokenProperty, GlobalResourceKey.ColorBorder);
-      _controlTokenBinder.AddControlBinding(ColorPrimaryTokenProperty, GlobalResourceKey.ColorPrimary);
-      _controlTokenBinder.AddControlBinding(ColorPrimaryHoverTokenProperty, GlobalResourceKey.ColorPrimaryHover);
-      _controlTokenBinder.AddControlBinding(ColorPrimaryActiveTokenProperty, GlobalResourceKey.ColorPrimaryActive);
-      _controlTokenBinder.AddControlBinding(SelectedOptionBorderColorProperty, GlobalResourceKey.ColorPrimary);
+      BindUtils.CreateTokenBinding(this, MotionDurationTokenProperty, GlobalResourceKey.MotionDurationMid);
+      BindUtils.CreateTokenBinding(this, ColorBorderTokenProperty, GlobalResourceKey.ColorBorder);
+      BindUtils.CreateTokenBinding(this, ColorPrimaryTokenProperty, GlobalResourceKey.ColorPrimary);
+      BindUtils.CreateTokenBinding(this, ColorPrimaryHoverTokenProperty, GlobalResourceKey.ColorPrimaryHover);
+      BindUtils.CreateTokenBinding(this, ColorPrimaryActiveTokenProperty, GlobalResourceKey.ColorPrimaryActive);
+      BindUtils.CreateTokenBinding(this, SelectedOptionBorderColorProperty, GlobalResourceKey.ColorPrimary);
    }
 
    void IControlCustomStyle.ApplyRenderScalingAwareStyleConfig()
@@ -279,14 +277,14 @@ public partial class OptionButtonGroup : StyledControl,
    void IControlCustomStyle.ApplySizeTypeStyleConfig()
    {
       if (SizeType == SizeType.Small) {
-         _controlTokenBinder.AddControlBinding(CornerRadiusProperty, GlobalResourceKey.BorderRadiusSM);
-         _controlTokenBinder.AddControlBinding(ControlHeightTokenProperty, GlobalResourceKey.ControlHeightSM);
+         BindUtils.CreateTokenBinding(this, CornerRadiusProperty, GlobalResourceKey.BorderRadiusSM);
+         BindUtils.CreateTokenBinding(this, ControlHeightTokenProperty, GlobalResourceKey.ControlHeightSM);
       } else if (SizeType == SizeType.Middle) {
-         _controlTokenBinder.AddControlBinding(CornerRadiusProperty, GlobalResourceKey.BorderRadius);
-         _controlTokenBinder.AddControlBinding(ControlHeightTokenProperty, GlobalResourceKey.ControlHeight);
+         BindUtils.CreateTokenBinding(this, CornerRadiusProperty, GlobalResourceKey.BorderRadius);
+         BindUtils.CreateTokenBinding(this, ControlHeightTokenProperty, GlobalResourceKey.ControlHeight);
       } else if (SizeType == SizeType.Large) {
-         _controlTokenBinder.AddControlBinding(CornerRadiusProperty, GlobalResourceKey.BorderRadiusLG);
-         _controlTokenBinder.AddControlBinding(ControlHeightTokenProperty, GlobalResourceKey.ControlHeightLG);
+         BindUtils.CreateTokenBinding(this, CornerRadiusProperty, GlobalResourceKey.BorderRadiusLG);
+         BindUtils.CreateTokenBinding(this, ControlHeightTokenProperty, GlobalResourceKey.ControlHeightLG);
       }
 
       ApplyButtonSizeConfig();
@@ -370,11 +368,10 @@ public partial class OptionButtonGroup : StyledControl,
    private void HandleOptionPointerEvent(object? sender, OptionButtonPointerEventArgs args)
    {
       if (args.Button == SelectedOption) {
-         _controlTokenBinder.ReleaseTriggerBindings(this);
          if (args.IsPressed) {
-            _controlTokenBinder.AddControlBinding(SelectedOptionBorderColorProperty, GlobalResourceKey.ColorPrimaryActive, BindingPriority.StyleTrigger);
+            BindUtils.CreateTokenBinding(this, SelectedOptionBorderColorProperty, GlobalResourceKey.ColorPrimaryActive, BindingPriority.StyleTrigger);
          } else if (args.IsHovering) {
-            _controlTokenBinder.AddControlBinding(SelectedOptionBorderColorProperty, GlobalResourceKey.ColorPrimaryHover, BindingPriority.StyleTrigger);
+            BindUtils.CreateTokenBinding(this, SelectedOptionBorderColorProperty, GlobalResourceKey.ColorPrimaryHover, BindingPriority.StyleTrigger);
          }
       }
    }

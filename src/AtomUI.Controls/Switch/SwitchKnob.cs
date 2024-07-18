@@ -36,8 +36,6 @@ internal class SwitchKnob : Control, IControlCustomStyle
       get => GetValue(LoadIndicatorBrushProperty);
       set => SetValue(LoadIndicatorBrushProperty, value);
    }
-   
-   private ControlTokenBinder _controlTokenBinder;
 
    public static readonly StyledProperty<Size> KnobSizeProperty
       = AvaloniaProperty.Register<SwitchKnob, Size>(nameof(KnobSize));
@@ -107,7 +105,6 @@ internal class SwitchKnob : Control, IControlCustomStyle
    
    public SwitchKnob()
    {
-      _controlTokenBinder = new ControlTokenBinder(this, ToggleSwitchToken.ID);
       _customStyle = this;
    }
 
@@ -233,10 +230,10 @@ internal class SwitchKnob : Control, IControlCustomStyle
    
    void IControlCustomStyle.ApplyFixedStyleConfig()
    {
-      _controlTokenBinder.AddControlBinding(MotionDurationTokenProperty, "MotionDurationMid");
-      _controlTokenBinder.AddControlBinding(this, ColorTextQuaternaryTokenProperty, "ColorTextQuaternary");
-      _controlTokenBinder.AddControlBinding(this, SwitchColorTokenProperty, "SwitchColor");
-      _controlTokenBinder.AddControlBinding(this, LoadingBgOpacityTokenProperty, "SwitchDisabledOpacity");
+      BindUtils.CreateTokenBinding(this, MotionDurationTokenProperty, GlobalResourceKey.MotionDurationMid);
+      BindUtils.CreateTokenBinding(this, ColorTextQuaternaryTokenProperty, GlobalResourceKey.ColorTextQuaternary);
+      BindUtils.CreateTokenBinding(this, SwitchColorTokenProperty, ToggleSwitchResourceKey.SwitchColor);
+      BindUtils.CreateTokenBinding(this, LoadingBgOpacityTokenProperty, ToggleSwitchResourceKey.SwitchDisabledOpacity);
       LoadingAnimationDuration = TimeSpan.FromMilliseconds(1200);
    }
 

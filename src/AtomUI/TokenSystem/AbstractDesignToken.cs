@@ -74,7 +74,7 @@ public abstract class AbstractDesignToken : IDesignToken
          if (property.PropertyType == typeof(Color) && tokenValue != null) {
             tokenValue = new SolidColorBrush((Color)tokenValue);
          }
-         dictionary[tokenName] = tokenValue;
+         dictionary[new TokenResourceKey(tokenName)] = tokenValue;
       }
    }
 

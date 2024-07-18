@@ -200,7 +200,6 @@ public abstract partial class AbstractProgressBar : RangeBaseControl,
    
    protected bool _initialized = false;
    protected ControlStyleState _styleState;
-   protected ControlTokenBinder _controlTokenBinder;
    internal IControlCustomStyle _customStyle;
    protected Label? _percentageLabel;
    protected PathIcon? _successCompletedIcon;
@@ -222,7 +221,6 @@ public abstract partial class AbstractProgressBar : RangeBaseControl,
 
    public AbstractProgressBar()
    {
-      _controlTokenBinder = new ControlTokenBinder(this, ProgressBarToken.ID);
       _customStyle = this;
       _effectiveSizeType = SizeType;
    }
@@ -352,7 +350,7 @@ public abstract partial class AbstractProgressBar : RangeBaseControl,
 
    void IControlCustomStyle.CollectStyleState()
    {
-      StyleUtils.InitCommonState(this, ref _styleState);
+      ControlStateUtils.InitCommonState(this, ref _styleState);
    }
    
    void IControlCustomStyle.ApplyFixedStyleConfig()
@@ -400,7 +398,7 @@ public abstract partial class AbstractProgressBar : RangeBaseControl,
 
    protected virtual void NotifyApplyFixedStyleConfig()
    {
-      _controlTokenBinder.AddControlBinding(SuccessThresholdBrushProperty, GlobalResourceKey.ColorSuccess);
+      BindUtils.CreateTokenBinding(this, SuccessThresholdBrushProperty, GlobalResourceKey.ColorSuccess);
    }
 
    protected virtual void NotifyPropertyChanged(AvaloniaPropertyChangedEventArgs e)
@@ -409,7 +407,6 @@ public abstract partial class AbstractProgressBar : RangeBaseControl,
 
    void IControlCustomStyle.ApplyVariableStyleConfig()
    {
-      _controlTokenBinder.ReleaseTriggerBindings(this);
       NotifyApplyVariableStyleConfig();
    }
 
@@ -419,26 +416,26 @@ public abstract partial class AbstractProgressBar : RangeBaseControl,
          if (TrailColor.HasValue) {
             GrooveBrush = new SolidColorBrush(TrailColor.Value);
          } else {
-            _controlTokenBinder.AddControlBinding(GrooveBrushProperty, ProgressBarResourceKey.RemainingColor);
+            BindUtils.CreateTokenBinding(this, GrooveBrushProperty, ProgressBarResourceKey.RemainingColor);
          }
        
          if (Status == ProgressStatus.Success || MathUtils.AreClose(Value, Maximum)) {
-            _controlTokenBinder.AddControlBinding(IndicatorBarBrushProperty, GlobalResourceKey.ColorSuccess);
+            BindUtils.CreateTokenBinding(this, IndicatorBarBrushProperty, GlobalResourceKey.ColorSuccess);
          } else if (Status == ProgressStatus.Exception) {
-            _controlTokenBinder.AddControlBinding(IndicatorBarBrushProperty, GlobalResourceKey.ColorError);
+            BindUtils.CreateTokenBinding(this, IndicatorBarBrushProperty, GlobalResourceKey.ColorError);
          } else {
-              _controlTokenBinder.AddControlBinding(IndicatorBarBrushProperty, ProgressBarResourceKey.DefaultColor);
+              BindUtils.CreateTokenBinding(this, IndicatorBarBrushProperty, ProgressBarResourceKey.DefaultColor);
          }
-         _controlTokenBinder.AddControlBinding(ForegroundProperty, GlobalResourceKey.ColorTextLabel);
+         BindUtils.CreateTokenBinding(this, ForegroundProperty, GlobalResourceKey.ColorTextLabel);
          if (_initialized) {
             _exceptionCompletedIcon!.IconMode = IconMode.Normal;
             _successCompletedIcon!.IconMode = IconMode.Normal;
          }
    
       } else {
-         _controlTokenBinder.AddControlBinding(GrooveBrushProperty, GlobalResourceKey.ColorBgContainerDisabled);
-         _controlTokenBinder.AddControlBinding(IndicatorBarBrushProperty, GlobalResourceKey.ControlItemBgActiveDisabled);
-         _controlTokenBinder.AddControlBinding(ForegroundProperty, GlobalResourceKey.ColorTextDisabled);
+         BindUtils.CreateTokenBinding(this, GrooveBrushProperty, GlobalResourceKey.ColorBgContainerDisabled);
+         BindUtils.CreateTokenBinding(this, IndicatorBarBrushProperty, GlobalResourceKey.ControlItemBgActiveDisabled);
+         BindUtils.CreateTokenBinding(this, ForegroundProperty, GlobalResourceKey.ColorTextDisabled);
          if (_initialized) {
             _exceptionCompletedIcon!.IconMode = IconMode.Disabled;
             _successCompletedIcon!.IconMode = IconMode.Disabled;

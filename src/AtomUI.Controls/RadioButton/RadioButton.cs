@@ -130,7 +130,7 @@ public partial class RadioButton : AvaloniaRadioButton,
 
    void IControlCustomStyle.CollectStyleState()
    {
-      StyleUtils.InitCommonState(this, ref _styleState);
+      ControlStateUtils.InitCommonState(this, ref _styleState);
       if (IsPressed) {
          _styleState |= ControlStyleState.Sunken;
       } else {

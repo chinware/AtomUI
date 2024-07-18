@@ -1,244 +1,246 @@
-﻿namespace AtomUI.Styling
+﻿using AtomUI.TokenSystem;
+
+namespace AtomUI.Styling
 {
     public static class AlertResourceKey
     {
-        public const string DefaultPadding = "Alert.DefaultPadding";
-        public const string WithDescriptionPadding = "Alert.WithDescriptionPadding";
-        public const string MessageWithDescriptionMargin = "Alert.MessageWithDescriptionMargin";
-        public const string IconDefaultMargin = "Alert.IconDefaultMargin";
-        public const string IconWithDescriptionMargin = "Alert.IconWithDescriptionMargin";
-        public const string IconSize = "Alert.IconSize";
-        public const string WithDescriptionIconSize = "Alert.WithDescriptionIconSize";
-        public const string CloseIconSize = "Alert.CloseIconSize";
-        public const string ExtraElementMargin = "Alert.ExtraElementMargin";
+        public static readonly TokenResourceKey DefaultPadding = new TokenResourceKey("Alert.DefaultPadding");
+        public static readonly TokenResourceKey WithDescriptionPadding = new TokenResourceKey("Alert.WithDescriptionPadding");
+        public static readonly TokenResourceKey MessageWithDescriptionMargin = new TokenResourceKey("Alert.MessageWithDescriptionMargin");
+        public static readonly TokenResourceKey IconDefaultMargin = new TokenResourceKey("Alert.IconDefaultMargin");
+        public static readonly TokenResourceKey IconWithDescriptionMargin = new TokenResourceKey("Alert.IconWithDescriptionMargin");
+        public static readonly TokenResourceKey IconSize = new TokenResourceKey("Alert.IconSize");
+        public static readonly TokenResourceKey WithDescriptionIconSize = new TokenResourceKey("Alert.WithDescriptionIconSize");
+        public static readonly TokenResourceKey CloseIconSize = new TokenResourceKey("Alert.CloseIconSize");
+        public static readonly TokenResourceKey ExtraElementMargin = new TokenResourceKey("Alert.ExtraElementMargin");
     }
 
     public static class ArrowDecoratedBoxResourceKey
     {
-        public const string ArrowSize = "ArrowDecoratedBox.ArrowSize";
+        public static readonly TokenResourceKey ArrowSize = new TokenResourceKey("ArrowDecoratedBox.ArrowSize");
     }
 
     public static class BadgeResourceKey
     {
-        public const string IndicatorHeight = "Badge.IndicatorHeight";
-        public const string IndicatorHeightSM = "Badge.IndicatorHeightSM";
-        public const string DotSize = "Badge.DotSize";
-        public const string TextFontSize = "Badge.TextFontSize";
-        public const string TextFontSizeSM = "Badge.TextFontSizeSM";
-        public const string TextFontWeight = "Badge.TextFontWeight";
-        public const string StatusSize = "Badge.StatusSize";
-        public const string BadgeFontHeight = "Badge.BadgeFontHeight";
-        public const string BadgeTextColor = "Badge.BadgeTextColor";
-        public const string BadgeColor = "Badge.BadgeColor";
-        public const string BadgeColorHover = "Badge.BadgeColorHover";
-        public const string BadgeShadowSize = "Badge.BadgeShadowSize";
-        public const string BadgeShadowColor = "Badge.BadgeShadowColor";
-        public const string BadgeProcessingDuration = "Badge.BadgeProcessingDuration";
-        public const string BadgeRibbonOffset = "Badge.BadgeRibbonOffset";
-        public const string BadgeRibbonCornerTransform = "Badge.BadgeRibbonCornerTransform";
-        public const string BadgeRibbonCornerDarkenAmount = "Badge.BadgeRibbonCornerDarkenAmount";
+        public static readonly TokenResourceKey IndicatorHeight = new TokenResourceKey("Badge.IndicatorHeight");
+        public static readonly TokenResourceKey IndicatorHeightSM = new TokenResourceKey("Badge.IndicatorHeightSM");
+        public static readonly TokenResourceKey DotSize = new TokenResourceKey("Badge.DotSize");
+        public static readonly TokenResourceKey TextFontSize = new TokenResourceKey("Badge.TextFontSize");
+        public static readonly TokenResourceKey TextFontSizeSM = new TokenResourceKey("Badge.TextFontSizeSM");
+        public static readonly TokenResourceKey TextFontWeight = new TokenResourceKey("Badge.TextFontWeight");
+        public static readonly TokenResourceKey StatusSize = new TokenResourceKey("Badge.StatusSize");
+        public static readonly TokenResourceKey BadgeFontHeight = new TokenResourceKey("Badge.BadgeFontHeight");
+        public static readonly TokenResourceKey BadgeTextColor = new TokenResourceKey("Badge.BadgeTextColor");
+        public static readonly TokenResourceKey BadgeColor = new TokenResourceKey("Badge.BadgeColor");
+        public static readonly TokenResourceKey BadgeColorHover = new TokenResourceKey("Badge.BadgeColorHover");
+        public static readonly TokenResourceKey BadgeShadowSize = new TokenResourceKey("Badge.BadgeShadowSize");
+        public static readonly TokenResourceKey BadgeShadowColor = new TokenResourceKey("Badge.BadgeShadowColor");
+        public static readonly TokenResourceKey BadgeProcessingDuration = new TokenResourceKey("Badge.BadgeProcessingDuration");
+        public static readonly TokenResourceKey BadgeRibbonOffset = new TokenResourceKey("Badge.BadgeRibbonOffset");
+        public static readonly TokenResourceKey BadgeRibbonCornerTransform = new TokenResourceKey("Badge.BadgeRibbonCornerTransform");
+        public static readonly TokenResourceKey BadgeRibbonCornerDarkenAmount = new TokenResourceKey("Badge.BadgeRibbonCornerDarkenAmount");
     }
 
     public static class ButtonResourceKey
     {
-        public const string FontWeight = "Button.FontWeight";
-        public const string DefaultShadow = "Button.DefaultShadow";
-        public const string PrimaryShadow = "Button.PrimaryShadow";
-        public const string DangerShadow = "Button.DangerShadow";
-        public const string PrimaryColor = "Button.PrimaryColor";
-        public const string DefaultColor = "Button.DefaultColor";
-        public const string DefaultBg = "Button.DefaultBg";
-        public const string DefaultBorderColor = "Button.DefaultBorderColor";
-        public const string DefaultBorderColorDisabled = "Button.DefaultBorderColorDisabled";
-        public const string DangerColor = "Button.DangerColor";
-        public const string DefaultHoverBg = "Button.DefaultHoverBg";
-        public const string DefaultHoverColor = "Button.DefaultHoverColor";
-        public const string DefaultHoverBorderColor = "Button.DefaultHoverBorderColor";
-        public const string DefaultActiveBg = "Button.DefaultActiveBg";
-        public const string DefaultActiveColor = "Button.DefaultActiveColor";
-        public const string DefaultActiveBorderColor = "Button.DefaultActiveBorderColor";
-        public const string BorderColorDisabled = "Button.BorderColorDisabled";
-        public const string DefaultGhostColor = "Button.DefaultGhostColor";
-        public const string GhostBg = "Button.GhostBg";
-        public const string DefaultGhostBorderColor = "Button.DefaultGhostBorderColor";
-        public const string Padding = "Button.Padding";
-        public const string PaddingLG = "Button.PaddingLG";
-        public const string PaddingSM = "Button.PaddingSM";
-        public const string CirclePadding = "Button.CirclePadding";
-        public const string OnlyIconSize = "Button.OnlyIconSize";
-        public const string OnlyIconSizeLG = "Button.OnlyIconSizeLG";
-        public const string OnlyIconSizeSM = "Button.OnlyIconSizeSM";
-        public const string IconSize = "Button.IconSize";
-        public const string IconSizeLG = "Button.IconSizeLG";
-        public const string IconSizeSM = "Button.IconSizeSM";
-        public const string GroupBorderColor = "Button.GroupBorderColor";
-        public const string LinkHoverBg = "Button.LinkHoverBg";
-        public const string TextHoverBg = "Button.TextHoverBg";
-        public const string ContentFontSize = "Button.ContentFontSize";
-        public const string ContentFontSizeLG = "Button.ContentFontSizeLG";
-        public const string ContentFontSizeSM = "Button.ContentFontSizeSM";
-        public const string ContentLineHeight = "Button.ContentLineHeight";
-        public const string ContentLineHeightLG = "Button.ContentLineHeightLG";
-        public const string ContentLineHeightSM = "Button.ContentLineHeightSM";
+        public static readonly TokenResourceKey FontWeight = new TokenResourceKey("Button.FontWeight");
+        public static readonly TokenResourceKey DefaultShadow = new TokenResourceKey("Button.DefaultShadow");
+        public static readonly TokenResourceKey PrimaryShadow = new TokenResourceKey("Button.PrimaryShadow");
+        public static readonly TokenResourceKey DangerShadow = new TokenResourceKey("Button.DangerShadow");
+        public static readonly TokenResourceKey PrimaryColor = new TokenResourceKey("Button.PrimaryColor");
+        public static readonly TokenResourceKey DefaultColor = new TokenResourceKey("Button.DefaultColor");
+        public static readonly TokenResourceKey DefaultBg = new TokenResourceKey("Button.DefaultBg");
+        public static readonly TokenResourceKey DefaultBorderColor = new TokenResourceKey("Button.DefaultBorderColor");
+        public static readonly TokenResourceKey DefaultBorderColorDisabled = new TokenResourceKey("Button.DefaultBorderColorDisabled");
+        public static readonly TokenResourceKey DangerColor = new TokenResourceKey("Button.DangerColor");
+        public static readonly TokenResourceKey DefaultHoverBg = new TokenResourceKey("Button.DefaultHoverBg");
+        public static readonly TokenResourceKey DefaultHoverColor = new TokenResourceKey("Button.DefaultHoverColor");
+        public static readonly TokenResourceKey DefaultHoverBorderColor = new TokenResourceKey("Button.DefaultHoverBorderColor");
+        public static readonly TokenResourceKey DefaultActiveBg = new TokenResourceKey("Button.DefaultActiveBg");
+        public static readonly TokenResourceKey DefaultActiveColor = new TokenResourceKey("Button.DefaultActiveColor");
+        public static readonly TokenResourceKey DefaultActiveBorderColor = new TokenResourceKey("Button.DefaultActiveBorderColor");
+        public static readonly TokenResourceKey BorderColorDisabled = new TokenResourceKey("Button.BorderColorDisabled");
+        public static readonly TokenResourceKey DefaultGhostColor = new TokenResourceKey("Button.DefaultGhostColor");
+        public static readonly TokenResourceKey GhostBg = new TokenResourceKey("Button.GhostBg");
+        public static readonly TokenResourceKey DefaultGhostBorderColor = new TokenResourceKey("Button.DefaultGhostBorderColor");
+        public static readonly TokenResourceKey Padding = new TokenResourceKey("Button.Padding");
+        public static readonly TokenResourceKey PaddingLG = new TokenResourceKey("Button.PaddingLG");
+        public static readonly TokenResourceKey PaddingSM = new TokenResourceKey("Button.PaddingSM");
+        public static readonly TokenResourceKey CirclePadding = new TokenResourceKey("Button.CirclePadding");
+        public static readonly TokenResourceKey OnlyIconSize = new TokenResourceKey("Button.OnlyIconSize");
+        public static readonly TokenResourceKey OnlyIconSizeLG = new TokenResourceKey("Button.OnlyIconSizeLG");
+        public static readonly TokenResourceKey OnlyIconSizeSM = new TokenResourceKey("Button.OnlyIconSizeSM");
+        public static readonly TokenResourceKey IconSize = new TokenResourceKey("Button.IconSize");
+        public static readonly TokenResourceKey IconSizeLG = new TokenResourceKey("Button.IconSizeLG");
+        public static readonly TokenResourceKey IconSizeSM = new TokenResourceKey("Button.IconSizeSM");
+        public static readonly TokenResourceKey GroupBorderColor = new TokenResourceKey("Button.GroupBorderColor");
+        public static readonly TokenResourceKey LinkHoverBg = new TokenResourceKey("Button.LinkHoverBg");
+        public static readonly TokenResourceKey TextHoverBg = new TokenResourceKey("Button.TextHoverBg");
+        public static readonly TokenResourceKey ContentFontSize = new TokenResourceKey("Button.ContentFontSize");
+        public static readonly TokenResourceKey ContentFontSizeLG = new TokenResourceKey("Button.ContentFontSizeLG");
+        public static readonly TokenResourceKey ContentFontSizeSM = new TokenResourceKey("Button.ContentFontSizeSM");
+        public static readonly TokenResourceKey ContentLineHeight = new TokenResourceKey("Button.ContentLineHeight");
+        public static readonly TokenResourceKey ContentLineHeightLG = new TokenResourceKey("Button.ContentLineHeightLG");
+        public static readonly TokenResourceKey ContentLineHeightSM = new TokenResourceKey("Button.ContentLineHeightSM");
     }
 
     public static class CheckBoxResourceKey
     {
-        public const string CheckIndicatorSize = "CheckBox.CheckIndicatorSize";
-        public const string IndicatorTristateMarkSize = "CheckBox.IndicatorTristateMarkSize";
+        public static readonly TokenResourceKey CheckIndicatorSize = new TokenResourceKey("CheckBox.CheckIndicatorSize");
+        public static readonly TokenResourceKey IndicatorTristateMarkSize = new TokenResourceKey("CheckBox.IndicatorTristateMarkSize");
     }
 
     public static class EmptyIndicatorResourceKey
     {
-        public const string EmptyImgHeight = "EmptyIndicator.EmptyImgHeight";
-        public const string EmptyImgHeightSM = "EmptyIndicator.EmptyImgHeightSM";
-        public const string EmptyImgHeightMD = "EmptyIndicator.EmptyImgHeightMD";
+        public static readonly TokenResourceKey EmptyImgHeight = new TokenResourceKey("EmptyIndicator.EmptyImgHeight");
+        public static readonly TokenResourceKey EmptyImgHeightSM = new TokenResourceKey("EmptyIndicator.EmptyImgHeightSM");
+        public static readonly TokenResourceKey EmptyImgHeightMD = new TokenResourceKey("EmptyIndicator.EmptyImgHeightMD");
     }
 
     public static class LoadingIndicatorResourceKey
     {
-        public const string DotSize = "LoadingIndicator.DotSize";
-        public const string DotSizeSM = "LoadingIndicator.DotSizeSM";
-        public const string DotSizeLG = "LoadingIndicator.DotSizeLG";
-        public const string IndicatorDuration = "LoadingIndicator.IndicatorDuration";
+        public static readonly TokenResourceKey DotSize = new TokenResourceKey("LoadingIndicator.DotSize");
+        public static readonly TokenResourceKey DotSizeSM = new TokenResourceKey("LoadingIndicator.DotSizeSM");
+        public static readonly TokenResourceKey DotSizeLG = new TokenResourceKey("LoadingIndicator.DotSizeLG");
+        public static readonly TokenResourceKey IndicatorDuration = new TokenResourceKey("LoadingIndicator.IndicatorDuration");
     }
 
     public static class MarqueeLabelResourceKey
     {
-        public const string CycleSpace = "MarqueeLabel.CycleSpace";
-        public const string DefaultSpeed = "MarqueeLabel.DefaultSpeed";
+        public static readonly TokenResourceKey CycleSpace = new TokenResourceKey("MarqueeLabel.CycleSpace");
+        public static readonly TokenResourceKey DefaultSpeed = new TokenResourceKey("MarqueeLabel.DefaultSpeed");
     }
 
     public static class OptionButtonResourceKey
     {
-        public const string ButtonBackground = "OptionButton.ButtonBackground";
-        public const string ButtonCheckedBackground = "OptionButton.ButtonCheckedBackground";
-        public const string ButtonColor = "OptionButton.ButtonColor";
-        public const string ButtonPadding = "OptionButton.ButtonPadding";
-        public const string ButtonCheckedBgDisabled = "OptionButton.ButtonCheckedBgDisabled";
-        public const string ButtonCheckedColorDisabled = "OptionButton.ButtonCheckedColorDisabled";
-        public const string ButtonSolidCheckedColor = "OptionButton.ButtonSolidCheckedColor";
-        public const string ButtonSolidCheckedBackground = "OptionButton.ButtonSolidCheckedBackground";
-        public const string ButtonSolidCheckedHoverBackground = "OptionButton.ButtonSolidCheckedHoverBackground";
-        public const string ButtonSolidCheckedActiveBackground = "OptionButton.ButtonSolidCheckedActiveBackground";
-        public const string ContentFontSize = "OptionButton.ContentFontSize";
-        public const string ContentFontSizeLG = "OptionButton.ContentFontSizeLG";
-        public const string ContentFontSizeSM = "OptionButton.ContentFontSizeSM";
-        public const string ContentLineHeight = "OptionButton.ContentLineHeight";
-        public const string ContentLineHeightLG = "OptionButton.ContentLineHeightLG";
-        public const string ContentLineHeightSM = "OptionButton.ContentLineHeightSM";
-        public const string Padding = "OptionButton.Padding";
-        public const string PaddingLG = "OptionButton.PaddingLG";
-        public const string PaddingSM = "OptionButton.PaddingSM";
+        public static readonly TokenResourceKey ButtonBackground = new TokenResourceKey("OptionButton.ButtonBackground");
+        public static readonly TokenResourceKey ButtonCheckedBackground = new TokenResourceKey("OptionButton.ButtonCheckedBackground");
+        public static readonly TokenResourceKey ButtonColor = new TokenResourceKey("OptionButton.ButtonColor");
+        public static readonly TokenResourceKey ButtonPadding = new TokenResourceKey("OptionButton.ButtonPadding");
+        public static readonly TokenResourceKey ButtonCheckedBgDisabled = new TokenResourceKey("OptionButton.ButtonCheckedBgDisabled");
+        public static readonly TokenResourceKey ButtonCheckedColorDisabled = new TokenResourceKey("OptionButton.ButtonCheckedColorDisabled");
+        public static readonly TokenResourceKey ButtonSolidCheckedColor = new TokenResourceKey("OptionButton.ButtonSolidCheckedColor");
+        public static readonly TokenResourceKey ButtonSolidCheckedBackground = new TokenResourceKey("OptionButton.ButtonSolidCheckedBackground");
+        public static readonly TokenResourceKey ButtonSolidCheckedHoverBackground = new TokenResourceKey("OptionButton.ButtonSolidCheckedHoverBackground");
+        public static readonly TokenResourceKey ButtonSolidCheckedActiveBackground = new TokenResourceKey("OptionButton.ButtonSolidCheckedActiveBackground");
+        public static readonly TokenResourceKey ContentFontSize = new TokenResourceKey("OptionButton.ContentFontSize");
+        public static readonly TokenResourceKey ContentFontSizeLG = new TokenResourceKey("OptionButton.ContentFontSizeLG");
+        public static readonly TokenResourceKey ContentFontSizeSM = new TokenResourceKey("OptionButton.ContentFontSizeSM");
+        public static readonly TokenResourceKey ContentLineHeight = new TokenResourceKey("OptionButton.ContentLineHeight");
+        public static readonly TokenResourceKey ContentLineHeightLG = new TokenResourceKey("OptionButton.ContentLineHeightLG");
+        public static readonly TokenResourceKey ContentLineHeightSM = new TokenResourceKey("OptionButton.ContentLineHeightSM");
+        public static readonly TokenResourceKey Padding = new TokenResourceKey("OptionButton.Padding");
+        public static readonly TokenResourceKey PaddingLG = new TokenResourceKey("OptionButton.PaddingLG");
+        public static readonly TokenResourceKey PaddingSM = new TokenResourceKey("OptionButton.PaddingSM");
     }
 
     public static class ProgressBarResourceKey
     {
-        public const string DefaultColor = "ProgressBar.DefaultColor";
-        public const string RemainingColor = "ProgressBar.RemainingColor";
-        public const string CircleTextColor = "ProgressBar.CircleTextColor";
-        public const string LineBorderRadius = "ProgressBar.LineBorderRadius";
-        public const string CircleMinimumTextFontSize = "ProgressBar.CircleMinimumTextFontSize";
-        public const string CircleMinimumIconSize = "ProgressBar.CircleMinimumIconSize";
-        public const string ProgressStepMinWidth = "ProgressBar.ProgressStepMinWidth";
-        public const string ProgressStepMarginInlineEnd = "ProgressBar.ProgressStepMarginInlineEnd";
-        public const string ProgressActiveMotionDuration = "ProgressBar.ProgressActiveMotionDuration";
-        public const string LineExtraInfoMargin = "ProgressBar.LineExtraInfoMargin";
-        public const string LineProgressPadding = "ProgressBar.LineProgressPadding";
-        public const string LineInfoIconSize = "ProgressBar.LineInfoIconSize";
-        public const string LineInfoIconSizeSM = "ProgressBar.LineInfoIconSizeSM";
+        public static readonly TokenResourceKey DefaultColor = new TokenResourceKey("ProgressBar.DefaultColor");
+        public static readonly TokenResourceKey RemainingColor = new TokenResourceKey("ProgressBar.RemainingColor");
+        public static readonly TokenResourceKey CircleTextColor = new TokenResourceKey("ProgressBar.CircleTextColor");
+        public static readonly TokenResourceKey LineBorderRadius = new TokenResourceKey("ProgressBar.LineBorderRadius");
+        public static readonly TokenResourceKey CircleMinimumTextFontSize = new TokenResourceKey("ProgressBar.CircleMinimumTextFontSize");
+        public static readonly TokenResourceKey CircleMinimumIconSize = new TokenResourceKey("ProgressBar.CircleMinimumIconSize");
+        public static readonly TokenResourceKey ProgressStepMinWidth = new TokenResourceKey("ProgressBar.ProgressStepMinWidth");
+        public static readonly TokenResourceKey ProgressStepMarginInlineEnd = new TokenResourceKey("ProgressBar.ProgressStepMarginInlineEnd");
+        public static readonly TokenResourceKey ProgressActiveMotionDuration = new TokenResourceKey("ProgressBar.ProgressActiveMotionDuration");
+        public static readonly TokenResourceKey LineExtraInfoMargin = new TokenResourceKey("ProgressBar.LineExtraInfoMargin");
+        public static readonly TokenResourceKey LineProgressPadding = new TokenResourceKey("ProgressBar.LineProgressPadding");
+        public static readonly TokenResourceKey LineInfoIconSize = new TokenResourceKey("ProgressBar.LineInfoIconSize");
+        public static readonly TokenResourceKey LineInfoIconSizeSM = new TokenResourceKey("ProgressBar.LineInfoIconSizeSM");
     }
 
     public static class RadioButtonResourceKey
     {
-        public const string RadioSize = "RadioButton.RadioSize";
-        public const string DotSize = "RadioButton.DotSize";
-        public const string DotColorDisabled = "RadioButton.DotColorDisabled";
-        public const string RadioColor = "RadioButton.RadioColor";
-        public const string RadioBgColor = "RadioButton.RadioBgColor";
-        public const string DotPadding = "RadioButton.DotPadding";
+        public static readonly TokenResourceKey RadioSize = new TokenResourceKey("RadioButton.RadioSize");
+        public static readonly TokenResourceKey DotSize = new TokenResourceKey("RadioButton.DotSize");
+        public static readonly TokenResourceKey DotColorDisabled = new TokenResourceKey("RadioButton.DotColorDisabled");
+        public static readonly TokenResourceKey RadioColor = new TokenResourceKey("RadioButton.RadioColor");
+        public static readonly TokenResourceKey RadioBgColor = new TokenResourceKey("RadioButton.RadioBgColor");
+        public static readonly TokenResourceKey DotPadding = new TokenResourceKey("RadioButton.DotPadding");
     }
 
     public static class SegmentedResourceKey
     {
-        public const string ItemColor = "Segmented.ItemColor";
-        public const string ItemHoverColor = "Segmented.ItemHoverColor";
-        public const string ItemHoverBg = "Segmented.ItemHoverBg";
-        public const string ItemActiveBg = "Segmented.ItemActiveBg";
-        public const string ItemSelectedBg = "Segmented.ItemSelectedBg";
-        public const string ItemSelectedColor = "Segmented.ItemSelectedColor";
-        public const string TrackPadding = "Segmented.TrackPadding";
-        public const string TrackBg = "Segmented.TrackBg";
-        public const string SegmentedItemPadding = "Segmented.SegmentedItemPadding";
-        public const string SegmentedItemPaddingSM = "Segmented.SegmentedItemPaddingSM";
-        public const string SegmentedTextLabelMargin = "Segmented.SegmentedTextLabelMargin";
+        public static readonly TokenResourceKey ItemColor = new TokenResourceKey("Segmented.ItemColor");
+        public static readonly TokenResourceKey ItemHoverColor = new TokenResourceKey("Segmented.ItemHoverColor");
+        public static readonly TokenResourceKey ItemHoverBg = new TokenResourceKey("Segmented.ItemHoverBg");
+        public static readonly TokenResourceKey ItemActiveBg = new TokenResourceKey("Segmented.ItemActiveBg");
+        public static readonly TokenResourceKey ItemSelectedBg = new TokenResourceKey("Segmented.ItemSelectedBg");
+        public static readonly TokenResourceKey ItemSelectedColor = new TokenResourceKey("Segmented.ItemSelectedColor");
+        public static readonly TokenResourceKey TrackPadding = new TokenResourceKey("Segmented.TrackPadding");
+        public static readonly TokenResourceKey TrackBg = new TokenResourceKey("Segmented.TrackBg");
+        public static readonly TokenResourceKey SegmentedItemPadding = new TokenResourceKey("Segmented.SegmentedItemPadding");
+        public static readonly TokenResourceKey SegmentedItemPaddingSM = new TokenResourceKey("Segmented.SegmentedItemPaddingSM");
+        public static readonly TokenResourceKey SegmentedTextLabelMargin = new TokenResourceKey("Segmented.SegmentedTextLabelMargin");
     }
 
     public static class SeparatorResourceKey
     {
-        public const string TextPaddingInline = "Separator.TextPaddingInline";
-        public const string OrientationMarginPercent = "Separator.OrientationMarginPercent";
-        public const string VerticalMarginInline = "Separator.VerticalMarginInline";
+        public static readonly TokenResourceKey TextPaddingInline = new TokenResourceKey("Separator.TextPaddingInline");
+        public static readonly TokenResourceKey OrientationMarginPercent = new TokenResourceKey("Separator.OrientationMarginPercent");
+        public static readonly TokenResourceKey VerticalMarginInline = new TokenResourceKey("Separator.VerticalMarginInline");
     }
 
     public static class ToggleSwitchResourceKey
     {
-        public const string TrackHeight = "ToggleSwitch.TrackHeight";
-        public const string TrackHeightSM = "ToggleSwitch.TrackHeightSM";
-        public const string TrackMinWidth = "ToggleSwitch.TrackMinWidth";
-        public const string TrackMinWidthSM = "ToggleSwitch.TrackMinWidthSM";
-        public const string TrackPadding = "ToggleSwitch.TrackPadding";
-        public const string HandleBg = "ToggleSwitch.HandleBg";
-        public const string HandleShadow = "ToggleSwitch.HandleShadow";
-        public const string HandleSize = "ToggleSwitch.HandleSize";
-        public const string HandleSizeSM = "ToggleSwitch.HandleSizeSM";
-        public const string InnerMinMargin = "ToggleSwitch.InnerMinMargin";
-        public const string InnerMaxMargin = "ToggleSwitch.InnerMaxMargin";
-        public const string InnerMinMarginSM = "ToggleSwitch.InnerMinMarginSM";
-        public const string InnerMaxMarginSM = "ToggleSwitch.InnerMaxMarginSM";
-        public const string SwitchDuration = "ToggleSwitch.SwitchDuration";
-        public const string SwitchColor = "ToggleSwitch.SwitchColor";
-        public const string SwitchDisabledOpacity = "ToggleSwitch.SwitchDisabledOpacity";
-        public const string SwitchLoadingIconSize = "ToggleSwitch.SwitchLoadingIconSize";
-        public const string SwitchLoadingIconColor = "ToggleSwitch.SwitchLoadingIconColor";
-        public const string ExtraInfoFontSize = "ToggleSwitch.ExtraInfoFontSize";
-        public const string ExtraInfoFontSizeSM = "ToggleSwitch.ExtraInfoFontSizeSM";
+        public static readonly TokenResourceKey TrackHeight = new TokenResourceKey("ToggleSwitch.TrackHeight");
+        public static readonly TokenResourceKey TrackHeightSM = new TokenResourceKey("ToggleSwitch.TrackHeightSM");
+        public static readonly TokenResourceKey TrackMinWidth = new TokenResourceKey("ToggleSwitch.TrackMinWidth");
+        public static readonly TokenResourceKey TrackMinWidthSM = new TokenResourceKey("ToggleSwitch.TrackMinWidthSM");
+        public static readonly TokenResourceKey TrackPadding = new TokenResourceKey("ToggleSwitch.TrackPadding");
+        public static readonly TokenResourceKey HandleBg = new TokenResourceKey("ToggleSwitch.HandleBg");
+        public static readonly TokenResourceKey HandleShadow = new TokenResourceKey("ToggleSwitch.HandleShadow");
+        public static readonly TokenResourceKey HandleSize = new TokenResourceKey("ToggleSwitch.HandleSize");
+        public static readonly TokenResourceKey HandleSizeSM = new TokenResourceKey("ToggleSwitch.HandleSizeSM");
+        public static readonly TokenResourceKey InnerMinMargin = new TokenResourceKey("ToggleSwitch.InnerMinMargin");
+        public static readonly TokenResourceKey InnerMaxMargin = new TokenResourceKey("ToggleSwitch.InnerMaxMargin");
+        public static readonly TokenResourceKey InnerMinMarginSM = new TokenResourceKey("ToggleSwitch.InnerMinMarginSM");
+        public static readonly TokenResourceKey InnerMaxMarginSM = new TokenResourceKey("ToggleSwitch.InnerMaxMarginSM");
+        public static readonly TokenResourceKey SwitchDuration = new TokenResourceKey("ToggleSwitch.SwitchDuration");
+        public static readonly TokenResourceKey SwitchColor = new TokenResourceKey("ToggleSwitch.SwitchColor");
+        public static readonly TokenResourceKey SwitchDisabledOpacity = new TokenResourceKey("ToggleSwitch.SwitchDisabledOpacity");
+        public static readonly TokenResourceKey SwitchLoadingIconSize = new TokenResourceKey("ToggleSwitch.SwitchLoadingIconSize");
+        public static readonly TokenResourceKey SwitchLoadingIconColor = new TokenResourceKey("ToggleSwitch.SwitchLoadingIconColor");
+        public static readonly TokenResourceKey ExtraInfoFontSize = new TokenResourceKey("ToggleSwitch.ExtraInfoFontSize");
+        public static readonly TokenResourceKey ExtraInfoFontSizeSM = new TokenResourceKey("ToggleSwitch.ExtraInfoFontSizeSM");
     }
 
     public static class TagResourceKey
     {
-        public const string DefaultBg = "Tag.DefaultBg";
-        public const string DefaultColor = "Tag.DefaultColor";
-        public const string TagFontSize = "Tag.TagFontSize";
-        public const string TagLineHeight = "Tag.TagLineHeight";
-        public const string TagIconSize = "Tag.TagIconSize";
-        public const string TagCloseIconSize = "Tag.TagCloseIconSize";
-        public const string TagPadding = "Tag.TagPadding";
-        public const string TagBorderlessBg = "Tag.TagBorderlessBg";
+        public static readonly TokenResourceKey DefaultBg = new TokenResourceKey("Tag.DefaultBg");
+        public static readonly TokenResourceKey DefaultColor = new TokenResourceKey("Tag.DefaultColor");
+        public static readonly TokenResourceKey TagFontSize = new TokenResourceKey("Tag.TagFontSize");
+        public static readonly TokenResourceKey TagLineHeight = new TokenResourceKey("Tag.TagLineHeight");
+        public static readonly TokenResourceKey TagIconSize = new TokenResourceKey("Tag.TagIconSize");
+        public static readonly TokenResourceKey TagCloseIconSize = new TokenResourceKey("Tag.TagCloseIconSize");
+        public static readonly TokenResourceKey TagPadding = new TokenResourceKey("Tag.TagPadding");
+        public static readonly TokenResourceKey TagBorderlessBg = new TokenResourceKey("Tag.TagBorderlessBg");
     }
 
     public static class ToolTipResourceKey
     {
-        public const string ToolTipMaxWidth = "ToolTip.ToolTipMaxWidth";
-        public const string ToolTipColor = "ToolTip.ToolTipColor";
-        public const string ToolTipBackground = "ToolTip.ToolTipBackground";
-        public const string BorderRadiusOuter = "ToolTip.BorderRadiusOuter";
-        public const string ToolTipPadding = "ToolTip.ToolTipPadding";
-        public const string ToolTipArrowSize = "ToolTip.ToolTipArrowSize";
+        public static readonly TokenResourceKey ToolTipMaxWidth = new TokenResourceKey("ToolTip.ToolTipMaxWidth");
+        public static readonly TokenResourceKey ToolTipColor = new TokenResourceKey("ToolTip.ToolTipColor");
+        public static readonly TokenResourceKey ToolTipBackground = new TokenResourceKey("ToolTip.ToolTipBackground");
+        public static readonly TokenResourceKey BorderRadiusOuter = new TokenResourceKey("ToolTip.BorderRadiusOuter");
+        public static readonly TokenResourceKey ToolTipPadding = new TokenResourceKey("ToolTip.ToolTipPadding");
+        public static readonly TokenResourceKey ToolTipArrowSize = new TokenResourceKey("ToolTip.ToolTipArrowSize");
     }
 
     public static class CaptionButtonResourceKey
     {
-        public const string HoverBackgroundColor = "CaptionButton.HoverBackgroundColor";
-        public const string PressedBackgroundColor = "CaptionButton.PressedBackgroundColor";
-        public const string CloseHoverBackgroundColor = "CaptionButton.CloseHoverBackgroundColor";
-        public const string ClosePressedBackgroundColor = "CaptionButton.ClosePressedBackgroundColor";
-        public const string ForegroundColor = "CaptionButton.ForegroundColor";
+        public static readonly TokenResourceKey HoverBackgroundColor = new TokenResourceKey("CaptionButton.HoverBackgroundColor");
+        public static readonly TokenResourceKey PressedBackgroundColor = new TokenResourceKey("CaptionButton.PressedBackgroundColor");
+        public static readonly TokenResourceKey CloseHoverBackgroundColor = new TokenResourceKey("CaptionButton.CloseHoverBackgroundColor");
+        public static readonly TokenResourceKey ClosePressedBackgroundColor = new TokenResourceKey("CaptionButton.ClosePressedBackgroundColor");
+        public static readonly TokenResourceKey ForegroundColor = new TokenResourceKey("CaptionButton.ForegroundColor");
     }
 
     public static class WindowResourceKey
     {
-        public const string DefaultBackground = "Window.DefaultBackground";
-        public const string DefaultForeground = "Window.DefaultForeground";
+        public static readonly TokenResourceKey DefaultBackground = new TokenResourceKey("Window.DefaultBackground");
+        public static readonly TokenResourceKey DefaultForeground = new TokenResourceKey("Window.DefaultForeground");
     }
 }

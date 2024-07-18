@@ -147,7 +147,7 @@ public partial class CheckBox : AvaloniaCheckBox,
 
    void IControlCustomStyle.CollectStyleState()
    {
-      StyleUtils.InitCommonState(this, ref _styleState);
+      ControlStateUtils.InitCommonState(this, ref _styleState);
       switch (IsChecked) {
          case true:
             _styleState |= ControlStyleState.On;

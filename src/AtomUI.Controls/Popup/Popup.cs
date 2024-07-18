@@ -50,7 +50,6 @@ public class Popup : AbstractPopup
    
    private static readonly MethodInfo ConfigurePositionMethodInfo;
    private PopupShadowLayer? _shadowLayer;
-   private readonly GlobalTokenBinder _globalTokenBinder;
    private CompositeDisposable? _compositeDisposable;
    private bool _initialized;
 
@@ -66,14 +65,13 @@ public class Popup : AbstractPopup
    public Popup()
    {
       IsLightDismissEnabled = false;
-      _globalTokenBinder = new GlobalTokenBinder();
    }
    
    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
    {
       base.OnAttachedToLogicalTree(e);
       if (!_initialized) {
-         _globalTokenBinder.AddGlobalBinding(this, MaskShadowsProperty, GlobalResourceKey.BoxShadowsSecondary);
+         BindUtils.CreateGlobalTokenBinding(this, MaskShadowsProperty, GlobalResourceKey.BoxShadowsSecondary);
          _initialized = true;
       }
    }

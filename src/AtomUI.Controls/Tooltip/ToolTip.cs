@@ -673,6 +673,15 @@ public partial class ToolTip : TemplatedControl,
    {
       _arrowDecoratedBox = scope.Find<ArrowDecoratedBox>(ToolTipTheme.ToolTipContainerPart);
       _customStyle.ApplyFixedStyleConfig();
+      if (_arrowDecoratedBox is not null) {
+         BindUtils.CreateTokenBinding(_arrowDecoratedBox, ArrowDecoratedBox.FontSizeProperty, GlobalResourceKey.FontSize);
+         BindUtils.CreateTokenBinding(_arrowDecoratedBox, ArrowDecoratedBox.MaxWidthProperty, ToolTipResourceKey.ToolTipMaxWidth);
+         BindUtils.CreateTokenBinding(_arrowDecoratedBox, ArrowDecoratedBox.BackgroundProperty, ToolTipResourceKey.ToolTipBackground);
+         BindUtils.CreateTokenBinding(_arrowDecoratedBox, ArrowDecoratedBox.ForegroundProperty, ToolTipResourceKey.ToolTipColor);
+         BindUtils.CreateTokenBinding(_arrowDecoratedBox, ArrowDecoratedBox.MinHeightProperty, GlobalResourceKey.ControlHeight);
+         BindUtils.CreateTokenBinding(_arrowDecoratedBox, ArrowDecoratedBox.PaddingProperty, ToolTipResourceKey.ToolTipPadding);
+         BindUtils.CreateTokenBinding(_arrowDecoratedBox, ArrowDecoratedBox.CornerRadiusProperty, ToolTipResourceKey.BorderRadiusOuter);
+      }
    }
    
    #region IControlCustomStyle 实现

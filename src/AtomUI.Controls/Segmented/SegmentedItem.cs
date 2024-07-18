@@ -161,7 +161,7 @@ public class SegmentedItem : TemplatedControl, IControlCustomStyle
 
    void IControlCustomStyle.CollectStyleState()
    {
-      StyleUtils.InitCommonState(this, ref _styleState);
+      ControlStateUtils.InitCommonState(this, ref _styleState);
       if (IsPressed) {
          _styleState |= ControlStyleState.Sunken;
       } else {

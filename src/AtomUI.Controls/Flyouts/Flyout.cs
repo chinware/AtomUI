@@ -112,7 +112,6 @@ public class Flyout : PopupFlyoutBase
 
    private CompositeDisposable? _compositeDisposable;
    private bool _animating = false;
-   private GlobalTokenBinder _globalTokenBinder;
 
    // 当鼠标移走了，但是打开动画还没完成，我们需要记录下来这个信号
    internal bool RequestCloseWhereAnimationCompleted { get; set; } = false;
@@ -125,9 +124,8 @@ public class Flyout : PopupFlyoutBase
 
    public Flyout()
    {
-      _globalTokenBinder = new GlobalTokenBinder();
-      _globalTokenBinder.AddGlobalBinding(this, MotionDurationTokenProperty, GlobalResourceKey.MotionDurationMid);
-      _globalTokenBinder.AddGlobalBinding(this, MaskShadowsProperty, GlobalResourceKey.BoxShadowsSecondary);
+      BindUtils.CreateGlobalTokenBinding(this, MotionDurationTokenProperty, GlobalResourceKey.MotionDurationMid);
+      BindUtils.CreateGlobalTokenBinding(this, MaskShadowsProperty, GlobalResourceKey.BoxShadowsSecondary);
    }
 
    private void HandlePopupPropertyChanged(AvaloniaPropertyChangedEventArgs args)

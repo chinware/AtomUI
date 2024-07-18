@@ -56,11 +56,11 @@ internal class EmptyIndicatorTheme : ControlTheme
       // 设置本身样式
       var sizeSmallAndMiddleStyle = new Style(selector => Selectors.Or(selector.Nesting().PropertyEquals(EmptyIndicator.SizeTypeProperty, SizeType.Middle),
                                                                        selector.Nesting().PropertyEquals(EmptyIndicator.SizeTypeProperty, SizeType.Small)));
-      sizeSmallAndMiddleStyle.Setters.Add(new Setter(EmptyIndicator.DescriptionMarginProperty, new DynamicResourceExtension(GlobalResourceKey.MarginXS)));
+      sizeSmallAndMiddleStyle.Add(new Setter(EmptyIndicator.DescriptionMarginProperty, new DynamicResourceExtension(GlobalResourceKey.MarginXS)));
       Add(sizeSmallAndMiddleStyle);
 
       var sizeLargeStyle = new Style(selector => selector.Nesting().PropertyEquals(EmptyIndicator.SizeTypeProperty, SizeType.Large));
-      sizeLargeStyle.Setters.Add(new Setter(EmptyIndicator.DescriptionMarginProperty, new DynamicResourceExtension(GlobalResourceKey.MarginSM)));
+      sizeLargeStyle.Add(new Setter(EmptyIndicator.DescriptionMarginProperty, new DynamicResourceExtension(GlobalResourceKey.MarginSM)));
       Add(sizeLargeStyle);
 
       BuildSvgStyle();
@@ -72,7 +72,7 @@ internal class EmptyIndicatorTheme : ControlTheme
       {
          var largeSizeStyle = new Style(selector => selector.Nesting().PropertyEquals(EmptyIndicator.SizeTypeProperty, SizeType.Large));
          var svgStyle = new Style(selector => svgSelector);
-         svgStyle.Setters.Add(new Setter(Layoutable.HeightProperty, new DynamicResourceExtension(EmptyIndicatorResourceKey.EmptyImgHeight)));
+         svgStyle.Add(new Setter(Layoutable.HeightProperty, new DynamicResourceExtension(EmptyIndicatorResourceKey.EmptyImgHeight)));
          largeSizeStyle.Add(svgStyle);
          Add(largeSizeStyle);
       }
@@ -80,7 +80,7 @@ internal class EmptyIndicatorTheme : ControlTheme
       {
          var middleSizeStyle = new Style(selector => selector.Nesting().PropertyEquals(EmptyIndicator.SizeTypeProperty, SizeType.Middle));
          var svgStyle = new Style(selector => svgSelector);
-         svgStyle.Setters.Add(new Setter(Layoutable.HeightProperty, new DynamicResourceExtension(EmptyIndicatorResourceKey.EmptyImgHeightMD)));
+         svgStyle.Add(new Setter(Layoutable.HeightProperty, new DynamicResourceExtension(EmptyIndicatorResourceKey.EmptyImgHeightMD)));
          middleSizeStyle.Add(svgStyle);
          Add(middleSizeStyle);
       }
@@ -88,7 +88,7 @@ internal class EmptyIndicatorTheme : ControlTheme
       {
          var smallSizeStyle = new Style(selector => selector.Nesting().PropertyEquals(EmptyIndicator.SizeTypeProperty, SizeType.Small));
          var svgStyle = new Style(selector => svgSelector);
-         svgStyle.Setters.Add(new Setter(Layoutable.HeightProperty, new DynamicResourceExtension(EmptyIndicatorResourceKey.EmptyImgHeightSM)));
+         svgStyle.Add(new Setter(Layoutable.HeightProperty, new DynamicResourceExtension(EmptyIndicatorResourceKey.EmptyImgHeightSM)));
          smallSizeStyle.Add(svgStyle);
          Add(smallSizeStyle);
       }

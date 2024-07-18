@@ -147,18 +147,12 @@ public class FlyoutHost : Control
 
    private bool _initialized = false;
    private CompositeDisposable? _compositeDisposable;
-   private GlobalTokenBinder _globalTokenBinder;
    private DispatcherTimer? _mouseEnterDelayTimer;
    private DispatcherTimer? _mouseLeaveDelayTimer;
 
    static FlyoutHost()
    {
       PlacementProperty.OverrideDefaultValue<FlyoutHost>(PlacementMode.Top);
-   }
-   
-   public FlyoutHost()
-   {
-      _globalTokenBinder = new GlobalTokenBinder();
    }
 
    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -169,7 +163,7 @@ public class FlyoutHost : Control
             ((ISetLogicalParent)AnchorTarget).SetParent(this);
             VisualChildren.Add(AnchorTarget);
          }
-         _globalTokenBinder.AddGlobalBinding(this, MarginToAnchorProperty, GlobalResourceKey.MarginXXS);
+         BindUtils.CreateGlobalTokenBinding(this, MarginToAnchorProperty, GlobalResourceKey.MarginXXS);
          _initialized = true;
       }
    }

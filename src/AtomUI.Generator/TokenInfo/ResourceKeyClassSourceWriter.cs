@@ -18,7 +18,10 @@ public class ResourceKeyClassSourceWriter
       SetupUsingInfos();
    }
 
-   private void SetupUsingInfos() { }
+   private void SetupUsingInfos()
+   {
+      _usingInfos.Add("AtomUI.TokenSystem");
+   }
 
    public void Write()
    {
@@ -44,18 +47,24 @@ public class ResourceKeyClassSourceWriter
       var modifiers = new List<SyntaxToken>()
       {
          SyntaxFactory.Token(SyntaxKind.PublicKeyword),
-         SyntaxFactory.Token(SyntaxKind.ConstKeyword)
+         SyntaxFactory.Token(SyntaxKind.StaticKeyword),
+         SyntaxFactory.Token(SyntaxKind.ReadOnlyKeyword)
       };
-      var fieldSyntax = SyntaxFactory.FieldDeclaration(SyntaxFactory.VariableDeclaration(
-               SyntaxFactory.PredefinedType(
-                  SyntaxFactory.Token(SyntaxKind.StringKeyword)))
+      
+      var resourceKeyType = SyntaxFactory.ParseTypeName("TokenResourceKey");
+      var argument = SyntaxFactory.Argument(
+         SyntaxFactory.LiteralExpression(
+            SyntaxKind.StringLiteralExpression,
+            SyntaxFactory.Literal($"{value}")));
+
+      var resourceKeyInstanceExpr = SyntaxFactory.ObjectCreationExpression(resourceKeyType)
+                                                 .WithArgumentList(SyntaxFactory.ArgumentList(SyntaxFactory.SingletonSeparatedList(argument)));
+      
+      var fieldSyntax = SyntaxFactory.FieldDeclaration(SyntaxFactory.VariableDeclaration(resourceKeyType)
             .WithVariables(SyntaxFactory.SingletonSeparatedList(
                SyntaxFactory.VariableDeclarator(name)
                   .WithInitializer(
-                     SyntaxFactory.EqualsValueClause(
-                        SyntaxFactory.LiteralExpression(
-                           SyntaxKind.StringLiteralExpression,
-                           SyntaxFactory.Literal($"{value}")))))))
+                     SyntaxFactory.EqualsValueClause(resourceKeyInstanceExpr)))))
          .AddModifiers(modifiers.ToArray());
       return fieldSyntax;
    }

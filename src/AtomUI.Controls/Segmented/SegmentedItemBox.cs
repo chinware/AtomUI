@@ -53,7 +53,6 @@ internal partial class SegmentedItemBox : BorderedStyleControl,
    internal bool IsCurrentItem { get => _isCurrentItem; set => SetCurrentItem(value); }
    private bool _initialized = false;
    private IControlCustomStyle _customStyle;
-   private ControlTokenBinder _controlTokenBinder;
    private bool _isPressed = false;
    private ControlStyleState _styleState;
    
@@ -68,7 +67,6 @@ internal partial class SegmentedItemBox : BorderedStyleControl,
    
    public SegmentedItemBox(Control item)
    {
-      _controlTokenBinder = new ControlTokenBinder(this, SegmentedToken.ID);
       _customStyle = this;
       Item = item;
       Child = Item;
@@ -191,7 +189,7 @@ internal partial class SegmentedItemBox : BorderedStyleControl,
 
    void IControlCustomStyle.CollectStyleState()
    {
-      StyleUtils.InitCommonState(this, ref _styleState);
+      ControlStateUtils.InitCommonState(this, ref _styleState);
       if (IsPressed) {
          _styleState |= ControlStyleState.Sunken;
       } else {
@@ -206,46 +204,45 @@ internal partial class SegmentedItemBox : BorderedStyleControl,
    void IControlCustomStyle.ApplySizeTypeStyleConfig()
    {
       if (SizeType == SizeType.Large) {
-         _controlTokenBinder.AddControlBinding(CornerRadiusProperty, GlobalResourceKey.BorderRadius);
-         _controlTokenBinder.AddControlBinding(FontSizeProperty, GlobalResourceKey.FontSizeLG);
+         BindUtils.CreateTokenBinding(this, CornerRadiusProperty, GlobalResourceKey.BorderRadius);
+         BindUtils.CreateTokenBinding(this, FontSizeProperty, GlobalResourceKey.FontSizeLG);
       } else if (SizeType == SizeType.Middle) {
-         _controlTokenBinder.AddControlBinding(CornerRadiusProperty, GlobalResourceKey.BorderRadiusSM);
-         _controlTokenBinder.AddControlBinding(FontSizeProperty, GlobalResourceKey.FontSize);
+         BindUtils.CreateTokenBinding(this, CornerRadiusProperty, GlobalResourceKey.BorderRadiusSM);
+         BindUtils.CreateTokenBinding(this, FontSizeProperty, GlobalResourceKey.FontSize);
       } else if (SizeType == SizeType.Small) {
-         _controlTokenBinder.AddControlBinding(CornerRadiusProperty, GlobalResourceKey.BorderRadiusXS);
-         _controlTokenBinder.AddControlBinding(FontSizeProperty, GlobalResourceKey.FontSize);
+         BindUtils.CreateTokenBinding(this, CornerRadiusProperty, GlobalResourceKey.BorderRadiusXS);
+         BindUtils.CreateTokenBinding(this, FontSizeProperty, GlobalResourceKey.FontSize);
       }
    }
 
    void IControlCustomStyle.ApplyVariableStyleConfig()
    {
-      _controlTokenBinder.ReleaseTriggerBindings(this);
       if (_styleState.HasFlag(ControlStyleState.Enabled)) {
          if (!_styleState.HasFlag(ControlStyleState.Selected)) {
-            _controlTokenBinder.AddControlBinding(BackgroundProperty, GlobalResourceKey.ColorTransparent);
-            _controlTokenBinder.AddControlBinding(ForegroundProperty, SegmentedResourceKey.ItemColor);
+            BindUtils.CreateTokenBinding(this, BackgroundProperty, GlobalResourceKey.ColorTransparent);
+            BindUtils.CreateTokenBinding(this, ForegroundProperty, SegmentedResourceKey.ItemColor);
             if (_styleState.HasFlag(ControlStyleState.Sunken)) {
-               _controlTokenBinder.AddControlBinding(BackgroundProperty, SegmentedResourceKey.ItemActiveBg, BindingPriority.StyleTrigger);
+               BindUtils.CreateTokenBinding(this, BackgroundProperty, SegmentedResourceKey.ItemActiveBg, BindingPriority.StyleTrigger);
             } else if (_styleState.HasFlag(ControlStyleState.MouseOver)) {
-               _controlTokenBinder.AddControlBinding(BackgroundProperty, SegmentedResourceKey.ItemHoverBg, BindingPriority.StyleTrigger);
-               _controlTokenBinder.AddControlBinding(ForegroundProperty, SegmentedResourceKey.ItemHoverColor, BindingPriority.StyleTrigger);
+               BindUtils.CreateTokenBinding(this, BackgroundProperty, SegmentedResourceKey.ItemHoverBg, BindingPriority.StyleTrigger);
+               BindUtils.CreateTokenBinding(this, ForegroundProperty, SegmentedResourceKey.ItemHoverColor, BindingPriority.StyleTrigger);
             }
          } else {
-            _controlTokenBinder.AddControlBinding(ForegroundProperty, SegmentedResourceKey.ItemSelectedColor);
+            BindUtils.CreateTokenBinding(this, ForegroundProperty, SegmentedResourceKey.ItemSelectedColor);
          }
       } else {
-        _controlTokenBinder.AddControlBinding(ForegroundProperty, GlobalResourceKey.ColorTextDisabled);
+        BindUtils.CreateTokenBinding(this, ForegroundProperty, GlobalResourceKey.ColorTextDisabled);
       }
    }
 
    void IControlCustomStyle.ApplyFixedStyleConfig()
    {
-      _controlTokenBinder.AddControlBinding(ControlHeightSMTokenProperty, GlobalResourceKey.ControlHeightSM);
-      _controlTokenBinder.AddControlBinding(ControlHeightTokenProperty, GlobalResourceKey.ControlHeight);
-      _controlTokenBinder.AddControlBinding(ControlHeightLGTokenProperty, GlobalResourceKey.ControlHeightLG);
-      _controlTokenBinder.AddControlBinding(TrackPaddingTokenProperty, SegmentedResourceKey.TrackPadding);
-      _controlTokenBinder.AddControlBinding(SegmentedItemPaddingSMTokenProperty, SegmentedResourceKey.SegmentedItemPaddingSM);
-      _controlTokenBinder.AddControlBinding(SegmentedItemPaddingTokenProperty, SegmentedResourceKey.SegmentedItemPadding);
+      BindUtils.CreateTokenBinding(this, ControlHeightSMTokenProperty, GlobalResourceKey.ControlHeightSM);
+      BindUtils.CreateTokenBinding(this, ControlHeightTokenProperty, GlobalResourceKey.ControlHeight);
+      BindUtils.CreateTokenBinding(this, ControlHeightLGTokenProperty, GlobalResourceKey.ControlHeightLG);
+      BindUtils.CreateTokenBinding(this, TrackPaddingTokenProperty, SegmentedResourceKey.TrackPadding);
+      BindUtils.CreateTokenBinding(this, SegmentedItemPaddingSMTokenProperty, SegmentedResourceKey.SegmentedItemPaddingSM);
+      BindUtils.CreateTokenBinding(this, SegmentedItemPaddingTokenProperty, SegmentedResourceKey.SegmentedItemPadding);
    }
 
    void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)

@@ -29,37 +29,37 @@ internal class LinkButtonTheme : BaseButtonTheme
    {
       var enabledStyle = new Style(selector => selector.Nesting());
       // 正常状态
-      enabledStyle.Setters.Add(new Setter(Button.BackgroundProperty, new DynamicResourceExtension(ButtonResourceKey.DefaultBg)));
-      enabledStyle.Setters.Add(new Setter(Button.ForegroundProperty, new DynamicResourceExtension(GlobalResourceKey.ColorLink)));
+      enabledStyle.Add(new Setter(Button.BackgroundProperty, new DynamicResourceExtension(ButtonResourceKey.DefaultBg)));
+      enabledStyle.Add(new Setter(Button.ForegroundProperty, new DynamicResourceExtension(GlobalResourceKey.ColorLink)));
       
       // 正常 hover
       {
          var hoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
-         hoverStyle.Setters.Add(new Setter(Button.ForegroundProperty, new DynamicResourceExtension(GlobalResourceKey.ColorLinkHover)));
+         hoverStyle.Add(new Setter(Button.ForegroundProperty, new DynamicResourceExtension(GlobalResourceKey.ColorLinkHover)));
          enabledStyle.Add(hoverStyle);
       }
       // 正常按下
       {
          var pressedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver).Class(StdPseudoClass.Pressed));
-         pressedStyle.Setters.Add(new Setter(Button.ForegroundProperty, new DynamicResourceExtension(GlobalResourceKey.ColorLinkActive)));
+         pressedStyle.Add(new Setter(Button.ForegroundProperty, new DynamicResourceExtension(GlobalResourceKey.ColorLinkActive)));
          enabledStyle.Add(pressedStyle);
       }
       
       // 危险按钮状态
       var dangerStyle = new Style(selector => selector.Nesting().PropertyEquals(Button.IsDangerProperty, true));
-      dangerStyle.Setters.Add(new Setter(Button.ForegroundProperty, new DynamicResourceExtension(GlobalResourceKey.ColorError)));
+      dangerStyle.Add(new Setter(Button.ForegroundProperty, new DynamicResourceExtension(GlobalResourceKey.ColorError)));
       
       // 危险状态 hover
       {
          var hoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
-         hoverStyle.Setters.Add(new Setter(Button.ForegroundProperty, new DynamicResourceExtension(GlobalResourceKey.ColorErrorHover)));
+         hoverStyle.Add(new Setter(Button.ForegroundProperty, new DynamicResourceExtension(GlobalResourceKey.ColorErrorHover)));
          dangerStyle.Add(hoverStyle);
       }
       
       // 危险状态按下
       {
          var pressedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver).Class(StdPseudoClass.Pressed));
-         pressedStyle.Setters.Add(new Setter(Button.ForegroundProperty, new DynamicResourceExtension(GlobalResourceKey.ColorErrorActive)));
+         pressedStyle.Add(new Setter(Button.ForegroundProperty, new DynamicResourceExtension(GlobalResourceKey.ColorErrorActive)));
          dangerStyle.Add(pressedStyle);
       }
       enabledStyle.Add(dangerStyle);
@@ -73,7 +73,7 @@ internal class LinkButtonTheme : BaseButtonTheme
    {
       var ghostStyle = new Style(selector => selector.Nesting().PropertyEquals(Button.IsGhostProperty, true));
       // 正常状态
-      ghostStyle.Setters.Add(new Setter(Button.BackgroundProperty, new DynamicResourceExtension(GlobalResourceKey.ColorTransparent)));
+      ghostStyle.Add(new Setter(Button.BackgroundProperty, new DynamicResourceExtension(GlobalResourceKey.ColorTransparent)));
       
       Add(ghostStyle);
    }
@@ -81,7 +81,7 @@ internal class LinkButtonTheme : BaseButtonTheme
    private void BuildDisabledStyle()
    {
       var disabledStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Disabled));
-      disabledStyle.Setters.Add(new Setter(Button.ForegroundProperty, new DynamicResourceExtension(GlobalResourceKey.ColorTextDisabled)));
+      disabledStyle.Add(new Setter(Button.ForegroundProperty, new DynamicResourceExtension(GlobalResourceKey.ColorTextDisabled)));
       Add(disabledStyle);
    }
 }

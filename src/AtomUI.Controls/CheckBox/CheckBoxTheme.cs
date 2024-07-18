@@ -31,11 +31,11 @@ internal class CheckBoxTheme : ControlTheme
       disableStyle.Add(new Setter(CheckBox.ForegroundProperty, new DynamicResourceExtension(GlobalResourceKey.ColorTextDisabled)));
       
       var checkedStyle = new Style(selector => selector.Nesting().PropertyEquals(CheckBox.IsCheckedProperty, true));
-      checkedStyle.Setters.Add(new Setter(CheckBox.IndicatorCheckedMarkBrushProperty, new DynamicResourceExtension(GlobalResourceKey.ColorTextDisabled)));
+      checkedStyle.Add(new Setter(CheckBox.IndicatorCheckedMarkBrushProperty, new DynamicResourceExtension(GlobalResourceKey.ColorTextDisabled)));
       disableStyle.Add(checkedStyle);
 
       var indeterminateStyle = new Style(selector => selector.Nesting().PropertyEquals(CheckBox.IsCheckedProperty, null));
-      indeterminateStyle.Setters.Add(new Setter(CheckBox.IndicatorTristateMarkBrushProperty, new DynamicResourceExtension(GlobalResourceKey.ColorTextDisabled)));
+      indeterminateStyle.Add(new Setter(CheckBox.IndicatorTristateMarkBrushProperty, new DynamicResourceExtension(GlobalResourceKey.ColorTextDisabled)));
       disableStyle.Add(indeterminateStyle);
       Add(disableStyle);
    }
@@ -50,24 +50,24 @@ internal class CheckBoxTheme : ControlTheme
       
       // 选中
       var checkedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Checked));
-      checkedStyle.Setters.Add(new Setter(CheckBox.IndicatorBackgroundProperty, new DynamicResourceExtension(GlobalResourceKey.ColorPrimary)));
-      checkedStyle.Setters.Add(new Setter(CheckBox.IndicatorBorderBrushProperty, new DynamicResourceExtension(GlobalResourceKey.ColorPrimary)));
+      checkedStyle.Add(new Setter(CheckBox.IndicatorBackgroundProperty, new DynamicResourceExtension(GlobalResourceKey.ColorPrimary)));
+      checkedStyle.Add(new Setter(CheckBox.IndicatorBorderBrushProperty, new DynamicResourceExtension(GlobalResourceKey.ColorPrimary)));
       
       // 选中 hover
       var checkedHoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
-      checkedHoverStyle.Setters.Add(new Setter(CheckBox.IndicatorBackgroundProperty, new DynamicResourceExtension(GlobalResourceKey.ColorPrimaryHover)));
-      checkedHoverStyle.Setters.Add(new Setter(CheckBox.IndicatorBorderBrushProperty, new DynamicResourceExtension(GlobalResourceKey.ColorPrimaryHover)));
+      checkedHoverStyle.Add(new Setter(CheckBox.IndicatorBackgroundProperty, new DynamicResourceExtension(GlobalResourceKey.ColorPrimaryHover)));
+      checkedHoverStyle.Add(new Setter(CheckBox.IndicatorBorderBrushProperty, new DynamicResourceExtension(GlobalResourceKey.ColorPrimaryHover)));
       checkedStyle.Add(checkedHoverStyle);
       enabledStyle.Add(checkedStyle);
       
       // 没选中
       var unCheckedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
-      unCheckedStyle.Setters.Add(new Setter(CheckBox.IndicatorBorderBrushProperty, new DynamicResourceExtension(GlobalResourceKey.ColorPrimaryHover)));
+      unCheckedStyle.Add(new Setter(CheckBox.IndicatorBorderBrushProperty, new DynamicResourceExtension(GlobalResourceKey.ColorPrimaryHover)));
       enabledStyle.Add(unCheckedStyle);
       
       // 中间状态
       var indeterminateStyle = new Style(selector => selector.Nesting().Class($"{StdPseudoClass.Indeterminate}{StdPseudoClass.PointerOver}"));
-      indeterminateStyle.Setters.Add(new Setter(CheckBox.IndicatorBorderBrushProperty, new DynamicResourceExtension(GlobalResourceKey.ColorPrimaryHover)));
+      indeterminateStyle.Add(new Setter(CheckBox.IndicatorBorderBrushProperty, new DynamicResourceExtension(GlobalResourceKey.ColorPrimaryHover)));
       enabledStyle.Add(indeterminateStyle);
       
       Add(enabledStyle);

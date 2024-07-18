@@ -50,21 +50,21 @@ internal class SeparatorTheme : ControlTheme
 
       var titleSelector = default(Selector).Nesting().Template().OfType<Label>().Name(TitlePart);
       var horizontalStyle = new Style(selector => selector.Nesting().PropertyEquals(Separator.OrientationProperty, Orientation.Horizontal));
-      horizontalStyle.Setters.Add(new Setter(Separator.HorizontalAlignmentProperty, HorizontalAlignment.Stretch));
-      horizontalStyle.Setters.Add(new Setter(Separator.VerticalAlignmentProperty, VerticalAlignment.Center));
+      horizontalStyle.Add(new Setter(Separator.HorizontalAlignmentProperty, HorizontalAlignment.Stretch));
+      horizontalStyle.Add(new Setter(Separator.VerticalAlignmentProperty, VerticalAlignment.Center));
       {
          var titleStyle = new Style(selector => titleSelector);
-         titleStyle.Setters.Add(new Setter(Label.IsVisibleProperty, true));
+         titleStyle.Add(new Setter(Label.IsVisibleProperty, true));
          horizontalStyle.Add(titleStyle);
       }
       Add(horizontalStyle);
       
       var verticalStyle = new Style(selector => selector.Nesting().PropertyEquals(Separator.OrientationProperty, Orientation.Vertical));
-      verticalStyle.Setters.Add(new Setter(Separator.HorizontalAlignmentProperty, HorizontalAlignment.Center));
-      verticalStyle.Setters.Add(new Setter(Separator.VerticalAlignmentProperty, VerticalAlignment.Center));
+      verticalStyle.Add(new Setter(Separator.HorizontalAlignmentProperty, HorizontalAlignment.Center));
+      verticalStyle.Add(new Setter(Separator.VerticalAlignmentProperty, VerticalAlignment.Center));
       {
          var titleStyle = new Style(selector => titleSelector);
-         titleStyle.Setters.Add(new Setter(Label.IsVisibleProperty, false));
+         titleStyle.Add(new Setter(Label.IsVisibleProperty, false));
          verticalStyle.Add(titleStyle);
       }
       Add(verticalStyle);

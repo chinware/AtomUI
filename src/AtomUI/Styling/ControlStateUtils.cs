@@ -2,7 +2,7 @@
 
 namespace AtomUI.Styling;
 
-public static class StyleUtils
+public static class ControlStateUtils
 {
    public static void InitCommonState(Control control, ref ControlStyleState state)
    {

@@ -6,13 +6,7 @@ namespace AtomUI.Controls;
 public partial class Segmented
 {
    // 获取 Token 值属性开始
-   private IBrush? _trackBg;
-   private static readonly DirectProperty<Segmented, IBrush?> TrackBgTokenProperty =
-      AvaloniaProperty.RegisterDirect<Segmented, IBrush?>(
-         nameof(_trackBg),
-         o => o._trackBg,
-         (o, v) => o._trackBg = v);
-   
+
    private IBrush? _itemSelectedBg;
    private static readonly DirectProperty<Segmented, IBrush?> ItemSelectedBgTokenProperty =
       AvaloniaProperty.RegisterDirect<Segmented, IBrush?>(

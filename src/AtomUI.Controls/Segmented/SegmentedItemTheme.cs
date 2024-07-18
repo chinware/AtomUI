@@ -3,7 +3,6 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Layout;
-using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Styling;
 
 namespace AtomUI.Controls;
@@ -48,7 +47,7 @@ internal class SegmentedItemTheme : ControlTheme
       var hasIconStyle = new Style(selector => selector.Nesting().Not(x => x.Nesting().PropertyEquals(SegmentedItem.IconProperty, null)));
       {
          var labelStyle = new Style(selector => selector.Nesting().Template().OfType<Label>());
-         labelStyle.Setters.Add(new Setter(Label.MarginProperty, new DynamicResourceExtension(SegmentedResourceKey.SegmentedTextLabelMargin)));
+         labelStyle.Add(Label.MarginProperty, SegmentedResourceKey.SegmentedTextLabelMargin);
          hasIconStyle.Add(labelStyle);
       }
       
@@ -58,7 +57,7 @@ internal class SegmentedItemTheme : ControlTheme
       var hasNoTextStyle = new Style(selector => selector.Nesting().PropertyEquals(SegmentedItem.TextProperty, null));
       {
          var labelStyle = new Style(selector => selector.Nesting().Template().OfType<Label>());
-         labelStyle.Setters.Add(new Setter(Label.IsVisibleProperty, false));
+         labelStyle.Add(Label.IsVisibleProperty, false);
          hasNoTextStyle.Add(labelStyle);
       }
       Add(hasNoTextStyle);
@@ -68,8 +67,8 @@ internal class SegmentedItemTheme : ControlTheme
          new Style(selector => selector.Nesting().PropertyEquals(SegmentedItem.SizeTypeProperty, SizeType.Large));
       {
          var iconStyle = new Style(selector => iconSelector);
-         iconStyle.Setters.Add(new Setter(PathIcon.WidthProperty, new DynamicResourceExtension(GlobalResourceKey.IconSizeLG)));
-         iconStyle.Setters.Add(new Setter(PathIcon.HeightProperty, new DynamicResourceExtension(GlobalResourceKey.IconSizeLG)));
+         iconStyle.Add(PathIcon.WidthProperty, GlobalResourceKey.IconSizeLG);
+         iconStyle.Add(PathIcon.HeightProperty, GlobalResourceKey.IconSizeLG);
          largeSizeStyle.Add(iconStyle);
       }
       Add(largeSizeStyle);
@@ -78,8 +77,8 @@ internal class SegmentedItemTheme : ControlTheme
          new Style(selector => selector.Nesting().PropertyEquals(SegmentedItem.SizeTypeProperty, SizeType.Middle));
       {
          var iconStyle = new Style(selector => iconSelector);
-         iconStyle.Setters.Add(new Setter(PathIcon.WidthProperty, new DynamicResourceExtension(GlobalResourceKey.IconSize)));
-         iconStyle.Setters.Add(new Setter(PathIcon.HeightProperty, new DynamicResourceExtension(GlobalResourceKey.IconSize)));
+         iconStyle.Add(PathIcon.WidthProperty, GlobalResourceKey.IconSize);
+         iconStyle.Add(PathIcon.HeightProperty, GlobalResourceKey.IconSize);
          middleSizeStyle.Add(iconStyle);
       }
       Add(middleSizeStyle);
@@ -88,8 +87,8 @@ internal class SegmentedItemTheme : ControlTheme
          new Style(selector => selector.Nesting().PropertyEquals(SegmentedItem.SizeTypeProperty, SizeType.Small));
       {
          var iconStyle = new Style(selector => iconSelector);
-         iconStyle.Setters.Add(new Setter(PathIcon.WidthProperty, new DynamicResourceExtension(GlobalResourceKey.IconSizeSM)));
-         iconStyle.Setters.Add(new Setter(PathIcon.HeightProperty, new DynamicResourceExtension(GlobalResourceKey.IconSizeSM)));
+         iconStyle.Add(PathIcon.WidthProperty, GlobalResourceKey.IconSizeSM);
+         iconStyle.Add(PathIcon.HeightProperty, GlobalResourceKey.IconSizeSM);
          smallSizeStyle.Add(iconStyle);
       }
       Add(smallSizeStyle);

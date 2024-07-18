@@ -33,12 +33,12 @@ public abstract class AbstractControlDesignToken : AbstractDesignToken, IControl
       ResourceDictionary tempDictionary = new ResourceDictionary();
       base.BuildResourceDictionary(tempDictionary);
       if (IsCustomTokenConfig) {
-         _globalToken?.BuildResourceDictionary(tempDictionary);
+         _globalToken.BuildResourceDictionary(tempDictionary);
       }
       // 增加自己的命名空间，现在这种方法效率不是很高，需要优化
       // 暂时先用这种方案，后期有更好的方案再做调整
       foreach (var entry in tempDictionary) {
-         var resourceName = $"{Id}.{entry.Key}";
+         var resourceName = new TokenResourceKey($"{Id}.{entry.Key}");
          dictionary.Add(resourceName, entry.Value);
       }
    }

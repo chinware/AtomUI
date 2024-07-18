@@ -112,7 +112,7 @@ public partial class MarqueeLabel : TextBlock,
 
    void IControlCustomStyle.CollectStyleState()
    {
-      StyleUtils.InitCommonState(this, ref _styleState);
+      ControlStateUtils.InitCommonState(this, ref _styleState);
    }
 
    void IControlCustomStyle.ApplyFixedStyleConfig()

@@ -29,7 +29,6 @@ public partial class ToggleSwitch : ToggleButton,
    private bool _transitionInitialized = false;
    private const double STRETCH_FACTOR = 1.3d;
    private IControlCustomStyle _customStyle;
-   private ControlTokenBinder _controlTokenBinder;
    private ControlStyleState _styleState;
    private Canvas? _togglePanel;
 
@@ -71,7 +70,6 @@ public partial class ToggleSwitch : ToggleButton,
    public ToggleSwitch()
    {
       _customStyle = this;
-      _controlTokenBinder = new ControlTokenBinder(this, ToggleSwitchToken.ID);
       _switchKnob = new SwitchKnob();
       LayoutUpdated += HandleLayoutUpdated;
    }
@@ -244,8 +242,8 @@ public partial class ToggleSwitch : ToggleButton,
       var handleSize = HandleSize();
       _switchKnob.KnobSize = new Size(handleSize, handleSize);
       
-      _controlTokenBinder.AddControlBinding(_switchKnob, SwitchKnob.KnobBackgroundColorProperty, ToggleSwitchResourceKey.HandleBg);
-      _controlTokenBinder.AddControlBinding(_switchKnob, SwitchKnob.KnobBoxShadowProperty, ToggleSwitchResourceKey.HandleShadow);
+      BindUtils.CreateTokenBinding(_switchKnob, SwitchKnob.KnobBackgroundColorProperty, ToggleSwitchResourceKey.HandleBg);
+      BindUtils.CreateTokenBinding(_switchKnob, SwitchKnob.KnobBoxShadowProperty, ToggleSwitchResourceKey.HandleShadow);
      
       _togglePanel = new Canvas();
       _togglePanel.Children.Add(_switchKnob);
@@ -327,7 +325,7 @@ public partial class ToggleSwitch : ToggleButton,
 
    void IControlCustomStyle.CollectStyleState()
    {
-      StyleUtils.InitCommonState(this, ref _styleState);
+      ControlStateUtils.InitCommonState(this, ref _styleState);
       switch (IsChecked) {
          case true:
             _styleState |= ControlStyleState.On;
@@ -348,18 +346,17 @@ public partial class ToggleSwitch : ToggleButton,
 
    void IControlCustomStyle.ApplyVariableStyleConfig()
    {
-      _controlTokenBinder.ReleaseTriggerBindings(this);
       if (_styleState.HasFlag(ControlStyleState.Enabled)) {
          SwitchOpacity = 1.0;
          if (_styleState.HasFlag(ControlStyleState.On)) {
-            _controlTokenBinder.AddControlBinding(GrooveBackgroundProperty, ToggleSwitchResourceKey.SwitchColor);
+            BindUtils.CreateTokenBinding(this, GrooveBackgroundProperty, ToggleSwitchResourceKey.SwitchColor);
             if (_styleState.HasFlag(ControlStyleState.MouseOver)) {
-               _controlTokenBinder.AddControlBinding(GrooveBackgroundProperty, GlobalResourceKey.ColorPrimaryHover, BindingPriority.StyleTrigger);
+               BindUtils.CreateTokenBinding(this, GrooveBackgroundProperty, GlobalResourceKey.ColorPrimaryHover, BindingPriority.StyleTrigger);
             }
          } else {
-            _controlTokenBinder.AddControlBinding(GrooveBackgroundProperty, GlobalResourceKey.ColorTextQuaternary);
+            BindUtils.CreateTokenBinding(this, GrooveBackgroundProperty, GlobalResourceKey.ColorTextQuaternary);
             if (_styleState.HasFlag(ControlStyleState.MouseOver)) {
-               _controlTokenBinder.AddControlBinding(GrooveBackgroundProperty, GlobalResourceKey.ColorTextTertiary, BindingPriority.StyleTrigger);
+               BindUtils.CreateTokenBinding(this, GrooveBackgroundProperty, GlobalResourceKey.ColorTextTertiary, BindingPriority.StyleTrigger);
             }
          }
       } else {
@@ -369,20 +366,20 @@ public partial class ToggleSwitch : ToggleButton,
 
    void IControlCustomStyle.ApplyFixedStyleConfig()
    {
-      _controlTokenBinder.AddControlBinding(HandleSizeTokenProperty, ToggleSwitchResourceKey.HandleSize);
-      _controlTokenBinder.AddControlBinding(HandleSizeSMTokenProperty, ToggleSwitchResourceKey.HandleSizeSM);
-      _controlTokenBinder.AddControlBinding(InnerMaxMarginTokenProperty, ToggleSwitchResourceKey.InnerMaxMargin);
-      _controlTokenBinder.AddControlBinding(this, InnerMaxMarginSMTokenProperty, ToggleSwitchResourceKey.InnerMaxMarginSM);
-      _controlTokenBinder.AddControlBinding(this, InnerMinMarginTokenProperty, ToggleSwitchResourceKey.InnerMinMargin);
-      _controlTokenBinder.AddControlBinding(this, InnerMinMarginSMTokenProperty, ToggleSwitchResourceKey.InnerMinMarginSM);
-      _controlTokenBinder.AddControlBinding(this, TrackHeightTokenProperty, ToggleSwitchResourceKey.TrackHeight);
-      _controlTokenBinder.AddControlBinding(this, TrackHeightSMTokenProperty, ToggleSwitchResourceKey.TrackHeightSM);
-      _controlTokenBinder.AddControlBinding(this, TrackMinWidthTokenProperty, ToggleSwitchResourceKey.TrackMinWidth);
-      _controlTokenBinder.AddControlBinding(this, TrackMinWidthSMTokenProperty, ToggleSwitchResourceKey.TrackMinWidthSM);
-      _controlTokenBinder.AddControlBinding(this, TrackPaddingTokenProperty, ToggleSwitchResourceKey.TrackPadding);
-      _controlTokenBinder.AddControlBinding(this, SwitchDisabledOpacityTokenProperty, ToggleSwitchResourceKey.SwitchDisabledOpacity);
+      BindUtils.CreateTokenBinding(this, HandleSizeTokenProperty, ToggleSwitchResourceKey.HandleSize);
+      BindUtils.CreateTokenBinding(this, HandleSizeSMTokenProperty, ToggleSwitchResourceKey.HandleSizeSM);
+      BindUtils.CreateTokenBinding(this, InnerMaxMarginTokenProperty, ToggleSwitchResourceKey.InnerMaxMargin);
+      BindUtils.CreateTokenBinding(this, InnerMaxMarginSMTokenProperty, ToggleSwitchResourceKey.InnerMaxMarginSM);
+      BindUtils.CreateTokenBinding(this, InnerMinMarginTokenProperty, ToggleSwitchResourceKey.InnerMinMargin);
+      BindUtils.CreateTokenBinding(this, InnerMinMarginSMTokenProperty, ToggleSwitchResourceKey.InnerMinMarginSM);
+      BindUtils.CreateTokenBinding(this, TrackHeightTokenProperty, ToggleSwitchResourceKey.TrackHeight);
+      BindUtils.CreateTokenBinding(this, TrackHeightSMTokenProperty, ToggleSwitchResourceKey.TrackHeightSM);
+      BindUtils.CreateTokenBinding(this, TrackMinWidthTokenProperty, ToggleSwitchResourceKey.TrackMinWidth);
+      BindUtils.CreateTokenBinding(this, TrackMinWidthSMTokenProperty, ToggleSwitchResourceKey.TrackMinWidthSM);
+      BindUtils.CreateTokenBinding(this, TrackPaddingTokenProperty, ToggleSwitchResourceKey.TrackPadding);
+      BindUtils.CreateTokenBinding(this, SwitchDisabledOpacityTokenProperty, ToggleSwitchResourceKey.SwitchDisabledOpacity);
       
-      _controlTokenBinder.AddControlBinding(this, ForegroundProperty, GlobalResourceKey.ColorTextLightSolid);
+      BindUtils.CreateTokenBinding(this, ForegroundProperty, GlobalResourceKey.ColorTextLightSolid);
 
       SwitchOpacity = 1d;
    }
@@ -390,9 +387,9 @@ public partial class ToggleSwitch : ToggleButton,
    void IControlCustomStyle.ApplySizeTypeStyleConfig()
    {
       if (IsDefaultSize()) {
-         _controlTokenBinder.AddControlBinding(this, FontSizeProperty, ToggleSwitchResourceKey.ExtraInfoFontSize);
+         BindUtils.CreateTokenBinding(this, FontSizeProperty, ToggleSwitchResourceKey.ExtraInfoFontSize);
       } else {
-         _controlTokenBinder.AddControlBinding(this, FontSizeProperty, ToggleSwitchResourceKey.ExtraInfoFontSizeSM);
+         BindUtils.CreateTokenBinding(this, FontSizeProperty, ToggleSwitchResourceKey.ExtraInfoFontSizeSM);
       }
    }
 
