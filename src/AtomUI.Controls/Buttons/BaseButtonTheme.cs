@@ -60,24 +60,24 @@ internal abstract class BaseButtonTheme : ControlTheme
    private void BuildSizeStyle()
    {
       var largeSizeStyle = new Style(selector => selector.Nesting().PropertyEquals(Button.SizeTypeProperty, SizeType.Large));
-      largeSizeStyle.Add(new Setter(Button.ControlHeightTokenProperty, new DynamicResourceExtension(GlobalResourceKey.ControlHeightLG)));
-      largeSizeStyle.Add(new Setter(Button.FontSizeProperty, new DynamicResourceExtension(ButtonResourceKey.ContentFontSizeLG)));
-      largeSizeStyle.Add(new Setter(Button.PaddingProperty, new DynamicResourceExtension(ButtonResourceKey.PaddingLG)));
-      largeSizeStyle.Add(new Setter(Button.CornerRadiusProperty, new DynamicResourceExtension(GlobalResourceKey.BorderRadiusLG)));
+      largeSizeStyle.Add(Button.ControlHeightTokenProperty, new DynamicResourceExtension(GlobalResourceKey.ControlHeightLG));
+      largeSizeStyle.Add(Button.FontSizeProperty, new DynamicResourceExtension(ButtonResourceKey.ContentFontSizeLG));
+      largeSizeStyle.Add(Button.PaddingProperty, new DynamicResourceExtension(ButtonResourceKey.PaddingLG));
+      largeSizeStyle.Add(Button.CornerRadiusProperty, new DynamicResourceExtension(GlobalResourceKey.BorderRadiusLG));
       Add(largeSizeStyle);
       
       var middleSizeStyle = new Style(selector => selector.Nesting().PropertyEquals(Button.SizeTypeProperty, SizeType.Middle));
-      middleSizeStyle.Add(new Setter(Button.ControlHeightTokenProperty, new DynamicResourceExtension(GlobalResourceKey.ControlHeight)));
-      middleSizeStyle.Add(new Setter(Button.FontSizeProperty, new DynamicResourceExtension(ButtonResourceKey.ContentFontSize)));
-      middleSizeStyle.Add(new Setter(Button.PaddingProperty, new DynamicResourceExtension(ButtonResourceKey.Padding)));
-      middleSizeStyle.Add(new Setter(Button.CornerRadiusProperty, new DynamicResourceExtension(GlobalResourceKey.BorderRadius)));
+      middleSizeStyle.Add(Button.ControlHeightTokenProperty, new DynamicResourceExtension(GlobalResourceKey.ControlHeight));
+      middleSizeStyle.Add(Button.FontSizeProperty, new DynamicResourceExtension(ButtonResourceKey.ContentFontSize));
+      middleSizeStyle.Add(Button.PaddingProperty, new DynamicResourceExtension(ButtonResourceKey.Padding));
+      middleSizeStyle.Add(Button.CornerRadiusProperty, new DynamicResourceExtension(GlobalResourceKey.BorderRadius));
       Add(middleSizeStyle);
       
       var smallSizeStyle = new Style(selector => selector.Nesting().PropertyEquals(Button.SizeTypeProperty, SizeType.Small));
-      smallSizeStyle.Add(new Setter(Button.ControlHeightTokenProperty, new DynamicResourceExtension(GlobalResourceKey.ControlHeightSM)));
-      smallSizeStyle.Add(new Setter(Button.FontSizeProperty, new DynamicResourceExtension(ButtonResourceKey.ContentFontSizeSM)));
-      smallSizeStyle.Add(new Setter(Button.PaddingProperty, new DynamicResourceExtension(ButtonResourceKey.PaddingSM)));
-      smallSizeStyle.Add(new Setter(Button.CornerRadiusProperty, new DynamicResourceExtension(GlobalResourceKey.BorderRadiusSM)));
+      smallSizeStyle.Add(Button.ControlHeightTokenProperty, new DynamicResourceExtension(GlobalResourceKey.ControlHeightSM));
+      smallSizeStyle.Add(Button.FontSizeProperty, new DynamicResourceExtension(ButtonResourceKey.ContentFontSizeSM));
+      smallSizeStyle.Add(Button.PaddingProperty, new DynamicResourceExtension(ButtonResourceKey.PaddingSM));
+      smallSizeStyle.Add(Button.CornerRadiusProperty, new DynamicResourceExtension(GlobalResourceKey.BorderRadiusSM));
       Add(smallSizeStyle);
    }
 }

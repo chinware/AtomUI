@@ -14,9 +14,9 @@ internal class RadioButtonTheme : ControlTheme
    
    protected override void BuildStyles()
    {
-      Add(new Setter(RadioButton.RadioSizeProperty, new DynamicResourceExtension(RadioButtonResourceKey.RadioSize)));
-      Add(new Setter(RadioButton.PaddingInlineProperty, new DynamicResourceExtension(GlobalResourceKey.PaddingXS)));
-      Add(new Setter(RadioButton.RadioBorderBrushProperty, new DynamicResourceExtension(GlobalResourceKey.ColorBorder)));
+      this.Add(RadioButton.RadioSizeProperty, RadioButtonResourceKey.RadioSize);
+      this.Add(RadioButton.PaddingInlineProperty, GlobalResourceKey.PaddingXS);
+      this.Add(RadioButton.RadioBorderBrushProperty, GlobalResourceKey.ColorBorder);
       
       BuildEnabledStyle();
       BuildDisabledStyle();
@@ -25,9 +25,9 @@ internal class RadioButtonTheme : ControlTheme
    private void BuildDisabledStyle()
    {
       var disableStyle = new Style(selector => selector.Nesting().PropertyEquals(RadioButton.IsEnabledProperty, false));
-      disableStyle.Add(new Setter(RadioButton.ForegroundProperty, new DynamicResourceExtension(GlobalResourceKey.ColorTextDisabled)));
-      disableStyle.Add(new Setter(RadioButton.RadioBackgroundProperty, new DynamicResourceExtension(GlobalResourceKey.ColorBgContainerDisabled)));
-      disableStyle.Add(new Setter(RadioButton.RadioInnerBackgroundProperty, new DynamicResourceExtension(RadioButtonResourceKey.DotColorDisabled)));
+      disableStyle.Add(RadioButton.ForegroundProperty, GlobalResourceKey.ColorTextDisabled);
+      disableStyle.Add(RadioButton.RadioBackgroundProperty, GlobalResourceKey.ColorBgContainerDisabled);
+      disableStyle.Add(RadioButton.RadioInnerBackgroundProperty, RadioButtonResourceKey.DotColorDisabled);
       Add(disableStyle);
    }
 
@@ -35,21 +35,21 @@ internal class RadioButtonTheme : ControlTheme
    {
       
        var enabledStyle = new Style(selector => selector.Nesting().PropertyEquals(RadioButton.IsEnabledProperty, true));
-      enabledStyle.Add(new Setter(RadioButton.RadioInnerBackgroundProperty, new DynamicResourceExtension(RadioButtonResourceKey.RadioColor)));
+      enabledStyle.Add(RadioButton.RadioInnerBackgroundProperty, RadioButtonResourceKey.RadioColor);
 
       
       // 选中
       var checkedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Checked));
-      checkedStyle.Add(new Setter(RadioButton.RadioBorderBrushProperty, new DynamicResourceExtension(GlobalResourceKey.ColorPrimary)));
-      checkedStyle.Add(new Setter(RadioButton.RadioBackgroundProperty, new DynamicResourceExtension(GlobalResourceKey.ColorPrimary)));
+      checkedStyle.Add(RadioButton.RadioBorderBrushProperty, GlobalResourceKey.ColorPrimary);
+      checkedStyle.Add(RadioButton.RadioBackgroundProperty, GlobalResourceKey.ColorPrimary);
       
       enabledStyle.Add(checkedStyle);
       
       // 没选中
       var unCheckedStyle = new Style(selector => selector.Nesting().Not(x=> x.Nesting().Class(StdPseudoClass.Checked)));
-      unCheckedStyle.Add(new Setter(RadioButton.RadioBackgroundProperty, new DynamicResourceExtension(GlobalResourceKey.ColorBgContainer)));
+      unCheckedStyle.Add(RadioButton.RadioBackgroundProperty, GlobalResourceKey.ColorBgContainer);
       var unCheckedHoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
-      unCheckedHoverStyle.Add(new Setter(RadioButton.RadioBorderBrushProperty, new DynamicResourceExtension(GlobalResourceKey.ColorPrimary)));
+      unCheckedHoverStyle.Add(RadioButton.RadioBorderBrushProperty, GlobalResourceKey.ColorPrimary);
       unCheckedStyle.Add(unCheckedHoverStyle);
       
       enabledStyle.Add(unCheckedStyle);

@@ -22,12 +22,12 @@ internal class TagTheme : ControlTheme
    
    protected override void BuildStyles()
    {
-      Add(new Setter(Tag.BackgroundProperty, new DynamicResourceExtension(TagResourceKey.DefaultBg)));
-      Add(new Setter(Tag.ForegroundProperty, new DynamicResourceExtension(TagResourceKey.DefaultColor)));
-      Add(new Setter(Tag.FontSizeProperty, new DynamicResourceExtension(TagResourceKey.TagFontSize)));
-      Add(new Setter(Tag.PaddingProperty, new DynamicResourceExtension(TagResourceKey.TagPadding)));
-      Add(new Setter(Tag.BorderBrushProperty, new DynamicResourceExtension(GlobalResourceKey.ColorBorder)));
-      Add(new Setter(Tag.CornerRadiusProperty, new DynamicResourceExtension(GlobalResourceKey.BorderRadiusSM)));
+      this.Add(Tag.BackgroundProperty, TagResourceKey.DefaultBg);
+      this.Add(Tag.ForegroundProperty, TagResourceKey.DefaultColor);
+      this.Add(Tag.FontSizeProperty, TagResourceKey.TagFontSize);
+      this.Add(Tag.PaddingProperty, TagResourceKey.TagPadding);
+      this.Add(Tag.BorderBrushProperty, GlobalResourceKey.ColorBorder);
+      this.Add(Tag.CornerRadiusProperty, GlobalResourceKey.BorderRadiusSM);
    }
 
    protected override IControlTemplate BuildControlTemplate()
