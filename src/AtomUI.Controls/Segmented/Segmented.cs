@@ -1,5 +1,4 @@
 using System.Collections.Specialized;
-using AtomUI.Data;
 using AtomUI.Styling;
 using AtomUI.Utils;
 using Avalonia;
@@ -64,7 +63,7 @@ public partial class Segmented : Control, IControlCustomStyle
       Border.CornerRadiusProperty.AddOwner<Segmented>();
    
    public static readonly StyledProperty<CornerRadius> SelectedThumbCornerRadiusProperty =
-      Border.CornerRadiusProperty.AddOwner<Segmented>();
+      AvaloniaProperty.Register<Border, CornerRadius>(nameof(SelectedThumbCornerRadius));
 
    public static readonly StyledProperty<SegmentedSizeType> SizeTypeProperty =
       AvaloniaProperty.Register<Segmented, SegmentedSizeType>(nameof(SizeType), SegmentedSizeType.Middle);
@@ -585,7 +584,6 @@ public partial class Segmented : Control, IControlCustomStyle
          BindUtils.CreateTokenBinding(this, CornerRadiusProperty, GlobalResourceKey.BorderRadiusSM);
          BindUtils.CreateTokenBinding(this, SelectedThumbCornerRadiusProperty, GlobalResourceKey.BorderRadiusXS);
       }
-
       ApplyItemSizeConfig();
    }
 
@@ -594,6 +592,7 @@ public partial class Segmented : Control, IControlCustomStyle
       foreach (var control in LogicalChildren) {
          if (control is SegmentedItemBox box) {
             box.SizeType = SizeType;
+            box.CornerRadius = SelectedThumbCornerRadius;
          }
       }
    }
@@ -887,7 +886,7 @@ public partial class Segmented : Control, IControlCustomStyle
 
    public sealed override void Render(DrawingContext context)
    {
-      context.DrawRectangle(Background, null, new RoundedRect(new Rect(new Point(0, 0), DesiredSize), CornerRadius));
+      context.DrawRectangle(Background, null, new RoundedRect(new Rect(new Point(0, 0), Bounds.Size), CornerRadius));
       context.DrawRectangle(_itemSelectedBg, null,
                             new RoundedRect(new Rect(SelectedThumbPos, SelectedThumbSize), SelectedThumbCornerRadius),
                             _boxShadowsTertiary);

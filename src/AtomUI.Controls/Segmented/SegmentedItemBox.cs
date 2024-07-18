@@ -1,12 +1,10 @@
-using AtomUI.Data;
 using AtomUI.Media;
 using AtomUI.Styling;
-using AtomUI.TokenSystem;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
-using Avalonia.Data;
+using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.LogicalTree;
 using Avalonia.Rendering;
@@ -17,7 +15,7 @@ namespace AtomUI.Controls;
 /// 在内部维护一些额外信息的控件，用户无感知
 /// 绘制圆角什么的
 /// </summary>
-internal partial class SegmentedItemBox : BorderedStyleControl, 
+internal partial class SegmentedItemBox : TemplatedControl, 
                                           ICustomHitTest,
                                           IControlCustomStyle
 {
@@ -69,7 +67,6 @@ internal partial class SegmentedItemBox : BorderedStyleControl,
    {
       _customStyle = this;
       Item = item;
-      Child = Item;
       BindUtils.RelayBind(Item, IsEnabledProperty, this);
       if (item is SegmentedItem segmentedItem) {
          BindUtils.RelayBind(this, SizeTypeProperty, segmentedItem);
@@ -129,6 +126,18 @@ internal partial class SegmentedItemBox : BorderedStyleControl,
          IsPressed = false;
       }
    }
+   
+   protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+   {
+      base.OnApplyTemplate(e);
+      _customStyle.HandleTemplateApplied(e.NameScope);
+   }
+
+   void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
+   {
+      _customStyle.ApplyFixedStyleConfig();
+      _customStyle.SetupTransitions();
+   }
 
    private void SetCurrentItem(bool flag)
    {
@@ -142,13 +151,13 @@ internal partial class SegmentedItemBox : BorderedStyleControl,
    private double ItemHeight(SizeType sizeType)
    {
       var itemHeight = 0d;
-      var padding = _trackPadding.Top + _trackPadding.Bottom;
+      var padding = _trackPaddingToken.Top + _trackPaddingToken.Bottom;
       if (sizeType == SizeType.Small) {
-         itemHeight = _controlHeightSM - padding;
+         itemHeight = _controlHeightSMToken - padding;
       } else if (sizeType == SizeType.Middle) {
-         itemHeight = _controlHeight - padding;
+         itemHeight = _controlHeightToken - padding;
       } else {
-         itemHeight = _controlHeightLG - padding;
+         itemHeight = _controlHeightLGToken - padding;
       }
       return itemHeight;
    }
@@ -156,10 +165,10 @@ internal partial class SegmentedItemBox : BorderedStyleControl,
    private Thickness ItemThickness(SizeType sizeType)
    {
       if (sizeType == SizeType.Large || sizeType == SizeType.Middle) {
-         return _segmentedItemPadding;
+         return _segmentedItemPaddingToken;
       }
 
-      return _segmentedItemPaddingSM;
+      return _segmentedItemPaddingSMToken;
    }
    
    public bool HitTest(Point point)
@@ -171,11 +180,7 @@ internal partial class SegmentedItemBox : BorderedStyleControl,
    void IControlCustomStyle.SetupUi()
    {
       Cursor = new Cursor(StandardCursorType.Hand);
-      _customStyle.ApplySizeTypeStyleConfig();
       _customStyle.CollectStyleState();
-      _customStyle.ApplyFixedStyleConfig();
-      _customStyle.ApplyVariableStyleConfig();
-      _customStyle.SetupTransitions();
    }
 
    void IControlCustomStyle.SetupTransitions()
@@ -199,42 +204,10 @@ internal partial class SegmentedItemBox : BorderedStyleControl,
       if (IsCurrentItem) {
          _styleState |= ControlStyleState.Selected;
       }
-   }
 
-   void IControlCustomStyle.ApplySizeTypeStyleConfig()
-   {
-      if (SizeType == SizeType.Large) {
-         BindUtils.CreateTokenBinding(this, CornerRadiusProperty, GlobalResourceKey.BorderRadius);
-         BindUtils.CreateTokenBinding(this, FontSizeProperty, GlobalResourceKey.FontSizeLG);
-      } else if (SizeType == SizeType.Middle) {
-         BindUtils.CreateTokenBinding(this, CornerRadiusProperty, GlobalResourceKey.BorderRadiusSM);
-         BindUtils.CreateTokenBinding(this, FontSizeProperty, GlobalResourceKey.FontSize);
-      } else if (SizeType == SizeType.Small) {
-         BindUtils.CreateTokenBinding(this, CornerRadiusProperty, GlobalResourceKey.BorderRadiusXS);
-         BindUtils.CreateTokenBinding(this, FontSizeProperty, GlobalResourceKey.FontSize);
-      }
+      _customStyle.UpdatePseudoClasses();
    }
-
-   void IControlCustomStyle.ApplyVariableStyleConfig()
-   {
-      if (_styleState.HasFlag(ControlStyleState.Enabled)) {
-         if (!_styleState.HasFlag(ControlStyleState.Selected)) {
-            BindUtils.CreateTokenBinding(this, BackgroundProperty, GlobalResourceKey.ColorTransparent);
-            BindUtils.CreateTokenBinding(this, ForegroundProperty, SegmentedResourceKey.ItemColor);
-            if (_styleState.HasFlag(ControlStyleState.Sunken)) {
-               BindUtils.CreateTokenBinding(this, BackgroundProperty, SegmentedResourceKey.ItemActiveBg, BindingPriority.StyleTrigger);
-            } else if (_styleState.HasFlag(ControlStyleState.MouseOver)) {
-               BindUtils.CreateTokenBinding(this, BackgroundProperty, SegmentedResourceKey.ItemHoverBg, BindingPriority.StyleTrigger);
-               BindUtils.CreateTokenBinding(this, ForegroundProperty, SegmentedResourceKey.ItemHoverColor, BindingPriority.StyleTrigger);
-            }
-         } else {
-            BindUtils.CreateTokenBinding(this, ForegroundProperty, SegmentedResourceKey.ItemSelectedColor);
-         }
-      } else {
-        BindUtils.CreateTokenBinding(this, ForegroundProperty, GlobalResourceKey.ColorTextDisabled);
-      }
-   }
-
+   
    void IControlCustomStyle.ApplyFixedStyleConfig()
    {
       BindUtils.CreateTokenBinding(this, ControlHeightSMTokenProperty, GlobalResourceKey.ControlHeightSM);
@@ -251,14 +224,13 @@ internal partial class SegmentedItemBox : BorderedStyleControl,
           e.Property == IsPointerOverProperty ||
           e.Property == IsCurrentItemProperty) {
          _customStyle.CollectStyleState();
-         _customStyle.ApplyVariableStyleConfig();
       }
-
-      if (_initialized) {
-         if (e.Property == SizeTypeProperty) {
-            _customStyle.ApplySizeTypeStyleConfig();
-         }
-      }
+   }
+   
+   void IControlCustomStyle.UpdatePseudoClasses()
+   {
+      PseudoClasses.Set(StdPseudoClass.Pressed, IsPressed);
+      PseudoClasses.Set(StdPseudoClass.Selected, IsCurrentItem);
    }
    #endregion
 }
