@@ -49,12 +49,6 @@ public partial class RadioButton : AvaloniaRadioButton,
          _initialized = true;
       }
    }
-   
-   protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-   {
-      base.OnAttachedToVisualTree(e);
-      _customStyle.ApplyRenderScalingAwareStyleConfig();
-   }
 
    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
    {
@@ -114,12 +108,6 @@ public partial class RadioButton : AvaloniaRadioButton,
       _customStyle.SetupTransitions();
       
       RadioDotEffectSize = CalculateDotSize(IsEnabled, IsChecked.HasValue && IsChecked.Value);
-   }
-   
-   void IControlCustomStyle.ApplyRenderScalingAwareStyleConfig()
-   {
-      BindUtils.CreateTokenBinding(this, RadioBorderThicknessProperty, GlobalResourceKey.BorderThickness, BindingPriority.Style,
-                                            new RenderScaleAwareThicknessConfigure(this));
    }
    
    void IControlCustomStyle.ApplyFixedStyleConfig()

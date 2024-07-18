@@ -81,6 +81,10 @@ public class OptionButtonTheme : ControlTheme
    private void BuildOutlineStyle()
    {
       var outlineStyle = new Style(selector => selector.Nesting().PropertyEquals(OptionButton.ButtonStyleProperty, OptionButtonStyle.Outline));
+      outlineStyle.Add(OptionButton.BorderThicknessProperty, GlobalResourceKey.BorderThickness);
+      var inOptionGroupStyle = new Style(selector => selector.Nesting().PropertyEquals(OptionButton.InOptionGroupProperty, true));
+      inOptionGroupStyle.Add(OptionButton.BorderThicknessProperty, new Thickness(0));
+      outlineStyle.Add(inOptionGroupStyle);
       BuildOutlineEnabledStyle(outlineStyle);
       BuildOutlineDisabledStyle(outlineStyle);
       Add(outlineStyle);

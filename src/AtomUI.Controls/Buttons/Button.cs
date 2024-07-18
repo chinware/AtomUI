@@ -165,12 +165,6 @@ public partial class Button : AvaloniaButton,
       base.OnPropertyChanged(e);
       _customStyle.HandlePropertyChangedForStyle(e);
    }
-
-   protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-   {
-      base.OnAttachedToVisualTree(e);
-      _customStyle.ApplyRenderScalingAwareStyleConfig();
-   }
    
    #region IControlCustomStyle 实现
     void IControlCustomStyle.SetupUi()
@@ -257,15 +251,6 @@ public partial class Button : AvaloniaButton,
          _styleState |= ControlStyleState.Sunken;
       } else {
          _styleState |= ControlStyleState.Raised;
-      }
-   }
-
-   void IControlCustomStyle.ApplyRenderScalingAwareStyleConfig()
-   {
-      if (ButtonType == ButtonType.Default || 
-          (ButtonType == ButtonType.Primary && (IsGhost || !IsEnabled))) {
-         BindUtils.CreateTokenBinding(this, BorderThicknessProperty, GlobalResourceKey.BorderThickness, BindingPriority.Style,
-                                      new RenderScaleAwareThicknessConfigure(this));
       }
    }
 

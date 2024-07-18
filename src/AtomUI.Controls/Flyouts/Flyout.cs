@@ -158,7 +158,7 @@ public class Flyout : PopupFlyoutBase
    {
       var presenter = new FlyoutPresenter
       {
-         [!BorderedStyleControl.ChildProperty] = this[!ContentProperty]
+         [!Border.ChildProperty] = this[!ContentProperty]
       };
       BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, presenter, IsShowArrowProperty);
       SetupArrowPosition(AtomPopup, presenter);

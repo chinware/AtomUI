@@ -1,4 +1,3 @@
-using AtomUI.Data;
 using AtomUI.Icon;
 using AtomUI.Media;
 using AtomUI.Styling;
@@ -22,7 +21,7 @@ public enum ProgressStatus
    Active,
 }
 
-public abstract partial class AbstractProgressBar : RangeBaseControl, 
+public abstract partial class AbstractProgressBar : RangeBase, 
                                                     ISizeTypeAware,
                                                     IControlCustomStyle
 {

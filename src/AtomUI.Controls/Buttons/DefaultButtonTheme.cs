@@ -22,6 +22,9 @@ internal class DefaultButtonTheme : BaseButtonTheme
    protected override void BuildStyles()
    {
       base.BuildStyles();
+      
+      this.Add(Button.BorderThicknessProperty, GlobalResourceKey.BorderThickness);
+      
       BuildEnabledStyle();
       BuildDisabledStyle();
    }

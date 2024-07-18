@@ -181,12 +181,6 @@ public partial class OptionButtonGroup : TemplatedControl,
       base.OnPropertyChanged(e);
       _customStyle.HandlePropertyChangedForStyle(e);
    }
-
-   protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-   {
-      base.OnAttachedToVisualTree(e);
-      _customStyle.ApplyRenderScalingAwareStyleConfig();
-   }
    
    #region IControlCustomStyle 实现
 
@@ -213,12 +207,6 @@ public partial class OptionButtonGroup : TemplatedControl,
    void IControlCustomStyle.CollectStyleState()
    {
       ControlStateUtils.InitCommonState(this, ref _styleState);
-   }
-   
-   void IControlCustomStyle.ApplyRenderScalingAwareStyleConfig()
-   {
-      BindUtils.CreateTokenBinding(this, BorderThicknessProperty, GlobalResourceKey.BorderThickness, BindingPriority.Style,
-         new RenderScaleAwareThicknessConfigure(this));
    }
 
    void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
@@ -250,7 +238,7 @@ public partial class OptionButtonGroup : TemplatedControl,
          new Size(DesiredSize.Width, DesiredSize.Height), 
          BorderThickness, 
          CornerRadius, 
-         BackgroundSizing.InnerBorderEdge, 
+         BackgroundSizing.CenterBorder, 
          null,
          BorderBrush,
          new BoxShadows());
@@ -280,9 +268,14 @@ public partial class OptionButtonGroup : TemplatedControl,
                // 绘制选中边框
                var offsetX = optionButton.Bounds.X;
                var width = optionButton.DesiredSize.Width;
-               if (i != 0) {
-                  offsetX -= BorderThickness.Left;
+               if (i > 0 && i < Options.Count - 1) {
+                  offsetX -= BorderThickness.Left / 2;
                   width += BorderThickness.Left;
+               } else if (i == 0) {
+                  width += BorderThickness.Left / 2;
+               } else {
+                  offsetX -= BorderThickness.Left / 2;
+                  width += BorderThickness.Left / 2;
                }
                var translationMatrix = Matrix.CreateTranslation(offsetX, 0);
                using var state = context.PushTransform(translationMatrix);

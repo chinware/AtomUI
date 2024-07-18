@@ -154,7 +154,7 @@ internal class PopupShadowLayer : LiteWindow, IShadowDecorator
             Canvas.SetTop(_shadowRenderer, maskBounds.Top);
             _shadowRenderer.Width = rendererSize.Width;
             _shadowRenderer.Height = rendererSize.Height;
-         } else if (content is BorderedStyleControl bordered) {
+         } else if (content is Border bordered) {
             cornerRadius = bordered.CornerRadius;
             var rendererSize = CalculateShadowRendererSize(content.DesiredSize);
             _shadowRenderer.Width = rendererSize.Width;
@@ -162,10 +162,6 @@ internal class PopupShadowLayer : LiteWindow, IShadowDecorator
          } else if (content is TemplatedControl templatedControl) {
             cornerRadius = templatedControl.CornerRadius;
             var rendererSize = CalculateShadowRendererSize(templatedControl.DesiredSize);
-            _shadowRenderer.Width = rendererSize.Width;
-            _shadowRenderer.Height = rendererSize.Height;
-         } else if (content is StyledControl styledControl) {
-            var rendererSize = CalculateShadowRendererSize(styledControl.DesiredSize);
             _shadowRenderer.Width = rendererSize.Width;
             _shadowRenderer.Height = rendererSize.Height;
          }

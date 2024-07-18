@@ -53,5 +53,6 @@ public class OptionButtonGroupTheme : ControlTheme
 
       this.Add(OptionButtonGroup.BorderBrushProperty, GlobalResourceKey.ColorBorder);
       this.Add(OptionButtonGroup.SelectedOptionBorderColorProperty, GlobalResourceKey.ColorPrimary);
+      this.Add(OptionButtonGroup.BorderThicknessProperty, GlobalResourceKey.BorderThickness);
    }
 }

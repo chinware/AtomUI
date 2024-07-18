@@ -75,7 +75,7 @@ internal class MotionGhostControl : Control, INotifyCaptureGhostBitmap
          var maskBounds = shadowMaskInfoProvider.GetMaskBounds();
          _maskOffset = maskBounds.Position;
          _maskSize = maskBounds.Size;
-      } else if (_motionTarget is BorderedStyleControl bordered) {
+      } else if (_motionTarget is Border bordered) {
          cornerRadius = bordered.CornerRadius;
       } else if (_motionTarget is TemplatedControl templatedControl) {
          cornerRadius = templatedControl.CornerRadius;

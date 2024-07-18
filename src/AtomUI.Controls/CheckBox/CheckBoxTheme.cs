@@ -19,6 +19,7 @@ internal class CheckBoxTheme : ControlTheme
       this.Add(CheckBox.IndicatorBorderRadiusProperty, GlobalResourceKey.BorderRadiusSM);
       this.Add(CheckBox.IndicatorTristateMarkSizeProperty, CheckBoxResourceKey.IndicatorTristateMarkSize);
       this.Add(CheckBox.IndicatorTristateMarkBrushProperty, GlobalResourceKey.ColorPrimary);
+      this.Add(CheckBox.IndicatorBorderThicknessProperty, GlobalResourceKey.BorderThickness);
       BuildEnabledStyle();
       BuildDisabledStyle();
    }

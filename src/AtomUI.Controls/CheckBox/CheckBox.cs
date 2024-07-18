@@ -46,12 +46,6 @@ public partial class CheckBox : AvaloniaCheckBox,
       _customStyle = this;
       _borderRenderHelper = new BorderRenderHelper();
    }
-   
-   protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-   {
-      base.OnAttachedToVisualTree(e);
-      _customStyle.ApplyRenderScalingAwareStyleConfig();
-   }
 
    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
    {
@@ -178,12 +172,6 @@ public partial class CheckBox : AvaloniaCheckBox,
    {
       var offsetX = CheckIndicatorSize + PaddingInline;
       return new Rect(offsetX, 0d, DesiredSize.Width - offsetX, DesiredSize.Height);
-   }
-   
-   void IControlCustomStyle.ApplyRenderScalingAwareStyleConfig()
-   {
-      BindUtils.CreateTokenBinding(this, IndicatorBorderThicknessProperty, GlobalResourceKey.BorderThickness, BindingPriority.Template,
-                                   new RenderScaleAwareThicknessConfigure(this));
    }
 
    private void SetupIndicatorCheckedMarkEffectSize()

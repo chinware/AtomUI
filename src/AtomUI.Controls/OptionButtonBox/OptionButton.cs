@@ -152,12 +152,6 @@ public partial class OptionButton : AvaloniaRadioButton,
       base.OnPropertyChanged(e);
       _customStyle.HandlePropertyChangedForStyle(e);
    }
-
-   protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-   {
-      base.OnAttachedToVisualTree(e);
-      _customStyle.ApplyRenderScalingAwareStyleConfig();
-   }
    
    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
    {
@@ -225,19 +219,6 @@ public partial class OptionButton : AvaloniaRadioButton,
       }
    }
 
-   void IControlCustomStyle.ApplyRenderScalingAwareStyleConfig()
-   {
-      BindUtils.CreateTokenBinding(this, BorderThicknessProperty, GlobalResourceKey.BorderThickness, BindingPriority.Template,
-                                      new RenderScaleAwareThicknessConfigure(this, thickness =>
-                                      {
-                                         if (InOptionGroup) {
-                                            return new Thickness(0);
-                                         }
-
-                                         return thickness;
-                                      }));
-   }
-
    void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
    {
       if (e.Property == IsPointerOverProperty ||
@@ -255,10 +236,6 @@ public partial class OptionButton : AvaloniaRadioButton,
          if (_originCornerRadius.HasValue) {
             CornerRadius = BuildCornerRadius(GroupPositionTrait, _originCornerRadius!.Value);
          }
-      }
-      
-      if (e.Property == InOptionGroupProperty) {
-         _customStyle.ApplyRenderScalingAwareStyleConfig();
       }
    }
 

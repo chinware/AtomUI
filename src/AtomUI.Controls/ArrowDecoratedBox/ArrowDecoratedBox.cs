@@ -1,11 +1,11 @@
 ﻿using System.Reactive.Disposables;
 using AtomUI.Controls.Utils;
-using AtomUI.Data;
 using AtomUI.Media;
 using AtomUI.Styling;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
@@ -77,7 +77,7 @@ public enum ArrowPosition
    RightEdgeAlignedBottom
 }
 
-public class ArrowDecoratedBox : StyledControl,
+public class ArrowDecoratedBox : TemplatedControl,
                                  IShadowMaskInfoProvider,
                                  IControlCustomStyle
 {
