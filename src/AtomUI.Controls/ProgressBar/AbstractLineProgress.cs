@@ -52,9 +52,9 @@ public abstract partial class AbstractLineProgress : AbstractProgressBar
       if (Status == ProgressStatus.Exception || MathUtils.AreClose(Value, Maximum)) {
          // 只要图标
          if (EffectiveSizeType == SizeType.Large || EffectiveSizeType == SizeType.Middle) {
-            return new Size(_lineInfoIconSize, _lineInfoIconSize);
+            return new Size(_lineInfoIconSizeToken, _lineInfoIconSizeToken);
          } 
-         return new Size(_lineInfoIconSizeSM, _lineInfoIconSizeSM);
+         return new Size(_lineInfoIconSizeSMToken, _lineInfoIconSizeSMToken);
       }
       var textSize = TextUtils.CalculateTextSize(string.Format(ProgressTextFormat, Value), FontFamily, fontSize);
       return textSize;

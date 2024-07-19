@@ -5,33 +5,33 @@ namespace AtomUI.Controls;
 public partial class AbstractLineProgress
 {
    // 获取 Token 值属性开始
-   protected double _lineProgressPadding;
+   protected double _lineProgressPaddingToken;
    protected static readonly DirectProperty<AbstractLineProgress, double> LineProgressPaddingTokenProperty =
       AvaloniaProperty.RegisterDirect<AbstractLineProgress, double>(
-         nameof(_lineProgressPadding),
-         o => o._lineProgressPadding,
-         (o, v) => o._lineProgressPadding = v);
+         nameof(_lineProgressPaddingToken),
+         o => o._lineProgressPaddingToken,
+         (o, v) => o._lineProgressPaddingToken = v);
    
-   protected double _lineExtraInfoMargin;
+   protected double _lineExtraInfoMarginToken;
    protected static readonly DirectProperty<AbstractLineProgress, double> LineExtraInfoMarginTokenProperty =
       AvaloniaProperty.RegisterDirect<AbstractLineProgress, double>(
-         nameof(_lineExtraInfoMargin),
-         o => o._lineExtraInfoMargin,
-         (o, v) => o._lineExtraInfoMargin = v);
+         nameof(_lineExtraInfoMarginToken),
+         o => o._lineExtraInfoMarginToken,
+         (o, v) => o._lineExtraInfoMarginToken = v);
    
-   protected double _lineInfoIconSize;
+   protected double _lineInfoIconSizeToken;
    protected static readonly DirectProperty<AbstractLineProgress, double> LineInfoIconSizeTokenProperty =
       AvaloniaProperty.RegisterDirect<AbstractLineProgress, double>(
-         nameof(_lineInfoIconSize),
-         o => o._lineInfoIconSize,
-         (o, v) => o._lineInfoIconSize = v);
+         nameof(_lineInfoIconSizeToken),
+         o => o._lineInfoIconSizeToken,
+         (o, v) => o._lineInfoIconSizeToken = v);
    
-   protected double _lineInfoIconSizeSM;
+   protected double _lineInfoIconSizeSMToken;
    protected static readonly DirectProperty<AbstractLineProgress, double> LineInfoIconSizeSMTokenProperty =
       AvaloniaProperty.RegisterDirect<AbstractLineProgress, double>(
-         nameof(_lineInfoIconSizeSM),
-         o => o._lineInfoIconSizeSM,
-         (o, v) => o._lineInfoIconSizeSM = v);
+         nameof(_lineInfoIconSizeSMToken),
+         o => o._lineInfoIconSizeSMToken,
+         (o, v) => o._lineInfoIconSizeSMToken = v);
    
    // 获取 Token 值属性结束
 }

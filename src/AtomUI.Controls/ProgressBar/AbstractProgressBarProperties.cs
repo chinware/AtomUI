@@ -16,18 +16,18 @@ public partial class AbstractProgressBar
    }
    
    // 获取 Token 值属性开始
-   protected double _fontSize;
+   protected double _fontSizeToken;
    protected static readonly DirectProperty<AbstractLineProgress, double> FontSizeTokenProperty =
       AvaloniaProperty.RegisterDirect<AbstractLineProgress, double>(
-         nameof(_fontSize),
-         o => o._fontSize,
-         (o, v) => o._fontSize = v);
+         nameof(_fontSizeToken),
+         o => o._fontSizeToken,
+         (o, v) => o._fontSizeToken = v);
    
-   protected double _fontSizeSM;
+   protected double _fontSizeSMToken;
    protected static readonly DirectProperty<AbstractLineProgress, double> FontSizeSMTokenProperty =
       AvaloniaProperty.RegisterDirect<AbstractLineProgress, double>(
-         nameof(_fontSizeSM),
-         o => o._fontSizeSM,
-         (o, v) => o._fontSizeSM = v);
+         nameof(_fontSizeSMToken),
+         o => o._fontSizeSMToken,
+         (o, v) => o._fontSizeSMToken = v);
    // 获取 Token 值属性结束
 }

@@ -44,7 +44,7 @@ public partial class ProgressBar : AbstractLineProgress
          targetHeight = StrokeThickness;
          if (!PercentPosition.IsInner && ShowProgressInfo) {
             if (PercentPosition.Alignment == LinePercentAlignment.Center) {
-               targetHeight += _extraInfoSize.Height + _lineExtraInfoMargin;
+               targetHeight += _extraInfoSize.Height + _lineExtraInfoMarginToken;
             }
          }
          
@@ -59,7 +59,7 @@ public partial class ProgressBar : AbstractLineProgress
          targetWidth = StrokeThickness;
          if (!PercentPosition.IsInner && ShowProgressInfo) {
             if (PercentPosition.Alignment == LinePercentAlignment.Center) {
-               targetWidth += _extraInfoSize.Width + _lineExtraInfoMargin;
+               targetWidth += _extraInfoSize.Width + _lineExtraInfoMarginToken;
             }
          }
 
@@ -217,45 +217,45 @@ public partial class ProgressBar : AbstractLineProgress
    
    protected void CalculateSizeTypeThresholdValue()
    {
-      var defaultExtraInfoSize = CalculateExtraInfoSize(_fontSize);
-      var smallExtraInfoSize = CalculateExtraInfoSize(_fontSizeSM);
+      var defaultExtraInfoSize = CalculateExtraInfoSize(_fontSizeToken);
+      var smallExtraInfoSize = CalculateExtraInfoSize(_fontSizeSMToken);
       if (Orientation == Orientation.Horizontal) {
          var largeSizeTypeThresholdValue = new SizeTypeThresholdValue
          {
-            InnerStateValue = defaultExtraInfoSize.Height + _lineProgressPadding * 2,
+            InnerStateValue = defaultExtraInfoSize.Height + _lineProgressPaddingToken * 2,
             NormalStateValue = Math.Max(LARGE_STROKE_THICKNESS, defaultExtraInfoSize.Height)
          };
          _sizeTypeThresholdValue.Add(SizeType.Large, largeSizeTypeThresholdValue);
          var middleSizeTypeThresholdValue = new SizeTypeThresholdValue
          {
-            InnerStateValue = defaultExtraInfoSize.Height + _lineProgressPadding * 2,
+            InnerStateValue = defaultExtraInfoSize.Height + _lineProgressPaddingToken * 2,
             NormalStateValue = Math.Max(MIDDLE_STROKE_THICKNESS, defaultExtraInfoSize.Height)
          };
          _sizeTypeThresholdValue.Add(SizeType.Middle, middleSizeTypeThresholdValue);
          
          var smallSizeTypeThresholdValue = new SizeTypeThresholdValue
          {
-            InnerStateValue = smallExtraInfoSize.Height + _lineProgressPadding * 2,
+            InnerStateValue = smallExtraInfoSize.Height + _lineProgressPaddingToken * 2,
             NormalStateValue = Math.Max(SMALL_STROKE_THICKNESS, smallExtraInfoSize.Height)
          };
          _sizeTypeThresholdValue.Add(SizeType.Small, smallSizeTypeThresholdValue);
       } else {
          var largeSizeTypeThresholdValue = new SizeTypeThresholdValue
          {
-            InnerStateValue = defaultExtraInfoSize.Width + _lineProgressPadding * 2,
+            InnerStateValue = defaultExtraInfoSize.Width + _lineProgressPaddingToken * 2,
             NormalStateValue = Math.Max(LARGE_STROKE_THICKNESS, defaultExtraInfoSize.Width)
          };
          _sizeTypeThresholdValue.Add(SizeType.Large, largeSizeTypeThresholdValue);
          var middleSizeTypeThresholdValue = new SizeTypeThresholdValue
          {
-            InnerStateValue = defaultExtraInfoSize.Width + _lineProgressPadding * 2,
+            InnerStateValue = defaultExtraInfoSize.Width + _lineProgressPaddingToken * 2,
             NormalStateValue = Math.Max(MIDDLE_STROKE_THICKNESS, defaultExtraInfoSize.Width)
          };
          _sizeTypeThresholdValue.Add(SizeType.Middle, middleSizeTypeThresholdValue);
          
          var smallSizeTypeThresholdValue = new SizeTypeThresholdValue
          {
-            InnerStateValue = smallExtraInfoSize.Width + _lineProgressPadding * 2,
+            InnerStateValue = smallExtraInfoSize.Width + _lineProgressPaddingToken * 2,
             NormalStateValue = Math.Max(SMALL_STROKE_THICKNESS, smallExtraInfoSize.Width)
          };
          _sizeTypeThresholdValue.Add(SizeType.Small, smallSizeTypeThresholdValue);
@@ -276,11 +276,11 @@ public partial class ProgressBar : AbstractLineProgress
                var percentLabelWidth = _extraInfoSize.Width;
                var percentLabelHeight = _extraInfoSize.Height;
                if (PercentPosition.Alignment == LinePercentAlignment.Start) {
-                  deflateLeft = percentLabelWidth + _lineExtraInfoMargin;
+                  deflateLeft = percentLabelWidth + _lineExtraInfoMarginToken;
                } else if (PercentPosition.Alignment == LinePercentAlignment.Center) {
                   deflateBottom = percentLabelHeight;
                } else if (PercentPosition.Alignment == LinePercentAlignment.End) {
-                  deflateRight = percentLabelWidth + _lineExtraInfoMargin;
+                  deflateRight = percentLabelWidth + _lineExtraInfoMarginToken;
                }
             }
          }
@@ -290,11 +290,11 @@ public partial class ProgressBar : AbstractLineProgress
                var percentLabelWidth = _extraInfoSize.Width;
                var percentLabelHeight = _extraInfoSize.Height;
                if (PercentPosition.Alignment == LinePercentAlignment.Start) {
-                  deflateTop = percentLabelHeight + _lineExtraInfoMargin;
+                  deflateTop = percentLabelHeight + _lineExtraInfoMarginToken;
                } else if (PercentPosition.Alignment == LinePercentAlignment.Center) {
                   deflateRight = percentLabelWidth;
                } else if (PercentPosition.Alignment == LinePercentAlignment.End) {
-                  deflateBottom = percentLabelHeight + _lineExtraInfoMargin;;
+                  deflateBottom = percentLabelHeight + _lineExtraInfoMarginToken;;
                }
             }
          }
@@ -329,11 +329,11 @@ public partial class ProgressBar : AbstractLineProgress
                var deflateValue = range * (1 - Value / (Maximum - Minimum));
                var indicatorRect = grooveRect.Deflate(new Thickness(0, 0, deflateValue, 0));
                if (PercentPosition.Alignment == LinePercentAlignment.Start) {
-                  offsetX = _lineProgressPadding * 2;
+                  offsetX = _lineProgressPaddingToken * 2;
                } else if (PercentPosition.Alignment == LinePercentAlignment.Center) {
                   offsetX = (indicatorRect.Width - targetWidth) / 2;
                } else if (PercentPosition.Alignment == LinePercentAlignment.End) {
-                  offsetX = indicatorRect.Right - targetWidth - _lineProgressPadding * 2;
+                  offsetX = indicatorRect.Right - targetWidth - _lineProgressPaddingToken * 2;
                }
             } else {
                if (PercentPosition.Alignment == LinePercentAlignment.Start) {
@@ -356,11 +356,11 @@ public partial class ProgressBar : AbstractLineProgress
             var deflateValue = range * (1 - Value / (Maximum - Minimum));
             var indicatorRect = grooveRect.Deflate(new Thickness(0, 0, 0, deflateValue));
             if (PercentPosition.Alignment == LinePercentAlignment.Start) {
-               offsetY = _lineExtraInfoMargin;
+               offsetY = _lineExtraInfoMarginToken;
             } else if (PercentPosition.Alignment == LinePercentAlignment.Center) {
                offsetY = (indicatorRect.Height - targetHeight) / 2;
             } else if (PercentPosition.Alignment == LinePercentAlignment.End) {
-               offsetY = indicatorRect.Bottom - targetHeight - _lineExtraInfoMargin;
+               offsetY = indicatorRect.Bottom - targetHeight - _lineExtraInfoMarginToken;
             }
          } else {
             if (PercentPosition.Alignment == LinePercentAlignment.Start) {
@@ -386,9 +386,9 @@ public partial class ProgressBar : AbstractLineProgress
           !PercentPosition.IsInner) {
          // 只要图标
          if (EffectiveSizeType == SizeType.Large || EffectiveSizeType == SizeType.Middle) {
-            return new Size(_lineInfoIconSize, _lineInfoIconSize);
+            return new Size(_lineInfoIconSizeToken, _lineInfoIconSizeToken);
          } 
-         return new Size(_lineInfoIconSizeSM, _lineInfoIconSizeSM);
+         return new Size(_lineInfoIconSizeSMToken, _lineInfoIconSizeSMToken);
       }
       var textSize = TextUtils.CalculateTextSize(string.Format(ProgressTextFormat, Value), FontFamily, fontSize);
       if (ShowProgressInfo && PercentPosition.IsInner) {
@@ -470,7 +470,7 @@ public partial class ProgressBar : AbstractLineProgress
    // 需要评估是否需要
    private void CalculateMinBarThickness()
    {
-      var thickness = _lineProgressPadding * 2;
+      var thickness = _lineProgressPaddingToken * 2;
       var extraInfoSize = CalculateExtraInfoSize(FontSize);
       if (Orientation == Orientation.Horizontal) {
          thickness += extraInfoSize.Height;

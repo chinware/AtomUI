@@ -171,8 +171,8 @@ public class StepsProgressBar : AbstractLineProgress
 
    protected void CalculateSizeTypeThresholdValue()
    {
-      var defaultExtraInfoSize = CalculateExtraInfoSize(_fontSize);
-      var smallExtraInfoSize = CalculateExtraInfoSize(_fontSizeSM);
+      var defaultExtraInfoSize = CalculateExtraInfoSize(_fontSizeToken);
+      var smallExtraInfoSize = CalculateExtraInfoSize(_fontSizeSMToken);
       if (Orientation == Orientation.Horizontal) {
          var largeSizeTypeThresholdValue = new SizeTypeThresholdValue
          {
@@ -314,9 +314,9 @@ public class StepsProgressBar : AbstractLineProgress
          targetWidth = chunkWidth * Steps + DEFAULT_CHUNK_SPACE * (Steps - 1);
          if (ShowProgressInfo) {
             if (PercentPosition == LinePercentAlignment.Center) {
-               chunkHeight += _extraInfoSize.Height + _lineExtraInfoMargin;
+               chunkHeight += _extraInfoSize.Height + _lineExtraInfoMarginToken;
             } else {
-               targetWidth += _extraInfoSize.Width + _lineExtraInfoMargin;
+               targetWidth += _extraInfoSize.Width + _lineExtraInfoMarginToken;
             }
          }
          targetHeight = Math.Max(chunkHeight, MinHeight);
@@ -326,9 +326,9 @@ public class StepsProgressBar : AbstractLineProgress
          targetHeight = chunkHeight * Steps + DEFAULT_CHUNK_SPACE * (Steps - 1);
          if (ShowProgressInfo) {
             if (PercentPosition == LinePercentAlignment.Center) {
-               chunkWidth += _extraInfoSize.Width + _lineExtraInfoMargin;
+               chunkWidth += _extraInfoSize.Width + _lineExtraInfoMarginToken;
             } else {
-               targetHeight += _extraInfoSize.Height + _lineExtraInfoMargin;
+               targetHeight += _extraInfoSize.Height + _lineExtraInfoMarginToken;
             }
          }
          targetWidth = Math.Max(chunkWidth, MinWidth);
@@ -398,11 +398,11 @@ public class StepsProgressBar : AbstractLineProgress
             var percentLabelWidth = _extraInfoSize.Width;
             var percentLabelHeight = _extraInfoSize.Height;
             if (PercentPosition == LinePercentAlignment.Start) {
-               deflateLeft = percentLabelWidth + _lineExtraInfoMargin;
+               deflateLeft = percentLabelWidth + _lineExtraInfoMarginToken;
             } else if (PercentPosition == LinePercentAlignment.Center) {
                deflateBottom = percentLabelHeight;
             } else if (PercentPosition == LinePercentAlignment.End) {
-               deflateRight = percentLabelWidth + _lineExtraInfoMargin;
+               deflateRight = percentLabelWidth + _lineExtraInfoMarginToken;
             }
          }
       } else {
@@ -410,11 +410,11 @@ public class StepsProgressBar : AbstractLineProgress
             var percentLabelWidth = _extraInfoSize.Width;
             var percentLabelHeight = _extraInfoSize.Height;
             if (PercentPosition == LinePercentAlignment.Start) {
-               deflateTop = percentLabelHeight + _lineExtraInfoMargin;
+               deflateTop = percentLabelHeight + _lineExtraInfoMarginToken;
             } else if (PercentPosition == LinePercentAlignment.Center) {
                deflateRight = percentLabelWidth;
             } else if (PercentPosition == LinePercentAlignment.End) {
-               deflateBottom = percentLabelHeight + _lineExtraInfoMargin;
+               deflateBottom = percentLabelHeight + _lineExtraInfoMarginToken;
             }
          }
       }
