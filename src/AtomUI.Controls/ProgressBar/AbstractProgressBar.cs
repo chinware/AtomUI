@@ -1,4 +1,3 @@
-using AtomUI.Icon;
 using AtomUI.Media;
 using AtomUI.Styling;
 using AtomUI.Utils;
@@ -6,8 +5,9 @@ using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
+using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
-using Avalonia.Layout;
+using Avalonia.Data;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 
@@ -21,6 +21,7 @@ public enum ProgressStatus
    Active,
 }
 
+[PseudoClasses(IndeterminatePC)]
 public abstract partial class AbstractProgressBar : RangeBase, 
                                                     ISizeTypeAware,
                                                     IControlCustomStyle
@@ -28,6 +29,9 @@ public abstract partial class AbstractProgressBar : RangeBase,
    protected const double LARGE_STROKE_THICKNESS = 8;
    protected const double MIDDLE_STROKE_THICKNESS = 6;
    protected const double SMALL_STROKE_THICKNESS = 4;
+
+   public const string IndeterminatePC = ":indeterminate";
+   public const string CompletedPC = ":completed";
 
    /// <summary>
    /// Defines the <see cref="IsIndeterminate"/> property.
@@ -80,7 +84,7 @@ public abstract partial class AbstractProgressBar : RangeBase,
    public static readonly StyledProperty<IBrush?> SuccessThresholdBrushProperty =
       AvaloniaProperty.Register<ProgressBar, IBrush?>(nameof(SuccessThresholdBrush));
 
-   protected static readonly DirectProperty<AbstractProgressBar, SizeType> EffectiveSizeTypeProperty =
+   internal static readonly DirectProperty<AbstractProgressBar, SizeType> EffectiveSizeTypeProperty =
       AvaloniaProperty.RegisterDirect<AbstractProgressBar, SizeType>(nameof(EffectiveSizeType),
                                                                      o => o.EffectiveSizeType,
                                                                      (o, v) => o.EffectiveSizeType = v);
@@ -183,7 +187,7 @@ public abstract partial class AbstractProgressBar : RangeBase,
 
    private SizeType _effectiveSizeType;
 
-   protected SizeType EffectiveSizeType
+   internal SizeType EffectiveSizeType
    {
       get => _effectiveSizeType;
       set => SetAndRaise(EffectiveSizeTypeProperty, ref _effectiveSizeType, value);
@@ -200,9 +204,11 @@ public abstract partial class AbstractProgressBar : RangeBase,
    protected bool _initialized = false;
    protected ControlStyleState _styleState;
    internal IControlCustomStyle _customStyle;
+   protected LayoutTransformControl? _layoutTransformLabel;
    protected Label? _percentageLabel;
    protected PathIcon? _successCompletedIcon;
    protected PathIcon? _exceptionCompletedIcon;
+   protected Canvas? _mainContainer;
 
    static AbstractProgressBar()
    {
@@ -216,6 +222,7 @@ public abstract partial class AbstractProgressBar : RangeBase,
                                          SuccessThresholdBrushProperty,
                                          SuccessThresholdProperty,
                                          ValueProperty);
+      ValueProperty.OverrideMetadata<AbstractProgressBar>(new(defaultBindingMode: BindingMode.OneWay));
    }
 
    public AbstractProgressBar()
@@ -229,7 +236,6 @@ public abstract partial class AbstractProgressBar : RangeBase,
       base.OnAttachedToLogicalTree(e);
       if (!_initialized) {
          _customStyle.SetupUi();
-         _customStyle.AfterUiStructureReady();
       }
    }
 
@@ -244,34 +250,50 @@ public abstract partial class AbstractProgressBar : RangeBase,
           e.Property == ProgressTextFormatProperty) {
          UpdateProgress();
       }
+      
+      if (e.Property == IsIndeterminateProperty) {
+         UpdatePseudoClasses();
+      }
 
       _customStyle.HandlePropertyChangedForStyle(e);
    }
-
-   protected virtual Label GetOrCreatePercentInfoLabel()
+   
+   protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
    {
-      if (_percentageLabel is null) {
-         _percentageLabel = new Label
-         {
-            Padding = new Thickness(0),
-            VerticalContentAlignment = VerticalAlignment.Center,
-         };
-         BindUtils.RelayBind(this, IsEnabledProperty, _percentageLabel);
-      }
+      base.OnApplyTemplate(e);
+      _customStyle.HandleTemplateApplied(e.NameScope);
+   }
 
-      return _percentageLabel;
+   void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
+   {
+      NotifyTemplateApplied(scope);
+      _customStyle.AfterUiStructureReady();
    }
 
    protected abstract SizeType CalculateEffectiveSizeType(double size);
+   
    protected abstract Rect GetProgressBarRect(Rect controlRect);
    protected abstract Rect GetExtraInfoRect(Rect controlRect);
+   
    protected abstract void RenderGroove(DrawingContext context);
    protected abstract void RenderIndicatorBar(DrawingContext context);
    protected abstract void CalculateStrokeThickness();
 
+   protected virtual void NotifyTemplateApplied(INameScope scope)
+   {
+      _layoutTransformLabel = scope.Find<LayoutTransformControl>(AbstractProgressBarTheme.LayoutTransformControlPart);
+      _percentageLabel = scope.Find<Label>(AbstractProgressBarTheme.PercentageLabelPart);
+      _exceptionCompletedIcon = scope.Find<PathIcon>(AbstractProgressBarTheme.ExceptionCompletedIconPart);
+      _successCompletedIcon = scope.Find<PathIcon>(AbstractProgressBarTheme.SuccessCompletedIconPart);
+      _mainContainer = scope.Find<Canvas>(AbstractProgressBarTheme.MainContainerPart);
+      _customStyle.CollectStyleState();
+      _customStyle.ApplyFixedStyleConfig();
+      _customStyle.ApplyVariableStyleConfig();
+      NotifySetupUi();
+   }
+
    protected virtual void NotifyEffectSizeTypeChanged()
    {
-      ApplyEffectiveSizeTypeStyleConfig();
       CalculateStrokeThickness();
    }
 
@@ -284,26 +306,10 @@ public abstract partial class AbstractProgressBar : RangeBase,
 
    protected virtual void NotifyUpdateProgress()
    {
-      if (ShowProgressInfo &&
-          _percentageLabel != null &&
-          _exceptionCompletedIcon != null &&
-          _successCompletedIcon != null) {
-         if (Status == ProgressStatus.Exception) {
-            _percentageLabel.IsVisible = false;
-            _exceptionCompletedIcon.IsVisible = true;
-            _successCompletedIcon.IsVisible = false;
-         } else {
-            if (MathUtils.AreClose(100, Percentage)) {
-               _percentageLabel.IsVisible = false;
-               _successCompletedIcon.IsVisible = true;
-            } else {
-               _successCompletedIcon.IsVisible = false;
-               _exceptionCompletedIcon.IsVisible = false;
-               _percentageLabel.IsVisible = true;
-            }
+      if (ShowProgressInfo && _percentageLabel != null) {
+         if (Status != ProgressStatus.Exception) {
             _percentageLabel.Content = string.Format(ProgressTextFormat, _percentage);
          }
-
          NotifyHandleExtraInfoVisibility();
       }
    }
@@ -313,13 +319,7 @@ public abstract partial class AbstractProgressBar : RangeBase,
    #region IControlCustomStyle 实现
     void IControlCustomStyle.SetupUi()
    {
-      _customStyle.CollectStyleState();
-      _customStyle.ApplyFixedStyleConfig();
-      _customStyle.ApplyVariableStyleConfig();
-      _customStyle.ApplySizeTypeStyleConfig();
       _customStyle.SetupTransitions();
-      
-      NotifySetupUi();
       
       _initialized = true;
    }
@@ -333,7 +333,8 @@ public abstract partial class AbstractProgressBar : RangeBase,
    {
       // 创建完更新调用一次
       NotifyEffectSizeTypeChanged();
-      UpdateProgress(); 
+      UpdateProgress();
+      UpdatePseudoClasses();
    }
 
    void IControlCustomStyle.SetupTransitions()
@@ -358,11 +359,6 @@ public abstract partial class AbstractProgressBar : RangeBase,
       NotifyApplyFixedStyleConfig();
    }
 
-   void IControlCustomStyle.ApplySizeTypeStyleConfig()
-   {
-      ApplyEffectiveSizeTypeStyleConfig();
-   }
-
    void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
    {
       if (e.Property == SizeTypeProperty) {
@@ -379,21 +375,25 @@ public abstract partial class AbstractProgressBar : RangeBase,
          _customStyle.ApplyVariableStyleConfig();
       }
 
+      if (e.Property == ValueProperty) {
+         UpdatePseudoClasses();
+      }
+
       NotifyPropertyChanged(e);
    }
    
    protected virtual void NotifySetupTransitions(ref Transitions transitions) {}
    protected virtual void ApplyIndicatorBarBackgroundStyleConfig() {}
-   protected virtual void ApplyEffectiveSizeTypeStyleConfig() {}
+   
+   private void UpdatePseudoClasses()
+   {
+      PseudoClasses.Set(IndeterminatePC, IsIndeterminate);
+      PseudoClasses.Set(CompletedPC, MathUtils.AreClose(Value, Maximum));
+   }
 
    protected virtual void NotifySetupUi()
    {
-      var label = GetOrCreatePercentInfoLabel();
-      AddChildControl(label);
-      CreateCompletedIcons();
    }
-
-   protected abstract void CreateCompletedIcons();
 
    protected virtual void NotifyApplyFixedStyleConfig()
    {
@@ -402,6 +402,13 @@ public abstract partial class AbstractProgressBar : RangeBase,
 
    protected virtual void NotifyPropertyChanged(AvaloniaPropertyChangedEventArgs e)
    {
+      if (e.Property == TrailColorProperty) {
+         if (TrailColor.HasValue) {
+            GrooveBrush = new SolidColorBrush(TrailColor.Value);
+         } else {
+            ClearValue(GrooveBrushProperty);
+         }
+      }
    }
 
    void IControlCustomStyle.ApplyVariableStyleConfig()
@@ -411,41 +418,6 @@ public abstract partial class AbstractProgressBar : RangeBase,
 
    protected virtual void NotifyApplyVariableStyleConfig()
    {
-      if (_styleState.HasFlag(ControlStyleState.Enabled)) {
-         if (TrailColor.HasValue) {
-            GrooveBrush = new SolidColorBrush(TrailColor.Value);
-         } else {
-            BindUtils.CreateTokenBinding(this, GrooveBrushProperty, ProgressBarResourceKey.RemainingColor);
-         }
-       
-         if (Status == ProgressStatus.Success || MathUtils.AreClose(Value, Maximum)) {
-            BindUtils.CreateTokenBinding(this, IndicatorBarBrushProperty, GlobalResourceKey.ColorSuccess);
-         } else if (Status == ProgressStatus.Exception) {
-            BindUtils.CreateTokenBinding(this, IndicatorBarBrushProperty, GlobalResourceKey.ColorError);
-         } else {
-              BindUtils.CreateTokenBinding(this, IndicatorBarBrushProperty, ProgressBarResourceKey.DefaultColor);
-         }
-         BindUtils.CreateTokenBinding(this, ForegroundProperty, GlobalResourceKey.ColorTextLabel);
-         if (_initialized) {
-            _exceptionCompletedIcon!.IconMode = IconMode.Normal;
-            _successCompletedIcon!.IconMode = IconMode.Normal;
-         }
-   
-      } else {
-         BindUtils.CreateTokenBinding(this, GrooveBrushProperty, GlobalResourceKey.ColorBgContainerDisabled);
-         BindUtils.CreateTokenBinding(this, IndicatorBarBrushProperty, GlobalResourceKey.ControlItemBgActiveDisabled);
-         BindUtils.CreateTokenBinding(this, ForegroundProperty, GlobalResourceKey.ColorTextDisabled);
-         if (_initialized) {
-            _exceptionCompletedIcon!.IconMode = IconMode.Disabled;
-            _successCompletedIcon!.IconMode = IconMode.Disabled;
-         }
-      }
-   }
-
-   protected void AddChildControl(Control child)
-   {
-      VisualChildren.Add(child);
-      (child as ISetLogicalParent).SetParent(this);
    }
    
    public override void Render(DrawingContext context)

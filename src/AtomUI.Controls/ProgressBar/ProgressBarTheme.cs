@@ -1,0 +1,134 @@
+﻿using AtomUI.Styling;
+using Avalonia.Controls;
+using Avalonia.Layout;
+using Avalonia.Media;
+using Avalonia.Styling;
+
+namespace AtomUI.Controls;
+
+[ControlThemeProvider]
+public class ProgressBarTheme : AbstractLineProgressTheme
+{
+   public ProgressBarTheme() : base(typeof(ProgressBar)) {}
+   
+   protected override void BuildStyles()
+   {
+      base.BuildStyles();
+
+      BuildPercentPositionStyle();
+      BuildCompletedIconStyle();
+      BuildLabelRotationStyle();
+   }
+
+   private void BuildPercentPositionStyle()
+   {
+      var showProgressInfoStyle = new Style(selector => selector.Nesting().PropertyEquals(ProgressBar.ShowProgressInfoProperty, true));
+      
+      // 水平方向
+      var horizontalStyle = new Style(selector => selector.Nesting().PropertyEquals(ProgressBar.OrientationProperty, Orientation.Horizontal));
+      {
+         var notInnerStartStyle = new Style(selector => selector.Nesting().PropertyEquals(ProgressBar.PercentPositionProperty, new PercentPosition()
+         {
+            IsInner = false,
+            Alignment = LinePercentAlignment.Start
+         }));
+         {
+            var icons = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
+            icons.Add(PathIcon.HorizontalAlignmentProperty, HorizontalAlignment.Right);
+            notInnerStartStyle.Add(icons);
+         }
+         
+         horizontalStyle.Add(notInnerStartStyle);
+         
+         var notInnerEndStyle = new Style(selector => selector.Nesting().PropertyEquals(ProgressBar.PercentPositionProperty, new PercentPosition()
+         {
+            IsInner = false,
+            Alignment = LinePercentAlignment.End
+         }));
+         {
+            var icons = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
+            icons.Add(PathIcon.HorizontalAlignmentProperty, HorizontalAlignment.Left);
+            notInnerEndStyle.Add(icons);
+         }
+         horizontalStyle.Add(notInnerEndStyle);
+         
+         var notInnerCenterStyle = new Style(selector => selector.Nesting().PropertyEquals(ProgressBar.PercentPositionProperty, new PercentPosition()
+         {
+            IsInner = false,
+            Alignment = LinePercentAlignment.Center
+         }));
+         {
+            var icons = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
+            icons.Add(PathIcon.HorizontalAlignmentProperty, HorizontalAlignment.Center);
+            notInnerCenterStyle.Add(icons);
+         }
+         horizontalStyle.Add(notInnerCenterStyle);
+      }
+        
+      showProgressInfoStyle.Add(horizontalStyle);
+      
+      // 垂直方向
+      var verticalStyle = new Style(selector => selector.Nesting().PropertyEquals(ProgressBar.OrientationProperty, Orientation.Vertical));
+      {
+         var notInnerStartStyle = new Style(selector => selector.Nesting().PropertyEquals(ProgressBar.PercentPositionProperty, new PercentPosition()
+         {
+            IsInner = false,
+            Alignment = LinePercentAlignment.Start
+         }));
+         {
+            var icons = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
+            icons.Add(PathIcon.VerticalAlignmentProperty, VerticalAlignment.Bottom);
+            notInnerStartStyle.Add(icons);
+         }
+         
+         horizontalStyle.Add(notInnerStartStyle);
+         
+         var notInnerEndStyle = new Style(selector => selector.Nesting().PropertyEquals(ProgressBar.PercentPositionProperty, new PercentPosition()
+         {
+            IsInner = false,
+            Alignment = LinePercentAlignment.End
+         }));
+         {
+            var icons = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
+            icons.Add(PathIcon.VerticalAlignmentProperty, VerticalAlignment.Top);
+            notInnerEndStyle.Add(icons);
+         }
+         horizontalStyle.Add(notInnerEndStyle);
+         
+         var notInnerCenterStyle = new Style(selector => selector.Nesting().PropertyEquals(ProgressBar.PercentPositionProperty, new PercentPosition()
+         {
+            IsInner = false,
+            Alignment = LinePercentAlignment.Center
+         }));
+         {
+            var icons = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
+            icons.Add(PathIcon.VerticalAlignmentProperty, VerticalAlignment.Center);
+            notInnerCenterStyle.Add(icons);
+         }
+         horizontalStyle.Add(notInnerCenterStyle);
+      }
+      showProgressInfoStyle.Add(verticalStyle);
+   }
+
+   // 如果是 Inner 模式，成功状态下不显示成功 icon
+   private void BuildCompletedIconStyle()
+   {
+      var labelInnerStyle = new Style(selector => selector.Nesting().Class(ProgressBar.PercentLabelInnerPC));
+      var icons = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
+      icons.Add(PathIcon.IsVisibleProperty, false);
+      labelInnerStyle.Add(icons);
+      var labelStyle = new Style(selector => selector.Nesting().Template().OfType<LayoutTransformControl>());
+      labelStyle.Add(LayoutTransformControl.IsVisibleProperty, true);
+      labelInnerStyle.Add(labelStyle);
+      Add(labelInnerStyle);
+   }
+
+   private void BuildLabelRotationStyle()
+   {
+      var rotationStyle = new Style(selector => selector.Nesting().Class(AbstractLineProgress.VerticalPC).Class(ProgressBar.PercentLabelInnerPC));
+      var layoutControl = new Style(selector => selector.Nesting().Template().OfType<LayoutTransformControl>());
+      layoutControl.Add(LayoutTransformControl.LayoutTransformProperty, new RotateTransform(90));
+      rotationStyle.Add(layoutControl);
+      Add(rotationStyle);
+   }
+}

@@ -236,30 +236,6 @@ public abstract partial class AbstractCircleProgress : AbstractProgressBar
       StrokeThickness = calculatedValue;
    }
    
-   protected override void CreateCompletedIcons()
-   {
-      _exceptionCompletedIcon = new PathIcon
-      {
-         Kind = "CloseOutlined",
-         HorizontalAlignment = HorizontalAlignment.Center,
-         VerticalAlignment = VerticalAlignment.Center
-      };
-      BindUtils.CreateTokenBinding(_exceptionCompletedIcon, PathIcon.NormalFillBrushProperty, GlobalResourceKey.ColorError);
-      BindUtils.CreateTokenBinding(_exceptionCompletedIcon, PathIcon.DisabledFilledBrushProperty, GlobalResourceKey.ControlItemBgActiveDisabled);
-      _successCompletedIcon = new PathIcon
-      {
-         Kind = "CheckOutlined",
-         HorizontalAlignment = HorizontalAlignment.Center,
-         VerticalAlignment = VerticalAlignment.Center
-      };
-      BindUtils.CreateTokenBinding(_successCompletedIcon, PathIcon.NormalFillBrushProperty, GlobalResourceKey.ColorSuccess);
-      BindUtils.CreateTokenBinding(_successCompletedIcon, PathIcon.DisabledFilledBrushProperty, GlobalResourceKey.ControlItemBgActiveDisabled);
-      _successCompletedIcon.IsVisible = false;
-      _exceptionCompletedIcon.IsVisible = false;
-      AddChildControl(_exceptionCompletedIcon);
-      AddChildControl(_successCompletedIcon);
-   }
-   
    protected override void NotifyApplyFixedStyleConfig()
    {
       base.NotifyApplyFixedStyleConfig();

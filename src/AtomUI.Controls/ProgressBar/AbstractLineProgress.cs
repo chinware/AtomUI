@@ -2,7 +2,8 @@ using AtomUI.Media;
 using AtomUI.Styling;
 using AtomUI.Utils;
 using Avalonia;
-using Avalonia.Data;
+using Avalonia.Controls;
+using Avalonia.Controls.Metadata;
 using Avalonia.Layout;
 
 namespace AtomUI.Controls;
@@ -20,8 +21,12 @@ internal class SizeTypeThresholdValue
    internal double InnerStateValue { get; set; }
 }
 
+[PseudoClasses(VerticalPC, HorizontalPC)]
 public abstract partial class AbstractLineProgress : AbstractProgressBar
 {
+   public const string VerticalPC = ":vertical";
+   public const string HorizontalPC = ":horizontal";
+   
    /// <summary>
    /// Defines the <see cref="Orientation"/> property.
    /// </summary>
@@ -60,16 +65,6 @@ public abstract partial class AbstractLineProgress : AbstractProgressBar
       return textSize;
    }
 
-   protected override void ApplyEffectiveSizeTypeStyleConfig()
-   {
-      base.ApplyEffectiveSizeTypeStyleConfig();
-      if (EffectiveSizeType == SizeType.Large || EffectiveSizeType == SizeType.Middle) {
-         BindUtils.CreateTokenBinding(this, FontSizeProperty, GlobalResourceKey.FontSize);
-      } else {
-         BindUtils.CreateTokenBinding(this, FontSizeProperty, GlobalResourceKey.FontSizeSM);
-      }
-   }
-
    protected override void NotifyUiStructureReady()
    {
       base.NotifyUiStructureReady();
@@ -86,7 +81,7 @@ public abstract partial class AbstractLineProgress : AbstractProgressBar
       if (calculateEffectiveSize) {
          EffectiveSizeType = CalculateEffectiveSizeType(sizeValue);
       }
-
+    
       _extraInfoSize = CalculateExtraInfoSize(FontSize);
       SetupAlignment();
       NotifyOrientationChanged();
@@ -96,6 +91,12 @@ public abstract partial class AbstractLineProgress : AbstractProgressBar
    {
       HorizontalAlignment = HorizontalAlignment.Left;
       VerticalAlignment = VerticalAlignment.Top;
+   }
+   
+   private void UpdatePseudoClasses()
+   {
+      PseudoClasses.Set(VerticalPC, Orientation == Orientation.Vertical);
+      PseudoClasses.Set(HorizontalPC, Orientation == Orientation.Horizontal);
    }
 
    protected override void NotifyPropertyChanged(AvaloniaPropertyChangedEventArgs e)
@@ -129,60 +130,18 @@ public abstract partial class AbstractLineProgress : AbstractProgressBar
       BindUtils.CreateTokenBinding(this, LineInfoIconSizeSMTokenProperty, ProgressBarResourceKey.LineInfoIconSizeSM);
    }
 
-   protected override void CreateCompletedIcons()
+   protected override void NotifyTemplateApplied(INameScope scope)
    {
-      _exceptionCompletedIcon = new PathIcon
-      {
-         Kind = "CloseCircleFilled",
-         HorizontalAlignment = HorizontalAlignment.Left
-      };
-      BindUtils.CreateTokenBinding(_exceptionCompletedIcon, PathIcon.NormalFillBrushProperty, GlobalResourceKey.ColorError);
-      BindUtils.CreateTokenBinding(_exceptionCompletedIcon, PathIcon.DisabledFilledBrushProperty, GlobalResourceKey.ControlItemBgActiveDisabled);
-      _successCompletedIcon = new PathIcon
-      {
-         Kind = "CheckCircleFilled",
-         HorizontalAlignment = HorizontalAlignment.Left
-      };
-      BindUtils.CreateTokenBinding(_successCompletedIcon, PathIcon.NormalFillBrushProperty, GlobalResourceKey.ColorSuccess);
-      BindUtils.CreateTokenBinding(_successCompletedIcon, PathIcon.DisabledFilledBrushProperty, GlobalResourceKey.ControlItemBgActiveDisabled);
-      _successCompletedIcon.IsVisible = false;
-      _exceptionCompletedIcon.IsVisible = false;
-      AddChildControl(_exceptionCompletedIcon);
-      AddChildControl(_successCompletedIcon);
+      _exceptionCompletedIcon = scope.Find<PathIcon>(AbstractProgressBarTheme.ExceptionCompletedIconPart);
+      _successCompletedIcon = scope.Find<PathIcon>(AbstractProgressBarTheme.SuccessCompletedIconPart);
+      base.NotifyTemplateApplied(scope);
    }
    
-   protected override void NotifyEffectSizeTypeChanged()
+   protected virtual void NotifyOrientationChanged()
    {
-      base.NotifyEffectSizeTypeChanged();
-      if (_initialized) {
-         if (EffectiveSizeType == SizeType.Large) {
-            BindUtils.CreateTokenBinding(_exceptionCompletedIcon!, WidthProperty, 
-                                            ProgressBarResourceKey.LineInfoIconSize, BindingPriority.LocalValue);
-        
-            BindUtils.CreateTokenBinding(_exceptionCompletedIcon!, HeightProperty, 
-                                            ProgressBarResourceKey.LineInfoIconSize, BindingPriority.LocalValue);
-     
-            BindUtils.CreateTokenBinding(_successCompletedIcon!, WidthProperty, 
-                                            ProgressBarResourceKey.LineInfoIconSize, BindingPriority.LocalValue);
-            BindUtils.CreateTokenBinding(_successCompletedIcon!, HeightProperty, 
-                                            ProgressBarResourceKey.LineInfoIconSize, BindingPriority.LocalValue);
-            BindUtils.CreateTokenBinding(this, FontSizeProperty, GlobalResourceKey.FontSize);
-         
-         } else {
-            BindUtils.CreateTokenBinding( _exceptionCompletedIcon!, WidthProperty,
-                                            ProgressBarResourceKey.LineInfoIconSizeSM, BindingPriority.LocalValue);
-            BindUtils.CreateTokenBinding(_exceptionCompletedIcon!, HeightProperty, 
-                                            ProgressBarResourceKey.LineInfoIconSizeSM, BindingPriority.LocalValue);
-            BindUtils.CreateTokenBinding(_successCompletedIcon!, WidthProperty,
-                                            ProgressBarResourceKey.LineInfoIconSizeSM, BindingPriority.LocalValue);
-            BindUtils.CreateTokenBinding(_successCompletedIcon!, HeightProperty,
-                                            ProgressBarResourceKey.LineInfoIconSizeSM, BindingPriority.LocalValue);
-            BindUtils.CreateTokenBinding(this, FontSizeProperty, GlobalResourceKey.FontSizeSM);
-         }
-      }
+      UpdatePseudoClasses();
    }
    
-   protected virtual void NotifyOrientationChanged() {}
    private bool _lastCompletedStatus = false;
    protected override void NotifyHandleExtraInfoVisibility()
    {

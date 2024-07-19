@@ -54,7 +54,6 @@ internal abstract class BaseButtonTheme : ControlTheme
    protected override void BuildStyles()
    {
       BuildSizeStyle();
-      
    }
    
    private void BuildSizeStyle()

@@ -3,6 +3,8 @@ using AtomUI.Media;
 using AtomUI.Styling;
 using AtomUI.Utils;
 using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.Metadata;
 using Avalonia.Layout;
 using Avalonia.Media;
 
@@ -14,8 +16,11 @@ public record PercentPosition
    public LinePercentAlignment Alignment { get; set; } = LinePercentAlignment.End;
 }
 
+[PseudoClasses(IndeterminatePC)]
 public partial class ProgressBar : AbstractLineProgress
 {
+   public const string PercentLabelInnerPC = ":labelinner";
+   
    public static readonly StyledProperty<PercentPosition> PercentPositionProperty =
       AvaloniaProperty.Register<ProgressBar, PercentPosition>(nameof(PercentPosition), new PercentPosition());
    
@@ -27,19 +32,14 @@ public partial class ProgressBar : AbstractLineProgress
    
    static ProgressBar()
    {
-      AffectsMeasure<ProgressBar>(IndicatorThicknessProperty,
-                                  PercentPositionProperty);
+      AffectsMeasure<ProgressBar>(IndicatorThicknessProperty, PercentPositionProperty);
    }
    
    protected override Size MeasureOverride(Size availableSize)
    {
-      // TODO 实现有问题
+      base.MeasureOverride(availableSize);
       double targetWidth = 0;
       double targetHeight = 0;
-      if (ShowProgressInfo) {
-         _percentageLabel!.Measure(availableSize);
-         // 其他两个 Icon 都是固定的
-      }
       if (Orientation == Orientation.Horizontal) {
          targetHeight = StrokeThickness;
          if (!PercentPosition.IsInner && ShowProgressInfo) {
@@ -76,25 +76,29 @@ public partial class ProgressBar : AbstractLineProgress
    protected override Size ArrangeOverride(Size finalSize)
    {
       if (ShowProgressInfo) {
-         var extraInfoRect = GetExtraInfoRect(new Rect(new Point(0, 0), DesiredSize));
-         if (_percentageLabel!.IsVisible) {
-            _percentageLabel.Arrange(extraInfoRect);
+         var extraInfoRect = GetExtraInfoRect(new Rect(new Point(0, 0), finalSize));
+         if (_layoutTransformLabel is not null) {
+            Canvas.SetTop(_layoutTransformLabel, extraInfoRect.Top);
+            Canvas.SetLeft(_layoutTransformLabel, extraInfoRect.Left);
          }
-
-         if (_successCompletedIcon != null && _successCompletedIcon.IsVisible) {
-            _successCompletedIcon.Arrange(extraInfoRect);
+      
+         if (_successCompletedIcon is not null) {
+            Canvas.SetLeft(_successCompletedIcon, extraInfoRect.Left);
+            Canvas.SetTop(_successCompletedIcon, extraInfoRect.Top);
          }
-         if (_exceptionCompletedIcon != null && _exceptionCompletedIcon.IsVisible) {
-            _exceptionCompletedIcon.Arrange(extraInfoRect);
+         
+         if (_exceptionCompletedIcon is not null) {
+            Canvas.SetLeft(_exceptionCompletedIcon, extraInfoRect.Left);
+            Canvas.SetTop(_exceptionCompletedIcon, extraInfoRect.Top);
          }
       }
-      
-      return finalSize;
+   
+      return base.ArrangeOverride(finalSize);
    }
 
    protected override void RenderGroove(DrawingContext context)
    {
-      var controlRect = new Rect(new Point(0, 0), DesiredSize);
+      var controlRect = new Rect(new Point(0, 0), Bounds.Size);
       _grooveRect = GetProgressBarRect(controlRect);
       if (StrokeLineCap == PenLineCap.Round) {
          context.DrawPilledRect(GrooveBrush, null, _grooveRect, Orientation);
@@ -161,7 +165,6 @@ public partial class ProgressBar : AbstractLineProgress
             if (_extraInfoSize == Size.Infinity) {
                _extraInfoSize = CalculateExtraInfoSize(FontSize);
             }
-
             if (PercentPosition.IsInner) {
                strokeThickness = _extraInfoSize.Width;
             } else {
@@ -177,6 +180,7 @@ public partial class ProgressBar : AbstractLineProgress
       CalculateSizeTypeThresholdValue();
       CalculateMinBarThickness();
       base.NotifySetupUi();
+      UpdatePseudoClasses();
    }
 
    protected override void NotifyApplyFixedStyleConfig()
@@ -264,7 +268,6 @@ public partial class ProgressBar : AbstractLineProgress
 
    protected override Rect GetProgressBarRect(Rect controlRect)
    {
-      var contentRect = new Rect(new Point(0, 0), controlRect.Size.Deflate(Margin));
       double deflateLeft = 0;
       double deflateTop = 0;
       double deflateRight = 0;
@@ -294,13 +297,13 @@ public partial class ProgressBar : AbstractLineProgress
                } else if (PercentPosition.Alignment == LinePercentAlignment.Center) {
                   deflateRight = percentLabelWidth;
                } else if (PercentPosition.Alignment == LinePercentAlignment.End) {
-                  deflateBottom = percentLabelHeight + _lineExtraInfoMarginToken;;
+                  deflateBottom = percentLabelHeight + _lineExtraInfoMarginToken;
                }
             }
          }
       }
 
-      var deflatedControlRect = contentRect.Deflate(new Thickness(deflateLeft, deflateTop, deflateRight, deflateBottom));
+      var deflatedControlRect = controlRect.Deflate(new Thickness(deflateLeft, deflateTop, deflateRight, deflateBottom));
       if (Orientation == Orientation.Horizontal) {
          return new Rect(new Point(deflatedControlRect.X, (deflatedControlRect.Height - strokeThickness) / 2), new Size(deflatedControlRect.Width, strokeThickness));
       }
@@ -309,21 +312,19 @@ public partial class ProgressBar : AbstractLineProgress
 
    protected override Rect GetExtraInfoRect(Rect controlRect)
    {
-      var contentRect = new Rect(new Point(0, 0), controlRect.Size.Deflate(Margin));
       double offsetX = 0;
       double offsetY = 0;
       double targetWidth = 0;
       double targetHeight = 0;
-      var extraInfoSize = CalculateExtraInfoSize(FontSize);
       if (ShowProgressInfo) {
-         targetWidth = extraInfoSize.Width;
-         targetHeight = extraInfoSize.Height;
+         targetWidth = _extraInfoSize.Width;
+         targetHeight = _extraInfoSize.Height;
       }
       
       if (Orientation == Orientation.Horizontal) {
          if (ShowProgressInfo) {
             if (PercentPosition.IsInner) {
-               var grooveRect = GetProgressBarRect(contentRect);
+               var grooveRect = GetProgressBarRect(controlRect);
                offsetY = grooveRect.Y + (grooveRect.Height - targetHeight) / 2;
                var range = grooveRect.Width;
                var deflateValue = range * (1 - Value / (Maximum - Minimum));
@@ -338,19 +339,19 @@ public partial class ProgressBar : AbstractLineProgress
             } else {
                if (PercentPosition.Alignment == LinePercentAlignment.Start) {
                   offsetX = 0;
-                  offsetY = (contentRect.Height - targetHeight) / 2;
+                  offsetY = (controlRect.Height - targetHeight) / 2;
                } else if (PercentPosition.Alignment == LinePercentAlignment.Center) {
-                  offsetX = (contentRect.Width - targetWidth) / 2;
-                  offsetY = contentRect.Bottom - targetHeight;
+                  offsetX = (controlRect.Width - targetWidth) / 2;
+                  offsetY = controlRect.Bottom - targetHeight;
                } else if (PercentPosition.Alignment == LinePercentAlignment.End) {
-                  offsetX = contentRect.Right - targetWidth;
-                  offsetY = (contentRect.Height - targetHeight) / 2;
+                  offsetX = controlRect.Right - targetWidth;
+                  offsetY = (controlRect.Height - targetHeight) / 2;
                }
             }
          }
       } else {
          if (PercentPosition.IsInner) {
-            var grooveRect = GetProgressBarRect(contentRect);
+            var grooveRect = GetProgressBarRect(controlRect);
             offsetX = grooveRect.X + (grooveRect.Width - targetWidth) / 2;
             var range = grooveRect.Height;
             var deflateValue = range * (1 - Value / (Maximum - Minimum));
@@ -364,19 +365,19 @@ public partial class ProgressBar : AbstractLineProgress
             }
          } else {
             if (PercentPosition.Alignment == LinePercentAlignment.Start) {
-               offsetX = (contentRect.Width - targetWidth) / 2;
+               offsetX = (controlRect.Width - targetWidth) / 2;
                offsetY = 0;
             } else if (PercentPosition.Alignment == LinePercentAlignment.Center) {
-               offsetX = contentRect.Right - targetWidth;
-               offsetY = (contentRect.Height - targetHeight) / 2;
+               offsetX = controlRect.Right - targetWidth;
+               offsetY = (controlRect.Height - targetHeight) / 2;
             } else if (PercentPosition.Alignment == LinePercentAlignment.End) {
-               offsetX = (contentRect.Width - targetWidth) / 2;
-               offsetY = contentRect.Bottom - targetHeight;
+               offsetX = (controlRect.Width - targetWidth) / 2;
+               offsetY = controlRect.Bottom - targetHeight;
             }
          }
       }
 
-      return new Rect(new Point(offsetX, offsetY), extraInfoSize);
+      return new Rect(new Point(offsetX, offsetY), _extraInfoSize);
    }
    
    protected override Size CalculateExtraInfoSize(double fontSize)
@@ -409,48 +410,6 @@ public partial class ProgressBar : AbstractLineProgress
    {
       base.NotifyOrientationChanged();
       CalculateMinBarThickness();
-      HandlePercentPositionChanged();
-   }
-
-   // TODO 当时 inner 的时候要选中 label 的渲染坐标系
-   private void HandlePercentPositionChanged()
-   {
-      if (ShowProgressInfo) {
-         if (Orientation == Orientation.Horizontal) {
-            if (!PercentPosition.IsInner) {
-               if (PercentPosition.Alignment == LinePercentAlignment.Start) {
-                  _percentageLabel!.HorizontalAlignment = HorizontalAlignment.Right;
-                  _exceptionCompletedIcon!.HorizontalAlignment = HorizontalAlignment.Right;
-                  _successCompletedIcon!.HorizontalAlignment = HorizontalAlignment.Right;
-                  _successCompletedIcon!.HorizontalAlignment = HorizontalAlignment.Right;
-               } else if (PercentPosition.Alignment == LinePercentAlignment.End) {
-                  _percentageLabel!.HorizontalAlignment = HorizontalAlignment.Left;
-                  _exceptionCompletedIcon!.HorizontalAlignment = HorizontalAlignment.Left;
-                  _successCompletedIcon!.HorizontalAlignment = HorizontalAlignment.Left;
-               } else {
-                  _percentageLabel!.HorizontalAlignment = HorizontalAlignment.Center;
-                  _exceptionCompletedIcon!.HorizontalAlignment = HorizontalAlignment.Center;
-                  _successCompletedIcon!.HorizontalAlignment = HorizontalAlignment.Center;
-               }
-            }
-         } else {
-            if (!PercentPosition.IsInner) {
-               if (PercentPosition.Alignment == LinePercentAlignment.Start) {
-                  _percentageLabel!.VerticalAlignment = VerticalAlignment.Bottom;
-                  _exceptionCompletedIcon!.VerticalAlignment = VerticalAlignment.Bottom;
-                  _successCompletedIcon!.VerticalAlignment = VerticalAlignment.Bottom;
-               } else if (PercentPosition.Alignment == LinePercentAlignment.End) {
-                  _percentageLabel!.VerticalAlignment = VerticalAlignment.Top;
-                  _exceptionCompletedIcon!.VerticalAlignment = VerticalAlignment.Top;
-                  _successCompletedIcon!.VerticalAlignment = VerticalAlignment.Top;
-               } else {
-                  _percentageLabel!.VerticalAlignment = VerticalAlignment.Center;
-                  _exceptionCompletedIcon!.VerticalAlignment = VerticalAlignment.Center;
-                  _successCompletedIcon!.VerticalAlignment = VerticalAlignment.Center;
-               }
-            }
-         }
-      }
    }
 
    protected override void NotifyPropertyChanged(AvaloniaPropertyChangedEventArgs e)
@@ -459,11 +418,11 @@ public partial class ProgressBar : AbstractLineProgress
       if (_initialized) {
          if (e.Property == IndicatorBarBrushProperty) {
             SetupPercentLabelForegroundBrush();
-         } else if (e.Property == PercentPositionProperty) {
-            HandlePercentPositionChanged();
-         } else if (e.Property == PercentPositionProperty) {
-            SetupRenderRotate();
          }
+      }
+
+      if (e.Property == PercentPositionProperty) {
+         UpdatePseudoClasses();
       }
    }
 
@@ -487,24 +446,6 @@ public partial class ProgressBar : AbstractLineProgress
    {
       base.NotifyUiStructureReady();
       SetupPercentLabelForegroundBrush();
-      SetupRenderRotate();
-   }
-
-   private void SetupRenderRotate()
-   {
-      if (ShowProgressInfo && PercentPosition.IsInner && Orientation == Orientation.Vertical) {
-         _percentageLabel!.RenderTransform = new RotateTransform()
-         {
-            Angle = 90
-         };
-         _percentageLabel!.RenderTransformOrigin = RelativePoint.Center;
-         _percentageLabel!.Width = _extraInfoSize.Height;
-         _percentageLabel!.Height = _extraInfoSize.Width;
-      } else {
-         _percentageLabel!.Width = double.NaN;
-         _percentageLabel!.Height = double.NaN;
-         _percentageLabel!.RenderTransform = null;
-      }
    }
 
    private void SetupPercentLabelForegroundBrush()
@@ -534,14 +475,9 @@ public partial class ProgressBar : AbstractLineProgress
          }
       }
    }
-
-   protected override void NotifyHandleExtraInfoVisibility()
+   
+   private void UpdatePseudoClasses()
    {
-      base.NotifyHandleExtraInfoVisibility();
-      if (PercentPosition.IsInner) {
-         _exceptionCompletedIcon!.IsVisible = false;
-         _successCompletedIcon!.IsVisible = false;
-         _percentageLabel!.IsVisible = true;
-      }
+      PseudoClasses.Set(PercentLabelInnerPC, PercentPosition.IsInner);
    }
 }
