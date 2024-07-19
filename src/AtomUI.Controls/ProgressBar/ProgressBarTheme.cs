@@ -81,7 +81,7 @@ public class ProgressBarTheme : AbstractLineProgressTheme
             notInnerStartStyle.Add(icons);
          }
          
-         horizontalStyle.Add(notInnerStartStyle);
+         verticalStyle.Add(notInnerStartStyle);
          
          var notInnerEndStyle = new Style(selector => selector.Nesting().PropertyEquals(ProgressBar.PercentPositionProperty, new PercentPosition()
          {
@@ -93,7 +93,7 @@ public class ProgressBarTheme : AbstractLineProgressTheme
             icons.Add(PathIcon.VerticalAlignmentProperty, VerticalAlignment.Top);
             notInnerEndStyle.Add(icons);
          }
-         horizontalStyle.Add(notInnerEndStyle);
+         verticalStyle.Add(notInnerEndStyle);
          
          var notInnerCenterStyle = new Style(selector => selector.Nesting().PropertyEquals(ProgressBar.PercentPositionProperty, new PercentPosition()
          {
@@ -105,9 +105,10 @@ public class ProgressBarTheme : AbstractLineProgressTheme
             icons.Add(PathIcon.VerticalAlignmentProperty, VerticalAlignment.Center);
             notInnerCenterStyle.Add(icons);
          }
-         horizontalStyle.Add(notInnerCenterStyle);
+         verticalStyle.Add(notInnerCenterStyle);
       }
       showProgressInfoStyle.Add(verticalStyle);
+      Add(showProgressInfoStyle);
    }
 
    // 如果是 Inner 模式，成功状态下不显示成功 icon

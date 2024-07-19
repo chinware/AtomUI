@@ -1,5 +1,6 @@
 using AtomUI.Utils;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Layout;
 using Avalonia.Media;
 
@@ -62,15 +63,6 @@ public class StepsProgressBar : AbstractLineProgress
       AffectsMeasure<StepsProgressBar>(StepsProperty, ChunkWidthProperty, ChunkHeightProperty);
       AffectsArrange<StepsProgressBar>(PercentPositionProperty);
       AffectsRender<StepsProgressBar>(StepsStrokeBrushProperty);
-   }
-
-   protected override void SetupAlignment()
-   {
-      if (Orientation == Orientation.Horizontal) {
-         HorizontalAlignment = HorizontalAlignment.Left;
-      } else {
-         VerticalAlignment = VerticalAlignment.Top;
-      }
    }
 
    protected override void RenderGroove(DrawingContext context)
@@ -246,52 +238,11 @@ public class StepsProgressBar : AbstractLineProgress
    {
       base.NotifyOrientationChanged();
       CalculateMinBarThickness();
-      HandlePercentPositionChanged();
    }
    
-    // TODO 当时 inner 的时候要选中 label 的渲染坐标系
-   private void HandlePercentPositionChanged()
-   {
-      if (ShowProgressInfo) {
-         if (Orientation == Orientation.Horizontal) {
-            if (PercentPosition == LinePercentAlignment.Start) {
-               _percentageLabel!.HorizontalAlignment = HorizontalAlignment.Right;
-               _exceptionCompletedIcon!.HorizontalAlignment = HorizontalAlignment.Right;
-               _successCompletedIcon!.HorizontalAlignment = HorizontalAlignment.Right;
-            } else if (PercentPosition == LinePercentAlignment.End) {
-               _percentageLabel!.HorizontalAlignment = HorizontalAlignment.Left;
-               _exceptionCompletedIcon!.HorizontalAlignment = HorizontalAlignment.Left;
-               _successCompletedIcon!.HorizontalAlignment = HorizontalAlignment.Left;
-            } else {
-               _percentageLabel!.HorizontalAlignment = HorizontalAlignment.Center;
-               _exceptionCompletedIcon!.HorizontalAlignment = HorizontalAlignment.Center;
-               _successCompletedIcon!.HorizontalAlignment = HorizontalAlignment.Center;
-            }
-         } else {
-            if (PercentPosition == LinePercentAlignment.Start) {
-               _percentageLabel!.VerticalAlignment = VerticalAlignment.Bottom;
-               _exceptionCompletedIcon!.VerticalAlignment = VerticalAlignment.Bottom;
-               _successCompletedIcon!.VerticalAlignment = VerticalAlignment.Bottom;
-            } else if (PercentPosition == LinePercentAlignment.End) {
-               _percentageLabel!.VerticalAlignment = VerticalAlignment.Top;
-               _exceptionCompletedIcon!.VerticalAlignment = VerticalAlignment.Top;
-               _successCompletedIcon!.VerticalAlignment = VerticalAlignment.Top;
-            } else {
-               _percentageLabel!.VerticalAlignment = VerticalAlignment.Center;
-               _exceptionCompletedIcon!.VerticalAlignment = VerticalAlignment.Center;
-               _successCompletedIcon!.VerticalAlignment = VerticalAlignment.Center;
-            }
-         }
-      }
-   }
    protected override void NotifyPropertyChanged(AvaloniaPropertyChangedEventArgs e)
    {
       base.NotifyPropertyChanged(e);
-      if (_initialized) {
-         if (e.Property == PercentPositionProperty) {
-            HandlePercentPositionChanged();
-         }
-      }
       if (e.Property == ChunkHeightProperty) {
          IndicatorThickness = e.GetNewValue<double>();
       } else if (e.Property == IndicatorThicknessProperty) {
@@ -301,12 +252,9 @@ public class StepsProgressBar : AbstractLineProgress
 
    protected override Size MeasureOverride(Size availableSize)
    {
+      base.MeasureOverride(availableSize);
       double targetWidth = 0;
       double targetHeight = 0;
-      if (ShowProgressInfo) {
-         _percentageLabel!.Measure(availableSize);
-         // 其他两个 Icon 都是固定的
-      }
       
       if (Orientation == Orientation.Horizontal) {
          var chunkWidth = GetChunkWidth();
@@ -340,20 +288,23 @@ public class StepsProgressBar : AbstractLineProgress
    protected override Size ArrangeOverride(Size finalSize)
    {
       if (ShowProgressInfo) {
-         var extraInfoRect = GetExtraInfoRect(new Rect(new Point(0, 0), DesiredSize));
-         if (_percentageLabel!.IsVisible) {
-            _percentageLabel.Arrange(extraInfoRect);
+         var extraInfoRect = GetExtraInfoRect(new Rect(new Point(0, 0), finalSize));
+         if (_layoutTransformLabel is not null) {
+            Canvas.SetTop(_layoutTransformLabel, extraInfoRect.Top);
+            Canvas.SetLeft(_layoutTransformLabel, extraInfoRect.Left);
          }
 
-         if (_successCompletedIcon != null && _successCompletedIcon.IsVisible) {
-            _successCompletedIcon.Arrange(extraInfoRect);
+         if (_successCompletedIcon is not null) {
+            Canvas.SetLeft(_successCompletedIcon, extraInfoRect.Left);
+            Canvas.SetTop(_successCompletedIcon, extraInfoRect.Top);
          }
-         if (_exceptionCompletedIcon != null && _exceptionCompletedIcon.IsVisible) {
-            _exceptionCompletedIcon.Arrange(extraInfoRect);
+         if (_exceptionCompletedIcon is not null) {
+            Canvas.SetLeft(_exceptionCompletedIcon, extraInfoRect.Left);
+            Canvas.SetTop(_exceptionCompletedIcon, extraInfoRect.Top);
          }
       }
       
-      return finalSize;
+      return base.ArrangeOverride(finalSize);;
    }
 
    private double GetChunkWidth()

@@ -244,20 +244,20 @@
         <!--     </StackPanel> -->
         <!-- </showcase:ShowCaseItem> -->
         
-        <!-- <showcase:ShowCaseItem -->
-        <!--     Title="Change progress value position for StepsProgressBar" -->
-        <!--     Description="Change the position of the progress value, you can use percentPosition to adjust it so that the progress bar value is inside, outside or at the bottom of the progress bar."> -->
-        <!--     <StackPanel Orientation="Vertical" Spacing="10"> -->
-        <!--         <atom:StepsProgressBar Value="100" Minimum="0" Maximum="100" Steps="8" PercentPosition="Start"/> -->
-        <!--         <atom:StepsProgressBar Value="100" Minimum="0" Maximum="100" Steps="8" PercentPosition="Center"/> -->
-        <!--         <atom:StepsProgressBar Value="60" Minimum="0" Maximum="100" Steps="8" PercentPosition="Center" SizeType="Middle"/> -->
-        <!--         <atom:StepsProgressBar Value="60" Minimum="0" Maximum="100" Steps="8" PercentPosition="Center" SizeType="Small"/> -->
-        <!--         <atom:StepsProgressBar Value="55" Minimum="0" Maximum="100" Steps="8" PercentPosition="Center"/> -->
-        <!--         <atom:StepsProgressBar Value="100" Minimum="0" Maximum="100" Steps="8" PercentPosition="End"/> -->
-        <!--         <atom:StepsProgressBar Value="55" Minimum="0" Maximum="100" Steps="8" PercentPosition="End" Status="Exception"/> -->
-        <!--         <atom:StepsProgressBar Value="99" Minimum="0" Maximum="100" Steps="8" PercentPosition="Start"/> -->
-        <!--     </StackPanel> -->
-        <!-- </showcase:ShowCaseItem> -->
+        <showcase:ShowCaseItem
+            Title="Change progress value position for StepsProgressBar"
+            Description="Change the position of the progress value, you can use percentPosition to adjust it so that the progress bar value is inside, outside or at the bottom of the progress bar.">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:StepsProgressBar Value="100" Minimum="0" Maximum="100" Steps="8" PercentPosition="Start"/>
+                <atom:StepsProgressBar Value="100" Minimum="0" Maximum="100" Steps="8" PercentPosition="Center"/>
+                <atom:StepsProgressBar Value="60" Minimum="0" Maximum="100" Steps="8" PercentPosition="Center" SizeType="Middle"/>
+                <atom:StepsProgressBar Value="60" Minimum="0" Maximum="100" Steps="8" PercentPosition="Center" SizeType="Small"/>
+                <atom:StepsProgressBar Value="55" Minimum="0" Maximum="100" Steps="8" PercentPosition="Center"/>
+                <atom:StepsProgressBar Value="100" Minimum="0" Maximum="100" Steps="8" PercentPosition="End"/>
+                <atom:StepsProgressBar Value="55" Minimum="0" Maximum="100" Steps="8" PercentPosition="End" Status="Exception"/>
+                <atom:StepsProgressBar Value="99" Minimum="0" Maximum="100" Steps="8" PercentPosition="Start"/>
+            </StackPanel>
+        </showcase:ShowCaseItem>
         <!-- -->
         <!-- <showcase:ShowCaseItem -->
         <!--     Title="Vertical progress bar" -->
@@ -277,19 +277,19 @@
         <!--     </StackPanel> -->
         <!-- </showcase:ShowCaseItem> -->
         <!-- -->
-        <!-- <showcase:ShowCaseItem -->
-        <!--     Title="Vertical progress bar" -->
-        <!--     Description="Ordinary step progress bar, supports position specification of additional areas"> -->
-        <!--     <StackPanel Orientation="Horizontal" Spacing="10" Height="300"> -->
-        <!--         <atom:StepsProgressBar Value="100" Minimum="0" Maximum="100" Steps="10" Orientation="Vertical" PercentPosition="End"/> -->
-        <!--         <atom:StepsProgressBar Value="55" Minimum="0" Maximum="100" Steps="5" Orientation="Vertical"/> -->
-        <!--         <atom:StepsProgressBar Value="55" Minimum="0" Maximum="100" Steps="10" Orientation="Vertical" SizeType="Small"/> -->
-        <!--         <atom:StepsProgressBar Value="55" Minimum="0" Maximum="100" Steps="6" Orientation="Vertical" PercentPosition="Start"/> -->
-        <!--         <atom:StepsProgressBar Value="55" Minimum="0" Maximum="100" Steps="6"  Orientation="Vertical" PercentPosition="Center"/> -->
-        <!--         <atom:StepsProgressBar Value="100" Minimum="0" Maximum="100" Steps="6" Orientation="Vertical" PercentPosition="Start"/> -->
-        <!--     </StackPanel> -->
-        <!-- </showcase:ShowCaseItem> -->
-        <!-- -->
+        <showcase:ShowCaseItem
+            Title="Vertical progress bar"
+            Description="Ordinary step progress bar, supports position specification of additional areas">
+            <StackPanel Orientation="Horizontal" Spacing="10" Height="300">
+                <atom:StepsProgressBar Value="100" Minimum="0" Maximum="100" Steps="10" Orientation="Vertical" PercentPosition="End"/>
+                <atom:StepsProgressBar Value="55" Minimum="0" Maximum="100" Steps="5" Orientation="Vertical"/>
+                <atom:StepsProgressBar Value="55" Minimum="0" Maximum="100" Steps="10" Orientation="Vertical" SizeType="Small"/>
+                <atom:StepsProgressBar Value="55" Minimum="0" Maximum="100" Steps="6" Orientation="Vertical" PercentPosition="Start"/>
+                <atom:StepsProgressBar Value="55" Minimum="0" Maximum="100" Steps="6"  Orientation="Vertical" PercentPosition="Center"/>
+                <atom:StepsProgressBar Value="100" Minimum="0" Maximum="100" Steps="6" Orientation="Vertical" PercentPosition="Start"/>
+            </StackPanel>
+        </showcase:ShowCaseItem>
+        
         <showcase:ShowCaseItem
             Title="Vertical progress bar"
             Description="Ordinary step progress bar, supports position specification of additional areas">
