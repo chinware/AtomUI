@@ -9,7 +9,7 @@ public class CircleProgress : AbstractCircleProgress
    private Rect _currentGrooveRect;
    protected override void RenderGroove(DrawingContext context)
    {
-      var controlRect = new Rect(new Point(0, 0), DesiredSize); 
+      var controlRect = new Rect(new Point(0, 0), Bounds.Size); 
      
       _currentGrooveRect = GetProgressBarRect(controlRect).Deflate(StrokeThickness / 2);
       _currentGrooveRect = new Rect(_currentGrooveRect.Position, new Size(Math.Floor(_currentGrooveRect.Size.Width), 

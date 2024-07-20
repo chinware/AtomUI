@@ -67,7 +67,7 @@ public class StepsProgressBar : AbstractLineProgress
 
    protected override void RenderGroove(DrawingContext context)
    {
-      _grooveRect = GetProgressBarRect(new Rect(new Point(0, 0), DesiredSize));
+      _grooveRect = GetProgressBarRect(new Rect(new Point(0, 0), Bounds.Size));
   
       if (Orientation == Orientation.Horizontal) {
          var chunkWidth = GetChunkWidth();
@@ -343,7 +343,6 @@ public class StepsProgressBar : AbstractLineProgress
       double deflateRight = 0;
       double deflateBottom = 0;
       var strokeThickness = StrokeThickness;
-      var contentRect = new Rect(new Point(0, 0), controlRect.Size.Deflate(Margin));
       if (Orientation == Orientation.Horizontal) {
          if (ShowProgressInfo) {
             var percentLabelWidth = _extraInfoSize.Width;
@@ -370,7 +369,7 @@ public class StepsProgressBar : AbstractLineProgress
          }
       }
 
-      var deflatedControlRect = contentRect.Deflate(new Thickness(deflateLeft, deflateTop, deflateRight, deflateBottom));
+      var deflatedControlRect = controlRect.Deflate(new Thickness(deflateLeft, deflateTop, deflateRight, deflateBottom));
       if (Orientation == Orientation.Horizontal) {
          return new Rect(new Point(deflatedControlRect.X, (deflatedControlRect.Height - strokeThickness) / 2), new Size(deflatedControlRect.Width, strokeThickness));
       }
@@ -379,7 +378,6 @@ public class StepsProgressBar : AbstractLineProgress
 
    protected override Rect GetExtraInfoRect(Rect controlRect)
    {
-      var contentRect = new Rect(new Point(0, 0), controlRect.Size.Deflate(Margin));
       double offsetX = 0;
       double offsetY = 0;
       double targetWidth = 0;
@@ -393,26 +391,26 @@ public class StepsProgressBar : AbstractLineProgress
          if (ShowProgressInfo) {
             if (PercentPosition == LinePercentAlignment.Start) {
                offsetX = 0;
-               offsetY = (contentRect.Height - targetHeight) / 2;
+               offsetY = (controlRect.Height - targetHeight) / 2;
             } else if (PercentPosition == LinePercentAlignment.Center) {
-               offsetX = (contentRect.Width - targetWidth) / 2;
-               offsetY = contentRect.Bottom - targetHeight;
+               offsetX = (controlRect.Width - targetWidth) / 2;
+               offsetY = controlRect.Bottom - targetHeight;
             } else if (PercentPosition == LinePercentAlignment.End) {
-               offsetX = (contentRect.Right - targetWidth);
-               offsetY = (contentRect.Height - targetHeight) / 2;
+               offsetX = (controlRect.Right - targetWidth);
+               offsetY = (controlRect.Height - targetHeight) / 2;
             }
          }
       } else {
          if (ShowProgressInfo) {
             if (PercentPosition == LinePercentAlignment.Start) {
-               offsetX = (contentRect.Width - targetWidth) / 2;
+               offsetX = (controlRect.Width - targetWidth) / 2;
                offsetY = 0;
             } else if (PercentPosition == LinePercentAlignment.Center) {
-               offsetX = contentRect.Right - targetWidth;
-               offsetY = (contentRect.Height - targetHeight) / 2;
+               offsetX = controlRect.Right - targetWidth;
+               offsetY = (controlRect.Height - targetHeight) / 2;
             } else if (PercentPosition == LinePercentAlignment.End) {
-               offsetX = (contentRect.Width - targetWidth) / 2;
-               offsetY = contentRect.Bottom - targetHeight;
+               offsetX = (controlRect.Width - targetWidth) / 2;
+               offsetY = controlRect.Bottom - targetHeight;
             }
          }
       }

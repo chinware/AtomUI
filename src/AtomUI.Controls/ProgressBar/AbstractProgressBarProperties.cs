@@ -8,11 +8,38 @@ public partial class AbstractProgressBar
    // 内部动画属性
    internal static readonly StyledProperty<IBrush?> GrooveBrushProperty =
       AvaloniaProperty.Register<AbstractProgressBar, IBrush?>(nameof(GrooveBrush));
+   
+   internal static readonly StyledProperty<bool> PercentLabelVisibleProperty = 
+      AvaloniaProperty.Register<ProgressBar, bool>(nameof(PercentLabelVisible), true);
+   
+   internal static readonly StyledProperty<bool> StatusIconVisibleProperty = 
+      AvaloniaProperty.Register<ProgressBar, bool>(nameof(StatusIconVisible), true);
+   
+   internal static readonly StyledProperty<bool> IsCompletedProperty = 
+      AvaloniaProperty.Register<ProgressBar, bool>(nameof(IsCompleted), false);
 
    internal IBrush? GrooveBrush
    {
       get => GetValue(GrooveBrushProperty);
       set => SetValue(GrooveBrushProperty, value);
+   }
+   
+   internal bool PercentLabelVisible
+   {
+      get => GetValue(PercentLabelVisibleProperty);
+      set => SetValue(PercentLabelVisibleProperty, value);
+   }
+   
+   internal bool StatusIconVisible
+   {
+      get => GetValue(StatusIconVisibleProperty);
+      set => SetValue(StatusIconVisibleProperty, value);
+   }
+   
+   internal bool IsCompleted
+   {
+      get => GetValue(IsCompletedProperty);
+      set => SetValue(IsCompletedProperty, value);
    }
    
    // 获取 Token 值属性开始

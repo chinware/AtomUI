@@ -1,4 +1,5 @@
-﻿using AtomUI.Styling;
+﻿using AtomUI.Icon;
+using AtomUI.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
@@ -10,7 +11,6 @@ namespace AtomUI.Controls;
 
 public class AbstractProgressBarTheme : ControlTheme
 {
-   public const string MainContainerPart = "PART_MainContainer";
    public const string PercentageLabelPart = "PART_PercentageLabel";
    public const string SuccessCompletedIconPart = "PART_SuccessCompletedIcon";
    public const string ExceptionCompletedIconPart = "PART_ExceptionCompletedIcon";
@@ -22,11 +22,7 @@ public class AbstractProgressBarTheme : ControlTheme
    {
       return new FuncControlTemplate<AbstractProgressBar>((bar, scope) =>
       {
-         var mainContainer = new Canvas()
-         {
-            Name = MainContainerPart
-         };
-         mainContainer.RegisterInNameScope(scope);
+         var mainContainer = new Canvas();
          NotifyBuildControlTemplate(bar, scope, mainContainer);
          return mainContainer;
       });
@@ -55,21 +51,21 @@ public class AbstractProgressBarTheme : ControlTheme
    protected override void BuildStyles()
    {
       base.BuildStyles();
-      var enabledStyle = new Style(selector => selector.Nesting().PropertyEquals(AbstractProgressBar.IsEnabledProperty, true));
-      BuildCommonStyle(enabledStyle);
-      BuildStatusStyle(enabledStyle);
-      BuildInfoLabelStyle(enabledStyle);
-      Add(enabledStyle);
+      BuildCommonStyle();
+      BuildInfoLabelStyle();
+      BuildStatusStyle();
       BuildDisabledStyle();
    }
 
-   private void BuildCommonStyle(Style enabledStyle)
+   private void BuildCommonStyle()
    {
+      var enabledStyle = new Style(selector => selector.Nesting().PropertyEquals(AbstractProgressBar.IsEnabledProperty, true));
       enabledStyle.Add(AbstractProgressBar.ForegroundProperty, GlobalResourceKey.ColorTextLabel);
       enabledStyle.Add(AbstractProgressBar.GrooveBrushProperty, ProgressBarResourceKey.RemainingColor);
+      Add(enabledStyle);
    }
 
-   private void BuildStatusStyle(Style enabledStyle)
+   private void BuildStatusStyle()
    {
       // 异常状态
       var exceptionStatusStyle = new Style(selector => selector.Nesting().PropertyEquals(AbstractProgressBar.StatusProperty, ProgressStatus.Exception));
@@ -112,17 +108,18 @@ public class AbstractProgressBarTheme : ControlTheme
       Add(successStatusStyle);
       
       // 正常状态
-      var normalStatusStyle = new Style(selector => selector.Nesting().PropertyEquals(AbstractProgressBar.StatusProperty, ProgressStatus.Normal));
+      var normalOrActiveStatusStyle = new Style(selector => Selectors.Or(selector.Nesting().PropertyEquals(AbstractProgressBar.StatusProperty, ProgressStatus.Normal),
+                                                                         selector.Nesting().PropertyEquals(AbstractProgressBar.StatusProperty, ProgressStatus.Active)));
       {
          {
             var exceptionIconStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>().Name(ExceptionCompletedIconPart));
             exceptionIconStyle.Add(PathIcon.IsVisibleProperty, false);
-            normalStatusStyle.Add(exceptionIconStyle);
+            normalOrActiveStatusStyle.Add(exceptionIconStyle);
          }
          {
             var successIconStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>().Name(SuccessCompletedIconPart));
             successIconStyle.Add(PathIcon.IsVisibleProperty, false);
-            normalStatusStyle.Add(successIconStyle);
+            normalOrActiveStatusStyle.Add(successIconStyle);
          }
          {
             var completedStyle = new Style(selector => selector.Nesting().Class(AbstractProgressBar.CompletedPC));
@@ -130,21 +127,21 @@ public class AbstractProgressBarTheme : ControlTheme
             var successIconStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>().Name(SuccessCompletedIconPart));
             successIconStyle.Add(PathIcon.IsVisibleProperty, true);
             completedStyle.Add(successIconStyle);
-            normalStatusStyle.Add(completedStyle);
+            normalOrActiveStatusStyle.Add(completedStyle);
          }
          
-         normalStatusStyle.Add(AbstractProgressBar.IndicatorBarBrushProperty, ProgressBarResourceKey.DefaultColor);
+         normalOrActiveStatusStyle.Add(AbstractProgressBar.IndicatorBarBrushProperty, ProgressBarResourceKey.DefaultColor);
       }
-      enabledStyle.Add(normalStatusStyle);
+      Add(normalOrActiveStatusStyle);
    }
 
-   private void BuildInfoLabelStyle(Style enabledStyle)
+   private void BuildInfoLabelStyle()
    {
       var completedStyle = new Style(selector => selector.Nesting().Class(AbstractProgressBar.CompletedPC));
       var infoLabelStyle = new Style(selector => selector.Nesting().Template().OfType<LayoutTransformControl>());
       infoLabelStyle.Add(LayoutTransformControl.IsVisibleProperty, false);
       completedStyle.Add(infoLabelStyle);
-      enabledStyle.Add(completedStyle);
+      Add(completedStyle);
    }
 
    private void BuildDisabledStyle()
@@ -153,6 +150,9 @@ public class AbstractProgressBarTheme : ControlTheme
       disableStyle.Add(AbstractProgressBar.GrooveBrushProperty, GlobalResourceKey.ColorBgContainerDisabled);
       disableStyle.Add(AbstractProgressBar.IndicatorBarBrushProperty, GlobalResourceKey.ControlItemBgActiveDisabled);
       disableStyle.Add(AbstractProgressBar.ForegroundProperty, GlobalResourceKey.ColorTextDisabled);
+      var statusIconStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
+      statusIconStyle.Add(PathIcon.IconModeProperty, IconMode.Disabled);
+      disableStyle.Add(statusIconStyle);
       Add(disableStyle);
    }
 }

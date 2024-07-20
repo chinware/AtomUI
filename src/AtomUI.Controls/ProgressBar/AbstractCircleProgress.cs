@@ -2,6 +2,7 @@ using AtomUI.Media;
 using AtomUI.Styling;
 using AtomUI.Utils;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Layout;
 using Math = System.Math;
 
@@ -68,13 +69,6 @@ public abstract partial class AbstractCircleProgress : AbstractProgressBar
       CalculateSizeTypeThresholdValue();
       base.NotifySetupUi();
    }
-   
-   protected override void NotifyUiStructureReady()
-   {
-      base.NotifyUiStructureReady();
-      _percentageLabel!.HorizontalAlignment = HorizontalAlignment.Center;
-      _percentageLabel!.VerticalAlignment = VerticalAlignment.Center;
-   }
 
    private void CalculateSizeTypeThresholdValue()
    {
@@ -86,6 +80,7 @@ public abstract partial class AbstractCircleProgress : AbstractProgressBar
    // 是否考虑一个最小的值
    protected override Size MeasureOverride(Size availableSize)
    {
+      base.MeasureOverride(availableSize);
       var targetSize = CalculateCircleSize();
       if (!double.IsInfinity(availableSize.Width) && !double.IsInfinity(availableSize.Height)) {
          var minSize = Math.Min(availableSize.Width, availableSize.Height);
@@ -101,10 +96,7 @@ public abstract partial class AbstractCircleProgress : AbstractProgressBar
             targetSize = availableSize.Height;
          }
       }
-
-      if (ShowProgressInfo) {
-         _percentageLabel!.Measure(availableSize);
-      }
+      
       return new Size(targetSize, targetSize);
    }
 
@@ -137,36 +129,42 @@ public abstract partial class AbstractCircleProgress : AbstractProgressBar
       CalculateStrokeThickness();
       var extraInfoSize = circleSize - StrokeThickness - 1; // 写死一个像素的 padding 吧
       var extraInfo = TextUtils.CalculateTextSize(string.Format(ProgressTextFormat, 100), FontFamily, FontSize);
-      if (_percentageLabel!.IsVisible) {
+      
+      // 这三个是不可能同时满足的
+      if (_layoutTransformLabel is not null) {
          if (extraInfo.Width > extraInfoSize || extraInfo.Height > extraInfoSize) {
-            _percentageLabel!.IsVisible = false;
+            PercentLabelVisible = false;
+         } else {
+            PercentLabelVisible = true;
          }
       }
 
-      if (_exceptionCompletedIcon!.IsVisible) {
-         var exceptionIconWidth = _exceptionCompletedIcon!.Width;
-         var exceptionIconHeight = _exceptionCompletedIcon!.Height;
+      if (_exceptionCompletedIcon is not null) {
+         var exceptionIconWidth = _exceptionCompletedIcon.Width;
+         var exceptionIconHeight = _exceptionCompletedIcon.Height;
          if (exceptionIconWidth > extraInfoSize || exceptionIconHeight > extraInfoSize) {
-            _exceptionCompletedIcon!.IsVisible = false;
+            StatusIconVisible = false;
+         } else {
+            StatusIconVisible = true;
          }
       }
 
-      if (_successCompletedIcon!.IsVisible) {
-         var successIconWidth = _successCompletedIcon!.Width;
-         var successIconHeight = _successCompletedIcon!.Height;
+      if (_successCompletedIcon is not null) {
+         var successIconWidth = _successCompletedIcon.Width;
+         var successIconHeight = _successCompletedIcon.Height;
          if (successIconWidth > extraInfoSize || successIconHeight > extraInfoSize) {
-            _successCompletedIcon!.IsVisible = false;
+            StatusIconVisible = false;
+         } else {
+            StatusIconVisible = true;
          }
       }
-
    }
    
    protected override void NotifyPropertyChanged(AvaloniaPropertyChangedEventArgs e)
    {
       base.NotifyPropertyChanged(e);
      
-      if (e.Property == WidthProperty || 
-          e.Property == HeightProperty) {
+      if (e.Property == WidthProperty || e.Property == HeightProperty) {
          if (_initialized) {
             CalculateStrokeThickness();
             SetupExtraInfoFontSize();
@@ -179,8 +177,8 @@ public abstract partial class AbstractCircleProgress : AbstractProgressBar
    {
       var circleSize = CalculateCircleSize();
       double fontSize = circleSize * 0.15 + 6;
-      if (fontSize < _circleMinimumTextFontSize) {
-         fontSize = _circleMinimumTextFontSize;
+      if (fontSize < _circleMinimumTextFontSizeToken) {
+         fontSize = _circleMinimumTextFontSizeToken;
       }
       FontSize = fontSize;
    }
@@ -188,7 +186,7 @@ public abstract partial class AbstractCircleProgress : AbstractProgressBar
    private void SetupExtraInfoIconSize()
    {
       var circleSize = CalculateCircleSize();
-      var calculatedSize = Math.Max(circleSize / 4.5, _circleMinimumIconSize);
+      var calculatedSize = Math.Max(circleSize / 4.5, _circleMinimumIconSizeToken);
       _exceptionCompletedIcon!.Width = calculatedSize;
       _exceptionCompletedIcon!.Height = calculatedSize;
       
@@ -199,24 +197,38 @@ public abstract partial class AbstractCircleProgress : AbstractProgressBar
    protected override Size ArrangeOverride(Size finalSize)
    {
       if (ShowProgressInfo) {
-         var extraInfoRect = GetExtraInfoRect(new Rect(new Point(0, 0), DesiredSize));
-         if (_percentageLabel!.IsVisible) {
-            _percentageLabel.Arrange(extraInfoRect);
+         var extraInfoRect = GetExtraInfoRect(new Rect(new Point(0, 0), finalSize));
+         var extraInfoPos = extraInfoRect.Position;
+         if (_layoutTransformLabel is not null) {
+            var labelSize = _layoutTransformLabel.DesiredSize;
+            var offsetX = (extraInfoRect.Width - labelSize.Width) / 2;
+            var offsetY = (extraInfoRect.Height - labelSize.Height) / 2;
+            Canvas.SetLeft(_layoutTransformLabel, extraInfoPos.X + offsetX);
+            Canvas.SetTop(_layoutTransformLabel, extraInfoPos.Y + offsetY);
          }
-
-         if (_successCompletedIcon != null && _successCompletedIcon.IsVisible) {
-            _successCompletedIcon.Arrange(extraInfoRect);
+         
+         if (_successCompletedIcon is not null) {
+            var size = _successCompletedIcon.DesiredSize;
+            var offsetX = (extraInfoRect.Width - size.Width) / 2;
+            var offsetY = (extraInfoRect.Height - size.Height) / 2;
+            Canvas.SetLeft(_successCompletedIcon, extraInfoPos.X + offsetX);
+            Canvas.SetTop(_successCompletedIcon, extraInfoPos.Y + offsetY);
          }
-         if (_exceptionCompletedIcon != null && _exceptionCompletedIcon.IsVisible) {
-            _exceptionCompletedIcon.Arrange(extraInfoRect);
+         
+         if (_exceptionCompletedIcon is not null) {
+            var size = _exceptionCompletedIcon.DesiredSize;
+            var offsetX = (extraInfoRect.Width - size.Width) / 2;
+            var offsetY = (extraInfoRect.Height - size.Height) / 2;
+            Canvas.SetLeft(_exceptionCompletedIcon, extraInfoPos.X + offsetX);
+            Canvas.SetTop(_exceptionCompletedIcon, extraInfoPos.Y + offsetY);
          }
       }
-      return finalSize;
+      return base.ArrangeOverride(finalSize);;
    }
 
    protected override Rect GetProgressBarRect(Rect controlRect)
    {
-      return new Rect(new Point(0, 0), controlRect.Size.Deflate(Margin));
+      return new Rect(new Point(0, 0), controlRect.Size);
    }
 
    protected override Rect GetExtraInfoRect(Rect controlRect)

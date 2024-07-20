@@ -208,7 +208,6 @@ public abstract partial class AbstractProgressBar : RangeBase,
    protected Label? _percentageLabel;
    protected PathIcon? _successCompletedIcon;
    protected PathIcon? _exceptionCompletedIcon;
-   protected Canvas? _mainContainer;
 
    static AbstractProgressBar()
    {
@@ -285,7 +284,6 @@ public abstract partial class AbstractProgressBar : RangeBase,
       _percentageLabel = scope.Find<Label>(AbstractProgressBarTheme.PercentageLabelPart);
       _exceptionCompletedIcon = scope.Find<PathIcon>(AbstractProgressBarTheme.ExceptionCompletedIconPart);
       _successCompletedIcon = scope.Find<PathIcon>(AbstractProgressBarTheme.SuccessCompletedIconPart);
-      _mainContainer = scope.Find<Canvas>(AbstractProgressBarTheme.MainContainerPart);
       _customStyle.CollectStyleState();
       _customStyle.ApplyFixedStyleConfig();
       _customStyle.ApplyVariableStyleConfig();
@@ -369,6 +367,12 @@ public abstract partial class AbstractProgressBar : RangeBase,
          }
       }
 
+      if (VisualRoot is not null) {
+         if (e.Property == WidthProperty || e.Property == HeightProperty) {
+            NotifyHandleExtraInfoVisibility();
+         }
+      }
+
       if (e.Property == IsEnabledProperty || 
           e.Property == PercentageProperty) {
          _customStyle.CollectStyleState();
@@ -376,9 +380,12 @@ public abstract partial class AbstractProgressBar : RangeBase,
       }
 
       if (e.Property == ValueProperty) {
+         IsCompleted = MathUtils.AreClose(Value, Maximum);
          UpdatePseudoClasses();
+      } else if (e.Property == IsCompletedProperty) {
+         InvalidateMeasure();
       }
-
+      
       NotifyPropertyChanged(e);
    }
    

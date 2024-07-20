@@ -149,7 +149,6 @@ public abstract partial class AbstractLineProgress : AbstractProgressBar
       var currentStatus = false;
       if (MathUtils.AreClose(Value, Maximum)) {
          currentStatus = true;
-        
       } else {
          currentStatus = false;
       }
