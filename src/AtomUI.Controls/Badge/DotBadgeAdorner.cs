@@ -110,7 +110,7 @@ internal partial class DotBadgeAdorner : Control, IControlCustomStyle
       _customStyle = this;
    }
    
-   void IControlCustomStyle.SetupUi()
+   void IControlCustomStyle.SetupUI()
    {
       _textLabel = new Label
       {
@@ -124,12 +124,12 @@ internal partial class DotBadgeAdorner : Control, IControlCustomStyle
       
       LogicalChildren.Add(_textLabel);
       VisualChildren.Add(_textLabel);
-      _customStyle.ApplyFixedStyleConfig();
+      _customStyle.SetupTokenBindings();
       SetupEffectiveDotColor();
       BuildBoxShadow();
    }
 
-   void IControlCustomStyle.ApplyFixedStyleConfig()
+   void IControlCustomStyle.SetupTokenBindings()
    {
       BindUtils.CreateTokenBinding(this, ColorTextPlaceholderTokenProperty, GlobalResourceKey.ColorTextPlaceholder);
       BindUtils.CreateTokenBinding(this, ColorErrorTokenProperty, GlobalResourceKey.ColorError);
@@ -149,7 +149,7 @@ internal partial class DotBadgeAdorner : Control, IControlCustomStyle
    {
       base.OnAttachedToLogicalTree(e);
       if (!_initialized) {
-         _customStyle.SetupUi();
+         _customStyle.SetupUI();
          _initialized = true;
       }
    }

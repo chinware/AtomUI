@@ -658,7 +658,10 @@ public partial class ToolTip : TemplatedControl,
    {
       base.OnAttachedToLogicalTree(e);
       if (!_initialized) {
-         _customStyle.SetupUi();
+         BindUtils.CreateTokenBinding(this, ThemeProperty, typeof(ToolTip));
+         // 手动提前应用模板
+         ApplyStyling();
+         ApplyTemplate();
          _initialized = true;
       }
    }
@@ -672,7 +675,9 @@ public partial class ToolTip : TemplatedControl,
    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
    {
       _arrowDecoratedBox = scope.Find<ArrowDecoratedBox>(ToolTipTheme.ToolTipContainerPart);
-      _customStyle.ApplyFixedStyleConfig();
+      _customStyle.SetupTokenBindings();
+      
+      Background = new SolidColorBrush(Colors.Transparent);
       if (_arrowDecoratedBox is not null) {
          BindUtils.CreateTokenBinding(_arrowDecoratedBox, ArrowDecoratedBox.FontSizeProperty, GlobalResourceKey.FontSize);
          BindUtils.CreateTokenBinding(_arrowDecoratedBox, ArrowDecoratedBox.MaxWidthProperty, ToolTipResourceKey.ToolTipMaxWidth);
@@ -685,16 +690,7 @@ public partial class ToolTip : TemplatedControl,
    }
    
    #region IControlCustomStyle 实现
-   void IControlCustomStyle.SetupUi()
-   {
-      Background = new SolidColorBrush(Colors.Transparent);
-      BindUtils.CreateTokenBinding(this, ThemeProperty, typeof(ToolTip));
-      // 手动提前应用模板
-      ApplyStyling();
-      ApplyTemplate();
-   }
-
-   void IControlCustomStyle.ApplyFixedStyleConfig()
+   void IControlCustomStyle.SetupTokenBindings()
    {
       if (_arrowDecoratedBox is not null) {
          BindUtils.CreateTokenBinding(this, MarginXXSTokenProperty, GlobalResourceKey.MarginXXS);

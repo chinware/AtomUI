@@ -45,7 +45,7 @@ public partial class RadioButton : AvaloniaRadioButton,
    {
       base.OnAttachedToLogicalTree(e);
       if (!_initialized) {
-         _customStyle.SetupUi();
+         _customStyle.SetupUI();
          _initialized = true;
       }
    }
@@ -100,17 +100,17 @@ public partial class RadioButton : AvaloniaRadioButton,
    }
    
    #region IControlCustomStyle 实现
-   void IControlCustomStyle.SetupUi()
+   void IControlCustomStyle.SetupUI()
    {
       Cursor = new Cursor(StandardCursorType.Hand);
       _customStyle.CollectStyleState();
-      _customStyle.ApplyFixedStyleConfig();
+      _customStyle.SetupTokenBindings();
       _customStyle.SetupTransitions();
       
       RadioDotEffectSize = CalculateDotSize(IsEnabled, IsChecked.HasValue && IsChecked.Value);
    }
    
-   void IControlCustomStyle.ApplyFixedStyleConfig()
+   void IControlCustomStyle.SetupTokenBindings()
    {
       BindUtils.CreateTokenBinding(this, DotSizeValueTokenProperty, RadioButtonResourceKey.DotSize);
       BindUtils.CreateTokenBinding(this, DotPaddingValueTokenProperty, RadioButtonResourceKey.DotPadding);

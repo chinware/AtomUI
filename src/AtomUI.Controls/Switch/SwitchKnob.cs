@@ -106,12 +106,12 @@ internal class SwitchKnob : Control, IControlCustomStyle
    {
       base.OnAttachedToLogicalTree(e);
       if (!_initialized) {
-         _customStyle.SetupUi();
+         _customStyle.HandleAttachedToLogicalTree(e);
          _initialized = true;
       }
    }
 
-   void IControlCustomStyle.SetupUi()
+   void IControlCustomStyle.HandleAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
    {
       Effect = new DropShadowEffect
       {
@@ -120,7 +120,7 @@ internal class SwitchKnob : Control, IControlCustomStyle
          Color = KnobBoxShadow.Color,
          BlurRadius = KnobBoxShadow.Blur,
       };
-      _customStyle.ApplyFixedStyleConfig();
+      _customStyle.SetupTokenBindings();
       _customStyle.SetupTransitions();
    }
 
@@ -206,7 +206,7 @@ internal class SwitchKnob : Control, IControlCustomStyle
       }
    }
 
-   void IControlCustomStyle.ApplyFixedStyleConfig()
+   void IControlCustomStyle.SetupTokenBindings()
    {
       BindUtils.CreateTokenBinding(this, LoadingBgOpacityTokenProperty, ToggleSwitchResourceKey.SwitchDisabledOpacity);
       LoadingAnimationDuration = TimeSpan.FromMilliseconds(1200);

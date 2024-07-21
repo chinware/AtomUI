@@ -390,7 +390,7 @@ public partial class Segmented : Control, IControlCustomStyle
    {
       base.OnAttachedToLogicalTree(e);
       if (!_initialized) {
-         _customStyle.SetupUi();
+         _customStyle.SetupUI();
          _initialized = true;
       }
    }
@@ -549,7 +549,7 @@ public partial class Segmented : Control, IControlCustomStyle
 
    #region IControlCustomStyle 实现
 
-   void IControlCustomStyle.SetupUi()
+   void IControlCustomStyle.SetupUI()
    {
       if (IsExpanding) {
          HorizontalAlignment = HorizontalAlignment.Stretch;
@@ -557,7 +557,7 @@ public partial class Segmented : Control, IControlCustomStyle
          HorizontalAlignment = HorizontalAlignment.Left;
       }
       _customStyle.ApplySizeTypeStyleConfig();
-      _customStyle.ApplyFixedStyleConfig();
+      _customStyle.SetupTokenBindings();
       _customStyle.ApplyVariableStyleConfig();
       NotifyCurrentChanged();
       ClipToBounds = true;
@@ -598,7 +598,7 @@ public partial class Segmented : Control, IControlCustomStyle
       }
    }
 
-   void IControlCustomStyle.ApplyFixedStyleConfig()
+   void IControlCustomStyle.SetupTokenBindings()
    {
       BindUtils.CreateTokenBinding(this, BackgroundProperty, SegmentedResourceKey.TrackBg);
       BindUtils.CreateTokenBinding(this, TrackPaddingTokenProperty, SegmentedResourceKey.TrackPadding);

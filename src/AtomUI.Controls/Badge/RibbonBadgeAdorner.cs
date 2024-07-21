@@ -109,12 +109,12 @@ internal partial class RibbonBadgeAdorner : Control, IControlCustomStyle
    {
       base.OnAttachedToLogicalTree(e);
       if (!_initialized) {
-         _customStyle.SetupUi();
+         _customStyle.SetupUI();
          _initialized = true;
       }
    }
 
-   void IControlCustomStyle.SetupUi()
+   void IControlCustomStyle.SetupUI()
    {
       HorizontalAlignment = HorizontalAlignment.Left;
       VerticalAlignment = VerticalAlignment.Top;
@@ -126,11 +126,11 @@ internal partial class RibbonBadgeAdorner : Control, IControlCustomStyle
       };
       LogicalChildren.Add(_textBlock);
       VisualChildren.Add(_textBlock);
-      _customStyle.ApplyFixedStyleConfig();
+      _customStyle.SetupTokenBindings();
       BuildCornerGeometry();
    }
 
-   void IControlCustomStyle.ApplyFixedStyleConfig()
+   void IControlCustomStyle.SetupTokenBindings()
    {
       BindUtils.CreateTokenBinding(this, BadgeRibbonOffsetTokenProperty, BadgeResourceKey.BadgeRibbonOffset);
       BindUtils.CreateTokenBinding(this, MarginXSTokenProperty, GlobalResourceKey.MarginXS);
@@ -163,7 +163,7 @@ internal partial class RibbonBadgeAdorner : Control, IControlCustomStyle
    {
       base.OnAttachedToVisualTree(e);
       // TODO 这里是否需要增加一个什么判断？
-      _customStyle.ApplyFixedStyleConfig();
+      _customStyle.SetupTokenBindings();
    }
 
    protected override Size MeasureOverride(Size availableSize)

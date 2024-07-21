@@ -118,9 +118,9 @@ public abstract partial class AbstractLineProgress : AbstractProgressBar
       }
    }
 
-   protected override void NotifyApplyFixedStyleConfig()
+   protected override void NotifySetupTokenBindings()
    {
-      base.NotifyApplyFixedStyleConfig();
+      base.NotifySetupTokenBindings();
       BindUtils.CreateTokenBinding(this, LineProgressPaddingTokenProperty, ProgressBarResourceKey.LineProgressPadding);
       BindUtils.CreateTokenBinding(this, LineExtraInfoMarginTokenProperty, ProgressBarResourceKey.LineExtraInfoMargin);
       BindUtils.CreateTokenBinding(this, FontSizeTokenProperty, GlobalResourceKey.FontSize);

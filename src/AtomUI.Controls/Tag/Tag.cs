@@ -96,7 +96,6 @@ public partial class Tag : TemplatedControl, IControlCustomStyle
       set => SetValue(TagTextProperty, value);
    }
    
-   private bool _initialized = false;
    private IControlCustomStyle _customStyle;
    private bool _isPresetColorTag = false;
    private bool _hasColorSet = false;
@@ -127,15 +126,6 @@ public partial class Tag : TemplatedControl, IControlCustomStyle
       _borderRenderHelper = new BorderRenderHelper();
    }
 
-   protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-   {
-      base.OnAttachedToLogicalTree(e);
-      if (!_initialized) {
-         _customStyle.SetupUi();
-         _initialized = true;
-      }
-   }
-
    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
    {
       base.OnAttachedToVisualTree(e);
@@ -153,10 +143,15 @@ public partial class Tag : TemplatedControl, IControlCustomStyle
       _layoutPanel = scope.Find<Canvas>(TagTheme.MainContainerPart);
       _closeButton = scope.Find<IconButton>(TagTheme.CloseButtonPart);
       _textBlock = scope.Find<TextBlock>(TagTheme.TagTextLabelPart);
-      
-      _customStyle.ApplyFixedStyleConfig();
+
+      _customStyle.SetupTokenBindings();
       _customStyle.ApplyRenderScalingAwareStyleConfig();
+      if (TagColor is not null) {
+         SetupTagColorInfo(TagColor);
+      }
+      SetupTagClosable();
       SetupTagIcon();
+      _customStyle.SetupTransitions();
    }
 
    protected override Size MeasureOverride(Size availableSize)
@@ -220,18 +215,8 @@ public partial class Tag : TemplatedControl, IControlCustomStyle
    }
 
    #region IControlCustomStyle 实现
-   
-   void IControlCustomStyle.SetupUi()
-   {
-      _customStyle.ApplyFixedStyleConfig();
-      if (TagColor is not null) {
-         SetupTagColorInfo(TagColor);
-      }
-      SetupTagClosable();
-      _customStyle.SetupTransitions();
-   }
 
-   void IControlCustomStyle.ApplyFixedStyleConfig()
+   void IControlCustomStyle.SetupTokenBindings()
    {
       BindUtils.CreateTokenBinding(this, PaddingXXSTokenProperty, GlobalResourceKey.PaddingXXS);
       BindUtils.CreateTokenBinding(this, ColorTextLightSolidTokenProperty, GlobalResourceKey.ColorTextLightSolid);
@@ -252,7 +237,7 @@ public partial class Tag : TemplatedControl, IControlCustomStyle
 
    void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
    {
-      if (_initialized) {
+      if (VisualRoot is not null) {
          if (e.Property == IsClosableProperty) {
             SetupTagClosable();
          } else if (e.Property == IconProperty) {

@@ -140,11 +140,11 @@ public class StepsProgressBar : AbstractLineProgress
       StrokeThickness = strokeThickness;
    }
 
-   protected override void NotifySetupUi()
+   protected override void NotifySetupUI()
    {
       CalculateSizeTypeThresholdValue();
       CalculateMinBarThickness();
-      base.NotifySetupUi();
+      base.NotifySetupUI();
    }
 
    // 需要评估是否需要

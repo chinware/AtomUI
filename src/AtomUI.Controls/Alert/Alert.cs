@@ -136,7 +136,7 @@ public class Alert : TemplatedControl, IControlCustomStyle
 
    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
    {
-      _customStyle.ApplyFixedStyleConfig();
+      _customStyle.SetupTokenBindings();
       _customStyle.ApplyRenderScalingAwareStyleConfig();
 
       SetupCloseButton();

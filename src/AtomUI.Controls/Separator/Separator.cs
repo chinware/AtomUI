@@ -163,13 +163,13 @@ public partial class Separator : TemplatedControl, IControlCustomStyle
    {
       _titleLabel = scope.Find<Label>(SeparatorTheme.TitlePart);
       
-      _customStyle.ApplyFixedStyleConfig();
+      _customStyle.SetupTokenBindings();
       _customStyle.ApplyRenderScalingAwareStyleConfig();
    }
 
    #region IControlCustomStyle 实现
 
-   void IControlCustomStyle.ApplyFixedStyleConfig()
+   void IControlCustomStyle.SetupTokenBindings()
    {
       BindUtils.CreateTokenBinding(this, TextPaddingInlineTokenProperty, SeparatorResourceKey.TextPaddingInline);
       BindUtils.CreateTokenBinding(this, OrientationMarginPercentTokenProperty, SeparatorResourceKey.OrientationMarginPercent);

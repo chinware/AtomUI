@@ -171,7 +171,7 @@ public partial class OptionButtonGroup : TemplatedControl,
    {
       base.OnAttachedToLogicalTree(e);
       if (!_initialized) {
-         _customStyle.SetupUi();
+         _customStyle.SetupUI();
          _initialized = true;
       }
    }
@@ -184,7 +184,7 @@ public partial class OptionButtonGroup : TemplatedControl,
    
    #region IControlCustomStyle 实现
 
-   void IControlCustomStyle.SetupUi()
+   void IControlCustomStyle.SetupUI()
    {
       HorizontalAlignment = HorizontalAlignment.Left;
       _customStyle.CollectStyleState();

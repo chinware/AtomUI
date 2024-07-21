@@ -155,7 +155,7 @@ public partial class Button : AvaloniaButton,
    {
       base.OnAttachedToLogicalTree(e);
       if (!_initialized) {
-         _customStyle.SetupUi();
+         _customStyle.SetupUI();
          _initialized = true;
       }
    }
@@ -167,7 +167,7 @@ public partial class Button : AvaloniaButton,
    }
    
    #region IControlCustomStyle 实现
-    void IControlCustomStyle.SetupUi()
+    void IControlCustomStyle.SetupUI()
    {
       SetValue(HorizontalAlignmentProperty, HorizontalAlignment.Left, BindingPriority.Template);
       SetValue(VerticalAlignmentProperty, VerticalAlignment.Bottom, BindingPriority.Template);
@@ -236,7 +236,7 @@ public partial class Button : AvaloniaButton,
       }
    }
 
-   void IControlCustomStyle.ApplyFixedStyleConfig()
+   void IControlCustomStyle.SetupTokenBindings()
    {
       BindUtils.CreateTokenBinding(this, PaddingXXSTokenProperty, GlobalResourceKey.PaddingXXS);
       BindUtils.CreateTokenBinding(this, DefaultShadowTokenProperty, ButtonResourceKey.DefaultShadow);
@@ -290,7 +290,7 @@ public partial class Button : AvaloniaButton,
       _stackPanel = scope.Find<StackPanel>(BaseButtonTheme.StackPanelPart);
       
       _customStyle.CollectStyleState();
-      _customStyle.ApplyFixedStyleConfig();
+      _customStyle.SetupTokenBindings();
       ApplyShapeStyleConfig();
       SetupIcon();
       ApplyIconModeStyleConfig();

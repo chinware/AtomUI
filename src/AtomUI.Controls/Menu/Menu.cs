@@ -1,6 +1,10 @@
-﻿namespace AtomUI.Controls;
+﻿using AtomUI.Styling;
 
-public class Menu
+namespace AtomUI.Controls;
+
+using AvaloniaMenu = Avalonia.Controls.Menu;
+
+public class Menu : AvaloniaMenu, IControlCustomStyle
 {
    
 }

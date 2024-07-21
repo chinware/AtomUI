@@ -1,6 +1,12 @@
-﻿namespace AtomUI.Controls;
+﻿using AtomUI.Styling;
 
-public class MenuItemTheme
+namespace AtomUI.Controls;
+
+[ControlThemeProvider]
+public class MenuItemTheme : ControlTheme
 {
-   
+   public MenuItemTheme()
+      : base(typeof(MenuItem))
+   {
+   }
 }

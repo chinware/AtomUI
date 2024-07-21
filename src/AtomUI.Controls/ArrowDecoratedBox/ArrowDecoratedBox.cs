@@ -189,7 +189,7 @@ public class ArrowDecoratedBox : TemplatedControl,
    {
       base.OnAttachedToLogicalTree(e);
       if (!_initialized) {
-         _customStyle.SetupUi();
+         _customStyle.SetupUI();
          SetupRelayProperties();
       }
    }
@@ -233,10 +233,10 @@ public class ArrowDecoratedBox : TemplatedControl,
                                                                    (o, v) => o._arrowSize = v);
    // 组件的 Token 绑定属性
 
-   void IControlCustomStyle.SetupUi()
+   void IControlCustomStyle.SetupUI()
    {
       _container = new Border();
-      _customStyle.ApplyFixedStyleConfig();
+      _customStyle.SetupTokenBindings();
       if (IsShowArrow) {
          BuildGeometry(true);
       }
@@ -266,9 +266,9 @@ public class ArrowDecoratedBox : TemplatedControl,
       }
    }
 
-   void IControlCustomStyle.ApplyFixedStyleConfig()
+   void IControlCustomStyle.SetupTokenBindings()
    {
-      NotifyApplyFixedStyleConfig();
+      NotifySetupTokenBindings();
    }
 
    private (double, double) GetArrowVertexPoint()
@@ -307,7 +307,7 @@ public class ArrowDecoratedBox : TemplatedControl,
       }
    }
 
-   protected virtual void NotifyApplyFixedStyleConfig()
+   protected virtual void NotifySetupTokenBindings()
    {
       BindUtils.CreateTokenBinding(this, MinHeightProperty, GlobalResourceKey.ControlHeight);
       BindUtils.CreateTokenBinding(this, PaddingProperty, GlobalResourceKey.PaddingXS);

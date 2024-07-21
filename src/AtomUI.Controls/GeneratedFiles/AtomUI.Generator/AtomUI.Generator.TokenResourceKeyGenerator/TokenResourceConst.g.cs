@@ -111,6 +111,31 @@ namespace AtomUI.Styling
         public static readonly TokenResourceKey DefaultSpeed = new TokenResourceKey("MarqueeLabel.DefaultSpeed");
     }
 
+    public static class MenuResourceKey
+    {
+        public static readonly TokenResourceKey MenuBorderRadius = new TokenResourceKey("Menu.MenuBorderRadius");
+        public static readonly TokenResourceKey MenuArrowSize = new TokenResourceKey("Menu.MenuArrowSize");
+        public static readonly TokenResourceKey MenuArrowOffset = new TokenResourceKey("Menu.MenuArrowOffset");
+        public static readonly TokenResourceKey MenuPanelWidth = new TokenResourceKey("Menu.MenuPanelWidth");
+        public static readonly TokenResourceKey MenuMargin = new TokenResourceKey("Menu.MenuMargin");
+        public static readonly TokenResourceKey MenuTearOffHeight = new TokenResourceKey("Menu.MenuTearOffHeight");
+        public static readonly TokenResourceKey MenuContentPadding = new TokenResourceKey("Menu.MenuContentPadding");
+        public static readonly TokenResourceKey MenuBgColor = new TokenResourceKey("Menu.MenuBgColor");
+        public static readonly TokenResourceKey ItemColor = new TokenResourceKey("Menu.ItemColor");
+        public static readonly TokenResourceKey ItemHoverColor = new TokenResourceKey("Menu.ItemHoverColor");
+        public static readonly TokenResourceKey ItemDisabledColor = new TokenResourceKey("Menu.ItemDisabledColor");
+        public static readonly TokenResourceKey DangerItemColor = new TokenResourceKey("Menu.DangerItemColor");
+        public static readonly TokenResourceKey DangerItemHoverColor = new TokenResourceKey("Menu.DangerItemHoverColor");
+        public static readonly TokenResourceKey ItemBg = new TokenResourceKey("Menu.ItemBg");
+        public static readonly TokenResourceKey ItemHoverBg = new TokenResourceKey("Menu.ItemHoverBg");
+        public static readonly TokenResourceKey ItemHeight = new TokenResourceKey("Menu.ItemHeight");
+        public static readonly TokenResourceKey ItemIconSize = new TokenResourceKey("Menu.ItemIconSize");
+        public static readonly TokenResourceKey ItemIconMarginInlineEnd = new TokenResourceKey("Menu.ItemIconMarginInlineEnd");
+        public static readonly TokenResourceKey ItemBorderRadius = new TokenResourceKey("Menu.ItemBorderRadius");
+        public static readonly TokenResourceKey ItemPaddingInline = new TokenResourceKey("Menu.ItemPaddingInline");
+        public static readonly TokenResourceKey MenuBoxShadows = new TokenResourceKey("Menu.MenuBoxShadows");
+    }
+
     public static class OptionButtonResourceKey
     {
         public static readonly TokenResourceKey ButtonBackground = new TokenResourceKey("OptionButton.ButtonBackground");

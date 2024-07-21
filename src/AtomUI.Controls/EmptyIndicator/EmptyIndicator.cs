@@ -113,7 +113,7 @@ public partial class EmptyIndicator : TemplatedControl,
 
    #region IControlCustomStyle 实现
 
-   void IControlCustomStyle.ApplyFixedStyleConfig()
+   void IControlCustomStyle.SetupTokenBindings()
    {
       BindUtils.CreateTokenBinding(this, EmptyImgHeightTokenProperty, EmptyIndicatorResourceKey.EmptyImgHeight);
       BindUtils.CreateTokenBinding(this, EmptyImgHeightSMTokenProperty, EmptyIndicatorResourceKey.EmptyImgHeightSM);
@@ -124,7 +124,7 @@ public partial class EmptyIndicator : TemplatedControl,
       BindUtils.CreateTokenBinding(this, ColorBgContainerTokenProperty, GlobalResourceKey.ColorBgContainer);
    }
 
-   void IControlCustomStyle.SetupUi()
+   void IControlCustomStyle.SetupUI()
    {
       HorizontalAlignment = HorizontalAlignment.Center;
       VerticalAlignment = VerticalAlignment.Center;
@@ -160,7 +160,7 @@ public partial class EmptyIndicator : TemplatedControl,
    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
    {
       base.OnApplyTemplate(e);
-      _customStyle.ApplyFixedStyleConfig();
+      _customStyle.SetupTokenBindings();
       _customStyle.HandleTemplateApplied(e.NameScope);
    }
 

@@ -83,7 +83,7 @@ public partial class MarqueeLabel : TextBlock,
    {
       base.OnAttachedToLogicalTree(e);
       if (!_initialized) {
-         _customStyle?.SetupUi();
+         _customStyle?.SetupUI();
          _initialized = true;
       }
    }
@@ -96,12 +96,12 @@ public partial class MarqueeLabel : TextBlock,
    }
    
    #region IControlCustomStyle 实现
-     void IControlCustomStyle.SetupUi()
+     void IControlCustomStyle.SetupUI()
    {
       HorizontalAlignment = HorizontalAlignment.Stretch;
       TextWrapping = TextWrapping.NoWrap;
       _customStyle?.CollectStyleState();
-      _customStyle?.ApplyFixedStyleConfig();
+      _customStyle?.SetupTokenBindings();
    }
 
    private double CalculateDuration(double distance)
@@ -115,7 +115,7 @@ public partial class MarqueeLabel : TextBlock,
       ControlStateUtils.InitCommonState(this, ref _styleState);
    }
 
-   void IControlCustomStyle.ApplyFixedStyleConfig()
+   void IControlCustomStyle.SetupTokenBindings()
    {
       BindUtils.CreateTokenBinding(this, CycleSpaceProperty, MarqueeLabelResourceKey.CycleSpace);
       BindUtils.CreateTokenBinding(this, MoveSpeedProperty, MarqueeLabelResourceKey.DefaultSpeed);

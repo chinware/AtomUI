@@ -175,17 +175,17 @@ public partial class ProgressBar : AbstractLineProgress
       StrokeThickness = strokeThickness;
    }
    
-   protected override void NotifySetupUi()
+   protected override void NotifySetupUI()
    {
       CalculateSizeTypeThresholdValue();
       CalculateMinBarThickness();
-      base.NotifySetupUi();
+      base.NotifySetupUI();
       UpdatePseudoClasses();
    }
 
-   protected override void NotifyApplyFixedStyleConfig()
+   protected override void NotifySetupTokenBindings()
    {
-      base.NotifyApplyFixedStyleConfig();
+      base.NotifySetupTokenBindings();
       BindUtils.CreateTokenBinding(this, ColorTextLabelTokenProperty, GlobalResourceKey.ColorTextLabel);
       BindUtils.CreateTokenBinding(this, ColorTextLightSolidTokenProperty, GlobalResourceKey.ColorTextLightSolid);
    }

@@ -234,7 +234,7 @@ public abstract partial class AbstractProgressBar : RangeBase,
    {
       base.OnAttachedToLogicalTree(e);
       if (!_initialized) {
-         _customStyle.SetupUi();
+         _customStyle.SetupUI();
       }
    }
 
@@ -266,7 +266,7 @@ public abstract partial class AbstractProgressBar : RangeBase,
    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
    {
       NotifyTemplateApplied(scope);
-      _customStyle.AfterUiStructureReady();
+      _customStyle.AfterUIStructureReady();
    }
 
    protected abstract SizeType CalculateEffectiveSizeType(double size);
@@ -285,9 +285,9 @@ public abstract partial class AbstractProgressBar : RangeBase,
       _exceptionCompletedIcon = scope.Find<PathIcon>(AbstractProgressBarTheme.ExceptionCompletedIconPart);
       _successCompletedIcon = scope.Find<PathIcon>(AbstractProgressBarTheme.SuccessCompletedIconPart);
       _customStyle.CollectStyleState();
-      _customStyle.ApplyFixedStyleConfig();
+      _customStyle.SetupTokenBindings();
       _customStyle.ApplyVariableStyleConfig();
-      NotifySetupUi();
+      NotifySetupUI();
    }
 
    protected virtual void NotifyEffectSizeTypeChanged()
@@ -315,14 +315,14 @@ public abstract partial class AbstractProgressBar : RangeBase,
    protected virtual void NotifyHandleExtraInfoVisibility() { }
    
    #region IControlCustomStyle 实现
-    void IControlCustomStyle.SetupUi()
+    void IControlCustomStyle.SetupUI()
    {
       _customStyle.SetupTransitions();
       
       _initialized = true;
    }
 
-   void IControlCustomStyle.AfterUiStructureReady()
+   void IControlCustomStyle.AfterUIStructureReady()
    {
       NotifyUiStructureReady();
    }
@@ -351,10 +351,10 @@ public abstract partial class AbstractProgressBar : RangeBase,
       ControlStateUtils.InitCommonState(this, ref _styleState);
    }
    
-   void IControlCustomStyle.ApplyFixedStyleConfig()
+   void IControlCustomStyle.SetupTokenBindings()
    {
       ApplyIndicatorBarBackgroundStyleConfig();
-      NotifyApplyFixedStyleConfig();
+      NotifySetupTokenBindings();
    }
 
    void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
@@ -398,11 +398,11 @@ public abstract partial class AbstractProgressBar : RangeBase,
       PseudoClasses.Set(CompletedPC, MathUtils.AreClose(Value, Maximum));
    }
 
-   protected virtual void NotifySetupUi()
+   protected virtual void NotifySetupUI()
    {
    }
 
-   protected virtual void NotifyApplyFixedStyleConfig()
+   protected virtual void NotifySetupTokenBindings()
    {
       BindUtils.CreateTokenBinding(this, SuccessThresholdBrushProperty, GlobalResourceKey.ColorSuccess);
    }

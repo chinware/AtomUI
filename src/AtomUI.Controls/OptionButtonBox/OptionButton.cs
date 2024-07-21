@@ -142,7 +142,7 @@ public partial class OptionButton : AvaloniaRadioButton,
    {
       base.OnAttachedToLogicalTree(e);
       if (!_initialized) {
-         _customStyle.SetupUi();
+         _customStyle.SetupUI();
          _initialized = true;
       }
    }
@@ -181,7 +181,7 @@ public partial class OptionButton : AvaloniaRadioButton,
       return CornerRadius;
    }
 
-   void IControlCustomStyle.SetupUi()
+   void IControlCustomStyle.SetupUI()
    {
       if (Text is null && Content is string content) {
          Text = content;

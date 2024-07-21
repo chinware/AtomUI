@@ -4,6 +4,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Layout;
 using Avalonia.Media;
+using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
@@ -23,7 +24,7 @@ internal class ToolTipTheme : ControlTheme
       {
          var arrowDecoratedBox = new ArrowDecoratedBox()
          {
-            Name = ToolTipContainerPart,
+            Name = ToolTipContainerPart
          };
          if (tip.Content is string text) {
             arrowDecoratedBox.Child = new TextBlock
@@ -36,10 +37,10 @@ internal class ToolTipTheme : ControlTheme
          } else if (tip.Content is Control control) {
             arrowDecoratedBox.Child = control;
          }
-         
          CreateTemplateParentBinding(arrowDecoratedBox, ArrowDecoratedBox.IsShowArrowProperty, ToolTip.IsShowArrowEffectiveProperty);
          arrowDecoratedBox.RegisterInNameScope(scope);
          return arrowDecoratedBox;
       });
    }
+
 }

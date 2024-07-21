@@ -1,19 +1,27 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
+using Avalonia.LogicalTree;
 
 namespace AtomUI.Styling;
 
 internal interface IControlCustomStyle
 {
    void InitOnConstruct() {}
-   void SetupUi() {}
-   void AfterUiStructureReady() {}
+   // 当模板
+   void SetupUI() {}
+   void AfterUIStructureReady() {}
    void SetupTransitions() {}
    void CollectStyleState() {}
+   void SetupTokenBindings() {}
+   
+   #region NeedReview
+   // 这些 API 需要重新评估，进来不要再使用
    void ApplyVariableStyleConfig() {}
-   void ApplyFixedStyleConfig() {}
    void ApplyRenderScalingAwareStyleConfig() {}
    void ApplySizeTypeStyleConfig() {}
+   #endregion
+
+   void HandleAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e) {}
    void HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e) {}
    void HandleTemplateApplied(INameScope scope) {}
    

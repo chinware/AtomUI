@@ -64,10 +64,10 @@ public abstract partial class AbstractCircleProgress : AbstractProgressBar
       return sizeType;
    }
    
-   protected override void NotifySetupUi()
+   protected override void NotifySetupUI()
    {
       CalculateSizeTypeThresholdValue();
-      base.NotifySetupUi();
+      base.NotifySetupUI();
    }
 
    private void CalculateSizeTypeThresholdValue()
@@ -248,9 +248,9 @@ public abstract partial class AbstractCircleProgress : AbstractProgressBar
       StrokeThickness = calculatedValue;
    }
    
-   protected override void NotifyApplyFixedStyleConfig()
+   protected override void NotifySetupTokenBindings()
    {
-      base.NotifyApplyFixedStyleConfig();
+      base.NotifySetupTokenBindings();
       BindUtils.CreateTokenBinding(this, CircleMinimumTextFontSizeTokenProperty, ProgressBarResourceKey.CircleMinimumTextFontSize);
       BindUtils.CreateTokenBinding(this, CircleMinimumIconSizeTokenProperty, ProgressBarResourceKey.CircleMinimumIconSize);
    }

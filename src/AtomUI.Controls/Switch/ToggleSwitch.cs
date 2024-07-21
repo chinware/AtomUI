@@ -92,8 +92,7 @@ public partial class ToggleSwitch : ToggleButton,
       get => GetValue(GrooveBackgroundProperty);
       set => SetValue(GrooveBackgroundProperty, value);
    }
-   
-   private bool _initialized = false;
+
    private const double STRETCH_FACTOR = 1.3d;
    private IControlCustomStyle _customStyle;
    private ControlStyleState _styleState;
@@ -123,15 +122,6 @@ public partial class ToggleSwitch : ToggleButton,
    {
       if (Transitions is null) {
          _customStyle.SetupTransitions();
-      }
-   }
-
-   protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-   {
-      base.OnAttachedToLogicalTree(e);
-      if (!_initialized) {
-         _customStyle.SetupUi();
-         _initialized = true;
       }
    }
 
@@ -251,7 +241,13 @@ public partial class ToggleSwitch : ToggleButton,
       _togglePanel = scope.Find<Canvas>(ToggleSwitchTheme.MainContainerPart);
       _switchKnob = scope.Find<SwitchKnob>(ToggleSwitchTheme.SwitchKnobPart);
       
-      _customStyle.ApplyFixedStyleConfig();
+      _customStyle.SetupTokenBindings();
+      
+      if (!IsLoading) {
+         Cursor = new Cursor(StandardCursorType.Hand);
+      }
+
+      HorizontalAlignment = HorizontalAlignment.Left;
 
       var offControl = SetupContent(OffContent);
       var onControl = SetupContent(OnContent);
@@ -268,6 +264,7 @@ public partial class ToggleSwitch : ToggleButton,
       OnContent = onControl;
       
       HandleLoadingState(IsLoading);
+      _customStyle.CollectStyleState();
    }
 
    public sealed override void Render(DrawingContext context)
@@ -287,16 +284,6 @@ public partial class ToggleSwitch : ToggleButton,
    }
 
    #region IControlCustomStyle 实现
-
-   void IControlCustomStyle.SetupUi()
-   {
-      if (!IsLoading) {
-         Cursor = new Cursor(StandardCursorType.Hand);
-      }
-
-      HorizontalAlignment = HorizontalAlignment.Left;
-      _customStyle.CollectStyleState();
-   }
 
    private Control? SetupContent(object? content)
    {
@@ -373,7 +360,7 @@ public partial class ToggleSwitch : ToggleButton,
       }
    }
 
-   void IControlCustomStyle.ApplyFixedStyleConfig()
+   void IControlCustomStyle.SetupTokenBindings()
    {
       BindUtils.CreateTokenBinding(this, InnerMaxMarginTokenProperty, ToggleSwitchResourceKey.InnerMaxMargin);
       BindUtils.CreateTokenBinding(this, InnerMaxMarginSMTokenProperty, ToggleSwitchResourceKey.InnerMaxMarginSM);

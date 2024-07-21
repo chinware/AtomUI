@@ -6,6 +6,8 @@ using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
+using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Layout;
@@ -25,7 +27,6 @@ public partial class CheckBox : AvaloniaCheckBox,
    private IControlCustomStyle _customStyle;
    private ControlStyleState _styleState;
    private BorderRenderHelper _borderRenderHelper;
-   private bool _initialized = false;
    
    static CheckBox()
    {
@@ -45,15 +46,6 @@ public partial class CheckBox : AvaloniaCheckBox,
    {
       _customStyle = this;
       _borderRenderHelper = new BorderRenderHelper();
-   }
-
-   protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-   {
-      base.OnAttachedToLogicalTree(e);
-      if (!_initialized) {
-         _customStyle.SetupUi();
-         _initialized = true;
-      }
    }
 
    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
@@ -129,8 +121,14 @@ public partial class CheckBox : AvaloniaCheckBox,
    }
 
    #region IControlCustomStyle 实现
+   
+   protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+   {
+      base.OnApplyTemplate(e);
+      _customStyle.HandleTemplateApplied(e.NameScope);
+   }
 
-   void IControlCustomStyle.SetupUi()
+   void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
    {
       HorizontalAlignment = HorizontalAlignment.Left;
       Cursor = new Cursor(StandardCursorType.Hand);

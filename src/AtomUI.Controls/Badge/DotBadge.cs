@@ -105,7 +105,7 @@ public partial class DotBadge : Control, IControlCustomStyle
    {
       base.OnAttachedToLogicalTree(e);
       if (!_initialized) {
-         _customStyle.SetupUi();
+         _customStyle.SetupUI();
          _initialized = true;
       }
    }
@@ -195,17 +195,17 @@ public partial class DotBadge : Control, IControlCustomStyle
       HideAdorner();
    }
 
-   void IControlCustomStyle.SetupUi()
+   void IControlCustomStyle.SetupUI()
    {
       _dotBadgeAdorner = new DotBadgeAdorner();
-      _customStyle.ApplyFixedStyleConfig();
+      _customStyle.SetupTokenBindings();
       HandleDecoratedTargetChanged();
       if (DotColor is not null) {
          SetupDotColor(DotColor);
       }
    }
 
-   void IControlCustomStyle.ApplyFixedStyleConfig()
+   void IControlCustomStyle.SetupTokenBindings()
    {
       if (_dotBadgeAdorner is not null) {
          BindUtils.RelayBind(this, StatusProperty, _dotBadgeAdorner, DotBadgeAdorner.StatusProperty);

@@ -97,7 +97,7 @@ public class LoadingMaskHost : Control, IControlCustomStyle
       _customStyle = this;
    }
 
-   void IControlCustomStyle.SetupUi()
+   void IControlCustomStyle.SetupUI()
    {
       if (MaskTarget is not null) {
          LogicalChildren.Add(MaskTarget);
@@ -144,7 +144,7 @@ public class LoadingMaskHost : Control, IControlCustomStyle
    {
       base.OnAttachedToLogicalTree(e);
       if (!_initialized) {
-         _customStyle.SetupUi();
+         _customStyle.SetupUI();
          _initialized = true;
       }
    }

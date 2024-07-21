@@ -71,8 +71,7 @@ public class SegmentedItem : TemplatedControl, IControlCustomStyle
       get => _isCurrentItem;
       set => SetAndRaise(IsCurrentItemProperty, ref _isCurrentItem, value);
    }
-
-   private bool _initialized = false;
+   
    private IControlCustomStyle _customStyle;
    private StackPanel? _mainLayout;
    private bool _isPressed = false;
@@ -88,16 +87,7 @@ public class SegmentedItem : TemplatedControl, IControlCustomStyle
    {
       _customStyle = this;
    }
-
-   protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-   {
-      base.OnAttachedToLogicalTree(e);
-      if (!_initialized) {
-         _customStyle.SetupUi();
-         _initialized = true;
-      }
-   }
-
+   
    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
    {
       base.OnPropertyChanged(e);
@@ -130,20 +120,18 @@ public class SegmentedItem : TemplatedControl, IControlCustomStyle
    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
    {
       _mainLayout = scope.Find<StackPanel>(SegmentedItemTheme.MainLayoutPart);
-      _customStyle.ApplyFixedStyleConfig();
+      
+      HorizontalAlignment = HorizontalAlignment.Left;
+      VerticalAlignment = VerticalAlignment.Center;
+
+      _customStyle.SetupTokenBindings();
       _customStyle.ApplyVariableStyleConfig();
       SetupItemIcon();
+      _customStyle.SetupTransitions();
+      _customStyle.CollectStyleState();
    }
 
    #region IControlCustomStyle 实现
-
-   void IControlCustomStyle.SetupUi()
-   {
-      HorizontalAlignment = HorizontalAlignment.Left;
-      VerticalAlignment = VerticalAlignment.Center;
-      _customStyle.CollectStyleState();
-      _customStyle.SetupTransitions();
-   }
    
    void IControlCustomStyle.UpdatePseudoClasses()
    {
@@ -175,7 +163,7 @@ public class SegmentedItem : TemplatedControl, IControlCustomStyle
 
    void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
    {
-      if (_initialized) {
+      if (VisualRoot is not null) {
          if (e.Property == IsPointerOverProperty ||
              e.Property == IsPressedProperty ||
              e.Property == IsCurrentItemProperty) {

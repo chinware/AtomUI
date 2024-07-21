@@ -1,6 +1,5 @@
 ﻿using System.Reactive.Disposables;
 using System.Reflection;
-using AtomUI.Data;
 using AtomUI.Styling;
 using AtomUI.Utils;
 using Avalonia;
@@ -60,6 +59,7 @@ public class Popup : AbstractPopup
       AffectsMeasure<Popup>(PlacementProperty);
       AffectsMeasure<Popup>(PlacementAnchorProperty);
       AffectsMeasure<Popup>(PlacementGravityProperty);
+      
    }
 
    public Popup()

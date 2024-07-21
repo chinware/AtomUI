@@ -105,7 +105,7 @@ public partial class LoadingIndicator : Control, ISizeTypeAware, IControlCustomS
    {
       base.OnAttachedToLogicalTree(e);
       if (!_initialized) {
-         _customStyle.SetupUi();
+         _customStyle.SetupUI();
          _initialized = true;
       }
    }
@@ -242,7 +242,7 @@ public partial class LoadingIndicator : Control, ISizeTypeAware, IControlCustomS
 
    #region IControlCustomStyle 实现
    
-   void IControlCustomStyle.SetupUi()
+   void IControlCustomStyle.SetupUI()
    {
       SetValue(HorizontalAlignmentProperty, HorizontalAlignment.Left, BindingPriority.Style);
       SetValue(VerticalAlignmentProperty, VerticalAlignment.Top, BindingPriority.Style);
@@ -259,10 +259,10 @@ public partial class LoadingIndicator : Control, ISizeTypeAware, IControlCustomS
       
       SetupCustomIndicator();
       
-      _customStyle.ApplyFixedStyleConfig();
+      _customStyle.SetupTokenBindings();
    }
    
-   void IControlCustomStyle.ApplyFixedStyleConfig()
+   void IControlCustomStyle.SetupTokenBindings()
    {
       BindUtils.CreateTokenBinding(this, DotSizeTokenProperty, LoadingIndicatorResourceKey.DotSize);
       BindUtils.CreateTokenBinding(this, DotSizeSMTokenProperty, LoadingIndicatorResourceKey.DotSizeSM);

@@ -49,7 +49,6 @@ internal partial class SegmentedItemBox : TemplatedControl,
 
    private bool _isCurrentItem;
    internal bool IsCurrentItem { get => _isCurrentItem; set => SetCurrentItem(value); }
-   private bool _initialized = false;
    private IControlCustomStyle _customStyle;
    private bool _isPressed = false;
    private ControlStyleState _styleState;
@@ -94,15 +93,6 @@ internal partial class SegmentedItemBox : TemplatedControl,
       Item.Arrange(new Rect(new Point(offsetX, offsetY), Item.DesiredSize));
       return finalSize;
    }
-   
-   protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-   {
-      base.OnAttachedToLogicalTree(e);
-      if (!_initialized) {
-         _customStyle.SetupUi();
-         _initialized = true;
-      }
-   }
 
    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
    {
@@ -135,7 +125,9 @@ internal partial class SegmentedItemBox : TemplatedControl,
 
    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
    {
-      _customStyle.ApplyFixedStyleConfig();
+      Cursor = new Cursor(StandardCursorType.Hand);
+      _customStyle.CollectStyleState();
+      _customStyle.SetupTokenBindings();
       _customStyle.SetupTransitions();
    }
 
@@ -177,11 +169,6 @@ internal partial class SegmentedItemBox : TemplatedControl,
    }
    
    #region IControlCustomStyle 实现
-   void IControlCustomStyle.SetupUi()
-   {
-      Cursor = new Cursor(StandardCursorType.Hand);
-      _customStyle.CollectStyleState();
-   }
 
    void IControlCustomStyle.SetupTransitions()
    { 
@@ -208,7 +195,7 @@ internal partial class SegmentedItemBox : TemplatedControl,
       _customStyle.UpdatePseudoClasses();
    }
    
-   void IControlCustomStyle.ApplyFixedStyleConfig()
+   void IControlCustomStyle.SetupTokenBindings()
    {
       BindUtils.CreateTokenBinding(this, ControlHeightSMTokenProperty, GlobalResourceKey.ControlHeightSM);
       BindUtils.CreateTokenBinding(this, ControlHeightTokenProperty, GlobalResourceKey.ControlHeight);

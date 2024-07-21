@@ -133,9 +133,9 @@ internal partial class CountBadgeAdorner : Control, IControlCustomStyle
       _formattedTexts = new List<FormattedText>();
    }
 
-   void IControlCustomStyle.SetupUi()
+   void IControlCustomStyle.SetupUI()
    {
-      _customStyle.ApplyFixedStyleConfig();
+      _customStyle.SetupTokenBindings();
       BuildBoxShadow();
       BuildCountText();
       CalculateCountTextSize();
@@ -146,12 +146,12 @@ internal partial class CountBadgeAdorner : Control, IControlCustomStyle
    {
       base.OnAttachedToLogicalTree(e);
       if (!_initialized) {
-         _customStyle.SetupUi();
+         _customStyle.SetupUI();
          _initialized = true;
       }
    }
 
-   void IControlCustomStyle.ApplyFixedStyleConfig()
+   void IControlCustomStyle.SetupTokenBindings()
    {
       BindUtils.CreateTokenBinding(this, IndicatorHeightTokenProperty, BadgeResourceKey.IndicatorHeight);
       BindUtils.CreateTokenBinding(this, IndicatorHeightSMTokenProperty, BadgeResourceKey.IndicatorHeightSM);

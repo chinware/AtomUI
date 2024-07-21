@@ -94,10 +94,10 @@ public class RibbonBadge : Control, IControlCustomStyle
    private RibbonBadgeAdorner? _ribbonBadgeAdorner;
    private AdornerLayer? _adornerLayer;
 
-   void IControlCustomStyle.SetupUi()
+   void IControlCustomStyle.SetupUI()
    {
       _ribbonBadgeAdorner = new RibbonBadgeAdorner();
-      _customStyle.ApplyFixedStyleConfig();
+      _customStyle.SetupTokenBindings();
       HandleDecoratedTargetChanged();
       if (RibbonColor is not null) {
          SetupRibbonColor(RibbonColor);
@@ -135,7 +135,7 @@ public class RibbonBadge : Control, IControlCustomStyle
       }
    }
    
-   void IControlCustomStyle.ApplyFixedStyleConfig()
+   void IControlCustomStyle.SetupTokenBindings()
    {
       if (_ribbonBadgeAdorner is not null) {
          BindUtils.RelayBind(this, TextProperty, _ribbonBadgeAdorner, RibbonBadgeAdorner.TextProperty);
@@ -174,7 +174,7 @@ public class RibbonBadge : Control, IControlCustomStyle
    {
       base.OnAttachedToLogicalTree(e);
       if (!_initialized) {
-         _customStyle.SetupUi();
+         _customStyle.SetupUI();
          _initialized = true;
       }
    }

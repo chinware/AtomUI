@@ -122,7 +122,7 @@ public partial class CountBadge : Control, IControlCustomStyle
    {
       base.OnAttachedToLogicalTree(e);
       if (!_initialized) {
-         _customStyle.SetupUi();
+         _customStyle.SetupUI();
          _initialized = true;
       }
    }
@@ -233,17 +233,17 @@ public partial class CountBadge : Control, IControlCustomStyle
       HideAdorner();
    }
 
-   void IControlCustomStyle.SetupUi()
+   void IControlCustomStyle.SetupUI()
    {
       _badgeAdorner = new CountBadgeAdorner();
-      _customStyle.ApplyFixedStyleConfig();
+      _customStyle.SetupTokenBindings();
       HandleDecoratedTargetChanged();
       if (BadgeColor is not null) {
          SetupBadgeColor(BadgeColor);
       }
    }
    
-   void IControlCustomStyle.ApplyFixedStyleConfig()
+   void IControlCustomStyle.SetupTokenBindings()
    {
       if (_badgeAdorner is not null) {
          BindUtils.RelayBind(this, OffsetProperty, _badgeAdorner, CountBadgeAdorner.OffsetProperty);

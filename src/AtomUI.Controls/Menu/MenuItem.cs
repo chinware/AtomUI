@@ -1,6 +1,8 @@
 ﻿namespace AtomUI.Controls;
 
-public class MenuItem
+using AvaloniaMenuItem = Avalonia.Controls.MenuItem;
+
+public class MenuItem : AvaloniaMenuItem
 {
    
 }
