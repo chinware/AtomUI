@@ -1,4 +1,5 @@
 ﻿using AtomUI.TokenSystem;
+using Avalonia;
 
 namespace AtomUI.Controls;
 
@@ -12,6 +13,11 @@ public class ArrowDecoratedBoxToken : AbstractControlDesignToken
    /// </summary>
    public double ArrowSize { get; set; }
    
+   /// <summary>
+   /// 默认的内边距
+   /// </summary>
+   public Thickness Padding { get; set; }
+   
    public ArrowDecoratedBoxToken()
       : base(ID)
    {
@@ -21,5 +27,6 @@ public class ArrowDecoratedBoxToken : AbstractControlDesignToken
    {
       base.CalculateFromAlias();
       ArrowSize = _globalToken.SeedToken.SizePopupArrow / 1.3;
+      Padding = new Thickness(_globalToken.PaddingXS);
    }
 }

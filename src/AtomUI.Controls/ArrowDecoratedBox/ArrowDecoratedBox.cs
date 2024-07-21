@@ -94,6 +94,8 @@ public class ArrowDecoratedBox : TemplatedControl,
    public static readonly StyledProperty<Control?> ChildProperty =
       Border.ChildProperty.AddOwner<ArrowDecoratedBox>();
    
+   internal static readonly StyledProperty<double> ArrowSizeProperty
+      = AvaloniaProperty.Register<ArrowDecoratedBox, double>(nameof(ArrowSize));
 
    // 指针最顶点位置
    // 相对坐标
@@ -117,6 +119,15 @@ public class ArrowDecoratedBox : TemplatedControl,
       get => GetValue(ArrowPositionProperty);
       set => SetValue(ArrowPositionProperty, value);
    }
+   
+   /// <summary>
+   /// 箭头的大小
+   /// </summary>
+   internal double ArrowSize
+   {
+      get => GetValue(ArrowSizeProperty);
+      set => SetValue(ArrowSizeProperty, value);
+   }
 
    /// <summary>
    /// Gets or sets the decorated control.
@@ -133,8 +144,6 @@ public class ArrowDecoratedBox : TemplatedControl,
    private Geometry? _arrowGeometry;
    private Rect _contentRect;
    private Rect _arrowRect;
-   private Border? _container;
-   private CompositeDisposable? _compositeDisposable;
    private bool _needGenerateArrowVertexPoint = true;
 
    static ArrowDecoratedBox()
@@ -171,27 +180,6 @@ public class ArrowDecoratedBox : TemplatedControl,
       };
    }
 
-   protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-   {
-      base.OnAttachedToLogicalTree(e);
-      if (!_initialized) {
-         _customStyle.SetupUI();
-         SetupRelayProperties();
-      }
-   }
-
-   protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-   {
-      base.OnAttachedToVisualTree(e);
-      SetupRelayProperties();
-   }
-
-   protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-   {
-      base.OnDetachedFromVisualTree(e);
-      _compositeDisposable?.Dispose();
-   }
-
    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
    {
       base.OnPropertyChanged(e);
@@ -208,54 +196,20 @@ public class ArrowDecoratedBox : TemplatedControl,
       return GetContentRect(DesiredSize).Deflate(0.5);
    }
 
-   #region IControlCustomStyle 实现
-
-   // 组件的 Token 绑定属性
-   private double _arrowSize;
-
-   private static readonly DirectProperty<ArrowDecoratedBox, double> ArrowSizeTokenProperty
-      = AvaloniaProperty.RegisterDirect<ArrowDecoratedBox, double>(nameof(_arrowSize),
-                                                                   (o) => o._arrowSize,
-                                                                   (o, v) => o._arrowSize = v);
-   // 组件的 Token 绑定属性
-
-   void IControlCustomStyle.SetupUI()
+   protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
    {
-      _container = new Border();
-      _customStyle.SetupTokenBindings();
+      base.OnApplyTemplate(e);
+      _customStyle.HandleTemplateApplied(e.NameScope);
+   }
+
+   void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
+   {
       if (IsShowArrow) {
          BuildGeometry(true);
       }
-
-      LogicalChildren.Add(_container);
-      VisualChildren.Add(_container);
-
-      BindUtils.CreateTokenBinding(this, BackgroundProperty, GlobalResourceKey.ColorBgContainer);
-      _initialized = true;
    }
-
-   private void SetupRelayProperties()
-   {
-      _compositeDisposable = new CompositeDisposable();
-      // 生命周期一样，可以不用管理
-      if (_container is not null) {
-         if (Child?.Parent is not null) {
-            UIStructureUtils.ClearLogicalParentRecursive(Child, null);
-            UIStructureUtils.ClearVisualParentRecursive(Child, null);
-         }
-
-         _compositeDisposable.Add(BindUtils.RelayBind(this, BackgroundSizingProperty, _container));
-         _compositeDisposable.Add(BindUtils.RelayBind(this, BackgroundProperty, _container));
-         _compositeDisposable.Add(BindUtils.RelayBind(this, CornerRadiusProperty, _container));
-         _compositeDisposable.Add(BindUtils.RelayBind(this, ChildProperty, _container));
-         _compositeDisposable.Add(BindUtils.RelayBind(this, PaddingProperty, _container));
-      }
-   }
-
-   void IControlCustomStyle.SetupTokenBindings()
-   {
-      NotifySetupTokenBindings();
-   }
+   
+   #region IControlCustomStyle 实现
 
    private (double, double) GetArrowVertexPoint()
    {
@@ -272,7 +226,7 @@ public class ArrowDecoratedBox : TemplatedControl,
    {
       if (e.Property == IsShowArrowProperty ||
           e.Property == ArrowPositionProperty ||
-          e.Property == ArrowSizeTokenProperty ||
+          e.Property == ArrowSizeProperty ||
           e.Property == VisualParentProperty) {
          if (e.Property == IsShowArrowProperty && VisualRoot is null) {
             // 当开启的时候，但是还没有加入的渲染树，这个时候我们取不到 Token 需要在取值的时候重新生成一下
@@ -289,40 +243,32 @@ public class ArrowDecoratedBox : TemplatedControl,
    private void BuildGeometry(bool force = false)
    {
       if (_arrowGeometry is null || force) {
-         _arrowGeometry = CommonShapeBuilder.BuildArrow(_arrowSize, 1.5);
+         _arrowGeometry = CommonShapeBuilder.BuildArrow(ArrowSize, 1.5);
       }
-   }
-
-   protected virtual void NotifySetupTokenBindings()
-   {
-      BindUtils.CreateTokenBinding(this, MinHeightProperty, GlobalResourceKey.ControlHeight);
-      BindUtils.CreateTokenBinding(this, PaddingProperty, GlobalResourceKey.PaddingXS);
-      BindUtils.CreateTokenBinding(this, ArrowSizeTokenProperty, ArrowDecoratedBoxResourceKey.ArrowSize);
-      BindUtils.CreateTokenBinding(this, CornerRadiusProperty, GlobalResourceKey.BorderRadius);
    }
 
    public sealed override void Render(DrawingContext context)
    {
       if (IsShowArrow) {
          var direction = GetDirection(ArrowPosition);
-         var matrix = Matrix.CreateTranslation(-_arrowSize / 2, -_arrowSize / 2);
+         var matrix = Matrix.CreateTranslation(-ArrowSize / 2, -ArrowSize / 2);
 
          if (direction == Direction.Right) {
             matrix *= Matrix.CreateRotation(MathUtils.Deg2Rad(90));
-            matrix *= Matrix.CreateTranslation(_arrowSize / 2, _arrowSize / 2);
+            matrix *= Matrix.CreateTranslation(ArrowSize / 2, ArrowSize / 2);
          } else if (direction == Direction.Top) {
-            matrix *= Matrix.CreateTranslation(_arrowSize / 2, 0);
+            matrix *= Matrix.CreateTranslation(ArrowSize / 2, 0);
          } else if (direction == Direction.Left) {
             matrix *= Matrix.CreateRotation(MathUtils.Deg2Rad(-90));
-            matrix *= Matrix.CreateTranslation(0, _arrowSize / 2);
+            matrix *= Matrix.CreateTranslation(0, ArrowSize / 2);
          } else {
             matrix *= Matrix.CreateRotation(MathUtils.Deg2Rad(180));
-            matrix *= Matrix.CreateTranslation(_arrowSize / 2, _arrowSize / 2);
+            matrix *= Matrix.CreateTranslation(ArrowSize / 2, ArrowSize / 2);
          }
 
          matrix *= Matrix.CreateTranslation(_arrowRect.X, _arrowRect.Y);
          _arrowGeometry!.Transform = new MatrixTransform(matrix);
-         context.DrawGeometry(_container?.Background, null, _arrowGeometry);
+         context.DrawGeometry(Background, null, _arrowGeometry);
       }
    }
 
