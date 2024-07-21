@@ -11,48 +11,60 @@ using Avalonia.Threading;
 
 namespace AtomUI.Controls;
 
-public partial class MarqueeLabel : TextBlock,
-                                    IControlCustomStyle
+public class MarqueeLabel : TextBlock,
+                            IControlCustomStyle
 {
    private IControlCustomStyle? _customStyle;
    private ControlStyleState _styleState;
    private CancellationTokenSource? _cancellationTokenSource;
    private bool _initialized = false;
-   private double _cycleSpace; // 默认的间隔
    private Animation? _animation;
    private bool _animationRunning = false;
    private double _lastDesiredWidth;
    private double _lastTextWidth;
-   private double _moveSpeed = 150; // 像素每秒
    private double _pivotOffsetStartValue = 0;
-   
-   public static readonly DirectProperty<MarqueeLabel, double> CycleSpaceProperty =
-      AvaloniaProperty.RegisterDirect<MarqueeLabel, double>(nameof(CycleSpace),
-                                                            o => o.CycleSpace,
-                                                            (o, v) => o.CycleSpace = v);
 
-   public static readonly DirectProperty<MarqueeLabel, double> MoveSpeedProperty =
-      AvaloniaProperty.RegisterDirect<MarqueeLabel, double>(nameof(MoveSpeed),
-                                                            o => o.MoveSpeed,
-                                                            (o, v) => o.MoveSpeed = v);
-   
+   public static readonly StyledProperty<double> CycleSpaceProperty =
+      AvaloniaProperty.Register<MarqueeLabel, double>(nameof(CycleSpace));
+
+   public static readonly StyledProperty<double> MoveSpeedProperty =
+      AvaloniaProperty.Register<MarqueeLabel, double>(nameof(MoveSpeed),150);
+
+   private static readonly StyledProperty<double> PivotOffsetProperty =
+      AvaloniaProperty.Register<MarqueeLabel, double>(nameof(PivotOffset), 0);
+
+   /// <summary>
+   /// 默认的间隔
+   /// </summary>
    public double CycleSpace
    {
-      get => _cycleSpace;
-      set => SetAndRaise(CycleSpaceProperty, ref _cycleSpace, value);
+      get => GetValue(CycleSpaceProperty);
+      set => SetValue(CycleSpaceProperty, value);
    }
-   
+
+   /// <summary>
+   /// 移动速度
+   /// </summary>
    public double MoveSpeed
    {
-      get => _moveSpeed;
-      set => SetAndRaise(MoveSpeedProperty, ref _moveSpeed, value);
+      get => GetValue(MoveSpeedProperty);
+      set => SetValue(MoveSpeedProperty, value);
    }
-   
+
+   /// <summary>
+   /// 内部动画使用，当前焦点，也就是文字最左侧
+   /// </summary>
+   private double PivotOffset
+   {
+      get => GetValue(PivotOffsetProperty);
+      set => SetValue(PivotOffsetProperty, value);
+   }
+
    static MarqueeLabel()
    {
-      AffectsRender<MarqueeLabel>(PivotOffsetProperty, CycleSpaceProperty, MoveSpeedProperty);   
+      AffectsRender<MarqueeLabel>(PivotOffsetProperty, CycleSpaceProperty, MoveSpeedProperty);
    }
-   
+
    public MarqueeLabel()
    {
       _customStyle = this;
@@ -85,7 +97,7 @@ public partial class MarqueeLabel : TextBlock,
          _initialized = true;
       }
    }
-   
+
    protected override Size MeasureOverride(Size availableSize)
    {
       var size = base.MeasureOverride(availableSize);
@@ -94,6 +106,7 @@ public partial class MarqueeLabel : TextBlock,
    }
 
    #region IControlCustomStyle 实现
+
    void IControlCustomStyle.HandleAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
    {
       HorizontalAlignment = HorizontalAlignment.Stretch;
@@ -105,7 +118,7 @@ public partial class MarqueeLabel : TextBlock,
    private double CalculateDuration(double distance)
    {
       // 计算持续时间，确保至少有一毫秒的持续时间以避免除以零的错误
-      return 4 * Math.Max(1, distance / _moveSpeed * 1000);
+      return 4 * Math.Max(1, distance / MoveSpeed * 1000);
    }
 
    void IControlCustomStyle.CollectStyleState()
@@ -121,7 +134,6 @@ public partial class MarqueeLabel : TextBlock,
 
    void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
    {
-     
       if (_initialized) {
          if (e.Property == IsPointerOverProperty) {
             _customStyle?.CollectStyleState();
@@ -179,6 +191,7 @@ public partial class MarqueeLabel : TextBlock,
                _lastTextWidth = TextLayout.Width;
             }
          }
+
          if (!_animationRunning) {
             ReConfigureAnimation();
             HandleStartupMarqueeAnimation();
@@ -191,8 +204,8 @@ public partial class MarqueeLabel : TextBlock,
       if (_animation is not null && _animationRunning) {
          _cancellationTokenSource?.Cancel();
       }
- 
-      var cycleWidth = _lastTextWidth + _cycleSpace;
+
+      var cycleWidth = _lastTextWidth + CycleSpace;
       if (_pivotOffsetStartValue < -cycleWidth) {
          _pivotOffsetStartValue %= cycleWidth;
       }
@@ -215,17 +228,18 @@ public partial class MarqueeLabel : TextBlock,
             }
          },
          FillMode = FillMode.Both,
-         Duration = TimeSpan.FromMilliseconds(CalculateDuration(_lastTextWidth + _cycleSpace))
+         Duration = TimeSpan.FromMilliseconds(CalculateDuration(_lastTextWidth + CycleSpace))
       };
    }
-   
+
    protected override void RenderTextLayout(DrawingContext context, Point origin)
    {
       var offset = TextLayout.OverhangLeading + PivotOffset;
       TextLayout.Draw(context, origin + new Point(offset, 0));
       if (PivotOffset < 0) {
-         TextLayout.Draw(context, origin + new Point(offset + _lastTextWidth + _cycleSpace, 0));
+         TextLayout.Draw(context, origin + new Point(offset + _lastTextWidth + CycleSpace, 0));
       }
    }
+
    #endregion
 }

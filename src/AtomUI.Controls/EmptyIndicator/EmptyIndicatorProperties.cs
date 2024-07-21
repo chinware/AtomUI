@@ -17,27 +17,6 @@ public partial class EmptyIndicator
    
    #region Control token 值绑定属性
    
-   private double _emptyImgHeightToken;
-   private static readonly DirectProperty<EmptyIndicator, double> EmptyImgHeightTokenProperty =
-      AvaloniaProperty.RegisterDirect<EmptyIndicator, double>(
-         nameof(_emptyImgHeightToken),
-         o => o._emptyImgHeightToken,
-         (o, v) => o._emptyImgHeightToken = v);
-   
-   private double _emptyImgHeightSMToken;
-   private static readonly DirectProperty<EmptyIndicator, double> EmptyImgHeightSMTokenProperty =
-      AvaloniaProperty.RegisterDirect<EmptyIndicator, double>(
-         nameof(_emptyImgHeightSMToken),
-         o => o._emptyImgHeightSMToken,
-         (o, v) => o._emptyImgHeightSMToken = v);
-   
-   private double _emptyImgHeightMDToken;
-   private static readonly DirectProperty<EmptyIndicator, double> EmptyImgHeightMDTokenProperty =
-      AvaloniaProperty.RegisterDirect<EmptyIndicator, double>(
-         nameof(_emptyImgHeightMDToken),
-         o => o._emptyImgHeightMDToken,
-         (o, v) => o._emptyImgHeightMDToken = v);
-   
    private IBrush? _colorFillToken;
    private static readonly DirectProperty<EmptyIndicator, IBrush?> ColorFillTokenProperty =
       AvaloniaProperty.RegisterDirect<EmptyIndicator, IBrush?>(

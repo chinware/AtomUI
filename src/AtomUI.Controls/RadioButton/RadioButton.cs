@@ -59,9 +59,8 @@ public partial class RadioButton : AvaloniaRadioButton,
       Cursor = new Cursor(StandardCursorType.Hand);
       _customStyle.CollectStyleState();
       _customStyle.SetupTokenBindings();
-      _customStyle.SetupTransitions();
-      
       RadioDotEffectSize = CalculateDotSize(IsEnabled, IsChecked.HasValue && IsChecked.Value);
+      _customStyle.SetupTransitions();
    }
 
    protected override Size MeasureOverride(Size availableSize)

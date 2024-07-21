@@ -1,5 +1,4 @@
 ﻿using AtomUI.ColorSystem;
-using AtomUI.Data;
 using AtomUI.Styling;
 using AtomUI.Utils;
 using Avalonia;
@@ -90,7 +89,7 @@ public partial class EmptyIndicator : TemplatedControl,
    {
       _customStyle = this;
    }
-   
+
    private void CheckImageSource()
    {
       var imageSettedCount = 0;
@@ -115,20 +114,10 @@ public partial class EmptyIndicator : TemplatedControl,
 
    void IControlCustomStyle.SetupTokenBindings()
    {
-      BindUtils.CreateTokenBinding(this, EmptyImgHeightTokenProperty, EmptyIndicatorResourceKey.EmptyImgHeight);
-      BindUtils.CreateTokenBinding(this, EmptyImgHeightSMTokenProperty, EmptyIndicatorResourceKey.EmptyImgHeightSM);
-      BindUtils.CreateTokenBinding(this, EmptyImgHeightMDTokenProperty, EmptyIndicatorResourceKey.EmptyImgHeightMD);
       BindUtils.CreateTokenBinding(this, ColorFillTokenProperty, GlobalResourceKey.ColorFill);
       BindUtils.CreateTokenBinding(this, ColorFillTertiaryTokenProperty, GlobalResourceKey.ColorFillTertiary);
       BindUtils.CreateTokenBinding(this, ColorFillQuaternaryTokenProperty, GlobalResourceKey.ColorFillQuaternary);
       BindUtils.CreateTokenBinding(this, ColorBgContainerTokenProperty, GlobalResourceKey.ColorBgContainer);
-   }
-
-   void IControlCustomStyle.SetupUI()
-   {
-      HorizontalAlignment = HorizontalAlignment.Center;
-      VerticalAlignment = VerticalAlignment.Center;
-      CheckImageSource();
    }
 
    private void SetupImage()
@@ -156,7 +145,7 @@ public partial class EmptyIndicator : TemplatedControl,
          _svg.Path = ImagePath;
       }
    }
-   
+
    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
    {
       base.OnApplyTemplate(e);
@@ -167,6 +156,9 @@ public partial class EmptyIndicator : TemplatedControl,
    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
    {
       _svg = scope.Find<Avalonia.Svg.Svg>(EmptyIndicatorTheme.SvgImagePart);
+      HorizontalAlignment = HorizontalAlignment.Center;
+      VerticalAlignment = VerticalAlignment.Center;
+      CheckImageSource();
       SetupImage();
    }
 
