@@ -5,63 +5,35 @@ namespace AtomUI.Controls;
 
 public partial class LoadingIndicator
 {
-   #region Control token 值绑定属性定义
+   internal static readonly StyledProperty<double> DotSizeProperty =
+      AvaloniaProperty.Register<LoadingIndicator, double>(
+         nameof(DotSize));
    
-   private double _dotSizeToken;
+   internal static readonly StyledProperty<IBrush?> DotBgBrushProperty =
+      AvaloniaProperty.Register<LoadingIndicator, IBrush?>(
+         nameof(DotBgBrush));
 
-   private static readonly DirectProperty<LoadingIndicator, double> DotSizeTokenProperty =
-      AvaloniaProperty.RegisterDirect<LoadingIndicator, double>(
-         nameof(_dotSizeToken),
-         o => o._dotSizeToken,
-         (o, v) => o._dotSizeToken = v);
+   internal double DotSize
+   {
+      get => GetValue(DotSizeProperty);
+      set => SetValue(DotSizeProperty, value);
+   }
    
-   private double _dotSizeSMToken;
+   internal IBrush? DotBgBrush
+   {
+      get => GetValue(DotBgBrushProperty);
+      set => SetValue(DotBgBrushProperty, value);
+   }
 
-   private static readonly DirectProperty<LoadingIndicator, double> DotSizeSMTokenProperty =
-      AvaloniaProperty.RegisterDirect<LoadingIndicator, double>(
-         nameof(_dotSizeSMToken),
-         o => o._dotSizeSMToken,
-         (o, v) => o._dotSizeSMToken = v);
+   internal static readonly StyledProperty<double> IndicatorTextMarginProperty =
+      AvaloniaProperty.Register<LoadingIndicator, double>(
+         nameof(IndicatorTextMargin));
    
-   private double _dotSizeLGToken;
-
-   private static readonly DirectProperty<LoadingIndicator, double> DotSizeLGTokenProperty =
-      AvaloniaProperty.RegisterDirect<LoadingIndicator, double>(
-         nameof(_dotSizeLGToken),
-         o => o._dotSizeLGToken,
-         (o, v) => o._dotSizeLGToken = v);
-   
-   private TimeSpan _indicatorDurationToken;
-
-   private static readonly DirectProperty<LoadingIndicator, TimeSpan> IndicatorDurationTokenProperty =
-      AvaloniaProperty.RegisterDirect<LoadingIndicator, TimeSpan>(
-         nameof(_indicatorDurationToken),
-         o => o._indicatorDurationToken,
-         (o, v) => o._indicatorDurationToken = v);
-   
-   private double _fontSizeToken;
-
-   private static readonly DirectProperty<LoadingIndicator, double> FontSizeTokenProperty =
-      AvaloniaProperty.RegisterDirect<LoadingIndicator, double>(
-         nameof(_fontSizeToken),
-         o => o._fontSizeToken,
-         (o, v) => o._fontSizeToken = v);
-   
-   private double _marginXXSToken;
-
-   private static readonly DirectProperty<LoadingIndicator, double> MarginXXSTokenProperty =
-      AvaloniaProperty.RegisterDirect<LoadingIndicator, double>(
-         nameof(_marginXXSToken),
-         o => o._marginXXSToken,
-         (o, v) => o._marginXXSToken = v);
-   
-   private IBrush? _colorPrimaryToken;
-   private static readonly DirectProperty<LoadingIndicator, IBrush?> ColorPrimaryTokenProperty =
-      AvaloniaProperty.RegisterDirect<LoadingIndicator, IBrush?>(
-         nameof(_colorPrimaryToken),
-         o => o._colorPrimaryToken,
-         (o, v) => o._colorPrimaryToken = v);
-   #endregion
+   internal double IndicatorTextMargin
+   {
+      get => GetValue(IndicatorTextMarginProperty);
+      set => SetValue(IndicatorTextMarginProperty, value);
+   }
 
    #region 私有属性
 

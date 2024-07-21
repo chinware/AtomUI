@@ -1,6 +1,4 @@
-using AtomUI.Data;
 using AtomUI.Styling;
-using AtomUI.TokenSystem;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
@@ -83,7 +81,7 @@ public partial class MarqueeLabel : TextBlock,
    {
       base.OnAttachedToLogicalTree(e);
       if (!_initialized) {
-         _customStyle?.SetupUI();
+         _customStyle?.HandleAttachedToLogicalTree(e);
          _initialized = true;
       }
    }
@@ -94,9 +92,9 @@ public partial class MarqueeLabel : TextBlock,
       HandleLayoutUpdated(size, availableSize);
       return size;
    }
-   
+
    #region IControlCustomStyle 实现
-     void IControlCustomStyle.SetupUI()
+   void IControlCustomStyle.HandleAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
    {
       HorizontalAlignment = HorizontalAlignment.Stretch;
       TextWrapping = TextWrapping.NoWrap;

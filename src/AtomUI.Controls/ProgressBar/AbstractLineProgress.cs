@@ -105,7 +105,7 @@ public abstract partial class AbstractLineProgress : AbstractProgressBar
       if (e.Property == HeightProperty || e.Property == WidthProperty) {
          SetupAlignment();
       }
-      if (_initialized) {
+      if (VisualRoot is not null) {
          if ((e.Property == WidthProperty && Orientation == Orientation.Vertical) ||
              (e.Property == HeightProperty && Orientation == Orientation.Horizontal)) {
             EffectiveSizeType = CalculateEffectiveSizeType(e.GetNewValue<double>());

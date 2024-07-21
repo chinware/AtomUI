@@ -173,8 +173,7 @@ public partial class Segmented : TemplatedControl, IControlCustomStyle
 
    [Content] public SegmentedItems Items { get; } = new SegmentedItems();
    public int ItemCount => Items.Count;
-
-   private bool _initialized = false;
+   
    private IControlCustomStyle _customStyle;
    private int _firstVisible = 0;
    private int _lastVisible = -1;

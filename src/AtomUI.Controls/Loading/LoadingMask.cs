@@ -4,6 +4,7 @@ using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.LogicalTree;
+using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Media;
 
 namespace AtomUI.Controls;
@@ -121,8 +122,7 @@ public class LoadingMask : AvaloniaObject, IDisposable
       _loadingIndicatorAdorner ??= new LoadingIndicatorAdorner();
       _loadingIndicatorAdorner.IndicatorCreated += HandleLoadingIndicatorCreated;
       
-      // 尽力探测 cornerradius
-      _attachTarget.Effect = new BlurEffect()
+     _attachTarget.Effect = new BlurEffect()
       {
          Radius = 5
       };

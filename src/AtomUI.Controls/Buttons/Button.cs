@@ -155,7 +155,7 @@ public partial class Button : AvaloniaButton,
    {
       base.OnAttachedToLogicalTree(e);
       if (!_initialized) {
-         _customStyle.SetupUI();
+         _customStyle.HandleAttachedToLogicalTree(e);
          _initialized = true;
       }
    }
@@ -167,12 +167,9 @@ public partial class Button : AvaloniaButton,
    }
    
    #region IControlCustomStyle 实现
-    void IControlCustomStyle.SetupUI()
+    void IControlCustomStyle.HandleAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
    {
-      SetValue(HorizontalAlignmentProperty, HorizontalAlignment.Left, BindingPriority.Template);
-      SetValue(VerticalAlignmentProperty, VerticalAlignment.Bottom, BindingPriority.Template);
       SetupControlTheme();
-      Cursor = new Cursor(StandardCursorType.Hand);
       if (Text is null && Content is string content) {
          Text = content;
          Content = null;
@@ -445,34 +442,37 @@ public partial class Button : AvaloniaButton,
          }
       }
 
-      if (_initialized && e.Property == IconProperty) {
-         var oldValue = e.GetOldValue<PathIcon?>();
-         var newValue = e.GetNewValue<PathIcon?>();
-         if (oldValue is not null) {
-            _stackPanel!.Children.Remove(oldValue);
-         }
+      if (VisualRoot is not null) {
+         if (e.Property == IconProperty) {
+            var oldValue = e.GetOldValue<PathIcon?>();
+            var newValue = e.GetNewValue<PathIcon?>();
+            if (oldValue is not null) {
+               _stackPanel!.Children.Remove(oldValue);
+            }
 
-         if (newValue is not null) {
-            SetupIcon();
-         }
-      }
-
-      if (_initialized && e.Property == ContentProperty) {
-         // 不推荐，尽最大能力还原
-         var oldText = (_label!.Content as string)!;
-         var newContent = e.GetNewValue<object?>();
-         if (newContent is string newText) {
-            if (oldText != newText) {
-               _label!.Content = newText;
+            if (newValue is not null) {
+               SetupIcon();
             }
          }
 
-         Content = _stackPanel;
-      }
+         if (e.Property == ContentProperty) {
+            // 不推荐，尽最大能力还原
+            var oldText = (_label!.Content as string)!;
+            var newContent = e.GetNewValue<object?>();
+            if (newContent is string newText) {
+               if (oldText != newText) {
+                  _label!.Content = newText;
+               }
+            }
+
+            Content = _stackPanel;
+         }
       
-      if (_initialized && e.Property == TextProperty) {
-         _label!.Content = Text;
+         if (e.Property == TextProperty) {
+            _label!.Content = Text;
+         }
       }
+  
    }
 
    public Rect WaveGeometry()

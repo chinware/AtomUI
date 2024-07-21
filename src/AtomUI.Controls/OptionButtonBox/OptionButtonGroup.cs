@@ -1,16 +1,12 @@
 using System.Collections.Specialized;
 using AtomUI.Controls.Utils;
-using AtomUI.Data;
 using AtomUI.Styling;
-using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.Data;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Metadata;
 
@@ -19,30 +15,30 @@ namespace AtomUI.Controls;
 using ButtonSizeType = SizeType;
 using OptionButtons = AvaloniaList<OptionButton>;
 
-public partial class OptionButtonGroup : TemplatedControl,
-                                         ISizeTypeAware,
-                                         IControlCustomStyle
+public class OptionButtonGroup : TemplatedControl,
+                                 ISizeTypeAware,
+                                 IControlCustomStyle
 {
    public static readonly StyledProperty<ButtonSizeType> SizeTypeProperty =
       AvaloniaProperty.Register<OptionButtonGroup, ButtonSizeType>(nameof(SizeType), ButtonSizeType.Middle);
 
    public static readonly StyledProperty<OptionButtonStyle> ButtonStyleProperty =
       AvaloniaProperty.Register<OptionButtonGroup, OptionButtonStyle>(nameof(SizeType), OptionButtonStyle.Outline);
-   
+
    public static readonly DirectProperty<OptionButtonGroup, OptionButton?> SelectedOptionProperty =
       AvaloniaProperty.RegisterDirect<OptionButtonGroup, OptionButton?>(nameof(SelectedOption),
-         o => o.SelectedOption,
-         (o, v) => o.SelectedOption = v);
-   
+                                                                        o => o.SelectedOption,
+                                                                        (o, v) => o.SelectedOption = v);
+
    internal static readonly StyledProperty<IBrush?> SelectedOptionBorderColorProperty =
       AvaloniaProperty.Register<Button, IBrush?>(nameof(SelectedOptionBorderColor));
-   
+
    public ButtonSizeType SizeType
    {
       get => GetValue(SizeTypeProperty);
       set => SetValue(SizeTypeProperty, value);
    }
-   
+
    public OptionButtonStyle ButtonStyle
    {
       get => GetValue(ButtonStyleProperty);
@@ -50,12 +46,13 @@ public partial class OptionButtonGroup : TemplatedControl,
    }
 
    private OptionButton? _optionButton;
+
    public OptionButton? SelectedOption
    {
       get => _optionButton;
       set => SetAndRaise(SelectedOptionProperty, ref _optionButton, value);
    }
-   
+
    internal IBrush? SelectedOptionBorderColor
    {
       get => GetValue(SelectedOptionBorderColorProperty);
@@ -63,8 +60,7 @@ public partial class OptionButtonGroup : TemplatedControl,
    }
 
    [Content] public OptionButtons Options { get; } = new OptionButtons();
-   
-   private bool _initialized = false;
+
    private ControlStyleState _styleState;
    private IControlCustomStyle _customStyle;
    private StackPanel? _layout;
@@ -74,7 +70,7 @@ public partial class OptionButtonGroup : TemplatedControl,
    {
       AffectsMeasure<OptionButtonGroup>(SizeTypeProperty);
       AffectsRender<OptionButtonGroup>(SelectedOptionProperty, SelectedOptionBorderColorProperty,
-         ButtonStyleProperty);
+                                       ButtonStyleProperty);
    }
 
    public OptionButtonGroup()
@@ -113,6 +109,7 @@ public partial class OptionButtonGroup : TemplatedControl,
                   _layout.Children[index] = child;
                }
             }
+
             break;
 
          case NotifyCollectionChangedAction.Reset:
@@ -166,30 +163,15 @@ public partial class OptionButtonGroup : TemplatedControl,
    {
       InvalidateMeasure();
    }
-   
-   protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-   {
-      base.OnAttachedToLogicalTree(e);
-      if (!_initialized) {
-         _customStyle.SetupUI();
-         _initialized = true;
-      }
-   }
 
    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
    {
       base.OnPropertyChanged(e);
       _customStyle.HandlePropertyChangedForStyle(e);
    }
-   
+
    #region IControlCustomStyle 实现
 
-   void IControlCustomStyle.SetupUI()
-   {
-      HorizontalAlignment = HorizontalAlignment.Left;
-      _customStyle.CollectStyleState();
-   }
-   
    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
    {
       base.OnApplyTemplate(e);
@@ -199,9 +181,11 @@ public partial class OptionButtonGroup : TemplatedControl,
    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
    {
       _layout = scope.Find<StackPanel>(OptionButtonGroupTheme.MainContainerPart);
+      HorizontalAlignment = HorizontalAlignment.Left;
       ApplyButtonSizeConfig();
       ApplyButtonStyleConfig();
       _layout?.Children.AddRange(Options);
+      _customStyle.CollectStyleState();
    }
 
    void IControlCustomStyle.CollectStyleState()
@@ -231,17 +215,17 @@ public partial class OptionButtonGroup : TemplatedControl,
          optionButton.ButtonStyle = ButtonStyle;
       }
    }
-   
+
    public override void Render(DrawingContext context)
    {
-      _borderRenderHelper.Render(context, 
-         new Size(DesiredSize.Width, DesiredSize.Height), 
-         BorderThickness, 
-         CornerRadius, 
-         BackgroundSizing.CenterBorder, 
-         null,
-         BorderBrush,
-         new BoxShadows());
+      _borderRenderHelper.Render(context,
+                                 new Size(DesiredSize.Width, DesiredSize.Height),
+                                 BorderThickness,
+                                 CornerRadius,
+                                 BackgroundSizing.CenterBorder,
+                                 null,
+                                 BorderBrush,
+                                 new BoxShadows());
       for (int i = 0; i < Options.Count; ++i) {
          var optionButton = Options[i];
          if (ButtonStyle == OptionButtonStyle.Solid) {
@@ -252,6 +236,7 @@ public partial class OptionButtonGroup : TemplatedControl,
                }
             }
          }
+
          if (i != Options.Count - 1) {
             var offsetX = optionButton.Bounds.Right;
             var startPoint = new Point(offsetX, 0);
@@ -277,6 +262,7 @@ public partial class OptionButtonGroup : TemplatedControl,
                   offsetX -= BorderThickness.Left / 2;
                   width += BorderThickness.Left / 2;
                }
+
                var translationMatrix = Matrix.CreateTranslation(offsetX, 0);
                using var state = context.PushTransform(translationMatrix);
                var cornerRadius = new CornerRadius(0);
@@ -285,17 +271,19 @@ public partial class OptionButtonGroup : TemplatedControl,
                } else if (i == Options.Count - 1) {
                   cornerRadius = new CornerRadius(0, CornerRadius.TopRight, CornerRadius.BottomRight, 0);
                }
-               _borderRenderHelper.Render(context, 
-                  new Size(width, DesiredSize.Height), 
-                  BorderThickness, 
-                  cornerRadius, 
-                  BackgroundSizing.InnerBorderEdge, 
-                  null,
-                  SelectedOptionBorderColor,
-                  new BoxShadows());
+
+               _borderRenderHelper.Render(context,
+                                          new Size(width, DesiredSize.Height),
+                                          BorderThickness,
+                                          cornerRadius,
+                                          BackgroundSizing.InnerBorderEdge,
+                                          null,
+                                          SelectedOptionBorderColor,
+                                          new BoxShadows());
             }
          }
       }
    }
+
    #endregion
 }

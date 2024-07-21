@@ -1,5 +1,4 @@
 using AtomUI.Controls.Utils;
-using AtomUI.Data;
 using AtomUI.Media;
 using AtomUI.Styling;
 using AtomUI.Utils;
@@ -7,15 +6,12 @@ using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.Data;
 using Avalonia.Input;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
 using AvaloniaRadioButton = Avalonia.Controls.RadioButton;
-
 using ButtonSizeType = SizeType;
 
 public enum OptionButtonStyle
@@ -37,31 +33,29 @@ public class OptionButtonPointerEventArgs : EventArgs
    public OptionButton? Button { get; }
    public bool IsPressed { get; set; }
    public bool IsHovering { get; set; }
+
    public OptionButtonPointerEventArgs(OptionButton button)
    {
       Button = button;
    }
 }
 
-public partial class OptionButton : AvaloniaRadioButton, 
-                                    ISizeTypeAware,
-                                    IWaveAdornerInfoProvider, 
-                                    IControlCustomStyle
+public class OptionButton : AvaloniaRadioButton,
+                            ISizeTypeAware,
+                            IWaveAdornerInfoProvider,
+                            IControlCustomStyle
 {
-   private bool _initialized = false;
    private ControlStyleState _styleState;
    private IControlCustomStyle _customStyle;
-   private StackPanel? _stackPanel;
-   private Label? _label;
    private CornerRadius? _originCornerRadius;
    private readonly BorderRenderHelper _borderRenderHelper;
-   
+
    public static readonly StyledProperty<ButtonSizeType> SizeTypeProperty =
       AvaloniaProperty.Register<OptionButton, ButtonSizeType>(nameof(SizeType), ButtonSizeType.Middle);
-   
+
    public static readonly StyledProperty<OptionButtonStyle> ButtonStyleProperty =
       AvaloniaProperty.Register<OptionButton, OptionButtonStyle>(nameof(ButtonStyle), OptionButtonStyle.Outline);
-   
+
    public static readonly StyledProperty<string?> TextProperty
       = AvaloniaProperty.Register<OptionButton, string?>(nameof(Text));
 
@@ -70,26 +64,26 @@ public partial class OptionButton : AvaloniaRadioButton,
          nameof(InOptionGroup),
          o => o.InOptionGroup,
          (o, v) => o.InOptionGroup = v);
-   
+
    private static readonly DirectProperty<OptionButton, OptionButtonPositionTrait> GroupPositionTraitProperty =
       AvaloniaProperty.RegisterDirect<OptionButton, OptionButtonPositionTrait>(
          nameof(GroupPositionTrait),
          o => o.GroupPositionTrait,
          (o, v) => o.GroupPositionTrait = v,
          OptionButtonPositionTrait.OnlyOne);
-   
+
    public ButtonSizeType SizeType
    {
       get => GetValue(SizeTypeProperty);
       set => SetValue(SizeTypeProperty, value);
    }
-   
+
    public OptionButtonStyle ButtonStyle
    {
       get => GetValue(ButtonStyleProperty);
       set => SetValue(ButtonStyleProperty, value);
    }
-   
+
    public string? Text
    {
       get => GetValue(TextProperty);
@@ -97,7 +91,7 @@ public partial class OptionButton : AvaloniaRadioButton,
    }
 
    private bool _inOptionGroup = false;
-   
+
    /// <summary>
    /// 是否在 Group 中渲染
    /// </summary>
@@ -108,26 +102,27 @@ public partial class OptionButton : AvaloniaRadioButton,
    }
 
    private OptionButtonPositionTrait _groupPositionTrait = OptionButtonPositionTrait.OnlyOne;
+
    internal OptionButtonPositionTrait GroupPositionTrait
    {
       get => _groupPositionTrait;
       set => SetAndRaise(GroupPositionTraitProperty, ref _groupPositionTrait, value);
    }
-   
+
    internal event EventHandler<OptionButtonPointerEventArgs>? OptionButtonPointerEvent;
-   
+
    static OptionButton()
    {
       AffectsMeasure<OptionButton>(SizeTypeProperty, ButtonStyleProperty, InOptionGroupProperty);
       AffectsRender<OptionButton>(IsCheckedProperty, CornerRadiusProperty, ForegroundProperty, BackgroundProperty);
    }
-   
+
    public OptionButton()
    {
       _customStyle = this;
       _borderRenderHelper = new BorderRenderHelper();
    }
-   
+
    protected override Size MeasureOverride(Size availableSize)
    {
       var size = base.MeasureOverride(availableSize);
@@ -137,22 +132,13 @@ public partial class OptionButton : AvaloniaRadioButton,
       targetWidth += Padding.Left + Padding.Right;
       return new Size(targetWidth, targetHeight);
    }
-   
-   protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-   {
-      base.OnAttachedToLogicalTree(e);
-      if (!_initialized) {
-         _customStyle.SetupUI();
-         _initialized = true;
-      }
-   }
-   
+
    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
    {
       base.OnPropertyChanged(e);
       _customStyle.HandlePropertyChangedForStyle(e);
    }
-   
+
    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
    {
       base.OnApplyTemplate(e);
@@ -161,6 +147,13 @@ public partial class OptionButton : AvaloniaRadioButton,
 
    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
    {
+      if (Text is null && Content is string content) {
+         Text = content;
+      }
+
+      Cursor = new Cursor(StandardCursorType.Hand);
+      HandleSizeTypeChanged();
+      _customStyle.CollectStyleState();
       _customStyle.SetupTransitions();
    }
 
@@ -169,8 +162,9 @@ public partial class OptionButton : AvaloniaRadioButton,
       _originCornerRadius = CornerRadius;
       CornerRadius = BuildCornerRadius(GroupPositionTrait, _originCornerRadius!.Value);
    }
-   
+
    #region IControlCustomStyle 实现
+
    public Rect WaveGeometry()
    {
       return new Rect(0, 0, Bounds.Width, Bounds.Height);
@@ -181,17 +175,6 @@ public partial class OptionButton : AvaloniaRadioButton,
       return CornerRadius;
    }
 
-   void IControlCustomStyle.SetupUI()
-   {
-      if (Text is null && Content is string content) {
-         Text = content;
-      }
-      
-      Cursor = new Cursor(StandardCursorType.Hand);
-      HandleSizeTypeChanged();
-      _customStyle.CollectStyleState();
-   }
-   
    void IControlCustomStyle.SetupTransitions()
    {
       var transitions = new Transitions();
@@ -200,7 +183,7 @@ public partial class OptionButton : AvaloniaRadioButton,
       } else if (ButtonStyle == OptionButtonStyle.Outline) {
          transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(BorderBrushProperty));
       }
-      
+
       transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty));
       Transitions = transitions;
    }
@@ -257,7 +240,7 @@ public partial class OptionButton : AvaloniaRadioButton,
 
       return cornerRadius;
    }
- 
+
    protected override void OnPointerPressed(PointerPressedEventArgs e)
    {
       base.OnPointerPressed(e);
@@ -300,16 +283,15 @@ public partial class OptionButton : AvaloniaRadioButton,
 
    public override void Render(DrawingContext context)
    {
-      _borderRenderHelper.Render(context, 
-                                 Bounds.Size, 
-                                 BorderThickness, 
-                                 CornerRadius, 
-                                 BackgroundSizing.InnerBorderEdge, 
+      _borderRenderHelper.Render(context,
+                                 Bounds.Size,
+                                 BorderThickness,
+                                 CornerRadius,
+                                 BackgroundSizing.InnerBorderEdge,
                                  Background,
                                  BorderBrush,
                                  default);
    }
 
    #endregion
-
 }

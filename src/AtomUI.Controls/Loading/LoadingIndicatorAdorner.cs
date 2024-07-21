@@ -1,13 +1,12 @@
 ﻿using AtomUI.Styling;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.LogicalTree;
+using Avalonia.Controls.Primitives;
 
 namespace AtomUI.Controls;
 
-public class LoadingIndicatorAdorner : Control, IControlCustomStyle
+public class LoadingIndicatorAdorner : TemplatedControl, IControlCustomStyle
 {
-   private bool _initialized = false;
    private IControlCustomStyle _customStyle;
    private LoadingIndicator? _loadingIndicator;
 
@@ -17,36 +16,28 @@ public class LoadingIndicatorAdorner : Control, IControlCustomStyle
    {
       _customStyle = this;
    }
-
-   protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+   
+   protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
    {
-      base.OnAttachedToLogicalTree(e);
-      if (!_initialized) {
-         _customStyle.SetupUI();
-         _initialized = true;
-      }
+      base.OnApplyTemplate(e);
+      _customStyle.HandleTemplateApplied(e.NameScope);
    }
 
-   void IControlCustomStyle.SetupUI()
+   void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
    {
-      _loadingIndicator = new LoadingIndicator();
-      IndicatorCreated?.Invoke(this, new LoadingIndicatorCreatedEventArgs(_loadingIndicator));
-      LogicalChildren.Add(_loadingIndicator);
-      VisualChildren.Add(_loadingIndicator);
+      _loadingIndicator = scope.Find<LoadingIndicator>(LoadingIndicatorAdornerTheme.LoadingIndicatorPart);
+      if (_loadingIndicator is not null) {
+         IndicatorCreated?.Invoke(this, new LoadingIndicatorCreatedEventArgs(_loadingIndicator));
+      }
    }
 
    protected override Size ArrangeOverride(Size finalSize)
    {
       var offsetX = (finalSize.Width - _loadingIndicator!.DesiredSize.Width) / 2;
       var offsetY = (finalSize.Height - _loadingIndicator.DesiredSize.Height) / 2;
-      _loadingIndicator.Arrange(new Rect(new Point(offsetX, offsetY), _loadingIndicator.DesiredSize));
-      return finalSize;
-   }
-
-   protected override Size MeasureOverride(Size availableSize)
-   {
-      base.MeasureOverride(availableSize);
-      return availableSize;
+      Canvas.SetLeft(_loadingIndicator, offsetX);
+      Canvas.SetTop(_loadingIndicator, offsetY);
+      return base.ArrangeOverride(finalSize);
    }
 }
 

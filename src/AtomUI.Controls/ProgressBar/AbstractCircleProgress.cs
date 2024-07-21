@@ -165,7 +165,7 @@ public abstract partial class AbstractCircleProgress : AbstractProgressBar
       base.NotifyPropertyChanged(e);
      
       if (e.Property == WidthProperty || e.Property == HeightProperty) {
-         if (_initialized) {
+         if (VisualRoot is not null) {
             CalculateStrokeThickness();
             SetupExtraInfoFontSize();
             SetupExtraInfoIconSize();

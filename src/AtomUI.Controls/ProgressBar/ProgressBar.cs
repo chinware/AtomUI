@@ -415,7 +415,7 @@ public partial class ProgressBar : AbstractLineProgress
    protected override void NotifyPropertyChanged(AvaloniaPropertyChangedEventArgs e)
    {
       base.NotifyPropertyChanged(e);
-      if (_initialized) {
+      if (VisualRoot is not null) {
          if (e.Property == IndicatorBarBrushProperty) {
             SetupPercentLabelForegroundBrush();
          }

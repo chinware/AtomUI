@@ -93,12 +93,7 @@ public class ArrowDecoratedBox : TemplatedControl,
    /// </summary>
    public static readonly StyledProperty<Control?> ChildProperty =
       Border.ChildProperty.AddOwner<ArrowDecoratedBox>();
-
-   /// <summary>
-   /// Defines the <see cref="CornerRadius"/> property.
-   /// </summary>
-   public static readonly StyledProperty<CornerRadius> CornerRadiusProperty =
-      Border.CornerRadiusProperty.AddOwner<ArrowDecoratedBox>();
+   
 
    // 指针最顶点位置
    // 相对坐标
@@ -121,15 +116,6 @@ public class ArrowDecoratedBox : TemplatedControl,
    {
       get => GetValue(ArrowPositionProperty);
       set => SetValue(ArrowPositionProperty, value);
-   }
-
-   /// <summary>
-   /// Gets or sets the radius of the border rounded corners.
-   /// </summary>
-   public CornerRadius CornerRadius
-   {
-      get => GetValue(CornerRadiusProperty);
-      set => SetValue(CornerRadiusProperty, value);
    }
 
    /// <summary>

@@ -5,6 +5,8 @@ using AtomUI.Styling;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
+using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Layout;
@@ -21,7 +23,6 @@ public partial class RadioButton : AvaloniaRadioButton,
                                    IWaveAdornerInfoProvider, 
                                    IControlCustomStyle
 {
-   private bool _initialized = false;
    private IPen? _cachedPen;
    private ControlStyleState _styleState;
    private IControlCustomStyle _customStyle;
@@ -41,19 +42,26 @@ public partial class RadioButton : AvaloniaRadioButton,
       _customStyle = this;
    }
 
-   protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-   {
-      base.OnAttachedToLogicalTree(e);
-      if (!_initialized) {
-         _customStyle.SetupUI();
-         _initialized = true;
-      }
-   }
-
    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
    {
       base.OnPropertyChanged(e);
       _customStyle.HandlePropertyChangedForStyle(e);
+   }
+   
+   protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+   {
+      base.OnApplyTemplate(e);
+      _customStyle.HandleTemplateApplied(e.NameScope);
+   }
+
+   void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
+   {
+      Cursor = new Cursor(StandardCursorType.Hand);
+      _customStyle.CollectStyleState();
+      _customStyle.SetupTokenBindings();
+      _customStyle.SetupTransitions();
+      
+      RadioDotEffectSize = CalculateDotSize(IsEnabled, IsChecked.HasValue && IsChecked.Value);
    }
 
    protected override Size MeasureOverride(Size availableSize)
@@ -100,15 +108,6 @@ public partial class RadioButton : AvaloniaRadioButton,
    }
    
    #region IControlCustomStyle 实现
-   void IControlCustomStyle.SetupUI()
-   {
-      Cursor = new Cursor(StandardCursorType.Hand);
-      _customStyle.CollectStyleState();
-      _customStyle.SetupTokenBindings();
-      _customStyle.SetupTransitions();
-      
-      RadioDotEffectSize = CalculateDotSize(IsEnabled, IsChecked.HasValue && IsChecked.Value);
-   }
    
    void IControlCustomStyle.SetupTokenBindings()
    {

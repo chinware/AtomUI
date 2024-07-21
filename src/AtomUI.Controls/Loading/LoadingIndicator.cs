@@ -1,20 +1,19 @@
-﻿using AtomUI.Icon;
+﻿using AtomUI.Controls.Utils;
+using AtomUI.Icon;
 using AtomUI.Styling;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
-using Avalonia.Data;
-using Avalonia.Layout;
-using Avalonia.LogicalTree;
+using Avalonia.Controls.Primitives;
 using Avalonia.Media;
 using Avalonia.Media.Transformation;
 using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
-public partial class LoadingIndicator : Control, ISizeTypeAware, IControlCustomStyle
+public partial class LoadingIndicator : TemplatedControl, ISizeTypeAware, IControlCustomStyle
 {
    #region 公共属性定义
    public static readonly StyledProperty<SizeType> SizeTypeProperty =
@@ -72,20 +71,20 @@ public partial class LoadingIndicator : Control, ISizeTypeAware, IControlCustomS
    }
    
    #endregion
-
-   private bool _initialized = false;
+   
    private IControlCustomStyle _customStyle;
    private Animation? _animation;
-   private TextBlock? _textBlock;
+   private TextBlock? _loadingText;
+   private Canvas? _mainContainer;
    private RenderInfo? _renderInfo;
    private CancellationTokenSource?_cancellationTokenSource;
    
-   private const double LARGE_INDICATOR_SIZE = 48;
-   private const double MIDDLE_INDICATOR_SIZE = 32;
-   private const double SMALL_INDICATOR_SIZE = 16;
-   private const double MAX_CONTENT_WIDTH = 120; // 拍脑袋的决定
-   private const double MAX_CONTENT_HEIGHT = 400;
-   private const double DOT_START_OPACITY = 0.3;
+   internal const double LARGE_INDICATOR_SIZE = 48;
+   internal const double MIDDLE_INDICATOR_SIZE = 32;
+   internal const double SMALL_INDICATOR_SIZE = 16;
+   internal const double MAX_CONTENT_WIDTH = 120; // 拍脑袋的决定
+   internal const double MAX_CONTENT_HEIGHT = 400;
+   internal const double DOT_START_OPACITY = 0.3;
    
    static LoadingIndicator()
    {
@@ -101,22 +100,13 @@ public partial class LoadingIndicator : Control, ISizeTypeAware, IControlCustomS
       _customStyle = this;
    }
    
-   protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-   {
-      base.OnAttachedToLogicalTree(e);
-      if (!_initialized) {
-         _customStyle.SetupUI();
-         _initialized = true;
-      }
-   }
-   
    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
    {
       base.OnAttachedToVisualTree(e);
       BuildIndicatorAnimation();
       _cancellationTokenSource?.Cancel();
       _cancellationTokenSource = new CancellationTokenSource();
-      _animation!.RunAsync(this, _cancellationTokenSource.Token);
+      _animation?.RunAsync(this, _cancellationTokenSource.Token);
    }
 
    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
@@ -130,20 +120,31 @@ public partial class LoadingIndicator : Control, ISizeTypeAware, IControlCustomS
       base.OnPropertyChanged(e);
       _customStyle.HandlePropertyChangedForStyle(e);
    }
+   
+   protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+   {
+      base.OnApplyTemplate(e);
+      _customStyle.HandleTemplateApplied(e.NameScope);
+   }
+
+   void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
+   {
+      _mainContainer = scope.Find<Canvas>(LoadingIndicatorTheme.MainContainerPart);
+      _loadingText = scope.Find<TextBlock>(LoadingIndicatorTheme.LoadingTextPart);
+      
+      SetupCustomIndicator();
+   }
 
    void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
    {
       if (e.Property == CustomIndicatorIconProperty) {
-         if (_initialized) {
+         if (VisualRoot is not null) {
             var oldCustomIcon = e.GetOldValue<PathIcon?>();
             if (oldCustomIcon is not null) {
-               LogicalChildren.Remove(oldCustomIcon);
-               VisualChildren.Remove(oldCustomIcon);
+               _mainContainer?.Children.Remove(oldCustomIcon);
             }
             SetupCustomIndicator();
          }
-      } else if (e.Property == SizeTypeProperty) {
-         HandleSizeTypeChanged();
       } else if (e.Property == IndicatorAngleProperty) {
          if (CustomIndicatorIcon is not null) {
             HandleIndicatorAngleChanged();
@@ -164,24 +165,8 @@ public partial class LoadingIndicator : Control, ISizeTypeAware, IControlCustomS
    private void SetupCustomIndicator()
    {
       if (CustomIndicatorIcon is not null) {
-         VisualChildren.Add(CustomIndicatorIcon);
-         LogicalChildren.Add(CustomIndicatorIcon);
-         // 暂时为了简单起见，我们在这里先只能使用 SizeType 的大小
-         var indicatorSize = GetIndicatorSize(SizeType);
-         CustomIndicatorIcon.Width = indicatorSize;
-         CustomIndicatorIcon.Height = indicatorSize;
-         CustomIndicatorIcon.IconMode = IconMode.Normal;
-         CustomIndicatorIcon.VerticalAlignment = VerticalAlignment.Center;
-         CustomIndicatorIcon.HorizontalAlignment = HorizontalAlignment.Center;
-      }
-   }
-
-   private void HandleSizeTypeChanged()
-   {
-      if (CustomIndicatorIcon is not null) {
-         var indicatorSize = GetIndicatorSize(SizeType);
-         CustomIndicatorIcon.Width = indicatorSize;
-         CustomIndicatorIcon.Height = indicatorSize;
+         UIStructureUtils.SetTemplateParent(CustomIndicatorIcon, this);
+         _mainContainer?.Children.Insert(0, CustomIndicatorIcon);
       }
    }
 
@@ -189,12 +174,15 @@ public partial class LoadingIndicator : Control, ISizeTypeAware, IControlCustomS
    {
       var targetWidth = 0d;
       var targetHeight = 0d;
+      base.MeasureOverride(new Size(Math.Min(availableSize.Width, MAX_CONTENT_WIDTH),
+                                    Math.Min(availableSize.Height, MAX_CONTENT_HEIGHT)));
       if (IsShowLoadingMsg) {
-         var size = base.MeasureOverride(new Size(Math.Min(availableSize.Width, MAX_CONTENT_WIDTH),
-                                                  Math.Min(availableSize.Height, MAX_CONTENT_HEIGHT)));
-         targetWidth += size.Width;
-         targetHeight += size.Height;
-         if (size.Height > 0) {
+         if (_loadingText is not null) {
+            targetWidth += _loadingText.DesiredSize.Width;
+            targetHeight += _loadingText.DesiredSize.Height;
+         }
+       
+         if (!string.IsNullOrEmpty(LoadingMsg)) {
             targetHeight += GetLoadMsgPaddingTop();
          }
       }
@@ -208,72 +196,30 @@ public partial class LoadingIndicator : Control, ISizeTypeAware, IControlCustomS
 
    private double GetLoadMsgPaddingTop()
    {
-      return (GetEffectiveDotSize() - _fontSizeToken) / 2 + 2;
-   }
-
-   private double GetEffectiveDotSize()
-   {
-      var dotSize = 0d;
-      if (SizeType == SizeType.Large) {
-         dotSize = _dotSizeLGToken;
-      } else if (SizeType == SizeType.Middle) {
-         dotSize = _dotSizeToken;
-      } else {
-         dotSize = _dotSizeSMToken;
-      }
-
-      return dotSize;
+      return (DotSize - FontSize) / 2 + 2;
    }
    
    protected override Size ArrangeOverride(Size finalSize)
    {
       if (IsShowLoadingMsg) {
          var msgRect = GetLoadingMsgRect();
-         _textBlock!.Arrange(msgRect);
+         if (_loadingText is not null) {
+            Canvas.SetLeft(_loadingText, msgRect.Left);
+            Canvas.SetTop(_loadingText, msgRect.Top);
+         }
       }
 
       if (CustomIndicatorIcon is not null) {
          var indicatorRect = GetIndicatorRect();
-         CustomIndicatorIcon.Arrange(indicatorRect);
+         Canvas.SetLeft(CustomIndicatorIcon, indicatorRect.Left);
+         Canvas.SetTop(CustomIndicatorIcon, indicatorRect.Top);
       }
 
-      return finalSize;
+      return base.ArrangeOverride(finalSize);
    }
 
    #region IControlCustomStyle 实现
    
-   void IControlCustomStyle.SetupUI()
-   {
-      SetValue(HorizontalAlignmentProperty, HorizontalAlignment.Left, BindingPriority.Style);
-      SetValue(VerticalAlignmentProperty, VerticalAlignment.Top, BindingPriority.Style);
-      
-      _textBlock = new TextBlock()
-      {
-         Text = LoadingMsg,
-         HorizontalAlignment = HorizontalAlignment.Center,
-         VerticalAlignment = VerticalAlignment.Center,
-      };
-      
-      LogicalChildren.Add(_textBlock);
-      VisualChildren.Add(_textBlock);
-      
-      SetupCustomIndicator();
-      
-      _customStyle.SetupTokenBindings();
-   }
-   
-   void IControlCustomStyle.SetupTokenBindings()
-   {
-      BindUtils.CreateTokenBinding(this, DotSizeTokenProperty, LoadingIndicatorResourceKey.DotSize);
-      BindUtils.CreateTokenBinding(this, DotSizeSMTokenProperty, LoadingIndicatorResourceKey.DotSizeSM);
-      BindUtils.CreateTokenBinding(this, DotSizeLGTokenProperty, LoadingIndicatorResourceKey.DotSizeLG);
-      BindUtils.CreateTokenBinding(this, IndicatorDurationTokenProperty, LoadingIndicatorResourceKey.IndicatorDuration);
-      BindUtils.CreateTokenBinding(this, FontSizeTokenProperty, GlobalResourceKey.FontSize);
-      BindUtils.CreateTokenBinding(this, MarginXXSTokenProperty, GlobalResourceKey.MarginXXS);
-      BindUtils.CreateTokenBinding(this, ColorPrimaryTokenProperty, GlobalResourceKey.ColorPrimary);
-      BindUtils.CreateTokenBinding(_textBlock!, TextBlock.ForegroundProperty, GlobalResourceKey.ColorPrimary);
-   }
-
    private void BuildIndicatorAnimation(bool force = false)
    {
       if (force || _animation is null) {
@@ -282,7 +228,7 @@ public partial class LoadingIndicator : Control, ISizeTypeAware, IControlCustomS
          {
             IterationCount = IterationCount.Infinite,
             Easing = MotionEasingCurve ?? new LinearEasing(),
-            Duration = MotionDuration ?? _indicatorDurationToken,
+            Duration = MotionDuration ?? TimeSpan.FromMilliseconds(300),
             Children =
             {
                new KeyFrame
@@ -305,7 +251,7 @@ public partial class LoadingIndicator : Control, ISizeTypeAware, IControlCustomS
       var offsetX = (DesiredSize.Width - indicatorSize) / 2;
       var offsetY = (DesiredSize.Height - indicatorSize) / 2;
       if (IsShowLoadingMsg && LoadingMsg is not null) {
-         offsetY -= _textBlock!.DesiredSize.Height / 2;
+         offsetY -= _loadingText!.DesiredSize.Height / 2;
       }
 
       return new Rect(new Point(offsetX, offsetY), new Size(indicatorSize, indicatorSize));
@@ -320,8 +266,8 @@ public partial class LoadingIndicator : Control, ISizeTypeAware, IControlCustomS
       var indicatorRect = GetIndicatorRect();
       var offsetX = indicatorRect.Left;
       var offsetY = indicatorRect.Bottom;
-      offsetX -= (_textBlock!.DesiredSize.Width - indicatorRect.Width) / 2;
-      return new Rect(new Point(offsetX, offsetY), _textBlock.DesiredSize);
+      offsetX -= (_loadingText!.DesiredSize.Width - indicatorRect.Width) / 2;
+      return new Rect(new Point(offsetX, offsetY), _loadingText.DesiredSize);
    }
 
    private static double GetIndicatorSize(SizeType sizeType)
@@ -401,15 +347,13 @@ public partial class LoadingIndicator : Control, ISizeTypeAware, IControlCustomS
    void IControlCustomStyle.PrepareRenderInfo()
    {
       _renderInfo = new RenderInfo();
+      _renderInfo.DotSize = DotSize;
       if (SizeType == SizeType.Large) {
-         _renderInfo.DotSize = _dotSizeLGToken;
-         _renderInfo.IndicatorItemSize = (_dotSizeLGToken - _marginXXSToken) / 2.5;
+         _renderInfo.IndicatorItemSize = (DotSize - IndicatorTextMargin) / 2.5;
       } else if (SizeType == SizeType.Middle) {
-         _renderInfo.DotSize = _dotSizeToken;
-         _renderInfo.IndicatorItemSize = (_dotSizeToken - _marginXXSToken) / 2;
+         _renderInfo.IndicatorItemSize = (DotSize - IndicatorTextMargin) / 2;
       } else {
-         _renderInfo.DotSize = _dotSizeSMToken;
-         _renderInfo.IndicatorItemSize = (_dotSizeSMToken - _marginXXSToken) / 2;
+         _renderInfo.IndicatorItemSize = (DotSize - IndicatorTextMargin) / 2;
       }
       _renderInfo.IndicatorItemSize *= 0.9;
       if (SizeType == SizeType.Large) {
@@ -420,7 +364,7 @@ public partial class LoadingIndicator : Control, ISizeTypeAware, IControlCustomS
          _renderInfo.ItemEdgeMargin = 0.5;
       }
  
-      _renderInfo.DotBgBrush = _colorPrimaryToken;
+      _renderInfo.DotBgBrush = DotBgBrush;
    }
 
    // 跟渲染相关的数据

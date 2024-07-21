@@ -201,7 +201,6 @@ public abstract partial class AbstractProgressBar : RangeBase,
       set => SetAndRaise(StrokeThicknessProperty, ref _strokeThickness, value);
    }
    
-   protected bool _initialized = false;
    protected ControlStyleState _styleState;
    internal IControlCustomStyle _customStyle;
    protected LayoutTransformControl? _layoutTransformLabel;
@@ -228,14 +227,6 @@ public abstract partial class AbstractProgressBar : RangeBase,
    {
       _customStyle = this;
       _effectiveSizeType = SizeType;
-   }
-
-   protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-   {
-      base.OnAttachedToLogicalTree(e);
-      if (!_initialized) {
-         _customStyle.SetupUI();
-      }
    }
 
    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
@@ -267,6 +258,7 @@ public abstract partial class AbstractProgressBar : RangeBase,
    {
       NotifyTemplateApplied(scope);
       _customStyle.AfterUIStructureReady();
+      _customStyle.SetupTransitions();
    }
 
    protected abstract SizeType CalculateEffectiveSizeType(double size);
@@ -315,12 +307,6 @@ public abstract partial class AbstractProgressBar : RangeBase,
    protected virtual void NotifyHandleExtraInfoVisibility() { }
    
    #region IControlCustomStyle 实现
-    void IControlCustomStyle.SetupUI()
-   {
-      _customStyle.SetupTransitions();
-      
-      _initialized = true;
-   }
 
    void IControlCustomStyle.AfterUIStructureReady()
    {
@@ -362,7 +348,7 @@ public abstract partial class AbstractProgressBar : RangeBase,
       if (e.Property == SizeTypeProperty) {
          EffectiveSizeType = e.GetNewValue<SizeType>();
       } else if (e.Property == EffectiveSizeTypeProperty) {
-         if (_initialized) {
+         if (VisualRoot is not null) {
             NotifyEffectSizeTypeChanged();
          }
       }

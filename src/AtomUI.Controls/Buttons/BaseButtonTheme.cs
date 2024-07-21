@@ -3,6 +3,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
+using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Styling;
@@ -53,6 +54,9 @@ internal abstract class BaseButtonTheme : ControlTheme
 
    protected override void BuildStyles()
    {
+      this.Add(Button.HorizontalAlignmentProperty, HorizontalAlignment.Left);
+      this.Add(Button.VerticalAlignmentProperty, VerticalAlignment.Bottom);
+      this.Add(Button.CursorProperty, new Cursor(StandardCursorType.Hand));
       BuildSizeStyle();
    }
    
