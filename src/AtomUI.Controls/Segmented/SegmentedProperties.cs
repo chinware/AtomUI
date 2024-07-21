@@ -5,30 +5,25 @@ namespace AtomUI.Controls;
 
 public partial class Segmented
 {
-   // 获取 Token 值属性开始
-
-   private IBrush? _itemSelectedBg;
-   private static readonly DirectProperty<Segmented, IBrush?> ItemSelectedBgTokenProperty =
-      AvaloniaProperty.RegisterDirect<Segmented, IBrush?>(
-         nameof(_itemSelectedBg),
-         o => o._itemSelectedBg,
-         (o, v) => o._itemSelectedBg = v);
+   internal static readonly StyledProperty<IBrush?> SelectedThumbBgProperty =
+      AvaloniaProperty.Register<Segmented, IBrush?>(
+         nameof(SelectedThumbBg));
    
-   private Thickness _trackPadding;
-   private static readonly DirectProperty<Segmented, Thickness> TrackPaddingTokenProperty =
-      AvaloniaProperty.RegisterDirect<Segmented, Thickness>(
-         nameof(_trackPadding),
-         o => o._trackPadding,
-         (o, v) => o._trackPadding = v);
+   internal static readonly StyledProperty<BoxShadows> SelectedThumbBoxShadowsProperty =
+      AvaloniaProperty.Register<Segmented, BoxShadows>(
+         nameof(SelectedThumbBoxShadows));
    
-   private BoxShadows _boxShadowsTertiary;
-   private static readonly DirectProperty<Segmented, BoxShadows> BoxShadowsTertiaryTokenProperty =
-      AvaloniaProperty.RegisterDirect<Segmented, BoxShadows>(
-         nameof(_boxShadowsTertiary),
-         o => o._boxShadowsTertiary,
-         (o, v) => o._boxShadowsTertiary = v);
-
-   // 获取 Token 值属性结束
+   internal IBrush? SelectedThumbBg
+   {
+      get => GetValue(SelectedThumbBgProperty);
+      set => SetValue(SelectedThumbBgProperty, value);
+   }
+   
+   internal BoxShadows SelectedThumbBoxShadows
+   {
+      get => GetValue(SelectedThumbBoxShadowsProperty);
+      set => SetValue(SelectedThumbBoxShadowsProperty, value);
+   }
    
    // 内部动画属性
    private static readonly StyledProperty<Size> SelectedThumbSizeProperty =

@@ -5,10 +5,10 @@ using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Collections;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Metadata;
 
@@ -55,16 +55,10 @@ public class SegmentedMovedEventArgs : RoutedEventArgs
 /// <summary>
 /// TODO 现在还没有支持 Tooltip, 还没有做点击事件
 /// </summary>
-public partial class Segmented : Control, IControlCustomStyle
+public partial class Segmented : TemplatedControl, IControlCustomStyle
 {
-   public static readonly StyledProperty<IBrush?> BackgroundProperty =
-      Border.BackgroundProperty.AddOwner<Segmented>();
-   
-   public static readonly StyledProperty<CornerRadius> CornerRadiusProperty =
-      Border.CornerRadiusProperty.AddOwner<Segmented>();
-   
    public static readonly StyledProperty<CornerRadius> SelectedThumbCornerRadiusProperty =
-      AvaloniaProperty.Register<Border, CornerRadius>(nameof(SelectedThumbCornerRadius));
+      AvaloniaProperty.Register<Segmented, CornerRadius>(nameof(SelectedThumbCornerRadius));
 
    public static readonly StyledProperty<SegmentedSizeType> SizeTypeProperty =
       AvaloniaProperty.Register<Segmented, SegmentedSizeType>(nameof(SizeType), SegmentedSizeType.Middle);
@@ -106,18 +100,6 @@ public partial class Segmented : Control, IControlCustomStyle
       RoutedEvent.Register<Segmented, SegmentedMovedEventArgs>(
          nameof(Segmented),
          RoutingStrategies.Direct);
-
-   public IBrush? Background
-   {
-      get => GetValue(BackgroundProperty);
-      set => SetValue(BackgroundProperty, value);
-   }
-
-   public CornerRadius CornerRadius
-   {
-      get => GetValue(CornerRadiusProperty);
-      set => SetValue(CornerRadiusProperty, value);
-   }
    
    public CornerRadius SelectedThumbCornerRadius
    {
@@ -132,6 +114,7 @@ public partial class Segmented : Control, IControlCustomStyle
    }
 
    private int _currentIndex = 0;
+   private Canvas? _mainContainer;
 
    /// <summary>
    /// 当前选择项
@@ -207,7 +190,6 @@ public partial class Segmented : Control, IControlCustomStyle
    {
       _customStyle = this;
       _customStyle.InitOnConstruct();
-      Items.CollectionChanged += HandleItemsChanged;
    }
 
    public void AddItem(string text)
@@ -386,19 +368,33 @@ public partial class Segmented : Control, IControlCustomStyle
       Items.Remove(item);
    }
 
-   protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-   {
-      base.OnAttachedToLogicalTree(e);
-      if (!_initialized) {
-         _customStyle.SetupUI();
-         _initialized = true;
-      }
-   }
-
    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
    {
       base.OnPropertyChanged(e);
       _customStyle.HandlePropertyChangedForStyle(e);
+   }
+   
+   protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+   {
+      base.OnApplyTemplate(e);
+      _customStyle.HandleTemplateApplied(e.NameScope);
+   }
+
+   void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
+   {
+      _mainContainer = scope.Find<Canvas>(SegmentedTheme.MainContainerPart);
+      NotifyCurrentChanged();
+      ClipToBounds = true;
+      Items.CollectionChanged += HandleItemsChanged;
+      
+      // 首次初始化
+      for (var i = 0; i < Items.Count; ++i) {
+         HandleAddItem(i, new SegmentedItemBox(Items[i])
+         {
+            HorizontalAlignment = HorizontalAlignment.Stretch
+         });
+      }
+      
    }
 
    private bool IsValidIndex(int index)
@@ -411,68 +407,62 @@ public partial class Segmented : Control, IControlCustomStyle
       if (!IsValidIndex(index)) {
          throw new ArgumentOutOfRangeException(nameof(index));
       }
-
-      return (LogicalChildren[index] as SegmentedItemBox)!;
+      
+      return (_mainContainer?.Children[index] as SegmentedItemBox)!;
    }
 
    protected override Size MeasureOverride(Size availableSize)
    {
-      Transitions = null;
-      // 由内置的 Box 布局
       if (!IsExpanding) {
          return MeasureOverrideNoExpanding(availableSize);
       }
-
       return MeasureOverrideExpanding(availableSize);
    }
-
+   
    private Size MeasureOverrideNoExpanding(Size availableSize)
    {
-      // 由内置的 Box 布局
       Size layoutSlotSize = availableSize;
       layoutSlotSize = layoutSlotSize.WithWidth(Double.PositiveInfinity);
       bool hasVisibleChild = false;
       double targetWidth = 0d;
       double targetHeight = 0d;
-      foreach (var child in LogicalChildren) {
+      foreach (var child in _mainContainer!.Children) {
          if (child is SegmentedItemBox box) {
             bool isVisible = box.IsVisible;
             if (isVisible && !hasVisibleChild) {
                hasVisibleChild = true;
             }
-
+   
             box.Measure(layoutSlotSize);
             Size childDesiredSize = box.DesiredSize;
             targetWidth += childDesiredSize.Width;
             targetHeight = Math.Max(targetHeight, childDesiredSize.Height);
          }
       }
-
-      targetWidth += _trackPadding.Left + _trackPadding.Right;
-      targetHeight += _trackPadding.Top + _trackPadding.Bottom;
+   
+      targetWidth += Padding.Left + Padding.Right;
+      targetHeight += Padding.Top + Padding.Bottom;
       return new Size(targetWidth, targetHeight);
    }
-
+   
    private Size MeasureOverrideExpanding(Size availableSize)
    {
       var maxHeight = 0d;
-      var columns = LogicalChildren.Count;
-      var availableWidth = availableSize.Width - _trackPadding.Left - _trackPadding.Right;
+      var columns = _mainContainer!.Children.Count;
+      var availableWidth = availableSize.Width - Padding.Left - Padding.Right;
       var childAvailableSize = new Size(availableWidth / columns, availableSize.Height);
-      foreach (var child in LogicalChildren) {
+      foreach (var child in _mainContainer!.Children) {
          if (child is SegmentedItemBox box) {
             box.Measure(childAvailableSize);
-
             if (box.DesiredSize.Height > maxHeight) {
                maxHeight = box.DesiredSize.Height;
             }
          }
       }
-
-      return new Size(availableSize.Width,
-                      maxHeight + _trackPadding.Top + _trackPadding.Bottom);
+   
+      return new Size(availableSize.Width, maxHeight + Padding.Top + Padding.Bottom);
    }
-
+   
    protected override Size ArrangeOverride(Size finalSize)
    {
       if (!IsExpanding) {
@@ -480,17 +470,19 @@ public partial class Segmented : Control, IControlCustomStyle
       } else {
          ArrangeOverrideExpanding(finalSize);
       }
-
-      SetupSelectedThumbRect();
+      if (Transitions is null) {
+         SetupSelectedThumbRect();
+         _customStyle.SetupTransitions();
+      }
       return finalSize;
    }
 
    private Size ArrangeOverrideNoExpanding(Size finalSize)
    {
       double previousChildSize = 0.0;
-      var offsetX = _trackPadding.Left;
-      var offsetY = _trackPadding.Top;
-      foreach (var child in LogicalChildren) {
+      var offsetX = Padding.Left;
+      var offsetY = Padding.Top;
+      foreach (var child in _mainContainer!.Children) {
          if (child is SegmentedItemBox box) {
             if (!box.IsVisible) {
                continue;
@@ -508,15 +500,15 @@ public partial class Segmented : Control, IControlCustomStyle
 
    private Size ArrangeOverrideExpanding(Size finalSize)
    {
-      var offsetX = _trackPadding.Left;
-      var offsetY = _trackPadding.Top;
-      var columns = LogicalChildren.Count;
-      var availableWidth = finalSize.Width - _trackPadding.Left - _trackPadding.Right;
+      var offsetX = Padding.Left;
+      var offsetY = Padding.Top;
+      var columns = _mainContainer!.Children.Count;
+      var availableWidth = finalSize.Width - Padding.Left - Padding.Right;
       var width = availableWidth / columns;
 
       var x = 0;
 
-      foreach (var child in LogicalChildren) {
+      foreach (var child in _mainContainer!.Children) {
          if (child is SegmentedItemBox box) {
             if (!box.IsVisible) {
                continue;
@@ -534,8 +526,8 @@ public partial class Segmented : Control, IControlCustomStyle
    {
       base.OnPointerReleased(e);
       var targetIndex = -1;
-      for (int i = 0; i < LogicalChildren.Count; ++i) {
-         if (LogicalChildren[i] is SegmentedItemBox box) {
+      for (int i = 0; i < _mainContainer!.Children.Count; ++i) {
+         if (_mainContainer!.Children[i] is SegmentedItemBox box) {
             if (box.Bounds.Contains(e.GetPosition(this)) && box.IsEnabled) {
                targetIndex = i;
             }
@@ -549,76 +541,13 @@ public partial class Segmented : Control, IControlCustomStyle
 
    #region IControlCustomStyle 实现
 
-   void IControlCustomStyle.SetupUI()
-   {
-      if (IsExpanding) {
-         HorizontalAlignment = HorizontalAlignment.Stretch;
-      } else {
-         HorizontalAlignment = HorizontalAlignment.Left;
-      }
-      _customStyle.ApplySizeTypeStyleConfig();
-      _customStyle.SetupTokenBindings();
-      _customStyle.ApplyVariableStyleConfig();
-      NotifyCurrentChanged();
-      ClipToBounds = true;
-   }
-
    void IControlCustomStyle.SetupTransitions()
    {
       Transitions = new Transitions()
       {
          AnimationUtils.CreateTransition<PointTransition>(SelectedThumbPosProperty),
-         AnimationUtils.CreateTransition<SizeTransition>(SelectedThumbSizeProperty,
-                                                         GlobalResourceKey.MotionDurationFast)
+         AnimationUtils.CreateTransition<SizeTransition>(SelectedThumbSizeProperty, GlobalResourceKey.MotionDurationFast)
       };
-   }
-
-   void IControlCustomStyle.ApplySizeTypeStyleConfig()
-   {
-      if (SizeType == SizeType.Large) {
-         BindUtils.CreateTokenBinding(this, CornerRadiusProperty, GlobalResourceKey.BorderRadiusLG);
-         BindUtils.CreateTokenBinding(this, SelectedThumbCornerRadiusProperty, GlobalResourceKey.BorderRadius);
-      } else if (SizeType == SizeType.Middle) {
-         BindUtils.CreateTokenBinding(this, CornerRadiusProperty, GlobalResourceKey.BorderRadius);
-         BindUtils.CreateTokenBinding(this, SelectedThumbCornerRadiusProperty, GlobalResourceKey.BorderRadiusSM);
-      } else if (SizeType == SizeType.Small) {
-         BindUtils.CreateTokenBinding(this, CornerRadiusProperty, GlobalResourceKey.BorderRadiusSM);
-         BindUtils.CreateTokenBinding(this, SelectedThumbCornerRadiusProperty, GlobalResourceKey.BorderRadiusXS);
-      }
-      ApplyItemSizeConfig();
-   }
-
-   private void ApplyItemSizeConfig()
-   {
-      foreach (var control in LogicalChildren) {
-         if (control is SegmentedItemBox box) {
-            box.SizeType = SizeType;
-            box.CornerRadius = SelectedThumbCornerRadius;
-         }
-      }
-   }
-
-   void IControlCustomStyle.SetupTokenBindings()
-   {
-      BindUtils.CreateTokenBinding(this, BackgroundProperty, SegmentedResourceKey.TrackBg);
-      BindUtils.CreateTokenBinding(this, TrackPaddingTokenProperty, SegmentedResourceKey.TrackPadding);
-      BindUtils.CreateTokenBinding(this, ItemSelectedBgTokenProperty, SegmentedResourceKey.ItemSelectedBg);
-      BindUtils.CreateTokenBinding(this, BoxShadowsTertiaryTokenProperty, GlobalResourceKey.BoxShadowsTertiary);
-   }
-
-   void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
-   {
-      if (_initialized) {
-         if (e.Property == SizeTypeProperty) {
-            _customStyle.ApplySizeTypeStyleConfig();
-         } else if (e.Property == IsExpandingProperty) {
-            if (IsExpanding) {
-               HorizontalAlignment = HorizontalAlignment.Stretch;
-            } else {
-               HorizontalAlignment = HorizontalAlignment.Left;
-            }
-         }
-      }
    }
 
    protected void HandleItemsChanged(object? sender, NotifyCollectionChangedEventArgs e)
@@ -671,7 +600,7 @@ public partial class Segmented : Control, IControlCustomStyle
    {
       AddItemBox(index, itemBox);
       _firstVisible = Math.Max(Math.Min(_currentIndex, _firstVisible), 0);
-      if (Items.Count == 1) {
+      if (_mainContainer?.Children.Count == 1) {
          CurrentIndex = index;
       } else if (index <= _currentIndex) {
          CurrentIndex += 1;
@@ -683,10 +612,12 @@ public partial class Segmented : Control, IControlCustomStyle
          _lastVisible = index;
       }
 
-      foreach (var control in LogicalChildren) {
-         if (control is SegmentedItemBox box) {
-            if (box.LastItem >= index) {
-               ++box.LastItem;
+      if (_mainContainer is not null) {
+         foreach (var control in _mainContainer.Children) {
+            if (control is SegmentedItemBox box) {
+               if (box.LastItem >= index) {
+                  ++box.LastItem;
+               }
             }
          }
       }
@@ -696,7 +627,7 @@ public partial class Segmented : Control, IControlCustomStyle
    {
       int newIndex = removedBox.LastItem;
       RemoveItemBox(removedBox);
-      foreach (var control in LogicalChildren) {
+      foreach (var control in _mainContainer!.Children) {
          if (control is SegmentedItemBox box) {
             if (box.LastItem == index) {
                box.LastItem = -1;
@@ -713,7 +644,7 @@ public partial class Segmented : Control, IControlCustomStyle
          // The current segment item is going away, in order to make sure
          // we emit that "current has changed", we need to reset this
          // around.
-         if (LogicalChildren.Count > 0) {
+         if (_mainContainer!.Children.Count > 0) {
             if (SelectionBehaviorOnRemove == SegmentedSelectionBehavior.SelectPreviousItem) {
                if (newIndex > index) {
                   newIndex--;
@@ -754,7 +685,7 @@ public partial class Segmented : Control, IControlCustomStyle
 
       MoveItemBox(from, to);
       // update lastTab locations
-      foreach (var control in LogicalChildren) {
+      foreach (var control in _mainContainer!.Children) {
          if (control is SegmentedItemBox box) {
             box.LastItem = CalculateNewPosition(from, to, box.LastItem);
          }
@@ -775,7 +706,7 @@ public partial class Segmented : Control, IControlCustomStyle
          _firstVisible = Math.Min(index, _firstVisible);
          _lastVisible = Math.Max(index, _lastVisible);
       } else {
-         var items = VisualChildren;
+         var items = _mainContainer!.Children;
          if (remove || (index == _firstVisible)) {
             _firstVisible = -1;
             for (var i = 0; i < items.Count; ++i) {
@@ -806,7 +737,7 @@ public partial class Segmented : Control, IControlCustomStyle
    private int SelectNewCurrentIndexFrom(int fromIndex)
    {
       var newindex = -1;
-      var items = VisualChildren;
+      var items = _mainContainer!.Children;
       for (var i = fromIndex; i < items.Count; ++i) {
          if (items[i] is SegmentedItemBox box) {
             if (box.IsVisible && box.IsEnabled) {
@@ -856,8 +787,8 @@ public partial class Segmented : Control, IControlCustomStyle
 
    private void NotifyCurrentChanged()
    {
-      for (int i = 0; i < LogicalChildren.Count; ++i) {
-         if (LogicalChildren[i] is SegmentedItemBox box) {
+      for (int i = 0; i < _mainContainer!.Children.Count; ++i) {
+         if (_mainContainer!.Children[i] is SegmentedItemBox box) {
             if (i == _currentIndex) {
                box.IsCurrentItem = true;
             } else {
@@ -865,20 +796,14 @@ public partial class Segmented : Control, IControlCustomStyle
             }
          }
       }
-
-      if (SelectedThumbSize.Width != 0 && SelectedThumbSize.Height != 0 &&
-          Transitions == null) {
-         _customStyle.SetupTransitions();
-      }
-
       SetupSelectedThumbRect();
    }
 
    private void SetupSelectedThumbRect()
    {
       if (VisualRoot is not null) {
-         for (int i = 0; i < LogicalChildren.Count; ++i) {
-            if (LogicalChildren[i] is SegmentedItemBox box) {
+         for (int i = 0; i < _mainContainer!.Children.Count; ++i) {
+            if (_mainContainer!.Children[i] is SegmentedItemBox box) {
                if (i == _currentIndex) {
                   var offsetX = box.Bounds.X;
                   var offsetY = (DesiredSize.Height - box.DesiredSize.Height) / 2;
@@ -894,33 +819,40 @@ public partial class Segmented : Control, IControlCustomStyle
    public sealed override void Render(DrawingContext context)
    {
       context.DrawRectangle(Background, null, new RoundedRect(new Rect(new Point(0, 0), Bounds.Size), CornerRadius));
-      context.DrawRectangle(_itemSelectedBg, null,
+      context.DrawRectangle(SelectedThumbBg, null,
                             new RoundedRect(new Rect(SelectedThumbPos, SelectedThumbSize), SelectedThumbCornerRadius),
-                            _boxShadowsTertiary);
+                            SelectedThumbBoxShadows);
    }
 
    private void AddItemBox(int index, SegmentedItemBox box)
    {
-      LogicalChildren.Insert(index, box);
-      VisualChildren.Insert(index, box);
+      if (_mainContainer is not null) {
+         _mainContainer.Children.Insert(index, box);
+         // TODO 这个在移除的时候是否需要释放？
+         BindUtils.RelayBind(this, SizeTypeProperty, box, SegmentedItemBox.SizeTypeProperty);
+         BindUtils.RelayBind(this, SelectedThumbCornerRadiusProperty, box, SegmentedItemBox.CornerRadiusProperty);
+      }
    }
 
    private void RemoveItemBoxAt(int index)
    {
-      LogicalChildren.RemoveAt(index);
-      VisualChildren.RemoveAt(index);
+      if (_mainContainer is not null) {
+         _mainContainer.Children.RemoveAt(index);
+      }
    }
 
    private void RemoveItemBox(SegmentedItemBox box)
    {
-      LogicalChildren.Remove(box);
-      VisualChildren.Remove(box);
+      if (_mainContainer is not null) {
+         _mainContainer.Children.Remove(box);
+      }
    }
 
    private void MoveItemBox(int from, int to)
    {
-      LogicalChildren.Move(from, to);
-      VisualChildren.Move(from, to);
+      if (_mainContainer is not null) {
+         _mainContainer.Children.Move(from, to);
+      }
    }
 
    #endregion
