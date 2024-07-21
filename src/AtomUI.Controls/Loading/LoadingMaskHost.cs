@@ -3,7 +3,6 @@ using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
 using Avalonia.LogicalTree;
 using Avalonia.Metadata;
 
@@ -96,14 +95,6 @@ public class LoadingMaskHost : Control, IControlCustomStyle
    {
       _customStyle = this;
    }
-
-   void IControlCustomStyle.SetupUI()
-   {
-      if (MaskTarget is not null) {
-         LogicalChildren.Add(MaskTarget);
-         VisualChildren.Add(MaskTarget);
-      }
-   }
    
    public void ShowLoading()
    {
@@ -144,8 +135,16 @@ public class LoadingMaskHost : Control, IControlCustomStyle
    {
       base.OnAttachedToLogicalTree(e);
       if (!_initialized) {
-         _customStyle.SetupUI();
+         _customStyle.HandleAttachedToLogicalTree(e);
          _initialized = true;
+      }
+   }
+   
+   void IControlCustomStyle.HandleAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+   {
+      if (MaskTarget is not null) {
+         ((ISetLogicalParent)MaskTarget).SetParent(this);
+         VisualChildren.Add(MaskTarget);
       }
    }
 
