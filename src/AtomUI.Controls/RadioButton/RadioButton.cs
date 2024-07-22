@@ -23,6 +23,89 @@ public partial class RadioButton : AvaloniaRadioButton,
                                    IWaveAdornerInfoProvider, 
                                    IControlCustomStyle
 {
+   internal static readonly StyledProperty<double> RadioSizeProperty =
+      AvaloniaProperty.Register<Button, double>(nameof(RadioSize), 0);
+   
+   internal static readonly StyledProperty<double> PaddingInlineProperty =
+      AvaloniaProperty.Register<Button, double>(nameof(PaddingInline), 0);
+   
+   internal static readonly StyledProperty<IBrush?> RadioBorderBrushProperty =
+      AvaloniaProperty.Register<Button, IBrush?>(nameof(RadioBorderBrush));
+   
+   internal static readonly StyledProperty<IBrush?> RadioInnerBackgroundProperty =
+      AvaloniaProperty.Register<Button, IBrush?>(nameof(RadioInnerBackground));
+   
+   internal static readonly StyledProperty<IBrush?> RadioBackgroundProperty =
+      AvaloniaProperty.Register<Button, IBrush?>(nameof(RadioBackground));
+   
+   internal static readonly StyledProperty<Thickness> RadioBorderThicknessProperty =
+      AvaloniaProperty.Register<Button, Thickness>(nameof(RadioBorderThickness));
+   
+   internal static readonly StyledProperty<double> RadioDotEffectSizeProperty =
+      AvaloniaProperty.Register<Button, double>(nameof(RadioDotEffectSize));
+   
+   internal static readonly StyledProperty<double> DotSizeValueProperty =
+      AvaloniaProperty.Register<RadioButton, double>(
+         nameof(DotSizeValue));
+   
+   internal static readonly StyledProperty<double> DotPaddingProperty =
+      AvaloniaProperty.Register<RadioButton, double>(
+         nameof(DotPadding));
+   
+   internal double RadioSize
+   {
+      get => GetValue(RadioSizeProperty);
+      set => SetValue(RadioSizeProperty, value);
+   }
+   
+   internal double PaddingInline
+   {
+      get => GetValue(PaddingInlineProperty);
+      set => SetValue(PaddingInlineProperty, value);
+   }
+   
+   internal IBrush? RadioBorderBrush
+   {
+      get => GetValue(RadioBorderBrushProperty);
+      set => SetValue(RadioBorderBrushProperty, value);
+   }
+   
+   internal IBrush? RadioInnerBackground
+   {
+      get => GetValue(RadioInnerBackgroundProperty);
+      set => SetValue(RadioInnerBackgroundProperty, value);
+   }
+   
+   internal IBrush? RadioBackground
+   {
+      get => GetValue(RadioBackgroundProperty);
+      set => SetValue(RadioBackgroundProperty, value);
+   }
+   
+   internal Thickness RadioBorderThickness
+   {
+      get => GetValue(RadioBorderThicknessProperty);
+      set => SetValue(RadioBorderThicknessProperty, value);
+   }
+   
+   internal double RadioDotEffectSize
+   {
+      get => GetValue(RadioDotEffectSizeProperty);
+      set => SetValue(RadioDotEffectSizeProperty, value);
+   }
+   
+   internal double DotSizeValue
+   {
+      get => GetValue(DotSizeValueProperty);
+      set => SetValue(DotSizeValueProperty, value);
+   }
+   
+   internal double DotPadding
+   {
+      get => GetValue(DotPaddingProperty);
+      set => SetValue(DotPaddingProperty, value);
+   }
+   
    private IPen? _cachedPen;
    private ControlStyleState _styleState;
    private IControlCustomStyle _customStyle;
@@ -58,7 +141,6 @@ public partial class RadioButton : AvaloniaRadioButton,
    {
       Cursor = new Cursor(StandardCursorType.Hand);
       _customStyle.CollectStyleState();
-      _customStyle.SetupTokenBindings();
       RadioDotEffectSize = CalculateDotSize(IsEnabled, IsChecked.HasValue && IsChecked.Value);
       _customStyle.SetupTransitions();
    }
@@ -107,12 +189,6 @@ public partial class RadioButton : AvaloniaRadioButton,
    }
    
    #region IControlCustomStyle 实现
-   
-   void IControlCustomStyle.SetupTokenBindings()
-   {
-      BindUtils.CreateTokenBinding(this, DotSizeValueTokenProperty, RadioButtonResourceKey.DotSize);
-      BindUtils.CreateTokenBinding(this, DotPaddingValueTokenProperty, RadioButtonResourceKey.DotPadding);
-   }
 
    void IControlCustomStyle.CollectStyleState()
    {
@@ -135,12 +211,12 @@ public partial class RadioButton : AvaloniaRadioButton,
       double targetValue;
       if (isChecked) {
          if (isEnabled) {
-            targetValue = _dotSizeValueToken;
+            targetValue = DotSizeValue;
          } else {
-            targetValue = RadioSize - _dotPaddingValueToken * 2;
+            targetValue = RadioSize - DotPadding * 2;
          }
       } else {
-         targetValue = _dotSizeValueToken * 0.6;
+         targetValue = DotSizeValue * 0.6;
       }
       return targetValue;
    }

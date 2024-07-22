@@ -18,6 +18,8 @@ internal class RadioButtonTheme : ControlTheme
       this.Add(RadioButton.PaddingInlineProperty, GlobalResourceKey.PaddingXS);
       this.Add(RadioButton.RadioBorderBrushProperty, GlobalResourceKey.ColorBorder);
       this.Add(RadioButton.RadioBorderThicknessProperty, GlobalResourceKey.BorderThickness);
+      this.Add(RadioButton.DotSizeValueProperty, RadioButtonResourceKey.DotSize);
+      this.Add(RadioButton.DotPaddingProperty, RadioButtonResourceKey.DotPadding);
       BuildEnabledStyle();
       BuildDisabledStyle();
    }
