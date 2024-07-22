@@ -88,33 +88,22 @@ public class RibbonBadge : Control, IControlCustomStyle
                                TextProperty);
       AffectsRender<RibbonBadge>(RibbonColorProperty, PlacementProperty);
    }
-
-   private bool _initialized = false;
+   
    private IControlCustomStyle _customStyle;
    private RibbonBadgeAdorner? _ribbonBadgeAdorner;
    private AdornerLayer? _adornerLayer;
-
-   void IControlCustomStyle.SetupUI()
-   {
-      _ribbonBadgeAdorner = new RibbonBadgeAdorner();
-      _customStyle.SetupTokenBindings();
-      HandleDecoratedTargetChanged();
-      if (RibbonColor is not null) {
-         SetupRibbonColor(RibbonColor);
-      }
-   }
 
    private void HandleDecoratedTargetChanged()
    {
       if (_ribbonBadgeAdorner is not null) {
          if (DecoratedTarget is null) {
             VisualChildren.Add(_ribbonBadgeAdorner);
-            LogicalChildren.Add(_ribbonBadgeAdorner);
+            ((ISetLogicalParent)_ribbonBadgeAdorner).SetParent(this);
             _ribbonBadgeAdorner.IsAdornerMode = false;
          } else if (DecoratedTarget is not null) {
             _ribbonBadgeAdorner.IsAdornerMode = true;
             VisualChildren.Add(DecoratedTarget);
-            LogicalChildren.Add(DecoratedTarget);
+            ((ISetLogicalParent)DecoratedTarget).SetParent(this);
          }
       }
    }
@@ -144,6 +133,14 @@ public class RibbonBadge : Control, IControlCustomStyle
       }
    }
    
+   public sealed override void ApplyTemplate()
+   {
+      base.ApplyTemplate();
+      if (DecoratedTarget is null) {
+         CreateBadgeAdorner();
+      }
+   }
+   
    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
    {
       base.OnPropertyChanged(e);
@@ -159,7 +156,7 @@ public class RibbonBadge : Control, IControlCustomStyle
             HideAdorner();
          }
       }
-      if (_initialized) {
+      if (VisualRoot is not null) {
          if (e.Property == DecoratedTargetProperty) {
             HandleDecoratedTargetChanged();
          }
@@ -169,29 +166,33 @@ public class RibbonBadge : Control, IControlCustomStyle
          }
       }
    }
-   
-   protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+
+   private RibbonBadgeAdorner CreateBadgeAdorner()
    {
-      base.OnAttachedToLogicalTree(e);
-      if (!_initialized) {
-         _customStyle.SetupUI();
-         _initialized = true;
+      if (_ribbonBadgeAdorner is null) {
+         _ribbonBadgeAdorner = new RibbonBadgeAdorner();
+         _customStyle.SetupTokenBindings();
+         HandleDecoratedTargetChanged();
+         if (RibbonColor is not null) {
+            SetupRibbonColor(RibbonColor);
+         }
       }
+
+      return _ribbonBadgeAdorner;
    }
 
    private void PrepareAdorner()
    {
-      if (_adornerLayer is null &&
-          DecoratedTarget is not null && 
-          _ribbonBadgeAdorner is not null) {
+      if (_adornerLayer is null && DecoratedTarget is not null) {
+         var ribbonBadgeAdorner = CreateBadgeAdorner();
          _adornerLayer = AdornerLayer.GetAdornerLayer(this);
          // 这里需要抛出异常吗？
          if (_adornerLayer == null) {
             return;
          }
-         AdornerLayer.SetAdornedElement(_ribbonBadgeAdorner, this);
-         AdornerLayer.SetIsClipEnabled(_ribbonBadgeAdorner, false);
-         _adornerLayer.Children.Add(_ribbonBadgeAdorner);
+         AdornerLayer.SetAdornedElement(ribbonBadgeAdorner, this);
+         AdornerLayer.SetIsClipEnabled(ribbonBadgeAdorner, false);
+         _adornerLayer.Children.Add(ribbonBadgeAdorner);
       }
    }
    

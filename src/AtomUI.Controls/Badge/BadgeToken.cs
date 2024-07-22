@@ -60,6 +60,7 @@ internal class BadgeToken : AbstractControlDesignToken
    public Point BadgeRibbonOffset { get; set; }
    public Transform? BadgeRibbonCornerTransform { get; set; }
    public int BadgeRibbonCornerDarkenAmount { get; set; }
+   public Thickness BadgeRibbonTextPadding { get; set; }
    #endregion
 
    internal override void CalculateFromAlias()
@@ -88,5 +89,6 @@ internal class BadgeToken : AbstractControlDesignToken
       
       BadgeRibbonCornerTransform = new ScaleTransform(1, 0.75);
       BadgeRibbonCornerDarkenAmount = 15;
+      BadgeRibbonTextPadding = new Thickness(_globalToken.PaddingXS, 0);
    }
 }

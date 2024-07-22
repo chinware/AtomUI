@@ -116,7 +116,7 @@ public partial class DotBadge : Control, IControlCustomStyle
       PrepareAdorner();
    }
 
-   private void CreateDotBadgeAdorner()
+   private DotBadgeAdorner CreateDotBadgeAdorner()
    {
       if (_dotBadgeAdorner is null) {
          _dotBadgeAdorner = new DotBadgeAdorner();
@@ -126,13 +126,14 @@ public partial class DotBadge : Control, IControlCustomStyle
             SetupDotColor(DotColor);
          }
       }
+
+      return _dotBadgeAdorner;
    }
 
    private void PrepareAdorner()
    {
       if (_adornerLayer is null && DecoratedTarget is not null) {
-         CreateDotBadgeAdorner();
-         var dotBadgeAdorner = _dotBadgeAdorner!;
+         var dotBadgeAdorner = CreateDotBadgeAdorner();
          _adornerLayer = AdornerLayer.GetAdornerLayer(this);
          // 这里需要抛出异常吗？
          if (_adornerLayer == null) {
@@ -235,7 +236,9 @@ public partial class DotBadge : Control, IControlCustomStyle
    public sealed override void ApplyTemplate()
    {
       base.ApplyTemplate();
-      CreateDotBadgeAdorner();
+      if (DecoratedTarget is null) {
+         CreateDotBadgeAdorner();
+      }
    }
 
    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)

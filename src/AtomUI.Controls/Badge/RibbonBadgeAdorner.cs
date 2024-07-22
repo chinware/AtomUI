@@ -1,19 +1,16 @@
-﻿using System.Reactive.Linq;
-using AtomUI.ColorSystem;
+﻿using AtomUI.ColorSystem;
 using AtomUI.Controls.Utils;
-using AtomUI.Data;
 using AtomUI.Styling;
-using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
+using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
-internal partial class RibbonBadgeAdorner : Control, IControlCustomStyle
+internal class RibbonBadgeAdorner : Control, IControlCustomStyle
 {
    private bool _initialized = false;
    private IControlCustomStyle _customStyle;
@@ -21,35 +18,50 @@ internal partial class RibbonBadgeAdorner : Control, IControlCustomStyle
    private Geometry? _cornerGeometry;
    private readonly BorderRenderHelper _borderRenderHelper;
 
-   public static readonly DirectProperty<RibbonBadgeAdorner, IBrush?> RibbonColorProperty =
-      AvaloniaProperty.RegisterDirect<RibbonBadgeAdorner, IBrush?>(
-         nameof(RibbonColor),
-         o => o.RibbonColor,
-         (o, v) => o.RibbonColor = v);
-
-   private IBrush? _ribbonColor;
-
-   public IBrush? RibbonColor
+   internal static readonly StyledProperty<IBrush?> RibbonColorProperty =
+      AvaloniaProperty.Register<RibbonBadgeAdorner, IBrush?>(
+         nameof(RibbonColor));
+   
+   internal static readonly StyledProperty<string?> TextProperty =
+      AvaloniaProperty.Register<RibbonBadgeAdorner, string?>(
+         nameof(Text));
+   
+   internal static readonly StyledProperty<RibbonBadgePlacement> PlacementProperty =
+      AvaloniaProperty.Register<RibbonBadgeAdorner, RibbonBadgePlacement>(
+         nameof(Placement));
+   
+   internal static readonly StyledProperty<Point> OffsetProperty =
+      AvaloniaProperty.Register<RibbonBadgeAdorner, Point>(
+         nameof(Offset));
+   
+   internal static readonly StyledProperty<CornerRadius> CornerRadiusProperty =
+      Border.CornerRadiusProperty.AddOwner<RibbonBadgeAdorner>();
+   
+   internal static readonly StyledProperty<Point> BadgeRibbonOffsetProperty =
+      AvaloniaProperty.Register<RibbonBadgeAdorner, Point>(
+         nameof(BadgeRibbonOffset));
+   
+   internal static readonly StyledProperty<int> BadgeRibbonCornerDarkenAmountProperty =
+      AvaloniaProperty.Register<RibbonBadgeAdorner, int>(
+         nameof(BadgeRibbonCornerDarkenAmount));
+   
+   internal static readonly StyledProperty<Transform?> BadgeRibbonCornerTransformProperty =
+      AvaloniaProperty.Register<RibbonBadgeAdorner, Transform?>(
+         nameof(BadgeRibbonCornerTransform));
+   
+   internal IBrush? RibbonColor
    {
-      get => _ribbonColor;
-      set => SetAndRaise(RibbonColorProperty, ref _ribbonColor, value);
+      get => GetValue(RibbonColorProperty);
+      set => SetValue(RibbonColorProperty, value);
    }
 
-   public static readonly DirectProperty<RibbonBadgeAdorner, string?> TextProperty =
-      AvaloniaProperty.RegisterDirect<RibbonBadgeAdorner, string?>(
-         nameof(Text),
-         o => o.Text,
-         (o, v) => o.Text = v);
-
-   private string? _text;
-
-   public string? Text
+   internal string? Text
    {
-      get => _text;
-      set => SetAndRaise(TextProperty, ref _text, value);
+      get => GetValue(TextProperty);
+      set => SetValue(TextProperty, value);
    }
 
-   public static readonly DirectProperty<RibbonBadgeAdorner, bool> IsAdornerModeProperty =
+   internal static readonly DirectProperty<RibbonBadgeAdorner, bool> IsAdornerModeProperty =
       AvaloniaProperty.RegisterDirect<RibbonBadgeAdorner, bool>(
          nameof(IsAdornerMode),
          o => o.IsAdornerMode,
@@ -57,41 +69,48 @@ internal partial class RibbonBadgeAdorner : Control, IControlCustomStyle
 
    private bool _isAdornerMode = false;
 
-   public bool IsAdornerMode
+   internal bool IsAdornerMode
    {
       get => _isAdornerMode;
       set => SetAndRaise(IsAdornerModeProperty, ref _isAdornerMode, value);
    }
-
-   public static readonly DirectProperty<RibbonBadgeAdorner, RibbonBadgePlacement> PlacementProperty =
-      AvaloniaProperty.RegisterDirect<RibbonBadgeAdorner, RibbonBadgePlacement>(
-         nameof(Placement),
-         o => o.Placement,
-         (o, v) => o.Placement = v);
-
-   private RibbonBadgePlacement _placement;
-
-   // 当前有效的颜色
-   public RibbonBadgePlacement Placement
+   
+   internal RibbonBadgePlacement Placement
    {
-      get => _placement;
-      set => SetAndRaise(PlacementProperty, ref _placement, value);
+      get => GetValue(PlacementProperty);
+      set => SetValue(PlacementProperty, value);
+   }
+   
+   internal Point Offset
+   {
+      get => GetValue(OffsetProperty);
+      set => SetValue(OffsetProperty, value);
+   }
+   
+   internal CornerRadius CornerRadius
+   {
+      get => GetValue(CornerRadiusProperty);
+      set => SetValue(CornerRadiusProperty, value);
+   }
+   
+   internal Point BadgeRibbonOffset
+   {
+      get => GetValue(BadgeRibbonOffsetProperty);
+      set => SetValue(BadgeRibbonOffsetProperty, value);
    }
 
-   public static readonly DirectProperty<RibbonBadgeAdorner, Point> OffsetProperty =
-      AvaloniaProperty.RegisterDirect<RibbonBadgeAdorner, Point>(
-         nameof(Offset),
-         o => o.Offset,
-         (o, v) => o.Offset = v);
-
-   private Point _offset;
-
-   public Point Offset
+   internal int BadgeRibbonCornerDarkenAmount
    {
-      get => _offset;
-      set => SetAndRaise(OffsetProperty, ref _offset, value);
+      get => GetValue(BadgeRibbonCornerDarkenAmountProperty);
+      set => SetValue(BadgeRibbonCornerDarkenAmountProperty, value);
    }
-
+   
+   internal Transform? BadgeRibbonCornerTransform
+   {
+      get => GetValue(BadgeRibbonCornerTransformProperty);
+      set => SetValue(BadgeRibbonCornerTransformProperty, value);
+   }
+   
    static RibbonBadgeAdorner()
    {
       AffectsMeasure<RibbonBadgeAdorner>(TextProperty, IsAdornerModeProperty);
@@ -108,62 +127,44 @@ internal partial class RibbonBadgeAdorner : Control, IControlCustomStyle
    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
    {
       base.OnAttachedToLogicalTree(e);
+      if (Styles.Count == 0) {
+         _customStyle.BuildStyles();
+      }
+   }
+
+   void IControlCustomStyle.BuildStyles()
+   {
+      var commonStyle = new Style(selector => selector.OfType<RibbonBadgeAdorner>());
+      commonStyle.Add(RibbonColorProperty, GlobalResourceKey.ColorPrimary);
+      commonStyle.Add(CornerRadiusProperty, GlobalResourceKey.BorderRadiusSM);
+      commonStyle.Add(BadgeRibbonOffsetProperty, BadgeResourceKey.BadgeRibbonOffset);
+      commonStyle.Add(BadgeRibbonCornerTransformProperty, BadgeResourceKey.BadgeRibbonCornerTransform);
+      commonStyle.Add(BadgeRibbonCornerDarkenAmountProperty, BadgeResourceKey.BadgeRibbonCornerDarkenAmount);
+      var labelStyle = new Style(selector => selector.Nesting().Child().OfType<TextBlock>());
+      labelStyle.Add(TextBlock.ForegroundProperty, GlobalResourceKey.ColorTextLightSolid);
+      labelStyle.Add(TextBlock.LineHeightProperty, BadgeResourceKey.BadgeFontHeight);
+      labelStyle.Add(TextBlock.PaddingProperty, BadgeResourceKey.BadgeRibbonTextPadding);
+      commonStyle.Add(labelStyle);
+      Styles.Add(commonStyle);
+   }
+   
+   public sealed override void ApplyTemplate()
+   {
+      base.ApplyTemplate();
       if (!_initialized) {
-         _customStyle.SetupUI();
+         HorizontalAlignment = HorizontalAlignment.Left;
+         VerticalAlignment = VerticalAlignment.Top;
+         _textBlock = new TextBlock()
+         {
+            Text = Text,
+            HorizontalAlignment = HorizontalAlignment.Left,
+            VerticalAlignment = VerticalAlignment.Center,
+         };
+         ((ISetLogicalParent)_textBlock).SetParent(this);
+         VisualChildren.Add(_textBlock);
+         BuildCornerGeometry();
          _initialized = true;
       }
-   }
-
-   void IControlCustomStyle.SetupUI()
-   {
-      HorizontalAlignment = HorizontalAlignment.Left;
-      VerticalAlignment = VerticalAlignment.Top;
-      _textBlock = new TextBlock()
-      {
-         Text = Text,
-         HorizontalAlignment = HorizontalAlignment.Left,
-         VerticalAlignment = VerticalAlignment.Center,
-      };
-      LogicalChildren.Add(_textBlock);
-      VisualChildren.Add(_textBlock);
-      _customStyle.SetupTokenBindings();
-      BuildCornerGeometry();
-   }
-
-   void IControlCustomStyle.SetupTokenBindings()
-   {
-      BindUtils.CreateTokenBinding(this, BadgeRibbonOffsetTokenProperty, BadgeResourceKey.BadgeRibbonOffset);
-      BindUtils.CreateTokenBinding(this, MarginXSTokenProperty, GlobalResourceKey.MarginXS);
-      BindUtils.CreateTokenBinding(this, ColorPrimaryTokenProperty, GlobalResourceKey.ColorPrimary);
-      BindUtils.CreateTokenBinding(this, BadgeRibbonCornerTransformTokenProperty,
-                                   BadgeResourceKey.BadgeRibbonCornerTransform);
-      BindUtils.CreateTokenBinding(this, BadgeRibbonCornerDarkenAmountTokenProperty,
-                                   BadgeResourceKey.BadgeRibbonCornerDarkenAmount);
-      BindUtils.CreateTokenBinding(this, BorderRadiusSMTokenProperty, GlobalResourceKey.BorderRadiusSM);
-
-      if (_textBlock is not null) {
-         BindUtils.CreateTokenBinding(_textBlock, TextBlock.ForegroundProperty,
-                                      GlobalResourceKey.ColorTextLightSolid);
-         BindUtils.CreateTokenBinding(_textBlock, TextBlock.LineHeightProperty,
-                                      BadgeResourceKey.BadgeFontHeight);
-         BindUtils.CreateTokenBinding(_textBlock, TextBlock.PaddingProperty, GlobalResourceKey.PaddingXS,
-                                      BindingPriority.Template,
-                                      o =>
-                                      {
-                                         if (o is double value) {
-                                            return new Thickness(value, 0);
-                                         }
-
-                                         return o;
-                                      });
-      }
-   }
-
-   protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-   {
-      base.OnAttachedToVisualTree(e);
-      // TODO 这里是否需要增加一个什么判断？
-      _customStyle.SetupTokenBindings();
    }
 
    protected override Size MeasureOverride(Size availableSize)
@@ -191,7 +192,7 @@ internal partial class RibbonBadgeAdorner : Control, IControlCustomStyle
    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
    {
       base.OnPropertyChanged(e);
-      if (_initialized) {
+      if (VisualRoot is not null) {
          if (e.Property == PlacementProperty) {
             BuildCornerGeometry(true);
          }
@@ -200,7 +201,7 @@ internal partial class RibbonBadgeAdorner : Control, IControlCustomStyle
 
    public override void Render(DrawingContext context)
    {
-      var backgroundBrush = (SolidColorBrush)(RibbonColor ?? _colorPrimaryToken)!;
+      var backgroundBrush = RibbonColor as SolidColorBrush;
       {
          var textRect = GetTextRect();
          using var state = context.PushTransform(Matrix.CreateTranslation(textRect.X, textRect.Y));
@@ -209,14 +210,14 @@ internal partial class RibbonBadgeAdorner : Control, IControlCustomStyle
                                     borderThickness: new Thickness(0),
                                     backgroundSizing: BackgroundSizing.OuterBorderEdge,
                                     finalSize: textRect.Size,
-                                    cornerRadius: new CornerRadius(topLeft: _borderRadiusSMToken.TopLeft,
-                                                                   topRight: _borderRadiusSMToken.TopRight,
+                                    cornerRadius: new CornerRadius(topLeft: CornerRadius.TopLeft,
+                                                                   topRight: CornerRadius.TopRight,
                                                                    bottomLeft: Placement == RibbonBadgePlacement.Start
                                                                       ? 0
-                                                                      : _borderRadiusSMToken.BottomLeft,
+                                                                      : CornerRadius.BottomLeft,
                                                                    bottomRight: Placement == RibbonBadgePlacement.End
                                                                       ? 0
-                                                                      : _borderRadiusSMToken.BottomRight),
+                                                                      : CornerRadius.BottomRight),
                                     background: backgroundBrush,
                                     borderBrush: null,
                                     boxShadows: new BoxShadows());
@@ -224,8 +225,8 @@ internal partial class RibbonBadgeAdorner : Control, IControlCustomStyle
       {
          var cornerRect = GetCornerRect();
          using var state = context.PushTransform(Matrix.CreateTranslation(cornerRect.X, cornerRect.Y));
-         var backgroundColor = backgroundBrush.Color;
-         var cornerBrush = new SolidColorBrush(backgroundColor.Darken(_badgeRibbonCornerDarkenAmountToken));
+         var backgroundColor = backgroundBrush?.Color;
+         var cornerBrush = backgroundColor.HasValue ? new SolidColorBrush(backgroundColor.Value.Darken(BadgeRibbonCornerDarkenAmount)) : default;
          context.DrawGeometry(cornerBrush, null, _cornerGeometry!);
       }
    }
@@ -239,11 +240,11 @@ internal partial class RibbonBadgeAdorner : Control, IControlCustomStyle
       var offsetX = 0d;
       var offsetY = 0d;
       if (IsAdornerMode) {
-         offsetY += _badgeRibbonOffsetToken.Y;
+         offsetY += BadgeRibbonOffset.Y;
          if (Placement == RibbonBadgePlacement.End) {
-            offsetX = DesiredSize.Width - _textBlock.DesiredSize.Width + _badgeRibbonOffsetToken.X;
+            offsetX = DesiredSize.Width - _textBlock.DesiredSize.Width + BadgeRibbonOffset.X;
          } else {
-            offsetX = -_badgeRibbonOffsetToken.X;
+            offsetX = -BadgeRibbonOffset.X;
          }
       }
 
@@ -280,8 +281,8 @@ internal partial class RibbonBadgeAdorner : Control, IControlCustomStyle
    private void BuildCornerGeometry(bool force = false)
    {
       if (force || _cornerGeometry is null) {
-         var width = _badgeRibbonOffsetToken.X;
-         var height = _badgeRibbonOffsetToken.Y;
+         var width = BadgeRibbonOffset.X;
+         var height = BadgeRibbonOffset.Y;
          var geometryStream = new StreamGeometry();
          using var context = geometryStream.Open();
          var p1 = new Point(0, 0);
@@ -293,8 +294,8 @@ internal partial class RibbonBadgeAdorner : Control, IControlCustomStyle
          context.EndFigure(true);
          _cornerGeometry = geometryStream;
          var transforms = new TransformGroup();
-         if (_badgeRibbonCornerTransformToken is not null) {
-            transforms.Children.Add(_badgeRibbonCornerTransformToken);
+         if (BadgeRibbonCornerTransform is not null) {
+            transforms.Children.Add(BadgeRibbonCornerTransform);
          }
 
          if (Placement == RibbonBadgePlacement.Start) {

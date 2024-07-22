@@ -130,10 +130,12 @@ public partial class CountBadge : Control, IControlCustomStyle
    public sealed override void ApplyTemplate()
    {
       base.ApplyTemplate();
-      CreateBadgeAdorner();
+      if (DecoratedTarget is null) {
+         CreateBadgeAdorner();
+      }
    }
 
-   private void CreateBadgeAdorner()
+   private CountBadgeAdorner CreateBadgeAdorner()
    {
       if (_badgeAdorner is null) {
          _badgeAdorner = new CountBadgeAdorner();
@@ -143,13 +145,14 @@ public partial class CountBadge : Control, IControlCustomStyle
             SetupBadgeColor(BadgeColor);
          }
       }
+
+      return _badgeAdorner;
    }
 
    private void PrepareAdorner()
    {
       if (_adornerLayer is null && DecoratedTarget is not null) {
-         CreateBadgeAdorner();
-         var badgeAdorner = _badgeAdorner!;
+         var badgeAdorner = CreateBadgeAdorner();
          _adornerLayer = AdornerLayer.GetAdornerLayer(this);
          // 这里需要抛出异常吗？
          if (_adornerLayer == null) {
