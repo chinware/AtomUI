@@ -122,8 +122,18 @@ public partial class CountBadge : Control, IControlCustomStyle
    {
       base.OnAttachedToLogicalTree(e);
       if (!_initialized) {
-         _customStyle.SetupUI();
+         _customStyle.HandleAttachedToLogicalTree(e);
          _initialized = true;
+      }
+   }
+
+   void IControlCustomStyle.HandleAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+   {
+      _badgeAdorner = new CountBadgeAdorner();
+      _customStyle.SetupTokenBindings();
+      HandleDecoratedTargetChanged();
+      if (BadgeColor is not null) {
+         SetupBadgeColor(BadgeColor);
       }
    }
 
@@ -231,16 +241,6 @@ public partial class CountBadge : Control, IControlCustomStyle
    {
       base.OnDetachedFromVisualTree(e);
       HideAdorner();
-   }
-
-   void IControlCustomStyle.SetupUI()
-   {
-      _badgeAdorner = new CountBadgeAdorner();
-      _customStyle.SetupTokenBindings();
-      HandleDecoratedTargetChanged();
-      if (BadgeColor is not null) {
-         SetupBadgeColor(BadgeColor);
-      }
    }
    
    void IControlCustomStyle.SetupTokenBindings()
