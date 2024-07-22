@@ -37,7 +37,7 @@ internal struct TagStatusCalcColor
    public Color BorderColor { get; set; }
 }
 
-public partial class Tag : TemplatedControl, IControlCustomStyle
+public class Tag : TemplatedControl, IControlCustomStyle
 {
    public static readonly StyledProperty<string?> TagColorProperty 
       = AvaloniaProperty.Register<Tag, string?>(
@@ -58,6 +58,9 @@ public partial class Tag : TemplatedControl, IControlCustomStyle
    public static readonly StyledProperty<string?> TagTextProperty 
       = AvaloniaProperty.Register<Tag, string?>(
          nameof(TagText));
+   
+   internal static readonly StyledProperty<double> TagTextPaddingInlineProperty
+      = AvaloniaProperty.Register<Tag, double>(nameof(TagTextPaddingInline));
    
    public string? TagColor
    {
@@ -95,6 +98,12 @@ public partial class Tag : TemplatedControl, IControlCustomStyle
       get => GetValue(TagTextProperty);
       set => SetValue(TagTextProperty, value);
    }
+
+   internal double TagTextPaddingInline
+   {
+      get => GetValue(TagTextPaddingInlineProperty);
+      set => SetValue(TagTextPaddingInlineProperty, value);
+   }
    
    private IControlCustomStyle _customStyle;
    private bool _isPresetColorTag = false;
@@ -116,8 +125,6 @@ public partial class Tag : TemplatedControl, IControlCustomStyle
       AffectsRender<Tag>(ForegroundProperty,
                          BackgroundProperty,
                          BorderBrushProperty);
-      SetupPresetColorMap();
-      SetupStatusColorMap();
    }
 
    public Tag()
@@ -125,15 +132,11 @@ public partial class Tag : TemplatedControl, IControlCustomStyle
       _customStyle = this;
       _borderRenderHelper = new BorderRenderHelper();
    }
-
-   protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-   {
-      base.OnAttachedToVisualTree(e);
-      _customStyle.ApplyRenderScalingAwareStyleConfig();
-   }
    
    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
    {
+      SetupPresetColorMap();
+      SetupStatusColorMap();
       base.OnApplyTemplate(e);
       _customStyle.HandleTemplateApplied(e.NameScope);
    }
@@ -143,14 +146,13 @@ public partial class Tag : TemplatedControl, IControlCustomStyle
       _layoutPanel = scope.Find<Canvas>(TagTheme.MainContainerPart);
       _closeButton = scope.Find<IconButton>(TagTheme.CloseButtonPart);
       _textBlock = scope.Find<TextBlock>(TagTheme.TagTextLabelPart);
-
-      _customStyle.SetupTokenBindings();
-      _customStyle.ApplyRenderScalingAwareStyleConfig();
+      
       if (TagColor is not null) {
          SetupTagColorInfo(TagColor);
       }
       SetupTagClosable();
       SetupTagIcon();
+      _customStyle.SetupTokenBindings();
       _customStyle.SetupTransitions();
    }
 
@@ -166,11 +168,11 @@ public partial class Tag : TemplatedControl, IControlCustomStyle
          }
       }
       if (Icon is not null) {
-         targetWidth += _paddingXXSToken;
+         targetWidth += TagTextPaddingInline;
       }
       
       if (IsClosable && _closeButton is not null) {
-         targetWidth += _paddingXXSToken;
+         targetWidth += TagTextPaddingInline;
       }
       targetWidth += Padding.Left + Padding.Right;
       return new Size(targetWidth, targetHeight);
@@ -196,7 +198,7 @@ public partial class Tag : TemplatedControl, IControlCustomStyle
       if (_textBlock is not null) {
          var offsetX = Padding.Left;
          if (Icon is not null) {
-            offsetX += Icon.DesiredSize.Width + _paddingXXSToken;
+            offsetX += Icon.DesiredSize.Width + TagTextPaddingInline;
          }
       
          // 这个时候已经算好了
@@ -218,21 +220,15 @@ public partial class Tag : TemplatedControl, IControlCustomStyle
 
    void IControlCustomStyle.SetupTokenBindings()
    {
-      BindUtils.CreateTokenBinding(this, PaddingXXSTokenProperty, GlobalResourceKey.PaddingXXS);
-      BindUtils.CreateTokenBinding(this, ColorTextLightSolidTokenProperty, GlobalResourceKey.ColorTextLightSolid);
-   }
+      BindUtils.CreateTokenBinding(this, BorderThicknessProperty, GlobalResourceKey.BorderThickness, BindingPriority.Template,
+                                   new RenderScaleAwareThicknessConfigure(this, thickness =>
+                                   {
+                                      if (!Bordered) {
+                                         return new Thickness(0);
+                                      }
 
-   void IControlCustomStyle.ApplyRenderScalingAwareStyleConfig()
-   {
-      BindUtils.CreateTokenBinding(this, BorderThicknessProperty, GlobalResourceKey.BorderThickness, BindingPriority.Style,
-                                            new RenderScaleAwareThicknessConfigure(this, thickness =>
-                                            {
-                                               if (!Bordered) {
-                                                  return new Thickness(0);
-                                               }
-
-                                               return thickness;
-                                            }));
+                                      return thickness;
+                                   }));
    }
 
    void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
@@ -347,9 +343,9 @@ public partial class Tag : TemplatedControl, IControlCustomStyle
 
       if (Color.TryParse(colorStr, out Color color)) {
          Bordered = false;
-         Foreground = _colorTextLightSolidToken;
          _hasColorSet = true;
          Background = new SolidColorBrush(color);
+         BindUtils.CreateTokenBinding(this, ForegroundProperty, GlobalResourceKey.ColorTextLightSolid);
       }
    }
 

@@ -10,7 +10,6 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Layout;
-using Avalonia.LogicalTree;
 using Avalonia.Metadata;
 
 namespace AtomUI.Controls;
@@ -125,7 +124,6 @@ public class SegmentedItem : TemplatedControl, IControlCustomStyle
       VerticalAlignment = VerticalAlignment.Center;
 
       _customStyle.SetupTokenBindings();
-      _customStyle.ApplyVariableStyleConfig();
       SetupItemIcon();
       _customStyle.SetupTransitions();
       _customStyle.CollectStyleState();
@@ -168,8 +166,6 @@ public class SegmentedItem : TemplatedControl, IControlCustomStyle
              e.Property == IsPressedProperty ||
              e.Property == IsCurrentItemProperty) {
             _customStyle.CollectStyleState();
-         } else if (e.Property == SizeTypeProperty) {
-            _customStyle.ApplySizeTypeStyleConfig();
          } else if (e.Property == IconProperty) {
             SetupItemIcon();
          }

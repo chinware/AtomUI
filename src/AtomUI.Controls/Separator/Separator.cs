@@ -162,9 +162,7 @@ public partial class Separator : TemplatedControl, IControlCustomStyle
    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
    {
       _titleLabel = scope.Find<Label>(SeparatorTheme.TitlePart);
-      
       _customStyle.SetupTokenBindings();
-      _customStyle.ApplyRenderScalingAwareStyleConfig();
    }
 
    #region IControlCustomStyle 实现
@@ -174,14 +172,7 @@ public partial class Separator : TemplatedControl, IControlCustomStyle
       BindUtils.CreateTokenBinding(this, TextPaddingInlineTokenProperty, SeparatorResourceKey.TextPaddingInline);
       BindUtils.CreateTokenBinding(this, OrientationMarginPercentTokenProperty, SeparatorResourceKey.OrientationMarginPercent);
       BindUtils.CreateTokenBinding(this, VerticalMarginInlineTokenProperty, SeparatorResourceKey.VerticalMarginInline);
-   }
-
-   void IControlCustomStyle.ApplyRenderScalingAwareStyleConfig()
-   {
-      if (!_scalingAwareConfigApplied) {
-         _scalingAwareConfigApplied = true;
-         BindUtils.CreateTokenBinding(this, LineWidthProperty, GlobalResourceKey.LineWidth, BindingPriority.Style,new RenderScaleAwareDoubleConfigure(this));
-      }
+      BindUtils.CreateTokenBinding(this, LineWidthProperty, GlobalResourceKey.LineWidth, BindingPriority.Template,new RenderScaleAwareDoubleConfigure(this));
    }
 
    // 当为水平分隔线的时候，我们设置最小的高度，当为垂直分割线的时候我们设置一个合适宽度

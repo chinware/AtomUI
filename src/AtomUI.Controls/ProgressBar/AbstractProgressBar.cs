@@ -278,7 +278,6 @@ public abstract partial class AbstractProgressBar : RangeBase,
       _successCompletedIcon = scope.Find<PathIcon>(AbstractProgressBarTheme.SuccessCompletedIconPart);
       _customStyle.CollectStyleState();
       _customStyle.SetupTokenBindings();
-      _customStyle.ApplyVariableStyleConfig();
       NotifySetupUI();
    }
 
@@ -362,7 +361,6 @@ public abstract partial class AbstractProgressBar : RangeBase,
       if (e.Property == IsEnabledProperty || 
           e.Property == PercentageProperty) {
          _customStyle.CollectStyleState();
-         _customStyle.ApplyVariableStyleConfig();
       }
 
       if (e.Property == ValueProperty) {
@@ -402,15 +400,6 @@ public abstract partial class AbstractProgressBar : RangeBase,
             ClearValue(GrooveBrushProperty);
          }
       }
-   }
-
-   void IControlCustomStyle.ApplyVariableStyleConfig()
-   {
-      NotifyApplyVariableStyleConfig();
-   }
-
-   protected virtual void NotifyApplyVariableStyleConfig()
-   {
    }
    
    public override void Render(DrawingContext context)

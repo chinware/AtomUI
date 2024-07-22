@@ -243,6 +243,7 @@ namespace AtomUI.Styling
         public static readonly TokenResourceKey TagIconSize = new TokenResourceKey("Tag.TagIconSize");
         public static readonly TokenResourceKey TagCloseIconSize = new TokenResourceKey("Tag.TagCloseIconSize");
         public static readonly TokenResourceKey TagPadding = new TokenResourceKey("Tag.TagPadding");
+        public static readonly TokenResourceKey TagTextPaddingInline = new TokenResourceKey("Tag.TagTextPaddingInline");
         public static readonly TokenResourceKey TagBorderlessBg = new TokenResourceKey("Tag.TagBorderlessBg");
     }
 

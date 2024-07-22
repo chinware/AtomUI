@@ -3,8 +3,6 @@ using AtomUI.Utils;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Layout;
-using Avalonia.Markup.Xaml.MarkupExtensions;
-using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
@@ -28,6 +26,7 @@ internal class TagTheme : ControlTheme
       this.Add(Tag.PaddingProperty, TagResourceKey.TagPadding);
       this.Add(Tag.BorderBrushProperty, GlobalResourceKey.ColorBorder);
       this.Add(Tag.CornerRadiusProperty, GlobalResourceKey.BorderRadiusSM);
+      this.Add(Tag.TagTextPaddingInlineProperty, TagResourceKey.TagTextPaddingInline);
    }
 
    protected override IControlTemplate BuildControlTemplate()

@@ -122,12 +122,6 @@ public class Alert : TemplatedControl, IControlCustomStyle
       _customStyle.HandlePropertyChangedForStyle(e);
    }
 
-   protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-   {
-      base.OnAttachedToVisualTree(e);
-      _customStyle.ApplyRenderScalingAwareStyleConfig();
-   }
-
    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
    {
       base.OnApplyTemplate(e);
@@ -136,24 +130,14 @@ public class Alert : TemplatedControl, IControlCustomStyle
 
    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
    {
-      _customStyle.SetupTokenBindings();
-      _customStyle.ApplyRenderScalingAwareStyleConfig();
-
+      BindUtils.CreateTokenBinding(this, BorderThicknessProperty, GlobalResourceKey.BorderThickness,
+                                   BindingPriority.Template,
+                                   new RenderScaleAwareThicknessConfigure(this));
       SetupCloseButton();
    }
 
    #region IControlCustomStyle 实现
-
-   void IControlCustomStyle.ApplyRenderScalingAwareStyleConfig()
-   {
-      if (!_scalingAwareConfigApplied) {
-         _scalingAwareConfigApplied = true;
-         BindUtils.CreateTokenBinding(this, BorderThicknessProperty, GlobalResourceKey.BorderThickness,
-                                      BindingPriority.Style,
-                                      new RenderScaleAwareThicknessConfigure(this));
-      }
-   }
-
+   
    void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
    {
       if (VisualRoot is not null) {

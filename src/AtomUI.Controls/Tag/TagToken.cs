@@ -25,6 +25,7 @@ internal class TagToken : AbstractControlDesignToken
    public double TagIconSize { get; set; }
    public double TagCloseIconSize { get; set; }
    public Thickness TagPadding { get; set; }
+   public double TagTextPaddingInline { get; set; }
    public Color TagBorderlessBg { get; set; }
 
    public TagToken()
@@ -47,5 +48,6 @@ internal class TagToken : AbstractControlDesignToken
       DefaultBg = ColorUtils.OnBackground(colorNeutralToken.ColorFillQuaternary, colorNeutralToken.ColorBgContainer);
       TagBorderlessBg = DefaultBg;
       DefaultColor = colorNeutralToken.ColorText;
+      TagTextPaddingInline = _globalToken.PaddingXXS;
    }
 }

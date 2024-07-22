@@ -437,7 +437,6 @@ public partial class Button : AvaloniaButton,
 
       if (e.Property == SizeTypeProperty) {
          if (VisualRoot is not null) {
-            _customStyle.ApplySizeTypeStyleConfig();
             SetupControlTheme();
          }
       }
