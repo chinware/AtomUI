@@ -5,7 +5,6 @@ using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Styling;
 
@@ -102,26 +101,21 @@ internal class SwitchKnob : Control, IControlCustomStyle
          RotationProperty);
    }
 
-   protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+   public sealed override void ApplyTemplate()
    {
-      base.OnAttachedToLogicalTree(e);
+      base.ApplyTemplate();
       if (!_initialized) {
-         _customStyle.HandleAttachedToLogicalTree(e);
+         Effect = new DropShadowEffect
+         {
+            OffsetX = KnobBoxShadow.OffsetX,
+            OffsetY = KnobBoxShadow.OffsetY,
+            Color = KnobBoxShadow.Color,
+            BlurRadius = KnobBoxShadow.Blur,
+         };
+         _customStyle.SetupTokenBindings();
+         _customStyle.SetupTransitions();
          _initialized = true;
       }
-   }
-
-   void IControlCustomStyle.HandleAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-   {
-      Effect = new DropShadowEffect
-      {
-         OffsetX = KnobBoxShadow.OffsetX,
-         OffsetY = KnobBoxShadow.OffsetY,
-         Color = KnobBoxShadow.Color,
-         BlurRadius = KnobBoxShadow.Blur,
-      };
-      _customStyle.SetupTokenBindings();
-      _customStyle.SetupTransitions();
    }
 
    void IControlCustomStyle.SetupTransitions()

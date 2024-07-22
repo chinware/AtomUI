@@ -89,15 +89,18 @@ public class MarqueeLabel : TextBlock,
       _customStyle?.HandlePropertyChangedForStyle(e);
    }
 
-   protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+   public sealed override void ApplyTemplate()
    {
-      base.OnAttachedToLogicalTree(e);
+      base.ApplyTemplate();
       if (!_initialized) {
-         _customStyle?.HandleAttachedToLogicalTree(e);
+         HorizontalAlignment = HorizontalAlignment.Stretch;
+         TextWrapping = TextWrapping.NoWrap;
+         _customStyle?.CollectStyleState();
+         _customStyle?.SetupTokenBindings();
          _initialized = true;
       }
    }
-
+   
    protected override Size MeasureOverride(Size availableSize)
    {
       var size = base.MeasureOverride(availableSize);
@@ -106,15 +109,7 @@ public class MarqueeLabel : TextBlock,
    }
 
    #region IControlCustomStyle 实现
-
-   void IControlCustomStyle.HandleAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-   {
-      HorizontalAlignment = HorizontalAlignment.Stretch;
-      TextWrapping = TextWrapping.NoWrap;
-      _customStyle?.CollectStyleState();
-      _customStyle?.SetupTokenBindings();
-   }
-
+   
    private double CalculateDuration(double distance)
    {
       // 计算持续时间，确保至少有一毫秒的持续时间以避免除以零的错误
