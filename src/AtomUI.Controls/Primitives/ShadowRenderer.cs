@@ -53,9 +53,9 @@ internal class ShadowRenderer : Control
       MaskContentBackgroundProperty.OverrideDefaultValue<ShadowRenderer>(new SolidColorBrush(Colors.White));
    }
 
-   protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+   public sealed override void ApplyTemplate()
    {
-      base.OnAttachedToLogicalTree(e);
+      base.ApplyTemplate();
       if (!_initialized) {
          HorizontalAlignment = HorizontalAlignment.Stretch;
          VerticalAlignment = VerticalAlignment.Stretch;

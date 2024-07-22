@@ -131,20 +131,15 @@ public class LoadingMaskHost : Control, IControlCustomStyle
       }
    }
 
-   protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+   public sealed override void ApplyTemplate()
    {
-      base.OnAttachedToLogicalTree(e);
+      base.ApplyTemplate();
       if (!_initialized) {
-         _customStyle.HandleAttachedToLogicalTree(e);
+         if (MaskTarget is not null) {
+            ((ISetLogicalParent)MaskTarget).SetParent(this);
+            VisualChildren.Add(MaskTarget);
+         }
          _initialized = true;
-      }
-   }
-   
-   void IControlCustomStyle.HandleAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-   {
-      if (MaskTarget is not null) {
-         ((ISetLogicalParent)MaskTarget).SetParent(this);
-         VisualChildren.Add(MaskTarget);
       }
    }
 

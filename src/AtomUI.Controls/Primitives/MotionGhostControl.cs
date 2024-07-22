@@ -87,15 +87,15 @@ internal class MotionGhostControl : Control, INotifyCaptureGhostBitmap
       }
    }
 
-   protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+   public sealed override void ApplyTemplate()
    {
-      base.OnAttachedToLogicalTree(e);
+      base.ApplyTemplate();
       if (!_initialized) {
          IsHitTestVisible = false;
          
          _layout = new Canvas();
          VisualChildren.Add(_layout);
-         LogicalChildren.Add(_layout);
+         ((ISetLogicalParent)_layout).SetParent(this);
          
          var shadowThickness = Shadows.Thickness();
          var offsetX = shadowThickness.Left;

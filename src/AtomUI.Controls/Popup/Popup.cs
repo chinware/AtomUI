@@ -66,10 +66,10 @@ public class Popup : AbstractPopup
    {
       IsLightDismissEnabled = false;
    }
-   
-   protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+
+   public sealed override void ApplyTemplate()
    {
-      base.OnAttachedToLogicalTree(e);
+      base.ApplyTemplate();
       if (!_initialized) {
          BindUtils.CreateGlobalTokenBinding(this, MaskShadowsProperty, GlobalResourceKey.BoxShadowsSecondary);
          _initialized = true;

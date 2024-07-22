@@ -155,9 +155,9 @@ public class FlyoutHost : Control
       PlacementProperty.OverrideDefaultValue<FlyoutHost>(PlacementMode.Top);
    }
 
-   protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+   public sealed override void ApplyTemplate()
    {
-      base.OnAttachedToLogicalTree(e);
+      base.ApplyTemplate();
       if (!_initialized) {
          if (AnchorTarget is not null) {
             ((ISetLogicalParent)AnchorTarget).SetParent(this);

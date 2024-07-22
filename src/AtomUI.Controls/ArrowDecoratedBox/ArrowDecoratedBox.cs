@@ -1,13 +1,10 @@
-﻿using System.Reactive.Disposables;
-using AtomUI.Controls.Utils;
-using AtomUI.Media;
+﻿using AtomUI.Media;
 using AtomUI.Styling;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Layout;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Metadata;
 
@@ -138,8 +135,7 @@ public class ArrowDecoratedBox : TemplatedControl,
       get => GetValue(ChildProperty);
       set => SetValue(ChildProperty, value);
    }
-
-   private bool _initialized = false;
+   
    private IControlCustomStyle _customStyle;
    private Geometry? _arrowGeometry;
    private Rect _contentRect;
@@ -233,7 +229,7 @@ public class ArrowDecoratedBox : TemplatedControl,
             _needGenerateArrowVertexPoint = true;
          }
 
-         if (_initialized && VisualRoot is not null) {
+         if (VisualRoot is not null) {
             BuildGeometry(true);
             _arrowRect = GetArrowRect(DesiredSize);
          }

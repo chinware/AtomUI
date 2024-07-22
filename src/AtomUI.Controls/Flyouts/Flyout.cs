@@ -389,12 +389,6 @@ public class Flyout : PopupFlyoutBase
       motionActor.SceneParent = topLevel;
       motionActor.Completed += (sender, args) =>
       {
-         if (flyoutPresenter.Child is not null) {
-            var child = flyoutPresenter.Child;
-            UIStructureUtils.ClearLogicalParentRecursive(child, null);
-            UIStructureUtils.ClearVisualParentRecursive(child, null);
-         }
-
          base.ShowAtCore(placementTarget, showAtPointer);
          if (Popup.Host is WindowBase window) {
             window.PlatformImpl!.SetTopmost(true);
