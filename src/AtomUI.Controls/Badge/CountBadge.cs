@@ -49,6 +49,10 @@ public partial class CountBadge : Control, IControlCustomStyle
    public static readonly StyledProperty<bool> BadgeIsVisibleProperty =
       AvaloniaProperty.Register<CountBadge, bool>(nameof(BadgeIsVisible));
    
+   internal static readonly StyledProperty<TimeSpan> MotionDurationProperty =
+      AvaloniaProperty.Register<CountBadge, TimeSpan>(
+         nameof(MotionDuration));
+   
    public string? BadgeColor
    {
       get => GetValue(BadgeColorProperty);
@@ -98,7 +102,12 @@ public partial class CountBadge : Control, IControlCustomStyle
       set => SetValue(BadgeIsVisibleProperty, value);
    }
    
-   private bool _initialized = false;
+   public TimeSpan MotionDuration
+   {
+      get => GetValue(MotionDurationProperty);
+      set => SetValue(MotionDurationProperty, value);
+   }
+   
    private IControlCustomStyle _customStyle;
    private CountBadgeAdorner? _badgeAdorner;
    private AdornerLayer? _adornerLayer;
@@ -118,38 +127,37 @@ public partial class CountBadge : Control, IControlCustomStyle
       AffectsRender<CountBadge>(BadgeColorProperty, OffsetProperty);
    }
    
-   protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+   public sealed override void ApplyTemplate()
    {
-      base.OnAttachedToLogicalTree(e);
-      if (!_initialized) {
-         _customStyle.HandleAttachedToLogicalTree(e);
-         _initialized = true;
-      }
+      base.ApplyTemplate();
+      CreateBadgeAdorner();
    }
 
-   void IControlCustomStyle.HandleAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+   private void CreateBadgeAdorner()
    {
-      _badgeAdorner = new CountBadgeAdorner();
-      _customStyle.SetupTokenBindings();
-      HandleDecoratedTargetChanged();
-      if (BadgeColor is not null) {
-         SetupBadgeColor(BadgeColor);
+      if (_badgeAdorner is null) {
+         _badgeAdorner = new CountBadgeAdorner();
+         _customStyle.SetupTokenBindings();
+         HandleDecoratedTargetChanged();
+         if (BadgeColor is not null) {
+            SetupBadgeColor(BadgeColor);
+         }
       }
    }
 
    private void PrepareAdorner()
    {
-      if (_adornerLayer is null && 
-          DecoratedTarget is not null && 
-          _badgeAdorner is not null) {
+      if (_adornerLayer is null && DecoratedTarget is not null) {
+         CreateBadgeAdorner();
+         var badgeAdorner = _badgeAdorner!;
          _adornerLayer = AdornerLayer.GetAdornerLayer(this);
          // 这里需要抛出异常吗？
          if (_adornerLayer == null) {
             return;
          }
-         AdornerLayer.SetAdornedElement(_badgeAdorner, this);
-         AdornerLayer.SetIsClipEnabled(_badgeAdorner, false);
-         _adornerLayer.Children.Add(_badgeAdorner);
+         AdornerLayer.SetAdornedElement(badgeAdorner, this);
+         AdornerLayer.SetIsClipEnabled(badgeAdorner, false);
+         _adornerLayer.Children.Add(badgeAdorner);
       }
    }
 
@@ -167,14 +175,14 @@ public partial class CountBadge : Control, IControlCustomStyle
       var adorner = _badgeAdorner!;
       if (DecoratedTarget is not null) {
          var countBadgeZoomBadgeIn = new CountBadgeZoomBadgeIn();
-         countBadgeZoomBadgeIn.ConfigureOpacity(_motionDurationSlow);
-         countBadgeZoomBadgeIn.ConfigureRenderTransform(_motionDurationSlow);
+         countBadgeZoomBadgeIn.ConfigureOpacity(MotionDuration);
+         countBadgeZoomBadgeIn.ConfigureRenderTransform(MotionDuration);
          motion = countBadgeZoomBadgeIn;
          adorner.AnimationRenderTransformOrigin = motion.MotionRenderTransformOrigin;
       } else {
          var countBadgeNoWrapperZoomBadgeIn = new CountBadgeNoWrapperZoomBadgeIn();
-         countBadgeNoWrapperZoomBadgeIn.ConfigureOpacity(_motionDurationSlow);
-         countBadgeNoWrapperZoomBadgeIn.ConfigureRenderTransform(_motionDurationSlow);
+         countBadgeNoWrapperZoomBadgeIn.ConfigureOpacity(MotionDuration);
+         countBadgeNoWrapperZoomBadgeIn.ConfigureRenderTransform(MotionDuration);
          motion = countBadgeNoWrapperZoomBadgeIn;
       }
       
@@ -209,14 +217,14 @@ public partial class CountBadge : Control, IControlCustomStyle
       var adorner = _badgeAdorner!;
       if (DecoratedTarget is not null) {
           var countBadgeZoomBadgeOut = new CountBadgeZoomBadgeOut();
-          countBadgeZoomBadgeOut.ConfigureOpacity(_motionDurationSlow);
-          countBadgeZoomBadgeOut.ConfigureRenderTransform(_motionDurationSlow);
+          countBadgeZoomBadgeOut.ConfigureOpacity(MotionDuration);
+          countBadgeZoomBadgeOut.ConfigureRenderTransform(MotionDuration);
           motion = countBadgeZoomBadgeOut;
           adorner.AnimationRenderTransformOrigin = motion.MotionRenderTransformOrigin;
       } else {
          var countBadgeNoWrapperZoomBadgeOut = new CountBadgeNoWrapperZoomBadgeOut();
-         countBadgeNoWrapperZoomBadgeOut.ConfigureOpacity(_motionDurationSlow);
-         countBadgeNoWrapperZoomBadgeOut.ConfigureRenderTransform(_motionDurationSlow);
+         countBadgeNoWrapperZoomBadgeOut.ConfigureOpacity(MotionDuration);
+         countBadgeNoWrapperZoomBadgeOut.ConfigureRenderTransform(MotionDuration);
          motion = countBadgeNoWrapperZoomBadgeOut;
       }
 
@@ -251,20 +259,20 @@ public partial class CountBadge : Control, IControlCustomStyle
          BindUtils.RelayBind(this, OverflowCountProperty, _badgeAdorner, CountBadgeAdorner.OverflowCountProperty);
          BindUtils.RelayBind(this, CountProperty, _badgeAdorner, CountBadgeAdorner.CountProperty);
       }
-      BindUtils.CreateTokenBinding(this, MotionDurationSlowTokenProperty, GlobalResourceKey.MotionDurationSlow);
+      BindUtils.CreateTokenBinding(this, MotionDurationProperty, GlobalResourceKey.MotionDurationSlow);
    }
    
    private void HandleDecoratedTargetChanged()
    {
       if (_badgeAdorner is not null) {
          if (DecoratedTarget is null) {
+            ((ISetLogicalParent)_badgeAdorner).SetParent(this);
             VisualChildren.Add(_badgeAdorner);
-            LogicalChildren.Add(_badgeAdorner);
             _badgeAdorner.IsAdornerMode = false;
          } else if (DecoratedTarget is not null) {
             _badgeAdorner.IsAdornerMode = true;
+            ((ISetLogicalParent)DecoratedTarget).SetParent(this);
             VisualChildren.Add(DecoratedTarget);
-            LogicalChildren.Add(DecoratedTarget);
          }
       }
    }
@@ -293,7 +301,7 @@ public partial class CountBadge : Control, IControlCustomStyle
             HideAdornerWithMotion();
          }
       }
-      if (_initialized) {
+      if (VisualRoot is not null) {
          if (e.Property == DecoratedTargetProperty) {
             HandleDecoratedTargetChanged();
          }

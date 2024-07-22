@@ -5,24 +5,12 @@ using Avalonia.Controls;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
+using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
 internal partial class DotBadgeAdorner : Control, IControlCustomStyle
 {
-   public static readonly DirectProperty<DotBadgeAdorner, IBrush?> DotColorProperty =
-      AvaloniaProperty.RegisterDirect<DotBadgeAdorner, IBrush?>(
-         nameof(DotColor),
-         o => o.DotColor,
-         (o, v) => o.DotColor = v);
-
-   private IBrush? _dotColor;
-   public IBrush? DotColor
-   {
-      get => _dotColor;
-      set => SetAndRaise(DotColorProperty, ref _dotColor, value);
-   }
-   
    public static readonly DirectProperty<DotBadgeAdorner, DotBadgeStatus?> StatusProperty =
       AvaloniaProperty.RegisterDirect<DotBadgeAdorner, DotBadgeStatus?>(
          nameof(Status),
@@ -54,7 +42,35 @@ internal partial class DotBadgeAdorner : Control, IControlCustomStyle
          nameof(IsAdornerMode),
          o => o.IsAdornerMode,
          (o, v) => o.IsAdornerMode = v);
-
+   
+   internal static readonly StyledProperty<IBrush?> BadgeDotColorProperty =
+      AvaloniaProperty.Register<DotBadgeAdorner, IBrush?>(
+         nameof(BadgeDotColor));
+   
+   internal static readonly StyledProperty<double> DotSizeProperty =
+      AvaloniaProperty.Register<DotBadgeAdorner, double>(
+         nameof(DotSize));
+   
+   internal static readonly StyledProperty<double> StatusSizeProperty =
+      AvaloniaProperty.Register<DotBadgeAdorner, double>(
+         nameof(StatusSize));
+   
+   internal static readonly StyledProperty<IBrush?> BadgeShadowColorProperty =
+      AvaloniaProperty.Register<DotBadgeAdorner, IBrush?>(
+         nameof(BadgeShadowColor));
+   
+   private static readonly StyledProperty<double> BadgeShadowSizeProperty =
+      AvaloniaProperty.Register<DotBadgeAdorner, double>(
+         nameof(BadgeShadowSize));
+   
+   private static readonly StyledProperty<double> BadgeTextMarginInlineProperty =
+      AvaloniaProperty.Register<DotBadgeAdorner, double>(
+         nameof(BadgeTextMarginInline));
+   
+   public static readonly StyledProperty<Point> OffsetProperty =
+      AvaloniaProperty.Register<DotBadgeAdorner, Point>(
+         nameof(Offset));
+   
    private bool _isAdornerMode = false;
    public bool IsAdornerMode
    {
@@ -62,33 +78,46 @@ internal partial class DotBadgeAdorner : Control, IControlCustomStyle
       set => SetAndRaise(IsAdornerModeProperty, ref _isAdornerMode, value);
    }
    
-   public static readonly DirectProperty<DotBadgeAdorner, IBrush?> EffectiveDotColorProperty =
-      AvaloniaProperty.RegisterDirect<DotBadgeAdorner, IBrush?>(
-         nameof(EffectiveDotColor),
-         o => o.EffectiveDotColor,
-         (o, v) => o.EffectiveDotColor = v);
-   
-   private IBrush? _effectiveDotColor;
-   
-   // 当前有效的颜色
-   public IBrush? EffectiveDotColor
-   {
-      get => _effectiveDotColor;
-      set => SetAndRaise(EffectiveDotColorProperty, ref _effectiveDotColor, value);
-   }
-   
-   public static readonly DirectProperty<DotBadgeAdorner, Point> OffsetProperty =
-      AvaloniaProperty.RegisterDirect<DotBadgeAdorner, Point>(
-         nameof(Offset),
-         o => o.Offset,
-         (o, v) => o.Offset = v);
-   
-   private Point _offset;
-
    public Point Offset
    {
-      get => _offset;
-      set => SetAndRaise(OffsetProperty, ref _offset, value);
+      get => GetValue(OffsetProperty);
+      set => SetValue(OffsetProperty,value);
+   }
+   
+   public double DotSize
+   {
+      get => GetValue(DotSizeProperty);
+      set => SetValue(DotSizeProperty, value);
+   }
+   
+   public double StatusSize
+   {
+      get => GetValue(StatusSizeProperty);
+      set => SetValue(StatusSizeProperty, value);
+   }
+   
+   internal IBrush? BadgeDotColor
+   {
+      get => GetValue(BadgeDotColorProperty);
+      set => SetValue(BadgeDotColorProperty, value);
+   }
+   
+   internal IBrush? BadgeShadowColor
+   {
+      get => GetValue(BadgeShadowColorProperty);
+      set => SetValue(BadgeShadowColorProperty, value);
+   }
+   
+   public double BadgeShadowSize
+   {
+      get => GetValue(BadgeShadowSizeProperty);
+      set => SetValue(BadgeShadowSizeProperty, value);
+   }
+   
+   public double BadgeTextMarginInline
+   {
+      get => GetValue(BadgeTextMarginInlineProperty);
+      set => SetValue(BadgeTextMarginInlineProperty, value);
    }
    
    private bool _initialized = false;
@@ -102,84 +131,79 @@ internal partial class DotBadgeAdorner : Control, IControlCustomStyle
    static DotBadgeAdorner()
    {
       AffectsMeasure<DotBadge>(TextProperty, IsAdornerModeProperty);
-      AffectsRender<DotBadge>(EffectiveDotColorProperty, OffsetProperty);
+      AffectsRender<DotBadge>(BadgeDotColorProperty, OffsetProperty);
    }
 
    public DotBadgeAdorner()
    {
       _customStyle = this;
    }
-   
-   void IControlCustomStyle.SetupUI()
-   {
-      _textLabel = new Label
-      {
-         Content = Text,
-         HorizontalAlignment = HorizontalAlignment.Left,
-         VerticalAlignment = VerticalAlignment.Center,
-         HorizontalContentAlignment = HorizontalAlignment.Center,
-         VerticalContentAlignment = VerticalAlignment.Center,
-         Padding = new Thickness(0),
-      };
-      
-      LogicalChildren.Add(_textLabel);
-      VisualChildren.Add(_textLabel);
-      _customStyle.SetupTokenBindings();
-      SetupEffectiveDotColor();
-      BuildBoxShadow();
-   }
 
-   void IControlCustomStyle.SetupTokenBindings()
+   public sealed override void ApplyTemplate()
    {
-      BindUtils.CreateTokenBinding(this, ColorTextPlaceholderTokenProperty, GlobalResourceKey.ColorTextPlaceholder);
-      BindUtils.CreateTokenBinding(this, ColorErrorTokenProperty, GlobalResourceKey.ColorError);
-      BindUtils.CreateTokenBinding(this, ColorWarningTokenProperty, GlobalResourceKey.ColorWarning);
-      BindUtils.CreateTokenBinding(this, ColorSuccessTokenProperty, GlobalResourceKey.ColorSuccess);
-      BindUtils.CreateTokenBinding(this, ColorInfoTokenProperty, GlobalResourceKey.ColorInfo);
-      BindUtils.CreateTokenBinding(this, MarginXSTokenProperty, GlobalResourceKey.MarginXS);
-      
-      BindUtils.CreateTokenBinding(this, DotSizeTokenProperty, BadgeResourceKey.DotSize);
-      BindUtils.CreateTokenBinding(this, StatusSizeTokenProperty, BadgeResourceKey.StatusSize);
-      BindUtils.CreateTokenBinding(this, BadgeColorTokenProperty, BadgeResourceKey.BadgeColor);
-      BindUtils.CreateTokenBinding(this, BadgeShadowSizeTokenProperty, BadgeResourceKey.BadgeShadowSize);
-      BindUtils.CreateTokenBinding(this, BadgeShadowColorTokenProperty, BadgeResourceKey.BadgeShadowColor);
-   }
-   
-   protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-   {
-      base.OnAttachedToLogicalTree(e);
+      base.ApplyTemplate();
       if (!_initialized) {
-         _customStyle.SetupUI();
+         _textLabel = new Label
+         {
+            Content = Text,
+            HorizontalAlignment = HorizontalAlignment.Left,
+            VerticalAlignment = VerticalAlignment.Center,
+            HorizontalContentAlignment = HorizontalAlignment.Center,
+            VerticalContentAlignment = VerticalAlignment.Center,
+            Padding = new Thickness(0),
+         };
+
+         ((ISetLogicalParent)_textLabel).SetParent(this);
+         VisualChildren.Add(_textLabel);
+         BuildBoxShadow();
          _initialized = true;
       }
    }
 
-   private IBrush? GetStatusColor(DotBadgeStatus status)
+   protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
    {
-      if (status == DotBadgeStatus.Error) {
-         return _colorErrorToken;
-      } else if (status == DotBadgeStatus.Processing) {
-         return _colorInfoToken;
-      } else if (status == DotBadgeStatus.Success) {
-         return _colorSuccessToken;
-      } else if (status == DotBadgeStatus.Warning) {
-         return _colorWarningToken;
-      } else {
-         return _colorTextPlaceholderToken;
+      base.OnAttachedToLogicalTree(e);
+      _customStyle.BuildStyles();
+   }
+
+   void IControlCustomStyle.BuildStyles()
+   {
+      if (Styles.Count == 0) {
+         BuildBadgeColorStyle();
       }
    }
 
-   private void SetupEffectiveDotColor()
+   private void BuildBadgeColorStyle()
    {
-      if (_dotColor is not null) {
-         EffectiveDotColor = _dotColor;
-      } else if (Status.HasValue) {
-         EffectiveDotColor = GetStatusColor(Status.Value);
-      }
+      var commonStyle = new Style(selector => selector.OfType<DotBadgeAdorner>());
+      commonStyle.Add(BadgeTextMarginInlineProperty, GlobalResourceKey.MarginXS);
+      commonStyle.Add(BadgeDotColorProperty, BadgeResourceKey.BadgeColor);
+      commonStyle.Add(DotSizeProperty, BadgeResourceKey.DotSize);
+      commonStyle.Add(StatusSizeProperty, BadgeResourceKey.StatusSize);
+      commonStyle.Add(BadgeShadowSizeProperty, BadgeResourceKey.BadgeShadowSize);
+      commonStyle.Add(BadgeShadowColorProperty, BadgeResourceKey.BadgeShadowColor);
 
-      if (EffectiveDotColor is null) {
-         EffectiveDotColor = _badgeColorToken;
-      }
+      var errorStatusStyle = new Style(selector => selector.Nesting().PropertyEquals(DotBadgeAdorner.StatusProperty, DotBadgeStatus.Error));
+      errorStatusStyle.Add(DotBadgeAdorner.BadgeDotColorProperty, GlobalResourceKey.ColorError);
+      commonStyle.Add(errorStatusStyle);
+      
+      var successStatusStyle = new Style(selector => selector.Nesting().PropertyEquals(DotBadgeAdorner.StatusProperty, DotBadgeStatus.Success));
+      successStatusStyle.Add(DotBadgeAdorner.BadgeDotColorProperty, GlobalResourceKey.ColorSuccess);
+      commonStyle.Add(successStatusStyle);
+      
+      var warningStatusStyle = new Style(selector => selector.Nesting().PropertyEquals(DotBadgeAdorner.StatusProperty, DotBadgeStatus.Warning));
+      warningStatusStyle.Add(DotBadgeAdorner.BadgeDotColorProperty, GlobalResourceKey.ColorWarning);
+      commonStyle.Add(warningStatusStyle);
+      
+      var defaultStatusStyle = new Style(selector => selector.Nesting().PropertyEquals(DotBadgeAdorner.StatusProperty, DotBadgeStatus.Default));
+      defaultStatusStyle.Add(DotBadgeAdorner.BadgeDotColorProperty, GlobalResourceKey.ColorTextPlaceholder);
+      commonStyle.Add(defaultStatusStyle);
+      
+      var processingStatusStyle = new Style(selector => selector.Nesting().PropertyEquals(DotBadgeAdorner.StatusProperty, DotBadgeStatus.Processing));
+      processingStatusStyle.Add(DotBadgeAdorner.BadgeDotColorProperty, GlobalResourceKey.ColorInfo);
+      commonStyle.Add(processingStatusStyle);
+      
+      Styles.Add(commonStyle);
    }
 
    protected override Size MeasureOverride(Size availableSize)
@@ -191,11 +215,11 @@ internal partial class DotBadgeAdorner : Control, IControlCustomStyle
          targetHeight = availableSize.Height;
       } else {
          var textSize = base.MeasureOverride(availableSize);
-         targetWidth += _statusSizeToken;
+         targetWidth += StatusSize;
          targetWidth += textSize.Width;
-         targetHeight += Math.Max(textSize.Height, _statusSizeToken);
+         targetHeight += Math.Max(textSize.Height, StatusSize);
          if (textSize.Width > 0) {
-            targetWidth += _marginXSToken;
+            targetWidth += BadgeTextMarginInline;
          }
       }
       return new Size(targetWidth, targetHeight);
@@ -206,12 +230,12 @@ internal partial class DotBadgeAdorner : Control, IControlCustomStyle
       if (!IsAdornerMode) {
          double textOffsetX = 0;
          if (IsAdornerMode) {
-            textOffsetX += _dotSizeToken;
+            textOffsetX += DotSize;
          } else {
-            textOffsetX += _statusSizeToken;
+            textOffsetX += StatusSize;
          }
 
-         textOffsetX += _marginXSToken;
+         textOffsetX += BadgeTextMarginInline;
          var textRect = new Rect(new Point(textOffsetX, 0), _textLabel!.DesiredSize);
          _textLabel.Arrange(textRect);
       }
@@ -226,16 +250,9 @@ internal partial class DotBadgeAdorner : Control, IControlCustomStyle
          if (_textLabel is not null) {
             _textLabel.IsVisible = !newValue;
          }
-      } else if (e.Property == BadgeShadowSizeTokenProperty ||
-                 e.Property == BadgeShadowColorTokenProperty) {
+      } else if (e.Property == BadgeShadowSizeProperty ||
+                 e.Property == BadgeShadowColorProperty) {
          BuildBoxShadow();
-      }
-
-      if (_initialized) {
-         if (e.Property == StatusProperty ||
-             e.Property == DotColorProperty) {
-            SetupEffectiveDotColor();
-         }
       }
    }
 
@@ -243,9 +260,9 @@ internal partial class DotBadgeAdorner : Control, IControlCustomStyle
    {
       var dotSize = 0d;
       if (IsAdornerMode) {
-         dotSize = _dotSizeToken;
+         dotSize = DotSize;
       } else {
-         dotSize = _statusSizeToken;
+         dotSize = StatusSize;
       }
       
       var offsetX = 0d;
@@ -273,19 +290,20 @@ internal partial class DotBadgeAdorner : Control, IControlCustomStyle
          var renderTransform = (-offset) * RenderTransform.Value * (offset);
          context.PushTransform(renderTransform);
       }
-      
-      context.DrawRectangle(EffectiveDotColor, null, dotRect, dotSize, dotSize, _boxShadows);
+      context.DrawRectangle(BadgeDotColor, null, dotRect, dotSize, dotSize, _boxShadows);
    }
 
    private void BuildBoxShadow()
    {
-      _boxShadows = new BoxShadows(new BoxShadow()
-      {
-         OffsetX = 0,
-         OffsetY = 0,
-         Blur = 0,
-         Spread = _badgeShadowSizeToken,
-         Color = ((SolidColorBrush)_badgeShadowColorToken!).Color
-      });
+      if (IsSet(BadgeShadowSizeProperty) && IsSet(BadgeShadowColorProperty)) {
+         _boxShadows = new BoxShadows(new BoxShadow()
+         {
+            OffsetX = 0,
+            OffsetY = 0,
+            Blur = 0,
+            Spread = BadgeShadowSize,
+            Color = ((SolidColorBrush)BadgeShadowColor!).Color
+         });
+      }
    }
 }

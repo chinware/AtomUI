@@ -1,8 +1,6 @@
 ﻿using System.Globalization;
-using AtomUI.Data;
 using AtomUI.Media;
 using AtomUI.Styling;
-using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Documents;
@@ -14,7 +12,7 @@ using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
-internal partial class CountBadgeAdorner : Control, IControlCustomStyle
+internal class CountBadgeAdorner : Control, IControlCustomStyle
 {
    public static readonly StyledProperty<IBrush?> BadgeColorProperty =
       AvaloniaProperty.Register<CountBadgeAdorner, IBrush?>(
@@ -38,22 +36,22 @@ internal partial class CountBadgeAdorner : Control, IControlCustomStyle
 
    internal static readonly StyledProperty<FontFamily> FontFamilyProperty =
       TextElement.FontFamilyProperty.AddOwner<CountBadgeAdorner>();
-   
+
    internal static readonly StyledProperty<FontWeight> TextFontWeightProperty =
       TextElement.FontWeightProperty.AddOwner<CountBadgeAdorner>();
-   
+
    internal static readonly StyledProperty<IBrush?> BadgeShadowColorProperty =
       AvaloniaProperty.Register<CountBadgeAdorner, IBrush?>(
          nameof(BadgeShadowColor));
-   
+
    internal static readonly StyledProperty<double> BadgeShadowSizeProperty =
       AvaloniaProperty.Register<CountBadgeAdorner, double>(
          nameof(BadgeShadowSize));
-   
+
    internal static readonly StyledProperty<double> PaddingInlineProperty =
       AvaloniaProperty.Register<CountBadgeAdorner, double>(
          nameof(PaddingInline));
-   
+
    public IBrush? BadgeColor
    {
       get => GetValue(BadgeColorProperty);
@@ -83,51 +81,59 @@ internal partial class CountBadgeAdorner : Control, IControlCustomStyle
       get => GetValue(CountProperty);
       set => SetValue(CountProperty, value);
    }
-   
+
    internal FontFamily FontFamily
    {
       get => GetValue(FontFamilyProperty);
       set => SetValue(FontFamilyProperty, value);
    }
-   
+
    internal FontWeight TextFontWeight
    {
       get => GetValue(TextFontWeightProperty);
       set => SetValue(TextFontWeightProperty, value);
    }
-   
+
    internal IBrush? BadgeShadowColor
    {
       get => GetValue(BadgeShadowColorProperty);
       set => SetValue(BadgeShadowColorProperty, value);
    }
-   
+
    internal double BadgeShadowSize
    {
       get => GetValue(BadgeShadowSizeProperty);
       set => SetValue(BadgeShadowSizeProperty, value);
    }
-   
+
    internal double PaddingInline
    {
       get => GetValue(PaddingInlineProperty);
       set => SetValue(PaddingInlineProperty, value);
    }
 
-   internal bool IsAdornerMode { get; set; }
+   internal static readonly DirectProperty<DotBadgeAdorner, bool> IsAdornerModeProperty =
+      AvaloniaProperty.RegisterDirect<DotBadgeAdorner, bool>(
+         nameof(IsAdornerMode),
+         o => o.IsAdornerMode,
+         (o, v) => o.IsAdornerMode = v);
 
-   public static readonly DirectProperty<CountBadgeAdorner, Point> OffsetProperty =
-      AvaloniaProperty.RegisterDirect<CountBadgeAdorner, Point>(
-         nameof(Offset),
-         o => o.Offset,
-         (o, v) => o.Offset = v);
+   private bool _isAdornerMode = false;
 
-   private Point _offset;
+   internal bool IsAdornerMode
+   {
+      get => _isAdornerMode;
+      set => SetAndRaise(IsAdornerModeProperty, ref _isAdornerMode, value);
+   }
+
+   internal static readonly StyledProperty<Point> OffsetProperty =
+      AvaloniaProperty.Register<CountBadgeAdorner, Point>(
+         nameof(Offset));
 
    public Point Offset
    {
-      get => _offset;
-      set => SetAndRaise(OffsetProperty, ref _offset, value);
+      get => GetValue(OffsetProperty);
+      set => SetValue(OffsetProperty, value);
    }
 
    public static readonly DirectProperty<CountBadgeAdorner, int> OverflowCountProperty =
@@ -166,7 +172,8 @@ internal partial class CountBadgeAdorner : Control, IControlCustomStyle
    {
       AffectsMeasure<CountBadgeAdorner>(OverflowCountProperty,
                                         SizeProperty,
-                                        CountProperty);
+                                        CountProperty,
+                                        IsAdornerModeProperty);
       AffectsRender<CountBadgeAdorner>(BadgeColorProperty, OffsetProperty);
    }
 
@@ -201,18 +208,17 @@ internal partial class CountBadgeAdorner : Control, IControlCustomStyle
       commonStyle.Add(BadgeTextColorProperty, BadgeResourceKey.BadgeTextColor);
       commonStyle.Add(PaddingInlineProperty, GlobalResourceKey.PaddingXS);
       Styles.Add(commonStyle);
-      
+
       var defaultSizeStyle =
          new Style(selector => selector.PropertyEquals(SizeProperty, CountBadgeSize.Default));
       defaultSizeStyle.Add(TextFontSizeProperty, BadgeResourceKey.TextFontSize);
       defaultSizeStyle.Add(IndicatorHeightProperty, BadgeResourceKey.IndicatorHeight);
       Styles.Add(defaultSizeStyle);
-      
+
       var smallSizeStyle = new Style(selector => selector.PropertyEquals(SizeProperty, CountBadgeSize.Small));
       smallSizeStyle.Add(TextFontSizeProperty, BadgeResourceKey.TextFontSizeSM);
       smallSizeStyle.Add(IndicatorHeightProperty, BadgeResourceKey.IndicatorHeightSM);
       Styles.Add(smallSizeStyle);
-
    }
 
    public override void ApplyTemplate()
