@@ -162,7 +162,6 @@ public partial class Separator : TemplatedControl, IControlCustomStyle
    #endregion
    
    private IControlCustomStyle _customStyle;
-   private bool _scalingAwareConfigApplied = false;
    private Label? _titleLabel;
    private const double SEPARATOR_LINE_MIN_PROPORTION = 0.25;
    private double _currentEdgeDistance;

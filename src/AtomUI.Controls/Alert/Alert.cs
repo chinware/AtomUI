@@ -95,8 +95,6 @@ public class Alert : TemplatedControl, IControlCustomStyle
 
    private readonly IControlCustomStyle _customStyle;
 
-   private bool _scalingAwareConfigApplied = false;
-
    static Alert()
    {
       AffectsMeasure<Segmented>(IsClosableProperty,

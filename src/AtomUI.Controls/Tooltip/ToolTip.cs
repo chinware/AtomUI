@@ -497,7 +497,6 @@ public class ToolTip : TemplatedControl,
    private Popup? _popup;
    private Action<IPopupHost?>? _popupHostChangedHandler;
    private PopupPositionInfo? _popupPositionInfo; // 这个信息在隐藏动画的时候会用到
-   private bool _initialized = false;
    private IControlCustomStyle _customStyle;
    private ArrowDecoratedBox? _arrowDecoratedBox;
    private bool _animating;
