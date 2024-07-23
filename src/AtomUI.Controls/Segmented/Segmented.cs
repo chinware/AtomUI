@@ -57,6 +57,8 @@ public class SegmentedMovedEventArgs : RoutedEventArgs
 /// </summary>
 public partial class Segmented : TemplatedControl, IControlCustomStyle
 {
+   #region 公共属性定义
+
    public static readonly StyledProperty<CornerRadius> SelectedThumbCornerRadiusProperty =
       AvaloniaProperty.Register<Segmented, CornerRadius>(nameof(SelectedThumbCornerRadius));
 
@@ -113,6 +115,51 @@ public partial class Segmented : TemplatedControl, IControlCustomStyle
       set => SetValue(SizeTypeProperty, value);
    }
 
+   #endregion
+
+   #region 内部属性定义
+
+   internal static readonly StyledProperty<IBrush?> SelectedThumbBgProperty =
+      AvaloniaProperty.Register<Segmented, IBrush?>(
+         nameof(SelectedThumbBg));
+   
+   internal static readonly StyledProperty<BoxShadows> SelectedThumbBoxShadowsProperty =
+      AvaloniaProperty.Register<Segmented, BoxShadows>(
+         nameof(SelectedThumbBoxShadows));
+   
+   internal IBrush? SelectedThumbBg
+   {
+      get => GetValue(SelectedThumbBgProperty);
+      set => SetValue(SelectedThumbBgProperty, value);
+   }
+   
+   internal BoxShadows SelectedThumbBoxShadows
+   {
+      get => GetValue(SelectedThumbBoxShadowsProperty);
+      set => SetValue(SelectedThumbBoxShadowsProperty, value);
+   }
+   
+   // 内部动画属性
+   internal static readonly StyledProperty<Size> SelectedThumbSizeProperty =
+      AvaloniaProperty.Register<Segmented, Size>(nameof(SelectedThumbSize));
+
+   internal Size SelectedThumbSize
+   {
+      get => GetValue(SelectedThumbSizeProperty);
+      set => SetValue(SelectedThumbSizeProperty, value);
+   }
+   
+   internal static readonly StyledProperty<Point> SelectedThumbPosProperty =
+      AvaloniaProperty.Register<Segmented, Point>(nameof(SelectedThumbPos));
+
+   internal Point SelectedThumbPos
+   {
+      get => GetValue(SelectedThumbPosProperty);
+      set => SetValue(SelectedThumbPosProperty, value);
+   }
+
+   #endregion
+   
    private int _currentIndex = 0;
    private Canvas? _mainContainer;
 
