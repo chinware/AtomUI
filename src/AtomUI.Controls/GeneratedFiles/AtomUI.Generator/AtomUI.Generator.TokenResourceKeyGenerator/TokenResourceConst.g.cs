@@ -257,6 +257,9 @@ namespace AtomUI.Styling
         public static readonly TokenResourceKey ToolTipBackground = new TokenResourceKey("ToolTip.ToolTipBackground");
         public static readonly TokenResourceKey BorderRadiusOuter = new TokenResourceKey("ToolTip.BorderRadiusOuter");
         public static readonly TokenResourceKey ToolTipPadding = new TokenResourceKey("ToolTip.ToolTipPadding");
+        public static readonly TokenResourceKey ToolTipShadows = new TokenResourceKey("ToolTip.ToolTipShadows");
+        public static readonly TokenResourceKey ToolTipMotionDuration = new TokenResourceKey("ToolTip.ToolTipMotionDuration");
+        public static readonly TokenResourceKey MarginToAnchor = new TokenResourceKey("ToolTip.MarginToAnchor");
         public static readonly TokenResourceKey ToolTipArrowSize = new TokenResourceKey("ToolTip.ToolTipArrowSize");
     }
 

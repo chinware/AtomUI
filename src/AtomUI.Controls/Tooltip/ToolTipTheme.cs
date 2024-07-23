@@ -43,4 +43,21 @@ internal class ToolTipTheme : ControlTheme
       });
    }
 
+   protected override void BuildStyles()
+   {
+      this.Add(ToolTip.ShadowsProperty, ToolTipResourceKey.ToolTipShadows);
+      this.Add(ToolTip.DefaultMarginToAnchorProperty, ToolTipResourceKey.MarginToAnchor);
+      this.Add(ToolTip.MotionDurationProperty, ToolTipResourceKey.ToolTipMotionDuration);
+      this.Add(ToolTip.BackgroundProperty, GlobalResourceKey.ColorTransparent);
+
+      var arrowDecoratedBoxStyle = new Style(selector => selector.Nesting().Template().OfType<ArrowDecoratedBox>());
+      arrowDecoratedBoxStyle.Add(ArrowDecoratedBox.FontSizeProperty, GlobalResourceKey.FontSize);
+      arrowDecoratedBoxStyle.Add(ArrowDecoratedBox.MaxWidthProperty, ToolTipResourceKey.ToolTipMaxWidth);
+      arrowDecoratedBoxStyle.Add(ArrowDecoratedBox.BackgroundProperty, ToolTipResourceKey.ToolTipBackground);
+      arrowDecoratedBoxStyle.Add(ArrowDecoratedBox.ForegroundProperty, ToolTipResourceKey.ToolTipColor);
+      arrowDecoratedBoxStyle.Add(ArrowDecoratedBox.MinHeightProperty, GlobalResourceKey.ControlHeight);
+      arrowDecoratedBoxStyle.Add(ArrowDecoratedBox.PaddingProperty, ToolTipResourceKey.ToolTipPadding);
+      arrowDecoratedBoxStyle.Add(ArrowDecoratedBox.CornerRadiusProperty, ToolTipResourceKey.BorderRadiusOuter);
+      Add(arrowDecoratedBoxStyle);
+   }
 }

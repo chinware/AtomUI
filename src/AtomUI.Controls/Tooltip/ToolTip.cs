@@ -20,10 +20,173 @@ using Avalonia.Threading;
 namespace AtomUI.Controls;
 
 [PseudoClasses(StdPseudoClass.Open)]
-public partial class ToolTip : TemplatedControl, 
+public class ToolTip : TemplatedControl, 
                                IShadowMaskInfoProvider,
                                IControlCustomStyle
 {
+   #region 公共属性定义
+
+      /// <summary>
+   /// Defines the <see cref="Content"/> property.
+   /// </summary>
+   public static readonly StyledProperty<object?> ContentProperty =
+      AvaloniaProperty.Register<ToolTip, object?>(nameof(Content));
+
+   /// <summary>
+   /// Defines the ToolTip.Tip attached property.
+   /// </summary>
+   public static readonly AttachedProperty<object?> TipProperty =
+      AvaloniaProperty.RegisterAttached<ToolTip, Control, object?>("Tip");
+
+   /// <summary>
+   /// Defines the ToolTip.IsOpen attached property.
+   /// </summary>
+   public static readonly AttachedProperty<bool> IsOpenProperty =
+      AvaloniaProperty.RegisterAttached<ToolTip, Control, bool>("IsOpen");
+
+   /// <summary>
+   /// Defines the ToolTip.PresetColor attached property.
+   /// </summary>
+   public static readonly AttachedProperty<PresetColorType?> PresetColorProperty =
+      AvaloniaProperty.RegisterAttached<ToolTip, Control, PresetColorType?>("PresetColor");
+
+   /// <summary>
+   /// Defines the ToolTip.PresetColor attached property.
+   /// </summary>
+   public static readonly AttachedProperty<Color?> ColorProperty =
+      AvaloniaProperty.RegisterAttached<ToolTip, Control, Color?>("Color");
+
+   /// <summary>
+   /// 是否显示指示箭头
+   /// </summary>
+   public static readonly AttachedProperty<bool> IsShowArrowProperty =
+      AvaloniaProperty.RegisterAttached<ToolTip, Control, bool>("IsShowArrow", true);
+
+   /// <summary>
+   /// 箭头是否始终指向中心
+   /// </summary>
+   public static readonly AttachedProperty<bool> IsPointAtCenterProperty =
+      AvaloniaProperty.RegisterAttached<ToolTip, Control, bool>("IsPointAtCenter", false);
+
+   /// <summary>
+   /// Defines the ToolTip.Placement property.
+   /// </summary>
+   public static readonly AttachedProperty<PlacementMode> PlacementProperty =
+      AvaloniaProperty.RegisterAttached<ToolTip, Control, PlacementMode>(
+         "Placement", defaultValue: PlacementMode.Top);
+
+   /// <summary>
+   /// Defines the ToolTip.HorizontalOffset property.
+   /// </summary>
+   public static readonly AttachedProperty<double> HorizontalOffsetProperty =
+      AvaloniaProperty.RegisterAttached<ToolTip, Control, double>("HorizontalOffset");
+
+   /// <summary>
+   /// Defines the ToolTip.VerticalOffset property.
+   /// </summary>
+   public static readonly AttachedProperty<double> VerticalOffsetProperty =
+      AvaloniaProperty.RegisterAttached<ToolTip, Control, double>("VerticalOffset");
+
+   /// <summary>
+   /// 距离 anchor 的边距，根据垂直和水平进行设置
+   /// </summary>
+   public static readonly AttachedProperty<double> MarginToAnchorProperty =
+      AvaloniaProperty.RegisterAttached<ToolTip, Control, double>("MarginToAnchor", double.NaN);
+
+   /// <summary>
+   /// Defines the ToolTip.ShowDelay property.
+   /// </summary>
+   public static readonly AttachedProperty<int> ShowDelayProperty =
+      AvaloniaProperty.RegisterAttached<ToolTip, Control, int>("ShowDelay", 400);
+
+   /// <summary>
+   /// Defines the ToolTip.BetweenShowDelay property.
+   /// </summary>
+   public static readonly AttachedProperty<int> BetweenShowDelayProperty =
+      AvaloniaProperty.RegisterAttached<ToolTip, Control, int>("BetweenShowDelay", 100);
+
+   /// <summary>
+   /// Defines the ToolTip.ShowOnDisabled property.
+   /// </summary>
+   public static readonly AttachedProperty<bool> ShowOnDisabledProperty =
+      AvaloniaProperty.RegisterAttached<ToolTip, Control, bool>("ShowOnDisabled", defaultValue: false, inherits: true);
+
+   /// <summary>
+   /// Defines the ToolTip.ServiceEnabled property.
+   /// </summary>
+   public static readonly AttachedProperty<bool> ServiceEnabledProperty =
+      AvaloniaProperty.RegisterAttached<ToolTip, Control, bool>("ServiceEnabled", defaultValue: true, inherits: true);
+   
+   public object? Content
+   {
+      get => GetValue(ContentProperty);
+      set => SetValue(ContentProperty, value);
+   }
+
+   #endregion
+
+   #region 内部属性定义
+
+   /// <summary>
+   /// Stores the current <see cref="ToolTip"/> instance in the control.
+   /// </summary>
+   internal static readonly AttachedProperty<ToolTip?> ToolTipProperty =
+      AvaloniaProperty.RegisterAttached<ToolTip, Control, ToolTip?>("ToolTip");
+   
+   internal static readonly StyledProperty<bool> IsShowArrowEffectiveProperty =
+      ArrowDecoratedBox.IsShowArrowProperty.AddOwner<ToolTip>();
+   
+   /// <summary>
+   /// 是否实际显示箭头
+   /// </summary>
+   internal bool IsShowArrowEffective
+   {
+      get => GetValue(IsShowArrowEffectiveProperty);
+      set => SetValue(IsShowArrowEffectiveProperty, value);
+   }
+
+   internal static readonly StyledProperty<BoxShadows> ShadowsProperty
+      = AvaloniaProperty.Register<ToolTip, BoxShadows>(nameof(Shadows));
+   
+   internal static readonly StyledProperty<TimeSpan> MotionDurationProperty 
+      = AvaloniaProperty.Register<ToolTip, TimeSpan>(nameof(MotionDuration));
+   
+   internal static readonly StyledProperty<double> DefaultMarginToAnchorProperty
+      = AvaloniaProperty.Register<ToolTip, double>(nameof(DefaultMarginToAnchor));
+   
+   internal BoxShadows Shadows
+   {
+      get => GetValue(ShadowsProperty);
+      set => SetValue(ShadowsProperty, value);
+   }
+   
+   internal TimeSpan MotionDuration
+   {
+      get => GetValue(MotionDurationProperty);
+      set => SetValue(MotionDurationProperty, value);
+   }
+   
+   internal double DefaultMarginToAnchor
+   {
+      get => GetValue(DefaultMarginToAnchorProperty);
+      set => SetValue(DefaultMarginToAnchorProperty, value);
+   }
+   
+   internal static readonly DirectProperty<ToolTip, PlacementMode?> FlipPlacementProperty =
+      AvaloniaProperty.RegisterDirect<ToolTip, PlacementMode?>(nameof(FlipPlacement),
+                                                               o => o.FlipPlacement,
+                                                               (o, v) => o.FlipPlacement = v);
+   
+   private PlacementMode? _flipPlacement;
+   
+   internal PlacementMode? FlipPlacement
+   {
+      get => _flipPlacement;
+      set => SetAndRaise(FlipPlacementProperty, ref _flipPlacement, value);
+   }
+   
+   #endregion
+   
    // 当鼠标移走了，但是打开动画还没完成，我们需要记录下来这个信号
    internal bool RequestCloseWhereAnimationCompleted { get; set; } = false;
 
@@ -45,10 +208,7 @@ public partial class ToolTip : TemplatedControl,
    {
       _customStyle = this;
    }
-
-   internal Control? AdornedControl { get; private set; }
-   internal event EventHandler? Closed;
-
+   
    #region 附加属性设置方法
 
     /// <summary>
@@ -341,7 +501,10 @@ public partial class ToolTip : TemplatedControl,
    private IControlCustomStyle _customStyle;
    private ArrowDecoratedBox? _arrowDecoratedBox;
    private bool _animating;
-
+   internal Control? AdornedControl { get; private set; }
+   internal event EventHandler? Closed;
+   private static StyledProperty<ThemeVariant?> RequestedThemeVariantProperty;
+   
    private static void IsOpenChanged(AvaloniaPropertyChangedEventArgs e)
    {
       var control = (Control)e.Sender;
@@ -463,7 +626,7 @@ public partial class ToolTip : TemplatedControl,
       
       var marginToAnchor = GetMarginToAnchor(control);
       if (double.IsNaN(marginToAnchor)) {
-         marginToAnchor = _marginXXSToken / 2;
+         marginToAnchor = DefaultMarginToAnchor;
       }
       
       var placement = GetPlacement(control);
@@ -530,12 +693,12 @@ public partial class ToolTip : TemplatedControl,
    {
       var director = Director.Instance;
       var motion = new ZoomBigInMotion();
-      motion.ConfigureOpacity(_motionDuration);
-      motion.ConfigureRenderTransform(_motionDuration);
+      motion.ConfigureOpacity(MotionDuration);
+      motion.ConfigureRenderTransform(MotionDuration);
       var topLevel = TopLevel.GetTopLevel(placementTarget);
 
       var motionActor =
-         new PopupMotionActor(_shadowsToken, positionInfo.Offset, positionInfo.Scaling, contentControl, motion);
+         new PopupMotionActor(Shadows, positionInfo.Offset, positionInfo.Scaling, contentControl, motion);
       motionActor.DispatchInSceneLayer = true;
       motionActor.SceneParent = topLevel;
       motionActor.Completed += (sender, args) =>
@@ -594,13 +757,13 @@ public partial class ToolTip : TemplatedControl,
       _animating = true;
       var director = Director.Instance;
       var motion = new ZoomBigOutMotion();
-      motion.ConfigureOpacity(_motionDuration);
-      motion.ConfigureRenderTransform(_motionDuration);
+      motion.ConfigureOpacity(MotionDuration);
+      motion.ConfigureRenderTransform(MotionDuration);
 
       UIStructureUtils.SetVisualParent(popup.Child, null);
       UIStructureUtils.SetVisualParent(popup.Child, null);
 
-      var motionActor = new PopupMotionActor(_shadowsToken, _popupPositionInfo.Offset, _popupPositionInfo.Scaling,
+      var motionActor = new PopupMotionActor(Shadows, _popupPositionInfo.Offset, _popupPositionInfo.Scaling,
                                              popup.Child, motion);
       motionActor.DispatchInSceneLayer = true;
       motionActor.SceneParent = placementToplevel;
@@ -656,13 +819,9 @@ public partial class ToolTip : TemplatedControl,
    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
    {
       base.OnAttachedToLogicalTree(e);
-      if (!_initialized) {
-         BindUtils.CreateTokenBinding(this, ThemeProperty, typeof(ToolTip));
-         // 手动提前应用模板
-         ApplyStyling();
-         ApplyTemplate();
-         _initialized = true;
-      }
+      // 手动提前应用模板，因为有某些计算需要
+      ApplyStyling();
+      ApplyTemplate();
    }
    
    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -674,29 +833,9 @@ public partial class ToolTip : TemplatedControl,
    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
    {
       _arrowDecoratedBox = scope.Find<ArrowDecoratedBox>(ToolTipTheme.ToolTipContainerPart);
-      _customStyle.SetupTokenBindings();
-      
-      Background = new SolidColorBrush(Colors.Transparent);
-      if (_arrowDecoratedBox is not null) {
-         BindUtils.CreateTokenBinding(_arrowDecoratedBox, ArrowDecoratedBox.FontSizeProperty, GlobalResourceKey.FontSize);
-         BindUtils.CreateTokenBinding(_arrowDecoratedBox, ArrowDecoratedBox.MaxWidthProperty, ToolTipResourceKey.ToolTipMaxWidth);
-         BindUtils.CreateTokenBinding(_arrowDecoratedBox, ArrowDecoratedBox.BackgroundProperty, ToolTipResourceKey.ToolTipBackground);
-         BindUtils.CreateTokenBinding(_arrowDecoratedBox, ArrowDecoratedBox.ForegroundProperty, ToolTipResourceKey.ToolTipColor);
-         BindUtils.CreateTokenBinding(_arrowDecoratedBox, ArrowDecoratedBox.MinHeightProperty, GlobalResourceKey.ControlHeight);
-         BindUtils.CreateTokenBinding(_arrowDecoratedBox, ArrowDecoratedBox.PaddingProperty, ToolTipResourceKey.ToolTipPadding);
-         BindUtils.CreateTokenBinding(_arrowDecoratedBox, ArrowDecoratedBox.CornerRadiusProperty, ToolTipResourceKey.BorderRadiusOuter);
-      }
    }
    
    #region IControlCustomStyle 实现
-   void IControlCustomStyle.SetupTokenBindings()
-   {
-      if (_arrowDecoratedBox is not null) {
-         BindUtils.CreateTokenBinding(this, MarginXXSTokenProperty, GlobalResourceKey.MarginXXS);
-         BindUtils.CreateTokenBinding(this, MotionDurationTokenProperty, GlobalResourceKey.MotionDurationMid);
-         BindUtils.CreateTokenBinding(this, ShadowsTokenProperty, GlobalResourceKey.BoxShadowsSecondary);
-      }
-   }
    
    public CornerRadius GetMaskCornerRadius()
    {

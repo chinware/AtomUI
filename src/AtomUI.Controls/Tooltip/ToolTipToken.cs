@@ -40,6 +40,21 @@ internal class ToolTipToken : AbstractControlDesignToken
    public Thickness ToolTipPadding { get; set; }
    
    /// <summary>
+   /// 内置阴影
+   /// </summary>
+   public BoxShadows ToolTipShadows { get; set; }
+   
+   /// <summary>
+   /// 动画时长
+   /// </summary>
+   public TimeSpan ToolTipMotionDuration { get; set; }
+   
+   /// <summary>
+   /// 默认距离锚控件的间距
+   /// </summary>
+   public double MarginToAnchor { get; set; }
+   
+   /// <summary>
    /// ToolTip 箭头三角形大小
    /// </summary>
    public double ToolTipArrowSize { get; set; }
@@ -56,5 +71,8 @@ internal class ToolTipToken : AbstractControlDesignToken
                                            Math.Max(BorderRadiusOuter.BottomLeft, 4),
                                            Math.Max(BorderRadiusOuter.BottomRight, 4));
       ToolTipPadding = new Thickness(_globalToken.PaddingSM, _globalToken.PaddingSM / 2 + 2);
+      ToolTipShadows = _globalToken.BoxShadowsSecondary;
+      ToolTipMotionDuration = _globalToken.StyleToken.MotionDurationMid;
+      MarginToAnchor = _globalToken.MarginXXS / 2;
    }
 }
