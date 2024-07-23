@@ -86,8 +86,16 @@ internal class SwitchKnob : Control, IControlCustomStyle
       = AvaloniaProperty.RegisterDirect<SwitchKnob, double>(nameof(_loadingBgOpacity),
                                                             (o) => o._loadingBgOpacity,
                                                             (o, v) => o._loadingBgOpacity = v);
+   
+   // TODO 这个属性可以考虑放出去
+   internal static readonly StyledProperty<TimeSpan> LoadingAnimationDurationProperty
+      = AvaloniaProperty.Register<SwitchKnob, TimeSpan>(nameof(LoadingAnimationDuration), TimeSpan.FromMilliseconds(300));
 
-   private TimeSpan LoadingAnimationDuration { get; set; } = TimeSpan.FromMilliseconds(300);
+   internal TimeSpan LoadingAnimationDuration 
+   {
+      get => GetValue(LoadingAnimationDurationProperty);
+      set => SetValue(LoadingAnimationDurationProperty, value);
+   }
 
    public SwitchKnob()
    {
@@ -141,6 +149,7 @@ internal class SwitchKnob : Control, IControlCustomStyle
    private void StartLoadingAnimation()
    {
       var loadingAnimation = new Animation();
+      BindUtils.RelayBind(this, LoadingAnimationDurationProperty, loadingAnimation, Animation.DurationProperty);
       loadingAnimation.Duration = LoadingAnimationDuration;
       loadingAnimation.IterationCount = IterationCount.Infinite;
       loadingAnimation.Easing = new LinearEasing();

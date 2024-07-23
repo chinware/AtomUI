@@ -44,6 +44,9 @@ internal class SeparatorTheme : ControlTheme
       this.Add(Separator.TitleColorProperty, GlobalResourceKey.ColorText);
       this.Add(Separator.FontSizeProperty, GlobalResourceKey.FontSize);
       this.Add(Separator.LineColorProperty, GlobalResourceKey.ColorSplit);
+      this.Add(Separator.TextPaddingInlineProperty, SeparatorResourceKey.TextPaddingInline);
+      this.Add(Separator.OrientationMarginPercentProperty, SeparatorResourceKey.OrientationMarginPercent);
+      this.Add(Separator.VerticalMarginInlineProperty, SeparatorResourceKey.VerticalMarginInline);
 
       var titleSelector = default(Selector).Nesting().Template().OfType<Label>().Name(TitlePart);
       var horizontalStyle =

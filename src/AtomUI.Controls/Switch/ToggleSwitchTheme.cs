@@ -40,7 +40,8 @@ public class ToggleSwitchTheme : ControlTheme
    protected override void BuildStyles()
    {
       this.Add(ToggleSwitch.ForegroundProperty, GlobalResourceKey.ColorTextLightSolid);
-      BuildSwitchKnobStyle();
+      this.Add(ToggleSwitch.TrackPaddingProperty, ToggleSwitchResourceKey.TrackPadding);
+      BuildSizeTypeStyle();
       BuildEnabledStyle();
 
       var disabledStyle = new Style(selector => selector.Nesting().PropertyEquals(ToggleSwitch.IsEnabledProperty, false));
@@ -76,7 +77,7 @@ public class ToggleSwitchTheme : ControlTheme
       Add(enabledStyle);
    }
 
-   private void BuildSwitchKnobStyle()
+   private void BuildSizeTypeStyle()
    {
       var smallSizeStyle = new Style(selector => selector.Nesting().PropertyEquals(ToggleSwitch.SizeTypeProperty, SizeType.Small));
       smallSizeStyle.Add(ToggleSwitch.FontSizeProperty, ToggleSwitchResourceKey.ExtraInfoFontSizeSM);
@@ -86,6 +87,12 @@ public class ToggleSwitchTheme : ControlTheme
          knobSizeStyle.Add(SwitchKnob.OriginKnobSizeProperty, ToggleSwitchResourceKey.HandleSizeSM);
          smallSizeStyle.Add(knobSizeStyle);
       }
+      smallSizeStyle.Add(ToggleSwitch.InnerMaxMarginProperty, ToggleSwitchResourceKey.InnerMaxMarginSM);
+      smallSizeStyle.Add(ToggleSwitch.InnerMinMarginProperty, ToggleSwitchResourceKey.InnerMinMarginSM);
+      smallSizeStyle.Add(ToggleSwitch.TrackHeightProperty, ToggleSwitchResourceKey.TrackHeightSM);
+      smallSizeStyle.Add(ToggleSwitch.TrackMinWidthProperty, ToggleSwitchResourceKey.TrackMinWidthSM);
+      smallSizeStyle.Add(ToggleSwitch.IconSizeProperty, ToggleSwitchResourceKey.IconSizeSM);
+      
       Add(smallSizeStyle);
       
       var middleSizeStyle = new Style(selector => selector.Nesting().PropertyEquals(ToggleSwitch.SizeTypeProperty, SizeType.Middle));
@@ -96,6 +103,11 @@ public class ToggleSwitchTheme : ControlTheme
          knobSizeStyle.Add(SwitchKnob.OriginKnobSizeProperty, ToggleSwitchResourceKey.HandleSize);
          middleSizeStyle.Add(knobSizeStyle);
       }
+      middleSizeStyle.Add(ToggleSwitch.InnerMaxMarginProperty, ToggleSwitchResourceKey.InnerMaxMargin);
+      middleSizeStyle.Add(ToggleSwitch.InnerMinMarginProperty, ToggleSwitchResourceKey.InnerMinMargin);
+      middleSizeStyle.Add(ToggleSwitch.TrackHeightProperty, ToggleSwitchResourceKey.TrackHeight);
+      middleSizeStyle.Add(ToggleSwitch.TrackMinWidthProperty, ToggleSwitchResourceKey.TrackMinWidth);
+      middleSizeStyle.Add(ToggleSwitch.IconSizeProperty, ToggleSwitchResourceKey.IconSize);
       Add(middleSizeStyle);
       
       var largeSizeStyle = new Style(selector => selector.Nesting().PropertyEquals(ToggleSwitch.SizeTypeProperty, SizeType.Large));
@@ -106,6 +118,11 @@ public class ToggleSwitchTheme : ControlTheme
          knobSizeStyle.Add(SwitchKnob.OriginKnobSizeProperty, ToggleSwitchResourceKey.HandleSize);
          largeSizeStyle.Add(knobSizeStyle);
       }
+      largeSizeStyle.Add(ToggleSwitch.InnerMaxMarginProperty, ToggleSwitchResourceKey.InnerMaxMargin);
+      largeSizeStyle.Add(ToggleSwitch.InnerMinMarginProperty, ToggleSwitchResourceKey.InnerMinMargin);
+      largeSizeStyle.Add(ToggleSwitch.TrackHeightProperty, ToggleSwitchResourceKey.TrackHeight);
+      largeSizeStyle.Add(ToggleSwitch.TrackMinWidthProperty, ToggleSwitchResourceKey.TrackMinWidth);
+      largeSizeStyle.Add(ToggleSwitch.IconSizeProperty, ToggleSwitchResourceKey.IconSize);
       Add(largeSizeStyle);
 
       {

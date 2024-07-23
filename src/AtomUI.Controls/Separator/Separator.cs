@@ -24,6 +24,8 @@ public enum SeparatorTitlePosition
 
 public partial class Separator : TemplatedControl, IControlCustomStyle
 {
+   #region 公共属性定义
+
    public static readonly StyledProperty<string?> TitleProperty =
       AvaloniaProperty.Register<Separator, string?>(nameof(Title));
 
@@ -123,6 +125,41 @@ public partial class Separator : TemplatedControl, IControlCustomStyle
       get => GetValue(LineWidthProperty);
       set => SetValue(LineWidthProperty, value);
    }
+   #endregion
+
+   #region 内部属性定义
+
+   internal static readonly StyledProperty<double> TextPaddingInlineProperty =
+      AvaloniaProperty.Register<Separator, double>(
+         nameof(TextPaddingInline));
+
+   internal static readonly StyledProperty<double> OrientationMarginPercentProperty =
+      AvaloniaProperty.Register<Separator, double>(
+         nameof(OrientationMarginPercent));
+
+   internal static readonly StyledProperty<double> VerticalMarginInlineProperty =
+      AvaloniaProperty.Register<Separator, double>(
+         nameof(VerticalMarginInline));
+   
+   internal double TextPaddingInline
+   {
+      get => GetValue(TextPaddingInlineProperty);
+      set => SetValue(TextPaddingInlineProperty, value);
+   }
+   
+   internal double OrientationMarginPercent
+   {
+      get => GetValue(OrientationMarginPercentProperty);
+      set => SetValue(OrientationMarginPercentProperty, value);
+   }
+   
+   internal double VerticalMarginInline
+   {
+      get => GetValue(VerticalMarginInlineProperty);
+      set => SetValue(VerticalMarginInlineProperty, value);
+   }
+
+   #endregion
    
    private IControlCustomStyle _customStyle;
    private bool _scalingAwareConfigApplied = false;
@@ -169,10 +206,8 @@ public partial class Separator : TemplatedControl, IControlCustomStyle
 
    void IControlCustomStyle.SetupTokenBindings()
    {
-      BindUtils.CreateTokenBinding(this, TextPaddingInlineTokenProperty, SeparatorResourceKey.TextPaddingInline);
-      BindUtils.CreateTokenBinding(this, OrientationMarginPercentTokenProperty, SeparatorResourceKey.OrientationMarginPercent);
-      BindUtils.CreateTokenBinding(this, VerticalMarginInlineTokenProperty, SeparatorResourceKey.VerticalMarginInline);
-      BindUtils.CreateTokenBinding(this, LineWidthProperty, GlobalResourceKey.LineWidth, BindingPriority.Template,new RenderScaleAwareDoubleConfigure(this));
+      BindUtils.CreateTokenBinding(this, LineWidthProperty, GlobalResourceKey.LineWidth, BindingPriority.Template,
+                                   new RenderScaleAwareDoubleConfigure(this));
    }
 
    // 当为水平分隔线的时候，我们设置最小的高度，当为垂直分割线的时候我们设置一个合适宽度
@@ -191,7 +226,7 @@ public partial class Separator : TemplatedControl, IControlCustomStyle
             targetWidth = Math.Max(availableSize.Width, targetWidth);
          }
       } else {
-         targetWidth = Math.Max(1, LineWidth) + _verticalMarginInline;
+         targetWidth = Math.Max(1, LineWidth) + VerticalMarginInline;
          targetHeight = FontUtils.ConvertEmToPixel(1, FontSize, TopLevel.GetTopLevel(this)?.RenderScaling ?? 1.0);
          if (!double.IsInfinity(availableSize.Height)) {
             targetHeight = Math.Max(availableSize.Height, targetHeight);
@@ -213,7 +248,7 @@ public partial class Separator : TemplatedControl, IControlCustomStyle
 
    private double GetTextPaddingInline()
    {
-      return FontSize * _textPaddingInline;
+      return FontSize * TextPaddingInline;
    }
 
    private Rect GetTitleRect(Size finalSize)
@@ -235,7 +270,7 @@ public partial class Separator : TemplatedControl, IControlCustomStyle
             if (!double.IsNaN(OrientationMargin)) {
                _currentEdgeDistance = Math.Min((finalSize.Width - titleWidth) / 2, OrientationMargin);
             } else {
-               _currentEdgeDistance = finalSize.Width * _orientationMarginPercent;
+               _currentEdgeDistance = finalSize.Width * OrientationMarginPercent;
             }
 
             titleRect = new Rect(new Point(_currentEdgeDistance + GetTextPaddingInline(), 0),
@@ -248,7 +283,7 @@ public partial class Separator : TemplatedControl, IControlCustomStyle
             if (!double.IsNaN(OrientationMargin)) {
                _currentEdgeDistance = Math.Min((finalSize.Width - titleWidth) / 2, OrientationMargin);
             } else {
-               _currentEdgeDistance = finalSize.Width * _orientationMarginPercent;
+               _currentEdgeDistance = finalSize.Width * OrientationMarginPercent;
             }
 
             titleRect = new Rect(

@@ -81,6 +81,16 @@ internal class ToggleSwitchToken : AbstractControlDesignToken
    /// </summary>
    public double InnerMaxMarginSM { get; set; }
    
+   /// <summary>
+   /// 正常状态的图标大小
+   /// </summary>
+   public double IconSize { get; set; }
+   
+   /// <summary>
+   /// 小号状态的图标大小
+   /// </summary>
+   public double IconSizeSM { get; set; }
+   
    /// 内部 Token
    /// 单位毫秒
    public TimeSpan SwitchDuration { get; set; }
@@ -135,5 +145,8 @@ internal class ToggleSwitchToken : AbstractControlDesignToken
          Blur = 4,
          Color = Color.FromArgb((int)(255 * 0.2),0, 35, 11)
       };
+
+      IconSize = TrackHeightSM;
+      IconSizeSM = TrackHeightSM - _globalToken.PaddingXXS;
    }
 }

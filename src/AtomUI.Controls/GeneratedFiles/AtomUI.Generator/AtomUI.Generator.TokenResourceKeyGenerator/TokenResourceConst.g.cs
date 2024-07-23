@@ -226,6 +226,8 @@ namespace AtomUI.Styling
         public static readonly TokenResourceKey InnerMaxMargin = new TokenResourceKey("ToggleSwitch.InnerMaxMargin");
         public static readonly TokenResourceKey InnerMinMarginSM = new TokenResourceKey("ToggleSwitch.InnerMinMarginSM");
         public static readonly TokenResourceKey InnerMaxMarginSM = new TokenResourceKey("ToggleSwitch.InnerMaxMarginSM");
+        public static readonly TokenResourceKey IconSize = new TokenResourceKey("ToggleSwitch.IconSize");
+        public static readonly TokenResourceKey IconSizeSM = new TokenResourceKey("ToggleSwitch.IconSizeSM");
         public static readonly TokenResourceKey SwitchDuration = new TokenResourceKey("ToggleSwitch.SwitchDuration");
         public static readonly TokenResourceKey SwitchColor = new TokenResourceKey("ToggleSwitch.SwitchColor");
         public static readonly TokenResourceKey SwitchDisabledOpacity = new TokenResourceKey("ToggleSwitch.SwitchDisabledOpacity");
