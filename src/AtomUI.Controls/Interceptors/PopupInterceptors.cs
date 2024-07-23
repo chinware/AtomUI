@@ -112,11 +112,11 @@ internal static class PopupInterceptorsRegister
 {
    public static void Register(Harmony harmony)
    {
-      RegisterPopupFlyoutBaseCreatePopup(harmony);
-      RegisterPopupUpdateHostPositionPrefix(harmony);
-      RegisterPopupUpdateHostPositionPostfix(harmony);
-      RegisterPopupPositionPopup(harmony);
-      RegisterPopupRootShow(harmony);
+      // RegisterPopupFlyoutBaseCreatePopup(harmony);
+      // RegisterPopupUpdateHostPositionPrefix(harmony);
+      // RegisterPopupUpdateHostPositionPostfix(harmony);
+      // RegisterPopupPositionPopup(harmony);
+      // RegisterPopupRootShow(harmony);
    }
    
    private static void RegisterPopupFlyoutBaseCreatePopup(Harmony harmony)
