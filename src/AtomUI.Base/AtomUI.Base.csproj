@@ -6,6 +6,7 @@
         <Nullable>enable</Nullable>
         <RootNamespace>AtomUI</RootNamespace>
         <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+        <GeneratePackageOnBuild Condition=" '$(Configuration)' != 'Debug' ">True</GeneratePackageOnBuild>
     </PropertyGroup>
     
     <ItemGroup>
