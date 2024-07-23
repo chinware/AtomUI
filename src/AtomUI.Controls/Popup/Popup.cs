@@ -1,5 +1,4 @@
 ﻿using System.Reactive.Disposables;
-using System.Reflection;
 using AtomUI.Styling;
 using AtomUI.Utils;
 using Avalonia;
@@ -47,19 +46,15 @@ public class Popup : AbstractPopup
       private set => SetAndRaise(IsFlippedProperty, ref _isFlipped, value);
    }
    
-   private static readonly MethodInfo ConfigurePositionMethodInfo;
    private PopupShadowLayer? _shadowLayer;
    private CompositeDisposable? _compositeDisposable;
    private bool _initialized;
 
    static Popup()
    {
-      var type = typeof(IPopupPositioner).Assembly.GetType("Avalonia.Controls.Primitives.PopupPositioning.PopupPositionerExtensions")!;
-      ConfigurePositionMethodInfo = type.GetMethod("ConfigurePosition", BindingFlags.Public | BindingFlags.Static)!;
       AffectsMeasure<Popup>(PlacementProperty);
       AffectsMeasure<Popup>(PlacementAnchorProperty);
       AffectsMeasure<Popup>(PlacementGravityProperty);
-      
    }
 
    public Popup()
@@ -199,31 +194,6 @@ public class Popup : AbstractPopup
       var size = topLevel.ClientSize * topLevel.RenderScaling;
       return new Rect(point.X, point.Y, size.Width, size.Height);
    }
-
-   public static void ConfigurePosition(ref PopupPositionerParameters positionerParameters,
-                                        TopLevel topLevel,
-                                        Visual target, PlacementMode placement, Point offset,
-                                        PopupAnchor anchor, PopupGravity gravity,
-                                        PopupPositionerConstraintAdjustment constraintAdjustment, Rect? rect,
-                                        FlowDirection flowDirection)
-   {
-
-      var arguments = new object?[]
-      { 
-         positionerParameters,
-         topLevel,
-         target,
-         placement,
-         offset,
-         anchor,
-         gravity,
-         constraintAdjustment,
-         rect,
-         flowDirection
-      };
-      ConfigurePositionMethodInfo.Invoke(null, arguments);
-      positionerParameters = (PopupPositionerParameters)arguments[0]!;
-   }
    
    protected internal override void NotifyPopupRootAboutToShow(PopupRoot popupRoot)
    {
@@ -243,15 +213,15 @@ public class Popup : AbstractPopup
          // 计算是否 flip
          PopupPositionerParameters parameters = new PopupPositionerParameters();
          var offset = new Point(HorizontalOffset, VerticalOffset);
-         ConfigurePosition(ref parameters, popupRoot.ParentTopLevel,
-                           PlacementTarget!,
-                           Placement,
-                           offset,
-                           PlacementAnchor,
-                           PlacementGravity,
-                           PopupPositionerConstraintAdjustment.All,
-                           null,
-                           FlowDirection);
+         parameters.ConfigurePosition(popupRoot.ParentTopLevel,
+                                     PlacementTarget!,
+                                     Placement,
+                                     offset,
+                                     PlacementAnchor,
+                                     PlacementGravity,
+                                     PopupPositionerConstraintAdjustment.All,
+                                     null,
+                                     FlowDirection);
             
          Size popupSize;
          // Popup.Child can't be null here, it was set in ShowAtCore.
@@ -333,15 +303,15 @@ public class Popup : AbstractPopup
          offset = new Point(offsetX, offsetY);
       }
       
-      ConfigurePosition(ref parameters, parentTopLevel,
-                        placementTarget,
-                        placement,
-                        offset,
-                        placementAnchor,
-                        placementGravity,
-                        PopupPositionerConstraintAdjustment.All,
-                        placementRect ?? new Rect(default, placementTarget.Bounds.Size),
-                        flowDirection);
+      parameters.ConfigurePosition(parentTopLevel,
+                                  placementTarget,
+                                  placement,
+                                  offset,
+                                  placementAnchor,
+                                  placementGravity,
+                                  PopupPositionerConstraintAdjustment.All,
+                                  placementRect ?? new Rect(default, placementTarget.Bounds.Size),
+                                  flowDirection);
       
       var positionInfo = new PopupPositionInfo();
       positionInfo.EffectivePlacement = placement;

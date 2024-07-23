@@ -2,7 +2,6 @@
 using System.Reactive.Disposables;
 using AtomUI.Controls.MotionScene;
 using AtomUI.Controls.Utils;
-using AtomUI.Data;
 using AtomUI.MotionScene;
 using AtomUI.Styling;
 using AtomUI.Utils;
@@ -130,7 +129,7 @@ public class Flyout : PopupFlyoutBase
 
    private void HandlePopupPropertyChanged(AvaloniaPropertyChangedEventArgs args)
    {
-      SetupArrowPosition(AtomPopup);
+      SetupArrowPosition(Popup);
    }
 
    private void SetupArrowPosition(Popup popup, FlyoutPresenter? flyoutPresenter = null)
@@ -161,7 +160,7 @@ public class Flyout : PopupFlyoutBase
          [!FlyoutPresenter.ChildProperty] = this[!ContentProperty]
       };
       BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, presenter, IsShowArrowProperty);
-      SetupArrowPosition(AtomPopup, presenter);
+      SetupArrowPosition(Popup, presenter);
       return presenter;
    }
 
@@ -405,10 +404,9 @@ public class Flyout : PopupFlyoutBase
 
    private void PlayHideMotion()
    {
-      var popup = AtomPopup;
-      var placementToplevel = TopLevel.GetTopLevel(popup.PlacementTarget);
+      var placementToplevel = TopLevel.GetTopLevel(Popup.PlacementTarget);
       if (_popupPositionInfo is null ||
-          popup.Child is null ||
+          Popup.Child is null ||
           placementToplevel is null) {
          // 没有动画位置信息，直接关闭
          base.HideCore(false);
@@ -421,19 +419,19 @@ public class Flyout : PopupFlyoutBase
       motion.ConfigureOpacity(_motionDuration);
       motion.ConfigureRenderTransform(_motionDuration);
 
-      UIStructureUtils.SetVisualParent(popup.Child, null);
-      UIStructureUtils.SetVisualParent(popup.Child, null);
+      UIStructureUtils.SetVisualParent(Popup.Child, null);
+      UIStructureUtils.SetVisualParent(Popup.Child, null);
 
       var motionActor = new PopupMotionActor(MaskShadows, _popupPositionInfo.Offset, _popupPositionInfo.Scaling,
-                                             popup.Child, motion);
+                                             Popup.Child, motion);
       motionActor.DispatchInSceneLayer = true;
       motionActor.SceneParent = placementToplevel;
 
       motionActor.SceneShowed += (sender, args) =>
       {
-         if (popup.Host is WindowBase window) {
+         if (Popup.Host is WindowBase window) {
             window.Opacity = 0;
-            popup.HideShadowLayer();
+            Popup.HideShadowLayer();
          }
       };
 

@@ -35,7 +35,7 @@ public sealed class PopupRoot : WindowBase, IHostedVisualTreeRoot, IDisposable, 
    /// </summary>
    static PopupRoot()
    {
-      BackgroundProperty.OverrideDefaultValue(typeof(PopupRoot), Brushes.White);            
+      BackgroundProperty.OverrideDefaultValue(typeof(PopupRoot), Brushes.Transparent);            
    }
 
    /// <summary>
@@ -194,10 +194,10 @@ public sealed class PopupRoot : WindowBase, IHostedVisualTreeRoot, IDisposable, 
       return ClientSize;
    }
 
-   // protected override AutomationPeer OnCreateAutomationPeer()
-   // {
-   //     return new PopupRootAutomationPeer(this);
-   // }
+   protected override AutomationPeer OnCreateAutomationPeer()
+   {
+       return new PopupRootAutomationPeer(this);
+   }
 
    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
    {
@@ -207,5 +207,13 @@ public sealed class PopupRoot : WindowBase, IHostedVisualTreeRoot, IDisposable, 
       {
          PlatformImpl?.SetWindowManagerAddShadowHint(change.GetNewValue<bool>());
       }
+   }
+
+   public override void Show()
+   {
+      if (Parent is Popup popup) {
+         popup.NotifyPopupRootAboutToShow(this);
+      }
+      base.Show();
    }
 }
