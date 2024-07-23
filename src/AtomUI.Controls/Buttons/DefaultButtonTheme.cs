@@ -24,7 +24,7 @@ internal class DefaultButtonTheme : BaseButtonTheme
       base.BuildStyles();
       
       this.Add(Button.BorderThicknessProperty, GlobalResourceKey.BorderThickness);
-      
+      BuildIconStyle();
       BuildEnabledStyle();
       BuildDisabledStyle();
    }
@@ -77,6 +77,41 @@ internal class DefaultButtonTheme : BaseButtonTheme
       Add(enabledStyle);
 
       BuildEnabledGhostStyle();
+   }
+
+   private void BuildIconStyle()
+   {
+      // 普通状态
+      {
+         var iconStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
+         iconStyle.Add(PathIcon.DisabledFilledBrushProperty, GlobalResourceKey.ColorTextDisabled);
+         iconStyle.Add(PathIcon.NormalFillBrushProperty, ButtonResourceKey.DefaultColor);
+         iconStyle.Add(PathIcon.SelectedFilledBrushProperty, ButtonResourceKey.DefaultActiveColor);
+         iconStyle.Add(PathIcon.ActiveFilledBrushProperty, ButtonResourceKey.DefaultHoverColor);
+         Add(iconStyle);
+      }
+      
+      // ghost 状态
+      var ghostStyle = new Style(selector => selector.Nesting().PropertyEquals(Button.IsGhostProperty, true));
+      {
+         var iconStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
+         iconStyle.Add(PathIcon.NormalFillBrushProperty, GlobalResourceKey.ColorTextLightSolid);
+         iconStyle.Add(PathIcon.SelectedFilledBrushProperty, GlobalResourceKey.ColorPrimaryActive);
+         iconStyle.Add(PathIcon.ActiveFilledBrushProperty, GlobalResourceKey.ColorPrimaryHover);
+         ghostStyle.Add(iconStyle);
+      }
+      Add(ghostStyle);
+      
+      var isDangerStyle = new Style(selector => selector.Nesting().PropertyEquals(Button.IsDangerProperty, true));
+      {
+         var iconStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
+         iconStyle.Add(PathIcon.NormalFillBrushProperty, GlobalResourceKey.ColorError);
+         iconStyle.Add(PathIcon.SelectedFilledBrushProperty, GlobalResourceKey.ColorErrorActive);
+         iconStyle.Add(PathIcon.ActiveFilledBrushProperty, GlobalResourceKey.ColorErrorBorderHover);
+         isDangerStyle.Add(iconStyle);
+      }
+      Add(isDangerStyle);
+
    }
 
    private void BuildEnabledGhostStyle()

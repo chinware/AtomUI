@@ -14,7 +14,10 @@ public class ProgressBarTheme : AbstractLineProgressTheme
    protected override void BuildStyles()
    {
       base.BuildStyles();
-
+      var commonStyle = new Style(selector => selector.Nesting());
+      commonStyle.Add(ProgressBar.ColorTextLabelProperty, GlobalResourceKey.ColorTextLabel);
+      commonStyle.Add(ProgressBar.ColorTextLightSolidProperty, GlobalResourceKey.ColorTextLightSolid);
+      Add(commonStyle);
       BuildPercentPositionStyle();
       BuildCompletedIconStyle();
       BuildLabelRotationStyle();

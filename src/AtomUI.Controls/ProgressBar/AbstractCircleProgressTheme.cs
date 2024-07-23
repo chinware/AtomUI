@@ -48,17 +48,18 @@ public class AbstractCircleProgressTheme : AbstractProgressBarTheme
    protected override void BuildStyles()
    {
       base.BuildStyles();
-
+      
       var commonStyle = new Style(selector => selector.Nesting());
+      commonStyle.Add(AbstractCircleProgress.CircleMinimumTextFontSizeProperty, ProgressBarResourceKey.CircleMinimumTextFontSize);
+      commonStyle.Add(AbstractCircleProgress.CircleMinimumIconSizeProperty, ProgressBarResourceKey.CircleMinimumIconSize);
       {
          var labelStyle = new Style(selector => selector.Nesting().Template().OfType<Label>());
          labelStyle.Add(Label.HorizontalAlignmentProperty, HorizontalAlignment.Center);
          labelStyle.Add(Label.VerticalAlignmentProperty, VerticalAlignment.Center);
          commonStyle.Add(labelStyle);
       }
-      var labelVisibleStyle =
-         new Style(selector => selector.Nesting()
-                                       .PropertyEquals(AbstractProgressBar.PercentLabelVisibleProperty, true));
+      var labelVisibleStyle = new Style(selector => selector.Nesting()
+                                                            .PropertyEquals(AbstractProgressBar.PercentLabelVisibleProperty, true));
       {
          var labelStyle = new Style(selector => selector.Nesting().Template().OfType<Label>());
          labelStyle.Add(Label.IsVisibleProperty, true);
@@ -66,9 +67,8 @@ public class AbstractCircleProgressTheme : AbstractProgressBarTheme
       }
       commonStyle.Add(labelVisibleStyle);
       
-      var labelInVisibleStyle =
-         new Style(selector => selector.Nesting()
-                                       .PropertyEquals(AbstractProgressBar.PercentLabelVisibleProperty, false));
+      var labelInVisibleStyle = new Style(selector => selector.Nesting()
+                                                              .PropertyEquals(AbstractProgressBar.PercentLabelVisibleProperty, false));
       {
          var labelStyle = new Style(selector => selector.Nesting().Template().OfType<Label>());
          labelStyle.Add(Label.IsVisibleProperty, false);

@@ -1,3 +1,5 @@
+using AtomUI.Data;
+using AtomUI.Styling;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -163,8 +165,21 @@ public class StepsProgressBar : AbstractLineProgress
 
    protected void CalculateSizeTypeThresholdValue()
    {
-      var defaultExtraInfoSize = CalculateExtraInfoSize(_fontSizeToken);
-      var smallExtraInfoSize = CalculateExtraInfoSize(_fontSizeSMToken);
+      double fontSize = default;
+      double fontSizeSM = default;
+      {
+         if (TokenResourceUtils.FindGlobalTokenResource(GlobalResourceKey.FontSize) is double value) {
+            fontSize = value;
+         }
+      }
+
+      {
+         if (TokenResourceUtils.FindGlobalTokenResource(GlobalResourceKey.FontSizeSM) is double value) {
+            fontSizeSM = value;
+         }
+      }
+      var defaultExtraInfoSize = CalculateExtraInfoSize(fontSize);
+      var smallExtraInfoSize = CalculateExtraInfoSize(fontSizeSM);
       if (Orientation == Orientation.Horizontal) {
          var largeSizeTypeThresholdValue = new SizeTypeThresholdValue
          {
@@ -262,9 +277,9 @@ public class StepsProgressBar : AbstractLineProgress
          targetWidth = chunkWidth * Steps + DEFAULT_CHUNK_SPACE * (Steps - 1);
          if (ShowProgressInfo) {
             if (PercentPosition == LinePercentAlignment.Center) {
-               chunkHeight += _extraInfoSize.Height + _lineExtraInfoMarginToken;
+               chunkHeight += _extraInfoSize.Height + LineExtraInfoMargin;
             } else {
-               targetWidth += _extraInfoSize.Width + _lineExtraInfoMarginToken;
+               targetWidth += _extraInfoSize.Width + LineExtraInfoMargin;
             }
          }
          targetHeight = Math.Max(chunkHeight, MinHeight);
@@ -274,9 +289,9 @@ public class StepsProgressBar : AbstractLineProgress
          targetHeight = chunkHeight * Steps + DEFAULT_CHUNK_SPACE * (Steps - 1);
          if (ShowProgressInfo) {
             if (PercentPosition == LinePercentAlignment.Center) {
-               chunkWidth += _extraInfoSize.Width + _lineExtraInfoMarginToken;
+               chunkWidth += _extraInfoSize.Width + LineExtraInfoMargin;
             } else {
-               targetHeight += _extraInfoSize.Height + _lineExtraInfoMarginToken;
+               targetHeight += _extraInfoSize.Height + LineExtraInfoMargin;
             }
          }
          targetWidth = Math.Max(chunkWidth, MinWidth);
@@ -348,11 +363,11 @@ public class StepsProgressBar : AbstractLineProgress
             var percentLabelWidth = _extraInfoSize.Width;
             var percentLabelHeight = _extraInfoSize.Height;
             if (PercentPosition == LinePercentAlignment.Start) {
-               deflateLeft = percentLabelWidth + _lineExtraInfoMarginToken;
+               deflateLeft = percentLabelWidth + LineExtraInfoMargin;
             } else if (PercentPosition == LinePercentAlignment.Center) {
                deflateBottom = percentLabelHeight;
             } else if (PercentPosition == LinePercentAlignment.End) {
-               deflateRight = percentLabelWidth + _lineExtraInfoMarginToken;
+               deflateRight = percentLabelWidth + LineExtraInfoMargin;
             }
          }
       } else {
@@ -360,11 +375,11 @@ public class StepsProgressBar : AbstractLineProgress
             var percentLabelWidth = _extraInfoSize.Width;
             var percentLabelHeight = _extraInfoSize.Height;
             if (PercentPosition == LinePercentAlignment.Start) {
-               deflateTop = percentLabelHeight + _lineExtraInfoMarginToken;
+               deflateTop = percentLabelHeight + LineExtraInfoMargin;
             } else if (PercentPosition == LinePercentAlignment.Center) {
                deflateRight = percentLabelWidth;
             } else if (PercentPosition == LinePercentAlignment.End) {
-               deflateBottom = percentLabelHeight + _lineExtraInfoMarginToken;
+               deflateBottom = percentLabelHeight + LineExtraInfoMargin;
             }
          }
       }

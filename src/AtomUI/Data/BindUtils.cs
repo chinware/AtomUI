@@ -91,6 +91,15 @@ public static class BindUtils
       return target.Bind(targetProperty, GetGlobalTokenResourceObservable(resourceKey, null, converter), priority);
    }
    
+   public static IDisposable CreateGlobalResourceBinding(AvaloniaObject target,
+                                                         AvaloniaProperty targetProperty,
+                                                         object resourceKey,
+                                                         BindingPriority priority = BindingPriority.Template,
+                                                         Func<object?, object?>? converter = null)
+   {
+      return target.Bind(targetProperty, GetGlobalResourceObservable(resourceKey, null, converter), priority);
+   }
+   
    /// <summary>
    /// 直接在 resource dictionary 中查找，忽略本地覆盖的值
    /// </summary>
@@ -101,6 +110,12 @@ public static class BindUtils
    /// <exception cref="ApplicationException"></exception>
    public static IObservable<object?> GetGlobalTokenResourceObservable(TokenResourceKey resourceKey, ThemeVariant? themeVariant = null, 
                                                                        Func<object?, object?>? converter = null)
+   {
+      return GetGlobalResourceObservable(resourceKey, themeVariant, converter);
+   }
+   
+   public static IObservable<object?> GetGlobalResourceObservable(object resourceKey, ThemeVariant? themeVariant = null, 
+                                                                  Func<object?, object?>? converter = null)
    {
       var application = Application.Current;
       if (application is null) {

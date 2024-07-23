@@ -29,15 +29,15 @@ public sealed class PathIcon : Control, ICustomHitTest
 
    public static readonly StyledProperty<IBrush?> ActiveFilledBrushProperty =
       AvaloniaProperty.Register<PathIcon, IBrush?>(
-         nameof(NormalFilledBrush));
+         nameof(ActiveFilledBrush));
 
    public static readonly StyledProperty<IBrush?> SelectedFilledBrushProperty =
       AvaloniaProperty.Register<PathIcon, IBrush?>(
-         nameof(NormalFilledBrush));
+         nameof(SelectedFilledBrush));
 
    public static readonly StyledProperty<IBrush?> DisabledFilledBrushProperty =
       AvaloniaProperty.Register<PathIcon, IBrush?>(
-         nameof(NormalFilledBrush));
+         nameof(DisabledFilledBrush));
 
    // Twotone 类型的颜色
    public static readonly StyledProperty<IBrush?> PrimaryFilledBrushProperty =

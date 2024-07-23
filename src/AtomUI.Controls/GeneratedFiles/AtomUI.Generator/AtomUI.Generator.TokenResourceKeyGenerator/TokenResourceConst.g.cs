@@ -75,6 +75,7 @@ namespace AtomUI.Styling
         public static readonly TokenResourceKey IconSize = new TokenResourceKey("Button.IconSize");
         public static readonly TokenResourceKey IconSizeLG = new TokenResourceKey("Button.IconSizeLG");
         public static readonly TokenResourceKey IconSizeSM = new TokenResourceKey("Button.IconSizeSM");
+        public static readonly TokenResourceKey IconMargin = new TokenResourceKey("Button.IconMargin");
         public static readonly TokenResourceKey GroupBorderColor = new TokenResourceKey("Button.GroupBorderColor");
         public static readonly TokenResourceKey LinkHoverBg = new TokenResourceKey("Button.LinkHoverBg");
         public static readonly TokenResourceKey TextHoverBg = new TokenResourceKey("Button.TextHoverBg");

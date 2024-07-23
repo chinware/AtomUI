@@ -15,7 +15,8 @@ public abstract partial class AbstractCircleProgress : AbstractProgressBar
    protected const double MIDDLE_CIRCLE_SIZE          = 90;
    protected const double SMALL_CIRCLE_SIZE           = 60;
    protected const double CIRCLE_MIN_STROKE_THICKNESS = 3;
-   
+
+   #region 公共属性定义
    public static readonly StyledProperty<int> StepCountProperty =
       AvaloniaProperty.Register<ProgressBar, int>(nameof(StepCount), 0, coerce:(o, v) => Math.Max(v, 0));
    
@@ -33,6 +34,38 @@ public abstract partial class AbstractCircleProgress : AbstractProgressBar
       get => GetValue(StepGapProperty);
       set => SetValue(StepGapProperty, value);
    }
+   #endregion
+
+   #region 内部属性定义
+   internal static readonly StyledProperty<double> IndicatorAngleProperty = 
+      AvaloniaProperty.Register<AbstractCircleProgress, double>(nameof(IndicatorAngle));
+   
+   internal static readonly StyledProperty<double> CircleMinimumTextFontSizeProperty =
+      AvaloniaProperty.Register<AbstractCircleProgress, double>(
+         nameof(CircleMinimumTextFontSize));
+   
+   internal static readonly StyledProperty<double> CircleMinimumIconSizeProperty =
+      AvaloniaProperty.Register<AbstractCircleProgress, double>(
+         nameof(CircleMinimumIconSize));
+   
+   internal double IndicatorAngle
+   {
+      get => GetValue(IndicatorAngleProperty);
+      set => SetValue(IndicatorAngleProperty, value);
+   }
+   
+   internal double CircleMinimumTextFontSize
+   {
+      get => GetValue(CircleMinimumTextFontSizeProperty);
+      set => SetValue(CircleMinimumTextFontSizeProperty, value);
+   }
+   
+   internal double CircleMinimumIconSize
+   {
+      get => GetValue(CircleMinimumIconSizeProperty);
+      set => SetValue(CircleMinimumIconSizeProperty, value);
+   }
+   #endregion
    
    internal Dictionary<SizeType, double> _sizeTypeThresholdValue;
 
@@ -177,8 +210,8 @@ public abstract partial class AbstractCircleProgress : AbstractProgressBar
    {
       var circleSize = CalculateCircleSize();
       double fontSize = circleSize * 0.15 + 6;
-      if (fontSize < _circleMinimumTextFontSizeToken) {
-         fontSize = _circleMinimumTextFontSizeToken;
+      if (fontSize < CircleMinimumTextFontSize) {
+         fontSize = CircleMinimumTextFontSize;
       }
       FontSize = fontSize;
    }
@@ -186,7 +219,7 @@ public abstract partial class AbstractCircleProgress : AbstractProgressBar
    private void SetupExtraInfoIconSize()
    {
       var circleSize = CalculateCircleSize();
-      var calculatedSize = Math.Max(circleSize / 4.5, _circleMinimumIconSizeToken);
+      var calculatedSize = Math.Max(circleSize / 4.5, CircleMinimumIconSize);
       _exceptionCompletedIcon!.Width = calculatedSize;
       _exceptionCompletedIcon!.Height = calculatedSize;
       
@@ -248,13 +281,6 @@ public abstract partial class AbstractCircleProgress : AbstractProgressBar
       StrokeThickness = calculatedValue;
    }
    
-   protected override void NotifySetupTokenBindings()
-   {
-      base.NotifySetupTokenBindings();
-      BindUtils.CreateTokenBinding(this, CircleMinimumTextFontSizeTokenProperty, ProgressBarResourceKey.CircleMinimumTextFontSize);
-      BindUtils.CreateTokenBinding(this, CircleMinimumIconSizeTokenProperty, ProgressBarResourceKey.CircleMinimumIconSize);
-   }
-
    protected override void NotifyEffectSizeTypeChanged()
    {
       base.NotifyEffectSizeTypeChanged();

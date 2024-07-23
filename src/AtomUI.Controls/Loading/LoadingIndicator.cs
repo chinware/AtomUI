@@ -1,5 +1,4 @@
 ﻿using AtomUI.Controls.Utils;
-using AtomUI.Icon;
 using AtomUI.Styling;
 using AtomUI.Utils;
 using Avalonia;
@@ -13,7 +12,7 @@ using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
-public partial class LoadingIndicator : TemplatedControl, ISizeTypeAware, IControlCustomStyle
+public class LoadingIndicator : TemplatedControl, ISizeTypeAware, IControlCustomStyle
 {
    #region 公共属性定义
    public static readonly StyledProperty<SizeType> SizeTypeProperty =
@@ -68,6 +67,52 @@ public partial class LoadingIndicator : TemplatedControl, ISizeTypeAware, IContr
    {
       get => GetValue(MotionEasingCurveProperty);
       set => SetValue(MotionEasingCurveProperty, value);
+   }
+   
+   #endregion
+   
+   #region 内部属性定义
+   internal static readonly StyledProperty<double> DotSizeProperty =
+      AvaloniaProperty.Register<LoadingIndicator, double>(
+         nameof(DotSize));
+   
+   internal static readonly StyledProperty<IBrush?> DotBgBrushProperty =
+      AvaloniaProperty.Register<LoadingIndicator, IBrush?>(
+         nameof(DotBgBrush));
+
+   internal static readonly StyledProperty<double> IndicatorTextMarginProperty =
+      AvaloniaProperty.Register<LoadingIndicator, double>(
+         nameof(IndicatorTextMargin));
+   
+   private static readonly DirectProperty<LoadingIndicator, double> IndicatorAngleProperty =
+      AvaloniaProperty.RegisterDirect<LoadingIndicator, double>(
+         nameof(IndicatorAngle),
+         o => o.IndicatorAngle,
+         (o, v) => o.IndicatorAngle = v);
+   
+   internal double DotSize
+   {
+      get => GetValue(DotSizeProperty);
+      set => SetValue(DotSizeProperty, value);
+   }
+   
+   internal IBrush? DotBgBrush
+   {
+      get => GetValue(DotBgBrushProperty);
+      set => SetValue(DotBgBrushProperty, value);
+   }
+   
+   internal double IndicatorTextMargin
+   {
+      get => GetValue(IndicatorTextMarginProperty);
+      set => SetValue(IndicatorTextMarginProperty, value);
+   }
+   
+   private double _indicatorAngle;
+   private double IndicatorAngle
+   {
+      get => _indicatorAngle;
+      set => SetAndRaise(IndicatorAngleProperty, ref _indicatorAngle, value);
    }
    
    #endregion

@@ -26,6 +26,10 @@ public class MenuTheme : ControlTheme
          {
             Name = ItemsPresenterPart,
             VerticalAlignment = VerticalAlignment.Stretch,
+            ItemsPanel = new FuncTemplate<Panel?>(() => new StackPanel()
+            {
+               Orientation = Orientation.Horizontal
+            })
          };
 
          KeyboardNavigation.SetTabNavigation(itemPresenter, KeyboardNavigationMode.Continue);

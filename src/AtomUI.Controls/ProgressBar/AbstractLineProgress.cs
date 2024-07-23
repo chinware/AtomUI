@@ -27,6 +27,38 @@ public abstract partial class AbstractLineProgress : AbstractProgressBar
    public const string VerticalPC = ":vertical";
    public const string HorizontalPC = ":horizontal";
    
+   #region 内部属性定义
+   internal static readonly StyledProperty<double> LineProgressPaddingProperty =
+      AvaloniaProperty.Register<AbstractLineProgress, double>(
+         nameof(LineProgressPadding));
+   
+   internal static readonly StyledProperty<double> LineExtraInfoMarginProperty =
+      AvaloniaProperty.Register<AbstractLineProgress, double>(
+         nameof(LineExtraInfoMargin));
+   
+   internal static readonly StyledProperty<double> LineInfoIconSizeProperty =
+      AvaloniaProperty.Register<AbstractLineProgress, double>(
+         nameof(LineInfoIconSize));
+
+   internal double LineProgressPadding
+   {
+      get => GetValue(LineProgressPaddingProperty);
+      set => SetValue(LineProgressPaddingProperty, value);
+   }
+   
+   internal double LineExtraInfoMargin
+   {
+      get => GetValue(LineExtraInfoMarginProperty);
+      set => SetValue(LineExtraInfoMarginProperty, value);
+   }
+   
+   internal double LineInfoIconSize
+   {
+      get => GetValue(LineInfoIconSizeProperty);
+      set => SetValue(LineInfoIconSizeProperty, value);
+   }
+   #endregion
+   
    /// <summary>
    /// Defines the <see cref="Orientation"/> property.
    /// </summary>
@@ -56,10 +88,7 @@ public abstract partial class AbstractLineProgress : AbstractProgressBar
    {
       if (Status == ProgressStatus.Exception || MathUtils.AreClose(Value, Maximum)) {
          // 只要图标
-         if (EffectiveSizeType == SizeType.Large || EffectiveSizeType == SizeType.Middle) {
-            return new Size(_lineInfoIconSizeToken, _lineInfoIconSizeToken);
-         } 
-         return new Size(_lineInfoIconSizeSMToken, _lineInfoIconSizeSMToken);
+         return new Size(LineInfoIconSize, LineInfoIconSize);
       }
       var textSize = TextUtils.CalculateTextSize(string.Format(ProgressTextFormat, Value), FontFamily, fontSize);
       return textSize;
@@ -116,18 +145,6 @@ public abstract partial class AbstractLineProgress : AbstractProgressBar
             NotifyOrientationChanged();
          }
       }
-   }
-
-   protected override void NotifySetupTokenBindings()
-   {
-      base.NotifySetupTokenBindings();
-      BindUtils.CreateTokenBinding(this, LineProgressPaddingTokenProperty, ProgressBarResourceKey.LineProgressPadding);
-      BindUtils.CreateTokenBinding(this, LineExtraInfoMarginTokenProperty, ProgressBarResourceKey.LineExtraInfoMargin);
-      BindUtils.CreateTokenBinding(this, FontSizeTokenProperty, GlobalResourceKey.FontSize);
-      BindUtils.CreateTokenBinding(this, FontSizeSMTokenProperty, GlobalResourceKey.FontSizeSM);
-      
-      BindUtils.CreateTokenBinding(this, LineInfoIconSizeTokenProperty, ProgressBarResourceKey.LineInfoIconSize);
-      BindUtils.CreateTokenBinding(this, LineInfoIconSizeSMTokenProperty, ProgressBarResourceKey.LineInfoIconSizeSM);
    }
 
    protected override void NotifyTemplateApplied(INameScope scope)

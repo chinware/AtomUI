@@ -22,7 +22,7 @@ public enum ProgressStatus
 }
 
 [PseudoClasses(IndeterminatePC)]
-public abstract partial class AbstractProgressBar : RangeBase, 
+public abstract class AbstractProgressBar : RangeBase, 
                                                     ISizeTypeAware,
                                                     IControlCustomStyle
 {
@@ -33,6 +33,7 @@ public abstract partial class AbstractProgressBar : RangeBase,
    public const string IndeterminatePC = ":indeterminate";
    public const string CompletedPC = ":completed";
 
+   #region 公共属性
    /// <summary>
    /// Defines the <see cref="IsIndeterminate"/> property.
    /// </summary>
@@ -83,16 +84,6 @@ public abstract partial class AbstractProgressBar : RangeBase,
 
    public static readonly StyledProperty<IBrush?> SuccessThresholdBrushProperty =
       AvaloniaProperty.Register<ProgressBar, IBrush?>(nameof(SuccessThresholdBrush));
-
-   internal static readonly DirectProperty<AbstractProgressBar, SizeType> EffectiveSizeTypeProperty =
-      AvaloniaProperty.RegisterDirect<AbstractProgressBar, SizeType>(nameof(EffectiveSizeType),
-                                                                     o => o.EffectiveSizeType,
-                                                                     (o, v) => o.EffectiveSizeType = v);
-
-   protected static readonly DirectProperty<AbstractProgressBar, double> StrokeThicknessProperty =
-      AvaloniaProperty.RegisterDirect<AbstractProgressBar, double>(nameof(StrokeThickness),
-                                                                   o => o.StrokeThickness,
-                                                                   (o, v) => o.StrokeThickness = v);
 
    /// <summary>
    /// Gets or sets a value indicating whether the progress bar shows the actual value or a generic,
@@ -184,9 +175,32 @@ public abstract partial class AbstractProgressBar : RangeBase,
       get => GetValue(SuccessThresholdProperty);
       set => SetValue(SuccessThresholdProperty, value);
    }
+   #endregion
+
+   #region 内部属性
+   internal static readonly DirectProperty<AbstractProgressBar, SizeType> EffectiveSizeTypeProperty =
+      AvaloniaProperty.RegisterDirect<AbstractProgressBar, SizeType>(nameof(EffectiveSizeType),
+                                                                     o => o.EffectiveSizeType,
+                                                                     (o, v) => o.EffectiveSizeType = v);
+
+   protected static readonly DirectProperty<AbstractProgressBar, double> StrokeThicknessProperty =
+      AvaloniaProperty.RegisterDirect<AbstractProgressBar, double>(nameof(StrokeThickness),
+                                                                   o => o.StrokeThickness,
+                                                                   (o, v) => o.StrokeThickness = v);
+   
+   internal static readonly StyledProperty<IBrush?> GrooveBrushProperty =
+      AvaloniaProperty.Register<AbstractProgressBar, IBrush?>(nameof(GrooveBrush));
+   
+   internal static readonly StyledProperty<bool> PercentLabelVisibleProperty = 
+      AvaloniaProperty.Register<ProgressBar, bool>(nameof(PercentLabelVisible), true);
+   
+   internal static readonly StyledProperty<bool> StatusIconVisibleProperty = 
+      AvaloniaProperty.Register<ProgressBar, bool>(nameof(StatusIconVisible), true);
+   
+   internal static readonly StyledProperty<bool> IsCompletedProperty = 
+      AvaloniaProperty.Register<ProgressBar, bool>(nameof(IsCompleted), false);
 
    private SizeType _effectiveSizeType;
-
    internal SizeType EffectiveSizeType
    {
       get => _effectiveSizeType;
@@ -194,12 +208,36 @@ public abstract partial class AbstractProgressBar : RangeBase,
    }
 
    private double _strokeThickness;
-
    protected double StrokeThickness
    {
       get => _strokeThickness;
       set => SetAndRaise(StrokeThicknessProperty, ref _strokeThickness, value);
    }
+   
+   internal IBrush? GrooveBrush
+   {
+      get => GetValue(GrooveBrushProperty);
+      set => SetValue(GrooveBrushProperty, value);
+   }
+   
+   internal bool PercentLabelVisible
+   {
+      get => GetValue(PercentLabelVisibleProperty);
+      set => SetValue(PercentLabelVisibleProperty, value);
+   }
+   
+   internal bool StatusIconVisible
+   {
+      get => GetValue(StatusIconVisibleProperty);
+      set => SetValue(StatusIconVisibleProperty, value);
+   }
+   
+   internal bool IsCompleted
+   {
+      get => GetValue(IsCompletedProperty);
+      set => SetValue(IsCompletedProperty, value);
+   }
+   #endregion
    
    protected ControlStyleState _styleState;
    internal IControlCustomStyle _customStyle;

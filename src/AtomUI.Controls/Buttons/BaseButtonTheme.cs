@@ -29,13 +29,7 @@ internal abstract class BaseButtonTheme : ControlTheme
             HorizontalContentAlignment = HorizontalAlignment.Center,
             VerticalAlignment = VerticalAlignment.Center
          };
-         label.Bind(Label.ContentProperty, new Binding("Text")
-         {
-            RelativeSource = new RelativeSource()
-            {
-               Mode = RelativeSourceMode.TemplatedParent
-            }
-         });
+         CreateTemplateParentBinding(label, Label.ContentProperty, Button.TextProperty);
          label.RegisterInNameScope(scope);
          var stackPanel = new StackPanel()
          {
@@ -57,7 +51,11 @@ internal abstract class BaseButtonTheme : ControlTheme
       this.Add(Button.HorizontalAlignmentProperty, HorizontalAlignment.Left);
       this.Add(Button.VerticalAlignmentProperty, VerticalAlignment.Bottom);
       this.Add(Button.CursorProperty, new Cursor(StandardCursorType.Hand));
+      this.Add(Button.DefaultShadowProperty, ButtonResourceKey.DefaultShadow);
+      this.Add(Button.PrimaryShadowProperty, ButtonResourceKey.PrimaryShadow);
+      this.Add(Button.DangerShadowProperty, ButtonResourceKey.DangerShadow);
       BuildSizeStyle();
+      BuildIconSizeStyle();
    }
    
    private void BuildSizeStyle()
@@ -82,5 +80,81 @@ internal abstract class BaseButtonTheme : ControlTheme
       smallSizeStyle.Add(Button.PaddingProperty, new DynamicResourceExtension(ButtonResourceKey.PaddingSM));
       smallSizeStyle.Add(Button.CornerRadiusProperty, new DynamicResourceExtension(GlobalResourceKey.BorderRadiusSM));
       Add(smallSizeStyle);
+   }
+
+   private void BuildIconSizeStyle()
+   {
+      // text 和 icon 都存在的情况
+      {
+         var largeSizeStyle = new Style(selector => selector.Nesting().PropertyEquals(Button.SizeTypeProperty, SizeType.Large));
+         {
+            var iconStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
+            iconStyle.Add(PathIcon.WidthProperty, GlobalResourceKey.IconSizeLG);
+            iconStyle.Add(PathIcon.HeightProperty, GlobalResourceKey.IconSizeLG);
+            largeSizeStyle.Add(iconStyle);
+         }
+         Add(largeSizeStyle);
+      
+         var middleSizeStyle = new Style(selector => selector.Nesting().PropertyEquals(Button.SizeTypeProperty, SizeType.Middle));
+         {
+            var iconStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
+            iconStyle.Add(PathIcon.WidthProperty, GlobalResourceKey.IconSize);
+            iconStyle.Add(PathIcon.HeightProperty, GlobalResourceKey.IconSize);
+            middleSizeStyle.Add(iconStyle);
+         }
+         Add(middleSizeStyle);
+      
+         var smallSizeStyle = new Style(selector => selector.Nesting().PropertyEquals(Button.SizeTypeProperty, SizeType.Small));
+         {
+            var iconStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
+            iconStyle.Add(PathIcon.WidthProperty, GlobalResourceKey.IconSizeSM);
+            iconStyle.Add(PathIcon.HeightProperty, GlobalResourceKey.IconSizeSM);
+            smallSizeStyle.Add(iconStyle);
+         }
+         Add(smallSizeStyle);
+      }
+      
+      
+      
+      // icon only
+      var iconOnlyStyle = new Style(selector => selector.Nesting().Class(Button.IconOnlyPC));
+      {
+         var largeSizeStyle = new Style(selector => selector.Nesting().PropertyEquals(Button.SizeTypeProperty, SizeType.Large));
+         {
+            var iconStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
+            iconStyle.Add(PathIcon.WidthProperty, ButtonResourceKey.OnlyIconSizeLG);
+            iconStyle.Add(PathIcon.HeightProperty, ButtonResourceKey.OnlyIconSizeLG);
+            largeSizeStyle.Add(iconStyle);
+         }
+         iconOnlyStyle.Add(largeSizeStyle);
+      
+         var middleSizeStyle = new Style(selector => selector.Nesting().PropertyEquals(Button.SizeTypeProperty, SizeType.Middle));
+         {
+            var iconStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
+            iconStyle.Add(PathIcon.WidthProperty, ButtonResourceKey.OnlyIconSize);
+            iconStyle.Add(PathIcon.HeightProperty, ButtonResourceKey.OnlyIconSize);
+            middleSizeStyle.Add(iconStyle);
+         }
+         iconOnlyStyle.Add(middleSizeStyle);
+      
+         var smallSizeStyle = new Style(selector => selector.Nesting().PropertyEquals(Button.SizeTypeProperty, SizeType.Small));
+         {
+            var iconStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
+            iconStyle.Add(PathIcon.WidthProperty, ButtonResourceKey.OnlyIconSizeSM);
+            iconStyle.Add(PathIcon.HeightProperty, ButtonResourceKey.OnlyIconSizeSM);
+            smallSizeStyle.Add(iconStyle);
+         }
+         iconOnlyStyle.Add(smallSizeStyle);
+      }
+      Add(iconOnlyStyle);
+
+      var notIconOnyStyle = new Style(selector => selector.Nesting().Not(x => x.Nesting().Class(Button.IconOnlyPC)));
+      {
+         var iconStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
+         iconStyle.Add(PathIcon.MarginProperty, ButtonResourceKey.IconMargin);
+         notIconOnyStyle.Add(iconStyle);
+      }
+      
+      Add(notIconOnyStyle);
    }
 }

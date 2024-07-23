@@ -22,9 +22,44 @@ internal class LinkButtonTheme : BaseButtonTheme
    {
       base.BuildStyles();
       BuildEnabledStyle();
+      BuildIconStyle();
       BuildDisabledStyle();
    }
-   
+
+   private void BuildIconStyle()
+   {
+      // 普通状态
+      {
+         var iconStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
+         iconStyle.Add(PathIcon.DisabledFilledBrushProperty, GlobalResourceKey.ColorTextDisabled);
+         iconStyle.Add(PathIcon.NormalFillBrushProperty, GlobalResourceKey.ColorLink);
+         iconStyle.Add(PathIcon.SelectedFilledBrushProperty, ButtonResourceKey.DefaultActiveColor);
+         iconStyle.Add(PathIcon.ActiveFilledBrushProperty, ButtonResourceKey.DefaultHoverColor);
+         Add(iconStyle);
+      }
+      
+      // ghost 状态
+      var ghostStyle = new Style(selector => selector.Nesting().PropertyEquals(Button.IsGhostProperty, true));
+      {
+         var iconStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
+         iconStyle.Add(PathIcon.NormalFillBrushProperty, GlobalResourceKey.ColorLink);
+         iconStyle.Add(PathIcon.SelectedFilledBrushProperty, GlobalResourceKey.ColorPrimaryActive);
+         iconStyle.Add(PathIcon.ActiveFilledBrushProperty, GlobalResourceKey.ColorPrimaryHover);
+         ghostStyle.Add(iconStyle);
+      }
+      Add(ghostStyle);
+      
+      var isDangerStyle = new Style(selector => selector.Nesting().PropertyEquals(Button.IsDangerProperty, true));
+      {
+         var iconStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
+         iconStyle.Add(PathIcon.NormalFillBrushProperty, GlobalResourceKey.ColorError);
+         iconStyle.Add(PathIcon.SelectedFilledBrushProperty, GlobalResourceKey.ColorErrorActive);
+         iconStyle.Add(PathIcon.ActiveFilledBrushProperty, GlobalResourceKey.ColorErrorBorderHover);
+         isDangerStyle.Add(iconStyle);
+      }
+      Add(isDangerStyle);
+   }
+
    private void BuildEnabledStyle()
    {
       var enabledStyle = new Style(selector => selector.Nesting());

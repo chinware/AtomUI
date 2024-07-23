@@ -46,13 +46,17 @@ public class AbstractLineProgressTheme : AbstractProgressBarTheme
    protected override void BuildStyles()
    {
       base.BuildStyles();
-      
+      var commonStyle = new Style(selector => selector.Nesting());
+      commonStyle.Add(AbstractLineProgress.LineProgressPaddingProperty, ProgressBarResourceKey.LineProgressPadding);
+      commonStyle.Add(AbstractLineProgress.LineExtraInfoMarginProperty, ProgressBarResourceKey.LineExtraInfoMargin);
+      Add(commonStyle);
       BuildSizeTypeStyle();
    }
    
    private void BuildSizeTypeStyle()
    {
       var largeSizeTypeStyle = new Style(selector => selector.Nesting().PropertyEquals(AbstractProgressBar.EffectiveSizeTypeProperty, SizeType.Large));
+      largeSizeTypeStyle.Add(AbstractLineProgress.LineInfoIconSizeProperty, ProgressBarResourceKey.LineInfoIconSize);
       // icon
       {
          var completedIconsStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
@@ -65,6 +69,7 @@ public class AbstractLineProgressTheme : AbstractProgressBarTheme
       Add(largeSizeTypeStyle);
       
       var middleTypeStyle = new Style(selector => selector.Nesting().PropertyEquals(AbstractProgressBar.EffectiveSizeTypeProperty, SizeType.Middle));
+      middleTypeStyle.Add(AbstractLineProgress.LineInfoIconSizeProperty, ProgressBarResourceKey.LineInfoIconSize);
       // icon
       {
          var completedIconsStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
@@ -77,6 +82,7 @@ public class AbstractLineProgressTheme : AbstractProgressBarTheme
       Add(middleTypeStyle);
 
       var smallTypeStyle = new Style(selector => selector.Nesting().PropertyEquals(AbstractProgressBar.EffectiveSizeTypeProperty, SizeType.Small));
+      smallTypeStyle.Add(AbstractLineProgress.LineInfoIconSizeProperty, ProgressBarResourceKey.LineInfoIconSizeSM);
       // icon
       {
          var completedIconsStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());

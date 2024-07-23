@@ -160,6 +160,11 @@ internal class ButtonToken : AbstractControlDesignToken
    /// 只有图标的按钮图标尺寸
    /// </summary>
    public double IconSizeSM { get; set; }
+   
+   /// <summary>
+   /// 完成 Icon 外边距
+   /// </summary>
+   public Thickness IconMargin { get; set; }
 
    /// <summary>
    /// 按钮组边框颜色
@@ -303,5 +308,7 @@ internal class ButtonToken : AbstractControlDesignToken
       IconSizeSM = _globalToken.IconSizeSM;
       IconSize = _globalToken.IconSize;
       IconSizeLG = _globalToken.IconSize;
+
+      IconMargin = new Thickness(0, 0, _globalToken.PaddingXXS, 0);
    }
 }

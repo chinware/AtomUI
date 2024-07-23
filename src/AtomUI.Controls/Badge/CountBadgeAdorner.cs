@@ -235,14 +235,14 @@ internal class CountBadgeAdorner : Control, IControlCustomStyle
 
    private void BuildBoxShadow()
    {
-      if (IsSet(BadgeShadowSizeProperty) && IsSet(BadgeShadowColorProperty)) {
+      if (BadgeShadowColor is not null) {
          _boxShadows = new BoxShadows(new BoxShadow()
          {
             OffsetX = 0,
             OffsetY = 0,
             Blur = 0,
             Spread = BadgeShadowSize,
-            Color = ((SolidColorBrush)BadgeShadowColor!).Color
+            Color = ((SolidColorBrush)BadgeShadowColor).Color
          });
       }
    }

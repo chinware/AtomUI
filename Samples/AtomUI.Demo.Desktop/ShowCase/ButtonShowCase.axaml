@@ -23,7 +23,7 @@
                 <atom:Button ButtonType="Link">Link Button</atom:Button>
             </WrapPanel>
         </showcase:ShowCaseItem>
-        
+
         <showcase:ShowCaseItem
             Title="Button Shape"
             Description="Supported button shape display, such as primary, default, dashed and Text, etc.">
@@ -47,53 +47,86 @@
                     <atom:Button ButtonType="Link" Shape="Circle">AA</atom:Button>
                 </StackPanel>
             </StackPanel>
-        
+
         </showcase:ShowCaseItem>
-        
+
         <showcase:ShowCaseItem
             Title="Icon"
             Description="You can add an icon through the icon property and adjust the position of the icon using iconPosition.">
-            <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal">
-                <atom:Button ButtonType="Primary" Shape="Circle">
-                    <atom:Button.Icon>
-                        <atom:PathIcon Kind="SearchOutlined"></atom:PathIcon>
-                    </atom:Button.Icon>
-                </atom:Button>
-                <atom:Button ButtonType="Primary" Shape="Round">
-                    <atom:Button.Icon>
-                        <atom:PathIcon Kind="SearchOutlined"></atom:PathIcon>
-                    </atom:Button.Icon>
-                    Search
-                </atom:Button>
-                
-                <atom:Button ButtonType="Default" Shape="Circle">
-                    <atom:Button.Icon>
-                        <atom:PathIcon Kind="SearchOutlined"></atom:PathIcon>
-                    </atom:Button.Icon>
-                </atom:Button>
-                <atom:Button ButtonType="Default" Shape="Round">
-                    <atom:Button.Icon>
-                        <atom:PathIcon Kind="SearchOutlined"></atom:PathIcon>
-                    </atom:Button.Icon>
-                    Search
-                </atom:Button>
-                
-                <atom:Button ButtonType="Text" Shape="Default">
-                    <atom:Button.Icon>
-                        <atom:PathIcon Kind="SearchOutlined"></atom:PathIcon>
-                    </atom:Button.Icon>
-                    Search
-                </atom:Button>
-                
-                <atom:Button ButtonType="Link" Shape="Default">
-                    <atom:Button.Icon>
-                        <atom:PathIcon Kind="SearchOutlined"></atom:PathIcon>
-                    </atom:Button.Icon>
-                    Search
-                </atom:Button>
-            </WrapPanel>
+            <StackPanel Orientation="Vertical">
+                <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                    <atom:Button ButtonType="Primary" Shape="Circle">
+                        <atom:Button.Icon>
+                            <atom:PathIcon Kind="SearchOutlined"></atom:PathIcon>
+                        </atom:Button.Icon>
+                    </atom:Button>
+                    <atom:Button ButtonType="Primary" Shape="Round">
+                        <atom:Button.Icon>
+                            <atom:PathIcon Kind="SearchOutlined"></atom:PathIcon>
+                        </atom:Button.Icon>
+                        Search
+                    </atom:Button>
+
+                    <atom:Button ButtonType="Default" Shape="Circle">
+                        <atom:Button.Icon>
+                            <atom:PathIcon Kind="SearchOutlined"></atom:PathIcon>
+                        </atom:Button.Icon>
+                    </atom:Button>
+                    <atom:Button ButtonType="Default" Shape="Round">
+                        <atom:Button.Icon>
+                            <atom:PathIcon Kind="SearchOutlined"></atom:PathIcon>
+                        </atom:Button.Icon>
+                        Search
+                    </atom:Button>
+
+                    <atom:Button ButtonType="Text" Shape="Default">
+                        <atom:Button.Icon>
+                            <atom:PathIcon Kind="SearchOutlined"></atom:PathIcon>
+                        </atom:Button.Icon>
+                        Search
+                    </atom:Button>
+                    
+                    <atom:Button ButtonType="Link" Shape="Default">
+                        <atom:Button.Icon>
+                            <atom:PathIcon Kind="SearchOutlined"></atom:PathIcon>
+                        </atom:Button.Icon>
+                        Search
+                    </atom:Button>
+                    
+                </WrapPanel>
+                <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                    <atom:Button ButtonType="Primary" IsDanger="True">
+                        <atom:Button.Icon>
+                            <atom:PathIcon Kind="SearchOutlined"></atom:PathIcon>
+                        </atom:Button.Icon>
+                        Search
+                    </atom:Button>
+
+                    <atom:Button ButtonType="Default" Shape="Round" IsDanger="True">
+                        <atom:Button.Icon>
+                            <atom:PathIcon Kind="SearchOutlined"></atom:PathIcon>
+                        </atom:Button.Icon>
+                        Search
+                    </atom:Button>
+                    
+                    <atom:Button ButtonType="Text" Shape="Default" IsDanger="True">
+                        <atom:Button.Icon>
+                            <atom:PathIcon Kind="SearchOutlined"></atom:PathIcon>
+                        </atom:Button.Icon>
+                        Search
+                    </atom:Button>
+
+                    <atom:Button ButtonType="Link" Shape="Default" IsDanger="True">
+                        <atom:Button.Icon>
+                            <atom:PathIcon Kind="SearchOutlined"></atom:PathIcon>
+                        </atom:Button.Icon>
+                        Search
+                    </atom:Button>
+                </WrapPanel>
+            </StackPanel>
+
         </showcase:ShowCaseItem>
-        
+
         <showcase:ShowCaseItem
             Title="Block Button"
             Description="block property will make the button fit to its parent width.">
@@ -112,11 +145,11 @@
                 </atom:Button>
             </StackPanel>
         </showcase:ShowCaseItem>
-        
+
         <showcase:ShowCaseItem
             Title="Danger Buttons"
             Description="danger is a property of button after antd 4.0.">
-            <WrapPanel HorizontalAlignment="Stretch"  Orientation="Horizontal">
+            <WrapPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
                 <atom:Button ButtonType="Primary" IsDanger="True">
                     Primary
                 </atom:Button>
@@ -131,45 +164,79 @@
                 </atom:Button>
             </WrapPanel>
         </showcase:ShowCaseItem>
-        
+
         <showcase:ShowCaseItem
             Title="Ghost Button"
             Description="ghost property will make button's background transparent, it is commonly used in colored background.">
-            <Border Background="rgb(190, 200, 200)" 
+            <Border Background="rgb(190, 200, 200)"
                     Margin="10"
                     Padding="10">
-                <WrapPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
-                    <atom:Button ButtonType="Primary" IsGhost="True">
-                        Primary
-                    </atom:Button>
-                    <atom:Button ButtonType="Default" IsGhost="True">
-                        Default
-                    </atom:Button>
-                    <atom:Button ButtonType="Text" IsGhost="True">
-                        Text
-                    </atom:Button>
-                    <atom:Button ButtonType="Link" IsGhost="True">
-                        Link
-                    </atom:Button>
-                    <atom:Button ButtonType="Primary" IsDanger="True" IsGhost="True">
-                        Danger
-                    </atom:Button>
-                </WrapPanel>
+               <StackPanel Orientation="Vertical">
+                   <WrapPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
+                       <atom:Button ButtonType="Primary" IsGhost="True">
+                           Primary
+                       </atom:Button>
+                       <atom:Button ButtonType="Default" IsGhost="True">
+                           Default
+                       </atom:Button>
+                       <atom:Button ButtonType="Text" IsGhost="True">
+                           Text
+                       </atom:Button>
+                       <atom:Button ButtonType="Link" IsGhost="True">
+                           Link
+                       </atom:Button>
+                       <atom:Button ButtonType="Primary" IsDanger="True" IsGhost="True">
+                           Danger
+                       </atom:Button>
+                   </WrapPanel>
+                   <WrapPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
+                       <atom:Button ButtonType="Primary" IsGhost="True">
+                           Primary
+                           <atom:Button.Icon>
+                               <atom:PathIcon Kind="SearchOutlined"></atom:PathIcon>
+                           </atom:Button.Icon>
+                       </atom:Button>
+                       <atom:Button ButtonType="Default" IsGhost="True">
+                           Default
+                           <atom:Button.Icon>
+                               <atom:PathIcon Kind="SearchOutlined"></atom:PathIcon>
+                           </atom:Button.Icon>
+                       </atom:Button>
+                       <atom:Button ButtonType="Text" IsGhost="True">
+                           Text
+                           <atom:Button.Icon>
+                               <atom:PathIcon Kind="SearchOutlined"></atom:PathIcon>
+                           </atom:Button.Icon>
+                       </atom:Button>
+                       <atom:Button ButtonType="Link" IsGhost="True">
+                           <atom:Button.Icon>
+                               <atom:PathIcon Kind="SearchOutlined"></atom:PathIcon>
+                           </atom:Button.Icon>
+                           Link
+                       </atom:Button>
+                       <atom:Button ButtonType="Primary" IsDanger="True" IsGhost="True">
+                           <atom:Button.Icon>
+                               <atom:PathIcon Kind="SearchOutlined"></atom:PathIcon>
+                           </atom:Button.Icon>
+                           Danger
+                       </atom:Button>
+                   </WrapPanel>
+               </StackPanel>
             </Border>
         </showcase:ShowCaseItem>
-        
+
         <showcase:ShowCaseItem
             Title="Disabled"
             Description="To mark a button as disabled, add the disabled property to the Button.">
-            <WrapPanel HorizontalAlignment="Stretch"  Orientation="Vertical">
-               <StackPanel Orientation="Horizontal">
-                   <atom:Button ButtonType="Primary">
-                       Primary
-                   </atom:Button>
-                   <atom:Button ButtonType="Primary" IsEnabled="False">
-                       Primary(disabled)
-                   </atom:Button>
-               </StackPanel>
+            <WrapPanel HorizontalAlignment="Stretch" Orientation="Vertical">
+                <StackPanel Orientation="Horizontal">
+                    <atom:Button ButtonType="Primary">
+                        Primary
+                    </atom:Button>
+                    <atom:Button ButtonType="Primary" IsEnabled="False">
+                        Primary(disabled)
+                    </atom:Button>
+                </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <atom:Button ButtonType="Default">
                         Default
@@ -194,7 +261,7 @@
                         Link(disabled)
                     </atom:Button>
                 </StackPanel>
-                
+
                 <StackPanel Orientation="Horizontal">
                     <atom:Button ButtonType="Primary" IsDanger="True">
                         Danger Primary
