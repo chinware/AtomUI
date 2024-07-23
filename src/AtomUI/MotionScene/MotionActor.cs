@@ -1,8 +1,10 @@
 ﻿using System.Reflection;
+using AtomUI.Media;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
+using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.VisualTree;
@@ -66,6 +68,14 @@ public class MotionActor : Animatable, IMotionActor
    private double _originHeight;
    private ITransform? _originRenderTransform;
    private RelativePoint _originRenderTransformOrigin;
+   private Dictionary<AvaloniaProperty, AnimationState> _transitionsMap;
+
+   private class AnimationState
+   {
+      public ITransition? Transition { get; set; }
+      public object? StartValue { get; set; }
+      public object? EndValue { get; set; }
+   }
    
    /// <summary>
    /// 动画实体
@@ -88,12 +98,51 @@ public class MotionActor : Animatable, IMotionActor
       EnableTransitionsMethodInfo = typeof(Animatable).GetMethod("EnableTransitions",BindingFlags.Instance | BindingFlags.NonPublic)!;
       DisableTransitionsMethodInfo =
          typeof(Animatable).GetMethod("DisableTransitions", BindingFlags.Instance | BindingFlags.NonPublic)!;
+      MotionWidthProperty.Changed.AddClassHandler<MotionActor>(HandlePropertyChanged);
+      MotionHeightProperty.Changed.AddClassHandler<MotionActor>(HandlePropertyChanged);
+      MotionOpacityProperty.Changed.AddClassHandler<MotionActor>(HandlePropertyChanged);
+      MotionRenderTransformProperty.Changed.AddClassHandler<MotionActor>(HandlePropertyChanged);
+   }
+
+   private static void HandlePropertyChanged(MotionActor actor, AvaloniaPropertyChangedEventArgs args)
+   {
+      var property = args.Property;
+      var oldValue = args.OldValue;
+      var newValue = args.NewValue;
+      var priority = args.Priority;
+      if (!actor._transitionsMap.ContainsKey(property)) {
+         return;
+      }
+      var state = actor._transitionsMap[property];
+      if (actor.IsAnimating(property) && priority == BindingPriority.Animation) {
+         // 判断新值是否相等
+         if (property.PropertyType == typeof(double)) {
+            var currentValue = (double)newValue!;
+            var endValue = (double)state.EndValue!;
+             if (MathUtils.AreClose(currentValue, endValue)) {
+                var transition = state.Transition;
+                if (transition is INotifyTransitionCompleted notifyTransitionCompleted) {
+                   notifyTransitionCompleted.NotifyTransitionCompleted(true);
+                }
+             }
+         } else if (property.PropertyType.IsAssignableTo(typeof(ITransform))) {
+            var currentValue = (ITransform)newValue!;
+            var endValue = (ITransform)state.EndValue!;
+            if (currentValue.Value == endValue.Value) {
+               var transition = state.Transition;
+               if (transition is INotifyTransitionCompleted notifyTransitionCompleted) {
+                  notifyTransitionCompleted.NotifyTransitionCompleted(true);
+               }
+            }
+         }
+      }
    }
 
    public MotionActor(Control motionTarget, AbstractMotion motion)
    {
       MotionTarget = motionTarget;
       _motion = motion;
+      _transitionsMap = new Dictionary<AvaloniaProperty, AnimationState>();
    }
    
    public bool IsSupportMotionProperty(AvaloniaProperty property)
@@ -195,7 +244,6 @@ public class MotionActor : Animatable, IMotionActor
          } else {
             BindUtils.RelayBind(this, property, ghost, property);
          }
-
       }
    }
 
@@ -226,6 +274,22 @@ public class MotionActor : Animatable, IMotionActor
 
    internal virtual void NotifyMotionPreStart()
    {
+      if (Transitions is not null) {
+         foreach (var transition in Transitions) {
+            _transitionsMap.Add(transition.Property, new AnimationState()
+            {
+               Transition = transition
+            });
+         }
+      }
+
+      foreach (var motionConfig in _motion.GetMotionConfigs()) {
+         var property = motionConfig.Property;
+         var state = _transitionsMap[property];
+         state.StartValue = motionConfig.StartValue;
+         state.EndValue = motionConfig.EndValue;
+      }
+
       SaveMotionTargetState();
       _motion.NotifyPreStart();
       _motion.NotifyConfigMotionTarget(GetAnimatableGhost());
@@ -244,6 +308,7 @@ public class MotionActor : Animatable, IMotionActor
       Completed?.Invoke(this, EventArgs.Empty);
       _motion.NotifyCompleted();
       _motion.NotifyRestoreMotionTarget(GetAnimatableGhost());
+      _transitionsMap.Clear();
    }
 
    private void SaveMotionTargetState()

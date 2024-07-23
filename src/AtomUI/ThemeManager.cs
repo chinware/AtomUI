@@ -1,6 +1,5 @@
 ﻿using System.Reflection;
 using AtomUI.Controls.MotionScene;
-using AtomUI.Interceptors;
 using AtomUI.MotionScene;
 using AtomUI.Styling;
 using AtomUI.Utils;
@@ -8,7 +7,6 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Platform;
 using Avalonia.Styling;
-using HarmonyLib;
 
 namespace AtomUI;
 
@@ -226,7 +224,6 @@ public class ThemeManager : Styles, IThemeManager
       RegisterServices();
       // 收集控件全局初始化接口
       InvokeBootstrapInitializers();
-      InitInterceptors();
       RegisterControlThemes();
    }
 
@@ -277,14 +274,6 @@ public class ThemeManager : Styles, IThemeManager
       var motionDirector = new Director();
       AvaloniaLocator.CurrentMutable.Bind<IDirector>()
                      .ToConstant(motionDirector);
-      var harmony = new Harmony("net.atomui");
-      AvaloniaLocator.CurrentMutable.Bind<Harmony>().ToConstant(harmony);
-   }
-
-   private void InitInterceptors()
-   {
-      var harmony = AvaloniaLocator.Current.GetService<Harmony>()!;
-      TransitionInterceptorsRegister.Register(harmony);
    }
 }
 
