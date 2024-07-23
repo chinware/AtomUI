@@ -1,8 +1,12 @@
 ﻿using AtomUI.Controls.Utils;
 using AtomUI.Styling;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
+using Avalonia.Media;
 using Avalonia.Styling;
+using ExCSS;
+using Colors = Avalonia.Media.Colors;
 
 namespace AtomUI.Controls;
 
@@ -19,7 +23,8 @@ public class ArrowDecoratedBoxTheme : ControlTheme
       {
          var decorator = new Border()
          {
-            Name = DecoratorPart
+            Name = DecoratorPart,
+            Margin = new Thickness(0),
          };
          decorator.RegisterInNameScope(scope);
          
@@ -32,7 +37,6 @@ public class ArrowDecoratedBoxTheme : ControlTheme
          CreateTemplateParentBinding(decorator, Border.BackgroundProperty, ArrowDecoratedBox.BackgroundProperty);
          CreateTemplateParentBinding(decorator, Border.CornerRadiusProperty, ArrowDecoratedBox.CornerRadiusProperty);
          CreateTemplateParentBinding(decorator, Border.ChildProperty, ArrowDecoratedBox.ChildProperty);
-         CreateTemplateParentBinding(decorator, Border.PaddingProperty, ArrowDecoratedBox.PaddingProperty);
          
          return decorator;
       });
@@ -41,6 +45,7 @@ public class ArrowDecoratedBoxTheme : ControlTheme
    protected override void BuildStyles()
    {
       var commonStyle = new Style(selector => selector.Nesting());
+      commonStyle.Add(ArrowDecoratedBox.ForegroundProperty, GlobalResourceKey.ColorText);
       commonStyle.Add(ArrowDecoratedBox.BackgroundProperty, GlobalResourceKey.ColorBgContainer);
       commonStyle.Add(ArrowDecoratedBox.MinHeightProperty, GlobalResourceKey.ControlHeight);
       commonStyle.Add(ArrowDecoratedBox.PaddingProperty, ArrowDecoratedBoxResourceKey.Padding);

@@ -406,7 +406,7 @@ public abstract class AbstractPopup : Control, IPopupHostProvider
 
       _isOpenRequested = false;
 
-      var popupHost = OverlayPopupHost.CreatePopupHost(placementTarget, DependencyResolver);
+      var popupHost = CreatePopupHost(placementTarget, DependencyResolver);
       NotifyPopupHostCreated(popupHost);
       var handlerCleanup = new CompositeDisposable(7);
 
@@ -526,6 +526,20 @@ public abstract class AbstractPopup : Control, IPopupHostProvider
       _popupHostChangedHandler?.Invoke(Host);
    }
 
+   public static IPopupHost CreatePopupHost(Visual target, IAvaloniaDependencyResolver? dependencyResolver)
+   {
+      if (TopLevel.GetTopLevel(target) is { } topLevel && topLevel.PlatformImpl?.CreatePopup() is { } popupImpl) {
+         return new PopupRoot(topLevel, popupImpl, dependencyResolver);
+      }
+
+      if (OverlayLayer.GetOverlayLayer(target) is { } overlayLayer) {
+         return new OverlayPopupHost(overlayLayer);
+      }
+
+      throw new InvalidOperationException(
+         "Unable to create IPopupImpl and no overlay layer is found for the target control");
+   }
+   
    /// <summary>
    /// Closes the popup.
    /// </summary>
