@@ -2,7 +2,6 @@
 using AtomUI.ColorSystem;
 using AtomUI.Controls.MotionScene;
 using AtomUI.Controls.Utils;
-using AtomUI.Data;
 using AtomUI.MotionScene;
 using AtomUI.Reflection;
 using AtomUI.Styling;
@@ -13,7 +12,6 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Data;
-using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Styling;
@@ -21,20 +19,11 @@ using Avalonia.Threading;
 
 namespace AtomUI.Controls;
 
-using AvaloniaWin = Avalonia.Controls.Window;
-
 [PseudoClasses(StdPseudoClass.Open)]
 public partial class ToolTip : TemplatedControl, 
                                IShadowMaskInfoProvider,
                                IControlCustomStyle
 {
-   private Popup? _popup;
-   private Action<IPopupHost?>? _popupHostChangedHandler;
-   private PopupPositionInfo? _popupPositionInfo; // 这个信息在隐藏动画的时候会用到
-   private bool _initialized = false;
-   private IControlCustomStyle _customStyle;
-   private ArrowDecoratedBox? _arrowDecoratedBox;
-   
    // 当鼠标移走了，但是打开动画还没完成，我们需要记录下来这个信号
    internal bool RequestCloseWhereAnimationCompleted { get; set; } = false;
 
@@ -60,7 +49,9 @@ public partial class ToolTip : TemplatedControl,
    internal Control? AdornedControl { get; private set; }
    internal event EventHandler? Closed;
 
-   /// <summary>
+   #region 附加属性设置方法
+
+    /// <summary>
    /// Gets the value of the ToolTipOld.Tip attached property.
    /// </summary>
    /// <param name="element">The control to get the property from.</param>
@@ -331,8 +322,6 @@ public partial class ToolTip : TemplatedControl,
       return element.GetValue(ColorProperty);
    }
 
-   private bool _animating;
-
    /// <summary>
    /// 设置预设颜色
    /// </summary>
@@ -342,6 +331,16 @@ public partial class ToolTip : TemplatedControl,
    {
       element.SetValue(ColorProperty, color);
    }
+
+   #endregion
+   
+   private Popup? _popup;
+   private Action<IPopupHost?>? _popupHostChangedHandler;
+   private PopupPositionInfo? _popupPositionInfo; // 这个信息在隐藏动画的时候会用到
+   private bool _initialized = false;
+   private IControlCustomStyle _customStyle;
+   private ArrowDecoratedBox? _arrowDecoratedBox;
+   private bool _animating;
 
    private static void IsOpenChanged(AvaloniaPropertyChangedEventArgs e)
    {

@@ -29,32 +29,16 @@ public class SegmentedItemBoxTheme : ControlTheme
 
    protected override void BuildStyles()
    {
-      var largeSizeStyle =
-         new Style(selector => selector.Nesting().PropertyEquals(SegmentedItemBox.SizeTypeProperty, SizeType.Large));
-      largeSizeStyle.Add(SegmentedItemBox.CornerRadiusProperty, GlobalResourceKey.BorderRadius);
-      largeSizeStyle.Add(SegmentedItemBox.FontSizeProperty, GlobalResourceKey.FontSizeLG);
-      Add(largeSizeStyle);
-      
-      var middleSizeStyle =
-         new Style(selector => selector.Nesting().PropertyEquals(SegmentedItemBox.SizeTypeProperty, SizeType.Middle));
-      middleSizeStyle.Add(SegmentedItemBox.CornerRadiusProperty, GlobalResourceKey.BorderRadiusSM);
-      middleSizeStyle.Add(SegmentedItemBox.FontSizeProperty, GlobalResourceKey.FontSize);
-      Add(middleSizeStyle);
-      
-      var smallSizeStyle =
-         new Style(selector => selector.Nesting().PropertyEquals(SegmentedItemBox.SizeTypeProperty, SizeType.Small));
-      smallSizeStyle.Add(SegmentedItemBox.CornerRadiusProperty, GlobalResourceKey.BorderRadiusXS);
-      smallSizeStyle.Add(SegmentedItemBox.FontSizeProperty, GlobalResourceKey.FontSize);
-      Add(smallSizeStyle);
-      
+      var commonStyle = new Style(selector => selector.Nesting());
+      commonStyle.Add(SegmentedItemBox.TrackPaddingProperty, SegmentedResourceKey.TrackPadding);
       // 没有被选择的正常状态
-      var normalStyle = new Style(selector => selector.Nesting().PropertyEquals(SegmentedItemBox.IsEnabledProperty, true));
+      var enabledStyle = new Style(selector => selector.Nesting().PropertyEquals(SegmentedItemBox.IsEnabledProperty, true));
       
       // 选中状态
       var selectedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Selected));
       selectedStyle.Add(SegmentedItemBox.ForegroundProperty, SegmentedResourceKey.ItemSelectedColor);
       selectedStyle.Add(SegmentedItemBox.BackgroundProperty, GlobalResourceKey.ColorTransparent);
-      normalStyle.Add(selectedStyle);
+      enabledStyle.Add(selectedStyle);
       
       // 没有被选中的状态
       var notSelectedStyle = new Style(selector => selector.Nesting().Not(x => x.Nesting().Class(StdPseudoClass.Selected)));
@@ -72,9 +56,40 @@ public class SegmentedItemBoxTheme : ControlTheme
       pressedStyle.Add(SegmentedItemBox.BackgroundProperty, SegmentedResourceKey.ItemActiveBg);
       notSelectedStyle.Add(pressedStyle);
       
-      normalStyle.Add(notSelectedStyle);
-      Add(normalStyle);
+      enabledStyle.Add(notSelectedStyle);
+      commonStyle.Add(enabledStyle);
+      Add(commonStyle);
+
+      BuildSizeTypeStyle();
       BuildDisabledStyle();
+   }
+
+   private void BuildSizeTypeStyle()
+   {
+      var largeSizeStyle =
+         new Style(selector => selector.Nesting().PropertyEquals(SegmentedItemBox.SizeTypeProperty, SizeType.Large));
+      largeSizeStyle.Add(SegmentedItemBox.CornerRadiusProperty, GlobalResourceKey.BorderRadius);
+      largeSizeStyle.Add(SegmentedItemBox.FontSizeProperty, GlobalResourceKey.FontSizeLG);
+      largeSizeStyle.Add(SegmentedItemBox.ControlHeightProperty, GlobalResourceKey.ControlHeightLG);
+      largeSizeStyle.Add(SegmentedItemBox.SegmentedItemPaddingProperty, SegmentedResourceKey.SegmentedItemPadding);
+      Add(largeSizeStyle);
+      
+      var middleSizeStyle =
+         new Style(selector => selector.Nesting().PropertyEquals(SegmentedItemBox.SizeTypeProperty, SizeType.Middle));
+      middleSizeStyle.Add(SegmentedItemBox.CornerRadiusProperty, GlobalResourceKey.BorderRadiusSM);
+      middleSizeStyle.Add(SegmentedItemBox.FontSizeProperty, GlobalResourceKey.FontSize);
+      middleSizeStyle.Add(SegmentedItemBox.ControlHeightProperty, GlobalResourceKey.ControlHeight);
+      middleSizeStyle.Add(SegmentedItemBox.SegmentedItemPaddingProperty, SegmentedResourceKey.SegmentedItemPadding);
+      Add(middleSizeStyle);
+      
+      var smallSizeStyle =
+         new Style(selector => selector.Nesting().PropertyEquals(SegmentedItemBox.SizeTypeProperty, SizeType.Small));
+      smallSizeStyle.Add(SegmentedItemBox.CornerRadiusProperty, GlobalResourceKey.BorderRadiusXS);
+      smallSizeStyle.Add(SegmentedItemBox.FontSizeProperty, GlobalResourceKey.FontSize);
+      smallSizeStyle.Add(SegmentedItemBox.ControlHeightProperty, GlobalResourceKey.ControlHeightSM);
+      smallSizeStyle.Add(SegmentedItemBox.SegmentedItemPaddingProperty, SegmentedResourceKey.SegmentedItemPaddingSM);
+      
+      Add(smallSizeStyle);
    }
 
    private void BuildDisabledStyle()

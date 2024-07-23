@@ -19,8 +19,7 @@ internal partial class SegmentedItemBox : TemplatedControl,
                                           ICustomHitTest,
                                           IControlCustomStyle
 {
-   internal Control Item { get; }
-   
+   #region 公共属性定义
    public static readonly StyledProperty<SizeType> SizeTypeProperty =
       Segmented.SizeTypeProperty.AddOwner<SegmentedItemBox>();
    
@@ -29,8 +28,8 @@ internal partial class SegmentedItemBox : TemplatedControl,
    
    public static readonly DirectProperty<SegmentedItemBox, bool> IsCurrentItemProperty =
       AvaloniaProperty.RegisterDirect<SegmentedItemBox, bool>(nameof(IsCurrentItem), 
-         o => o.IsCurrentItem,
-         (o, v) => o.IsCurrentItem = v);
+                                                              o => o.IsCurrentItem,
+                                                              (o, v) => o.IsCurrentItem = v);
    
    /// <summary>
    /// Gets or sets a value indicating whether the button is currently pressed.
@@ -46,6 +45,41 @@ internal partial class SegmentedItemBox : TemplatedControl,
       get => GetValue(SizeTypeProperty);
       set => SetValue(SizeTypeProperty, value);
    }
+
+   #endregion
+
+   #region 私有属性定义
+
+   internal static readonly StyledProperty<double> ControlHeightProperty =
+      AvaloniaProperty.Register<SegmentedItemBox, double>(
+         nameof(ControlHeight));
+   
+   internal static readonly StyledProperty<Thickness> SegmentedItemPaddingProperty
+      = AvaloniaProperty.Register<SegmentedItemBox, Thickness>(nameof(SegmentedItemPadding));
+   
+   internal static readonly StyledProperty<Thickness> TrackPaddingProperty
+      = AvaloniaProperty.Register<SegmentedItemBox, Thickness>(nameof(TrackPadding));
+   
+   internal double ControlHeight
+   {
+      get => GetValue(ControlHeightProperty);
+      set => SetValue(ControlHeightProperty, value);
+   }
+   
+   internal Thickness SegmentedItemPadding
+   {
+      get => GetValue(SegmentedItemPaddingProperty);
+      set => SetValue(SegmentedItemPaddingProperty, value);
+   }
+   
+   internal Thickness TrackPadding
+   {
+      get => GetValue(TrackPaddingProperty);
+      set => SetValue(TrackPaddingProperty, value);
+   }
+   #endregion
+   
+   internal Control Item { get; }
 
    private bool _isCurrentItem;
    internal bool IsCurrentItem { get => _isCurrentItem; set => SetCurrentItem(value); }
@@ -79,9 +113,8 @@ internal partial class SegmentedItemBox : TemplatedControl,
       var itemHeight = ItemHeight(SizeType);
       var targetWidth = size.Width;
       var targetHeight = Math.Max(size.Height, itemHeight);
-      var thickness = ItemThickness(SizeType);
-      targetWidth += thickness.Left + thickness.Right;
-      targetHeight += thickness.Top + thickness.Bottom;
+      targetWidth += SegmentedItemPadding.Left + SegmentedItemPadding.Right;
+      targetHeight += SegmentedItemPadding.Top + SegmentedItemPadding.Bottom;
       return new Size(targetWidth, targetHeight);
    }
 
@@ -127,7 +160,6 @@ internal partial class SegmentedItemBox : TemplatedControl,
    {
       Cursor = new Cursor(StandardCursorType.Hand);
       _customStyle.CollectStyleState();
-      _customStyle.SetupTokenBindings();
       _customStyle.SetupTransitions();
    }
 
@@ -143,24 +175,9 @@ internal partial class SegmentedItemBox : TemplatedControl,
    private double ItemHeight(SizeType sizeType)
    {
       var itemHeight = 0d;
-      var padding = _trackPaddingToken.Top + _trackPaddingToken.Bottom;
-      if (sizeType == SizeType.Small) {
-         itemHeight = _controlHeightSMToken - padding;
-      } else if (sizeType == SizeType.Middle) {
-         itemHeight = _controlHeightToken - padding;
-      } else {
-         itemHeight = _controlHeightLGToken - padding;
-      }
+      var padding = TrackPadding.Top + TrackPadding.Bottom;
+      itemHeight = ControlHeight - padding;
       return itemHeight;
-   }
-
-   private Thickness ItemThickness(SizeType sizeType)
-   {
-      if (sizeType == SizeType.Large || sizeType == SizeType.Middle) {
-         return _segmentedItemPaddingToken;
-      }
-
-      return _segmentedItemPaddingSMToken;
    }
    
    public bool HitTest(Point point)
@@ -195,15 +212,6 @@ internal partial class SegmentedItemBox : TemplatedControl,
       _customStyle.UpdatePseudoClasses();
    }
    
-   void IControlCustomStyle.SetupTokenBindings()
-   {
-      BindUtils.CreateTokenBinding(this, ControlHeightSMTokenProperty, GlobalResourceKey.ControlHeightSM);
-      BindUtils.CreateTokenBinding(this, ControlHeightTokenProperty, GlobalResourceKey.ControlHeight);
-      BindUtils.CreateTokenBinding(this, ControlHeightLGTokenProperty, GlobalResourceKey.ControlHeightLG);
-      BindUtils.CreateTokenBinding(this, TrackPaddingTokenProperty, SegmentedResourceKey.TrackPadding);
-      BindUtils.CreateTokenBinding(this, SegmentedItemPaddingSMTokenProperty, SegmentedResourceKey.SegmentedItemPaddingSM);
-      BindUtils.CreateTokenBinding(this, SegmentedItemPaddingTokenProperty, SegmentedResourceKey.SegmentedItemPadding);
-   }
 
    void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
    {
