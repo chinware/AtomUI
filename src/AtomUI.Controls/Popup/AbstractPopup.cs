@@ -333,9 +333,9 @@ public abstract class AbstractPopup : Control, IPopupHostProvider
    
    private bool _isOpenRequested;
    private bool _ignoreIsOpenChanged;
-   private PopupOpenState? _openState;
+   protected PopupOpenState? _openState;
    private Action<IPopupHost?>? _popupHostChangedHandler;
-   private bool _animating = false;
+
    // 当鼠标移走了，但是打开动画还没完成，我们需要记录下来这个信号
    internal bool RequestCloseWhereAnimationCompleted { get; set; } = false;
 
@@ -379,7 +379,13 @@ public abstract class AbstractPopup : Control, IPopupHostProvider
       if (_openState != null) {
          return;
       }
-      RequestCloseWhereAnimationCompleted = false;
+      
+      PrepareOpenState();
+      OpenOverride();
+   }
+   
+   protected void PrepareOpenState()
+   {
       var placementTarget = GetEffectivePlacementTarget();
 
       if (placementTarget == null) {
@@ -502,16 +508,13 @@ public abstract class AbstractPopup : Control, IPopupHostProvider
       }
 
       _openState = new PopupOpenState(placementTarget, topLevel, popupHost, cleanupPopup);
-
       WindowManagerAddShadowHintChanged(popupHost, WindowManagerAddShadowHint);
       NotifyPopupRootAboutToShow(popupHost);
-      
-      OpenOverride(popupHost);
    }
    
-   protected virtual void OpenOverride(IPopupHost popupHost)
+   protected virtual void OpenOverride()
    {
-      popupHost.Show();
+      _openState?.PopupHost.Show();
       using (BeginIgnoringIsOpen()) {
          SetCurrentValue(IsOpenProperty, true);
       }
@@ -535,12 +538,7 @@ public abstract class AbstractPopup : Control, IPopupHostProvider
    
    private void CloseCore()
    {
-      if (_animating) {
-         RequestCloseWhereAnimationCompleted = true;
-         return;
-      }
       var closingArgs = new CancelEventArgs();
-      
       Closing?.Invoke(this, closingArgs);
       if (closingArgs.Cancel) {
          return;
@@ -553,11 +551,7 @@ public abstract class AbstractPopup : Control, IPopupHostProvider
          }
          return;
       }
-      CloseOverride();
-   }
-
-   protected virtual void CloseOverride()
-   {
+   
       _openState?.Dispose();
       _openState = null;
 
@@ -906,7 +900,7 @@ public abstract class AbstractPopup : Control, IPopupHostProvider
       }
    }
 
-   private class PopupOpenState : IDisposable
+   protected class PopupOpenState : IDisposable
    {
       private readonly IDisposable _cleanup;
       private IDisposable? _presenterCleanup;

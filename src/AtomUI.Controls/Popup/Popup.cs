@@ -1,4 +1,6 @@
 ﻿using System.Reactive.Disposables;
+using AtomUI.Controls.MotionScene;
+using AtomUI.MotionScene;
 using AtomUI.Styling;
 using AtomUI.Utils;
 using Avalonia;
@@ -9,6 +11,7 @@ using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Platform;
+using Avalonia.Threading;
 
 namespace AtomUI.Controls;
 
@@ -21,6 +24,10 @@ public class Popup : AbstractPopup
 
    public static readonly StyledProperty<double> MarginToAnchorProperty =
       AvaloniaProperty.Register<Popup, double>(nameof(MarginToAnchor));
+   
+   
+   private static readonly StyledProperty<TimeSpan> MotionDurationProperty
+      = AvaloniaProperty.Register<Popup, TimeSpan>(nameof(MotionDuration));
    
    public static readonly DirectProperty<Popup, bool> IsFlippedProperty =
       AvaloniaProperty.RegisterDirect<Popup, bool>(nameof(IsFlipped),
@@ -39,6 +46,12 @@ public class Popup : AbstractPopup
       set => SetValue(MarginToAnchorProperty, value);
    }
 
+   public TimeSpan MotionDuration
+   {
+      get => GetValue(MotionDurationProperty);
+      set => SetValue(MotionDurationProperty, value);
+   }
+
    private bool _isFlipped = false;
    public bool IsFlipped
    {
@@ -50,6 +63,7 @@ public class Popup : AbstractPopup
    private CompositeDisposable? _compositeDisposable;
    private bool _initialized;
    private ManagedPopupPositionerInfo? _managedPopupPositioner;
+   protected bool _animating = false;
 
    static Popup()
    {
@@ -63,11 +77,12 @@ public class Popup : AbstractPopup
       IsLightDismissEnabled = false;
    }
 
-   public sealed override void ApplyTemplate()
+   protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
    {
-      base.ApplyTemplate();
+      base.OnAttachedToLogicalTree(e);
       if (!_initialized) {
          BindUtils.CreateGlobalTokenBinding(this, MaskShadowsProperty, GlobalResourceKey.BoxShadowsSecondary);
+         BindUtils.CreateGlobalTokenBinding(this, MotionDurationProperty, GlobalResourceKey.MotionDurationMid);
          _initialized = true;
       }
    }
@@ -204,9 +219,9 @@ public class Popup : AbstractPopup
    /// </summary>
    /// <param name="popupHost"></param>
    /// <param name="placementTarget"></param>
-   protected internal override void NotifyHostPositionUpdated(IPopupHost popupHost, Control placementTarget)
+   protected internal override void NotifyAboutToUpdateHostPosition(IPopupHost popupHost, Control placementTarget)
    {
-      base.NotifyHostPositionUpdated(popupHost, placementTarget);
+      base.NotifyAboutToUpdateHostPosition(popupHost, placementTarget);
    
       var offsetX = HorizontalOffset;
       var offsetY = VerticalOffset;
@@ -277,119 +292,6 @@ public class Popup : AbstractPopup
          PositionFlipped?.Invoke(this, new PopupFlippedEventArgs(IsFlipped));
       }
    }
-   
-   internal static PopupPositionInfo CalculatePositionInfo(Control placementTarget, 
-                                                           double marginToAnchor,
-                                                           Control popupContent, 
-                                                           Point offset,
-                                                           PlacementMode placement,
-                                                           PopupAnchor placementAnchor,
-                                                           PopupGravity placementGravity,
-                                                           Rect? placementRect,
-                                                           FlowDirection flowDirection)
-   {
-      var offsetX = offset.X;
-      var offsetY = offset.Y;
-      
-      var marginToAnchorOffset = PopupUtils.CalculateMarginToAnchorOffset(placement, marginToAnchor, placementAnchor, placementGravity);
-      offsetX += marginToAnchorOffset.X;
-      offsetY += marginToAnchorOffset.Y;
-
-      var direction = PopupUtils.GetDirection(placement);
-  
-      PopupPositionerParameters parameters = new PopupPositionerParameters();
-      var parentTopLevel = TopLevel.GetTopLevel(placementTarget)!;
-      
-      // Popup.Child can't be null here, it was set in ShowAtCore.
-      if (popupContent.DesiredSize == default) {
-         // Popup may not have been shown yet. Measure content
-         parameters.Size = LayoutHelper.MeasureChild(popupContent, Size.Infinity, new Thickness());
-      } else {
-         parameters.Size = popupContent.DesiredSize;
-      }
-      
-      if (placement != PlacementMode.Center &&
-          placement != PlacementMode.Pointer) {
-         offset = new Point(offsetX, offsetY);
-      }
-      
-      parameters.ConfigurePosition(parentTopLevel,
-                                  placementTarget,
-                                  placement,
-                                  offset,
-                                  placementAnchor,
-                                  placementGravity,
-                                  PopupPositionerConstraintAdjustment.All,
-                                  placementRect ?? new Rect(default, placementTarget.Bounds.Size),
-                                  flowDirection);
-      
-      var positionInfo = new PopupPositionInfo();
-      positionInfo.EffectivePlacement = placement;
-      positionInfo.EffectivePlacementAnchor = placementAnchor;
-      positionInfo.EffectivePlacementGravity = placementGravity;
-      positionInfo.Size = parameters.Size;
-      positionInfo.Offset = parameters.Offset;
-      
-      var scaling = parentTopLevel.RenderScaling;
-      var parentGeometry = GetParentClientAreaScreenGeometry(parentTopLevel);
-      var screens = GetScreenInfos(parentTopLevel);
-      
-      if (placement != PlacementMode.Center &&
-          placement != PlacementMode.Pointer) {
-         // 计算是否 flip
-         var anchorRect = new Rect(
-            parameters.AnchorRectangle.TopLeft * scaling,
-            parameters.AnchorRectangle.Size * scaling);
-         
-         var parentOffsetPoint = parentTopLevel.PointToScreen(default);
-      
-         anchorRect = anchorRect.Translate(new Point(parentOffsetPoint.X, parentOffsetPoint.Y));
-   
-         var bounds = GetBounds(anchorRect, parentGeometry,screens);
-         var flipInfo = CalculateFlipInfo(bounds, 
-                                          parameters.Size * scaling,
-                                          anchorRect,
-                                          parameters.Anchor,
-                                          parameters.Gravity,
-                                          offset * scaling);
-         if (flipInfo.Item1 || flipInfo.Item2) {
-            var flipPlacement = GetFlipPlacement(placement);
-            var flipAnchorAndGravity = PopupUtils.GetAnchorAndGravity(flipPlacement);
-            var flipOffset = PopupUtils.CalculateMarginToAnchorOffset(flipPlacement, marginToAnchor, placementAnchor, placementGravity);
-            positionInfo.EffectivePlacement = flipPlacement;
-            positionInfo.EffectivePlacementAnchor = flipAnchorAndGravity.Item1;
-            positionInfo.EffectivePlacementGravity = flipAnchorAndGravity.Item2;
-                        
-            if (direction == Direction.Top || direction == Direction.Bottom) {
-               positionInfo.Offset = positionInfo.Offset.WithY(flipOffset.Y);
-            } else {
-               positionInfo.Offset = positionInfo.Offset.WithX(flipOffset.X);
-            }
-            
-            positionInfo.IsFlipped = true;
-         } else {
-            positionInfo.IsFlipped = false;
-         }
-      }
-      
-      var rect = PopupUtils.Calculate(
-         parameters.Size * scaling,
-         new Rect(
-            parameters.AnchorRectangle.TopLeft * scaling,
-            parameters.AnchorRectangle.Size * scaling),
-         parameters.Anchor,
-         parameters.Gravity,
-         parameters.ConstraintAdjustment,
-         positionInfo.Offset * scaling,
-         parentGeometry,
-         screens);
-
-      positionInfo.Offset = new Point(Math.Round(rect.Position.X), Math.Floor(rect.Position.Y + 0.5));
-      positionInfo.Size = rect.Size;
-      positionInfo.Scaling = scaling;
-      
-      return positionInfo;
-   }
 
    protected static PlacementMode GetFlipPlacement(PlacementMode placement)
    {
@@ -421,17 +323,110 @@ public class Popup : AbstractPopup
          _shadowLayer.Opacity = 0;
       }
    }
-}
+   
+   // TODO Review 需要评估这里等待的变成模式是否正确高效
+   public async Task OpenAnimationAsync()
+   {
+      // AbstractPopup is currently open
+      if (_openState != null || _animating) {
+         return;
+      }
 
-internal class PopupPositionInfo
-{
-   public Point Offset { get; set; }
-   public bool IsFlipped { get; set; }
-   public Size Size { get; set; }
-   public double Scaling { get; set; }
-   public PlacementMode EffectivePlacement { get; set; }
-   public PopupAnchor EffectivePlacementAnchor { get; set; }
-   public PopupGravity EffectivePlacementGravity { get; set; }
+      _animating = true;
+      PrepareOpenState();
+      if (_openState == null) {
+         return;
+      }
+      
+      // 获取 popup 的具体位置，这个就是非常准确的位置，还有大小
+      // TODO 暂时只支持 WindowBase popup
+      var popupRoot = (_openState.PopupHost as PopupRoot)!;
+      popupRoot.Show();
+      popupRoot.Hide();
+      var popupOffset = popupRoot.PlatformImpl!.Position;
+      var offset = new Point(popupOffset.X, popupOffset.Y);
+      var topLevel = _openState.TopLevel;
+      var scaling = topLevel.RenderScaling;
+      
+      // 调度动画
+      var director = Director.Instance;
+      var motion = new ZoomBigInMotion();
+      motion.ConfigureOpacity(MotionDuration);
+      motion.ConfigureRenderTransform(MotionDuration);
+      
+      var motionActor =
+         new PopupMotionActor(MaskShadows,offset, scaling, Child ?? popupRoot, motion);
+      motionActor.DispatchInSceneLayer = true;
+      motionActor.SceneParent = topLevel;
+      var cts = new CancellationTokenSource();
+      var cancelToken = cts.Token;
+      
+      motionActor.Completed += (sender, args) =>
+      {
+         OpenOverride();
+         if (_openState?.PopupHost is WindowBase window) {
+            window.PlatformImpl!.SetTopmost(true);
+         }
+         _animating = false;
+         cts.Cancel();
+         if (RequestCloseWhereAnimationCompleted) {
+            RequestCloseWhereAnimationCompleted = false;
+            Dispatcher.UIThread.InvokeAsync(async () => { await CloseAnimationAsync(); });
+         }
+      };
+      director?.Schedule(motionActor);
+      while (!cancelToken.IsCancellationRequested) {
+         await Task.Delay(TimeSpan.FromMilliseconds(10), cancelToken);
+      }
+   }
+
+   public async Task CloseAnimationAsync()
+   {
+      if (_animating) {
+         RequestCloseWhereAnimationCompleted = true;
+         return;
+      }
+      if (_openState is null) {
+         return;
+      }
+
+      _animating = true;
+  
+      var director = Director.Instance;
+      var motion = new ZoomBigOutMotion();
+      motion.ConfigureOpacity(MotionDuration);
+      motion.ConfigureRenderTransform(MotionDuration);
+      
+      var popupRoot = (_openState.PopupHost as PopupRoot)!;
+      var popupOffset = popupRoot.PlatformImpl!.Position;
+      var offset = new Point(popupOffset.X, popupOffset.Y);
+      var scaling = _openState.TopLevel.RenderScaling;
+      
+      var motionActor = new PopupMotionActor(MaskShadows, offset, scaling, Child ?? popupRoot, motion);
+      motionActor.DispatchInSceneLayer = true;
+      motionActor.SceneParent = _openState.TopLevel;
+      
+      var cts = new CancellationTokenSource();
+      var cancelToken = cts.Token;
+      
+      motionActor.SceneShowed += (sender, args) =>
+      {
+         popupRoot.Opacity = 0;
+         HideShadowLayer();
+      };
+
+      motionActor.Completed += (sender, args) =>
+      {
+         _animating = false;
+         Close();
+         cts.Cancel();
+      };
+
+      director?.Schedule(motionActor);
+      while (!cancelToken.IsCancellationRequested) {
+         await Task.Delay(TimeSpan.FromMilliseconds(10), cancelToken);
+      }
+   }
 }
 
 internal class ManagedPopupPositionerInfo

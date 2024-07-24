@@ -293,10 +293,6 @@ public class FlyoutHost : Control
          return;
       }
       StopMouseEnterTimer();
-
-      if (Flyout is Flyout atomFlyout) {
-         atomFlyout.RequestCloseWhereAnimationCompleted = true;
-      }
       
       if (MouseLeaveDelay == 0) {
          Flyout.Hide();

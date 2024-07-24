@@ -186,9 +186,6 @@ public class ToolTip : TemplatedControl,
    }
    
    #endregion
-   
-   // 当鼠标移走了，但是打开动画还没完成，我们需要记录下来这个信号
-   internal bool RequestCloseWhereAnimationCompleted { get; set; } = false;
 
    static ToolTip()
    {
@@ -496,10 +493,8 @@ public class ToolTip : TemplatedControl,
    
    private Popup? _popup;
    private Action<IPopupHost?>? _popupHostChangedHandler;
-   private PopupPositionInfo? _popupPositionInfo; // 这个信息在隐藏动画的时候会用到
    private IControlCustomStyle _customStyle;
    private ArrowDecoratedBox? _arrowDecoratedBox;
-   private bool _animating;
    internal Control? AdornedControl { get; private set; }
    internal event EventHandler? Closed;
    private static StyledProperty<ThemeVariant?> RequestedThemeVariantProperty;
@@ -602,12 +597,7 @@ public class ToolTip : TemplatedControl,
    private void Open(Control control)
    {
       Close();
-
-      if (_animating) {
-         return;
-      }
-      RequestCloseWhereAnimationCompleted = false;
-      _animating = true;
+      
       if (_popup is null) {
          _popup = new Popup();
          _popup.Child = this;
@@ -629,7 +619,6 @@ public class ToolTip : TemplatedControl,
       }
       
       var placement = GetPlacement(control);
-      var isPointAtCenter = GetIsPointAtCenter(control);
       
       var offsetX = GetHorizontalOffset(control);
       var offsetY = GetVerticalOffset(control);
@@ -649,80 +638,16 @@ public class ToolTip : TemplatedControl,
       // 后期看能不能检测对应字段的改变
       CalculateShowArrowEffective(control);
       
-      // 计算动画相关的数据
-      _popupPositionInfo = Popup.CalculatePositionInfo(control,
-                                                       marginToAnchor,
-                                                       this,
-                                                       new Point(offsetX, offsetY),
-                                                       placement,
-                                                       anchorAndGravity.Item1,
-                                                       anchorAndGravity.Item2,
-                                                       null,
-                                                       _popup.FlowDirection);
-      
-      // 重新设置箭头位置
-      // 因为可能有 flip 的情况
-      var arrowPosition = PopupUtils.CalculateArrowPosition(_popupPositionInfo.EffectivePlacement,
-                                                            _popupPositionInfo.EffectivePlacementAnchor,
-                                                            _popupPositionInfo.EffectivePlacementGravity);
-      if (arrowPosition.HasValue) {
-         _arrowDecoratedBox!.ArrowPosition = arrowPosition.Value;
-      }
-
-      // 获取是否在指向中点
-      var pointAtCenterOffset = CalculatePopupPositionDelta(control,
-                                                            _popupPositionInfo.EffectivePlacement,
-                                                            _popupPositionInfo.EffectivePlacementAnchor,
-                                                            _popupPositionInfo.EffectivePlacementGravity);
-      if (isPointAtCenter) {
-         _popupPositionInfo.Offset = new Point(
-            Math.Floor(_popupPositionInfo.Offset.X + pointAtCenterOffset.X * _popupPositionInfo.Scaling),
-            Math.Floor(_popupPositionInfo.Offset.Y + pointAtCenterOffset.Y * _popupPositionInfo.Scaling));
-      }
-
       _popup.MarginToAnchor = marginToAnchor;
       _popup.Placement = placement;
       _popup.PlacementTarget = control;
-      
-      // 开始动画
-      PlayShowMotion(_popupPositionInfo, control, this);
-   }
-   
-   private void PlayShowMotion(PopupPositionInfo positionInfo, Control placementTarget, Control contentControl)
-   {
-      var director = Director.Instance;
-      var motion = new ZoomBigInMotion();
-      motion.ConfigureOpacity(MotionDuration);
-      motion.ConfigureRenderTransform(MotionDuration);
-      var topLevel = TopLevel.GetTopLevel(placementTarget);
 
-      var motionActor =
-         new PopupMotionActor(Shadows, positionInfo.Offset, positionInfo.Scaling, contentControl, motion);
-      motionActor.DispatchInSceneLayer = true;
-      motionActor.SceneParent = topLevel;
-      motionActor.Completed += (sender, args) =>
+      Dispatcher.UIThread.InvokeAsync(async () =>
       {
-         if (_popup is not null) {
-            _popup.IsOpen = true;
-            if (_popup?.Host is WindowBase window) {
-               window.PlatformImpl!.SetTopmost(true);
-            }
-         }
-
-         _animating = false;
-         if (RequestCloseWhereAnimationCompleted) {
-            Dispatcher.UIThread.Post(() =>
-            {
-               if (_popup is not null) {
-                  _popup.IsOpen = false;
-               }
-            });
-         }
-      };
-
-      director?.Schedule(motionActor);
+         await _popup.OpenAnimationAsync();
+      });
    }
-   
+
    private bool CalculateShowArrowEffective(Control control)
    {
       if (GetIsShowArrow(control) == false) {
@@ -735,57 +660,16 @@ public class ToolTip : TemplatedControl,
 
    private void Close()
    {
-      if (_popup is null || !_popup.IsOpen || _animating) {
-         RequestCloseWhereAnimationCompleted = true;
+      if (_popup is null) {
          return;
       }
-      PlayHideMotion(_popup);
+
+      Dispatcher.UIThread.InvokeAsync(async () =>
+      {
+         await _popup.CloseAnimationAsync();
+      });
    }
    
-   private void PlayHideMotion(Popup popup)
-   {
-      var placementToplevel = TopLevel.GetTopLevel(popup.PlacementTarget);
-      if (_popupPositionInfo is null ||
-          popup.Child is null ||
-          placementToplevel is null) {
-         // 没有动画位置信息，直接关闭
-         popup.IsOpen = false;
-         return;
-      }
-
-      _animating = true;
-      var director = Director.Instance;
-      var motion = new ZoomBigOutMotion();
-      motion.ConfigureOpacity(MotionDuration);
-      motion.ConfigureRenderTransform(MotionDuration);
-
-      UIStructureUtils.SetVisualParent(popup.Child, null);
-      UIStructureUtils.SetVisualParent(popup.Child, null);
-
-      var motionActor = new PopupMotionActor(Shadows, _popupPositionInfo.Offset, _popupPositionInfo.Scaling,
-                                             popup.Child, motion);
-      motionActor.DispatchInSceneLayer = true;
-      motionActor.SceneParent = placementToplevel;
-
-      motionActor.SceneShowed += (sender, args) =>
-      {
-         if (popup.Host is WindowBase window) {
-            window.Opacity = 0;
-            popup.HideShadowLayer();
-         }
-      };
-
-      motionActor.Completed += (sender, args) =>
-      {
-         popup.IsOpen = false;
-         SetPopupParent(popup, null);
-         popup.PlacementTarget = null;
-         _animating = false;
-      };
-
-      director?.Schedule(motionActor);
-   }
-
    private void OnPopupPositionFlipped(object? sender, PopupFlippedEventArgs e)
    {
       if (sender is Popup popup) {

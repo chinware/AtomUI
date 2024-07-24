@@ -58,7 +58,6 @@ public class Director : IDirector
          sceneLayer.Topmost = true;
          actor.NotifySceneShowed();
       }
-      
       HandleMotionPreStart(actor);
       ExecuteMotionAction(actor);
       HandleMotionStarted(actor);

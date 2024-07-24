@@ -233,6 +233,13 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
       IsOpen = false;
       Popup.IsOpen = false;
 
+      HandlePopupClosed();
+
+      return true;
+   }
+
+   protected void HandlePopupClosed()
+   {
       ((ISetLogicalParent)Popup).SetParent(null);
 
       // Ensure this isn't active
@@ -249,12 +256,22 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
       OnClosed();
 
       Target = null;
-
-      return true;
    }
 
    /// <returns>True, if action was handled</returns>
    protected virtual bool ShowAtCore(Control placementTarget, bool showAtPointer = false)
+   {
+
+      if (!PrepareShowPopup(placementTarget, showAtPointer)) {
+         return false;
+      }
+      IsOpen = Popup.IsOpen = true;
+      HandlePopupOpened(placementTarget);
+      
+      return true;
+   }
+
+   protected bool PrepareShowPopup(Control placementTarget, bool showAtPointer = false)
    {
       if (placementTarget == null) {
          throw new ArgumentNullException(nameof(placementTarget));
@@ -290,8 +307,11 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
       }
 
       NotifyPositionPopup(showAtPointer);
-      
-      IsOpen = Popup.IsOpen = true;
+      return true;
+   }
+
+   protected void HandlePopupOpened(Control placementTarget)
+   {
       OnOpened();
 
       placementTarget.DetachedFromVisualTree += PlacementTarget_DetachedFromVisualTree;
@@ -299,7 +319,7 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
 
       if (ShowMode == FlyoutShowMode.Standard) {
          // Try and focus content inside Flyout
-         if (Popup.Child.Focusable) {
+         if (Popup.Child!.Focusable) {
             Popup.Child.Focus();
          } else {
             var nextFocus = KeyboardNavigationHandler.GetNext(Popup.Child, NavigationDirection.Next);
@@ -309,8 +329,6 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
          var inputManager = AvaloniaLocator.Current.GetService<IInputManager>();
          _transientDisposable = inputManager?.Process.Subscribe(HandleTransientDismiss);
       }
-
-      return true;
    }
 
    private void PlacementTarget_DetachedFromVisualTree(object? sender, VisualTreeAttachmentEventArgs e)

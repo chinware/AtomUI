@@ -41,6 +41,7 @@ internal class MotionGhostControl : Control, INotifyCaptureGhostBitmap
    protected Canvas? _layout;
    protected Control _motionTarget;
    protected RenderTargetBitmap? _ghostBitmap;
+   protected RenderTargetBitmap? _contentBitmap;
    protected Size _motionTargetSize;
    protected Point _maskOffset;
    protected Size _maskSize;
@@ -106,11 +107,17 @@ internal class MotionGhostControl : Control, INotifyCaptureGhostBitmap
          foreach (var renderer in shadowRenderers) {
             _layout.Children.Add(renderer);
          }
+
+         var border = new Border()
+         {
+            Width = _motionTarget.DesiredSize.Width,
+            Height = _motionTarget.DesiredSize.Height,
+         };
          
-         _layout.Children.Add(_motionTarget);
+         _layout.Children.Add(border);
          
-         Canvas.SetLeft(_motionTarget, offsetX);
-         Canvas.SetTop(_motionTarget, offsetY);
+         Canvas.SetLeft(border, offsetX);
+         Canvas.SetTop(border, offsetY);
          
          _initialized = true;
       }
@@ -162,11 +169,15 @@ internal class MotionGhostControl : Control, INotifyCaptureGhostBitmap
 
    public override void Render(DrawingContext context)
    {
-      if (_ghostBitmap is not null) {
-         var scaling = TopLevel.GetTopLevel(this)?.RenderScaling ?? 1.0;
-    
+      var scaling = TopLevel.GetTopLevel(this)?.RenderScaling ?? 1.0;
+      if (_ghostBitmap is not null && _contentBitmap is not null) {
          context.DrawImage(_ghostBitmap, new Rect(new Point(0, 0), DesiredSize * scaling), 
                            new Rect(new Point(0, 0), DesiredSize));
+         var shadowThickness = Shadows.Thickness();
+         var offsetX = shadowThickness.Left;
+         var offsetY = shadowThickness.Top;
+         context.DrawImage(_contentBitmap, new Rect(new Point(0, 0), _motionTargetSize * scaling), 
+                           new Rect(new Point(offsetX, offsetY), _motionTargetSize));
       }
    }
 
@@ -176,7 +187,10 @@ internal class MotionGhostControl : Control, INotifyCaptureGhostBitmap
          var scaling = TopLevel.GetTopLevel(this)?.RenderScaling ?? 1.0;
          _ghostBitmap = new RenderTargetBitmap(new PixelSize((int)(DesiredSize.Width * scaling), (int)(DesiredSize.Height * scaling)),
             new Vector(96 * scaling, 96 * scaling));
+         _contentBitmap = new RenderTargetBitmap(new PixelSize((int)(_motionTargetSize.Width * scaling), (int)(_motionTargetSize.Height * scaling)),
+                                                 new Vector(96 * scaling, 96 * scaling));
          _ghostBitmap.Render(this);
+         _contentBitmap.Render(_motionTarget);
          _layout!.Children.Clear();
       }
    }

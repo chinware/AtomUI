@@ -1,8 +1,5 @@
 ﻿using System.ComponentModel;
 using System.Reactive.Disposables;
-using AtomUI.Controls.MotionScene;
-using AtomUI.Controls.Utils;
-using AtomUI.MotionScene;
 using AtomUI.Styling;
 using AtomUI.Utils;
 using Avalonia;
@@ -110,11 +107,6 @@ public class Flyout : PopupFlyoutBase
                                                           (o, v) => o._motionDuration = v);
 
    private CompositeDisposable? _compositeDisposable;
-   private bool _animating = false;
-
-   // 当鼠标移走了，但是打开动画还没完成，我们需要记录下来这个信号
-   internal bool RequestCloseWhereAnimationCompleted { get; set; } = false;
-   private PopupPositionInfo? _popupPositionInfo; // 这个信息在隐藏动画的时候会用到
 
    static Flyout()
    {
@@ -291,156 +283,49 @@ public class Flyout : PopupFlyoutBase
 
    protected override bool ShowAtCore(Control placementTarget, bool showAtPointer = false)
    {
-      // if (_animating) {
-      //    return false;
-      // }
-      //
-      // RequestCloseWhereAnimationCompleted = false;
-      // CalculateShowArrowEffective();
-      // var presenter = CreatePresenter();
-      // bool result = default;
-      // if (presenter is FlyoutPresenter flyoutPresenter) {
-      //    _animating = true;
-      //    if (flyoutPresenter.Child is not null) {
-      //       var placementToplevel = TopLevel.GetTopLevel(placementTarget);
-      //       UIStructureUtils.ClearLogicalParentRecursive(flyoutPresenter, null);
-      //       UIStructureUtils.ClearVisualParentRecursive(flyoutPresenter, null);
-      //       UIStructureUtils.SetLogicalParent(flyoutPresenter, placementToplevel);
-      //
-      //       _popupPositionInfo = PopupControl.CalculatePositionInfo(placementTarget,
-      //                                                               MarginToAnchor,
-      //                                                               presenter,
-      //                                                               new Point(HorizontalOffset, VerticalOffset),
-      //                                                               Placement,
-      //                                                               Popup.PlacementAnchor,
-      //                                                               Popup.PlacementGravity,
-      //                                                               null,
-      //                                                               Popup.FlowDirection);
-      //       // 重新设置箭头位置
-      //       // 因为可能有 flip 的情况
-      //       var arrowPosition = PopupUtils.CalculateArrowPosition(_popupPositionInfo.EffectivePlacement,
-      //                                                             _popupPositionInfo.EffectivePlacementAnchor,
-      //                                                             _popupPositionInfo.EffectivePlacementGravity);
-      //       if (arrowPosition.HasValue) {
-      //          flyoutPresenter.ArrowPosition = arrowPosition.Value;
-      //       }
-      //
-      //       // 获取是否在指向中点
-      //       var pointAtCenterOffset = CalculatePopupPositionDelta(placementTarget,
-      //                                                             presenter,
-      //                                                             _popupPositionInfo.EffectivePlacement,
-      //                                                             _popupPositionInfo.EffectivePlacementAnchor,
-      //                                                             _popupPositionInfo.EffectivePlacementGravity);
-      //       if (IsPointAtCenter) {
-      //          _popupPositionInfo.Offset = new Point(
-      //             Math.Floor(_popupPositionInfo.Offset.X + pointAtCenterOffset.X * _popupPositionInfo.Scaling),
-      //             Math.Floor(_popupPositionInfo.Offset.Y + pointAtCenterOffset.Y * _popupPositionInfo.Scaling));
-      //       }
-      //
-      //       PlayShowMotion(_popupPositionInfo, placementTarget, flyoutPresenter, showAtPointer);
-      //    }
-      //
-      //    result = true;
-      // } else {
-      //    result = base.ShowAtCore(placementTarget, showAtPointer);
-      // }
-
-      return base.ShowAtCore(placementTarget, showAtPointer);
+      if (IsOpen) {
+         return false;
+      }
+      
+      if (!PrepareShowPopup(placementTarget, showAtPointer)) {
+         return false;
+      }
+      IsOpen = true;
+      Dispatcher.UIThread.InvokeAsync(async () =>
+      {
+         await Popup.OpenAnimationAsync();
+         HandlePopupOpened(placementTarget);
+      });
+      return true;
    }
 
-   // protected override bool HideCore(bool canCancel = true)
-   // {
-   //    // 在这里我们需要自己实现是否能关闭的逻辑了
-   //    if (!IsOpen || _animating) {
-   //       return false;
-   //    }
-   //
-   //    if (canCancel) {
-   //       if (CancelClosing()) {
-   //          return false;
-   //       }
-   //    }
-   //
-   //    // 后期加上是否有动画的开关
-   //    PlayHideMotion();
-   //    return true;
-   // }
+   protected override bool HideCore(bool canCancel = true)
+   {
+      if (!IsOpen) {
+         return false;
+      }
+
+      if (canCancel) {
+         if (CancelClosing()) {
+            return false;
+         }
+      }
+
+      IsOpen = false;
+      
+      Dispatcher.UIThread.InvokeAsync(async () =>
+      {
+         await Popup.CloseAnimationAsync();
+         HandlePopupClosed();
+      });
+
+      return true;
+   }
 
    private bool CancelClosing()
    {
       var eventArgs = new CancelEventArgs();
       OnClosing(eventArgs);
       return eventArgs.Cancel;
-   }
-
-   private void PlayShowMotion(PopupPositionInfo positionInfo, Control placementTarget, FlyoutPresenter flyoutPresenter,
-                               bool showAtPointer)
-   {
-      var director = Director.Instance;
-      var motion = new ZoomBigInMotion();
-      motion.ConfigureOpacity(_motionDuration);
-      motion.ConfigureRenderTransform(_motionDuration);
-      var topLevel = TopLevel.GetTopLevel(placementTarget);
-
-      var motionActor =
-         new PopupMotionActor(MaskShadows, positionInfo.Offset, positionInfo.Scaling, flyoutPresenter, motion);
-      motionActor.DispatchInSceneLayer = true;
-      motionActor.SceneParent = topLevel;
-      motionActor.Completed += (sender, args) =>
-      {
-         base.ShowAtCore(placementTarget, showAtPointer);
-         if (Popup.Host is WindowBase window) {
-            window.PlatformImpl!.SetTopmost(true);
-         }
-
-         _animating = false;
-         if (RequestCloseWhereAnimationCompleted) {
-            Dispatcher.UIThread.Post(() => { Hide(); });
-         }
-      };
-
-      director?.Schedule(motionActor);
-   }
-
-   private void PlayHideMotion()
-   {
-      var placementToplevel = TopLevel.GetTopLevel(Popup.PlacementTarget);
-      if (_popupPositionInfo is null ||
-          Popup.Child is null ||
-          placementToplevel is null) {
-         // 没有动画位置信息，直接关闭
-         base.HideCore(false);
-         return;
-      }
-
-      _animating = true;
-      var director = Director.Instance;
-      var motion = new ZoomBigOutMotion();
-      motion.ConfigureOpacity(_motionDuration);
-      motion.ConfigureRenderTransform(_motionDuration);
-
-      UIStructureUtils.SetVisualParent(Popup.Child, null);
-      UIStructureUtils.SetVisualParent(Popup.Child, null);
-
-      var motionActor = new PopupMotionActor(MaskShadows, _popupPositionInfo.Offset, _popupPositionInfo.Scaling,
-                                             Popup.Child, motion);
-      motionActor.DispatchInSceneLayer = true;
-      motionActor.SceneParent = placementToplevel;
-
-      motionActor.SceneShowed += (sender, args) =>
-      {
-         if (Popup.Host is WindowBase window) {
-            window.Opacity = 0;
-            Popup.HideShadowLayer();
-         }
-      };
-
-      motionActor.Completed += (sender, args) =>
-      {
-         base.HideCore(false);
-         _animating = false;
-      };
-
-      director?.Schedule(motionActor);
    }
 }

@@ -28,7 +28,8 @@ public sealed class PopupRoot : WindowBase, IHostedVisualTreeRoot, IDisposable, 
    public static readonly StyledProperty<bool> WindowManagerAddShadowHintProperty =
       Popup.WindowManagerAddShadowHintProperty.AddOwner<PopupRoot>();
 
-   private PopupPositionerParameters _positionerParameters;        
+   private PopupPositionerParameters _positionerParameters;
+   internal PopupPositionerParameters PositionerParameters => _positionerParameters;
 
    /// <summary>
    /// Initializes static members of the <see cref="PopupRoot"/> class.
@@ -90,7 +91,7 @@ public sealed class PopupRoot : WindowBase, IHostedVisualTreeRoot, IDisposable, 
    /// <remarks>
    /// Popup events are passed to their parent window. This facilitates this.
    /// </remarks>
-   /// TODO 需要评估影响
+   /// TODO 需要评估影响，可能有严重错误！！！
    //internal override Interactive? InteractiveParent => (Interactive?)Parent;
 
    /// <summary>
@@ -139,8 +140,9 @@ public sealed class PopupRoot : WindowBase, IHostedVisualTreeRoot, IDisposable, 
       _positionerParameters.ConfigurePosition(ParentTopLevel, target,
                                               placement, offset, anchor, gravity, constraintAdjustment, rect, FlowDirection);
 
-      if (_positionerParameters.Size != default)
+      if (_positionerParameters.Size != default) {
          UpdatePosition();
+      }
    }
 
    public void SetChild(Control? control) => Content = control;
