@@ -80,9 +80,9 @@ public class Popup : AbstractPopup
    protected override void NotifyPopupHostCreated(IPopupHost popupHost)
    {
       base.NotifyPopupHostCreated(popupHost);
-
-      if (PlacementTarget is not null) {
-         var toplevel = TopLevel.GetTopLevel(PlacementTarget);
+      var placementTarget = GetEffectivePlacementTarget();
+      if (placementTarget is not null) {
+         var toplevel = TopLevel.GetTopLevel(placementTarget);
          if (toplevel is null) {
             throw new InvalidOperationException(
                "Unable to create shadow layer, top level for PlacementTarget is null.");
@@ -207,7 +207,7 @@ public class Popup : AbstractPopup
       VerticalOffset = offsetY;
 
       var direction = PopupUtils.GetDirection(Placement);
-      var placementTarget = PlacementTarget ?? this.FindLogicalAncestorOfType<Control>();
+      var placementTarget = GetEffectivePlacementTarget();
       if (placementTarget is null) {
          throw new InvalidOperationException("Placement mode is not Pointer and PlacementTarget is null");
       }

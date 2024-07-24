@@ -378,7 +378,11 @@ public abstract class AbstractPopup : Control, IPopupHostProvider
    
    protected virtual void NotifyClosed() {}
    protected internal virtual void NotifyPopupRootAboutToShow(PopupRoot popupRoot) {}
-   
+
+   protected Control? GetEffectivePlacementTarget()
+   {
+      return PlacementTarget ?? this.FindLogicalAncestorOfType<Control>();
+   }
    
    /// <summary>
    /// Opens the popup.
@@ -390,7 +394,7 @@ public abstract class AbstractPopup : Control, IPopupHostProvider
          return;
       }
 
-      var placementTarget = PlacementTarget ?? this.FindLogicalAncestorOfType<Control>();
+      var placementTarget = GetEffectivePlacementTarget();
 
       if (placementTarget == null) {
          _isOpenRequested = true;
@@ -654,8 +658,10 @@ public abstract class AbstractPopup : Control, IPopupHostProvider
    private void HandlePositionChange()
    {
       if (_openState != null) {
-         var placementTarget = PlacementTarget ?? this.FindLogicalAncestorOfType<Control>();
-         if (placementTarget == null) return;
+         var placementTarget = GetEffectivePlacementTarget();
+         if (placementTarget == null) {
+            return;
+         }
          _openState.PopupHost.ConfigurePosition(
             placementTarget,
             Placement,
