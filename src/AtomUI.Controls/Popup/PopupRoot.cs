@@ -208,12 +208,4 @@ public sealed class PopupRoot : WindowBase, IHostedVisualTreeRoot, IDisposable, 
          PlatformImpl?.SetWindowManagerAddShadowHint(change.GetNewValue<bool>());
       }
    }
-
-   public override void Show()
-   {
-      if (Parent is Popup popup) {
-         popup.NotifyPopupRootAboutToShow(this);
-      }
-      base.Show();
-   }
 }

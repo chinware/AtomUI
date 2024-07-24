@@ -24,7 +24,7 @@ namespace AtomUI.Controls;
 
 public abstract class AbstractPopup : Control, IPopupHostProvider
 {
-    public static readonly StyledProperty<bool> WindowManagerAddShadowHintProperty =
+   public static readonly StyledProperty<bool> WindowManagerAddShadowHintProperty =
       AvaloniaProperty.Register<AbstractPopup, bool>(nameof(WindowManagerAddShadowHint), false);
 
    /// <summary>
@@ -120,8 +120,8 @@ public abstract class AbstractPopup : Control, IPopupHostProvider
    /// </summary>
    public static readonly StyledProperty<bool> TopmostProperty =
       AvaloniaProperty.Register<AbstractPopup, bool>(nameof(Topmost));
-   
-    /// <summary>
+
+   /// <summary>
    /// Raised when the popup closes.
    /// </summary>
    public event EventHandler<EventArgs>? Closed;
@@ -333,12 +333,12 @@ public abstract class AbstractPopup : Control, IPopupHostProvider
    private bool _ignoreIsOpenChanged;
    private PopupOpenState? _openState;
    private Action<IPopupHost?>? _popupHostChangedHandler;
-   
+
    public event EventHandler<EventArgs>? PopupHostCreated;
    public event EventHandler<EventArgs>? AboutToClosing;
    private static readonly FieldInfo ManagedPopupPositionerPopupInfo;
    protected IManagedPopupPositionerPopup? _managedPopupPositioner; // 在弹窗有效期获取
-   
+
    static AbstractPopup()
    {
       ManagedPopupPositionerPopupInfo = typeof(ManagedPopupPositioner).GetField("_popup",
@@ -351,10 +351,8 @@ public abstract class AbstractPopup : Control, IPopupHostProvider
       HorizontalOffsetProperty.Changed.AddClassHandler<AbstractPopup>((x, _) => x.HandlePositionChange());
    }
 
-   protected internal virtual void NotifyHostPositionUpdated(IPopupHost popupHost, Control placementTarget)
-   {
-   }
-   
+   protected internal virtual void NotifyHostPositionUpdated(IPopupHost popupHost, Control placementTarget) { }
+
    // 开始定位 Host 窗口
    protected internal virtual void NotifyAboutToUpdateHostPosition(IPopupHost popupHost, Control placementTarget)
    {
@@ -362,6 +360,7 @@ public abstract class AbstractPopup : Control, IPopupHostProvider
          if (popupRoot.PlatformImpl?.PopupPositioner is ManagedPopupPositioner managedPopupPositioner) {
             _managedPopupPositioner =
                ManagedPopupPositionerPopupInfo.GetValue(managedPopupPositioner) as IManagedPopupPositionerPopup;
+            
          }
       }
    }
@@ -375,15 +374,15 @@ public abstract class AbstractPopup : Control, IPopupHostProvider
    {
       AboutToClosing?.Invoke(this, EventArgs.Empty);
    }
-   
-   protected virtual void NotifyClosed() {}
-   protected internal virtual void NotifyPopupRootAboutToShow(PopupRoot popupRoot) {}
+
+   protected virtual void NotifyClosed() { }
+   protected internal virtual void NotifyPopupRootAboutToShow(IPopupHost popupRoot) { }
 
    protected Control? GetEffectivePlacementTarget()
    {
       return PlacementTarget ?? this.FindLogicalAncestorOfType<Control>();
    }
-   
+
    /// <summary>
    /// Opens the popup.
    /// </summary>
@@ -433,7 +432,7 @@ public abstract class AbstractPopup : Control, IPopupHostProvider
                this.GetBindingObservable(ThemeVariantScope.ActualThemeVariantProperty))
             .DisposeWith(handlerCleanup);
       }
-      
+
       UpdateHostPosition(popupHost, placementTarget);
 
       SubscribeToEventHandler<IPopupHost, EventHandler<TemplateAppliedEventArgs>>(popupHost, RootTemplateApplied,
@@ -474,8 +473,8 @@ public abstract class AbstractPopup : Control, IPopupHostProvider
 
          if (parentPopupRoot.Parent is AbstractPopup popup) {
             SubscribeToEventHandler<AbstractPopup, EventHandler<EventArgs>>(popup, ParentClosed,
-                                                                     (x, handler) => x.Closed += handler,
-                                                                     (x, handler) => x.Closed -= handler)
+                                                                            (x, handler) => x.Closed += handler,
+                                                                            (x, handler) => x.Closed -= handler)
                .DisposeWith(handlerCleanup);
          }
       }
@@ -518,7 +517,7 @@ public abstract class AbstractPopup : Control, IPopupHostProvider
       _openState = new PopupOpenState(placementTarget, topLevel, popupHost, cleanupPopup);
 
       WindowManagerAddShadowHintChanged(popupHost, WindowManagerAddShadowHint);
-
+      NotifyPopupRootAboutToShow(popupHost);
       popupHost.Show();
 
       using (BeginIgnoringIsOpen()) {
@@ -543,7 +542,7 @@ public abstract class AbstractPopup : Control, IPopupHostProvider
       throw new InvalidOperationException(
          "Unable to create IPopupImpl and no overlay layer is found for the target control");
    }
-   
+
    /// <summary>
    /// Closes the popup.
    /// </summary>
@@ -662,6 +661,7 @@ public abstract class AbstractPopup : Control, IPopupHostProvider
          if (placementTarget == null) {
             return;
          }
+
          _openState.PopupHost.ConfigurePosition(
             placementTarget,
             Placement,
@@ -676,9 +676,9 @@ public abstract class AbstractPopup : Control, IPopupHostProvider
    /// <inheritdoc />
    protected override AutomationPeer OnCreateAutomationPeer()
    {
-       return new PopupAutomationPeer(this);
+      return new PopupAutomationPeer(this);
    }
-   
+
    private static IDisposable SubscribeToEventHandler<T, TEventHandler>(T target, TEventHandler handler,
                                                                         Action<T, TEventHandler> subscribe,
                                                                         Action<T, TEventHandler> unsubscribe)
@@ -945,7 +945,7 @@ public abstract class AbstractPopup : Control, IPopupHostProvider
 public class PopupHostCreatedEventArgs : EventArgs
 {
    public IPopupHost PopupHost { get; }
-   
+
    public PopupHostCreatedEventArgs(IPopupHost host)
    {
       PopupHost = host;

@@ -13,7 +13,6 @@ namespace AtomUI.Controls;
 
 public class Popup : AbstractPopup
 {
-
    public event EventHandler<PopupFlippedEventArgs>? PositionFlipped;
    
    public static readonly StyledProperty<BoxShadows> MaskShadowsProperty =
@@ -194,10 +193,16 @@ public class Popup : AbstractPopup
       var size = topLevel.ClientSize * topLevel.RenderScaling;
       return new Rect(point.X, point.Y, size.Width, size.Height);
    }
-   
-   protected internal override void NotifyPopupRootAboutToShow(PopupRoot popupRoot)
+
+   /// <summary>
+   /// 在这里处理翻转问题
+   /// </summary>
+   /// <param name="popupHost"></param>
+   /// <param name="placementTarget"></param>
+   protected internal override void NotifyHostPositionUpdated(IPopupHost popupHost, Control placementTarget)
    {
-      base.NotifyPopupRootAboutToShow(popupRoot);
+      base.NotifyHostPositionUpdated(popupHost, placementTarget);
+   
       var offsetX = HorizontalOffset;
       var offsetY = VerticalOffset;
       var marginToAnchorOffset = PopupUtils.CalculateMarginToAnchorOffset(Placement, MarginToAnchor, PlacementAnchor, PlacementGravity);
@@ -207,17 +212,14 @@ public class Popup : AbstractPopup
       VerticalOffset = offsetY;
 
       var direction = PopupUtils.GetDirection(Placement);
-      var placementTarget = GetEffectivePlacementTarget();
-      if (placementTarget is null) {
-         throw new InvalidOperationException("Placement mode is not Pointer and PlacementTarget is null");
-      }
+      var topLevel = TopLevel.GetTopLevel(placementTarget)!;
       
       if (Placement != PlacementMode.Center &&
           Placement != PlacementMode.Pointer) {
          // 计算是否 flip
          PopupPositionerParameters parameters = new PopupPositionerParameters();
          var offset = new Point(HorizontalOffset, VerticalOffset);
-         parameters.ConfigurePosition(popupRoot.ParentTopLevel,
+         parameters.ConfigurePosition(topLevel,
                                       placementTarget,
                                       Placement,
                                       offset,
@@ -264,7 +266,6 @@ public class Popup : AbstractPopup
                HorizontalOffset = flipOffset.X;
             }
             IsFlipped = true;
-            
          } else {
             IsFlipped = false;
          }

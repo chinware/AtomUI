@@ -291,80 +291,80 @@ public class Flyout : PopupFlyoutBase
 
    protected override bool ShowAtCore(Control placementTarget, bool showAtPointer = false)
    {
-      if (_animating) {
-         return false;
-      }
+      // if (_animating) {
+      //    return false;
+      // }
+      //
+      // RequestCloseWhereAnimationCompleted = false;
+      // CalculateShowArrowEffective();
+      // var presenter = CreatePresenter();
+      // bool result = default;
+      // if (presenter is FlyoutPresenter flyoutPresenter) {
+      //    _animating = true;
+      //    if (flyoutPresenter.Child is not null) {
+      //       var placementToplevel = TopLevel.GetTopLevel(placementTarget);
+      //       UIStructureUtils.ClearLogicalParentRecursive(flyoutPresenter, null);
+      //       UIStructureUtils.ClearVisualParentRecursive(flyoutPresenter, null);
+      //       UIStructureUtils.SetLogicalParent(flyoutPresenter, placementToplevel);
+      //
+      //       _popupPositionInfo = PopupControl.CalculatePositionInfo(placementTarget,
+      //                                                               MarginToAnchor,
+      //                                                               presenter,
+      //                                                               new Point(HorizontalOffset, VerticalOffset),
+      //                                                               Placement,
+      //                                                               Popup.PlacementAnchor,
+      //                                                               Popup.PlacementGravity,
+      //                                                               null,
+      //                                                               Popup.FlowDirection);
+      //       // 重新设置箭头位置
+      //       // 因为可能有 flip 的情况
+      //       var arrowPosition = PopupUtils.CalculateArrowPosition(_popupPositionInfo.EffectivePlacement,
+      //                                                             _popupPositionInfo.EffectivePlacementAnchor,
+      //                                                             _popupPositionInfo.EffectivePlacementGravity);
+      //       if (arrowPosition.HasValue) {
+      //          flyoutPresenter.ArrowPosition = arrowPosition.Value;
+      //       }
+      //
+      //       // 获取是否在指向中点
+      //       var pointAtCenterOffset = CalculatePopupPositionDelta(placementTarget,
+      //                                                             presenter,
+      //                                                             _popupPositionInfo.EffectivePlacement,
+      //                                                             _popupPositionInfo.EffectivePlacementAnchor,
+      //                                                             _popupPositionInfo.EffectivePlacementGravity);
+      //       if (IsPointAtCenter) {
+      //          _popupPositionInfo.Offset = new Point(
+      //             Math.Floor(_popupPositionInfo.Offset.X + pointAtCenterOffset.X * _popupPositionInfo.Scaling),
+      //             Math.Floor(_popupPositionInfo.Offset.Y + pointAtCenterOffset.Y * _popupPositionInfo.Scaling));
+      //       }
+      //
+      //       PlayShowMotion(_popupPositionInfo, placementTarget, flyoutPresenter, showAtPointer);
+      //    }
+      //
+      //    result = true;
+      // } else {
+      //    result = base.ShowAtCore(placementTarget, showAtPointer);
+      // }
 
-      RequestCloseWhereAnimationCompleted = false;
-      CalculateShowArrowEffective();
-      var presenter = CreatePresenter();
-      bool result = default;
-      if (presenter is FlyoutPresenter flyoutPresenter) {
-         _animating = true;
-         if (flyoutPresenter.Child is not null) {
-            var placementToplevel = TopLevel.GetTopLevel(placementTarget);
-            UIStructureUtils.ClearLogicalParentRecursive(flyoutPresenter, null);
-            UIStructureUtils.ClearVisualParentRecursive(flyoutPresenter, null);
-            UIStructureUtils.SetLogicalParent(flyoutPresenter, placementToplevel);
-
-            _popupPositionInfo = PopupControl.CalculatePositionInfo(placementTarget,
-                                                                    MarginToAnchor,
-                                                                    presenter,
-                                                                    new Point(HorizontalOffset, VerticalOffset),
-                                                                    Placement,
-                                                                    Popup.PlacementAnchor,
-                                                                    Popup.PlacementGravity,
-                                                                    null,
-                                                                    Popup.FlowDirection);
-            // 重新设置箭头位置
-            // 因为可能有 flip 的情况
-            var arrowPosition = PopupUtils.CalculateArrowPosition(_popupPositionInfo.EffectivePlacement,
-                                                                  _popupPositionInfo.EffectivePlacementAnchor,
-                                                                  _popupPositionInfo.EffectivePlacementGravity);
-            if (arrowPosition.HasValue) {
-               flyoutPresenter.ArrowPosition = arrowPosition.Value;
-            }
-
-            // 获取是否在指向中点
-            var pointAtCenterOffset = CalculatePopupPositionDelta(placementTarget,
-                                                                  presenter,
-                                                                  _popupPositionInfo.EffectivePlacement,
-                                                                  _popupPositionInfo.EffectivePlacementAnchor,
-                                                                  _popupPositionInfo.EffectivePlacementGravity);
-            if (IsPointAtCenter) {
-               _popupPositionInfo.Offset = new Point(
-                  Math.Floor(_popupPositionInfo.Offset.X + pointAtCenterOffset.X * _popupPositionInfo.Scaling),
-                  Math.Floor(_popupPositionInfo.Offset.Y + pointAtCenterOffset.Y * _popupPositionInfo.Scaling));
-            }
-
-            PlayShowMotion(_popupPositionInfo, placementTarget, flyoutPresenter, showAtPointer);
-         }
-
-         result = true;
-      } else {
-         result = base.ShowAtCore(placementTarget, showAtPointer);
-      }
-
-      return result;
+      return base.ShowAtCore(placementTarget, showAtPointer);
    }
 
-   protected override bool HideCore(bool canCancel = true)
-   {
-      // 在这里我们需要自己实现是否能关闭的逻辑了
-      if (!IsOpen || _animating) {
-         return false;
-      }
-
-      if (canCancel) {
-         if (CancelClosing()) {
-            return false;
-         }
-      }
-
-      // 后期加上是否有动画的开关
-      PlayHideMotion();
-      return true;
-   }
+   // protected override bool HideCore(bool canCancel = true)
+   // {
+   //    // 在这里我们需要自己实现是否能关闭的逻辑了
+   //    if (!IsOpen || _animating) {
+   //       return false;
+   //    }
+   //
+   //    if (canCancel) {
+   //       if (CancelClosing()) {
+   //          return false;
+   //       }
+   //    }
+   //
+   //    // 后期加上是否有动画的开关
+   //    PlayHideMotion();
+   //    return true;
+   // }
 
    private bool CancelClosing()
    {
