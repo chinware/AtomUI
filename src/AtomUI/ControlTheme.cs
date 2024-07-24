@@ -35,16 +35,19 @@ public class ControlTheme : AvaloniaControlTheme
    protected virtual void NotifyPreBuild() {}
    protected virtual void NotifyBuildCompleted() {}
 
-   protected static IDisposable CreateTemplateParentBinding(Control control, AvaloniaProperty property, string templateParentPath)
+   protected static IDisposable CreateTemplateParentBinding(Control control, AvaloniaProperty property, string templateParentPath,
+                                                            BindingMode mode = BindingMode.Default)
    {
       return control.Bind(property, new Binding(templateParentPath)
       {
-         RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent)
+         RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent),
+         Mode = mode
       });
    }
    
-   protected static IDisposable CreateTemplateParentBinding(Control control, AvaloniaProperty property, AvaloniaProperty templateParentProperty)
+   protected static IDisposable CreateTemplateParentBinding(Control control, AvaloniaProperty property, AvaloniaProperty templateParentProperty,
+                                                            BindingMode mode = BindingMode.Default)
    {
-      return CreateTemplateParentBinding(control, property, templateParentProperty.Name);
+      return CreateTemplateParentBinding(control, property, templateParentProperty.Name, mode);
    }
 }

@@ -1,12 +1,11 @@
-﻿using AtomUI.Media;
-using AtomUI.Styling;
-using AtomUI.Utils;
-using Avalonia.Animation;
+﻿using AtomUI.Styling;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Layout;
+using Avalonia.Media;
 using Avalonia.Styling;
 
 namespace AtomUI.Controls;
@@ -15,6 +14,7 @@ namespace AtomUI.Controls;
 public class TopLevelMenuItemTheme : ControlTheme
 {
    public const string ID = "TopLevelMenuItem";
+   
    public const string PopupPart = "PART_Popup";
    public const string HeaderPresenterPart = "PART_HeaderPresenter";
    
@@ -27,7 +27,7 @@ public class TopLevelMenuItemTheme : ControlTheme
 
    protected override IControlTemplate? BuildControlTemplate()
    {
-      return new FuncControlTemplate<MenuItem>((item, scope) =>
+      return new FuncControlTemplate<MenuItem>((menuItem, scope) =>
       {
          var panel = new Panel();
          var contentPresenter = new ContentPresenter()
@@ -48,8 +48,32 @@ public class TopLevelMenuItemTheme : ControlTheme
          CreateTemplateParentBinding(contentPresenter, ContentPresenter.ForegroundProperty, MenuItem.ForegroundProperty);
          contentPresenter.RegisterInNameScope(scope);
          panel.Children.Add(contentPresenter);
+
+         var popup = CreateMenuPopup(menuItem);
+         panel.Children.Add(popup);
          return panel;
       });
+   }
+
+   private Popup CreateMenuPopup(MenuItem menuItem)
+   {
+      var popup = new Popup()
+      {
+         Name = PopupPart,
+         WindowManagerAddShadowHint = false,
+         IsLightDismissEnabled = true,
+         Placement = PlacementMode.BottomEdgeAlignedLeft,
+         OverlayInputPassThroughElement = menuItem,
+       
+         Child = new Border()
+         {
+            Background = new SolidColorBrush(Colors.Gray),
+            Width = 240,
+            Height = 120
+         }
+      };
+      CreateTemplateParentBinding(popup, Popup.IsOpenProperty, MenuItem.IsSubMenuOpenProperty, BindingMode.TwoWay);
+      return popup;
    }
 
    protected override void BuildStyles()

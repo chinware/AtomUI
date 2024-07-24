@@ -28,10 +28,7 @@ static class PopupPositionerExtensions
          positionerParameters.Anchor = PopupAnchor.TopLeft;
          positionerParameters.Gravity = PopupGravity.BottomRight;
       } else {
-         if (target == null) {
-            throw new InvalidOperationException("Placement mode is not Pointer and PlacementTarget is null");
-         }
-          
+
          Matrix? matrix;
          if (TryGetAdorner(target, out var adorned, out var adornerLayer)) {
             matrix = adorned!.TransformToVisual(topLevel) * target.TransformToVisual(adornerLayer!);

@@ -207,6 +207,10 @@ public class Popup : AbstractPopup
       VerticalOffset = offsetY;
 
       var direction = PopupUtils.GetDirection(Placement);
+      var placementTarget = PlacementTarget ?? this.FindLogicalAncestorOfType<Control>();
+      if (placementTarget is null) {
+         throw new InvalidOperationException("Placement mode is not Pointer and PlacementTarget is null");
+      }
       
       if (Placement != PlacementMode.Center &&
           Placement != PlacementMode.Pointer) {
@@ -214,14 +218,14 @@ public class Popup : AbstractPopup
          PopupPositionerParameters parameters = new PopupPositionerParameters();
          var offset = new Point(HorizontalOffset, VerticalOffset);
          parameters.ConfigurePosition(popupRoot.ParentTopLevel,
-                                     PlacementTarget!,
-                                     Placement,
-                                     offset,
-                                     PlacementAnchor,
-                                     PlacementGravity,
-                                     PopupPositionerConstraintAdjustment.All,
-                                     null,
-                                     FlowDirection);
+                                      placementTarget,
+                                      Placement,
+                                      offset,
+                                      PlacementAnchor,
+                                      PlacementGravity,
+                                      PopupPositionerConstraintAdjustment.All,
+                                      null,
+                                      FlowDirection);
             
          Size popupSize;
          // Popup.Child can't be null here, it was set in ShowAtCore.
