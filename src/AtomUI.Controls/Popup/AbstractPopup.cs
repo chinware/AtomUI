@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel;
 using System.Reactive.Disposables;
-using System.Reflection;
 using AtomUI.Controls.Utils;
 using AtomUI.Input;
 using AtomUI.Reactive;
@@ -329,20 +328,19 @@ public abstract class AbstractPopup : Control, IPopupHostProvider
       remove => _popupHostChangedHandler -= value;
    }
 
+   public event EventHandler<EventArgs>? PopupHostCreated;
+   public event EventHandler<EventArgs>? AboutToClosing;
+   
    private bool _isOpenRequested;
    private bool _ignoreIsOpenChanged;
    private PopupOpenState? _openState;
    private Action<IPopupHost?>? _popupHostChangedHandler;
-
-   public event EventHandler<EventArgs>? PopupHostCreated;
-   public event EventHandler<EventArgs>? AboutToClosing;
-   private static readonly FieldInfo ManagedPopupPositionerPopupInfo;
-   protected IManagedPopupPositionerPopup? _managedPopupPositioner; // 在弹窗有效期获取
+   private bool _animating = false;
+   // 当鼠标移走了，但是打开动画还没完成，我们需要记录下来这个信号
+   internal bool RequestCloseWhereAnimationCompleted { get; set; } = false;
 
    static AbstractPopup()
    {
-      ManagedPopupPositionerPopupInfo = typeof(ManagedPopupPositioner).GetField("_popup",
-         BindingFlags.Instance | BindingFlags.NonPublic)!;
       IsHitTestVisibleProperty.OverrideDefaultValue<AbstractPopup>(false);
       ChildProperty.Changed.AddClassHandler<AbstractPopup>((x, e) => x.ChildChanged(e));
       IsOpenProperty.Changed.AddClassHandler<AbstractPopup>(
@@ -352,18 +350,7 @@ public abstract class AbstractPopup : Control, IPopupHostProvider
    }
 
    protected internal virtual void NotifyHostPositionUpdated(IPopupHost popupHost, Control placementTarget) { }
-
-   // 开始定位 Host 窗口
-   protected internal virtual void NotifyAboutToUpdateHostPosition(IPopupHost popupHost, Control placementTarget)
-   {
-      if (popupHost is PopupRoot popupRoot) {
-         if (popupRoot.PlatformImpl?.PopupPositioner is ManagedPopupPositioner managedPopupPositioner) {
-            _managedPopupPositioner =
-               ManagedPopupPositionerPopupInfo.GetValue(managedPopupPositioner) as IManagedPopupPositionerPopup;
-            
-         }
-      }
-   }
+   protected internal virtual void NotifyAboutToUpdateHostPosition(IPopupHost popupHost, Control placementTarget) { }
 
    protected virtual void NotifyPopupHostCreated(IPopupHost popupHost)
    {
@@ -392,7 +379,7 @@ public abstract class AbstractPopup : Control, IPopupHostProvider
       if (_openState != null) {
          return;
       }
-
+      RequestCloseWhereAnimationCompleted = false;
       var placementTarget = GetEffectivePlacementTarget();
 
       if (placementTarget == null) {
@@ -518,14 +505,17 @@ public abstract class AbstractPopup : Control, IPopupHostProvider
 
       WindowManagerAddShadowHintChanged(popupHost, WindowManagerAddShadowHint);
       NotifyPopupRootAboutToShow(popupHost);
+      
+      OpenOverride(popupHost);
+   }
+   
+   protected virtual void OpenOverride(IPopupHost popupHost)
+   {
       popupHost.Show();
-
       using (BeginIgnoringIsOpen()) {
          SetCurrentValue(IsOpenProperty, true);
       }
-
       Opened?.Invoke(this, EventArgs.Empty);
-
       _popupHostChangedHandler?.Invoke(Host);
    }
 
@@ -541,6 +531,44 @@ public abstract class AbstractPopup : Control, IPopupHostProvider
 
       throw new InvalidOperationException(
          "Unable to create IPopupImpl and no overlay layer is found for the target control");
+   }
+   
+   private void CloseCore()
+   {
+      if (_animating) {
+         RequestCloseWhereAnimationCompleted = true;
+         return;
+      }
+      var closingArgs = new CancelEventArgs();
+      
+      Closing?.Invoke(this, closingArgs);
+      if (closingArgs.Cancel) {
+         return;
+      }
+
+      _isOpenRequested = false;
+      if (_openState is null) {
+         using (BeginIgnoringIsOpen()) {
+            SetCurrentValue(IsOpenProperty, false);
+         }
+         return;
+      }
+      CloseOverride();
+   }
+
+   protected virtual void CloseOverride()
+   {
+      _openState?.Dispose();
+      _openState = null;
+
+      _popupHostChangedHandler?.Invoke(null);
+
+      using (BeginIgnoringIsOpen()) {
+         SetCurrentValue(IsOpenProperty, false);
+      }
+
+      NotifyClosed();
+      Closed?.Invoke(this, EventArgs.Empty);
    }
 
    /// <summary>
@@ -726,36 +754,6 @@ public abstract class AbstractPopup : Control, IPopupHostProvider
       }
    }
 
-   private void CloseCore()
-   {
-      var closingArgs = new CancelEventArgs();
-      Closing?.Invoke(this, closingArgs);
-      if (closingArgs.Cancel) {
-         return;
-      }
-
-      _isOpenRequested = false;
-      if (_openState is null) {
-         using (BeginIgnoringIsOpen()) {
-            SetCurrentValue(IsOpenProperty, false);
-         }
-
-         return;
-      }
-
-      _openState.Dispose();
-      _openState = null;
-
-      _popupHostChangedHandler?.Invoke(null);
-
-      using (BeginIgnoringIsOpen()) {
-         SetCurrentValue(IsOpenProperty, false);
-      }
-
-      NotifyClosed();
-      Closed?.Invoke(this, EventArgs.Empty);
-   }
-
    private void ListenForNonClientClick(RawInputEventArgs e)
    {
       var mouse = e as RawPointerEventArgs;
@@ -769,7 +767,6 @@ public abstract class AbstractPopup : Control, IPopupHostProvider
    {
       if (IsLightDismissEnabled && e.Source is Visual v && !IsChildOrThis(v)) {
          CloseCore();
-
          if (OverlayDismissEventPassThrough) {
             PassThroughEvent(e);
          }

@@ -8,6 +8,7 @@ using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
+using Avalonia.Platform;
 
 namespace AtomUI.Controls;
 
@@ -48,6 +49,7 @@ public class Popup : AbstractPopup
    private PopupShadowLayer? _shadowLayer;
    private CompositeDisposable? _compositeDisposable;
    private bool _initialized;
+   private ManagedPopupPositionerInfo? _managedPopupPositioner;
 
    static Popup()
    {
@@ -86,7 +88,10 @@ public class Popup : AbstractPopup
             throw new InvalidOperationException(
                "Unable to create shadow layer, top level for PlacementTarget is null.");
          }
-
+         
+         // 目前我们只支持 WindowBase Popup
+         _managedPopupPositioner = new ManagedPopupPositionerInfo((toplevel as WindowBase)!.PlatformImpl!);
+         
          _compositeDisposable = new CompositeDisposable();
          _shadowLayer = new PopupShadowLayer(toplevel);
          _compositeDisposable?.Add(BindUtils.RelayBind(this, MaskShadowsProperty, _shadowLayer!));
@@ -427,6 +432,30 @@ internal class PopupPositionInfo
    public PlacementMode EffectivePlacement { get; set; }
    public PopupAnchor EffectivePlacementAnchor { get; set; }
    public PopupGravity EffectivePlacementGravity { get; set; }
+}
+
+internal class ManagedPopupPositionerInfo
+{
+   private readonly IWindowBaseImpl _parent;
+   public ManagedPopupPositionerInfo(IWindowBaseImpl parent)
+   {
+      _parent = parent;
+   }
+
+   public IReadOnlyList<ManagedPopupPositionerScreenInfo> Screens =>
+      _parent.Screen.AllScreens
+             .Select(s => new ManagedPopupPositionerScreenInfo(s.Bounds.ToRect(1), s.WorkingArea.ToRect(1)))
+             .ToArray();
+   public Rect ParentClientAreaScreenGeometry {  
+      get
+      {
+         // Popup positioner operates with abstract coordinates, but in our case they are pixel ones
+         var point = _parent.PointToScreen(default);
+         var size = _parent.ClientSize * Scaling;
+         return new Rect(point.X, point.Y, size.Width, size.Height);
+      }
+   }
+   public double Scaling => _parent.DesktopScaling;
 }
 
 public class PopupFlippedEventArgs : EventArgs
