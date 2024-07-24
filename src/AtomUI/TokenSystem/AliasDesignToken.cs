@@ -264,6 +264,12 @@ public class AliasDesignToken : MapDesignToken
    /// 控制内容元素水平内间距，适用于小屏幕设备。
    /// </summary>
    public double PaddingContentHorizontalSM { get; set; }
+   
+   /// <summary>
+   /// 内容水平内间距（XS）
+   /// 控制内容元素水平内间距，适用于小屏幕设备。
+   /// </summary>
+   public double PaddingContentHorizontalXS { get; set; }
 
    /// <summary>
    /// 内容垂直内间距（LG）

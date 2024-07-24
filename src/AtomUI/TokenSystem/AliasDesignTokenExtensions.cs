@@ -104,7 +104,8 @@ public static class AliasDesignTokenExtensions
       aliasToken.PaddingContentVerticalLG = sizeToken.SizeMS;
       aliasToken.PaddingContentHorizontal = sizeToken.SizeMS;
       aliasToken.PaddingContentVertical = sizeToken.SizeSM;
-      aliasToken.PaddingContentHorizontalSM = sizeToken.Size;
+      aliasToken.PaddingContentHorizontalSM = sizeToken.SizeSM;
+      aliasToken.PaddingContentHorizontalXS = sizeToken.SizeXS;
       aliasToken.PaddingContentVerticalSM = sizeToken.SizeXS;
 
       aliasToken.MarginXXS = sizeToken.SizeXXS;

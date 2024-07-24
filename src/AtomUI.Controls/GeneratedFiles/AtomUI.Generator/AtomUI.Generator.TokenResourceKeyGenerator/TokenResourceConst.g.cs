@@ -136,6 +136,24 @@ namespace AtomUI.Styling
         public static readonly TokenResourceKey ItemIconMarginInlineEnd = new TokenResourceKey("Menu.ItemIconMarginInlineEnd");
         public static readonly TokenResourceKey ItemBorderRadius = new TokenResourceKey("Menu.ItemBorderRadius");
         public static readonly TokenResourceKey ItemPaddingInline = new TokenResourceKey("Menu.ItemPaddingInline");
+        public static readonly TokenResourceKey TopLevelItemColor = new TokenResourceKey("Menu.TopLevelItemColor");
+        public static readonly TokenResourceKey TopLevelItemSelectedColor = new TokenResourceKey("Menu.TopLevelItemSelectedColor");
+        public static readonly TokenResourceKey TopLevelItemHoverColor = new TokenResourceKey("Menu.TopLevelItemHoverColor");
+        public static readonly TokenResourceKey TopLevelItemBg = new TokenResourceKey("Menu.TopLevelItemBg");
+        public static readonly TokenResourceKey TopLevelItemSelectedBg = new TokenResourceKey("Menu.TopLevelItemSelectedBg");
+        public static readonly TokenResourceKey TopLevelItemHoverBg = new TokenResourceKey("Menu.TopLevelItemHoverBg");
+        public static readonly TokenResourceKey TopLevelItemBorderRadiusSM = new TokenResourceKey("Menu.TopLevelItemBorderRadiusSM");
+        public static readonly TokenResourceKey TopLevelItemBorderRadius = new TokenResourceKey("Menu.TopLevelItemBorderRadius");
+        public static readonly TokenResourceKey TopLevelItemBorderRadiusLG = new TokenResourceKey("Menu.TopLevelItemBorderRadiusLG");
+        public static readonly TokenResourceKey TopLevelItemPaddingSM = new TokenResourceKey("Menu.TopLevelItemPaddingSM");
+        public static readonly TokenResourceKey TopLevelItemPadding = new TokenResourceKey("Menu.TopLevelItemPadding");
+        public static readonly TokenResourceKey TopLevelItemPaddingLG = new TokenResourceKey("Menu.TopLevelItemPaddingLG");
+        public static readonly TokenResourceKey TopLevelItemFontSizeSM = new TokenResourceKey("Menu.TopLevelItemFontSizeSM");
+        public static readonly TokenResourceKey TopLevelItemFontSize = new TokenResourceKey("Menu.TopLevelItemFontSize");
+        public static readonly TokenResourceKey TopLevelItemFontSizeLG = new TokenResourceKey("Menu.TopLevelItemFontSizeLG");
+        public static readonly TokenResourceKey TopLevelItemLineHeight = new TokenResourceKey("Menu.TopLevelItemLineHeight");
+        public static readonly TokenResourceKey TopLevelItemLineHeightLG = new TokenResourceKey("Menu.TopLevelItemLineHeightLG");
+        public static readonly TokenResourceKey TopLevelItemLineHeightSM = new TokenResourceKey("Menu.TopLevelItemLineHeightSM");
         public static readonly TokenResourceKey MenuBoxShadows = new TokenResourceKey("Menu.MenuBoxShadows");
     }
 

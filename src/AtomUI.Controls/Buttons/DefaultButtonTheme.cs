@@ -74,9 +74,8 @@ internal class DefaultButtonTheme : BaseButtonTheme
       }
       enabledStyle.Add(dangerStyle);
 
+      BuildEnabledGhostStyle(enabledStyle);
       Add(enabledStyle);
-
-      BuildEnabledGhostStyle();
    }
 
    private void BuildIconStyle()
@@ -114,7 +113,7 @@ internal class DefaultButtonTheme : BaseButtonTheme
 
    }
 
-   private void BuildEnabledGhostStyle()
+   private void BuildEnabledGhostStyle(Style enabledStyle)
    {
       var ghostStyle = new Style(selector => selector.Nesting().PropertyEquals(Button.IsGhostProperty, true));
       // 正常状态
@@ -141,9 +140,26 @@ internal class DefaultButtonTheme : BaseButtonTheme
       // 危险按钮状态
       var dangerStyle = new Style(selector => selector.Nesting().PropertyEquals(Button.IsDangerProperty, true));
       dangerStyle.Add(Button.BackgroundProperty, new DynamicResourceExtension(GlobalResourceKey.ColorTransparent));
+      dangerStyle.Add(Button.BorderBrushProperty, new DynamicResourceExtension(GlobalResourceKey.ColorError));
+      dangerStyle.Add(Button.ForegroundProperty, new DynamicResourceExtension(GlobalResourceKey.ColorError));
       
+      // 危险状态 hover
+      {
+         var hoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
+         hoverStyle.Add(Button.BorderBrushProperty, new DynamicResourceExtension(GlobalResourceKey.ColorErrorBorderHover));
+         hoverStyle.Add(Button.ForegroundProperty, new DynamicResourceExtension(GlobalResourceKey.ColorErrorBorderHover));
+         dangerStyle.Add(hoverStyle);
+      }
+      
+      // 危险状态按下
+      {
+         var pressedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver).Class(StdPseudoClass.Pressed));
+         pressedStyle.Add(Button.BorderBrushProperty, new DynamicResourceExtension(GlobalResourceKey.ColorErrorActive));
+         pressedStyle.Add(Button.ForegroundProperty, new DynamicResourceExtension(GlobalResourceKey.ColorErrorActive));
+         dangerStyle.Add(pressedStyle);
+      }
       ghostStyle.Add(dangerStyle);
-      Add(ghostStyle);
+      enabledStyle.Add(ghostStyle);
    }
 
    private void BuildDisabledStyle()

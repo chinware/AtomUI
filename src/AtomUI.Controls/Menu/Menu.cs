@@ -14,7 +14,7 @@ public class Menu : AvaloniaMenu,
    #region 公共属性定义
 
    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-      AvaloniaProperty.Register<Button, SizeType>(nameof(SizeType), SizeType.Middle);
+      AvaloniaProperty.Register<Menu, SizeType>(nameof(SizeType), SizeType.Middle);
 
    public SizeType SizeType
    {
@@ -30,5 +30,13 @@ public class Menu : AvaloniaMenu,
       if (ItemContainerTheme is null) {
          BindUtils.CreateGlobalResourceBinding(this, ItemContainerThemeProperty, TopLevelMenuItemTheme.ID);
       }
+   }
+
+   protected override void PrepareContainerForItemOverride(Control container, object? item, int index)
+   {
+      if (container is MenuItem menuItem) {
+         BindUtils.RelayBind(this, SizeTypeProperty, menuItem, MenuItem.SizeTypeProperty);
+      }
+      base.PrepareContainerForItemOverride(container, item, index);
    }
 }

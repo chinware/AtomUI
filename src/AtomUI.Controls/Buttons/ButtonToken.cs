@@ -184,32 +184,32 @@ internal class ButtonToken : AbstractControlDesignToken
    /// <summary>
    /// 按钮内容字体大小
    /// </summary>
-   public double ContentFontSize { get; set; } = -1;
+   public double ContentFontSize { get; set; } = double.NaN;
 
    /// <summary>
    /// 大号按钮内容字体大小
    /// </summary>
-   public double ContentFontSizeLG { get; set; } = -1;
+   public double ContentFontSizeLG { get; set; } = double.NaN;
 
    /// <summary>
    /// 小号按钮内容字体大小
    /// </summary>
-   public double ContentFontSizeSM { get; set; } = -1;
+   public double ContentFontSizeSM { get; set; } = double.NaN;
 
    /// <summary>
    /// 按钮内容字体行高
    /// </summary>
-   public double ContentLineHeight { get; set; } = -1;
+   public double ContentLineHeight { get; set; } = double.NaN;
 
    /// <summary>
    /// 大号按钮内容字体行高
    /// </summary>
-   public double ContentLineHeightLG { get; set; } = -1;
+   public double ContentLineHeightLG { get; set; } = double.NaN;
 
    /// <summary>
    /// 小号按钮内容字体行高
    /// </summary>
-   public double ContentLineHeightSM { get; set; } = -1;
+   public double ContentLineHeightSM { get; set; } = double.NaN;
 
    public ButtonToken()
       : base(ID)
@@ -222,18 +222,18 @@ internal class ButtonToken : AbstractControlDesignToken
       var fontSize = _globalToken.FontToken.FontSize;
       var fontSizeLG = _globalToken.FontToken.FontSizeLG;
       
-      ContentFontSize = !MathUtils.AreClose(ContentFontSize, -1) ? ContentFontSize : fontSize;
-      ContentFontSizeSM = !MathUtils.AreClose(ContentFontSizeSM, -1) ? ContentFontSizeSM : fontSize;
-      ContentFontSizeLG = !MathUtils.AreClose(ContentFontSizeLG, -1) ? ContentFontSizeLG : fontSizeLG;
-      ContentLineHeight = !MathUtils.AreClose(ContentLineHeight, -1)
+      ContentFontSize = !double.IsNaN(ContentFontSize) ? ContentFontSize : fontSize;
+      ContentFontSizeSM = !double.IsNaN(ContentFontSizeSM) ? ContentFontSizeSM : fontSize;
+      ContentFontSizeLG = !double.IsNaN(ContentFontSizeLG) ? ContentFontSizeLG : fontSizeLG;
+      ContentLineHeight = !double.IsNaN(ContentLineHeight)
          ? ContentLineHeight
-         : CalculatorUtils.CalculateLineHeight(ContentFontSize);
-      ContentLineHeightSM =  !MathUtils.AreClose(ContentLineHeightSM, -1)
+         : CalculatorUtils.CalculateLineHeight(ContentFontSize) * ContentFontSize;
+      ContentLineHeightSM = !double.IsNaN(ContentLineHeightSM)
          ? ContentLineHeightSM
-         : CalculatorUtils.CalculateLineHeight(ContentFontSizeSM);
-      ContentLineHeightLG = !MathUtils.AreClose(ContentLineHeightLG, -1)
+         : CalculatorUtils.CalculateLineHeight(ContentFontSizeSM) * ContentFontSizeSM;
+      ContentLineHeightLG = !double.IsNaN(ContentLineHeightLG)
          ? ContentLineHeightLG
-         : CalculatorUtils.CalculateLineHeight(ContentFontSizeLG);
+         : CalculatorUtils.CalculateLineHeight(ContentFontSizeLG) * ContentFontSizeLG;
 
       var controlOutlineWidth = _globalToken.ControlOutlineWidth;
       FontWeight = 400;
@@ -290,16 +290,17 @@ internal class ButtonToken : AbstractControlDesignToken
       DefaultActiveColor = primaryColorToken.ColorPrimaryActive;
       DefaultActiveBorderColor = primaryColorToken.ColorPrimaryActive;
       
-      var controlHeight = _globalToken.SeedToken.ControlHeight;
       var controlHeightSM = base._globalToken.HeightToken.ControlHeightSM;
+      var controlHeight = _globalToken.SeedToken.ControlHeight;
       var controlHeightLG = _globalToken.HeightToken.ControlHeightLG;
       
-      Padding = new Thickness(_globalToken.PaddingContentHorizontal - lineWidth, 
-         Math.Max((controlHeight - ContentFontSize * ContentLineHeight) / 2 - lineWidth, 0));
-      PaddingLG = new Thickness(_globalToken.PaddingContentHorizontal - lineWidth, 
-         Math.Max((controlHeightSM - ContentFontSizeSM * ContentLineHeightSM) / 2 - lineWidth, 0));
       PaddingSM = new Thickness(8 - _globalToken.SeedToken.LineWidth, 
-         Math.Max((controlHeightLG - controlHeightLG * controlHeightLG) / 2 - lineWidth, 0));
+                                Math.Max((controlHeightSM - ContentLineHeightSM) / 2 - lineWidth, 0));
+      Padding = new Thickness(_globalToken.PaddingContentHorizontal - lineWidth, 
+         Math.Max((controlHeight - ContentLineHeight) / 2 - lineWidth, 0));
+      PaddingLG = new Thickness(_globalToken.PaddingContentHorizontal - lineWidth, 
+         Math.Max((controlHeightLG - ContentLineHeightLG) / 2 - lineWidth, 0));
+     
       CirclePadding = new Thickness(PaddingSM.Left / 2);
       OnlyIconSizeSM = _globalToken.IconSize;
       OnlyIconSize = _globalToken.IconSizeLG;

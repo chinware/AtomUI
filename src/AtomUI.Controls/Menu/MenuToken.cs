@@ -1,4 +1,5 @@
-﻿using AtomUI.TokenSystem;
+﻿using AtomUI.Styling;
+using AtomUI.TokenSystem;
 using Avalonia;
 using Avalonia.Media;
 
@@ -116,6 +117,97 @@ internal class MenuToken : AbstractControlDesignToken
    public Thickness ItemPaddingInline { get; set; }
    
    /// <summary>
+   /// 顶层菜单项颜色
+   /// </summary>
+   public Color TopLevelItemColor { get; set; }
+   
+   /// <summary>
+   /// 顶层菜单项选中颜色
+   /// </summary>
+   public Color TopLevelItemSelectedColor { get; set; }
+   
+   /// <summary>
+   /// 顶层菜单项鼠标放上去的颜色
+   /// </summary>
+   public Color TopLevelItemHoverColor { get; set; }
+   
+   /// <summary>
+   /// 顶层菜单项背景色
+   /// </summary>
+   public Color TopLevelItemBg { get; set; }
+   
+   /// <summary>
+   /// 顶层菜单项选中时背景色
+   /// </summary>
+   public Color TopLevelItemSelectedBg { get; set; }
+   
+   /// <summary>
+   /// 顶层菜单项鼠标放上去背景色
+   /// </summary>
+   public Color TopLevelItemHoverBg { get; set; }
+   
+   /// <summary>
+   /// 顶层菜单项小号圆角
+   /// </summary>
+   public CornerRadius TopLevelItemBorderRadiusSM { get; set; }
+   
+   /// <summary>
+   /// 顶层菜单项圆角
+   /// </summary>
+   public CornerRadius TopLevelItemBorderRadius { get; set; }
+   
+   /// <summary>
+   /// 顶层菜单项大号圆角
+   /// </summary>
+   public CornerRadius TopLevelItemBorderRadiusLG { get; set; }
+   
+   /// <summary>
+   /// 顶层菜单项小号内间距
+   /// </summary>
+   public Thickness TopLevelItemPaddingSM { get; set; }
+   
+   /// <summary>
+   /// 顶层菜单项间距
+   /// </summary>
+   public Thickness TopLevelItemPadding { get; set; }
+   
+   /// <summary>
+   /// 顶层菜单项大号内间距
+   /// </summary>
+   public Thickness TopLevelItemPaddingLG { get; set; }
+
+   /// <summary>
+   /// 顶层菜单项小号字体
+   /// </summary>
+   public double TopLevelItemFontSizeSM { get; set; } = double.NaN;
+   
+   /// <summary>
+   /// 顶层菜单项字体
+   /// </summary>
+   public double TopLevelItemFontSize { get; set; } = double.NaN;
+   
+   /// <summary>
+   /// 顶层菜单项大号字体
+   /// </summary>
+   public double TopLevelItemFontSizeLG { get; set; } = double.NaN;
+   
+   /// <summary>
+   /// 顶层菜单项内容字体行高
+   /// </summary>
+   public double TopLevelItemLineHeight { get; set; } = double.NaN;
+
+   /// <summary>
+   /// 大号顶层菜单项内容字体行高
+   /// </summary>
+   public double TopLevelItemLineHeightLG { get; set; } = double.NaN;
+
+   /// <summary>
+   /// 小号顶层菜单项内容字体行高
+   /// </summary>
+   public double TopLevelItemLineHeightSM { get; set; } = double.NaN;
+   
+   
+   /// <summary>
    /// 菜单阴影
    /// </summary>
    public BoxShadows MenuBoxShadows { get; set; }
@@ -133,8 +225,12 @@ internal class MenuToken : AbstractControlDesignToken
       var colorBgTextHover = _globalToken.ColorBgTextHover;
       var colorBgElevated = colorNeutralToken.ColorBgElevated;
       var padding = _globalToken.Padding;
+      var controlHeight = _globalToken.SeedToken.ControlHeight;
+      var controlHeightSM = base._globalToken.HeightToken.ControlHeightSM;
+      var controlHeightLG = _globalToken.HeightToken.ControlHeightLG;
+      
       var fontSize = _globalToken.FontToken.FontSize;
-      var controlHeightSM = _globalToken.HeightToken.ControlHeightSM;
+      var fontSizeLG = _globalToken.FontToken.FontSizeLG;
 
       MenuBorderRadius = _globalToken.StyleToken.BorderRadiusLG;
       MenuPanelWidth = _globalToken.SeedToken.LineWidth;
@@ -164,5 +260,39 @@ internal class MenuToken : AbstractControlDesignToken
       MenuMargin = new Thickness(1);
 
       MenuBoxShadows = _globalToken.BoxShadowsSecondary;
+      
+      TopLevelItemColor = colorNeutralToken.ColorText;
+      TopLevelItemSelectedColor = colorNeutralToken.ColorTextSecondary;
+      TopLevelItemHoverColor = colorNeutralToken.ColorTextSecondary;
+
+      TopLevelItemBg = colorBgContainer;
+      TopLevelItemHoverBg = colorBgTextHover;
+      TopLevelItemSelectedBg = colorBgTextHover;
+
+      TopLevelItemBorderRadiusSM = _globalToken.StyleToken.BorderRadiusSM;
+      TopLevelItemBorderRadius = _globalToken.SeedToken.BorderRadius;
+      TopLevelItemBorderRadiusLG = _globalToken.StyleToken.BorderRadiusLG;
+      
+      TopLevelItemFontSize = !double.IsNaN(TopLevelItemFontSize) ? TopLevelItemFontSize : fontSize;
+      TopLevelItemFontSizeSM = !double.IsNaN(TopLevelItemFontSizeSM) ? TopLevelItemFontSizeSM : fontSize;
+      TopLevelItemFontSizeLG = !double.IsNaN(TopLevelItemFontSizeLG) ? TopLevelItemFontSizeLG : fontSizeLG;
+      
+      TopLevelItemLineHeight = !double.IsNaN(TopLevelItemLineHeight)
+         ? TopLevelItemLineHeight
+         : CalculatorUtils.CalculateLineHeight(TopLevelItemFontSize) * TopLevelItemFontSize;
+      TopLevelItemLineHeightSM = !double.IsNaN(TopLevelItemLineHeightSM)
+         ? TopLevelItemLineHeightSM
+         : CalculatorUtils.CalculateLineHeight(TopLevelItemFontSizeSM) * TopLevelItemFontSizeSM;
+      TopLevelItemLineHeightLG = !double.IsNaN(TopLevelItemLineHeightLG)
+         ? TopLevelItemLineHeightLG
+         : CalculatorUtils.CalculateLineHeight(TopLevelItemFontSizeLG) * TopLevelItemFontSizeLG;
+
+      TopLevelItemPaddingSM = new Thickness(_globalToken.PaddingContentHorizontalXS * 0.7, 
+                                            Math.Max((controlHeightSM - TopLevelItemLineHeightSM) / 2, 0));
+      TopLevelItemPadding = new Thickness(_globalToken.PaddingContentHorizontalXS, 
+                              Math.Max((controlHeight - TopLevelItemLineHeight) / 2, 0));
+      TopLevelItemPaddingLG = new Thickness(_globalToken.PaddingContentHorizontalSM, 
+                                            Math.Max((controlHeightLG - TopLevelItemLineHeightLG) / 2, 0));
+     
    }
 }

@@ -25,7 +25,8 @@ public class MenuTheme : ControlTheme
          var itemPresenter = new ItemsPresenter()
          {
             Name = ItemsPresenterPart,
-            VerticalAlignment = VerticalAlignment.Stretch,
+            HorizontalAlignment = HorizontalAlignment.Stretch,
+            VerticalAlignment = VerticalAlignment.Center,
             ItemsPanel = new FuncTemplate<Panel?>(() => new StackPanel()
             {
                Orientation = Orientation.Horizontal

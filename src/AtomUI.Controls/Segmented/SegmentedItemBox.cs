@@ -160,6 +160,7 @@ internal partial class SegmentedItemBox : TemplatedControl,
       Cursor = new Cursor(StandardCursorType.Hand);
       _customStyle.CollectStyleState();
       _customStyle.SetupTransitions();
+      _customStyle.UpdatePseudoClasses();
    }
 
    private void SetCurrentItem(bool flag)

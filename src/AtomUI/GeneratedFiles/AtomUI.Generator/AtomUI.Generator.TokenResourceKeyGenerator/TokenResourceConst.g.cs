@@ -48,6 +48,7 @@ namespace AtomUI.Styling
         public static readonly TokenResourceKey PaddingContentHorizontalLG = new TokenResourceKey("PaddingContentHorizontalLG");
         public static readonly TokenResourceKey PaddingContentHorizontal = new TokenResourceKey("PaddingContentHorizontal");
         public static readonly TokenResourceKey PaddingContentHorizontalSM = new TokenResourceKey("PaddingContentHorizontalSM");
+        public static readonly TokenResourceKey PaddingContentHorizontalXS = new TokenResourceKey("PaddingContentHorizontalXS");
         public static readonly TokenResourceKey PaddingContentVerticalLG = new TokenResourceKey("PaddingContentVerticalLG");
         public static readonly TokenResourceKey PaddingContentVertical = new TokenResourceKey("PaddingContentVertical");
         public static readonly TokenResourceKey PaddingContentVerticalSM = new TokenResourceKey("PaddingContentVerticalSM");

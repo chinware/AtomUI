@@ -265,32 +265,32 @@ public class Button : AvaloniaButton,
 
    void IControlCustomStyle.SetupTransitions()
    {
-      var transitions = new Transitions();
-      if (ButtonType == ButtonType.Primary) {
-         transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty));
-         if (IsGhost) {
+      if (Transitions is null) {
+         var transitions = new Transitions();
+         if (ButtonType == ButtonType.Primary) {
+            transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty));
+            if (IsGhost) {
+               transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(BorderBrushProperty));
+               transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty));
+            }
+         } else if (ButtonType == ButtonType.Default) {
             transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(BorderBrushProperty));
             transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty));
+         } else if (ButtonType == ButtonType.Text) {
+            transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty));
+         } else if (ButtonType == ButtonType.Link) {
+            transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty));
          }
-      } else if (ButtonType == ButtonType.Default) {
-         transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(BorderBrushProperty));
-         transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty));
-      } else if (ButtonType == ButtonType.Text) {
-         transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty));
-      } else if (ButtonType == ButtonType.Link) {
-         transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty));
-      }
 
-      Transitions = transitions;
+         Transitions = transitions;
+      }
    }
 
    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
    {
       base.OnApplyTemplate(e);
       _customStyle.HandleTemplateApplied(e.NameScope);
-      if (Transitions is null) {
-         _customStyle.SetupTransitions();
-      }
+      _customStyle.SetupTransitions();
    }
 
    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)

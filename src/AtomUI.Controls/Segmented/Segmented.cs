@@ -429,7 +429,6 @@ public partial class Segmented : TemplatedControl, IControlCustomStyle
    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
    {
       _mainContainer = scope.Find<Canvas>(SegmentedTheme.MainContainerPart);
-      NotifyCurrentChanged();
       ClipToBounds = true;
       Items.CollectionChanged += HandleItemsChanged;
       
@@ -440,7 +439,7 @@ public partial class Segmented : TemplatedControl, IControlCustomStyle
             HorizontalAlignment = HorizontalAlignment.Stretch
          });
       }
-      
+      NotifyCurrentChanged();
    }
 
    private bool IsValidIndex(int index)
