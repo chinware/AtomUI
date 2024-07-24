@@ -18,7 +18,32 @@ internal class MenuToken : AbstractControlDesignToken
    /// <summary>
    /// 菜单的圆角
    /// </summary>
-   public CornerRadius MenuBorderRadius { get; set; }
+   public CornerRadius MenuPopupBorderRadius { get; set; }
+   
+   /// <summary>
+   /// 菜单 Popup 阴影
+   /// </summary>
+   public BoxShadows MenuPopupBoxShadows { get; set; }
+   
+   /// <summary>
+   /// 菜单 Popup 最小宽度
+   /// </summary>
+   public double MenuPopupMinWidth { get; set; }
+   
+   /// <summary>
+   /// 菜单 Popup 最大宽度
+   /// </summary>
+   public double MenuPopupMaxWidth { get; set; }
+   
+   /// <summary>
+   /// 菜单 Popup 最小高度
+   /// </summary>
+   public double MenuPopupMinHeight { get; set; }
+   
+   /// <summary>
+   /// 菜单 Popup 最大高度
+   /// </summary>
+   public double MenuPopupMaxHeight { get; set; }
    
    /// <summary>
    /// 子菜单指示三角形的大小
@@ -29,11 +54,6 @@ internal class MenuToken : AbstractControlDesignToken
    /// 子菜单指示三角形的位移
    /// </summary>
    public double MenuArrowOffset { get; set; }
-   
-   /// <summary>
-   /// 菜单面板的宽度，一般用于画边框
-   /// </summary>
-   public double MenuPanelWidth { get; set; }
    
    /// <summary>
    /// 菜单间距
@@ -206,12 +226,12 @@ internal class MenuToken : AbstractControlDesignToken
    /// </summary>
    public double TopLevelItemLineHeightSM { get; set; } = double.NaN;
    
-   
    /// <summary>
-   /// 菜单阴影
+   /// 顶层弹出菜单，距离顶层菜单项的边距
    /// </summary>
-   public BoxShadows MenuBoxShadows { get; set; }
+   public double TopLevelItemPopupMarginToAnchor { get; set; }
    
+ 
    internal override void CalculateFromAlias()
    {
       base.CalculateFromAlias();
@@ -231,10 +251,8 @@ internal class MenuToken : AbstractControlDesignToken
       
       var fontSize = _globalToken.FontToken.FontSize;
       var fontSizeLG = _globalToken.FontToken.FontSizeLG;
-
-      MenuBorderRadius = _globalToken.StyleToken.BorderRadiusLG;
-      MenuPanelWidth = _globalToken.SeedToken.LineWidth;
-      MenuBorderRadius = _globalToken.SeedToken.BorderRadius;
+      
+      ItemBorderRadius = _globalToken.SeedToken.BorderRadius;
       ItemColor = colorTextSecondary;
       ItemHoverColor = colorTextSecondary;
       ItemBg = colorBgContainer;
@@ -259,7 +277,7 @@ internal class MenuToken : AbstractControlDesignToken
       MenuContentPadding = _globalToken.PaddingXXS / 2; // 先默认一个最小的内容间距
       MenuMargin = new Thickness(1);
 
-      MenuBoxShadows = _globalToken.BoxShadowsSecondary;
+      MenuPopupBoxShadows = _globalToken.BoxShadowsSecondary;
       
       TopLevelItemColor = colorNeutralToken.ColorText;
       TopLevelItemSelectedColor = colorNeutralToken.ColorTextSecondary;
@@ -293,6 +311,16 @@ internal class MenuToken : AbstractControlDesignToken
                               Math.Max((controlHeight - TopLevelItemLineHeight) / 2, 0));
       TopLevelItemPaddingLG = new Thickness(_globalToken.PaddingContentHorizontalSM, 
                                             Math.Max((controlHeightLG - TopLevelItemLineHeightLG) / 2, 0));
-     
+
+      TopLevelItemPopupMarginToAnchor = _globalToken.MarginXXS;
+      
+      MenuPopupBorderRadius = _globalToken.StyleToken.BorderRadiusLG;
+      
+      MenuPopupMinWidth = 120;
+      MenuPopupMaxWidth = 800;
+
+      MenuPopupMinHeight = ItemHeight * 3;
+      MenuPopupMaxHeight = ItemHeight * 30;
+
    }
 }

@@ -45,6 +45,9 @@ public sealed class PopupRoot : WindowBase, IHostedVisualTreeRoot, IDisposable, 
    public PopupRoot(TopLevel parent, IPopupImpl impl)
       : this(parent, impl,null)
    {
+#if DEBUG
+      this.AttachDevTools();
+#endif
    }
 
    /// <summary>

@@ -1,4 +1,6 @@
 ﻿using AtomUI.Styling;
+using AtomUI.Utils;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Templates;
@@ -64,13 +66,7 @@ public class TopLevelMenuItemTheme : ControlTheme
          IsLightDismissEnabled = true,
          Placement = PlacementMode.BottomEdgeAlignedLeft,
          OverlayInputPassThroughElement = menuItem,
-       
          Child = new Border()
-         {
-            Background = new SolidColorBrush(Colors.Gray),
-            Width = 240,
-            Height = 120
-         }
       };
       CreateTemplateParentBinding(popup, Popup.IsOpenProperty, MenuItem.IsSubMenuOpenProperty, BindingMode.TwoWay);
       return popup;
@@ -81,6 +77,7 @@ public class TopLevelMenuItemTheme : ControlTheme
       BuildCommonStyle();
       BuildSizeTypeStyle();
       BuildDisabledStyle();
+      BuildPopupStyle();
    }
 
    private void BuildCommonStyle()
@@ -133,6 +130,25 @@ public class TopLevelMenuItemTheme : ControlTheme
          smallSizeStyle.Add(presenterStyle);
       }
       Add(smallSizeStyle);
+   }
+
+   private void BuildPopupStyle()
+   {
+      var popupStyle = new Style(selector => selector.Nesting().Template().OfType<Popup>());
+
+      popupStyle.Add(Popup.MarginToAnchorProperty, MenuResourceKey.TopLevelItemPopupMarginToAnchor);
+      popupStyle.Add(Popup.MaskShadowsProperty, MenuResourceKey.MenuPopupBoxShadows);
+      
+      Add(popupStyle);
+      
+      var borderStyle = new Style(selector => selector.Nesting().Template().OfType<Popup>().Child().OfType<Border>());
+      borderStyle.Add(Border.BackgroundProperty, GlobalResourceKey.ColorBgContainer);
+      borderStyle.Add(Border.CornerRadiusProperty, MenuResourceKey.MenuPopupBorderRadius);
+      borderStyle.Add(Border.MinWidthProperty, MenuResourceKey.MenuPopupMinWidth);
+      borderStyle.Add(Border.MaxWidthProperty, MenuResourceKey.MenuPopupMaxWidth);
+      borderStyle.Add(Border.MinHeightProperty, MenuResourceKey.MenuPopupMinHeight);
+      borderStyle.Add(Border.MaxHeightProperty, MenuResourceKey.MenuPopupMaxHeight);
+      Add(borderStyle);
    }
 
    private void BuildDisabledStyle()

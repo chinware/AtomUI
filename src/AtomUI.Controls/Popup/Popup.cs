@@ -119,6 +119,16 @@ public class Popup : AbstractPopup
    protected override void NotifyClosed()
    {
       base.NotifyClosed();
+      var offsetX = HorizontalOffset;
+      var offsetY = VerticalOffset;
+      // 还原位移
+      var marginToAnchorOffset = PopupUtils.CalculateMarginToAnchorOffset(Placement, MarginToAnchor, PlacementAnchor, PlacementGravity);
+      offsetX -= marginToAnchorOffset.X;
+      offsetY -= marginToAnchorOffset.Y;
+
+      HorizontalOffset = offsetX;
+      VerticalOffset = offsetY;
+      
       _compositeDisposable?.Dispose();
       _shadowLayer = null;
    }
