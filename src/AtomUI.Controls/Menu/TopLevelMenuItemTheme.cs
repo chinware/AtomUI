@@ -6,6 +6,7 @@ using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Layout;
+using Avalonia.Media;
 using Avalonia.Styling;
 
 namespace AtomUI.Controls;
@@ -15,9 +16,9 @@ public class TopLevelMenuItemTheme : ControlTheme
 {
    public const string ID = "TopLevelMenuItem";
    
-   public const string PopupPart = "PART_Popup";
+   public const string PopupPart           = "PART_Popup";
    public const string HeaderPresenterPart = "PART_HeaderPresenter";
-   public const string ItemsPresenterPart = "PART_ItemsPresenter";
+   public const string ItemsPresenterPart  = "PART_ItemsPresenter";
    
    public TopLevelMenuItemTheme() : base(typeof(MenuItem)) {}
    
@@ -36,7 +37,7 @@ public class TopLevelMenuItemTheme : ControlTheme
             Name = HeaderPresenterPart,
             HorizontalAlignment = HorizontalAlignment.Stretch,
             VerticalAlignment = VerticalAlignment.Center,
-            RecognizesAccessKey = true
+            RecognizesAccessKey = true,
          };
          
          CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty, MenuItem.HeaderProperty);
@@ -45,8 +46,6 @@ public class TopLevelMenuItemTheme : ControlTheme
          CreateTemplateParentBinding(contentPresenter, ContentPresenter.PaddingProperty, MenuItem.PaddingProperty);
          CreateTemplateParentBinding(contentPresenter, ContentPresenter.MinHeightProperty, MenuItem.MinHeightProperty);
          CreateTemplateParentBinding(contentPresenter, ContentPresenter.FontSizeProperty, MenuItem.FontSizeProperty);
-         CreateTemplateParentBinding(contentPresenter, ContentPresenter.BackgroundProperty, MenuItem.BackgroundProperty);
-         CreateTemplateParentBinding(contentPresenter, ContentPresenter.ForegroundProperty, MenuItem.ForegroundProperty);
          contentPresenter.RegisterInNameScope(scope);
          panel.Children.Add(contentPresenter);
 
@@ -58,7 +57,6 @@ public class TopLevelMenuItemTheme : ControlTheme
 
    private Popup CreateMenuPopup(MenuItem menuItem)
    {
-
       var popup = new Popup()
       {
          Name = PopupPart,
@@ -78,7 +76,7 @@ public class TopLevelMenuItemTheme : ControlTheme
       BindUtils.CreateTokenBinding(border, Border.PaddingProperty, MenuResourceKey.MenuPopupContentPadding);
 
       var scrollViewer = new MenuScrollViewer();
-      var itemsPresenter = new ItemsPresenter()
+      var itemsPresenter = new ItemsPresenter
       {
          Name = ItemsPresenterPart,
       };
@@ -92,29 +90,58 @@ public class TopLevelMenuItemTheme : ControlTheme
       BindUtils.CreateTokenBinding(popup, Popup.MaskShadowsProperty, MenuResourceKey.MenuPopupBoxShadows);
       
       CreateTemplateParentBinding(popup, Popup.IsOpenProperty, MenuItem.IsSubMenuOpenProperty, BindingMode.TwoWay);
+      
       return popup;
    }
 
    protected override void BuildStyles()
    {
-      BuildCommonStyle();
-      BuildSizeTypeStyle();
-      BuildDisabledStyle();
+      var topLevelStyle = new Style(selector => selector.Nesting().Class(MenuItem.TopLevelPC));
+      BuildCommonStyle(topLevelStyle);
+      BuildSizeTypeStyle(topLevelStyle);
+      BuildDisabledStyle(topLevelStyle);
+      Add(topLevelStyle);
    }
 
-   private void BuildCommonStyle()
+   private void BuildCommonStyle(Style topLevelStyle)
    {
       var commonStyle = new Style(selector => selector.Nesting().PropertyEquals(MenuItem.IsEnabledProperty, true));
       commonStyle.Add(MenuItem.BackgroundProperty, GlobalResourceKey.ColorTransparent);
+      
+      // 正常状态
+      {
+         var contentPresenterStyle = new Style(selector => selector.Nesting().Template().OfType<ContentPresenter>().Name(HeaderPresenterPart));
+         contentPresenterStyle.Add(ContentPresenter.BackgroundProperty, GlobalResourceKey.ColorTransparent);
+         commonStyle.Add(contentPresenterStyle);
+      }
+      
+      // hover 状态
       var hoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
-      hoverStyle.Add(MenuItem.BackgroundProperty, MenuResourceKey.TopLevelItemHoverBg);
-      hoverStyle.Add(MenuItem.ForegroundProperty, MenuResourceKey.TopLevelItemHoverColor);
-      hoverStyle.Add(MenuItem.CursorProperty, new Cursor(StandardCursorType.Hand));
+      {
+         var contentPresenterHoverStyle = new Style(selector => selector.Nesting().Template().OfType<ContentPresenter>().Name(HeaderPresenterPart));
+         contentPresenterHoverStyle.Add(ContentPresenter.BackgroundProperty, MenuResourceKey.TopLevelItemHoverBg);
+         contentPresenterHoverStyle.Add(ContentPresenter.ForegroundProperty, MenuResourceKey.TopLevelItemHoverColor);
+         contentPresenterHoverStyle.Add(ContentPresenter.CursorProperty, new Cursor(StandardCursorType.Hand));
+         hoverStyle.Add(contentPresenterHoverStyle);
+      }
       commonStyle.Add(hoverStyle);
-      Add(commonStyle);
+      
+      // 在打开状态下的
+      var openedStyle = new Style(selector => selector.Nesting().PropertyEquals(MenuItem.IsSubMenuOpenProperty, true));
+      {
+         var contentPresenterHoverStyle = new Style(selector => selector.Nesting().Template().OfType<ContentPresenter>().Name(HeaderPresenterPart));
+         contentPresenterHoverStyle.Add(ContentPresenter.BackgroundProperty, MenuResourceKey.TopLevelItemHoverBg);
+         contentPresenterHoverStyle.Add(ContentPresenter.ForegroundProperty, MenuResourceKey.TopLevelItemHoverColor);
+         contentPresenterHoverStyle.Add(ContentPresenter.CursorProperty, new Cursor(StandardCursorType.Hand));
+         openedStyle.Add(contentPresenterHoverStyle);
+      }
+      
+      commonStyle.Add(openedStyle);
+      
+      topLevelStyle.Add(commonStyle);
    }
    
-   private void BuildSizeTypeStyle()
+   private void BuildSizeTypeStyle(Style topLevelStyle)
    {
       var largeSizeStyle = new Style(selector => selector.Nesting().PropertyEquals(MenuItem.SizeTypeProperty, SizeType.Large));
       largeSizeStyle.Add(MenuItem.CornerRadiusProperty, MenuResourceKey.TopLevelItemBorderRadiusLG);
@@ -127,7 +154,7 @@ public class TopLevelMenuItemTheme : ControlTheme
          presenterStyle.Add(ContentPresenter.LineHeightProperty, MenuResourceKey.TopLevelItemLineHeightLG);
          largeSizeStyle.Add(presenterStyle);
       }
-      Add(largeSizeStyle);
+      topLevelStyle.Add(largeSizeStyle);
       
       var middleSizeStyle = new Style(selector => selector.Nesting().PropertyEquals(MenuItem.SizeTypeProperty, SizeType.Middle));
       middleSizeStyle.Add(MenuItem.CornerRadiusProperty, MenuResourceKey.TopLevelItemBorderRadius);
@@ -139,7 +166,7 @@ public class TopLevelMenuItemTheme : ControlTheme
          presenterStyle.Add(ContentPresenter.LineHeightProperty, MenuResourceKey.TopLevelItemLineHeight);
          middleSizeStyle.Add(presenterStyle);
       }
-      Add(middleSizeStyle);
+      topLevelStyle.Add(middleSizeStyle);
 
       var smallSizeStyle = new Style(selector => selector.Nesting().PropertyEquals(MenuItem.SizeTypeProperty, SizeType.Small));
       smallSizeStyle.Add(MenuItem.CornerRadiusProperty, MenuResourceKey.TopLevelItemBorderRadiusSM);
@@ -151,13 +178,13 @@ public class TopLevelMenuItemTheme : ControlTheme
          presenterStyle.Add(ContentPresenter.LineHeightProperty, MenuResourceKey.TopLevelItemLineHeightSM);
          smallSizeStyle.Add(presenterStyle);
       }
-      Add(smallSizeStyle);
+      topLevelStyle.Add(smallSizeStyle);
    }
 
-   private void BuildDisabledStyle()
+   private void BuildDisabledStyle(Style topLevelStyle)
    {
       var disabledStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Disabled));
       disabledStyle.Add(MenuItem.ForegroundProperty, MenuResourceKey.ItemDisabledColor);
-      Add(disabledStyle);
+      topLevelStyle.Add(disabledStyle);
    }
 }

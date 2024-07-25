@@ -4,14 +4,19 @@ using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
+using Avalonia.Controls.Metadata;
+using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 
 namespace AtomUI.Controls;
 
 using AvaloniaMenuItem = Avalonia.Controls.MenuItem;
 
+[PseudoClasses(TopLevelPC)]
 public class MenuItem : AvaloniaMenuItem, IControlCustomStyle
 {
+   public const string TopLevelPC = ":toplevel";
+   
    #region 公共属性定义
 
    public static readonly StyledProperty<SizeType> SizeTypeProperty =
@@ -26,6 +31,7 @@ public class MenuItem : AvaloniaMenuItem, IControlCustomStyle
    #endregion
    
    private readonly IControlCustomStyle _customStyle;
+   private ContentPresenter? _topLevelContentPresenter;
 
    static MenuItem()
    {
@@ -46,17 +52,34 @@ public class MenuItem : AvaloniaMenuItem, IControlCustomStyle
    #region IControlCustomStyle 实现
    void IControlCustomStyle.SetupTransitions()
    {
-      if (Transitions is null) {
+      if (_topLevelContentPresenter is not null && _topLevelContentPresenter.Transitions is null) {
          var transitions = new Transitions();
          transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty));
          transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty));
-         Transitions = transitions;
+         _topLevelContentPresenter.Transitions = transitions;
       }
    }
    
    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
    {
+      if (IsTopLevel) {
+         _topLevelContentPresenter = scope.Find<ContentPresenter>(TopLevelMenuItemTheme.HeaderPresenterPart);
+      }
       _customStyle.SetupTransitions();
+      UpdatePseudoClasses();
    }
    #endregion
+
+   protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
+   {
+      base.OnPropertyChanged(e);
+      if (e.Property == ParentProperty) {
+         UpdatePseudoClasses();
+      }
+   }
+
+   private void UpdatePseudoClasses()
+   {
+      PseudoClasses.Set(TopLevelPC, IsTopLevel);
+   }
 }

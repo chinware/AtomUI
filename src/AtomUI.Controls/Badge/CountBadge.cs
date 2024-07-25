@@ -20,7 +20,7 @@ public enum CountBadgeSize
    Small
 }
 
-public partial class CountBadge : Control, IControlCustomStyle
+public class CountBadge : Control, IControlCustomStyle
 {
    public static readonly StyledProperty<string?> BadgeColorProperty 
       = AvaloniaProperty.Register<CountBadge, string?>(
