@@ -85,6 +85,7 @@ internal class MenuItemTheme : ControlTheme
             IsVisible = false,
             Stretch = Stretch.Uniform
          };
+         
          Grid.SetColumn(iconPresenter, 1);
          iconPresenter.RegisterInNameScope(scope);
          
@@ -113,7 +114,7 @@ internal class MenuItemTheme : ControlTheme
             VerticalAlignment = VerticalAlignment.Center,
          };
          Grid.SetColumn(inputGestureText, 3);
-         
+         BindUtils.CreateTokenBinding(inputGestureText, ContentPresenter.MarginProperty, MenuResourceKey.ItemMargin);
          CreateTemplateParentBinding(inputGestureText, 
                                      TextBlock.TextProperty, 
                                      MenuItem.InputGestureProperty,
@@ -127,8 +128,11 @@ internal class MenuItemTheme : ControlTheme
             Name = MenuIndicatorIconPart,
             HorizontalAlignment = HorizontalAlignment.Right,
             VerticalAlignment = VerticalAlignment.Center,
+            Kind = "RightOutlined"
          };
-         Grid.SetColumn(inputGestureText, 4);
+         BindUtils.CreateGlobalTokenBinding(menuIndicatorIcon, PathIcon.WidthProperty, GlobalResourceKey.IconSizeXS);
+         BindUtils.CreateGlobalTokenBinding(menuIndicatorIcon, PathIcon.HeightProperty, GlobalResourceKey.IconSizeXS);
+         Grid.SetColumn(menuIndicatorIcon, 4);
          menuIndicatorIcon.RegisterInNameScope(scope);
 
          layout.Children.Add(togglePresenter);
@@ -147,6 +151,7 @@ internal class MenuItemTheme : ControlTheme
    {
       var commonStyle = new Style(selector => selector.Nesting());
       BuildCommonStyle(commonStyle);
+      BuildMenuIndicatorStyle();
       Add(commonStyle);
    }
 
@@ -176,6 +181,21 @@ internal class MenuItemTheme : ControlTheme
          hoverStyle.Add(borderStyle);
       }
       commonStyle.Add(hoverStyle);
+   }
 
+   private void BuildMenuIndicatorStyle()
+   {
+      {
+         var menuIndicatorStyle = new Style(selector => selector.Nesting().Template().Name(MenuIndicatorIconPart));
+         menuIndicatorStyle.Add(PathIcon.IsVisibleProperty, true);
+         Add(menuIndicatorStyle);
+      }
+      var hasSubMenuStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Empty));
+      {
+         var menuIndicatorStyle = new Style(selector => selector.Nesting().Template().Name(MenuIndicatorIconPart));
+         menuIndicatorStyle.Add(PathIcon.IsVisibleProperty, false);
+         hasSubMenuStyle.Add(menuIndicatorStyle);
+      }
+      Add(hasSubMenuStyle);
    }
 }

@@ -26,11 +26,15 @@ internal class MenuScrollViewerTheme : ControlTheme
          var scrollUpButton = new IconButton()
          {
             Name = ScrollUpButtonPart,
+            Width = 16,
+            Height = 16
          };
          DockPanel.SetDock(scrollUpButton, Dock.Top);
          var scrollDownButton = new IconButton()
          {
-            Name = ScrollDownButtonPart
+            Name = ScrollDownButtonPart,
+            Width = 16,
+            Height = 16
          };
          DockPanel.SetDock(scrollDownButton, Dock.Bottom);
 
