@@ -176,7 +176,7 @@ public class SegmentedItem : TemplatedControl, IControlCustomStyle
    {
       if (Icon is not null) {
          if (Icon.ThemeType != IconThemeType.TwoTone) {
-            BindUtils.CreateTokenBinding(Icon, PathIcon.NormalFillBrushProperty, SegmentedResourceKey.ItemColor);
+            BindUtils.CreateTokenBinding(Icon, PathIcon.NormalFilledBrushProperty, SegmentedResourceKey.ItemColor);
             BindUtils.CreateTokenBinding(Icon, PathIcon.ActiveFilledBrushProperty, SegmentedResourceKey.ItemHoverColor);
             BindUtils.CreateTokenBinding(Icon, PathIcon.SelectedFilledBrushProperty, SegmentedResourceKey.ItemSelectedColor);
          }

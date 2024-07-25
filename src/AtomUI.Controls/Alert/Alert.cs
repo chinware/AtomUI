@@ -152,7 +152,7 @@ public class Alert : TemplatedControl, IControlCustomStyle
          {
             Kind = "CloseOutlined",
          };
-         BindUtils.CreateTokenBinding(CloseIcon, PathIcon.NormalFillBrushProperty, GlobalResourceKey.ColorIcon);
+         BindUtils.CreateTokenBinding(CloseIcon, PathIcon.NormalFilledBrushProperty, GlobalResourceKey.ColorIcon);
          BindUtils.CreateTokenBinding(CloseIcon, PathIcon.ActiveFilledBrushProperty, GlobalResourceKey.ColorIconHover);
       }
    }

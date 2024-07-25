@@ -1,4 +1,5 @@
-﻿using AtomUI.Media;
+﻿using AtomUI.Controls.Utils;
+using AtomUI.Media;
 using AtomUI.Styling;
 using AtomUI.Utils;
 using Avalonia;
@@ -10,6 +11,7 @@ using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Layout;
+using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
@@ -81,6 +83,12 @@ public class MenuItem : AvaloniaMenuItem, IControlCustomStyle
       base.OnPropertyChanged(e);
       if (e.Property == ParentProperty) {
          UpdatePseudoClasses();
+      } else if (e.Property == IconProperty) {
+         if (Icon is not null && Icon is PathIcon pathIcon) {
+            BindUtils.CreateTokenBinding(pathIcon, PathIcon.WidthProperty, MenuResourceKey.ItemIconSize);
+            BindUtils.CreateTokenBinding(pathIcon, PathIcon.HeightProperty, MenuResourceKey.ItemIconSize);
+            BindUtils.CreateTokenBinding(pathIcon, PathIcon.NormalFilledBrushProperty, MenuResourceKey.ItemColor);
+         }
       }
    }
 

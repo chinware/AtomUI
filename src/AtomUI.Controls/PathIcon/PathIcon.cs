@@ -23,7 +23,7 @@ public sealed class PathIcon : Control, ICustomHitTest
          nameof(PackageProvider));
 
    // Fill 和 Outline 支持的颜色
-   public static readonly StyledProperty<IBrush?> NormalFillBrushProperty =
+   public static readonly StyledProperty<IBrush?> NormalFilledBrushProperty =
       AvaloniaProperty.Register<PathIcon, IBrush?>(
          nameof(NormalFilledBrush));
 
@@ -73,8 +73,8 @@ public sealed class PathIcon : Control, ICustomHitTest
 
    public IBrush? NormalFilledBrush
    {
-      get => GetValue(NormalFillBrushProperty);
-      set => SetValue(NormalFillBrushProperty, value);
+      get => GetValue(NormalFilledBrushProperty);
+      set => SetValue(NormalFilledBrushProperty, value);
    }
 
    public IBrush? ActiveFilledBrush
@@ -204,7 +204,7 @@ public sealed class PathIcon : Control, ICustomHitTest
             _animation = null;
             _animationCancellationTokenSource = null;
          }
-      } else if (change.Property == NormalFillBrushProperty ||
+      } else if (change.Property == NormalFilledBrushProperty ||
                  change.Property == ActiveFilledBrushProperty ||
                  change.Property == SelectedFilledBrushProperty ||
                  change.Property == DisabledFilledBrushProperty ||

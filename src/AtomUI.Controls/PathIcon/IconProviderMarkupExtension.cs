@@ -1,4 +1,5 @@
 ﻿using AtomUI.Icon;
+using Avalonia.Data;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 
@@ -40,21 +41,22 @@ public class IconProvider : MarkupExtension
       {
          Kind = Kind,
          PackageProvider = PackageProvider,
-         Animation = Animation,
-         NormalFilledBrush = NormalFilledColor,
-         ActiveFilledBrush = ActiveFilledColor,
-         SelectedFilledBrush = SelectedFilledColor,
-         DisabledFilledBrush = DisabledFilledColor,
-         
-         PrimaryFilledBrush = PrimaryFilledColor,
-         SecondaryFilledBrush = SecondaryFilledColor
       };
+      icon.SetValue(PathIcon.AnimationProperty, Animation, BindingPriority.Template);
+      icon.SetValue(PathIcon.NormalFilledBrushProperty, NormalFilledColor, BindingPriority.Template);
+      icon.SetValue(PathIcon.ActiveFilledBrushProperty, ActiveFilledColor, BindingPriority.Template);
+      icon.SetValue(PathIcon.SelectedFilledBrushProperty, SelectedFilledColor, BindingPriority.Template);
+      icon.SetValue(PathIcon.DisabledFilledBrushProperty, DisabledFilledColor, BindingPriority.Template);
+      icon.SetValue(PathIcon.PrimaryFilledBrushProperty, SelectedFilledColor, BindingPriority.Template);
+      icon.SetValue(PathIcon.DisabledFilledBrushProperty, PrimaryFilledColor, BindingPriority.Template);
+      icon.SetValue(PathIcon.SecondaryFilledBrushProperty, SecondaryFilledColor, BindingPriority.Template);
+
       if (!double.IsNaN(Width)) {
-         icon.Width = Width;
+         icon.SetValue(PathIcon.WidthProperty, Width, BindingPriority.Template);
       }
 
       if (!double.IsNaN(Height)) {
-         icon.Height = Height;
+         icon.SetValue(PathIcon.HeightProperty, Height, BindingPriority.Template);
       }
       return icon;
    }

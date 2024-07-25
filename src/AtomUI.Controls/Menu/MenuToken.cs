@@ -280,7 +280,7 @@ internal class MenuToken : AbstractControlDesignToken
       MenuBgColor = colorBgElevated;
       
       ItemPaddingInline = new Thickness(padding, _globalToken.PaddingXXS);
-      ItemIconSize = fontSize;
+      ItemIconSize = _globalToken.IconSize;
       ItemIconMarginInlineEnd = controlHeightSM - fontSize;
       
       TopLevelItemColor = colorNeutralToken.ColorText;

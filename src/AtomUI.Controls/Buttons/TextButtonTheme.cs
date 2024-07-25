@@ -74,7 +74,7 @@ internal class TextButtonTheme : BaseButtonTheme
       {
          var iconStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
          iconStyle.Add(PathIcon.DisabledFilledBrushProperty, GlobalResourceKey.ColorTextDisabled);
-         iconStyle.Add(PathIcon.NormalFillBrushProperty, ButtonResourceKey.DefaultColor);
+         iconStyle.Add(PathIcon.NormalFilledBrushProperty, ButtonResourceKey.DefaultColor);
          iconStyle.Add(PathIcon.SelectedFilledBrushProperty, ButtonResourceKey.DefaultColor);
          iconStyle.Add(PathIcon.ActiveFilledBrushProperty, ButtonResourceKey.DefaultColor);
          Add(iconStyle);
@@ -83,7 +83,7 @@ internal class TextButtonTheme : BaseButtonTheme
       var isDangerStyle = new Style(selector => selector.Nesting().PropertyEquals(Button.IsDangerProperty, true));
       {
          var iconStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
-         iconStyle.Add(PathIcon.NormalFillBrushProperty, GlobalResourceKey.ColorError);
+         iconStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalResourceKey.ColorError);
          iconStyle.Add(PathIcon.SelectedFilledBrushProperty, GlobalResourceKey.ColorErrorActive);
          iconStyle.Add(PathIcon.ActiveFilledBrushProperty, GlobalResourceKey.ColorErrorBorderHover);
          isDangerStyle.Add(iconStyle);

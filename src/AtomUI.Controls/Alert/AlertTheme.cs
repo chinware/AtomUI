@@ -136,7 +136,7 @@ internal class AlertTheme : ControlTheme
          var successStyle = new Style(selector => selector.Nesting().PropertyEquals(Alert.TypeProperty, AlertType.Success));
          var infoIconStyle = new Style(selector => infoIconSelector);
          infoIconStyle.Add(PathIcon.KindProperty, "CheckCircleFilled");
-         infoIconStyle.Add(PathIcon.NormalFillBrushProperty, GlobalResourceKey.ColorSuccess);
+         infoIconStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalResourceKey.ColorSuccess);
          successStyle.Add(infoIconStyle);
          Add(successStyle);
       }
@@ -145,7 +145,7 @@ internal class AlertTheme : ControlTheme
          var infoStyle = new Style(selector => selector.Nesting().PropertyEquals(Alert.TypeProperty, AlertType.Info));
          var infoIconStyle = new Style(selector => infoIconSelector);
          infoIconStyle.Add(PathIcon.KindProperty, "InfoCircleFilled");
-         infoIconStyle.Add(PathIcon.NormalFillBrushProperty, GlobalResourceKey.ColorPrimary);
+         infoIconStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalResourceKey.ColorPrimary);
          infoStyle.Add(infoIconStyle);
          Add(infoStyle);
       }
@@ -154,7 +154,7 @@ internal class AlertTheme : ControlTheme
          var warningStyle = new Style(selector => selector.Nesting().PropertyEquals(Alert.TypeProperty, AlertType.Warning));
          var infoIconStyle = new Style(selector => infoIconSelector);
          infoIconStyle.Add(PathIcon.KindProperty, "ExclamationCircleFilled");
-         infoIconStyle.Add(PathIcon.NormalFillBrushProperty, GlobalResourceKey.ColorWarning);
+         infoIconStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalResourceKey.ColorWarning);
          warningStyle.Add(infoIconStyle);
          Add(warningStyle);
       }
@@ -163,7 +163,7 @@ internal class AlertTheme : ControlTheme
          var errorStyle = new Style(selector => selector.Nesting().PropertyEquals(Alert.TypeProperty, AlertType.Error));
          var infoIconStyle = new Style(selector => infoIconSelector);
          infoIconStyle.Add(PathIcon.KindProperty, "CloseCircleFilled");
-         infoIconStyle.Add(PathIcon.NormalFillBrushProperty, GlobalResourceKey.ColorError);
+         infoIconStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalResourceKey.ColorError);
          errorStyle.Add(infoIconStyle);
          Add(errorStyle);
       }

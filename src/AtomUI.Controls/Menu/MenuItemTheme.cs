@@ -82,15 +82,15 @@ internal class MenuItemTheme : ControlTheme
             Name = ItemIconPresenterPart,
             HorizontalAlignment = HorizontalAlignment.Center,
             VerticalAlignment = VerticalAlignment.Center,
-            IsVisible = false,
             Stretch = Stretch.Uniform
          };
          
          Grid.SetColumn(iconPresenter, 1);
          iconPresenter.RegisterInNameScope(scope);
-         
-         BindUtils.CreateGlobalTokenBinding(iconPresenter, Viewbox.WidthProperty, GlobalResourceKey.IconSize);
-         BindUtils.CreateGlobalTokenBinding(iconPresenter, Viewbox.HeightProperty, GlobalResourceKey.IconSize);
+         CreateTemplateParentBinding(iconPresenter, Viewbox.ChildProperty, MenuItem.IconProperty);
+         BindUtils.CreateTokenBinding(iconPresenter, Viewbox.MarginProperty, MenuResourceKey.ItemMargin);
+         BindUtils.CreateGlobalTokenBinding(iconPresenter, Viewbox.WidthProperty, MenuResourceKey.ItemIconSize);
+         BindUtils.CreateGlobalTokenBinding(iconPresenter, Viewbox.HeightProperty, MenuResourceKey.ItemIconSize);
 
          var itemTextPresenter = new ContentPresenter
          {
@@ -152,6 +152,7 @@ internal class MenuItemTheme : ControlTheme
       var commonStyle = new Style(selector => selector.Nesting());
       BuildCommonStyle(commonStyle);
       BuildMenuIndicatorStyle();
+      BuildMenuIconStyle();
       Add(commonStyle);
    }
 
@@ -197,5 +198,22 @@ internal class MenuItemTheme : ControlTheme
          hasSubMenuStyle.Add(menuIndicatorStyle);
       }
       Add(hasSubMenuStyle);
+   }
+
+   private void BuildMenuIconStyle()
+   {
+      {
+         var iconViewBoxStyle = new Style(selector => selector.Nesting().Template().Name(ItemIconPresenterPart));
+         iconViewBoxStyle.Add(Viewbox.IsVisibleProperty, false);
+         Add(iconViewBoxStyle);
+      }
+
+      var hasIconStyle = new Style(selector => selector.Nesting().Class(":icon"));
+      {
+         var iconViewBoxStyle = new Style(selector => selector.Nesting().Template().Name(ItemIconPresenterPart));
+         iconViewBoxStyle.Add(Viewbox.IsVisibleProperty, true);
+         hasIconStyle.Add(iconViewBoxStyle);
+      }
+      Add(hasIconStyle);
    }
 }

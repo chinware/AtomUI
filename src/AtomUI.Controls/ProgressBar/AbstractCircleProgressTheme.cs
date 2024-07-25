@@ -27,7 +27,7 @@ public class AbstractCircleProgressTheme : AbstractProgressBarTheme
          VerticalAlignment = VerticalAlignment.Center
       };
       exceptionCompletedIcon.RegisterInNameScope(scope);
-      BindUtils.CreateGlobalTokenBinding(exceptionCompletedIcon, PathIcon.NormalFillBrushProperty, GlobalResourceKey.ColorError);
+      BindUtils.CreateGlobalTokenBinding(exceptionCompletedIcon, PathIcon.NormalFilledBrushProperty, GlobalResourceKey.ColorError);
       BindUtils.CreateGlobalTokenBinding(exceptionCompletedIcon, PathIcon.DisabledFilledBrushProperty, GlobalResourceKey.ControlItemBgActiveDisabled);
       
       var successCompletedIcon = new PathIcon
@@ -38,7 +38,7 @@ public class AbstractCircleProgressTheme : AbstractProgressBarTheme
          VerticalAlignment = VerticalAlignment.Center,
       };
       successCompletedIcon.RegisterInNameScope(scope);
-      BindUtils.CreateGlobalTokenBinding(successCompletedIcon, PathIcon.NormalFillBrushProperty, GlobalResourceKey.ColorSuccess);
+      BindUtils.CreateGlobalTokenBinding(successCompletedIcon, PathIcon.NormalFilledBrushProperty, GlobalResourceKey.ColorSuccess);
       BindUtils.CreateGlobalTokenBinding(successCompletedIcon, PathIcon.DisabledFilledBrushProperty, GlobalResourceKey.ControlItemBgActiveDisabled);
       
       container.Children.Add(exceptionCompletedIcon);
