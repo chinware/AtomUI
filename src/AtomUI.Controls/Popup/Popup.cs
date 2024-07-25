@@ -106,12 +106,25 @@ public class Popup : AbstractPopup
          
          // 目前我们只支持 WindowBase Popup
          _managedPopupPositioner = new ManagedPopupPositionerInfo((toplevel as WindowBase)!.PlatformImpl!);
+      }
+   }
+
+   protected internal override void NotifyPopupRootAboutToShow(IPopupHost popupRoot)
+   {
+      base.NotifyPopupRootAboutToShow(popupRoot);
+      var placementTarget = GetEffectivePlacementTarget();
+      if (placementTarget is not null) {
+         var toplevel = TopLevel.GetTopLevel(placementTarget);
+         if (toplevel is null) {
+            throw new InvalidOperationException(
+               "Unable to create shadow layer, top level for PlacementTarget is null.");
+         }
          
          _compositeDisposable = new CompositeDisposable();
          _shadowLayer = new PopupShadowLayer(toplevel);
          _compositeDisposable?.Add(BindUtils.RelayBind(this, MaskShadowsProperty, _shadowLayer!));
          _compositeDisposable?.Add(BindUtils.RelayBind(this, OpacityProperty, _shadowLayer!));
-         _compositeDisposable?.Add(BindUtils.RelayBind(this, OpacityProperty, (popupHost as Control)!));
+         _compositeDisposable?.Add(BindUtils.RelayBind(this, OpacityProperty, (popupRoot as Control)!));
          _shadowLayer.AttachToTarget(this);
       }
    }

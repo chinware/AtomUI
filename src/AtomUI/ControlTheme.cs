@@ -2,6 +2,7 @@
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
+using Avalonia.Data.Converters;
 using Avalonia.Styling;
 
 namespace AtomUI;
@@ -41,41 +42,48 @@ public class ControlTheme : AvaloniaControlTheme
 
    protected static IDisposable CreateTemplateParentBinding(AvaloniaObject target, AvaloniaProperty property,
                                                             string templateParentPath,
-                                                            BindingMode mode = BindingMode.Default)
+                                                            BindingMode mode = BindingMode.Default,
+                                                            IValueConverter? converter = null)
    {
       return target.Bind(property, new Binding(templateParentPath)
       {
          RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent),
-         Mode = mode
+         Mode = mode,
+         Converter = converter
       });
    }
 
    protected static IDisposable CreateTemplateParentBinding<T>(AvaloniaObject target, StyledProperty<T> property,
                                                                string templateParentPath,
-                                                               BindingMode mode = BindingMode.Default)
+                                                               BindingMode mode = BindingMode.Default,
+                                                               IValueConverter? converter = null)
    {
       return target.Bind(property, new Binding(templateParentPath)
       {
          RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent),
-         Mode = mode
+         Mode = mode,
+         Converter = converter
       });
    }
 
    protected static IDisposable CreateTemplateParentBinding<T>(AvaloniaObject target, DirectPropertyBase<T> property,
                                                                string templateParentPath,
-                                                               BindingMode mode = BindingMode.Default)
+                                                               BindingMode mode = BindingMode.Default,
+                                                               IValueConverter? converter = null)
    {
       return target.Bind(property, new Binding(templateParentPath)
       {
          RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent),
-         Mode = mode
+         Mode = mode,
+         Converter = converter
       });
    }
 
    protected static IDisposable CreateTemplateParentBinding(AvaloniaObject target, AvaloniaProperty property,
                                                             AvaloniaProperty templateParentProperty,
-                                                            BindingMode mode = BindingMode.Default)
+                                                            BindingMode mode = BindingMode.Default,
+                                                            IValueConverter? converter = null)
    {
-      return CreateTemplateParentBinding(target, property, templateParentProperty.Name, mode);
+      return CreateTemplateParentBinding(target, property, templateParentProperty.Name, mode, converter);
    }
 }

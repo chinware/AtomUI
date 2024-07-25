@@ -128,6 +128,8 @@ namespace AtomUI.Styling
         public static readonly TokenResourceKey MenuTearOffHeight = new TokenResourceKey("Menu.MenuTearOffHeight");
         public static readonly TokenResourceKey MenuBgColor = new TokenResourceKey("Menu.MenuBgColor");
         public static readonly TokenResourceKey ItemColor = new TokenResourceKey("Menu.ItemColor");
+        public static readonly TokenResourceKey KeyGestureColor = new TokenResourceKey("Menu.KeyGestureColor");
+        public static readonly TokenResourceKey ItemMargin = new TokenResourceKey("Menu.ItemMargin");
         public static readonly TokenResourceKey ItemHoverColor = new TokenResourceKey("Menu.ItemHoverColor");
         public static readonly TokenResourceKey ItemDisabledColor = new TokenResourceKey("Menu.ItemDisabledColor");
         public static readonly TokenResourceKey DangerItemColor = new TokenResourceKey("Menu.DangerItemColor");

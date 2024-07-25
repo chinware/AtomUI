@@ -77,6 +77,16 @@ internal class MenuToken : AbstractControlDesignToken
    public Color ItemColor { get; set; }
    
    /// <summary>
+   /// 快捷键颜色
+   /// </summary>
+   public Color KeyGestureColor { get; set; }
+   
+   /// <summary>
+   /// 菜单项边距
+   /// </summary>
+   public Thickness ItemMargin { get; set; }
+   
+   /// <summary>
    /// 菜单项文字悬浮颜色
    /// </summary>
    public Color ItemHoverColor { get; set; }
@@ -250,12 +260,14 @@ internal class MenuToken : AbstractControlDesignToken
       
       var fontSize = _globalToken.FontToken.FontSize;
       var fontSizeLG = _globalToken.FontToken.FontSizeLG;
-      
+
+      KeyGestureColor = colorTextSecondary;
       ItemBorderRadius = _globalToken.SeedToken.BorderRadius;
-      ItemColor = colorTextSecondary;
-      ItemHoverColor = colorTextSecondary;
+      ItemColor = colorNeutralToken.ColorText;
+      ItemHoverColor = ItemColor;
       ItemBg = colorBgContainer;
       ItemHoverBg = colorBgTextHover;
+      ItemMargin = new Thickness(0, 0, _globalToken.MarginXXS, 0);
 
       // Disabled
       ItemDisabledColor = colorTextDisabled;
@@ -267,7 +279,7 @@ internal class MenuToken : AbstractControlDesignToken
       ItemHeight = controlHeightSM;
       MenuBgColor = colorBgElevated;
       
-      ItemPaddingInline = new Thickness(padding);
+      ItemPaddingInline = new Thickness(padding, _globalToken.PaddingXXS);
       ItemIconSize = fontSize;
       ItemIconMarginInlineEnd = controlHeightSM - fontSize;
       

@@ -1,16 +1,21 @@
-﻿using AtomUI.Styling;
+﻿using AtomUI.Media;
+using AtomUI.Styling;
 using AtomUI.Utils;
+using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.Media;
+using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
 [ControlThemeProvider]
 internal class MenuItemTheme : ControlTheme
 {
+   public const string ItemDecoratorPart     = "Part_ItemDecorator";
    public const string MainContainerPart     = "Part_MainContainer";
    public const string TogglePresenterPart   = "Part_TogglePresenter";
    public const string ItemIconPresenterPart = "Part_ItemIconPresenter";
@@ -27,11 +32,38 @@ internal class MenuItemTheme : ControlTheme
    {
       return new FuncControlTemplate<MenuItem>((item, scope) =>
       {
-         var container =  new Border();
-         var layout = new StackPanel
+         var container = new Border()
+         {
+            Name = ItemDecoratorPart
+         };
+         
+         var transitions = new Transitions();
+         transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty));
+         container.Transitions = transitions;
+         
+         var layout = new Grid()
          {
             Name = MainContainerPart,
-            Orientation = Orientation.Horizontal,
+            ColumnDefinitions =
+            {
+               new ColumnDefinition(GridLength.Auto)
+               {
+                  SharedSizeGroup = "TogglePresenter"
+               },
+               new ColumnDefinition(GridLength.Auto)
+               {
+                  SharedSizeGroup = "IconPresenter"
+               },
+               new ColumnDefinition(GridLength.Star),
+               new ColumnDefinition(GridLength.Auto)
+               {
+                  SharedSizeGroup = "InputGestureText"
+               },
+               new ColumnDefinition(GridLength.Auto)
+               {
+                  SharedSizeGroup = "MenuIndicatorIcon"
+               }
+            }
          };
          layout.RegisterInNameScope(scope);
 
@@ -42,6 +74,7 @@ internal class MenuItemTheme : ControlTheme
             VerticalAlignment = VerticalAlignment.Center,
             IsVisible = false
          };
+         Grid.SetColumn(togglePresenter, 0);
          togglePresenter.RegisterInNameScope(scope);
 
          var iconPresenter = new Viewbox
@@ -52,7 +85,7 @@ internal class MenuItemTheme : ControlTheme
             IsVisible = false,
             Stretch = Stretch.Uniform
          };
-         
+         Grid.SetColumn(iconPresenter, 1);
          iconPresenter.RegisterInNameScope(scope);
          
          BindUtils.CreateGlobalTokenBinding(iconPresenter, Viewbox.WidthProperty, GlobalResourceKey.IconSize);
@@ -65,7 +98,8 @@ internal class MenuItemTheme : ControlTheme
             VerticalAlignment = VerticalAlignment.Center,
             RecognizesAccessKey = true
          };
-         
+         Grid.SetColumn(itemTextPresenter, 2);
+         BindUtils.CreateTokenBinding(itemTextPresenter, ContentPresenter.MarginProperty, MenuResourceKey.ItemMargin);
          CreateTemplateParentBinding(itemTextPresenter, ContentPresenter.ContentProperty, MenuItem.HeaderProperty);
          CreateTemplateParentBinding(itemTextPresenter, ContentPresenter.ContentTemplateProperty, MenuItem.HeaderTemplateProperty);
 
@@ -75,8 +109,17 @@ internal class MenuItemTheme : ControlTheme
          {
             Name = InputGestureTextPart,
             HorizontalAlignment = HorizontalAlignment.Right,
+            TextAlignment = TextAlignment.Right,
             VerticalAlignment = VerticalAlignment.Center,
          };
+         Grid.SetColumn(inputGestureText, 3);
+         
+         CreateTemplateParentBinding(inputGestureText, 
+                                     TextBlock.TextProperty, 
+                                     MenuItem.InputGestureProperty,
+                                     BindingMode.Default,
+                                     MenuItem.KeyGestureConverter);
+         
          inputGestureText.RegisterInNameScope(scope);
 
          var menuIndicatorIcon = new PathIcon
@@ -85,8 +128,9 @@ internal class MenuItemTheme : ControlTheme
             HorizontalAlignment = HorizontalAlignment.Right,
             VerticalAlignment = VerticalAlignment.Center,
          };
+         Grid.SetColumn(inputGestureText, 4);
          menuIndicatorIcon.RegisterInNameScope(scope);
-         
+
          layout.Children.Add(togglePresenter);
          layout.Children.Add(iconPresenter);
          layout.Children.Add(itemTextPresenter);
@@ -97,5 +141,41 @@ internal class MenuItemTheme : ControlTheme
          
          return container;
       });
+   }
+
+   protected override void BuildStyles()
+   {
+      var commonStyle = new Style(selector => selector.Nesting());
+      BuildCommonStyle(commonStyle);
+      Add(commonStyle);
+   }
+
+   private void BuildCommonStyle(Style commonStyle)
+   {
+      commonStyle.Add(MenuItem.ForegroundProperty, MenuResourceKey.ItemColor);
+      {
+         var keyGestureStyle = new Style(selector => selector.Nesting().Template().Name(InputGestureTextPart));
+         keyGestureStyle.Add(TextBlock.ForegroundProperty, MenuResourceKey.KeyGestureColor);
+         commonStyle.Add(keyGestureStyle);
+      }
+      {
+         var borderStyle = new Style(selector => selector.Nesting().Template().Name(ItemDecoratorPart));
+         borderStyle.Add(Border.MinHeightProperty, MenuResourceKey.ItemHeight);
+         borderStyle.Add(Border.PaddingProperty, MenuResourceKey.ItemPaddingInline);
+         borderStyle.Add(Border.BackgroundProperty, MenuResourceKey.ItemBg);
+         borderStyle.Add(Border.CornerRadiusProperty, MenuResourceKey.ItemBorderRadius);
+         commonStyle.Add(borderStyle);
+      }
+      
+      // Hover 状态
+      var hoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
+      hoverStyle.Add(MenuItem.ForegroundProperty, MenuResourceKey.ItemHoverColor);
+      {
+         var borderStyle = new Style(selector => selector.Nesting().Template().Name(ItemDecoratorPart));
+         borderStyle.Add(Border.BackgroundProperty, MenuResourceKey.ItemHoverBg);
+         hoverStyle.Add(borderStyle);
+      }
+      commonStyle.Add(hoverStyle);
+
    }
 }
