@@ -3,6 +3,7 @@ using AtomUI.Icon.AntDesign;
 using Avalonia;
 using Avalonia.Dialogs;
 using Avalonia.Media;
+using Nlnet.Avalonia.DevTools;
 
 namespace AtomUI.Demo.Desktop;
 
@@ -30,6 +31,7 @@ class Program
                    .UseManagedSystemDialogs()
                    .UsePlatformDetect()
                    .UseAtomUI()
+                   .UseDevToolsForAvalonia()
                    .UseIconPackage<AntDesignIconPackage>(true)
                    .With(new Win32PlatformOptions())
                    .LogToTrace();

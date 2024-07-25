@@ -10,7 +10,7 @@ namespace AtomUI.Controls;
 [ControlThemeProvider]
 internal class SeparatorTheme : ControlTheme
 {
-   public const string TitlePart = "PART_CloseBtn";
+   public const string TitlePart = "PART_Title";
 
    public SeparatorTheme()
       : base(typeof(Separator)) { }

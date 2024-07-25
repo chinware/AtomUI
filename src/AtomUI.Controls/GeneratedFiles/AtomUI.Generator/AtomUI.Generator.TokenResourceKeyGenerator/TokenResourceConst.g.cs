@@ -118,15 +118,14 @@ namespace AtomUI.Styling
     {
         public static readonly TokenResourceKey MenuPopupBorderRadius = new TokenResourceKey("Menu.MenuPopupBorderRadius");
         public static readonly TokenResourceKey MenuPopupBoxShadows = new TokenResourceKey("Menu.MenuPopupBoxShadows");
+        public static readonly TokenResourceKey MenuPopupContentPadding = new TokenResourceKey("Menu.MenuPopupContentPadding");
         public static readonly TokenResourceKey MenuPopupMinWidth = new TokenResourceKey("Menu.MenuPopupMinWidth");
         public static readonly TokenResourceKey MenuPopupMaxWidth = new TokenResourceKey("Menu.MenuPopupMaxWidth");
         public static readonly TokenResourceKey MenuPopupMinHeight = new TokenResourceKey("Menu.MenuPopupMinHeight");
         public static readonly TokenResourceKey MenuPopupMaxHeight = new TokenResourceKey("Menu.MenuPopupMaxHeight");
         public static readonly TokenResourceKey MenuArrowSize = new TokenResourceKey("Menu.MenuArrowSize");
         public static readonly TokenResourceKey MenuArrowOffset = new TokenResourceKey("Menu.MenuArrowOffset");
-        public static readonly TokenResourceKey MenuMargin = new TokenResourceKey("Menu.MenuMargin");
         public static readonly TokenResourceKey MenuTearOffHeight = new TokenResourceKey("Menu.MenuTearOffHeight");
-        public static readonly TokenResourceKey MenuContentPadding = new TokenResourceKey("Menu.MenuContentPadding");
         public static readonly TokenResourceKey MenuBgColor = new TokenResourceKey("Menu.MenuBgColor");
         public static readonly TokenResourceKey ItemColor = new TokenResourceKey("Menu.ItemColor");
         public static readonly TokenResourceKey ItemHoverColor = new TokenResourceKey("Menu.ItemHoverColor");
@@ -159,6 +158,7 @@ namespace AtomUI.Styling
         public static readonly TokenResourceKey TopLevelItemLineHeightLG = new TokenResourceKey("Menu.TopLevelItemLineHeightLG");
         public static readonly TokenResourceKey TopLevelItemLineHeightSM = new TokenResourceKey("Menu.TopLevelItemLineHeightSM");
         public static readonly TokenResourceKey TopLevelItemPopupMarginToAnchor = new TokenResourceKey("Menu.TopLevelItemPopupMarginToAnchor");
+        public static readonly TokenResourceKey SeparatorItemHeight = new TokenResourceKey("Menu.SeparatorItemHeight");
     }
 
     public static class OptionButtonResourceKey

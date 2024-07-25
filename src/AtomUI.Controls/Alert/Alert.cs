@@ -126,6 +126,8 @@ public class Alert : TemplatedControl, IControlCustomStyle
       _customStyle.HandleTemplateApplied(e.NameScope);
    }
 
+   #region IControlCustomStyle 实现
+   
    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
    {
       BindUtils.CreateTokenBinding(this, BorderThicknessProperty, GlobalResourceKey.BorderThickness,
@@ -133,8 +135,6 @@ public class Alert : TemplatedControl, IControlCustomStyle
                                    new RenderScaleAwareThicknessConfigure(this));
       SetupCloseButton();
    }
-
-   #region IControlCustomStyle 实现
    
    void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
    {

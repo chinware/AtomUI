@@ -1,4 +1,5 @@
 ﻿using AtomUI.Styling;
+using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
@@ -8,5 +9,13 @@ public class MenuSeparatorTheme : ControlTheme
    public MenuSeparatorTheme()
       : base(typeof(MenuSeparator))
    {
+   }
+
+   protected override void BuildStyles()
+   {
+      var commonStyle = new Style(selector => selector.Nesting());
+      commonStyle.Add(MenuSeparator.MinHeightProperty, MenuResourceKey.SeparatorItemHeight);
+      commonStyle.Add(MenuSeparator.BorderBrushProperty, GlobalResourceKey.ColorBorder);
+      Add(commonStyle);
    }
 }

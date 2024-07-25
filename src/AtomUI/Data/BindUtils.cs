@@ -11,7 +11,7 @@ public static class BindUtils
 {
    public static IDisposable RelayBind(AvaloniaObject source, AvaloniaProperty sourceProperty, AvaloniaObject target,
                                        AvaloniaProperty? targetProperty = null,
-                                       BindingMode mode = BindingMode.OneWay)
+                                       BindingMode mode = BindingMode.Default)
    {
       targetProperty ??= sourceProperty;
       var registry = AvaloniaPropertyRegistry.Instance;

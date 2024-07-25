@@ -7,13 +7,13 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Layout;
-using Avalonia.LogicalTree;
-using Avalonia.Markup.Xaml.Templates;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Metadata;
 
 namespace AtomUI.Controls;
+
+using AvaloniaSeparator = Avalonia.Controls.Separator;
 
 public enum SeparatorTitlePosition
 {
@@ -22,7 +22,7 @@ public enum SeparatorTitlePosition
    Center
 }
 
-public partial class Separator : TemplatedControl, IControlCustomStyle
+public class Separator : AvaloniaSeparator, IControlCustomStyle
 {
    #region 公共属性定义
 

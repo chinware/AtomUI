@@ -1,13 +1,11 @@
 ﻿using AtomUI.Styling;
 using AtomUI.Utils;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Layout;
-using Avalonia.Media;
 using Avalonia.Styling;
 
 namespace AtomUI.Controls;
@@ -19,6 +17,7 @@ public class TopLevelMenuItemTheme : ControlTheme
    
    public const string PopupPart = "PART_Popup";
    public const string HeaderPresenterPart = "PART_HeaderPresenter";
+   public const string ItemsPresenterPart = "PART_ItemsPresenter";
    
    public TopLevelMenuItemTheme() : base(typeof(MenuItem)) {}
    
@@ -59,6 +58,7 @@ public class TopLevelMenuItemTheme : ControlTheme
 
    private Popup CreateMenuPopup(MenuItem menuItem)
    {
+
       var popup = new Popup()
       {
          Name = PopupPart,
@@ -66,8 +66,31 @@ public class TopLevelMenuItemTheme : ControlTheme
          IsLightDismissEnabled = true,
          Placement = PlacementMode.BottomEdgeAlignedLeft,
          OverlayInputPassThroughElement = menuItem,
-         Child = new Border()
       };
+      
+      var border = new Border();
+      BindUtils.CreateTokenBinding(border, Border.BackgroundProperty, GlobalResourceKey.ColorBgContainer);
+      BindUtils.CreateTokenBinding(border, Border.CornerRadiusProperty, MenuResourceKey.MenuPopupBorderRadius);
+      BindUtils.CreateTokenBinding(border, Border.MinWidthProperty, MenuResourceKey.MenuPopupMinWidth);
+      BindUtils.CreateTokenBinding(border, Border.MaxWidthProperty, MenuResourceKey.MenuPopupMaxWidth);
+      BindUtils.CreateTokenBinding(border, Border.MinHeightProperty, MenuResourceKey.MenuPopupMinHeight);
+      BindUtils.CreateTokenBinding(border, Border.MaxHeightProperty, MenuResourceKey.MenuPopupMaxHeight);
+      BindUtils.CreateTokenBinding(border, Border.PaddingProperty, MenuResourceKey.MenuPopupContentPadding);
+
+      var scrollViewer = new MenuScrollViewer();
+      var itemsPresenter = new ItemsPresenter()
+      {
+         Name = ItemsPresenterPart,
+      };
+      CreateTemplateParentBinding(itemsPresenter, ItemsPresenter.ItemsPanelProperty, MenuItem.ItemsPanelProperty);
+      Grid.SetIsSharedSizeScope(itemsPresenter, true);
+      scrollViewer.Content = itemsPresenter;
+      border.Child = scrollViewer;
+      popup.Child = border;
+
+      BindUtils.CreateTokenBinding(popup, Popup.MarginToAnchorProperty, MenuResourceKey.TopLevelItemPopupMarginToAnchor);
+      BindUtils.CreateTokenBinding(popup, Popup.MaskShadowsProperty, MenuResourceKey.MenuPopupBoxShadows);
+      
       CreateTemplateParentBinding(popup, Popup.IsOpenProperty, MenuItem.IsSubMenuOpenProperty, BindingMode.TwoWay);
       return popup;
    }
@@ -77,7 +100,6 @@ public class TopLevelMenuItemTheme : ControlTheme
       BuildCommonStyle();
       BuildSizeTypeStyle();
       BuildDisabledStyle();
-      BuildPopupStyle();
    }
 
    private void BuildCommonStyle()
@@ -130,25 +152,6 @@ public class TopLevelMenuItemTheme : ControlTheme
          smallSizeStyle.Add(presenterStyle);
       }
       Add(smallSizeStyle);
-   }
-
-   private void BuildPopupStyle()
-   {
-      var popupStyle = new Style(selector => selector.Nesting().Template().OfType<Popup>());
-
-      popupStyle.Add(Popup.MarginToAnchorProperty, MenuResourceKey.TopLevelItemPopupMarginToAnchor);
-      popupStyle.Add(Popup.MaskShadowsProperty, MenuResourceKey.MenuPopupBoxShadows);
-      
-      Add(popupStyle);
-      
-      var borderStyle = new Style(selector => selector.Nesting().Template().OfType<Popup>().Child().OfType<Border>());
-      borderStyle.Add(Border.BackgroundProperty, GlobalResourceKey.ColorBgContainer);
-      borderStyle.Add(Border.CornerRadiusProperty, MenuResourceKey.MenuPopupBorderRadius);
-      borderStyle.Add(Border.MinWidthProperty, MenuResourceKey.MenuPopupMinWidth);
-      borderStyle.Add(Border.MaxWidthProperty, MenuResourceKey.MenuPopupMaxWidth);
-      borderStyle.Add(Border.MinHeightProperty, MenuResourceKey.MenuPopupMinHeight);
-      borderStyle.Add(Border.MaxHeightProperty, MenuResourceKey.MenuPopupMaxHeight);
-      Add(borderStyle);
    }
 
    private void BuildDisabledStyle()

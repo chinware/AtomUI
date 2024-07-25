@@ -26,6 +26,11 @@ internal class MenuToken : AbstractControlDesignToken
    public BoxShadows MenuPopupBoxShadows { get; set; }
    
    /// <summary>
+   /// 菜单内容边距
+   /// </summary>
+   public Thickness MenuPopupContentPadding { get; set; }
+   
+   /// <summary>
    /// 菜单 Popup 最小宽度
    /// </summary>
    public double MenuPopupMinWidth { get; set; }
@@ -56,20 +61,10 @@ internal class MenuToken : AbstractControlDesignToken
    public double MenuArrowOffset { get; set; }
    
    /// <summary>
-   /// 菜单间距
-   /// </summary>
-   public Thickness MenuMargin { get; set; }
-   
-   /// <summary>
    /// 分离菜单项的高度，这个用于菜单中快捷功能的图标显示
    /// TODO 暂时还没实现，但是最终会实现
    /// </summary>
    public double MenuTearOffHeight { get; set; }
-   
-   /// <summary>
-   /// 菜单内容边距
-   /// </summary>
-   public double MenuContentPadding { get; set; }
    
    /// <summary>
    /// 弹出框背景色
@@ -231,7 +226,11 @@ internal class MenuToken : AbstractControlDesignToken
    /// </summary>
    public double TopLevelItemPopupMarginToAnchor { get; set; }
    
- 
+   /// <summary>
+   /// 菜单分割项的高度
+   /// </summary>
+   public double SeparatorItemHeight { get; set; }
+   
    internal override void CalculateFromAlias()
    {
       base.CalculateFromAlias();
@@ -271,13 +270,6 @@ internal class MenuToken : AbstractControlDesignToken
       ItemPaddingInline = new Thickness(padding);
       ItemIconSize = fontSize;
       ItemIconMarginInlineEnd = controlHeightSM - fontSize;
-      MenuArrowSize = (fontSize / 7.0) * 5.0;
-      MenuArrowOffset = MenuArrowSize * 0.5;
-      MenuTearOffHeight = ItemHeight * 1.2; // 暂时这么定义吧
-      MenuContentPadding = _globalToken.PaddingXXS / 2; // 先默认一个最小的内容间距
-      MenuMargin = new Thickness(1);
-
-      MenuPopupBoxShadows = _globalToken.BoxShadowsSecondary;
       
       TopLevelItemColor = colorNeutralToken.ColorText;
       TopLevelItemSelectedColor = colorNeutralToken.ColorTextSecondary;
@@ -322,5 +314,13 @@ internal class MenuToken : AbstractControlDesignToken
       MenuPopupMinHeight = ItemHeight * 3;
       MenuPopupMaxHeight = ItemHeight * 30;
 
+      SeparatorItemHeight = _globalToken.SeedToken.LineWidth * 5; // 上下两像素，留一像素给自己
+      
+      MenuArrowSize = (fontSize / 7.0) * 5.0;
+      MenuArrowOffset = MenuArrowSize * 0.5;
+      MenuTearOffHeight = ItemHeight * 1.2; // 暂时这么定义吧
+      
+      MenuPopupContentPadding = new Thickness(_globalToken.PaddingXXS, MenuPopupBorderRadius.TopLeft / 2);
+      MenuPopupBoxShadows = _globalToken.BoxShadowsSecondary;
    }
 }
