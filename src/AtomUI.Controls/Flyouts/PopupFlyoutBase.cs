@@ -411,7 +411,7 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
 
       popup.Opened += OnPopupOpened;
       popup.Closed += OnPopupClosed;
-      popup.Closing += OnPopupClosing;
+      // popup.Closing += OnPopupClosing;
       popup.KeyUp += OnPlacementTargetOrPopupKeyUp;
       NotifyPopupCreated(popup);
       return popup;
@@ -424,16 +424,11 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
       _popupHostChangedHandler?.Invoke(Popup.Host);
    }
 
-   
+   // TODO Error 通过反射玩
    private void OnPopupClosing(object? sender, CancelEventArgs e)
    {
       if (IsOpen) {
          e.Cancel = CancelClosing();
-         if (!e.Cancel) {
-            if (Popup.Host is not null) {
-               Popup.NotifyAboutToClosing();
-            }
-         }
       }
    }
 

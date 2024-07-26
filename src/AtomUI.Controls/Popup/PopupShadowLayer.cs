@@ -74,6 +74,11 @@ internal class PopupShadowLayer : LiteWindow, IShadowDecorator
          _layout.Children.Add(_shadowRenderer);
          SetChild(_layout);
       }
+
+      if (_target is not null && _target.IsOpen) {
+         SetupShadowRenderer();
+         Open();
+      }
    }
 
    private void HandleTargetOpened(object? sender, EventArgs args)

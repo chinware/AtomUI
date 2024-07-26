@@ -564,7 +564,7 @@ public class ToolTip : TemplatedControl,
    /// <summary>
    /// Helper method to set popup's styling and templated parent.
    /// </summary>
-   internal void SetPopupParent(AbstractPopup popup, Control? newParent)
+   internal void SetPopupParent(Popup popup, Control? newParent)
    {
       if (popup.Parent != null && popup.Parent != newParent) {
          ((ISetLogicalParent)popup).SetParent(null);
@@ -691,7 +691,7 @@ public class ToolTip : TemplatedControl,
 
    private void OnPopupOpened(object? sender, EventArgs e)
    {
-      _popupHostChangedHandler?.Invoke(((AbstractPopup)sender!).Host);
+      _popupHostChangedHandler?.Invoke(((Popup)sender!).Host);
    }
 
    private void UpdatePseudoClasses(bool newValue)

@@ -11,7 +11,7 @@ public class FlyoutPresenter : ArrowDecoratedBox
    {
       if (e.Key == Key.Escape)
       {
-         var host = this.FindLogicalAncestorOfType<AbstractPopup>();
+         var host = this.FindLogicalAncestorOfType<Popup>();
          if (host != null)
          {
             host.IsOpen = false;

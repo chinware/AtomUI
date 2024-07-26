@@ -36,7 +36,6 @@ public class MenuItem : AvaloniaMenuItem, IControlCustomStyle
    private readonly IControlCustomStyle _customStyle;
    private ContentPresenter? _topLevelContentPresenter;
    private ContentControl? _togglePresenter;
-   private Popup? _popup;
    
    internal static PlatformKeyGestureConverter KeyGestureConverter = new PlatformKeyGestureConverter();
 

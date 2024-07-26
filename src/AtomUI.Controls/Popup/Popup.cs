@@ -15,7 +15,9 @@ using Avalonia.Threading;
 
 namespace AtomUI.Controls;
 
-public class Popup : AbstractPopup
+using AvaloniaPopup = Avalonia.Controls.Primitives.Popup;
+
+public class Popup : AvaloniaPopup
 {
    public event EventHandler<PopupFlippedEventArgs>? PositionFlipped;
    
@@ -64,7 +66,9 @@ public class Popup : AbstractPopup
    private bool _initialized;
    private ManagedPopupPositionerInfo? _managedPopupPositioner;
    protected bool _animating = false;
-
+    // 当鼠标移走了，但是打开动画还没完成，我们需要记录下来这个信号
+    internal bool RequestCloseWhereAnimationCompleted { get; set; } = false;
+   
    static Popup()
    {
       AffectsMeasure<Popup>(PlacementProperty);
@@ -75,6 +79,8 @@ public class Popup : AbstractPopup
    public Popup()
    {
       IsLightDismissEnabled = false;
+      Closed += HandleClosed;
+      Opened += HandleOpened;
    }
 
    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -93,45 +99,13 @@ public class Popup : AbstractPopup
       _compositeDisposable?.Dispose();
    }
 
-   protected override void NotifyPopupHostCreated(IPopupHost popupHost)
+   protected Control? GetEffectivePlacementTarget()
    {
-      base.NotifyPopupHostCreated(popupHost);
-      var placementTarget = GetEffectivePlacementTarget();
-      if (placementTarget is not null) {
-         var toplevel = TopLevel.GetTopLevel(placementTarget);
-         if (toplevel is null) {
-            throw new InvalidOperationException(
-               "Unable to create shadow layer, top level for PlacementTarget is null.");
-         }
-         
-         // 目前我们只支持 WindowBase Popup
-         _managedPopupPositioner = new ManagedPopupPositionerInfo((toplevel as WindowBase)!.PlatformImpl!);
-      }
+      return PlacementTarget ?? this.FindLogicalAncestorOfType<Control>();
    }
-
-   protected internal override void NotifyPopupRootAboutToShow(IPopupHost popupRoot)
+   
+   private void HandleClosed(object? sender, EventArgs? args)
    {
-      base.NotifyPopupRootAboutToShow(popupRoot);
-      var placementTarget = GetEffectivePlacementTarget();
-      if (placementTarget is not null) {
-         var toplevel = TopLevel.GetTopLevel(placementTarget);
-         if (toplevel is null) {
-            throw new InvalidOperationException(
-               "Unable to create shadow layer, top level for PlacementTarget is null.");
-         }
-         
-         _compositeDisposable = new CompositeDisposable();
-         _shadowLayer = new PopupShadowLayer(toplevel);
-         _compositeDisposable?.Add(BindUtils.RelayBind(this, MaskShadowsProperty, _shadowLayer!));
-         _compositeDisposable?.Add(BindUtils.RelayBind(this, OpacityProperty, _shadowLayer!));
-         _compositeDisposable?.Add(BindUtils.RelayBind(this, OpacityProperty, (popupRoot as Control)!));
-         _shadowLayer.AttachToTarget(this);
-      }
-   }
-
-   protected override void NotifyClosed()
-   {
-      base.NotifyClosed();
       var offsetX = HorizontalOffset;
       var offsetY = VerticalOffset;
       // 还原位移
@@ -144,6 +118,35 @@ public class Popup : AbstractPopup
       
       _compositeDisposable?.Dispose();
       _shadowLayer = null;
+   }
+
+   private void HandleOpened(object? sender, EventArgs? args)
+   {
+      var placementTarget = GetEffectivePlacementTarget();
+      if (placementTarget is not null) {
+         var toplevel = TopLevel.GetTopLevel(placementTarget);
+         if (toplevel is null) {
+            throw new InvalidOperationException(
+               "Unable to create shadow layer, top level for PlacementTarget is null.");
+         }
+         
+         // 目前我们只支持 WindowBase Popup
+         _managedPopupPositioner = new ManagedPopupPositionerInfo((toplevel as WindowBase)!.PlatformImpl!);
+
+         if (toplevel is null) {
+            throw new InvalidOperationException(
+               "Unable to create shadow layer, top level for PlacementTarget is null.");
+         }
+         
+         _compositeDisposable = new CompositeDisposable();
+         _shadowLayer = new PopupShadowLayer(toplevel);
+         _compositeDisposable?.Add(BindUtils.RelayBind(this, MaskShadowsProperty, _shadowLayer!));
+         _compositeDisposable?.Add(BindUtils.RelayBind(this, OpacityProperty, _shadowLayer!));
+         _compositeDisposable?.Add(BindUtils.RelayBind(this, OpacityProperty, (Host as Control)!));
+         _shadowLayer.AttachToTarget(this);
+
+         AdjustPopupHostPosition(placementTarget);
+      }
    }
 
    internal (bool, bool) CalculateFlipInfo(Size translatedSize, Rect anchorRect, PopupAnchor anchor,
@@ -242,10 +245,8 @@ public class Popup : AbstractPopup
    /// </summary>
    /// <param name="popupHost"></param>
    /// <param name="placementTarget"></param>
-   protected internal override void NotifyAboutToUpdateHostPosition(IPopupHost popupHost, Control placementTarget)
+   internal void AdjustPopupHostPosition(Control placementTarget)
    {
-      base.NotifyAboutToUpdateHostPosition(popupHost, placementTarget);
-   
       var offsetX = HorizontalOffset;
       var offsetY = VerticalOffset;
       var marginToAnchorOffset = PopupUtils.CalculateMarginToAnchorOffset(Placement, MarginToAnchor, PlacementAnchor, PlacementGravity);
@@ -351,25 +352,23 @@ public class Popup : AbstractPopup
    public async Task OpenAnimationAsync()
    {
       // AbstractPopup is currently open
-      if (_openState != null || _animating) {
-         return;
-      }
-
-      _animating = true;
-      PrepareOpenState();
-      if (_openState == null) {
+      if (IsOpen || _animating) {
          return;
       }
       
+      _animating = true;
+      
+      Open();
+      HideShadowLayer();
+      var popupRoot = (Host as PopupRoot)!;
       // 获取 popup 的具体位置，这个就是非常准确的位置，还有大小
       // TODO 暂时只支持 WindowBase popup
-      var popupRoot = (_openState.PopupHost as PopupRoot)!;
-      popupRoot.Show();
       popupRoot.Hide();
       var popupOffset = popupRoot.PlatformImpl!.Position;
       var offset = new Point(popupOffset.X, popupOffset.Y);
-      var topLevel = _openState.TopLevel;
-      var scaling = topLevel.RenderScaling;
+      var placementTarget = GetEffectivePlacementTarget();
+      var topLevel = TopLevel.GetTopLevel(placementTarget);
+      var scaling = topLevel?.RenderScaling ?? 1.0;
       
       // 调度动画
       var director = Director.Instance;
@@ -386,8 +385,9 @@ public class Popup : AbstractPopup
       
       motionActor.Completed += (sender, args) =>
       {
-         OpenOverride();
-         if (_openState?.PopupHost is WindowBase window) {
+         popupRoot.Show();
+         _shadowLayer!.Opacity = 1;
+         if (popupRoot is WindowBase window) {
             window.PlatformImpl!.SetTopmost(true);
          }
          _animating = false;
@@ -409,25 +409,28 @@ public class Popup : AbstractPopup
          RequestCloseWhereAnimationCompleted = true;
          return;
       }
-      if (_openState is null) {
+      if (!IsOpen) {
          return;
       }
-
+      
       _animating = true;
-  
+      
       var director = Director.Instance;
       var motion = new ZoomBigOutMotion();
       motion.ConfigureOpacity(MotionDuration);
       motion.ConfigureRenderTransform(MotionDuration);
       
-      var popupRoot = (_openState.PopupHost as PopupRoot)!;
+      var popupRoot = (Host as PopupRoot)!;
       var popupOffset = popupRoot.PlatformImpl!.Position;
       var offset = new Point(popupOffset.X, popupOffset.Y);
-      var scaling = _openState.TopLevel.RenderScaling;
+      var placementTarget = GetEffectivePlacementTarget();
+      var topLevel = TopLevel.GetTopLevel(placementTarget);
+      
+      var scaling = topLevel?.RenderScaling ?? 1.0;
       
       var motionActor = new PopupMotionActor(MaskShadows, offset, scaling, Child ?? popupRoot, motion);
       motionActor.DispatchInSceneLayer = true;
-      motionActor.SceneParent = _openState.TopLevel;
+      motionActor.SceneParent = topLevel;
       
       var cts = new CancellationTokenSource();
       var cancelToken = cts.Token;
@@ -437,14 +440,14 @@ public class Popup : AbstractPopup
          popupRoot.Opacity = 0;
          HideShadowLayer();
       };
-
+      
       motionActor.Completed += (sender, args) =>
       {
          _animating = false;
          Close();
          cts.Cancel();
       };
-
+      
       director?.Schedule(motionActor);
       while (!cancelToken.IsCancellationRequested) {
          await Task.Delay(TimeSpan.FromMilliseconds(10), cancelToken);
