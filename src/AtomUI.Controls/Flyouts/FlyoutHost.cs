@@ -1,6 +1,4 @@
-﻿using System.Reactive.Disposables;
-using AtomUI.Data;
-using AtomUI.Styling;
+﻿using AtomUI.Styling;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -8,7 +6,6 @@ using Avalonia.Controls.Diagnostics;
 using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Input;
 using Avalonia.Input.Raw;
-using Avalonia.LogicalTree;
 using Avalonia.Metadata;
 using Avalonia.Threading;
 
@@ -146,7 +143,6 @@ public class FlyoutHost : Control
    }
 
    private bool _initialized = false;
-   private CompositeDisposable? _compositeDisposable;
    private DispatcherTimer? _mouseEnterDelayTimer;
    private DispatcherTimer? _mouseLeaveDelayTimer;
 
@@ -171,7 +167,6 @@ public class FlyoutHost : Control
    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
    {
       base.OnAttachedToVisualTree(e);
-      _compositeDisposable = new CompositeDisposable();
       SetupTriggerHandler();
       SetupFlyoutProperties();
    }
@@ -179,7 +174,6 @@ public class FlyoutHost : Control
    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
    {
       base.OnDetachedFromVisualTree(e);
-      _compositeDisposable?.Dispose();
       StopMouseLeaveTimer();
       StopMouseEnterTimer();
    }
@@ -187,12 +181,12 @@ public class FlyoutHost : Control
    private void SetupFlyoutProperties()
    {
       if (Flyout is not null) {
-         _compositeDisposable?.Add(BindUtils.RelayBind(this, PlacementProperty, Flyout));
-         _compositeDisposable?.Add(BindUtils.RelayBind(this, PlacementAnchorProperty, Flyout));
-         _compositeDisposable?.Add(BindUtils.RelayBind(this, PlacementGravityProperty, Flyout));
-         _compositeDisposable?.Add(BindUtils.RelayBind(this, IsShowArrowProperty, Flyout));
-         _compositeDisposable?.Add(BindUtils.RelayBind(this, IsPointAtCenterProperty, Flyout));
-         _compositeDisposable?.Add(BindUtils.RelayBind(this, MarginToAnchorProperty, Flyout));
+         BindUtils.RelayBind(this, PlacementProperty, Flyout);
+         BindUtils.RelayBind(this, PlacementAnchorProperty, Flyout);
+         BindUtils.RelayBind(this, PlacementGravityProperty, Flyout);
+         BindUtils.RelayBind(this, IsShowArrowProperty, Flyout);
+         BindUtils.RelayBind(this, IsPointAtCenterProperty, Flyout);
+         BindUtils.RelayBind(this, MarginToAnchorProperty, Flyout);
       }
    }
 
@@ -202,22 +196,22 @@ public class FlyoutHost : Control
          return;
       }
       if (Trigger == FlyoutTriggerType.Hover) {
-         _compositeDisposable?.Add(IsPointerOverProperty.Changed.Subscribe(args =>
+         IsPointerOverProperty.Changed.Subscribe(args =>
          {
             if (args.Sender == AnchorTarget) {
                HandleAnchorTargetHover(args);
             }
-         }));
+         });
       } else if (Trigger == FlyoutTriggerType.Focus) {
-         _compositeDisposable?.Add(IsFocusedProperty.Changed.Subscribe(args =>
+         IsFocusedProperty.Changed.Subscribe(args =>
          {
             if (args.Sender == AnchorTarget) {
                HandleAnchorTargetFocus(args);
             }
-         }));
+         });
       } else if (Trigger == FlyoutTriggerType.Click) {
          var inputManager = AvaloniaLocator.Current.GetService<IInputManager>()!;
-         _compositeDisposable?.Add(inputManager.Process.Subscribe(HandleAnchorTargetClick));
+         inputManager.Process.Subscribe(HandleAnchorTargetClick);
       }
    }
 

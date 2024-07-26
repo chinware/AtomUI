@@ -108,10 +108,15 @@ public class MenuItem : AvaloniaMenuItem, IControlCustomStyle
             _togglePresenter.Presenter.IsVisible = false;
          }
       } else if (ToggleType == MenuItemToggleType.CheckBox) {
-         _togglePresenter.Content = new CheckBox();
+         var checkbox = new CheckBox();
+         BindUtils.RelayBind(this, IsCheckedProperty, checkbox, CheckBox.IsCheckedProperty);
+         _togglePresenter.Content = checkbox;
          _togglePresenter.IsVisible = true;
       } else if (ToggleType == MenuItemToggleType.Radio) {
-         _togglePresenter.Content = new RadioButton();
+         var radioButton = new RadioButton();
+         BindUtils.RelayBind(this, IsCheckedProperty, radioButton, RadioButton.IsCheckedProperty);
+         BindUtils.RelayBind(this, GroupNameProperty, radioButton, RadioButton.GroupNameProperty);
+          _togglePresenter.Content = radioButton;
          _togglePresenter.IsVisible = true;
       }
    }

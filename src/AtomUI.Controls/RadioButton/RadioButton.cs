@@ -1,5 +1,4 @@
 using AtomUI.Controls.Utils;
-using AtomUI.Data;
 using AtomUI.Media;
 using AtomUI.Styling;
 using AtomUI.Utils;
@@ -7,10 +6,8 @@ using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Layout;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Rendering;
 
@@ -18,98 +15,98 @@ namespace AtomUI.Controls;
 
 using AvaloniaRadioButton = Avalonia.Controls.RadioButton;
 
-public partial class RadioButton : AvaloniaRadioButton, 
-                                   ICustomHitTest,
-                                   IWaveAdornerInfoProvider, 
-                                   IControlCustomStyle
+public class RadioButton : AvaloniaRadioButton,
+                           ICustomHitTest,
+                           IWaveAdornerInfoProvider,
+                           IControlCustomStyle
 {
    internal static readonly StyledProperty<double> RadioSizeProperty =
       AvaloniaProperty.Register<Button, double>(nameof(RadioSize), 0);
-   
+
    internal static readonly StyledProperty<double> PaddingInlineProperty =
       AvaloniaProperty.Register<Button, double>(nameof(PaddingInline), 0);
-   
+
    internal static readonly StyledProperty<IBrush?> RadioBorderBrushProperty =
       AvaloniaProperty.Register<Button, IBrush?>(nameof(RadioBorderBrush));
-   
+
    internal static readonly StyledProperty<IBrush?> RadioInnerBackgroundProperty =
       AvaloniaProperty.Register<Button, IBrush?>(nameof(RadioInnerBackground));
-   
+
    internal static readonly StyledProperty<IBrush?> RadioBackgroundProperty =
       AvaloniaProperty.Register<Button, IBrush?>(nameof(RadioBackground));
-   
+
    internal static readonly StyledProperty<Thickness> RadioBorderThicknessProperty =
       AvaloniaProperty.Register<Button, Thickness>(nameof(RadioBorderThickness));
-   
+
    internal static readonly StyledProperty<double> RadioDotEffectSizeProperty =
       AvaloniaProperty.Register<Button, double>(nameof(RadioDotEffectSize));
-   
+
    internal static readonly StyledProperty<double> DotSizeValueProperty =
       AvaloniaProperty.Register<RadioButton, double>(
          nameof(DotSizeValue));
-   
+
    internal static readonly StyledProperty<double> DotPaddingProperty =
       AvaloniaProperty.Register<RadioButton, double>(
          nameof(DotPadding));
-   
+
    internal double RadioSize
    {
       get => GetValue(RadioSizeProperty);
       set => SetValue(RadioSizeProperty, value);
    }
-   
+
    internal double PaddingInline
    {
       get => GetValue(PaddingInlineProperty);
       set => SetValue(PaddingInlineProperty, value);
    }
-   
+
    internal IBrush? RadioBorderBrush
    {
       get => GetValue(RadioBorderBrushProperty);
       set => SetValue(RadioBorderBrushProperty, value);
    }
-   
+
    internal IBrush? RadioInnerBackground
    {
       get => GetValue(RadioInnerBackgroundProperty);
       set => SetValue(RadioInnerBackgroundProperty, value);
    }
-   
+
    internal IBrush? RadioBackground
    {
       get => GetValue(RadioBackgroundProperty);
       set => SetValue(RadioBackgroundProperty, value);
    }
-   
+
    internal Thickness RadioBorderThickness
    {
       get => GetValue(RadioBorderThicknessProperty);
       set => SetValue(RadioBorderThicknessProperty, value);
    }
-   
+
    internal double RadioDotEffectSize
    {
       get => GetValue(RadioDotEffectSizeProperty);
       set => SetValue(RadioDotEffectSizeProperty, value);
    }
-   
+
    internal double DotSizeValue
    {
       get => GetValue(DotSizeValueProperty);
       set => SetValue(DotSizeValueProperty, value);
    }
-   
+
    internal double DotPadding
    {
       get => GetValue(DotPaddingProperty);
       set => SetValue(DotPaddingProperty, value);
    }
-   
+
    private IPen? _cachedPen;
    private ControlStyleState _styleState;
    private IControlCustomStyle _customStyle;
-   
+
    static RadioButton()
    {
       AffectsRender<RadioButton>(
@@ -130,7 +127,7 @@ public partial class RadioButton : AvaloniaRadioButton,
       base.OnPropertyChanged(e);
       _customStyle.HandlePropertyChangedForStyle(e);
    }
-   
+
    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
    {
       base.OnApplyTemplate(e);
@@ -180,14 +177,13 @@ public partial class RadioButton : AvaloniaRadioButton,
          var dotDiameter = RadioDotEffectSize / 2;
          context.DrawEllipse(RadioInnerBackground, null, radioRect.Center, dotDiameter, dotDiameter);
       }
-      
    }
 
    public bool HitTest(Point point)
    {
       return true;
    }
-   
+
    #region IControlCustomStyle 实现
 
    void IControlCustomStyle.CollectStyleState()
@@ -218,6 +214,7 @@ public partial class RadioButton : AvaloniaRadioButton,
       } else {
          targetValue = DotSizeValue * 0.6;
       }
+
       return targetValue;
    }
 
@@ -227,7 +224,8 @@ public partial class RadioButton : AvaloniaRadioButton,
       {
          AnimationUtils.CreateTransition<SolidColorBrushTransition>(RadioBorderBrushProperty),
          AnimationUtils.CreateTransition<DoubleTransition>(RadioDotEffectSizeProperty),
-         AnimationUtils.CreateTransition<SolidColorBrushTransition>(RadioBackgroundProperty, GlobalResourceKey.MotionDurationFast)
+         AnimationUtils.CreateTransition<SolidColorBrushTransition>(RadioBackgroundProperty,
+                                                                    GlobalResourceKey.MotionDurationFast)
       };
    }
 
@@ -243,7 +241,7 @@ public partial class RadioButton : AvaloniaRadioButton,
       var offsetX = RadioSize + PaddingInline;
       return new Rect(offsetX, 0d, DesiredSize.Width - offsetX, DesiredSize.Height);
    }
-   
+
    void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
    {
       if (e.Property == IsPointerOverProperty ||
@@ -253,7 +251,8 @@ public partial class RadioButton : AvaloniaRadioButton,
          if (VisualRoot is not null) {
             RadioDotEffectSize = CalculateDotSize(IsEnabled, IsChecked.HasValue && IsChecked.Value);
          }
-         if (e.Property == IsCheckedProperty && 
+
+         if (e.Property == IsCheckedProperty &&
              _styleState.HasFlag(ControlStyleState.Enabled) &&
              _styleState.HasFlag(ControlStyleState.On)) {
             WaveSpiritAdorner.ShowWaveAdorner(this, WaveType.CircleWave);
@@ -265,10 +264,11 @@ public partial class RadioButton : AvaloniaRadioButton,
    {
       return RadioRect();
    }
-   
+
    public CornerRadius WaveBorderRadius()
    {
       return new CornerRadius(RadioSize / 2);
    }
+
    #endregion
 }

@@ -22,6 +22,7 @@
                     <atom:MenuSeparator />
                     <atom:MenuItem Header="Cut" InputGesture="Ctrl+X" />
                 </atom:MenuItem>
+                <atom:MenuItem Header="Disabled Item" IsEnabled="False" />
             </atom:Menu>
         </showcase:ShowCaseItem>
 
@@ -72,6 +73,7 @@
                                    Icon="{atom:IconProvider Kind=CheckOutlined}" />
                     <atom:MenuSeparator />
                     <atom:MenuItem Header="Exit" />
+                    <atom:MenuItem Header="Disabled" IsEnabled="False"/>
                 </atom:MenuItem>
             </atom:Menu>
         </showcase:ShowCaseItem>

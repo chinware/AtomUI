@@ -79,6 +79,7 @@ internal class MenuItemTheme : ControlTheme
             VerticalAlignment = VerticalAlignment.Center,
             IsVisible = false
          };
+         CreateTemplateParentBinding(togglePresenter, ContentControl.IsEnabledProperty, MenuItem.IsEnabledProperty);
          Grid.SetColumn(togglePresenter, 0);
          togglePresenter.RegisterInNameScope(scope);
 
@@ -202,6 +203,7 @@ internal class MenuItemTheme : ControlTheme
       BuildMenuIndicatorStyle();
       BuildMenuIconStyle();
       Add(commonStyle);
+      BuildDisabledStyle();
    }
 
    private void BuildCommonStyle(Style commonStyle)
@@ -263,5 +265,12 @@ internal class MenuItemTheme : ControlTheme
          hasIconStyle.Add(iconViewBoxStyle);
       }
       Add(hasIconStyle);
+   }
+
+   private void BuildDisabledStyle()
+   {
+      var disabledStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Disabled));
+      disabledStyle.Add(MenuItem.ForegroundProperty, MenuResourceKey.ItemDisabledColor);
+      Add(disabledStyle);
    }
 }

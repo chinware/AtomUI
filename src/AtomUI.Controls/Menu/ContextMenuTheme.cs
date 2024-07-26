@@ -1,6 +1,5 @@
 ﻿using AtomUI.Styling;
 using AtomUI.Utils;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Templates;
