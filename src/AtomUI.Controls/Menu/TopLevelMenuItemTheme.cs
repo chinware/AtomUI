@@ -39,33 +39,35 @@ public class TopLevelMenuItemTheme : ControlTheme
             RecognizesAccessKey = true,
          };
          
+         // TODO 后面需要评估一下，能直接绑定到对象，是否还需要这样通过模板绑定
          CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty, MenuItem.HeaderProperty);
          CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentTemplateProperty, MenuItem.HeaderTemplateProperty);
          CreateTemplateParentBinding(contentPresenter, ContentPresenter.CornerRadiusProperty, MenuItem.CornerRadiusProperty);
          CreateTemplateParentBinding(contentPresenter, ContentPresenter.PaddingProperty, MenuItem.PaddingProperty);
          CreateTemplateParentBinding(contentPresenter, ContentPresenter.MinHeightProperty, MenuItem.MinHeightProperty);
          CreateTemplateParentBinding(contentPresenter, ContentPresenter.FontSizeProperty, MenuItem.FontSizeProperty);
+         
          contentPresenter.RegisterInNameScope(scope);
          panel.Children.Add(contentPresenter);
 
-         var popup = CreateMenuPopup(menuItem);
+         var popup = CreateMenuPopup();
          panel.Children.Add(popup);
          return panel;
       });
    }
 
-   private Popup CreateMenuPopup(MenuItem menuItem)
+   private Popup CreateMenuPopup()
    {
       var popup = new Popup()
       {
          Name = PopupPart,
          WindowManagerAddShadowHint = false,
-         IsLightDismissEnabled = true,
+         IsLightDismissEnabled = false,
          Placement = PlacementMode.BottomEdgeAlignedLeft,
-         OverlayInputPassThroughElement = menuItem,
       };
       
       var border = new Border();
+      
       BindUtils.CreateTokenBinding(border, Border.BackgroundProperty, GlobalResourceKey.ColorBgContainer);
       BindUtils.CreateTokenBinding(border, Border.CornerRadiusProperty, MenuResourceKey.MenuPopupBorderRadius);
       BindUtils.CreateTokenBinding(border, Border.MinWidthProperty, MenuResourceKey.MenuPopupMinWidth);

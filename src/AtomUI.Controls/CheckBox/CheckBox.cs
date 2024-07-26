@@ -188,9 +188,10 @@ public class CheckBox : AvaloniaCheckBox,
          var checkMarkPenWidth = 2;
          var checkMarkPen = new Pen(IndicatorCheckedMarkBrush, 2);
          var checkMarkBounds = checkMarkGeometry.GetRenderBounds(checkMarkPen);
-         var deltaSize = (CheckIndicatorSize - checkMarkBounds.Width) / 2;
-         var offsetX = deltaSize - checkMarkPenWidth - penWidth;
-         var offsetY = deltaSize - checkMarkPenWidth - penWidth;
+         var deltaWidth = (CheckIndicatorSize - checkMarkBounds.Width) / 2;
+         var deltaHeight = (CheckIndicatorSize - checkMarkBounds.Height) / 2;
+         var offsetX = indicatorRect.X + deltaWidth - checkMarkPenWidth - penWidth;
+         var offsetY = indicatorRect.Y + deltaHeight - checkMarkPenWidth - penWidth * 2;
          checkMarkGeometry.Transform = new TranslateTransform(offsetX, offsetY);
          context.DrawGeometry(null, checkMarkPen, checkMarkGeometry);
       } else if (_styleState.HasFlag(ControlStyleState.Indeterminate)) {

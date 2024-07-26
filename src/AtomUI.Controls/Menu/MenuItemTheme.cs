@@ -22,6 +22,8 @@ internal class MenuItemTheme : ControlTheme
    public const string ItemTextPresenterPart = "Part_ItemTextPresenter";
    public const string InputGestureTextPart  = "Part_InputGestureText";
    public const string MenuIndicatorIconPart = "Part_MenuIndicatorIcon";
+   public const string PopupPart             = "PART_Popup";
+   public const string ItemsPresenterPart    = "PART_ItemsPresenter";
    
    public MenuItemTheme()
       : base(typeof(MenuItem))
@@ -32,6 +34,8 @@ internal class MenuItemTheme : ControlTheme
    {
       return new FuncControlTemplate<MenuItem>((item, scope) =>
       {
+         // 仅仅为了把 Popup 包进来，没有其他什么作用
+         var layoutWrapper = new Panel();
          var container = new Border()
          {
             Name = ItemDecoratorPart
@@ -97,7 +101,8 @@ internal class MenuItemTheme : ControlTheme
             Name = ItemTextPresenterPart,
             HorizontalAlignment = HorizontalAlignment.Stretch,
             VerticalAlignment = VerticalAlignment.Center,
-            RecognizesAccessKey = true
+            RecognizesAccessKey = true,
+            IsHitTestVisible = false
          };
          Grid.SetColumn(itemTextPresenter, 2);
          BindUtils.CreateTokenBinding(itemTextPresenter, ContentPresenter.MarginProperty, MenuResourceKey.ItemMargin);
@@ -135,16 +140,57 @@ internal class MenuItemTheme : ControlTheme
          Grid.SetColumn(menuIndicatorIcon, 4);
          menuIndicatorIcon.RegisterInNameScope(scope);
 
+         var popup = CreateMenuPopup();
+
          layout.Children.Add(togglePresenter);
          layout.Children.Add(iconPresenter);
          layout.Children.Add(itemTextPresenter);
          layout.Children.Add(inputGestureText);
          layout.Children.Add(menuIndicatorIcon);
+         layout.Children.Add(popup);
          
          container.Child = layout;
-         
-         return container;
+         layoutWrapper.Children.Add(container);
+         return layoutWrapper;
       });
+   }
+
+   private Popup CreateMenuPopup()
+   {
+      var popup = new Popup()
+      {
+         Name = PopupPart,
+         WindowManagerAddShadowHint = false,
+         IsLightDismissEnabled = false,
+         Placement = PlacementMode.RightEdgeAlignedTop,
+      };
+      
+      var border = new Border();
+      BindUtils.CreateTokenBinding(border, Border.BackgroundProperty, GlobalResourceKey.ColorBgContainer);
+      BindUtils.CreateTokenBinding(border, Border.CornerRadiusProperty, MenuResourceKey.MenuPopupBorderRadius);
+      BindUtils.CreateTokenBinding(border, Border.MinWidthProperty, MenuResourceKey.MenuPopupMinWidth);
+      BindUtils.CreateTokenBinding(border, Border.MaxWidthProperty, MenuResourceKey.MenuPopupMaxWidth);
+      BindUtils.CreateTokenBinding(border, Border.MinHeightProperty, MenuResourceKey.MenuPopupMinHeight);
+      BindUtils.CreateTokenBinding(border, Border.MaxHeightProperty, MenuResourceKey.MenuPopupMaxHeight);
+      BindUtils.CreateTokenBinding(border, Border.PaddingProperty, MenuResourceKey.MenuPopupContentPadding);
+      
+      var scrollViewer = new MenuScrollViewer();
+      var itemsPresenter = new ItemsPresenter
+      {
+         Name = ItemsPresenterPart,
+      };
+      CreateTemplateParentBinding(itemsPresenter, ItemsPresenter.ItemsPanelProperty, MenuItem.ItemsPanelProperty);
+      Grid.SetIsSharedSizeScope(itemsPresenter, true);
+      scrollViewer.Content = itemsPresenter;
+      border.Child = scrollViewer;
+      
+      popup.Child = border;
+
+      BindUtils.CreateTokenBinding(popup, Popup.MarginToAnchorProperty, MenuResourceKey.TopLevelItemPopupMarginToAnchor);
+      BindUtils.CreateTokenBinding(popup, Popup.MaskShadowsProperty, MenuResourceKey.MenuPopupBoxShadows);
+      CreateTemplateParentBinding(popup, Popup.IsOpenProperty, MenuItem.IsSubMenuOpenProperty, BindingMode.TwoWay);
+      
+      return popup;
    }
 
    protected override void BuildStyles()

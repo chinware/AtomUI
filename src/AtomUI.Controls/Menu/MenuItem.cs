@@ -1,5 +1,4 @@
-﻿using AtomUI.Controls.Utils;
-using AtomUI.Media;
+﻿using AtomUI.Media;
 using AtomUI.Styling;
 using AtomUI.Utils;
 using Avalonia;
@@ -11,7 +10,6 @@ using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Layout;
-using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
@@ -37,6 +35,9 @@ public class MenuItem : AvaloniaMenuItem, IControlCustomStyle
    
    private readonly IControlCustomStyle _customStyle;
    private ContentPresenter? _topLevelContentPresenter;
+   private ContentControl? _togglePresenter;
+   private Popup? _popup;
+   
    internal static PlatformKeyGestureConverter KeyGestureConverter = new PlatformKeyGestureConverter();
 
    static MenuItem()
@@ -72,7 +73,10 @@ public class MenuItem : AvaloniaMenuItem, IControlCustomStyle
    {
       if (IsTopLevel) {
          _topLevelContentPresenter = scope.Find<ContentPresenter>(TopLevelMenuItemTheme.HeaderPresenterPart);
+      } else {
+         _togglePresenter = scope.Find<ContentControl>(MenuItemTheme.TogglePresenterPart);
       }
+      HandleToggleTypeChanged();
       _customStyle.SetupTransitions();
       UpdatePseudoClasses();
    }
@@ -89,6 +93,27 @@ public class MenuItem : AvaloniaMenuItem, IControlCustomStyle
             BindUtils.CreateTokenBinding(pathIcon, PathIcon.HeightProperty, MenuResourceKey.ItemIconSize);
             BindUtils.CreateTokenBinding(pathIcon, PathIcon.NormalFilledBrushProperty, MenuResourceKey.ItemColor);
          }
+      } else if (e.Property == ToggleTypeProperty) {
+         HandleToggleTypeChanged();
+      }
+   }
+
+   private void HandleToggleTypeChanged()
+   {
+      if (IsTopLevel || _togglePresenter is null) {
+         return;
+      }
+
+      if (ToggleType == MenuItemToggleType.None) {
+         if (_togglePresenter.Presenter is not null) {
+            _togglePresenter.Presenter.IsVisible = false;
+         }
+      } else if (ToggleType == MenuItemToggleType.CheckBox) {
+         _togglePresenter.Content = new CheckBox();
+         _togglePresenter.IsVisible = true;
+      } else if (ToggleType == MenuItemToggleType.Radio) {
+         _togglePresenter.Content = new RadioButton();
+         _togglePresenter.IsVisible = true;
       }
    }
 
