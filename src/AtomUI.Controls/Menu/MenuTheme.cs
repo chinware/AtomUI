@@ -53,6 +53,7 @@ public class MenuTheme : ControlTheme
    protected override void BuildStyles()
    {
       var commonStyle = new Style(selector => selector.Nesting());
+      commonStyle.Add(Menu.HorizontalAlignmentProperty, HorizontalAlignment.Left);
       commonStyle.Add(Menu.BackgroundProperty, MenuResourceKey.MenuBgColor);
       commonStyle.Add(Menu.BorderBrushProperty, GlobalResourceKey.ColorBorder);
       var largeSizeType = new Style(selector => selector.Nesting().PropertyEquals(Menu.SizeTypeProperty, SizeType.Large));

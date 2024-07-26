@@ -123,8 +123,6 @@ namespace AtomUI.Styling
         public static readonly TokenResourceKey MenuPopupMaxWidth = new TokenResourceKey("Menu.MenuPopupMaxWidth");
         public static readonly TokenResourceKey MenuPopupMinHeight = new TokenResourceKey("Menu.MenuPopupMinHeight");
         public static readonly TokenResourceKey MenuPopupMaxHeight = new TokenResourceKey("Menu.MenuPopupMaxHeight");
-        public static readonly TokenResourceKey MenuArrowSize = new TokenResourceKey("Menu.MenuArrowSize");
-        public static readonly TokenResourceKey MenuArrowOffset = new TokenResourceKey("Menu.MenuArrowOffset");
         public static readonly TokenResourceKey MenuTearOffHeight = new TokenResourceKey("Menu.MenuTearOffHeight");
         public static readonly TokenResourceKey MenuBgColor = new TokenResourceKey("Menu.MenuBgColor");
         public static readonly TokenResourceKey ItemColor = new TokenResourceKey("Menu.ItemColor");
@@ -160,6 +158,9 @@ namespace AtomUI.Styling
         public static readonly TokenResourceKey TopLevelItemLineHeightLG = new TokenResourceKey("Menu.TopLevelItemLineHeightLG");
         public static readonly TokenResourceKey TopLevelItemLineHeightSM = new TokenResourceKey("Menu.TopLevelItemLineHeightSM");
         public static readonly TokenResourceKey TopLevelItemPopupMarginToAnchor = new TokenResourceKey("Menu.TopLevelItemPopupMarginToAnchor");
+        public static readonly TokenResourceKey ScrollButtonIconSize = new TokenResourceKey("Menu.ScrollButtonIconSize");
+        public static readonly TokenResourceKey ScrollButtonPadding = new TokenResourceKey("Menu.ScrollButtonPadding");
+        public static readonly TokenResourceKey ScrollButtonMargin = new TokenResourceKey("Menu.ScrollButtonMargin");
         public static readonly TokenResourceKey SeparatorItemHeight = new TokenResourceKey("Menu.SeparatorItemHeight");
     }
 

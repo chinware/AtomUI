@@ -1,9 +1,14 @@
-﻿using AtomUI.Styling;
+﻿using AtomUI.Media;
+using AtomUI.Styling;
 using AtomUI.Utils;
+using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Templates;
 using Avalonia.Input.GestureRecognizers;
+using Avalonia.Layout;
+using Avalonia.Media;
+using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
@@ -22,16 +27,40 @@ internal class MenuScrollViewerTheme : ControlTheme
    {
       return new FuncControlTemplate<MenuScrollViewer>((viewer, scope) =>
       {
+         var transitions = new Transitions();
+         transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(IconButton.BackgroundProperty));
          var dockPanel = new DockPanel();
          var scrollUpButton = new IconButton()
          {
             Name = ScrollUpButtonPart,
+            Icon = new PathIcon()
+            {
+               Kind = "UpOutlined"
+            },
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment = VerticalAlignment.Center,
+            Transitions = transitions,
+            RenderTransform = null
          };
+         CreateTemplateParentBinding(scrollUpButton, IconButton.CommandProperty, nameof(MenuScrollViewer.LineUp));
+         BindUtils.CreateTokenBinding(scrollUpButton.Icon, PathIcon.WidthProperty, MenuResourceKey.ScrollButtonIconSize);
+         BindUtils.CreateTokenBinding(scrollUpButton.Icon, PathIcon.HeightProperty, MenuResourceKey.ScrollButtonIconSize);
          DockPanel.SetDock(scrollUpButton, Dock.Top);
          var scrollDownButton = new IconButton()
          {
             Name = ScrollDownButtonPart,
+            Icon = new PathIcon()
+            {
+               Kind = "DownOutlined"
+            },
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment = VerticalAlignment.Center,
+            Transitions = transitions,
+            RenderTransform = null
          };
+         CreateTemplateParentBinding(scrollDownButton, IconButton.CommandProperty, nameof(MenuScrollViewer.LineDown));
+         BindUtils.CreateTokenBinding(scrollDownButton.Icon, PathIcon.WidthProperty, MenuResourceKey.ScrollButtonIconSize);
+         BindUtils.CreateTokenBinding(scrollDownButton.Icon, PathIcon.HeightProperty, MenuResourceKey.ScrollButtonIconSize);
          DockPanel.SetDock(scrollDownButton, Dock.Bottom);
 
          var scrollViewContent = CreateScrollContentPresenter(viewer);
@@ -77,6 +106,19 @@ internal class MenuScrollViewerTheme : ControlTheme
 
    protected override void BuildStyles()
    {
+      {
+         var iconButtonStyle = new Style(selector => selector.Nesting().Template().OfType<IconButton>());
+         iconButtonStyle.Add(IconButton.PaddingProperty, MenuResourceKey.ScrollButtonPadding);
+         iconButtonStyle.Add(IconButton.MarginProperty, MenuResourceKey.ScrollButtonMargin);
+         iconButtonStyle.Add(IconButton.BackgroundProperty, GlobalResourceKey.ColorTransparent);
+         Add(iconButtonStyle);
+      }
       
+      {
+         var iconButtonStyle = new Style(selector => selector.Nesting().Template().OfType<IconButton>().Class(StdPseudoClass.PointerOver));
+         iconButtonStyle.Add(IconButton.BackgroundProperty, MenuResourceKey.ItemHoverBg);
+         Add(iconButtonStyle);
+      }
+
    }
 }

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Reflection;
 using AtomUI.Controls.Utils;
 using AtomUI.Utils;
 using Avalonia;
@@ -134,6 +135,7 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
    private PixelRect? _enlargePopupRectScreenPixelRect;
    private IDisposable? _transientDisposable;
    private Action<IPopupHost?>? _popupHostChangedHandler;
+   private static readonly EventInfo _closingEventInfo;
 
    public double MarginToAnchor
    {
@@ -144,6 +146,7 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
    static PopupFlyoutBase()
    {
       Control.ContextFlyoutProperty.Changed.Subscribe(OnContextFlyoutPropertyChanged);
+      _closingEventInfo = typeof(Popup).GetEvent("Closing", BindingFlags.NonPublic | BindingFlags.Instance)!;
    }
 
    public PopupFlyoutBase()
@@ -411,7 +414,12 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
 
       popup.Opened += OnPopupOpened;
       popup.Closed += OnPopupClosed;
+      // 通过反射设置
       // popup.Closing += OnPopupClosing;
+      var handler = new EventHandler<CancelEventArgs>(OnPopupClosing);
+      var closingEventAddMethod = _closingEventInfo.GetAddMethod(true);
+      closingEventAddMethod?.Invoke(popup, new object?[]{handler});
+      
       popup.KeyUp += OnPlacementTargetOrPopupKeyUp;
       NotifyPopupCreated(popup);
       return popup;
@@ -423,8 +431,7 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
 
       _popupHostChangedHandler?.Invoke(Popup.Host);
    }
-
-   // TODO Error 通过反射玩
+   
    private void OnPopupClosing(object? sender, CancelEventArgs e)
    {
       if (IsOpen) {

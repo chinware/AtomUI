@@ -8,30 +8,118 @@
     xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
     mc:Ignorable="d">
     <showcase:ShowCasePanel>
-        <atom:Menu>
-            <atom:MenuItem Header="_File">
-                <atom:MenuItem Header="New Text File" InputGesture="Ctrl+N" ToggleType="Radio" GroupName="Group1"/>
-                <atom:MenuItem Header="New File" InputGesture="Ctrl+Alt+N" ToggleType="Radio"  GroupName="Group1"/>
-                <atom:MenuItem Header="New Window" InputGesture="Ctrl+Shift+N" ToggleType="Radio"  GroupName="Group1"/>
-                <atom:MenuSeparator />
-                <atom:MenuItem Header="Save" InputGesture="Ctrl+S" ToggleType="CheckBox" />
-                <atom:MenuItem Header="Save As..." InputGesture="Ctrl+Shift+S" ToggleType="CheckBox" Icon="{atom:IconProvider Kind=GithubOutlined}" />
-                <atom:MenuItem Header="Save All" InputGesture="Ctrl+K" ToggleType="CheckBox" Icon="{atom:IconProvider Kind=CheckOutlined}"/>
-                <atom:MenuSeparator />
-                <atom:MenuItem Header="Exit" />
-            </atom:MenuItem>
-            <atom:MenuItem Header="_Edit">
-                <atom:MenuItem Header="Undo" InputGesture="Ctrl+Shift+Z" />
-                <atom:MenuSeparator />
-                <atom:MenuItem Header="Cut" InputGesture="Ctrl+X" Icon="{atom:IconProvider Kind=ScissorOutlined}" />
-                <atom:MenuItem Header="Copy" InputGesture="Ctrl+C" Icon="{atom:IconProvider Kind=CopyOutlined}" />
-                <atom:MenuItem Header="Delete" InputGesture="Ctrl+D" Icon="{atom:IconProvider Kind=DeleteOutlined}" />
-                <atom:MenuItem Header="Paste">
-                    <atom:MenuItem Header="Paste" InputGesture="Ctrl+P"
-                                   Icon="{atom:IconProvider Kind=FileDoneOutlined}" />
-                    <atom:MenuItem Header="Paste from History" InputGesture="Ctrl+Shift+V" />
+        <showcase:ShowCaseItem
+            Title="Basic"
+            Description="Simplest Usage.">
+            <atom:Menu>
+                <atom:MenuItem Header="_File">
+                    <atom:MenuItem Header="New Text File" InputGesture="Ctrl+N"/>
+                    <atom:MenuItem Header="New File" InputGesture="Ctrl+Alt+N"/>
+                    <atom:MenuItem Header="New Window" InputGesture="Ctrl+Shift+N"/>
                 </atom:MenuItem>
-            </atom:MenuItem>
-        </atom:Menu>
+                <atom:MenuItem Header="_Edit">
+                    <atom:MenuItem Header="Undo" InputGesture="Ctrl+Shift+Z" />
+                    <atom:MenuSeparator />
+                    <atom:MenuItem Header="Cut" InputGesture="Ctrl+X"/>
+                </atom:MenuItem>
+            </atom:Menu>
+        </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="Icon and submenu"
+            Description="With icon and submenu.">
+            <atom:Menu>
+                <atom:MenuItem Header="_File">
+                    <atom:MenuItem Header="New Text File" InputGesture="Ctrl+N"/>
+                    <atom:MenuItem Header="New File" InputGesture="Ctrl+Alt+N"/>
+                    <atom:MenuItem Header="New Window" InputGesture="Ctrl+Shift+N" />
+                    <atom:MenuSeparator />
+                    <atom:MenuItem Header="Save" InputGesture="Ctrl+S"  />
+                    <atom:MenuItem Header="Save As..." InputGesture="Ctrl+Shift+S" />
+                    <atom:MenuItem Header="Save All" InputGesture="Ctrl+K" />
+                    <atom:MenuSeparator />
+                    <atom:MenuItem Header="Exit" />
+                </atom:MenuItem>
+                <atom:MenuItem Header="_Edit">
+                    <atom:MenuItem Header="Undo" InputGesture="Ctrl+Shift+Z" />
+                    <atom:MenuSeparator />
+                    <atom:MenuItem Header="Cut" InputGesture="Ctrl+X" Icon="{atom:IconProvider Kind=ScissorOutlined}" />
+                    <atom:MenuItem Header="Copy" InputGesture="Ctrl+C" Icon="{atom:IconProvider Kind=CopyOutlined}" />
+                    <atom:MenuItem Header="Delete" InputGesture="Ctrl+D" Icon="{atom:IconProvider Kind=DeleteOutlined}" />
+                    <atom:MenuItem Header="Paste">
+                        <atom:MenuItem Header="Paste" InputGesture="Ctrl+P"
+                                       Icon="{atom:IconProvider Kind=FileDoneOutlined}" />
+                        <atom:MenuItem Header="Paste from History" InputGesture="Ctrl+Shift+V" />
+                    </atom:MenuItem>
+                </atom:MenuItem>
+            </atom:Menu>
+        </showcase:ShowCaseItem>
+
+        <showcase:ShowCaseItem
+            Title="menu item with ToggleType"
+            Description="Renders a checkbox or radio button on a menu.">
+            <atom:Menu>
+                <atom:MenuItem Header="_Menu A">
+                    <atom:MenuItem Header="New Text File" InputGesture="Ctrl+N" ToggleType="Radio" GroupName="Group1" />
+                    <atom:MenuItem Header="New File" InputGesture="Ctrl+Alt+N" ToggleType="Radio" GroupName="Group1" />
+                    <atom:MenuItem Header="New Window" InputGesture="Ctrl+Shift+N" ToggleType="Radio"
+                                   GroupName="Group1" />
+                    <atom:MenuSeparator />
+                    <atom:MenuItem Header="Save" InputGesture="Ctrl+S" ToggleType="CheckBox" />
+                    <atom:MenuItem Header="Save As..." InputGesture="Ctrl+Shift+S" ToggleType="CheckBox"
+                                   Icon="{atom:IconProvider Kind=GithubOutlined}" />
+                    <atom:MenuItem Header="Save All" InputGesture="Ctrl+K" ToggleType="CheckBox"
+                                   Icon="{atom:IconProvider Kind=CheckOutlined}" />
+                    <atom:MenuSeparator />
+                    <atom:MenuItem Header="Exit" />
+                </atom:MenuItem>
+            </atom:Menu>
+        </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="Scrollable menu"
+            Description="When there are too many menu items, up and down scroll buttons will appear.">
+            <atom:Menu>
+                <atom:MenuItem Header="_Menu">
+                    <atom:MenuItem Header="Menu Item" />
+                    <atom:MenuItem Header="Menu Item" />
+                    <atom:MenuItem Header="Menu Item" />
+                    <atom:MenuItem Header="Menu Item" />
+                    <atom:MenuItem Header="Menu Item" />
+                    <atom:MenuItem Header="Menu Item" />
+                    <atom:MenuItem Header="Menu Item" />
+                    <atom:MenuItem Header="Menu Item" />
+                    <atom:MenuItem Header="Menu Item" />
+                    <atom:MenuItem Header="Menu Item" />
+                    <atom:MenuItem Header="Menu Item" />
+                    <atom:MenuItem Header="Menu Item" />
+                    <atom:MenuItem Header="Menu Item" />
+                    <atom:MenuItem Header="Menu Item" />
+                    <atom:MenuItem Header="Menu Item" />
+                    <atom:MenuItem Header="Menu Item" />
+                    <atom:MenuItem Header="Menu Item" />
+                    <atom:MenuItem Header="Menu Item" />
+                    <atom:MenuItem Header="Menu Item" />
+                    <atom:MenuItem Header="Menu Item" />
+                    <atom:MenuItem Header="Menu Item" />
+                    <atom:MenuItem Header="Menu Item" />
+                    <atom:MenuItem Header="Menu Item" />
+                    <atom:MenuItem Header="Menu Item" />
+                    <atom:MenuItem Header="Menu Item" />
+                    <atom:MenuItem Header="Menu Item" />
+                    <atom:MenuItem Header="Menu Item" />
+                    <atom:MenuItem Header="Menu Item" />
+                    <atom:MenuItem Header="Menu Item" />
+                    <atom:MenuItem Header="Menu Item" />
+                    <atom:MenuItem Header="Menu Item" />
+                    <atom:MenuItem Header="Menu Item" />
+                    <atom:MenuItem Header="Menu Item" />
+                    <atom:MenuItem Header="Menu Item" />
+                    <atom:MenuItem Header="Menu Item" />
+                    <atom:MenuItem Header="Menu Item" />
+                </atom:MenuItem>
+            </atom:Menu>
+        </showcase:ShowCaseItem>
+      
     </showcase:ShowCasePanel>
 </UserControl>

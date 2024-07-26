@@ -51,16 +51,6 @@ internal class MenuToken : AbstractControlDesignToken
    public double MenuPopupMaxHeight { get; set; }
    
    /// <summary>
-   /// 子菜单指示三角形的大小
-   /// </summary>
-   public double MenuArrowSize { get; set; }
-   
-   /// <summary>
-   /// 子菜单指示三角形的位移
-   /// </summary>
-   public double MenuArrowOffset { get; set; }
-   
-   /// <summary>
    /// 分离菜单项的高度，这个用于菜单中快捷功能的图标显示
    /// TODO 暂时还没实现，但是最终会实现
    /// </summary>
@@ -237,6 +227,21 @@ internal class MenuToken : AbstractControlDesignToken
    public double TopLevelItemPopupMarginToAnchor { get; set; }
    
    /// <summary>
+   /// 滚动按钮 Icon 大小
+   /// </summary>
+   public double ScrollButtonIconSize { get; set; }
+   
+   /// <summary>
+   /// 滚动按内边距
+   /// </summary>
+   public Thickness ScrollButtonPadding { get; set; }
+   
+   /// <summary>
+   /// 滚动按内边距
+   /// </summary>
+   public Thickness ScrollButtonMargin { get; set; }
+   
+   /// <summary>
    /// 菜单分割项的高度
    /// </summary>
    public double SeparatorItemHeight { get; set; }
@@ -328,11 +333,13 @@ internal class MenuToken : AbstractControlDesignToken
 
       SeparatorItemHeight = _globalToken.SeedToken.LineWidth * 5; // 上下两像素，留一像素给自己
       
-      MenuArrowSize = (fontSize / 7.0) * 5.0;
-      MenuArrowOffset = MenuArrowSize * 0.5;
       MenuTearOffHeight = ItemHeight * 1.2; // 暂时这么定义吧
       
       MenuPopupContentPadding = new Thickness(_globalToken.PaddingXXS, MenuPopupBorderRadius.TopLeft / 2);
       MenuPopupBoxShadows = _globalToken.BoxShadowsSecondary;
+      
+      ScrollButtonIconSize = _globalToken.IconSizeSM;
+      ScrollButtonPadding = new Thickness(_globalToken.PaddingXS);
+      ScrollButtonMargin = new Thickness(_globalToken.MarginXXS / 2);
    }
 }
