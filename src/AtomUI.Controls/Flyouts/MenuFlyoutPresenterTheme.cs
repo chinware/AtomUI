@@ -1,6 +1,5 @@
 ﻿using AtomUI.Styling;
 using AtomUI.Utils;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Templates;
@@ -10,21 +9,23 @@ using Avalonia.Media;
 namespace AtomUI.Controls;
 
 [ControlThemeProvider]
-public class ContextMenuTheme : ControlTheme
+public class MenuFlyoutPresenterTheme : ControlTheme
 {
    public const string ItemsPresenterPart  = "PART_ItemsPresenter";
    public const string RootContainerPart   = "PART_RootContainer";
    
-   public ContextMenuTheme()
-      : base(typeof(ContextMenu)) { }
-
-   protected override IControlTemplate BuildControlTemplate()
+   public MenuFlyoutPresenterTheme() : base(typeof(MenuFlyoutPresenter)) { }
+   
+   
+   protected override IControlTemplate? BuildControlTemplate()
    {
-      return new FuncControlTemplate<ContextMenu>((menu, scope) =>
+      return new FuncControlTemplate<MenuFlyoutPresenter>((theme, scope) =>
       {
          var wrapper = new Border()
          {
-            Name = RootContainerPart
+            Name = RootContainerPart,
+            ClipToBounds = false,
+            UseLayoutRounding = false
          };
          BindUtils.CreateTokenBinding(wrapper, Border.BackgroundProperty, MenuResourceKey.MenuBgColor);
          BindUtils.CreateTokenBinding(wrapper, Border.MinWidthProperty, MenuResourceKey.MenuPopupMinWidth);
@@ -33,7 +34,7 @@ public class ContextMenuTheme : ControlTheme
          BindUtils.CreateTokenBinding(wrapper, Border.MaxHeightProperty, MenuResourceKey.MenuPopupMaxHeight);
          BindUtils.CreateTokenBinding(wrapper, Border.PaddingProperty, MenuResourceKey.MenuPopupContentPadding);
          BindUtils.CreateTokenBinding(wrapper, Border.CornerRadiusProperty, MenuResourceKey.MenuPopupBorderRadius);
-
+         
          var scrollViewer = new MenuScrollViewer();
          var itemsPresenter = new ItemsPresenter
          {
@@ -47,10 +48,10 @@ public class ContextMenuTheme : ControlTheme
          return wrapper;
       });
    }
-
+   
    protected override void BuildStyles()
    {
-      this.Add(ContextMenu.BackgroundProperty, new SolidColorBrush(Colors.Transparent));
-      this.Add(ContextMenu.CornerRadiusProperty, MenuResourceKey.MenuPopupBorderRadius);
+      this.Add(MenuFlyoutPresenter.BackgroundProperty, new SolidColorBrush(Colors.Transparent));
+      this.Add(MenuFlyoutPresenter.CornerRadiusProperty, MenuResourceKey.MenuPopupBorderRadius);
    }
 }

@@ -126,4 +126,11 @@ public class MenuFlyout : PopupFlyoutBase
          SetItemsSourceMethodInfo.Invoke(Items, new object?[]{change.GetNewValue<IEnumerable?>()});
       }
    }
+   
+   protected override bool ShowAtCore(Control placementTarget, bool showAtPointer = false)
+   {
+      Popup.IsLightDismissEnabled = true;
+      return base.ShowAtCore(placementTarget, showAtPointer);
+   }
+
 }

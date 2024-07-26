@@ -264,7 +264,6 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
    /// <returns>True, if action was handled</returns>
    protected virtual bool ShowAtCore(Control placementTarget, bool showAtPointer = false)
    {
-
       if (!PrepareShowPopup(placementTarget, showAtPointer)) {
          return false;
       }
