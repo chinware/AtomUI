@@ -51,6 +51,7 @@ public class TopLevelMenuItemTheme : ControlTheme
          panel.Children.Add(contentPresenter);
 
          var popup = CreateMenuPopup();
+         popup.RegisterInNameScope(scope);
          panel.Children.Add(popup);
          return panel;
       });

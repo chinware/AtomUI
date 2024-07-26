@@ -141,6 +141,7 @@ internal class MenuItemTheme : ControlTheme
          menuIndicatorIcon.RegisterInNameScope(scope);
 
          var popup = CreateMenuPopup();
+         popup.RegisterInNameScope(scope);
 
          layout.Children.Add(togglePresenter);
          layout.Children.Add(iconPresenter);
