@@ -66,6 +66,7 @@ public class Popup : AvaloniaPopup
    private bool _initialized;
    private ManagedPopupPositionerInfo? _managedPopupPositioner;
    protected bool _animating = false;
+   
     // 当鼠标移走了，但是打开动画还没完成，我们需要记录下来这个信号
     internal bool RequestCloseWhereAnimationCompleted { get; set; } = false;
    
@@ -137,15 +138,30 @@ public class Popup : AvaloniaPopup
             throw new InvalidOperationException(
                "Unable to create shadow layer, top level for PlacementTarget is null.");
          }
-         
+         AdjustPopupHostPosition(placementTarget);
+         if (!_animating) {
+            CreateShadowLayer();
+         }
+      }
+   }
+
+   private void CreateShadowLayer()
+   {
+      if (_shadowLayer is not null) {
+         return;
+      }
+      var placementTarget = GetEffectivePlacementTarget();
+      if (placementTarget is not null) {
+         var toplevel = TopLevel.GetTopLevel(placementTarget);
+         if (toplevel is null) {
+            throw new InvalidOperationException(
+               "Unable to create shadow layer, top level for PlacementTarget is null.");
+         }
          _compositeDisposable = new CompositeDisposable();
          _shadowLayer = new PopupShadowLayer(toplevel);
          _compositeDisposable?.Add(BindUtils.RelayBind(this, MaskShadowsProperty, _shadowLayer!));
          _compositeDisposable?.Add(BindUtils.RelayBind(this, OpacityProperty, _shadowLayer!));
-         _compositeDisposable?.Add(BindUtils.RelayBind(this, OpacityProperty, (Host as Control)!));
          _shadowLayer.AttachToTarget(this);
-
-         AdjustPopupHostPosition(placementTarget);
       }
    }
 
@@ -349,7 +365,7 @@ public class Popup : AvaloniaPopup
    }
    
    // TODO Review 需要评估这里等待的变成模式是否正确高效
-   public async Task OpenAnimationAsync()
+   public void OpenAnimation()
    {
       // AbstractPopup is currently open
       if (IsOpen || _animating) {
@@ -359,7 +375,6 @@ public class Popup : AvaloniaPopup
       _animating = true;
       
       Open();
-      HideShadowLayer();
       var popupRoot = (Host as PopupRoot)!;
       // 获取 popup 的具体位置，这个就是非常准确的位置，还有大小
       // TODO 暂时只支持 WindowBase popup
@@ -380,30 +395,21 @@ public class Popup : AvaloniaPopup
          new PopupMotionActor(MaskShadows,offset, scaling, Child ?? popupRoot, motion);
       motionActor.DispatchInSceneLayer = true;
       motionActor.SceneParent = topLevel;
-      var cts = new CancellationTokenSource();
-      var cancelToken = cts.Token;
       
       motionActor.Completed += (sender, args) =>
       {
          popupRoot.Show();
-         _shadowLayer!.Opacity = 1;
-         if (popupRoot is WindowBase window) {
-            window.PlatformImpl!.SetTopmost(true);
-         }
-         _animating = false;
-         cts.Cancel();
+         CreateShadowLayer();
          if (RequestCloseWhereAnimationCompleted) {
             RequestCloseWhereAnimationCompleted = false;
-            Dispatcher.UIThread.InvokeAsync(async () => { await CloseAnimationAsync(); });
+            Dispatcher.UIThread.Post(() => { CloseAnimation(); });
          }
+         _animating = false;
       };
       director?.Schedule(motionActor);
-      while (!cancelToken.IsCancellationRequested) {
-         await Task.Delay(TimeSpan.FromMilliseconds(10), cancelToken);
-      }
    }
 
-   public async Task CloseAnimationAsync()
+   public void CloseAnimation(Action? closed = null)
    {
       if (_animating) {
          RequestCloseWhereAnimationCompleted = true;
@@ -432,26 +438,22 @@ public class Popup : AvaloniaPopup
       motionActor.DispatchInSceneLayer = true;
       motionActor.SceneParent = topLevel;
       
-      var cts = new CancellationTokenSource();
-      var cancelToken = cts.Token;
-      
       motionActor.SceneShowed += (sender, args) =>
       {
-         popupRoot.Opacity = 0;
          HideShadowLayer();
+         popupRoot.Opacity = 0;
       };
       
       motionActor.Completed += (sender, args) =>
       {
          _animating = false;
          Close();
-         cts.Cancel();
+         if (closed is not null) {
+            closed();
+         }
       };
       
       director?.Schedule(motionActor);
-      while (!cancelToken.IsCancellationRequested) {
-         await Task.Delay(TimeSpan.FromMilliseconds(10), cancelToken);
-      }
    }
 }
 

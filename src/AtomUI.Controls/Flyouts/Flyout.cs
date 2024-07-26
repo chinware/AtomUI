@@ -291,9 +291,9 @@ public class Flyout : PopupFlyoutBase
          return false;
       }
       IsOpen = true;
-      Dispatcher.UIThread.InvokeAsync(async () =>
-      {
-         await Popup.OpenAnimationAsync();
+      Dispatcher.UIThread.Post(() =>
+      { 
+         Popup.OpenAnimation();
          HandlePopupOpened(placementTarget);
       });
       return true;
@@ -313,10 +313,9 @@ public class Flyout : PopupFlyoutBase
 
       IsOpen = false;
       
-      Dispatcher.UIThread.InvokeAsync(async () =>
+      Dispatcher.UIThread.Post(() =>
       {
-         await Popup.CloseAnimationAsync();
-         HandlePopupClosed();
+         Popup.CloseAnimation(HandlePopupClosed);
       });
 
       return true;

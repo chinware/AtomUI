@@ -642,9 +642,9 @@ public class ToolTip : TemplatedControl,
       _popup.Placement = placement;
       _popup.PlacementTarget = control;
 
-      Dispatcher.UIThread.InvokeAsync(async () =>
-      {
-         await _popup.OpenAnimationAsync();
+      Dispatcher.UIThread.Post(() =>
+      { 
+         _popup.OpenAnimation();
       });
    }
 
@@ -664,9 +664,9 @@ public class ToolTip : TemplatedControl,
          return;
       }
 
-      Dispatcher.UIThread.InvokeAsync(async () =>
-      {
-         await _popup.CloseAnimationAsync();
+      Dispatcher.UIThread.Post(() =>
+      { 
+         _popup.CloseAnimation();
       });
    }
    
