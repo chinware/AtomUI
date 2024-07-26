@@ -7,7 +7,6 @@ using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Templates;
 using Avalonia.Input.GestureRecognizers;
 using Avalonia.Layout;
-using Avalonia.Media;
 using Avalonia.Styling;
 
 namespace AtomUI.Controls;

@@ -13,28 +13,28 @@
             Description="Simplest Usage.">
             <atom:Menu>
                 <atom:MenuItem Header="_File">
-                    <atom:MenuItem Header="New Text File" InputGesture="Ctrl+N"/>
-                    <atom:MenuItem Header="New File" InputGesture="Ctrl+Alt+N"/>
-                    <atom:MenuItem Header="New Window" InputGesture="Ctrl+Shift+N"/>
+                    <atom:MenuItem Header="New Text File" InputGesture="Ctrl+N" />
+                    <atom:MenuItem Header="New File" InputGesture="Ctrl+Alt+N" />
+                    <atom:MenuItem Header="New Window" InputGesture="Ctrl+Shift+N" />
                 </atom:MenuItem>
                 <atom:MenuItem Header="_Edit">
                     <atom:MenuItem Header="Undo" InputGesture="Ctrl+Shift+Z" />
                     <atom:MenuSeparator />
-                    <atom:MenuItem Header="Cut" InputGesture="Ctrl+X"/>
+                    <atom:MenuItem Header="Cut" InputGesture="Ctrl+X" />
                 </atom:MenuItem>
             </atom:Menu>
         </showcase:ShowCaseItem>
-        
+
         <showcase:ShowCaseItem
             Title="Icon and submenu"
             Description="With icon and submenu.">
             <atom:Menu>
                 <atom:MenuItem Header="_File">
-                    <atom:MenuItem Header="New Text File" InputGesture="Ctrl+N"/>
-                    <atom:MenuItem Header="New File" InputGesture="Ctrl+Alt+N"/>
+                    <atom:MenuItem Header="New Text File" InputGesture="Ctrl+N" />
+                    <atom:MenuItem Header="New File" InputGesture="Ctrl+Alt+N" />
                     <atom:MenuItem Header="New Window" InputGesture="Ctrl+Shift+N" />
                     <atom:MenuSeparator />
-                    <atom:MenuItem Header="Save" InputGesture="Ctrl+S"  />
+                    <atom:MenuItem Header="Save" InputGesture="Ctrl+S" />
                     <atom:MenuItem Header="Save As..." InputGesture="Ctrl+Shift+S" />
                     <atom:MenuItem Header="Save All" InputGesture="Ctrl+K" />
                     <atom:MenuSeparator />
@@ -75,7 +75,7 @@
                 </atom:MenuItem>
             </atom:Menu>
         </showcase:ShowCaseItem>
-        
+
         <showcase:ShowCaseItem
             Title="Scrollable menu"
             Description="When there are too many menu items, up and down scroll buttons will appear.">
@@ -120,6 +120,36 @@
                 </atom:MenuItem>
             </atom:Menu>
         </showcase:ShowCaseItem>
-      
+
+        <showcase:ShowCaseItem
+            Title="Scrollable menu"
+            Description="When there are too many menu items, up and down scroll buttons will appear.">
+            <showcase:ShowCaseItem.Styles>
+                <Style Selector="Border#contextMenuContainer">
+                    <Setter Property="BorderBrush" Value="Gray"/>
+                    <Setter Property="BorderThickness" Value="1"/>
+                    <Setter Property="CornerRadius" Value="6"/>
+                    <Setter Property="Padding" Value="10"/>
+                    <Setter Property="Margin" Value="10"/>
+                </Style>
+            </showcase:ShowCaseItem.Styles>
+            <Border Name="contextMenuContainer">
+       
+                <Border.ContextMenu>
+                    <atom:ContextMenu>
+                        <atom:MenuItem Header="Cut" InputGesture="Ctrl+X" Icon="{atom:IconProvider Kind=ScissorOutlined}" />
+                        <atom:MenuItem Header="Copy" InputGesture="Ctrl+C" Icon="{atom:IconProvider Kind=CopyOutlined}" />
+                        <atom:MenuItem Header="Delete" InputGesture="Ctrl+D" Icon="{atom:IconProvider Kind=DeleteOutlined}" />
+                        <atom:MenuItem Header="Paste">
+                            <atom:MenuItem Header="Paste" InputGesture="Ctrl+P"
+                                           Icon="{atom:IconProvider Kind=FileDoneOutlined}" />
+                            <atom:MenuItem Header="Paste from History" InputGesture="Ctrl+Shift+V" />
+                        </atom:MenuItem>
+                    </atom:ContextMenu>
+                </Border.ContextMenu>
+                <TextBlock Text="Right Click to show Context Menu" />
+            </Border>
+        </showcase:ShowCaseItem>
+
     </showcase:ShowCasePanel>
 </UserControl>

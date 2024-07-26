@@ -138,7 +138,11 @@ public class Popup : AvaloniaPopup
             throw new InvalidOperationException(
                "Unable to create shadow layer, top level for PlacementTarget is null.");
          }
-         AdjustPopupHostPosition(placementTarget);
+
+         if (Placement != PlacementMode.Pointer && Placement != PlacementMode.Center) {
+            AdjustPopupHostPosition(placementTarget);
+         }
+         
          if (!_animating) {
             CreateShadowLayer();
          }

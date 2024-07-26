@@ -84,6 +84,7 @@ public class TopLevelMenuItemTheme : ControlTheme
       };
       CreateTemplateParentBinding(itemsPresenter, ItemsPresenter.ItemsPanelProperty, MenuItem.ItemsPanelProperty);
       Grid.SetIsSharedSizeScope(itemsPresenter, true);
+      KeyboardNavigation.SetTabNavigation(itemsPresenter, KeyboardNavigationMode.Continue);
       scrollViewer.Content = itemsPresenter;
       border.Child = scrollViewer;
       popup.Child = border;

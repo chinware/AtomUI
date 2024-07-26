@@ -135,7 +135,7 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
    private PixelRect? _enlargePopupRectScreenPixelRect;
    private IDisposable? _transientDisposable;
    private Action<IPopupHost?>? _popupHostChangedHandler;
-   private static readonly EventInfo _closingEventInfo;
+   private static readonly EventInfo ClosingEventInfo;
 
    public double MarginToAnchor
    {
@@ -146,7 +146,7 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
    static PopupFlyoutBase()
    {
       Control.ContextFlyoutProperty.Changed.Subscribe(OnContextFlyoutPropertyChanged);
-      _closingEventInfo = typeof(Popup).GetEvent("Closing", BindingFlags.NonPublic | BindingFlags.Instance)!;
+      ClosingEventInfo = typeof(Popup).GetEvent("Closing", BindingFlags.NonPublic | BindingFlags.Instance)!;
    }
 
    public PopupFlyoutBase()
@@ -417,7 +417,7 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
       // 通过反射设置
       // popup.Closing += OnPopupClosing;
       var handler = new EventHandler<CancelEventArgs>(OnPopupClosing);
-      var closingEventAddMethod = _closingEventInfo.GetAddMethod(true);
+      var closingEventAddMethod = ClosingEventInfo.GetAddMethod(true);
       closingEventAddMethod?.Invoke(popup, new object?[]{handler});
       
       popup.KeyUp += OnPlacementTargetOrPopupKeyUp;
