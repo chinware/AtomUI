@@ -23,6 +23,7 @@ internal class SliderThumbTheme : ControlTheme
       commonStyle.Add(SliderThumb.ThumbCircleSizeProperty, SliderResourceKey.ThumbCircleSize);
       commonStyle.Add(SliderThumb.WidthProperty, SliderResourceKey.ThumbSize);
       commonStyle.Add(SliderThumb.HeightProperty, SliderResourceKey.ThumbSize);
+      commonStyle.Add(SliderThumb.ZIndexProperty, SliderThumb.NormalZIndex);
 
       var hoverOrFocusStyle = new Style(selector => Selectors.Or(selector.Nesting().Class(StdPseudoClass.PointerOver),
                                                                  selector.Nesting().Class(StdPseudoClass.Focus)));
@@ -31,6 +32,10 @@ internal class SliderThumbTheme : ControlTheme
       hoverOrFocusStyle.Add(SliderThumb.ThumbCircleSizeProperty, SliderResourceKey.ThumbCircleSizeHover);
       hoverOrFocusStyle.Add(SliderThumb.OutlineThicknessProperty, SliderResourceKey.ThumbOutlineThickness);
       commonStyle.Add(hoverOrFocusStyle);
+      
+      var focusStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Focus));
+      focusStyle.Add(SliderThumb.ZIndexProperty, SliderThumb.FocusZIndex);
+      commonStyle.Add(focusStyle);
       
       Add(commonStyle);
    }

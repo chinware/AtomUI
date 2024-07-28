@@ -189,6 +189,7 @@ public class Slider : RangeBase
    // Slider required parts
    private bool _isDragging;
    private bool _isFocusEngaged;
+   private SliderThumb? _graspedThumb;
    private SliderTrack? _track;
    private IDisposable? _pointerMovedDispose;
    private IDisposable? _pointerPressDispose;
@@ -218,6 +219,11 @@ public class Slider : RangeBase
    public Slider()
    {
       UpdatePseudoClasses(Orientation);
+      RangeValue = new SliderRangeValue()
+      {
+         StartValue = 20d,
+         EndValue = 40d
+      };
    }
 
    /// <summary>
@@ -369,12 +375,15 @@ public class Slider : RangeBase
    private void TrackReleased(object? sender, PointerReleasedEventArgs e)
    {
       _isDragging = false;
+      _graspedThumb = null;
    }
 
    private void TrackPressed(object? sender, PointerPressedEventArgs e)
    {
       if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed) {
-         MoveToPoint(e.GetCurrentPoint(_track));
+         var posOnTrack = e.GetCurrentPoint(_track);
+         _graspedThumb = GetEffectiveMoveThumb(posOnTrack.Position);
+         MoveToPoint(posOnTrack);
          _isDragging = true;
       }
    }
@@ -384,7 +393,7 @@ public class Slider : RangeBase
       if (_track is null) return;
 
       var orient = Orientation == Orientation.Horizontal;
-      var sliderThumb = GetEffectiveMoveThumb(posOnTrack.Position);
+      var sliderThumb = _graspedThumb;
       var thumbLength = (orient
          ? sliderThumb?.Bounds.Width ?? 0.0
          : sliderThumb?.Bounds.Height ?? 0.0) + double.Epsilon;
@@ -398,8 +407,19 @@ public class Slider : RangeBase
       var calcVal = Math.Abs(invert - logicalPos);
       var range = Maximum - Minimum;
       var finalValue = calcVal * range + Minimum;
+      if (!IsRangeMode) {
+         SetCurrentValue(ValueProperty, IsSnapToTickEnabled ? SnapToTick(finalValue) : finalValue);
+      } else {
+         var targetValue = IsSnapToTickEnabled ? SnapToTick(finalValue) : finalValue;
+         var currentRangeValue = RangeValue;
+         if (sliderThumb == _track.StartSliderThumb) {
+            currentRangeValue.StartValue = targetValue;
+         } else {
+            currentRangeValue.EndValue = targetValue;
+         }
+         SetCurrentValue(RangeValueProperty, currentRangeValue);
+      }
 
-      SetCurrentValue(ValueProperty, IsSnapToTickEnabled ? SnapToTick(finalValue) : finalValue);
       if (sliderThumb is not null && !sliderThumb.IsFocused) {
          sliderThumb.Focus();
       }

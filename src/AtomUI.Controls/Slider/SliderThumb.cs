@@ -15,6 +15,9 @@ namespace AtomUI.Controls;
 [PseudoClasses(StdPseudoClass.Pressed)]
 public class SliderThumb : TemplatedControl
 {
+   internal const int FocusZIndex = 1000;
+   internal const int NormalZIndex = 100;
+   
    public static readonly RoutedEvent<VectorEventArgs> DragStartedEvent =
       RoutedEvent.Register<SliderThumb, VectorEventArgs>(nameof(DragStarted), RoutingStrategies.Bubble);
 
@@ -96,13 +99,6 @@ public class SliderThumb : TemplatedControl
       if (_lastPoint.HasValue) _lastPoint = _lastPoint.Value + v;
    }
 
-   protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
-   {
-      base.OnPropertyChanged(change);
-      Console.WriteLine(change.Property.Name);
-      Console.WriteLine(Transitions?.Count);
-   }
-
    protected override AutomationPeer OnCreateAutomationPeer() => new SliderThumbAutomationPeer(this);
 
    protected virtual void OnDragStarted(VectorEventArgs e) { }
@@ -181,7 +177,6 @@ public class SliderThumb : TemplatedControl
 
    public override void Render(DrawingContext context)
    {
-      Console.WriteLine("xxxx");
       // 绘制圆
       var centerPos = new Point(Bounds.Width / 2, Bounds.Height / 2);
       var thumbCircleRadius = ThumbCircleSize / 2 + BorderThickness.Left / 2;
