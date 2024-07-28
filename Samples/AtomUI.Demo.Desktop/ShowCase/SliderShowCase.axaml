@@ -8,6 +8,16 @@
     xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
     mc:Ignorable="d">
     <showcase:ShowCasePanel>
-     
+        <showcase:ShowCaseItem
+            Title="Basic"
+            Description="Basic slider. When range is true, display as dual thumb mode. When disable is true, the slider will not be interactable.">
+            <StackPanel Orientation="Vertical" Spacing="20">
+                <atom:Slider
+                    Maximum="100"
+                    Minimum="0"
+                    TickFrequency="5"
+                    Value="50"/>
+            </StackPanel>
+        </showcase:ShowCaseItem>
     </showcase:ShowCasePanel>
 </UserControl>

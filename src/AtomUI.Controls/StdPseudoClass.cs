@@ -16,4 +16,6 @@ public static class StdPseudoClass
    public const string FlyoutOpen = ":flyout-open";
    public const string Expanded = ":expanded";
    public const string Open = ":open";
+   public const string Horizontal = ":horizontal";
+   public const string Vertical = ":vertical";
 }

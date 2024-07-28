@@ -100,7 +100,6 @@ public class MenuFlyout : PopupFlyoutBase
          [!ItemsControl.ItemTemplateProperty] = this[!ItemTemplateProperty],
          [!ItemsControl.ItemContainerThemeProperty] = this[!ItemContainerThemeProperty],
       };
-      return default!;
    }
 
    protected override void OnOpening(CancelEventArgs args)

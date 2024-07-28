@@ -90,7 +90,7 @@ public abstract partial class AbstractLineProgress : AbstractProgressBar
          // 只要图标
          return new Size(LineInfoIconSize, LineInfoIconSize);
       }
-      var textSize = TextUtils.CalculateTextSize(string.Format(ProgressTextFormat, Value), FontFamily, fontSize);
+      var textSize = TextUtils.CalculateTextSize(string.Format(ProgressTextFormat, Value), fontSize, FontFamily);
       return textSize;
    }
 

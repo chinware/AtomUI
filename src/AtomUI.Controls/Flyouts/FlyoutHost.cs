@@ -1,4 +1,5 @@
-﻿using AtomUI.Styling;
+﻿using System.Reactive.Disposables;
+using AtomUI.Styling;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -145,6 +146,7 @@ public class FlyoutHost : Control
    private bool _initialized = false;
    private DispatcherTimer? _mouseEnterDelayTimer;
    private DispatcherTimer? _mouseLeaveDelayTimer;
+   private CompositeDisposable? _subscriptions;
 
    static FlyoutHost()
    {
@@ -176,6 +178,7 @@ public class FlyoutHost : Control
       base.OnDetachedFromVisualTree(e);
       StopMouseLeaveTimer();
       StopMouseEnterTimer();
+      _subscriptions?.Dispose();
    }
 
    private void SetupFlyoutProperties()
@@ -195,6 +198,8 @@ public class FlyoutHost : Control
       if (AnchorTarget is null) {
          return;
       }
+
+      _subscriptions = new CompositeDisposable();
       if (Trigger == FlyoutTriggerType.Hover) {
          IsPointerOverProperty.Changed.Subscribe(args =>
          {
@@ -203,15 +208,15 @@ public class FlyoutHost : Control
             }
          });
       } else if (Trigger == FlyoutTriggerType.Focus) {
-         IsFocusedProperty.Changed.Subscribe(args =>
+         _subscriptions.Add(IsFocusedProperty.Changed.Subscribe(args =>
          {
             if (args.Sender == AnchorTarget) {
                HandleAnchorTargetFocus(args);
             }
-         });
+         }));
       } else if (Trigger == FlyoutTriggerType.Click) {
          var inputManager = AvaloniaLocator.Current.GetService<IInputManager>()!;
-         inputManager.Process.Subscribe(HandleAnchorTargetClick);
+         _subscriptions.Add(inputManager.Process.Subscribe(HandleAnchorTargetClick));
       }
    }
 

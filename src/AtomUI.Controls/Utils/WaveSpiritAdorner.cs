@@ -128,7 +128,7 @@ internal class WaveSpiritAdorner : Control
       var motionDurationSlow = globalToken.StyleToken.MotionDurationSlow;
       _wavePainter.SizeEasingCurve = new CubicEaseOut();
       _wavePainter.OpacityEasingCurve = new CubicEaseOut();
-      _wavePainter.OriginOpacity = 0.4;
+      _wavePainter.OriginOpacity = Math.Clamp(globalToken.WaveStartOpacity, 0.0, 1.0);
       _wavePainter.SizeMotionDuration = motionDurationSlow;
       _wavePainter.OpacityMotionDuration = motionDurationSlow.Add(TimeSpan.FromMilliseconds(50));
       _wavePainter.WaveRange = Math.Min(globalToken.WaveAnimationRange, 8);

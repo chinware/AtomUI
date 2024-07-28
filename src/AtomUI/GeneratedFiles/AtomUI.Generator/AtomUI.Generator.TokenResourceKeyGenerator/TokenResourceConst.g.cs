@@ -38,6 +38,7 @@ namespace AtomUI.Styling
         public static readonly TokenResourceKey ControlItemBgActiveDisabled = new TokenResourceKey("ControlItemBgActiveDisabled");
         public static readonly TokenResourceKey LineWidthFocus = new TokenResourceKey("LineWidthFocus");
         public static readonly TokenResourceKey WaveAnimationRange = new TokenResourceKey("WaveAnimationRange");
+        public static readonly TokenResourceKey WaveStartOpacity = new TokenResourceKey("WaveStartOpacity");
         public static readonly TokenResourceKey PaddingXXS = new TokenResourceKey("PaddingXXS");
         public static readonly TokenResourceKey PaddingXS = new TokenResourceKey("PaddingXS");
         public static readonly TokenResourceKey PaddingSM = new TokenResourceKey("PaddingSM");

@@ -161,7 +161,7 @@ public abstract partial class AbstractCircleProgress : AbstractProgressBar
       var circleSize = CalculateCircleSize();
       CalculateStrokeThickness();
       var extraInfoSize = circleSize - StrokeThickness - 1; // 写死一个像素的 padding 吧
-      var extraInfo = TextUtils.CalculateTextSize(string.Format(ProgressTextFormat, 100), FontFamily, FontSize);
+      var extraInfo = TextUtils.CalculateTextSize(string.Format(ProgressTextFormat, 100), FontSize, FontFamily);
       
       // 这三个是不可能同时满足的
       if (_layoutTransformLabel is not null) {

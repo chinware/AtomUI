@@ -202,6 +202,11 @@ public class AliasDesignToken : MapDesignToken
    /// 波浪动画的波动范围
    /// </summary>
    public double WaveAnimationRange { get; set; }
+   
+   /// <summary>
+   /// 波浪动画的初始透明度
+   /// </summary>
+   public double WaveStartOpacity { get; set; }
 
    // Padding
    /// <summary>

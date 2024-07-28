@@ -70,6 +70,7 @@ public static class AliasDesignTokenExtensions
       // Line
       aliasToken.LineWidthFocus = seedToken.LineWidth * 2;
       aliasToken.WaveAnimationRange = seedToken.LineWidth * 6;
+      aliasToken.WaveStartOpacity = 0.4; 
       
       // Control
       aliasToken.ControlOutlineWidth = seedToken.LineWidth * 2;

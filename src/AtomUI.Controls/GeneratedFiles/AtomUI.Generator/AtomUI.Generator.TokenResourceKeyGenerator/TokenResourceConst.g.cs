@@ -236,6 +236,30 @@ namespace AtomUI.Styling
         public static readonly TokenResourceKey VerticalMarginInline = new TokenResourceKey("Separator.VerticalMarginInline");
     }
 
+    public static class SliderResourceKey
+    {
+        public static readonly TokenResourceKey SliderTrackSize = new TokenResourceKey("Slider.SliderTrackSize");
+        public static readonly TokenResourceKey RailSize = new TokenResourceKey("Slider.RailSize");
+        public static readonly TokenResourceKey ThumbSize = new TokenResourceKey("Slider.ThumbSize");
+        public static readonly TokenResourceKey ThumbCircleSize = new TokenResourceKey("Slider.ThumbCircleSize");
+        public static readonly TokenResourceKey ThumbCircleSizeHover = new TokenResourceKey("Slider.ThumbCircleSizeHover");
+        public static readonly TokenResourceKey ThumbCircleBorderThickness = new TokenResourceKey("Slider.ThumbCircleBorderThickness");
+        public static readonly TokenResourceKey ThumbCircleBorderThicknessHover = new TokenResourceKey("Slider.ThumbCircleBorderThicknessHover");
+        public static readonly TokenResourceKey RailBg = new TokenResourceKey("Slider.RailBg");
+        public static readonly TokenResourceKey RailHoverBg = new TokenResourceKey("Slider.RailHoverBg");
+        public static readonly TokenResourceKey TrackBg = new TokenResourceKey("Slider.TrackBg");
+        public static readonly TokenResourceKey TrackHoverBg = new TokenResourceKey("Slider.TrackHoverBg");
+        public static readonly TokenResourceKey ThumbCircleBorderColor = new TokenResourceKey("Slider.ThumbCircleBorderColor");
+        public static readonly TokenResourceKey ThumbCircleBorderActiveColor = new TokenResourceKey("Slider.ThumbCircleBorderActiveColor");
+        public static readonly TokenResourceKey ThumbCircleBorderColorDisabled = new TokenResourceKey("Slider.ThumbCircleBorderColorDisabled");
+        public static readonly TokenResourceKey ThumbOutlineColor = new TokenResourceKey("Slider.ThumbOutlineColor");
+        public static readonly TokenResourceKey ThumbOutlineThickness = new TokenResourceKey("Slider.ThumbOutlineThickness");
+        public static readonly TokenResourceKey TrackBgDisabled = new TokenResourceKey("Slider.TrackBgDisabled");
+        public static readonly TokenResourceKey SliderPaddingHorizontal = new TokenResourceKey("Slider.SliderPaddingHorizontal");
+        public static readonly TokenResourceKey SliderPaddingVertical = new TokenResourceKey("Slider.SliderPaddingVertical");
+        public static readonly TokenResourceKey MarginPartWithMark = new TokenResourceKey("Slider.MarginPartWithMark");
+    }
+
     public static class ToggleSwitchResourceKey
     {
         public static readonly TokenResourceKey TrackHeight = new TokenResourceKey("ToggleSwitch.TrackHeight");
