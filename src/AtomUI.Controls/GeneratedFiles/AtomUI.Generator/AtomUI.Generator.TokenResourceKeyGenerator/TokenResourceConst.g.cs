@@ -250,6 +250,7 @@ namespace AtomUI.Styling
         public static readonly TokenResourceKey TrackBg = new TokenResourceKey("Slider.TrackBg");
         public static readonly TokenResourceKey TrackHoverBg = new TokenResourceKey("Slider.TrackHoverBg");
         public static readonly TokenResourceKey ThumbCircleBorderColor = new TokenResourceKey("Slider.ThumbCircleBorderColor");
+        public static readonly TokenResourceKey ThumbCircleBorderHoverColor = new TokenResourceKey("Slider.ThumbCircleBorderHoverColor");
         public static readonly TokenResourceKey ThumbCircleBorderActiveColor = new TokenResourceKey("Slider.ThumbCircleBorderActiveColor");
         public static readonly TokenResourceKey ThumbCircleBorderColorDisabled = new TokenResourceKey("Slider.ThumbCircleBorderColorDisabled");
         public static readonly TokenResourceKey ThumbOutlineColor = new TokenResourceKey("Slider.ThumbOutlineColor");

@@ -76,6 +76,11 @@ public class SliderToken : AbstractControlDesignToken
    public Color ThumbCircleBorderColor { get; set; }
    
    /// <summary>
+   /// 滑块颜色 hover
+   /// </summary>
+   public Color ThumbCircleBorderHoverColor { get; set; }
+   
+   /// <summary>
    /// 滑块激活态颜色
    /// </summary>
    public Color ThumbCircleBorderActiveColor { get; set; }
@@ -129,6 +134,7 @@ public class SliderToken : AbstractControlDesignToken
       TrackBg = colorPrimaryToken.ColorPrimaryBorder;
       TrackHoverBg = colorPrimaryToken.ColorPrimaryBorderHover;
       ThumbCircleBorderColor = colorPrimaryToken.ColorPrimaryBorder;
+      ThumbCircleBorderHoverColor = colorPrimaryToken.ColorPrimaryBorderHover;
       ThumbCircleBorderActiveColor = colorPrimaryToken.ColorPrimary;
       ThumbCircleBorderColorDisabled = ColorUtils.OnBackground(_globalToken.ColorTextDisabled, colorNeutralToken.ColorBgContainer);
       TrackBgDisabled = _globalToken.ColorBgContainerDisabled;

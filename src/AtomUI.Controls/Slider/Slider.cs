@@ -191,6 +191,8 @@ public class Slider : RangeBase
    private bool _isFocusEngaged;
    private SliderTrack? _track;
    private IDisposable? _pointerMovedDispose;
+   private IDisposable? _pointerPressDispose;
+   private IDisposable? _pointerReleaseDispose;
 
    private const double Tolerance = 0.0001;
    
@@ -233,6 +235,8 @@ public class Slider : RangeBase
    {
       base.OnApplyTemplate(e);
       _pointerMovedDispose?.Dispose();
+      _pointerPressDispose?.Dispose();
+      _pointerReleaseDispose?.Dispose();
 
       _track = e.NameScope.Find<SliderTrack>(SliderTheme.TrackPart);
 
@@ -240,6 +244,8 @@ public class Slider : RangeBase
          _track.IgnoreThumbDrag = true;
       }
 
+      _pointerPressDispose = this.AddDisposableHandler(PointerPressedEvent, TrackPressed, RoutingStrategies.Tunnel);
+      _pointerReleaseDispose = this.AddDisposableHandler(PointerReleasedEvent, TrackReleased, RoutingStrategies.Tunnel);
       _pointerMovedDispose = this.AddDisposableHandler(PointerMovedEvent, TrackMoved, RoutingStrategies.Tunnel);
    }
 
@@ -394,6 +400,9 @@ public class Slider : RangeBase
       var finalValue = calcVal * range + Minimum;
 
       SetCurrentValue(ValueProperty, IsSnapToTickEnabled ? SnapToTick(finalValue) : finalValue);
+      if (sliderThumb is not null && !sliderThumb.IsFocused) {
+         sliderThumb.Focus();
+      }
    }
 
    private SliderThumb? GetEffectiveMoveThumb(Point point)

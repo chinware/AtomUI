@@ -81,6 +81,14 @@ internal class SliderTheme : ControlTheme
       sliderTrackStyle.Add(SliderTrack.TrackGrooveBrushProperty, SliderResourceKey.RailBg);
       sliderTrackStyle.Add(SliderTrack.TrackBarBrushProperty, SliderResourceKey.TrackBg);
       sliderStyle.Add(sliderTrackStyle);
+      
+      var sliderStyleHover = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
+      var thumbStyle = new Style(selector => selector.Nesting().Template().OfType<SliderThumb>().PropertyEquals(SliderThumb.IsFocusedProperty, false)
+                                                     .Not(x => x.Class(StdPseudoClass.PointerOver)));
+      thumbStyle.Add(SliderThumb.BorderBrushProperty, SliderResourceKey.ThumbCircleBorderHoverColor);
+      sliderStyleHover.Add(thumbStyle);
+      sliderStyle.Add(sliderStyleHover);
+     
 
       var sliderTrackHorizontalStyle = new Style(selector => selector.Nesting().Template().OfType<SliderTrack>().Class(StdPseudoClass.Horizontal));
       sliderTrackHorizontalStyle.Add(SliderTrack.PaddingProperty, SliderResourceKey.SliderPaddingHorizontal);

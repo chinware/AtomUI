@@ -1,6 +1,4 @@
-﻿using System.Reactive.Disposables;
-using AtomUI.Media;
-using AtomUI.Reflection;
+﻿using AtomUI.Media;
 using AtomUI.Styling;
 using AtomUI.Utils;
 using Avalonia;
@@ -11,6 +9,7 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Input.Raw;
+using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Utilities;
@@ -79,6 +78,12 @@ public class SliderTrack : Control, IControlCustomStyle
    
    internal static readonly StyledProperty<Thickness> PaddingProperty = 
       Decorator.PaddingProperty.AddOwner<SliderTrack>();
+   
+   internal static readonly RoutedEvent<PointerPressedEventArgs> TrailPressedEvent =
+      RoutedEvent.Register<SliderThumb, PointerPressedEventArgs>(nameof(TrailPressed), RoutingStrategies.Bubble);
+   
+   internal static readonly RoutedEvent<PointerReleasedEventArgs> TrailReleasedEvent =
+      RoutedEvent.Register<SliderThumb, PointerReleasedEventArgs>(nameof(TrailReleased), RoutingStrategies.Bubble);
 
    private VectorEventArgs? _deferredThumbDrag;
    private Vector _lastDrag;
@@ -223,6 +228,18 @@ public class SliderTrack : Control, IControlCustomStyle
       set => SetValue(PaddingProperty, value);
    }
    
+   public event EventHandler<PointerPressedEventArgs>? TrailPressed
+   {
+      add => AddHandler(TrailPressedEvent, value);
+      remove => RemoveHandler(TrailPressedEvent, value);
+   }
+   
+   public event EventHandler<PointerReleasedEventArgs>? TrailReleased
+   {
+      add => AddHandler(TrailReleasedEvent, value);
+      remove => RemoveHandler(TrailReleasedEvent, value);
+   }
+   
    private double ThumbCenterOffset { get; set; }
    private Point StartThumbCenterOffset { get; set; }
    private Point EndThumbCenterOffset { get; set; }
@@ -296,6 +313,13 @@ public class SliderTrack : Control, IControlCustomStyle
 
    private void HandleGlobalMousePressed(Point point)
    {
+      var globalOffset = GetGlobalOffset();
+      var trailGlobalBounds = new Rect(globalOffset + _renderContextData!.RailRect.Position, _renderContextData.RailRect.Size);
+      if (trailGlobalBounds.Contains(point)) {
+         // 点击在轨道上，要不设置值，要不本身就在 Thumb 上，所以不需要处理
+         return;
+      }
+      
       if (StartSliderThumb is not null && StartSliderThumb.IsVisible) {
          HandleThumbFocus(StartSliderThumb, point);
       }
@@ -305,18 +329,38 @@ public class SliderTrack : Control, IControlCustomStyle
       }
    }
 
+   private bool IsNeedHandlePressedForValue(Point point)
+   {
+      if ((StartSliderThumb is not null &&
+           StartSliderThumb.IsVisible &&
+           StartSliderThumb.Bounds.Contains(point)) ||
+          EndSliderThumb is not null &&
+          EndSliderThumb.IsVisible &&
+          EndSliderThumb.Bounds.Contains(point)) {
+         return false;
+      }
+
+      return true;
+   }
+
+   private Point GetGlobalOffset()
+   {
+      var topLevel = TopLevel.GetTopLevel(this);
+      if (topLevel is null) {
+         return default;
+      }
+      return this.TranslatePoint(Bounds.Position, topLevel) ?? default;
+   }
+
    private void HandleThumbFocus(SliderThumb sliderThumb, Point point)
    {
       var topLevel = TopLevel.GetTopLevel(this);
       if (topLevel is null) {
          return;
       }
-      var offset = this.TranslatePoint(Bounds.Position, topLevel);
-      if (!offset.HasValue) {
-         return;
-      }
+      var offset = GetGlobalOffset();
       
-      var thumbGOffset = offset.Value + sliderThumb.Bounds.Position;
+      var thumbGOffset = offset + sliderThumb.Bounds.Position;
       var thumbGBounds = new Rect(thumbGOffset, sliderThumb.Bounds.Size);
       if (!thumbGBounds.Contains(point) && sliderThumb.IsFocused) {
          topLevel.FocusManager?.ClearFocus();
