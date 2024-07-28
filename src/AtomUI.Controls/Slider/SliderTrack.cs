@@ -2,6 +2,7 @@
 using AtomUI.Styling;
 using AtomUI.Utils;
 using Avalonia;
+using Avalonia.Animation;
 using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Controls.Documents;
@@ -274,6 +275,12 @@ public class SliderTrack : Control, IControlCustomStyle
       BindUtils.CreateTokenBinding(this, SliderTrack.SliderRailSizeProperty, SliderResourceKey.RailSize);
 
       HandleRangeModeChanged();
+      if (Transitions is null) {
+         var transitions = new Transitions();
+         transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(TrackGrooveBrushProperty));
+         transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(TrackBarBrushProperty));
+         Transitions = transitions;
+      }
    }
 
    private void HandleRangeModeChanged()
@@ -327,20 +334,6 @@ public class SliderTrack : Control, IControlCustomStyle
       if (EndSliderThumb is not null && EndSliderThumb.IsVisible) {
          HandleThumbFocus(EndSliderThumb, point);
       }
-   }
-
-   private bool IsNeedHandlePressedForValue(Point point)
-   {
-      if ((StartSliderThumb is not null &&
-           StartSliderThumb.IsVisible &&
-           StartSliderThumb.Bounds.Contains(point)) ||
-          EndSliderThumb is not null &&
-          EndSliderThumb.IsVisible &&
-          EndSliderThumb.Bounds.Contains(point)) {
-         return false;
-      }
-
-      return true;
    }
 
    private Point GetGlobalOffset()
@@ -667,12 +660,9 @@ public class SliderTrack : Control, IControlCustomStyle
    void IControlCustomStyle.PrepareRenderInfo()
    {
       _renderContextData = new RenderContextData();
-
-      var startThumbPivotOffset = 0d;
-      var endThumbPivotOffset = 0d;
       CalculateThumbValuePivotOffset(Bounds.Size, Orientation == Orientation.Vertical, 
-                                    out startThumbPivotOffset,
-                                    out endThumbPivotOffset);
+                                    out var startThumbPivotOffset,
+                                    out var endThumbPivotOffset);
       var thumbSize = StartSliderThumb!.DesiredSize.Width;
       if (Orientation == Orientation.Horizontal) {
          {

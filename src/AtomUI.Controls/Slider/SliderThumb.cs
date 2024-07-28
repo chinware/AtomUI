@@ -1,4 +1,8 @@
-﻿using Avalonia;
+﻿using AtomUI.Media;
+using AtomUI.Styling;
+using AtomUI.Utils;
+using Avalonia;
+using Avalonia.Animation;
 using Avalonia.Automation.Peers;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
@@ -24,10 +28,10 @@ public class SliderThumb : TemplatedControl
          AvaloniaProperty.Register<SliderThumb, IBrush?>(nameof(OutlineBrush));
 
    public static readonly StyledProperty<Thickness> OutlineThicknessProperty =
-      AvaloniaProperty.Register<TemplatedControl, Thickness>(nameof(OutlineThickness));
+      AvaloniaProperty.Register<SliderThumb, Thickness>(nameof(OutlineThickness));
    
    public static readonly StyledProperty<double> ThumbCircleSizeProperty =
-      AvaloniaProperty.Register<TemplatedControl, double>(nameof(ThumbCircleSize));
+      AvaloniaProperty.Register<SliderThumb, double>(nameof(ThumbCircleSize));
 
    private Point? _lastPoint;
 
@@ -41,6 +45,14 @@ public class SliderThumb : TemplatedControl
                                  BorderThicknessProperty,
                                  OutlineBrushProperty, 
                                  BorderBrushProperty);
+   }
+
+   public SliderThumb()
+   {
+      var transitions = new Transitions();
+      transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(OutlineBrushProperty, GlobalResourceKey.MotionDurationFast));
+      transitions.Add(AnimationUtils.CreateTransition<ThicknessTransition>(OutlineThicknessProperty, GlobalResourceKey.MotionDurationFast));
+      Transitions = transitions;
    }
 
    public event EventHandler<VectorEventArgs>? DragStarted
@@ -83,7 +95,14 @@ public class SliderThumb : TemplatedControl
    {
       if (_lastPoint.HasValue) _lastPoint = _lastPoint.Value + v;
    }
-   
+
+   protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+   {
+      base.OnPropertyChanged(change);
+      Console.WriteLine(change.Property.Name);
+      Console.WriteLine(Transitions?.Count);
+   }
+
    protected override AutomationPeer OnCreateAutomationPeer() => new SliderThumbAutomationPeer(this);
 
    protected virtual void OnDragStarted(VectorEventArgs e) { }
@@ -162,6 +181,7 @@ public class SliderThumb : TemplatedControl
 
    public override void Render(DrawingContext context)
    {
+      Console.WriteLine("xxxx");
       // 绘制圆
       var centerPos = new Point(Bounds.Width / 2, Bounds.Height / 2);
       var thumbCircleRadius = ThumbCircleSize / 2 + BorderThickness.Left / 2;
