@@ -1,8 +1,5 @@
 ﻿using System.Reflection;
 using AtomUI.ColorSystem;
-using AtomUI.Controls.MotionScene;
-using AtomUI.Controls.Utils;
-using AtomUI.MotionScene;
 using AtomUI.Reflection;
 using AtomUI.Styling;
 using AtomUI.Utils;
@@ -21,12 +18,12 @@ namespace AtomUI.Controls;
 
 [PseudoClasses(StdPseudoClass.Open)]
 public class ToolTip : TemplatedControl, 
-                               IShadowMaskInfoProvider,
-                               IControlCustomStyle
+                       IShadowMaskInfoProvider,
+                       IControlCustomStyle
 {
    #region 公共属性定义
 
-      /// <summary>
+   /// <summary>
    /// Defines the <see cref="Content"/> property.
    /// </summary>
    public static readonly StyledProperty<object?> ContentProperty =
@@ -43,6 +40,12 @@ public class ToolTip : TemplatedControl,
    /// </summary>
    public static readonly AttachedProperty<bool> IsOpenProperty =
       AvaloniaProperty.RegisterAttached<ToolTip, Control, bool>("IsOpen");
+   
+   /// <summary>
+   /// 自己手动关闭哦
+   /// </summary>
+   public static readonly AttachedProperty<bool> IsCustomHideProperty =
+      AvaloniaProperty.RegisterAttached<ToolTip, Control, bool>("IsCustomHide", false);
 
    /// <summary>
    /// Defines the ToolTip.PresetColor attached property.
@@ -337,6 +340,16 @@ public class ToolTip : TemplatedControl,
    {
       element.SetValue(IsShowArrowProperty, flag);
    }
+   
+   public static bool GetIsCustomHide(Control element)
+   {
+      return element.GetValue(IsCustomHideProperty);
+   }
+   
+   public static void SetIsCustomHide(Control element, bool flag)
+   {
+      element.SetValue(IsCustomHideProperty, flag);
+   }
 
    /// <summary>
    /// 箭头是否始终指向居中位置
@@ -526,6 +539,20 @@ public class ToolTip : TemplatedControl,
          toolTip.AdornedControl = null;
          toolTip.Close();
          toolTip.UpdatePseudoClasses(newValue);
+      }
+   }
+
+   protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+   {
+      base.OnPropertyChanged(change);
+      if (change.Property == ContentProperty) {
+         if (_arrowDecoratedBox is not null) {
+            if (_arrowDecoratedBox.Child is TextBlock textBlock) {
+               if (change.NewValue is string text) {
+                  textBlock.Text = text;
+               }
+            }
+         }
       }
    }
 

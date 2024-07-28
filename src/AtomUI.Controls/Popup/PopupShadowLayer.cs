@@ -127,6 +127,7 @@ internal class PopupShadowLayer : LiteWindow, IShadowDecorator
 
    private void TargetPopupPositionChanged(object? sender, PixelPointEventArgs e)
    {
+      SetupShadowRenderer();
       SetupPositionAndSize();
    }
 

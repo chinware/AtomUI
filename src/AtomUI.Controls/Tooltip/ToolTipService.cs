@@ -66,6 +66,9 @@ internal sealed class ToolTipService : IDisposable
             case RawPointerEventType.MiddleButtonDown:
             case RawPointerEventType.XButton1Down:
             case RawPointerEventType.XButton2Down:
+               if (_tipControl is not null && ToolTip.GetIsCustomHide(_tipControl)) {
+                  break;  
+               }
                ClearTip();
                break;
          }
@@ -216,7 +219,9 @@ internal sealed class ToolTipService : IDisposable
 
    private void Close(Control control)
    {
-      ToolTip.SetIsOpen(control, false);
+      if (!ToolTip.GetIsCustomHide(control)) {
+         ToolTip.SetIsOpen(control, false); 
+      }
    }
 
    private void StopTimer()

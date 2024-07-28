@@ -278,8 +278,8 @@ public class SliderTrack : Control, IControlCustomStyle
                                             sender.GetValue(MaximumProperty));
          return new SliderRangeValue()
          {
-            StartValue = Math.Min(startValue, endValue),
-            EndValue = Math.Max(startValue, endValue),
+            StartValue = startValue,
+            EndValue = endValue,
          };
       }
       return sender.GetValue(RangeValueProperty);

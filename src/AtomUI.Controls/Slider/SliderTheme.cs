@@ -1,4 +1,5 @@
 ﻿using AtomUI.Styling;
+using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Input;
@@ -26,6 +27,8 @@ internal class SliderTheme : ControlTheme
          {
             Name = StartThumbPart,
          };
+         ToolTip.SetPlacement(startSliderThumb, PlacementMode.Top);
+         ToolTip.SetShowDelay(startSliderThumb, 50);
          startSliderThumb.RegisterInNameScope(scope);
          
          var endSliderThumb = new SliderThumb
@@ -33,6 +36,8 @@ internal class SliderTheme : ControlTheme
             Name = EndThumbPart,
          };
          endSliderThumb.RegisterInNameScope(scope);
+         ToolTip.SetPlacement(endSliderThumb, PlacementMode.Top);
+         ToolTip.SetShowDelay(endSliderThumb, 50);
          
          var sliderTrack = new SliderTrack
          {

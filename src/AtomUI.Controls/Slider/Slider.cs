@@ -285,6 +285,21 @@ public class Slider : RangeBase
       _pointerPressDispose = this.AddDisposableHandler(PointerPressedEvent, TrackPressed, RoutingStrategies.Tunnel);
       _pointerReleaseDispose = this.AddDisposableHandler(PointerReleasedEvent, TrackReleased, RoutingStrategies.Tunnel);
       _pointerMovedDispose = this.AddDisposableHandler(PointerMovedEvent, TrackMoved, RoutingStrategies.Tunnel);
+      
+      if (_track is not null) {
+         if (!IsRangeMode) {
+            if (_track.StartSliderThumb is not null) {
+               ToolTip.SetTip(_track.StartSliderThumb, FormatValue(Value));
+            }
+         } else {
+            if (_track.StartSliderThumb is not null) {
+               ToolTip.SetTip(_track.StartSliderThumb, FormatValue(RangeValue.StartValue));
+            }
+            if (_track.EndSliderThumb is not null) {
+               ToolTip.SetTip(_track.EndSliderThumb, FormatValue(RangeValue.EndValue));
+            }
+         }
+      }
    }
 
    /// <inheritdoc />
@@ -406,6 +421,12 @@ public class Slider : RangeBase
 
    private void TrackReleased(object? sender, PointerReleasedEventArgs e)
    {
+      if (_graspedThumb is not null) {
+         ToolTip.SetIsCustomHide(_graspedThumb, false);
+         if (!_graspedThumb.Bounds.Contains(e.GetPosition(_track))) {
+            ToolTip.SetIsOpen(_graspedThumb, false);
+         }
+      }
       _isDragging = false;
       _graspedThumb = null;
    }
@@ -416,6 +437,10 @@ public class Slider : RangeBase
          var posOnTrack = e.GetCurrentPoint(_track);
          _graspedThumb = GetEffectiveMoveThumb(posOnTrack.Position);
          MoveToPoint(posOnTrack);
+         if (_graspedThumb is not null) {
+            ToolTip.SetIsCustomHide(_graspedThumb, true);
+         }
+
          _isDragging = true;
       }
    }
@@ -439,19 +464,19 @@ public class Slider : RangeBase
       var calcVal = Math.Abs(invert - logicalPos);
       var range = Maximum - Minimum;
       var finalValue = calcVal * range + Minimum;
+      finalValue = IsSnapToTickEnabled ? SnapToTick(finalValue) : finalValue;
       if (!IsRangeMode) {
-         SetCurrentValue(ValueProperty, IsSnapToTickEnabled ? SnapToTick(finalValue) : finalValue);
+         SetCurrentValue(ValueProperty, finalValue);
       } else {
-         var targetValue = IsSnapToTickEnabled ? SnapToTick(finalValue) : finalValue;
          var currentRangeValue = RangeValue;
          if (sliderThumb == _track.StartSliderThumb) {
-            currentRangeValue.StartValue = targetValue;
+            currentRangeValue.StartValue = finalValue;
          } else {
-            currentRangeValue.EndValue = targetValue;
+            currentRangeValue.EndValue = finalValue;
          }
+         
          SetCurrentValue(RangeValueProperty, currentRangeValue);
       }
-
       if (sliderThumb is not null && !sliderThumb.IsFocused) {
          sliderThumb.Focus();
       }
@@ -507,7 +532,25 @@ public class Slider : RangeBase
 
       if (change.Property == OrientationProperty) {
          UpdatePseudoClasses(change.GetNewValue<Orientation>());
+      } else if (change.Property == ValueProperty) {
+         if (_track is not null && _track.StartSliderThumb is not null) {
+            ToolTip.SetTip(_track.StartSliderThumb, FormatValue(Value));
+         }
+      } else if (change.Property == RangeValueProperty) {
+         if (_track is not null) {
+            if (_track.StartSliderThumb is not null) {
+               ToolTip.SetTip(_track.StartSliderThumb, FormatValue(RangeValue.StartValue));
+            }
+            if (_track.EndSliderThumb is not null) {
+               ToolTip.SetTip(_track.EndSliderThumb, FormatValue(RangeValue.EndValue));
+            }
+         }
       }
+   }
+
+   private string FormatValue(double value)
+   {
+      return $"{Math.Round(value)}";
    }
 
    /// <summary>
