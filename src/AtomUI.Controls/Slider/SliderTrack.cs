@@ -689,8 +689,8 @@ public class SliderTrack : Control, IControlCustomStyle
          {
             // 计算 range bar rect
             var offsetY = (Bounds.Height - SliderRailSize) / 2;
-            _renderContextData.TrackRangeRect = new Rect(new Point(startThumbPivotOffset, offsetY), 
-                                                         new Size(endThumbPivotOffset - startThumbPivotOffset,SliderRailSize));
+            _renderContextData.TrackRangeRect = new Rect(new Point(Math.Min(startThumbPivotOffset, endThumbPivotOffset), offsetY), 
+                                                         new Size(Math.Abs(endThumbPivotOffset - startThumbPivotOffset),SliderRailSize));
          }
       } else {
          {
@@ -702,8 +702,8 @@ public class SliderTrack : Control, IControlCustomStyle
          {
             // 计算 range bar rect
             var offsetX = (Bounds.Width - SliderRailSize) / 2;
-            _renderContextData.TrackRangeRect = new Rect(new Point(offsetX, startThumbPivotOffset), 
-                                                         new Size(SliderRailSize, endThumbPivotOffset - startThumbPivotOffset));
+            _renderContextData.TrackRangeRect = new Rect(new Point(offsetX, Math.Min(startThumbPivotOffset, endThumbPivotOffset)), 
+                                                         new Size(SliderRailSize, Math.Abs(endThumbPivotOffset - startThumbPivotOffset)));
          }
       }
    }

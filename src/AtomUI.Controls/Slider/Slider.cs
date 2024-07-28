@@ -145,6 +145,9 @@ public class Slider : RangeBase
    /// </summary>
    public static readonly StyledProperty<AvaloniaList<double>?> TicksProperty =
       TickBar.TicksProperty.AddOwner<Slider>();
+   
+   public static readonly StyledProperty<string> ValueFormatTemplateProperty =
+      AvaloniaProperty.Register<Slider, string>(nameof(ValueFormatTemplate), "{0:0.00}");
 
    /// <summary>
    /// Defines the ticks to be drawn on the tick bar.
@@ -221,6 +224,12 @@ public class Slider : RangeBase
    {
       get => GetValue(MarksProperty);
       set => SetValue(MarksProperty, value);
+   }
+
+   public string ValueFormatTemplate
+   {
+      get => GetValue(ValueFormatTemplateProperty);
+      set => SetValue(ValueFormatTemplateProperty, value);
    }
    
    // Slider required parts
@@ -550,7 +559,7 @@ public class Slider : RangeBase
 
    private string FormatValue(double value)
    {
-      return $"{Math.Round(value)}";
+      return string.Format(ValueFormatTemplate, value);
    }
 
    /// <summary>
