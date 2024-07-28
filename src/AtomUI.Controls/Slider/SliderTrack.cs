@@ -30,7 +30,8 @@ public class SliderTrack : Control, IControlCustomStyle
       RangeBase.ValueProperty.AddOwner<SliderTrack>();
 
    public static readonly StyledProperty<SliderRangeValue> RangeValueProperty =
-      AvaloniaProperty.Register<SliderTrack, SliderRangeValue>(nameof(RangeValue));
+      AvaloniaProperty.Register<SliderTrack, SliderRangeValue>(nameof(RangeValue),
+         coerce:CoerceRangeValue);
 
    public static readonly StyledProperty<bool> IsRangeModeProperty =
       AvaloniaProperty.Register<SliderTrack, bool>(nameof(IsRangeMode));
@@ -266,6 +267,28 @@ public class SliderTrack : Control, IControlCustomStyle
    {
       _customStyle = this;
       UpdatePseudoClasses(Orientation);
+   }
+   
+   private static SliderRangeValue CoerceRangeValue(AvaloniaObject sender, SliderRangeValue value)
+   {
+      if (ValidateRangeValue(ref value)) {
+         var startValue = MathUtilities.Clamp(value.StartValue, sender.GetValue(MinimumProperty),
+                                              sender.GetValue(MaximumProperty));
+         var endValue = MathUtilities.Clamp(value.EndValue, sender.GetValue(MinimumProperty),
+                                            sender.GetValue(MaximumProperty));
+         return new SliderRangeValue()
+         {
+            StartValue = Math.Min(startValue, endValue),
+            EndValue = Math.Max(startValue, endValue),
+         };
+      }
+      return sender.GetValue(RangeValueProperty);
+   }
+   
+   private static bool ValidateRangeValue(ref SliderRangeValue value)
+   {
+      return !double.IsInfinity(value.StartValue) && !double.IsNaN(value.StartValue) && 
+             !double.IsInfinity(value.EndValue) && !double.IsNaN(value.EndValue);
    }
    
    public override void ApplyTemplate()
@@ -517,15 +540,6 @@ public class SliderTrack : Control, IControlCustomStyle
    {
       var thumbDelta = newThumbBounds.Position - thumb.Bounds.Position;
       return _lastDrag - thumbDelta;
-   }
-
-   private static void CoerceLength(ref double componentLength, double trackLength)
-   {
-      if (componentLength < 0) {
-         componentLength = 0.0;
-      } else if (componentLength > trackLength || double.IsNaN(componentLength)) {
-         componentLength = trackLength;
-      }
    }
 
    private void CalculateThumbValuePivotOffset(Size arrangeSize, 

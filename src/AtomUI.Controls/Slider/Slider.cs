@@ -1,4 +1,5 @@
-﻿using AtomUI.Input;
+﻿using System.Globalization;
+using AtomUI.Input;
 using Avalonia;
 using Avalonia.Automation;
 using Avalonia.Automation.Peers;
@@ -46,6 +47,42 @@ public record struct SliderRangeValue
 {
    public double StartValue { get; set; }
    public double EndValue { get; set; }
+
+   public static SliderRangeValue Parse(string expr)
+   {
+      // 这里只负责解析到 double
+      const string exceptionMessage = "Parse value expression for SliderRangeValue failed";
+      using (var tokenizer = new StringTokenizer(expr, CultureInfo.InvariantCulture, exceptionMessage)) {
+         try {
+            double startValue = 0d;
+            double endValue = 0d;
+            if (tokenizer.TryReadString(out var startValueStr)) {
+               startValue = double.Parse(startValueStr);
+               if (tokenizer.TryReadString(out var endValueStr)) {
+                  endValue = double.Parse(endValueStr);
+               } else {
+                  // 至少要两个
+                  throw new FormatException($"{exceptionMessage}, must have two value.");
+               }
+            } 
+            // 检查顺序
+            if (startValue > endValue) {
+               throw new ArgumentException($"{exceptionMessage}, start value must less or equal to end value.");
+            }
+            return new SliderRangeValue()
+            {
+               StartValue = startValue,
+               EndValue = endValue
+            };
+         } catch (Exception e) {
+            if (e is not FormatException) {
+               throw new FormatException(exceptionMessage, e);
+            }
+            
+            throw;
+         }
+      }
+   }
 }
 
 public record struct SliderMark
@@ -219,11 +256,6 @@ public class Slider : RangeBase
    public Slider()
    {
       UpdatePseudoClasses(Orientation);
-      RangeValue = new SliderRangeValue()
-      {
-         StartValue = 20d,
-         EndValue = 40d
-      };
    }
 
    /// <summary>
