@@ -1,4 +1,4 @@
-﻿namespace AtomUI;
+﻿namespace AtomUI.Theme;
 
 public class StaticTheme : Theme
 {

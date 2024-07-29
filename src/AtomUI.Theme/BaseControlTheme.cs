@@ -5,14 +5,12 @@ using Avalonia.Data;
 using Avalonia.Data.Converters;
 using Avalonia.Styling;
 
-namespace AtomUI;
+namespace AtomUI.Theme;
 
-using AvaloniaControlTheme = Avalonia.Styling.ControlTheme;
-
-public class ControlTheme : AvaloniaControlTheme
+public class BaseControlTheme : ControlTheme
 {
-   public ControlTheme() { }
-   public ControlTheme(Type targetType) : base(targetType) { }
+   public BaseControlTheme() { }
+   public BaseControlTheme(Type targetType) : base(targetType) { }
 
    public void Build()
    {

@@ -2,7 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.Media;
 
-namespace AtomUI.TokenSystem;
+namespace AtomUI.Theme.TokenSystem;
 
 public abstract class AbstractDesignToken : IDesignToken
 {

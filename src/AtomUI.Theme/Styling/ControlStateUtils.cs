@@ -1,6 +1,6 @@
 ﻿using Avalonia.Controls;
 
-namespace AtomUI.Styling;
+namespace AtomUI.Theme.Styling;
 
 public static class ControlStateUtils
 {

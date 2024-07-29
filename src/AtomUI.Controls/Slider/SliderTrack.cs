@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using AtomUI.Media;
-using AtomUI.Styling;
+using AtomUI.Theme.Styling;
+using AtomUI.Theme.Utils;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;

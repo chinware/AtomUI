@@ -1,4 +1,5 @@
-﻿using AtomUI.Styling;
+﻿using AtomUI.Theme;
+using AtomUI.Theme.Styling;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Styling;
@@ -6,7 +7,7 @@ using Avalonia.Styling;
 namespace AtomUI.Controls;
 
 [ControlThemeProvider]
-public class SegmentedItemBoxTheme : ControlTheme
+public class SegmentedItemBoxTheme : BaseControlTheme
 {
    public SegmentedItemBoxTheme()
       : base(typeof(SegmentedItemBox))

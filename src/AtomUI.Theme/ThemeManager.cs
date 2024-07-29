@@ -1,14 +1,14 @@
 ﻿using System.Reflection;
 using AtomUI.Controls.MotionScene;
 using AtomUI.MotionScene;
-using AtomUI.Styling;
+using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Platform;
 using Avalonia.Styling;
 
-namespace AtomUI;
+namespace AtomUI.Theme;
 
 /// <summary>
 /// 当切换主题时候就是动态的换 ResourceDictionary 里面的东西
@@ -253,12 +253,12 @@ public class ThemeManager : Styles, IThemeManager
       var controlThemeProviders = Assembly.GetEntryAssembly()?
                                           .GetReferencedAssemblies().Select(assemblyName => Assembly.Load(assemblyName))
                                           .SelectMany(assembly => assembly.GetTypes())
-                                          .Where(type => type.IsDefined(typeof(ControlThemeProviderAttribute)) && typeof(ControlTheme).IsAssignableFrom(type))
+                                          .Where(type => type.IsDefined(typeof(ControlThemeProviderAttribute)) && typeof(BaseControlTheme).IsAssignableFrom(type))
                                           .Select(type => Activator.CreateInstance(type));
       var resources = new ResourceDictionary();
       if (controlThemeProviders is not null) {
          foreach (var item in controlThemeProviders) {
-            if (item is ControlTheme controlTheme) {
+            if (item is BaseControlTheme controlTheme) {
                controlTheme.Build();
                object? resourceKey = controlTheme.ThemeResourceKey();
                resourceKey ??= controlTheme.TargetType!;

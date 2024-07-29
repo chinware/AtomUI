@@ -1,4 +1,4 @@
-﻿using AtomUI.Styling;
+﻿using AtomUI.Theme.Styling;
 using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Media;
 using Avalonia.Styling;

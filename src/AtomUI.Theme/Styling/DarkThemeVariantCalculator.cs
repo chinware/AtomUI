@@ -1,10 +1,10 @@
 ﻿using AtomUI.Media;
-using AtomUI.Palette;
-using AtomUI.TokenSystem;
+using AtomUI.Theme.Palette;
+using AtomUI.Theme.TokenSystem;
 using Avalonia.Media;
 using Avalonia.Styling;
 
-namespace AtomUI.Styling;
+namespace AtomUI.Theme.Styling;
 
 public class DarkThemeVariantCalculator : AbstractThemeVariantCalculator
 {

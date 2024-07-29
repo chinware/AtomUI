@@ -1,5 +1,5 @@
-﻿using AtomUI.Styling;
-using AtomUI.Utils;
+﻿using AtomUI.Theme;
+using AtomUI.Theme.Styling;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Layout;
@@ -9,7 +9,7 @@ using Avalonia.Styling;
 namespace AtomUI.Controls;
 
 [ControlThemeProvider]
-internal class ToolTipTheme : ControlTheme
+internal class ToolTipTheme : BaseControlTheme
 {
    public const string ToolTipContainerPart = "PART_ToolTipContainer";
    

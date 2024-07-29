@@ -1,11 +1,12 @@
-﻿using AtomUI.Styling;
+﻿using AtomUI.Theme;
+using AtomUI.Theme.Styling;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 
 namespace AtomUI.Controls;
 
 [ControlThemeProvider]
-public class LoadingIndicatorAdornerTheme : ControlTheme
+public class LoadingIndicatorAdornerTheme : BaseControlTheme
 {
    public const string LoadingIndicatorPart = "Part_LoadingIndicator";
    public const string MainContainerPart = "Part_MainContainer";

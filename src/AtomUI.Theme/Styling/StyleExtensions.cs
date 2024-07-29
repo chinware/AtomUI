@@ -1,10 +1,9 @@
-﻿using AtomUI.TokenSystem;
+﻿using AtomUI.Theme.TokenSystem;
 using Avalonia;
-using Avalonia.Data;
 using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Styling;
 
-namespace AtomUI.Styling;
+namespace AtomUI.Theme.Styling;
 
 internal static class StyleExtensions
 {

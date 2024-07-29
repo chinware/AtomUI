@@ -1,6 +1,6 @@
 ﻿using Avalonia.Media;
 
-namespace AtomUI.TokenSystem;
+namespace AtomUI.Theme.TokenSystem;
 
 [TokenValueConverter]
 class StringTokenValueConverter : ITokenValueConverter

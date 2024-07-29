@@ -1,9 +1,9 @@
-﻿using AtomUI.TokenSystem;
+﻿using AtomUI.Theme.TokenSystem;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Styling;
 
-namespace AtomUI.Data;
+namespace AtomUI.Theme.Data;
 
 public static class TokenResourceUtils
 {

@@ -1,9 +1,8 @@
-﻿using System.Reactive.Linq;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.VisualTree;
 
-namespace AtomUI.Data;
+namespace AtomUI.Theme.Data;
 
 internal class RenderScaleAwareThicknessConfigure
 {

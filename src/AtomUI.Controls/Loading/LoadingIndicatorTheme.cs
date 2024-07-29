@@ -1,5 +1,6 @@
 ﻿using AtomUI.Icon;
-using AtomUI.Styling;
+using AtomUI.Theme;
+using AtomUI.Theme.Styling;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
@@ -9,7 +10,7 @@ using Avalonia.Styling;
 namespace AtomUI.Controls;
 
 [ControlThemeProvider]
-public class LoadingIndicatorTheme : ControlTheme
+public class LoadingIndicatorTheme : BaseControlTheme
 {
    public const string MainContainerPart = "Part_MainContainer";
    public const string LoadingTextPart = "Part_LoadingText";

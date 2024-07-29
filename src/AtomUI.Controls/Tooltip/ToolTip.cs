@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
-using AtomUI.Palette;
 using AtomUI.Reflection;
-using AtomUI.Styling;
+using AtomUI.Theme.Palette;
+using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;

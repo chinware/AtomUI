@@ -1,4 +1,4 @@
-﻿using AtomUI.Styling;
+﻿using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;

@@ -1,4 +1,5 @@
-﻿using AtomUI.Styling;
+﻿using AtomUI.Theme;
+using AtomUI.Theme.Styling;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Layout;
@@ -8,7 +9,7 @@ using Avalonia.Styling;
 namespace AtomUI.Controls;
 
 [ControlThemeProvider]
-public class SegmentedTheme : ControlTheme
+public class SegmentedTheme : BaseControlTheme
 {
    public const string MainContainerPart = "PART_MainContainer";
    public SegmentedTheme()

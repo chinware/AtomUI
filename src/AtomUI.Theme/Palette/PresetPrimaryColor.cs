@@ -1,6 +1,6 @@
 ﻿using Avalonia.Media;
 
-namespace AtomUI.Palette;
+namespace AtomUI.Theme.Palette;
 
 public enum PresetColorType
 {

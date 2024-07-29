@@ -1,7 +1,7 @@
 using AtomUI.Data;
 using AtomUI.Media;
-using AtomUI.Styling;
-using AtomUI.Utils;
+using AtomUI.Theme.Styling;
+using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
@@ -15,22 +15,23 @@ namespace AtomUI.Controls;
 /// 在内部维护一些额外信息的控件，用户无感知
 /// 绘制圆角什么的
 /// </summary>
-internal partial class SegmentedItemBox : TemplatedControl, 
-                                          ICustomHitTest,
-                                          IControlCustomStyle
+internal class SegmentedItemBox : TemplatedControl,
+                                  ICustomHitTest,
+                                  IControlCustomStyle
 {
    #region 公共属性定义
+
    public static readonly StyledProperty<SizeType> SizeTypeProperty =
       Segmented.SizeTypeProperty.AddOwner<SegmentedItemBox>();
-   
+
    public static readonly DirectProperty<SegmentedItemBox, bool> IsPressedProperty =
       AvaloniaProperty.RegisterDirect<SegmentedItemBox, bool>(nameof(IsPressed), o => o.IsPressed);
-   
+
    public static readonly DirectProperty<SegmentedItemBox, bool> IsCurrentItemProperty =
-      AvaloniaProperty.RegisterDirect<SegmentedItemBox, bool>(nameof(IsCurrentItem), 
+      AvaloniaProperty.RegisterDirect<SegmentedItemBox, bool>(nameof(IsCurrentItem),
                                                               o => o.IsCurrentItem,
                                                               (o, v) => o.IsCurrentItem = v);
-   
+
    /// <summary>
    /// Gets or sets a value indicating whether the button is currently pressed.
    /// </summary>
@@ -39,7 +40,7 @@ internal partial class SegmentedItemBox : TemplatedControl,
       get => _isPressed;
       private set => SetAndRaise(IsPressedProperty, ref _isPressed, value);
    }
-   
+
    public SizeType SizeType
    {
       get => GetValue(SizeTypeProperty);
@@ -53,40 +54,47 @@ internal partial class SegmentedItemBox : TemplatedControl,
    internal static readonly StyledProperty<double> ControlHeightProperty =
       AvaloniaProperty.Register<SegmentedItemBox, double>(
          nameof(ControlHeight));
-   
+
    internal static readonly StyledProperty<Thickness> SegmentedItemPaddingProperty
       = AvaloniaProperty.Register<SegmentedItemBox, Thickness>(nameof(SegmentedItemPadding));
-   
+
    internal static readonly StyledProperty<Thickness> TrackPaddingProperty
       = AvaloniaProperty.Register<SegmentedItemBox, Thickness>(nameof(TrackPadding));
-   
+
    internal double ControlHeight
    {
       get => GetValue(ControlHeightProperty);
       set => SetValue(ControlHeightProperty, value);
    }
-   
+
    internal Thickness SegmentedItemPadding
    {
       get => GetValue(SegmentedItemPaddingProperty);
       set => SetValue(SegmentedItemPaddingProperty, value);
    }
-   
+
    internal Thickness TrackPadding
    {
       get => GetValue(TrackPaddingProperty);
       set => SetValue(TrackPaddingProperty, value);
    }
+
    #endregion
-   
+
    internal Control Item { get; }
 
    private bool _isCurrentItem;
-   internal bool IsCurrentItem { get => _isCurrentItem; set => SetCurrentItem(value); }
+
+   internal bool IsCurrentItem
+   {
+      get => _isCurrentItem;
+      set => SetCurrentItem(value);
+   }
+
    private IControlCustomStyle _customStyle;
    private bool _isPressed = false;
    private ControlStyleState _styleState;
-   
+
    public int LastItem { get; set; } = -1;
 
    static SegmentedItemBox()
@@ -95,7 +103,7 @@ internal partial class SegmentedItemBox : TemplatedControl,
       AffectsMeasure<SegmentedItemBox>(SizeTypeProperty);
       AffectsRender<SegmentedItemBox>(BackgroundProperty);
    }
-   
+
    public SegmentedItemBox(Control item)
    {
       _customStyle = this;
@@ -105,7 +113,7 @@ internal partial class SegmentedItemBox : TemplatedControl,
          BindUtils.RelayBind(this, SizeTypeProperty, segmentedItem);
       }
    }
-   
+
    protected override Size MeasureOverride(Size availableSize)
    {
       // 由内置的 Box 布局
@@ -149,7 +157,7 @@ internal partial class SegmentedItemBox : TemplatedControl,
          IsPressed = false;
       }
    }
-   
+
    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
    {
       base.OnApplyTemplate(e);
@@ -180,16 +188,16 @@ internal partial class SegmentedItemBox : TemplatedControl,
       itemHeight = ControlHeight - padding;
       return itemHeight;
    }
-   
+
    public bool HitTest(Point point)
    {
       return true;
    }
-   
+
    #region IControlCustomStyle 实现
 
    void IControlCustomStyle.SetupTransitions()
-   { 
+   {
       Transitions = new Transitions()
       {
          AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty),
@@ -212,7 +220,7 @@ internal partial class SegmentedItemBox : TemplatedControl,
 
       _customStyle.UpdatePseudoClasses();
    }
-   
+
 
    void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
    {
@@ -222,11 +230,12 @@ internal partial class SegmentedItemBox : TemplatedControl,
          _customStyle.CollectStyleState();
       }
    }
-   
+
    void IControlCustomStyle.UpdatePseudoClasses()
    {
       PseudoClasses.Set(StdPseudoClass.Pressed, IsPressed);
       PseudoClasses.Set(StdPseudoClass.Selected, IsCurrentItem);
    }
+
    #endregion
 }

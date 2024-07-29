@@ -1,9 +1,10 @@
-﻿using Avalonia.Controls;
+﻿using AtomUI.Theme;
+using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 
 namespace AtomUI.Controls;
 
-internal class BaseTabStripTheme : ControlTheme
+internal class BaseTabStripTheme : BaseControlTheme
 {
    public const string MainContainerPart = "Part_MainContainer";
    public const string ItemsPresenterPart = "PART_ItemsPresenter";

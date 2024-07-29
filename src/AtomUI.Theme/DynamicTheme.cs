@@ -1,6 +1,6 @@
-﻿using AtomUI.TokenSystem;
+﻿using AtomUI.Theme.TokenSystem;
 
-namespace AtomUI;
+namespace AtomUI.Theme;
 
 public class DynamicTheme : Theme
 {

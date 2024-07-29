@@ -1,12 +1,11 @@
-﻿using AtomUI.Styling;
-using Avalonia.Controls;
-using Avalonia.Controls.Templates;
+﻿using AtomUI.Theme;
+using AtomUI.Theme.Styling;
 using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
 [ControlThemeProvider]
-public class MenuSeparatorTheme : ControlTheme
+public class MenuSeparatorTheme : BaseControlTheme
 {
    public MenuSeparatorTheme()
       : base(typeof(MenuSeparator))

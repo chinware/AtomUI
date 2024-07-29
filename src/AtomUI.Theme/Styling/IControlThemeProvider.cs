@@ -1,11 +1,9 @@
-﻿
-
-namespace AtomUI.Styling;
+﻿namespace AtomUI.Theme.Styling;
 
 public interface IControlThemeProvider
 {
    public object Key { get; }
    public Type TargetType { get; }
 
-   public ControlTheme BuildControlTheme();
+   public BaseControlTheme BuildControlTheme();
 }

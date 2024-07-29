@@ -1,8 +1,8 @@
-﻿using AtomUI.Palette;
-using AtomUI.Styling;
+﻿using AtomUI.Theme.Palette;
+using AtomUI.Theme.Styling;
 using Avalonia.Controls;
 
-namespace AtomUI.TokenSystem;
+namespace AtomUI.Theme.TokenSystem;
 
 [GlobalDesignToken]
 public class MapDesignToken : AbstractDesignToken

@@ -1,11 +1,12 @@
-﻿using AtomUI.Styling;
+﻿using AtomUI.Theme;
+using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
 [ControlThemeProvider]
-internal class SliderThumbTheme : ControlTheme
+internal class SliderThumbTheme : BaseControlTheme
 {
    public SliderThumbTheme() : base(typeof(SliderThumb))
    {

@@ -1,5 +1,6 @@
 ﻿using AtomUI.Icon;
-using AtomUI.Styling;
+using AtomUI.Theme;
+using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
@@ -9,7 +10,7 @@ using Avalonia.Styling;
 namespace AtomUI.Controls;
 
 
-public class AbstractProgressBarTheme : ControlTheme
+public class AbstractProgressBarTheme : BaseControlTheme
 {
    public const string PercentageLabelPart = "PART_PercentageLabel";
    public const string SuccessCompletedIconPart = "PART_SuccessCompletedIcon";

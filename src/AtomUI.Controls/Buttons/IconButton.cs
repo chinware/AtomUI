@@ -1,5 +1,5 @@
 using AtomUI.Icon;
-using AtomUI.Styling;
+using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Input;
 using Avalonia.LogicalTree;

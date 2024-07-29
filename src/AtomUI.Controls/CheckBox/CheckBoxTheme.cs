@@ -1,11 +1,11 @@
-﻿using AtomUI.Styling;
-using Avalonia.Markup.Xaml.MarkupExtensions;
+﻿using AtomUI.Theme;
+using AtomUI.Theme.Styling;
 using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
 [ControlThemeProvider]
-internal class CheckBoxTheme : ControlTheme
+internal class CheckBoxTheme : BaseControlTheme
 {
    public CheckBoxTheme()
       : base(typeof(CheckBox))

@@ -1,8 +1,8 @@
-﻿using AtomUI.Styling;
+﻿using AtomUI.Theme;
+using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
-using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Markup.Xaml.MarkupExtensions;
@@ -10,7 +10,7 @@ using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
-internal abstract class BaseButtonTheme : ControlTheme
+internal abstract class BaseButtonTheme : BaseControlTheme
 {
    public const string LabelPart = "PART_Label";
    public const string StackPanelPart = "PART_StackPanel";

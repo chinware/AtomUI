@@ -1,7 +1,7 @@
-﻿using AtomUI.TokenSystem;
+﻿using AtomUI.Theme.TokenSystem;
 using Avalonia.Styling;
 
-namespace AtomUI;
+namespace AtomUI.Theme;
 
 public interface ITheme
 {

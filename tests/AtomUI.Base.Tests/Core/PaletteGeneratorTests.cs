@@ -1,5 +1,5 @@
 using AtomUI.Media;
-using AtomUI.Palette;
+using AtomUI.Theme.Palette;
 using Avalonia.Media;
 using Avalonia.Styling;
 using Shouldly;

@@ -1,4 +1,5 @@
-﻿using AtomUI.Styling;
+﻿using AtomUI.Theme;
+using AtomUI.Theme.Styling;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
@@ -9,7 +10,7 @@ using Avalonia.Styling;
 namespace AtomUI.Controls;
 
 [ControlThemeProvider]
-internal class SliderTheme : ControlTheme
+internal class SliderTheme : BaseControlTheme
 {
    public const string TrackPart = "PART_Track";
    public const string StartThumbPart = "PART_StartThumb";

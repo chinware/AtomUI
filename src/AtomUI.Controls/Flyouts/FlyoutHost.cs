@@ -1,6 +1,6 @@
 ﻿using System.Reactive.Disposables;
 using AtomUI.Data;
-using AtomUI.Styling;
+using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;

@@ -1,5 +1,5 @@
 ﻿using AtomUI.Data;
-using AtomUI.Styling;
+using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;

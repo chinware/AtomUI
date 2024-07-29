@@ -1,5 +1,4 @@
-﻿using AtomUI.Utils;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Animation;
 
 namespace AtomUI.Media;

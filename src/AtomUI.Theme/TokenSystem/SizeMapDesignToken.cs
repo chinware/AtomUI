@@ -1,4 +1,4 @@
-﻿namespace AtomUI.TokenSystem;
+﻿namespace AtomUI.Theme.TokenSystem;
 
 [GlobalDesignToken]
 public class SizeMapDesignToken : AbstractDesignToken

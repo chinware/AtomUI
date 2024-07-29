@@ -5,10 +5,9 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Metadata;
+using Avalonia.Styling;
 
 namespace AtomUI.Controls;
-
-using AvaloniaControlTheme = Avalonia.Styling.ControlTheme;
 
 public class MenuFlyout : PopupFlyoutBase
 {
@@ -41,7 +40,7 @@ public class MenuFlyout : PopupFlyoutBase
    /// <summary>
    /// Defines the <see cref="ItemContainerTheme"/> property.
    /// </summary>
-   public static readonly StyledProperty<AvaloniaControlTheme?> ItemContainerThemeProperty =
+   public static readonly StyledProperty<ControlTheme?> ItemContainerThemeProperty =
       ItemsControl.ItemContainerThemeProperty.AddOwner<MenuFlyout>();
 
    /// <summary>
@@ -75,7 +74,7 @@ public class MenuFlyout : PopupFlyoutBase
    /// <summary>
    /// Gets or sets the <see cref="ControlTheme"/> that is applied to the container element generated for each item.
    /// </summary>
-   public AvaloniaControlTheme? ItemContainerTheme
+   public ControlTheme? ItemContainerTheme
    {
       get => GetValue(ItemContainerThemeProperty);
       set => SetValue(ItemContainerThemeProperty, value);
@@ -84,7 +83,7 @@ public class MenuFlyout : PopupFlyoutBase
    /// <summary>
    /// Gets or sets the <see cref="ControlTheme"/> that is applied to the container element generated for the flyout presenter.
    /// </summary>
-   public AvaloniaControlTheme? FlyoutPresenterTheme
+   public ControlTheme? FlyoutPresenterTheme
    {
       get => GetValue(FlyoutPresenterThemeProperty);
       set => SetValue(FlyoutPresenterThemeProperty, value);

@@ -1,5 +1,5 @@
 using System.Collections.ObjectModel;
-using AtomUI.Palette;
+using AtomUI.Theme.Palette;
 using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;

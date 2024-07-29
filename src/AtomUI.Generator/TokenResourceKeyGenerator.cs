@@ -5,8 +5,8 @@ namespace AtomUI.Generator;
 [Generator]
 public class TokenResourceKeyGenerator : IIncrementalGenerator
 {
-   public const string GlobalDesignTokenAttribute = "AtomUI.TokenSystem.GlobalDesignTokenAttribute";
-   public const string ControlDesignTokenAttribute = "AtomUI.TokenSystem.ControlDesignTokenAttribute";
+   public const string GlobalDesignTokenAttribute = "AtomUI.Theme.TokenSystem.GlobalDesignTokenAttribute";
+   public const string ControlDesignTokenAttribute = "AtomUI.Theme.TokenSystem.ControlDesignTokenAttribute";
    
    public void Initialize(IncrementalGeneratorInitializationContext initContext)
    {

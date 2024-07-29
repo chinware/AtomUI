@@ -1,8 +1,8 @@
 ﻿using System.Xml;
-using AtomUI.TokenSystem;
+using AtomUI.Theme.TokenSystem;
 using Avalonia.Platform;
 
-namespace AtomUI;
+namespace AtomUI.Theme;
 
 internal class ThemeDefinitionReader
 {

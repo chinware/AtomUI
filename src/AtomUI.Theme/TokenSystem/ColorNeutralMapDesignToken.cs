@@ -1,7 +1,7 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Media;
 
-namespace AtomUI.TokenSystem;
+namespace AtomUI.Theme.TokenSystem;
 
 [GlobalDesignToken]
 public class ColorNeutralMapDesignToken : AbstractDesignToken

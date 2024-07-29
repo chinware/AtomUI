@@ -1,12 +1,13 @@
 ﻿using AtomUI.Media;
-using AtomUI.Styling;
+using AtomUI.Theme;
+using AtomUI.Theme.Styling;
+using AtomUI.Theme.Utils;
 using AtomUI.Utils;
 using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
-using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Styling;
@@ -14,7 +15,7 @@ using Avalonia.Styling;
 namespace AtomUI.Controls;
 
 [ControlThemeProvider]
-internal class MenuItemTheme : ControlTheme
+internal class MenuItemTheme : BaseControlTheme
 {
    public const string ItemDecoratorPart     = "Part_ItemDecorator";
    public const string MainContainerPart     = "Part_MainContainer";

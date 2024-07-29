@@ -1,6 +1,8 @@
 ﻿using AtomUI.Data;
 using AtomUI.Media;
-using AtomUI.Styling;
+using AtomUI.Theme;
+using AtomUI.Theme.Styling;
+using AtomUI.Theme.Utils;
 using AtomUI.Utils;
 using Avalonia.Animation;
 using Avalonia.Controls;
@@ -13,7 +15,7 @@ using Avalonia.Styling;
 namespace AtomUI.Controls;
 
 [ControlThemeProvider]
-internal class MenuScrollViewerTheme : ControlTheme
+internal class MenuScrollViewerTheme : BaseControlTheme
 {
    public const string ScrollUpButtonPart = "Part_ScrollUpButton";
    public const string ScrollDownButtonPart = "Part_ScrollDownButton";

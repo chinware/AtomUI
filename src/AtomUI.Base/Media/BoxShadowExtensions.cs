@@ -1,6 +1,5 @@
 ﻿using Avalonia;
 using Avalonia.Media;
-using Math = System.Math;
 
 namespace AtomUI.Media;
 

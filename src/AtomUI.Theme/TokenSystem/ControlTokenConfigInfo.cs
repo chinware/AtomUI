@@ -1,4 +1,4 @@
-﻿namespace AtomUI.TokenSystem;
+﻿namespace AtomUI.Theme.TokenSystem;
 
 public class ControlTokenConfigInfo
 {

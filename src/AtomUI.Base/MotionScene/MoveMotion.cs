@@ -1,8 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
-using Avalonia.Media;
-using Avalonia.Media.Transformation;
 
 namespace AtomUI.MotionScene;
 

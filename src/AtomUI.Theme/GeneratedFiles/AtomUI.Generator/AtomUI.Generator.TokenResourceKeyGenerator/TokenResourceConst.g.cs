@@ -1,6 +1,6 @@
-﻿using AtomUI.TokenSystem;
+﻿using AtomUI.Theme.TokenSystem;
 
-namespace AtomUI.Styling
+namespace AtomUI.Theme.Styling
 {
     public static class GlobalResourceKey
     {

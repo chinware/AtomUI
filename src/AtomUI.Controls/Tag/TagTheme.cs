@@ -1,4 +1,5 @@
-﻿using AtomUI.Styling;
+﻿using AtomUI.Theme;
+using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
@@ -7,7 +8,7 @@ using Avalonia.Layout;
 namespace AtomUI.Controls;
 
 [ControlThemeProvider]
-internal class TagTheme : ControlTheme
+internal class TagTheme : BaseControlTheme
 {
    public const string MainContainerPart = "PART_MainContainer";
    public const string CloseButtonPart = "PART_CloseButton";

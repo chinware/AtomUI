@@ -20,7 +20,7 @@ public class ResourceKeyClassSourceWriter
 
    private void SetupUsingInfos()
    {
-      _usingInfos.Add("AtomUI.TokenSystem");
+      _usingInfos.Add("AtomUI.Theme.TokenSystem");
    }
 
    public void Write()
@@ -117,7 +117,7 @@ public class ResourceKeyClassSourceWriter
       compilationUnit = compilationUnit.AddUsings(usingSyntaxList.ToArray());
 
       // 添加命名空间
-      var namespaceSyntax = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.ParseName("AtomUI.Styling"));
+      var namespaceSyntax = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.ParseName("AtomUI.Theme.Styling"));
       if (_tokenInfo.Tokens.Count != 0) {
          namespaceSyntax = namespaceSyntax.AddMembers(BuildGlobalResourceKeyClassSyntax());
       }

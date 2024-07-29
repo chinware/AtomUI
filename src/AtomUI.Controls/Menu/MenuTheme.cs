@@ -1,4 +1,5 @@
-﻿using AtomUI.Styling;
+﻿using AtomUI.Theme;
+using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
@@ -10,7 +11,7 @@ using Avalonia.Styling;
 namespace AtomUI.Controls;
 
 [ControlThemeProvider]
-public class MenuTheme : ControlTheme
+public class MenuTheme : BaseControlTheme
 {
    public const string ItemsPresenterPart = "PART_ItemsPresenter";
    public MenuTheme()

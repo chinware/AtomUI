@@ -1,4 +1,4 @@
-﻿using AtomUI.Styling;
+﻿using AtomUI.Theme.Styling;
 
 namespace AtomUI.Controls;
 

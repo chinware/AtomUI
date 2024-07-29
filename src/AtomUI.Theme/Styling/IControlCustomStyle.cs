@@ -2,7 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.LogicalTree;
 
-namespace AtomUI.Styling;
+namespace AtomUI.Theme.Styling;
 
 internal interface IControlCustomStyle
 {

@@ -1,9 +1,9 @@
 ﻿using AtomUI.Media;
-using AtomUI.Palette;
-using AtomUI.TokenSystem;
+using AtomUI.Theme.Palette;
+using AtomUI.Theme.TokenSystem;
 using Avalonia.Media;
 
-namespace AtomUI.Styling;
+namespace AtomUI.Theme.Styling;
 
 public class DefaultThemeVariantCalculator : AbstractThemeVariantCalculator
 {

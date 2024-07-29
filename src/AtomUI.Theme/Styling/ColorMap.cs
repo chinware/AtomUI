@@ -1,6 +1,6 @@
 ﻿using Avalonia.Media;
 
-namespace AtomUI.Styling;
+namespace AtomUI.Theme.Styling;
 
 public record ColorMap
 {

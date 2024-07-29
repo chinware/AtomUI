@@ -1,4 +1,6 @@
-﻿using AtomUI.Styling;
+﻿
+using AtomUI.Theme.Styling;
+using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
@@ -8,7 +10,7 @@ using Avalonia.Styling;
 namespace AtomUI.Controls;
 
 [ControlThemeProvider]
-internal class SeparatorTheme : ControlTheme
+internal class SeparatorTheme : BaseControlTheme
 {
    public const string TitlePart = "PART_Title";
 

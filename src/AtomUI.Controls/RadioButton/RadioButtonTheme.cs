@@ -1,11 +1,11 @@
-﻿using AtomUI.Styling;
-using Avalonia.Markup.Xaml.MarkupExtensions;
+﻿using AtomUI.Theme;
+using AtomUI.Theme.Styling;
 using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
 [ControlThemeProvider]
-internal class RadioButtonTheme : ControlTheme
+internal class RadioButtonTheme : BaseControlTheme
 {
    public RadioButtonTheme()
       : base(typeof(RadioButton))

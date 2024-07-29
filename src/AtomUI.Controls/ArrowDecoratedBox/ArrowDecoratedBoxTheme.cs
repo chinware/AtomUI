@@ -1,17 +1,15 @@
 ﻿using AtomUI.Controls.Utils;
-using AtomUI.Styling;
+using AtomUI.Theme;
+using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
-using Avalonia.Media;
 using Avalonia.Styling;
-using ExCSS;
-using Colors = Avalonia.Media.Colors;
 
 namespace AtomUI.Controls;
 
 [ControlThemeProvider]
-public class ArrowDecoratedBoxTheme : ControlTheme
+public class ArrowDecoratedBoxTheme : BaseControlTheme
 {
    public const string DecoratorPart = "Part_Decorator";
    

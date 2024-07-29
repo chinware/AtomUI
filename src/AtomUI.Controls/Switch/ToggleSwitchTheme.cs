@@ -1,4 +1,5 @@
-﻿using AtomUI.Styling;
+﻿using AtomUI.Theme;
+using AtomUI.Theme.Styling;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Styling;
@@ -6,7 +7,7 @@ using Avalonia.Styling;
 namespace AtomUI.Controls.Switch;
 
 [ControlThemeProvider]
-public class ToggleSwitchTheme : ControlTheme
+public class ToggleSwitchTheme : BaseControlTheme
 {
    public const string SwitchKnobPart = "PART_SwitchKnob";
    public const string MainContainerPart = "PART_MainContainer";

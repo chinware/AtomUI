@@ -1,5 +1,6 @@
 ﻿using AtomUI.Data;
-using AtomUI.Styling;
+using AtomUI.Theme;
+using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -16,7 +17,7 @@ using VerticalAlignment = Avalonia.Layout.VerticalAlignment;
 namespace AtomUI.Controls;
 
 [ControlThemeProvider]
-internal class AlertTheme : ControlTheme
+internal class AlertTheme : BaseControlTheme
 {
    public const string CloseBtnPart = "PART_CloseBtn";
    public const string InfoIconPart = "PART_InfoIcon";

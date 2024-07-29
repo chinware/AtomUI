@@ -1,5 +1,5 @@
-using AtomUI.Styling;
-using AtomUI.TokenSystem;
+using AtomUI.Theme.Styling;
+using AtomUI.Theme.TokenSystem;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Media;

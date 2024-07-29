@@ -1,6 +1,6 @@
 ﻿using Avalonia.Controls;
 
-namespace AtomUI.TokenSystem;
+namespace AtomUI.Theme.TokenSystem;
 
 public interface IDesignToken
 {

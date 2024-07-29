@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Reactive.Disposables;
 using AtomUI.Data;
-using AtomUI.Styling;
+using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -9,6 +9,7 @@ using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Metadata;
+using Avalonia.Styling;
 using Avalonia.Threading;
 
 namespace AtomUI.Controls;

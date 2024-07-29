@@ -1,5 +1,5 @@
 using AtomUI.Controls.Window;
-using AtomUI.Styling;
+using AtomUI.Theme.Styling;
 using Avalonia.Styling;
 
 namespace AtomUI.Controls.Controls.Window;

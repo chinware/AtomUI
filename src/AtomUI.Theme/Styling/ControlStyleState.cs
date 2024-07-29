@@ -1,4 +1,4 @@
-﻿namespace AtomUI.Styling;
+﻿namespace AtomUI.Theme.Styling;
 
 [Flags] 
 public enum ControlStyleState

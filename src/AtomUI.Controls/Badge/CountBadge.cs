@@ -2,8 +2,8 @@
 using AtomUI.Controls.MotionScene;
 using AtomUI.Data;
 using AtomUI.MotionScene;
-using AtomUI.Palette;
-using AtomUI.Styling;
+using AtomUI.Theme.Palette;
+using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;

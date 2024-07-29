@@ -1,12 +1,12 @@
-﻿using AtomUI.Styling;
-using AtomUI.TokenSystem;
+﻿using AtomUI.Theme.Styling;
+using AtomUI.Theme.TokenSystem;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Styling;
 
-namespace AtomUI.Utils;
+namespace AtomUI.Theme.Utils;
 
 public static class AnimationUtils
 {

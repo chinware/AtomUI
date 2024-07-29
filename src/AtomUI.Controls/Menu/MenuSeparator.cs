@@ -1,11 +1,8 @@
-﻿using AtomUI.Data;
-using AtomUI.Styling;
+﻿using AtomUI.Theme.Data;
+using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
-using Avalonia.Controls.Primitives;
-using Avalonia.Controls.Templates;
 using Avalonia.Data;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 
 namespace AtomUI.Controls;

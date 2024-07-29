@@ -1,4 +1,5 @@
-﻿using AtomUI.Styling;
+﻿using AtomUI.Theme;
+using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
@@ -11,7 +12,7 @@ using Avalonia.Styling;
 namespace AtomUI.Controls;
 
 [ControlThemeProvider]
-public class TopLevelMenuItemTheme : ControlTheme
+public class TopLevelMenuItemTheme : BaseControlTheme
 {
    public const string ID = "TopLevelMenuItem";
    

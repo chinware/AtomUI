@@ -1,7 +1,7 @@
 using System.Collections.Specialized;
 using AtomUI.Data;
-using AtomUI.Styling;
-using AtomUI.Utils;
+using AtomUI.Theme.Styling;
+using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Collections;

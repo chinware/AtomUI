@@ -1,7 +1,7 @@
 ﻿using AtomUI.Media;
 using Avalonia.Media;
 
-namespace AtomUI.TokenSystem;
+namespace AtomUI.Theme.TokenSystem;
 
 public static class AliasDesignTokenExtensions
 {

@@ -1,4 +1,5 @@
-﻿using AtomUI.Styling;
+﻿using AtomUI.Theme;
+using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
@@ -9,7 +10,7 @@ using Avalonia.Media;
 namespace AtomUI.Controls;
 
 [ControlThemeProvider]
-public class MenuFlyoutPresenterTheme : ControlTheme
+public class MenuFlyoutPresenterTheme : BaseControlTheme
 {
    public const string ItemsPresenterPart  = "PART_ItemsPresenter";
    public const string RootContainerPart   = "PART_RootContainer";

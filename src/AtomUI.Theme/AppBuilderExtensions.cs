@@ -1,6 +1,6 @@
 ﻿using Avalonia;
 
-namespace AtomUI;
+namespace AtomUI.Theme;
 
 public static class AtomUIExtensions
 {
