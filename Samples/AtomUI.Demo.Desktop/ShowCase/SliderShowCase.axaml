@@ -32,7 +32,6 @@
                     IsEnabled="{Binding NormalEnabled}"
                     IsRangeMode="True"
                     TickFrequency="5"
-                    Included="False"
                     Marks="{Binding SliderMarks}"
                     RangeValue="20, 80" />
                 

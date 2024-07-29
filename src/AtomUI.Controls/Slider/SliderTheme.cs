@@ -122,6 +122,8 @@ internal class SliderTheme : ControlTheme
       
       var sliderTrackStyle = new Style(selector => selector.Nesting().Template().OfType<SliderTrack>());
       sliderTrackStyle.Add(SliderTrack.TrackBarBrushProperty, SliderResourceKey.TrackBgDisabled);
+      sliderTrackStyle.Add(SliderTrack.MarkBorderActiveBrushProperty, SliderResourceKey.ThumbCircleBorderColorDisabled);
+      sliderTrackStyle.Add(SliderTrack.MarkBorderBrushProperty, SliderResourceKey.ThumbCircleBorderColorDisabled);
       disabledStyle.Add(sliderTrackStyle);
       var thumbStyle = new Style(selector => selector.Nesting().Template().OfType<SliderThumb>());
       thumbStyle.Add(SliderThumb.BorderBrushProperty, SliderResourceKey.ThumbCircleBorderColorDisabled);

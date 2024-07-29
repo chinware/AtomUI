@@ -308,7 +308,8 @@ public class SliderTrack : Control, IControlCustomStyle
                                   IsRangeModeProperty);
       AffectsRender<SliderTrack>(TrackBarBrushProperty,
                                  TrackGrooveBrushProperty,
-                                 IncludedProperty);
+                                 IncludedProperty,
+                                 MarkBorderBrushProperty);
    }
 
    public SliderTrack()
