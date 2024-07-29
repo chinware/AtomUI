@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\AtomUI.Base\AtomUI.Base.csproj" />
+        <PackageReference Include="Avalonia"/>
     </ItemGroup>
 
 </Project>
