@@ -1,13 +1,12 @@
-using AtomUI.ColorSystem;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
+using AtomUI.Palette;
 using AtomUI.Styling;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Metadata;
 
@@ -220,7 +219,7 @@ public class Tag : TemplatedControl, IControlCustomStyle
 
    void IControlCustomStyle.SetupTokenBindings()
    {
-      BindUtils.CreateTokenBinding(this, BorderThicknessProperty, GlobalResourceKey.BorderThickness, BindingPriority.Template,
+      TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty, GlobalResourceKey.BorderThickness, BindingPriority.Template,
                                    new RenderScaleAwareThicknessConfigure(this, thickness =>
                                    {
                                       if (!Bordered) {
@@ -345,7 +344,7 @@ public class Tag : TemplatedControl, IControlCustomStyle
          Bordered = false;
          _hasColorSet = true;
          Background = new SolidColorBrush(color);
-         BindUtils.CreateTokenBinding(this, ForegroundProperty, GlobalResourceKey.ColorTextLightSolid);
+         TokenResourceBinder.CreateTokenBinding(this, ForegroundProperty, GlobalResourceKey.ColorTextLightSolid);
       }
    }
 
@@ -358,13 +357,13 @@ public class Tag : TemplatedControl, IControlCustomStyle
                Kind = "CloseOutlined"
             };
            
-            BindUtils.CreateTokenBinding(CloseIcon, PathIcon.WidthProperty, TagResourceKey.TagCloseIconSize);
-            BindUtils.CreateTokenBinding(CloseIcon, PathIcon.HeightProperty, TagResourceKey.TagCloseIconSize);
+            TokenResourceBinder.CreateTokenBinding(CloseIcon, PathIcon.WidthProperty, TagResourceKey.TagCloseIconSize);
+            TokenResourceBinder.CreateTokenBinding(CloseIcon, PathIcon.HeightProperty, TagResourceKey.TagCloseIconSize);
             if (_hasColorSet && !_isPresetColorTag) {
-               BindUtils.CreateTokenBinding(CloseIcon, PathIcon.NormalFilledBrushProperty, GlobalResourceKey.ColorTextLightSolid);
+               TokenResourceBinder.CreateTokenBinding(CloseIcon, PathIcon.NormalFilledBrushProperty, GlobalResourceKey.ColorTextLightSolid);
             } else {
-               BindUtils.CreateTokenBinding(CloseIcon, PathIcon.NormalFilledBrushProperty, GlobalResourceKey.ColorIcon);
-               BindUtils.CreateTokenBinding(CloseIcon, PathIcon.ActiveFilledBrushProperty, GlobalResourceKey.ColorIconHover);
+               TokenResourceBinder.CreateTokenBinding(CloseIcon, PathIcon.NormalFilledBrushProperty, GlobalResourceKey.ColorIcon);
+               TokenResourceBinder.CreateTokenBinding(CloseIcon, PathIcon.ActiveFilledBrushProperty, GlobalResourceKey.ColorIconHover);
             }
          }
       }
@@ -376,11 +375,11 @@ public class Tag : TemplatedControl, IControlCustomStyle
          if (_layoutPanel?.Children[0] is PathIcon oldIcon) {
             _layoutPanel.Children.Remove(oldIcon);
          }
-         BindUtils.CreateTokenBinding(Icon, PathIcon.WidthProperty, TagResourceKey.TagIconSize);
-         BindUtils.CreateTokenBinding(Icon, PathIcon.HeightProperty, TagResourceKey.TagIconSize);
+         TokenResourceBinder.CreateTokenBinding(Icon, PathIcon.WidthProperty, TagResourceKey.TagIconSize);
+         TokenResourceBinder.CreateTokenBinding(Icon, PathIcon.HeightProperty, TagResourceKey.TagIconSize);
          _layoutPanel?.Children.Insert(0, Icon);
          if (_hasColorSet) {
-            BindUtils.CreateTokenBinding(Icon, PathIcon.NormalFilledBrushProperty, GlobalResourceKey.ColorTextLightSolid);
+            TokenResourceBinder.CreateTokenBinding(Icon, PathIcon.NormalFilledBrushProperty, GlobalResourceKey.ColorTextLightSolid);
          } else if (_isPresetColorTag) {
             Icon.NormalFilledBrush = Foreground;
          }

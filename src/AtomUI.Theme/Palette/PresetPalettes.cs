@@ -1,7 +1,7 @@
 ﻿using Avalonia.Media;
 using Avalonia.Styling;
 
-namespace AtomUI.ColorSystem;
+namespace AtomUI.Palette;
 
 public class PaletteInfo
 {

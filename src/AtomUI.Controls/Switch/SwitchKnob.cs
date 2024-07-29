@@ -1,3 +1,4 @@
+using AtomUI.Data;
 using AtomUI.Media;
 using AtomUI.Styling;
 using AtomUI.Utils;
@@ -211,7 +212,7 @@ internal class SwitchKnob : Control, IControlCustomStyle
 
    void IControlCustomStyle.SetupTokenBindings()
    {
-      BindUtils.CreateTokenBinding(this, LoadingBgOpacityTokenProperty, ToggleSwitchResourceKey.SwitchDisabledOpacity);
+      TokenResourceBinder.CreateTokenBinding(this, LoadingBgOpacityTokenProperty, ToggleSwitchResourceKey.SwitchDisabledOpacity);
       LoadingAnimationDuration = TimeSpan.FromMilliseconds(1200);
    }
    

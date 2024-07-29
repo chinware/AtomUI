@@ -1,5 +1,6 @@
 ﻿using System.Reactive.Disposables;
 using AtomUI.Controls.MotionScene;
+using AtomUI.Data;
 using AtomUI.MotionScene;
 using AtomUI.Styling;
 using AtomUI.Utils;
@@ -88,8 +89,8 @@ public class Popup : AvaloniaPopup
    {
       base.OnAttachedToLogicalTree(e);
       if (!_initialized) {
-         BindUtils.CreateGlobalTokenBinding(this, MaskShadowsProperty, GlobalResourceKey.BoxShadowsSecondary);
-         BindUtils.CreateGlobalTokenBinding(this, MotionDurationProperty, GlobalResourceKey.MotionDurationMid);
+         TokenResourceBinder.CreateGlobalTokenBinding(this, MaskShadowsProperty, GlobalResourceKey.BoxShadowsSecondary);
+         TokenResourceBinder.CreateGlobalTokenBinding(this, MotionDurationProperty, GlobalResourceKey.MotionDurationMid);
          _initialized = true;
       }
    }

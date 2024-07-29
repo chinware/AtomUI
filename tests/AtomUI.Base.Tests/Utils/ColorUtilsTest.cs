@@ -1,4 +1,4 @@
-using AtomUI.ColorSystem;
+using AtomUI.Media;
 using Avalonia.Media;
 using Shouldly;
 using Xunit;

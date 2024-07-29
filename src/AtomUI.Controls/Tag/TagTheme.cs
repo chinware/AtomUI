@@ -54,10 +54,10 @@ internal class TagTheme : ControlTheme
          };
          closeBtn.RegisterInNameScope(scope);
       
-         BindUtils.CreateTokenBinding(closeBtn, IconButton.WidthProperty, GlobalResourceKey.IconSizeSM);
-         BindUtils.CreateTokenBinding(closeBtn, IconButton.HeightProperty, GlobalResourceKey.IconSizeSM);
-         BindUtils.CreateTokenBinding(textBlock, TextBlock.HeightProperty, TagResourceKey.TagLineHeight);
-         BindUtils.CreateTokenBinding(textBlock, TextBlock.LineHeightProperty, TagResourceKey.TagLineHeight);
+         TokenResourceBinder.CreateTokenBinding(closeBtn, IconButton.WidthProperty, GlobalResourceKey.IconSizeSM);
+         TokenResourceBinder.CreateTokenBinding(closeBtn, IconButton.HeightProperty, GlobalResourceKey.IconSizeSM);
+         TokenResourceBinder.CreateTokenBinding(textBlock, TextBlock.HeightProperty, TagResourceKey.TagLineHeight);
+         TokenResourceBinder.CreateTokenBinding(textBlock, TextBlock.LineHeightProperty, TagResourceKey.TagLineHeight);
 
          CreateTemplateParentBinding(closeBtn, IconButton.IsVisibleProperty, Tag.IsClosableProperty);
          CreateTemplateParentBinding(closeBtn, IconButton.IconProperty, Tag.CloseIconProperty);

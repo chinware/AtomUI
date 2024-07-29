@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtomUI", "src\AtomUI\AtomUI.csproj", "{87085491-3C99-4C8F-8FA6-F179B9569CE8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtomUI.Theme", "src\AtomUI.Theme\AtomUI.Theme.csproj", "{87085491-3C99-4C8F-8FA6-F179B9569CE8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtomUI.Base", "src\AtomUI.Base\AtomUI.Base.csproj", "{8FFEB15F-7E48-4AF4-B708-8E96A68CF2D9}"
 EndProject

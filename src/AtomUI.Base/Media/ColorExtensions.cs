@@ -2,7 +2,7 @@
 using AtomUI.Utils;
 using Avalonia.Media;
 
-namespace AtomUI.ColorSystem;
+namespace AtomUI.Media;
 
 public static class ColorExtensions
 {

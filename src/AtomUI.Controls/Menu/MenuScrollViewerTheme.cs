@@ -1,4 +1,5 @@
-﻿using AtomUI.Media;
+﻿using AtomUI.Data;
+using AtomUI.Media;
 using AtomUI.Styling;
 using AtomUI.Utils;
 using Avalonia.Animation;
@@ -42,8 +43,8 @@ internal class MenuScrollViewerTheme : ControlTheme
             RenderTransform = null
          };
          CreateTemplateParentBinding(scrollUpButton, IconButton.CommandProperty, nameof(MenuScrollViewer.LineUp));
-         BindUtils.CreateTokenBinding(scrollUpButton.Icon, PathIcon.WidthProperty, MenuResourceKey.ScrollButtonIconSize);
-         BindUtils.CreateTokenBinding(scrollUpButton.Icon, PathIcon.HeightProperty, MenuResourceKey.ScrollButtonIconSize);
+         TokenResourceBinder.CreateTokenBinding(scrollUpButton.Icon, PathIcon.WidthProperty, MenuResourceKey.ScrollButtonIconSize);
+         TokenResourceBinder.CreateTokenBinding(scrollUpButton.Icon, PathIcon.HeightProperty, MenuResourceKey.ScrollButtonIconSize);
          DockPanel.SetDock(scrollUpButton, Dock.Top);
          var scrollDownButton = new IconButton()
          {
@@ -58,8 +59,8 @@ internal class MenuScrollViewerTheme : ControlTheme
             RenderTransform = null
          };
          CreateTemplateParentBinding(scrollDownButton, IconButton.CommandProperty, nameof(MenuScrollViewer.LineDown));
-         BindUtils.CreateTokenBinding(scrollDownButton.Icon, PathIcon.WidthProperty, MenuResourceKey.ScrollButtonIconSize);
-         BindUtils.CreateTokenBinding(scrollDownButton.Icon, PathIcon.HeightProperty, MenuResourceKey.ScrollButtonIconSize);
+         TokenResourceBinder.CreateTokenBinding(scrollDownButton.Icon, PathIcon.WidthProperty, MenuResourceKey.ScrollButtonIconSize);
+         TokenResourceBinder.CreateTokenBinding(scrollDownButton.Icon, PathIcon.HeightProperty, MenuResourceKey.ScrollButtonIconSize);
          DockPanel.SetDock(scrollDownButton, Dock.Bottom);
 
          var scrollViewContent = CreateScrollContentPresenter(viewer);

@@ -17,7 +17,7 @@ public class ThemeManager : Styles, IThemeManager
 {
    public const string THEME_DIR = "Themes";
    public const string DEFAULT_THEME_ID = "DaybreakBlueLight";
-   public const string DEFAULT_THEME_RES_PATH = $"avares://AtomUI/Assets/{THEME_DIR}";
+   public const string DEFAULT_THEME_RES_PATH = $"avares://AtomUI.Theme/Assets/{THEME_DIR}";
 
    private Theme? _activatedTheme;
    private Dictionary<string, Theme> _themePool;

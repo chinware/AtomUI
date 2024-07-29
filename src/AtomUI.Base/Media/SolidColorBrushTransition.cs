@@ -1,5 +1,4 @@
-﻿using AtomUI.Utils;
-using Avalonia.Animation;
+﻿using Avalonia.Animation;
 using Avalonia.Media;
 using Avalonia.Media.Immutable;
 
@@ -15,7 +14,7 @@ public class SolidColorBrushTransition : InterpolatingTransitionBase<IBrush?>
       
       if (from is ISolidColorBrush fromBrush && to is ISolidColorBrush toBrush) {
          return new ImmutableSolidColorBrush(
-            AnimationUtils.ColorInterpolate(fromBrush.Color, toBrush.Color, progress),
+            InterpolateUtils.ColorInterpolate(fromBrush.Color, toBrush.Color, progress),
             DoubleInterpolate(progress, from.Opacity, to.Opacity));
       }
       // TODO 不知道这样返回是否合适

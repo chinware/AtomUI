@@ -94,9 +94,9 @@ internal class MenuItemTheme : ControlTheme
          Grid.SetColumn(iconPresenter, 1);
          iconPresenter.RegisterInNameScope(scope);
          CreateTemplateParentBinding(iconPresenter, Viewbox.ChildProperty, MenuItem.IconProperty);
-         BindUtils.CreateTokenBinding(iconPresenter, Viewbox.MarginProperty, MenuResourceKey.ItemMargin);
-         BindUtils.CreateGlobalTokenBinding(iconPresenter, Viewbox.WidthProperty, MenuResourceKey.ItemIconSize);
-         BindUtils.CreateGlobalTokenBinding(iconPresenter, Viewbox.HeightProperty, MenuResourceKey.ItemIconSize);
+         TokenResourceBinder.CreateTokenBinding(iconPresenter, Viewbox.MarginProperty, MenuResourceKey.ItemMargin);
+         TokenResourceBinder.CreateGlobalTokenBinding(iconPresenter, Viewbox.WidthProperty, MenuResourceKey.ItemIconSize);
+         TokenResourceBinder.CreateGlobalTokenBinding(iconPresenter, Viewbox.HeightProperty, MenuResourceKey.ItemIconSize);
 
          var itemTextPresenter = new ContentPresenter
          {
@@ -107,7 +107,7 @@ internal class MenuItemTheme : ControlTheme
             IsHitTestVisible = false
          };
          Grid.SetColumn(itemTextPresenter, 2);
-         BindUtils.CreateTokenBinding(itemTextPresenter, ContentPresenter.MarginProperty, MenuResourceKey.ItemMargin);
+         TokenResourceBinder.CreateTokenBinding(itemTextPresenter, ContentPresenter.MarginProperty, MenuResourceKey.ItemMargin);
          CreateTemplateParentBinding(itemTextPresenter, ContentPresenter.ContentProperty, MenuItem.HeaderProperty);
          CreateTemplateParentBinding(itemTextPresenter, ContentPresenter.ContentTemplateProperty, MenuItem.HeaderTemplateProperty);
 
@@ -121,7 +121,7 @@ internal class MenuItemTheme : ControlTheme
             VerticalAlignment = VerticalAlignment.Center,
          };
          Grid.SetColumn(inputGestureText, 3);
-         BindUtils.CreateTokenBinding(inputGestureText, ContentPresenter.MarginProperty, MenuResourceKey.ItemMargin);
+         TokenResourceBinder.CreateTokenBinding(inputGestureText, ContentPresenter.MarginProperty, MenuResourceKey.ItemMargin);
          CreateTemplateParentBinding(inputGestureText, 
                                      TextBlock.TextProperty, 
                                      MenuItem.InputGestureProperty,
@@ -137,8 +137,8 @@ internal class MenuItemTheme : ControlTheme
             VerticalAlignment = VerticalAlignment.Center,
             Kind = "RightOutlined"
          };
-         BindUtils.CreateGlobalTokenBinding(menuIndicatorIcon, PathIcon.WidthProperty, GlobalResourceKey.IconSizeXS);
-         BindUtils.CreateGlobalTokenBinding(menuIndicatorIcon, PathIcon.HeightProperty, GlobalResourceKey.IconSizeXS);
+         TokenResourceBinder.CreateGlobalTokenBinding(menuIndicatorIcon, PathIcon.WidthProperty, GlobalResourceKey.IconSizeXS);
+         TokenResourceBinder.CreateGlobalTokenBinding(menuIndicatorIcon, PathIcon.HeightProperty, GlobalResourceKey.IconSizeXS);
          Grid.SetColumn(menuIndicatorIcon, 4);
          menuIndicatorIcon.RegisterInNameScope(scope);
 
@@ -169,13 +169,13 @@ internal class MenuItemTheme : ControlTheme
       };
       
       var border = new Border();
-      BindUtils.CreateTokenBinding(border, Border.BackgroundProperty, GlobalResourceKey.ColorBgContainer);
-      BindUtils.CreateTokenBinding(border, Border.CornerRadiusProperty, MenuResourceKey.MenuPopupBorderRadius);
-      BindUtils.CreateTokenBinding(border, Border.MinWidthProperty, MenuResourceKey.MenuPopupMinWidth);
-      BindUtils.CreateTokenBinding(border, Border.MaxWidthProperty, MenuResourceKey.MenuPopupMaxWidth);
-      BindUtils.CreateTokenBinding(border, Border.MinHeightProperty, MenuResourceKey.MenuPopupMinHeight);
-      BindUtils.CreateTokenBinding(border, Border.MaxHeightProperty, MenuResourceKey.MenuPopupMaxHeight);
-      BindUtils.CreateTokenBinding(border, Border.PaddingProperty, MenuResourceKey.MenuPopupContentPadding);
+      TokenResourceBinder.CreateTokenBinding(border, Border.BackgroundProperty, GlobalResourceKey.ColorBgContainer);
+      TokenResourceBinder.CreateTokenBinding(border, Border.CornerRadiusProperty, MenuResourceKey.MenuPopupBorderRadius);
+      TokenResourceBinder.CreateTokenBinding(border, Border.MinWidthProperty, MenuResourceKey.MenuPopupMinWidth);
+      TokenResourceBinder.CreateTokenBinding(border, Border.MaxWidthProperty, MenuResourceKey.MenuPopupMaxWidth);
+      TokenResourceBinder.CreateTokenBinding(border, Border.MinHeightProperty, MenuResourceKey.MenuPopupMinHeight);
+      TokenResourceBinder.CreateTokenBinding(border, Border.MaxHeightProperty, MenuResourceKey.MenuPopupMaxHeight);
+      TokenResourceBinder.CreateTokenBinding(border, Border.PaddingProperty, MenuResourceKey.MenuPopupContentPadding);
       
       var scrollViewer = new MenuScrollViewer();
       var itemsPresenter = new ItemsPresenter
@@ -189,8 +189,8 @@ internal class MenuItemTheme : ControlTheme
       
       popup.Child = border;
 
-      BindUtils.CreateTokenBinding(popup, Popup.MarginToAnchorProperty, MenuResourceKey.TopLevelItemPopupMarginToAnchor);
-      BindUtils.CreateTokenBinding(popup, Popup.MaskShadowsProperty, MenuResourceKey.MenuPopupBoxShadows);
+      TokenResourceBinder.CreateTokenBinding(popup, Popup.MarginToAnchorProperty, MenuResourceKey.TopLevelItemPopupMarginToAnchor);
+      TokenResourceBinder.CreateTokenBinding(popup, Popup.MaskShadowsProperty, MenuResourceKey.MenuPopupBoxShadows);
       CreateTemplateParentBinding(popup, Popup.IsOpenProperty, MenuItem.IsSubMenuOpenProperty, BindingMode.TwoWay);
       
       return popup;

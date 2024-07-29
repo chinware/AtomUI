@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\AtomUI\AtomUI.csproj" />
+      <ProjectReference Include="..\..\src\AtomUI.Theme\AtomUI.Theme.csproj" />
       <ProjectReference Include="..\AtomUI.TestBase\AtomUI.TestBase.csproj" />
     </ItemGroup>
 

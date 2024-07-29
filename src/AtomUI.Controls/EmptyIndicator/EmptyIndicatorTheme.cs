@@ -1,4 +1,5 @@
-﻿using AtomUI.Styling;
+﻿using AtomUI.Data;
+using AtomUI.Styling;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -42,7 +43,7 @@ internal class EmptyIndicatorTheme : ControlTheme
             Text = indicator.Description ?? "No data"
          };
 
-         BindUtils.CreateTokenBinding(description, TextBlock.ForegroundProperty, GlobalResourceKey.ColorTextDescription);
+         TokenResourceBinder.CreateTokenBinding(description, TextBlock.ForegroundProperty, GlobalResourceKey.ColorTextDescription);
          BindUtils.RelayBind(indicator, EmptyIndicator.DescriptionMarginProperty, description, TextBlock.MarginProperty,
             d => new Thickness(0, d, 0, 0));
          layout.Children.Add(description);

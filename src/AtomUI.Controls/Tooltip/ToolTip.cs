@@ -1,5 +1,5 @@
 ﻿using System.Reflection;
-using AtomUI.ColorSystem;
+using AtomUI.Palette;
 using AtomUI.Reflection;
 using AtomUI.Styling;
 using AtomUI.Utils;
@@ -637,7 +637,7 @@ public class ToolTip : TemplatedControl,
       
       SetPopupParent(_popup, control);
 
-      BindUtils.CreateTokenBinding(_popup, Popup.MaskShadowsProperty, GlobalResourceKey.BoxShadowsSecondary);
+      TokenResourceBinder.CreateTokenBinding(_popup, Popup.MaskShadowsProperty, GlobalResourceKey.BoxShadowsSecondary);
       SetToolTipColor(control);
       
       var marginToAnchor = GetMarginToAnchor(control);

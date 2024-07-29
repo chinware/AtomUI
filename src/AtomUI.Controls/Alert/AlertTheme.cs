@@ -1,4 +1,5 @@
-﻿using AtomUI.Styling;
+﻿using AtomUI.Data;
+using AtomUI.Styling;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -274,9 +275,9 @@ internal class AlertTheme : ControlTheme
          Name = CloseBtnPart,
       };
       
-      BindUtils.CreateTokenBinding(closeBtn, IconButton.WidthProperty, GlobalResourceKey.IconSizeSM);
-      BindUtils.CreateTokenBinding(closeBtn, IconButton.HeightProperty, GlobalResourceKey.IconSizeSM);
-      BindUtils.CreateTokenBinding(closeBtn, IconButton.MarginProperty, AlertResourceKey.ExtraElementMargin);
+      TokenResourceBinder.CreateTokenBinding(closeBtn, IconButton.WidthProperty, GlobalResourceKey.IconSizeSM);
+      TokenResourceBinder.CreateTokenBinding(closeBtn, IconButton.HeightProperty, GlobalResourceKey.IconSizeSM);
+      TokenResourceBinder.CreateTokenBinding(closeBtn, IconButton.MarginProperty, AlertResourceKey.ExtraElementMargin);
 
       CreateTemplateParentBinding(closeBtn, IconButton.IsVisibleProperty, Alert.IsClosableProperty);
       CreateTemplateParentBinding(closeBtn, IconButton.IconProperty, Alert.CloseIconProperty);
@@ -349,7 +350,7 @@ internal class AlertTheme : ControlTheme
          Padding = new Thickness(0),
          IsVisible = !string.IsNullOrEmpty(alert.Description)
       };
-      BindUtils.CreateTokenBinding(descriptionLabel, Label.MarginProperty, GlobalResourceKey.MarginXS, BindingPriority.Template, 
+      TokenResourceBinder.CreateTokenBinding(descriptionLabel, Label.MarginProperty, GlobalResourceKey.MarginXS, BindingPriority.Template, 
                                       o =>
                                       {
                                          if (o is double value) {

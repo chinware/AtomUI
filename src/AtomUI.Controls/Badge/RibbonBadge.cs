@@ -1,14 +1,11 @@
-﻿using AtomUI.ColorSystem;
+﻿using AtomUI.Data;
+using AtomUI.Palette;
 using AtomUI.Styling;
-using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.Data;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Metadata;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 

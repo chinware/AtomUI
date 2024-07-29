@@ -344,11 +344,11 @@ public class SliderTrack : Control, IControlCustomStyle
    public override void ApplyTemplate()
    {
       base.ApplyTemplate();
-      BindUtils.CreateTokenBinding(this, SliderTrack.SliderTrackSizeProperty, SliderResourceKey.SliderTrackSize);
-      BindUtils.CreateTokenBinding(this, SliderTrack.SliderMarkSizeProperty, SliderResourceKey.MarkSize);
-      BindUtils.CreateTokenBinding(this, SliderTrack.SliderRailSizeProperty, SliderResourceKey.RailSize);
-      BindUtils.CreateTokenBinding(this, SliderTrack.MarkBackgroundBrushProperty, GlobalResourceKey.ColorBgElevated);
-      BindUtils.CreateTokenBinding(this, SliderTrack.MarkBorderThicknessProperty, SliderResourceKey.ThumbCircleBorderThickness);
+      TokenResourceBinder.CreateTokenBinding(this, SliderTrack.SliderTrackSizeProperty, SliderResourceKey.SliderTrackSize);
+      TokenResourceBinder.CreateTokenBinding(this, SliderTrack.SliderMarkSizeProperty, SliderResourceKey.MarkSize);
+      TokenResourceBinder.CreateTokenBinding(this, SliderTrack.SliderRailSizeProperty, SliderResourceKey.RailSize);
+      TokenResourceBinder.CreateTokenBinding(this, SliderTrack.MarkBackgroundBrushProperty, GlobalResourceKey.ColorBgElevated);
+      TokenResourceBinder.CreateTokenBinding(this, SliderTrack.MarkBorderThicknessProperty, SliderResourceKey.ThumbCircleBorderThickness);
       
       HandleRangeModeChanged();
       CalculateMaxMarkSize();

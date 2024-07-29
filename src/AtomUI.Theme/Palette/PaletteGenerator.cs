@@ -1,8 +1,9 @@
-﻿using AtomUI.Utils;
+﻿using AtomUI.Media;
+using AtomUI.Utils;
 using Avalonia.Media;
 using Avalonia.Styling;
 
-namespace AtomUI.ColorSystem;
+namespace AtomUI.Palette;
 
 public static class PaletteGenerator
 {

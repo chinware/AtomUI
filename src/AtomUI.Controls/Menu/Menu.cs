@@ -1,7 +1,7 @@
-﻿using AtomUI.Utils;
+﻿using AtomUI.Data;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Layout;
 using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
@@ -28,7 +28,7 @@ public class Menu : AvaloniaMenu,
    {
       base.OnAttachedToLogicalTree(e);
       if (ItemContainerTheme is null) {
-         BindUtils.CreateGlobalResourceBinding(this, ItemContainerThemeProperty, TopLevelMenuItemTheme.ID);
+         TokenResourceBinder.CreateGlobalResourceBinding(this, ItemContainerThemeProperty, TopLevelMenuItemTheme.ID);
       }
    }
 

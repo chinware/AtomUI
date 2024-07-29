@@ -1,9 +1,8 @@
-﻿using AtomUI.Styling;
-using AtomUI.Utils;
+﻿using AtomUI.Data;
+using AtomUI.Styling;
 using Avalonia;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
-using Avalonia.LogicalTree;
 using Avalonia.Metadata;
 
 namespace AtomUI.Controls;

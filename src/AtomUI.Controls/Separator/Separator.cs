@@ -205,7 +205,7 @@ public class Separator : AvaloniaSeparator, IControlCustomStyle
 
    void IControlCustomStyle.SetupTokenBindings()
    {
-      BindUtils.CreateTokenBinding(this, LineWidthProperty, GlobalResourceKey.LineWidth, BindingPriority.Template,
+      TokenResourceBinder.CreateTokenBinding(this, LineWidthProperty, GlobalResourceKey.LineWidth, BindingPriority.Template,
                                    new RenderScaleAwareDoubleConfigure(this));
    }
 

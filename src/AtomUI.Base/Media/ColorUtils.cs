@@ -1,7 +1,7 @@
 ﻿using AtomUI.Utils;
 using Avalonia.Media;
 
-namespace AtomUI.ColorSystem;
+namespace AtomUI.Media;
 
 public enum WCAG2Level
 {

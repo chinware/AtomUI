@@ -426,7 +426,7 @@ public abstract class AbstractProgressBar : RangeBase,
 
    protected virtual void NotifySetupTokenBindings()
    {
-      BindUtils.CreateTokenBinding(this, SuccessThresholdBrushProperty, GlobalResourceKey.ColorSuccess);
+      TokenResourceBinder.CreateTokenBinding(this, SuccessThresholdBrushProperty, GlobalResourceKey.ColorSuccess);
    }
 
    protected virtual void NotifyPropertyChanged(AvaloniaPropertyChangedEventArgs e)

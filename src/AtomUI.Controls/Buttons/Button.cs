@@ -236,20 +236,20 @@ public class Button : AvaloniaButton,
    private void SetupControlTheme()
    {
       if (ButtonType == ButtonType.Default) {
-         BindUtils.CreateTokenBinding(this, ThemeProperty, DefaultButtonTheme.ID);
+         TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, DefaultButtonTheme.ID);
       } else if (ButtonType == ButtonType.Primary) {
-         BindUtils.CreateTokenBinding(this, ThemeProperty, PrimaryButtonTheme.ID);
+         TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, PrimaryButtonTheme.ID);
       } else if (ButtonType == ButtonType.Text) {
-         BindUtils.CreateTokenBinding(this, ThemeProperty, TextButtonTheme.ID);
+         TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, TextButtonTheme.ID);
       } else if (ButtonType == ButtonType.Link) {
-         BindUtils.CreateTokenBinding(this, ThemeProperty, LinkButtonTheme.ID);
+         TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, LinkButtonTheme.ID);
       }
    }
 
    void ApplyShapeStyleConfig()
    {
       if (Shape == ButtonShape.Circle) {
-         BindUtils.CreateTokenBinding(this, PaddingProperty, ButtonResourceKey.CirclePadding);
+         TokenResourceBinder.CreateTokenBinding(this, PaddingProperty, ButtonResourceKey.CirclePadding);
       }
    }
 

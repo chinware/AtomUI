@@ -1,4 +1,4 @@
-﻿using AtomUI.ColorSystem;
+﻿using AtomUI.Media;
 using AtomUI.Styling;
 using AtomUI.Utils;
 using Avalonia;
@@ -114,10 +114,10 @@ public partial class EmptyIndicator : TemplatedControl,
 
    void IControlCustomStyle.SetupTokenBindings()
    {
-      BindUtils.CreateTokenBinding(this, ColorFillTokenProperty, GlobalResourceKey.ColorFill);
-      BindUtils.CreateTokenBinding(this, ColorFillTertiaryTokenProperty, GlobalResourceKey.ColorFillTertiary);
-      BindUtils.CreateTokenBinding(this, ColorFillQuaternaryTokenProperty, GlobalResourceKey.ColorFillQuaternary);
-      BindUtils.CreateTokenBinding(this, ColorBgContainerTokenProperty, GlobalResourceKey.ColorBgContainer);
+      TokenResourceBinder.CreateTokenBinding(this, ColorFillTokenProperty, GlobalResourceKey.ColorFill);
+      TokenResourceBinder.CreateTokenBinding(this, ColorFillTertiaryTokenProperty, GlobalResourceKey.ColorFillTertiary);
+      TokenResourceBinder.CreateTokenBinding(this, ColorFillQuaternaryTokenProperty, GlobalResourceKey.ColorFillQuaternary);
+      TokenResourceBinder.CreateTokenBinding(this, ColorBgContainerTokenProperty, GlobalResourceKey.ColorBgContainer);
    }
 
    private void SetupImage()

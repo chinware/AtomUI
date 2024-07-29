@@ -1,4 +1,5 @@
 ﻿using System.Reactive.Disposables;
+using AtomUI.Data;
 using AtomUI.Styling;
 using AtomUI.Utils;
 using Avalonia;
@@ -161,7 +162,7 @@ public class FlyoutHost : Control
             ((ISetLogicalParent)AnchorTarget).SetParent(this);
             VisualChildren.Add(AnchorTarget);
          }
-         BindUtils.CreateGlobalTokenBinding(this, MarginToAnchorProperty, GlobalResourceKey.MarginXXS);
+         TokenResourceBinder.CreateGlobalTokenBinding(this, MarginToAnchorProperty, GlobalResourceKey.MarginXXS);
          _initialized = true;
       }
    }

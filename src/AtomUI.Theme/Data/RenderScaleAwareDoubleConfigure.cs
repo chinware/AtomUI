@@ -1,5 +1,4 @@
-﻿using System.Reactive.Linq;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Data;

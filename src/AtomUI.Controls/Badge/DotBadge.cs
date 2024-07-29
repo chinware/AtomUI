@@ -1,14 +1,13 @@
-﻿using AtomUI.ColorSystem;
-using AtomUI.Controls.Badge;
+﻿using AtomUI.Controls.Badge;
 using AtomUI.Controls.MotionScene;
 using AtomUI.Data;
 using AtomUI.MotionScene;
+using AtomUI.Palette;
 using AtomUI.Styling;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Metadata;
 
@@ -215,7 +214,7 @@ public partial class DotBadge : Control, IControlCustomStyle
          BindUtils.RelayBind(this, TextProperty, _dotBadgeAdorner, DotBadgeAdorner.TextProperty);
          BindUtils.RelayBind(this, OffsetProperty, _dotBadgeAdorner, DotBadgeAdorner.OffsetProperty);
       }
-      BindUtils.CreateTokenBinding(this, MotionDurationProperty, GlobalResourceKey.MotionDurationSlow);
+      TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, GlobalResourceKey.MotionDurationSlow);
    }
 
    private void HandleDecoratedTargetChanged()

@@ -1,5 +1,5 @@
-﻿using AtomUI.ColorSystem;
-using AtomUI.Controls.Utils;
+﻿using AtomUI.Controls.Utils;
+using AtomUI.Media;
 using AtomUI.Styling;
 using Avalonia;
 using Avalonia.Controls;

@@ -4,6 +4,7 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <PackageId>AtomUI.Controls</PackageId>
         <RootNamespace>AtomUI.Controls</RootNamespace>
         <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
         <CompilerGeneratedFilesOutputPath>GeneratedFiles</CompilerGeneratedFilesOutputPath>
@@ -15,7 +16,7 @@
     </ItemGroup>
     
     <ItemGroup>
-      <ProjectReference Include="..\AtomUI\AtomUI.csproj" />
+      <ProjectReference Include="..\AtomUI.Theme\AtomUI.Theme.csproj" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Avalonia.Svg"/>

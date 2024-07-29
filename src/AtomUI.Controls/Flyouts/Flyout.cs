@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Reactive.Disposables;
+using AtomUI.Data;
 using AtomUI.Styling;
 using AtomUI.Utils;
 using Avalonia;
@@ -115,8 +116,8 @@ public class Flyout : PopupFlyoutBase
 
    public Flyout()
    {
-      BindUtils.CreateGlobalTokenBinding(this, MotionDurationTokenProperty, GlobalResourceKey.MotionDurationMid);
-      BindUtils.CreateGlobalTokenBinding(this, MaskShadowsProperty, GlobalResourceKey.BoxShadowsSecondary);
+      TokenResourceBinder.CreateGlobalTokenBinding(this, MotionDurationTokenProperty, GlobalResourceKey.MotionDurationMid);
+      TokenResourceBinder.CreateGlobalTokenBinding(this, MaskShadowsProperty, GlobalResourceKey.BoxShadowsSecondary);
    }
 
    private void HandlePopupPropertyChanged(AvaloniaPropertyChangedEventArgs args)
