@@ -240,6 +240,7 @@ namespace AtomUI.Styling
     {
         public static readonly TokenResourceKey SliderTrackSize = new TokenResourceKey("Slider.SliderTrackSize");
         public static readonly TokenResourceKey RailSize = new TokenResourceKey("Slider.RailSize");
+        public static readonly TokenResourceKey MarkSize = new TokenResourceKey("Slider.MarkSize");
         public static readonly TokenResourceKey ThumbSize = new TokenResourceKey("Slider.ThumbSize");
         public static readonly TokenResourceKey ThumbCircleSize = new TokenResourceKey("Slider.ThumbCircleSize");
         public static readonly TokenResourceKey ThumbCircleSizeHover = new TokenResourceKey("Slider.ThumbCircleSizeHover");
@@ -249,6 +250,9 @@ namespace AtomUI.Styling
         public static readonly TokenResourceKey RailHoverBg = new TokenResourceKey("Slider.RailHoverBg");
         public static readonly TokenResourceKey TrackBg = new TokenResourceKey("Slider.TrackBg");
         public static readonly TokenResourceKey TrackHoverBg = new TokenResourceKey("Slider.TrackHoverBg");
+        public static readonly TokenResourceKey MarkBorderColor = new TokenResourceKey("Slider.MarkBorderColor");
+        public static readonly TokenResourceKey MarkBorderColorHover = new TokenResourceKey("Slider.MarkBorderColorHover");
+        public static readonly TokenResourceKey MarkBorderColorActive = new TokenResourceKey("Slider.MarkBorderColorActive");
         public static readonly TokenResourceKey ThumbCircleBorderColor = new TokenResourceKey("Slider.ThumbCircleBorderColor");
         public static readonly TokenResourceKey ThumbCircleBorderHoverColor = new TokenResourceKey("Slider.ThumbCircleBorderHoverColor");
         public static readonly TokenResourceKey ThumbCircleBorderActiveColor = new TokenResourceKey("Slider.ThumbCircleBorderActiveColor");

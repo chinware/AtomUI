@@ -17,32 +17,6 @@ using Avalonia.Utilities;
 
 namespace AtomUI.Controls;
 
-/// <summary>
-/// Enum which describes how to position the ticks in a <see cref="Slider"/>.
-/// </summary>
-public enum MarkPlacement
-{
-   /// <summary>
-   /// No tick marks will appear.
-   /// </summary>
-   None,
-
-   /// <summary>
-   /// Tick marks  will appear above the track for a horizontal <see cref="Slider"/>, or to the left of the track for a vertical <see cref="Slider"/>.
-   /// </summary>
-   TopLeft,
-
-   /// <summary>
-   /// Tick marks will appear below the track for a horizontal <see cref="Slider"/>, or to the right of the track for a vertical <see cref="Slider"/>.
-   /// </summary>
-   BottomRight,
-
-   /// <summary>
-   /// Tick marks appear on both sides of either a horizontal or vertical <see cref="Slider"/>.
-   /// </summary>
-   Outside
-}
-
 public record struct SliderRangeValue
 {
    public double StartValue { get; set; }
@@ -85,13 +59,13 @@ public record struct SliderRangeValue
    }
 }
 
-public record struct SliderMark
+public record SliderMark(string Label, double Value)
 {
-   public double Value { get; set; }
-   public string Label { get; set; }
    public IBrush? LabelBrush { get; set; }
-   public FontStyle LabelFontStyle { get; set; }
-   public FontWeight LabelFontWeight { get; set; }
+   public FontStyle LabelFontStyle { get; set; } = FontStyle.Normal;
+   public FontWeight LabelFontWeight { get; set; } = FontWeight.Normal;
+   internal Size LabelSize { get; set; }
+   internal FormattedText? FormattedText { get; set; }
 }
 
 /// <summary>
@@ -124,12 +98,6 @@ public class Slider : RangeBase
    /// </summary>
    public static readonly StyledProperty<double> TickFrequencyProperty =
       AvaloniaProperty.Register<Slider, double>(nameof(TickFrequency), 0.0);
-
-   /// <summary>
-   /// Defines the <see cref="MarkPlacement"/> property.
-   /// </summary>
-   public static readonly StyledProperty<MarkPlacement> MarkPlacementProperty =
-      AvaloniaProperty.Register<Slider, MarkPlacement>(nameof(MarkPlacement), 0d);
    
    public static readonly StyledProperty<SliderRangeValue> RangeValueProperty =
       SliderTrack.RangeValueProperty.AddOwner<Slider>();
@@ -139,25 +107,13 @@ public class Slider : RangeBase
    
    public static readonly StyledProperty<AvaloniaList<SliderMark>?> MarksProperty =
       SliderTrack.MarksProperty.AddOwner<Slider>();
-
-   /// <summary>
-   /// Defines the <see cref="Ticks"/> property.
-   /// </summary>
-   public static readonly StyledProperty<AvaloniaList<double>?> TicksProperty =
-      TickBar.TicksProperty.AddOwner<Slider>();
    
    public static readonly StyledProperty<string> ValueFormatTemplateProperty =
       AvaloniaProperty.Register<Slider, string>(nameof(ValueFormatTemplate), "{0:0.00}");
 
-   /// <summary>
-   /// Defines the ticks to be drawn on the tick bar.
-   /// </summary>
-   public AvaloniaList<double>? Ticks
-   {
-      get => GetValue(TicksProperty);
-      set => SetValue(TicksProperty, value);
-   }
-
+   public static readonly StyledProperty<bool> IncludedProperty =
+      AtomUI.Controls.SliderTrack.IncludedProperty.AddOwner<Slider>();
+   
    /// <summary>
    /// Gets or sets the orientation of a <see cref="Slider"/>.
    /// </summary>
@@ -197,16 +153,6 @@ public class Slider : RangeBase
       get => GetValue(TickFrequencyProperty);
       set => SetValue(TickFrequencyProperty, value);
    }
-
-   /// <summary>
-   /// Gets or sets a value that indicates where to draw 
-   /// tick marks in relation to the track.
-   /// </summary>
-   public MarkPlacement MarkPlacement
-   {
-      get => GetValue(MarkPlacementProperty);
-      set => SetValue(MarkPlacementProperty, value);
-   }
    
    public SliderRangeValue RangeValue
    {
@@ -230,6 +176,12 @@ public class Slider : RangeBase
    {
       get => GetValue(ValueFormatTemplateProperty);
       set => SetValue(ValueFormatTemplateProperty, value);
+   }
+   
+   public bool Included
+   {
+      get => GetValue(IncludedProperty);
+      set => SetValue(IncludedProperty, value);
    }
    
    // Slider required parts
@@ -309,8 +261,10 @@ public class Slider : RangeBase
             }
          }
       }
+      SetupSliderThumbPlacement();
    }
 
+   // TODO 在 rangemode 下可能没有用
    /// <inheritdoc />
    protected override void OnKeyDown(KeyEventArgs e)
    {
@@ -383,21 +337,23 @@ public class Slider : RangeBase
           && !(greaterThan && Math.Abs(value - Maximum) < Tolerance) // Stop if searching up if already at Max
           && !(!greaterThan && Math.Abs(value - Minimum) < Tolerance)) // Stop if searching down if already at Min
       {
-         var ticks = Ticks;
+         // var ticks = Ticks;
 
          // If ticks collection is available, use it.
-         // Note that ticks may be unsorted.
-         if (ticks != null && ticks.Count > 0) {
-            foreach (var tick in ticks) {
-               // Find the smallest tick greater than value or the largest tick less than value
-               if (greaterThan && MathUtilities.GreaterThan(tick, value) &&
-                   (MathUtilities.LessThan(tick, next) || Math.Abs(next - value) < Tolerance)
-                   || !greaterThan && MathUtilities.LessThan(tick, value) &&
-                   (MathUtilities.GreaterThan(tick, next) || Math.Abs(next - value) < Tolerance)) {
-                  next = tick;
-               }
-            }
-         } else if (MathUtilities.GreaterThan(TickFrequency, 0.0)) {
+         // // Note that ticks may be unsorted.
+         // if (ticks != null && ticks.Count > 0) {
+         //    foreach (var tick in ticks) {
+         //       // Find the smallest tick greater than value or the largest tick less than value
+         //       if (greaterThan && MathUtilities.GreaterThan(tick, value) &&
+         //           (MathUtilities.LessThan(tick, next) || Math.Abs(next - value) < Tolerance)
+         //           || !greaterThan && MathUtilities.LessThan(tick, value) &&
+         //           (MathUtilities.GreaterThan(tick, next) || Math.Abs(next - value) < Tolerance)) {
+         //          next = tick;
+         //       }
+         //    }
+         // } else
+         
+         if (MathUtilities.GreaterThan(TickFrequency, 0.0)) {
             // Find the current tick we are at
             var tickNumber = Math.Round((value - Minimum) / TickFrequency);
 
@@ -444,7 +400,34 @@ public class Slider : RangeBase
    {
       if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed) {
          var posOnTrack = e.GetCurrentPoint(_track);
+         
          _graspedThumb = GetEffectiveMoveThumb(posOnTrack.Position);
+         
+         var mark = _track?.GetMarkForPosition(posOnTrack.Position);
+         if (mark is not null) {
+            // 修正坐标
+            if (!IsRangeMode) {
+               Value = mark.Value;
+            } else {
+               if (_graspedThumb == _track?.StartSliderThumb) {
+                  var endValue = RangeValue.EndValue;
+                  RangeValue = new SliderRangeValue()
+                  {
+                     StartValue = mark.Value,
+                     EndValue = endValue
+                  };
+               } else {
+                  var startValue = RangeValue.StartValue;
+                  RangeValue = new SliderRangeValue()
+                  {
+                     StartValue = startValue,
+                     EndValue = mark.Value
+                  };
+               }
+            }
+            return;
+         } 
+         
          MoveToPoint(posOnTrack);
          if (_graspedThumb is not null) {
             ToolTip.SetIsCustomHide(_graspedThumb, true);
@@ -534,6 +517,27 @@ public class Slider : RangeBase
       return new SliderAutomationPeer(this);
    }
 
+   private void SetupSliderThumbPlacement()
+   {
+      if (_track is not null) {
+         if (Orientation == Orientation.Horizontal) {
+            if (_track.StartSliderThumb is not null) {
+               ToolTip.SetPlacement(_track.StartSliderThumb, PlacementMode.Top);
+            }
+            if (_track.EndSliderThumb is not null) {
+               ToolTip.SetPlacement(_track.EndSliderThumb, PlacementMode.Top);
+            }
+         } else {
+            if (_track.StartSliderThumb is not null) {
+               ToolTip.SetPlacement(_track.StartSliderThumb, PlacementMode.Right);
+            }
+            if (_track.EndSliderThumb is not null) {
+               ToolTip.SetPlacement(_track.EndSliderThumb, PlacementMode.Right);
+            }
+         }
+      }
+   }
+   
    /// <inheritdoc />
    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
    {
@@ -541,6 +545,8 @@ public class Slider : RangeBase
 
       if (change.Property == OrientationProperty) {
          UpdatePseudoClasses(change.GetNewValue<Orientation>());
+         SetupSliderThumbPlacement();
+
       } else if (change.Property == ValueProperty) {
          if (_track is not null && _track.StartSliderThumb is not null) {
             ToolTip.SetTip(_track.StartSliderThumb, FormatValue(Value));
@@ -591,23 +597,25 @@ public class Slider : RangeBase
          var next = Maximum;
 
          // This property is rarely set so let's try to avoid the GetValue
-         var ticks = Ticks;
+         // var ticks = Ticks;
 
          // If ticks collection is available, use it.
          // Note that ticks may be unsorted.
-         if (ticks != null && ticks.Count > 0) {
-            foreach (var tick in ticks) {
-               if (MathUtilities.AreClose(tick, value)) {
-                  return value;
-               }
-
-               if (MathUtilities.LessThan(tick, value) && MathUtilities.GreaterThan(tick, previous)) {
-                  previous = tick;
-               } else if (MathUtilities.GreaterThan(tick, value) && MathUtilities.LessThan(tick, next)) {
-                  next = tick;
-               }
-            }
-         } else if (MathUtilities.GreaterThan(TickFrequency, 0.0)) {
+         // if (ticks != null && ticks.Count > 0) {
+         //    foreach (var tick in ticks) {
+         //       if (MathUtilities.AreClose(tick, value)) {
+         //          return value;
+         //       }
+         //
+         //       if (MathUtilities.LessThan(tick, value) && MathUtilities.GreaterThan(tick, previous)) {
+         //          previous = tick;
+         //       } else if (MathUtilities.GreaterThan(tick, value) && MathUtilities.LessThan(tick, next)) {
+         //          next = tick;
+         //       }
+         //    }
+         // } else 
+         
+         if (MathUtilities.GreaterThan(TickFrequency, 0.0)) {
             previous = Minimum + Math.Round((value - Minimum) / TickFrequency) * TickFrequency;
             next = Math.Min(Maximum, previous + TickFrequency);
          }

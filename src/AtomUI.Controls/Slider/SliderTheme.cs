@@ -28,7 +28,7 @@ internal class SliderTheme : ControlTheme
             Name = StartThumbPart,
          };
          ToolTip.SetPlacement(startSliderThumb, PlacementMode.Top);
-         ToolTip.SetShowDelay(startSliderThumb, 50);
+         ToolTip.SetShowDelay(startSliderThumb, 0);
          startSliderThumb.RegisterInNameScope(scope);
          
          var endSliderThumb = new SliderThumb
@@ -37,7 +37,7 @@ internal class SliderTheme : ControlTheme
          };
          endSliderThumb.RegisterInNameScope(scope);
          ToolTip.SetPlacement(endSliderThumb, PlacementMode.Top);
-         ToolTip.SetShowDelay(endSliderThumb, 50);
+         ToolTip.SetShowDelay(endSliderThumb, 0);
          
          var sliderTrack = new SliderTrack
          {
@@ -55,6 +55,8 @@ internal class SliderTheme : ControlTheme
          CreateTemplateParentBinding(sliderTrack, SliderTrack.IsRangeModeProperty, Slider.IsRangeModeProperty);
          CreateTemplateParentBinding(sliderTrack, SliderTrack.MarkLabelFontFamilyProperty, Slider.FontFamilyProperty);
          CreateTemplateParentBinding(sliderTrack, SliderTrack.MarkLabelFontSizeProperty, Slider.FontSizeProperty);
+         CreateTemplateParentBinding(sliderTrack, SliderTrack.MarksProperty, Slider.MarksProperty);
+         CreateTemplateParentBinding(sliderTrack, SliderTrack.IncludedProperty, Slider.IncludedProperty);
          
          sliderTrack.RegisterInNameScope(scope);
          return sliderTrack;
@@ -66,6 +68,7 @@ internal class SliderTheme : ControlTheme
       var sliderStyle = new Style(selector => selector.Nesting());
       BuildCommonStyle(sliderStyle);
       BuildSliderTrackStyle(sliderStyle);
+      BuildDisabledStyle(sliderStyle);
       Add(sliderStyle);
    }
 
@@ -85,6 +88,8 @@ internal class SliderTheme : ControlTheme
       var sliderTrackStyle = new Style(selector => selector.Nesting().Template().OfType<SliderTrack>());
       sliderTrackStyle.Add(SliderTrack.TrackGrooveBrushProperty, SliderResourceKey.RailBg);
       sliderTrackStyle.Add(SliderTrack.TrackBarBrushProperty, SliderResourceKey.TrackBg);
+      sliderTrackStyle.Add(SliderTrack.MarkBorderBrushProperty, SliderResourceKey.MarkBorderColor);
+      sliderTrackStyle.Add(SliderTrack.MarkBorderActiveBrushProperty, SliderResourceKey.MarkBorderColorActive);
       sliderStyle.Add(sliderTrackStyle);
       
       var sliderStyleHover = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
@@ -106,7 +111,21 @@ internal class SliderTheme : ControlTheme
       var sliderTrackHoverStyle = new Style(selector => selector.Nesting().Template().OfType<SliderTrack>().Class(StdPseudoClass.PointerOver));
       sliderTrackHoverStyle.Add(SliderTrack.TrackGrooveBrushProperty, SliderResourceKey.RailHoverBg);
       sliderTrackHoverStyle.Add(SliderTrack.TrackBarBrushProperty, SliderResourceKey.TrackHoverBg);
+      sliderTrackHoverStyle.Add(SliderTrack.MarkBorderBrushProperty, SliderResourceKey.MarkBorderColorHover);
       sliderTrackHoverStyle.Add(SliderTrack.CursorProperty, new Cursor(StandardCursorType.Hand));
       sliderStyle.Add(sliderTrackHoverStyle);
+   }
+
+   private void BuildDisabledStyle(Style sliderStyle)
+   {
+      var disabledStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Disabled));
+      
+      var sliderTrackStyle = new Style(selector => selector.Nesting().Template().OfType<SliderTrack>());
+      sliderTrackStyle.Add(SliderTrack.TrackBarBrushProperty, SliderResourceKey.TrackBgDisabled);
+      disabledStyle.Add(sliderTrackStyle);
+      var thumbStyle = new Style(selector => selector.Nesting().Template().OfType<SliderThumb>());
+      thumbStyle.Add(SliderThumb.BorderBrushProperty, SliderResourceKey.ThumbCircleBorderColorDisabled);
+      disabledStyle.Add(thumbStyle);
+      sliderStyle.Add(disabledStyle);
    }
 }

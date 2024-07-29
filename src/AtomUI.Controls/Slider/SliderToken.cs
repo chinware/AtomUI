@@ -24,6 +24,11 @@ public class SliderToken : AbstractControlDesignToken
    /// 轨道高度
    /// </summary>
    public double RailSize { get; set; }
+   
+   /// <summary>
+   /// Mark 的大小
+   /// </summary>
+   public double MarkSize { get; set; }
       
    /// <summary>
    /// Thumb 推荐的大小，方便风格使用，是最大需要的大小
@@ -69,6 +74,21 @@ public class SliderToken : AbstractControlDesignToken
    /// 轨道已覆盖部分背景色（悬浮态）
    /// </summary>
    public Color TrackHoverBg { get; set; }
+   
+   /// <summary>
+   /// Mark 的背景颜色
+   /// </summary>
+   public Color MarkBorderColor { get; set; }
+   
+   /// <summary>
+   /// Mark 的背景 hover 效果
+   /// </summary>
+   public Color MarkBorderColorHover { get; set; }
+   
+   /// <summary>
+   /// Mark 的背景激活时候效果
+   /// </summary>
+   public Color MarkBorderColorActive { get; set; }
    
    /// <summary>
    /// 滑块颜色
@@ -121,6 +141,7 @@ public class SliderToken : AbstractControlDesignToken
 
       SliderTrackSize = controlSizeHover;
       RailSize = 4;
+      MarkSize = 8;
       ThumbCircleSize = controlSize;
       ThumbCircleSizeHover = controlSizeHover;
       ThumbCircleBorderThickness = new Thickness(handleLineWidth);
@@ -133,6 +154,11 @@ public class SliderToken : AbstractControlDesignToken
       RailHoverBg = colorNeutralToken.ColorFillSecondary;
       TrackBg = colorPrimaryToken.ColorPrimaryBorder;
       TrackHoverBg = colorPrimaryToken.ColorPrimaryBorderHover;
+
+      MarkBorderColor = colorNeutralToken.ColorBorderSecondary;
+      MarkBorderColorHover = _globalToken.ColorFillContentHover;
+      MarkBorderColorActive = colorPrimaryToken.ColorPrimaryBorder;
+      
       ThumbCircleBorderColor = colorPrimaryToken.ColorPrimaryBorder;
       ThumbCircleBorderHoverColor = colorPrimaryToken.ColorPrimaryBorderHover;
       ThumbCircleBorderActiveColor = colorPrimaryToken.ColorPrimary;

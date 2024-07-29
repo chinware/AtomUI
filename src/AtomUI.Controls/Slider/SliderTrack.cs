@@ -1,4 +1,5 @@
-﻿using AtomUI.Media;
+﻿using System.Globalization;
+using AtomUI.Media;
 using AtomUI.Styling;
 using AtomUI.Utils;
 using Avalonia;
@@ -78,8 +79,23 @@ public class SliderTrack : Control, IControlCustomStyle
    internal static readonly StyledProperty<double> SliderRailSizeProperty =
       AvaloniaProperty.Register<SliderTrack, double>(nameof(SliderRailSize));
    
+   internal static readonly StyledProperty<double> SliderMarkSizeProperty =
+      AvaloniaProperty.Register<SliderTrack, double>(nameof(SliderMarkSize));
+   
    internal static readonly StyledProperty<Thickness> PaddingProperty = 
       Decorator.PaddingProperty.AddOwner<SliderTrack>();
+   
+   internal static readonly StyledProperty<IBrush?> MarkBorderBrushProperty =
+      AvaloniaProperty.Register<SliderTrack, IBrush?>(nameof(MarkBorderBrush));
+   
+   internal static readonly StyledProperty<IBrush?> MarkBorderActiveBrushProperty =
+      AvaloniaProperty.Register<SliderTrack, IBrush?>(nameof(MarkBorderActiveBrush));
+   
+   internal static readonly StyledProperty<IBrush?> MarkBackgroundBrushProperty =
+      AvaloniaProperty.Register<SliderTrack, IBrush?>(nameof(MarkBackgroundBrush));
+   
+   internal static readonly StyledProperty<Thickness> MarkBorderThicknessProperty =
+      AvaloniaProperty.Register<SliderTrack, Thickness>(nameof(MarkBorderThickness));
    
    internal static readonly RoutedEvent<PointerPressedEventArgs> TrailPressedEvent =
       RoutedEvent.Register<SliderThumb, PointerPressedEventArgs>(nameof(TrailPressed), RoutingStrategies.Bubble);
@@ -212,22 +228,52 @@ public class SliderTrack : Control, IControlCustomStyle
       set => SetValue(MarkLabelFontSizeProperty, value);
    }
    
-   public double SliderTrackSize
+   internal double SliderTrackSize
    {
       get => GetValue(SliderTrackSizeProperty);
       set => SetValue(SliderTrackSizeProperty, value);
    }
 
-   public double SliderRailSize
+   internal double SliderRailSize
    {
       get => GetValue(SliderRailSizeProperty);
       set => SetValue(SliderRailSizeProperty, value);
+   }
+   
+   internal double SliderMarkSize
+   {
+      get => GetValue(SliderMarkSizeProperty);
+      set => SetValue(SliderMarkSizeProperty, value);
    }
    
    public Thickness Padding
    {
       get => GetValue(PaddingProperty);
       set => SetValue(PaddingProperty, value);
+   }
+   
+   internal IBrush? MarkBorderBrush
+   {
+      get => GetValue(MarkBorderBrushProperty);
+      set => SetValue(MarkBorderBrushProperty, value);
+   }
+   
+   internal IBrush? MarkBorderActiveBrush
+   {
+      get => GetValue(MarkBorderActiveBrushProperty);
+      set => SetValue(MarkBorderActiveBrushProperty, value);
+   }
+   
+   internal IBrush? MarkBackgroundBrush
+   {
+      get => GetValue(MarkBackgroundBrushProperty);
+      set => SetValue(MarkBackgroundBrushProperty, value);
+   }
+
+   internal Thickness MarkBorderThickness
+   {
+      get => GetValue(MarkBorderThicknessProperty);
+      set => SetValue(MarkBorderThicknessProperty, value);
    }
    
    public event EventHandler<PointerPressedEventArgs>? TrailPressed
@@ -247,6 +293,7 @@ public class SliderTrack : Control, IControlCustomStyle
    private Point EndThumbCenterOffset { get; set; }
    private double Density { get; set; }
    private IDisposable? _focusProcessDisposable;
+   private Size _markLabelSize;
    
    static SliderTrack()
    {
@@ -260,7 +307,8 @@ public class SliderTrack : Control, IControlCustomStyle
                                   OrientationProperty,
                                   IsRangeModeProperty);
       AffectsRender<SliderTrack>(TrackBarBrushProperty,
-                                 TrackGrooveBrushProperty);
+                                 TrackGrooveBrushProperty,
+                                 IncludedProperty);
    }
 
    public SliderTrack()
@@ -282,6 +330,7 @@ public class SliderTrack : Control, IControlCustomStyle
             EndValue = endValue,
          };
       }
+      
       return sender.GetValue(RangeValueProperty);
    }
    
@@ -295,13 +344,18 @@ public class SliderTrack : Control, IControlCustomStyle
    {
       base.ApplyTemplate();
       BindUtils.CreateTokenBinding(this, SliderTrack.SliderTrackSizeProperty, SliderResourceKey.SliderTrackSize);
+      BindUtils.CreateTokenBinding(this, SliderTrack.SliderMarkSizeProperty, SliderResourceKey.MarkSize);
       BindUtils.CreateTokenBinding(this, SliderTrack.SliderRailSizeProperty, SliderResourceKey.RailSize);
-
+      BindUtils.CreateTokenBinding(this, SliderTrack.MarkBackgroundBrushProperty, GlobalResourceKey.ColorBgElevated);
+      BindUtils.CreateTokenBinding(this, SliderTrack.MarkBorderThicknessProperty, SliderResourceKey.ThumbCircleBorderThickness);
+      
       HandleRangeModeChanged();
+      CalculateMaxMarkSize();
       if (Transitions is null) {
          var transitions = new Transitions();
          transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(TrackGrooveBrushProperty));
          transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(TrackBarBrushProperty));
+         transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(MarkBorderBrushProperty));
          Transitions = transitions;
       }
    }
@@ -390,28 +444,6 @@ public class SliderTrack : Control, IControlCustomStyle
    }
 
    /// <summary>
-   /// Calculates the distance along the <see cref="SliderThumb"/> of a specified point along the
-   /// track.
-   /// </summary>
-   /// <param name="point">The specified point.</param>
-   /// <returns>
-   /// The distance between the SliderThumb and the specified pt value.
-   /// </returns>
-   public virtual double ValueFromPoint(Point point)
-   {
-      double val;
-
-      // Find distance from center of thumb to given point.
-      if (Orientation == Orientation.Horizontal) {
-         val = ThumbValue + ValueFromDistance(point.X - ThumbCenterOffset, point.Y - (Bounds.Height * 0.5));
-      } else {
-         val = ThumbValue + ValueFromDistance(point.X - (Bounds.Width * 0.5), point.Y - ThumbCenterOffset);
-      }
-
-      return Math.Max(Minimum, Math.Min(Maximum, val));
-   }
-
-   /// <summary>
    /// Calculates the change in the <see cref="Value"/> of the <see cref="SliderTrack"/> when the
    /// <see cref="SliderThumb"/> moves.
    /// </summary>
@@ -433,7 +465,6 @@ public class SliderTrack : Control, IControlCustomStyle
    {
       var targetWidth = 0d;
       var targetHeight = 0d;
-      var markTextSize = CalculateMaxMarkSize();
       if (StartSliderThumb is not null) {
          StartSliderThumb.Measure(availableSize);
       }
@@ -447,14 +478,14 @@ public class SliderTrack : Control, IControlCustomStyle
             targetWidth = availableSize.Width;
          }
          targetWidth = Math.Max(targetWidth, SliderTrackSize);
-         targetHeight = SliderTrackSize + markTextSize.Height;
+         targetHeight = SliderTrackSize + _markLabelSize.Height;
          
       } else {
          if (!double.IsInfinity(availableSize.Height)) {
             targetHeight = availableSize.Height;
          }
          targetHeight = Math.Max(targetHeight, SliderTrackSize);
-         targetWidth = SliderTrackSize + markTextSize.Width;
+         targetWidth = SliderTrackSize + _markLabelSize.Width;
       }
 
       targetWidth += Padding.Left + Padding.Right;
@@ -475,10 +506,24 @@ public class SliderTrack : Control, IControlCustomStyle
       var thumbCenterPoints = CalculateThumbCenterOffset(arrangeSize);
       StartThumbCenterOffset = thumbCenterPoints.Item1;
       EndThumbCenterOffset = thumbCenterPoints.Item2;
+      var hasMarks = Marks?.Count > 0;
       
       if (IsRangeMode) {
          if (StartSliderThumb != null) {
-            var offset = StartThumbCenterOffset - new Point(StartSliderThumb.DesiredSize.Width / 2, StartSliderThumb.DesiredSize.Height / 2);
+            var offset = StartThumbCenterOffset;
+
+            if (Orientation == Orientation.Horizontal) {
+               offset -= new Point(StartSliderThumb.DesiredSize.Width / 2, 
+                                                           hasMarks
+                                                              ? Padding.Top
+                                                              : StartSliderThumb.DesiredSize.Height / 2);
+            } else {
+               offset -= new Point(hasMarks
+                                      ? Padding.Left
+                                      : StartSliderThumb.DesiredSize.Width / 2,
+                                   StartSliderThumb.DesiredSize.Height / 2);
+            }
+
             var bounds = new Rect(offset, StartSliderThumb.DesiredSize);
             var adjust = CalculateThumbAdjustment(StartSliderThumb, bounds);
             StartSliderThumb.Arrange(bounds);
@@ -486,7 +531,20 @@ public class SliderTrack : Control, IControlCustomStyle
          }
          
          if (EndSliderThumb != null) {
-            var offset = EndThumbCenterOffset - new Point(EndSliderThumb.DesiredSize.Width / 2, EndSliderThumb.DesiredSize.Height / 2);
+            var offset = EndThumbCenterOffset;
+
+            if (Orientation == Orientation.Horizontal) {
+               offset -= new Point(EndSliderThumb.DesiredSize.Width / 2,
+                                   hasMarks
+                                      ? Padding.Top
+                                      : EndSliderThumb.DesiredSize.Height / 2);
+            } else {
+               offset -= new Point(hasMarks
+                                      ? Padding.Left
+                                      : EndSliderThumb.DesiredSize.Width / 2,
+                                   EndSliderThumb.DesiredSize.Height / 2 );
+            }
+            
             var bounds = new Rect(offset, EndSliderThumb.DesiredSize);
             var adjust = CalculateThumbAdjustment(EndSliderThumb, bounds);
             EndSliderThumb.Arrange(bounds);
@@ -494,7 +552,19 @@ public class SliderTrack : Control, IControlCustomStyle
          }
       } else {
          if (StartSliderThumb != null) {
-            var offset = EndThumbCenterOffset - new Point(StartSliderThumb.DesiredSize.Width / 2, StartSliderThumb.DesiredSize.Height / 2);
+            var offset = EndThumbCenterOffset;
+            if (Orientation == Orientation.Horizontal) { 
+               offset -= new Point(StartSliderThumb.DesiredSize.Width / 2, 
+                                   hasMarks
+                                      ? Padding.Top
+                                      : StartSliderThumb.DesiredSize.Height / 2);
+            } else {
+               offset -= new Point(hasMarks
+                                      ? Padding.Left
+                                      : StartSliderThumb.DesiredSize.Width / 2,
+                                   StartSliderThumb.DesiredSize.Height / 2);
+            }
+          
             var bounds = new Rect(offset, StartSliderThumb.DesiredSize);
             var adjust = CalculateThumbAdjustment(StartSliderThumb, bounds);
             StartSliderThumb.Arrange(bounds);
@@ -513,11 +583,15 @@ public class SliderTrack : Control, IControlCustomStyle
                                      out var startThumbPivotOffset,
                                      out var endThumbPivotOffset);
       if (Orientation == Orientation.Horizontal) {
-         var offsetY = arrangeSize.Height / 2;
+         var offsetY = Marks?.Count > 0
+            ? Padding.Top
+            : arrangeSize.Height / 2;
          return (new Point(startThumbPivotOffset, offsetY), new Point(endThumbPivotOffset, offsetY));
       }
 
-      var offsetX = arrangeSize.Width / 2;
+      var offsetX = Marks?.Count > 0
+         ? Padding.Left
+         : arrangeSize.Width / 2;
       return (new Point(offsetX, startThumbPivotOffset), new Point(offsetX, endThumbPivotOffset));
    }
 
@@ -533,6 +607,10 @@ public class SliderTrack : Control, IControlCustomStyle
          }
       } else if (change.Property == IsRangeModeProperty) {
          HandleRangeModeChanged();
+      } else if (change.Property == MarksProperty) {
+         if (VisualRoot is not null) {
+            CalculateMaxMarkSize();
+         }
       }
    }
 
@@ -542,6 +620,7 @@ public class SliderTrack : Control, IControlCustomStyle
       return _lastDrag - thumbDelta;
    }
 
+   // TODO 需要重构，这里对圆心的半径做了处理，理论上不应该在这里做
    private void CalculateThumbValuePivotOffset(Size arrangeSize, 
                                                bool isVertical, 
                                                out double startThumbOffset,
@@ -551,8 +630,10 @@ public class SliderTrack : Control, IControlCustomStyle
       double range = Math.Max(0.0, Maximum - min);
       var thumbSize = StartSliderThumb!.Width;
       var totalSize = arrangeSize.Width;
+      var factor = 1;
       if (isVertical) {
          totalSize = arrangeSize.Height;
+         factor = -1;
       }
 
       totalSize -= thumbSize;
@@ -569,8 +650,32 @@ public class SliderTrack : Control, IControlCustomStyle
          endThumbOffset = totalSize * ratio;
       }
 
-      startThumbOffset += thumbSize / 2;
-      endThumbOffset += thumbSize / 2;
+      startThumbOffset += factor * thumbSize / 2;
+      endThumbOffset += factor * thumbSize / 2;
+      if (isVertical) {
+         startThumbOffset = totalSize - startThumbOffset;
+         endThumbOffset = totalSize - endThumbOffset;
+      }
+   }
+
+   // 计算 value 对应的进度条上的坐标
+   private double CalculateMarkPivotOffset(Size arrangeSize, bool isVertical, double value)
+   {
+      double min = Minimum;
+      double range = Math.Max(0.0, Maximum - min);
+      var totalSize = arrangeSize.Width;
+      if (isVertical) {
+         totalSize = arrangeSize.Height;
+      }
+      
+      var ratio = Math.Min(range, value - min) / range;
+      var offset = totalSize * ratio;
+
+      if (isVertical) {
+         offset = totalSize - offset;
+      }
+
+      return offset;
    }
 
    private void ComputeDensity(Size arrangeSize, bool isVertical)
@@ -653,24 +758,51 @@ public class SliderTrack : Control, IControlCustomStyle
       PseudoClasses.Set(StdPseudoClass.Horizontal, o == Orientation.Horizontal);
    }
 
-   private Size CalculateMaxMarkSize()
+   private void CalculateMaxMarkSize(bool force = false)
    {
-      var targetWidth = 0d;
-      var targetHeight = 0d;
-      if (Marks is not null) {
-         foreach (var mark in Marks) {
-            var markTextSize = TextUtils.CalculateTextSize(mark.Label, 
-                                                           MarkLabelFontSize,
-                                                           MarkLabelFontFamily,
-                                                           mark.LabelFontStyle,
-                                                           mark.LabelFontWeight);
-            targetWidth = Math.Max(targetWidth, markTextSize.Width);
-            targetHeight = Math.Max(targetHeight, markTextSize.Height);
+      if (_markLabelSize == default || force) {
+         var targetWidth = 0d;
+         var targetHeight = 0d;
+         var topLevel = TopLevel.GetTopLevel(this)!;
+         if (Marks is not null) {
+            foreach (var mark in Marks) {
+               var markTextSize = TextUtils.CalculateTextSize(mark.Label, 
+                                                              MarkLabelFontSize,
+                                                              MarkLabelFontFamily,
+                                                              mark.LabelFontStyle,
+                                                              mark.LabelFontWeight);
+               mark.LabelSize = markTextSize;
+               targetWidth = Math.Max(targetWidth, markTextSize.Width);
+               targetHeight = Math.Max(targetHeight, markTextSize.Height);
+               
+               var typeface = new Typeface(topLevel.FontFamily, mark.LabelFontStyle, mark.LabelFontWeight);
+               var formattedText = new FormattedText(mark.Label, CultureInfo.CurrentUICulture, GetFlowDirection(this),
+                                                     typeface, 1, mark.LabelBrush ?? topLevel.Foreground);
+               formattedText.SetFontSize(topLevel.FontSize);
+               formattedText.TextAlignment = TextAlignment.Left;
+               mark.FormattedText = formattedText;
+            }
          }
+         _markLabelSize = new Size(targetWidth, targetHeight);
       }
-      return new Size(targetWidth, targetHeight);
    }
 
+   internal SliderMark? GetMarkForPosition(Point point)
+   {
+      if (Marks is not null) {
+         if (_renderContextData!.MarkTextRects is not null) {
+            var entries = _renderContextData.MarkTextRects!;
+            for (var i = 0; i < entries.Count; i++) {
+               var textEntry = entries[i];
+               if (textEntry.Item1.Contains(point)) {
+                  return Marks[i];
+               }
+            }
+         }
+      }
+      return null;
+   }
+   
    void IControlCustomStyle.PrepareRenderInfo()
    {
       _renderContextData = new RenderContextData();
@@ -682,28 +814,118 @@ public class SliderTrack : Control, IControlCustomStyle
          {
             // 计算轨道位置
             var offsetX = thumbSize / 2;
-            var offsetY = (Bounds.Height - SliderRailSize) / 2;
+            var offsetY = Marks?.Count > 0 
+               ? Math.Max(Padding.Top, (thumbSize - SliderRailSize) / 2)
+               : (Bounds.Height - SliderRailSize) / 2;
             _renderContextData.RailRect = new Rect(new Point(offsetX, offsetY),
                                                    new Size(Bounds.Width - thumbSize, SliderRailSize));
          }
          {
             // 计算 range bar rect
-            var offsetY = (Bounds.Height - SliderRailSize) / 2;
+            var offsetY = Marks?.Count > 0 
+               ? Math.Max(Padding.Top, (thumbSize - SliderRailSize) / 2)
+               : (Bounds.Height - SliderRailSize) / 2;
             _renderContextData.TrackRangeRect = new Rect(new Point(Math.Min(startThumbPivotOffset, endThumbPivotOffset), offsetY), 
                                                          new Size(Math.Abs(endThumbPivotOffset - startThumbPivotOffset),SliderRailSize));
          }
+         
+         // 计算 mark 的位置
+         {
+            if (Marks?.Count > 0) {
+               _renderContextData.MarkRects = new List<(Rect, int, bool)>();
+               _renderContextData.MarkTextRects = new List<(Rect, int, bool, FormattedText)>();
+               var railRect = _renderContextData.RailRect;
+               var railCenterY = railRect.Center.Y;
+               bool markIncluded = false;
+               for (var i = 0; i < Marks.Count; i++) {
+                  var mark = Marks[i];
+                  if (Included) {
+                     if (IsRangeMode) {
+                        markIncluded = MathUtils.GreaterThanOrClose(mark.Value, RangeValue.StartValue) && MathUtils.LessThanOrClose(mark.Value, RangeValue.EndValue);
+                     } else {
+                        markIncluded = MathUtils.LessThanOrClose(mark.Value, Value);
+                     }
+                  }
+             
+                  var offsetX = railRect.X + CalculateMarkPivotOffset(railRect.Size, Orientation == Orientation.Vertical, mark.Value);
+                  var offsetY = railCenterY;
+                  // 将圆心放到合适的坐标
+                  offsetX -= SliderMarkSize / 2;
+                  offsetY -= SliderMarkSize / 2;
+                  
+                  var markRect = new Rect(new Point(offsetX, offsetY), new Size(SliderMarkSize, SliderMarkSize));
+                  _renderContextData.MarkRects.Add((markRect, i, markIncluded));
+
+                  var textOffsetX = offsetX - mark.LabelSize.Width / 2;
+                  var textOffsetY = railCenterY + thumbSize / 2;
+
+                  if (i == Marks.Count - 1) {
+                     textOffsetX -= Padding.Right; // 不知道为啥会出去一点点
+                  }
+                  
+                  var textRect = new Rect(new Point(textOffsetX, textOffsetY), mark.LabelSize);
+                  _renderContextData.MarkTextRects.Add((textRect, i, markIncluded, mark.FormattedText!));
+               }
+            }
+         }
+         
       } else {
          {
             // 计算轨道位置
-            var offsetX = (Bounds.Width - SliderRailSize) / 2;
-            var offsetY = thumbSize;
-            _renderContextData.RailRect = new Rect(new Point(offsetX, offsetY), new Size(SliderRailSize, Bounds.Height));
+            var offsetX = Marks?.Count > 0 
+               ? Math.Max(Padding.Left, (thumbSize - SliderRailSize) / 2)
+               : (Bounds.Width - SliderRailSize) / 2;
+            var offsetY = thumbSize / 2;
+            _renderContextData.RailRect = new Rect(new Point(offsetX, offsetY), new Size(SliderRailSize, Bounds.Height - thumbSize));
          }
          {
             // 计算 range bar rect
-            var offsetX = (Bounds.Width - SliderRailSize) / 2;
+            var offsetX = Marks?.Count > 0 
+               ? Math.Max(Padding.Left, (thumbSize - SliderRailSize) / 2)
+               : (Bounds.Width - SliderRailSize) / 2;
             _renderContextData.TrackRangeRect = new Rect(new Point(offsetX, Math.Min(startThumbPivotOffset, endThumbPivotOffset)), 
                                                          new Size(SliderRailSize, Math.Abs(endThumbPivotOffset - startThumbPivotOffset)));
+         }
+         
+         // 计算 mark 的位置
+         {
+            if (Marks?.Count > 0) {
+               _renderContextData.MarkRects = new List<(Rect, int, bool)>();
+               _renderContextData.MarkTextRects = new List<(Rect, int, bool, FormattedText)>();
+               var railRect = _renderContextData.RailRect;
+               var railCenterX = railRect.Center.X;
+               bool markIncluded = false;
+               for (var i = 0; i < Marks.Count; i++) {
+                  var mark = Marks[i];
+                  if (Included) {
+                     if (IsRangeMode) {
+                        markIncluded = MathUtils.GreaterThanOrClose(mark.Value, RangeValue.StartValue) && MathUtils.LessThanOrClose(mark.Value, RangeValue.EndValue);
+                     } else {
+                        markIncluded = MathUtils.LessThanOrClose(mark.Value, Value);
+                     }
+                  }
+                  var offsetX = railCenterX;
+                  var offsetY = railRect.Y + CalculateMarkPivotOffset(railRect.Size, Orientation == Orientation.Vertical, mark.Value);
+                  
+                  // 将圆心放到合适的坐标
+                  offsetX -= SliderMarkSize / 2;
+                  offsetY -= SliderMarkSize / 2;
+                  
+                  var markRect = new Rect(new Point(offsetX, offsetY), new Size(SliderMarkSize, SliderMarkSize));
+                  _renderContextData.MarkRects.Add((markRect, i, markIncluded));
+
+                  var textOffsetX = railCenterX + thumbSize / 2;
+                  var textOffsetY = offsetY;
+                  if (i == 0) {
+                     textOffsetY -= Padding.Bottom;
+                  } else {
+                     textOffsetY -= mark.LabelSize.Height / 2;
+                  }
+                  
+                  var textRect = new Rect(new Point(textOffsetX, textOffsetY), mark.LabelSize);
+                  _renderContextData.MarkTextRects.Add((textRect, i, markIncluded, mark.FormattedText!));
+               }
+            }
          }
       }
    }
@@ -718,17 +940,34 @@ public class SliderTrack : Control, IControlCustomStyle
 
    private void DrawGroove(DrawingContext context)
    {
-      context.DrawPilledRect(TrackGrooveBrush, null, _renderContextData!.RailRect);
+      context.DrawPilledRect(TrackGrooveBrush, null, _renderContextData!.RailRect, Orientation);
    }
    
    private void DrawMark(DrawingContext context)
    {
-      
+      if (_renderContextData?.MarkRects is not null) {
+         foreach (var markRectEntry in _renderContextData.MarkRects) {
+            var centerPos = markRectEntry.Item1.Center;
+            var radius = SliderMarkSize / 2;
+            var circlePen = new Pen(markRectEntry.Item3 ? MarkBorderActiveBrush : MarkBorderBrush, MarkBorderThickness.Left);
+            context.DrawEllipse(MarkBackgroundBrush, circlePen, centerPos, radius, radius);
+         }
+      }
+
+      // 绘制文字
+      if (_renderContextData?.MarkTextRects is not null) {
+         foreach (var markTextRectEntry in _renderContextData.MarkTextRects) {
+            var pos = markTextRectEntry.Item1.Position;
+            context.DrawText(markTextRectEntry.Item4, pos);
+         }
+      }
    }
    
    private void DrawTrackBar(DrawingContext context)
    {
-      context.DrawPilledRect(TrackBarBrush, null, _renderContextData!.TrackRangeRect);
+      if (Included) {
+         context.DrawPilledRect(TrackBarBrush, null, _renderContextData!.TrackRangeRect, Orientation);
+      }
    }
    
    // 跟渲染相关的数据
@@ -736,5 +975,7 @@ public class SliderTrack : Control, IControlCustomStyle
    {
       public Rect RailRect { get; set; }
       public Rect TrackRangeRect { get; set; }
+      public List<(Rect, int, bool)>? MarkRects { get; set; }
+      public List<(Rect, int, bool, FormattedText)>? MarkTextRects { get; set; }
    }
 }
