@@ -69,6 +69,7 @@ public static class ColorExtensions
       double l = hslColor.L;
       l += amount / 100d;
       l = Math.Clamp(l, 0d, 1d);
+      Console.WriteLine(hslColor.H);
       return HslColor.FromHsl(hslColor.H, hslColor.S, l).ToRgb();
    }
    

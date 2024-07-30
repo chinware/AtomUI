@@ -19,5 +19,17 @@
                 </atom:TabStrip>
             </StackPanel>
         </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="Disabled"
+            Description="Disabled a tab.">
+            <StackPanel Orientation="Vertical" Spacing="20">
+                <atom:TabStrip>
+                    <atom:TabStripItem>Tab 1</atom:TabStripItem>
+                    <atom:TabStripItem IsEnabled="False">Tab 2</atom:TabStripItem>
+                    <atom:TabStripItem>Tab 3</atom:TabStripItem>
+                </atom:TabStrip>
+            </StackPanel>
+        </showcase:ShowCaseItem>
     </showcase:ShowCasePanel>
 </UserControl>

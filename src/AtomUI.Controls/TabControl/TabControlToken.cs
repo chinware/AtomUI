@@ -5,7 +5,7 @@ using Avalonia.Media;
 namespace AtomUI.Controls;
 
 [ControlDesignToken]
-public class TabControlToken : AbstractControlDesignToken
+internal class TabControlToken : AbstractControlDesignToken
 {
    public const string ID = "TabControl";
 
@@ -103,11 +103,6 @@ public class TabControlToken : AbstractControlDesignToken
    public Color ItemColor { get; set; }
    
    /// <summary>
-   /// 标签激活态文本颜色
-   /// </summary>
-   public Color ItemActiveColor { get; set; }
-   
-   /// <summary>
    /// 标签悬浮态文本颜色
    /// </summary>
    public Color ItemHoverColor { get; set; }
@@ -155,7 +150,6 @@ public class TabControlToken : AbstractControlDesignToken
       ItemColor = colorToken.ColorNeutralToken.ColorText;
       ItemSelectedColor = colorToken.ColorPrimaryToken.ColorPrimary;
       ItemHoverColor = colorToken.ColorPrimaryToken.ColorPrimaryHover;
-      ItemActiveColor = colorToken.ColorPrimaryToken.ColorPrimaryActive;
 
       CardGutter = _globalToken.MarginXXS / 2;
    }

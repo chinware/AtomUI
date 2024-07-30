@@ -84,7 +84,7 @@ public class DefaultThemeVariantCalculator : AbstractThemeVariantCalculator
          ColorBgBlur = ColorUtils.TransparentColor(),
 
          ColorBorder = SolidColor(colorBgBase, 15),
-         ColorBorderSecondary = SolidColor(colorBgBase, 10),
+         ColorBorderSecondary = SolidColor(colorBgBase, 6),
       };
       return colorNeutralToken;
    }
