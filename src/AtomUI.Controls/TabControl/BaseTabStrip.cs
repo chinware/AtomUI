@@ -1,5 +1,4 @@
-﻿using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
+﻿using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -29,6 +28,9 @@ public abstract class BaseTabStrip : AvaloniaTabStrip, ISizeTypeAware
    
    public static readonly StyledProperty<Dock> TabStripPlacementProperty =
       AvaloniaProperty.Register<BaseTabStrip, Dock>(nameof(TabStripPlacement), defaultValue: Dock.Top);
+
+   public static readonly StyledProperty<bool> TabAlignmentCenterProperty =
+      AvaloniaProperty.Register<BaseTabStrip, bool>(nameof(TabAlignmentCenter), false);
    
    public SizeType SizeType
    {
@@ -40,6 +42,12 @@ public abstract class BaseTabStrip : AvaloniaTabStrip, ISizeTypeAware
    {
       get => GetValue(TabStripPlacementProperty);
       set => SetValue(TabStripPlacementProperty, value);
+   }
+   
+   public bool TabAlignmentCenter
+   {
+      get => GetValue(TabAlignmentCenterProperty);
+      set => SetValue(TabAlignmentCenterProperty, value);
    }
    
    #endregion

@@ -116,6 +116,11 @@ internal class TabControlToken : AbstractControlDesignToken
    /// 卡片标签间距
    /// </summary>
    public double CardGutter { get; set; }
+   
+   /// <summary>
+   /// 标签内容 icon 的外边距
+   /// </summary>
+   public Thickness ItemIconMargin { get; set; }
 
    internal override void CalculateFromAlias()
    {
@@ -152,5 +157,6 @@ internal class TabControlToken : AbstractControlDesignToken
       ItemHoverColor = colorToken.ColorPrimaryToken.ColorPrimaryHover;
 
       CardGutter = _globalToken.MarginXXS / 2;
+      ItemIconMargin = new Thickness(0, 0, _globalToken.MarginSM, 0);
    }
 }

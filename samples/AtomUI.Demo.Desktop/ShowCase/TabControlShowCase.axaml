@@ -31,5 +31,29 @@
                 </atom:TabStrip>
             </StackPanel>
         </showcase:ShowCaseItem>
+           
+        <showcase:ShowCaseItem
+            Title="Centered"
+            Description="Centered tabs.">
+            <StackPanel Orientation="Vertical" Spacing="20">
+                <atom:TabStrip TabAlignmentCenter="True">
+                    <atom:TabStripItem>Tab 1</atom:TabStripItem>
+                    <atom:TabStripItem>Tab 2</atom:TabStripItem>
+                    <atom:TabStripItem>Tab 3</atom:TabStripItem>
+                </atom:TabStrip>
+            </StackPanel>
+        </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="Icon"
+            Description="The Tab with Icon.">
+            <StackPanel Orientation="Vertical" Spacing="20">
+                <atom:TabStrip>
+                    <atom:TabStripItem Icon="{atom:IconProvider Kind=AppleOutlined}">Tab 1</atom:TabStripItem>
+                    <atom:TabStripItem Icon="{atom:IconProvider Kind=AndroidOutlined}">Tab 2</atom:TabStripItem>
+                    <atom:TabStripItem Icon="{atom:IconProvider Kind=WechatOutlined}">Tab 3</atom:TabStripItem>
+                </atom:TabStrip>
+            </StackPanel>
+        </showcase:ShowCaseItem>
     </showcase:ShowCasePanel>
 </UserControl>

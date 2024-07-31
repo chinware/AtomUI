@@ -1,4 +1,5 @@
 ﻿using AtomUI.Controls.Utils;
+using AtomUI.Icon;
 using AtomUI.Media;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
@@ -8,6 +9,7 @@ using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.LogicalTree;
+using Avalonia.Rendering;
 
 namespace AtomUI.Controls;
 
@@ -19,7 +21,7 @@ public enum TabSharp
    Card
 }
 
-public class TabStripItem : AvaloniaTabStripItem, IControlCustomStyle
+public class TabStripItem : AvaloniaTabStripItem, IControlCustomStyle, ICustomHitTest
 {
    #region 公共属性定义
    public static readonly StyledProperty<SizeType> SizeTypeProperty =
@@ -92,6 +94,16 @@ public class TabStripItem : AvaloniaTabStripItem, IControlCustomStyle
    {
       if (Icon is not null) {
          UIStructureUtils.SetTemplateParent(Icon, this);
+         Icon.Name = TabStripItemTheme.ItemIconPart;
+         if (Icon.ThemeType != IconThemeType.TwoTone) {
+            TokenResourceBinder.CreateTokenBinding(Icon, PathIcon.NormalFilledBrushProperty, TabControlResourceKey.ItemColor);
+            TokenResourceBinder.CreateTokenBinding(Icon, PathIcon.ActiveFilledBrushProperty, TabControlResourceKey.ItemHoverColor);
+            TokenResourceBinder.CreateTokenBinding(Icon, PathIcon.SelectedFilledBrushProperty, TabControlResourceKey.ItemSelectedColor);
+            TokenResourceBinder.CreateTokenBinding(Icon, PathIcon.DisabledFilledBrushProperty, GlobalResourceKey.ColorTextDisabled);
+         }
+         if (_contentLayout is not null) {
+            _contentLayout.Children.Insert(0, Icon);
+         }
       }
    }
 
@@ -124,9 +136,8 @@ public class TabStripItem : AvaloniaTabStripItem, IControlCustomStyle
             if (oldIcon != null) {
                UIStructureUtils.SetTemplateParent(oldIcon, null);
             }
-            if (Icon is not null) {
-               UIStructureUtils.SetTemplateParent(Icon, this);
-            }
+
+            SetupItemIcon();
          }
       }
    }
@@ -139,5 +150,10 @@ public class TabStripItem : AvaloniaTabStripItem, IControlCustomStyle
       } else {
          TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, CardTabStripItemTheme.ID);
       }
+   }
+
+   public bool HitTest(Point point)
+   {
+      return true;
    }
 }

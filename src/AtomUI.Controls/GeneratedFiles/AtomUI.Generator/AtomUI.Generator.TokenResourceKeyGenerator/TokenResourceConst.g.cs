@@ -314,6 +314,7 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey ItemHoverColor = new TokenResourceKey("TabControl.ItemHoverColor");
         public static readonly TokenResourceKey ItemSelectedColor = new TokenResourceKey("TabControl.ItemSelectedColor");
         public static readonly TokenResourceKey CardGutter = new TokenResourceKey("TabControl.CardGutter");
+        public static readonly TokenResourceKey ItemIconMargin = new TokenResourceKey("TabControl.ItemIconMargin");
     }
 
     public static class TagResourceKey

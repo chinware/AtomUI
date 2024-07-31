@@ -2,6 +2,7 @@
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
+using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Reactive;
 using Avalonia.Rendering;
@@ -145,6 +146,8 @@ public sealed class PathIcon : Control, ICustomHitTest
                               FilledBrushProperty,
                               PrimaryFilledBrushProperty,
                               SecondaryFilledBrushProperty);
+      HorizontalAlignmentProperty.OverrideDefaultValue<PathIcon>(HorizontalAlignment.Left);
+      VerticalAlignmentProperty.OverrideDefaultValue<PathIcon>(VerticalAlignment.Top);
    }
 
    public PathIcon()
