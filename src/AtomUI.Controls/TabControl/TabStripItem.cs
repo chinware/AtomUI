@@ -33,8 +33,8 @@ public class TabStripItem : AvaloniaTabStripItem, IControlCustomStyle, ICustomHi
    public static readonly StyledProperty<PathIcon?> CloseIconProperty =
       AvaloniaProperty.Register<TabStripItem, PathIcon?>(nameof(CloseIcon));
    
-   public static readonly StyledProperty<bool> ClosableProperty =
-      AvaloniaProperty.Register<TabStripItem, bool>(nameof(Closable));
+   public static readonly StyledProperty<bool> IsClosableProperty =
+      AvaloniaProperty.Register<TabStripItem, bool>(nameof(IsClosable));
    
    public static readonly DirectProperty<TabStripItem, Dock?> TabStripPlacementProperty =
       AvaloniaProperty.RegisterDirect<TabStripItem, Dock?>(nameof(TabStripPlacement), o => o.TabStripPlacement);
@@ -57,10 +57,10 @@ public class TabStripItem : AvaloniaTabStripItem, IControlCustomStyle, ICustomHi
       set => SetValue(CloseIconProperty, value);
    }
    
-   public bool Closable
+   public bool IsClosable
    {
-      get => GetValue(ClosableProperty);
-      set => SetValue(ClosableProperty, value);
+      get => GetValue(IsClosableProperty);
+      set => SetValue(IsClosableProperty, value);
    }
    
    private Dock? _tabStripPlacement;

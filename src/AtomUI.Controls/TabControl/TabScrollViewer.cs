@@ -210,9 +210,11 @@ public class TabScrollViewer : ScrollViewer
                var right = Math.Floor(itemBounds.Right - Offset.X);
                if (TabStripPlacement == Dock.Top || TabStripPlacement == Dock.Bottom) {
                   if (left < 0 || right > Viewport.Width) {
-                     var menuItem = new MenuItem()
+                     var menuItem = new TabStripMenuItem()
                      {
                         Header = tabStripItem.Content,
+                        TabStripItem = tabStripItem,
+                        IsClosable = tabStripItem.IsClosable
                      };
                      menuItem.Click += HandleMenuItemClicked;
                      _menuFlyout.Items.Add(menuItem);
@@ -230,14 +232,16 @@ public class TabScrollViewer : ScrollViewer
    private void HandleMenuItemClicked(object? sender, RoutedEventArgs args)
    {
       if (TabStrip is not null) {
-         TabStrip.BringIntoView();
          Dispatcher.UIThread.Post(sender =>
          {
-            var item = TabStrip.Items[5];
-            if (item is TabStripItem tabStripItem) {
-               tabStripItem.BringIntoView();
+            if (sender is TabStripMenuItem tabStripMenuItem) {
+               var tabStripItem = tabStripMenuItem.TabStripItem;
+               if (tabStripItem is not null) {
+                  tabStripItem.BringIntoView();
+                  TabStrip.SelectedItem = tabStripItem;
+               }
             }
-          }, sender);
+         }, sender);
       }
    }
 
