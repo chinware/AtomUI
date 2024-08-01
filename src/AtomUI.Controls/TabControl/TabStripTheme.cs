@@ -21,6 +21,7 @@ internal class TabStripTheme : BaseTabStripTheme
       CreateTemplateParentBinding(tabScrollViewer, TabScrollViewer.TabStripPlacementProperty, TabStrip.TabStripPlacementProperty);
       var contentPanel = CreateTabStripContentPanel(scope);
       tabScrollViewer.Content = contentPanel;
+      tabScrollViewer.TabStrip = baseTabStrip;
       container.Child = tabScrollViewer;
    }
 

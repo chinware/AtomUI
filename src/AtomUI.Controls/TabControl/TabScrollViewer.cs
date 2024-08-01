@@ -7,7 +7,9 @@ using Avalonia.Controls.Converters;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
+using Avalonia.Interactivity;
 using Avalonia.Media;
+using Avalonia.Threading;
 using Colors = Avalonia.Media.Colors;
 using GradientStop = Avalonia.Media.GradientStop;
 
@@ -62,11 +64,14 @@ public class TabScrollViewer : ScrollViewer
       set => SetAndRaise(MenuEdgeThicknessProperty, ref _menuEdgeThickness, value);
    }
    
+   internal BaseTabStrip? TabStrip { get; set; } 
+   
    #endregion
 
    private IconButton? _menuIndicator;
    private Border? _startEdgeIndicator;
    private Border? _endEdgeIndicator;
+   private MenuFlyout? _menuFlyout;
 
    static TabScrollViewer()
    {
@@ -174,8 +179,66 @@ public class TabScrollViewer : ScrollViewer
       
       TokenResourceBinder.CreateTokenBinding(this, EdgeShadowStartColorProperty, GlobalResourceKey.ColorFillSecondary);
       TokenResourceBinder.CreateTokenBinding(this, MenuEdgeThicknessProperty, TabControlResourceKey.MenuEdgeThickness);
+
+      if (_menuIndicator is not null) {
+         _menuIndicator.Click += HandleMenuIndicator;
+      }
       
       SetupIndicatorsVisibility();
+   }
+
+   private void HandleMenuIndicator(object? sender, RoutedEventArgs args)
+   {
+      if (_menuFlyout is null) {
+         _menuFlyout = new MenuFlyout();
+      }
+
+      if (TabStripPlacement == Dock.Top || TabStripPlacement == Dock.Bottom) {
+         _menuFlyout.Placement = PlacementMode.Bottom;
+      } else {
+         _menuFlyout.Placement = PlacementMode.Right;
+      }
+
+      // 收集没有完全显示的 Tab 列表
+      _menuFlyout.Items.Clear();
+      if (TabStrip is not null) {
+         for (int i = 0; i < TabStrip.ItemCount; i++) {
+            var itemContainer = TabStrip.ContainerFromIndex(i)!;
+            if (itemContainer is TabStripItem tabStripItem) {
+               var itemBounds = itemContainer.Bounds;
+               var left = Math.Floor(itemBounds.Left - Offset.X);
+               var right = Math.Floor(itemBounds.Right - Offset.X);
+               if (TabStripPlacement == Dock.Top || TabStripPlacement == Dock.Bottom) {
+                  if (left < 0 || right > Viewport.Width) {
+                     var menuItem = new MenuItem()
+                     {
+                        Header = tabStripItem.Content,
+                     };
+                     menuItem.Click += HandleMenuItemClicked;
+                     _menuFlyout.Items.Add(menuItem);
+                  }
+               }
+            }
+         }
+
+         if (_menuFlyout.Items.Count > 0) {
+            _menuFlyout.ShowAt(_menuIndicator!);
+         }
+      }
+   }
+
+   private void HandleMenuItemClicked(object? sender, RoutedEventArgs args)
+   {
+      if (TabStrip is not null) {
+         TabStrip.BringIntoView();
+         Dispatcher.UIThread.Post(sender =>
+         {
+            var item = TabStrip.Items[5];
+            if (item is TabStripItem tabStripItem) {
+               tabStripItem.BringIntoView();
+            }
+          }, sender);
+      }
    }
 
    protected override Size MeasureOverride(Size availableSize)
