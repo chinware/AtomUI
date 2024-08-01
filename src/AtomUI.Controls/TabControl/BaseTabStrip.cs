@@ -7,6 +7,7 @@ using Avalonia.Controls.Templates;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
+using Avalonia.Rendering;
 
 namespace AtomUI.Controls;
 

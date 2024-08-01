@@ -1,0 +1,64 @@
+﻿using System.Reflection;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.Presenters;
+using Avalonia.Controls.Primitives;
+using Avalonia.Input;
+using Avalonia.Rendering;
+
+namespace AtomUI.Controls;
+
+internal class TabStripScrollContentPresenter : ScrollContentPresenter, ICustomHitTest
+{
+   internal Dock TabStripPlacement { get; set; } = Dock.Top;
+   
+   private static readonly MethodInfo SnapOffsetMethodInfo;
+
+   static TabStripScrollContentPresenter()
+   {
+      SnapOffsetMethodInfo =
+         typeof(ScrollContentPresenter).GetMethod("SnapOffset", BindingFlags.Instance | BindingFlags.NonPublic)!;
+   }
+
+   protected override void OnPointerWheelChanged(PointerWheelEventArgs e)
+   {
+      if (Extent.Height > Viewport.Height || Extent.Width > Viewport.Width) {
+         var scrollable = Child as ILogicalScrollable;
+         var isLogical = scrollable?.IsLogicalScrollEnabled == true;
+
+         var x = Offset.X;
+         var y = Offset.Y;
+         var delta = e.Delta;
+
+         if (TabStripPlacement == Dock.Top || TabStripPlacement == Dock.Bottom) {
+            delta = new Vector(delta.Y, delta.X);
+         }
+
+         if (Extent.Height > Viewport.Height) {
+            double height = isLogical ? scrollable!.ScrollSize.Height : 50;
+            y += -delta.Y * height;
+            y = Math.Max(y, 0);
+            y = Math.Min(y, Extent.Height - Viewport.Height);
+         }
+
+         if (Extent.Width > Viewport.Width) {
+            double width = isLogical ? scrollable!.ScrollSize.Width : 50;
+            x += -delta.X * width;
+            x = Math.Max(x, 0);
+            x = Math.Min(x, Extent.Width - Viewport.Width);
+         }
+
+         Vector newOffset = (Vector)SnapOffsetMethodInfo.Invoke(this, new object?[] { new Vector(x, y), delta, true })!;
+
+         bool offsetChanged = newOffset != Offset;
+         SetCurrentValue(OffsetProperty, newOffset);
+
+         e.Handled = !IsScrollChainingEnabled || offsetChanged;
+      }
+   }
+
+   public bool HitTest(Point point)
+   {
+      return true;
+   }
+}

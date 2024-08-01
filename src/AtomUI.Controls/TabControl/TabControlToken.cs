@@ -121,6 +121,21 @@ internal class TabControlToken : AbstractControlDesignToken
    /// 标签内容 icon 的外边距
    /// </summary>
    public Thickness ItemIconMargin { get; set; }
+   
+   /// <summary>
+   /// 水平布局的菜单外边距
+   /// </summary>
+   public Thickness MenuIndicatorPaddingHorizontal { get; set; }
+   
+   /// <summary>
+   /// 垂直布局的菜单外边距
+   /// </summary>
+   public Thickness MenuIndicatorPaddingVertical { get; set; }
+   
+   /// <summary>
+   /// 滚动边缘的厚度
+   /// </summary>
+   public double MenuEdgeThickness { get; set; }
 
    internal override void CalculateFromAlias()
    {
@@ -138,6 +153,7 @@ internal class TabControlToken : AbstractControlDesignToken
                                     bottom:_globalToken.PaddingXXS * 1.5, 
                                     left:_globalToken.Padding, 
                                     right:_globalToken.Padding);
+      
       TitleFontSize = fontToken.FontSize;
       TitleFontSizeLG = fontToken.FontSizeLG;
       TitleFontSizeSM = fontToken.FontSize;
@@ -158,5 +174,10 @@ internal class TabControlToken : AbstractControlDesignToken
 
       CardGutter = _globalToken.MarginXXS / 2;
       ItemIconMargin = new Thickness(0, 0, _globalToken.MarginSM, 0);
+
+      MenuIndicatorPaddingHorizontal = new Thickness(_globalToken.PaddingXS, 0, 0, 0);
+      MenuIndicatorPaddingVertical = new Thickness(0, _globalToken.PaddingXS, 0, 0);
+
+      MenuEdgeThickness = 20;
    }
 }

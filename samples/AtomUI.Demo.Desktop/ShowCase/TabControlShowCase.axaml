@@ -55,5 +55,37 @@
                 </atom:TabStrip>
             </StackPanel>
         </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="Slide"
+            Description="In order to fit in more tabs, they can slide left and right (or up and down).">
+            <StackPanel Orientation="Vertical" Spacing="20">
+                <atom:TabStrip>
+                    <atom:TabStripItem>Tab 1</atom:TabStripItem>
+                    <atom:TabStripItem>Tab 2</atom:TabStripItem>
+                    <atom:TabStripItem>Tab 3</atom:TabStripItem>
+                    <atom:TabStripItem>Tab 4</atom:TabStripItem>
+                    <atom:TabStripItem>Tab 5</atom:TabStripItem>
+                    <atom:TabStripItem>Tab 6</atom:TabStripItem>
+                    <atom:TabStripItem>Tab 7</atom:TabStripItem>
+                    <atom:TabStripItem>Tab 8</atom:TabStripItem>
+                    <atom:TabStripItem>Tab 9</atom:TabStripItem>
+                    <atom:TabStripItem>Tab 10</atom:TabStripItem>
+                    <atom:TabStripItem>Tab 11</atom:TabStripItem>
+                    <atom:TabStripItem>Tab 12</atom:TabStripItem>
+                    <atom:TabStripItem>Tab 13</atom:TabStripItem>
+                    <atom:TabStripItem>Tab 14</atom:TabStripItem>
+                    <atom:TabStripItem>Tab 15</atom:TabStripItem>
+                    <atom:TabStripItem>Tab 16</atom:TabStripItem>
+                    <atom:TabStripItem>Tab 17</atom:TabStripItem>
+                    <atom:TabStripItem>Tab 18</atom:TabStripItem>
+                    <atom:TabStripItem>Tab 19</atom:TabStripItem>
+                    <atom:TabStripItem>Tab 20</atom:TabStripItem>
+                    <atom:TabStripItem>Tab 21</atom:TabStripItem>
+                    <atom:TabStripItem>Tab 22</atom:TabStripItem>
+                    <atom:TabStripItem>Tab 23</atom:TabStripItem>
+                </atom:TabStrip>
+            </StackPanel>
+        </showcase:ShowCaseItem>
     </showcase:ShowCasePanel>
 </UserControl>

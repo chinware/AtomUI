@@ -17,6 +17,15 @@ internal class TabStripTheme : BaseTabStripTheme
    
    protected override void NotifyBuildControlTemplate(BaseTabStrip baseTabStrip, INameScope scope, Border container)
    {
+      var tabScrollViewer = new TabScrollViewer();
+      CreateTemplateParentBinding(tabScrollViewer, TabScrollViewer.TabStripPlacementProperty, TabStrip.TabStripPlacementProperty);
+      var contentPanel = CreateTabStripContentPanel(scope);
+      tabScrollViewer.Content = contentPanel;
+      container.Child = tabScrollViewer;
+   }
+
+   private Panel CreateTabStripContentPanel(INameScope scope)
+   {
       var layout = new Panel();
       var itemsPresenter = new ItemsPresenter
       {
@@ -33,7 +42,7 @@ internal class TabStripTheme : BaseTabStripTheme
       layout.Children.Add(itemsPresenter);
       layout.Children.Add(border);
       CreateTemplateParentBinding(itemsPresenter, ItemsPresenter.ItemsPanelProperty, TabStrip.ItemsPanelProperty);
-      container.Child = layout;
+      return layout;
    }
 
    protected override void BuildStyles()
