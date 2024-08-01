@@ -1,10 +1,8 @@
-# AtomUI
-
-#### 介绍
-
 <p align="center">
     <img src="./docs/images/ATOMUI.png" />
 </p>
+
+#### 介绍
 
 AtomUI 是基于 .NET 技术的 Ant Design 实现，致力于将 Ant Design 优秀高效的设计语言和体验带到 Avalonia/.NET 跨平台桌面软件研发领域。
 
