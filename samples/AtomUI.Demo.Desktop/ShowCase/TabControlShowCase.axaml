@@ -103,8 +103,8 @@
         </showcase:ShowCaseItem>
         
         <showcase:ShowCaseItem
-            Title="Card type tab"
-            Description="Another type of Tabs, which doesn't support vertical mode.">
+            Title="Position"
+            Description="Tab's position: left, right, top or bottom. Will auto switch to top in mobile.">
             <StackPanel Orientation="Vertical" Spacing="20">
                 <StackPanel Orientation="Horizontal" Spacing="5">
                     <TextBlock VerticalAlignment="Center">Tab position:</TextBlock>
@@ -125,6 +125,38 @@
                         <atom:TabStripItem>Tab 3</atom:TabStripItem>
                         <atom:TabStripItem Icon="{atom:IconProvider Kind=GithubOutlined}" IsClosable="True">Tab 4</atom:TabStripItem>
                     </atom:TabStrip>
+                    <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="rgb(241, 243, 246)">
+                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">Tab Content</TextBlock>
+                    </Border>
+                </DockPanel>
+        
+            </StackPanel>
+        </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="Card Shape Position"
+            Description="Tab's position: left, right, top or bottom. Will auto switch to top in mobile."
+            Margin="0, 0, 10, 0">
+            <StackPanel Orientation="Vertical" Spacing="20">
+                <StackPanel Orientation="Horizontal" Spacing="5">
+                    <TextBlock VerticalAlignment="Center">Tab position:</TextBlock>
+                    <atom:OptionButtonGroup ButtonStyle="Outline" Name="PositionCardTabStripOptionGroup">
+                        <atom:OptionButton IsChecked="True">Top</atom:OptionButton>
+                        <atom:OptionButton>Bottom</atom:OptionButton>
+                        <atom:OptionButton>Left</atom:OptionButton>
+                        <atom:OptionButton>Right</atom:OptionButton>
+                    </atom:OptionButtonGroup>
+                </StackPanel>
+        
+                <DockPanel Height="300">
+                    <atom:CardTabStrip Name="PositionCardTabStrip"
+                                   DockPanel.Dock="{Binding PositionCardTabStripPlacement}"
+                                   TabStripPlacement="{Binding PositionCardTabStripPlacement}">
+                        <atom:TabStripItem Icon="{atom:IconProvider Kind=AppleOutlined}">Tab 1</atom:TabStripItem>
+                        <atom:TabStripItem Icon="{atom:IconProvider Kind=AndroidOutlined}">Tab 2</atom:TabStripItem>
+                        <atom:TabStripItem>Tab 3</atom:TabStripItem>
+                        <atom:TabStripItem Icon="{atom:IconProvider Kind=GithubOutlined}" IsClosable="True">Tab 4</atom:TabStripItem>
+                    </atom:CardTabStrip>
                     <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="rgb(241, 243, 246)">
                         <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">Tab Content</TextBlock>
                     </Border>

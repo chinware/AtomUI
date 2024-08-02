@@ -194,7 +194,8 @@ public class TabStripItem : AvaloniaTabStripItem, IControlCustomStyle, ICustomHi
             }
             SetupItemIcon();
          }
-      } else if (change.Property == TabStripPlacementProperty ||
+      } 
+      if (change.Property == TabStripPlacementProperty ||
                  change.Property == SizeTypeProperty) {
          if (Shape == TabSharp.Card) {
             if (change.Property == SizeTypeProperty) {
@@ -258,6 +259,12 @@ public class TabStripItem : AvaloniaTabStripItem, IControlCustomStyle, ICustomHi
    {
       if (TabStripPlacement == Dock.Top) {
          CardBorderRadius = new CornerRadius(topLeft: _cardBorderRadiusSize.TopLeft, topRight:_cardBorderRadiusSize.TopRight, bottomLeft:0, bottomRight:0);
+      } else if (TabStripPlacement == Dock.Bottom) {
+         CardBorderRadius = new CornerRadius(topLeft: 0, 0, bottomLeft:_cardBorderRadiusSize.BottomLeft, bottomRight:_cardBorderRadiusSize.BottomRight);
+      } else if (TabStripPlacement == Dock.Left) {
+         CardBorderRadius = new CornerRadius(topLeft: _cardBorderRadiusSize.TopLeft, 0, bottomLeft:_cardBorderRadiusSize.BottomLeft, bottomRight:0);
+      } else {
+         CardBorderRadius = new CornerRadius(topLeft: 0, topRight:_cardBorderRadiusSize.TopRight, bottomLeft:0, bottomRight:_cardBorderRadiusSize.BottomRight);
       }
    }
 }

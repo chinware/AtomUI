@@ -9,6 +9,9 @@ public partial class TabControlShowCase : UserControl
    public static readonly StyledProperty<Dock> PositionTabStripPlacementProperty =
       AvaloniaProperty.Register<TabControlShowCase, Dock>(nameof(PositionTabStripPlacement), Dock.Top);
    
+   public static readonly StyledProperty<Dock> PositionCardTabStripPlacementProperty =
+      AvaloniaProperty.Register<TabControlShowCase, Dock>(nameof(PositionCardTabStripPlacement), Dock.Top);
+   
    public static readonly StyledProperty<SizeType> SizeTypeTabStripProperty =
       AvaloniaProperty.Register<TabControlShowCase, SizeType>(nameof(SizeTypeTabStrip), SizeType.Middle);
    
@@ -16,6 +19,12 @@ public partial class TabControlShowCase : UserControl
    {
       get => GetValue(PositionTabStripPlacementProperty);
       set => SetValue(PositionTabStripPlacementProperty, value);
+   }
+   
+   public Dock PositionCardTabStripPlacement
+   {
+      get => GetValue(PositionCardTabStripPlacementProperty);
+      set => SetValue(PositionCardTabStripPlacementProperty, value);
    }
    
    public SizeType SizeTypeTabStrip
@@ -29,6 +38,7 @@ public partial class TabControlShowCase : UserControl
       InitializeComponent();
       DataContext = this;
       PositionTabStripOptionGroup.OptionCheckedChanged += HandlePlacementOptionCheckedChanged;
+      PositionCardTabStripOptionGroup.OptionCheckedChanged += HandleCardPlacementOptionCheckedChanged;
       SizeTypeTabStripOptionGroup.OptionCheckedChanged += HandleSizeTypeOptionCheckedChanged;
    }
 
@@ -42,6 +52,19 @@ public partial class TabControlShowCase : UserControl
          PositionTabStripPlacement = Dock.Left;
       } else {
          PositionTabStripPlacement = Dock.Right;
+      }
+   }
+   
+   private void HandleCardPlacementOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
+   {
+      if (args.Index == 0) {
+         PositionCardTabStripPlacement = Dock.Top;
+      } else if (args.Index == 1) {
+         PositionCardTabStripPlacement = Dock.Bottom;
+      } else if (args.Index == 2) {
+         PositionCardTabStripPlacement = Dock.Left;
+      } else {
+         PositionCardTabStripPlacement = Dock.Right;
       }
    }
    
