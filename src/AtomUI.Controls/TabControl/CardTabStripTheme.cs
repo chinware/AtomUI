@@ -2,6 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Templates;
+using Avalonia.Layout;
 using Avalonia.Styling;
 
 namespace AtomUI.Controls;
@@ -37,25 +38,28 @@ internal class CardTabStripTheme : BaseTabStripTheme
    {
       base.BuildStyles();
       var commonStyle = new Style(selector => selector.Nesting());
-        
-      var itemPresenterPanelStyle = new Style(selector => selector.Nesting().Template().Name(ItemsPresenterPart).Child().OfType<StackPanel>());
-      itemPresenterPanelStyle.Add(StackPanel.SpacingProperty, TabControlResourceKey.CardGutter);
-
-      commonStyle.Add(itemPresenterPanelStyle);
       
       // 设置 items presenter 面板样式
       // 分为上、右、下、左
       {
          // 上
          var topStyle = new Style(selector => selector.Nesting().Class(BaseTabStrip.TopPC));
-
+         var itemPresenterPanelStyle = new Style(selector => selector.Nesting().Template().Name(ItemsPresenterPart).Child().OfType<StackPanel>());
+         itemPresenterPanelStyle.Add(StackPanel.OrientationProperty, Orientation.Horizontal);
+         itemPresenterPanelStyle.Add(StackPanel.SpacingProperty, TabControlResourceKey.CardGutter);
+         topStyle.Add(itemPresenterPanelStyle);
+         
          commonStyle.Add(topStyle);
       }
 
       {
          // 右
          var rightStyle = new Style(selector => selector.Nesting().Class(BaseTabStrip.RightPC));
-
+         
+         var itemPresenterPanelStyle = new Style(selector => selector.Nesting().Template().Name(ItemsPresenterPart).Child().OfType<StackPanel>());
+         itemPresenterPanelStyle.Add(StackPanel.OrientationProperty, Orientation.Vertical);
+         itemPresenterPanelStyle.Add(StackPanel.SpacingProperty, TabControlResourceKey.CardVerticalGutter);
+         rightStyle.Add(itemPresenterPanelStyle);
          
          commonStyle.Add(rightStyle);
       }
@@ -63,11 +67,21 @@ internal class CardTabStripTheme : BaseTabStripTheme
          // 下
          var bottomStyle = new Style(selector => selector.Nesting().Class(BaseTabStrip.BottomPC));
          
+         var itemPresenterPanelStyle = new Style(selector => selector.Nesting().Template().Name(ItemsPresenterPart).Child().OfType<StackPanel>());
+         itemPresenterPanelStyle.Add(StackPanel.OrientationProperty, Orientation.Horizontal);
+         itemPresenterPanelStyle.Add(StackPanel.SpacingProperty, TabControlResourceKey.CardGutter);
+         bottomStyle.Add(itemPresenterPanelStyle);
+         
          commonStyle.Add(bottomStyle);
       }
       {
          // 左
          var leftStyle = new Style(selector => selector.Nesting().Class(BaseTabStrip.LeftPC));
+         
+         var itemPresenterPanelStyle = new Style(selector => selector.Nesting().Template().Name(ItemsPresenterPart).Child().OfType<StackPanel>());
+         itemPresenterPanelStyle.Add(StackPanel.OrientationProperty, Orientation.Vertical);
+         itemPresenterPanelStyle.Add(StackPanel.SpacingProperty, TabControlResourceKey.CardVerticalGutter);
+         leftStyle.Add(itemPresenterPanelStyle);
          
          commonStyle.Add(leftStyle);
       }

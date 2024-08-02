@@ -29,7 +29,7 @@ public class TabStripItem : AvaloniaTabStripItem, IControlCustomStyle, ICustomHi
 {
    #region 公共属性定义
    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-      TabStrip.SizeTypeProperty.AddOwner<TabStrip>();
+      BaseTabStrip.SizeTypeProperty.AddOwner<TabStripItem>();
 
    public static readonly StyledProperty<PathIcon?> IconProperty =
       AvaloniaProperty.Register<TabStripItem, PathIcon?>(nameof(Icon));

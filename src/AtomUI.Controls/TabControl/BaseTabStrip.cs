@@ -1,4 +1,5 @@
-﻿using AtomUI.Theme.Data;
+﻿using AtomUI.Data;
+using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
@@ -26,7 +27,7 @@ public abstract class BaseTabStrip : AvaloniaTabStrip, ISizeTypeAware
    
    #region 公共属性定义
    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-      AvaloniaProperty.Register<TabStrip, SizeType>(nameof(SizeType), SizeType.Middle);
+      AvaloniaProperty.Register<BaseTabStrip, SizeType>(nameof(SizeType), SizeType.Middle);
    
    public static readonly StyledProperty<Dock> TabStripPlacementProperty =
       AvaloniaProperty.Register<BaseTabStrip, Dock>(nameof(TabStripPlacement), defaultValue: Dock.Top);
@@ -82,6 +83,7 @@ public abstract class BaseTabStrip : AvaloniaTabStrip, ISizeTypeAware
       base.PrepareContainerForItemOverride(container, item, index);
       if (container is TabStripItem tabStripItem) {
          tabStripItem.TabStripPlacement = TabStripPlacement;
+         BindUtils.RelayBind(this, SizeTypeProperty, tabStripItem, TabStripItem.SizeTypeProperty);
       }
    }
 

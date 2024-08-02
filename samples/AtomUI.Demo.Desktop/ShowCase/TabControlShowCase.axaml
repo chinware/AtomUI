@@ -8,100 +8,100 @@
     xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
     mc:Ignorable="d">
     <showcase:ShowCasePanel>
-        <!-- <showcase:ShowCaseItem -->
-        <!--     Title="Basic" -->
-        <!--     Description="Default activate first tab."> -->
-        <!--     <StackPanel Orientation="Vertical" Spacing="20"> -->
-        <!--         <atom:TabStrip> -->
-        <!--             <atom:TabStripItem>Tab 1</atom:TabStripItem> -->
-        <!--             <atom:TabStripItem>Tab 2</atom:TabStripItem> -->
-        <!--             <atom:TabStripItem>Tab 3</atom:TabStripItem> -->
-        <!--         </atom:TabStrip> -->
-        <!--     </StackPanel> -->
-        <!-- </showcase:ShowCaseItem> -->
-        <!-- -->
-        <!-- <showcase:ShowCaseItem -->
-        <!--     Title="Disabled" -->
-        <!--     Description="Disabled a tab."> -->
-        <!--     <StackPanel Orientation="Vertical" Spacing="20"> -->
-        <!--         <atom:TabStrip> -->
-        <!--             <atom:TabStripItem>Tab 1</atom:TabStripItem> -->
-        <!--             <atom:TabStripItem IsEnabled="False">Tab 2</atom:TabStripItem> -->
-        <!--             <atom:TabStripItem>Tab 3</atom:TabStripItem> -->
-        <!--         </atom:TabStrip> -->
-        <!--     </StackPanel> -->
-        <!-- </showcase:ShowCaseItem> -->
-        <!-- -->
-        <!-- <showcase:ShowCaseItem -->
-        <!--     Title="Centered" -->
-        <!--     Description="Centered tabs."> -->
-        <!--     <StackPanel Orientation="Vertical" Spacing="20"> -->
-        <!--         <atom:TabStrip TabAlignmentCenter="True"> -->
-        <!--             <atom:TabStripItem>Tab 1</atom:TabStripItem> -->
-        <!--             <atom:TabStripItem>Tab 2</atom:TabStripItem> -->
-        <!--             <atom:TabStripItem>Tab 3</atom:TabStripItem> -->
-        <!--         </atom:TabStrip> -->
-        <!--     </StackPanel> -->
-        <!-- </showcase:ShowCaseItem> -->
-        <!-- -->
-        <!-- <showcase:ShowCaseItem -->
-        <!--     Title="Icon" -->
-        <!--     Description="The Tab with Icon."> -->
-        <!--     <StackPanel Orientation="Vertical" Spacing="20"> -->
-        <!--         <atom:TabStrip> -->
-        <!--             <atom:TabStripItem Icon="{atom:IconProvider Kind=AppleOutlined}">Tab 1</atom:TabStripItem> -->
-        <!--             <atom:TabStripItem Icon="{atom:IconProvider Kind=AndroidOutlined}">Tab 2</atom:TabStripItem> -->
-        <!--             <atom:TabStripItem Icon="{atom:IconProvider Kind=WechatOutlined}">Tab 3</atom:TabStripItem> -->
-        <!--         </atom:TabStrip> -->
-        <!--     </StackPanel> -->
-        <!-- </showcase:ShowCaseItem> -->
-        <!-- -->
-        <!-- <showcase:ShowCaseItem -->
-        <!--     Title="Slide" -->
-        <!--     Description="In order to fit in more tabs, they can slide left and right (or up and down)."> -->
-        <!--     <StackPanel Orientation="Vertical" Spacing="20"> -->
-        <!--         <atom:TabStrip> -->
-        <!--             <atom:TabStripItem>Tab 1</atom:TabStripItem> -->
-        <!--             <atom:TabStripItem>Tab 2</atom:TabStripItem> -->
-        <!--             <atom:TabStripItem>Tab 3</atom:TabStripItem> -->
-        <!--             <atom:TabStripItem>Tab 4</atom:TabStripItem> -->
-        <!--             <atom:TabStripItem>Tab 5</atom:TabStripItem> -->
-        <!--             <atom:TabStripItem>Tab 6</atom:TabStripItem> -->
-        <!--             <atom:TabStripItem>Tab 7</atom:TabStripItem> -->
-        <!--             <atom:TabStripItem>Tab 8</atom:TabStripItem> -->
-        <!--             <atom:TabStripItem>Tab 9</atom:TabStripItem> -->
-        <!--             <atom:TabStripItem>Tab 10</atom:TabStripItem> -->
-        <!--             <atom:TabStripItem>Tab 11</atom:TabStripItem> -->
-        <!--             <atom:TabStripItem>Tab 12</atom:TabStripItem> -->
-        <!--             <atom:TabStripItem>Tab 13</atom:TabStripItem> -->
-        <!--             <atom:TabStripItem>Tab 14</atom:TabStripItem> -->
-        <!--             <atom:TabStripItem>Tab 15</atom:TabStripItem> -->
-        <!--             <atom:TabStripItem>Tab 16</atom:TabStripItem> -->
-        <!--             <atom:TabStripItem>Tab 17</atom:TabStripItem> -->
-        <!--             <atom:TabStripItem>Tab 18</atom:TabStripItem> -->
-        <!--             <atom:TabStripItem>Tab 19</atom:TabStripItem> -->
-        <!--             <atom:TabStripItem>Tab 20</atom:TabStripItem> -->
-        <!--             <atom:TabStripItem>Tab 21</atom:TabStripItem> -->
-        <!--             <atom:TabStripItem>Tab 22</atom:TabStripItem> -->
-        <!--             <atom:TabStripItem>Tab 23</atom:TabStripItem> -->
-        <!--         </atom:TabStrip> -->
-        <!--     </StackPanel> -->
-        <!-- </showcase:ShowCaseItem> -->
-        <!-- -->
-        <!-- <showcase:ShowCaseItem -->
-        <!--     Title="Card type tab" -->
-        <!--     Description="Another type of Tabs, which doesn't support vertical mode."> -->
-        <!--     <StackPanel Orientation="Vertical" Spacing="20"> -->
-        <!--         <atom:CardTabStrip> -->
-        <!--             <atom:TabStripItem Icon="{atom:IconProvider Kind=AppleOutlined}">Tab 1</atom:TabStripItem> -->
-        <!--             <atom:TabStripItem Icon="{atom:IconProvider Kind=AndroidOutlined}">Tab 2</atom:TabStripItem> -->
-        <!--             <atom:TabStripItem Icon="{atom:IconProvider Kind=WechatOutlined}">Tab 3</atom:TabStripItem> -->
-        <!--             <atom:TabStripItem Icon="{atom:IconProvider Kind=GithubOutlined}" IsClosable="True">Tab 4</atom:TabStripItem> -->
-        <!--         </atom:CardTabStrip> -->
-        <!--          -->
-        <!--     </StackPanel> -->
-        <!-- </showcase:ShowCaseItem> -->
-        <!-- -->
+        <showcase:ShowCaseItem
+            Title="Basic"
+            Description="Default activate first tab.">
+            <StackPanel Orientation="Vertical" Spacing="20">
+                <atom:TabStrip>
+                    <atom:TabStripItem>Tab 1</atom:TabStripItem>
+                    <atom:TabStripItem>Tab 2</atom:TabStripItem>
+                    <atom:TabStripItem>Tab 3</atom:TabStripItem>
+                </atom:TabStrip>
+            </StackPanel>
+        </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="Disabled"
+            Description="Disabled a tab.">
+            <StackPanel Orientation="Vertical" Spacing="20">
+                <atom:TabStrip>
+                    <atom:TabStripItem>Tab 1</atom:TabStripItem>
+                    <atom:TabStripItem IsEnabled="False">Tab 2</atom:TabStripItem>
+                    <atom:TabStripItem>Tab 3</atom:TabStripItem>
+                </atom:TabStrip>
+            </StackPanel>
+        </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="Centered"
+            Description="Centered tabs.">
+            <StackPanel Orientation="Vertical" Spacing="20">
+                <atom:TabStrip TabAlignmentCenter="True">
+                    <atom:TabStripItem>Tab 1</atom:TabStripItem>
+                    <atom:TabStripItem>Tab 2</atom:TabStripItem>
+                    <atom:TabStripItem>Tab 3</atom:TabStripItem>
+                </atom:TabStrip>
+            </StackPanel>
+        </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="Icon"
+            Description="The Tab with Icon.">
+            <StackPanel Orientation="Vertical" Spacing="20">
+                <atom:TabStrip>
+                    <atom:TabStripItem Icon="{atom:IconProvider Kind=AppleOutlined}">Tab 1</atom:TabStripItem>
+                    <atom:TabStripItem Icon="{atom:IconProvider Kind=AndroidOutlined}">Tab 2</atom:TabStripItem>
+                    <atom:TabStripItem Icon="{atom:IconProvider Kind=WechatOutlined}">Tab 3</atom:TabStripItem>
+                </atom:TabStrip>
+            </StackPanel>
+        </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="Slide"
+            Description="In order to fit in more tabs, they can slide left and right (or up and down).">
+            <StackPanel Orientation="Vertical" Spacing="20">
+                <atom:TabStrip>
+                    <atom:TabStripItem>Tab 1</atom:TabStripItem>
+                    <atom:TabStripItem>Tab 2</atom:TabStripItem>
+                    <atom:TabStripItem>Tab 3</atom:TabStripItem>
+                    <atom:TabStripItem>Tab 4</atom:TabStripItem>
+                    <atom:TabStripItem>Tab 5</atom:TabStripItem>
+                    <atom:TabStripItem>Tab 6</atom:TabStripItem>
+                    <atom:TabStripItem>Tab 7</atom:TabStripItem>
+                    <atom:TabStripItem>Tab 8</atom:TabStripItem>
+                    <atom:TabStripItem>Tab 9</atom:TabStripItem>
+                    <atom:TabStripItem>Tab 10</atom:TabStripItem>
+                    <atom:TabStripItem>Tab 11</atom:TabStripItem>
+                    <atom:TabStripItem>Tab 12</atom:TabStripItem>
+                    <atom:TabStripItem>Tab 13</atom:TabStripItem>
+                    <atom:TabStripItem>Tab 14</atom:TabStripItem>
+                    <atom:TabStripItem>Tab 15</atom:TabStripItem>
+                    <atom:TabStripItem>Tab 16</atom:TabStripItem>
+                    <atom:TabStripItem>Tab 17</atom:TabStripItem>
+                    <atom:TabStripItem>Tab 18</atom:TabStripItem>
+                    <atom:TabStripItem>Tab 19</atom:TabStripItem>
+                    <atom:TabStripItem>Tab 20</atom:TabStripItem>
+                    <atom:TabStripItem>Tab 21</atom:TabStripItem>
+                    <atom:TabStripItem>Tab 22</atom:TabStripItem>
+                    <atom:TabStripItem>Tab 23</atom:TabStripItem>
+                </atom:TabStrip>
+            </StackPanel>
+        </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="Card type tab"
+            Description="Another type of Tabs, which doesn't support vertical mode.">
+            <StackPanel Orientation="Vertical" Spacing="20">
+                <atom:CardTabStrip>
+                    <atom:TabStripItem Icon="{atom:IconProvider Kind=AppleOutlined}">Tab 1</atom:TabStripItem>
+                    <atom:TabStripItem Icon="{atom:IconProvider Kind=AndroidOutlined}">Tab 2</atom:TabStripItem>
+                    <atom:TabStripItem Icon="{atom:IconProvider Kind=WechatOutlined}">Tab 3</atom:TabStripItem>
+                    <atom:TabStripItem Icon="{atom:IconProvider Kind=GithubOutlined}" IsClosable="True">Tab 4</atom:TabStripItem>
+                </atom:CardTabStrip>
+        
+            </StackPanel>
+        </showcase:ShowCaseItem>
+        
         <showcase:ShowCaseItem
             Title="Card type tab"
             Description="Another type of Tabs, which doesn't support vertical mode.">
@@ -115,9 +115,9 @@
                         <atom:OptionButton>Right</atom:OptionButton>
                     </atom:OptionButtonGroup>
                 </StackPanel>
-
+        
                 <DockPanel Height="300">
-                    <atom:TabStrip Name="PositionTabStrip" 
+                    <atom:TabStrip Name="PositionTabStrip"
                                    DockPanel.Dock="{Binding PositionTabStripPlacement}"
                                    TabStripPlacement="{Binding PositionTabStripPlacement}">
                         <atom:TabStripItem Icon="{atom:IconProvider Kind=AppleOutlined}">Tab 1</atom:TabStripItem>
@@ -129,8 +129,39 @@
                         <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">Tab Content</TextBlock>
                     </Border>
                 </DockPanel>
-                
+        
             </StackPanel>
         </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="Size"
+            Description="Large size tabs are usually used in page header, and small size could be used in Modal.">
+            <StackPanel Orientation="Vertical" Spacing="20">
+                <StackPanel Orientation="Horizontal" Spacing="5">
+                    <TextBlock VerticalAlignment="Center">Tab position:</TextBlock>
+                    <atom:OptionButtonGroup ButtonStyle="Outline" Name="SizeTypeTabStripOptionGroup">
+                        <atom:OptionButton>Small</atom:OptionButton>
+                        <atom:OptionButton IsChecked="True">Middle</atom:OptionButton>
+                        <atom:OptionButton>Large</atom:OptionButton>
+                    </atom:OptionButtonGroup>
+                </StackPanel>
+                
+                <atom:TabStrip SizeType="{Binding SizeTypeTabStrip}">
+                    <atom:TabStripItem Icon="{atom:IconProvider Kind=AppleOutlined}">Tab 1</atom:TabStripItem>
+                    <atom:TabStripItem Icon="{atom:IconProvider Kind=AndroidOutlined}">Tab 2</atom:TabStripItem>
+                    <atom:TabStripItem Icon="{atom:IconProvider Kind=WechatOutlined}">Tab 3</atom:TabStripItem>
+                    <atom:TabStripItem Icon="{atom:IconProvider Kind=GithubOutlined}" IsClosable="True">Tab 4</atom:TabStripItem>
+                </atom:TabStrip>
+                
+                <atom:CardTabStrip SizeType="{Binding SizeTypeTabStrip}">
+                    <atom:TabStripItem Icon="{atom:IconProvider Kind=AppleOutlined}">Tab 1</atom:TabStripItem>
+                    <atom:TabStripItem Icon="{atom:IconProvider Kind=AndroidOutlined}">Tab 2</atom:TabStripItem>
+                    <atom:TabStripItem Icon="{atom:IconProvider Kind=WechatOutlined}">Tab 3</atom:TabStripItem>
+                    <atom:TabStripItem Icon="{atom:IconProvider Kind=GithubOutlined}" IsClosable="True">Tab 4</atom:TabStripItem>
+                </atom:CardTabStrip>
+        
+            </StackPanel>
+        </showcase:ShowCaseItem>
+        
     </showcase:ShowCasePanel>
 </UserControl>
