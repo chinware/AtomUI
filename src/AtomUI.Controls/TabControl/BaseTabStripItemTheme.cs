@@ -160,7 +160,8 @@ internal class BaseTabStripItemTheme : BaseControlTheme
          // 右
          var rightStyle = new Style(selector => selector.Nesting().PropertyEquals(TabStripItem.TabStripPlacementProperty, Dock.Right));
          var iconStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
-         iconStyle.Add(PathIcon.HorizontalAlignmentProperty, HorizontalAlignment.Center);
+         iconStyle.Add(PathIcon.HorizontalAlignmentProperty, HorizontalAlignment.Left);
+         iconStyle.Add(PathIcon.VerticalAlignmentProperty, VerticalAlignment.Center);
          rightStyle.Add(iconStyle);
          Add(rightStyle);
       }
@@ -177,7 +178,8 @@ internal class BaseTabStripItemTheme : BaseControlTheme
          // 左
          var leftStyle = new Style(selector => selector.Nesting().PropertyEquals(TabStripItem.TabStripPlacementProperty, Dock.Left));
          var iconStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
-         iconStyle.Add(PathIcon.HorizontalAlignmentProperty, HorizontalAlignment.Center);
+         iconStyle.Add(PathIcon.VerticalAlignmentProperty, VerticalAlignment.Center);
+         iconStyle.Add(PathIcon.HorizontalAlignmentProperty, HorizontalAlignment.Left);
          leftStyle.Add(iconStyle);
          Add(leftStyle);
       }

@@ -88,6 +88,11 @@ internal class TabControlToken : AbstractControlDesignToken
    public Thickness HorizontalItemPaddingSM { get; set; }
    
    /// <summary>
+   /// 纵向标签页标签间距
+   /// </summary>
+   public double VerticalItemGutter { get; set; }
+   
+   /// <summary>
    /// 纵向标签页标签内间距
    /// </summary>
    public Thickness VerticalItemPadding { get; set; }
@@ -116,6 +121,11 @@ internal class TabControlToken : AbstractControlDesignToken
    /// 卡片标签间距
    /// </summary>
    public double CardGutter { get; set; }
+   
+   /// <summary>
+   /// 纵向卡片标签间距
+   /// </summary>
+   public double CardVerticalGutter { get; set; }
    
    /// <summary>
    /// 标签内容 icon 的外边距
@@ -174,15 +184,16 @@ internal class TabControlToken : AbstractControlDesignToken
       HorizontalItemPadding = new Thickness(0, _globalToken.PaddingSM);
       HorizontalItemPaddingSM = new Thickness(0, _globalToken.PaddingXS);
       HorizontalItemPaddingLG = new Thickness(0, _globalToken.Padding);
-      
-      VerticalItemPadding = new Thickness(_globalToken.PaddingLG, _globalToken.PaddingXS);
-      VerticalItemMargin = new Thickness(0, _globalToken.Margin, 0, 0);
+
+      VerticalItemGutter = _globalToken.Margin;
+      VerticalItemPadding = new Thickness(_globalToken.PaddingXS, _globalToken.PaddingXS);
       
       ItemColor = colorToken.ColorNeutralToken.ColorText;
       ItemSelectedColor = colorToken.ColorPrimaryToken.ColorPrimary;
       ItemHoverColor = colorToken.ColorPrimaryToken.ColorPrimaryHover;
 
       CardGutter = _globalToken.MarginXXS / 2;
+      CardVerticalGutter = CardGutter;
       ItemIconMargin = new Thickness(0, 0, _globalToken.MarginSM, 0);
 
       MenuIndicatorPaddingHorizontal = new Thickness(_globalToken.PaddingXS, 0, 0, 0);

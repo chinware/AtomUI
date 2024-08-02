@@ -20,9 +20,9 @@ public abstract class BaseTabStrip : AvaloniaTabStrip, ISizeTypeAware
    public const string RightPC  = ":right";
    public const string BottomPC = ":bottom";
    public const string LeftPC   = ":left";
-   
+
    private static readonly FuncTemplate<Panel?> DefaultPanel =
-      new(() => new StackPanel { Orientation = Orientation.Horizontal});
+      new(() => new StackPanel());
    
    #region 公共属性定义
    public static readonly StyledProperty<SizeType> SizeTypeProperty =
@@ -95,8 +95,13 @@ public abstract class BaseTabStrip : AvaloniaTabStrip, ISizeTypeAware
    {
       base.OnPropertyChanged(change);
       if (change.Property == TabStripPlacementProperty) {
-         RefreshContainers();
          UpdatePseudoClasses();
+         for (var i = 0; i < ItemCount; ++i) {
+            var itemContainer = ContainerFromIndex(i);
+            if (itemContainer is TabStripItem tabStripItem) {
+               tabStripItem.TabStripPlacement = TabStripPlacement;
+            }
+         }
       }
    }
 

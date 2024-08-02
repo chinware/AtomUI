@@ -15,9 +15,20 @@ namespace AtomUI.Controls;
 using ButtonSizeType = SizeType;
 using OptionButtons = AvaloniaList<OptionButton>;
 
-public class OptionButtonGroup : TemplatedControl,
-                                 ISizeTypeAware,
-                                 IControlCustomStyle
+public class OptionCheckedChangedEventArgs : RoutedEventArgs
+{
+   public OptionCheckedChangedEventArgs(RoutedEvent routedEvent, OptionButton option, int index)
+      : base(routedEvent)
+   {
+      CheckedOption = option;
+      Index = index;
+   }
+
+   public OptionButton CheckedOption { get; }
+   public int Index { get; }
+}
+
+public class OptionButtonGroup : TemplatedControl, ISizeTypeAware, IControlCustomStyle
 {
    public static readonly StyledProperty<ButtonSizeType> SizeTypeProperty =
       AvaloniaProperty.Register<OptionButtonGroup, ButtonSizeType>(nameof(SizeType), ButtonSizeType.Middle);
@@ -32,6 +43,17 @@ public class OptionButtonGroup : TemplatedControl,
 
    internal static readonly StyledProperty<IBrush?> SelectedOptionBorderColorProperty =
       AvaloniaProperty.Register<Button, IBrush?>(nameof(SelectedOptionBorderColor));
+   
+   public static readonly RoutedEvent<OptionCheckedChangedEventArgs> OptionCheckedChangedEvent =
+      RoutedEvent.Register<SelectingItemsControl, OptionCheckedChangedEventArgs>(
+         nameof(OptionCheckedChanged),
+         RoutingStrategies.Bubble);
+   
+   public event EventHandler<OptionCheckedChangedEventArgs>? OptionCheckedChanged
+   {
+      add => AddHandler(OptionCheckedChangedEvent, value);
+      remove => RemoveHandler(OptionCheckedChangedEvent, value);
+   }
 
    public ButtonSizeType SizeType
    {
@@ -155,6 +177,7 @@ public class OptionButtonGroup : TemplatedControl,
       if (sender is OptionButton optionButton) {
          if (optionButton.IsChecked.HasValue && optionButton.IsChecked.Value) {
             SelectedOption = optionButton;
+            RaiseEvent(new OptionCheckedChangedEventArgs(OptionCheckedChangedEvent, optionButton, Options.IndexOf(optionButton)));
          }
       }
    }

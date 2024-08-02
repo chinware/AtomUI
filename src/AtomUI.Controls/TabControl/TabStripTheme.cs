@@ -51,17 +51,19 @@ internal class TabStripTheme : BaseTabStripTheme
       base.BuildStyles();
       var commonStyle = new Style(selector => selector.Nesting());
       
-      var itemPresenterPanelStyle = new Style(selector => selector.Nesting().Template().Name(ItemsPresenterPart).Child().OfType<StackPanel>());
-      itemPresenterPanelStyle.Add(StackPanel.SpacingProperty, TabControlResourceKey.HorizontalItemGutter);
-      
       // 设置 items presenter 面板样式
       // 分为上、右、下、左
       {
          // 上
          var topStyle = new Style(selector => selector.Nesting().Class(BaseTabStrip.TopPC));
          
+         var itemPresenterPanelStyle = new Style(selector => selector.Nesting().Template().Name(ItemsPresenterPart).Child().OfType<StackPanel>());
+         itemPresenterPanelStyle.Add(StackPanel.SpacingProperty, TabControlResourceKey.HorizontalItemGutter);
+         itemPresenterPanelStyle.Add(StackPanel.OrientationProperty, Orientation.Horizontal);
+
+         topStyle.Add(itemPresenterPanelStyle);
+         
          var indicatorStyle = new Style(selector => selector.Nesting().Template().Name(SelectedItemIndicatorPart));
-         indicatorStyle.Add(Border.HeightProperty, GlobalResourceKey.LineWidthBold);
          indicatorStyle.Add(Border.HorizontalAlignmentProperty, HorizontalAlignment.Left);
          indicatorStyle.Add(Border.VerticalAlignmentProperty, VerticalAlignment.Bottom);
          topStyle.Add(indicatorStyle);
@@ -74,8 +76,12 @@ internal class TabStripTheme : BaseTabStripTheme
          // 右
          var rightStyle = new Style(selector => selector.Nesting().Class(BaseTabStrip.RightPC));
 
+         var itemPresenterPanelStyle = new Style(selector => selector.Nesting().Template().Name(ItemsPresenterPart).Child().OfType<StackPanel>());
+         itemPresenterPanelStyle.Add(StackPanel.OrientationProperty, Orientation.Vertical);
+         itemPresenterPanelStyle.Add(StackPanel.SpacingProperty, TabControlResourceKey.VerticalItemGutter);
+         rightStyle.Add(itemPresenterPanelStyle);
+         
          var indicatorStyle = new Style(selector => selector.Nesting().Template().Name(SelectedItemIndicatorPart));
-         indicatorStyle.Add(Border.WidthProperty, GlobalResourceKey.LineWidthBold);
          indicatorStyle.Add(Border.HorizontalAlignmentProperty, HorizontalAlignment.Left);
          indicatorStyle.Add(Border.VerticalAlignmentProperty, VerticalAlignment.Top);
          rightStyle.Add(indicatorStyle);
@@ -86,8 +92,12 @@ internal class TabStripTheme : BaseTabStripTheme
          // 下
          var bottomStyle = new Style(selector => selector.Nesting().Class(BaseTabStrip.BottomPC));
          
+         var itemPresenterPanelStyle = new Style(selector => selector.Nesting().Template().Name(ItemsPresenterPart).Child().OfType<StackPanel>());
+         itemPresenterPanelStyle.Add(StackPanel.SpacingProperty, TabControlResourceKey.HorizontalItemGutter);
+         itemPresenterPanelStyle.Add(StackPanel.OrientationProperty, Orientation.Horizontal);
+         bottomStyle.Add(itemPresenterPanelStyle);
+         
          var indicatorStyle = new Style(selector => selector.Nesting().Template().Name(SelectedItemIndicatorPart));
-         indicatorStyle.Add(Border.HeightProperty, GlobalResourceKey.LineWidthBold);
          indicatorStyle.Add(Border.HorizontalAlignmentProperty, HorizontalAlignment.Left);
          indicatorStyle.Add(Border.VerticalAlignmentProperty, VerticalAlignment.Top);
          bottomStyle.Add(indicatorStyle);
@@ -98,8 +108,12 @@ internal class TabStripTheme : BaseTabStripTheme
          // 左
          var leftStyle = new Style(selector => selector.Nesting().Class(BaseTabStrip.LeftPC));
          
+         var itemPresenterPanelStyle = new Style(selector => selector.Nesting().Template().Name(ItemsPresenterPart).Child().OfType<StackPanel>());
+         itemPresenterPanelStyle.Add(StackPanel.OrientationProperty, Orientation.Vertical);
+         itemPresenterPanelStyle.Add(StackPanel.SpacingProperty, TabControlResourceKey.VerticalItemGutter);
+         leftStyle.Add(itemPresenterPanelStyle);
+         
          var indicatorStyle = new Style(selector => selector.Nesting().Template().Name(SelectedItemIndicatorPart));
-         indicatorStyle.Add(Border.WidthProperty, GlobalResourceKey.LineWidthBold);
          indicatorStyle.Add(Border.HorizontalAlignmentProperty, HorizontalAlignment.Right);
          indicatorStyle.Add(Border.VerticalAlignmentProperty, VerticalAlignment.Top);
          leftStyle.Add(indicatorStyle);

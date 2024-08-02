@@ -19,40 +19,79 @@ internal class TabStripItemTheme : BaseTabStripItemTheme
    protected override void BuildStyles()
    {
       base.BuildStyles();
-      
-      var decoratorStyle = new Style(selector => selector.Nesting().Template().OfType<Border>().Name(DecoratorPart));
-      decoratorStyle.Add(Border.MarginProperty, TabControlResourceKey.HorizontalItemMargin);
-      Add(decoratorStyle);
       BuildSizeTypeStyle();
    }
 
    protected void BuildSizeTypeStyle()
    {
-      var largeSizeStyle = new Style(selector => selector.Nesting().PropertyEquals(TabStripItem.SizeTypeProperty, SizeType.Large));
+      var topOrBottomStyle = new Style(selector => Selectors.Or(selector.Nesting().PropertyEquals(TabStripItem.TabStripPlacementProperty, Dock.Top),
+                                                                selector.Nesting().PropertyEquals(TabStripItem.TabStripPlacementProperty, Dock.Bottom)));
+
       {
-         var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(DecoratorPart));
-         decoratorStyle.Add(Border.PaddingProperty, TabControlResourceKey.HorizontalItemPaddingLG);
-         largeSizeStyle.Add(decoratorStyle);
-      }
+         topOrBottomStyle.Add(Border.MarginProperty, TabControlResourceKey.HorizontalItemMargin);
+         
+         var largeSizeStyle = new Style(selector => selector.Nesting().PropertyEquals(TabStripItem.SizeTypeProperty, SizeType.Large));
+         {
+            var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(DecoratorPart));
+            decoratorStyle.Add(Border.PaddingProperty, TabControlResourceKey.HorizontalItemPaddingLG);
+            largeSizeStyle.Add(decoratorStyle);
+         }
  
-      Add(largeSizeStyle);
+         topOrBottomStyle.Add(largeSizeStyle);
 
-      var middleSizeStyle = new Style(selector => selector.Nesting().PropertyEquals(TabStripItem.SizeTypeProperty, SizeType.Middle));
-      {
-         var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(DecoratorPart));
-         decoratorStyle.Add(Border.PaddingProperty, TabControlResourceKey.HorizontalItemPadding);
-         middleSizeStyle.Add(decoratorStyle);
-      }
+         var middleSizeStyle = new Style(selector => selector.Nesting().PropertyEquals(TabStripItem.SizeTypeProperty, SizeType.Middle));
+         {
+            var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(DecoratorPart));
+            decoratorStyle.Add(Border.PaddingProperty, TabControlResourceKey.HorizontalItemPadding);
+            middleSizeStyle.Add(decoratorStyle);
+         }
 
-      Add(middleSizeStyle);
+         topOrBottomStyle.Add(middleSizeStyle);
 
-      var smallSizeType = new Style(selector => selector.Nesting().PropertyEquals(TabStripItem.SizeTypeProperty, SizeType.Small));
-      {
-         var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(DecoratorPart));
-         decoratorStyle.Add(Border.PaddingProperty, TabControlResourceKey.HorizontalItemPaddingSM);
-         smallSizeType.Add(decoratorStyle);
-      }
+         var smallSizeType = new Style(selector => selector.Nesting().PropertyEquals(TabStripItem.SizeTypeProperty, SizeType.Small));
+         {
+            var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(DecoratorPart));
+            decoratorStyle.Add(Border.PaddingProperty, TabControlResourceKey.HorizontalItemPaddingSM);
+            smallSizeType.Add(decoratorStyle);
+         }
      
-      Add(smallSizeType);
+         topOrBottomStyle.Add(smallSizeType);
+         
+         Add(topOrBottomStyle);
+      }
+      
+      var leftOrRightStyle = new Style(selector => Selectors.Or(selector.Nesting().PropertyEquals(TabStripItem.TabStripPlacementProperty, Dock.Left),
+                                                                selector.Nesting().PropertyEquals(TabStripItem.TabStripPlacementProperty, Dock.Right)));
+      {
+         // 貌似没必要分大小，但是先放着吧，万一需要难得再加
+         var largeSizeStyle = new Style(selector => selector.Nesting().PropertyEquals(TabStripItem.SizeTypeProperty, SizeType.Large));
+         {
+            var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(DecoratorPart));
+            decoratorStyle.Add(Border.PaddingProperty, TabControlResourceKey.VerticalItemPadding);
+            largeSizeStyle.Add(decoratorStyle);
+         }
+ 
+         leftOrRightStyle.Add(largeSizeStyle);
+
+         var middleSizeStyle = new Style(selector => selector.Nesting().PropertyEquals(TabStripItem.SizeTypeProperty, SizeType.Middle));
+         {
+            var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(DecoratorPart));
+            decoratorStyle.Add(Border.PaddingProperty, TabControlResourceKey.VerticalItemPadding);
+            middleSizeStyle.Add(decoratorStyle);
+         }
+
+         leftOrRightStyle.Add(middleSizeStyle);
+
+         var smallSizeType = new Style(selector => selector.Nesting().PropertyEquals(TabStripItem.SizeTypeProperty, SizeType.Small));
+         {
+            var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(DecoratorPart));
+            decoratorStyle.Add(Border.PaddingProperty, TabControlResourceKey.VerticalItemPadding);
+            smallSizeType.Add(decoratorStyle);
+         }
+     
+         leftOrRightStyle.Add(smallSizeType);
+         
+         Add(leftOrRightStyle);
+      }
    }
 }

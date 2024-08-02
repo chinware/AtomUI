@@ -308,12 +308,14 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey HorizontalItemPadding = new TokenResourceKey("TabControl.HorizontalItemPadding");
         public static readonly TokenResourceKey HorizontalItemPaddingLG = new TokenResourceKey("TabControl.HorizontalItemPaddingLG");
         public static readonly TokenResourceKey HorizontalItemPaddingSM = new TokenResourceKey("TabControl.HorizontalItemPaddingSM");
+        public static readonly TokenResourceKey VerticalItemGutter = new TokenResourceKey("TabControl.VerticalItemGutter");
         public static readonly TokenResourceKey VerticalItemPadding = new TokenResourceKey("TabControl.VerticalItemPadding");
         public static readonly TokenResourceKey VerticalItemMargin = new TokenResourceKey("TabControl.VerticalItemMargin");
         public static readonly TokenResourceKey ItemColor = new TokenResourceKey("TabControl.ItemColor");
         public static readonly TokenResourceKey ItemHoverColor = new TokenResourceKey("TabControl.ItemHoverColor");
         public static readonly TokenResourceKey ItemSelectedColor = new TokenResourceKey("TabControl.ItemSelectedColor");
         public static readonly TokenResourceKey CardGutter = new TokenResourceKey("TabControl.CardGutter");
+        public static readonly TokenResourceKey CardVerticalGutter = new TokenResourceKey("TabControl.CardVerticalGutter");
         public static readonly TokenResourceKey ItemIconMargin = new TokenResourceKey("TabControl.ItemIconMargin");
         public static readonly TokenResourceKey MenuIndicatorPaddingHorizontal = new TokenResourceKey("TabControl.MenuIndicatorPaddingHorizontal");
         public static readonly TokenResourceKey MenuIndicatorPaddingVertical = new TokenResourceKey("TabControl.MenuIndicatorPaddingVertical");

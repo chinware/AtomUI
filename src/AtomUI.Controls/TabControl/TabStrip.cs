@@ -1,17 +1,31 @@
 ﻿using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
+using Avalonia.Layout;
 using Avalonia.Media.Transformation;
 
 namespace AtomUI.Controls;
 
 public class TabStrip : BaseTabStrip
 {
+   internal static readonly DirectProperty<TabStrip, double> SelectedIndicatorThicknessProperty =
+      AvaloniaProperty.RegisterDirect<TabStrip, double>(nameof(SelectedIndicatorThickness),
+         o => o.SelectedIndicatorThickness,
+         (o, v) => o.SelectedIndicatorThickness = v);
+
+   private double _selectedIndicatorThickness;
+   internal double SelectedIndicatorThickness
+   {
+      get => _selectedIndicatorThickness;
+      set => SetAndRaise(SelectedIndicatorThicknessProperty, ref _selectedIndicatorThickness, value);
+   }
+   
    private Border? _selectedIndicator;
    private ItemsPresenter? _itemsPresenter;
 
@@ -19,6 +33,8 @@ public class TabStrip : BaseTabStrip
    {
       SelectionChanged += HandleSelectionChanged;
       LayoutUpdated += HandleLayoutUpdated;
+      HorizontalAlignment = HorizontalAlignment.Left;
+      VerticalAlignment = VerticalAlignment.Top;
    }
 
    private void HandleSelectionChanged(object? sender, SelectionChangedEventArgs args)
@@ -48,15 +64,23 @@ public class TabStrip : BaseTabStrip
          var selectedBounds = tabStripItem.Bounds;
          var builder = new TransformOperations.Builder(1);
          var offset = _itemsPresenter?.Bounds.Position ?? default;
+          
          if (TabStripPlacement == Dock.Top) {
-            _selectedIndicator.Width = tabStripItem.DesiredSize.Width;
+            _selectedIndicator.SetValue(Border.WidthProperty, tabStripItem.DesiredSize.Width);
+            _selectedIndicator.SetValue(Border.HeightProperty, _selectedIndicatorThickness);
             builder.AppendTranslate(offset.X + selectedBounds.Left, 0);
          } else if (TabStripPlacement == Dock.Right) {
-            _selectedIndicator.Height = tabStripItem.DesiredSize.Height;
+            _selectedIndicator.SetValue(Border.HeightProperty, tabStripItem.DesiredSize.Height);
+            _selectedIndicator.SetValue(Border.WidthProperty, _selectedIndicatorThickness);
+            builder.AppendTranslate(0, offset.Y + selectedBounds.Y);
          } else if (TabStripPlacement == Dock.Bottom) {
-            _selectedIndicator.Width = tabStripItem.DesiredSize.Width;
+            _selectedIndicator.SetValue(Border.WidthProperty, tabStripItem.DesiredSize.Width);
+            _selectedIndicator.SetValue(Border.HeightProperty, _selectedIndicatorThickness);
+            builder.AppendTranslate(offset.X + selectedBounds.Left, 0);
          } else {
-            _selectedIndicator.Height = tabStripItem.DesiredSize.Height;
+            _selectedIndicator.SetValue(Border.HeightProperty, tabStripItem.DesiredSize.Height);
+            _selectedIndicator.SetValue(Border.WidthProperty, _selectedIndicatorThickness);
+            builder.AppendTranslate(0, offset.Y + selectedBounds.Y);
          }
          _selectedIndicator.RenderTransform = builder.Build();
       }
@@ -93,5 +117,7 @@ public class TabStrip : BaseTabStrip
       base.OnApplyTemplate(e);
       _selectedIndicator = e.NameScope.Find<Border>(TabStripTheme.SelectedItemIndicatorPart);
       _itemsPresenter = e.NameScope.Find<ItemsPresenter>(TabStripTheme.ItemsPresenterPart);
+
+      TokenResourceBinder.CreateGlobalResourceBinding(this, SelectedIndicatorThicknessProperty, GlobalResourceKey.LineWidthBold);
    }
 }
