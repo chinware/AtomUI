@@ -318,6 +318,8 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey MenuIndicatorPaddingHorizontal = new TokenResourceKey("TabControl.MenuIndicatorPaddingHorizontal");
         public static readonly TokenResourceKey MenuIndicatorPaddingVertical = new TokenResourceKey("TabControl.MenuIndicatorPaddingVertical");
         public static readonly TokenResourceKey MenuEdgeThickness = new TokenResourceKey("TabControl.MenuEdgeThickness");
+        public static readonly TokenResourceKey AddTabButtonMarginHorizontal = new TokenResourceKey("TabControl.AddTabButtonMarginHorizontal");
+        public static readonly TokenResourceKey AddTabButtonMarginVertical = new TokenResourceKey("TabControl.AddTabButtonMarginVertical");
         public static readonly TokenResourceKey CloseIconMargin = new TokenResourceKey("TabControl.CloseIconMargin");
     }
 

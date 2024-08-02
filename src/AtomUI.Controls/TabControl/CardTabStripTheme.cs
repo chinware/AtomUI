@@ -19,15 +19,22 @@ internal class CardTabStripTheme : BaseTabStripTheme
 
    protected override void NotifyBuildControlTemplate(BaseTabStrip baseTabStrip, INameScope scope, Border container)
    {
-      var cardTabStripContainer = new StackPanel()
+      var cardTabStripContainer = new Grid()
       {
-         Name = CardTabStripContainerPart
+         Name = CardTabStripContainerPart,
+         ColumnDefinitions =
+         {
+            new ColumnDefinition(GridLength.Auto),
+            new ColumnDefinition(GridLength.Auto)
+         },
       };
+      cardTabStripContainer.RegisterInNameScope(scope);
 
       TokenResourceBinder.CreateTokenBinding(cardTabStripContainer, StackPanel.SpacingProperty,
                                              TabControlResourceKey.CardGutter);
       
       var tabScrollViewer = new TabScrollViewer();
+      Grid.SetColumn(tabScrollViewer, 0);
       CreateTemplateParentBinding(tabScrollViewer, TabScrollViewer.TabStripPlacementProperty, TabStrip.TabStripPlacementProperty);
       var contentPanel = CreateTabStripContentPanel(scope);
       tabScrollViewer.Content = contentPanel;
@@ -45,14 +52,14 @@ internal class CardTabStripTheme : BaseTabStripTheme
       TokenResourceBinder.CreateGlobalResourceBinding(addTabIcon, PathIcon.WidthProperty, GlobalResourceKey.IconSize);
       TokenResourceBinder.CreateGlobalResourceBinding(addTabIcon, PathIcon.HeightProperty, GlobalResourceKey.IconSize);
 
-      var addTabButton = new IconButton()
+      var addTabButton = new IconButton
       {
          Name = AddTabButtonPart,
          BorderThickness = new Thickness(1),
-         Icon = addTabIcon,
-         Width = 30
+         Icon = addTabIcon
       };
-
+      Grid.SetColumn(addTabButton, 1);
+      
       CreateTemplateParentBinding(addTabButton, IconButton.BorderThicknessProperty, CardTabStrip.CardBorderThicknessProperty);
       CreateTemplateParentBinding(addTabButton, IconButton.CornerRadiusProperty, CardTabStrip.CardBorderRadiusProperty);
       CreateTemplateParentBinding(addTabButton, IconButton.IsVisibleProperty, CardTabStrip.IsShowAddTabButtonProperty);
@@ -95,6 +102,10 @@ internal class CardTabStripTheme : BaseTabStripTheme
          var itemPresenterPanelStyle = new Style(selector => selector.Nesting().Template().Name(ItemsPresenterPart).Child().OfType<StackPanel>());
          itemPresenterPanelStyle.Add(StackPanel.OrientationProperty, Orientation.Horizontal);
          itemPresenterPanelStyle.Add(StackPanel.SpacingProperty, TabControlResourceKey.CardGutter);
+
+         var addTabButtonStyle = new Style(selector => selector.Nesting().Template().Name(AddTabButtonPart));
+         addTabButtonStyle.Add(IconButton.MarginProperty, TabControlResourceKey.AddTabButtonMarginHorizontal);
+         topStyle.Add(addTabButtonStyle);
          
          topStyle.Add(itemPresenterPanelStyle);
          commonStyle.Add(topStyle);
@@ -113,6 +124,10 @@ internal class CardTabStripTheme : BaseTabStripTheme
          itemPresenterPanelStyle.Add(StackPanel.SpacingProperty, TabControlResourceKey.CardGutter);
          rightStyle.Add(itemPresenterPanelStyle);
          
+         var addTabButtonStyle = new Style(selector => selector.Nesting().Template().Name(AddTabButtonPart));
+         addTabButtonStyle.Add(IconButton.MarginProperty, TabControlResourceKey.AddTabButtonMarginVertical);
+         rightStyle.Add(addTabButtonStyle);
+         
          commonStyle.Add(rightStyle);
       }
       {
@@ -128,6 +143,10 @@ internal class CardTabStripTheme : BaseTabStripTheme
          itemPresenterPanelStyle.Add(StackPanel.SpacingProperty, TabControlResourceKey.CardGutter);
          bottomStyle.Add(itemPresenterPanelStyle);
          
+         var addTabButtonStyle = new Style(selector => selector.Nesting().Template().Name(AddTabButtonPart));
+         addTabButtonStyle.Add(IconButton.MarginProperty, TabControlResourceKey.AddTabButtonMarginHorizontal);
+         bottomStyle.Add(addTabButtonStyle);
+         
          commonStyle.Add(bottomStyle);
       }
       {
@@ -142,6 +161,10 @@ internal class CardTabStripTheme : BaseTabStripTheme
          itemPresenterPanelStyle.Add(StackPanel.OrientationProperty, Orientation.Vertical);
          itemPresenterPanelStyle.Add(StackPanel.SpacingProperty, TabControlResourceKey.CardGutter);
          leftStyle.Add(itemPresenterPanelStyle);
+         
+         var addTabButtonStyle = new Style(selector => selector.Nesting().Template().Name(AddTabButtonPart));
+         addTabButtonStyle.Add(IconButton.MarginProperty, TabControlResourceKey.AddTabButtonMarginVertical);
+         leftStyle.Add(addTabButtonStyle);
          
          commonStyle.Add(leftStyle);
       }

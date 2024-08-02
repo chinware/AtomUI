@@ -201,7 +201,7 @@
 
                 <showcase:ShowCaseItem
                     Title="Add and close tab"
-                    Description="Hide default plus icon, and bind event for customized trigger.">
+                    Description="Hide default plus icon, and bind event for customized trigger." Margin="0, 0, 30, 0">
                     <StackPanel Orientation="Vertical" Spacing="20">
                         <atom:CardTabStrip IsShowAddTabButton="True" Name="AddTabDemoStrip">
                             <atom:TabStripItem Icon="{atom:IconProvider Kind=AppleOutlined}">Tab 1</atom:TabStripItem>

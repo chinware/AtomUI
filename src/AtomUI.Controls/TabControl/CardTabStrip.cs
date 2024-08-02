@@ -85,6 +85,7 @@ public class CardTabStrip : BaseTabStrip, IControlCustomStyle
    private IControlCustomStyle _customStyle;
    private IconButton? _addTabButton;
    private ItemsPresenter? _itemsPresenter;
+   private Grid? _cardTabStripContainer;
 
    public CardTabStrip()
    {
@@ -128,12 +129,33 @@ public class CardTabStrip : BaseTabStrip, IControlCustomStyle
       }
    }
 
+   private void SetupCardTabStripContainer(Size finalSize)
+   {
+      if (_cardTabStripContainer is not null) {
+         double addButtonOffset = 0;
+         double markOffset = 0;
+         if (TabStripPlacement == Dock.Top || TabStripPlacement == Dock.Bottom) {
+            addButtonOffset = _addTabButton?.Bounds.Right ?? 0;
+            markOffset = finalSize.Width;
+         } else {
+            addButtonOffset = _addTabButton?.Bounds.Bottom ?? 0;
+            markOffset = finalSize.Height;
+         }
+         if (addButtonOffset > markOffset) {
+            _cardTabStripContainer.ColumnDefinitions[0].Width = GridLength.Star;
+         } else {
+            _cardTabStripContainer.ColumnDefinitions[0].Width = GridLength.Auto;
+         }
+      }
+   }
+
    #region IControlCustomStyle 实现
    
    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
    {
       _addTabButton = scope.Find<IconButton>(CardTabStripTheme.AddTabButtonPart);
       _itemsPresenter = scope.Find<ItemsPresenter>(CardTabStripTheme.ItemsPresenterPart);
+      _cardTabStripContainer = scope.Find<Grid>(CardTabStripTheme.CardTabStripContainerPart);
       if (_addTabButton is not null) {
          _addTabButton.Click += HandleAddButtonClicked;
       }
@@ -156,10 +178,11 @@ public class CardTabStrip : BaseTabStrip, IControlCustomStyle
          TokenResourceBinder.CreateGlobalResourceBinding(this, CardBorderRadiusSizeProperty, GlobalResourceKey.BorderRadiusSM);
       }
    }
-   
+
    protected override Size ArrangeOverride(Size finalSize)
    {
       var size = base.ArrangeOverride(finalSize);
+      SetupCardTabStripContainer(finalSize);
       HandleTabStripPlacementChanged();
       return size;
    }

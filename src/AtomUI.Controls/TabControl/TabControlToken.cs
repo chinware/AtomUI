@@ -138,6 +138,16 @@ internal class TabControlToken : AbstractControlDesignToken
    public double MenuEdgeThickness { get; set; }
    
    /// <summary>
+   /// 水平添加按钮外边距
+   /// </summary>
+   public Thickness AddTabButtonMarginHorizontal { get; set; }
+   
+   /// <summary>
+   /// 垂直添加按钮外边距
+   /// </summary>
+   public Thickness AddTabButtonMarginVertical { get; set; }
+   
+   /// <summary>
    /// 关闭按钮外边距
    /// </summary>
    public Thickness CloseIconMargin { get; set; }
@@ -183,6 +193,8 @@ internal class TabControlToken : AbstractControlDesignToken
       ItemHoverColor = colorToken.ColorPrimaryToken.ColorPrimaryHover;
 
       CardGutter = _globalToken.MarginXXS / 2;
+      AddTabButtonMarginHorizontal = new Thickness(_globalToken.MarginXXS, 0, 0, 0);
+      AddTabButtonMarginVertical = new Thickness(0, _globalToken.MarginXXS, 0, 0);
       ItemIconMargin = new Thickness(0, 0, _globalToken.MarginSM, 0);
 
       MenuIndicatorPaddingHorizontal = new Thickness(_globalToken.PaddingXS, 0, 0, 0);
