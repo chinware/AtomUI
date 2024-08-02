@@ -44,6 +44,8 @@ internal class BaseTabStripTheme : BaseControlTheme
       {
          // 上
          var topStyle = new Style(selector => selector.Nesting().Class(BaseTabStrip.TopPC));
+         topStyle.Add(BaseTabStrip.HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
+         topStyle.Add(BaseTabStrip.VerticalAlignmentProperty, VerticalAlignment.Top);
          
          // tabs 是否居中
          var tabAlignCenterStyle = new Style(selector => selector.Nesting().PropertyEquals(TabStrip.TabAlignmentCenterProperty, true));
@@ -61,6 +63,9 @@ internal class BaseTabStripTheme : BaseControlTheme
          // 右
          var rightStyle = new Style(selector => selector.Nesting().Class(BaseTabStrip.RightPC));
          
+         rightStyle.Add(BaseTabStrip.HorizontalAlignmentProperty, HorizontalAlignment.Left);
+         rightStyle.Add(BaseTabStrip.VerticalAlignmentProperty, VerticalAlignment.Stretch);
+         
          // tabs 是否居中
          var tabAlignCenterStyle = new Style(selector => selector.Nesting().PropertyEquals(TabStrip.TabAlignmentCenterProperty, true));
          {
@@ -75,6 +80,8 @@ internal class BaseTabStripTheme : BaseControlTheme
       {
          // 下
          var bottomStyle = new Style(selector => selector.Nesting().Class(BaseTabStrip.BottomPC));
+         bottomStyle.Add(BaseTabStrip.HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
+         bottomStyle.Add(BaseTabStrip.VerticalAlignmentProperty, VerticalAlignment.Top);
          
          // tabs 是否居中
          var tabAlignCenterStyle = new Style(selector => selector.Nesting().PropertyEquals(TabStrip.TabAlignmentCenterProperty, true));
@@ -90,6 +97,10 @@ internal class BaseTabStripTheme : BaseControlTheme
       {
          // 左
          var leftStyle = new Style(selector => selector.Nesting().Class(BaseTabStrip.LeftPC));
+         
+                  
+         leftStyle.Add(BaseTabStrip.HorizontalAlignmentProperty, HorizontalAlignment.Left);
+         leftStyle.Add(BaseTabStrip.VerticalAlignmentProperty, VerticalAlignment.Stretch);
          
          // tabs 是否居中
          var tabAlignCenterStyle = new Style(selector => selector.Nesting().PropertyEquals(TabStrip.TabAlignmentCenterProperty, true));

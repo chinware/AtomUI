@@ -33,8 +33,6 @@ public class TabStrip : BaseTabStrip
    {
       SelectionChanged += HandleSelectionChanged;
       LayoutUpdated += HandleLayoutUpdated;
-      HorizontalAlignment = HorizontalAlignment.Left;
-      VerticalAlignment = VerticalAlignment.Top;
    }
 
    private void HandleSelectionChanged(object? sender, SelectionChangedEventArgs args)
