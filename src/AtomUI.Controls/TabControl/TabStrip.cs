@@ -80,6 +80,14 @@ public class TabStrip : BaseTabStrip
       return tabStripItem;
    }
    
+   protected override void PrepareContainerForItemOverride(Control container, object? item, int index)
+   {
+      base.PrepareContainerForItemOverride(container, item, index);
+      if (container is TabStripItem tabStripItem) {
+         tabStripItem.Shape = TabSharp.Line;
+      }
+   }
+   
    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
    {
       base.OnApplyTemplate(e);

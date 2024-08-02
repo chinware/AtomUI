@@ -1,9 +1,11 @@
-﻿using AtomUI.Theme.Styling;
+﻿using AtomUI.Theme.Data;
+using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
@@ -70,7 +72,8 @@ public abstract class BaseTabStrip : AvaloniaTabStrip, ISizeTypeAware
    private void SetupBorderBinding()
    {
       if (_mainContainer is not null) {
-         TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty, GlobalResourceKey.BorderThickness);
+         TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty, GlobalResourceKey.BorderThickness, BindingPriority.Template,
+                                                new RenderScaleAwareThicknessConfigure(this));
       }
    }
 

@@ -136,6 +136,11 @@ internal class TabControlToken : AbstractControlDesignToken
    /// 滚动边缘的厚度
    /// </summary>
    public double MenuEdgeThickness { get; set; }
+   
+   /// <summary>
+   /// 关闭按钮外边距
+   /// </summary>
+   public Thickness CloseIconMargin { get; set; }
 
    internal override void CalculateFromAlias()
    {
@@ -146,7 +151,9 @@ internal class TabControlToken : AbstractControlDesignToken
       var colorToken = _globalToken.ColorToken;
       
       CardBg = _globalToken.ColorFillAlter;
+      
       CardHeight = _globalToken.HeightToken.ControlHeightLG;
+      
       CardPadding = new Thickness(_globalToken.Padding, (CardHeight - Math.Round(_globalToken.FontToken.FontSize * lineHeight)) / 2 - lineWidth);
       CardPaddingSM = new Thickness(_globalToken.Padding, _globalToken.PaddingXXS * 1.5);
       CardPaddingLG = new Thickness(top:_globalToken.PaddingXS,
@@ -157,7 +164,9 @@ internal class TabControlToken : AbstractControlDesignToken
       TitleFontSize = fontToken.FontSize;
       TitleFontSizeLG = fontToken.FontSizeLG;
       TitleFontSizeSM = fontToken.FontSize;
+      
       InkBarColor = colorToken.ColorPrimaryToken.ColorPrimary;
+      
       HorizontalMargin = new Thickness(0, 0, _globalToken.Margin, 0);
       HorizontalItemGutter = 32;
       HorizontalItemMargin = new Thickness();
@@ -165,6 +174,7 @@ internal class TabControlToken : AbstractControlDesignToken
       HorizontalItemPadding = new Thickness(0, _globalToken.PaddingSM);
       HorizontalItemPaddingSM = new Thickness(0, _globalToken.PaddingXS);
       HorizontalItemPaddingLG = new Thickness(0, _globalToken.Padding);
+      
       VerticalItemPadding = new Thickness(_globalToken.PaddingLG, _globalToken.PaddingXS);
       VerticalItemMargin = new Thickness(0, _globalToken.Margin, 0, 0);
       
@@ -177,6 +187,7 @@ internal class TabControlToken : AbstractControlDesignToken
 
       MenuIndicatorPaddingHorizontal = new Thickness(_globalToken.PaddingXS, 0, 0, 0);
       MenuIndicatorPaddingVertical = new Thickness(0, _globalToken.PaddingXS, 0, 0);
+      CloseIconMargin = new Thickness(_globalToken.MarginXXS, 0, 0, 0);
 
       MenuEdgeThickness = 20;
    }

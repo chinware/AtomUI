@@ -2,6 +2,7 @@ using AtomUI.Icon;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Input;
+using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Rendering;
 
@@ -39,6 +40,8 @@ public class IconButton : AvaloniaButton, ICustomHitTest
       base.OnAttachedToLogicalTree(e);
       if (!_initialized) {
          if (Icon is not null) {
+            Icon.VerticalAlignment = VerticalAlignment.Center;
+            Icon.HorizontalAlignment = HorizontalAlignment.Center;
             Content = Icon;
          }
          _initialized = true;
