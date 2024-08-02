@@ -64,30 +64,65 @@ internal class CardTabStripItemTheme : BaseTabStripItemTheme
 
    protected void BuildSizeTypeStyle()
    {
-      var largeSizeStyle = new Style(selector => selector.Nesting().PropertyEquals(TabStripItem.SizeTypeProperty, SizeType.Large));
+      var topOrBottomStyle = new Style(selector => Selectors.Or(selector.Nesting().PropertyEquals(TabStripItem.TabStripPlacementProperty, Dock.Top),
+                                                                selector.Nesting().PropertyEquals(TabStripItem.TabStripPlacementProperty, Dock.Bottom)));
       {
-         var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(DecoratorPart));
-         decoratorStyle.Add(Border.PaddingProperty, TabControlResourceKey.CardPaddingLG);
-         largeSizeStyle.Add(decoratorStyle);
-      }
-      Add(largeSizeStyle);
+         var largeSizeStyle = new Style(selector => selector.Nesting().PropertyEquals(TabStripItem.SizeTypeProperty, SizeType.Large));
+         {
+            var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(DecoratorPart));
+            decoratorStyle.Add(Border.PaddingProperty, TabControlResourceKey.CardPaddingLG);
+            largeSizeStyle.Add(decoratorStyle);
+         }
+         topOrBottomStyle.Add(largeSizeStyle);
 
-      var middleSizeStyle = new Style(selector => selector.Nesting().PropertyEquals(TabStripItem.SizeTypeProperty, SizeType.Middle));
-      {
-         var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(DecoratorPart));
-         decoratorStyle.Add(Border.PaddingProperty, TabControlResourceKey.CardPadding);
-         middleSizeStyle.Add(decoratorStyle);
-      }
-      Add(middleSizeStyle);
+         var middleSizeStyle = new Style(selector => selector.Nesting().PropertyEquals(TabStripItem.SizeTypeProperty, SizeType.Middle));
+         {
+            var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(DecoratorPart));
+            decoratorStyle.Add(Border.PaddingProperty, TabControlResourceKey.CardPadding);
+            middleSizeStyle.Add(decoratorStyle);
+         }
+         topOrBottomStyle.Add(middleSizeStyle);
 
-      var smallSizeType = new Style(selector => selector.Nesting().PropertyEquals(TabStripItem.SizeTypeProperty, SizeType.Small));
-      {
-         var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(DecoratorPart));
-         decoratorStyle.Add(Border.PaddingProperty, TabControlResourceKey.CardPaddingSM);
-         smallSizeType.Add(decoratorStyle);
-      }
+         var smallSizeType = new Style(selector => selector.Nesting().PropertyEquals(TabStripItem.SizeTypeProperty, SizeType.Small));
+         {
+            var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(DecoratorPart));
+            decoratorStyle.Add(Border.PaddingProperty, TabControlResourceKey.CardPaddingSM);
+            smallSizeType.Add(decoratorStyle);
+         }
     
-      Add(smallSizeType);
+         topOrBottomStyle.Add(smallSizeType);
+      }
+      Add(topOrBottomStyle);
+      
+      var leftOrRightStyle = new Style(selector => Selectors.Or(selector.Nesting().PropertyEquals(TabStripItem.TabStripPlacementProperty, Dock.Left),
+                                                                selector.Nesting().PropertyEquals(TabStripItem.TabStripPlacementProperty, Dock.Right)));
+      {
+         var largeSizeStyle = new Style(selector => selector.Nesting().PropertyEquals(TabStripItem.SizeTypeProperty, SizeType.Large));
+         {
+            var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(DecoratorPart));
+            decoratorStyle.Add(Border.PaddingProperty, TabControlResourceKey.VerticalItemPadding);
+            largeSizeStyle.Add(decoratorStyle);
+         }
+         leftOrRightStyle.Add(largeSizeStyle);
+
+         var middleSizeStyle = new Style(selector => selector.Nesting().PropertyEquals(TabStripItem.SizeTypeProperty, SizeType.Middle));
+         {
+            var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(DecoratorPart));
+            decoratorStyle.Add(Border.PaddingProperty, TabControlResourceKey.VerticalItemPadding);
+            middleSizeStyle.Add(decoratorStyle);
+         }
+         leftOrRightStyle.Add(middleSizeStyle);
+
+         var smallSizeType = new Style(selector => selector.Nesting().PropertyEquals(TabStripItem.SizeTypeProperty, SizeType.Small));
+         {
+            var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(DecoratorPart));
+            decoratorStyle.Add(Border.PaddingProperty, TabControlResourceKey.VerticalItemPadding);
+            smallSizeType.Add(decoratorStyle);
+         }
+    
+         leftOrRightStyle.Add(smallSizeType);
+      }
+      Add(leftOrRightStyle);
    }
 
    private void BuildPlacementStyle()

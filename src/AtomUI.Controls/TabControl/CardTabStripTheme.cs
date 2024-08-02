@@ -14,6 +14,7 @@ internal class CardTabStripTheme : BaseTabStripTheme
 {
    public const string AddTabButtonPart = "Part_AddTabButton";
    public const string CardTabStripContainerPart = "Part_CardTabStripContainer";
+   public const string CardTabStripScrollViewerPart = "Part_CardTabStripScrollViewer";
    
    public CardTabStripTheme() : base(typeof(CardTabStrip)) { }
 
@@ -22,19 +23,17 @@ internal class CardTabStripTheme : BaseTabStripTheme
       var cardTabStripContainer = new Grid()
       {
          Name = CardTabStripContainerPart,
-         ColumnDefinitions =
-         {
-            new ColumnDefinition(GridLength.Auto),
-            new ColumnDefinition(GridLength.Auto)
-         },
       };
       cardTabStripContainer.RegisterInNameScope(scope);
 
       TokenResourceBinder.CreateTokenBinding(cardTabStripContainer, StackPanel.SpacingProperty,
                                              TabControlResourceKey.CardGutter);
       
-      var tabScrollViewer = new TabScrollViewer();
-      Grid.SetColumn(tabScrollViewer, 0);
+      var tabScrollViewer = new TabScrollViewer()
+      {
+         Name = CardTabStripScrollViewerPart
+      };
+      tabScrollViewer.RegisterInNameScope(scope);
       CreateTemplateParentBinding(tabScrollViewer, TabScrollViewer.TabStripPlacementProperty, TabStrip.TabStripPlacementProperty);
       var contentPanel = CreateTabStripContentPanel(scope);
       tabScrollViewer.Content = contentPanel;
@@ -58,7 +57,6 @@ internal class CardTabStripTheme : BaseTabStripTheme
          BorderThickness = new Thickness(1),
          Icon = addTabIcon
       };
-      Grid.SetColumn(addTabButton, 1);
       
       CreateTemplateParentBinding(addTabButton, IconButton.BorderThicknessProperty, CardTabStrip.CardBorderThicknessProperty);
       CreateTemplateParentBinding(addTabButton, IconButton.CornerRadiusProperty, CardTabStrip.CardBorderRadiusProperty);
@@ -96,7 +94,6 @@ internal class CardTabStripTheme : BaseTabStripTheme
          // 上
          var topStyle = new Style(selector => selector.Nesting().Class(BaseTabStrip.TopPC));
          var containerStyle = new Style(selector => selector.Nesting().Template().Name(CardTabStripContainerPart));
-         containerStyle.Add(StackPanel.OrientationProperty, Orientation.Horizontal);
          topStyle.Add(containerStyle);
          
          var itemPresenterPanelStyle = new Style(selector => selector.Nesting().Template().Name(ItemsPresenterPart).Child().OfType<StackPanel>());

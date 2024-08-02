@@ -154,7 +154,8 @@
                         <DockPanel Height="300">
                             <atom:CardTabStrip Name="PositionCardTabStrip"
                                                DockPanel.Dock="{Binding PositionCardTabStripPlacement}"
-                                               TabStripPlacement="{Binding PositionCardTabStripPlacement}">
+                                               TabStripPlacement="{Binding PositionCardTabStripPlacement}"
+                                               IsShowAddTabButton="True">
                                 <atom:TabStripItem Icon="{atom:IconProvider Kind=AppleOutlined}">Tab 1</atom:TabStripItem>
                                 <atom:TabStripItem Icon="{atom:IconProvider Kind=AndroidOutlined}">Tab 2</atom:TabStripItem>
                                 <atom:TabStripItem>Tab 3</atom:TabStripItem>

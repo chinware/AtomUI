@@ -86,6 +86,7 @@ public class CardTabStrip : BaseTabStrip, IControlCustomStyle
    private IconButton? _addTabButton;
    private ItemsPresenter? _itemsPresenter;
    private Grid? _cardTabStripContainer;
+   private TabScrollViewer? _tabScrollViewer;
 
    public CardTabStrip()
    {
@@ -125,6 +126,7 @@ public class CardTabStrip : BaseTabStrip, IControlCustomStyle
       if (change.Property == SizeTypeProperty) {
          HandleSizeTypeChanged();
       } else if (change.Property == TabStripPlacementProperty) {
+         SetupCardTabStripContainer();
          HandleTabStripPlacementChanged();
       }
    }
@@ -137,15 +139,21 @@ public class CardTabStrip : BaseTabStrip, IControlCustomStyle
          if (TabStripPlacement == Dock.Top || TabStripPlacement == Dock.Bottom) {
             addButtonOffset = _addTabButton?.Bounds.Right ?? 0;
             markOffset = finalSize.Width;
+            if (addButtonOffset > markOffset) {
+               _cardTabStripContainer.ColumnDefinitions[0].Width = GridLength.Star;
+            } else {
+               _cardTabStripContainer.ColumnDefinitions[0].Width = GridLength.Auto;
+            }
          } else {
             addButtonOffset = _addTabButton?.Bounds.Bottom ?? 0;
             markOffset = finalSize.Height;
+            if (addButtonOffset > markOffset) {
+               _cardTabStripContainer.RowDefinitions[0].Height = GridLength.Star;
+            } else {
+               _cardTabStripContainer.RowDefinitions[0].Height = GridLength.Auto;
+            }
          }
-         if (addButtonOffset > markOffset) {
-            _cardTabStripContainer.ColumnDefinitions[0].Width = GridLength.Star;
-         } else {
-            _cardTabStripContainer.ColumnDefinitions[0].Width = GridLength.Auto;
-         }
+        
       }
    }
 
@@ -156,10 +164,12 @@ public class CardTabStrip : BaseTabStrip, IControlCustomStyle
       _addTabButton = scope.Find<IconButton>(CardTabStripTheme.AddTabButtonPart);
       _itemsPresenter = scope.Find<ItemsPresenter>(CardTabStripTheme.ItemsPresenterPart);
       _cardTabStripContainer = scope.Find<Grid>(CardTabStripTheme.CardTabStripContainerPart);
+      _tabScrollViewer = scope.Find<TabScrollViewer>(CardTabStripTheme.CardTabStripScrollViewerPart);
       if (_addTabButton is not null) {
          _addTabButton.Click += HandleAddButtonClicked;
       }
       HandleSizeTypeChanged();
+      SetupCardTabStripContainer();
    }
    #endregion
 
@@ -186,6 +196,52 @@ public class CardTabStrip : BaseTabStrip, IControlCustomStyle
       HandleTabStripPlacementChanged();
       return size;
    }
+
+   private void SetupCardTabStripContainer()
+   {
+      if (TabStripPlacement == Dock.Top ||
+          TabStripPlacement == Dock.Bottom) {
+         if (_cardTabStripContainer is not null) {
+            _cardTabStripContainer.Children.Clear();
+            _cardTabStripContainer.RowDefinitions.Clear();
+            _cardTabStripContainer.ColumnDefinitions = new ColumnDefinitions()
+            {
+               new ColumnDefinition(GridLength.Auto),
+               new ColumnDefinition(GridLength.Auto),
+            };
+         }
+
+         if (_tabScrollViewer is not null) {
+            Grid.SetColumn(_tabScrollViewer, 0);
+         }
+
+         if (_addTabButton is not null) {
+            Grid.SetColumn(_addTabButton, 1);
+         }
+
+         _cardTabStripContainer!.Children.Add(_tabScrollViewer!);
+         _cardTabStripContainer.Children.Add(_addTabButton!);
+      } else {
+         if (_cardTabStripContainer is not null) {
+            _cardTabStripContainer.Children.Clear();
+            _cardTabStripContainer.ColumnDefinitions.Clear();
+            _cardTabStripContainer.RowDefinitions = new RowDefinitions()
+            {
+               new RowDefinition(GridLength.Auto),
+               new RowDefinition(GridLength.Auto),
+            };
+         }
+         if (_tabScrollViewer is not null) {
+            Grid.SetRow(_tabScrollViewer, 0);
+         }
+
+         if (_addTabButton is not null) {
+            Grid.SetRow(_addTabButton, 1);
+         }
+         _cardTabStripContainer!.Children.Add(_tabScrollViewer!);
+         _cardTabStripContainer.Children.Add(_addTabButton!);
+      }
+   }
    
    private void HandleTabStripPlacementChanged()
    {
@@ -204,13 +260,13 @@ public class CardTabStrip : BaseTabStrip, IControlCustomStyle
       } else if (TabStripPlacement == Dock.Left) {
          CardBorderRadius = new CornerRadius(topLeft: _cardBorderRadiusSize.TopLeft, 0, bottomLeft:_cardBorderRadiusSize.BottomLeft, bottomRight:0);
          if (_addTabButton is not null && _itemsPresenter is not null) {
-            _addTabButton.Width = _itemsPresenter.DesiredSize.Height;
+            _addTabButton.Width = _itemsPresenter.DesiredSize.Width;
             _addTabButton.Height = _cardSize;
          }
       } else {
          CardBorderRadius = new CornerRadius(topLeft: 0, topRight:_cardBorderRadiusSize.TopRight, bottomLeft:0, bottomRight:_cardBorderRadiusSize.BottomRight);
          if (_addTabButton is not null && _itemsPresenter is not null) {
-            _addTabButton.Width = _itemsPresenter.DesiredSize.Height;
+            _addTabButton.Width = _itemsPresenter.DesiredSize.Width;
             _addTabButton.Height = _cardSize;
          }
       }
