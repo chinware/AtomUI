@@ -29,9 +29,8 @@ internal class CardTabStripItemTheme : BaseTabStripItemTheme
          transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty));
          container.Transitions = transitions;
       }
-     
-      
-      CreateTemplateParentBinding(container, Border.CornerRadiusProperty, TabStripItem.CardBorderRadiusProperty);
+      CreateTemplateParentBinding(container, Border.BorderThicknessProperty, TabStripItem.BorderThicknessProperty);
+      CreateTemplateParentBinding(container, Border.CornerRadiusProperty, TabStripItem.CornerRadiusProperty);
    }
    
    protected override void BuildStyles()

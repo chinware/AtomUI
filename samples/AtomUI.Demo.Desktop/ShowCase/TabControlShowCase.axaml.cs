@@ -1,6 +1,7 @@
 using AtomUI.Controls;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 
 namespace AtomUI.Demo.Desktop.ShowCase;
 
@@ -40,6 +41,7 @@ public partial class TabControlShowCase : UserControl
       PositionTabStripOptionGroup.OptionCheckedChanged += HandlePlacementOptionCheckedChanged;
       PositionCardTabStripOptionGroup.OptionCheckedChanged += HandleCardPlacementOptionCheckedChanged;
       SizeTypeTabStripOptionGroup.OptionCheckedChanged += HandleSizeTypeOptionCheckedChanged;
+      AddTabDemoStrip.AddTabRequest += HandleAddTabRequest;
    }
 
    private void HandlePlacementOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
@@ -77,5 +79,15 @@ public partial class TabControlShowCase : UserControl
       } else {
          SizeTypeTabStrip = SizeType.Large;
       }
+   }
+   
+   private void HandleAddTabRequest(object? sender, RoutedEventArgs args)
+   {
+      var index = AddTabDemoStrip.ItemCount;
+      AddTabDemoStrip.Items.Add(new TabStripItem()
+      {
+         Content = $"new tab {index}",
+         IsClosable = true
+      });
    }
 }

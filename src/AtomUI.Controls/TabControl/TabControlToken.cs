@@ -18,9 +18,9 @@ internal class TabControlToken : AbstractControlDesignToken
    public Color CardBg { get; set; }
    
    /// <summary>
-   /// 卡片标签页高度
+   /// 卡片标签页大小
    /// </summary>
-   public double CardHeight { get; set; }
+   public double CardSize { get; set; }
    
    /// <summary>
    /// 卡片标签页内间距
@@ -98,11 +98,6 @@ internal class TabControlToken : AbstractControlDesignToken
    public Thickness VerticalItemPadding { get; set; }
    
    /// <summary>
-   /// 纵向标签页标签外间距
-   /// </summary>
-   public Thickness VerticalItemMargin { get; set; }
-   
-   /// <summary>
    /// 标签文本颜色
    /// </summary>
    public Color ItemColor { get; set; }
@@ -121,12 +116,7 @@ internal class TabControlToken : AbstractControlDesignToken
    /// 卡片标签间距
    /// </summary>
    public double CardGutter { get; set; }
-   
-   /// <summary>
-   /// 纵向卡片标签间距
-   /// </summary>
-   public double CardVerticalGutter { get; set; }
-   
+  
    /// <summary>
    /// 标签内容 icon 的外边距
    /// </summary>
@@ -162,9 +152,9 @@ internal class TabControlToken : AbstractControlDesignToken
       
       CardBg = _globalToken.ColorFillAlter;
       
-      CardHeight = _globalToken.HeightToken.ControlHeightLG;
+      CardSize = _globalToken.HeightToken.ControlHeightLG;
       
-      CardPadding = new Thickness(_globalToken.Padding, (CardHeight - Math.Round(_globalToken.FontToken.FontSize * lineHeight)) / 2 - lineWidth);
+      CardPadding = new Thickness(_globalToken.Padding, (CardSize - Math.Round(_globalToken.FontToken.FontSize * lineHeight)) / 2 - lineWidth);
       CardPaddingSM = new Thickness(_globalToken.Padding, _globalToken.PaddingXXS * 1.5);
       CardPaddingLG = new Thickness(top:_globalToken.PaddingXS,
                                     bottom:_globalToken.PaddingXXS * 1.5, 
@@ -193,7 +183,6 @@ internal class TabControlToken : AbstractControlDesignToken
       ItemHoverColor = colorToken.ColorPrimaryToken.ColorPrimaryHover;
 
       CardGutter = _globalToken.MarginXXS / 2;
-      CardVerticalGutter = CardGutter;
       ItemIconMargin = new Thickness(0, 0, _globalToken.MarginSM, 0);
 
       MenuIndicatorPaddingHorizontal = new Thickness(_globalToken.PaddingXS, 0, 0, 0);

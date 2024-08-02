@@ -1,4 +1,6 @@
 ﻿using AtomUI.Theme.Styling;
+using AtomUI.Utils;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Templates;
@@ -10,16 +12,58 @@ namespace AtomUI.Controls;
 [ControlThemeProvider]
 internal class CardTabStripTheme : BaseTabStripTheme
 {
+   public const string AddTabButtonPart = "Part_AddTabButton";
+   public const string CardTabStripContainerPart = "Part_CardTabStripContainer";
+   
    public CardTabStripTheme() : base(typeof(CardTabStrip)) { }
 
    protected override void NotifyBuildControlTemplate(BaseTabStrip baseTabStrip, INameScope scope, Border container)
    {
+      var cardTabStripContainer = new StackPanel()
+      {
+         Name = CardTabStripContainerPart
+      };
+
+      TokenResourceBinder.CreateTokenBinding(cardTabStripContainer, StackPanel.SpacingProperty,
+                                             TabControlResourceKey.CardGutter);
+      
       var tabScrollViewer = new TabScrollViewer();
       CreateTemplateParentBinding(tabScrollViewer, TabScrollViewer.TabStripPlacementProperty, TabStrip.TabStripPlacementProperty);
       var contentPanel = CreateTabStripContentPanel(scope);
       tabScrollViewer.Content = contentPanel;
       tabScrollViewer.TabStrip = baseTabStrip;
-      container.Child = tabScrollViewer;
+
+      var addTabIcon = new PathIcon()
+      {
+         Kind = "PlusOutlined"
+      };
+
+      TokenResourceBinder.CreateTokenBinding(addTabIcon, PathIcon.NormalFilledBrushProperty, TabControlResourceKey.ItemColor);
+      TokenResourceBinder.CreateTokenBinding(addTabIcon, PathIcon.ActiveFilledBrushProperty, TabControlResourceKey.ItemHoverColor);
+      TokenResourceBinder.CreateTokenBinding(addTabIcon, PathIcon.DisabledFilledBrushProperty, GlobalResourceKey.ColorTextDisabled);
+      
+      TokenResourceBinder.CreateGlobalResourceBinding(addTabIcon, PathIcon.WidthProperty, GlobalResourceKey.IconSize);
+      TokenResourceBinder.CreateGlobalResourceBinding(addTabIcon, PathIcon.HeightProperty, GlobalResourceKey.IconSize);
+
+      var addTabButton = new IconButton()
+      {
+         Name = AddTabButtonPart,
+         BorderThickness = new Thickness(1),
+         Icon = addTabIcon,
+         Width = 30
+      };
+
+      CreateTemplateParentBinding(addTabButton, IconButton.BorderThicknessProperty, CardTabStrip.CardBorderThicknessProperty);
+      CreateTemplateParentBinding(addTabButton, IconButton.CornerRadiusProperty, CardTabStrip.CardBorderRadiusProperty);
+      CreateTemplateParentBinding(addTabButton, IconButton.IsVisibleProperty, CardTabStrip.IsShowAddTabButtonProperty);
+      
+      TokenResourceBinder.CreateGlobalResourceBinding(addTabButton, IconButton.BorderBrushProperty, GlobalResourceKey.ColorBorderSecondary);
+      
+      addTabButton.RegisterInNameScope(scope);
+      
+      cardTabStripContainer.Children.Add(tabScrollViewer);
+      cardTabStripContainer.Children.Add(addTabButton);
+      container.Child = cardTabStripContainer;
    }
    
    private ItemsPresenter CreateTabStripContentPanel(INameScope scope)
@@ -44,11 +88,15 @@ internal class CardTabStripTheme : BaseTabStripTheme
       {
          // 上
          var topStyle = new Style(selector => selector.Nesting().Class(BaseTabStrip.TopPC));
+         var containerStyle = new Style(selector => selector.Nesting().Template().Name(CardTabStripContainerPart));
+         containerStyle.Add(StackPanel.OrientationProperty, Orientation.Horizontal);
+         topStyle.Add(containerStyle);
+         
          var itemPresenterPanelStyle = new Style(selector => selector.Nesting().Template().Name(ItemsPresenterPart).Child().OfType<StackPanel>());
          itemPresenterPanelStyle.Add(StackPanel.OrientationProperty, Orientation.Horizontal);
          itemPresenterPanelStyle.Add(StackPanel.SpacingProperty, TabControlResourceKey.CardGutter);
-         topStyle.Add(itemPresenterPanelStyle);
          
+         topStyle.Add(itemPresenterPanelStyle);
          commonStyle.Add(topStyle);
       }
 
@@ -56,9 +104,13 @@ internal class CardTabStripTheme : BaseTabStripTheme
          // 右
          var rightStyle = new Style(selector => selector.Nesting().Class(BaseTabStrip.RightPC));
          
+         var containerStyle = new Style(selector => selector.Nesting().Template().Name(CardTabStripContainerPart));
+         containerStyle.Add(StackPanel.OrientationProperty, Orientation.Vertical);
+         rightStyle.Add(containerStyle);
+         
          var itemPresenterPanelStyle = new Style(selector => selector.Nesting().Template().Name(ItemsPresenterPart).Child().OfType<StackPanel>());
          itemPresenterPanelStyle.Add(StackPanel.OrientationProperty, Orientation.Vertical);
-         itemPresenterPanelStyle.Add(StackPanel.SpacingProperty, TabControlResourceKey.CardVerticalGutter);
+         itemPresenterPanelStyle.Add(StackPanel.SpacingProperty, TabControlResourceKey.CardGutter);
          rightStyle.Add(itemPresenterPanelStyle);
          
          commonStyle.Add(rightStyle);
@@ -66,6 +118,10 @@ internal class CardTabStripTheme : BaseTabStripTheme
       {
          // 下
          var bottomStyle = new Style(selector => selector.Nesting().Class(BaseTabStrip.BottomPC));
+         
+         var containerStyle = new Style(selector => selector.Nesting().Template().Name(CardTabStripContainerPart));
+         containerStyle.Add(StackPanel.OrientationProperty, Orientation.Horizontal);
+         bottomStyle.Add(containerStyle);
          
          var itemPresenterPanelStyle = new Style(selector => selector.Nesting().Template().Name(ItemsPresenterPart).Child().OfType<StackPanel>());
          itemPresenterPanelStyle.Add(StackPanel.OrientationProperty, Orientation.Horizontal);
@@ -78,9 +134,13 @@ internal class CardTabStripTheme : BaseTabStripTheme
          // 左
          var leftStyle = new Style(selector => selector.Nesting().Class(BaseTabStrip.LeftPC));
          
+         var containerStyle = new Style(selector => selector.Nesting().Template().Name(CardTabStripContainerPart));
+         containerStyle.Add(StackPanel.OrientationProperty, Orientation.Vertical);
+         leftStyle.Add(containerStyle);
+         
          var itemPresenterPanelStyle = new Style(selector => selector.Nesting().Template().Name(ItemsPresenterPart).Child().OfType<StackPanel>());
          itemPresenterPanelStyle.Add(StackPanel.OrientationProperty, Orientation.Vertical);
-         itemPresenterPanelStyle.Add(StackPanel.SpacingProperty, TabControlResourceKey.CardVerticalGutter);
+         itemPresenterPanelStyle.Add(StackPanel.SpacingProperty, TabControlResourceKey.CardGutter);
          leftStyle.Add(itemPresenterPanelStyle);
          
          commonStyle.Add(leftStyle);

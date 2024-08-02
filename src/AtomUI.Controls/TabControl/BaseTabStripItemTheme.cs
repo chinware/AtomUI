@@ -18,6 +18,7 @@ internal class BaseTabStripItemTheme : BaseControlTheme
    public const string ContentLayoutPart = "Part_ContentLayout";
    public const string ContentPresenterPart = "PART_ContentPresenter";
    public const string ItemIconPart = "PART_ItemIcon";
+   public const string ItemCloseButtonPart = "PART_ItemCloseButton";
    
    public BaseTabStripItemTheme(Type targetType) : base(targetType) { }
    
@@ -53,14 +54,17 @@ internal class BaseTabStripItemTheme : BaseControlTheme
       CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty, TabStripItem.ContentProperty);
       CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentTemplateProperty, TabStripItem.ContentTemplateProperty);
 
-      var iconButton = new IconButton();
+      var iconButton = new IconButton()
+      {
+         Name = ItemCloseButtonPart
+      };
+      iconButton.RegisterInNameScope(scope);
       TokenResourceBinder.CreateTokenBinding(iconButton, IconButton.MarginProperty, TabControlResourceKey.CloseIconMargin);
       
       CreateTemplateParentBinding(iconButton, IconButton.IconProperty, TabStripItem.CloseIconProperty);
       CreateTemplateParentBinding(iconButton, IconButton.IsVisibleProperty, TabStripItem.IsClosableProperty);
       
       containerLayout.Children.Add(iconButton);
-      
       container.Child = containerLayout;
    }
 

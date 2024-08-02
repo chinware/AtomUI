@@ -11,6 +11,7 @@ using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
+using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Rendering;
@@ -42,14 +43,6 @@ public class TabStripItem : AvaloniaTabStripItem, IControlCustomStyle, ICustomHi
    
    public static readonly DirectProperty<TabStripItem, Dock?> TabStripPlacementProperty =
       AvaloniaProperty.RegisterDirect<TabStripItem, Dock?>(nameof(TabStripPlacement), o => o.TabStripPlacement);
-
-   internal static readonly StyledProperty<CornerRadius> CardBorderRadiusProperty =
-      AvaloniaProperty.Register<TabStripItem, CornerRadius>(nameof(CardBorderRadius));
-   
-   internal static readonly DirectProperty<TabStripItem, CornerRadius> CardBorderRadiusSizeProperty =
-      AvaloniaProperty.RegisterDirect<TabStripItem, CornerRadius>(nameof(CardBorderRadiusSize),
-                                                                  o => o.CardBorderRadiusSize,
-                                                                  (o, v) => o.CardBorderRadiusSize = v);
    
    public SizeType SizeType
    {
@@ -81,19 +74,6 @@ public class TabStripItem : AvaloniaTabStripItem, IControlCustomStyle, ICustomHi
       get => _tabStripPlacement;
       internal set => SetAndRaise(TabStripPlacementProperty, ref _tabStripPlacement, value);
    }
-
-   internal CornerRadius CardBorderRadius
-   {
-      get => GetValue(CardBorderRadiusProperty);
-      set => SetValue(CardBorderRadiusProperty, value);
-   }
-   
-   private CornerRadius _cardBorderRadiusSize;
-   public CornerRadius CardBorderRadiusSize
-   {
-      get => _cardBorderRadiusSize;
-      internal set => SetAndRaise(CardBorderRadiusSizeProperty, ref _cardBorderRadiusSize, value);
-   }
    
    #endregion
    
@@ -110,8 +90,8 @@ public class TabStripItem : AvaloniaTabStripItem, IControlCustomStyle, ICustomHi
 
    private StackPanel? _contentLayout;
    private IControlCustomStyle _customStyle;
-   private Border? _decorator;
-
+   private IconButton? _closeButton;
+   
    public TabStripItem()
    {
       _customStyle = this;
@@ -166,7 +146,8 @@ public class TabStripItem : AvaloniaTabStripItem, IControlCustomStyle, ICustomHi
    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
    {
       _contentLayout = scope.Find<StackPanel>(BaseTabStripItemTheme.ContentLayoutPart);
-      _decorator = scope.Find<Border>(BaseTabStripItemTheme.DecoratorPart);
+      _closeButton = scope.Find<IconButton>(BaseTabStripItemTheme.ItemCloseButtonPart);
+      
       SetupItemIcon();
       SetupCloseIcon();
       if (Transitions is null) {
@@ -175,13 +156,18 @@ public class TabStripItem : AvaloniaTabStripItem, IControlCustomStyle, ICustomHi
          Transitions = transitions;
       }
 
-      if (_decorator is not null) {
-         TokenResourceBinder.CreateTokenBinding(_decorator, BorderThicknessProperty, GlobalResourceKey.BorderThickness, BindingPriority.Template,
-                                                new RenderScaleAwareThicknessConfigure(this));
+      if (_closeButton is not null) {
+         _closeButton.Click += HandleCloseRequest;
       }
-
    }
    #endregion
+
+   private void HandleCloseRequest(object? sender, RoutedEventArgs args)
+   {
+      if (Parent is BaseTabStrip tabStrip) {
+         tabStrip.Items.Remove(this);
+      }
+   }
 
    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
    {
@@ -195,19 +181,7 @@ public class TabStripItem : AvaloniaTabStripItem, IControlCustomStyle, ICustomHi
             SetupItemIcon();
          }
       } 
-      if (change.Property == TabStripPlacementProperty ||
-                 change.Property == SizeTypeProperty) {
-         if (Shape == TabSharp.Card) {
-            if (change.Property == SizeTypeProperty) {
-               HandleSizeTypeChanged();
-            }
-            SetupCardBorderRadius();
-         }
-      } else if (change.Property == ShapeProperty) {
-         if (Shape == TabSharp.Card) {
-            SetupCardBorderRadius();
-         }
-      } else if (change.Property == CloseIconProperty) {
+      if (change.Property == CloseIconProperty) {
          var oldIcon = change.GetOldValue<PathIcon?>();
          if (oldIcon != null) {
             UIStructureUtils.SetTemplateParent(oldIcon, null);
@@ -224,23 +198,8 @@ public class TabStripItem : AvaloniaTabStripItem, IControlCustomStyle, ICustomHi
    {
       base.OnAttachedToLogicalTree(e);
       HandleShapeChanged();
-      HandleSizeTypeChanged();
-      if (Shape == TabSharp.Card) {
-         SetupCardBorderRadius();
-      }
    }
-
-   private void HandleSizeTypeChanged()
-   {
-      if (SizeType == SizeType.Large) {
-         TokenResourceBinder.CreateGlobalResourceBinding(this, CardBorderRadiusSizeProperty, GlobalResourceKey.BorderRadiusLG);
-      } else if (SizeType == SizeType.Middle) {
-         TokenResourceBinder.CreateGlobalResourceBinding(this, CardBorderRadiusSizeProperty, GlobalResourceKey.BorderRadius);
-      } else {
-         TokenResourceBinder.CreateGlobalResourceBinding(this, CardBorderRadiusSizeProperty, GlobalResourceKey.BorderRadiusSM);
-      }
-   }
-
+   
    private void HandleShapeChanged()
    {
       if (Shape == TabSharp.Line) {
@@ -253,18 +212,5 @@ public class TabStripItem : AvaloniaTabStripItem, IControlCustomStyle, ICustomHi
    public bool HitTest(Point point)
    {
       return true;
-   }
-
-   private void SetupCardBorderRadius()
-   {
-      if (TabStripPlacement == Dock.Top) {
-         CardBorderRadius = new CornerRadius(topLeft: _cardBorderRadiusSize.TopLeft, topRight:_cardBorderRadiusSize.TopRight, bottomLeft:0, bottomRight:0);
-      } else if (TabStripPlacement == Dock.Bottom) {
-         CardBorderRadius = new CornerRadius(topLeft: 0, 0, bottomLeft:_cardBorderRadiusSize.BottomLeft, bottomRight:_cardBorderRadiusSize.BottomRight);
-      } else if (TabStripPlacement == Dock.Left) {
-         CardBorderRadius = new CornerRadius(topLeft: _cardBorderRadiusSize.TopLeft, 0, bottomLeft:_cardBorderRadiusSize.BottomLeft, bottomRight:0);
-      } else {
-         CardBorderRadius = new CornerRadius(topLeft: 0, topRight:_cardBorderRadiusSize.TopRight, bottomLeft:0, bottomRight:_cardBorderRadiusSize.BottomRight);
-      }
    }
 }
