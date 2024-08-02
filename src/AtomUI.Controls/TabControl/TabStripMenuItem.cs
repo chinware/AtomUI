@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
+using Avalonia.Threading;
 
 namespace AtomUI.Controls;
 
@@ -15,8 +16,8 @@ internal class TabStripMenuItem : MenuItem
                                                               o => o.IsClosable,
                                                               (o, v) => o.IsClosable = v);
    
-   public static readonly RoutedEvent<RoutedEventArgs> CloseTabEvent =
-      RoutedEvent.Register<Button, RoutedEventArgs>(nameof(CloseTab), RoutingStrategies.Bubble);
+   public static readonly RoutedEvent<CloseTabRequestEventArgs> CloseTabEvent =
+      RoutedEvent.Register<Button, CloseTabRequestEventArgs>(nameof(CloseTab), RoutingStrategies.Bubble);
 
    private bool _isClosable = false;
    public bool IsClosable
@@ -27,7 +28,7 @@ internal class TabStripMenuItem : MenuItem
    
    public TabStripItem? TabStripItem { get; set; }
 
-   public event EventHandler<RoutedEventArgs>? CloseTab
+   public event EventHandler<CloseTabRequestEventArgs>? CloseTab
    {
       add => AddHandler(CloseTabEvent, value);
       remove => RemoveHandler(CloseTabEvent, value);
@@ -44,13 +45,25 @@ internal class TabStripMenuItem : MenuItem
       if (_iconButton is not null) {
          _iconButton.Click += (sender, args) =>
          {
-            var menu = this.FindLogicalAncestorOfType<MenuBase>();
-            if (menu is not null) {
-               menu.Close();
-               var eventArgs = new RoutedEventArgs(CloseTabEvent);
+            if (Parent is MenuBase menu) {
+               var eventArgs = new CloseTabRequestEventArgs(CloseTabEvent, TabStripItem!);
                RaiseEvent(eventArgs);
+               Dispatcher.UIThread.Post(() =>
+               {
+                  menu.Close();
+               });
             }
          };
       }
    }
+}
+
+internal class CloseTabRequestEventArgs : RoutedEventArgs
+{
+   public CloseTabRequestEventArgs(RoutedEvent routedEvent, TabStripItem stripItem)
+      : base(routedEvent)
+   {
+      TabStripItem = stripItem;
+   }
+   public TabStripItem TabStripItem { get; }
 }

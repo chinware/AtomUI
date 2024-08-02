@@ -165,7 +165,19 @@ public class TabStripItem : AvaloniaTabStripItem, IControlCustomStyle, ICustomHi
    private void HandleCloseRequest(object? sender, RoutedEventArgs args)
    {
       if (Parent is BaseTabStrip tabStrip) {
-         tabStrip.Items.Remove(this);
+         if (tabStrip.SelectedItem is TabStripItem selectedItem) {
+            if (selectedItem == this) {
+               var selectedIndex = tabStrip.SelectedIndex;
+               object? newSelectedItem = null;
+               if (selectedIndex != 0) {
+                  newSelectedItem = tabStrip.Items[--selectedIndex];
+               }
+               tabStrip.Items.Remove(this);
+               tabStrip.SelectedItem = newSelectedItem;
+            } else {
+               tabStrip.Items.Remove(this);
+            }
+         }
       }
    }
 

@@ -217,6 +217,7 @@ public class TabScrollViewer : ScrollViewer
                         IsClosable = tabStripItem.IsClosable
                      };
                      menuItem.Click += HandleMenuItemClicked;
+                     menuItem.CloseTab += HandleCloseTabRequest;
                      _menuFlyout.Items.Add(menuItem);
                   }
                }
@@ -242,6 +243,28 @@ public class TabScrollViewer : ScrollViewer
                }
             }
          }, sender);
+      }
+   }
+
+   private void HandleCloseTabRequest(object? sender, RoutedEventArgs args)
+   {
+      if (sender is TabStripMenuItem tabStripMenuItem) {
+         if (TabStrip is not null) {
+            if (TabStrip.SelectedItem is TabStripItem selectedItem) {
+               if (selectedItem == tabStripMenuItem.TabStripItem) {
+                  var selectedIndex = TabStrip.SelectedIndex;
+                  object? newSelectedItem = null;
+                  if (selectedIndex != 0) {
+                     newSelectedItem = TabStrip.Items[--selectedIndex];
+                  }
+                  TabStrip.Items.Remove(tabStripMenuItem.TabStripItem);
+                  TabStrip.SelectedItem = newSelectedItem;
+               } else {
+                  TabStrip.Items.Remove(tabStripMenuItem.TabStripItem);
+               }
+            } 
+         }
+        
       }
    }
 
