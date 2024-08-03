@@ -17,8 +17,8 @@ internal class TabStripTheme : BaseTabStripTheme
    
    protected override void NotifyBuildControlTemplate(BaseTabStrip baseTabStrip, INameScope scope, Border container)
    {
-      var tabScrollViewer = new TabScrollViewer();
-      CreateTemplateParentBinding(tabScrollViewer, TabScrollViewer.TabStripPlacementProperty, TabStrip.TabStripPlacementProperty);
+      var tabScrollViewer = new TabStripScrollViewer();
+      CreateTemplateParentBinding(tabScrollViewer, BaseTabScrollViewer.TabStripPlacementProperty, TabStrip.TabStripPlacementProperty);
       var contentPanel = CreateTabStripContentPanel(scope);
       tabScrollViewer.Content = contentPanel;
       tabScrollViewer.TabStrip = baseTabStrip;
