@@ -74,7 +74,7 @@ public class BaseTabControl : AvaloniaTabControl
    #endregion
    
    private Border? _frameDecorator;
-   private TabControlScrollViewer? _tabsContainer;
+   private Control? _tabsContainer;
    private Point _tabStripBorderStartPoint;
    private Point _tabStripBorderEndPoint;
    
@@ -87,7 +87,7 @@ public class BaseTabControl : AvaloniaTabControl
    {
       base.OnApplyTemplate(e);
       _frameDecorator = e.NameScope.Find<Border>(BaseTabControlTheme.FrameDecoratorPart);
-      _tabsContainer = e.NameScope.Find<TabControlScrollViewer>(BaseTabControlTheme.TabsContainerPart);
+      _tabsContainer = e.NameScope.Find<Control>(BaseTabControlTheme.TabsContainerPart);
       SetupBorderBinding();
       HandlePlacementChanged();
    }
