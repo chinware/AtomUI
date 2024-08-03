@@ -60,6 +60,7 @@ internal class CardTabStripItemTheme : BaseTabStripItemTheme
       
       BuildSizeTypeStyle();
       BuildPlacementStyle();
+      BuildDisabledStyle();
    }
 
    protected void BuildSizeTypeStyle()
@@ -167,5 +168,14 @@ internal class CardTabStripItemTheme : BaseTabStripItemTheme
          leftStyle.Add(iconStyle);
          Add(leftStyle);
       }
+   }
+
+   private void BuildDisabledStyle()
+   {
+      var disabledStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Disabled));
+      var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(DecoratorPart));
+      decoratorStyle.Add(Border.BackgroundProperty, GlobalResourceKey.ColorBgContainerDisabled);
+      disabledStyle.Add(decoratorStyle);
+      Add(disabledStyle);
    }
 }

@@ -26,6 +26,12 @@
                     Title="Disabled"
                     Description="Disabled a tab.">
                     <StackPanel Orientation="Vertical" Spacing="20">
+                        <atom:CardTabStrip>
+                            <atom:TabStripItem>Tab 1</atom:TabStripItem>
+                            <atom:TabStripItem IsEnabled="False" IsClosable="True">Tab 2</atom:TabStripItem>
+                            <atom:TabStripItem>Tab 3</atom:TabStripItem>
+                        </atom:CardTabStrip>
+                        
                         <atom:TabStrip>
                             <atom:TabStripItem>Tab 1</atom:TabStripItem>
                             <atom:TabStripItem IsEnabled="False">Tab 2</atom:TabStripItem>
