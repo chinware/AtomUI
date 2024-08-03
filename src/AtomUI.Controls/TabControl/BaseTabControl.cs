@@ -73,7 +73,10 @@ public class BaseTabControl : AvaloniaTabControl
 
    #endregion
    
-    private Border? _frameDecorator;
+   private Border? _frameDecorator;
+   private TabControlScrollViewer? _tabsContainer;
+   private Point _tabStripBorderStartPoint;
+   private Point _tabStripBorderEndPoint;
    
    static BaseTabControl()
    {
@@ -84,6 +87,7 @@ public class BaseTabControl : AvaloniaTabControl
    {
       base.OnApplyTemplate(e);
       _frameDecorator = e.NameScope.Find<Border>(BaseTabControlTheme.FrameDecoratorPart);
+      _tabsContainer = e.NameScope.Find<TabControlScrollViewer>(BaseTabControlTheme.TabsContainerPart);
       SetupBorderBinding();
       HandlePlacementChanged();
    }
@@ -142,30 +146,46 @@ public class BaseTabControl : AvaloniaTabControl
       }
    }
 
+   private void SetupTabStripBorderPoints()
+   {
+      if (_tabsContainer is not null) {
+         var offset = _tabsContainer.TranslatePoint(new Point(0, 0), this) ?? default;
+         var size = _tabsContainer.Bounds.Size;
+         var borderThickness = BorderThickness.Left;
+         var offsetDelta = borderThickness / 2;
+         if (TabStripPlacement == Dock.Top) {
+            _tabStripBorderStartPoint = new Point(0, size.Height - offsetDelta);
+            _tabStripBorderEndPoint = new Point(size.Width, size.Height - offsetDelta);
+         } else if (TabStripPlacement == Dock.Right) {
+            _tabStripBorderStartPoint = new Point(offsetDelta, 0);
+            _tabStripBorderEndPoint = new Point(offsetDelta, size.Height);
+         } else if (TabStripPlacement == Dock.Bottom) {
+            _tabStripBorderStartPoint = new Point(0, offsetDelta);
+            _tabStripBorderEndPoint = new Point(size.Width, offsetDelta);
+         } else {
+            _tabStripBorderStartPoint = new Point(size.Width - offsetDelta, 0);
+            _tabStripBorderEndPoint = new Point(size.Width - offsetDelta, size.Height);
+         }
+
+         _tabStripBorderStartPoint += offset;
+         _tabStripBorderEndPoint += offset;
+      }
+   }
+
+   protected override Size ArrangeOverride(Size finalSize)
+   {
+      var size =  base.ArrangeOverride(finalSize);
+      SetupTabStripBorderPoints();
+      return size;
+   }
+
    public override void Render(DrawingContext context)
    {
-      Point startPoint = default;
-      Point endPoint = default;
       var borderThickness = BorderThickness.Left;
-      var offsetDelta = borderThickness / 2;
-      if (TabStripPlacement == Dock.Top) {
-         startPoint = new Point(0, Bounds.Height - offsetDelta);
-         endPoint = new Point(Bounds.Width, Bounds.Height - offsetDelta);
-      } else if (TabStripPlacement == Dock.Right) {
-         startPoint = new Point(offsetDelta, 0);
-         endPoint = new Point(offsetDelta, Bounds.Height);
-      } else if (TabStripPlacement == Dock.Bottom) {
-         startPoint = new Point(0, offsetDelta);
-         endPoint = new Point(Bounds.Width, offsetDelta);
-      } else {
-         startPoint = new Point(Bounds.Width - offsetDelta, 0);
-         endPoint = new Point(Bounds.Width - offsetDelta, Bounds.Height);
-      }
-
       using var optionState = context.PushRenderOptions(new RenderOptions()
       {
          EdgeMode = EdgeMode.Aliased
       });
-      context.DrawLine(new Pen(BorderBrush, borderThickness), startPoint, endPoint);
+      context.DrawLine(new Pen(BorderBrush, borderThickness), _tabStripBorderStartPoint, _tabStripBorderEndPoint);
    }
 }

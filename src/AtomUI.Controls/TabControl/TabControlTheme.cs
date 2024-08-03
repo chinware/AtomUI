@@ -19,12 +19,13 @@ internal class TabControlTheme : BaseTabControlTheme
    {
       var tabScrollViewer = new TabControlScrollViewer()
       {
-         Name = TabsContainerPart
+         Name = TabsContainerPart,
       };
       CreateTemplateParentBinding(tabScrollViewer, BaseTabScrollViewer.TabStripPlacementProperty, TabStrip.TabStripPlacementProperty);
       var contentPanel = CreateTabStripContentPanel(scope);
       tabScrollViewer.Content = contentPanel;
       tabScrollViewer.TabControl = baseTabControl;
+      tabScrollViewer.RegisterInNameScope(scope);
       CreateTemplateParentBinding(tabScrollViewer, DockPanel.DockProperty, TabControl.TabStripPlacementProperty);
       CreateTemplateParentBinding(tabScrollViewer, TabControlScrollViewer.MarginProperty,
                                   TabControl.TabStripMarginProperty);
