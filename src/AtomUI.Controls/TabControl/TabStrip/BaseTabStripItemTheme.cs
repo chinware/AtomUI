@@ -2,7 +2,6 @@
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Templates;

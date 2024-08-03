@@ -29,12 +29,12 @@ internal class CardTabStripTheme : BaseTabStripTheme
       TokenResourceBinder.CreateTokenBinding(cardTabStripContainer, StackPanel.SpacingProperty,
                                              TabControlResourceKey.CardGutter);
       
-      var tabScrollViewer = new TabScrollViewer()
+      var tabScrollViewer = new TabStripScrollViewer()
       {
          Name = CardTabStripScrollViewerPart
       };
       tabScrollViewer.RegisterInNameScope(scope);
-      CreateTemplateParentBinding(tabScrollViewer, TabScrollViewer.TabStripPlacementProperty, TabStrip.TabStripPlacementProperty);
+      CreateTemplateParentBinding(tabScrollViewer, BaseTabScrollViewer.TabStripPlacementProperty, TabStrip.TabStripPlacementProperty);
       var contentPanel = CreateTabStripContentPanel(scope);
       tabScrollViewer.Content = contentPanel;
       tabScrollViewer.TabStrip = baseTabStrip;

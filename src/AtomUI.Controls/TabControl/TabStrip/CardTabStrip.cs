@@ -86,7 +86,7 @@ public class CardTabStrip : BaseTabStrip, IControlCustomStyle
    private IconButton? _addTabButton;
    private ItemsPresenter? _itemsPresenter;
    private Grid? _cardTabStripContainer;
-   private TabScrollViewer? _tabScrollViewer;
+   private BaseTabScrollViewer? _tabScrollViewer;
 
    public CardTabStrip()
    {
@@ -164,7 +164,7 @@ public class CardTabStrip : BaseTabStrip, IControlCustomStyle
       _addTabButton = scope.Find<IconButton>(CardTabStripTheme.AddTabButtonPart);
       _itemsPresenter = scope.Find<ItemsPresenter>(CardTabStripTheme.ItemsPresenterPart);
       _cardTabStripContainer = scope.Find<Grid>(CardTabStripTheme.CardTabStripContainerPart);
-      _tabScrollViewer = scope.Find<TabScrollViewer>(CardTabStripTheme.CardTabStripScrollViewerPart);
+      _tabScrollViewer = scope.Find<BaseTabScrollViewer>(CardTabStripTheme.CardTabStripScrollViewerPart);
       if (_addTabButton is not null) {
          _addTabButton.Click += HandleAddButtonClicked;
       }

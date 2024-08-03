@@ -54,7 +54,7 @@ public abstract class BaseTabStrip : AvaloniaTabStrip, ISizeTypeAware
    
    #endregion
 
-   private Border? _mainContainer;
+   private Border? _frameDecorator;
    
    static BaseTabStrip()
    {
@@ -65,13 +65,13 @@ public abstract class BaseTabStrip : AvaloniaTabStrip, ISizeTypeAware
    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
    {
       base.OnApplyTemplate(e);
-      _mainContainer = e.NameScope.Find<Border>(BaseTabStripTheme.MainContainerPart);
+      _frameDecorator = e.NameScope.Find<Border>(BaseTabStripTheme.FrameDecoratorPart);
       SetupBorderBinding();
    }
 
    private void SetupBorderBinding()
    {
-      if (_mainContainer is not null) {
+      if (_frameDecorator is not null) {
          TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty, GlobalResourceKey.BorderThickness, BindingPriority.Template,
                                                 new RenderScaleAwareThicknessConfigure(this));
       }

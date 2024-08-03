@@ -7,7 +7,6 @@ using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
-using Avalonia.Layout;
 using Avalonia.Media.Transformation;
 
 namespace AtomUI.Controls;
