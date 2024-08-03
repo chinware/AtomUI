@@ -321,6 +321,7 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey AddTabButtonMarginHorizontal = new TokenResourceKey("TabControl.AddTabButtonMarginHorizontal");
         public static readonly TokenResourceKey AddTabButtonMarginVertical = new TokenResourceKey("TabControl.AddTabButtonMarginVertical");
         public static readonly TokenResourceKey CloseIconMargin = new TokenResourceKey("TabControl.CloseIconMargin");
+        public static readonly TokenResourceKey TabAndContentGutter = new TokenResourceKey("TabControl.TabAndContentGutter");
     }
 
     public static class TagResourceKey

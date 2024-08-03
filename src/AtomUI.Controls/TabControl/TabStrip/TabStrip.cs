@@ -13,10 +13,12 @@ namespace AtomUI.Controls;
 
 public class TabStrip : BaseTabStrip
 {
+   #region 内部属性定义
+
    internal static readonly DirectProperty<TabStrip, double> SelectedIndicatorThicknessProperty =
       AvaloniaProperty.RegisterDirect<TabStrip, double>(nameof(SelectedIndicatorThickness),
-         o => o.SelectedIndicatorThickness,
-         (o, v) => o.SelectedIndicatorThickness = v);
+                                                        o => o.SelectedIndicatorThickness,
+                                                        (o, v) => o.SelectedIndicatorThickness = v);
 
    private double _selectedIndicatorThickness;
    internal double SelectedIndicatorThickness
@@ -24,6 +26,8 @@ public class TabStrip : BaseTabStrip
       get => _selectedIndicatorThickness;
       set => SetAndRaise(SelectedIndicatorThicknessProperty, ref _selectedIndicatorThickness, value);
    }
+
+   #endregion
    
    private Border? _selectedIndicator;
    private ItemsPresenter? _itemsPresenter;

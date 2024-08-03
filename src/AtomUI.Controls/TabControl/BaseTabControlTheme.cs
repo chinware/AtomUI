@@ -14,6 +14,7 @@ internal class BaseTabControlTheme : BaseControlTheme
    public const string ItemsPresenterPart      = "PART_ItemsPresenter";
    public const string MainLayoutContainerPart = "PART_MainLayoutContainer";
    public const string SelectedContentHostPart = "PART_SelectedContentHost";
+   public const string TabsContainerPart       = "PART_TabsContainer";
     
    public BaseTabControlTheme(Type targetType) : base(targetType) { }
    
@@ -33,7 +34,7 @@ internal class BaseTabControlTheme : BaseControlTheme
 
          NotifyBuildTabStripTemplate(baseTabControl, scope, layoutContainer);
          NotifyBuildContentPresenter(baseTabControl, scope, layoutContainer);
-         
+         frameDecorator.Child = layoutContainer;
          return frameDecorator;
       });
    }

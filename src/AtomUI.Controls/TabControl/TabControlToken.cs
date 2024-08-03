@@ -151,6 +151,11 @@ internal class TabControlToken : AbstractControlDesignToken
    /// 关闭按钮外边距
    /// </summary>
    public Thickness CloseIconMargin { get; set; }
+   
+   /// <summary>
+   /// Tab 标签和内容区域的间距
+   /// </summary>
+   public double TabAndContentGutter { get; set; }
 
    internal override void CalculateFromAlias()
    {
@@ -202,5 +207,6 @@ internal class TabControlToken : AbstractControlDesignToken
       CloseIconMargin = new Thickness(_globalToken.MarginXXS, 0, 0, 0);
 
       MenuEdgeThickness = 20;
+      TabAndContentGutter = _globalToken.MarginSM;
    }
 }

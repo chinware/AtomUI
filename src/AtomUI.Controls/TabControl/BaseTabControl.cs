@@ -44,6 +44,34 @@ public class BaseTabControl : AvaloniaTabControl
    }
    
    #endregion
+
+   #region 内部属性实现
+
+   internal static readonly DirectProperty<BaseTabControl, double> TabAndContentGutterProperty =
+      AvaloniaProperty.RegisterDirect<BaseTabControl, double>(nameof(TabAndContentGutter),
+                                                              o => o.TabAndContentGutter,
+                                                              (o, v) => o.TabAndContentGutter = v);
+
+   private double _tabAndContentGutter;
+   internal double TabAndContentGutter
+   {
+      get => _tabAndContentGutter;
+      set => SetAndRaise(TabAndContentGutterProperty, ref _tabAndContentGutter, value);
+   }
+   
+   internal static readonly DirectProperty<BaseTabControl, Thickness> TabStripMarginProperty =
+      AvaloniaProperty.RegisterDirect<BaseTabControl, Thickness>(nameof(TabStripMargin),
+                                                                 o => o.TabStripMargin,
+                                                                 (o, v) => o.TabStripMargin = v);
+
+   private Thickness _tabStripMargin;
+   internal Thickness TabStripMargin
+   {
+      get => _tabStripMargin;
+      set => SetAndRaise(TabStripMarginProperty, ref _tabStripMargin, value);
+   }
+
+   #endregion
    
     private Border? _frameDecorator;
    
@@ -57,6 +85,7 @@ public class BaseTabControl : AvaloniaTabControl
       base.OnApplyTemplate(e);
       _frameDecorator = e.NameScope.Find<Border>(BaseTabControlTheme.FrameDecoratorPart);
       SetupBorderBinding();
+      HandlePlacementChanged();
    }
 
    private void SetupBorderBinding()
@@ -65,6 +94,8 @@ public class BaseTabControl : AvaloniaTabControl
          TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty, GlobalResourceKey.BorderThickness, BindingPriority.Template,
                                                 new RenderScaleAwareThicknessConfigure(this));
       }
+
+      TokenResourceBinder.CreateTokenBinding(this, TabAndContentGutterProperty, TabControlResourceKey.TabAndContentGutter);
    }
 
    protected override void PrepareContainerForItemOverride(Control container, object? item, int index)
@@ -85,7 +116,7 @@ public class BaseTabControl : AvaloniaTabControl
    {
       base.OnPropertyChanged(change);
       if (change.Property == TabStripPlacementProperty) {
-         UpdatePseudoClasses();
+         HandlePlacementChanged();
       }
    }
 
@@ -95,6 +126,20 @@ public class BaseTabControl : AvaloniaTabControl
       PseudoClasses.Set(RightPC, TabStripPlacement == Dock.Right);
       PseudoClasses.Set(BottomPC, TabStripPlacement == Dock.Bottom);
       PseudoClasses.Set(LeftPC, TabStripPlacement == Dock.Left);
+   }
+
+   private void HandlePlacementChanged()
+   {
+      UpdatePseudoClasses();
+      if (TabStripPlacement == Dock.Top) {
+         TabStripMargin = new Thickness(0, 0, 0, _tabAndContentGutter);
+      } else if (TabStripPlacement == Dock.Right) {
+         TabStripMargin = new Thickness(_tabAndContentGutter, 0, 0, 0);
+      } else if (TabStripPlacement == Dock.Bottom) {
+         TabStripMargin = new Thickness(0, _tabAndContentGutter, 0, 0);
+      } else {
+         TabStripMargin = new Thickness(0, 0, _tabAndContentGutter, 0);
+      }
    }
 
    public override void Render(DrawingContext context)
