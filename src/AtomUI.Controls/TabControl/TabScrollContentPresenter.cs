@@ -8,13 +8,13 @@ using Avalonia.Rendering;
 
 namespace AtomUI.Controls;
 
-internal class TabStripScrollContentPresenter : ScrollContentPresenter, ICustomHitTest
+internal class TabScrollContentPresenter : ScrollContentPresenter, ICustomHitTest
 {
    internal Dock TabStripPlacement { get; set; } = Dock.Top;
    
    private static readonly MethodInfo SnapOffsetMethodInfo;
 
-   static TabStripScrollContentPresenter()
+   static TabScrollContentPresenter()
    {
       SnapOffsetMethodInfo =
          typeof(ScrollContentPresenter).GetMethod("SnapOffset", BindingFlags.Instance | BindingFlags.NonPublic)!;

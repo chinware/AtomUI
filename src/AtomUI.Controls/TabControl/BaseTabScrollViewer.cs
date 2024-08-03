@@ -15,28 +15,28 @@ using GradientStop = Avalonia.Media.GradientStop;
 
 namespace AtomUI.Controls;
 
-[TemplatePart(TabScrollViewerTheme.ScrollStartEdgeIndicatorPart, typeof(Control))]
-[TemplatePart(TabScrollViewerTheme.ScrollEndEdgeIndicatorPart, typeof(Control))]
-[TemplatePart(TabScrollViewerTheme.ScrollMenuIndicatorPart, typeof(IconButton))]
-[TemplatePart(TabScrollViewerTheme.ScrollViewContentPart, typeof(ScrollContentPresenter))]
-public class TabScrollViewer : ScrollViewer
+[TemplatePart(BaseTabScrollViewerTheme.ScrollStartEdgeIndicatorPart, typeof(Control))]
+[TemplatePart(BaseTabScrollViewerTheme.ScrollEndEdgeIndicatorPart, typeof(Control))]
+[TemplatePart(BaseTabScrollViewerTheme.ScrollMenuIndicatorPart, typeof(IconButton))]
+[TemplatePart(BaseTabScrollViewerTheme.ScrollViewContentPart, typeof(ScrollContentPresenter))]
+internal abstract class BaseTabScrollViewer : ScrollViewer
 {
    private const int EdgeIndicatorZIndex = 1000;
 
    #region 内部属性定义
 
-   internal static readonly DirectProperty<TabScrollViewer, Dock> TabStripPlacementProperty =
-      AvaloniaProperty.RegisterDirect<TabScrollViewer, Dock>(nameof(TabStripPlacement),
+   internal static readonly DirectProperty<BaseTabScrollViewer, Dock> TabStripPlacementProperty =
+      AvaloniaProperty.RegisterDirect<BaseTabScrollViewer, Dock>(nameof(TabStripPlacement),
                                                              o => o.TabStripPlacement,
                                                              (o, v) => o.TabStripPlacement = v);
    
-   internal static readonly DirectProperty<TabScrollViewer, IBrush?> EdgeShadowStartColorProperty =
-      AvaloniaProperty.RegisterDirect<TabScrollViewer, IBrush?>(nameof(EdgeShadowStartColor),
+   internal static readonly DirectProperty<BaseTabScrollViewer, IBrush?> EdgeShadowStartColorProperty =
+      AvaloniaProperty.RegisterDirect<BaseTabScrollViewer, IBrush?>(nameof(EdgeShadowStartColor),
                                                                 o => o.EdgeShadowStartColor,
                                                                 (o, v) => o.EdgeShadowStartColor = v);
    
-   internal static readonly DirectProperty<TabScrollViewer, double> MenuEdgeThicknessProperty =
-      AvaloniaProperty.RegisterDirect<TabScrollViewer, double>(nameof(MenuEdgeThickness),
+   internal static readonly DirectProperty<BaseTabScrollViewer, double> MenuEdgeThicknessProperty =
+      AvaloniaProperty.RegisterDirect<BaseTabScrollViewer, double>(nameof(MenuEdgeThickness),
                                                                o => o.MenuEdgeThickness,
                                                                (o, v) => o.MenuEdgeThickness = v);
 
@@ -64,21 +64,19 @@ public class TabScrollViewer : ScrollViewer
       set => SetAndRaise(MenuEdgeThicknessProperty, ref _menuEdgeThickness, value);
    }
    
-   internal BaseTabStrip? TabStrip { get; set; } 
-   
    #endregion
 
-   private IconButton? _menuIndicator;
-   private Border? _startEdgeIndicator;
-   private Border? _endEdgeIndicator;
-   private MenuFlyout? _menuFlyout;
+   private protected IconButton? _menuIndicator;
+   private protected Border? _startEdgeIndicator;
+   private protected Border? _endEdgeIndicator;
+   private protected MenuFlyout? _menuFlyout;
 
-   static TabScrollViewer()
+   static BaseTabScrollViewer()
    {
-      AffectsMeasure<TabScrollViewer>(TabStripPlacementProperty);
+      AffectsMeasure<BaseTabScrollViewer>(TabStripPlacementProperty);
    }
 
-   public TabScrollViewer()
+   public BaseTabScrollViewer()
    {
       HorizontalScrollBarVisibility = ScrollBarVisibility.Auto;
    }
@@ -87,7 +85,7 @@ public class TabScrollViewer : ScrollViewer
    {
       base.OnPropertyChanged(change);
       if (change.Property == TabStripPlacementProperty) {
-         if (Presenter is TabStripScrollContentPresenter tabStripScrollContentPresenter) {
+         if (Presenter is TabScrollContentPresenter tabStripScrollContentPresenter) {
             tabStripScrollContentPresenter.TabStripPlacement = TabStripPlacement;
          }
       } else if (change.Property == VerticalScrollBarVisibilityProperty ||
@@ -163,7 +161,7 @@ public class TabScrollViewer : ScrollViewer
 
    protected override bool RegisterContentPresenter(ContentPresenter presenter)
    {
-      if (presenter is TabStripScrollContentPresenter tabStripScrollContentPresenter) {
+      if (presenter is TabScrollContentPresenter tabStripScrollContentPresenter) {
          tabStripScrollContentPresenter.TabStripPlacement = TabStripPlacement;
       }
 
@@ -173,99 +171,14 @@ public class TabScrollViewer : ScrollViewer
    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
    {
       base.OnApplyTemplate(e);
-      _menuIndicator = e.NameScope.Find<IconButton>(TabScrollViewerTheme.ScrollMenuIndicatorPart);
-      _startEdgeIndicator = e.NameScope.Find<Border>(TabScrollViewerTheme.ScrollStartEdgeIndicatorPart);
-      _endEdgeIndicator = e.NameScope.Find<Border>(TabScrollViewerTheme.ScrollEndEdgeIndicatorPart);
+      _menuIndicator = e.NameScope.Find<IconButton>(BaseTabScrollViewerTheme.ScrollMenuIndicatorPart);
+      _startEdgeIndicator = e.NameScope.Find<Border>(BaseTabScrollViewerTheme.ScrollStartEdgeIndicatorPart);
+      _endEdgeIndicator = e.NameScope.Find<Border>(BaseTabScrollViewerTheme.ScrollEndEdgeIndicatorPart);
       
       TokenResourceBinder.CreateTokenBinding(this, EdgeShadowStartColorProperty, GlobalResourceKey.ColorFillSecondary);
       TokenResourceBinder.CreateTokenBinding(this, MenuEdgeThicknessProperty, TabControlResourceKey.MenuEdgeThickness);
-
-      if (_menuIndicator is not null) {
-         _menuIndicator.Click += HandleMenuIndicator;
-      }
       
       SetupIndicatorsVisibility();
-   }
-
-   private void HandleMenuIndicator(object? sender, RoutedEventArgs args)
-   {
-      if (_menuFlyout is null) {
-         _menuFlyout = new MenuFlyout();
-      }
-
-      if (TabStripPlacement == Dock.Top || TabStripPlacement == Dock.Bottom) {
-         _menuFlyout.Placement = PlacementMode.Bottom;
-      } else {
-         _menuFlyout.Placement = PlacementMode.Right;
-      }
-
-      // 收集没有完全显示的 Tab 列表
-      _menuFlyout.Items.Clear();
-      if (TabStrip is not null) {
-         for (int i = 0; i < TabStrip.ItemCount; i++) {
-            var itemContainer = TabStrip.ContainerFromIndex(i)!;
-            if (itemContainer is TabStripItem tabStripItem) {
-               var itemBounds = itemContainer.Bounds;
-               var left = Math.Floor(itemBounds.Left - Offset.X);
-               var right = Math.Floor(itemBounds.Right - Offset.X);
-               if (TabStripPlacement == Dock.Top || TabStripPlacement == Dock.Bottom) {
-                  if (left < 0 || right > Viewport.Width) {
-                     var menuItem = new OverflowTabMenuItem()
-                     {
-                        Header = tabStripItem.Content,
-                        TabStripItem = tabStripItem,
-                        IsClosable = tabStripItem.IsClosable
-                     };
-                     menuItem.Click += HandleMenuItemClicked;
-                     menuItem.CloseTab += HandleCloseTabRequest;
-                     _menuFlyout.Items.Add(menuItem);
-                  }
-               }
-            }
-         }
-
-         if (_menuFlyout.Items.Count > 0) {
-            _menuFlyout.ShowAt(_menuIndicator!);
-         }
-      }
-   }
-
-   private void HandleMenuItemClicked(object? sender, RoutedEventArgs args)
-   {
-      if (TabStrip is not null) {
-         Dispatcher.UIThread.Post(sender =>
-         {
-            if (sender is OverflowTabMenuItem tabStripMenuItem) {
-               var tabStripItem = tabStripMenuItem.TabStripItem;
-               if (tabStripItem is not null) {
-                  tabStripItem.BringIntoView();
-                  TabStrip.SelectedItem = tabStripItem;
-               }
-            }
-         }, sender);
-      }
-   }
-
-   private void HandleCloseTabRequest(object? sender, RoutedEventArgs args)
-   {
-      if (sender is OverflowTabMenuItem tabStripMenuItem) {
-         if (TabStrip is not null) {
-            if (TabStrip.SelectedItem is TabStripItem selectedItem) {
-               if (selectedItem == tabStripMenuItem.TabStripItem) {
-                  var selectedIndex = TabStrip.SelectedIndex;
-                  object? newSelectedItem = null;
-                  if (selectedIndex != 0) {
-                     newSelectedItem = TabStrip.Items[--selectedIndex];
-                  }
-                  TabStrip.Items.Remove(tabStripMenuItem.TabStripItem);
-                  TabStrip.SelectedItem = newSelectedItem;
-               } else {
-                  TabStrip.Items.Remove(tabStripMenuItem.TabStripItem);
-               }
-            } 
-         }
-        
-      }
    }
 
    protected override Size MeasureOverride(Size availableSize)
