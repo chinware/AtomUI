@@ -2,17 +2,16 @@
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
-using Avalonia.LogicalTree;
 using Avalonia.Threading;
 
 namespace AtomUI.Controls;
 
-internal class TabStripMenuItem : MenuItem
+internal class OverflowTabMenuItem : MenuItem
 {
    #region 公共属性
 
-   public static readonly DirectProperty<TabStripMenuItem, bool> IsClosableProperty =
-      AvaloniaProperty.RegisterDirect<TabStripMenuItem, bool>(nameof(IsClosable),
+   public static readonly DirectProperty<OverflowTabMenuItem, bool> IsClosableProperty =
+      AvaloniaProperty.RegisterDirect<OverflowTabMenuItem, bool>(nameof(IsClosable),
                                                               o => o.IsClosable,
                                                               (o, v) => o.IsClosable = v);
    
@@ -41,7 +40,7 @@ internal class TabStripMenuItem : MenuItem
    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
    {
       base.OnApplyTemplate(e);
-      _iconButton = e.NameScope.Find<IconButton>(TabStripMenuItemTheme.ItemCloseButtonPart);
+      _iconButton = e.NameScope.Find<IconButton>(OverflowTabMenuItemTheme.ItemCloseButtonPart);
       if (_iconButton is not null) {
          _iconButton.Click += (sender, args) =>
          {

@@ -13,21 +13,21 @@ using Avalonia.Styling;
 namespace AtomUI.Controls;
 
 [ControlThemeProvider]
-internal class TabStripMenuItemTheme : BaseControlTheme
+internal class OverflowTabMenuItemTheme : BaseControlTheme
 {
    public const string ItemDecoratorPart     = "Part_ItemDecorator";
    public const string MainContainerPart     = "Part_MainContainer";
    public const string ItemTextPresenterPart = "Part_ItemTextPresenter";
    public const string ItemCloseButtonPart = "Part_ItemCloseIcon";
    
-   public TabStripMenuItemTheme()
-      : base(typeof(TabStripMenuItem))
+   public OverflowTabMenuItemTheme()
+      : base(typeof(OverflowTabMenuItem))
    {
    }
 
    protected override IControlTemplate BuildControlTemplate()
    {
-      return new FuncControlTemplate<TabStripMenuItem>((item, scope) =>
+      return new FuncControlTemplate<OverflowTabMenuItem>((item, scope) =>
       {
          var container = new Border()
          {
@@ -61,8 +61,8 @@ internal class TabStripMenuItemTheme : BaseControlTheme
          
          Grid.SetColumn(itemTextPresenter, 0);
          TokenResourceBinder.CreateTokenBinding(itemTextPresenter, ContentPresenter.MarginProperty, MenuResourceKey.ItemMargin);
-         CreateTemplateParentBinding(itemTextPresenter, ContentPresenter.ContentProperty, TabStripMenuItem.HeaderProperty);
-         CreateTemplateParentBinding(itemTextPresenter, ContentPresenter.ContentTemplateProperty, TabStripMenuItem.HeaderTemplateProperty);
+         CreateTemplateParentBinding(itemTextPresenter, ContentPresenter.ContentProperty, OverflowTabMenuItem.HeaderProperty);
+         CreateTemplateParentBinding(itemTextPresenter, ContentPresenter.ContentTemplateProperty, OverflowTabMenuItem.HeaderTemplateProperty);
 
          itemTextPresenter.RegisterInNameScope(scope);
          
@@ -82,7 +82,7 @@ internal class TabStripMenuItemTheme : BaseControlTheme
          };
 
 
-         CreateTemplateParentBinding(closeButton, IconButton.IsVisibleProperty, TabStripMenuItem.IsClosableProperty);
+         CreateTemplateParentBinding(closeButton, IconButton.IsVisibleProperty, OverflowTabMenuItem.IsClosableProperty);
          TokenResourceBinder.CreateGlobalTokenBinding(menuCloseIcon, PathIcon.NormalFilledBrushProperty, GlobalResourceKey.ColorIcon);
          TokenResourceBinder.CreateGlobalTokenBinding(menuCloseIcon, PathIcon.ActiveFilledBrushProperty, GlobalResourceKey.ColorIconHover);
          
@@ -110,7 +110,7 @@ internal class TabStripMenuItemTheme : BaseControlTheme
 
    private void BuildCommonStyle(Style commonStyle)
    {
-      commonStyle.Add(TabStripMenuItem.ForegroundProperty, MenuResourceKey.ItemColor);
+      commonStyle.Add(OverflowTabMenuItem.ForegroundProperty, MenuResourceKey.ItemColor);
       {
          var borderStyle = new Style(selector => selector.Nesting().Template().Name(ItemDecoratorPart));
          borderStyle.Add(Border.MinHeightProperty, MenuResourceKey.ItemHeight);
@@ -122,7 +122,7 @@ internal class TabStripMenuItemTheme : BaseControlTheme
       
       // Hover 状态
       var hoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
-      hoverStyle.Add(TabStripMenuItem.ForegroundProperty, MenuResourceKey.ItemHoverColor);
+      hoverStyle.Add(OverflowTabMenuItem.ForegroundProperty, MenuResourceKey.ItemHoverColor);
       {
          var borderStyle = new Style(selector => selector.Nesting().Template().Name(ItemDecoratorPart));
          borderStyle.Add(Border.BackgroundProperty, MenuResourceKey.ItemHoverBg);
@@ -134,7 +134,7 @@ internal class TabStripMenuItemTheme : BaseControlTheme
    private void BuildDisabledStyle()
    {
       var disabledStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Disabled));
-      disabledStyle.Add(TabStripMenuItem.ForegroundProperty, MenuResourceKey.ItemDisabledColor);
+      disabledStyle.Add(OverflowTabMenuItem.ForegroundProperty, MenuResourceKey.ItemDisabledColor);
       Add(disabledStyle);
    }
    
