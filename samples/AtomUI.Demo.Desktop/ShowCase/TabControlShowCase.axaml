@@ -8,6 +8,21 @@
     xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
     mc:Ignorable="d">
     <TabControl>
+        <TabItem Header="TabControl">
+            <showcase:ShowCasePanel>
+                <showcase:ShowCaseItem
+                    Title="Basic"
+                    Description="Default activate first tab.">
+                    <StackPanel Orientation="Vertical" Spacing="20">
+                        <atom:TabControl>
+                            <atom:TabItem>Tab 1</atom:TabItem>
+                            <atom:TabItem>Tab 2</atom:TabItem>
+                            <atom:TabItem>Tab 3</atom:TabItem>
+                        </atom:TabControl>
+                    </StackPanel>
+                </showcase:ShowCaseItem>
+            </showcase:ShowCasePanel>
+        </TabItem>
         <TabItem Header="TabStrip">
             <showcase:ShowCasePanel>
                 <showcase:ShowCaseItem
