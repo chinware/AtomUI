@@ -7,4 +7,6 @@ internal class TabControlScrollViewer : BaseTabScrollViewer
    internal BaseTabControl? TabControl { get; set; } 
 
    #endregion
+   
+   protected override Type StyleKeyOverride => typeof(BaseTabScrollViewer);
 }

@@ -16,11 +16,11 @@ namespace AtomUI.Controls;
 internal class BaseTabScrollViewerTheme : BaseControlTheme
 {
    public const string ScrollStartEdgeIndicatorPart = "Part_ScrollStartEdgeIndicator";
-   public const string ScrollEndEdgeIndicatorPart = "Part_ScrollEndEdgeIndicator";
-   public const string ScrollMenuIndicatorPart = "Part_ScrollMenuIndicator";
-   public const string ScrollViewContentPart = "PART_ContentPresenter";
-   public const string ScrollViewLayoutPart = "PART_ScrollViewLayout";
-   public const string ScrollViewWrapperLayoutPart = "PART_ScrollViewWrapperLayout";
+   public const string ScrollEndEdgeIndicatorPart   = "Part_ScrollEndEdgeIndicator";
+   public const string ScrollMenuIndicatorPart      = "Part_ScrollMenuIndicator";
+   public const string ScrollViewContentPart        = "PART_ContentPresenter";
+   public const string ScrollViewLayoutPart         = "PART_ScrollViewLayout";
+   public const string ScrollViewWrapperLayoutPart  = "PART_ScrollViewWrapperLayout";
    
    public BaseTabScrollViewerTheme()
       : base(typeof(BaseTabScrollViewer)) { }
@@ -136,14 +136,14 @@ internal class BaseTabScrollViewerTheme : BaseControlTheme
          var menuIndicatorStyle =
             new Style(selector => selector.Nesting().Template().Name(ScrollMenuIndicatorPart));
          menuIndicatorStyle.Add(DockPanel.DockProperty, Dock.Right);
-         menuIndicatorStyle.Add(IconButton.PaddingProperty, TabControlResourceKey.MenuIndicatorPaddingHorizontal);
+         menuIndicatorStyle.Add(TemplatedControl.PaddingProperty, TabControlResourceKey.MenuIndicatorPaddingHorizontal);
 
          var startEdgeIndicatorStyle = new Style(selector => selector.Nesting().Template().Name(ScrollStartEdgeIndicatorPart));
-         startEdgeIndicatorStyle.Add(Control.WidthProperty, TabControlResourceKey.MenuEdgeThickness);
+         startEdgeIndicatorStyle.Add(Layoutable.WidthProperty, TabControlResourceKey.MenuEdgeThickness);
          topPlacementStyle.Add(startEdgeIndicatorStyle);
          
          var endEdgeIndicatorStyle = new Style(selector => selector.Nesting().Template().Name(ScrollEndEdgeIndicatorPart));
-         endEdgeIndicatorStyle.Add(Control.WidthProperty, TabControlResourceKey.MenuEdgeThickness);
+         endEdgeIndicatorStyle.Add(Layoutable.WidthProperty, TabControlResourceKey.MenuEdgeThickness);
          topPlacementStyle.Add(endEdgeIndicatorStyle);
          
          topPlacementStyle.Add(menuIndicatorStyle);
@@ -161,14 +161,14 @@ internal class BaseTabScrollViewerTheme : BaseControlTheme
          var menuIndicatorStyle =
             new Style(selector => selector.Nesting().Template().Name(ScrollMenuIndicatorPart));
          menuIndicatorStyle.Add(DockPanel.DockProperty, Dock.Bottom);
-         menuIndicatorStyle.Add(IconButton.PaddingProperty, TabControlResourceKey.MenuIndicatorPaddingVertical);
+         menuIndicatorStyle.Add(TemplatedControl.PaddingProperty, TabControlResourceKey.MenuIndicatorPaddingVertical);
          
          var startEdgeIndicatorStyle = new Style(selector => selector.Nesting().Template().Name(ScrollStartEdgeIndicatorPart));
-         startEdgeIndicatorStyle.Add(Control.HeightProperty, TabControlResourceKey.MenuEdgeThickness);
+         startEdgeIndicatorStyle.Add(Layoutable.HeightProperty, TabControlResourceKey.MenuEdgeThickness);
          topPlacementStyle.Add(startEdgeIndicatorStyle);
          
          var endEdgeIndicatorStyle = new Style(selector => selector.Nesting().Template().Name(ScrollStartEdgeIndicatorPart));
-         endEdgeIndicatorStyle.Add(Control.HeightProperty, TabControlResourceKey.MenuEdgeThickness);
+         endEdgeIndicatorStyle.Add(Layoutable.HeightProperty, TabControlResourceKey.MenuEdgeThickness);
          topPlacementStyle.Add(endEdgeIndicatorStyle);
       
          rightPlacementStyle.Add(menuIndicatorStyle);
@@ -186,14 +186,14 @@ internal class BaseTabScrollViewerTheme : BaseControlTheme
          var menuIndicatorStyle =
             new Style(selector => selector.Nesting().Template().Name(ScrollMenuIndicatorPart));
          menuIndicatorStyle.Add(DockPanel.DockProperty, Dock.Right);
-         menuIndicatorStyle.Add(IconButton.PaddingProperty, TabControlResourceKey.MenuIndicatorPaddingHorizontal);
+         menuIndicatorStyle.Add(TemplatedControl.PaddingProperty, TabControlResourceKey.MenuIndicatorPaddingHorizontal);
          
          var startEdgeIndicatorStyle = new Style(selector => selector.Nesting().Template().Name(ScrollStartEdgeIndicatorPart));
-         startEdgeIndicatorStyle.Add(Control.WidthProperty, TabControlResourceKey.MenuEdgeThickness);
+         startEdgeIndicatorStyle.Add(Layoutable.WidthProperty, TabControlResourceKey.MenuEdgeThickness);
          topPlacementStyle.Add(startEdgeIndicatorStyle);
          
          var endEdgeIndicatorStyle = new Style(selector => selector.Nesting().Template().Name(ScrollStartEdgeIndicatorPart));
-         endEdgeIndicatorStyle.Add(Control.WidthProperty, TabControlResourceKey.MenuEdgeThickness);
+         endEdgeIndicatorStyle.Add(Layoutable.WidthProperty, TabControlResourceKey.MenuEdgeThickness);
          topPlacementStyle.Add(endEdgeIndicatorStyle);
       
          bottomPlacementStyle.Add(menuIndicatorStyle);
@@ -211,14 +211,14 @@ internal class BaseTabScrollViewerTheme : BaseControlTheme
          var menuIndicatorStyle =
             new Style(selector => selector.Nesting().Template().Name(ScrollMenuIndicatorPart));
          menuIndicatorStyle.Add(DockPanel.DockProperty, Dock.Bottom);
-         menuIndicatorStyle.Add(IconButton.PaddingProperty, TabControlResourceKey.MenuIndicatorPaddingVertical);
+         menuIndicatorStyle.Add(TemplatedControl.PaddingProperty, TabControlResourceKey.MenuIndicatorPaddingVertical);
          
          var startEdgeIndicatorStyle = new Style(selector => selector.Nesting().Template().Name(ScrollStartEdgeIndicatorPart));
-         startEdgeIndicatorStyle.Add(Control.HeightProperty, TabControlResourceKey.MenuEdgeThickness);
+         startEdgeIndicatorStyle.Add(Layoutable.HeightProperty, TabControlResourceKey.MenuEdgeThickness);
          topPlacementStyle.Add(startEdgeIndicatorStyle);
          
          var endEdgeIndicatorStyle = new Style(selector => selector.Nesting().Template().Name(ScrollStartEdgeIndicatorPart));
-         endEdgeIndicatorStyle.Add(Control.HeightProperty, TabControlResourceKey.MenuEdgeThickness);
+         endEdgeIndicatorStyle.Add(Layoutable.HeightProperty, TabControlResourceKey.MenuEdgeThickness);
          topPlacementStyle.Add(endEdgeIndicatorStyle);
       
          leftPlacementStyle.Add(menuIndicatorStyle);

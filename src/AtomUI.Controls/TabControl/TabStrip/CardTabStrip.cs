@@ -8,6 +8,7 @@ using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Interactivity;
+using Avalonia.Layout;
 
 namespace AtomUI.Controls;
 
@@ -260,14 +261,16 @@ public class CardTabStrip : BaseTabStrip, IControlCustomStyle
       } else if (TabStripPlacement == Dock.Left) {
          CardBorderRadius = new CornerRadius(topLeft: _cardBorderRadiusSize.TopLeft, 0, bottomLeft:_cardBorderRadiusSize.BottomLeft, bottomRight:0);
          if (_addTabButton is not null && _itemsPresenter is not null) {
-            _addTabButton.Width = _itemsPresenter.DesiredSize.Width;
+            _addTabButton.Width = _cardSize;
             _addTabButton.Height = _cardSize;
+            _addTabButton.HorizontalAlignment = HorizontalAlignment.Right;
          }
       } else {
          CardBorderRadius = new CornerRadius(topLeft: 0, topRight:_cardBorderRadiusSize.TopRight, bottomLeft:0, bottomRight:_cardBorderRadiusSize.BottomRight);
          if (_addTabButton is not null && _itemsPresenter is not null) {
-            _addTabButton.Width = _itemsPresenter.DesiredSize.Width;
+            _addTabButton.Width = _cardSize;
             _addTabButton.Height = _cardSize;
+            _addTabButton.HorizontalAlignment = HorizontalAlignment.Left;
          }
       }
    }
