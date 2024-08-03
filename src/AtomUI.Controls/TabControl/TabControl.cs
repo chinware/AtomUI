@@ -1,6 +1,6 @@
 ﻿namespace AtomUI.Controls;
 
-public class TabControl
+public class TabControl : BaseTabControl
 {
    
 }
