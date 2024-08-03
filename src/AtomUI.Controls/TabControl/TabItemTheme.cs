@@ -1,6 +1,16 @@
-﻿namespace AtomUI.Controls;
+﻿using AtomUI.Theme.Styling;
 
-public class TabItemTheme
+namespace AtomUI.Controls;
+
+[ControlThemeProvider]
+internal class TabItemTheme : BaseTabItemTheme
 {
+   public const string ID = "TabItem";
    
+   public TabItemTheme() : base(typeof(TabItem)) { }
+   
+   public override string ThemeResourceKey()
+   {
+      return ID;
+   }
 }
