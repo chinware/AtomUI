@@ -205,8 +205,7 @@ public class Separator : AvaloniaSeparator, IControlCustomStyle
 
    void IControlCustomStyle.SetupTokenBindings()
    {
-      TokenResourceBinder.CreateTokenBinding(this, LineWidthProperty, GlobalResourceKey.LineWidth, BindingPriority.Template,
-                                   new RenderScaleAwareDoubleConfigure(this));
+      TokenResourceBinder.CreateTokenBinding(this, LineWidthProperty, GlobalResourceKey.LineWidth);
    }
 
    // 当为水平分隔线的时候，我们设置最小的高度，当为垂直分割线的时候我们设置一个合适宽度
@@ -306,8 +305,7 @@ public class Separator : AvaloniaSeparator, IControlCustomStyle
    {
       using var state = context.PushRenderOptions(new RenderOptions
       {
-         BitmapInterpolationMode = BitmapInterpolationMode.LowQuality,
-         TextRenderingMode = TextRenderingMode.Alias
+         EdgeMode = EdgeMode.Aliased
       });
       var linePen = new Pen(LineColor, LineWidth);
       var controlRect = new Rect(new Point(0, 0), DesiredSize);

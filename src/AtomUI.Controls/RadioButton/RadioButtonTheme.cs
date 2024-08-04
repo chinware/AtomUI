@@ -17,7 +17,6 @@ internal class RadioButtonTheme : BaseControlTheme
       this.Add(RadioButton.RadioSizeProperty, RadioButtonResourceKey.RadioSize);
       this.Add(RadioButton.PaddingInlineProperty, GlobalResourceKey.PaddingXS);
       this.Add(RadioButton.RadioBorderBrushProperty, GlobalResourceKey.ColorBorder);
-      this.Add(RadioButton.RadioBorderThicknessProperty, GlobalResourceKey.BorderThickness);
       this.Add(RadioButton.DotSizeValueProperty, RadioButtonResourceKey.DotSize);
       this.Add(RadioButton.DotPaddingProperty, RadioButtonResourceKey.DotPadding);
       BuildEnabledStyle();

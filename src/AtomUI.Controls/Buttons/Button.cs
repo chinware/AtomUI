@@ -1,6 +1,7 @@
 using AtomUI.Controls.Utils;
 using AtomUI.Icon;
 using AtomUI.Media;
+using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using AtomUI.Utils;
@@ -9,6 +10,7 @@ using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
+using Avalonia.Data;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 
@@ -31,6 +33,7 @@ public enum ButtonShape
    Circle,
    Round,
 }
+// TODO 目前不能动态切换 ButtonType
 
 [PseudoClasses(IconOnlyPC)]
 public class Button : AvaloniaButton,
@@ -164,7 +167,6 @@ public class Button : AvaloniaButton,
    private ControlStyleState _styleState;
    private IControlCustomStyle _customStyle;
    private StackPanel? _stackPanel;
-   private Label? _label;
    private bool _initialized = false;
    private BorderRenderHelper _borderRenderHelper;
 
@@ -296,7 +298,6 @@ public class Button : AvaloniaButton,
 
    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
    {
-      _label = scope.Find<Label>(BaseButtonTheme.LabelPart);
       _stackPanel = scope.Find<StackPanel>(BaseButtonTheme.StackPanelPart);
 
       if (ButtonType == ButtonType.Default) {
@@ -406,7 +407,7 @@ public class Button : AvaloniaButton,
          }
       }
 
-      if (e.Property == SizeTypeProperty) {
+      if (e.Property == ButtonTypeProperty) {
          if (VisualRoot is not null) {
             SetupControlTheme();
          }
@@ -453,7 +454,7 @@ public class Button : AvaloniaButton,
    {
       _borderRenderHelper.Render(context,
                                  Bounds.Size,
-                                 BorderThickness,
+                                 BorderUtils.BuildRenderScaleAwareThickness(BorderThickness, VisualRoot?.RenderScaling ?? 1.0),
                                  CornerRadius,
                                  BackgroundSizing,
                                  Background,

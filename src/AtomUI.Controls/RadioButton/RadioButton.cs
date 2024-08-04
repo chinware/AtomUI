@@ -1,11 +1,14 @@
 using AtomUI.Controls.Utils;
 using AtomUI.Media;
+using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Media;
@@ -136,6 +139,9 @@ public class RadioButton : AvaloniaRadioButton,
 
    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
    {
+      TokenResourceBinder.CreateGlobalResourceBinding(this, RadioBorderThicknessProperty,
+                                                      GlobalResourceKey.BorderThickness, BindingPriority.Template,
+                                                      new RenderScaleAwareThicknessConfigure(this));
       Cursor = new Cursor(StandardCursorType.Hand);
       _customStyle.CollectStyleState();
       RadioDotEffectSize = CalculateDotSize(IsEnabled, IsChecked.HasValue && IsChecked.Value);

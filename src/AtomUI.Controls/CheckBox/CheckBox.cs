@@ -1,12 +1,15 @@
 using AtomUI.Controls.Utils;
 using AtomUI.Media;
+using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Media;
@@ -172,8 +175,6 @@ public class CheckBox : AvaloniaCheckBox,
       var penWidth = IndicatorBorderThickness.Top;
       var borderRadius = GeometryUtils.CornerRadiusScalarValue(IndicatorBorderRadius);
       {
-         var originTransform = Matrix.CreateTranslation(indicatorRect.X, indicatorRect.Y);
-         using var transformState = context.PushTransform(originTransform);
          _borderRenderHelper.Render(context, indicatorRect.Size,
                                     borderThickness: new Thickness(penWidth),
                                     new CornerRadius(borderRadius),
@@ -191,7 +192,7 @@ public class CheckBox : AvaloniaCheckBox,
          var deltaWidth = (CheckIndicatorSize - checkMarkBounds.Width) / 2;
          var deltaHeight = (CheckIndicatorSize - checkMarkBounds.Height) / 2;
          var offsetX = indicatorRect.X + deltaWidth - checkMarkPenWidth - penWidth;
-         var offsetY = indicatorRect.Y + deltaHeight - checkMarkPenWidth - penWidth * 2;
+         var offsetY = indicatorRect.Y + deltaHeight - checkMarkPenWidth - penWidth * 3;
          checkMarkGeometry.Transform = new TranslateTransform(offsetX, offsetY);
          context.DrawGeometry(null, checkMarkPen, checkMarkGeometry);
       } else if (_styleState.HasFlag(ControlStyleState.Indeterminate)) {
@@ -218,6 +219,8 @@ public class CheckBox : AvaloniaCheckBox,
 
    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
    {
+      TokenResourceBinder.CreateGlobalResourceBinding(this, IndicatorBorderThicknessProperty, GlobalResourceKey.BorderThickness, BindingPriority.Template,
+         new RenderScaleAwareThicknessConfigure(this));
       HorizontalAlignment = HorizontalAlignment.Left;
       Cursor = new Cursor(StandardCursorType.Hand);
       _customStyle.CollectStyleState();
@@ -250,8 +253,8 @@ public class CheckBox : AvaloniaCheckBox,
    // Measure 之后才有值
    private Rect IndicatorRect()
    {
-      var offsetY = Math.Ceiling((DesiredSize.Height - Margin.Top - Margin.Bottom - CheckIndicatorSize) / 2);
-      return new Rect(0d, offsetY, CheckIndicatorSize, CheckIndicatorSize);
+      // var offsetY = Math.Ceiling((DesiredSize.Height - Margin.Top - Margin.Bottom - CheckIndicatorSize) / 2);
+      return new Rect(0d, 0d, CheckIndicatorSize, CheckIndicatorSize);
    }
 
    private Rect TextRect()

@@ -1,4 +1,6 @@
-﻿using Avalonia;
+﻿using AtomUI.Theme.Utils;
+using AtomUI.Utils;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.VisualTree;
 
@@ -25,10 +27,11 @@ internal class RenderScaleAwareThicknessConfigure
                renderScaling = visualRoot.RenderScaling;
             }
          }
-         var result = new Thickness(thickness.Left / renderScaling,
-                                    thickness.Top / renderScaling,
-                                    thickness.Right / renderScaling,
-                                    thickness.Bottom / renderScaling);
+
+         if (MathUtils.AreClose(renderScaling, Math.Floor(renderScaling))) {
+            renderScaling = 1.0d; // 这种情况很清晰
+         }
+         var result = BorderUtils.BuildRenderScaleAwareThickness(thickness, renderScaling);
          if (_postProcessor is not null) {
             return _postProcessor(result);
          }
@@ -42,4 +45,5 @@ internal class RenderScaleAwareThicknessConfigure
    {
       return configure.Configure;
    }
+   
 }

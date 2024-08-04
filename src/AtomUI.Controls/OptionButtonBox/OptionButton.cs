@@ -285,7 +285,7 @@ public class OptionButton : AvaloniaRadioButton,
    {
       _borderRenderHelper.Render(context,
                                  Bounds.Size,
-                                 BorderThickness,
+                                 BorderUtils.BuildRenderScaleAwareThickness(BorderThickness, VisualRoot?.RenderScaling ?? 1.0),
                                  CornerRadius,
                                  BackgroundSizing.InnerBorderEdge,
                                  Background,

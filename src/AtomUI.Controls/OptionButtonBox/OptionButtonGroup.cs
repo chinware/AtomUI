@@ -1,6 +1,7 @@
 using System.Collections.Specialized;
 using AtomUI.Controls.Utils;
 using AtomUI.Theme.Styling;
+using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;
@@ -241,9 +242,11 @@ public class OptionButtonGroup : TemplatedControl, ISizeTypeAware, IControlCusto
 
    public override void Render(DrawingContext context)
    {
+      var borderThickness =
+         BorderUtils.BuildRenderScaleAwareThickness(BorderThickness, VisualRoot?.RenderScaling ?? 1.0);
       _borderRenderHelper.Render(context,
                                  new Size(DesiredSize.Width, DesiredSize.Height),
-                                 BorderThickness,
+                                 borderThickness,
                                  CornerRadius,
                                  BackgroundSizing.CenterBorder,
                                  null,
@@ -268,7 +271,7 @@ public class OptionButtonGroup : TemplatedControl, ISizeTypeAware, IControlCusto
             {
                EdgeMode = EdgeMode.Aliased
             });
-            context.DrawLine(new Pen(BorderBrush, BorderThickness.Left), startPoint, endPoint);
+            context.DrawLine(new Pen(BorderBrush, borderThickness.Left), startPoint, endPoint);
          }
 
          if (ButtonStyle == OptionButtonStyle.Outline) {
@@ -276,14 +279,9 @@ public class OptionButtonGroup : TemplatedControl, ISizeTypeAware, IControlCusto
                // 绘制选中边框
                var offsetX = optionButton.Bounds.X;
                var width = optionButton.DesiredSize.Width;
-               if (i > 0 && i < Options.Count - 1) {
-                  offsetX -= BorderThickness.Left / 2;
-                  width += BorderThickness.Left;
-               } else if (i == 0) {
-                  width += BorderThickness.Left / 2;
-               } else {
-                  offsetX -= BorderThickness.Left / 2;
-                  width += BorderThickness.Left / 2;
+               if (i > 0) {
+                  offsetX -= borderThickness.Left;
+                  width += borderThickness.Left;
                }
 
                var translationMatrix = Matrix.CreateTranslation(offsetX, 0);
@@ -297,7 +295,7 @@ public class OptionButtonGroup : TemplatedControl, ISizeTypeAware, IControlCusto
 
                _borderRenderHelper.Render(context,
                                           new Size(width, DesiredSize.Height),
-                                          BorderThickness,
+                                          borderThickness,
                                           cornerRadius,
                                           BackgroundSizing.InnerBorderEdge,
                                           null,
