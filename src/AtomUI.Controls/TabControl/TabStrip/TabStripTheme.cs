@@ -17,12 +17,23 @@ internal class TabStripTheme : BaseTabStripTheme
    
    protected override void NotifyBuildControlTemplate(BaseTabStrip baseTabStrip, INameScope scope, Border container)
    {
-      var tabScrollViewer = new TabStripScrollViewer();
+      var alignWrapper = new Panel()
+      {
+         Name = AlignWrapperPart
+      };
+      alignWrapper.RegisterInNameScope(scope);
+      
+      var tabScrollViewer = new TabStripScrollViewer()
+      {
+         Name = TabsContainerPart
+      };
       CreateTemplateParentBinding(tabScrollViewer, BaseTabScrollViewer.TabStripPlacementProperty, TabStrip.TabStripPlacementProperty);
       var contentPanel = CreateTabStripContentPanel(scope);
       tabScrollViewer.Content = contentPanel;
       tabScrollViewer.TabStrip = baseTabStrip;
-      container.Child = tabScrollViewer;
+      
+      alignWrapper.Children.Add(tabScrollViewer);
+      container.Child = alignWrapper;
    }
 
    private Panel CreateTabStripContentPanel(INameScope scope)

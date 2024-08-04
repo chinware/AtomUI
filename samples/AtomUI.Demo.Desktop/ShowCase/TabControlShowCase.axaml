@@ -103,6 +103,13 @@
                             <atom:TabStripItem>Tab 2</atom:TabStripItem>
                             <atom:TabStripItem>Tab 3</atom:TabStripItem>
                         </atom:TabStrip>
+                        
+                        <atom:CardTabStrip TabAlignmentCenter="True">
+                            <atom:TabStripItem>Tab 1</atom:TabStripItem>
+                            <atom:TabStripItem>Tab 2</atom:TabStripItem>
+                            <atom:TabStripItem>Tab 3</atom:TabStripItem>
+                        </atom:CardTabStrip>
+                        
                     </StackPanel>
                 </showcase:ShowCaseItem>
 

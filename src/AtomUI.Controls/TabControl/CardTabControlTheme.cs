@@ -27,14 +27,12 @@ internal class CardTabControlTheme : BaseTabControlTheme
        CreateTemplateParentBinding(alignWrapper, DockPanel.DockProperty, BaseTabControl.TabStripPlacementProperty);
        CreateTemplateParentBinding(alignWrapper, Panel.MarginProperty,TabControl.TabStripMarginProperty);
        
-      var cardTabStripContainer = new DockPanel()
+      var cardTabControlContainer = new TabsContainerPanel()
       {
          Name = TabsContainerPart,
       };
-      cardTabStripContainer.RegisterInNameScope(scope);
-
-      TokenResourceBinder.CreateTokenBinding(cardTabStripContainer, StackPanel.SpacingProperty,
-                                             TabControlResourceKey.CardGutter);
+      cardTabControlContainer.RegisterInNameScope(scope);
+      CreateTemplateParentBinding(cardTabControlContainer, TabsContainerPanel.TabStripPlacementProperty, TabStrip.TabStripPlacementProperty);
       
       var tabScrollViewer = new TabControlScrollViewer()
       {
@@ -64,6 +62,7 @@ internal class CardTabControlTheme : BaseTabControlTheme
          BorderThickness = new Thickness(1),
          Icon = addTabIcon
       };
+      DockPanel.SetDock(addTabButton, Dock.Right);
       
       CreateTemplateParentBinding(addTabButton, IconButton.BorderThicknessProperty, CardTabControl.CardBorderThicknessProperty);
       CreateTemplateParentBinding(addTabButton, IconButton.CornerRadiusProperty, CardTabControl.CardBorderRadiusProperty);
@@ -73,10 +72,10 @@ internal class CardTabControlTheme : BaseTabControlTheme
       
       addTabButton.RegisterInNameScope(scope);
       
-      cardTabStripContainer.Children.Add(addTabButton);
-      cardTabStripContainer.Children.Add(tabScrollViewer);
+      cardTabControlContainer.TabScrollViewer = tabScrollViewer;
+      cardTabControlContainer.AddTabButton = addTabButton;
       
-      alignWrapper.Children.Add(cardTabStripContainer); 
+      alignWrapper.Children.Add(cardTabControlContainer); 
       
       container.Children.Add(alignWrapper);
    }

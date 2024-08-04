@@ -127,34 +127,7 @@ public class CardTabStrip : BaseTabStrip, IControlCustomStyle
       if (change.Property == SizeTypeProperty) {
          HandleSizeTypeChanged();
       } else if (change.Property == TabStripPlacementProperty) {
-         SetupCardTabStripContainer();
          HandleTabStripPlacementChanged();
-      }
-   }
-
-   private void SetupCardTabStripContainer(Size finalSize)
-   {
-      if (_cardTabStripContainer is not null) {
-         double addButtonOffset = 0;
-         double markOffset = 0;
-         if (TabStripPlacement == Dock.Top || TabStripPlacement == Dock.Bottom) {
-            addButtonOffset = _addTabButton?.Bounds.Right ?? 0;
-            markOffset = finalSize.Width;
-            if (addButtonOffset > markOffset) {
-               _cardTabStripContainer.ColumnDefinitions[0].Width = GridLength.Star;
-            } else {
-               _cardTabStripContainer.ColumnDefinitions[0].Width = GridLength.Auto;
-            }
-         } else {
-            addButtonOffset = _addTabButton?.Bounds.Bottom ?? 0;
-            markOffset = finalSize.Height;
-            if (addButtonOffset > markOffset) {
-               _cardTabStripContainer.RowDefinitions[0].Height = GridLength.Star;
-            } else {
-               _cardTabStripContainer.RowDefinitions[0].Height = GridLength.Auto;
-            }
-         }
-        
       }
    }
 
@@ -170,7 +143,6 @@ public class CardTabStrip : BaseTabStrip, IControlCustomStyle
          _addTabButton.Click += HandleAddButtonClicked;
       }
       HandleSizeTypeChanged();
-      SetupCardTabStripContainer();
    }
    #endregion
 
@@ -193,55 +165,8 @@ public class CardTabStrip : BaseTabStrip, IControlCustomStyle
    protected override Size ArrangeOverride(Size finalSize)
    {
       var size = base.ArrangeOverride(finalSize);
-      SetupCardTabStripContainer(finalSize);
       HandleTabStripPlacementChanged();
       return size;
-   }
-
-   private void SetupCardTabStripContainer()
-   {
-      if (TabStripPlacement == Dock.Top ||
-          TabStripPlacement == Dock.Bottom) {
-         if (_cardTabStripContainer is not null) {
-            _cardTabStripContainer.Children.Clear();
-            _cardTabStripContainer.RowDefinitions.Clear();
-            _cardTabStripContainer.ColumnDefinitions = new ColumnDefinitions()
-            {
-               new ColumnDefinition(GridLength.Auto),
-               new ColumnDefinition(GridLength.Auto),
-            };
-         }
-
-         if (_tabScrollViewer is not null) {
-            Grid.SetColumn(_tabScrollViewer, 0);
-         }
-
-         if (_addTabButton is not null) {
-            Grid.SetColumn(_addTabButton, 1);
-         }
-
-         _cardTabStripContainer!.Children.Add(_tabScrollViewer!);
-         _cardTabStripContainer.Children.Add(_addTabButton!);
-      } else {
-         if (_cardTabStripContainer is not null) {
-            _cardTabStripContainer.Children.Clear();
-            _cardTabStripContainer.ColumnDefinitions.Clear();
-            _cardTabStripContainer.RowDefinitions = new RowDefinitions()
-            {
-               new RowDefinition(GridLength.Auto),
-               new RowDefinition(GridLength.Auto),
-            };
-         }
-         if (_tabScrollViewer is not null) {
-            Grid.SetRow(_tabScrollViewer, 0);
-         }
-
-         if (_addTabButton is not null) {
-            Grid.SetRow(_addTabButton, 1);
-         }
-         _cardTabStripContainer!.Children.Add(_tabScrollViewer!);
-         _cardTabStripContainer.Children.Add(_addTabButton!);
-      }
    }
    
    private void HandleTabStripPlacementChanged()

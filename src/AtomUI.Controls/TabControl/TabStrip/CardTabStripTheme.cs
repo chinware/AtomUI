@@ -12,22 +12,24 @@ namespace AtomUI.Controls;
 [ControlThemeProvider]
 internal class CardTabStripTheme : BaseTabStripTheme
 {
-   public const string AddTabButtonPart = "PART_AddTabButton";
-   public const string CardTabStripContainerPart = "PART_CardTabStripContainer";
+   public const string AddTabButtonPart             = "PART_AddTabButton";
+   public const string CardTabStripContainerPart    = "PART_CardTabStripContainer";
    public const string CardTabStripScrollViewerPart = "PART_CardTabStripScrollViewer";
    
    public CardTabStripTheme() : base(typeof(CardTabStrip)) { }
 
    protected override void NotifyBuildControlTemplate(BaseTabStrip baseTabStrip, INameScope scope, Border container)
    {
-      var cardTabStripContainer = new Grid()
+      var alignWrapper = new Panel()
       {
-         Name = CardTabStripContainerPart,
+         Name = AlignWrapperPart
+      };
+      var cardTabStripContainer = new TabsContainerPanel()
+      {
+         Name = TabsContainerPart,
       };
       cardTabStripContainer.RegisterInNameScope(scope);
-
-      TokenResourceBinder.CreateTokenBinding(cardTabStripContainer, StackPanel.SpacingProperty,
-                                             TabControlResourceKey.CardGutter);
+      CreateTemplateParentBinding(cardTabStripContainer, TabsContainerPanel.TabStripPlacementProperty, TabStrip.TabStripPlacementProperty);
       
       var tabScrollViewer = new TabStripScrollViewer()
       {
@@ -65,10 +67,13 @@ internal class CardTabStripTheme : BaseTabStripTheme
       TokenResourceBinder.CreateGlobalResourceBinding(addTabButton, IconButton.BorderBrushProperty, GlobalResourceKey.ColorBorderSecondary);
       
       addTabButton.RegisterInNameScope(scope);
+
+      cardTabStripContainer.TabScrollViewer = tabScrollViewer;
+      cardTabStripContainer.AddTabButton = addTabButton;
       
-      cardTabStripContainer.Children.Add(tabScrollViewer);
-      cardTabStripContainer.Children.Add(addTabButton);
-      container.Child = cardTabStripContainer;
+      alignWrapper.Children.Add(cardTabStripContainer);
+      
+      container.Child = alignWrapper;
    }
    
    private ItemsPresenter CreateTabStripContentPanel(INameScope scope)
