@@ -172,15 +172,9 @@ public class BaseTabControl : AvaloniaTabControl
       }
    }
 
-   protected override Size ArrangeOverride(Size finalSize)
-   {
-      var size =  base.ArrangeOverride(finalSize);
-      SetupTabStripBorderPoints();
-      return size;
-   }
-
    public override void Render(DrawingContext context)
    {
+      SetupTabStripBorderPoints();
       var borderThickness = BorderThickness.Left;
       using var optionState = context.PushRenderOptions(new RenderOptions()
       {

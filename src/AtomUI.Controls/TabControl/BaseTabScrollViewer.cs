@@ -100,12 +100,14 @@ internal abstract class BaseTabScrollViewer : ScrollViewer
          if (TabStripPlacement == Dock.Top || TabStripPlacement == Dock.Bottom) {
             if (_startEdgeIndicator is not null) {
                _startEdgeIndicator.Height = Presenter.DesiredSize.Height;
+               _startEdgeIndicator.Width = _menuEdgeThickness;
                _startEdgeIndicator.ZIndex = EdgeIndicatorZIndex;
                _startEdgeIndicator.Background = BuildEdgeIndicatorBrush(TabStripPlacement, true);
             }
 
             if (_endEdgeIndicator is not null) {
                _endEdgeIndicator.Height = Presenter.DesiredSize.Height;
+               _endEdgeIndicator.Width = _menuEdgeThickness;
                _endEdgeIndicator.Margin = new Thickness(0, 0, _menuEdgeThickness, 0);
                _endEdgeIndicator.ZIndex = EdgeIndicatorZIndex;
                _endEdgeIndicator.Background = BuildEdgeIndicatorBrush(TabStripPlacement, false);
@@ -113,13 +115,15 @@ internal abstract class BaseTabScrollViewer : ScrollViewer
          } else {
             if (_startEdgeIndicator is not null) {
                _startEdgeIndicator.Width = Presenter.DesiredSize.Width;
+               _startEdgeIndicator.Height = _menuEdgeThickness;
                _startEdgeIndicator.ZIndex = EdgeIndicatorZIndex;
-               _startEdgeIndicator.Background = BuildEdgeIndicatorBrush(TabStripPlacement, false);
+               _startEdgeIndicator.Background = BuildEdgeIndicatorBrush(TabStripPlacement, true);
             }
 
             if (_endEdgeIndicator is not null) {
                _endEdgeIndicator.Width = Presenter.DesiredSize.Width;
-               _endEdgeIndicator.Margin = new Thickness(0, _menuEdgeThickness, 0, 0);
+               _endEdgeIndicator.Height = _menuEdgeThickness;
+               _endEdgeIndicator.Margin = new Thickness(0, 0, 0, _menuEdgeThickness);
                _endEdgeIndicator.ZIndex = EdgeIndicatorZIndex;
                _endEdgeIndicator.Background = BuildEdgeIndicatorBrush(TabStripPlacement, false);
             }

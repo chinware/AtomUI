@@ -29,8 +29,12 @@ internal class TabControlScrollViewer : BaseTabScrollViewer
          _menuFlyout = new MenuFlyout();
       }
 
-      if (TabStripPlacement == Dock.Top || TabStripPlacement == Dock.Bottom) {
+      if (TabStripPlacement == Dock.Top) {
          _menuFlyout.Placement = PlacementMode.Bottom;
+      } else if (TabStripPlacement == Dock.Bottom) {
+         _menuFlyout.Placement = PlacementMode.Top;
+      } else if (TabStripPlacement == Dock.Right) {
+         _menuFlyout.Placement = PlacementMode.Left;
       } else {
          _menuFlyout.Placement = PlacementMode.Right;
       }
@@ -41,21 +45,33 @@ internal class TabControlScrollViewer : BaseTabScrollViewer
          for (int i = 0; i < TabControl.ItemCount; i++) {
             var itemContainer = TabControl.ContainerFromIndex(i)!;
             if (itemContainer is TabItem tabItem) {
+               bool needAddToMenu = false;
                var itemBounds = itemContainer.Bounds;
-               var left = Math.Floor(itemBounds.Left - Offset.X);
-               var right = Math.Floor(itemBounds.Right - Offset.X);
                if (TabStripPlacement == Dock.Top || TabStripPlacement == Dock.Bottom) {
+                  var left = Math.Floor(itemBounds.Left - Offset.X);
+                  var right = Math.Floor(itemBounds.Right - Offset.X);
                   if (left < 0 || right > Viewport.Width) {
-                     var menuItem = new TabControlOverflowMenuItem
-                     {
-                        Header = tabItem.Header,
-                        TabItem = tabItem,
-                        IsClosable = tabItem.IsClosable
-                     };
-                     menuItem.Click += HandleMenuItemClicked;
-                     menuItem.CloseTab += HandleCloseTabRequest;
-                     _menuFlyout.Items.Add(menuItem);
+                     needAddToMenu = true;
                   }
+               } else {
+                  var top = Math.Floor(itemBounds.Top - Offset.Y);
+                  var bottom = Math.Floor(itemBounds.Bottom - Offset.Y);
+                  
+                  if (top < 0 || bottom > Viewport.Height) {
+                     needAddToMenu = true;
+                  }
+               }
+
+               if (needAddToMenu) {
+                  var menuItem = new TabControlOverflowMenuItem
+                  {
+                     Header = tabItem.Header,
+                     TabItem = tabItem,
+                     IsClosable = tabItem.IsClosable
+                  };
+                  menuItem.Click += HandleMenuItemClicked;
+                  menuItem.CloseTab += HandleCloseTabRequest;
+                  _menuFlyout.Items.Add(menuItem);
                }
             }
          }
