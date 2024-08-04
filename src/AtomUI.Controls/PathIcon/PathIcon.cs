@@ -147,7 +147,7 @@ public sealed class PathIcon : Control, ICustomHitTest
                               PrimaryFilledBrushProperty,
                               SecondaryFilledBrushProperty);
       HorizontalAlignmentProperty.OverrideDefaultValue<PathIcon>(HorizontalAlignment.Left);
-      VerticalAlignmentProperty.OverrideDefaultValue<PathIcon>(VerticalAlignment.Top);
+      VerticalAlignmentProperty.OverrideDefaultValue<PathIcon>(VerticalAlignment.Center);
    }
 
    public PathIcon()
