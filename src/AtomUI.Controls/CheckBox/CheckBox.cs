@@ -186,14 +186,7 @@ public class CheckBox : AvaloniaCheckBox,
       if (_styleState.HasFlag(ControlStyleState.On)) {
          var checkMarkGeometry =
             CommonShapeBuilder.BuildCheckMark(new Size(IndicatorCheckedMarkEffectSize, IndicatorCheckedMarkEffectSize));
-         var checkMarkPenWidth = 2;
          var checkMarkPen = new Pen(IndicatorCheckedMarkBrush, 2);
-         var checkMarkBounds = checkMarkGeometry.GetRenderBounds(checkMarkPen);
-         var deltaWidth = (CheckIndicatorSize - checkMarkBounds.Width) / 2;
-         var deltaHeight = (CheckIndicatorSize - checkMarkBounds.Height) / 2;
-         var offsetX = indicatorRect.X + deltaWidth - checkMarkPenWidth - penWidth;
-         var offsetY = indicatorRect.Y + deltaHeight - checkMarkPenWidth - penWidth * 3;
-         checkMarkGeometry.Transform = new TranslateTransform(offsetX, offsetY);
          context.DrawGeometry(null, checkMarkPen, checkMarkGeometry);
       } else if (_styleState.HasFlag(ControlStyleState.Indeterminate)) {
          double deltaSize = (CheckIndicatorSize - IndicatorTristateMarkSize) / 2.0;
@@ -253,7 +246,6 @@ public class CheckBox : AvaloniaCheckBox,
    // Measure 之后才有值
    private Rect IndicatorRect()
    {
-      // var offsetY = Math.Ceiling((DesiredSize.Height - Margin.Top - Margin.Bottom - CheckIndicatorSize) / 2);
       return new Rect(0d, 0d, CheckIndicatorSize, CheckIndicatorSize);
    }
 
