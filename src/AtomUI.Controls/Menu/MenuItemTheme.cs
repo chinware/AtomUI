@@ -17,13 +17,13 @@ namespace AtomUI.Controls;
 [ControlThemeProvider]
 internal class MenuItemTheme : BaseControlTheme
 {
-   public const string ItemDecoratorPart     = "Part_ItemDecorator";
-   public const string MainContainerPart     = "Part_MainContainer";
-   public const string TogglePresenterPart   = "Part_TogglePresenter";
-   public const string ItemIconPresenterPart = "Part_ItemIconPresenter";
-   public const string ItemTextPresenterPart = "Part_ItemTextPresenter";
-   public const string InputGestureTextPart  = "Part_InputGestureText";
-   public const string MenuIndicatorIconPart = "Part_MenuIndicatorIcon";
+   public const string ItemDecoratorPart     = "PART_ItemDecorator";
+   public const string MainContainerPart     = "PART_MainContainer";
+   public const string TogglePresenterPart   = "PART_TogglePresenter";
+   public const string ItemIconPresenterPart = "PART_ItemIconPresenter";
+   public const string ItemTextPresenterPart = "PART_ItemTextPresenter";
+   public const string InputGestureTextPart  = "PART_InputGestureText";
+   public const string MenuIndicatorIconPart = "PART_MenuIndicatorIcon";
    public const string PopupPart             = "PART_Popup";
    public const string ItemsPresenterPart    = "PART_ItemsPresenter";
    

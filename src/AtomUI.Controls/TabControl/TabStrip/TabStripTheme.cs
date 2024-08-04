@@ -17,12 +17,23 @@ internal class TabStripTheme : BaseTabStripTheme
    
    protected override void NotifyBuildControlTemplate(BaseTabStrip baseTabStrip, INameScope scope, Border container)
    {
-      var tabScrollViewer = new TabScrollViewer();
-      CreateTemplateParentBinding(tabScrollViewer, TabScrollViewer.TabStripPlacementProperty, TabStrip.TabStripPlacementProperty);
+      var alignWrapper = new Panel()
+      {
+         Name = AlignWrapperPart
+      };
+      alignWrapper.RegisterInNameScope(scope);
+      
+      var tabScrollViewer = new TabStripScrollViewer()
+      {
+         Name = TabsContainerPart
+      };
+      CreateTemplateParentBinding(tabScrollViewer, BaseTabScrollViewer.TabStripPlacementProperty, TabStrip.TabStripPlacementProperty);
       var contentPanel = CreateTabStripContentPanel(scope);
       tabScrollViewer.Content = contentPanel;
       tabScrollViewer.TabStrip = baseTabStrip;
-      container.Child = tabScrollViewer;
+      
+      alignWrapper.Children.Add(tabScrollViewer);
+      container.Child = alignWrapper;
    }
 
    private Panel CreateTabStripContentPanel(INameScope scope)
@@ -56,21 +67,17 @@ internal class TabStripTheme : BaseTabStripTheme
       {
          // 上
          var topStyle = new Style(selector => selector.Nesting().Class(BaseTabStrip.TopPC));
-         var itemPresenterPanelStyle = new Style(selector => selector.Nesting().Template().OfType<ItemsPresenter>().Name(ItemsPresenterPart).Child().OfType<StackPanel>());
+         
+         var itemPresenterPanelStyle = new Style(selector => selector.Nesting().Template().Name(ItemsPresenterPart).Child().OfType<StackPanel>());
          itemPresenterPanelStyle.Add(StackPanel.SpacingProperty, TabControlResourceKey.HorizontalItemGutter);
+         itemPresenterPanelStyle.Add(StackPanel.OrientationProperty, Orientation.Horizontal);
 
+         topStyle.Add(itemPresenterPanelStyle);
+         
          var indicatorStyle = new Style(selector => selector.Nesting().Template().Name(SelectedItemIndicatorPart));
-         indicatorStyle.Add(Border.HeightProperty, GlobalResourceKey.LineWidthBold);
          indicatorStyle.Add(Border.HorizontalAlignmentProperty, HorizontalAlignment.Left);
          indicatorStyle.Add(Border.VerticalAlignmentProperty, VerticalAlignment.Bottom);
          topStyle.Add(indicatorStyle);
-         
-         // tabs 是否居中
-         var tabAlignCenterStyle = new Style(selector => selector.Nesting().PropertyEquals(TabStrip.TabAlignmentCenterProperty, true));
-         var itemsPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ItemsPresenterPart));
-         itemsPresenterStyle.Add(ItemsPresenter.HorizontalAlignmentProperty, HorizontalAlignment.Center);
-         tabAlignCenterStyle.Add(itemsPresenterStyle);
-         topStyle.Add(tabAlignCenterStyle);
          
          topStyle.Add(itemPresenterPanelStyle);
          commonStyle.Add(topStyle);
@@ -79,66 +86,48 @@ internal class TabStripTheme : BaseTabStripTheme
       {
          // 右
          var rightStyle = new Style(selector => selector.Nesting().Class(BaseTabStrip.RightPC));
-         var itemPresenterPanelStyle = new Style(selector => selector.Nesting().Template().OfType<ItemsPresenter>().Name(ItemsPresenterPart).Child().OfType<StackPanel>());
-         itemPresenterPanelStyle.Add(StackPanel.SpacingProperty, TabControlResourceKey.HorizontalItemGutter);
+
+         var itemPresenterPanelStyle = new Style(selector => selector.Nesting().Template().Name(ItemsPresenterPart).Child().OfType<StackPanel>());
+         itemPresenterPanelStyle.Add(StackPanel.OrientationProperty, Orientation.Vertical);
+         itemPresenterPanelStyle.Add(StackPanel.SpacingProperty, TabControlResourceKey.VerticalItemGutter);
          rightStyle.Add(itemPresenterPanelStyle);
          
          var indicatorStyle = new Style(selector => selector.Nesting().Template().Name(SelectedItemIndicatorPart));
-         indicatorStyle.Add(Border.WidthProperty, GlobalResourceKey.LineWidthBold);
          indicatorStyle.Add(Border.HorizontalAlignmentProperty, HorizontalAlignment.Left);
          indicatorStyle.Add(Border.VerticalAlignmentProperty, VerticalAlignment.Top);
          rightStyle.Add(indicatorStyle);
-         
-         // tabs 是否居中
-         var tabAlignCenterStyle = new Style(selector => selector.Nesting().PropertyEquals(TabStrip.TabAlignmentCenterProperty, true));
-         var itemsPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ItemsPresenterPart));
-         itemsPresenterStyle.Add(ItemsPresenter.VerticalAlignmentProperty, VerticalAlignment.Center);
-         tabAlignCenterStyle.Add(itemsPresenterStyle);
-         rightStyle.Add(tabAlignCenterStyle);
          
          commonStyle.Add(rightStyle);
       }
       {
          // 下
          var bottomStyle = new Style(selector => selector.Nesting().Class(BaseTabStrip.BottomPC));
-         var itemPresenterPanelStyle = new Style(selector => selector.Nesting().Template().OfType<ItemsPresenter>().Name(ItemsPresenterPart).Child().OfType<StackPanel>());
+         
+         var itemPresenterPanelStyle = new Style(selector => selector.Nesting().Template().Name(ItemsPresenterPart).Child().OfType<StackPanel>());
          itemPresenterPanelStyle.Add(StackPanel.SpacingProperty, TabControlResourceKey.HorizontalItemGutter);
+         itemPresenterPanelStyle.Add(StackPanel.OrientationProperty, Orientation.Horizontal);
          bottomStyle.Add(itemPresenterPanelStyle);
          
          var indicatorStyle = new Style(selector => selector.Nesting().Template().Name(SelectedItemIndicatorPart));
-         indicatorStyle.Add(Border.HeightProperty, GlobalResourceKey.LineWidthBold);
          indicatorStyle.Add(Border.HorizontalAlignmentProperty, HorizontalAlignment.Left);
          indicatorStyle.Add(Border.VerticalAlignmentProperty, VerticalAlignment.Top);
          bottomStyle.Add(indicatorStyle);
-         
-         // tabs 是否居中
-         var tabAlignCenterStyle = new Style(selector => selector.Nesting().PropertyEquals(TabStrip.TabAlignmentCenterProperty, true));
-         var itemsPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ItemsPresenterPart));
-         itemsPresenterStyle.Add(ItemsPresenter.HorizontalAlignmentProperty, HorizontalAlignment.Center);
-         tabAlignCenterStyle.Add(itemsPresenterStyle);
-         bottomStyle.Add(tabAlignCenterStyle);
          
          commonStyle.Add(bottomStyle);
       }
       {
          // 左
          var leftStyle = new Style(selector => selector.Nesting().Class(BaseTabStrip.LeftPC));
-         var itemPresenterPanelStyle = new Style(selector => selector.Nesting().Template().OfType<ItemsPresenter>().Name(ItemsPresenterPart).Child().OfType<StackPanel>());
-         itemPresenterPanelStyle.Add(StackPanel.SpacingProperty, TabControlResourceKey.HorizontalItemGutter);
+         
+         var itemPresenterPanelStyle = new Style(selector => selector.Nesting().Template().Name(ItemsPresenterPart).Child().OfType<StackPanel>());
+         itemPresenterPanelStyle.Add(StackPanel.OrientationProperty, Orientation.Vertical);
+         itemPresenterPanelStyle.Add(StackPanel.SpacingProperty, TabControlResourceKey.VerticalItemGutter);
          leftStyle.Add(itemPresenterPanelStyle);
          
          var indicatorStyle = new Style(selector => selector.Nesting().Template().Name(SelectedItemIndicatorPart));
-         indicatorStyle.Add(Border.WidthProperty, GlobalResourceKey.LineWidthBold);
          indicatorStyle.Add(Border.HorizontalAlignmentProperty, HorizontalAlignment.Right);
          indicatorStyle.Add(Border.VerticalAlignmentProperty, VerticalAlignment.Top);
          leftStyle.Add(indicatorStyle);
-         
-         // tabs 是否居中
-         var tabAlignCenterStyle = new Style(selector => selector.Nesting().PropertyEquals(TabStrip.TabAlignmentCenterProperty, true));
-         var itemsPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ItemsPresenterPart));
-         itemsPresenterStyle.Add(ItemsPresenter.VerticalAlignmentProperty, VerticalAlignment.Center);
-         tabAlignCenterStyle.Add(itemsPresenterStyle);
-         leftStyle.Add(tabAlignCenterStyle);
          
          commonStyle.Add(leftStyle);
       }

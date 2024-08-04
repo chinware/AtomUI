@@ -5,17 +5,17 @@ using Avalonia.Styling;
 namespace AtomUI.Controls;
 
 [ControlThemeProvider]
-internal class TabItemTheme : BaseTabItemTheme
+internal class TabStripItemTheme : BaseTabStripItemTheme
 {
-   public const string ID = "TabItem";
+   public const string ID = "TabStripItem";
    
-   public TabItemTheme() : base(typeof(TabItem)) { }
+   public TabStripItemTheme() : base(typeof(TabStripItem)) { }
    
    public override string ThemeResourceKey()
    {
       return ID;
    }
-   
+
    protected override void BuildStyles()
    {
       base.BuildStyles();
@@ -24,13 +24,13 @@ internal class TabItemTheme : BaseTabItemTheme
 
    protected void BuildSizeTypeStyle()
    {
-      var topOrBottomStyle = new Style(selector => Selectors.Or(selector.Nesting().PropertyEquals(TabItem.TabStripPlacementProperty, Dock.Top),
-                                                                selector.Nesting().PropertyEquals(TabItem.TabStripPlacementProperty, Dock.Bottom)));
+      var topOrBottomStyle = new Style(selector => Selectors.Or(selector.Nesting().PropertyEquals(TabStripItem.TabStripPlacementProperty, Dock.Top),
+                                                                selector.Nesting().PropertyEquals(TabStripItem.TabStripPlacementProperty, Dock.Bottom)));
 
       {
          topOrBottomStyle.Add(Border.MarginProperty, TabControlResourceKey.HorizontalItemMargin);
          
-         var largeSizeStyle = new Style(selector => selector.Nesting().PropertyEquals(TabItem.SizeTypeProperty, SizeType.Large));
+         var largeSizeStyle = new Style(selector => selector.Nesting().PropertyEquals(TabStripItem.SizeTypeProperty, SizeType.Large));
          {
             var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(DecoratorPart));
             decoratorStyle.Add(Border.PaddingProperty, TabControlResourceKey.HorizontalItemPaddingLG);
@@ -39,7 +39,7 @@ internal class TabItemTheme : BaseTabItemTheme
  
          topOrBottomStyle.Add(largeSizeStyle);
 
-         var middleSizeStyle = new Style(selector => selector.Nesting().PropertyEquals(TabItem.SizeTypeProperty, SizeType.Middle));
+         var middleSizeStyle = new Style(selector => selector.Nesting().PropertyEquals(TabStripItem.SizeTypeProperty, SizeType.Middle));
          {
             var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(DecoratorPart));
             decoratorStyle.Add(Border.PaddingProperty, TabControlResourceKey.HorizontalItemPadding);
@@ -48,7 +48,7 @@ internal class TabItemTheme : BaseTabItemTheme
 
          topOrBottomStyle.Add(middleSizeStyle);
 
-         var smallSizeType = new Style(selector => selector.Nesting().PropertyEquals(TabItem.SizeTypeProperty, SizeType.Small));
+         var smallSizeType = new Style(selector => selector.Nesting().PropertyEquals(TabStripItem.SizeTypeProperty, SizeType.Small));
          {
             var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(DecoratorPart));
             decoratorStyle.Add(Border.PaddingProperty, TabControlResourceKey.HorizontalItemPaddingSM);
@@ -60,11 +60,11 @@ internal class TabItemTheme : BaseTabItemTheme
          Add(topOrBottomStyle);
       }
       
-      var leftOrRightStyle = new Style(selector => Selectors.Or(selector.Nesting().PropertyEquals(TabItem.TabStripPlacementProperty, Dock.Left),
-                                                                selector.Nesting().PropertyEquals(TabItem.TabStripPlacementProperty, Dock.Right)));
+      var leftOrRightStyle = new Style(selector => Selectors.Or(selector.Nesting().PropertyEquals(TabStripItem.TabStripPlacementProperty, Dock.Left),
+                                                                selector.Nesting().PropertyEquals(TabStripItem.TabStripPlacementProperty, Dock.Right)));
       {
          // 貌似没必要分大小，但是先放着吧，万一需要难得再加
-         var largeSizeStyle = new Style(selector => selector.Nesting().PropertyEquals(TabItem.SizeTypeProperty, SizeType.Large));
+         var largeSizeStyle = new Style(selector => selector.Nesting().PropertyEquals(TabStripItem.SizeTypeProperty, SizeType.Large));
          {
             var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(DecoratorPart));
             decoratorStyle.Add(Border.PaddingProperty, TabControlResourceKey.VerticalItemPadding);
@@ -73,7 +73,7 @@ internal class TabItemTheme : BaseTabItemTheme
  
          leftOrRightStyle.Add(largeSizeStyle);
 
-         var middleSizeStyle = new Style(selector => selector.Nesting().PropertyEquals(TabItem.SizeTypeProperty, SizeType.Middle));
+         var middleSizeStyle = new Style(selector => selector.Nesting().PropertyEquals(TabStripItem.SizeTypeProperty, SizeType.Middle));
          {
             var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(DecoratorPart));
             decoratorStyle.Add(Border.PaddingProperty, TabControlResourceKey.VerticalItemPadding);
@@ -82,7 +82,7 @@ internal class TabItemTheme : BaseTabItemTheme
 
          leftOrRightStyle.Add(middleSizeStyle);
 
-         var smallSizeType = new Style(selector => selector.Nesting().PropertyEquals(TabItem.SizeTypeProperty, SizeType.Small));
+         var smallSizeType = new Style(selector => selector.Nesting().PropertyEquals(TabStripItem.SizeTypeProperty, SizeType.Small));
          {
             var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(DecoratorPart));
             decoratorStyle.Add(Border.PaddingProperty, TabControlResourceKey.VerticalItemPadding);

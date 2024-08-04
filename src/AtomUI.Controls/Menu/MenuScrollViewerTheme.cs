@@ -17,10 +17,10 @@ namespace AtomUI.Controls;
 [ControlThemeProvider]
 internal class MenuScrollViewerTheme : BaseControlTheme
 {
-   public const string ScrollUpButtonPart = "Part_ScrollUpButton";
-   public const string ScrollDownButtonPart = "Part_ScrollDownButton";
+   public const string ScrollUpButtonPart = "PART_ScrollUpButton";
+   public const string ScrollDownButtonPart = "PART_ScrollDownButton";
    public const string ScrollViewContentPart = "PART_ContentPresenter";
-   public const string MainContainerPart = "Part_MainContainer";
+   public const string MainContainerPart = "PART_MainContainer";
 
    public MenuScrollViewerTheme()
       : base(typeof(MenuScrollViewer)) { }

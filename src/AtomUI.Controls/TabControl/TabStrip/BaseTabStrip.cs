@@ -1,10 +1,12 @@
-﻿using AtomUI.Theme.Styling;
+﻿using AtomUI.Data;
+using AtomUI.Theme.Data;
+using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
-using Avalonia.Layout;
+using Avalonia.Data;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 
@@ -18,13 +20,13 @@ public abstract class BaseTabStrip : AvaloniaTabStrip, ISizeTypeAware
    public const string RightPC  = ":right";
    public const string BottomPC = ":bottom";
    public const string LeftPC   = ":left";
-   
+
    private static readonly FuncTemplate<Panel?> DefaultPanel =
-      new(() => new StackPanel { Orientation = Orientation.Horizontal});
+      new(() => new StackPanel());
    
    #region 公共属性定义
    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-      AvaloniaProperty.Register<TabStrip, SizeType>(nameof(SizeType), SizeType.Middle);
+      AvaloniaProperty.Register<BaseTabStrip, SizeType>(nameof(SizeType), SizeType.Middle);
    
    public static readonly StyledProperty<Dock> TabStripPlacementProperty =
       AvaloniaProperty.Register<BaseTabStrip, Dock>(nameof(TabStripPlacement), defaultValue: Dock.Top);
@@ -52,7 +54,7 @@ public abstract class BaseTabStrip : AvaloniaTabStrip, ISizeTypeAware
    
    #endregion
 
-   private Border? _mainContainer;
+   private Border? _frameDecorator;
    
    static BaseTabStrip()
    {
@@ -63,14 +65,15 @@ public abstract class BaseTabStrip : AvaloniaTabStrip, ISizeTypeAware
    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
    {
       base.OnApplyTemplate(e);
-      _mainContainer = e.NameScope.Find<Border>(BaseTabStripTheme.MainContainerPart);
+      _frameDecorator = e.NameScope.Find<Border>(BaseTabStripTheme.FrameDecoratorPart);
       SetupBorderBinding();
    }
 
    private void SetupBorderBinding()
    {
-      if (_mainContainer is not null) {
-         TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty, GlobalResourceKey.BorderThickness);
+      if (_frameDecorator is not null) {
+         TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty, GlobalResourceKey.BorderThickness, BindingPriority.Template,
+                                                new RenderScaleAwareThicknessConfigure(this));
       }
    }
 
@@ -79,6 +82,7 @@ public abstract class BaseTabStrip : AvaloniaTabStrip, ISizeTypeAware
       base.PrepareContainerForItemOverride(container, item, index);
       if (container is TabStripItem tabStripItem) {
          tabStripItem.TabStripPlacement = TabStripPlacement;
+         BindUtils.RelayBind(this, SizeTypeProperty, tabStripItem, TabStripItem.SizeTypeProperty);
       }
    }
 
@@ -92,8 +96,13 @@ public abstract class BaseTabStrip : AvaloniaTabStrip, ISizeTypeAware
    {
       base.OnPropertyChanged(change);
       if (change.Property == TabStripPlacementProperty) {
-         RefreshContainers();
          UpdatePseudoClasses();
+         for (var i = 0; i < ItemCount; ++i) {
+            var itemContainer = ContainerFromIndex(i);
+            if (itemContainer is TabStripItem tabStripItem) {
+               tabStripItem.TabStripPlacement = TabStripPlacement;
+            }
+         }
       }
    }
 

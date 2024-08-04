@@ -294,7 +294,7 @@ namespace AtomUI.Theme.Styling
     public static class TabControlResourceKey
     {
         public static readonly TokenResourceKey CardBg = new TokenResourceKey("TabControl.CardBg");
-        public static readonly TokenResourceKey CardHeight = new TokenResourceKey("TabControl.CardHeight");
+        public static readonly TokenResourceKey CardSize = new TokenResourceKey("TabControl.CardSize");
         public static readonly TokenResourceKey CardPadding = new TokenResourceKey("TabControl.CardPadding");
         public static readonly TokenResourceKey CardPaddingSM = new TokenResourceKey("TabControl.CardPaddingSM");
         public static readonly TokenResourceKey CardPaddingLG = new TokenResourceKey("TabControl.CardPaddingLG");
@@ -308,8 +308,8 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey HorizontalItemPadding = new TokenResourceKey("TabControl.HorizontalItemPadding");
         public static readonly TokenResourceKey HorizontalItemPaddingLG = new TokenResourceKey("TabControl.HorizontalItemPaddingLG");
         public static readonly TokenResourceKey HorizontalItemPaddingSM = new TokenResourceKey("TabControl.HorizontalItemPaddingSM");
+        public static readonly TokenResourceKey VerticalItemGutter = new TokenResourceKey("TabControl.VerticalItemGutter");
         public static readonly TokenResourceKey VerticalItemPadding = new TokenResourceKey("TabControl.VerticalItemPadding");
-        public static readonly TokenResourceKey VerticalItemMargin = new TokenResourceKey("TabControl.VerticalItemMargin");
         public static readonly TokenResourceKey ItemColor = new TokenResourceKey("TabControl.ItemColor");
         public static readonly TokenResourceKey ItemHoverColor = new TokenResourceKey("TabControl.ItemHoverColor");
         public static readonly TokenResourceKey ItemSelectedColor = new TokenResourceKey("TabControl.ItemSelectedColor");
@@ -318,6 +318,10 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey MenuIndicatorPaddingHorizontal = new TokenResourceKey("TabControl.MenuIndicatorPaddingHorizontal");
         public static readonly TokenResourceKey MenuIndicatorPaddingVertical = new TokenResourceKey("TabControl.MenuIndicatorPaddingVertical");
         public static readonly TokenResourceKey MenuEdgeThickness = new TokenResourceKey("TabControl.MenuEdgeThickness");
+        public static readonly TokenResourceKey AddTabButtonMarginHorizontal = new TokenResourceKey("TabControl.AddTabButtonMarginHorizontal");
+        public static readonly TokenResourceKey AddTabButtonMarginVertical = new TokenResourceKey("TabControl.AddTabButtonMarginVertical");
+        public static readonly TokenResourceKey CloseIconMargin = new TokenResourceKey("TabControl.CloseIconMargin");
+        public static readonly TokenResourceKey TabAndContentGutter = new TokenResourceKey("TabControl.TabAndContentGutter");
     }
 
     public static class TagResourceKey
