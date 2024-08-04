@@ -46,7 +46,7 @@ internal class TabStripScrollViewer : BaseTabScrollViewer
                var right = Math.Floor(itemBounds.Right - Offset.X);
                if (TabStripPlacement == Dock.Top || TabStripPlacement == Dock.Bottom) {
                   if (left < 0 || right > Viewport.Width) {
-                     var menuItem = new OverflowTabMenuItem()
+                     var menuItem = new TabStripOverflowMenuItem()
                      {
                         Header = tabStripItem.Content,
                         TabStripItem = tabStripItem,
@@ -71,7 +71,7 @@ internal class TabStripScrollViewer : BaseTabScrollViewer
       if (TabStrip is not null) {
          Dispatcher.UIThread.Post(sender =>
          {
-            if (sender is OverflowTabMenuItem tabStripMenuItem) {
+            if (sender is TabStripOverflowMenuItem tabStripMenuItem) {
                var tabStripItem = tabStripMenuItem.TabStripItem;
                if (tabStripItem is not null) {
                   tabStripItem.BringIntoView();
@@ -84,7 +84,7 @@ internal class TabStripScrollViewer : BaseTabScrollViewer
 
    private void HandleCloseTabRequest(object? sender, RoutedEventArgs args)
    {
-      if (sender is OverflowTabMenuItem tabStripMenuItem) {
+      if (sender is TabStripOverflowMenuItem tabStripMenuItem) {
          if (TabStrip is not null) {
             if (TabStrip.SelectedItem is TabStripItem selectedItem) {
                if (selectedItem == tabStripMenuItem.TabStripItem) {

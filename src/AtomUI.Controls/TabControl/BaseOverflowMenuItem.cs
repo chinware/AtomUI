@@ -6,12 +6,12 @@ using Avalonia.Threading;
 
 namespace AtomUI.Controls;
 
-internal class OverflowTabMenuItem : MenuItem
+internal class BaseOverflowMenuItem : MenuItem
 {
    #region 公共属性
 
-   public static readonly DirectProperty<OverflowTabMenuItem, bool> IsClosableProperty =
-      AvaloniaProperty.RegisterDirect<OverflowTabMenuItem, bool>(nameof(IsClosable),
+   public static readonly DirectProperty<BaseOverflowMenuItem, bool> IsClosableProperty =
+      AvaloniaProperty.RegisterDirect<BaseOverflowMenuItem, bool>(nameof(IsClosable),
                                                               o => o.IsClosable,
                                                               (o, v) => o.IsClosable = v);
    
@@ -24,8 +24,6 @@ internal class OverflowTabMenuItem : MenuItem
       get => _isClosable;
       set => SetAndRaise(IsClosableProperty, ref _isClosable, value);
    }
-   
-   public TabStripItem? TabStripItem { get; set; }
 
    public event EventHandler<CloseTabRequestEventArgs>? CloseTab
    {
@@ -40,29 +38,26 @@ internal class OverflowTabMenuItem : MenuItem
    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
    {
       base.OnApplyTemplate(e);
-      _iconButton = e.NameScope.Find<IconButton>(OverflowTabMenuItemTheme.ItemCloseButtonPart);
+      _iconButton = e.NameScope.Find<IconButton>(BaseOverflowMenuItemTheme.ItemCloseButtonPart);
       if (_iconButton is not null) {
          _iconButton.Click += (sender, args) =>
          {
-            if (Parent is MenuBase menu) {
-               var eventArgs = new CloseTabRequestEventArgs(CloseTabEvent, TabStripItem!);
-               RaiseEvent(eventArgs);
-               Dispatcher.UIThread.Post(() =>
-               {
-                  menu.Close();
-               });
-            }
+            NotifyCloseRequest();
          };
       }
+   }
+
+   protected virtual void NotifyCloseRequest()
+   {
    }
 }
 
 internal class CloseTabRequestEventArgs : RoutedEventArgs
 {
-   public CloseTabRequestEventArgs(RoutedEvent routedEvent, TabStripItem stripItem)
+   public CloseTabRequestEventArgs(RoutedEvent routedEvent, object tabItem)
       : base(routedEvent)
    {
-      TabStripItem = stripItem;
+      TabItem = tabItem;
    }
-   public TabStripItem TabStripItem { get; }
+   public object TabItem { get; }
 }
