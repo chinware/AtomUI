@@ -10,7 +10,7 @@ namespace AtomUI.Controls;
 
 internal class BaseTabStripTheme : BaseControlTheme
 {
-   public const string FrameDecoratorPart = "Part_FrameDecorator";
+   public const string FrameDecoratorPart = "PART_FrameDecorator";
    public const string ItemsPresenterPart = "PART_ItemsPresenter";
    
    public BaseTabStripTheme(Type targetType) : base(targetType) { }

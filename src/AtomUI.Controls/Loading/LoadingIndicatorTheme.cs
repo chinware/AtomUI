@@ -12,8 +12,8 @@ namespace AtomUI.Controls;
 [ControlThemeProvider]
 public class LoadingIndicatorTheme : BaseControlTheme
 {
-   public const string MainContainerPart = "Part_MainContainer";
-   public const string LoadingTextPart = "Part_LoadingText";
+   public const string MainContainerPart = "PART_MainContainer";
+   public const string LoadingTextPart = "PART_LoadingText";
    
    public LoadingIndicatorTheme()
       : base(typeof(LoadingIndicator))

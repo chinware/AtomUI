@@ -74,7 +74,7 @@ public class BaseTabControl : AvaloniaTabControl
    #endregion
    
    private Border? _frameDecorator;
-   private Control? _tabsContainer;
+   private Panel? _alignWrapper;
    private Point _tabStripBorderStartPoint;
    private Point _tabStripBorderEndPoint;
    
@@ -87,7 +87,7 @@ public class BaseTabControl : AvaloniaTabControl
    {
       base.OnApplyTemplate(e);
       _frameDecorator = e.NameScope.Find<Border>(BaseTabControlTheme.FrameDecoratorPart);
-      _tabsContainer = e.NameScope.Find<Control>(BaseTabControlTheme.TabsContainerPart);
+      _alignWrapper = e.NameScope.Find<Panel>(BaseTabControlTheme.AlignWrapperPart);
       SetupBorderBinding();
       HandlePlacementChanged();
    }
@@ -148,9 +148,9 @@ public class BaseTabControl : AvaloniaTabControl
 
    private void SetupTabStripBorderPoints()
    {
-      if (_tabsContainer is not null) {
-         var offset = _tabsContainer.TranslatePoint(new Point(0, 0), this) ?? default;
-         var size = _tabsContainer.Bounds.Size;
+      if (_alignWrapper is not null) {
+         var offset = _alignWrapper.TranslatePoint(new Point(0, 0), this) ?? default;
+         var size = _alignWrapper.Bounds.Size;
          var borderThickness = BorderThickness.Left;
          var offsetDelta = borderThickness / 2;
          if (TabStripPlacement == Dock.Top) {

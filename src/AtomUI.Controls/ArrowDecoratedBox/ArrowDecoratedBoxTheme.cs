@@ -11,7 +11,7 @@ namespace AtomUI.Controls;
 [ControlThemeProvider]
 public class ArrowDecoratedBoxTheme : BaseControlTheme
 {
-   public const string DecoratorPart = "Part_Decorator";
+   public const string DecoratorPart = "PART_Decorator";
    
    public ArrowDecoratedBoxTheme() : base(typeof(ArrowDecoratedBox)) {}
 

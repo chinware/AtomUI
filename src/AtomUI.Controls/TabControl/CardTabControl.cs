@@ -127,36 +127,36 @@ public class CardTabControl : BaseTabControl, IControlCustomStyle
       if (change.Property == SizeTypeProperty) {
          HandleSizeTypeChanged();
       } else if (change.Property == TabStripPlacementProperty) {
-         SetupCardTabStripContainer();
+         // SetupCardTabStripContainer();
          HandleTabStripPlacementChanged();
       }
    }
 
-   private void SetupCardTabStripContainer(Size finalSize)
-   {
-      if (_tabsContainer is not null) {
-         double addButtonOffset = 0;
-         double markOffset = 0;
-         if (TabStripPlacement == Dock.Top || TabStripPlacement == Dock.Bottom) {
-            addButtonOffset = _addTabButton?.Bounds.Right ?? 0;
-            markOffset = finalSize.Width;
-            if (addButtonOffset > markOffset) {
-               _tabsContainer.ColumnDefinitions[0].Width = GridLength.Star;
-            } else {
-               _tabsContainer.ColumnDefinitions[0].Width = GridLength.Auto;
-            }
-         } else {
-            addButtonOffset = _addTabButton?.Bounds.Bottom ?? 0;
-            markOffset = finalSize.Height;
-            if (addButtonOffset > markOffset) {
-               _tabsContainer.RowDefinitions[0].Height = GridLength.Star;
-            } else {
-               _tabsContainer.RowDefinitions[0].Height = GridLength.Auto;
-            }
-         }
-        
-      }
-   }
+   // private void SetupCardTabStripContainer(Size finalSize)
+   // {
+   //    if (_tabsContainer is not null) {
+   //       double addButtonOffset = 0;
+   //       double markOffset = 0;
+   //       if (TabStripPlacement == Dock.Top || TabStripPlacement == Dock.Bottom) {
+   //          addButtonOffset = _addTabButton?.Bounds.Right ?? 0;
+   //          markOffset = finalSize.Width;
+   //          if (addButtonOffset > markOffset) {
+   //             _tabsContainer.ColumnDefinitions[0].Width = GridLength.Star;
+   //          } else {
+   //             _tabsContainer.ColumnDefinitions[0].Width = GridLength.Auto;
+   //          }
+   //       } else {
+   //          addButtonOffset = _addTabButton?.Bounds.Bottom ?? 0;
+   //          markOffset = finalSize.Height;
+   //          if (addButtonOffset > markOffset) {
+   //             _tabsContainer.RowDefinitions[0].Height = GridLength.Star;
+   //          } else {
+   //             _tabsContainer.RowDefinitions[0].Height = GridLength.Auto;
+   //          }
+   //       }
+   //      
+   //    }
+   // }
 
    #region IControlCustomStyle 实现
    
@@ -164,13 +164,13 @@ public class CardTabControl : BaseTabControl, IControlCustomStyle
    {
       _addTabButton = scope.Find<IconButton>(CardTabControlTheme.AddTabButtonPart);
       _itemsPresenter = scope.Find<ItemsPresenter>(CardTabControlTheme.ItemsPresenterPart);
-      _tabsContainer = scope.Find<Grid>(CardTabControlTheme.TabsContainerPart);
+      // _tabsContainer = scope.Find<Grid>(CardTabControlTheme.TabsContainerPart);
       _tabScrollViewer = scope.Find<BaseTabScrollViewer>(CardTabControlTheme.CardTabStripScrollViewerPart);
       if (_addTabButton is not null) {
          _addTabButton.Click += HandleAddButtonClicked;
       }
       HandleSizeTypeChanged();
-      SetupCardTabStripContainer();
+      // SetupCardTabStripContainer();
    }
    #endregion
 
@@ -193,56 +193,56 @@ public class CardTabControl : BaseTabControl, IControlCustomStyle
    protected override Size ArrangeOverride(Size finalSize)
    {
       var size = base.ArrangeOverride(finalSize);
-      SetupCardTabStripContainer(finalSize);
+      // SetupCardTabStripContainer(finalSize);
       HandleTabStripPlacementChanged();
       return size;
    }
 
-   private void SetupCardTabStripContainer()
-   {
-      if (TabStripPlacement == Dock.Top ||
-          TabStripPlacement == Dock.Bottom) {
-         if (_tabsContainer is not null) {
-            _tabsContainer.Children.Clear();
-            _tabsContainer.RowDefinitions.Clear();
-            _tabsContainer.ColumnDefinitions = new ColumnDefinitions()
-            {
-               new ColumnDefinition(GridLength.Auto),
-               new ColumnDefinition(GridLength.Auto),
-            };
-         }
-
-         if (_tabScrollViewer is not null) {
-            Grid.SetColumn(_tabScrollViewer, 0);
-         }
-
-         if (_addTabButton is not null) {
-            Grid.SetColumn(_addTabButton, 1);
-         }
-
-         _tabsContainer!.Children.Add(_tabScrollViewer!);
-         _tabsContainer.Children.Add(_addTabButton!);
-      } else {
-         if (_tabsContainer is not null) {
-            _tabsContainer.Children.Clear();
-            _tabsContainer.ColumnDefinitions.Clear();
-            _tabsContainer.RowDefinitions = new RowDefinitions()
-            {
-               new RowDefinition(GridLength.Auto),
-               new RowDefinition(GridLength.Auto),
-            };
-         }
-         if (_tabScrollViewer is not null) {
-            Grid.SetRow(_tabScrollViewer, 0);
-         }
-
-         if (_addTabButton is not null) {
-            Grid.SetRow(_addTabButton, 1);
-         }
-         _tabsContainer!.Children.Add(_tabScrollViewer!);
-         _tabsContainer.Children.Add(_addTabButton!);
-      }
-   }
+   // private void SetupCardTabStripContainer()
+   // {
+   //    if (TabStripPlacement == Dock.Top ||
+   //        TabStripPlacement == Dock.Bottom) {
+   //       if (_tabsContainer is not null) {
+   //          _tabsContainer.Children.Clear();
+   //          _tabsContainer.RowDefinitions.Clear();
+   //          _tabsContainer.ColumnDefinitions = new ColumnDefinitions()
+   //          {
+   //             new ColumnDefinition(GridLength.Auto),
+   //             new ColumnDefinition(GridLength.Auto),
+   //          };
+   //       }
+   //
+   //       if (_tabScrollViewer is not null) {
+   //          Grid.SetColumn(_tabScrollViewer, 0);
+   //       }
+   //
+   //       if (_addTabButton is not null) {
+   //          Grid.SetColumn(_addTabButton, 1);
+   //       }
+   //
+   //       _tabsContainer!.Children.Add(_tabScrollViewer!);
+   //       _tabsContainer.Children.Add(_addTabButton!);
+   //    } else {
+   //       if (_tabsContainer is not null) {
+   //          _tabsContainer.Children.Clear();
+   //          _tabsContainer.ColumnDefinitions.Clear();
+   //          _tabsContainer.RowDefinitions = new RowDefinitions()
+   //          {
+   //             new RowDefinition(GridLength.Auto),
+   //             new RowDefinition(GridLength.Auto),
+   //          };
+   //       }
+   //       if (_tabScrollViewer is not null) {
+   //          Grid.SetRow(_tabScrollViewer, 0);
+   //       }
+   //
+   //       if (_addTabButton is not null) {
+   //          Grid.SetRow(_addTabButton, 1);
+   //       }
+   //       _tabsContainer!.Children.Add(_tabScrollViewer!);
+   //       _tabsContainer.Children.Add(_addTabButton!);
+   //    }
+   // }
 
    private void HandleTabStripPlacementChanged()
    {

@@ -15,10 +15,10 @@ namespace AtomUI.Controls;
 [ControlThemeProvider]
 internal class OverflowTabMenuItemTheme : BaseControlTheme
 {
-   public const string ItemDecoratorPart     = "Part_ItemDecorator";
-   public const string MainContainerPart     = "Part_MainContainer";
-   public const string ItemTextPresenterPart = "Part_ItemTextPresenter";
-   public const string ItemCloseButtonPart = "Part_ItemCloseIcon";
+   public const string ItemDecoratorPart     = "PART_ItemDecorator";
+   public const string MainContainerPart     = "PART_MainContainer";
+   public const string ItemTextPresenterPart = "PART_ItemTextPresenter";
+   public const string ItemCloseButtonPart = "PART_ItemCloseIcon";
    
    public OverflowTabMenuItemTheme()
       : base(typeof(OverflowTabMenuItem))

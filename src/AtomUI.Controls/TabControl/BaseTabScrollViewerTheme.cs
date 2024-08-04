@@ -15,9 +15,9 @@ namespace AtomUI.Controls;
 [ControlThemeProvider]
 internal class BaseTabScrollViewerTheme : BaseControlTheme
 {
-   public const string ScrollStartEdgeIndicatorPart = "Part_ScrollStartEdgeIndicator";
-   public const string ScrollEndEdgeIndicatorPart   = "Part_ScrollEndEdgeIndicator";
-   public const string ScrollMenuIndicatorPart      = "Part_ScrollMenuIndicator";
+   public const string ScrollStartEdgeIndicatorPart = "PART_ScrollStartEdgeIndicator";
+   public const string ScrollEndEdgeIndicatorPart   = "PART_ScrollEndEdgeIndicator";
+   public const string ScrollMenuIndicatorPart      = "PART_ScrollMenuIndicator";
    public const string ScrollViewContentPart        = "PART_ContentPresenter";
    public const string ScrollViewLayoutPart         = "PART_ScrollViewLayout";
    public const string ScrollViewWrapperLayoutPart  = "PART_ScrollViewWrapperLayout";

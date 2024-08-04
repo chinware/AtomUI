@@ -17,19 +17,27 @@ internal class TabControlTheme : BaseTabControlTheme
    
    protected override void NotifyBuildTabStripTemplate(BaseTabControl baseTabControl, INameScope scope, DockPanel container)
    {
+      var alignWrapper = new Panel()
+      {
+         Name = AlignWrapperPart
+      };
+      alignWrapper.RegisterInNameScope(scope);
+      CreateTemplateParentBinding(alignWrapper, DockPanel.DockProperty, TabControl.TabStripPlacementProperty);
+      CreateTemplateParentBinding(alignWrapper, Panel.MarginProperty,TabControl.TabStripMarginProperty);
+      
       var tabScrollViewer = new TabControlScrollViewer()
       {
          Name = TabsContainerPart,
       };
       CreateTemplateParentBinding(tabScrollViewer, BaseTabScrollViewer.TabStripPlacementProperty, TabStrip.TabStripPlacementProperty);
+  
       var contentPanel = CreateTabStripContentPanel(scope);
       tabScrollViewer.Content = contentPanel;
       tabScrollViewer.TabControl = baseTabControl;
       tabScrollViewer.RegisterInNameScope(scope);
-      CreateTemplateParentBinding(tabScrollViewer, DockPanel.DockProperty, TabControl.TabStripPlacementProperty);
-      CreateTemplateParentBinding(tabScrollViewer, TabControlScrollViewer.MarginProperty,
-                                  TabControl.TabStripMarginProperty);
-      container.Children.Add(tabScrollViewer);
+      
+      alignWrapper.Children.Add(tabScrollViewer);
+      container.Children.Add(alignWrapper);
    }
    
    private Panel CreateTabStripContentPanel(INameScope scope)

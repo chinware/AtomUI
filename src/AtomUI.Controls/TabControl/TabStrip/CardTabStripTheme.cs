@@ -12,9 +12,9 @@ namespace AtomUI.Controls;
 [ControlThemeProvider]
 internal class CardTabStripTheme : BaseTabStripTheme
 {
-   public const string AddTabButtonPart = "Part_AddTabButton";
-   public const string CardTabStripContainerPart = "Part_CardTabStripContainer";
-   public const string CardTabStripScrollViewerPart = "Part_CardTabStripScrollViewer";
+   public const string AddTabButtonPart = "PART_AddTabButton";
+   public const string CardTabStripContainerPart = "PART_CardTabStripContainer";
+   public const string CardTabStripScrollViewerPart = "PART_CardTabStripScrollViewer";
    
    public CardTabStripTheme() : base(typeof(CardTabStrip)) { }
 

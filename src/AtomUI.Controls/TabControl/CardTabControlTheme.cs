@@ -12,21 +12,26 @@ namespace AtomUI.Controls;
 [ControlThemeProvider]
 internal class CardTabControlTheme : BaseTabControlTheme
 {
-   public const string AddTabButtonPart = "Part_AddTabButton";
-   public const string CardTabStripScrollViewerPart = "Part_CardTabStripScrollViewer";
+   public const string AddTabButtonPart             = "PART_AddTabButton";
+   public const string CardTabStripScrollViewerPart = "PART_CardTabStripScrollViewer";
    
    public CardTabControlTheme() : base(typeof(CardTabControl)) { }
    
     protected override void NotifyBuildTabStripTemplate(BaseTabControl baseTabControl, INameScope scope, DockPanel container)
-   {
-      var cardTabStripContainer = new Grid()
+    {
+       var alignWrapper = new Panel()
+       {
+          Name = AlignWrapperPart
+       };
+       alignWrapper.RegisterInNameScope(scope);
+       CreateTemplateParentBinding(alignWrapper, DockPanel.DockProperty, BaseTabControl.TabStripPlacementProperty);
+       CreateTemplateParentBinding(alignWrapper, Panel.MarginProperty,TabControl.TabStripMarginProperty);
+       
+      var cardTabStripContainer = new DockPanel()
       {
          Name = TabsContainerPart,
       };
       cardTabStripContainer.RegisterInNameScope(scope);
-      
-      CreateTemplateParentBinding(cardTabStripContainer, DockPanel.DockProperty, BaseTabControl.TabStripPlacementProperty);
-      CreateTemplateParentBinding(cardTabStripContainer, Grid.MarginProperty, BaseTabControl.TabStripMarginProperty);
 
       TokenResourceBinder.CreateTokenBinding(cardTabStripContainer, StackPanel.SpacingProperty,
                                              TabControlResourceKey.CardGutter);
@@ -35,8 +40,8 @@ internal class CardTabControlTheme : BaseTabControlTheme
       {
          Name = CardTabStripScrollViewerPart
       };
+      CreateTemplateParentBinding(tabScrollViewer, TabControlScrollViewer.TabStripPlacementProperty, BaseTabControl.TabStripPlacementProperty);
       tabScrollViewer.RegisterInNameScope(scope);
-      CreateTemplateParentBinding(tabScrollViewer, BaseTabScrollViewer.TabStripPlacementProperty, TabControl.TabStripPlacementProperty);
       var contentPanel = CreateTabStripContentPanel(scope);
       tabScrollViewer.Content = contentPanel;
       tabScrollViewer.TabControl = baseTabControl;
@@ -68,10 +73,12 @@ internal class CardTabControlTheme : BaseTabControlTheme
       
       addTabButton.RegisterInNameScope(scope);
       
-      cardTabStripContainer.Children.Add(tabScrollViewer);
       cardTabStripContainer.Children.Add(addTabButton);
+      cardTabStripContainer.Children.Add(tabScrollViewer);
       
-      container.Children.Add(cardTabStripContainer);
+      alignWrapper.Children.Add(cardTabStripContainer); 
+      
+      container.Children.Add(alignWrapper);
    }
    
    private ItemsPresenter CreateTabStripContentPanel(INameScope scope)

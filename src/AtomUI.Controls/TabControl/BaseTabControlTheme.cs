@@ -15,6 +15,7 @@ internal class BaseTabControlTheme : BaseControlTheme
    public const string MainLayoutContainerPart = "PART_MainLayoutContainer";
    public const string SelectedContentHostPart = "PART_SelectedContentHost";
    public const string TabsContainerPart       = "PART_TabsContainer";
+   public const string AlignWrapperPart        = "PART_AlignWrapper";
     
    public BaseTabControlTheme(Type targetType) : base(targetType) { }
    
@@ -73,11 +74,11 @@ internal class BaseTabControlTheme : BaseControlTheme
          topStyle.Add(BaseTabControl.VerticalAlignmentProperty, VerticalAlignment.Top);
          
          // tabs 是否居中
-         var tabAlignCenterStyle = new Style(selector => selector.Nesting().PropertyEquals(TabStrip.TabAlignmentCenterProperty, true));
+         var tabAlignCenterStyle = new Style(selector => selector.Nesting().PropertyEquals(TabControl.TabAlignmentCenterProperty, true));
          {
-            var itemsPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ItemsPresenterPart));
-            itemsPresenterStyle.Add(ItemsPresenter.HorizontalAlignmentProperty, HorizontalAlignment.Center);
-            tabAlignCenterStyle.Add(itemsPresenterStyle);
+            var tabsContainerStyle = new Style(selector => selector.Nesting().Template().Name(TabsContainerPart));
+            tabsContainerStyle.Add(ItemsPresenter.HorizontalAlignmentProperty, HorizontalAlignment.Center);
+            tabAlignCenterStyle.Add(tabsContainerStyle);
          }
          topStyle.Add(tabAlignCenterStyle);
          
@@ -92,11 +93,11 @@ internal class BaseTabControlTheme : BaseControlTheme
          rightStyle.Add(BaseTabControl.VerticalAlignmentProperty, VerticalAlignment.Stretch);
          
          // tabs 是否居中
-         var tabAlignCenterStyle = new Style(selector => selector.Nesting().PropertyEquals(TabStrip.TabAlignmentCenterProperty, true));
+         var tabAlignCenterStyle = new Style(selector => selector.Nesting().PropertyEquals(TabControl.TabAlignmentCenterProperty, true));
          {
-            var itemsPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ItemsPresenterPart));
-            itemsPresenterStyle.Add(ItemsPresenter.VerticalAlignmentProperty, VerticalAlignment.Center);
-            tabAlignCenterStyle.Add(itemsPresenterStyle);
+            var tabsContainerStyle = new Style(selector => selector.Nesting().Template().Name(TabsContainerPart));
+            tabsContainerStyle.Add(ItemsPresenter.VerticalAlignmentProperty, VerticalAlignment.Center);
+            tabAlignCenterStyle.Add(tabsContainerStyle);
          }
          rightStyle.Add(tabAlignCenterStyle);
          
@@ -109,11 +110,11 @@ internal class BaseTabControlTheme : BaseControlTheme
          bottomStyle.Add(BaseTabControl.VerticalAlignmentProperty, VerticalAlignment.Top);
          
          // tabs 是否居中
-         var tabAlignCenterStyle = new Style(selector => selector.Nesting().PropertyEquals(TabStrip.TabAlignmentCenterProperty, true));
+         var tabAlignCenterStyle = new Style(selector => selector.Nesting().PropertyEquals(TabControl.TabAlignmentCenterProperty, true));
          {
-            var itemsPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ItemsPresenterPart));
-            itemsPresenterStyle.Add(ItemsPresenter.HorizontalAlignmentProperty, HorizontalAlignment.Center);
-            tabAlignCenterStyle.Add(itemsPresenterStyle);
+            var tabsContainerStyle = new Style(selector => selector.Nesting().Template().Name(TabsContainerPart));
+            tabsContainerStyle.Add(ItemsPresenter.HorizontalAlignmentProperty, HorizontalAlignment.Center);
+            tabAlignCenterStyle.Add(tabsContainerStyle);
          }
          bottomStyle.Add(tabAlignCenterStyle);
          
@@ -128,11 +129,11 @@ internal class BaseTabControlTheme : BaseControlTheme
          leftStyle.Add(BaseTabControl.VerticalAlignmentProperty, VerticalAlignment.Stretch);
          
          // tabs 是否居中
-         var tabAlignCenterStyle = new Style(selector => selector.Nesting().PropertyEquals(TabStrip.TabAlignmentCenterProperty, true));
+         var tabAlignCenterStyle = new Style(selector => selector.Nesting().PropertyEquals(TabControl.TabAlignmentCenterProperty, true));
          {
-            var itemsPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ItemsPresenterPart));
-            itemsPresenterStyle.Add(ItemsPresenter.VerticalAlignmentProperty, VerticalAlignment.Center);
-            tabAlignCenterStyle.Add(itemsPresenterStyle);
+            var tabsContainerStyle = new Style(selector => selector.Nesting().Template().Name(TabsContainerPart));
+            tabsContainerStyle.Add(ItemsPresenter.VerticalAlignmentProperty, VerticalAlignment.Center);
+            tabAlignCenterStyle.Add(tabsContainerStyle);
          }
          leftStyle.Add(tabAlignCenterStyle);
          
