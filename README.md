@@ -8,17 +8,90 @@ AtomUI is an implementation of Ant Design based on .NET technology, dedicated to
 
 Welcome to communicate and give suggestions to AtomUI, thank you for giving the project a Star.
 
+
+#### Control library completion
+##### Navigation
+| Control Name | Status |
+|:-------------|:-------|
+| Breadcrumb   | TODO    |
+| Dropdown     | TODO    |
+| Menu         | Completed ✅  |
+| Pagination   | TODO    |
+| Steps        | TODO    |
+
+##### Data Entry
+| Control Name    | Status   |
+|:----------------|:-------|
+| AutoComplete    | TODO    |
+| Cascader        | TODO    |
+| Checkbox        | Completed ✅  |
+| ColorPicker     | TODO    |
+| DatePicker      | TODO    |
+| Form            | TODO    |
+| Input           | TODO    |
+| InputNumber     | TODO    |
+| Mentions        | TODO    |
+| Radio           | Completed ✅  |
+| OptionButtonBox | Completed ✅  |
+| Rate            | TODO    |
+| Select          | TODO    |
+| Slider          | Completed ✅  |
+| Switch          | Completed ✅  |
+| TimePicker      | TODO    |
+| Transfer        | TODO    |
+| Upload          | Need Review 🤔 |
+
+##### Data Display
+| Control Name   | Status  |
+|:---------------|:------|
+| Avatar         | TODO   |
+| Badge          | Completed ✅ |
+| Calendar       | TODO   |
+| Card           | TODO   |
+| Carousel       | TODO   |
+| Collapse       | TODO   |
+| Descriptions   | TODO   |
+| EmptyIndicator | Completed ✅ |
+| Image          | TODO   |
+| List           | TODO   |
+| Popover        | Completed ✅ |
+| QRCode         | TODO   |
+| Segmented      | Completed ✅ |
+| Statistic      | TODO   |
+| Table          | TODO   |
+| TabControl     | Completed ✅ |
+| Tag            | Completed ✅ |
+| Timeline       | TODO |
+| Tooltip        | Completed ✅ |
+| Tour           | TODO |
+| Tree           | TODO |
+
+##### Feedback
+| Control Name       | Status   |
+|:-------------------|:-------|
+| Alert              | Completed ✅  |
+| Drawer             | TODO    |
+| Message            | TODO    |
+| Modal              | TODO    |
+| Notification       | TODO    |
+| Popconfirm         | TODO    |
+| ProgressBar        | Completed ✅  |
+| Result             | Need Review 🤔 |
+| Skeleton           | TODO    |
+| LoadingIndicator   | Completed ✅  |
+| Watermark          | TODO        |
+
 #### Some screenshots of the running effect
 
 #### Button Controls
 
-![按钮控件](docs/images/controls/ButtonControl.png)
+![Button](docs/images/controls/ButtonControl.png)
 
 #### Progress bar control
-![进度条控件](docs/images/controls/ProgressBarControl.png)
+![Progress](docs/images/controls/ProgressBarControl.png)
 
 #### Slider control
-![Slider 控件](docs/images/controls/SliderControl.png)
+![Slider](docs/images/controls/SliderControl.png)
 
 <div style="height:50px"></div>
 
