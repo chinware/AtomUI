@@ -9,11 +9,36 @@ AtomUI 是基于 .NET 技术的 Ant Design 实现，致力于将 Ant Design 优�
 欢迎交流和给 AtomUI 提相关建议，感谢给项目点 Star。
 
 #### 当前完成度
-##### （导航类）Navigation
-| 控件名 | 完成情况 |
-|:---|:---|
-| Breadcrumb 面包屑 | 未完成 |
-| Dropdown 下拉菜单 | 未完成 |
+##### （导航）Navigation
+| 控件名            | 完成情况                             |
+|:---------------|:---------------------------------|
+| Breadcrumb 面包屑 | 未完成                              |
+| Dropdown 下拉菜单  | 未完成                              |
+| Menu 导航菜单      | <font color="#00B96B">已完成</font> |
+| Pagination 分页  | 未完成 |
+| Steps 步骤条      | 未完成 |
+
+##### （数据录入）Data Entry
+| 控件名               | 完成情况                             |
+|:------------------|:---------------------------------|
+| AutoComplete 自动完成 | 未完成                              |
+| Cascader 级联选择     | 未完成                              |
+| Checkbox多选框       | <font color="#00B96B">已完成</font> |
+| ColorPicker 颜色选择器 | 未完成                              |
+| DatePicker 日期选择框  | 未完成                              |
+| Form 表单           | 未完成                              |
+| Input 输入框         | 未完成                              |
+| InputNumber 数字输入框 | 未完成                              |
+| Mentions 提及       | 未完成                              |
+| Radio 单选框         | <font color="#00B96B">已完成</font> |
+| Rate 评分           | 未完成                              |
+| Select 选择器        | 未完成                              |
+| Slider 滑动输入条      | <font color="#00B96B">已完成</font> |
+| Switch 开关         | <font color="#00B96B">已完成</font> |
+| TimePicker 时间选择框  | 未完成                              |
+| Transfer 穿梭框      | 未完成                              |
+| Upload 上传         | 需评估                              |
+
 
 #### 运行效果部分截图
 
