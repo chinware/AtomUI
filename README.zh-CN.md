@@ -10,9 +10,9 @@ AtomUI 是基于 .NET 技术的 Ant Design 实现，致力于将 Ant Design 优�
 
 #### 运行环境
 
-.NET 8 及其以上
-Avalonia 11.1.1 及其以上
-PS: AtomUI 目前仅在 Windows 11 平台测试
+.NET 8 及其以上</br>
+Avalonia 11.1.1 及其以上</br>
+PS: AtomUI 目前仅在 Windows 11 平台测试</br>
 
 #### 当前完成度
 ##### （导航）Navigation
@@ -48,29 +48,31 @@ PS: AtomUI 目前仅在 Windows 11 平台测试
 | Upload 上传           | 需评估 🤔 |
 
 ##### （数据展示）Data Display
-| 控件名                | 完成情况   |
-|:-------------------|:-------|
-| Avatar 头像          | 未完成    |
-| Badge 徽标数          | 已完成 ✅  |
-| Calendar 日历        | 未完成    |
-| Card 卡片            | 未完成    |
-| Carousel 走马灯       | 未完成    |
-| Collapse 折叠面板      | 进行中 💪 |
-| Descriptions 描述列表  | 未完成    |
-| EmptyIndicator 空状态 | 已完成 ✅  |
-| Image 图片           | 未完成    |
-| List 列表            | 进行中 💪   |
-| Popover 气泡卡片       | 已完成 ✅  |
-| QRCode 二维码         | 未完成    |
-| Segmented 分段控制器    | 已完成 ✅  |
-| Statistic 统计数值     | 未完成    |
-| Table 表格           | 未完成    |
-| TabControl 标签页     | 已完成 ✅  |
-| Tag 标签             | 已完成 ✅  |
-| Timeline 时间轴       | 进行中 💪 |
-| Tooltip 文字提示       | 已完成 ✅  |
-| Tour 漫游式引导         | 未完成    |
-| Tree 树形控件          | 进行中 💪 |
+| 控件名                    | 完成情况   |
+|:-----------------------|:-------|
+| Avatar 头像              | 未完成    |
+| Badge 徽标数              | 已完成 ✅  |
+| Calendar 日历            | 未完成    |
+| Card 卡片                | 未完成    |
+| Carousel 走马灯           | 未完成    |
+| Collapse 折叠面板          | 进行中 💪 |
+| Descriptions 描述列表      | 未完成    |
+| EmptyIndicator 空状态     | 已完成 ✅  |
+| PathIcon 图标            | 已完成 ✅    |
+| Image 图片               | 未完成    |
+| List 列表                | 进行中 💪   |
+| Popover 气泡卡片           | 已完成 ✅  |
+| QRCode 二维码             | 未完成    |
+| Segmented 分段控制器        | 已完成 ✅  |
+| Statistic 统计数值         | 未完成    |
+| Table 表格               | 未完成    |
+| TabControl 标签页         | 已完成 ✅  |
+| Tag 标签                 | 已完成 ✅  |
+| MarqueeLabel 跑马灯 Label | 已完成 ✅  |
+| Timeline 时间轴           | 进行中 💪 |
+| Tooltip 文字提示           | 已完成 ✅  |
+| Tour 漫游式引导             | 未完成    |
+| Tree 树形控件              | 进行中 💪 |
 
 ##### （反馈）Feedback
 | 控件名                  | 完成情况   |
