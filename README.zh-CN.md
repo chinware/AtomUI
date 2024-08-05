@@ -8,6 +8,13 @@ AtomUI 是基于 .NET 技术的 Ant Design 实现，致力于将 Ant Design 优�
 
 欢迎交流和给 AtomUI 提相关建议，感谢给项目点 Star。
 
+#### 当前完成度
+##### （导航类）Navigation
+| 控件名 | 完成情况 |
+|:---|:---|
+| Breadcrumb 面包屑 | 未完成 |
+| Dropdown 下拉菜单 | 未完成 |
+
 #### 运行效果部分截图
 
 #### 按钮控件
