@@ -264,7 +264,7 @@ public class OptionButtonGroup : TemplatedControl, ISizeTypeAware, IControlCusto
          }
 
          if (i != Options.Count - 1) {
-            var offsetX = optionButton.Bounds.Right;
+            var offsetX = optionButton.Bounds.Right - borderThickness.Left / 2;
             var startPoint = new Point(offsetX, 0);
             var endPoint = new Point(offsetX, Bounds.Height);
             using var optionState = context.PushRenderOptions(new RenderOptions()
