@@ -10,9 +10,9 @@ AtomUI 是基于 .NET 技术的 Ant Design 实现，致力于将 Ant Design 优�
 
 #### 运行环境
 
-.NET 8 及其以上</br>
-Avalonia 11.1.1 及其以上</br>
-PS: AtomUI 目前仅在 Windows 11 平台测试</br>
+.NET 8 及其以上<br>
+Avalonia 11.1.1 及其以上<br>
+PS: AtomUI 目前仅在 Windows 11 平台测试<br>
 
 #### 当前完成度
 ##### （导航）Navigation

@@ -40,8 +40,8 @@ public class IconButton : AvaloniaButton, ICustomHitTest
       base.OnAttachedToLogicalTree(e);
       if (!_initialized) {
          if (Icon is not null) {
-            Icon.VerticalAlignment = VerticalAlignment.Center;
-            Icon.HorizontalAlignment = HorizontalAlignment.Center;
+            Icon.SetCurrentValue(PathIcon.HorizontalAlignmentProperty, HorizontalAlignment.Center);
+            Icon.SetCurrentValue(PathIcon.VerticalAlignmentProperty, VerticalAlignment.Center);
             Content = Icon;
          }
          _initialized = true;
@@ -81,12 +81,6 @@ public class IconButton : AvaloniaButton, ICustomHitTest
       } else {
          _styleState |= ControlStyleState.Raised;
       }
-   }
-
-   protected override Size MeasureOverride(Size availableSize)
-   {
-      var size = base.MeasureOverride(availableSize);
-      return size;
    }
    
    public bool HitTest(Point point)
