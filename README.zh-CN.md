@@ -10,35 +10,75 @@ AtomUI 是基于 .NET 技术的 Ant Design 实现，致力于将 Ant Design 优�
 
 #### 当前完成度
 ##### （导航）Navigation
-| 控件名            | 完成情况                             |
-|:---------------|:---------------------------------|
-| Breadcrumb 面包屑 | 未完成                              |
-| Dropdown 下拉菜单  | 未完成                              |
-| Menu 导航菜单      | <font color="#00B96B">已完成</font> |
-| Pagination 分页  | 未完成 |
-| Steps 步骤条      | 未完成 |
+| 控件名            | 完成情况 |
+|:---------------|:-----|
+| Breadcrumb 面包屑 | 未完成  |
+| Dropdown 下拉菜单  | 未完成  |
+| Menu 导航菜单      | 已完成 ✅ |
+| Pagination 分页  | 未完成  |
+| Steps 步骤条      | 未完成  |
 
 ##### （数据录入）Data Entry
-| 控件名               | 完成情况  |
-|:------------------|:------|
-| AutoComplete 自动完成 | 未完成   |
-| Cascader 级联选择     | 未完成   |
-| Checkbox多选框       | 已完成 ✅ |
-| ColorPicker 颜色选择器 | 未完成   |
-| DatePicker 日期选择框  | 未完成   |
-| Form 表单           | 未完成   |
-| Input 输入框         | 未完成   |
-| InputNumber 数字输入框 | 未完成   |
-| Mentions 提及       | 未完成   |
-| Radio 单选框         | 已完成 ✅ |
-| Rate 评分           | 未完成   |
-| Select 选择器        | 未完成   |
-| Slider 滑动输入条      | 已完成 ✅ |
-| Switch 开关         | 已完成 ✅ |
-| TimePicker 时间选择框  | 未完成   |
-| Transfer 穿梭框      | 未完成   |
-| Upload 上传         | 需评估   |
+| 控件名                 | 完成情况   |
+|:--------------------|:-------|
+| AutoComplete 自动完成   | 未完成    |
+| Cascader 级联选择       | 未完成    |
+| Checkbox 多选框        | 已完成 ✅  |
+| ColorPicker 颜色选择器   | 未完成    |
+| DatePicker 日期选择框    | 未完成    |
+| Form 表单             | 未完成    |
+| Input 输入框           | 未完成    |
+| InputNumber 数字输入框   | 未完成    |
+| Mentions 提及         | 未完成    |
+| Radio 单选框           | 已完成 ✅  |
+| OptionButtonBox 单选组 | 已完成 ✅  |
+| Rate 评分             | 未完成    |
+| Select 选择器          | 未完成    |
+| Slider 滑动输入条        | 已完成 ✅  |
+| Switch 开关           | 已完成 ✅  |
+| TimePicker 时间选择框    | 未完成    |
+| Transfer 穿梭框        | 未完成    |
+| Upload 上传           | 需评估 🤔 |
 
+##### （数据展示）Data Display
+| 控件名                | 完成情况  |
+|:-------------------|:------|
+| Avatar 头像          | 未完成   |
+| Badge 徽标数          | 已完成 ✅ |
+| Calendar 日历        | 未完成   |
+| Card 卡片            | 未完成   |
+| Carousel 走马灯       | 未完成   |
+| Collapse 折叠面板      | 未完成   |
+| Descriptions 描述列表  | 未完成   |
+| EmptyIndicator 空状态 | 已完成 ✅ |
+| Image 图片           | 未完成   |
+| List 列表            | 未完成   |
+| Popover 气泡卡片       | 已完成 ✅ |
+| QRCode 二维码         | 未完成   |
+| Segmented 分段控制器    | 已完成 ✅ |
+| Statistic 统计数值     | 未完成   |
+| Table 表格           | 未完成   |
+| TabControl 标签页     | 已完成 ✅ |
+| Tag 标签             | 已完成 ✅ |
+| Timeline 时间轴       | 未完成 |
+| Tooltip 文字提示       | 已完成 ✅ |
+| Tour 漫游式引导         | 未完成 |
+| Tree 树形控件          | 未完成 |
+
+##### （反馈）Feedback
+| 控件名                  | 完成情况   |
+|:---------------------|:-------|
+| Alert 警告提示           | 已完成 ✅  |
+| Drawer 抽屉            | 未完成    |
+| Message 全局提示         | 未完成    |
+| Modal 对话框            | 未完成    |
+| Notification 通知提醒框   | 未完成    |
+| Popconfirm 气泡确认框     | 未完成    |
+| ProgressBar 进度条      | 已完成 ✅  |
+| Result 结果            | 需评估 🤔 |
+| Skeleton 骨架屏         | 未完成    |
+| LoadingIndicator 加载中 | 已完成 ✅  |
+| Watermark 水印         | 未完成        |
 
 #### 运行效果部分截图
 
