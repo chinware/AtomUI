@@ -20,6 +20,23 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtomUI.Base.Tests", "tests\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtomUI.Controls", "src\AtomUI.Controls\AtomUI.Controls.csproj", "{A07CB66E-7A5F-4C44-BB16-02A0A99D6C2D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{5EB2524C-30A5-4031-B424-4510E36C753E}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
+		Directory.Packages.props = Directory.Packages.props
+		build\Common.props = build\Common.props
+		build\Internal.Using.props = build\Internal.Using.props
+		build\Nuget.props = build\Nuget.props
+		build\Output.App.props = build\Output.App.props
+		build\Output.Local.props = build\Output.Local.props
+		build\Output.props = build\Output.props
+		build\Version.props = build\Version.props
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{279BC2C9-A818-4D6C-9274-678649932057}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Generators", "Generators", "{B4C46C3E-0CCC-4861-95B6-CA08D501A46F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -66,5 +83,12 @@ Global
 		{A07CB66E-7A5F-4C44-BB16-02A0A99D6C2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A07CB66E-7A5F-4C44-BB16-02A0A99D6C2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A07CB66E-7A5F-4C44-BB16-02A0A99D6C2D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E41D737A-5CF0-4B33-9F51-2C1B1541659C} = {279BC2C9-A818-4D6C-9274-678649932057}
+		{59931F42-8DD8-4DFC-9060-563841F39669} = {279BC2C9-A818-4D6C-9274-678649932057}
+		{954FB7F2-7706-4E2B-86D1-624F66C1EFF0} = {B4C46C3E-0CCC-4861-95B6-CA08D501A46F}
+		{30910056-F8F6-4429-B25E-722C57440210} = {B4C46C3E-0CCC-4861-95B6-CA08D501A46F}
+		{EADEF2AC-B7E5-436A-8B39-8BBECF8706AB} = {279BC2C9-A818-4D6C-9274-678649932057}
 	EndGlobalSection
 EndGlobal

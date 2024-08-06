@@ -1,27 +1,13 @@
 <Project>
+    
     <PropertyGroup>
-        <IsTestProject Condition="$(MSBuildProjectFullPath.Contains('test')) and ($(MSBuildProjectName.EndsWith('.Tests')) or $(MSBuildProjectName.EndsWith('.TestBase')))">true</IsTestProject>
-        <AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>
-        <NoWarn>$(NoWarn);CS1591;CS0436</NoWarn>
-        <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-        <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-        <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-        <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-        <WarningsAsErrors>Nullable</WarningsAsErrors>
-    </PropertyGroup>
-
-    <PropertyGroup>
+        <RootNamespace>AtomUI</RootNamespace>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
         <LangVersion>latest</LangVersion>
-        <Version>0.0.1-preview</Version>
-        <Company>Chinware Technologies Ltd.</Company>
-        <PackageProjectUrl>https://atomui.net/</PackageProjectUrl>
-        <AvaloniaVersion>[11.1.0]</AvaloniaVersion>
     </PropertyGroup>
 
-    <PropertyGroup>
-        <!-- enable private APIs -->
-        <AvaloniaAccessUnstablePrivateApis>true</AvaloniaAccessUnstablePrivateApis>
-        <!-- Mind to specify the exact Avalonia version needed for your package to work -->
-        <Avalonia_I_Want_To_Use_Private_Apis_In_Nuget_Package_And_Promise_To_Pin_The_Exact_Avalonia_Version_In_Package_Dependency>true</Avalonia_I_Want_To_Use_Private_Apis_In_Nuget_Package_And_Promise_To_Pin_The_Exact_Avalonia_Version_In_Package_Dependency>
-    </PropertyGroup>
+    <Import Project="$(MSBuildThisFileDirectory)\Build\Version.props" />
+    <Import Project="$(MSBuildThisFileDirectory)\Build\Output.props" />
+    
 </Project>

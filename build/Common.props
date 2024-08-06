@@ -1,0 +1,31 @@
+<Project>
+	<PropertyGroup>
+
+		<OutputType>Library</OutputType>
+		<TargetFramework>net8.0</TargetFramework>
+		<TrimMode>copyused</TrimMode>
+		<BuiltInComInteropSupport>false</BuiltInComInteropSupport>
+
+		<!-- 'bin/ref/' https://learn.microsoft.com/zh-cn/dotnet/csharp/language-reference/compiler-options/output#producereferenceassembly -->
+		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+		<!-- 'net6.0' https://learn.microsoft.com/zh-cn/dotnet/core/project-sdk/msbuild-props#appendtargetframeworktooutputpath -->
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<!-- 'win-x64' https://learn.microsoft.com/zh-cn/dotnet/core/project-sdk/msbuild-props#appendruntimeidentifiertooutputpath -->
+		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+
+		<IsTestProject Condition="$(MSBuildProjectFullPath.Contains('test')) and ($(MSBuildProjectName.EndsWith('.Tests')) or $(MSBuildProjectName.EndsWith('.TestBase')))">true</IsTestProject>
+		<AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>
+		<NoWarn>$(NoWarn);CS1591;CS0436;CS7035</NoWarn>
+		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+		<GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+		<GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+		<GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+		<WarningsAsErrors>Nullable</WarningsAsErrors>
+
+		<!-- enable private APIs -->
+		<AvaloniaAccessUnstablePrivateApis>true</AvaloniaAccessUnstablePrivateApis>
+		<!-- Mind to specify the exact Avalonia version needed for your package to work -->
+		<Avalonia_I_Want_To_Use_Private_Apis_In_Nuget_Package_And_Promise_To_Pin_The_Exact_Avalonia_Version_In_Package_Dependency>true</Avalonia_I_Want_To_Use_Private_Apis_In_Nuget_Package_And_Promise_To_Pin_The_Exact_Avalonia_Version_In_Package_Dependency>
+		
+	</PropertyGroup>
+</Project>

@@ -1,13 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+    <Import Project="$(MSBuildThisFileDirectory)..\..\Build\Common.props" />
+
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-        <PackageId>AtomUI.Base</PackageId>
-        <RootNamespace>AtomUI</RootNamespace>
         <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
-        <GeneratePackageOnBuild Condition=" '$(Configuration)' != 'Debug' ">True</GeneratePackageOnBuild>
     </PropertyGroup>
     
     <ItemGroup>

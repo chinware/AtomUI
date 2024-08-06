@@ -1,0 +1,33 @@
+<Project>
+
+	<PropertyGroup>
+		<GeneratePackageOnBuild Condition=" '$(Configuration)' == 'Release' ">True</GeneratePackageOnBuild>
+
+		<PackageId>$(MSBuildProjectName)</PackageId>
+		
+		<!--Nuget-->
+		<Title>Atom UI</Title>
+		<Author>Chinware Technologies Ltd.</Author>
+		<Authors>$(Author)</Authors>
+		
+		<Description>TODO</Description>
+		<PackageTags>TODO</PackageTags>
+		
+		<ProjectUrl>https://atomui.net</ProjectUrl>
+		<RepositoryUrl>https://github.com/chinware/AtomUI</RepositoryUrl>
+		<PackageProjectUrl>https://atomui.net</PackageProjectUrl>
+		<Company>Chinware Technologies Ltd.</Company>
+		<Copyright>Copyright ©2024 L, Chinware Technologies Ltd, All Rights Reserved.</Copyright>
+		<PackageIcon>logo.png</PackageIcon>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<Version>$(NugetPackageVersion)</Version>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="$(MSBuildThisFileDirectory)..\logo.png" Visible="False" Pack="True" PackagePath="\"/>
+		<None Include="$(MSBuildThisFileDirectory)..\LICENSE" Visible="False" Pack="True" PackagePath="\"/>
+		<None Include="$(MSBuildThisFileDirectory)..\README.md" Visible="False" Pack="True" PackagePath="\"/>
+	</ItemGroup>
+
+</Project>

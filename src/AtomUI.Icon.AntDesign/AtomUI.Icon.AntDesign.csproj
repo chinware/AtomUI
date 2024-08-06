@@ -1,28 +1,25 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-        <PackageId>AtomUI.Icon.AntDesign</PackageId>
-        <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-        <CompilerGeneratedFilesOutputPath>GeneratedFiles</CompilerGeneratedFilesOutputPath>
-        <GeneratePackageOnBuild Condition=" '$(Configuration)' != 'Debug' ">True</GeneratePackageOnBuild>
-    </PropertyGroup>
+    <Import Project="$(MSBuildThisFileDirectory)..\..\Build\Common.props" />
 
     <ItemGroup>
         <Compile Remove="$(CompilerGeneratedFilesOutputPath)/**/*.cs" />
     </ItemGroup>
+    
+    <PropertyGroup>
+        <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+        <CompilerGeneratedFilesOutputPath>GeneratedFiles</CompilerGeneratedFilesOutputPath>
+    </PropertyGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\AtomUI.Icon.Generator\AtomUI.Icon.Generator.csproj"
                           OutputItemType="Analyzer"
-                          ReferenceOutputAssembly="false"
-        />
+                          ReferenceOutputAssembly="false"/>
         <ProjectReference Include="..\AtomUI.Icon\AtomUI.Icon.csproj" />
     </ItemGroup>
 
     <ItemGroup>
         <AdditionalFiles Include="Assets\Svg\**\*.svg" />
     </ItemGroup>
+    
 </Project>

@@ -1,0 +1,8 @@
+<Project>
+	<PropertyGroup>
+
+		<PackageOutputPath>$(MSBuildThisFileDirectory)..\_output\Nuget\</PackageOutputPath>
+		<OutputPath>$(MSBuildThisFileDirectory)..\_output\Bin\$(Configuration)\</OutputPath>
+
+	</PropertyGroup>
+</Project>

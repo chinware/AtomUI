@@ -1,12 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-        <PackageId>AtomUI.Icon</PackageId>
-        <GeneratePackageOnBuild Condition=" '$(Configuration)' != 'Debug' ">True</GeneratePackageOnBuild>
-    </PropertyGroup>
+    <Import Project="$(MSBuildThisFileDirectory)..\..\Build\Common.props" />
 
     <ItemGroup>
         <PackageReference Include="Avalonia"/>

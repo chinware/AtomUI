@@ -1,10 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+    <Import Project="$(MSBuildThisFileDirectory)..\..\Build\Common.props" />
+    <Import Project="$(MSBuildThisFileDirectory)..\..\Build\Output.App.props" />
+
     <PropertyGroup>
         <OutputType>WinExe</OutputType>
         <TargetFramework>net8.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
         <RootNamespace>AtomUI.Demo.Desktop</RootNamespace>
     </PropertyGroup>
 
@@ -24,7 +25,7 @@
         <PackageReference Include="Avalonia.Themes.Fluent" />
         <PackageReference Include="Avalonia.Controls.DataGrid" />
         <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" />
-<!--        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Nlnet.Avalonia.DevTools" />-->
+        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Nlnet.Avalonia.DevTools" />
         <PackageReference Include="CommunityToolkit.Mvvm" />
     </ItemGroup>
 

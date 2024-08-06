@@ -1,29 +1,24 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+    <Import Project="$(MSBuildThisFileDirectory)..\..\Build\Common.props" />
+
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-        <PackageId>AtomUI.Controls</PackageId>
         <RootNamespace>AtomUI.Controls</RootNamespace>
         <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
         <CompilerGeneratedFilesOutputPath>GeneratedFiles</CompilerGeneratedFilesOutputPath>
-        <GeneratePackageOnBuild Condition=" '$(Configuration)' != 'Debug' ">True</GeneratePackageOnBuild>
     </PropertyGroup>
 
     <ItemGroup>
         <Compile Remove="$(CompilerGeneratedFilesOutputPath)/**/*.cs" />
     </ItemGroup>
-    
-    <ItemGroup>
-      <ProjectReference Include="..\AtomUI.Theme\AtomUI.Theme.csproj" />
-    </ItemGroup>
+
     <ItemGroup>
         <PackageReference Include="Avalonia.Svg"/>
     </ItemGroup>
     
     <ItemGroup>
+      <ProjectReference Include="..\AtomUI.Theme\AtomUI.Theme.csproj" />
         <ProjectReference Include="..\AtomUI.Generator\AtomUI.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     </ItemGroup>
-
+    
 </Project>

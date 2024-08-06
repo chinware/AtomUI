@@ -1,14 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+    <Import Project="$(MSBuildThisFileDirectory)..\..\Build\Common.props" />
+
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-        <PackageId>AtomUI.Theme</PackageId>
-        <RootNamespace>AtomUI</RootNamespace>
         <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
         <CompilerGeneratedFilesOutputPath>GeneratedFiles</CompilerGeneratedFilesOutputPath>
-        <GeneratePackageOnBuild Condition=" '$(Configuration)' != 'Debug' ">True</GeneratePackageOnBuild>
     </PropertyGroup>
 
     <ItemGroup>
@@ -18,6 +14,7 @@
     <ItemGroup>
       <ProjectReference Include="..\AtomUI.Base\AtomUI.Base.csproj" />
       <ProjectReference Include="..\AtomUI.Icon\AtomUI.Icon.csproj" />
+        <ProjectReference Include="..\AtomUI.Generator\AtomUI.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     </ItemGroup>
 
     <ItemGroup>
@@ -25,7 +22,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\AtomUI.Generator\AtomUI.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+        
     </ItemGroup>
 
     <ItemGroup>
