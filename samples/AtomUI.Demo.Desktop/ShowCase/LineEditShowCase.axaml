@@ -34,5 +34,13 @@
             </StackPanel>
         </showcase:ShowCaseItem>
         
+        <showcase:ShowCaseItem
+            Title="Pre / Post tab"
+            Description="Using pre and post tabs example.">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:LineEdit Watermark="Outlined" LeftAddOn="http://" RightAddOn=".com"/>
+            </StackPanel>
+        </showcase:ShowCaseItem>
+        
     </showcase:ShowCasePanel>
 </UserControl>

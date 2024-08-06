@@ -83,6 +83,21 @@ internal class LineEditToken : AbstractControlDesignToken
    /// 小号字体大小
    /// </summary>
    public double InputFontSizeSM { get; set; }
+   
+   /// <summary>
+   /// AddOn 内边距
+   /// </summary>
+   public Thickness AddOnPadding { get; set; }
+   
+   /// <summary>
+   /// AddOn 小号内边距
+   /// </summary>
+   public Thickness AddOnPaddingSM { get; set; }
+   
+   /// <summary>
+   /// AddOn 大号内边距
+   /// </summary>
+   public Thickness AddOnPaddingLG { get; set; }
 
    internal override void CalculateFromAlias()
    {
@@ -98,6 +113,9 @@ internal class LineEditToken : AbstractControlDesignToken
                               Math.Round(((_globalToken.HeightToken.ControlHeightSM - fontSize * lineHeight) / 2) * 10) / 10 - lineWidth);
       PaddingLG = new Thickness(_globalToken.ControlPadding - lineWidth, 
                                 Math.Ceiling(((_globalToken.HeightToken.ControlHeightLG - fontSizeLG * lineHeightLG) / 2) * 10) / 10 - lineWidth);
+      AddOnPadding = new Thickness(_globalToken.PaddingSM, 0);
+      AddOnPaddingSM = new Thickness(_globalToken.ControlPaddingSM, 0);
+      AddOnPaddingLG = new Thickness(_globalToken.ControlPadding, 0);
 
       AddonBg = _globalToken.ColorFillAlter;
       ActiveBorderColor = _globalToken.ColorToken.ColorPrimaryToken.ColorPrimary;
