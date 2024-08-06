@@ -159,6 +159,8 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey ColorWhite = new TokenResourceKey("ColorWhite");
         public static readonly TokenResourceKey ColorBgMask = new TokenResourceKey("ColorBgMask");
         public static readonly TokenResourceKey ColorBlack = new TokenResourceKey("ColorBlack");
+        public static readonly TokenResourceKey SelectionBackground = new TokenResourceKey("SelectionBackground");
+        public static readonly TokenResourceKey SelectionForeground = new TokenResourceKey("SelectionForeground");
         public static readonly TokenResourceKey FontSizeSM = new TokenResourceKey("FontSizeSM");
         public static readonly TokenResourceKey FontSize = new TokenResourceKey("FontSize");
         public static readonly TokenResourceKey FontSizeLG = new TokenResourceKey("FontSizeLG");

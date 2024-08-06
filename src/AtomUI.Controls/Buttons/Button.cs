@@ -36,10 +36,7 @@ public enum ButtonShape
 // TODO 目前不能动态切换 ButtonType
 
 [PseudoClasses(IconOnlyPC)]
-public class Button : AvaloniaButton,
-                      ISizeTypeAware,
-                      IControlCustomStyle,
-                      IWaveAdornerInfoProvider
+public class Button : AvaloniaButton, ISizeTypeAware, IControlCustomStyle, IWaveAdornerInfoProvider
 {
    public const string IconOnlyPC = ":icononly";
    

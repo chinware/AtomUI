@@ -8,6 +8,11 @@
     xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
     mc:Ignorable="d">
     <showcase:ShowCasePanel>
-     
+        <showcase:ShowCaseItem
+            Title="Basic usage"
+            Description="Basic usage example.">
+            <atom:LineEdit Watermark="Basic usage"/>
+        </showcase:ShowCaseItem>
+        
     </showcase:ShowCasePanel>
 </UserControl>

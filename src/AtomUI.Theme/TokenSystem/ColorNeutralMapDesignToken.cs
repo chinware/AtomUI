@@ -485,6 +485,16 @@ public class ColorMapDesignToken : AbstractDesignToken
    /// 不随主题变化的纯黑色
    /// </summary>
    public Color ColorBlack { get; set; } = Color.FromRgb(0, 0, 0);
+   
+   /// <summary>
+   /// 选择背景色
+   /// </summary>
+   public Color SelectionBackground { get; set; }
+   
+   /// <summary>
+   /// 选择前景色
+   /// </summary>
+   public Color SelectionForeground { get; set; }
 
    public ColorNeutralMapDesignToken ColorNeutralToken { get; set; }
    public ColorPrimaryMapDesignToken ColorPrimaryToken { get; set; }
@@ -514,6 +524,7 @@ public class ColorMapDesignToken : AbstractDesignToken
       ColorErrorToken.BuildResourceDictionary(dictionary);
       ColorInfoToken.BuildResourceDictionary(dictionary);
       ColorLinkToken.BuildResourceDictionary(dictionary);
+      base.BuildResourceDictionary(dictionary);
    }
 
    internal override void LoadConfig(IDictionary<string, string> tokenConfigInfo)
@@ -525,5 +536,6 @@ public class ColorMapDesignToken : AbstractDesignToken
       ColorErrorToken.LoadConfig(tokenConfigInfo);
       ColorInfoToken.LoadConfig(tokenConfigInfo);
       ColorLinkToken.LoadConfig(tokenConfigInfo);
+      base.LoadConfig(tokenConfigInfo);
    }
 }

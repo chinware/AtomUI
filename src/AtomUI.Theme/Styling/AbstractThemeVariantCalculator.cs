@@ -132,7 +132,9 @@ public abstract class AbstractThemeVariantCalculator : IThemeVariantCalculator
 
          ColorBgMask = ColorUtils.FromRgbF(0.45, 0, 0, 0),
          ColorWhite = Color.FromRgb(255, 255, 255),
-         ColorBlack = Color.FromRgb(0, 0, 0)
+         ColorBlack = Color.FromRgb(0, 0, 0),
+         SelectionBackground = primaryColors.Color6,
+         SelectionForeground = Color.FromRgb(255, 255, 255)
       };
 
       return colorMapDesignToken;

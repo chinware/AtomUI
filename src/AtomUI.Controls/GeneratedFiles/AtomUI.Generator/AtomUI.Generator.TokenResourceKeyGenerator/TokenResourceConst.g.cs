@@ -100,6 +100,24 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey EmptyImgHeightMD = new TokenResourceKey("EmptyIndicator.EmptyImgHeightMD");
     }
 
+    public static class LineEditResourceKey
+    {
+        public static readonly TokenResourceKey Padding = new TokenResourceKey("LineEdit.Padding");
+        public static readonly TokenResourceKey PaddingSM = new TokenResourceKey("LineEdit.PaddingSM");
+        public static readonly TokenResourceKey PaddingLG = new TokenResourceKey("LineEdit.PaddingLG");
+        public static readonly TokenResourceKey AddonBg = new TokenResourceKey("LineEdit.AddonBg");
+        public static readonly TokenResourceKey HoverBorderColor = new TokenResourceKey("LineEdit.HoverBorderColor");
+        public static readonly TokenResourceKey ActiveBorderColor = new TokenResourceKey("LineEdit.ActiveBorderColor");
+        public static readonly TokenResourceKey ActiveShadow = new TokenResourceKey("LineEdit.ActiveShadow");
+        public static readonly TokenResourceKey ErrorActiveShadow = new TokenResourceKey("LineEdit.ErrorActiveShadow");
+        public static readonly TokenResourceKey WarningActiveShadow = new TokenResourceKey("LineEdit.WarningActiveShadow");
+        public static readonly TokenResourceKey HoverBg = new TokenResourceKey("LineEdit.HoverBg");
+        public static readonly TokenResourceKey ActiveBg = new TokenResourceKey("LineEdit.ActiveBg");
+        public static readonly TokenResourceKey InputFontSize = new TokenResourceKey("LineEdit.InputFontSize");
+        public static readonly TokenResourceKey InputFontSizeLG = new TokenResourceKey("LineEdit.InputFontSizeLG");
+        public static readonly TokenResourceKey InputFontSizeSM = new TokenResourceKey("LineEdit.InputFontSizeSM");
+    }
+
     public static class LoadingIndicatorResourceKey
     {
         public static readonly TokenResourceKey DotSize = new TokenResourceKey("LoadingIndicator.DotSize");
