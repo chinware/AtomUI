@@ -14,5 +14,25 @@
             <atom:LineEdit Watermark="Basic usage"/>
         </showcase:ShowCaseItem>
         
+        <showcase:ShowCaseItem
+            Title="Three sizes of Input"
+            Description="There are three sizes of an Input box: large (40px), default (32px) and small (24px).">
+          <StackPanel Orientation="Vertical" Spacing="10">
+              <atom:LineEdit Watermark="Large" SizeType="Large"/>
+              <atom:LineEdit Watermark="Middle" SizeType="Middle"/>
+              <atom:LineEdit Watermark="Small" SizeType="Small"/>
+          </StackPanel>
+        </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="Variants"
+            Description="Variants of Input.">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:LineEdit Watermark="Outlined" StyleVariant="Outline"/>
+                <atom:LineEdit Watermark="Filled" StyleVariant="Filled"/>
+                <atom:LineEdit Watermark="Borderless" StyleVariant="Borderless"/>
+            </StackPanel>
+        </showcase:ShowCaseItem>
+        
     </showcase:ShowCasePanel>
 </UserControl>

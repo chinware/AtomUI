@@ -1,6 +1,8 @@
 ﻿using AtomUI.Data;
 using AtomUI.Theme;
+using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
+using AtomUI.Theme.Utils;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Templates;
@@ -213,6 +215,7 @@ internal class LineEditTheme : BaseControlTheme
    {
       BuildFixedStyle();
       BuildCommonStyle();
+      BuildFilledStyle();
       BuildOutLineStyle();
    }
 
@@ -270,6 +273,25 @@ internal class LineEditTheme : BaseControlTheme
        outlineStyle.Add(focusStyle);
        
        Add(outlineStyle);
+   }
+
+   private void BuildFilledStyle()
+   {
+      var filledStyle = new Style(selector => selector.Nesting().PropertyEquals(LineEdit.StyleVariantProperty, TextBoxVariant.Filled));
+       
+      filledStyle.Add(LineEdit.BorderBrushProperty, GlobalResourceKey.ColorTransparent);
+      filledStyle.Add(LineEdit.BackgroundProperty, GlobalResourceKey.ColorFillTertiary);
+
+      var hoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
+      hoverStyle.Add(LineEdit.BackgroundProperty, GlobalResourceKey.ColorFillSecondary);
+      filledStyle.Add(hoverStyle);
+       
+      var focusStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.FocusWithIn));
+      focusStyle.Add(LineEdit.BorderBrushProperty, LineEditResourceKey.ActiveBorderColor);
+      focusStyle.Add(LineEdit.BackgroundProperty, LineEditResourceKey.ActiveBg);
+      filledStyle.Add(focusStyle);
+       
+      Add(filledStyle);
    }
 
 }

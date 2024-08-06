@@ -86,7 +86,7 @@ public class LineEdit : TextBox
 
    static LineEdit()
    {
-      AffectsRender<LineEdit>(BorderBrushProperty);
+      AffectsRender<LineEdit>(BorderBrushProperty, BackgroundProperty);
       AffectsMeasure<LineEdit>(LeftAddOnProperty, RightAddOnProperty);
    }
 
@@ -106,7 +106,14 @@ public class LineEdit : TextBox
       if (Transitions is null) {
          Transitions = new Transitions();
          Transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(BorderBrushProperty));
+         Transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty));
       }
+   }
+   
+   protected override Size MeasureOverride(Size availableSize)
+   {
+      var size = base.MeasureOverride(availableSize);
+      return size.Inflate(BorderThickness);
    }
 
    public override void Render(DrawingContext context)
@@ -116,10 +123,10 @@ public class LineEdit : TextBox
       using var state = context.PushTransform(Matrix.CreateTranslation(borderRect.X, borderRect.Y));
       _borderRenderHelper.Render(context,
                                  borderThickness: BorderThickness,
-                                 backgroundSizing: BackgroundSizing.OuterBorderEdge,
+                                 backgroundSizing: BackgroundSizing.InnerBorderEdge,
                                  finalSize: borderRect.Size,
                                  cornerRadius: borderRadius,
-                                 background: null,
+                                 background: Background,
                                  borderBrush: BorderBrush,
                                  boxShadows: new BoxShadows());
    }
@@ -151,6 +158,7 @@ public class LineEdit : TextBox
    {
       var offsetStart = 0d;
       var offsetEnd = 0d;
+      var bounds = Bounds.Deflate(BorderThickness);
       if (_leftAddOnPresenter is not null && _leftAddOnPresenter.IsVisible) {
          offsetStart += _leftAddOnPresenter.DesiredSize.Width;
       }
@@ -158,7 +166,9 @@ public class LineEdit : TextBox
          offsetEnd += _rightAddOnPresenter.DesiredSize.Width;
       }
 
-      return new Rect(new Point(offsetStart, Bounds.Y),
-                      new Size(Bounds.Width - offsetStart + offsetEnd, Bounds.Height));
+      return new Rect(new Point(offsetStart + BorderThickness.Left, BorderThickness.Top),
+                      new Size(bounds.Width - offsetStart - offsetEnd, 
+                               bounds.Height));
    }
+
 }

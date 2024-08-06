@@ -88,6 +88,7 @@ internal class LineEditToken : AbstractControlDesignToken
    {
       base.CalculateFromAlias();
       var fontSize = _globalToken.FontToken.FontSize;
+      var fontSizeLG = _globalToken.FontToken.FontSizeLG;
       var lineHeight = _globalToken.FontToken.LineHeight;
       var lineHeightLG = _globalToken.FontToken.LineHeightLG;
       var lineWidth = _globalToken.SeedToken.LineWidth;
@@ -96,7 +97,7 @@ internal class LineEditToken : AbstractControlDesignToken
       PaddingSM = new Thickness(_globalToken.ControlPaddingSM - lineWidth, 
                               Math.Round(((_globalToken.HeightToken.ControlHeightSM - fontSize * lineHeight) / 2) * 10) / 10 - lineWidth);
       PaddingLG = new Thickness(_globalToken.ControlPadding - lineWidth, 
-                                Math.Ceiling(((_globalToken.HeightToken.ControlHeightLG - fontSize * lineHeightLG) / 2) * 10) / 10 - lineWidth);
+                                Math.Ceiling(((_globalToken.HeightToken.ControlHeightLG - fontSizeLG * lineHeightLG) / 2) * 10) / 10 - lineWidth);
 
       AddonBg = _globalToken.ColorFillAlter;
       ActiveBorderColor = _globalToken.ColorToken.ColorPrimaryToken.ColorPrimary;
