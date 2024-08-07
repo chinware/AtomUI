@@ -6,7 +6,7 @@
 		<PackageId>$(MSBuildProjectName)</PackageId>
 		
 		<!--Nuget-->
-		<Title>Atom UI</Title>
+		<Title>AtomUI</Title>
 		<Author>Chinware Technologies Ltd.</Author>
 		<Authors>$(Author)</Authors>
 		
@@ -17,7 +17,7 @@
 		<RepositoryUrl>https://github.com/chinware/AtomUI</RepositoryUrl>
 		<PackageProjectUrl>https://atomui.net</PackageProjectUrl>
 		<Company>Chinware Technologies Ltd.</Company>
-		<Copyright>Copyright ©2024 L, Chinware Technologies Ltd, All Rights Reserved.</Copyright>
+		<Copyright>Copyright ©2018-2024, Chinware Technologies Ltd, All Rights Reserved.</Copyright>
 		<PackageIcon>logo.png</PackageIcon>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
