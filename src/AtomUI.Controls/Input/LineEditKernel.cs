@@ -4,8 +4,6 @@ using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
-using Avalonia.Controls.Primitives;
-using Avalonia.Layout;
 
 namespace AtomUI.Controls;
 
@@ -89,6 +87,7 @@ internal class LineEditKernel : Border
    {
       _layout = new Panel();
       Child = _layout;
+      Focusable = true;
    }
    
    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

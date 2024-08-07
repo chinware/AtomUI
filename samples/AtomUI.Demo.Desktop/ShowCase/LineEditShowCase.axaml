@@ -38,7 +38,12 @@
             Title="Pre / Post tab"
             Description="Using pre and post tabs example.">
             <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:LineEdit Watermark="Outlined" LeftAddOn="http://" RightAddOn=".com"/>
+                <atom:LineEdit LeftAddOn="http://" RightAddOn=".com" Width="400" HorizontalAlignment="Left"
+                               Text="mysite"/>
+                <atom:LineEdit RightAddOn="{atom:IconProvider Kind=SettingOutlined, Width=16, Height=16}" Width="400" HorizontalAlignment="Left"
+                               Text="mysite"/>
+                <atom:LineEdit LeftAddOn="http://" InnerRightContent=".com" Width="400" HorizontalAlignment="Left"
+                               Text="mysite"/>
             </StackPanel>
         </showcase:ShowCaseItem>
         

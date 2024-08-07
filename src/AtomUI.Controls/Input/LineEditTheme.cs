@@ -19,7 +19,7 @@ namespace AtomUI.Controls;
 [ControlThemeProvider]
 internal class LineEditTheme : BaseControlTheme
 {
-   public const string FrameDecoratorPart       = "PART_FrameDecorator";
+   public const string MainLayoutPart           = "PART_FrameDecorator";
    public const string TextPresenterPart        = "PART_TextPresenter";
    public const string WatermarkPart            = "PART_Watermark";
    public const string ScrollViewerPart         = "PART_ScrollViewer";
@@ -37,46 +37,31 @@ internal class LineEditTheme : BaseControlTheme
    {
       return new FuncControlTemplate<LineEdit>((lineEdit, scope) =>
       {
-         var border = new Border()
+         var mainLayout = new Panel()
          {
-            Name = FrameDecoratorPart
+            Name = MainLayoutPart
          };
-         
-         var grid = new Grid()
-         {
-            ShowGridLines = false
-         };
-         ConfigureGrid(grid);
-         BuildGridChildren(lineEdit, grid, scope);
-         border.Child = grid;
-         return border;
+         BuildGridChildren(lineEdit, mainLayout, scope);
+         return mainLayout;
       });
    }
 
-   protected virtual void ConfigureGrid(Grid grid)
+   protected virtual void BuildGridChildren(LineEdit lineEdit, Panel layout, INameScope scope)
    {
-      grid.ColumnDefinitions = new ColumnDefinitions()
-      {
-         new ColumnDefinition(GridLength.Auto),
-         new ColumnDefinition(GridLength.Star),
-         new ColumnDefinition(GridLength.Auto)
-      };
+      BuildLeftAddOn(layout, scope);
+      BuildLineEditKernel(lineEdit, layout, scope);
+      BuildRightAddOn(layout, scope);
    }
 
-   protected virtual void BuildGridChildren(LineEdit lineEdit, Grid grid, INameScope scope)
-   {
-      BuildLeftAddOn(grid, scope);
-      BuildLineEditKernel(lineEdit, grid, scope);
-      BuildRightAddOn(grid, scope);
-   }
-
-   protected virtual void BuildLeftAddOn(Grid grid, INameScope scope)
+   protected virtual void BuildLeftAddOn(Panel layout, INameScope scope)
    {
       var leftAddOnContentPresenter = new ContentPresenter()
       {
          Name = LeftAddOnPart,
          VerticalAlignment = VerticalAlignment.Stretch,
-         VerticalContentAlignment = VerticalAlignment.Center
+         VerticalContentAlignment = VerticalAlignment.Center,
+         HorizontalAlignment = HorizontalAlignment.Left,
+         Focusable = false
       };
       
       CreateTemplateParentBinding(leftAddOnContentPresenter, ContentPresenter.ContentProperty, LineEdit.LeftAddOnProperty);
@@ -90,14 +75,16 @@ internal class LineEditTheme : BaseControlTheme
       TokenResourceBinder.CreateTokenBinding(leftAddOnContentPresenter, ContentPresenter.BorderBrushProperty, GlobalResourceKey.ColorBorder);
       
       Grid.SetColumn(leftAddOnContentPresenter, 0);
-      grid.Children.Add(leftAddOnContentPresenter);
+      layout.Children.Add(leftAddOnContentPresenter);
    }
 
-   protected virtual void BuildLineEditKernel(LineEdit lineEdit, Grid grid, INameScope scope)
+   protected virtual void BuildLineEditKernel(LineEdit lineEdit, Panel layout, INameScope scope)
    {
       var kernelLayout = new LineEditKernel()
       {
-         Name = LineEditKernelPart
+         Name = LineEditKernelPart,
+         ZIndex = 1000,
+         Cursor = new Cursor(StandardCursorType.Ibeam)
       };
       
       CreateTemplateParentBinding(kernelLayout, LineEditKernel.BorderThicknessProperty, LineEdit.BorderThicknessProperty);
@@ -108,18 +95,19 @@ internal class LineEditTheme : BaseControlTheme
       BuildClearButton(kernelLayout, scope);
       BuildRevealButton(kernelLayout, scope);
       BuildInnerRightContent(kernelLayout, scope);
-      grid.Children.Add(kernelLayout);
-      Grid.SetColumn(kernelLayout, 1);
+      layout.Children.Add(kernelLayout);
       kernelLayout.RegisterInNameScope(scope);
    }
 
-   protected virtual void BuildRightAddOn(Grid grid, INameScope scope)
+   protected virtual void BuildRightAddOn(Panel layout, INameScope scope)
    {
       var rightAddOnContentPresenter = new ContentPresenter()
       {
          Name = RightAddOnPart,
          VerticalAlignment = VerticalAlignment.Stretch,
-         VerticalContentAlignment = VerticalAlignment.Center
+         VerticalContentAlignment = VerticalAlignment.Center,
+         HorizontalAlignment = HorizontalAlignment.Right,
+         Focusable = false
       };
       CreateTemplateParentBinding(rightAddOnContentPresenter, ContentPresenter.ContentProperty, LineEdit.RightAddOnProperty);
       CreateTemplateParentBinding(rightAddOnContentPresenter, ContentPresenter.BorderThicknessProperty, LineEdit.BorderThicknessProperty);
@@ -131,18 +119,19 @@ internal class LineEditTheme : BaseControlTheme
       TokenResourceBinder.CreateTokenBinding(rightAddOnContentPresenter, ContentPresenter.BorderBrushProperty, GlobalResourceKey.ColorBorder);
       
       rightAddOnContentPresenter.RegisterInNameScope(scope);
-      grid.Children.Add(rightAddOnContentPresenter);
-      Grid.SetColumn(rightAddOnContentPresenter, 2);
+      layout.Children.Add(rightAddOnContentPresenter);
    }
    
    protected virtual void BuildInnerLeftContent(LineEditKernel layout, INameScope scope)
    {
       var innerLeftContentPresenter = new ContentPresenter()
       {
-         Name = LeftInnerContentPart
+         Name = LeftInnerContentPart,
+         VerticalAlignment = VerticalAlignment.Center
       };
       CreateTemplateParentBinding(innerLeftContentPresenter, ContentPresenter.IsVisibleProperty, LineEdit.InnerLeftContentProperty,
-                                  BindingMode.Default, ObjectConverters.IsNotNull);      
+                                  BindingMode.Default, ObjectConverters.IsNotNull);
+      CreateTemplateParentBinding(innerLeftContentPresenter, ContentPresenter.ContentProperty, LineEdit.InnerLeftContentProperty);
       innerLeftContentPresenter.RegisterInNameScope(scope);
       layout.RightInnerContent = innerLeftContentPresenter;
    }
@@ -154,7 +143,8 @@ internal class LineEditTheme : BaseControlTheme
          Name = RightInnerContentPart
       };
       CreateTemplateParentBinding(innerRightContentPresenter, ContentPresenter.IsVisibleProperty, LineEdit.InnerRightContentProperty,
-                                  BindingMode.Default, ObjectConverters.IsNotNull);      
+                                  BindingMode.Default, ObjectConverters.IsNotNull);
+      CreateTemplateParentBinding(innerRightContentPresenter, ContentPresenter.ContentProperty, LineEdit.InnerRightContentProperty);
       innerRightContentPresenter.RegisterInNameScope(scope);
       layout.RightInnerContent = innerRightContentPresenter;
    }
@@ -251,7 +241,6 @@ internal class LineEditTheme : BaseControlTheme
 
    private void BuildFixedStyle()
    {
-      this.Add(LineEdit.CursorProperty, new Cursor(StandardCursorType.Ibeam));
       this.Add(LineEdit.SelectionBrushProperty, GlobalResourceKey.SelectionBackground);
       this.Add(LineEdit.SelectionForegroundBrushProperty, GlobalResourceKey.SelectionForeground);
       this.Add(LineEdit.VerticalAlignmentProperty, VerticalAlignment.Center);
@@ -272,7 +261,8 @@ internal class LineEditTheme : BaseControlTheme
       }
 
       {
-         var addOnStyle = new Style(selector => selector.Nesting().Template().OfType<ContentPresenter>());
+         var addOnStyle = new Style(selector => Selectors.Or(selector.Nesting().Template().Name(LeftAddOnPart),
+                                                             selector.Nesting().Template().Name(RightAddOnPart)));
          addOnStyle.Add(ContentPresenter.PaddingProperty, LineEditResourceKey.PaddingLG);
          largeStyle.Add(addOnStyle);
       }
@@ -290,7 +280,8 @@ internal class LineEditTheme : BaseControlTheme
       }
       
       {
-         var addOnStyle = new Style(selector => selector.Nesting().Template().OfType<ContentPresenter>());
+         var addOnStyle = new Style(selector => Selectors.Or(selector.Nesting().Template().Name(LeftAddOnPart),
+                                                             selector.Nesting().Template().Name(RightAddOnPart)));
          addOnStyle.Add(ContentPresenter.PaddingProperty, LineEditResourceKey.Padding);
          middleStyle.Add(addOnStyle);
       }
@@ -308,7 +299,8 @@ internal class LineEditTheme : BaseControlTheme
       }
       
       {
-         var addOnStyle = new Style(selector => selector.Nesting().Template().OfType<ContentPresenter>());
+         var addOnStyle = new Style(selector => Selectors.Or(selector.Nesting().Template().Name(LeftAddOnPart),
+                                                             selector.Nesting().Template().Name(RightAddOnPart)));
          addOnStyle.Add(ContentPresenter.PaddingProperty, LineEditResourceKey.PaddingSM);
          smallStyle.Add(addOnStyle);
       }
@@ -323,28 +315,19 @@ internal class LineEditTheme : BaseControlTheme
    private void BuildOutLineStyle()
    {
        var outlineStyle = new Style(selector => selector.Nesting().PropertyEquals(LineEdit.StyleVariantProperty, TextBoxVariant.Outline));
-       {
-          var editKernelStyle = new Style(selector => selector.Nesting().Template().Name(LineEditKernelPart)); 
-          editKernelStyle.Add(LineEditKernel.BorderBrushProperty, GlobalResourceKey.ColorBorder);
-          outlineStyle.Add(editKernelStyle);
-       }
-
+       
+       var editKernelStyle = new Style(selector => selector.Nesting().Template().Name(LineEditKernelPart));
+       editKernelStyle.Add(LineEditKernel.BorderBrushProperty, GlobalResourceKey.ColorBorder);
+       
        var hoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
-       {
-          var editKernelStyle = new Style(selector => selector.Nesting().Template().Name(LineEditKernelPart)); 
-          editKernelStyle.Add(LineEditKernel.BorderBrushProperty, LineEditResourceKey.HoverBorderColor);
-          hoverStyle.Add(editKernelStyle);
-       }
-       outlineStyle.Add(hoverStyle);
+       hoverStyle.Add(LineEditKernel.BorderBrushProperty, LineEditResourceKey.HoverBorderColor);
+       editKernelStyle.Add(hoverStyle);
        
        var focusStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.FocusWithIn));
-       {
-          var editKernelStyle = new Style(selector => selector.Nesting().Template().Name(LineEditKernelPart)); 
-          editKernelStyle.Add(LineEditKernel.BorderBrushProperty, LineEditResourceKey.ActiveBorderColor);
-          focusStyle.Add(editKernelStyle);
-       }
-       outlineStyle.Add(focusStyle);
-       
+       focusStyle.Add(LineEditKernel.BorderBrushProperty, LineEditResourceKey.ActiveBorderColor);
+       editKernelStyle.Add(focusStyle);
+   
+       outlineStyle.Add(editKernelStyle);
        Add(outlineStyle);
    }
 
@@ -352,38 +335,23 @@ internal class LineEditTheme : BaseControlTheme
    {
       var filledStyle = new Style(selector => selector.Nesting().PropertyEquals(LineEdit.StyleVariantProperty, TextBoxVariant.Filled));
 
-      {
-         var editKernelStyle = new Style(selector => selector.Nesting().Template().Name(LineEditKernelPart)); 
       
-         editKernelStyle.Add(LineEditKernel.BorderBrushProperty, GlobalResourceKey.ColorTransparent);
-         editKernelStyle.Add(LineEditKernel.BackgroundProperty, GlobalResourceKey.ColorFillTertiary);
-
-         filledStyle.Add(editKernelStyle);
-      }
+      var editKernelStyle = new Style(selector => selector.Nesting().Template().Name(LineEditKernelPart));
+      
+      editKernelStyle.Add(LineEditKernel.BorderBrushProperty, GlobalResourceKey.ColorTransparent);
+      editKernelStyle.Add(LineEditKernel.BackgroundProperty, GlobalResourceKey.ColorFillTertiary);
+      filledStyle.Add(editKernelStyle);
 
       var hoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
-      {
-         var editKernelStyle = new Style(selector => selector.Nesting().Template().Name(LineEditKernelPart)); 
-         editKernelStyle.Add(LineEditKernel.BackgroundProperty, GlobalResourceKey.ColorFillSecondary);
-
-         hoverStyle.Add(editKernelStyle);
-      }
+      hoverStyle.Add(LineEditKernel.BackgroundProperty, GlobalResourceKey.ColorFillSecondary);
+      editKernelStyle.Add(hoverStyle);
       
-      filledStyle.Add(hoverStyle);
-       
       var focusStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.FocusWithIn));
+      focusStyle.Add(LineEditKernel.BorderBrushProperty, LineEditResourceKey.ActiveBorderColor);
+      focusStyle.Add(LineEditKernel.BackgroundProperty, LineEditResourceKey.ActiveBg);
+      editKernelStyle.Add(focusStyle);
       
-      {
-         var editKernelStyle = new Style(selector => selector.Nesting().Template().Name(LineEditKernelPart)); 
-      
-         editKernelStyle.Add(LineEditKernel.BorderBrushProperty, LineEditResourceKey.ActiveBorderColor);
-         editKernelStyle.Add(LineEditKernel.BackgroundProperty, LineEditResourceKey.ActiveBg);
-
-         focusStyle.Add(editKernelStyle);
-      }
-      
-      filledStyle.Add(focusStyle);
-       
+      filledStyle.Add(editKernelStyle);
       Add(filledStyle);
    }
 

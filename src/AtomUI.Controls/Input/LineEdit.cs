@@ -188,4 +188,34 @@ public class LineEdit : TextBox
                               bottomRight:bottomRightRadius);
    }
 
+   protected override Size ArrangeOverride(Size finalSize)
+   {
+      var offsetLeft = 0d;
+      var offsetRight = finalSize.Width;
+      var controlRect = new Rect(new Point(0, 0), finalSize);
+      if (_leftAddOnPresenter is not null && _leftAddOnPresenter.IsVisible) {
+         offsetLeft += _leftAddOnPresenter.DesiredSize.Width - BorderThickness.Left;
+         _leftAddOnPresenter.Arrange(controlRect);
+      }
+
+      if (_rightAddOnPresenter is not null && _rightAddOnPresenter.IsVisible) {
+         offsetRight -= _rightAddOnPresenter.DesiredSize.Width - BorderThickness.Right;
+         _rightAddOnPresenter.Arrange(controlRect);
+      }
+
+      if (_lineEditKernel is not null) {
+         var width = offsetRight - offsetLeft;
+         if (_leftAddOnPresenter is not null && _leftAddOnPresenter.IsVisible) {
+            offsetLeft -= BorderThickness.Left;
+            width += BorderThickness.Left;
+         }
+
+         if (_rightAddOnPresenter is not null && _rightAddOnPresenter.IsVisible) {
+            width += BorderThickness.Right;
+         }
+         _lineEditKernel.Arrange(new Rect(new Point(offsetLeft, 0), new Size(width, finalSize.Height)));
+      }
+
+      return finalSize;
+   }
 }
