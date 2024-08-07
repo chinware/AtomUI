@@ -17,7 +17,7 @@
         <showcase:ShowCaseItem
             Title="Three sizes of Input"
             Description="There are three sizes of an Input box: large (40px), default (32px) and small (24px).">
-          <StackPanel Orientation="Vertical" Spacing="10">
+            <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
               <atom:LineEdit Watermark="Large" SizeType="Large" InnerLeftContent="{atom:IconProvider Kind=UserOutlined, Width=16, Height=16}"/>
               <atom:LineEdit Watermark="Middle" SizeType="Middle" InnerLeftContent="{atom:IconProvider Kind=UserOutlined, Width=14, Height=14}"/>
               <atom:LineEdit Watermark="Small" SizeType="Small"  InnerLeftContent="{atom:IconProvider Kind=UserOutlined, Width=12, Height=12}"/>
@@ -84,6 +84,23 @@
                                InnerRightContent="{atom:IconProvider Kind=InfoCircleOutlined, NormalFilledColor=#8C8C8C, Width=16, Height=16}"/>
                 <atom:LineEdit InnerLeftContent="￥" InnerRightContent="RMB"/>
                 <atom:LineEdit InnerLeftContent="￥" InnerRightContent="RMB" IsEnabled="False"/>
+            </StackPanel>
+        </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="Status"
+            Description="Add status to Input with status, which could be error or warning.">
+            <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
+                <atom:LineEdit Watermark="Error" Status="Error"/>
+                <atom:LineEdit Watermark="Warning" Status="Warning"/>
+                <atom:LineEdit Watermark="Error with prefix" InnerLeftContent="{atom:IconProvider Kind=ClockCircleOutlined, Width=16, Height=16}" Status="Error"/>
+                <atom:LineEdit Watermark="Warning with prefix" InnerLeftContent="{atom:IconProvider Kind=ClockCircleOutlined,  Width=16, Height=16}" Status="Warning"/>
+                
+                <atom:LineEdit Watermark="Error" Status="Error" StyleVariant="Filled"/>
+                <atom:LineEdit Watermark="Warning" Status="Warning" StyleVariant="Filled"/>
+                                
+                <atom:LineEdit Watermark="Error" Status="Error" StyleVariant="Borderless"/>
+                <atom:LineEdit Watermark="Warning" Status="Warning" StyleVariant="Borderless"/>
             </StackPanel>
         </showcase:ShowCaseItem>
         

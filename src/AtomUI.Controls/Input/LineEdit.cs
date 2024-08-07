@@ -27,6 +27,8 @@ public enum TextBoxStatus
 
 public class LineEdit : TextBox
 {
+   public const string ErrorPC = ":error";
+   public const string WarningPC = ":warning";
    #region 功能属性定义
 
    public static readonly StyledProperty<object?> LeftAddOnProperty =
@@ -219,6 +221,10 @@ public class LineEdit : TextBox
           change.Property == IsEnableClearButtonProperty) {
          SetupEffectiveShowClearButton();
       }
+      
+      if (change.Property == StatusProperty) {
+         UpdatePseudoClasses();
+      }
    }
 
    private void SetupAddOnBorderInfo()
@@ -298,5 +304,11 @@ public class LineEdit : TextBox
       }
 
       IsEffectiveShowClearButton = !IsReadOnly && !AcceptsReturn && !string.IsNullOrEmpty(Text);
+   }
+   
+   private void UpdatePseudoClasses()
+   {
+      PseudoClasses.Set(ErrorPC, Status == TextBoxStatus.Error);
+      PseudoClasses.Set(WarningPC, Status == TextBoxStatus.Warning);
    }
 }
