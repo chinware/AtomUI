@@ -172,7 +172,6 @@ public class LineEdit : TextBox
    
    #endregion
    
-   private readonly BorderRenderHelper _borderRenderHelper;
    private ContentPresenter? _leftAddOnPresenter;
    private ContentPresenter? _rightAddOnPresenter;
    private Border? _lineEditKernelDecorator;
@@ -183,12 +182,7 @@ public class LineEdit : TextBox
       AffectsRender<LineEdit>(BorderBrushProperty, BackgroundProperty);
       AffectsMeasure<LineEdit>(LeftAddOnProperty, RightAddOnProperty);
    }
-
-   public LineEdit()
-   {
-      _borderRenderHelper = new BorderRenderHelper();
-   }
-
+   
    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
    {
       base.OnApplyTemplate(e);
@@ -224,6 +218,17 @@ public class LineEdit : TextBox
       
       if (change.Property == StatusProperty) {
          UpdatePseudoClasses();
+      }
+
+      if (change.Property == InnerLeftContentProperty || 
+          change.Property == InnerRightContentProperty) {
+         if (change.OldValue is Control oldControl) {
+            UIStructureUtils.SetTemplateParent(oldControl, null);
+         }
+
+         if (change.NewValue is Control newControl) {
+            UIStructureUtils.SetTemplateParent(newControl, this);
+         }
       }
    }
 

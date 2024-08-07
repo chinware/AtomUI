@@ -372,6 +372,15 @@ internal class LineEditTheme : BaseControlTheme
       var revealButtonStyle = new Style(selector => selector.Nesting().Template().Name(RevealButtonPart));
       revealButtonStyle.Add(ToggleIconButton.PaddingProperty, LineEditResourceKey.RightInnerAddOnMargin);
       commonStyle.Add(revealButtonStyle);
+      
+      {
+         // 左右 inner icon 的大小
+         var innerContentIconStyle = new Style(selector => Selectors.Or(selector.Nesting().Template().Name(LeftInnerContentPart).Descendant().OfType<PathIcon>(),
+                                                                        selector.Nesting().Template().Name(RightInnerContentPart).Descendant().OfType<PathIcon>()));
+         innerContentIconStyle.Add(PathIcon.WidthProperty, GlobalResourceKey.IconSize);
+         innerContentIconStyle.Add(PathIcon.HeightProperty, GlobalResourceKey.IconSize);
+         commonStyle.Add(innerContentIconStyle);
+      }
 
       var largeStyle =
          new Style(selector => selector.Nesting().PropertyEquals(LineEdit.SizeTypeProperty, SizeType.Large));
@@ -460,6 +469,12 @@ internal class LineEditTheme : BaseControlTheme
       }
       {
          var errorStyle = new Style(selector => selector.Nesting().Class(LineEdit.ErrorPC));
+         {
+            var innerContentIconStyle = new Style(selector => Selectors.Or(selector.Nesting().Template().Name(LeftInnerContentPart).Descendant().OfType<PathIcon>(),
+                                                                           selector.Nesting().Template().Name(RightInnerContentPart).Descendant().OfType<PathIcon>()));
+            innerContentIconStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalResourceKey.ColorError);
+            errorStyle.Add(innerContentIconStyle);
+         }
 
          var editKernelDecoratorStyle =
             new Style(selector => selector.Nesting().Template().Name(LineEditKernelDecoratorPart));
@@ -480,6 +495,13 @@ internal class LineEditTheme : BaseControlTheme
       {
          var warningStyle = new Style(selector => selector.Nesting().Class(LineEdit.WarningPC));
 
+         {
+            var innerContentIconStyle = new Style(selector => Selectors.Or(selector.Nesting().Template().Name(LeftInnerContentPart).Descendant().OfType<PathIcon>(),
+                                                                           selector.Nesting().Template().Name(RightInnerContentPart).Descendant().OfType<PathIcon>()));
+            innerContentIconStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalResourceKey.ColorWarning);
+            warningStyle.Add(innerContentIconStyle);
+         }
+         
          var editKernelDecoratorStyle =
             new Style(selector => selector.Nesting().Template().Name(LineEditKernelDecoratorPart));
          editKernelDecoratorStyle.Add(Border.BorderBrushProperty, GlobalResourceKey.ColorWarning);
@@ -504,9 +526,15 @@ internal class LineEditTheme : BaseControlTheme
       var borderlessStyle =
          new Style(selector => selector.Nesting()
                                        .PropertyEquals(LineEdit.StyleVariantProperty, TextBoxVariant.Borderless));
-
+      
       {
          var errorStyle = new Style(selector => selector.Nesting().Class(LineEdit.ErrorPC));
+         {
+            var innerContentIconStyle = new Style(selector => Selectors.Or(selector.Nesting().Template().Name(LeftInnerContentPart).Descendant().OfType<PathIcon>(),
+                                                                           selector.Nesting().Template().Name(RightInnerContentPart).Descendant().OfType<PathIcon>()));
+            innerContentIconStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalResourceKey.ColorError);
+            errorStyle.Add(innerContentIconStyle);
+         }
          var scrollViewerStyle = new Style(selector => selector.Nesting().Template().Name(LineEditKernelDecoratorPart)
                                                                .Descendant().OfType<ScrollViewer>());
          scrollViewerStyle.Add(ScrollViewer.ForegroundProperty, GlobalResourceKey.ColorErrorText);
@@ -516,6 +544,12 @@ internal class LineEditTheme : BaseControlTheme
 
       {
          var warningStyle = new Style(selector => selector.Nesting().Class(LineEdit.WarningPC));
+         {
+            var innerContentIconStyle = new Style(selector => Selectors.Or(selector.Nesting().Template().Name(LeftInnerContentPart).Descendant().OfType<PathIcon>(),
+                                                                           selector.Nesting().Template().Name(RightInnerContentPart).Descendant().OfType<PathIcon>()));
+            innerContentIconStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalResourceKey.ColorWarning);
+            warningStyle.Add(innerContentIconStyle);
+         }
          var scrollViewerStyle = new Style(selector => selector.Nesting().Template().Name(LineEditKernelDecoratorPart)
                                                                .Descendant().OfType<ScrollViewer>());
          scrollViewerStyle.Add(ScrollViewer.ForegroundProperty, GlobalResourceKey.ColorWarningText);
@@ -553,6 +587,13 @@ internal class LineEditTheme : BaseControlTheme
       {
          var errorStyle = new Style(selector => selector.Nesting().Class(LineEdit.ErrorPC));
 
+         {
+            var innerContentIconStyle = new Style(selector => Selectors.Or(selector.Nesting().Template().Name(LeftInnerContentPart).Descendant().OfType<PathIcon>(),
+                                                                           selector.Nesting().Template().Name(RightInnerContentPart).Descendant().OfType<PathIcon>()));
+            innerContentIconStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalResourceKey.ColorError);
+            errorStyle.Add(innerContentIconStyle);
+         }
+         
          var editKernelDecoratorStyle =
             new Style(selector => selector.Nesting().Template().Name(LineEditKernelDecoratorPart));
 
@@ -582,6 +623,13 @@ internal class LineEditTheme : BaseControlTheme
 
       {
          var warningStyle = new Style(selector => selector.Nesting().Class(LineEdit.WarningPC));
+         
+         {
+            var innerContentIconStyle = new Style(selector => Selectors.Or(selector.Nesting().Template().Name(LeftInnerContentPart).Descendant().OfType<PathIcon>(),
+                                                                           selector.Nesting().Template().Name(RightInnerContentPart).Descendant().OfType<PathIcon>()));
+            innerContentIconStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalResourceKey.ColorWarning);
+            warningStyle.Add(innerContentIconStyle);
+         }
 
          var editKernelDecoratorStyle =
             new Style(selector => selector.Nesting().Template().Name(LineEditKernelDecoratorPart));
@@ -597,6 +645,14 @@ internal class LineEditTheme : BaseControlTheme
          var focusStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.FocusWithIn));
          focusStyle.Add(Border.BorderBrushProperty, GlobalResourceKey.ColorWarning);
          focusStyle.Add(Border.BackgroundProperty, LineEditResourceKey.ActiveBg);
+         
+         {
+            var innerContentIconStyle = new Style(selector => Selectors.Or(selector.Nesting().Template().Name(LeftInnerContentPart).Descendant().OfType<PathIcon>(),
+                                                                           selector.Nesting().Template().Name(RightInnerContentPart).Descendant().OfType<PathIcon>()));
+            innerContentIconStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalResourceKey.ColorWarning);
+            focusStyle.Add(innerContentIconStyle);
+         }
+         
          editKernelDecoratorStyle.Add(focusStyle);
 
          var scrollViewerStyle = new Style(selector => selector.Nesting().Template().Name(LineEditKernelDecoratorPart)

@@ -18,9 +18,9 @@
             Title="Three sizes of Input"
             Description="There are three sizes of an Input box: large (40px), default (32px) and small (24px).">
             <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
-              <atom:LineEdit Watermark="Large" SizeType="Large" InnerLeftContent="{atom:IconProvider Kind=UserOutlined, Width=16, Height=16}"/>
-              <atom:LineEdit Watermark="Middle" SizeType="Middle" InnerLeftContent="{atom:IconProvider Kind=UserOutlined, Width=14, Height=14}"/>
-              <atom:LineEdit Watermark="Small" SizeType="Small"  InnerLeftContent="{atom:IconProvider Kind=UserOutlined, Width=12, Height=12}"/>
+              <atom:LineEdit Watermark="Large" SizeType="Large" InnerLeftContent="{atom:IconProvider Kind=UserOutlined}"/>
+              <atom:LineEdit Watermark="Middle" SizeType="Middle" InnerLeftContent="{atom:IconProvider Kind=UserOutlined}"/>
+              <atom:LineEdit Watermark="Small" SizeType="Small"  InnerLeftContent="{atom:IconProvider Kind=UserOutlined}"/>
           </StackPanel>
         </showcase:ShowCaseItem>
         
@@ -40,7 +40,7 @@
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:LineEdit LeftAddOn="http://" RightAddOn=".com" Width="400" HorizontalAlignment="Left"
                                Text="mysite"/>
-                <atom:LineEdit RightAddOn="{atom:IconProvider Kind=SettingOutlined, Width=16, Height=16}" Width="400" HorizontalAlignment="Left"
+                <atom:LineEdit RightAddOn="{atom:IconProvider Kind=SettingOutlined}" Width="400" HorizontalAlignment="Left"
                                Text="mysite"/>
                 <atom:LineEdit LeftAddOn="http://" InnerRightContent=".com" Width="400" HorizontalAlignment="Left"
                                Text="mysite"/>
@@ -80,8 +80,8 @@
             Description="Add a prefix or suffix icons inside input.">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:LineEdit Watermark="Enter your username"
-                               InnerLeftContent="{atom:IconProvider Kind=UserOutlined, NormalFilledColor=#D7D7D7, Width=16, Height=16}"
-                               InnerRightContent="{atom:IconProvider Kind=InfoCircleOutlined, NormalFilledColor=#8C8C8C, Width=16, Height=16}"/>
+                               InnerLeftContent="{atom:IconProvider Kind=UserOutlined, NormalFilledColor=#D7D7D7}"
+                               InnerRightContent="{atom:IconProvider Kind=InfoCircleOutlined, NormalFilledColor=#8C8C8C}"/>
                 <atom:LineEdit InnerLeftContent="￥" InnerRightContent="RMB"/>
                 <atom:LineEdit InnerLeftContent="￥" InnerRightContent="RMB" IsEnabled="False"/>
             </StackPanel>
@@ -93,14 +93,14 @@
             <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
                 <atom:LineEdit Watermark="Error" Status="Error"/>
                 <atom:LineEdit Watermark="Warning" Status="Warning"/>
-                <atom:LineEdit Watermark="Error with prefix" InnerLeftContent="{atom:IconProvider Kind=ClockCircleOutlined, Width=16, Height=16}" Status="Error"/>
-                <atom:LineEdit Watermark="Warning with prefix" InnerLeftContent="{atom:IconProvider Kind=ClockCircleOutlined,  Width=16, Height=16}" Status="Warning"/>
+                <atom:LineEdit Watermark="Error with prefix" InnerLeftContent="{atom:IconProvider Kind=ClockCircleOutlined}" Status="Error"/>
+                <atom:LineEdit Watermark="Warning with prefix" InnerLeftContent="{atom:IconProvider Kind=ClockCircleOutlined}" Status="Warning"/>
                 
-                <atom:LineEdit Watermark="Error" Status="Error" StyleVariant="Filled"/>
-                <atom:LineEdit Watermark="Warning" Status="Warning" StyleVariant="Filled"/>
+                <atom:LineEdit Watermark="Error" Status="Error" InnerLeftContent="{atom:IconProvider Kind=ClockCircleOutlined}" StyleVariant="Filled"/>
+                <atom:LineEdit Watermark="Warning" Status="Warning" InnerLeftContent="{atom:IconProvider Kind=ClockCircleOutlined}" StyleVariant="Filled"/>
                                 
-                <atom:LineEdit Watermark="Error" Status="Error" StyleVariant="Borderless"/>
-                <atom:LineEdit Watermark="Warning" Status="Warning" StyleVariant="Borderless"/>
+                <atom:LineEdit Watermark="Error" Status="Error" InnerLeftContent="{atom:IconProvider Kind=ClockCircleOutlined}" StyleVariant="Borderless"/>
+                <atom:LineEdit Watermark="Warning" Status="Warning" InnerLeftContent="{atom:IconProvider Kind=ClockCircleOutlined}" StyleVariant="Borderless"/>
             </StackPanel>
         </showcase:ShowCaseItem>
         
