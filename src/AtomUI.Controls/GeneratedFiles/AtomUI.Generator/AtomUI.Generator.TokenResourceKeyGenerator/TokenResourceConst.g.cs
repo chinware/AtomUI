@@ -119,6 +119,8 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey AddOnPadding = new TokenResourceKey("LineEdit.AddOnPadding");
         public static readonly TokenResourceKey AddOnPaddingSM = new TokenResourceKey("LineEdit.AddOnPaddingSM");
         public static readonly TokenResourceKey AddOnPaddingLG = new TokenResourceKey("LineEdit.AddOnPaddingLG");
+        public static readonly TokenResourceKey LeftInnerAddOnMargin = new TokenResourceKey("LineEdit.LeftInnerAddOnMargin");
+        public static readonly TokenResourceKey RightInnerAddOnMargin = new TokenResourceKey("LineEdit.RightInnerAddOnMargin");
     }
 
     public static class LoadingIndicatorResourceKey

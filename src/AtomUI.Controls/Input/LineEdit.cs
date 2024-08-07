@@ -7,6 +7,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
+using Avalonia.Input;
 
 namespace AtomUI.Controls;
 
@@ -80,14 +81,23 @@ public class LineEdit : TextBox
    internal static readonly StyledProperty<CornerRadius> EditKernelCornerRadiusProperty =
       AvaloniaProperty.Register<LineEdit, CornerRadius>(nameof(EditKernelCornerRadius));
    
+   internal static readonly StyledProperty<CornerRadius> LeftAddOnCornerRadiusProperty =
+      AvaloniaProperty.Register<LineEdit, CornerRadius>(nameof(LeftAddOnCornerRadius));
+   
+   internal static readonly StyledProperty<CornerRadius> RightAddOnCornerRadiusProperty =
+      AvaloniaProperty.Register<LineEdit, CornerRadius>(nameof(RightAddOnCornerRadius));
+   
+   internal static readonly StyledProperty<Thickness> LeftAddOnBorderThicknessProperty =
+      AvaloniaProperty.Register<LineEdit, Thickness>(nameof(LeftAddOnBorderThickness));
+   
+   internal static readonly StyledProperty<Thickness> RightAddOnBorderThicknessProperty =
+      AvaloniaProperty.Register<LineEdit, Thickness>(nameof(RightAddOnBorderThickness));
+   
    internal CornerRadius EditKernelCornerRadius
    {
       get => GetValue(EditKernelCornerRadiusProperty);
       set => SetValue(EditKernelCornerRadiusProperty, value);
    }
-   
-   internal static readonly StyledProperty<CornerRadius> LeftAddOnCornerRadiusProperty =
-      AvaloniaProperty.Register<LineEdit, CornerRadius>(nameof(LeftAddOnCornerRadius));
    
    internal CornerRadius LeftAddOnCornerRadius
    {
@@ -95,13 +105,22 @@ public class LineEdit : TextBox
       set => SetValue(LeftAddOnCornerRadiusProperty, value);
    }
    
-   internal static readonly StyledProperty<CornerRadius> RightAddOnCornerRadiusProperty =
-      AvaloniaProperty.Register<LineEdit, CornerRadius>(nameof(RightAddOnCornerRadius));
-   
    internal CornerRadius RightAddOnCornerRadius
    {
       get => GetValue(RightAddOnCornerRadiusProperty);
       set => SetValue(RightAddOnCornerRadiusProperty, value);
+   }
+   
+   internal Thickness LeftAddOnBorderThickness
+   {
+      get => GetValue(LeftAddOnBorderThicknessProperty);
+      set => SetValue(LeftAddOnBorderThicknessProperty, value);
+   }
+   
+   internal Thickness RightAddOnBorderThickness
+   {
+      get => GetValue(RightAddOnBorderThicknessProperty);
+      set => SetValue(RightAddOnBorderThicknessProperty, value);
    }
    
    #endregion
@@ -109,7 +128,7 @@ public class LineEdit : TextBox
    private readonly BorderRenderHelper _borderRenderHelper;
    private ContentPresenter? _leftAddOnPresenter;
    private ContentPresenter? _rightAddOnPresenter;
-   private LineEditKernel? _lineEditKernel;
+   private Border? _lineEditKernelDecorator;
 
 
    static LineEdit()
@@ -130,7 +149,7 @@ public class LineEdit : TextBox
                                                       BindingPriority.Template, new RenderScaleAwareThicknessConfigure(this));
       _leftAddOnPresenter = e.NameScope.Find<ContentPresenter>(LineEditTheme.LeftAddOnPart);
       _rightAddOnPresenter = e.NameScope.Find<ContentPresenter>(LineEditTheme.RightAddOnPart);
-      _lineEditKernel = e.NameScope.Find<LineEditKernel>(LineEditTheme.LineEditKernelPart);
+      _lineEditKernelDecorator = e.NameScope.Find<Border>(LineEditTheme.LineEditKernelDecoratorPart);
       SetupEditKernelCornerRadius();
    }
 
@@ -144,17 +163,22 @@ public class LineEdit : TextBox
          }
       }
 
-      if (change.Property == CornerRadiusProperty) {
-         SetupAddOnCornerRadius();
+      if (change.Property == CornerRadiusProperty || change.Property == BorderThicknessProperty) {
+         SetupAddOnBorderInfo();
       }
    }
 
-   private void SetupAddOnCornerRadius()
+   private void SetupAddOnBorderInfo()
    {
       var topLeftRadius = CornerRadius.TopLeft;
       var topRightRadius = CornerRadius.TopRight;
       var bottomLeftRadius = CornerRadius.BottomLeft;
       var bottomRightRadius = CornerRadius.BottomRight;
+      
+      var topThickness = BorderThickness.Top;
+      var rightThickness = BorderThickness.Right;
+      var bottomThickness = BorderThickness.Bottom;
+      var leftThickness = BorderThickness.Left;
 
       LeftAddOnCornerRadius = new CornerRadius(topLeft: topLeftRadius,
                                                topRight: 0,
@@ -164,6 +188,9 @@ public class LineEdit : TextBox
                                                topRight: topRightRadius,
                                                bottomLeft:0,
                                                bottomRight:bottomRightRadius);
+
+      LeftAddOnBorderThickness = new Thickness(top: topThickness, right:0, bottom:bottomThickness, left: leftThickness);
+      RightAddOnBorderThickness = new Thickness(top: topThickness, right:rightThickness, bottom:bottomThickness, left: 0);
    }
 
    private void SetupEditKernelCornerRadius()
@@ -188,34 +215,25 @@ public class LineEdit : TextBox
                               bottomRight:bottomRightRadius);
    }
 
+   protected override Size MeasureOverride(Size availableSize)
+   {
+      return base.MeasureOverride(new Size(availableSize.Width - BorderThickness.Left - BorderThickness.Right, availableSize.Height));
+   }
+   
    protected override Size ArrangeOverride(Size finalSize)
    {
-      var offsetLeft = 0d;
-      var offsetRight = finalSize.Width;
-      var controlRect = new Rect(new Point(0, 0), finalSize);
-      if (_leftAddOnPresenter is not null && _leftAddOnPresenter.IsVisible) {
-         offsetLeft += _leftAddOnPresenter.DesiredSize.Width - BorderThickness.Left;
-         _leftAddOnPresenter.Arrange(controlRect);
+      return base.ArrangeOverride(new Size(finalSize.Width - BorderThickness.Left - BorderThickness.Right, finalSize.Height));
+   }
+
+   protected override void OnPointerPressed(PointerPressedEventArgs e)
+   {
+      if (_lineEditKernelDecorator is null) {
+         return;
       }
-
-      if (_rightAddOnPresenter is not null && _rightAddOnPresenter.IsVisible) {
-         offsetRight -= _rightAddOnPresenter.DesiredSize.Width - BorderThickness.Right;
-         _rightAddOnPresenter.Arrange(controlRect);
+      var targetRect = new Rect(_lineEditKernelDecorator.DesiredSize);
+      if (!targetRect.Contains(e.GetPosition(_lineEditKernelDecorator))) {
+         return;
       }
-
-      if (_lineEditKernel is not null) {
-         var width = offsetRight - offsetLeft;
-         if (_leftAddOnPresenter is not null && _leftAddOnPresenter.IsVisible) {
-            offsetLeft -= BorderThickness.Left;
-            width += BorderThickness.Left;
-         }
-
-         if (_rightAddOnPresenter is not null && _rightAddOnPresenter.IsVisible) {
-            width += BorderThickness.Right;
-         }
-         _lineEditKernel.Arrange(new Rect(new Point(offsetLeft, 0), new Size(width, finalSize.Height)));
-      }
-
-      return finalSize;
+      base.OnPointerPressed(e);
    }
 }

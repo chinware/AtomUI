@@ -98,6 +98,16 @@ internal class LineEditToken : AbstractControlDesignToken
    /// AddOn 大号内边距
    /// </summary>
    public Thickness AddOnPaddingLG { get; set; }
+   
+   /// <summary>
+   /// 左边内部小组件的边距
+   /// </summary>
+   public Thickness LeftInnerAddOnMargin { get; set; }
+   
+   /// <summary>
+   /// 右边内部小组件的边距
+   /// </summary>
+   public Thickness RightInnerAddOnMargin { get; set; }
 
    internal override void CalculateFromAlias()
    {
@@ -140,5 +150,8 @@ internal class LineEditToken : AbstractControlDesignToken
       InputFontSize = _globalToken.FontToken.FontSize;
       InputFontSizeLG = _globalToken.FontToken.FontSizeLG;
       InputFontSizeSM = _globalToken.FontToken.FontSizeSM;
+
+      LeftInnerAddOnMargin = new Thickness(0, 0, _globalToken.MarginXXS, 0);
+      RightInnerAddOnMargin = new Thickness(_globalToken.MarginXXS, 0, 0, 0);
    }
 }
