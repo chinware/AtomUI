@@ -101,7 +101,7 @@ public class AntDesignGenerator : IIncrementalGenerator
          sourceText.Append($"   public static readonly IconInfo {info.Name}{info.ThemeType}");
          sourceText.Append(" = new IconInfo(");
          sourceText.Append($"\"{info.Name}{info.ThemeType}\", ");
-         if (info.ThemeType == "Twotone") {
+         if (info.ThemeType == "TwoTone") {
             sourceText.Append($"new Rect({viewBox.X}, {viewBox.Y}, {viewBox.Width}, {viewBox.Height}), ");
             sourceText.Append("new List<GeometryData>{");
             // 需要判断主要颜色和次要颜色

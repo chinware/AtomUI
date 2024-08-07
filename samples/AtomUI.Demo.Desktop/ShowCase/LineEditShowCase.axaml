@@ -55,5 +55,25 @@
             </StackPanel>
         </showcase:ShowCaseItem>
         
+        <showcase:ShowCaseItem
+            Title="Password box"
+            Description="Input type of password.">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:LineEdit Watermark="input password"
+                               Width="400" 
+                               PasswordChar="*"
+                               RevealPassword="False"
+                               HorizontalAlignment="Left"
+                               IsEnableRevealButton="True"/>
+                <atom:LineEdit Watermark="input password"
+                               Width="400" 
+                               PasswordChar="*"
+                               RevealPassword="False"
+                               HorizontalAlignment="Left"
+                               IsEnableRevealButton="True"
+                               IsEnableClearButton="True"/>
+            </StackPanel>
+        </showcase:ShowCaseItem>
+        
     </showcase:ShowCasePanel>
 </UserControl>

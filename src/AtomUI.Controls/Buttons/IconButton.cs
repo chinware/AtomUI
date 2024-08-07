@@ -23,8 +23,6 @@ public class IconButton : AvaloniaButton, ICustomHitTest
       set => SetValue(IconProperty, value);
    }
 
-   private bool _initialized = false;
-
    static IconButton()
    {
       AffectsMeasure<IconButton>(IconProperty);
@@ -38,22 +36,17 @@ public class IconButton : AvaloniaButton, ICustomHitTest
    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
    {
       base.OnAttachedToLogicalTree(e);
-      if (!_initialized) {
-         if (Icon is not null) {
-            Icon.SetCurrentValue(PathIcon.HorizontalAlignmentProperty, HorizontalAlignment.Center);
-            Icon.SetCurrentValue(PathIcon.VerticalAlignmentProperty, VerticalAlignment.Center);
-            Icon.SetCurrentValue(PathIcon.IsHitTestVisibleProperty, false);
-            Icon.IsHitTestVisible = false;
-            Content = Icon;
-         }
-         _initialized = true;
+      if (Icon is not null) {
+         Icon.SetCurrentValue(PathIcon.HorizontalAlignmentProperty, HorizontalAlignment.Center);
+         Icon.SetCurrentValue(PathIcon.VerticalAlignmentProperty, VerticalAlignment.Center);
+         Content = Icon;
       }
    }
    
    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
    {
       base.OnPropertyChanged(e);
-      if (_initialized) {
+      if (VisualRoot is not null) {
      
          if (e.Property == IconProperty) {
             Content = e.GetNewValue<PathIcon?>();

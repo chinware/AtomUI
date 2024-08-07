@@ -17,7 +17,7 @@ public class IconProvider : MarkupExtension
    public IBrush? SelectedFilledColor { get; set; }
    public IBrush? DisabledFilledColor { get; set; }
    
-   // Twotone
+   // TwoTone
    public IBrush? PrimaryFilledColor { get; set; }
    public IBrush? SecondaryFilledColor { get; set; }
    

@@ -47,6 +47,9 @@ public class LineEdit : TextBox
    public static readonly StyledProperty<bool> IsEnableClearButtonProperty =
       AvaloniaProperty.Register<LineEdit, bool>(nameof(IsEnableClearButton), false);
    
+   public static readonly StyledProperty<bool> IsEnableRevealButtonProperty =
+      AvaloniaProperty.Register<LineEdit, bool>(nameof(IsEnableRevealButton), false);
+   
    public object? LeftAddOn
    {
       get => GetValue(LeftAddOnProperty);
@@ -81,6 +84,12 @@ public class LineEdit : TextBox
    {
       get => GetValue(IsEnableClearButtonProperty);
       set => SetValue(IsEnableClearButtonProperty, value);
+   }
+   
+   public bool IsEnableRevealButton
+   {
+      get => GetValue(IsEnableRevealButtonProperty);
+      set => SetValue(IsEnableRevealButtonProperty, value);
    }
    
    #endregion

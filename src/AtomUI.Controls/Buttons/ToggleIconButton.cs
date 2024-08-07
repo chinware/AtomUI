@@ -1,7 +1,7 @@
 ﻿using AtomUI.Controls.Utils;
+using AtomUI.Icon;
 using AtomUI.Theme.Styling;
 using Avalonia;
-using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Layout;
@@ -31,14 +31,14 @@ public class ToggleIconButton : ToggleButton
    }
 
    #endregion
-
-   private bool _initialized;
+   
    private ControlStyleState _styleState;
    
    static ToggleIconButton()
    {
       AffectsMeasure<ToggleIconButton>(CheckedIconProperty);
       AffectsMeasure<ToggleIconButton>(UnCheckedIconProperty);
+      AffectsMeasure<ToggleIconButton>(IsCheckedProperty);
    }
 
    public ToggleIconButton()
@@ -50,14 +50,15 @@ public class ToggleIconButton : ToggleButton
    {
       base.OnApplyTemplate(e);
       SetupStatusIcon();
-      if (!_initialized) {
-         if (CheckedIcon is not null) {
-            UIStructureUtils.SetTemplateParent(CheckedIcon, this);
-         }
-         if (UnCheckedIcon is not null) {
-            UIStructureUtils.SetTemplateParent(UnCheckedIcon, this);
-         }
-         _initialized = true;
+      if (CheckedIcon is not null) {
+         CheckedIcon.SetCurrentValue(PathIcon.HorizontalAlignmentProperty, HorizontalAlignment.Center);
+         CheckedIcon.SetCurrentValue(PathIcon.VerticalAlignmentProperty, VerticalAlignment.Center);
+         UIStructureUtils.SetTemplateParent(CheckedIcon, this);
+      }
+      if (UnCheckedIcon is not null) {
+         UnCheckedIcon.SetCurrentValue(PathIcon.HorizontalAlignmentProperty, HorizontalAlignment.Center);
+         UnCheckedIcon.SetCurrentValue(PathIcon.VerticalAlignmentProperty, VerticalAlignment.Center);
+         UIStructureUtils.SetTemplateParent(UnCheckedIcon, this);
       }
    }
 
@@ -67,6 +68,22 @@ public class ToggleIconButton : ToggleButton
       if (VisualRoot is not null) {
          if (change.Property == IsCheckedProperty) {
             SetupStatusIcon();
+         } else if (change.Property == IsPressedProperty ||
+                    change.Property == IsPointerOverProperty) {
+            CollectStyleState();
+            var pathIcon = IsChecked.HasValue && IsChecked.Value ? CheckedIcon : UnCheckedIcon;
+            if (pathIcon is not null) {
+               if (_styleState.HasFlag(ControlStyleState.Enabled)) {
+                  pathIcon.IconMode = IconMode.Normal;
+                  if (_styleState.HasFlag(ControlStyleState.Sunken)) {
+                     pathIcon.IconMode = IconMode.Selected;
+                  } else if (_styleState.HasFlag(ControlStyleState.MouseOver)) {
+                     pathIcon.IconMode = IconMode.Active;
+                  }
+               } else {
+                  pathIcon.IconMode = IconMode.Disabled;
+               }
+            }
          }
       }
    }
@@ -79,6 +96,16 @@ public class ToggleIconButton : ToggleButton
          } else {
             Presenter.Content = UnCheckedIcon;
          }
+      }
+   }
+   
+   private void CollectStyleState()
+   {
+      ControlStateUtils.InitCommonState(this, ref _styleState);
+      if (IsPressed) {
+         _styleState |= ControlStyleState.Sunken;
+      } else {
+         _styleState |= ControlStyleState.Raised;
       }
    }
 

@@ -40,7 +40,7 @@ public sealed class PathIcon : Control, ICustomHitTest
       AvaloniaProperty.Register<PathIcon, IBrush?>(
          nameof(DisabledFilledBrush));
 
-   // Twotone 类型的颜色
+   // TwoTone 类型的颜色
    public static readonly StyledProperty<IBrush?> PrimaryFilledBrushProperty =
       AvaloniaProperty.Register<PathIcon, IBrush?>(
          nameof(PrimaryFilledBrush));
@@ -104,8 +104,8 @@ public sealed class PathIcon : Control, ICustomHitTest
 
    public IBrush? SecondaryFilledBrush
    {
-      get => GetValue(SelectedFilledBrushProperty);
-      set => SetValue(SelectedFilledBrushProperty, value);
+      get => GetValue(SecondaryFilledBrushProperty);
+      set => SetValue(SecondaryFilledBrushProperty, value);
    }
 
    /// <summary>

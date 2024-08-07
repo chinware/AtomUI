@@ -244,8 +244,8 @@ internal class LineEditTheme : BaseControlTheme
          Icon = closeIcon
       };
 
-      TokenResourceBinder.CreateGlobalTokenBinding(closeIcon, PathIcon.WidthProperty, GlobalResourceKey.IconSizeSM);
-      TokenResourceBinder.CreateGlobalTokenBinding(closeIcon, PathIcon.HeightProperty, GlobalResourceKey.IconSizeSM);
+      TokenResourceBinder.CreateGlobalTokenBinding(closeIcon, PathIcon.WidthProperty, GlobalResourceKey.IconSize);
+      TokenResourceBinder.CreateGlobalTokenBinding(closeIcon, PathIcon.HeightProperty, GlobalResourceKey.IconSize);
       TokenResourceBinder.CreateGlobalTokenBinding(closeIcon, PathIcon.NormalFilledBrushProperty, GlobalResourceKey.ColorTextQuaternary);
       TokenResourceBinder.CreateGlobalTokenBinding(closeIcon, PathIcon.ActiveFilledBrushProperty, GlobalResourceKey.ColorTextTertiary);
       TokenResourceBinder.CreateGlobalTokenBinding(closeIcon, PathIcon.SelectedFilledBrushProperty, GlobalResourceKey.ColorText);
@@ -258,12 +258,39 @@ internal class LineEditTheme : BaseControlTheme
    
    protected virtual void BuildRevealButton(LineEditKernel layout, INameScope scope)
    {
+      var checkedIcon = new PathIcon()
+      {
+         Kind = "EyeTwoTone"
+      };
+      
+      TokenResourceBinder.CreateGlobalTokenBinding(checkedIcon, PathIcon.WidthProperty, GlobalResourceKey.IconSize);
+      TokenResourceBinder.CreateGlobalTokenBinding(checkedIcon, PathIcon.HeightProperty, GlobalResourceKey.IconSize);
+      TokenResourceBinder.CreateGlobalTokenBinding(checkedIcon, PathIcon.PrimaryFilledBrushProperty, LineEditResourceKey.ActiveBorderColor);
+      TokenResourceBinder.CreateGlobalTokenBinding(checkedIcon, PathIcon.SecondaryFilledBrushProperty, GlobalResourceKey.ColorPrimaryBgHover);
+
+      var unCheckedIcon = new PathIcon()
+      {
+         Kind = "EyeInvisibleOutlined"
+      };
+      
+      TokenResourceBinder.CreateGlobalTokenBinding(unCheckedIcon, PathIcon.WidthProperty, GlobalResourceKey.IconSize);
+      TokenResourceBinder.CreateGlobalTokenBinding(unCheckedIcon, PathIcon.HeightProperty, GlobalResourceKey.IconSize);
+      TokenResourceBinder.CreateGlobalTokenBinding(unCheckedIcon, PathIcon.NormalFilledBrushProperty, GlobalResourceKey.ColorTextQuaternary);
+      TokenResourceBinder.CreateGlobalTokenBinding(unCheckedIcon, PathIcon.ActiveFilledBrushProperty, GlobalResourceKey.ColorTextTertiary);
+      TokenResourceBinder.CreateGlobalTokenBinding(unCheckedIcon, PathIcon.SelectedFilledBrushProperty, GlobalResourceKey.ColorText);
+      
       var revealButton = new ToggleIconButton()
       {
          Name = RevealButtonPart,
-         IsVisible = false
+         CheckedIcon = checkedIcon,
+         UnCheckedIcon = unCheckedIcon
       };
+      
       revealButton.RegisterInNameScope(scope);
+      
+      CreateTemplateParentBinding(revealButton, ToggleIconButton.IsVisibleProperty, LineEdit.IsEnableRevealButtonProperty);
+      CreateTemplateParentBinding(revealButton, ToggleIconButton.IsCheckedProperty, LineEdit.RevealPasswordProperty, BindingMode.TwoWay);
+      
       layout.RevealButton = revealButton;
    }
 
