@@ -439,9 +439,12 @@ internal class LineEditTheme : BaseControlTheme
    private void BuildDisabledStyle()
    {
       var disabledStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Disabled));
+      disabledStyle.Add(LineEdit.ForegroundProperty, GlobalResourceKey.ColorTextDisabled);
+      var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(LineEditKernelDecoratorPart));
+      decoratorStyle.Add(Border.BackgroundProperty, GlobalResourceKey.ColorBgContainerDisabled);
+      disabledStyle.Add(decoratorStyle);
       // TODO 暂时这么简单处理吧
       var addOnStyle = new Style(selector => selector.Nesting().Template().OfType<ContentPresenter>());
-      addOnStyle.Add(ContentPresenter.BackgroundProperty, GlobalResourceKey.ColorFillTertiary);
       addOnStyle.Add(ContentPresenter.ForegroundProperty, GlobalResourceKey.ColorTextDisabled);
       disabledStyle.Add(addOnStyle);
       Add(disabledStyle);
