@@ -1,11 +1,9 @@
 ﻿using AtomUI.Data;
 using AtomUI.Media;
 using AtomUI.Theme;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using AtomUI.Utils;
-using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
@@ -236,12 +234,25 @@ internal class LineEditTheme : BaseControlTheme
 
    protected virtual void BuildClearButton(LineEditKernel layout, INameScope scope)
    {
+      var closeIcon = new PathIcon()
+      {
+         Kind = "CloseCircleFilled"
+      };
       var clearButton = new IconButton()
       {
          Name = ClearButtonPart,
-         IsVisible = false
+         Icon = closeIcon
       };
+
+      TokenResourceBinder.CreateGlobalTokenBinding(closeIcon, PathIcon.WidthProperty, GlobalResourceKey.IconSizeSM);
+      TokenResourceBinder.CreateGlobalTokenBinding(closeIcon, PathIcon.HeightProperty, GlobalResourceKey.IconSizeSM);
+      TokenResourceBinder.CreateGlobalTokenBinding(closeIcon, PathIcon.NormalFilledBrushProperty, GlobalResourceKey.ColorTextQuaternary);
+      TokenResourceBinder.CreateGlobalTokenBinding(closeIcon, PathIcon.ActiveFilledBrushProperty, GlobalResourceKey.ColorTextTertiary);
+      TokenResourceBinder.CreateGlobalTokenBinding(closeIcon, PathIcon.SelectedFilledBrushProperty, GlobalResourceKey.ColorText);
+      CreateTemplateParentBinding(clearButton, IconButton.CommandProperty, nameof(LineEdit.Clear));
+      
       clearButton.RegisterInNameScope(scope);
+      CreateTemplateParentBinding(clearButton, IconButton.IsVisibleProperty, LineEdit.IsEffectiveShowClearButtonProperty);
       layout.ClearButton = clearButton;
    }
    

@@ -42,6 +42,8 @@ public class IconButton : AvaloniaButton, ICustomHitTest
          if (Icon is not null) {
             Icon.SetCurrentValue(PathIcon.HorizontalAlignmentProperty, HorizontalAlignment.Center);
             Icon.SetCurrentValue(PathIcon.VerticalAlignmentProperty, VerticalAlignment.Center);
+            Icon.SetCurrentValue(PathIcon.IsHitTestVisibleProperty, false);
+            Icon.IsHitTestVisible = false;
             Content = Icon;
          }
          _initialized = true;
@@ -52,6 +54,7 @@ public class IconButton : AvaloniaButton, ICustomHitTest
    {
       base.OnPropertyChanged(e);
       if (_initialized) {
+     
          if (e.Property == IconProperty) {
             Content = e.GetNewValue<PathIcon?>();
          } else if (e.Property == IsPressedProperty ||
@@ -60,7 +63,7 @@ public class IconButton : AvaloniaButton, ICustomHitTest
             if (Icon is not null) {
                if (_styleState.HasFlag(ControlStyleState.Enabled)) {
                   Icon.IconMode = IconMode.Normal;
-                  if (_styleState.HasFlag(ControlStyleState.Active)) {
+                  if (_styleState.HasFlag(ControlStyleState.Sunken)) {
                      Icon.IconMode = IconMode.Selected;
                   } else if (_styleState.HasFlag(ControlStyleState.MouseOver)) {
                      Icon.IconMode = IconMode.Active;

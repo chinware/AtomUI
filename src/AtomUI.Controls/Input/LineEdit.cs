@@ -44,6 +44,9 @@ public class LineEdit : TextBox
    public static readonly StyledProperty<TextBoxStatus> StatusProperty =
       AvaloniaProperty.Register<LineEdit, TextBoxStatus>(nameof(Status), TextBoxStatus.Default);
    
+   public static readonly StyledProperty<bool> IsEnableClearButtonProperty =
+      AvaloniaProperty.Register<LineEdit, bool>(nameof(IsEnableClearButton), false);
+   
    public object? LeftAddOn
    {
       get => GetValue(LeftAddOnProperty);
@@ -73,54 +76,87 @@ public class LineEdit : TextBox
       get => GetValue(StatusProperty);
       set => SetValue(StatusProperty, value);
    }
-
+   
+   public bool IsEnableClearButton
+   {
+      get => GetValue(IsEnableClearButtonProperty);
+      set => SetValue(IsEnableClearButtonProperty, value);
+   }
+   
    #endregion
 
    #region 内部属性定义
 
-   internal static readonly StyledProperty<CornerRadius> EditKernelCornerRadiusProperty =
-      AvaloniaProperty.Register<LineEdit, CornerRadius>(nameof(EditKernelCornerRadius));
+   internal static readonly DirectProperty<LineEdit, CornerRadius> EditKernelCornerRadiusProperty =
+      AvaloniaProperty.RegisterDirect<LineEdit, CornerRadius>(nameof(EditKernelCornerRadius),
+                                                              o => o.EditKernelCornerRadius,
+                                                              (o, v) => o.EditKernelCornerRadius = v);
    
-   internal static readonly StyledProperty<CornerRadius> LeftAddOnCornerRadiusProperty =
-      AvaloniaProperty.Register<LineEdit, CornerRadius>(nameof(LeftAddOnCornerRadius));
+   internal static readonly DirectProperty<LineEdit, CornerRadius> LeftAddOnCornerRadiusProperty =
+      AvaloniaProperty.RegisterDirect<LineEdit, CornerRadius>(nameof(LeftAddOnCornerRadius), 
+                                                              o => o.LeftAddOnCornerRadius,
+                                                              (o, v) => o.LeftAddOnCornerRadius = v);
    
-   internal static readonly StyledProperty<CornerRadius> RightAddOnCornerRadiusProperty =
-      AvaloniaProperty.Register<LineEdit, CornerRadius>(nameof(RightAddOnCornerRadius));
+   internal static readonly DirectProperty<LineEdit, CornerRadius> RightAddOnCornerRadiusProperty =
+      AvaloniaProperty.RegisterDirect<LineEdit, CornerRadius>(nameof(RightAddOnCornerRadius),
+                                                              o => o.RightAddOnCornerRadius,
+                                                              (o, v) => o.RightAddOnCornerRadius = v);
    
-   internal static readonly StyledProperty<Thickness> LeftAddOnBorderThicknessProperty =
-      AvaloniaProperty.Register<LineEdit, Thickness>(nameof(LeftAddOnBorderThickness));
+   internal static readonly DirectProperty<LineEdit, Thickness> LeftAddOnBorderThicknessProperty =
+      AvaloniaProperty.RegisterDirect<LineEdit, Thickness>(nameof(LeftAddOnBorderThickness),
+                                                           o => o.LeftAddOnBorderThickness,
+                                                           (o, v) => o.LeftAddOnBorderThickness = v);
    
-   internal static readonly StyledProperty<Thickness> RightAddOnBorderThicknessProperty =
-      AvaloniaProperty.Register<LineEdit, Thickness>(nameof(RightAddOnBorderThickness));
+   internal static readonly DirectProperty<LineEdit, Thickness> RightAddOnBorderThicknessProperty =
+      AvaloniaProperty.RegisterDirect<LineEdit, Thickness>(nameof(RightAddOnBorderThickness),
+                                                           o => o.RightAddOnBorderThickness,
+                                                           (o, v) => o.RightAddOnBorderThickness = v);
    
+   internal static readonly DirectProperty<LineEdit, bool> IsEffectiveShowClearButtonProperty =
+      AvaloniaProperty.RegisterDirect<LineEdit, bool>(nameof(IsEffectiveShowClearButton),
+                                                      o => o.IsEffectiveShowClearButton,
+                                                      (o, v) => o.IsEffectiveShowClearButton = v);
+
+   private CornerRadius _editKernelCornerRadius;
    internal CornerRadius EditKernelCornerRadius
    {
-      get => GetValue(EditKernelCornerRadiusProperty);
-      set => SetValue(EditKernelCornerRadiusProperty, value);
+      get => _editKernelCornerRadius;
+      set => SetAndRaise(EditKernelCornerRadiusProperty, ref _editKernelCornerRadius, value);
    }
    
+   private CornerRadius _leftAddOnCornerRadius;
    internal CornerRadius LeftAddOnCornerRadius
    {
-      get => GetValue(LeftAddOnCornerRadiusProperty);
-      set => SetValue(LeftAddOnCornerRadiusProperty, value);
+      get => _leftAddOnCornerRadius;
+      set => SetAndRaise(LeftAddOnCornerRadiusProperty, ref _leftAddOnCornerRadius, value);
    }
-   
+
+   private CornerRadius _rightAddOnCornerRadius;
    internal CornerRadius RightAddOnCornerRadius
    {
-      get => GetValue(RightAddOnCornerRadiusProperty);
-      set => SetValue(RightAddOnCornerRadiusProperty, value);
+      get => _rightAddOnCornerRadius;
+      set => SetAndRaise(RightAddOnCornerRadiusProperty, ref _rightAddOnCornerRadius, value);
    }
-   
+
+   private Thickness _leftAddOnBorderThickness;
    internal Thickness LeftAddOnBorderThickness
    {
-      get => GetValue(LeftAddOnBorderThicknessProperty);
-      set => SetValue(LeftAddOnBorderThicknessProperty, value);
+      get => _leftAddOnBorderThickness;
+      set => SetAndRaise(LeftAddOnBorderThicknessProperty, ref _leftAddOnBorderThickness, value);
    }
-   
+
+   private Thickness _rightAddOnBorderThickness;
    internal Thickness RightAddOnBorderThickness
    {
-      get => GetValue(RightAddOnBorderThicknessProperty);
-      set => SetValue(RightAddOnBorderThicknessProperty, value);
+      get => _rightAddOnBorderThickness;
+      set => SetAndRaise(RightAddOnBorderThicknessProperty, ref _rightAddOnBorderThickness, value);
+   }
+   
+   private bool _isEffectiveShowClearButton;
+   internal bool IsEffectiveShowClearButton
+   {
+      get => _isEffectiveShowClearButton;
+      set => SetAndRaise(IsEffectiveShowClearButtonProperty, ref _isEffectiveShowClearButton, value);
    }
    
    #endregion
@@ -151,6 +187,7 @@ public class LineEdit : TextBox
       _rightAddOnPresenter = e.NameScope.Find<ContentPresenter>(LineEditTheme.RightAddOnPart);
       _lineEditKernelDecorator = e.NameScope.Find<Border>(LineEditTheme.LineEditKernelDecoratorPart);
       SetupEditKernelCornerRadius();
+      SetupEffectiveShowClearButton();
    }
 
    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -165,6 +202,13 @@ public class LineEdit : TextBox
 
       if (change.Property == CornerRadiusProperty || change.Property == BorderThicknessProperty) {
          SetupAddOnBorderInfo();
+      }
+
+      if (change.Property == AcceptsReturnProperty ||
+          change.Property == IsReadOnlyProperty ||
+          change.Property == TextProperty ||
+          change.Property == IsEnableClearButtonProperty) {
+         SetupEffectiveShowClearButton();
       }
    }
 
@@ -185,9 +229,9 @@ public class LineEdit : TextBox
                                                bottomLeft:bottomLeftRadius,
                                                bottomRight:0);
       RightAddOnCornerRadius = new CornerRadius(topLeft: 0,
-                                               topRight: topRightRadius,
-                                               bottomLeft:0,
-                                               bottomRight:bottomRightRadius);
+                                                topRight: topRightRadius,
+                                                bottomLeft:0,
+                                                bottomRight:bottomRightRadius);
 
       LeftAddOnBorderThickness = new Thickness(top: topThickness, right:0, bottom:bottomThickness, left: leftThickness);
       RightAddOnBorderThickness = new Thickness(top: topThickness, right:rightThickness, bottom:bottomThickness, left: 0);
@@ -210,9 +254,9 @@ public class LineEdit : TextBox
       }
 
       EditKernelCornerRadius = new CornerRadius(topLeft: topLeftRadius,
-                              topRight: topRightRadius,
-                              bottomLeft:bottomLeftRadius,
-                              bottomRight:bottomRightRadius);
+                                                topRight: topRightRadius,
+                                                bottomLeft:bottomLeftRadius,
+                                                bottomRight:bottomRightRadius);
    }
 
    protected override Size MeasureOverride(Size availableSize)
@@ -235,5 +279,15 @@ public class LineEdit : TextBox
          return;
       }
       base.OnPointerPressed(e);
+   }
+
+   private void SetupEffectiveShowClearButton()
+   {
+      if (!IsEnableClearButton) {
+         IsEffectiveShowClearButton = false;
+         return;
+      }
+
+      IsEffectiveShowClearButton = !IsReadOnly && !AcceptsReturn && !string.IsNullOrEmpty(Text);
    }
 }
