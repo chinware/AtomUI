@@ -28,7 +28,7 @@ Welcome to communicate and give suggestions to AtomUI, thank you for giving the 
 | ColorPicker     | TODO    |
 | DatePicker      | TODO    |
 | Form            | TODO    |
-| Input           | TODO    |
+| Input           | Completed ✅    |
 | InputNumber     | TODO    |
 | Mentions        | TODO    |
 | Radio           | Completed ✅  |

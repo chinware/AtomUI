@@ -34,7 +34,7 @@ PS: AtomUI 目前仅在 Windows 11 平台测试<br>
 | ColorPicker 颜色选择器   | 未完成    |
 | DatePicker 日期选择框    | 未完成    |
 | Form 表单             | 未完成    |
-| Input 输入框           | 进行中 💪 |
+| Input 输入框           | Completed ✅ |
 | InputNumber 数字输入框   | 进行中 💪 |
 | Mentions 提及         | 未完成    |
 | Radio 单选框           | 已完成 ✅  |
