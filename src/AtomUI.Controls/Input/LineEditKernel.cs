@@ -179,8 +179,8 @@ internal class LineEditKernel : Panel
    {
       var offsetLeft = 0d;
       if (LeftInnerContent is not null && LeftInnerContent.IsVisible) {
-         offsetLeft += LeftInnerContent.DesiredSize.Width;
          LeftInnerContent.Arrange(new Rect(new Point(offsetLeft, (finalSize.Height - LeftInnerContent.DesiredSize.Height) / 2), LeftInnerContent.DesiredSize));
+         offsetLeft += LeftInnerContent.DesiredSize.Width;
       }
       
       var offsetRight = finalSize.Width;

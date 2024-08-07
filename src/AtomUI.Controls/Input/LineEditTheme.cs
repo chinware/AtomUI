@@ -157,7 +157,7 @@ internal class LineEditTheme : BaseControlTheme
                                   BindingMode.Default, ObjectConverters.IsNotNull);
       CreateTemplateParentBinding(innerLeftContentPresenter, ContentPresenter.ContentProperty, LineEdit.InnerLeftContentProperty);
       innerLeftContentPresenter.RegisterInNameScope(scope);
-      layout.RightInnerContent = innerLeftContentPresenter;
+      layout.LeftInnerContent = innerLeftContentPresenter;
    }
 
    protected virtual void BuildInnerRightContent(LineEditKernel layout, INameScope scope)

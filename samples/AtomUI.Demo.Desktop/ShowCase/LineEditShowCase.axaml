@@ -18,9 +18,9 @@
             Title="Three sizes of Input"
             Description="There are three sizes of an Input box: large (40px), default (32px) and small (24px).">
           <StackPanel Orientation="Vertical" Spacing="10">
-              <atom:LineEdit Watermark="Large" SizeType="Large"/>
-              <atom:LineEdit Watermark="Middle" SizeType="Middle"/>
-              <atom:LineEdit Watermark="Small" SizeType="Small"/>
+              <atom:LineEdit Watermark="Large" SizeType="Large" InnerLeftContent="{atom:IconProvider Kind=UserOutlined, Width=16, Height=16}"/>
+              <atom:LineEdit Watermark="Middle" SizeType="Middle" InnerLeftContent="{atom:IconProvider Kind=UserOutlined, Width=14, Height=14}"/>
+              <atom:LineEdit Watermark="Small" SizeType="Small"  InnerLeftContent="{atom:IconProvider Kind=UserOutlined, Width=12, Height=12}"/>
           </StackPanel>
         </showcase:ShowCaseItem>
         
