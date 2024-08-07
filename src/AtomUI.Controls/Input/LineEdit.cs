@@ -29,6 +29,7 @@ public class LineEdit : TextBox
 {
    public const string ErrorPC = ":error";
    public const string WarningPC = ":warning";
+   
    #region 功能属性定义
 
    public static readonly StyledProperty<object?> LeftAddOnProperty =
@@ -172,9 +173,9 @@ public class LineEdit : TextBox
    
    #endregion
    
-   private ContentPresenter? _leftAddOnPresenter;
-   private ContentPresenter? _rightAddOnPresenter;
-   private Border? _lineEditKernelDecorator;
+   protected Control? _leftAddOnPresenter;
+   protected Control? _rightAddOnPresenter;
+   protected Border? _lineEditKernelDecorator;
 
 
    static LineEdit()
@@ -188,8 +189,8 @@ public class LineEdit : TextBox
       base.OnApplyTemplate(e);
       TokenResourceBinder.CreateGlobalResourceBinding(this, BorderThicknessProperty, GlobalResourceKey.BorderThickness, 
                                                       BindingPriority.Template, new RenderScaleAwareThicknessConfigure(this));
-      _leftAddOnPresenter = e.NameScope.Find<ContentPresenter>(LineEditTheme.LeftAddOnPart);
-      _rightAddOnPresenter = e.NameScope.Find<ContentPresenter>(LineEditTheme.RightAddOnPart);
+      _leftAddOnPresenter = e.NameScope.Find<Control>(LineEditTheme.LeftAddOnPart);
+      _rightAddOnPresenter = e.NameScope.Find<Control>(LineEditTheme.RightAddOnPart);
       _lineEditKernelDecorator = e.NameScope.Find<Border>(LineEditTheme.LineEditKernelDecoratorPart);
       SetupEditKernelCornerRadius();
       SetupEffectiveShowClearButton();
@@ -221,7 +222,9 @@ public class LineEdit : TextBox
       }
 
       if (change.Property == InnerLeftContentProperty || 
-          change.Property == InnerRightContentProperty) {
+          change.Property == InnerRightContentProperty ||
+          change.Property == LeftAddOnProperty ||
+          change.Property == RightAddOnProperty) {
          if (change.OldValue is Control oldControl) {
             UIStructureUtils.SetTemplateParent(oldControl, null);
          }
@@ -255,6 +258,13 @@ public class LineEdit : TextBox
 
       LeftAddOnBorderThickness = new Thickness(top: topThickness, right:0, bottom:bottomThickness, left: leftThickness);
       RightAddOnBorderThickness = new Thickness(top: topThickness, right:rightThickness, bottom:bottomThickness, left: 0);
+
+      NotifyAddOnBorderInfoCalculated();
+   }
+
+   protected virtual void NotifyAddOnBorderInfoCalculated()
+   {
+      
    }
 
    private void SetupEditKernelCornerRadius()

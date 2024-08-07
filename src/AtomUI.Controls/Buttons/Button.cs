@@ -1,4 +1,5 @@
 using AtomUI.Controls.Utils;
+using AtomUI.Data;
 using AtomUI.Icon;
 using AtomUI.Media;
 using AtomUI.Theme.Data;
@@ -62,6 +63,9 @@ public class Button : AvaloniaButton, ISizeTypeAware, IControlCustomStyle, IWave
 
    public static readonly StyledProperty<string?> TextProperty
       = AvaloniaProperty.Register<Button, string?>(nameof(Text));
+   
+   public static readonly StyledProperty<bool> IsIconVisibleProperty
+      = AvaloniaProperty.Register<Button, bool>(nameof (IsIconVisible), true);
 
    public ButtonType ButtonType
    {
@@ -103,6 +107,12 @@ public class Button : AvaloniaButton, ISizeTypeAware, IControlCustomStyle, IWave
    {
       get => GetValue(TextProperty);
       set => SetValue(TextProperty, value);
+   }
+   
+   public bool IsIconVisible
+   {
+      get => GetValue(IsIconVisibleProperty);
+      set => SetValue(IsIconVisibleProperty, value);
    }
 
    #endregion
@@ -347,6 +357,7 @@ public class Button : AvaloniaButton, ISizeTypeAware, IControlCustomStyle, IWave
       if (Icon is not null) {
          if (_stackPanel is not null) {
             UIStructureUtils.SetTemplateParent(Icon, this);
+            BindUtils.RelayBind(this, IsIconVisibleProperty, Icon, PathIcon.IsVisibleProperty);
             _stackPanel.Children.Insert(0, Icon);
          }
       }

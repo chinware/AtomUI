@@ -32,6 +32,10 @@ internal class LineEditTheme : BaseControlTheme
    public const string LineEditKernelPart = "PART_LineEditKernel";
    public const string LineEditKernelDecoratorPart = "PART_LineEditKernelDecorator";
 
+   public const int NormalZIndex    = 1000;
+   public const int ActivatedZIndex = 2000;
+
+   public LineEditTheme(Type targetType) : base(targetType) { }
    public LineEditTheme() : base(typeof(LineEdit)) { }
 
    protected override IControlTemplate? BuildControlTemplate()
@@ -108,7 +112,6 @@ internal class LineEditTheme : BaseControlTheme
       var kernelLayout = new LineEditKernel()
       {
          Name = LineEditKernelPart,
-         ZIndex = 1000,
          Cursor = new Cursor(StandardCursorType.Ibeam)
       };
 
@@ -356,6 +359,10 @@ internal class LineEditTheme : BaseControlTheme
       var commonStyle = new Style(selector => selector.Nesting());
       commonStyle.Add(LineEdit.ForegroundProperty, GlobalResourceKey.ColorText);
 
+      var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(LineEditKernelDecoratorPart));
+      decoratorStyle.Add(Border.ZIndexProperty, NormalZIndex);
+      commonStyle.Add(decoratorStyle);
+
       // 输入框左右小组件的 margin 设置
       var leftInnerContentStyle = new Style(selector => selector.Nesting().Template().Name(LeftInnerContentPart));
       leftInnerContentStyle.Add(ContentPresenter.PaddingProperty, LineEditResourceKey.LeftInnerAddOnMargin);
@@ -397,6 +404,15 @@ internal class LineEditTheme : BaseControlTheme
          addOnStyle.Add(ContentPresenter.PaddingProperty, LineEditResourceKey.PaddingLG);
          largeStyle.Add(addOnStyle);
       }
+      
+      {
+         // 左右 AddOn icon 的大小
+         var addOnContentIconStyle = new Style(selector => Selectors.Or(selector.Nesting().Template().Name(LeftAddOnPart).Descendant().OfType<PathIcon>(),
+                                                                        selector.Nesting().Template().Name(RightAddOnPart).Descendant().OfType<PathIcon>()));
+         addOnContentIconStyle.Add(PathIcon.WidthProperty, GlobalResourceKey.IconSizeLG);
+         addOnContentIconStyle.Add(PathIcon.HeightProperty, GlobalResourceKey.IconSizeLG);
+         largeStyle.Add(addOnContentIconStyle);
+      }
 
       largeStyle.Add(LineEdit.FontSizeProperty, LineEditResourceKey.InputFontSizeLG);
       largeStyle.Add(LineEdit.LineHeightProperty, GlobalResourceKey.FontHeightLG);
@@ -417,6 +433,15 @@ internal class LineEditTheme : BaseControlTheme
                                                              selector.Nesting().Template().Name(RightAddOnPart)));
          addOnStyle.Add(ContentPresenter.PaddingProperty, LineEditResourceKey.Padding);
          middleStyle.Add(addOnStyle);
+      }
+      
+      {
+         // 左右 AddOn icon 的大小
+         var addOnContentIconStyle = new Style(selector => Selectors.Or(selector.Nesting().Template().Name(LeftAddOnPart).Descendant().OfType<PathIcon>(),
+                                                                        selector.Nesting().Template().Name(RightAddOnPart).Descendant().OfType<PathIcon>()));
+         addOnContentIconStyle.Add(PathIcon.WidthProperty, GlobalResourceKey.IconSize);
+         addOnContentIconStyle.Add(PathIcon.HeightProperty, GlobalResourceKey.IconSize);
+         middleStyle.Add(addOnContentIconStyle);
       }
 
       middleStyle.Add(LineEdit.FontSizeProperty, LineEditResourceKey.InputFontSize);
@@ -439,6 +464,16 @@ internal class LineEditTheme : BaseControlTheme
          addOnStyle.Add(ContentPresenter.PaddingProperty, LineEditResourceKey.PaddingSM);
          smallStyle.Add(addOnStyle);
       }
+      
+      {
+         // 左右 AddOn icon 的大小
+         var addOnContentIconStyle = new Style(selector => Selectors.Or(selector.Nesting().Template().Name(LeftAddOnPart).Descendant().OfType<PathIcon>(),
+                                                                        selector.Nesting().Template().Name(RightAddOnPart).Descendant().OfType<PathIcon>()));
+         addOnContentIconStyle.Add(PathIcon.WidthProperty, GlobalResourceKey.IconSizeSM);
+         addOnContentIconStyle.Add(PathIcon.HeightProperty, GlobalResourceKey.IconSizeSM);
+         smallStyle.Add(addOnContentIconStyle);
+      }
+      
       smallStyle.Add(LineEdit.FontSizeProperty, LineEditResourceKey.InputFontSizeSM);
       smallStyle.Add(LineEdit.LineHeightProperty, GlobalResourceKey.FontHeightSM);
       smallStyle.Add(LineEdit.CornerRadiusProperty, GlobalResourceKey.BorderRadiusSM);
