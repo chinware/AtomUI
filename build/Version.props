@@ -3,8 +3,8 @@
 
 		<NoWarn>$(NoWarn);CS7035</NoWarn>
 
-		<AvaloniaVersionThatLibrariesUsed>11.1.0</AvaloniaVersionThatLibrariesUsed>
-		<AvaloniaVersionThatSampleUsed>11.1.0</AvaloniaVersionThatSampleUsed>
+		<AvaloniaVersionThatLibrariesUsed>11.1.2</AvaloniaVersionThatLibrariesUsed>
+		<AvaloniaVersionThatSampleUsed>11.1.2</AvaloniaVersionThatSampleUsed>
 		<LibVersion>0.0.1</LibVersion>
 		<NugetPackageVersion>$(LibVersion)-local.1</NugetPackageVersion>
 		<NugetPackageVersion>$(LibVersion)-preview.1</NugetPackageVersion>

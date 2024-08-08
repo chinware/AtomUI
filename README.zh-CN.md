@@ -1,9 +1,8 @@
 <p align="center">
     <img src="./docs/images/ATOMUI.png" />
 </p>
-<p align="center">
-    <h4>基于 Ant Design 5.0 和 Avalonia 技术的企业级跨平台控件库</h4>
-</p>
+
+<div align="center" style = "font-weight: bold">基于 Ant Design 5.0 和 Avalonia 技术的企业级跨平台控件库</div>
 
 #### 介绍
 

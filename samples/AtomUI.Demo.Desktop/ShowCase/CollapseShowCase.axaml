@@ -1,0 +1,33 @@
+<UserControl
+    x:Class="AtomUI.Demo.Desktop.ShowCase.CollapseShowCase"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:atom="https://atomui.net"
+    xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
+    mc:Ignorable="d">
+    <showcase:ShowCasePanel>
+        <showcase:ShowCaseItem
+            Title="Collapse"
+            Description="By default, any number of panels can be expanded at a time. The first panel is expanded in this example.">
+            <atom:Collapse>
+                <atom:CollapseItem Header="This is panel header 1">
+                    <TextBlock TextWrapping="Wrap">
+                        A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
+                    </TextBlock>
+                </atom:CollapseItem>
+                <atom:CollapseItem Header="This is panel header 2">
+                    <TextBlock TextWrapping="Wrap">
+                        A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
+                    </TextBlock>
+                </atom:CollapseItem>
+                <atom:CollapseItem Header="This is panel header 3">
+                    <TextBlock TextWrapping="Wrap">
+                        A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
+                    </TextBlock>
+                </atom:CollapseItem>
+            </atom:Collapse>
+        </showcase:ShowCaseItem>
+    </showcase:ShowCasePanel>
+</UserControl>

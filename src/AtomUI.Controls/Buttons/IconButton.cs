@@ -1,6 +1,8 @@
 using AtomUI.Icon;
 using AtomUI.Theme.Styling;
 using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
@@ -33,22 +35,26 @@ public class IconButton : AvaloniaButton, ICustomHitTest
       Cursor = new Cursor(StandardCursorType.Hand);
    }
    
-   protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+   protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
    {
-      base.OnAttachedToLogicalTree(e);
+      base.OnApplyTemplate(e);
       if (Icon is not null) {
          Icon.SetCurrentValue(PathIcon.HorizontalAlignmentProperty, HorizontalAlignment.Center);
          Icon.SetCurrentValue(PathIcon.VerticalAlignmentProperty, VerticalAlignment.Center);
          Content = Icon;
       }
    }
-   
+
    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
    {
       base.OnPropertyChanged(e);
       if (VisualRoot is not null) {
      
          if (e.Property == IconProperty) {
+            var oldIcon = e.GetOldValue<PathIcon?>();
+            if (oldIcon is not null) {
+               ((ISetLogicalParent)oldIcon).SetParent(null);
+            }
             Content = e.GetNewValue<PathIcon?>();
          } else if (e.Property == IsPressedProperty ||
                     e.Property == IsPointerOverProperty) {

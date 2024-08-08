@@ -93,6 +93,9 @@
             <TabItem Header="Expander">
                 <showcases:ExpanderShowCase />
             </TabItem>
+            <TabItem Header="Collapse">
+                <showcases:CollapseShowCase />
+            </TabItem>
             <TabItem Header="ComboBox">
                 <showcases:ComboBoxShowCase />
             </TabItem>
