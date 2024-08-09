@@ -1,4 +1,5 @@
-﻿using AtomUI.Theme;
+﻿using AtomUI.MotionScene;
+using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using AtomUI.Utils;
@@ -17,11 +18,12 @@ namespace AtomUI.Controls;
 [ControlThemeProvider]
 internal class CollapseItemTheme : BaseControlTheme
 {
-   public const string MainLayoutPart       = "PART_MainLayout";
-   public const string ExpandButtonPart     = "PART_ExpandButton";
-   public const string HeaderPresenterPart  = "PART_HeaderPresenter";
-   public const string HeaderDecoratorPart  = "PART_HeaderDecorator";
-   public const string ContentPresenterPart = "PART_ContentPresenter";
+   public const string MainLayoutPart             = "PART_MainLayout";
+   public const string ExpandButtonPart           = "PART_ExpandButton";
+   public const string HeaderPresenterPart        = "PART_HeaderPresenter";
+   public const string HeaderDecoratorPart        = "PART_HeaderDecorator";
+   public const string ContentPresenterPart       = "PART_ContentPresenter";
+   public const string ContentAnimationTargetPart = "PART_ContentAnimationTarget";
    
    public CollapseItemTheme() : base(typeof(CollapseItem)) {}
    
@@ -36,15 +38,21 @@ internal class CollapseItemTheme : BaseControlTheme
          };
 
          BuildHeader(mainLayout, scope);
+         var animationPanel = new AnimationTargetPanel()
+         {
+            Name = ContentAnimationTargetPart
+         };
          var contentPresenter = new ContentPresenter()
          {
             Name = ContentPresenterPart,
          };
+         animationPanel.Children.Add(contentPresenter);
          TokenResourceBinder.CreateGlobalTokenBinding(contentPresenter, ContentPresenter.BorderBrushProperty, GlobalResourceKey.ColorBorder);
          CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty, CollapseItem.ContentProperty);
          CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentTemplateProperty, CollapseItem.ContentTemplateProperty);
          CreateTemplateParentBinding(contentPresenter, ContentPresenter.BorderThicknessProperty, CollapseItem.ContentBorderThicknessProperty);
-         mainLayout.Children.Add(contentPresenter);
+         mainLayout.Children.Add(animationPanel);
+         animationPanel.RegisterInNameScope(scope);
          contentPresenter.RegisterInNameScope(scope);
          return mainLayout;
       });
@@ -56,6 +64,7 @@ internal class CollapseItemTheme : BaseControlTheme
       {
          Name = HeaderDecoratorPart
       };
+      headerDecorator.RegisterInNameScope(scope);
       DockPanel.SetDock(headerDecorator, Dock.Top);
          
       TokenResourceBinder.CreateGlobalTokenBinding(headerDecorator, Border.BorderBrushProperty, GlobalResourceKey.ColorBorder);

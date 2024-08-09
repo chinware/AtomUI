@@ -152,8 +152,10 @@ public class CollapseItem : HeaderedContentControl, ISelectable
 
    private bool _animating = false;
    private bool _enableAnimation = true;
+   private AnimationTargetPanel? _animationTarget;
+   private Border? _headerDecorator;
 
-   internal bool IsAnimating => _animating;
+   internal bool InAnimating => _animating;
    
    protected override AutomationPeer OnCreateAutomationPeer() => new ListItemAutomationPeer(this);
    
@@ -179,6 +181,8 @@ public class CollapseItem : HeaderedContentControl, ISelectable
    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
    {
       base.OnApplyTemplate(e);
+      _animationTarget = e.NameScope.Find<AnimationTargetPanel>(CollapseItemTheme.ContentAnimationTargetPart);
+      _headerDecorator = e.NameScope.Find<Border>(CollapseItemTheme.HeaderDecoratorPart);
       TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, GlobalResourceKey.MotionDurationSlow);
       SetupIconButton();
       _enableAnimation = false;
@@ -213,24 +217,27 @@ public class CollapseItem : HeaderedContentControl, ISelectable
 
    private void ExpandItemContent()
    {
-      if (Presenter is null || _animating) {
+      if (_animationTarget is null || _animating) {
           return;
       }
-
-      Presenter.IsVisible = true;
+      
       if (!_enableAnimation) {
+         _animationTarget.IsVisible = true;
          return;
       }
-      LayoutHelper.MeasureChild(Presenter, new Size(Bounds.Width, double.PositiveInfinity), new Thickness());
+      _animationTarget.IsVisible = true;
+      LayoutHelper.MeasureChild(_animationTarget, new Size(Bounds.Width, double.PositiveInfinity), new Thickness());
       _animating = true;
       var director = Director.Instance;
       var motion = new ExpandMotion();
       motion.ConfigureOpacity(MotionDuration);
       motion.ConfigureHeight(MotionDuration);
-      var motionActor = new MotionActor(Presenter, motion);
+      var motionActor = new MotionActor(_animationTarget, motion);
       motionActor.DispatchInSceneLayer = false;
+      _animationTarget.InAnimation = true;
       motionActor.Completed += (sender, args) =>
       {
+         _animationTarget.InAnimation = false;
          _animating = false;
       };
       director?.Schedule(motionActor);
@@ -238,26 +245,29 @@ public class CollapseItem : HeaderedContentControl, ISelectable
 
    private void CollapseItemContent()
    {
-      if (Presenter is null || _animating) {
+      if (_animationTarget is null || _animating) {
          return;
       }
 
       if (!_enableAnimation) {
-         Presenter.IsVisible = false;
+         _animationTarget.IsVisible = false;
          return;
       }
       _animating = true;
-      LayoutHelper.MeasureChild(Presenter, new Size(Bounds.Width, double.PositiveInfinity), new Thickness());
+
+      LayoutHelper.MeasureChild(_animationTarget, new Size(Bounds.Width, double.PositiveInfinity), new Thickness());
       var director = Director.Instance;
       var motion = new CollapseMotion();
       motion.ConfigureOpacity(MotionDuration);
       motion.ConfigureHeight(MotionDuration);
-      var motionActor = new MotionActor(Presenter, motion);
+      var motionActor = new MotionActor(_animationTarget!, motion);
       motionActor.DispatchInSceneLayer = false;
+      _animationTarget.InAnimation = true;
       motionActor.Completed += (sender, args) =>
       {
          _animating = false;
-         Presenter.IsVisible = false;
+         _animationTarget.InAnimation = false;
+         _animationTarget.IsVisible = false;
       };
       director?.Schedule(motionActor);
    }
@@ -271,5 +281,14 @@ public class CollapseItem : HeaderedContentControl, ISelectable
          };
       }
       UIStructureUtils.SetTemplateParent(ExpandIcon, this);
+   }
+
+   internal bool IsPointInHeaderBounds(Point position)
+   {
+      if (_headerDecorator is not null) {
+         return _headerDecorator.Bounds.Contains(position);
+      }
+
+      return false;
    }
 }

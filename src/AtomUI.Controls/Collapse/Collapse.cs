@@ -1,5 +1,4 @@
-﻿using AtomUI.Controls.Utils;
-using AtomUI.Data;
+﻿using AtomUI.Data;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
@@ -176,20 +175,10 @@ public class Collapse : SelectingItemsControl
       collapseItem.HeaderBorderThickness = new Thickness(0, 0, 0, headerBorderBottom);
       
       var contentBorderBottom = BorderThickness.Bottom;
-      if (index == ItemCount - 1 && collapseItem.IsSelected) {
+      if (index == ItemCount - 1 && (collapseItem.IsSelected || (!collapseItem.IsSelected && collapseItem.InAnimating))) {
          contentBorderBottom = 0d;
       }
       collapseItem.ContentBorderThickness = new Thickness(0, 0, 0, contentBorderBottom);
-   }
-
-   protected override void ContainerIndexChangedOverride(Control container, int oldIndex, int newIndex)
-   {
-      base.ContainerIndexChangedOverride(container, oldIndex, newIndex);
-   }
-
-   protected override void ClearContainerForItemOverride(Control element)
-   {
-      base.ClearContainerForItemOverride(element);
    }
 
    protected override void OnGotFocus(GotFocusEventArgs e)
@@ -199,7 +188,7 @@ public class Collapse : SelectingItemsControl
       if (e.NavigationMethod == NavigationMethod.Directional) {
          Control? containerFromEventSource = GetContainerFromEventSource(e.Source);
          if (containerFromEventSource is CollapseItem collapseItem) {
-            if (!collapseItem.IsAnimating) {
+            if (!collapseItem.InAnimating) {
                e.Handled = UpdateSelectionFromEventSource(e.Source);
             }
          }
@@ -213,7 +202,7 @@ public class Collapse : SelectingItemsControl
       if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed && e.Pointer.Type == PointerType.Mouse) {
          Control? containerFromEventSource = GetContainerFromEventSource(e.Source);
          if (containerFromEventSource is CollapseItem collapseItem) {
-            if (!collapseItem.IsAnimating) {
+            if (!collapseItem.InAnimating && collapseItem.IsPointInHeaderBounds(e.GetPosition(collapseItem))) {
                e.Handled = UpdateSelectionFromEventSource(e.Source);
             }
          }
@@ -229,7 +218,7 @@ public class Collapse : SelectingItemsControl
                          .Any(c => container == c || container.IsVisualAncestorOf(c))) {
             Control? containerFromEventSource = GetContainerFromEventSource(e.Source);
             if (containerFromEventSource is CollapseItem collapseItem) {
-               if (!collapseItem.IsAnimating) {
+               if (!collapseItem.InAnimating && collapseItem.IsPointInHeaderBounds(e.GetPosition(collapseItem))) {
                   e.Handled = UpdateSelectionFromEventSource(e.Source);
                }
             }
