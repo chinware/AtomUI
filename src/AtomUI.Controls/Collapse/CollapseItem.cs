@@ -9,10 +9,8 @@ using Avalonia.Automation.Peers;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Mixins;
-using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Layout;
-using Avalonia.Threading;
 
 namespace AtomUI.Controls;
 
@@ -153,6 +151,9 @@ public class CollapseItem : HeaderedContentControl, ISelectable
    }
 
    private bool _animating = false;
+   private bool _enableAnimation = true;
+
+   internal bool IsAnimating => _animating;
    
    protected override AutomationPeer OnCreateAutomationPeer() => new ListItemAutomationPeer(this);
    
@@ -180,7 +181,9 @@ public class CollapseItem : HeaderedContentControl, ISelectable
       base.OnApplyTemplate(e);
       TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, GlobalResourceKey.MotionDurationSlow);
       SetupIconButton();
+      _enableAnimation = false;
       HandleSelectedChanged();
+      _enableAnimation = true;
    }
    
    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -213,7 +216,11 @@ public class CollapseItem : HeaderedContentControl, ISelectable
       if (Presenter is null || _animating) {
           return;
       }
+
       Presenter.IsVisible = true;
+      if (!_enableAnimation) {
+         return;
+      }
       LayoutHelper.MeasureChild(Presenter, new Size(Bounds.Width, double.PositiveInfinity), new Thickness());
       _animating = true;
       var director = Director.Instance;
@@ -231,24 +238,28 @@ public class CollapseItem : HeaderedContentControl, ISelectable
 
    private void CollapseItemContent()
    {
-      Presenter!.IsVisible = false;
-      // if (Presenter is null || _animating) {
-      //    return;
-      // }
-      // _animating = true;
-      // LayoutHelper.MeasureChild(Presenter, new Size(Bounds.Width, double.PositiveInfinity), new Thickness());
-      // var director = Director.Instance;
-      // var motion = new CollapseMotion();
-      // motion.ConfigureOpacity(MotionDuration);
-      // motion.ConfigureHeight(MotionDuration);
-      // var motionActor = new MotionActor(Presenter, motion);
-      // motionActor.DispatchInSceneLayer = false;
-      // motionActor.Completed += (sender, args) =>
-      // {
-      //    _animating = false;
-      //    Presenter.IsVisible = false;
-      // };
-      // director?.Schedule(motionActor);
+      if (Presenter is null || _animating) {
+         return;
+      }
+
+      if (!_enableAnimation) {
+         Presenter.IsVisible = false;
+         return;
+      }
+      _animating = true;
+      LayoutHelper.MeasureChild(Presenter, new Size(Bounds.Width, double.PositiveInfinity), new Thickness());
+      var director = Director.Instance;
+      var motion = new CollapseMotion();
+      motion.ConfigureOpacity(MotionDuration);
+      motion.ConfigureHeight(MotionDuration);
+      var motionActor = new MotionActor(Presenter, motion);
+      motionActor.DispatchInSceneLayer = false;
+      motionActor.Completed += (sender, args) =>
+      {
+         _animating = false;
+         Presenter.IsVisible = false;
+      };
+      director?.Schedule(motionActor);
    }
 
    private void SetupIconButton()

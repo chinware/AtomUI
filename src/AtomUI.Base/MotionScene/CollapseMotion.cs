@@ -39,7 +39,11 @@ public class CollapseMotion : AbstractMotion
    {
       base.NotifyPreBuildTransition(config, motionTarget);
       if (config.Property == MotionHeightProperty) {
-         config.StartValue = Math.Ceiling(motionTarget.DesiredSize.Height);
+         if (!double.IsNaN(motionTarget.Height)) {
+            config.StartValue = Math.Ceiling(motionTarget.Height);
+         } else {
+            config.StartValue = Math.Ceiling(motionTarget.DesiredSize.Height);
+         }
       }
    }
 }

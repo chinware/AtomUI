@@ -197,7 +197,12 @@ public class Collapse : SelectingItemsControl
       base.OnGotFocus(e);
 
       if (e.NavigationMethod == NavigationMethod.Directional) {
-         e.Handled = UpdateSelectionFromEventSource(e.Source);
+         Control? containerFromEventSource = GetContainerFromEventSource(e.Source);
+         if (containerFromEventSource is CollapseItem collapseItem) {
+            if (!collapseItem.IsAnimating) {
+               e.Handled = UpdateSelectionFromEventSource(e.Source);
+            }
+         }
       }
    }
 
@@ -206,7 +211,12 @@ public class Collapse : SelectingItemsControl
       base.OnPointerPressed(e);
 
       if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed && e.Pointer.Type == PointerType.Mouse) {
-         e.Handled = UpdateSelectionFromEventSource(e.Source);
+         Control? containerFromEventSource = GetContainerFromEventSource(e.Source);
+         if (containerFromEventSource is CollapseItem collapseItem) {
+            if (!collapseItem.IsAnimating) {
+               e.Handled = UpdateSelectionFromEventSource(e.Source);
+            }
+         }
       }
    }
 
@@ -217,7 +227,12 @@ public class Collapse : SelectingItemsControl
          if (container != null
              && container.GetVisualsAt(e.GetPosition(container))
                          .Any(c => container == c || container.IsVisualAncestorOf(c))) {
-            e.Handled = UpdateSelectionFromEventSource(e.Source);
+            Control? containerFromEventSource = GetContainerFromEventSource(e.Source);
+            if (containerFromEventSource is CollapseItem collapseItem) {
+               if (!collapseItem.IsAnimating) {
+                  e.Handled = UpdateSelectionFromEventSource(e.Source);
+               }
+            }
          }
       }
    }
