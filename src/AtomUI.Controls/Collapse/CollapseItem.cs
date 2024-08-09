@@ -4,12 +4,12 @@ using AtomUI.MotionScene;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
-using Avalonia.Automation;
 using Avalonia.Automation.Peers;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Mixins;
 using Avalonia.Controls.Primitives;
+using Avalonia.Controls.Templates;
 using Avalonia.Layout;
 
 namespace AtomUI.Controls;
@@ -22,13 +22,16 @@ public class CollapseItem : HeaderedContentControl, ISelectable
       SelectingItemsControl.IsSelectedProperty.AddOwner<CollapseItem>();
    
    public static readonly StyledProperty<bool> IsShowExpandIconProperty =
-      AvaloniaProperty.Register<CollapseItem, bool>(nameof(IsShowExpandIcon));
+      AvaloniaProperty.Register<CollapseItem, bool>(nameof(IsShowExpandIcon), true);
 
    public static readonly StyledProperty<PathIcon?> ExpandIconProperty =
       AvaloniaProperty.Register<CollapseItem, PathIcon?>(nameof(ExpandIcon));
    
    public static readonly StyledProperty<object?> AddOnContentProperty =
       AvaloniaProperty.Register<CollapseItem, object?>(nameof(AddOnContent));
+   
+   public static readonly StyledProperty<IDataTemplate?> AddOnContentTemplateProperty =
+      AvaloniaProperty.Register<CollapseItem, IDataTemplate?>(nameof (AddOnContentTemplate));
    
    public bool IsSelected
    {
@@ -53,6 +56,12 @@ public class CollapseItem : HeaderedContentControl, ISelectable
       get => GetValue(AddOnContentProperty);
       set => SetValue(AddOnContentProperty, value);
    }
+   
+   public IDataTemplate? AddOnContentTemplate
+   {
+      get => GetValue(AddOnContentTemplateProperty);
+      set => SetValue(AddOnContentTemplateProperty, value);
+   }
    #endregion
 
    #region 内部属性定义
@@ -65,6 +74,11 @@ public class CollapseItem : HeaderedContentControl, ISelectable
       AvaloniaProperty.RegisterDirect<CollapseItem, bool>(nameof(IsGhostStyle),
                                                           o => o.IsGhostStyle,
                                                           (o, v) => o.IsGhostStyle = v);
+   
+   internal static readonly DirectProperty<CollapseItem, bool> IsBorderlessProperty =
+      AvaloniaProperty.RegisterDirect<CollapseItem, bool>(nameof(IsBorderless),
+                                                          o => o.IsBorderless,
+                                                          (o, v) => o.IsBorderless = v);
    
    internal static readonly DirectProperty<CollapseItem, CollapseTriggerType> TriggerTypeProperty =
       AvaloniaProperty.RegisterDirect<CollapseItem, CollapseTriggerType>(nameof(TriggerType),
@@ -104,7 +118,14 @@ public class CollapseItem : HeaderedContentControl, ISelectable
       get => _isGhostStyle;
       set => SetAndRaise(IsGhostStyleProperty, ref _isGhostStyle, value);
    }
-
+   
+   private bool _isBorderless = false;
+   internal bool IsBorderless
+   {
+      get => _isBorderless;
+      set => SetAndRaise(IsBorderlessProperty, ref _isBorderless, value);
+   }
+   
    private CollapseTriggerType _triggerType = CollapseTriggerType.Header;
    internal CollapseTriggerType TriggerType
    {
@@ -147,13 +168,13 @@ public class CollapseItem : HeaderedContentControl, ISelectable
       PressedMixin.Attach<CollapseItem>();
       FocusableProperty.OverrideDefaultValue(typeof(CollapseItem), true);
       DataContextProperty.Changed.AddClassHandler<CollapseItem>((x, e) => x.UpdateHeader(e));
-      AutomationProperties.ControlTypeOverrideProperty.OverrideDefaultValue<TabItem>(AutomationControlType.TabItem);
    }
 
    private bool _animating = false;
    private bool _enableAnimation = true;
    private AnimationTargetPanel? _animationTarget;
    private Border? _headerDecorator;
+   private IconButton? _expandButton;
 
    internal bool InAnimating => _animating;
    
@@ -183,11 +204,18 @@ public class CollapseItem : HeaderedContentControl, ISelectable
       base.OnApplyTemplate(e);
       _animationTarget = e.NameScope.Find<AnimationTargetPanel>(CollapseItemTheme.ContentAnimationTargetPart);
       _headerDecorator = e.NameScope.Find<Border>(CollapseItemTheme.HeaderDecoratorPart);
+      _expandButton = e.NameScope.Find<IconButton>(CollapseItemTheme.ExpandButtonPart);
       TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, GlobalResourceKey.MotionDurationSlow);
       SetupIconButton();
       _enableAnimation = false;
       HandleSelectedChanged();
       _enableAnimation = true;
+      if (_expandButton is not null) {
+         _expandButton.Click += (sender, args) =>
+         {
+            IsSelected = !IsSelected;
+         };
+      }
    }
    
    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -200,6 +228,16 @@ public class CollapseItem : HeaderedContentControl, ISelectable
       if (VisualRoot is not null) {
          if (change.Property == IsSelectedProperty) {
             HandleSelectedChanged();
+         }
+      }
+      
+      if (change.Property == AddOnContentProperty) {
+         if (change.OldValue is Control oldControl) {
+            UIStructureUtils.SetTemplateParent(oldControl, null);
+         }
+
+         if (change.NewValue is Control newControl) {
+            UIStructureUtils.SetTemplateParent(newControl, this);
          }
       }
    }
@@ -279,16 +317,16 @@ public class CollapseItem : HeaderedContentControl, ISelectable
          {
             Kind = "RightOutlined"
          };
+         TokenResourceBinder.CreateGlobalTokenBinding(ExpandIcon, PathIcon.DisabledFilledBrushProperty, GlobalResourceKey.ColorTextDisabled);
       }
       UIStructureUtils.SetTemplateParent(ExpandIcon, this);
    }
 
    internal bool IsPointInHeaderBounds(Point position)
    {
-      if (_headerDecorator is not null) {
+      if (_headerDecorator is not null && TriggerType != CollapseTriggerType.Icon) {
          return _headerDecorator.Bounds.Contains(position);
       }
-
       return false;
    }
 }

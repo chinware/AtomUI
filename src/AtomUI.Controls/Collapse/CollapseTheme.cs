@@ -46,6 +46,7 @@ internal class CollapseTheme : BaseControlTheme
       var commonStyle = new Style(selector => selector.Nesting());
       commonStyle.Add(Collapse.BorderBrushProperty, GlobalResourceKey.ColorBorder);
       commonStyle.Add(Collapse.CornerRadiusProperty, CollapseResourceKey.CollapsePanelBorderRadius);
+      
       Add(commonStyle);
    }
 }

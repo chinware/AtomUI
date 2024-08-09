@@ -1,4 +1,5 @@
-﻿using AtomUI.MotionScene;
+﻿using AtomUI.Icon;
+using AtomUI.MotionScene;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
@@ -23,6 +24,7 @@ internal class CollapseItemTheme : BaseControlTheme
    public const string HeaderPresenterPart        = "PART_HeaderPresenter";
    public const string HeaderDecoratorPart        = "PART_HeaderDecorator";
    public const string ContentPresenterPart       = "PART_ContentPresenter";
+   public const string AddOnContentPresenterPart  = "PART_AddOnContentPresenter";
    public const string ContentAnimationTargetPart = "PART_ContentAnimationTarget";
    
    public CollapseItemTheme() : base(typeof(CollapseItem)) {}
@@ -65,6 +67,10 @@ internal class CollapseItemTheme : BaseControlTheme
          Name = HeaderDecoratorPart
       };
       headerDecorator.RegisterInNameScope(scope);
+      headerDecorator.Transitions = new Transitions()
+      {
+         AnimationUtils.CreateTransition<ThicknessTransition>(Border.BorderThicknessProperty)
+      };
       DockPanel.SetDock(headerDecorator, Dock.Top);
          
       TokenResourceBinder.CreateGlobalTokenBinding(headerDecorator, Border.BorderBrushProperty, GlobalResourceKey.ColorBorder);
@@ -86,9 +92,11 @@ internal class CollapseItemTheme : BaseControlTheme
          Name = ExpandButtonPart,
          VerticalAlignment = VerticalAlignment.Center,
       };
+      expandButton.RegisterInNameScope(scope);
       expandButton.Transitions = new Transitions();
       expandButton.Transitions.Add(AnimationUtils.CreateTransition<TransformOperationsTransition>(IconButton.RenderTransformProperty));
       CreateTemplateParentBinding(expandButton, IconButton.IconProperty, CollapseItem.ExpandIconProperty);
+      CreateTemplateParentBinding(expandButton, IconButton.IsVisibleProperty, CollapseItem.IsShowExpandIconProperty);
       headerLayout.Children.Add(expandButton);
       
       var headerPresenter = new ContentPresenter()
@@ -102,6 +110,18 @@ internal class CollapseItemTheme : BaseControlTheme
       Grid.SetColumn(headerPresenter, 1);
       headerPresenter.RegisterInNameScope(scope);
       headerLayout.Children.Add(headerPresenter);
+
+      var addContentPresenter = new ContentPresenter()
+      {
+         Name = AddOnContentPresenterPart,
+         VerticalAlignment = VerticalAlignment.Center,
+         HorizontalAlignment = HorizontalAlignment.Left
+      };
+      CreateTemplateParentBinding(addContentPresenter, ContentPresenter.ContentProperty, CollapseItem.AddOnContentProperty);
+      CreateTemplateParentBinding(addContentPresenter, ContentPresenter.ContentTemplateProperty, CollapseItem.AddOnContentTemplateProperty);
+      Grid.SetColumn(addContentPresenter, 2);
+      headerLayout.Children.Add(addContentPresenter);
+      
       headerDecorator.Child = headerLayout;
       layout.Children.Add(headerDecorator);
    }
@@ -113,6 +133,10 @@ internal class CollapseItemTheme : BaseControlTheme
       BuildTriggerPositionStyle();
       BuildSizeTypeStyle();
       BuildSelectedStyle();
+      BuildBorderlessStyle();
+      BuildGhostStyle();
+      BuildDisabledStyle();
+      BuildAddOnContentStyle();
    }
 
    private void BuildCommonStyle()
@@ -147,7 +171,7 @@ internal class CollapseItemTheme : BaseControlTheme
       selectedStyle.Add(expandButtonStyle);
       Add(selectedStyle);
    }
-
+   
    private void BuildSizeTypeStyle()
    {
       var largeSizeStyle = new Style(selector => selector.Nesting().PropertyEquals(CollapseItem.SizeTypeProperty, SizeType.Large));
@@ -234,5 +258,49 @@ internal class CollapseItemTheme : BaseControlTheme
          endPositionStyle.Add(expandButtonStyle);
       }
       Add(endPositionStyle);
+   }
+
+   private void BuildBorderlessStyle()
+   {
+      var borderlessStyle =
+         new Style(selector => selector.Nesting().PropertyEquals(CollapseItem.IsBorderlessProperty, true));
+      var contentPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ContentPresenterPart));
+      contentPresenterStyle.Add(ContentPresenter.BackgroundProperty, CollapseResourceKey.HeaderBg);
+      borderlessStyle.Add(contentPresenterStyle);
+      Add(borderlessStyle);
+   }
+
+   private void BuildGhostStyle()
+   {
+      var ghostStyle =
+         new Style(selector => selector.Nesting().PropertyEquals(CollapseItem.IsGhostStyleProperty, true));
+      var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));
+      decoratorStyle.Add(Border.BackgroundProperty, CollapseResourceKey.ContentBg);
+      ghostStyle.Add(decoratorStyle);
+      Add(ghostStyle);
+   }
+
+   private void BuildDisabledStyle()
+   {
+      var disabledStyle =
+         new Style(selector => selector.Nesting().Class(StdPseudoClass.Disabled));
+      disabledStyle.Add(CollapseItem.ForegroundProperty, GlobalResourceKey.ColorTextDisabled);
+      var headerContentPresenterStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart).Descendant().OfType<ContentPresenter>());
+      headerContentPresenterStyle.Add(ContentPresenter.ForegroundProperty, GlobalResourceKey.ColorTextDisabled);
+      disabledStyle.Add(headerContentPresenterStyle);
+      
+      var expandIconStyle = new Style(selector => selector.Nesting().Template().Name(ExpandButtonPart).Descendant().OfType<PathIcon>());
+      expandIconStyle.Add(PathIcon.IconModeProperty, IconMode.Disabled);
+      disabledStyle.Add(expandIconStyle);
+      
+      Add(disabledStyle);
+   }
+
+   private void BuildAddOnContentStyle()
+   {
+      var addOnContentStyle = new Style(selector => selector.Nesting().Template().Name(AddOnContentPresenterPart).Descendant().OfType<PathIcon>());
+      addOnContentStyle.Add(PathIcon.WidthProperty, GlobalResourceKey.IconSize);
+      addOnContentStyle.Add(PathIcon.HeightProperty, GlobalResourceKey.IconSize);
+      Add(addOnContentStyle);
    }
 }

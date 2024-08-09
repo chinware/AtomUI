@@ -57,7 +57,8 @@ PS: AtomUI 目前仅在 Windows 11 平台测试<br>
 | Calendar 日历            | 未完成    |
 | Card 卡片                | 未完成    |
 | Carousel 走马灯           | 未完成    |
-| Collapse 折叠面板          | 进行中 💪 |
+| Collapse 折叠面板          | Completed ✅ |
+| Expander 折叠面板          | 进行中 💪  |
 | Descriptions 描述列表      | 未完成    |
 | EmptyIndicator 空状态     | 已完成 ✅  |
 | PathIcon 图标            | 已完成 ✅    |

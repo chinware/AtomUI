@@ -160,6 +160,7 @@ public class Collapse : SelectingItemsControl
          BindUtils.RelayBind(this, SizeTypeProperty, collapseItem, CollapseItem.SizeTypeProperty);
          BindUtils.RelayBind(this, EffectiveBorderThicknessProperty, collapseItem, CollapseItem.BorderThicknessProperty);
          BindUtils.RelayBind(this, IsGhostStyleProperty, collapseItem, CollapseItem.IsGhostStyleProperty);
+         BindUtils.RelayBind(this, IsBorderlessProperty, collapseItem, CollapseItem.IsBorderlessProperty);
          BindUtils.RelayBind(this, TriggerTypeProperty, collapseItem, CollapseItem.TriggerTypeProperty);
          BindUtils.RelayBind(this, ExpandIconPositionProperty, collapseItem, CollapseItem.ExpandIconPositionProperty);
          SetupCollapseBorderThickness(collapseItem, index);
@@ -169,15 +170,28 @@ public class Collapse : SelectingItemsControl
    private void SetupCollapseBorderThickness(CollapseItem collapseItem, int index)
    {
       var headerBorderBottom = BorderThickness.Bottom;
-      if (index == ItemCount - 1 && !collapseItem.IsSelected) {
-         headerBorderBottom = 0d;
-      }
-      collapseItem.HeaderBorderThickness = new Thickness(0, 0, 0, headerBorderBottom);
-      
       var contentBorderBottom = BorderThickness.Bottom;
-      if (index == ItemCount - 1 && (collapseItem.IsSelected || (!collapseItem.IsSelected && collapseItem.InAnimating))) {
+      if (!IsGhostStyle) {
+         if (!IsBorderless) {
+            if (index == ItemCount - 1 && !collapseItem.IsSelected) {
+               headerBorderBottom = 0d;
+            }
+         } else {
+            if (collapseItem.IsSelected || (index == ItemCount - 1 && !collapseItem.IsSelected)) {
+               headerBorderBottom = 0d;
+            }
+         }
+         
+         if (index == ItemCount - 1 && 
+             (collapseItem.IsSelected || (!collapseItem.IsSelected && collapseItem.InAnimating))) {
+            contentBorderBottom = 0d;
+         }
+      } else {
+         headerBorderBottom = 0d;
          contentBorderBottom = 0d;
       }
+      
+      collapseItem.HeaderBorderThickness = new Thickness(0, 0, 0, headerBorderBottom);
       collapseItem.ContentBorderThickness = new Thickness(0, 0, 0, contentBorderBottom);
    }
 
@@ -198,7 +212,6 @@ public class Collapse : SelectingItemsControl
    protected override void OnPointerPressed(PointerPressedEventArgs e)
    {
       base.OnPointerPressed(e);
-
       if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed && e.Pointer.Type == PointerType.Mouse) {
          Control? containerFromEventSource = GetContainerFromEventSource(e.Source);
          if (containerFromEventSource is CollapseItem collapseItem) {
@@ -242,7 +255,7 @@ public class Collapse : SelectingItemsControl
 
    private void SetupEffectiveBorderThickness()
    {
-      if (IsBorderless) {
+      if (IsBorderless || IsGhostStyle) {
          EffectiveBorderThickness = default;
       } else {
          EffectiveBorderThickness = BorderThickness;
