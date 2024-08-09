@@ -1,10 +1,10 @@
-﻿using AtomUI.Media;
+﻿using AtomUI.Controls.Utils;
+using AtomUI.Media;
 using AtomUI.MotionScene;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Layout;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 
@@ -52,7 +52,7 @@ internal class MotionGhostControl : Control, INotifyCaptureGhostBitmap
       AffectsRender<ShadowRenderer>(MaskCornerRadiusProperty);
    }
 
-   public MotionGhostControl(Control motionTarget, BoxShadows fallbackShadows)
+   public MotionGhostControl(Control motionTarget, BoxShadows fallbackShadows = default)
    {
       _motionTarget = motionTarget;
       if (_motionTarget.DesiredSize == default) {
@@ -60,12 +60,15 @@ internal class MotionGhostControl : Control, INotifyCaptureGhostBitmap
       } else {
          _motionTargetSize = _motionTarget.DesiredSize;
       }
-
+      
       _maskOffset = default;
       _maskSize = _motionTargetSize;
       
       Shadows = fallbackShadows;
       DetectMotionTargetInfo();
+      var shadowThickness = Shadows.Thickness();
+      Width = _motionTargetSize.Width + shadowThickness.Left + shadowThickness.Right;
+      Height = _motionTargetSize.Height + shadowThickness.Top + shadowThickness.Bottom;
    }
 
    private void DetectMotionTargetInfo()

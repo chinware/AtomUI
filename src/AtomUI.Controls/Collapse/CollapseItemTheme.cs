@@ -1,12 +1,15 @@
 ﻿using AtomUI.Theme;
 using AtomUI.Theme.Styling;
+using AtomUI.Theme.Utils;
 using AtomUI.Utils;
+using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Documents;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Layout;
+using Avalonia.Media.Transformation;
 using Avalonia.Styling;
 
 namespace AtomUI.Controls;
@@ -68,12 +71,14 @@ internal class CollapseItemTheme : BaseControlTheme
             new ColumnDefinition(GridLength.Auto)
          }
       };
-
+      
       var expandButton = new IconButton()
       {
          Name = ExpandButtonPart,
-         VerticalAlignment = VerticalAlignment.Center
+         VerticalAlignment = VerticalAlignment.Center,
       };
+      expandButton.Transitions = new Transitions();
+      expandButton.Transitions.Add(AnimationUtils.CreateTransition<TransformOperationsTransition>(IconButton.RenderTransformProperty));
       CreateTemplateParentBinding(expandButton, IconButton.IconProperty, CollapseItem.ExpandIconProperty);
       headerLayout.Children.Add(expandButton);
       
@@ -98,6 +103,7 @@ internal class CollapseItemTheme : BaseControlTheme
       BuildTriggerStyle();
       BuildTriggerPositionStyle();
       BuildSizeTypeStyle();
+      BuildSelectedStyle();
    }
 
    private void BuildCommonStyle()
@@ -118,6 +124,19 @@ internal class CollapseItemTheme : BaseControlTheme
       commonStyle.Add(expandIconStyle);
       
       Add(commonStyle);
+   }
+
+   private void BuildSelectedStyle()
+   {
+      var selectedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Selected));
+      // Expand Button
+      var expandButtonStyle = new Style(selector => selector.Nesting().Template().Name(ExpandButtonPart));
+      var transformOptions = new TransformOperations.Builder(1);
+      transformOptions.AppendRotate(MathUtils.Deg2Rad(90));
+      expandButtonStyle.Add(IconButton.RenderTransformProperty, transformOptions.Build());
+      
+      selectedStyle.Add(expandButtonStyle);
+      Add(selectedStyle);
    }
 
    private void BuildSizeTypeStyle()

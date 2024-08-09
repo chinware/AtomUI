@@ -93,6 +93,21 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey IndicatorTristateMarkSize = new TokenResourceKey("CheckBox.IndicatorTristateMarkSize");
     }
 
+    public static class CollapseResourceKey
+    {
+        public static readonly TokenResourceKey HeaderPadding = new TokenResourceKey("Collapse.HeaderPadding");
+        public static readonly TokenResourceKey HeaderBg = new TokenResourceKey("Collapse.HeaderBg");
+        public static readonly TokenResourceKey ContentPadding = new TokenResourceKey("Collapse.ContentPadding");
+        public static readonly TokenResourceKey ContentBg = new TokenResourceKey("Collapse.ContentBg");
+        public static readonly TokenResourceKey CollapseHeaderPaddingSM = new TokenResourceKey("Collapse.CollapseHeaderPaddingSM");
+        public static readonly TokenResourceKey CollapseHeaderPaddingLG = new TokenResourceKey("Collapse.CollapseHeaderPaddingLG");
+        public static readonly TokenResourceKey CollapseContentPaddingSM = new TokenResourceKey("Collapse.CollapseContentPaddingSM");
+        public static readonly TokenResourceKey CollapseContentPaddingLG = new TokenResourceKey("Collapse.CollapseContentPaddingLG");
+        public static readonly TokenResourceKey CollapsePanelBorderRadius = new TokenResourceKey("Collapse.CollapsePanelBorderRadius");
+        public static readonly TokenResourceKey LeftExpandButtonMargin = new TokenResourceKey("Collapse.LeftExpandButtonMargin");
+        public static readonly TokenResourceKey RightExpandButtonMargin = new TokenResourceKey("Collapse.RightExpandButtonMargin");
+    }
+
     public static class EmptyIndicatorResourceKey
     {
         public static readonly TokenResourceKey EmptyImgHeight = new TokenResourceKey("EmptyIndicator.EmptyImgHeight");

@@ -14,7 +14,7 @@ public class CollapseMotion : AbstractMotion
       var config = new MotionConfig(MotionHeightProperty)
       {
          TransitionKind = TransitionKind.Double,
-         EndValue = 0,
+         EndValue = 0d,
          MotionDuration = duration,
          MotionEasing = easing
       };
@@ -39,7 +39,7 @@ public class CollapseMotion : AbstractMotion
    {
       base.NotifyPreBuildTransition(config, motionTarget);
       if (config.Property == MotionHeightProperty) {
-         config.StartValue = motionTarget.DesiredSize.Height;
+         config.StartValue = Math.Ceiling(motionTarget.DesiredSize.Height);
       }
    }
 }
@@ -49,7 +49,7 @@ public class ExpandMotion : AbstractMotion
    public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
    public MotionConfig? HeightConfig => GetMotionConfig(MotionHeightProperty);
 
-   public void ConfigureHeight(double originHeight, TimeSpan duration, Easing? easing = null)
+   public void ConfigureHeight(TimeSpan duration, Easing? easing = null)
    {
       easing ??= new CubicEaseInOut();
       var config = new MotionConfig(MotionHeightProperty)
@@ -62,7 +62,7 @@ public class ExpandMotion : AbstractMotion
       AddMotionConfig(config);
    }
 
-   public void ConfigureOpacity(double originOpacity, TimeSpan duration, Easing? easing = null)
+   public void ConfigureOpacity(TimeSpan duration, Easing? easing = null)
    {
       easing ??= new CubicEaseInOut();
       var config = new MotionConfig(MotionOpacityProperty)
@@ -80,7 +80,12 @@ public class ExpandMotion : AbstractMotion
    {
       base.NotifyPreBuildTransition(config, motionTarget);
       if (config.Property == MotionHeightProperty) {
-         config.EndValue = motionTarget.DesiredSize.Height;
+         if (!double.IsNaN(motionTarget.Height)) {
+            config.EndValue = Math.Ceiling(motionTarget.Height);
+         } else {
+            config.EndValue = Math.Ceiling(motionTarget.DesiredSize.Height);
+         }
+         
       }
    }
 }

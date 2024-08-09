@@ -1,11 +1,18 @@
-﻿using AtomUI.Controls.Utils;
+﻿using AtomUI.Controls.MotionScene;
+using AtomUI.Controls.Utils;
+using AtomUI.MotionScene;
+using AtomUI.Theme.Styling;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Automation;
 using Avalonia.Automation.Peers;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Mixins;
+using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
+using Avalonia.Layout;
+using Avalonia.Threading;
 
 namespace AtomUI.Controls;
 
@@ -80,6 +87,11 @@ public class CollapseItem : HeaderedContentControl, ISelectable
       AvaloniaProperty.RegisterDirect<CollapseItem, Thickness>(nameof(ContentBorderThickness),
                                                                o => o. ContentBorderThickness,
                                                                (o, v) => o. ContentBorderThickness = v);
+   
+   internal static readonly DirectProperty<CollapseItem, TimeSpan> MotionDurationProperty =
+      AvaloniaProperty.RegisterDirect<CollapseItem, TimeSpan>(nameof(MotionDuration), 
+                                                              o => o.MotionDuration,
+                                                              (o, v) => o.MotionDuration = v);
 
    private SizeType _sizeType;
    internal SizeType SizeType
@@ -122,6 +134,13 @@ public class CollapseItem : HeaderedContentControl, ISelectable
       get => _contentBorderThickness;
       set => SetAndRaise(ContentBorderThicknessProperty, ref _contentBorderThickness, value);
    }
+
+   private TimeSpan _motionDuration;
+   internal TimeSpan MotionDuration
+   {
+      get => _motionDuration;
+      set => SetAndRaise(MotionDurationProperty, ref _motionDuration, value);
+   }
    #endregion
 
    static CollapseItem()
@@ -132,6 +151,8 @@ public class CollapseItem : HeaderedContentControl, ISelectable
       DataContextProperty.Changed.AddClassHandler<CollapseItem>((x, e) => x.UpdateHeader(e));
       AutomationProperties.ControlTypeOverrideProperty.OverrideDefaultValue<TabItem>(AutomationControlType.TabItem);
    }
+
+   private bool _animating = false;
    
    protected override AutomationPeer OnCreateAutomationPeer() => new ListItemAutomationPeer(this);
    
@@ -157,6 +178,7 @@ public class CollapseItem : HeaderedContentControl, ISelectable
    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
    {
       base.OnApplyTemplate(e);
+      TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, GlobalResourceKey.MotionDurationSlow);
       SetupIconButton();
       HandleSelectedChanged();
    }
@@ -178,8 +200,55 @@ public class CollapseItem : HeaderedContentControl, ISelectable
    private void HandleSelectedChanged()
    {
       if (Presenter is not null) {
-         Presenter.IsVisible = IsSelected;
+         if (IsSelected) {
+            ExpandItemContent();
+         } else {
+            CollapseItemContent();
+         }
       }
+   }
+
+   private void ExpandItemContent()
+   {
+      if (Presenter is null || _animating) {
+          return;
+      }
+      Presenter.IsVisible = true;
+      LayoutHelper.MeasureChild(Presenter, new Size(Bounds.Width, double.PositiveInfinity), new Thickness());
+      _animating = true;
+      var director = Director.Instance;
+      var motion = new ExpandMotion();
+      motion.ConfigureOpacity(MotionDuration);
+      motion.ConfigureHeight(MotionDuration);
+      var motionActor = new MotionActor(Presenter, motion);
+      motionActor.DispatchInSceneLayer = false;
+      motionActor.Completed += (sender, args) =>
+      {
+         _animating = false;
+      };
+      director?.Schedule(motionActor);
+   }
+
+   private void CollapseItemContent()
+   {
+      Presenter!.IsVisible = false;
+      // if (Presenter is null || _animating) {
+      //    return;
+      // }
+      // _animating = true;
+      // LayoutHelper.MeasureChild(Presenter, new Size(Bounds.Width, double.PositiveInfinity), new Thickness());
+      // var director = Director.Instance;
+      // var motion = new CollapseMotion();
+      // motion.ConfigureOpacity(MotionDuration);
+      // motion.ConfigureHeight(MotionDuration);
+      // var motionActor = new MotionActor(Presenter, motion);
+      // motionActor.DispatchInSceneLayer = false;
+      // motionActor.Completed += (sender, args) =>
+      // {
+      //    _animating = false;
+      //    Presenter.IsVisible = false;
+      // };
+      // director?.Schedule(motionActor);
    }
 
    private void SetupIconButton()

@@ -221,10 +221,7 @@ public class MotionActor : Animatable, IMotionActor
    public virtual void NotifyPostedToDirector()
    {
       DisableMotion();
-      if (DispatchInSceneLayer) {
-         BuildGhost();
-      }
-      
+      BuildGhost();
       RelayMotionProperties();
       var transitions = new Transitions();
       foreach (var transition in _motion.BuildTransitions(GetAnimatableGhost())) {
@@ -235,17 +232,13 @@ public class MotionActor : Animatable, IMotionActor
 
    protected void RelayMotionProperties()
    {
-      var ghost = GetAnimatableGhost();
-      // TODO 这个看是否需要管理起来
-      
-      var motionProperties = Motion.GetActivatedProperties();
-      foreach (var property in motionProperties) {
-         if (property == MotionRenderTransformProperty) {
-            BindUtils.RelayBind(this, property, ghost, Visual.RenderTransformProperty);
-         } else {
-            BindUtils.RelayBind(this, property, ghost, property);
-         }
-      }
+      // var ghost = GetAnimatableGhost();
+      // // TODO 这个看是否需要管理起来
+      //
+      // var motionProperties = Motion.GetActivatedProperties();
+      // foreach (var property in motionProperties) {
+      //    BindUtils.RelayBind(this, property, ghost, property);
+      // }
    }
 
    /// <summary>
@@ -329,19 +322,34 @@ public class MotionActor : Animatable, IMotionActor
       }
    }
 
+   protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+   {
+      base.OnPropertyChanged(change);
+      if (change.Property == MotionWidthProperty ||
+          change.Property == MotionHeightProperty ||
+          change.Property == MotionOpacityProperty ||
+          change.Property == MotionRenderTransformProperty) {
+         var ghost = GetAnimatableGhost();
+         ghost.SetCurrentValue(change.Property, change.NewValue);
+      }
+   }
+
    private void RestoreMotionTargetState()
    {
       var target = GetAnimatableGhost();
-      foreach (var motionConfig in _motion.GetMotionConfigs()) {
-         if (motionConfig.Property == MotionHeightProperty) {
-            target.Height = _originHeight;
-         } else if (motionConfig.Property == MotionWidthProperty) {
-            target.Width = _originWidth;
-         } else if (motionConfig.Property == MotionOpacityProperty) {
-            target.Opacity = _originOpacity;
-         } else if (motionConfig.Property == MotionRenderTransformProperty) {
-            target.RenderTransform = _originRenderTransform;
-            target.RenderTransformOrigin = _originRenderTransformOrigin;
+      if (target == MotionTarget) {
+         foreach (var motionConfig in _motion.GetMotionConfigs()) {
+            if (motionConfig.Property == MotionHeightProperty) {
+               target.SetValue(MotionHeightProperty, _originHeight);
+            } else if (motionConfig.Property == MotionWidthProperty) {
+               target.SetValue(MotionWidthProperty, _originWidth);
+            } else if (motionConfig.Property == MotionOpacityProperty) {
+               target.SetValue(MotionOpacityProperty, _originOpacity);
+            } else if (motionConfig.Property == MotionRenderTransformProperty) {
+               target.SetValue(MotionRenderTransformProperty, _originRenderTransform);
+               target.SetValue(MotionRenderTransformProperty, _originRenderTransform);
+               target.SetValue(Visual.RenderTransformOriginProperty, _originRenderTransformOrigin);
+            }
          }
       }
    }

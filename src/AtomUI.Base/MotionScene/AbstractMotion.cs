@@ -5,6 +5,7 @@ using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
+using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Media.Transformation;
 
@@ -47,10 +48,10 @@ public abstract class AbstractMotion : AvaloniaObject, IMotion
       Visual.OpacityProperty.AddOwner<AbstractMotion>();
    
    public static readonly StyledProperty<double> MotionWidthProperty =
-      Visual.OpacityProperty.AddOwner<AbstractMotion>();
+      Layoutable.WidthProperty.AddOwner<AbstractMotion>();
    
    public static readonly StyledProperty<double> MotionHeightProperty =
-      Visual.OpacityProperty.AddOwner<AbstractMotion>();
+      Layoutable.HeightProperty.AddOwner<AbstractMotion>();
 
    public static readonly StyledProperty<RelativePoint> MotionRenderTransformOriginProperty =
       Visual.RenderTransformOriginProperty.AddOwner<AbstractMotion>();
