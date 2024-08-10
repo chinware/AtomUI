@@ -42,7 +42,7 @@ PS: AtomUI 目前仅在 Windows 11 平台测试<br>
 | Radio 单选框           | 已完成 ✅  |
 | OptionButtonBox 单选组 | 已完成 ✅  |
 | Rate 评分             | 未完成    |
-| Select 选择器          | 未完成    |
+| Select 选择器          | 进行中 💪    |
 | Slider 滑动输入条        | 已完成 ✅  |
 | Switch 开关           | 已完成 ✅  |
 | TimePicker 时间选择框    | 未完成    |
@@ -56,9 +56,9 @@ PS: AtomUI 目前仅在 Windows 11 平台测试<br>
 | Badge 徽标数              | 已完成 ✅  |
 | Calendar 日历            | 未完成    |
 | Card 卡片                | 未完成    |
-| Carousel 走马灯           | 未完成    |
-| Collapse 折叠面板          | Completed ✅ |
-| Expander 折叠面板          | 进行中 💪  |
+| Carousel 走马灯           | 进行中 💪    |
+| Collapse 折叠面板          | 已完成 ✅ |
+| Expander 折叠面板          | 已完成 ✅  |
 | Descriptions 描述列表      | 未完成    |
 | EmptyIndicator 空状态     | 已完成 ✅  |
 | PathIcon 图标            | 已完成 ✅    |
@@ -82,9 +82,9 @@ PS: AtomUI 目前仅在 Windows 11 平台测试<br>
 |:---------------------|:-------|
 | Alert 警告提示           | 已完成 ✅  |
 | Drawer 抽屉            | 未完成    |
-| Message 全局提示         | 未完成    |
-| Modal 对话框            | 未完成    |
-| Notification 通知提醒框   | 未完成    |
+| Message 全局提示         | 进行中 💪    |
+| Modal 对话框            | 进行中 💪    |
+| Notification 通知提醒框   | 进行中 💪    |
 | Popconfirm 气泡确认框     | 未完成    |
 | ProgressBar 进度条      | 已完成 ✅  |
 | Result 结果            | 需评估 🤔 |

@@ -48,9 +48,9 @@ Welcome to communicate and give suggestions to AtomUI, thank you for giving the 
 | Badge             | Completed ✅    |
 | Calendar          | TODO           |
 | Card              | TODO           |
-| Carousel          | TODO           |
+| Carousel          | Developing 💪           |
 | Collapse          | Completed ✅    |
-| Expander          | Developing 💪  |
+| Expander          | Completed ✅  |
 | Descriptions      | TODO           |
 | EmptyIndicator    | Completed ✅    |
 | Image             | TODO           |
@@ -72,10 +72,10 @@ Welcome to communicate and give suggestions to AtomUI, thank you for giving the 
 |:-------------------|:---------------|
 | Alert              | Completed ✅    |
 | Drawer             | TODO           |
-| Message            | TODO           |
-| Modal              | TODO           |
-| Notification       | TODO           |
-| Popconfirm         | TODO           |
+| Message            | Developing 💪  |
+| Modal              | Developing 💪  |
+| Notification       | Developing 💪  |
+| Popconfirm         | Developing 💪  |
 | ProgressBar        | Completed ✅    |
 | Result             | Need Review 🤔 |
 | Skeleton           | TODO           |
