@@ -115,6 +115,23 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey EmptyImgHeightMD = new TokenResourceKey("EmptyIndicator.EmptyImgHeightMD");
     }
 
+    public static class ExpanderResourceKey
+    {
+        public static readonly TokenResourceKey HeaderPadding = new TokenResourceKey("Expander.HeaderPadding");
+        public static readonly TokenResourceKey HeaderPaddingSM = new TokenResourceKey("Expander.HeaderPaddingSM");
+        public static readonly TokenResourceKey HeaderPaddingLG = new TokenResourceKey("Expander.HeaderPaddingLG");
+        public static readonly TokenResourceKey HeaderBg = new TokenResourceKey("Expander.HeaderBg");
+        public static readonly TokenResourceKey ContentPadding = new TokenResourceKey("Expander.ContentPadding");
+        public static readonly TokenResourceKey ContentPaddingSM = new TokenResourceKey("Expander.ContentPaddingSM");
+        public static readonly TokenResourceKey ContentPaddingLG = new TokenResourceKey("Expander.ContentPaddingLG");
+        public static readonly TokenResourceKey ContentBg = new TokenResourceKey("Expander.ContentBg");
+        public static readonly TokenResourceKey ExpanderBorderRadius = new TokenResourceKey("Expander.ExpanderBorderRadius");
+        public static readonly TokenResourceKey LeftExpandButtonHMargin = new TokenResourceKey("Expander.LeftExpandButtonHMargin");
+        public static readonly TokenResourceKey RightExpandButtonHMargin = new TokenResourceKey("Expander.RightExpandButtonHMargin");
+        public static readonly TokenResourceKey LeftExpandButtonVMargin = new TokenResourceKey("Expander.LeftExpandButtonVMargin");
+        public static readonly TokenResourceKey RightExpandButtonVMargin = new TokenResourceKey("Expander.RightExpandButtonVMargin");
+    }
+
     public static class LineEditResourceKey
     {
         public static readonly TokenResourceKey Padding = new TokenResourceKey("LineEdit.Padding");

@@ -5,7 +5,6 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Layout;
-using Avalonia.LogicalTree;
 using Avalonia.Rendering;
 
 namespace AtomUI.Controls;
@@ -43,6 +42,7 @@ public class IconButton : AvaloniaButton, ICustomHitTest
          Icon.SetCurrentValue(PathIcon.VerticalAlignmentProperty, VerticalAlignment.Center);
          Content = Icon;
       }
+      SetupIconMode();
    }
 
    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
@@ -57,20 +57,26 @@ public class IconButton : AvaloniaButton, ICustomHitTest
             }
             Content = e.GetNewValue<PathIcon?>();
          } else if (e.Property == IsPressedProperty ||
-                    e.Property == IsPointerOverProperty) {
-            CollectStyleState();
-            if (Icon is not null) {
-               if (_styleState.HasFlag(ControlStyleState.Enabled)) {
-                  Icon.IconMode = IconMode.Normal;
-                  if (_styleState.HasFlag(ControlStyleState.Sunken)) {
-                     Icon.IconMode = IconMode.Selected;
-                  } else if (_styleState.HasFlag(ControlStyleState.MouseOver)) {
-                     Icon.IconMode = IconMode.Active;
-                  }
-               } else {
-                  Icon.IconMode = IconMode.Disabled;
-               }
+                     e.Property == IsPointerOverProperty ||
+                     e.Property == IsEnabledProperty) {
+            SetupIconMode();
+         }
+      }
+   }
+
+   protected void SetupIconMode()
+   {
+      CollectStyleState();
+      if (Icon is not null) {
+         if (_styleState.HasFlag(ControlStyleState.Enabled)) {
+            Icon.IconMode = IconMode.Normal;
+            if (_styleState.HasFlag(ControlStyleState.Sunken)) {
+               Icon.IconMode = IconMode.Selected;
+            } else if (_styleState.HasFlag(ControlStyleState.MouseOver)) {
+               Icon.IconMode = IconMode.Active;
             }
+         } else {
+            Icon.IconMode = IconMode.Disabled;
          }
       }
    }

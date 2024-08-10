@@ -101,8 +101,6 @@ public class Collapse : SelectingItemsControl
       get => _effectiveBorderThickness;
       set => SetAndRaise(EffectiveBorderThicknessProperty, ref _effectiveBorderThickness, value);
    }
-   
-   internal ItemsPresenter? ItemsPresenterPart { get; private set; }
 
    private static readonly FuncTemplate<Panel?> DefaultPanel =
       new(() => new StackPanel
@@ -124,6 +122,11 @@ public class Collapse : SelectingItemsControl
    }
 
    private void HandleSelectionChanged(object? sender, SelectionChangedEventArgs args)
+   {
+      SetupItemsBorderThickness();
+   }
+
+   private void SetupItemsBorderThickness()
    {
       if (VisualRoot is not null) {
          for (var i = 0; i < ItemCount; ++i) {
@@ -163,6 +166,7 @@ public class Collapse : SelectingItemsControl
          BindUtils.RelayBind(this, IsBorderlessProperty, collapseItem, CollapseItem.IsBorderlessProperty);
          BindUtils.RelayBind(this, TriggerTypeProperty, collapseItem, CollapseItem.TriggerTypeProperty);
          BindUtils.RelayBind(this, ExpandIconPositionProperty, collapseItem, CollapseItem.ExpandIconPositionProperty);
+         BindUtils.RelayBind(this, IsEnabledProperty, collapseItem, CollapseItem.IsEnabledProperty);
          SetupCollapseBorderThickness(collapseItem, index);
       }
    }
@@ -250,6 +254,9 @@ public class Collapse : SelectingItemsControl
 
       if (change.Property == IsAccordionProperty) {
          SetupSelectionMode();
+      } else if (change.Property == IsBorderlessProperty ||
+                 change.Property == IsGhostStyleProperty) {
+         SetupItemsBorderThickness();
       }
    }
 

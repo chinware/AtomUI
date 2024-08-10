@@ -19,16 +19,16 @@ namespace AtomUI.Controls;
 [ControlThemeProvider]
 internal class CollapseItemTheme : BaseControlTheme
 {
-   public const string MainLayoutPart             = "PART_MainLayout";
-   public const string ExpandButtonPart           = "PART_ExpandButton";
-   public const string HeaderPresenterPart        = "PART_HeaderPresenter";
-   public const string HeaderDecoratorPart        = "PART_HeaderDecorator";
-   public const string ContentPresenterPart       = "PART_ContentPresenter";
-   public const string AddOnContentPresenterPart  = "PART_AddOnContentPresenter";
+   public const string MainLayoutPart = "PART_MainLayout";
+   public const string ExpandButtonPart = "PART_ExpandButton";
+   public const string HeaderPresenterPart = "PART_HeaderPresenter";
+   public const string HeaderDecoratorPart = "PART_HeaderDecorator";
+   public const string ContentPresenterPart = "PART_ContentPresenter";
+   public const string AddOnContentPresenterPart = "PART_AddOnContentPresenter";
    public const string ContentAnimationTargetPart = "PART_ContentAnimationTarget";
-   
-   public CollapseItemTheme() : base(typeof(CollapseItem)) {}
-   
+
+   public CollapseItemTheme() : base(typeof(CollapseItem)) { }
+
    protected override IControlTemplate BuildControlTemplate()
    {
       return new FuncControlTemplate<CollapseItem>((collapseItem, scope) =>
@@ -42,17 +42,21 @@ internal class CollapseItemTheme : BaseControlTheme
          BuildHeader(mainLayout, scope);
          var animationPanel = new AnimationTargetPanel()
          {
-            Name = ContentAnimationTargetPart
+            Name = ContentAnimationTargetPart,
          };
+         animationPanel.SetCurrentValue(AnimationTargetPanel.IsVisibleProperty, false);
          var contentPresenter = new ContentPresenter()
          {
             Name = ContentPresenterPart,
          };
          animationPanel.Children.Add(contentPresenter);
-         TokenResourceBinder.CreateGlobalTokenBinding(contentPresenter, ContentPresenter.BorderBrushProperty, GlobalResourceKey.ColorBorder);
+         TokenResourceBinder.CreateGlobalTokenBinding(contentPresenter, ContentPresenter.BorderBrushProperty,
+                                                      GlobalResourceKey.ColorBorder);
          CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty, CollapseItem.ContentProperty);
-         CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentTemplateProperty, CollapseItem.ContentTemplateProperty);
-         CreateTemplateParentBinding(contentPresenter, ContentPresenter.BorderThicknessProperty, CollapseItem.ContentBorderThicknessProperty);
+         CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentTemplateProperty,
+                                     CollapseItem.ContentTemplateProperty);
+         CreateTemplateParentBinding(contentPresenter, ContentPresenter.BorderThicknessProperty,
+                                     CollapseItem.ContentBorderThicknessProperty);
          mainLayout.Children.Add(animationPanel);
          animationPanel.RegisterInNameScope(scope);
          contentPresenter.RegisterInNameScope(scope);
@@ -72,10 +76,12 @@ internal class CollapseItemTheme : BaseControlTheme
          AnimationUtils.CreateTransition<ThicknessTransition>(Border.BorderThicknessProperty)
       };
       DockPanel.SetDock(headerDecorator, Dock.Top);
-         
-      TokenResourceBinder.CreateGlobalTokenBinding(headerDecorator, Border.BorderBrushProperty, GlobalResourceKey.ColorBorder);
-      CreateTemplateParentBinding(headerDecorator, Border.BorderThicknessProperty, CollapseItem.HeaderBorderThicknessProperty);
-      
+
+      TokenResourceBinder.CreateGlobalTokenBinding(headerDecorator, Border.BorderBrushProperty,
+                                                   GlobalResourceKey.ColorBorder);
+      CreateTemplateParentBinding(headerDecorator, Border.BorderThicknessProperty,
+                                  CollapseItem.HeaderBorderThicknessProperty);
+
       var headerLayout = new Grid()
       {
          ColumnDefinitions = new ColumnDefinitions()
@@ -86,7 +92,7 @@ internal class CollapseItemTheme : BaseControlTheme
             new ColumnDefinition(GridLength.Auto)
          }
       };
-      
+
       var expandButton = new IconButton()
       {
          Name = ExpandButtonPart,
@@ -94,11 +100,13 @@ internal class CollapseItemTheme : BaseControlTheme
       };
       expandButton.RegisterInNameScope(scope);
       expandButton.Transitions = new Transitions();
-      expandButton.Transitions.Add(AnimationUtils.CreateTransition<TransformOperationsTransition>(IconButton.RenderTransformProperty));
+      expandButton.Transitions.Add(
+         AnimationUtils.CreateTransition<TransformOperationsTransition>(IconButton.RenderTransformProperty));
       CreateTemplateParentBinding(expandButton, IconButton.IconProperty, CollapseItem.ExpandIconProperty);
       CreateTemplateParentBinding(expandButton, IconButton.IsVisibleProperty, CollapseItem.IsShowExpandIconProperty);
+      CreateTemplateParentBinding(expandButton, IconButton.IsEnabledProperty, CollapseItem.IsEnabledProperty);
       headerLayout.Children.Add(expandButton);
-      
+
       var headerPresenter = new ContentPresenter()
       {
          Name = HeaderPresenterPart,
@@ -106,7 +114,8 @@ internal class CollapseItemTheme : BaseControlTheme
          HorizontalContentAlignment = HorizontalAlignment.Left,
       };
       CreateTemplateParentBinding(headerPresenter, ContentPresenter.ContentProperty, CollapseItem.HeaderProperty);
-      CreateTemplateParentBinding(headerPresenter, ContentPresenter.ContentTemplateProperty, CollapseItem.HeaderTemplateProperty);
+      CreateTemplateParentBinding(headerPresenter, ContentPresenter.ContentTemplateProperty,
+                                  CollapseItem.HeaderTemplateProperty);
       Grid.SetColumn(headerPresenter, 1);
       headerPresenter.RegisterInNameScope(scope);
       headerLayout.Children.Add(headerPresenter);
@@ -117,15 +126,17 @@ internal class CollapseItemTheme : BaseControlTheme
          VerticalAlignment = VerticalAlignment.Center,
          HorizontalAlignment = HorizontalAlignment.Left
       };
-      CreateTemplateParentBinding(addContentPresenter, ContentPresenter.ContentProperty, CollapseItem.AddOnContentProperty);
-      CreateTemplateParentBinding(addContentPresenter, ContentPresenter.ContentTemplateProperty, CollapseItem.AddOnContentTemplateProperty);
+      CreateTemplateParentBinding(addContentPresenter, ContentPresenter.ContentProperty,
+                                  CollapseItem.AddOnContentProperty);
+      CreateTemplateParentBinding(addContentPresenter, ContentPresenter.ContentTemplateProperty,
+                                  CollapseItem.AddOnContentTemplateProperty);
       Grid.SetColumn(addContentPresenter, 2);
       headerLayout.Children.Add(addContentPresenter);
-      
+
       headerDecorator.Child = headerLayout;
       layout.Children.Add(headerDecorator);
    }
-   
+
    protected override void BuildStyles()
    {
       BuildCommonStyle();
@@ -149,13 +160,14 @@ internal class CollapseItemTheme : BaseControlTheme
       var headerPresenter = new Style(selector => selector.Nesting().Template().Name(HeaderPresenterPart));
       headerPresenter.Add(ContentPresenter.ForegroundProperty, GlobalResourceKey.ColorTextHeading);
       commonStyle.Add(headerPresenter);
-      
+
       // ExpandIcon 
-      var expandIconStyle = new Style(selector => selector.Nesting().Template().Name(ExpandButtonPart).Descendant().OfType<PathIcon>());
+      var expandIconStyle =
+         new Style(selector => selector.Nesting().Template().Name(ExpandButtonPart).Descendant().OfType<PathIcon>());
       expandIconStyle.Add(PathIcon.WidthProperty, GlobalResourceKey.IconSizeSM);
       expandIconStyle.Add(PathIcon.HeightProperty, GlobalResourceKey.IconSizeSM);
       commonStyle.Add(expandIconStyle);
-      
+
       Add(commonStyle);
    }
 
@@ -167,14 +179,15 @@ internal class CollapseItemTheme : BaseControlTheme
       var transformOptions = new TransformOperations.Builder(1);
       transformOptions.AppendRotate(MathUtils.Deg2Rad(90));
       expandButtonStyle.Add(IconButton.RenderTransformProperty, transformOptions.Build());
-      
+
       selectedStyle.Add(expandButtonStyle);
       Add(selectedStyle);
    }
-   
+
    private void BuildSizeTypeStyle()
    {
-      var largeSizeStyle = new Style(selector => selector.Nesting().PropertyEquals(CollapseItem.SizeTypeProperty, SizeType.Large));
+      var largeSizeStyle =
+         new Style(selector => selector.Nesting().PropertyEquals(CollapseItem.SizeTypeProperty, SizeType.Large));
       {
          var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));
          decoratorStyle.Add(Border.PaddingProperty, CollapseResourceKey.CollapseHeaderPaddingLG);
@@ -188,10 +201,11 @@ internal class CollapseItemTheme : BaseControlTheme
          contentPresenterStyle.Add(ContentPresenter.PaddingProperty, CollapseResourceKey.CollapseContentPaddingLG);
          largeSizeStyle.Add(contentPresenterStyle);
       }
-   
+
       Add(largeSizeStyle);
-      
-      var middleSizeStyle = new Style(selector => selector.Nesting().PropertyEquals(CollapseItem.SizeTypeProperty, SizeType.Middle));
+
+      var middleSizeStyle =
+         new Style(selector => selector.Nesting().PropertyEquals(CollapseItem.SizeTypeProperty, SizeType.Middle));
       {
          var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));
          decoratorStyle.Add(Border.PaddingProperty, CollapseResourceKey.HeaderPadding);
@@ -199,15 +213,16 @@ internal class CollapseItemTheme : BaseControlTheme
          decoratorStyle.Add(TextBlock.LineHeightProperty, GlobalResourceKey.FontHeight);
          middleSizeStyle.Add(decoratorStyle);
       }
-      
+
       {
          var contentPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ContentPresenterPart));
          contentPresenterStyle.Add(ContentPresenter.PaddingProperty, CollapseResourceKey.ContentPadding);
          middleSizeStyle.Add(contentPresenterStyle);
       }
       Add(middleSizeStyle);
-      
-      var smallSizeStyle = new Style(selector => selector.Nesting().PropertyEquals(CollapseItem.SizeTypeProperty, SizeType.Small));
+
+      var smallSizeStyle =
+         new Style(selector => selector.Nesting().PropertyEquals(CollapseItem.SizeTypeProperty, SizeType.Small));
       {
          var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));
          decoratorStyle.Add(Border.PaddingProperty, CollapseResourceKey.CollapseHeaderPaddingSM);
@@ -215,7 +230,7 @@ internal class CollapseItemTheme : BaseControlTheme
          decoratorStyle.Add(TextBlock.LineHeightProperty, GlobalResourceKey.FontHeight);
          smallSizeStyle.Add(decoratorStyle);
       }
-      
+
       {
          var contentPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ContentPresenterPart));
          contentPresenterStyle.Add(ContentPresenter.PaddingProperty, CollapseResourceKey.CollapseContentPaddingSM);
@@ -227,13 +242,18 @@ internal class CollapseItemTheme : BaseControlTheme
 
    private void BuildTriggerStyle()
    {
-      var headerTriggerHandleStyle = new Style(selector => selector.Nesting().PropertyEquals(CollapseItem.TriggerTypeProperty, CollapseTriggerType.Header));
+      var headerTriggerHandleStyle = new Style(selector => selector.Nesting()
+                                                                   .PropertyEquals(
+                                                                      CollapseItem.TriggerTypeProperty,
+                                                                      CollapseTriggerType.Header));
       var headerDecoratorStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));
       headerDecoratorStyle.Add(Border.CursorProperty, new Cursor(StandardCursorType.Hand));
       headerTriggerHandleStyle.Add(headerDecoratorStyle);
       Add(headerTriggerHandleStyle);
-      
-      var iconTriggerHandleStyle = new Style(selector => selector.Nesting().PropertyEquals(CollapseItem.TriggerTypeProperty, CollapseTriggerType.Icon));
+
+      var iconTriggerHandleStyle =
+         new Style(selector => selector.Nesting()
+                                       .PropertyEquals(CollapseItem.TriggerTypeProperty, CollapseTriggerType.Icon));
       var expandIconStyle = new Style(selector => selector.Nesting().Template().Name(ExpandButtonPart));
       expandIconStyle.Add(IconButton.CursorProperty, new Cursor(StandardCursorType.Hand));
       iconTriggerHandleStyle.Add(expandIconStyle);
@@ -242,7 +262,10 @@ internal class CollapseItemTheme : BaseControlTheme
 
    private void BuildTriggerPositionStyle()
    {
-      var startPositionStyle = new Style(selector => selector.Nesting().PropertyEquals(CollapseItem.ExpandIconPositionProperty, CollapseExpandIconPosition.Start));
+      var startPositionStyle = new Style(selector => selector.Nesting()
+                                                             .PropertyEquals(
+                                                                CollapseItem.ExpandIconPositionProperty,
+                                                                CollapseExpandIconPosition.Start));
       {
          var expandButtonStyle = new Style(selector => selector.Nesting().Template().Name(ExpandButtonPart));
          expandButtonStyle.Add(Grid.ColumnProperty, 0);
@@ -250,7 +273,10 @@ internal class CollapseItemTheme : BaseControlTheme
          startPositionStyle.Add(expandButtonStyle);
       }
       Add(startPositionStyle);
-      var endPositionStyle = new Style(selector => selector.Nesting().PropertyEquals(CollapseItem.ExpandIconPositionProperty, CollapseExpandIconPosition.End));
+      var endPositionStyle = new Style(selector => selector.Nesting()
+                                                           .PropertyEquals(
+                                                              CollapseItem.ExpandIconPositionProperty,
+                                                              CollapseExpandIconPosition.End));
       {
          var expandButtonStyle = new Style(selector => selector.Nesting().Template().Name(ExpandButtonPart));
          expandButtonStyle.Add(Grid.ColumnProperty, 3);
@@ -285,20 +311,18 @@ internal class CollapseItemTheme : BaseControlTheme
       var disabledStyle =
          new Style(selector => selector.Nesting().Class(StdPseudoClass.Disabled));
       disabledStyle.Add(CollapseItem.ForegroundProperty, GlobalResourceKey.ColorTextDisabled);
-      var headerContentPresenterStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart).Descendant().OfType<ContentPresenter>());
+      var headerContentPresenterStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart)
+                                                                      .Descendant().OfType<ContentPresenter>());
       headerContentPresenterStyle.Add(ContentPresenter.ForegroundProperty, GlobalResourceKey.ColorTextDisabled);
       disabledStyle.Add(headerContentPresenterStyle);
-      
-      var expandIconStyle = new Style(selector => selector.Nesting().Template().Name(ExpandButtonPart).Descendant().OfType<PathIcon>());
-      expandIconStyle.Add(PathIcon.IconModeProperty, IconMode.Disabled);
-      disabledStyle.Add(expandIconStyle);
-      
+
       Add(disabledStyle);
    }
 
    private void BuildAddOnContentStyle()
    {
-      var addOnContentStyle = new Style(selector => selector.Nesting().Template().Name(AddOnContentPresenterPart).Descendant().OfType<PathIcon>());
+      var addOnContentStyle = new Style(selector => selector.Nesting().Template().Name(AddOnContentPresenterPart)
+                                                            .Descendant().OfType<PathIcon>());
       addOnContentStyle.Add(PathIcon.WidthProperty, GlobalResourceKey.IconSize);
       addOnContentStyle.Add(PathIcon.HeightProperty, GlobalResourceKey.IconSize);
       Add(addOnContentStyle);

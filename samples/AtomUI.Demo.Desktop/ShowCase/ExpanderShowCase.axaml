@@ -8,6 +8,159 @@
     xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
     mc:Ignorable="d">
     <showcase:ShowCasePanel>
-     
+        <showcase:ShowCaseItem
+            Title="Expander"
+            Description="By default, The simplest usage is to expand downward.">
+            <atom:Expander Header="This is panel header 1">
+                <TextBlock TextWrapping="Wrap">
+                    A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
+                </TextBlock>
+            </atom:Expander>
+        </showcase:ShowCaseItem>
+
+        <showcase:ShowCaseItem
+            Title="Size"
+            Description="Ant Design supports a default Expander size as well as a large and small size.
+If a large or small Expander is desired, set the size property to either large or small respectively. Omit the size property for a Expander with the default size.">
+            <StackPanel Orientation="Vertical" Spacing="20" Margin="0, 0, 10, 0">
+                <atom:Separator Title="Default Size" TitlePosition="Left" FontWeight="Bold" />
+                <atom:Expander SizeType="Middle" Header="This is default size panel header">
+                    <TextBlock TextWrapping="Wrap">
+                        A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
+                    </TextBlock>
+                </atom:Expander>
+                <atom:Separator Title="Small Size" TitlePosition="Left" FontWeight="Bold" />
+                <atom:Expander SizeType="Small" Header="This is small size panel header">
+                    <TextBlock TextWrapping="Wrap">
+                        A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
+                    </TextBlock>
+                </atom:Expander>
+                <atom:Separator Title="Large Size" TitlePosition="Left" FontWeight="Bold" />
+                <atom:Expander SizeType="Large" Header="This is large size panel header">
+                    <TextBlock TextWrapping="Wrap">
+                        A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
+                    </TextBlock>
+                </atom:Expander>
+            </StackPanel>
+        </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="Expanding Direction"
+            Description="The content area supports expansion in four directions.">
+            <DockPanel Margin="0, 0, 0, 0" Height="300">
+                <StackPanel Orientation="Horizontal" Spacing="5" DockPanel.Dock="Top">
+                    <TextBlock VerticalAlignment="Center">Expand direction:</TextBlock>
+                    <atom:OptionButtonGroup ButtonStyle="Outline" Name="ExpandDirectionOptionGroup">
+                        <atom:OptionButton IsChecked="True">Down</atom:OptionButton>
+                        <atom:OptionButton>Up</atom:OptionButton>
+                        <atom:OptionButton>Left</atom:OptionButton>
+                        <atom:OptionButton>Right</atom:OptionButton>
+                    </atom:OptionButtonGroup>
+                </StackPanel>
+                
+                <Panel Margin="0, 20, 0, 0">
+                    <atom:Expander Header="This is panel header" ExpandDirection="{Binding ExpandDirection}"
+                                   Name="DirectionDemoExpander">
+                        <TextBlock TextWrapping="Wrap">
+                            A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
+                        </TextBlock>
+                    </atom:Expander>
+                </Panel>
+            </DockPanel>
+        </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="Nested panel"
+            Description="Expander is nested inside the Collapse." Margin="0, 0, 10, 0">
+            <atom:Expander Header="This is panel header 1">
+                <atom:Expander Header="This is nested panel header">
+                    <TextBlock TextWrapping="Wrap">
+                        A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
+                    </TextBlock>
+                </atom:Expander>
+            </atom:Expander>
+        </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="Borderless"
+            Description="A borderless style of Expander." Margin="0, 0, 10, 0">
+            <atom:Expander IsBorderless="True" Header="This is panel header 1">
+                <TextBlock TextWrapping="Wrap">
+                    A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
+                </TextBlock>
+            </atom:Expander>
+        </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="No Arrow"
+            Description="You can hide the arrow icon by passing IsShowExpandIcon={False} to CollapsePanel component." Margin="0, 0, 10, 0">
+            <atom:Expander Header="This is panel header 1" IsShowExpandIcon="False">
+                <TextBlock TextWrapping="Wrap">
+                    A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
+                </TextBlock>
+            </atom:Expander>
+        </showcase:ShowCaseItem>
+        
+         <showcase:ShowCaseItem
+            Title="Extra node"
+            Description="Render extra element in the top-right corner of each panel." Margin="0, 0, 10, 0">
+            <StackPanel Orientation="Vertical" Spacing="20">
+                <atom:Expander Header="This is panel header 1"
+                               AddOnContent="{atom:IconProvider Kind=SettingOutlined}"
+                               ExpandIconPosition="{Binding ToggleIconPosition}">
+                    <TextBlock TextWrapping="Wrap">
+                        A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
+                    </TextBlock>
+                </atom:Expander>
+
+                <StackPanel Orientation="Horizontal" Spacing="5">
+                    <TextBlock VerticalAlignment="Center">Expand Icon Position:</TextBlock>
+                    <atom:OptionButtonGroup ButtonStyle="Outline" Name="ExpandButtonPosGroup">
+                        <atom:OptionButton IsChecked="True">Start</atom:OptionButton>
+                        <atom:OptionButton>End</atom:OptionButton>
+                    </atom:OptionButtonGroup>
+                </StackPanel>
+            </StackPanel>
+            
+        </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="Ghost Collapse"
+            Description="Making collapse's background to transparent." Margin="0, 0, 10, 0">
+            <atom:Expander IsGhostStyle="True" Header="This is panel header 1">
+                <TextBlock TextWrapping="Wrap">
+                    A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
+                </TextBlock>
+            </atom:Expander>
+        </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="Collapsible"
+            Description="Specify the trigger area of collapsible by collapsible." Margin="0, 0, 10, 0">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:Expander Header="This panel can only be collapsed by clicking text">
+                    <TextBlock TextWrapping="Wrap">
+                        A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
+                    </TextBlock>
+                </atom:Expander>
+                <atom:Expander TriggerType="Icon" Header="This panel can only be collapsed by clicking icon">
+                    <TextBlock TextWrapping="Wrap">
+                        A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
+                    </TextBlock>
+                </atom:Expander>
+                
+                <atom:Expander IsEnabled="False" Header="This panel can't be collapsed">
+                    <TextBlock TextWrapping="Wrap">
+                        A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
+                    </TextBlock>
+                </atom:Expander>
+                
+                <atom:Expander IsEnabled="False" Header="This panel can't be collapsed" IsExpanded="True">
+                    <TextBlock TextWrapping="Wrap">
+                        A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
+                    </TextBlock>
+                </atom:Expander>
+            </StackPanel>
+        </showcase:ShowCaseItem>
     </showcase:ShowCasePanel>
 </UserControl>

@@ -239,6 +239,12 @@ public class CollapseItem : HeaderedContentControl, ISelectable
          if (change.NewValue is Control newControl) {
             UIStructureUtils.SetTemplateParent(newControl, this);
          }
+      } else if (change.Property == ExpandIconProperty) {
+         var oldExpandIcon = change.GetOldValue<PathIcon?>();
+         if (oldExpandIcon is not null) {
+            UIStructureUtils.SetTemplateParent(oldExpandIcon, null);
+         }
+         SetupIconButton();
       }
    }
 
