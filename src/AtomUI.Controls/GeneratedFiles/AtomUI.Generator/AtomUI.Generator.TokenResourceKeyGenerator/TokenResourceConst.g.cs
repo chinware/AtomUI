@@ -408,6 +408,15 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey ToolTipArrowSize = new TokenResourceKey("ToolTip.ToolTipArrowSize");
     }
 
+    public static class TreeViewResourceKey
+    {
+        public static readonly TokenResourceKey TitleHeight = new TokenResourceKey("TreeView.TitleHeight");
+        public static readonly TokenResourceKey NodeHoverBg = new TokenResourceKey("TreeView.NodeHoverBg");
+        public static readonly TokenResourceKey NodeSelectedBg = new TokenResourceKey("TreeView.NodeSelectedBg");
+        public static readonly TokenResourceKey DirectoryNodeSelectedColor = new TokenResourceKey("TreeView.DirectoryNodeSelectedColor");
+        public static readonly TokenResourceKey DirectoryNodeSelectedBg = new TokenResourceKey("TreeView.DirectoryNodeSelectedBg");
+    }
+
     public static class CaptionButtonResourceKey
     {
         public static readonly TokenResourceKey HoverBackgroundColor = new TokenResourceKey("CaptionButton.HoverBackgroundColor");

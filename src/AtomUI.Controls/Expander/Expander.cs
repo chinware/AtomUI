@@ -166,9 +166,7 @@ public class Expander : AvaloniaExpander
    }
 
    #endregion
-
-   private bool _animating = false;
-   private bool _enableAnimation = true;
+   
    private AnimationTargetPanel? _animationTarget;
    private Border? _headerDecorator;
    private IconButton? _expandButton;
@@ -182,13 +180,10 @@ public class Expander : AvaloniaExpander
       TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, GlobalResourceKey.MotionDurationSlow);
       TokenResourceBinder.CreateGlobalResourceBinding(this, BorderThicknessProperty, GlobalResourceKey.BorderThickness, 
                                                       BindingPriority.Template, new RenderScaleAwareThicknessConfigure(this));
-      // SetupHeaderLayout();
       SetupEffectiveBorderThickness();
       SetupExpanderBorderThickness();
       SetupIconButton();
-      _enableAnimation = false;
       HandleExpandedChanged();
-      _enableAnimation = true;
       if (_expandButton is not null) {
          _expandButton.Click += (sender, args) =>
          {
@@ -266,7 +261,7 @@ public class Expander : AvaloniaExpander
          var position = e.GetPosition(_headerDecorator);
          if (_headerDecorator is not null) {
             var targetRect = new Rect(_headerDecorator.Bounds.Size);
-            if (targetRect.Contains(position) && !_animating) {
+            if (targetRect.Contains(position)) {
                IsExpanded = !IsExpanded;
             }
          }
