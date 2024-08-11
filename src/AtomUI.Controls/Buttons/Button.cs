@@ -2,7 +2,6 @@ using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.Icon;
 using AtomUI.Media;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using AtomUI.Utils;
@@ -11,7 +10,6 @@ using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
-using Avalonia.Data;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 
@@ -203,14 +201,24 @@ public class Button : AvaloniaButton, ISizeTypeAware, IControlCustomStyle, IWave
       var size = base.MeasureOverride(availableSize);
       var targetWidth = size.Width;
       var targetHeight = size.Height;
-      targetWidth += Padding.Left + Padding.Right;
+
       targetHeight += Padding.Top + Padding.Bottom;
+      if (Shape != ButtonShape.Round) {
+         targetWidth += Padding.Left + Padding.Right;
+      } else {
+         targetWidth += Math.Max(Padding.Left + Padding.Right, targetHeight);
+      }
+    
       targetHeight = Math.Max(targetHeight, ControlHeight);
+      
+      targetWidth = Math.Max(targetWidth, targetHeight);
+      
       if (Shape == ButtonShape.Circle) {
          targetWidth = targetHeight;
          CornerRadius = new CornerRadius(targetHeight);
       } else if (Shape == ButtonShape.Round) {
          CornerRadius = new CornerRadius(targetHeight);
+         targetWidth = Math.Max(targetWidth, targetHeight + targetHeight / 2);
       }
 
       return new Size(targetWidth, targetHeight);
@@ -428,6 +436,7 @@ public class Button : AvaloniaButton, ISizeTypeAware, IControlCustomStyle, IWave
             var oldValue = e.GetOldValue<PathIcon?>();
             var newValue = e.GetNewValue<PathIcon?>();
             if (oldValue is not null) {
+               UIStructureUtils.SetTemplateParent(oldValue, null);
                _stackPanel!.Children.Remove(oldValue);
             }
 

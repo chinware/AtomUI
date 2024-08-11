@@ -65,6 +65,11 @@ internal abstract class BaseButtonTheme : BaseControlTheme
       largeSizeStyle.Add(Button.FontSizeProperty, ButtonResourceKey.ContentFontSizeLG);
       largeSizeStyle.Add(Button.PaddingProperty, ButtonResourceKey.PaddingLG);
       largeSizeStyle.Add(Button.CornerRadiusProperty, GlobalResourceKey.BorderRadiusLG);
+      {
+         var iconOnlyStyle = new Style(selector => selector.Nesting().Class(Button.IconOnlyPC));
+         iconOnlyStyle.Add(Button.PaddingProperty, ButtonResourceKey.IconOnyPaddingLG);
+         largeSizeStyle.Add(iconOnlyStyle);
+      }
       Add(largeSizeStyle);
       
       var middleSizeStyle = new Style(selector => selector.Nesting().PropertyEquals(Button.SizeTypeProperty, SizeType.Middle));
@@ -72,6 +77,11 @@ internal abstract class BaseButtonTheme : BaseControlTheme
       middleSizeStyle.Add(Button.FontSizeProperty, ButtonResourceKey.ContentFontSize);
       middleSizeStyle.Add(Button.PaddingProperty, ButtonResourceKey.Padding);
       middleSizeStyle.Add(Button.CornerRadiusProperty, GlobalResourceKey.BorderRadius);
+      {
+         var iconOnlyStyle = new Style(selector => selector.Nesting().Class(Button.IconOnlyPC));
+         iconOnlyStyle.Add(Button.PaddingProperty, ButtonResourceKey.IconOnyPadding);
+         middleSizeStyle.Add(iconOnlyStyle);
+      }
       Add(middleSizeStyle);
       
       var smallSizeStyle = new Style(selector => selector.Nesting().PropertyEquals(Button.SizeTypeProperty, SizeType.Small));
@@ -79,6 +89,11 @@ internal abstract class BaseButtonTheme : BaseControlTheme
       smallSizeStyle.Add(Button.FontSizeProperty, ButtonResourceKey.ContentFontSizeSM);
       smallSizeStyle.Add(Button.PaddingProperty, ButtonResourceKey.PaddingSM);
       smallSizeStyle.Add(Button.CornerRadiusProperty, GlobalResourceKey.BorderRadiusSM);
+      {
+         var iconOnlyStyle = new Style(selector => selector.Nesting().Class(Button.IconOnlyPC));
+         iconOnlyStyle.Add(Button.PaddingProperty, ButtonResourceKey.IconOnyPaddingSM);
+         smallSizeStyle.Add(iconOnlyStyle);
+      }
       Add(smallSizeStyle);
    }
 
@@ -102,6 +117,7 @@ internal abstract class BaseButtonTheme : BaseControlTheme
             iconStyle.Add(PathIcon.HeightProperty, GlobalResourceKey.IconSize);
             middleSizeStyle.Add(iconStyle);
          }
+         
          Add(middleSizeStyle);
       
          var smallSizeStyle = new Style(selector => selector.Nesting().PropertyEquals(Button.SizeTypeProperty, SizeType.Small));
@@ -113,8 +129,6 @@ internal abstract class BaseButtonTheme : BaseControlTheme
          }
          Add(smallSizeStyle);
       }
-      
-      
       
       // icon only
       var iconOnlyStyle = new Style(selector => selector.Nesting().Class(Button.IconOnlyPC));

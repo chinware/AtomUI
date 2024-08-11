@@ -1,6 +1,5 @@
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.TokenSystem;
-using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Media;
 
@@ -211,6 +210,25 @@ internal class ButtonToken : AbstractControlDesignToken
    /// </summary>
    public double ContentLineHeightSM { get; set; } = double.NaN;
 
+   #region 内部 Token 定义
+
+   /// <summary>
+   /// IconOnly 按钮内间距
+   /// </summary>
+   public Thickness IconOnyPadding { get; set; }
+
+   /// <summary>
+   /// IconOnly 大号按钮内间距
+   /// </summary>
+   public Thickness IconOnyPaddingLG { get; set; }
+
+   /// <summary>
+   /// IconOnly 小号按钮内间距
+   /// </summary>
+   public Thickness IconOnyPaddingSM { get; set; }
+
+   #endregion
+
    public ButtonToken()
       : base(ID)
    {
@@ -311,5 +329,9 @@ internal class ButtonToken : AbstractControlDesignToken
       IconSizeLG = _globalToken.IconSize;
 
       IconMargin = new Thickness(0, 0, _globalToken.PaddingXXS, 0);
+
+      IconOnyPadding = new Thickness(Math.Max((controlHeight - ContentLineHeight) / 2 - lineWidth, 0));
+      IconOnyPaddingLG = new Thickness(Math.Max((controlHeightLG - ContentLineHeightLG) / 2 - lineWidth, 0));
+      IconOnyPaddingSM = new Thickness(Math.Max((controlHeightSM - ContentLineHeightSM) / 2 - lineWidth, 0));
    }
 }

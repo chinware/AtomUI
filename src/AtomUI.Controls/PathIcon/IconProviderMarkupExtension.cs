@@ -42,21 +42,21 @@ public class IconProvider : MarkupExtension
          Kind = Kind,
          PackageProvider = PackageProvider,
       };
-      icon.SetValue(PathIcon.AnimationProperty, Animation, BindingPriority.Template);
-      icon.SetValue(PathIcon.NormalFilledBrushProperty, NormalFilledColor, BindingPriority.Template);
-      icon.SetValue(PathIcon.ActiveFilledBrushProperty, ActiveFilledColor, BindingPriority.Template);
-      icon.SetValue(PathIcon.SelectedFilledBrushProperty, SelectedFilledColor, BindingPriority.Template);
-      icon.SetValue(PathIcon.DisabledFilledBrushProperty, DisabledFilledColor, BindingPriority.Template);
-      icon.SetValue(PathIcon.PrimaryFilledBrushProperty, SelectedFilledColor, BindingPriority.Template);
-      icon.SetValue(PathIcon.DisabledFilledBrushProperty, PrimaryFilledColor, BindingPriority.Template);
-      icon.SetValue(PathIcon.SecondaryFilledBrushProperty, SecondaryFilledColor, BindingPriority.Template);
+      icon.SetCurrentValue(PathIcon.AnimationProperty, Animation);
+      icon.SetCurrentValue(PathIcon.NormalFilledBrushProperty, NormalFilledColor);
+      icon.SetCurrentValue(PathIcon.ActiveFilledBrushProperty, ActiveFilledColor);
+      icon.SetCurrentValue(PathIcon.SelectedFilledBrushProperty, SelectedFilledColor);
+      icon.SetCurrentValue(PathIcon.DisabledFilledBrushProperty, DisabledFilledColor);
+      icon.SetCurrentValue(PathIcon.PrimaryFilledBrushProperty, SelectedFilledColor);
+      icon.SetCurrentValue(PathIcon.DisabledFilledBrushProperty, PrimaryFilledColor);
+      icon.SetCurrentValue(PathIcon.SecondaryFilledBrushProperty, SecondaryFilledColor);
 
       if (!double.IsNaN(Width)) {
-         icon.SetValue(PathIcon.WidthProperty, Width, BindingPriority.Template);
+         icon.SetCurrentValue(PathIcon.WidthProperty, Width);
       }
 
       if (!double.IsNaN(Height)) {
-         icon.SetValue(PathIcon.HeightProperty, Height, BindingPriority.Template);
+         icon.SetCurrentValue(PathIcon.HeightProperty, Height);
       }
       return icon;
    }

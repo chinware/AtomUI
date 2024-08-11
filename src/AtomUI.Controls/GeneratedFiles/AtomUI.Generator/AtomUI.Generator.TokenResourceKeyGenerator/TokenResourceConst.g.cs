@@ -85,6 +85,9 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey ContentLineHeight = new TokenResourceKey("Button.ContentLineHeight");
         public static readonly TokenResourceKey ContentLineHeightLG = new TokenResourceKey("Button.ContentLineHeightLG");
         public static readonly TokenResourceKey ContentLineHeightSM = new TokenResourceKey("Button.ContentLineHeightSM");
+        public static readonly TokenResourceKey IconOnyPadding = new TokenResourceKey("Button.IconOnyPadding");
+        public static readonly TokenResourceKey IconOnyPaddingLG = new TokenResourceKey("Button.IconOnyPaddingLG");
+        public static readonly TokenResourceKey IconOnyPaddingSM = new TokenResourceKey("Button.IconOnyPaddingSM");
     }
 
     public static class CheckBoxResourceKey
