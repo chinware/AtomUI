@@ -12,6 +12,7 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
+using Avalonia.Rendering;
 
 namespace AtomUI.Controls;
 
@@ -34,10 +35,14 @@ public enum ButtonShape
 }
 // TODO 目前不能动态切换 ButtonType
 
-[PseudoClasses(IconOnlyPC)]
-public class Button : AvaloniaButton, ISizeTypeAware, IControlCustomStyle, IWaveAdornerInfoProvider
+[PseudoClasses(IconOnlyPC, LoadingPC)]
+public class Button : AvaloniaButton, 
+                      ISizeTypeAware,
+                      IControlCustomStyle, 
+                      IWaveAdornerInfoProvider
 {
    public const string IconOnlyPC = ":icononly";
+   public const string LoadingPC  = ":loading";
    
    #region 公共属性定义
 
@@ -52,6 +57,9 @@ public class Button : AvaloniaButton, ISizeTypeAware, IControlCustomStyle, IWave
 
    public static readonly StyledProperty<bool> IsGhostProperty =
       AvaloniaProperty.Register<Button, bool>(nameof(IsGhost), false);
+   
+   public static readonly StyledProperty<bool> IsLoadingProperty =
+      AvaloniaProperty.Register<Button, bool>(nameof(IsLoading), false);
 
    public static readonly StyledProperty<ButtonSizeType> SizeTypeProperty =
       AvaloniaProperty.Register<Button, ButtonSizeType>(nameof(SizeType), ButtonSizeType.Middle);
@@ -89,6 +97,12 @@ public class Button : AvaloniaButton, ISizeTypeAware, IControlCustomStyle, IWave
       set => SetValue(IsGhostProperty, value);
    }
 
+   public bool IsLoading
+   {
+      get => GetValue(IsLoadingProperty);
+      set => SetValue(IsLoadingProperty, value);
+   }
+   
    public ButtonSizeType SizeType
    {
       get => GetValue(SizeTypeProperty);
@@ -357,6 +371,7 @@ public class Button : AvaloniaButton, ISizeTypeAware, IControlCustomStyle, IWave
       ApplyShapeStyleConfig();
       SetupIcon();
       ApplyIconModeStyleConfig();
+      UpdatePseudoClasses();
    }
 
    // TODO 针对 primary 的是否是 ghost 没有完成
@@ -365,7 +380,7 @@ public class Button : AvaloniaButton, ISizeTypeAware, IControlCustomStyle, IWave
       if (Icon is not null) {
          if (_stackPanel is not null) {
             UIStructureUtils.SetTemplateParent(Icon, this);
-            BindUtils.RelayBind(this, IsIconVisibleProperty, Icon, PathIcon.IsVisibleProperty);
+            Icon.SetCurrentValue(PathIcon.NameProperty, BaseButtonTheme.ButtonIconPart);
             _stackPanel.Children.Insert(0, Icon);
          }
       }
@@ -398,8 +413,8 @@ public class Button : AvaloniaButton, ISizeTypeAware, IControlCustomStyle, IWave
          _customStyle.CollectStyleState();
          ApplyIconModeStyleConfig();
          if (e.Property == IsPressedProperty) {
-            if (_styleState.HasFlag(ControlStyleState.Raised) && (ButtonType == ButtonType.Primary ||
-                                                                  ButtonType == ButtonType.Default)) {
+            if (!IsLoading && _styleState.HasFlag(ControlStyleState.Raised) && (ButtonType == ButtonType.Primary ||
+                   ButtonType == ButtonType.Default)) {
                WaveType waveType = default;
                if (Shape == ButtonShape.Default) {
                   waveType = WaveType.RoundRectWave;
@@ -427,7 +442,9 @@ public class Button : AvaloniaButton, ISizeTypeAware, IControlCustomStyle, IWave
          if (VisualRoot is not null) {
             SetupControlTheme();
          }
-      } else if (e.Property == ContentProperty || e.Property == TextProperty) {
+      } else if (e.Property == ContentProperty || 
+                 e.Property == TextProperty ||
+                 e.Property == IsLoadingProperty) {
          UpdatePseudoClasses();
       }
 
@@ -437,6 +454,7 @@ public class Button : AvaloniaButton, ISizeTypeAware, IControlCustomStyle, IWave
             var newValue = e.GetNewValue<PathIcon?>();
             if (oldValue is not null) {
                UIStructureUtils.SetTemplateParent(oldValue, null);
+               oldValue.ClearValue(PathIcon.NameProperty);
                _stackPanel!.Children.Remove(oldValue);
             }
 
@@ -482,7 +500,9 @@ public class Button : AvaloniaButton, ISizeTypeAware, IControlCustomStyle, IWave
    private void UpdatePseudoClasses()
    {
       PseudoClasses.Set(IconOnlyPC, Icon is not null && Text is null);
+      PseudoClasses.Set(LoadingPC, IsLoading);
    }
    
    #endregion
+   
 }

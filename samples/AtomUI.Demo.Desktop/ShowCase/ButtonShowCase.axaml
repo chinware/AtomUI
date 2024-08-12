@@ -91,40 +91,58 @@ If a large or small button is desired, set the size property to either large or 
                                  Icon="{atom:IconProvider Kind=SearchOutlined}">
                         Search
                     </atom:Button>
-        
+
                     <atom:Button ButtonType="Default" Shape="Circle" Icon="{atom:IconProvider Kind=SearchOutlined}"/>
                     <atom:Button ButtonType="Default" Shape="Round" Icon="{atom:IconProvider Kind=SearchOutlined}">
                         Search
                     </atom:Button>
-        
+
                     <atom:Button ButtonType="Text" Shape="Default" Icon="{atom:IconProvider Kind=SearchOutlined}">
                         Search
                     </atom:Button>
-        
+
                     <atom:Button ButtonType="Link" Shape="Default" Icon="{atom:IconProvider Kind=SearchOutlined}">
                         Search
                     </atom:Button>
-        
+
                 </WrapPanel>
                 <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal">
                     <atom:Button ButtonType="Primary" IsDanger="True" Icon="{atom:IconProvider Kind=SearchOutlined}">
                         Search
                     </atom:Button>
-        
+
                     <atom:Button ButtonType="Default" Shape="Round" IsDanger="True" Icon="{atom:IconProvider Kind=SearchOutlined}">
                         Search
                     </atom:Button>
-        
+
                     <atom:Button ButtonType="Text" Shape="Default" IsDanger="True" Icon="{atom:IconProvider Kind=SearchOutlined}">
                         Search
                     </atom:Button>
-        
+
                     <atom:Button ButtonType="Link" Shape="Default" IsDanger="True" Icon="{atom:IconProvider Kind=SearchOutlined}">
                         Search
                     </atom:Button>
                 </WrapPanel>
             </StackPanel>
+
+        </showcase:ShowCaseItem>
+
+        <showcase:ShowCaseItem
+            Title="Loading"
+            Description="A loading indicator can be added to a button by setting the loading property on the Button.">
+            <StackPanel HorizontalAlignment="Stretch" Orientation="Vertical" Margin="10">
+                <WrapPanel>
+                    <atom:Button ButtonType="Primary" IsLoading="True">Loading</atom:Button>
+                    <atom:Button ButtonType="Primary" SizeType="Small" IsLoading="True">Loading</atom:Button>
+                    <atom:Button ButtonType="Primary" IsLoading="True" Icon="{atom:IconProvider Kind=PoweroffOutlined}"/>
+                </WrapPanel>
+                <WrapPanel>
+                    <atom:Button ButtonType="Primary" Name="LoadingBtn1">Click me!</atom:Button>
+                    <atom:Button ButtonType="Primary" Name="LoadingBtn2" Icon="{atom:IconProvider Kind=PoweroffOutlined}">Click me!</atom:Button>
+                    <atom:Button ButtonType="Primary" Name="LoadingBtn3" Icon="{atom:IconProvider Kind=PoweroffOutlined}"/>
+                </WrapPanel>
         
+            </StackPanel>
         </showcase:ShowCaseItem>
 
         <showcase:ShowCaseItem

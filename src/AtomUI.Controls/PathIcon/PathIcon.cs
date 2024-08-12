@@ -1,8 +1,11 @@
 ﻿using AtomUI.Icon;
+using AtomUI.Media;
+using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Layout;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Reactive;
 using Avalonia.Rendering;
@@ -48,17 +51,13 @@ public sealed class PathIcon : Control, ICustomHitTest
    public static readonly StyledProperty<IBrush?> SecondaryFilledBrushProperty =
       AvaloniaProperty.Register<PathIcon, IBrush?>(
          nameof(SecondaryFilledBrush));
+   
+   public static readonly StyledProperty<TimeSpan> LoadingAnimationDurationProperty = 
+      AvaloniaProperty.Register<PathIcon, TimeSpan>(
+         nameof(LoadingAnimationDuration), TimeSpan.FromSeconds(1));
 
    public static readonly StyledProperty<IconMode> IconModeProperty = AvaloniaProperty.Register<PathIcon, IconMode>(
       nameof(IconMode));
-
-   private Animation? _animation;
-   private CancellationTokenSource? _animationCancellationTokenSource;
-   private WeakReference<IIconPackageProvider>? _iconPackageRef;
-   private List<Matrix> _transforms;
-   private List<Geometry> _sourceGeometriesData;
-   private IconInfo? _iconInfo;
-   private Rect _viewBox;
 
    public string Kind
    {
@@ -107,6 +106,12 @@ public sealed class PathIcon : Control, ICustomHitTest
       get => GetValue(SecondaryFilledBrushProperty);
       set => SetValue(SecondaryFilledBrushProperty, value);
    }
+   
+   public TimeSpan LoadingAnimationDuration
+   {
+      get => GetValue(LoadingAnimationDurationProperty);
+      set => SetValue(LoadingAnimationDurationProperty, value);
+   }
 
    /// <summary>
    /// PathIcon 的模式，只对 Outlined 和 Filled 类型有效
@@ -138,6 +143,28 @@ public sealed class PathIcon : Control, ICustomHitTest
       set => SetValue(AnimationProperty, value);
    }
 
+   #region 内部属性定义
+
+   internal static readonly StyledProperty<double> AngleAnimationRotateProperty =
+      AvaloniaProperty.Register<PathIcon, double>(
+         nameof(AngleAnimationRotate));
+   
+   internal double AngleAnimationRotate
+   {
+      get => GetValue(AngleAnimationRotateProperty);
+      set => SetValue(AngleAnimationRotateProperty, value);
+   }
+
+   #endregion
+   
+   private Animation? _animation;
+   private CancellationTokenSource? _animationCancellationTokenSource;
+   private WeakReference<IIconPackageProvider>? _iconPackageRef;
+   private List<Matrix> _transforms;
+   private List<Geometry> _sourceGeometriesData;
+   private IconInfo? _iconInfo;
+   private Rect _viewBox;
+
    static PathIcon()
    {
       AffectsGeometry(KindProperty, PackageProviderProperty);
@@ -154,21 +181,17 @@ public sealed class PathIcon : Control, ICustomHitTest
    {
       var rotateTransform = new RotateTransform();
       RenderTransform = rotateTransform;
-      AttachedToVisualTree += HandleAttachedToVisualTree;
-      DetachedFromVisualTree += HandleDetachedFromVisualTree;
       _sourceGeometriesData = new List<Geometry>();
       _transforms = new List<Matrix>();
    }
 
    private void SetupTransitions()
    {
-      var transitions = new Transitions();
-      transitions.Add(new BrushTransition()
-      {
-         Property = FilledBrushProperty,
-         Duration = TimeSpan.FromMilliseconds(300)
-      });
-      Transitions = transitions;
+      if (Transitions is null) {
+         var transitions = new Transitions();
+         transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(FilledBrushProperty));
+         Transitions = transitions;
+      }
    }
 
    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -179,34 +202,6 @@ public sealed class PathIcon : Control, ICustomHitTest
          if (VisualRoot is not null) {
             BuildSourceRenderData();
          }
-      } else if (change.Property == AnimationProperty) {
-         if (Animation == IconAnimation.Spin || Animation == IconAnimation.Pulse) {
-            _animation = new Animation
-            {
-               Duration = new TimeSpan(0, 0, 2),
-               IterationCount = IterationCount.Infinite,
-               Children =
-               {
-                  new KeyFrame
-                  {
-                     Cue = new Cue(0d),
-                     Setters = { new Setter(RotateTransform.AngleProperty, 0) }
-                  },
-                  new KeyFrame
-                  {
-                     Cue = new Cue(1d),
-                     Setters = { new Setter(RotateTransform.AngleProperty, 360) }
-                  }
-               }
-            };
-            if (Animation == IconAnimation.Pulse) {
-               _animation.Easing = new PulseEasing();
-            }
-         } else if (_animation is not null) {
-            _animationCancellationTokenSource?.Cancel();
-            _animation = null;
-            _animationCancellationTokenSource = null;
-         }
       } else if (change.Property == NormalFilledBrushProperty ||
                  change.Property == ActiveFilledBrushProperty ||
                  change.Property == SelectedFilledBrushProperty ||
@@ -215,6 +210,52 @@ public sealed class PathIcon : Control, ICustomHitTest
                  change.Property == SecondaryFilledBrushProperty ||
                  change.Property == IconModeProperty) {
          SetupFilledBrush();
+      } else if (change.Property == AngleAnimationRotateProperty) {
+         SetCurrentValue(RenderTransformProperty, new RotateTransform(AngleAnimationRotate));
+      }
+
+      if (VisualRoot is not null) { 
+         if (change.Property == AnimationProperty) {
+            SetupRotateAnimation();
+         }
+      }
+   }
+
+   private void SetupRotateAnimation()
+   {
+      if (_animation is not null) {
+         _animationCancellationTokenSource?.Cancel();
+         _animation = null;
+         _animationCancellationTokenSource = null;
+      }
+         
+      if (Animation == IconAnimation.Spin || Animation == IconAnimation.Pulse) {
+         _animation = new Animation
+         {
+            Duration = LoadingAnimationDuration,
+            IterationCount = new IterationCount(UInt64.MaxValue),
+            Children =
+            {
+               new KeyFrame
+               {
+                  Cue = new Cue(0d),
+                  Setters = { new Setter(PathIcon.AngleAnimationRotateProperty, 0d) }
+               },
+               new KeyFrame
+               {
+                  Cue = new Cue(1d),
+                  Setters = { new Setter(PathIcon.AngleAnimationRotateProperty, 360d) }
+               }
+            }
+         };
+         if (Animation == IconAnimation.Pulse) {
+            _animation.Easing = new PulseEasing();
+         }
+         
+         if (VisualRoot is not null) {
+            _animationCancellationTokenSource = new CancellationTokenSource();
+            _animation.RunAsync(this, _animationCancellationTokenSource.Token);
+         }
       }
    }
 
@@ -363,6 +404,13 @@ public sealed class PathIcon : Control, ICustomHitTest
          }
       }
    }
+   
+   protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+   {
+      base.OnAttachedToLogicalTree(e);
+      SetupTransitions();
+      SetupRotateAnimation();
+   }
 
    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
    {
@@ -371,9 +419,16 @@ public sealed class PathIcon : Control, ICustomHitTest
          BuildSourceRenderData();
          SetupFilledBrush();
       }
-      if (Transitions is null) {
-         SetupTransitions();
+      if (_animation is not null && _animationCancellationTokenSource is null) {
+         _animationCancellationTokenSource = new CancellationTokenSource();
+         _animation.RunAsync(this, _animationCancellationTokenSource.Token);
       }
+   }
+
+   protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+   {
+      base.OnDetachedFromVisualTree(e);
+      _animationCancellationTokenSource?.Cancel();
    }
 
    protected override Size MeasureOverride(Size availableSize)
@@ -408,19 +463,6 @@ public sealed class PathIcon : Control, ICustomHitTest
       }
 
       return default;
-   }
-
-   private async void HandleAttachedToVisualTree(object? sender, VisualTreeAttachmentEventArgs eventArgs)
-   {
-      if (_animation is not null) {
-         _animationCancellationTokenSource = new CancellationTokenSource();
-         await _animation.RunAsync(this, _animationCancellationTokenSource.Token);
-      }
-   }
-
-   private void HandleDetachedFromVisualTree(object? sender, VisualTreeAttachmentEventArgs eventArgs)
-   {
-      _animationCancellationTokenSource?.Cancel();
    }
 
    public sealed override void Render(DrawingContext context)

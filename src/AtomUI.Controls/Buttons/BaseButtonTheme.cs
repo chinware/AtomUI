@@ -1,19 +1,21 @@
-﻿using AtomUI.Theme;
+﻿using AtomUI.Icon;
+using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Layout;
-using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
 internal abstract class BaseButtonTheme : BaseControlTheme
 {
-   public const string LabelPart = "PART_Label";
-   public const string StackPanelPart = "PART_StackPanel";
+   public const string LabelPart       = "PART_Label";
+   public const string StackPanelPart  = "PART_StackPanel";
+   public const string LoadingIconPart = "PART_LoadingIcon";
+   public const string ButtonIconPart  = "PART_ButtonIcon";
    
    public BaseButtonTheme(Type targetType) : base(targetType) {}
 
@@ -29,7 +31,15 @@ internal abstract class BaseButtonTheme : BaseControlTheme
             HorizontalContentAlignment = HorizontalAlignment.Center,
             VerticalAlignment = VerticalAlignment.Center
          };
+
+         var loadingIcon = new PathIcon()
+         {
+            Kind = "LoadingOutlined",
+            Name = LoadingIconPart
+         };
+         
          CreateTemplateParentBinding(label, Label.ContentProperty, Button.TextProperty);
+         
          label.RegisterInNameScope(scope);
          var stackPanel = new StackPanel()
          {
@@ -41,6 +51,7 @@ internal abstract class BaseButtonTheme : BaseControlTheme
             ClipToBounds = true
          };
          stackPanel.RegisterInNameScope(scope);
+         stackPanel.Children.Add(loadingIcon);
          stackPanel.Children.Add(label);
          return stackPanel;
       });
@@ -54,8 +65,10 @@ internal abstract class BaseButtonTheme : BaseControlTheme
       this.Add(Button.DefaultShadowProperty, ButtonResourceKey.DefaultShadow);
       this.Add(Button.PrimaryShadowProperty, ButtonResourceKey.PrimaryShadow);
       this.Add(Button.DangerShadowProperty, ButtonResourceKey.DangerShadow);
+      
       BuildSizeStyle();
       BuildIconSizeStyle();
+      BuildLoadingStyle();
    }
    
    private void BuildSizeStyle()
@@ -106,6 +119,7 @@ internal abstract class BaseButtonTheme : BaseControlTheme
             var iconStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
             iconStyle.Add(PathIcon.WidthProperty, GlobalResourceKey.IconSizeLG);
             iconStyle.Add(PathIcon.HeightProperty, GlobalResourceKey.IconSizeLG);
+            iconStyle.Add(PathIcon.MarginProperty, ButtonResourceKey.IconMargin);
             largeSizeStyle.Add(iconStyle);
          }
          Add(largeSizeStyle);
@@ -115,6 +129,7 @@ internal abstract class BaseButtonTheme : BaseControlTheme
             var iconStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
             iconStyle.Add(PathIcon.WidthProperty, GlobalResourceKey.IconSize);
             iconStyle.Add(PathIcon.HeightProperty, GlobalResourceKey.IconSize);
+            iconStyle.Add(PathIcon.MarginProperty, ButtonResourceKey.IconMargin);
             middleSizeStyle.Add(iconStyle);
          }
          
@@ -125,6 +140,7 @@ internal abstract class BaseButtonTheme : BaseControlTheme
             var iconStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
             iconStyle.Add(PathIcon.WidthProperty, GlobalResourceKey.IconSizeSM);
             iconStyle.Add(PathIcon.HeightProperty, GlobalResourceKey.IconSizeSM);
+            iconStyle.Add(PathIcon.MarginProperty, ButtonResourceKey.IconMargin);
             smallSizeStyle.Add(iconStyle);
          }
          Add(smallSizeStyle);
@@ -132,6 +148,12 @@ internal abstract class BaseButtonTheme : BaseControlTheme
       
       // icon only
       var iconOnlyStyle = new Style(selector => selector.Nesting().Class(Button.IconOnlyPC));
+      {
+         // Icon only 状态没有 margin
+         var iconStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
+         iconStyle.Add(PathIcon.MarginProperty, new Thickness());
+         iconOnlyStyle.Add(iconStyle);
+      }
       {
          var largeSizeStyle = new Style(selector => selector.Nesting().PropertyEquals(Button.SizeTypeProperty, SizeType.Large));
          {
@@ -170,5 +192,33 @@ internal abstract class BaseButtonTheme : BaseControlTheme
       }
       
       Add(notIconOnyStyle);
+   }
+
+   private void BuildLoadingStyle()
+   {
+      // 正常状态
+      {
+         var buttonIconStyle = new Style(selector => selector.Nesting().Template().Name(ButtonIconPart));
+         buttonIconStyle.Add(PathIcon.IsVisibleProperty, true);
+         Add(buttonIconStyle);
+
+         var loadingIconStyle = new Style(selector => selector.Nesting().Template().Name(LoadingIconPart));
+         loadingIconStyle.Add(PathIcon.IsVisibleProperty, false);
+         Add(loadingIconStyle);
+      }
+      // loading 状态
+      var loadingStyle = new Style(selector => selector.Nesting().Class(Button.LoadingPC));
+      {
+         var buttonIconStyle = new Style(selector => selector.Nesting().Template().Name(ButtonIconPart));
+         buttonIconStyle.Add(PathIcon.IsVisibleProperty, false);
+         loadingStyle.Add(buttonIconStyle);
+
+         var loadingIconStyle = new Style(selector => selector.Nesting().Template().Name(LoadingIconPart));
+         loadingIconStyle.Add(PathIcon.IsVisibleProperty, true);
+         loadingIconStyle.Add(PathIcon.AnimationProperty, IconAnimation.Spin);
+         loadingStyle.Add(loadingIconStyle);
+      }
+      loadingStyle.Add(Button.OpacityProperty, GlobalResourceKey.OpacityLoading);
+      Add(loadingStyle);
    }
 }
