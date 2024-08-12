@@ -18,6 +18,12 @@ public class ToggleIconButton : ToggleButton
    public static readonly StyledProperty<PathIcon?> UnCheckedIconProperty
       = AvaloniaProperty.Register<ToggleIconButton, PathIcon?>(nameof(UnCheckedIcon));
    
+   public static readonly StyledProperty<double> IconWidthProperty
+      = AvaloniaProperty.Register<ToggleIconButton, double>(nameof(IconWidth));
+   
+   public static readonly StyledProperty<double> IconHeightProperty
+      = AvaloniaProperty.Register<ToggleIconButton, double>(nameof(IconHeight));
+   
    public PathIcon? CheckedIcon
    {
       get => GetValue(CheckedIconProperty);
@@ -28,6 +34,18 @@ public class ToggleIconButton : ToggleButton
    {
       get => GetValue(UnCheckedIconProperty);
       set => SetValue(UnCheckedIconProperty, value);
+   }
+      
+   public double IconWidth
+   {
+      get => GetValue(IconWidthProperty);
+      set => SetValue(IconWidthProperty, value);
+   }
+   
+   public double IconHeight
+   {
+      get => GetValue(IconHeightProperty);
+      set => SetValue(IconHeightProperty, value);
    }
 
    #endregion
@@ -49,7 +67,6 @@ public class ToggleIconButton : ToggleButton
    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
    {
       base.OnApplyTemplate(e);
-      SetupStatusIcon();
       if (CheckedIcon is not null) {
          CheckedIcon.SetCurrentValue(PathIcon.HorizontalAlignmentProperty, HorizontalAlignment.Center);
          CheckedIcon.SetCurrentValue(PathIcon.VerticalAlignmentProperty, VerticalAlignment.Center);
@@ -60,6 +77,7 @@ public class ToggleIconButton : ToggleButton
          UnCheckedIcon.SetCurrentValue(PathIcon.VerticalAlignmentProperty, VerticalAlignment.Center);
          UIStructureUtils.SetTemplateParent(UnCheckedIcon, this);
       }
+      SetupStatusIcon();
    }
 
    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -88,7 +106,7 @@ public class ToggleIconButton : ToggleButton
       }
    }
 
-   private void SetupStatusIcon()
+   internal virtual void SetupStatusIcon()
    {
       if (Presenter is not null) {
          if (IsChecked.HasValue && IsChecked.Value) {
