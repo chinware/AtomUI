@@ -215,7 +215,7 @@ internal abstract class BaseButtonTheme : BaseControlTheme
 
          var loadingIconStyle = new Style(selector => selector.Nesting().Template().Name(LoadingIconPart));
          loadingIconStyle.Add(PathIcon.IsVisibleProperty, true);
-         loadingIconStyle.Add(PathIcon.AnimationProperty, IconAnimation.Spin);
+         loadingIconStyle.Add(PathIcon.LoadingAnimationProperty, IconAnimation.Spin);
          loadingStyle.Add(loadingIconStyle);
       }
       loadingStyle.Add(Button.OpacityProperty, GlobalResourceKey.OpacityLoading);

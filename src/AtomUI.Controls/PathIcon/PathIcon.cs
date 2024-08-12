@@ -18,9 +18,9 @@ public sealed class PathIcon : Control, ICustomHitTest
    public static readonly StyledProperty<string> KindProperty = AvaloniaProperty.Register<PathIcon, string>(
       nameof(Kind), string.Empty);
 
-   public static readonly StyledProperty<IconAnimation> AnimationProperty =
+   public static readonly StyledProperty<IconAnimation> LoadingAnimationProperty =
       AvaloniaProperty.Register<PathIcon, IconAnimation>(
-         nameof(Animation));
+         nameof(LoadingAnimation));
 
    public static readonly StyledProperty<string?> PackageProviderProperty =
       AvaloniaProperty.Register<PathIcon, string?>(
@@ -137,10 +137,10 @@ public sealed class PathIcon : Control, ICustomHitTest
 
    public IconThemeType ThemeType => _iconInfo?.ThemeType ?? IconThemeType.Filled;
 
-   public IconAnimation Animation
+   public IconAnimation LoadingAnimation
    {
-      get => GetValue(AnimationProperty);
-      set => SetValue(AnimationProperty, value);
+      get => GetValue(LoadingAnimationProperty);
+      set => SetValue(LoadingAnimationProperty, value);
    }
 
    #region 内部属性定义
@@ -215,7 +215,7 @@ public sealed class PathIcon : Control, ICustomHitTest
       }
 
       if (VisualRoot is not null) { 
-         if (change.Property == AnimationProperty) {
+         if (change.Property == LoadingAnimationProperty) {
             SetupRotateAnimation();
          }
       }
@@ -229,7 +229,7 @@ public sealed class PathIcon : Control, ICustomHitTest
          _animationCancellationTokenSource = null;
       }
          
-      if (Animation == IconAnimation.Spin || Animation == IconAnimation.Pulse) {
+      if (LoadingAnimation == IconAnimation.Spin || LoadingAnimation == IconAnimation.Pulse) {
          _animation = new Animation
          {
             Duration = LoadingAnimationDuration,
@@ -248,7 +248,7 @@ public sealed class PathIcon : Control, ICustomHitTest
                }
             }
          };
-         if (Animation == IconAnimation.Pulse) {
+         if (LoadingAnimation == IconAnimation.Pulse) {
             _animation.Easing = new PulseEasing();
          }
          

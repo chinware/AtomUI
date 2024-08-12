@@ -1,3 +1,4 @@
+using AtomUI.Data;
 using AtomUI.Icon;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -13,16 +14,38 @@ using AvaloniaButton = Avalonia.Controls.Button;
 
 public class IconButton : AvaloniaButton, ICustomHitTest
 {
+   #region 公共属性定义
+
    public static readonly StyledProperty<PathIcon?> IconProperty
       = AvaloniaProperty.Register<IconButton, PathIcon?>(nameof(Icon));
-   
-   private ControlStyleState _styleState;
-   
+
+   public static readonly StyledProperty<IconAnimation> LoadingAnimationProperty =
+      PathIcon.LoadingAnimationProperty.AddOwner<IconButton>();
+
+   public static readonly StyledProperty<TimeSpan> LoadingAnimationDurationProperty =
+      PathIcon.LoadingAnimationDurationProperty.AddOwner<IconButton>();
+
    public PathIcon? Icon
    {
       get => GetValue(IconProperty);
       set => SetValue(IconProperty, value);
    }
+
+   public IconAnimation LoadingAnimation
+   {
+      get => GetValue(LoadingAnimationProperty);
+      set => SetValue(LoadingAnimationProperty, value);
+   }
+
+   public TimeSpan LoadingAnimationDuration
+   {
+      get => GetValue(LoadingAnimationDurationProperty);
+      set => SetValue(LoadingAnimationDurationProperty, value);
+   }
+
+   #endregion
+
+   private ControlStyleState _styleState;
 
    static IconButton()
    {
@@ -33,15 +56,11 @@ public class IconButton : AvaloniaButton, ICustomHitTest
    {
       Cursor = new Cursor(StandardCursorType.Hand);
    }
-   
+
    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
    {
       base.OnApplyTemplate(e);
-      if (Icon is not null) {
-         Icon.SetCurrentValue(PathIcon.HorizontalAlignmentProperty, HorizontalAlignment.Center);
-         Icon.SetCurrentValue(PathIcon.VerticalAlignmentProperty, VerticalAlignment.Center);
-         Content = Icon;
-      }
+      SetupIcon();
       SetupIconMode();
    }
 
@@ -49,22 +68,33 @@ public class IconButton : AvaloniaButton, ICustomHitTest
    {
       base.OnPropertyChanged(e);
       if (VisualRoot is not null) {
-     
          if (e.Property == IconProperty) {
             var oldIcon = e.GetOldValue<PathIcon?>();
             if (oldIcon is not null) {
                ((ISetLogicalParent)oldIcon).SetParent(null);
             }
-            Content = e.GetNewValue<PathIcon?>();
+
+            SetupIcon();
          } else if (e.Property == IsPressedProperty ||
-                     e.Property == IsPointerOverProperty ||
-                     e.Property == IsEnabledProperty) {
+                    e.Property == IsPointerOverProperty ||
+                    e.Property == IsEnabledProperty) {
             SetupIconMode();
          }
       }
    }
 
-   protected void SetupIconMode()
+   private void SetupIcon()
+   {
+      if (Icon is not null) {
+         Icon.SetCurrentValue(PathIcon.HorizontalAlignmentProperty, HorizontalAlignment.Center);
+         Icon.SetCurrentValue(PathIcon.VerticalAlignmentProperty, VerticalAlignment.Center);
+         BindUtils.RelayBind(this, LoadingAnimationProperty, Icon, PathIcon.LoadingAnimationProperty);
+         BindUtils.RelayBind(this, LoadingAnimationDurationProperty, Icon, PathIcon.LoadingAnimationDurationProperty);
+         Content = Icon;
+      }
+   }
+
+   private void SetupIconMode()
    {
       CollectStyleState();
       if (Icon is not null) {
@@ -80,7 +110,7 @@ public class IconButton : AvaloniaButton, ICustomHitTest
          }
       }
    }
-   
+
    private void CollectStyleState()
    {
       ControlStateUtils.InitCommonState(this, ref _styleState);
@@ -90,7 +120,7 @@ public class IconButton : AvaloniaButton, ICustomHitTest
          _styleState |= ControlStyleState.Raised;
       }
    }
-   
+
    public bool HitTest(Point point)
    {
       return true;

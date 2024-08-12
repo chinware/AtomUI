@@ -42,7 +42,7 @@ public class IconProvider : MarkupExtension
          Kind = Kind,
          PackageProvider = PackageProvider,
       };
-      icon.SetCurrentValue(PathIcon.AnimationProperty, Animation);
+      icon.SetCurrentValue(PathIcon.LoadingAnimationProperty, Animation);
       icon.SetCurrentValue(PathIcon.NormalFilledBrushProperty, NormalFilledColor);
       icon.SetCurrentValue(PathIcon.ActiveFilledBrushProperty, ActiveFilledColor);
       icon.SetCurrentValue(PathIcon.SelectedFilledBrushProperty, SelectedFilledColor);
