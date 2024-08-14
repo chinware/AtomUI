@@ -19,6 +19,7 @@ internal class TreeViewItemTheme : BaseControlTheme
    public const string ItemsPresenterPart = "PART_ItemsPresenter";
    public const string ItemsLayoutPart = "PART_ItemsLayoutPart";
    public const string HeaderPresenterPart = "PART_HeaderPresenter";
+   public const string IconPresenterPart = "PART_IconPresenter";
    public const string NodeSwitcherButtonPart = "PART_NodeSwitcherButton";
 
    public TreeViewItemTheme()
@@ -93,6 +94,19 @@ internal class TreeViewItemTheme : BaseControlTheme
          treeItemLayout.Children.Add(checkbox);
          Grid.SetColumn(checkbox, 1);
 
+         var iconContentPresenter = new ContentPresenter()
+         {
+            Name = IconPresenterPart,
+            Cursor = new Cursor(StandardCursorType.Hand)
+         };
+         iconContentPresenter.RegisterInNameScope(scope);
+         CreateTemplateParentBinding(iconContentPresenter, ContentPresenter.ContentProperty, TreeViewItem.IconProperty);
+         CreateTemplateParentBinding(iconContentPresenter, ContentPresenter.IsEnabledProperty, TreeViewItem.IsEnabledProperty);
+         CreateTemplateParentBinding(iconContentPresenter, ContentPresenter.IsVisibleProperty, TreeViewItem.IconEffectiveVisibleProperty);
+         
+         treeItemLayout.Children.Add(iconContentPresenter);
+         Grid.SetColumn(iconContentPresenter, 2);
+
          var contentPresenter = new ContentPresenter()
          {
             Name = HeaderPresenterPart,
@@ -145,6 +159,13 @@ internal class TreeViewItemTheme : BaseControlTheme
       frameDecoratorStyle.Add(Border.MarginProperty, TreeViewResourceKey.TreeItemMargin);
       commonStyle.Add(frameDecoratorStyle);
       
+      // 节点 Icon 的大小
+      var treeItemIconStyle = new Style(selector => selector.Nesting().Template().Name(IconPresenterPart).Descendant().OfType<PathIcon>());
+      treeItemIconStyle.Add(PathIcon.WidthProperty, GlobalResourceKey.IconSize);
+      treeItemIconStyle.Add(PathIcon.HeightProperty, GlobalResourceKey.IconSize);
+      treeItemIconStyle.Add(PathIcon.MarginProperty, TreeViewResourceKey.TreeNodeIconMargin);
+      commonStyle.Add(treeItemIconStyle);
+      
       // 设置 NodeHoverMode 为 Block 的情况
       {
          var headerPresenterStyle = new Style(selector => selector.Nesting().Template().Name(HeaderPresenterPart));
@@ -193,6 +214,15 @@ internal class TreeViewItemTheme : BaseControlTheme
          switcherButtonStyle.Add(NodeSwitcherButton.CursorProperty, new Cursor(StandardCursorType.Hand));
          Add(switcherButtonStyle);
       }
+
+      var leafSwitcherButtonStyle = new Style(selector => selector.Nesting().PropertyEquals(TreeViewItem.IsLeafProperty, true));
+      {
+         var switcherButtonStyle = new Style(selector => selector.Nesting().Template().Name(NodeSwitcherButtonPart));
+         switcherButtonStyle.Add(NodeSwitcherButton.CursorProperty, new Cursor(StandardCursorType.Arrow));
+         leafSwitcherButtonStyle.Add(switcherButtonStyle);
+      }
+      Add(leafSwitcherButtonStyle);
+      
       var leafAndHideButtonStyle = new Style(selector => selector.Nesting().PropertyEquals(TreeViewItem.IsLeafProperty, true)
                                                             .PropertyEquals(TreeViewItem.IsShowLeafSwitcherProperty, false));
       {
@@ -201,6 +231,7 @@ internal class TreeViewItemTheme : BaseControlTheme
          leafAndHideButtonStyle.Add(switcherButtonStyle);
       }
       Add(leafAndHideButtonStyle);
+      
       var checkboxVisibleStyle = new Style(selector => selector.Nesting().PropertyEquals(TreeViewItem.IsCheckboxVisibleProperty, true));
       {
          var switcherButtonStyle = new Style(selector => selector.Nesting().Template().Name(NodeSwitcherButtonPart));

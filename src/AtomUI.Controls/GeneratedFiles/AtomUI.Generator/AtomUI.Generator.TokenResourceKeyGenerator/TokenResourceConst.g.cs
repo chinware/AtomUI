@@ -418,6 +418,7 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey TreeItemMargin = new TokenResourceKey("TreeView.TreeItemMargin");
         public static readonly TokenResourceKey TreeItemHeaderPadding = new TokenResourceKey("TreeView.TreeItemHeaderPadding");
         public static readonly TokenResourceKey TreeNodeSwitcherMargin = new TokenResourceKey("TreeView.TreeNodeSwitcherMargin");
+        public static readonly TokenResourceKey TreeNodeIconMargin = new TokenResourceKey("TreeView.TreeNodeIconMargin");
     }
 
     public static class CaptionButtonResourceKey

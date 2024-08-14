@@ -62,7 +62,7 @@ public class ToggleIconButton : ToggleButton
 
    public ToggleIconButton()
    {
-      Cursor = new Cursor(StandardCursorType.Hand);
+      SetCurrentValue(CursorProperty, new Cursor(StandardCursorType.Hand));
    }
 
    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -140,6 +140,11 @@ public class ToggleIconButton : ToggleButton
    }
 
    public bool HitTest(Point point)
+   {
+      return NotifyHistTest(point);
+   }
+
+   protected virtual bool NotifyHistTest(Point point)
    {
       return true;
    }

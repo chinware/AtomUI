@@ -122,6 +122,7 @@ public class TreeView : AvaloniaTreeView
          treeViewItem.OwnerTreeView = this;
          BindUtils.RelayBind(this, TreeView.NodeHoverModeProperty, treeViewItem, TreeViewItem.NodeHoverModeProperty);
          BindUtils.RelayBind(this, TreeView.IsShowLineProperty, treeViewItem, TreeViewItem.IsShowLineProperty);
+         BindUtils.RelayBind(this, TreeView.IsShowIconProperty, treeViewItem, TreeViewItem.IsShowIconProperty);
          BindUtils.RelayBind(this, TreeView.IsShowLeafSwitcherProperty, treeViewItem, TreeViewItem.IsShowLeafSwitcherProperty);
          BindUtils.RelayBind(this, TreeView.IsCheckableProperty, treeViewItem, TreeViewItem.IsCheckboxVisibleProperty);
       }

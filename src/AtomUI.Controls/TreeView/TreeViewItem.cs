@@ -99,6 +99,16 @@ public class TreeViewItem : AvaloniaTreeItem
                                                                        o => o.IsShowLine,
                                                                        (o, v) => o.IsShowLine = v);
    
+   internal static readonly DirectProperty<TreeViewItem, bool> IsShowIconProperty =
+      AvaloniaProperty.RegisterDirect<TreeViewItem, bool>(nameof(IsShowIcon),
+                                                          o => o.IsShowIcon,
+                                                          (o, v) => o.IsShowIcon = v);
+   
+   internal static readonly DirectProperty<TreeViewItem, bool> IconEffectiveVisibleProperty =
+      AvaloniaProperty.RegisterDirect<TreeViewItem, bool>(nameof(IconEffectiveVisible),
+                                                          o => o.IconEffectiveVisible,
+                                                          (o, v) => o.IconEffectiveVisible = v);
+   
    internal static readonly DirectProperty<TreeViewItem, bool> IsShowLeafSwitcherProperty =
       AvaloniaProperty.RegisterDirect<TreeViewItem, bool>(nameof(IsShowLeafSwitcher),
                                                           o => o.IsShowLeafSwitcher,
@@ -143,6 +153,22 @@ public class TreeViewItem : AvaloniaTreeItem
       get => _isShowLine;
       set => SetAndRaise(IsShowLineProperty, ref _isShowLine, value);
    }
+   
+   private bool _isShowIcon = true;
+
+   internal bool IsShowIcon
+   {
+      get => _isShowIcon;
+      set => SetAndRaise(IsShowIconProperty, ref _isShowIcon, value);
+   }
+   
+   private bool _iconEffectiveVisible = true;
+
+   internal bool IconEffectiveVisible
+   {
+      get => _iconEffectiveVisible;
+      set => SetAndRaise(IconEffectiveVisibleProperty, ref _iconEffectiveVisible, value);
+   }
 
    private bool _isShowLeafSwitcher;
    internal bool IsShowLeafSwitcher
@@ -184,6 +210,7 @@ public class TreeViewItem : AvaloniaTreeItem
    private bool _initialized;
    private ContentPresenter? _headerPresenter;
    private Border? _frameDecorator;
+   private ContentPresenter? _iconPresenter;
    private NodeSwitcherButton? _switcherButton;
    private Rect _effectiveBgRect;
    private readonly BorderRenderHelper _borderRenderHelper;
@@ -236,12 +263,23 @@ public class TreeViewItem : AvaloniaTreeItem
                } else {
                   OwnerTreeView?.UnCheckedSubTree(this);
                }
-            } 
+            }
          }
+      }
+
+      if (change.Property == IsShowIconProperty || change.Property == IconProperty) {
+         IconEffectiveVisible = IsShowIcon && Icon is not null;
       }
 
       if (change.Property == ItemCountProperty) {
          IsLeaf = ItemCount == 0;
+      } else if (change.Property == IconProperty) {
+         if (change.OldValue is PathIcon oldIcon) {
+            UIStructureUtils.SetTemplateParent(oldIcon, null);
+         }
+         if (change.NewValue is PathIcon newIcon) {
+            UIStructureUtils.SetTemplateParent(newIcon, this);
+         }
       }
    }
 
@@ -256,6 +294,7 @@ public class TreeViewItem : AvaloniaTreeItem
    {
       base.OnApplyTemplate(e);
       _headerPresenter = e.NameScope.Find<ContentPresenter>(TreeViewItemTheme.HeaderPresenterPart);
+      _iconPresenter = e.NameScope.Find<ContentPresenter>(TreeViewItemTheme.IconPresenterPart);
       _frameDecorator = e.NameScope.Find<Border>(TreeViewItemTheme.FrameDecoratorPart);
       _switcherButton = e.NameScope.Find<NodeSwitcherButton>(TreeViewItemTheme.NodeSwitcherButtonPart);
       
@@ -266,6 +305,11 @@ public class TreeViewItem : AvaloniaTreeItem
       if (_headerPresenter is not null) {
          _headerPresenter.PointerEntered += HandleHeaderPresenterEntered;
          _headerPresenter.PointerExited += HandleHeaderPresenterExited;
+      }
+
+      if (_iconPresenter is not null) {
+         _iconPresenter.PointerEntered += HandleHeaderPresenterEntered;
+         _iconPresenter.PointerExited += HandleHeaderPresenterExited;
       }
       IsLeaf = ItemCount == 0;
       SetNodeSwitcherIcons();
@@ -282,7 +326,11 @@ public class TreeViewItem : AvaloniaTreeItem
       var targetWidth = 0d;
       var targetHeight = 0d;
       if (NodeHoverMode == TreeItemHoverMode.Default || NodeHoverMode == TreeItemHoverMode.Block) {
-         if (_headerPresenter is not null) {
+         if (_iconPresenter is not null && _iconPresenter.IsVisible) {
+            offset = _iconPresenter.TranslatePoint(new Point(0, 0), this) ?? default;
+            targetWidth = _iconPresenter.Bounds.Width + _headerPresenter?.Bounds.Width ?? 0d;
+            targetHeight = _frameDecorator.Bounds.Height;
+         } else if (_headerPresenter is not null) {
             offset = _headerPresenter.TranslatePoint(new Point(0, 0), this) ?? default;
             targetWidth = _headerPresenter.Bounds.Width;
             targetHeight = _frameDecorator.Bounds.Height;

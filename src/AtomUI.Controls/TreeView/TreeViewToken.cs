@@ -56,6 +56,11 @@ internal class TreeViewToken : AbstractControlDesignToken
    /// </summary>
    public Thickness TreeNodeSwitcherMargin { get; set; }
    
+   /// <summary>
+   /// 树节点 Icon 边距
+   /// </summary>
+   public Thickness TreeNodeIconMargin { get; set; }
+   
    #endregion
 
    internal override void CalculateFromAlias()
@@ -68,9 +73,9 @@ internal class TreeViewToken : AbstractControlDesignToken
       DirectoryNodeSelectedColor = _globalToken.ColorTextLightSolid;
       DirectoryNodeSelectedBg = _globalToken.ColorToken.ColorPrimaryToken.ColorPrimary;
       
-      
       TreeItemMargin = new Thickness(0, 0, 0, _globalToken.PaddingXS / 2);
       TreeItemHeaderPadding = new Thickness(_globalToken.PaddingXS / 2, 0);
       TreeNodeSwitcherMargin = new Thickness(0, 0, _globalToken.PaddingXS / 2, 0);
+      TreeNodeIconMargin = new Thickness(_globalToken.PaddingXS / 2, 0, 0, 0);
    }
 }

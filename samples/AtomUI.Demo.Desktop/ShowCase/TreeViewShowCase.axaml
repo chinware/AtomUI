@@ -8,32 +8,32 @@
     xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
     mc:Ignorable="d">
     <showcase:ShowCasePanel>
-        <!-- <showcase:ShowCaseItem -->
-        <!--     Title="Basic" -->
-        <!--     Description="The most basic usage, tell you how to use checkable, selectable, disabled, defaultExpandKeys, and etc."> -->
-        <!--     <atom:TreeView IsCheckable="True" IsDefaultExpandAll="True"> -->
-        <!--         <atom:TreeViewItem Header="parent 1"> -->
-        <!--             <atom:TreeViewItem Header="parent 1-0"> -->
-        <!--                 <atom:TreeViewItem Header="leaf" IsCheckable="False" IsChecked="True" /> -->
-        <!--                 <atom:TreeViewItem Header="leaf" /> -->
-        <!--             </atom:TreeViewItem> -->
-        <!--             <atom:TreeViewItem Header="parent 1-1" IsChecked="True"> -->
-        <!--                 <atom:TreeViewItem Header="sss" /> -->
-        <!--             </atom:TreeViewItem> -->
-        <!--         </atom:TreeViewItem> -->
-        <!--     </atom:TreeView> -->
-        <!-- </showcase:ShowCaseItem> -->
-        <!-- -->
-        <!-- <showcase:ShowCaseItem -->
-        <!--     Title="Block Node" -->
-        <!--     Description="Block Node."> -->
-        <!--     <atom:TreeView IsCheckable="True" IsDefaultExpandAll="True" NodeHoverMode="Block"> -->
-        <!--         <atom:TreeViewItem Header="parent"> -->
-        <!--             <atom:TreeViewItem Header="child 1" IsEnabled="False" /> -->
-        <!--             <atom:TreeViewItem Header="child 2" IsCheckable="False" /> -->
-        <!--         </atom:TreeViewItem> -->
-        <!--     </atom:TreeView> -->
-        <!-- </showcase:ShowCaseItem> -->
+        <showcase:ShowCaseItem
+            Title="Basic"
+            Description="The most basic usage, tell you how to use checkable, selectable, disabled, defaultExpandKeys, and etc.">
+            <atom:TreeView IsCheckable="True" IsDefaultExpandAll="True">
+                <atom:TreeViewItem Header="parent 1">
+                    <atom:TreeViewItem Header="parent 1-0">
+                        <atom:TreeViewItem Header="leaf" IsCheckable="False" IsChecked="True" />
+                        <atom:TreeViewItem Header="leaf" />
+                    </atom:TreeViewItem>
+                    <atom:TreeViewItem Header="parent 1-1" IsChecked="True">
+                        <atom:TreeViewItem Header="sss" />
+                    </atom:TreeViewItem>
+                </atom:TreeViewItem>
+            </atom:TreeView>
+        </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="Block Node"
+            Description="Block Node.">
+            <atom:TreeView IsCheckable="True" IsDefaultExpandAll="True" NodeHoverMode="Block">
+                <atom:TreeViewItem Header="parent">
+                    <atom:TreeViewItem Header="child 1" IsEnabled="False" />
+                    <atom:TreeViewItem Header="child 2" IsCheckable="False" />
+                </atom:TreeViewItem>
+            </atom:TreeView>
+        </showcase:ShowCaseItem>
 
         <showcase:ShowCaseItem
             Title="Tree with line"
