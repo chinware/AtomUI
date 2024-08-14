@@ -1,10 +1,13 @@
 ﻿using AtomUI.Controls.Utils;
+using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
+using AtomUI.Theme.Utils;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
+using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
@@ -188,7 +191,9 @@ public class TreeViewItem : AvaloniaTreeItem
    static TreeViewItem()
    {
       AffectsRender<TreeViewItem>(EffectiveNodeCornerRadiusProperty,
-                                  EffectiveNodeBgProperty);
+                                  EffectiveNodeBgProperty,
+                                  IsShowLineProperty,
+                                  IsShowLeafSwitcherProperty);
    }
 
    public TreeViewItem()
@@ -289,15 +294,72 @@ public class TreeViewItem : AvaloniaTreeItem
 
    public override void Render(DrawingContext context)
    {
-      using var state = context.PushTransform(Matrix.CreateTranslation(_effectiveBgRect.X, 0));
-      _borderRenderHelper.Render(context,
-                                 _effectiveBgRect.Size,
-                                 new Thickness(),
-                                 EffectiveNodeCornerRadius,
-                                 BackgroundSizing.InnerBorderEdge,
-                                 EffectiveNodeBg,
-                                 null,
-                                 default);
+      {
+         using var state = context.PushTransform(Matrix.CreateTranslation(_effectiveBgRect.X, 0));
+         _borderRenderHelper.Render(context,
+                                    _effectiveBgRect.Size,
+                                    new Thickness(),
+                                    EffectiveNodeCornerRadius,
+                                    BackgroundSizing.InnerBorderEdge,
+                                    EffectiveNodeBg,
+                                    null,
+                                    default);
+      }
+      if (IsShowLine && (IsExpanded || IsLeaf)) {
+         RenderTreeNodeLine(context);
+      }
+   }
+
+   private void RenderTreeNodeLine(DrawingContext context)
+   {
+      if (_switcherButton is null) {
+         return;
+      }
+
+      var penWidth = BorderUtils.BuildRenderScaleAwareThickness(BorderThickness, VisualRoot?.RenderScaling ?? 1.0).Top;
+      using var state = context.PushRenderOptions(new RenderOptions
+      {
+         EdgeMode = EdgeMode.Aliased
+      });
+      
+      if (!IsLeaf) {
+         var switcherMiddleBottom = _switcherButton.TranslatePoint(new Point(_switcherButton.DesiredSize.Width / 2, _switcherButton.DesiredSize.Height), this) ?? default;
+         var blockStartPoint = new Point(switcherMiddleBottom.X, switcherMiddleBottom.Y);
+         var blockEndPoint = new Point(blockStartPoint.X, DesiredSize.Height);
+     
+         context.DrawLine(new Pen(BorderBrush, penWidth), blockStartPoint, blockEndPoint);
+      }
+      
+      // 画孩子线条
+      if (!IsShowLeafSwitcher && IsLeaf) {
+         var isLastChild = false;
+         if (Parent is TreeViewItem parentTreeItem) {
+            if (parentTreeItem.ContainerFromIndex(parentTreeItem.ItemCount - 1) == this) {
+               isLastChild = true;
+            }
+         }
+
+         {
+            // 纵向
+            var childStartPoint = _switcherButton.TranslatePoint(new Point(_switcherButton.DesiredSize.Width / 2, 0), this) ?? default;
+            var childEndPoint = _switcherButton.TranslatePoint(new Point(_switcherButton.DesiredSize.Width / 2, isLastChild ? _switcherButton.DesiredSize.Height : DesiredSize.Height), this) ?? default;
+   
+            if (isLastChild) {
+               childEndPoint = childEndPoint.WithY(childEndPoint.Y / 2);
+            }
+         
+            context.DrawLine(new Pen(BorderBrush, penWidth), childStartPoint, childEndPoint);
+         }
+
+         {
+            // 横向
+            var childStartPoint = _switcherButton.TranslatePoint(new Point(_switcherButton.DesiredSize.Width / 2, _switcherButton.DesiredSize.Height / 2), this) ?? default;
+            var childEndPoint = _switcherButton.TranslatePoint(new Point(_switcherButton.DesiredSize.Width, _switcherButton.DesiredSize.Height / 2), this) ?? default;
+         
+            context.DrawLine(new Pen(BorderBrush, penWidth), childStartPoint, childEndPoint);
+         }
+         
+      }
    }
 
    private void SetNodeSwitcherIcons()
@@ -325,13 +387,13 @@ public class TreeViewItem : AvaloniaTreeItem
          TokenResourceBinder.CreateTokenBinding(_switcherButton, NodeSwitcherButton.IconWidthProperty, GlobalResourceKey.IconSize);
          TokenResourceBinder.CreateTokenBinding(_switcherButton, NodeSwitcherButton.IconHeightProperty, GlobalResourceKey.IconSize);
       } else {
+         _switcherButton.CheckedIcon = null;
          _switcherButton.UnCheckedIcon = new PathIcon()
          {
             Kind = "CaretRightOutlined"
          };
          TokenResourceBinder.CreateTokenBinding(_switcherButton, NodeSwitcherButton.IconWidthProperty, GlobalResourceKey.IconSizeXS);
          TokenResourceBinder.CreateTokenBinding(_switcherButton, NodeSwitcherButton.IconHeightProperty, GlobalResourceKey.IconSizeXS);
-         _switcherButton.CheckedIcon = null;
       }
    }
 

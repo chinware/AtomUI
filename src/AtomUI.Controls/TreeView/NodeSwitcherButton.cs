@@ -121,7 +121,14 @@ internal class NodeSwitcherButton : ToggleIconButton
          if (change.NewValue is PathIcon newIcon) {
             ConfigureFixedSizeIcon(newIcon);
             ApplyIconToContent();
+            RenderTransform = null;
          }
+      }
+
+      if (change.Property == CheckedIconProperty ||
+          change.Property == UnCheckedIconProperty) {
+         RenderTransform = null;
+         ApplyIconToContent();
       }
    }
 

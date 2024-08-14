@@ -138,6 +138,8 @@ internal class TreeViewItemTheme : BaseControlTheme
    {
       var commonStyle = new Style(selector => selector.Nesting());
       commonStyle.Add(TreeViewItem.EffectiveNodeCornerRadiusProperty, GlobalResourceKey.BorderRadius);
+      commonStyle.Add(TreeViewItem.BorderBrushProperty, GlobalResourceKey.ColorBorder);
+      commonStyle.Add(TreeViewItem.BorderThicknessProperty, GlobalResourceKey.BorderThickness);
       var frameDecoratorStyle = new Style(selector => selector.Nesting().Template().Name(FrameDecoratorPart));
       frameDecoratorStyle.Add(Border.HeightProperty, TreeViewResourceKey.TitleHeight);
       frameDecoratorStyle.Add(Border.MarginProperty, TreeViewResourceKey.TreeItemMargin);
@@ -156,6 +158,7 @@ internal class TreeViewItemTheme : BaseControlTheme
          var headerPresenterStyle = new Style(selector => selector.Nesting().Template().Name(HeaderPresenterPart));
          headerPresenterStyle.Add(ContentPresenter.HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
          headerPresenterStyle.Add(ContentPresenter.BackgroundProperty, GlobalResourceKey.ColorTransparent);
+         headerPresenterStyle.Add(ContentPresenter.FontSizeProperty, GlobalResourceKey.FontSize);
          blockNodeHoverModeStyle.Add(headerPresenterStyle);
       }
       enabledStyle.Add(blockNodeHoverModeStyle);
