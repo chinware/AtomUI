@@ -1,4 +1,5 @@
 ﻿using AtomUI.Theme.TokenSystem;
+using Avalonia;
 using Avalonia.Media;
 
 namespace AtomUI.Controls;
@@ -40,6 +41,21 @@ internal class TreeViewToken : AbstractControlDesignToken
    /// </summary>
    public Color DirectoryNodeSelectedBg { get; set; }
    
+   /// <summary>
+   /// 树节点的外边距
+   /// </summary>
+   public Thickness TreeItemMargin { get; set; }
+   
+   /// <summary>
+   /// 树节点标题的内间距
+   /// </summary>
+   public Thickness TreeItemHeaderPadding { get; set; }
+   
+   /// <summary>
+   /// 树节点展开按钮外边距
+   /// </summary>
+   public Thickness TreeNodeSwitcherMargin { get; set; }
+   
    #endregion
 
    internal override void CalculateFromAlias()
@@ -51,5 +67,10 @@ internal class TreeViewToken : AbstractControlDesignToken
 
       DirectoryNodeSelectedColor = _globalToken.ColorTextLightSolid;
       DirectoryNodeSelectedBg = _globalToken.ColorToken.ColorPrimaryToken.ColorPrimary;
+      
+      
+      TreeItemMargin = new Thickness(0, 0, 0, _globalToken.PaddingXS / 2);
+      TreeItemHeaderPadding = new Thickness(_globalToken.PaddingXS / 2, 0);
+      TreeNodeSwitcherMargin = new Thickness(0, 0, _globalToken.PaddingXS / 2, 0);
    }
 }

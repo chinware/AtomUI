@@ -410,15 +410,15 @@ public sealed class PathIcon : Control, ICustomHitTest
       base.OnAttachedToLogicalTree(e);
       SetupTransitions();
       SetupRotateAnimation();
+      if (_sourceGeometriesData.Count == 0) {
+         BuildSourceRenderData();
+         SetupFilledBrush();
+      }
    }
 
    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
    {
       base.OnAttachedToVisualTree(e);
-      if (_sourceGeometriesData.Count == 0) {
-         BuildSourceRenderData();
-         SetupFilledBrush();
-      }
       if (_animation is not null && _animationCancellationTokenSource is null) {
          _animationCancellationTokenSource = new CancellationTokenSource();
          _animation.RunAsync(this, _animationCancellationTokenSource.Token);

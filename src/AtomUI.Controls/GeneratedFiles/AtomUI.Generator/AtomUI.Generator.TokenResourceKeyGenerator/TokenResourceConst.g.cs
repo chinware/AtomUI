@@ -415,6 +415,9 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey NodeSelectedBg = new TokenResourceKey("TreeView.NodeSelectedBg");
         public static readonly TokenResourceKey DirectoryNodeSelectedColor = new TokenResourceKey("TreeView.DirectoryNodeSelectedColor");
         public static readonly TokenResourceKey DirectoryNodeSelectedBg = new TokenResourceKey("TreeView.DirectoryNodeSelectedBg");
+        public static readonly TokenResourceKey TreeItemMargin = new TokenResourceKey("TreeView.TreeItemMargin");
+        public static readonly TokenResourceKey TreeItemHeaderPadding = new TokenResourceKey("TreeView.TreeItemHeaderPadding");
+        public static readonly TokenResourceKey TreeNodeSwitcherMargin = new TokenResourceKey("TreeView.TreeNodeSwitcherMargin");
     }
 
     public static class CaptionButtonResourceKey

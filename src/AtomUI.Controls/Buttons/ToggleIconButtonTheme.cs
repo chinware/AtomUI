@@ -4,9 +4,12 @@ using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Templates;
 using Avalonia.Styling;
 using AtomUI.Theme.Styling;
+using Avalonia;
+using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
+[ControlThemeProvider]
 internal class ToggleIconButtonTheme : BaseControlTheme
 {
    public const string ContentPresenterPart = "PART_ContentPresenter";
@@ -15,14 +18,18 @@ internal class ToggleIconButtonTheme : BaseControlTheme
       : base(typeof(ToggleIconButton))
    {}
    
+   public ToggleIconButtonTheme(Type targetType) : base(targetType) { }
+   
    protected override IControlTemplate BuildControlTemplate()
    {
       return new FuncControlTemplate<ToggleIconButton>((button, scope) =>
       {
          var contentPresenter = new ContentPresenter
          {
-            Name = ContentPresenterPart
+            Name = ContentPresenterPart,
          };
+         CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty, ToggleIconButton.ContentProperty);
+         CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentTemplateProperty, ToggleIconButton.ContentTemplateProperty);
          return contentPresenter;
       });
    }
