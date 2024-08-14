@@ -11,13 +11,13 @@
         <showcase:ShowCaseItem
             Title="Basic"
             Description="The most basic usage, tell you how to use checkable, selectable, disabled, defaultExpandKeys, and etc.">
-            <atom:TreeView IsCheckable="True">
+            <atom:TreeView IsCheckable="True" IsDefaultExpandAll="True">
                 <atom:TreeViewItem Header="parent 1">
-                    <atom:TreeViewItem Header="parent 1-0" IsChecked="True">
-                        <atom:TreeViewItem Header="leaf" IsCheckable="False"/>
+                    <atom:TreeViewItem Header="parent 1-0">
+                        <atom:TreeViewItem Header="leaf" IsCheckable="False" IsChecked="True"/>
                         <atom:TreeViewItem Header="leaf"/>
                     </atom:TreeViewItem>
-                    <atom:TreeViewItem Header="parent 1-1">
+                    <atom:TreeViewItem Header="parent 1-1" IsChecked="True">
                         <atom:TreeViewItem Header="sss"/>
                     </atom:TreeViewItem>
                 </atom:TreeViewItem>

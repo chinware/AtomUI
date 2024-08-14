@@ -4,6 +4,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Layout;
+using Avalonia.Threading;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
@@ -78,6 +79,8 @@ public class TreeView : AvaloniaTreeView
       set => SetValue(IsShowLeafSwitcherProperty, value);
    }
 
+   public bool IsDefaultExpandAll { get; set; } = false;
+
    #endregion
 
    internal List<TreeViewItem> DefaultCheckedItems { get; set; }
@@ -127,7 +130,22 @@ public class TreeView : AvaloniaTreeView
    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
    {
       base.OnAttachedToVisualTree(e);
+      if (IsDefaultExpandAll) {
+         Dispatcher.UIThread.Post(() =>
+         {
+            ExpandAll();
+         });
+      }
       ApplyDefaultChecked();
+   }
+
+   public void ExpandAll()
+   {
+      foreach (var item in Items) {
+         if (item is TreeViewItem treeItem) {
+            this.ExpandSubTree(treeItem);
+         }
+      }
    }
 
    private void ApplyDefaultChecked()
