@@ -161,7 +161,11 @@ public class TreeView : AvaloniaTreeView
       if (!IsCheckable) {
          return;
       }
-   
+
+      if (!item.IsEnabled || !item.IsCheckable) {
+         return;
+      }
+
       item.IsChecked = true;
       if (item.Presenter?.Panel == null && this.GetVisualRoot() is ILayoutRoot visualRoot) {
          var layoutManager = LayoutUtils.GetLayoutManager(visualRoot);
@@ -182,6 +186,9 @@ public class TreeView : AvaloniaTreeView
    public void UnCheckedSubTree(TreeViewItem item)
    {
       if (!IsCheckable) {
+         return;
+      }
+      if (!item.IsEnabled || !item.IsCheckable) {
          return;
       }
       item.IsChecked = false;

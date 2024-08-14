@@ -50,7 +50,7 @@ internal class NodeSwitcherButton : ToggleIconButton
    #region 内部属性定义
 
    internal static readonly StyledProperty<bool> IsIconVisibleProperty
-      = AvaloniaProperty.Register<NodeSwitcherButton, bool>(nameof(IsIconVisible), false);
+      = AvaloniaProperty.Register<NodeSwitcherButton, bool>(nameof(IsIconVisible), true);
 
    internal bool IsIconVisible
    {

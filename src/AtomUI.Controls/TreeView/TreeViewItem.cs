@@ -276,7 +276,7 @@ public class TreeViewItem : AvaloniaTreeItem
       Point offset = default;
       var targetWidth = 0d;
       var targetHeight = 0d;
-      if (NodeHoverMode == TreeItemHoverMode.Default) {
+      if (NodeHoverMode == TreeItemHoverMode.Default || NodeHoverMode == TreeItemHoverMode.Block) {
          if (_headerPresenter is not null) {
             offset = _headerPresenter.TranslatePoint(new Point(0, 0), this) ?? default;
             targetWidth = _headerPresenter.Bounds.Width;

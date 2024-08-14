@@ -97,12 +97,12 @@ internal class TreeViewItemTheme : BaseControlTheme
          {
             Name = HeaderPresenterPart,
             Cursor = new Cursor(StandardCursorType.Hand),
-            HorizontalAlignment = HorizontalAlignment.Left,
             HorizontalContentAlignment = HorizontalAlignment.Left,
             VerticalAlignment = VerticalAlignment.Center,
             VerticalContentAlignment = VerticalAlignment.Center
          };
 
+         CreateTemplateParentBinding(contentPresenter, ContentPresenter.IsEnabledProperty, TreeViewItem.IsEnabledProperty);
          CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty, TreeViewItem.HeaderProperty);
          CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentTemplateProperty,
                                      TreeViewItem.HeaderTemplateProperty);
@@ -131,6 +131,7 @@ internal class TreeViewItemTheme : BaseControlTheme
    {
       BuildCommonStyle();
       BuildSwitcherButtonStyle();
+      BuildDisabledStyle();
    }
 
    private void BuildCommonStyle()
@@ -142,18 +143,40 @@ internal class TreeViewItemTheme : BaseControlTheme
       frameDecoratorStyle.Add(Border.MarginProperty, TreeViewResourceKey.TreeItemMargin);
       commonStyle.Add(frameDecoratorStyle);
       
-      // header 样式
-      var headerStyle = new Style(selector => selector.Nesting().Template().Name(HeaderPresenterPart));
-      headerStyle.Add(ContentPresenter.PaddingProperty, TreeViewResourceKey.TreeItemHeaderPadding);
-      commonStyle.Add(headerStyle);
+      // 设置 NodeHoverMode 为 Block 的情况
+      {
+         var headerPresenterStyle = new Style(selector => selector.Nesting().Template().Name(HeaderPresenterPart));
+         headerPresenterStyle.Add(ContentPresenter.HorizontalAlignmentProperty, HorizontalAlignment.Left);
+         commonStyle.Add(headerPresenterStyle);
+      }
 
+      var enabledStyle = new Style(selector => selector.Nesting().PropertyEquals(TreeViewItem.IsEnabledProperty, true));
+      var blockNodeHoverModeStyle = new Style(selector => selector.Nesting().PropertyEquals(TreeViewItem.NodeHoverModeProperty, TreeItemHoverMode.Block));
+      {
+         var headerPresenterStyle = new Style(selector => selector.Nesting().Template().Name(HeaderPresenterPart));
+         headerPresenterStyle.Add(ContentPresenter.HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
+         headerPresenterStyle.Add(ContentPresenter.BackgroundProperty, GlobalResourceKey.ColorTransparent);
+         blockNodeHoverModeStyle.Add(headerPresenterStyle);
+      }
+      enabledStyle.Add(blockNodeHoverModeStyle);
+      
+      // header 样式
+      {
+         var headerPresenterStyle = new Style(selector => selector.Nesting().Template().Name(HeaderPresenterPart));
+         headerPresenterStyle.Add(ContentPresenter.PaddingProperty, TreeViewResourceKey.TreeItemHeaderPadding);
+         headerPresenterStyle.Add(TreeViewItem.EffectiveNodeBgProperty, GlobalResourceKey.ColorBgContainer);
+         enabledStyle.Add(headerPresenterStyle);
+      }
+      
       var hoverStyle = new Style(selector => selector.Nesting().Class(TreeViewItem.TreeNodeHoverPC));
       hoverStyle.Add(TreeViewItem.EffectiveNodeBgProperty, TreeViewResourceKey.NodeHoverBg);
-      commonStyle.Add(hoverStyle);
+      enabledStyle.Add(hoverStyle);
 
       var selectedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Selected));
       selectedStyle.Add(TreeViewItem.EffectiveNodeBgProperty, TreeViewResourceKey.NodeSelectedBg);
-      commonStyle.Add(selectedStyle);
+      enabledStyle.Add(selectedStyle);
+
+      commonStyle.Add(enabledStyle);
       
       Add(commonStyle);
    }
@@ -182,5 +205,14 @@ internal class TreeViewItemTheme : BaseControlTheme
          checkboxVisibleStyle.Add(switcherButtonStyle);
       }
       Add(checkboxVisibleStyle);
+   }
+
+   private void BuildDisabledStyle()
+   {
+      var disabledStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Disabled));
+      var headerPresenterStyle = new Style(selector => selector.Nesting().Template().Name(HeaderPresenterPart));
+      headerPresenterStyle.Add(ContentPresenter.ForegroundProperty, GlobalResourceKey.ColorTextDisabled);
+      disabledStyle.Add(headerPresenterStyle);
+      Add(disabledStyle);
    }
 }

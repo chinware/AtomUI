@@ -23,5 +23,16 @@
                 </atom:TreeViewItem>
             </atom:TreeView>
         </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="Block Node"
+            Description="Block Node.">
+            <atom:TreeView IsCheckable="True" IsDefaultExpandAll="True" NodeHoverMode="Block">
+                <atom:TreeViewItem Header="parent">
+                    <atom:TreeViewItem Header="child 1" IsEnabled="False"/>
+                    <atom:TreeViewItem Header="child 2" IsCheckable="False"/>
+                </atom:TreeViewItem>
+            </atom:TreeView>
+        </showcase:ShowCaseItem>
     </showcase:ShowCasePanel>
 </UserControl>
