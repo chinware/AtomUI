@@ -15,7 +15,7 @@ internal class NodeSwitcherButtonTheme : ToggleIconButtonTheme
       base.BuildStyles();
 
       var commonStyle = new Style(selector => selector.Nesting());
-      commonStyle.Add(NodeSwitcherButton.BackgroundProperty, GlobalResourceKey.ColorBgContainer);
+      commonStyle.Add(NodeSwitcherButton.BackgroundProperty, GlobalResourceKey.ColorTransparent);
       commonStyle.Add(NodeSwitcherButton.CornerRadiusProperty, GlobalResourceKey.BorderRadius);
 
       var hoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));

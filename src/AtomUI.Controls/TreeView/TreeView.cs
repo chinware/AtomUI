@@ -125,6 +125,7 @@ public class TreeView : AvaloniaTreeView
          BindUtils.RelayBind(this, TreeView.IsShowIconProperty, treeViewItem, TreeViewItem.IsShowIconProperty);
          BindUtils.RelayBind(this, TreeView.IsShowLeafSwitcherProperty, treeViewItem, TreeViewItem.IsShowLeafSwitcherProperty);
          BindUtils.RelayBind(this, TreeView.IsCheckableProperty, treeViewItem, TreeViewItem.IsCheckboxVisibleProperty);
+         BindUtils.RelayBind(this, TreeView.IsDraggableProperty, treeViewItem, TreeViewItem.IsDraggableProperty);
       }
    }
 
@@ -234,5 +235,73 @@ public class TreeView : AvaloniaTreeView
       } else {
          parent.IsChecked = false;
       }
+   }
+
+   internal TreeViewItem? GetNodeByPosition(Point position)
+   {
+      TreeViewItem? result = null;
+      for (var i = 0; i < ItemCount; i++) {
+         var current = ContainerFromIndex(i) as TreeViewItem;
+         if (current is not null) {
+            result = GetNodeByPosition(position, current);
+         }
+         if (result is not null) {
+            break;
+         }
+      }
+
+      return result;
+   }
+
+   private TreeViewItem? GetNodeByPosition(Point position, TreeViewItem current)
+   {
+      TreeViewItem? result = null;
+      for (var i = 0; i < current.ItemCount; i++) { 
+         var child = current.ContainerFromIndex(i) as TreeViewItem;
+         if (child is not null) {
+            result = GetNodeByPosition(position, child);
+         }
+         
+         if (result is not null) {
+            break;
+         }
+      }
+      
+      result ??= current.IsDragOverForPoint(position) ? current : null;
+      return result;
+   }
+   
+   internal TreeViewItem? GetNodeByOffsetY(Point position)
+   {
+      TreeViewItem? result = null;
+      for (var i = 0; i < ItemCount; i++) {
+         var current = ContainerFromIndex(i) as TreeViewItem;
+         if (current is not null) {
+            result = GetNodeByOffsetY(position, current);
+         }
+         if (result is not null) {
+            break;
+         }
+      }
+
+      return result;
+   }
+
+   private TreeViewItem? GetNodeByOffsetY(Point position, TreeViewItem current)
+   {
+      TreeViewItem? result = null;
+      for (var i = 0; i < current.ItemCount; i++) { 
+         var child = current.ContainerFromIndex(i) as TreeViewItem;
+         if (child is not null) {
+            result = GetNodeByOffsetY(position, child);
+         }
+         
+         if (result is not null) {
+            break;
+         }
+      }
+      
+      result ??= current.IsDragOverForOffsetY(position) ? current : null;
+      return result;
    }
 }

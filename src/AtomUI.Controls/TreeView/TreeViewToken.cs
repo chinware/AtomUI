@@ -61,6 +61,11 @@ internal class TreeViewToken : AbstractControlDesignToken
    /// </summary>
    public Thickness TreeNodeIconMargin { get; set; }
    
+   /// <summary>
+   /// 拖动指示器
+   /// </summary>
+   public double DragIndicatorLineWidth { get; set; }
+   
    #endregion
 
    internal override void CalculateFromAlias()
@@ -77,5 +82,7 @@ internal class TreeViewToken : AbstractControlDesignToken
       TreeItemHeaderPadding = new Thickness(_globalToken.PaddingXS / 2, 0);
       TreeNodeSwitcherMargin = new Thickness(0, 0, _globalToken.PaddingXS / 2, 0);
       TreeNodeIconMargin = new Thickness(_globalToken.PaddingXS / 2, 0, 0, 0);
+
+      DragIndicatorLineWidth = _globalToken.LineWidthFocus;
    }
 }

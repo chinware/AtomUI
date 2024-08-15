@@ -79,6 +79,41 @@
                 </atom:TreeView>
             </StackPanel>
         </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="draggable"
+            Description="Drag treeNode to insert after the other treeNode or insert into the other parent TreeNode."
+            Margin="0, 0, 10, 0">
+            <atom:TreeView IsDraggable="True" NodeHoverMode="Block">
+                <atom:TreeViewItem Header="0-0">
+                    <atom:TreeViewItem Header="0-0-0">
+                        <atom:TreeViewItem Header="0-0-0-0"/>
+                        <atom:TreeViewItem Header="0-0-0-1"/>
+                        <atom:TreeViewItem Header="0-0-0-2"/>
+                    </atom:TreeViewItem>
+                    <atom:TreeViewItem Header="0-0-1">
+                        <atom:TreeViewItem Header="0-0-1-0"/>
+                        <atom:TreeViewItem Header="0-0-1-1"/>
+                        <atom:TreeViewItem Header="0-0-1-2"/>
+                    </atom:TreeViewItem>
+                    <atom:TreeViewItem Header="0-0-2"/>
+                </atom:TreeViewItem>
+                <atom:TreeViewItem Header="0-1">
+                    <atom:TreeViewItem Header="0-1-0">
+                        <atom:TreeViewItem Header="0-1-0-0"/>
+                        <atom:TreeViewItem Header="0-1-0-1"/>
+                        <atom:TreeViewItem Header="0-1-0-2"/>
+                    </atom:TreeViewItem>
+                    <atom:TreeViewItem Header="0-1-1">
+                        <atom:TreeViewItem Header="0-1-1-0"/>
+                        <atom:TreeViewItem Header="0-1-1-1"/>
+                        <atom:TreeViewItem Header="0-1-1-2"/>
+                    </atom:TreeViewItem>
+                    <atom:TreeViewItem Header="0-1-2"/>
+                </atom:TreeViewItem>
+                <atom:TreeViewItem Header="0-2"/>
+            </atom:TreeView>
+        </showcase:ShowCaseItem>
 
     </showcase:ShowCasePanel>
 </UserControl>

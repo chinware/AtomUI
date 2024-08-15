@@ -38,7 +38,7 @@ internal class TreeViewItemTheme : BaseControlTheme
             Name = FrameDecoratorPart,
             Focusable = true
          };
-
+         CreateTemplateParentBinding(frameDecorator, Border.BorderThicknessProperty, TreeViewItem.DragFrameBorderThicknessProperty);
          frameDecorator.RegisterInNameScope(scope);
 
          var treeItemLayout = new Grid()
@@ -146,6 +146,7 @@ internal class TreeViewItemTheme : BaseControlTheme
       BuildCommonStyle();
       BuildSwitcherButtonStyle();
       BuildDisabledStyle();
+      BuildDraggingStyle();
    }
 
    private void BuildCommonStyle()
@@ -248,5 +249,14 @@ internal class TreeViewItemTheme : BaseControlTheme
       headerPresenterStyle.Add(ContentPresenter.ForegroundProperty, GlobalResourceKey.ColorTextDisabled);
       disabledStyle.Add(headerPresenterStyle);
       Add(disabledStyle);
+   }
+
+   private void BuildDraggingStyle()
+   {
+      var draggingStyle = new Style(selector => selector.Nesting().PropertyEquals(TreeViewItem.IsDraggingProperty, true));
+      var frameDecoratorStyle = new Style(selector => selector.Nesting().Template().Name(FrameDecoratorPart));
+      frameDecoratorStyle.Add(Border.BorderBrushProperty, GlobalResourceKey.ColorPrimary);
+      draggingStyle.Add(frameDecoratorStyle);
+      Add(draggingStyle);
    }
 }
