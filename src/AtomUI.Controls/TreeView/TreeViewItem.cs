@@ -576,22 +576,29 @@ public class TreeViewItem : AvaloniaTreeItem
    {
       var offsetX = 0d;
       var offsetY = 0d;
-   
-      if (_iconPresenter is not null && _iconPresenter.IsVisible) {
-         var offset = _iconPresenter.TranslatePoint(new Point(0, 0), this) ?? default;
-         offsetX = offset.X;
-         offsetY = offset.Y;
-      } else if (_headerPresenter is not null) {
-         var offset = _headerPresenter.TranslatePoint(new Point(0, 0), this) ?? default;
-         offsetX = offset.X;
-         offsetY = offset.Y;
+      if (Level != 0) {
+         if (_iconPresenter is not null && _iconPresenter.IsVisible) {
+            var offset = _iconPresenter.TranslatePoint(new Point(0, 0), this) ?? default;
+            offsetX = offset.X;
+            offsetY = offset.Y;
+         } else if (_headerPresenter is not null) {
+            var offset = _headerPresenter.TranslatePoint(new Point(0, 0), this) ?? default;
+            offsetX = offset.X;
+            offsetY = offset.Y;
+         }
+      } else {
+         if (_headerPresenter is not null) {
+            var offset = _headerPresenter.TranslatePoint(new Point(0, 0), this) ?? default;
+            offsetX = offset.X;
+            offsetY = offset.Y;
+         }
       }
    
       if (_switcherButton is not null && _switcherButton.IsIconVisible) {
          offsetX -= _switcherButton.Bounds.Width;
       }
 
-      return new Rect(new Point(offsetX, offsetY), new Size(Bounds.Width, includeChildren ? Bounds.Height : _headerPresenter?.Bounds.Height ?? default));
+      return new Rect(new Point(offsetX, offsetY), new Size(Bounds.Width - offsetX, includeChildren ? Bounds.Height : _headerPresenter?.Bounds.Height ?? default));
    }
 
    internal Thickness FrameDecoratorMargin()
