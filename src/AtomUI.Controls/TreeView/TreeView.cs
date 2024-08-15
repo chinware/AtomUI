@@ -548,7 +548,6 @@ public class TreeView : AvaloniaTreeView
       var offsetY = position.Y;
       Point startPoint = default;
       Point endPoint = default;
-      IndicatorPosition indicatorPosition = IndicatorPosition.In;
       var offsetYDelta = effectiveDropTarget.FrameDecoratorMargin().Bottom + DragIndicatorLineWidth / 3;
 
       var minOffsetY = DragIndicatorLineWidth / 2;
@@ -565,14 +564,12 @@ public class TreeView : AvaloniaTreeView
          if (offsetY > dropTargetHalfOffsetY) {
             startPoint = effectiveDragHeaderBounds.BottomLeft;
             endPoint = effectiveDragHeaderBounds.BottomRight;
-            indicatorPosition = IndicatorPosition.After;
             startPoint = startPoint.WithY(Math.Min(startPoint.Y + offsetYDelta, maxOffsetY));
             endPoint = endPoint.WithY(Math.Min(endPoint.Y + offsetYDelta, maxOffsetY));
             _dropTargetInfo.Index = effectiveIndex + 1;
          } else {
             startPoint = effectiveDragHeaderBounds.TopLeft;
             endPoint = effectiveDragHeaderBounds.TopRight;
-            indicatorPosition = IndicatorPosition.Before;
             startPoint = startPoint.WithY(Math.Max(startPoint.Y - offsetYDelta, minOffsetY));
             endPoint = endPoint.WithY(Math.Max(endPoint.Y - offsetYDelta, minOffsetY));
             _dropTargetInfo.Index = effectiveIndex;
@@ -624,7 +621,6 @@ public class TreeView : AvaloniaTreeView
          TargetTreeItem = effectiveDropTarget,
          StartPoint = startPoint,
          EndPoint = endPoint,
-         IndicatorPosition = indicatorPosition
       };
    }
    
@@ -756,17 +752,9 @@ internal class DropTargetInfo
    public bool IsRoot { get; set; }
 }
 
-internal enum IndicatorPosition
-{
-   Before,
-   In,
-   After
-}
-
 internal record DragIndicatorRenderInfo
 {
    public TreeViewItem? TargetTreeItem { get; set; }
-   public IndicatorPosition IndicatorPosition { get; set; }
    public Point StartPoint { get; set; }
    public Point EndPoint { get; set; }
 }
