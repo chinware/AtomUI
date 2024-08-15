@@ -634,6 +634,7 @@ public class TreeView : AvaloniaTreeView
    
    private void HandleDragCompleted(Point point)
    {
+      Console.WriteLine($"{_dropTargetInfo?.TargetTreeItem?.Header}|{_dropTargetInfo?.Index}|{_dropTargetInfo?.IsRoot}");
       PerformDropOperation();
       if (_dragPreview is not null) {
          AdornerLayer layer = AdornerLayer.GetAdornerLayer(this)!;
@@ -661,6 +662,8 @@ public class TreeView : AvaloniaTreeView
       }
 
       object? sourceItem = default;
+      var beingDraggedTreeItemParent = _beingDraggedTreeItem.Parent;
+      var sourceIsRoot = false;
       if (_beingDraggedTreeItem.Parent is TreeViewItem parentItem) {
           sourceItem = parentItem.ItemFromContainer(_beingDraggedTreeItem);
          if (sourceItem is not null) {
@@ -668,15 +671,24 @@ public class TreeView : AvaloniaTreeView
          }
       } else if (_beingDraggedTreeItem.Level == 0) { 
          sourceItem = ItemFromContainer(_beingDraggedTreeItem);
+         sourceIsRoot = true;
          if (sourceItem is not null) {
             Items.Remove(sourceItem);
          }
       }
 
       if (_dropTargetInfo.IsRoot) {
-         Items.Insert(_dropTargetInfo.Index, sourceItem);
+         var indexDelta = 0;
+         if (sourceIsRoot) {
+            indexDelta = 1;
+         }
+         Items.Insert(Math.Max(_dropTargetInfo.Index - indexDelta, 0), sourceItem);
       } else if (_dropTargetInfo.TargetTreeItem is not null) {
-         _dropTargetInfo.TargetTreeItem.Items.Insert(_dropTargetInfo.Index, sourceItem);
+         var indexDelta = 0;
+         if (_dropTargetInfo.TargetTreeItem == beingDraggedTreeItemParent) {
+            indexDelta = 1;
+         }
+         _dropTargetInfo.TargetTreeItem.Items.Insert(Math.Max(_dropTargetInfo.Index - indexDelta, 0), sourceItem);
       }
    }
    

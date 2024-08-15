@@ -1,9 +1,11 @@
 ﻿using AtomUI.Controls.Utils;
+using AtomUI.Media;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using AtomUI.Utils;
 using Avalonia;
+using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
@@ -369,6 +371,13 @@ public class TreeViewItem : AvaloniaTreeItem
       IsLeaf = ItemCount == 0;
       SetNodeSwitcherIcons();
       SetupCheckBoxEnabled();
+
+      if (Transitions is null) {
+         Transitions = new Transitions()
+         {
+            AnimationUtils.CreateTransition<SolidColorBrushTransition>(EffectiveNodeBgProperty)
+         };
+      }
    }
 
    private void CalculateEffectiveBgRect()
@@ -411,90 +420,8 @@ public class TreeViewItem : AvaloniaTreeItem
       if (IsShowLine && (IsExpanded || IsLeaf)) {
          RenderTreeNodeLine(context);
       }
-      // if (IsDragOver) {
-      //    RenderDraggingIndicator(context);
-      // }
    }
-
-   // private void RenderDraggingIndicator(DrawingContext context)
-   // {
-   //    if (OwnerTreeView is null || _dropTargetNode is null) {
-   //       return;
-   //    }
-   //    
-   //    var localPosition = OwnerTreeView.TranslatePoint(DragOverPosition, this) ?? default;
-   //    var dropTargetOffset = _dropTargetNode.TranslatePoint(new Point(0, 0), this) ?? default;
-   //    var dropTargetHalfOffsetY = dropTargetOffset.Y + _dropTargetNode._frameDecorator?.DesiredSize.Height / 2 ?? default;
-   //    var offsetY = localPosition.Y;
-   //    Point startPoint = default;
-   //    Point endPoint = default;
-   //    
-   //    var indicatorOffsetX = 0d;
-   //    
-   //    if (this != _dropTargetNode) {
-   //       if (_dropTargetNode._iconPresenter is not null && _dropTargetNode._iconPresenter.IsVisible) {
-   //          var offset = _dropTargetNode._iconPresenter.TranslatePoint(new Point(0, 0), OwnerTreeView) ?? default;
-   //          indicatorOffsetX = offset.X;
-   //       } else if (_dropTargetNode._headerPresenter is not null) {
-   //          var offset = _dropTargetNode._headerPresenter.TranslatePoint(new Point(0, 0), OwnerTreeView) ?? default;
-   //          indicatorOffsetX = offset.X;
-   //       }
-   //
-   //       var frameHeight = _dropTargetNode._frameDecorator?.Bounds.Height ?? default;
-   //       var frameMargin = _dropTargetNode._frameDecorator?.Margin.Bottom ?? default;
-   //
-   //       var indicatorOffsetY = Math.Min(dropTargetOffset.Y + frameHeight + frameMargin + DragIndicatorLineWidth / 2, Bounds.Height - DragIndicatorLineWidth / 2);
-   //       
-   //       if (offsetY > dropTargetHalfOffsetY) {
-   //          startPoint = new Point(indicatorOffsetX, indicatorOffsetY);
-   //          endPoint = new Point(indicatorOffsetX + _dropTargetNode.Bounds.Width, indicatorOffsetY);
-   //       } else {
-   //          startPoint = new Point(indicatorOffsetX, dropTargetOffset.Y + DragIndicatorLineWidth / 2);
-   //          endPoint = new Point(indicatorOffsetX + _dropTargetNode.Bounds.Width, dropTargetOffset.Y + DragIndicatorLineWidth / 2);
-   //       }
-   //    } else {
-   //       if (_iconPresenter is not null && _iconPresenter.IsVisible) {
-   //          var offset = _iconPresenter.TranslatePoint(new Point(0, 0), OwnerTreeView) ?? default;
-   //          indicatorOffsetX = offset.X;
-   //       } else if (_headerPresenter is not null) {
-   //          var offset = _headerPresenter.TranslatePoint(new Point(0, 0), OwnerTreeView) ?? default;
-   //          indicatorOffsetX = offset.X;
-   //       }
-   //
-   //       var isFirstChild = false;
-   //
-   //       var frameHeight = _frameDecorator?.Bounds.Height ?? default;
-   //       
-   //       if (Parent is TreeViewItem parentItem) {
-   //          isFirstChild = parentItem.ContainerFromIndex(0) == this;
-   //       }
-   //       
-   //       if (isFirstChild || Level == 0) {
-   //          if (offsetY > dropTargetHalfOffsetY) {
-   //             indicatorOffsetX += 20;
-   //             startPoint = new Point(indicatorOffsetX, dropTargetOffset.Y + frameHeight);
-   //             endPoint = new Point(indicatorOffsetX + Bounds.Width, dropTargetOffset.Y + frameHeight);
-   //          } else {
-   //             startPoint = new Point(indicatorOffsetX, dropTargetOffset.Y + DragIndicatorLineWidth / 2);
-   //             endPoint = new Point(indicatorOffsetX + _dropTargetNode.Bounds.Width, dropTargetOffset.Y + DragIndicatorLineWidth / 2);
-   //          }
-   //       } else {
-   //          indicatorOffsetX += 20;
-   //          startPoint = new Point(indicatorOffsetX, dropTargetOffset.Y + frameHeight);
-   //          endPoint = new Point(indicatorOffsetX + Bounds.Width, dropTargetOffset.Y + frameHeight);
-   //       }
-   //    }
-   //
-   //    var pen = new Pen(DragIndicatorBrush, DragIndicatorLineWidth);
-   //    {
-   //       using var state = context.PushRenderOptions(new RenderOptions
-   //       {
-   //          EdgeMode = EdgeMode.Aliased
-   //       });
-   //       context.DrawLine(pen, startPoint, endPoint);
-   //    }
-   // }
-
+   
    private void RenderTreeNodeLine(DrawingContext context)
    {
       if (_switcherButton is null) {

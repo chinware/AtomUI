@@ -1,9 +1,12 @@
 ﻿using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.Icon;
+using AtomUI.Media;
 using AtomUI.Theme.Styling;
+using AtomUI.Theme.Utils;
 using AtomUI.Utils;
 using Avalonia;
+using Avalonia.Animation;
 using Avalonia.Controls.Primitives;
 using Avalonia.Layout;
 using Avalonia.Media;
@@ -96,6 +99,12 @@ internal class NodeSwitcherButton : ToggleIconButton
       ConfigureFixedSizeIcon(LeafIcon);
       base.OnApplyTemplate(e);
       ApplyIconToContent();
+      if (Transitions is null) {
+         Transitions = new Transitions()
+         {
+            AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty)
+         };
+      }
    }
 
    private void ConfigureFixedSizeIcon(PathIcon icon)
