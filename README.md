@@ -67,7 +67,7 @@ Welcome to communicate and give suggestions to AtomUI, thank you for giving the 
 | Timeline          | TODO           |
 | Tooltip           | Completed ✅    |
 | Tour              | TODO           |
-| Tree              | Developing 💪  |
+| Tree              | Completed ✅  |
 
 ##### Feedback
 | Control Name       | Status         |

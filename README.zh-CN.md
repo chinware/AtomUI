@@ -75,7 +75,7 @@ PS: AtomUI 目前仅在 Windows 11 平台测试<br>
 | Timeline 时间轴           | 进行中 💪 |
 | Tooltip 文字提示           | 已完成 ✅  |
 | Tour 漫游式引导             | 未完成    |
-| Tree 树形控件              | 进行中 💪 |
+| Tree 树形控件              | 已完成 ✅ |
 
 ##### （反馈）Feedback
 | 控件名                  | 完成情况   |
