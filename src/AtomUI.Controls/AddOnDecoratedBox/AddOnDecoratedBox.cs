@@ -1,4 +1,5 @@
-﻿using AtomUI.Theme.Data;
+﻿using AtomUI.Controls.Utils;
+using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
@@ -8,7 +9,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls;
 using Avalonia.Data;
 
-namespace AtomUI.Controls.AddOnDecoratedBox;
+namespace AtomUI.Controls;
 
 public enum AddOnDecoratedVariant
 {
@@ -153,7 +154,6 @@ public class AddOnDecoratedBox : ContentControl
 
    protected Control? _leftAddOnPresenter;
    protected Control? _rightAddOnPresenter;
-   protected Border? _innerBoxDecorator;
 
    static AddOnDecoratedBox()
    {
@@ -161,6 +161,35 @@ public class AddOnDecoratedBox : ContentControl
       AffectsMeasure<AddOnDecoratedBox>(LeftAddOnProperty, RightAddOnProperty);
    }
 
+   protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+   {
+      base.OnPropertyChanged(change);
+
+      if (VisualRoot is not null) {
+         if (change.Property == LeftAddOnProperty || change.Property == RightAddOnProperty) {
+            SetupInnerBoxCornerRadius();
+         }
+      }
+
+      if (change.Property == CornerRadiusProperty || change.Property == BorderThicknessProperty) {
+         SetupAddOnBorderInfo();
+      }
+      
+      if (change.Property == StatusProperty) {
+         UpdatePseudoClasses();
+      }
+
+      if (change.Property == LeftAddOnProperty || change.Property == RightAddOnProperty) {
+         if (change.OldValue is Control oldControl) {
+            UIStructureUtils.SetTemplateParent(oldControl, null);
+         }
+
+         if (change.NewValue is Control newControl) {
+            UIStructureUtils.SetTemplateParent(newControl, this);
+         }
+      }
+   }
+   
    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
    {
       base.OnApplyTemplate(e);
@@ -169,8 +198,39 @@ public class AddOnDecoratedBox : ContentControl
                                                       new RenderScaleAwareThicknessConfigure(this));
       _leftAddOnPresenter = e.NameScope.Find<Control>(AddOnDecoratedBoxTheme.LeftAddOnPart);
       _rightAddOnPresenter = e.NameScope.Find<Control>(AddOnDecoratedBoxTheme.RightAddOnPart);
-      _innerBoxDecorator = e.NameScope.Find<Border>(AddOnDecoratedBoxTheme.InnerBoxDecoratorPart);
       SetupInnerBoxCornerRadius();
+   }
+   
+   private void SetupAddOnBorderInfo()
+   {
+      var topLeftRadius = CornerRadius.TopLeft;
+      var topRightRadius = CornerRadius.TopRight;
+      var bottomLeftRadius = CornerRadius.BottomLeft;
+      var bottomRightRadius = CornerRadius.BottomRight;
+      
+      var topThickness = BorderThickness.Top;
+      var rightThickness = BorderThickness.Right;
+      var bottomThickness = BorderThickness.Bottom;
+      var leftThickness = BorderThickness.Left;
+
+      LeftAddOnCornerRadius = new CornerRadius(topLeft: topLeftRadius,
+                                               topRight: 0,
+                                               bottomLeft:bottomLeftRadius,
+                                               bottomRight:0);
+      RightAddOnCornerRadius = new CornerRadius(topLeft: 0,
+                                                topRight: topRightRadius,
+                                                bottomLeft:0,
+                                                bottomRight:bottomRightRadius);
+
+      LeftAddOnBorderThickness = new Thickness(top: topThickness, right:0, bottom:bottomThickness, left: leftThickness);
+      RightAddOnBorderThickness = new Thickness(top: topThickness, right:rightThickness, bottom:bottomThickness, left: 0);
+
+      NotifyAddOnBorderInfoCalculated();
+   }
+
+   protected virtual void NotifyAddOnBorderInfoCalculated()
+   {
+      
    }
 
    private void SetupInnerBoxCornerRadius()

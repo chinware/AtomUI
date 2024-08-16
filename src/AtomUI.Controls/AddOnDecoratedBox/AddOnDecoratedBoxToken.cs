@@ -2,7 +2,7 @@
 using Avalonia;
 using Avalonia.Media;
 
-namespace AtomUI.Controls.AddOnDecoratedBox;
+namespace AtomUI.Controls;
 
 [ControlDesignToken]
 internal class AddOnDecoratedBoxToken : AbstractControlDesignToken
