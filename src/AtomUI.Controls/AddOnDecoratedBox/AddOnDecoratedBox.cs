@@ -180,13 +180,33 @@ public class AddOnDecoratedBox : ContentControl
       }
 
       if (change.Property == LeftAddOnProperty || change.Property == RightAddOnProperty) {
-         if (change.OldValue is Control oldControl) {
-            UIStructureUtils.SetTemplateParent(oldControl, null);
+         if (change.NewValue is PathIcon icon) {
+            SetupIconTypeAddOnSize(icon);
+         }
+      }
+
+      if (change.Property == SizeTypeProperty) {
+         if (LeftAddOn is PathIcon leftIconAddOn) {
+            SetupIconTypeAddOnSize(leftIconAddOn);
          }
 
-         if (change.NewValue is Control newControl) {
-            UIStructureUtils.SetTemplateParent(newControl, this);
+         if (RightAddOn is PathIcon rightIconAddOn) {
+            SetupIconTypeAddOnSize(rightIconAddOn);
          }
+      }
+   }
+
+   private void SetupIconTypeAddOnSize(PathIcon icon)
+   {
+      if (SizeType == SizeType.Large) {
+         TokenResourceBinder.CreateGlobalTokenBinding(icon, PathIcon.WidthProperty, GlobalResourceKey.IconSizeLG);
+         TokenResourceBinder.CreateGlobalTokenBinding(icon, PathIcon.HeightProperty, GlobalResourceKey.IconSizeLG);
+      } else if (SizeType == SizeType.Middle) {
+         TokenResourceBinder.CreateGlobalTokenBinding(icon, PathIcon.WidthProperty, GlobalResourceKey.IconSize);
+         TokenResourceBinder.CreateGlobalTokenBinding(icon, PathIcon.HeightProperty, GlobalResourceKey.IconSize);
+      } else {
+         TokenResourceBinder.CreateGlobalTokenBinding(icon, PathIcon.WidthProperty, GlobalResourceKey.IconSizeSM);
+         TokenResourceBinder.CreateGlobalTokenBinding(icon, PathIcon.HeightProperty, GlobalResourceKey.IconSizeSM);
       }
    }
    

@@ -28,22 +28,28 @@ internal class LineEditTheme : BaseControlTheme
    {
       return new FuncControlTemplate<LineEdit>((lineEdit, scope) =>
       {
-         var decoratedBox = new AddOnDecoratedBox()
-         {
-            Name = DecoratedBoxPart,
-            Focusable = true
-         };
-         CreateTemplateParentBinding(decoratedBox, AddOnDecoratedBox.StyleVariantProperty, LineEdit.StyleVariantProperty);
-         CreateTemplateParentBinding(decoratedBox, AddOnDecoratedBox.SizeTypeProperty, LineEdit.SizeTypeProperty);
-         CreateTemplateParentBinding(decoratedBox, AddOnDecoratedBox.StatusProperty, LineEdit.StatusProperty);
-         CreateTemplateParentBinding(decoratedBox, AddOnDecoratedBox.LeftAddOnProperty, LineEdit.LeftAddOnProperty);
-         CreateTemplateParentBinding(decoratedBox, AddOnDecoratedBox.RightAddOnProperty, LineEdit.RightAddOnProperty);
-         decoratedBox.RegisterInNameScope(scope);
+         var decoratedBox = BuildAddOnDecoratedBox(lineEdit, scope);
          var lineEditKernel = BuildLineEditKernel(lineEdit, scope);
          decoratedBox.Content = lineEditKernel;
          lineEditKernel.RegisterInNameScope(scope);
          return decoratedBox;
       });
+   }
+
+   protected virtual AddOnDecoratedBox BuildAddOnDecoratedBox(LineEdit lineEdit, INameScope scope)
+   {
+      var decoratedBox = new AddOnDecoratedBox()
+      {
+         Name = DecoratedBoxPart,
+         Focusable = true
+      };
+      CreateTemplateParentBinding(decoratedBox, AddOnDecoratedBox.StyleVariantProperty, LineEdit.StyleVariantProperty);
+      CreateTemplateParentBinding(decoratedBox, AddOnDecoratedBox.SizeTypeProperty, LineEdit.SizeTypeProperty);
+      CreateTemplateParentBinding(decoratedBox, AddOnDecoratedBox.StatusProperty, LineEdit.StatusProperty);
+      CreateTemplateParentBinding(decoratedBox, AddOnDecoratedBox.LeftAddOnProperty, LineEdit.LeftAddOnProperty);
+      CreateTemplateParentBinding(decoratedBox, AddOnDecoratedBox.RightAddOnProperty, LineEdit.RightAddOnProperty);
+      decoratedBox.RegisterInNameScope(scope);
+      return decoratedBox;
    }
 
    protected virtual LineEditInnerBox BuildLineEditKernel(LineEdit lineEdit, INameScope scope)

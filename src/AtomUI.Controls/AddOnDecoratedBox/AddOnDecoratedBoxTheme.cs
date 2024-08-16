@@ -27,6 +27,7 @@ internal class AddOnDecoratedBoxTheme : BaseControlTheme
    public const int ActivatedZIndex = 2000;
 
    public AddOnDecoratedBoxTheme() : base(typeof(AddOnDecoratedBox)) { }
+   protected AddOnDecoratedBoxTheme(Type targetType) : base(targetType) { }
 
    protected override IControlTemplate BuildControlTemplate()
    {
@@ -184,15 +185,6 @@ internal class AddOnDecoratedBoxTheme : BaseControlTheme
          addOnStyle.Add(ContentPresenter.PaddingProperty, AddOnDecoratedBoxResourceKey.PaddingLG);
          largeStyle.Add(addOnStyle);
       }
-      
-      {
-         // 左右 AddOn icon 的大小
-         var addOnContentIconStyle = new Style(selector => Selectors.Or(selector.Nesting().Template().Name(LeftAddOnPart).Descendant().OfType<PathIcon>(),
-                                                                        selector.Nesting().Template().Name(RightAddOnPart).Descendant().OfType<PathIcon>()));
-         addOnContentIconStyle.Add(PathIcon.WidthProperty, GlobalResourceKey.IconSizeLG);
-         addOnContentIconStyle.Add(PathIcon.HeightProperty, GlobalResourceKey.IconSizeLG);
-         largeStyle.Add(addOnContentIconStyle);
-      }
 
       largeStyle.Add(AddOnDecoratedBox.FontSizeProperty, AddOnDecoratedBoxResourceKey.FontSizeLG);
       largeStyle.Add(AddOnDecoratedBox.MinHeightProperty, GlobalResourceKey.FontHeightLG);
@@ -215,15 +207,6 @@ internal class AddOnDecoratedBoxTheme : BaseControlTheme
          middleStyle.Add(addOnStyle);
       }
       
-      {
-         // 左右 AddOn icon 的大小
-         var addOnContentIconStyle = new Style(selector => Selectors.Or(selector.Nesting().Template().Name(LeftAddOnPart).Descendant().OfType<PathIcon>(),
-                                                                        selector.Nesting().Template().Name(RightAddOnPart).Descendant().OfType<PathIcon>()));
-         addOnContentIconStyle.Add(PathIcon.WidthProperty, GlobalResourceKey.IconSize);
-         addOnContentIconStyle.Add(PathIcon.HeightProperty, GlobalResourceKey.IconSize);
-         middleStyle.Add(addOnContentIconStyle);
-      }
-
       middleStyle.Add(AddOnDecoratedBox.FontSizeProperty, AddOnDecoratedBoxResourceKey.FontSize);
       middleStyle.Add(AddOnDecoratedBox.MinHeightProperty, GlobalResourceKey.FontHeight);
       middleStyle.Add(AddOnDecoratedBox.CornerRadiusProperty, GlobalResourceKey.BorderRadius);
@@ -243,15 +226,6 @@ internal class AddOnDecoratedBoxTheme : BaseControlTheme
                                                              selector.Nesting().Template().Name(RightAddOnPart)));
          addOnStyle.Add(ContentPresenter.PaddingProperty, AddOnDecoratedBoxResourceKey.PaddingSM);
          smallStyle.Add(addOnStyle);
-      }
-      
-      {
-         // 左右 AddOn icon 的大小
-         var addOnContentIconStyle = new Style(selector => Selectors.Or(selector.Nesting().Template().Name(LeftAddOnPart).Descendant().OfType<PathIcon>(),
-                                                                        selector.Nesting().Template().Name(RightAddOnPart).Descendant().OfType<PathIcon>()));
-         addOnContentIconStyle.Add(PathIcon.WidthProperty, GlobalResourceKey.IconSizeSM);
-         addOnContentIconStyle.Add(PathIcon.HeightProperty, GlobalResourceKey.IconSizeSM);
-         smallStyle.Add(addOnContentIconStyle);
       }
       
       smallStyle.Add(AddOnDecoratedBox.FontSizeProperty, AddOnDecoratedBoxResourceKey.FontSizeSM);
