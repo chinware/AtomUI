@@ -1,8 +1,8 @@
-﻿using Avalonia.Controls.Primitives;
+﻿using Avalonia.Controls;
 
 namespace AtomUI.Controls.AddOnDecoratedBox;
 
-public class AddOnDecoratedInnerBox : TemplatedControl
+public class AddOnDecoratedInnerBox : ContentControl
 {
    
 }
