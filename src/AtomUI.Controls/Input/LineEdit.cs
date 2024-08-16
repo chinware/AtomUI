@@ -175,8 +175,7 @@ public class LineEdit : TextBox
    protected Control? _leftAddOnPresenter;
    protected Control? _rightAddOnPresenter;
    protected Border? _lineEditKernelDecorator;
-
-
+   
    static LineEdit()
    {
       AffectsRender<LineEdit>(BorderBrushProperty, BackgroundProperty);

@@ -22,51 +22,52 @@ Welcome to communicate and give suggestions to AtomUI, thank you for giving the 
 | Steps        | TODO    |
 
 ##### Data Entry
-| Control Name    | Status   |
-|:----------------|:-------|
-| AutoComplete    | TODO    |
-| Cascader        | TODO    |
-| Checkbox        | Completed ✅  |
-| ColorPicker     | TODO    |
-| DatePicker      | TODO    |
-| Form            | TODO    |
-| Input           | Completed ✅    |
-| InputNumber     | TODO    |
-| Mentions        | TODO    |
-| Radio           | Completed ✅  |
-| OptionButtonBox | Completed ✅  |
-| Rate            | TODO    |
-| Select          | TODO    |
-| Slider          | Completed ✅  |
-| Switch          | Completed ✅  |
-| TimePicker      | TODO    |
-| Transfer        | TODO    |
-| Upload          | Need Review 🤔 |
+| Control Name     | Status       |
+|:-----------------|:-------------|
+| AutoComplete     | TODO         |
+| Cascader         | TODO         |
+| Checkbox         | Completed ✅  |
+| ColorPicker      | TODO         |
+| DatePicker       | TODO         |
+| Form             | TODO         |
+| Input            | Completed ✅  |
+| InputNumber      | Developing 💪 |
+| ButtonSpinner    | Developing 💪 |
+| Mentions         | TODO         |
+| Radio            | Completed ✅  |
+| OptionButtonBox  | Completed ✅  |
+| Rate             | TODO         |
+| Select           | TODO         |
+| Slider           | Completed ✅  |
+| Switch           | Completed ✅  |
+| TimePicker       | TODO         |
+| Transfer         | TODO         |
+| Upload           | Need Review 🤔 |
 
 ##### Data Display
-| Control Name      | Status         |
-|:------------------|:---------------|
-| Avatar            | TODO           |
-| Badge             | Completed ✅    |
-| Calendar          | TODO           |
-| Card              | TODO           |
-| Carousel          | Developing 💪           |
-| Collapse          | Completed ✅    |
+| Control Name      | Status       |
+|:------------------|:-------------|
+| Avatar            | TODO         |
+| Badge             | Completed ✅  |
+| Calendar          | TODO         |
+| Card              | TODO         |
+| Carousel          | Developing 💪|
+| Collapse          | Completed ✅  |
 | Expander          | Completed ✅  |
-| Descriptions      | TODO           |
-| EmptyIndicator    | Completed ✅    |
-| Image             | TODO           |
-| List              | TODO           |
-| Popover           | Completed ✅    |
-| QRCode            | TODO           |
-| Segmented         | Completed ✅    |
-| Statistic         | TODO           |
-| Table             | TODO           |
-| TabControl        | Completed ✅    |
-| Tag               | Completed ✅    |
-| Timeline          | TODO           |
-| Tooltip           | Completed ✅    |
-| Tour              | TODO           |
+| Descriptions      | TODO         |
+| EmptyIndicator    | Completed ✅  |
+| Image             | TODO         |
+| List              | TODO         |
+| Popover           | Completed ✅  |
+| QRCode            | TODO         |
+| Segmented         | Completed ✅  |
+| Statistic         | TODO         |
+| Table             | TODO         |
+| TabControl        | Completed ✅  |
+| Tag               | Completed ✅  |
+| Timeline          | TODO         |
+| Tooltip           | Completed ✅  |
+| Tour              | TODO         |
 | Tree              | Completed ✅  |
 
 ##### Feedback

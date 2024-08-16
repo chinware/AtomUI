@@ -2,21 +2,17 @@
 using Avalonia;
 using Avalonia.Media;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Controls.AddOnDecoratedBox;
 
 [ControlDesignToken]
-internal class LineEditToken : AbstractControlDesignToken
+internal class AddOnDecoratedBoxToken : AbstractControlDesignToken
 {
-   public const string ID = "LineEdit";
+   public const string ID = "AddOnDecoratedBox";
    
-   public LineEditToken()
-      : this(ID)
+   public AddOnDecoratedBoxToken()
+      : base(ID)
    {
    }
-   
-   protected LineEditToken(string id)
-      : base(id)
-   {}
    
    /// <summary>
    /// 输入框内边距
@@ -64,29 +60,29 @@ internal class LineEditToken : AbstractControlDesignToken
    public BoxShadow WarningActiveShadow { get; set; }
    
    /// <summary>
-   /// 输入框 hover 状态时背景颜色
+   /// hover 状态时背景颜色
    /// </summary>
    public Color HoverBg { get; set; }
    
    /// <summary>
-   /// 输入框激活状态时背景颜色
+   /// 激活状态时背景颜色
    /// </summary>
    public Color ActiveBg { get; set; }
    
    /// <summary>
    /// 字体大小
    /// </summary>
-   public double InputFontSize { get; set; }
+   public double FontSize { get; set; }
    
    /// <summary>
    /// 大号字体大小
    /// </summary>
-   public double InputFontSizeLG { get; set; }
+   public double FontSizeLG { get; set; }
    
    /// <summary>
    /// 小号字体大小
    /// </summary>
-   public double InputFontSizeSM { get; set; }
+   public double FontSizeSM { get; set; }
    
    /// <summary>
    /// AddOn 内边距
@@ -112,8 +108,8 @@ internal class LineEditToken : AbstractControlDesignToken
    /// 右边内部小组件的边距
    /// </summary>
    public Thickness RightInnerAddOnMargin { get; set; }
-
-   internal override void CalculateFromAlias()
+   
+      internal override void CalculateFromAlias()
    {
       base.CalculateFromAlias();
       var fontSize = _globalToken.FontToken.FontSize;
@@ -151,9 +147,9 @@ internal class LineEditToken : AbstractControlDesignToken
       };
       HoverBg = _globalToken.ColorToken.ColorNeutralToken.ColorBgContainer;
       ActiveBg = _globalToken.ColorToken.ColorNeutralToken.ColorBgContainer;
-      InputFontSize = _globalToken.FontToken.FontSize;
-      InputFontSizeLG = _globalToken.FontToken.FontSizeLG;
-      InputFontSizeSM = _globalToken.FontToken.FontSizeSM;
+      FontSize = _globalToken.FontToken.FontSize;
+      FontSizeLG = _globalToken.FontToken.FontSizeLG;
+      FontSizeSM = _globalToken.FontToken.FontSizeSM;
 
       LeftInnerAddOnMargin = new Thickness(0, 0, _globalToken.MarginXXS, 0);
       RightInnerAddOnMargin = new Thickness(_globalToken.MarginXXS, 0, 0, 0);

@@ -2,6 +2,29 @@
 
 namespace AtomUI.Theme.Styling
 {
+    public static class AddOnDecoratedBoxResourceKey
+    {
+        public static readonly TokenResourceKey Padding = new TokenResourceKey("AddOnDecoratedBox.Padding");
+        public static readonly TokenResourceKey PaddingSM = new TokenResourceKey("AddOnDecoratedBox.PaddingSM");
+        public static readonly TokenResourceKey PaddingLG = new TokenResourceKey("AddOnDecoratedBox.PaddingLG");
+        public static readonly TokenResourceKey AddonBg = new TokenResourceKey("AddOnDecoratedBox.AddonBg");
+        public static readonly TokenResourceKey HoverBorderColor = new TokenResourceKey("AddOnDecoratedBox.HoverBorderColor");
+        public static readonly TokenResourceKey ActiveBorderColor = new TokenResourceKey("AddOnDecoratedBox.ActiveBorderColor");
+        public static readonly TokenResourceKey ActiveShadow = new TokenResourceKey("AddOnDecoratedBox.ActiveShadow");
+        public static readonly TokenResourceKey ErrorActiveShadow = new TokenResourceKey("AddOnDecoratedBox.ErrorActiveShadow");
+        public static readonly TokenResourceKey WarningActiveShadow = new TokenResourceKey("AddOnDecoratedBox.WarningActiveShadow");
+        public static readonly TokenResourceKey HoverBg = new TokenResourceKey("AddOnDecoratedBox.HoverBg");
+        public static readonly TokenResourceKey ActiveBg = new TokenResourceKey("AddOnDecoratedBox.ActiveBg");
+        public static readonly TokenResourceKey FontSize = new TokenResourceKey("AddOnDecoratedBox.FontSize");
+        public static readonly TokenResourceKey FontSizeLG = new TokenResourceKey("AddOnDecoratedBox.FontSizeLG");
+        public static readonly TokenResourceKey FontSizeSM = new TokenResourceKey("AddOnDecoratedBox.FontSizeSM");
+        public static readonly TokenResourceKey AddOnPadding = new TokenResourceKey("AddOnDecoratedBox.AddOnPadding");
+        public static readonly TokenResourceKey AddOnPaddingSM = new TokenResourceKey("AddOnDecoratedBox.AddOnPaddingSM");
+        public static readonly TokenResourceKey AddOnPaddingLG = new TokenResourceKey("AddOnDecoratedBox.AddOnPaddingLG");
+        public static readonly TokenResourceKey LeftInnerAddOnMargin = new TokenResourceKey("AddOnDecoratedBox.LeftInnerAddOnMargin");
+        public static readonly TokenResourceKey RightInnerAddOnMargin = new TokenResourceKey("AddOnDecoratedBox.RightInnerAddOnMargin");
+    }
+
     public static class AlertResourceKey
     {
         public static readonly TokenResourceKey DefaultPadding = new TokenResourceKey("Alert.DefaultPadding");
@@ -220,6 +243,18 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey ScrollButtonPadding = new TokenResourceKey("Menu.ScrollButtonPadding");
         public static readonly TokenResourceKey ScrollButtonMargin = new TokenResourceKey("Menu.ScrollButtonMargin");
         public static readonly TokenResourceKey SeparatorItemHeight = new TokenResourceKey("Menu.SeparatorItemHeight");
+    }
+
+    public static class NumericUpDownResourceKey
+    {
+        public static readonly TokenResourceKey ControlWidth = new TokenResourceKey("NumericUpDown.ControlWidth");
+        public static readonly TokenResourceKey HandleWidth = new TokenResourceKey("NumericUpDown.HandleWidth");
+        public static readonly TokenResourceKey HandleFontSize = new TokenResourceKey("NumericUpDown.HandleFontSize");
+        public static readonly TokenResourceKey HandleBg = new TokenResourceKey("NumericUpDown.HandleBg");
+        public static readonly TokenResourceKey HandleActiveBg = new TokenResourceKey("NumericUpDown.HandleActiveBg");
+        public static readonly TokenResourceKey HandleHoverColor = new TokenResourceKey("NumericUpDown.HandleHoverColor");
+        public static readonly TokenResourceKey HandleBorderColor = new TokenResourceKey("NumericUpDown.HandleBorderColor");
+        public static readonly TokenResourceKey FilledHandleBg = new TokenResourceKey("NumericUpDown.FilledHandleBg");
     }
 
     public static class OptionButtonResourceKey

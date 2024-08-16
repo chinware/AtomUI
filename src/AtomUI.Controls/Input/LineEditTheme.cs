@@ -38,7 +38,7 @@ internal class LineEditTheme : BaseControlTheme
    public LineEditTheme(Type targetType) : base(targetType) { }
    public LineEditTheme() : base(typeof(LineEdit)) { }
 
-   protected override IControlTemplate? BuildControlTemplate()
+   protected override IControlTemplate BuildControlTemplate()
    {
       return new FuncControlTemplate<LineEdit>((lineEdit, scope) =>
       {
