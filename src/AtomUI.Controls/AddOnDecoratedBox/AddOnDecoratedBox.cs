@@ -33,7 +33,7 @@ public class AddOnDecoratedBox : ContentControl
    public const string ErrorPC = ":error";
    public const string WarningPC = ":warning";
 
-   #region 功能属性定义
+   #region 公共属性定义
 
    public static readonly StyledProperty<object?> LeftAddOnProperty =
       AvaloniaProperty.Register<AddOnDecoratedBox, object?>(nameof(LeftAddOn));

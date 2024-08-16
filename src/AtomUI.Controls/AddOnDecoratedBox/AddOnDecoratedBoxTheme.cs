@@ -53,7 +53,6 @@ internal class AddOnDecoratedBoxTheme : BaseControlTheme
       BuildCommonStyle();
       BuildFilledStyle();
       BuildOutLineStyle();
-      BuildBorderlessStyle();
       BuildDisabledStyle();
    }
 
@@ -358,34 +357,7 @@ internal class AddOnDecoratedBoxTheme : BaseControlTheme
 
       Add(outlineStyle);
    }
-
-   private void BuildBorderlessStyle()
-   {
-      var borderlessStyle =
-         new Style(selector => selector.Nesting()
-                                       .PropertyEquals(AddOnDecoratedBox.StyleVariantProperty, AddOnDecoratedVariant.Borderless));
-      
-      {
-         var errorStyle = new Style(selector => selector.Nesting().Class(AddOnDecoratedBox.ErrorPC));
-         var scrollViewerStyle = new Style(selector => selector.Nesting().Template().Name(InnerBoxDecoratorPart)
-                                                               .Descendant().OfType<ScrollViewer>());
-         scrollViewerStyle.Add(ScrollViewer.ForegroundProperty, GlobalResourceKey.ColorErrorText);
-         errorStyle.Add(scrollViewerStyle);
-         borderlessStyle.Add(errorStyle);
-      }
-
-      {
-         var warningStyle = new Style(selector => selector.Nesting().Class(AddOnDecoratedBox.WarningPC));
-         var scrollViewerStyle = new Style(selector => selector.Nesting().Template().Name(InnerBoxDecoratorPart)
-                                                               .Descendant().OfType<ScrollViewer>());
-         scrollViewerStyle.Add(ScrollViewer.ForegroundProperty, GlobalResourceKey.ColorWarningText);
-         warningStyle.Add(scrollViewerStyle);
-         borderlessStyle.Add(warningStyle);
-      }
-
-      Add(borderlessStyle);
-   }
-
+   
    private void BuildFilledStyle()
    {
       var filledStyle =

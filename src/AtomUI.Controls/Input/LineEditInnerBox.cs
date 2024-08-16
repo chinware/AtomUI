@@ -12,6 +12,9 @@ public class LineEditInnerBox : AddOnDecoratedInnerBox
    public static readonly StyledProperty<bool> IsRevealButtonCheckedProperty =
       AvaloniaProperty.Register<LineEditInnerBox, bool>(nameof(IsRevealButtonChecked));
    
+   public static readonly StyledProperty<AddOnDecoratedStatus> StatusProperty =
+      AddOnDecoratedBox.StatusProperty.AddOwner<LineEditInnerBox>();
+   
    public bool IsRevealButtonVisible
    {
       get => GetValue(IsRevealButtonVisibleProperty);
@@ -22,6 +25,12 @@ public class LineEditInnerBox : AddOnDecoratedInnerBox
    {
       get => GetValue(IsRevealButtonCheckedProperty);
       set => SetValue(IsRevealButtonCheckedProperty, value);
+   }
+   
+   public AddOnDecoratedStatus Status
+   {
+      get => GetValue(StatusProperty);
+      set => SetValue(StatusProperty, value);
    }
 
    #endregion

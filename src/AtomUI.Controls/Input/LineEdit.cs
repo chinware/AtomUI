@@ -2,7 +2,6 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.Input;
 
 namespace AtomUI.Controls;
 
@@ -20,13 +19,13 @@ public class LineEdit : TextBox
       AvaloniaProperty.Register<LineEdit, object?>(nameof(RightAddOn));
    
    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-      AvaloniaProperty.Register<LineEdit, SizeType>(nameof(SizeType), SizeType.Middle);
+      AddOnDecoratedBox.SizeTypeProperty.AddOwner<LineEdit>();
    
    public static readonly StyledProperty<AddOnDecoratedVariant> StyleVariantProperty =
-      AvaloniaProperty.Register<LineEdit, AddOnDecoratedVariant>(nameof(StyleVariant), AddOnDecoratedVariant.Outline);
+      AddOnDecoratedBox.StyleVariantProperty.AddOwner<LineEdit>();
    
    public static readonly StyledProperty<AddOnDecoratedStatus> StatusProperty =
-      AvaloniaProperty.Register<LineEdit, AddOnDecoratedStatus>(nameof(Status), AddOnDecoratedStatus.Default);
+      AddOnDecoratedBox.StatusProperty.AddOwner<LineEdit>();
    
    public static readonly StyledProperty<bool> IsEnableClearButtonProperty =
       AvaloniaProperty.Register<LineEdit, bool>(nameof(IsEnableClearButton), false);
@@ -97,7 +96,6 @@ public class LineEdit : TextBox
    static LineEdit()
    {
       AffectsRender<LineEdit>(BorderBrushProperty, BackgroundProperty);
-      // AffectsMeasure<LineEdit>(LeftAddOnProperty, RightAddOnProperty);
    }
    
    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)

@@ -61,6 +61,7 @@ internal class LineEditTheme : BaseControlTheme
       CreateTemplateParentBinding(editInnerBox, LineEditInnerBox.IsClearButtonVisibleProperty, LineEdit.IsEffectiveShowClearButtonProperty);
       CreateTemplateParentBinding(editInnerBox, LineEditInnerBox.IsRevealButtonVisibleProperty, LineEdit.IsEnableRevealButtonProperty);
       CreateTemplateParentBinding(editInnerBox, LineEditInnerBox.IsRevealButtonCheckedProperty, LineEdit.RevealPasswordProperty);
+      CreateTemplateParentBinding(editInnerBox, LineEditInnerBox.StatusProperty, LineEdit.StatusProperty);
       
       var scrollViewer = new ScrollViewer
       {
@@ -139,6 +140,7 @@ internal class LineEditTheme : BaseControlTheme
    {
       BuildCommonStyle();
       BuildFixedStyle();
+      BuildStatusStyle();
    }
 
    private void BuildCommonStyle()
@@ -169,6 +171,54 @@ internal class LineEditTheme : BaseControlTheme
       this.Add(LineEdit.VerticalAlignmentProperty, VerticalAlignment.Center);
       this.Add(LineEdit.VerticalContentAlignmentProperty, VerticalAlignment.Center);
       this.Add(ScrollViewer.IsScrollChainingEnabledProperty, true);
+   }
+
+   private void BuildStatusStyle()
+   {
+      var borderlessStyle =
+         new Style(selector => selector.Nesting()
+                                       .PropertyEquals(AddOnDecoratedBox.StyleVariantProperty, AddOnDecoratedVariant.Borderless));
+      
+      {
+         var errorStyle = new Style(selector => selector.Nesting().Class(AddOnDecoratedBox.ErrorPC));
+         var scrollViewerStyle = new Style(selector => selector.Nesting().Template().Name(ScrollViewerPart));
+         scrollViewerStyle.Add(ScrollViewer.ForegroundProperty, GlobalResourceKey.ColorErrorText);
+         errorStyle.Add(scrollViewerStyle);
+         borderlessStyle.Add(errorStyle);
+      }
+
+      {
+         var warningStyle = new Style(selector => selector.Nesting().Class(AddOnDecoratedBox.WarningPC));
+         var scrollViewerStyle = new Style(selector => selector.Nesting().Template().Name(ScrollViewerPart));
+         scrollViewerStyle.Add(ScrollViewer.ForegroundProperty, GlobalResourceKey.ColorWarningText);
+         warningStyle.Add(scrollViewerStyle);
+         borderlessStyle.Add(warningStyle);
+      }
+
+      Add(borderlessStyle);
+      
+       var filledStyle =
+         new Style(selector => selector.Nesting().PropertyEquals(AddOnDecoratedBox.StyleVariantProperty, AddOnDecoratedVariant.Filled));
+
+
+       {
+          var errorStyle = new Style(selector => selector.Nesting().Class(AddOnDecoratedBox.ErrorPC));
+          
+         var scrollViewerStyle = new Style(selector => selector.Nesting().Template().Name(ScrollViewerPart));
+         scrollViewerStyle.Add(ScrollViewer.ForegroundProperty, GlobalResourceKey.ColorErrorText);
+         errorStyle.Add(scrollViewerStyle);
+         filledStyle.Add(errorStyle);
+       }
+
+      {
+         var warningStyle = new Style(selector => selector.Nesting().Class(AddOnDecoratedBox.WarningPC));
+         var scrollViewerStyle = new Style(selector => selector.Nesting().Template().Name(ScrollViewerPart));
+         scrollViewerStyle.Add(ScrollViewer.ForegroundProperty, GlobalResourceKey.ColorWarningText);
+         warningStyle.Add(scrollViewerStyle);
+         filledStyle.Add(warningStyle);
+      }
+
+      Add(filledStyle);
    }
 
 }
