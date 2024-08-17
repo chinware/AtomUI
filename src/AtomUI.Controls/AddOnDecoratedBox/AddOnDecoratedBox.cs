@@ -1,5 +1,4 @@
-﻿using AtomUI.Controls.Utils;
-using AtomUI.Data;
+﻿using AtomUI.Data;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
@@ -9,7 +8,6 @@ using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls;
 using Avalonia.Data;
-using Avalonia.Metadata;
 
 namespace AtomUI.Controls;
 
@@ -111,15 +109,6 @@ public class AddOnDecoratedBox : ContentControl
       AvaloniaProperty.RegisterDirect<AddOnDecoratedBox, Thickness>(nameof(RightAddOnBorderThickness),
                                                                     o => o.RightAddOnBorderThickness,
                                                                     (o, v) => o.RightAddOnBorderThickness = v);
-   //
-   // internal static readonly StyledProperty<Thickness> InnerBoxPaddingProperty =
-   //    AvaloniaProperty.Register<AddOnDecoratedBox, Thickness>(nameof(InnerBoxPadding));
-   //
-   // internal static readonly DirectProperty<AddOnDecoratedBox, Thickness> EffectiveInnerBoxPaddingProperty =
-   //    AvaloniaProperty.RegisterDirect<AddOnDecoratedBox, Thickness>(nameof(EffectiveInnerBoxPadding),
-   //                                                                  o => o.EffectiveInnerBoxPadding,
-   //                                                                  (o, v) => o.EffectiveInnerBoxPadding = v);
-
    private CornerRadius _innerBoxCornerRadius;
 
    internal CornerRadius InnerBoxCornerRadius
@@ -159,21 +148,6 @@ public class AddOnDecoratedBox : ContentControl
       get => _rightAddOnBorderThickness;
       set => SetAndRaise(RightAddOnBorderThicknessProperty, ref _rightAddOnBorderThickness, value);
    }
-   //
-   // public Thickness InnerBoxPadding
-   // {
-   //    get => GetValue(InnerBoxPaddingProperty);
-   //    set => SetValue(InnerBoxPaddingProperty, value);
-   // }
-   
-   // private Thickness _effectiveInnerBoxPadding;
-   //
-   // internal Thickness EffectiveInnerBoxPadding
-   // {
-   //    get => _effectiveInnerBoxPadding;
-   //    set => SetAndRaise(EffectiveInnerBoxPaddingProperty, ref _effectiveInnerBoxPadding, value);
-   // }
-   
    #endregion
 
    protected Control? _leftAddOnPresenter;

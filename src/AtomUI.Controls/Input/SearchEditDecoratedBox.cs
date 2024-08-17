@@ -24,5 +24,24 @@ public class SearchEditDecoratedBox : AddOnDecoratedBox
       set => SetValue(SearchButtonTextProperty, value);
    }
    #endregion
+   
+   private Rect? _originRect;
+   
+   protected override void NotifyAddOnBorderInfoCalculated()
+   {
+      RightAddOnBorderThickness = BorderThickness;
+   }
+   
+   protected override Size ArrangeOverride(Size finalSize)
+   {
+      var size = base.ArrangeOverride(finalSize);
+      if (_originRect is null) {
+         _originRect = _rightAddOnPresenter?.Bounds;
+      }
+      if (_rightAddOnPresenter is not null && _originRect.HasValue) {
+         _rightAddOnPresenter.Arrange(_originRect.Value.Inflate(new Thickness(1, 0, 0, 0)));
+      }
 
+      return size;
+   }
 }

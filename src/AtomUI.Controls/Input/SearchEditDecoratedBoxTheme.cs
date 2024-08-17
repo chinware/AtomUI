@@ -2,6 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Templates;
+using Avalonia.Media;
 using Avalonia.Styling;
 
 namespace AtomUI.Controls;
@@ -25,6 +26,7 @@ internal class SearchEditDecoratedBoxTheme : AddOnDecoratedBoxTheme
          Name = RightAddOnPart,
          Focusable = false,
          Icon = searchIcon,
+         BackgroundSizing = BackgroundSizing.OuterBorderEdge
       };
       
       searchButton.RegisterInNameScope(scope);
@@ -44,20 +46,36 @@ internal class SearchEditDecoratedBoxTheme : AddOnDecoratedBoxTheme
       var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(InnerBoxContentPart));
       decoratorStyle.Add(ContentPresenter.ZIndexProperty, NormalZIndex);
       Add(decoratorStyle);
-         
+
+      var defaultButtonTypeStyle = new Style(selector => selector.Nesting().PropertyEquals(SearchEditDecoratedBox.SearchButtonStyleProperty, 
+                                                SearchEditButtonStyle.Default));
+      
+          
       var decoratorHoverOrFocusStyle = new Style(selector => Selectors.Or(selector.Nesting().Template().Name(InnerBoxContentPart).Class(StdPseudoClass.FocusWithIn),
                                                                           selector.Nesting().Template().Name(InnerBoxContentPart).Class(StdPseudoClass.PointerOver)));
       decoratorHoverOrFocusStyle.Add(ContentPresenter.ZIndexProperty, ActivatedZIndex);
-      Add(decoratorHoverOrFocusStyle);
-      
-      var searchButtonStyle = new Style(selector => selector.Nesting().Template().Name(RightAddOnPart));
-      searchButtonStyle.Add(Border.ZIndexProperty, NormalZIndex);
-      Add(searchButtonStyle);
+      defaultButtonTypeStyle.Add(decoratorHoverOrFocusStyle);
+
+      {
+         var searchButtonStyle = new Style(selector => selector.Nesting().Template().Name(RightAddOnPart));
+         searchButtonStyle.Add(Border.ZIndexProperty, NormalZIndex);
+         defaultButtonTypeStyle.Add(searchButtonStyle);
+      }
          
       var searchButtonStyleHoverOrFocusStyle = new Style(selector => Selectors.Or(selector.Nesting().Template().Name(RightAddOnPart).Class(StdPseudoClass.Pressed),
                                                             selector.Nesting().Template().Name(RightAddOnPart).Class(StdPseudoClass.PointerOver)));
       searchButtonStyleHoverOrFocusStyle.Add(Border.ZIndexProperty, ActivatedZIndex);
-      Add(searchButtonStyleHoverOrFocusStyle);
+      defaultButtonTypeStyle.Add(searchButtonStyleHoverOrFocusStyle);
+      Add(defaultButtonTypeStyle);
+
+      var primaryButtonTypeStyle = new Style(selector => selector.Nesting().PropertyEquals(SearchEditDecoratedBox.SearchButtonStyleProperty, 
+                                                SearchEditButtonStyle.Primary));
+      {
+         var searchButtonStyle = new Style(selector => selector.Nesting().Template().Name(RightAddOnPart));
+         searchButtonStyle.Add(Border.ZIndexProperty, ActivatedZIndex);
+         primaryButtonTypeStyle.Add(searchButtonStyle);
+      }
+      Add(primaryButtonTypeStyle);
       
       // Icon button
       var iconSearchButtonStyle = new Style(selector => selector.Nesting().PropertyEquals(SearchEdit.SearchButtonStyleProperty, SearchEditButtonStyle.Default));
