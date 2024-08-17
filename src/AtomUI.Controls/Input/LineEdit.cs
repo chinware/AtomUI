@@ -132,18 +132,6 @@ public class LineEdit : TextBox
          }
       }
    }
-   
-   // protected override void OnPointerPressed(PointerPressedEventArgs e)
-   // {
-   //    if (_lineEditKernelDecorator is null) {
-   //       return;
-   //    }
-   //    var targetRect = new Rect(_lineEditKernelDecorator.DesiredSize);
-   //    if (!targetRect.Contains(e.GetPosition(_lineEditKernelDecorator))) {
-   //       return;
-   //    }
-   //    base.OnPointerPressed(e);
-   // }
 
    private void SetupEffectiveShowClearButton()
    {

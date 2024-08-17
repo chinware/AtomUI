@@ -35,8 +35,6 @@ public class SearchEdit : LineEdit
       set => SetValue(SearchButtonTextProperty, value);
    }
    #endregion
-
-   private Rect? _originRect;
    
    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
    {

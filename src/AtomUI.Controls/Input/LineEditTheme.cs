@@ -58,7 +58,6 @@ internal class LineEditTheme : BaseControlTheme
       {
          Name = LineEditInnerBoxPart,
          Cursor = new Cursor(StandardCursorType.Ibeam),
-         IsRevealButtonVisible = true
       };
       
       CreateTemplateParentBinding(editInnerBox, LineEditInnerBox.LeftAddOnContentProperty, LineEdit.InnerLeftContentProperty);
@@ -66,7 +65,7 @@ internal class LineEditTheme : BaseControlTheme
       CreateTemplateParentBinding(editInnerBox, LineEditInnerBox.SizeTypeProperty, LineEdit.SizeTypeProperty);
       CreateTemplateParentBinding(editInnerBox, LineEditInnerBox.IsClearButtonVisibleProperty, LineEdit.IsEffectiveShowClearButtonProperty);
       CreateTemplateParentBinding(editInnerBox, LineEditInnerBox.IsRevealButtonVisibleProperty, LineEdit.IsEnableRevealButtonProperty);
-      CreateTemplateParentBinding(editInnerBox, LineEditInnerBox.IsRevealButtonCheckedProperty, LineEdit.RevealPasswordProperty);
+      CreateTemplateParentBinding(editInnerBox, LineEditInnerBox.IsRevealButtonCheckedProperty, LineEdit.RevealPasswordProperty, BindingMode.TwoWay);
       CreateTemplateParentBinding(editInnerBox, LineEditInnerBox.StatusProperty, LineEdit.StatusProperty);
       
       var scrollViewer = new ScrollViewer

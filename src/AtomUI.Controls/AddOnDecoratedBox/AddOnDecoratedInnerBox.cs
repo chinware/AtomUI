@@ -84,12 +84,10 @@ public abstract class AddOnDecoratedInnerBox : ContentControl
 
    private StackPanel? _leftAddOnLayout;
    private StackPanel? _rightAddOnLayout;
-   private ToggleIconButton? _revealButton;
    private IconButton? _clearButton;
 
    protected virtual void NotifyClearButtonClicked()
    {
-      
    }
    
    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -113,8 +111,7 @@ public abstract class AddOnDecoratedInnerBox : ContentControl
       TokenResourceBinder.CreateGlobalResourceBinding(this, MarginXSTokenProperty, GlobalResourceKey.MarginXS);
       _leftAddOnLayout = e.NameScope.Find<StackPanel>(AddOnDecoratedInnerBoxTheme.LeftAddOnLayoutPart);
       _rightAddOnLayout = e.NameScope.Find<StackPanel>(AddOnDecoratedInnerBoxTheme.RightAddOnLayoutPart);
-
-      _revealButton = e.NameScope.Find<ToggleIconButton>(AddOnDecoratedInnerBoxTheme.RevealButtonPart);
+      
       _clearButton = e.NameScope.Find<IconButton>(AddOnDecoratedInnerBoxTheme.ClearButtonPart);
 
       if (_leftAddOnLayout is not null) {

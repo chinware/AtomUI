@@ -10,6 +10,8 @@ namespace AtomUI.Controls;
 [ControlThemeProvider]
 internal class LineEditInnerBoxTheme : AddOnDecoratedInnerBoxTheme
 {
+   public const string RevealButtonPart = "PART_RevealButton";
+   
    public LineEditInnerBoxTheme() : base(typeof(LineEditInnerBox)) {}
    
    protected override void BuildRightAddOnItems(StackPanel layout, INameScope scope)

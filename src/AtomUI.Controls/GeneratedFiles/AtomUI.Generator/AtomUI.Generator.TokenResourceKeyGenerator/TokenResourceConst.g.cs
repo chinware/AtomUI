@@ -245,18 +245,6 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey SeparatorItemHeight = new TokenResourceKey("Menu.SeparatorItemHeight");
     }
 
-    public static class NumericUpDownResourceKey
-    {
-        public static readonly TokenResourceKey ControlWidth = new TokenResourceKey("NumericUpDown.ControlWidth");
-        public static readonly TokenResourceKey HandleWidth = new TokenResourceKey("NumericUpDown.HandleWidth");
-        public static readonly TokenResourceKey HandleFontSize = new TokenResourceKey("NumericUpDown.HandleFontSize");
-        public static readonly TokenResourceKey HandleBg = new TokenResourceKey("NumericUpDown.HandleBg");
-        public static readonly TokenResourceKey HandleActiveBg = new TokenResourceKey("NumericUpDown.HandleActiveBg");
-        public static readonly TokenResourceKey HandleHoverColor = new TokenResourceKey("NumericUpDown.HandleHoverColor");
-        public static readonly TokenResourceKey HandleBorderColor = new TokenResourceKey("NumericUpDown.HandleBorderColor");
-        public static readonly TokenResourceKey FilledHandleBg = new TokenResourceKey("NumericUpDown.FilledHandleBg");
-    }
-
     public static class OptionButtonResourceKey
     {
         public static readonly TokenResourceKey ButtonBackground = new TokenResourceKey("OptionButton.ButtonBackground");

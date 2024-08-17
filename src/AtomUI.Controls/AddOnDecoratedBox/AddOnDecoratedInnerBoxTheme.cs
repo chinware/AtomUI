@@ -18,7 +18,6 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
    public const string LeftAddOnLayoutPart = "PART_LeftAddOnLayout";
    public const string RightAddOnLayoutPart = "PART_RightAddOnLayout";
    public const string ClearButtonPart = "PART_ClearButton";
-   public const string RevealButtonPart = "PART_RevealButton";
 
    public AddOnDecoratedInnerBoxTheme(Type targetType) : base(targetType) { }
 
