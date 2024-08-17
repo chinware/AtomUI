@@ -24,6 +24,12 @@ public class IconButton : AvaloniaButton, ICustomHitTest
 
    public static readonly StyledProperty<TimeSpan> LoadingAnimationDurationProperty =
       PathIcon.LoadingAnimationDurationProperty.AddOwner<IconButton>();
+   
+   public static readonly StyledProperty<double> IconWidthProperty
+      = AvaloniaProperty.Register<IconButton, double>(nameof(IconWidth));
+
+   public static readonly StyledProperty<double> IconHeightProperty
+      = AvaloniaProperty.Register<IconButton, double>(nameof(IconHeight));
 
    public PathIcon? Icon
    {
@@ -41,6 +47,18 @@ public class IconButton : AvaloniaButton, ICustomHitTest
    {
       get => GetValue(LoadingAnimationDurationProperty);
       set => SetValue(LoadingAnimationDurationProperty, value);
+   }
+   
+   public double IconWidth
+   {
+      get => GetValue(IconWidthProperty);
+      set => SetValue(IconWidthProperty, value);
+   }
+
+   public double IconHeight
+   {
+      get => GetValue(IconHeightProperty);
+      set => SetValue(IconHeightProperty, value);
    }
 
    #endregion
@@ -90,6 +108,8 @@ public class IconButton : AvaloniaButton, ICustomHitTest
          Icon.SetCurrentValue(PathIcon.VerticalAlignmentProperty, VerticalAlignment.Center);
          BindUtils.RelayBind(this, LoadingAnimationProperty, Icon, PathIcon.LoadingAnimationProperty);
          BindUtils.RelayBind(this, LoadingAnimationDurationProperty, Icon, PathIcon.LoadingAnimationDurationProperty);
+         BindUtils.RelayBind(this, IconHeightProperty, Icon, PathIcon.HeightProperty);
+         BindUtils.RelayBind(this, IconWidthProperty, Icon, PathIcon.WidthProperty);
          Content = Icon;
       }
    }

@@ -15,7 +15,13 @@ public abstract class AddOnDecoratedInnerBox : ContentControl
    #region 公共属性定义
 
    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-      AddOnDecoratedBox.SizeTypeProperty.AddOwner<AddOnDecoratedInnerBox>();   
+      AddOnDecoratedBox.SizeTypeProperty.AddOwner<AddOnDecoratedInnerBox>();
+   
+   public static readonly StyledProperty<AddOnDecoratedVariant> StyleVariantProperty =
+      AddOnDecoratedBox.StyleVariantProperty.AddOwner<AddOnDecoratedInnerBox>();
+   
+   public static readonly StyledProperty<AddOnDecoratedStatus> StatusProperty =
+      AddOnDecoratedBox.StatusProperty.AddOwner<AddOnDecoratedInnerBox>();
    
    public static readonly StyledProperty<object?> LeftAddOnContentProperty =
       AvaloniaProperty.Register<AddOnDecoratedInnerBox, object?>(nameof(LeftAddOnContent));
@@ -30,6 +36,18 @@ public abstract class AddOnDecoratedInnerBox : ContentControl
    {
       get => GetValue(SizeTypeProperty);
       set => SetValue(SizeTypeProperty, value);
+   }
+   
+   public AddOnDecoratedVariant StyleVariant
+   {
+      get => GetValue(StyleVariantProperty);
+      set => SetValue(StyleVariantProperty, value);
+   }
+   
+   public AddOnDecoratedStatus Status
+   {
+      get => GetValue(StatusProperty);
+      set => SetValue(StatusProperty, value);
    }
    
    public object? LeftAddOnContent
@@ -103,6 +121,7 @@ public abstract class AddOnDecoratedInnerBox : ContentControl
             UIStructureUtils.SetTemplateParent(newControl, this);
          }
       }
+      
    }
    
    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -153,4 +172,5 @@ public abstract class AddOnDecoratedInnerBox : ContentControl
 
       ContentPresenterMargin = new Thickness(marginLeft, 0, marginRight, 0);
    }
+   
 }

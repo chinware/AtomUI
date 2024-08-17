@@ -57,12 +57,15 @@ internal class LineEditTheme : BaseControlTheme
       var editInnerBox = new LineEditInnerBox(lineEdit)
       {
          Name = LineEditInnerBoxPart,
-         Cursor = new Cursor(StandardCursorType.Ibeam),
+         Cursor = new Cursor(StandardCursorType.Ibeam)
       };
+
+      editInnerBox.RegisterInNameScope(scope);
       
       CreateTemplateParentBinding(editInnerBox, LineEditInnerBox.LeftAddOnContentProperty, LineEdit.InnerLeftContentProperty);
       CreateTemplateParentBinding(editInnerBox, LineEditInnerBox.RightAddOnContentProperty, LineEdit.InnerRightContentProperty);
       CreateTemplateParentBinding(editInnerBox, LineEditInnerBox.SizeTypeProperty, LineEdit.SizeTypeProperty);
+      CreateTemplateParentBinding(editInnerBox, LineEditInnerBox.StyleVariantProperty, LineEdit.StyleVariantProperty);
       CreateTemplateParentBinding(editInnerBox, LineEditInnerBox.IsClearButtonVisibleProperty, LineEdit.IsEffectiveShowClearButtonProperty);
       CreateTemplateParentBinding(editInnerBox, LineEditInnerBox.IsRevealButtonVisibleProperty, LineEdit.IsEnableRevealButtonProperty);
       CreateTemplateParentBinding(editInnerBox, LineEditInnerBox.IsRevealButtonCheckedProperty, LineEdit.RevealPasswordProperty, BindingMode.TwoWay);
@@ -93,10 +96,8 @@ internal class LineEditTheme : BaseControlTheme
          Name = WatermarkPart,
          Opacity = 0.5
       };
-      CreateTemplateParentBinding(watermark, TextBlock.HorizontalAlignmentProperty,
-                                  LineEdit.HorizontalContentAlignmentProperty);
-      CreateTemplateParentBinding(watermark, TextBlock.VerticalAlignmentProperty,
-                                  LineEdit.VerticalContentAlignmentProperty);
+      CreateTemplateParentBinding(watermark, TextBlock.HorizontalAlignmentProperty, LineEdit.HorizontalContentAlignmentProperty);
+      CreateTemplateParentBinding(watermark, TextBlock.VerticalAlignmentProperty, LineEdit.VerticalContentAlignmentProperty);
       CreateTemplateParentBinding(watermark, TextBlock.TextProperty, LineEdit.WatermarkProperty);
       CreateTemplateParentBinding(watermark, TextBlock.TextAlignmentProperty, LineEdit.TextAlignmentProperty);
       CreateTemplateParentBinding(watermark, TextBlock.TextWrappingProperty, LineEdit.TextWrappingProperty);

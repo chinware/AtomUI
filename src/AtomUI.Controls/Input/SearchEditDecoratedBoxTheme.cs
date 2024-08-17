@@ -1,5 +1,6 @@
 ﻿using AtomUI.Theme.Styling;
 using Avalonia.Controls;
+using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Templates;
 using Avalonia.Styling;
 
@@ -40,13 +41,13 @@ internal class SearchEditDecoratedBoxTheme : AddOnDecoratedBoxTheme
    {
       base.BuildStyles();
 
-      var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(InnerBoxDecoratorPart));
-      decoratorStyle.Add(Border.ZIndexProperty, NormalZIndex);
+      var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(InnerBoxContentPart));
+      decoratorStyle.Add(ContentPresenter.ZIndexProperty, NormalZIndex);
       Add(decoratorStyle);
          
-      var decoratorHoverOrFocusStyle = new Style(selector => Selectors.Or(selector.Nesting().Template().Name(InnerBoxDecoratorPart).Class(StdPseudoClass.FocusWithIn),
-                                                                          selector.Nesting().Template().Name(InnerBoxDecoratorPart).Class(StdPseudoClass.PointerOver)));
-      decoratorHoverOrFocusStyle.Add(Border.ZIndexProperty, ActivatedZIndex);
+      var decoratorHoverOrFocusStyle = new Style(selector => Selectors.Or(selector.Nesting().Template().Name(InnerBoxContentPart).Class(StdPseudoClass.FocusWithIn),
+                                                                          selector.Nesting().Template().Name(InnerBoxContentPart).Class(StdPseudoClass.PointerOver)));
+      decoratorHoverOrFocusStyle.Add(ContentPresenter.ZIndexProperty, ActivatedZIndex);
       Add(decoratorHoverOrFocusStyle);
       
       var searchButtonStyle = new Style(selector => selector.Nesting().Template().Name(RightAddOnPart));

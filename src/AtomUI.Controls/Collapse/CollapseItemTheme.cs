@@ -98,6 +98,8 @@ internal class CollapseItemTheme : BaseControlTheme
          Name = ExpandButtonPart,
          VerticalAlignment = VerticalAlignment.Center,
       };
+      TokenResourceBinder.CreateGlobalTokenBinding(expandButton, IconButton.IconWidthProperty, GlobalResourceKey.IconSize);
+      TokenResourceBinder.CreateGlobalTokenBinding(expandButton, IconButton.IconHeightProperty, GlobalResourceKey.IconSize);
       expandButton.RegisterInNameScope(scope);
       expandButton.Transitions = new Transitions();
       expandButton.Transitions.Add(
@@ -105,6 +107,7 @@ internal class CollapseItemTheme : BaseControlTheme
       CreateTemplateParentBinding(expandButton, IconButton.IconProperty, CollapseItem.ExpandIconProperty);
       CreateTemplateParentBinding(expandButton, IconButton.IsVisibleProperty, CollapseItem.IsShowExpandIconProperty);
       CreateTemplateParentBinding(expandButton, IconButton.IsEnabledProperty, CollapseItem.IsEnabledProperty);
+      
       headerLayout.Children.Add(expandButton);
 
       var headerPresenter = new ContentPresenter()

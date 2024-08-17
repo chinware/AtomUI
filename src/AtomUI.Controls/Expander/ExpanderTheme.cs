@@ -108,6 +108,9 @@ internal class ExpanderTheme : BaseControlTheme
          VerticalAlignment = VerticalAlignment.Center,
          HorizontalAlignment = HorizontalAlignment.Left,
       };
+      TokenResourceBinder.CreateGlobalTokenBinding(expandButton, IconButton.IconWidthProperty, GlobalResourceKey.IconSize);
+      TokenResourceBinder.CreateGlobalTokenBinding(expandButton, IconButton.IconHeightProperty, GlobalResourceKey.IconSize);
+      
       expandButton.RegisterInNameScope(scope);
       expandButton.Transitions = new Transitions();
       expandButton.Transitions.Add(AnimationUtils.CreateTransition<TransformOperationsTransition>(IconButton.RenderTransformProperty));

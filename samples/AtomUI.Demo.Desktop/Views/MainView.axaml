@@ -114,6 +114,9 @@
             <TabItem Header="InputNumber">
                 <showcases:InputNumberShowCase />
             </TabItem>
+            <TabItem Header="ButtonSpinner">
+                <showcases:ButtonSpinnerShowCase />
+            </TabItem>
             <TabItem Header="TitleBar">
                 <showcases:TitleBarShowCase />
             </TabItem>

@@ -1,8 +1,10 @@
 ﻿using AtomUI.Media;
+using AtomUI.Theme.TokenSystem;
 using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
+[ControlDesignToken]
 internal class ButtonSpinnerToken : LineEditToken
 {
    new public const string ID = "ButtonSpinner";
@@ -29,7 +31,7 @@ internal class ButtonSpinnerToken : LineEditToken
    /// <summary>
    /// 操作按钮图标大小
    /// </summary>
-   public double HandleFontSize { get; set; }
+   public double HandleIconSize { get; set; }
    
    /// <summary>
    /// 操作按钮背景色
@@ -62,7 +64,7 @@ internal class ButtonSpinnerToken : LineEditToken
       var colorNeutral = _globalToken.ColorToken.ColorNeutralToken;
       ControlWidth = 90;
       HandleWidth = _globalToken.HeightToken.ControlHeightSM;
-      HandleFontSize = _globalToken.FontToken.FontSize / 2;
+      HandleIconSize = _globalToken.FontToken.FontSize / 2;
       HandleActiveBg = _globalToken.ColorFillAlter;
       HandleBg = colorNeutral.ColorBgContainer;
       FilledHandleBg = ColorUtils.OnBackground(colorNeutral.ColorFillSecondary,

@@ -33,5 +33,9 @@
         <ProjectReference Include="..\..\src\AtomUI.Icon.AntDesign\AtomUI.Icon.AntDesign.csproj" />
         <ProjectReference Include="..\..\src\AtomUI.Theme\AtomUI.Theme.csproj" />
     </ItemGroup>
+
+    <ItemGroup>
+      <AdditionalFiles Include="ShowCase\ButtonSpinnerShowCase.axaml" />
+    </ItemGroup>
     
 </Project>
