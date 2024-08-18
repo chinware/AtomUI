@@ -2,6 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Templates;
+using Avalonia.Layout;
 using Avalonia.Styling;
 
 namespace AtomUI.Controls;
@@ -15,9 +16,8 @@ internal class ButtonSpinnerInnerBoxTheme : AddOnDecoratedInnerBoxTheme
    public ButtonSpinnerInnerBoxTheme() : base(typeof(ButtonSpinnerInnerBox)) {}
    public ButtonSpinnerInnerBoxTheme(Type targetType) : base(targetType) {}
    
-   protected override Panel BuildBoxMainLayout(AddOnDecoratedInnerBox decoratedBox, INameScope scope)
+   protected override void NotifyBuildExtraChild(Panel layout, AddOnDecoratedInnerBox decoratedBox, INameScope scope)
    {
-      var baseMainLayout = base.BuildBoxMainLayout(decoratedBox, scope);
       var contentPresenter = new ContentPresenter()
       {
          Name = SpinnerHandlePart
@@ -25,16 +25,7 @@ internal class ButtonSpinnerInnerBoxTheme : AddOnDecoratedInnerBoxTheme
       contentPresenter.RegisterInNameScope(scope);
       CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty, ButtonSpinnerInnerBox.SpinnerContentProperty);
       CreateTemplateParentBinding(contentPresenter, ContentPresenter.IsVisibleProperty, ButtonSpinnerInnerBox.ShowButtonSpinnerProperty);
-      
-      var spinnerMainLayout = new DockPanel
-      {
-         Name = SpinnerMainLayoutPart,
-         LastChildFill = true,
-      };
-      spinnerMainLayout.Children.Add(contentPresenter);
-      spinnerMainLayout.Children.Add(baseMainLayout);
-      
-      return spinnerMainLayout;
+      layout.Children.Add(contentPresenter);
    }
    
    protected override void BuildStyles()
@@ -74,7 +65,7 @@ internal class ButtonSpinnerInnerBoxTheme : AddOnDecoratedInnerBoxTheme
       var leftPositionStyle = new Style(selector => selector.Nesting().PropertyEquals(ButtonSpinnerInnerBox.ButtonSpinnerLocationProperty, Location.Left));
       {
          var handleStyle = new Style(selector => selector.Nesting().Template().Name(SpinnerHandlePart));
-         handleStyle.Add(DockPanel.DockProperty, Dock.Left);
+         handleStyle.Add(ContentPresenter.HorizontalAlignmentProperty, HorizontalAlignment.Left);
          leftPositionStyle.Add(handleStyle);
       }
       commonStyle.Add(leftPositionStyle);
@@ -82,7 +73,7 @@ internal class ButtonSpinnerInnerBoxTheme : AddOnDecoratedInnerBoxTheme
       var rightPositionStyle = new Style(selector => selector.Nesting().PropertyEquals(ButtonSpinnerInnerBox.ButtonSpinnerLocationProperty, Location.Right));
       {
          var handleStyle = new Style(selector => selector.Nesting().Template().Name(SpinnerHandlePart));
-         handleStyle.Add(DockPanel.DockProperty, Dock.Right);
+         handleStyle.Add(ContentPresenter.HorizontalAlignmentProperty, HorizontalAlignment.Right);
          rightPositionStyle.Add(handleStyle);
       }
       commonStyle.Add(rightPositionStyle);

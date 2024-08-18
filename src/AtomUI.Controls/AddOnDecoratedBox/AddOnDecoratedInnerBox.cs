@@ -1,4 +1,5 @@
 ﻿using AtomUI.Controls.Utils;
+using AtomUI.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
@@ -72,6 +73,14 @@ public abstract class AddOnDecoratedInnerBox : ContentControl
 
    #region 内部属性定义
    
+   internal static readonly StyledProperty<Thickness> InnerBoxPaddingProperty =
+      AvaloniaProperty.Register<AddOnDecoratedInnerBox, Thickness>(nameof(InnerBoxPadding));
+   
+   internal static readonly DirectProperty<AddOnDecoratedInnerBox, Thickness> EffectiveInnerBoxPaddingProperty =
+      AvaloniaProperty.RegisterDirect<AddOnDecoratedInnerBox, Thickness>(nameof(EffectiveInnerBoxPadding),
+                                                                         o => o.EffectiveInnerBoxPadding,
+                                                                         (o, v) => o.EffectiveInnerBoxPadding = v);
+   
    internal static readonly DirectProperty<AddOnDecoratedInnerBox, Thickness> ContentPresenterMarginProperty =
       AvaloniaProperty.RegisterDirect<AddOnDecoratedInnerBox, Thickness>(nameof(ContentPresenterMargin),
                                                                          o => o.ContentPresenterMargin,
@@ -81,6 +90,19 @@ public abstract class AddOnDecoratedInnerBox : ContentControl
       AvaloniaProperty.RegisterDirect<AddOnDecoratedInnerBox, double>(nameof(MarginXSToken),
                                                                          o => o.MarginXSToken,
                                                                          (o, v) => o.MarginXSToken = v);
+   internal Thickness InnerBoxPadding
+   {
+      get => GetValue(InnerBoxPaddingProperty);
+      set => SetValue(InnerBoxPaddingProperty, value);
+   }
+   
+   private Thickness _effectiveInnerBoxPadding;
+
+   internal Thickness EffectiveInnerBoxPadding
+   {
+      get => _effectiveInnerBoxPadding;
+      set => SetAndRaise(EffectiveInnerBoxPaddingProperty, ref _effectiveInnerBoxPadding, value);
+   }
    
    private double _marginXSToken;
 
@@ -104,8 +126,11 @@ public abstract class AddOnDecoratedInnerBox : ContentControl
    private StackPanel? _rightAddOnLayout;
    private IconButton? _clearButton;
 
-   protected virtual void NotifyClearButtonClicked()
+   protected virtual void NotifyClearButtonClicked() { }
+
+   protected virtual void BuildEffectiveInnerBoxPadding()
    {
+      BindUtils.RelayBind(this, InnerBoxPaddingProperty, this, EffectiveInnerBoxPaddingProperty);
    }
    
    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -130,7 +155,6 @@ public abstract class AddOnDecoratedInnerBox : ContentControl
       TokenResourceBinder.CreateGlobalResourceBinding(this, MarginXSTokenProperty, GlobalResourceKey.MarginXS);
       _leftAddOnLayout = e.NameScope.Find<StackPanel>(AddOnDecoratedInnerBoxTheme.LeftAddOnLayoutPart);
       _rightAddOnLayout = e.NameScope.Find<StackPanel>(AddOnDecoratedInnerBoxTheme.RightAddOnLayoutPart);
-      
       _clearButton = e.NameScope.Find<IconButton>(AddOnDecoratedInnerBoxTheme.ClearButtonPart);
 
       if (_leftAddOnLayout is not null) {
@@ -148,6 +172,7 @@ public abstract class AddOnDecoratedInnerBox : ContentControl
       }
       
       SetupContentPresenterMargin();
+      BuildEffectiveInnerBoxPadding();
    }
 
    private void HandleLayoutSizeChanged(object? sender, SizeChangedEventArgs args)

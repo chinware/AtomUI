@@ -153,7 +153,6 @@ internal class AddOnDecoratedBoxTheme : BaseControlTheme
       }
 
       largeStyle.Add(AddOnDecoratedBox.FontSizeProperty, AddOnDecoratedBoxResourceKey.FontSizeLG);
-      // largeStyle.Add(AddOnDecoratedBox.MinHeightProperty, GlobalResourceKey.FontHeightLG);
       largeStyle.Add(AddOnDecoratedBox.CornerRadiusProperty, GlobalResourceKey.BorderRadiusLG);
       commonStyle.Add(largeStyle);
 
@@ -167,7 +166,6 @@ internal class AddOnDecoratedBoxTheme : BaseControlTheme
       }
       
       middleStyle.Add(AddOnDecoratedBox.FontSizeProperty, AddOnDecoratedBoxResourceKey.FontSize);
-      // middleStyle.Add(AddOnDecoratedBox.MinHeightProperty, GlobalResourceKey.FontHeight);
       middleStyle.Add(AddOnDecoratedBox.CornerRadiusProperty, GlobalResourceKey.BorderRadius);
       commonStyle.Add(middleStyle);
 
@@ -181,7 +179,6 @@ internal class AddOnDecoratedBoxTheme : BaseControlTheme
       }
       
       smallStyle.Add(AddOnDecoratedBox.FontSizeProperty, AddOnDecoratedBoxResourceKey.FontSizeSM);
-      // smallStyle.Add(AddOnDecoratedBox.MinHeightProperty, GlobalResourceKey.FontHeightSM);
       smallStyle.Add(AddOnDecoratedBox.CornerRadiusProperty, GlobalResourceKey.BorderRadiusSM);
       commonStyle.Add(smallStyle);
 

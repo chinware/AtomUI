@@ -1,7 +1,9 @@
-﻿using AtomUI.Theme;
+﻿using AtomUI.Media;
+using AtomUI.Theme;
 using AtomUI.Theme.Styling;
+using AtomUI.Theme.Utils;
 using AtomUI.Utils;
-using Avalonia;
+using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
@@ -18,6 +20,7 @@ internal class ButtonSpinnerTheme : BaseControlTheme
    public const string SpinnerInnerBoxPart = "PART_SpinnerInnerBox";
    public const string IncreaseButtonPart = "PART_IncreaseButton";
    public const string DecreaseButtonPart = "PART_DecreaseButton";
+   public const string SpinnerHandleDecoratorPart = "PART_SpinnerHandleDecorator";
    
    public ButtonSpinnerTheme() : base(typeof(ButtonSpinner)) {}
    
@@ -61,12 +64,23 @@ internal class ButtonSpinnerTheme : BaseControlTheme
       CreateTemplateParentBinding(spinnerInnerBox, ButtonSpinnerInnerBox.ContentTemplateProperty, ButtonSpinner.ContentTemplateProperty);
       CreateTemplateParentBinding(spinnerInnerBox, ButtonSpinnerInnerBox.ShowButtonSpinnerProperty, ButtonSpinner.ShowButtonSpinnerProperty);
       CreateTemplateParentBinding(spinnerInnerBox, ButtonSpinnerInnerBox.ButtonSpinnerLocationProperty, ButtonSpinner.ButtonSpinnerLocationProperty);
+
+      var spinnerHandleDecorator = new Border()
+      {
+         Name = SpinnerHandleDecoratorPart,
+         BackgroundSizing = BackgroundSizing.InnerBorderEdge,
+         ClipToBounds = true
+      };
+      
+      spinnerHandleDecorator.RegisterInNameScope(scope);
       
       var spinnerLayout = new UniformGrid()
       {
          Columns = 1,
-         Rows = 2
+         Rows = 2,
       };
+
+      spinnerHandleDecorator.Child = spinnerLayout;
 
       TokenResourceBinder.CreateTokenBinding(spinnerLayout, StackPanel.WidthProperty, ButtonSpinnerResourceKey.HandleWidth);
       
@@ -75,7 +89,7 @@ internal class ButtonSpinnerTheme : BaseControlTheme
          Kind = "UpOutlined"
       };
 
-      TokenResourceBinder.CreateGlobalTokenBinding(increaseButtonIcon, PathIcon.ActiveFilledBrushProperty, GlobalResourceKey.ColorPrimaryHover);
+      TokenResourceBinder.CreateGlobalTokenBinding(increaseButtonIcon, PathIcon.ActiveFilledBrushProperty, ButtonSpinnerResourceKey.HandleHoverColor);
       TokenResourceBinder.CreateGlobalTokenBinding(increaseButtonIcon, PathIcon.SelectedFilledBrushProperty, GlobalResourceKey.ColorPrimaryActive);
       
       var increaseButton = new IconButton()
@@ -84,7 +98,18 @@ internal class ButtonSpinnerTheme : BaseControlTheme
          Icon = increaseButtonIcon,
          VerticalAlignment = VerticalAlignment.Stretch,
          HorizontalAlignment = HorizontalAlignment.Stretch,
+         BackgroundSizing = BackgroundSizing.InnerBorderEdge,
+         Transitions = new Transitions()
+         {
+            AnimationUtils.CreateTransition<SolidColorBrushTransition>(IconButton.BackgroundProperty)
+         }
       };
+      increaseButton.SetCurrentValue(IconButton.BackgroundProperty, new SolidColorBrush(Colors.Transparent));
+      {
+         var handleButtonStyle = new Style(selector => selector.Class(StdPseudoClass.Pressed));
+         handleButtonStyle.Add(IconButton.BackgroundProperty, ButtonSpinnerResourceKey.HandleActiveBg);
+         increaseButton.Styles.Add(handleButtonStyle);
+      }
       
       TokenResourceBinder.CreateTokenBinding(increaseButton, IconButton.IconWidthProperty, ButtonSpinnerResourceKey.HandleIconSize);
       TokenResourceBinder.CreateTokenBinding(increaseButton, IconButton.IconHeightProperty, ButtonSpinnerResourceKey.HandleIconSize);
@@ -95,7 +120,7 @@ internal class ButtonSpinnerTheme : BaseControlTheme
          Kind = "DownOutlined"
       };
       
-      TokenResourceBinder.CreateGlobalTokenBinding(decreaseButtonIcon, PathIcon.ActiveFilledBrushProperty, GlobalResourceKey.ColorPrimaryHover);
+      TokenResourceBinder.CreateGlobalTokenBinding(decreaseButtonIcon, PathIcon.ActiveFilledBrushProperty, ButtonSpinnerResourceKey.HandleHoverColor);
       TokenResourceBinder.CreateGlobalTokenBinding(decreaseButtonIcon, PathIcon.SelectedFilledBrushProperty, GlobalResourceKey.ColorPrimaryActive);
       
       var decreaseButton = new IconButton()
@@ -104,8 +129,18 @@ internal class ButtonSpinnerTheme : BaseControlTheme
          Icon = decreaseButtonIcon,
          VerticalAlignment = VerticalAlignment.Stretch,
          HorizontalAlignment = HorizontalAlignment.Stretch,
+         BackgroundSizing = BackgroundSizing.InnerBorderEdge,
+         Transitions = new Transitions()
+         {
+            AnimationUtils.CreateTransition<SolidColorBrushTransition>(IconButton.BackgroundProperty)
+         }
       };
-      
+      decreaseButton.SetCurrentValue(IconButton.BackgroundProperty, new SolidColorBrush(Colors.Transparent));
+      {
+         var handleButtonStyle = new Style(selector => selector.Class(StdPseudoClass.Pressed));
+         handleButtonStyle.Add(IconButton.BackgroundProperty, ButtonSpinnerResourceKey.HandleActiveBg);
+         decreaseButton.Styles.Add(handleButtonStyle);
+      }
       decreaseButton.RegisterInNameScope(scope);
       TokenResourceBinder.CreateTokenBinding(decreaseButton, IconButton.IconWidthProperty, ButtonSpinnerResourceKey.HandleIconSize);
       TokenResourceBinder.CreateTokenBinding(decreaseButton, IconButton.IconHeightProperty, ButtonSpinnerResourceKey.HandleIconSize);
@@ -113,7 +148,7 @@ internal class ButtonSpinnerTheme : BaseControlTheme
       spinnerLayout.Children.Add(increaseButton);
       spinnerLayout.Children.Add(decreaseButton);
 
-      spinnerInnerBox.SpinnerContent = spinnerLayout;
+      spinnerInnerBox.SpinnerContent = spinnerHandleDecorator;
       
       return spinnerInnerBox;
    }
@@ -121,6 +156,20 @@ internal class ButtonSpinnerTheme : BaseControlTheme
    protected override void BuildStyles()
    {
       var commonStyle = new Style(selector => selector.Nesting());
+      var largeStyle =
+         new Style(selector => selector.Nesting().PropertyEquals(AddOnDecoratedBox.SizeTypeProperty, SizeType.Large));
+      largeStyle.Add(AddOnDecoratedBox.CornerRadiusProperty, GlobalResourceKey.BorderRadiusLG);
+      commonStyle.Add(largeStyle);
+
+      var middleStyle =
+         new Style(selector => selector.Nesting().PropertyEquals(AddOnDecoratedBox.SizeTypeProperty, SizeType.Middle));
+      middleStyle.Add(AddOnDecoratedBox.CornerRadiusProperty, GlobalResourceKey.BorderRadius);
+      commonStyle.Add(middleStyle);
+
+      var smallStyle =
+         new Style(selector => selector.Nesting().PropertyEquals(AddOnDecoratedBox.SizeTypeProperty, SizeType.Small));
+      smallStyle.Add(AddOnDecoratedBox.CornerRadiusProperty, GlobalResourceKey.BorderRadiusSM);
+      commonStyle.Add(smallStyle);
       
       Add(commonStyle);
    }

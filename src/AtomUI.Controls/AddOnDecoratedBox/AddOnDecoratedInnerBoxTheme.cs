@@ -29,23 +29,39 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
    {
       return new FuncControlTemplate<AddOnDecoratedInnerBox>((decoratedBox, scope) =>
       {
-         var innerBoxDecorator = new Border()
-         {
-            Name = InnerBoxDecoratorPart,
-            Transitions = new Transitions()
-            {
-               AnimationUtils.CreateTransition<SolidColorBrushTransition>(Border.BorderBrushProperty),
-               AnimationUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty)
-            }
-         };
-
-         CreateTemplateParentBinding(innerBoxDecorator, Border.BorderThicknessProperty, AddOnDecoratedInnerBox.BorderThicknessProperty);
-         CreateTemplateParentBinding(innerBoxDecorator, Border.CornerRadiusProperty, AddOnDecoratedInnerBox.CornerRadiusProperty);
-         innerBoxDecorator.RegisterInNameScope(scope);
-         var layout = BuildBoxMainLayout(decoratedBox, scope);
-         innerBoxDecorator.Child = layout;
-         return innerBoxDecorator;
+         var frameLayout = new Panel();
+         BuildFrameDecorator(frameLayout, decoratedBox, scope);
+         NotifyBuildExtraChild(frameLayout, decoratedBox, scope);
+         return frameLayout;
       });
+   }
+
+   protected virtual void NotifyBuildExtraChild(Panel layout, AddOnDecoratedInnerBox decoratedBox, INameScope scope)
+   {
+      
+   }
+
+   protected virtual void BuildFrameDecorator(Panel layout, AddOnDecoratedInnerBox decoratedBox, INameScope scope)
+   {
+      var innerBoxDecorator = new Border()
+      {
+         Name = InnerBoxDecoratorPart,
+         Transitions = new Transitions()
+         {
+            AnimationUtils.CreateTransition<SolidColorBrushTransition>(Border.BorderBrushProperty),
+            AnimationUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty)
+         }
+      };
+      
+      innerBoxDecorator.RegisterInNameScope(scope);
+      CreateTemplateParentBinding(innerBoxDecorator, Border.PaddingProperty, AddOnDecoratedInnerBox.EffectiveInnerBoxPaddingProperty);
+      CreateTemplateParentBinding(innerBoxDecorator, Border.BorderThicknessProperty, AddOnDecoratedInnerBox.BorderThicknessProperty);
+      CreateTemplateParentBinding(innerBoxDecorator, Border.CornerRadiusProperty, AddOnDecoratedInnerBox.CornerRadiusProperty);
+      
+      var mainLayout = BuildBoxMainLayout(decoratedBox, scope);
+      innerBoxDecorator.Child = mainLayout;
+      
+      layout.Children.Add(innerBoxDecorator);
    }
 
    protected virtual Panel BuildBoxMainLayout(AddOnDecoratedInnerBox decoratedBox, INameScope scope)
@@ -197,9 +213,10 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
       
       var largeStyle =
          new Style(selector => selector.Nesting().PropertyEquals(AddOnDecoratedInnerBox.SizeTypeProperty, SizeType.Large));
+      largeStyle.Add(AddOnDecoratedInnerBox.InnerBoxPaddingProperty, AddOnDecoratedBoxResourceKey.PaddingLG);
+      
       {
          var innerBoxContentStyle = new Style(selector => selector.Nesting().Template().Name(InnerBoxDecoratorPart));
-         innerBoxContentStyle.Add(Border.PaddingProperty, AddOnDecoratedBoxResourceKey.PaddingLG);
          innerBoxContentStyle.Add(TextBlock.LineHeightProperty, GlobalResourceKey.FontHeightLG);
          largeStyle.Add(innerBoxContentStyle);
       }
@@ -213,9 +230,9 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
 
       var middleStyle =
          new Style(selector => selector.Nesting().PropertyEquals(AddOnDecoratedInnerBox.SizeTypeProperty, SizeType.Middle));
+      middleStyle.Add(AddOnDecoratedInnerBox.InnerBoxPaddingProperty, AddOnDecoratedBoxResourceKey.Padding);
       {
          var innerBoxContentStyle = new Style(selector => selector.Nesting().Template().Name(InnerBoxDecoratorPart));
-         innerBoxContentStyle.Add(Border.PaddingProperty, AddOnDecoratedBoxResourceKey.Padding);
          innerBoxContentStyle.Add(TextBlock.LineHeightProperty, GlobalResourceKey.FontHeight);
          middleStyle.Add(innerBoxContentStyle);
       }
@@ -229,9 +246,9 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
 
       var smallStyle =
          new Style(selector => selector.Nesting().PropertyEquals(AddOnDecoratedInnerBox.SizeTypeProperty, SizeType.Small));
+      smallStyle.Add(AddOnDecoratedInnerBox.InnerBoxPaddingProperty, AddOnDecoratedBoxResourceKey.PaddingSM);
       {
          var innerBoxContentStyle = new Style(selector => selector.Nesting().Template().Name(InnerBoxDecoratorPart));
-         innerBoxContentStyle.Add(Border.PaddingProperty, AddOnDecoratedBoxResourceKey.PaddingSM);
          innerBoxContentStyle.Add(TextBlock.LineHeightProperty, GlobalResourceKey.FontHeightSM);
          smallStyle.Add(innerBoxContentStyle);
       }

@@ -49,9 +49,13 @@ internal class ButtonSpinnerInnerBox : AddOnDecoratedInnerBox, ICustomHitTest
       AvaloniaProperty.RegisterDirect<ButtonSpinnerInnerBox, IBrush?>(nameof(SpinnerBorderBrush),
                                                                       o => o.SpinnerBorderBrush,
                                                                       (o, v) => o.SpinnerBorderBrush = v);
+   
+   internal static readonly DirectProperty<ButtonSpinnerInnerBox, double> SpinnerHandleWidthTokenProperty =
+      AvaloniaProperty.RegisterDirect<ButtonSpinnerInnerBox, double>(nameof(SpinnerHandleWidthToken),
+                                                                      o => o.SpinnerHandleWidthToken,
+                                                                      (o, v) => o.SpinnerHandleWidthToken = v);
 
    private bool _showButtonSpinner;
-
    internal bool ShowButtonSpinner
    {
       get => _showButtonSpinner;
@@ -59,7 +63,6 @@ internal class ButtonSpinnerInnerBox : AddOnDecoratedInnerBox, ICustomHitTest
    }
 
    private Location _buttonSpinnerLocation;
-
    internal Location ButtonSpinnerLocation
    {
       get => _buttonSpinnerLocation;
@@ -67,7 +70,6 @@ internal class ButtonSpinnerInnerBox : AddOnDecoratedInnerBox, ICustomHitTest
    }
 
    private Thickness _spinnerBorderThickness;
-
    internal Thickness SpinnerBorderThickness
    {
       get => _spinnerBorderThickness;
@@ -75,17 +77,36 @@ internal class ButtonSpinnerInnerBox : AddOnDecoratedInnerBox, ICustomHitTest
    }
    
    private IBrush? _spinnerBorderBrush;
-
    internal IBrush? SpinnerBorderBrush
    {
       get => _spinnerBorderBrush;
       set => SetAndRaise(SpinnerBorderBrushProperty, ref _spinnerBorderBrush, value);
    }
    
-   #endregion
-
-   private ContentPresenter? _handleContentPresenter;
+   private double _spinnerHandleWidthToken;
+   internal double SpinnerHandleWidthToken
+   {
+      get => _spinnerHandleWidthToken;
+      set => SetAndRaise(SpinnerHandleWidthTokenProperty, ref _spinnerHandleWidthToken, value);
+   }
    
+   #endregion
+   
+   private ContentPresenter? _handleContentPresenter;
+   protected override void BuildEffectiveInnerBoxPadding()
+   {
+      if (ShowButtonSpinner) {
+         var padding = _spinnerHandleWidthToken + SpinnerBorderThickness.Left * 2;
+         if (ButtonSpinnerLocation == Location.Right) {
+            EffectiveInnerBoxPadding = new Thickness(InnerBoxPadding.Left, InnerBoxPadding.Top, padding, InnerBoxPadding.Bottom);
+         } else {
+            EffectiveInnerBoxPadding = new Thickness(padding, InnerBoxPadding.Top, InnerBoxPadding.Right, InnerBoxPadding.Bottom);
+         }
+      } else {
+         EffectiveInnerBoxPadding = InnerBoxPadding;
+      }
+   }
+
    public bool HitTest(Point point)
    {
       return true;
@@ -93,17 +114,35 @@ internal class ButtonSpinnerInnerBox : AddOnDecoratedInnerBox, ICustomHitTest
 
    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
    {
-      base.OnApplyTemplate(e);
       _handleContentPresenter = e.NameScope.Find<ContentPresenter>(ButtonSpinnerInnerBoxTheme.SpinnerHandlePart);
       TokenResourceBinder.CreateGlobalTokenBinding(this, SpinnerBorderThicknessProperty, GlobalResourceKey.BorderThickness, BindingPriority.Template,
          new RenderScaleAwareThicknessConfigure(this));
       TokenResourceBinder.CreateGlobalTokenBinding(this, SpinnerBorderBrushProperty, GlobalResourceKey.ColorBorder);
+      TokenResourceBinder.CreateTokenBinding(this, SpinnerHandleWidthTokenProperty, ButtonSpinnerResourceKey.HandleWidth);
+      base.OnApplyTemplate(e);
    }
 
    public override void Render(DrawingContext context)
    {
       if (_handleContentPresenter is not null) {
-         Console.WriteLine(_handleContentPresenter.TranslatePoint(new Point(0, 0), this));
+         var handleOffset = _handleContentPresenter.TranslatePoint(new Point(0, 0), this) ?? default;
+         var handleOffsetY = handleOffset.Y + Bounds.Height / 2;
+         using var optionState = context.PushRenderOptions(new RenderOptions()
+         {
+            EdgeMode = EdgeMode.Aliased
+         });
+         {
+            // 画竖线
+            var startPoint = new Point(handleOffset.X, 0);
+            var endPoint = new Point(handleOffset.X, Bounds.Height);
+            context.DrawLine(new Pen(SpinnerBorderBrush, SpinnerBorderThickness.Left), startPoint, endPoint);
+         }
+         {
+            // 画竖线
+            var startPoint = new Point(handleOffset.X, handleOffsetY);
+            var endPoint = new Point(Bounds.Width, handleOffsetY);
+            context.DrawLine(new Pen(SpinnerBorderBrush, SpinnerBorderThickness.Left), startPoint, endPoint);
+         }
       }
    }
 }
