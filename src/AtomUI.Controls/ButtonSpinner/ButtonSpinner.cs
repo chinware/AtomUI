@@ -1,11 +1,6 @@
-﻿using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
-using AtomUI.Utils;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
-using Avalonia.Data;
 
 namespace AtomUI.Controls;
 
@@ -16,19 +11,25 @@ public class ButtonSpinner : AvaloniaButtonSpinner
    #region 公共属性定义
 
    public static readonly StyledProperty<object?> LeftAddOnProperty =
-      AvaloniaProperty.Register<LineEdit, object?>(nameof(LeftAddOn));
+      AvaloniaProperty.Register<ButtonSpinner, object?>(nameof(LeftAddOn));
 
    public static readonly StyledProperty<object?> RightAddOnProperty =
-      AvaloniaProperty.Register<LineEdit, object?>(nameof(RightAddOn));
+      AvaloniaProperty.Register<ButtonSpinner, object?>(nameof(RightAddOn));
+   
+   public static readonly StyledProperty<object?> InnerLeftContentProperty 
+      = AvaloniaProperty.Register<ButtonSpinner, object?>(nameof(InnerLeftContent));
+   
+   public static readonly StyledProperty<object?> InnerRightContentProperty 
+      = AvaloniaProperty.Register<ButtonSpinner, object?>(nameof(InnerRightContent));
 
    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-      AddOnDecoratedBox.SizeTypeProperty.AddOwner<LineEdit>();
+      AddOnDecoratedBox.SizeTypeProperty.AddOwner<ButtonSpinner>();
 
    public static readonly StyledProperty<AddOnDecoratedVariant> StyleVariantProperty =
-      AddOnDecoratedBox.StyleVariantProperty.AddOwner<LineEdit>();
+      AddOnDecoratedBox.StyleVariantProperty.AddOwner<ButtonSpinner>();
 
    public static readonly StyledProperty<AddOnDecoratedStatus> StatusProperty =
-      AddOnDecoratedBox.StatusProperty.AddOwner<LineEdit>();
+      AddOnDecoratedBox.StatusProperty.AddOwner<ButtonSpinner>();
 
    public object? LeftAddOn
    {
@@ -40,6 +41,18 @@ public class ButtonSpinner : AvaloniaButtonSpinner
    {
       get => GetValue(RightAddOnProperty);
       set => SetValue(RightAddOnProperty, value);
+   }
+   
+   public object? InnerLeftContent
+   {
+      get => GetValue(InnerLeftContentProperty);
+      set => SetValue(InnerLeftContentProperty, value);
+   }
+
+   public object? InnerRightContent
+   {
+      get => GetValue(InnerRightContentProperty);
+      set => SetValue(InnerRightContentProperty, value);
    }
 
    public SizeType SizeType
@@ -63,6 +76,7 @@ public class ButtonSpinner : AvaloniaButtonSpinner
    #endregion
 
    private Border? _spinnerHandleDecorator;
+   private ButtonSpinnerDecoratedBox? _decoratedBox;
    
    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
    {
@@ -90,10 +104,17 @@ public class ButtonSpinner : AvaloniaButtonSpinner
          }
       }
    }
-   
+
+   protected override Size MeasureOverride(Size availableSize)
+   {
+      var borderThickness = _decoratedBox?.BorderThickness ?? default;
+      return base.MeasureOverride(availableSize).Inflate(borderThickness);
+   }
+
    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
    {
       _spinnerHandleDecorator = e.NameScope.Find<Border>(ButtonSpinnerTheme.SpinnerHandleDecoratorPart);
+      _decoratedBox = e.NameScope.Find<ButtonSpinnerDecoratedBox>(ButtonSpinnerTheme.DecoratedBoxPart);
       base.OnApplyTemplate(e);
       SetupSpinnerHandleCornerRadius();
    }

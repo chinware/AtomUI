@@ -39,7 +39,7 @@ public class SearchEditDecoratedBox : AddOnDecoratedBox
          _originRect = _rightAddOnPresenter?.Bounds;
       }
       if (_rightAddOnPresenter is not null && _originRect.HasValue) {
-         _rightAddOnPresenter.Arrange(_originRect.Value.Inflate(new Thickness(1, 0, 0, 0)));
+         _rightAddOnPresenter.Arrange(_originRect.Value.Inflate(new Thickness(BorderThickness.Left, 0, 0, 0)));
       }
 
       return size;

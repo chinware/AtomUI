@@ -111,12 +111,9 @@ internal class LineEditTheme : BaseControlTheme
          Name = TextPresenterPart
       };
    
-      CreateTemplateParentBinding(textPresenter, TextPresenter.HorizontalAlignmentProperty,
-                                  LineEdit.HorizontalContentAlignmentProperty);
-      CreateTemplateParentBinding(textPresenter, TextPresenter.VerticalAlignmentProperty,
-                                  LineEdit.VerticalContentAlignmentProperty);
-      CreateTemplateParentBinding(textPresenter, TextPresenter.CaretBlinkIntervalProperty,
-                                  LineEdit.CaretBlinkIntervalProperty);
+      CreateTemplateParentBinding(textPresenter, TextPresenter.HorizontalAlignmentProperty, LineEdit.HorizontalContentAlignmentProperty);
+      CreateTemplateParentBinding(textPresenter, TextPresenter.VerticalAlignmentProperty, LineEdit.VerticalContentAlignmentProperty);
+      CreateTemplateParentBinding(textPresenter, TextPresenter.CaretBlinkIntervalProperty, LineEdit.CaretBlinkIntervalProperty);
       CreateTemplateParentBinding(textPresenter, TextPresenter.CaretBrushProperty, LineEdit.CaretBrushProperty);
       CreateTemplateParentBinding(textPresenter, TextPresenter.CaretIndexProperty, LineEdit.CaretIndexProperty);
       CreateTemplateParentBinding(textPresenter, TextPresenter.LineHeightProperty, LineEdit.LineHeightProperty);
@@ -125,8 +122,7 @@ internal class LineEditTheme : BaseControlTheme
       CreateTemplateParentBinding(textPresenter, TextPresenter.SelectionBrushProperty, LineEdit.SelectionBrushProperty);
       CreateTemplateParentBinding(textPresenter, TextPresenter.SelectionStartProperty, LineEdit.SelectionStartProperty);
       CreateTemplateParentBinding(textPresenter, TextPresenter.SelectionEndProperty, LineEdit.SelectionEndProperty);
-      CreateTemplateParentBinding(textPresenter, TextPresenter.SelectionForegroundBrushProperty,
-                                  LineEdit.SelectionForegroundBrushProperty);
+      CreateTemplateParentBinding(textPresenter, TextPresenter.SelectionForegroundBrushProperty, LineEdit.SelectionForegroundBrushProperty);
       CreateTemplateParentBinding(textPresenter, TextPresenter.TextProperty, LineEdit.TextProperty, BindingMode.TwoWay);
       CreateTemplateParentBinding(textPresenter, TextPresenter.TextAlignmentProperty, LineEdit.TextAlignmentProperty);
       CreateTemplateParentBinding(textPresenter, TextPresenter.TextWrappingProperty, LineEdit.TextWrappingProperty);

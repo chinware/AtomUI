@@ -38,7 +38,7 @@ PS: AtomUI 目前仅在 Windows 11 平台测试<br>
 | Form 表单              | 未完成    |
 | Input 输入框            | Completed ✅ |
 | InputNumber 数字输入框    | 进行中 💪 |
-| ButtonSpinner 按钮切换控件 | 进行中 💪 |
+| ButtonSpinner 按钮切换控件 | Completed ✅ |
 | Mentions 提及          | 未完成    |
 | Radio 单选框            | 已完成 ✅  |
 | OptionButtonBox 单选组  | 已完成 ✅  |

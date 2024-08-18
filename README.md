@@ -32,7 +32,7 @@ Welcome to communicate and give suggestions to AtomUI, thank you for giving the 
 | Form             | TODO         |
 | Input            | Completed ✅  |
 | InputNumber      | Developing 💪 |
-| ButtonSpinner    | Developing 💪 |
+| ButtonSpinner    | Completed ✅ |
 | Mentions         | TODO         |
 | Radio            | Completed ✅  |
 | OptionButtonBox  | Completed ✅  |

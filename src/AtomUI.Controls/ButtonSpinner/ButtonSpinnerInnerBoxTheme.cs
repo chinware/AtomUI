@@ -20,7 +20,8 @@ internal class ButtonSpinnerInnerBoxTheme : AddOnDecoratedInnerBoxTheme
    {
       var contentPresenter = new ContentPresenter()
       {
-         Name = SpinnerHandlePart
+         Name = SpinnerHandlePart,
+         ZIndex = AddOnDecoratedBoxTheme.ActivatedZIndex
       };
       contentPresenter.RegisterInNameScope(scope);
       CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty, ButtonSpinnerInnerBox.SpinnerContentProperty);
@@ -33,33 +34,6 @@ internal class ButtonSpinnerInnerBoxTheme : AddOnDecoratedInnerBoxTheme
       base.BuildStyles();
       
       var commonStyle = new Style(selector => selector.Nesting());
-      
-      var largeStyle =
-         new Style(selector => selector.Nesting().PropertyEquals(ButtonSpinnerInnerBox.SizeTypeProperty, SizeType.Large));
-      {
-         var contentPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ButtonSpinnerInnerBoxTheme.ContentPresenterPart));
-         contentPresenterStyle.Add(ContentPresenter.LineHeightProperty, GlobalResourceKey.FontHeightLG);
-         largeStyle.Add(contentPresenterStyle);
-      }
-      commonStyle.Add(largeStyle);
-
-      var middleStyle =
-         new Style(selector => selector.Nesting().PropertyEquals(ButtonSpinnerInnerBox.SizeTypeProperty, SizeType.Middle));
-      {
-         var contentPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ButtonSpinnerInnerBoxTheme.ContentPresenterPart));
-         contentPresenterStyle.Add(ContentPresenter.LineHeightProperty, GlobalResourceKey.FontHeight);
-         middleStyle.Add(contentPresenterStyle);
-      }
-      commonStyle.Add(middleStyle);
-
-      var smallStyle =
-         new Style(selector => selector.Nesting().PropertyEquals(ButtonSpinnerInnerBox.SizeTypeProperty, SizeType.Small));
-      {
-         var contentPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ButtonSpinnerInnerBoxTheme.ContentPresenterPart));
-         contentPresenterStyle.Add(ContentPresenter.LineHeightProperty, GlobalResourceKey.FontHeightSM);
-         smallStyle.Add(contentPresenterStyle);
-      }
-      commonStyle.Add(smallStyle);
       
       // spinner 的位置
       var leftPositionStyle = new Style(selector => selector.Nesting().PropertyEquals(ButtonSpinnerInnerBox.ButtonSpinnerLocationProperty, Location.Left));

@@ -3,7 +3,6 @@ using AtomUI.Utils;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
-using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
@@ -58,29 +57,5 @@ internal class LineEditInnerBoxTheme : AddOnDecoratedInnerBoxTheme
       CreateTemplateParentBinding(revealButton, ToggleIconButton.IsCheckedProperty,
                                   LineEditInnerBox.IsRevealButtonCheckedProperty, BindingMode.TwoWay);
       addOnLayout.Children.Add(revealButton);
-   }
-   
-   protected override void BuildStyles()
-   {
-      base.BuildStyles();
-      {
-         var errorStyle = new Style(selector => selector.Nesting().PropertyEquals(LineEditInnerBox.StatusProperty, AddOnDecoratedStatus.Error));
-         {
-            var iconStyle = new Style(selector => selector.Nesting().Template().Descendant().OfType<PathIcon>());
-            iconStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalResourceKey.ColorError);
-            errorStyle.Add(iconStyle);
-         }
-         Add(errorStyle);
-      }
-
-      {
-         var warningStyle = new Style(selector => selector.Nesting().PropertyEquals(LineEditInnerBox.StatusProperty, AddOnDecoratedStatus.Warning));
-         {
-            var iconStyle = new Style(selector => selector.Nesting().Template().Descendant().OfType<PathIcon>());
-            iconStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalResourceKey.ColorWarning);
-            warningStyle.Add(iconStyle);
-         }
-         Add(warningStyle);
-      }
    }
 }

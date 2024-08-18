@@ -60,7 +60,12 @@ internal class ButtonSpinnerTheme : BaseControlTheme
       {
          Name = SpinnerInnerBoxPart,
       };
+      CreateTemplateParentBinding(spinnerInnerBox, ButtonSpinnerInnerBox.LeftAddOnContentProperty, ButtonSpinner.InnerLeftContentProperty);
+      CreateTemplateParentBinding(spinnerInnerBox, ButtonSpinnerInnerBox.RightAddOnContentProperty, ButtonSpinner.InnerRightContentProperty);
+      CreateTemplateParentBinding(spinnerInnerBox, ButtonSpinnerInnerBox.StyleVariantProperty, ButtonSpinner.StyleVariantProperty);
+      CreateTemplateParentBinding(spinnerInnerBox, ButtonSpinnerInnerBox.StatusProperty, ButtonSpinner.StatusProperty);
       CreateTemplateParentBinding(spinnerInnerBox, ButtonSpinnerInnerBox.ContentProperty, ButtonSpinner.ContentProperty);
+      CreateTemplateParentBinding(spinnerInnerBox, ButtonSpinnerInnerBox.SizeTypeProperty, ButtonSpinner.SizeTypeProperty);
       CreateTemplateParentBinding(spinnerInnerBox, ButtonSpinnerInnerBox.ContentTemplateProperty, ButtonSpinner.ContentTemplateProperty);
       CreateTemplateParentBinding(spinnerInnerBox, ButtonSpinnerInnerBox.ShowButtonSpinnerProperty, ButtonSpinner.ShowButtonSpinnerProperty);
       CreateTemplateParentBinding(spinnerInnerBox, ButtonSpinnerInnerBox.ButtonSpinnerLocationProperty, ButtonSpinner.ButtonSpinnerLocationProperty);

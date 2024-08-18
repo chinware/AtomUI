@@ -96,7 +96,7 @@ internal class ButtonSpinnerInnerBox : AddOnDecoratedInnerBox, ICustomHitTest
    protected override void BuildEffectiveInnerBoxPadding()
    {
       if (ShowButtonSpinner) {
-         var padding = _spinnerHandleWidthToken + SpinnerBorderThickness.Left * 2;
+         var padding = _spinnerHandleWidthToken + InnerBoxPadding.Right;
          if (ButtonSpinnerLocation == Location.Right) {
             EffectiveInnerBoxPadding = new Thickness(InnerBoxPadding.Left, InnerBoxPadding.Top, padding, InnerBoxPadding.Bottom);
          } else {

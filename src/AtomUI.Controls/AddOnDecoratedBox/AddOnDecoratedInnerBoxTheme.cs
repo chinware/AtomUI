@@ -201,6 +201,7 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
       BuildDisabledStyle();
       BuildOutLineStyle();
       BuildFilledStyle();
+      BuildAddOnStyle();
    }
    
    private void BuildCommonStyle()
@@ -216,8 +217,9 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
       largeStyle.Add(AddOnDecoratedInnerBox.InnerBoxPaddingProperty, AddOnDecoratedBoxResourceKey.PaddingLG);
       
       {
-         var innerBoxContentStyle = new Style(selector => selector.Nesting().Template().Name(InnerBoxDecoratorPart));
+         var innerBoxContentStyle = new Style(selector => selector.Nesting().Template().Name(ContentPresenterPart));
          innerBoxContentStyle.Add(TextBlock.LineHeightProperty, GlobalResourceKey.FontHeightLG);
+         innerBoxContentStyle.Add(Border.MinHeightProperty, GlobalResourceKey.FontHeightLG);
          largeStyle.Add(innerBoxContentStyle);
       }
       {
@@ -232,8 +234,9 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
          new Style(selector => selector.Nesting().PropertyEquals(AddOnDecoratedInnerBox.SizeTypeProperty, SizeType.Middle));
       middleStyle.Add(AddOnDecoratedInnerBox.InnerBoxPaddingProperty, AddOnDecoratedBoxResourceKey.Padding);
       {
-         var innerBoxContentStyle = new Style(selector => selector.Nesting().Template().Name(InnerBoxDecoratorPart));
+         var innerBoxContentStyle = new Style(selector => selector.Nesting().Template().Name(ContentPresenterPart));
          innerBoxContentStyle.Add(TextBlock.LineHeightProperty, GlobalResourceKey.FontHeight);
+         innerBoxContentStyle.Add(Border.MinHeightProperty, GlobalResourceKey.FontHeight);
          middleStyle.Add(innerBoxContentStyle);
       }
       {
@@ -248,8 +251,9 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
          new Style(selector => selector.Nesting().PropertyEquals(AddOnDecoratedInnerBox.SizeTypeProperty, SizeType.Small));
       smallStyle.Add(AddOnDecoratedInnerBox.InnerBoxPaddingProperty, AddOnDecoratedBoxResourceKey.PaddingSM);
       {
-         var innerBoxContentStyle = new Style(selector => selector.Nesting().Template().Name(InnerBoxDecoratorPart));
+         var innerBoxContentStyle = new Style(selector => selector.Nesting().Template().Name(ContentPresenterPart));
          innerBoxContentStyle.Add(TextBlock.LineHeightProperty, GlobalResourceKey.FontHeightSM);
+         innerBoxContentStyle.Add(Border.MinHeightProperty, GlobalResourceKey.FontHeightSM);
          smallStyle.Add(innerBoxContentStyle);
       }
       {
@@ -386,7 +390,7 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
          {
             var innerBoxDecoratorStyle = new Style(selector => selector.Nesting().Template().Name(InnerBoxDecoratorPart));
             innerBoxDecoratorStyle.Add(Border.BorderBrushProperty, AddOnDecoratedBoxResourceKey.ActiveBorderColor);
-            innerBoxDecoratorStyle.Add(Border.BackgroundProperty, AddOnDecoratedBoxResourceKey.ActiveBg);
+            innerBoxDecoratorStyle.Add(Border.BackgroundProperty, GlobalResourceKey.ColorTransparent);
             focusStyle.Add(innerBoxDecoratorStyle);
          }
          filledStyle.Add(focusStyle);
@@ -423,14 +427,6 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
          }
 
          errorStyle.Add(focusStyle);
-
-         var scrollViewerStyle = new Style(selector => selector.Nesting().Template().Name(InnerBoxDecoratorPart)
-                                                               .Class(StdPseudoClass.FocusWithIn)
-                                                               .Descendant().OfType<ScrollViewer>());
-         scrollViewerStyle.Add(ScrollViewer.ForegroundProperty, GlobalResourceKey.ColorErrorText);
-
-         errorStyle.Add(scrollViewerStyle);
-         
          filledStyle.Add(errorStyle);
       }
 
@@ -464,16 +460,36 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
             focusStyle.Add(innerBoxDecoratorStyle);
          }
          warningStyle.Add(focusStyle);
-
-         var scrollViewerStyle = new Style(selector => selector.Nesting().Template().Name(InnerBoxDecoratorPart)
-                                                               .Descendant().OfType<ScrollViewer>());
-         scrollViewerStyle.Add(ScrollViewer.ForegroundProperty, GlobalResourceKey.ColorWarningText);
-
-         warningStyle.Add(scrollViewerStyle);
+         
          filledStyle.Add(warningStyle);
       }
 
       Add(filledStyle);
+   }
+
+   private void BuildAddOnStyle()
+   {
+      {
+         var errorStyle = new Style(selector => selector.Nesting().PropertyEquals(AddOnDecoratedInnerBox.StatusProperty, AddOnDecoratedStatus.Error));
+         {
+            var iconStyle = new Style(selector => Selectors.Or(selector.Nesting().Template().Name(LeftAddOnPart),
+                                                               selector.Nesting().Template().Name(RightAddOnPart)).Nesting().Descendant().OfType<PathIcon>());
+            iconStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalResourceKey.ColorError);
+            errorStyle.Add(iconStyle);
+         }
+         Add(errorStyle);
+      }
+
+      {
+         var warningStyle = new Style(selector => selector.Nesting().PropertyEquals(AddOnDecoratedInnerBox.StatusProperty, AddOnDecoratedStatus.Warning));
+         {
+            var iconStyle = new Style(selector => Selectors.Or(selector.Nesting().Template().Name(LeftAddOnPart),
+                                                               selector.Nesting().Template().Name(RightAddOnPart)).Nesting().Descendant().OfType<PathIcon>());
+            iconStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalResourceKey.ColorWarning);
+            warningStyle.Add(iconStyle);
+         }
+         Add(warningStyle);
+      }
    }
 
    private void BuildDisabledStyle()

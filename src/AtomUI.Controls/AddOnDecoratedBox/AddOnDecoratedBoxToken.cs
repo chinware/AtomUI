@@ -146,7 +146,7 @@ internal class AddOnDecoratedBoxToken : AbstractControlDesignToken
          Color = _globalToken.ColorWarningOutline
       };
       HoverBg = _globalToken.ColorToken.ColorNeutralToken.ColorBgContainer;
-      ActiveBg = _globalToken.ColorToken.ColorNeutralToken.ColorBgContainer;
+      ActiveBg = _globalToken.SeedToken.ColorTransparent;
       FontSize = _globalToken.FontToken.FontSize;
       FontSizeLG = _globalToken.FontToken.FontSizeLG;
       FontSizeSM = _globalToken.FontToken.FontSizeSM;
