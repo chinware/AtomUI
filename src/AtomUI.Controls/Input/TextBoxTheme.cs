@@ -47,7 +47,6 @@ public class TextBoxTheme : BaseControlTheme
 
       editInnerBox.RegisterInNameScope(scope);
       
-      CreateTemplateParentBinding(editInnerBox, TextBoxInnerBox.DisabledInnerBoxPaddingProperty, TextBox.DisabledInnerBoxPaddingProperty);
       CreateTemplateParentBinding(editInnerBox, TextBoxInnerBox.LeftAddOnContentProperty, TextBox.InnerLeftContentProperty);
       CreateTemplateParentBinding(editInnerBox, TextBoxInnerBox.RightAddOnContentProperty, TextBox.InnerRightContentProperty);
       CreateTemplateParentBinding(editInnerBox, TextBoxInnerBox.SizeTypeProperty, TextBox.SizeTypeProperty);

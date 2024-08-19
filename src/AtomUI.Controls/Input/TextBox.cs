@@ -13,12 +13,6 @@ public class TextBox : AvaloniaTextBox
    public const string WarningPC = ":warning";
    
    #region 公共属性定义
-
-   public static readonly StyledProperty<object?> LeftAddOnProperty =
-      AvaloniaProperty.Register<TextBox, object?>(nameof(LeftAddOn));
-
-   public static readonly StyledProperty<object?> RightAddOnProperty =
-      AvaloniaProperty.Register<TextBox, object?>(nameof(RightAddOn));
    
    public static readonly StyledProperty<SizeType> SizeTypeProperty =
       AddOnDecoratedBox.SizeTypeProperty.AddOwner<TextBox>();
@@ -34,18 +28,6 @@ public class TextBox : AvaloniaTextBox
    
    public static readonly StyledProperty<bool> IsEnableRevealButtonProperty =
       AvaloniaProperty.Register<TextBox, bool>(nameof(IsEnableRevealButton), false);
-   
-   public object? LeftAddOn
-   {
-      get => GetValue(LeftAddOnProperty);
-      set => SetValue(LeftAddOnProperty, value);
-   }
-   
-   public object? RightAddOn
-   {
-      get => GetValue(RightAddOnProperty);
-      set => SetValue(RightAddOnProperty, value);
-   }
    
    public SizeType SizeType
    {
@@ -93,18 +75,6 @@ public class TextBox : AvaloniaTextBox
       set => SetAndRaise(IsEffectiveShowClearButtonProperty, ref _isEffectiveShowClearButton, value);
    }
    
-   internal static readonly DirectProperty<TextBox, bool> DisabledInnerBoxPaddingProperty =
-      AvaloniaProperty.RegisterDirect<TextBox, bool>(nameof(DisabledInnerBoxPadding),
-                                                     o => o.DisabledInnerBoxPadding,
-                                                     (o, v) => o.DisabledInnerBoxPadding = v);
-   
-   private bool _disabledInnerBoxPadding = false;
-   internal bool DisabledInnerBoxPadding
-   {
-      get => _disabledInnerBoxPadding;
-      set => SetAndRaise(DisabledInnerBoxPaddingProperty, ref _disabledInnerBoxPadding, value);
-   }
-   
    internal static readonly DirectProperty<TextBox, bool> EmbedModeProperty =
       AvaloniaProperty.RegisterDirect<TextBox, bool>(nameof(EmbedMode),
                                                      o => o.EmbedMode,
@@ -147,9 +117,7 @@ public class TextBox : AvaloniaTextBox
 
       // TODO 到底是否需要这样，这些控件的管辖区理论上不应该我们控制
       if (change.Property == InnerLeftContentProperty || 
-          change.Property == InnerRightContentProperty ||
-          change.Property == LeftAddOnProperty ||
-          change.Property == RightAddOnProperty) {
+          change.Property == InnerRightContentProperty) {
          if (change.OldValue is Control oldControl) {
             UIStructureUtils.SetTemplateParent(oldControl, null);
          }

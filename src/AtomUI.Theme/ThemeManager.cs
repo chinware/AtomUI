@@ -1,7 +1,6 @@
 ﻿using System.Reflection;
 using AtomUI.Controls.MotionScene;
 using AtomUI.MotionScene;
-using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -13,7 +12,7 @@ namespace AtomUI.Theme;
 /// <summary>
 /// 当切换主题时候就是动态的换 ResourceDictionary 里面的东西
 /// </summary>
-public class ThemeManager : Styles, IThemeManager
+public partial class ThemeManager : Styles, IThemeManager
 {
    public const string THEME_DIR = "Themes";
    public const string DEFAULT_THEME_ID = "DaybreakBlueLight";
@@ -23,11 +22,12 @@ public class ThemeManager : Styles, IThemeManager
    private Dictionary<string, Theme> _themePool;
    private List<string> _customThemeDirs;
    private List<string> _builtInThemeDirs;
-   private string DefaultThemeId { get; set; }
+   private ResourceDictionary? _controlThemeResources;
 
    public ITheme? ActivatedTheme => _activatedTheme;
    public IReadOnlyList<string> CustomThemeDirs => _customThemeDirs;
    public static ThemeManager Current { get; }
+   public string DefaultThemeId { get; set; }
 
    public event EventHandler<ThemeOperateEventArgs>? ThemeCreatedEvent;
    public event EventHandler<ThemeOperateEventArgs>? ThemeAboutToLoadEvent;
@@ -52,6 +52,7 @@ public class ThemeManager : Styles, IThemeManager
          Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), THEME_DIR)
       };
       DefaultThemeId = DEFAULT_THEME_ID;
+      _controlThemeResources = new ResourceDictionary();
    }
 
    public IReadOnlyCollection<ITheme> AvailableThemes
@@ -230,16 +231,9 @@ public class ThemeManager : Styles, IThemeManager
    internal void InvokeBootstrapInitializers()
    {
       // 暂时就初始化自己的
-      var assemblies = Assembly.GetEntryAssembly()?.GetReferencedAssemblies().Where(assembly =>
-      {
-         if (assembly.Name is null) {
-            return false;
-         }
-
-         return assembly.Name.StartsWith("AtomUI.Controls");
-      }).Select(assemblyName => Assembly.Load(assemblyName));
+      var assemblies = Assembly.GetEntryAssembly()?.GetReferencedAssemblies().Select(assemblyName => Assembly.Load(assemblyName));
       var initializers = assemblies?.SelectMany(assembly => assembly.GetTypes())
-                                   .Where(type => typeof(IBootstrapInitializer).IsAssignableFrom(type))
+                                   .Where(type => type.IsClass && typeof(IBootstrapInitializer).IsAssignableFrom(type))
                                    .Select(type => (IBootstrapInitializer)Activator.CreateInstance(type)!);
       if (initializers is not null) {
          foreach (var initializer in initializers) {
@@ -250,23 +244,18 @@ public class ThemeManager : Styles, IThemeManager
 
    internal void RegisterControlThemes()
    {
-      var controlThemeProviders = Assembly.GetEntryAssembly()?
-                                          .GetReferencedAssemblies().Select(assemblyName => Assembly.Load(assemblyName))
-                                          .SelectMany(assembly => assembly.GetTypes())
-                                          .Where(type => type.IsDefined(typeof(ControlThemeProviderAttribute)) && typeof(BaseControlTheme).IsAssignableFrom(type))
-                                          .Select(type => Activator.CreateInstance(type));
-      var resources = new ResourceDictionary();
-      if (controlThemeProviders is not null) {
-         foreach (var item in controlThemeProviders) {
-            if (item is BaseControlTheme controlTheme) {
-               controlTheme.Build();
-               object? resourceKey = controlTheme.ThemeResourceKey();
-               resourceKey ??= controlTheme.TargetType!;
-               resources.Add(resourceKey, controlTheme);
-            }
-         }
+      if (_controlThemeResources is not null) {
+         Resources.MergedDictionaries.Add(_controlThemeResources);
+         _controlThemeResources = null;
       }
-      Resources.MergedDictionaries.Add(resources);
+   }
+
+   public void RegisterControlTheme(BaseControlTheme controlTheme)
+   {
+      controlTheme.Build();
+      object? resourceKey = controlTheme.ThemeResourceKey();
+      resourceKey ??= controlTheme.TargetType!;
+      _controlThemeResources?.Add(resourceKey, controlTheme);
    }
 
    private void RegisterServices()

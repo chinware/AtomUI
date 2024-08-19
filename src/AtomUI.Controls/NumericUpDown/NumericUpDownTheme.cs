@@ -57,8 +57,8 @@ internal class NumericUpDownTheme : BaseControlTheme
          HorizontalAlignment = HorizontalAlignment.Stretch,
          BorderThickness = new Thickness(0),
          TextWrapping = TextWrapping.NoWrap,
-         DisabledInnerBoxPadding = true,
-         AcceptsReturn = false
+         AcceptsReturn = false,
+         EmbedMode = true
       };
 
       BindUtils.RelayBind(this, DataValidationErrors.ErrorsProperty, textBox, DataValidationErrors.ErrorsProperty);

@@ -1,9 +1,7 @@
-﻿using AtomUI.Theme.Styling;
-using Avalonia;
+﻿using Avalonia;
 
 namespace AtomUI.Controls;
 
-[ControlThemeProvider]
 public class TextBoxInnerBox : AddOnDecoratedInnerBox
 {
    #region 公共属性定义
@@ -29,18 +27,6 @@ public class TextBoxInnerBox : AddOnDecoratedInnerBox
    #endregion
 
    #region 内部属性定义
-
-   internal static readonly DirectProperty<TextBoxInnerBox, bool> DisabledInnerBoxPaddingProperty =
-      AvaloniaProperty.RegisterDirect<TextBoxInnerBox, bool>(nameof(DisabledInnerBoxPadding),
-                                                             o => o.DisabledInnerBoxPadding,
-                                                             (o, v) => o.DisabledInnerBoxPadding = v);
-   
-   private bool _disabledInnerBoxPadding;
-   internal bool DisabledInnerBoxPadding
-   {
-      get => _disabledInnerBoxPadding;
-      set => SetAndRaise(DisabledInnerBoxPaddingProperty, ref _disabledInnerBoxPadding, value);
-   }
    
    internal static readonly DirectProperty<TextBoxInnerBox, bool> EmbedModeProperty =
       AvaloniaProperty.RegisterDirect<TextBoxInnerBox, bool>(nameof(EmbedMode),
@@ -72,7 +58,7 @@ public class TextBoxInnerBox : AddOnDecoratedInnerBox
    
    protected override void BuildEffectiveInnerBoxPadding()
    {
-      if (!_disabledInnerBoxPadding) {
+      if (!_embedMode) {
          base.BuildEffectiveInnerBoxPadding();
       }
    }
