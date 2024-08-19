@@ -111,8 +111,8 @@
             <TabItem Header="LineEdit">
                 <showcases:LineEditShowCase />
             </TabItem>
-            <TabItem Header="InputNumber">
-                <showcases:InputNumberShowCase />
+            <TabItem Header="NumberUpDown">
+                <showcases:NumberUpDownShowCase />
             </TabItem>
             <TabItem Header="ButtonSpinner">
                 <showcases:ButtonSpinnerShowCase />

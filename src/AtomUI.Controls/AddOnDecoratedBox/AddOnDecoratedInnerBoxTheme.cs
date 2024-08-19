@@ -12,6 +12,7 @@ using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
+[ControlThemeProvider]
 internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
 {
    public const string MainLayoutPart = "PART_MainLayout";
@@ -23,7 +24,8 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
    public const string ClearButtonPart = "PART_ClearButton";
    public const string InnerBoxDecoratorPart = "PART_InnerBoxDecorator";
 
-   public AddOnDecoratedInnerBoxTheme(Type targetType) : base(targetType) { }
+   public AddOnDecoratedInnerBoxTheme() : base(typeof(AddOnDecoratedInnerBox)) {}
+   protected AddOnDecoratedInnerBoxTheme(Type targetType) : base(targetType) { }
 
    protected override IControlTemplate BuildControlTemplate()
    {
@@ -38,7 +40,6 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
 
    protected virtual void NotifyBuildExtraChild(Panel layout, AddOnDecoratedInnerBox decoratedBox, INameScope scope)
    {
-      
    }
 
    protected virtual void BuildFrameDecorator(Panel layout, AddOnDecoratedInnerBox decoratedBox, INameScope scope)

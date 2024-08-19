@@ -7,11 +7,9 @@ namespace AtomUI.Controls;
 [ControlThemeProvider]
 internal class SearchEditTheme : LineEditTheme
 {
-
-   
    public SearchEditTheme() : base(typeof(SearchEdit)) { }
    
-   protected override AddOnDecoratedBox BuildAddOnDecoratedBox(LineEdit lineEdit, INameScope scope)
+   protected override AddOnDecoratedBox BuildAddOnDecoratedBox(TextBox textBox, INameScope scope)
    {
       var decoratedBox = new SearchEditDecoratedBox()
       {
@@ -28,11 +26,5 @@ internal class SearchEditTheme : LineEditTheme
       CreateTemplateParentBinding(decoratedBox, SearchEditDecoratedBox.SearchButtonStyleProperty, SearchEdit.SearchButtonStyleProperty);
       CreateTemplateParentBinding(decoratedBox, SearchEditDecoratedBox.SearchButtonTextProperty, SearchEdit.SearchButtonTextProperty);
       return decoratedBox;
-   }
-   
-   protected override void BuildStyles()
-   {
-      base.BuildStyles();
-      
    }
 }
