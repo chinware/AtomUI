@@ -28,6 +28,7 @@ public partial class ThemeManager : Styles, IThemeManager
    public IReadOnlyList<string> CustomThemeDirs => _customThemeDirs;
    public static ThemeManager Current { get; }
    public string DefaultThemeId { get; set; }
+   internal List<Type> ControlTokenTypes { get; set; }
 
    public event EventHandler<ThemeOperateEventArgs>? ThemeCreatedEvent;
    public event EventHandler<ThemeOperateEventArgs>? ThemeAboutToLoadEvent;
@@ -53,6 +54,7 @@ public partial class ThemeManager : Styles, IThemeManager
       };
       DefaultThemeId = DEFAULT_THEME_ID;
       _controlThemeResources = new ResourceDictionary();
+      ControlTokenTypes = new List<Type>();
    }
 
    public IReadOnlyCollection<ITheme> AvailableThemes
@@ -230,7 +232,6 @@ public partial class ThemeManager : Styles, IThemeManager
 
    internal void InvokeBootstrapInitializers()
    {
-      // 暂时就初始化自己的
       var assemblies = Assembly.GetEntryAssembly()?.GetReferencedAssemblies().Select(assemblyName => Assembly.Load(assemblyName));
       var initializers = assemblies?.SelectMany(assembly => assembly.GetTypes())
                                    .Where(type => type.IsClass && typeof(IBootstrapInitializer).IsAssignableFrom(type))
@@ -256,6 +257,11 @@ public partial class ThemeManager : Styles, IThemeManager
       object? resourceKey = controlTheme.ThemeResourceKey();
       resourceKey ??= controlTheme.TargetType!;
       _controlThemeResources?.Add(resourceKey, controlTheme);
+   }
+
+   public void RegisterControlTokenType(Type tokenType)
+   {
+      ControlTokenTypes.Add(tokenType);
    }
 
    private void RegisterServices()

@@ -2,12 +2,13 @@ namespace AtomUI.Generator;
 
 public class ControlTokenInfo
 {
+   public string? ControlNamespace { get; set; }
    public string ControlName { get; set; }
    public HashSet<string> Tokens { get; private set; }
 
-   public ControlTokenInfo(string controlNam, HashSet<string> tokens)
+   public ControlTokenInfo(string controlName, HashSet<string> tokens)
    {
-      ControlName = controlNam;
+      ControlName = controlName;
       Tokens = tokens;
    }
    

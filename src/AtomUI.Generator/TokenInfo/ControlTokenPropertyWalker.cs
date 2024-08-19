@@ -20,6 +20,11 @@ public class ControlTokenPropertyWalker : CSharpSyntaxWalker
    public override void VisitClassDeclaration(ClassDeclarationSyntax node)
    {
       ControlTokenInfo.ControlName = node.Identifier.Text;
+      if (node.Parent is FileScopedNamespaceDeclarationSyntax fileScopedNamespaceDecl) {
+         ControlTokenInfo.ControlNamespace = fileScopedNamespaceDecl.Name.ToString();
+      } else if (node.Parent is NamespaceDeclarationSyntax namespaceDecl) {
+         ControlTokenInfo.ControlNamespace = namespaceDecl.Name.ToString();
+      }
       base.VisitClassDeclaration(node);
    }
 }

@@ -46,8 +46,23 @@ public class TokenResourceKeyGenerator : IIncrementalGenerator
             tokenInfo.ControlTokenInfos.Add(controlToken);
          }
 
-         var classWriter = new ResourceKeyClassSourceWriter(context, tokenInfo);
-         classWriter.Write();
+         {
+            var classWriter = new ResourceKeyClassSourceWriter(context, tokenInfo);
+            classWriter.Write();
+         }
+
+         {
+            var tokenClassNames = tokenInfo.ControlTokenInfos.Select(info =>
+            {
+               if (info.ControlNamespace is not null) {
+                  return $"{info.ControlNamespace}.{info.ControlName}";
+               }
+
+               return info.ControlName;
+            });
+            var classWriter = new TokenRegisterClassSourceWriter(context, tokenClassNames);
+            classWriter.Write();
+         }
       });
    }
 }

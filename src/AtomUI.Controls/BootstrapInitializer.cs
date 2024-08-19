@@ -10,5 +10,6 @@ public class BootstrapInitializer : IBootstrapInitializer
    {
       AvaloniaLocator.CurrentMutable.BindToSelf(new ToolTipService());
       ControlThemeRegister.Register();
+      ControlTokenTypeRegister.Register();
    }
 }
