@@ -12,7 +12,7 @@ namespace AtomUI.Theme;
 /// <summary>
 /// 当切换主题时候就是动态的换 ResourceDictionary 里面的东西
 /// </summary>
-public partial class ThemeManager : Styles, IThemeManager
+public class ThemeManager : Styles, IThemeManager
 {
    public const string THEME_DIR = "Themes";
    public const string DEFAULT_THEME_ID = "DaybreakBlueLight";
