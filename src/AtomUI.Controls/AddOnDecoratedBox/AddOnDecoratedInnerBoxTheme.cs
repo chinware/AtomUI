@@ -493,7 +493,7 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
       }
    }
 
-   private void BuildDisabledStyle()
+   protected virtual void BuildDisabledStyle()
    {
       var disabledStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Disabled));
       var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(InnerBoxDecoratorPart));

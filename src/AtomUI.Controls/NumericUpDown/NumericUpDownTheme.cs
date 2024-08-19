@@ -1,4 +1,5 @@
-﻿using AtomUI.Theme;
+﻿using AtomUI.Data;
+using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
@@ -34,6 +35,14 @@ internal class NumericUpDownTheme : BaseControlTheme
       {
          Name = SpinnerPart
       };
+      CreateTemplateParentBinding(buttonSpinner, ButtonSpinner.IsEnabledProperty, NumericUpDown.IsEnabledProperty);
+      CreateTemplateParentBinding(buttonSpinner, ButtonSpinner.SizeTypeProperty, NumericUpDown.SizeTypeProperty);
+      CreateTemplateParentBinding(buttonSpinner, ButtonSpinner.StyleVariantProperty, NumericUpDown.StyleVariantProperty);
+      CreateTemplateParentBinding(buttonSpinner, ButtonSpinner.StatusProperty, NumericUpDown.StatusProperty);
+      CreateTemplateParentBinding(buttonSpinner, ButtonSpinner.LeftAddOnProperty, NumericUpDown.LeftAddOnProperty);
+      CreateTemplateParentBinding(buttonSpinner, ButtonSpinner.RightAddOnProperty, NumericUpDown.RightAddOnProperty);
+      CreateTemplateParentBinding(buttonSpinner, ButtonSpinner.InnerLeftContentProperty, NumericUpDown.InnerLeftContentProperty);
+      CreateTemplateParentBinding(buttonSpinner, ButtonSpinner.InnerRightContentProperty, NumericUpDown.InnerRightContentProperty);
       buttonSpinner.RegisterInNameScope(scope);
       return buttonSpinner;
    }
@@ -43,14 +52,21 @@ internal class NumericUpDownTheme : BaseControlTheme
       var textBox = new TextBox()
       {
          Name = TextBoxPart,
-         Padding = new Thickness(0),
          VerticalContentAlignment = VerticalAlignment.Center,
          VerticalAlignment = VerticalAlignment.Stretch,
          HorizontalAlignment = HorizontalAlignment.Stretch,
          BorderThickness = new Thickness(0),
          TextWrapping = TextWrapping.NoWrap,
-         DisabledInnerBoxPadding = true
+         DisabledInnerBoxPadding = true,
+         AcceptsReturn = false
       };
+
+      BindUtils.RelayBind(this, DataValidationErrors.ErrorsProperty, textBox, DataValidationErrors.ErrorsProperty);
+      CreateTemplateParentBinding(textBox, TextBox.SizeTypeProperty, NumericUpDown.SizeTypeProperty);
+      CreateTemplateParentBinding(textBox, TextBox.IsReadOnlyProperty, NumericUpDown.IsReadOnlyProperty);
+      CreateTemplateParentBinding(textBox, TextBox.TextProperty, NumericUpDown.TextProperty);
+      CreateTemplateParentBinding(textBox, TextBox.WatermarkProperty, NumericUpDown.WatermarkProperty);
+      CreateTemplateParentBinding(textBox, TextBox.IsEnableClearButtonProperty, NumericUpDown.IsEnableClearButtonProperty);
       textBox.RegisterInNameScope(scope);
       return textBox;
    }

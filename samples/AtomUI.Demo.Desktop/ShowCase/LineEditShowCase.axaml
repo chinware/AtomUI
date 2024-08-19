@@ -53,9 +53,7 @@
         <showcase:ShowCaseItem
             Title="With clear icon"
             Description="Input box with the remove icon, click the icon to delete everything.">
-            <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:LineEdit Watermark="input with clear icon" Width="400" HorizontalAlignment="Left" IsEnableClearButton="True"/>
-            </StackPanel>
+            <atom:LineEdit Watermark="input with clear icon" Width="400" HorizontalAlignment="Left" IsEnableClearButton="True"/>
         </showcase:ShowCaseItem>
         
         <showcase:ShowCaseItem

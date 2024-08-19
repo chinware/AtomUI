@@ -56,6 +56,7 @@ public class TextBoxTheme : BaseControlTheme
       CreateTemplateParentBinding(editInnerBox, TextBoxInnerBox.IsRevealButtonVisibleProperty, TextBox.IsEnableRevealButtonProperty);
       CreateTemplateParentBinding(editInnerBox, TextBoxInnerBox.IsRevealButtonCheckedProperty, TextBox.RevealPasswordProperty, BindingMode.TwoWay);
       CreateTemplateParentBinding(editInnerBox, TextBoxInnerBox.StatusProperty, TextBox.StatusProperty);
+      CreateTemplateParentBinding(editInnerBox, TextBoxInnerBox.EmbedModeProperty, TextBox.EmbedModeProperty);
       
       var scrollViewer = new ScrollViewer
       {

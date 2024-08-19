@@ -11,14 +11,18 @@ public static class BindUtils
    {
       targetProperty ??= sourceProperty;
       var registry = AvaloniaPropertyRegistry.Instance;
-      if (!registry.IsRegistered(source.GetType(), sourceProperty)) {
-         throw new ArgumentException($"Relay source property is not registered for: {source.GetType().Name}.");
+      if (!sourceProperty.IsAttached) {
+         if (!registry.IsRegistered(source.GetType(), sourceProperty)) {
+            throw new ArgumentException($"Relay source property is not registered for: {source.GetType().Name}.");
+         }
       }
 
-      if (!registry.IsRegistered(target.GetType(), targetProperty)) {
-         throw new ArgumentException($"Relay target property is not registered for: {target.GetType().Name}.");
+      if (!targetProperty.IsAttached) {
+         if (!registry.IsRegistered(target.GetType(), targetProperty)) {
+            throw new ArgumentException($"Relay target property is not registered for: {target.GetType().Name}.");
+         }
       }
-
+      
       var descriptor = new IndexerDescriptor
       {
          Source = source,

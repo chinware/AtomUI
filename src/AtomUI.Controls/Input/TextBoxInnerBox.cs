@@ -1,11 +1,11 @@
-﻿using Avalonia;
+﻿using AtomUI.Theme.Styling;
+using Avalonia;
 
 namespace AtomUI.Controls;
 
+[ControlThemeProvider]
 public class TextBoxInnerBox : AddOnDecoratedInnerBox
 {
-   protected override Type StyleKeyOverride => typeof(AddOnDecoratedInnerBox);
-   
    #region 公共属性定义
 
    public static readonly StyledProperty<bool> IsRevealButtonVisibleProperty =
@@ -40,6 +40,18 @@ public class TextBoxInnerBox : AddOnDecoratedInnerBox
    {
       get => _disabledInnerBoxPadding;
       set => SetAndRaise(DisabledInnerBoxPaddingProperty, ref _disabledInnerBoxPadding, value);
+   }
+   
+   internal static readonly DirectProperty<TextBoxInnerBox, bool> EmbedModeProperty =
+      AvaloniaProperty.RegisterDirect<TextBoxInnerBox, bool>(nameof(EmbedMode),
+                                                             o => o.EmbedMode,
+                                                             (o, v) => o.EmbedMode = v);
+   
+   private bool _embedMode = false;
+   internal bool EmbedMode
+   {
+      get => _embedMode;
+      set => SetAndRaise(EmbedModeProperty, ref _embedMode, value);
    }
 
    #endregion

@@ -37,7 +37,7 @@ PS: AtomUI 目前仅在 Windows 11 平台测试<br>
 | DatePicker 日期选择框     | 未完成    |
 | Form 表单              | 未完成    |
 | Input 输入框            | Completed ✅ |
-| InputNumber 数字输入框    | 进行中 💪 |
+| NumberUpDown 数字输入框   | Completed ✅ |
 | ButtonSpinner 按钮切换控件 | Completed ✅ |
 | Mentions 提及          | 未完成    |
 | Radio 单选框            | 已完成 ✅  |

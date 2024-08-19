@@ -105,6 +105,18 @@ public class TextBox : AvaloniaTextBox
       set => SetAndRaise(DisabledInnerBoxPaddingProperty, ref _disabledInnerBoxPadding, value);
    }
    
+   internal static readonly DirectProperty<TextBox, bool> EmbedModeProperty =
+      AvaloniaProperty.RegisterDirect<TextBox, bool>(nameof(EmbedMode),
+                                                     o => o.EmbedMode,
+                                                     (o, v) => o.EmbedMode = v);
+   
+   private bool _embedMode = false;
+   internal bool EmbedMode
+   {
+      get => _embedMode;
+      set => SetAndRaise(EmbedModeProperty, ref _embedMode, value);
+   }
+   
    #endregion
    
    static TextBox()
