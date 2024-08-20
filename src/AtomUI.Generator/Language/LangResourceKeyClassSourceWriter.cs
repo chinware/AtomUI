@@ -1,32 +1,45 @@
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace AtomUI.Generator;
+namespace AtomUI.Generator.Language;
 
-public class ResourceKeyClassSourceWriter
+public class LangResourceKeyClassSourceWriter
 {
    private SourceProductionContext _context;
-   private TokenInfo _tokenInfo;
+   private List<LanguageInfo> _languageInfos;
    private List<string> _usingInfos;
+   private Dictionary<string, List<LanguageInfo>> _languagesById;
 
-   public ResourceKeyClassSourceWriter(SourceProductionContext context, TokenInfo tokenInfo)
+   public LangResourceKeyClassSourceWriter(SourceProductionContext context, List<LanguageInfo> languageInfos)
    {
       _context = context;
-      _tokenInfo = tokenInfo;
+      _languageInfos = languageInfos;
+      _languagesById = new Dictionary<string, List<LanguageInfo>>();
       _usingInfos = new List<string>();
       SetupUsingInfos();
+      BuildLanguageKeys();
    }
 
+   private void BuildLanguageKeys()
+   {
+      foreach (var languageInfo in _languageInfos) {
+         if (!_languagesById.ContainsKey(languageInfo.LanguageId)) {
+            _languagesById[languageInfo.LanguageId] = new List<LanguageInfo>();
+         }
+         _languagesById[languageInfo.LanguageId].Add(languageInfo);
+      }
+   }
+   
    private void SetupUsingInfos()
    {
-      _usingInfos.Add("AtomUI.Theme.TokenSystem");
+      _usingInfos.Add("AtomUI.Theme");
    }
-
-   public void Write()
+   
+  public void Write()
    {
       var compilationUnitSyntax = BuildCompilationUnitSyntax();
-      _context.AddSource($"TokenResourceConst.g.cs", compilationUnitSyntax.NormalizeWhitespace().ToFullString());
+      _context.AddSource($"LanguageResourceConst.g.cs", compilationUnitSyntax.NormalizeWhitespace().ToFullString());
    }
 
    private ClassDeclarationSyntax BuildClassSyntax(string className)
@@ -41,9 +54,8 @@ public class ResourceKeyClassSourceWriter
       return classSyntax;
    }
 
-   private FieldDeclarationSyntax BuildResourceKeyFieldSyntax(TokenName tokenName, string? value = null)
+   private FieldDeclarationSyntax BuildResourceKeyFieldSyntax(string catalog, string name, string value)
    {
-      value ??= tokenName.Name;
       var modifiers = new List<SyntaxToken>()
       {
          SyntaxFactory.Token(SyntaxKind.PublicKeyword),
@@ -51,7 +63,7 @@ public class ResourceKeyClassSourceWriter
          SyntaxFactory.Token(SyntaxKind.ReadOnlyKeyword)
       };
       
-      var resourceKeyType = SyntaxFactory.ParseTypeName("TokenResourceKey");
+      var resourceKeyType = SyntaxFactory.ParseTypeName("LanguageResourceKey");
       var argument = SyntaxFactory.Argument(
          SyntaxFactory.LiteralExpression(
             SyntaxKind.StringLiteralExpression,
@@ -60,7 +72,7 @@ public class ResourceKeyClassSourceWriter
       var nsArgument = SyntaxFactory.Argument(
          SyntaxFactory.LiteralExpression(
             SyntaxKind.StringLiteralExpression,
-            SyntaxFactory.Literal($"{tokenName.ResourceCatalog}")));
+            SyntaxFactory.Literal($"{catalog}")));
 
       var resourceKeyInstanceExpr = SyntaxFactory.ObjectCreationExpression(resourceKeyType)
                                                  .WithArgumentList(SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList<ArgumentSyntax>(new SyntaxNodeOrToken[]
@@ -72,51 +84,43 @@ public class ResourceKeyClassSourceWriter
       
       var fieldSyntax = SyntaxFactory.FieldDeclaration(SyntaxFactory.VariableDeclaration(resourceKeyType)
             .WithVariables(SyntaxFactory.SingletonSeparatedList(
-               SyntaxFactory.VariableDeclarator(tokenName.Name)
+               SyntaxFactory.VariableDeclarator(name)
                   .WithInitializer(
                      SyntaxFactory.EqualsValueClause(resourceKeyInstanceExpr)))))
          .AddModifiers(modifiers.ToArray());
       return fieldSyntax;
    }
-
-   private void AddGlobalResourceKeyField(ref ClassDeclarationSyntax classSyntax)
+   
+   private NamespaceDeclarationSyntax BuildLanguageResourceKey(List<LanguageInfo> languages)
    {
+      var targetNamespace = languages.First().Namespace;
+      var catalog = languages.First().ResourceCatalog;
+      var languageId = languages.First().LanguageId;
+
+      var keys = new HashSet<string>();
+      foreach (var languageInfo in languages) {
+         keys.UnionWith(languageInfo.Items.Keys);
+      }
+      
+      var namespaceSyntax = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.ParseName(targetNamespace));
+      
+      var className = $"{languageId}LangResourceKey";
+      
+      var classSyntax = BuildClassSyntax(className);
       var resourceKeyFields = new List<MemberDeclarationSyntax>();
-      foreach (var tokenName in _tokenInfo.Tokens) {
-         resourceKeyFields.Add(BuildResourceKeyFieldSyntax(tokenName));
+      foreach (var key in keys) {
+         resourceKeyFields.Add(BuildResourceKeyFieldSyntax(catalog, key, $"{languageId}.{key}"));
       }
 
       classSyntax = classSyntax.AddMembers(resourceKeyFields.ToArray());
+      namespaceSyntax = namespaceSyntax.AddMembers(classSyntax);
+      return namespaceSyntax;
    }
-
-   private ClassDeclarationSyntax BuildControlResourceKeyClassSyntax(ControlTokenInfo controlTokenInfo)
-   {
-      var className = controlTokenInfo.ControlName;
-      var tokenId = className.Replace("Token", "");
-      className = className + "ResourceKey";
-      
-      var controlClassSyntax = BuildClassSyntax(className);
-      var resourceKeyFields = new List<MemberDeclarationSyntax>();
-      foreach (var tokenName in controlTokenInfo.Tokens) {
-         resourceKeyFields.Add(BuildResourceKeyFieldSyntax(tokenName, $"{tokenId}.{tokenName.Name}"));
-      }
-
-      controlClassSyntax = controlClassSyntax.AddMembers(resourceKeyFields.ToArray());
-      return controlClassSyntax;
-   }
-
-   private ClassDeclarationSyntax BuildGlobalResourceKeyClassSyntax()
-   {
-      var globalClassSyntax = BuildClassSyntax("GlobalTokenResourceKey");
-      // 添加全局的 Token 定义
-      AddGlobalResourceKeyField(ref globalClassSyntax);
-      return globalClassSyntax;
-   }
-
+   
    private CompilationUnitSyntax BuildCompilationUnitSyntax()
    {
       var compilationUnit = SyntaxFactory.CompilationUnit();
-
+      
       var usingSyntaxList = new List<UsingDirectiveSyntax>();
 
       foreach (var usingInfo in _usingInfos) {
@@ -126,23 +130,12 @@ public class ResourceKeyClassSourceWriter
 
       compilationUnit = compilationUnit.AddUsings(usingSyntaxList.ToArray());
 
-      // 添加命名空间
-      var namespaceSyntax = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.ParseName("AtomUI.Theme.Styling"));
-      if (_tokenInfo.Tokens.Count != 0) {
-         namespaceSyntax = namespaceSyntax.AddMembers(BuildGlobalResourceKeyClassSyntax());
-      }
-      
-      var controlInfoClassSyntaxList = new List<MemberDeclarationSyntax>();
-      // 添加控件类成员
-      foreach (var controlTokenInfo in _tokenInfo.ControlTokenInfos) {
-         if (controlTokenInfo.Tokens.Count > 0) {
-            controlInfoClassSyntaxList.Add(BuildControlResourceKeyClassSyntax(controlTokenInfo));
+      foreach (var entry in _languagesById) {
+         if (entry.Value.Count > 0) {
+            var namespaceDeclSyntax = BuildLanguageResourceKey(entry.Value);
+            compilationUnit = compilationUnit.AddMembers(namespaceDeclSyntax);
          }
       }
-      
-      namespaceSyntax = namespaceSyntax.AddMembers(controlInfoClassSyntaxList.ToArray());
-      compilationUnit = compilationUnit.AddMembers(namespaceSyntax);
-
       return compilationUnit;
    }
 }

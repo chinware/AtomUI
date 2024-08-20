@@ -47,6 +47,15 @@ public class LanguageProviderWalker : CSharpSyntaxWalker
          }
       }
       
+      var ns = string.Empty;
+      if (node.Parent is FileScopedNamespaceDeclarationSyntax fileScopedNamespaceDecl) {
+         ns = fileScopedNamespaceDecl.Name.ToString();
+      } else if (node.Parent is NamespaceDeclarationSyntax namespaceDecl) {
+         ns = namespaceDecl.Name.ToString();
+      }
+
+      LanguageInfo.Namespace = ns;
+      
       base.VisitClassDeclaration(node);
    }
 }

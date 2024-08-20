@@ -38,11 +38,11 @@ public class TokenInfo
 public record TokenName
 {
    public string Name { get; }
-   public string ResourceNamespace { get; }
+   public string ResourceCatalog { get; }
 
-   public TokenName(string name, string resourceNamespace)
+   public TokenName(string name, string catalog)
    {
       Name = name;
-      ResourceNamespace = resourceNamespace;
+      ResourceCatalog = catalog;
    }
 }
