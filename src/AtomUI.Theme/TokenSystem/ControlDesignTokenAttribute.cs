@@ -3,10 +3,11 @@
 [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
 public class ControlDesignTokenAttribute : Attribute
 {
-   public string Namespace { get; }
+   public const string DefaultResourceCatalog = $"{ResourceCatalogConstants.Root}.{ResourceCatalogConstants.Token}";
+   public string ResourceCatalog { get; }
    
-   public ControlDesignTokenAttribute(string resourceNamespace = $"{ResourceNamespace.Root}.{ResourceNamespace.Token}")
+   public ControlDesignTokenAttribute(string resourceCatalog = DefaultResourceCatalog)
    {
-      Namespace = resourceNamespace;
+      ResourceCatalog = resourceCatalog;
    }
 }

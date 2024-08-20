@@ -1,6 +1,6 @@
 ﻿namespace AtomUI.Theme;
 
-public static class ResourceNamespace
+public static class ResourceCatalogConstants
 {
    public const string Token = "Token";
    public const string Language = "Lang";

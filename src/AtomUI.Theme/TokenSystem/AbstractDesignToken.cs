@@ -83,10 +83,10 @@ public abstract class AbstractDesignToken : IDesignToken
    {
       var tokenType = GetType();
       if (tokenType.GetCustomAttribute<GlobalDesignTokenAttribute>() is GlobalDesignTokenAttribute globalTokenAttribute) {
-         return globalTokenAttribute.Namespace;
+         return globalTokenAttribute.ResourceCatalog;
       } else if (tokenType.GetCustomAttribute<ControlDesignTokenAttribute>() is ControlDesignTokenAttribute
                  controlTokenAttribute) {
-         return controlTokenAttribute.Namespace;
+         return controlTokenAttribute.ResourceCatalog;
       }
 
       throw new TokenResourceRegisterException($"The current Token: {tokenType.FullName} lacks the token type annotation");

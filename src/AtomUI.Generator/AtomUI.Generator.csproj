@@ -17,4 +17,7 @@
     <ItemGroup>
         <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
     </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Language\" />
+    </ItemGroup>
 </Project>

@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Globalization;
+using System.Reflection;
 using AtomUI.Controls.MotionScene;
 using AtomUI.MotionScene;
 using AtomUI.Utils;
@@ -17,18 +18,36 @@ public class ThemeManager : Styles, IThemeManager
    public const string THEME_DIR = "Themes";
    public const string DEFAULT_THEME_ID = "DaybreakBlueLight";
    public const string DEFAULT_THEME_RES_PATH = $"avares://AtomUI.Theme/Assets/{THEME_DIR}";
+   public static readonly CultureInfo DEFAULT_LANGUAGE = new CultureInfo(LanguageCode.zh_CN);
 
    private Theme? _activatedTheme;
    private Dictionary<string, Theme> _themePool;
    private List<string> _customThemeDirs;
    private List<string> _builtInThemeDirs;
    private ResourceDictionary? _controlThemeResources;
+   private Dictionary<CultureInfo, ResourceDictionary> _languages;
+   private List<ILanguageProvider>? _languageProviders;
 
    public ITheme? ActivatedTheme => _activatedTheme;
    public IReadOnlyList<string> CustomThemeDirs => _customThemeDirs;
    public static ThemeManager Current { get; }
    public string DefaultThemeId { get; set; }
    internal List<Type> ControlTokenTypes { get; set; }
+
+   private CultureInfo? _cultureInfo;
+
+   public CultureInfo? CultureInfo
+   {
+      get => _cultureInfo;
+      set
+      {
+         _cultureInfo = value;
+         var languageResource = TryGetLanguageResource(value ?? DEFAULT_LANGUAGE);
+         foreach (var entry in languageResource) {
+            Resources.Add(entry);
+         }
+      }
+   }
 
    public event EventHandler<ThemeOperateEventArgs>? ThemeCreatedEvent;
    public event EventHandler<ThemeOperateEventArgs>? ThemeAboutToLoadEvent;
@@ -38,7 +57,7 @@ public class ThemeManager : Styles, IThemeManager
    public event EventHandler<ThemeOperateEventArgs>? ThemeUnloadedEvent;
    public event EventHandler<ThemeOperateEventArgs>? ThemeAboutToChangeEvent;
    public event EventHandler<ThemeChangedEventArgs>? ThemeChangedEvent;
-
+   
    static ThemeManager()
    {
       Current = new ThemeManager();
@@ -55,6 +74,7 @@ public class ThemeManager : Styles, IThemeManager
       DefaultThemeId = DEFAULT_THEME_ID;
       _controlThemeResources = new ResourceDictionary();
       ControlTokenTypes = new List<Type>();
+      _languages = new Dictionary<CultureInfo, ResourceDictionary>();
    }
 
    public IReadOnlyCollection<ITheme> AvailableThemes
@@ -180,6 +200,15 @@ public class ThemeManager : Styles, IThemeManager
       // TODO 如果这里为空的化需要记录一个日志
    }
 
+   private ResourceDictionary TryGetLanguageResource(CultureInfo locale)
+   {
+      if (_languages.TryGetValue(locale, out var resource)) {
+         return resource;
+      }
+
+      return _languages[DEFAULT_LANGUAGE];
+   }
+
    public void AddCustomThemePaths(IList<string> paths)
    {
       foreach (var path in paths) {
@@ -228,6 +257,12 @@ public class ThemeManager : Styles, IThemeManager
       // 收集控件全局初始化接口
       InvokeBootstrapInitializers();
       RegisterControlThemes();
+      BuildLanguageResources();
+   }
+
+   private void BuildLanguageResources()
+   {
+      
    }
 
    internal void InvokeBootstrapInitializers()
@@ -257,6 +292,11 @@ public class ThemeManager : Styles, IThemeManager
       object? resourceKey = controlTheme.ThemeResourceKey();
       resourceKey ??= controlTheme.TargetType!;
       _controlThemeResources?.Add(resourceKey, controlTheme);
+   }
+   
+   public void RegisterLanguageProvider(ILanguageProvider languageProvider)
+   {
+      _languageProviders?.Add(languageProvider);
    }
 
    public void RegisterControlTokenType(Type tokenType)
