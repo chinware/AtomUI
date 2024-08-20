@@ -112,8 +112,8 @@ internal class NodeSwitcherButton : ToggleIconButton
       icon.SetCurrentValue(PathIcon.HorizontalAlignmentProperty, HorizontalAlignment.Center);
       icon.SetCurrentValue(PathIcon.VerticalAlignmentProperty, VerticalAlignment.Center);
       UIStructureUtils.SetTemplateParent(icon, this);
-      TokenResourceBinder.CreateGlobalResourceBinding(icon, PathIcon.WidthProperty, GlobalResourceKey.IconSize);
-      TokenResourceBinder.CreateGlobalResourceBinding(icon, PathIcon.HeightProperty, GlobalResourceKey.IconSize);
+      TokenResourceBinder.CreateGlobalResourceBinding(icon, PathIcon.WidthProperty, GlobalTokenResourceKey.IconSize);
+      TokenResourceBinder.CreateGlobalResourceBinding(icon, PathIcon.HeightProperty, GlobalTokenResourceKey.IconSize);
       BindUtils.RelayBind(this, IsIconVisibleProperty, icon, PathIcon.IsVisibleProperty);
    }
    

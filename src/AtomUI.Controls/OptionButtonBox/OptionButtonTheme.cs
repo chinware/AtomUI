@@ -44,26 +44,26 @@ public class OptionButtonTheme : BaseControlTheme
    {
       var largeSizeStyle =
          new Style(selector => selector.Nesting().PropertyEquals(OptionButton.SizeTypeProperty, SizeType.Large));
-      largeSizeStyle.Add(OptionButton.MinHeightProperty, GlobalResourceKey.ControlHeightLG);
-      largeSizeStyle.Add(OptionButton.FontSizeProperty, OptionButtonResourceKey.ContentFontSizeLG);
-      largeSizeStyle.Add(OptionButton.PaddingProperty, OptionButtonResourceKey.PaddingLG);
-      largeSizeStyle.Add(OptionButton.CornerRadiusProperty, GlobalResourceKey.BorderRadiusLG);
+      largeSizeStyle.Add(OptionButton.MinHeightProperty, GlobalTokenResourceKey.ControlHeightLG);
+      largeSizeStyle.Add(OptionButton.FontSizeProperty, OptionButtonTokenResourceKey.ContentFontSizeLG);
+      largeSizeStyle.Add(OptionButton.PaddingProperty, OptionButtonTokenResourceKey.PaddingLG);
+      largeSizeStyle.Add(OptionButton.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadiusLG);
       Add(largeSizeStyle);
       
       var middleSizeStyle =
          new Style(selector => selector.Nesting().PropertyEquals(OptionButton.SizeTypeProperty, SizeType.Middle));
-      middleSizeStyle.Add(OptionButton.MinHeightProperty, GlobalResourceKey.ControlHeight);
-      middleSizeStyle.Add(OptionButton.FontSizeProperty, OptionButtonResourceKey.ContentFontSize);
-      middleSizeStyle.Add(OptionButton.PaddingProperty, OptionButtonResourceKey.Padding);
-      middleSizeStyle.Add(OptionButton.CornerRadiusProperty, GlobalResourceKey.BorderRadius);
+      middleSizeStyle.Add(OptionButton.MinHeightProperty, GlobalTokenResourceKey.ControlHeight);
+      middleSizeStyle.Add(OptionButton.FontSizeProperty, OptionButtonTokenResourceKey.ContentFontSize);
+      middleSizeStyle.Add(OptionButton.PaddingProperty, OptionButtonTokenResourceKey.Padding);
+      middleSizeStyle.Add(OptionButton.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadius);
       Add(middleSizeStyle);
       
       var smallSizeStyle =
          new Style(selector => selector.Nesting().PropertyEquals(OptionButton.SizeTypeProperty, SizeType.Small));
-      smallSizeStyle.Add(OptionButton.MinHeightProperty, GlobalResourceKey.ControlHeightSM);
-      smallSizeStyle.Add(OptionButton.FontSizeProperty, OptionButtonResourceKey.ContentFontSizeSM);
-      smallSizeStyle.Add(OptionButton.PaddingProperty, OptionButtonResourceKey.PaddingSM);
-      smallSizeStyle.Add(OptionButton.CornerRadiusProperty, GlobalResourceKey.BorderRadiusSM);
+      smallSizeStyle.Add(OptionButton.MinHeightProperty, GlobalTokenResourceKey.ControlHeightSM);
+      smallSizeStyle.Add(OptionButton.FontSizeProperty, OptionButtonTokenResourceKey.ContentFontSizeSM);
+      smallSizeStyle.Add(OptionButton.PaddingProperty, OptionButtonTokenResourceKey.PaddingSM);
+      smallSizeStyle.Add(OptionButton.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadiusSM);
       
       Add(smallSizeStyle);
 
@@ -82,7 +82,7 @@ public class OptionButtonTheme : BaseControlTheme
    private void BuildOutlineStyle()
    {
       var outlineStyle = new Style(selector => selector.Nesting().PropertyEquals(OptionButton.ButtonStyleProperty, OptionButtonStyle.Outline));
-      outlineStyle.Add(OptionButton.BorderThicknessProperty, GlobalResourceKey.BorderThickness);
+      outlineStyle.Add(OptionButton.BorderThicknessProperty, GlobalTokenResourceKey.BorderThickness);
       var inOptionGroupStyle = new Style(selector => selector.Nesting().PropertyEquals(OptionButton.InOptionGroupProperty, true));
       inOptionGroupStyle.Add(OptionButton.BorderThicknessProperty, new Thickness(0));
       outlineStyle.Add(inOptionGroupStyle);
@@ -97,17 +97,17 @@ public class OptionButtonTheme : BaseControlTheme
       // 选中状态
       {
          var checkedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Checked));
-         checkedStyle.Add(OptionButton.ForegroundProperty, OptionButtonResourceKey.ButtonSolidCheckedColor);
-         checkedStyle.Add(OptionButton.BackgroundProperty, OptionButtonResourceKey.ButtonSolidCheckedBackground);
+         checkedStyle.Add(OptionButton.ForegroundProperty, OptionButtonTokenResourceKey.ButtonSolidCheckedColor);
+         checkedStyle.Add(OptionButton.BackgroundProperty, OptionButtonTokenResourceKey.ButtonSolidCheckedBackground);
          
          // Hover 状态
          var hoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
-         hoverStyle.Add(OptionButton.BackgroundProperty, OptionButtonResourceKey.ButtonSolidCheckedHoverBackground);
+         hoverStyle.Add(OptionButton.BackgroundProperty, OptionButtonTokenResourceKey.ButtonSolidCheckedHoverBackground);
          checkedStyle.Add(hoverStyle);
       
          // Pressed 状态
          var pressedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Pressed));
-         pressedStyle.Add(OptionButton.BackgroundProperty, OptionButtonResourceKey.ButtonSolidCheckedActiveBackground);
+         pressedStyle.Add(OptionButton.BackgroundProperty, OptionButtonTokenResourceKey.ButtonSolidCheckedActiveBackground);
          checkedStyle.Add(pressedStyle);
          
          enabledStyle.Add(checkedStyle);
@@ -116,21 +116,21 @@ public class OptionButtonTheme : BaseControlTheme
       // 没选中状态
       {
          var unCheckedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.UnChecked));
-         unCheckedStyle.Add(OptionButton.ForegroundProperty, GlobalResourceKey.ColorText);
-         unCheckedStyle.Add(OptionButton.BackgroundProperty, GlobalResourceKey.ColorBgContainer);
+         unCheckedStyle.Add(OptionButton.ForegroundProperty, GlobalTokenResourceKey.ColorText);
+         unCheckedStyle.Add(OptionButton.BackgroundProperty, GlobalTokenResourceKey.ColorBgContainer);
          var inOptionGroupStyle = new Style(selector => selector.Nesting().PropertyEquals(OptionButton.InOptionGroupProperty, true));
-         inOptionGroupStyle.Add(OptionButton.BackgroundProperty, GlobalResourceKey.ColorTransparent);
+         inOptionGroupStyle.Add(OptionButton.BackgroundProperty, GlobalTokenResourceKey.ColorTransparent);
 
          unCheckedStyle.Add(inOptionGroupStyle);
          
          // Hover 状态
          var hoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
-         hoverStyle.Add(OptionButton.ForegroundProperty, GlobalResourceKey.ColorPrimaryHover);
+         hoverStyle.Add(OptionButton.ForegroundProperty, GlobalTokenResourceKey.ColorPrimaryHover);
          unCheckedStyle.Add(hoverStyle);
       
          // Pressed 状态
          var pressedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Pressed));
-         pressedStyle.Add(OptionButton.ForegroundProperty, GlobalResourceKey.ColorPrimaryActive);
+         pressedStyle.Add(OptionButton.ForegroundProperty, GlobalTokenResourceKey.ColorPrimaryActive);
          unCheckedStyle.Add(pressedStyle);
          
          enabledStyle.Add(unCheckedStyle);
@@ -143,13 +143,13 @@ public class OptionButtonTheme : BaseControlTheme
    {
       var disabledStyle = new Style(selector => selector.Nesting().PropertyEquals(OptionButton.IsEnabledProperty, false));
       
-      disabledStyle.Add(OptionButton.BorderBrushProperty, GlobalResourceKey.ColorBorder);
-      disabledStyle.Add(OptionButton.ForegroundProperty, GlobalResourceKey.ColorTextDisabled);
-      disabledStyle.Add(OptionButton.BackgroundProperty, GlobalResourceKey.ColorBgContainerDisabled);
+      disabledStyle.Add(OptionButton.BorderBrushProperty, GlobalTokenResourceKey.ColorBorder);
+      disabledStyle.Add(OptionButton.ForegroundProperty, GlobalTokenResourceKey.ColorTextDisabled);
+      disabledStyle.Add(OptionButton.BackgroundProperty, GlobalTokenResourceKey.ColorBgContainerDisabled);
       
       var checkedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Checked));
-      checkedStyle.Add(OptionButton.ForegroundProperty, OptionButtonResourceKey.ButtonCheckedColorDisabled);
-      checkedStyle.Add(OptionButton.BackgroundProperty, OptionButtonResourceKey.ButtonCheckedColorDisabled);
+      checkedStyle.Add(OptionButton.ForegroundProperty, OptionButtonTokenResourceKey.ButtonCheckedColorDisabled);
+      checkedStyle.Add(OptionButton.BackgroundProperty, OptionButtonTokenResourceKey.ButtonCheckedColorDisabled);
       disabledStyle.Add(checkedStyle);
       
       solidStyle.Add(disabledStyle);
@@ -162,11 +162,11 @@ public class OptionButtonTheme : BaseControlTheme
       // 选中状态
       {
          var checkedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Checked));
-         checkedStyle.Add(OptionButton.BorderBrushProperty, GlobalResourceKey.ColorPrimary);
-         checkedStyle.Add(OptionButton.ForegroundProperty, GlobalResourceKey.ColorPrimary);
-         checkedStyle.Add(OptionButton.BackgroundProperty, OptionButtonResourceKey.ButtonBackground);
+         checkedStyle.Add(OptionButton.BorderBrushProperty, GlobalTokenResourceKey.ColorPrimary);
+         checkedStyle.Add(OptionButton.ForegroundProperty, GlobalTokenResourceKey.ColorPrimary);
+         checkedStyle.Add(OptionButton.BackgroundProperty, OptionButtonTokenResourceKey.ButtonBackground);
          var inOptionGroupStyle = new Style(selector => selector.Nesting().PropertyEquals(OptionButton.InOptionGroupProperty, true));
-         inOptionGroupStyle.Add(OptionButton.BackgroundProperty, GlobalResourceKey.ColorTransparent);
+         inOptionGroupStyle.Add(OptionButton.BackgroundProperty, GlobalTokenResourceKey.ColorTransparent);
 
          checkedStyle.Add(inOptionGroupStyle);
          
@@ -175,25 +175,25 @@ public class OptionButtonTheme : BaseControlTheme
       }
       // 没选中状态
       {
-         enabledStyle.Add(OptionButton.BorderBrushProperty, GlobalResourceKey.ColorBorder);
-         enabledStyle.Add(OptionButton.ForegroundProperty, OptionButtonResourceKey.ButtonColor);
-         enabledStyle.Add(OptionButton.BackgroundProperty, OptionButtonResourceKey.ButtonCheckedBackground);
+         enabledStyle.Add(OptionButton.BorderBrushProperty, GlobalTokenResourceKey.ColorBorder);
+         enabledStyle.Add(OptionButton.ForegroundProperty, OptionButtonTokenResourceKey.ButtonColor);
+         enabledStyle.Add(OptionButton.BackgroundProperty, OptionButtonTokenResourceKey.ButtonCheckedBackground);
          
          var inOptionGroupStyle = new Style(selector => selector.Nesting().PropertyEquals(OptionButton.InOptionGroupProperty, true));
-         inOptionGroupStyle.Add(OptionButton.BackgroundProperty, GlobalResourceKey.ColorTransparent);
+         inOptionGroupStyle.Add(OptionButton.BackgroundProperty, GlobalTokenResourceKey.ColorTransparent);
          enabledStyle.Add(inOptionGroupStyle);
       }
       
       // Hover 状态
       var hoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
-      hoverStyle.Add(OptionButton.BorderBrushProperty, GlobalResourceKey.ColorPrimaryHover);
-      hoverStyle.Add(OptionButton.ForegroundProperty, GlobalResourceKey.ColorPrimaryHover);
+      hoverStyle.Add(OptionButton.BorderBrushProperty, GlobalTokenResourceKey.ColorPrimaryHover);
+      hoverStyle.Add(OptionButton.ForegroundProperty, GlobalTokenResourceKey.ColorPrimaryHover);
       enabledStyle.Add(hoverStyle);
       
       // Pressed 状态
       var pressedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Pressed));
-      pressedStyle.Add(OptionButton.BorderBrushProperty, GlobalResourceKey.ColorPrimaryActive);
-      pressedStyle.Add(OptionButton.ForegroundProperty, GlobalResourceKey.ColorPrimaryActive);
+      pressedStyle.Add(OptionButton.BorderBrushProperty, GlobalTokenResourceKey.ColorPrimaryActive);
+      pressedStyle.Add(OptionButton.ForegroundProperty, GlobalTokenResourceKey.ColorPrimaryActive);
       enabledStyle.Add(pressedStyle);
    }
    
@@ -201,13 +201,13 @@ public class OptionButtonTheme : BaseControlTheme
    {
       var disabledStyle = new Style(selector => selector.Nesting().PropertyEquals(OptionButton.IsEnabledProperty, false));
 
-      disabledStyle.Add(OptionButton.BorderBrushProperty, GlobalResourceKey.ColorBorder);
-      disabledStyle.Add(OptionButton.ForegroundProperty, GlobalResourceKey.ColorTextDisabled);
-      disabledStyle.Add(OptionButton.BackgroundProperty, GlobalResourceKey.ColorBgContainerDisabled);
+      disabledStyle.Add(OptionButton.BorderBrushProperty, GlobalTokenResourceKey.ColorBorder);
+      disabledStyle.Add(OptionButton.ForegroundProperty, GlobalTokenResourceKey.ColorTextDisabled);
+      disabledStyle.Add(OptionButton.BackgroundProperty, GlobalTokenResourceKey.ColorBgContainerDisabled);
       
       var checkedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Checked));
-      checkedStyle.Add(OptionButton.ForegroundProperty, OptionButtonResourceKey.ButtonCheckedColorDisabled);
-      checkedStyle.Add(OptionButton.BackgroundProperty, OptionButtonResourceKey.ButtonCheckedBgDisabled);
+      checkedStyle.Add(OptionButton.ForegroundProperty, OptionButtonTokenResourceKey.ButtonCheckedColorDisabled);
+      checkedStyle.Add(OptionButton.BackgroundProperty, OptionButtonTokenResourceKey.ButtonCheckedBgDisabled);
       disabledStyle.Add(checkedStyle);
       
       outlineStyle.Add(disabledStyle);

@@ -7,7 +7,7 @@ namespace AtomUI.Generator;
 public class TokenPropertyWalker : CSharpSyntaxWalker
 {
    public HashSet<string> TokenNames { get; private set; }
-   public string? TokenResourceNamespace { get; set; }
+   public string? TokenResourceCatalog { get; set; }
    private SemanticModel _semanticModel;
    public const string AbstractDesignTokenName = "AbstractDesignToken";
    
@@ -44,8 +44,8 @@ public class TokenPropertyWalker : CSharpSyntaxWalker
       var classDeclaredSymbol = _semanticModel.GetDeclaredSymbol(node);
       if (classDeclaredSymbol is not null) {
          foreach (var attribute in classDeclaredSymbol.GetAttributes()) {
-            if (attribute.ConstructorArguments.Any() && attribute.ConstructorArguments[0].Value is string ns) {
-               TokenResourceNamespace = ns;
+            if (attribute.ConstructorArguments.Any() && attribute.ConstructorArguments[0].Value is string catalog) {
+               TokenResourceCatalog = catalog;
             }
          }
       }

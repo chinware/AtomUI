@@ -140,7 +140,7 @@ public class RadioButton : AvaloniaRadioButton,
    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
    {
       TokenResourceBinder.CreateGlobalResourceBinding(this, RadioBorderThicknessProperty,
-                                                      GlobalResourceKey.BorderThickness, BindingPriority.Template,
+                                                      GlobalTokenResourceKey.BorderThickness, BindingPriority.Template,
                                                       new RenderScaleAwareThicknessConfigure(this));
       Cursor = new Cursor(StandardCursorType.Hand);
       _customStyle.CollectStyleState();
@@ -231,7 +231,7 @@ public class RadioButton : AvaloniaRadioButton,
          AnimationUtils.CreateTransition<SolidColorBrushTransition>(RadioBorderBrushProperty),
          AnimationUtils.CreateTransition<DoubleTransition>(RadioDotEffectSizeProperty),
          AnimationUtils.CreateTransition<SolidColorBrushTransition>(RadioBackgroundProperty,
-                                                                    GlobalResourceKey.MotionDurationFast)
+                                                                    GlobalTokenResourceKey.MotionDurationFast)
       };
    }
 

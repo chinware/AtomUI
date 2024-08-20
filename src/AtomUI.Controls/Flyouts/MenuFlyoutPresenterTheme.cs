@@ -28,13 +28,13 @@ public class MenuFlyoutPresenterTheme : BaseControlTheme
             ClipToBounds = false,
             UseLayoutRounding = false
          };
-         TokenResourceBinder.CreateTokenBinding(wrapper, Border.BackgroundProperty, MenuResourceKey.MenuBgColor);
-         TokenResourceBinder.CreateTokenBinding(wrapper, Border.MinWidthProperty, MenuResourceKey.MenuPopupMinWidth);
-         TokenResourceBinder.CreateTokenBinding(wrapper, Border.MaxWidthProperty, MenuResourceKey.MenuPopupMaxWidth);
-         TokenResourceBinder.CreateTokenBinding(wrapper, Border.MinHeightProperty, MenuResourceKey.MenuPopupMinHeight);
-         TokenResourceBinder.CreateTokenBinding(wrapper, Border.MaxHeightProperty, MenuResourceKey.MenuPopupMaxHeight);
-         TokenResourceBinder.CreateTokenBinding(wrapper, Border.PaddingProperty, MenuResourceKey.MenuPopupContentPadding);
-         TokenResourceBinder.CreateTokenBinding(wrapper, Border.CornerRadiusProperty, MenuResourceKey.MenuPopupBorderRadius);
+         TokenResourceBinder.CreateTokenBinding(wrapper, Border.BackgroundProperty, MenuTokenResourceKey.MenuBgColor);
+         TokenResourceBinder.CreateTokenBinding(wrapper, Border.MinWidthProperty, MenuTokenResourceKey.MenuPopupMinWidth);
+         TokenResourceBinder.CreateTokenBinding(wrapper, Border.MaxWidthProperty, MenuTokenResourceKey.MenuPopupMaxWidth);
+         TokenResourceBinder.CreateTokenBinding(wrapper, Border.MinHeightProperty, MenuTokenResourceKey.MenuPopupMinHeight);
+         TokenResourceBinder.CreateTokenBinding(wrapper, Border.MaxHeightProperty, MenuTokenResourceKey.MenuPopupMaxHeight);
+         TokenResourceBinder.CreateTokenBinding(wrapper, Border.PaddingProperty, MenuTokenResourceKey.MenuPopupContentPadding);
+         TokenResourceBinder.CreateTokenBinding(wrapper, Border.CornerRadiusProperty, MenuTokenResourceKey.MenuPopupBorderRadius);
          
          var scrollViewer = new MenuScrollViewer();
          var itemsPresenter = new ItemsPresenter
@@ -53,6 +53,6 @@ public class MenuFlyoutPresenterTheme : BaseControlTheme
    protected override void BuildStyles()
    {
       this.Add(MenuFlyoutPresenter.BackgroundProperty, new SolidColorBrush(Colors.Transparent));
-      this.Add(MenuFlyoutPresenter.CornerRadiusProperty, MenuResourceKey.MenuPopupBorderRadius);
+      this.Add(MenuFlyoutPresenter.CornerRadiusProperty, MenuTokenResourceKey.MenuPopupBorderRadius);
    }
 }

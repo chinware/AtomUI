@@ -201,23 +201,23 @@ internal class CountBadgeAdorner : Control, IControlCustomStyle
    void IControlCustomStyle.BuildStyles()
    {
       var commonStyle = new Style();
-      commonStyle.Add(TextFontWeightProperty, BadgeResourceKey.TextFontWeight);
-      commonStyle.Add(BadgeColorProperty, BadgeResourceKey.BadgeColor);
-      commonStyle.Add(BadgeShadowSizeProperty, BadgeResourceKey.BadgeShadowSize);
-      commonStyle.Add(BadgeShadowColorProperty, BadgeResourceKey.BadgeShadowColor);
-      commonStyle.Add(BadgeTextColorProperty, BadgeResourceKey.BadgeTextColor);
-      commonStyle.Add(PaddingInlineProperty, GlobalResourceKey.PaddingXS);
+      commonStyle.Add(TextFontWeightProperty, BadgeTokenResourceKey.TextFontWeight);
+      commonStyle.Add(BadgeColorProperty, BadgeTokenResourceKey.BadgeColor);
+      commonStyle.Add(BadgeShadowSizeProperty, BadgeTokenResourceKey.BadgeShadowSize);
+      commonStyle.Add(BadgeShadowColorProperty, BadgeTokenResourceKey.BadgeShadowColor);
+      commonStyle.Add(BadgeTextColorProperty, BadgeTokenResourceKey.BadgeTextColor);
+      commonStyle.Add(PaddingInlineProperty, GlobalTokenResourceKey.PaddingXS);
       Styles.Add(commonStyle);
 
       var defaultSizeStyle =
          new Style(selector => selector.PropertyEquals(SizeProperty, CountBadgeSize.Default));
-      defaultSizeStyle.Add(TextFontSizeProperty, BadgeResourceKey.TextFontSize);
-      defaultSizeStyle.Add(IndicatorHeightProperty, BadgeResourceKey.IndicatorHeight);
+      defaultSizeStyle.Add(TextFontSizeProperty, BadgeTokenResourceKey.TextFontSize);
+      defaultSizeStyle.Add(IndicatorHeightProperty, BadgeTokenResourceKey.IndicatorHeight);
       Styles.Add(defaultSizeStyle);
 
       var smallSizeStyle = new Style(selector => selector.PropertyEquals(SizeProperty, CountBadgeSize.Small));
-      smallSizeStyle.Add(TextFontSizeProperty, BadgeResourceKey.TextFontSizeSM);
-      smallSizeStyle.Add(IndicatorHeightProperty, BadgeResourceKey.IndicatorHeightSM);
+      smallSizeStyle.Add(TextFontSizeProperty, BadgeTokenResourceKey.TextFontSizeSM);
+      smallSizeStyle.Add(IndicatorHeightProperty, BadgeTokenResourceKey.IndicatorHeightSM);
       Styles.Add(smallSizeStyle);
    }
 

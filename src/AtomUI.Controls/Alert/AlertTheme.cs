@@ -40,38 +40,38 @@ internal class AlertTheme : BaseControlTheme
 
    private void BuildAlertTypeStyle()
    {
-      this.Add(Alert.CornerRadiusProperty, GlobalResourceKey.BorderRadiusLG);
+      this.Add(Alert.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadiusLG);
       var successStyle = new Style(selector => selector.Nesting().PropertyEquals(Alert.TypeProperty, AlertType.Success));
-      successStyle.Add(Alert.BackgroundProperty, GlobalResourceKey.ColorSuccessBg);
-      successStyle.Add(Alert.BorderBrushProperty, GlobalResourceKey.ColorSuccessBorder);
+      successStyle.Add(Alert.BackgroundProperty, GlobalTokenResourceKey.ColorSuccessBg);
+      successStyle.Add(Alert.BorderBrushProperty, GlobalTokenResourceKey.ColorSuccessBorder);
       Add(successStyle);
       
       var infoStyle = new Style(selector => selector.Nesting().PropertyEquals(Alert.TypeProperty, AlertType.Info));
-      infoStyle.Add(Alert.BackgroundProperty, GlobalResourceKey.ColorInfoBg);
-      infoStyle.Add(Alert.BorderBrushProperty, GlobalResourceKey.ColorInfoBorder);
+      infoStyle.Add(Alert.BackgroundProperty, GlobalTokenResourceKey.ColorInfoBg);
+      infoStyle.Add(Alert.BorderBrushProperty, GlobalTokenResourceKey.ColorInfoBorder);
       Add(infoStyle);
       
       var warningStyle = new Style(selector => selector.Nesting().PropertyEquals(Alert.TypeProperty, AlertType.Warning));
-      warningStyle.Add(Alert.BackgroundProperty, GlobalResourceKey.ColorWarningBg);
-      warningStyle.Add(Alert.BorderBrushProperty, GlobalResourceKey.ColorWarningBorder);
+      warningStyle.Add(Alert.BackgroundProperty, GlobalTokenResourceKey.ColorWarningBg);
+      warningStyle.Add(Alert.BorderBrushProperty, GlobalTokenResourceKey.ColorWarningBorder);
       Add(warningStyle);
       
       var errorStyle = new Style(selector => selector.Nesting().PropertyEquals(Alert.TypeProperty, AlertType.Error));
-      errorStyle.Add(Alert.BackgroundProperty, GlobalResourceKey.ColorErrorBg);
-      errorStyle.Add(Alert.BorderBrushProperty, GlobalResourceKey.ColorErrorBorder);
+      errorStyle.Add(Alert.BackgroundProperty, GlobalTokenResourceKey.ColorErrorBg);
+      errorStyle.Add(Alert.BorderBrushProperty, GlobalTokenResourceKey.ColorErrorBorder);
       Add(errorStyle);
       
       // 根据是否显示 Description 设置 Padding
       {
          // 为空
          var paddingStyle = new Style(selector => selector.Nesting().PropertyEquals(Alert.DescriptionProperty, null));
-         paddingStyle.Add(TemplatedControl.PaddingProperty, AlertResourceKey.DefaultPadding);
+         paddingStyle.Add(TemplatedControl.PaddingProperty, AlertTokenResourceKey.DefaultPadding);
          Add(paddingStyle);
       }
       {
          // 不为空
          var paddingStyle = new Style(selector => selector.Nesting().Not(x=> x.PropertyEquals(Alert.DescriptionProperty, null)));
-         paddingStyle.Add(TemplatedControl.PaddingProperty, AlertResourceKey.WithDescriptionPadding);
+         paddingStyle.Add(TemplatedControl.PaddingProperty, AlertTokenResourceKey.WithDescriptionPadding);
          Add(paddingStyle);
       }
    }
@@ -85,7 +85,7 @@ internal class AlertTheme : BaseControlTheme
          // Description 不为空
          var descriptionStyle = new Style(selector => selector.Nesting().Not(x=> x.PropertyEquals(Alert.DescriptionProperty, null)));
          var commonLabelStyle = new Style(selector => commonLabelSelector);
-         commonLabelStyle.Add(TemplatedControl.FontSizeProperty, GlobalResourceKey.FontSizeLG);
+         commonLabelStyle.Add(TemplatedControl.FontSizeProperty, GlobalTokenResourceKey.FontSizeLG);
          commonLabelStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Top);
          descriptionStyle.Add(commonLabelStyle);
          Add(descriptionStyle);
@@ -93,7 +93,7 @@ internal class AlertTheme : BaseControlTheme
       {
          var descriptionStyle = new Style(selector => selector.Nesting().PropertyEquals(Alert.DescriptionProperty, null));
          var commonLabelStyle = new Style(selector => commonLabelSelector);
-         commonLabelStyle.Add(TemplatedControl.FontSizeProperty, GlobalResourceKey.FontSize);
+         commonLabelStyle.Add(TemplatedControl.FontSizeProperty, GlobalTokenResourceKey.FontSize);
          commonLabelStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Stretch);
          descriptionStyle.Add(commonLabelStyle);
          Add(descriptionStyle);
@@ -138,7 +138,7 @@ internal class AlertTheme : BaseControlTheme
          var successStyle = new Style(selector => selector.Nesting().PropertyEquals(Alert.TypeProperty, AlertType.Success));
          var infoIconStyle = new Style(selector => infoIconSelector);
          infoIconStyle.Add(PathIcon.KindProperty, "CheckCircleFilled");
-         infoIconStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalResourceKey.ColorSuccess);
+         infoIconStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorSuccess);
          successStyle.Add(infoIconStyle);
          Add(successStyle);
       }
@@ -147,7 +147,7 @@ internal class AlertTheme : BaseControlTheme
          var infoStyle = new Style(selector => selector.Nesting().PropertyEquals(Alert.TypeProperty, AlertType.Info));
          var infoIconStyle = new Style(selector => infoIconSelector);
          infoIconStyle.Add(PathIcon.KindProperty, "InfoCircleFilled");
-         infoIconStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalResourceKey.ColorPrimary);
+         infoIconStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorPrimary);
          infoStyle.Add(infoIconStyle);
          Add(infoStyle);
       }
@@ -156,7 +156,7 @@ internal class AlertTheme : BaseControlTheme
          var warningStyle = new Style(selector => selector.Nesting().PropertyEquals(Alert.TypeProperty, AlertType.Warning));
          var infoIconStyle = new Style(selector => infoIconSelector);
          infoIconStyle.Add(PathIcon.KindProperty, "ExclamationCircleFilled");
-         infoIconStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalResourceKey.ColorWarning);
+         infoIconStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorWarning);
          warningStyle.Add(infoIconStyle);
          Add(warningStyle);
       }
@@ -165,7 +165,7 @@ internal class AlertTheme : BaseControlTheme
          var errorStyle = new Style(selector => selector.Nesting().PropertyEquals(Alert.TypeProperty, AlertType.Error));
          var infoIconStyle = new Style(selector => infoIconSelector);
          infoIconStyle.Add(PathIcon.KindProperty, "CloseCircleFilled");
-         infoIconStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalResourceKey.ColorError);
+         infoIconStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorError);
          errorStyle.Add(infoIconStyle);
          Add(errorStyle);
       }
@@ -175,9 +175,9 @@ internal class AlertTheme : BaseControlTheme
          // 为空
          var wrapperStyle = new Style(selector => selector.Nesting().PropertyEquals(Alert.DescriptionProperty, null));
          var infoIconStyle = new Style(selector=> infoIconSelector);
-         infoIconStyle.Add(Layoutable.WidthProperty, AlertResourceKey.IconSize);
-         infoIconStyle.Add(Layoutable.HeightProperty, AlertResourceKey.IconSize);
-         infoIconStyle.Add(Layoutable.MarginProperty, AlertResourceKey.IconDefaultMargin);
+         infoIconStyle.Add(Layoutable.WidthProperty, AlertTokenResourceKey.IconSize);
+         infoIconStyle.Add(Layoutable.HeightProperty, AlertTokenResourceKey.IconSize);
+         infoIconStyle.Add(Layoutable.MarginProperty, AlertTokenResourceKey.IconDefaultMargin);
          infoIconStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Center);
          wrapperStyle.Add(infoIconStyle);
          Add(wrapperStyle);
@@ -186,9 +186,9 @@ internal class AlertTheme : BaseControlTheme
          // 不为空
          var wrapperStyle = new Style(selector => selector.Nesting().Not(x=> x.PropertyEquals(Alert.DescriptionProperty, null)));
          var infoIconStyle = new Style(selector=> infoIconSelector);
-         infoIconStyle.Add(Layoutable.WidthProperty, AlertResourceKey.WithDescriptionIconSize);
-         infoIconStyle.Add(Layoutable.HeightProperty, AlertResourceKey.WithDescriptionIconSize);
-         infoIconStyle.Add(Layoutable.MarginProperty, AlertResourceKey.IconWithDescriptionMargin);
+         infoIconStyle.Add(Layoutable.WidthProperty, AlertTokenResourceKey.WithDescriptionIconSize);
+         infoIconStyle.Add(Layoutable.HeightProperty, AlertTokenResourceKey.WithDescriptionIconSize);
+         infoIconStyle.Add(Layoutable.MarginProperty, AlertTokenResourceKey.IconWithDescriptionMargin);
          infoIconStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Top);
          wrapperStyle.Add(infoIconStyle);
          Add(wrapperStyle);
@@ -276,9 +276,9 @@ internal class AlertTheme : BaseControlTheme
          Name = CloseBtnPart,
       };
       
-      TokenResourceBinder.CreateTokenBinding(closeBtn, IconButton.WidthProperty, GlobalResourceKey.IconSizeSM);
-      TokenResourceBinder.CreateTokenBinding(closeBtn, IconButton.HeightProperty, GlobalResourceKey.IconSizeSM);
-      TokenResourceBinder.CreateTokenBinding(closeBtn, IconButton.MarginProperty, AlertResourceKey.ExtraElementMargin);
+      TokenResourceBinder.CreateTokenBinding(closeBtn, IconButton.WidthProperty, GlobalTokenResourceKey.IconSizeSM);
+      TokenResourceBinder.CreateTokenBinding(closeBtn, IconButton.HeightProperty, GlobalTokenResourceKey.IconSizeSM);
+      TokenResourceBinder.CreateTokenBinding(closeBtn, IconButton.MarginProperty, AlertTokenResourceKey.ExtraElementMargin);
 
       CreateTemplateParentBinding(closeBtn, IconButton.IsVisibleProperty, Alert.IsClosableProperty);
       CreateTemplateParentBinding(closeBtn, IconButton.IconProperty, Alert.CloseIconProperty);
@@ -351,7 +351,7 @@ internal class AlertTheme : BaseControlTheme
          Padding = new Thickness(0),
          IsVisible = !string.IsNullOrEmpty(alert.Description)
       };
-      TokenResourceBinder.CreateTokenBinding(descriptionLabel, Label.MarginProperty, GlobalResourceKey.MarginXS, BindingPriority.Template, 
+      TokenResourceBinder.CreateTokenBinding(descriptionLabel, Label.MarginProperty, GlobalTokenResourceKey.MarginXS, BindingPriority.Template, 
                                       o =>
                                       {
                                          if (o is double value) {

@@ -177,8 +177,8 @@ public class Expander : AvaloniaExpander
       _animationTarget = e.NameScope.Find<AnimationTargetPanel>(ExpanderTheme.ContentAnimationTargetPart);
       _headerDecorator = e.NameScope.Find<Border>(ExpanderTheme.HeaderDecoratorPart);
       _expandButton = e.NameScope.Find<IconButton>(ExpanderTheme.ExpandButtonPart);
-      TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, GlobalResourceKey.MotionDurationSlow);
-      TokenResourceBinder.CreateGlobalResourceBinding(this, BorderThicknessProperty, GlobalResourceKey.BorderThickness, 
+      TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, GlobalTokenResourceKey.MotionDurationSlow);
+      TokenResourceBinder.CreateGlobalResourceBinding(this, BorderThicknessProperty, GlobalTokenResourceKey.BorderThickness, 
                                                       BindingPriority.Template, new RenderScaleAwareThicknessConfigure(this));
       SetupEffectiveBorderThickness();
       SetupExpanderBorderThickness();
@@ -249,7 +249,7 @@ public class Expander : AvaloniaExpander
          {
             Kind = "RightOutlined"
          };
-         TokenResourceBinder.CreateGlobalTokenBinding(ExpandIcon, PathIcon.DisabledFilledBrushProperty, GlobalResourceKey.ColorTextDisabled);
+         TokenResourceBinder.CreateGlobalTokenBinding(ExpandIcon, PathIcon.DisabledFilledBrushProperty, GlobalTokenResourceKey.ColorTextDisabled);
       }
       UIStructureUtils.SetTemplateParent(ExpandIcon, this);
    }

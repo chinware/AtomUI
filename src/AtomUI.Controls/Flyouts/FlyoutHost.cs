@@ -162,7 +162,7 @@ public class FlyoutHost : Control
             ((ISetLogicalParent)AnchorTarget).SetParent(this);
             VisualChildren.Add(AnchorTarget);
          }
-         TokenResourceBinder.CreateGlobalTokenBinding(this, MarginToAnchorProperty, GlobalResourceKey.MarginXXS);
+         TokenResourceBinder.CreateGlobalTokenBinding(this, MarginToAnchorProperty, GlobalTokenResourceKey.MarginXXS);
          _initialized = true;
       }
    }

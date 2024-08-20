@@ -31,30 +31,30 @@ public class SegmentedItemBoxTheme : BaseControlTheme
    protected override void BuildStyles()
    {
       var commonStyle = new Style(selector => selector.Nesting());
-      commonStyle.Add(SegmentedItemBox.TrackPaddingProperty, SegmentedResourceKey.TrackPadding);
+      commonStyle.Add(SegmentedItemBox.TrackPaddingProperty, SegmentedTokenResourceKey.TrackPadding);
       // 没有被选择的正常状态
       var enabledStyle = new Style(selector => selector.Nesting().PropertyEquals(SegmentedItemBox.IsEnabledProperty, true));
       
       // 选中状态
       var selectedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Selected));
-      selectedStyle.Add(SegmentedItemBox.ForegroundProperty, SegmentedResourceKey.ItemSelectedColor);
-      selectedStyle.Add(SegmentedItemBox.BackgroundProperty, GlobalResourceKey.ColorTransparent);
+      selectedStyle.Add(SegmentedItemBox.ForegroundProperty, SegmentedTokenResourceKey.ItemSelectedColor);
+      selectedStyle.Add(SegmentedItemBox.BackgroundProperty, GlobalTokenResourceKey.ColorTransparent);
       enabledStyle.Add(selectedStyle);
       
       // 没有被选中的状态
       var notSelectedStyle = new Style(selector => selector.Nesting().Not(x => x.Nesting().Class(StdPseudoClass.Selected)));
-      notSelectedStyle.Add(SegmentedItemBox.BackgroundProperty, GlobalResourceKey.ColorTransparent);
-      notSelectedStyle.Add(SegmentedItemBox.ForegroundProperty, SegmentedResourceKey.ItemColor);
+      notSelectedStyle.Add(SegmentedItemBox.BackgroundProperty, GlobalTokenResourceKey.ColorTransparent);
+      notSelectedStyle.Add(SegmentedItemBox.ForegroundProperty, SegmentedTokenResourceKey.ItemColor);
       
       // Hover 状态
       var hoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
-      hoverStyle.Add(SegmentedItemBox.BackgroundProperty, SegmentedResourceKey.ItemHoverBg);
-      hoverStyle.Add(SegmentedItemBox.ForegroundProperty, SegmentedResourceKey.ItemHoverColor);
+      hoverStyle.Add(SegmentedItemBox.BackgroundProperty, SegmentedTokenResourceKey.ItemHoverBg);
+      hoverStyle.Add(SegmentedItemBox.ForegroundProperty, SegmentedTokenResourceKey.ItemHoverColor);
       notSelectedStyle.Add(hoverStyle);
       
       // Pressed 状态
       var pressedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Pressed));
-      pressedStyle.Add(SegmentedItemBox.BackgroundProperty, SegmentedResourceKey.ItemActiveBg);
+      pressedStyle.Add(SegmentedItemBox.BackgroundProperty, SegmentedTokenResourceKey.ItemActiveBg);
       notSelectedStyle.Add(pressedStyle);
       
       enabledStyle.Add(notSelectedStyle);
@@ -69,26 +69,26 @@ public class SegmentedItemBoxTheme : BaseControlTheme
    {
       var largeSizeStyle =
          new Style(selector => selector.Nesting().PropertyEquals(SegmentedItemBox.SizeTypeProperty, SizeType.Large));
-      largeSizeStyle.Add(SegmentedItemBox.CornerRadiusProperty, GlobalResourceKey.BorderRadius);
-      largeSizeStyle.Add(SegmentedItemBox.FontSizeProperty, GlobalResourceKey.FontSizeLG);
-      largeSizeStyle.Add(SegmentedItemBox.ControlHeightProperty, GlobalResourceKey.ControlHeightLG);
-      largeSizeStyle.Add(SegmentedItemBox.SegmentedItemPaddingProperty, SegmentedResourceKey.SegmentedItemPadding);
+      largeSizeStyle.Add(SegmentedItemBox.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadius);
+      largeSizeStyle.Add(SegmentedItemBox.FontSizeProperty, GlobalTokenResourceKey.FontSizeLG);
+      largeSizeStyle.Add(SegmentedItemBox.ControlHeightProperty, GlobalTokenResourceKey.ControlHeightLG);
+      largeSizeStyle.Add(SegmentedItemBox.SegmentedItemPaddingProperty, SegmentedTokenResourceKey.SegmentedItemPadding);
       Add(largeSizeStyle);
       
       var middleSizeStyle =
          new Style(selector => selector.Nesting().PropertyEquals(SegmentedItemBox.SizeTypeProperty, SizeType.Middle));
-      middleSizeStyle.Add(SegmentedItemBox.CornerRadiusProperty, GlobalResourceKey.BorderRadiusSM);
-      middleSizeStyle.Add(SegmentedItemBox.FontSizeProperty, GlobalResourceKey.FontSize);
-      middleSizeStyle.Add(SegmentedItemBox.ControlHeightProperty, GlobalResourceKey.ControlHeight);
-      middleSizeStyle.Add(SegmentedItemBox.SegmentedItemPaddingProperty, SegmentedResourceKey.SegmentedItemPadding);
+      middleSizeStyle.Add(SegmentedItemBox.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadiusSM);
+      middleSizeStyle.Add(SegmentedItemBox.FontSizeProperty, GlobalTokenResourceKey.FontSize);
+      middleSizeStyle.Add(SegmentedItemBox.ControlHeightProperty, GlobalTokenResourceKey.ControlHeight);
+      middleSizeStyle.Add(SegmentedItemBox.SegmentedItemPaddingProperty, SegmentedTokenResourceKey.SegmentedItemPadding);
       Add(middleSizeStyle);
       
       var smallSizeStyle =
          new Style(selector => selector.Nesting().PropertyEquals(SegmentedItemBox.SizeTypeProperty, SizeType.Small));
-      smallSizeStyle.Add(SegmentedItemBox.CornerRadiusProperty, GlobalResourceKey.BorderRadiusXS);
-      smallSizeStyle.Add(SegmentedItemBox.FontSizeProperty, GlobalResourceKey.FontSize);
-      smallSizeStyle.Add(SegmentedItemBox.ControlHeightProperty, GlobalResourceKey.ControlHeightSM);
-      smallSizeStyle.Add(SegmentedItemBox.SegmentedItemPaddingProperty, SegmentedResourceKey.SegmentedItemPaddingSM);
+      smallSizeStyle.Add(SegmentedItemBox.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadiusXS);
+      smallSizeStyle.Add(SegmentedItemBox.FontSizeProperty, GlobalTokenResourceKey.FontSize);
+      smallSizeStyle.Add(SegmentedItemBox.ControlHeightProperty, GlobalTokenResourceKey.ControlHeightSM);
+      smallSizeStyle.Add(SegmentedItemBox.SegmentedItemPaddingProperty, SegmentedTokenResourceKey.SegmentedItemPaddingSM);
       
       Add(smallSizeStyle);
    }
@@ -96,7 +96,7 @@ public class SegmentedItemBoxTheme : BaseControlTheme
    private void BuildDisabledStyle()
    {
       var disabledStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Disabled));
-      disabledStyle.Add(SegmentedItemBox.ForegroundProperty, GlobalResourceKey.ColorTextDisabled);
+      disabledStyle.Add(SegmentedItemBox.ForegroundProperty, GlobalTokenResourceKey.ColorTextDisabled);
       Add(disabledStyle);
    }
 }

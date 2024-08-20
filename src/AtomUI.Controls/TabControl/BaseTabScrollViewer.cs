@@ -177,8 +177,8 @@ internal abstract class BaseTabScrollViewer : ScrollViewer
       _startEdgeIndicator = e.NameScope.Find<Border>(BaseTabScrollViewerTheme.ScrollStartEdgeIndicatorPart);
       _endEdgeIndicator = e.NameScope.Find<Border>(BaseTabScrollViewerTheme.ScrollEndEdgeIndicatorPart);
       
-      TokenResourceBinder.CreateTokenBinding(this, EdgeShadowStartColorProperty, GlobalResourceKey.ColorFillSecondary);
-      TokenResourceBinder.CreateTokenBinding(this, MenuEdgeThicknessProperty, TabControlResourceKey.MenuEdgeThickness);
+      TokenResourceBinder.CreateTokenBinding(this, EdgeShadowStartColorProperty, GlobalTokenResourceKey.ColorFillSecondary);
+      TokenResourceBinder.CreateTokenBinding(this, MenuEdgeThicknessProperty, TabControlTokenResourceKey.MenuEdgeThickness);
       
       SetupIndicatorsVisibility();
    }

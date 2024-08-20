@@ -16,12 +16,12 @@ public class TokenResourceKeyGenerator : IIncrementalGenerator
          {
             var walker = new TokenPropertyWalker(context.SemanticModel);
             walker.Visit(context.TargetNode);
-            return (walker.TokenResourceNamespace, walker.TokenNames);
+            return (walker.TokenResourceCatalog, walker.TokenNames);
          }).Collect().Select((array, token) =>
       {
          var mergedSet = new HashSet<TokenName>();
          foreach (var entry in array) {
-            var ns = entry.TokenResourceNamespace!;
+            var ns = entry.TokenResourceCatalog!;
             foreach (var tokenName in entry.TokenNames) {
                mergedSet.Add(new TokenName(tokenName, ns));
             }

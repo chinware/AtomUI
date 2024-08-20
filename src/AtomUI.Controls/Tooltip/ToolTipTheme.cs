@@ -45,19 +45,19 @@ internal class ToolTipTheme : BaseControlTheme
 
    protected override void BuildStyles()
    {
-      this.Add(ToolTip.ShadowsProperty, ToolTipResourceKey.ToolTipShadows);
-      this.Add(ToolTip.DefaultMarginToAnchorProperty, ToolTipResourceKey.MarginToAnchor);
-      this.Add(ToolTip.MotionDurationProperty, ToolTipResourceKey.ToolTipMotionDuration);
-      this.Add(ToolTip.BackgroundProperty, GlobalResourceKey.ColorTransparent);
+      this.Add(ToolTip.ShadowsProperty, ToolTipTokenResourceKey.ToolTipShadows);
+      this.Add(ToolTip.DefaultMarginToAnchorProperty, ToolTipTokenResourceKey.MarginToAnchor);
+      this.Add(ToolTip.MotionDurationProperty, ToolTipTokenResourceKey.ToolTipMotionDuration);
+      this.Add(ToolTip.BackgroundProperty, GlobalTokenResourceKey.ColorTransparent);
 
       var arrowDecoratedBoxStyle = new Style(selector => selector.Nesting().Template().OfType<ArrowDecoratedBox>());
-      arrowDecoratedBoxStyle.Add(ArrowDecoratedBox.FontSizeProperty, GlobalResourceKey.FontSize);
-      arrowDecoratedBoxStyle.Add(ArrowDecoratedBox.MaxWidthProperty, ToolTipResourceKey.ToolTipMaxWidth);
-      arrowDecoratedBoxStyle.Add(ArrowDecoratedBox.BackgroundProperty, ToolTipResourceKey.ToolTipBackground);
-      arrowDecoratedBoxStyle.Add(ArrowDecoratedBox.ForegroundProperty, ToolTipResourceKey.ToolTipColor);
-      arrowDecoratedBoxStyle.Add(ArrowDecoratedBox.MinHeightProperty, GlobalResourceKey.ControlHeight);
-      arrowDecoratedBoxStyle.Add(ArrowDecoratedBox.PaddingProperty, ToolTipResourceKey.ToolTipPadding);
-      arrowDecoratedBoxStyle.Add(ArrowDecoratedBox.CornerRadiusProperty, ToolTipResourceKey.BorderRadiusOuter);
+      arrowDecoratedBoxStyle.Add(ArrowDecoratedBox.FontSizeProperty, GlobalTokenResourceKey.FontSize);
+      arrowDecoratedBoxStyle.Add(ArrowDecoratedBox.MaxWidthProperty, ToolTipTokenResourceKey.ToolTipMaxWidth);
+      arrowDecoratedBoxStyle.Add(ArrowDecoratedBox.BackgroundProperty, ToolTipTokenResourceKey.ToolTipBackground);
+      arrowDecoratedBoxStyle.Add(ArrowDecoratedBox.ForegroundProperty, ToolTipTokenResourceKey.ToolTipColor);
+      arrowDecoratedBoxStyle.Add(ArrowDecoratedBox.MinHeightProperty, GlobalTokenResourceKey.ControlHeight);
+      arrowDecoratedBoxStyle.Add(ArrowDecoratedBox.PaddingProperty, ToolTipTokenResourceKey.ToolTipPadding);
+      arrowDecoratedBoxStyle.Add(ArrowDecoratedBox.CornerRadiusProperty, ToolTipTokenResourceKey.BorderRadiusOuter);
       Add(arrowDecoratedBoxStyle);
    }
 }

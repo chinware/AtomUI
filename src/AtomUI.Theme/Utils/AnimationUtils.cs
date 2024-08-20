@@ -46,7 +46,7 @@ public static class AnimationUtils
       where T : TransitionBase, new()
    {
       easing ??= new LinearEasing();
-      durationResourceKey ??= GlobalResourceKey.MotionDurationMid;
+      durationResourceKey ??= GlobalTokenResourceKey.MotionDurationMid;
       var transition = new T()
       {
          Property = targetProperty,

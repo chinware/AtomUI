@@ -81,9 +81,9 @@ internal class AddOnDecoratedBoxTheme : BaseControlTheme
       leftAddOnContentPresenter.RegisterInNameScope(scope);
 
       TokenResourceBinder.CreateTokenBinding(leftAddOnContentPresenter, ContentPresenter.BackgroundProperty,
-                                             AddOnDecoratedBoxResourceKey.AddonBg);
+                                             AddOnDecoratedBoxTokenResourceKey.AddonBg);
       TokenResourceBinder.CreateTokenBinding(leftAddOnContentPresenter, ContentPresenter.BorderBrushProperty,
-                                             GlobalResourceKey.ColorBorder);
+                                             GlobalTokenResourceKey.ColorBorder);
 
       Grid.SetColumn(leftAddOnContentPresenter, 0);
       layout.Children.Add(leftAddOnContentPresenter);
@@ -123,9 +123,9 @@ internal class AddOnDecoratedBoxTheme : BaseControlTheme
                                   BindingMode.Default, ObjectConverters.IsNotNull);
 
       TokenResourceBinder.CreateTokenBinding(rightAddOnContentPresenter, ContentPresenter.BackgroundProperty,
-                                             AddOnDecoratedBoxResourceKey.AddonBg);
+                                             AddOnDecoratedBoxTokenResourceKey.AddonBg);
       TokenResourceBinder.CreateTokenBinding(rightAddOnContentPresenter, ContentPresenter.BorderBrushProperty,
-                                             GlobalResourceKey.ColorBorder);
+                                             GlobalTokenResourceKey.ColorBorder);
 
       rightAddOnContentPresenter.RegisterInNameScope(scope);
       layout.Children.Add(rightAddOnContentPresenter);
@@ -141,19 +141,19 @@ internal class AddOnDecoratedBoxTheme : BaseControlTheme
    private void BuildCommonStyle()
    {
       var commonStyle = new Style(selector => selector.Nesting());
-      commonStyle.Add(AddOnDecoratedBox.ForegroundProperty, GlobalResourceKey.ColorText);
+      commonStyle.Add(AddOnDecoratedBox.ForegroundProperty, GlobalTokenResourceKey.ColorText);
 
       var largeStyle =
          new Style(selector => selector.Nesting().PropertyEquals(AddOnDecoratedBox.SizeTypeProperty, SizeType.Large));
       {
          var addOnStyle = new Style(selector => Selectors.Or(selector.Nesting().Template().Name(LeftAddOnPart),
                                                              selector.Nesting().Template().Name(RightAddOnPart)));
-         addOnStyle.Add(ContentPresenter.PaddingProperty, AddOnDecoratedBoxResourceKey.PaddingLG);
+         addOnStyle.Add(ContentPresenter.PaddingProperty, AddOnDecoratedBoxTokenResourceKey.PaddingLG);
          largeStyle.Add(addOnStyle);
       }
 
-      largeStyle.Add(AddOnDecoratedBox.FontSizeProperty, AddOnDecoratedBoxResourceKey.FontSizeLG);
-      largeStyle.Add(AddOnDecoratedBox.CornerRadiusProperty, GlobalResourceKey.BorderRadiusLG);
+      largeStyle.Add(AddOnDecoratedBox.FontSizeProperty, AddOnDecoratedBoxTokenResourceKey.FontSizeLG);
+      largeStyle.Add(AddOnDecoratedBox.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadiusLG);
       commonStyle.Add(largeStyle);
 
       var middleStyle =
@@ -161,12 +161,12 @@ internal class AddOnDecoratedBoxTheme : BaseControlTheme
       {
          var addOnStyle = new Style(selector => Selectors.Or(selector.Nesting().Template().Name(LeftAddOnPart),
                                                              selector.Nesting().Template().Name(RightAddOnPart)));
-         addOnStyle.Add(ContentPresenter.PaddingProperty, AddOnDecoratedBoxResourceKey.Padding);
+         addOnStyle.Add(ContentPresenter.PaddingProperty, AddOnDecoratedBoxTokenResourceKey.Padding);
          middleStyle.Add(addOnStyle);
       }
       
-      middleStyle.Add(AddOnDecoratedBox.FontSizeProperty, AddOnDecoratedBoxResourceKey.FontSize);
-      middleStyle.Add(AddOnDecoratedBox.CornerRadiusProperty, GlobalResourceKey.BorderRadius);
+      middleStyle.Add(AddOnDecoratedBox.FontSizeProperty, AddOnDecoratedBoxTokenResourceKey.FontSize);
+      middleStyle.Add(AddOnDecoratedBox.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadius);
       commonStyle.Add(middleStyle);
 
       var smallStyle =
@@ -174,12 +174,12 @@ internal class AddOnDecoratedBoxTheme : BaseControlTheme
       {
          var addOnStyle = new Style(selector => Selectors.Or(selector.Nesting().Template().Name(LeftAddOnPart),
                                                              selector.Nesting().Template().Name(RightAddOnPart)));
-         addOnStyle.Add(ContentPresenter.PaddingProperty, AddOnDecoratedBoxResourceKey.PaddingSM);
+         addOnStyle.Add(ContentPresenter.PaddingProperty, AddOnDecoratedBoxTokenResourceKey.PaddingSM);
          smallStyle.Add(addOnStyle);
       }
       
-      smallStyle.Add(AddOnDecoratedBox.FontSizeProperty, AddOnDecoratedBoxResourceKey.FontSizeSM);
-      smallStyle.Add(AddOnDecoratedBox.CornerRadiusProperty, GlobalResourceKey.BorderRadiusSM);
+      smallStyle.Add(AddOnDecoratedBox.FontSizeProperty, AddOnDecoratedBoxTokenResourceKey.FontSizeSM);
+      smallStyle.Add(AddOnDecoratedBox.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadiusSM);
       commonStyle.Add(smallStyle);
 
       Add(commonStyle);
@@ -188,10 +188,10 @@ internal class AddOnDecoratedBoxTheme : BaseControlTheme
    private void BuildDisabledStyle()
    {
       var disabledStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Disabled));
-      disabledStyle.Add(AddOnDecoratedBox.ForegroundProperty, GlobalResourceKey.ColorTextDisabled);
+      disabledStyle.Add(AddOnDecoratedBox.ForegroundProperty, GlobalTokenResourceKey.ColorTextDisabled);
       // TODO 暂时这么简单处理吧
       var addOnStyle = new Style(selector => selector.Nesting().Template().OfType<ContentPresenter>());
-      addOnStyle.Add(ContentPresenter.ForegroundProperty, GlobalResourceKey.ColorTextDisabled);
+      addOnStyle.Add(ContentPresenter.ForegroundProperty, GlobalTokenResourceKey.ColorTextDisabled);
       disabledStyle.Add(addOnStyle);
       Add(disabledStyle);
    }

@@ -58,7 +58,7 @@ internal class BaseTabItemTheme : BaseControlTheme
          Name = ItemCloseButtonPart
       };
       iconButton.RegisterInNameScope(scope);
-      TokenResourceBinder.CreateTokenBinding(iconButton, IconButton.MarginProperty, TabControlResourceKey.CloseIconMargin);
+      TokenResourceBinder.CreateTokenBinding(iconButton, IconButton.MarginProperty, TabControlTokenResourceKey.CloseIconMargin);
       
       CreateTemplateParentBinding(iconButton, IconButton.IconProperty, TabItem.CloseIconProperty);
       CreateTemplateParentBinding(iconButton, IconButton.IsVisibleProperty, TabItem.IsClosableProperty);
@@ -71,18 +71,18 @@ internal class BaseTabItemTheme : BaseControlTheme
    {
       var commonStyle = new Style(selector => selector.Nesting());
       commonStyle.Add(TabItem.CursorProperty, new Cursor(StandardCursorType.Hand));
-      commonStyle.Add(TabItem.ForegroundProperty, TabControlResourceKey.ItemColor);
+      commonStyle.Add(TabItem.ForegroundProperty, TabControlTokenResourceKey.ItemColor);
       
       // Icon 一些通用属性
       {
          var iconStyle = new Style(selector => selector.Nesting().Template().Name(ItemIconPart));
-         iconStyle.Add(PathIcon.MarginProperty, TabControlResourceKey.ItemIconMargin);
+         iconStyle.Add(PathIcon.MarginProperty, TabControlTokenResourceKey.ItemIconMargin);
          commonStyle.Add(iconStyle);
       }
       
       // hover
       var hoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
-      hoverStyle.Add(TabItem.ForegroundProperty, TabControlResourceKey.ItemHoverColor);
+      hoverStyle.Add(TabItem.ForegroundProperty, TabControlTokenResourceKey.ItemHoverColor);
       {
          var iconStyle = new Style(selector => selector.Nesting().Template().Name(ItemIconPart));
          iconStyle.Add(PathIcon.IconModeProperty, IconMode.Active);
@@ -93,7 +93,7 @@ internal class BaseTabItemTheme : BaseControlTheme
       
       // 选中
       var selectedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Selected));
-      selectedStyle.Add(TabItem.ForegroundProperty, TabControlResourceKey.ItemSelectedColor);
+      selectedStyle.Add(TabItem.ForegroundProperty, TabControlTokenResourceKey.ItemSelectedColor);
       {
          var iconStyle = new Style(selector => selector.Nesting().Template().Name(ItemIconPart));
          iconStyle.Add(PathIcon.IconModeProperty, IconMode.Selected);
@@ -110,12 +110,12 @@ internal class BaseTabItemTheme : BaseControlTheme
    {
       var largeSizeStyle = new Style(selector => selector.Nesting().PropertyEquals(TabItem.SizeTypeProperty, SizeType.Large));
       
-      largeSizeStyle.Add(TabItem.FontSizeProperty, TabControlResourceKey.TitleFontSizeLG);
+      largeSizeStyle.Add(TabItem.FontSizeProperty, TabControlTokenResourceKey.TitleFontSizeLG);
       {
          // Icon
          var iconStyle = new Style(selector => selector.Nesting().Template().Name(ItemIconPart));
-         iconStyle.Add(PathIcon.WidthProperty, GlobalResourceKey.IconSize);
-         iconStyle.Add(PathIcon.HeightProperty, GlobalResourceKey.IconSize);
+         iconStyle.Add(PathIcon.WidthProperty, GlobalTokenResourceKey.IconSize);
+         iconStyle.Add(PathIcon.HeightProperty, GlobalTokenResourceKey.IconSize);
          largeSizeStyle.Add(iconStyle);
       }
       
@@ -125,11 +125,11 @@ internal class BaseTabItemTheme : BaseControlTheme
       {
          // Icon
          var iconStyle = new Style(selector => selector.Nesting().Template().Name(ItemIconPart));
-         iconStyle.Add(PathIcon.WidthProperty, GlobalResourceKey.IconSize);
-         iconStyle.Add(PathIcon.HeightProperty, GlobalResourceKey.IconSize);
+         iconStyle.Add(PathIcon.WidthProperty, GlobalTokenResourceKey.IconSize);
+         iconStyle.Add(PathIcon.HeightProperty, GlobalTokenResourceKey.IconSize);
          middleSizeStyle.Add(iconStyle);
       }
-      middleSizeStyle.Add(TabItem.FontSizeProperty, TabControlResourceKey.TitleFontSize);
+      middleSizeStyle.Add(TabItem.FontSizeProperty, TabControlTokenResourceKey.TitleFontSize);
       Add(middleSizeStyle);
 
       var smallSizeType = new Style(selector => selector.Nesting().PropertyEquals(TabItem.SizeTypeProperty, SizeType.Small));
@@ -137,12 +137,12 @@ internal class BaseTabItemTheme : BaseControlTheme
       {
          // Icon
          var iconStyle = new Style(selector => selector.Nesting().Template().Name(ItemIconPart));
-         iconStyle.Add(PathIcon.WidthProperty, GlobalResourceKey.IconSizeSM);
-         iconStyle.Add(PathIcon.HeightProperty, GlobalResourceKey.IconSizeSM);
+         iconStyle.Add(PathIcon.WidthProperty, GlobalTokenResourceKey.IconSizeSM);
+         iconStyle.Add(PathIcon.HeightProperty, GlobalTokenResourceKey.IconSizeSM);
          smallSizeType.Add(iconStyle);
       }
       
-      smallSizeType.Add(TabItem.FontSizeProperty, TabControlResourceKey.TitleFontSizeSM);
+      smallSizeType.Add(TabItem.FontSizeProperty, TabControlTokenResourceKey.TitleFontSizeSM);
       Add(smallSizeType);
    }
    
@@ -191,7 +191,7 @@ internal class BaseTabItemTheme : BaseControlTheme
    private void BuildDisabledStyle()
    {
       var disabledStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Disabled));
-      disabledStyle.Add(TabItem.ForegroundProperty, GlobalResourceKey.ColorTextDisabled);
+      disabledStyle.Add(TabItem.ForegroundProperty, GlobalTokenResourceKey.ColorTextDisabled);
       Add(disabledStyle);
    }
 }

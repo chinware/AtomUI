@@ -280,7 +280,7 @@ public class TreeViewItem : AvaloniaTreeItem
    {
       base.OnAttachedToLogicalTree(e);
       if (!_initialized) {
-         TokenResourceBinder.CreateTokenBinding(this, TitleHeightProperty, TreeViewResourceKey.TitleHeight);
+         TokenResourceBinder.CreateTokenBinding(this, TitleHeightProperty, TreeViewTokenResourceKey.TitleHeight);
          if (IsChecked.HasValue && IsChecked.Value) {
             OwnerTreeView = this.FindLogicalAncestorOfType<TreeView>();
             // 注册到 TreeView
@@ -343,7 +343,7 @@ public class TreeViewItem : AvaloniaTreeItem
    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
    {
       TokenResourceBinder.CreateGlobalResourceBinding(this, DragFrameBorderThicknessProperty,
-                                                      GlobalResourceKey.BorderThickness,
+                                                      GlobalTokenResourceKey.BorderThickness,
                                                       BindingPriority.Template,
                                                       new RenderScaleAwareThicknessConfigure(this));
       
@@ -495,9 +495,9 @@ public class TreeViewItem : AvaloniaTreeItem
          _switcherButton.UnCheckedIcon = SwitcherExpandIcon;
          _switcherButton.CheckedIcon = SwitcherCollapseIcon;
          TokenResourceBinder.CreateTokenBinding(_switcherButton, NodeSwitcherButton.IconWidthProperty,
-                                                GlobalResourceKey.IconSize);
+                                                GlobalTokenResourceKey.IconSize);
          TokenResourceBinder.CreateTokenBinding(_switcherButton, NodeSwitcherButton.IconHeightProperty,
-                                                GlobalResourceKey.IconSize);
+                                                GlobalTokenResourceKey.IconSize);
          return;
       }
 
@@ -511,9 +511,9 @@ public class TreeViewItem : AvaloniaTreeItem
             Kind = "MinusSquareOutlined"
          };
          TokenResourceBinder.CreateTokenBinding(_switcherButton, NodeSwitcherButton.IconWidthProperty,
-                                                GlobalResourceKey.IconSize);
+                                                GlobalTokenResourceKey.IconSize);
          TokenResourceBinder.CreateTokenBinding(_switcherButton, NodeSwitcherButton.IconHeightProperty,
-                                                GlobalResourceKey.IconSize);
+                                                GlobalTokenResourceKey.IconSize);
       } else {
          _switcherButton.CheckedIcon = null;
          _switcherButton.UnCheckedIcon = new PathIcon()
@@ -521,9 +521,9 @@ public class TreeViewItem : AvaloniaTreeItem
             Kind = "CaretRightOutlined"
          };
          TokenResourceBinder.CreateTokenBinding(_switcherButton, NodeSwitcherButton.IconWidthProperty,
-                                                GlobalResourceKey.IconSizeXS);
+                                                GlobalTokenResourceKey.IconSizeXS);
          TokenResourceBinder.CreateTokenBinding(_switcherButton, NodeSwitcherButton.IconHeightProperty,
-                                                GlobalResourceKey.IconSizeXS);
+                                                GlobalTokenResourceKey.IconSizeXS);
       }
    }
 

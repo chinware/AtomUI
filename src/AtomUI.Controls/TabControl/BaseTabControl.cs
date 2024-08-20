@@ -95,11 +95,11 @@ public class BaseTabControl : AvaloniaTabControl
    private void SetupBorderBinding()
    {
       if (_frameDecorator is not null) {
-         TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty, GlobalResourceKey.BorderThickness, BindingPriority.Template,
+         TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty, GlobalTokenResourceKey.BorderThickness, BindingPriority.Template,
                                                 new RenderScaleAwareThicknessConfigure(this));
       }
 
-      TokenResourceBinder.CreateTokenBinding(this, TabAndContentGutterProperty, TabControlResourceKey.TabAndContentGutter);
+      TokenResourceBinder.CreateTokenBinding(this, TabAndContentGutterProperty, TabControlTokenResourceKey.TabAndContentGutter);
    }
 
    protected override void PrepareContainerForItemOverride(Control container, object? item, int index)

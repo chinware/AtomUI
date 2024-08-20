@@ -2,7 +2,7 @@
 
 namespace AtomUI.Theme.Styling
 {
-    public static class AddOnDecoratedBoxResourceKey
+    public static class AddOnDecoratedBoxTokenResourceKey
     {
         public static readonly TokenResourceKey Padding = new TokenResourceKey("AddOnDecoratedBox.Padding", "AtomUI.Token");
         public static readonly TokenResourceKey PaddingSM = new TokenResourceKey("AddOnDecoratedBox.PaddingSM", "AtomUI.Token");
@@ -25,7 +25,7 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey RightInnerAddOnMargin = new TokenResourceKey("AddOnDecoratedBox.RightInnerAddOnMargin", "AtomUI.Token");
     }
 
-    public static class AlertResourceKey
+    public static class AlertTokenResourceKey
     {
         public static readonly TokenResourceKey DefaultPadding = new TokenResourceKey("Alert.DefaultPadding", "AtomUI.Token");
         public static readonly TokenResourceKey WithDescriptionPadding = new TokenResourceKey("Alert.WithDescriptionPadding", "AtomUI.Token");
@@ -38,13 +38,13 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey ExtraElementMargin = new TokenResourceKey("Alert.ExtraElementMargin", "AtomUI.Token");
     }
 
-    public static class ArrowDecoratedBoxResourceKey
+    public static class ArrowDecoratedBoxTokenResourceKey
     {
         public static readonly TokenResourceKey ArrowSize = new TokenResourceKey("ArrowDecoratedBox.ArrowSize", "AtomUI.Token");
         public static readonly TokenResourceKey Padding = new TokenResourceKey("ArrowDecoratedBox.Padding", "AtomUI.Token");
     }
 
-    public static class BadgeResourceKey
+    public static class BadgeTokenResourceKey
     {
         public static readonly TokenResourceKey IndicatorHeight = new TokenResourceKey("Badge.IndicatorHeight", "AtomUI.Token");
         public static readonly TokenResourceKey IndicatorHeightSM = new TokenResourceKey("Badge.IndicatorHeightSM", "AtomUI.Token");
@@ -66,7 +66,7 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey BadgeRibbonTextPadding = new TokenResourceKey("Badge.BadgeRibbonTextPadding", "AtomUI.Token");
     }
 
-    public static class ButtonSpinnerResourceKey
+    public static class ButtonSpinnerTokenResourceKey
     {
         public static readonly TokenResourceKey ControlWidth = new TokenResourceKey("ButtonSpinner.ControlWidth", "AtomUI.Token");
         public static readonly TokenResourceKey HandleWidth = new TokenResourceKey("ButtonSpinner.HandleWidth", "AtomUI.Token");
@@ -78,7 +78,7 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey FilledHandleBg = new TokenResourceKey("ButtonSpinner.FilledHandleBg", "AtomUI.Token");
     }
 
-    public static class ButtonResourceKey
+    public static class ButtonTokenResourceKey
     {
         public static readonly TokenResourceKey FontWeight = new TokenResourceKey("Button.FontWeight", "AtomUI.Token");
         public static readonly TokenResourceKey DefaultShadow = new TokenResourceKey("Button.DefaultShadow", "AtomUI.Token");
@@ -125,13 +125,13 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey IconOnyPaddingSM = new TokenResourceKey("Button.IconOnyPaddingSM", "AtomUI.Token");
     }
 
-    public static class CheckBoxResourceKey
+    public static class CheckBoxTokenResourceKey
     {
         public static readonly TokenResourceKey CheckIndicatorSize = new TokenResourceKey("CheckBox.CheckIndicatorSize", "AtomUI.Token");
         public static readonly TokenResourceKey IndicatorTristateMarkSize = new TokenResourceKey("CheckBox.IndicatorTristateMarkSize", "AtomUI.Token");
     }
 
-    public static class CollapseResourceKey
+    public static class CollapseTokenResourceKey
     {
         public static readonly TokenResourceKey HeaderPadding = new TokenResourceKey("Collapse.HeaderPadding", "AtomUI.Token");
         public static readonly TokenResourceKey HeaderBg = new TokenResourceKey("Collapse.HeaderBg", "AtomUI.Token");
@@ -146,14 +146,14 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey RightExpandButtonMargin = new TokenResourceKey("Collapse.RightExpandButtonMargin", "AtomUI.Token");
     }
 
-    public static class EmptyIndicatorResourceKey
+    public static class EmptyIndicatorTokenResourceKey
     {
         public static readonly TokenResourceKey EmptyImgHeight = new TokenResourceKey("EmptyIndicator.EmptyImgHeight", "AtomUI.Token");
         public static readonly TokenResourceKey EmptyImgHeightSM = new TokenResourceKey("EmptyIndicator.EmptyImgHeightSM", "AtomUI.Token");
         public static readonly TokenResourceKey EmptyImgHeightMD = new TokenResourceKey("EmptyIndicator.EmptyImgHeightMD", "AtomUI.Token");
     }
 
-    public static class ExpanderResourceKey
+    public static class ExpanderTokenResourceKey
     {
         public static readonly TokenResourceKey HeaderPadding = new TokenResourceKey("Expander.HeaderPadding", "AtomUI.Token");
         public static readonly TokenResourceKey HeaderPaddingSM = new TokenResourceKey("Expander.HeaderPaddingSM", "AtomUI.Token");
@@ -170,7 +170,7 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey RightExpandButtonVMargin = new TokenResourceKey("Expander.RightExpandButtonVMargin", "AtomUI.Token");
     }
 
-    public static class LineEditResourceKey
+    public static class LineEditTokenResourceKey
     {
         public static readonly TokenResourceKey Padding = new TokenResourceKey("LineEdit.Padding", "AtomUI.Token");
         public static readonly TokenResourceKey PaddingSM = new TokenResourceKey("LineEdit.PaddingSM", "AtomUI.Token");
@@ -193,7 +193,7 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey RightInnerAddOnMargin = new TokenResourceKey("LineEdit.RightInnerAddOnMargin", "AtomUI.Token");
     }
 
-    public static class LoadingIndicatorResourceKey
+    public static class LoadingIndicatorTokenResourceKey
     {
         public static readonly TokenResourceKey DotSize = new TokenResourceKey("LoadingIndicator.DotSize", "AtomUI.Token");
         public static readonly TokenResourceKey DotSizeSM = new TokenResourceKey("LoadingIndicator.DotSizeSM", "AtomUI.Token");
@@ -201,13 +201,13 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey IndicatorDuration = new TokenResourceKey("LoadingIndicator.IndicatorDuration", "AtomUI.Token");
     }
 
-    public static class MarqueeLabelResourceKey
+    public static class MarqueeLabelTokenResourceKey
     {
         public static readonly TokenResourceKey CycleSpace = new TokenResourceKey("MarqueeLabel.CycleSpace", "AtomUI.Token");
         public static readonly TokenResourceKey DefaultSpeed = new TokenResourceKey("MarqueeLabel.DefaultSpeed", "AtomUI.Token");
     }
 
-    public static class MenuResourceKey
+    public static class MenuTokenResourceKey
     {
         public static readonly TokenResourceKey MenuPopupBorderRadius = new TokenResourceKey("Menu.MenuPopupBorderRadius", "AtomUI.Token");
         public static readonly TokenResourceKey MenuPopupBoxShadows = new TokenResourceKey("Menu.MenuPopupBoxShadows", "AtomUI.Token");
@@ -257,7 +257,7 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey SeparatorItemHeight = new TokenResourceKey("Menu.SeparatorItemHeight", "AtomUI.Token");
     }
 
-    public static class OptionButtonResourceKey
+    public static class OptionButtonTokenResourceKey
     {
         public static readonly TokenResourceKey ButtonBackground = new TokenResourceKey("OptionButton.ButtonBackground", "AtomUI.Token");
         public static readonly TokenResourceKey ButtonCheckedBackground = new TokenResourceKey("OptionButton.ButtonCheckedBackground", "AtomUI.Token");
@@ -280,7 +280,7 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey PaddingSM = new TokenResourceKey("OptionButton.PaddingSM", "AtomUI.Token");
     }
 
-    public static class ProgressBarResourceKey
+    public static class ProgressBarTokenResourceKey
     {
         public static readonly TokenResourceKey DefaultColor = new TokenResourceKey("ProgressBar.DefaultColor", "AtomUI.Token");
         public static readonly TokenResourceKey RemainingColor = new TokenResourceKey("ProgressBar.RemainingColor", "AtomUI.Token");
@@ -297,7 +297,7 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey LineInfoIconSizeSM = new TokenResourceKey("ProgressBar.LineInfoIconSizeSM", "AtomUI.Token");
     }
 
-    public static class RadioButtonResourceKey
+    public static class RadioButtonTokenResourceKey
     {
         public static readonly TokenResourceKey RadioSize = new TokenResourceKey("RadioButton.RadioSize", "AtomUI.Token");
         public static readonly TokenResourceKey DotSize = new TokenResourceKey("RadioButton.DotSize", "AtomUI.Token");
@@ -307,7 +307,7 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey DotPadding = new TokenResourceKey("RadioButton.DotPadding", "AtomUI.Token");
     }
 
-    public static class SegmentedResourceKey
+    public static class SegmentedTokenResourceKey
     {
         public static readonly TokenResourceKey ItemColor = new TokenResourceKey("Segmented.ItemColor", "AtomUI.Token");
         public static readonly TokenResourceKey ItemHoverColor = new TokenResourceKey("Segmented.ItemHoverColor", "AtomUI.Token");
@@ -322,14 +322,14 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey SegmentedTextLabelMargin = new TokenResourceKey("Segmented.SegmentedTextLabelMargin", "AtomUI.Token");
     }
 
-    public static class SeparatorResourceKey
+    public static class SeparatorTokenResourceKey
     {
         public static readonly TokenResourceKey TextPaddingInline = new TokenResourceKey("Separator.TextPaddingInline", "AtomUI.Token");
         public static readonly TokenResourceKey OrientationMarginPercent = new TokenResourceKey("Separator.OrientationMarginPercent", "AtomUI.Token");
         public static readonly TokenResourceKey VerticalMarginInline = new TokenResourceKey("Separator.VerticalMarginInline", "AtomUI.Token");
     }
 
-    public static class SliderResourceKey
+    public static class SliderTokenResourceKey
     {
         public static readonly TokenResourceKey SliderTrackSize = new TokenResourceKey("Slider.SliderTrackSize", "AtomUI.Token");
         public static readonly TokenResourceKey RailSize = new TokenResourceKey("Slider.RailSize", "AtomUI.Token");
@@ -358,7 +358,7 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey MarginPartWithMark = new TokenResourceKey("Slider.MarginPartWithMark", "AtomUI.Token");
     }
 
-    public static class ToggleSwitchResourceKey
+    public static class ToggleSwitchTokenResourceKey
     {
         public static readonly TokenResourceKey TrackHeight = new TokenResourceKey("ToggleSwitch.TrackHeight", "AtomUI.Token");
         public static readonly TokenResourceKey TrackHeightSM = new TokenResourceKey("ToggleSwitch.TrackHeightSM", "AtomUI.Token");
@@ -384,7 +384,7 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey ExtraInfoFontSizeSM = new TokenResourceKey("ToggleSwitch.ExtraInfoFontSizeSM", "AtomUI.Token");
     }
 
-    public static class TabControlResourceKey
+    public static class TabControlTokenResourceKey
     {
         public static readonly TokenResourceKey CardBg = new TokenResourceKey("TabControl.CardBg", "AtomUI.Token");
         public static readonly TokenResourceKey CardSize = new TokenResourceKey("TabControl.CardSize", "AtomUI.Token");
@@ -417,7 +417,7 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey TabAndContentGutter = new TokenResourceKey("TabControl.TabAndContentGutter", "AtomUI.Token");
     }
 
-    public static class TagResourceKey
+    public static class TagTokenResourceKey
     {
         public static readonly TokenResourceKey DefaultBg = new TokenResourceKey("Tag.DefaultBg", "AtomUI.Token");
         public static readonly TokenResourceKey DefaultColor = new TokenResourceKey("Tag.DefaultColor", "AtomUI.Token");
@@ -430,7 +430,7 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey TagBorderlessBg = new TokenResourceKey("Tag.TagBorderlessBg", "AtomUI.Token");
     }
 
-    public static class ToolTipResourceKey
+    public static class ToolTipTokenResourceKey
     {
         public static readonly TokenResourceKey ToolTipMaxWidth = new TokenResourceKey("ToolTip.ToolTipMaxWidth", "AtomUI.Token");
         public static readonly TokenResourceKey ToolTipColor = new TokenResourceKey("ToolTip.ToolTipColor", "AtomUI.Token");
@@ -443,7 +443,7 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey ToolTipArrowSize = new TokenResourceKey("ToolTip.ToolTipArrowSize", "AtomUI.Token");
     }
 
-    public static class TreeViewResourceKey
+    public static class TreeViewTokenResourceKey
     {
         public static readonly TokenResourceKey TitleHeight = new TokenResourceKey("TreeView.TitleHeight", "AtomUI.Token");
         public static readonly TokenResourceKey NodeHoverBg = new TokenResourceKey("TreeView.NodeHoverBg", "AtomUI.Token");
@@ -457,7 +457,7 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey DragIndicatorLineWidth = new TokenResourceKey("TreeView.DragIndicatorLineWidth", "AtomUI.Token");
     }
 
-    public static class CaptionButtonResourceKey
+    public static class CaptionButtonTokenResourceKey
     {
         public static readonly TokenResourceKey HoverBackgroundColor = new TokenResourceKey("CaptionButton.HoverBackgroundColor", "AtomUI.Token");
         public static readonly TokenResourceKey PressedBackgroundColor = new TokenResourceKey("CaptionButton.PressedBackgroundColor", "AtomUI.Token");
@@ -466,7 +466,7 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey ForegroundColor = new TokenResourceKey("CaptionButton.ForegroundColor", "AtomUI.Token");
     }
 
-    public static class WindowResourceKey
+    public static class WindowTokenResourceKey
     {
         public static readonly TokenResourceKey DefaultBackground = new TokenResourceKey("Window.DefaultBackground", "AtomUI.Token");
         public static readonly TokenResourceKey DefaultForeground = new TokenResourceKey("Window.DefaultForeground", "AtomUI.Token");

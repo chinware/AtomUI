@@ -90,9 +90,9 @@ public class MenuItem : AvaloniaMenuItem, IControlCustomStyle
          UpdatePseudoClasses();
       } else if (e.Property == IconProperty) {
          if (Icon is not null && Icon is PathIcon pathIcon) {
-            TokenResourceBinder.CreateTokenBinding(pathIcon, PathIcon.WidthProperty, MenuResourceKey.ItemIconSize);
-            TokenResourceBinder.CreateTokenBinding(pathIcon, PathIcon.HeightProperty, MenuResourceKey.ItemIconSize);
-            TokenResourceBinder.CreateTokenBinding(pathIcon, PathIcon.NormalFilledBrushProperty, MenuResourceKey.ItemColor);
+            TokenResourceBinder.CreateTokenBinding(pathIcon, PathIcon.WidthProperty, MenuTokenResourceKey.ItemIconSize);
+            TokenResourceBinder.CreateTokenBinding(pathIcon, PathIcon.HeightProperty, MenuTokenResourceKey.ItemIconSize);
+            TokenResourceBinder.CreateTokenBinding(pathIcon, PathIcon.NormalFilledBrushProperty, MenuTokenResourceKey.ItemColor);
          }
       } else if (e.Property == ToggleTypeProperty) {
          HandleToggleTypeChanged();

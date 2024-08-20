@@ -73,7 +73,7 @@ internal class DragPreview : Decorator
    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
    {
       base.OnAttachedToVisualTree(e);
-      TokenResourceBinder.CreateTokenBinding(this, BackgroundProperty, TreeViewResourceKey.NodeHoverBg);
+      TokenResourceBinder.CreateTokenBinding(this, BackgroundProperty, TreeViewTokenResourceKey.NodeHoverBg);
    }
 
    public override void Render(DrawingContext context)

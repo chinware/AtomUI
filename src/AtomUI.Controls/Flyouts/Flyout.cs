@@ -117,8 +117,8 @@ public class Flyout : PopupFlyoutBase
 
    public Flyout()
    {
-      TokenResourceBinder.CreateGlobalTokenBinding(this, MotionDurationTokenProperty, GlobalResourceKey.MotionDurationMid);
-      TokenResourceBinder.CreateGlobalTokenBinding(this, MaskShadowsProperty, GlobalResourceKey.BoxShadowsSecondary);
+      TokenResourceBinder.CreateGlobalTokenBinding(this, MotionDurationTokenProperty, GlobalTokenResourceKey.MotionDurationMid);
+      TokenResourceBinder.CreateGlobalTokenBinding(this, MaskShadowsProperty, GlobalTokenResourceKey.BoxShadowsSecondary);
    }
 
    private void HandlePopupPropertyChanged(AvaloniaPropertyChangedEventArgs args)

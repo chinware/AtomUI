@@ -137,17 +137,17 @@ public class TextBoxTheme : BaseControlTheme
       var commonStyle = new Style(selector => selector.Nesting());
       var largeStyle =
          new Style(selector => selector.Nesting().PropertyEquals(TextBox.SizeTypeProperty, SizeType.Large));
-      largeStyle.Add(TextBox.LineHeightProperty, GlobalResourceKey.FontHeightLG);
+      largeStyle.Add(TextBox.LineHeightProperty, GlobalTokenResourceKey.FontHeightLG);
       commonStyle.Add(largeStyle);
 
       var middleStyle =
          new Style(selector => selector.Nesting().PropertyEquals(TextBox.SizeTypeProperty, SizeType.Middle));
-      middleStyle.Add(TextBox.LineHeightProperty, GlobalResourceKey.FontHeight);
+      middleStyle.Add(TextBox.LineHeightProperty, GlobalTokenResourceKey.FontHeight);
       commonStyle.Add(middleStyle);
 
       var smallStyle =
          new Style(selector => selector.Nesting().PropertyEquals(TextBox.SizeTypeProperty, SizeType.Small));
-      smallStyle.Add(TextBox.LineHeightProperty, GlobalResourceKey.FontHeightSM);
+      smallStyle.Add(TextBox.LineHeightProperty, GlobalTokenResourceKey.FontHeightSM);
       commonStyle.Add(smallStyle);
       
       Add(commonStyle);
@@ -155,8 +155,8 @@ public class TextBoxTheme : BaseControlTheme
    
    private void BuildFixedStyle()
    {
-      this.Add(TextBox.SelectionBrushProperty, GlobalResourceKey.SelectionBackground);
-      this.Add(TextBox.SelectionForegroundBrushProperty, GlobalResourceKey.SelectionForeground);
+      this.Add(TextBox.SelectionBrushProperty, GlobalTokenResourceKey.SelectionBackground);
+      this.Add(TextBox.SelectionForegroundBrushProperty, GlobalTokenResourceKey.SelectionForeground);
       this.Add(TextBox.VerticalAlignmentProperty, VerticalAlignment.Center);
       this.Add(TextBox.VerticalContentAlignmentProperty, VerticalAlignment.Center);
       this.Add(ScrollViewer.IsScrollChainingEnabledProperty, true);
@@ -171,7 +171,7 @@ public class TextBoxTheme : BaseControlTheme
       {
          var errorStyle = new Style(selector => selector.Nesting().Class(AddOnDecoratedBox.ErrorPC));
          var scrollViewerStyle = new Style(selector => selector.Nesting().Template().Name(ScrollViewerPart));
-         scrollViewerStyle.Add(ScrollViewer.ForegroundProperty, GlobalResourceKey.ColorErrorText);
+         scrollViewerStyle.Add(ScrollViewer.ForegroundProperty, GlobalTokenResourceKey.ColorErrorText);
          errorStyle.Add(scrollViewerStyle);
          borderlessStyle.Add(errorStyle);
       }
@@ -179,7 +179,7 @@ public class TextBoxTheme : BaseControlTheme
       {
          var warningStyle = new Style(selector => selector.Nesting().Class(AddOnDecoratedBox.WarningPC));
          var scrollViewerStyle = new Style(selector => selector.Nesting().Template().Name(ScrollViewerPart));
-         scrollViewerStyle.Add(ScrollViewer.ForegroundProperty, GlobalResourceKey.ColorWarningText);
+         scrollViewerStyle.Add(ScrollViewer.ForegroundProperty, GlobalTokenResourceKey.ColorWarningText);
          warningStyle.Add(scrollViewerStyle);
          borderlessStyle.Add(warningStyle);
       }
@@ -194,7 +194,7 @@ public class TextBoxTheme : BaseControlTheme
           var errorStyle = new Style(selector => selector.Nesting().Class(AddOnDecoratedBox.ErrorPC));
           
          var scrollViewerStyle = new Style(selector => selector.Nesting().Template().Name(ScrollViewerPart));
-         scrollViewerStyle.Add(ScrollViewer.ForegroundProperty, GlobalResourceKey.ColorErrorText);
+         scrollViewerStyle.Add(ScrollViewer.ForegroundProperty, GlobalTokenResourceKey.ColorErrorText);
          errorStyle.Add(scrollViewerStyle);
          filledStyle.Add(errorStyle);
        }
@@ -202,7 +202,7 @@ public class TextBoxTheme : BaseControlTheme
       {
          var warningStyle = new Style(selector => selector.Nesting().Class(AddOnDecoratedBox.WarningPC));
          var scrollViewerStyle = new Style(selector => selector.Nesting().Template().Name(ScrollViewerPart));
-         scrollViewerStyle.Add(ScrollViewer.ForegroundProperty, GlobalResourceKey.ColorWarningText);
+         scrollViewerStyle.Add(ScrollViewer.ForegroundProperty, GlobalTokenResourceKey.ColorWarningText);
          warningStyle.Add(scrollViewerStyle);
          filledStyle.Add(warningStyle);
       }

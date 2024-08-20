@@ -115,10 +115,10 @@ internal class ButtonSpinnerInnerBox : AddOnDecoratedInnerBox, ICustomHitTest
    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
    {
       _handleContentPresenter = e.NameScope.Find<ContentPresenter>(ButtonSpinnerInnerBoxTheme.SpinnerHandlePart);
-      TokenResourceBinder.CreateGlobalTokenBinding(this, SpinnerBorderThicknessProperty, GlobalResourceKey.BorderThickness, BindingPriority.Template,
+      TokenResourceBinder.CreateGlobalTokenBinding(this, SpinnerBorderThicknessProperty, GlobalTokenResourceKey.BorderThickness, BindingPriority.Template,
          new RenderScaleAwareThicknessConfigure(this));
-      TokenResourceBinder.CreateGlobalTokenBinding(this, SpinnerBorderBrushProperty, GlobalResourceKey.ColorBorder);
-      TokenResourceBinder.CreateTokenBinding(this, SpinnerHandleWidthTokenProperty, ButtonSpinnerResourceKey.HandleWidth);
+      TokenResourceBinder.CreateGlobalTokenBinding(this, SpinnerBorderBrushProperty, GlobalTokenResourceKey.ColorBorder);
+      TokenResourceBinder.CreateTokenBinding(this, SpinnerHandleWidthTokenProperty, ButtonSpinnerTokenResourceKey.HandleWidth);
       base.OnApplyTemplate(e);
    }
 

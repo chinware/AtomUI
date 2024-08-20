@@ -51,7 +51,7 @@ public class TabControl : BaseTabControl
          if (_selectedIndicator.Transitions is null) {
             var transitions = new Transitions();
             transitions.Add(AnimationUtils.CreateTransition<TransformOperationsTransition>(Border.RenderTransformProperty,
-                               GlobalResourceKey.MotionDurationSlow, new ExponentialEaseOut()));
+                               GlobalTokenResourceKey.MotionDurationSlow, new ExponentialEaseOut()));
             _selectedIndicator.Transitions = transitions;
             // 只需要执行一次
             LayoutUpdated -= HandleLayoutUpdated;
@@ -119,6 +119,6 @@ public class TabControl : BaseTabControl
       _selectedIndicator = e.NameScope.Find<Border>(TabControlTheme.SelectedItemIndicatorPart);
       _itemsPresenter = e.NameScope.Find<ItemsPresenter>(TabControlTheme.ItemsPresenterPart);
 
-      TokenResourceBinder.CreateGlobalResourceBinding(this, SelectedIndicatorThicknessProperty, GlobalResourceKey.LineWidthBold);
+      TokenResourceBinder.CreateGlobalResourceBinding(this, SelectedIndicatorThicknessProperty, GlobalTokenResourceKey.LineWidthBold);
    }
 }

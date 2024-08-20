@@ -637,7 +637,7 @@ public class ToolTip : TemplatedControl,
       
       SetPopupParent(_popup, control);
 
-      TokenResourceBinder.CreateTokenBinding(_popup, Popup.MaskShadowsProperty, GlobalResourceKey.BoxShadowsSecondary);
+      TokenResourceBinder.CreateTokenBinding(_popup, Popup.MaskShadowsProperty, GlobalTokenResourceKey.BoxShadowsSecondary);
       SetToolTipColor(control);
       
       var marginToAnchor = GetMarginToAnchor(control);

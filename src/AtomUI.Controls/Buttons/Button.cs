@@ -281,7 +281,7 @@ public class Button : AvaloniaButton,
    void ApplyShapeStyleConfig()
    {
       if (Shape == ButtonShape.Circle) {
-         TokenResourceBinder.CreateTokenBinding(this, PaddingProperty, ButtonResourceKey.CirclePadding);
+         TokenResourceBinder.CreateTokenBinding(this, PaddingProperty, ButtonTokenResourceKey.CirclePadding);
       }
    }
 

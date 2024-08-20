@@ -44,12 +44,12 @@ public class ArrowDecoratedBoxTheme : BaseControlTheme
    protected override void BuildStyles()
    {
       var commonStyle = new Style(selector => selector.Nesting());
-      commonStyle.Add(ArrowDecoratedBox.ForegroundProperty, GlobalResourceKey.ColorText);
-      commonStyle.Add(ArrowDecoratedBox.BackgroundProperty, GlobalResourceKey.ColorBgContainer);
-      commonStyle.Add(ArrowDecoratedBox.MinHeightProperty, GlobalResourceKey.ControlHeight);
-      commonStyle.Add(ArrowDecoratedBox.PaddingProperty, ArrowDecoratedBoxResourceKey.Padding);
-      commonStyle.Add(ArrowDecoratedBox.ArrowSizeProperty, ArrowDecoratedBoxResourceKey.ArrowSize);
-      commonStyle.Add(ArrowDecoratedBox.CornerRadiusProperty, GlobalResourceKey.BorderRadius);
+      commonStyle.Add(ArrowDecoratedBox.ForegroundProperty, GlobalTokenResourceKey.ColorText);
+      commonStyle.Add(ArrowDecoratedBox.BackgroundProperty, GlobalTokenResourceKey.ColorBgContainer);
+      commonStyle.Add(ArrowDecoratedBox.MinHeightProperty, GlobalTokenResourceKey.ControlHeight);
+      commonStyle.Add(ArrowDecoratedBox.PaddingProperty, ArrowDecoratedBoxTokenResourceKey.Padding);
+      commonStyle.Add(ArrowDecoratedBox.ArrowSizeProperty, ArrowDecoratedBoxTokenResourceKey.ArrowSize);
+      commonStyle.Add(ArrowDecoratedBox.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadius);
       Add(commonStyle);
    }
 }

@@ -48,7 +48,7 @@ internal class SegmentedItemTheme : BaseControlTheme
       var hasIconStyle = new Style(selector => selector.Nesting().Not(x => x.Nesting().PropertyEquals(SegmentedItem.IconProperty, null)));
       {
          var labelStyle = new Style(selector => selector.Nesting().Template().OfType<Label>());
-         labelStyle.Add(Label.MarginProperty, SegmentedResourceKey.SegmentedTextLabelMargin);
+         labelStyle.Add(Label.MarginProperty, SegmentedTokenResourceKey.SegmentedTextLabelMargin);
          hasIconStyle.Add(labelStyle);
       }
       
@@ -68,8 +68,8 @@ internal class SegmentedItemTheme : BaseControlTheme
          new Style(selector => selector.Nesting().PropertyEquals(SegmentedItem.SizeTypeProperty, SizeType.Large));
       {
          var iconStyle = new Style(selector => iconSelector);
-         iconStyle.Add(PathIcon.WidthProperty, GlobalResourceKey.IconSizeLG);
-         iconStyle.Add(PathIcon.HeightProperty, GlobalResourceKey.IconSizeLG);
+         iconStyle.Add(PathIcon.WidthProperty, GlobalTokenResourceKey.IconSizeLG);
+         iconStyle.Add(PathIcon.HeightProperty, GlobalTokenResourceKey.IconSizeLG);
          largeSizeStyle.Add(iconStyle);
       }
       Add(largeSizeStyle);
@@ -78,8 +78,8 @@ internal class SegmentedItemTheme : BaseControlTheme
          new Style(selector => selector.Nesting().PropertyEquals(SegmentedItem.SizeTypeProperty, SizeType.Middle));
       {
          var iconStyle = new Style(selector => iconSelector);
-         iconStyle.Add(PathIcon.WidthProperty, GlobalResourceKey.IconSize);
-         iconStyle.Add(PathIcon.HeightProperty, GlobalResourceKey.IconSize);
+         iconStyle.Add(PathIcon.WidthProperty, GlobalTokenResourceKey.IconSize);
+         iconStyle.Add(PathIcon.HeightProperty, GlobalTokenResourceKey.IconSize);
          middleSizeStyle.Add(iconStyle);
       }
       Add(middleSizeStyle);
@@ -88,8 +88,8 @@ internal class SegmentedItemTheme : BaseControlTheme
          new Style(selector => selector.Nesting().PropertyEquals(SegmentedItem.SizeTypeProperty, SizeType.Small));
       {
          var iconStyle = new Style(selector => iconSelector);
-         iconStyle.Add(PathIcon.WidthProperty, GlobalResourceKey.IconSizeSM);
-         iconStyle.Add(PathIcon.HeightProperty, GlobalResourceKey.IconSizeSM);
+         iconStyle.Add(PathIcon.WidthProperty, GlobalTokenResourceKey.IconSizeSM);
+         iconStyle.Add(PathIcon.HeightProperty, GlobalTokenResourceKey.IconSizeSM);
          smallSizeStyle.Add(iconStyle);
       }
       Add(smallSizeStyle);

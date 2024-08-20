@@ -15,11 +15,11 @@ internal class NodeSwitcherButtonTheme : ToggleIconButtonTheme
       base.BuildStyles();
 
       var commonStyle = new Style(selector => selector.Nesting());
-      commonStyle.Add(NodeSwitcherButton.BackgroundProperty, GlobalResourceKey.ColorTransparent);
-      commonStyle.Add(NodeSwitcherButton.CornerRadiusProperty, GlobalResourceKey.BorderRadius);
+      commonStyle.Add(NodeSwitcherButton.BackgroundProperty, GlobalTokenResourceKey.ColorTransparent);
+      commonStyle.Add(NodeSwitcherButton.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadius);
 
       var hoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
-      hoverStyle.Add(NodeSwitcherButton.BackgroundProperty, TreeViewResourceKey.NodeHoverBg);
+      hoverStyle.Add(NodeSwitcherButton.BackgroundProperty, TreeViewTokenResourceKey.NodeHoverBg);
       commonStyle.Add(hoverStyle);
       Add(commonStyle);
    }

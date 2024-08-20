@@ -54,7 +54,7 @@ public class SliderThumb : TemplatedControl
    {
       var transitions = new Transitions();
       transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(OutlineBrushProperty));
-      transitions.Add(AnimationUtils.CreateTransition<ThicknessTransition>(OutlineThicknessProperty, GlobalResourceKey.MotionDurationFast));
+      transitions.Add(AnimationUtils.CreateTransition<ThicknessTransition>(OutlineThicknessProperty, GlobalTokenResourceKey.MotionDurationFast));
       transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(BorderBrushProperty));
       Transitions = transitions;
    }

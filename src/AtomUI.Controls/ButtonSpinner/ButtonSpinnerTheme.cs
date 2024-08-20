@@ -87,15 +87,15 @@ internal class ButtonSpinnerTheme : BaseControlTheme
 
       spinnerHandleDecorator.Child = spinnerLayout;
 
-      TokenResourceBinder.CreateTokenBinding(spinnerLayout, StackPanel.WidthProperty, ButtonSpinnerResourceKey.HandleWidth);
+      TokenResourceBinder.CreateTokenBinding(spinnerLayout, StackPanel.WidthProperty, ButtonSpinnerTokenResourceKey.HandleWidth);
       
       var increaseButtonIcon = new PathIcon()
       {
          Kind = "UpOutlined"
       };
 
-      TokenResourceBinder.CreateGlobalTokenBinding(increaseButtonIcon, PathIcon.ActiveFilledBrushProperty, ButtonSpinnerResourceKey.HandleHoverColor);
-      TokenResourceBinder.CreateGlobalTokenBinding(increaseButtonIcon, PathIcon.SelectedFilledBrushProperty, GlobalResourceKey.ColorPrimaryActive);
+      TokenResourceBinder.CreateGlobalTokenBinding(increaseButtonIcon, PathIcon.ActiveFilledBrushProperty, ButtonSpinnerTokenResourceKey.HandleHoverColor);
+      TokenResourceBinder.CreateGlobalTokenBinding(increaseButtonIcon, PathIcon.SelectedFilledBrushProperty, GlobalTokenResourceKey.ColorPrimaryActive);
       
       var increaseButton = new IconButton()
       {
@@ -112,12 +112,12 @@ internal class ButtonSpinnerTheme : BaseControlTheme
       increaseButton.SetCurrentValue(IconButton.BackgroundProperty, new SolidColorBrush(Colors.Transparent));
       {
          var handleButtonStyle = new Style(selector => selector.Class(StdPseudoClass.Pressed));
-         handleButtonStyle.Add(IconButton.BackgroundProperty, ButtonSpinnerResourceKey.HandleActiveBg);
+         handleButtonStyle.Add(IconButton.BackgroundProperty, ButtonSpinnerTokenResourceKey.HandleActiveBg);
          increaseButton.Styles.Add(handleButtonStyle);
       }
       
-      TokenResourceBinder.CreateTokenBinding(increaseButton, IconButton.IconWidthProperty, ButtonSpinnerResourceKey.HandleIconSize);
-      TokenResourceBinder.CreateTokenBinding(increaseButton, IconButton.IconHeightProperty, ButtonSpinnerResourceKey.HandleIconSize);
+      TokenResourceBinder.CreateTokenBinding(increaseButton, IconButton.IconWidthProperty, ButtonSpinnerTokenResourceKey.HandleIconSize);
+      TokenResourceBinder.CreateTokenBinding(increaseButton, IconButton.IconHeightProperty, ButtonSpinnerTokenResourceKey.HandleIconSize);
       increaseButton.RegisterInNameScope(scope);
 
       var decreaseButtonIcon = new PathIcon()
@@ -125,8 +125,8 @@ internal class ButtonSpinnerTheme : BaseControlTheme
          Kind = "DownOutlined"
       };
       
-      TokenResourceBinder.CreateGlobalTokenBinding(decreaseButtonIcon, PathIcon.ActiveFilledBrushProperty, ButtonSpinnerResourceKey.HandleHoverColor);
-      TokenResourceBinder.CreateGlobalTokenBinding(decreaseButtonIcon, PathIcon.SelectedFilledBrushProperty, GlobalResourceKey.ColorPrimaryActive);
+      TokenResourceBinder.CreateGlobalTokenBinding(decreaseButtonIcon, PathIcon.ActiveFilledBrushProperty, ButtonSpinnerTokenResourceKey.HandleHoverColor);
+      TokenResourceBinder.CreateGlobalTokenBinding(decreaseButtonIcon, PathIcon.SelectedFilledBrushProperty, GlobalTokenResourceKey.ColorPrimaryActive);
       
       var decreaseButton = new IconButton()
       {
@@ -143,12 +143,12 @@ internal class ButtonSpinnerTheme : BaseControlTheme
       decreaseButton.SetCurrentValue(IconButton.BackgroundProperty, new SolidColorBrush(Colors.Transparent));
       {
          var handleButtonStyle = new Style(selector => selector.Class(StdPseudoClass.Pressed));
-         handleButtonStyle.Add(IconButton.BackgroundProperty, ButtonSpinnerResourceKey.HandleActiveBg);
+         handleButtonStyle.Add(IconButton.BackgroundProperty, ButtonSpinnerTokenResourceKey.HandleActiveBg);
          decreaseButton.Styles.Add(handleButtonStyle);
       }
       decreaseButton.RegisterInNameScope(scope);
-      TokenResourceBinder.CreateTokenBinding(decreaseButton, IconButton.IconWidthProperty, ButtonSpinnerResourceKey.HandleIconSize);
-      TokenResourceBinder.CreateTokenBinding(decreaseButton, IconButton.IconHeightProperty, ButtonSpinnerResourceKey.HandleIconSize);
+      TokenResourceBinder.CreateTokenBinding(decreaseButton, IconButton.IconWidthProperty, ButtonSpinnerTokenResourceKey.HandleIconSize);
+      TokenResourceBinder.CreateTokenBinding(decreaseButton, IconButton.IconHeightProperty, ButtonSpinnerTokenResourceKey.HandleIconSize);
       
       spinnerLayout.Children.Add(increaseButton);
       spinnerLayout.Children.Add(decreaseButton);
@@ -163,17 +163,17 @@ internal class ButtonSpinnerTheme : BaseControlTheme
       var commonStyle = new Style(selector => selector.Nesting());
       var largeStyle =
          new Style(selector => selector.Nesting().PropertyEquals(AddOnDecoratedBox.SizeTypeProperty, SizeType.Large));
-      largeStyle.Add(AddOnDecoratedBox.CornerRadiusProperty, GlobalResourceKey.BorderRadiusLG);
+      largeStyle.Add(AddOnDecoratedBox.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadiusLG);
       commonStyle.Add(largeStyle);
 
       var middleStyle =
          new Style(selector => selector.Nesting().PropertyEquals(AddOnDecoratedBox.SizeTypeProperty, SizeType.Middle));
-      middleStyle.Add(AddOnDecoratedBox.CornerRadiusProperty, GlobalResourceKey.BorderRadius);
+      middleStyle.Add(AddOnDecoratedBox.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadius);
       commonStyle.Add(middleStyle);
 
       var smallStyle =
          new Style(selector => selector.Nesting().PropertyEquals(AddOnDecoratedBox.SizeTypeProperty, SizeType.Small));
-      smallStyle.Add(AddOnDecoratedBox.CornerRadiusProperty, GlobalResourceKey.BorderRadiusSM);
+      smallStyle.Add(AddOnDecoratedBox.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadiusSM);
       commonStyle.Add(smallStyle);
       
       Add(commonStyle);

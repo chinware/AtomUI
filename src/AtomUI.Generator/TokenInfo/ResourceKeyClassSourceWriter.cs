@@ -93,7 +93,7 @@ public class ResourceKeyClassSourceWriter
    {
       var className = controlTokenInfo.ControlName;
       var tokenId = className.Replace("Token", "");
-      className = className.Replace("Token", "ResourceKey");
+      className = className + "ResourceKey";
       
       var controlClassSyntax = BuildClassSyntax(className);
       var resourceKeyFields = new List<MemberDeclarationSyntax>();
@@ -107,7 +107,7 @@ public class ResourceKeyClassSourceWriter
 
    private ClassDeclarationSyntax BuildGlobalResourceKeyClassSyntax()
    {
-      var globalClassSyntax = BuildClassSyntax("GlobalResourceKey");
+      var globalClassSyntax = BuildClassSyntax("GlobalTokenResourceKey");
       // 添加全局的 Token 定义
       AddGlobalResourceKeyField(ref globalClassSyntax);
       return globalClassSyntax;

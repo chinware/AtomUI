@@ -8,7 +8,7 @@ public class ControlTokenPropertyWalker : CSharpSyntaxWalker
 {
    public ControlTokenInfo ControlTokenInfo { get; private set; }
    private SemanticModel _semanticModel;
-   public string? TokenResourceNamespace { get; set; }
+   public string? TokenResourceCatalog { get; set; }
 
    public ControlTokenPropertyWalker(SemanticModel semanticModel)
    {
@@ -18,7 +18,7 @@ public class ControlTokenPropertyWalker : CSharpSyntaxWalker
    
    public override void VisitPropertyDeclaration(PropertyDeclarationSyntax node)
    {
-      ControlTokenInfo.Tokens.Add(new TokenName(node.Identifier.Text, TokenResourceNamespace!));
+      ControlTokenInfo.Tokens.Add(new TokenName(node.Identifier.Text, TokenResourceCatalog!));
    }
 
    public override void VisitClassDeclaration(ClassDeclarationSyntax node)
@@ -33,8 +33,8 @@ public class ControlTokenPropertyWalker : CSharpSyntaxWalker
       var classDeclaredSymbol = _semanticModel.GetDeclaredSymbol(node);
       if (classDeclaredSymbol is not null) {
          foreach (var attribute in classDeclaredSymbol.GetAttributes()) {
-            if (attribute.ConstructorArguments.Any() && attribute.ConstructorArguments[0].Value is string ns) {
-               TokenResourceNamespace = ns;
+            if (attribute.ConstructorArguments.Any() && attribute.ConstructorArguments[0].Value is string catalog) {
+               TokenResourceCatalog = catalog;
             }
          }
       }

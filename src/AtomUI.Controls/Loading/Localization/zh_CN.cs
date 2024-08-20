@@ -6,5 +6,5 @@ namespace AtomUI.Controls.LoadingLang;
 [LanguageProvider(LanguageCode.zh_CN, LoadingIndicatorToken.ID)]
 internal class zh_CN : AbstractLanguageProvider
 {
-   public string LoadingText { get; } = "加载中";
+   public string LoadingText = "加载中";
 }

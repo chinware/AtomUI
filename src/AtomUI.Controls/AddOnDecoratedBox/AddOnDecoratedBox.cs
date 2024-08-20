@@ -202,21 +202,21 @@ public class AddOnDecoratedBox : ContentControl
    private void SetupIconTypeAddOnSize(PathIcon icon)
    {
       if (SizeType == SizeType.Large) {
-         TokenResourceBinder.CreateGlobalTokenBinding(icon, PathIcon.WidthProperty, GlobalResourceKey.IconSizeLG);
-         TokenResourceBinder.CreateGlobalTokenBinding(icon, PathIcon.HeightProperty, GlobalResourceKey.IconSizeLG);
+         TokenResourceBinder.CreateGlobalTokenBinding(icon, PathIcon.WidthProperty, GlobalTokenResourceKey.IconSizeLG);
+         TokenResourceBinder.CreateGlobalTokenBinding(icon, PathIcon.HeightProperty, GlobalTokenResourceKey.IconSizeLG);
       } else if (SizeType == SizeType.Middle) {
-         TokenResourceBinder.CreateGlobalTokenBinding(icon, PathIcon.WidthProperty, GlobalResourceKey.IconSize);
-         TokenResourceBinder.CreateGlobalTokenBinding(icon, PathIcon.HeightProperty, GlobalResourceKey.IconSize);
+         TokenResourceBinder.CreateGlobalTokenBinding(icon, PathIcon.WidthProperty, GlobalTokenResourceKey.IconSize);
+         TokenResourceBinder.CreateGlobalTokenBinding(icon, PathIcon.HeightProperty, GlobalTokenResourceKey.IconSize);
       } else {
-         TokenResourceBinder.CreateGlobalTokenBinding(icon, PathIcon.WidthProperty, GlobalResourceKey.IconSizeSM);
-         TokenResourceBinder.CreateGlobalTokenBinding(icon, PathIcon.HeightProperty, GlobalResourceKey.IconSizeSM);
+         TokenResourceBinder.CreateGlobalTokenBinding(icon, PathIcon.WidthProperty, GlobalTokenResourceKey.IconSizeSM);
+         TokenResourceBinder.CreateGlobalTokenBinding(icon, PathIcon.HeightProperty, GlobalTokenResourceKey.IconSizeSM);
       }
    }
    
    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
    {
       base.OnApplyTemplate(e);
-      TokenResourceBinder.CreateGlobalResourceBinding(this, BorderThicknessProperty, GlobalResourceKey.BorderThickness,
+      TokenResourceBinder.CreateGlobalResourceBinding(this, BorderThicknessProperty, GlobalTokenResourceKey.BorderThickness,
                                                       BindingPriority.Template,
                                                       new RenderScaleAwareThicknessConfigure(this));
       _leftAddOnPresenter = e.NameScope.Find<Control>(AddOnDecoratedBoxTheme.LeftAddOnPart);
