@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-
-namespace AtomUI.Theme
+﻿namespace AtomUI.Theme
 {
     internal class ControlThemeRegister
     {

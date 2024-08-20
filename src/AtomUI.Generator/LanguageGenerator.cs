@@ -20,8 +20,15 @@ public class LanguageGenerator : IIncrementalGenerator
          }).Collect();
       initContext.RegisterImplementationSourceOutput(languageProvider, (context, languageProviders) =>
       {
-         var classWriter = new LangResourceKeyClassSourceWriter(context, languageProviders.ToList());
-         classWriter.Write();
+         var providerList = languageProviders.ToList();
+         {
+            var classWriter = new LangResourceKeyClassSourceWriter(context, providerList);
+            classWriter.Write();
+         }
+         {
+            var classWriter = new LanguageProviderRegisterClassSourceWriter(context, providerList);
+            classWriter.Write();
+         }
       });
    }
 }

@@ -57,14 +57,14 @@ public abstract class AbstractDesignToken : IDesignToken
 
    public virtual void BuildResourceDictionary(IResourceDictionary dictionary)
    {
-      Type type = GetType();
+      var type = GetType();
       // internal 这里也考虑进去，还是具体的 Token 自己处理？
       var tokenProperties = type.GetProperties(BindingFlags.Public | 
                                                BindingFlags.NonPublic |
                                                BindingFlags.Instance |
                                                BindingFlags.FlattenHierarchy);
-      Type baseTokenType = typeof(AbstractDesignToken);
-      var tokenResourceNamespace = GetTokenResourceNamespace();
+      var baseTokenType = typeof(AbstractDesignToken);
+      var tokenResourceNamespace = GetTokenResourceCatalog();
       foreach (var property in tokenProperties) {
          if (baseTokenType.IsAssignableFrom(property.PropertyType)) {
             // 如果当前的属性是 Token 类型，证明是组合属性，跳过
@@ -79,7 +79,7 @@ public abstract class AbstractDesignToken : IDesignToken
       }
    }
 
-   private string GetTokenResourceNamespace()
+   private string GetTokenResourceCatalog()
    {
       var tokenType = GetType();
       if (tokenType.GetCustomAttribute<GlobalDesignTokenAttribute>() is GlobalDesignTokenAttribute globalTokenAttribute) {

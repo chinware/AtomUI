@@ -57,7 +57,7 @@ public class ThemeManager : Styles, IThemeManager
    public event EventHandler<ThemeOperateEventArgs>? ThemeUnloadedEvent;
    public event EventHandler<ThemeOperateEventArgs>? ThemeAboutToChangeEvent;
    public event EventHandler<ThemeChangedEventArgs>? ThemeChangedEvent;
-   
+
    static ThemeManager()
    {
       Current = new ThemeManager();
@@ -74,6 +74,7 @@ public class ThemeManager : Styles, IThemeManager
       DefaultThemeId = DEFAULT_THEME_ID;
       _controlThemeResources = new ResourceDictionary();
       ControlTokenTypes = new List<Type>();
+      _languageProviders = new List<ILanguageProvider>();
       _languages = new Dictionary<CultureInfo, ResourceDictionary>();
    }
 
@@ -262,12 +263,25 @@ public class ThemeManager : Styles, IThemeManager
 
    private void BuildLanguageResources()
    {
-      
+      if (_languageProviders is not null) {
+         foreach (var languageProvider in _languageProviders) {
+            var culture = new CultureInfo(languageProvider.LangCode);
+            if (!_languages.ContainsKey(culture)) {
+               _languages[culture] = new ResourceDictionary();
+            }
+
+            var resourceDictionary = _languages[culture];
+            languageProvider.BuildResourceDictionary(resourceDictionary);
+         }
+
+         _languageProviders = null;
+      }
    }
 
    internal void InvokeBootstrapInitializers()
    {
-      var assemblies = Assembly.GetEntryAssembly()?.GetReferencedAssemblies().Select(assemblyName => Assembly.Load(assemblyName));
+      var assemblies = Assembly.GetEntryAssembly()?.GetReferencedAssemblies()
+                               .Select(assemblyName => Assembly.Load(assemblyName));
       var initializers = assemblies?.SelectMany(assembly => assembly.GetTypes())
                                    .Where(type => type.IsClass && typeof(IBootstrapInitializer).IsAssignableFrom(type))
                                    .Select(type => (IBootstrapInitializer)Activator.CreateInstance(type)!);
@@ -293,7 +307,7 @@ public class ThemeManager : Styles, IThemeManager
       resourceKey ??= controlTheme.TargetType!;
       _controlThemeResources?.Add(resourceKey, controlTheme);
    }
-   
+
    public void RegisterLanguageProvider(ILanguageProvider languageProvider)
    {
       _languageProviders?.Add(languageProvider);

@@ -46,7 +46,8 @@ public class LanguageProviderWalker : CSharpSyntaxWalker
             }
          }
       }
-      
+
+      LanguageInfo.ClassName = node.Identifier.ToString();
       var ns = string.Empty;
       if (node.Parent is FileScopedNamespaceDeclarationSyntax fileScopedNamespaceDecl) {
          ns = fileScopedNamespaceDecl.Name.ToString();

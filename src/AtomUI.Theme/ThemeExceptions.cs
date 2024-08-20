@@ -38,3 +38,16 @@ public class TokenResourceRegisterException : SystemException
    {
    }
 }
+
+public class LanguageMetaInfoParseException : SystemException
+{
+   public LanguageMetaInfoParseException(string? message)
+      : base(message)
+   {
+   }
+
+   public LanguageMetaInfoParseException(string? message, Exception? innerException)
+      : base(message, innerException)
+   {
+   }
+}

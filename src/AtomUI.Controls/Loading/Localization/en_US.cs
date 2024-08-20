@@ -6,5 +6,5 @@ namespace AtomUI.Controls.Lang;
 [LanguageProvider(LanguageCode.en_US, LoadingIndicatorToken.ID)]
 internal class en_US : AbstractLanguageProvider
 {
-   public string LoadingText = "Loading";
+   public const string LoadingText = "Loading";
 }

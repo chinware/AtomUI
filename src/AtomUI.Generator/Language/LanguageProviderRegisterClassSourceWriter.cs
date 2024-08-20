@@ -3,18 +3,18 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace AtomUI.Generator.ControlTheme;
+namespace AtomUI.Generator.Language;
 
-public class ControlThemeRegisterClassSourceWriter
+public class LanguageProviderRegisterClassSourceWriter
 {
    private SourceProductionContext _context;
-   private ImmutableArray<string> _classes;
+   private List<LanguageInfo> _languageInfos;
    private List<string> _usingInfos;
 
-   public ControlThemeRegisterClassSourceWriter(SourceProductionContext context, ImmutableArray<string> classes)
+   public LanguageProviderRegisterClassSourceWriter(SourceProductionContext context, List<LanguageInfo> classes)
    {
       _context = context;
-      _classes = classes;
+      _languageInfos = classes;
       _usingInfos = new List<string>();
       SetupUsingInfos();
    }
@@ -26,7 +26,7 @@ public class ControlThemeRegisterClassSourceWriter
    public void Write()
    {
       var compilationUnitSyntax = BuildCompilationUnitSyntax();
-      _context.AddSource($"ControlThemeRegister.g.cs", compilationUnitSyntax.NormalizeWhitespace().ToFullString());
+      _context.AddSource($"LanguageProviderRegister.g.cs", compilationUnitSyntax.NormalizeWhitespace().ToFullString());
    }
    
    private CompilationUnitSyntax BuildCompilationUnitSyntax()
@@ -45,7 +45,7 @@ public class ControlThemeRegisterClassSourceWriter
       // 添加命名空间
       var namespaceSyntax = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.ParseName("AtomUI.Theme"));
       
-      var themeManagerClassDecl = SyntaxFactory.ClassDeclaration("ControlThemeRegister")
+      var themeManagerClassDecl = SyntaxFactory.ClassDeclaration("LanguageProviderRegister")
                                           .AddModifiers(SyntaxFactory.Token(SyntaxKind.InternalKeyword))
                                           .AddMembers(GenerateControlThemeCreateMethod());
       namespaceSyntax = namespaceSyntax.AddMembers(themeManagerClassDecl);
@@ -58,8 +58,8 @@ public class ControlThemeRegisterClassSourceWriter
    {
       
       List<ExpressionStatementSyntax> objectCreateStmts = new();
-      foreach (var className in _classes) {
-         var registerExprStmt = SyntaxFactory.ParseExpression($"ThemeManager.Current.RegisterControlTheme(new {className}())");
+      foreach (var languageInfo in _languageInfos) {
+         var registerExprStmt = SyntaxFactory.ParseExpression($"ThemeManager.Current.RegisterLanguageProvider(new {languageInfo.Namespace}.{languageInfo.ClassName}())");
          var statement = SyntaxFactory.ExpressionStatement(registerExprStmt);
          objectCreateStmts.Add(statement);
       }
