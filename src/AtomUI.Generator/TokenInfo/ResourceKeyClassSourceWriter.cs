@@ -41,9 +41,9 @@ public class ResourceKeyClassSourceWriter
       return classSyntax;
    }
 
-   private FieldDeclarationSyntax BuildResourceKeyFieldSyntax(string name, string? value = null)
+   private FieldDeclarationSyntax BuildResourceKeyFieldSyntax(TokenName tokenName, string? value = null)
    {
-      value ??= name;
+      value ??= tokenName.Name;
       var modifiers = new List<SyntaxToken>()
       {
          SyntaxFactory.Token(SyntaxKind.PublicKeyword),
@@ -56,13 +56,23 @@ public class ResourceKeyClassSourceWriter
          SyntaxFactory.LiteralExpression(
             SyntaxKind.StringLiteralExpression,
             SyntaxFactory.Literal($"{value}")));
+      
+      var nsArgument = SyntaxFactory.Argument(
+         SyntaxFactory.LiteralExpression(
+            SyntaxKind.StringLiteralExpression,
+            SyntaxFactory.Literal($"{tokenName.ResourceNamespace}")));
 
       var resourceKeyInstanceExpr = SyntaxFactory.ObjectCreationExpression(resourceKeyType)
-                                                 .WithArgumentList(SyntaxFactory.ArgumentList(SyntaxFactory.SingletonSeparatedList(argument)));
+                                                 .WithArgumentList(SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList<ArgumentSyntax>(new SyntaxNodeOrToken[]
+                                                 {
+                                                    argument,
+                                                    SyntaxFactory.Token(SyntaxKind.CommaToken),
+                                                    nsArgument
+                                                 })));
       
       var fieldSyntax = SyntaxFactory.FieldDeclaration(SyntaxFactory.VariableDeclaration(resourceKeyType)
             .WithVariables(SyntaxFactory.SingletonSeparatedList(
-               SyntaxFactory.VariableDeclarator(name)
+               SyntaxFactory.VariableDeclarator(tokenName.Name)
                   .WithInitializer(
                      SyntaxFactory.EqualsValueClause(resourceKeyInstanceExpr)))))
          .AddModifiers(modifiers.ToArray());
@@ -88,7 +98,7 @@ public class ResourceKeyClassSourceWriter
       var controlClassSyntax = BuildClassSyntax(className);
       var resourceKeyFields = new List<MemberDeclarationSyntax>();
       foreach (var tokenName in controlTokenInfo.Tokens) {
-         resourceKeyFields.Add(BuildResourceKeyFieldSyntax(tokenName, $"{tokenId}.{tokenName}"));
+         resourceKeyFields.Add(BuildResourceKeyFieldSyntax(tokenName, $"{tokenId}.{tokenName.Name}"));
       }
 
       controlClassSyntax = controlClassSyntax.AddMembers(resourceKeyFields.ToArray());

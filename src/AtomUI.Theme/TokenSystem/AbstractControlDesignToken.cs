@@ -39,7 +39,7 @@ public abstract class AbstractControlDesignToken : AbstractDesignToken, IControl
       // 暂时先用这种方案，后期有更好的方案再做调整
       foreach (var entry in tempDictionary) {
          if (entry.Key is TokenResourceKey entryResourceKey) {
-            var resourceKey = new TokenResourceKey($"{Id}.{entryResourceKey.UnQualifiedKey()}");
+            var resourceKey = new TokenResourceKey($"{Id}.{entryResourceKey.UnQualifiedKey()}", entryResourceKey.Namespace);
             dictionary.Add(resourceKey, entry.Value);
          }
       }

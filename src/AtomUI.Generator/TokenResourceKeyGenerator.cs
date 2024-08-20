@@ -16,12 +16,15 @@ public class TokenResourceKeyGenerator : IIncrementalGenerator
          {
             var walker = new TokenPropertyWalker(context.SemanticModel);
             walker.Visit(context.TargetNode);
-            return walker.TokenNames;
+            return (walker.TokenResourceNamespace, walker.TokenNames);
          }).Collect().Select((array, token) =>
       {
-         var mergedSet = new HashSet<string>();
-         foreach (var set in array) {
-            mergedSet.UnionWith(set);
+         var mergedSet = new HashSet<TokenName>();
+         foreach (var entry in array) {
+            var ns = entry.TokenResourceNamespace!;
+            foreach (var tokenName in entry.TokenNames) {
+               mergedSet.Add(new TokenName(tokenName, ns));
+            }
          }
 
          return mergedSet;
@@ -31,7 +34,7 @@ public class TokenResourceKeyGenerator : IIncrementalGenerator
          (node, token) => true,
          (context, token) =>
          {
-            var walker = new ControlTokenPropertyWalker();
+            var walker = new ControlTokenPropertyWalker(context.SemanticModel);
             walker.Visit(context.TargetNode);
             return walker.ControlTokenInfo;
          }).Collect();
@@ -60,8 +63,10 @@ public class TokenResourceKeyGenerator : IIncrementalGenerator
 
                return info.ControlName;
             });
-            var classWriter = new TokenRegisterClassSourceWriter(context, tokenClassNames);
-            classWriter.Write();
+            if (tokenClassNames.Any()) {
+               var classWriter = new TokenRegisterClassSourceWriter(context, tokenClassNames);
+               classWriter.Write();
+            }
          }
       });
    }

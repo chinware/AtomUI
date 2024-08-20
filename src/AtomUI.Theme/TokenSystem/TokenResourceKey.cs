@@ -13,6 +13,7 @@ public readonly struct TokenResourceKey : IEquatable<TokenResourceKey>
    }
 
    public string Value => _value;
+   public string Namespace => _namespace;
 
    public bool Equals(TokenResourceKey other)
    {

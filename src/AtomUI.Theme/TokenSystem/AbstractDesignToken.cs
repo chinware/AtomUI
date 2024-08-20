@@ -64,6 +64,7 @@ public abstract class AbstractDesignToken : IDesignToken
                                                BindingFlags.Instance |
                                                BindingFlags.FlattenHierarchy);
       Type baseTokenType = typeof(AbstractDesignToken);
+      var tokenResourceNamespace = GetTokenResourceNamespace();
       foreach (var property in tokenProperties) {
          if (baseTokenType.IsAssignableFrom(property.PropertyType)) {
             // 如果当前的属性是 Token 类型，证明是组合属性，跳过
@@ -74,8 +75,21 @@ public abstract class AbstractDesignToken : IDesignToken
          if (property.PropertyType == typeof(Color) && tokenValue != null) {
             tokenValue = new SolidColorBrush((Color)tokenValue);
          }
-         dictionary[new TokenResourceKey(tokenName)] = tokenValue;
+         dictionary[new TokenResourceKey(tokenName, tokenResourceNamespace)] = tokenValue;
       }
+   }
+
+   private string GetTokenResourceNamespace()
+   {
+      var tokenType = GetType();
+      if (tokenType.GetCustomAttribute<GlobalDesignTokenAttribute>() is GlobalDesignTokenAttribute globalTokenAttribute) {
+         return globalTokenAttribute.Namespace;
+      } else if (tokenType.GetCustomAttribute<ControlDesignTokenAttribute>() is ControlDesignTokenAttribute
+                 controlTokenAttribute) {
+         return controlTokenAttribute.Namespace;
+      }
+
+      throw new TokenResourceRegisterException($"The current Token: {tokenType.FullName} lacks the token type annotation");
    }
 
    public virtual object? GetTokenValue(string name)
