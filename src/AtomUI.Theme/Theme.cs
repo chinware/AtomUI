@@ -141,7 +141,7 @@ public abstract class Theme : ITheme
             (controlToken as AbstractControlDesignToken)!.IsCustomTokenConfig = true;
             (controlToken as AbstractControlDesignToken)!.CustomTokens = controlTokenInfo.ControlTokens.Keys.ToList();
          }
-
+      
          foreach (var controlToken in _controlTokens.Values) {
             (controlToken as AbstractControlDesignToken)!.CalculateFromAlias();
             if (controlTokenConfig.ContainsKey(controlToken.Id)) {

@@ -3,17 +3,20 @@
 public readonly struct TokenResourceKey : IEquatable<TokenResourceKey>
 {
    private readonly string _value;
+   private readonly string _namespace;
+   public const string DefaultNamespace = $"{ResourceNamespace.Root}.{ResourceNamespace.Token}";
 
-   public TokenResourceKey(string value)
+   public TokenResourceKey(string value, string ns = DefaultNamespace)
    {
       _value = value;
+      _namespace = ns;
    }
 
    public string Value => _value;
 
    public bool Equals(TokenResourceKey other)
    {
-      return _value == other._value;
+      return _namespace == other._namespace && _value == other._value;
    }
 
    public override bool Equals(object? obj)
@@ -55,6 +58,11 @@ public readonly struct TokenResourceKey : IEquatable<TokenResourceKey>
    }
 
    public override string ToString()
+   {
+      return $"{_namespace}:{_value}";
+   }
+
+   public string UnQualifiedKey()
    {
       return _value;
    }
