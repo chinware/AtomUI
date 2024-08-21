@@ -22,26 +22,26 @@ Welcome to communicate and give suggestions to AtomUI, thank you for giving the 
 | Steps        | TODO    |
 
 ##### Data Entry
-| Control Name    | Status         |
-|:----------------|:---------------|
-| AutoComplete    | TODO           |
-| Cascader        | TODO           |
-| Checkbox        | Completed ✅    |
-| ColorPicker     | TODO           |
-| DatePicker      | TODO           |
-| Form            | TODO           |
-| Input           | Completed ✅    |
-| NumberUpDown    | Completed ✅    |
-| ButtonSpinner   | Completed ✅    |
-| Mentions        | TODO           |
-| Radio           | Completed ✅    |
-| OptionButtonBox | Completed ✅    |
-| Rate            | TODO           |
-| Select          | TODO           |
-| Slider          | Completed ✅    |
-| Switch          | Completed ✅    |
-| TimePicker      | TODO           |
-| Transfer        | TODO           |
+| Control Name    | Status        |
+|:----------------|:--------------|
+| AutoComplete    | TODO          |
+| Cascader        | TODO          |
+| Checkbox        | Completed ✅   |
+| ColorPicker     | TODO          |
+| DatePicker      | TODO          |
+| Form            | TODO          |
+| Input           | Completed ✅   |
+| NumberUpDown    | Completed ✅   |
+| ButtonSpinner   | Completed ✅   |
+| Mentions        | TODO          |
+| Radio           | Completed ✅   |
+| OptionButtonBox | Completed ✅   |
+| Rate            | TODO          |
+| Select          | TODO          |
+| Slider          | Completed ✅   |
+| Switch          | Completed ✅   |
+| TimePicker      | TODO          |
+| Transfer        | TODO          |
 | Upload          | Need Review 🤔 |
 
 ##### Data Display

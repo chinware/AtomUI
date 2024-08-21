@@ -105,10 +105,10 @@ public class ButtonSpinner : AvaloniaButtonSpinner
       }
    }
 
-   protected override Size MeasureOverride(Size availableSize)
+   protected override Size ArrangeOverride(Size finalSize)
    {
       var borderThickness = _decoratedBox?.BorderThickness ?? default;
-      return base.MeasureOverride(availableSize).Inflate(borderThickness);
+      return base.ArrangeOverride(finalSize).Inflate(borderThickness);
    }
 
    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
