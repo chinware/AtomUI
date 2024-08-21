@@ -30,7 +30,7 @@ PS: AtomUI 目前仅在 Windows 11 平台测试<br>
 | 控件名                  | 完成情况   |
 |:---------------------|:-------|
 | AutoComplete 自动完成    | 未完成    |
-| ComboBox 自动完成        | 进行中 💪   |
+| ComboBox 下拉选择        | 进行中 💪   |
 | Cascader 级联选择        | 未完成    |
 | Checkbox 多选框         | 已完成 ✅  |
 | ColorPicker 颜色选择器    | 未完成    |
@@ -64,7 +64,7 @@ PS: AtomUI 目前仅在 Windows 11 平台测试<br>
 | EmptyIndicator 空状态     | 已完成 ✅  |
 | PathIcon 图标            | 已完成 ✅  |
 | Image 图片               | 未完成    |
-| ListBox 列表             | 进行中 💪 |
+| ListBox 列表             |  已完成 ✅ |
 | Popover 气泡卡片           | 已完成 ✅  |
 | QRCode 二维码             | 未完成    |
 | Segmented 分段控制器        | 已完成 ✅  |
