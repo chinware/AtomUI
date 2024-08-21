@@ -36,9 +36,9 @@ PS: AtomUI 目前仅在 Windows 11 平台测试<br>
 | ColorPicker 颜色选择器    | 未完成    |
 | DatePicker 日期选择框     | 未完成    |
 | Form 表单              | 未完成    |
-| Input 输入框            | Completed ✅ |
-| NumberUpDown 数字输入框   | Completed ✅ |
-| ButtonSpinner 按钮切换控件 | Completed ✅ |
+| Input 输入框            | 已完成 ✅ |
+| NumberUpDown 数字输入框   | 已完成 ✅ |
+| ButtonSpinner 按钮切换控件 | 已完成 ✅ |
 | Mentions 提及          | 未完成    |
 | Radio 单选框            | 已完成 ✅  |
 | OptionButtonBox 单选组  | 已完成 ✅  |
@@ -64,7 +64,7 @@ PS: AtomUI 目前仅在 Windows 11 平台测试<br>
 | EmptyIndicator 空状态     | 已完成 ✅  |
 | PathIcon 图标            | 已完成 ✅  |
 | Image 图片               | 未完成    |
-| List 列表                | 进行中 💪 |
+| ListBox 列表             | 进行中 💪 |
 | Popover 气泡卡片           | 已完成 ✅  |
 | QRCode 二维码             | 未完成    |
 | Segmented 分段控制器        | 已完成 ✅  |
