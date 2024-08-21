@@ -16,6 +16,7 @@
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.ExpanderToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.FlyoutPresenterToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.LineEditToken));
+            ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.ListBoxToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.LoadingIndicatorToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.MarqueeLabelToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.MenuToken));

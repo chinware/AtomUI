@@ -26,6 +26,8 @@
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.SearchEditTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.TextBoxInnerBoxTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.TextBoxTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.ListBoxItemTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.ListBoxTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.LoadingIndicatorAdornerTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.LoadingIndicatorTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.ContextMenuTheme());

@@ -1,4 +1,5 @@
-﻿using Avalonia;
+﻿using AtomUI.Theme.Styling;
+using Avalonia;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
@@ -7,7 +8,7 @@ using Avalonia.Styling;
 
 namespace AtomUI.Theme;
 
-public class BaseControlTheme : ControlTheme
+public abstract class BaseControlTheme : ControlTheme
 {
    public BaseControlTheme() { }
    public BaseControlTheme(Type targetType) : base(targetType) { }

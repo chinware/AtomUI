@@ -193,6 +193,22 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey RightInnerAddOnMargin = new TokenResourceKey("LineEdit.RightInnerAddOnMargin", "AtomUI.Token");
     }
 
+    public static class ListBoxTokenResourceKey
+    {
+        public static readonly TokenResourceKey ContentPadding = new TokenResourceKey("ListBox.ContentPadding", "AtomUI.Token");
+        public static readonly TokenResourceKey ItemColor = new TokenResourceKey("ListBox.ItemColor", "AtomUI.Token");
+        public static readonly TokenResourceKey ItemHoverColor = new TokenResourceKey("ListBox.ItemHoverColor", "AtomUI.Token");
+        public static readonly TokenResourceKey ItemSelectedColor = new TokenResourceKey("ListBox.ItemSelectedColor", "AtomUI.Token");
+        public static readonly TokenResourceKey ItemDisabledColor = new TokenResourceKey("ListBox.ItemDisabledColor", "AtomUI.Token");
+        public static readonly TokenResourceKey ItemBgColor = new TokenResourceKey("ListBox.ItemBgColor", "AtomUI.Token");
+        public static readonly TokenResourceKey ItemHoverBgColor = new TokenResourceKey("ListBox.ItemHoverBgColor", "AtomUI.Token");
+        public static readonly TokenResourceKey ItemSelectedBgColor = new TokenResourceKey("ListBox.ItemSelectedBgColor", "AtomUI.Token");
+        public static readonly TokenResourceKey ItemPaddingSM = new TokenResourceKey("ListBox.ItemPaddingSM", "AtomUI.Token");
+        public static readonly TokenResourceKey ItemPadding = new TokenResourceKey("ListBox.ItemPadding", "AtomUI.Token");
+        public static readonly TokenResourceKey ItemPaddingLG = new TokenResourceKey("ListBox.ItemPaddingLG", "AtomUI.Token");
+        public static readonly TokenResourceKey ItemMargin = new TokenResourceKey("ListBox.ItemMargin", "AtomUI.Token");
+    }
+
     public static class LoadingIndicatorTokenResourceKey
     {
         public static readonly TokenResourceKey DotSize = new TokenResourceKey("LoadingIndicator.DotSize", "AtomUI.Token");
