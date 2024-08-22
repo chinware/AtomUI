@@ -159,9 +159,7 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey ItemBgColor = new TokenResourceKey("ComboBox.ItemBgColor", "AtomUI.Token");
         public static readonly TokenResourceKey ItemHoverBgColor = new TokenResourceKey("ComboBox.ItemHoverBgColor", "AtomUI.Token");
         public static readonly TokenResourceKey ItemSelectedBgColor = new TokenResourceKey("ComboBox.ItemSelectedBgColor", "AtomUI.Token");
-        public static readonly TokenResourceKey ItemPaddingSM = new TokenResourceKey("ComboBox.ItemPaddingSM", "AtomUI.Token");
         public static readonly TokenResourceKey ItemPadding = new TokenResourceKey("ComboBox.ItemPadding", "AtomUI.Token");
-        public static readonly TokenResourceKey ItemPaddingLG = new TokenResourceKey("ComboBox.ItemPaddingLG", "AtomUI.Token");
         public static readonly TokenResourceKey ItemMargin = new TokenResourceKey("ComboBox.ItemMargin", "AtomUI.Token");
         public static readonly TokenResourceKey PopupMarginToAnchor = new TokenResourceKey("ComboBox.PopupMarginToAnchor", "AtomUI.Token");
     }

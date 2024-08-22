@@ -70,19 +70,9 @@ internal class ComboBoxToken : ButtonSpinnerToken
    public Color ItemSelectedBgColor { get; set; }
 
    /// <summary>
-   /// 列表项小号内间距
-   /// </summary>
-   public Thickness ItemPaddingSM { get; set; }
-
-   /// <summary>
    /// 列表项内间距
    /// </summary>
    public Thickness ItemPadding { get; set; }
-
-   /// <summary>
-   /// 列表项大号内间距
-   /// </summary>
-   public Thickness ItemPaddingLG { get; set; }
    
    /// <summary>
    /// 列表项外边距
@@ -118,9 +108,7 @@ internal class ComboBoxToken : ButtonSpinnerToken
       ItemSelectedBgColor = _globalToken.ControlItemBgActive;
 
       ItemDisabledColor = colorTextDisabled;
-
-      ItemPaddingLG = new Thickness(_globalToken.Padding);
-      ItemPaddingSM = new Thickness(_globalToken.PaddingXS, _globalToken.PaddingXS);
+      
       ItemPadding = new Thickness(_globalToken.PaddingSM, _globalToken.PaddingXS);
       ItemMargin = new Thickness(0, 0.5);
    }

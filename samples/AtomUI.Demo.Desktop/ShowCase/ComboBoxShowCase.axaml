@@ -14,12 +14,218 @@
             <showcase:ShowCaseItem
                 Title="Basic"
                 Description="Basic button spinner.">
-                <atom:ComboBox PlaceholderText="Select" Width="400">
-                    <atom:ComboBoxItem>aaa</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>bbb</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>ccc</atom:ComboBoxItem>
+                <atom:ComboBox PlaceholderText="Please select" Width="300">
+                    <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>疑是地上霜</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>举头望明月</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
                 </atom:ComboBox>
             </showcase:ShowCaseItem>
         </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="Three sizes of Input"
+            Description="There are three sizes of an ComboBox: large (40px), default (32px) and small (24px).">
+            <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
+                <atom:ComboBox SizeType="Large" PlaceholderText="Please select">
+                    <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>疑是地上霜</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>举头望明月</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
+                </atom:ComboBox>
+                <atom:ComboBox SizeType="Middle" PlaceholderText="Please select">
+                    <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>疑是地上霜</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>举头望明月</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
+                </atom:ComboBox>
+                <atom:ComboBox SizeType="Small" PlaceholderText="Please select">
+                    <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>疑是地上霜</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>举头望明月</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
+                </atom:ComboBox>
+            </StackPanel>
+        </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="Variants"
+            Description="Variants of Input.">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:ComboBox StyleVariant="Outline" PlaceholderText="Please select" Width="300">
+                    <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>疑是地上霜</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>举头望明月</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
+                </atom:ComboBox>
+                
+                <atom:ComboBox StyleVariant="Filled" PlaceholderText="Please select" Width="300">
+                    <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>疑是地上霜</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>举头望明月</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
+                </atom:ComboBox>
+                
+                <atom:ComboBox StyleVariant="Borderless" PlaceholderText="Please select" Width="300">
+                    <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>疑是地上霜</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>举头望明月</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
+                </atom:ComboBox>
+            </StackPanel>
+        </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="Pre / Post tab"
+            Description="Using pre and post tabs example.">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:ComboBox PlaceholderText="Please select" Width="300"
+                               LeftAddOn="http://"
+                               RightAddOn=".com">
+                    <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>疑是地上霜</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>举头望明月</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
+                </atom:ComboBox>
+                
+                <atom:ComboBox PlaceholderText="Please select" Width="300"
+                               RightAddOn="{atom:IconProvider Kind=SettingOutlined}"
+                               >
+                    <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>疑是地上霜</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>举头望明月</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
+                </atom:ComboBox>
+                
+                <atom:ComboBox PlaceholderText="Please select" Width="300"
+                               LeftAddOn="http://"
+                               InnerRightContent=".com"
+                >
+                    <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>疑是地上霜</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>举头望明月</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
+                </atom:ComboBox>
+                
+            </StackPanel>
+        </showcase:ShowCaseItem>
+        
+        
+        <showcase:ShowCaseItem
+            Title="prefix and suffix"
+            Description="Add a prefix or suffix icons inside input.">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:ComboBox PlaceholderText="Please select" Width="300"
+                               InnerLeftContent="{atom:IconProvider Kind=UserOutlined, NormalFilledColor=#D7D7D7}"
+                               InnerRightContent="{atom:IconProvider Kind=InfoCircleOutlined, NormalFilledColor=#8C8C8C}"
+                               >
+                    <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>疑是地上霜</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>举头望明月</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
+                </atom:ComboBox>
+                
+                <atom:ComboBox PlaceholderText="Please select" Width="300"
+                               InnerLeftContent="￥"
+                               InnerRightContent="RMB">
+                    <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>疑是地上霜</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>举头望明月</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
+                </atom:ComboBox>
+                
+                <atom:ComboBox PlaceholderText="Please select" Width="300"
+                               InnerLeftContent="￥" 
+                               InnerRightContent="RMB" IsEnabled="False">
+                    <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>疑是地上霜</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>举头望明月</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
+                </atom:ComboBox>
+                
+            </StackPanel>
+        </showcase:ShowCaseItem>
+        
+           <showcase:ShowCaseItem
+            Title="Status"
+            Description="Add status to Input with status, which could be error or warning.">
+            <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
+                <atom:ComboBox PlaceholderText="Please select" Width="300"
+                               Status="Error">
+                    <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>疑是地上霜</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>举头望明月</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
+                </atom:ComboBox>
+                
+                <atom:ComboBox PlaceholderText="Please select" Width="300"
+                               Status="Warning">
+                    <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>疑是地上霜</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>举头望明月</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
+                </atom:ComboBox>
+                
+                <atom:ComboBox PlaceholderText="Please select" Width="300"
+                               Status="Error"
+                               InnerLeftContent="{atom:IconProvider Kind=ClockCircleOutlined}">
+                    <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>疑是地上霜</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>举头望明月</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
+                </atom:ComboBox>
+                
+                <atom:ComboBox PlaceholderText="Please select" Width="300"
+                               Status="Warning"
+                               InnerLeftContent="{atom:IconProvider Kind=ClockCircleOutlined}">
+                    <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>疑是地上霜</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>举头望明月</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
+                </atom:ComboBox>
+                
+                <atom:ComboBox PlaceholderText="Please select" Width="300"
+                               Status="Error"
+                               StyleVariant="Filled"
+                               InnerLeftContent="{atom:IconProvider Kind=ClockCircleOutlined}">
+                    <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>疑是地上霜</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>举头望明月</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
+                </atom:ComboBox>
+           
+                <atom:ComboBox PlaceholderText="Please select" Width="300"
+                               Status="Warning"
+                               StyleVariant="Filled"
+                               InnerLeftContent="{atom:IconProvider Kind=ClockCircleOutlined}">
+                    <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>疑是地上霜</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>举头望明月</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
+                </atom:ComboBox>
+                
+                <atom:ComboBox PlaceholderText="Please select" Width="300"
+                               Status="Error"
+                               StyleVariant="Borderless"
+                               InnerLeftContent="{atom:IconProvider Kind=ClockCircleOutlined}">
+                    <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>疑是地上霜</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>举头望明月</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
+                </atom:ComboBox>
+           
+                <atom:ComboBox PlaceholderText="Please select" Width="300"
+                               Status="Warning"
+                               StyleVariant="Borderless"
+                               InnerLeftContent="{atom:IconProvider Kind=ClockCircleOutlined}">
+                    <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>疑是地上霜</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>举头望明月</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
+                </atom:ComboBox>
+                
+            </StackPanel>
+        </showcase:ShowCaseItem>
+        
     </showcase:ShowCasePanel>
 </UserControl>

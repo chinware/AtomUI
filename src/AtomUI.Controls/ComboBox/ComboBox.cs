@@ -10,6 +10,9 @@ using AvaloniaComboBox = Avalonia.Controls.ComboBox;
 
 public class ComboBox : AvaloniaComboBox
 {
+   public const string ErrorPC = ":error";
+   public const string WarningPC = ":warning";
+   
    #region 公共属性定义
 
    public static readonly StyledProperty<object?> LeftAddOnProperty =
@@ -93,6 +96,7 @@ public class ComboBox : AvaloniaComboBox
    }
 
    private IconButton? _openIndicatorButton;
+   private ComboBoxSpinnerInnerBox? _spinnerInnerBox;
 
    protected override Size ArrangeOverride(Size finalSize)
    {
@@ -111,12 +115,16 @@ public class ComboBox : AvaloniaComboBox
       base.OnApplyTemplate(e);
       _popup = e.NameScope.Find<Popup>(ComboBoxTheme.PopupPart);
       _openIndicatorButton = e.NameScope.Find<IconButton>(ComboBoxTheme.OpenIndicatorButtonPart);
+      _spinnerInnerBox = e.NameScope.Find<ComboBoxSpinnerInnerBox>(ComboBoxTheme.SpinnerInnerBoxPart);
+      
       if (_openIndicatorButton is not null) {
          _openIndicatorButton.Click += (sender, args) =>
          {
             SetCurrentValue(IsDropDownOpenProperty, true);
          };
       }
+
+      UpdatePseudoClasses();
    }
    
    protected override void PrepareContainerForItemOverride(Control container, object? item, int index)
@@ -125,5 +133,20 @@ public class ComboBox : AvaloniaComboBox
       if (container is ComboBoxItem comboBoxItem) {
          BindUtils.RelayBind(this, SizeTypeProperty, comboBoxItem, ComboBoxItem.SizeTypeProperty);
       }
+   }
+   
+   protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+   {
+      base.OnPropertyChanged(change);
+      
+      if (change.Property == StatusProperty) {
+         UpdatePseudoClasses();
+      }
+   }
+   
+   private void UpdatePseudoClasses()
+   {
+      PseudoClasses.Set(ErrorPC, Status == AddOnDecoratedStatus.Error);
+      PseudoClasses.Set(WarningPC, Status == AddOnDecoratedStatus.Warning);
    }
 }

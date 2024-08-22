@@ -277,16 +277,6 @@ public class AddOnDecoratedBox : ContentControl
                                               bottomLeft: bottomLeftRadius,
                                               bottomRight: bottomRightRadius);
    }
-
-   protected override Size MeasureOverride(Size availableSize)
-   {
-      return base.MeasureOverride(new Size(availableSize.Width - BorderThickness.Left - BorderThickness.Right, availableSize.Height));
-   }
-   
-   protected override Size ArrangeOverride(Size finalSize)
-   {
-      return base.ArrangeOverride(new Size(finalSize.Width - BorderThickness.Left - BorderThickness.Right, finalSize.Height));
-   }
    
    protected virtual void UpdatePseudoClasses()
    {

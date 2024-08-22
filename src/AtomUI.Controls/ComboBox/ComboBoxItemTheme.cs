@@ -16,7 +16,7 @@ internal class ComboBoxItemTheme : BaseControlTheme
    
    public ComboBoxItemTheme() : base(typeof(ComboBoxItem)) {}
    
-      protected override IControlTemplate BuildControlTemplate()
+   protected override IControlTemplate BuildControlTemplate()
    {
       return new FuncControlTemplate<ComboBoxItem>((listBoxItem, scope) =>
       {
@@ -41,18 +41,22 @@ internal class ComboBoxItemTheme : BaseControlTheme
    protected override void BuildStyles()
    {
       BuildCommonStyle();
-      BuildSizeTypeStyle();
       BuildDisabledStyle();
    }
 
    private void BuildCommonStyle()
    {
       var commonStyle = new Style(selector => selector.Nesting());
+      commonStyle.Add(ComboBoxItem.FontSizeProperty, GlobalTokenResourceKey.FontSize);
       commonStyle.Add(ComboBoxItem.MarginProperty, ComboBoxTokenResourceKey.ItemMargin);
+      
       {
          var contentPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ContentPresenterPart));
          contentPresenterStyle.Add(ContentPresenter.ForegroundProperty, ComboBoxTokenResourceKey.ItemColor);
          contentPresenterStyle.Add(ContentPresenter.BackgroundProperty, ComboBoxTokenResourceKey.ItemBgColor);
+         contentPresenterStyle.Add(ContentPresenter.MinHeightProperty, GlobalTokenResourceKey.ControlHeight);
+         contentPresenterStyle.Add(ContentPresenter.PaddingProperty, ComboBoxTokenResourceKey.ItemPadding);
+         contentPresenterStyle.Add(ContentPresenter.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadiusSM);
          commonStyle.Add(contentPresenterStyle);
       }
 
@@ -74,41 +78,6 @@ internal class ComboBoxItemTheme : BaseControlTheme
       }
       commonStyle.Add(selectedStyle);
       Add(commonStyle);
-   }
-
-   private void BuildSizeTypeStyle()
-   {
-      var largeStyle = new Style(selector => selector.Nesting().PropertyEquals(ComboBoxItem.SizeTypeProperty, SizeType.Large));
-      {
-         var contentPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ContentPresenterPart));
-         contentPresenterStyle.Add(ContentPresenter.MinHeightProperty, GlobalTokenResourceKey.ControlHeightLG);
-         contentPresenterStyle.Add(ContentPresenter.PaddingProperty, ComboBoxTokenResourceKey.ItemPaddingLG);
-         contentPresenterStyle.Add(ContentPresenter.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadius);
-         largeStyle.Add(contentPresenterStyle);
-      }
-
-      Add(largeStyle);
-      
-      var middleStyle = new Style(selector => selector.Nesting().PropertyEquals(ComboBoxItem.SizeTypeProperty, SizeType.Middle));
-      {
-         var contentPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ContentPresenterPart));
-         contentPresenterStyle.Add(ContentPresenter.MinHeightProperty, GlobalTokenResourceKey.ControlHeight);
-         contentPresenterStyle.Add(ContentPresenter.PaddingProperty, ComboBoxTokenResourceKey.ItemPadding);
-         contentPresenterStyle.Add(ContentPresenter.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadiusSM);
-         middleStyle.Add(contentPresenterStyle);
-      }
-
-      Add(middleStyle);
-      
-      var smallStyle = new Style(selector => selector.Nesting().PropertyEquals(ComboBoxItem.SizeTypeProperty, SizeType.Small));
-      {
-         var contentPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ContentPresenterPart));
-         contentPresenterStyle.Add(ContentPresenter.MinHeightProperty, GlobalTokenResourceKey.ControlHeightSM);
-         contentPresenterStyle.Add(ContentPresenter.PaddingProperty, ComboBoxTokenResourceKey.ItemPaddingSM);
-         contentPresenterStyle.Add(ContentPresenter.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadiusXS);
-         smallStyle.Add(contentPresenterStyle);
-      }
-      Add(smallStyle);
    }
 
    private void BuildDisabledStyle()
