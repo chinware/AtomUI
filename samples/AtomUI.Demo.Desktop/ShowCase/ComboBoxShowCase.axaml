@@ -8,6 +8,18 @@
     xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
     mc:Ignorable="d">
     <showcase:ShowCasePanel>
-     
+        <showcase:ShowCaseItem
+            Title="Basic"
+            Description="Basic button spinner.">
+            <showcase:ShowCaseItem
+                Title="Basic"
+                Description="Basic button spinner.">
+                <atom:ComboBox PlaceholderText="Select" Width="400">
+                    <atom:ComboBoxItem>aaa</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>bbb</atom:ComboBoxItem>
+                    <atom:ComboBoxItem>ccc</atom:ComboBoxItem>
+                </atom:ComboBox>
+            </showcase:ShowCaseItem>
+        </showcase:ShowCaseItem>
     </showcase:ShowCasePanel>
 </UserControl>

@@ -146,6 +146,26 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey RightExpandButtonMargin = new TokenResourceKey("Collapse.RightExpandButtonMargin", "AtomUI.Token");
     }
 
+    public static class ComboBoxTokenResourceKey
+    {
+        public static readonly TokenResourceKey OpenIndicatorWidth = new TokenResourceKey("ComboBox.OpenIndicatorWidth", "AtomUI.Token");
+        public static readonly TokenResourceKey PopupBorderRadius = new TokenResourceKey("ComboBox.PopupBorderRadius", "AtomUI.Token");
+        public static readonly TokenResourceKey PopupBoxShadows = new TokenResourceKey("ComboBox.PopupBoxShadows", "AtomUI.Token");
+        public static readonly TokenResourceKey PopupContentPadding = new TokenResourceKey("ComboBox.PopupContentPadding", "AtomUI.Token");
+        public static readonly TokenResourceKey ItemColor = new TokenResourceKey("ComboBox.ItemColor", "AtomUI.Token");
+        public static readonly TokenResourceKey ItemHoverColor = new TokenResourceKey("ComboBox.ItemHoverColor", "AtomUI.Token");
+        public static readonly TokenResourceKey ItemSelectedColor = new TokenResourceKey("ComboBox.ItemSelectedColor", "AtomUI.Token");
+        public static readonly TokenResourceKey ItemDisabledColor = new TokenResourceKey("ComboBox.ItemDisabledColor", "AtomUI.Token");
+        public static readonly TokenResourceKey ItemBgColor = new TokenResourceKey("ComboBox.ItemBgColor", "AtomUI.Token");
+        public static readonly TokenResourceKey ItemHoverBgColor = new TokenResourceKey("ComboBox.ItemHoverBgColor", "AtomUI.Token");
+        public static readonly TokenResourceKey ItemSelectedBgColor = new TokenResourceKey("ComboBox.ItemSelectedBgColor", "AtomUI.Token");
+        public static readonly TokenResourceKey ItemPaddingSM = new TokenResourceKey("ComboBox.ItemPaddingSM", "AtomUI.Token");
+        public static readonly TokenResourceKey ItemPadding = new TokenResourceKey("ComboBox.ItemPadding", "AtomUI.Token");
+        public static readonly TokenResourceKey ItemPaddingLG = new TokenResourceKey("ComboBox.ItemPaddingLG", "AtomUI.Token");
+        public static readonly TokenResourceKey ItemMargin = new TokenResourceKey("ComboBox.ItemMargin", "AtomUI.Token");
+        public static readonly TokenResourceKey PopupMarginToAnchor = new TokenResourceKey("ComboBox.PopupMarginToAnchor", "AtomUI.Token");
+    }
+
     public static class EmptyIndicatorTokenResourceKey
     {
         public static readonly TokenResourceKey EmptyImgHeight = new TokenResourceKey("EmptyIndicator.EmptyImgHeight", "AtomUI.Token");

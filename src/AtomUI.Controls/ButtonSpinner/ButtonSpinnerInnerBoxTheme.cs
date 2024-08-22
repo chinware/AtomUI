@@ -10,7 +10,6 @@ namespace AtomUI.Controls;
 [ControlThemeProvider]
 internal class ButtonSpinnerInnerBoxTheme : AddOnDecoratedInnerBoxTheme
 {
-   public const string SpinnerMainLayoutPart = "PART_SpinnerMainLayout";
    public const string SpinnerHandlePart = "PART_SpinnerHandle";
    
    public ButtonSpinnerInnerBoxTheme() : base(typeof(ButtonSpinnerInnerBox)) {}
