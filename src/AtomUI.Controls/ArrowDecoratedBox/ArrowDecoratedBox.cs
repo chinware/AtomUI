@@ -290,7 +290,7 @@ public class ArrowDecoratedBox : ContentControl,
       return finalSize;
    }
 
-   private Rect GetContentRect(Size finalSize)
+   internal Rect GetContentRect(Size finalSize)
    {
       var offsetX = 0d;
       var offsetY = 0d;

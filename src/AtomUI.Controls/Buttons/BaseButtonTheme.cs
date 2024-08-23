@@ -72,8 +72,16 @@ internal abstract class BaseButtonTheme : BaseControlTheme
 
          var extraContentPresenter = new ContentPresenter()
          {
-            Name = RightExtraContentPart
+            Name = RightExtraContentPart,
+            HorizontalContentAlignment = HorizontalAlignment.Center,
+            VerticalContentAlignment = VerticalAlignment.Center,
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment = VerticalAlignment.Center
          };
+
+         CreateTemplateParentBinding(extraContentPresenter, ContentPresenter.ContentProperty, Button.ExtraContentProperty);
+         
+         DockPanel.SetDock(extraContentPresenter, Dock.Right);
 
          var rootLayout = new DockPanel()
          {

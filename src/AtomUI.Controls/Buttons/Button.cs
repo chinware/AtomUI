@@ -156,6 +156,9 @@ public class Button : AvaloniaButton,
       AvaloniaProperty.Register<Button, BoxShadow>(
          nameof(DangerShadow));
    
+   public static readonly StyledProperty<object?> ExtraContentProperty =
+      AvaloniaProperty.Register<AddOnDecoratedBox, object?>(nameof(ExtraContent));
+   
    internal double ControlHeight
    {
       get => GetValue(ControlHeightTokenProperty);
@@ -191,10 +194,16 @@ public class Button : AvaloniaButton,
       get => GetValue(DangerShadowProperty);
       set => SetValue(DangerShadowProperty, value);
    }
-
+   
+   public object? ExtraContent
+   {
+      get => GetValue(ExtraContentProperty);
+      set => SetValue(ExtraContentProperty, value);
+   }
+   
    #endregion
 
-   private ControlStyleState _styleState;
+   protected ControlStyleState _styleState;
    private IControlCustomStyle _customStyle;
    private bool _initialized = false;
    private BorderRenderHelper _borderRenderHelper;
@@ -387,7 +396,7 @@ public class Button : AvaloniaButton,
       SetupIconBrush();
    }
 
-   private void ApplyIconModeStyleConfig()
+   protected virtual void ApplyIconModeStyleConfig()
    {
       if (Icon is null) {
          return;
@@ -538,6 +547,15 @@ public class Button : AvaloniaButton,
          TokenResourceBinder.CreateGlobalTokenBinding(_loadingIcon, PathIcon.ActiveFilledBrushProperty, activeFilledBrushKey);
          TokenResourceBinder.CreateGlobalTokenBinding(_loadingIcon, PathIcon.DisabledFilledBrushProperty, disabledFilledBrushKey);
       }
+      
+      NotifyIconBrushCalculated(in normalFilledBrushKey, in selectedFilledBrushKey, in activeFilledBrushKey, in disabledFilledBrushKey);
+   }
+
+   protected virtual void NotifyIconBrushCalculated(in TokenResourceKey normalFilledBrushKey,
+                                                    in TokenResourceKey selectedFilledBrushKey,
+                                                    in TokenResourceKey activeFilledBrushKey,
+                                                    in TokenResourceKey disabledFilledBrushKey)
+   {
    }
 
    public Rect WaveGeometry()

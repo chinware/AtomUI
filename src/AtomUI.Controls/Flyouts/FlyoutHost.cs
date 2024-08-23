@@ -24,7 +24,9 @@ public enum FlyoutTriggerType
 
 public class FlyoutHost : Control
 {
-   public static readonly StyledProperty<Control?> AnchorTargetProperty =
+   #region 公共属性定义
+
+    public static readonly StyledProperty<Control?> AnchorTargetProperty =
       AvaloniaProperty.Register<FlyoutHost, Control?>(nameof(AnchorTarget));
 
    /// <summary>
@@ -143,6 +145,8 @@ public class FlyoutHost : Control
       get => GetValue(MouseLeaveDelayProperty);
       set => SetValue(MouseLeaveDelayProperty, value);
    }
+
+   #endregion
 
    private bool _initialized = false;
    private DispatcherTimer? _mouseEnterDelayTimer;

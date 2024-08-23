@@ -26,9 +26,9 @@ public class MenuFlyoutPresenterTheme : BaseControlTheme
          var arrowDecorator = new ArrowDecoratedBox()
          {
             Name = RootContainerPart,
-            ClipToBounds = false,
-            UseLayoutRounding = false
          };
+         arrowDecorator.RegisterInNameScope(scope);
+         
          CreateTemplateParentBinding(arrowDecorator, ArrowDecoratedBox.IsShowArrowProperty, MenuFlyoutPresenter.IsShowArrowProperty);
          CreateTemplateParentBinding(arrowDecorator, ArrowDecoratedBox.ArrowPositionProperty, MenuFlyoutPresenter.ArrowPositionProperty);
          
@@ -53,7 +53,7 @@ public class MenuFlyoutPresenterTheme : BaseControlTheme
          KeyboardNavigation.SetTabNavigation(itemsPresenter, KeyboardNavigationMode.Continue);
          Grid.SetIsSharedSizeScope(itemsPresenter, true);
          scrollViewer.Content = itemsPresenter;
-         
+
          arrowDecorator.Content = scrollViewer;
          
          return arrowDecorator;
