@@ -9,6 +9,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Input;
+using Avalonia.Input.Raw;
 using Avalonia.Metadata;
 using Avalonia.Styling;
 using Avalonia.VisualTree;
@@ -120,9 +121,8 @@ public class MenuFlyout : Flyout
       base.OnOpening(args);
       
       var dismissLayer = LightDismissOverlayLayer.GetLightDismissOverlayLayer(Popup.PlacementTarget!);
-
-      if (dismissLayer != null)
-      {
+      var compositeDisposable = _compositeDisposable!;
+      if (dismissLayer != null) {
          dismissLayer.IsVisible = true;
          dismissLayer.InputPassThroughElement = OverlayInputPassThroughElement;
                     
@@ -130,16 +130,27 @@ public class MenuFlyout : Flyout
          {
             dismissLayer.IsVisible = false;
             dismissLayer.InputPassThroughElement = null;
-         }).DisposeWith(_compositeDisposable!);
+         }).DisposeWith(compositeDisposable);
                     
          SubscribeToEventHandler<LightDismissOverlayLayer, EventHandler<PointerPressedEventArgs>>(
             dismissLayer,
             PointerPressedDismissOverlay,
             (x, handler) => x.PointerPressed += handler,
-            (x, handler) => x.PointerPressed -= handler).DisposeWith(_compositeDisposable!);
+            (x, handler) => x.PointerPressed -= handler).DisposeWith(compositeDisposable);
       }
+      var inputManager = AvaloniaLocator.Current.GetService<IInputManager>();
+      inputManager?.Process.Subscribe(ListenForNonClientClick).DisposeWith(compositeDisposable);
    }
 
+   private void ListenForNonClientClick(RawInputEventArgs e)
+   {
+      var mouse = e as RawPointerEventArgs;
+
+      if (mouse?.Type == RawPointerEventType.NonClientLeftButtonDown) {
+         Hide();
+      }
+   }
+   
    private void PointerPressedDismissOverlay(object? sender, PointerPressedEventArgs e)
    {
       if (e.Source is Visual v && !IsChildOrThis(v)) {
