@@ -1,5 +1,4 @@
 using AtomUI.Controls.Utils;
-using AtomUI.Data;
 using AtomUI.Icon;
 using AtomUI.Media;
 using AtomUI.Theme.Styling;
@@ -12,7 +11,6 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
-using Avalonia.Rendering;
 
 namespace AtomUI.Controls;
 

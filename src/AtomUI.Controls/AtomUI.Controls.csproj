@@ -20,7 +20,6 @@
     </ItemGroup>
     
     <ItemGroup>
-      <Folder Include="DropdownButton\" />
       <Folder Include="Localization\" />
       <Folder Include="SplitButton\" />
     </ItemGroup>
