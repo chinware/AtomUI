@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.ComponentModel;
 using System.Reflection;
+using AtomUI.Data;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
@@ -9,7 +10,7 @@ using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
-public class MenuFlyout : PopupFlyoutBase
+public class MenuFlyout : Flyout
 {
    private static readonly MethodInfo SetItemsSourceMethodInfo;
 
@@ -43,14 +44,6 @@ public class MenuFlyout : PopupFlyoutBase
    public static readonly StyledProperty<ControlTheme?> ItemContainerThemeProperty =
       ItemsControl.ItemContainerThemeProperty.AddOwner<MenuFlyout>();
 
-   /// <summary>
-   /// Defines the <see cref="FlyoutPresenterTheme"/> property.
-   /// </summary>
-   public static readonly StyledProperty<ControlTheme?> FlyoutPresenterThemeProperty =
-      Flyout.FlyoutPresenterThemeProperty.AddOwner<MenuFlyout>();
-
-   public Classes FlyoutPresenterClasses => _classes ??= new Classes();
-
    [Content] public ItemCollection Items { get; }
 
    /// <summary>
@@ -71,48 +64,54 @@ public class MenuFlyout : PopupFlyoutBase
       set => SetValue(ItemTemplateProperty, value);
    }
 
-   /// <summary>
-   /// Gets or sets the <see cref="ControlTheme"/> that is applied to the container element generated for each item.
-   /// </summary>
-   public ControlTheme? ItemContainerTheme
-   {
-      get => GetValue(ItemContainerThemeProperty);
-      set => SetValue(ItemContainerThemeProperty, value);
-   }
-
-   /// <summary>
-   /// Gets or sets the <see cref="ControlTheme"/> that is applied to the container element generated for the flyout presenter.
-   /// </summary>
-   public ControlTheme? FlyoutPresenterTheme
-   {
-      get => GetValue(FlyoutPresenterThemeProperty);
-      set => SetValue(FlyoutPresenterThemeProperty, value);
-   }
-
    private Classes? _classes;
 
    protected override Control CreatePresenter()
    {
-      return new MenuFlyoutPresenter
+      var presenter = new ArrowDecoratedMenuFlyoutPresenter()
       {
          ItemsSource = Items,
          [!ItemsControl.ItemTemplateProperty] = this[!ItemTemplateProperty],
          [!ItemsControl.ItemContainerThemeProperty] = this[!ItemContainerThemeProperty],
       };
+      BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, presenter, IsShowArrowProperty);
+      SetupArrowPosition(Popup, presenter);
+      return presenter;
    }
+   
+   private void SetupArrowPosition(Popup popup, ArrowDecoratedMenuFlyoutPresenter? flyoutPresenter = null)
+   {
+      if (flyoutPresenter is null) {
+         var child = popup.Child;
+         if (child is ArrowDecoratedMenuFlyoutPresenter childPresenter) {
+            flyoutPresenter = childPresenter;
+         }
+      }
 
+      var placement = popup.Placement;
+      var anchor = popup.PlacementAnchor;
+      var gravity = popup.PlacementGravity;
+
+      if (flyoutPresenter is not null) {
+         var arrowPosition = PopupUtils.CalculateArrowPosition(placement, anchor, gravity);
+         if (arrowPosition.HasValue) {
+            flyoutPresenter.ArrowPosition = arrowPosition.Value;
+         }
+      }
+   }
+   
    protected override void OnOpening(CancelEventArgs args)
    {
       if (Popup.Child is { } presenter) {
          if (_classes != null) {
             SetPresenterClasses(presenter, FlyoutPresenterClasses);
          }
-
+   
          if (FlyoutPresenterTheme is { } theme) {
             presenter.SetValue(Control.ThemeProperty, theme);
          }
       }
-
+   
       base.OnOpening(args);
    }
 

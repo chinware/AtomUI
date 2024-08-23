@@ -7,7 +7,7 @@ namespace AtomUI.Controls;
 [ControlDesignToken]
 internal class ComboBoxToken : ButtonSpinnerToken
 {
-   public const string ID = "ComboBox";
+   public new const string ID = "ComboBox";
 
    public ComboBoxToken()
       : base(ID)
