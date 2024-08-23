@@ -22,42 +22,7 @@ internal class LinkButtonTheme : BaseButtonTheme
    {
       base.BuildStyles();
       BuildEnabledStyle();
-      BuildIconStyle();
       BuildDisabledStyle();
-   }
-
-   private void BuildIconStyle()
-   {
-      // 普通状态
-      {
-         var iconStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
-         iconStyle.Add(PathIcon.DisabledFilledBrushProperty, GlobalTokenResourceKey.ColorTextDisabled);
-         iconStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorLink);
-         iconStyle.Add(PathIcon.SelectedFilledBrushProperty, ButtonTokenResourceKey.DefaultActiveColor);
-         iconStyle.Add(PathIcon.ActiveFilledBrushProperty, ButtonTokenResourceKey.DefaultHoverColor);
-         Add(iconStyle);
-      }
-      
-      // ghost 状态
-      var ghostStyle = new Style(selector => selector.Nesting().PropertyEquals(Button.IsGhostProperty, true));
-      {
-         var iconStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
-         iconStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorLink);
-         iconStyle.Add(PathIcon.SelectedFilledBrushProperty, GlobalTokenResourceKey.ColorPrimaryActive);
-         iconStyle.Add(PathIcon.ActiveFilledBrushProperty, GlobalTokenResourceKey.ColorPrimaryHover);
-         ghostStyle.Add(iconStyle);
-      }
-      Add(ghostStyle);
-      
-      var isDangerStyle = new Style(selector => selector.Nesting().PropertyEquals(Button.IsDangerProperty, true));
-      {
-         var iconStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
-         iconStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorError);
-         iconStyle.Add(PathIcon.SelectedFilledBrushProperty, GlobalTokenResourceKey.ColorErrorActive);
-         iconStyle.Add(PathIcon.ActiveFilledBrushProperty, GlobalTokenResourceKey.ColorErrorBorderHover);
-         isDangerStyle.Add(iconStyle);
-      }
-      Add(isDangerStyle);
    }
 
    private void BuildEnabledStyle()
