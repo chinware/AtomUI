@@ -256,7 +256,7 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
          Target.DetachedFromVisualTree -= PlacementTarget_DetachedFromVisualTree;
          Target.KeyUp -= OnPlacementTargetOrPopupKeyUp;
       }
-
+      
       OnClosed();
 
       Target = null;

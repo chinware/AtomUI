@@ -24,7 +24,7 @@
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.DropdownButtonTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.EmptyIndicatorTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.ExpanderTheme());
-            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.ArrowDecoratedMenuFlyoutPresenterTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.MenuFlyoutPresenterTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.LineEditTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.SearchEditDecoratedBoxTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.SearchEditTheme());

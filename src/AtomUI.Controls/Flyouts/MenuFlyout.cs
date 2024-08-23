@@ -1,12 +1,17 @@
 ﻿using System.Collections;
 using System.ComponentModel;
+using System.Reactive.Disposables;
 using System.Reflection;
 using AtomUI.Data;
+using AtomUI.Reactive;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Input;
 using Avalonia.Metadata;
 using Avalonia.Styling;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -68,7 +73,7 @@ public class MenuFlyout : Flyout
 
    protected override Control CreatePresenter()
    {
-      var presenter = new ArrowDecoratedMenuFlyoutPresenter()
+      var presenter = new MenuFlyoutPresenter()
       {
          ItemsSource = Items,
          [!ItemsControl.ItemTemplateProperty] = this[!ItemTemplateProperty],
@@ -79,11 +84,11 @@ public class MenuFlyout : Flyout
       return presenter;
    }
    
-   private void SetupArrowPosition(Popup popup, ArrowDecoratedMenuFlyoutPresenter? flyoutPresenter = null)
+   private void SetupArrowPosition(Popup popup, MenuFlyoutPresenter? flyoutPresenter = null)
    {
       if (flyoutPresenter is null) {
          var child = popup.Child;
-         if (child is ArrowDecoratedMenuFlyoutPresenter childPresenter) {
+         if (child is MenuFlyoutPresenter childPresenter) {
             flyoutPresenter = childPresenter;
          }
       }
@@ -113,6 +118,64 @@ public class MenuFlyout : Flyout
       }
    
       base.OnOpening(args);
+      
+      var dismissLayer = LightDismissOverlayLayer.GetLightDismissOverlayLayer(Popup.PlacementTarget!);
+
+      if (dismissLayer != null)
+      {
+         dismissLayer.IsVisible = true;
+         dismissLayer.InputPassThroughElement = OverlayInputPassThroughElement;
+                    
+         Disposable.Create(() =>
+         {
+            dismissLayer.IsVisible = false;
+            dismissLayer.InputPassThroughElement = null;
+         }).DisposeWith(_compositeDisposable!);
+                    
+         SubscribeToEventHandler<LightDismissOverlayLayer, EventHandler<PointerPressedEventArgs>>(
+            dismissLayer,
+            PointerPressedDismissOverlay,
+            (x, handler) => x.PointerPressed += handler,
+            (x, handler) => x.PointerPressed -= handler).DisposeWith(_compositeDisposable!);
+      }
+   }
+
+   private void PointerPressedDismissOverlay(object? sender, PointerPressedEventArgs e)
+   {
+      if (e.Source is Visual v && !IsChildOrThis(v)) {
+         // Ensure the popup is closed if it was not closed by a pass-through event handler
+         if (IsOpen) {
+            Hide();
+         }
+      }
+   }
+
+   private bool IsChildOrThis(Visual child)
+   {
+      if (!IsOpen) {
+         return false;
+      }
+
+      var popupHost = Popup.Host;
+
+      Visual? root = child.GetVisualRoot() as Visual;
+
+      while (root is IHostedVisualTreeRoot hostedRoot) {
+         if (root == popupHost) {
+            return true;
+         }
+
+         root = hostedRoot.Host?.GetVisualRoot() as Visual;
+      }
+
+      return false;
+   }
+   
+   private static IDisposable SubscribeToEventHandler<T, TEventHandler>(T target, TEventHandler handler, Action<T, TEventHandler> subscribe, Action<T, TEventHandler> unsubscribe)
+   {
+      subscribe(target, handler);
+
+      return Disposable.Create((unsubscribe, target, handler), state => state.unsubscribe(state.target, state.handler));
    }
 
    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -126,7 +189,7 @@ public class MenuFlyout : Flyout
    
    protected override bool ShowAtCore(Control placementTarget, bool showAtPointer = false)
    {
-      Popup.IsLightDismissEnabled = true;
+      Popup.IsLightDismissEnabled = false;
       return base.ShowAtCore(placementTarget, showAtPointer);
    }
 

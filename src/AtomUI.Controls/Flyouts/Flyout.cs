@@ -115,7 +115,7 @@ public class Flyout : PopupFlyoutBase
                                                           (o) => o._motionDuration,
                                                           (o, v) => o._motionDuration = v);
 
-   private CompositeDisposable? _compositeDisposable;
+   protected CompositeDisposable? _compositeDisposable;
 
    static Flyout()
    {
@@ -158,9 +158,10 @@ public class Flyout : PopupFlyoutBase
    {
       var presenter = new FlyoutPresenter
       {
-         [!FlyoutPresenter.ChildProperty] = this[!ContentProperty]
+         [!FlyoutPresenter.ContentProperty] = this[!ContentProperty]
       };
       BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, presenter, IsShowArrowProperty);
+      CalculateShowArrowEffective();
       SetupArrowPosition(Popup, presenter);
       return presenter;
    }
@@ -177,6 +178,7 @@ public class Flyout : PopupFlyoutBase
 
    protected override void OnOpening(CancelEventArgs args)
    {
+      _compositeDisposable = new CompositeDisposable();
       if (Popup.Child is { } presenter) {
          if (_classes != null) {
             SetPresenterClasses(presenter, FlyoutPresenterClasses);
@@ -189,9 +191,9 @@ public class Flyout : PopupFlyoutBase
 
       base.OnOpening(args);
       if (!args.Cancel) {
-         _compositeDisposable = new CompositeDisposable();
          _compositeDisposable.Add(PopupControl.IsFlippedProperty.Changed.Subscribe(HandlePopupPropertyChanged));
       }
+      
    }
 
    protected override void OnClosed()
