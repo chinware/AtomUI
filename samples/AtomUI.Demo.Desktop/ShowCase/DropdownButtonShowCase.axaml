@@ -27,8 +27,6 @@
                 </atom:DropdownButton.DropdownFlyout>
             </atom:DropdownButton>
         </showcase:ShowCaseItem>
-<<<<<<< Updated upstream
-=======
         
         <showcase:ShowCaseItem
             Title="Button Types"
@@ -245,7 +243,6 @@
                 </atom:DropdownButton>
             </WrapPanel>
         </showcase:ShowCaseItem>
-        
->>>>>>> Stashed changes
+
     </showcase:ShowCasePanel>
 </UserControl>
