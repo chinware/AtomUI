@@ -2,6 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.Controls.Platform;
 using Avalonia.Controls.Primitives;
+using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
@@ -15,7 +16,12 @@ public class MenuFlyoutPresenter : MenuBase, IShadowMaskInfoProvider
 
    public static readonly StyledProperty<ArrowPosition> ArrowPositionProperty =
       ArrowDecoratedBox.ArrowPositionProperty.AddOwner<MenuFlyoutPresenter>();
-   
+
+   public static readonly RoutedEvent<FlyoutMenuItemClickedEventArgs> MenuItemClickedEvent =
+      RoutedEvent.Register<DropdownButton, FlyoutMenuItemClickedEventArgs>(
+         nameof(MenuItemClicked),
+         RoutingStrategies.Bubble);
+
    /// <summary>
    /// 是否显示指示箭头
    /// </summary>
@@ -34,10 +40,16 @@ public class MenuFlyoutPresenter : MenuBase, IShadowMaskInfoProvider
       set => SetValue(ArrowPositionProperty, value);
    }
 
+   public event EventHandler<FlyoutMenuItemClickedEventArgs>? MenuItemClicked
+   {
+      add => AddHandler(MenuItemClickedEvent, value);
+      remove => RemoveHandler(MenuItemClickedEvent, value);
+   }
+
    #endregion
 
    private ArrowDecoratedBox? _arrowDecoratedBox;
-   
+
    public MenuFlyoutPresenter()
       : base(new DefaultMenuInteractionHandler(true)) { }
 
@@ -49,10 +61,57 @@ public class MenuFlyoutPresenter : MenuBase, IShadowMaskInfoProvider
    public override void Close()
    {
       // DefaultMenuInteractionHandler calls this
-      var host = this.FindLogicalAncestorOfType<Popup>();
-      if (host != null) {
+      var flyout = this.FindLogicalAncestorOfType<PopupFlyoutBase>();
+      if (flyout != null) {
          SelectedIndex = -1;
-         host.IsOpen = false;
+         flyout.Hide();
+      }
+   }
+   
+   protected override void ContainerForItemPreparedOverride(Control container, object? item, int index)
+   {
+      base.ContainerForItemPreparedOverride(container, item, index);
+      if (container is MenuItem menuItem) {
+         BindMenuItemClickedRecursive(menuItem);
+      }
+   }
+   
+   private void BindMenuItemClickedRecursive(MenuItem menuItem)
+   {
+      foreach (var childItem in menuItem.Items) {
+         if (childItem is MenuItem childMenuItem) {
+            BindMenuItemClickedRecursive(childMenuItem);
+         }
+      }
+      // 绑定自己
+      menuItem.Click += HandleMenuItemClicked;
+   }
+
+   private void ClearMenuItemClickedRecursive(MenuItem menuItem)
+   { 
+      foreach (var childItem in menuItem.Items) {
+         if (childItem is MenuItem childMenuItem) {
+            ClearMenuItemClickedRecursive(childMenuItem);
+         }
+      }
+      // 绑定自己
+      menuItem.Click -= HandleMenuItemClicked;
+      
+   }
+
+   protected override void ClearContainerForItemOverride(Control container)
+   {
+      base.ClearContainerForItemOverride(container);
+      if (container is MenuItem menuItem) {
+         ClearMenuItemClickedRecursive(menuItem);
+      }
+   }
+
+   private void HandleMenuItemClicked(object? sender, RoutedEventArgs args)
+   {
+      if (sender is MenuItem menuItem) {
+         var ev = new FlyoutMenuItemClickedEventArgs(MenuItemClickedEvent, menuItem);
+         RaiseEvent(ev);
       }
    }
 
@@ -83,6 +142,7 @@ public class MenuFlyoutPresenter : MenuBase, IShadowMaskInfoProvider
       if (_arrowDecoratedBox is not null) {
          return _arrowDecoratedBox.CornerRadius;
       }
+
       return new CornerRadius(0);
    }
 
@@ -90,10 +150,24 @@ public class MenuFlyoutPresenter : MenuBase, IShadowMaskInfoProvider
    {
       if (_arrowDecoratedBox is not null) {
          var contentRect = _arrowDecoratedBox.GetContentRect(Bounds.Size);
-         var adjustedPos =_arrowDecoratedBox.TranslatePoint(contentRect.Position, this) ?? default;
+         var adjustedPos = _arrowDecoratedBox.TranslatePoint(contentRect.Position, this) ?? default;
          return new Rect(adjustedPos, contentRect.Size);
       }
 
       return Bounds;
+   }
+}
+
+public class FlyoutMenuItemClickedEventArgs : RoutedEventArgs
+{
+   /// <summary>
+   /// 当前鼠标点击的菜单项
+   /// </summary>
+   public MenuItem Item { get; }
+
+   public FlyoutMenuItemClickedEventArgs(RoutedEvent routedEvent, MenuItem menuItem)
+      : base(routedEvent)
+   {
+      Item = menuItem;
    }
 }

@@ -11,6 +11,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Input;
 using Avalonia.Input.Raw;
+using Avalonia.Interactivity;
 using Avalonia.Threading;
 
 namespace AtomUI.Controls;
@@ -49,6 +50,14 @@ public class DropdownButton : Button
    public static readonly StyledProperty<int> MouseLeaveDelayProperty =
       AvaloniaProperty.Register<DropdownButton, int>(nameof(MouseLeaveDelay), 100);
 
+   public static readonly StyledProperty<bool> IsShowIndicatorProperty =
+      AvaloniaProperty.Register<DropdownButton, bool>(nameof(IsShowIndicator), true);
+
+   public static readonly RoutedEvent<FlyoutMenuItemClickedEventArgs> MenuItemClickedEvent =
+      RoutedEvent.Register<DropdownButton, FlyoutMenuItemClickedEventArgs>(
+         nameof(MenuItemClicked),
+         RoutingStrategies.Bubble);
+
    public MenuFlyout? DropdownFlyout
    {
       get => GetValue(DropdownFlyoutProperty);
@@ -60,13 +69,13 @@ public class DropdownButton : Button
       get => GetValue(TriggerTypeProperty);
       set => SetValue(TriggerTypeProperty, value);
    }
-   
+
    public bool IsShowArrow
    {
       get => GetValue(IsShowArrowProperty);
       set => SetValue(IsShowArrowProperty, value);
    }
-   
+
    public bool IsPointAtCenter
    {
       get => GetValue(IsPointAtCenterProperty);
@@ -109,6 +118,18 @@ public class DropdownButton : Button
       set => SetValue(MouseLeaveDelayProperty, value);
    }
 
+   public bool IsShowIndicator
+   {
+      get => GetValue(IsShowIndicatorProperty);
+      set => SetValue(IsShowIndicatorProperty, value);
+   }
+
+   public event EventHandler<FlyoutMenuItemClickedEventArgs>? MenuItemClicked
+   {
+      add => AddHandler(MenuItemClickedEvent, value);
+      remove => RemoveHandler(MenuItemClickedEvent, value);
+   }
+
    #endregion
 
    private DispatcherTimer? _mouseEnterDelayTimer;
@@ -116,6 +137,7 @@ public class DropdownButton : Button
    private CompositeDisposable? _subscriptions;
    private PathIcon? _openIndicatorIcon;
    private IDisposable? _flyoutCloseDetectDisposable;
+   private MenuFlyoutPresenter? _menuFlyoutPresenter;
 
    static DropdownButton()
    {
@@ -163,6 +185,7 @@ public class DropdownButton : Button
          BindUtils.RelayBind(this, MarginToAnchorProperty, DropdownFlyout);
 
          DropdownFlyout.Opened += HandleFlyoutOpened;
+         DropdownFlyout.Closed += HandleFlyoutClosed;
       }
    }
 
@@ -180,10 +203,30 @@ public class DropdownButton : Button
                   _flyoutCloseDetectDisposable = inputManager.Process.Subscribe(DetectWhenToClosePopup);
                }
             };
+            if (popupRoot.Parent is Popup popup) {
+               if (popup.Child is MenuFlyoutPresenter menuFlyoutPresenter) {
+                  _menuFlyoutPresenter = menuFlyoutPresenter;
+                  menuFlyoutPresenter.MenuItemClicked += HandleMenuItemClicked;
+               }
+            }
          }
       }
    }
-   
+
+   private void HandleFlyoutClosed(object? sender, EventArgs e)
+   {
+      Console.WriteLine(_menuFlyoutPresenter);
+      if (_menuFlyoutPresenter is not null) {
+         _menuFlyoutPresenter.MenuItemClicked -= HandleMenuItemClicked;
+         _menuFlyoutPresenter = null;
+      }
+   }
+
+   private void HandleMenuItemClicked(object? sender, FlyoutMenuItemClickedEventArgs args)
+   {
+      // Console.WriteLine(sender);
+   }
+
    private void SetupTriggerHandler()
    {
       _subscriptions = new CompositeDisposable();
@@ -217,6 +260,7 @@ public class DropdownButton : Button
          if (DropdownFlyout is null) {
             return;
          }
+
          if (DropdownFlyout.IsOpen) {
             var found = false;
             if (pointerEventArgs.Root is PopupRoot popupRoot) {
@@ -225,18 +269,20 @@ public class DropdownButton : Button
                   if (current == this) {
                      found = true;
                   }
+
                   current = current.Parent;
                }
             } else if (object.Equals(pointerEventArgs.Root, this)) {
                found = true;
             }
+
             if (!found) {
                HideFlyout();
             }
          }
       }
    }
-   
+
    private void HandleAnchorTargetClick(RawInputEventArgs args)
    {
       if (args is RawPointerEventArgs pointerEventArgs) {
@@ -271,6 +317,7 @@ public class DropdownButton : Button
       if (DropdownFlyout is null) {
          return;
       }
+
       // 防止干扰打开
       _flyoutCloseDetectDisposable?.Dispose();
       StopMouseEnterTimer();
@@ -288,10 +335,11 @@ public class DropdownButton : Button
       if (DropdownFlyout is null) {
          return;
       }
+
       _flyoutCloseDetectDisposable?.Dispose();
       _flyoutCloseDetectDisposable = null;
       StopMouseEnterTimer();
-      
+
       if (MouseLeaveDelay == 0) {
          DropdownFlyout.Hide();
       } else {
@@ -351,10 +399,14 @@ public class DropdownButton : Button
                                                     in TokenResourceKey disabledFilledBrushKey)
    {
       if (_openIndicatorIcon is not null) {
-         TokenResourceBinder.CreateGlobalTokenBinding(_openIndicatorIcon, PathIcon.NormalFilledBrushProperty, normalFilledBrushKey);
-         TokenResourceBinder.CreateGlobalTokenBinding(_openIndicatorIcon, PathIcon.SelectedFilledBrushProperty, selectedFilledBrushKey);
-         TokenResourceBinder.CreateGlobalTokenBinding(_openIndicatorIcon, PathIcon.ActiveFilledBrushProperty, activeFilledBrushKey);
-         TokenResourceBinder.CreateGlobalTokenBinding(_openIndicatorIcon, PathIcon.DisabledFilledBrushProperty, disabledFilledBrushKey);
+         TokenResourceBinder.CreateGlobalTokenBinding(_openIndicatorIcon, PathIcon.NormalFilledBrushProperty,
+                                                      normalFilledBrushKey);
+         TokenResourceBinder.CreateGlobalTokenBinding(_openIndicatorIcon, PathIcon.SelectedFilledBrushProperty,
+                                                      selectedFilledBrushKey);
+         TokenResourceBinder.CreateGlobalTokenBinding(_openIndicatorIcon, PathIcon.ActiveFilledBrushProperty,
+                                                      activeFilledBrushKey);
+         TokenResourceBinder.CreateGlobalTokenBinding(_openIndicatorIcon, PathIcon.DisabledFilledBrushProperty,
+                                                      disabledFilledBrushKey);
       }
    }
 
@@ -373,8 +425,7 @@ public class DropdownButton : Button
             _openIndicatorIcon.IconMode = IconMode.Disabled;
          }
       }
+
       base.ApplyIconModeStyleConfig();
    }
-
-
 }

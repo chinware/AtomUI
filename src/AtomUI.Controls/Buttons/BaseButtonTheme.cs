@@ -121,6 +121,11 @@ internal abstract class BaseButtonTheme : BaseControlTheme
          iconOnlyStyle.Add(Button.PaddingProperty, ButtonTokenResourceKey.IconOnyPaddingLG);
          largeSizeStyle.Add(iconOnlyStyle);
       }
+      {
+         var extraContentStyle = new Style(selector => selector.Nesting().Template().Name(RightExtraContentPart));
+         extraContentStyle.Add(ContentPresenter.MarginProperty, ButtonTokenResourceKey.ExtraContentMarginLG);
+         largeSizeStyle.Add(extraContentStyle);
+      }
       Add(largeSizeStyle);
       
       var middleSizeStyle = new Style(selector => selector.Nesting().PropertyEquals(Button.SizeTypeProperty, SizeType.Middle));
@@ -133,6 +138,11 @@ internal abstract class BaseButtonTheme : BaseControlTheme
          iconOnlyStyle.Add(Button.PaddingProperty, ButtonTokenResourceKey.IconOnyPadding);
          middleSizeStyle.Add(iconOnlyStyle);
       }
+      {
+         var extraContentStyle = new Style(selector => selector.Nesting().Template().Name(RightExtraContentPart));
+         extraContentStyle.Add(ContentPresenter.PaddingProperty, ButtonTokenResourceKey.ExtraContentMargin);
+         middleSizeStyle.Add(extraContentStyle);
+      }
       Add(middleSizeStyle);
       
       var smallSizeStyle = new Style(selector => selector.Nesting().PropertyEquals(Button.SizeTypeProperty, SizeType.Small));
@@ -144,6 +154,11 @@ internal abstract class BaseButtonTheme : BaseControlTheme
          var iconOnlyStyle = new Style(selector => selector.Nesting().Class(Button.IconOnlyPC));
          iconOnlyStyle.Add(Button.PaddingProperty, ButtonTokenResourceKey.IconOnyPaddingSM);
          smallSizeStyle.Add(iconOnlyStyle);
+      }
+      {
+         var extraContentStyle = new Style(selector => selector.Nesting().Template().Name(RightExtraContentPart));
+         extraContentStyle.Add(ContentPresenter.PaddingProperty, ButtonTokenResourceKey.ExtraContentMarginSM);
+         smallSizeStyle.Add(extraContentStyle);
       }
       Add(smallSizeStyle);
    }

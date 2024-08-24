@@ -64,7 +64,7 @@ If a large or small button is desired, set the size property to either large or 
                     </atom:OptionButtonGroup>
                 </StackPanel>
 
-                <StackPanel Orientation="Vertical" Margin="0, 20, 0, 0">
+                <StackPanel Orientation="Vertical" Margin="0, 20, 0, 0" Spacing="10">
                     <WrapPanel>
                         <atom:Button ButtonType="Primary" SizeType="{Binding ButtonSizeType}">Primary</atom:Button>
                         <atom:Button ButtonType="Default" SizeType="{Binding ButtonSizeType}">Default</atom:Button>

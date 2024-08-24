@@ -1,6 +1,4 @@
-﻿using AtomUI.Icon;
-using AtomUI.Media;
-using AtomUI.MotionScene;
+﻿using AtomUI.MotionScene;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
@@ -43,6 +41,7 @@ internal class ExpanderTheme : BaseControlTheme
             Name = FrameDecoratorPart,
             ClipToBounds = true
          };
+ 
          CreateTemplateParentBinding(frameDecorator, Border.BorderThicknessProperty, Expander.EffectiveBorderThicknessProperty);
          
          var mainLayout = new DockPanel()

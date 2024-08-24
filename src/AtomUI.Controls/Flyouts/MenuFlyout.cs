@@ -77,6 +77,7 @@ public class MenuFlyout : Flyout
       BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, presenter, IsShowArrowProperty);
       SetupArrowPosition(Popup, presenter);
       CalculateShowArrowEffective();
+      
       return presenter;
    }
    
