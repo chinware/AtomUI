@@ -33,13 +33,13 @@ public class ShowCasePanel : Control
       _leftContainer = new StackPanel()
       {
          Orientation = Orientation.Vertical,
-         Spacing = 20,
+         Spacing = 10,
          Margin = new Thickness(0, 0, 10, 0),
       };
       _rightContainer = new StackPanel()
       {
          Orientation = Orientation.Vertical,
-         Spacing = 20,
+         Spacing = 10,
       };
       mainLayout.Children.Add(_leftContainer);
       mainLayout.Children.Add(_rightContainer);
