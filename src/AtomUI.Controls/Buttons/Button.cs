@@ -156,8 +156,8 @@ public class Button : AvaloniaButton,
       AvaloniaProperty.Register<Button, BoxShadow>(
          nameof(DangerShadow));
    
-   public static readonly StyledProperty<object?> ExtraContentProperty =
-      AvaloniaProperty.Register<AddOnDecoratedBox, object?>(nameof(ExtraContent));
+   public static readonly StyledProperty<object?> RightExtraContentProperty =
+      AvaloniaProperty.Register<Button, object?>(nameof(RightExtraContent));
    
    internal double ControlHeight
    {
@@ -195,10 +195,10 @@ public class Button : AvaloniaButton,
       set => SetValue(DangerShadowProperty, value);
    }
    
-   public object? ExtraContent
+   public object? RightExtraContent
    {
-      get => GetValue(ExtraContentProperty);
-      set => SetValue(ExtraContentProperty, value);
+      get => GetValue(RightExtraContentProperty);
+      set => SetValue(RightExtraContentProperty, value);
    }
    
    #endregion

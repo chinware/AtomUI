@@ -429,6 +429,7 @@ public sealed class PathIcon : Control, ICustomHitTest
    {
       base.OnDetachedFromVisualTree(e);
       _animationCancellationTokenSource?.Cancel();
+      _animationCancellationTokenSource = null;
    }
 
    protected override Size MeasureOverride(Size availableSize)

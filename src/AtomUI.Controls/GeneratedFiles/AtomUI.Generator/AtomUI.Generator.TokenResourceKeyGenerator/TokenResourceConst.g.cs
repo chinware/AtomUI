@@ -103,6 +103,9 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey Padding = new TokenResourceKey("Button.Padding", "AtomUI.Token");
         public static readonly TokenResourceKey PaddingLG = new TokenResourceKey("Button.PaddingLG", "AtomUI.Token");
         public static readonly TokenResourceKey PaddingSM = new TokenResourceKey("Button.PaddingSM", "AtomUI.Token");
+        public static readonly TokenResourceKey ExtraContentMarginSM = new TokenResourceKey("Button.ExtraContentMarginSM", "AtomUI.Token");
+        public static readonly TokenResourceKey ExtraContentMargin = new TokenResourceKey("Button.ExtraContentMargin", "AtomUI.Token");
+        public static readonly TokenResourceKey ExtraContentMarginLG = new TokenResourceKey("Button.ExtraContentMarginLG", "AtomUI.Token");
         public static readonly TokenResourceKey CirclePadding = new TokenResourceKey("Button.CirclePadding", "AtomUI.Token");
         public static readonly TokenResourceKey OnlyIconSize = new TokenResourceKey("Button.OnlyIconSize", "AtomUI.Token");
         public static readonly TokenResourceKey OnlyIconSizeLG = new TokenResourceKey("Button.OnlyIconSizeLG", "AtomUI.Token");

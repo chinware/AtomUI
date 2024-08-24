@@ -5,6 +5,8 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
+using Avalonia.Data.Converters;
 using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Styling;
@@ -79,7 +81,10 @@ internal abstract class BaseButtonTheme : BaseControlTheme
             VerticalAlignment = VerticalAlignment.Center
          };
 
-         CreateTemplateParentBinding(extraContentPresenter, ContentPresenter.ContentProperty, Button.ExtraContentProperty);
+         CreateTemplateParentBinding(extraContentPresenter, ContentPresenter.IsVisibleProperty, Button.RightExtraContentProperty,
+            BindingMode.Default,
+            ObjectConverters.IsNotNull);
+         CreateTemplateParentBinding(extraContentPresenter, ContentPresenter.ContentProperty, Button.RightExtraContentProperty);
          
          DockPanel.SetDock(extraContentPresenter, Dock.Right);
 

@@ -153,7 +153,7 @@ public class DropdownButton : Button
       };
       BindUtils.RelayBind(this, IconSizeProperty, _openIndicatorIcon, PathIcon.WidthProperty);
       BindUtils.RelayBind(this, IconSizeProperty, _openIndicatorIcon, PathIcon.HeightProperty);
-      ExtraContent = _openIndicatorIcon;
+      RightExtraContent = _openIndicatorIcon;
       
       base.OnApplyTemplate(e);
       TokenResourceBinder.CreateGlobalTokenBinding(this, MarginToAnchorProperty, GlobalTokenResourceKey.MarginXXS);
