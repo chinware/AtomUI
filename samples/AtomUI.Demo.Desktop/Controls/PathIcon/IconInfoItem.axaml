@@ -28,6 +28,7 @@
                             Margin="0,20, 0, 0"
                             Padding="8"
                             FontSize="13"
+                            HorizontalAlignment="Center"
                             Foreground="{TemplateBinding Foreground}"
                             Text="{Binding IconName}" />
                     </StackPanel>

@@ -22,7 +22,7 @@
             <Setter Property="Margin" Value="0, 30, 0, 0" />
         </Style>
         <Style Selector="showcases|ShowCaseItem">
-            <Setter Property="Margin" Value="0, 0, 0, 50" />
+            <Setter Property="Margin" Value="0, 0, 0, 0" />
         </Style>
     </UserControl.Styles>
     <Grid RowDefinitions="Auto, *">
