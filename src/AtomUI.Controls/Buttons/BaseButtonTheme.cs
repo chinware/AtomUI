@@ -78,9 +78,8 @@ internal abstract class BaseButtonTheme : BaseControlTheme
             HorizontalContentAlignment = HorizontalAlignment.Center,
             VerticalContentAlignment = VerticalAlignment.Center,
             HorizontalAlignment = HorizontalAlignment.Center,
-            VerticalAlignment = VerticalAlignment.Center
+            VerticalAlignment = VerticalAlignment.Center,
          };
-
          CreateTemplateParentBinding(extraContentPresenter, ContentPresenter.IsVisibleProperty, Button.RightExtraContentProperty,
             BindingMode.Default,
             ObjectConverters.IsNotNull);
@@ -88,7 +87,7 @@ internal abstract class BaseButtonTheme : BaseControlTheme
          
          DockPanel.SetDock(extraContentPresenter, Dock.Right);
 
-         var rootLayout = new DockPanel()
+         var rootLayout = new DockPanel
          {
             Name = RootLayoutPart,
             LastChildFill = true
@@ -145,7 +144,7 @@ internal abstract class BaseButtonTheme : BaseControlTheme
       }
       {
          var extraContentStyle = new Style(selector => selector.Nesting().Template().Name(RightExtraContentPart));
-         extraContentStyle.Add(ContentPresenter.PaddingProperty, ButtonTokenResourceKey.ExtraContentMargin);
+         extraContentStyle.Add(ContentPresenter.MarginProperty, ButtonTokenResourceKey.ExtraContentMargin);
          middleSizeStyle.Add(extraContentStyle);
       }
       Add(middleSizeStyle);
@@ -162,7 +161,7 @@ internal abstract class BaseButtonTheme : BaseControlTheme
       }
       {
          var extraContentStyle = new Style(selector => selector.Nesting().Template().Name(RightExtraContentPart));
-         extraContentStyle.Add(ContentPresenter.PaddingProperty, ButtonTokenResourceKey.ExtraContentMarginSM);
+         extraContentStyle.Add(ContentPresenter.MarginProperty, ButtonTokenResourceKey.ExtraContentMarginSM);
          smallSizeStyle.Add(extraContentStyle);
       }
       Add(smallSizeStyle);

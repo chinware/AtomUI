@@ -243,5 +243,6 @@
                 </atom:DropdownButton>
             </WrapPanel>
         </showcase:ShowCaseItem>
+
     </showcase:ShowCasePanel>
 </UserControl>

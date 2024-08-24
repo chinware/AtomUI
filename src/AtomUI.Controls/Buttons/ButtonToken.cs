@@ -224,6 +224,21 @@ internal class ButtonToken : AbstractControlDesignToken
    /// 小号按钮内容字体行高
    /// </summary>
    public double ContentLineHeightSM { get; set; } = double.NaN;
+   
+   /// <summary>
+   /// 按钮右边一个额外的区域对右侧的小号外边距
+   /// </summary>
+   public Thickness ExtraContentMarginSM { get; set; }
+   
+   /// <summary>
+   /// 按钮右边一个额外的区域对右侧的外边距
+   /// </summary>
+   public Thickness ExtraContentMargin { get; set; }
+   
+   /// <summary>
+   /// 按钮右边一个额外的区域对右侧的大号外边距
+   /// </summary>
+   public Thickness ExtraContentMarginLG { get; set; }
 
    #region 内部 Token 定义
 

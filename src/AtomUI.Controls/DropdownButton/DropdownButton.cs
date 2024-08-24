@@ -49,7 +49,7 @@ public class DropdownButton : Button
 
    public static readonly StyledProperty<int> MouseLeaveDelayProperty =
       AvaloniaProperty.Register<DropdownButton, int>(nameof(MouseLeaveDelay), 100);
-
+   
    public static readonly StyledProperty<bool> IsShowIndicatorProperty =
       AvaloniaProperty.Register<DropdownButton, bool>(nameof(IsShowIndicator), true);
 
@@ -117,7 +117,7 @@ public class DropdownButton : Button
       get => GetValue(MouseLeaveDelayProperty);
       set => SetValue(MouseLeaveDelayProperty, value);
    }
-
+   
    public bool IsShowIndicator
    {
       get => GetValue(IsShowIndicatorProperty);
@@ -153,11 +153,27 @@ public class DropdownButton : Button
       };
       BindUtils.RelayBind(this, IconSizeProperty, _openIndicatorIcon, PathIcon.WidthProperty);
       BindUtils.RelayBind(this, IconSizeProperty, _openIndicatorIcon, PathIcon.HeightProperty);
-      RightExtraContent = _openIndicatorIcon;
       
       base.OnApplyTemplate(e);
       TokenResourceBinder.CreateGlobalTokenBinding(this, MarginToAnchorProperty, GlobalTokenResourceKey.MarginXXS);
       SetupFlyoutProperties();
+      if (IsShowIndicator) {
+         RightExtraContent = _openIndicatorIcon;
+      }
+   }
+
+   protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
+   {
+      base.OnPropertyChanged(e);
+      if (VisualRoot is not null) {
+         if (e.Property == IsShowIndicatorProperty) {
+            if (IsShowIndicator) {
+               RightExtraContent = _openIndicatorIcon;
+            } else {
+               RightExtraContent = null;
+            }
+         }
+      }
    }
 
    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
@@ -394,9 +410,9 @@ public class DropdownButton : Button
    }
 
    protected override void NotifyIconBrushCalculated(in TokenResourceKey normalFilledBrushKey,
-                                                    in TokenResourceKey selectedFilledBrushKey,
-                                                    in TokenResourceKey activeFilledBrushKey,
-                                                    in TokenResourceKey disabledFilledBrushKey)
+                                                     in TokenResourceKey selectedFilledBrushKey,
+                                                     in TokenResourceKey activeFilledBrushKey,
+                                                     in TokenResourceKey disabledFilledBrushKey)
    {
       if (_openIndicatorIcon is not null) {
          TokenResourceBinder.CreateGlobalTokenBinding(_openIndicatorIcon, PathIcon.NormalFilledBrushProperty,
