@@ -220,7 +220,7 @@ public class Tag : TemplatedControl, IControlCustomStyle
 
    void IControlCustomStyle.SetupTokenBindings()
    {
-      TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty, GlobalResourceKey.BorderThickness, BindingPriority.Template,
+      TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty, GlobalTokenResourceKey.BorderThickness, BindingPriority.Template,
                                    new RenderScaleAwareThicknessConfigure(this, thickness =>
                                    {
                                       if (!Bordered) {
@@ -345,7 +345,7 @@ public class Tag : TemplatedControl, IControlCustomStyle
          Bordered = false;
          _hasColorSet = true;
          Background = new SolidColorBrush(color);
-         TokenResourceBinder.CreateTokenBinding(this, ForegroundProperty, GlobalResourceKey.ColorTextLightSolid);
+         TokenResourceBinder.CreateTokenBinding(this, ForegroundProperty, GlobalTokenResourceKey.ColorTextLightSolid);
       }
    }
 
@@ -358,13 +358,13 @@ public class Tag : TemplatedControl, IControlCustomStyle
                Kind = "CloseOutlined"
             };
            
-            TokenResourceBinder.CreateTokenBinding(CloseIcon, PathIcon.WidthProperty, TagResourceKey.TagCloseIconSize);
-            TokenResourceBinder.CreateTokenBinding(CloseIcon, PathIcon.HeightProperty, TagResourceKey.TagCloseIconSize);
+            TokenResourceBinder.CreateTokenBinding(CloseIcon, PathIcon.WidthProperty, TagTokenResourceKey.TagCloseIconSize);
+            TokenResourceBinder.CreateTokenBinding(CloseIcon, PathIcon.HeightProperty, TagTokenResourceKey.TagCloseIconSize);
             if (_hasColorSet && !_isPresetColorTag) {
-               TokenResourceBinder.CreateTokenBinding(CloseIcon, PathIcon.NormalFilledBrushProperty, GlobalResourceKey.ColorTextLightSolid);
+               TokenResourceBinder.CreateTokenBinding(CloseIcon, PathIcon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorTextLightSolid);
             } else {
-               TokenResourceBinder.CreateTokenBinding(CloseIcon, PathIcon.NormalFilledBrushProperty, GlobalResourceKey.ColorIcon);
-               TokenResourceBinder.CreateTokenBinding(CloseIcon, PathIcon.ActiveFilledBrushProperty, GlobalResourceKey.ColorIconHover);
+               TokenResourceBinder.CreateTokenBinding(CloseIcon, PathIcon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorIcon);
+               TokenResourceBinder.CreateTokenBinding(CloseIcon, PathIcon.ActiveFilledBrushProperty, GlobalTokenResourceKey.ColorIconHover);
             }
          }
       }
@@ -376,11 +376,11 @@ public class Tag : TemplatedControl, IControlCustomStyle
          if (_layoutPanel?.Children[0] is PathIcon oldIcon) {
             _layoutPanel.Children.Remove(oldIcon);
          }
-         TokenResourceBinder.CreateTokenBinding(Icon, PathIcon.WidthProperty, TagResourceKey.TagIconSize);
-         TokenResourceBinder.CreateTokenBinding(Icon, PathIcon.HeightProperty, TagResourceKey.TagIconSize);
+         TokenResourceBinder.CreateTokenBinding(Icon, PathIcon.WidthProperty, TagTokenResourceKey.TagIconSize);
+         TokenResourceBinder.CreateTokenBinding(Icon, PathIcon.HeightProperty, TagTokenResourceKey.TagIconSize);
          _layoutPanel?.Children.Insert(0, Icon);
          if (_hasColorSet) {
-            TokenResourceBinder.CreateTokenBinding(Icon, PathIcon.NormalFilledBrushProperty, GlobalResourceKey.ColorTextLightSolid);
+            TokenResourceBinder.CreateTokenBinding(Icon, PathIcon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorTextLightSolid);
          } else if (_isPresetColorTag) {
             Icon.NormalFilledBrush = Foreground;
          }

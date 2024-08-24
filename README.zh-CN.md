@@ -27,27 +27,28 @@ PS: AtomUI 目前仅在 Windows 11 平台测试<br>
 | Steps 步骤条      | 未完成    |
 
 ##### （数据录入）Data Entry
-| 控件名                 | 完成情况   |
-|:--------------------|:-------|
-| AutoComplete 自动完成   | 未完成    |
-| ComboBox 自动完成       | 进行中 💪   |
-| Cascader 级联选择       | 未完成    |
-| Checkbox 多选框        | 已完成 ✅  |
-| ColorPicker 颜色选择器   | 未完成    |
-| DatePicker 日期选择框    | 未完成    |
-| Form 表单             | 未完成    |
-| Input 输入框           | Completed ✅ |
-| InputNumber 数字输入框   | 进行中 💪 |
-| Mentions 提及         | 未完成    |
-| Radio 单选框           | 已完成 ✅  |
-| OptionButtonBox 单选组 | 已完成 ✅  |
-| Rate 评分             | 未完成    |
-| Select 选择器          | 未完成    |
-| Slider 滑动输入条        | 已完成 ✅  |
-| Switch 开关           | 已完成 ✅  |
-| TimePicker 时间选择框    | 未完成    |
-| Transfer 穿梭框        | 未完成    |
-| Upload 上传           | 需评估 🤔 |
+| 控件名                  | 完成情况   |
+|:---------------------|:-------|
+| AutoComplete 自动完成    | 未完成    |
+| ComboBox 下拉选择        | 进行中 💪   |
+| Cascader 级联选择        | 未完成    |
+| Checkbox 多选框         | 已完成 ✅  |
+| ColorPicker 颜色选择器    | 未完成    |
+| DatePicker 日期选择框     | 未完成    |
+| Form 表单              | 未完成    |
+| Input 输入框            | 已完成 ✅ |
+| NumberUpDown 数字输入框   | 已完成 ✅ |
+| ButtonSpinner 按钮切换控件 | 已完成 ✅ |
+| Mentions 提及          | 未完成    |
+| Radio 单选框            | 已完成 ✅  |
+| OptionButtonBox 单选组  | 已完成 ✅  |
+| Rate 评分              | 未完成    |
+| Select 选择器           | 进行中 💪    |
+| Slider 滑动输入条         | 已完成 ✅  |
+| Switch 开关            | 已完成 ✅  |
+| TimePicker 时间选择框     | 未完成    |
+| Transfer 穿梭框         | 未完成    |
+| Upload 上传            | 需评估 🤔 |
 
 ##### （数据展示）Data Display
 | 控件名                    | 完成情况   |
@@ -56,14 +57,14 @@ PS: AtomUI 目前仅在 Windows 11 平台测试<br>
 | Badge 徽标数              | 已完成 ✅  |
 | Calendar 日历            | 未完成    |
 | Card 卡片                | 未完成    |
-| Carousel 走马灯           | 未完成    |
-| Collapse 折叠面板          | Completed ✅ |
-| Expander 折叠面板          | 进行中 💪  |
+| Carousel 走马灯           | 进行中 💪 |
+| Collapse 折叠面板          | 已完成 ✅  |
+| Expander 折叠面板          | 已完成 ✅  |
 | Descriptions 描述列表      | 未完成    |
 | EmptyIndicator 空状态     | 已完成 ✅  |
-| PathIcon 图标            | 已完成 ✅    |
+| PathIcon 图标            | 已完成 ✅  |
 | Image 图片               | 未完成    |
-| List 列表                | 进行中 💪   |
+| ListBox 列表             |  已完成 ✅ |
 | Popover 气泡卡片           | 已完成 ✅  |
 | QRCode 二维码             | 未完成    |
 | Segmented 分段控制器        | 已完成 ✅  |
@@ -75,16 +76,16 @@ PS: AtomUI 目前仅在 Windows 11 平台测试<br>
 | Timeline 时间轴           | 进行中 💪 |
 | Tooltip 文字提示           | 已完成 ✅  |
 | Tour 漫游式引导             | 未完成    |
-| Tree 树形控件              | 进行中 💪 |
+| Tree 树形控件              | 已完成 ✅  |
 
 ##### （反馈）Feedback
 | 控件名                  | 完成情况   |
 |:---------------------|:-------|
 | Alert 警告提示           | 已完成 ✅  |
 | Drawer 抽屉            | 未完成    |
-| Message 全局提示         | 未完成    |
-| Modal 对话框            | 未完成    |
-| Notification 通知提醒框   | 未完成    |
+| Message 全局提示         | 进行中 💪    |
+| Modal 对话框            | 进行中 💪    |
+| Notification 通知提醒框   | 进行中 💪    |
 | Popconfirm 气泡确认框     | 未完成    |
 | ProgressBar 进度条      | 已完成 ✅  |
 | Result 结果            | 需评估 🤔 |

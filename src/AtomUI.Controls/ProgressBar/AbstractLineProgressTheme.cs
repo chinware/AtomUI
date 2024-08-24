@@ -26,8 +26,8 @@ public class AbstractLineProgressTheme : AbstractProgressBarTheme
          HorizontalAlignment = HorizontalAlignment.Left
       };
       exceptionCompletedIcon.RegisterInNameScope(scope);
-      TokenResourceBinder.CreateGlobalTokenBinding(exceptionCompletedIcon, PathIcon.NormalFilledBrushProperty, GlobalResourceKey.ColorError);
-      TokenResourceBinder.CreateGlobalTokenBinding(exceptionCompletedIcon, PathIcon.DisabledFilledBrushProperty, GlobalResourceKey.ControlItemBgActiveDisabled);
+      TokenResourceBinder.CreateGlobalTokenBinding(exceptionCompletedIcon, PathIcon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorError);
+      TokenResourceBinder.CreateGlobalTokenBinding(exceptionCompletedIcon, PathIcon.DisabledFilledBrushProperty, GlobalTokenResourceKey.ControlItemBgActiveDisabled);
       
       var successCompletedIcon = new PathIcon
       {
@@ -36,8 +36,8 @@ public class AbstractLineProgressTheme : AbstractProgressBarTheme
          HorizontalAlignment = HorizontalAlignment.Left
       };
       successCompletedIcon.RegisterInNameScope(scope);
-      TokenResourceBinder.CreateGlobalTokenBinding(successCompletedIcon, PathIcon.NormalFilledBrushProperty, GlobalResourceKey.ColorSuccess);
-      TokenResourceBinder.CreateGlobalTokenBinding(successCompletedIcon, PathIcon.DisabledFilledBrushProperty, GlobalResourceKey.ControlItemBgActiveDisabled);
+      TokenResourceBinder.CreateGlobalTokenBinding(successCompletedIcon, PathIcon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorSuccess);
+      TokenResourceBinder.CreateGlobalTokenBinding(successCompletedIcon, PathIcon.DisabledFilledBrushProperty, GlobalTokenResourceKey.ControlItemBgActiveDisabled);
       
       container.Children.Add(exceptionCompletedIcon);
       container.Children.Add(successCompletedIcon);
@@ -47,8 +47,8 @@ public class AbstractLineProgressTheme : AbstractProgressBarTheme
    {
       base.BuildStyles();
       var commonStyle = new Style(selector => selector.Nesting());
-      commonStyle.Add(AbstractLineProgress.LineProgressPaddingProperty, ProgressBarResourceKey.LineProgressPadding);
-      commonStyle.Add(AbstractLineProgress.LineExtraInfoMarginProperty, ProgressBarResourceKey.LineExtraInfoMargin);
+      commonStyle.Add(AbstractLineProgress.LineProgressPaddingProperty, ProgressBarTokenResourceKey.LineProgressPadding);
+      commonStyle.Add(AbstractLineProgress.LineExtraInfoMarginProperty, ProgressBarTokenResourceKey.LineExtraInfoMargin);
       Add(commonStyle);
       BuildSizeTypeStyle();
    }
@@ -56,41 +56,41 @@ public class AbstractLineProgressTheme : AbstractProgressBarTheme
    private void BuildSizeTypeStyle()
    {
       var largeSizeTypeStyle = new Style(selector => selector.Nesting().PropertyEquals(AbstractProgressBar.EffectiveSizeTypeProperty, SizeType.Large));
-      largeSizeTypeStyle.Add(AbstractLineProgress.LineInfoIconSizeProperty, ProgressBarResourceKey.LineInfoIconSize);
+      largeSizeTypeStyle.Add(AbstractLineProgress.LineInfoIconSizeProperty, ProgressBarTokenResourceKey.LineInfoIconSize);
       // icon
       {
          var completedIconsStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
-         completedIconsStyle.Add(PathIcon.WidthProperty, ProgressBarResourceKey.LineInfoIconSize);
-         completedIconsStyle.Add(PathIcon.HeightProperty, ProgressBarResourceKey.LineInfoIconSize);
+         completedIconsStyle.Add(PathIcon.WidthProperty, ProgressBarTokenResourceKey.LineInfoIconSize);
+         completedIconsStyle.Add(PathIcon.HeightProperty, ProgressBarTokenResourceKey.LineInfoIconSize);
          largeSizeTypeStyle.Add(completedIconsStyle);
       }
-      largeSizeTypeStyle.Add(Label.FontSizeProperty, GlobalResourceKey.FontSize);
+      largeSizeTypeStyle.Add(Label.FontSizeProperty, GlobalTokenResourceKey.FontSize);
       
       Add(largeSizeTypeStyle);
       
       var middleTypeStyle = new Style(selector => selector.Nesting().PropertyEquals(AbstractProgressBar.EffectiveSizeTypeProperty, SizeType.Middle));
-      middleTypeStyle.Add(AbstractLineProgress.LineInfoIconSizeProperty, ProgressBarResourceKey.LineInfoIconSize);
+      middleTypeStyle.Add(AbstractLineProgress.LineInfoIconSizeProperty, ProgressBarTokenResourceKey.LineInfoIconSize);
       // icon
       {
          var completedIconsStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
-         completedIconsStyle.Add(PathIcon.WidthProperty, ProgressBarResourceKey.LineInfoIconSizeSM);
-         completedIconsStyle.Add(PathIcon.HeightProperty, ProgressBarResourceKey.LineInfoIconSizeSM);
+         completedIconsStyle.Add(PathIcon.WidthProperty, ProgressBarTokenResourceKey.LineInfoIconSizeSM);
+         completedIconsStyle.Add(PathIcon.HeightProperty, ProgressBarTokenResourceKey.LineInfoIconSizeSM);
          middleTypeStyle.Add(completedIconsStyle);
       }
       
-      middleTypeStyle.Add(Label.FontSizeProperty, GlobalResourceKey.FontSizeSM);
+      middleTypeStyle.Add(Label.FontSizeProperty, GlobalTokenResourceKey.FontSizeSM);
       Add(middleTypeStyle);
 
       var smallTypeStyle = new Style(selector => selector.Nesting().PropertyEquals(AbstractProgressBar.EffectiveSizeTypeProperty, SizeType.Small));
-      smallTypeStyle.Add(AbstractLineProgress.LineInfoIconSizeProperty, ProgressBarResourceKey.LineInfoIconSizeSM);
+      smallTypeStyle.Add(AbstractLineProgress.LineInfoIconSizeProperty, ProgressBarTokenResourceKey.LineInfoIconSizeSM);
       // icon
       {
          var completedIconsStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
-         completedIconsStyle.Add(PathIcon.WidthProperty, ProgressBarResourceKey.LineInfoIconSizeSM);
-         completedIconsStyle.Add(PathIcon.HeightProperty, ProgressBarResourceKey.LineInfoIconSizeSM);
+         completedIconsStyle.Add(PathIcon.WidthProperty, ProgressBarTokenResourceKey.LineInfoIconSizeSM);
+         completedIconsStyle.Add(PathIcon.HeightProperty, ProgressBarTokenResourceKey.LineInfoIconSizeSM);
          smallTypeStyle.Add(completedIconsStyle);
       }
-      smallTypeStyle.Add(Label.FontSizeProperty, GlobalResourceKey.FontSizeSM);
+      smallTypeStyle.Add(Label.FontSizeProperty, GlobalTokenResourceKey.FontSizeSM);
       Add(smallTypeStyle);
    }
 }

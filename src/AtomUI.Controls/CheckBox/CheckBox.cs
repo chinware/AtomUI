@@ -212,7 +212,7 @@ public class CheckBox : AvaloniaCheckBox,
 
    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
    {
-      TokenResourceBinder.CreateGlobalResourceBinding(this, IndicatorBorderThicknessProperty, GlobalResourceKey.BorderThickness, BindingPriority.Template,
+      TokenResourceBinder.CreateGlobalResourceBinding(this, IndicatorBorderThicknessProperty, GlobalTokenResourceKey.BorderThickness, BindingPriority.Template,
          new RenderScaleAwareThicknessConfigure(this));
       HorizontalAlignment = HorizontalAlignment.Left;
       Cursor = new Cursor(StandardCursorType.Hand);
@@ -280,7 +280,7 @@ public class CheckBox : AvaloniaCheckBox,
          AnimationUtils.CreateTransition<SolidColorBrushTransition>(IndicatorBorderBrushProperty),
          AnimationUtils.CreateTransition<SolidColorBrushTransition>(IndicatorTristateMarkBrushProperty),
          AnimationUtils.CreateTransition<DoubleTransition>(IndicatorCheckedMarkEffectSizeProperty,
-                                                           GlobalResourceKey.MotionDurationMid, new BackEaseOut())
+                                                           GlobalTokenResourceKey.MotionDurationMid, new BackEaseOut())
       };
    }
 

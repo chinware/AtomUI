@@ -25,3 +25,29 @@ public class ThemeLoadException : SystemException
    {
    }
 }
+
+public class TokenResourceRegisterException : SystemException
+{
+   public TokenResourceRegisterException(string? message)
+      : base(message)
+   {
+   }
+
+   public TokenResourceRegisterException(string? message, Exception? innerException)
+      : base(message, innerException)
+   {
+   }
+}
+
+public class LanguageMetaInfoParseException : SystemException
+{
+   public LanguageMetaInfoParseException(string? message)
+      : base(message)
+   {
+   }
+
+   public LanguageMetaInfoParseException(string? message, Exception? innerException)
+      : base(message, innerException)
+   {
+   }
+}

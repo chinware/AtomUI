@@ -46,12 +46,12 @@ internal class CardTabStripTheme : BaseTabStripTheme
          Kind = "PlusOutlined"
       };
 
-      TokenResourceBinder.CreateTokenBinding(addTabIcon, PathIcon.NormalFilledBrushProperty, TabControlResourceKey.ItemColor);
-      TokenResourceBinder.CreateTokenBinding(addTabIcon, PathIcon.ActiveFilledBrushProperty, TabControlResourceKey.ItemHoverColor);
-      TokenResourceBinder.CreateTokenBinding(addTabIcon, PathIcon.DisabledFilledBrushProperty, GlobalResourceKey.ColorTextDisabled);
+      TokenResourceBinder.CreateTokenBinding(addTabIcon, PathIcon.NormalFilledBrushProperty, TabControlTokenResourceKey.ItemColor);
+      TokenResourceBinder.CreateTokenBinding(addTabIcon, PathIcon.ActiveFilledBrushProperty, TabControlTokenResourceKey.ItemHoverColor);
+      TokenResourceBinder.CreateTokenBinding(addTabIcon, PathIcon.DisabledFilledBrushProperty, GlobalTokenResourceKey.ColorTextDisabled);
       
-      TokenResourceBinder.CreateGlobalResourceBinding(addTabIcon, PathIcon.WidthProperty, GlobalResourceKey.IconSize);
-      TokenResourceBinder.CreateGlobalResourceBinding(addTabIcon, PathIcon.HeightProperty, GlobalResourceKey.IconSize);
+      TokenResourceBinder.CreateGlobalResourceBinding(addTabIcon, PathIcon.WidthProperty, GlobalTokenResourceKey.IconSize);
+      TokenResourceBinder.CreateGlobalResourceBinding(addTabIcon, PathIcon.HeightProperty, GlobalTokenResourceKey.IconSize);
 
       var addTabButton = new IconButton
       {
@@ -64,7 +64,7 @@ internal class CardTabStripTheme : BaseTabStripTheme
       CreateTemplateParentBinding(addTabButton, IconButton.CornerRadiusProperty, CardTabStrip.CardBorderRadiusProperty);
       CreateTemplateParentBinding(addTabButton, IconButton.IsVisibleProperty, CardTabStrip.IsShowAddTabButtonProperty);
       
-      TokenResourceBinder.CreateGlobalResourceBinding(addTabButton, IconButton.BorderBrushProperty, GlobalResourceKey.ColorBorderSecondary);
+      TokenResourceBinder.CreateGlobalResourceBinding(addTabButton, IconButton.BorderBrushProperty, GlobalTokenResourceKey.ColorBorderSecondary);
       
       addTabButton.RegisterInNameScope(scope);
 
@@ -103,10 +103,10 @@ internal class CardTabStripTheme : BaseTabStripTheme
          
          var itemPresenterPanelStyle = new Style(selector => selector.Nesting().Template().Name(ItemsPresenterPart).Child().OfType<StackPanel>());
          itemPresenterPanelStyle.Add(StackPanel.OrientationProperty, Orientation.Horizontal);
-         itemPresenterPanelStyle.Add(StackPanel.SpacingProperty, TabControlResourceKey.CardGutter);
+         itemPresenterPanelStyle.Add(StackPanel.SpacingProperty, TabControlTokenResourceKey.CardGutter);
 
          var addTabButtonStyle = new Style(selector => selector.Nesting().Template().Name(AddTabButtonPart));
-         addTabButtonStyle.Add(IconButton.MarginProperty, TabControlResourceKey.AddTabButtonMarginHorizontal);
+         addTabButtonStyle.Add(IconButton.MarginProperty, TabControlTokenResourceKey.AddTabButtonMarginHorizontal);
          topStyle.Add(addTabButtonStyle);
          
          topStyle.Add(itemPresenterPanelStyle);
@@ -123,11 +123,11 @@ internal class CardTabStripTheme : BaseTabStripTheme
          
          var itemPresenterPanelStyle = new Style(selector => selector.Nesting().Template().Name(ItemsPresenterPart).Child().OfType<StackPanel>());
          itemPresenterPanelStyle.Add(StackPanel.OrientationProperty, Orientation.Vertical);
-         itemPresenterPanelStyle.Add(StackPanel.SpacingProperty, TabControlResourceKey.CardGutter);
+         itemPresenterPanelStyle.Add(StackPanel.SpacingProperty, TabControlTokenResourceKey.CardGutter);
          rightStyle.Add(itemPresenterPanelStyle);
          
          var addTabButtonStyle = new Style(selector => selector.Nesting().Template().Name(AddTabButtonPart));
-         addTabButtonStyle.Add(IconButton.MarginProperty, TabControlResourceKey.AddTabButtonMarginVertical);
+         addTabButtonStyle.Add(IconButton.MarginProperty, TabControlTokenResourceKey.AddTabButtonMarginVertical);
          rightStyle.Add(addTabButtonStyle);
          
          commonStyle.Add(rightStyle);
@@ -142,11 +142,11 @@ internal class CardTabStripTheme : BaseTabStripTheme
          
          var itemPresenterPanelStyle = new Style(selector => selector.Nesting().Template().Name(ItemsPresenterPart).Child().OfType<StackPanel>());
          itemPresenterPanelStyle.Add(StackPanel.OrientationProperty, Orientation.Horizontal);
-         itemPresenterPanelStyle.Add(StackPanel.SpacingProperty, TabControlResourceKey.CardGutter);
+         itemPresenterPanelStyle.Add(StackPanel.SpacingProperty, TabControlTokenResourceKey.CardGutter);
          bottomStyle.Add(itemPresenterPanelStyle);
          
          var addTabButtonStyle = new Style(selector => selector.Nesting().Template().Name(AddTabButtonPart));
-         addTabButtonStyle.Add(IconButton.MarginProperty, TabControlResourceKey.AddTabButtonMarginHorizontal);
+         addTabButtonStyle.Add(IconButton.MarginProperty, TabControlTokenResourceKey.AddTabButtonMarginHorizontal);
          bottomStyle.Add(addTabButtonStyle);
          
          commonStyle.Add(bottomStyle);
@@ -161,11 +161,11 @@ internal class CardTabStripTheme : BaseTabStripTheme
          
          var itemPresenterPanelStyle = new Style(selector => selector.Nesting().Template().Name(ItemsPresenterPart).Child().OfType<StackPanel>());
          itemPresenterPanelStyle.Add(StackPanel.OrientationProperty, Orientation.Vertical);
-         itemPresenterPanelStyle.Add(StackPanel.SpacingProperty, TabControlResourceKey.CardGutter);
+         itemPresenterPanelStyle.Add(StackPanel.SpacingProperty, TabControlTokenResourceKey.CardGutter);
          leftStyle.Add(itemPresenterPanelStyle);
          
          var addTabButtonStyle = new Style(selector => selector.Nesting().Template().Name(AddTabButtonPart));
-         addTabButtonStyle.Add(IconButton.MarginProperty, TabControlResourceKey.AddTabButtonMarginVertical);
+         addTabButtonStyle.Add(IconButton.MarginProperty, TabControlTokenResourceKey.AddTabButtonMarginVertical);
          leftStyle.Add(addTabButtonStyle);
          
          commonStyle.Add(leftStyle);

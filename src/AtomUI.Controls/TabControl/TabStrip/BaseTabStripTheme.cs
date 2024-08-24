@@ -39,7 +39,7 @@ internal class BaseTabStripTheme : BaseControlTheme
    {
       base.BuildStyles();
       var commonStyle = new Style(selector => selector.Nesting());
-      commonStyle.Add(BaseTabStrip.BorderBrushProperty, GlobalResourceKey.ColorBorderSecondary);
+      commonStyle.Add(BaseTabStrip.BorderBrushProperty, GlobalTokenResourceKey.ColorBorderSecondary);
       
       // 设置 items presenter 是否居中
       // 分为上、右、下、左

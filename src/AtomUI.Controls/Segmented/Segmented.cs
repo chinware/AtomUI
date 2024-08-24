@@ -592,7 +592,7 @@ public partial class Segmented : TemplatedControl, IControlCustomStyle
       Transitions = new Transitions()
       {
          AnimationUtils.CreateTransition<PointTransition>(SelectedThumbPosProperty),
-         AnimationUtils.CreateTransition<SizeTransition>(SelectedThumbSizeProperty, GlobalResourceKey.MotionDurationFast)
+         AnimationUtils.CreateTransition<SizeTransition>(SelectedThumbSizeProperty, GlobalTokenResourceKey.MotionDurationFast)
       };
    }
 

@@ -2,6 +2,8 @@
     <img src="./docs/images/ATOMUI.png" />
 </p>
 
+<div align="center" style = "font-weight: bold">An enterprise cross-platform control library based on Ant Design 5.0 and Avalonia technology</div>
+
 #### Introduce
 
 AtomUI is an implementation of Ant Design based on .NET technology, dedicated to bringing the excellent and efficient design language and experience of Ant Design to the Avalonia/.NET cross-platform desktop software development field.
@@ -20,62 +22,63 @@ Welcome to communicate and give suggestions to AtomUI, thank you for giving the 
 | Steps        | TODO    |
 
 ##### Data Entry
-| Control Name    | Status   |
-|:----------------|:-------|
-| AutoComplete    | TODO    |
-| Cascader        | TODO    |
-| Checkbox        | Completed ✅  |
-| ColorPicker     | TODO    |
-| DatePicker      | TODO    |
-| Form            | TODO    |
-| Input           | Completed ✅    |
-| InputNumber     | TODO    |
-| Mentions        | TODO    |
-| Radio           | Completed ✅  |
-| OptionButtonBox | Completed ✅  |
-| Rate            | TODO    |
-| Select          | TODO    |
-| Slider          | Completed ✅  |
-| Switch          | Completed ✅  |
-| TimePicker      | TODO    |
-| Transfer        | TODO    |
+| Control Name    | Status        |
+|:----------------|:--------------|
+| AutoComplete    | TODO          |
+| Cascader        | TODO          |
+| Checkbox        | Completed ✅   |
+| ColorPicker     | TODO          |
+| DatePicker      | TODO          |
+| Form            | TODO          |
+| Input           | Completed ✅   |
+| NumberUpDown    | Completed ✅   |
+| ButtonSpinner   | Completed ✅   |
+| Mentions        | TODO          |
+| Radio           | Completed ✅   |
+| OptionButtonBox | Completed ✅   |
+| Rate            | TODO          |
+| Select          | TODO          |
+| Slider          | Completed ✅   |
+| Switch          | Completed ✅   |
+| TimePicker      | TODO          |
+| Transfer        | TODO          |
 | Upload          | Need Review 🤔 |
 
 ##### Data Display
-| Control Name      | Status         |
-|:------------------|:---------------|
-| Avatar            | TODO           |
-| Badge             | Completed ✅    |
-| Calendar          | TODO           |
-| Card              | TODO           |
-| Carousel          | TODO           |
-| Collapse          | Completed ✅    |
-| Expander          | Developing 💪  |
-| Descriptions      | TODO           |
-| EmptyIndicator    | Completed ✅    |
-| Image             | TODO           |
-| List              | TODO           |
-| Popover           | Completed ✅    |
-| QRCode            | TODO           |
-| Segmented         | Completed ✅    |
-| Statistic         | TODO           |
-| Table             | TODO           |
-| TabControl        | Completed ✅    |
-| Tag               | Completed ✅    |
-| Timeline          | TODO           |
-| Tooltip           | Completed ✅    |
-| Tour              | TODO           |
-| Tree              | Developing 💪  |
+| Control Name   | Status        |
+|:---------------|:--------------|
+| Avatar         | TODO          |
+| Badge          | Completed ✅   |
+| Calendar       | TODO          |
+| Card           | TODO          |
+| Carousel       | Developing 💪 |
+| Collapse       | Completed ✅   |
+| Expander       | Completed ✅   |
+| Descriptions   | TODO          |
+| EmptyIndicator | Completed ✅   |
+| Image          | TODO          |
+| ListBox        | Completed ✅   |
+| Popover        | Completed ✅   |
+| QRCode         | TODO          |
+| Segmented      | Completed ✅   |
+| Statistic      | TODO          |
+| Table          | TODO          |
+| TabControl     | Completed ✅   |
+| Tag            | Completed ✅   |
+| Timeline       | TODO          |
+| Tooltip        | Completed ✅   |
+| Tour           | TODO          |
+| Tree           | Completed ✅   |
 
 ##### Feedback
 | Control Name       | Status         |
 |:-------------------|:---------------|
 | Alert              | Completed ✅    |
 | Drawer             | TODO           |
-| Message            | TODO           |
-| Modal              | TODO           |
-| Notification       | TODO           |
-| Popconfirm         | TODO           |
+| Message            | Developing 💪  |
+| Modal              | Developing 💪  |
+| Notification       | Developing 💪  |
+| Popconfirm         | Developing 💪  |
 | ProgressBar        | Completed ✅    |
 | Result             | Need Review 🤔 |
 | Skeleton           | TODO           |

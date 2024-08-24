@@ -8,6 +8,37 @@
     xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
     mc:Ignorable="d">
     <showcase:ShowCasePanel>
-     
+        <showcase:ShowCaseItem
+            Title="Basic usage"
+            Description="Basic usage example.">
+            <atom:ListBox>
+                <atom:ListBoxItem>Blue</atom:ListBoxItem>
+                <atom:ListBoxItem>Green</atom:ListBoxItem>
+                <atom:ListBoxItem>Red</atom:ListBoxItem>
+                <atom:ListBoxItem>Yellow</atom:ListBoxItem>
+            </atom:ListBox>
+        </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="Hover effect"
+            Description="Disabled item hover effect.">
+            <atom:ListBox DisabledItemHoverEffect="True">
+                <atom:ListBoxItem>Blue</atom:ListBoxItem>
+                <atom:ListBoxItem>Green</atom:ListBoxItem>
+                <atom:ListBoxItem>Red</atom:ListBoxItem>
+                <atom:ListBoxItem>Yellow</atom:ListBoxItem>
+            </atom:ListBox>
+        </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="Item disabled"
+            Description="Disabled item.">
+            <atom:ListBox>
+                <atom:ListBoxItem>Blue</atom:ListBoxItem>
+                <atom:ListBoxItem>Green</atom:ListBoxItem>
+                <atom:ListBoxItem IsEnabled="False">Red</atom:ListBoxItem>
+                <atom:ListBoxItem>Yellow</atom:ListBoxItem>
+            </atom:ListBox>
+        </showcase:ShowCaseItem>
     </showcase:ShowCasePanel>
 </UserControl>

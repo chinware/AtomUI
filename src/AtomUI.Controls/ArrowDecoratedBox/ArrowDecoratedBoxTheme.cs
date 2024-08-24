@@ -3,6 +3,7 @@ using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Templates;
 using Avalonia.Styling;
 
@@ -12,6 +13,7 @@ namespace AtomUI.Controls;
 public class ArrowDecoratedBoxTheme : BaseControlTheme
 {
    public const string DecoratorPart = "PART_Decorator";
+   public const string ContentPresenterPart = "PART_ContentPresenter";
    
    public ArrowDecoratedBoxTheme() : base(typeof(ArrowDecoratedBox)) {}
 
@@ -24,17 +26,21 @@ public class ArrowDecoratedBoxTheme : BaseControlTheme
             Name = DecoratorPart,
             Margin = new Thickness(0),
          };
-         decorator.RegisterInNameScope(scope);
          
-         if (box.Child?.Parent is not null) {
-            UIStructureUtils.ClearLogicalParentRecursive(box.Child, null);
-            UIStructureUtils.ClearVisualParentRecursive(box.Child, null);
-         }
+         decorator.RegisterInNameScope(scope);
+
+         var contentPresenter = new ContentPresenter()
+         {
+            Name = ContentPresenterPart
+         };
+         CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty, ArrowDecoratedBox.ContentProperty);
+         CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentTemplateProperty, ArrowDecoratedBox.ContentTemplateProperty);
+
+         decorator.Child = contentPresenter;
 
          CreateTemplateParentBinding(decorator, Border.BackgroundSizingProperty, ArrowDecoratedBox.BackgroundSizingProperty);
          CreateTemplateParentBinding(decorator, Border.BackgroundProperty, ArrowDecoratedBox.BackgroundProperty);
          CreateTemplateParentBinding(decorator, Border.CornerRadiusProperty, ArrowDecoratedBox.CornerRadiusProperty);
-         CreateTemplateParentBinding(decorator, Border.ChildProperty, ArrowDecoratedBox.ChildProperty);
          CreateTemplateParentBinding(decorator, Border.PaddingProperty, ArrowDecoratedBox.PaddingProperty);
          
          return decorator;
@@ -44,12 +50,12 @@ public class ArrowDecoratedBoxTheme : BaseControlTheme
    protected override void BuildStyles()
    {
       var commonStyle = new Style(selector => selector.Nesting());
-      commonStyle.Add(ArrowDecoratedBox.ForegroundProperty, GlobalResourceKey.ColorText);
-      commonStyle.Add(ArrowDecoratedBox.BackgroundProperty, GlobalResourceKey.ColorBgContainer);
-      commonStyle.Add(ArrowDecoratedBox.MinHeightProperty, GlobalResourceKey.ControlHeight);
-      commonStyle.Add(ArrowDecoratedBox.PaddingProperty, ArrowDecoratedBoxResourceKey.Padding);
-      commonStyle.Add(ArrowDecoratedBox.ArrowSizeProperty, ArrowDecoratedBoxResourceKey.ArrowSize);
-      commonStyle.Add(ArrowDecoratedBox.CornerRadiusProperty, GlobalResourceKey.BorderRadius);
+      commonStyle.Add(ArrowDecoratedBox.ForegroundProperty, GlobalTokenResourceKey.ColorText);
+      commonStyle.Add(ArrowDecoratedBox.BackgroundProperty, GlobalTokenResourceKey.ColorBgContainer);
+      commonStyle.Add(ArrowDecoratedBox.MinHeightProperty, GlobalTokenResourceKey.ControlHeight);
+      commonStyle.Add(ArrowDecoratedBox.PaddingProperty, ArrowDecoratedBoxTokenResourceKey.Padding);
+      commonStyle.Add(ArrowDecoratedBox.ArrowSizeProperty, ArrowDecoratedBoxTokenResourceKey.ArrowSize);
+      commonStyle.Add(ArrowDecoratedBox.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadius);
       Add(commonStyle);
    }
 }

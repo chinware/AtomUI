@@ -57,13 +57,14 @@ public abstract class AbstractDesignToken : IDesignToken
 
    public virtual void BuildResourceDictionary(IResourceDictionary dictionary)
    {
-      Type type = GetType();
+      var type = GetType();
       // internal 这里也考虑进去，还是具体的 Token 自己处理？
       var tokenProperties = type.GetProperties(BindingFlags.Public | 
                                                BindingFlags.NonPublic |
                                                BindingFlags.Instance |
                                                BindingFlags.FlattenHierarchy);
-      Type baseTokenType = typeof(AbstractDesignToken);
+      var baseTokenType = typeof(AbstractDesignToken);
+      var tokenResourceNamespace = GetTokenResourceCatalog();
       foreach (var property in tokenProperties) {
          if (baseTokenType.IsAssignableFrom(property.PropertyType)) {
             // 如果当前的属性是 Token 类型，证明是组合属性，跳过
@@ -74,8 +75,21 @@ public abstract class AbstractDesignToken : IDesignToken
          if (property.PropertyType == typeof(Color) && tokenValue != null) {
             tokenValue = new SolidColorBrush((Color)tokenValue);
          }
-         dictionary[new TokenResourceKey(tokenName)] = tokenValue;
+         dictionary[new TokenResourceKey(tokenName, tokenResourceNamespace)] = tokenValue;
       }
+   }
+
+   private string GetTokenResourceCatalog()
+   {
+      var tokenType = GetType();
+      if (tokenType.GetCustomAttribute<GlobalDesignTokenAttribute>() is GlobalDesignTokenAttribute globalTokenAttribute) {
+         return globalTokenAttribute.ResourceCatalog;
+      } else if (tokenType.GetCustomAttribute<ControlDesignTokenAttribute>() is ControlDesignTokenAttribute
+                 controlTokenAttribute) {
+         return controlTokenAttribute.ResourceCatalog;
+      }
+
+      throw new TokenResourceRegisterException($"The current Token: {tokenType.FullName} lacks the token type annotation");
    }
 
    public virtual object? GetTokenValue(string name)

@@ -16,12 +16,15 @@ public class TokenResourceKeyGenerator : IIncrementalGenerator
          {
             var walker = new TokenPropertyWalker(context.SemanticModel);
             walker.Visit(context.TargetNode);
-            return walker.TokenNames;
+            return (walker.TokenResourceCatalog, walker.TokenNames);
          }).Collect().Select((array, token) =>
       {
-         var mergedSet = new HashSet<string>();
-         foreach (var set in array) {
-            mergedSet.UnionWith(set);
+         var mergedSet = new HashSet<TokenName>();
+         foreach (var entry in array) {
+            var ns = entry.TokenResourceCatalog!;
+            foreach (var tokenName in entry.TokenNames) {
+               mergedSet.Add(new TokenName(tokenName, ns));
+            }
          }
 
          return mergedSet;
@@ -31,7 +34,7 @@ public class TokenResourceKeyGenerator : IIncrementalGenerator
          (node, token) => true,
          (context, token) =>
          {
-            var walker = new ControlTokenPropertyWalker();
+            var walker = new ControlTokenPropertyWalker(context.SemanticModel);
             walker.Visit(context.TargetNode);
             return walker.ControlTokenInfo;
          }).Collect();
@@ -46,8 +49,25 @@ public class TokenResourceKeyGenerator : IIncrementalGenerator
             tokenInfo.ControlTokenInfos.Add(controlToken);
          }
 
-         var classWriter = new ResourceKeyClassSourceWriter(context, tokenInfo);
-         classWriter.Write();
+         {
+            var classWriter = new ResourceKeyClassSourceWriter(context, tokenInfo);
+            classWriter.Write();
+         }
+
+         {
+            var tokenClassNames = tokenInfo.ControlTokenInfos.Select(info =>
+            {
+               if (info.ControlNamespace is not null) {
+                  return $"{info.ControlNamespace}.{info.ControlName}";
+               }
+
+               return info.ControlName;
+            });
+            if (tokenClassNames.Any()) {
+               var classWriter = new TokenRegisterClassSourceWriter(context, tokenClassNames);
+               classWriter.Write();
+            }
+         }
       });
    }
 }

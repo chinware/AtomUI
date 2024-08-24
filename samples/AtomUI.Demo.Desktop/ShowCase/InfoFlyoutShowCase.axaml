@@ -35,14 +35,6 @@
                     </atom:FlyoutHost.Flyout>
                     <atom:Button>Hover me</atom:Button>
                 </atom:FlyoutHost>
-                <atom:FlyoutHost Trigger="Focus">
-                    <atom:FlyoutHost.Flyout>
-                        <atom:Flyout>
-                            <TextBlock Width="200" Height="100" Padding="20">The most basic example.</TextBlock>
-                        </atom:Flyout>
-                    </atom:FlyoutHost.Flyout>
-                    <atom:Button>Focus me</atom:Button>
-                </atom:FlyoutHost>
                 <atom:FlyoutHost Trigger="Click">
                     <atom:FlyoutHost.Flyout>
                         <atom:Flyout>

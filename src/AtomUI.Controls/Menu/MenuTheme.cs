@@ -55,21 +55,21 @@ public class MenuTheme : BaseControlTheme
    {
       var commonStyle = new Style(selector => selector.Nesting());
       commonStyle.Add(Menu.HorizontalAlignmentProperty, HorizontalAlignment.Left);
-      commonStyle.Add(Menu.BackgroundProperty, MenuResourceKey.MenuBgColor);
-      commonStyle.Add(Menu.BorderBrushProperty, GlobalResourceKey.ColorBorder);
+      commonStyle.Add(Menu.BackgroundProperty, MenuTokenResourceKey.MenuBgColor);
+      commonStyle.Add(Menu.BorderBrushProperty, GlobalTokenResourceKey.ColorBorder);
       var largeSizeType = new Style(selector => selector.Nesting().PropertyEquals(Menu.SizeTypeProperty, SizeType.Large));
-      largeSizeType.Add(Menu.MinHeightProperty, GlobalResourceKey.ControlHeightLG);
-      largeSizeType.Add(Menu.CornerRadiusProperty, GlobalResourceKey.BorderRadius);
+      largeSizeType.Add(Menu.MinHeightProperty, GlobalTokenResourceKey.ControlHeightLG);
+      largeSizeType.Add(Menu.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadius);
       commonStyle.Add(largeSizeType);
       
       var middleSizeType = new Style(selector => selector.Nesting().PropertyEquals(Menu.SizeTypeProperty, SizeType.Middle));
-      middleSizeType.Add(Menu.MinHeightProperty, GlobalResourceKey.ControlHeight);
-      middleSizeType.Add(Menu.CornerRadiusProperty, GlobalResourceKey.BorderRadius);
+      middleSizeType.Add(Menu.MinHeightProperty, GlobalTokenResourceKey.ControlHeight);
+      middleSizeType.Add(Menu.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadius);
       commonStyle.Add(middleSizeType);
       
       var smallSizeType = new Style(selector => selector.Nesting().PropertyEquals(Menu.SizeTypeProperty, SizeType.Small));
-      smallSizeType.Add(Menu.MinHeightProperty, GlobalResourceKey.ControlHeightSM);
-      smallSizeType.Add(Menu.CornerRadiusProperty, GlobalResourceKey.BorderRadiusSM);
+      smallSizeType.Add(Menu.MinHeightProperty, GlobalTokenResourceKey.ControlHeightSM);
+      smallSizeType.Add(Menu.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadiusSM);
       commonStyle.Add(smallSizeType);
       Add(commonStyle);
    }

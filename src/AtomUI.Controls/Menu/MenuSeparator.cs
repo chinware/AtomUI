@@ -26,7 +26,7 @@ public class MenuSeparator : AvaloniaSeparator
    {
       base.OnAttachedToVisualTree(e);
       if (!_initialized) {
-         TokenResourceBinder.CreateTokenBinding(this, LineWidthProperty, GlobalResourceKey.LineWidth, BindingPriority.Template,
+         TokenResourceBinder.CreateTokenBinding(this, LineWidthProperty, GlobalTokenResourceKey.LineWidth, BindingPriority.Template,
                                       new RenderScaleAwareDoubleConfigure(this));
          _initialized = true;
       }

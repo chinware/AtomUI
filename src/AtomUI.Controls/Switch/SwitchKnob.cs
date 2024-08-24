@@ -213,7 +213,7 @@ internal class SwitchKnob : Control, IControlCustomStyle
 
    void IControlCustomStyle.SetupTokenBindings()
    {
-      TokenResourceBinder.CreateTokenBinding(this, LoadingBgOpacityTokenProperty, ToggleSwitchResourceKey.SwitchDisabledOpacity);
+      TokenResourceBinder.CreateTokenBinding(this, LoadingBgOpacityTokenProperty, ToggleSwitchTokenResourceKey.SwitchDisabledOpacity);
       LoadingAnimationDuration = TimeSpan.FromMilliseconds(1200);
    }
    

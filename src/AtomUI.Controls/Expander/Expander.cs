@@ -166,9 +166,7 @@ public class Expander : AvaloniaExpander
    }
 
    #endregion
-
-   private bool _animating = false;
-   private bool _enableAnimation = true;
+   
    private AnimationTargetPanel? _animationTarget;
    private Border? _headerDecorator;
    private IconButton? _expandButton;
@@ -179,16 +177,13 @@ public class Expander : AvaloniaExpander
       _animationTarget = e.NameScope.Find<AnimationTargetPanel>(ExpanderTheme.ContentAnimationTargetPart);
       _headerDecorator = e.NameScope.Find<Border>(ExpanderTheme.HeaderDecoratorPart);
       _expandButton = e.NameScope.Find<IconButton>(ExpanderTheme.ExpandButtonPart);
-      TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, GlobalResourceKey.MotionDurationSlow);
-      TokenResourceBinder.CreateGlobalResourceBinding(this, BorderThicknessProperty, GlobalResourceKey.BorderThickness, 
+      TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, GlobalTokenResourceKey.MotionDurationSlow);
+      TokenResourceBinder.CreateGlobalResourceBinding(this, BorderThicknessProperty, GlobalTokenResourceKey.BorderThickness, 
                                                       BindingPriority.Template, new RenderScaleAwareThicknessConfigure(this));
-      // SetupHeaderLayout();
       SetupEffectiveBorderThickness();
       SetupExpanderBorderThickness();
       SetupIconButton();
-      _enableAnimation = false;
       HandleExpandedChanged();
-      _enableAnimation = true;
       if (_expandButton is not null) {
          _expandButton.Click += (sender, args) =>
          {
@@ -254,7 +249,7 @@ public class Expander : AvaloniaExpander
          {
             Kind = "RightOutlined"
          };
-         TokenResourceBinder.CreateGlobalTokenBinding(ExpandIcon, PathIcon.DisabledFilledBrushProperty, GlobalResourceKey.ColorTextDisabled);
+         TokenResourceBinder.CreateGlobalTokenBinding(ExpandIcon, PathIcon.DisabledFilledBrushProperty, GlobalTokenResourceKey.ColorTextDisabled);
       }
       UIStructureUtils.SetTemplateParent(ExpandIcon, this);
    }
@@ -266,7 +261,7 @@ public class Expander : AvaloniaExpander
          var position = e.GetPosition(_headerDecorator);
          if (_headerDecorator is not null) {
             var targetRect = new Rect(_headerDecorator.Bounds.Size);
-            if (targetRect.Contains(position) && !_animating) {
+            if (targetRect.Contains(position)) {
                IsExpanded = !IsExpanded;
             }
          }

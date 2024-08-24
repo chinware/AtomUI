@@ -20,59 +20,62 @@ using AvaloniaTabItem = Avalonia.Controls.TabItem;
 public class TabItem : AvaloniaTabItem, IControlCustomStyle, ICustomHitTest
 {
    #region 公共属性定义
-   public static readonly StyledProperty<SizeType> SizeTypeProperty =
-      BaseTabControl.SizeTypeProperty.AddOwner<TabItem>();
 
    public static readonly StyledProperty<PathIcon?> IconProperty =
       AvaloniaProperty.Register<TabItem, PathIcon?>(nameof(Icon));
-   
+
    public static readonly StyledProperty<PathIcon?> CloseIconProperty =
       AvaloniaProperty.Register<TabItem, PathIcon?>(nameof(CloseIcon));
-   
+
    public static readonly StyledProperty<bool> IsClosableProperty =
       AvaloniaProperty.Register<TabItem, bool>(nameof(IsClosable));
+
+   public PathIcon? Icon
+   {
+      get => GetValue(IconProperty);
+      set => SetValue(IconProperty, value);
+   }
+
+   public PathIcon? CloseIcon
+   {
+      get => GetValue(CloseIconProperty);
+      set => SetValue(CloseIconProperty, value);
+   }
+
+   public bool IsClosable
+   {
+      get => GetValue(IsClosableProperty);
+      set => SetValue(IsClosableProperty, value);
+   }
+
+   #endregion
+
+   #region 内部属性定义
+   
+   internal static readonly StyledProperty<SizeType> SizeTypeProperty =
+      BaseTabControl.SizeTypeProperty.AddOwner<TabItem>();
+
+   internal static readonly StyledProperty<TabSharp> ShapeProperty =
+      AvaloniaProperty.Register<TabItem, TabSharp>(nameof(Shape));
    
    public SizeType SizeType
    {
       get => GetValue(SizeTypeProperty);
       set => SetValue(SizeTypeProperty, value);
    }
-   
-   public PathIcon? Icon
-   {
-      get => GetValue(IconProperty);
-      set => SetValue(IconProperty, value);
-   }
-   
-   public PathIcon? CloseIcon
-   {
-      get => GetValue(CloseIconProperty);
-      set => SetValue(CloseIconProperty, value);
-   }
-   
-   public bool IsClosable
-   {
-      get => GetValue(IsClosableProperty);
-      set => SetValue(IsClosableProperty, value);
-   }
-   
-   #endregion
-   
-    #region 内部属性定义
-   internal static readonly StyledProperty<TabSharp> ShapeProperty =
-      AvaloniaProperty.Register<TabItem, TabSharp>(nameof(Shape));
-   
+
    public TabSharp Shape
    {
       get => GetValue(ShapeProperty);
       set => SetValue(ShapeProperty, value);
    }
+
    #endregion
 
    private StackPanel? _contentLayout;
    private IControlCustomStyle _customStyle;
    private IconButton? _closeButton;
-   
+
    public TabItem()
    {
       _customStyle = this;
@@ -84,11 +87,16 @@ public class TabItem : AvaloniaTabItem, IControlCustomStyle, ICustomHitTest
          UIStructureUtils.SetTemplateParent(Icon, this);
          Icon.Name = BaseTabItemTheme.ItemIconPart;
          if (Icon.ThemeType != IconThemeType.TwoTone) {
-            TokenResourceBinder.CreateTokenBinding(Icon, PathIcon.NormalFilledBrushProperty, TabControlResourceKey.ItemColor);
-            TokenResourceBinder.CreateTokenBinding(Icon, PathIcon.ActiveFilledBrushProperty, TabControlResourceKey.ItemHoverColor);
-            TokenResourceBinder.CreateTokenBinding(Icon, PathIcon.SelectedFilledBrushProperty, TabControlResourceKey.ItemSelectedColor);
-            TokenResourceBinder.CreateTokenBinding(Icon, PathIcon.DisabledFilledBrushProperty, GlobalResourceKey.ColorTextDisabled);
+            TokenResourceBinder.CreateTokenBinding(Icon, PathIcon.NormalFilledBrushProperty,
+                                                   TabControlTokenResourceKey.ItemColor);
+            TokenResourceBinder.CreateTokenBinding(Icon, PathIcon.ActiveFilledBrushProperty,
+                                                   TabControlTokenResourceKey.ItemHoverColor);
+            TokenResourceBinder.CreateTokenBinding(Icon, PathIcon.SelectedFilledBrushProperty,
+                                                   TabControlTokenResourceKey.ItemSelectedColor);
+            TokenResourceBinder.CreateTokenBinding(Icon, PathIcon.DisabledFilledBrushProperty,
+                                                   GlobalTokenResourceKey.ColorTextDisabled);
          }
+
          if (_contentLayout is not null) {
             _contentLayout.Children.Insert(0, Icon);
          }
@@ -102,17 +110,22 @@ public class TabItem : AvaloniaTabItem, IControlCustomStyle, ICustomHitTest
          {
             Kind = "CloseOutlined"
          };
-         TokenResourceBinder.CreateGlobalResourceBinding(CloseIcon, PathIcon.WidthProperty, GlobalResourceKey.IconSizeSM);
-         TokenResourceBinder.CreateGlobalResourceBinding(CloseIcon, PathIcon.HeightProperty, GlobalResourceKey.IconSizeSM);
+         TokenResourceBinder.CreateGlobalResourceBinding(CloseIcon, PathIcon.WidthProperty,
+                                                         GlobalTokenResourceKey.IconSizeSM);
+         TokenResourceBinder.CreateGlobalResourceBinding(CloseIcon, PathIcon.HeightProperty,
+                                                         GlobalTokenResourceKey.IconSizeSM);
       }
 
       CloseIcon.SetValue(PathIcon.VerticalAlignmentProperty, VerticalAlignment.Center);
-      
+
       UIStructureUtils.SetTemplateParent(CloseIcon, this);
       if (CloseIcon.ThemeType != IconThemeType.TwoTone) {
-         TokenResourceBinder.CreateTokenBinding(CloseIcon, PathIcon.NormalFilledBrushProperty, GlobalResourceKey.ColorIcon);
-         TokenResourceBinder.CreateTokenBinding(CloseIcon, PathIcon.ActiveFilledBrushProperty, GlobalResourceKey.ColorIconHover);
-         TokenResourceBinder.CreateTokenBinding(CloseIcon, PathIcon.DisabledFilledBrushProperty, GlobalResourceKey.ColorTextDisabled);
+         TokenResourceBinder.CreateTokenBinding(CloseIcon, PathIcon.NormalFilledBrushProperty,
+                                                GlobalTokenResourceKey.ColorIcon);
+         TokenResourceBinder.CreateTokenBinding(CloseIcon, PathIcon.ActiveFilledBrushProperty,
+                                                GlobalTokenResourceKey.ColorIconHover);
+         TokenResourceBinder.CreateTokenBinding(CloseIcon, PathIcon.DisabledFilledBrushProperty,
+                                                GlobalTokenResourceKey.ColorTextDisabled);
       }
    }
 
@@ -123,12 +136,12 @@ public class TabItem : AvaloniaTabItem, IControlCustomStyle, ICustomHitTest
    }
 
    #region IControlCustomStyle 实现
-   
+
    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
    {
       _contentLayout = scope.Find<StackPanel>(BaseTabItemTheme.ContentLayoutPart);
       _closeButton = scope.Find<IconButton>(BaseTabItemTheme.ItemCloseButtonPart);
-      
+
       SetupItemIcon();
       SetupCloseIcon();
       if (Transitions is null) {
@@ -141,6 +154,7 @@ public class TabItem : AvaloniaTabItem, IControlCustomStyle, ICustomHitTest
          _closeButton.Click += HandleCloseRequest;
       }
    }
+
    #endregion
 
    private void HandleCloseRequest(object? sender, RoutedEventArgs args)
@@ -153,6 +167,7 @@ public class TabItem : AvaloniaTabItem, IControlCustomStyle, ICustomHitTest
                if (selectedIndex != 0) {
                   newSelectedItem = tabControl.Items[--selectedIndex];
                }
+
                tabControl.Items.Remove(this);
                tabControl.SelectedItem = newSelectedItem;
             } else {
@@ -171,14 +186,17 @@ public class TabItem : AvaloniaTabItem, IControlCustomStyle, ICustomHitTest
             if (oldIcon != null) {
                UIStructureUtils.SetTemplateParent(oldIcon, null);
             }
+
             SetupItemIcon();
          }
-      } 
+      }
+
       if (change.Property == CloseIconProperty) {
          var oldIcon = change.GetOldValue<PathIcon?>();
          if (oldIcon != null) {
             UIStructureUtils.SetTemplateParent(oldIcon, null);
          }
+
          SetupCloseIcon();
       }
 
@@ -192,7 +210,7 @@ public class TabItem : AvaloniaTabItem, IControlCustomStyle, ICustomHitTest
       base.OnAttachedToLogicalTree(e);
       HandleShapeChanged();
    }
-   
+
    private void HandleShapeChanged()
    {
       if (Shape == TabSharp.Line) {

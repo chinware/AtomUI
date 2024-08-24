@@ -175,31 +175,31 @@ internal partial class DotBadgeAdorner : Control, IControlCustomStyle
    private void BuildBadgeColorStyle()
    {
       var commonStyle = new Style(selector => selector.OfType<DotBadgeAdorner>());
-      commonStyle.Add(BadgeTextMarginInlineProperty, GlobalResourceKey.MarginXS);
-      commonStyle.Add(BadgeDotColorProperty, BadgeResourceKey.BadgeColor);
-      commonStyle.Add(DotSizeProperty, BadgeResourceKey.DotSize);
-      commonStyle.Add(StatusSizeProperty, BadgeResourceKey.StatusSize);
-      commonStyle.Add(BadgeShadowSizeProperty, BadgeResourceKey.BadgeShadowSize);
-      commonStyle.Add(BadgeShadowColorProperty, BadgeResourceKey.BadgeShadowColor);
+      commonStyle.Add(BadgeTextMarginInlineProperty, GlobalTokenResourceKey.MarginXS);
+      commonStyle.Add(BadgeDotColorProperty, BadgeTokenResourceKey.BadgeColor);
+      commonStyle.Add(DotSizeProperty, BadgeTokenResourceKey.DotSize);
+      commonStyle.Add(StatusSizeProperty, BadgeTokenResourceKey.StatusSize);
+      commonStyle.Add(BadgeShadowSizeProperty, BadgeTokenResourceKey.BadgeShadowSize);
+      commonStyle.Add(BadgeShadowColorProperty, BadgeTokenResourceKey.BadgeShadowColor);
 
       var errorStatusStyle = new Style(selector => selector.Nesting().PropertyEquals(DotBadgeAdorner.StatusProperty, DotBadgeStatus.Error));
-      errorStatusStyle.Add(DotBadgeAdorner.BadgeDotColorProperty, GlobalResourceKey.ColorError);
+      errorStatusStyle.Add(DotBadgeAdorner.BadgeDotColorProperty, GlobalTokenResourceKey.ColorError);
       commonStyle.Add(errorStatusStyle);
       
       var successStatusStyle = new Style(selector => selector.Nesting().PropertyEquals(DotBadgeAdorner.StatusProperty, DotBadgeStatus.Success));
-      successStatusStyle.Add(DotBadgeAdorner.BadgeDotColorProperty, GlobalResourceKey.ColorSuccess);
+      successStatusStyle.Add(DotBadgeAdorner.BadgeDotColorProperty, GlobalTokenResourceKey.ColorSuccess);
       commonStyle.Add(successStatusStyle);
       
       var warningStatusStyle = new Style(selector => selector.Nesting().PropertyEquals(DotBadgeAdorner.StatusProperty, DotBadgeStatus.Warning));
-      warningStatusStyle.Add(DotBadgeAdorner.BadgeDotColorProperty, GlobalResourceKey.ColorWarning);
+      warningStatusStyle.Add(DotBadgeAdorner.BadgeDotColorProperty, GlobalTokenResourceKey.ColorWarning);
       commonStyle.Add(warningStatusStyle);
       
       var defaultStatusStyle = new Style(selector => selector.Nesting().PropertyEquals(DotBadgeAdorner.StatusProperty, DotBadgeStatus.Default));
-      defaultStatusStyle.Add(DotBadgeAdorner.BadgeDotColorProperty, GlobalResourceKey.ColorTextPlaceholder);
+      defaultStatusStyle.Add(DotBadgeAdorner.BadgeDotColorProperty, GlobalTokenResourceKey.ColorTextPlaceholder);
       commonStyle.Add(defaultStatusStyle);
       
       var processingStatusStyle = new Style(selector => selector.Nesting().PropertyEquals(DotBadgeAdorner.StatusProperty, DotBadgeStatus.Processing));
-      processingStatusStyle.Add(DotBadgeAdorner.BadgeDotColorProperty, GlobalResourceKey.ColorInfo);
+      processingStatusStyle.Add(DotBadgeAdorner.BadgeDotColorProperty, GlobalTokenResourceKey.ColorInfo);
       commonStyle.Add(processingStatusStyle);
       
       Styles.Add(commonStyle);

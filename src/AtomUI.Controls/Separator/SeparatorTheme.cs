@@ -43,12 +43,12 @@ internal class SeparatorTheme : BaseControlTheme
    protected override void BuildStyles()
    {
       // 默认的一些样式
-      this.Add(Separator.TitleColorProperty, GlobalResourceKey.ColorText);
-      this.Add(Separator.FontSizeProperty, GlobalResourceKey.FontSize);
-      this.Add(Separator.LineColorProperty, GlobalResourceKey.ColorSplit);
-      this.Add(Separator.TextPaddingInlineProperty, SeparatorResourceKey.TextPaddingInline);
-      this.Add(Separator.OrientationMarginPercentProperty, SeparatorResourceKey.OrientationMarginPercent);
-      this.Add(Separator.VerticalMarginInlineProperty, SeparatorResourceKey.VerticalMarginInline);
+      this.Add(Separator.TitleColorProperty, GlobalTokenResourceKey.ColorText);
+      this.Add(Separator.FontSizeProperty, GlobalTokenResourceKey.FontSize);
+      this.Add(Separator.LineColorProperty, GlobalTokenResourceKey.ColorSplit);
+      this.Add(Separator.TextPaddingInlineProperty, SeparatorTokenResourceKey.TextPaddingInline);
+      this.Add(Separator.OrientationMarginPercentProperty, SeparatorTokenResourceKey.OrientationMarginPercent);
+      this.Add(Separator.VerticalMarginInlineProperty, SeparatorTokenResourceKey.VerticalMarginInline);
 
       var titleSelector = default(Selector).Nesting().Template().OfType<Label>().Name(TitlePart);
       var horizontalStyle =

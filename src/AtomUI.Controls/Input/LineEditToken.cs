@@ -10,9 +10,13 @@ internal class LineEditToken : AbstractControlDesignToken
    public const string ID = "LineEdit";
    
    public LineEditToken()
-      : base(ID)
+      : this(ID)
    {
    }
+   
+   protected LineEditToken(string id)
+      : base(id)
+   {}
    
    /// <summary>
    /// 输入框内边距

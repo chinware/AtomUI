@@ -130,7 +130,7 @@ public class Alert : TemplatedControl, IControlCustomStyle
    
    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
    {
-      TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty, GlobalResourceKey.BorderThickness,
+      TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty, GlobalTokenResourceKey.BorderThickness,
                                    BindingPriority.Template,
                                    new RenderScaleAwareThicknessConfigure(this));
       SetupCloseButton();
@@ -152,8 +152,8 @@ public class Alert : TemplatedControl, IControlCustomStyle
          {
             Kind = "CloseOutlined",
          };
-         TokenResourceBinder.CreateTokenBinding(CloseIcon, PathIcon.NormalFilledBrushProperty, GlobalResourceKey.ColorIcon);
-         TokenResourceBinder.CreateTokenBinding(CloseIcon, PathIcon.ActiveFilledBrushProperty, GlobalResourceKey.ColorIconHover);
+         TokenResourceBinder.CreateTokenBinding(CloseIcon, PathIcon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorIcon);
+         TokenResourceBinder.CreateTokenBinding(CloseIcon, PathIcon.ActiveFilledBrushProperty, GlobalTokenResourceKey.ColorIconHover);
       }
    }
 

@@ -140,7 +140,7 @@ public class Collapse : SelectingItemsControl
    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
    {
       base.OnApplyTemplate(e);
-      TokenResourceBinder.CreateGlobalResourceBinding(this, BorderThicknessProperty, GlobalResourceKey.BorderThickness, 
+      TokenResourceBinder.CreateGlobalResourceBinding(this, BorderThicknessProperty, GlobalTokenResourceKey.BorderThickness, 
                                                       BindingPriority.Template, new RenderScaleAwareThicknessConfigure(this));
       SetupEffectiveBorderThickness();
       SetupSelectionMode();

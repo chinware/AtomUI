@@ -11,26 +11,29 @@
         <showcase:ShowCaseItem
             Title="Basic usage"
             Description="Basic usage example.">
-            <atom:LineEdit Watermark="Basic usage"/>
+            <atom:LineEdit Watermark="Basic usage" />
         </showcase:ShowCaseItem>
-        
+
         <showcase:ShowCaseItem
             Title="Three sizes of Input"
             Description="There are three sizes of an Input box: large (40px), default (32px) and small (24px).">
             <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
-              <atom:LineEdit Watermark="Large" SizeType="Large" InnerLeftContent="{atom:IconProvider Kind=UserOutlined}"/>
-              <atom:LineEdit Watermark="Middle" SizeType="Middle" InnerLeftContent="{atom:IconProvider Kind=UserOutlined}"/>
-              <atom:LineEdit Watermark="Small" SizeType="Small"  InnerLeftContent="{atom:IconProvider Kind=UserOutlined}"/>
-          </StackPanel>
+                <atom:LineEdit Watermark="Large" SizeType="Large"
+                               InnerLeftContent="{atom:IconProvider Kind=UserOutlined}" />
+                <atom:LineEdit Watermark="Middle" SizeType="Middle"
+                               InnerLeftContent="{atom:IconProvider Kind=UserOutlined}" />
+                <atom:LineEdit Watermark="Small" SizeType="Small"
+                               InnerLeftContent="{atom:IconProvider Kind=UserOutlined}" />
+            </StackPanel>
         </showcase:ShowCaseItem>
-        
+
         <showcase:ShowCaseItem
             Title="Variants"
             Description="Variants of Input.">
             <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:LineEdit Watermark="Outlined" StyleVariant="Outline"/>
-                <atom:LineEdit Watermark="Filled" StyleVariant="Filled"/>
-                <atom:LineEdit Watermark="Borderless" StyleVariant="Borderless"/>
+                <atom:LineEdit Watermark="Outlined" StyleVariant="Outline" />
+                <atom:LineEdit Watermark="Filled" StyleVariant="Filled" />
+                <atom:LineEdit Watermark="Borderless" StyleVariant="Borderless" />
             </StackPanel>
         </showcase:ShowCaseItem>
         
@@ -50,9 +53,7 @@
         <showcase:ShowCaseItem
             Title="With clear icon"
             Description="Input box with the remove icon, click the icon to delete everything.">
-            <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:LineEdit Watermark="input with clear icon" Width="400" HorizontalAlignment="Left" IsEnableClearButton="True"/>
-            </StackPanel>
+            <atom:LineEdit Watermark="input with clear icon" Width="400" HorizontalAlignment="Left" IsEnableClearButton="True"/>
         </showcase:ShowCaseItem>
         
         <showcase:ShowCaseItem
@@ -60,13 +61,13 @@
             Description="Input type of password.">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:LineEdit Watermark="input password"
-                               Width="400" 
+                               Width="400"
                                PasswordChar="*"
                                RevealPassword="False"
                                HorizontalAlignment="Left"
                                IsEnableRevealButton="True"/>
                 <atom:LineEdit Watermark="input password"
-                               Width="400" 
+                               Width="400"
                                PasswordChar="*"
                                RevealPassword="False"
                                HorizontalAlignment="Left"
@@ -95,10 +96,10 @@
                 <atom:LineEdit Watermark="Warning" Status="Warning"/>
                 <atom:LineEdit Watermark="Error with prefix" InnerLeftContent="{atom:IconProvider Kind=ClockCircleOutlined}" Status="Error"/>
                 <atom:LineEdit Watermark="Warning with prefix" InnerLeftContent="{atom:IconProvider Kind=ClockCircleOutlined}" Status="Warning"/>
-                
+        
                 <atom:LineEdit Watermark="Error" Status="Error" InnerLeftContent="{atom:IconProvider Kind=ClockCircleOutlined}" StyleVariant="Filled"/>
                 <atom:LineEdit Watermark="Warning" Status="Warning" InnerLeftContent="{atom:IconProvider Kind=ClockCircleOutlined}" StyleVariant="Filled"/>
-                                
+        
                 <atom:LineEdit Watermark="Error" Status="Error" InnerLeftContent="{atom:IconProvider Kind=ClockCircleOutlined}" StyleVariant="Borderless"/>
                 <atom:LineEdit Watermark="Warning" Status="Warning" InnerLeftContent="{atom:IconProvider Kind=ClockCircleOutlined}" StyleVariant="Borderless"/>
             </StackPanel>
@@ -110,27 +111,27 @@
             <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
                 <atom:SearchEdit Watermark="input search text" Width="400" HorizontalAlignment="Left"/>
                 <atom:SearchEdit Watermark="input search text" Width="400" HorizontalAlignment="Left" SearchButtonText="Search"/>
-                
+        
                 <atom:SearchEdit Watermark="input search text" Width="400" HorizontalAlignment="Left" SearchButtonStyle="Primary" SearchButtonText="Search"/>
                 <atom:SearchEdit Watermark="input search text" Width="400" HorizontalAlignment="Left" SearchButtonStyle="Primary" SearchButtonText="Search"/>
-                
-                <atom:SearchEdit Watermark="input search text" 
+        
+                <atom:SearchEdit Watermark="input search text"
                                  Width="400"
                                  HorizontalAlignment="Left"
                                  SearchButtonStyle="Primary"
                                  SearchButtonText="Search"
                                  IsEnableClearButton="True"
                                  SizeType="Large"/>
-                <atom:SearchEdit Watermark="input search text" 
+                <atom:SearchEdit Watermark="input search text"
                                  Width="400"
                                  HorizontalAlignment="Left"
-                                 SearchButtonStyle="Primary" 
+                                 SearchButtonStyle="Primary"
                                  SearchButtonText="搜索一下"
                                  InnerRightContent="{atom:IconProvider Kind=AudioOutlined, NormalFilledColor=#1677ff, Width=16, Height=16}"
                                  IsEnableClearButton="True"
                                  SizeType="Large"/>
             </StackPanel>
         </showcase:ShowCaseItem>
-        
+
     </showcase:ShowCasePanel>
 </UserControl>

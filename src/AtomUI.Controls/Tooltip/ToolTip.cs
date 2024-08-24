@@ -547,7 +547,7 @@ public class ToolTip : TemplatedControl,
       base.OnPropertyChanged(change);
       if (change.Property == ContentProperty) {
          if (_arrowDecoratedBox is not null) {
-            if (_arrowDecoratedBox.Child is TextBlock textBlock) {
+            if (_arrowDecoratedBox.Content is TextBlock textBlock) {
                if (change.NewValue is string text) {
                   textBlock.Text = text;
                }
@@ -637,7 +637,7 @@ public class ToolTip : TemplatedControl,
       
       SetPopupParent(_popup, control);
 
-      TokenResourceBinder.CreateTokenBinding(_popup, Popup.MaskShadowsProperty, GlobalResourceKey.BoxShadowsSecondary);
+      TokenResourceBinder.CreateTokenBinding(_popup, Popup.MaskShadowsProperty, GlobalTokenResourceKey.BoxShadowsSecondary);
       SetToolTipColor(control);
       
       var marginToAnchor = GetMarginToAnchor(control);

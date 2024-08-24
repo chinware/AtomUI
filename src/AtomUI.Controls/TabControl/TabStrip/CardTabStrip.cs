@@ -115,9 +115,9 @@ public class CardTabStrip : BaseTabStrip, IControlCustomStyle
    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
    {
       base.OnApplyTemplate(e);
-      TokenResourceBinder.CreateTokenBinding(this, CardBorderThicknessProperty, GlobalResourceKey.BorderThickness, BindingPriority.Template,
+      TokenResourceBinder.CreateTokenBinding(this, CardBorderThicknessProperty, GlobalTokenResourceKey.BorderThickness, BindingPriority.Template,
                                              new RenderScaleAwareThicknessConfigure(this));
-      TokenResourceBinder.CreateTokenBinding(this, CardSizeProperty, TabControlResourceKey.CardSize);
+      TokenResourceBinder.CreateTokenBinding(this, CardSizeProperty, TabControlTokenResourceKey.CardSize);
       _customStyle.HandleTemplateApplied(e.NameScope);
    }
 
@@ -154,11 +154,11 @@ public class CardTabStrip : BaseTabStrip, IControlCustomStyle
    private void HandleSizeTypeChanged()
    {
       if (SizeType == SizeType.Large) {
-         TokenResourceBinder.CreateGlobalResourceBinding(this, CardBorderRadiusSizeProperty, GlobalResourceKey.BorderRadiusLG);
+         TokenResourceBinder.CreateGlobalResourceBinding(this, CardBorderRadiusSizeProperty, GlobalTokenResourceKey.BorderRadiusLG);
       } else if (SizeType == SizeType.Middle) {
-         TokenResourceBinder.CreateGlobalResourceBinding(this, CardBorderRadiusSizeProperty, GlobalResourceKey.BorderRadius);
+         TokenResourceBinder.CreateGlobalResourceBinding(this, CardBorderRadiusSizeProperty, GlobalTokenResourceKey.BorderRadius);
       } else {
-         TokenResourceBinder.CreateGlobalResourceBinding(this, CardBorderRadiusSizeProperty, GlobalResourceKey.BorderRadiusSM);
+         TokenResourceBinder.CreateGlobalResourceBinding(this, CardBorderRadiusSizeProperty, GlobalTokenResourceKey.BorderRadiusSM);
       }
    }
 

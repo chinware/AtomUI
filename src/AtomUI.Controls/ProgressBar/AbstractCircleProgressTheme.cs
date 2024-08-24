@@ -7,7 +7,7 @@ using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
-public class AbstractCircleProgressTheme : AbstractProgressBarTheme
+internal class AbstractCircleProgressTheme : AbstractProgressBarTheme
 {
    public AbstractCircleProgressTheme(Type targetType) : base(targetType) {}
    
@@ -27,8 +27,8 @@ public class AbstractCircleProgressTheme : AbstractProgressBarTheme
          VerticalAlignment = VerticalAlignment.Center
       };
       exceptionCompletedIcon.RegisterInNameScope(scope);
-      TokenResourceBinder.CreateGlobalTokenBinding(exceptionCompletedIcon, PathIcon.NormalFilledBrushProperty, GlobalResourceKey.ColorError);
-      TokenResourceBinder.CreateGlobalTokenBinding(exceptionCompletedIcon, PathIcon.DisabledFilledBrushProperty, GlobalResourceKey.ControlItemBgActiveDisabled);
+      TokenResourceBinder.CreateGlobalTokenBinding(exceptionCompletedIcon, PathIcon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorError);
+      TokenResourceBinder.CreateGlobalTokenBinding(exceptionCompletedIcon, PathIcon.DisabledFilledBrushProperty, GlobalTokenResourceKey.ControlItemBgActiveDisabled);
       
       var successCompletedIcon = new PathIcon
       {
@@ -38,8 +38,8 @@ public class AbstractCircleProgressTheme : AbstractProgressBarTheme
          VerticalAlignment = VerticalAlignment.Center,
       };
       successCompletedIcon.RegisterInNameScope(scope);
-      TokenResourceBinder.CreateGlobalTokenBinding(successCompletedIcon, PathIcon.NormalFilledBrushProperty, GlobalResourceKey.ColorSuccess);
-      TokenResourceBinder.CreateGlobalTokenBinding(successCompletedIcon, PathIcon.DisabledFilledBrushProperty, GlobalResourceKey.ControlItemBgActiveDisabled);
+      TokenResourceBinder.CreateGlobalTokenBinding(successCompletedIcon, PathIcon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorSuccess);
+      TokenResourceBinder.CreateGlobalTokenBinding(successCompletedIcon, PathIcon.DisabledFilledBrushProperty, GlobalTokenResourceKey.ControlItemBgActiveDisabled);
       
       container.Children.Add(exceptionCompletedIcon);
       container.Children.Add(successCompletedIcon);
@@ -50,8 +50,8 @@ public class AbstractCircleProgressTheme : AbstractProgressBarTheme
       base.BuildStyles();
       
       var commonStyle = new Style(selector => selector.Nesting());
-      commonStyle.Add(AbstractCircleProgress.CircleMinimumTextFontSizeProperty, ProgressBarResourceKey.CircleMinimumTextFontSize);
-      commonStyle.Add(AbstractCircleProgress.CircleMinimumIconSizeProperty, ProgressBarResourceKey.CircleMinimumIconSize);
+      commonStyle.Add(AbstractCircleProgress.CircleMinimumTextFontSizeProperty, ProgressBarTokenResourceKey.CircleMinimumTextFontSize);
+      commonStyle.Add(AbstractCircleProgress.CircleMinimumIconSizeProperty, ProgressBarTokenResourceKey.CircleMinimumIconSize);
       {
          var labelStyle = new Style(selector => selector.Nesting().Template().OfType<Label>());
          labelStyle.Add(Label.HorizontalAlignmentProperty, HorizontalAlignment.Center);

@@ -3,7 +3,7 @@
 namespace AtomUI.Controls;
 
 [ControlThemeProvider]
-public class CircleProgressTheme : AbstractCircleProgressTheme
+internal class CircleProgressTheme : AbstractCircleProgressTheme
 {
    public CircleProgressTheme() : base(typeof(CircleProgress)) {}
 }

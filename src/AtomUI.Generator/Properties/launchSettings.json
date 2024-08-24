@@ -3,7 +3,7 @@
   "profiles": {
     "AtomUIGenerators": {
       "commandName": "DebugRoslynComponent",
-      "targetProject": "../AtomUI/AtomUI.csproj"
+      "targetProject": "../AtomUI.Theme/AtomUI.Theme.csproj"
     },
     "AtomUIControlsGenerators": {
       "commandName": "DebugRoslynComponent",

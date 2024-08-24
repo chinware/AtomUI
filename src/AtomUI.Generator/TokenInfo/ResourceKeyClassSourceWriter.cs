@@ -41,9 +41,9 @@ public class ResourceKeyClassSourceWriter
       return classSyntax;
    }
 
-   private FieldDeclarationSyntax BuildResourceKeyFieldSyntax(string name, string? value = null)
+   private FieldDeclarationSyntax BuildResourceKeyFieldSyntax(TokenName tokenName, string? value = null)
    {
-      value ??= name;
+      value ??= tokenName.Name;
       var modifiers = new List<SyntaxToken>()
       {
          SyntaxFactory.Token(SyntaxKind.PublicKeyword),
@@ -56,13 +56,23 @@ public class ResourceKeyClassSourceWriter
          SyntaxFactory.LiteralExpression(
             SyntaxKind.StringLiteralExpression,
             SyntaxFactory.Literal($"{value}")));
+      
+      var nsArgument = SyntaxFactory.Argument(
+         SyntaxFactory.LiteralExpression(
+            SyntaxKind.StringLiteralExpression,
+            SyntaxFactory.Literal($"{tokenName.ResourceCatalog}")));
 
       var resourceKeyInstanceExpr = SyntaxFactory.ObjectCreationExpression(resourceKeyType)
-                                                 .WithArgumentList(SyntaxFactory.ArgumentList(SyntaxFactory.SingletonSeparatedList(argument)));
+                                                 .WithArgumentList(SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList<ArgumentSyntax>(new SyntaxNodeOrToken[]
+                                                 {
+                                                    argument,
+                                                    SyntaxFactory.Token(SyntaxKind.CommaToken),
+                                                    nsArgument
+                                                 })));
       
       var fieldSyntax = SyntaxFactory.FieldDeclaration(SyntaxFactory.VariableDeclaration(resourceKeyType)
             .WithVariables(SyntaxFactory.SingletonSeparatedList(
-               SyntaxFactory.VariableDeclarator(name)
+               SyntaxFactory.VariableDeclarator(tokenName.Name)
                   .WithInitializer(
                      SyntaxFactory.EqualsValueClause(resourceKeyInstanceExpr)))))
          .AddModifiers(modifiers.ToArray());
@@ -83,12 +93,12 @@ public class ResourceKeyClassSourceWriter
    {
       var className = controlTokenInfo.ControlName;
       var tokenId = className.Replace("Token", "");
-      className = className.Replace("Token", "ResourceKey");
+      className = className + "ResourceKey";
       
       var controlClassSyntax = BuildClassSyntax(className);
       var resourceKeyFields = new List<MemberDeclarationSyntax>();
       foreach (var tokenName in controlTokenInfo.Tokens) {
-         resourceKeyFields.Add(BuildResourceKeyFieldSyntax(tokenName, $"{tokenId}.{tokenName}"));
+         resourceKeyFields.Add(BuildResourceKeyFieldSyntax(tokenName, $"{tokenId}.{tokenName.Name}"));
       }
 
       controlClassSyntax = controlClassSyntax.AddMembers(resourceKeyFields.ToArray());
@@ -97,7 +107,7 @@ public class ResourceKeyClassSourceWriter
 
    private ClassDeclarationSyntax BuildGlobalResourceKeyClassSyntax()
    {
-      var globalClassSyntax = BuildClassSyntax("GlobalResourceKey");
+      var globalClassSyntax = BuildClassSyntax("GlobalTokenResourceKey");
       // 添加全局的 Token 定义
       AddGlobalResourceKeyField(ref globalClassSyntax);
       return globalClassSyntax;

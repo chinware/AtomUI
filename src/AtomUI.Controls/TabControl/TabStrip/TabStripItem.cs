@@ -100,10 +100,10 @@ public class TabStripItem : AvaloniaTabStripItem, IControlCustomStyle, ICustomHi
          UIStructureUtils.SetTemplateParent(Icon, this);
          Icon.Name = BaseTabStripItemTheme.ItemIconPart;
          if (Icon.ThemeType != IconThemeType.TwoTone) {
-            TokenResourceBinder.CreateTokenBinding(Icon, PathIcon.NormalFilledBrushProperty, TabControlResourceKey.ItemColor);
-            TokenResourceBinder.CreateTokenBinding(Icon, PathIcon.ActiveFilledBrushProperty, TabControlResourceKey.ItemHoverColor);
-            TokenResourceBinder.CreateTokenBinding(Icon, PathIcon.SelectedFilledBrushProperty, TabControlResourceKey.ItemSelectedColor);
-            TokenResourceBinder.CreateTokenBinding(Icon, PathIcon.DisabledFilledBrushProperty, GlobalResourceKey.ColorTextDisabled);
+            TokenResourceBinder.CreateTokenBinding(Icon, PathIcon.NormalFilledBrushProperty, TabControlTokenResourceKey.ItemColor);
+            TokenResourceBinder.CreateTokenBinding(Icon, PathIcon.ActiveFilledBrushProperty, TabControlTokenResourceKey.ItemHoverColor);
+            TokenResourceBinder.CreateTokenBinding(Icon, PathIcon.SelectedFilledBrushProperty, TabControlTokenResourceKey.ItemSelectedColor);
+            TokenResourceBinder.CreateTokenBinding(Icon, PathIcon.DisabledFilledBrushProperty, GlobalTokenResourceKey.ColorTextDisabled);
          }
          if (_contentLayout is not null) {
             _contentLayout.Children.Insert(0, Icon);
@@ -118,17 +118,17 @@ public class TabStripItem : AvaloniaTabStripItem, IControlCustomStyle, ICustomHi
          {
             Kind = "CloseOutlined"
          };
-         TokenResourceBinder.CreateGlobalResourceBinding(CloseIcon, PathIcon.WidthProperty, GlobalResourceKey.IconSizeSM);
-         TokenResourceBinder.CreateGlobalResourceBinding(CloseIcon, PathIcon.HeightProperty, GlobalResourceKey.IconSizeSM);
+         TokenResourceBinder.CreateGlobalResourceBinding(CloseIcon, PathIcon.WidthProperty, GlobalTokenResourceKey.IconSizeSM);
+         TokenResourceBinder.CreateGlobalResourceBinding(CloseIcon, PathIcon.HeightProperty, GlobalTokenResourceKey.IconSizeSM);
       }
 
       CloseIcon.SetValue(PathIcon.VerticalAlignmentProperty, VerticalAlignment.Center);
       
       UIStructureUtils.SetTemplateParent(CloseIcon, this);
       if (CloseIcon.ThemeType != IconThemeType.TwoTone) {
-         TokenResourceBinder.CreateTokenBinding(CloseIcon, PathIcon.NormalFilledBrushProperty, GlobalResourceKey.ColorIcon);
-         TokenResourceBinder.CreateTokenBinding(CloseIcon, PathIcon.ActiveFilledBrushProperty, GlobalResourceKey.ColorIconHover);
-         TokenResourceBinder.CreateTokenBinding(CloseIcon, PathIcon.DisabledFilledBrushProperty, GlobalResourceKey.ColorTextDisabled);
+         TokenResourceBinder.CreateTokenBinding(CloseIcon, PathIcon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorIcon);
+         TokenResourceBinder.CreateTokenBinding(CloseIcon, PathIcon.ActiveFilledBrushProperty, GlobalTokenResourceKey.ColorIconHover);
+         TokenResourceBinder.CreateTokenBinding(CloseIcon, PathIcon.DisabledFilledBrushProperty, GlobalTokenResourceKey.ColorTextDisabled);
       }
    }
 

@@ -89,12 +89,48 @@ internal class PopupShadowLayer : LiteWindow, IShadowDecorator
    
    protected override Size MeasureOverride(Size availableSize)
    {
-      var content = _target?.Child;
-      Size size = default;
-      if (content is not null) {
-         size = content.DesiredSize;
+      if (_target is null) {
+         return default;
       }
+
+      var size = DetectShadowWindowSize(_target);
       return CalculateShadowRendererSize(size);
+   }
+
+   private Size DetectShadowWindowSize(Popup attachedPopup)
+   {
+      var targetWidth = 0d;
+      var targetHeight = 0d;
+      var content = attachedPopup.Child;
+      if (content is not null) {
+         targetWidth = content.DesiredSize.Width;
+         targetHeight = content.DesiredSize.Height;
+      }
+
+      if (!double.IsNaN(attachedPopup.Width)) {
+         targetWidth = attachedPopup.Width;
+      }
+      if (!double.IsNaN(attachedPopup.Height)) {
+         targetHeight = attachedPopup.Height;
+      }
+
+      if (!double.IsNaN(attachedPopup.MinWidth)) {
+         targetWidth = Math.Max(targetWidth, attachedPopup.MinWidth);
+      }
+
+      if (!double.IsNaN(attachedPopup.MaxWidth)) {
+         targetWidth = Math.Min(targetWidth, attachedPopup.MaxWidth);
+      }
+      
+      if (!double.IsNaN(attachedPopup.MinHeight)) {
+         targetHeight = Math.Max(targetHeight, attachedPopup.MinHeight);
+      }
+
+      if (!double.IsNaN(attachedPopup.MaxHeight)) {
+         targetHeight = Math.Min(targetHeight, attachedPopup.MaxHeight);
+      }
+
+      return new Size(targetWidth, targetHeight);
    }
 
    private void Open()
@@ -144,33 +180,38 @@ internal class PopupShadowLayer : LiteWindow, IShadowDecorator
 
    private void SetupShadowRenderer()
    {
-      if (_target?.Child is not null && _shadowRenderer is not null) {
-         // 理论上现在已经有大小了
-         var content = _target?.Child!;
-         _shadowRenderer.Shadows = MaskShadows;
-   
-         CornerRadius cornerRadius = default;
-         if (content is IShadowMaskInfoProvider shadowMaskInfoProvider) {
-            cornerRadius = shadowMaskInfoProvider.GetMaskCornerRadius();
-            var maskBounds = shadowMaskInfoProvider.GetMaskBounds();
-            var rendererSize = CalculateShadowRendererSize(maskBounds.Size);
-            Canvas.SetLeft(_shadowRenderer, maskBounds.Left);
-            Canvas.SetTop(_shadowRenderer, maskBounds.Top);
-            _shadowRenderer.Width = rendererSize.Width;
-            _shadowRenderer.Height = rendererSize.Height;
-         } else if (content is Border bordered) {
-            cornerRadius = bordered.CornerRadius;
-            var rendererSize = CalculateShadowRendererSize(content.DesiredSize);
-            _shadowRenderer.Width = rendererSize.Width;
-            _shadowRenderer.Height = rendererSize.Height;
-         } else if (content is TemplatedControl templatedControl) {
-            cornerRadius = templatedControl.CornerRadius;
-            var rendererSize = CalculateShadowRendererSize(templatedControl.DesiredSize);
-            _shadowRenderer.Width = rendererSize.Width;
-            _shadowRenderer.Height = rendererSize.Height;
+      if (_target is not null) {
+         if (_target?.Child is not null && _shadowRenderer is not null) {
+            // 理论上现在已经有大小了
+            var content = _target?.Child!;
+            var detectPopupWinSize = DetectShadowWindowSize(_target!);
+            _shadowRenderer.Shadows = MaskShadows;
+            CornerRadius cornerRadius = default;
+            if (content is IShadowMaskInfoProvider shadowMaskInfoProvider) {
+               cornerRadius = shadowMaskInfoProvider.GetMaskCornerRadius();
+               var maskBounds = shadowMaskInfoProvider.GetMaskBounds();
+               var rendererSize = CalculateShadowRendererSize(new Size(maskBounds.Width, maskBounds.Height));
+               Canvas.SetLeft(_shadowRenderer, maskBounds.Left);
+               Canvas.SetTop(_shadowRenderer, maskBounds.Top);
+               _shadowRenderer.Width = rendererSize.Width;
+               _shadowRenderer.Height = rendererSize.Height;
+            } else if (content is Border bordered) {
+               cornerRadius = bordered.CornerRadius;
+               var rendererSize = CalculateShadowRendererSize(new Size(Math.Max(detectPopupWinSize.Width, content.DesiredSize.Width),
+                                                                       Math.Max(detectPopupWinSize.Height, content.DesiredSize.Height)));
+               _shadowRenderer.Width = rendererSize.Width;
+               _shadowRenderer.Height = rendererSize.Height;
+            } else if (content is TemplatedControl templatedControl) {
+               cornerRadius = templatedControl.CornerRadius;
+               var rendererSize = CalculateShadowRendererSize(new Size(Math.Max(detectPopupWinSize.Width, templatedControl.DesiredSize.Width),
+                                                                       Math.Max(detectPopupWinSize.Height, templatedControl.DesiredSize.Height)));
+               _shadowRenderer.Width = rendererSize.Width;
+               _shadowRenderer.Height = rendererSize.Height;
+            }
+            _shadowRenderer.MaskCornerRadius = cornerRadius;
          }
-         _shadowRenderer.MaskCornerRadius = cornerRadius;
       }
+      
    }
 
    private Size CalculateShadowRendererSize(Size content)

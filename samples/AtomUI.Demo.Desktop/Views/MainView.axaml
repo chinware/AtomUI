@@ -54,6 +54,9 @@
             <TabItem Header="Button">
                 <showcases:ButtonShowCase />
             </TabItem>
+            <TabItem Header="DropdownButton">
+                <showcases:DropdownButtonShowCase />
+            </TabItem>
             <TabItem Header="RadioButton">
                 <showcases:RadioButtonShowCase />
             </TabItem>
@@ -111,8 +114,11 @@
             <TabItem Header="LineEdit">
                 <showcases:LineEditShowCase />
             </TabItem>
-            <TabItem Header="InputNumber">
-                <showcases:InputNumberShowCase />
+            <TabItem Header="NumberUpDown">
+                <showcases:NumberUpDownShowCase />
+            </TabItem>
+            <TabItem Header="ButtonSpinner">
+                <showcases:ButtonSpinnerShowCase />
             </TabItem>
             <TabItem Header="TitleBar">
                 <showcases:TitleBarShowCase />

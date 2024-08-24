@@ -1,7 +1,7 @@
-﻿using System.Reflection;
+﻿using System.Globalization;
+using System.Reflection;
 using AtomUI.Controls.MotionScene;
 using AtomUI.MotionScene;
-using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -18,16 +18,36 @@ public class ThemeManager : Styles, IThemeManager
    public const string THEME_DIR = "Themes";
    public const string DEFAULT_THEME_ID = "DaybreakBlueLight";
    public const string DEFAULT_THEME_RES_PATH = $"avares://AtomUI.Theme/Assets/{THEME_DIR}";
+   public static readonly CultureInfo DEFAULT_LANGUAGE = new CultureInfo(LanguageCode.zh_CN);
 
    private Theme? _activatedTheme;
    private Dictionary<string, Theme> _themePool;
    private List<string> _customThemeDirs;
    private List<string> _builtInThemeDirs;
-   private string DefaultThemeId { get; set; }
+   private ResourceDictionary? _controlThemeResources;
+   private Dictionary<CultureInfo, ResourceDictionary> _languages;
+   private List<ILanguageProvider>? _languageProviders;
 
    public ITheme? ActivatedTheme => _activatedTheme;
    public IReadOnlyList<string> CustomThemeDirs => _customThemeDirs;
    public static ThemeManager Current { get; }
+   public string DefaultThemeId { get; set; }
+   internal List<Type> ControlTokenTypes { get; set; }
+
+   private CultureInfo? _cultureInfo;
+
+   public CultureInfo? CultureInfo
+   {
+      get => _cultureInfo;
+      set
+      {
+         _cultureInfo = value;
+         var languageResource = TryGetLanguageResource(value ?? DEFAULT_LANGUAGE);
+         foreach (var entry in languageResource) {
+            Resources.Add(entry);
+         }
+      }
+   }
 
    public event EventHandler<ThemeOperateEventArgs>? ThemeCreatedEvent;
    public event EventHandler<ThemeOperateEventArgs>? ThemeAboutToLoadEvent;
@@ -52,6 +72,10 @@ public class ThemeManager : Styles, IThemeManager
          Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), THEME_DIR)
       };
       DefaultThemeId = DEFAULT_THEME_ID;
+      _controlThemeResources = new ResourceDictionary();
+      ControlTokenTypes = new List<Type>();
+      _languageProviders = new List<ILanguageProvider>();
+      _languages = new Dictionary<CultureInfo, ResourceDictionary>();
    }
 
    public IReadOnlyCollection<ITheme> AvailableThemes
@@ -177,6 +201,15 @@ public class ThemeManager : Styles, IThemeManager
       // TODO 如果这里为空的化需要记录一个日志
    }
 
+   private ResourceDictionary TryGetLanguageResource(CultureInfo locale)
+   {
+      if (_languages.TryGetValue(locale, out var resource)) {
+         return resource;
+      }
+
+      return _languages[DEFAULT_LANGUAGE];
+   }
+
    public void AddCustomThemePaths(IList<string> paths)
    {
       foreach (var path in paths) {
@@ -225,21 +258,32 @@ public class ThemeManager : Styles, IThemeManager
       // 收集控件全局初始化接口
       InvokeBootstrapInitializers();
       RegisterControlThemes();
+      BuildLanguageResources();
+   }
+
+   private void BuildLanguageResources()
+   {
+      if (_languageProviders is not null) {
+         foreach (var languageProvider in _languageProviders) {
+            var culture = new CultureInfo(languageProvider.LangCode);
+            if (!_languages.ContainsKey(culture)) {
+               _languages[culture] = new ResourceDictionary();
+            }
+
+            var resourceDictionary = _languages[culture];
+            languageProvider.BuildResourceDictionary(resourceDictionary);
+         }
+
+         _languageProviders = null;
+      }
    }
 
    internal void InvokeBootstrapInitializers()
    {
-      // 暂时就初始化自己的
-      var assemblies = Assembly.GetEntryAssembly()?.GetReferencedAssemblies().Where(assembly =>
-      {
-         if (assembly.Name is null) {
-            return false;
-         }
-
-         return assembly.Name.StartsWith("AtomUI.Controls");
-      }).Select(assemblyName => Assembly.Load(assemblyName));
+      var assemblies = Assembly.GetEntryAssembly()?.GetReferencedAssemblies()
+                               .Select(assemblyName => Assembly.Load(assemblyName));
       var initializers = assemblies?.SelectMany(assembly => assembly.GetTypes())
-                                   .Where(type => typeof(IBootstrapInitializer).IsAssignableFrom(type))
+                                   .Where(type => type.IsClass && typeof(IBootstrapInitializer).IsAssignableFrom(type))
                                    .Select(type => (IBootstrapInitializer)Activator.CreateInstance(type)!);
       if (initializers is not null) {
          foreach (var initializer in initializers) {
@@ -250,23 +294,28 @@ public class ThemeManager : Styles, IThemeManager
 
    internal void RegisterControlThemes()
    {
-      var controlThemeProviders = Assembly.GetEntryAssembly()?
-                                          .GetReferencedAssemblies().Select(assemblyName => Assembly.Load(assemblyName))
-                                          .SelectMany(assembly => assembly.GetTypes())
-                                          .Where(type => type.IsDefined(typeof(ControlThemeProviderAttribute)) && typeof(BaseControlTheme).IsAssignableFrom(type))
-                                          .Select(type => Activator.CreateInstance(type));
-      var resources = new ResourceDictionary();
-      if (controlThemeProviders is not null) {
-         foreach (var item in controlThemeProviders) {
-            if (item is BaseControlTheme controlTheme) {
-               controlTheme.Build();
-               object? resourceKey = controlTheme.ThemeResourceKey();
-               resourceKey ??= controlTheme.TargetType!;
-               resources.Add(resourceKey, controlTheme);
-            }
-         }
+      if (_controlThemeResources is not null) {
+         Resources.MergedDictionaries.Add(_controlThemeResources);
+         _controlThemeResources = null;
       }
-      Resources.MergedDictionaries.Add(resources);
+   }
+
+   public void RegisterControlTheme(BaseControlTheme controlTheme)
+   {
+      controlTheme.Build();
+      object? resourceKey = controlTheme.ThemeResourceKey();
+      resourceKey ??= controlTheme.TargetType!;
+      _controlThemeResources?.Add(resourceKey, controlTheme);
+   }
+
+   public void RegisterLanguageProvider(ILanguageProvider languageProvider)
+   {
+      _languageProviders?.Add(languageProvider);
+   }
+
+   public void RegisterControlTokenType(Type tokenType)
+   {
+      ControlTokenTypes.Add(tokenType);
    }
 
    private void RegisterServices()

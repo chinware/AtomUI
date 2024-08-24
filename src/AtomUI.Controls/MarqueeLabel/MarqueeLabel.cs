@@ -4,7 +4,6 @@ using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Layout;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.Threading;
@@ -123,8 +122,8 @@ public class MarqueeLabel : TextBlock,
 
    void IControlCustomStyle.SetupTokenBindings()
    {
-      TokenResourceBinder.CreateTokenBinding(this, CycleSpaceProperty, MarqueeLabelResourceKey.CycleSpace);
-      TokenResourceBinder.CreateTokenBinding(this, MoveSpeedProperty, MarqueeLabelResourceKey.DefaultSpeed);
+      TokenResourceBinder.CreateTokenBinding(this, CycleSpaceProperty, MarqueeLabelTokenResourceKey.CycleSpace);
+      TokenResourceBinder.CreateTokenBinding(this, MoveSpeedProperty, MarqueeLabelTokenResourceKey.DefaultSpeed);
    }
 
    void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)

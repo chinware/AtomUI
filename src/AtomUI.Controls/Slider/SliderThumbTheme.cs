@@ -16,22 +16,22 @@ internal class SliderThumbTheme : BaseControlTheme
    {
       var commonStyle = new Style(selector => selector.Nesting());
       commonStyle.Add(SliderThumb.FocusableProperty, true);
-      commonStyle.Add(SliderThumb.BackgroundProperty, GlobalResourceKey.ColorBgContainer);
-      commonStyle.Add(SliderThumb.BorderThicknessProperty, SliderResourceKey.ThumbCircleBorderThickness);
-      commonStyle.Add(SliderThumb.BorderBrushProperty, SliderResourceKey.ThumbCircleBorderColor);
-      commonStyle.Add(SliderThumb.OutlineBrushProperty, SliderResourceKey.ThumbOutlineColor);
+      commonStyle.Add(SliderThumb.BackgroundProperty, GlobalTokenResourceKey.ColorBgContainer);
+      commonStyle.Add(SliderThumb.BorderThicknessProperty, SliderTokenResourceKey.ThumbCircleBorderThickness);
+      commonStyle.Add(SliderThumb.BorderBrushProperty, SliderTokenResourceKey.ThumbCircleBorderColor);
+      commonStyle.Add(SliderThumb.OutlineBrushProperty, SliderTokenResourceKey.ThumbOutlineColor);
       commonStyle.Add(SliderThumb.OutlineThicknessProperty, new Thickness(0));
-      commonStyle.Add(SliderThumb.ThumbCircleSizeProperty, SliderResourceKey.ThumbCircleSize);
-      commonStyle.Add(SliderThumb.WidthProperty, SliderResourceKey.ThumbSize);
-      commonStyle.Add(SliderThumb.HeightProperty, SliderResourceKey.ThumbSize);
+      commonStyle.Add(SliderThumb.ThumbCircleSizeProperty, SliderTokenResourceKey.ThumbCircleSize);
+      commonStyle.Add(SliderThumb.WidthProperty, SliderTokenResourceKey.ThumbSize);
+      commonStyle.Add(SliderThumb.HeightProperty, SliderTokenResourceKey.ThumbSize);
       commonStyle.Add(SliderThumb.ZIndexProperty, SliderThumb.NormalZIndex);
 
       var hoverOrFocusStyle = new Style(selector => Selectors.Or(selector.Nesting().Class(StdPseudoClass.PointerOver),
                                                                  selector.Nesting().Class(StdPseudoClass.Focus)));
-      hoverOrFocusStyle.Add(SliderThumb.BorderThicknessProperty, SliderResourceKey.ThumbCircleBorderThicknessHover);
-      hoverOrFocusStyle.Add(SliderThumb.BorderBrushProperty, SliderResourceKey.ThumbCircleBorderActiveColor);
-      hoverOrFocusStyle.Add(SliderThumb.ThumbCircleSizeProperty, SliderResourceKey.ThumbCircleSizeHover);
-      hoverOrFocusStyle.Add(SliderThumb.OutlineThicknessProperty, SliderResourceKey.ThumbOutlineThickness);
+      hoverOrFocusStyle.Add(SliderThumb.BorderThicknessProperty, SliderTokenResourceKey.ThumbCircleBorderThicknessHover);
+      hoverOrFocusStyle.Add(SliderThumb.BorderBrushProperty, SliderTokenResourceKey.ThumbCircleBorderActiveColor);
+      hoverOrFocusStyle.Add(SliderThumb.ThumbCircleSizeProperty, SliderTokenResourceKey.ThumbCircleSizeHover);
+      hoverOrFocusStyle.Add(SliderThumb.OutlineThicknessProperty, SliderTokenResourceKey.ThumbOutlineThickness);
       commonStyle.Add(hoverOrFocusStyle);
       
       var focusStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Focus));

@@ -1,4 +1,9 @@
-﻿using Avalonia;
+﻿using AtomUI.Theme.Data;
+using AtomUI.Theme.Styling;
+using AtomUI.Utils;
+using Avalonia;
+using Avalonia.Controls.Primitives;
+using Avalonia.Data;
 
 namespace AtomUI.Controls;
 
@@ -30,24 +35,12 @@ public class SearchEdit : LineEdit
       set => SetValue(SearchButtonTextProperty, value);
    }
    #endregion
-
-   private Rect? _originRect;
    
-   protected override void NotifyAddOnBorderInfoCalculated()
+   protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
    {
-      RightAddOnBorderThickness = BorderThickness;
-   }
-
-   protected override Size ArrangeOverride(Size finalSize)
-   {
-      var size = base.ArrangeOverride(finalSize);
-      if (_originRect is null) {
-         _originRect = _rightAddOnPresenter?.Bounds;
-      }
-      if (_rightAddOnPresenter is not null && _originRect.HasValue) {
-         _rightAddOnPresenter.Arrange(_originRect.Value.Inflate(new Thickness(1, 0, 0, 0)));
-      }
-
-      return size;
+      base.OnApplyTemplate(e);
+      TokenResourceBinder.CreateGlobalResourceBinding(this, BorderThicknessProperty, GlobalTokenResourceKey.BorderThickness,
+                                                      BindingPriority.Template,
+                                                      new RenderScaleAwareThicknessConfigure(this));
    }
 }

@@ -45,8 +45,8 @@ internal class MenuScrollViewerTheme : BaseControlTheme
             RenderTransform = null
          };
          CreateTemplateParentBinding(scrollUpButton, IconButton.CommandProperty, nameof(MenuScrollViewer.LineUp));
-         TokenResourceBinder.CreateTokenBinding(scrollUpButton.Icon, PathIcon.WidthProperty, MenuResourceKey.ScrollButtonIconSize);
-         TokenResourceBinder.CreateTokenBinding(scrollUpButton.Icon, PathIcon.HeightProperty, MenuResourceKey.ScrollButtonIconSize);
+         TokenResourceBinder.CreateTokenBinding(scrollUpButton.Icon, PathIcon.WidthProperty, MenuTokenResourceKey.ScrollButtonIconSize);
+         TokenResourceBinder.CreateTokenBinding(scrollUpButton.Icon, PathIcon.HeightProperty, MenuTokenResourceKey.ScrollButtonIconSize);
          DockPanel.SetDock(scrollUpButton, Dock.Top);
          var scrollDownButton = new IconButton()
          {
@@ -61,8 +61,8 @@ internal class MenuScrollViewerTheme : BaseControlTheme
             RenderTransform = null
          };
          CreateTemplateParentBinding(scrollDownButton, IconButton.CommandProperty, nameof(MenuScrollViewer.LineDown));
-         TokenResourceBinder.CreateTokenBinding(scrollDownButton.Icon, PathIcon.WidthProperty, MenuResourceKey.ScrollButtonIconSize);
-         TokenResourceBinder.CreateTokenBinding(scrollDownButton.Icon, PathIcon.HeightProperty, MenuResourceKey.ScrollButtonIconSize);
+         TokenResourceBinder.CreateTokenBinding(scrollDownButton.Icon, PathIcon.WidthProperty, MenuTokenResourceKey.ScrollButtonIconSize);
+         TokenResourceBinder.CreateTokenBinding(scrollDownButton.Icon, PathIcon.HeightProperty, MenuTokenResourceKey.ScrollButtonIconSize);
          DockPanel.SetDock(scrollDownButton, Dock.Bottom);
 
          var scrollViewContent = CreateScrollContentPresenter(viewer);
@@ -110,15 +110,15 @@ internal class MenuScrollViewerTheme : BaseControlTheme
    {
       {
          var iconButtonStyle = new Style(selector => selector.Nesting().Template().OfType<IconButton>());
-         iconButtonStyle.Add(IconButton.PaddingProperty, MenuResourceKey.ScrollButtonPadding);
-         iconButtonStyle.Add(IconButton.MarginProperty, MenuResourceKey.ScrollButtonMargin);
-         iconButtonStyle.Add(IconButton.BackgroundProperty, GlobalResourceKey.ColorTransparent);
+         iconButtonStyle.Add(IconButton.PaddingProperty, MenuTokenResourceKey.ScrollButtonPadding);
+         iconButtonStyle.Add(IconButton.MarginProperty, MenuTokenResourceKey.ScrollButtonMargin);
+         iconButtonStyle.Add(IconButton.BackgroundProperty, GlobalTokenResourceKey.ColorTransparent);
          Add(iconButtonStyle);
       }
       
       {
          var iconButtonStyle = new Style(selector => selector.Nesting().Template().OfType<IconButton>().Class(StdPseudoClass.PointerOver));
-         iconButtonStyle.Add(IconButton.BackgroundProperty, MenuResourceKey.ItemHoverBg);
+         iconButtonStyle.Add(IconButton.BackgroundProperty, MenuTokenResourceKey.ItemHoverBg);
          Add(iconButtonStyle);
       }
 

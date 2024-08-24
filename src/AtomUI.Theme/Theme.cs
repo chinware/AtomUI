@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using AtomUI.Theme.Styling;
+﻿using AtomUI.Theme.Styling;
 using AtomUI.Theme.TokenSystem;
 using Avalonia.Controls;
 using Avalonia.Styling;
@@ -142,7 +141,7 @@ public abstract class Theme : ITheme
             (controlToken as AbstractControlDesignToken)!.IsCustomTokenConfig = true;
             (controlToken as AbstractControlDesignToken)!.CustomTokens = controlTokenInfo.ControlTokens.Keys.ToList();
          }
-
+      
          foreach (var controlToken in _controlTokens.Values) {
             (controlToken as AbstractControlDesignToken)!.CalculateFromAlias();
             if (controlTokenConfig.ContainsKey(controlToken.Id)) {
@@ -192,21 +191,10 @@ public abstract class Theme : ITheme
    protected void CollectControlTokens()
    {
       _controlTokens.Clear();
-      // TODO 先简单用字符串过滤
-      var assemblies = Assembly.GetEntryAssembly()?.GetReferencedAssemblies().Where(assembly =>
-      {
-         if (assembly.Name is null) {
-            return false;
-         }
-         return assembly.Name.StartsWith("AtomUI");
-      }).Select(assemblyName => Assembly.Load(assemblyName));
-      var allTypes = assemblies?.SelectMany(assembly => assembly.GetTypes());
-      if (allTypes is not null) {
-         var controlTokenTypes = allTypes.Where(type =>
-                                                   type.IsDefined(typeof(ControlDesignTokenAttribute)) &&
-                                                   typeof(AbstractControlDesignToken).IsAssignableFrom(type));
-         var controlTokens = controlTokenTypes.Select(type => (AbstractControlDesignToken)Activator.CreateInstance(type)!);
-         foreach (var controlToken in controlTokens) {
+      var controlTokenTypes = ThemeManager.Current.ControlTokenTypes;
+      foreach (var tokenType in controlTokenTypes) {
+         var obj = Activator.CreateInstance(tokenType);
+         if (obj is AbstractControlDesignToken controlToken) {
             _controlTokens.Add(controlToken.Id, controlToken);
          }
       }

@@ -60,7 +60,7 @@ internal class BaseOverflowMenuItemTheme : BaseControlTheme
          };
          
          Grid.SetColumn(itemTextPresenter, 0);
-         TokenResourceBinder.CreateTokenBinding(itemTextPresenter, ContentPresenter.MarginProperty, MenuResourceKey.ItemMargin);
+         TokenResourceBinder.CreateTokenBinding(itemTextPresenter, ContentPresenter.MarginProperty, MenuTokenResourceKey.ItemMargin);
          CreateTemplateParentBinding(itemTextPresenter, ContentPresenter.ContentProperty, BaseOverflowMenuItem.HeaderProperty);
          CreateTemplateParentBinding(itemTextPresenter, ContentPresenter.ContentTemplateProperty, BaseOverflowMenuItem.HeaderTemplateProperty);
 
@@ -83,11 +83,11 @@ internal class BaseOverflowMenuItemTheme : BaseControlTheme
 
 
          CreateTemplateParentBinding(closeButton, IconButton.IsVisibleProperty, BaseOverflowMenuItem.IsClosableProperty);
-         TokenResourceBinder.CreateGlobalTokenBinding(menuCloseIcon, PathIcon.NormalFilledBrushProperty, GlobalResourceKey.ColorIcon);
-         TokenResourceBinder.CreateGlobalTokenBinding(menuCloseIcon, PathIcon.ActiveFilledBrushProperty, GlobalResourceKey.ColorIconHover);
+         TokenResourceBinder.CreateGlobalTokenBinding(menuCloseIcon, PathIcon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorIcon);
+         TokenResourceBinder.CreateGlobalTokenBinding(menuCloseIcon, PathIcon.ActiveFilledBrushProperty, GlobalTokenResourceKey.ColorIconHover);
          
-         TokenResourceBinder.CreateGlobalTokenBinding(menuCloseIcon, PathIcon.WidthProperty, GlobalResourceKey.IconSizeSM);
-         TokenResourceBinder.CreateGlobalTokenBinding(menuCloseIcon, PathIcon.HeightProperty, GlobalResourceKey.IconSizeSM);
+         TokenResourceBinder.CreateGlobalTokenBinding(menuCloseIcon, PathIcon.WidthProperty, GlobalTokenResourceKey.IconSizeSM);
+         TokenResourceBinder.CreateGlobalTokenBinding(menuCloseIcon, PathIcon.HeightProperty, GlobalTokenResourceKey.IconSizeSM);
          
          Grid.SetColumn(menuCloseIcon, 4);
          closeButton.RegisterInNameScope(scope);
@@ -110,22 +110,22 @@ internal class BaseOverflowMenuItemTheme : BaseControlTheme
 
    private void BuildCommonStyle(Style commonStyle)
    {
-      commonStyle.Add(BaseOverflowMenuItem.ForegroundProperty, MenuResourceKey.ItemColor);
+      commonStyle.Add(BaseOverflowMenuItem.ForegroundProperty, MenuTokenResourceKey.ItemColor);
       {
          var borderStyle = new Style(selector => selector.Nesting().Template().Name(ItemDecoratorPart));
-         borderStyle.Add(Border.MinHeightProperty, MenuResourceKey.ItemHeight);
-         borderStyle.Add(Border.PaddingProperty, MenuResourceKey.ItemPaddingInline);
-         borderStyle.Add(Border.BackgroundProperty, MenuResourceKey.ItemBg);
-         borderStyle.Add(Border.CornerRadiusProperty, MenuResourceKey.ItemBorderRadius);
+         borderStyle.Add(Border.MinHeightProperty, MenuTokenResourceKey.ItemHeight);
+         borderStyle.Add(Border.PaddingProperty, MenuTokenResourceKey.ItemPaddingInline);
+         borderStyle.Add(Border.BackgroundProperty, MenuTokenResourceKey.ItemBg);
+         borderStyle.Add(Border.CornerRadiusProperty, MenuTokenResourceKey.ItemBorderRadius);
          commonStyle.Add(borderStyle);
       }
       
       // Hover 状态
       var hoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
-      hoverStyle.Add(BaseOverflowMenuItem.ForegroundProperty, MenuResourceKey.ItemHoverColor);
+      hoverStyle.Add(BaseOverflowMenuItem.ForegroundProperty, MenuTokenResourceKey.ItemHoverColor);
       {
          var borderStyle = new Style(selector => selector.Nesting().Template().Name(ItemDecoratorPart));
-         borderStyle.Add(Border.BackgroundProperty, MenuResourceKey.ItemHoverBg);
+         borderStyle.Add(Border.BackgroundProperty, MenuTokenResourceKey.ItemHoverBg);
          hoverStyle.Add(borderStyle);
       }
       commonStyle.Add(hoverStyle);
@@ -134,7 +134,7 @@ internal class BaseOverflowMenuItemTheme : BaseControlTheme
    private void BuildDisabledStyle()
    {
       var disabledStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Disabled));
-      disabledStyle.Add(BaseOverflowMenuItem.ForegroundProperty, MenuResourceKey.ItemDisabledColor);
+      disabledStyle.Add(BaseOverflowMenuItem.ForegroundProperty, MenuTokenResourceKey.ItemDisabledColor);
       Add(disabledStyle);
    }
    

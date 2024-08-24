@@ -21,13 +21,13 @@ internal class TagTheme : BaseControlTheme
    
    protected override void BuildStyles()
    {
-      this.Add(Tag.BackgroundProperty, TagResourceKey.DefaultBg);
-      this.Add(Tag.ForegroundProperty, TagResourceKey.DefaultColor);
-      this.Add(Tag.FontSizeProperty, TagResourceKey.TagFontSize);
-      this.Add(Tag.PaddingProperty, TagResourceKey.TagPadding);
-      this.Add(Tag.BorderBrushProperty, GlobalResourceKey.ColorBorder);
-      this.Add(Tag.CornerRadiusProperty, GlobalResourceKey.BorderRadiusSM);
-      this.Add(Tag.TagTextPaddingInlineProperty, TagResourceKey.TagTextPaddingInline);
+      this.Add(Tag.BackgroundProperty, TagTokenResourceKey.DefaultBg);
+      this.Add(Tag.ForegroundProperty, TagTokenResourceKey.DefaultColor);
+      this.Add(Tag.FontSizeProperty, TagTokenResourceKey.TagFontSize);
+      this.Add(Tag.PaddingProperty, TagTokenResourceKey.TagPadding);
+      this.Add(Tag.BorderBrushProperty, GlobalTokenResourceKey.ColorBorder);
+      this.Add(Tag.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadiusSM);
+      this.Add(Tag.TagTextPaddingInlineProperty, TagTokenResourceKey.TagTextPaddingInline);
    }
 
    protected override IControlTemplate BuildControlTemplate()
@@ -55,10 +55,10 @@ internal class TagTheme : BaseControlTheme
          };
          closeBtn.RegisterInNameScope(scope);
       
-         TokenResourceBinder.CreateTokenBinding(closeBtn, IconButton.WidthProperty, GlobalResourceKey.IconSizeSM);
-         TokenResourceBinder.CreateTokenBinding(closeBtn, IconButton.HeightProperty, GlobalResourceKey.IconSizeSM);
-         TokenResourceBinder.CreateTokenBinding(textBlock, TextBlock.HeightProperty, TagResourceKey.TagLineHeight);
-         TokenResourceBinder.CreateTokenBinding(textBlock, TextBlock.LineHeightProperty, TagResourceKey.TagLineHeight);
+         TokenResourceBinder.CreateTokenBinding(closeBtn, IconButton.WidthProperty, GlobalTokenResourceKey.IconSizeSM);
+         TokenResourceBinder.CreateTokenBinding(closeBtn, IconButton.HeightProperty, GlobalTokenResourceKey.IconSizeSM);
+         TokenResourceBinder.CreateTokenBinding(textBlock, TextBlock.HeightProperty, TagTokenResourceKey.TagLineHeight);
+         TokenResourceBinder.CreateTokenBinding(textBlock, TextBlock.LineHeightProperty, TagTokenResourceKey.TagLineHeight);
 
          CreateTemplateParentBinding(closeBtn, IconButton.IsVisibleProperty, Tag.IsClosableProperty);
          CreateTemplateParentBinding(closeBtn, IconButton.IconProperty, Tag.CloseIconProperty);
