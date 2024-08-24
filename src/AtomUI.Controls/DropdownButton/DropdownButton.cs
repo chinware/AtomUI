@@ -15,14 +15,12 @@ using Avalonia.Threading;
 
 namespace AtomUI.Controls;
 
-using FlyoutControl = Flyout;
-
 public class DropdownButton : Button
 {
    #region 公共属性定义
 
-   public static readonly StyledProperty<FlyoutControl?> DropdownFlyoutProperty =
-      AvaloniaProperty.Register<DropdownButton, FlyoutControl?>(nameof(DropdownFlyout));
+   public static readonly StyledProperty<MenuFlyout?> DropdownFlyoutProperty =
+      AvaloniaProperty.Register<DropdownButton, MenuFlyout?>(nameof(DropdownFlyout));
 
    public static readonly StyledProperty<FlyoutTriggerType> TriggerTypeProperty =
       AvaloniaProperty.Register<DropdownButton, FlyoutTriggerType>(nameof(TriggerType), FlyoutTriggerType.Click);
@@ -51,7 +49,7 @@ public class DropdownButton : Button
    public static readonly StyledProperty<int> MouseLeaveDelayProperty =
       AvaloniaProperty.Register<DropdownButton, int>(nameof(MouseLeaveDelay), 100);
 
-   public FlyoutControl? DropdownFlyout
+   public MenuFlyout? DropdownFlyout
    {
       get => GetValue(DropdownFlyoutProperty);
       set => SetValue(DropdownFlyoutProperty, value);
@@ -117,6 +115,7 @@ public class DropdownButton : Button
    private DispatcherTimer? _mouseLeaveDelayTimer;
    private CompositeDisposable? _subscriptions;
    private PathIcon? _openIndicatorIcon;
+   private IDisposable? _flyoutCloseDetectDisposable;
 
    static DropdownButton()
    {
@@ -136,7 +135,7 @@ public class DropdownButton : Button
       
       base.OnApplyTemplate(e);
       TokenResourceBinder.CreateGlobalTokenBinding(this, MarginToAnchorProperty, GlobalTokenResourceKey.MarginXXS);
-      SetupTriggerHandler();
+      SetupFlyoutProperties();
    }
 
    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
@@ -162,6 +161,26 @@ public class DropdownButton : Button
          BindUtils.RelayBind(this, IsShowArrowProperty, DropdownFlyout);
          BindUtils.RelayBind(this, IsPointAtCenterProperty, DropdownFlyout);
          BindUtils.RelayBind(this, MarginToAnchorProperty, DropdownFlyout);
+
+         DropdownFlyout.Opened += HandleFlyoutOpened;
+      }
+   }
+
+   private void HandleFlyoutOpened(object? sender, EventArgs e)
+   {
+      if (DropdownFlyout is IPopupHostProvider popupHostProvider) {
+         var host = popupHostProvider.PopupHost;
+         if (host is PopupRoot popupRoot) {
+            // 这里 PopupRoot 关闭的时候会被关闭，所以这里的事件处理器是不是不需要删除
+            popupRoot.PointerMoved += (o, args) =>
+            {
+               StopMouseLeaveTimer();
+               if (_flyoutCloseDetectDisposable is null) {
+                  var inputManager = AvaloniaLocator.Current.GetService<IInputManager>()!;
+                  _flyoutCloseDetectDisposable = inputManager.Process.Subscribe(DetectWhenToClosePopup);
+               }
+            };
+         }
       }
    }
    
@@ -173,13 +192,6 @@ public class DropdownButton : Button
          {
             if (args.Sender == this) {
                HandleAnchorTargetHover(args);
-            }
-         }));
-      } else if (TriggerType == FlyoutTriggerType.Focus) {
-         _subscriptions.Add(IsFocusedProperty.Changed.Subscribe(args =>
-         {
-            if (args.Sender == this) {
-               HandleAnchorTargetFocus(args);
             }
          }));
       } else if (TriggerType == FlyoutTriggerType.Click) {
@@ -199,33 +211,46 @@ public class DropdownButton : Button
       }
    }
 
-   private void HandleAnchorTargetFocus(AvaloniaPropertyChangedEventArgs<bool> e)
+   private void DetectWhenToClosePopup(RawInputEventArgs args)
    {
-      if (DropdownFlyout is not null) {
-         if (e.GetNewValue<bool>()) {
-            if (!DropdownFlyout.IsOpen) {
-               ShowFlyout();
+      if (args is RawPointerEventArgs pointerEventArgs) {
+         if (DropdownFlyout is null) {
+            return;
+         }
+         if (DropdownFlyout.IsOpen) {
+            var found = false;
+            if (pointerEventArgs.Root is PopupRoot popupRoot) {
+               var current = popupRoot.Parent;
+               while (current is not null) {
+                  if (current == this) {
+                     found = true;
+                  }
+                  current = current.Parent;
+               }
+            } else if (object.Equals(pointerEventArgs.Root, this)) {
+               found = true;
             }
-         } else {
-            HideFlyout();
+            if (!found) {
+               HideFlyout();
+            }
          }
       }
    }
-
+   
    private void HandleAnchorTargetClick(RawInputEventArgs args)
    {
       if (args is RawPointerEventArgs pointerEventArgs) {
+         if (DropdownFlyout is null) {
+            return;
+         }
+
          if (pointerEventArgs.Type == RawPointerEventType.LeftButtonUp) {
-            if (DropdownFlyout is null) {
-               return;
-            }
-      
             if (!DropdownFlyout.IsOpen) {
                var pos = this.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(this)!);
                if (!pos.HasValue) {
                   return;
                }
-      
+
                var bounds = new Rect(pos.Value, Bounds.Size);
                if (bounds.Contains(pointerEventArgs.Position)) {
                   ShowFlyout();
@@ -246,7 +271,8 @@ public class DropdownButton : Button
       if (DropdownFlyout is null) {
          return;
       }
-
+      // 防止干扰打开
+      _flyoutCloseDetectDisposable?.Dispose();
       StopMouseEnterTimer();
       StopMouseLeaveTimer();
       DropdownFlyout.Hide();
@@ -262,7 +288,8 @@ public class DropdownButton : Button
       if (DropdownFlyout is null) {
          return;
       }
-      
+      _flyoutCloseDetectDisposable?.Dispose();
+      _flyoutCloseDetectDisposable = null;
       StopMouseEnterTimer();
       
       if (MouseLeaveDelay == 0) {

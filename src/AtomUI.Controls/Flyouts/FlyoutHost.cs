@@ -18,8 +18,7 @@ using FlyoutControl = Flyout;
 public enum FlyoutTriggerType
 {
    Hover,
-   Click,
-   Focus
+   Click
 }
 
 public class FlyoutHost : Control
@@ -212,13 +211,6 @@ public class FlyoutHost : Control
                HandleAnchorTargetHover(args);
             }
          });
-      } else if (Trigger == FlyoutTriggerType.Focus) {
-         _subscriptions.Add(IsFocusedProperty.Changed.Subscribe(args =>
-         {
-            if (args.Sender == AnchorTarget) {
-               HandleAnchorTargetFocus(args);
-            }
-         }));
       } else if (Trigger == FlyoutTriggerType.Click) {
          var inputManager = AvaloniaLocator.Current.GetService<IInputManager>()!;
          _subscriptions.Add(inputManager.Process.Subscribe(HandleAnchorTargetClick));
@@ -226,17 +218,6 @@ public class FlyoutHost : Control
    }
 
    private void HandleAnchorTargetHover(AvaloniaPropertyChangedEventArgs<bool> e)
-   {
-      if (Flyout is not null) {
-         if (e.GetNewValue<bool>()) {
-            ShowFlyout();
-         } else {
-            HideFlyout();
-         }
-      }
-   }
-
-   private void HandleAnchorTargetFocus(AvaloniaPropertyChangedEventArgs<bool> e)
    {
       if (Flyout is not null) {
          if (e.GetNewValue<bool>()) {

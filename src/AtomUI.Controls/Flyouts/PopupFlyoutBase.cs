@@ -526,4 +526,19 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
       //Add new classes
       presenter.Classes.AddRange(classes);
    }
+
+   internal bool InPopupRootBounds(Point position)
+   {
+      if (!IsOpen) {
+         return false;
+      }
+      // TODO 后期需要加入对 Overlay 的支持
+      if (Popup?.Host is PopupRoot root) {
+         // Get the popup root bounds and convert to screen coordinates
+
+         Console.WriteLine(position);
+      }
+
+      return true;
+   }
 }
