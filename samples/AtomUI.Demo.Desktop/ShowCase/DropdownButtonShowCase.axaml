@@ -27,5 +27,55 @@
                 </atom:DropdownButton.DropdownFlyout>
             </atom:DropdownButton>
         </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="Button Types"
+            Description="Support centralized button type.">
+            <StackPanel Orientation="Horizontal" Spacing="10">
+                <atom:DropdownButton ButtonType="Primary" TriggerType="Click">
+                    Edit File
+                    <atom:DropdownButton.DropdownFlyout>
+                        <atom:MenuFlyout>
+                            <atom:MenuItem Header="Cut" InputGesture="Ctrl+X" Icon="{atom:IconProvider Kind=ScissorOutlined}" />
+                            <atom:MenuItem Header="Copy" InputGesture="Ctrl+C" Icon="{atom:IconProvider Kind=CopyOutlined}" />
+                            <atom:MenuItem Header="Delete" InputGesture="Ctrl+D" Icon="{atom:IconProvider Kind=DeleteOutlined}" />
+                        </atom:MenuFlyout>
+                    </atom:DropdownButton.DropdownFlyout>
+                </atom:DropdownButton>
+                
+                <atom:DropdownButton ButtonType="Primary" Shape="Round" TriggerType="Click">
+                    Edit File
+                    <atom:DropdownButton.DropdownFlyout>
+                        <atom:MenuFlyout>
+                            <atom:MenuItem Header="Cut" InputGesture="Ctrl+X" Icon="{atom:IconProvider Kind=ScissorOutlined}" />
+                            <atom:MenuItem Header="Copy" InputGesture="Ctrl+C" Icon="{atom:IconProvider Kind=CopyOutlined}" />
+                            <atom:MenuItem Header="Delete" InputGesture="Ctrl+D" Icon="{atom:IconProvider Kind=DeleteOutlined}" />
+                        </atom:MenuFlyout>
+                    </atom:DropdownButton.DropdownFlyout>
+                </atom:DropdownButton>
+                
+                <atom:DropdownButton ButtonType="Default" TriggerType="Click">
+                    Edit File
+                    <atom:DropdownButton.DropdownFlyout>
+                        <atom:MenuFlyout>
+                            <atom:MenuItem Header="Cut" InputGesture="Ctrl+X" Icon="{atom:IconProvider Kind=ScissorOutlined}" />
+                            <atom:MenuItem Header="Copy" InputGesture="Ctrl+C" Icon="{atom:IconProvider Kind=CopyOutlined}" />
+                            <atom:MenuItem Header="Delete" InputGesture="Ctrl+D" Icon="{atom:IconProvider Kind=DeleteOutlined}" />
+                        </atom:MenuFlyout>
+                    </atom:DropdownButton.DropdownFlyout>
+                </atom:DropdownButton>
+                
+                <atom:DropdownButton ButtonType="Text" TriggerType="Click">
+                    Edit File
+                    <atom:DropdownButton.DropdownFlyout>
+                        <atom:MenuFlyout>
+                            <atom:MenuItem Header="Cut" InputGesture="Ctrl+X" Icon="{atom:IconProvider Kind=ScissorOutlined}" />
+                            <atom:MenuItem Header="Copy" InputGesture="Ctrl+C" Icon="{atom:IconProvider Kind=CopyOutlined}" />
+                            <atom:MenuItem Header="Delete" InputGesture="Ctrl+D" Icon="{atom:IconProvider Kind=DeleteOutlined}" />
+                        </atom:MenuFlyout>
+                    </atom:DropdownButton.DropdownFlyout>
+                </atom:DropdownButton>
+            </StackPanel>
+        </showcase:ShowCaseItem>
     </showcase:ShowCasePanel>
 </UserControl>

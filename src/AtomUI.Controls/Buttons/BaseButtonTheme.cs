@@ -5,6 +5,8 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
+using Avalonia.Data.Converters;
 using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Styling;
@@ -76,14 +78,17 @@ internal abstract class BaseButtonTheme : BaseControlTheme
             HorizontalContentAlignment = HorizontalAlignment.Center,
             VerticalContentAlignment = VerticalAlignment.Center,
             HorizontalAlignment = HorizontalAlignment.Center,
-            VerticalAlignment = VerticalAlignment.Center
+            VerticalAlignment = VerticalAlignment.Center,
          };
-
+         
+         CreateTemplateParentBinding(extraContentPresenter, ContentPresenter.IsVisibleProperty, Button.ExtraContentProperty,
+                                     BindingMode.Default,
+                                     ObjectConverters.IsNotNull);
          CreateTemplateParentBinding(extraContentPresenter, ContentPresenter.ContentProperty, Button.ExtraContentProperty);
          
          DockPanel.SetDock(extraContentPresenter, Dock.Right);
 
-         var rootLayout = new DockPanel()
+         var rootLayout = new DockPanel
          {
             Name = RootLayoutPart,
             LastChildFill = true
@@ -121,6 +126,11 @@ internal abstract class BaseButtonTheme : BaseControlTheme
          iconOnlyStyle.Add(Button.PaddingProperty, ButtonTokenResourceKey.IconOnyPaddingLG);
          largeSizeStyle.Add(iconOnlyStyle);
       }
+      {
+         var extraContentStyle = new Style(selector => selector.Nesting().Template().Name(RightExtraContentPart));
+         largeSizeStyle.Add(ContentPresenter.MarginProperty, ButtonTokenResourceKey.ExtraContentMarginLG);
+         largeSizeStyle.Add(extraContentStyle);
+      }
       Add(largeSizeStyle);
       
       var middleSizeStyle = new Style(selector => selector.Nesting().PropertyEquals(Button.SizeTypeProperty, SizeType.Middle));
@@ -133,6 +143,11 @@ internal abstract class BaseButtonTheme : BaseControlTheme
          iconOnlyStyle.Add(Button.PaddingProperty, ButtonTokenResourceKey.IconOnyPadding);
          middleSizeStyle.Add(iconOnlyStyle);
       }
+      {
+         var extraContentStyle = new Style(selector => selector.Nesting().Template().Name(RightExtraContentPart));
+         extraContentStyle.Add(ContentPresenter.MarginProperty, ButtonTokenResourceKey.ExtraContentMargin);
+         middleSizeStyle.Add(extraContentStyle);
+      }
       Add(middleSizeStyle);
       
       var smallSizeStyle = new Style(selector => selector.Nesting().PropertyEquals(Button.SizeTypeProperty, SizeType.Small));
@@ -144,6 +159,11 @@ internal abstract class BaseButtonTheme : BaseControlTheme
          var iconOnlyStyle = new Style(selector => selector.Nesting().Class(Button.IconOnlyPC));
          iconOnlyStyle.Add(Button.PaddingProperty, ButtonTokenResourceKey.IconOnyPaddingSM);
          smallSizeStyle.Add(iconOnlyStyle);
+      }
+      {
+         var extraContentStyle = new Style(selector => selector.Nesting().Template().Name(RightExtraContentPart));
+         extraContentStyle.Add(ContentPresenter.MarginProperty, ButtonTokenResourceKey.ExtraContentMarginSM);
+         smallSizeStyle.Add(extraContentStyle);
       }
       Add(smallSizeStyle);
    }

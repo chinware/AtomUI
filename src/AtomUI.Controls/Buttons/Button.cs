@@ -503,12 +503,13 @@ public class Button : AvaloniaButton,
             normalFilledBrushKey = GlobalTokenResourceKey.ColorPrimary;
             selectedFilledBrushKey = GlobalTokenResourceKey.ColorPrimaryActive;
             activeFilledBrushKey = GlobalTokenResourceKey.ColorPrimaryHover;
+            if (IsDanger) {
+               normalFilledBrushKey = GlobalTokenResourceKey.ColorError;
+               selectedFilledBrushKey = GlobalTokenResourceKey.ColorErrorActive;
+               activeFilledBrushKey = GlobalTokenResourceKey.ColorErrorBorderHover;
+            }
          }
-         if (IsDanger) {
-            normalFilledBrushKey = GlobalTokenResourceKey.ColorError;
-            selectedFilledBrushKey = GlobalTokenResourceKey.ColorErrorActive;
-            activeFilledBrushKey = GlobalTokenResourceKey.ColorErrorBorderHover;
-         }
+
       } else if (ButtonType == ButtonType.Text) {
          normalFilledBrushKey = ButtonTokenResourceKey.DefaultColor;
          selectedFilledBrushKey = ButtonTokenResourceKey.DefaultColor;
