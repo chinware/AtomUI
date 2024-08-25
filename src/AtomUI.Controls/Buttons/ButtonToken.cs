@@ -334,9 +334,9 @@ internal class ButtonToken : AbstractControlDesignToken
       PaddingLG = new Thickness(_globalToken.PaddingContentHorizontal - lineWidth, 
          Math.Max((controlHeightLG - ContentLineHeightLG) / 2 - lineWidth, 0));
 
-      ExtraContentMarginSM = new Thickness(0, 0, 8 - _globalToken.SeedToken.LineWidth, 0);
-      ExtraContentMargin = new Thickness(0, 0, _globalToken.PaddingContentHorizontal - lineWidth, 0);
-      ExtraContentMarginLG = new Thickness(0, 0, _globalToken.PaddingContentHorizontal - lineWidth, 0);
+      ExtraContentMarginSM = new Thickness(PaddingSM.Left / 2, 0, 0, 0);
+      ExtraContentMargin = new Thickness(Padding.Left / 2, 0, 0, 0);
+      ExtraContentMarginLG = new Thickness(PaddingLG.Left / 2, 0, 0, 0);
      
       CirclePadding = new Thickness(PaddingSM.Left / 2);
       OnlyIconSizeSM = _globalToken.IconSize;
