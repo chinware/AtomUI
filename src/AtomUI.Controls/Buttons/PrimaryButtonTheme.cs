@@ -76,7 +76,6 @@ internal class PrimaryButtonTheme : BaseButtonTheme
    {
       var ghostStyle = new Style(selector => selector.Nesting().PropertyEquals(Button.IsGhostProperty, true));
       ghostStyle.Add(Button.BackgroundProperty, new SolidColorBrush(Colors.Transparent));
-      ghostStyle.Add(Button.BorderThicknessProperty, GlobalTokenResourceKey.BorderThickness);
       // 正常状态
       ghostStyle.Add(Button.ForegroundProperty, GlobalTokenResourceKey.ColorPrimary);
       ghostStyle.Add(Button.BorderBrushProperty, GlobalTokenResourceKey.ColorPrimary);
@@ -125,7 +124,6 @@ internal class PrimaryButtonTheme : BaseButtonTheme
    private void BuildDisabledStyle()
    {
       var disabledStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Disabled));
-      disabledStyle.Add(Button.BorderThicknessProperty, GlobalTokenResourceKey.BorderThickness);
       disabledStyle.Add(Button.ForegroundProperty, GlobalTokenResourceKey.ColorTextDisabled);
       disabledStyle.Add(Button.BorderBrushProperty, ButtonTokenResourceKey.BorderColorDisabled);
       disabledStyle.Add(Button.BackgroundProperty, GlobalTokenResourceKey.ColorBgContainerDisabled);

@@ -2,6 +2,7 @@ using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.Icon;
 using AtomUI.Media;
+using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.TokenSystem;
 using AtomUI.Theme.Utils;
@@ -11,6 +12,7 @@ using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
+using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
@@ -238,12 +240,12 @@ public class Button : AvaloniaButton,
       var targetWidth = size.Width;
       var targetHeight = size.Height;
 
-      targetHeight += Padding.Top + Padding.Bottom;
-      if (Shape != ButtonShape.Round) {
-         targetWidth += Padding.Left + Padding.Right;
-      } else {
-         targetWidth += Math.Max(Padding.Left + Padding.Right, targetHeight);
-      }
+      // targetHeight += Padding.Top + Padding.Bottom;
+      // if (Shape != ButtonShape.Round) {
+      //    targetWidth += Padding.Left + Padding.Right;
+      // } else {
+      //    targetWidth += Math.Max(Padding.Left + Padding.Right, targetHeight);
+      // }
     
       targetHeight = Math.Max(targetHeight, ControlHeight);
       
@@ -388,6 +390,9 @@ public class Button : AvaloniaButton,
          }
       }
 
+      TokenResourceBinder.CreateGlobalTokenBinding(this, BorderThicknessProperty, GlobalTokenResourceKey.BorderThickness,
+         BindingPriority.Template,
+         new RenderScaleAwareThicknessConfigure(this));
       _customStyle.CollectStyleState();
       ApplyShapeStyleConfig();
       ApplyIconModeStyleConfig();
@@ -567,18 +572,6 @@ public class Button : AvaloniaButton,
    public CornerRadius WaveBorderRadius()
    {
       return CornerRadius;
-   }
-
-   public override void Render(DrawingContext context)
-   {
-      _borderRenderHelper.Render(context,
-                                 Bounds.Size,
-                                 BorderUtils.BuildRenderScaleAwareThickness(BorderThickness, VisualRoot?.RenderScaling ?? 1.0),
-                                 CornerRadius,
-                                 BackgroundSizing,
-                                 Background,
-                                 BorderBrush,
-                                 default);
    }
    
    private void UpdatePseudoClasses()

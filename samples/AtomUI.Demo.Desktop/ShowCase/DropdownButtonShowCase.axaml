@@ -11,7 +11,7 @@
         <showcase:ShowCaseItem
             Title="Basic"
             Description="The most basic dropdown menu.">
-            <atom:DropdownButton ButtonType="Link" TriggerType="Hover">
+            <atom:DropdownButton ButtonType="Link" TriggerType="Hover" x:Name="Test">
                 Hover me
                 <atom:DropdownButton.DropdownFlyout>
                     <atom:MenuFlyout>

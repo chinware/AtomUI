@@ -46,6 +46,8 @@ public class MenuFlyoutPresenter : MenuBase, IShadowMaskInfoProvider
       remove => RemoveHandler(MenuItemClickedEvent, value);
    }
 
+   public WeakReference<MenuFlyout>? MenuFlyout { get; set; }
+   
    #endregion
 
    private ArrowDecoratedBox? _arrowDecoratedBox;
@@ -61,10 +63,11 @@ public class MenuFlyoutPresenter : MenuBase, IShadowMaskInfoProvider
    public override void Close()
    {
       // DefaultMenuInteractionHandler calls this
-      var flyout = this.FindLogicalAncestorOfType<PopupFlyoutBase>();
-      if (flyout != null) {
-         SelectedIndex = -1;
-         flyout.Hide();
+      if (MenuFlyout is not null) {
+         if (MenuFlyout.TryGetTarget(out var menuFlyout)) {
+            SelectedIndex = -1;
+            menuFlyout.Hide();
+         }
       }
    }
    

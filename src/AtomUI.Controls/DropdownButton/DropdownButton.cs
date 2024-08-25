@@ -231,7 +231,6 @@ public class DropdownButton : Button
 
    private void HandleFlyoutClosed(object? sender, EventArgs e)
    {
-      Console.WriteLine(_menuFlyoutPresenter);
       if (_menuFlyoutPresenter is not null) {
          _menuFlyoutPresenter.MenuItemClicked -= HandleMenuItemClicked;
          _menuFlyoutPresenter = null;
@@ -240,7 +239,8 @@ public class DropdownButton : Button
 
    private void HandleMenuItemClicked(object? sender, FlyoutMenuItemClickedEventArgs args)
    {
-      // Console.WriteLine(sender);
+      var eventArgs = new FlyoutMenuItemClickedEventArgs(MenuItemClickedEvent, args.Item);
+      RaiseEvent(eventArgs);
    }
 
    private void SetupTriggerHandler()
