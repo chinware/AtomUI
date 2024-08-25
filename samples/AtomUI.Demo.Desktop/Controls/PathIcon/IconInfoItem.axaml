@@ -17,8 +17,9 @@
                     Width="{TemplateBinding Width}"
                     Height="{TemplateBinding Height}"
                     Background="{TemplateBinding Background}">
-                    <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <StackPanel Orientation="Vertical">
                         <atom:PathIcon
+                            HorizontalAlignment="Center"
                             Kind="{Binding IconKind}"
                             Width="48"
                             Height="48">
@@ -27,6 +28,7 @@
                             Margin="0,20, 0, 0"
                             Padding="8"
                             FontSize="13"
+                            HorizontalAlignment="Center"
                             Foreground="{TemplateBinding Foreground}"
                             Text="{Binding IconName}" />
                     </StackPanel>

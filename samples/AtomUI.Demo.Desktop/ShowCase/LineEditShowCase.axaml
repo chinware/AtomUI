@@ -121,7 +121,7 @@
                                  SearchButtonStyle="Primary"
                                  SearchButtonText="Search"
                                  IsEnableClearButton="True"
-                                 SizeType="Large"/>
+                                 />
                 <atom:SearchEdit Watermark="input search text"
                                  Width="400"
                                  HorizontalAlignment="Left"

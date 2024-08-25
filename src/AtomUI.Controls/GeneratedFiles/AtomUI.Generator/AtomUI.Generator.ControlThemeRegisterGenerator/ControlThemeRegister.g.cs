@@ -21,6 +21,7 @@
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.ComboBoxItemTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.ComboBoxSpinnerInnerBoxTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.ComboBoxTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.DropdownButtonTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.EmptyIndicatorTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.ExpanderTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.MenuFlyoutPresenterTheme());

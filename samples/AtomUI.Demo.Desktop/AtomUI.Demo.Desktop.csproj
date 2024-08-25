@@ -37,5 +37,11 @@
     <ItemGroup>
       <AdditionalFiles Include="ShowCase\ButtonSpinnerShowCase.axaml" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="ShowCase\DropdownButtonShowCase.axaml.cs">
+        <DependentUpon>DropdownButtonShowCase.axaml</DependentUpon>
+      </Compile>
+    </ItemGroup>
     
 </Project>

@@ -21,7 +21,6 @@ internal class TextButtonTheme : BaseButtonTheme
    protected override void BuildStyles()
    {
       base.BuildStyles();
-      BuildIconStyle();
       BuildEnabledStyle();
       BuildDisabledStyle();
    }
@@ -66,28 +65,6 @@ internal class TextButtonTheme : BaseButtonTheme
       enabledStyle.Add(dangerStyle);
 
       Add(enabledStyle);
-   }
-   
-   private void BuildIconStyle()
-   {
-      {
-         var iconStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
-         iconStyle.Add(PathIcon.DisabledFilledBrushProperty, GlobalTokenResourceKey.ColorTextDisabled);
-         iconStyle.Add(PathIcon.NormalFilledBrushProperty, ButtonTokenResourceKey.DefaultColor);
-         iconStyle.Add(PathIcon.SelectedFilledBrushProperty, ButtonTokenResourceKey.DefaultColor);
-         iconStyle.Add(PathIcon.ActiveFilledBrushProperty, ButtonTokenResourceKey.DefaultColor);
-         Add(iconStyle);
-      }
-      
-      var isDangerStyle = new Style(selector => selector.Nesting().PropertyEquals(Button.IsDangerProperty, true));
-      {
-         var iconStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
-         iconStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorError);
-         iconStyle.Add(PathIcon.SelectedFilledBrushProperty, GlobalTokenResourceKey.ColorErrorActive);
-         iconStyle.Add(PathIcon.ActiveFilledBrushProperty, GlobalTokenResourceKey.ColorErrorBorderHover);
-         isDangerStyle.Add(iconStyle);
-         Add(isDangerStyle);
-      }
    }
 
    private void BuildDisabledStyle()

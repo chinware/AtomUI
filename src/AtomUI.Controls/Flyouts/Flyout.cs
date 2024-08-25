@@ -11,6 +11,7 @@ using Avalonia.Media;
 using Avalonia.Metadata;
 using Avalonia.Styling;
 using Avalonia.Threading;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -18,64 +19,46 @@ using PopupControl = Popup;
 
 public class Flyout : PopupFlyoutBase
 {
+   #region 公共属性定义
    /// <summary>
    /// 是否显示指示箭头
    /// </summary>
    public static readonly StyledProperty<bool> IsShowArrowProperty =
       ArrowDecoratedBox.IsShowArrowProperty.AddOwner<PopupFlyoutBase>();
-
-   private static readonly StyledProperty<bool> IsShowArrowEffectiveProperty =
-      ArrowDecoratedBox.IsShowArrowProperty.AddOwner<PopupFlyoutBase>();
-
+   
    public static readonly StyledProperty<BoxShadows> MaskShadowsProperty =
       Border.BoxShadowProperty.AddOwner<Flyout>();
-
+   
    /// <summary>
    /// 箭头是否始终指向中心
    /// </summary>
    public static readonly StyledProperty<bool> IsPointAtCenterProperty =
-      AvaloniaProperty.Register<PopupFlyoutBase, bool>(nameof(IsPointAtCenter), false);
-
+      AvaloniaProperty.Register<Flyout, bool>(nameof(IsPointAtCenter), false);
+   
    /// <summary>
    /// Defines the <see cref="Content"/> property
    /// </summary>
    public static readonly StyledProperty<object> ContentProperty =
       AvaloniaProperty.Register<Flyout, object>(nameof(Content));
-
-   private Classes? _classes;
-
-   /// <summary>
-   /// Gets the Classes collection to apply to the FlyoutPresenter this Flyout is hosting
-   /// </summary>
-   public Classes FlyoutPresenterClasses => _classes ??= new Classes();
-
+   
    /// <summary>
    /// Defines the <see cref="FlyoutPresenterTheme"/> property.
    /// </summary>
    public static readonly StyledProperty<ControlTheme?> FlyoutPresenterThemeProperty =
       AvaloniaProperty.Register<Flyout, ControlTheme?>(nameof(FlyoutPresenterTheme));
-
+   
    public bool IsShowArrow
    {
       get => GetValue(IsShowArrowProperty);
       set => SetValue(IsShowArrowProperty, value);
    }
-
-   /// <summary>
-   /// 是否实际显示箭头
-   /// </summary>
-   private bool IsShowArrowEffective
-   {
-      get => GetValue(IsShowArrowEffectiveProperty);
-      set => SetValue(IsShowArrowEffectiveProperty, value);
-   }
-
+   
    public bool IsPointAtCenter
    {
       get => GetValue(IsPointAtCenterProperty);
       set => SetValue(IsPointAtCenterProperty, value);
    }
-
+   
    /// <summary>
    /// Gets or sets the <see cref="ControlTheme"/> that is applied to the container element generated for the flyout presenter.
    /// </summary>
@@ -101,6 +84,31 @@ public class Flyout : PopupFlyoutBase
       set => SetValue(MaskShadowsProperty, value);
    }
 
+   #endregion
+
+   #region 内部属性定义
+
+   internal static readonly StyledProperty<bool> IsShowArrowEffectiveProperty =
+      AvaloniaProperty.Register<Flyout, bool>(nameof(IsShowArrowEffective));
+   
+   /// <summary>
+   /// 是否实际显示箭头
+   /// </summary>
+   internal bool IsShowArrowEffective
+   {
+      get => GetValue(IsShowArrowEffectiveProperty);
+      set => SetValue(IsShowArrowEffectiveProperty, value);
+   }
+
+   #endregion
+
+   private Classes? _classes;
+
+   /// <summary>
+   /// Gets the Classes collection to apply to the FlyoutPresenter this Flyout is hosting
+   /// </summary>
+   public Classes FlyoutPresenterClasses => _classes ??= new Classes();
+
    private TimeSpan _motionDuration;
 
    private static readonly DirectProperty<Flyout, TimeSpan> MotionDurationTokenProperty
@@ -108,7 +116,7 @@ public class Flyout : PopupFlyoutBase
                                                           (o) => o._motionDuration,
                                                           (o, v) => o._motionDuration = v);
 
-   private CompositeDisposable? _compositeDisposable;
+   protected CompositeDisposable? _compositeDisposable;
 
    static Flyout()
    {
@@ -151,9 +159,10 @@ public class Flyout : PopupFlyoutBase
    {
       var presenter = new FlyoutPresenter
       {
-         [!FlyoutPresenter.ChildProperty] = this[!ContentProperty]
+         [!FlyoutPresenter.ContentProperty] = this[!ContentProperty]
       };
       BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, presenter, IsShowArrowProperty);
+      CalculateShowArrowEffective();
       SetupArrowPosition(Popup, presenter);
       return presenter;
    }
@@ -170,6 +179,7 @@ public class Flyout : PopupFlyoutBase
 
    protected override void OnOpening(CancelEventArgs args)
    {
+      _compositeDisposable = new CompositeDisposable();
       if (Popup.Child is { } presenter) {
          if (_classes != null) {
             SetPresenterClasses(presenter, FlyoutPresenterClasses);
@@ -182,9 +192,9 @@ public class Flyout : PopupFlyoutBase
 
       base.OnOpening(args);
       if (!args.Cancel) {
-         _compositeDisposable = new CompositeDisposable();
          _compositeDisposable.Add(PopupControl.IsFlippedProperty.Changed.Subscribe(HandlePopupPropertyChanged));
       }
+      
    }
 
    protected override void OnClosed()
@@ -242,7 +252,7 @@ public class Flyout : PopupFlyoutBase
       }
    }
 
-   private void CalculateShowArrowEffective()
+   protected void CalculateShowArrowEffective()
    {
       if (IsShowArrow == false) {
          IsShowArrowEffective = false;
@@ -313,14 +323,16 @@ public class Flyout : PopupFlyoutBase
          }
       }
 
+      if (Popup.PlacementTarget?.GetVisualRoot() is null) {
+         return base.HideCore(false);
+      }
       IsOpen = false;
-      
       Dispatcher.UIThread.Post(() =>
       {
          Popup.CloseAnimation(HandlePopupClosed);
       });
-
       return true;
+
    }
 
    private bool CancelClosing()

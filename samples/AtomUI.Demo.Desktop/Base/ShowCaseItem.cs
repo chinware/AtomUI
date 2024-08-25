@@ -47,7 +47,16 @@ public class ShowCaseItem : ContentControl
          Text = Description,
          TextWrapping = TextWrapping.Wrap
       });
-      Content = mainLayout;
+      
+      var outerBorder = new Border()
+      {
+         BorderBrush = new SolidColorBrush(new Color(10, 5, 5, 5)),
+         BorderThickness = new Thickness(1),
+         Padding = new Thickness(20),
+         Child = mainLayout
+      };
+      
+      Content = outerBorder;
    }
 
    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)

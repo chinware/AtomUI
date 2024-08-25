@@ -23,7 +23,6 @@ internal class PrimaryButtonTheme : BaseButtonTheme
    protected override void BuildStyles()
    {
       base.BuildStyles();
-      BuildIconStyle();
       BuildEnabledStyle();
       BuildDisabledStyle();
    }
@@ -77,7 +76,6 @@ internal class PrimaryButtonTheme : BaseButtonTheme
    {
       var ghostStyle = new Style(selector => selector.Nesting().PropertyEquals(Button.IsGhostProperty, true));
       ghostStyle.Add(Button.BackgroundProperty, new SolidColorBrush(Colors.Transparent));
-      ghostStyle.Add(Button.BorderThicknessProperty, GlobalTokenResourceKey.BorderThickness);
       // 正常状态
       ghostStyle.Add(Button.ForegroundProperty, GlobalTokenResourceKey.ColorPrimary);
       ghostStyle.Add(Button.BorderBrushProperty, GlobalTokenResourceKey.ColorPrimary);
@@ -123,40 +121,9 @@ internal class PrimaryButtonTheme : BaseButtonTheme
       Add(ghostStyle);
    }
 
-   private void BuildIconStyle()
-   {
-      // 普通状态
-      {
-         var iconStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
-         iconStyle.Add(PathIcon.DisabledFilledBrushProperty, GlobalTokenResourceKey.ColorTextDisabled);
-         iconStyle.Add(PathIcon.NormalFilledBrushProperty, ButtonTokenResourceKey.PrimaryColor);
-         Add(iconStyle);
-      }
-      // ghost 状态
-      var ghostStyle = new Style(selector => selector.Nesting().PropertyEquals(Button.IsGhostProperty, true));
-      {
-         var iconStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
-         iconStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorPrimary);
-         iconStyle.Add(PathIcon.SelectedFilledBrushProperty, GlobalTokenResourceKey.ColorPrimaryActive);
-         iconStyle.Add(PathIcon.ActiveFilledBrushProperty, GlobalTokenResourceKey.ColorPrimaryHover);
-         ghostStyle.Add(iconStyle);
-      }
-      var isDangerStyle = new Style(selector => selector.Nesting().PropertyEquals(Button.IsDangerProperty, true));
-      {
-         var iconStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
-         iconStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorError);
-         iconStyle.Add(PathIcon.SelectedFilledBrushProperty, GlobalTokenResourceKey.ColorErrorActive);
-         iconStyle.Add(PathIcon.ActiveFilledBrushProperty, GlobalTokenResourceKey.ColorErrorBorderHover);
-         isDangerStyle.Add(iconStyle);
-      }
-      ghostStyle.Add(isDangerStyle);
-      Add(ghostStyle);
-   }
-
    private void BuildDisabledStyle()
    {
       var disabledStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Disabled));
-      disabledStyle.Add(Button.BorderThicknessProperty, GlobalTokenResourceKey.BorderThickness);
       disabledStyle.Add(Button.ForegroundProperty, GlobalTokenResourceKey.ColorTextDisabled);
       disabledStyle.Add(Button.BorderBrushProperty, ButtonTokenResourceKey.BorderColorDisabled);
       disabledStyle.Add(Button.BackgroundProperty, GlobalTokenResourceKey.ColorBgContainerDisabled);

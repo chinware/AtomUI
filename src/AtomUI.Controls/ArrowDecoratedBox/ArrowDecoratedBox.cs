@@ -74,7 +74,7 @@ public enum ArrowPosition
    RightEdgeAlignedBottom
 }
 
-public class ArrowDecoratedBox : TemplatedControl,
+public class ArrowDecoratedBox : ContentControl,
                                  IShadowMaskInfoProvider,
                                  IControlCustomStyle
 {
@@ -84,12 +84,6 @@ public class ArrowDecoratedBox : TemplatedControl,
    public static readonly StyledProperty<ArrowPosition> ArrowPositionProperty =
       AvaloniaProperty.Register<ArrowDecoratedBox, ArrowPosition>(
          nameof(ArrowPosition), defaultValue: ArrowPosition.Bottom);
-
-   /// <summary>
-   /// Defines the <see cref="Child"/> property.
-   /// </summary>
-   public static readonly StyledProperty<Control?> ChildProperty =
-      Border.ChildProperty.AddOwner<ArrowDecoratedBox>();
    
    internal static readonly StyledProperty<double> ArrowSizeProperty
       = AvaloniaProperty.Register<ArrowDecoratedBox, double>(nameof(ArrowSize));
@@ -126,16 +120,6 @@ public class ArrowDecoratedBox : TemplatedControl,
       set => SetValue(ArrowSizeProperty, value);
    }
 
-   /// <summary>
-   /// Gets or sets the decorated control.
-   /// </summary>
-   [Content]
-   public Control? Child
-   {
-      get => GetValue(ChildProperty);
-      set => SetValue(ChildProperty, value);
-   }
-   
    private IControlCustomStyle _customStyle;
    private Geometry? _arrowGeometry;
    private Rect _contentRect;
@@ -306,7 +290,7 @@ public class ArrowDecoratedBox : TemplatedControl,
       return finalSize;
    }
 
-   private Rect GetContentRect(Size finalSize)
+   internal Rect GetContentRect(Size finalSize)
    {
       var offsetX = 0d;
       var offsetY = 0d;

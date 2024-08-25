@@ -12,14 +12,22 @@ Welcome to communicate and give suggestions to AtomUI, thank you for giving the 
 
 
 #### Control library completion
+
+##### General
+| Control Name | Status     |
+|:-------------|:-----------|
+| Button       | Completed ✅|
+| PathIcon     | Completed ✅|
+| SpiltButton  | Developing 💪|
+
 ##### Navigation
-| Control Name | Status |
-|:-------------|:-------|
-| Breadcrumb   | TODO    |
-| Dropdown     | TODO    |
-| Menu         | Completed ✅  |
-| Pagination   | TODO    |
-| Steps        | TODO    |
+| Control Name | Status      |
+|:-------------|:------------|
+| Breadcrumb   | TODO        |
+| Dropdown     | Completed ✅ |
+| Menu         | Completed ✅ |
+| Pagination   | TODO        |
+| Steps        | TODO        |
 
 ##### Data Entry
 | Control Name    | Status        |

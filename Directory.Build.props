@@ -7,7 +7,7 @@
         <LangVersion>latest</LangVersion>
     </PropertyGroup>
 
-    <Import Project="$(MSBuildThisFileDirectory)\Build\Version.props" />
-    <Import Project="$(MSBuildThisFileDirectory)\Build\Output.props" />
+    <Import Project="$(MSBuildThisFileDirectory)\build\Version.props" />
+    <Import Project="$(MSBuildThisFileDirectory)\build\Output.props" />
     
 </Project>

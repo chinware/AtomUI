@@ -126,6 +126,21 @@ internal class ButtonToken : AbstractControlDesignToken
    public Thickness PaddingSM { get; set; }
    
    /// <summary>
+   /// 按钮右边一个额外的区域对右侧的小号外边距
+   /// </summary>
+   public Thickness ExtraContentMarginSM { get; set; }
+   
+   /// <summary>
+   /// 按钮右边一个额外的区域对右侧的外边距
+   /// </summary>
+   public Thickness ExtraContentMargin { get; set; }
+   
+   /// <summary>
+   /// 按钮右边一个额外的区域对右侧的大号外边距
+   /// </summary>
+   public Thickness ExtraContentMarginLG { get; set; }
+   
+   /// <summary>
    /// 圆形按钮内间距
    /// </summary>
    public Thickness CirclePadding { get; set; }
@@ -318,6 +333,10 @@ internal class ButtonToken : AbstractControlDesignToken
          Math.Max((controlHeight - ContentLineHeight) / 2 - lineWidth, 0));
       PaddingLG = new Thickness(_globalToken.PaddingContentHorizontal - lineWidth, 
          Math.Max((controlHeightLG - ContentLineHeightLG) / 2 - lineWidth, 0));
+
+      ExtraContentMarginSM = new Thickness(PaddingSM.Left / 2, 0, 0, 0);
+      ExtraContentMargin = new Thickness(Padding.Left / 2, 0, 0, 0);
+      ExtraContentMarginLG = new Thickness(PaddingLG.Left / 2, 0, 0, 0);
      
       CirclePadding = new Thickness(PaddingSM.Left / 2);
       OnlyIconSizeSM = _globalToken.IconSize;

@@ -18,13 +18,14 @@ using FlyoutControl = Flyout;
 public enum FlyoutTriggerType
 {
    Hover,
-   Click,
-   Focus
+   Click
 }
 
 public class FlyoutHost : Control
 {
-   public static readonly StyledProperty<Control?> AnchorTargetProperty =
+   #region 公共属性定义
+
+    public static readonly StyledProperty<Control?> AnchorTargetProperty =
       AvaloniaProperty.Register<FlyoutHost, Control?>(nameof(AnchorTarget));
 
    /// <summary>
@@ -144,6 +145,8 @@ public class FlyoutHost : Control
       set => SetValue(MouseLeaveDelayProperty, value);
    }
 
+   #endregion
+
    private bool _initialized = false;
    private DispatcherTimer? _mouseEnterDelayTimer;
    private DispatcherTimer? _mouseLeaveDelayTimer;
@@ -208,13 +211,6 @@ public class FlyoutHost : Control
                HandleAnchorTargetHover(args);
             }
          });
-      } else if (Trigger == FlyoutTriggerType.Focus) {
-         _subscriptions.Add(IsFocusedProperty.Changed.Subscribe(args =>
-         {
-            if (args.Sender == AnchorTarget) {
-               HandleAnchorTargetFocus(args);
-            }
-         }));
       } else if (Trigger == FlyoutTriggerType.Click) {
          var inputManager = AvaloniaLocator.Current.GetService<IInputManager>()!;
          _subscriptions.Add(inputManager.Process.Subscribe(HandleAnchorTargetClick));
@@ -222,17 +218,6 @@ public class FlyoutHost : Control
    }
 
    private void HandleAnchorTargetHover(AvaloniaPropertyChangedEventArgs<bool> e)
-   {
-      if (Flyout is not null) {
-         if (e.GetNewValue<bool>()) {
-            ShowFlyout();
-         } else {
-            HideFlyout();
-         }
-      }
-   }
-
-   private void HandleAnchorTargetFocus(AvaloniaPropertyChangedEventArgs<bool> e)
    {
       if (Flyout is not null) {
          if (e.GetNewValue<bool>()) {
