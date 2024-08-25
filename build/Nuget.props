@@ -10,8 +10,8 @@
 		<Author>Chinware Technologies Ltd.</Author>
 		<Authors>$(Author)</Authors>
 		
-		<Description>TODO</Description>
-		<PackageTags>TODO</PackageTags>
+		<Description>AtomUI is an implementation of Ant Design based on .NET technology, and is committed to bringing Ant Design's excellent and efficient design language and experience to the Avalonia/.NET cross-platform desktop software development field.</Description>
+		<PackageTags>avalonia;antdesign;ui;control</PackageTags>
 		
 		<ProjectUrl>https://atomui.net</ProjectUrl>
 		<RepositoryUrl>https://github.com/chinware/AtomUI</RepositoryUrl>

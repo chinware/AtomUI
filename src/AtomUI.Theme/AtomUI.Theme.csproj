@@ -1,43 +1,41 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+    <Import Project="$(MSBuildThisFileDirectory)..\..\build\Nuget.props"/>
+
     <PropertyGroup>
         <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
         <CompilerGeneratedFilesOutputPath>GeneratedFiles</CompilerGeneratedFilesOutputPath>
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Remove="$(CompilerGeneratedFilesOutputPath)/**/*.cs" />
-    </ItemGroup>
-    
-    <ItemGroup>
-      <ProjectReference Include="..\AtomUI.Base\AtomUI.Base.csproj" />
-      <ProjectReference Include="..\AtomUI.Icon\AtomUI.Icon.csproj" />
-        <ProjectReference Include="..\AtomUI.Generator\AtomUI.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+        <Compile Remove="$(CompilerGeneratedFilesOutputPath)/**/*.cs"/>
     </ItemGroup>
 
     <ItemGroup>
-        <AvaloniaResource Include="Assets\**" />
+        <ProjectReference Include="..\AtomUI.Base\AtomUI.Base.csproj"/>
+        <ProjectReference Include="..\AtomUI.Icon\AtomUI.Icon.csproj"/>
+        <ProjectReference Include="..\AtomUI.Generator\AtomUI.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
     </ItemGroup>
 
     <ItemGroup>
-        
+        <AvaloniaResource Include="Assets\**"/>
     </ItemGroup>
 
     <ItemGroup>
-        <InternalsVisibleTo Include="AtomUI.Controls" />
+        <InternalsVisibleTo Include="AtomUI.Controls"/>
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" />
+        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics"/>
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Remove="Platform/**/*.cs" />
+        <Compile Remove="Platform/**/*.cs"/>
     </ItemGroup>
-    
-    <ItemGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))" >
+
+    <ItemGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
         <Compile Include="Platform\Windows\*.cs"/>
         <PackageReference Include="Avalonia.Win32"/>
     </ItemGroup>
-    
+
 </Project>

@@ -1,5 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+    <Import Project="$(MSBuildThisFileDirectory)..\..\build\Nuget.props" />
+
     <PropertyGroup>
         <RootNamespace>AtomUI.Controls</RootNamespace>
         <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
@@ -7,22 +9,22 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Remove="$(CompilerGeneratedFilesOutputPath)/**/*.cs" />
+        <Compile Remove="$(CompilerGeneratedFilesOutputPath)/**/*.cs"/>
     </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="Avalonia.Svg"/>
     </ItemGroup>
-    
+
     <ItemGroup>
-      <ProjectReference Include="..\AtomUI.Theme\AtomUI.Theme.csproj" />
-        <ProjectReference Include="..\AtomUI.Generator\AtomUI.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+        <ProjectReference Include="..\AtomUI.Theme\AtomUI.Theme.csproj"/>
+        <ProjectReference Include="..\AtomUI.Generator\AtomUI.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
     </ItemGroup>
-    
+
     <ItemGroup>
-      <Folder Include="DropdownButton\" />
-      <Folder Include="Localization\" />
-      <Folder Include="SplitButton\" />
+        <Folder Include="DropdownButton\" />
+        <Folder Include="Localization\" />
+        <Folder Include="SplitButton\" />
     </ItemGroup>
-    
+
 </Project>

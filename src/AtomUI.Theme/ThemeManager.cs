@@ -214,7 +214,7 @@ public class ThemeManager : Styles, IThemeManager
    {
       foreach (var path in paths) {
          var fullPath = Path.GetFullPath(path);
-         if (!_customThemeDirs.Contains(fullPath) && Path.Exists(fullPath)) {
+         if (!_customThemeDirs.Contains(fullPath) && Directory.Exists(fullPath)) {
             _customThemeDirs.Add(fullPath);
          }
       }
