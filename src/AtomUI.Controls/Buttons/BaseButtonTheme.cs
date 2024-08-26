@@ -97,7 +97,7 @@ internal abstract class BaseButtonTheme : BaseControlTheme
          var frameDecorator = new Border();
 
          CreateTemplateParentBinding(frameDecorator, Border.PaddingProperty, Button.PaddingProperty);
-         CreateTemplateParentBinding(frameDecorator, Border.BorderThicknessProperty, Button.BorderThicknessProperty);
+         CreateTemplateParentBinding(frameDecorator, Border.BorderThicknessProperty, Button.EffectiveBorderThicknessProperty);
          CreateTemplateParentBinding(frameDecorator, Border.BorderBrushProperty, Button.BorderBrushProperty);
          CreateTemplateParentBinding(frameDecorator, Border.BackgroundProperty, Button.BackgroundProperty);
          CreateTemplateParentBinding(frameDecorator, Border.BackgroundSizingProperty, Button.BackgroundSizingProperty);

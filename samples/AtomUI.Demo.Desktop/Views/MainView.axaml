@@ -57,6 +57,9 @@
             <TabItem Header="DropdownButton">
                 <showcases:DropdownButtonShowCase />
             </TabItem>
+            <TabItem Header="SplitButton">
+                <showcases:SplitButtonShowCase />
+            </TabItem>
             <TabItem Header="RadioButton">
                 <showcases:RadioButtonShowCase />
             </TabItem>

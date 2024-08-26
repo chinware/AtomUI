@@ -11,8 +11,10 @@
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.ButtonSpinnerInnerBoxTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.ButtonSpinnerTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.DefaultButtonTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.DropdownButtonTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.LinkButtonTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.PrimaryButtonTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.SplitButtonTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.TextButtonTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.ToggleIconButtonTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.CheckBoxTheme());
@@ -21,7 +23,6 @@
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.ComboBoxItemTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.ComboBoxSpinnerInnerBoxTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.ComboBoxTheme());
-            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.DropdownButtonTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.EmptyIndicatorTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.ExpanderTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.MenuFlyoutPresenterTheme());
