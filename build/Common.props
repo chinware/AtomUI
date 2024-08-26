@@ -2,7 +2,7 @@
 	<PropertyGroup>
 
 		<OutputType>Library</OutputType>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net6.0</TargetFramework>
 		<TrimMode>copyused</TrimMode>
 		<BuiltInComInteropSupport>false</BuiltInComInteropSupport>
 
