@@ -4,20 +4,27 @@ namespace AtomUI.Input;
 
 internal static class XYFocusHelpers
 {
-   internal static bool IsAllowedXYNavigationMode(this InputElement visual, KeyDeviceType? keyDeviceType)
+   internal static bool IsAllowedXYNavigationMode(
+      this InputElement visual,
+      KeyDeviceType? keyDeviceType)
    {
-      return IsAllowedXYNavigationMode(XYFocus.GetNavigationModes(visual), keyDeviceType);
+      return XYFocusHelpers.IsAllowedXYNavigationMode(XYFocus.GetNavigationModes(visual), keyDeviceType);
    }
 
-   private static bool IsAllowedXYNavigationMode(XYFocusNavigationModes modes, KeyDeviceType? keyDeviceType)
+   private static bool IsAllowedXYNavigationMode(
+      XYFocusNavigationModes modes,
+      KeyDeviceType? keyDeviceType)
    {
-      return keyDeviceType switch
-      {
-         null => true, // programmatic input, allow any subtree.
-         KeyDeviceType.Keyboard => modes.HasFlag(XYFocusNavigationModes.Keyboard),
-         KeyDeviceType.Gamepad => modes.HasFlag(XYFocusNavigationModes.Gamepad),
-         KeyDeviceType.Remote => modes.HasFlag(XYFocusNavigationModes.Remote),
-         _ => throw new ArgumentOutOfRangeException(nameof(keyDeviceType), keyDeviceType, null)
-      };
+      if (!keyDeviceType.HasValue) return true;
+      switch (keyDeviceType.GetValueOrDefault()) {
+         case KeyDeviceType.Keyboard:
+            return modes.HasFlag((Enum)XYFocusNavigationModes.Keyboard);
+         case KeyDeviceType.Gamepad:
+            return modes.HasFlag((Enum)XYFocusNavigationModes.Gamepad);
+         case KeyDeviceType.Remote:
+            return modes.HasFlag((Enum)XYFocusNavigationModes.Remote);
+         default:
+            throw new ArgumentOutOfRangeException(nameof(keyDeviceType), (object)keyDeviceType, (string?)null);
+      }
    }
 }

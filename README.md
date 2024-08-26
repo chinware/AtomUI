@@ -18,7 +18,7 @@ Welcome to communicate and give suggestions to AtomUI, thank you for giving the 
 |:-------------|:-----------|
 | Button       | Completed ✅|
 | PathIcon     | Completed ✅|
-| SpiltButton  | Developing 💪|
+| SpiltButton  | Completed ✅|
 
 ##### Navigation
 | Control Name | Status      |

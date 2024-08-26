@@ -1,0 +1,242 @@
+<UserControl x:Class="AtomUI.Demo.Desktop.ShowCase.SplitButtonShowCase"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:atom="https://atomui.net"
+             xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase" mc:Ignorable="d">
+    <showcase:ShowCasePanel>
+        <showcase:ShowCaseItem
+            Title="Basic"
+            Description="The most basic SplitButton.">
+            <atom:SplitButton TriggerType="Hover">
+                Hover me
+                <atom:SplitButton.Flyout>
+                    <atom:MenuFlyout>
+                        <atom:MenuItem Header="Cut" InputGesture="Ctrl+X"
+                                       Icon="{atom:IconProvider Kind=ScissorOutlined}" />
+                        <atom:MenuItem Header="Copy" InputGesture="Ctrl+C" Icon="{atom:IconProvider Kind=CopyOutlined}" />
+                        <atom:MenuItem Header="Delete" InputGesture="Ctrl+D"
+                                       Icon="{atom:IconProvider Kind=DeleteOutlined}" />
+                    </atom:MenuFlyout>
+                </atom:SplitButton.Flyout>
+            </atom:SplitButton>
+        </showcase:ShowCaseItem>
+
+        <showcase:ShowCaseItem
+            Title="Size"
+            Description="AtomUI supports three sizes of buttons: small, default and large.
+If a large or small button is desired, set the size property to either large or small respectively. Omit the size property for a button with the default size.">
+            <showcase:ShowCaseItem.Styles>
+                <Style Selector="atom|SplitButton">
+                    <Setter Property="Margin" Value="5" />
+                    <Setter Property="VerticalAlignment" Value="Bottom" />
+                </Style>
+            </showcase:ShowCaseItem.Styles>
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <WrapPanel>
+                    <atom:SplitButton SizeType="Large">
+                        Large
+                        <atom:SplitButton.Flyout>
+                            <atom:MenuFlyout>
+                                <atom:MenuItem Header="Cut" InputGesture="Ctrl+X"
+                                               Icon="{atom:IconProvider Kind=ScissorOutlined}" />
+                                <atom:MenuItem Header="Copy" InputGesture="Ctrl+C"
+                                               Icon="{atom:IconProvider Kind=CopyOutlined}" />
+                                <atom:MenuItem Header="Delete" InputGesture="Ctrl+D"
+                                               Icon="{atom:IconProvider Kind=DeleteOutlined}" />
+                            </atom:MenuFlyout>
+                        </atom:SplitButton.Flyout>
+                    </atom:SplitButton>
+                    <atom:SplitButton SizeType="Middle">
+                        Middle
+                        <atom:SplitButton.Flyout>
+                            <atom:MenuFlyout>
+                                <atom:MenuItem Header="Cut" InputGesture="Ctrl+X"
+                                               Icon="{atom:IconProvider Kind=ScissorOutlined}" />
+                                <atom:MenuItem Header="Copy" InputGesture="Ctrl+C"
+                                               Icon="{atom:IconProvider Kind=CopyOutlined}" />
+                                <atom:MenuItem Header="Delete" InputGesture="Ctrl+D"
+                                               Icon="{atom:IconProvider Kind=DeleteOutlined}" />
+                            </atom:MenuFlyout>
+                        </atom:SplitButton.Flyout>
+                    </atom:SplitButton>
+                    <atom:SplitButton SizeType="Small">
+                        Small
+                        <atom:SplitButton.Flyout>
+                            <atom:MenuFlyout>
+                                <atom:MenuItem Header="Cut" InputGesture="Ctrl+X"
+                                               Icon="{atom:IconProvider Kind=ScissorOutlined}" />
+                                <atom:MenuItem Header="Copy" InputGesture="Ctrl+C"
+                                               Icon="{atom:IconProvider Kind=CopyOutlined}" />
+                                <atom:MenuItem Header="Delete" InputGesture="Ctrl+D"
+                                               Icon="{atom:IconProvider Kind=DeleteOutlined}" />
+                            </atom:MenuFlyout>
+                        </atom:SplitButton.Flyout>
+                    </atom:SplitButton>
+                </WrapPanel>
+                <WrapPanel>
+                    <atom:SplitButton SizeType="Large" IsPrimaryButtonType="True">
+                        Large
+                        <atom:SplitButton.Flyout>
+                            <atom:MenuFlyout>
+                                <atom:MenuItem Header="Cut" InputGesture="Ctrl+X"
+                                               Icon="{atom:IconProvider Kind=ScissorOutlined}" />
+                                <atom:MenuItem Header="Copy" InputGesture="Ctrl+C"
+                                               Icon="{atom:IconProvider Kind=CopyOutlined}" />
+                                <atom:MenuItem Header="Delete" InputGesture="Ctrl+D"
+                                               Icon="{atom:IconProvider Kind=DeleteOutlined}" />
+                            </atom:MenuFlyout>
+                        </atom:SplitButton.Flyout>
+                    </atom:SplitButton>
+                    <atom:SplitButton SizeType="Middle" IsPrimaryButtonType="True">
+                        Middle
+                        <atom:SplitButton.Flyout>
+                            <atom:MenuFlyout>
+                                <atom:MenuItem Header="Cut" InputGesture="Ctrl+X"
+                                               Icon="{atom:IconProvider Kind=ScissorOutlined}" />
+                                <atom:MenuItem Header="Copy" InputGesture="Ctrl+C"
+                                               Icon="{atom:IconProvider Kind=CopyOutlined}" />
+                                <atom:MenuItem Header="Delete" InputGesture="Ctrl+D"
+                                               Icon="{atom:IconProvider Kind=DeleteOutlined}" />
+                            </atom:MenuFlyout>
+                        </atom:SplitButton.Flyout>
+                    </atom:SplitButton>
+                    <atom:SplitButton SizeType="Small" IsPrimaryButtonType="True">
+                        Small
+                        <atom:SplitButton.Flyout>
+                            <atom:MenuFlyout>
+                                <atom:MenuItem Header="Cut" InputGesture="Ctrl+X"
+                                               Icon="{atom:IconProvider Kind=ScissorOutlined}" />
+                                <atom:MenuItem Header="Copy" InputGesture="Ctrl+C"
+                                               Icon="{atom:IconProvider Kind=CopyOutlined}" />
+                                <atom:MenuItem Header="Delete" InputGesture="Ctrl+D"
+                                               Icon="{atom:IconProvider Kind=DeleteOutlined}" />
+                            </atom:MenuFlyout>
+                        </atom:SplitButton.Flyout>
+                    </atom:SplitButton>
+                </WrapPanel>
+            </StackPanel>
+        </showcase:ShowCaseItem>
+
+        <showcase:ShowCaseItem
+            Title="Danger Buttons"
+            Description="danger is a property of button after antd 4.0.">
+            <showcase:ShowCaseItem.Styles>
+                <Style Selector="atom|SplitButton">
+                    <Setter Property="Margin" Value="5" />
+                    <Setter Property="VerticalAlignment" Value="Bottom" />
+                </Style>
+            </showcase:ShowCaseItem.Styles>
+            <WrapPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
+                <atom:SplitButton IsDanger="true">
+                    Default
+                    <atom:SplitButton.Flyout>
+                        <atom:MenuFlyout>
+                            <atom:MenuItem Header="Cut" InputGesture="Ctrl+X"
+                                           Icon="{atom:IconProvider Kind=ScissorOutlined}" />
+                            <atom:MenuItem Header="Copy" InputGesture="Ctrl+C"
+                                           Icon="{atom:IconProvider Kind=CopyOutlined}" />
+                            <atom:MenuItem Header="Delete" InputGesture="Ctrl+D"
+                                           Icon="{atom:IconProvider Kind=DeleteOutlined}" />
+                        </atom:MenuFlyout>
+                    </atom:SplitButton.Flyout>
+                </atom:SplitButton>
+
+                <atom:SplitButton IsDanger="true" IsPrimaryButtonType="True">
+                    Primary
+                    <atom:SplitButton.Flyout>
+                        <atom:MenuFlyout>
+                            <atom:MenuItem Header="Cut" InputGesture="Ctrl+X"
+                                           Icon="{atom:IconProvider Kind=ScissorOutlined}" />
+                            <atom:MenuItem Header="Copy" InputGesture="Ctrl+C"
+                                           Icon="{atom:IconProvider Kind=CopyOutlined}" />
+                            <atom:MenuItem Header="Delete" InputGesture="Ctrl+D"
+                                           Icon="{atom:IconProvider Kind=DeleteOutlined}" />
+                        </atom:MenuFlyout>
+                    </atom:SplitButton.Flyout>
+                </atom:SplitButton>
+            </WrapPanel>
+        </showcase:ShowCaseItem>
+
+        <showcase:ShowCaseItem
+            Title="Custom Icon"
+            Description="Custom flyout button icon.">
+            <showcase:ShowCaseItem.Styles>
+                <Style Selector="atom|SplitButton">
+                    <Setter Property="Margin" Value="5" />
+                    <Setter Property="VerticalAlignment" Value="Bottom" />
+                </Style>
+            </showcase:ShowCaseItem.Styles>
+            <WrapPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
+                <atom:SplitButton>
+                    Default
+                    <atom:SplitButton.Flyout>
+                        <atom:MenuFlyout>
+                            <atom:MenuItem Header="Cut" InputGesture="Ctrl+X"
+                                           Icon="{atom:IconProvider Kind=ScissorOutlined}" />
+                            <atom:MenuItem Header="Copy" InputGesture="Ctrl+C"
+                                           Icon="{atom:IconProvider Kind=CopyOutlined}" />
+                            <atom:MenuItem Header="Delete" InputGesture="Ctrl+D"
+                                           Icon="{atom:IconProvider Kind=DeleteOutlined}" />
+                        </atom:MenuFlyout>
+                    </atom:SplitButton.Flyout>
+                </atom:SplitButton>
+
+                <atom:SplitButton FlyoutButtonIcon="{atom:IconProvider Kind=UserOutlined}">
+                    Primary
+                    <atom:SplitButton.Flyout>
+                        <atom:MenuFlyout>
+                            <atom:MenuItem Header="Cut" InputGesture="Ctrl+X"
+                                           Icon="{atom:IconProvider Kind=ScissorOutlined}" />
+                            <atom:MenuItem Header="Copy" InputGesture="Ctrl+C"
+                                           Icon="{atom:IconProvider Kind=CopyOutlined}" />
+                            <atom:MenuItem Header="Delete" InputGesture="Ctrl+D"
+                                           Icon="{atom:IconProvider Kind=DeleteOutlined}" />
+                        </atom:MenuFlyout>
+                    </atom:SplitButton.Flyout>
+                </atom:SplitButton>
+            </WrapPanel>
+        </showcase:ShowCaseItem>
+        
+         <showcase:ShowCaseItem
+            Title="Flyout trigger type"
+            Description="Support two kind of Trigger type.">
+            <showcase:ShowCaseItem.Styles>
+                <Style Selector="atom|SplitButton">
+                    <Setter Property="Margin" Value="5" />
+                    <Setter Property="VerticalAlignment" Value="Bottom" />
+                </Style>
+            </showcase:ShowCaseItem.Styles>
+            <WrapPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
+                <atom:SplitButton TriggerType="Hover">
+                    Hover Me
+                    <atom:SplitButton.Flyout>
+                        <atom:MenuFlyout>
+                            <atom:MenuItem Header="Cut" InputGesture="Ctrl+X"
+                                           Icon="{atom:IconProvider Kind=ScissorOutlined}" />
+                            <atom:MenuItem Header="Copy" InputGesture="Ctrl+C"
+                                           Icon="{atom:IconProvider Kind=CopyOutlined}" />
+                            <atom:MenuItem Header="Delete" InputGesture="Ctrl+D"
+                                           Icon="{atom:IconProvider Kind=DeleteOutlined}" />
+                        </atom:MenuFlyout>
+                    </atom:SplitButton.Flyout>
+                </atom:SplitButton>
+
+                <atom:SplitButton FlyoutButtonIcon="{atom:IconProvider Kind=UserOutlined}" TriggerType="Click">
+                    Click Me
+                    <atom:SplitButton.Flyout>
+                        <atom:MenuFlyout>
+                            <atom:MenuItem Header="Cut" InputGesture="Ctrl+X"
+                                           Icon="{atom:IconProvider Kind=ScissorOutlined}" />
+                            <atom:MenuItem Header="Copy" InputGesture="Ctrl+C"
+                                           Icon="{atom:IconProvider Kind=CopyOutlined}" />
+                            <atom:MenuItem Header="Delete" InputGesture="Ctrl+D"
+                                           Icon="{atom:IconProvider Kind=DeleteOutlined}" />
+                        </atom:MenuFlyout>
+                    </atom:SplitButton.Flyout>
+                </atom:SplitButton>
+            </WrapPanel>
+        </showcase:ShowCaseItem>
+    </showcase:ShowCasePanel>
+</UserControl>

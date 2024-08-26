@@ -21,7 +21,6 @@
     
     <ItemGroup>
       <Folder Include="Localization\" />
-      <Folder Include="SplitButton\" />
     </ItemGroup>
     
 </Project>

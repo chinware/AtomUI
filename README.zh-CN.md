@@ -22,7 +22,7 @@ PS: AtomUI 目前仅在 Windows 11 平台测试<br>
 |:-------------|:-------|
 | Button       | 已完成 ✅  |
 | PathIcon     | 已完成 ✅  |
-| SpiltButton  | 进行中 💪 |
+| SpiltButton  | 已完成 ✅ |
 
 ##### （导航）Navigation
 | 控件名            | 完成情况   |
@@ -90,15 +90,15 @@ PS: AtomUI 目前仅在 Windows 11 平台测试<br>
 |:---------------------|:-------|
 | Alert 警告提示           | 已完成 ✅  |
 | Drawer 抽屉            | 未完成    |
-| Message 全局提示         | 进行中 💪    |
-| Modal 对话框            | 进行中 💪    |
-| Notification 通知提醒框   | 进行中 💪    |
-| Popconfirm 气泡确认框     | 未完成    |
+| Message 全局提示         | 进行中 💪 |
+| Modal 对话框            | 进行中 💪 |
+| Notification 通知提醒框   | 进行中 💪 |
+| Popconfirm 气泡确认框     | 进行中 💪 |
 | ProgressBar 进度条      | 已完成 ✅  |
 | Result 结果            | 需评估 🤔 |
 | Skeleton 骨架屏         | 未完成    |
 | LoadingIndicator 加载中 | 已完成 ✅  |
-| Watermark 水印         | 未完成        |
+| Watermark 水印         | 未完成    |
 
 #### 运行效果部分截图
 

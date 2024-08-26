@@ -158,8 +158,12 @@ public class Button : AvaloniaButton,
       AvaloniaProperty.Register<Button, BoxShadow>(
          nameof(DangerShadow));
    
-   public static readonly StyledProperty<object?> RightExtraContentProperty =
+   internal static readonly StyledProperty<object?> RightExtraContentProperty =
       AvaloniaProperty.Register<Button, object?>(nameof(RightExtraContent));
+   
+   internal static readonly StyledProperty<Thickness> EffectiveBorderThicknessProperty =
+      AvaloniaProperty.Register<Button, Thickness>(
+         nameof(EffectiveBorderThickness));
    
    internal double ControlHeight
    {
@@ -201,6 +205,12 @@ public class Button : AvaloniaButton,
    {
       get => GetValue(RightExtraContentProperty);
       set => SetValue(RightExtraContentProperty, value);
+   }
+   
+   public Thickness EffectiveBorderThickness
+   {
+      get => GetValue(EffectiveBorderThicknessProperty);
+      set => SetValue(EffectiveBorderThicknessProperty, value);
    }
    
    #endregion
@@ -399,6 +409,7 @@ public class Button : AvaloniaButton,
       UpdatePseudoClasses();
       SetupIcon();
       SetupIconBrush();
+      SetupEffectiveBorderThickness();
    }
 
    protected virtual void ApplyIconModeStyleConfig()
@@ -471,6 +482,26 @@ public class Button : AvaloniaButton,
           e.Property == IsGhostProperty ||
           e.Property == ButtonTypeProperty) {
          SetupIconBrush();
+      }
+
+      if (e.Property == BorderBrushProperty ||
+          e.Property == ButtonTypeProperty) {
+         SetupEffectiveBorderThickness();
+      }
+   }
+
+   private void SetupEffectiveBorderThickness()
+   {
+      if (ButtonType == ButtonType.Default) {
+         EffectiveBorderThickness = BorderThickness;
+      } else if (ButtonType == ButtonType.Primary) {
+         if (IsGhost) {
+            EffectiveBorderThickness = BorderThickness;
+         } else {
+            EffectiveBorderThickness = new Thickness(0);
+         }
+      } else {
+         EffectiveBorderThickness = new Thickness(0);
       }
    }
 

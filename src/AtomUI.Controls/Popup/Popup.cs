@@ -26,7 +26,7 @@ public class Popup : AvaloniaPopup
       Border.BoxShadowProperty.AddOwner<Popup>();
 
    public static readonly StyledProperty<double> MarginToAnchorProperty =
-      AvaloniaProperty.Register<Popup, double>(nameof(MarginToAnchor));
+      AvaloniaProperty.Register<Popup, double>(nameof(MarginToAnchor), 4);
    
    
    private static readonly StyledProperty<TimeSpan> MotionDurationProperty
