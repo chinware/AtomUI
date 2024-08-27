@@ -165,5 +165,19 @@
         
             </Grid>
         </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="Customize icon"
+            Description="Set icon props to customize the icon.">
+            <atom:PopupConfirm 
+                Title="Delete the task"
+                ConfirmContent="Are you sure to delete this task?"
+                Icon="{atom:IconProvider Kind=QuestionCircleOutlined}"
+                ConfirmStatus="Error"
+                OkText="Ok"
+                CancelText="Cancel">
+                <atom:Button ButtonType="Default" IsDanger="True">Delete</atom:Button>
+            </atom:PopupConfirm>
+        </showcase:ShowCaseItem>
     </showcase:ShowCasePanel>
 </UserControl>
