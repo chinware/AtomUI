@@ -30,7 +30,7 @@
             Grid.Row="1"
             HorizontalAlignment="Stretch"
             Margin="8"
-            Name="tab"
+            Name="Tab"
             Padding="20,0,0,0"
             TabStripPlacement="Left"
             FontSize="13"
