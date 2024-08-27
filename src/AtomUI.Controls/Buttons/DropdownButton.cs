@@ -1,5 +1,4 @@
-﻿using System.Reactive.Disposables;
-using AtomUI.Data;
+﻿using AtomUI.Data;
 using AtomUI.Icon;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.TokenSystem;
@@ -9,10 +8,8 @@ using Avalonia.Controls;
 using Avalonia.Controls.Diagnostics;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Primitives.PopupPositioning;
-using Avalonia.Input;
-using Avalonia.Input.Raw;
 using Avalonia.Interactivity;
-using Avalonia.Threading;
+using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
 
@@ -24,7 +21,7 @@ public class DropdownButton : Button
       AvaloniaProperty.Register<DropdownButton, MenuFlyout?>(nameof(DropdownFlyout));
 
    public static readonly StyledProperty<FlyoutTriggerType> TriggerTypeProperty =
-      AvaloniaProperty.Register<DropdownButton, FlyoutTriggerType>(nameof(TriggerType), FlyoutTriggerType.Click);
+      FlyoutStateHelper.TriggerTypeProperty.AddOwner<DropdownButton>();
 
    public static readonly StyledProperty<bool> IsShowArrowProperty =
       ArrowDecoratedBox.IsShowArrowProperty.AddOwner<DropdownButton>();
@@ -45,10 +42,10 @@ public class DropdownButton : Button
       Popup.MarginToAnchorProperty.AddOwner<DropdownButton>();
 
    public static readonly StyledProperty<int> MouseEnterDelayProperty =
-      AvaloniaProperty.Register<DropdownButton, int>(nameof(MouseEnterDelay), 100);
+      FlyoutStateHelper.MouseEnterDelayProperty.AddOwner<DropdownButton>();
 
    public static readonly StyledProperty<int> MouseLeaveDelayProperty =
-      AvaloniaProperty.Register<DropdownButton, int>(nameof(MouseLeaveDelay), 100);
+      FlyoutStateHelper.MouseLeaveDelayProperty.AddOwner<DropdownButton>();
    
    public static readonly StyledProperty<bool> IsShowIndicatorProperty =
       AvaloniaProperty.Register<DropdownButton, bool>(nameof(IsShowIndicator), true);
@@ -131,18 +128,32 @@ public class DropdownButton : Button
    }
 
    #endregion
-
-   private DispatcherTimer? _mouseEnterDelayTimer;
-   private DispatcherTimer? _mouseLeaveDelayTimer;
-   private CompositeDisposable? _subscriptions;
+   
    private PathIcon? _openIndicatorIcon;
-   private IDisposable? _flyoutCloseDetectDisposable;
    private MenuFlyoutPresenter? _menuFlyoutPresenter;
+   private FlyoutStateHelper _flyoutStateHelper;
 
    static DropdownButton()
    {
       PlacementProperty.OverrideDefaultValue<DropdownButton>(PlacementMode.BottomEdgeAlignedLeft);
       IsShowArrowProperty.OverrideDefaultValue<DropdownButton>(false);
+   }
+   
+   public DropdownButton()
+   {
+      _flyoutStateHelper = new FlyoutStateHelper()
+      {
+         AnchorTarget = this
+      };
+   }
+   
+   protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+   {
+      base.OnAttachedToLogicalTree(e);
+      BindUtils.RelayBind(this, DropdownFlyoutProperty, _flyoutStateHelper, FlyoutStateHelper.FlyoutProperty);
+      BindUtils.RelayBind(this, MouseEnterDelayProperty, _flyoutStateHelper, FlyoutStateHelper.MouseEnterDelayProperty);
+      BindUtils.RelayBind(this, MouseLeaveDelayProperty, _flyoutStateHelper, FlyoutStateHelper.MouseLeaveDelayProperty);
+      BindUtils.RelayBind(this, TriggerTypeProperty, _flyoutStateHelper, FlyoutStateHelper.TriggerTypeProperty);
    }
 
    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -179,15 +190,13 @@ public class DropdownButton : Button
    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
    {
       base.OnDetachedFromVisualTree(e);
-      StopMouseLeaveTimer();
-      StopMouseEnterTimer();
-      _subscriptions?.Dispose();
+      _flyoutStateHelper.NotifyDetachedFromVisualTree();
    }
 
    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
    {
       base.OnAttachedToVisualTree(e);
-      SetupTriggerHandler();
+      _flyoutStateHelper.NotifyAttachedToVisualTree();
    }
 
    private void SetupFlyoutProperties()
@@ -210,15 +219,6 @@ public class DropdownButton : Button
       if (DropdownFlyout is IPopupHostProvider popupHostProvider) {
          var host = popupHostProvider.PopupHost;
          if (host is PopupRoot popupRoot) {
-            // 这里 PopupRoot 关闭的时候会被关闭，所以这里的事件处理器是不是不需要删除
-            popupRoot.PointerMoved += (o, args) =>
-            {
-               StopMouseLeaveTimer();
-               if (_flyoutCloseDetectDisposable is null) {
-                  var inputManager = AvaloniaLocator.Current.GetService<IInputManager>()!;
-                  _flyoutCloseDetectDisposable = inputManager.Process.Subscribe(DetectWhenToClosePopup);
-               }
-            };
             if (popupRoot.Parent is Popup popup) {
                if (popup.Child is MenuFlyoutPresenter menuFlyoutPresenter) {
                   _menuFlyoutPresenter = menuFlyoutPresenter;
@@ -242,173 +242,7 @@ public class DropdownButton : Button
       var eventArgs = new FlyoutMenuItemClickedEventArgs(MenuItemClickedEvent, args.Item);
       RaiseEvent(eventArgs);
    }
-
-   private void SetupTriggerHandler()
-   {
-      _subscriptions = new CompositeDisposable();
-      if (TriggerType == FlyoutTriggerType.Hover) {
-         _subscriptions.Add(IsPointerOverProperty.Changed.Subscribe(args =>
-         {
-            if (args.Sender == this) {
-               HandleAnchorTargetHover(args);
-            }
-         }));
-      } else if (TriggerType == FlyoutTriggerType.Click) {
-         var inputManager = AvaloniaLocator.Current.GetService<IInputManager>()!;
-         _subscriptions.Add(inputManager.Process.Subscribe(HandleAnchorTargetClick));
-      }
-   }
-
-   private void HandleAnchorTargetHover(AvaloniaPropertyChangedEventArgs<bool> e)
-   {
-      if (DropdownFlyout is not null) {
-         if (e.GetNewValue<bool>()) {
-            ShowFlyout();
-         } else {
-            HideFlyout();
-         }
-      }
-   }
-
-   private void DetectWhenToClosePopup(RawInputEventArgs args)
-   {
-      if (args is RawPointerEventArgs pointerEventArgs) {
-         if (DropdownFlyout is null) {
-            return;
-         }
-
-         if (DropdownFlyout.IsOpen) {
-            var found = false;
-            if (pointerEventArgs.Root is PopupRoot popupRoot) {
-               var current = popupRoot.Parent;
-               while (current is not null) {
-                  if (current == this) {
-                     found = true;
-                  }
-
-                  current = current.Parent;
-               }
-            } else if (object.Equals(pointerEventArgs.Root, this)) {
-               found = true;
-            }
-
-            if (!found) {
-               HideFlyout();
-            }
-         }
-      }
-   }
-
-   private void HandleAnchorTargetClick(RawInputEventArgs args)
-   {
-      if (args is RawPointerEventArgs pointerEventArgs) {
-         if (DropdownFlyout is null) {
-            return;
-         }
-
-         if (pointerEventArgs.Type == RawPointerEventType.LeftButtonUp) {
-            if (!DropdownFlyout.IsOpen) {
-               var pos = this.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(this)!);
-               if (!pos.HasValue) {
-                  return;
-               }
-
-               var bounds = new Rect(pos.Value, Bounds.Size);
-               if (bounds.Contains(pointerEventArgs.Position)) {
-                  ShowFlyout();
-               }
-            } else {
-               if (DropdownFlyout is IPopupHostProvider popupHostProvider) {
-                  if (popupHostProvider.PopupHost != pointerEventArgs.Root) {
-                     HideFlyout();
-                  }
-               }
-            }
-         }
-      }
-   }
-
-   public void ShowFlyout()
-   {
-      if (DropdownFlyout is null) {
-         return;
-      }
-
-      // 防止干扰打开
-      _flyoutCloseDetectDisposable?.Dispose();
-      StopMouseEnterTimer();
-      StopMouseLeaveTimer();
-      DropdownFlyout.Hide();
-      if (MouseEnterDelay == 0) {
-         DropdownFlyout.ShowAt(this);
-      } else {
-         StartMouseEnterTimer();
-      }
-   }
-
-   public void HideFlyout()
-   {
-      if (DropdownFlyout is null) {
-         return;
-      }
-
-      _flyoutCloseDetectDisposable?.Dispose();
-      _flyoutCloseDetectDisposable = null;
-      StopMouseEnterTimer();
-
-      if (MouseLeaveDelay == 0) {
-         DropdownFlyout.Hide();
-      } else {
-         StartMouseLeaveTimer();
-      }
-   }
-
-   private void StartMouseEnterTimer()
-   {
-      _mouseEnterDelayTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(MouseEnterDelay), Tag = this };
-      _mouseEnterDelayTimer.Tick += (sender, args) =>
-      {
-         if (_mouseEnterDelayTimer != null) {
-            StopMouseEnterTimer();
-            if (DropdownFlyout is null) {
-               return;
-            }
-
-            DropdownFlyout.ShowAt(this);
-         }
-      };
-      _mouseEnterDelayTimer.Start();
-   }
-
-   private void StopMouseEnterTimer()
-   {
-      _mouseEnterDelayTimer?.Stop();
-      _mouseEnterDelayTimer = null;
-   }
-
-   private void StopMouseLeaveTimer()
-   {
-      _mouseLeaveDelayTimer?.Stop();
-      _mouseLeaveDelayTimer = null;
-   }
-
-   private void StartMouseLeaveTimer()
-   {
-      _mouseLeaveDelayTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(MouseLeaveDelay), Tag = this };
-      _mouseLeaveDelayTimer.Tick += (sender, args) =>
-      {
-         if (_mouseLeaveDelayTimer != null) {
-            StopMouseLeaveTimer();
-            if (DropdownFlyout is null) {
-               return;
-            }
-
-            DropdownFlyout.Hide();
-         }
-      };
-      _mouseLeaveDelayTimer.Start();
-   }
-
+   
    protected override void NotifyIconBrushCalculated(in TokenResourceKey normalFilledBrushKey,
                                                      in TokenResourceKey selectedFilledBrushKey,
                                                      in TokenResourceKey activeFilledBrushKey,

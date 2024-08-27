@@ -121,7 +121,7 @@ public class Flyout : PopupFlyoutBase
 
    static Flyout()
    {
-      IsShowArrowProperty.OverrideDefaultValue<Flyout>(true);
+      IsShowArrowProperty.OverrideDefaultValue<Flyout>(false);
    }
 
    public Flyout()

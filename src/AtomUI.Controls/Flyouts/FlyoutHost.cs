@@ -4,13 +4,9 @@ using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Diagnostics;
 using Avalonia.Controls.Primitives.PopupPositioning;
-using Avalonia.Input;
-using Avalonia.Input.Raw;
 using Avalonia.LogicalTree;
 using Avalonia.Metadata;
-using Avalonia.Threading;
 
 namespace AtomUI.Controls;
 
@@ -39,7 +35,7 @@ public class FlyoutHost : Control
    /// 触发方式
    /// </summary>
    public static readonly StyledProperty<FlyoutTriggerType> TriggerProperty =
-      AvaloniaProperty.Register<FlyoutHost, FlyoutTriggerType>(nameof(Trigger), FlyoutTriggerType.Click);
+      FlyoutStateHelper.TriggerTypeProperty.AddOwner<FlyoutHost>();
 
    /// <summary>
    /// 是否显示指示箭头
@@ -71,10 +67,10 @@ public class FlyoutHost : Control
       Popup.MarginToAnchorProperty.AddOwner<FlyoutHost>();
 
    public static readonly StyledProperty<int> MouseEnterDelayProperty =
-      AvaloniaProperty.Register<FlyoutHost, int>(nameof(MouseEnterDelay), 100);
+      FlyoutStateHelper.MouseEnterDelayProperty.AddOwner<FlyoutHost>();
    
    public static readonly StyledProperty<int> MouseLeaveDelayProperty =
-      AvaloniaProperty.Register<FlyoutHost, int>(nameof(MouseLeaveDelay), 100);
+      FlyoutStateHelper.MouseLeaveDelayProperty.AddOwner<FlyoutHost>();
 
    /// <summary>
    /// 装饰的目标控件
@@ -147,14 +143,17 @@ public class FlyoutHost : Control
    }
 
    #endregion
-   
-   private DispatcherTimer? _mouseEnterDelayTimer;
-   private DispatcherTimer? _mouseLeaveDelayTimer;
-   private CompositeDisposable? _subscriptions;
 
    static FlyoutHost()
    {
       PlacementProperty.OverrideDefaultValue<FlyoutHost>(PlacementMode.Top);
+   }
+
+   private FlyoutStateHelper _flyoutStateHelper;
+
+   public FlyoutHost()
+   {
+      _flyoutStateHelper = new FlyoutStateHelper();
    }
 
    public override void ApplyTemplate()
@@ -167,6 +166,11 @@ public class FlyoutHost : Control
    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
    {
       base.OnAttachedToLogicalTree(e);
+      BindUtils.RelayBind(this, AnchorTargetProperty, _flyoutStateHelper, FlyoutStateHelper.AnchorTargetProperty);
+      BindUtils.RelayBind(this, FlyoutProperty, _flyoutStateHelper, FlyoutStateHelper.FlyoutProperty);
+      BindUtils.RelayBind(this, MouseEnterDelayProperty, _flyoutStateHelper, FlyoutStateHelper.MouseEnterDelayProperty);
+      BindUtils.RelayBind(this, MouseLeaveDelayProperty, _flyoutStateHelper, FlyoutStateHelper.MouseLeaveDelayProperty);
+      BindUtils.RelayBind(this, TriggerProperty, _flyoutStateHelper, FlyoutStateHelper.TriggerTypeProperty);
       if (AnchorTarget is not null) {
          ((ISetLogicalParent)AnchorTarget).SetParent(this);
          VisualChildren.Add(AnchorTarget);
@@ -176,15 +180,13 @@ public class FlyoutHost : Control
    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
    {
       base.OnAttachedToVisualTree(e);
-      SetupTriggerHandler();
+      _flyoutStateHelper.NotifyAttachedToVisualTree();
    }
 
    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
    {
       base.OnDetachedFromVisualTree(e);
-      StopMouseLeaveTimer();
-      StopMouseEnterTimer();
-      _subscriptions?.Dispose();
+      _flyoutStateHelper.NotifyDetachedFromVisualTree();
    }
 
    protected virtual void SetupFlyoutProperties()
@@ -199,136 +201,13 @@ public class FlyoutHost : Control
       }
    }
 
-   private void SetupTriggerHandler()
-   {
-      if (AnchorTarget is null) {
-         return;
-      }
-
-      _subscriptions = new CompositeDisposable();
-      if (Trigger == FlyoutTriggerType.Hover) {
-         IsPointerOverProperty.Changed.Subscribe(args =>
-         {
-            if (args.Sender == AnchorTarget) {
-               HandleAnchorTargetHover(args);
-            }
-         });
-      } else if (Trigger == FlyoutTriggerType.Click) {
-         var inputManager = AvaloniaLocator.Current.GetService<IInputManager>()!;
-         _subscriptions.Add(inputManager.Process.Subscribe(HandleAnchorTargetClick));
-      }
-   }
-
-   private void HandleAnchorTargetHover(AvaloniaPropertyChangedEventArgs<bool> e)
-   {
-      if (Flyout is not null) {
-         if (e.GetNewValue<bool>()) {
-            ShowFlyout();
-         } else {
-            HideFlyout();
-         }
-      }
-   }
-
-   private void HandleAnchorTargetClick(RawInputEventArgs args)
-   {
-      if (args is RawPointerEventArgs pointerEventArgs) {
-         if (AnchorTarget is not null && pointerEventArgs.Type == RawPointerEventType.LeftButtonUp) {
-
-            if (Flyout is null) {
-               return;
-            }
-
-            if (!Flyout.IsOpen) {
-               var pos = AnchorTarget.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(AnchorTarget)!);
-               if (!pos.HasValue) {
-                  return;
-               }
-               var bounds = new Rect(pos.Value, AnchorTarget.Bounds.Size);
-               if (bounds.Contains(pointerEventArgs.Position)) {
-                  ShowFlyout();
-               }
-            } else {
-               if (Flyout is IPopupHostProvider popupHostProvider) {
-                  if (popupHostProvider.PopupHost != pointerEventArgs.Root) {
-                     HideFlyout();
-                  }
-               }
-            }
-         }
-      }
-   }
-
    public void ShowFlyout()
    {
-      if (Flyout is null || AnchorTarget is null) {
-         return;
-      }
-      StopMouseEnterTimer();
-      StopMouseLeaveTimer();
-      Flyout.Hide();
-      if (MouseEnterDelay == 0) {
-         Flyout.ShowAt(AnchorTarget);
-      } else {
-         StartMouseEnterTimer();
-      }
+      _flyoutStateHelper.ShowFlyout();
    }
 
    public void HideFlyout()
    {
-      if (Flyout is null) {
-         return;
-      }
-      StopMouseEnterTimer();
-      
-      if (MouseLeaveDelay == 0) {
-         Flyout.Hide();
-      } else {
-         StartMouseLeaveTimer();
-      }
-   }
-
-   private void StartMouseEnterTimer()
-   {
-      _mouseEnterDelayTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(MouseEnterDelay), Tag = this };
-      _mouseEnterDelayTimer.Tick += (sender, args) =>
-      {
-         if (_mouseEnterDelayTimer != null) {
-            StopMouseEnterTimer();
-            if (Flyout is null || AnchorTarget is null) {
-               return;
-            }
-            Flyout.ShowAt(AnchorTarget);
-         }
-      };
-      _mouseEnterDelayTimer.Start();
-   }
-   
-   private void StopMouseEnterTimer()
-   {
-      _mouseEnterDelayTimer?.Stop();
-      _mouseEnterDelayTimer = null;
-   }
-
-   private void StopMouseLeaveTimer()
-   {
-      _mouseLeaveDelayTimer?.Stop();
-      _mouseLeaveDelayTimer = null;
-   }
-   
-   private void StartMouseLeaveTimer()
-   {
-      _mouseLeaveDelayTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(MouseLeaveDelay), Tag = this };
-      _mouseLeaveDelayTimer.Tick += (sender, args) =>
-      {
-         if (_mouseLeaveDelayTimer != null) {
-            StopMouseLeaveTimer();
-            if (Flyout is null) {
-               return;
-            }
-            Flyout.Hide();
-         }
-      };
-      _mouseLeaveDelayTimer.Start();
+      _flyoutStateHelper.HideFlyout();
    }
 }

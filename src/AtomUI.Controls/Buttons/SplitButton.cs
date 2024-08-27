@@ -44,13 +44,13 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
       Button.CommandParameterProperty.AddOwner<SplitButton>();
 
    public static readonly StyledProperty<Flyout?> FlyoutProperty =
-      AvaloniaProperty.Register<Button, Flyout?>(nameof(Flyout));
+      AvaloniaProperty.Register<SplitButton, Flyout?>(nameof(Flyout));
 
    public static readonly StyledProperty<KeyGesture?> HotKeyProperty =
       Button.HotKeyProperty.AddOwner<SplitButton>();
 
    public static readonly StyledProperty<FlyoutTriggerType> TriggerTypeProperty =
-      AvaloniaProperty.Register<SplitButton, FlyoutTriggerType>(nameof(TriggerType), FlyoutTriggerType.Click);
+      FlyoutStateHelper.TriggerTypeProperty.AddOwner<SplitButton>();
 
    public static readonly StyledProperty<bool> IsShowArrowProperty =
       ArrowDecoratedBox.IsShowArrowProperty.AddOwner<SplitButton>();
@@ -71,10 +71,10 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
       Popup.MarginToAnchorProperty.AddOwner<SplitButton>();
 
    public static readonly StyledProperty<int> MouseEnterDelayProperty =
-      AvaloniaProperty.Register<SplitButton, int>(nameof(MouseEnterDelay), 100);
+      FlyoutStateHelper.MouseEnterDelayProperty.AddOwner<SplitButton>();
 
    public static readonly StyledProperty<int> MouseLeaveDelayProperty =
-      AvaloniaProperty.Register<SplitButton, int>(nameof(MouseLeaveDelay), 100);
+      FlyoutStateHelper.MouseLeaveDelayProperty.AddOwner<SplitButton>();
 
    public static readonly StyledProperty<bool> IsShowIndicatorProperty =
       AvaloniaProperty.Register<SplitButton, bool>(nameof(IsShowIndicator), true);
@@ -276,11 +276,7 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
    private bool _isAttachedToLogicalTree = false;
    private bool _isFlyoutOpen = false;
    private bool _isKeyboardPressed = false;
-   
-   private DispatcherTimer? _mouseEnterDelayTimer;
-   private DispatcherTimer? _mouseLeaveDelayTimer;
-   private CompositeDisposable? _subscriptions;
-   private IDisposable? _flyoutCloseDetectDisposable;
+   private FlyoutStateHelper _flyoutStateHelper;
 
    private IDisposable? _flyoutPropertyChangedDisposable;
 
@@ -291,6 +287,11 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
       HorizontalAlignmentProperty.OverrideDefaultValue<SplitButton>(HorizontalAlignment.Left);
       VerticalAlignmentProperty.OverrideDefaultValue<SplitButton>(VerticalAlignment.Top);
       AffectsRender<SplitButton>(IsPrimaryButtonTypeProperty, IsDangerProperty);
+   }
+
+   public SplitButton()
+   {
+      _flyoutStateHelper = new FlyoutStateHelper();
    }
 
    internal virtual bool InternalIsChecked => false;
@@ -334,20 +335,7 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
 
    protected void OpenFlyout()
    {
-      if (Flyout is null) {
-         return;
-      }
-
-      // 防止干扰打开
-      _flyoutCloseDetectDisposable?.Dispose();
-      StopMouseEnterTimer();
-      StopMouseLeaveTimer();
-      Flyout.Hide();
-      if (MouseEnterDelay == 0) {
-         Flyout.ShowAt(this);
-      } else {
-         StartMouseEnterTimer();
-      }
+      _flyoutStateHelper.ShowFlyout();
    }
 
    /// <summary>
@@ -355,19 +343,7 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
    /// </summary>
    protected void CloseFlyout()
    {
-      if (Flyout is null) {
-         return;
-      }
-
-      _flyoutCloseDetectDisposable?.Dispose();
-      _flyoutCloseDetectDisposable = null;
-      StopMouseEnterTimer();
-
-      if (MouseLeaveDelay == 0) {
-         Flyout.Hide();
-      } else {
-         StartMouseLeaveTimer();
-      }
+      _flyoutStateHelper.HideFlyout();
    }
 
    /// <summary>
@@ -413,77 +389,16 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
    {
       base.OnDetachedFromVisualTree(e);
-      StopMouseLeaveTimer();
-      StopMouseEnterTimer();
-      _subscriptions?.Dispose();
+      _flyoutStateHelper.NotifyDetachedFromVisualTree();
    }
 
    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
    {
       base.OnAttachedToVisualTree(e);
-      SetupTriggerHandler();
+      _flyoutStateHelper.NotifyAttachedToVisualTree();
    }
    
-   private void SetupTriggerHandler()
-   {
-      _subscriptions = new CompositeDisposable();
-      if (TriggerType == FlyoutTriggerType.Hover) {
-         _subscriptions.Add(IsPointerOverProperty.Changed.Subscribe(args =>
-         {
-            if (args.Sender == _secondaryButton) {
-               HandleAnchorTargetHover(args);
-            }
-         }));
-      } else if (TriggerType == FlyoutTriggerType.Click) {
-         var inputManager = AvaloniaLocator.Current.GetService<IInputManager>()!;
-         _subscriptions.Add(inputManager.Process.Subscribe(HandleAnchorTargetClick));
-      }
-   }
    
-   private void HandleAnchorTargetClick(RawInputEventArgs args)
-   {
-      if (args is RawPointerEventArgs pointerEventArgs) {
-         if (Flyout is null) {
-            return;
-         }
-
-         if (pointerEventArgs.Type == RawPointerEventType.LeftButtonUp) {
-            if (_secondaryButton is not null) {
-               if (!Flyout.IsOpen) {
-                  var pos = _secondaryButton.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(this)!);
-                  if (!pos.HasValue) {
-                     return;
-                  }
-
-                  var bounds = new Rect(pos.Value, _secondaryButton.Bounds.Size);
-                  if (bounds.Contains(pointerEventArgs.Position)) {
-                     OpenFlyout();
-                     args.Handled = true;
-                  }
-               } else {
-                  if (Flyout is IPopupHostProvider popupHostProvider) {
-                     if (popupHostProvider.PopupHost != pointerEventArgs.Root) {
-                        CloseFlyout();
-                        args.Handled = true;
-                     }
-                  }
-               }
-            }
-         }
-      }
-   }
-   
-   private void HandleAnchorTargetHover(AvaloniaPropertyChangedEventArgs<bool> e)
-   {
-      if (Flyout is not null) {
-         if (e.GetNewValue<bool>()) {
-            OpenFlyout();
-         } else {
-            CloseFlyout();
-         }
-      }
-   }
-
    /// <inheritdoc/>
    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
    {
@@ -499,6 +414,7 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
 
       _primaryButton = e.NameScope.Find<Button>("PART_PrimaryButton");
       _secondaryButton = e.NameScope.Find<Button>("PART_SecondaryButton");
+      _flyoutStateHelper.AnchorTarget = _secondaryButton;
 
       if (_primaryButton != null) {
          _primaryButton.Click += HandlePrimaryButtonClick;
@@ -540,7 +456,12 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
          Command.CanExecuteChanged += CanExecuteChanged;
          CanExecuteChanged(this, EventArgs.Empty);
       }
-
+      
+      BindUtils.RelayBind(this, FlyoutProperty, _flyoutStateHelper, FlyoutStateHelper.FlyoutProperty);
+      BindUtils.RelayBind(this, MouseEnterDelayProperty, _flyoutStateHelper, FlyoutStateHelper.MouseEnterDelayProperty);
+      BindUtils.RelayBind(this, MouseLeaveDelayProperty, _flyoutStateHelper, FlyoutStateHelper.MouseLeaveDelayProperty);
+      BindUtils.RelayBind(this, TriggerTypeProperty, _flyoutStateHelper, FlyoutStateHelper.TriggerTypeProperty);
+      
       _isAttachedToLogicalTree = true;
    }
 
@@ -742,98 +663,8 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
 
          OnFlyoutOpened();
       }
-      
-      if (Flyout is IPopupHostProvider popupHostProvider) {
-         var host = popupHostProvider.PopupHost;
-         if (host is PopupRoot popupRoot) {
-            // 这里 PopupRoot 关闭的时候会被关闭，所以这里的事件处理器是不是不需要删除
-            popupRoot.PointerMoved += (o, args) =>
-            {
-               StopMouseLeaveTimer();
-               if (_flyoutCloseDetectDisposable is null) {
-                  var inputManager = AvaloniaLocator.Current.GetService<IInputManager>()!;
-                  _flyoutCloseDetectDisposable = inputManager.Process.Subscribe(DetectWhenToClosePopup);
-               }
-            };
-         }
-      }
    }
    
-   private void DetectWhenToClosePopup(RawInputEventArgs args)
-   {
-      if (args is RawPointerEventArgs pointerEventArgs) {
-         if (Flyout is null) {
-            return;
-         }
-
-         if (Flyout.IsOpen) {
-            var found = false;
-            if (pointerEventArgs.Root is PopupRoot popupRoot) {
-               var current = popupRoot.Parent;
-               while (current is not null) {
-                  if (current == this) {
-                     found = true;
-                  }
-
-                  current = current.Parent;
-               }
-            } else if (object.Equals(pointerEventArgs.Root, this)) {
-               found = true;
-            }
-
-            if (!found) {
-               CloseFlyout();
-            }
-         }
-      }
-   }
-   
-   private void StartMouseEnterTimer()
-   {
-      _mouseEnterDelayTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(MouseEnterDelay), Tag = this };
-      _mouseEnterDelayTimer.Tick += (sender, args) =>
-      {
-         if (_mouseEnterDelayTimer != null) {
-            StopMouseEnterTimer();
-            if (Flyout is null) {
-               return;
-            }
-
-            Flyout.ShowAt(this);
-         }
-      };
-      _mouseEnterDelayTimer.Start();
-   }
-
-   private void StopMouseEnterTimer()
-   {
-      _mouseEnterDelayTimer?.Stop();
-      _mouseEnterDelayTimer = null;
-   }
-
-   private void StopMouseLeaveTimer()
-   {
-      _mouseLeaveDelayTimer?.Stop();
-      _mouseLeaveDelayTimer = null;
-   }
-
-   private void StartMouseLeaveTimer()
-   {
-      _mouseLeaveDelayTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(MouseLeaveDelay), Tag = this };
-      _mouseLeaveDelayTimer.Tick += (sender, args) =>
-      {
-         if (_mouseLeaveDelayTimer != null) {
-            StopMouseLeaveTimer();
-            if (Flyout is null) {
-               return;
-            }
-
-            Flyout.Hide();
-         }
-      };
-      _mouseLeaveDelayTimer.Start();
-   }
-
    /// <summary>
    /// Event handler for when the split button's flyout is closed.
    /// </summary>
