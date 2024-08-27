@@ -73,7 +73,7 @@
                 <TextBlock TextWrapping="Wrap">
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
                 </TextBlock>
-                <atom:Separator Title="Left Text" TitlePosition="Right"/>
+                <atom:Separator Title="Right Text" TitlePosition="Right"/>
                 <TextBlock TextWrapping="Wrap">
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
                 </TextBlock>

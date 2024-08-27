@@ -15,37 +15,29 @@ public class ShowCaseItem : ContentControl
    private void SetupUi()
    {
       var mainLayout = new StackPanel();
-      var showCaseTitle = new StackPanel
+      var showCaseTitle = new AtomUI.Controls.Separator()
       {
-         Orientation = Orientation.Horizontal,
-         Margin = new Thickness(0, 30, 0, 0)
+         Title = Title,
+         TitlePosition = AtomUI.Controls.SeparatorTitlePosition.Left,
+         FontWeight = FontWeight.Bold,
       };
-      showCaseTitle.Children.Add(new Label()
-      {
-         VerticalAlignment = VerticalAlignment.Center,
-         HorizontalAlignment = HorizontalAlignment.Left,
-         Content = Title,
-         FontWeight = FontWeight.Bold
-      });
-      showCaseTitle.Children.Add(new Separator()
-      {
-         VerticalAlignment = VerticalAlignment.Center,
-         HorizontalAlignment = HorizontalAlignment.Stretch,
-         Margin = new Thickness(10, 0),
-         Width = 200,
-         BorderBrush = new SolidColorBrush(Colors.Gray),
-      });
 
       if (Content is Control contentControl) {
          LogicalChildren.Remove(contentControl);
          mainLayout.Children.Add(contentControl);
       }
-
+      
+      mainLayout.Children.Add(new Border
+      {
+         Height = 10,
+         Background = Brushes.Transparent
+      });
       mainLayout.Children.Add(showCaseTitle);
       mainLayout.Children.Add(new TextBlock()
       {
          Text = Description,
-         TextWrapping = TextWrapping.Wrap
+         TextWrapping = TextWrapping.Wrap,
+         Margin = new Thickness(0, 10, 0, 0)
       });
       
       var outerBorder = new Border()
@@ -53,7 +45,8 @@ public class ShowCaseItem : ContentControl
          BorderBrush = new SolidColorBrush(new Color(10, 5, 5, 5)),
          BorderThickness = new Thickness(1),
          Padding = new Thickness(20),
-         Child = mainLayout
+         Child = mainLayout,
+         CornerRadius = new CornerRadius(8)
       };
       
       Content = outerBorder;

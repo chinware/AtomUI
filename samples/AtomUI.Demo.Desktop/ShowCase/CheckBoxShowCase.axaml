@@ -87,7 +87,6 @@
                         Check all
                     </atom:CheckBox>
                 </StackPanel>
-                <Separator Width="200" />
                 <WrapPanel Margin="0, 20, 0, 0">
                     <atom:CheckBox x:Name="AppleCheckBox"
                                    IsChecked="{Binding AppleCheckedStatus}"

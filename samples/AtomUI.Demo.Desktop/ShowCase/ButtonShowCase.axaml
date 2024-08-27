@@ -54,7 +54,7 @@
             Title="Size"
             Description="AtomUI supports three sizes of buttons: small, default and large.
 If a large or small button is desired, set the size property to either large or small respectively. Omit the size property for a button with the default size.">
-            <DockPanel Margin="0, 0, 0, 0" Height="300">
+            <DockPanel Margin="0, 0, 0, 0">
                 <StackPanel Orientation="Horizontal" Spacing="5" DockPanel.Dock="Top">
                     <TextBlock VerticalAlignment="Center">Expand direction:</TextBlock>
                     <atom:OptionButtonGroup ButtonStyle="Outline" Name="ButtonSizeTypeOptionGroup">
