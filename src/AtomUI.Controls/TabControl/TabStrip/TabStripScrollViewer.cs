@@ -29,10 +29,14 @@ internal class TabStripScrollViewer : BaseTabScrollViewer
          _menuFlyout = new MenuFlyout();
       }
 
-      if (TabStripPlacement == Dock.Top || TabStripPlacement == Dock.Bottom) {
-         _menuFlyout.Placement = PlacementMode.Bottom;
+      if (TabStripPlacement == Dock.Top) {
+         _menuFlyout.Placement = PlacementMode.BottomEdgeAlignedLeft;
+      } else if (TabStripPlacement == Dock.Bottom) {
+         _menuFlyout.Placement = PlacementMode.TopEdgeAlignedLeft;
+      } else if (TabStripPlacement == Dock.Right) {
+         _menuFlyout.Placement = PlacementMode.LeftEdgeAlignedBottom;
       } else {
-         _menuFlyout.Placement = PlacementMode.Right;
+         _menuFlyout.Placement = PlacementMode.RightEdgeAlignedBottom;
       }
 
       // 收集没有完全显示的 Tab 列表
