@@ -64,6 +64,7 @@ PS: AtomUI 目前仅在 Windows 11 平台测试<br>
 | Badge 徽标数              | 已完成 ✅  |
 | Calendar 日历            | 未完成    |
 | Card 卡片                | 未完成    |
+| GroupBox 控件            | 进行中 💪 |
 | Carousel 走马灯           | 进行中 💪 |
 | Collapse 折叠面板          | 已完成 ✅  |
 | Expander 折叠面板          | 已完成 ✅  |
@@ -93,7 +94,7 @@ PS: AtomUI 目前仅在 Windows 11 平台测试<br>
 | Message 全局提示         | 进行中 💪 |
 | Modal 对话框            | 进行中 💪 |
 | Notification 通知提醒框   | 进行中 💪 |
-| Popconfirm 气泡确认框     | 进行中 💪 |
+| Popconfirm 气泡确认框     | 已完成 ✅ |
 | ProgressBar 进度条      | 已完成 ✅  |
 | Result 结果            | 需评估 🤔 |
 | Skeleton 骨架屏         | 未完成    |

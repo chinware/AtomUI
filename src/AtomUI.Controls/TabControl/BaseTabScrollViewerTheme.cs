@@ -47,16 +47,15 @@ internal class BaseTabScrollViewerTheme : BaseControlTheme
             VerticalAlignment = VerticalAlignment.Center
          };
          
-         TokenResourceBinder.CreateTokenBinding(menuIndicatorIcon, PathIcon.WidthProperty, GlobalTokenResourceKey.IconSize);
-         TokenResourceBinder.CreateTokenBinding(menuIndicatorIcon, PathIcon.HeightProperty, GlobalTokenResourceKey.IconSize);
          TokenResourceBinder.CreateTokenBinding(menuIndicatorIcon, PathIcon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorTextSecondary);
          
          var menuIndicator = new IconButton()
          {
             Name = ScrollMenuIndicatorPart,
-            Icon = menuIndicatorIcon
+            Icon = menuIndicatorIcon,
          };
-
+         TokenResourceBinder.CreateTokenBinding(menuIndicator, IconButton.IconWidthProperty, GlobalTokenResourceKey.IconSize);
+         TokenResourceBinder.CreateTokenBinding(menuIndicator, IconButton.IconHeightProperty, GlobalTokenResourceKey.IconSize);
          menuIndicator.RegisterInNameScope(scope);
 
          var scrollViewContent = CreateScrollContentPresenter();

@@ -26,11 +26,14 @@ internal class TabControlScrollViewer : BaseTabScrollViewer
    private void HandleMenuIndicator(object? sender, RoutedEventArgs args)
    {
       if (_menuFlyout is null) {
-         _menuFlyout = new MenuFlyout();
+         _menuFlyout = new MenuFlyout()
+         {
+            IsShowArrow = false
+         };
       }
 
       if (TabStripPlacement == Dock.Top) {
-         _menuFlyout.Placement = PlacementMode.Bottom;
+         _menuFlyout.Placement = PlacementMode.BottomEdgeAlignedLeft;
       } else if (TabStripPlacement == Dock.Bottom) {
          _menuFlyout.Placement = PlacementMode.Top;
       } else if (TabStripPlacement == Dock.Right) {

@@ -1,5 +1,4 @@
-﻿using AtomUI.Controls;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 
 namespace AtomUI.Demo.Desktop.ShowCase;
 

@@ -52,9 +52,6 @@ internal class CardTabControlTheme : BaseTabControlTheme
       TokenResourceBinder.CreateTokenBinding(addTabIcon, PathIcon.NormalFilledBrushProperty, TabControlTokenResourceKey.ItemColor);
       TokenResourceBinder.CreateTokenBinding(addTabIcon, PathIcon.ActiveFilledBrushProperty, TabControlTokenResourceKey.ItemHoverColor);
       TokenResourceBinder.CreateTokenBinding(addTabIcon, PathIcon.DisabledFilledBrushProperty, GlobalTokenResourceKey.ColorTextDisabled);
-      
-      TokenResourceBinder.CreateGlobalResourceBinding(addTabIcon, PathIcon.WidthProperty, GlobalTokenResourceKey.IconSize);
-      TokenResourceBinder.CreateGlobalResourceBinding(addTabIcon, PathIcon.HeightProperty, GlobalTokenResourceKey.IconSize);
 
       var addTabButton = new IconButton
       {
@@ -63,7 +60,8 @@ internal class CardTabControlTheme : BaseTabControlTheme
          Icon = addTabIcon
       };
       DockPanel.SetDock(addTabButton, Dock.Right);
-      
+      TokenResourceBinder.CreateGlobalResourceBinding(addTabButton, IconButton.IconHeightProperty, GlobalTokenResourceKey.IconSize);
+      TokenResourceBinder.CreateGlobalResourceBinding(addTabButton, IconButton.IconWidthProperty, GlobalTokenResourceKey.IconSize);
       CreateTemplateParentBinding(addTabButton, IconButton.BorderThicknessProperty, CardTabControl.CardBorderThicknessProperty);
       CreateTemplateParentBinding(addTabButton, IconButton.CornerRadiusProperty, CardTabControl.CardBorderRadiusProperty);
       CreateTemplateParentBinding(addTabButton, IconButton.IsVisibleProperty, CardTabControl.IsShowAddTabButtonProperty);

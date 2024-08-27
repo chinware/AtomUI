@@ -59,6 +59,7 @@ Welcome to communicate and give suggestions to AtomUI, thank you for giving the 
 | Badge          | Completed ✅   |
 | Calendar       | TODO          |
 | Card           | TODO          |
+| GroupBox       | Developing 💪 |
 | Carousel       | Developing 💪 |
 | Collapse       | Completed ✅   |
 | Expander       | Completed ✅   |
@@ -86,7 +87,7 @@ Welcome to communicate and give suggestions to AtomUI, thank you for giving the 
 | Message            | Developing 💪  |
 | Modal              | Developing 💪  |
 | Notification       | Developing 💪  |
-| Popconfirm         | Developing 💪  |
+| Popconfirm         | Completed ✅  |
 | ProgressBar        | Completed ✅    |
 | Result             | Need Review 🤔 |
 | Skeleton           | TODO           |
