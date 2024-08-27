@@ -28,7 +28,7 @@ PS: AtomUI 目前仅在 Windows 11 平台测试<br>
 | 控件名            | 完成情况   |
 |:---------------|:-------|
 | Breadcrumb 面包屑 | 未完成    |
-| Dropdown 下拉菜单  | 未完成    |
+| Dropdown 下拉菜单  | 已完成 ✅  |
 | Menu 导航菜单      | 已完成 ✅  |
 | Pagination 分页  | 进行中 💪 |
 | Steps 步骤条      | 未完成    |
