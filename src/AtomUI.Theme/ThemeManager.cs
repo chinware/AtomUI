@@ -32,6 +32,7 @@ public class ThemeManager : Styles, IThemeManager
    public IReadOnlyList<string> CustomThemeDirs => _customThemeDirs;
    public static ThemeManager Current { get; }
    public string DefaultThemeId { get; set; }
+   public double RenderScaling { get; internal set; }
    internal List<Type> ControlTokenTypes { get; set; }
 
    private CultureInfo? _cultureInfo;

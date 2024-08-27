@@ -146,8 +146,7 @@ public class FlyoutHost : Control
    }
 
    #endregion
-
-   private bool _initialized = false;
+   
    private DispatcherTimer? _mouseEnterDelayTimer;
    private DispatcherTimer? _mouseLeaveDelayTimer;
    private CompositeDisposable? _subscriptions;
@@ -157,35 +156,36 @@ public class FlyoutHost : Control
       PlacementProperty.OverrideDefaultValue<FlyoutHost>(PlacementMode.Top);
    }
 
-   public sealed override void ApplyTemplate()
+   public override void ApplyTemplate()
    {
       base.ApplyTemplate();
-      if (!_initialized) {
-         if (AnchorTarget is not null) {
-            ((ISetLogicalParent)AnchorTarget).SetParent(this);
-            VisualChildren.Add(AnchorTarget);
-         }
-         TokenResourceBinder.CreateGlobalTokenBinding(this, MarginToAnchorProperty, GlobalTokenResourceKey.MarginXXS);
-         _initialized = true;
+      if (AnchorTarget is not null) {
+         ((ISetLogicalParent)AnchorTarget).SetParent(this);
+         VisualChildren.Add(AnchorTarget);
       }
+      TokenResourceBinder.CreateGlobalTokenBinding(this, MarginToAnchorProperty, GlobalTokenResourceKey.MarginXXS);
+      SetupFlyoutProperties();
    }
 
    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
    {
       base.OnAttachedToVisualTree(e);
       SetupTriggerHandler();
-      SetupFlyoutProperties();
    }
 
    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
    {
       base.OnDetachedFromVisualTree(e);
+      if (AnchorTarget is not null) {
+         ((ISetLogicalParent)AnchorTarget).SetParent(null);
+         VisualChildren.Remove(AnchorTarget);
+      }
       StopMouseLeaveTimer();
       StopMouseEnterTimer();
       _subscriptions?.Dispose();
    }
 
-   private void SetupFlyoutProperties()
+   protected virtual void SetupFlyoutProperties()
    {
       if (Flyout is not null) {
          BindUtils.RelayBind(this, PlacementProperty, Flyout);

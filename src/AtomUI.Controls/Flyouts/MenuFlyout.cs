@@ -64,8 +64,6 @@ public class MenuFlyout : Flyout
       set => SetValue(ItemTemplateProperty, value);
    }
 
-   private Classes? _classes;
-
    protected override Control CreatePresenter()
    {
       var presenter = new MenuFlyoutPresenter()
@@ -106,10 +104,6 @@ public class MenuFlyout : Flyout
    protected override void OnOpening(CancelEventArgs args)
    {
       if (Popup.Child is { } presenter) {
-         if (_classes != null) {
-            SetPresenterClasses(presenter, FlyoutPresenterClasses);
-         }
-   
          if (FlyoutPresenterTheme is { } theme) {
             presenter.SetValue(Control.ThemeProperty, theme);
          }

@@ -16,6 +16,7 @@ using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -249,13 +250,6 @@ public class Button : AvaloniaButton,
       var size = base.MeasureOverride(availableSize);
       var targetWidth = size.Width;
       var targetHeight = size.Height;
-
-      // targetHeight += Padding.Top + Padding.Bottom;
-      // if (Shape != ButtonShape.Round) {
-      //    targetWidth += Padding.Left + Padding.Right;
-      // } else {
-      //    targetWidth += Math.Max(Padding.Left + Padding.Right, targetHeight);
-      // }
     
       targetHeight = Math.Max(targetHeight, ControlHeight);
       
@@ -399,17 +393,13 @@ public class Button : AvaloniaButton,
             };
          }
       }
-
-      TokenResourceBinder.CreateGlobalTokenBinding(this, BorderThicknessProperty, GlobalTokenResourceKey.BorderThickness,
-         BindingPriority.Template,
-         new RenderScaleAwareThicknessConfigure(this));
+      
       _customStyle.CollectStyleState();
       ApplyShapeStyleConfig();
       ApplyIconModeStyleConfig();
       UpdatePseudoClasses();
       SetupIcon();
       SetupIconBrush();
-      SetupEffectiveBorderThickness();
    }
 
    protected virtual void ApplyIconModeStyleConfig()
@@ -488,6 +478,15 @@ public class Button : AvaloniaButton,
           e.Property == ButtonTypeProperty) {
          SetupEffectiveBorderThickness();
       }
+   }
+
+   protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+   {
+      base.OnAttachedToVisualTree(e);
+      TokenResourceBinder.CreateGlobalTokenBinding(this, BorderThicknessProperty, GlobalTokenResourceKey.BorderThickness,
+                                                   BindingPriority.Template,
+                                                   new RenderScaleAwareThicknessConfigure(this));
+      SetupEffectiveBorderThickness();
    }
 
    private void SetupEffectiveBorderThickness()
