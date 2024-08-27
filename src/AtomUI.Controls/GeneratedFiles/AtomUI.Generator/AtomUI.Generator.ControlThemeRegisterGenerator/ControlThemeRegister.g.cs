@@ -44,6 +44,7 @@
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.NumericUpDownTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.OptionButtonGroupTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.OptionButtonTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.PopupConfirmContainerTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.CircleProgressTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.DashboardProgressTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.ProgressBarTheme());

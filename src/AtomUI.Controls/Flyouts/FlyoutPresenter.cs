@@ -1,4 +1,5 @@
-﻿using Avalonia.Input;
+﻿using Avalonia.Data;
+using Avalonia.Input;
 using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
@@ -19,5 +20,10 @@ public class FlyoutPresenter : ArrowDecoratedBox
          }
       }
       base.OnKeyDown(e);
+   }
+
+   public FlyoutPresenter()
+   {
+      SetValue(CursorProperty, new Cursor(StandardCursorType.Arrow), BindingPriority.Template);
    }
 }

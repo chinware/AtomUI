@@ -84,6 +84,9 @@
             <TabItem Header="InfoFlyout">
                 <showcases:InfoFlyoutShowCase />
             </TabItem>
+            <TabItem Header="PopupConfirm">
+                <showcases:PopupConfirmShowCase />
+            </TabItem>
             <TabItem Header="ProgressBar">
                 <showcases:ProgressBarShowCase />
             </TabItem>

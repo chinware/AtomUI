@@ -6,12 +6,12 @@ using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives.PopupPositioning;
+using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Metadata;
 using Avalonia.Styling;
 using Avalonia.Threading;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -134,7 +134,7 @@ public class Flyout : PopupFlyoutBase
       SetupArrowPosition(Popup);
    }
 
-   private void SetupArrowPosition(Popup popup, FlyoutPresenter? flyoutPresenter = null)
+   protected void SetupArrowPosition(Popup popup, FlyoutPresenter? flyoutPresenter = null)
    {
       if (flyoutPresenter is null) {
          var child = popup.Child;
@@ -323,14 +323,14 @@ public class Flyout : PopupFlyoutBase
          }
       }
 
-      if (Popup.PlacementTarget?.GetVisualRoot() is null) {
-         return base.HideCore(false);
-      }
-      IsOpen = false;
-      Dispatcher.UIThread.Post(() =>
-      {
-         Popup.CloseAnimation(HandlePopupClosed);
-      });
+      // if (Popup.PlacementTarget?.GetVisualRoot() is null) {
+      //    return base.HideCore(false);
+      // }
+      // IsOpen = false;
+      // Dispatcher.UIThread.Post(() =>
+      // {
+      //    Popup.CloseAnimation(HandlePopupClosed);
+      // });
       return true;
 
    }

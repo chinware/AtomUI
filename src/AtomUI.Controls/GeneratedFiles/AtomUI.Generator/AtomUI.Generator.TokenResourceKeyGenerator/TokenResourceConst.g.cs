@@ -317,6 +317,16 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey PaddingSM = new TokenResourceKey("OptionButton.PaddingSM", "AtomUI.Token");
     }
 
+    public static class PopupConfirmTokenResourceKey
+    {
+        public static readonly TokenResourceKey PopupMinWidth = new TokenResourceKey("PopupConfirm.PopupMinWidth", "AtomUI.Token");
+        public static readonly TokenResourceKey PopupMinHeight = new TokenResourceKey("PopupConfirm.PopupMinHeight", "AtomUI.Token");
+        public static readonly TokenResourceKey ButtonMargin = new TokenResourceKey("PopupConfirm.ButtonMargin", "AtomUI.Token");
+        public static readonly TokenResourceKey IconMargin = new TokenResourceKey("PopupConfirm.IconMargin", "AtomUI.Token");
+        public static readonly TokenResourceKey ContentContainerMargin = new TokenResourceKey("PopupConfirm.ContentContainerMargin", "AtomUI.Token");
+        public static readonly TokenResourceKey TitleMargin = new TokenResourceKey("PopupConfirm.TitleMargin", "AtomUI.Token");
+    }
+
     public static class ProgressBarTokenResourceKey
     {
         public static readonly TokenResourceKey DefaultColor = new TokenResourceKey("ProgressBar.DefaultColor", "AtomUI.Token");

@@ -1,4 +1,5 @@
 ﻿using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
@@ -35,6 +36,7 @@ public abstract class BaseControlTheme : ControlTheme
    }
 
    protected virtual void BuildStyles() { }
+   protected virtual void BuildInstanceStyles(Control control) { }
    protected virtual void NotifyPreBuild() { }
    protected virtual void NotifyBuildCompleted() { }
 
