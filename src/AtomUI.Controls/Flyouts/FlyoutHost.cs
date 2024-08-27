@@ -8,6 +8,7 @@ using Avalonia.Controls.Diagnostics;
 using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Input;
 using Avalonia.Input.Raw;
+using Avalonia.LogicalTree;
 using Avalonia.Metadata;
 using Avalonia.Threading;
 
@@ -159,12 +160,17 @@ public class FlyoutHost : Control
    public override void ApplyTemplate()
    {
       base.ApplyTemplate();
+      TokenResourceBinder.CreateGlobalTokenBinding(this, MarginToAnchorProperty, GlobalTokenResourceKey.MarginXXS);
+      SetupFlyoutProperties();
+   }
+
+   protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+   {
+      base.OnAttachedToLogicalTree(e);
       if (AnchorTarget is not null) {
          ((ISetLogicalParent)AnchorTarget).SetParent(this);
          VisualChildren.Add(AnchorTarget);
       }
-      TokenResourceBinder.CreateGlobalTokenBinding(this, MarginToAnchorProperty, GlobalTokenResourceKey.MarginXXS);
-      SetupFlyoutProperties();
    }
 
    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -176,10 +182,6 @@ public class FlyoutHost : Control
    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
    {
       base.OnDetachedFromVisualTree(e);
-      if (AnchorTarget is not null) {
-         ((ISetLogicalParent)AnchorTarget).SetParent(null);
-         VisualChildren.Remove(AnchorTarget);
-      }
       StopMouseLeaveTimer();
       StopMouseEnterTimer();
       _subscriptions?.Dispose();

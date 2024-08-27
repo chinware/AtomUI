@@ -17,7 +17,7 @@ internal class PopupConfirmFlyout : Flyout
       var presenter = new FlyoutPresenter();
 
       if (PopupConfirmRef.TryGetTarget(out var popupConfirm)) {
-         var popupConfirmContainer = new PopupConfirmContainer();
+         var popupConfirmContainer = new PopupConfirmContainer(popupConfirm);
          BindUtils.RelayBind(popupConfirm, PopupConfirm.OkTextProperty, popupConfirmContainer, PopupConfirmContainer.OkTextProperty);
          BindUtils.RelayBind(popupConfirm, PopupConfirm.CancelTextProperty, popupConfirmContainer, PopupConfirmContainer.CancelTextProperty);
          BindUtils.RelayBind(popupConfirm, PopupConfirm.OkButtonTypeProperty, popupConfirmContainer, PopupConfirmContainer.OkButtonTypeProperty);

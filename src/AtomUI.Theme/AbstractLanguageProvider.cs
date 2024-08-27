@@ -31,13 +31,12 @@ public class AbstractLanguageProvider : ILanguageProvider
    {
       var type = GetType();
       var languageFields = type.GetFields(BindingFlags.Public |
-                                          BindingFlags.Instance |
+                                          BindingFlags.Static |
                                           BindingFlags.FlattenHierarchy);
       foreach (var field in languageFields) {
-         var languageKey = field.Name;
+         var languageKey = $"{_languageId}.{field.Name}";
          var languageText = field.GetValue(this);
-
-         dictionary[new TokenResourceKey(languageKey, _resourceCatalog)] = languageText;
+         dictionary[new LanguageResourceKey(languageKey, _resourceCatalog)] = languageText;
       }
    }
 }

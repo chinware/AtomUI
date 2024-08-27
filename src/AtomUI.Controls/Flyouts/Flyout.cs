@@ -12,6 +12,7 @@ using Avalonia.Media;
 using Avalonia.Metadata;
 using Avalonia.Styling;
 using Avalonia.Threading;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -323,14 +324,14 @@ public class Flyout : PopupFlyoutBase
          }
       }
 
-      // if (Popup.PlacementTarget?.GetVisualRoot() is null) {
-      //    return base.HideCore(false);
-      // }
-      // IsOpen = false;
-      // Dispatcher.UIThread.Post(() =>
-      // {
-      //    Popup.CloseAnimation(HandlePopupClosed);
-      // });
+      if (Popup.PlacementTarget?.GetVisualRoot() is null) {
+         return base.HideCore(false);
+      }
+      IsOpen = false;
+      Dispatcher.UIThread.Post(() =>
+      {
+         Popup.CloseAnimation(HandlePopupClosed);
+      });
       return true;
 
    }

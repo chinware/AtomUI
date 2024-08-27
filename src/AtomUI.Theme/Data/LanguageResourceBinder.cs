@@ -1,4 +1,4 @@
-﻿using AtomUI.Theme.TokenSystem;
+﻿using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
@@ -10,7 +10,7 @@ public static class LanguageResourceBinder
 {
    public static IDisposable CreateBinding(AvaloniaObject target,
                                                       AvaloniaProperty targetProperty,
-                                                      TokenResourceKey resourceKey,
+                                                      LanguageResourceKey resourceKey,
                                                       BindingPriority priority = BindingPriority.Template,
                                                       Func<object?, object?>? converter = null)
    {

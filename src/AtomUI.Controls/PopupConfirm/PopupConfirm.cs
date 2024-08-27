@@ -1,5 +1,9 @@
-﻿using Avalonia;
+﻿using AtomUI.Controls.PopupConfirmLang;
+using AtomUI.Data;
+using Avalonia;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
+using Avalonia.Interactivity;
 
 namespace AtomUI.Controls;
 
@@ -15,10 +19,10 @@ public class PopupConfirm : FlyoutHost
    #region 公共属性属性
 
    public static readonly StyledProperty<string> OkTextProperty =
-      AvaloniaProperty.Register<PopupConfirm, string>(nameof(OkText), "Ok");
+      AvaloniaProperty.Register<PopupConfirm, string>(nameof(OkText));
    
    public static readonly StyledProperty<string> CancelTextProperty =
-      AvaloniaProperty.Register<PopupConfirm, string>(nameof(CancelText), "Cancel");
+      AvaloniaProperty.Register<PopupConfirm, string>(nameof(CancelText));
    
    public static readonly StyledProperty<ButtonType> OkButtonTypeProperty =
       AvaloniaProperty.Register<PopupConfirm, ButtonType>(nameof(OkButtonType), ButtonType.Primary);
@@ -40,6 +44,15 @@ public class PopupConfirm : FlyoutHost
    
    public static readonly StyledProperty<PopupConfirmStatus> ConfirmStatusProperty
       = AvaloniaProperty.Register<PopupConfirm, PopupConfirmStatus>(nameof(ConfirmStatus), PopupConfirmStatus.Warning);
+   
+   public static readonly RoutedEvent<RoutedEventArgs> CancelledEvent =
+      RoutedEvent.Register<Button, RoutedEventArgs>(nameof(Cancelled), RoutingStrategies.Bubble);
+   
+   public static readonly RoutedEvent<RoutedEventArgs> ConfirmedEvent =
+      RoutedEvent.Register<Button, RoutedEventArgs>(nameof(Confirmed), RoutingStrategies.Bubble);
+   
+   public static readonly RoutedEvent<PopupConfirmClickEventArgs> PopupClickEvent =
+      RoutedEvent.Register<Button, PopupConfirmClickEventArgs>(nameof(PopupClick), RoutingStrategies.Bubble);
    
    public string OkText
    {
@@ -95,6 +108,24 @@ public class PopupConfirm : FlyoutHost
       set => SetValue(ConfirmStatusProperty, value);
    }
 
+   public event EventHandler<RoutedEventArgs>? Cancelled
+   {
+      add => AddHandler(CancelledEvent, value);
+      remove => RemoveHandler(CancelledEvent, value);
+   }
+   
+   public event EventHandler<RoutedEventArgs>? Confirmed
+   {
+      add => AddHandler(ConfirmedEvent, value);
+      remove => RemoveHandler(ConfirmedEvent, value);
+   }
+   
+   public event EventHandler<PopupConfirmClickEventArgs>? PopupClick
+   {
+      add => AddHandler(PopupClickEvent, value);
+      remove => RemoveHandler(PopupClickEvent, value);
+   }
+   
    #endregion
    
    public sealed override void ApplyTemplate()
@@ -109,6 +140,20 @@ public class PopupConfirm : FlyoutHost
             Kind = "ExclamationCircleFilled"
          };
       }
+
+      LanguageResourceBinder.CreateBinding(this, OkTextProperty, PopupConfirmLangResourceKey.OkText, BindingPriority.Template);
+      LanguageResourceBinder.CreateBinding(this, CancelTextProperty, PopupConfirmLangResourceKey.CancelText, BindingPriority.Template);
       base.ApplyTemplate();
+   }
+}
+
+public class PopupConfirmClickEventArgs : RoutedEventArgs
+{
+   public bool IsConfirmed { get; }
+
+   public PopupConfirmClickEventArgs(RoutedEvent? routedEvent, bool isConfirmed)
+      : base(routedEvent)
+   {
+      IsConfirmed = isConfirmed;
    }
 }

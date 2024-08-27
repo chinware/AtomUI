@@ -1,6 +1,8 @@
 ﻿using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Interactivity;
 
 namespace AtomUI.Controls;
 
@@ -90,4 +92,45 @@ internal class PopupConfirmContainer : TemplatedControl
    }
 
    #endregion
+   
+   internal WeakReference<PopupConfirm> PopupConfirmRef { get; set; }
+   private Button? _okButton;
+   private Button? _cancelButton;
+   
+   public PopupConfirmContainer(PopupConfirm popupConfirm)
+   {
+      PopupConfirmRef = new WeakReference<PopupConfirm>(popupConfirm);
+   }
+
+   protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+   {
+      base.OnApplyTemplate(e);
+      _okButton = e.NameScope.Find<Button>(PopupConfirmContainerTheme.OkButtonPart);
+      _cancelButton = e.NameScope.Find<Button>(PopupConfirmContainerTheme.CancelButtonPart);
+      if (_okButton is not null) {
+         _okButton.Click += HandleButtonClicked;
+      }
+      if (_cancelButton is not null) {
+         _cancelButton.Click += HandleButtonClicked;
+      }
+   }
+
+   private void HandleButtonClicked(object? sender, RoutedEventArgs args)
+   {
+      if (PopupConfirmRef.TryGetTarget(out var popupConfirm)) {
+         var isConfirmed = false;
+         if (sender == _okButton) {
+            isConfirmed = true;
+            var eventArgs = new RoutedEventArgs(PopupConfirm.ConfirmedEvent);
+            popupConfirm.RaiseEvent(eventArgs);
+         } else {
+            var eventArgs = new RoutedEventArgs(PopupConfirm.CancelledEvent);
+            popupConfirm.RaiseEvent(eventArgs);
+         }
+
+         var popupEventArgs = new PopupConfirmClickEventArgs(PopupConfirm.PopupClickEvent, isConfirmed);
+         popupConfirm.RaiseEvent(popupEventArgs);
+         popupConfirm.HideFlyout();
+      }
+   }
 }

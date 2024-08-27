@@ -1,6 +1,8 @@
-﻿using AtomUI.Theme;
+﻿using AtomUI.Controls.PopupConfirmLang;
+using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Templates;
@@ -16,7 +18,9 @@ namespace AtomUI.Controls;
 internal class PopupConfirmContainerTheme : BaseControlTheme
 {
    public const string MainLayoutPart = "PART_MainLayout";
+   public const string ButtonLayoutPart = "PART_ButtonLayout";
    public const string OkButtonPart = "PART_OkButton";
+   public const string CancelButtonPart = "PART_CancelButton";
    public const string TitlePart = "PART_Title";
    public const string ContentPart = "PART_Content";
    public const string IconContentPart = "PART_IconContent";
@@ -95,16 +99,24 @@ internal class PopupConfirmContainerTheme : BaseControlTheme
    {
       var buttonLayout = new StackPanel()
       {
+         Name = ButtonLayoutPart,
          Orientation = Orientation.Horizontal,
          HorizontalAlignment = HorizontalAlignment.Right,
          VerticalAlignment = VerticalAlignment.Bottom
       };
       DockPanel.SetDock(buttonLayout, Dock.Bottom);
+      
       var cancelButton = new Button()
       {
+         Name = CancelButtonPart,
          SizeType = SizeType.Small,
-         HorizontalAlignment = HorizontalAlignment.Right
+         HorizontalAlignment = HorizontalAlignment.Right,
+         Width = double.NaN,
+         Height = double.NaN
       };
+
+      TokenResourceBinder.CreateTokenBinding(cancelButton, Button.MarginProperty, PopupConfirmTokenResourceKey.ButtonContainerMargin);
+      cancelButton.RegisterInNameScope(scope);
       TokenResourceBinder.CreateTokenBinding(cancelButton, Button.MarginProperty, PopupConfirmTokenResourceKey.ButtonMargin);
       CreateTemplateParentBinding(cancelButton, Button.TextProperty, PopupConfirmContainer.CancelTextProperty);
       CreateTemplateParentBinding(cancelButton, Button.IsVisibleProperty, PopupConfirmContainer.IsShowCancelButtonProperty);
@@ -114,8 +126,11 @@ internal class PopupConfirmContainerTheme : BaseControlTheme
       {
          Name = OkButtonPart,
          SizeType = SizeType.Small,
-         HorizontalAlignment = HorizontalAlignment.Right
+         HorizontalAlignment = HorizontalAlignment.Right,
+         Width = double.NaN,
+         Height = double.NaN
       };
+      TokenResourceBinder.CreateTokenBinding(okButton, Button.MarginProperty, PopupConfirmTokenResourceKey.ButtonContainerMargin);
       okButton.RegisterInNameScope(scope);
       TokenResourceBinder.CreateTokenBinding(okButton, Button.MarginProperty, PopupConfirmTokenResourceKey.ButtonMargin);
       CreateTemplateParentBinding(okButton, Button.TextProperty, PopupConfirmContainer.OkTextProperty);
@@ -152,9 +167,11 @@ internal class PopupConfirmContainerTheme : BaseControlTheme
    protected override void BuildStyles()
    {
       var commonStyle = new Style(selector => selector.Nesting());
+      
       var iconContentPresenter = new Style(selector => selector.Nesting().Template().Name(IconContentPart));
       iconContentPresenter.Add(ContentPresenter.MarginProperty, PopupConfirmTokenResourceKey.IconMargin);
-
+      commonStyle.Add(iconContentPresenter);
+      
       var titleStyle = new Style(selector => selector.Nesting().Template().Name(TitlePart));
       titleStyle.Add(TextBlock.MarginProperty, PopupConfirmTokenResourceKey.TitleMargin);
       titleStyle.Add(TextBlock.ForegroundProperty, GlobalTokenResourceKey.ColorTextHeading);
@@ -165,7 +182,6 @@ internal class PopupConfirmContainerTheme : BaseControlTheme
       contentStyle.Add(ContentPresenter.MarginProperty, PopupConfirmTokenResourceKey.ContentContainerMargin);
       commonStyle.Add(contentStyle);
       
-      commonStyle.Add(iconContentPresenter);
       Add(commonStyle);
    }
 }
