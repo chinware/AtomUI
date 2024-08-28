@@ -59,7 +59,7 @@ Welcome to communicate and give suggestions to AtomUI, thank you for giving the 
 | Badge          | Completed ✅   |
 | Calendar       | TODO          |
 | Card           | TODO          |
-| GroupBox       | Developing 💪 |
+| GroupBox       | Completed ✅ |
 | Carousel       | Developing 💪 |
 | Collapse       | Completed ✅   |
 | Expander       | Completed ✅   |

@@ -36,6 +36,7 @@
 
     <ItemGroup>
       <AdditionalFiles Include="ShowCase\ButtonSpinnerShowCase.axaml" />
+      <AdditionalFiles Include="ShowCase\GroupBoxShowCase.axaml" />
     </ItemGroup>
 
     <ItemGroup>
