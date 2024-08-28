@@ -42,6 +42,8 @@
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.MenuSeparatorTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.MenuTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.TopLevelMenuItemTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.NotificationCardTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.WindowNotificationManagerTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.NumericUpDownTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.OptionButtonGroupTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.OptionButtonTheme());

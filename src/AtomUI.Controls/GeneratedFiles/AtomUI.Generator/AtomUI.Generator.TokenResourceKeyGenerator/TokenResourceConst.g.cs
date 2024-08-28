@@ -305,6 +305,19 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey SeparatorItemHeight = new TokenResourceKey("Menu.SeparatorItemHeight", "AtomUI.Token");
     }
 
+    public static class NotificationTokenResourceKey
+    {
+        public static readonly TokenResourceKey AnimationMaxHeight = new TokenResourceKey("Notification.AnimationMaxHeight", "AtomUI.Token");
+        public static readonly TokenResourceKey NotificationBg = new TokenResourceKey("Notification.NotificationBg", "AtomUI.Token");
+        public static readonly TokenResourceKey NotificationPadding = new TokenResourceKey("Notification.NotificationPadding", "AtomUI.Token");
+        public static readonly TokenResourceKey NotificationIconSize = new TokenResourceKey("Notification.NotificationIconSize", "AtomUI.Token");
+        public static readonly TokenResourceKey NotificationCloseButtonSize = new TokenResourceKey("Notification.NotificationCloseButtonSize", "AtomUI.Token");
+        public static readonly TokenResourceKey NotificationMarginBottom = new TokenResourceKey("Notification.NotificationMarginBottom", "AtomUI.Token");
+        public static readonly TokenResourceKey NotificationMarginEdge = new TokenResourceKey("Notification.NotificationMarginEdge", "AtomUI.Token");
+        public static readonly TokenResourceKey NotificationProgressBg = new TokenResourceKey("Notification.NotificationProgressBg", "AtomUI.Token");
+        public static readonly TokenResourceKey NotificationProgressHeight = new TokenResourceKey("Notification.NotificationProgressHeight", "AtomUI.Token");
+    }
+
     public static class OptionButtonTokenResourceKey
     {
         public static readonly TokenResourceKey ButtonBackground = new TokenResourceKey("OptionButton.ButtonBackground", "AtomUI.Token");
