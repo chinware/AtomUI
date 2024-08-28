@@ -1,5 +1,4 @@
-﻿
-using AtomUI.Theme.Styling;
+﻿using AtomUI.Theme.Styling;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
@@ -17,7 +16,7 @@ internal class SeparatorTheme : BaseControlTheme
    public SeparatorTheme()
       : base(typeof(Separator)) { }
 
-   protected override IControlTemplate? BuildControlTemplate()
+   protected override IControlTemplate BuildControlTemplate()
    {
       return new FuncControlTemplate<Separator>((separator, scope) =>
       {

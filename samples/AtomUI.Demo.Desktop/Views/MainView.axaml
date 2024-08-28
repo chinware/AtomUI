@@ -141,6 +141,9 @@
             <TabItem Header="Card">
                 <showcases:CardShowCase />
             </TabItem>
+            <TabItem Header="GroupBox">
+                <showcases:GroupBoxShowCase />
+            </TabItem>
             <TabItem Header="Empty">
                 <showcases:EmptyShowCase />
             </TabItem>

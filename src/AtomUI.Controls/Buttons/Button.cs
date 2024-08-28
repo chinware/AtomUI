@@ -218,7 +218,6 @@ public class Button : AvaloniaButton,
    protected ControlStyleState _styleState;
    private IControlCustomStyle _customStyle;
    private bool _initialized = false;
-   private BorderRenderHelper _borderRenderHelper;
    private PathIcon? _loadingIcon;
    
    static Button()
@@ -241,7 +240,6 @@ public class Button : AvaloniaButton,
    public Button()
    {
       _customStyle = this;
-      _borderRenderHelper = new BorderRenderHelper();
    }
 
    protected override Size MeasureOverride(Size availableSize)

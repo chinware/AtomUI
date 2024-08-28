@@ -191,6 +191,17 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey RightExpandButtonVMargin = new TokenResourceKey("Expander.RightExpandButtonVMargin", "AtomUI.Token");
     }
 
+    public static class GroupBoxTokenResourceKey
+    {
+        public static readonly TokenResourceKey TextPaddingInline = new TokenResourceKey("GroupBox.TextPaddingInline", "AtomUI.Token");
+        public static readonly TokenResourceKey OrientationMarginPercent = new TokenResourceKey("GroupBox.OrientationMarginPercent", "AtomUI.Token");
+        public static readonly TokenResourceKey VerticalMarginInline = new TokenResourceKey("GroupBox.VerticalMarginInline", "AtomUI.Token");
+        public static readonly TokenResourceKey ContentPadding = new TokenResourceKey("GroupBox.ContentPadding", "AtomUI.Token");
+        public static readonly TokenResourceKey HeaderContainerMargin = new TokenResourceKey("GroupBox.HeaderContainerMargin", "AtomUI.Token");
+        public static readonly TokenResourceKey HeaderIconMargin = new TokenResourceKey("GroupBox.HeaderIconMargin", "AtomUI.Token");
+        public static readonly TokenResourceKey HeaderContentPadding = new TokenResourceKey("GroupBox.HeaderContentPadding", "AtomUI.Token");
+    }
+
     public static class LineEditTokenResourceKey
     {
         public static readonly TokenResourceKey Padding = new TokenResourceKey("LineEdit.Padding", "AtomUI.Token");

@@ -1,0 +1,98 @@
+<UserControl
+    x:Class="AtomUI.Demo.Desktop.ShowCase.GroupBoxShowCase"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:atom="https://atomui.net"
+    xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
+    mc:Ignorable="d">
+    <showcase:ShowCasePanel>
+        <showcase:ShowCaseItem
+            Title="Basic"
+            Description="Basic usage of the GroupBox control.">
+            <atom:GroupBox HeaderTitle="Title Info">
+                <Panel Height="100">
+                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
+                        Content of group box
+                    </TextBlock>
+                </Panel>
+            </atom:GroupBox>
+        </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="Header title Position"
+            Description="GroupBox Header supports three position types: Left, Center and Right.">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:GroupBox HeaderTitle="Title Info">
+                    <Panel Height="40">
+                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
+                            Content of group box
+                        </TextBlock>
+                    </Panel>
+                </atom:GroupBox>
+                <atom:GroupBox HeaderTitle="Title Info" HeaderTitlePosition="Center">
+                    <Panel Height="40">
+                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
+                            Content of group box
+                        </TextBlock>
+                    </Panel>
+                </atom:GroupBox>
+                <atom:GroupBox HeaderTitle="Title Info" HeaderTitlePosition="Right">
+                    <Panel Height="40">
+                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
+                            Content of group box
+                        </TextBlock>
+                    </Panel>
+                </atom:GroupBox>
+            </StackPanel>
+        </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="Header title style"
+            Description="GroupBox Header supports customizing some properties of color and font.">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:GroupBox HeaderTitle="Title Info" HeaderFontStyle="Italic">
+                    <Panel Height="40">
+                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
+                            Content of group box
+                        </TextBlock>
+                    </Panel>
+                </atom:GroupBox>
+                <atom:GroupBox HeaderTitle="Title Info" HeaderTitlePosition="Center" HeaderFontWeight="Bold">
+                    <Panel Height="40">
+                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
+                            Content of group box
+                        </TextBlock>
+                    </Panel>
+                </atom:GroupBox>
+                <atom:GroupBox HeaderTitle="Title Info" HeaderTitlePosition="Right" HeaderFontStyle="Oblique">
+                    <Panel Height="40">
+                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
+                            Content of group box
+                        </TextBlock>
+                    </Panel>
+                </atom:GroupBox>
+                <atom:GroupBox HeaderTitle="Title Info" HeaderTitlePosition="Center" HeaderFontStyle="Oblique" HeaderTitleColor="Coral" HeaderFontWeight="Medium">
+                    <Panel Height="40">
+                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
+                            Content of group box
+                        </TextBlock>
+                    </Panel>
+                </atom:GroupBox>
+            </StackPanel>
+        </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="Header Icon"
+            Description="GroupBox Header supports specifying Icon.">
+            <atom:GroupBox HeaderTitle="Title Info" HeaderIcon="{atom:IconProvider Kind=GithubOutlined}">
+                <Panel Height="100">
+                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
+                        Content of group box
+                    </TextBlock>
+                </Panel>
+            </atom:GroupBox>
+        </showcase:ShowCaseItem>
+    </showcase:ShowCasePanel>
+</UserControl>
