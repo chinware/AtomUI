@@ -44,7 +44,6 @@ internal class WindowNotificationManagerTheme : BaseControlTheme
       var topRightStyle = new Style(selector => selector.Nesting().Class(WindowNotificationManager.TopRightPC));
       {
          var itemsStyle = new Style(selector => selector.Nesting().Template().Name(ItemsPart));
-         itemsStyle.Add(ReversibleStackPanel.ReverseOrderProperty, true);
          itemsStyle.Add(ReversibleStackPanel.HorizontalAlignmentProperty, HorizontalAlignment.Right);
          itemsStyle.Add(ReversibleStackPanel.VerticalAlignmentProperty, VerticalAlignment.Top);
          topRightStyle.Add(itemsStyle);

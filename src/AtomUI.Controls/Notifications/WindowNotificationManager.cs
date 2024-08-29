@@ -22,7 +22,9 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager
    public const string BottomCenterPC = ":bottomcenter";
 
    private IList? _items;
+   private Queue<NotificationCard> _cleanupQueue;
    private DispatcherTimer _dispatcherTimer;
+   private DispatcherTimer _cleanupTimer;
 
    public static readonly StyledProperty<NotificationPosition> PositionProperty =
       AvaloniaProperty.Register<WindowNotificationManager, NotificationPosition>(
@@ -55,6 +57,9 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager
       UpdatePseudoClasses(Position);
       _dispatcherTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(50), Tag = this };
       _dispatcherTimer.Tick += HandleTimerTick;
+      _cleanupTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(50), Tag = this };
+      _cleanupTimer.Tick += HandleCleanupTimerTick;
+      _cleanupQueue = new Queue<NotificationCard>();
    }
 
    static WindowNotificationManager()
@@ -79,8 +84,30 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager
       if (_items is not null) {
          foreach (var item in _items) {
             if (item is NotificationCard card) {
-               card.NotifyCloseTick(_dispatcherTimer.Interval);
+               if (card.NotifyCloseTick(_dispatcherTimer.Interval)) {
+                  if (!_cleanupQueue.Contains(card)) {
+                     _cleanupQueue.Enqueue(card);
+                     if (!_cleanupTimer.IsEnabled) {
+                        _cleanupTimer.Start();
+                     }
+                  }
+               }
             }  
+         }
+      }
+   }
+   
+   private void HandleCleanupTimerTick(object? sender, EventArgs eventArgs)
+   {
+      if (_cleanupQueue.Count > 0) {
+         var card = _cleanupQueue.Peek();
+         if (!card.IsClosing) {
+            card.Close();
+         } else if (card.IsClosed) {
+            _cleanupQueue.Dequeue();
+            if (_cleanupQueue.Count == 0) {
+               _cleanupTimer.Stop();
+            }
          }
       }
    }

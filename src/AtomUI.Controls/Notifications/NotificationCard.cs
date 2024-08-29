@@ -8,6 +8,7 @@ using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
+using Avalonia.Threading;
 
 namespace AtomUI.Controls;
 
@@ -308,15 +309,16 @@ public class NotificationCard : TemplatedControl
       SetValue(IconProperty, icon, BindingPriority.Template);
    }
 
-   internal void NotifyCloseTick(TimeSpan cycleDuration)
+   internal bool NotifyCloseTick(TimeSpan cycleDuration)
    {
       if (Expiration is null) {
-         return;
-      }
-      if (Expiration.Value.TotalMilliseconds < 0) {
-         Close();
-         return;
+         return false;
       }
       Expiration -= cycleDuration;
+      if (Expiration.Value.TotalMilliseconds < 0) {
+         return true;
+      }
+
+      return false;
    }
 }
