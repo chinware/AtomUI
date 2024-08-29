@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Specialized;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -21,7 +22,7 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager
    public const string BottomCenterPC = ":bottomcenter";
 
    private IList? _items;
-   private Queue<NotificationCard> _notificationCards;
+   private DispatcherTimer _dispatcherTimer;
 
    public static readonly StyledProperty<NotificationPosition> PositionProperty =
       AvaloniaProperty.Register<WindowNotificationManager, NotificationPosition>(
@@ -52,7 +53,8 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager
    public WindowNotificationManager()
    {
       UpdatePseudoClasses(Position);
-      _notificationCards = new Queue<NotificationCard>();
+      _dispatcherTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(50), Tag = this };
+      _dispatcherTimer.Tick += HandleTimerTick;
    }
 
    static WindowNotificationManager()
@@ -67,6 +69,31 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager
 
       var itemsControl = e.NameScope.Find<Panel>("PART_Items");
       _items = itemsControl?.Children;
+      if (itemsControl is not null) {
+         itemsControl.Children.CollectionChanged += HandleCollectionChanged;
+      }
+   }
+
+   private void HandleTimerTick(object? sender, EventArgs eventArgs)
+   {
+      if (_items is not null) {
+         foreach (var item in _items) {
+            if (item is NotificationCard card) {
+               card.NotifyCloseTick(_dispatcherTimer.Interval);
+            }  
+         }
+      }
+   }
+
+   private void HandleCollectionChanged(object? sender, NotifyCollectionChangedEventArgs args)
+   {
+      if (_items is not null) {
+         if (_items.Count > 0) {
+            _dispatcherTimer.Start();
+         } else {
+            _dispatcherTimer.Stop();
+         }
+      }
    }
    
    public void Show(INotification notification, string[]? classes = null)
@@ -80,7 +107,8 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager
       {
          Title = notification.Title,
          CardContent = notification.Content,
-         NotificationType = notification.Type
+         NotificationType = notification.Type,
+         Expiration = expiration == TimeSpan.Zero ? null : expiration
       };
 
       // Add style classes if any
@@ -112,16 +140,6 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager
             _items.OfType<NotificationCard>().First(i => !i.IsClosing).Close();
          }
       });
-
-      if (expiration == TimeSpan.Zero) {
-         return;
-      }
-      
-      _notificationCards.Enqueue(notificationControl);
-
-      // await Task.Delay(expiration ?? TimeSpan.FromSeconds(1000));
-      //
-      // notificationControl.Close();
    }
 
    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

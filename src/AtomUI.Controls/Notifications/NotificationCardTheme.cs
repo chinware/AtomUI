@@ -160,14 +160,13 @@ internal class NotificationCardTheme : BaseControlTheme
    {
       var commonStyle = new Style(selector => selector.Nesting());
       
-      var motionConfig = MotionFactory.BuildSlideRightInMotion(TimeSpan.FromMilliseconds(400));
+      var motionConfig = MotionFactory.BuildMoveRightInMotion(800, TimeSpan.FromMilliseconds(400));
       foreach (var animation in motionConfig.Animations) {
          commonStyle.Animations.Add(animation);
       }
       
       commonStyle.Add(NotificationCard.MarginProperty, NotificationTokenResourceKey.NotificationMarginEdge);
       commonStyle.Add(NotificationCard.WidthProperty, NotificationTokenResourceKey.NotificationWidth);
-      commonStyle.Add(NotificationCard.RenderTransformOriginProperty, new RelativePoint(1.0, 0.5, RelativeUnit.Relative));
 
       var frameDecoratorStyle = new Style(selector => selector.Nesting().Template().Name(FrameDecoratorPart));
       frameDecoratorStyle.Add(Border.PaddingProperty, NotificationTokenResourceKey.NotificationPadding);
@@ -207,13 +206,5 @@ internal class NotificationCardTheme : BaseControlTheme
       iconStyle.Add(PathIcon.WidthProperty, NotificationTokenResourceKey.NotificationIconSize);
       iconStyle.Add(PathIcon.HeightProperty, NotificationTokenResourceKey.NotificationIconSize);
       control.Styles.Add(iconStyle);
-   }
-
-   protected override void BuildAnimations()
-   {
-      // var motionConfig = MotionFactory.BuildSlideLeftInMotion(TimeSpan.FromMilliseconds(300));
-      // foreach (var animation in motionConfig.Animations) {
-      //    Animations.Add(animation);
-      // }
    }
 }

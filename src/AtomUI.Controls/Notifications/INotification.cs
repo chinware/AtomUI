@@ -21,7 +21,7 @@ public interface INotification
    /// Gets the expiration time of the notification after which it will automatically close.
    /// If the value is <see cref="TimeSpan.Zero"/> then the notification will remain open until the user closes it.
    /// </summary>
-   TimeSpan? Expiration { get; }
+   TimeSpan Expiration { get; }
 
    /// <summary>
    /// Gets an Action to be run when the notification is clicked.

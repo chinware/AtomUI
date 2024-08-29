@@ -68,7 +68,7 @@ public class Notification : INotification, INotifyPropertyChanged
    public NotificationType Type { get; set; }
 
    /// <inheritdoc/>
-   public TimeSpan? Expiration { get; set; }
+   public TimeSpan Expiration { get; set; }
 
    /// <inheritdoc/>
    public Action? OnClick { get; set; }

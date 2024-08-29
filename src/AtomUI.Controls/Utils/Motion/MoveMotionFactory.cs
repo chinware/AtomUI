@@ -8,68 +8,69 @@ namespace AtomUI.Controls.Utils;
 
 public static partial class MotionFactory
 {
-   public static MotionConfig BuildSlideUpInMotion(TimeSpan duration, Easing? easing = null,
-                                                   FillMode fillMode = FillMode.None)
-   {
-      easing ??= new QuinticEaseOut();
-      var animations = new List<IAnimation>();
-      RelativePoint transformOrigin = default;
-      var animation = new Animation()
-      {
-         Duration = duration,
-         Easing = easing,
-         FillMode = fillMode
-      };
-
-      var startFrame = new KeyFrame()
-      {
-         Cue = new Cue(0.0)
-      };
-      {
-         var opacitySetter = new Setter()
-         {
-            Property = Visual.OpacityProperty,
-            Value = 0.0
-         };
-         startFrame.Setters.Add(opacitySetter);
-
-         var scaleYSetter = new Setter()
-         {
-            Property = ScaleTransform.ScaleYProperty,
-            Value = 0.8
-         };
-         startFrame.Setters.Add(scaleYSetter);
-      }
-      animation.Children.Add(startFrame);
-
-      var endFrame = new KeyFrame()
-      {
-         Cue = new Cue(1.0)
-      };
-      {
-         var opacitySetter = new Setter()
-         {
-            Property = Visual.OpacityProperty,
-            Value = 1.0
-         };
-         endFrame.Setters.Add(opacitySetter);
-         var scaleYSetter = new Setter()
-         {
-            Property = ScaleTransform.ScaleYProperty,
-            Value = 1.0
-         };
-         endFrame.Setters.Add(scaleYSetter);
-      }
-      animation.Children.Add(endFrame);
-      transformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
-
-      animations.Add(animation);
-      return new MotionConfig(transformOrigin, animations);
-   }
-
-   public static MotionConfig BuildSlideUpOutMotion(TimeSpan duration, Easing? easing = null,
+   public static MotionConfig BuildMoveDownInMotion(double offset, TimeSpan duration, Easing? easing = null,
                                                     FillMode fillMode = FillMode.None)
    {
+      easing ??= new QuinticEaseOut();
+      var animations = new List<IAnimation>();
+      RelativePoint transformOrigin = default;
+      var animation = new Animation()
+      {
+         Duration = duration,
+         Easing = easing,
+         FillMode = fillMode
+      };
+
+      var startFrame = new KeyFrame()
+      {
+         Cue = new Cue(0.0)
+      };
+      {
+         var opacitySetter = new Setter()
+         {
+            Property = Visual.OpacityProperty,
+            Value = 0.0
+         };
+         startFrame.Setters.Add(opacitySetter);
+
+         var translateYSetter = new Setter()
+         {
+            Property = TranslateTransform.YProperty,
+            Value = offset
+         };
+         startFrame.Setters.Add(translateYSetter);
+      }
+      animation.Children.Add(startFrame);
+
+      var endFrame = new KeyFrame()
+      {
+         Cue = new Cue(1.0)
+      };
+      {
+         var opacitySetter = new Setter()
+         {
+            Property = Visual.OpacityProperty,
+            Value = 1.0
+         };
+         endFrame.Setters.Add(opacitySetter);
+         var translateYSetter = new Setter()
+         {
+            Property = TranslateTransform.YProperty,
+            Value = 0.0
+         };
+         endFrame.Setters.Add(translateYSetter);
+      }
+      animation.Children.Add(endFrame);
+
+      transformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
+
+      animations.Add(animation);
+      return new MotionConfig(transformOrigin, animations);
+   }
+
+   public static MotionConfig BuildMoveDownOutMotion(double offset, TimeSpan duration, Easing? easing = null,
+                                                     FillMode fillMode = FillMode.None)
+   {
       easing ??= new QuinticEaseIn();
       var animations = new List<IAnimation>();
       RelativePoint transformOrigin = default;
@@ -92,12 +93,12 @@ public static partial class MotionFactory
          };
          startFrame.Setters.Add(opacitySetter);
 
-         var scaleYSetter = new Setter()
+         var translateYSetter = new Setter()
          {
-            Property = ScaleTransform.ScaleYProperty,
-            Value = 1.0
+            Property = TranslateTransform.YProperty,
+            Value = 0.0
          };
-         startFrame.Setters.Add(scaleYSetter);
+         startFrame.Setters.Add(translateYSetter);
       }
       animation.Children.Add(startFrame);
 
@@ -112,12 +113,71 @@ public static partial class MotionFactory
             Value = 0.0
          };
          endFrame.Setters.Add(opacitySetter);
-         var scaleYSetter = new Setter()
+         var translateYSetter = new Setter()
          {
-            Property = ScaleTransform.ScaleYProperty,
-            Value = 0.8
+            Property = TranslateTransform.YProperty,
+            Value = offset
          };
-         endFrame.Setters.Add(scaleYSetter);
+         endFrame.Setters.Add(translateYSetter);
+      }
+      animation.Children.Add(endFrame);
+      transformOrigin = new RelativePoint(0, 0, RelativeUnit.Relative);
+
+      animations.Add(animation);
+      return new MotionConfig(transformOrigin, animations);
+   }
+
+   public static MotionConfig BuildMoveUpInMotion(double offset, TimeSpan duration, Easing? easing = null,
+                                                  FillMode fillMode = FillMode.None)
+   {
+      easing ??= new QuinticEaseOut();
+      var animations = new List<IAnimation>();
+      RelativePoint transformOrigin = default;
+      var animation = new Animation()
+      {
+         Duration = duration,
+         Easing = easing,
+         FillMode = fillMode
+      };
+
+      var startFrame = new KeyFrame()
+      {
+         Cue = new Cue(0.0)
+      };
+      {
+         var opacitySetter = new Setter()
+         {
+            Property = Visual.OpacityProperty,
+            Value = 0.0
+         };
+         startFrame.Setters.Add(opacitySetter);
+
+         var translateYSetter = new Setter()
+         {
+            Property = TranslateTransform.YProperty,
+            Value = -offset
+         };
+         startFrame.Setters.Add(translateYSetter);
+      }
+      animation.Children.Add(startFrame);
+
+      var endFrame = new KeyFrame()
+      {
+         Cue = new Cue(1.0)
+      };
+      {
+         var opacitySetter = new Setter()
+         {
+            Property = Visual.OpacityProperty,
+            Value = 1.0
+         };
+         endFrame.Setters.Add(opacitySetter);
+         var translateYSetter = new Setter()
+         {
+            Property = TranslateTransform.YProperty,
+            Value = 0.0
+         };
+         endFrame.Setters.Add(translateYSetter);
       }
       animation.Children.Add(endFrame);
       transformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
@@ -126,7 +186,184 @@ public static partial class MotionFactory
       return new MotionConfig(transformOrigin, animations);
    }
 
-   public static MotionConfig BuildSlideDownInMotion(TimeSpan duration, Easing? easing = null,
+   public static MotionConfig BuildMoveUpOutMotion(double offset, TimeSpan duration, Easing? easing = null,
+                                                   FillMode fillMode = FillMode.None)
+   {
+      easing ??= new QuinticEaseIn();
+      var animations = new List<IAnimation>();
+      RelativePoint transformOrigin = default;
+      var animation = new Animation()
+      {
+         Duration = duration,
+         Easing = easing,
+         FillMode = fillMode
+      };
+
+      var startFrame = new KeyFrame()
+      {
+         Cue = new Cue(0.0)
+      };
+      {
+         var opacitySetter = new Setter()
+         {
+            Property = Visual.OpacityProperty,
+            Value = 1.0
+         };
+         startFrame.Setters.Add(opacitySetter);
+
+         var translateYSetter = new Setter()
+         {
+            Property = TranslateTransform.YProperty,
+            Value = -offset
+         };
+         startFrame.Setters.Add(translateYSetter);
+      }
+      animation.Children.Add(startFrame);
+
+      var endFrame = new KeyFrame()
+      {
+         Cue = new Cue(1.0)
+      };
+      {
+         var opacitySetter = new Setter()
+         {
+            Property = Visual.OpacityProperty,
+            Value = 0.0
+         };
+         endFrame.Setters.Add(opacitySetter);
+         var translateYSetter = new Setter()
+         {
+            Property = TranslateTransform.YProperty,
+            Value = 0.0
+         };
+         endFrame.Setters.Add(translateYSetter);
+      }
+      animation.Children.Add(endFrame);
+      transformOrigin = new RelativePoint(0, 0, RelativeUnit.Relative);
+
+      animations.Add(animation);
+      return new MotionConfig(transformOrigin, animations);
+   }
+
+   public static MotionConfig BuildMoveLeftInMotion(double offset, TimeSpan duration, Easing? easing = null,
+                                                    FillMode fillMode = FillMode.None)
+   {
+      easing ??= new QuinticEaseOut();
+      var animations = new List<IAnimation>();
+      RelativePoint transformOrigin = default;
+      var animation = new Animation()
+      {
+         Duration = duration,
+         Easing = easing,
+         FillMode = fillMode
+      };
+
+      var startFrame = new KeyFrame()
+      {
+         Cue = new Cue(0.0)
+      };
+      {
+         var opacitySetter = new Setter()
+         {
+            Property = Visual.OpacityProperty,
+            Value = 0.0
+         };
+         startFrame.Setters.Add(opacitySetter);
+
+         var translateXSetter = new Setter()
+         {
+            Property = TranslateTransform.XProperty,
+            Value = -offset
+         };
+         startFrame.Setters.Add(translateXSetter);
+      }
+      animation.Children.Add(startFrame);
+
+      var endFrame = new KeyFrame()
+      {
+         Cue = new Cue(1.0)
+      };
+      {
+         var opacitySetter = new Setter()
+         {
+            Property = Visual.OpacityProperty,
+            Value = 1.0
+         };
+         endFrame.Setters.Add(opacitySetter);
+         var translateXSetter = new Setter()
+         {
+            Property = TranslateTransform.XProperty,
+            Value = 0.0
+         };
+         endFrame.Setters.Add(translateXSetter);
+      }
+      animation.Children.Add(endFrame);
+      transformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
+
+      animations.Add(animation);
+      return new MotionConfig(transformOrigin, animations);
+   }
+
+   public static MotionConfig BuildLeftOutMotion(double offset, TimeSpan duration, Easing? easing = null,
+                                                 FillMode fillMode = FillMode.None)
+   {
+      easing ??= new QuinticEaseIn();
+      var animations = new List<IAnimation>();
+      RelativePoint transformOrigin = default;
+      var animation = new Animation()
+      {
+         Duration = duration,
+         Easing = easing,
+         FillMode = fillMode
+      };
+
+      var startFrame = new KeyFrame()
+      {
+         Cue = new Cue(0.0)
+      };
+      {
+         var opacitySetter = new Setter()
+         {
+            Property = Visual.OpacityProperty,
+            Value = 1.0
+         };
+         startFrame.Setters.Add(opacitySetter);
+
+         var translateXSetter = new Setter()
+         {
+            Property = TranslateTransform.XProperty,
+            Value = 0.0
+         };
+         startFrame.Setters.Add(translateXSetter);
+      }
+      animation.Children.Add(startFrame);
+
+      var endFrame = new KeyFrame()
+      {
+         Cue = new Cue(1.0)
+      };
+      {
+         var opacitySetter = new Setter()
+         {
+            Property = Visual.OpacityProperty,
+            Value = 0.0
+         };
+         endFrame.Setters.Add(opacitySetter);
+         var translateXSetter = new Setter()
+         {
+            Property = TranslateTransform.XProperty,
+            Value = -offset
+         };
+         endFrame.Setters.Add(translateXSetter);
+      }
+      animation.Children.Add(endFrame);
+      transformOrigin = new RelativePoint(0, 0, RelativeUnit.Relative);
+
+      animations.Add(animation);
+      return new MotionConfig(transformOrigin, animations);
+   }
+
+   public static MotionConfig BuildMoveRightInMotion(double offset, TimeSpan duration, Easing? easing = null,
                                                      FillMode fillMode = FillMode.None)
    {
       easing ??= new QuinticEaseOut();
@@ -151,12 +388,12 @@ public static partial class MotionFactory
          };
          startFrame.Setters.Add(opacitySetter);
 
-         var scaleYSetter = new Setter()
+         var translateXSetter = new Setter()
          {
-            Property = ScaleTransform.ScaleYProperty,
-            Value = 0.8
+            Property = TranslateTransform.XProperty,
+            Value = offset
          };
-         startFrame.Setters.Add(scaleYSetter);
+         startFrame.Setters.Add(translateXSetter);
       }
       animation.Children.Add(startFrame);
 
@@ -171,130 +408,12 @@ public static partial class MotionFactory
             Value = 1.0
          };
          endFrame.Setters.Add(opacitySetter);
-         var scaleYSetter = new Setter()
+         var translateXSetter = new Setter()
          {
-            Property = ScaleTransform.ScaleYProperty,
-            Value = 1.0
-         };
-         endFrame.Setters.Add(scaleYSetter);
-      }
-      animation.Children.Add(endFrame);
-      transformOrigin = new RelativePoint(1.0, 1.0, RelativeUnit.Relative);
-
-      animations.Add(animation);
-      return new MotionConfig(transformOrigin, animations);
-   }
-
-   public static MotionConfig BuildSlideDownOutMotion(TimeSpan duration, Easing? easing = null,
-                                                      FillMode fillMode = FillMode.None)
-   {
-      easing ??= new QuinticEaseIn();
-      var animations = new List<IAnimation>();
-      RelativePoint transformOrigin = default;
-      var animation = new Animation()
-      {
-         Duration = duration,
-         Easing = easing,
-         FillMode = fillMode
-      };
-
-      var startFrame = new KeyFrame()
-      {
-         Cue = new Cue(0.0)
-      };
-      {
-         var opacitySetter = new Setter()
-         {
-            Property = Visual.OpacityProperty,
-            Value = 1.0
-         };
-         startFrame.Setters.Add(opacitySetter);
-
-         var scaleYSetter = new Setter()
-         {
-            Property = ScaleTransform.ScaleYProperty,
-            Value = 1.0
-         };
-         startFrame.Setters.Add(scaleYSetter);
-      }
-      animation.Children.Add(startFrame);
-
-      var endFrame = new KeyFrame()
-      {
-         Cue = new Cue(1.0)
-      };
-      {
-         var opacitySetter = new Setter()
-         {
-            Property = Visual.OpacityProperty,
+            Property = TranslateTransform.XProperty,
             Value = 0.0
          };
-         endFrame.Setters.Add(opacitySetter);
-         var scaleYSetter = new Setter()
-         {
-            Property = ScaleTransform.ScaleYProperty,
-            Value = 0.8
-         };
-         endFrame.Setters.Add(scaleYSetter);
-      }
-      animation.Children.Add(endFrame);
-      transformOrigin = new RelativePoint(0.5, 1.0, RelativeUnit.Relative);
-
-      animations.Add(animation);
-      return new MotionConfig(transformOrigin, animations);
-   }
-
-   public static MotionConfig BuildSlideLeftInMotion(TimeSpan duration, Easing? easing = null,
-                                                     FillMode fillMode = FillMode.None)
-   {
-      easing ??= new QuinticEaseOut();
-      var animations = new List<IAnimation>();
-      RelativePoint transformOrigin = default;
-      var animation = new Animation()
-      {
-         Duration = duration,
-         Easing = easing,
-         FillMode = fillMode
-      };
-
-      var startFrame = new KeyFrame()
-      {
-         Cue = new Cue(0.0)
-      };
-      {
-         var opacitySetter = new Setter()
-         {
-            Property = Visual.OpacityProperty,
-            Value = 0.0
-         };
-         startFrame.Setters.Add(opacitySetter);
-
-         var scaleXSetter = new Setter()
-         {
-            Property = ScaleTransform.ScaleXProperty,
-            Value = 0.8
-         };
-         startFrame.Setters.Add(scaleXSetter);
-      }
-      animation.Children.Add(startFrame);
-
-      var endFrame = new KeyFrame()
-      {
-         Cue = new Cue(1.0)
-      };
-      {
-         var opacitySetter = new Setter()
-         {
-            Property = Visual.OpacityProperty,
-            Value = 1.0
-         };
-         endFrame.Setters.Add(opacitySetter);
-         var scaleXSetter = new Setter()
-         {
-            Property = ScaleTransform.ScaleXProperty,
-            Value = 1.0
-         };
-         endFrame.Setters.Add(scaleXSetter);
+         endFrame.Setters.Add(translateXSetter);
       }
       animation.Children.Add(endFrame);
       transformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
@@ -303,8 +422,8 @@ public static partial class MotionFactory
       return new MotionConfig(transformOrigin, animations);
    }
 
-   public static MotionConfig BuildSlideLeftOutMotion(TimeSpan duration, Easing? easing = null,
-                                                      FillMode fillMode = FillMode.None)
+   public static MotionConfig BuildRightOutMotion(double offset, TimeSpan duration, Easing? easing = null,
+                                                  FillMode fillMode = FillMode.None)
    {
       easing ??= new QuinticEaseIn();
       var animations = new List<IAnimation>();
@@ -328,12 +447,12 @@ public static partial class MotionFactory
          };
          startFrame.Setters.Add(opacitySetter);
 
-         var scaleXSetter = new Setter()
+         var translateXSetter = new Setter()
          {
-            Property = ScaleTransform.ScaleXProperty,
-            Value = 1.0
+            Property = TranslateTransform.XProperty,
+            Value = 0.0
          };
-         startFrame.Setters.Add(scaleXSetter);
+         startFrame.Setters.Add(translateXSetter);
       }
       animation.Children.Add(startFrame);
 
@@ -348,133 +467,15 @@ public static partial class MotionFactory
             Value = 0.0
          };
          endFrame.Setters.Add(opacitySetter);
-         var scaleXSetter = new Setter()
+         var translateXSetter = new Setter()
          {
-            Property = ScaleTransform.ScaleXProperty,
-            Value = 0.8
+            Property = TranslateTransform.XProperty,
+            Value = offset
          };
-         endFrame.Setters.Add(scaleXSetter);
+         endFrame.Setters.Add(translateXSetter);
       }
       animation.Children.Add(endFrame);
-      transformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
-
-      animations.Add(animation);
-      return new MotionConfig(transformOrigin, animations);
-   }
-
-   public static MotionConfig BuildSlideRightInMotion(TimeSpan duration, Easing? easing = null,
-                                                      FillMode fillMode = FillMode.None)
-   {
-      easing ??= new QuinticEaseOut();
-      var animations = new List<IAnimation>();
-      RelativePoint transformOrigin = default;
-      var animation = new Animation()
-      {
-         Duration = duration,
-         Easing = easing,
-         FillMode = fillMode
-      };
-
-      var startFrame = new KeyFrame()
-      {
-         Cue = new Cue(0.0)
-      };
-      {
-         var opacitySetter = new Setter()
-         {
-            Property = Visual.OpacityProperty,
-            Value = 0.0
-         };
-         startFrame.Setters.Add(opacitySetter);
-
-         var scaleXSetter = new Setter()
-         {
-            Property = ScaleTransform.ScaleXProperty,
-            Value = 0.8
-         };
-         startFrame.Setters.Add(scaleXSetter);
-      }
-      animation.Children.Add(startFrame);
-
-      var endFrame = new KeyFrame()
-      {
-         Cue = new Cue(1.0)
-      };
-      {
-         var opacitySetter = new Setter()
-         {
-            Property = Visual.OpacityProperty,
-            Value = 1.0
-         };
-         endFrame.Setters.Add(opacitySetter);
-         var scaleXSetter = new Setter()
-         {
-            Property = ScaleTransform.ScaleXProperty,
-            Value = 1.0
-         };
-         endFrame.Setters.Add(scaleXSetter);
-      }
-      animation.Children.Add(endFrame);
-      transformOrigin = new RelativePoint(1.0, 0.0, RelativeUnit.Relative);
-
-      animations.Add(animation);
-      return new MotionConfig(transformOrigin, animations);
-   }
-
-   public static MotionConfig BuildSlideRightOutMotion(TimeSpan duration, Easing? easing = null,
-                                                       FillMode fillMode = FillMode.None)
-   {
-      easing ??= new QuinticEaseIn();
-      var animations = new List<IAnimation>();
-      RelativePoint transformOrigin = default;
-      var animation = new Animation()
-      {
-         Duration = duration,
-         Easing = easing,
-         FillMode = fillMode
-      };
-
-      var startFrame = new KeyFrame()
-      {
-         Cue = new Cue(0.0)
-      };
-      {
-         var opacitySetter = new Setter()
-         {
-            Property = Visual.OpacityProperty,
-            Value = 1.0
-         };
-         startFrame.Setters.Add(opacitySetter);
-
-         var scaleXSetter = new Setter()
-         {
-            Property = ScaleTransform.ScaleXProperty,
-            Value = 1.0
-         };
-         startFrame.Setters.Add(scaleXSetter);
-      }
-      animation.Children.Add(startFrame);
-
-      var endFrame = new KeyFrame()
-      {
-         Cue = new Cue(1.0)
-      };
-      {
-         var opacitySetter = new Setter()
-         {
-            Property = Visual.OpacityProperty,
-            Value = 0.0
-         };
-         endFrame.Setters.Add(opacitySetter);
-         var scaleXSetter = new Setter()
-         {
-            Property = ScaleTransform.ScaleXProperty,
-            Value = 0.8
-         };
-         endFrame.Setters.Add(scaleXSetter);
-      }
-      animation.Children.Add(endFrame);
-      transformOrigin = new RelativePoint(1.0, 0.0, RelativeUnit.Relative);
+      transformOrigin = new RelativePoint(0, 0, RelativeUnit.Relative);
 
       animations.Add(animation);
       return new MotionConfig(transformOrigin, animations);

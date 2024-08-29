@@ -1,8 +1,6 @@
-﻿using AtomUI.Controls.Utils;
-using AtomUI.Theme.Styling;
+﻿using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
-using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
@@ -10,8 +8,6 @@ using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
-using Avalonia.Media;
-using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
@@ -129,6 +125,12 @@ public class NotificationCard : TemplatedControl
 
    #endregion
    
+   /// <summary>
+   /// Gets the expiration time of the notification after which it will automatically close.
+   /// If the value is null then the notification will remain open until the user closes it.
+   /// </summary>
+   public TimeSpan? Expiration { get; set; }
+   
    public static bool GetCloseOnClick(Button obj)
    {
       _ = obj ?? throw new ArgumentNullException(nameof(obj));
@@ -199,13 +201,7 @@ public class NotificationCard : TemplatedControl
          UpdateNotificationType();
       }
    }
-
-   protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-   {
-      base.OnAttachedToLogicalTree(e);
-      SetupAnimation();
-   }
-
+   
    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
    {
       base.OnPropertyChanged(e);
@@ -312,13 +308,15 @@ public class NotificationCard : TemplatedControl
       SetValue(IconProperty, icon, BindingPriority.Template);
    }
 
-   private void SetupAnimation()
+   internal void NotifyCloseTick(TimeSpan cycleDuration)
    {
-      // var motionConfig = MotionFactory.BuildSlideRightInMotion(TimeSpan.FromMilliseconds(300), null, FillMode.None);
-      // var style = new Style();
-      // foreach (var animation in motionConfig.Animations) {
-      //    style.Animations.Add(animation);
-      // }
-      // Styles.Add(style);
+      if (Expiration is null) {
+         return;
+      }
+      if (Expiration.Value.TotalMilliseconds < 0) {
+         Close();
+         return;
+      }
+      Expiration -= cycleDuration;
    }
 }
