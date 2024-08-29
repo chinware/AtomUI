@@ -16,6 +16,7 @@ public abstract class BaseControlTheme : ControlTheme
    public void Build()
    {
       NotifyPreBuild();
+      BuildAnimations();
       BuildStyles();
       var template = BuildControlTemplate();
       if (template is not null) {
@@ -35,6 +36,7 @@ public abstract class BaseControlTheme : ControlTheme
       return default;
    }
 
+   protected virtual void BuildAnimations() { }
    protected virtual void BuildStyles() { }
    protected virtual void BuildInstanceStyles(Control control) { }
    protected virtual void NotifyPreBuild() { }

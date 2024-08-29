@@ -1,6 +1,8 @@
-﻿using AtomUI.Theme.Styling;
+﻿using AtomUI.Controls.Utils;
+using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
+using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
@@ -8,6 +10,8 @@ using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
+using Avalonia.Media;
+using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
@@ -196,6 +200,12 @@ public class NotificationCard : TemplatedControl
       }
    }
 
+   protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+   {
+      base.OnAttachedToLogicalTree(e);
+      SetupAnimation();
+   }
+
    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
    {
       base.OnPropertyChanged(e);
@@ -300,5 +310,15 @@ public class NotificationCard : TemplatedControl
          SetupNotificationIconColor(icon);
       }
       SetValue(IconProperty, icon, BindingPriority.Template);
+   }
+
+   private void SetupAnimation()
+   {
+      // var motionConfig = MotionFactory.BuildSlideRightInMotion(TimeSpan.FromMilliseconds(300), null, FillMode.None);
+      // var style = new Style();
+      // foreach (var animation in motionConfig.Animations) {
+      //    style.Animations.Add(animation);
+      // }
+      // Styles.Add(style);
    }
 }
