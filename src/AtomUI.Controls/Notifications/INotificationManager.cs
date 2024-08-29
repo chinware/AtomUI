@@ -2,5 +2,5 @@
 
 public interface INotificationManager
 {
-   void Show(INotification notification);
+   public void Show(INotification notification, string[]? classes = null);
 }

@@ -5,27 +5,28 @@ namespace AtomUI.Controls;
 
 public class Notification : INotification, INotifyPropertyChanged
 {
-   private string? _title, _message;
+   private string? _title;
+   private object? _content;
 
    /// <summary>
    /// Initializes a new instance of the <see cref="Notification"/> class.
    /// </summary>
    /// <param name="title">The title of the notification.</param>
-   /// <param name="message">The message to be displayed in the notification.</param>
+   /// <param name="content">The message to be displayed in the notification.</param>
    /// <param name="type">The <see cref="NotificationType"/> of the notification.</param>
    /// <param name="expiration">The expiry time at which the notification will close. 
    /// Use <see cref="TimeSpan.Zero"/> for notifications that will remain open.</param>
    /// <param name="onClick">An Action to call when the notification is clicked.</param>
    /// <param name="onClose">An Action to call when the notification is closed.</param>
    public Notification(string? title,
-                       string? message,
+                       object? content,
                        NotificationType type = NotificationType.Information,
                        TimeSpan? expiration = null,
                        Action? onClick = null,
                        Action? onClose = null)
    {
       Title = title;
-      Message = message;
+      _content = content;
       Type = type;
       Expiration = expiration.HasValue ? expiration.Value : TimeSpan.FromSeconds(5);
       OnClick = onClick;
@@ -51,13 +52,13 @@ public class Notification : INotification, INotifyPropertyChanged
    }
 
    /// <inheritdoc/>
-   public string? Message
+   public object? Content
    {
-      get => _message;
+      get => _content;
       set
       {
-         if (_message != value) {
-            _message = value;
+         if (!object.ReferenceEquals(_content, value)) {
+            _content = value;
             OnPropertyChanged();
          }
       }
@@ -67,7 +68,7 @@ public class Notification : INotification, INotifyPropertyChanged
    public NotificationType Type { get; set; }
 
    /// <inheritdoc/>
-   public TimeSpan Expiration { get; set; }
+   public TimeSpan? Expiration { get; set; }
 
    /// <inheritdoc/>
    public Action? OnClick { get; set; }

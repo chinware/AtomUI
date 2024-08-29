@@ -35,6 +35,11 @@ internal class NotificationToken : AbstractControlDesignToken
    public double NotificationIconSize { get; set; }
    
    /// <summary>
+   /// 提醒框图标外边距
+   /// </summary>
+   public Thickness NotificationIconMargin { get; set; }
+   
+   /// <summary>
    /// 提醒框关闭按钮尺寸
    /// </summary>
    public double NotificationCloseButtonSize { get; set; }
@@ -58,6 +63,16 @@ internal class NotificationToken : AbstractControlDesignToken
    /// 提醒框进度条高度
    /// </summary>
    public double NotificationProgressHeight { get; set; }
+   
+   /// <summary>
+   /// 提醒框宽度
+   /// </summary>
+   public double NotificationWidth { get; set; }
+   
+   /// <summary>
+   /// 标题栏的外边距
+   /// </summary>
+   public Thickness HeaderMargin { get; set; }
 
    internal override void CalculateFromAlias()
    {
@@ -67,7 +82,7 @@ internal class NotificationToken : AbstractControlDesignToken
       NotificationIconSize = _globalToken.FontToken.FontSizeLG * _globalToken.FontToken.LineHeightLG;
       NotificationCloseButtonSize = _globalToken.HeightToken.ControlHeightLG * 0.55;
       NotificationMarginBottom = new Thickness(0, 0, 0, _globalToken.Margin);
-      NotificationMarginEdge = new Thickness(_globalToken.MarginLG);
+      NotificationMarginEdge = new Thickness(_globalToken.MarginLG, _globalToken.MarginLG, _globalToken.MarginLG, 0);
       AnimationMaxHeight = 150;
 
       NotificationProgressHeight = 2;
@@ -81,5 +96,8 @@ internal class NotificationToken : AbstractControlDesignToken
             new GradientStop { Color = _globalToken.ColorToken.ColorPrimaryToken.ColorPrimary, Offset = 1}
          }
       };
+      NotificationWidth = 384;
+      HeaderMargin = new Thickness(0, 0, 0, _globalToken.MarginXS);
+      NotificationIconMargin = new Thickness(0, 0, _globalToken.MarginSM, 0);
    }
 }

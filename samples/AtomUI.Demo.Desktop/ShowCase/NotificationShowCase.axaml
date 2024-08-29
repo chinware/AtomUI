@@ -1,0 +1,20 @@
+<UserControl
+    x:Class="AtomUI.Demo.Desktop.ShowCase.NotificationShowCase"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:atom="https://atomui.net"
+    xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
+    mc:Ignorable="d">
+    <showcase:ShowCasePanel>
+        <showcase:ShowCaseItem
+            Title="Basic"
+            Description="The simplest usage for Notification.">
+            <atom:Button ButtonType="Primary"
+                         Click="ShowSimpleNotification">
+                Show Notification
+            </atom:Button>
+        </showcase:ShowCaseItem>
+    </showcase:ShowCasePanel>
+</UserControl>

@@ -21,56 +21,38 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager
    public const string BottomCenterPC = ":bottomcenter";
 
    private IList? _items;
+   private Queue<NotificationCard> _notificationCards;
 
-   /// <summary>
-   /// Defines the <see cref="Position"/> property.
-   /// </summary>
    public static readonly StyledProperty<NotificationPosition> PositionProperty =
       AvaloniaProperty.Register<WindowNotificationManager, NotificationPosition>(
          nameof(Position), NotificationPosition.TopRight);
-
-   /// <summary>
-   /// Defines which corner of the screen notifications can be displayed in.
-   /// </summary>
-   /// <seealso cref="NotificationPosition"/>
+   
    public NotificationPosition Position
    {
       get => GetValue(PositionProperty);
       set => SetValue(PositionProperty, value);
    }
-
-   /// <summary>
-   /// Defines the <see cref="MaxItems"/> property.
-   /// </summary>
+   
    public static readonly StyledProperty<int> MaxItemsProperty =
       AvaloniaProperty.Register<WindowNotificationManager, int>(nameof(MaxItems), 5);
-
-   /// <summary>
-   /// Defines the maximum number of notifications visible at once.
-   /// </summary>
+   
    public int MaxItems
    {
       get => GetValue(MaxItemsProperty);
       set => SetValue(MaxItemsProperty, value);
    }
-
-   /// <summary>
-   /// Initializes a new instance of the <see cref="WindowNotificationManager"/> class.
-   /// </summary>
-   /// <param name="host">The TopLevel that will host the control.</param>
+   
    public WindowNotificationManager(TopLevel? host) : this()
    {
       if (host is not null) {
          InstallFromTopLevel(host);
       }
    }
-
-   /// <summary>
-   /// Initializes a new instance of the <see cref="WindowNotificationManager"/> class.
-   /// </summary>
+   
    public WindowNotificationManager()
    {
       UpdatePseudoClasses(Position);
+      _notificationCards = new Queue<NotificationCard>();
    }
 
    static WindowNotificationManager()
@@ -78,8 +60,7 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager
       HorizontalAlignmentProperty.OverrideDefaultValue<WindowNotificationManager>(HorizontalAlignment.Stretch);
       VerticalAlignmentProperty.OverrideDefaultValue<WindowNotificationManager>(VerticalAlignment.Stretch);
    }
-
-   /// <inheritdoc/>
+   
    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
    {
       base.OnApplyTemplate(e);
@@ -87,34 +68,19 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager
       var itemsControl = e.NameScope.Find<Panel>("PART_Items");
       _items = itemsControl?.Children;
    }
-
-   public void Show(INotification content)
+   
+   public void Show(INotification notification, string[]? classes = null)
    {
-      Show(content, content.Type, content.Expiration, content.OnClick, content.OnClose);
-   }
-
-   /// <summary>
-   /// Shows a Notification
-   /// </summary>
-   /// <param name="content">the content of the notification</param>
-   /// <param name="type">the type of the notification</param>
-   /// <param name="expiration">the expiration time of the notification after which it will automatically close. If the value is Zero then the notification will remain open until the user closes it</param>
-   /// <param name="onClick">an Action to be run when the notification is clicked</param>
-   /// <param name="onClose">an Action to be run when the notification is closed</param>
-   /// <param name="classes">style classes to apply</param>
-   private async void Show(object content,
-                           NotificationType type,
-                           TimeSpan? expiration = null,
-                           Action? onClick = null,
-                           Action? onClose = null,
-                           string[]? classes = null)
-   {
+      var expiration = notification.Expiration;
+      var onClick = notification.OnClick;
+      var onClose = notification.OnClose;
       Dispatcher.UIThread.VerifyAccess();
-
+      
       var notificationControl = new NotificationCard
       {
-         Content = content,
-         NotificationType = type
+         Title = notification.Title,
+         CardContent = notification.Content,
+         NotificationType = notification.Type
       };
 
       // Add style classes if any
@@ -150,10 +116,12 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager
       if (expiration == TimeSpan.Zero) {
          return;
       }
+      
+      _notificationCards.Enqueue(notificationControl);
 
-      await Task.Delay(expiration ?? TimeSpan.FromSeconds(5));
-
-      notificationControl.Close();
+      // await Task.Delay(expiration ?? TimeSpan.FromSeconds(1000));
+      //
+      // notificationControl.Close();
    }
 
    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -164,10 +132,7 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager
          UpdatePseudoClasses(change.GetNewValue<NotificationPosition>());
       }
    }
-
-   /// <summary>
-   /// Installs the <see cref="WindowNotificationManager"/> within the <see cref="AdornerLayer"/>
-   /// </summary>
+   
    private void InstallFromTopLevel(TopLevel topLevel)
    {
       topLevel.TemplateApplied += TopLevelOnTemplateApplied;

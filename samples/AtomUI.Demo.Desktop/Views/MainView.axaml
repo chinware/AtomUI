@@ -153,6 +153,12 @@
             <TabItem Header="TabControl">
                 <showcases:TabControlShowCase />
             </TabItem>
+            <TabItem Header="Notification">
+                <showcases:NotificationShowCase />
+            </TabItem>
+            <TabItem Header="Message">
+                <showcases:MessageShowCase />
+            </TabItem>
         </TabControl>
     </Grid>
 

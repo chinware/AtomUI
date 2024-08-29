@@ -311,11 +311,14 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey NotificationBg = new TokenResourceKey("Notification.NotificationBg", "AtomUI.Token");
         public static readonly TokenResourceKey NotificationPadding = new TokenResourceKey("Notification.NotificationPadding", "AtomUI.Token");
         public static readonly TokenResourceKey NotificationIconSize = new TokenResourceKey("Notification.NotificationIconSize", "AtomUI.Token");
+        public static readonly TokenResourceKey NotificationIconMargin = new TokenResourceKey("Notification.NotificationIconMargin", "AtomUI.Token");
         public static readonly TokenResourceKey NotificationCloseButtonSize = new TokenResourceKey("Notification.NotificationCloseButtonSize", "AtomUI.Token");
         public static readonly TokenResourceKey NotificationMarginBottom = new TokenResourceKey("Notification.NotificationMarginBottom", "AtomUI.Token");
         public static readonly TokenResourceKey NotificationMarginEdge = new TokenResourceKey("Notification.NotificationMarginEdge", "AtomUI.Token");
         public static readonly TokenResourceKey NotificationProgressBg = new TokenResourceKey("Notification.NotificationProgressBg", "AtomUI.Token");
         public static readonly TokenResourceKey NotificationProgressHeight = new TokenResourceKey("Notification.NotificationProgressHeight", "AtomUI.Token");
+        public static readonly TokenResourceKey NotificationWidth = new TokenResourceKey("Notification.NotificationWidth", "AtomUI.Token");
+        public static readonly TokenResourceKey HeaderMargin = new TokenResourceKey("Notification.HeaderMargin", "AtomUI.Token");
     }
 
     public static class OptionButtonTokenResourceKey

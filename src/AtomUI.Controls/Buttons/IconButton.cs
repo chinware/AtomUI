@@ -30,6 +30,9 @@ public class IconButton : AvaloniaButton, ICustomHitTest
 
    public static readonly StyledProperty<double> IconHeightProperty
       = AvaloniaProperty.Register<IconButton, double>(nameof(IconHeight));
+   
+   public static readonly StyledProperty<bool> IsEnableHoverEffectProperty
+      = AvaloniaProperty.Register<IconButton, bool>(nameof(IsEnableHoverEffect), false);
 
    public PathIcon? Icon
    {
@@ -61,6 +64,12 @@ public class IconButton : AvaloniaButton, ICustomHitTest
       set => SetValue(IconHeightProperty, value);
    }
 
+   public bool IsEnableHoverEffect
+   {
+      get => GetValue(IsEnableHoverEffectProperty);
+      set => SetValue(IsEnableHoverEffectProperty, value);
+   }
+   
    #endregion
 
    private ControlStyleState _styleState;
@@ -104,13 +113,10 @@ public class IconButton : AvaloniaButton, ICustomHitTest
    private void SetupIcon()
    {
       if (Icon is not null) {
-         Icon.SetCurrentValue(PathIcon.HorizontalAlignmentProperty, HorizontalAlignment.Center);
-         Icon.SetCurrentValue(PathIcon.VerticalAlignmentProperty, VerticalAlignment.Center);
          BindUtils.RelayBind(this, LoadingAnimationProperty, Icon, PathIcon.LoadingAnimationProperty);
          BindUtils.RelayBind(this, LoadingAnimationDurationProperty, Icon, PathIcon.LoadingAnimationDurationProperty);
          BindUtils.RelayBind(this, IconHeightProperty, Icon, PathIcon.HeightProperty);
          BindUtils.RelayBind(this, IconWidthProperty, Icon, PathIcon.WidthProperty);
-         Content = Icon;
       }
    }
 
