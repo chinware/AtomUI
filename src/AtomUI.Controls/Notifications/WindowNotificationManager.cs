@@ -23,12 +23,18 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager
 
    private IList? _items;
    private Queue<NotificationCard> _cleanupQueue;
-   private DispatcherTimer _dispatcherTimer;
+   private DispatcherTimer _cardExpiredTimer;
    private DispatcherTimer _cleanupTimer;
 
    public static readonly StyledProperty<NotificationPosition> PositionProperty =
       AvaloniaProperty.Register<WindowNotificationManager, NotificationPosition>(
          nameof(Position), NotificationPosition.TopRight);
+   
+   public static readonly StyledProperty<int> MaxItemsProperty =
+      AvaloniaProperty.Register<WindowNotificationManager, int>(nameof(MaxItems), 5);
+   
+   public static readonly StyledProperty<bool> IsPauseOnHoverProperty =
+      AvaloniaProperty.Register<WindowNotificationManager, bool>(nameof(IsPauseOnHover), false);
    
    public NotificationPosition Position
    {
@@ -36,13 +42,16 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager
       set => SetValue(PositionProperty, value);
    }
    
-   public static readonly StyledProperty<int> MaxItemsProperty =
-      AvaloniaProperty.Register<WindowNotificationManager, int>(nameof(MaxItems), 5);
-   
    public int MaxItems
    {
       get => GetValue(MaxItemsProperty);
       set => SetValue(MaxItemsProperty, value);
+   }
+   
+   public bool IsPauseOnHover
+   {
+      get => GetValue(IsPauseOnHoverProperty);
+      set => SetValue(IsPauseOnHoverProperty, value);
    }
    
    public WindowNotificationManager(TopLevel? host) : this()
@@ -55,8 +64,8 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager
    public WindowNotificationManager()
    {
       UpdatePseudoClasses(Position);
-      _dispatcherTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(50), Tag = this };
-      _dispatcherTimer.Tick += HandleTimerTick;
+      _cardExpiredTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(50), Tag = this };
+      _cardExpiredTimer.Tick += HandleCardExpiredTimer;
       _cleanupTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(50), Tag = this };
       _cleanupTimer.Tick += HandleCleanupTimerTick;
       _cleanupQueue = new Queue<NotificationCard>();
@@ -79,12 +88,12 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager
       }
    }
 
-   private void HandleTimerTick(object? sender, EventArgs eventArgs)
+   private void HandleCardExpiredTimer(object? sender, EventArgs eventArgs)
    {
       if (_items is not null) {
          foreach (var item in _items) {
             if (item is NotificationCard card) {
-               if (card.NotifyCloseTick(_dispatcherTimer.Interval)) {
+               if (card.NotifyCloseTick(_cardExpiredTimer.Interval)) {
                   if (!_cleanupQueue.Contains(card)) {
                      _cleanupQueue.Enqueue(card);
                      if (!_cleanupTimer.IsEnabled) {
@@ -116,9 +125,9 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager
    {
       if (_items is not null) {
          if (_items.Count > 0) {
-            _dispatcherTimer.Start();
+            _cardExpiredTimer.Start();
          } else {
-            _dispatcherTimer.Stop();
+            _cardExpiredTimer.Stop();
          }
       }
    }
@@ -130,12 +139,13 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager
       var onClose = notification.OnClose;
       Dispatcher.UIThread.VerifyAccess();
       
-      var notificationControl = new NotificationCard
+      var notificationControl = new NotificationCard(this)
       {
          Title = notification.Title,
          CardContent = notification.Content,
          NotificationType = notification.Type,
-         Expiration = expiration == TimeSpan.Zero ? null : expiration
+         Expiration = expiration == TimeSpan.Zero ? null : expiration,
+         IsShowProgress = notification.ShowProgress
       };
 
       // Add style classes if any
@@ -209,5 +219,15 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager
       PseudoClasses.Set(BottomRightPC, position == NotificationPosition.BottomRight);
       PseudoClasses.Set(TopCenterPC, position == NotificationPosition.TopCenter);
       PseudoClasses.Set(BottomCenterPC, position == NotificationPosition.BottomCenter);
+   }
+
+   internal void StopExpiredTimer()
+   {
+      _cardExpiredTimer.Stop();
+   }
+
+   internal void StartExpiredTimer()
+   {
+      _cardExpiredTimer.Start();
    }
 }

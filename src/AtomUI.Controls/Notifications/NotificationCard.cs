@@ -6,9 +6,8 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
+using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.LogicalTree;
-using Avalonia.Threading;
 
 namespace AtomUI.Controls;
 
@@ -34,6 +33,9 @@ public class NotificationCard : TemplatedControl
    public static readonly StyledProperty<bool> IsClosedProperty =
       AvaloniaProperty.Register<NotificationCard, bool>(nameof(IsClosed));
    
+   public static readonly StyledProperty<bool> IsShowProgressProperty =
+      AvaloniaProperty.Register<NotificationCard, bool>(nameof(IsShowProgress), false);
+   
    /// <summary>
    /// Defines the <see cref="NotificationType" /> property
    /// </summary>
@@ -45,12 +47,6 @@ public class NotificationCard : TemplatedControl
    /// </summary>
    public static readonly RoutedEvent<RoutedEventArgs> NotificationClosedEvent =
       RoutedEvent.Register<NotificationCard, RoutedEventArgs>(nameof(NotificationClosed), RoutingStrategies.Bubble);
-   
-   /// <summary>
-   /// Defines the CloseOnClick property.
-   /// </summary>
-   public static readonly AttachedProperty<bool> CloseOnClickProperty =
-      AvaloniaProperty.RegisterAttached<NotificationCard, Button, bool>("CloseOnClick", defaultValue: false);
    
    public static readonly StyledProperty<string?> TitleProperty =
       AvaloniaProperty.Register<NotificationCard, string?>(nameof(Title));
@@ -82,6 +78,12 @@ public class NotificationCard : TemplatedControl
       set => SetValue(IsClosedProperty, value);
    }
    
+   public bool IsShowProgress
+   {
+      get => GetValue(IsShowProgressProperty);
+      set => SetValue(IsShowProgressProperty, value);
+   }
+      
    /// <summary>
    /// Gets or sets the type of the notification
    /// </summary>
@@ -126,59 +128,39 @@ public class NotificationCard : TemplatedControl
 
    #endregion
    
+   #region 内部属性定义
+
+   internal static readonly DirectProperty<NotificationCard, bool> EffectiveShowProgressProperty =
+      AvaloniaProperty.RegisterDirect<NotificationCard, bool>(nameof(EffectiveShowProgress),
+                                                              o => o.EffectiveShowProgress);
+
+   private bool _effectiveShowProgress;
+   internal bool EffectiveShowProgress
+   {
+      get => _effectiveShowProgress;
+      set => SetAndRaise(EffectiveShowProgressProperty, ref _effectiveShowProgress, value);
+   }
+
+   #endregion
+   
    /// <summary>
    /// Gets the expiration time of the notification after which it will automatically close.
    /// If the value is null then the notification will remain open until the user closes it.
    /// </summary>
    public TimeSpan? Expiration { get; set; }
-   
-   public static bool GetCloseOnClick(Button obj)
-   {
-      _ = obj ?? throw new ArgumentNullException(nameof(obj));
-      return (bool)obj.GetValue(CloseOnClickProperty);
-   }
-
-   public static void SetCloseOnClick(Button obj, bool value)
-   {
-      _ = obj ?? throw new ArgumentNullException(nameof(obj));
-      obj.SetValue(CloseOnClickProperty, value);
-   }
-   
    private bool _isClosing;
-
-   static NotificationCard()
-   {
-      CloseOnClickProperty.Changed.AddClassHandler<Button>(OnCloseOnClickPropertyChanged);
-   }
-
+   private NotificationProgressBar? _progressBar;
+   private WindowNotificationManager _notificationManager;
+   private IconButton? _closeButton;
+   
    /// <summary>
    /// Initializes a new instance of the <see cref="NotificationCard"/> class.
    /// </summary>
-   public NotificationCard()
+   public NotificationCard(WindowNotificationManager manager)
    {
       UpdateNotificationType();
       ClipToBounds = false;
-   }
-
-   private static void OnCloseOnClickPropertyChanged(AvaloniaObject d, AvaloniaPropertyChangedEventArgs e)
-   {
-      var button = (Button)d;
-      var value = (bool)e.NewValue!;
-      if (value) {
-         button.Click += Button_Click;
-      } else {
-         button.Click -= Button_Click;
-      }
-   }
-
-   /// <summary>
-   /// Called when a button inside the Notification is clicked.
-   /// </summary>
-   private static void Button_Click(object? sender, RoutedEventArgs e)
-   {
-      var btn = sender as ILogical;
-      var notification = btn?.GetLogicalAncestors().OfType<NotificationCard>().FirstOrDefault();
-      notification?.Close();
+      _notificationManager = manager;
    }
 
    /// <summary>
@@ -201,6 +183,26 @@ public class NotificationCard : TemplatedControl
          SetupNotificationIcon();
          UpdateNotificationType();
       }
+
+      _progressBar = e.NameScope.Find<NotificationProgressBar>(NotificationCardTheme.ProgressBarPart);
+      _closeButton = e.NameScope.Find<IconButton>(NotificationCardTheme.CloseButtonPart);
+      if (_progressBar is not null) {
+         if (Expiration is null) {
+            _progressBar.IsVisible = false;
+         } else {
+            _progressBar.Expiration = Expiration.Value;
+         }
+      }
+
+      if (_closeButton is not null) {
+         _closeButton.Click += HandleCloseButtonClose;
+      }
+      SetupEffectiveShowProgress();
+   }
+
+   private void HandleCloseButtonClose(object? sender, EventArgs args)
+   {
+      Close();
    }
    
    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
@@ -223,6 +225,24 @@ public class NotificationCard : TemplatedControl
       if (e.Property == CardContentProperty) {
          if (e.NewValue is string) {
             SetupContent();
+         }
+      }
+
+      if (e.Property == IsShowProgressProperty ||
+          e.Property == IsClosedProperty) {
+         SetupEffectiveShowProgress();
+      }
+   }
+
+   private void SetupEffectiveShowProgress()
+   {
+      if (!IsShowProgress) {
+         EffectiveShowProgress = false;
+      } else {
+         if (Expiration is not null) {
+            EffectiveShowProgress = true;
+         } else {
+            EffectiveShowProgress = false;
          }
       }
    }
@@ -311,14 +331,42 @@ public class NotificationCard : TemplatedControl
 
    internal bool NotifyCloseTick(TimeSpan cycleDuration)
    {
+      InvalidateVisual();
       if (Expiration is null) {
          return false;
       }
       Expiration -= cycleDuration;
+      if (_progressBar is not null) {
+         _progressBar.CurrentExpiration = Expiration.Value;
+      }
       if (Expiration.Value.TotalMilliseconds < 0) {
          return true;
       }
 
       return false;
+   }
+
+   protected override void OnPointerEntered(PointerEventArgs e)
+   {
+      base.OnPointerEntered(e);
+      if (_notificationManager.IsPauseOnHover) {
+         _notificationManager.StopExpiredTimer();
+      }
+   }
+
+   protected override void OnPointerMoved(PointerEventArgs e)
+   {
+      base.OnPointerMoved(e);
+      if (_notificationManager.IsPauseOnHover) {
+         _notificationManager.StopExpiredTimer();
+      }
+   }
+
+   protected override void OnPointerExited(PointerEventArgs e)
+   {
+      base.OnPointerExited(e);
+      if (_notificationManager.IsPauseOnHover) {
+         _notificationManager.StartExpiredTimer();
+      }
    }
 }

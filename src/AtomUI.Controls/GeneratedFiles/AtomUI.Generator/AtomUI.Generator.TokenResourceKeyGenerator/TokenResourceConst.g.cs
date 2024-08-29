@@ -317,7 +317,9 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey NotificationMarginEdge = new TokenResourceKey("Notification.NotificationMarginEdge", "AtomUI.Token");
         public static readonly TokenResourceKey NotificationProgressBg = new TokenResourceKey("Notification.NotificationProgressBg", "AtomUI.Token");
         public static readonly TokenResourceKey NotificationProgressHeight = new TokenResourceKey("Notification.NotificationProgressHeight", "AtomUI.Token");
+        public static readonly TokenResourceKey NotificationProgressMargin = new TokenResourceKey("Notification.NotificationProgressMargin", "AtomUI.Token");
         public static readonly TokenResourceKey NotificationWidth = new TokenResourceKey("Notification.NotificationWidth", "AtomUI.Token");
+        public static readonly TokenResourceKey NotificationContentMargin = new TokenResourceKey("Notification.NotificationContentMargin", "AtomUI.Token");
         public static readonly TokenResourceKey HeaderMargin = new TokenResourceKey("Notification.HeaderMargin", "AtomUI.Token");
     }
 

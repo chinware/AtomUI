@@ -22,6 +22,11 @@ public interface INotification
    /// If the value is <see cref="TimeSpan.Zero"/> then the notification will remain open until the user closes it.
    /// </summary>
    TimeSpan Expiration { get; }
+   
+   /// <summary>
+   /// 显示一个进度条
+   /// </summary>
+   bool ShowProgress { get; }
 
    /// <summary>
    /// Gets an Action to be run when the notification is clicked.

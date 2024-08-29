@@ -26,6 +26,7 @@ internal class NotificationCardTheme : BaseControlTheme
    public const string ContentPart = "PART_Content";
    public const string CloseButtonPart = "PART_CloseButton";
    public const string LayoutTransformControlPart = "PART_LayoutTransformControl";
+   public const string ProgressBarPart = "PART_ProgressBar";
 
    public NotificationCardTheme()
       : base(typeof(NotificationCard))
@@ -58,13 +59,15 @@ internal class NotificationCardTheme : BaseControlTheme
             RowDefinitions = new RowDefinitions()
             {
                new RowDefinition(GridLength.Auto),
-               new RowDefinition(GridLength.Star)
+               new RowDefinition(GridLength.Star),
+               new RowDefinition(GridLength.Auto)
             }
          };
 
          frameDecorator.Child = mainLayout;
          BuildHeader(mainLayout, scope);
          BuildContent(mainLayout, scope);
+         BuildProgressBar(mainLayout, scope);
          frameDecorator.RegisterInNameScope(scope);
 
          layoutTransformControl.Child = frameDecorator;
@@ -119,6 +122,7 @@ internal class NotificationCardTheme : BaseControlTheme
          HorizontalAlignment = HorizontalAlignment.Right,
          VerticalAlignment = VerticalAlignment.Center
       };
+      closeIconButton.RegisterInNameScope(scope);
       TokenResourceBinder.CreateTokenBinding(closeIconButton, IconButton.PaddingProperty,
                                              GlobalTokenResourceKey.PaddingXXS, BindingPriority.Template,
                                              o =>
@@ -149,8 +153,9 @@ internal class NotificationCardTheme : BaseControlTheme
       var contentPresenter = new ContentPresenter()
       {
          Name = ContentPart,
-         TextWrapping = TextWrapping.Wrap
+         TextWrapping = TextWrapping.Wrap,
       };
+      TokenResourceBinder.CreateTokenBinding(contentPresenter, ContentPresenter.MarginProperty, NotificationTokenResourceKey.NotificationContentMargin);
       CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty,
                                   NotificationCard.CardContentProperty);
       CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentTemplateProperty,
@@ -158,6 +163,21 @@ internal class NotificationCardTheme : BaseControlTheme
       Grid.SetColumn(contentPresenter, 1);
       Grid.SetRow(contentPresenter, 1);
       layout.Children.Add(contentPresenter);
+   }
+
+   private void BuildProgressBar(Grid layout, INameScope scope)
+   {
+      var progressBar = new NotificationProgressBar()
+      {
+         Name = ProgressBarPart
+      };
+      progressBar.RegisterInNameScope(scope);
+      CreateTemplateParentBinding(progressBar, NotificationProgressBar.IsVisibleProperty, NotificationCard.EffectiveShowProgressProperty);
+      TokenResourceBinder.CreateTokenBinding(progressBar, NotificationProgressBar.MarginProperty, NotificationTokenResourceKey.NotificationProgressMargin);
+      Grid.SetColumn(progressBar, 0);
+      Grid.SetRow(progressBar, 1);
+      Grid.SetColumnSpan(progressBar, 2);
+      layout.Children.Add(progressBar);
    }
 
    protected override void BuildStyles()
@@ -218,40 +238,50 @@ internal class NotificationCardTheme : BaseControlTheme
    private void BuildAnimationStyle()
    {
       var commonStyle = new Style(selector => selector.Nesting());
-      var moveRightInMotionConfig = MotionFactory.BuildMoveRightInMotion(400, TimeSpan.FromMilliseconds(400), new QuadraticEaseOut(), 
-                                                                         FillMode.Forward);
-      foreach (var animation in moveRightInMotionConfig.Animations) {
-         commonStyle.Animations.Add(animation);
+      
+
+      {
+         var layoutTransformStyle = new Style(selector => selector.Nesting().Template().Name(LayoutTransformControlPart));
+         var moveRightInMotionConfig = MotionFactory.BuildMoveRightInMotion(400, TimeSpan.FromMilliseconds(400), new QuadraticEaseOut(), 
+                                                                            FillMode.Forward);
+         foreach (var animation in moveRightInMotionConfig.Animations) {
+            layoutTransformStyle.Animations.Add(animation);
+         }
+
+         commonStyle.Add(layoutTransformStyle);
       }
 
       var isClosingStyle = new Style(selector => selector.Nesting().PropertyEquals(NotificationCard.IsClosingProperty, true));
-      var layoutTransformStyle = new Style(selector => selector.Nesting().Template().Name(LayoutTransformControlPart));
-      
-      var moveRightOutMotionConfig = MotionFactory.BuildMoveRightOutMotion(400, TimeSpan.FromMilliseconds(400), new QuadraticEaseOut(), FillMode.Forward);
-      
-      foreach (var animation in moveRightOutMotionConfig.Animations) {
-         layoutTransformStyle.Animations.Add(animation);
-      }
-      
-      isClosingStyle.Animations.Add(new Animation()
       {
-         Duration = TimeSpan.FromMilliseconds(600),
-         Easing = new QuadraticEaseOut(),
-         FillMode = FillMode.Forward,
-         Children =
+         var layoutTransformStyle = new Style(selector => selector.Nesting().Template().Name(LayoutTransformControlPart));
+      
+         var moveRightOutMotionConfig = MotionFactory.BuildMoveRightOutMotion(400, TimeSpan.FromMilliseconds(400), new QuadraticEaseIn(), FillMode.Forward);
+      
+         foreach (var animation in moveRightOutMotionConfig.Animations) {
+            layoutTransformStyle.Animations.Add(animation);
+         }
+      
+         isClosingStyle.Animations.Add(new Animation()
          {
-            new KeyFrame()
+            Duration = TimeSpan.FromMilliseconds(600),
+            Easing = new QuadraticEaseIn(),
+            FillMode = FillMode.Forward,
+            Children =
             {
-               Cue = new Cue(1.0),
-               Setters =
+               new KeyFrame()
                {
-                  new Setter(NotificationCard.IsClosedProperty, true),
-                  new Setter(NotificationCard.MarginProperty, new Thickness(0)),
+                  Cue = new Cue(1.0),
+                  Setters =
+                  {
+                     new Setter(NotificationCard.IsClosedProperty, true),
+                     new Setter(NotificationCard.MarginProperty, new Thickness(0)),
+                  }
                }
             }
-         }
-      });
-      isClosingStyle.Add(layoutTransformStyle);
+         });
+      
+         isClosingStyle.Add(layoutTransformStyle);
+      }
       commonStyle.Add(isClosingStyle);
       
       Add(commonStyle);

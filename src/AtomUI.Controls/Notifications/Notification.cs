@@ -7,6 +7,7 @@ public class Notification : INotification, INotifyPropertyChanged
 {
    private string? _title;
    private object? _content;
+   private bool _showProgress;
 
    /// <summary>
    /// Initializes a new instance of the <see cref="Notification"/> class.
@@ -22,6 +23,7 @@ public class Notification : INotification, INotifyPropertyChanged
                        object? content,
                        NotificationType type = NotificationType.Information,
                        TimeSpan? expiration = null,
+                       bool showProgress = false,
                        Action? onClick = null,
                        Action? onClose = null)
    {
@@ -29,6 +31,7 @@ public class Notification : INotification, INotifyPropertyChanged
       _content = content;
       Type = type;
       Expiration = expiration.HasValue ? expiration.Value : TimeSpan.FromSeconds(5);
+      ShowProgress = showProgress;
       OnClick = onClick;
       OnClose = onClose;
    }
@@ -59,6 +62,18 @@ public class Notification : INotification, INotifyPropertyChanged
       {
          if (!object.ReferenceEquals(_content, value)) {
             _content = value;
+            OnPropertyChanged();
+         }
+      }
+   }
+   
+   public bool ShowProgress
+   {
+      get => _showProgress;
+      set
+      {
+         if (_showProgress != value) {
+            _showProgress = value;
             OnPropertyChanged();
          }
       }

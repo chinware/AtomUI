@@ -17,15 +17,20 @@ public partial class NotificationShowCase : UserControl
    {
       base.OnAttachedToVisualTree(e);
       var topLevel = TopLevel.GetTopLevel(this);
-      _windowNotificationManager = new WindowNotificationManager(topLevel) { MaxItems = 5 };
+      _windowNotificationManager = new WindowNotificationManager(topLevel)
+      {
+         MaxItems = 5,
+         IsPauseOnHover = true
+      };
    }
 
    private void ShowSimpleNotification(object? sender, RoutedEventArgs e)
    {
       _windowNotificationManager?.Show(new Notification()
       {
+         ShowProgress = true,
          Title = "Notification Title",
-         Content = "This is the content of the notification. This is the content of the notification. This is the content of the notification. This is the content of the notification. This is the content of the notification. This is the content of the notification."
+         Content = "This is the content of the notification. This is the content of the notification. This is the content of the notification. This is the content of the notification."
       });
    }
 }

@@ -394,8 +394,42 @@ public static partial class MotionFactory
             Value = offset
          };
          startFrame.Setters.Add(translateXSetter);
+         
+         var scaleYSetter = new Setter()
+         {
+            Property = ScaleTransform.ScaleYProperty,
+            Value = 0.0
+         };
+         startFrame.Setters.Add(scaleYSetter);
       }
       animation.Children.Add(startFrame);
+      
+      
+      var middleFrame = new KeyFrame()
+      {
+         Cue = new Cue(0.7)
+      };
+      {
+         var opacitySetter = new Setter()
+         {
+            Property = Visual.OpacityProperty,
+            Value = 0.0
+         };
+         middleFrame.Setters.Add(opacitySetter);
+         var translateXSetter = new Setter()
+         {
+            Property = TranslateTransform.XProperty,
+            Value = offset
+         };
+         middleFrame.Setters.Add(translateXSetter);
+         var scaleYSetter = new Setter()
+         {
+            Property = ScaleTransform.ScaleYProperty,
+            Value = 1.0
+         };
+         middleFrame.Setters.Add(scaleYSetter);
+      }
+      animation.Children.Add(middleFrame);
 
       var endFrame = new KeyFrame()
       {
@@ -414,6 +448,13 @@ public static partial class MotionFactory
             Value = 0.0
          };
          endFrame.Setters.Add(translateXSetter);
+         
+         var scaleYSetter = new Setter()
+         {
+            Property = ScaleTransform.ScaleYProperty,
+            Value = 1.0
+         };
+         endFrame.Setters.Add(scaleYSetter);
       }
       animation.Children.Add(endFrame);
       transformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);

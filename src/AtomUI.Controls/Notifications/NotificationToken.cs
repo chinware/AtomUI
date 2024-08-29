@@ -65,9 +65,19 @@ internal class NotificationToken : AbstractControlDesignToken
    public double NotificationProgressHeight { get; set; }
    
    /// <summary>
+   /// 进度条外边距
+   /// </summary>
+   public Thickness NotificationProgressMargin { get; set; }
+   
+   /// <summary>
    /// 提醒框宽度
    /// </summary>
    public double NotificationWidth { get; set; }
+   
+   /// <summary>
+   /// 内容外边距
+   /// </summary>
+   public Thickness NotificationContentMargin { get; set; }
    
    /// <summary>
    /// 标题栏的外边距
@@ -77,15 +87,17 @@ internal class NotificationToken : AbstractControlDesignToken
    internal override void CalculateFromAlias()
    {
       base.CalculateFromAlias();
-      NotificationPadding = new Thickness(_globalToken.PaddingLG, _globalToken.PaddingMD);
+      NotificationProgressHeight = 2;
+      NotificationProgressMargin = new Thickness(0, 0, 0, 1);
+      NotificationContentMargin = new Thickness(0, 0, 0, _globalToken.PaddingMD);
+      NotificationPadding = new Thickness(_globalToken.PaddingLG, _globalToken.PaddingMD, _globalToken.PaddingLG, 0);
       NotificationBg = _globalToken.ColorToken.ColorNeutralToken.ColorBgElevated;
       NotificationIconSize = _globalToken.FontToken.FontSizeLG * _globalToken.FontToken.LineHeightLG;
       NotificationCloseButtonSize = _globalToken.HeightToken.ControlHeightLG * 0.55;
       NotificationMarginBottom = new Thickness(0, 0, 0, _globalToken.Margin);
       NotificationMarginEdge = new Thickness(_globalToken.MarginLG, _globalToken.MarginLG, _globalToken.MarginLG, 0);
       AnimationMaxHeight = 150;
-
-      NotificationProgressHeight = 2;
+      
       NotificationProgressBg = new LinearGradientBrush()
       {
          StartPoint = new RelativePoint(0, 0.5, RelativeUnit.Relative),
