@@ -86,8 +86,8 @@ Welcome to communicate and give suggestions to AtomUI, thank you for giving the 
 | Drawer             | TODO           |
 | Message            | Developing 💪  |
 | Modal              | Developing 💪  |
-| Notification       | Developing 💪  |
-| Popconfirm         | Completed ✅  |
+| Notification       | Completed ✅    |
+| Popconfirm         | Completed ✅    |
 | ProgressBar        | Completed ✅    |
 | Result             | Need Review 🤔 |
 | Skeleton           | TODO           |

@@ -93,7 +93,7 @@ PS: AtomUI 目前仅在 Windows 11 平台测试<br>
 | Drawer 抽屉            | 未完成    |
 | Message 全局提示         | 进行中 💪 |
 | Modal 对话框            | 进行中 💪 |
-| Notification 通知提醒框   | 进行中 💪 |
+| Notification 通知提醒框   | 已完成 ✅ |
 | Popconfirm 气泡确认框     | 已完成 ✅ |
 | ProgressBar 进度条      | 已完成 ✅  |
 | Result 结果            | 需评估 🤔 |
