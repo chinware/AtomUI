@@ -8,6 +8,7 @@ using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
 
@@ -132,13 +133,27 @@ public class NotificationCard : TemplatedControl
 
    internal static readonly DirectProperty<NotificationCard, bool> EffectiveShowProgressProperty =
       AvaloniaProperty.RegisterDirect<NotificationCard, bool>(nameof(EffectiveShowProgress),
-                                                              o => o.EffectiveShowProgress);
+                                                              o => o.EffectiveShowProgress,
+                                                              (o, v) => o.EffectiveShowProgress = v);
+   
+   internal static readonly DirectProperty<NotificationCard, NotificationPosition> PositionProperty =
+      AvaloniaProperty.RegisterDirect<NotificationCard, NotificationPosition>(
+         nameof(Position), 
+         o => o.Position,
+         (o, v) => o.Position = v);
 
    private bool _effectiveShowProgress;
    internal bool EffectiveShowProgress
    {
       get => _effectiveShowProgress;
       set => SetAndRaise(EffectiveShowProgressProperty, ref _effectiveShowProgress, value);
+   }
+
+   private NotificationPosition _position;
+   internal NotificationPosition Position
+   {
+      get => _position;
+      set => SetAndRaise(PositionProperty, ref _position, value);
    }
 
    #endregion
@@ -175,10 +190,15 @@ public class NotificationCard : TemplatedControl
       IsClosing = true;
    }
 
+   protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+   {
+      base.OnAttachedToLogicalTree(e);
+      UpdatePseudoClasses(Position);
+   }
+
    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
    {
       base.OnApplyTemplate(e);
-      SetupContent();
       if (Icon is null) {
          SetupNotificationIcon();
          UpdateNotificationType();
@@ -231,6 +251,10 @@ public class NotificationCard : TemplatedControl
       if (e.Property == IsShowProgressProperty ||
           e.Property == IsClosedProperty) {
          SetupEffectiveShowProgress();
+      }
+      
+      if (e.Property == PositionProperty) {
+         UpdatePseudoClasses(e.GetNewValue<NotificationPosition>());
       }
    }
 
@@ -368,5 +392,15 @@ public class NotificationCard : TemplatedControl
       if (_notificationManager.IsPauseOnHover) {
          _notificationManager.StartExpiredTimer();
       }
+   }
+   
+   private void UpdatePseudoClasses(NotificationPosition position)
+   {
+      PseudoClasses.Set(WindowNotificationManager.TopLeftPC, position == NotificationPosition.TopLeft);
+      PseudoClasses.Set(WindowNotificationManager.TopRightPC, position == NotificationPosition.TopRight);
+      PseudoClasses.Set(WindowNotificationManager.BottomLeftPC, position == NotificationPosition.BottomLeft);
+      PseudoClasses.Set(WindowNotificationManager.BottomRightPC, position == NotificationPosition.BottomRight);
+      PseudoClasses.Set(WindowNotificationManager.TopCenterPC, position == NotificationPosition.TopCenter);
+      PseudoClasses.Set(WindowNotificationManager.BottomCenterPC, position == NotificationPosition.BottomCenter);
    }
 }

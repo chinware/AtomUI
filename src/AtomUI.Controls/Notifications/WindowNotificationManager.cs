@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Specialized;
+using AtomUI.Data;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -147,6 +148,7 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager
          Expiration = expiration == TimeSpan.Zero ? null : expiration,
          IsShowProgress = notification.ShowProgress
       };
+      BindUtils.RelayBind(this, PositionProperty, notificationControl, NotificationCard.PositionProperty);
 
       // Add style classes if any
       if (classes != null) {
@@ -160,13 +162,6 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager
          onClose?.Invoke();
 
          _items?.Remove(sender);
-      };
-
-      notificationControl.PointerPressed += (sender, args) =>
-      {
-         onClick?.Invoke();
-
-         (sender as NotificationCard)?.Close();
       };
 
       Dispatcher.UIThread.Post(() =>

@@ -50,9 +50,14 @@ internal class NotificationToken : AbstractControlDesignToken
    public Thickness NotificationMarginBottom { get; set; }
    
    /// <summary>
-   /// 提醒框边缘外边距
+   /// 提醒框上边缘外边距
    /// </summary>
-   public Thickness NotificationMarginEdge { get; set; }
+   public Thickness NotificationTopMargin { get; set; }
+   
+   /// <summary>
+   /// 提醒框下边缘外边距
+   /// </summary>
+   public Thickness NotificationBottomMargin { get; set; }
    
    /// <summary>
    /// 提醒框进度条背景色
@@ -95,8 +100,8 @@ internal class NotificationToken : AbstractControlDesignToken
       NotificationIconSize = _globalToken.FontToken.FontSizeLG * _globalToken.FontToken.LineHeightLG;
       NotificationCloseButtonSize = _globalToken.HeightToken.ControlHeightLG * 0.55;
       NotificationMarginBottom = new Thickness(0, 0, 0, _globalToken.Margin);
-      NotificationMarginEdge = new Thickness(_globalToken.MarginLG, _globalToken.MarginLG, _globalToken.MarginLG, 0);
-      AnimationMaxHeight = 150;
+      NotificationTopMargin = new Thickness(_globalToken.MarginLG, _globalToken.MarginLG, _globalToken.MarginLG, 0);
+      NotificationBottomMargin = new Thickness(_globalToken.MarginLG, 0, _globalToken.MarginLG, _globalToken.MarginLG);
       
       NotificationProgressBg = new LinearGradientBrush()
       {

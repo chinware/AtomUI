@@ -34,6 +34,7 @@ internal class WindowNotificationManagerTheme : BaseControlTheme
       var topLeftStyle = new Style(selector => selector.Nesting().Class(WindowNotificationManager.TopLeftPC));
       {
          var itemsStyle = new Style(selector => selector.Nesting().Template().Name(ItemsPart));
+         itemsStyle.Add(ReversibleStackPanel.ReverseOrderProperty, true);
          itemsStyle.Add(ReversibleStackPanel.HorizontalAlignmentProperty, HorizontalAlignment.Left);
          itemsStyle.Add(ReversibleStackPanel.VerticalAlignmentProperty, VerticalAlignment.Top);
          topLeftStyle.Add(itemsStyle);
@@ -54,6 +55,7 @@ internal class WindowNotificationManagerTheme : BaseControlTheme
       var topCenterStyle = new Style(selector => selector.Nesting().Class(WindowNotificationManager.TopCenterPC));
       {
          var itemsStyle = new Style(selector => selector.Nesting().Template().Name(ItemsPart));
+         itemsStyle.Add(ReversibleStackPanel.ReverseOrderProperty, true);
          itemsStyle.Add(ReversibleStackPanel.HorizontalAlignmentProperty, HorizontalAlignment.Center);
          itemsStyle.Add(ReversibleStackPanel.VerticalAlignmentProperty, VerticalAlignment.Top);
          topCenterStyle.Add(itemsStyle);
@@ -65,7 +67,7 @@ internal class WindowNotificationManagerTheme : BaseControlTheme
          var itemsStyle = new Style(selector => selector.Nesting().Template().Name(ItemsPart));
          itemsStyle.Add(ReversibleStackPanel.HorizontalAlignmentProperty, HorizontalAlignment.Left);
          itemsStyle.Add(ReversibleStackPanel.VerticalAlignmentProperty, VerticalAlignment.Bottom);
-         topLeftStyle.Add(itemsStyle);
+         bottomLeftStyle.Add(itemsStyle);
       }
       
       Add(bottomLeftStyle);
