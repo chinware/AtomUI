@@ -5,12 +5,17 @@ public interface INotification
    /// <summary>
    /// Gets the Title of the notification.
    /// </summary>
-   string? Title { get; }
+   string Title { get; }
 
    /// <summary>
    /// Gets the notification message.
    /// </summary>
    object? Content { get; }
+   
+   /// <summary>
+   /// 自定义图标
+   /// </summary>
+   PathIcon? Icon { get; }
 
    /// <summary>
    /// Gets the <see cref="NotificationType"/> of the notification.

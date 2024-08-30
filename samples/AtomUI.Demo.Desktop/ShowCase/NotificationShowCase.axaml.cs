@@ -2,6 +2,7 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using PathIcon = AtomUI.Controls.PathIcon;
 
 namespace AtomUI.Demo.Desktop.ShowCase;
 
@@ -19,6 +20,18 @@ public partial class NotificationShowCase : UserControl
    public NotificationShowCase()
    {
       InitializeComponent();
+      HoverOptionGroup.OptionCheckedChanged += HandleHoverOptionGroupCheckedChanged;
+   }
+
+   private void HandleHoverOptionGroupCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
+   {
+      if (_basicManager is not null) {
+         if (args.Index == 0) {
+            _basicManager.IsPauseOnHover = true;
+         } else {
+            _basicManager.IsPauseOnHover = false;
+         }
+      }
    }
    
    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -69,115 +82,125 @@ public partial class NotificationShowCase : UserControl
 
    private void ShowSimpleNotification(object? sender, RoutedEventArgs e)
    {
-      _basicManager?.Show(new Notification()
-      {
-         ShowProgress = true,
-         Title = "Notification Title",
-         Content = "Hello, AtomUI/Avalonia!"
-      });
+      _basicManager?.Show(new Notification(
+                             title: "Notification Title",
+                             content: "Hello, AtomUI/Avalonia!"
+                          ));
    }
    
    private void ShowNeverCloseNotification(object? sender, RoutedEventArgs e)
    {
-      _basicManager?.Show(new Notification()
-      {
-         Expiration = TimeSpan.Zero,
-         Title = "Notification Title",
-         Content = "I will never close automatically. This is a purposely very very long description that has many many characters and words."
-      });
+      _basicManager?.Show(new Notification(
+                             expiration : TimeSpan.Zero,
+                             title : "Notification Title",
+                             content : "I will never close automatically. This is a purposely very very long description that has many many characters and words."
+                          ));
    }
       
    private void ShowSuccessNotification(object? sender, RoutedEventArgs e)
    {
-      _basicManager?.Show(new Notification()
-      {
-         Type = NotificationType.Success,
-         Title = "Notification Title",
-         Content = "This is the content of the notification. This is the content of the notification. This is the content of the notification."
-      });
+      _basicManager?.Show(new Notification(
+                             type: NotificationType.Success,
+                             title: "Notification Title",
+                             content: "This is the content of the notification. This is the content of the notification. This is the content of the notification."
+                          ));
    }
    
    private void ShowInfoNotification(object? sender, RoutedEventArgs e)
    {
-      _basicManager?.Show(new Notification()
-      {
-         Type = NotificationType.Information,
-         Title = "Notification Title",
-         Content = "This is the content of the notification. This is the content of the notification. This is the content of the notification."
-      });
+      _basicManager?.Show(new Notification(
+                             type: NotificationType.Information,
+                             title: "Notification Title",
+                             content: "This is the content of the notification. This is the content of the notification. This is the content of the notification."
+                          ));
    }
    
    private void ShowWarningNotification(object? sender, RoutedEventArgs e)
    {
-      _basicManager?.Show(new Notification()
-      {
-         Type = NotificationType.Warning,
-         Title = "Notification Title",
-         Content = "This is the content of the notification. This is the content of the notification. This is the content of the notification."
-      });
+      _basicManager?.Show(new Notification(
+                             type: NotificationType.Warning,
+                             title: "Notification Title",
+                             content: "This is the content of the notification. This is the content of the notification. This is the content of the notification."
+                          ));
    }
    
    private void ShowErrorNotification(object? sender, RoutedEventArgs e)
    {
-      _basicManager?.Show(new Notification()
-      {
-         Type = NotificationType.Error,
-         Title = "Notification Title",
-         Content = "This is the content of the notification. This is the content of the notification. This is the content of the notification."
-      });
+      _basicManager?.Show(new Notification(
+                             type: NotificationType.Error,
+                             title: "Notification Title",
+                             content: "This is the content of the notification. This is the content of the notification. This is the content of the notification."
+                          ));
    }
    
    private void ShowTopNotification(object? sender, RoutedEventArgs e)
    {
-      _topManager?.Show(new Notification()
-      {
-         Title = "Notification Top",
-         Content = "Hello, AtomUI/Avalonia!"
-      });
+      _topManager?.Show(new Notification(
+                           title : "Notification Top",
+                           content : "Hello, AtomUI/Avalonia!"
+                        ));
    }
    
    private void ShowBottomNotification(object? sender, RoutedEventArgs e)
    {
-      _bottomManager?.Show(new Notification()
-      {
-         Title = "Notification Bottom",
-         Content = "Hello, AtomUI/Avalonia!"
-      });
+      _bottomManager?.Show(new Notification(
+                              title : "Notification Bottom",
+                              content : "Hello, AtomUI/Avalonia!"
+                           ));
    }
    
    private void ShowTopLeftNotification(object? sender, RoutedEventArgs e)
    {
-      _topLeftManager?.Show(new Notification()
-      {
-         Title = "Notification TopLeft",
-         Content = "Hello, AtomUI/Avalonia!"
-      });
+      _topLeftManager?.Show(new Notification(
+                               title : "Notification TopLeft",
+                               content : "Hello, AtomUI/Avalonia!"
+                            ));
    }
    
    private void ShowTopRightNotification(object? sender, RoutedEventArgs e)
    {
-      _topRightManager?.Show(new Notification()
-      {
-         Title = "Notification TopRight",
-         Content = "Hello, AtomUI/Avalonia!"
-      });
+      _topRightManager?.Show(new Notification(
+                                title : "Notification TopRight",
+                                content : "Hello, AtomUI/Avalonia!"
+                             ));
    }
    
    private void ShowBottomLeftNotification(object? sender, RoutedEventArgs e)
    {
-      _bottomLeftManager?.Show(new Notification()
-      {
-         Title = "Notification BottomLeft",
-         Content = "Hello, AtomUI/Avalonia!"
-      });
+      _bottomLeftManager?.Show(new Notification(
+                                  title : "Notification BottomLeft",
+                                  content : "Hello, AtomUI/Avalonia!"
+                               ));
    }
    
    private void ShowBottomRightNotification(object? sender, RoutedEventArgs e)
    {
-      _bottomRightManager?.Show(new Notification()
-      {
-         Title = "Notification BottomRight",
-         Content = "Hello, AtomUI/Avalonia!"
-      });
+      _bottomRightManager?.Show(new Notification(
+                                   title : "Notification BottomRight",
+                                   content : "Hello, AtomUI/Avalonia!"
+                                ));
+   }
+   
+   
+   private void ShowCustomIconNotification(object? sender, RoutedEventArgs e)
+   {
+      _basicManager?.Show(new Notification(
+                             title: "Notification Title",
+                             content: "This is the content of the notification. This is the content of the notification. This is the content of the notification.",
+                             icon: new PathIcon()
+                             {
+                                Kind = "SettingOutlined"
+                             }
+                          ));
+   }
+   
+   private void ShowProgressNotification(object? sender, RoutedEventArgs e)
+   {
+      _basicManager?.Show(new Notification(
+                             type: NotificationType.Information,
+                             title: "Notification Title",
+                             content: "This is the content of the notification. This is the content of the notification. This is the content of the notification.",
+                             showProgress:true
+                          ));
    }
 }

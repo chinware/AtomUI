@@ -49,8 +49,8 @@ public class NotificationCard : TemplatedControl
    public static readonly RoutedEvent<RoutedEventArgs> NotificationClosedEvent =
       RoutedEvent.Register<NotificationCard, RoutedEventArgs>(nameof(NotificationClosed), RoutingStrategies.Bubble);
    
-   public static readonly StyledProperty<string?> TitleProperty =
-      AvaloniaProperty.Register<NotificationCard, string?>(nameof(Title));
+   public static readonly StyledProperty<string> TitleProperty =
+      AvaloniaProperty.Register<NotificationCard, string>(nameof(Title));
    
    public static readonly StyledProperty<object?> CardContentProperty =
       AvaloniaProperty.Register<NotificationCard, object?>(nameof(CardContent));
@@ -94,7 +94,7 @@ public class NotificationCard : TemplatedControl
       set => SetValue(NotificationTypeProperty, value);
    }
    
-   public string? Title
+   public string Title
    {
       get => GetValue(TitleProperty);
       set => SetValue(TitleProperty, value);
@@ -350,7 +350,7 @@ public class NotificationCard : TemplatedControl
       if (icon is not null) {
          SetupNotificationIconColor(icon);
       }
-      SetValue(IconProperty, icon, BindingPriority.Template);
+      SetCurrentValue(IconProperty, icon);
    }
 
    internal bool NotifyCloseTick(TimeSpan cycleDuration)

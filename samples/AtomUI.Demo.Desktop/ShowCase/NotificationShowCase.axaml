@@ -48,7 +48,7 @@
                 </atom:Button>
             </StackPanel>
         </showcase:ShowCaseItem>
-        
+
         <showcase:ShowCaseItem
             Title="Placement"
             Description="A notification box can appear from the top bottom topLeft topRight bottomLeft or bottomRight of the viewport via placement.">
@@ -63,7 +63,7 @@
                         Bottom
                     </atom:Button>
                 </StackPanel>
-                <atom:Separator/>
+                <atom:Separator />
                 <StackPanel Orientation="Horizontal" Spacing="10">
                     <atom:Button ButtonType="Primary"
                                  Click="ShowTopLeftNotification">
@@ -74,7 +74,7 @@
                         TopRight
                     </atom:Button>
                 </StackPanel>
-                <atom:Separator/>
+                <atom:Separator />
                 <StackPanel Orientation="Horizontal" Spacing="10">
                     <atom:Button ButtonType="Primary"
                                  Click="ShowBottomLeftNotification">
@@ -86,6 +86,31 @@
                     </atom:Button>
                 </StackPanel>
             </StackPanel>
+        </showcase:ShowCaseItem>
+
+        <showcase:ShowCaseItem
+            Title="Customized Icon"
+            Description="The icon can be customized to any icon node.">
+            <atom:Button ButtonType="Primary"
+                         Click="ShowCustomIconNotification">
+                Open the notification box
+            </atom:Button>
+        </showcase:ShowCaseItem>
+
+        <showcase:ShowCaseItem
+            Title="Show with progress"
+            Description="Show progress bar for auto-closing notification.">
+            <StackPanel Spacing="10" Orientation="Vertical">
+                <atom:OptionButtonGroup ButtonStyle="Outline" Name="HoverOptionGroup">
+                    <atom:OptionButton IsChecked="True">Pause on hover</atom:OptionButton>
+                    <atom:OptionButton>Don&apos;t pause on hover</atom:OptionButton>
+                </atom:OptionButtonGroup>
+                <atom:Button ButtonType="Primary"
+                             Click="ShowProgressNotification">
+                    Show Notification
+                </atom:Button>
+            </StackPanel>
+
         </showcase:ShowCaseItem>
     </showcase:ShowCasePanel>
 </UserControl>

@@ -5,44 +5,31 @@ namespace AtomUI.Controls;
 
 public class Notification : INotification, INotifyPropertyChanged
 {
-   private string? _title;
+   private string _title;
    private object? _content;
    private bool _showProgress;
-
-   /// <summary>
-   /// Initializes a new instance of the <see cref="Notification"/> class.
-   /// </summary>
-   /// <param name="title">The title of the notification.</param>
-   /// <param name="content">The message to be displayed in the notification.</param>
-   /// <param name="type">The <see cref="NotificationType"/> of the notification.</param>
-   /// <param name="expiration">The expiry time at which the notification will close. 
-   /// Use <see cref="TimeSpan.Zero"/> for notifications that will remain open.</param>
-   /// <param name="onClick">An Action to call when the notification is clicked.</param>
-   /// <param name="onClose">An Action to call when the notification is closed.</param>
-   public Notification(string? title,
+   private PathIcon? _icon;
+   
+   public Notification(string title,
                        object? content,
                        NotificationType type = NotificationType.Information,
+                       PathIcon? icon = null,
                        TimeSpan? expiration = null,
                        bool showProgress = false,
                        Action? onClick = null,
                        Action? onClose = null)
    {
-      Title = title;
+      _title = title;
       _content = content;
+      _icon = icon;
       Type = type;
       Expiration = expiration.HasValue ? expiration.Value : TimeSpan.FromSeconds(5);
       ShowProgress = showProgress;
       OnClick = onClick;
       OnClose = onClose;
    }
-
-   /// <summary>
-   /// Initializes a new instance of the <see cref="Notification"/> class.
-   /// </summary>
-   public Notification() : this(null, null) { }
-
-   /// <inheritdoc/>
-   public string? Title
+   
+   public string Title
    {
       get => _title;
       set
@@ -53,8 +40,7 @@ public class Notification : INotification, INotifyPropertyChanged
          }
       }
    }
-
-   /// <inheritdoc/>
+   
    public object? Content
    {
       get => _content;
@@ -62,6 +48,18 @@ public class Notification : INotification, INotifyPropertyChanged
       {
          if (!object.ReferenceEquals(_content, value)) {
             _content = value;
+            OnPropertyChanged();
+         }
+      }
+   }
+   
+   public PathIcon? Icon
+   {
+      get => _icon;
+      set
+      {
+         if (!object.ReferenceEquals(_icon, value)) {
+            _icon = value;
             OnPropertyChanged();
          }
       }
@@ -78,17 +76,13 @@ public class Notification : INotification, INotifyPropertyChanged
          }
       }
    }
-
-   /// <inheritdoc/>
+   
    public NotificationType Type { get; set; }
-
-   /// <inheritdoc/>
+   
    public TimeSpan Expiration { get; set; }
-
-   /// <inheritdoc/>
+   
    public Action? OnClick { get; set; }
-
-   /// <inheritdoc/>
+   
    public Action? OnClose { get; set; }
 
    public event PropertyChangedEventHandler? PropertyChanged;

@@ -35,7 +35,7 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager
       AvaloniaProperty.Register<WindowNotificationManager, int>(nameof(MaxItems), 5);
    
    public static readonly StyledProperty<bool> IsPauseOnHoverProperty =
-      AvaloniaProperty.Register<WindowNotificationManager, bool>(nameof(IsPauseOnHover), false);
+      AvaloniaProperty.Register<WindowNotificationManager, bool>(nameof(IsPauseOnHover), true);
    
    public NotificationPosition Position
    {
@@ -144,6 +144,7 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager
       {
          Title = notification.Title,
          CardContent = notification.Content,
+         Icon = notification.Icon,
          NotificationType = notification.Type,
          Expiration = expiration == TimeSpan.Zero ? null : expiration,
          IsShowProgress = notification.ShowProgress
@@ -157,6 +158,11 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager
          }
       }
 
+      notificationControl.PointerPressed += (sender, args) =>
+      {
+         onClick?.Invoke();
+      };
+      
       notificationControl.NotificationClosed += (sender, args) =>
       {
          onClose?.Invoke();
