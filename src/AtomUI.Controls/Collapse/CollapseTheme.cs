@@ -1,5 +1,7 @@
-﻿using AtomUI.Theme;
+﻿using AtomUI.Data;
+using AtomUI.Theme;
 using AtomUI.Theme.Styling;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Templates;
@@ -23,7 +25,7 @@ internal class CollapseTheme : BaseControlTheme
          var frameDecorator = new Border()
          {
             Name = FrameDecoratorPart,
-            ClipToBounds = true
+            ClipToBounds = true,
          };
          var itemsPresenter = new ItemsPresenter()
          {

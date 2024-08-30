@@ -136,8 +136,8 @@ public class Expander : AvaloniaExpander
                                                           o => o.MotionDuration,
                                                           (o, v) => o.MotionDuration = v);
 
-   internal static readonly DirectProperty<Collapse, Thickness> EffectiveBorderThicknessProperty =
-      AvaloniaProperty.RegisterDirect<Collapse, Thickness>(nameof(EffectiveBorderThickness),
+   internal static readonly DirectProperty<Expander, Thickness> EffectiveBorderThicknessProperty =
+      AvaloniaProperty.RegisterDirect<Expander, Thickness>(nameof(EffectiveBorderThickness),
                                                            o => o.EffectiveBorderThickness,
                                                            (o, v) => o.EffectiveBorderThickness = v);
 

@@ -276,8 +276,8 @@ internal class AlertTheme : BaseControlTheme
          Name = CloseBtnPart,
       };
       
-      TokenResourceBinder.CreateTokenBinding(closeBtn, IconButton.WidthProperty, GlobalTokenResourceKey.IconSizeSM);
-      TokenResourceBinder.CreateTokenBinding(closeBtn, IconButton.HeightProperty, GlobalTokenResourceKey.IconSizeSM);
+      TokenResourceBinder.CreateTokenBinding(closeBtn, IconButton.IconWidthProperty, GlobalTokenResourceKey.IconSizeSM);
+      TokenResourceBinder.CreateTokenBinding(closeBtn, IconButton.IconHeightProperty, GlobalTokenResourceKey.IconSizeSM);
       TokenResourceBinder.CreateTokenBinding(closeBtn, IconButton.MarginProperty, AlertTokenResourceKey.ExtraElementMargin);
 
       CreateTemplateParentBinding(closeBtn, IconButton.IsVisibleProperty, Alert.IsClosableProperty);
