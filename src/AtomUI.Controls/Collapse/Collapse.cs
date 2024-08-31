@@ -11,7 +11,6 @@ using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Layout;
-using Avalonia.Threading;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;

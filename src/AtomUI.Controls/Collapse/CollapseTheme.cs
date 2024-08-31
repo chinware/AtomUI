@@ -1,7 +1,5 @@
-﻿using AtomUI.Data;
-using AtomUI.Theme;
+﻿using AtomUI.Theme;
 using AtomUI.Theme.Styling;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Templates;
@@ -16,7 +14,6 @@ internal class CollapseTheme : BaseControlTheme
    public const string ItemsPresenterPart = "PART_ItemsPresenter";
    
    public CollapseTheme() : base(typeof(Collapse)) {}
-   
    
    protected override IControlTemplate BuildControlTemplate()
    {
@@ -42,7 +39,7 @@ internal class CollapseTheme : BaseControlTheme
          return frameDecorator;
       });
    }
-      
+   
    protected override void BuildStyles()
    {
       var commonStyle = new Style(selector => selector.Nesting());

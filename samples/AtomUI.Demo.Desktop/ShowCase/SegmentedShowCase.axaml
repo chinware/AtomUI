@@ -11,7 +11,7 @@
         <showcase:ShowCaseItem
             Title="Basic"
             Description="The most basic usage.">
-            <StackPanel HorizontalAlignment="Left" Orientation="Vertical">
+            <StackPanel HorizontalAlignment="Left" Orientation="Vertical" Spacing="10">
                 <atom:Segmented>
                     <atom:SegmentedItem>Daily</atom:SegmentedItem>
                     <atom:SegmentedItem>Weekly</atom:SegmentedItem>
@@ -33,7 +33,7 @@
                 </atom:Segmented>
             </StackPanel>
         </showcase:ShowCaseItem>
-
+        
         <showcase:ShowCaseItem
             Title="Disabled"
             Description="Disabled Segmented.">
@@ -52,7 +52,7 @@
                 </atom:Segmented>
             </StackPanel>
         </showcase:ShowCaseItem>
-
+        
         <showcase:ShowCaseItem
             Title="Three sizes of Segmented"
             Description="There are three sizes of an Segmented: large (40px), default (32px) and small (24px).">
@@ -64,7 +64,7 @@
                     <atom:SegmentedItem>Quarterly</atom:SegmentedItem>
                     <atom:SegmentedItem>Yearly</atom:SegmentedItem>
                 </atom:Segmented>
-
+        
                 <atom:Segmented>
                     <atom:SegmentedItem>Daily</atom:SegmentedItem>
                     <atom:SegmentedItem>Weekly</atom:SegmentedItem>
@@ -72,7 +72,7 @@
                     <atom:SegmentedItem>Quarterly</atom:SegmentedItem>
                     <atom:SegmentedItem>Yearly</atom:SegmentedItem>
                 </atom:Segmented>
-
+        
                 <atom:Segmented SizeType="Small">
                     <atom:SegmentedItem>Daily</atom:SegmentedItem>
                     <atom:SegmentedItem>Weekly</atom:SegmentedItem>
@@ -82,24 +82,15 @@
                 </atom:Segmented>
             </StackPanel>
         </showcase:ShowCaseItem>
-
+        
         <showcase:ShowCaseItem
             Title="With Icon only"
             Description="Set icon without label for Segmented Item.">
             <StackPanel HorizontalAlignment="Left" Orientation="Vertical" Spacing="10">
                 <atom:Segmented>
-                    <atom:SegmentedItem>
-                        <atom:SegmentedItem.Icon>
-                            <atom:PathIcon Kind="BarsOutlined"></atom:PathIcon>
-                        </atom:SegmentedItem.Icon>
-                    </atom:SegmentedItem>
-                    <atom:SegmentedItem>
-                        <atom:SegmentedItem.Icon>
-                            <atom:PathIcon Kind="AppstoreOutlined"></atom:PathIcon>
-                        </atom:SegmentedItem.Icon>
-                    </atom:SegmentedItem>
+                    <atom:SegmentedItem Icon="{atom:IconProvider Kind=BarsOutlined}"/>
+                    <atom:SegmentedItem Icon="{atom:IconProvider Kind=AppstoreOutlined}"/>
                 </atom:Segmented>
-        
             </StackPanel>
         </showcase:ShowCaseItem>
         
@@ -108,57 +99,36 @@
             Description="Set icon for Segmented Item.">
             <StackPanel HorizontalAlignment="Left" Orientation="Vertical" Spacing="10">
                 <atom:Segmented>
-                    <atom:SegmentedItem>
-                        <atom:SegmentedItem.Icon>
-                            <atom:PathIcon Kind="BarsOutlined"></atom:PathIcon>
-                        </atom:SegmentedItem.Icon>
+                    <atom:SegmentedItem Icon="{atom:IconProvider Kind=BarsOutlined}">
                         List
                     </atom:SegmentedItem>
-                    <atom:SegmentedItem Text="Kanban">
-                        <atom:SegmentedItem.Icon>
-                            <atom:PathIcon Kind="AppstoreOutlined"></atom:PathIcon>
-                        </atom:SegmentedItem.Icon>
-                    </atom:SegmentedItem>
+                    <atom:SegmentedItem Content="Kanban" Icon="{atom:IconProvider Kind=AppstoreOutlined}"/>
                 </atom:Segmented>
         
                 <atom:Segmented>
-                    <atom:SegmentedItem>
-                        <atom:SegmentedItem.Icon>
-                            <atom:PathIcon Kind="BarsOutlined"></atom:PathIcon>
-                        </atom:SegmentedItem.Icon>
+                    <atom:SegmentedItem Icon="{atom:IconProvider Kind=BarsOutlined}">
                         Ava 牛逼
                     </atom:SegmentedItem>
-                    <atom:SegmentedItem Text="群主牛逼">
-                        <atom:SegmentedItem.Icon>
-                            <atom:PathIcon Kind="WechatOutlined"></atom:PathIcon>
-                        </atom:SegmentedItem.Icon>
-                    </atom:SegmentedItem>
+                    <atom:SegmentedItem Content="群主牛逼" Icon="{atom:IconProvider Kind=WechatOutlined}"/>
         
-                    <atom:SegmentedItem Text="微软牛逼"
-                                        Icon="{atom:IconProvider Kind=WindowsOutlined}">
+                    <atom:SegmentedItem Content="微软牛逼"
+                                         Icon="{atom:IconProvider Kind=WindowsOutlined}">
                     </atom:SegmentedItem>
         
                 </atom:Segmented>
         
                 <atom:Segmented SizeType="Large">
-                    <atom:SegmentedItem>
-                        <atom:SegmentedItem.Icon>
-                            <atom:PathIcon Kind="BarsOutlined"></atom:PathIcon>
-                        </atom:SegmentedItem.Icon>
+                    <atom:SegmentedItem Icon="{atom:IconProvider Kind=BarsOutlined}">
                         Ava 牛逼
                     </atom:SegmentedItem>
-                    <atom:SegmentedItem Text="群主牛逼">
-                        <atom:SegmentedItem.Icon>
-                            <atom:PathIcon Kind="WechatOutlined"></atom:PathIcon>
-                        </atom:SegmentedItem.Icon>
-                    </atom:SegmentedItem>
+                    <atom:SegmentedItem Content="群主牛逼" Icon="{atom:IconProvider Kind=WechatOutlined}"/>
         
-                    <atom:SegmentedItem Text="微软牛逼"
-                                        Icon="{atom:IconProvider Kind=WindowsOutlined}">
+                    <atom:SegmentedItem Content="微软牛逼"
+                                         Icon="{atom:IconProvider Kind=WindowsOutlined}">
                     </atom:SegmentedItem>
         
                 </atom:Segmented>
-
+        
             </StackPanel>
         </showcase:ShowCaseItem>
     </showcase:ShowCasePanel>

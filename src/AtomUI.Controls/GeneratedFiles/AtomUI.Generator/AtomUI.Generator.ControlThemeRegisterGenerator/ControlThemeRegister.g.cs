@@ -54,7 +54,6 @@
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.ProgressBarTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.StepsProgressBarTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.RadioButtonTheme());
-            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.SegmentedItemBoxTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.SegmentedItemTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.SegmentedTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.SeparatorTheme());

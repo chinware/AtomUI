@@ -46,7 +46,22 @@ internal class SegmentedToken : AbstractControlDesignToken
    /// Segmented 控件容器的 padding
    /// </summary>
    public Thickness TrackPadding { get; set; }
+   
+   /// <summary>
+   /// 大尺寸选项最小高度
+   /// </summary>
+   public double ItemMinHeightLG { get; set; }
+   
+   /// <summary>
+   /// 选项最小高度
+   /// </summary>
+   public double ItemMinHeight { get; set; }
 
+   /// <summary>
+   /// 小尺寸选项最小高度
+   /// </summary>
+   public double ItemMinHeightSM { get; set; }
+   
    /// <summary>
    /// Segmented 控件容器背景色
    /// </summary>
@@ -55,7 +70,7 @@ internal class SegmentedToken : AbstractControlDesignToken
    // 内部 token
    public Thickness SegmentedItemPadding { get; set; }
    public Thickness SegmentedItemPaddingSM { get; set; }
-   public Thickness SegmentedTextLabelMargin { get; set; }
+   public Thickness SegmentedItemContentMargin { get; set; }
 
    internal override void CalculateFromAlias()
    {
@@ -80,6 +95,10 @@ internal class SegmentedToken : AbstractControlDesignToken
          0,
          Math.Max(_globalToken.ControlPaddingSM - lineWidth, 0),
          0);
-      SegmentedTextLabelMargin = new Thickness(_globalToken.PaddingXXS, 0, 0, 0);
+      SegmentedItemContentMargin = new Thickness(_globalToken.PaddingXXS, 0, 0, 0);
+
+      ItemMinHeightLG = _globalToken.HeightToken.ControlHeightLG - TrackPadding.Top - TrackPadding.Bottom;
+      ItemMinHeight = _globalToken.SeedToken.ControlHeight - TrackPadding.Top - TrackPadding.Bottom;
+      ItemMinHeightSM = _globalToken.HeightToken.ControlHeightSM - TrackPadding.Top - TrackPadding.Bottom;
    }
 }

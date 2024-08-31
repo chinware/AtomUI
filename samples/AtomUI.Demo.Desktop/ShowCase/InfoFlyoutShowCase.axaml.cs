@@ -33,15 +33,15 @@ public partial class InfoFlyoutShowCase : UserControl
       InitializeComponent();
       var control = this as Control;
       _segmented = control.FindControl<Segmented>("ArrowSegmented")!;
-      _segmented.CurrentChanged += (sender, args) =>
+      _segmented.SelectionChanged += (sender, args) =>
       {
-         if (args.ItemIndex == 0) {
+         if (_segmented.SelectedIndex == 0) {
             ShowArrow = true;
             IsPointAtCenter = false;
-         } else if (args.ItemIndex == 1) {
+         } else if (_segmented.SelectedIndex == 1) {
             ShowArrow = false;
             IsPointAtCenter = false;
-         } else if (args.ItemIndex == 2) {
+         } else if (_segmented.SelectedIndex == 2) {
             IsPointAtCenter = true;
             ShowArrow = true;
          }

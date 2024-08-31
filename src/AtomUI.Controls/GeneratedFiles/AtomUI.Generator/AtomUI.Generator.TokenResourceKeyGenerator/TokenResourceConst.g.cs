@@ -394,10 +394,13 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey ItemSelectedBg = new TokenResourceKey("Segmented.ItemSelectedBg", "AtomUI.Token");
         public static readonly TokenResourceKey ItemSelectedColor = new TokenResourceKey("Segmented.ItemSelectedColor", "AtomUI.Token");
         public static readonly TokenResourceKey TrackPadding = new TokenResourceKey("Segmented.TrackPadding", "AtomUI.Token");
+        public static readonly TokenResourceKey ItemMinHeightLG = new TokenResourceKey("Segmented.ItemMinHeightLG", "AtomUI.Token");
+        public static readonly TokenResourceKey ItemMinHeight = new TokenResourceKey("Segmented.ItemMinHeight", "AtomUI.Token");
+        public static readonly TokenResourceKey ItemMinHeightSM = new TokenResourceKey("Segmented.ItemMinHeightSM", "AtomUI.Token");
         public static readonly TokenResourceKey TrackBg = new TokenResourceKey("Segmented.TrackBg", "AtomUI.Token");
         public static readonly TokenResourceKey SegmentedItemPadding = new TokenResourceKey("Segmented.SegmentedItemPadding", "AtomUI.Token");
         public static readonly TokenResourceKey SegmentedItemPaddingSM = new TokenResourceKey("Segmented.SegmentedItemPaddingSM", "AtomUI.Token");
-        public static readonly TokenResourceKey SegmentedTextLabelMargin = new TokenResourceKey("Segmented.SegmentedTextLabelMargin", "AtomUI.Token");
+        public static readonly TokenResourceKey SegmentedItemContentMargin = new TokenResourceKey("Segmented.SegmentedItemContentMargin", "AtomUI.Token");
     }
 
     public static class SeparatorTokenResourceKey

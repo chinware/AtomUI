@@ -1,33 +1,41 @@
 ﻿using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using Avalonia.Controls;
+using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Templates;
 using Avalonia.Layout;
-using Avalonia.Media;
 using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
 [ControlThemeProvider]
-public class SegmentedTheme : BaseControlTheme
+internal class SegmentedTheme : BaseControlTheme
 {
-   public const string MainContainerPart = "PART_MainContainer";
-   public SegmentedTheme()
-      : base(typeof(Segmented))
-   {
-   }
+   public const string FrameDecoratorPart = "PART_FrameDecorator";
+   public const string ItemsPresenterPart = "PART_ItemsPresenter";
 
+   public SegmentedTheme() : base(typeof(Segmented)) { }
+   
    protected override IControlTemplate BuildControlTemplate()
    {
-      return new FuncControlTemplate<Segmented>((segmented, scope) =>
+      return new FuncControlTemplate<Segmented>((collapse, scope) =>
       {
-         var mainContainer = new Canvas()
+         var frameDecorator = new Border()
          {
-            Name = MainContainerPart,
-            Background = new SolidColorBrush(Colors.Transparent)
+            Name = FrameDecoratorPart,
+            ClipToBounds = true,
          };
-         mainContainer.RegisterInNameScope(scope);
-         return mainContainer;
+         var itemsPresenter = new ItemsPresenter()
+         {
+            Name = ItemsPresenterPart
+         };
+         itemsPresenter.RegisterInNameScope(scope);
+         frameDecorator.Child = itemsPresenter;
+         
+         CreateTemplateParentBinding(itemsPresenter, ItemsPresenter.ItemsPanelProperty, Segmented.ItemsPanelProperty);
+         CreateTemplateParentBinding(frameDecorator, Border.CornerRadiusProperty, Segmented.CornerRadiusProperty);
+         CreateTemplateParentBinding(frameDecorator, Border.PaddingProperty, Segmented.PaddingProperty);
+         return frameDecorator;
       });
    }
 
@@ -46,7 +54,7 @@ public class SegmentedTheme : BaseControlTheme
 
       BuildSizeTypeStyle();
    }
-
+   
    private void BuildSizeTypeStyle()
    {
       var largeSizeTypeStyle = new Style(selector => selector.Nesting().PropertyEquals(Segmented.SizeTypeProperty, SizeType.Large));
