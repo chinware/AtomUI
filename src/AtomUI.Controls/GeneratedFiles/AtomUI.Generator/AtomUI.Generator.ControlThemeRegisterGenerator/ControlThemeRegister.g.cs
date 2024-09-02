@@ -78,6 +78,8 @@
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.RangeTimePickerTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.TimePickerFlyoutPresenterTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.TimePickerPresenterTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.TimelineItemTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.TimelineTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.ToolTipTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.NodeSwitcherButtonTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.TreeViewItemTheme());

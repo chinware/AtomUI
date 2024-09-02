@@ -530,6 +530,17 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey RangePickerArrowMargin = new TokenResourceKey("TimePicker.RangePickerArrowMargin", "AtomUI.Token");
         public static readonly TokenResourceKey RangePickerIndicatorThickness = new TokenResourceKey("TimePicker.RangePickerIndicatorThickness", "AtomUI.Token");
     }
+    public static class TimelineTokenResourceKey
+    {
+        public static readonly TokenResourceKey TailColor = new TokenResourceKey("Timeline.TailColor", "AtomUI.Token");
+        public static readonly TokenResourceKey TailWidth = new TokenResourceKey("Timeline.TailWidth", "AtomUI.Token");
+        public static readonly TokenResourceKey DotBorderWidth = new TokenResourceKey("Timeline.DotBorderWidth", "AtomUI.Token");
+        public static readonly TokenResourceKey ItemSelectedColor = new TokenResourceKey("Timeline.ItemSelectedColor", "AtomUI.Token");
+        public static readonly TokenResourceKey DotBg = new TokenResourceKey("Timeline.DotBg", "AtomUI.Token");
+        public static readonly TokenResourceKey ItemBgColor = new TokenResourceKey("Timeline.ItemBgColor", "AtomUI.Token");
+        public static readonly TokenResourceKey ItemPaddingBottom = new TokenResourceKey("Timeline.ItemPaddingBottom", "AtomUI.Token");
+        public static readonly TokenResourceKey ContentMargin = new TokenResourceKey("Timeline.ContentMargin", "AtomUI.Token");
+    }
 
     public static class ToolTipTokenResourceKey
     {

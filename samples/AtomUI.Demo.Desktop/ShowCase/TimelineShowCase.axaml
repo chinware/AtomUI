@@ -8,6 +8,145 @@
     xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
     mc:Ignorable="d">
     <showcase:ShowCasePanel>
-     
+        <showcase:ShowCaseItem
+            Title="Basic usage"
+            Description="Basic usage example.">
+            <atom:Timeline>
+                <atom:TimelineItem Label="2024-01-01">
+                    <TextBlock>
+                        正式立项<LineBreak/>
+                        正式立项<LineBreak/>
+                        正式立项<LineBreak/>
+                        正式立项<LineBreak/>
+                        正式立项<LineBreak/>
+                    </TextBlock>
+                </atom:TimelineItem>
+                <atom:TimelineItem Label="2024-08-12" Color="green">
+                    <TextBlock>
+                        经过7个多月的开发，AtomUI正式开源
+                        欢迎大家关注
+                        经过7个多月的开发，AtomUI正式开源
+                        欢迎大家关注
+                        经过7个多月的开发，AtomUI正式开源
+                        欢迎大家关注
+                    </TextBlock>
+                </atom:TimelineItem>
+                <atom:TimelineItem Label="2024-10-01" Color="red">
+                    <TextBlock>
+                        发布1.0预览版
+                        发布1.0预览版
+                        发布1.0预览版
+                        发布1.0预览版
+                        发布1.0预览版
+                        发布1.0预览版
+                    </TextBlock>
+                </atom:TimelineItem>
+            </atom:Timeline>
+        </showcase:ShowCaseItem>  
+        
+        <showcase:ShowCaseItem
+            Title="Basic usage"
+            Description="Basic usage example.">
+            <atom:Timeline>
+                <atom:TimelineItem>
+                    <TextBlock>
+                        正式立项<LineBreak/>
+                        正式立项<LineBreak/>
+                        正式立项<LineBreak/>
+                        正式立项<LineBreak/>
+                    </TextBlock>
+                </atom:TimelineItem>
+                <atom:TimelineItem>
+                    <TextBlock>
+                        经过7个多月的开发，AtomUI正式开源
+                        欢迎大家关注
+                        经过7个多月的开发，AtomUI正式开源
+                        欢迎大家关注
+                        经过7个多月的开发，AtomUI正式开源
+                        欢迎大家关注
+                    </TextBlock>
+                </atom:TimelineItem>
+                <atom:TimelineItem>
+                    <TextBlock>
+                        发布1.0预览版
+                        发布1.0预览版
+                        发布1.0预览版
+                        发布1.0预览版
+                        发布1.0预览版
+                        发布1.0预览版
+                    </TextBlock>
+                </atom:TimelineItem>
+            </atom:Timeline>
+        </showcase:ShowCaseItem>  
+        
+        <showcase:ShowCaseItem
+            Title="Basic usage"
+            Description="Basic usage example.">
+            <atom:Timeline Mode="right">
+                <atom:TimelineItem Label="2024-01-01">
+                    <TextBlock>
+                        正式立项<LineBreak/>
+                        正式立项<LineBreak/>
+                        正式立项<LineBreak/>
+                        正式立项<LineBreak/>
+                    </TextBlock>
+                </atom:TimelineItem>
+                <atom:TimelineItem Label="2024-08-12">
+                    <TextBlock>
+                        经过7个多月的开发，AtomUI正式开源
+                        欢迎大家关注
+                        经过7个多月的开发，AtomUI正式开源
+                        欢迎大家关注
+                        经过7个多月的开发，AtomUI正式开源
+                        欢迎大家关注
+                    </TextBlock>
+                </atom:TimelineItem>
+                <atom:TimelineItem Label="2024-10-01">
+                    <TextBlock>
+                        发布1.0预览版
+                        发布1.0预览版
+                        发布1.0预览版
+                        发布1.0预览版
+                        发布1.0预览版
+                        发布1.0预览版
+                    </TextBlock>
+                </atom:TimelineItem>
+            </atom:Timeline>
+        </showcase:ShowCaseItem>  
+        
+        <showcase:ShowCaseItem
+            Title="Basic usage"
+            Description="Basic usage example.">
+            <atom:Timeline>
+                <atom:TimelineItem Label="2024-01-01">
+                    <TextBlock>
+                        正式立项<LineBreak/>
+                        正式立项<LineBreak/>
+                        正式立项<LineBreak/>
+                        正式立项<LineBreak/>
+                    </TextBlock>
+                </atom:TimelineItem>
+                <atom:TimelineItem Label="2024-08-12">
+                    <TextBlock>
+                        经过7个多月的开发，AtomUI正式开源
+                        欢迎大家关注
+                        经过7个多月的开发，AtomUI正式开源
+                        欢迎大家关注
+                        经过7个多月的开发，AtomUI正式开源
+                        欢迎大家关注
+                    </TextBlock>
+                </atom:TimelineItem>
+                <atom:TimelineItem Label="2024-10-01">
+                    <TextBlock>
+                        发布1.0预览版
+                        发布1.0预览版
+                        发布1.0预览版
+                        发布1.0预览版
+                        发布1.0预览版
+                        发布1.0预览版
+                    </TextBlock>
+                </atom:TimelineItem>
+            </atom:Timeline>
+        </showcase:ShowCaseItem>  
     </showcase:ShowCasePanel>
 </UserControl>
