@@ -31,6 +31,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{5EB2524C
 		build\Output.Local.props = build\Output.Local.props
 		build\Output.props = build\Output.props
 		build\Version.props = build\Version.props
+		build\Directory.Build.targets = build\Directory.Build.targets
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{279BC2C9-A818-4D6C-9274-678649932057}"
