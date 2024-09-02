@@ -13,7 +13,7 @@ using Avalonia.LogicalTree;
 namespace AtomUI.Controls;
 
 [PseudoClasses(ErrorPC, InformationPC, SuccessPC, WarningPC)]
-public class NotificationCard : TemplatedControl
+public class NotificationCard : ContentControl
 {
    public const string ErrorPC = ":error";
    public const string InformationPC = ":information";
@@ -51,12 +51,6 @@ public class NotificationCard : TemplatedControl
    
    public static readonly StyledProperty<string> TitleProperty =
       AvaloniaProperty.Register<NotificationCard, string>(nameof(Title));
-   
-   public static readonly StyledProperty<object?> CardContentProperty =
-      AvaloniaProperty.Register<NotificationCard, object?>(nameof(CardContent));
-   
-   public static readonly StyledProperty<IDataTemplate?> CardContentTemplateProperty =
-      AvaloniaProperty.Register<NotificationCard, IDataTemplate?>(nameof(CardContentTemplate));
    
    public static readonly StyledProperty<PathIcon?> IconProperty
       = AvaloniaProperty.Register<NotificationCard, PathIcon?>(nameof(Icon));
@@ -98,18 +92,6 @@ public class NotificationCard : TemplatedControl
    {
       get => GetValue(TitleProperty);
       set => SetValue(TitleProperty, value);
-   }
-   
-   public object? CardContent
-   {
-      get => GetValue(CardContentProperty);
-      set => SetValue(CardContentProperty, value);
-   }
-   
-   public object? CardContentTemplate
-   {
-      get => GetValue(CardContentTemplateProperty);
-      set => SetValue(CardContentTemplateProperty, value);
    }
    
    public PathIcon? Icon
@@ -242,7 +224,7 @@ public class NotificationCard : TemplatedControl
          RaiseEvent(new RoutedEventArgs(NotificationClosedEvent));
       }
 
-      if (e.Property == CardContentProperty) {
+      if (e.Property == ContentProperty) {
          if (e.NewValue is string) {
             SetupContent();
          }
@@ -311,14 +293,14 @@ public class NotificationCard : TemplatedControl
 
    private void SetupContent()
    {
-      if (CardContent is string content) {
+      if (Content is string content) {
          var textBlock = new SelectableTextBlock()
          {
             Text = content,
          };
          TokenResourceBinder.CreateGlobalTokenBinding(textBlock, SelectableTextBlock.SelectionBrushProperty, GlobalTokenResourceKey.SelectionBackground);
          TokenResourceBinder.CreateGlobalTokenBinding(textBlock, SelectableTextBlock.SelectionForegroundBrushProperty, GlobalTokenResourceKey.SelectionForeground);
-         CardContent = textBlock;
+         Content = textBlock;
       }
    }
 

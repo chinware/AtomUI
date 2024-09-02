@@ -305,9 +305,18 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey SeparatorItemHeight = new TokenResourceKey("Menu.SeparatorItemHeight", "AtomUI.Token");
     }
 
+    public static class MessageTokenResourceKey
+    {
+        public static readonly TokenResourceKey ContentBg = new TokenResourceKey("Message.ContentBg", "AtomUI.Token");
+        public static readonly TokenResourceKey ContentPadding = new TokenResourceKey("Message.ContentPadding", "AtomUI.Token");
+        public static readonly TokenResourceKey CardHeight = new TokenResourceKey("Message.CardHeight", "AtomUI.Token");
+        public static readonly TokenResourceKey MessageIconSize = new TokenResourceKey("Message.MessageIconSize", "AtomUI.Token");
+        public static readonly TokenResourceKey MessageIconMargin = new TokenResourceKey("Message.MessageIconMargin", "AtomUI.Token");
+        public static readonly TokenResourceKey MessageTopMargin = new TokenResourceKey("Message.MessageTopMargin", "AtomUI.Token");
+    }
+
     public static class NotificationTokenResourceKey
     {
-        public static readonly TokenResourceKey AnimationMaxHeight = new TokenResourceKey("Notification.AnimationMaxHeight", "AtomUI.Token");
         public static readonly TokenResourceKey NotificationBg = new TokenResourceKey("Notification.NotificationBg", "AtomUI.Token");
         public static readonly TokenResourceKey NotificationPadding = new TokenResourceKey("Notification.NotificationPadding", "AtomUI.Token");
         public static readonly TokenResourceKey NotificationIconSize = new TokenResourceKey("Notification.NotificationIconSize", "AtomUI.Token");

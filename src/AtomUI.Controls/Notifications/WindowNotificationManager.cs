@@ -143,7 +143,7 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager
       var notificationControl = new NotificationCard(this)
       {
          Title = notification.Title,
-         CardContent = notification.Content,
+         Content = notification.Content,
          Icon = notification.Icon,
          NotificationType = notification.Type,
          Expiration = expiration == TimeSpan.Zero ? null : expiration,

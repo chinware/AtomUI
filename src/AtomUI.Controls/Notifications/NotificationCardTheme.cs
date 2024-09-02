@@ -174,9 +174,9 @@ internal class NotificationCardTheme : BaseControlTheme
       };
       TokenResourceBinder.CreateTokenBinding(contentPresenter, ContentPresenter.MarginProperty, NotificationTokenResourceKey.NotificationContentMargin);
       CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty,
-                                  NotificationCard.CardContentProperty);
+                                  NotificationCard.ContentProperty);
       CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentTemplateProperty,
-                                  NotificationCard.CardContentTemplateProperty);
+                                  NotificationCard.ContentTemplateProperty);
       Grid.SetColumn(contentPresenter, 1);
       Grid.SetRow(contentPresenter, 1);
       layout.Children.Add(contentPresenter);

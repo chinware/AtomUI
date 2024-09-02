@@ -13,11 +13,6 @@ internal class NotificationToken : AbstractControlDesignToken
       : base(ID)
    {
    }
-
-   /// <summary>
-   /// 动画最大高度
-   /// </summary>
-   public double AnimationMaxHeight { get; set; }
    
    /// <summary>
    /// 提醒框背景色
