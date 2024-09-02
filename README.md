@@ -83,8 +83,8 @@ Welcome to communicate and give suggestions to AtomUI, thank you for giving the 
 | Control Name       | Status         |
 |:-------------------|:---------------|
 | Alert              | Completed ✅    |
-| Drawer             | TODO           |
-| Message            | Developing 💪  |
+| Drawer             | Developing 💪  |
+| Message            | Completed ✅    |
 | Modal              | Developing 💪  |
 | Notification       | Completed ✅    |
 | Popconfirm         | Completed ✅    |
