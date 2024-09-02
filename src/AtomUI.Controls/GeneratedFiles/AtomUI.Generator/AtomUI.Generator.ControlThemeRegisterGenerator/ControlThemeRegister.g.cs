@@ -73,6 +73,8 @@
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.TabStripItemTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.TabStripTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.TagTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.TimelineItemTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.TimelineTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.ToolTipTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.NodeSwitcherButtonTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.TreeViewItemTheme());

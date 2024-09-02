@@ -34,6 +34,11 @@ public class ListBox : AvaloniaListBox
    }
 
    #endregion
+   
+   protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
+   {
+      return new ListBoxItem();
+   }
 
    protected override Size ArrangeOverride(Size finalSize)
    {
