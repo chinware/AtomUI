@@ -201,13 +201,13 @@ public class FlyoutHost : Control
       }
    }
 
-   public void ShowFlyout()
+   public void ShowFlyout(bool immediately)
    {
-      _flyoutStateHelper.ShowFlyout();
+      _flyoutStateHelper.ShowFlyout(immediately);
    }
 
-   public void HideFlyout()
+   public void HideFlyout(bool immediately)
    {
-      _flyoutStateHelper.HideFlyout();
+      _flyoutStateHelper.HideFlyout(immediately);
    }
 }

@@ -190,7 +190,7 @@ internal class FlyoutStateHelper : AvaloniaObject
       }
    }
 
-   public void ShowFlyout()
+   public void ShowFlyout(bool immediately = false)
    {
       if (Flyout is null || AnchorTarget is null) {
          return;
@@ -199,14 +199,14 @@ internal class FlyoutStateHelper : AvaloniaObject
       StopMouseEnterTimer();
       StopMouseLeaveTimer();
       Flyout.Hide();
-      if (MouseEnterDelay == 0) {
+      if (immediately || MouseEnterDelay == 0) {
          Flyout.ShowAt(AnchorTarget);
       } else {
          StartMouseEnterTimer();
       }
    }
 
-   public void HideFlyout()
+   public void HideFlyout(bool immediately = false)
    {
       if (Flyout is null) {
          return;
@@ -215,7 +215,7 @@ internal class FlyoutStateHelper : AvaloniaObject
       _flyoutCloseDetectDisposable = null;
       StopMouseEnterTimer();
 
-      if (MouseLeaveDelay == 0) {
+      if (immediately || MouseLeaveDelay == 0) {
          Flyout.Hide();
       } else {
          StartMouseLeaveTimer();

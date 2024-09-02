@@ -130,7 +130,7 @@ internal class PopupConfirmContainer : TemplatedControl
 
          var popupEventArgs = new PopupConfirmClickEventArgs(PopupConfirm.PopupClickEvent, isConfirmed);
          popupConfirm.RaiseEvent(popupEventArgs);
-         popupConfirm.HideFlyout();
+         popupConfirm.HideFlyout(true);
       }
    }
 }
