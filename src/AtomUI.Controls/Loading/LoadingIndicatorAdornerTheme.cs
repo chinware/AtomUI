@@ -6,7 +6,7 @@ using Avalonia.Controls.Templates;
 namespace AtomUI.Controls;
 
 [ControlThemeProvider]
-public class LoadingIndicatorAdornerTheme : BaseControlTheme
+internal class LoadingIndicatorAdornerTheme : BaseControlTheme
 {
    public const string LoadingIndicatorPart = "PART_LoadingIndicator";
    public const string MainContainerPart = "PART_MainContainer";

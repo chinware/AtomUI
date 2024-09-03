@@ -12,7 +12,7 @@ using Avalonia.Media;
 namespace AtomUI.Controls;
 
 [ControlThemeProvider]
-public class MenuFlyoutPresenterTheme : BaseControlTheme
+internal class MenuFlyoutPresenterTheme : BaseControlTheme
 {
    public const string ItemsPresenterPart  = "PART_ItemsPresenter";
    public const string RootContainerPart   = "PART_RootContainer";

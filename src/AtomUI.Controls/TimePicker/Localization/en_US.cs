@@ -8,4 +8,5 @@ internal class en_US : AbstractLanguageProvider
 {
    public const string AMText = "AM";
    public const string PMText = "PM";
+   public const string Now = "Now";
 }

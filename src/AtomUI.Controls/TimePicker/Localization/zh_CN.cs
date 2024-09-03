@@ -8,4 +8,5 @@ internal class zh_CN : AbstractLanguageProvider
 {
    public const string AMText = "上午";
    public const string PMText = "下午";
+   public const string Now = "现在";
 }

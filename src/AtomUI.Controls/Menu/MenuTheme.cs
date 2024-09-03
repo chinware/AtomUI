@@ -11,7 +11,7 @@ using Avalonia.Styling;
 namespace AtomUI.Controls;
 
 [ControlThemeProvider]
-public class MenuTheme : BaseControlTheme
+internal class MenuTheme : BaseControlTheme
 {
    public const string ItemsPresenterPart = "PART_ItemsPresenter";
    public MenuTheme()

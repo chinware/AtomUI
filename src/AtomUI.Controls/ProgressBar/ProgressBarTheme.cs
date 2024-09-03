@@ -7,7 +7,7 @@ using Avalonia.Styling;
 namespace AtomUI.Controls;
 
 [ControlThemeProvider]
-public class ProgressBarTheme : AbstractLineProgressTheme
+internal class ProgressBarTheme : AbstractLineProgressTheme
 {
    public ProgressBarTheme() : base(typeof(ProgressBar)) {}
    

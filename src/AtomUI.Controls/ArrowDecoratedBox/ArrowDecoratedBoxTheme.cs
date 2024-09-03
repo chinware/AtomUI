@@ -1,22 +1,21 @@
-﻿using AtomUI.Controls.Utils;
-using AtomUI.Theme;
+﻿using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Templates;
-using Avalonia.Input;
 using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
 [ControlThemeProvider]
-public class ArrowDecoratedBoxTheme : BaseControlTheme
+internal class ArrowDecoratedBoxTheme : BaseControlTheme
 {
    public const string DecoratorPart = "PART_Decorator";
    public const string ContentPresenterPart = "PART_ContentPresenter";
    
-   public ArrowDecoratedBoxTheme() : base(typeof(ArrowDecoratedBox)) {}
+   public ArrowDecoratedBoxTheme() : this(typeof(ArrowDecoratedBox)) {}
+   protected ArrowDecoratedBoxTheme(Type targetType) : base(targetType) {}
 
    protected override IControlTemplate BuildControlTemplate()
    {
@@ -29,15 +28,8 @@ public class ArrowDecoratedBoxTheme : BaseControlTheme
          };
          
          decorator.RegisterInNameScope(scope);
-
-         var contentPresenter = new ContentPresenter()
-         {
-            Name = ContentPresenterPart
-         };
-         CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty, ArrowDecoratedBox.ContentProperty);
-         CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentTemplateProperty, ArrowDecoratedBox.ContentTemplateProperty);
-
-         decorator.Child = contentPresenter;
+         
+         decorator.Child = BuildContent(scope);
 
          CreateTemplateParentBinding(decorator, Border.BackgroundSizingProperty, ArrowDecoratedBox.BackgroundSizingProperty);
          CreateTemplateParentBinding(decorator, Border.BackgroundProperty, ArrowDecoratedBox.BackgroundProperty);
@@ -46,6 +38,17 @@ public class ArrowDecoratedBoxTheme : BaseControlTheme
          
          return decorator;
       });
+   }
+
+   protected virtual Control BuildContent(INameScope scope)
+   {
+      var contentPresenter = new ContentPresenter()
+      {
+         Name = ContentPresenterPart
+      };
+      CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty, ArrowDecoratedBox.ContentProperty);
+      CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentTemplateProperty, ArrowDecoratedBox.ContentTemplateProperty);
+      return contentPresenter;
    }
 
    protected override void BuildStyles()

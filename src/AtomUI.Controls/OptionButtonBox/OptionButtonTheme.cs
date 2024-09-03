@@ -9,7 +9,7 @@ using Avalonia.Styling;
 namespace AtomUI.Controls;
 
 [ControlThemeProvider]
-public class OptionButtonTheme : BaseControlTheme
+internal class OptionButtonTheme : BaseControlTheme
 {
    public OptionButtonTheme()
       : base(typeof(OptionButton))

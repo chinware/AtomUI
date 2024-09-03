@@ -296,14 +296,4 @@ public class TimePickerPresenter : PickerPresenterBase
 
       _hourSelector?.Focus(NavigationMethod.Pointer);
    }
-
-   internal double GetOffsetForPopup()
-   {
-      // TODO 需要评估
-      if (_hourSelector is null) {
-         return 0;
-      }
-      var acceptDismissButtonHeight = 41;
-      return -(MaxHeight - acceptDismissButtonHeight) / 2 - (_hourSelector.ItemHeight / 2);
-   }
 }

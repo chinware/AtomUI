@@ -5,7 +5,7 @@ using Avalonia.Styling;
 namespace AtomUI.Controls;
 
 [ControlThemeProvider]
-public class MenuSeparatorTheme : BaseControlTheme
+internal class MenuSeparatorTheme : BaseControlTheme
 {
    public MenuSeparatorTheme()
       : base(typeof(MenuSeparator))

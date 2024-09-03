@@ -9,8 +9,7 @@ using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
-
-public class AbstractProgressBarTheme : BaseControlTheme
+internal class AbstractProgressBarTheme : BaseControlTheme
 {
    public const string PercentageLabelPart = "PART_PercentageLabel";
    public const string SuccessCompletedIconPart = "PART_SuccessCompletedIcon";

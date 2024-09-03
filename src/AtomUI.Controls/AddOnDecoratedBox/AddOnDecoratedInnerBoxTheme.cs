@@ -144,6 +144,9 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
       };
       TokenResourceBinder.CreateGlobalTokenBinding(addLayout, StackPanel.SpacingProperty, GlobalTokenResourceKey.PaddingXXS);
       addLayout.RegisterInNameScope(scope);
+      
+      BuildRightAddOnItems(addLayout, scope);
+      
       var rightAddOnContentPresenter = new ContentPresenter()
       {
          Name = RightAddOnPart,
@@ -157,8 +160,6 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
 
       rightAddOnContentPresenter.RegisterInNameScope(scope);
       addLayout.Children.Add(rightAddOnContentPresenter);
-      
-      BuildRightAddOnItems(addLayout, scope);
 
       layout.Children.Add(addLayout);
       Grid.SetColumn(addLayout, 2);

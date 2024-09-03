@@ -10,7 +10,7 @@ using Avalonia.Styling;
 namespace AtomUI.Controls;
 
 [ControlThemeProvider]
-public class LoadingIndicatorTheme : BaseControlTheme
+internal class LoadingIndicatorTheme : BaseControlTheme
 {
    public const string MainContainerPart = "PART_MainContainer";
    public const string LoadingTextPart = "PART_LoadingText";

@@ -2,7 +2,6 @@
 using AtomUI.Data;
 using Avalonia;
 using Avalonia.Controls.Templates;
-using Avalonia.Data;
 using Avalonia.Interactivity;
 
 namespace AtomUI.Controls;

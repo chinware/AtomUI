@@ -13,7 +13,7 @@ using Avalonia.Styling;
 namespace AtomUI.Controls;
 
 [ControlThemeProvider]
-public class TextBoxTheme : BaseControlTheme
+internal class TextBoxTheme : BaseControlTheme
 {
    public const string DecoratedBoxPart = "PART_DecoratedBox";
    public const string TextBoxInnerBoxPart = "PART_TextBoxInnerBox";

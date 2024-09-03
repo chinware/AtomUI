@@ -278,8 +278,6 @@ public class Button : AvaloniaButton,
       _customStyle.HandlePropertyChangedForStyle(e);
    }
 
-   #region IControlCustomStyle 实现
-
    void IControlCustomStyle.HandleAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
    {
       SetupControlTheme();
@@ -288,6 +286,43 @@ public class Button : AvaloniaButton,
          Content = null;
       }
       PseudoClasses.Set(IconOnlyPC, Icon is not null && Text is null);
+      if (ButtonType == ButtonType.Default) {
+         if (IsDanger) {
+            Effect = new DropShadowEffect
+            {
+               OffsetX = DangerShadow.OffsetX,
+               OffsetY = DangerShadow.OffsetY,
+               Color = DangerShadow.Color,
+               BlurRadius = DangerShadow.Blur,
+            };
+         } else {
+            Effect = new DropShadowEffect
+            {
+               OffsetX = DefaultShadow.OffsetX,
+               OffsetY = DefaultShadow.OffsetY,
+               Color = DefaultShadow.Color,
+               BlurRadius = DefaultShadow.Blur,
+            };
+         }
+      } else if (ButtonType == ButtonType.Primary) {
+         if (IsDanger) {
+            Effect = new DropShadowEffect
+            {
+               OffsetX = DangerShadow.OffsetX,
+               OffsetY = DangerShadow.OffsetY,
+               Color = DangerShadow.Color,
+               BlurRadius = DangerShadow.Blur,
+            };
+         } else {
+            Effect = new DropShadowEffect
+            {
+               OffsetX = PrimaryShadow.OffsetX,
+               OffsetY = PrimaryShadow.OffsetY,
+               Color = PrimaryShadow.Color,
+               BlurRadius = PrimaryShadow.Blur,
+            };
+         }
+      }
    }
 
    private void SetupControlTheme()
@@ -353,44 +388,6 @@ public class Button : AvaloniaButton,
 
    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
    {
-      if (ButtonType == ButtonType.Default) {
-         if (IsDanger) {
-            Effect = new DropShadowEffect
-            {
-               OffsetX = DangerShadow.OffsetX,
-               OffsetY = DangerShadow.OffsetY,
-               Color = DangerShadow.Color,
-               BlurRadius = DangerShadow.Blur,
-            };
-         } else {
-            Effect = new DropShadowEffect
-            {
-               OffsetX = DefaultShadow.OffsetX,
-               OffsetY = DefaultShadow.OffsetY,
-               Color = DefaultShadow.Color,
-               BlurRadius = DefaultShadow.Blur,
-            };
-         }
-      } else if (ButtonType == ButtonType.Primary) {
-         if (IsDanger) {
-            Effect = new DropShadowEffect
-            {
-               OffsetX = DangerShadow.OffsetX,
-               OffsetY = DangerShadow.OffsetY,
-               Color = DangerShadow.Color,
-               BlurRadius = DangerShadow.Blur,
-            };
-         } else {
-            Effect = new DropShadowEffect
-            {
-               OffsetX = PrimaryShadow.OffsetX,
-               OffsetY = PrimaryShadow.OffsetY,
-               Color = PrimaryShadow.Color,
-               BlurRadius = PrimaryShadow.Blur,
-            };
-         }
-      }
-      
       _customStyle.CollectStyleState();
       ApplyShapeStyleConfig();
       ApplyIconModeStyleConfig();
@@ -606,7 +603,5 @@ public class Button : AvaloniaButton,
       PseudoClasses.Set(IconOnlyPC, Icon is not null && Text is null);
       PseudoClasses.Set(LoadingPC, IsLoading);
    }
-   
-   #endregion
-   
+
 }

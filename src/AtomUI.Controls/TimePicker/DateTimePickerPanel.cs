@@ -1,5 +1,4 @@
 ﻿using AtomUI.Controls.TimePickerLang;
-using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
@@ -293,16 +292,16 @@ public class DateTimePickerPanel : Panel, ILogicalScrollable
          throw new InvalidOperationException("Panel must have finite height");
 
       if (!_hasInit) UpdateHelperInfo();
-
+      
       double initY = (availableSize.Height / 2.0) - (ItemHeight / 2.0);
       _numItemsAboveBelowSelected = (int)Math.Ceiling(initY / ItemHeight) + 1;
-
+      
       var children = Children;
-
+      
       CreateOrDestroyItems(children);
-
+      
       for (int i = 0; i < children.Count; i++) children[i].Measure(availableSize);
-
+      
       if (!_hasInit) {
          UpdateItems();
          RaiseScrollInvalidated(EventArgs.Empty);

@@ -8,7 +8,7 @@ using Avalonia.Styling;
 namespace AtomUI.Controls;
 
 [ControlThemeProvider]
-public class OptionButtonGroupTheme : BaseControlTheme
+internal class OptionButtonGroupTheme : BaseControlTheme
 {
    public const string MainContainerPart = "PART_MainContainer";
    

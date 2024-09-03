@@ -12,7 +12,7 @@ using Avalonia.Styling;
 namespace AtomUI.Controls;
 
 [ControlThemeProvider]
-public class TopLevelMenuItemTheme : BaseControlTheme
+internal class TopLevelMenuItemTheme : BaseControlTheme
 {
    public const string ID = "TopLevelMenuItem";
    

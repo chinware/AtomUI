@@ -24,5 +24,6 @@ namespace AtomUI.Controls.TimePickerLang
     {
         public static readonly LanguageResourceKey AMText = new LanguageResourceKey("TimePicker.AMText", "AtomUI.Lang");
         public static readonly LanguageResourceKey PMText = new LanguageResourceKey("TimePicker.PMText", "AtomUI.Lang");
+        public static readonly LanguageResourceKey Now = new LanguageResourceKey("TimePicker.Now", "AtomUI.Lang");
     }
 }

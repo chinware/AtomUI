@@ -1,5 +1,4 @@
-﻿using System.Reactive.Disposables;
-using AtomUI.Data;
+﻿using AtomUI.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
@@ -22,7 +21,7 @@ public class FlyoutHost : Control
 {
    #region 公共属性定义
 
-    public static readonly StyledProperty<Control?> AnchorTargetProperty =
+   public static readonly StyledProperty<Control?> AnchorTargetProperty =
       AvaloniaProperty.Register<FlyoutHost, Control?>(nameof(AnchorTarget));
 
    /// <summary>
@@ -48,13 +47,13 @@ public class FlyoutHost : Control
    /// </summary>
    public static readonly StyledProperty<bool> IsPointAtCenterProperty =
       FlyoutControl.IsPointAtCenterProperty.AddOwner<FlyoutHost>();
-   
-   public static readonly StyledProperty<PlacementMode> PlacementProperty = 
+
+   public static readonly StyledProperty<PlacementMode> PlacementProperty =
       Popup.PlacementProperty.AddOwner<FlyoutHost>();
-   
+
    public static readonly StyledProperty<PopupAnchor> PlacementAnchorProperty =
       Popup.PlacementAnchorProperty.AddOwner<FlyoutHost>();
-   
+
    public static readonly StyledProperty<PopupGravity> PlacementGravityProperty =
       Popup.PlacementGravityProperty.AddOwner<FlyoutHost>();
 
@@ -68,7 +67,7 @@ public class FlyoutHost : Control
 
    public static readonly StyledProperty<int> MouseEnterDelayProperty =
       FlyoutStateHelper.MouseEnterDelayProperty.AddOwner<FlyoutHost>();
-   
+
    public static readonly StyledProperty<int> MouseLeaveDelayProperty =
       FlyoutStateHelper.MouseLeaveDelayProperty.AddOwner<FlyoutHost>();
 
@@ -81,7 +80,7 @@ public class FlyoutHost : Control
       get => GetValue(AnchorTargetProperty);
       set => SetValue(AnchorTargetProperty, value);
    }
-   
+
    public PopupFlyoutBase? Flyout
    {
       get => GetValue(FlyoutProperty);
@@ -111,7 +110,7 @@ public class FlyoutHost : Control
       get => GetValue(PlacementProperty);
       set => SetValue(PlacementProperty, value);
    }
-   
+
    public PopupGravity PlacementGravity
    {
       get => GetValue(PlacementGravityProperty);
@@ -135,7 +134,7 @@ public class FlyoutHost : Control
       get => GetValue(MouseEnterDelayProperty);
       set => SetValue(MouseEnterDelayProperty, value);
    }
-   
+
    public int MouseLeaveDelay
    {
       get => GetValue(MouseLeaveDelayProperty);

@@ -8,6 +8,6 @@
     xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
     mc:Ignorable="d">
     <showcase:ShowCasePanel>
-        <atom:TimePickerPresenter Height="200" Width="200"/>
+        <atom:TimePicker Watermark="Select time" Width="300"/>
     </showcase:ShowCasePanel>
 </UserControl>
