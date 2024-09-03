@@ -31,8 +31,11 @@ internal class ListBoxItemTheme : BaseControlTheme
             AnimationUtils.CreateTransition<SolidColorBrushTransition>(ContentPresenter.BackgroundProperty)
          };
 
+         CreateTemplateParentBinding(contentPresenter, ContentPresenter.CornerRadiusProperty, ListBoxItem.CornerRadiusProperty);
          CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty, ListBoxItem.ContentProperty);
          CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentTemplateProperty, ListBoxItem.ContentTemplateProperty);
+         CreateTemplateParentBinding(contentPresenter, ContentPresenter.MinHeightProperty, ListBoxItem.MinHeightProperty);
+         CreateTemplateParentBinding(contentPresenter, ContentPresenter.PaddingProperty, ListBoxItem.PaddingProperty);
          CreateTemplateParentBinding(contentPresenter, ContentPresenter.HorizontalContentAlignmentProperty, ListBoxItem.HorizontalContentAlignmentProperty);
          CreateTemplateParentBinding(contentPresenter, ContentPresenter.VerticalContentAlignmentProperty, ListBoxItem.VerticalContentAlignmentProperty);
          return contentPresenter;
@@ -80,35 +83,23 @@ internal class ListBoxItemTheme : BaseControlTheme
    private void BuildSizeTypeStyle()
    {
       var largeStyle = new Style(selector => selector.Nesting().PropertyEquals(ListBoxItem.SizeTypeProperty, SizeType.Large));
-      {
-         var contentPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ContentPresenterPart));
-         contentPresenterStyle.Add(ContentPresenter.MinHeightProperty, GlobalTokenResourceKey.ControlHeightLG);
-         contentPresenterStyle.Add(ContentPresenter.PaddingProperty, ListBoxTokenResourceKey.ItemPaddingLG);
-         contentPresenterStyle.Add(ContentPresenter.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadius);
-         largeStyle.Add(contentPresenterStyle);
-      }
+      largeStyle.Add(ListBoxItem.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadius);
+      largeStyle.Add(ListBoxItem.MinHeightProperty, GlobalTokenResourceKey.ControlHeightLG);
+      largeStyle.Add(ListBoxItem.PaddingProperty, ListBoxTokenResourceKey.ItemPaddingLG);
 
       Add(largeStyle);
       
       var middleStyle = new Style(selector => selector.Nesting().PropertyEquals(ListBoxItem.SizeTypeProperty, SizeType.Middle));
-      {
-         var contentPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ContentPresenterPart));
-         contentPresenterStyle.Add(ContentPresenter.MinHeightProperty, GlobalTokenResourceKey.ControlHeight);
-         contentPresenterStyle.Add(ContentPresenter.PaddingProperty, ListBoxTokenResourceKey.ItemPadding);
-         contentPresenterStyle.Add(ContentPresenter.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadiusSM);
-         middleStyle.Add(contentPresenterStyle);
-      }
+      middleStyle.Add(ListBoxItem.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadiusSM);
+      middleStyle.Add(ListBoxItem.MinHeightProperty, GlobalTokenResourceKey.ControlHeight);
+      middleStyle.Add(ListBoxItem.PaddingProperty, ListBoxTokenResourceKey.ItemPadding);
 
       Add(middleStyle);
       
       var smallStyle = new Style(selector => selector.Nesting().PropertyEquals(ListBoxItem.SizeTypeProperty, SizeType.Small));
-      {
-         var contentPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ContentPresenterPart));
-         contentPresenterStyle.Add(ContentPresenter.MinHeightProperty, GlobalTokenResourceKey.ControlHeightSM);
-         contentPresenterStyle.Add(ContentPresenter.PaddingProperty, ListBoxTokenResourceKey.ItemPaddingSM);
-         contentPresenterStyle.Add(ContentPresenter.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadiusXS);
-         smallStyle.Add(contentPresenterStyle);
-      }
+      smallStyle.Add(ListBoxItem.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadiusXS);
+      smallStyle.Add(ListBoxItem.MinHeightProperty, GlobalTokenResourceKey.ControlHeightSM);
+      smallStyle.Add(ListBoxItem.PaddingProperty, ListBoxTokenResourceKey.ItemPaddingSM);
       Add(smallStyle);
    }
 

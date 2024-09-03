@@ -13,7 +13,7 @@ public class ListBoxItem : AvaloniaListBoxItem
                                                              o => o.SizeType,
                                                              (o, v) => o.SizeType = v);
 
-   private SizeType _sizeType;
+   private SizeType _sizeType = SizeType.Middle;
 
    internal SizeType SizeType
    {

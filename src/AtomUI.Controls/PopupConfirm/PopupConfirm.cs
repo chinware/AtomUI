@@ -141,8 +141,8 @@ public class PopupConfirm : FlyoutHost
          };
       }
 
-      LanguageResourceBinder.CreateBinding(this, OkTextProperty, PopupConfirmLangResourceKey.OkText, BindingPriority.Template);
-      LanguageResourceBinder.CreateBinding(this, CancelTextProperty, PopupConfirmLangResourceKey.CancelText, BindingPriority.Template);
+      LanguageResourceBinder.CreateBinding(this, OkTextProperty, PopupConfirmLangResourceKey.OkText);
+      LanguageResourceBinder.CreateBinding(this, CancelTextProperty, PopupConfirmLangResourceKey.CancelText);
       base.ApplyTemplate();
    }
 }

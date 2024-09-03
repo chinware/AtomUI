@@ -15,14 +15,14 @@ public static class TokenResourceBinder
    {
       return target.Bind(targetProperty, new DynamicResourceExtension(resourceKey.Value));
    }
-   
+
    public static IDisposable CreateTokenBinding(AvaloniaObject target,
                                                 AvaloniaProperty targetProperty,
                                                 string resourceKey)
    {
       return target.Bind(targetProperty, new DynamicResourceExtension(resourceKey));
    }
-   
+
    public static IDisposable CreateTokenBinding(Control target,
                                                 AvaloniaProperty targetProperty,
                                                 TokenResourceKey resourceKey,
@@ -31,7 +31,7 @@ public static class TokenResourceBinder
    {
       return target.Bind(targetProperty, target.GetResourceObservable(resourceKey, converter), priority);
    }
-   
+
    public static IDisposable CreateTokenBinding(Control target,
                                                 AvaloniaProperty targetProperty,
                                                 object resourceKey,
@@ -40,7 +40,7 @@ public static class TokenResourceBinder
    {
       return target.Bind(targetProperty, target.GetResourceObservable(resourceKey, converter), priority);
    }
-   
+
    public static IDisposable CreateGlobalTokenBinding(AvaloniaObject target,
                                                       AvaloniaProperty targetProperty,
                                                       TokenResourceKey resourceKey,
@@ -49,7 +49,7 @@ public static class TokenResourceBinder
    {
       return target.Bind(targetProperty, GetGlobalTokenResourceObservable(resourceKey, null, converter), priority);
    }
-   
+
    public static IDisposable CreateGlobalResourceBinding(AvaloniaObject target,
                                                          AvaloniaProperty targetProperty,
                                                          object resourceKey,
@@ -58,22 +58,18 @@ public static class TokenResourceBinder
    {
       return target.Bind(targetProperty, GetGlobalResourceObservable(resourceKey, null, converter), priority);
    }
-   
+
    /// <summary>
    /// 直接在 resource dictionary 中查找，忽略本地覆盖的值
    /// </summary>
-   /// <param name="resourceKey"></param>
-   /// <param name="themeVariant"></param>
-   /// <param name="converter"></param>
-   /// <returns></returns>
-   /// <exception cref="ApplicationException"></exception>
-   public static IObservable<object?> GetGlobalTokenResourceObservable(TokenResourceKey resourceKey, ThemeVariant? themeVariant = null, 
+   public static IObservable<object?> GetGlobalTokenResourceObservable(TokenResourceKey resourceKey,
+                                                                       ThemeVariant? themeVariant = null,
                                                                        Func<object?, object?>? converter = null)
    {
       return GetGlobalResourceObservable(resourceKey, themeVariant, converter);
    }
-   
-   public static IObservable<object?> GetGlobalResourceObservable(object resourceKey, ThemeVariant? themeVariant = null, 
+
+   public static IObservable<object?> GetGlobalResourceObservable(object resourceKey, ThemeVariant? themeVariant = null,
                                                                   Func<object?, object?>? converter = null)
    {
       var application = Application.Current;

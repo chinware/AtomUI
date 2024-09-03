@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using AtomUI.Utils;
 using Avalonia;
 
 namespace AtomUI.Theme;
@@ -13,7 +14,7 @@ public static class AtomUIExtensions
          themeManager.Initialize();
          themeManager.LoadTheme(ThemeManager.DEFAULT_THEME_ID);
          themeManager.SetActiveTheme(ThemeManager.DEFAULT_THEME_ID);
-         themeManager.CultureInfo = CultureInfo.CurrentUICulture;
+         themeManager.CultureInfo = new CultureInfo(LanguageCode.en_US);
          builder.Instance!.Styles.Add(themeManager);
       });
       return builder;

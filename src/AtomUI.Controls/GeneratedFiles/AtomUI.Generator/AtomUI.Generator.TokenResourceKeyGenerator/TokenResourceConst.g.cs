@@ -520,6 +520,12 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey TagBorderlessBg = new TokenResourceKey("Tag.TagBorderlessBg", "AtomUI.Token");
     }
 
+    public static class TimePickerTokenResourceKey
+    {
+        public static readonly TokenResourceKey ItemHeight = new TokenResourceKey("TimePicker.ItemHeight", "AtomUI.Token");
+        public static readonly TokenResourceKey ItemPadding = new TokenResourceKey("TimePicker.ItemPadding", "AtomUI.Token");
+    }
+
     public static class ToolTipTokenResourceKey
     {
         public static readonly TokenResourceKey ToolTipMaxWidth = new TokenResourceKey("ToolTip.ToolTipMaxWidth", "AtomUI.Token");

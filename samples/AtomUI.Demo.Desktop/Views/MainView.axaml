@@ -159,6 +159,12 @@
             <TabItem Header="Message">
                 <showcases:MessageShowCase />
             </TabItem>
+            <TabItem Header="TimePicker">
+                <showcases:TimePickerShowCase />
+            </TabItem>
+            <TabItem Header="DatePicker">
+                <showcases:DatePickerShowCase />
+            </TabItem>
         </TabControl>
     </Grid>
 
