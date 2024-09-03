@@ -9,7 +9,7 @@ using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
-public sealed class Watermark : Control
+public sealed class Watermark : Control, IAtomAdorner
 {
     public static WatermarkGlyph? GetGlyph(Visual element)
     {
@@ -24,22 +24,27 @@ public sealed class Watermark : Control
 
 
 
-    private Visual? Target { get; init; }
+    public Visual Target { get; }
 
-    private WatermarkGlyph? Glyph { get; init; }
+    private WatermarkGlyph? Glyph { get; }
+    
+    private AtomLayer Layer { get; }
 
 
 
     static Watermark()
     {
+        IsHitTestVisibleProperty.OverrideMetadata<Watermark>(new StyledPropertyMetadata<bool>(false));
         GlyphProperty.Changed.AddClassHandler<Visual>(OnGlyphChanged);
     }
 
-    private Watermark()
+    private Watermark(AtomLayer layer, Visual target, WatermarkGlyph? glyph)
     {
-        IsHitTestVisibleProperty.OverrideMetadata<Watermark>(new StyledPropertyMetadata<bool>(false));
+        Target = target;
+        Glyph  = glyph;
+        Layer  = layer;
     }
-
+    
     private static void OnGlyphChanged(Visual target, AvaloniaPropertyChangedEventArgs arg)
     {
         if (target.IsAttachedToVisualTree())
@@ -71,23 +76,19 @@ public sealed class Watermark : Control
             return;
         }
 
-        var watermark = layer.Children.OfType<Watermark>().FirstOrDefault(w => w.Target == target);
+        var watermark = layer.GetAdorner<Watermark>(target);
         if (watermark != null)
         {
             return;
         }
 
-        watermark = new Watermark
-        {
-            Target = target,
-            Glyph  = GetGlyph(target),
-        };
-        layer.Children.Add(watermark);
+        watermark = new Watermark(layer, target, GetGlyph(target));
+        layer.AddAdorner(target ,watermark);
     }
 
     private static bool CheckLayer(Visual target, [NotNullWhen(true)] out AtomLayer? layer)
     {
-        layer = target.GetAxLayer();
+        layer = target.GetLayer();
         if (layer == null)
         {
             Trace.WriteLine($"Can not get AxLayer for {target} to show a watermark.");
@@ -100,7 +101,7 @@ public sealed class Watermark : Control
     {
         base.Render(context);
 
-        if (Target == null || Glyph == null)
+        if (Glyph == null)
         {
             return;
         }
