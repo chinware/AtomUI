@@ -13,11 +13,29 @@ public class Timeline : ItemsControl
 {
     public static readonly StyledProperty<string> ModeProperty =
         AvaloniaProperty.Register<Timeline, string>(nameof(Mode), "left");
+    
+    public static readonly StyledProperty<string> PendingProperty =
+        AvaloniaProperty.Register<Timeline, string>(nameof(Pending), "");
+    
+    public static readonly StyledProperty<bool> ReverseProperty =
+        AvaloniaProperty.Register<Timeline, bool>(nameof(Reverse), false);
 
     public string Mode
     {
         get => GetValue(ModeProperty);
         set => SetValue(ModeProperty, value);
+    }
+    
+    public string Pending
+    {
+        get => GetValue(PendingProperty);
+        set => SetValue(PendingProperty, value);
+    }
+    
+    public bool Reverse
+    {
+        get => GetValue(ReverseProperty);
+        set => SetValue(ReverseProperty, value);
     }
 
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
@@ -36,6 +54,8 @@ public class Timeline : ItemsControl
         base.PrepareContainerForItemOverride(element, item, index);
         if (element is TimelineItem timelineItem)
         { 
+            timelineItem.Index = index;
+            timelineItem.Mode = Mode;
             BindUtils.RelayBind(this, ModeProperty, timelineItem, TimelineItem.ModeProperty);
             foreach (var child in Items)
             {
