@@ -18,6 +18,7 @@ internal class TimelineItemTheme : BaseControlTheme
     public const string ItemsPresenterPart = "PART_ItemsPresenter";
     public const string SplitHeadPart = "PART_SplitHead";
     public const string SplitLinePart = "PART_SplitLine";
+    public const string LabelPart = "PART_Label";
 
     public TimelineItemTheme() : this(typeof(TimelineItem))
     {
@@ -31,20 +32,17 @@ internal class TimelineItemTheme : BaseControlTheme
     {
         return new FuncControlTemplate<TimelineItem>((timelineItem, scope) =>
         {
-            var columnDefinition = new ColumnDefinitions()
-            {
-                new ColumnDefinition(new GridLength(10)),
-                new ColumnDefinition(GridLength.Star)
-            };
-            if (timelineItem.HasLabel)
-            {
-                columnDefinition = new ColumnDefinitions()
-                {
-                    new ColumnDefinition(GridLength.Star),
-                    new ColumnDefinition(new GridLength(10)),
-                    new ColumnDefinition(GridLength.Star)
-                };
-            }
+            var labelIndex = 0;
+            var splitIndex = 1;
+            var contentIndex = 2;
+            var labelTextAlign = HorizontalAlignment.Right;
+            var contentTextAlign = HorizontalAlignment.Right;
+            
+            CalculateGridIndex(timelineItem, out labelIndex, out splitIndex, out contentIndex, out labelTextAlign, out contentTextAlign);
+            System.Console.WriteLine("TimelineItem Mode: {0},hasLabel: {1}, index: {2} labelIndex: {3} splitIndex:{4} contentIndex：{5}", timelineItem.Mode, timelineItem.HasLabel, timelineItem.Index,labelIndex,splitIndex,contentIndex);
+
+            var columnDefinition = CalculateGridColumn(timelineItem, labelIndex);
+            
             var grid = new Grid()
             {
                 Name = GridPart,
@@ -59,13 +57,17 @@ internal class TimelineItemTheme : BaseControlTheme
             {
                 var labelBlock = new TextBlock()
                 {
+                    Name = LabelPart,
                     VerticalAlignment = VerticalAlignment.Top,
-                    HorizontalAlignment = HorizontalAlignment.Right,
+                    HorizontalAlignment = labelTextAlign,
                 };
 
                 CreateTemplateParentBinding(labelBlock, TextBlock.TextProperty, TimelineItem.LabelProperty);
+                
+                var labelStyle = new Style(selector => selector.Nesting().Template().Name(LabelPart));
+                labelStyle.Add(ContentPresenter.MarginProperty, TimelineTokenResourceKey.ContentMargin);
 
-                Grid.SetColumn(labelBlock, 0);
+                Grid.SetColumn(labelBlock, labelIndex);
                 grid.Children.Add(labelBlock);
             }
             
@@ -90,7 +92,8 @@ internal class TimelineItemTheme : BaseControlTheme
                 try
                 {
                     var color = Color.Parse(timelineItem.Color);
-                    contentPresenterStyle.Add(ContentPresenter.BorderBrushProperty, color);
+                    var brush = new SolidColorBrush(color);
+                    contentPresenterStyle.Add(ContentPresenter.BorderBrushProperty, brush);
                 }
                 catch (Exception)
                 {
@@ -137,13 +140,14 @@ internal class TimelineItemTheme : BaseControlTheme
 
             splitPanel.Children.Add(border);
 
-            Grid.SetColumn(splitPanel, timelineItem.HasLabel ? 1 : 0);
+            Grid.SetColumn(splitPanel, splitIndex);
             grid.Children.Add(splitPanel);
 
 
             var contentPresenter = new ContentPresenter()
             {
                 Name = ItemsPresenterPart,
+                HorizontalAlignment = contentTextAlign,
             };
             contentPresenter.RegisterInNameScope(scope);
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty,
@@ -153,9 +157,70 @@ internal class TimelineItemTheme : BaseControlTheme
             contentPresenterStyle.Add(ContentPresenter.MarginProperty, TimelineTokenResourceKey.ContentMargin);
             Add(contentPresenterStyle);
 
-            Grid.SetColumn(contentPresenter, timelineItem.HasLabel ? 2 : 1);
+            Grid.SetColumn(contentPresenter, contentIndex);
             grid.Children.Add(contentPresenter);
             return grid;
         });
+    }
+
+    private void CalculateGridIndex(TimelineItem timelineItem, out int labelIndex, out int splitIndex, out int contentIndex, out HorizontalAlignment labelTextAlign, out HorizontalAlignment contentTextAlign)
+    {
+        labelIndex = 0;
+        splitIndex = 1;
+        contentIndex = 2;
+        labelTextAlign = HorizontalAlignment.Right;
+        contentTextAlign = HorizontalAlignment.Left;
+
+        if (timelineItem.Mode == "right" || (timelineItem.Mode == "alternate" && timelineItem.Index % 2 == 1))
+        {
+            labelIndex = 2;
+            contentIndex = 0;
+            labelTextAlign = HorizontalAlignment.Left;
+            contentTextAlign = HorizontalAlignment.Right;
+        }
+
+        if (!timelineItem.HasLabel && timelineItem.Mode == "left")
+        {
+            splitIndex = 0;
+            contentIndex = 1;
+            contentTextAlign = HorizontalAlignment.Left;
+        }
+        
+        if (!timelineItem.HasLabel && timelineItem.Mode == "right")
+        {
+            splitIndex = 1;
+            contentIndex = 0;
+            contentTextAlign = HorizontalAlignment.Right;
+        }
+    }
+
+    private ColumnDefinitions CalculateGridColumn(TimelineItem timelineItem, int labelIndex)
+    {
+
+        if (timelineItem.HasLabel || timelineItem.Mode == "alternate")
+        {
+            return new ColumnDefinitions()
+            {
+                new ColumnDefinition(GridLength.Star),
+                new ColumnDefinition(new GridLength(10)),
+                new ColumnDefinition(GridLength.Star)
+            };
+        }
+        if (labelIndex == 0)
+        {
+            return new ColumnDefinitions()
+            {
+                new ColumnDefinition(new GridLength(10)),
+                new ColumnDefinition(GridLength.Star)
+            };
+        }
+        else
+        {
+            return new ColumnDefinitions()
+            {
+                new ColumnDefinition(GridLength.Star),
+                new ColumnDefinition(new GridLength(10))
+            };
+        }
     }
 }
