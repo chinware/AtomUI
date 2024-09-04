@@ -30,10 +30,13 @@ internal class TimePickerFlyoutPresenterTheme : ArrowDecoratedBoxTheme
       var contentPresenter = new TimePickerPresenter()
       {
          Name = ContentPresenterPart,
-         Width = 200,
-         Height = 200,
          IsShowHeader = false,
       };
+     
+      CreateTemplateParentBinding(contentPresenter, TimePickerPresenter.MinuteIncrementProperty, TimePickerFlyoutPresenter.MinuteIncrementProperty);
+      CreateTemplateParentBinding(contentPresenter, TimePickerPresenter.SecondIncrementProperty, TimePickerFlyoutPresenter.SecondIncrementProperty);
+      CreateTemplateParentBinding(contentPresenter, TimePickerPresenter.ClockIdentifierProperty, TimePickerFlyoutPresenter.ClockIdentifierProperty);
+      CreateTemplateParentBinding(contentPresenter, TimePickerPresenter.TimeProperty, TimePickerFlyoutPresenter.TimeProperty);
       contentPresenter.RegisterInNameScope(scope);
       
       var buttons = new Panel()
@@ -75,5 +78,10 @@ internal class TimePickerFlyoutPresenterTheme : ArrowDecoratedBoxTheme
       var buttonsContainerStyle = new Style(selector => selector.Nesting().Template().Name(ButtonsContainerPart));
       buttonsContainerStyle.Add(Panel.MarginProperty, TimePickerTokenResourceKey.ButtonsMargin);
       Add(buttonsContainerStyle);
+      
+      var contentPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ContentPresenterPart));
+      contentPresenterStyle.Add(TimePickerPresenter.MaxWidthProperty, TimePickerTokenResourceKey.PickerPopupWidth);
+      contentPresenterStyle.Add(TimePickerPresenter.HeightProperty, TimePickerTokenResourceKey.PickerPopupHeight);
+      Add(contentPresenterStyle);
    }
 }

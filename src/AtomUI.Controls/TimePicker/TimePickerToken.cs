@@ -27,12 +27,24 @@ internal class TimePickerToken : AbstractControlDesignToken
    /// 按钮区域对上的外边距
    /// </summary>
    public Thickness ButtonsMargin { get; set; }
-
+   
+   /// <summary>
+   /// 日期选择弹出框宽度
+   /// </summary>
+   public double PickerPopupWidth { get; set; }
+   
+   /// <summary>
+   /// 日期选择弹出框高度
+   /// </summary>
+   public double PickerPopupHeight { get; set; }
+   
    internal override void CalculateFromAlias()
    {
       base.CalculateFromAlias();
       ItemHeight = _globalToken.SeedToken.ControlHeight - 4;
       ItemPadding = new Thickness(0, _globalToken.PaddingXXS);
       ButtonsMargin = new Thickness(0, _globalToken.MarginXS, 0, 0);
+      PickerPopupWidth = 200;
+      PickerPopupHeight = ItemHeight * 7;
    }
 }

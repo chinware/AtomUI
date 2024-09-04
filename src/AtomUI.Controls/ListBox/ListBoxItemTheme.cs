@@ -5,6 +5,7 @@ using AtomUI.Theme.Utils;
 using Avalonia.Animation;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Templates;
+using Avalonia.Layout;
 using Avalonia.Styling;
 
 namespace AtomUI.Controls;
@@ -23,7 +24,7 @@ internal class ListBoxItemTheme : BaseControlTheme
       {
          var contentPresenter = new ContentPresenter()
          {
-            Name = ContentPresenterPart
+            Name = ContentPresenterPart,
          };
 
          contentPresenter.Transitions = new Transitions()

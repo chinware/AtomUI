@@ -29,7 +29,7 @@ namespace AtomUI.Controls;
 public class TimePickerPresenter : PickerPresenterBase
 {
    #region 公共属性定义
-
+   
    /// <summary>
    /// Defines the <see cref="MinuteIncrement"/> property
    /// </summary>
@@ -42,7 +42,7 @@ public class TimePickerPresenter : PickerPresenterBase
    /// <summary>
    /// Defines the <see cref="ClockIdentifier"/> property
    /// </summary>
-   public static readonly StyledProperty<string> ClockIdentifierProperty =
+   public static readonly StyledProperty<ClockIdentifierType> ClockIdentifierProperty =
       TimePicker.ClockIdentifierProperty.AddOwner<TimePickerPresenter>();
 
    /// <summary>
@@ -75,7 +75,7 @@ public class TimePickerPresenter : PickerPresenterBase
    /// <summary>
    /// Gets or sets the current clock identifier, either 12HourClock or 24HourClock
    /// </summary>
-   public string ClockIdentifier
+   public ClockIdentifierType ClockIdentifier
    {
       get => GetValue(ClockIdentifierProperty);
       set => SetValue(ClockIdentifierProperty, value);
@@ -189,7 +189,7 @@ public class TimePickerPresenter : PickerPresenterBase
       TemporaryTime = selectedValue;
       if (IsShowHeader) {
          if (_headerText is not null) {
-            _headerText.Text = DateTimeUtils.FormatTimeSpan(selectedValue, ClockIdentifier == "12HourClock");
+            _headerText.Text = DateTimeUtils.FormatTimeSpan(selectedValue, ClockIdentifier == ClockIdentifierType.HourClock12);
          }
       }
    }
@@ -201,7 +201,7 @@ public class TimePickerPresenter : PickerPresenterBase
       var second = _secondSelector!.SelectedValue;
       var period = _periodSelector!.SelectedValue;
 
-      if (ClockIdentifier == "12HourClock") {
+      if (ClockIdentifier == ClockIdentifierType.HourClock12) {
          hour = period == 1 ? (hour == 12) ? 12 : hour + 12 : period == 0 && hour == 12 ? 0 : hour;
       }
 
@@ -270,9 +270,8 @@ public class TimePickerPresenter : PickerPresenterBase
    private void InitPicker()
    {
       if (_pickerContainer == null) return;
-
-      bool clock12 = ClockIdentifier == "12HourClock";
-      bool use24HourClock = ClockIdentifier == "24HourClock";
+      bool clock12 = ClockIdentifier == ClockIdentifierType.HourClock12;
+      bool use24HourClock = ClockIdentifier == ClockIdentifierType.HourClock24;
       _hourSelector!.MaximumValue = clock12 ? 12 : 23;
       _hourSelector.MinimumValue = clock12 ? 1 : 0;
       _hourSelector.ItemFormat = "%h";

@@ -525,6 +525,8 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey ItemHeight = new TokenResourceKey("TimePicker.ItemHeight", "AtomUI.Token");
         public static readonly TokenResourceKey ItemPadding = new TokenResourceKey("TimePicker.ItemPadding", "AtomUI.Token");
         public static readonly TokenResourceKey ButtonsMargin = new TokenResourceKey("TimePicker.ButtonsMargin", "AtomUI.Token");
+        public static readonly TokenResourceKey PickerPopupWidth = new TokenResourceKey("TimePicker.PickerPopupWidth", "AtomUI.Token");
+        public static readonly TokenResourceKey PickerPopupHeight = new TokenResourceKey("TimePicker.PickerPopupHeight", "AtomUI.Token");
     }
 
     public static class ToolTipTokenResourceKey

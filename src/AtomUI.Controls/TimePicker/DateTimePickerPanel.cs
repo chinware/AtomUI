@@ -292,16 +292,16 @@ public class DateTimePickerPanel : Panel, ILogicalScrollable
          throw new InvalidOperationException("Panel must have finite height");
 
       if (!_hasInit) UpdateHelperInfo();
-      
+
       double initY = (availableSize.Height / 2.0) - (ItemHeight / 2.0);
       _numItemsAboveBelowSelected = (int)Math.Ceiling(initY / ItemHeight) + 1;
-      
+
       var children = Children;
-      
+
       CreateOrDestroyItems(children);
-      
+
       for (int i = 0; i < children.Count; i++) children[i].Measure(availableSize);
-      
+
       if (!_hasInit) {
          UpdateItems();
          RaiseScrollInvalidated(EventArgs.Empty);
@@ -450,8 +450,10 @@ public class DateTimePickerPanel : Panel, ILogicalScrollable
             HorizontalContentAlignment = HorizontalAlignment.Center,
             Focusable = false,
             CornerRadius = new CornerRadius(0),
+            SizeType = SizeType.Middle
          };
-         TokenResourceBinder.CreateTokenBinding(item, ListBoxItem.PaddingProperty, TimePickerTokenResourceKey.ItemPadding, BindingPriority.LocalValue);
+         TokenResourceBinder.CreateTokenBinding(item, ListBoxItem.PaddingProperty,
+                                                TimePickerTokenResourceKey.ItemPadding, BindingPriority.LocalValue);
          children.Add(item);
       }
 
@@ -483,7 +485,13 @@ public class DateTimePickerPanel : Panel, ILogicalScrollable
 
       for (int i = 0; i < children.Count; i++) {
          ListBoxItem item = (ListBoxItem)children[i];
-         item.Content = FormatContent(first, panelType);
+         var textBlock = new TextBlock()
+         {
+            VerticalAlignment = VerticalAlignment.Center,
+            HorizontalAlignment = HorizontalAlignment.Center
+         };
+         textBlock.Text = FormatContent(first, panelType);
+         item.Content = textBlock;
          item.Tag = first;
          item.IsSelected = first == selected;
          first += Increment;
@@ -507,7 +515,8 @@ public class DateTimePickerPanel : Panel, ILogicalScrollable
          case DateTimePickerPanelType.Second:
             return new TimeSpan(0, 0, value).ToString(ItemFormat);
          case DateTimePickerPanelType.TimePeriod:
-            return value == MinimumValue ? LanguageResourceBinder.GetLangResource(TimePickerLangResourceKey.AMText)!
+            return value == MinimumValue
+               ? LanguageResourceBinder.GetLangResource(TimePickerLangResourceKey.AMText)!
                : LanguageResourceBinder.GetLangResource(TimePickerLangResourceKey.PMText)!;
          default:
             return "";

@@ -6,8 +6,44 @@ using Avalonia.Layout;
 
 namespace AtomUI.Controls;
 
-public class TimePickerFlyoutPresenter : FlyoutPresenter
+internal class TimePickerFlyoutPresenter : FlyoutPresenter
 {
+   public static readonly StyledProperty<int> MinuteIncrementProperty =
+      TimePicker.MinuteIncrementProperty.AddOwner<TimePickerFlyoutPresenter>();
+
+   public static readonly StyledProperty<int> SecondIncrementProperty =
+      TimePicker.SecondIncrementProperty.AddOwner<TimePickerFlyoutPresenter>();
+   
+   public static readonly StyledProperty<TimeSpan> TimeProperty =
+      AvaloniaProperty.Register<TimePickerPresenter, TimeSpan>(nameof(Time));
+   
+   public static readonly StyledProperty<ClockIdentifierType> ClockIdentifierProperty =
+      TimePicker.ClockIdentifierProperty.AddOwner<TimePickerFlyoutPresenter>();
+   
+   public int MinuteIncrement
+   {
+      get => GetValue(MinuteIncrementProperty);
+      set => SetValue(MinuteIncrementProperty, value);
+   }
+
+   public int SecondIncrement
+   {
+      get => GetValue(SecondIncrementProperty);
+      set => SetValue(SecondIncrementProperty, value);
+   }
+
+   public TimeSpan Time
+   {
+      get => GetValue(TimeProperty);
+      set => SetValue(TimeProperty, value);
+   }
+   
+   public ClockIdentifierType ClockIdentifier
+   {
+      get => GetValue(ClockIdentifierProperty);
+      set => SetValue(ClockIdentifierProperty, value);
+   }
+   
    protected override Type StyleKeyOverride => typeof(TimePickerFlyoutPresenter);
    
    internal TimePicker TimePickerRef { get; set; }
@@ -21,6 +57,7 @@ public class TimePickerFlyoutPresenter : FlyoutPresenter
    {
       TimePickerRef = timePicker;
       HorizontalAlignment = HorizontalAlignment.Left;
+      SetCurrentValue(TimeProperty, DateTime.Now.TimeOfDay);
    }
 
    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -34,6 +71,9 @@ public class TimePickerFlyoutPresenter : FlyoutPresenter
          {
             TimePickerRef.NotifyConfirmed(_timePickerPresenter.Time);
          };
+         if (TimePickerRef.DefaultTime is not null) {
+            _timePickerPresenter.Time = TimePickerRef.DefaultTime.Value;
+         }
       }
 
       if (_confirmButton is not null) {

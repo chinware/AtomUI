@@ -14,6 +14,12 @@ using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
 
+public enum ClockIdentifierType
+{
+   HourClock12,
+   HourClock24
+};
+
 public class TimePicker : LineEdit
 {
    protected override Type StyleKeyOverride => typeof(LineEdit);
@@ -46,9 +52,8 @@ public class TimePicker : LineEdit
    /// <summary>
    /// Defines the <see cref="ClockIdentifier"/> property
    /// </summary>
-   public static readonly StyledProperty<string> ClockIdentifierProperty =
-      AvaloniaProperty.Register<TimePicker, string>(nameof(ClockIdentifier), "12HourClock",
-                                                    coerce: CoerceClockIdentifier);
+   public static readonly StyledProperty<ClockIdentifierType> ClockIdentifierProperty =
+      AvaloniaProperty.Register<TimePicker, ClockIdentifierType>(nameof(ClockIdentifier), ClockIdentifierType.HourClock12);
 
    /// <summary>
    /// Defines the <see cref="SelectedTime"/> property
@@ -56,6 +61,10 @@ public class TimePicker : LineEdit
    public static readonly StyledProperty<TimeSpan?> SelectedTimeProperty =
       AvaloniaProperty.Register<TimePicker, TimeSpan?>(nameof(SelectedTime),
                                                        defaultBindingMode: BindingMode.TwoWay,
+                                                       enableDataValidation: true);
+   
+   public static readonly StyledProperty<TimeSpan?> DefaultTimeProperty =
+      AvaloniaProperty.Register<TimePicker, TimeSpan?>(nameof(DefaultTime),
                                                        enableDataValidation: true);
    
    public static readonly StyledProperty<double> MarginToAnchorProperty =
@@ -106,7 +115,7 @@ public class TimePicker : LineEdit
    /// <summary>
    /// Gets or sets the clock identifier, either 12HourClock or 24HourClock
    /// </summary>
-   public string ClockIdentifier
+   public ClockIdentifierType ClockIdentifier
    {
       get => GetValue(ClockIdentifierProperty);
       set => SetValue(ClockIdentifierProperty, value);
@@ -119,6 +128,12 @@ public class TimePicker : LineEdit
    {
       get => GetValue(SelectedTimeProperty);
       set => SetValue(SelectedTimeProperty, value);
+   }
+   
+   public TimeSpan? DefaultTime
+   {
+      get => GetValue(DefaultTimeProperty);
+      set => SetValue(DefaultTimeProperty, value);
    }
    
    public double MarginToAnchor
@@ -169,6 +184,9 @@ public class TimePicker : LineEdit
 
    private bool FlyoutOpenPredicate(Point position)
    {
+      if (!IsEnabled) {
+         return false;
+      }
       return PositionInEditKernel(position);
    }
 
@@ -228,9 +246,9 @@ public class TimePicker : LineEdit
    {
       if (!_currentValidSelected) {
          if (SelectedTime.HasValue) {
-            Text = DateTimeUtils.FormatTimeSpan(SelectedTime.Value, ClockIdentifier == "12HourClock");
+            Text = DateTimeUtils.FormatTimeSpan(SelectedTime.Value, ClockIdentifier == ClockIdentifierType.HourClock12);
          } else {
-            Clear();
+            ResetTimeValue();
          }
       }
    }
@@ -247,7 +265,7 @@ public class TimePicker : LineEdit
          _pickerIndicator = new PickerIndicator();
          _pickerIndicator.ClearRequest += (sender, args) =>
          {
-            Clear();
+            ResetTimeValue();
             SelectedTime = null;
          };
          InnerRightContent = _pickerIndicator;
@@ -260,6 +278,7 @@ public class TimePicker : LineEdit
       _flyoutStateHelper.AnchorTarget = _textBoxInnerBox;
       TokenResourceBinder.CreateGlobalTokenBinding(this, MarginToAnchorProperty, GlobalTokenResourceKey.MarginXXS);
       SetupFlyoutProperties();
+      ResetTimeValue();
    }
    
    protected void SetupFlyoutProperties()
@@ -277,6 +296,9 @@ public class TimePicker : LineEdit
       base.OnAttachedToLogicalTree(e);
       BindUtils.RelayBind(this, MouseEnterDelayProperty, _flyoutStateHelper, FlyoutStateHelper.MouseEnterDelayProperty);
       BindUtils.RelayBind(this, MouseLeaveDelayProperty, _flyoutStateHelper, FlyoutStateHelper.MouseLeaveDelayProperty);
+      if (DefaultTime is not null) {
+         SelectedTime = DefaultTime;
+      }
    }
    
    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -295,30 +317,41 @@ public class TimePicker : LineEdit
       if (VisualRoot is not null) {
          if (change.Property == SelectedTimeProperty) {
             if (SelectedTime.HasValue) {
-               Text = DateTimeUtils.FormatTimeSpan(SelectedTime.Value, ClockIdentifier == "12HourClock");
+               Text = DateTimeUtils.FormatTimeSpan(SelectedTime.Value, ClockIdentifier == ClockIdentifierType.HourClock12);
             } else {
-               Clear();
+               ResetTimeValue();
             }
          }
       }
    }
 
+   protected void ResetTimeValue()
+   {
+      if (DefaultTime is not null) {
+         Text = DateTimeUtils.FormatTimeSpan(DefaultTime.Value, ClockIdentifier == ClockIdentifierType.HourClock12);
+      } else {
+         Clear();
+      }
+   }
+
    private void DetectIndicatorState(RawInputEventArgs args)
    {
-      if (args is RawPointerEventArgs pointerEventArgs) {
-         if (_textBoxInnerBox is not null) {
-            var pos = _textBoxInnerBox.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(this)!);
-            if (!pos.HasValue) {
-               return;
-            }
-
-            var bounds = new Rect(pos.Value, _textBoxInnerBox.Bounds.Size);
-            if (bounds.Contains(pointerEventArgs.Position)) {
-               if (SelectedTime is not null) {
-                  _pickerIndicator!.IsInClearMode = true;
+      if (IsEnabled) {
+         if (args is RawPointerEventArgs pointerEventArgs) {
+            if (_textBoxInnerBox is not null) {
+               var pos = _textBoxInnerBox.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(this)!);
+               if (!pos.HasValue) {
+                  return;
                }
-            } else {
-               _pickerIndicator!.IsInClearMode = false;
+
+               var bounds = new Rect(pos.Value, _textBoxInnerBox.Bounds.Size);
+               if (bounds.Contains(pointerEventArgs.Position)) {
+                  if (SelectedTime is not null) {
+                     _pickerIndicator!.IsInClearMode = true;
+                  }
+               } else {
+                  _pickerIndicator!.IsInClearMode = false;
+               }
             }
          }
       }
@@ -349,18 +382,9 @@ public class TimePicker : LineEdit
       return value;
    }
 
-   private static string CoerceClockIdentifier(AvaloniaObject sender, string value)
-   {
-      if (!(string.IsNullOrEmpty(value) || value == "12HourClock" || value == "24HourClock")) {
-         throw new ArgumentException("Invalid ClockIdentifier", default(string));
-      }
-
-      return value;
-   }
-
    internal void NotifyTemporaryTimeSelected(TimeSpan selected)
    {
-      Text = DateTimeUtils.FormatTimeSpan(selected, ClockIdentifier == "12HourClock");
+      Text = DateTimeUtils.FormatTimeSpan(selected, ClockIdentifier == ClockIdentifierType.HourClock12);
    }
    
    internal void NotifyConfirmed(TimeSpan value)

@@ -8,6 +8,94 @@
     xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
     mc:Ignorable="d">
     <showcase:ShowCasePanel>
-        <atom:TimePicker Watermark="Select time" Width="300"/>
+        <showcase:ShowCaseItem
+            Title="Basic"
+            Description="Click TimePicker, and then we could select or input a time in panel.">
+            <atom:TimePicker Watermark="Select time" Width="200" />
+        </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="Three Sizes"
+            Description="The input box comes in three sizes: large, middle and small. Large is used in the form, while the medium size is the default.">
+           <StackPanel Orientation="Horizontal" Spacing="10">
+               <atom:TimePicker Watermark="Select time" Width="160" SizeType="Large" DefaultTime="12:08:23"/>
+               <atom:TimePicker Watermark="Select time" Width="160" SizeType="Middle" DefaultTime="12:08:23"/>
+               <atom:TimePicker Watermark="Select time" Width="160" SizeType="Small" DefaultTime="12:08:23"/>
+           </StackPanel>
+        </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="Disabled"
+            Description="A disabled state of the TimePicker.">
+            <StackPanel Orientation="Horizontal" Spacing="10">
+                <atom:TimePicker Watermark="Select time" Width="160" IsEnabled="False" DefaultTime="12:08:23"/>
+            </StackPanel>
+        </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="Interval option"
+            Description="Show stepped options by MinuteIncrement SecondIncrement.">
+            <StackPanel Orientation="Horizontal" Spacing="10">
+                <atom:TimePicker Watermark="Select time"
+                                 Width="160" 
+                                 DefaultTime="12:08:23"
+                                 MinuteIncrement="15"
+                                 SecondIncrement="10"
+                                 />
+            </StackPanel>
+        </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="12 hours"
+            Description="TimePicker of 12 hours format, with default format h:mm:ss a.">
+            <StackPanel Orientation="Horizontal" Spacing="10">
+                <atom:TimePicker Watermark="Select time"
+                                 Width="160" 
+                                 DefaultTime="12:08:23"
+                                 ClockIdentifier="HourClock12"
+                />
+                <atom:TimePicker Watermark="Select time"
+                                 Width="160" 
+                                 DefaultTime="12:08:23"
+                                 ClockIdentifier="HourClock24"
+                />
+            </StackPanel>
+        </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="Variants"
+            Description="Bordered-less style component.">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:TimePicker Watermark="Filled"
+                                 Width="160" 
+                                 StyleVariant="Filled"
+                />
+                <atom:TimePicker Watermark="Select time"
+                                 Width="160" 
+                                 StyleVariant="Outline"
+                />
+                <atom:TimePicker Watermark="Select time"
+                                 Width="160" 
+                                 StyleVariant="Borderless"
+                />
+            </StackPanel>
+        </showcase:ShowCaseItem>
+
+        <showcase:ShowCaseItem
+            Title="Status"
+            Description="Add status to TimePicker with status, which could be error or warning.">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:TimePicker Width="160"
+                                 Status="Default"
+                                 Watermark="Select time"
+                                 />
+                <atom:TimePicker Width="160"
+                                 Status="Warning"
+                                 Watermark="Select time"/>
+                <atom:TimePicker Width="160"
+                                 Status="Error" 
+                                 Watermark="Select time"/>
+            </StackPanel>
+        </showcase:ShowCaseItem>
     </showcase:ShowCasePanel>
 </UserControl>
