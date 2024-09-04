@@ -2,7 +2,7 @@
 
 namespace AtomUI.Controls;
 
-public class TextBoxInnerBox : AddOnDecoratedInnerBox
+internal class TextBoxInnerBox : AddOnDecoratedInnerBox
 {
    #region 公共属性定义
 

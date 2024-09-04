@@ -97,5 +97,16 @@
                                  Watermark="Select time"/>
             </StackPanel>
         </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="Time Range Picker"
+            Description="Use time range picker with RangeTimePicker.">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:RangeTimePicker Width="320"
+                                 Status="Default"
+                                 RangeStartWatermark="Start time"
+                                 RangeEndWatermark="End time"/>
+            </StackPanel>
+        </showcase:ShowCaseItem>
     </showcase:ShowCasePanel>
 </UserControl>

@@ -280,6 +280,7 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
             var innerBoxDecoratorStyle =
                new Style(selector => selector.Nesting().Template().Name(InnerBoxDecoratorPart));
             innerBoxDecoratorStyle.Add(Border.BorderBrushProperty, GlobalTokenResourceKey.ColorBorder);
+            innerBoxDecoratorStyle.Add(Border.BackgroundProperty, GlobalTokenResourceKey.ColorTransparent);
             outlineStyle.Add(innerBoxDecoratorStyle);
          }
 
@@ -374,7 +375,7 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
          {
             var innerBoxDecoratorStyle =
                new Style(selector => selector.Nesting().Template().Name(InnerBoxDecoratorPart));
-
+         
             innerBoxDecoratorStyle.Add(Border.BorderBrushProperty, GlobalTokenResourceKey.ColorTransparent);
             innerBoxDecoratorStyle.Add(Border.BackgroundProperty, GlobalTokenResourceKey.ColorFillTertiary);
             filledStyle.Add(innerBoxDecoratorStyle);

@@ -12,7 +12,7 @@ using Avalonia.Rendering;
 namespace AtomUI.Controls;
 
 [TemplatePart(ComboBoxSpinnerInnerBoxTheme.SpinnerHandlePart, typeof(ContentPresenter))]
-public class ComboBoxSpinnerInnerBox : AddOnDecoratedInnerBox, ICustomHitTest
+internal class ComboBoxSpinnerInnerBox : AddOnDecoratedInnerBox, ICustomHitTest
 {
     #region 公共属性定义
 

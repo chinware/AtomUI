@@ -1,7 +1,4 @@
-﻿using System.Globalization;
-using AtomUI.Controls.TimePickerLang;
-using AtomUI.Controls.Utils;
-using AtomUI.Data;
+﻿using AtomUI.Controls.Utils;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;

@@ -11,7 +11,7 @@ using Avalonia.Controls.Primitives;
 namespace AtomUI.Controls;
 
 [TemplatePart(AddOnDecoratedInnerBoxTheme.ContentPresenterPart, typeof(ContentPresenter), IsRequired = true)]
-public abstract class AddOnDecoratedInnerBox : ContentControl
+public class AddOnDecoratedInnerBox : ContentControl
 {
    #region 公共属性定义
 
