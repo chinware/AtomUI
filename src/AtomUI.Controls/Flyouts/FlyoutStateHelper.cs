@@ -56,6 +56,13 @@ internal class FlyoutStateHelper : AvaloniaObject
       set => SetValue(TriggerTypeProperty, value);
    }
 
+   public event EventHandler<EventArgs>? FlyoutPassiveAboutToClose;
+   public event EventHandler<EventArgs>? FlyoutAboutToClose;
+   public event EventHandler<EventArgs>? FlyoutClosed;
+   public event EventHandler<EventArgs>? FlyoutAboutToShow;
+
+   public Func<Point, bool>? OpenFlyoutPredicate;
+
    private DispatcherTimer? _mouseEnterDelayTimer;
    private DispatcherTimer? _mouseLeaveDelayTimer;
    private IDisposable? _flyoutCloseDetectDisposable;
@@ -85,20 +92,23 @@ internal class FlyoutStateHelper : AvaloniaObject
          var host = popupHostProvider.PopupHost;
          if (host is PopupRoot popupRoot) {
             // 这里 PopupRoot 关闭的时候会被关闭，所以这里的事件处理器是不是不需要删除
-            popupRoot.PointerMoved += (o, args) =>
-            {
-               StopMouseLeaveTimer();
-               if (_flyoutCloseDetectDisposable is null) {
-                  var inputManager = AvaloniaLocator.Current.GetService<IInputManager>()!;
-                  _flyoutCloseDetectDisposable = inputManager.Process.Subscribe(DetectWhenToClosePopup);
-               }
-            };
+            if (TriggerType == FlyoutTriggerType.Hover) {
+               popupRoot.PointerMoved += (o, args) =>
+               {
+                  StopMouseLeaveTimer();
+                  if (_flyoutCloseDetectDisposable is null) {
+                     var inputManager = AvaloniaLocator.Current.GetService<IInputManager>()!;
+                     _flyoutCloseDetectDisposable = inputManager.Process.Subscribe(DetectWhenToClosePopup);
+                  }
+               };
+            }
          }
       }
    }
 
    private void HandleFlyoutClosed(object? sender, EventArgs e)
    {
+      FlyoutClosed?.Invoke(this, EventArgs.Empty);
    }
 
    private void StartMouseEnterTimer()
@@ -111,7 +121,7 @@ internal class FlyoutStateHelper : AvaloniaObject
             if (Flyout is null || AnchorTarget is null) {
                return;
             }
-
+            FlyoutAboutToShow?.Invoke(this, EventArgs.Empty);
             Flyout.ShowAt(AnchorTarget);
          }
       };
@@ -140,7 +150,7 @@ internal class FlyoutStateHelper : AvaloniaObject
             if (Flyout is null) {
                return;
             }
-
+            FlyoutAboutToClose?.Invoke(this, EventArgs.Empty);
             Flyout.Hide();
          }
       };
@@ -200,6 +210,7 @@ internal class FlyoutStateHelper : AvaloniaObject
       StopMouseLeaveTimer();
       Flyout.Hide();
       if (immediately || MouseEnterDelay == 0) {
+         FlyoutAboutToShow?.Invoke(this, EventArgs.Empty);
          Flyout.ShowAt(AnchorTarget);
       } else {
          StartMouseEnterTimer();
@@ -216,6 +227,7 @@ internal class FlyoutStateHelper : AvaloniaObject
       StopMouseEnterTimer();
 
       if (immediately || MouseLeaveDelay == 0) {
+         FlyoutAboutToClose?.Invoke(this, EventArgs.Empty);
          Flyout.Hide();
       } else {
          StartMouseLeaveTimer();
@@ -231,14 +243,19 @@ internal class FlyoutStateHelper : AvaloniaObject
             }
 
             if (!Flyout.IsOpen) {
-               var pos = AnchorTarget.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(AnchorTarget)!);
-               if (!pos.HasValue) {
-                  return;
-               }
-
-               var bounds = new Rect(pos.Value, AnchorTarget.Bounds.Size);
-               if (bounds.Contains(pointerEventArgs.Position)) {
-                  ShowFlyout();
+               if (OpenFlyoutPredicate is not null) {
+                  if (OpenFlyoutPredicate(pointerEventArgs.Position)) {
+                     ShowFlyout();
+                  }
+               } else {
+                  var pos = AnchorTarget.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(AnchorTarget)!);
+                  if (!pos.HasValue) {
+                     return;
+                  }
+                  var bounds = new Rect(pos.Value, AnchorTarget.Bounds.Size);
+                  if (bounds.Contains(pointerEventArgs.Position)) {
+                     ShowFlyout();
+                  }
                }
             } else {
                if (Flyout is IPopupHostProvider popupHostProvider) {
@@ -274,6 +291,7 @@ internal class FlyoutStateHelper : AvaloniaObject
             }
 
             if (!found) {
+               FlyoutPassiveAboutToClose?.Invoke(this, EventArgs.Empty);
                HideFlyout();
             }
          }

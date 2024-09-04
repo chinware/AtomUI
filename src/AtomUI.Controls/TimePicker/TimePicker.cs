@@ -5,6 +5,8 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
+using Avalonia.Input;
+using Avalonia.Input.Raw;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
 
@@ -139,13 +141,16 @@ public class TimePicker : LineEdit
 
    private TextBoxInnerBox? _textBoxInnerBox;
    private TimePickerFlyout? _pickerFlyout;
-   private FlyoutStateHelper _flyoutStateHelper;
+   private readonly FlyoutStateHelper _flyoutStateHelper;
+   private PickerIndicator? _pickerIndicator;
+   private bool _currentValidSelected = false;
+   private IDisposable? _indicatorDetectDisposable;
 
    static TimePicker()
    {
       HorizontalAlignmentProperty.OverrideDefaultValue<TimePicker>(HorizontalAlignment.Left);
       VerticalAlignmentProperty.OverrideDefaultValue<TimePicker>(VerticalAlignment.Top);
-      IsEnableClearButtonProperty.OverrideDefaultValue<TimePicker>(true);
+      IsEnableClearButtonProperty.OverrideDefaultValue<TimePicker>(false);
    }
 
    public TimePicker()
@@ -154,16 +159,70 @@ public class TimePicker : LineEdit
       {
          TriggerType = FlyoutTriggerType.Click
       };
+      _flyoutStateHelper.FlyoutAboutToShow += HandleFlyoutAboutToShow;
+      _flyoutStateHelper.FlyoutAboutToClose += HandleFlyoutAboutToClose;
+      _flyoutStateHelper.OpenFlyoutPredicate = FlyoutOpenPredicate;
+   }
+
+   private bool FlyoutOpenPredicate(Point position)
+   {
+      if (_textBoxInnerBox is not null) {
+         var pos = _textBoxInnerBox.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(this)!);
+         if (!pos.HasValue) {
+            return false;
+         }
+         
+         var targetWidth = _textBoxInnerBox.Bounds.Width;
+         var targetHeight = _textBoxInnerBox.Bounds.Height;
+         var startOffsetX = pos.Value.X;
+         var endOffsetX = startOffsetX + targetWidth;
+         var offsetY = pos.Value.Y;
+         if (InnerLeftContent is Control leftContent) {
+            var leftContentPos = leftContent.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(this)!);
+            if (leftContentPos.HasValue) {
+               startOffsetX = leftContentPos.Value.X + leftContent.Bounds.Width;
+            }
+         }
+         if (InnerRightContent is Control rightContent) {
+            var rightContentPos = rightContent.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(this)!);
+            if (rightContentPos.HasValue) {
+               endOffsetX = rightContentPos.Value.X;
+            }
+         }
+
+         targetWidth = endOffsetX - startOffsetX;
+         var bounds = new Rect(new Point(startOffsetX, offsetY), new Size(targetWidth, targetHeight));
+         if (bounds.Contains(position)) {
+            return true;
+         }
+      }
+
+      return false;
+   }
+
+   private void HandleFlyoutAboutToShow(object? sender, EventArgs args)
+   {
+      _currentValidSelected = false;
+   }
+   
+   private void HandleFlyoutAboutToClose(object? sender, EventArgs args)
+   {
+      if (!_currentValidSelected) {
+         Text = SelectedTime.ToString();
+      }
+   }
+
+   internal void ClosePickerFlyout()
+   {
+      _flyoutStateHelper.HideFlyout(true);
    }
 
    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
    {
       base.OnApplyTemplate(e);
       if (InnerRightContent is null) {
-         InnerRightContent = new PathIcon()
-         {
-            Kind = "ClockCircleOutlined"
-         };
+         _pickerIndicator = new PickerIndicator();
+         InnerRightContent = _pickerIndicator;
       }
       if (_pickerFlyout is null) {
          _pickerFlyout = new TimePickerFlyout(this);
@@ -173,7 +232,6 @@ public class TimePicker : LineEdit
       _flyoutStateHelper.AnchorTarget = _textBoxInnerBox;
       TokenResourceBinder.CreateGlobalTokenBinding(this, MarginToAnchorProperty, GlobalTokenResourceKey.MarginXXS);
       SetupFlyoutProperties();
-
    }
    
    protected void SetupFlyoutProperties()
@@ -197,12 +255,39 @@ public class TimePicker : LineEdit
    {
       base.OnAttachedToVisualTree(e);
       _flyoutStateHelper.NotifyAttachedToVisualTree();
+      if (_indicatorDetectDisposable is null) {
+         var inputManager = AvaloniaLocator.Current.GetService<IInputManager>()!;
+         _indicatorDetectDisposable = inputManager.Process.Subscribe(DetectIndicatorState);
+      }
+   }
+   
+   private void DetectIndicatorState(RawInputEventArgs args)
+   {
+      if (args is RawPointerEventArgs pointerEventArgs) {
+         if (_textBoxInnerBox is not null) {
+            var pos = _textBoxInnerBox.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(this)!);
+            if (!pos.HasValue) {
+               return;
+            }
+
+            var bounds = new Rect(pos.Value, _textBoxInnerBox.Bounds.Size);
+            if (bounds.Contains(pointerEventArgs.Position)) {
+               if (SelectedTime is not null) {
+                  _pickerIndicator!.IsInClearMode = true;
+               }
+            } else {
+               _pickerIndicator!.IsInClearMode = false;
+            }
+         }
+      }
    }
 
    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
    {
       base.OnDetachedFromVisualTree(e);
       _flyoutStateHelper.NotifyDetachedFromVisualTree();
+      _indicatorDetectDisposable?.Dispose();
+      _indicatorDetectDisposable = null;
    }
    
    private static int CoerceMinuteIncrement(AvaloniaObject sender, int value)
@@ -229,5 +314,16 @@ public class TimePicker : LineEdit
       }
 
       return value;
+   }
+
+   internal void NotifyTemporaryTimeSelected(TimeSpan selected)
+   {
+      Text = selected.ToString();
+   }
+   
+   internal void NotifyConfirmed(TimeSpan value)
+   {
+      _currentValidSelected = true;
+      SelectedTime = value;
    }
 }

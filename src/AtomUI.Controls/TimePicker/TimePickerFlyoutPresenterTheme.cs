@@ -34,6 +34,7 @@ internal class TimePickerFlyoutPresenterTheme : ArrowDecoratedBoxTheme
          Height = 200,
          IsShowHeader = false,
       };
+      contentPresenter.RegisterInNameScope(scope);
       
       var buttons = new Panel()
       {

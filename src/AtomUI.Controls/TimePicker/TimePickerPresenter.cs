@@ -50,6 +50,9 @@ public class TimePickerPresenter : PickerPresenterBase
    /// </summary>
    public static readonly StyledProperty<TimeSpan> TimeProperty =
       AvaloniaProperty.Register<TimePickerPresenter, TimeSpan>(nameof(Time));
+   
+   public static readonly StyledProperty<TimeSpan> TemporaryTimeProperty =
+      AvaloniaProperty.Register<TimePickerPresenter, TimeSpan>(nameof(TemporaryTime));
 
    public static readonly StyledProperty<bool> IsShowHeaderProperty =
       AvaloniaProperty.Register<TimePickerPresenter, bool>(nameof(IsShowHeader), true);
@@ -85,6 +88,12 @@ public class TimePickerPresenter : PickerPresenterBase
    {
       get => GetValue(TimeProperty);
       set => SetValue(TimeProperty, value);
+   }
+   
+   public TimeSpan TemporaryTime
+   {
+      get => GetValue(TemporaryTimeProperty);
+      set => SetValue(TemporaryTimeProperty, value);
    }
 
    public bool IsShowHeader
@@ -176,8 +185,9 @@ public class TimePickerPresenter : PickerPresenterBase
 
    private void HandleSelectionChanged(object? sender, EventArgs args)
    {
+      var selectedValue = CollectValue();
+      TemporaryTime = selectedValue;
       if (IsShowHeader) {
-         var selectedValue = CollectValue();
          var dateTime = DateTime.Today.Add(selectedValue);
          if (ClockIdentifier == "12HourClock") {
             var formatInfo = new DateTimeFormatInfo();
