@@ -10,6 +10,12 @@ AtomUI 是基于 .NET 技术的 Ant Design 实现，致力于将 Ant Design 优�
 
 欢迎交流和给 AtomUI 提相关建议，感谢给项目点 Star。
 
+#### 感谢 Gitee 对 AtomUI 的认可
+
+<p align="center" width="400">
+    <img src="./docs/images/GVP.png" />
+</p>
+
 #### 运行环境
 
 .NET 8 及其以上<br>
@@ -37,23 +43,23 @@ PS: AtomUI 目前仅在 Windows 11 平台测试<br>
 | 控件名                  | 完成情况   |
 |:---------------------|:-------|
 | AutoComplete 自动完成    | 未完成    |
-| ComboBox 下拉选择        | 进行中 💪   |
+| ComboBox 下拉选择        | 进行中 💪 |
 | Cascader 级联选择        | 未完成    |
 | Checkbox 多选框         | 已完成 ✅  |
-| ColorPicker 颜色选择器    | 未完成    |
-| DatePicker 日期选择框     | 未完成    |
+| ColorPicker 颜色选择器    | 进行中 💪 |
+| DatePicker 日期选择框     | 进行中 💪 |
 | Form 表单              | 未完成    |
-| Input 输入框            | 已完成 ✅ |
-| NumberUpDown 数字输入框   | 已完成 ✅ |
-| ButtonSpinner 按钮切换控件 | 已完成 ✅ |
+| Input 输入框            | 已完成 ✅  |
+| NumberUpDown 数字输入框   | 已完成 ✅  |
+| ButtonSpinner 按钮切换控件 | 已完成 ✅  |
 | Mentions 提及          | 未完成    |
 | Radio 单选框            | 已完成 ✅  |
 | OptionButtonBox 单选组  | 已完成 ✅  |
 | Rate 评分              | 未完成    |
-| Select 选择器           | 进行中 💪    |
+| Select 选择器           | 进行中 💪 |
 | Slider 滑动输入条         | 已完成 ✅  |
 | Switch 开关            | 已完成 ✅  |
-| TimePicker 时间选择框     | 未完成    |
+| TimePicker 时间选择框     | 已完成 ✅  |
 | Transfer 穿梭框         | 未完成    |
 | Upload 上传            | 需评估 🤔 |
 
@@ -99,7 +105,7 @@ PS: AtomUI 目前仅在 Windows 11 平台测试<br>
 | Result 结果            | 需评估 🤔 |
 | Skeleton 骨架屏         | 未完成    |
 | LoadingIndicator 加载中 | 已完成 ✅  |
-| Watermark 水印         | 未完成    |
+| Watermark 水印         | 进行中 💪 |
 
 #### 运行效果部分截图
 

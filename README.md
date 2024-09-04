@@ -30,69 +30,69 @@ Welcome to communicate and give suggestions to AtomUI, thank you for giving the 
 | Steps        | TODO        |
 
 ##### Data Entry
-| Control Name    | Status        |
-|:----------------|:--------------|
-| AutoComplete    | TODO          |
-| Cascader        | TODO          |
-| Checkbox        | Completed ✅   |
-| ColorPicker     | TODO          |
-| DatePicker      | TODO          |
-| Form            | TODO          |
-| Input           | Completed ✅   |
-| NumberUpDown    | Completed ✅   |
-| ButtonSpinner   | Completed ✅   |
-| Mentions        | TODO          |
-| Radio           | Completed ✅   |
-| OptionButtonBox | Completed ✅   |
-| Rate            | TODO          |
-| Select          | TODO          |
-| Slider          | Completed ✅   |
-| Switch          | Completed ✅   |
-| TimePicker      | TODO          |
-| Transfer        | TODO          |
+| Control Name    | Status         |
+|:----------------|:---------------|
+| AutoComplete    | TODO           |
+| Cascader        | TODO           |
+| Checkbox        | Completed ✅    |
+| ColorPicker     | Developing 💪  |
+| DatePicker      | Developing 💪  |
+| Form            | TODO           |
+| Input           | Completed ✅    |
+| NumberUpDown    | Completed ✅    |
+| ButtonSpinner   | Completed ✅    |
+| Mentions        | TODO           |
+| Radio           | Completed ✅    |
+| OptionButtonBox | Completed ✅    |
+| Rate            | TODO           |
+| Select          | TODO           |
+| Slider          | Completed ✅    |
+| Switch          | Completed ✅    |
+| TimePicker      | Completed ✅    |
+| Transfer        | TODO           |
 | Upload          | Need Review 🤔 |
 
 ##### Data Display
-| Control Name   | Status        |
-|:---------------|:--------------|
-| Avatar         | TODO          |
-| Badge          | Completed ✅   |
-| Calendar       | TODO          |
-| Card           | TODO          |
-| GroupBox       | Completed ✅ |
-| Carousel       | Developing 💪 |
-| Collapse       | Completed ✅   |
-| Expander       | Completed ✅   |
-| Descriptions   | TODO          |
-| EmptyIndicator | Completed ✅   |
-| Image          | TODO          |
-| ListBox        | Completed ✅   |
-| Popover        | Completed ✅   |
-| QRCode         | TODO          |
-| Segmented      | Completed ✅   |
-| Statistic      | TODO          |
-| Table          | TODO          |
-| TabControl     | Completed ✅   |
-| Tag            | Completed ✅   |
-| Timeline       | TODO          |
-| Tooltip        | Completed ✅   |
-| Tour           | TODO          |
-| Tree           | Completed ✅   |
+| Control Name   | Status         |
+|:---------------|:---------------|
+| Avatar         | TODO           |
+| Badge          | Completed ✅    |
+| Calendar       | TODO           |
+| Card           | TODO           |
+| GroupBox       | Completed ✅    |
+| Carousel       | Developing 💪  |
+| Collapse       | Completed ✅    |
+| Expander       | Completed ✅    |
+| Descriptions   | TODO           |
+| EmptyIndicator | Completed ✅    |
+| Image          | TODO           |
+| ListBox        | Completed ✅    |
+| Popover        | Completed ✅    |
+| QRCode         | TODO           |
+| Segmented      | Completed ✅    |
+| Statistic      | TODO           |
+| Table          | TODO           |
+| TabControl     | Completed ✅    |
+| Tag            | Completed ✅    |
+| Timeline       | Developing 💪  |
+| Tooltip        | Completed ✅    |
+| Tour           | TODO           |
+| Tree           | Completed ✅    |
 
 ##### Feedback
-| Control Name       | Status         |
-|:-------------------|:---------------|
-| Alert              | Completed ✅    |
-| Drawer             | Developing 💪  |
-| Message            | Completed ✅    |
-| Modal              | Developing 💪  |
-| Notification       | Completed ✅    |
-| Popconfirm         | Completed ✅    |
-| ProgressBar        | Completed ✅    |
+| Control Name       | Status        |
+|:-------------------|:--------------|
+| Alert              | Completed ✅   |
+| Drawer             | Developing 💪 |
+| Message            | Completed ✅   |
+| Modal              | Developing 💪 |
+| Notification       | Completed ✅   |
+| Popconfirm         | Completed ✅   |
+| ProgressBar        | Completed ✅   |
 | Result             | Need Review 🤔 |
-| Skeleton           | TODO           |
-| LoadingIndicator   | Completed ✅    |
-| Watermark          | TODO           |
+| Skeleton           | TODO          |
+| LoadingIndicator   | Completed ✅   |
+| Watermark          | Developing 💪 |
 
 #### Some screenshots of the running effect
 
