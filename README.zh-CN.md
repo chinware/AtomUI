@@ -12,8 +12,12 @@ AtomUI 是基于 .NET 技术的 Ant Design 实现，致力于将 Ant Design 优�
 
 #### 感谢 Gitee 对 AtomUI 的认可
 
-<p align="center" width="400">
-    <img src="./docs/images/GVP.png" />
+<p align="center">
+    <img src="./docs/images/GVP.png" width="400"/>
+</p>
+
+<p align="center">
+    <img src="./docs/images/Chinware.png" width="300" />
 </p>
 
 #### 运行环境
