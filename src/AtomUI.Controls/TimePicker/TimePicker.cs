@@ -1,8 +1,10 @@
-﻿using AtomUI.Data;
+﻿using AtomUI.Controls.Utils;
+using AtomUI.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Diagnostics;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Input;
@@ -162,9 +164,15 @@ public class TimePicker : LineEdit
       _flyoutStateHelper.FlyoutAboutToShow += HandleFlyoutAboutToShow;
       _flyoutStateHelper.FlyoutAboutToClose += HandleFlyoutAboutToClose;
       _flyoutStateHelper.OpenFlyoutPredicate = FlyoutOpenPredicate;
+      _flyoutStateHelper.ClickHideFlyoutPredicate = ClickHideFlyoutPredicate;
    }
 
    private bool FlyoutOpenPredicate(Point position)
+   {
+      return PositionInEditKernel(position);
+   }
+
+   private bool PositionInEditKernel(Point position)
    {
       if (_textBoxInnerBox is not null) {
          var pos = _textBoxInnerBox.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(this)!);
@@ -200,6 +208,17 @@ public class TimePicker : LineEdit
       return false;
    }
 
+   private bool ClickHideFlyoutPredicate(IPopupHostProvider hostProvider, RawPointerEventArgs args)
+   {
+      if (hostProvider.PopupHost != args.Root) {
+         if (!PositionInEditKernel(args.Position)) {
+            return true;
+         }
+      }
+
+      return false;
+   }
+
    private void HandleFlyoutAboutToShow(object? sender, EventArgs args)
    {
       _currentValidSelected = false;
@@ -208,7 +227,11 @@ public class TimePicker : LineEdit
    private void HandleFlyoutAboutToClose(object? sender, EventArgs args)
    {
       if (!_currentValidSelected) {
-         Text = SelectedTime.ToString();
+         if (SelectedTime.HasValue) {
+            Text = DateTimeUtils.FormatTimeSpan(SelectedTime.Value, ClockIdentifier == "12HourClock");
+         } else {
+            Clear();
+         }
       }
    }
 
@@ -222,6 +245,11 @@ public class TimePicker : LineEdit
       base.OnApplyTemplate(e);
       if (InnerRightContent is null) {
          _pickerIndicator = new PickerIndicator();
+         _pickerIndicator.ClearRequest += (sender, args) =>
+         {
+            Clear();
+            SelectedTime = null;
+         };
          InnerRightContent = _pickerIndicator;
       }
       if (_pickerFlyout is null) {
@@ -260,7 +288,21 @@ public class TimePicker : LineEdit
          _indicatorDetectDisposable = inputManager.Process.Subscribe(DetectIndicatorState);
       }
    }
-   
+
+   protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+   {
+      base.OnPropertyChanged(change);
+      if (VisualRoot is not null) {
+         if (change.Property == SelectedTimeProperty) {
+            if (SelectedTime.HasValue) {
+               Text = DateTimeUtils.FormatTimeSpan(SelectedTime.Value, ClockIdentifier == "12HourClock");
+            } else {
+               Clear();
+            }
+         }
+      }
+   }
+
    private void DetectIndicatorState(RawInputEventArgs args)
    {
       if (args is RawPointerEventArgs pointerEventArgs) {
@@ -318,7 +360,7 @@ public class TimePicker : LineEdit
 
    internal void NotifyTemporaryTimeSelected(TimeSpan selected)
    {
-      Text = selected.ToString();
+      Text = DateTimeUtils.FormatTimeSpan(selected, ClockIdentifier == "12HourClock");
    }
    
    internal void NotifyConfirmed(TimeSpan value)

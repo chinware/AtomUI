@@ -188,18 +188,8 @@ public class TimePickerPresenter : PickerPresenterBase
       var selectedValue = CollectValue();
       TemporaryTime = selectedValue;
       if (IsShowHeader) {
-         var dateTime = DateTime.Today.Add(selectedValue);
-         if (ClockIdentifier == "12HourClock") {
-            var formatInfo = new DateTimeFormatInfo();
-            formatInfo.AMDesignator = LanguageResourceBinder.GetLangResource(TimePickerLangResourceKey.AMText)!;
-            formatInfo.PMDesignator = LanguageResourceBinder.GetLangResource(TimePickerLangResourceKey.PMText)!;
-            if (_headerText is not null) {
-               _headerText.Text = dateTime.ToString(@"hh:mm:ss tt", formatInfo);
-            }
-         } else {
-            if (_headerText is not null) {
-               _headerText.Text = dateTime.ToString(@"HH:mm:ss");
-            }
+         if (_headerText is not null) {
+            _headerText.Text = DateTimeUtils.FormatTimeSpan(selectedValue, ClockIdentifier == "12HourClock");
          }
       }
    }
@@ -258,6 +248,12 @@ public class TimePickerPresenter : PickerPresenterBase
    {
       var value = CollectValue();
       SetCurrentValue(TimeProperty, value);
+      base.OnConfirmed();
+   }
+   
+   internal void NowConfirm()
+   {
+      SetCurrentValue(TimeProperty, DateTime.Now.TimeOfDay);
       base.OnConfirmed();
    }
 

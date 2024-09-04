@@ -15,7 +15,8 @@ public class TimePickerFlyoutPresenter : FlyoutPresenter
    private TimePickerPresenter? _timePickerPresenter;
    private IDisposable? _disposable;
    private Button? _confirmButton;
-
+   private Button? _nowButton;
+   
    public TimePickerFlyoutPresenter(TimePicker timePicker)
    {
       TimePickerRef = timePicker;
@@ -27,6 +28,7 @@ public class TimePickerFlyoutPresenter : FlyoutPresenter
       base.OnApplyTemplate(e);
       _timePickerPresenter = e.NameScope.Get<TimePickerPresenter>(TimePickerFlyoutPresenterTheme.ContentPresenterPart);
       _confirmButton = e.NameScope.Get<Button>(TimePickerFlyoutPresenterTheme.ConfirmButtonPart);
+      _nowButton = e.NameScope.Get<Button>(TimePickerFlyoutPresenterTheme.NowButtonPart);
       if (_timePickerPresenter is not null) {
          _timePickerPresenter.Confirmed += (sender, args) =>
          {
@@ -37,6 +39,16 @@ public class TimePickerFlyoutPresenter : FlyoutPresenter
       if (_confirmButton is not null) {
          _confirmButton.Click += HandleConfirmButtonClicked;
       }
+
+      if (_nowButton is not null) {
+         _nowButton.Click += HandleNowButtonClicked;
+      }
+   }
+   
+   private void HandleNowButtonClicked(object? sender, RoutedEventArgs args)
+   {
+      _timePickerPresenter?.NowConfirm();
+      TimePickerRef.ClosePickerFlyout();
    }
 
    private void HandleConfirmButtonClicked(object? sender, RoutedEventArgs args)

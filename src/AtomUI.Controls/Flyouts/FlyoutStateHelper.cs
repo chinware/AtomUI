@@ -62,6 +62,7 @@ internal class FlyoutStateHelper : AvaloniaObject
    public event EventHandler<EventArgs>? FlyoutAboutToShow;
 
    public Func<Point, bool>? OpenFlyoutPredicate;
+   public Func<IPopupHostProvider, RawPointerEventArgs, bool>? ClickHideFlyoutPredicate;
 
    private DispatcherTimer? _mouseEnterDelayTimer;
    private DispatcherTimer? _mouseLeaveDelayTimer;
@@ -258,9 +259,16 @@ internal class FlyoutStateHelper : AvaloniaObject
                   }
                }
             } else {
+              
                if (Flyout is IPopupHostProvider popupHostProvider) {
-                  if (popupHostProvider.PopupHost != pointerEventArgs.Root) {
-                     HideFlyout();
+                  if (ClickHideFlyoutPredicate is not null) {
+                     if (ClickHideFlyoutPredicate(popupHostProvider, pointerEventArgs)) {
+                        HideFlyout();
+                     }
+                  } else {
+                     if (popupHostProvider.PopupHost != pointerEventArgs.Root) {
+                        HideFlyout();
+                     }
                   }
                }
             }
