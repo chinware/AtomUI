@@ -28,36 +28,21 @@ public class TimePicker : LineEdit
    public static readonly StyledProperty<PlacementMode> PickerPlacementProperty =
       AvaloniaProperty.Register<TimePicker, PlacementMode>(nameof(PickerPlacement), defaultValue: PlacementMode.BottomEdgeAlignedLeft);
    
-   /// <summary>
-   /// 是否显示指示箭头
-   /// </summary>
    public static readonly StyledProperty<bool> IsShowArrowProperty =
       ArrowDecoratedBox.IsShowArrowProperty.AddOwner<TimePicker>();
-
-   /// <summary>
-   /// 箭头是否始终指向中心
-   /// </summary>
+   
    public static readonly StyledProperty<bool> IsPointAtCenterProperty =
       Flyout.IsPointAtCenterProperty.AddOwner<TimePicker>();
    
-   /// <summary>
-   /// Defines the <see cref="MinuteIncrement"/> property
-   /// </summary>
    public static readonly StyledProperty<int> MinuteIncrementProperty =
       AvaloniaProperty.Register<TimePicker, int>(nameof(MinuteIncrement), 1, coerce: CoerceMinuteIncrement);
 
    public static readonly StyledProperty<int> SecondIncrementProperty =
       AvaloniaProperty.Register<TimePicker, int>(nameof(SecondIncrement), 1, coerce: CoerceSecondIncrement);
-
-   /// <summary>
-   /// Defines the <see cref="ClockIdentifier"/> property
-   /// </summary>
+   
    public static readonly StyledProperty<ClockIdentifierType> ClockIdentifierProperty =
       AvaloniaProperty.Register<TimePicker, ClockIdentifierType>(nameof(ClockIdentifier), ClockIdentifierType.HourClock12);
 
-   /// <summary>
-   /// Defines the <see cref="SelectedTime"/> property
-   /// </summary>
    public static readonly StyledProperty<TimeSpan?> SelectedTimeProperty =
       AvaloniaProperty.Register<TimePicker, TimeSpan?>(nameof(SelectedTime),
                                                        defaultBindingMode: BindingMode.TwoWay,
@@ -76,9 +61,6 @@ public class TimePicker : LineEdit
    public static readonly StyledProperty<int> MouseLeaveDelayProperty =
       FlyoutStateHelper.MouseLeaveDelayProperty.AddOwner<TimePicker>();
    
-   /// <summary>
-   /// Gets or sets the desired placement of the popup in relation to the <see cref="PlacementTarget"/>.
-   /// </summary>
    public PlacementMode PickerPlacement
    {
       get => GetValue(PickerPlacementProperty);
@@ -97,9 +79,6 @@ public class TimePicker : LineEdit
       set => SetValue(IsPointAtCenterProperty, value);
    }
    
-   /// <summary>
-   /// Gets or sets the minute increment in the picker
-   /// </summary>
    public int MinuteIncrement
    {
       get => GetValue(MinuteIncrementProperty);
@@ -111,19 +90,13 @@ public class TimePicker : LineEdit
       get => GetValue(SecondIncrementProperty);
       set => SetValue(SecondIncrementProperty, value);
    }
-
-   /// <summary>
-   /// Gets or sets the clock identifier, either 12HourClock or 24HourClock
-   /// </summary>
+   
    public ClockIdentifierType ClockIdentifier
    {
       get => GetValue(ClockIdentifierProperty);
       set => SetValue(ClockIdentifierProperty, value);
    }
-
-   /// <summary>
-   /// Gets or sets the selected time. Can be null.
-   /// </summary>
+   
    public TimeSpan? SelectedTime
    {
       get => GetValue(SelectedTimeProperty);
@@ -310,6 +283,14 @@ public class TimePicker : LineEdit
          _clearUpButtonDetectDisposable = inputManager.Process.Subscribe(DetectClearUpButtonState);
       }
    }
+   
+   protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+   {
+      base.OnDetachedFromVisualTree(e);
+      _flyoutStateHelper.NotifyDetachedFromVisualTree();
+      _clearUpButtonDetectDisposable?.Dispose();
+      _clearUpButtonDetectDisposable = null;
+   }
 
    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
    {
@@ -356,14 +337,6 @@ public class TimePicker : LineEdit
          }
       }
    }
-
-   protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-   {
-      base.OnDetachedFromVisualTree(e);
-      _flyoutStateHelper.NotifyDetachedFromVisualTree();
-      _clearUpButtonDetectDisposable?.Dispose();
-      _clearUpButtonDetectDisposable = null;
-   }
    
    private static int CoerceMinuteIncrement(AvaloniaObject sender, int value)
    {
@@ -382,9 +355,9 @@ public class TimePicker : LineEdit
       return value;
    }
    
-   internal void NotifyTemporaryTimeSelected(TimeSpan selected)
+   internal void NotifyTemporaryTimeSelected(TimeSpan value)
    {
-      Text = DateTimeUtils.FormatTimeSpan(selected, ClockIdentifier == ClockIdentifierType.HourClock12);
+      Text = DateTimeUtils.FormatTimeSpan(value, ClockIdentifier == ClockIdentifierType.HourClock12);
    }
    
    internal void NotifyConfirmed(TimeSpan value)

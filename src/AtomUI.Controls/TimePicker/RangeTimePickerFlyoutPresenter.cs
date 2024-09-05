@@ -1,4 +1,5 @@
-﻿using Avalonia;
+﻿using System.Reactive.Disposables;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
@@ -49,7 +50,7 @@ internal class RangeTimePickerFlyoutPresenter : FlyoutPresenter
    internal RangeTimePicker TimePickerRef { get; set; }
 
    private TimePickerPresenter? _timePickerPresenter;
-   private IDisposable? _disposable;
+   private CompositeDisposable? _compositeDisposable;
    private Button? _confirmButton;
    private Button? _nowButton;
    
@@ -71,9 +72,8 @@ internal class RangeTimePickerFlyoutPresenter : FlyoutPresenter
          {
             TimePickerRef.NotifyConfirmed(_timePickerPresenter.Time);
          };
-         // if (TimePickerRef.DefaultTime is not null) {
-         //    _timePickerPresenter.Time = TimePickerRef.DefaultTime.Value;
-         // }
+
+         SetupTime();
       }
 
       if (_confirmButton is not null) {
@@ -82,6 +82,20 @@ internal class RangeTimePickerFlyoutPresenter : FlyoutPresenter
 
       if (_nowButton is not null) {
          _nowButton.Click += HandleNowButtonClicked;
+      }
+   }
+
+   private void SetupTime()
+   {
+      if (TimePickerRef.RangeActivatedPart == RangeActivatedPart.Start) {
+         if (TimePickerRef.RangeStartSelectedTime is not null) {
+            _timePickerPresenter!.Time = TimePickerRef.RangeStartSelectedTime.Value;
+     
+         }
+      } else if (TimePickerRef.RangeActivatedPart == RangeActivatedPart.End) {
+         if (TimePickerRef.RangeEndSelectedTime is not null) {
+            _timePickerPresenter!.Time = TimePickerRef.RangeEndSelectedTime.Value;
+         }
       }
    }
    
@@ -94,24 +108,43 @@ internal class RangeTimePickerFlyoutPresenter : FlyoutPresenter
    private void HandleConfirmButtonClicked(object? sender, RoutedEventArgs args)
    {
       _timePickerPresenter?.Confirm();
-      TimePickerRef.PickerPlacement = PlacementMode.BottomEdgeAlignedRight;
-      // TimePickerRef.ClosePickerFlyout();
+      if (TimePickerRef.RangeActivatedPart == RangeActivatedPart.Start) {
+         if (TimePickerRef.RangeEndSelectedTime is null) {
+            TimePickerRef.RangeActivatedPart = RangeActivatedPart.End;
+            return;
+         }
+      } else if (TimePickerRef.RangeActivatedPart == RangeActivatedPart.End) {
+         if (TimePickerRef.RangeStartSelectedTime is null) {
+            TimePickerRef.RangeActivatedPart = RangeActivatedPart.Start;
+            return;
+         }
+      }
+      TimePickerRef.ClosePickerFlyout();
    }
    
    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
    {
       base.OnAttachedToVisualTree(e);
+      _compositeDisposable = new CompositeDisposable();
       if (_timePickerPresenter is not null) {
-         _disposable = TimePickerPresenter.TemporaryTimeProperty.Changed.Subscribe(args =>
+         _compositeDisposable.Add(TimePickerPresenter.TemporaryTimeProperty.Changed.Subscribe(args =>
          {
             TimePickerRef.NotifyTemporaryTimeSelected(args.GetNewValue<TimeSpan>());
-         });
+         }));
       }
+      _compositeDisposable.Add(RangeTimePicker.RangeActivatedPartProperty.Changed.Subscribe(HandleRangeActivatedPartChanged));
+      SetupTime();
+   }
+
+   private void HandleRangeActivatedPartChanged(AvaloniaPropertyChangedEventArgs args)
+   {
+      SetupTime();
    }
 
    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
    {
       base.OnDetachedFromVisualTree(e);
-      _disposable?.Dispose();
+      _compositeDisposable?.Dispose();
+      _compositeDisposable = null;
    }
 }

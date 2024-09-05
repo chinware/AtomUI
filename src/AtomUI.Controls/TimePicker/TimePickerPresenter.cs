@@ -144,6 +144,7 @@ public class TimePickerPresenter : PickerPresenterBase
       TokenResourceBinder.CreateGlobalTokenBinding(this, SpacerThicknessProperty, GlobalTokenResourceKey.LineWidth,
                                                    BindingPriority.Template,
                                                    new RenderScaleAwareDoubleConfigure(this));
+      InitPicker();
    }
 
    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -176,8 +177,6 @@ public class TimePickerPresenter : PickerPresenterBase
       }
       
       _spacer3 = e.NameScope.Get<Rectangle>(TimePickerPresenterTheme.ThirdSpacerPart);
-      
-      InitPicker();
    }
 
    private void HandleSelectionChanged(object? sender, EventArgs args)
@@ -295,7 +294,5 @@ public class TimePickerPresenter : PickerPresenterBase
       
       _spacer3!.IsVisible = !use24HourClock;
       _periodHost!.IsVisible = !use24HourClock;
-
-      _hourSelector?.Focus(NavigationMethod.Pointer);
    }
 }

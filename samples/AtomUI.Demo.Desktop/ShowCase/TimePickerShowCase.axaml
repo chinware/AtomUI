@@ -66,18 +66,31 @@
             Title="Variants"
             Description="Bordered-less style component.">
             <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:TimePicker Watermark="Filled"
-                                 Width="160" 
-                                 StyleVariant="Filled"
-                />
-                <atom:TimePicker Watermark="Select time"
-                                 Width="160" 
-                                 StyleVariant="Outline"
-                />
-                <atom:TimePicker Watermark="Select time"
-                                 Width="160" 
-                                 StyleVariant="Borderless"
-                />
+                <StackPanel Orientation="Horizontal" Spacing="5">
+                    <atom:TimePicker Watermark="Outline"
+                                     Width="160" 
+                                     StyleVariant="Outline"
+                    />
+                    <atom:RangeTimePicker Width="320"
+                                          StyleVariant="Outline"
+                                          RangeStartWatermark="Outline"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="5">
+                    <atom:TimePicker Watermark="Filled"
+                                     Width="160"
+                                     StyleVariant="Filled" />
+                    <atom:RangeTimePicker Width="320"
+                                          StyleVariant="Outline"
+                                          RangeStartWatermark="Filled"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="5">
+                    <atom:TimePicker Watermark="Borderless"
+                                     Width="160"
+                                     StyleVariant="Borderless" />
+                    <atom:RangeTimePicker Width="320"
+                                          StyleVariant="Borderless"
+                                          RangeStartWatermark="Borderless"/>
+                </StackPanel>
             </StackPanel>
         </showcase:ShowCaseItem>
 
@@ -85,16 +98,36 @@
             Title="Status"
             Description="Add status to TimePicker with status, which could be error or warning.">
             <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:TimePicker Width="160"
-                                 Status="Default"
-                                 Watermark="Select time"
-                                 />
-                <atom:TimePicker Width="160"
-                                 Status="Warning"
-                                 Watermark="Select time"/>
-                <atom:TimePicker Width="160"
-                                 Status="Error" 
-                                 Watermark="Select time"/>
+                <StackPanel Orientation="Horizontal" Spacing="5">
+                    <atom:TimePicker Width="160"
+                                     Status="Default"
+                                     Watermark="Select time" />
+                    <atom:RangeTimePicker Width="320"
+                                          StyleVariant="Outline"
+                                          Status="Default"
+                                          RangeStartWatermark="Start time"
+                                          RangeEndWatermark="End time" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="5">
+                    <atom:TimePicker Width="160"
+                                     Status="Warning"
+                                     Watermark="Select time" />
+                    <atom:RangeTimePicker Width="320"
+                                          StyleVariant="Outline"
+                                          Status="Warning"
+                                          RangeStartWatermark="Start time"
+                                          RangeEndWatermark="End time" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="5">
+                    <atom:TimePicker Width="160"
+                                     Status="Error"
+                                     Watermark="Select time" />
+                    <atom:RangeTimePicker Width="320"
+                                          StyleVariant="Outline"
+                                          Status="Error"
+                                          RangeStartWatermark="Start time"
+                                          RangeEndWatermark="End time"/>
+                </StackPanel>
             </StackPanel>
         </showcase:ShowCaseItem>
         

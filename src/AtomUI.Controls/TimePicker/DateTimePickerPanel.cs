@@ -11,6 +11,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Media;
+using Avalonia.Utilities;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
@@ -581,7 +582,7 @@ public class DateTimePickerPanel : Panel, ILogicalScrollable
    {
       var snapY = Math.Round(Offset.Y / ItemHeight) * ItemHeight;
 
-      if (snapY != Offset.Y) {
+      if (!MathUtilities.AreClose(snapY, Offset.Y)) {
          Offset = Offset.WithY(snapY);
       }
    }
