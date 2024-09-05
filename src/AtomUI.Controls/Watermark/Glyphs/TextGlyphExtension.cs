@@ -1,8 +1,14 @@
+using Avalonia.Media;
+
 namespace AtomUI.Controls;
 
 public class TextGlyphExtension : WatermarkGlyphExtension
 {
     private string? Text { get; }
+
+    public double FontSize { get; set; } = 16;
+    
+    public IBrush Foreground { get; set; } = Brushes.Black;
 
     public TextGlyphExtension(string text)
     {
@@ -14,6 +20,8 @@ public class TextGlyphExtension : WatermarkGlyphExtension
         var glyph =  new TextGlyph()
         {
             Text = Text,
+            FontSize = FontSize,
+            Foreground = Foreground,
         };
         
         SetProperties(glyph);

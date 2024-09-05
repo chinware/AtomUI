@@ -13,18 +13,33 @@ public class TextGlyph : WatermarkGlyph
     }
     public static readonly StyledProperty<string?> TextProperty = AvaloniaProperty
         .Register<TextGlyph, string?>(nameof(Text));
+
+    public double FontSize
+    {
+        get => GetValue(FontSizeProperty);
+        set => SetValue(FontSizeProperty, value);
+    }
+    public static readonly StyledProperty<double> FontSizeProperty = AvaloniaProperty
+        .Register<TextGlyph, double>(nameof(FontSize), 16);
+
+    public IBrush Foreground
+    {
+        get => GetValue(ForegroundProperty);
+        set => SetValue(ForegroundProperty, value);
+    }
+    public static readonly StyledProperty<IBrush> ForegroundProperty = AvaloniaProperty
+        .Register<TextGlyph, IBrush>(nameof(Foreground), Brushes.Black);
     
     protected FormattedText? FormattedText { get; private set; }
 
     static TextGlyph()
     {
-        TextProperty.Changed.AddClassHandler<TextGlyph>((glyph, args) =>
-        {
-            glyph.RebuildFormatText();
-        });
+        TextProperty.Changed.AddClassHandler<TextGlyph>((glyph, args) => glyph.RebuildFormatText());
+        FontSizeProperty.Changed.AddClassHandler<TextGlyph>((glyph, args) => glyph.UpdateFormatText());
+        ForegroundProperty.Changed.AddClassHandler<TextGlyph>((glyph, args) => glyph.UpdateFormatText());
     }
 
-    private void RebuildFormatText()
+    protected virtual void RebuildFormatText()
     {
         if (Text == null)
         {
@@ -32,8 +47,27 @@ public class TextGlyph : WatermarkGlyph
             return;
         }
         
-        // TODO Expose properties.
-        FormattedText = new FormattedText(Text, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, Typeface.Default, 15, Brushes.Gray);
+        FormattedText = new FormattedText(
+            Text,
+            CultureInfo.CurrentCulture,
+            FlowDirection.RightToLeft,
+            Typeface.Default,
+            FontSize,
+            Foreground)
+        {
+            TextAlignment = TextAlignment.Center
+        };
+    }
+    
+    private void UpdateFormatText()
+    {
+        if (FormattedText == null)
+        {
+            return;
+        }
+        
+        FormattedText.SetFontSize(FontSize);
+        FormattedText.SetForegroundBrush(Foreground);
     }
 
     public override void Render(DrawingContext context)

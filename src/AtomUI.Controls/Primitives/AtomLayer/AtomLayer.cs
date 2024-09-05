@@ -42,17 +42,7 @@ namespace AtomUI.Controls.Primitives
         {
             var layer = new AtomLayer();
             
-            if (control.IsLoaded == false)
-            {
-                control.Loaded += (sender, args) =>
-                {
-                    InjectCore(control, layer);
-                };
-            }
-            else
-            {
-                InjectCore(control, layer);
-            }
+            InjectCore(control, layer);
 
             return layer;
         }
@@ -97,8 +87,27 @@ namespace AtomUI.Controls.Primitives
             target.DetachedFromVisualTree -= OnTargetOnDetachedFromVisualTree;
             target.AttachedToVisualTree   += OnTargetOnAttachedToVisualTree;
             target.DetachedFromVisualTree += OnTargetOnDetachedFromVisualTree;
+
+            if (target is Control c)
+            {
+                c.SizeChanged -= OnTargetOnSizeChanged;
+                c.SizeChanged += OnTargetOnSizeChanged;
+            }
         }
-        
+
+        private void OnTargetOnSizeChanged(object? sender, SizeChangedEventArgs e)
+        {
+            if (sender is not Visual visual)
+            {
+                return;
+            }
+            foreach (var adorner in GetAdorners(visual))
+            {
+                adorner.InvalidateMeasure();
+                adorner.InvalidateVisual();
+            }
+        }
+
         private void OnTargetOnAttachedToVisualTree(object? sender, VisualTreeAttachmentEventArgs args)
         {
             if (Children.Contains(this))
@@ -118,6 +127,11 @@ namespace AtomUI.Controls.Primitives
         {
             var adorner = this.Children.OfType<T>().FirstOrDefault(a => a.Target == target);
             return adorner;
+        }
+
+        public IEnumerable<Control> GetAdorners(Visual target)
+        {
+            return this.Children.OfType<IAtomAdorner>().Where(c => c.Target == target).OfType<Control>();
         }
     }
 }

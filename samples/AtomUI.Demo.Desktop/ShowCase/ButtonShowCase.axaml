@@ -25,7 +25,6 @@
         </showcase:ShowCaseItem>
 
         <showcase:ShowCaseItem
-            atom:Watermark.Glyph="{atom:TextGlyph 'AtomUI', Space=100, Angle=30, Opacity=0.5, UseMirror=False, UseCross=True}"
             Title="Button Shape"
             Description="Supported button shape display, such as primary, default, dashed and Text, etc.">
             <StackPanel Orientation="Vertical">

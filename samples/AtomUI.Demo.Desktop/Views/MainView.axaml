@@ -159,6 +159,9 @@
             <TabItem Header="Message">
                 <showcases:MessageShowCase />
             </TabItem>
+            <TabItem Header="Watermark">
+                <showcases:WatermarkShowCase />
+            </TabItem>
         </TabControl>
     </Grid>
 

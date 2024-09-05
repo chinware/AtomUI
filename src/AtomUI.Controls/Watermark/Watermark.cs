@@ -43,6 +43,14 @@ public sealed class Watermark : Control, IAtomAdorner
         Target = target;
         Glyph  = glyph;
         Layer  = layer;
+
+        if (glyph != null)
+        {
+            glyph.PropertyChanged += (sender, args) =>
+            {
+                InvalidateVisual();
+            };
+        }
     }
     
     private static void OnGlyphChanged(Visual target, AvaloniaPropertyChangedEventArgs arg)
@@ -127,22 +135,22 @@ public sealed class Watermark : Control, IAtomAdorner
         using (context.PushClip(new Rect(Target.Bounds.Size)))
         using (context.PushOpacity(Glyph.Opacity))
         {
-            var t = 0d;
+            var t = Glyph.VerticalOffset;
             var r = 0;
             while (t < Target.Bounds.Height)
             {
                 var pushState = new DrawingContext.PushedState();
                 if (r % 2 == 1 && Glyph.UseCross)
                 {
-                    pushState = context.PushTransform(Matrix.CreateTranslation((Glyph.Space - size.Width) / 2 + size.Width, 0));
+                    pushState = context.PushTransform(Matrix.CreateTranslation((Glyph.HorizontalSpace - size.Width) / 2 + size.Width, 0));
                 }
                 using (pushState)
                 {
-                    var l = 0d;
+                    var l = Glyph.HorizontalOffset;
                     var c = 0;
                     while (l < Target.Bounds.Width)
                     {
-                        var angle = Glyph.Angle;
+                        var angle = Glyph.Rotate;
                         if (c % 2 == 1 && Glyph.UseMirror)
                         {
                             angle = -angle;
@@ -155,11 +163,11 @@ public sealed class Watermark : Control, IAtomAdorner
                             Glyph.Render(context);
                         }
 
-                        l += size.Width + Glyph.Space;
+                        l += size.Width + Glyph.HorizontalSpace;
                         c++;
                     }
 
-                    t += size.Height + Glyph.Space;
+                    t += size.Height + Glyph.VerticalSpace;
                     r++;
                 }
             }
