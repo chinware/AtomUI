@@ -5,6 +5,7 @@ using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Diagnostics;
+using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Shapes;
 using Avalonia.Data;
@@ -15,8 +16,10 @@ using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
 
+[PseudoClasses(FlyoutOpenPC)]
 public class RangeTimePicker : TemplatedControl
 {
+   private const string FlyoutOpenPC = ":flyout-open";
    #region 公共属性定义
    
    public static readonly StyledProperty<object?> LeftAddOnProperty =
@@ -268,6 +271,7 @@ public class RangeTimePicker : TemplatedControl
    private bool _currentValidSelected;
    private IDisposable? _clearUpButtonDetectDisposable;
    private AddOnDecoratedInnerBox? _rangePickerInner;
+   private bool _isFlyoutOpen;
 
    static RangeTimePicker()
    {
@@ -447,6 +451,16 @@ public class RangeTimePicker : TemplatedControl
       
       if (_pickerFlyout is null) {
          _pickerFlyout = new RangeTimePickerFlyout(this);
+         _pickerFlyout.Opened += (sender, args) =>
+         {
+            _isFlyoutOpen = true;
+            UpdatePseudoClasses();
+         };
+         _pickerFlyout.Closed += (sender, args) =>
+         {
+            _isFlyoutOpen = false;
+            UpdatePseudoClasses();
+         };
          _flyoutStateHelper.Flyout = _pickerFlyout;
       }
       
@@ -664,6 +678,11 @@ public class RangeTimePicker : TemplatedControl
    internal void ClosePickerFlyout()
    {
       _flyoutStateHelper.HideFlyout(true);
+   }
+   
+   protected void UpdatePseudoClasses()
+   {
+      PseudoClasses.Set(FlyoutOpenPC, _isFlyoutOpen);
    }
 }
 

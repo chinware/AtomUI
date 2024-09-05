@@ -5,6 +5,7 @@ using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Diagnostics;
+using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Input;
@@ -20,8 +21,10 @@ public enum ClockIdentifierType
    HourClock24
 };
 
+[PseudoClasses(FlyoutOpenPC)]
 public class TimePicker : LineEdit
 {
+   private const string FlyoutOpenPC = ":flyout-open";
    protected override Type StyleKeyOverride => typeof(LineEdit);
    
    #region 公共属性定义
@@ -135,6 +138,7 @@ public class TimePicker : LineEdit
    private PickerClearUpButton? _pickerClearUpButton;
    private bool _currentValidSelected = false;
    private IDisposable? _clearUpButtonDetectDisposable;
+   private bool _isFlyoutOpen;
 
    static TimePicker()
    {
@@ -245,6 +249,16 @@ public class TimePicker : LineEdit
       }
       if (_pickerFlyout is null) {
          _pickerFlyout = new TimePickerFlyout(this);
+         _pickerFlyout.Opened += (sender, args) =>
+         {
+            _isFlyoutOpen = true;
+            UpdatePseudoClasses();
+         };
+         _pickerFlyout.Closed += (sender, args) =>
+         {
+            _isFlyoutOpen = false;
+            UpdatePseudoClasses();
+         };
          _flyoutStateHelper.Flyout = _pickerFlyout;
       }
       _textBoxInnerBox = e.NameScope.Get<TextBoxInnerBox>(TextBoxTheme.TextBoxInnerBoxPart);
@@ -364,5 +378,10 @@ public class TimePicker : LineEdit
    {
       _currentValidSelected = true;
       SelectedTime = value;
+   }
+   
+   protected void UpdatePseudoClasses()
+   {
+      PseudoClasses.Set(FlyoutOpenPC, _isFlyoutOpen);
    }
 }
