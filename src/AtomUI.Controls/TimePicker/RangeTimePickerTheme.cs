@@ -26,13 +26,18 @@ internal class RangeTimePickerTheme : BaseControlTheme
    
    protected override IControlTemplate BuildControlTemplate()
    {
-      return new FuncControlTemplate<RangeTimePicker>((buttonSpinner, scope) =>
+      return new FuncControlTemplate<RangeTimePicker>((rangeTimePicker, scope) =>
       {
-         var decoratedBox = BuildRangePickerDecoratedBox(buttonSpinner, scope);
-         var innerBox = BuildPickerContent(buttonSpinner, scope);
+         var indicatorLayout = new Panel();
+         var canvas = new Canvas();
+         var decoratedBox = BuildRangePickerDecoratedBox(rangeTimePicker, scope);
+         var innerBox = BuildPickerContent(rangeTimePicker, scope);
+         var pickerIndicator = BuildPickerIndicator(rangeTimePicker, scope);
+         canvas.Children.Add(pickerIndicator);
          decoratedBox.Content = innerBox;
-         innerBox.RegisterInNameScope(scope);
-         return decoratedBox;
+         indicatorLayout.Children.Add(decoratedBox);
+         indicatorLayout.Children.Add(canvas);
+         return indicatorLayout;
       });
    }
    
@@ -52,20 +57,21 @@ internal class RangeTimePickerTheme : BaseControlTheme
       return decoratedBox;
    }
    
-   protected virtual AddOnDecoratedInnerBox BuildPickerContent(RangeTimePicker rangeTimePicker, INameScope scope)
+   private AddOnDecoratedInnerBox BuildPickerContent(RangeTimePicker rangeTimePicker, INameScope scope)
    {
       var rangePickerInnerBox = new AddOnDecoratedInnerBox
       {
          Name = RangePickerInnerPart,
+         HorizontalAlignment = HorizontalAlignment.Stretch,
+         VerticalContentAlignment = VerticalAlignment.Stretch
       };
+      rangePickerInnerBox.RegisterInNameScope(scope);
       CreateTemplateParentBinding(rangePickerInnerBox, ButtonSpinnerInnerBox.LeftAddOnContentProperty, RangeTimePicker.InnerLeftContentProperty);
       CreateTemplateParentBinding(rangePickerInnerBox, ButtonSpinnerInnerBox.RightAddOnContentProperty, RangeTimePicker.InnerRightContentProperty);
       CreateTemplateParentBinding(rangePickerInnerBox, ButtonSpinnerInnerBox.StyleVariantProperty, RangeTimePicker.StyleVariantProperty);
       CreateTemplateParentBinding(rangePickerInnerBox, ButtonSpinnerInnerBox.StatusProperty, RangeTimePicker.StatusProperty);
       CreateTemplateParentBinding(rangePickerInnerBox, ButtonSpinnerInnerBox.SizeTypeProperty, RangeTimePicker.SizeTypeProperty);
 
-      var indicatorLayout = new Panel();
-      
       var rangeLayout = new Grid()
       {
          ColumnDefinitions = new ColumnDefinitions()
@@ -103,17 +109,20 @@ internal class RangeTimePickerTheme : BaseControlTheme
       Grid.SetColumn(arrowIcon, 1);
       Grid.SetColumn(rangeEndTextBox, 2);
       
-      indicatorLayout.Children.Add(rangeLayout);
+      rangePickerInnerBox.Content = rangeLayout;
+      
+      return rangePickerInnerBox;
+   }
 
+   private Rectangle BuildPickerIndicator(RangeTimePicker rangeTimePicker, INameScope scope)
+   {
       var indicator = new Rectangle()
       {
          Name = RangePickerIndicatorPart,
+         Opacity = 0
       };
-      rangeLayout.Children.Add(indicator);
-
-      rangePickerInnerBox.Content = indicatorLayout;
-      
-      return rangePickerInnerBox;
+      indicator.RegisterInNameScope(scope);
+      return indicator;
    }
 
    private TextBox BuildPickerTextBox(string name)
@@ -174,7 +183,6 @@ internal class RangeTimePickerTheme : BaseControlTheme
       {
          var indicatorStyle = new Style(selector => selector.Nesting().Template().Name(RangePickerIndicatorPart));
          indicatorStyle.Add(Rectangle.HeightProperty, TimePickerTokenResourceKey.RangePickerIndicatorThickness);
-      
          commonStyle.Add(indicatorStyle);
       }
       
@@ -186,13 +194,13 @@ internal class RangeTimePickerTheme : BaseControlTheme
       
          defaultStyle.Add(indicatorStyle);
       }
-
+      commonStyle.Add(defaultStyle);
+      
       var errorStyle = new Style(selector => selector.Nesting().PropertyEquals(AddOnDecoratedInnerBox.StatusProperty, AddOnDecoratedStatus.Error));
       
       {
          var indicatorStyle = new Style(selector => selector.Nesting().Template().Name(RangePickerIndicatorPart));
          indicatorStyle.Add(Rectangle.FillProperty, GlobalTokenResourceKey.ColorError);
-      
          errorStyle.Add(indicatorStyle);
       }
       
@@ -203,7 +211,6 @@ internal class RangeTimePickerTheme : BaseControlTheme
       {
          var indicatorStyle = new Style(selector => selector.Nesting().Template().Name(RangePickerIndicatorPart));
          indicatorStyle.Add(Rectangle.FillProperty, GlobalTokenResourceKey.ColorWarning);
-      
          warningStyle.Add(indicatorStyle);
       }
       

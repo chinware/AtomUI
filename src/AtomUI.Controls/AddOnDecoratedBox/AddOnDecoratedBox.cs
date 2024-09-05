@@ -216,9 +216,6 @@ public class AddOnDecoratedBox : ContentControl
    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
    {
       base.OnApplyTemplate(e);
-      TokenResourceBinder.CreateGlobalResourceBinding(this, BorderThicknessProperty, GlobalTokenResourceKey.BorderThickness,
-                                                      BindingPriority.Template,
-                                                      new RenderScaleAwareThicknessConfigure(this));
       _leftAddOnPresenter = e.NameScope.Find<Control>(AddOnDecoratedBoxTheme.LeftAddOnPart);
       _rightAddOnPresenter = e.NameScope.Find<Control>(AddOnDecoratedBoxTheme.RightAddOnPart);
       SetupInnerBoxCornerRadius();
@@ -249,6 +246,14 @@ public class AddOnDecoratedBox : ContentControl
       RightAddOnBorderThickness = new Thickness(top: topThickness, right:rightThickness, bottom:bottomThickness, left: 0);
 
       NotifyAddOnBorderInfoCalculated();
+   }
+
+   protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+   {
+      base.OnAttachedToVisualTree(e);
+      TokenResourceBinder.CreateGlobalResourceBinding(this, BorderThicknessProperty, GlobalTokenResourceKey.BorderThickness,
+                                                      BindingPriority.Template,
+                                                      new RenderScaleAwareThicknessConfigure(this));
    }
 
    protected virtual void NotifyAddOnBorderInfoCalculated()

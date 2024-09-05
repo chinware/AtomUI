@@ -1,8 +1,11 @@
 ﻿using AtomUI.Data;
+using AtomUI.Theme.Utils;
 using Avalonia;
+using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Diagnostics;
 using Avalonia.Controls.Primitives;
+using Avalonia.Controls.Shapes;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Input.Raw;
@@ -234,12 +237,31 @@ public class RangeTimePicker : TemplatedControl
       set => SetAndRaise(RangeActivatedPartProperty, ref _rangeActivatedPart, value);
    }
 
+   internal static readonly StyledProperty<double> PickerIndicatorOffsetXProperty =
+      AvaloniaProperty.Register<RangeTimePicker, double>(nameof(PickerIndicatorOffsetX), Double.NaN);
+
+   internal double PickerIndicatorOffsetX
+   {
+      get => GetValue(PickerIndicatorOffsetXProperty);
+      set => SetValue(PickerIndicatorOffsetXProperty, value);
+   }
+   
+   internal static readonly StyledProperty<double> PickerIndicatorOffsetYProperty =
+      AvaloniaProperty.Register<RangeTimePicker, double>(nameof(PickerIndicatorOffsetY));
+
+   internal double PickerIndicatorOffsetY
+   {
+      get => GetValue(PickerIndicatorOffsetYProperty);
+      set => SetValue(PickerIndicatorOffsetYProperty, value);
+   }
+
    #endregion
 
    private AddOnDecoratedBox? _decoratedBox;
    private PickerClearUpButton? _pickerClearUpButton;
    private readonly FlyoutStateHelper _flyoutStateHelper;
    private RangeTimePickerFlyout? _pickerFlyout;
+   private Rectangle? _rangePickerIndicator;
    private TextBox? _rangeStartTextBox;
    private TextBox? _rangeEndTextBox;
    private bool _currentValidSelected;
@@ -250,6 +272,7 @@ public class RangeTimePicker : TemplatedControl
    {
       HorizontalAlignmentProperty.OverrideDefaultValue<RangeTimePicker>(HorizontalAlignment.Left);
       VerticalAlignmentProperty.OverrideDefaultValue<RangeTimePicker>(VerticalAlignment.Top);
+      AffectsArrange<RangeTimePicker>(PickerIndicatorOffsetXProperty, PickerIndicatorOffsetYProperty);
    }
    
    public RangeTimePicker()
@@ -377,16 +400,23 @@ public class RangeTimePicker : TemplatedControl
    protected override Size ArrangeOverride(Size finalSize)
    {
       var borderThickness = _decoratedBox?.BorderThickness ?? default;
-      return base.ArrangeOverride(finalSize).Inflate(borderThickness);
+      var size = base.ArrangeOverride(finalSize).Inflate(borderThickness);
+      if (_rangePickerIndicator is not null) {
+         Canvas.SetLeft(_rangePickerIndicator, PickerIndicatorOffsetX);
+         Canvas.SetTop(_rangePickerIndicator, PickerIndicatorOffsetY);
+      }
+
+      return size;
    }
 
    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
    {
-      _decoratedBox = e.NameScope.Get<AddOnDecoratedBox>(RangeTimePickerTheme.DecoratedBoxPart);
       base.OnApplyTemplate(e);
+      _decoratedBox = e.NameScope.Get<AddOnDecoratedBox>(RangeTimePickerTheme.DecoratedBoxPart);
       _rangeStartTextBox = e.NameScope.Get<TextBox>(RangeTimePickerTheme.RangeStartTextBoxPart);
       _rangeEndTextBox = e.NameScope.Get<TextBox>(RangeTimePickerTheme.RangeEndTextBoxPart);
-
+      _rangePickerIndicator = e.NameScope.Get<Rectangle>(RangeTimePickerTheme.RangePickerIndicatorPart);
+      
       _rangePickerInner = e.NameScope.Get<AddOnDecoratedInnerBox>(RangeTimePickerTheme.RangePickerInnerPart);
       if (InnerRightContent is null) {
          _pickerClearUpButton = new PickerClearUpButton();
@@ -405,6 +435,45 @@ public class RangeTimePicker : TemplatedControl
       
       _flyoutStateHelper.AnchorTarget = _rangePickerInner;
       SetupFlyoutProperties();
+
+      if (_rangePickerIndicator.Transitions is null) {
+         _rangePickerIndicator.Transitions = new Transitions()
+         {
+            AnimationUtils.CreateTransition<DoubleTransition>(Rectangle.OpacityProperty),
+            AnimationUtils.CreateTransition<DoubleTransition>(Rectangle.OpacityProperty)
+         };
+      }
+
+      if (Transitions is null) {
+         Transitions = new Transitions()
+         {
+            AnimationUtils.CreateTransition<DoubleTransition>(PickerIndicatorOffsetXProperty)
+         };
+      }
+   }
+
+   private void SetupPickerIndicatorPosition()
+   {
+      if (_rangePickerIndicator is null || 
+          _decoratedBox is null || 
+          _rangeStartTextBox is null ||
+          _rangeEndTextBox is null) {
+         return;
+      }
+      
+      if (_rangeActivatedPart == RangeActivatedPart.None) {
+         _rangePickerIndicator.Opacity = 0;
+      } else if (_rangeActivatedPart == RangeActivatedPart.Start) {
+         _rangePickerIndicator.Opacity = 1;
+         _rangePickerIndicator.Width = _rangeStartTextBox.Bounds.Width;
+         var offset = _rangeStartTextBox.TranslatePoint(new Point(0, 0), this) ?? default;
+         PickerIndicatorOffsetX = offset.X;
+      } else if (_rangeActivatedPart == RangeActivatedPart.End) {
+         _rangePickerIndicator.Opacity = 1;
+         _rangePickerIndicator.Width = _rangeEndTextBox.Bounds.Width;
+         var offset = _rangeEndTextBox.TranslatePoint(new Point(0, 0), this) ?? default;
+         PickerIndicatorOffsetX = offset.X;
+      }
    }
    
    protected void SetupFlyoutProperties()
@@ -468,6 +537,22 @@ public class RangeTimePicker : TemplatedControl
       }
    }
 
+   protected override Size MeasureOverride(Size availableSize)
+   {
+      var size = base.MeasureOverride(availableSize);
+      if (_decoratedBox is not null) {
+         PickerIndicatorOffsetY = _decoratedBox.DesiredSize.Height - _rangePickerIndicator!.Height;
+      }
+
+      if (double.IsNaN(PickerIndicatorOffsetX)) {
+         if (_rangeActivatedPart == RangeActivatedPart.None) {
+            var offset = _rangeStartTextBox!.TranslatePoint(new Point(0, 0), this) ?? default;
+            PickerIndicatorOffsetX = offset.X;
+         }
+      }
+      return size;
+   }
+
    private void HandleRangeActivatedPartChanged()
    {
       if (_rangeActivatedPart == RangeActivatedPart.Start) {
@@ -475,6 +560,8 @@ public class RangeTimePicker : TemplatedControl
       } else if (_rangeActivatedPart == RangeActivatedPart.End) {
          PickerPlacement = PlacementMode.BottomEdgeAlignedRight;
       }
+
+      SetupPickerIndicatorPosition();
    }
 
    internal void NotifyConfirmed(TimeSpan value)
