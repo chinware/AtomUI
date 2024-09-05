@@ -21,7 +21,6 @@ internal class RangeTimePickerFlyout : Flyout
       BindUtils.RelayBind(RangeTimePickerRef, RangeTimePicker.MinuteIncrementProperty, presenter, RangeTimePickerFlyoutPresenter.MinuteIncrementProperty);
       BindUtils.RelayBind(RangeTimePickerRef, RangeTimePicker.SecondIncrementProperty, presenter, RangeTimePickerFlyoutPresenter.SecondIncrementProperty);
       BindUtils.RelayBind(RangeTimePickerRef, RangeTimePicker.ClockIdentifierProperty, presenter, RangeTimePickerFlyoutPresenter.ClockIdentifierProperty);
-      
       CalculateShowArrowEffective();
       SetupArrowPosition(Popup, presenter);
       return presenter;

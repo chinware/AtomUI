@@ -143,10 +143,10 @@ public class Flyout : PopupFlyoutBase
             flyoutPresenter = childPresenter;
          }
       }
-
-      var placement = popup.Placement;
-      var anchor = popup.PlacementAnchor;
-      var gravity = popup.PlacementGravity;
+      
+      var placement = Placement;
+      var anchor = PlacementAnchor;
+      var gravity = PlacementGravity;
 
       if (flyoutPresenter is not null) {
          var arrowPosition = PopupUtils.CalculateArrowPosition(placement, anchor, gravity);
@@ -171,10 +171,10 @@ public class Flyout : PopupFlyoutBase
    protected internal override void NotifyPopupCreated(Popup popup)
    {
       base.NotifyPopupCreated(popup);
-      BindUtils.RelayBind(this, PlacementProperty, popup);
-      BindUtils.RelayBind(this, PlacementAnchorProperty, popup);
-      BindUtils.RelayBind(this, PlacementGravityProperty, popup);
-      BindUtils.RelayBind(this, MaskShadowsProperty, popup);
+      BindUtils.RelayBind(this, PlacementProperty, popup, Popup.PlacementProperty);
+      BindUtils.RelayBind(this, PlacementAnchorProperty, popup, Popup.PlacementAnchorProperty);
+      BindUtils.RelayBind(this, PlacementGravityProperty, popup, Popup.PlacementGravityProperty);
+      BindUtils.RelayBind(this, MaskShadowsProperty, popup, Popup.MaskShadowsProperty);
       SetupArrowPosition(popup);
    }
 
@@ -250,6 +250,9 @@ public class Flyout : PopupFlyoutBase
           e.Property == PlacementAnchorProperty ||
           e.Property == PlacementGravityProperty) {
          CalculateShowArrowEffective();
+      }
+      if (e.Property == PlacementProperty) {
+         SetupArrowPosition(Popup);
       }
    }
 
