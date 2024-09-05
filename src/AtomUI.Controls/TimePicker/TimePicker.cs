@@ -159,9 +159,9 @@ public class TimePicker : LineEdit
    private TextBoxInnerBox? _textBoxInnerBox;
    private TimePickerFlyout? _pickerFlyout;
    private readonly FlyoutStateHelper _flyoutStateHelper;
-   private PickerIndicator? _pickerIndicator;
+   private PickerClearUpButton? _pickerClearUpButton;
    private bool _currentValidSelected = false;
-   private IDisposable? _indicatorDetectDisposable;
+   private IDisposable? _clearUpButtonDetectDisposable;
 
    static TimePicker()
    {
@@ -262,13 +262,13 @@ public class TimePicker : LineEdit
    {
       base.OnApplyTemplate(e);
       if (InnerRightContent is null) {
-         _pickerIndicator = new PickerIndicator();
-         _pickerIndicator.ClearRequest += (sender, args) =>
+         _pickerClearUpButton = new PickerClearUpButton();
+         _pickerClearUpButton.ClearRequest += (sender, args) =>
          {
             ResetTimeValue();
             SelectedTime = null;
          };
-         InnerRightContent = _pickerIndicator;
+         InnerRightContent = _pickerClearUpButton;
       }
       if (_pickerFlyout is null) {
          _pickerFlyout = new TimePickerFlyout(this);
@@ -305,9 +305,9 @@ public class TimePicker : LineEdit
    {
       base.OnAttachedToVisualTree(e);
       _flyoutStateHelper.NotifyAttachedToVisualTree();
-      if (_indicatorDetectDisposable is null) {
+      if (_clearUpButtonDetectDisposable is null) {
          var inputManager = AvaloniaLocator.Current.GetService<IInputManager>()!;
-         _indicatorDetectDisposable = inputManager.Process.Subscribe(DetectIndicatorState);
+         _clearUpButtonDetectDisposable = inputManager.Process.Subscribe(DetectClearUpButtonState);
       }
    }
 
@@ -334,7 +334,7 @@ public class TimePicker : LineEdit
       }
    }
 
-   private void DetectIndicatorState(RawInputEventArgs args)
+   private void DetectClearUpButtonState(RawInputEventArgs args)
    {
       if (IsEnabled) {
          if (args is RawPointerEventArgs pointerEventArgs) {
@@ -347,10 +347,10 @@ public class TimePicker : LineEdit
                var bounds = new Rect(pos.Value, _textBoxInnerBox.Bounds.Size);
                if (bounds.Contains(pointerEventArgs.Position)) {
                   if (SelectedTime is not null) {
-                     _pickerIndicator!.IsInClearMode = true;
+                     _pickerClearUpButton!.IsInClearMode = true;
                   }
                } else {
-                  _pickerIndicator!.IsInClearMode = false;
+                  _pickerClearUpButton!.IsInClearMode = false;
                }
             }
          }
@@ -361,8 +361,8 @@ public class TimePicker : LineEdit
    {
       base.OnDetachedFromVisualTree(e);
       _flyoutStateHelper.NotifyDetachedFromVisualTree();
-      _indicatorDetectDisposable?.Dispose();
-      _indicatorDetectDisposable = null;
+      _clearUpButtonDetectDisposable?.Dispose();
+      _clearUpButtonDetectDisposable = null;
    }
    
    private static int CoerceMinuteIncrement(AvaloniaObject sender, int value)
@@ -381,7 +381,7 @@ public class TimePicker : LineEdit
 
       return value;
    }
-
+   
    internal void NotifyTemporaryTimeSelected(TimeSpan selected)
    {
       Text = DateTimeUtils.FormatTimeSpan(selected, ClockIdentifier == ClockIdentifierType.HourClock12);

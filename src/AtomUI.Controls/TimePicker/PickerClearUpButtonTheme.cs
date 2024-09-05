@@ -9,17 +9,17 @@ using Avalonia.Data.Converters;
 namespace AtomUI.Controls;
 
 [ControlThemeProvider]
-internal class PickerIndicatorTheme : BaseControlTheme
+internal class PickerClearUpButtonTheme : BaseControlTheme
 {
    public const string ClearButtonPart = "PART_ClearButton";
    
-   public PickerIndicatorTheme() : base(typeof(PickerIndicator))
+   public PickerClearUpButtonTheme() : base(typeof(PickerClearUpButton))
    {
    }
    
    protected override IControlTemplate BuildControlTemplate()
    {
-      return new FuncControlTemplate<PickerIndicator>((indicator, scope) =>
+      return new FuncControlTemplate<PickerClearUpButton>((indicator, scope) =>
       {
          var container = new Panel();
          BuildClearButton(container, scope);
@@ -39,7 +39,7 @@ internal class PickerIndicatorTheme : BaseControlTheme
       TokenResourceBinder.CreateGlobalTokenBinding(clockIcon, PathIcon.NormalFilledBrushProperty,
                                                    GlobalTokenResourceKey.ColorTextQuaternary);
       CreateTemplateParentBinding(clockIcon, IconButton.IsVisibleProperty,
-                                  PickerIndicator.IsInClearModeProperty, BindingMode.Default,
+                                  PickerClearUpButton.IsInClearModeProperty, BindingMode.Default,
          BoolConverters.Not);
       layout.Children.Add(clockIcon);
    }
@@ -67,7 +67,7 @@ internal class PickerIndicatorTheme : BaseControlTheme
 
       clearButton.RegisterInNameScope(scope);
       CreateTemplateParentBinding(clearButton, IconButton.IsVisibleProperty,
-                                  PickerIndicator.IsInClearModeProperty);
+                                  PickerClearUpButton.IsInClearModeProperty);
       layout.Children.Add(clearButton);
    }
 

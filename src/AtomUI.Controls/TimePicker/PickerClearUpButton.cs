@@ -4,12 +4,12 @@ using Avalonia.Controls.Primitives;
 
 namespace AtomUI.Controls;
 
-internal class PickerIndicator : TemplatedControl
+internal class PickerClearUpButton : TemplatedControl
 {
    public event EventHandler? ClearRequest;
 
    public static readonly StyledProperty<bool> IsInClearModeProperty =
-      AvaloniaProperty.Register<PickerIndicator, bool>(nameof(IsInClearMode));
+      AvaloniaProperty.Register<PickerClearUpButton, bool>(nameof(IsInClearMode));
 
    public bool IsInClearMode
    {
@@ -22,7 +22,7 @@ internal class PickerIndicator : TemplatedControl
    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
    {
       base.OnApplyTemplate(e);
-      _clearButton = e.NameScope.Get<IconButton>(PickerIndicatorTheme.ClearButtonPart);
+      _clearButton = e.NameScope.Get<IconButton>(PickerClearUpButtonTheme.ClearButtonPart);
       if (_clearButton is not null) {
          _clearButton.Click += (sender, args) =>
          {

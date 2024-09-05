@@ -29,7 +29,7 @@ internal class RangeTimePickerTheme : BaseControlTheme
       return new FuncControlTemplate<RangeTimePicker>((buttonSpinner, scope) =>
       {
          var decoratedBox = BuildRangePickerDecoratedBox(buttonSpinner, scope);
-         var innerBox = BuildSpinnerContent(buttonSpinner, scope);
+         var innerBox = BuildPickerContent(buttonSpinner, scope);
          decoratedBox.Content = innerBox;
          innerBox.RegisterInNameScope(scope);
          return decoratedBox;
@@ -52,7 +52,7 @@ internal class RangeTimePickerTheme : BaseControlTheme
       return decoratedBox;
    }
    
-   protected virtual AddOnDecoratedInnerBox BuildSpinnerContent(RangeTimePicker rangeTimePicker, INameScope scope)
+   protected virtual AddOnDecoratedInnerBox BuildPickerContent(RangeTimePicker rangeTimePicker, INameScope scope)
    {
       var rangePickerInnerBox = new AddOnDecoratedInnerBox
       {
