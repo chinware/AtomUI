@@ -96,9 +96,9 @@ PS: AtomUI 目前仅在 Windows 11 平台测试<br>
 |:-----------------------|:-------|
 | Avatar 头像              | 未完成    |
 | Badge 徽标数              | 已完成 ✅  |
-| Calendar 日历            | 未完成    |
+| Calendar 日历            | 进行中 💪 |
 | Card 卡片                | 未完成    |
-| GroupBox 控件            | 已完成 ✅ |
+| GroupBox 控件            | 已完成 ✅  |
 | Carousel 走马灯           | 进行中 💪 |
 | Collapse 折叠面板          | 已完成 ✅  |
 | Expander 折叠面板          | 已完成 ✅  |
@@ -106,7 +106,7 @@ PS: AtomUI 目前仅在 Windows 11 平台测试<br>
 | EmptyIndicator 空状态     | 已完成 ✅  |
 | PathIcon 图标            | 已完成 ✅  |
 | Image 图片               | 未完成    |
-| ListBox 列表             |  已完成 ✅ |
+| ListBox 列表             | 已完成 ✅  |
 | Popover 气泡卡片           | 已完成 ✅  |
 | QRCode 二维码             | 未完成    |
 | Segmented 分段控制器        | 已完成 ✅  |
