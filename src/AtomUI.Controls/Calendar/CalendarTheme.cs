@@ -2,6 +2,7 @@
 using AtomUI.Theme.Styling;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
+using Avalonia.Layout;
 using Avalonia.Styling;
 
 namespace AtomUI.Controls;
@@ -11,6 +12,7 @@ internal class CalendarTheme : BaseControlTheme
 {
    public const string RootPart = "PART_Root";
    public const string CalendarItemPart = "PART_CalendarItem";
+   public const string FramePart = "PART_Frame";
    
    public CalendarTheme()
       : base(typeof(Calendar))
@@ -22,6 +24,17 @@ internal class CalendarTheme : BaseControlTheme
    {
       return new FuncControlTemplate<Calendar>((calendar, scope) =>
       {
+         var frame = new Border()
+         {
+            Name = FramePart
+         };
+         
+         CreateTemplateParentBinding(frame, Border.BorderBrushProperty, Calendar.BorderBrushProperty);
+         CreateTemplateParentBinding(frame, Border.BorderThicknessProperty, Calendar.BorderThicknessProperty);
+         CreateTemplateParentBinding(frame, Border.CornerRadiusProperty, Calendar.CornerRadiusProperty);
+         CreateTemplateParentBinding(frame, Border.BackgroundProperty, Calendar.BackgroundProperty);
+         CreateTemplateParentBinding(frame, Border.PaddingProperty, Calendar.PaddingProperty);
+         
          var rootLayout = new StackPanel()
          {
             Name = RootPart,
@@ -31,16 +44,16 @@ internal class CalendarTheme : BaseControlTheme
 
          var calendarItem = new CalendarItem()
          {
-            Name = CalendarItemPart
+            Name = CalendarItemPart,
+            HorizontalAlignment = HorizontalAlignment.Center
          };
-         calendarItem.RegisterInNameScope(scope);
-         CreateTemplateParentBinding(calendarItem, CalendarItem.BorderBrushProperty, Calendar.BorderBrushProperty);
-         CreateTemplateParentBinding(calendarItem, CalendarItem.BorderThicknessProperty, Calendar.BorderThicknessProperty);
-         CreateTemplateParentBinding(calendarItem, CalendarItem.CornerRadiusProperty, Calendar.CornerRadiusProperty);
-         CreateTemplateParentBinding(calendarItem, CalendarItem.BackgroundProperty, Calendar.BackgroundProperty);
-         rootLayout.Children.Add(calendarItem);
          
-         return rootLayout;
+         calendarItem.RegisterInNameScope(scope);
+
+         rootLayout.Children.Add(calendarItem);
+         frame.Child = rootLayout;
+         
+         return frame;
       });
    }
    
@@ -50,6 +63,7 @@ internal class CalendarTheme : BaseControlTheme
       commonStyle.Add(Calendar.BorderBrushProperty, GlobalTokenResourceKey.ColorBorder);
       commonStyle.Add(Calendar.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadius);
       commonStyle.Add(Calendar.BackgroundProperty, GlobalTokenResourceKey.ColorBgContainer);
+      commonStyle.Add(Calendar.PaddingProperty, CalendarTokenResourceKey.PanelContentPadding);
       Add(commonStyle);
    }
 }

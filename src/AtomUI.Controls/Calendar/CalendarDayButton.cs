@@ -1,20 +1,28 @@
 ﻿using System.Globalization;
+using AtomUI.Media;
+using AtomUI.Theme.Data;
+using AtomUI.Theme.Styling;
+using AtomUI.Theme.Utils;
+using AtomUI.Utils;
+using Avalonia;
+using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
+using Avalonia.Data;
 using Avalonia.Input;
 using AvaloniaButton = Avalonia.Controls.Button;
 
 namespace AtomUI.Controls;
 
-[PseudoClasses(StdPseudoClass.Pressed, StdPseudoClass.Disabled, StdPseudoClass.Selected, InactivePC, TodayPC, BlackoutPC, DayfocusedPC)]
+[PseudoClasses(StdPseudoClass.Pressed, StdPseudoClass.Disabled, StdPseudoClass.Selected, StdPseudoClass.InActive,
+               TodayPC, BlackoutPC, DayfocusedPC)]
 internal sealed class CalendarDayButton : AvaloniaButton
 {
-   private const string InactivePC = ":inactive";
-   private const string TodayPC = ":today";
-   private const string BlackoutPC = ":blackout";
-   private const string DayfocusedPC = ":dayfocused";
-   
+   internal const string TodayPC = ":today";
+   internal const string BlackoutPC = ":blackout";
+   internal const string DayfocusedPC = ":dayfocused";
+
    /// <summary>
    /// Default content for the CalendarDayButton.
    /// </summary>
@@ -152,6 +160,12 @@ internal sealed class CalendarDayButton : AvaloniaButton
    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
    {
       SetPseudoClasses();
+      if (Transitions is null) {
+         Transitions = new Transitions()
+         {
+            AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty, GlobalTokenResourceKey.MotionDurationFast)
+         };
+      }
    }
 
    private void SetPseudoClasses()
@@ -162,7 +176,7 @@ internal sealed class CalendarDayButton : AvaloniaButton
       }
 
       PseudoClasses.Set(StdPseudoClass.Selected, IsSelected);
-      PseudoClasses.Set(InactivePC, IsInactive);
+      PseudoClasses.Set(StdPseudoClass.InActive, IsInactive);
       PseudoClasses.Set(TodayPC, IsToday);
       PseudoClasses.Set(BlackoutPC, IsBlackout);
       PseudoClasses.Set(DayfocusedPC, IsCurrent && IsEnabled);
@@ -229,5 +243,12 @@ internal sealed class CalendarDayButton : AvaloniaButton
       base.OnPointerReleased(e);
 
       if (e.InitialPressMouseButton == MouseButton.Left) CalendarDayButtonMouseUp?.Invoke(this, e);
+   }
+
+   protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+   {
+      base.OnAttachedToVisualTree(e);
+      TokenResourceBinder.CreateGlobalTokenBinding(this, BorderThicknessProperty, GlobalTokenResourceKey.BorderThickness, BindingPriority.Template,
+         new RenderScaleAwareThicknessConfigure(this));
    }
 }

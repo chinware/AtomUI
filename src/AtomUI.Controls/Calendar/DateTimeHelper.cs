@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Globalization;
+using AtomUI.Theme;
 
 namespace AtomUI.Controls;
 
@@ -67,14 +68,15 @@ internal static class DateTimeHelper
 
    public static DateTimeFormatInfo GetCurrentDateFormat()
    {
-      if (CultureInfo.CurrentCulture.Calendar is GregorianCalendar) {
-         return CultureInfo.CurrentCulture.DateTimeFormat;
+      var culture = ThemeManager.Current.CultureInfo ?? CultureInfo.CurrentCulture;
+      if (culture.Calendar is GregorianCalendar) {
+         return culture.DateTimeFormat;
       } else {
-         foreach (System.Globalization.Calendar cal in CultureInfo.CurrentCulture.OptionalCalendars) {
+         foreach (System.Globalization.Calendar cal in culture.OptionalCalendars) {
             if (cal is GregorianCalendar) {
                // if the default calendar is not Gregorian, return the
                // first supported GregorianCalendar dtfi
-               DateTimeFormatInfo dtfi = new CultureInfo(CultureInfo.CurrentCulture.Name).DateTimeFormat;
+               DateTimeFormatInfo dtfi = new CultureInfo(culture.Name).DateTimeFormat;
                dtfi.Calendar = cal;
                return dtfi;
             }

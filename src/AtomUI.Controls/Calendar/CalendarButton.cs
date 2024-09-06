@@ -1,4 +1,8 @@
-﻿using Avalonia.Controls;
+﻿using AtomUI.Media;
+using AtomUI.Theme.Styling;
+using AtomUI.Theme.Utils;
+using Avalonia.Animation;
+using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
@@ -10,9 +14,10 @@ namespace AtomUI.Controls;
 /// Represents a button on a
 /// <see cref="T:Avalonia.Controls.Calendar" />.
 /// </summary>
-[PseudoClasses(":selected", ":inactive", ":btnfocused")]
+[PseudoClasses(StdPseudoClass.Selected, StdPseudoClass.InActive, BtnFocusedPC)]
 internal sealed class CalendarButton : AvaloniaButton
 {
+   private const string BtnFocusedPC = ":btnfocused";
    /// <summary>
    /// A value indicating whether the button is focused.
    /// </summary>
@@ -34,7 +39,6 @@ internal sealed class CalendarButton : AvaloniaButton
    /// class.
    /// </summary>
    public CalendarButton()
-      : base()
    {
       SetCurrentValue(ContentProperty, DateTimeHelper.GetCurrentDateFormat().AbbreviatedMonthNames[0]);
    }
@@ -97,6 +101,12 @@ internal sealed class CalendarButton : AvaloniaButton
    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
    {
       SetPseudoClasses();
+      if (Transitions is null) {
+         Transitions = new Transitions()
+         {
+            AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty, GlobalTokenResourceKey.MotionDurationFast)
+         };
+      }
    }
 
    /// <summary>
@@ -104,9 +114,9 @@ internal sealed class CalendarButton : AvaloniaButton
    /// </summary>
    private void SetPseudoClasses()
    {
-      PseudoClasses.Set(":selected", IsSelected);
-      PseudoClasses.Set(":inactive", IsInactive);
-      PseudoClasses.Set(":btnfocused", IsCalendarButtonFocused && IsEnabled);
+      PseudoClasses.Set(StdPseudoClass.Selected, IsSelected);
+      PseudoClasses.Set(StdPseudoClass.InActive, IsInactive);
+      PseudoClasses.Set(BtnFocusedPC, IsCalendarButtonFocused && IsEnabled);
    }
 
    /// <summary>

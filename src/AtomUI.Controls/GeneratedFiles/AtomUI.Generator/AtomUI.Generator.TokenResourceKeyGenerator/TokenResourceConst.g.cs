@@ -137,8 +137,15 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey CellRangeBorderColor = new TokenResourceKey("Calendar.CellRangeBorderColor", "AtomUI.Token");
         public static readonly TokenResourceKey CellHeight = new TokenResourceKey("Calendar.CellHeight", "AtomUI.Token");
         public static readonly TokenResourceKey CellWidth = new TokenResourceKey("Calendar.CellWidth", "AtomUI.Token");
+        public static readonly TokenResourceKey CellLineHeight = new TokenResourceKey("Calendar.CellLineHeight", "AtomUI.Token");
+        public static readonly TokenResourceKey CellMargin = new TokenResourceKey("Calendar.CellMargin", "AtomUI.Token");
+        public static readonly TokenResourceKey ItemPanelMinWidth = new TokenResourceKey("Calendar.ItemPanelMinWidth", "AtomUI.Token");
+        public static readonly TokenResourceKey ItemPanelMinHeight = new TokenResourceKey("Calendar.ItemPanelMinHeight", "AtomUI.Token");
         public static readonly TokenResourceKey TextHeight = new TokenResourceKey("Calendar.TextHeight", "AtomUI.Token");
+        public static readonly TokenResourceKey PanelContentPadding = new TokenResourceKey("Calendar.PanelContentPadding", "AtomUI.Token");
         public static readonly TokenResourceKey WithoutTimeCellHeight = new TokenResourceKey("Calendar.WithoutTimeCellHeight", "AtomUI.Token");
+        public static readonly TokenResourceKey DayTitleHeight = new TokenResourceKey("Calendar.DayTitleHeight", "AtomUI.Token");
+        public static readonly TokenResourceKey HeaderMargin = new TokenResourceKey("Calendar.HeaderMargin", "AtomUI.Token");
     }
 
     public static class CheckBoxTokenResourceKey

@@ -18,8 +18,11 @@
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.SplitButtonTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.TextButtonTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.ToggleIconButtonTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.CalendarButtonTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.CalendarDayButtonTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.CalendarItemTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.CalendarTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.HeadTextButtonTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.CheckBoxTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.CollapseItemTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.CollapseTheme());

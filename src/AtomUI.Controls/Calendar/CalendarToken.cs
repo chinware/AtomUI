@@ -1,5 +1,7 @@
 ﻿using AtomUI.Media;
 using AtomUI.Theme.TokenSystem;
+using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Media;
 
 namespace AtomUI.Controls;
@@ -50,14 +52,49 @@ internal class CalendarToken : AbstractControlDesignToken
    public double CellWidth { get; set; }
    
    /// <summary>
+   /// 单元格行高
+   /// </summary>
+   public double CellLineHeight { get; set; }
+   
+   /// <summary>
+   /// 单元格外边距
+   /// </summary>
+   public Thickness CellMargin { get; set; }
+   
+   /// <summary>
+   /// 日历项最小宽度
+   /// </summary>
+   public double ItemPanelMinWidth { get; set; }
+   
+   /// <summary>
+   /// 日历项最小高度
+   /// </summary>
+   public double ItemPanelMinHeight { get; set; }
+   
+   /// <summary>
    /// 单元格文本高度
    /// </summary>
    public double TextHeight { get; set; }
    
    /// <summary>
+   /// 面板内容内边距
+   /// </summary>
+   public Thickness PanelContentPadding { get; set; }
+   
+   /// <summary>
    /// 十年/年/季/月/周单元格高度
    /// </summary>
    public double WithoutTimeCellHeight { get; set; }
+   
+   /// <summary>
+   /// 星期的高度
+   /// </summary>
+   public GridLength DayTitleHeight { get; set; }
+   
+   /// <summary>
+   /// Header 头外边距
+   /// </summary>
+   public Thickness HeaderMargin { get; set; }
    
    internal override void CalculateFromAlias()
    {
@@ -70,9 +107,16 @@ internal class CalendarToken : AbstractControlDesignToken
       CellHoverWithRangeBg = colorPrimary.Lighten(35);
       CellRangeBorderColor = colorPrimary.Lighten(20);
       CellBgDisabled = _globalToken.ColorBgContainerDisabled;
-      CellWidth = _globalToken.HeightToken.ControlHeightSM * 1.5;
+      CellWidth = _globalToken.HeightToken.ControlHeightSM;
       CellHeight = _globalToken.HeightToken.ControlHeightSM;
       TextHeight = _globalToken.HeightToken.ControlHeightLG;
       WithoutTimeCellHeight = _globalToken.HeightToken.ControlHeightLG * 1.65;
+      CellMargin = new Thickness(_globalToken.MarginXXS);
+      PanelContentPadding = new Thickness(_globalToken.PaddingSM);
+      ItemPanelMinWidth = 230;
+      ItemPanelMinHeight = 260;
+      DayTitleHeight = new GridLength(40, GridUnitType.Pixel);
+      HeaderMargin = new Thickness(0, 0, 0, _globalToken.MarginXS);
+      CellLineHeight = CellHeight - 2; // 不知道为啥设置成一样，或者不设置文字有些靠下
    }
 }

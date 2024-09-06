@@ -1,10 +1,11 @@
 ﻿using AtomUI.Theme;
 using AtomUI.Theme.Styling;
+using AtomUI.Utils;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.Styling;
-using AvaloniaButton = Avalonia.Controls.Button;
 
 namespace AtomUI.Controls;
 
@@ -15,6 +16,7 @@ internal class CalendarItemTheme : BaseControlTheme
    public const string ItemRootLayoutPart = "PART_ItemRootLayout";
    public const string MonthViewPart = "PART_MonthView";
    public const string YearViewPart = "PART_YearView";
+   public const string HeaderLayoutPart = "PART_HeaderLayout";
    
    public const string PreviousButtonPart = "PART_PreviousButton";
    public const string HeaderButtonPart = "PART_HeaderButton";
@@ -33,11 +35,6 @@ internal class CalendarItemTheme : BaseControlTheme
          {
             Name = ItemFramePart
          };
-         
-         CreateTemplateParentBinding(frame, Border.BorderBrushProperty, CalendarItem.BorderBrushProperty);
-         CreateTemplateParentBinding(frame, Border.BorderThicknessProperty, CalendarItem.BorderThicknessProperty);
-         CreateTemplateParentBinding(frame, Border.CornerRadiusProperty, CalendarItem.CornerRadiusProperty);
-         CreateTemplateParentBinding(frame, Border.BackgroundProperty, CalendarItem.BackgroundProperty);
 
          var rootLayout = new DockPanel()
          {
@@ -63,6 +60,7 @@ internal class CalendarItemTheme : BaseControlTheme
    {
       var headerLayout = new Grid()
       {
+         Name = HeaderLayoutPart,
          ColumnDefinitions = new ColumnDefinitions()
          {
             new ColumnDefinition(GridLength.Auto),
@@ -70,15 +68,29 @@ internal class CalendarItemTheme : BaseControlTheme
             new ColumnDefinition(GridLength.Auto),
          }
       };
-      var previousButton = new AvaloniaButton()
+      
+      var previousButtonIcon = new PathIcon()
       {
-         Name = PreviousButtonPart
+         Kind = "LeftOutlined"
       };
+      TokenResourceBinder.CreateGlobalTokenBinding(previousButtonIcon, PathIcon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorTextDescription);
+      TokenResourceBinder.CreateGlobalTokenBinding(previousButtonIcon, PathIcon.ActiveFilledBrushProperty, GlobalTokenResourceKey.ColorText);
+      TokenResourceBinder.CreateGlobalTokenBinding(previousButtonIcon, PathIcon.SelectedFilledBrushProperty, GlobalTokenResourceKey.ColorText);
+      
+      var previousButton = new IconButton()
+      {
+         Name = PreviousButtonPart,
+         Icon = previousButtonIcon
+      };
+
+      TokenResourceBinder.CreateGlobalTokenBinding(previousButton, IconButton.IconWidthProperty, GlobalTokenResourceKey.IconSize);
+      TokenResourceBinder.CreateGlobalTokenBinding(previousButton, IconButton.IconHeightProperty, GlobalTokenResourceKey.IconSize);
+      
       previousButton.RegisterInNameScope(scope);
       Grid.SetColumn(previousButton, 0);
       headerLayout.Children.Add(previousButton);
       
-      var headerButton = new AvaloniaButton()
+      var headerButton = new HeadTextButton()
       {
          Name = HeaderButtonPart
       };
@@ -86,10 +98,22 @@ internal class CalendarItemTheme : BaseControlTheme
       headerButton.RegisterInNameScope(scope);
       headerLayout.Children.Add(headerButton);
       
-      var nextButton = new AvaloniaButton()
+      var nextButtonIcon = new PathIcon()
       {
-         Name = NextButtonPart
+         Kind = "RightOutlined"
       };
+      TokenResourceBinder.CreateGlobalTokenBinding(nextButtonIcon, PathIcon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorTextDescription);
+      TokenResourceBinder.CreateGlobalTokenBinding(nextButtonIcon, PathIcon.ActiveFilledBrushProperty, GlobalTokenResourceKey.ColorText);
+      TokenResourceBinder.CreateGlobalTokenBinding(nextButtonIcon, PathIcon.SelectedFilledBrushProperty, GlobalTokenResourceKey.ColorText);
+      
+      var nextButton = new IconButton()
+      {
+         Name = NextButtonPart,
+         Icon = nextButtonIcon
+      };
+      TokenResourceBinder.CreateGlobalTokenBinding(nextButton, IconButton.IconWidthProperty, GlobalTokenResourceKey.IconSize);
+      TokenResourceBinder.CreateGlobalTokenBinding(nextButton, IconButton.IconHeightProperty, GlobalTokenResourceKey.IconSize);
+      
       Grid.SetColumn(nextButton, 2);
       nextButton.RegisterInNameScope(scope);
       headerLayout.Children.Add(nextButton);
@@ -99,6 +123,9 @@ internal class CalendarItemTheme : BaseControlTheme
 
    private void BuildContentView(DockPanel layout, INameScope scope)
    {
+      var dayTitleRowDef = new RowDefinition();
+      TokenResourceBinder.CreateTokenBinding(dayTitleRowDef, RowDefinition.HeightProperty, CalendarTokenResourceKey.DayTitleHeight);
+      
       var monthView = new Grid()
       {
          Name = MonthViewPart,
@@ -106,7 +133,7 @@ internal class CalendarItemTheme : BaseControlTheme
          IsVisible = false,
          RowDefinitions = new RowDefinitions()
          {
-            new RowDefinition(30, GridUnitType.Pixel),
+            dayTitleRowDef,
             new RowDefinition(GridLength.Star),
             new RowDefinition(GridLength.Star),
             new RowDefinition(GridLength.Star),
@@ -153,9 +180,15 @@ internal class CalendarItemTheme : BaseControlTheme
    protected override void BuildStyles()
    {
       var commonStyle = new Style(selector => selector.Nesting());
-      commonStyle.Add(CalendarItem.BorderBrushProperty, GlobalTokenResourceKey.ColorBorder);
-      commonStyle.Add(CalendarItem.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadius);
-      commonStyle.Add(CalendarItem.BackgroundProperty, GlobalTokenResourceKey.ColorBgContainer);
+
+      commonStyle.Add(CalendarItem.MinWidthProperty, CalendarTokenResourceKey.ItemPanelMinWidth);
+      commonStyle.Add(CalendarItem.MinHeightProperty, CalendarTokenResourceKey.ItemPanelMinHeight);
+
+      var headerLayoutStyle = new Style(selector => selector.Nesting().Template().Name(HeaderLayoutPart));
+      headerLayoutStyle.Add(Grid.MarginProperty, CalendarTokenResourceKey.HeaderMargin);
+      
+      commonStyle.Add(headerLayoutStyle);
+      
       Add(commonStyle);
    }
 }
@@ -164,7 +197,13 @@ internal class DayTitleTemplate : ITemplate<Control>
 {
    public Control Build()
    {
-      return new TextBlock();
+      var textBlock = new TextBlock()
+      {
+         HorizontalAlignment = HorizontalAlignment.Center,
+         VerticalAlignment = VerticalAlignment.Center
+      };
+      textBlock.Bind(TextBlock.TextProperty, new Binding());
+      return textBlock;
    }
 
    object? ITemplate.Build()

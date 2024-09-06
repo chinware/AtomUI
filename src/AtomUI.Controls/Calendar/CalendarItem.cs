@@ -31,9 +31,9 @@ internal sealed class CalendarItem : TemplatedControl
    /// </summary>
    private const int NumberOfDaysPerWeek = 7;
 
-   private AvaloniaButton? _headerButton;
-   private AvaloniaButton? _nextButton;
-   private AvaloniaButton? _previousButton;
+   private HeadTextButton? _headerButton;
+   private IconButton? _nextButton;
+   private IconButton? _previousButton;
 
    private DateTime _currentMonth;
    private bool _isMouseLeftButtonDown;
@@ -69,7 +69,7 @@ internal sealed class CalendarItem : TemplatedControl
    /// Gets the button that allows switching between month mode, year mode,
    /// and decade mode. 
    /// </summary>
-   internal AvaloniaButton? HeaderButton
+   internal HeadTextButton? HeaderButton
    {
       get => _headerButton;
       private set
@@ -89,7 +89,7 @@ internal sealed class CalendarItem : TemplatedControl
    /// Gets the button that displays the next page of the calendar when it
    /// is clicked.
    /// </summary>
-   internal AvaloniaButton? NextButton
+   internal IconButton? NextButton
    {
       get => _nextButton;
       private set
@@ -118,7 +118,7 @@ internal sealed class CalendarItem : TemplatedControl
    /// Gets the button that displays the previous page of the calendar when
    /// it is clicked.
    /// </summary>
-   internal AvaloniaButton? PreviousButton
+   internal IconButton? PreviousButton
    {
       get => _previousButton;
       private set
@@ -230,9 +230,9 @@ internal sealed class CalendarItem : TemplatedControl
    /// </summary>
    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
    {
-      HeaderButton = e.NameScope.Find<AvaloniaButton>(CalendarItemTheme.HeaderButtonPart);
-      PreviousButton = e.NameScope.Find<AvaloniaButton>(CalendarItemTheme.PreviousButtonPart);
-      NextButton = e.NameScope.Find<AvaloniaButton>(CalendarItemTheme.NextButtonPart);
+      HeaderButton = e.NameScope.Find<HeadTextButton>(CalendarItemTheme.HeaderButtonPart);
+      PreviousButton = e.NameScope.Find<IconButton>(CalendarItemTheme.PreviousButtonPart);
+      NextButton = e.NameScope.Find<IconButton>(CalendarItemTheme.NextButtonPart);
       MonthView = e.NameScope.Find<Grid>(CalendarItemTheme.MonthViewPart);
       YearView = e.NameScope.Find<Grid>(CalendarItemTheme.YearViewPart);
 
