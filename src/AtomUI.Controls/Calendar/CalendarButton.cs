@@ -2,6 +2,7 @@
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
+using AvaloniaButton = Avalonia.Controls.Button;
 
 namespace AtomUI.Controls;
 
@@ -10,7 +11,7 @@ namespace AtomUI.Controls;
 /// <see cref="T:Avalonia.Controls.Calendar" />.
 /// </summary>
 [PseudoClasses(":selected", ":inactive", ":btnfocused")]
-public sealed class CalendarButton : Button
+internal sealed class CalendarButton : AvaloniaButton
 {
    /// <summary>
    /// A value indicating whether the button is focused.

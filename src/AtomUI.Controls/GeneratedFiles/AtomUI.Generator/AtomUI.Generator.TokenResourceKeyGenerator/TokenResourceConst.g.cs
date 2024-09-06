@@ -128,6 +128,19 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey IconOnyPaddingSM = new TokenResourceKey("Button.IconOnyPaddingSM", "AtomUI.Token");
     }
 
+    public static class CalendarTokenResourceKey
+    {
+        public static readonly TokenResourceKey CellHoverBg = new TokenResourceKey("Calendar.CellHoverBg", "AtomUI.Token");
+        public static readonly TokenResourceKey CellActiveWithRangeBg = new TokenResourceKey("Calendar.CellActiveWithRangeBg", "AtomUI.Token");
+        public static readonly TokenResourceKey CellHoverWithRangeBg = new TokenResourceKey("Calendar.CellHoverWithRangeBg", "AtomUI.Token");
+        public static readonly TokenResourceKey CellBgDisabled = new TokenResourceKey("Calendar.CellBgDisabled", "AtomUI.Token");
+        public static readonly TokenResourceKey CellRangeBorderColor = new TokenResourceKey("Calendar.CellRangeBorderColor", "AtomUI.Token");
+        public static readonly TokenResourceKey CellHeight = new TokenResourceKey("Calendar.CellHeight", "AtomUI.Token");
+        public static readonly TokenResourceKey CellWidth = new TokenResourceKey("Calendar.CellWidth", "AtomUI.Token");
+        public static readonly TokenResourceKey TextHeight = new TokenResourceKey("Calendar.TextHeight", "AtomUI.Token");
+        public static readonly TokenResourceKey WithoutTimeCellHeight = new TokenResourceKey("Calendar.WithoutTimeCellHeight", "AtomUI.Token");
+    }
+
     public static class CheckBoxTokenResourceKey
     {
         public static readonly TokenResourceKey CheckIndicatorSize = new TokenResourceKey("CheckBox.CheckIndicatorSize", "AtomUI.Token");

@@ -9,6 +9,7 @@ using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
+using AvaloniaButton = Avalonia.Controls.Button;
 
 namespace AtomUI.Controls;
 
@@ -16,28 +17,23 @@ namespace AtomUI.Controls;
 /// Represents the currently displayed month or year on a
 /// <see cref="T:Avalonia.Controls.Calendar" />.
 /// </summary>
-[TemplatePart(PART_ElementHeaderButton, typeof(Button))]
-[TemplatePart(PART_ElementMonthView, typeof(Grid))]
-[TemplatePart(PART_ElementNextButton, typeof(Button))]
-[TemplatePart(PART_ElementPreviousButton, typeof(Button))]
-[TemplatePart(PART_ElementYearView, typeof(Grid))]
-[PseudoClasses(":calendardisabled")]
-public sealed class CalendarItem : TemplatedControl
+[TemplatePart(CalendarItemTheme.HeaderButtonPart, typeof(AvaloniaButton))]
+[TemplatePart(CalendarItemTheme.MonthViewPart, typeof(Grid))]
+[TemplatePart(CalendarItemTheme.NextButtonPart, typeof(AvaloniaButton))]
+[TemplatePart(CalendarItemTheme.PreviousButtonPart, typeof(AvaloniaButton))]
+[TemplatePart(CalendarItemTheme.YearViewPart, typeof(Grid))]
+[PseudoClasses(CalendarDisabledPC)]
+internal sealed class CalendarItem : TemplatedControl
 {
+   private const string CalendarDisabledPC = ":calendardisabled";
    /// <summary>
    /// The number of days per week.
    /// </summary>
    private const int NumberOfDaysPerWeek = 7;
 
-   private const string PART_ElementHeaderButton = "PART_HeaderButton";
-   private const string PART_ElementPreviousButton = "PART_PreviousButton";
-   private const string PART_ElementNextButton = "PART_NextButton";
-   private const string PART_ElementMonthView = "PART_MonthView";
-   private const string PART_ElementYearView = "PART_YearView";
-
-   private Button? _headerButton;
-   private Button? _nextButton;
-   private Button? _previousButton;
+   private AvaloniaButton? _headerButton;
+   private AvaloniaButton? _nextButton;
+   private AvaloniaButton? _previousButton;
 
    private DateTime _currentMonth;
    private bool _isMouseLeftButtonDown;
@@ -73,7 +69,7 @@ public sealed class CalendarItem : TemplatedControl
    /// Gets the button that allows switching between month mode, year mode,
    /// and decade mode. 
    /// </summary>
-   internal Button? HeaderButton
+   internal AvaloniaButton? HeaderButton
    {
       get => _headerButton;
       private set
@@ -93,7 +89,7 @@ public sealed class CalendarItem : TemplatedControl
    /// Gets the button that displays the next page of the calendar when it
    /// is clicked.
    /// </summary>
-   internal Button? NextButton
+   internal AvaloniaButton? NextButton
    {
       get => _nextButton;
       private set
@@ -122,7 +118,7 @@ public sealed class CalendarItem : TemplatedControl
    /// Gets the button that displays the previous page of the calendar when
    /// it is clicked.
    /// </summary>
-   internal Button? PreviousButton
+   internal AvaloniaButton? PreviousButton
    {
       get => _previousButton;
       private set
@@ -234,11 +230,11 @@ public sealed class CalendarItem : TemplatedControl
    /// </summary>
    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
    {
-      HeaderButton = e.NameScope.Find<Button>(PART_ElementHeaderButton);
-      PreviousButton = e.NameScope.Find<Button>(PART_ElementPreviousButton);
-      NextButton = e.NameScope.Find<Button>(PART_ElementNextButton);
-      MonthView = e.NameScope.Find<Grid>(PART_ElementMonthView);
-      YearView = e.NameScope.Find<Grid>(PART_ElementYearView);
+      HeaderButton = e.NameScope.Find<AvaloniaButton>(CalendarItemTheme.HeaderButtonPart);
+      PreviousButton = e.NameScope.Find<AvaloniaButton>(CalendarItemTheme.PreviousButtonPart);
+      NextButton = e.NameScope.Find<AvaloniaButton>(CalendarItemTheme.NextButtonPart);
+      MonthView = e.NameScope.Find<Grid>(CalendarItemTheme.MonthViewPart);
+      YearView = e.NameScope.Find<Grid>(CalendarItemTheme.YearViewPart);
 
       if (Owner != null) {
          UpdateDisabled(Owner.IsEnabled);
@@ -695,7 +691,7 @@ public sealed class CalendarItem : TemplatedControl
             Owner.Focus();
          }
 
-         Button b = (Button)sender!;
+         AvaloniaButton b = (AvaloniaButton)sender!;
          DateTime d;
 
          if (b.IsEnabled) {
@@ -720,7 +716,7 @@ public sealed class CalendarItem : TemplatedControl
             Owner.Focus();
          }
 
-         Button b = (Button)sender!;
+         AvaloniaButton b = (AvaloniaButton)sender!;
          if (b.IsEnabled) {
             Owner.OnPreviousClick();
          }
@@ -734,7 +730,7 @@ public sealed class CalendarItem : TemplatedControl
             Owner.Focus();
          }
 
-         Button b = (Button)sender!;
+         AvaloniaButton b = (AvaloniaButton)sender!;
 
          if (b.IsEnabled) {
             Owner.OnNextClick();
@@ -990,6 +986,6 @@ public sealed class CalendarItem : TemplatedControl
 
    internal void UpdateDisabled(bool isEnabled)
    {
-      PseudoClasses.Set(":calendardisabled", !isEnabled);
+      PseudoClasses.Set(CalendarDisabledPC, !isEnabled);
    }
 }

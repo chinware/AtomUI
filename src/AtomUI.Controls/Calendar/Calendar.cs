@@ -3,9 +3,11 @@
 // Please see https://go.microsoft.com/fwlink/?LinkID=131993 for details.
 // All other rights reserved.
 
-using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using AtomUI.Theme.Data;
+using AtomUI.Theme.Styling;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -13,6 +15,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Layout;
 using Avalonia.Media;
 
 namespace AtomUI.Controls;
@@ -225,8 +228,8 @@ public class CalendarModeChangedEventArgs : RoutedEventArgs
 /// element in XAML.
 /// </para>
 /// </remarks>
-[TemplatePart(PART_ElementMonth, typeof(CalendarItem))]
-[TemplatePart(PART_ElementRoot, typeof(Panel))]
+[TemplatePart(CalendarTheme.CalendarItemPart, typeof(CalendarItem))]
+[TemplatePart(CalendarTheme.RootPart, typeof(Panel))]
 public class Calendar : TemplatedControl
 {
    internal const int RowsPerMonth = 7;
@@ -1189,7 +1192,6 @@ public class Calendar : TemplatedControl
             if (!LastSelectedDate.HasValue || DateTimeHelper.CompareYearMonth(LastSelectedDate.Value, d.Value) != 0) {
                LastSelectedDate = d.Value;
             }
-
             SetCurrentValue(DisplayDateProperty, d.Value);
          }
       } else {
@@ -1934,10 +1936,9 @@ public class Calendar : TemplatedControl
       BlackoutDates = new CalendarBlackoutDatesCollection(this);
       SelectedDates = new SelectedDatesCollection(this);
       RemovedItems = new Collection<DateTime>();
+      HorizontalAlignmentProperty.OverrideDefaultValue<Calendar>(HorizontalAlignment.Left);
+      VerticalAlignmentProperty.OverrideDefaultValue<Calendar>(VerticalAlignment.Top);
    }
-
-   private const string PART_ElementRoot = "PART_Root";
-   private const string PART_ElementMonth = "PART_CalendarItem";
 
    /// <summary>
    /// Builds the visual tree for the
@@ -1946,17 +1947,25 @@ public class Calendar : TemplatedControl
    /// </summary>
    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
    {
-      Root = e.NameScope.Find<Panel>(PART_ElementRoot);
+      Root = e.NameScope.Find<Panel>(CalendarTheme.RootPart);
 
       SelectedMonth = DisplayDate;
       SelectedYear = DisplayDate;
 
       if (Root != null) {
-         CalendarItem? month = e.NameScope.Find<CalendarItem>(PART_ElementMonth);
+         CalendarItem? month = e.NameScope.Find<CalendarItem>(CalendarTheme.CalendarItemPart);
 
          if (month != null) {
             month.Owner = this;
          }
       }
+   }
+
+   protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+   {
+      base.OnAttachedToVisualTree(e);
+      TokenResourceBinder.CreateGlobalTokenBinding(this, BorderThicknessProperty, GlobalTokenResourceKey.BorderThickness,
+                                                   BindingPriority.Template,
+                                                   new RenderScaleAwareThicknessConfigure(this));
    }
 }

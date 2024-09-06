@@ -3,12 +3,18 @@ using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
+using AvaloniaButton = Avalonia.Controls.Button;
 
 namespace AtomUI.Controls;
 
-[PseudoClasses(":pressed", ":disabled", ":selected", ":inactive", ":today", ":blackout", ":dayfocused")]
-public sealed class CalendarDayButton : Button
+[PseudoClasses(StdPseudoClass.Pressed, StdPseudoClass.Disabled, StdPseudoClass.Selected, InactivePC, TodayPC, BlackoutPC, DayfocusedPC)]
+internal sealed class CalendarDayButton : AvaloniaButton
 {
+   private const string InactivePC = ":inactive";
+   private const string TodayPC = ":today";
+   private const string BlackoutPC = ":blackout";
+   private const string DayfocusedPC = ":dayfocused";
+   
    /// <summary>
    /// Default content for the CalendarDayButton.
    /// </summary>
@@ -27,7 +33,6 @@ public sealed class CalendarDayButton : Button
    /// class.
    /// </summary>
    public CalendarDayButton()
-      : base()
    {
       //Focusable = false;
       SetCurrentValue(ContentProperty, DefaultContent.ToString(CultureInfo.CurrentCulture));
@@ -152,15 +157,15 @@ public sealed class CalendarDayButton : Button
    private void SetPseudoClasses()
    {
       if (_ignoringMouseOverState) {
-         PseudoClasses.Set(":pressed", IsPressed);
-         PseudoClasses.Set(":disabled", !IsEnabled);
+         PseudoClasses.Set(StdPseudoClass.Pressed, IsPressed);
+         PseudoClasses.Set(StdPseudoClass.Disabled, !IsEnabled);
       }
 
-      PseudoClasses.Set(":selected", IsSelected);
-      PseudoClasses.Set(":inactive", IsInactive);
-      PseudoClasses.Set(":today", IsToday);
-      PseudoClasses.Set(":blackout", IsBlackout);
-      PseudoClasses.Set(":dayfocused", IsCurrent && IsEnabled);
+      PseudoClasses.Set(StdPseudoClass.Selected, IsSelected);
+      PseudoClasses.Set(InactivePC, IsInactive);
+      PseudoClasses.Set(TodayPC, IsToday);
+      PseudoClasses.Set(BlackoutPC, IsBlackout);
+      PseudoClasses.Set(DayfocusedPC, IsCurrent && IsEnabled);
    }
 
    /// <summary>
