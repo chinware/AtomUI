@@ -49,13 +49,29 @@ internal class TimelineToken : AbstractControlDesignToken
    /// <summary>
    /// 时间项下间距
    /// </summary>
-   public double ItemPaddingBottom { get; set; }
+   public Thickness ItemPaddingBottom { get; set; }
    
    /// <summary>
-   /// content left margin
+   /// right margin
    /// </summary>
-   public Thickness ContentMargin { get; set; }
-
+   public Thickness RightMargin { get; set; }
+   
+   /// <summary>
+   /// left margin
+   /// </summary>
+   public Thickness LeftMargin { get; set; }
+   
+   /// <summary>
+   /// 最后一个Item的Content最小高度
+   /// </summary>
+   public double LastItemContentMinHeight { get; set; }
+   
+   /// <summary>
+   /// 字体大小
+   /// </summary>
+   public double FontSize { get; set; }
+   
+   
    internal override void CalculateFromAlias()
    {
       base.CalculateFromAlias();
@@ -67,8 +83,14 @@ internal class TimelineToken : AbstractControlDesignToken
          ? _globalToken.StyleToken.LineWidthBold
          : _globalToken.SeedToken.LineWidth * 3;
       DotBg = _globalToken.ColorToken.ColorNeutralToken.ColorBgContainer;
-      ItemPaddingBottom = _globalToken.Padding * 1.25;
+      ItemPaddingBottom = new Thickness(0, 0, 0, _globalToken.Padding * 1.25);
       
-      ContentMargin = new Thickness(_globalToken.Margin, 0, 0, 0);
+      LeftMargin = new Thickness(_globalToken.Margin, 0, 0, 0);
+      RightMargin = new Thickness(0, 0, _globalToken.MarginSM, 0);
+
+      LastItemContentMinHeight = _globalToken.HeightToken.ControlHeightLG * 1.2;
+      FontSize = _globalToken.FontToken.FontSize;
+      
+
    }
 }

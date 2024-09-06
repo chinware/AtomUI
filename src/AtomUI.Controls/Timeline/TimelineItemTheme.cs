@@ -37,12 +37,15 @@ internal class TimelineItemTheme : BaseControlTheme
             var contentIndex = 2;
             var labelTextAlign = HorizontalAlignment.Right;
             var contentTextAlign = HorizontalAlignment.Right;
-            
-            CalculateGridIndex(timelineItem, out labelIndex, out splitIndex, out contentIndex, out labelTextAlign, out contentTextAlign);
-            System.Console.WriteLine("TimelineItem Mode: {0},hasLabel: {1}, index: {2} labelIndex: {3} splitIndex:{4} contentIndex：{5}", timelineItem.Mode, timelineItem.HasLabel, timelineItem.Index,labelIndex,splitIndex,contentIndex);
+
+            CalculateGridIndex(timelineItem, out labelIndex, out splitIndex, out contentIndex, out labelTextAlign,
+                out contentTextAlign);
+            System.Console.WriteLine(
+                "TimelineItem Mode: {0},hasLabel: {1}, index: {2} labelIndex: {3} splitIndex:{4} contentIndex：{5}",
+                timelineItem.Mode, timelineItem.HasLabel, timelineItem.Index, labelIndex, splitIndex, contentIndex);
 
             var columnDefinition = CalculateGridColumn(timelineItem, labelIndex);
-            
+
             var grid = new Grid()
             {
                 Name = GridPart,
@@ -52,7 +55,7 @@ internal class TimelineItemTheme : BaseControlTheme
                     new RowDefinition(GridLength.Star),
                 },
             };
-            
+
             if (timelineItem.HasLabel)
             {
                 var labelBlock = new TextBlock()
@@ -60,18 +63,28 @@ internal class TimelineItemTheme : BaseControlTheme
                     Name = LabelPart,
                     VerticalAlignment = VerticalAlignment.Top,
                     HorizontalAlignment = labelTextAlign,
+                    Margin = new Thickness(0,0,14,0)
                 };
 
                 CreateTemplateParentBinding(labelBlock, TextBlock.TextProperty, TimelineItem.LabelProperty);
-                
+
                 var labelStyle = new Style(selector => selector.Nesting().Template().Name(LabelPart));
-                labelStyle.Add(ContentPresenter.MarginProperty, TimelineTokenResourceKey.ContentMargin);
+                labelStyle.Add(ContentPresenter.FontSizeProperty, TimelineTokenResourceKey.FontSize);
+                // todo 未生效
+                if (labelIndex == 0)
+                {
+                    labelStyle.Add(ContentPresenter.MarginProperty, TimelineTokenResourceKey.RightMargin);
+                }
+                else
+                {
+                    labelStyle.Add(ContentPresenter.MarginProperty, TimelineTokenResourceKey.LeftMargin);
+                }
 
                 Grid.SetColumn(labelBlock, labelIndex);
                 grid.Children.Add(labelBlock);
             }
-            
-            
+
+
             var splitPanel = new DockPanel()
             {
                 Width = 10,
@@ -86,7 +99,7 @@ internal class TimelineItemTheme : BaseControlTheme
                 Name = SplitHeadPart,
             };
             var contentPresenterStyle = new Style(selector => selector.Nesting().Template().Name(SplitHeadPart));
-            
+
             if (timelineItem.Color.StartsWith("#"))
             {
                 try
@@ -97,7 +110,8 @@ internal class TimelineItemTheme : BaseControlTheme
                 }
                 catch (Exception)
                 {
-                    contentPresenterStyle.Add(ContentPresenter.BorderBrushProperty, GlobalTokenResourceKey.ColorPrimary);
+                    contentPresenterStyle.Add(ContentPresenter.BorderBrushProperty,
+                        GlobalTokenResourceKey.ColorPrimary);
                 }
             }
             else
@@ -106,23 +120,28 @@ internal class TimelineItemTheme : BaseControlTheme
                 switch (timelineItem.Color)
                 {
                     case "blue":
-                        contentPresenterStyle.Add(ContentPresenter.BorderBrushProperty, GlobalTokenResourceKey.ColorPrimary);
+                        contentPresenterStyle.Add(ContentPresenter.BorderBrushProperty,
+                            GlobalTokenResourceKey.ColorPrimary);
                         break;
                     case "green":
-                        contentPresenterStyle.Add(ContentPresenter.BorderBrushProperty, GlobalTokenResourceKey.ColorSuccess);
+                        contentPresenterStyle.Add(ContentPresenter.BorderBrushProperty,
+                            GlobalTokenResourceKey.ColorSuccess);
                         break;
                     case "red":
-                        contentPresenterStyle.Add(ContentPresenter.BorderBrushProperty, GlobalTokenResourceKey.ColorError);
+                        contentPresenterStyle.Add(ContentPresenter.BorderBrushProperty,
+                            GlobalTokenResourceKey.ColorError);
                         break;
                     case "gray":
-                        contentPresenterStyle.Add(ContentPresenter.BorderBrushProperty, GlobalTokenResourceKey.ColorTextDisabled);
+                        contentPresenterStyle.Add(ContentPresenter.BorderBrushProperty,
+                            GlobalTokenResourceKey.ColorTextDisabled);
                         break;
                     default:
-                        contentPresenterStyle.Add(ContentPresenter.BorderBrushProperty, GlobalTokenResourceKey.ColorPrimary);
+                        contentPresenterStyle.Add(ContentPresenter.BorderBrushProperty,
+                            GlobalTokenResourceKey.ColorPrimary);
                         break;
-                }   
+                }
             }
-            
+
             contentPresenterStyle.Add(ContentPresenter.BackgroundProperty, TimelineTokenResourceKey.DotBg);
             Add(contentPresenterStyle);
 
@@ -133,10 +152,16 @@ internal class TimelineItemTheme : BaseControlTheme
             {
                 Name = SplitLinePart,
             };
-            contentPresenterStyle = new Style(selector => selector.Nesting().Template().Name(SplitLinePart));
-            contentPresenterStyle.Add(ContentPresenter.BackgroundProperty, TimelineTokenResourceKey.TailColor);
-            contentPresenterStyle.Add(ContentPresenter.WidthProperty, TimelineTokenResourceKey.TailWidth);
-            Add(contentPresenterStyle);
+            var borderStyle = new Style(selector => selector.Nesting().Template().Name(SplitLinePart));
+            borderStyle.Add(ContentPresenter.BackgroundProperty, TimelineTokenResourceKey.TailColor);
+            borderStyle.Add(ContentPresenter.WidthProperty, TimelineTokenResourceKey.TailWidth);
+            borderStyle.Add(ContentPresenter.PaddingProperty, TimelineTokenResourceKey.ItemPaddingBottom);
+            if (timelineItem.IsLast)
+            {
+                borderStyle.Add(ContentPresenter.MinHeightProperty, TimelineTokenResourceKey.LastItemContentMinHeight);
+            }
+
+            Add(borderStyle);
 
             splitPanel.Children.Add(border);
 
@@ -154,7 +179,16 @@ internal class TimelineItemTheme : BaseControlTheme
                 TimelineItem.ContentProperty);
 
             contentPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ItemsPresenterPart));
-            contentPresenterStyle.Add(ContentPresenter.MarginProperty, TimelineTokenResourceKey.ContentMargin);
+            contentPresenterStyle.Add(ContentPresenter.FontSizeProperty, TimelineTokenResourceKey.FontSize);
+            if (contentIndex == 0)
+            {
+                contentPresenterStyle.Add(ContentPresenter.MarginProperty, TimelineTokenResourceKey.RightMargin);
+            }
+            else
+            {
+                contentPresenterStyle.Add(ContentPresenter.MarginProperty, TimelineTokenResourceKey.LeftMargin);
+            }
+
             Add(contentPresenterStyle);
 
             Grid.SetColumn(contentPresenter, contentIndex);
@@ -163,7 +197,8 @@ internal class TimelineItemTheme : BaseControlTheme
         });
     }
 
-    private void CalculateGridIndex(TimelineItem timelineItem, out int labelIndex, out int splitIndex, out int contentIndex, out HorizontalAlignment labelTextAlign, out HorizontalAlignment contentTextAlign)
+    private void CalculateGridIndex(TimelineItem timelineItem, out int labelIndex, out int splitIndex,
+        out int contentIndex, out HorizontalAlignment labelTextAlign, out HorizontalAlignment contentTextAlign)
     {
         labelIndex = 0;
         splitIndex = 1;
@@ -185,7 +220,7 @@ internal class TimelineItemTheme : BaseControlTheme
             contentIndex = 1;
             contentTextAlign = HorizontalAlignment.Left;
         }
-        
+
         if (!timelineItem.HasLabel && timelineItem.Mode == "right")
         {
             splitIndex = 1;
@@ -196,7 +231,6 @@ internal class TimelineItemTheme : BaseControlTheme
 
     private ColumnDefinitions CalculateGridColumn(TimelineItem timelineItem, int labelIndex)
     {
-
         if (timelineItem.HasLabel || timelineItem.Mode == "alternate")
         {
             return new ColumnDefinitions()
@@ -206,6 +240,7 @@ internal class TimelineItemTheme : BaseControlTheme
                 new ColumnDefinition(GridLength.Star)
             };
         }
+
         if (labelIndex == 0)
         {
             return new ColumnDefinitions()
