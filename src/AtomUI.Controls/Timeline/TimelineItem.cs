@@ -12,7 +12,9 @@ public class TimelineItem : ContentControl
     public static readonly StyledProperty<int> IndexProperty = AvaloniaProperty.Register<TimelineItem, int>(nameof(Index), 0);
     public static readonly StyledProperty<string> ModeProperty = AvaloniaProperty.Register<TimelineItem, string>(nameof(Mode), "left");
     public static readonly StyledProperty<string> ColorProperty = AvaloniaProperty.Register<TimelineItem, string>(nameof(Color), "blue");
-    public static readonly StyledProperty<bool> HasLabelProperty = AvaloniaProperty.Register<TimelineItem, bool>(nameof(Color), false);
+    public static readonly StyledProperty<bool> HasLabelProperty = AvaloniaProperty.Register<TimelineItem, bool>(nameof(HasLabel), false);
+    public static readonly StyledProperty<bool> IsLastProperty = AvaloniaProperty.Register<TimelineItem, bool>(nameof(IsLast), false);
+    public static readonly StyledProperty<bool> ReverseProperty = AvaloniaProperty.Register<TimelineItem, bool>(nameof(Reverse), false);
     
     public int Index
     {
@@ -42,5 +44,17 @@ public class TimelineItem : ContentControl
     {
         get => GetValue(HasLabelProperty);
         set => SetValue(HasLabelProperty, value);
+    }
+    
+    public bool IsLast
+    {
+        get => GetValue(IsLastProperty);
+        set => SetValue(IsLastProperty, value);
+    }
+    
+    public bool Reverse
+    {
+        get => GetValue(ReverseProperty);
+        set => SetValue(ReverseProperty, value);
     }
 }

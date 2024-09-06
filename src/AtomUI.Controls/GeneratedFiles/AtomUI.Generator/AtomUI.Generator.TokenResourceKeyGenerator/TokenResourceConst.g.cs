@@ -539,7 +539,10 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey DotBg = new TokenResourceKey("Timeline.DotBg", "AtomUI.Token");
         public static readonly TokenResourceKey ItemBgColor = new TokenResourceKey("Timeline.ItemBgColor", "AtomUI.Token");
         public static readonly TokenResourceKey ItemPaddingBottom = new TokenResourceKey("Timeline.ItemPaddingBottom", "AtomUI.Token");
-        public static readonly TokenResourceKey ContentMargin = new TokenResourceKey("Timeline.ContentMargin", "AtomUI.Token");
+        public static readonly TokenResourceKey RightMargin = new TokenResourceKey("Timeline.RightMargin", "AtomUI.Token");
+        public static readonly TokenResourceKey LeftMargin = new TokenResourceKey("Timeline.LeftMargin", "AtomUI.Token");
+        public static readonly TokenResourceKey LastItemContentMinHeight = new TokenResourceKey("Timeline.LastItemContentMinHeight", "AtomUI.Token");
+        public static readonly TokenResourceKey FontSize = new TokenResourceKey("Timeline.FontSize", "AtomUI.Token");
     }
 
     public static class ToolTipTokenResourceKey

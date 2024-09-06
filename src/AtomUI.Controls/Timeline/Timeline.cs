@@ -3,6 +3,7 @@ using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
+using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
@@ -35,7 +36,11 @@ public class Timeline : ItemsControl
     public bool Reverse
     {
         get => GetValue(ReverseProperty);
-        set => SetValue(ReverseProperty, value);
+        set
+        {
+            SetValue(ReverseProperty, value);
+            // Items.Reverse();
+        }
     }
 
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
@@ -56,7 +61,9 @@ public class Timeline : ItemsControl
         { 
             timelineItem.Index = index;
             timelineItem.Mode = Mode;
+            timelineItem.IsLast = Items.Count - 1 == index;
             BindUtils.RelayBind(this, ModeProperty, timelineItem, TimelineItem.ModeProperty);
+            BindUtils.RelayBind(this, ReverseProperty, timelineItem, TimelineItem.ReverseProperty);
             foreach (var child in Items)
             {
                 if (child is TimelineItem otherItem)

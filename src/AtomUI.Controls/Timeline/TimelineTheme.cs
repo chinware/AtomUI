@@ -28,10 +28,10 @@ internal class TimelineTheme : BaseControlTheme
          {
             Name = FrameDecoratorPart
          };
-         CreateTemplateParentBinding(frameBorder, Border.BackgroundProperty, Timeline.BackgroundProperty);
-         CreateTemplateParentBinding(frameBorder, Border.BorderBrushProperty, Timeline.BorderBrushProperty);
-         CreateTemplateParentBinding(frameBorder, Border.BorderThicknessProperty, Timeline.BorderThicknessProperty);
-         CreateTemplateParentBinding(frameBorder, Border.CornerRadiusProperty, Timeline.CornerRadiusProperty);
+         // CreateTemplateParentBinding(frameBorder, Border.BackgroundProperty, Timeline.BackgroundProperty);
+         // CreateTemplateParentBinding(frameBorder, Border.BorderBrushProperty, Timeline.BorderBrushProperty);
+         // CreateTemplateParentBinding(frameBorder, Border.BorderThicknessProperty, Timeline.BorderThicknessProperty);
+         // CreateTemplateParentBinding(frameBorder, Border.CornerRadiusProperty, Timeline.CornerRadiusProperty);
 
          var itemsPresenter = BuildItemsPresenter(timeline, scope);
          var scrollViewer = BuildScrollViewer(timeline, scope);
