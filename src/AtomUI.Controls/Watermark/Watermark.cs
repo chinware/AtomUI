@@ -9,7 +9,7 @@ using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
-public sealed class Watermark : Control, IAtomAdorner
+public sealed class Watermark : Control
 {
     public static WatermarkGlyph? GetGlyph(Visual element)
     {
@@ -27,8 +27,6 @@ public sealed class Watermark : Control, IAtomAdorner
     public Visual Target { get; }
 
     private WatermarkGlyph? Glyph { get; }
-    
-    private AtomLayer Layer { get; }
 
 
 
@@ -38,11 +36,10 @@ public sealed class Watermark : Control, IAtomAdorner
         GlyphProperty.Changed.AddClassHandler<Visual>(OnGlyphChanged);
     }
 
-    private Watermark(AtomLayer layer, Visual target, WatermarkGlyph? glyph)
+    private Watermark(Visual target, WatermarkGlyph? glyph)
     {
         Target = target;
         Glyph  = glyph;
-        Layer  = layer;
 
         if (glyph != null)
         {
@@ -90,7 +87,7 @@ public sealed class Watermark : Control, IAtomAdorner
             return;
         }
 
-        watermark = new Watermark(layer, target, GetGlyph(target));
+        watermark = new Watermark(target, GetGlyph(target));
         layer.AddAdorner(target ,watermark);
     }
 
@@ -114,24 +111,12 @@ public sealed class Watermark : Control, IAtomAdorner
             return;
         }
 
-        if (CheckLayer(Target, out var layer) == false)
-        {
-            return;
-        }
-
-        var matrix = Target.TransformToVisual(layer);
-        if (matrix == null)
-        {
-            return;
-        }
-
         var size = Glyph.GetDesiredSize();
         if (size.Width == 0 || size.Height == 0)
         {
             return;
         }
         
-        using (context.PushTransform(matrix.Value))
         using (context.PushClip(new Rect(Target.Bounds.Size)))
         using (context.PushOpacity(Glyph.Opacity))
         {

@@ -1,76 +1,60 @@
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Presenters;
-using Avalonia.Layout;
-using Avalonia.VisualTree;
+using Avalonia.Threading;
 
 // ReSharper disable SuggestBaseTypeForParameter
 
 namespace AtomUI.Controls.Primitives
 {
-    public class AtomLayer : Panel
+    public class AtomLayer : Canvas
     {
-        public static Control? GetTarget(Visual element)
-        {
-            return element.GetValue(TargetProperty);
-        }
-        public static void SetTarget(Visual element, Control? value)
-        {
-            element.SetValue(TargetProperty, value);
-        }
-        public static readonly AttachedProperty<Control?> TargetProperty = AvaloniaProperty
-            .RegisterAttached<AtomLayer, Visual, Control?>("Target");
+        #region Static
 
+        public static AtomLayer? GetLayer(Visual target)
+        {
+            return target.GetLayer();
+        }
 
+        public static Visual GetTarget(Control adorner)
+        {
+            return adorner.GetValue(TargetProperty);
+        }
+        private static void SetTarget(Control adorner, Visual value)
+        {
+            adorner.SetValue(TargetProperty, value);
+        }
+        public static readonly AttachedProperty<Visual> TargetProperty = AvaloniaProperty
+            .RegisterAttached<AtomLayer, Control, Visual>("Target");
+
+        public static Rect GetTargetRect(Control adorner)
+        {
+            return adorner.GetValue(TargetRectProperty);
+        }
+        private static void SetTargetRect(Control adorner, Rect value)
+        {
+            adorner.SetValue(TargetRectProperty, value);
+        }
+        public static readonly AttachedProperty<Rect> TargetRectProperty = AvaloniaProperty
+            .RegisterAttached<AtomLayer, Control, Rect>("TargetRect");
         
-        public static AtomLayer? GetLayer(Visual visual)
+        #endregion
+
+
+
+        private readonly IList<WeakReference<Control>> _detachedAdorners = new List<WeakReference<Control>>();
+        
+        internal Visual? ParentHost { get; set; }
+        
+        internal AtomLayer() { }
+        
+        public T? GetAdorner<T>(Visual target) where T : Control
         {
-            var host = visual.FindAncestorOfType<ScrollContentPresenter>(true)?.Content as Control
-                       ?? TopLevel.GetTopLevel(visual);
-            
-            if (host == null)
-            {
-                return null;
-            }
-            
-            var layer = host.GetVisualChildren().FirstOrDefault(c => c is AtomLayer) as AtomLayer;
-            layer ??= TryInject(host);
-            return layer;
+            return this.Children.OfType<T>().FirstOrDefault(a => GetTarget(a) == target);
         }
 
-        private static AtomLayer TryInject(Control control)
+        public IEnumerable<Control> GetAdorners(Visual target)
         {
-            var layer = new AtomLayer();
-            
-            InjectCore(control, layer);
-
-            return layer;
-        }
-
-        private static void InjectCore(Control control, AtomLayer layer)
-        {
-            if (control.GetVisualChildren() is not IList<Visual> visualChildren)
-            {
-                return;
-            }
-            if (visualChildren.Any(c => c is AtomLayer))
-            {
-                return;
-            }
-
-            layer.HorizontalAlignment = HorizontalAlignment.Stretch;
-            layer.VerticalAlignment   = VerticalAlignment.Stretch;
-            layer.InheritanceParent   = control;
-
-            visualChildren.Add(layer);
-            control.InvalidateMeasure();
-        }
-        
-        
-        
-        private AtomLayer()
-        {
-            
+            return this.Children.Where(v => GetTarget(v) == target).ToList();
         }
 
         public void AddAdorner(Visual target, Control adorner)
@@ -80,58 +64,117 @@ namespace AtomUI.Controls.Primitives
                 return;
             }
             
-            SetTarget(target, adorner);
-            Children.Add(adorner);
+            target.PropertyChanged -= TargetOnPropertyChanged;
+            target.PropertyChanged += TargetOnPropertyChanged;
             
             target.AttachedToVisualTree   -= OnTargetOnAttachedToVisualTree;
             target.DetachedFromVisualTree -= OnTargetOnDetachedFromVisualTree;
             target.AttachedToVisualTree   += OnTargetOnAttachedToVisualTree;
             target.DetachedFromVisualTree += OnTargetOnDetachedFromVisualTree;
-
-            if (target is Control c)
-            {
-                c.SizeChanged -= OnTargetOnSizeChanged;
-                c.SizeChanged += OnTargetOnSizeChanged;
-            }
+            
+            SetTarget(adorner, target);
+            Children.Add(adorner);
+            Locate(target, adorner);
         }
 
-        private void OnTargetOnSizeChanged(object? sender, SizeChangedEventArgs e)
+        private void TargetOnPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
         {
-            if (sender is not Visual visual)
+            if (e.Property != BoundsProperty)
             {
                 return;
             }
-            foreach (var adorner in GetAdorners(visual))
+            
+            if (sender is not Visual target)
             {
-                adorner.InvalidateMeasure();
-                adorner.InvalidateVisual();
+                return;
             }
+            
+            // Child element's bounds will be updated first.
+            Dispatcher.UIThread.Post(() =>
+            {
+                foreach (var adorner in GetAdorners(target))
+                {
+                    Locate(target, adorner);
+                }    
+            }, DispatcherPriority.Send);
+        }
+
+        private void Locate(Visual target, Control adorner)
+        {
+            if (this.ParentHost is Control { IsLoaded: false })
+            {
+                this.ParentHost.PropertyChanged -= ParentHostOnPropertyChanged;
+                this.ParentHost.PropertyChanged += ParentHostOnPropertyChanged;
+            }
+            else
+            {
+                LocateCore(target, adorner);
+            }
+
+            return;
+
+            void ParentHostOnPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
+            {
+                this.ParentHost.PropertyChanged -= ParentHostOnPropertyChanged;
+                LocateCore(target, adorner);
+            }
+        }
+
+        private void LocateCore(Visual target, Control adorner)
+        {
+            var matrix = target.TransformToVisual(this)!;
+            var x      = matrix.Value.M31;
+            var y      = matrix.Value.M32;
+            var rect   = new Rect(x, y, target.Bounds.Width, target.Bounds.Height);
+            
+            SetTargetRect(adorner, rect);
+            SetLeft(adorner, x);
+            SetTop(adorner, y);
+            adorner.Width  = target.Bounds.Width;
+            adorner.Height = target.Bounds.Height;
+            
+            adorner.Measure(target.Bounds.Size);
+            adorner.Arrange(rect);
         }
 
         private void OnTargetOnAttachedToVisualTree(object? sender, VisualTreeAttachmentEventArgs args)
         {
-            if (Children.Contains(this))
+            if (sender is not Visual target)
             {
                 return;
             }
 
-            Children.Add(this);
+            var adorners = new List<Control>();
+            for (var i = 0; i < _detachedAdorners.Count; i++)
+            {
+                var w = _detachedAdorners[i];
+                if (w.TryGetTarget(out var t) && Children.Contains(t) == false && GetTarget(t) == target)
+                {
+                    adorners.Add(t);
+                    _detachedAdorners.RemoveAt(i--);
+                }
+            }
+            
+            adorners = adorners.Where(a => Children.Contains(a) == false && GetTarget(a) == target).ToList();
+            foreach (var adorner in adorners)
+            {
+                Children.Add(adorner);   
+            }
         }
         
         private void OnTargetOnDetachedFromVisualTree(object? sender, VisualTreeAttachmentEventArgs args)
         {
-            Children.Remove(this);
-        }
-
-        public Control? GetAdorner<T>(Visual target) where T : Control, IAtomAdorner
-        {
-            var adorner = this.Children.OfType<T>().FirstOrDefault(a => a.Target == target);
-            return adorner;
-        }
-
-        public IEnumerable<Control> GetAdorners(Visual target)
-        {
-            return this.Children.OfType<IAtomAdorner>().Where(c => c.Target == target).OfType<Control>();
+            if (sender is not Visual target)
+            {
+                return;
+            }
+           
+            var adorners = target.GetAdorners();
+            foreach (var adorner in adorners)
+            {
+                Children.Remove(adorner);   
+                _detachedAdorners.Add(new WeakReference<Control>(adorner));
+            }
         }
     }
 }
