@@ -1184,7 +1184,7 @@ public class Calendar : TemplatedControl
       }
    }
 
-   internal void OnPreviousClick()
+   internal void OnPreviousMonthClick()
    {
       if (DisplayMode == CalendarMode.Month) {
          DateTime? d = DateTimeHelper.AddMonths(DateTimeHelper.DiscardDayTime(DisplayDate), -1);
@@ -1194,33 +1194,44 @@ public class Calendar : TemplatedControl
             }
             SetCurrentValue(DisplayDateProperty, d.Value);
          }
-      } else {
-         if (DisplayMode == CalendarMode.Year) {
-            DateTime? d = DateTimeHelper.AddYears(new DateTime(SelectedMonth.Year, 1, 1), -1);
-
-            if (d.HasValue) {
-               SelectedMonth = d.Value;
-            } else {
-               SelectedMonth = DateTimeHelper.DiscardDayTime(DisplayDateRangeStart);
-            }
-         } else {
-            Debug.Assert(DisplayMode == CalendarMode.Decade, "DisplayMode should be Decade!");
-
-            DateTime? d = DateTimeHelper.AddYears(new DateTime(SelectedYear.Year, 1, 1), -10);
-
-            if (d.HasValue) {
-               int decade = Math.Max(1, DateTimeHelper.DecadeOfDate(d.Value));
-               SelectedYear = new DateTime(decade, 1, 1);
-            } else {
-               SelectedYear = DateTimeHelper.DiscardDayTime(DisplayDateRangeStart);
-            }
-         }
-
-         UpdateMonths();
       }
    }
 
-   internal void OnNextClick()
+   internal void OnPreviousClick()
+   {
+      if (DisplayMode == CalendarMode.Month) {
+         DateTime? d = DateTimeHelper.AddYears(DateTimeHelper.DiscardDayTime(DisplayDate), -1);
+         if (d.HasValue) {
+            if (!LastSelectedDate.HasValue || DateTimeHelper.CompareYearMonth(LastSelectedDate.Value, d.Value) != 0) {
+               LastSelectedDate = d.Value;
+            }
+            SetCurrentValue(DisplayDateProperty, d.Value);
+         }
+      } else if (DisplayMode == CalendarMode.Year) {
+         DateTime? d = DateTimeHelper.AddYears(new DateTime(SelectedMonth.Year, 1, 1), -1);
+
+         if (d.HasValue) {
+            SelectedMonth = d.Value;
+         } else {
+            SelectedMonth = DateTimeHelper.DiscardDayTime(DisplayDateRangeStart);
+         }
+      } else if (DisplayMode == CalendarMode.Decade) {
+         Debug.Assert(DisplayMode == CalendarMode.Decade, "DisplayMode should be Decade!");
+
+         DateTime? d = DateTimeHelper.AddYears(new DateTime(SelectedYear.Year, 1, 1), -10);
+
+         if (d.HasValue) {
+            int decade = Math.Max(1, DateTimeHelper.DecadeOfDate(d.Value));
+            SelectedYear = new DateTime(decade, 1, 1);
+         } else {
+            SelectedYear = DateTimeHelper.DiscardDayTime(DisplayDateRangeStart);
+         }
+      }
+
+      UpdateMonths();
+   }
+
+   internal void OnNextMonthClick()
    {
       if (DisplayMode == CalendarMode.Month) {
          DateTime? d = DateTimeHelper.AddMonths(DateTimeHelper.DiscardDayTime(DisplayDate), 1);
@@ -1228,33 +1239,43 @@ public class Calendar : TemplatedControl
             if (!LastSelectedDate.HasValue || DateTimeHelper.CompareYearMonth(LastSelectedDate.Value, d.Value) != 0) {
                LastSelectedDate = d.Value;
             }
-
             SetCurrentValue(DisplayDateProperty, d.Value);
          }
-      } else {
-         if (DisplayMode == CalendarMode.Year) {
-            DateTime? d = DateTimeHelper.AddYears(new DateTime(SelectedMonth.Year, 1, 1), 1);
-
-            if (d.HasValue) {
-               SelectedMonth = d.Value;
-            } else {
-               SelectedMonth = DateTimeHelper.DiscardDayTime(DisplayDateRangeEnd);
-            }
-         } else {
-            Debug.Assert(DisplayMode == CalendarMode.Decade, "DisplayMode should be Decade");
-
-            DateTime? d = DateTimeHelper.AddYears(new DateTime(SelectedYear.Year, 1, 1), 10);
-
-            if (d.HasValue) {
-               int decade = Math.Max(1, DateTimeHelper.DecadeOfDate(d.Value));
-               SelectedYear = new DateTime(decade, 1, 1);
-            } else {
-               SelectedYear = DateTimeHelper.DiscardDayTime(DisplayDateRangeEnd);
-            }
-         }
-
-         UpdateMonths();
       }
+   }
+   
+   internal void OnNextClick()
+   {
+      if (DisplayMode == CalendarMode.Month) {
+         DateTime? d = DateTimeHelper.AddYears(DateTimeHelper.DiscardDayTime(DisplayDate), 1);
+         if (d.HasValue) {
+            if (!LastSelectedDate.HasValue || DateTimeHelper.CompareYearMonth(LastSelectedDate.Value, d.Value) != 0) {
+               LastSelectedDate = d.Value;
+            }
+            SetCurrentValue(DisplayDateProperty, d.Value);
+         }
+      } else if (DisplayMode == CalendarMode.Year) {
+         DateTime? d = DateTimeHelper.AddYears(new DateTime(SelectedMonth.Year, 1, 1), 1);
+
+         if (d.HasValue) {
+            SelectedMonth = d.Value;
+         } else {
+            SelectedMonth = DateTimeHelper.DiscardDayTime(DisplayDateRangeEnd);
+         }
+      } else if (DisplayMode == CalendarMode.Decade) {
+         Debug.Assert(DisplayMode == CalendarMode.Decade, "DisplayMode should be Decade");
+
+         DateTime? d = DateTimeHelper.AddYears(new DateTime(SelectedYear.Year, 1, 1), 10);
+
+         if (d.HasValue) {
+            int decade = Math.Max(1, DateTimeHelper.DecadeOfDate(d.Value));
+            SelectedYear = new DateTime(decade, 1, 1);
+         } else {
+            SelectedYear = DateTimeHelper.DiscardDayTime(DisplayDateRangeEnd);
+         }
+      }
+
+      UpdateMonths();
    }
 
    /// <summary>

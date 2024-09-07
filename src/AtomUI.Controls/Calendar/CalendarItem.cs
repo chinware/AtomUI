@@ -19,8 +19,8 @@ namespace AtomUI.Controls;
 /// </summary>
 [TemplatePart(CalendarItemTheme.HeaderButtonPart, typeof(AvaloniaButton))]
 [TemplatePart(CalendarItemTheme.MonthViewPart, typeof(Grid))]
-[TemplatePart(CalendarItemTheme.NextButtonPart, typeof(AvaloniaButton))]
-[TemplatePart(CalendarItemTheme.PreviousButtonPart, typeof(AvaloniaButton))]
+[TemplatePart(CalendarItemTheme.NextMonthButtonPart, typeof(AvaloniaButton))]
+[TemplatePart(CalendarItemTheme.PreviousMonthButtonPart, typeof(AvaloniaButton))]
 [TemplatePart(CalendarItemTheme.YearViewPart, typeof(Grid))]
 [PseudoClasses(CalendarDisabledPC)]
 internal sealed class CalendarItem : TemplatedControl
@@ -34,6 +34,8 @@ internal sealed class CalendarItem : TemplatedControl
    private HeadTextButton? _headerButton;
    private IconButton? _nextButton;
    private IconButton? _previousButton;
+   private IconButton? _nextMonthButton;
+   private IconButton? _previousMonthButton;
 
    private DateTime _currentMonth;
    private bool _isMouseLeftButtonDown;
@@ -74,12 +76,12 @@ internal sealed class CalendarItem : TemplatedControl
       get => _headerButton;
       private set
       {
-         if (_headerButton != null) _headerButton.Click -= HeaderButton_Click;
+         if (_headerButton != null) _headerButton.Click -= HandleHeaderButtonClick;
 
          _headerButton = value;
 
          if (_headerButton != null) {
-            _headerButton.Click += HeaderButton_Click;
+            _headerButton.Click += HandleHeaderButtonClick;
             _headerButton.Focusable = false;
          }
       }
@@ -94,7 +96,7 @@ internal sealed class CalendarItem : TemplatedControl
       get => _nextButton;
       private set
       {
-         if (_nextButton != null) _nextButton.Click -= NextButton_Click;
+         if (_nextButton != null) _nextButton.Click -= HandleNextButtonClick;
 
          _nextButton = value;
 
@@ -108,8 +110,33 @@ internal sealed class CalendarItem : TemplatedControl
             }
 
             _nextButton.IsVisible = true;
-            _nextButton.Click += NextButton_Click;
+            _nextButton.Click += HandleNextButtonClick;
             _nextButton.Focusable = false;
+         }
+      }
+   }
+   
+   internal IconButton? NextMonthButton
+   {
+      get => _nextMonthButton;
+      private set
+      {
+         if (_nextMonthButton != null) _nextMonthButton.Click -= HandleNextMonthButtonClick;
+
+         _nextMonthButton = value;
+
+         if (_nextMonthButton != null) {
+            // If the user does not provide a Content value in template,
+            // we provide a helper text that can be used in
+            // Accessibility this text is not shown on the UI, just used
+            // for Accessibility purposes
+            if (_nextMonthButton.Content == null) {
+               _nextMonthButton.Content = "next button";
+            }
+
+            _nextMonthButton.IsVisible = true;
+            _nextMonthButton.Click += HandleNextMonthButtonClick;
+            _nextMonthButton.Focusable = false;
          }
       }
    }
@@ -123,7 +150,7 @@ internal sealed class CalendarItem : TemplatedControl
       get => _previousButton;
       private set
       {
-         if (_previousButton != null) _previousButton.Click -= PreviousButton_Click;
+         if (_previousButton != null) _previousButton.Click -= HandlePreviousButtonClick;
 
          _previousButton = value;
 
@@ -137,8 +164,33 @@ internal sealed class CalendarItem : TemplatedControl
             }
 
             _previousButton.IsVisible = true;
-            _previousButton.Click += PreviousButton_Click;
+            _previousButton.Click += HandlePreviousButtonClick;
             _previousButton.Focusable = false;
+         }
+      }
+   }
+   
+   internal IconButton? PreviousMonthButton
+   {
+      get => _previousMonthButton;
+      private set
+      {
+         if (_previousMonthButton != null) _previousMonthButton.Click -= HandlePreviousMonthButtonClick;
+
+         _previousMonthButton = value;
+
+         if (_previousMonthButton != null) {
+            // If the user does not provide a Content value in template,
+            // we provide a helper text that can be used in
+            // Accessibility this text is not shown on the UI, just used
+            // for Accessibility purposes
+            if (_previousMonthButton.Content == null) {
+               _previousMonthButton.Content = "previous button";
+            }
+
+            _previousMonthButton.IsVisible = true;
+            _previousMonthButton.Click += HandlePreviousMonthButtonClick;
+            _previousMonthButton.Focusable = false;
          }
       }
    }
@@ -168,10 +220,10 @@ internal sealed class CalendarItem : TemplatedControl
             }
          }
 
-         EventHandler<PointerPressedEventArgs> cellMouseLeftButtonDown = Cell_MouseLeftButtonDown;
-         EventHandler<PointerReleasedEventArgs> cellMouseLeftButtonUp = Cell_MouseLeftButtonUp;
-         EventHandler<PointerEventArgs> cellMouseEntered = Cell_MouseEntered;
-         EventHandler<RoutedEventArgs> cellClick = Cell_Click;
+         EventHandler<PointerPressedEventArgs> cellMouseLeftButtonDown = HandleCellMouseLeftButtonDown;
+         EventHandler<PointerReleasedEventArgs> cellMouseLeftButtonUp = HandleCellMouseLeftButtonUp;
+         EventHandler<PointerEventArgs> cellMouseEntered = HandleCellMouseEntered;
+         EventHandler<RoutedEventArgs> cellClick = HandleCellClick;
 
          for (int i = 1; i < Calendar.RowsPerMonth; i++) {
             for (int j = 0; j < Calendar.ColumnsPerMonth; j++) {
@@ -198,9 +250,9 @@ internal sealed class CalendarItem : TemplatedControl
          var childCount = Calendar.RowsPerYear * Calendar.ColumnsPerYear;
          using var children = new PooledList<Control>(childCount);
 
-         EventHandler<PointerPressedEventArgs> monthCalendarButtonMouseDown = Month_CalendarButtonMouseDown;
-         EventHandler<PointerReleasedEventArgs> monthCalendarButtonMouseUp = Month_CalendarButtonMouseUp;
-         EventHandler<PointerEventArgs> monthMouseEntered = Month_MouseEntered;
+         EventHandler<PointerPressedEventArgs> monthCalendarButtonMouseDown = HandleMonthCalendarButtonMouseDown;
+         EventHandler<PointerReleasedEventArgs> monthCalendarButtonMouseUp = HandleMonthCalendarButtonMouseUp;
+         EventHandler<PointerEventArgs> monthMouseEntered = HandleMonthMouseEntered;
 
          for (int i = 0; i < Calendar.RowsPerYear; i++) {
             for (int j = 0; j < Calendar.ColumnsPerYear; j++) {
@@ -232,7 +284,9 @@ internal sealed class CalendarItem : TemplatedControl
    {
       HeaderButton = e.NameScope.Find<HeadTextButton>(CalendarItemTheme.HeaderButtonPart);
       PreviousButton = e.NameScope.Find<IconButton>(CalendarItemTheme.PreviousButtonPart);
+      PreviousMonthButton = e.NameScope.Find<IconButton>(CalendarItemTheme.PreviousMonthButtonPart);
       NextButton = e.NameScope.Find<IconButton>(CalendarItemTheme.NextButtonPart);
+      NextMonthButton = e.NameScope.Find<IconButton>(CalendarItemTheme.NextMonthButtonPart);
       MonthView = e.NameScope.Find<Grid>(CalendarItemTheme.MonthViewPart);
       YearView = e.NameScope.Find<Grid>(CalendarItemTheme.YearViewPart);
 
@@ -684,7 +738,7 @@ internal sealed class CalendarItem : TemplatedControl
       }
    }
 
-   internal void HeaderButton_Click(object? sender, RoutedEventArgs e)
+   internal void HandleHeaderButtonClick(object? sender, RoutedEventArgs e)
    {
       if (Owner != null) {
          if (!Owner.HasFocusInternal) {
@@ -709,7 +763,21 @@ internal sealed class CalendarItem : TemplatedControl
       }
    }
 
-   internal void PreviousButton_Click(object? sender, RoutedEventArgs e)
+   internal void HandlePreviousMonthButtonClick(object? sender, RoutedEventArgs e)
+   {
+      if (Owner != null) {
+         if (!Owner.HasFocusInternal) {
+            Owner.Focus();
+         }
+
+         AvaloniaButton b = (AvaloniaButton)sender!;
+         if (b.IsEnabled) {
+            Owner.OnPreviousMonthClick();
+         }
+      }
+   }
+   
+   internal void HandlePreviousButtonClick(object? sender, RoutedEventArgs e)
    {
       if (Owner != null) {
          if (!Owner.HasFocusInternal) {
@@ -723,7 +791,22 @@ internal sealed class CalendarItem : TemplatedControl
       }
    }
 
-   internal void NextButton_Click(object? sender, RoutedEventArgs e)
+   internal void HandleNextMonthButtonClick(object? sender, RoutedEventArgs e)
+   {
+      if (Owner != null) {
+         if (!Owner.HasFocusInternal) {
+            Owner.Focus();
+         }
+
+         AvaloniaButton b = (AvaloniaButton)sender!;
+
+         if (b.IsEnabled) {
+            Owner.OnNextMonthClick();
+         }
+      }
+   }
+   
+   internal void HandleNextButtonClick(object? sender, RoutedEventArgs e)
    {
       if (Owner != null) {
          if (!Owner.HasFocusInternal) {
@@ -738,7 +821,7 @@ internal sealed class CalendarItem : TemplatedControl
       }
    }
 
-   internal void Cell_MouseEntered(object? sender, PointerEventArgs e)
+   internal void HandleCellMouseEntered(object? sender, PointerEventArgs e)
    {
       if (Owner != null) {
          if (_isMouseLeftButtonDown
@@ -775,7 +858,7 @@ internal sealed class CalendarItem : TemplatedControl
       }
    }
 
-   internal void Cell_MouseLeftButtonDown(object? sender, PointerPressedEventArgs e)
+   internal void HandleCellMouseLeftButtonDown(object? sender, PointerPressedEventArgs e)
    {
       if (Owner != null) {
          if (!Owner.HasFocusInternal) {
@@ -886,7 +969,7 @@ internal sealed class CalendarItem : TemplatedControl
       }
    }
 
-   internal void Cell_MouseLeftButtonUp(object? sender, PointerReleasedEventArgs e)
+   internal void HandleCellMouseLeftButtonUp(object? sender, PointerReleasedEventArgs e)
    {
       if (Owner != null) {
          CalendarDayButton? b = sender as CalendarDayButton;
@@ -934,7 +1017,7 @@ internal sealed class CalendarItem : TemplatedControl
       }
    }
 
-   private void Cell_Click(object? sender, RoutedEventArgs e)
+   private void HandleCellClick(object? sender, RoutedEventArgs e)
    {
       if (Owner != null) {
          if (_isControlPressed && Owner.SelectionMode == CalendarSelectionMode.MultipleRange) {
@@ -954,14 +1037,14 @@ internal sealed class CalendarItem : TemplatedControl
       _isControlPressed = false;
    }
 
-   private void Month_CalendarButtonMouseDown(object? sender, PointerPressedEventArgs e)
+   private void HandleMonthCalendarButtonMouseDown(object? sender, PointerPressedEventArgs e)
    {
       _isMouseLeftButtonDownYearView = true;
 
       UpdateYearViewSelection(sender as CalendarButton);
    }
 
-   internal void Month_CalendarButtonMouseUp(object? sender, PointerReleasedEventArgs e)
+   internal void HandleMonthCalendarButtonMouseUp(object? sender, PointerReleasedEventArgs e)
    {
       _isMouseLeftButtonDownYearView = false;
 
@@ -977,7 +1060,7 @@ internal sealed class CalendarItem : TemplatedControl
       }
    }
 
-   private void Month_MouseEntered(object? sender, PointerEventArgs e)
+   private void HandleMonthMouseEntered(object? sender, PointerEventArgs e)
    {
       if (_isMouseLeftButtonDownYearView) {
          UpdateYearViewSelection(sender as CalendarButton);
