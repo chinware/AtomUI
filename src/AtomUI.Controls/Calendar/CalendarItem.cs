@@ -743,7 +743,7 @@ internal class CalendarItem : TemplatedControl
       }
    }
 
-   internal void HandleHeaderButtonClick(object? sender, RoutedEventArgs e)
+   protected internal virtual void HandleHeaderButtonClick(object? sender, RoutedEventArgs e)
    {
       if (Owner != null) {
          if (!Owner.HasFocusInternal) {
@@ -1049,7 +1049,7 @@ internal class CalendarItem : TemplatedControl
       UpdateYearViewSelection(sender as CalendarButton);
    }
 
-   internal void HandleMonthCalendarButtonMouseUp(object? sender, PointerReleasedEventArgs e)
+   protected internal virtual void HandleMonthCalendarButtonMouseUp(object? sender, PointerReleasedEventArgs e)
    {
       _isMouseLeftButtonDownYearView = false;
 

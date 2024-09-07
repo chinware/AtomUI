@@ -123,6 +123,6 @@ internal class CalendarToken : AbstractControlDesignToken
       DayTitleHeight = new GridLength(40, GridUnitType.Pixel);
       HeaderMargin = new Thickness(0, 0, 0, _globalToken.MarginXS);
       CellLineHeight = CellHeight - 2; // 不知道为啥设置成一样，或者不设置文字有些靠下
-      RangeCalendarSpacing = 40;
+      RangeCalendarSpacing = 15;
    }
 }

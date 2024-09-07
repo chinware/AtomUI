@@ -2,7 +2,6 @@
 using AtomUI.Theme.Styling;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
-using Avalonia.Layout;
 using Avalonia.Styling;
 
 namespace AtomUI.Controls;
@@ -34,11 +33,10 @@ internal class CalendarTheme : BaseControlTheme
          CreateTemplateParentBinding(frame, Border.BackgroundProperty, Calendar.BackgroundProperty);
          CreateTemplateParentBinding(frame, Border.PaddingProperty, Calendar.PaddingProperty);
          
-         var rootLayout = new StackPanel()
+         var rootLayout = new Panel()
          {
             Name = RootPart,
             ClipToBounds = true,
-            Orientation = Orientation.Horizontal
          };
          rootLayout.RegisterInNameScope(scope);
 

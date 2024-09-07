@@ -21,16 +21,15 @@ internal class RangeCalendarItemTheme : CalendarItemTheme
    {
       var previousMonthButton = base.BuildPreviousMonthButton();
       CreateTemplateParentBinding(previousMonthButton, IconButton.IsVisibleProperty,
-                                  RangeCalendarItem.IsPrimaryProperty);
+                                  RangeCalendarItem.IsNextButtonVisibleProperty, BindingMode.Default,
+                                  BoolConverters.Not);
       return previousMonthButton;
    }
 
    protected override IconButton BuildNextButton()
    {
       var nextButton = base.BuildNextButton();
-      CreateTemplateParentBinding(nextButton, IconButton.IsVisibleProperty, RangeCalendarItem.IsPrimaryProperty,
-                                  BindingMode.Default,
-                                  BoolConverters.Not);
+      CreateTemplateParentBinding(nextButton, IconButton.IsVisibleProperty, RangeCalendarItem.IsNextButtonVisibleProperty);
       return nextButton;
    }
 
