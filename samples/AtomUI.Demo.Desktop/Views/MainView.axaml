@@ -168,6 +168,9 @@
             <TabItem Header="Watermark">
                 <showcases:WatermarkShowCase />
             </TabItem>
+            <TabItem Header="Drawer">
+                <showcases:DrawerShowCase />
+            </TabItem>
         </TabControl>
     </Grid>
 

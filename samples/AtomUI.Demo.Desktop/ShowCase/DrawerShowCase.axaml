@@ -1,0 +1,23 @@
+<UserControl x:Class="AtomUI.Demo.Desktop.ShowCase.DrawerShowCase"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:atom="https://atomui.net"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
+             mc:Ignorable="d">
+    <showcase:ShowCasePanel>
+
+        <showcase:ShowCaseItem Title="Basic" Description="Basic drawer.">
+            <atom:DrawerContainer>
+                <Panel>
+                    <Border Height="300" atom:Watermark.Glyph="{atom:TextGlyph 'AtomUI'}" />
+                    <atom:Drawer Background="Gray">
+                        <atom:Button ButtonType="Primary" Text="Close" VerticalAlignment="Top" />
+                    </atom:Drawer>
+                </Panel>
+            </atom:DrawerContainer>
+        </showcase:ShowCaseItem>
+
+    </showcase:ShowCasePanel>
+</UserControl>
