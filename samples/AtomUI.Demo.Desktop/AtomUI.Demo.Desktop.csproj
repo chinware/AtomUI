@@ -33,16 +33,5 @@
         <ProjectReference Include="..\..\src\AtomUI.Icon.AntDesign\AtomUI.Icon.AntDesign.csproj" />
         <ProjectReference Include="..\..\src\AtomUI.Theme\AtomUI.Theme.csproj" />
     </ItemGroup>
-
-    <ItemGroup>
-      <AdditionalFiles Include="ShowCase\ButtonSpinnerShowCase.axaml" />
-      <AdditionalFiles Include="ShowCase\GroupBoxShowCase.axaml" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Compile Update="ShowCase\DropdownButtonShowCase.axaml.cs">
-        <DependentUpon>DropdownButtonShowCase.axaml</DependentUpon>
-      </Compile>
-    </ItemGroup>
     
 </Project>

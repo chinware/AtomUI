@@ -1,6 +1,7 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Threading;
+using Rect = Avalonia.Rect;
 
 // ReSharper disable SuggestBaseTypeForParameter
 
@@ -25,25 +26,36 @@ namespace AtomUI.Controls.Primitives
         }
         public static readonly AttachedProperty<Visual> TargetProperty = AvaloniaProperty
             .RegisterAttached<AtomLayer, Control, Visual>("Target");
-
-        public static Rect GetTargetRect(Control adorner)
-        {
-            return adorner.GetValue(TargetRectProperty);
-        }
-        private static void SetTargetRect(Control adorner, Rect value)
-        {
-            adorner.SetValue(TargetRectProperty, value);
-        }
-        public static readonly AttachedProperty<Rect> TargetRectProperty = AvaloniaProperty
-            .RegisterAttached<AtomLayer, Control, Rect>("TargetRect");
         
         #endregion
 
 
+        
+        public Visual? Host
+        {
+            get => GetValue(HostProperty);
+            set => SetValue(HostProperty, value);
+        }
+        public static readonly StyledProperty<Visual?> HostProperty = AvaloniaProperty
+            .Register<AtomLayer, Visual?>(nameof(Host));
+
+        public Vector HostOffset
+        {
+            get => GetValue(HostOffsetProperty);
+            set => SetValue(HostOffsetProperty, value);
+        }
+        public static readonly StyledProperty<Vector> HostOffsetProperty = AvaloniaProperty
+            .Register<AtomLayer, Vector>(nameof(HostOffset));
 
         private readonly IList<WeakReference<Control>> _detachedAdorners = new List<WeakReference<Control>>();
         
-        internal Visual? ParentHost { get; set; }
+        static AtomLayer()
+        {
+            HostOffsetProperty.Changed.AddClassHandler<AtomLayer>((layer, args) =>
+            {
+                layer.Measure();
+            });
+        }
         
         internal AtomLayer() { }
         
@@ -74,7 +86,19 @@ namespace AtomUI.Controls.Primitives
             
             SetTarget(adorner, target);
             Children.Add(adorner);
-            Locate(target, adorner);
+            UpdateLocation(target, adorner);
+            Arrange();
+        }
+
+        private void Measure()
+        {
+            Measure(new Size());
+            Arrange();
+        }
+
+        private void Arrange()
+        {
+            Arrange(new Rect(new Point(HostOffset.X, -HostOffset.Y), new Size()));
         }
 
         private void TargetOnPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
@@ -89,52 +113,47 @@ namespace AtomUI.Controls.Primitives
                 return;
             }
             
-            // Child element's bounds will be updated first.
+            // Child element's bounds will be updated before it's ancestors do.
             Dispatcher.UIThread.Post(() =>
             {
                 foreach (var adorner in GetAdorners(target))
                 {
-                    Locate(target, adorner);
+                    UpdateLocation(target, adorner);
                 }    
             }, DispatcherPriority.Send);
         }
 
-        private void Locate(Visual target, Control adorner)
+        private void UpdateLocation(Visual target, Control adorner)
         {
-            if (this.ParentHost is Control { IsLoaded: false })
+            if (this.Host is Control { IsLoaded: false })
             {
-                this.ParentHost.PropertyChanged -= ParentHostOnPropertyChanged;
-                this.ParentHost.PropertyChanged += ParentHostOnPropertyChanged;
+                this.Host.PropertyChanged -= ParentHostOnPropertyChanged;
+                this.Host.PropertyChanged += ParentHostOnPropertyChanged;
             }
             else
             {
-                LocateCore(target, adorner);
+                UpdateLocationCore(target, adorner);
             }
 
             return;
 
             void ParentHostOnPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
             {
-                this.ParentHost.PropertyChanged -= ParentHostOnPropertyChanged;
-                LocateCore(target, adorner);
+                this.Host.PropertyChanged -= ParentHostOnPropertyChanged;
+                UpdateLocationCore(target, adorner);
             }
         }
 
-        private void LocateCore(Visual target, Control adorner)
+        private void UpdateLocationCore(Visual target, Control adorner)
         {
             var matrix = target.TransformToVisual(this)!;
             var x      = matrix.Value.M31;
             var y      = matrix.Value.M32;
-            var rect   = new Rect(x, y, target.Bounds.Width, target.Bounds.Height);
             
-            SetTargetRect(adorner, rect);
             SetLeft(adorner, x);
             SetTop(adorner, y);
             adorner.Width  = target.Bounds.Width;
             adorner.Height = target.Bounds.Height;
-            
-            adorner.Measure(target.Bounds.Size);
-            adorner.Arrange(rect);
         }
 
         private void OnTargetOnAttachedToVisualTree(object? sender, VisualTreeAttachmentEventArgs args)

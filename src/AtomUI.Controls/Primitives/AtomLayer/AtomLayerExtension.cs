@@ -15,7 +15,7 @@ public static class AtomLayerExtension
             return null;
         }
         
-        var host = visual.FindAncestorOfType<ScrollContentPresenter>(true)?.Content as Visual
+        var host = visual.FindAncestorOfType<ScrollContentPresenter>() as Visual
                    ?? TopLevel.GetTopLevel(visual);
             
         if (host == null)
@@ -69,7 +69,12 @@ public static class AtomLayerExtension
         }
 
         visualChildren.Add(layer);
-        layer.ParentHost = host;
+        layer.Host = host;
+
+        if (host is ScrollContentPresenter presenter)
+        {
+            layer[!AtomLayer.HostOffsetProperty] = presenter[!ScrollContentPresenter.OffsetProperty];
+        }
 
         return true;
     }
