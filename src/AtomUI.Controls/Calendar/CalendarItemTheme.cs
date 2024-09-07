@@ -25,9 +25,11 @@ internal class CalendarItemTheme : BaseControlTheme
    public const string NextButtonPart = "PART_NextButton";
    
    public CalendarItemTheme()
-      : base(typeof(CalendarItem))
+      : this(typeof(CalendarItem))
    {
    }
+   
+   protected CalendarItemTheme(Type targetType) : base(targetType) { }
    
    protected override IControlTemplate BuildControlTemplate()
    {
@@ -58,7 +60,7 @@ internal class CalendarItemTheme : BaseControlTheme
       calendarItem.DayTitleTemplate = new DayTitleTemplate();
    }
 
-   private void BuildHeader(DockPanel layout, INameScope scope)
+   protected virtual void BuildHeader(DockPanel layout, INameScope scope)
    {
       var headerLayout = new Grid()
       {
@@ -72,7 +74,42 @@ internal class CalendarItemTheme : BaseControlTheme
             new ColumnDefinition(GridLength.Auto),
          }
       };
+
+      var previousButton = BuildPreviousButton();
+      previousButton.RegisterInNameScope(scope);
+      Grid.SetColumn(previousButton, 0);
+      headerLayout.Children.Add(previousButton);
+
+      var previousMonthButton = BuildPreviousMonthButton();
+      previousMonthButton.RegisterInNameScope(scope);
+      Grid.SetColumn(previousMonthButton, 1);
+      headerLayout.Children.Add(previousMonthButton);
       
+      var headerButton = new HeadTextButton()
+      {
+         Name = HeaderButtonPart
+      };
+      Grid.SetColumn(headerButton, 2);
+      headerButton.RegisterInNameScope(scope);
+      headerLayout.Children.Add(headerButton);
+
+      var nextMonthButton = BuildNextMonthButton();
+      Grid.SetColumn(nextMonthButton, 3);
+      nextMonthButton.RegisterInNameScope(scope);
+      headerLayout.Children.Add(nextMonthButton);
+
+      var nextButton = BuildNextButton();
+      
+      Grid.SetColumn(nextButton, 4);
+      nextButton.RegisterInNameScope(scope);
+      headerLayout.Children.Add(nextButton);
+      
+      DockPanel.SetDock(headerLayout, Dock.Top);
+      layout.Children.Add(headerLayout);
+   }
+
+   protected virtual IconButton BuildPreviousButton()
+   {
       var previousButtonIcon = new PathIcon()
       {
          Kind = "DoubleLeftOutlined"
@@ -89,11 +126,11 @@ internal class CalendarItemTheme : BaseControlTheme
 
       TokenResourceBinder.CreateGlobalTokenBinding(previousButton, IconButton.IconWidthProperty, GlobalTokenResourceKey.IconSizeSM);
       TokenResourceBinder.CreateGlobalTokenBinding(previousButton, IconButton.IconHeightProperty, GlobalTokenResourceKey.IconSizeSM);
-      
-      previousButton.RegisterInNameScope(scope);
-      Grid.SetColumn(previousButton, 0);
-      headerLayout.Children.Add(previousButton);
-      
+      return previousButton;
+   }
+
+   protected virtual IconButton BuildPreviousMonthButton()
+   {
       var previousMonthButtonIcon = new PathIcon()
       {
          Kind = "LeftOutlined"
@@ -110,39 +147,11 @@ internal class CalendarItemTheme : BaseControlTheme
 
       TokenResourceBinder.CreateGlobalTokenBinding(previousMonthButton, IconButton.IconWidthProperty, GlobalTokenResourceKey.IconSizeSM);
       TokenResourceBinder.CreateGlobalTokenBinding(previousMonthButton, IconButton.IconHeightProperty, GlobalTokenResourceKey.IconSizeSM);
-      
-      previousMonthButton.RegisterInNameScope(scope);
-      Grid.SetColumn(previousMonthButton, 1);
-      headerLayout.Children.Add(previousMonthButton);
-      
-      var headerButton = new HeadTextButton()
-      {
-         Name = HeaderButtonPart
-      };
-      Grid.SetColumn(headerButton, 2);
-      headerButton.RegisterInNameScope(scope);
-      headerLayout.Children.Add(headerButton);
-      
-      var nextMonthButtonIcon = new PathIcon()
-      {
-         Kind = "RightOutlined"
-      };
-      TokenResourceBinder.CreateGlobalTokenBinding(nextMonthButtonIcon, PathIcon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorTextDescription);
-      TokenResourceBinder.CreateGlobalTokenBinding(nextMonthButtonIcon, PathIcon.ActiveFilledBrushProperty, GlobalTokenResourceKey.ColorText);
-      TokenResourceBinder.CreateGlobalTokenBinding(nextMonthButtonIcon, PathIcon.SelectedFilledBrushProperty, GlobalTokenResourceKey.ColorText);
-      
-      var nextMonthButton = new IconButton()
-      {
-         Name = NextMonthButtonPart,
-         Icon = nextMonthButtonIcon
-      };
-      TokenResourceBinder.CreateGlobalTokenBinding(nextMonthButton, IconButton.IconWidthProperty, GlobalTokenResourceKey.IconSizeSM);
-      TokenResourceBinder.CreateGlobalTokenBinding(nextMonthButton, IconButton.IconHeightProperty, GlobalTokenResourceKey.IconSizeSM);
-      
-      Grid.SetColumn(nextMonthButton, 3);
-      nextMonthButton.RegisterInNameScope(scope);
-      headerLayout.Children.Add(nextMonthButton);
-      
+      return previousMonthButton;
+   }
+   
+   protected virtual IconButton BuildNextButton()
+   {
       var nextButtonIcon = new PathIcon()
       {
          Kind = "DoubleRightOutlined"
@@ -158,14 +167,26 @@ internal class CalendarItemTheme : BaseControlTheme
       };
       TokenResourceBinder.CreateGlobalTokenBinding(nextButton, IconButton.IconWidthProperty, GlobalTokenResourceKey.IconSizeSM);
       TokenResourceBinder.CreateGlobalTokenBinding(nextButton, IconButton.IconHeightProperty, GlobalTokenResourceKey.IconSizeSM);
-      
-      Grid.SetColumn(nextButton, 4);
-      nextButton.RegisterInNameScope(scope);
-      headerLayout.Children.Add(nextButton);
-      
-      DockPanel.SetDock(headerLayout, Dock.Top);
-      layout.Children.Add(headerLayout);
-      
+      return nextButton;
+   }
+
+   protected virtual IconButton BuildNextMonthButton()
+   {
+      var nextMonthButtonIcon = new PathIcon()
+      {
+         Kind = "RightOutlined"
+      };
+      TokenResourceBinder.CreateGlobalTokenBinding(nextMonthButtonIcon, PathIcon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorTextDescription);
+      TokenResourceBinder.CreateGlobalTokenBinding(nextMonthButtonIcon, PathIcon.ActiveFilledBrushProperty, GlobalTokenResourceKey.ColorText);
+      TokenResourceBinder.CreateGlobalTokenBinding(nextMonthButtonIcon, PathIcon.SelectedFilledBrushProperty, GlobalTokenResourceKey.ColorText);
+      var nextMonthButton = new IconButton()
+      {
+         Name = NextMonthButtonPart,
+         Icon = nextMonthButtonIcon
+      };
+      TokenResourceBinder.CreateGlobalTokenBinding(nextMonthButton, IconButton.IconWidthProperty, GlobalTokenResourceKey.IconSizeSM);
+      TokenResourceBinder.CreateGlobalTokenBinding(nextMonthButton, IconButton.IconHeightProperty, GlobalTokenResourceKey.IconSizeSM);
+      return nextMonthButton;
    }
 
    private void BuildContentView(DockPanel layout, INameScope scope)
@@ -228,9 +249,6 @@ internal class CalendarItemTheme : BaseControlTheme
    {
       var commonStyle = new Style(selector => selector.Nesting());
 
-      commonStyle.Add(CalendarItem.MinWidthProperty, CalendarTokenResourceKey.ItemPanelMinWidth);
-      commonStyle.Add(CalendarItem.MinHeightProperty, CalendarTokenResourceKey.ItemPanelMinHeight);
-
       var headerLayoutStyle = new Style(selector => selector.Nesting().Template().Name(HeaderLayoutPart));
       headerLayoutStyle.Add(Grid.MarginProperty, CalendarTokenResourceKey.HeaderMargin);
       
@@ -253,7 +271,7 @@ internal class DayTitleTemplate : ITemplate<Control>
       return textBlock;
    }
 
-   object? ITemplate.Build()
+   object ITemplate.Build()
    {
       return Build();
    }

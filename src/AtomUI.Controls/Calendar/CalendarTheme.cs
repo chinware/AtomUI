@@ -17,7 +17,6 @@ internal class CalendarTheme : BaseControlTheme
    public CalendarTheme()
       : base(typeof(Calendar))
    {
-      
    }
 
    protected override IControlTemplate BuildControlTemplate()
@@ -38,14 +37,14 @@ internal class CalendarTheme : BaseControlTheme
          var rootLayout = new StackPanel()
          {
             Name = RootPart,
-            ClipToBounds = true
+            ClipToBounds = true,
+            Orientation = Orientation.Horizontal
          };
          rootLayout.RegisterInNameScope(scope);
 
          var calendarItem = new CalendarItem()
          {
             Name = CalendarItemPart,
-            HorizontalAlignment = HorizontalAlignment.Center
          };
          
          calendarItem.RegisterInNameScope(scope);
@@ -64,6 +63,8 @@ internal class CalendarTheme : BaseControlTheme
       commonStyle.Add(Calendar.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadius);
       commonStyle.Add(Calendar.BackgroundProperty, GlobalTokenResourceKey.ColorBgContainer);
       commonStyle.Add(Calendar.PaddingProperty, CalendarTokenResourceKey.PanelContentPadding);
+      commonStyle.Add(Calendar.MinWidthProperty, CalendarTokenResourceKey.ItemPanelMinWidth);
+      commonStyle.Add(Calendar.MinHeightProperty, CalendarTokenResourceKey.ItemPanelMinHeight);
       Add(commonStyle);
    }
 }

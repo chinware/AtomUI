@@ -23,29 +23,11 @@ namespace AtomUI.Controls;
 [TemplatePart(CalendarItemTheme.PreviousMonthButtonPart, typeof(AvaloniaButton))]
 [TemplatePart(CalendarItemTheme.YearViewPart, typeof(Grid))]
 [PseudoClasses(CalendarDisabledPC)]
-internal sealed class CalendarItem : TemplatedControl
+internal class CalendarItem : TemplatedControl
 {
    private const string CalendarDisabledPC = ":calendardisabled";
-   /// <summary>
-   /// The number of days per week.
-   /// </summary>
-   private const int NumberOfDaysPerWeek = 7;
-
-   private HeadTextButton? _headerButton;
-   private IconButton? _nextButton;
-   private IconButton? _previousButton;
-   private IconButton? _nextMonthButton;
-   private IconButton? _previousMonthButton;
-
-   private DateTime _currentMonth;
-   private bool _isMouseLeftButtonDown;
-   private bool _isMouseLeftButtonDownYearView;
-   private bool _isControlPressed;
-
-   private readonly System.Globalization.Calendar _calendar = new GregorianCalendar();
-
-   internal Calendar? Owner { get; set; }
-   internal CalendarDayButton? CurrentButton { get; set; }
+   
+   #region 公共属性定义
 
    public static readonly StyledProperty<IBrush?> HeaderBackgroundProperty =
       Calendar.HeaderBackgroundProperty.AddOwner<CalendarItem>();
@@ -55,7 +37,7 @@ internal sealed class CalendarItem : TemplatedControl
       get => GetValue(HeaderBackgroundProperty);
       set => SetValue(HeaderBackgroundProperty, value);
    }
-
+   
    public static readonly StyledProperty<ITemplate<Control>?> DayTitleTemplateProperty =
       AvaloniaProperty.Register<CalendarItem, ITemplate<Control>?>(
          nameof(DayTitleTemplate),
@@ -67,7 +49,11 @@ internal sealed class CalendarItem : TemplatedControl
       set => SetValue(DayTitleTemplateProperty, value);
    }
 
-   /// <summary>
+   #endregion
+
+   #region 内部属性定义
+
+    /// <summary>
    /// Gets the button that allows switching between month mode, year mode,
    /// and decade mode. 
    /// </summary>
@@ -108,8 +94,7 @@ internal sealed class CalendarItem : TemplatedControl
             if (_nextButton.Content == null) {
                _nextButton.Content = "next button";
             }
-
-            _nextButton.IsVisible = true;
+            
             _nextButton.Click += HandleNextButtonClick;
             _nextButton.Focusable = false;
          }
@@ -133,8 +118,7 @@ internal sealed class CalendarItem : TemplatedControl
             if (_nextMonthButton.Content == null) {
                _nextMonthButton.Content = "next button";
             }
-
-            _nextMonthButton.IsVisible = true;
+            
             _nextMonthButton.Click += HandleNextMonthButtonClick;
             _nextMonthButton.Focusable = false;
          }
@@ -162,8 +146,7 @@ internal sealed class CalendarItem : TemplatedControl
             if (_previousButton.Content == null) {
                _previousButton.Content = "previous button";
             }
-
-            _previousButton.IsVisible = true;
+            
             _previousButton.Click += HandlePreviousButtonClick;
             _previousButton.Focusable = false;
          }
@@ -187,14 +170,36 @@ internal sealed class CalendarItem : TemplatedControl
             if (_previousMonthButton.Content == null) {
                _previousMonthButton.Content = "previous button";
             }
-
-            _previousMonthButton.IsVisible = true;
+            
             _previousMonthButton.Click += HandlePreviousMonthButtonClick;
             _previousMonthButton.Focusable = false;
          }
       }
    }
+   
+   #endregion
+   
+   /// <summary>
+   /// The number of days per week.
+   /// </summary>
+   private const int NumberOfDaysPerWeek = 7;
 
+   private HeadTextButton? _headerButton;
+   private IconButton? _nextButton;
+   private IconButton? _previousButton;
+   private IconButton? _nextMonthButton;
+   private IconButton? _previousMonthButton;
+
+   private DateTime _currentMonth;
+   private bool _isMouseLeftButtonDown;
+   private bool _isMouseLeftButtonDownYearView;
+   private bool _isControlPressed;
+
+   private readonly System.Globalization.Calendar _calendar = new GregorianCalendar();
+
+   internal Calendar? Owner { get; set; }
+   internal CalendarDayButton? CurrentButton { get; set; }
+   
    /// <summary>
    /// Gets the Grid that hosts the content when in month mode.
    /// </summary>

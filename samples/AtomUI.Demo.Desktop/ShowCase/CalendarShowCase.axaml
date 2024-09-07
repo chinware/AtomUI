@@ -13,5 +13,11 @@
             Description="The simplest usage for Calendar.">
             <atom:Calendar/>
         </showcase:ShowCaseItem>
+        
+        <showcase:ShowCaseItem
+            Title="Range Calendar"
+            Description="The simplest usage for Calendar.">
+            <atom:RangeCalendar/>
+        </showcase:ShowCaseItem>
     </showcase:ShowCasePanel>
 </UserControl>

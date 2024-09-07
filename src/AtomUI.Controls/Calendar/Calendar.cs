@@ -237,28 +237,7 @@ public class Calendar : TemplatedControl
    internal const int RowsPerYear = 3;
    internal const int ColumnsPerYear = 4;
 
-   private DateTime _selectedMonth;
-   private DateTime _selectedYear;
-
-   private bool _isShiftPressed;
-   private bool _displayDateIsChanging;
-
-   internal CalendarDayButton? FocusButton { get; set; }
-   internal CalendarButton? FocusCalendarButton { get; set; }
-
-   internal Panel? Root { get; set; }
-
-   internal CalendarItem? MonthControl
-   {
-      get
-      {
-         if (Root != null && Root.Children.Count > 0) {
-            return Root.Children[0] as CalendarItem;
-         }
-
-         return null;
-      }
-   }
+   #region 公共属性定义
 
    public static readonly StyledProperty<DayOfWeek> FirstDayOfWeekProperty =
       AvaloniaProperty.Register<Calendar, DayOfWeek>(
@@ -278,37 +257,6 @@ public class Calendar : TemplatedControl
       set => SetValue(FirstDayOfWeekProperty, value);
    }
 
-   /// <summary>
-   /// FirstDayOfWeekProperty property changed handler.
-   /// </summary>
-   /// <param name="e">The DependencyPropertyChangedEventArgs.</param>
-   private void OnFirstDayOfWeekChanged(AvaloniaPropertyChangedEventArgs e)
-   {
-      if (IsValidFirstDayOfWeek(e.NewValue!)) {
-         UpdateMonths();
-      } else {
-         throw new ArgumentOutOfRangeException(nameof(e), "Invalid DayOfWeek");
-      }
-   }
-
-   /// <summary>
-   /// Inherited code: Requires comment.
-   /// </summary>
-   /// <param name="value">Inherited code: Requires comment 1.</param>
-   /// <returns>Inherited code: Requires comment 2.</returns>
-   private static bool IsValidFirstDayOfWeek(object value)
-   {
-      DayOfWeek day = (DayOfWeek)value;
-
-      return day == DayOfWeek.Sunday
-             || day == DayOfWeek.Monday
-             || day == DayOfWeek.Tuesday
-             || day == DayOfWeek.Wednesday
-             || day == DayOfWeek.Thursday
-             || day == DayOfWeek.Friday
-             || day == DayOfWeek.Saturday;
-   }
-
    public static readonly StyledProperty<bool> IsTodayHighlightedProperty =
       AvaloniaProperty.Register<Calendar, bool>(
          nameof(IsTodayHighlighted),
@@ -326,19 +274,6 @@ public class Calendar : TemplatedControl
    {
       get => GetValue(IsTodayHighlightedProperty);
       set => SetValue(IsTodayHighlightedProperty, value);
-   }
-
-   /// <summary>
-   /// IsTodayHighlightedProperty property changed handler.
-   /// </summary>
-   /// <param name="e">The DependencyPropertyChangedEventArgs.</param>
-   private void OnIsTodayHighlightedChanged(AvaloniaPropertyChangedEventArgs e)
-   {
-      int i = DateTimeHelper.CompareYearMonth(DisplayDateInternal, DateTime.Today);
-
-      if (i > -2 && i < 2) {
-         UpdateMonths();
-      }
    }
 
    public static readonly StyledProperty<IBrush?> HeaderBackgroundProperty =
@@ -369,68 +304,6 @@ public class Calendar : TemplatedControl
       set => SetValue(DisplayModeProperty, value);
    }
 
-   /// <summary>
-   /// DisplayModeProperty property changed handler.
-   /// </summary>
-   /// <param name="e">The DependencyPropertyChangedEventArgs.</param>
-   private void OnDisplayModePropertyChanged(AvaloniaPropertyChangedEventArgs e)
-   {
-      CalendarMode mode = (CalendarMode)e.NewValue!;
-      CalendarMode oldMode = (CalendarMode)e.OldValue!;
-      CalendarItem? monthControl = MonthControl;
-
-      if (monthControl != null) {
-         switch (oldMode) {
-            case CalendarMode.Month:
-            {
-               SelectedYear = DisplayDateInternal;
-               SelectedMonth = DisplayDateInternal;
-               break;
-            }
-            case CalendarMode.Year:
-            {
-               SetCurrentValue(DisplayDateProperty, SelectedMonth);
-               SelectedYear = SelectedMonth;
-               break;
-            }
-            case CalendarMode.Decade:
-            {
-               SetCurrentValue(DisplayDateProperty, SelectedYear);
-               SelectedMonth = SelectedYear;
-               break;
-            }
-         }
-
-         switch (mode) {
-            case CalendarMode.Month:
-            {
-               OnMonthClick();
-               break;
-            }
-            case CalendarMode.Year:
-            case CalendarMode.Decade:
-            {
-               OnHeaderClick();
-               break;
-            }
-         }
-      }
-
-      OnDisplayModeChanged(new CalendarModeChangedEventArgs((CalendarMode)e.OldValue, mode));
-   }
-
-   private static bool IsValidDisplayMode(CalendarMode mode)
-   {
-      return mode == CalendarMode.Month
-             || mode == CalendarMode.Year
-             || mode == CalendarMode.Decade;
-   }
-
-   private void OnDisplayModeChanged(CalendarModeChangedEventArgs args)
-   {
-      DisplayModeChanged?.Invoke(this, args);
-   }
-
    public static readonly StyledProperty<CalendarSelectionMode> SelectionModeProperty =
       AvaloniaProperty.Register<Calendar, CalendarSelectionMode>(
          nameof(SelectionMode),
@@ -459,33 +332,6 @@ public class Calendar : TemplatedControl
    {
       get => GetValue(SelectionModeProperty);
       set => SetValue(SelectionModeProperty, value);
-   }
-
-   private void OnSelectionModeChanged(AvaloniaPropertyChangedEventArgs e)
-   {
-      if (IsValidSelectionMode(e.NewValue!)) {
-         _displayDateIsChanging = true;
-         SetCurrentValue(SelectedDateProperty, null);
-         _displayDateIsChanging = false;
-         SelectedDates.Clear();
-      } else {
-         throw new ArgumentOutOfRangeException(nameof(e), "Invalid SelectionMode");
-      }
-   }
-
-   /// <summary>
-   /// Inherited code: Requires comment.
-   /// </summary>
-   /// <param name="value">Inherited code: Requires comment 1.</param>
-   /// <returns>Inherited code: Requires comment 2.</returns>
-   private static bool IsValidSelectionMode(object value)
-   {
-      CalendarSelectionMode mode = (CalendarSelectionMode)value;
-
-      return mode == CalendarSelectionMode.SingleDate
-             || mode == CalendarSelectionMode.SingleRange
-             || mode == CalendarSelectionMode.MultipleRange
-             || mode == CalendarSelectionMode.None;
    }
 
    public static readonly StyledProperty<DateTime?> SelectedDateProperty =
@@ -521,45 +367,39 @@ public class Calendar : TemplatedControl
       set => SetValue(SelectedDateProperty, value);
    }
 
-   private void OnSelectedDateChanged(AvaloniaPropertyChangedEventArgs e)
+   public static readonly StyledProperty<DateTime> DisplayDateProperty =
+      AvaloniaProperty.Register<Calendar, DateTime>(nameof(DisplayDate),
+                                                    defaultBindingMode: BindingMode.TwoWay);
+
+   /// <summary>
+   /// Gets or sets the date to display.
+   /// </summary>
+   /// <value>The date to display.</value>
+   /// <exception cref="T:System.ArgumentOutOfRangeException">
+   /// The given date is not in the range specified by
+   /// <see cref="P:System.Windows.Controls.Calendar.DisplayDateStart" />
+   /// and
+   /// <see cref="P:System.Windows.Controls.Calendar.DisplayDateEnd" />.
+   /// </exception>
+   /// <remarks>
+   /// <para>
+   /// This property allows the developer to specify a date to display.  If
+   /// this property is a null reference (Nothing in Visual Basic),
+   /// SelectedDate is displayed.  If SelectedDate is also a null reference
+   /// (Nothing in Visual Basic), Today is displayed.  The default is
+   /// Today.
+   /// </para>
+   /// <para>
+   /// To set this property in XAML, use a date specified in the format
+   /// yyyy/mm/dd.  The mm and dd components must always consist of two
+   /// characters, with a leading zero if necessary.  For instance, the
+   /// month of May should be specified as 05.
+   /// </para>
+   /// </remarks>
+   public DateTime DisplayDate
    {
-      if (!_displayDateIsChanging) {
-         if (SelectionMode != CalendarSelectionMode.None) {
-            DateTime? addedDate;
-
-            addedDate = (DateTime?)e.NewValue;
-
-            if (IsValidDateSelection(this, addedDate)) {
-               if (addedDate == null) {
-                  SelectedDates.Clear();
-               } else {
-                  if (!(SelectedDates.Count > 0 && SelectedDates[0] == addedDate.Value)) {
-                     foreach (DateTime item in SelectedDates) {
-                        RemovedItems.Add(item);
-                     }
-
-                     SelectedDates.ClearInternal();
-                     // the value is added as a range so that the
-                     // SelectedDatesChanged event can be thrown with
-                     // all the removed items
-                     SelectedDates.AddRange(addedDate.Value, addedDate.Value);
-                  }
-               }
-
-               // We update the LastSelectedDate for only the Single
-               // mode.  For the other modes it automatically gets
-               // updated when the HoverEnd is updated.
-               if (SelectionMode == CalendarSelectionMode.SingleDate) {
-                  LastSelectedDate = addedDate;
-               }
-            } else {
-               throw new ArgumentOutOfRangeException(nameof(e), "SelectedDate value is not valid.");
-            }
-         } else {
-            throw new InvalidOperationException(
-               "The SelectedDate property cannot be set when the selection mode is None.");
-         }
-      }
+      get => GetValue(DisplayDateProperty);
+      set => SetValue(DisplayDateProperty, value);
    }
 
    /// <summary>
@@ -606,28 +446,65 @@ public class Calendar : TemplatedControl
    ///                             exception.
    /// </remarks>
    public SelectedDatesCollection SelectedDates { get; private set; }
+   
+   public static readonly StyledProperty<DateTime?> DisplayDateStartProperty =
+      AvaloniaProperty.Register<Calendar, DateTime?>(nameof(DisplayDateStart),
+                                                     defaultBindingMode: BindingMode.TwoWay);
 
-   private static bool IsSelectionChanged(SelectionChangedEventArgs e)
+   /// <summary>
+   /// Gets or sets the first date to be displayed.
+   /// </summary>
+   /// <value>The first date to display.</value>
+   /// <remarks>
+   /// To set this property in XAML, use a date specified in the format
+   /// yyyy/mm/dd.  The mm and dd components must always consist of two
+   /// characters, with a leading zero if necessary.  For instance, the
+   /// month of May should be specified as 05.
+   /// </remarks>
+   public DateTime? DisplayDateStart
    {
-      if (e.AddedItems.Count != e.RemovedItems.Count) {
-         return true;
-      }
-
-      foreach (DateTime addedDate in e.AddedItems) {
-         if (!e.RemovedItems.Contains(addedDate)) {
-            return true;
-         }
-      }
-
-      return false;
+      get => GetValue(DisplayDateStartProperty);
+      set => SetValue(DisplayDateStartProperty, value);
+   }
+   
+   public static readonly StyledProperty<DateTime?> DisplayDateEndProperty =
+      AvaloniaProperty.Register<Calendar, DateTime?>(nameof(DisplayDateEnd),
+                                                     defaultBindingMode: BindingMode.TwoWay);
+   
+   /// <summary>
+   /// Gets or sets the last date to be displayed.
+   /// </summary>
+   /// <value>The last date to display.</value>
+   /// <remarks>
+   /// To set this property in XAML, use a date specified in the format
+   /// yyyy/mm/dd.  The mm and dd components must always consist of two
+   /// characters, with a leading zero if necessary.  For instance, the
+   /// month of May should be specified as 05.
+   /// </remarks>
+   public DateTime? DisplayDateEnd
+   {
+      get => GetValue(DisplayDateEndProperty);
+      set => SetValue(DisplayDateEndProperty, value);
    }
 
-   internal void OnSelectedDatesCollectionChanged(SelectionChangedEventArgs e)
+   #endregion
+
+   #region 内部属性定义
+
+   internal CalendarDayButton? FocusButton { get; set; }
+   internal CalendarButton? FocusCalendarButton { get; set; }
+
+   internal Panel? Root { get; set; }
+
+   internal CalendarItem? MonthControl
    {
-      if (IsSelectionChanged(e)) {
-         e.RoutedEvent = SelectingItemsControl.SelectionChangedEvent;
-         e.Source = this;
-         SelectedDatesChanged?.Invoke(this, e);
+      get
+      {
+         if (Root != null && Root.Children.Count > 0) {
+            return Root.Children[0] as CalendarItem;
+         }
+
+         return null;
       }
    }
 
@@ -692,42 +569,243 @@ public class Calendar : TemplatedControl
       }
    }
 
-   public static readonly StyledProperty<DateTime> DisplayDateProperty =
-      AvaloniaProperty.Register<Calendar, DateTime>(nameof(DisplayDate),
-                                                    defaultBindingMode: BindingMode.TwoWay);
+   internal DateTime DisplayDateInternal { get; private set; }
+
+   #endregion
+
+   private DateTime _selectedMonth;
+   private DateTime _selectedYear;
+
+   private bool _isShiftPressed;
+   private bool _displayDateIsChanging;
 
    /// <summary>
-   /// Gets or sets the date to display.
+   /// FirstDayOfWeekProperty property changed handler.
    /// </summary>
-   /// <value>The date to display.</value>
-   /// <exception cref="T:System.ArgumentOutOfRangeException">
-   /// The given date is not in the range specified by
-   /// <see cref="P:System.Windows.Controls.Calendar.DisplayDateStart" />
-   /// and
-   /// <see cref="P:System.Windows.Controls.Calendar.DisplayDateEnd" />.
-   /// </exception>
-   /// <remarks>
-   /// <para>
-   /// This property allows the developer to specify a date to display.  If
-   /// this property is a null reference (Nothing in Visual Basic),
-   /// SelectedDate is displayed.  If SelectedDate is also a null reference
-   /// (Nothing in Visual Basic), Today is displayed.  The default is
-   /// Today.
-   /// </para>
-   /// <para>
-   /// To set this property in XAML, use a date specified in the format
-   /// yyyy/mm/dd.  The mm and dd components must always consist of two
-   /// characters, with a leading zero if necessary.  For instance, the
-   /// month of May should be specified as 05.
-   /// </para>
-   /// </remarks>
-   public DateTime DisplayDate
+   /// <param name="e">The DependencyPropertyChangedEventArgs.</param>
+   private void OnFirstDayOfWeekChanged(AvaloniaPropertyChangedEventArgs e)
    {
-      get => GetValue(DisplayDateProperty);
-      set => SetValue(DisplayDateProperty, value);
+      if (IsValidFirstDayOfWeek(e.NewValue!)) {
+         UpdateMonths();
+      } else {
+         throw new ArgumentOutOfRangeException(nameof(e), "Invalid DayOfWeek");
+      }
    }
 
-   internal DateTime DisplayDateInternal { get; private set; }
+   /// <summary>
+   /// Inherited code: Requires comment.
+   /// </summary>
+   /// <param name="value">Inherited code: Requires comment 1.</param>
+   /// <returns>Inherited code: Requires comment 2.</returns>
+   private static bool IsValidFirstDayOfWeek(object value)
+   {
+      DayOfWeek day = (DayOfWeek)value;
+
+      return day == DayOfWeek.Sunday
+             || day == DayOfWeek.Monday
+             || day == DayOfWeek.Tuesday
+             || day == DayOfWeek.Wednesday
+             || day == DayOfWeek.Thursday
+             || day == DayOfWeek.Friday
+             || day == DayOfWeek.Saturday;
+   }
+
+   /// <summary>
+   /// IsTodayHighlightedProperty property changed handler.
+   /// </summary>
+   /// <param name="e">The DependencyPropertyChangedEventArgs.</param>
+   private void OnIsTodayHighlightedChanged(AvaloniaPropertyChangedEventArgs e)
+   {
+      int i = DateTimeHelper.CompareYearMonth(DisplayDateInternal, DateTime.Today);
+
+      if (i > -2 && i < 2) {
+         UpdateMonths();
+      }
+   }
+
+   /// <summary>
+   /// DisplayModeProperty property changed handler.
+   /// </summary>
+   /// <param name="e">The DependencyPropertyChangedEventArgs.</param>
+   private void OnDisplayModePropertyChanged(AvaloniaPropertyChangedEventArgs e)
+   {
+      CalendarMode mode = (CalendarMode)e.NewValue!;
+      CalendarMode oldMode = (CalendarMode)e.OldValue!;
+      CalendarItem? monthControl = MonthControl;
+
+      if (monthControl != null) {
+         switch (oldMode) {
+            case CalendarMode.Month:
+            {
+               SelectedYear = DisplayDateInternal;
+               SelectedMonth = DisplayDateInternal;
+               break;
+            }
+            case CalendarMode.Year:
+            {
+               SetCurrentValue(DisplayDateProperty, SelectedMonth);
+               SelectedYear = SelectedMonth;
+               break;
+            }
+            case CalendarMode.Decade:
+            {
+               SetCurrentValue(DisplayDateProperty, SelectedYear);
+               SelectedMonth = SelectedYear;
+               break;
+            }
+         }
+
+         switch (mode) {
+            case CalendarMode.Month:
+            {
+               OnMonthClick();
+               break;
+            }
+            case CalendarMode.Year:
+            case CalendarMode.Decade:
+            {
+               OnHeaderClick();
+               break;
+            }
+         }
+      }
+
+      OnDisplayModeChanged(new CalendarModeChangedEventArgs((CalendarMode)e.OldValue, mode));
+   }
+
+   private static bool IsValidDisplayMode(CalendarMode mode)
+   {
+      return mode == CalendarMode.Month
+             || mode == CalendarMode.Year
+             || mode == CalendarMode.Decade;
+   }
+
+   private void OnDisplayModeChanged(CalendarModeChangedEventArgs args)
+   {
+      DisplayModeChanged?.Invoke(this, args);
+   }
+
+   private void OnSelectionModeChanged(AvaloniaPropertyChangedEventArgs e)
+   {
+      if (IsValidSelectionMode(e.NewValue!)) {
+         _displayDateIsChanging = true;
+         SetCurrentValue(SelectedDateProperty, null);
+         _displayDateIsChanging = false;
+         SelectedDates.Clear();
+      } else {
+         throw new ArgumentOutOfRangeException(nameof(e), "Invalid SelectionMode");
+      }
+   }
+
+   /// <summary>
+   /// Inherited code: Requires comment.
+   /// </summary>
+   /// <param name="value">Inherited code: Requires comment 1.</param>
+   /// <returns>Inherited code: Requires comment 2.</returns>
+   private static bool IsValidSelectionMode(object value)
+   {
+      CalendarSelectionMode mode = (CalendarSelectionMode)value;
+
+      return mode == CalendarSelectionMode.SingleDate
+             || mode == CalendarSelectionMode.SingleRange
+             || mode == CalendarSelectionMode.MultipleRange
+             || mode == CalendarSelectionMode.None;
+   }
+
+   private void OnSelectedDateChanged(AvaloniaPropertyChangedEventArgs e)
+   {
+      if (!_displayDateIsChanging) {
+         if (SelectionMode != CalendarSelectionMode.None) {
+            DateTime? addedDate;
+
+            addedDate = (DateTime?)e.NewValue;
+
+            if (IsValidDateSelection(this, addedDate)) {
+               if (addedDate == null) {
+                  SelectedDates.Clear();
+               } else {
+                  if (!(SelectedDates.Count > 0 && SelectedDates[0] == addedDate.Value)) {
+                     foreach (DateTime item in SelectedDates) {
+                        RemovedItems.Add(item);
+                     }
+
+                     SelectedDates.ClearInternal();
+                     // the value is added as a range so that the
+                     // SelectedDatesChanged event can be thrown with
+                     // all the removed items
+                     SelectedDates.AddRange(addedDate.Value, addedDate.Value);
+                  }
+               }
+
+               // We update the LastSelectedDate for only the Single
+               // mode.  For the other modes it automatically gets
+               // updated when the HoverEnd is updated.
+               if (SelectionMode == CalendarSelectionMode.SingleDate) {
+                  LastSelectedDate = addedDate;
+               }
+            } else {
+               throw new ArgumentOutOfRangeException(nameof(e), "SelectedDate value is not valid.");
+            }
+         } else {
+            throw new InvalidOperationException(
+               "The SelectedDate property cannot be set when the selection mode is None.");
+         }
+      }
+   }
+
+   private static bool IsSelectionChanged(SelectionChangedEventArgs e)
+   {
+      if (e.AddedItems.Count != e.RemovedItems.Count) {
+         return true;
+      }
+
+      foreach (DateTime addedDate in e.AddedItems) {
+         if (!e.RemovedItems.Contains(addedDate)) {
+            return true;
+         }
+      }
+
+      return false;
+   }
+
+   internal void OnSelectedDatesCollectionChanged(SelectionChangedEventArgs e)
+   {
+      if (IsSelectionChanged(e)) {
+         e.RoutedEvent = SelectingItemsControl.SelectionChangedEvent;
+         e.Source = this;
+         SelectedDatesChanged?.Invoke(this, e);
+      }
+   }
+
+   static Calendar()
+   {
+      IsEnabledProperty.Changed.AddClassHandler<Calendar>((x, e) => x.OnIsEnabledChanged(e));
+      FirstDayOfWeekProperty.Changed.AddClassHandler<Calendar>((x, e) => x.OnFirstDayOfWeekChanged(e));
+      IsTodayHighlightedProperty.Changed.AddClassHandler<Calendar>((x, e) => x.OnIsTodayHighlightedChanged(e));
+      DisplayModeProperty.Changed.AddClassHandler<Calendar>((x, e) => x.OnDisplayModePropertyChanged(e));
+      SelectionModeProperty.Changed.AddClassHandler<Calendar>((x, e) => x.OnSelectionModeChanged(e));
+      SelectedDateProperty.Changed.AddClassHandler<Calendar>((x, e) => x.OnSelectedDateChanged(e));
+      DisplayDateProperty.Changed.AddClassHandler<Calendar>((x, e) => x.OnDisplayDateChanged(e));
+      DisplayDateStartProperty.Changed.AddClassHandler<Calendar>((x, e) => x.OnDisplayDateStartChanged(e));
+      DisplayDateEndProperty.Changed.AddClassHandler<Calendar>((x, e) => x.OnDisplayDateEndChanged(e));
+      KeyDownEvent.AddClassHandler<Calendar>((x, e) => x.HandleCalendarKeyDown(e));
+      KeyUpEvent.AddClassHandler<Calendar>((x, e) => x.HandleCalendarKeyUp(e));
+      HorizontalAlignmentProperty.OverrideDefaultValue<Calendar>(HorizontalAlignment.Left);
+      VerticalAlignmentProperty.OverrideDefaultValue<Calendar>(VerticalAlignment.Top);
+   }
+
+   /// <summary>
+   /// Initializes a new instance of the
+   /// <see cref="T:System.Windows.Controls.Calendar" /> class.
+   /// </summary>
+   public Calendar()
+   {
+      SetCurrentValue(DisplayDateProperty, DateTime.Today);
+      UpdateDisplayDate(this, DisplayDate, DateTime.MinValue);
+      BlackoutDates = new CalendarBlackoutDatesCollection(this);
+      SelectedDates = new SelectedDatesCollection(this);
+      RemovedItems = new Collection<DateTime>();
+   }
 
    private void OnDisplayDateChanged(AvaloniaPropertyChangedEventArgs e)
    {
@@ -758,26 +836,6 @@ public class Calendar : TemplatedControl
    private void OnDisplayDate(CalendarDateChangedEventArgs e)
    {
       DisplayDateChanged?.Invoke(this, e);
-   }
-
-   public static readonly StyledProperty<DateTime?> DisplayDateStartProperty =
-      AvaloniaProperty.Register<Calendar, DateTime?>(nameof(DisplayDateStart),
-                                                     defaultBindingMode: BindingMode.TwoWay);
-
-   /// <summary>
-   /// Gets or sets the first date to be displayed.
-   /// </summary>
-   /// <value>The first date to display.</value>
-   /// <remarks>
-   /// To set this property in XAML, use a date specified in the format
-   /// yyyy/mm/dd.  The mm and dd components must always consist of two
-   /// characters, with a leading zero if necessary.  For instance, the
-   /// month of May should be specified as 05.
-   /// </remarks>
-   public DateTime? DisplayDateStart
-   {
-      get => GetValue(DisplayDateStartProperty);
-      set => SetValue(DisplayDateStartProperty, value);
    }
 
    private void OnDisplayDateStartChanged(AvaloniaPropertyChangedEventArgs e)
@@ -860,26 +918,6 @@ public class Calendar : TemplatedControl
    internal DateTime DisplayDateRangeStart
    {
       get => DisplayDateStart.GetValueOrDefault(DateTime.MinValue);
-   }
-
-   public static readonly StyledProperty<DateTime?> DisplayDateEndProperty =
-      AvaloniaProperty.Register<Calendar, DateTime?>(nameof(DisplayDateEnd),
-                                                     defaultBindingMode: BindingMode.TwoWay);
-
-   /// <summary>
-   /// Gets or sets the last date to be displayed.
-   /// </summary>
-   /// <value>The last date to display.</value>
-   /// <remarks>
-   /// To set this property in XAML, use a date specified in the format
-   /// yyyy/mm/dd.  The mm and dd components must always consist of two
-   /// characters, with a leading zero if necessary.  For instance, the
-   /// month of May should be specified as 05.
-   /// </remarks>
-   public DateTime? DisplayDateEnd
-   {
-      get => GetValue(DisplayDateEndProperty);
-      set => SetValue(DisplayDateEndProperty, value);
    }
 
    private void OnDisplayDateEndChanged(AvaloniaPropertyChangedEventArgs e)
@@ -1192,6 +1230,7 @@ public class Calendar : TemplatedControl
             if (!LastSelectedDate.HasValue || DateTimeHelper.CompareYearMonth(LastSelectedDate.Value, d.Value) != 0) {
                LastSelectedDate = d.Value;
             }
+
             SetCurrentValue(DisplayDateProperty, d.Value);
          }
       }
@@ -1205,6 +1244,7 @@ public class Calendar : TemplatedControl
             if (!LastSelectedDate.HasValue || DateTimeHelper.CompareYearMonth(LastSelectedDate.Value, d.Value) != 0) {
                LastSelectedDate = d.Value;
             }
+
             SetCurrentValue(DisplayDateProperty, d.Value);
          }
       } else if (DisplayMode == CalendarMode.Year) {
@@ -1239,11 +1279,12 @@ public class Calendar : TemplatedControl
             if (!LastSelectedDate.HasValue || DateTimeHelper.CompareYearMonth(LastSelectedDate.Value, d.Value) != 0) {
                LastSelectedDate = d.Value;
             }
+
             SetCurrentValue(DisplayDateProperty, d.Value);
          }
       }
    }
-   
+
    internal void OnNextClick()
    {
       if (DisplayMode == CalendarMode.Month) {
@@ -1252,6 +1293,7 @@ public class Calendar : TemplatedControl
             if (!LastSelectedDate.HasValue || DateTimeHelper.CompareYearMonth(LastSelectedDate.Value, d.Value) != 0) {
                LastSelectedDate = d.Value;
             }
+
             SetCurrentValue(DisplayDateProperty, d.Value);
          }
       } else if (DisplayMode == CalendarMode.Year) {
@@ -1496,7 +1538,7 @@ public class Calendar : TemplatedControl
       }
    }
 
-   internal void Calendar_KeyDown(KeyEventArgs e)
+   internal void HandleCalendarKeyDown(KeyEventArgs e)
    {
       if (!e.Handled && IsEnabled) {
          e.Handled = ProcessCalendarKey(e);
@@ -1840,7 +1882,7 @@ public class Calendar : TemplatedControl
       }
    }
 
-   private void Calendar_KeyUp(KeyEventArgs e)
+   private void HandleCalendarKeyUp(KeyEventArgs e)
    {
       if (!e.Handled && (e.Key == Key.LeftShift || e.Key == Key.RightShift)) {
          ProcessShiftKeyUp();
@@ -1931,36 +1973,6 @@ public class Calendar : TemplatedControl
       MonthControl?.UpdateDisabled(isEnabled);
    }
 
-   static Calendar()
-   {
-      IsEnabledProperty.Changed.AddClassHandler<Calendar>((x, e) => x.OnIsEnabledChanged(e));
-      FirstDayOfWeekProperty.Changed.AddClassHandler<Calendar>((x, e) => x.OnFirstDayOfWeekChanged(e));
-      IsTodayHighlightedProperty.Changed.AddClassHandler<Calendar>((x, e) => x.OnIsTodayHighlightedChanged(e));
-      DisplayModeProperty.Changed.AddClassHandler<Calendar>((x, e) => x.OnDisplayModePropertyChanged(e));
-      SelectionModeProperty.Changed.AddClassHandler<Calendar>((x, e) => x.OnSelectionModeChanged(e));
-      SelectedDateProperty.Changed.AddClassHandler<Calendar>((x, e) => x.OnSelectedDateChanged(e));
-      DisplayDateProperty.Changed.AddClassHandler<Calendar>((x, e) => x.OnDisplayDateChanged(e));
-      DisplayDateStartProperty.Changed.AddClassHandler<Calendar>((x, e) => x.OnDisplayDateStartChanged(e));
-      DisplayDateEndProperty.Changed.AddClassHandler<Calendar>((x, e) => x.OnDisplayDateEndChanged(e));
-      KeyDownEvent.AddClassHandler<Calendar>((x, e) => x.Calendar_KeyDown(e));
-      KeyUpEvent.AddClassHandler<Calendar>((x, e) => x.Calendar_KeyUp(e));
-   }
-
-   /// <summary>
-   /// Initializes a new instance of the
-   /// <see cref="T:System.Windows.Controls.Calendar" /> class.
-   /// </summary>
-   public Calendar()
-   {
-      SetCurrentValue(DisplayDateProperty, DateTime.Today);
-      UpdateDisplayDate(this, DisplayDate, DateTime.MinValue);
-      BlackoutDates = new CalendarBlackoutDatesCollection(this);
-      SelectedDates = new SelectedDatesCollection(this);
-      RemovedItems = new Collection<DateTime>();
-      HorizontalAlignmentProperty.OverrideDefaultValue<Calendar>(HorizontalAlignment.Left);
-      VerticalAlignmentProperty.OverrideDefaultValue<Calendar>(VerticalAlignment.Top);
-   }
-
    /// <summary>
    /// Builds the visual tree for the
    /// <see cref="T:System.Windows.Controls.Calendar" /> when a new
@@ -1985,7 +1997,8 @@ public class Calendar : TemplatedControl
    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
    {
       base.OnAttachedToVisualTree(e);
-      TokenResourceBinder.CreateGlobalTokenBinding(this, BorderThicknessProperty, GlobalTokenResourceKey.BorderThickness,
+      TokenResourceBinder.CreateGlobalTokenBinding(this, BorderThicknessProperty,
+                                                   GlobalTokenResourceKey.BorderThickness,
                                                    BindingPriority.Template,
                                                    new RenderScaleAwareThicknessConfigure(this));
    }

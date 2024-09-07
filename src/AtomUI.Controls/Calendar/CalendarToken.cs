@@ -96,6 +96,11 @@ internal class CalendarToken : AbstractControlDesignToken
    /// </summary>
    public Thickness HeaderMargin { get; set; }
    
+   /// <summary>
+   /// 范围日历间距
+   /// </summary>
+   public double RangeCalendarSpacing { get; set; }
+   
    internal override void CalculateFromAlias()
    {
       base.CalculateFromAlias();
@@ -113,10 +118,11 @@ internal class CalendarToken : AbstractControlDesignToken
       WithoutTimeCellHeight = _globalToken.HeightToken.ControlHeightLG * 1.65;
       CellMargin = new Thickness(_globalToken.MarginXXS);
       PanelContentPadding = new Thickness(_globalToken.PaddingSM);
-      ItemPanelMinWidth = 230;
-      ItemPanelMinHeight = 260;
+      ItemPanelMinWidth = 260;
+      ItemPanelMinHeight = 290;
       DayTitleHeight = new GridLength(40, GridUnitType.Pixel);
       HeaderMargin = new Thickness(0, 0, 0, _globalToken.MarginXS);
       CellLineHeight = CellHeight - 2; // 不知道为啥设置成一样，或者不设置文字有些靠下
+      RangeCalendarSpacing = 40;
    }
 }

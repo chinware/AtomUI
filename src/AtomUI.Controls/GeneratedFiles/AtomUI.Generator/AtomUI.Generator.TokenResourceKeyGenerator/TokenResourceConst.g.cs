@@ -146,6 +146,7 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey WithoutTimeCellHeight = new TokenResourceKey("Calendar.WithoutTimeCellHeight", "AtomUI.Token");
         public static readonly TokenResourceKey DayTitleHeight = new TokenResourceKey("Calendar.DayTitleHeight", "AtomUI.Token");
         public static readonly TokenResourceKey HeaderMargin = new TokenResourceKey("Calendar.HeaderMargin", "AtomUI.Token");
+        public static readonly TokenResourceKey RangeCalendarSpacing = new TokenResourceKey("Calendar.RangeCalendarSpacing", "AtomUI.Token");
     }
 
     public static class CheckBoxTokenResourceKey
