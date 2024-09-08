@@ -25,7 +25,7 @@ namespace AtomUI.Controls;
 [PseudoClasses(CalendarDisabledPC)]
 internal class CalendarItem : TemplatedControl
 {
-   private const string CalendarDisabledPC = ":calendardisabled";
+   internal const string CalendarDisabledPC = ":calendardisabled";
    
    #region 公共属性定义
 
@@ -182,20 +182,20 @@ internal class CalendarItem : TemplatedControl
    /// <summary>
    /// The number of days per week.
    /// </summary>
-   private const int NumberOfDaysPerWeek = 7;
+   internal const int NumberOfDaysPerWeek = 7;
 
-   private HeadTextButton? _headerButton;
-   private IconButton? _nextButton;
-   private IconButton? _previousButton;
-   private IconButton? _nextMonthButton;
-   private IconButton? _previousMonthButton;
+   protected HeadTextButton? _headerButton;
+   protected IconButton? _nextButton;
+   protected IconButton? _previousButton;
+   protected IconButton? _nextMonthButton;
+   protected IconButton? _previousMonthButton;
 
-   private DateTime _currentMonth;
-   private bool _isMouseLeftButtonDown;
-   private bool _isMouseLeftButtonDownYearView;
-   private bool _isControlPressed;
+   protected DateTime _currentMonth;
+   protected bool _isMouseLeftButtonDown;
+   protected bool _isMouseLeftButtonDownYearView;
+   protected bool _isControlPressed;
 
-   private readonly System.Globalization.Calendar _calendar = new GregorianCalendar();
+   protected readonly System.Globalization.Calendar _calendar = new GregorianCalendar();
 
    internal Calendar? Owner { get; set; }
    internal CalendarDayButton? CurrentButton { get; set; }
@@ -328,7 +328,7 @@ internal class CalendarItem : TemplatedControl
       }
    }
 
-   private void SetDayTitles()
+   protected void SetDayTitles()
    {
       for (int childIndex = 0; childIndex < Calendar.ColumnsPerMonth; childIndex++) {
          var daytitle = MonthView!.Children[childIndex];
@@ -364,7 +364,7 @@ internal class CalendarItem : TemplatedControl
       }
    }
 
-   internal void UpdateMonthMode()
+   protected internal virtual void UpdateMonthMode()
    {
       if (Owner != null) {
          _currentMonth = Owner.DisplayDateInternal;
@@ -382,7 +382,7 @@ internal class CalendarItem : TemplatedControl
       }
    }
 
-   private void SetMonthModeHeaderButton()
+   protected virtual void SetMonthModeHeaderButton()
    {
       if (HeaderButton != null) {
          if (Owner != null) {
@@ -394,7 +394,7 @@ internal class CalendarItem : TemplatedControl
       }
    }
 
-   private void SetMonthModeNextButton(DateTime firstDayOfMonth)
+   protected void SetMonthModeNextButton(DateTime firstDayOfMonth)
    {
       if (Owner != null && NextButton != null) {
          // DisplayDate is equal to DateTime.MaxValue
@@ -409,7 +409,7 @@ internal class CalendarItem : TemplatedControl
       }
    }
 
-   private void SetMonthModePreviousButton(DateTime firstDayOfMonth)
+   protected void SetMonthModePreviousButton(DateTime firstDayOfMonth)
    {
       if (Owner != null && PreviousButton != null) {
          PreviousButton.IsEnabled = (DateTimeHelper.CompareDays(Owner.DisplayDateRangeStart, firstDayOfMonth) < 0);
@@ -441,10 +441,10 @@ internal class CalendarItem : TemplatedControl
 
             // SET IF THE DAY IS INACTIVE OR NOT: set if the day is a
             // trailing day or not
-            childButton.IsInactive = (DateTimeHelper.CompareYearMonth(dateToAdd, Owner.DisplayDateInternal) != 0);
-
+            childButton.IsInactive = CheckDayInactiveState(dateToAdd);
+            
             // SET IF THE DAY IS TODAY OR NOT
-            childButton.IsToday = (Owner.IsTodayHighlighted && dateToAdd == DateTime.Today);
+            childButton.IsToday = CheckDayIsTodayState(dateToAdd);
 
             // SET IF THE DAY IS SELECTED OR NOT
             childButton.IsSelected = false;
@@ -474,7 +474,25 @@ internal class CalendarItem : TemplatedControl
       }
    }
 
-   private void SetCalendarDayButtons(DateTime firstDayOfMonth)
+   protected virtual bool CheckDayInactiveState(DateTime dateToAdd)
+   {
+      if (Owner is not null) {
+         return DateTimeHelper.CompareYearMonth(dateToAdd, Owner.DisplayDateInternal) != 0;
+      }
+
+      return false;
+   }
+   
+   protected virtual bool CheckDayIsTodayState(DateTime dateToAdd)
+   {
+      if (Owner is not null) {
+         return Owner.IsTodayHighlighted && dateToAdd == DateTime.Today;
+      }
+
+      return false;
+   }
+
+   protected void SetCalendarDayButtons(DateTime firstDayOfMonth)
    {
       int lastMonthToDisplay = PreviousMonthDays(firstDayOfMonth);
       DateTime dateToAdd;

@@ -6,6 +6,13 @@ namespace AtomUI.Controls;
 
 public class RangeCalendar : Calendar
 {
+   public RangeCalendar()
+   {
+      SelectionMode = CalendarSelectionMode.SingleRange;
+   }
+   
+   internal DateTime SecondaryDisplayDateInternal { get; private set; }
+   
    internal CalendarItem? SecondaryMonthControl
    {
       get
@@ -17,7 +24,34 @@ public class RangeCalendar : Calendar
          return null;
       }
    }
+   
+   protected override void OnDisplayDateChanged(AvaloniaPropertyChangedEventArgs e)
+   {
+      UpdateDisplayDate(this, (DateTime)e.NewValue!, (DateTime)e.OldValue!);
+   }
+   
+   private static void UpdateDisplayDate(RangeCalendar c, DateTime addedDate, DateTime removedDate)
+   {
+      _ = c ?? throw new ArgumentNullException(nameof(c));
 
+      // If DisplayDate < DisplayDateStart, DisplayDate = DisplayDateStart
+      if (DateTime.Compare(addedDate, c.DisplayDateRangeStart) < 0) {
+         c.DisplayDate = c.DisplayDateRangeStart;
+         return;
+      }
+
+      // If DisplayDate > DisplayDateEnd, DisplayDate = DisplayDateEnd
+      if (DateTime.Compare(addedDate, c.DisplayDateRangeEnd) > 0) {
+         c.DisplayDate = c.DisplayDateRangeEnd;
+         return;
+      }
+
+      c.DisplayDateInternal = DateTimeHelper.DiscardDayTime(addedDate);
+      c.SecondaryDisplayDateInternal = DateTimeHelper.AddMonths(DateTimeHelper.DiscardDayTime(addedDate), 1) ?? c.DisplayDateInternal;
+      c.UpdateMonths();
+      c.OnDisplayDate(new CalendarDateChangedEventArgs(removedDate, addedDate));
+   }
+   
    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
    {
       base.OnApplyTemplate(e);
@@ -54,6 +88,14 @@ public class RangeCalendar : Calendar
          if (Root is UniformGrid uniformGrid) {
             uniformGrid.Columns = columns;
          }
+      }
+   }
+
+   protected internal override void UpdateMonths()
+   {
+      base.UpdateMonths();
+      if (SecondaryMonthControl is not null) {
+         UpdateCalendarMonths(SecondaryMonthControl);
       }
    }
 }

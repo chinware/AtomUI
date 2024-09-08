@@ -569,7 +569,7 @@ public class Calendar : TemplatedControl
       }
    }
 
-   internal DateTime DisplayDateInternal { get; private set; }
+   internal DateTime DisplayDateInternal { get; set; }
 
    #endregion
 
@@ -807,7 +807,7 @@ public class Calendar : TemplatedControl
       RemovedItems = new Collection<DateTime>();
    }
 
-   private void OnDisplayDateChanged(AvaloniaPropertyChangedEventArgs e)
+   protected virtual void OnDisplayDateChanged(AvaloniaPropertyChangedEventArgs e)
    {
       UpdateDisplayDate(this, (DateTime)e.NewValue!, (DateTime)e.OldValue!);
    }
@@ -833,7 +833,7 @@ public class Calendar : TemplatedControl
       c.OnDisplayDate(new CalendarDateChangedEventArgs(removedDate, addedDate));
    }
 
-   private void OnDisplayDate(CalendarDateChangedEventArgs e)
+   protected void OnDisplayDate(CalendarDateChangedEventArgs e)
    {
       DisplayDateChanged?.Invoke(this, e);
    }
@@ -1073,26 +1073,31 @@ public class Calendar : TemplatedControl
       }
    }
 
-   internal void UpdateMonths()
+   protected internal virtual void UpdateMonths()
    {
       CalendarItem? monthControl = MonthControl;
       if (monthControl != null) {
-         switch (DisplayMode) {
-            case CalendarMode.Month:
-            {
-               monthControl.UpdateMonthMode();
-               break;
-            }
-            case CalendarMode.Year:
-            {
-               monthControl.UpdateYearMode();
-               break;
-            }
-            case CalendarMode.Decade:
-            {
-               monthControl.UpdateDecadeMode();
-               break;
-            }
+         UpdateCalendarMonths(monthControl);
+      }
+   }
+
+   internal void UpdateCalendarMonths(CalendarItem calendarItem)
+   {
+      switch (DisplayMode) {
+         case CalendarMode.Month:
+         {
+            calendarItem.UpdateMonthMode();
+            break;
+         }
+         case CalendarMode.Year:
+         {
+            calendarItem.UpdateYearMode();
+            break;
+         }
+         case CalendarMode.Decade:
+         {
+            calendarItem.UpdateDecadeMode();
+            break;
          }
       }
    }

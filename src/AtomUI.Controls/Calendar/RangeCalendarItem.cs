@@ -1,5 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 
@@ -54,6 +55,12 @@ internal class RangeCalendarItem : CalendarItem
       }
    }
 
+   protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+   {
+      base.OnApplyTemplate(e);
+      SetupNextButtonVisible();
+   }
+
    private void SetupNextButtonVisible()
    {
       IsNextButtonVisible = !IsPrimary || Owner?.DisplayMode == CalendarMode.Decade ||
@@ -76,5 +83,46 @@ internal class RangeCalendarItem : CalendarItem
    {
       base.HandleMonthCalendarButtonMouseUp(sender, e);
       SetupNextButtonVisible();
+   }
+   
+   protected internal override void UpdateMonthMode()
+   {
+      if (Owner is RangeCalendar owner) {
+         _currentMonth = IsPrimary ? owner.DisplayDateInternal : owner.SecondaryDisplayDateInternal;
+      } else {
+         _currentMonth = DateTime.Today;
+      }
+   
+      SetMonthModeHeaderButton();
+      SetMonthModePreviousButton(_currentMonth);
+      SetMonthModeNextButton(_currentMonth);
+   
+      if (MonthView != null) {
+         SetDayTitles();
+         SetCalendarDayButtons(_currentMonth);
+      }
+   }
+   
+   protected override void SetMonthModeHeaderButton()
+   {
+      if (HeaderButton != null) {
+         if (Owner is RangeCalendar owner) {
+            var targetDate = _isPrimary ? owner.DisplayDateInternal : owner.SecondaryDisplayDateInternal;
+            HeaderButton.Content = targetDate.ToString("Y", DateTimeHelper.GetCurrentDateFormat());
+            HeaderButton.IsEnabled = true;
+         } else {
+            HeaderButton.Content = DateTime.Today.ToString("Y", DateTimeHelper.GetCurrentDateFormat());
+         }
+      }
+   }
+   
+   protected override bool CheckDayInactiveState(DateTime dateToAdd)
+   {
+      if (Owner is RangeCalendar owner) {
+         var targetDate = _isPrimary ? owner.DisplayDateInternal : owner.SecondaryDisplayDateInternal;
+         return DateTimeHelper.CompareYearMonth(dateToAdd, targetDate) != 0;
+      }
+   
+      return false;
    }
 }
