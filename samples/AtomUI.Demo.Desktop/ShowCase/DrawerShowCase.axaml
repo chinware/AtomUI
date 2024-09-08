@@ -3,20 +3,74 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:atom="https://atomui.net"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:primitives="clr-namespace:AtomUI.Controls.Primitives;assembly=AtomUI.Controls"
              xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
              mc:Ignorable="d">
     <showcase:ShowCasePanel>
 
+        <showcase:ShowCasePanel.Styles>
+            <Style Selector="Button">
+                <Setter Property="Foreground" Value="Aqua" />
+                <Setter Property="Background" Value="Tan" />
+            </Style>
+        </showcase:ShowCasePanel.Styles>
+
         <showcase:ShowCaseItem Title="Basic" Description="Basic drawer.">
-            <atom:DrawerContainer>
-                <Panel>
-                    <Border Height="300" atom:Watermark.Glyph="{atom:TextGlyph 'AtomUI'}" />
-                    <atom:Drawer Background="Gray">
-                        <atom:Button ButtonType="Primary" Text="Close" VerticalAlignment="Top" />
-                    </atom:Drawer>
-                </Panel>
-            </atom:DrawerContainer>
+            <Grid ColumnDefinitions="Auto,*">
+                <Border Grid.ColumnSpan="2"
+                        Height="300"
+                        atom:Watermark.Glyph="{atom:TextGlyph 'AtomUI'}" />
+                <StackPanel Grid.Column="0">
+                    <atom:CheckBox x:Name="ToggleButton1"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Top"
+                                   Content="Open Drawer #1" />
+                    <atom:CheckBox x:Name="ToggleButton2"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Top"
+                                   Content="Open Drawer #2" />
+                    <ComboBox x:Name="CbxHorizontalAlignment" ItemsSource="{desktop:Enum atom:DrawerPlacement}" />
+                    <Button Click="ButtonOpenOnCurrentParent_OnClick" Content="Open On Current's Parent" />
+                </StackPanel>
+
+                <Grid Grid.Column="1" ColumnDefinitions="*,*">
+                    <TextBlock Text="Left between a drawer." />
+                    <Panel Grid.Column="1">
+                        <atom:Drawer x:Name="Drawer1"
+                                     Background="Gray"
+                                     IsOpen="{Binding #ToggleButton1.IsChecked}"
+                                     OpenOn="{Binding $parent[Panel]}"
+                                     Placement="{Binding #CbxHorizontalAlignment.SelectedItem}"
+                                     ShowMask="True">
+                            <Border Background="White">
+                                <atom:Button HorizontalAlignment="Right"
+                                             VerticalAlignment="Top"
+                                             ButtonType="Primary"
+                                             Click="Button_OnClick"
+                                             Text="Button in Drawer #1" />
+                            </Border>
+                        </atom:Drawer>
+                    </Panel>
+                </Grid>
+
+
+                <atom:Drawer x:Name="Drawer2"
+                             Grid.Column="1"
+                             Background="Gray"
+                             IsOpen="{Binding #ToggleButton2.IsChecked}"
+                             Placement="{Binding #CbxHorizontalAlignment.SelectedItem}"
+                             ShowMask="True">
+                    <Border Background="White">
+                        <atom:Button HorizontalAlignment="Right"
+                                     VerticalAlignment="Top"
+                                     ButtonType="Text"
+                                     Click="Button_OnClick"
+                                     Text="Button in Drawer #2" />
+                    </Border>
+                </atom:Drawer>
+            </Grid>
         </showcase:ShowCaseItem>
 
     </showcase:ShowCasePanel>

@@ -1,3 +1,4 @@
+using System.Reactive.Disposables;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Threading;
@@ -26,11 +27,21 @@ namespace AtomUI.Controls.Primitives
         }
         public static readonly AttachedProperty<Visual> TargetProperty = AvaloniaProperty
             .RegisterAttached<AtomLayer, Control, Visual>("Target");
+
+        public static Visual? GetBoundsAnchor(Visual element)
+        {
+            return element.GetValue(BoundsAnchorProperty);
+        }
+        public static void SetBoundsAnchor(Visual element, Visual? value)
+        {
+            element.SetValue(BoundsAnchorProperty, value);
+        }
+        public static readonly AttachedProperty<Visual?> BoundsAnchorProperty = AvaloniaProperty
+            .RegisterAttached<AtomLayer, Visual, Visual?>("BoundsAnchor");
         
         #endregion
 
 
-        
         public Visual? Host
         {
             get => GetValue(HostProperty);
@@ -48,17 +59,41 @@ namespace AtomUI.Controls.Primitives
             .Register<AtomLayer, Vector>(nameof(HostOffset));
 
         private readonly IList<WeakReference<Control>> _detachedAdorners = new List<WeakReference<Control>>();
-        
+
+
+        #region Ctor
+
         static AtomLayer()
         {
-            HostOffsetProperty.Changed.AddClassHandler<AtomLayer>((layer, args) =>
+            HostOffsetProperty.Changed.AddClassHandler<AtomLayer>((layer, args) => { layer.Measure(); });
+            BoundsAnchorProperty.Changed.AddClassHandler<Visual>((target, args) =>
             {
-                layer.Measure();
+                var layer = target.GetLayer();
+                layer?.MonitorTargetBounds(target);
+                layer?.UpdateAdornersLocationOfTarget(target);
+                layer?.Measure();
             });
         }
-        
-        internal AtomLayer() { }
-        
+
+        internal AtomLayer()
+        {
+            Children.CollectionChanged += (sender, args) =>
+            {
+                if (_internalOperation)
+                {
+                    return;
+                }
+
+                throw new InvalidOperationException(
+                    $"Please use {nameof(AddAdorner)}() method to add a child to {nameof(AtomLayer)} instead of adding it by Children's Add().");
+            };
+        }
+
+        #endregion
+
+
+        #region Public Methods
+
         public T? GetAdorner<T>(Visual target) where T : Control
         {
             return this.Children.OfType<T>().FirstOrDefault(a => GetTarget(a) == target);
@@ -75,20 +110,38 @@ namespace AtomUI.Controls.Primitives
             {
                 return;
             }
-            
-            target.PropertyChanged -= TargetOnPropertyChanged;
-            target.PropertyChanged += TargetOnPropertyChanged;
-            
+
+            MonitorTargetBounds(target);
+
             target.AttachedToVisualTree   -= OnTargetOnAttachedToVisualTree;
             target.DetachedFromVisualTree -= OnTargetOnDetachedFromVisualTree;
             target.AttachedToVisualTree   += OnTargetOnAttachedToVisualTree;
             target.DetachedFromVisualTree += OnTargetOnDetachedFromVisualTree;
-            
+
             SetTarget(adorner, target);
-            Children.Add(adorner);
+            AddChild(adorner);
             UpdateLocation(target, adorner);
             Arrange();
         }
+
+        public void RemoveAdorner<T>(Visual target) where T : Control
+        {
+            var adorners = GetAdorners(target).OfType<T>().ToList();
+            foreach (var adorner in adorners)
+            {
+                RemoveChild(adorner);
+            }
+        }
+
+        public void RemoveAdorner(Visual target, Control adorner)
+        {
+            RemoveChild(adorner);
+        }
+
+        #endregion
+        
+
+        #region Measure & Arrange
 
         private void Measure()
         {
@@ -101,26 +154,17 @@ namespace AtomUI.Controls.Primitives
             Arrange(new Rect(new Point(HostOffset.X, -HostOffset.Y), new Size()));
         }
 
-        private void TargetOnPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
+        #endregion
+        
+
+        #region Update Adorner Location
+
+        private void UpdateAdornersLocationOfTarget(Visual target)
         {
-            if (e.Property != BoundsProperty)
+            foreach (var a in GetAdorners(target))
             {
-                return;
+                UpdateLocation(target, a);
             }
-            
-            if (sender is not Visual target)
-            {
-                return;
-            }
-            
-            // Child element's bounds will be updated before it's ancestors do.
-            Dispatcher.UIThread.Post(() =>
-            {
-                foreach (var adorner in GetAdorners(target))
-                {
-                    UpdateLocation(target, adorner);
-                }    
-            }, DispatcherPriority.Send);
         }
 
         private void UpdateLocation(Visual target, Control adorner)
@@ -146,16 +190,24 @@ namespace AtomUI.Controls.Primitives
 
         private void UpdateLocationCore(Visual target, Control adorner)
         {
-            var matrix = target.TransformToVisual(this)!;
+            var provider = GetBoundsAnchor(target);
+            provider ??= target;
+
+            var matrix = provider.TransformToVisual(this)!;
             var x      = matrix.Value.M31;
             var y      = matrix.Value.M32;
-            
+
             SetLeft(adorner, x);
             SetTop(adorner, y);
-            adorner.Width  = target.Bounds.Width;
-            adorner.Height = target.Bounds.Height;
+            adorner.Width  = provider.Bounds.Width;
+            adorner.Height = provider.Bounds.Height;
         }
 
+        #endregion
+        
+
+        #region Attach & Detach
+        
         private void OnTargetOnAttachedToVisualTree(object? sender, VisualTreeAttachmentEventArgs args)
         {
             if (sender is not Visual target)
@@ -173,27 +225,99 @@ namespace AtomUI.Controls.Primitives
                     _detachedAdorners.RemoveAt(i--);
                 }
             }
-            
+
             adorners = adorners.Where(a => Children.Contains(a) == false && GetTarget(a) == target).ToList();
             foreach (var adorner in adorners)
             {
-                Children.Add(adorner);   
+                AddChild(adorner);
             }
         }
-        
+
         private void OnTargetOnDetachedFromVisualTree(object? sender, VisualTreeAttachmentEventArgs args)
         {
             if (sender is not Visual target)
             {
                 return;
             }
-           
+
             var adorners = target.GetAdorners();
             foreach (var adorner in adorners)
             {
-                Children.Remove(adorner);   
+                RemoveChild(adorner);
                 _detachedAdorners.Add(new WeakReference<Control>(adorner));
             }
         }
+
+        #endregion
+        
+
+        #region Monitor Target Bounds
+
+        private IDisposable? _monitoringTargetBoundsDisposable;
+
+        private void MonitorTargetBounds(Visual target)
+        {
+            _monitoringTargetBoundsDisposable?.Dispose();
+            _monitoringTargetBoundsDisposable = null;
+
+            var provider = GetBoundsAnchor(target);
+            provider ??= target;
+
+            provider.PropertyChanged -= TargetBoundsOnPropertyChanged;
+            provider.PropertyChanged += TargetBoundsOnPropertyChanged;
+
+            _monitoringTargetBoundsDisposable = Disposable.Create(() =>
+            {
+                provider.PropertyChanged -= TargetBoundsOnPropertyChanged;
+            });
+
+            return;
+
+            void TargetBoundsOnPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
+            {
+                if (e.Property != BoundsProperty)
+                {
+                    return;
+                }
+
+                // Child element's bounds will be updated before it's ancestors do.
+                Dispatcher.UIThread.Post(() => UpdateAdornersLocationOfTarget(target), DispatcherPriority.Send);
+            }
+        }
+
+        #endregion
+
+
+        #region Children
+
+        private bool _internalOperation = false;
+
+        private void AddChild(Control adorner)
+        {
+            try
+            {
+                _internalOperation = true;
+                Children.Add(adorner);
+            }
+            finally
+            {
+                _internalOperation = false;
+            }
+        }
+
+        private void RemoveChild(Control adorner)
+        {
+            try
+            {
+                _internalOperation = true;
+                Children.Remove(adorner);
+            }
+            finally
+            {
+                _internalOperation = false;
+            }
+        }
+
+        #endregion
     }
 }
