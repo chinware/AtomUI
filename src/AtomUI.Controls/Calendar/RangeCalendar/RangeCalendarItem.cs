@@ -122,14 +122,6 @@ internal class RangeCalendarItem : TemplatedControl
          _primaryNextButton = value;
 
          if (_primaryNextButton != null) {
-            // If the user does not provide a Content value in template,
-            // we provide a helper text that can be used in
-            // Accessibility this text is not shown on the UI, just used
-            // for Accessibility purposes
-            if (_primaryNextButton.Content == null) {
-               _primaryNextButton.Content = "next button";
-            }
-            
             _primaryNextButton.Click += HandleNextButtonClick;
             _primaryNextButton.Focusable = false;
          }
@@ -146,14 +138,6 @@ internal class RangeCalendarItem : TemplatedControl
          _primaryNextMonthButton = value;
 
          if (_primaryNextMonthButton != null) {
-            // If the user does not provide a Content value in template,
-            // we provide a helper text that can be used in
-            // Accessibility this text is not shown on the UI, just used
-            // for Accessibility purposes
-            if (_primaryNextMonthButton.Content == null) {
-               _primaryNextMonthButton.Content = "next button";
-            }
-            
             _primaryNextMonthButton.Click += HandleNextMonthButtonClick;
             _primaryNextMonthButton.Focusable = false;
          }
@@ -174,14 +158,6 @@ internal class RangeCalendarItem : TemplatedControl
          _primaryPreviousButton = value;
 
          if (_primaryPreviousButton != null) {
-            // If the user does not provide a Content value in template,
-            // we provide a helper text that can be used in
-            // Accessibility this text is not shown on the UI, just used
-            // for Accessibility purposes
-            if (_primaryPreviousButton.Content == null) {
-               _primaryPreviousButton.Content = "previous button";
-            }
-            
             _primaryPreviousButton.Click += HandlePreviousButtonClick;
             _primaryPreviousButton.Focusable = false;
          }
@@ -198,14 +174,6 @@ internal class RangeCalendarItem : TemplatedControl
          _primaryPreviousMonthButton = value;
 
          if (_primaryPreviousMonthButton != null) {
-            // If the user does not provide a Content value in template,
-            // we provide a helper text that can be used in
-            // Accessibility this text is not shown on the UI, just used
-            // for Accessibility purposes
-            if (_primaryPreviousMonthButton.Content == null) {
-               _primaryPreviousMonthButton.Content = "previous button";
-            }
-            
             _primaryPreviousMonthButton.Click += HandlePreviousMonthButtonClick;
             _primaryPreviousMonthButton.Focusable = false;
          }
@@ -226,14 +194,6 @@ internal class RangeCalendarItem : TemplatedControl
          _secondaryNextButton = value;
 
          if (_secondaryNextButton != null) {
-            // If the user does not provide a Content value in template,
-            // we provide a helper text that can be used in
-            // Accessibility this text is not shown on the UI, just used
-            // for Accessibility purposes
-            if (_secondaryNextButton.Content == null) {
-               _secondaryNextButton.Content = "next button";
-            }
-            
             _secondaryNextButton.Click += HandleNextButtonClick;
             _secondaryNextButton.Focusable = false;
          }
@@ -250,14 +210,6 @@ internal class RangeCalendarItem : TemplatedControl
          _secondaryNextMonthButton = value;
 
          if (_secondaryNextMonthButton != null) {
-            // If the user does not provide a Content value in template,
-            // we provide a helper text that can be used in
-            // Accessibility this text is not shown on the UI, just used
-            // for Accessibility purposes
-            if (_secondaryNextMonthButton.Content == null) {
-               _secondaryNextMonthButton.Content = "next button";
-            }
-            
             _secondaryNextMonthButton.Click += HandleNextMonthButtonClick;
             _secondaryNextMonthButton.Focusable = false;
          }
@@ -278,14 +230,6 @@ internal class RangeCalendarItem : TemplatedControl
          _secondaryPreviousButton = value;
 
          if (_secondaryPreviousButton != null) {
-            // If the user does not provide a Content value in template,
-            // we provide a helper text that can be used in
-            // Accessibility this text is not shown on the UI, just used
-            // for Accessibility purposes
-            if (_secondaryPreviousButton.Content == null) {
-               _secondaryPreviousButton.Content = "previous button";
-            }
-            
             _secondaryPreviousButton.Click += HandlePreviousButtonClick;
             _secondaryPreviousButton.Focusable = false;
          }
@@ -302,14 +246,6 @@ internal class RangeCalendarItem : TemplatedControl
          _secondaryPreviousMonthButton = value;
 
          if (_secondaryPreviousMonthButton != null) {
-            // If the user does not provide a Content value in template,
-            // we provide a helper text that can be used in
-            // Accessibility this text is not shown on the UI, just used
-            // for Accessibility purposes
-            if (_secondaryPreviousMonthButton.Content == null) {
-               _secondaryPreviousMonthButton.Content = "previous button";
-            }
-            
             _secondaryPreviousMonthButton.Click += HandlePreviousMonthButtonClick;
             _secondaryPreviousMonthButton.Focusable = false;
          }
@@ -664,11 +600,8 @@ internal class RangeCalendarItem : TemplatedControl
 
             // SET IF THE DAY IS SELECTED OR NOT
             childButton.IsSelected = false;
-            foreach (DateTime item in Owner.SelectedDates) {
-               // Since we should be comparing the Date values not
-               // DateTime values, we can't use
-               // Owner.SelectedDates.Contains(dateToAdd) directly
-               childButton.IsSelected |= (DateTimeHelper.CompareDays(dateToAdd, item) == 0);
+            if (Owner.SelectedRangeStartDate is not null && Owner.SelectedRangeEndDate is not null) {
+               childButton.IsSelected = DateTimeHelper.InRange(dateToAdd, Owner.SelectedRangeStartDate.Value, Owner.SelectedRangeEndDate.Value);
             }
 
             // SET THE FOCUS ELEMENT
@@ -1106,16 +1039,15 @@ internal class RangeCalendarItem : TemplatedControl
                _isMouseLeftButtonDown = true;
                // Set the start or end of the selection
                // range
-               if (shift) {
+               if (Owner.HoverStart is null) {
+                  Owner.UnHighlightDays();
+                  Owner.HoverStart = selectedDate;
+                  Owner.HoverStartIndex = b.Index;
+               } else if (Owner.HoverStart is not null && Owner.HoverEnd is not null) {
                   Owner.UnHighlightDays();
                   Owner.HoverEnd = selectedDate;
                   Owner.HoverEndIndex = b.Index;
                   Owner.HighlightDays();
-               } else {
-                  Owner.UnHighlightDays();
-                  Owner.HoverStart = selectedDate;
-                  Owner.HoverStartIndex = b.Index;
-                  Console.WriteLine(Owner.HoverStartIndex);
                }
             } else {
                // If a click occurs on a BlackOutDay we set the
@@ -1124,6 +1056,30 @@ internal class RangeCalendarItem : TemplatedControl
             }
          } else {
             _isControlPressed = false;
+         }
+      }
+   }
+   
+   internal void HandleCellMouseLeftButtonUp(object? sender, PointerReleasedEventArgs e)
+   {
+      if (Owner != null) {
+         RangeCalendarDayButton? b = sender as RangeCalendarDayButton;
+         if (b != null && !b.IsBlackout) {
+            Owner.OnDayButtonMouseUp(e);
+         }
+
+         _isMouseLeftButtonDown = false;
+         if (b != null && b.DataContext is DateTime selectedDate) {
+
+            if (Owner.HoverStart.HasValue) {
+               AddSelection(b, selectedDate);
+            } else {
+               // If the day is Disabled but a trailing day we should
+               // be able to switch months
+               if (b.IsInactive && b.IsBlackout) {
+                  Owner.OnDayClick(selectedDate);
+               }
+            }
          }
       }
    }
@@ -1140,38 +1096,7 @@ internal class RangeCalendarItem : TemplatedControl
             // will throw away the BlackOutDates based on the
             // SelectionMode
             Owner.IsMouseSelection = true;
-            Owner.SelectedDates.AddRange(Owner.HoverStart.Value, Owner.HoverEnd.Value);
             Owner.OnDayClick(selectedDate);
-         }
-      }
-   }
-
-   internal void HandleCellMouseLeftButtonUp(object? sender, PointerReleasedEventArgs e)
-   {
-      if (Owner != null) {
-         RangeCalendarDayButton? b = sender as RangeCalendarDayButton;
-         if (b != null && !b.IsBlackout) {
-            Owner.OnDayButtonMouseUp(e);
-         }
-
-         _isMouseLeftButtonDown = false;
-         if (b != null && b.DataContext is DateTime selectedDate) {
-
-            if (Owner.HoverStart.HasValue) {
-               // Update SelectedDates
-               foreach (DateTime item in Owner.SelectedDates) {
-                  Owner.RemovedItems.Add(item);
-               }
-
-               Owner.SelectedDates.ClearInternal();
-               AddSelection(b, selectedDate);
-            } else {
-               // If the day is Disabled but a trailing day we should
-               // be able to switch months
-               if (b.IsInactive && b.IsBlackout) {
-                  Owner.OnDayClick(selectedDate);
-               }
-            }
          }
       }
    }

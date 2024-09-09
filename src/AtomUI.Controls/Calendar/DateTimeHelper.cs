@@ -100,6 +100,17 @@ internal static class DateTimeHelper
 
       return false;
    }
+   
+   public static bool InRange(DateTime date, in DateTime rangeStart, in DateTime rangeEnd)
+   {
+      Debug.Assert(DateTime.Compare(rangeStart, rangeEnd) < 1, "The range should start before it ends!");
+
+      if (CompareDays(date, rangeStart) > -1 && CompareDays(date, rangeEnd) < 1) {
+         return true;
+      }
+
+      return false;
+   }
 
    public static string ToYearMonthPatternString(DateTime date)
    {

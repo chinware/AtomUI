@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Text;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
@@ -92,37 +93,24 @@ public class RangeCalendar : TemplatedControl
       set => SetValue(DisplayModeProperty, value);
    }
    
-   public static readonly StyledProperty<DateTime?> SelectedDateProperty =
-      AvaloniaProperty.Register<RangeCalendar, DateTime?>(nameof(SelectedDate),
+   public static readonly StyledProperty<DateTime?> SelectedRangeStartDateProperty =
+      AvaloniaProperty.Register<RangeCalendar, DateTime?>(nameof(SelectedRangeStartDate),
                                                      defaultBindingMode: BindingMode.TwoWay);
-
-   /// <summary>
-   /// Gets or sets the currently selected date.
-   /// </summary>
-   /// <value>The date currently selected. The default is null.</value>
-   /// <exception cref="T:System.ArgumentOutOfRangeException">
-   /// The given date is outside the range specified by
-   /// <see cref="P:System.Windows.Controls.RangeCalendar.DisplayDateStart" />
-   /// and <see cref="P:System.Windows.Controls.RangeCalendar.DisplayDateEnd" />
-   /// -or-
-   /// The given date is in the
-   /// <see cref="P:System.Windows.Controls.RangeCalendar.BlackoutDates" />
-   /// collection.
-   /// </exception>
-   /// <exception cref="T:System.InvalidOperationException">
-   /// If set to anything other than null when
-   /// <see cref="P:System.Windows.Controls.RangeCalendar.SelectionMode" /> is
-   /// set to
-   /// <see cref="F:System.Windows.Controls.CalendarSelectionMode.None" />.
-   /// </exception>
-   /// <remarks>
-   /// Use this property when SelectionMode is set to SingleDate.  In other
-   /// modes, this property will always be the first date in SelectedDates.
-   /// </remarks>
-   public DateTime? SelectedDate
+   
+   public DateTime? SelectedRangeStartDate
    {
-      get => GetValue(SelectedDateProperty);
-      set => SetValue(SelectedDateProperty, value);
+      get => GetValue(SelectedRangeStartDateProperty);
+      set => SetValue(SelectedRangeStartDateProperty, value);
+   }
+   
+   public static readonly StyledProperty<DateTime?> SelectedRangeEndDateProperty =
+      AvaloniaProperty.Register<RangeCalendar, DateTime?>(nameof(SelectedRangeEndDate),
+                                                          defaultBindingMode: BindingMode.TwoWay);
+   
+   public DateTime? SelectedRangeEndDate
+   {
+      get => GetValue(SelectedRangeEndDateProperty);
+      set => SetValue(SelectedRangeEndDateProperty, value);
    }
 
    public static readonly StyledProperty<DateTime> DisplayDateProperty =
@@ -159,51 +147,6 @@ public class RangeCalendar : TemplatedControl
       get => GetValue(DisplayDateProperty);
       set => SetValue(DisplayDateProperty, value);
    }
-
-   /// <summary>
-   /// Gets a collection of selected dates.
-   /// </summary>
-   /// <value>
-   /// A <see cref="T:System.Windows.Controls.SelectedDatesCollection" />
-   /// object that contains the currently selected dates. The default is an
-   /// empty collection.
-   /// </value>
-   /// <remarks>
-   /// Dates can be added to the collection either individually or in a
-   /// range using the AddRange method.  Depending on the value of the
-   /// SelectionMode property, adding a date or range to the collection may
-   /// cause it to be cleared.  The following table lists how
-   /// CalendarSelectionMode affects the SelectedDates property.
-   /// 
-   ///     CalendarSelectionMode   Description
-   ///     None                    No selections are allowed.  SelectedDate
-   ///                             cannot be set and no values can be added
-   ///                             to SelectedDates.
-   ///                             
-   ///     SingleDate              Only a single date can be selected,
-   ///                             either by setting SelectedDate or the
-   ///                             first value in SelectedDates.  AddRange
-   ///                             cannot be used.
-   ///                             
-   ///     SingleRange             A single range of dates can be selected.
-   ///                             Setting SelectedDate, adding a date
-   ///                             individually to SelectedDates, or using
-   ///                             AddRange will clear all previous values
-   ///                             from SelectedDates.
-   ///     MultipleRange           Multiple non-contiguous ranges of dates
-   ///                             can be selected. Adding a date
-   ///                             individually to SelectedDates or using
-   ///                             AddRange will not clear SelectedDates.
-   ///                             Setting SelectedDate will still clear
-   ///                             SelectedDates, but additional dates or
-   ///                             range can then be added.  Adding a range
-   ///                             that includes some dates that are
-   ///                             already selected or overlaps with
-   ///                             another range results in the union of
-   ///                             the ranges and does not cause an
-   ///                             exception.
-   /// </remarks>
-   public RangeSelectedDatesCollection SelectedDates { get; private set; }
 
    public static readonly StyledProperty<DateTime?> DisplayDateStartProperty =
       AvaloniaProperty.Register<RangeCalendar, DateTime?>(nameof(DisplayDateStart),
@@ -459,32 +402,32 @@ public class RangeCalendar : TemplatedControl
 
    private void OnSelectedDateChanged(AvaloniaPropertyChangedEventArgs e)
    {
-      if (!_displayDateIsChanging) {
-         DateTime? addedDate;
-
-         addedDate = (DateTime?)e.NewValue;
-
-         if (IsValidDateSelection(this, addedDate)) {
-            if (addedDate == null) {
-               SelectedDates.Clear();
-            } else {
-               if (!(SelectedDates.Count > 0 && SelectedDates[0] == addedDate.Value)) {
-                  foreach (DateTime item in SelectedDates) {
-                     RemovedItems.Add(item);
-                  }
-
-                  SelectedDates.ClearInternal();
-                  // the value is added as a range so that the
-                  // SelectedDatesChanged event can be thrown with
-                  // all the removed items
-                  SelectedDates.AddRange(addedDate.Value, addedDate.Value);
-               }
-            }
-            
-         } else {
-            throw new ArgumentOutOfRangeException(nameof(e), "SelectedDate value is not valid.");
-         }
-      }
+      // if (!_displayDateIsChanging) {
+      //    DateTime? addedDate;
+      //
+      //    addedDate = (DateTime?)e.NewValue;
+      //
+      //    if (IsValidDateSelection(this, addedDate)) {
+      //       if (addedDate == null) {
+      //          SelectedDates.Clear();
+      //       } else {
+      //          if (!(SelectedDates.Count > 0 && SelectedDates[0] == addedDate.Value)) {
+      //             foreach (DateTime item in SelectedDates) {
+      //                RemovedItems.Add(item);
+      //             }
+      //
+      //             SelectedDates.ClearInternal();
+      //             // the value is added as a range so that the
+      //             // SelectedDatesChanged event can be thrown with
+      //             // all the removed items
+      //             SelectedDates.AddRange(addedDate.Value, addedDate.Value);
+      //          }
+      //       }
+      //       
+      //    } else {
+      //       throw new ArgumentOutOfRangeException(nameof(e), "SelectedDate value is not valid.");
+      //    }
+      // }
    }
 
    private static bool IsSelectionChanged(SelectionChangedEventArgs e)
@@ -517,12 +460,11 @@ public class RangeCalendar : TemplatedControl
       FirstDayOfWeekProperty.Changed.AddClassHandler<RangeCalendar>((x, e) => x.OnFirstDayOfWeekChanged(e));
       IsTodayHighlightedProperty.Changed.AddClassHandler<RangeCalendar>((x, e) => x.OnIsTodayHighlightedChanged(e));
       DisplayModeProperty.Changed.AddClassHandler<RangeCalendar>((x, e) => x.OnDisplayModePropertyChanged(e));
-      SelectedDateProperty.Changed.AddClassHandler<RangeCalendar>((x, e) => x.OnSelectedDateChanged(e));
+      // SelectedDateProperty.Changed.AddClassHandler<RangeCalendar>((x, e) => x.OnSelectedDateChanged(e));
       DisplayDateProperty.Changed.AddClassHandler<RangeCalendar>((x, e) => x.OnDisplayDateChanged(e));
       DisplayDateStartProperty.Changed.AddClassHandler<RangeCalendar>((x, e) => x.OnDisplayDateStartChanged(e));
       DisplayDateEndProperty.Changed.AddClassHandler<RangeCalendar>((x, e) => x.OnDisplayDateEndChanged(e));
       KeyDownEvent.AddClassHandler<RangeCalendar>((x, e) => x.HandleCalendarKeyDown(e));
-      KeyUpEvent.AddClassHandler<RangeCalendar>((x, e) => x.HandleCalendarKeyUp(e));
       HorizontalAlignmentProperty.OverrideDefaultValue<RangeCalendar>(HorizontalAlignment.Left);
       VerticalAlignmentProperty.OverrideDefaultValue<RangeCalendar>(VerticalAlignment.Top);
    }
@@ -536,7 +478,6 @@ public class RangeCalendar : TemplatedControl
       SetCurrentValue(DisplayDateProperty, DateTime.Today);
       UpdateDisplayDate(this, DisplayDate, DateTime.MinValue);
       BlackoutDates = new RangeCalendarBlackoutDatesCollection(this);
-      SelectedDates = new RangeSelectedDatesCollection(this);
       RemovedItems = new Collection<DateTime>();
    }
 
@@ -581,7 +522,8 @@ public class RangeCalendar : TemplatedControl
          if (newValue.HasValue) {
             // DisplayDateStart coerces to the value of the
             // SelectedDateMin if SelectedDateMin < DisplayDateStart
-            DateTime? selectedDateMin = SelectedDateMin(this);
+       
+            DateTime? selectedDateMin = SelectedRangeStartDate;
 
             if (selectedDateMin.HasValue && DateTime.Compare(selectedDateMin.Value, newValue.Value) < 0) {
                SetCurrentValue(DisplayDateStartProperty, selectedDateMin.Value);
@@ -628,28 +570,7 @@ public class RangeCalendar : TemplatedControl
    /// </para>
    /// </remarks>
    public RangeCalendarBlackoutDatesCollection BlackoutDates { get; private set; }
-
-   private static DateTime? SelectedDateMin(RangeCalendar cal)
-   {
-      DateTime selectedDateMin;
-
-      if (cal.SelectedDates.Count > 0) {
-         selectedDateMin = cal.SelectedDates[0];
-         Debug.Assert(DateTime.Compare(cal.SelectedDate!.Value, selectedDateMin) == 0,
-                      "The SelectedDate should be the minimum selected date!");
-      } else {
-         return null;
-      }
-
-      foreach (DateTime selectedDate in cal.SelectedDates) {
-         if (DateTime.Compare(selectedDate, selectedDateMin) < 0) {
-            selectedDateMin = selectedDate;
-         }
-      }
-
-      return selectedDateMin;
-   }
-
+   
    internal DateTime DisplayDateRangeStart
    {
       get => DisplayDateStart.GetValueOrDefault(DateTime.MinValue);
@@ -663,7 +584,7 @@ public class RangeCalendar : TemplatedControl
          if (newValue.HasValue) {
             // DisplayDateEnd coerces to the value of the
             // SelectedDateMax if SelectedDateMax > DisplayDateEnd
-            DateTime? selectedDateMax = SelectedDateMax(this);
+            DateTime? selectedDateMax = SelectedRangeEndDate;
 
             if (selectedDateMax.HasValue && DateTime.Compare(selectedDateMax.Value, newValue.Value) > 0) {
                SetCurrentValue(DisplayDateEndProperty, selectedDateMax.Value);
@@ -686,27 +607,6 @@ public class RangeCalendar : TemplatedControl
 
          UpdateMonths();
       }
-   }
-
-   private static DateTime? SelectedDateMax(RangeCalendar cal)
-   {
-      DateTime selectedDateMax;
-
-      if (cal.SelectedDates.Count > 0) {
-         selectedDateMax = cal.SelectedDates[0];
-         Debug.Assert(DateTime.Compare(cal.SelectedDate!.Value, selectedDateMax) == 0,
-                      "The SelectedDate should be the maximum SelectedDate!");
-      } else {
-         return null;
-      }
-
-      foreach (DateTime selectedDate in cal.SelectedDates) {
-         if (DateTime.Compare(selectedDate, selectedDateMax) > 0) {
-            selectedDateMax = selectedDate;
-         }
-      }
-
-      return selectedDateMax;
    }
 
    internal DateTime DisplayDateRangeEnd
@@ -732,12 +632,6 @@ public class RangeCalendar : TemplatedControl
    
    internal int? HoverStartIndex { get; set; }
    internal int? HoverEndIndex { get; set; }
-
-   /// <summary>
-   /// Gets or sets a value indicating whether CalendarDatePicker should change its 
-   /// DisplayDate because of a SelectedDate change on its RangeCalendar.
-   /// </summary>
-   internal bool CalendarDatePickerDisplayDateFlag { get; set; }
 
    internal RangeCalendarDayButton? FindDayButtonFromDay(DateTime day)
    {
@@ -1133,11 +1027,23 @@ public class RangeCalendar : TemplatedControl
 
    public override string ToString()
    {
-      if (SelectedDate != null) {
-         return SelectedDate.Value.ToString(DateTimeHelper.GetCurrentDateFormat());
-      } else {
-         return string.Empty;
+      if (SelectedRangeStartDate != null || SelectedRangeEndDate != null) {
+         var builder = new StringBuilder();
+         if (SelectedRangeStartDate != null) {
+            builder.Append(SelectedRangeStartDate.Value.ToString(DateTimeHelper.GetCurrentDateFormat()));
+         } else {
+            builder.Append('?');
+         }
+         builder.Append(" - ");
+         if (SelectedRangeEndDate != null) {
+            builder.Append(SelectedRangeEndDate.Value.ToString(DateTimeHelper.GetCurrentDateFormat()));
+         } else {
+            builder.Append('?');
+         }
+
+         return builder.ToString();
       }
+      return string.Empty;
    }
 
    public event EventHandler<SelectionChangedEventArgs>? SelectedDatesChanged;
@@ -1163,33 +1069,10 @@ public class RangeCalendar : TemplatedControl
    /// Inherited code: Requires comment.
    /// </summary>
    internal event EventHandler<PointerReleasedEventArgs>? DayButtonMouseUp;
-
-   /// <summary>
-   /// This method adds the days that were selected by Keyboard to the
-   /// SelectedDays Collection.
-   /// </summary>
-   private void AddSelection()
-   {
-      if (HoverEnd != null && HoverStart != null) {
-         foreach (DateTime item in SelectedDates) {
-            RemovedItems.Add(item);
-         }
-
-         SelectedDates.ClearInternal();
-         // In keyboard selection, we are sure that the collection does
-         // not include any blackout days
-         SelectedDates.AddRange(HoverStart.Value, HoverEnd.Value);
-      }
-   }
-
+   
    private void ProcessSelection(bool shift, DateTime? lastSelectedDate, int? index)
    {
       if (lastSelectedDate != null && IsValidKeyboardSelection(this, lastSelectedDate.Value)) {
-         foreach (DateTime item in SelectedDates) {
-            RemovedItems.Add(item);
-         }
-
-         SelectedDates.ClearInternal();
          if (shift) {
             RangeCalendarDayButton? b;
             _isShiftPressed = true;
@@ -1247,7 +1130,6 @@ public class RangeCalendar : TemplatedControl
          } else {
             HoverStart = lastSelectedDate;
             HoverEnd = lastSelectedDate;
-            AddSelection();
             OnDayClick(lastSelectedDate.Value);
          }
       }
@@ -1637,22 +1519,7 @@ public class RangeCalendar : TemplatedControl
          }
       }
    }
-
-   private void HandleCalendarKeyUp(KeyEventArgs e)
-   {
-      if (!e.Handled && (e.Key == Key.LeftShift || e.Key == Key.RightShift)) {
-         ProcessShiftKeyUp();
-      }
-   }
-
-   internal void ProcessShiftKeyUp()
-   {
-      if (_isShiftPressed) {
-         AddSelection();
-         _isShiftPressed = false;
-      }
-   }
-
+   
    protected override void OnGotFocus(GotFocusEventArgs e)
    {
       base.OnGotFocus(e);

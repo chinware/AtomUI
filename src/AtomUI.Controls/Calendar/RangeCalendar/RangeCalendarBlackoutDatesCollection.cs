@@ -181,11 +181,12 @@ public sealed class RangeCalendarBlackoutDatesCollection : ObservableCollection<
 
    private bool IsValid(CalendarDateRange item)
    {
-      foreach (DateTime day in _owner.SelectedDates) {
-         if (DateTimeHelper.InRange(day, item)) {
-            return false;
-         }
-      }
+      // TODO
+      // foreach (DateTime day in _owner.SelectedDates) {
+      //    if (DateTimeHelper.InRange(day, item)) {
+      //       return false;
+      //    }
+      // }
 
       return true;
    }
