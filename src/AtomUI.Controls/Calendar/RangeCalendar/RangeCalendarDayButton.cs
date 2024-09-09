@@ -1,11 +1,11 @@
 ﻿namespace AtomUI.Controls;
 
-internal sealed class CalendarDayButton : BaseCalendarDayButton
+internal sealed class RangeCalendarDayButton : BaseCalendarDayButton
 {
    protected override Type StyleKeyOverride => typeof(BaseCalendarDayButton);
    
    /// <summary>
    /// Gets or sets the Calendar associated with this button.
    /// </summary>
-   internal Calendar? Owner { get; set; }
+   internal RangeCalendar? Owner { get; set; }
 }

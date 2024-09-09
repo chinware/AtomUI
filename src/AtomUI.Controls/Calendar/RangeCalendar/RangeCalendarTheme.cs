@@ -1,11 +1,8 @@
 ﻿using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
-using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.Styling;
 
@@ -39,11 +36,10 @@ public class RangeCalendarTheme : BaseControlTheme
          CreateTemplateParentBinding(frame, Border.BackgroundProperty, RangeCalendar.BackgroundProperty);
          CreateTemplateParentBinding(frame, Border.PaddingProperty, RangeCalendar.PaddingProperty);
          
-         var rootLayout = new UniformGrid()
+         var rootLayout = new Panel()
          {
             Name = RootPart,
             ClipToBounds = true,
-            Columns = 2
          };
          TokenResourceBinder.CreateTokenBinding(rootLayout, StackPanel.SpacingProperty, CalendarTokenResourceKey.RangeCalendarSpacing);
          rootLayout.RegisterInNameScope(scope);
@@ -55,29 +51,7 @@ public class RangeCalendarTheme : BaseControlTheme
          };
          
          calendarItem.RegisterInNameScope(scope);
-
          rootLayout.Children.Add(calendarItem);
-         
-         var secondaryCalendarItem = new RangeCalendarItem()
-         {
-            Name = SecondaryCalendarItemPart,
-            HorizontalAlignment = HorizontalAlignment.Stretch,
-            IsPrimary = false
-         };
-         
-         secondaryCalendarItem.RegisterInNameScope(scope);
-         TokenResourceBinder.CreateTokenBinding(secondaryCalendarItem, RangeCalendarItem.MarginProperty, CalendarTokenResourceKey.RangeCalendarSpacing,
-            BindingPriority.Template,
-            v =>
-            {
-               if (v is double dval) {
-                  return new Thickness(dval, 0, 0, 0);
-               }
-
-               return new Thickness(0);
-            });
-
-         rootLayout.Children.Add(secondaryCalendarItem);
          
          frame.Child = rootLayout;
          
