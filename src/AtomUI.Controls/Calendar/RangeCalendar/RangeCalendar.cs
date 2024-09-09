@@ -12,6 +12,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Media;
+using Avalonia.Utilities;
 
 namespace AtomUI.Controls;
 
@@ -90,37 +91,7 @@ public class RangeCalendar : TemplatedControl
       get => GetValue(DisplayModeProperty);
       set => SetValue(DisplayModeProperty, value);
    }
-
-   public static readonly StyledProperty<CalendarSelectionMode> SelectionModeProperty =
-      AvaloniaProperty.Register<RangeCalendar, CalendarSelectionMode>(
-         nameof(SelectionMode),
-         defaultValue: CalendarSelectionMode.SingleDate);
-
-   /// <summary>
-   /// Gets or sets a value that indicates what kind of selections are
-   /// allowed.
-   /// </summary>
-   /// <value>
-   /// A value that indicates the current selection mode. The default is
-   /// <see cref="F:System.Windows.Controls.CalendarSelectionMode.SingleDate" />.
-   /// </value>
-   /// <remarks>
-   /// <para>
-   /// This property determines whether the RangeCalendar allows no selection,
-   /// selection of a single date, or selection of multiple dates.  The
-   /// selection mode is specified with the CalendarSelectionMode
-   /// enumeration.
-   /// </para>
-   /// <para>
-   /// When this property is changed, all selected dates will be cleared.
-   /// </para>
-   /// </remarks>
-   public CalendarSelectionMode SelectionMode
-   {
-      get => GetValue(SelectionModeProperty);
-      set => SetValue(SelectionModeProperty, value);
-   }
-
+   
    public static readonly StyledProperty<DateTime?> SelectedDateProperty =
       AvaloniaProperty.Register<RangeCalendar, DateTime?>(nameof(SelectedDate),
                                                      defaultBindingMode: BindingMode.TwoWay);
@@ -305,15 +276,13 @@ public class RangeCalendar : TemplatedControl
       {
          LastSelectedDateInternal = value;
 
-         if (SelectionMode == CalendarSelectionMode.None) {
-            if (FocusButton != null) {
-               FocusButton.IsCurrent = false;
-            }
+         if (FocusButton != null) {
+            FocusButton.IsCurrent = false;
+         }
 
-            FocusButton = FindDayButtonFromDay(LastSelectedDate!.Value);
-            if (FocusButton != null) {
-               FocusButton.IsCurrent = HasFocusInternal;
-            }
+         FocusButton = FindDayButtonFromDay(LastSelectedDate!.Value);
+         if (FocusButton != null) {
+            FocusButton.IsCurrent = HasFocusInternal;
          }
       }
    }
@@ -472,19 +441,7 @@ public class RangeCalendar : TemplatedControl
    {
       DisplayModeChanged?.Invoke(this, args);
    }
-
-   private void OnSelectionModeChanged(AvaloniaPropertyChangedEventArgs e)
-   {
-      if (IsValidSelectionMode(e.NewValue!)) {
-         _displayDateIsChanging = true;
-         SetCurrentValue(SelectedDateProperty, null);
-         _displayDateIsChanging = false;
-         SelectedDates.Clear();
-      } else {
-         throw new ArgumentOutOfRangeException(nameof(e), "Invalid SelectionMode");
-      }
-   }
-
+   
    /// <summary>
    /// Inherited code: Requires comment.
    /// </summary>
@@ -503,40 +460,29 @@ public class RangeCalendar : TemplatedControl
    private void OnSelectedDateChanged(AvaloniaPropertyChangedEventArgs e)
    {
       if (!_displayDateIsChanging) {
-         if (SelectionMode != CalendarSelectionMode.None) {
-            DateTime? addedDate;
+         DateTime? addedDate;
 
-            addedDate = (DateTime?)e.NewValue;
+         addedDate = (DateTime?)e.NewValue;
 
-            if (IsValidDateSelection(this, addedDate)) {
-               if (addedDate == null) {
-                  SelectedDates.Clear();
-               } else {
-                  if (!(SelectedDates.Count > 0 && SelectedDates[0] == addedDate.Value)) {
-                     foreach (DateTime item in SelectedDates) {
-                        RemovedItems.Add(item);
-                     }
-
-                     SelectedDates.ClearInternal();
-                     // the value is added as a range so that the
-                     // SelectedDatesChanged event can be thrown with
-                     // all the removed items
-                     SelectedDates.AddRange(addedDate.Value, addedDate.Value);
-                  }
-               }
-
-               // We update the LastSelectedDate for only the Single
-               // mode.  For the other modes it automatically gets
-               // updated when the HoverEnd is updated.
-               if (SelectionMode == CalendarSelectionMode.SingleDate) {
-                  LastSelectedDate = addedDate;
-               }
+         if (IsValidDateSelection(this, addedDate)) {
+            if (addedDate == null) {
+               SelectedDates.Clear();
             } else {
-               throw new ArgumentOutOfRangeException(nameof(e), "SelectedDate value is not valid.");
+               if (!(SelectedDates.Count > 0 && SelectedDates[0] == addedDate.Value)) {
+                  foreach (DateTime item in SelectedDates) {
+                     RemovedItems.Add(item);
+                  }
+
+                  SelectedDates.ClearInternal();
+                  // the value is added as a range so that the
+                  // SelectedDatesChanged event can be thrown with
+                  // all the removed items
+                  SelectedDates.AddRange(addedDate.Value, addedDate.Value);
+               }
             }
+            
          } else {
-            throw new InvalidOperationException(
-               "The SelectedDate property cannot be set when the selection mode is None.");
+            throw new ArgumentOutOfRangeException(nameof(e), "SelectedDate value is not valid.");
          }
       }
    }
@@ -571,7 +517,6 @@ public class RangeCalendar : TemplatedControl
       FirstDayOfWeekProperty.Changed.AddClassHandler<RangeCalendar>((x, e) => x.OnFirstDayOfWeekChanged(e));
       IsTodayHighlightedProperty.Changed.AddClassHandler<RangeCalendar>((x, e) => x.OnIsTodayHighlightedChanged(e));
       DisplayModeProperty.Changed.AddClassHandler<RangeCalendar>((x, e) => x.OnDisplayModePropertyChanged(e));
-      SelectionModeProperty.Changed.AddClassHandler<RangeCalendar>((x, e) => x.OnSelectionModeChanged(e));
       SelectedDateProperty.Changed.AddClassHandler<RangeCalendar>((x, e) => x.OnSelectedDateChanged(e));
       DisplayDateProperty.Changed.AddClassHandler<RangeCalendar>((x, e) => x.OnDisplayDateChanged(e));
       DisplayDateStartProperty.Changed.AddClassHandler<RangeCalendar>((x, e) => x.OnDisplayDateStartChanged(e));
@@ -593,7 +538,6 @@ public class RangeCalendar : TemplatedControl
       BlackoutDates = new RangeCalendarBlackoutDatesCollection(this);
       SelectedDates = new RangeSelectedDatesCollection(this);
       RemovedItems = new Collection<DateTime>();
-      SelectionMode = CalendarSelectionMode.SingleRange;
    }
 
    protected virtual void OnDisplayDateChanged(AvaloniaPropertyChangedEventArgs e)
@@ -963,13 +907,17 @@ public class RangeCalendar : TemplatedControl
          // This assumes a contiguous set of dates:
          if (HoverEndIndex != null && HoverStartIndex != null) {
             SortHoverIndexes(out startIndex, out endIndex);
-            if (monthControl.PrimaryMonthView is not null && endIndex < RangeCalendarItem.MonthViewSize) {
-               HighlightDays(monthControl.PrimaryMonthView, startIndex, endIndex);
+            if (monthControl.PrimaryMonthView is not null) {
+               int primaryStartIndex = MathUtilities.Clamp(startIndex, 7, RangeCalendarItem.MonthViewSize - 1);
+               int primaryEndIndex = MathUtilities.Clamp(endIndex, 7, RangeCalendarItem.MonthViewSize - 1);
+               HighlightDays(monthControl.PrimaryMonthView, primaryStartIndex, primaryEndIndex);
             }
-            if (monthControl.SecondaryMonthView is not null && startIndex >= RangeCalendarItem.MonthViewSize) {
-               startIndex -= RangeCalendarItem.MonthViewSize;
-               endIndex -= RangeCalendarItem.MonthViewSize;
-               HighlightDays(monthControl.SecondaryMonthView, startIndex, endIndex);
+            if (monthControl.SecondaryMonthView is not null) {
+               int secondaryStartIndex = startIndex - RangeCalendarItem.MonthViewSize;
+               int secondaryEndIndex = endIndex - RangeCalendarItem.MonthViewSize;
+               secondaryStartIndex = MathUtilities.Clamp(secondaryStartIndex, 7, RangeCalendarItem.MonthViewSize - 1);
+               secondaryEndIndex = MathUtilities.Clamp(secondaryEndIndex, 7, RangeCalendarItem.MonthViewSize - 1);
+               HighlightDays(monthControl.SecondaryMonthView, secondaryStartIndex, secondaryEndIndex);
             }
          }
       }
@@ -1010,13 +958,17 @@ public class RangeCalendar : TemplatedControl
 
          if (HoverEndIndex != null && HoverStartIndex != null) {
             SortHoverIndexes(out int startIndex, out int endIndex);
-            if (monthControl.PrimaryMonthView is not null  && endIndex < RangeCalendarItem.MonthViewSize) {
-               UnHighlightDays(monthControl.PrimaryMonthView, startIndex, endIndex);
+            if (monthControl.PrimaryMonthView is not null) {
+               int primaryStartIndex = MathUtilities.Clamp(startIndex, 7, RangeCalendarItem.MonthViewSize - 1);
+               int primaryEndIndex = MathUtilities.Clamp(endIndex, 7, RangeCalendarItem.MonthViewSize - 1);
+               UnHighlightDays(monthControl.PrimaryMonthView, primaryStartIndex, primaryEndIndex);
             }
-            if (monthControl.SecondaryMonthView is not null && startIndex >= RangeCalendarItem.MonthViewSize) {
-               startIndex -= RangeCalendarItem.MonthViewSize;
-               endIndex -= RangeCalendarItem.MonthViewSize;
-               UnHighlightDays(monthControl.SecondaryMonthView, startIndex, endIndex);
+            if (monthControl.SecondaryMonthView is not null) {
+               int secondaryStartIndex = startIndex - RangeCalendarItem.MonthViewSize;
+               int secondaryEndIndex = endIndex - RangeCalendarItem.MonthViewSize;
+               secondaryStartIndex = MathUtilities.Clamp(secondaryStartIndex, 7, RangeCalendarItem.MonthViewSize - 1);
+               secondaryEndIndex = MathUtilities.Clamp(secondaryEndIndex, 7, RangeCalendarItem.MonthViewSize - 1);
+               UnHighlightDays(monthControl.SecondaryMonthView, secondaryStartIndex, secondaryEndIndex);
             }
          }
       }
@@ -1025,23 +977,9 @@ public class RangeCalendar : TemplatedControl
    private void UnHighlightDays(Grid targetMonthView, int startIndex, int endIndex)
    {
       if (HoverEnd != null && HoverStart != null) {
-         if (SelectionMode == CalendarSelectionMode.MultipleRange) {
-            for (int i = startIndex; i <= endIndex; i++) {
-               if (targetMonthView.Children[i] is RangeCalendarDayButton b) {
-                  var d = b.DataContext as DateTime?;
-
-                  if (d.HasValue) {
-                     if (!SelectedDates.Contains(d.Value)) {
-                        b.IsSelected = false;
-                     }
-                  }
-               }
-            }
-         } else {
-            // It is SingleRange
-            for (int i = startIndex; i <= endIndex; i++) {
-               ((RangeCalendarDayButton)targetMonthView.Children[i]).IsSelected = false;
-            }
+         // It is SingleRange
+         for (int i = startIndex; i <= endIndex; i++) {
+            ((RangeCalendarDayButton)targetMonthView.Children[i]).IsSelected = false;
          }
       }
    }
@@ -1169,14 +1107,10 @@ public class RangeCalendar : TemplatedControl
       Debug.Assert(DisplayMode == CalendarMode.Month, "DisplayMode should be Month!");
       int i = DateTimeHelper.CompareYearMonth(selectedDate, DisplayDateInternal);
 
-      if (SelectionMode == CalendarSelectionMode.None) {
-         LastSelectedDate = selectedDate;
-      }
-
       if (i > 1) {
-         OnNextClick();
+         OnNextMonthClick();
       } else if (i < 0) {
-         OnPreviousClick();
+         OnPreviousMonthClick();
       }
    }
 
@@ -1250,88 +1184,70 @@ public class RangeCalendar : TemplatedControl
 
    private void ProcessSelection(bool shift, DateTime? lastSelectedDate, int? index)
    {
-      if (SelectionMode == CalendarSelectionMode.None && lastSelectedDate != null) {
-         OnDayClick(lastSelectedDate.Value);
-         return;
-      }
-
       if (lastSelectedDate != null && IsValidKeyboardSelection(this, lastSelectedDate.Value)) {
-         if (SelectionMode == CalendarSelectionMode.SingleRange ||
-             SelectionMode == CalendarSelectionMode.MultipleRange) {
-            foreach (DateTime item in SelectedDates) {
-               RemovedItems.Add(item);
-            }
+         foreach (DateTime item in SelectedDates) {
+            RemovedItems.Add(item);
+         }
 
-            SelectedDates.ClearInternal();
-            if (shift) {
-               RangeCalendarDayButton? b;
-               _isShiftPressed = true;
-               if (HoverStart == null) {
-                  if (LastSelectedDate != null) {
-                     HoverStart = LastSelectedDate;
-                  } else {
-                     if (DateTimeHelper.CompareYearMonth(DisplayDateInternal, DateTime.Today) == 0) {
-                        HoverStart = DateTime.Today;
-                     } else {
-                        HoverStart = DisplayDateInternal;
-                     }
-                  }
-
-                  b = FindDayButtonFromDay(HoverStart.Value);
-                  if (b != null) {
-                     HoverStartIndex = b.Index;
-                  }
-               }
-
-               // the index of the SelectedDate is always the last
-               // selectedDate's index
-               UnHighlightDays();
-               // If we hit a BlackOutDay with keyboard we do not
-               // update the HoverEnd
-               CalendarDateRange range;
-
-               if (DateTime.Compare(HoverStart.Value, lastSelectedDate.Value) < 0) {
-                  range = new CalendarDateRange(HoverStart.Value, lastSelectedDate.Value);
+         SelectedDates.ClearInternal();
+         if (shift) {
+            RangeCalendarDayButton? b;
+            _isShiftPressed = true;
+            if (HoverStart == null) {
+               if (LastSelectedDate != null) {
+                  HoverStart = LastSelectedDate;
                } else {
-                  range = new CalendarDateRange(lastSelectedDate.Value, HoverStart.Value);
-               }
-
-               if (!BlackoutDates.ContainsAny(range)) {
-                  HoverEnd = lastSelectedDate;
-
-                  if (index.HasValue) {
-                     HoverEndIndex += index;
+                  if (DateTimeHelper.CompareYearMonth(DisplayDateInternal, DateTime.Today) == 0) {
+                     HoverStart = DateTime.Today;
                   } else {
-                     Debug.Assert(HoverEndInternal is not null);
-
-                     // For Home, End, PageUp and PageDown Keys there
-                     // is no easy way to predict the index value
-                     b = FindDayButtonFromDay(HoverEndInternal.Value);
-
-                     if (b != null) {
-                        HoverEndIndex = b.Index;
-                     }
+                     HoverStart = DisplayDateInternal;
                   }
                }
 
-               Debug.Assert(HoverEnd is not null);
-               OnDayClick(HoverEnd.Value);
-               HighlightDays();
-            } else {
-               HoverStart = lastSelectedDate;
-               HoverEnd = lastSelectedDate;
-               AddSelection();
-               OnDayClick(lastSelectedDate.Value);
-            }
-         } else {
-            // ON CLEAR 
-            LastSelectedDate = lastSelectedDate.Value;
-            if (SelectedDates.Count > 0) {
-               SelectedDates[0] = lastSelectedDate.Value;
-            } else {
-               SelectedDates.Add(lastSelectedDate.Value);
+               b = FindDayButtonFromDay(HoverStart.Value);
+               if (b != null) {
+                  HoverStartIndex = b.Index;
+               }
             }
 
+            // the index of the SelectedDate is always the last
+            // selectedDate's index
+            UnHighlightDays();
+            // If we hit a BlackOutDay with keyboard we do not
+            // update the HoverEnd
+            CalendarDateRange range;
+
+            if (DateTime.Compare(HoverStart.Value, lastSelectedDate.Value) < 0) {
+               range = new CalendarDateRange(HoverStart.Value, lastSelectedDate.Value);
+            } else {
+               range = new CalendarDateRange(lastSelectedDate.Value, HoverStart.Value);
+            }
+
+            if (!BlackoutDates.ContainsAny(range)) {
+               HoverEnd = lastSelectedDate;
+
+               if (index.HasValue) {
+                  HoverEndIndex += index;
+               } else {
+                  Debug.Assert(HoverEndInternal is not null);
+
+                  // For Home, End, PageUp and PageDown Keys there
+                  // is no easy way to predict the index value
+                  b = FindDayButtonFromDay(HoverEndInternal.Value);
+
+                  if (b != null) {
+                     HoverEndIndex = b.Index;
+                  }
+               }
+            }
+
+            Debug.Assert(HoverEnd is not null);
+            OnDayClick(HoverEnd.Value);
+            HighlightDays();
+         } else {
+            HoverStart = lastSelectedDate;
+            HoverEnd = lastSelectedDate;
+            AddSelection();
             OnDayClick(lastSelectedDate.Value);
          }
       }
@@ -1731,8 +1647,7 @@ public class RangeCalendar : TemplatedControl
 
    internal void ProcessShiftKeyUp()
    {
-      if (_isShiftPressed && (SelectionMode == CalendarSelectionMode.SingleRange ||
-                              SelectionMode == CalendarSelectionMode.MultipleRange)) {
+      if (_isShiftPressed) {
          AddSelection();
          _isShiftPressed = false;
       }

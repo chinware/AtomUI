@@ -77,10 +77,8 @@ public sealed class RangeSelectedDatesCollection : ObservableCollection<DateTime
             if (RangeCalendar.IsValidDateSelection(_owner, rangeStart)) {
                Add(rangeStart.Value);
             } else {
-               if (_owner.SelectionMode == CalendarSelectionMode.SingleRange) {
-                  _owner.HoverEnd = rangeStart.Value.AddDays(-increment);
-                  break;
-               }
+               _owner.HoverEnd = rangeStart.Value.AddDays(-increment);
+               break;
             }
 
             rangeStart = DateTimeHelper.AddDays(rangeStart.Value, increment);
@@ -91,7 +89,7 @@ public sealed class RangeSelectedDatesCollection : ObservableCollection<DateTime
          // away the old range and replace it with the new one.  In order
          // to provide the removed items without an additional event, we
          // are calling ClearInternal
-         if (_owner.SelectionMode == CalendarSelectionMode.SingleRange && Count > 0) {
+         if (Count > 0) {
             foreach (DateTime item in this) {
                _owner.RemovedItems.Add(item);
             }
@@ -132,7 +130,7 @@ public sealed class RangeSelectedDatesCollection : ObservableCollection<DateTime
       base.ClearItems();
 
       // The event fires after SelectedDate changes
-      if (_owner.SelectionMode != CalendarSelectionMode.None && _owner.SelectedDate != null) {
+      if (_owner.SelectedDate != null) {
          _owner.SelectedDate = null;
       }
 
@@ -290,21 +288,11 @@ public sealed class RangeSelectedDatesCollection : ObservableCollection<DateTime
 
    private bool CheckSelectionMode()
    {
-      if (_owner.SelectionMode == CalendarSelectionMode.None) {
-         throw new InvalidOperationException(
-            "The SelectedDate property cannot be set when the selection mode is None.");
-      }
-
-      if (_owner.SelectionMode == CalendarSelectionMode.SingleDate && Count > 0) {
-         throw new InvalidOperationException(
-            "The SelectedDates collection can be changed only in a multiple selection mode. Use the SelectedDate in a single selection mode.");
-      }
-
       // if user tries to add an item into the SelectedDates in
       // SingleRange mode, we throw away the old range and replace it with
       // the new one in order to provide the removed items without an
       // additional event, we are calling ClearInternal
-      if (_owner.SelectionMode == CalendarSelectionMode.SingleRange && !_isRangeAdded && Count > 0) {
+      if (!_isRangeAdded && Count > 0) {
          foreach (DateTime item in this) {
             _owner.RemovedItems.Add(item);
          }

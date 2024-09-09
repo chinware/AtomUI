@@ -747,11 +747,11 @@ internal class RangeCalendarItem : TemplatedControl
          // Update the indexes of hoverStart and hoverEnd
          if (Owner != null && Owner.HoverEnd != null && Owner.HoverStart != null) {
             if (DateTimeHelper.CompareDays(dateToAdd, Owner.HoverEnd.Value) == 0) {
-               Owner.HoverEndIndex = childIndex;
+               Owner.HoverEndIndex = childButton.Index;
             }
 
             if (DateTimeHelper.CompareDays(dateToAdd, Owner.HoverStart.Value) == 0) {
-               Owner.HoverStartIndex = childIndex;
+               Owner.HoverStartIndex = childButton.Index;
             }
          }
 
@@ -1081,29 +1081,12 @@ internal class RangeCalendarItem : TemplatedControl
              } b) {
             // Update the states of all buttons to be selected starting
             // from HoverStart to b
-            switch (Owner.SelectionMode) {
-               case CalendarSelectionMode.SingleDate:
-               {
-                  Owner.CalendarDatePickerDisplayDateFlag = true;
-                  if (Owner.SelectedDates.Count == 0) {
-                     Owner.SelectedDates.Add(selectedDate);
-                  } else {
-                     Owner.SelectedDates[0] = selectedDate;
-                  }
-
-                  return;
-               }
-               case CalendarSelectionMode.SingleRange:
-               case CalendarSelectionMode.MultipleRange:
-               {
-                  Owner.UnHighlightDays();
-                  Owner.HoverEndIndex = b.Index;
-                  Owner.HoverEnd = selectedDate;
-                  // Update the States of the buttons
-                  Owner.HighlightDays();
-                  return;
-               }
-            }
+            Owner.UnHighlightDays();
+            Owner.HoverEndIndex = b.Index;
+            Owner.HoverEnd = selectedDate;
+            // Update the States of the buttons
+            Owner.HighlightDays();
+            return;
          }
       }
    }
@@ -1121,74 +1104,18 @@ internal class RangeCalendarItem : TemplatedControl
             _isControlPressed = ctrl;
             if (b.IsEnabled && !b.IsBlackout && b.DataContext is DateTime selectedDate) {
                _isMouseLeftButtonDown = true;
-
-               switch (Owner.SelectionMode) {
-                  case CalendarSelectionMode.None:
-                  {
-                     return;
-                  }
-                  case CalendarSelectionMode.SingleDate:
-                  {
-                     Owner.CalendarDatePickerDisplayDateFlag = true;
-                     if (Owner.SelectedDates.Count == 0) {
-                        Owner.SelectedDates.Add(selectedDate);
-                     } else {
-                        Owner.SelectedDates[0] = selectedDate;
-                     }
-
-                     return;
-                  }
-                  case CalendarSelectionMode.SingleRange:
-                  {
-                     // Set the start or end of the selection
-                     // range
-                     if (shift) {
-                        Owner.UnHighlightDays();
-                        Owner.HoverEnd = selectedDate;
-                        Owner.HoverEndIndex = b.Index;
-                        Owner.HighlightDays();
-                     } else {
-                        Owner.UnHighlightDays();
-                        Owner.HoverStart = selectedDate;
-                        Owner.HoverStartIndex = b.Index;
-                     }
-
-                     return;
-                  }
-                  case CalendarSelectionMode.MultipleRange:
-                  {
-                     if (shift) {
-                        if (!ctrl) {
-                           // clear the list, set the states to
-                           // default
-                           foreach (DateTime item in Owner.SelectedDates) {
-                              Owner.RemovedItems.Add(item);
-                           }
-
-                           Owner.SelectedDates.ClearInternal();
-                        }
-
-                        Owner.HoverEnd = selectedDate;
-                        Owner.HoverEndIndex = b.Index;
-                        Owner.HighlightDays();
-                     } else {
-                        if (!ctrl) {
-                           // clear the list, set the states to
-                           // default
-                           foreach (DateTime item in Owner.SelectedDates) {
-                              Owner.RemovedItems.Add(item);
-                           }
-
-                           Owner.SelectedDates.ClearInternal();
-                           Owner.UnHighlightDays();
-                        }
-
-                        Owner.HoverStart = selectedDate;
-                        Owner.HoverStartIndex = b.Index;
-                     }
-
-                     return;
-                  }
+               // Set the start or end of the selection
+               // range
+               if (shift) {
+                  Owner.UnHighlightDays();
+                  Owner.HoverEnd = selectedDate;
+                  Owner.HoverEndIndex = b.Index;
+                  Owner.HighlightDays();
+               } else {
+                  Owner.UnHighlightDays();
+                  Owner.HoverStart = selectedDate;
+                  Owner.HoverStartIndex = b.Index;
+                  Console.WriteLine(Owner.HoverStartIndex);
                }
             } else {
                // If a click occurs on a BlackOutDay we set the
@@ -1229,33 +1156,15 @@ internal class RangeCalendarItem : TemplatedControl
 
          _isMouseLeftButtonDown = false;
          if (b != null && b.DataContext is DateTime selectedDate) {
-            if (Owner.SelectionMode == CalendarSelectionMode.None ||
-                Owner.SelectionMode == CalendarSelectionMode.SingleDate) {
-               Owner.OnDayClick(selectedDate);
-               return;
-            }
 
             if (Owner.HoverStart.HasValue) {
-               switch (Owner.SelectionMode) {
-                  case CalendarSelectionMode.SingleRange:
-                  {
-                     // Update SelectedDates
-                     foreach (DateTime item in Owner.SelectedDates) {
-                        Owner.RemovedItems.Add(item);
-                     }
-
-                     Owner.SelectedDates.ClearInternal();
-                     AddSelection(b, selectedDate);
-                     return;
-                  }
-                  case CalendarSelectionMode.MultipleRange:
-                  {
-                     // add the selection (either single day or
-                     // SingleRange day)
-                     AddSelection(b, selectedDate);
-                     return;
-                  }
+               // Update SelectedDates
+               foreach (DateTime item in Owner.SelectedDates) {
+                  Owner.RemovedItems.Add(item);
                }
+
+               Owner.SelectedDates.ClearInternal();
+               AddSelection(b, selectedDate);
             } else {
                // If the day is Disabled but a trailing day we should
                // be able to switch months
@@ -1269,21 +1178,6 @@ internal class RangeCalendarItem : TemplatedControl
 
    private void HandleCellClick(object? sender, RoutedEventArgs e)
    {
-      if (Owner != null) {
-         if (_isControlPressed && Owner.SelectionMode == CalendarSelectionMode.MultipleRange) {
-            RangeCalendarDayButton b = (RangeCalendarDayButton)sender!;
-
-            if (b.IsSelected) {
-               Owner.HoverStart = null;
-               _isMouseLeftButtonDown = false;
-               b.IsSelected = false;
-               if (b.DataContext is DateTime selectedDate) {
-                  Owner.SelectedDates.Remove(selectedDate);
-               }
-            }
-         }
-      }
-
       _isControlPressed = false;
    }
 

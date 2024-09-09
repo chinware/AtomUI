@@ -82,7 +82,7 @@ internal class BaseCalendarDayButtonTheme : BaseControlTheme
       todayStyle.Add(BaseCalendarDayButton.BorderBrushProperty, GlobalTokenResourceKey.ColorPrimary);
       commonStyle.Add(todayStyle);
       
-      var selectedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Selected));
+      var selectedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Selected).Not(selector1 => selector1.Nesting().Class(StdPseudoClass.InActive)));
       selectedStyle.Add(BaseCalendarDayButton.BackgroundProperty, GlobalTokenResourceKey.ColorPrimary);
       selectedStyle.Add(BaseCalendarDayButton.ForegroundProperty, GlobalTokenResourceKey.ColorWhite);
       selectedStyle.Add(BaseCalendarDayButton.BorderThicknessProperty, new Thickness(0));
