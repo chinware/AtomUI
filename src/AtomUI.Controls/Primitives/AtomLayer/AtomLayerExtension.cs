@@ -60,9 +60,13 @@ public static class AtomLayerExtension
 
     public static void RemoveAdorner(this Visual target, Control adorner)
     {
-        target.GetLayer()?.RemoveAdorner(target, adorner);
+        target.GetLayer()?.RemoveAdorner(adorner);
     }
-    
+
+    public static void BeginRemovingAdorner(this Visual target, Control adorner, int millisecondsToConfirm, Func<bool> confirm)
+    {
+        target.GetLayer()?.BeginRemovingAdorner(adorner, millisecondsToConfirm, confirm);
+    }
     
     private static AtomLayer? TryInject(Visual host)
     {

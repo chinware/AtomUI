@@ -2,7 +2,6 @@ using System.Reactive.Disposables;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Threading;
-using Rect = Avalonia.Rect;
 
 // ReSharper disable SuggestBaseTypeForParameter
 
@@ -32,15 +31,28 @@ namespace AtomUI.Controls.Primitives
         {
             return element.GetValue(BoundsAnchorProperty);
         }
-        public static void SetBoundsAnchor(Visual element, Visual? value)
+        private static void SetBoundsAnchor(Visual element, Visual? value)
         {
             element.SetValue(BoundsAnchorProperty, value);
         }
         public static readonly AttachedProperty<Visual?> BoundsAnchorProperty = AvaloniaProperty
             .RegisterAttached<AtomLayer, Visual, Visual?>("BoundsAnchor");
+
+        private static IDisposable? GetDisposableForSubscriptionOfTargetBounds(Visual host)
+        {
+            return host.GetValue(DisposableForSubscriptionOfTargetBoundsProperty);
+        }
+        private static void SetDisposableForSubscriptionOfTargetBounds(Visual host, IDisposable? value)
+        {
+            host.SetValue(DisposableForSubscriptionOfTargetBoundsProperty, value);
+        }
+        private static readonly AttachedProperty<IDisposable?> DisposableForSubscriptionOfTargetBoundsProperty = AvaloniaProperty
+            .RegisterAttached<AtomLayer, Visual, IDisposable?>("DisposableForSubscriptionOfTargetBounds");
         
         #endregion
 
+
+        #region Properties
 
         public Visual? Host
         {
@@ -60,6 +72,8 @@ namespace AtomUI.Controls.Primitives
 
         private readonly IList<WeakReference<Control>> _detachedAdorners = new List<WeakReference<Control>>();
 
+        #endregion
+        
 
         #region Ctor
 
@@ -108,6 +122,8 @@ namespace AtomUI.Controls.Primitives
         {
             if (Children.Contains(adorner))
             {
+                RemoveChild(adorner);
+                AddChild(adorner);
                 return;
             }
 
@@ -133,9 +149,18 @@ namespace AtomUI.Controls.Primitives
             }
         }
 
-        public void RemoveAdorner(Visual target, Control adorner)
+        public void RemoveAdorner(Control adorner)
         {
             RemoveChild(adorner);
+        }
+        
+        public async void BeginRemovingAdorner(Control adorner, int millisecondsToConfirm, Func<bool> confirm)
+        {
+            await Task.Delay(millisecondsToConfirm);
+            if (confirm())
+            {
+                RemoveChild(adorner);
+            }
         }
 
         #endregion
@@ -253,23 +278,18 @@ namespace AtomUI.Controls.Primitives
 
         #region Monitor Target Bounds
 
-        private IDisposable? _monitoringTargetBoundsDisposable;
-
         private void MonitorTargetBounds(Visual target)
         {
-            _monitoringTargetBoundsDisposable?.Dispose();
-            _monitoringTargetBoundsDisposable = null;
-
             var provider = GetBoundsAnchor(target);
             provider ??= target;
 
+            var disposable = GetDisposableForSubscriptionOfTargetBounds(target);
+            disposable?.Dispose();
+            disposable = Disposable.Create(() => provider.PropertyChanged -= TargetBoundsOnPropertyChanged);
+            SetDisposableForSubscriptionOfTargetBounds(target, disposable);
+            
             provider.PropertyChanged -= TargetBoundsOnPropertyChanged;
             provider.PropertyChanged += TargetBoundsOnPropertyChanged;
-
-            _monitoringTargetBoundsDisposable = Disposable.Create(() =>
-            {
-                provider.PropertyChanged -= TargetBoundsOnPropertyChanged;
-            });
 
             return;
 

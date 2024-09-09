@@ -5,17 +5,109 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:primitives="clr-namespace:AtomUI.Controls.Primitives;assembly=AtomUI.Controls"
              xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
              mc:Ignorable="d">
+
+    <UserControl.Styles>
+        <Style Selector="ListBox">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="ItemsPanel">
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="ListBoxItem">
+            <Setter Property="Template">
+                <ControlTemplate TargetType="ListBoxItem">
+                    <ContentPresenter Margin="{TemplateBinding Padding}"
+                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                      Background="Transparent"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}" />
+                </ControlTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="ListBox.PlacementList">
+            <Setter Property="ItemTemplate">
+                <DataTemplate DataType="atom:DrawerPlacement">
+                    <atom:RadioButton Content="{Binding}" IsChecked="{Binding $parent[ListBoxItem].IsSelected}" />
+                </DataTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="StackPanel.ControllerPanel">
+            <Setter Property="Orientation" Value="Horizontal" />
+            <Setter Property="Spacing" Value="8" />
+            <Style Selector="^&gt;:is(Control)">
+                <Setter Property="VerticalAlignment" Value="Center" />
+            </Style>
+        </Style>
+    </UserControl.Styles>
+
     <showcase:ShowCasePanel>
 
-        <showcase:ShowCasePanel.Styles>
-            <Style Selector="Button">
-                <Setter Property="Foreground" Value="Aqua" />
-                <Setter Property="Background" Value="Tan" />
-            </Style>
-        </showcase:ShowCasePanel.Styles>
+        <showcase:ShowCaseItem Title="Basic" Description="Basic drawer.">
+            <Panel>
+                <atom:ToggleSwitch x:Name="OpenButton01" Content="Open" />
+                <atom:Drawer IsOpen="{Binding $parent[Panel].((atom:ToggleSwitch)Children[0]).IsChecked}" OpenOn="{Binding $parent[TopLevel]}">
+                    <TextBlock Margin="50" Text="Some contents..." />
+                </atom:Drawer>
+            </Panel>
+        </showcase:ShowCaseItem>
+
+        <showcase:ShowCaseItem Title="Custom Placement" Description="The Drawer can appear from any edge of the screen.">
+            <Panel>
+                <StackPanel Classes="ControllerPanel">
+                    <ListBox Classes="PlacementList"
+                             ItemsSource="{desktop:Enum atom:DrawerPlacement}"
+                             SelectedIndex="2" />
+                    <atom:ToggleSwitch Content="Open" />
+                </StackPanel>
+
+                <atom:Drawer IsOpen="{Binding $parent[Panel].((Panel)Children[0]).((atom:ToggleSwitch)Children[1]).IsChecked}"
+                             OpenOn="{Binding $parent[TopLevel]}"
+                             Placement="{Binding $parent[Panel].((Panel)Children[0]).((ListBox)Children[0]).SelectedItem}">
+                    <TextBlock Margin="50" Text="Some contents..." />
+                </atom:Drawer>
+            </Panel>
+        </showcase:ShowCaseItem>
+
+        <showcase:ShowCaseItem Title="Extra Actions" Description="Extra actions should be placed at corner of drawer in Ant Design, you can use extra prop for that.">
+            <Panel>
+                <StackPanel Classes="ControllerPanel">
+                    <ListBox Classes="PlacementList"
+                             ItemsSource="{desktop:Enum atom:DrawerPlacement}"
+                             SelectedIndex="2" />
+                    <atom:ToggleSwitch Content="Open" />
+                </StackPanel>
+
+                <atom:Drawer IsOpen="{Binding $parent[Panel].((Panel)Children[0]).((atom:ToggleSwitch)Children[1]).IsChecked}"
+                             OpenOn="{Binding $parent[TopLevel]}"
+                             Placement="{Binding $parent[Panel].((Panel)Children[0]).((ListBox)Children[0]).SelectedItem}">
+                    <TextBlock Margin="50" Text=" TODO " />
+                </atom:Drawer>
+            </Panel>
+        </showcase:ShowCaseItem>
+
+        <showcase:ShowCaseItem Title="Render in current area" Description="Render in current area.">
+            <Panel>
+                <StackPanel Height="120"
+                            atom:Watermark.Glyph="{atom:TextGlyph AtomUI}"
+                            Classes="ControllerPanel">
+                    <ListBox Classes="PlacementList"
+                             ItemsSource="{desktop:Enum atom:DrawerPlacement}"
+                             SelectedIndex="2" />
+                    <atom:ToggleSwitch Content="Open" />
+                </StackPanel>
+
+                <atom:Drawer IsOpen="{Binding $parent[Panel].((Panel)Children[0]).((atom:ToggleSwitch)Children[1]).IsChecked}"
+                             OpenOn="{Binding $parent[showcase:ShowCaseItem]}"
+                             Placement="{Binding $parent[Panel].((Panel)Children[0]).((ListBox)Children[0]).SelectedItem}">
+                    <TextBlock Margin="50" Text=" Some contents... " />
+                </atom:Drawer>
+            </Panel>
+        </showcase:ShowCaseItem>
 
         <showcase:ShowCaseItem Title="Basic" Description="Basic drawer.">
             <Grid ColumnDefinitions="Auto,*">

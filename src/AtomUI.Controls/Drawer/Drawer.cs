@@ -3,7 +3,6 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
-using Avalonia.Layout;
 using Avalonia.Metadata;
 using Avalonia.VisualTree;
 
@@ -11,6 +10,15 @@ namespace AtomUI.Controls;
 
 public class Drawer : TemplatedControl
 {
+    public static Drawer? GetDrawer(Visual element)
+    {
+        var container = element.FindAncestorOfType<DrawerContainer>();
+        return container?.Drawer;
+    }
+    
+    
+    #region Properties
+
     [Content]
     public Control? Content
     {
@@ -60,43 +68,62 @@ public class Drawer : TemplatedControl
     public static readonly StyledProperty<bool> CloseWhenClickOnMaskProperty = AvaloniaProperty
         .Register<Drawer, bool>(nameof(CloseWhenClickOnMask), true);
 
+    public double DrawerMinWidth
+    {
+        get => GetValue(DrawerMinWidthProperty);
+        set => SetValue(DrawerMinWidthProperty, value);
+    }
+    public static readonly StyledProperty<double> DrawerMinWidthProperty = AvaloniaProperty
+        .Register<Drawer, double>(nameof(DrawerMinWidth), 0);
 
+    public double DrawerMinHeight
+    {
+        get => GetValue(DrawerMinHeightProperty);
+        set => SetValue(DrawerMinHeightProperty, value);
+    }
+    public static readonly StyledProperty<double> DrawerMinHeightProperty = AvaloniaProperty
+        .Register<Drawer, double>(nameof(DrawerMinHeight), 0);
+
+    public double DrawerMaxWidth
+    {
+        get => GetValue(DrawerMaxWidthProperty);
+        set => SetValue(DrawerMaxWidthProperty, value);
+    }
+    public static readonly StyledProperty<double> DrawerMaxWidthProperty = AvaloniaProperty
+        .Register<Drawer, double>(nameof(DrawerMaxWidth), double.MaxValue);
+
+    public double DrawerMaxHeight
+    {
+        get => GetValue(DrawerMaxHeightProperty);
+        set => SetValue(DrawerMaxHeightProperty, value);
+    }
+    public static readonly StyledProperty<double> DrawerMaxHeightProperty = AvaloniaProperty
+        .Register<Drawer, double>(nameof(DrawerMaxHeight), double.MaxValue);
+
+    public double DrawerWidth
+    {
+        get => GetValue(DrawerWidthProperty);
+        set => SetValue(DrawerWidthProperty, value);
+    }
+    public static readonly StyledProperty<double> DrawerWidthProperty = AvaloniaProperty
+        .Register<Drawer, double>(nameof(DrawerWidth), double.NaN);
+
+    public double DrawerHeight
+    {
+        get => GetValue(DrawerHeightProperty);
+        set => SetValue(DrawerHeightProperty, value);
+    }
+    public static readonly StyledProperty<double> DrawerHeightProperty = AvaloniaProperty
+        .Register<Drawer, double>(nameof(DrawerHeight), double.NaN);
+    
+    #endregion
+    
+    
     #region Ctor
 
     static Drawer()
     {
         IsOpenProperty.Changed.AddClassHandler<Drawer>(OnIsOpenChanged);
-        PlacementProperty.Changed.AddClassHandler<Drawer>((drawer, args) => drawer.UpdatePlacement(drawer._container));
-    }
-
-    private void UpdatePlacement(DrawerContainer? container)
-    {
-        if (container?.Child == null)
-        {
-            return;
-        }
-
-        switch (Placement)
-        {
-            case DrawerPlacement.Left:
-                container.Child.VerticalAlignment   = VerticalAlignment.Stretch;
-                container.Child.HorizontalAlignment = HorizontalAlignment.Left;
-                break;
-            case DrawerPlacement.Right:
-                container.Child.VerticalAlignment   = VerticalAlignment.Stretch;
-                container.Child.HorizontalAlignment = HorizontalAlignment.Right;
-                break;
-            case DrawerPlacement.Top:
-                container.Child.VerticalAlignment   = VerticalAlignment.Top;
-                container.Child.HorizontalAlignment = HorizontalAlignment.Stretch;
-                break;
-            case DrawerPlacement.Bottom:
-                container.Child.VerticalAlignment   = VerticalAlignment.Bottom;
-                container.Child.HorizontalAlignment = HorizontalAlignment.Stretch;
-                break;
-            default:
-                throw new ArgumentOutOfRangeException();
-        }
     }
     
     public Drawer()
@@ -109,7 +136,8 @@ public class Drawer : TemplatedControl
 
     #region Open & Close
 
-    private DrawerContainer? _container;
+    private DrawerContainer?     _container;
+    private DrawerElementBorder? _element;
 
     private static void OnIsOpenChanged(Drawer drawer, AvaloniaPropertyChangedEventArgs arg)
     {
@@ -125,18 +153,12 @@ public class Drawer : TemplatedControl
 
     private void Open()
     {
-        _container ??= new DrawerContainer(this)
-        {
-            Child = new DrawerElementBorder(this)
-            {
-                Child = Content,
-            },
-            ShowMask = ShowMask,
-        };
-        UpdatePlacement(_container);
+        _element   ??= new DrawerElementBorder(this);
+        _container ??= new DrawerContainer(this, _element);
         
         var layer = this.GetLayer();
         layer?.AddAdorner(this, _container);
+        this._container.IsHitTestVisible = true;
     }
     
     private void Close()
@@ -145,16 +167,10 @@ public class Drawer : TemplatedControl
         {
             return;
         }
-
-        this.RemoveAdorner(_container);
+        
+        this.BeginRemovingAdorner(_container, 1000, () => this.IsOpen == false);
+        this._container.IsHitTestVisible = false;
     }
 
     #endregion
-
-
-    public static Drawer? GetDrawer(Visual element)
-    {
-        var container = element.FindAncestorOfType<DrawerContainer>();
-        return container?.Drawer;
-    }
 }
