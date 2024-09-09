@@ -357,6 +357,7 @@ public class RangeCalendar : TemplatedControl
    }
 
    internal DateTime DisplayDateInternal { get; set; }
+   internal DateTime SecondaryDisplayDateInternal { get; set; }
 
    #endregion
 
@@ -617,6 +618,8 @@ public class RangeCalendar : TemplatedControl
       }
 
       c.DisplayDateInternal = DateTimeHelper.DiscardDayTime(addedDate);
+      c.SecondaryDisplayDateInternal = DateTimeHelper.AddMonths(c.DisplayDateInternal, 1) ?? c.DisplayDateInternal;
+      
       c.UpdateMonths();
       c.OnDisplayDate(new CalendarDateChangedEventArgs(removedDate, addedDate));
    }

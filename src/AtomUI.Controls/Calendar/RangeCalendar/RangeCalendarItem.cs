@@ -12,11 +12,18 @@ using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
-[TemplatePart(CalendarItemTheme.HeaderButtonPart, typeof(HeadTextButton))]
-[TemplatePart(CalendarItemTheme.MonthViewPart, typeof(Grid))]
-[TemplatePart(CalendarItemTheme.NextMonthButtonPart, typeof(IconButton))]
-[TemplatePart(CalendarItemTheme.PreviousMonthButtonPart, typeof(IconButton))]
-[TemplatePart(CalendarItemTheme.YearViewPart, typeof(Grid))]
+[TemplatePart(RangeCalendarItemTheme.PrimaryHeaderButtonPart, typeof(HeadTextButton))]
+[TemplatePart(RangeCalendarItemTheme.SecondaryHeaderButtonPart, typeof(HeadTextButton))]
+[TemplatePart(RangeCalendarItemTheme.MonthViewPart, typeof(Grid))]
+[TemplatePart(RangeCalendarItemTheme.PrimaryPreviousButtonPart, typeof(IconButton))]
+[TemplatePart(RangeCalendarItemTheme.PrimaryPreviousMonthButtonPart, typeof(IconButton))]
+[TemplatePart(RangeCalendarItemTheme.PrimaryNextButtonPart, typeof(IconButton))]
+[TemplatePart(RangeCalendarItemTheme.PrimaryNextMonthButtonPart, typeof(IconButton))]
+[TemplatePart(RangeCalendarItemTheme.SecondaryPreviousButtonPart, typeof(IconButton))]
+[TemplatePart(RangeCalendarItemTheme.SecondaryPreviousMonthButtonPart, typeof(IconButton))]
+[TemplatePart(RangeCalendarItemTheme.SecondaryNextButtonPart, typeof(IconButton))]
+[TemplatePart(RangeCalendarItemTheme.SecondaryNextMonthButtonPart, typeof(IconButton))]
+[TemplatePart(RangeCalendarItemTheme.YearViewPart, typeof(Grid))]
 internal class RangeCalendarItem : TemplatedControl
 {
    internal const string CalendarDisabledPC = ":calendardisabled";
@@ -24,7 +31,7 @@ internal class RangeCalendarItem : TemplatedControl
    #region 公共属性定义
 
    public static readonly StyledProperty<IBrush?> HeaderBackgroundProperty =
-      Calendar.HeaderBackgroundProperty.AddOwner<RangeCalendarItem>();
+      RangeCalendar.HeaderBackgroundProperty.AddOwner<RangeCalendarItem>();
 
    public IBrush? HeaderBackground
    {
@@ -47,22 +54,55 @@ internal class RangeCalendarItem : TemplatedControl
 
    #region 内部属性定义
 
+   internal static readonly DirectProperty<RangeCalendarItem, bool> IsMonthViewModeProperty =
+      AvaloniaProperty.RegisterDirect<RangeCalendarItem, bool>(nameof(IsMonthViewMode),
+                                                               o => o.IsMonthViewMode,
+                                                               (o, v) => o.IsMonthViewMode = v);
+
+   private bool _isMonthViewMode = true;
+
+   internal bool IsMonthViewMode
+   {
+      get => _isMonthViewMode;
+      set => SetAndRaise(IsMonthViewModeProperty, ref _isMonthViewMode, value);
+   }
+
     /// <summary>
    /// Gets the button that allows switching between month mode, year mode,
    /// and decade mode. 
    /// </summary>
-   internal HeadTextButton? HeaderButton
+   internal HeadTextButton? PrimaryHeaderButton
    {
-      get => _headerButton;
+      get => _primaryHeaderButton;
       private set
       {
-         if (_headerButton != null) _headerButton.Click -= HandleHeaderButtonClick;
+         if (_primaryHeaderButton != null) _primaryHeaderButton.Click -= HandleHeaderButtonClick;
 
-         _headerButton = value;
+         _primaryHeaderButton = value;
 
-         if (_headerButton != null) {
-            _headerButton.Click += HandleHeaderButtonClick;
-            _headerButton.Focusable = false;
+         if (_primaryHeaderButton != null) {
+            _primaryHeaderButton.Click += HandleHeaderButtonClick;
+            _primaryHeaderButton.Focusable = false;
+         }
+      }
+   }
+    
+   /// <summary>
+   /// Gets the button that allows switching between month mode, year mode,
+   /// and decade mode. 
+   /// </summary>
+   internal HeadTextButton? SecondaryHeaderButton
+   {
+      get => _secondaryHeaderButton;
+      private set
+      {
+         if (_secondaryHeaderButton != null) _secondaryHeaderButton.Click -= HandleHeaderButtonClick;
+
+         _secondaryHeaderButton = value;
+
+         if (_secondaryHeaderButton != null) {
+            _secondaryHeaderButton.Click += HandleHeaderButtonClick;
+            _secondaryHeaderButton.Focusable = false;
          }
       }
    }
@@ -71,50 +111,50 @@ internal class RangeCalendarItem : TemplatedControl
    /// Gets the button that displays the next page of the calendar when it
    /// is clicked.
    /// </summary>
-   internal IconButton? NextButton
+   internal IconButton? PrimaryNextButton
    {
-      get => _nextButton;
+      get => _primaryNextButton;
       private set
       {
-         if (_nextButton != null) _nextButton.Click -= HandleNextButtonClick;
+         if (_primaryNextButton != null) _primaryNextButton.Click -= HandleNextButtonClick;
 
-         _nextButton = value;
+         _primaryNextButton = value;
 
-         if (_nextButton != null) {
+         if (_primaryNextButton != null) {
             // If the user does not provide a Content value in template,
             // we provide a helper text that can be used in
             // Accessibility this text is not shown on the UI, just used
             // for Accessibility purposes
-            if (_nextButton.Content == null) {
-               _nextButton.Content = "next button";
+            if (_primaryNextButton.Content == null) {
+               _primaryNextButton.Content = "next button";
             }
             
-            _nextButton.Click += HandleNextButtonClick;
-            _nextButton.Focusable = false;
+            _primaryNextButton.Click += HandleNextButtonClick;
+            _primaryNextButton.Focusable = false;
          }
       }
    }
    
-   internal IconButton? NextMonthButton
+   internal IconButton? PrimaryNextMonthButton
    {
-      get => _nextMonthButton;
+      get => _primaryNextMonthButton;
       private set
       {
-         if (_nextMonthButton != null) _nextMonthButton.Click -= HandleNextMonthButtonClick;
+         if (_primaryNextMonthButton != null) _primaryNextMonthButton.Click -= HandleNextMonthButtonClick;
 
-         _nextMonthButton = value;
+         _primaryNextMonthButton = value;
 
-         if (_nextMonthButton != null) {
+         if (_primaryNextMonthButton != null) {
             // If the user does not provide a Content value in template,
             // we provide a helper text that can be used in
             // Accessibility this text is not shown on the UI, just used
             // for Accessibility purposes
-            if (_nextMonthButton.Content == null) {
-               _nextMonthButton.Content = "next button";
+            if (_primaryNextMonthButton.Content == null) {
+               _primaryNextMonthButton.Content = "next button";
             }
             
-            _nextMonthButton.Click += HandleNextMonthButtonClick;
-            _nextMonthButton.Focusable = false;
+            _primaryNextMonthButton.Click += HandleNextMonthButtonClick;
+            _primaryNextMonthButton.Focusable = false;
          }
       }
    }
@@ -123,50 +163,154 @@ internal class RangeCalendarItem : TemplatedControl
    /// Gets the button that displays the previous page of the calendar when
    /// it is clicked.
    /// </summary>
-   internal IconButton? PreviousButton
+   internal IconButton? PrimaryPreviousButton
    {
-      get => _previousButton;
+      get => _primaryPreviousButton;
       private set
       {
-         if (_previousButton != null) _previousButton.Click -= HandlePreviousButtonClick;
+         if (_primaryPreviousButton != null) _primaryPreviousButton.Click -= HandlePreviousButtonClick;
 
-         _previousButton = value;
+         _primaryPreviousButton = value;
 
-         if (_previousButton != null) {
+         if (_primaryPreviousButton != null) {
             // If the user does not provide a Content value in template,
             // we provide a helper text that can be used in
             // Accessibility this text is not shown on the UI, just used
             // for Accessibility purposes
-            if (_previousButton.Content == null) {
-               _previousButton.Content = "previous button";
+            if (_primaryPreviousButton.Content == null) {
+               _primaryPreviousButton.Content = "previous button";
             }
             
-            _previousButton.Click += HandlePreviousButtonClick;
-            _previousButton.Focusable = false;
+            _primaryPreviousButton.Click += HandlePreviousButtonClick;
+            _primaryPreviousButton.Focusable = false;
          }
       }
    }
    
-   internal IconButton? PreviousMonthButton
+   internal IconButton? PrimaryPreviousMonthButton
    {
-      get => _previousMonthButton;
+      get => _primaryPreviousMonthButton;
       private set
       {
-         if (_previousMonthButton != null) _previousMonthButton.Click -= HandlePreviousMonthButtonClick;
+         if (_primaryPreviousMonthButton != null) _primaryPreviousMonthButton.Click -= HandlePreviousMonthButtonClick;
 
-         _previousMonthButton = value;
+         _primaryPreviousMonthButton = value;
 
-         if (_previousMonthButton != null) {
+         if (_primaryPreviousMonthButton != null) {
             // If the user does not provide a Content value in template,
             // we provide a helper text that can be used in
             // Accessibility this text is not shown on the UI, just used
             // for Accessibility purposes
-            if (_previousMonthButton.Content == null) {
-               _previousMonthButton.Content = "previous button";
+            if (_primaryPreviousMonthButton.Content == null) {
+               _primaryPreviousMonthButton.Content = "previous button";
             }
             
-            _previousMonthButton.Click += HandlePreviousMonthButtonClick;
-            _previousMonthButton.Focusable = false;
+            _primaryPreviousMonthButton.Click += HandlePreviousMonthButtonClick;
+            _primaryPreviousMonthButton.Focusable = false;
+         }
+      }
+   }
+   
+     /// <summary>
+   /// Gets the button that displays the next page of the calendar when it
+   /// is clicked.
+   /// </summary>
+   internal IconButton? SecondaryNextButton
+   {
+      get => _secondaryNextButton;
+      private set
+      {
+         if (_secondaryNextButton != null) _secondaryNextButton.Click -= HandleNextButtonClick;
+
+         _secondaryNextButton = value;
+
+         if (_secondaryNextButton != null) {
+            // If the user does not provide a Content value in template,
+            // we provide a helper text that can be used in
+            // Accessibility this text is not shown on the UI, just used
+            // for Accessibility purposes
+            if (_secondaryNextButton.Content == null) {
+               _secondaryNextButton.Content = "next button";
+            }
+            
+            _secondaryNextButton.Click += HandleNextButtonClick;
+            _secondaryNextButton.Focusable = false;
+         }
+      }
+   }
+   
+   internal IconButton? SecondaryNextMonthButton
+   {
+      get => _secondaryNextMonthButton;
+      private set
+      {
+         if (_secondaryNextMonthButton != null) _secondaryNextMonthButton.Click -= HandleNextMonthButtonClick;
+
+         _secondaryNextMonthButton = value;
+
+         if (_secondaryNextMonthButton != null) {
+            // If the user does not provide a Content value in template,
+            // we provide a helper text that can be used in
+            // Accessibility this text is not shown on the UI, just used
+            // for Accessibility purposes
+            if (_secondaryNextMonthButton.Content == null) {
+               _secondaryNextMonthButton.Content = "next button";
+            }
+            
+            _secondaryNextMonthButton.Click += HandleNextMonthButtonClick;
+            _secondaryNextMonthButton.Focusable = false;
+         }
+      }
+   }
+
+   /// <summary>
+   /// Gets the button that displays the previous page of the calendar when
+   /// it is clicked.
+   /// </summary>
+   internal IconButton? SecondaryPreviousButton
+   {
+      get => _secondaryPreviousButton;
+      private set
+      {
+         if (_secondaryPreviousButton != null) _secondaryPreviousButton.Click -= HandlePreviousButtonClick;
+
+         _secondaryPreviousButton = value;
+
+         if (_secondaryPreviousButton != null) {
+            // If the user does not provide a Content value in template,
+            // we provide a helper text that can be used in
+            // Accessibility this text is not shown on the UI, just used
+            // for Accessibility purposes
+            if (_secondaryPreviousButton.Content == null) {
+               _secondaryPreviousButton.Content = "previous button";
+            }
+            
+            _secondaryPreviousButton.Click += HandlePreviousButtonClick;
+            _secondaryPreviousButton.Focusable = false;
+         }
+      }
+   }
+   
+   internal IconButton? SecondaryPreviousMonthButton
+   {
+      get => _secondaryPreviousMonthButton;
+      private set
+      {
+         if (_secondaryPreviousMonthButton != null) _secondaryPreviousMonthButton.Click -= HandlePreviousMonthButtonClick;
+
+         _secondaryPreviousMonthButton = value;
+
+         if (_secondaryPreviousMonthButton != null) {
+            // If the user does not provide a Content value in template,
+            // we provide a helper text that can be used in
+            // Accessibility this text is not shown on the UI, just used
+            // for Accessibility purposes
+            if (_secondaryPreviousMonthButton.Content == null) {
+               _secondaryPreviousMonthButton.Content = "previous button";
+            }
+            
+            _secondaryPreviousMonthButton.Click += HandlePreviousMonthButtonClick;
+            _secondaryPreviousMonthButton.Focusable = false;
          }
       }
    }
@@ -178,11 +322,18 @@ internal class RangeCalendarItem : TemplatedControl
    /// </summary>
    internal const int NumberOfDaysPerWeek = 7;
 
-   protected HeadTextButton? _headerButton;
-   protected IconButton? _nextButton;
-   protected IconButton? _previousButton;
-   protected IconButton? _nextMonthButton;
-   protected IconButton? _previousMonthButton;
+   protected HeadTextButton? _primaryHeaderButton;
+   protected HeadTextButton? _secondaryHeaderButton;
+   protected IconButton? _primaryNextButton;
+   protected IconButton? _primaryPreviousButton;
+   protected IconButton? _primaryNextMonthButton;
+   protected IconButton? _primaryPreviousMonthButton;
+   
+   protected IconButton? _secondaryNextButton;
+   protected IconButton? _secondaryPreviousButton;
+   protected IconButton? _secondaryNextMonthButton;
+   protected IconButton? _secondaryPreviousMonthButton;
+   protected UniformGrid? _headerLayout;
 
    protected DateTime _currentMonth;
    protected bool _isMouseLeftButtonDown;
@@ -210,55 +361,23 @@ internal class RangeCalendarItem : TemplatedControl
    {
       if (MonthView != null) {
          if (PrimaryMonthView is not null) {
-            var childCount = Calendar.RowsPerMonth + Calendar.RowsPerMonth * Calendar.ColumnsPerMonth;
-            using var children = new PooledList<Control>(childCount);
-
-            for (int i = 0; i < Calendar.ColumnsPerMonth; i++) {
-               if (DayTitleTemplate?.Build() is Control cell) {
-                  cell.DataContext = string.Empty;
-                  cell.SetValue(Grid.RowProperty, 0);
-                  cell.SetValue(Grid.ColumnProperty, i);
-                  children.Add(cell);
-               }
-            }
-
-            EventHandler<PointerPressedEventArgs> cellMouseLeftButtonDown = HandleCellMouseLeftButtonDown;
-            EventHandler<PointerReleasedEventArgs> cellMouseLeftButtonUp = HandleCellMouseLeftButtonUp;
-            EventHandler<PointerEventArgs> cellMouseEntered = HandleCellMouseEntered;
-            EventHandler<RoutedEventArgs> cellClick = HandleCellClick;
-
-            for (int i = 1; i < Calendar.RowsPerMonth; i++) {
-               for (int j = 0; j < Calendar.ColumnsPerMonth; j++) {
-                  var cell = new RangeCalendarDayButton();
-
-                  if (Owner != null) {
-                     cell.Owner = Owner;
-                  }
-
-                  cell.SetValue(Grid.RowProperty, i);
-                  cell.SetValue(Grid.ColumnProperty, j);
-                  cell.CalendarDayButtonMouseDown += cellMouseLeftButtonDown;
-                  cell.CalendarDayButtonMouseUp += cellMouseLeftButtonUp;
-                  cell.PointerEntered += cellMouseEntered;
-                  cell.Click += cellClick;
-                  children.Add(cell);
-               }
-            }
-
-            PrimaryMonthView.Children.AddRange(children);
+            PopulateMonthViewGrids(PrimaryMonthView);
+         }
+         if (SecondaryMonthView is not null) {
+            PopulateMonthViewGrids(SecondaryMonthView);
          }
       }
 
       if (YearView != null) {
-         var childCount = Calendar.RowsPerYear * Calendar.ColumnsPerYear;
+         var childCount = RangeCalendar.RowsPerYear * RangeCalendar.ColumnsPerYear;
          using var children = new PooledList<Control>(childCount);
 
          EventHandler<PointerPressedEventArgs> monthCalendarButtonMouseDown = HandleMonthCalendarButtonMouseDown;
          EventHandler<PointerReleasedEventArgs> monthCalendarButtonMouseUp = HandleMonthCalendarButtonMouseUp;
          EventHandler<PointerEventArgs> monthMouseEntered = HandleMonthMouseEntered;
 
-         for (int i = 0; i < Calendar.RowsPerYear; i++) {
-            for (int j = 0; j < Calendar.ColumnsPerYear; j++) {
+         for (int i = 0; i < RangeCalendar.RowsPerYear; i++) {
+            for (int j = 0; j < RangeCalendar.ColumnsPerYear; j++) {
                var month = new RangeCalendarButton();
 
                if (Owner != null) {
@@ -278,6 +397,46 @@ internal class RangeCalendarItem : TemplatedControl
       }
    }
 
+   private void PopulateMonthViewGrids(Grid monthView)
+   {
+      var childCount = RangeCalendar.RowsPerMonth + RangeCalendar.RowsPerMonth * RangeCalendar.ColumnsPerMonth;
+      using var children = new PooledList<Control>(childCount);
+
+      for (int i = 0; i < RangeCalendar.ColumnsPerMonth; i++) {
+         if (DayTitleTemplate?.Build() is Control cell) {
+            cell.DataContext = string.Empty;
+            cell.SetValue(Grid.RowProperty, 0);
+            cell.SetValue(Grid.ColumnProperty, i);
+            children.Add(cell);
+         }
+      }
+
+      EventHandler<PointerPressedEventArgs> cellMouseLeftButtonDown = HandleCellMouseLeftButtonDown;
+      EventHandler<PointerReleasedEventArgs> cellMouseLeftButtonUp = HandleCellMouseLeftButtonUp;
+      EventHandler<PointerEventArgs> cellMouseEntered = HandleCellMouseEntered;
+      EventHandler<RoutedEventArgs> cellClick = HandleCellClick;
+
+      for (int i = 1; i < RangeCalendar.RowsPerMonth; i++) {
+         for (int j = 0; j < RangeCalendar.ColumnsPerMonth; j++) {
+            var cell = new RangeCalendarDayButton();
+
+            if (Owner != null) {
+               cell.Owner = Owner;
+            }
+
+            cell.SetValue(Grid.RowProperty, i);
+            cell.SetValue(Grid.ColumnProperty, j);
+            cell.CalendarDayButtonMouseDown += cellMouseLeftButtonDown;
+            cell.CalendarDayButtonMouseUp += cellMouseLeftButtonUp;
+            cell.PointerEntered += cellMouseEntered;
+            cell.Click += cellClick;
+            children.Add(cell);
+         }
+      }
+
+      monthView.Children.AddRange(children);
+   }
+
    /// <summary>
    /// Builds the visual tree for the
    /// <see cref="T:System.Windows.Controls.Primitives.CalendarItem" />
@@ -285,15 +444,23 @@ internal class RangeCalendarItem : TemplatedControl
    /// </summary>
    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
    {
-      HeaderButton = e.NameScope.Find<HeadTextButton>(RangeCalendarItemTheme.HeaderButtonPart);
-      PreviousButton = e.NameScope.Find<IconButton>(RangeCalendarItemTheme.PreviousButtonPart);
-      PreviousMonthButton = e.NameScope.Find<IconButton>(RangeCalendarItemTheme.PreviousMonthButtonPart);
-      NextButton = e.NameScope.Find<IconButton>(RangeCalendarItemTheme.NextButtonPart);
-      NextMonthButton = e.NameScope.Find<IconButton>(RangeCalendarItemTheme.NextMonthButtonPart);
+      PrimaryHeaderButton = e.NameScope.Find<HeadTextButton>(RangeCalendarItemTheme.PrimaryHeaderButtonPart);
+      SecondaryHeaderButton = e.NameScope.Find<HeadTextButton>(RangeCalendarItemTheme.SecondaryHeaderButtonPart);
+      PrimaryPreviousButton = e.NameScope.Find<IconButton>(RangeCalendarItemTheme.PrimaryPreviousButtonPart);
+      PrimaryPreviousMonthButton = e.NameScope.Find<IconButton>(RangeCalendarItemTheme.PrimaryPreviousMonthButtonPart);
+      PrimaryNextButton = e.NameScope.Find<IconButton>(RangeCalendarItemTheme.PrimaryNextButtonPart);
+      PrimaryNextMonthButton = e.NameScope.Find<IconButton>(RangeCalendarItemTheme.PrimaryNextMonthButtonPart);
+      
+      SecondaryPreviousButton = e.NameScope.Find<IconButton>(RangeCalendarItemTheme.PrimaryPreviousButtonPart);
+      SecondaryPreviousMonthButton = e.NameScope.Find<IconButton>(RangeCalendarItemTheme.PrimaryPreviousMonthButtonPart);
+      SecondaryNextButton = e.NameScope.Find<IconButton>(RangeCalendarItemTheme.PrimaryNextButtonPart);
+      SecondaryNextMonthButton = e.NameScope.Find<IconButton>(RangeCalendarItemTheme.PrimaryNextMonthButtonPart);
+      
       MonthView = e.NameScope.Find<UniformGrid>(RangeCalendarItemTheme.MonthViewPart);
       PrimaryMonthView = e.NameScope.Find<Grid>(RangeCalendarItemTheme.PrimaryMonthViewPart);
       SecondaryMonthView = e.NameScope.Find<Grid>(RangeCalendarItemTheme.SecondaryMonthViewPart);
       YearView = e.NameScope.Find<Grid>(RangeCalendarItemTheme.YearViewPart);
+      _headerLayout = e.NameScope.Find<UniformGrid>(RangeCalendarItemTheme.HeaderLayoutPart);
 
       if (Owner != null) {
          UpdateDisabled(Owner.IsEnabled);
@@ -326,18 +493,47 @@ internal class RangeCalendarItem : TemplatedControl
             YearView.IsVisible = false;
          }
       }
+
+      SetupHeaderForDisplayModeChanged();
+   }
+
+   private void SetupHeaderForDisplayModeChanged()
+   {
+      if (Owner is null || MonthView is null || _headerLayout is null) {
+         return;
+      }
+      if (Owner.DisplayMode == CalendarMode.Month) {
+         MonthView.Columns = 2;
+         _headerLayout.Columns = 2;
+      } else if (Owner.DisplayMode == CalendarMode.Year || Owner.DisplayMode == CalendarMode.Decade) {
+         MonthView.Columns = 1;
+         _headerLayout.Columns = 1;
+      }
+
+      IsMonthViewMode = Owner.DisplayMode == CalendarMode.Month;
    }
 
    protected void SetDayTitles()
    {
-      for (int childIndex = 0; childIndex < Calendar.ColumnsPerMonth; childIndex++) {
-         var daytitle = PrimaryMonthView!.Children[childIndex];
+      if (PrimaryMonthView is not null) {
+         SetDayTitles(PrimaryMonthView);
+      }
+      
+      if (SecondaryMonthView is not null) {
+         SetDayTitles(SecondaryMonthView);
+      }
+   }
+
+   protected void SetDayTitles(Grid monthView)
+   {
+      for (int childIndex = 0; childIndex < RangeCalendar.ColumnsPerMonth; childIndex++) {
+         var dayTitle = monthView.Children[childIndex];
          if (Owner != null) {
-            daytitle.DataContext = DateTimeHelper.GetCurrentDateFormat()
+            dayTitle.DataContext = DateTimeHelper.GetCurrentDateFormat()
                                                  .ShortestDayNames[
                                                     (childIndex + (int)Owner.FirstDayOfWeek) % NumberOfDaysPerWeek];
          } else {
-            daytitle.DataContext = DateTimeHelper.GetCurrentDateFormat().ShortestDayNames[
+            dayTitle.DataContext = DateTimeHelper.GetCurrentDateFormat().ShortestDayNames[
                (childIndex + (int)DateTimeHelper.GetCurrentDateFormat().FirstDayOfWeek) % NumberOfDaysPerWeek];
          }
       }
@@ -378,41 +574,55 @@ internal class RangeCalendarItem : TemplatedControl
 
       if (MonthView != null) {
          SetDayTitles();
-         SetCalendarDayButtons(_currentMonth);
+         if (PrimaryMonthView is not null) {
+            SetCalendarDayButtons(_currentMonth, PrimaryMonthView);
+         }
+         if (SecondaryMonthView is not null) {
+            SetCalendarDayButtons(_currentMonth, SecondaryMonthView);
+         }
       }
    }
 
    protected virtual void SetMonthModeHeaderButton()
    {
-      if (HeaderButton != null) {
-         if (Owner != null) {
-            HeaderButton.Content = Owner.DisplayDateInternal.ToString("Y", DateTimeHelper.GetCurrentDateFormat());
-            HeaderButton.IsEnabled = true;
+      if (PrimaryHeaderButton is not null) {
+         if (Owner is not null) {
+            PrimaryHeaderButton.Content = Owner.DisplayDateInternal.ToString("Y", DateTimeHelper.GetCurrentDateFormat());
+            PrimaryHeaderButton.IsEnabled = true;
          } else {
-            HeaderButton.Content = DateTime.Today.ToString("Y", DateTimeHelper.GetCurrentDateFormat());
+            PrimaryHeaderButton.Content = DateTime.Today.ToString("Y", DateTimeHelper.GetCurrentDateFormat());
+         }
+      }
+
+      if (SecondaryHeaderButton is not null) {
+         if (Owner is not null) {
+            SecondaryHeaderButton.Content = Owner.SecondaryDisplayDateInternal.ToString("Y", DateTimeHelper.GetCurrentDateFormat());
+            SecondaryHeaderButton.IsEnabled = true;
+         } else {
+            SecondaryHeaderButton.Content = DateTime.Today.ToString("Y", DateTimeHelper.GetCurrentDateFormat());
          }
       }
    }
 
    protected void SetMonthModeNextButton(DateTime firstDayOfMonth)
    {
-      if (Owner != null && NextButton != null) {
+      if (Owner != null && PrimaryNextButton != null) {
          // DisplayDate is equal to DateTime.MaxValue
          if (DateTimeHelper.CompareYearMonth(firstDayOfMonth, DateTime.MaxValue) == 0) {
-            NextButton.IsEnabled = false;
+            PrimaryNextButton.IsEnabled = false;
          } else {
             // Since we are sure DisplayDate is not equal to
             // DateTime.MaxValue, it is safe to use AddMonths  
             DateTime firstDayOfNextMonth = _calendar.AddMonths(firstDayOfMonth, 1);
-            NextButton.IsEnabled = (DateTimeHelper.CompareDays(Owner.DisplayDateRangeEnd, firstDayOfNextMonth) > -1);
+            PrimaryNextButton.IsEnabled = (DateTimeHelper.CompareDays(Owner.DisplayDateRangeEnd, firstDayOfNextMonth) > -1);
          }
       }
    }
 
    protected void SetMonthModePreviousButton(DateTime firstDayOfMonth)
    {
-      if (Owner != null && PreviousButton != null) {
-         PreviousButton.IsEnabled = (DateTimeHelper.CompareDays(Owner.DisplayDateRangeStart, firstDayOfMonth) < 0);
+      if (Owner != null && PrimaryPreviousButton != null) {
+         PrimaryPreviousButton.IsEnabled = (DateTimeHelper.CompareDays(Owner.DisplayDateRangeStart, firstDayOfMonth) < 0);
       }
    }
 
@@ -492,7 +702,7 @@ internal class RangeCalendarItem : TemplatedControl
       return false;
    }
 
-   protected void SetCalendarDayButtons(DateTime firstDayOfMonth)
+   protected void SetCalendarDayButtons(DateTime firstDayOfMonth, Grid monthView)
    {
       int lastMonthToDisplay = PreviousMonthDays(firstDayOfMonth);
       DateTime dateToAdd;
@@ -510,10 +720,10 @@ internal class RangeCalendarItem : TemplatedControl
          Owner.HoverStartIndex = null;
       }
 
-      int count = Calendar.RowsPerMonth * Calendar.ColumnsPerMonth;
+      int count = RangeCalendar.RowsPerMonth * RangeCalendar.ColumnsPerMonth;
 
-      for (int childIndex = Calendar.ColumnsPerMonth; childIndex < count; childIndex++) {
-         RangeCalendarDayButton childButton = (RangeCalendarDayButton)PrimaryMonthView!.Children[childIndex];
+      for (int childIndex = RangeCalendar.ColumnsPerMonth; childIndex < count; childIndex++) {
+         RangeCalendarDayButton childButton = (RangeCalendarDayButton)monthView!.Children[childIndex];
 
          childButton.Index = childIndex;
          SetButtonState(childButton, dateToAdd);
@@ -542,7 +752,7 @@ internal class RangeCalendarItem : TemplatedControl
             // are no trailing days
             childIndex++;
             for (int i = childIndex; i < count; i++) {
-               childButton = (RangeCalendarDayButton)PrimaryMonthView.Children[i];
+               childButton = (RangeCalendarDayButton)monthView.Children[i];
                // button needs a content to occupy the necessary space
                // for the content presenter
                childButton.Content = i.ToString(DateTimeHelper.GetCurrentDateFormat());
@@ -561,17 +771,17 @@ internal class RangeCalendarItem : TemplatedControl
       if (Owner != null && Owner.HoverStart.HasValue && Owner.HoverEndInternal.HasValue) {
          if (!Owner.HoverEndIndex.HasValue) {
             if (DateTimeHelper.CompareDays(Owner.HoverEndInternal.Value, Owner.HoverStart.Value) > 0) {
-               Owner.HoverEndIndex = Calendar.ColumnsPerMonth * Calendar.RowsPerMonth - 1;
+               Owner.HoverEndIndex = RangeCalendar.ColumnsPerMonth * RangeCalendar.RowsPerMonth - 1;
             } else {
-               Owner.HoverEndIndex = Calendar.ColumnsPerMonth;
+               Owner.HoverEndIndex = RangeCalendar.ColumnsPerMonth;
             }
          }
 
          if (!Owner.HoverStartIndex.HasValue) {
             if (DateTimeHelper.CompareDays(Owner.HoverEndInternal.Value, Owner.HoverStart.Value) > 0) {
-               Owner.HoverStartIndex = Calendar.ColumnsPerMonth;
+               Owner.HoverStartIndex = RangeCalendar.ColumnsPerMonth;
             } else {
-               Owner.HoverStartIndex = Calendar.ColumnsPerMonth * Calendar.RowsPerMonth - 1;
+               Owner.HoverStartIndex = RangeCalendar.ColumnsPerMonth * RangeCalendar.RowsPerMonth - 1;
             }
          }
       }
@@ -596,23 +806,23 @@ internal class RangeCalendarItem : TemplatedControl
 
    private void SetYearModeHeaderButton()
    {
-      if (HeaderButton != null) {
-         HeaderButton.IsEnabled = true;
-         HeaderButton.Content = _currentMonth.Year.ToString(DateTimeHelper.GetCurrentDateFormat());
+      if (PrimaryHeaderButton != null) {
+         PrimaryHeaderButton.IsEnabled = true;
+         PrimaryHeaderButton.Content = _currentMonth.Year.ToString(DateTimeHelper.GetCurrentDateFormat());
       }
    }
 
    private void SetYearModePreviousButton()
    {
-      if (Owner != null && PreviousButton != null) {
-         PreviousButton.IsEnabled = (Owner.DisplayDateRangeStart.Year != _currentMonth.Year);
+      if (Owner != null && PrimaryPreviousButton != null) {
+         PrimaryPreviousButton.IsEnabled = (Owner.DisplayDateRangeStart.Year != _currentMonth.Year);
       }
    }
 
    private void SetYearModeNextButton()
    {
-      if (Owner != null && NextButton != null) {
-         NextButton.IsEnabled = (Owner.DisplayDateRangeEnd.Year != _currentMonth.Year);
+      if (Owner != null && PrimaryNextButton != null) {
+         PrimaryNextButton.IsEnabled = (Owner.DisplayDateRangeEnd.Year != _currentMonth.Year);
       }
    }
 
@@ -740,24 +950,24 @@ internal class RangeCalendarItem : TemplatedControl
 
    private void SetDecadeModeHeaderButton(int decade, int decadeEnd)
    {
-      if (HeaderButton != null) {
-         HeaderButton.Content = decade.ToString(CultureInfo.CurrentCulture) + "-" +
+      if (PrimaryHeaderButton != null) {
+         PrimaryHeaderButton.Content = decade.ToString(CultureInfo.CurrentCulture) + "-" +
                                 decadeEnd.ToString(CultureInfo.CurrentCulture);
-         HeaderButton.IsEnabled = false;
+         PrimaryHeaderButton.IsEnabled = false;
       }
    }
 
    private void SetDecadeModeNextButton(int decadeEnd)
    {
-      if (Owner != null && NextButton != null) {
-         NextButton.IsEnabled = (Owner.DisplayDateRangeEnd.Year > decadeEnd);
+      if (Owner != null && PrimaryNextButton != null) {
+         PrimaryNextButton.IsEnabled = (Owner.DisplayDateRangeEnd.Year > decadeEnd);
       }
    }
 
    private void SetDecadeModePreviousButton(int decade)
    {
-      if (Owner != null && PreviousButton != null) {
-         PreviousButton.IsEnabled = (decade > Owner.DisplayDateRangeStart.Year);
+      if (Owner != null && PrimaryPreviousButton != null) {
+         PrimaryPreviousButton.IsEnabled = (decade > Owner.DisplayDateRangeStart.Year);
       }
    }
 
@@ -777,11 +987,12 @@ internal class RangeCalendarItem : TemplatedControl
                Owner.SelectedMonth = new DateTime(d.Year, d.Month, 1);
                Owner.DisplayMode = CalendarMode.Year;
             } else {
-               Debug.Assert(Owner.DisplayMode == CalendarMode.Year, "The Owner Calendar's DisplayMode should be Year!");
+               Debug.Assert(Owner.DisplayMode == CalendarMode.Year, "The Owner RangeCalendar's DisplayMode should be Year!");
                d = Owner.SelectedMonth;
                Owner.SelectedYear = new DateTime(d.Year, d.Month, 1);
                Owner.DisplayMode = CalendarMode.Decade;
             }
+            SetupHeaderForDisplayModeChanged();
          }
       }
    }
@@ -1080,6 +1291,8 @@ internal class RangeCalendarItem : TemplatedControl
             Owner.SelectedMonth = newMonth;
             Owner.DisplayMode = CalendarMode.Year;
          }
+
+         SetupHeaderForDisplayModeChanged();
       }
    }
 
