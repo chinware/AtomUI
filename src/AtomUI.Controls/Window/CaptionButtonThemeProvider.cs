@@ -4,11 +4,11 @@ namespace AtomUI.Controls;
 
 public class CaptionButtonThemeProvider
 {
-   public object Key { get; } = typeof(CaptionButton);
-   public Type TargetType { get; } = typeof(Button);
+    public object Key { get; } = typeof(CaptionButton);
+    public Type TargetType { get; } = typeof(Button);
 
-   public ControlTheme BuildControlTheme()
-   {
-      return default!;
-   }
+    public ControlTheme BuildControlTheme()
+    {
+        return default!;
+    }
 }

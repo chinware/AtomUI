@@ -5,7 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
              mc:Ignorable="d">
     <desktop:ShowCasePanel>
         <desktop:ShowCasePanel.Styles>
@@ -13,7 +12,8 @@
                 <Setter Property="Margin" Value="5" />
             </Style>
         </desktop:ShowCasePanel.Styles>
-        <desktop:ShowCaseItem Title="Basic" Description="Usage of basic Tag, and it could be IsClosable and customize close button by set closeIcon property,will display default close button when closeIcon is setting to true. IsClosable Tag supports onClose events.">
+        <desktop:ShowCaseItem Title="Basic"
+                              Description="Usage of basic Tag, and it could be IsClosable and customize close button by set closeIcon property,will display default close button when closeIcon is setting to true. IsClosable Tag supports onClose events.">
             <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal">
                 <atom:Tag>Tag 1</atom:Tag>
                 <atom:Tag>Link</atom:Tag>
@@ -27,7 +27,8 @@
             </WrapPanel>
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Colorful Tag" Description="We preset a series of colorful tag styles for use in different situations. You can also set it to a hex color string for custom color.">
+        <desktop:ShowCaseItem Title="Colorful Tag"
+                              Description="We preset a series of colorful tag styles for use in different situations. You can also set it to a hex color string for custom color.">
             <StackPanel Orientation="Vertical">
                 <TextBlock Margin="0,0,0,10"
                            FontSize="14"
@@ -63,7 +64,8 @@
 
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Status Tag" Description="We preset five different colors, you can set color property such as success,processing,error,default and warning to indicate specific status.">
+        <desktop:ShowCaseItem Title="Status Tag"
+                              Description="We preset five different colors, you can set color property such as success,processing,error,default and warning to indicate specific status.">
             <StackPanel Orientation="Vertical">
                 <TextBlock Margin="0,0,0,10"
                            FontSize="14"
@@ -125,7 +127,8 @@
 
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Icon" Description="Tag components can contain an Icon. This is done by setting the icon property or placing an Icon component within the Tag. If you want specific control over the positioning and placement of the Icon, then that should be done by placing the Icon component within the Tag rather than using the icon property.">
+        <desktop:ShowCaseItem Title="Icon"
+                              Description="Tag components can contain an Icon. This is done by setting the icon property or placing an Icon component within the Tag. If you want specific control over the positioning and placement of the Icon, then that should be done by placing the Icon component within the Tag rather than using the icon property.">
             <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal">
                 <atom:Tag TagColor="#55acee">
                     <atom:Tag.Icon>

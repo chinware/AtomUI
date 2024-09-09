@@ -5,13 +5,13 @@ namespace AtomUI.Theme;
 
 public interface ITheme
 {
-   public string Id { get; }
-   public string DisplayName { get; }
-   public bool IsLoaded { get; }
-   public bool IsDarkMode { get; }
-   public bool IsActivated { get; }
-   public List<string> ThemeResourceKeys { get; }
-   public IControlDesignToken? GetControlToken(string tokenId);
-   public AliasDesignToken GlobalToken { get; }
-   public ThemeVariant ThemeVariant { get; }
+    public string Id { get; }
+    public string DisplayName { get; }
+    public bool IsLoaded { get; }
+    public bool IsDarkMode { get; }
+    public bool IsActivated { get; }
+    public List<string> ThemeResourceKeys { get; }
+    public AliasDesignToken GlobalToken { get; }
+    public ThemeVariant ThemeVariant { get; }
+    public IControlDesignToken? GetControlToken(string tokenId);
 }

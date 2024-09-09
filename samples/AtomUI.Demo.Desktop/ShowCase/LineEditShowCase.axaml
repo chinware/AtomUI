@@ -5,14 +5,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
              mc:Ignorable="d">
     <desktop:ShowCasePanel>
         <desktop:ShowCaseItem Title="Basic usage" Description="Basic usage example.">
             <atom:LineEdit Watermark="Basic usage" />
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Three sizes of Input" Description="There are three sizes of an Input box: large (40px), default (32px) and small (24px).">
+        <desktop:ShowCaseItem Title="Three sizes of Input"
+                              Description="There are three sizes of an Input box: large (40px), default (32px) and small (24px).">
             <StackPanel Margin="0,0,20,0"
                         Orientation="Vertical"
                         Spacing="10">
@@ -55,7 +55,8 @@
             </StackPanel>
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="With clear icon" Description="Input box with the remove icon, click the icon to delete everything.">
+        <desktop:ShowCaseItem Title="With clear icon"
+                              Description="Input box with the remove icon, click the icon to delete everything.">
             <atom:LineEdit Width="400"
                            HorizontalAlignment="Left"
                            IsEnableClearButton="True"
@@ -82,11 +83,12 @@
 
         <desktop:ShowCaseItem Title="prefix and suffix" Description="Add a prefix or suffix icons inside input.">
             <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:LineEdit InnerLeftContent="{atom:IconProvider Kind=UserOutlined,
+                <atom:LineEdit
+                    InnerLeftContent="{atom:IconProvider Kind=UserOutlined,
                                                                     NormalFilledColor=#D7D7D7}"
-                               InnerRightContent="{atom:IconProvider Kind=InfoCircleOutlined,
+                    InnerRightContent="{atom:IconProvider Kind=InfoCircleOutlined,
                                                                      NormalFilledColor=#8C8C8C}"
-                               Watermark="Enter your username" />
+                    Watermark="Enter your username" />
                 <atom:LineEdit InnerLeftContent="￥" InnerRightContent="RMB" />
                 <atom:LineEdit InnerLeftContent="￥"
                                InnerRightContent="RMB"
@@ -94,7 +96,8 @@
             </StackPanel>
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Status" Description="Add status to Input with status, which could be error or warning.">
+        <desktop:ShowCaseItem Title="Status"
+                              Description="Add status to Input with status, which could be error or warning.">
             <StackPanel Margin="0,0,20,0"
                         Orientation="Vertical"
                         Spacing="10">
@@ -127,7 +130,8 @@
             </StackPanel>
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Search box" Description="Example of creating a search box by grouping a standard input with a search button.">
+        <desktop:ShowCaseItem Title="Search box"
+                              Description="Example of creating a search box by grouping a standard input with a search button.">
             <StackPanel Margin="0,0,20,0"
                         Orientation="Vertical"
                         Spacing="10">

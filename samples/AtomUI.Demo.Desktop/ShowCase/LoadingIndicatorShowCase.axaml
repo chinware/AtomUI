@@ -5,14 +5,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
              mc:Ignorable="d">
     <desktop:ShowCasePanel>
         <desktop:ShowCaseItem Title="Basic Usage" Description="A simple loading status.">
             <atom:LoadingIndicator />
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Size" Description="A small LoadingIndicator is used for loading text, default sized LoadingIndicator for loading a card-level block, and large LoadingIndicator used for loading a page.">
+        <desktop:ShowCaseItem Title="Size"
+                              Description="A small LoadingIndicator is used for loading text, default sized LoadingIndicator for loading a card-level block, and large LoadingIndicator used for loading a page.">
             <StackPanel Orientation="Horizontal">
                 <atom:LoadingIndicator VerticalAlignment="Center" SizeType="Small" />
                 <atom:LoadingIndicator VerticalAlignment="Center" SizeType="Middle" />

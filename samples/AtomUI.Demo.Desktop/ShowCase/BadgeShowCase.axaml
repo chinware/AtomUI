@@ -5,11 +5,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
              mc:Ignorable="d">
     <desktop:ShowCasePanel>
 
-        <desktop:ShowCaseItem Title="Basic" Description="Simplest Usage. Badge will be hidden when count is 0, but we can use showZero to show it.">
+        <desktop:ShowCaseItem Title="Basic"
+                              Description="Simplest Usage. Badge will be hidden when count is 0, but we can use showZero to show it.">
             <StackPanel Orientation="Horizontal" Spacing="20">
                 <atom:CountBadge Count="5">
                     <Border Width="40"
@@ -26,7 +26,8 @@
             </StackPanel>
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Overflow Count" Description="${overflowCount}+ is displayed when count is larger than overflowCount. The default value of overflowCount is 99.">
+        <desktop:ShowCaseItem Title="Overflow Count"
+                              Description="${overflowCount}+ is displayed when count is larger than overflowCount. The default value of overflowCount is 99.">
             <StackPanel Orientation="Horizontal" Spacing="20">
                 <atom:CountBadge Count="99">
                     <Border Width="40"
@@ -55,7 +56,8 @@
             </StackPanel>
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Offset" Description="Set offset of the badge dot, the format is [left, top], which represents the offset of the status dot from the left and top of the default position.">
+        <desktop:ShowCaseItem Title="Offset"
+                              Description="Set offset of the badge dot, the format is [left, top], which represents the offset of the status dot from the left and top of the default position.">
             <StackPanel Orientation="Horizontal" Spacing="20">
                 <atom:CountBadge Count="5" Offset="10, 10">
                     <Border Width="40"
@@ -118,12 +120,14 @@
                                 Background="rgb(191,191,191)"
                                 CornerRadius="8" />
                     </atom:DotBadge>
-                    <atom:ToggleSwitch VerticalAlignment="Center" IsChecked="{Binding DynamicDotBadgeVisible, Mode=TwoWay}" />
+                    <atom:ToggleSwitch VerticalAlignment="Center"
+                                       IsChecked="{Binding DynamicDotBadgeVisible, Mode=TwoWay}" />
                 </StackPanel>
             </StackPanel>
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Red badge" Description="This will simply display a red badge, without a specific count. If count equals 0, it won't display the dot.">
+        <desktop:ShowCaseItem Title="Red badge"
+                              Description="This will simply display a red badge, without a specific count. If count equals 0, it won't display the dot.">
             <StackPanel Orientation="Vertical" Spacing="20">
                 <StackPanel Orientation="Horizontal">
                     <atom:DotBadge Offset="15,9">
@@ -294,7 +298,8 @@
             </StackPanel>
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Colorful Badge" Description="We preset a series of colorful Badge styles for use in different situations. You can also set it to a hex color string for custom color.">
+        <desktop:ShowCaseItem Title="Colorful Badge"
+                              Description="We preset a series of colorful Badge styles for use in different situations. You can also set it to a hex color string for custom color.">
             <StackPanel Orientation="Vertical" Spacing="20">
                 <atom:Separator Title="Presets"
                                 FontWeight="SemiBold"

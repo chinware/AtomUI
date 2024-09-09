@@ -17,114 +17,129 @@ namespace AtomUI.Controls;
 
 using AvaloniaMenuItem = Avalonia.Controls.MenuItem;
 
+
 [PseudoClasses(TopLevelPC)]
 public class MenuItem : AvaloniaMenuItem, IControlCustomStyle
 {
-   public const string TopLevelPC = ":toplevel";
-   
-   #region 公共属性定义
+    public const string TopLevelPC = ":toplevel";
 
-   public static readonly StyledProperty<SizeType> SizeTypeProperty =
-      Menu.SizeTypeProperty.AddOwner<MenuItem>();
+    internal static PlatformKeyGestureConverter KeyGestureConverter = new();
 
-   public SizeType SizeType
-   {
-      get => GetValue(SizeTypeProperty);
-      set => SetValue(SizeTypeProperty, value);
-   }
+    private readonly IControlCustomStyle _customStyle;
+    private ContentControl? _togglePresenter;
+    private ContentPresenter? _topLevelContentPresenter;
 
-   #endregion
-   
-   private readonly IControlCustomStyle _customStyle;
-   private ContentPresenter? _topLevelContentPresenter;
-   private ContentControl? _togglePresenter;
-   
-   internal static PlatformKeyGestureConverter KeyGestureConverter = new PlatformKeyGestureConverter();
+    static MenuItem()
+    {
+        AffectsRender<MenuItem>(BackgroundProperty);
+    }
 
-   static MenuItem()
-   {
-      AffectsRender<MenuItem>(BackgroundProperty);
-   }
-   
-   public MenuItem()
-   {
-      _customStyle = this;
-   }
-   
-   protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-   {
-      base.OnApplyTemplate(e);
-      Cursor = new Cursor(StandardCursorType.Hand);
-      HorizontalAlignment = HorizontalAlignment.Stretch;
-      _customStyle.HandleTemplateApplied(e.NameScope);
-   }
-   
-   #region IControlCustomStyle 实现
-   void IControlCustomStyle.SetupTransitions()
-   {
-      if (_topLevelContentPresenter is not null && _topLevelContentPresenter.Transitions is null) {
-         var transitions = new Transitions();
-         transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty));
-         transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty));
-         _topLevelContentPresenter.Transitions = transitions;
-      }
-   }
-   
-   void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
-   {
-      if (IsTopLevel) {
-         _topLevelContentPresenter = scope.Find<ContentPresenter>(TopLevelMenuItemTheme.HeaderPresenterPart);
-      } else {
-         _togglePresenter = scope.Find<ContentControl>(MenuItemTheme.TogglePresenterPart);
-      }
-      HandleToggleTypeChanged();
-      _customStyle.SetupTransitions();
-      UpdatePseudoClasses();
-   }
-   #endregion
+    public MenuItem()
+    {
+        _customStyle = this;
+    }
 
-   protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
-   {
-      base.OnPropertyChanged(e);
-      if (e.Property == ParentProperty) {
-         UpdatePseudoClasses();
-      } else if (e.Property == IconProperty) {
-         if (Icon is not null && Icon is PathIcon pathIcon) {
-            TokenResourceBinder.CreateTokenBinding(pathIcon, PathIcon.WidthProperty, MenuTokenResourceKey.ItemIconSize);
-            TokenResourceBinder.CreateTokenBinding(pathIcon, PathIcon.HeightProperty, MenuTokenResourceKey.ItemIconSize);
-            TokenResourceBinder.CreateTokenBinding(pathIcon, PathIcon.NormalFilledBrushProperty, MenuTokenResourceKey.ItemColor);
-         }
-      } else if (e.Property == ToggleTypeProperty) {
-         HandleToggleTypeChanged();
-      }
-   }
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        Cursor              = new Cursor(StandardCursorType.Hand);
+        HorizontalAlignment = HorizontalAlignment.Stretch;
+        _customStyle.HandleTemplateApplied(e.NameScope);
+    }
 
-   private void HandleToggleTypeChanged()
-   {
-      if (IsTopLevel || _togglePresenter is null) {
-         return;
-      }
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
+    {
+        base.OnPropertyChanged(e);
+        if (e.Property == ParentProperty)
+        {
+            UpdatePseudoClasses();
+        }
+        else if (e.Property == IconProperty)
+        {
+            if (Icon is not null && Icon is PathIcon pathIcon)
+            {
+                TokenResourceBinder.CreateTokenBinding(pathIcon, WidthProperty, MenuTokenResourceKey.ItemIconSize);
+                TokenResourceBinder.CreateTokenBinding(pathIcon, HeightProperty, MenuTokenResourceKey.ItemIconSize);
+                TokenResourceBinder.CreateTokenBinding(pathIcon, PathIcon.NormalFilledBrushProperty,
+                    MenuTokenResourceKey.ItemColor);
+            }
+        }
+        else if (e.Property == ToggleTypeProperty)
+        {
+            HandleToggleTypeChanged();
+        }
+    }
 
-      if (ToggleType == MenuItemToggleType.None) {
-         if (_togglePresenter.Presenter is not null) {
-            _togglePresenter.Presenter.IsVisible = false;
-         }
-      } else if (ToggleType == MenuItemToggleType.CheckBox) {
-         var checkbox = new CheckBox();
-         BindUtils.RelayBind(this, IsCheckedProperty, checkbox, CheckBox.IsCheckedProperty);
-         _togglePresenter.Content = checkbox;
-         _togglePresenter.IsVisible = true;
-      } else if (ToggleType == MenuItemToggleType.Radio) {
-         var radioButton = new RadioButton();
-         BindUtils.RelayBind(this, IsCheckedProperty, radioButton, RadioButton.IsCheckedProperty);
-         BindUtils.RelayBind(this, GroupNameProperty, radioButton, RadioButton.GroupNameProperty);
-          _togglePresenter.Content = radioButton;
-         _togglePresenter.IsVisible = true;
-      }
-   }
+    private void HandleToggleTypeChanged()
+    {
+        if (IsTopLevel || _togglePresenter is null) return;
 
-   private void UpdatePseudoClasses()
-   {
-      PseudoClasses.Set(TopLevelPC, IsTopLevel);
-   }
+        if (ToggleType == MenuItemToggleType.None)
+        {
+            if (_togglePresenter.Presenter is not null) _togglePresenter.Presenter.IsVisible = false;
+        }
+        else if (ToggleType == MenuItemToggleType.CheckBox)
+        {
+            var checkbox = new CheckBox();
+            BindUtils.RelayBind(this, IsCheckedProperty, checkbox, ToggleButton.IsCheckedProperty);
+            _togglePresenter.Content   = checkbox;
+            _togglePresenter.IsVisible = true;
+        }
+        else if (ToggleType == MenuItemToggleType.Radio)
+        {
+            var radioButton = new RadioButton();
+            BindUtils.RelayBind(this, IsCheckedProperty, radioButton, ToggleButton.IsCheckedProperty);
+            BindUtils.RelayBind(this, GroupNameProperty, radioButton, Avalonia.Controls.RadioButton.GroupNameProperty);
+            _togglePresenter.Content   = radioButton;
+            _togglePresenter.IsVisible = true;
+        }
+    }
+
+    private void UpdatePseudoClasses()
+    {
+        PseudoClasses.Set(TopLevelPC, IsTopLevel);
+    }
+
+
+
+    #region 公共属性定义
+
+    public static readonly StyledProperty<SizeType> SizeTypeProperty =
+        Menu.SizeTypeProperty.AddOwner<MenuItem>();
+
+    public SizeType SizeType
+    {
+        get => GetValue(SizeTypeProperty);
+        set => SetValue(SizeTypeProperty, value);
+    }
+
+    #endregion
+
+
+
+    #region IControlCustomStyle 实现
+
+    void IControlCustomStyle.SetupTransitions()
+    {
+        if (_topLevelContentPresenter is not null && _topLevelContentPresenter.Transitions is null)
+        {
+            var transitions = new Transitions();
+            transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty));
+            transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty));
+            _topLevelContentPresenter.Transitions = transitions;
+        }
+    }
+
+    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
+    {
+        if (IsTopLevel)
+            _topLevelContentPresenter = scope.Find<ContentPresenter>(TopLevelMenuItemTheme.HeaderPresenterPart);
+        else
+            _togglePresenter = scope.Find<ContentControl>(MenuItemTheme.TogglePresenterPart);
+        HandleToggleTypeChanged();
+        _customStyle.SetupTransitions();
+        UpdatePseudoClasses();
+    }
+
+    #endregion
 }

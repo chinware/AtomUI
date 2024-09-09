@@ -22,7 +22,7 @@
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.LoadingIndicatorToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.MarqueeLabelToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.MenuToken));
-            ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.Message.MessageToken));
+            ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.MessageToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.NotificationToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.NumericUpDownToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.OptionButtonToken));
@@ -32,14 +32,14 @@
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.SegmentedToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.SeparatorToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.SliderToken));
-            ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.Switch.ToggleSwitchToken));
+            ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.ToggleSwitchToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.TabControlToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.TagToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.TimePickerToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.ToolTipToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.TreeViewToken));
-            ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.Controls.CaptionButtonToken));
-            ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.Window.WindowToken));
+            ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.CaptionButtonToken));
+            ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.WindowToken));
         }
     }
 }

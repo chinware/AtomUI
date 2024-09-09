@@ -5,7 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
              mc:Ignorable="d">
     <TabControl>
         <TabItem Header="TabControl">
@@ -64,7 +63,8 @@
                     </StackPanel>
                 </desktop:ShowCaseItem>
 
-                <desktop:ShowCaseItem Title="Slide" Description="In order to fit in more tabs, they can slide left and right (or up and down).">
+                <desktop:ShowCaseItem Title="Slide"
+                                      Description="In order to fit in more tabs, they can slide left and right (or up and down).">
                     <StackPanel Orientation="Vertical" Spacing="20">
                         <atom:TabControl>
                             <atom:TabItem Header="Tab 1">Content of Tab Pane 1</atom:TabItem>
@@ -114,7 +114,8 @@
                     </StackPanel>
                 </desktop:ShowCaseItem>
 
-                <desktop:ShowCaseItem Title="Card type tab" Description="Another type of Tabs, which doesn't support vertical mode.">
+                <desktop:ShowCaseItem Title="Card type tab"
+                                      Description="Another type of Tabs, which doesn't support vertical mode.">
                     <StackPanel Orientation="Vertical" Spacing="20">
 
                         <atom:CardTabControl>
@@ -126,7 +127,8 @@
                     </StackPanel>
                 </desktop:ShowCaseItem>
 
-                <desktop:ShowCaseItem Title="Position" Description="Tab's position: left, right, top or bottom. Will auto switch to top in mobile.">
+                <desktop:ShowCaseItem Title="Position"
+                                      Description="Tab's position: left, right, top or bottom. Will auto switch to top in mobile.">
                     <StackPanel Orientation="Vertical" Spacing="20">
                         <StackPanel Orientation="Horizontal" Spacing="5">
                             <TextBlock VerticalAlignment="Center">Tab position:</TextBlock>
@@ -197,7 +199,8 @@
                     </StackPanel>
                 </desktop:ShowCaseItem>
 
-                <desktop:ShowCaseItem Title="Size" Description="Large size tabs are usually used in page header, and small size could be used in Modal.">
+                <desktop:ShowCaseItem Title="Size"
+                                      Description="Large size tabs are usually used in page header, and small size could be used in Modal.">
                     <StackPanel Orientation="Vertical" Spacing="20">
                         <StackPanel Orientation="Horizontal" Spacing="5">
                             <TextBlock VerticalAlignment="Center">Tab position:</TextBlock>
@@ -294,7 +297,8 @@
                     </StackPanel>
                 </desktop:ShowCaseItem>
 
-                <desktop:ShowCaseItem Title="Slide" Description="In order to fit in more tabs, they can slide left and right (or up and down).">
+                <desktop:ShowCaseItem Title="Slide"
+                                      Description="In order to fit in more tabs, they can slide left and right (or up and down).">
                     <StackPanel Orientation="Vertical" Spacing="20">
                         <atom:TabStrip>
                             <atom:TabStripItem>Tab 1</atom:TabStripItem>
@@ -324,7 +328,8 @@
                     </StackPanel>
                 </desktop:ShowCaseItem>
 
-                <desktop:ShowCaseItem Title="Card type tab" Description="Another type of Tabs, which doesn't support vertical mode.">
+                <desktop:ShowCaseItem Title="Card type tab"
+                                      Description="Another type of Tabs, which doesn't support vertical mode.">
                     <StackPanel Orientation="Vertical" Spacing="20">
                         <atom:CardTabStrip>
                             <atom:TabStripItem Icon="{atom:IconProvider Kind=AppleOutlined}">Tab 1</atom:TabStripItem>
@@ -336,7 +341,8 @@
                     </StackPanel>
                 </desktop:ShowCaseItem>
 
-                <desktop:ShowCaseItem Title="Position" Description="Tab's position: left, right, top or bottom. Will auto switch to top in mobile.">
+                <desktop:ShowCaseItem Title="Position"
+                                      Description="Tab's position: left, right, top or bottom. Will auto switch to top in mobile.">
                     <StackPanel Orientation="Vertical" Spacing="20">
                         <StackPanel Orientation="Horizontal" Spacing="5">
                             <TextBlock VerticalAlignment="Center">Tab position:</TextBlock>
@@ -401,7 +407,8 @@
                     </StackPanel>
                 </desktop:ShowCaseItem>
 
-                <desktop:ShowCaseItem Title="Size" Description="Large size tabs are usually used in page header, and small size could be used in Modal.">
+                <desktop:ShowCaseItem Title="Size"
+                                      Description="Large size tabs are usually used in page header, and small size could be used in Modal.">
                     <StackPanel Orientation="Vertical" Spacing="20">
                         <StackPanel Orientation="Horizontal" Spacing="5">
                             <TextBlock VerticalAlignment="Center">Tab position:</TextBlock>

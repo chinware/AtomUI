@@ -5,7 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
              mc:Ignorable="d">
     <desktop:ShowCasePanel>
         <desktop:ShowCasePanel.Styles>
@@ -13,7 +12,8 @@
                 <Setter Property="Margin" Value="5" />
             </Style>
         </desktop:ShowCasePanel.Styles>
-        <desktop:ShowCaseItem Title="Type" Description="There are primary button, default button, dashed button, text button and link button in antd.">
+        <desktop:ShowCaseItem Title="Type"
+                              Description="There are primary button, default button, dashed button, text button and link button in antd.">
             <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal">
                 <atom:Button ButtonType="Primary">Primary Button</atom:Button>
                 <atom:Button>Default Button</atom:Button>
@@ -22,7 +22,8 @@
             </WrapPanel>
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Button Shape" Description="Supported button shape display, such as primary, default, dashed and Text, etc.">
+        <desktop:ShowCaseItem Title="Button Shape"
+                              Description="Supported button shape display, such as primary, default, dashed and Text, etc.">
             <StackPanel Orientation="Vertical">
                 <WrapPanel Margin="0,0,0,20"
                            HorizontalAlignment="Left"
@@ -53,7 +54,8 @@
 
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Size" Description="AtomUI supports three sizes of buttons: small, default and large. If a large or small button is desired, set the size property to either large or small respectively. Omit the size property for a button with the default size.">
+        <desktop:ShowCaseItem Title="Size"
+                              Description="AtomUI supports three sizes of buttons: small, default and large. If a large or small button is desired, set the size property to either large or small respectively. Omit the size property for a button with the default size.">
             <DockPanel Margin="0,0,0,0">
                 <StackPanel DockPanel.Dock="Top"
                             Orientation="Horizontal"
@@ -104,7 +106,8 @@
             </DockPanel>
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Icon" Description="You can add an icon through the icon property and adjust the position of the icon using iconPosition.">
+        <desktop:ShowCaseItem Title="Icon"
+                              Description="You can add an icon through the icon property and adjust the position of the icon using iconPosition.">
             <StackPanel Orientation="Vertical">
                 <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal">
                     <atom:Button ButtonType="Primary"
@@ -170,7 +173,8 @@
 
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Loading" Description="A loading indicator can be added to a button by setting the loading property on the Button.">
+        <desktop:ShowCaseItem Title="Loading"
+                              Description="A loading indicator can be added to a button by setting the loading property on the Button.">
             <StackPanel Margin="10"
                         HorizontalAlignment="Stretch"
                         Orientation="Vertical">
@@ -200,7 +204,8 @@
             </StackPanel>
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Block Button" Description="block property will make the button fit to its parent width.">
+        <desktop:ShowCaseItem Title="Block Button"
+                              Description="block property will make the button fit to its parent width.">
             <StackPanel Margin="10"
                         HorizontalAlignment="Stretch"
                         Orientation="Vertical">
@@ -236,7 +241,8 @@
             </WrapPanel>
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Ghost Button" Description="ghost property will make button's background transparent, it is commonly used in colored background.">
+        <desktop:ShowCaseItem Title="Ghost Button"
+                              Description="ghost property will make button's background transparent, it is commonly used in colored background.">
             <Border Margin="10"
                     Padding="10"
                     Background="rgb(190, 200, 200)">
@@ -292,7 +298,8 @@
             </Border>
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Disabled" Description="To mark a button as disabled, add the disabled property to the Button.">
+        <desktop:ShowCaseItem Title="Disabled"
+                              Description="To mark a button as disabled, add the disabled property to the Button.">
             <WrapPanel HorizontalAlignment="Stretch" Orientation="Vertical">
                 <StackPanel Orientation="Horizontal">
                     <atom:Button ButtonType="Primary">

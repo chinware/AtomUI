@@ -10,75 +10,78 @@ namespace AtomUI.Controls;
 
 internal class NotificationProgressBar : Control
 {
-   #region 公共属性定义
+    static NotificationProgressBar()
+    {
+        AffectsMeasure<NotificationProgressBar>(ProgressIndicatorThicknessProperty);
+        AffectsRender<NotificationProgressBar>(ProgressIndicatorBrushProperty,
+            ExpirationProperty,
+            CurrentExpirationProperty);
+    }
 
-   public static readonly StyledProperty<double> ProgressIndicatorThicknessProperty =
-      AvaloniaProperty.Register<NotificationProgressBar, double>(nameof(ProgressIndicatorThickness));
+    protected override Size MeasureOverride(Size availableSize)
+    {
+        return new Size(availableSize.Width, ProgressIndicatorThickness);
+    }
 
-   public static readonly StyledProperty<IBrush?> ProgressIndicatorBrushProperty =
-      AvaloniaProperty.Register<NotificationProgressBar, IBrush?>(nameof(ProgressIndicatorBrush));
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        TokenResourceBinder.CreateTokenBinding(this, ProgressIndicatorThicknessProperty,
+            NotificationTokenResourceKey.NotificationProgressHeight);
+        TokenResourceBinder.CreateTokenBinding(this, ProgressIndicatorBrushProperty,
+            NotificationTokenResourceKey.NotificationProgressBg);
+    }
 
-   public static readonly StyledProperty<TimeSpan> ExpirationProperty =
-      AvaloniaProperty.Register<NotificationProgressBar, TimeSpan>(nameof(Expiration));
+    public override void Render(DrawingContext context)
+    {
+        var indicatorWidth = 0d;
+        var total          = Expiration.TotalMilliseconds;
+        if (MathUtils.GreaterThan(total, 0))
+            indicatorWidth = CurrentExpiration.TotalMilliseconds / total * Bounds.Width;
+        var offsetY       = Bounds.Height - ProgressIndicatorThickness;
+        var indicatorRect = new Rect(new Point(0, offsetY), new Size(indicatorWidth, ProgressIndicatorThickness));
+        context.FillRectangle(ProgressIndicatorBrush!, indicatorRect);
+    }
 
-   public static readonly StyledProperty<TimeSpan> CurrentExpirationProperty =
-      AvaloniaProperty.Register<NotificationProgressBar, TimeSpan>(nameof(CurrentExpiration));
 
-   internal double ProgressIndicatorThickness
-   {
-      get => GetValue(ProgressIndicatorThicknessProperty);
-      set => SetValue(ProgressIndicatorThicknessProperty, value);
-   }
 
-   public IBrush? ProgressIndicatorBrush
-   {
-      get => GetValue(ProgressIndicatorBrushProperty);
-      set => SetValue(ProgressIndicatorBrushProperty, value);
-   }
+    #region 公共属性定义
 
-   public TimeSpan Expiration
-   {
-      get => GetValue(ExpirationProperty);
-      set => SetValue(ExpirationProperty, value);
-   }
+    public static readonly StyledProperty<double> ProgressIndicatorThicknessProperty =
+        AvaloniaProperty.Register<NotificationProgressBar, double>(nameof(ProgressIndicatorThickness));
 
-   public TimeSpan CurrentExpiration
-   {
-      get => GetValue(CurrentExpirationProperty);
-      set => SetValue(CurrentExpirationProperty, value);
-   }
+    public static readonly StyledProperty<IBrush?> ProgressIndicatorBrushProperty =
+        AvaloniaProperty.Register<NotificationProgressBar, IBrush?>(nameof(ProgressIndicatorBrush));
 
-   #endregion
+    public static readonly StyledProperty<TimeSpan> ExpirationProperty =
+        AvaloniaProperty.Register<NotificationProgressBar, TimeSpan>(nameof(Expiration));
 
-   static NotificationProgressBar()
-   {
-      AffectsMeasure<NotificationProgressBar>(ProgressIndicatorThicknessProperty);
-      AffectsRender<NotificationProgressBar>(ProgressIndicatorBrushProperty,
-                                             ExpirationProperty,
-                                             CurrentExpirationProperty);
-   }
+    public static readonly StyledProperty<TimeSpan> CurrentExpirationProperty =
+        AvaloniaProperty.Register<NotificationProgressBar, TimeSpan>(nameof(CurrentExpiration));
 
-   protected override Size MeasureOverride(Size availableSize)
-   {
-      return new Size(availableSize.Width, ProgressIndicatorThickness);
-   }
+    internal double ProgressIndicatorThickness
+    {
+        get => GetValue(ProgressIndicatorThicknessProperty);
+        set => SetValue(ProgressIndicatorThicknessProperty, value);
+    }
 
-   protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-   {
-      base.OnAttachedToLogicalTree(e);
-      TokenResourceBinder.CreateTokenBinding(this, ProgressIndicatorThicknessProperty, NotificationTokenResourceKey.NotificationProgressHeight);
-      TokenResourceBinder.CreateTokenBinding(this, ProgressIndicatorBrushProperty, NotificationTokenResourceKey.NotificationProgressBg);
-   }
+    public IBrush? ProgressIndicatorBrush
+    {
+        get => GetValue(ProgressIndicatorBrushProperty);
+        set => SetValue(ProgressIndicatorBrushProperty, value);
+    }
 
-   public override void Render(DrawingContext context)
-   {
-      var indicatorWidth = 0d;
-      var total = Expiration.TotalMilliseconds;
-      if (MathUtils.GreaterThan(total, 0)) {
-         indicatorWidth = (CurrentExpiration.TotalMilliseconds / total) * Bounds.Width;
-      }
-      var offsetY = Bounds.Height - ProgressIndicatorThickness;
-      var indicatorRect = new Rect(new Point(0, offsetY), new Size(indicatorWidth, ProgressIndicatorThickness));
-      context.FillRectangle(ProgressIndicatorBrush!, indicatorRect);
-   }
+    public TimeSpan Expiration
+    {
+        get => GetValue(ExpirationProperty);
+        set => SetValue(ExpirationProperty, value);
+    }
+
+    public TimeSpan CurrentExpiration
+    {
+        get => GetValue(CurrentExpirationProperty);
+        set => SetValue(CurrentExpirationProperty, value);
+    }
+
+    #endregion
 }

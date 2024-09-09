@@ -15,557 +15,564 @@ using Avalonia.Rendering;
 namespace AtomUI.Controls;
 
 public class ToggleSwitch : ToggleButton,
-                            ISizeTypeAware,
-                            ICustomHitTest,
-                            IWaveAdornerInfoProvider,
-                            IControlCustomStyle
+    ISizeTypeAware,
+    ICustomHitTest,
+    IWaveAdornerInfoProvider,
+    IControlCustomStyle
 {
-   #region 公共属性定义
+    private const double STRETCH_FACTOR = 1.3d;
+    private readonly IControlCustomStyle _customStyle;
+    private ControlStyleState _styleState;
 
-   /// <summary>
-   /// Defines the <see cref="GrooveBackground"/> property.
-   /// </summary>
-   public static readonly StyledProperty<IBrush?> GrooveBackgroundProperty
-      = AvaloniaProperty.Register<ToggleSwitch, IBrush?>(
-         nameof(GrooveBackground));
+    private SwitchKnob? _switchKnob;
+    private Canvas? _togglePanel;
 
-   /// <summary>
-   /// Defines the <see cref="OffContent"/> property.
-   /// </summary>
-   public static readonly StyledProperty<object?> OffContentProperty =
-      AvaloniaProperty.Register<ToggleSwitch, object?>(nameof(OffContent));
+    static ToggleSwitch()
+    {
+        AffectsMeasure<ToggleSwitch>(SizeTypeProperty);
+        AffectsArrange<ToggleSwitch>(
+            IsPressedProperty,
+            KnobOffsetProperty,
+            OnContentOffsetProperty,
+            OffContentOffsetProperty);
+        AffectsRender<ToggleSwitch>(GrooveBackgroundProperty,
+            SwitchOpacityProperty);
+    }
 
-   /// <summary>
-   /// Defines the <see cref="OnContent"/> property.
-   /// </summary>
-   public static readonly StyledProperty<object?> OnContentProperty =
-      AvaloniaProperty.Register<ToggleSwitch, object?>(nameof(OnContent));
+    public ToggleSwitch()
+    {
+        _customStyle  =  this;
+        LayoutUpdated += HandleLayoutUpdated;
+    }
 
-   /// <summary>
-   /// 设置预置的大小类型
-   /// </summary>
-   public static readonly StyledProperty<SizeType> SizeTypeProperty =
-      AvaloniaProperty.Register<Button, SizeType>(nameof(SizeType), SizeType.Middle);
+    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
+    {
+        _togglePanel = scope.Find<Canvas>(ToggleSwitchTheme.MainContainerPart);
+        _switchKnob  = scope.Find<SwitchKnob>(ToggleSwitchTheme.SwitchKnobPart);
 
-   /// <summary>
-   /// 是否处于加载状态
-   /// </summary>
-   public static readonly StyledProperty<bool> IsLoadingProperty =
-      AvaloniaProperty.Register<Button, bool>(nameof(IsLoading), false);
+        if (!IsLoading) Cursor = new Cursor(StandardCursorType.Hand);
 
-   /// <summary>
-   /// Gets or Sets the Content that is displayed when in the On State.
-   /// </summary>
-   public object? OnContent
-   {
-      get => GetValue(OnContentProperty);
-      set => SetValue(OnContentProperty, value);
-   }
+        HorizontalAlignment = HorizontalAlignment.Left;
 
-   /// <summary>
-   /// Gets or Sets the Content that is displayed when in the Off State.
-   /// </summary>
-   public object? OffContent
-   {
-      get => GetValue(OffContentProperty);
-      set => SetValue(OffContentProperty, value);
-   }
+        var offControl = SetupContent(OffContent);
+        var onControl  = SetupContent(OnContent);
 
-   public SizeType SizeType
-   {
-      get => GetValue(SizeTypeProperty);
-      set => SetValue(SizeTypeProperty, value);
-   }
+        // 这里会调用属性函数进行添加到布局
+        if (offControl == OffContent && offControl is not null) _togglePanel?.Children.Add(offControl);
 
-   /// <summary>
-   /// 是否处于加载状态
-   /// </summary>
-   public bool IsLoading
-   {
-      get => GetValue(IsLoadingProperty);
-      set => SetValue(IsLoadingProperty, value);
-   }
+        if (onControl == OnContent && onControl is not null) _togglePanel?.Children.Add(onControl);
 
-   public IBrush? GrooveBackground
-   {
-      get => GetValue(GrooveBackgroundProperty);
-      set => SetValue(GrooveBackgroundProperty, value);
-   }
+        OffContent = offControl;
+        OnContent  = onControl;
 
-   #endregion
+        HandleLoadingState(IsLoading);
+        _customStyle.CollectStyleState();
+    }
 
-   #region 私有属性定义
-   
-   internal static readonly StyledProperty<double> InnerMaxMarginProperty
-      = AvaloniaProperty.Register<ToggleSwitch, double>(nameof(InnerMaxMargin));
-   
-   internal static readonly StyledProperty<double> InnerMinMarginProperty
-      = AvaloniaProperty.Register<ToggleSwitch, double>(nameof(InnerMinMargin));
-   
-   internal static readonly StyledProperty<double> TrackHeightProperty
-      = AvaloniaProperty.Register<ToggleSwitch, double>(nameof(TrackHeight));
-   
-   internal static readonly StyledProperty<double> IconSizeProperty
-      = AvaloniaProperty.Register<ToggleSwitch, double>(nameof(IconSize));
-   
-   internal static readonly StyledProperty<double> TrackMinWidthProperty
-      = AvaloniaProperty.Register<ToggleSwitch, double>(nameof(TrackMinWidth));
+    public bool HitTest(Point point)
+    {
+        if (!IsEnabled || IsLoading) return false;
 
-   internal static readonly StyledProperty<double> TrackPaddingProperty
-      = AvaloniaProperty.Register<ToggleSwitch, double>(nameof(TrackPadding));
-   
-   // 这几个属性跟动画相关
-   internal static readonly StyledProperty<Point> KnobOffsetProperty
-      = AvaloniaProperty.Register<ToggleSwitch, Point>(nameof(KnobOffset));
-   
-   internal double InnerMaxMargin
-   {
-      get => GetValue(InnerMaxMarginProperty);
-      set => SetValue(InnerMaxMarginProperty, value);
-   }
-   
-   internal double InnerMinMargin
-   {
-      get => GetValue(InnerMinMarginProperty);
-      set => SetValue(InnerMinMarginProperty, value);
-   }
-   
-   internal double TrackHeight
-   {
-      get => GetValue(TrackHeightProperty);
-      set => SetValue(TrackHeightProperty, value);
-   }
-   
-   internal double IconSize
-   {
-      get => GetValue(IconSizeProperty);
-      set => SetValue(IconSizeProperty, value);
-   }
-    
-   internal double TrackMinWidth
-   {
-      get => GetValue(TrackMinWidthProperty);
-      set => SetValue(TrackMinWidthProperty, value);
-   }
-   
-   internal double TrackPadding
-   {
-      get => GetValue(TrackPaddingProperty);
-      set => SetValue(TrackPaddingProperty, value);
-   }
+        var grooveRect = GrooveRect();
+        return grooveRect.Contains(point);
+    }
 
-   internal Point KnobOffset
-   {
-      get => GetValue(KnobOffsetProperty);
-      set => SetValue(KnobOffsetProperty, value);
-   }
-   
-   internal static readonly StyledProperty<Point> OnContentOffsetProperty
-      = AvaloniaProperty.Register<ToggleSwitch, Point>(nameof(OnContentOffset));
+    private void HandleLayoutUpdated(object? sender, EventArgs args)
+    {
+        if (Transitions is null) _customStyle.SetupTransitions();
+    }
 
-   internal Point OnContentOffset
-   {
-      get => GetValue(OnContentOffsetProperty);
-      set => SetValue(OnContentOffsetProperty, value);
-   }
-   
-   internal static readonly StyledProperty<Point> OffContentOffsetProperty
-      = AvaloniaProperty.Register<ToggleSwitch, Point>(nameof(OffContentOffset));
+    protected override Size MeasureOverride(Size availableSize)
+    {
+        double extraInfoWidth = 0;
 
-   internal Point OffContentOffset
-   {
-      get => GetValue(OffContentOffsetProperty);
-      set => SetValue(OffContentOffsetProperty, value);
-   }
-   
-   internal static readonly StyledProperty<double> SwitchOpacityProperty
-      = AvaloniaProperty.Register<ToggleSwitch, double>(nameof(SwitchOpacity), 1d);
+        if (OffContent is Layoutable offLayoutable)
+        {
+            offLayoutable.Measure(availableSize);
+            extraInfoWidth = Math.Max(extraInfoWidth, offLayoutable.DesiredSize.Width);
+        }
 
-   internal double SwitchOpacity
-   {
-      get => GetValue(SwitchOpacityProperty);
-      set => SetValue(SwitchOpacityProperty, value);
-   }
+        if (OnContent is Layoutable onLayoutable)
+        {
+            onLayoutable.Measure(availableSize);
+            extraInfoWidth = Math.Max(extraInfoWidth, onLayoutable.DesiredSize.Width);
+        }
 
-   #endregion
+        var switchHeight  = TrackHeight;
+        var switchWidth   = extraInfoWidth;
+        var trackMinWidth = TrackMinWidth;
+        switchWidth += InnerMinMargin + InnerMaxMargin;
+        switchWidth =  Math.Max(switchWidth, trackMinWidth);
+        var targetSize = new Size(switchWidth, switchHeight);
+        CalculateElementsOffset(targetSize);
+        return targetSize;
+    }
 
-   private const double STRETCH_FACTOR = 1.3d;
-   private IControlCustomStyle _customStyle;
-   private ControlStyleState _styleState;
-   private Canvas? _togglePanel;
+    protected override Size ArrangeOverride(Size finalSize)
+    {
+        if (_switchKnob is not null)
+        {
+            Canvas.SetLeft(_switchKnob, KnobOffset.X);
+            Canvas.SetTop(_switchKnob, KnobOffset.Y);
+        }
 
-   private SwitchKnob? _switchKnob;
+        base.ArrangeOverride(finalSize);
+        AdjustExtraInfoOffset();
+        return finalSize;
+    }
 
-   static ToggleSwitch()
-   {
-      AffectsMeasure<ToggleSwitch>(SizeTypeProperty);
-      AffectsArrange<ToggleSwitch>(
-         IsPressedProperty,
-         KnobOffsetProperty,
-         OnContentOffsetProperty,
-         OffContentOffsetProperty);
-      AffectsRender<ToggleSwitch>(GrooveBackgroundProperty,
-                                  SwitchOpacityProperty);
-   }
+    private void AdjustExtraInfoOffset()
+    {
+        if (OffContent is Control offControl)
+        {
+            Canvas.SetLeft(offControl, OffContentOffset.X);
+            Canvas.SetTop(offControl, OffContentOffset.Y);
+        }
 
-   public ToggleSwitch()
-   {
-      _customStyle = this;
-      LayoutUpdated += HandleLayoutUpdated;
-   }
+        if (OnContent is Control onControl)
+        {
+            Canvas.SetLeft(onControl, OnContentOffset.X);
+            Canvas.SetTop(onControl, OnContentOffset.Y);
+        }
+    }
 
-   private void HandleLayoutUpdated(object? sender, EventArgs args)
-   {
-      if (Transitions is null) {
-         _customStyle.SetupTransitions();
-      }
-   }
+    private void AdjustOffsetOnPressed()
+    {
+        var handleRect = HandleRect();
+        KnobOffset = handleRect.TopLeft;
+        var handleSize = _switchKnob?.OriginKnobSize.Width ?? 0d;
+        var delta      = handleRect.Width - handleSize;
 
-   protected override Size MeasureOverride(Size availableSize)
-   {
-      double extraInfoWidth = 0;
+        var contentOffsetDelta = handleSize * (STRETCH_FACTOR - 1);
 
-      if (OffContent is Layoutable offLayoutable) {
-         offLayoutable.Measure(availableSize);
-         extraInfoWidth = Math.Max(extraInfoWidth, offLayoutable.DesiredSize.Width);
-      }
+        if (IsChecked.HasValue && IsChecked.Value)
+        {
+            // 点击的时候如果是选中，需要调整坐标
+            KnobOffset      = new Point(KnobOffset.X      - delta, KnobOffset.Y);
+            OnContentOffset = new Point(OnContentOffset.X - contentOffsetDelta, OffContentOffset.Y);
+        }
+        else
+        {
+            OffContentOffset = new Point(OffContentOffset.X + contentOffsetDelta, OffContentOffset.Y);
+        }
 
-      if (OnContent is Layoutable onLayoutable) {
-         onLayoutable.Measure(availableSize);
-         extraInfoWidth = Math.Max(extraInfoWidth, onLayoutable.DesiredSize.Width);
-      }
+        var handleWidth                                   = handleSize * STRETCH_FACTOR;
+        if (_switchKnob is not null) _switchKnob.KnobSize = new Size(handleWidth, handleSize);
+    }
 
-      double switchHeight = TrackHeight;
-      double switchWidth = extraInfoWidth;
-      double trackMinWidth = TrackMinWidth;
-      switchWidth += InnerMinMargin + InnerMaxMargin;
-      switchWidth = Math.Max(switchWidth, trackMinWidth);
-      var targetSize = new Size(switchWidth, switchHeight);
-      CalculateElementsOffset(targetSize);
-      return targetSize;
-   }
+    private void AdjustOffsetOnReleased()
+    {
+        var handleSize                                    = _switchKnob?.OriginKnobSize.Width ?? 0d;
+        if (_switchKnob is not null) _switchKnob.KnobSize = new Size(handleSize, handleSize);
 
-   protected override Size ArrangeOverride(Size finalSize)
-   {
-      if (_switchKnob is not null) {
-         Canvas.SetLeft(_switchKnob, KnobOffset.X);
-         Canvas.SetTop(_switchKnob, KnobOffset.Y);
-      }
+        CalculateElementsOffset(DesiredSize);
+    }
 
-      base.ArrangeOverride(finalSize);
-      AdjustExtraInfoOffset();
-      return finalSize;
-   }
+    protected override void OnPointerPressed(PointerPressedEventArgs e)
+    {
+        if (!IsLoading)
+        {
+            base.OnPointerPressed(e);
+            AdjustOffsetOnPressed();
+        }
+    }
 
-   private void AdjustExtraInfoOffset()
-   {
-      if (OffContent is Control offControl) {
-         Canvas.SetLeft(offControl, OffContentOffset.X);
-         Canvas.SetTop(offControl, OffContentOffset.Y);
-      }
+    protected override void OnPointerReleased(PointerReleasedEventArgs e)
+    {
+        if (!IsLoading)
+        {
+            base.OnPointerReleased(e);
+            AdjustOffsetOnReleased();
+            InvalidateArrange();
+        }
+    }
 
-      if (OnContent is Control onControl) {
-         Canvas.SetLeft(onControl, OnContentOffset.X);
-         Canvas.SetTop(onControl, OnContentOffset.Y);
-      }
-   }
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
+    {
+        base.OnPropertyChanged(e);
+        _customStyle.HandlePropertyChangedForStyle(e);
+    }
 
-   private void AdjustOffsetOnPressed()
-   {
-      var handleRect = HandleRect();
-      KnobOffset = handleRect.TopLeft;
-      var handleSize = _switchKnob?.OriginKnobSize.Width ?? 0d;
-      var delta = handleRect.Width - handleSize;
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        _customStyle.HandleTemplateApplied(e.NameScope);
+    }
 
-      var contentOffsetDelta = handleSize * (STRETCH_FACTOR - 1);
+    public sealed override void Render(DrawingContext context)
+    {
+        using var state = context.PushOpacity(SwitchOpacity);
+        context.DrawPilledRect(GrooveBackground, null, GrooveRect());
+    }
 
-      if (IsChecked.HasValue && IsChecked.Value) {
-         // 点击的时候如果是选中，需要调整坐标
-         KnobOffset = new Point(KnobOffset.X - delta, KnobOffset.Y);
-         OnContentOffset = new Point(OnContentOffset.X - contentOffsetDelta, OffContentOffset.Y);
-      } else {
-         OffContentOffset = new Point(OffContentOffset.X + contentOffsetDelta, OffContentOffset.Y);
-      }
 
-      var handleWidth = handleSize * STRETCH_FACTOR;
-      if (_switchKnob is not null) {
-         _switchKnob.KnobSize = new Size(handleWidth, handleSize);
-      }
-   }
 
-   private void AdjustOffsetOnReleased()
-   {
-      var handleSize = _switchKnob?.OriginKnobSize.Width ?? 0d;
-      if (_switchKnob is not null) {
-         _switchKnob.KnobSize = new Size(handleSize, handleSize);
-      }
+    #region 公共属性定义
 
-      CalculateElementsOffset(DesiredSize);
-   }
+    /// <summary>
+    ///     Defines the <see cref="GrooveBackground" /> property.
+    /// </summary>
+    public static readonly StyledProperty<IBrush?> GrooveBackgroundProperty
+        = AvaloniaProperty.Register<ToggleSwitch, IBrush?>(
+            nameof(GrooveBackground));
 
-   protected override void OnPointerPressed(PointerPressedEventArgs e)
-   {
-      if (!IsLoading) {
-         base.OnPointerPressed(e);
-         AdjustOffsetOnPressed();
-      }
-   }
+    /// <summary>
+    ///     Defines the <see cref="OffContent" /> property.
+    /// </summary>
+    public static readonly StyledProperty<object?> OffContentProperty =
+        AvaloniaProperty.Register<ToggleSwitch, object?>(nameof(OffContent));
 
-   protected override void OnPointerReleased(PointerReleasedEventArgs e)
-   {
-      if (!IsLoading) {
-         base.OnPointerReleased(e);
-         AdjustOffsetOnReleased();
-         InvalidateArrange();
-      }
-   }
+    /// <summary>
+    ///     Defines the <see cref="OnContent" /> property.
+    /// </summary>
+    public static readonly StyledProperty<object?> OnContentProperty =
+        AvaloniaProperty.Register<ToggleSwitch, object?>(nameof(OnContent));
 
-   protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
-   {
-      base.OnPropertyChanged(e);
-      _customStyle.HandlePropertyChangedForStyle(e);
-   }
+    /// <summary>
+    ///     设置预置的大小类型
+    /// </summary>
+    public static readonly StyledProperty<SizeType> SizeTypeProperty =
+        AvaloniaProperty.Register<Button, SizeType>(nameof(SizeType), SizeType.Middle);
 
-   protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-   {
-      base.OnApplyTemplate(e);
-      _customStyle.HandleTemplateApplied(e.NameScope);
-   }
+    /// <summary>
+    ///     是否处于加载状态
+    /// </summary>
+    public static readonly StyledProperty<bool> IsLoadingProperty =
+        AvaloniaProperty.Register<Button, bool>(nameof(IsLoading));
 
-   void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
-   {
-      _togglePanel = scope.Find<Canvas>(ToggleSwitchTheme.MainContainerPart);
-      _switchKnob = scope.Find<SwitchKnob>(ToggleSwitchTheme.SwitchKnobPart);
-      
-      if (!IsLoading) {
-         Cursor = new Cursor(StandardCursorType.Hand);
-      }
+    /// <summary>
+    ///     Gets or Sets the Content that is displayed when in the On State.
+    /// </summary>
+    public object? OnContent
+    {
+        get => GetValue(OnContentProperty);
+        set => SetValue(OnContentProperty, value);
+    }
 
-      HorizontalAlignment = HorizontalAlignment.Left;
+    /// <summary>
+    ///     Gets or Sets the Content that is displayed when in the Off State.
+    /// </summary>
+    public object? OffContent
+    {
+        get => GetValue(OffContentProperty);
+        set => SetValue(OffContentProperty, value);
+    }
 
-      var offControl = SetupContent(OffContent);
-      var onControl = SetupContent(OnContent);
+    public SizeType SizeType
+    {
+        get => GetValue(SizeTypeProperty);
+        set => SetValue(SizeTypeProperty, value);
+    }
 
-      // 这里会调用属性函数进行添加到布局
-      if (offControl == OffContent && offControl is not null) {
-         _togglePanel?.Children.Add(offControl);
-      }
+    /// <summary>
+    ///     是否处于加载状态
+    /// </summary>
+    public bool IsLoading
+    {
+        get => GetValue(IsLoadingProperty);
+        set => SetValue(IsLoadingProperty, value);
+    }
 
-      if (onControl == OnContent && onControl is not null) {
-         _togglePanel?.Children.Add(onControl);
-      }
+    public IBrush? GrooveBackground
+    {
+        get => GetValue(GrooveBackgroundProperty);
+        set => SetValue(GrooveBackgroundProperty, value);
+    }
 
-      OffContent = offControl;
-      OnContent = onControl;
+    #endregion
 
-      HandleLoadingState(IsLoading);
-      _customStyle.CollectStyleState();
-   }
 
-   public sealed override void Render(DrawingContext context)
-   {
-      using var state = context.PushOpacity(SwitchOpacity);
-      context.DrawPilledRect(GrooveBackground, null, GrooveRect());
-   }
 
-   public bool HitTest(Point point)
-   {
-      if (!IsEnabled || IsLoading) {
-         return false;
-      }
+    #region 私有属性定义
 
-      var grooveRect = GrooveRect();
-      return grooveRect.Contains(point);
-   }
+    internal static readonly StyledProperty<double> InnerMaxMarginProperty
+        = AvaloniaProperty.Register<ToggleSwitch, double>(nameof(InnerMaxMargin));
 
-   #region IControlCustomStyle 实现
+    internal static readonly StyledProperty<double> InnerMinMarginProperty
+        = AvaloniaProperty.Register<ToggleSwitch, double>(nameof(InnerMinMargin));
 
-   private Control? SetupContent(object? content)
-   {
-      Control? result = default;
-      if (content is Control offControl) {
-         if (content is TemplatedControl templatedControl) {
-            templatedControl.Padding = new Thickness(0);
-         } else if (content is PathIcon iconControl) {
-            if (iconControl.ThemeType != IconThemeType.TwoTone) {
-               iconControl.NormalFilledBrush ??= Foreground;
+    internal static readonly StyledProperty<double> TrackHeightProperty
+        = AvaloniaProperty.Register<ToggleSwitch, double>(nameof(TrackHeight));
+
+    internal static readonly StyledProperty<double> IconSizeProperty
+        = AvaloniaProperty.Register<ToggleSwitch, double>(nameof(IconSize));
+
+    internal static readonly StyledProperty<double> TrackMinWidthProperty
+        = AvaloniaProperty.Register<ToggleSwitch, double>(nameof(TrackMinWidth));
+
+    internal static readonly StyledProperty<double> TrackPaddingProperty
+        = AvaloniaProperty.Register<ToggleSwitch, double>(nameof(TrackPadding));
+
+    // 这几个属性跟动画相关
+    internal static readonly StyledProperty<Point> KnobOffsetProperty
+        = AvaloniaProperty.Register<ToggleSwitch, Point>(nameof(KnobOffset));
+
+    internal double InnerMaxMargin
+    {
+        get => GetValue(InnerMaxMarginProperty);
+        set => SetValue(InnerMaxMarginProperty, value);
+    }
+
+    internal double InnerMinMargin
+    {
+        get => GetValue(InnerMinMarginProperty);
+        set => SetValue(InnerMinMarginProperty, value);
+    }
+
+    internal double TrackHeight
+    {
+        get => GetValue(TrackHeightProperty);
+        set => SetValue(TrackHeightProperty, value);
+    }
+
+    internal double IconSize
+    {
+        get => GetValue(IconSizeProperty);
+        set => SetValue(IconSizeProperty, value);
+    }
+
+    internal double TrackMinWidth
+    {
+        get => GetValue(TrackMinWidthProperty);
+        set => SetValue(TrackMinWidthProperty, value);
+    }
+
+    internal double TrackPadding
+    {
+        get => GetValue(TrackPaddingProperty);
+        set => SetValue(TrackPaddingProperty, value);
+    }
+
+    internal Point KnobOffset
+    {
+        get => GetValue(KnobOffsetProperty);
+        set => SetValue(KnobOffsetProperty, value);
+    }
+
+    internal static readonly StyledProperty<Point> OnContentOffsetProperty
+        = AvaloniaProperty.Register<ToggleSwitch, Point>(nameof(OnContentOffset));
+
+    internal Point OnContentOffset
+    {
+        get => GetValue(OnContentOffsetProperty);
+        set => SetValue(OnContentOffsetProperty, value);
+    }
+
+    internal static readonly StyledProperty<Point> OffContentOffsetProperty
+        = AvaloniaProperty.Register<ToggleSwitch, Point>(nameof(OffContentOffset));
+
+    internal Point OffContentOffset
+    {
+        get => GetValue(OffContentOffsetProperty);
+        set => SetValue(OffContentOffsetProperty, value);
+    }
+
+    internal static readonly StyledProperty<double> SwitchOpacityProperty
+        = AvaloniaProperty.Register<ToggleSwitch, double>(nameof(SwitchOpacity), 1d);
+
+    internal double SwitchOpacity
+    {
+        get => GetValue(SwitchOpacityProperty);
+        set => SetValue(SwitchOpacityProperty, value);
+    }
+
+    #endregion
+
+
+
+    #region IControlCustomStyle 实现
+
+    private Control? SetupContent(object? content)
+    {
+        Control? result = default;
+        if (content is Control offControl)
+        {
+            if (content is TemplatedControl templatedControl)
+                templatedControl.Padding = new Thickness(0);
+            else if (content is PathIcon iconControl)
+                if (iconControl.ThemeType != IconThemeType.TwoTone)
+                    iconControl.NormalFilledBrush ??= Foreground;
+            offControl.Width = offControl.Height = IconSize;
+            result           = offControl;
+        }
+        else if (content is string offStr)
+        {
+            var label = new Label
+            {
+                Content = offStr,
+                Padding = new Thickness(0)
+            };
+            result = label;
+        }
+
+        return result;
+    }
+
+    private void CalculateElementsOffset(Size controlSize)
+    {
+        var isChecked  = IsChecked.HasValue && IsChecked.Value;
+        var handleRect = HandleRect(isChecked, controlSize);
+        KnobOffset = handleRect.TopLeft;
+
+        var onExtraInfoRect  = ExtraInfoRect(true, controlSize);
+        var offExtraInfoRect = ExtraInfoRect(false, controlSize);
+        if (isChecked)
+        {
+            OnContentOffset  = onExtraInfoRect.TopLeft;
+            OffContentOffset = new Point(controlSize.Width + 1, onExtraInfoRect.Top);
+        }
+        else
+        {
+            OffContentOffset = offExtraInfoRect.TopLeft;
+            OnContentOffset  = new Point(-offExtraInfoRect.Width, offExtraInfoRect.Top);
+        }
+    }
+
+    void IControlCustomStyle.SetupTransitions()
+    {
+        Transitions = new Transitions
+        {
+            AnimationUtils.CreateTransition<PointTransition>(KnobOffsetProperty),
+            AnimationUtils.CreateTransition<PointTransition>(OnContentOffsetProperty),
+            AnimationUtils.CreateTransition<PointTransition>(OffContentOffsetProperty),
+            AnimationUtils.CreateTransition<SolidColorBrushTransition>(GrooveBackgroundProperty),
+            AnimationUtils.CreateTransition<DoubleTransition>(SwitchOpacityProperty)
+        };
+    }
+
+    void IControlCustomStyle.CollectStyleState()
+    {
+        ControlStateUtils.InitCommonState(this, ref _styleState);
+        switch (IsChecked)
+        {
+            case true:
+                _styleState |= ControlStyleState.On;
+                break;
+            case false:
+                _styleState |= ControlStyleState.Off;
+                break;
+            default:
+                _styleState |= ControlStyleState.Indeterminate;
+                break;
+        }
+
+        if (IsPressed)
+            _styleState |= ControlStyleState.Sunken;
+        else
+            _styleState |= ControlStyleState.Raised;
+    }
+
+    void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
+    {
+        if (e.Property == IsLoadingProperty)
+            HandleLoadingState(IsLoading);
+        else if (e.Property == OffContentProperty || e.Property == OnContentProperty)
+            if (VisualRoot is not null)
+            {
+                if (e.OldValue is Control oldChild) _togglePanel?.Children.Remove(oldChild);
+
+                var newControl = SetupContent(e.NewValue);
+
+                if (e.Property == OffContentProperty)
+                    OffContent = newControl;
+                else
+                    OnContent = newControl;
+
+                if (newControl is not null) _togglePanel?.Children.Add(newControl);
             }
-         }
-         offControl.Width = offControl.Height = IconSize;
-         result = offControl;
-      } else if (content is string offStr) {
-         var label = new Label
-         {
-            Content = offStr,
-            Padding = new Thickness(0)
-         };
-         result = label;
-      }
 
-      return result;
-   }
-
-   private void CalculateElementsOffset(Size controlSize)
-   {
-      var isChecked = IsChecked.HasValue && IsChecked.Value;
-      var handleRect = HandleRect(isChecked, controlSize);
-      KnobOffset = handleRect.TopLeft;
-
-      var onExtraInfoRect = ExtraInfoRect(true, controlSize);
-      var offExtraInfoRect = ExtraInfoRect(false, controlSize);
-      if (isChecked) {
-         OnContentOffset = onExtraInfoRect.TopLeft;
-         OffContentOffset = new Point(controlSize.Width + 1, onExtraInfoRect.Top);
-      } else {
-         OffContentOffset = offExtraInfoRect.TopLeft;
-         OnContentOffset = new Point(-offExtraInfoRect.Width, offExtraInfoRect.Top);
-      }
-   }
-
-   void IControlCustomStyle.SetupTransitions()
-   {
-      Transitions = new Transitions()
-      {
-         AnimationUtils.CreateTransition<PointTransition>(KnobOffsetProperty),
-         AnimationUtils.CreateTransition<PointTransition>(OnContentOffsetProperty),
-         AnimationUtils.CreateTransition<PointTransition>(OffContentOffsetProperty),
-         AnimationUtils.CreateTransition<SolidColorBrushTransition>(GrooveBackgroundProperty),
-         AnimationUtils.CreateTransition<DoubleTransition>(SwitchOpacityProperty),
-      };
-   }
-
-   void IControlCustomStyle.CollectStyleState()
-   {
-      ControlStateUtils.InitCommonState(this, ref _styleState);
-      switch (IsChecked) {
-         case true:
-            _styleState |= ControlStyleState.On;
-            break;
-         case false:
-            _styleState |= ControlStyleState.Off;
-            break;
-         default:
-            _styleState |= ControlStyleState.Indeterminate;
-            break;
-      }
-
-      if (IsPressed) {
-         _styleState |= ControlStyleState.Sunken;
-      } else {
-         _styleState |= ControlStyleState.Raised;
-      }
-   }
-
-   void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
-   {
-      if (e.Property == IsLoadingProperty) {
-         HandleLoadingState(IsLoading);
-      } else if (e.Property == OffContentProperty || e.Property == OnContentProperty) {
-         if (VisualRoot is not null) {
-            if (e.OldValue is Control oldChild) {
-               _togglePanel?.Children.Remove(oldChild);
+        if ((e.Property == IsPointerOverProperty && !IsLoading) ||
+            e.Property == IsCheckedProperty                     ||
+            e.Property == IsEnabledProperty)
+        {
+            _customStyle.CollectStyleState();
+            if (e.Property == IsCheckedProperty)
+            {
+                CalculateElementsOffset(DesiredSize);
+                WaveSpiritAdorner.ShowWaveAdorner(this, WaveType.PillWave);
             }
+        }
+    }
 
-            var newControl = SetupContent(e.NewValue);
+    private void HandleLoadingState(bool isLoading)
+    {
+        if (isLoading)
+        {
+            Cursor = new Cursor(StandardCursorType.Arrow);
+            _switchKnob?.NotifyStartLoading();
+        }
+        else
+        {
+            Cursor = new Cursor(StandardCursorType.Hand);
+            _switchKnob?.NotifyStopLoading();
+        }
+    }
 
-            if (e.Property == OffContentProperty) {
-               OffContent = newControl;
-            } else {
-               OnContent = newControl;
-            }
+    private Rect GrooveRect()
+    {
+        return new Rect(new Point(0, 0), DesiredSize);
+    }
 
-            if (newControl is not null) {
-               _togglePanel?.Children.Add(newControl);
-            }
-         }
-      }
+    private Rect HandleRect()
+    {
+        return HandleRect(IsChecked.HasValue && IsChecked.Value, DesiredSize);
+    }
 
-      if ((e.Property == IsPointerOverProperty && !IsLoading) ||
-          e.Property == IsCheckedProperty ||
-          e.Property == IsEnabledProperty) {
-         _customStyle.CollectStyleState();
-         if (e.Property == IsCheckedProperty) {
-            CalculateElementsOffset(DesiredSize);
-            WaveSpiritAdorner.ShowWaveAdorner(this, WaveType.PillWave);
-         }
-      }
-   }
+    private Rect HandleRect(bool isChecked, Size controlSize)
+    {
+        double handlePosX;
+        double handlePosY;
+        var    handleSize = _switchKnob?.OriginKnobSize.Width ?? 0d;
+        var    offsetX    = TrackPadding;
+        var    offsetY    = TrackPadding;
+        if (!isChecked)
+        {
+            handlePosX = offsetX;
+            handlePosY = offsetY;
+        }
+        else
+        {
+            if (IsPressed) handleSize *= STRETCH_FACTOR;
 
-   private void HandleLoadingState(bool isLoading)
-   {
-      if (isLoading) {
-         Cursor = new Cursor(StandardCursorType.Arrow);
-         _switchKnob?.NotifyStartLoading();
-      } else {
-         Cursor = new Cursor(StandardCursorType.Hand);
-         _switchKnob?.NotifyStopLoading();
-      }
-   }
+            handlePosX = controlSize.Width - offsetX - handleSize;
+            handlePosY = offsetY;
+        }
 
-   private Rect GrooveRect()
-   {
-      return new Rect(new Point(0, 0), DesiredSize);
-   }
+        return new Rect(handlePosX, handlePosY, handleSize, handleSize);
+    }
 
-   private Rect HandleRect()
-   {
-      return HandleRect(IsChecked.HasValue && IsChecked.Value, DesiredSize);
-   }
+    private Rect ExtraInfoRect(bool isChecked, Size controlSize)
+    {
+        var    innerMinMargin = InnerMinMargin;
+        var    innerMaxMargin = InnerMaxMargin;
+        double yAdjustValue   = 0;
+        var    targetRect     = new Rect(new Point(0, 0), controlSize);
+        if (isChecked)
+        {
+            if (OffContent is Control offControl)
+                yAdjustValue = (controlSize.Height - offControl.DesiredSize.Height) / 2;
 
-   private Rect HandleRect(bool isChecked, Size controlSize)
-   {
-      double handlePosX;
-      double handlePosY;
-      double handleSize = _switchKnob?.OriginKnobSize.Width ?? 0d;
-      double offsetX = TrackPadding;
-      double offsetY = TrackPadding;
-      if (!isChecked) {
-         handlePosX = offsetX;
-         handlePosY = offsetY;
-      } else {
-         if (IsPressed) {
-            handleSize *= STRETCH_FACTOR;
-         }
+            targetRect = targetRect.Inflate(new Thickness(-innerMinMargin, -yAdjustValue, innerMaxMargin, 0));
+        }
+        else
+        {
+            if (OnContent is Control onControl) yAdjustValue = (controlSize.Height - onControl.DesiredSize.Height) / 2;
 
-         handlePosX = controlSize.Width - offsetX - handleSize;
-         handlePosY = offsetY;
-      }
+            targetRect = targetRect.Inflate(new Thickness(-innerMaxMargin, -yAdjustValue, innerMinMargin, 0));
+        }
 
-      return new Rect(handlePosX, handlePosY, handleSize, handleSize);
-   }
+        return targetRect;
+    }
 
-   private Rect ExtraInfoRect(bool isChecked, Size controlSize)
-   {
-      double innerMinMargin = InnerMinMargin;
-      double innerMaxMargin = InnerMaxMargin;
-      double yAdjustValue = 0;
-      Rect targetRect = new Rect(new Point(0, 0), controlSize);
-      if (isChecked) {
-         if (OffContent is Control offControl) {
-            yAdjustValue = (controlSize.Height - offControl.DesiredSize.Height) / 2;
-         }
+    public Rect WaveGeometry()
+    {
+        return GrooveRect();
+    }
 
-         targetRect = targetRect.Inflate(new Thickness(-innerMinMargin, -yAdjustValue, innerMaxMargin, 0));
-      } else {
-         if (OnContent is Control onControl) {
-            yAdjustValue = (controlSize.Height - onControl.DesiredSize.Height) / 2;
-         }
+    public CornerRadius WaveBorderRadius()
+    {
+        return new CornerRadius(DesiredSize.Height / 2);
+    }
 
-         targetRect = targetRect.Inflate(new Thickness(-innerMaxMargin, -yAdjustValue, innerMinMargin, 0));
-      }
-
-      return targetRect;
-   }
-
-   public Rect WaveGeometry()
-   {
-      return GrooveRect();
-   }
-
-   public CornerRadius WaveBorderRadius()
-   {
-      return new CornerRadius(DesiredSize.Height / 2);
-   }
-
-   #endregion
+    #endregion
 }

@@ -4,9 +4,8 @@ namespace AtomUI.Demo.Desktop.ShowCase;
 
 public partial class MenuShowCase : UserControl
 {
-   public MenuShowCase()
-   {
-      InitializeComponent();
-   }
-   
+    public MenuShowCase()
+    {
+        InitializeComponent();
+    }
 }

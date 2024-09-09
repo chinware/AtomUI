@@ -5,7 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
              mc:Ignorable="d">
     <desktop:ShowCasePanel>
         <desktop:ShowCaseItem Title="Basic" Description="The simplest usage.">
@@ -256,7 +255,8 @@
             </StackPanel>
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Colorful Tooltip" Description="We preset a series of colorful Tooltip styles for use in different situations.">
+        <desktop:ShowCaseItem Title="Colorful Tooltip"
+                              Description="We preset a series of colorful Tooltip styles for use in different situations.">
             <desktop:ShowCaseItem.Styles>
                 <Style Selector="atom|Button">
                     <Setter Property="Margin" Value="5" />

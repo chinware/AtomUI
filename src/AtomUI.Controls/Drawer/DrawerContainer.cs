@@ -11,43 +11,60 @@ namespace AtomUI.Controls;
 
 internal class DrawerContainer : Border
 {
-    private readonly TimeSpan            _duration  = TimeSpan.FromMilliseconds(500);
-    private readonly Easing              _easing    = new SplineEasing(0.3, 0.7, 0.3, 0.7);
-    private readonly IBrush              _maskBrush = new SolidColorBrush(Colors.Black, 0.45);
-    private readonly Transitions         _transitions1;
-    private readonly Transitions         _transitions2;
-    private readonly Border              _mask;
+    private readonly TimeSpan _duration = TimeSpan.FromMilliseconds(500);
+    private readonly Easing _easing = new SplineEasing(0.3, 0.7, 0.3, 0.7);
     private readonly DrawerElementBorder _elementBorder;
-    
-    
+    private readonly Border _mask;
+    private readonly IBrush _maskBrush = new SolidColorBrush(Colors.Black, 0.45);
+    private readonly Transitions _transitions1;
+    private readonly Transitions _transitions2;
+
+
+
     #region Properties
 
     public Drawer Drawer { get; }
-    
+
     #endregion
-    
+
+
+
+    #region Close On Click
+
+    protected override void OnPointerPressed(PointerPressedEventArgs e)
+    {
+        base.OnPointerPressed(e);
+
+        if (e.Handled || Equals(e.Source, _mask) == false) return;
+
+        if (e.Pointer.IsPrimary && Drawer.CloseWhenClickOnMask) Drawer.IsOpen = false;
+    }
+
+    #endregion
+
+
 
     #region Ctor
-    
+
     internal DrawerContainer(Drawer drawer, DrawerElementBorder elementBorder)
     {
-        _transitions1 = 
+        _transitions1 =
         [
-            new DoubleTransition()
+            new DoubleTransition
             {
                 Property = OpacityProperty,
                 Duration = _duration,
-                Easing   = _easing,
+                Easing   = _easing
             }
         ];
         _transitions2 =
         [
-            new TransformOperationsTransition()
+            new TransformOperationsTransition
             {
                 Property = RenderTransformProperty,
                 Duration = _duration,
-                Easing   = _easing,
-            },
+                Easing   = _easing
+            }
         ];
         _elementBorder                     = elementBorder;
         _elementBorder[!MinWidthProperty]  = drawer[!Drawer.DrawerMinWidthProperty];
@@ -56,20 +73,20 @@ internal class DrawerContainer : Border
         _elementBorder[!MaxHeightProperty] = drawer[!Drawer.DrawerMaxHeightProperty];
         _elementBorder[!WidthProperty]     = drawer[!Drawer.DrawerWidthProperty];
         _elementBorder[!HeightProperty]    = drawer[!Drawer.DrawerHeightProperty];
-        
-        _mask = new Border()
+
+        _mask = new Border
         {
-            Background = _maskBrush,
-            [!IsVisibleProperty] = drawer[!Drawer.ShowMaskProperty],
+            Background           = _maskBrush,
+            [!IsVisibleProperty] = drawer[!Drawer.ShowMaskProperty]
         };
-        
+
         Drawer       = drawer;
         ClipToBounds = true;
-        Child        = new Panel() { Children = { _mask, _elementBorder } };
-        
+        Child        = new Panel { Children = { _mask, _elementBorder } };
+
         Drawer.PropertyChanged += DrawerOnPropertyChanged;
     }
-    
+
     private void DrawerOnPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
     {
         if (e.Property == Drawer.PlacementProperty)
@@ -84,20 +101,17 @@ internal class DrawerContainer : Border
         {
             UpdateDropShadow();
             UpdatePlacement();
-            
+
             if (Drawer.IsOpen)
-            {
                 OnOpening();
-            }
             else
-            {
                 OnClosing();
-            }
         }
     }
 
     #endregion
-    
+
+
 
     #region On Opening & Closing
 
@@ -128,20 +142,20 @@ internal class DrawerContainer : Border
             default:
                 throw new ArgumentOutOfRangeException();
         }
-        
+
         _elementBorder.Transitions     = null;
         _elementBorder.RenderTransform = TransformOperations.Parse($"translate({fromX}px,{fromY}px)");
         _elementBorder.Transitions     = _transitions2;
         _elementBorder.RenderTransform = TransformOperations.Parse("translate(0px,0px)");
     }
-    
+
     private void OnClosing()
     {
         _mask.Transitions = null;
         _mask.Opacity     = 1;
         _mask.Transitions = _transitions1;
         _mask.Opacity     = 0;
-        
+
         var fromX = 0d;
         var fromY = 0d;
 
@@ -162,7 +176,7 @@ internal class DrawerContainer : Border
             default:
                 throw new ArgumentOutOfRangeException();
         }
-        
+
         _elementBorder.Transitions     = null;
         _elementBorder.RenderTransform = TransformOperations.Parse("translate(0px,0px)");
         _elementBorder.Transitions     = _transitions2;
@@ -172,6 +186,7 @@ internal class DrawerContainer : Border
     #endregion
 
 
+
     #region BoxShadow
 
     private bool _isBoxShadowValid;
@@ -179,10 +194,7 @@ internal class DrawerContainer : Border
 
     private void UpdateDropShadow()
     {
-        if (_isBoxShadowValid)
-        {
-            return;
-        }
+        if (_isBoxShadowValid) return;
 
         switch (Drawer.Placement)
         {
@@ -236,13 +248,10 @@ internal class DrawerContainer : Border
 
         _isBoxShadowValid = true;
     }
-    
+
     private void UpdatePlacement()
     {
-        if (_isPlacementValid)
-        {
-            return;
-        }
+        if (_isPlacementValid) return;
         switch (Drawer.Placement)
         {
             case DrawerPlacement.Left:
@@ -266,26 +275,6 @@ internal class DrawerContainer : Border
         }
 
         _isPlacementValid = true;
-    }
-
-    #endregion
-
-    
-    #region Close On Click
-
-    protected override void OnPointerPressed(PointerPressedEventArgs e)
-    {
-        base.OnPointerPressed(e);
-
-        if (e.Handled || Equals(e.Source, _mask) == false)
-        {
-            return;
-        }
-
-        if (e.Pointer.IsPrimary && Drawer.CloseWhenClickOnMask)
-        {
-            Drawer.IsOpen = false;
-        }
     }
 
     #endregion

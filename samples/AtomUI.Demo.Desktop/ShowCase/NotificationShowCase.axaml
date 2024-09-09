@@ -5,7 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
              mc:Ignorable="d">
     <desktop:ShowCasePanel>
         <desktop:ShowCaseItem Title="Basic" Description="The simplest usage for Notification.">
@@ -14,13 +13,15 @@
             </atom:Button>
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Duration after which the notification box is closed" Description="Duration can be used to specify how long the notification stays open. After the duration time elapses, the notification closes automatically. If not specified, default value is 4.5 seconds. If you set the value to TimeSpan.Zero, the notification box will never close automatically.">
+        <desktop:ShowCaseItem Title="Duration after which the notification box is closed"
+                              Description="Duration can be used to specify how long the notification stays open. After the duration time elapses, the notification closes automatically. If not specified, default value is 4.5 seconds. If you set the value to TimeSpan.Zero, the notification box will never close automatically.">
             <atom:Button ButtonType="Primary" Click="ShowNeverCloseNotification">
                 Open the notification box
             </atom:Button>
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Notification with icon" Description="A notification box with a icon at the left side.">
+        <desktop:ShowCaseItem Title="Notification with icon"
+                              Description="A notification box with a icon at the left side.">
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <atom:Button ButtonType="Default" Click="ShowSuccessNotification">
                     Success
@@ -37,7 +38,8 @@
             </StackPanel>
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Placement" Description="A notification box can appear from the top bottom topLeft topRight bottomLeft or bottomRight of the viewport via placement.">
+        <desktop:ShowCaseItem Title="Placement"
+                              Description="A notification box can appear from the top bottom topLeft topRight bottomLeft or bottomRight of the viewport via placement.">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <StackPanel Orientation="Horizontal" Spacing="10">
                     <atom:Button ButtonType="Primary" Click="ShowTopNotification">

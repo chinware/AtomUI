@@ -2,7 +2,7 @@
 
     <!-- https://github.com/dotnet/sdk/issues/22515-->
     <ItemGroup>
-        <None Remove="*.csproj.DotSettings" />
+        <None Remove="*.csproj.DotSettings"/>
     </ItemGroup>
 
 </Project>

@@ -6,28 +6,24 @@ namespace AtomUI.Controls;
 
 internal class PickerClearUpButton : TemplatedControl
 {
-   public event EventHandler? ClearRequest;
+    public static readonly StyledProperty<bool> IsInClearModeProperty =
+        AvaloniaProperty.Register<PickerClearUpButton, bool>(nameof(IsInClearMode));
 
-   public static readonly StyledProperty<bool> IsInClearModeProperty =
-      AvaloniaProperty.Register<PickerClearUpButton, bool>(nameof(IsInClearMode));
+    private IconButton? _clearButton;
 
-   public bool IsInClearMode
-   {
-      get => GetValue(IsInClearModeProperty);
-      set => SetValue(IsInClearModeProperty, value);
-   }
+    public bool IsInClearMode
+    {
+        get => GetValue(IsInClearModeProperty);
+        set => SetValue(IsInClearModeProperty, value);
+    }
 
-   private IconButton? _clearButton;
+    public event EventHandler? ClearRequest;
 
-   protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-   {
-      base.OnApplyTemplate(e);
-      _clearButton = e.NameScope.Get<IconButton>(PickerClearUpButtonTheme.ClearButtonPart);
-      if (_clearButton is not null) {
-         _clearButton.Click += (sender, args) =>
-         {
-            ClearRequest?.Invoke(this, EventArgs.Empty);
-         };
-      }
-   }
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        _clearButton = e.NameScope.Get<IconButton>(PickerClearUpButtonTheme.ClearButtonPart);
+        if (_clearButton is not null)
+            _clearButton.Click += (sender, args) => { ClearRequest?.Invoke(this, EventArgs.Empty); };
+    }
 }

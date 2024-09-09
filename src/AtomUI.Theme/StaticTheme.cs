@@ -2,25 +2,25 @@
 
 public class StaticTheme : Theme
 {
-   public string DefinitionFilePath => _definitionFilePath;
-   
-   public StaticTheme(string id, string defFilePath)
-      : base(id, defFilePath)
-   {
-   }
+    public StaticTheme(string id, string defFilePath)
+        : base(id, defFilePath)
+    {
+    }
 
-   public override bool IsDynamic()
-   {
-      return false;
-   }
+    public string DefinitionFilePath => _definitionFilePath;
 
-   internal override void NotifyLoadThemeDef()
-   {
-      var reader = new ThemeDefinitionReader(this);
-      reader.Load(_themeDefinition!);
-   }
+    public override bool IsDynamic()
+    {
+        return false;
+    }
 
-   internal override void NotifyResetLoadStatus()
-   {
-   }
+    internal override void NotifyLoadThemeDef()
+    {
+        var reader = new ThemeDefinitionReader(this);
+        reader.Load(_themeDefinition!);
+    }
+
+    internal override void NotifyResetLoadStatus()
+    {
+    }
 }

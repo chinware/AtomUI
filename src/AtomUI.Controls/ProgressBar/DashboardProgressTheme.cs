@@ -5,5 +5,7 @@ namespace AtomUI.Controls;
 [ControlThemeProvider]
 internal class DashboardProgressTheme : AbstractCircleProgressTheme
 {
-   public DashboardProgressTheme() : base(typeof(DashboardProgress)) {}
+    public DashboardProgressTheme() : base(typeof(DashboardProgress))
+    {
+    }
 }

@@ -4,8 +4,8 @@ namespace AtomUI.Demo.Desktop.ShowCase;
 
 public partial class AlertShowCase : UserControl
 {
-   public AlertShowCase()
-   {
-      InitializeComponent();
-   }
+    public AlertShowCase()
+    {
+        InitializeComponent();
+    }
 }

@@ -43,8 +43,8 @@
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.MenuSeparatorTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.MenuTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.TopLevelMenuItemTheme());
-            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.Message.MessageCardTheme());
-            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.Message.WindowMessageManagerTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.MessageCardTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.WindowMessageManagerTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.NotificationCardTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.WindowNotificationManagerTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.NumericUpDownTheme());
@@ -61,7 +61,7 @@
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.SeparatorTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.SliderTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.SliderThumbTheme());
-            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.Switch.ToggleSwitchTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.ToggleSwitchTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.BaseOverflowMenuItemTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.BaseTabScrollViewerTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.CardTabControlTheme());

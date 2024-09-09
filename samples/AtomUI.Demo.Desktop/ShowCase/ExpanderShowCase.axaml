@@ -5,7 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
              mc:Ignorable="d">
     <desktop:ShowCasePanel>
         <desktop:ShowCaseItem Title="Expander" Description="By default, The simplest usage is to expand downward.">
@@ -16,7 +15,8 @@
             </atom:Expander>
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Size" Description="Ant Design supports a default Expander size as well as a large and small size. If a large or small Expander is desired, set the size property to either large or small respectively. Omit the size property for a Expander with the default size.">
+        <desktop:ShowCaseItem Title="Size"
+                              Description="Ant Design supports a default Expander size as well as a large and small size. If a large or small Expander is desired, set the size property to either large or small respectively. Omit the size property for a Expander with the default size.">
             <StackPanel Margin="0,0,10,0"
                         Orientation="Vertical"
                         Spacing="20">
@@ -47,7 +47,8 @@
             </StackPanel>
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Expanding Direction" Description="The content area supports expansion in four directions.">
+        <desktop:ShowCaseItem Title="Expanding Direction"
+                              Description="The content area supports expansion in four directions.">
             <DockPanel Height="300" Margin="0,0,0,0">
                 <StackPanel DockPanel.Dock="Top"
                             Orientation="Horizontal"

@@ -4,9 +4,8 @@ namespace AtomUI.Demo.Desktop.ShowCase;
 
 public partial class TagShowCase : UserControl
 {
-   public TagShowCase()
-   {
-      InitializeComponent();
-   }
-   
+    public TagShowCase()
+    {
+        InitializeComponent();
+    }
 }

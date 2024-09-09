@@ -5,7 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
              mc:Ignorable="d">
     <desktop:ShowCasePanel>
 
@@ -15,7 +14,8 @@
             </StackPanel>
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="More types" Description="There are 4 types of Alert: success, info, warning, error.">
+        <desktop:ShowCaseItem Title="More types"
+                              Description="There are 4 types of Alert: success, info, warning, error.">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:Alert Type="Success">Success Text</atom:Alert>
                 <atom:Alert Type="Info">Info Text</atom:Alert>
@@ -29,9 +29,10 @@
                 <atom:Alert IsClosable="True" Type="Warning">
                     Warning Text Warning Text Warning Text Warning Text Warning Text Warning TextWarning Text
                 </atom:Alert>
-                <atom:Alert Description="Error Description Error Description Error Description Error Description Error Description Error Description"
-                            IsClosable="True"
-                            Type="Error">
+                <atom:Alert
+                    Description="Error Description Error Description Error Description Error Description Error Description Error Description"
+                    IsClosable="True"
+                    Type="Error">
                     Error Text
                 </atom:Alert>
                 <atom:Alert CloseIcon="{atom:IconProvider CloseSquareFilled}"
@@ -51,9 +52,10 @@
                 <atom:Alert Description="Info Description Info Description Info Description Info Description"
                             Message="Info Text"
                             Type="Info" />
-                <atom:Alert Description="Warning Description Warning Description Warning Description Warning Description"
-                            Message="Warning Text"
-                            Type="Warning" />
+                <atom:Alert
+                    Description="Warning Description Warning Description Warning Description Warning Description"
+                    Message="Warning Text"
+                    Type="Warning" />
                 <atom:Alert Description="Error Description Error Description Error Description Error Description"
                             Message="Error Text"
                             Type="Error" />

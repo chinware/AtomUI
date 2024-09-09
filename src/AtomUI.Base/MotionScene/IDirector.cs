@@ -2,5 +2,5 @@
 
 public interface IDirector
 {
-   public void Schedule(MotionActor actor);
+    public void Schedule(MotionActor actor);
 }

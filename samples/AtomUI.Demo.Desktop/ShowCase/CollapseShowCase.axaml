@@ -5,10 +5,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
              mc:Ignorable="d">
     <desktop:ShowCasePanel>
-        <desktop:ShowCaseItem Title="Collapse" Description="By default, any number of panels can be expanded at a time. The first panel is expanded in this example.">
+        <desktop:ShowCaseItem Title="Collapse"
+                              Description="By default, any number of panels can be expanded at a time. The first panel is expanded in this example.">
             <atom:Collapse>
                 <atom:CollapseItem Header="This is panel header 1">
                     <TextBlock TextWrapping="Wrap">
@@ -28,7 +28,8 @@
             </atom:Collapse>
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Size" Description="Ant Design supports a default collapse size as well as a large and small size. If a large or small collapse is desired, set the size property to either large or small respectively. Omit the size property for a collapse with the default size.">
+        <desktop:ShowCaseItem Title="Size"
+                              Description="Ant Design supports a default collapse size as well as a large and small size. If a large or small collapse is desired, set the size property to either large or small respectively. Omit the size property for a collapse with the default size.">
             <StackPanel Margin="0,0,10,0"
                         Orientation="Vertical"
                         Spacing="20">
@@ -65,7 +66,8 @@
             </StackPanel>
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Accordion" Description="In accordion mode, only one panel can be expanded at a time.">
+        <desktop:ShowCaseItem Title="Accordion"
+                              Description="In accordion mode, only one panel can be expanded at a time.">
             <atom:Collapse IsAccordion="True">
                 <atom:CollapseItem Header="This is panel header 1">
                     <TextBlock TextWrapping="Wrap">
@@ -155,17 +157,20 @@
                               Description="Render extra element in the top-right corner of each panel.">
             <StackPanel Orientation="Vertical" Spacing="20">
                 <atom:Collapse ExpandIconPosition="{Binding CollapseExpandIconPosition}">
-                    <atom:CollapseItem AddOnContent="{atom:IconProvider Kind=SettingOutlined}" Header="This is panel header 1">
+                    <atom:CollapseItem AddOnContent="{atom:IconProvider Kind=SettingOutlined}"
+                                       Header="This is panel header 1">
                         <TextBlock TextWrapping="Wrap">
                             A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
                         </TextBlock>
                     </atom:CollapseItem>
-                    <atom:CollapseItem AddOnContent="{atom:IconProvider Kind=SettingOutlined}" Header="This is panel header 2">
+                    <atom:CollapseItem AddOnContent="{atom:IconProvider Kind=SettingOutlined}"
+                                       Header="This is panel header 2">
                         <TextBlock TextWrapping="Wrap">
                             A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
                         </TextBlock>
                     </atom:CollapseItem>
-                    <atom:CollapseItem AddOnContent="{atom:IconProvider Kind=SettingOutlined}" Header="This is panel header 3">
+                    <atom:CollapseItem AddOnContent="{atom:IconProvider Kind=SettingOutlined}"
+                                       Header="This is panel header 3">
                         <TextBlock TextWrapping="Wrap">
                             A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
                         </TextBlock>

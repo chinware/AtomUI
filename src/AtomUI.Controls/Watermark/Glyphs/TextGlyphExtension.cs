@@ -4,26 +4,26 @@ namespace AtomUI.Controls;
 
 public class TextGlyphExtension : WatermarkGlyphExtension
 {
-    private string? Text { get; }
-
-    public double FontSize { get; set; } = 16;
-    
-    public IBrush Foreground { get; set; } = Brushes.Black;
-
     public TextGlyphExtension(string text)
     {
         Text = text;
     }
-    
+
+    private string? Text { get; }
+
+    public double FontSize { get; set; } = 16;
+
+    public IBrush Foreground { get; set; } = Brushes.Black;
+
     public override object ProvideValue(IServiceProvider serviceProvider)
     {
-        var glyph =  new TextGlyph()
+        var glyph = new TextGlyph
         {
-            Text = Text,
-            FontSize = FontSize,
-            Foreground = Foreground,
+            Text       = Text,
+            FontSize   = FontSize,
+            Foreground = Foreground
         };
-        
+
         SetProperties(glyph);
 
         return glyph;

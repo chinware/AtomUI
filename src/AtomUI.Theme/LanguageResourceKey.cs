@@ -2,69 +2,64 @@
 
 public readonly struct LanguageResourceKey : IEquatable<LanguageResourceKey>
 {
-   private readonly string _value;
-   private readonly string _catalog;
-   public const string DefaultResourceCatalog = $"{ResourceCatalogConstants.Root}.{ResourceCatalogConstants.Language}";
+    public const string DefaultResourceCatalog = $"{ResourceCatalogConstants.Root}.{ResourceCatalogConstants.Language}";
 
-   public LanguageResourceKey(string value, string catalog = DefaultResourceCatalog)
-   {
-      _value = value;
-      _catalog = catalog;
-   }
+    public LanguageResourceKey(string value, string catalog = DefaultResourceCatalog)
+    {
+        Value   = value;
+        Catalog = catalog;
+    }
 
-   public string Value => _value;
-   public string Catalog => _catalog;
+    public string Value { get; }
 
-   public bool Equals(LanguageResourceKey other)
-   {
-      return _catalog == other._catalog && _value == other._value;
-   }
+    public string Catalog { get; }
 
-   public override bool Equals(object? obj)
-   {
-      if (obj is LanguageResourceKey other) {
-         return Equals(other);
-      }
+    public bool Equals(LanguageResourceKey other)
+    {
+        return Catalog == other.Catalog && Value == other.Value;
+    }
 
-      if (obj is string str) {
-         return _value == str;
-      }
+    public override bool Equals(object? obj)
+    {
+        if (obj is LanguageResourceKey other) return Equals(other);
 
-      return false;
-   }
+        if (obj is string str) return Value == str;
 
-   public override int GetHashCode()
-   {
-      return _value.GetHashCode();
-   }
+        return false;
+    }
 
-   public static bool operator ==(LanguageResourceKey left, LanguageResourceKey right)
-   {
-      return left.Equals(right);
-   }
+    public override int GetHashCode()
+    {
+        return Value.GetHashCode();
+    }
 
-   public static bool operator !=(LanguageResourceKey left, LanguageResourceKey right)
-   {
-      return !left.Equals(right);
-   }
+    public static bool operator ==(LanguageResourceKey left, LanguageResourceKey right)
+    {
+        return left.Equals(right);
+    }
 
-   public static bool operator ==(LanguageResourceKey left, string right)
-   {
-      return left.Equals(new LanguageResourceKey(right));
-   }
+    public static bool operator !=(LanguageResourceKey left, LanguageResourceKey right)
+    {
+        return !left.Equals(right);
+    }
 
-   public static bool operator !=(LanguageResourceKey left, string right)
-   {
-      return !left.Equals(new LanguageResourceKey(right));
-   }
+    public static bool operator ==(LanguageResourceKey left, string right)
+    {
+        return left.Equals(new LanguageResourceKey(right));
+    }
 
-   public override string ToString()
-   {
-      return $"{_catalog}:{_value}";
-   }
+    public static bool operator !=(LanguageResourceKey left, string right)
+    {
+        return !left.Equals(new LanguageResourceKey(right));
+    }
 
-   public string UnQualifiedKey()
-   {
-      return _value;
-   }
+    public override string ToString()
+    {
+        return $"{Catalog}:{Value}";
+    }
+
+    public string UnQualifiedKey()
+    {
+        return Value;
+    }
 }

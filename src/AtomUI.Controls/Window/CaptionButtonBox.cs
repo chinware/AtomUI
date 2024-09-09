@@ -1,8 +1,10 @@
+using Avalonia.Controls.Chrome;
+
 namespace AtomUI.Controls;
 
-using AvaloniaCaptionButtons = Avalonia.Controls.Chrome.CaptionButtons;
+using AvaloniaCaptionButtons = CaptionButtons;
+
 
 public class CaptionButtonBox : AvaloniaCaptionButtons
 {
-   
 }

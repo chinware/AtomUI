@@ -140,7 +140,8 @@
             </StackPanel>
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Size type" Description="There are three sizes available: large, medium, and small. It can coordinate with input box.">
+        <desktop:ShowCaseItem Title="Size type"
+                              Description="There are three sizes available: large, medium, and small. It can coordinate with input box.">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:OptionButtonGroup SizeType="Large">
                     <atom:OptionButton IsChecked="True">Hangzhou</atom:OptionButton>

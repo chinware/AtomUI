@@ -4,9 +4,8 @@ namespace AtomUI.Demo.Desktop.ShowCase;
 
 public partial class NumberUpDownShowCase : UserControl
 {
-   public NumberUpDownShowCase()
-   {
-      InitializeComponent();
-   }
-   
+    public NumberUpDownShowCase()
+    {
+        InitializeComponent();
+    }
 }

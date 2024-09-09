@@ -8,46 +8,47 @@ namespace AtomUI.Controls;
 [ControlDesignToken]
 internal class TagToken : AbstractControlDesignToken
 {
-   public const string ID = "Tag";
+    public const string ID = "Tag";
 
-   /// <summary>
-   /// 默认背景色
-   /// </summary>
-   public Color DefaultBg { get; set; }
+    public TagToken()
+        : base(ID)
+    {
+    }
 
-   /// <summary>
-   /// 默认文字颜色
-   /// </summary>
-   public Color DefaultColor { get; set; }
+    /// <summary>
+    ///     默认背景色
+    /// </summary>
+    public Color DefaultBg { get; set; }
 
-   public double TagFontSize { get; set; }
-   public double TagLineHeight { get; set; }
-   public double TagIconSize { get; set; }
-   public double TagCloseIconSize { get; set; }
-   public Thickness TagPadding { get; set; }
-   public double TagTextPaddingInline { get; set; }
-   public Color TagBorderlessBg { get; set; }
+    /// <summary>
+    ///     默认文字颜色
+    /// </summary>
+    public Color DefaultColor { get; set; }
 
-   public TagToken()
-      : base(ID)
-   {
-   }
+    public double TagFontSize { get; set; }
+    public double TagLineHeight { get; set; }
+    public double TagIconSize { get; set; }
+    public double TagCloseIconSize { get; set; }
+    public Thickness TagPadding { get; set; }
+    public double TagTextPaddingInline { get; set; }
+    public Color TagBorderlessBg { get; set; }
 
-   internal override void CalculateFromAlias()
-   {
-      base.CalculateFromAlias();
-      var fontToken = _globalToken.FontToken;
-      var colorNeutralToken = _globalToken.ColorToken.ColorNeutralToken;
-      var lineHeightSM = fontToken.LineHeightSM;
-      TagFontSize = fontToken.FontSizeSM;
-      TagLineHeight = lineHeightSM * TagFontSize;
-      TagCloseIconSize = _globalToken.IconSizeXS;
-      TagIconSize = _globalToken.FontSizeIcon;
-      TagPadding = new Thickness(8, 0); // Fixed padding.
-      // TODO 这个地方需要看看
-      DefaultBg = ColorUtils.OnBackground(colorNeutralToken.ColorFillQuaternary, colorNeutralToken.ColorBgContainer);
-      TagBorderlessBg = DefaultBg;
-      DefaultColor = colorNeutralToken.ColorText;
-      TagTextPaddingInline = _globalToken.PaddingXXS;
-   }
+    internal override void CalculateFromAlias()
+    {
+        base.CalculateFromAlias();
+        var fontToken         = _globalToken.FontToken;
+        var colorNeutralToken = _globalToken.ColorToken.ColorNeutralToken;
+        var lineHeightSM      = fontToken.LineHeightSM;
+        TagFontSize      = fontToken.FontSizeSM;
+        TagLineHeight    = lineHeightSM * TagFontSize;
+        TagCloseIconSize = _globalToken.IconSizeXS;
+        TagIconSize      = _globalToken.FontSizeIcon;
+        TagPadding       = new Thickness(8, 0); // Fixed padding.
+
+        // TODO 这个地方需要看看
+        DefaultBg = ColorUtils.OnBackground(colorNeutralToken.ColorFillQuaternary, colorNeutralToken.ColorBgContainer);
+        TagBorderlessBg = DefaultBg;
+        DefaultColor = colorNeutralToken.ColorText;
+        TagTextPaddingInline = _globalToken.PaddingXXS;
+    }
 }

@@ -5,7 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
              mc:Ignorable="d">
     <desktop:ShowCasePanel>
         <desktop:ShowCaseItem Title="Basic" Description="The most basic SplitButton.">
@@ -27,7 +26,8 @@
             </atom:SplitButton>
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Size" Description="AtomUI supports three sizes of buttons: small, default and large. If a large or small button is desired, set the size property to either large or small respectively. Omit the size property for a button with the default size.">
+        <desktop:ShowCaseItem Title="Size"
+                              Description="AtomUI supports three sizes of buttons: small, default and large. If a large or small button is desired, set the size property to either large or small respectively. Omit the size property for a button with the default size.">
             <desktop:ShowCaseItem.Styles>
                 <Style Selector="atom|SplitButton">
                     <Setter Property="Margin" Value="5" />

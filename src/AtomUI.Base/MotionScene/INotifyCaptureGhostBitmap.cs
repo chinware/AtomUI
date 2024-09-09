@@ -2,5 +2,5 @@
 
 internal interface INotifyCaptureGhostBitmap
 {
-   public void NotifyCaptureGhostBitmap();
+    public void NotifyCaptureGhostBitmap();
 }

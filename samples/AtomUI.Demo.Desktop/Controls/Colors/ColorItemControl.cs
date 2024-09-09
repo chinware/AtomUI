@@ -1,15 +1,19 @@
+using AtomUI.Demo.Desktop.ViewModels;
 using Avalonia;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using AtomUI.Demo.Desktop.ViewModels;
 
 namespace AtomUI.Demo.Desktop.Controls;
 
 public class ColorItemControl : TemplatedControl
 {
-    public static readonly StyledProperty<string?> ColorNameProperty = AvaloniaProperty.Register<ColorItemControl, string?>(
-        nameof(ColorName));
+    public static readonly StyledProperty<string?> ColorNameProperty =
+        AvaloniaProperty.Register<ColorItemControl, string?>(
+            nameof(ColorName));
+
+    public static readonly StyledProperty<string?> HexProperty = AvaloniaProperty.Register<ColorItemControl, string?>(
+        nameof(Hex));
 
     public string? ColorName
     {
@@ -17,22 +21,15 @@ public class ColorItemControl : TemplatedControl
         set => SetValue(ColorNameProperty, value);
     }
 
-    public static readonly StyledProperty<string?> HexProperty = AvaloniaProperty.Register<ColorItemControl, string?>(
-        nameof(Hex));
-
     public string? Hex
     {
         get => GetValue(HexProperty);
         set => SetValue(HexProperty, value);
     }
-    
+
     protected override void OnPointerPressed(PointerPressedEventArgs e)
     {
         base.OnPointerPressed(e);
-        if (this.DataContext is ColorItemViewModel v)
-        {
-            WeakReferenceMessenger.Default.Send(v);
-        }
-        
+        if (DataContext is ColorItemViewModel v) WeakReferenceMessenger.Default.Send(v);
     }
 }

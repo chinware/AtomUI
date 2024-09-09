@@ -5,14 +5,15 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
              mc:Ignorable="d">
     <desktop:ShowCasePanel>
-        <desktop:ShowCaseItem Title="Basic" Description="Click TimePicker, and then we could select or input a time in panel.">
+        <desktop:ShowCaseItem Title="Basic"
+                              Description="Click TimePicker, and then we could select or input a time in panel.">
             <atom:TimePicker Width="200" Watermark="Select time" />
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Three Sizes" Description="The input box comes in three sizes: large, middle and small. Large is used in the form, while the medium size is the default.">
+        <desktop:ShowCaseItem Title="Three Sizes"
+                              Description="The input box comes in three sizes: large, middle and small. Large is used in the form, while the medium size is the default.">
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <atom:TimePicker Width="160"
                                  DefaultTime="12:08:23"
@@ -38,7 +39,8 @@
             </StackPanel>
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Interval option" Description="Show stepped options by MinuteIncrement SecondIncrement.">
+        <desktop:ShowCaseItem Title="Interval option"
+                              Description="Show stepped options by MinuteIncrement SecondIncrement.">
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <atom:TimePicker Width="160"
                                  DefaultTime="12:08:23"
@@ -48,7 +50,8 @@
             </StackPanel>
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="12 hours" Description="TimePicker of 12 hours format, with default format h:mm:ss a.">
+        <desktop:ShowCaseItem Title="12 hours"
+                              Description="TimePicker of 12 hours format, with default format h:mm:ss a.">
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <atom:TimePicker Width="160"
                                  ClockIdentifier="HourClock12"
@@ -90,7 +93,8 @@
             </StackPanel>
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Status" Description="Add status to TimePicker with status, which could be error or warning.">
+        <desktop:ShowCaseItem Title="Status"
+                              Description="Add status to TimePicker with status, which could be error or warning.">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <StackPanel Orientation="Horizontal" Spacing="5">
                     <atom:TimePicker Width="160"

@@ -5,7 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
              mc:Ignorable="d">
     <desktop:ShowCasePanel>
         <desktop:ShowCaseItem Title="Basic" Description="The most basic usage.">
@@ -22,7 +21,8 @@
             </StackPanel>
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Block Segmented" Description="block property will make the Segmented fit to its parent width.">
+        <desktop:ShowCaseItem Title="Block Segmented"
+                              Description="block property will make the Segmented fit to its parent width.">
             <StackPanel HorizontalAlignment="Stretch" Orientation="Vertical">
                 <atom:Segmented IsExpanding="True">
                     <atom:SegmentedItem>123</atom:SegmentedItem>
@@ -51,7 +51,8 @@
             </StackPanel>
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Three sizes of Segmented" Description="There are three sizes of an Segmented: large (40px), default (32px) and small (24px).">
+        <desktop:ShowCaseItem Title="Three sizes of Segmented"
+                              Description="There are three sizes of an Segmented: large (40px), default (32px) and small (24px).">
             <StackPanel HorizontalAlignment="Left"
                         Orientation="Vertical"
                         Spacing="10">

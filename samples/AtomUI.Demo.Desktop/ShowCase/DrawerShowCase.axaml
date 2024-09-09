@@ -5,7 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
              xmlns:utils="clr-namespace:AtomUI.Demo.Desktop.Utils"
              mc:Ignorable="d">
 
@@ -51,7 +50,8 @@
         <desktop:ShowCaseItem Title="Basic" Description="Basic drawer.">
             <Panel>
                 <atom:ToggleSwitch x:Name="OpenButton01" Content="Open" />
-                <atom:Drawer IsOpen="{Binding $parent[Panel].((atom:ToggleSwitch)Children[0]).IsChecked}" OpenOn="{Binding $parent[TopLevel]}">
+                <atom:Drawer IsOpen="{Binding $parent[Panel].((atom:ToggleSwitch)Children[0]).IsChecked}"
+                             OpenOn="{Binding $parent[TopLevel]}">
                     <TextBlock Margin="50" Text="Some contents..." />
                 </atom:Drawer>
             </Panel>
@@ -66,15 +66,17 @@
                     <atom:ToggleSwitch Content="Open" />
                 </StackPanel>
 
-                <atom:Drawer IsOpen="{Binding $parent[Panel].((Panel)Children[0]).((atom:ToggleSwitch)Children[1]).IsChecked}"
-                             OpenOn="{Binding $parent[TopLevel]}"
-                             Placement="{Binding $parent[Panel].((Panel)Children[0]).((ListBox)Children[0]).SelectedItem}">
+                <atom:Drawer
+                    IsOpen="{Binding $parent[Panel].((Panel)Children[0]).((atom:ToggleSwitch)Children[1]).IsChecked}"
+                    OpenOn="{Binding $parent[TopLevel]}"
+                    Placement="{Binding $parent[Panel].((Panel)Children[0]).((ListBox)Children[0]).SelectedItem}">
                     <TextBlock Margin="50" Text="Some contents..." />
                 </atom:Drawer>
             </Panel>
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Extra Actions" Description="Extra actions should be placed at corner of drawer in Ant Design, you can use extra prop for that.">
+        <desktop:ShowCaseItem Title="Extra Actions"
+                              Description="Extra actions should be placed at corner of drawer in Ant Design, you can use extra prop for that.">
             <Panel>
                 <StackPanel Classes="ControllerPanel">
                     <ListBox Classes="PlacementList"
@@ -83,9 +85,10 @@
                     <atom:ToggleSwitch Content="Open" />
                 </StackPanel>
 
-                <atom:Drawer IsOpen="{Binding $parent[Panel].((Panel)Children[0]).((atom:ToggleSwitch)Children[1]).IsChecked}"
-                             OpenOn="{Binding $parent[TopLevel]}"
-                             Placement="{Binding $parent[Panel].((Panel)Children[0]).((ListBox)Children[0]).SelectedItem}">
+                <atom:Drawer
+                    IsOpen="{Binding $parent[Panel].((Panel)Children[0]).((atom:ToggleSwitch)Children[1]).IsChecked}"
+                    OpenOn="{Binding $parent[TopLevel]}"
+                    Placement="{Binding $parent[Panel].((Panel)Children[0]).((ListBox)Children[0]).SelectedItem}">
                     <TextBlock Margin="50" Text=" TODO " />
                 </atom:Drawer>
             </Panel>
@@ -102,9 +105,10 @@
                     <atom:ToggleSwitch Content="Open" />
                 </StackPanel>
 
-                <atom:Drawer IsOpen="{Binding $parent[Panel].((Panel)Children[0]).((atom:ToggleSwitch)Children[1]).IsChecked}"
-                             OpenOn="{Binding $parent[desktop:ShowCaseItem]}"
-                             Placement="{Binding $parent[Panel].((Panel)Children[0]).((ListBox)Children[0]).SelectedItem}">
+                <atom:Drawer
+                    IsOpen="{Binding $parent[Panel].((Panel)Children[0]).((atom:ToggleSwitch)Children[1]).IsChecked}"
+                    OpenOn="{Binding $parent[desktop:ShowCaseItem]}"
+                    Placement="{Binding $parent[Panel].((Panel)Children[0]).((ListBox)Children[0]).SelectedItem}">
                     <TextBlock Margin="50" Text=" Some contents... " />
                 </atom:Drawer>
             </Panel>

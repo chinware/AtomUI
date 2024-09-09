@@ -15,8 +15,9 @@ public class Drawer : TemplatedControl
         var container = element.FindAncestorOfType<DrawerContainer>();
         return container?.Drawer;
     }
-    
-    
+
+
+
     #region Properties
 
     [Content]
@@ -25,6 +26,7 @@ public class Drawer : TemplatedControl
         get => GetValue(ContentProperty);
         set => SetValue(ContentProperty, value);
     }
+
     public static readonly StyledProperty<Control?> ContentProperty = AvaloniaProperty
         .Register<Drawer, Control?>(nameof(Content));
 
@@ -33,6 +35,7 @@ public class Drawer : TemplatedControl
         get => GetValue(IsOpenProperty);
         set => SetValue(IsOpenProperty, value);
     }
+
     public static readonly StyledProperty<bool> IsOpenProperty = AvaloniaProperty
         .Register<Drawer, bool>(nameof(IsOpen), false, false, BindingMode.TwoWay);
 
@@ -41,6 +44,7 @@ public class Drawer : TemplatedControl
         get => GetValue(PlacementProperty);
         set => SetValue(PlacementProperty, value);
     }
+
     public static readonly StyledProperty<DrawerPlacement> PlacementProperty = AvaloniaProperty
         .Register<Drawer, DrawerPlacement>(nameof(Placement), DrawerPlacement.Right);
 
@@ -49,6 +53,7 @@ public class Drawer : TemplatedControl
         get => GetValue(OpenOnProperty);
         set => SetValue(OpenOnProperty, value);
     }
+
     public static readonly StyledProperty<Visual?> OpenOnProperty = AvaloniaProperty
         .Register<Drawer, Visual?>(nameof(OpenOn));
 
@@ -57,6 +62,7 @@ public class Drawer : TemplatedControl
         get => GetValue(ShowMaskProperty);
         set => SetValue(ShowMaskProperty, value);
     }
+
     public static readonly StyledProperty<bool> ShowMaskProperty = AvaloniaProperty
         .Register<Drawer, bool>(nameof(ShowMask), true);
 
@@ -65,6 +71,7 @@ public class Drawer : TemplatedControl
         get => GetValue(CloseWhenClickOnMaskProperty);
         set => SetValue(CloseWhenClickOnMaskProperty, value);
     }
+
     public static readonly StyledProperty<bool> CloseWhenClickOnMaskProperty = AvaloniaProperty
         .Register<Drawer, bool>(nameof(CloseWhenClickOnMask), true);
 
@@ -73,22 +80,25 @@ public class Drawer : TemplatedControl
         get => GetValue(DrawerMinWidthProperty);
         set => SetValue(DrawerMinWidthProperty, value);
     }
+
     public static readonly StyledProperty<double> DrawerMinWidthProperty = AvaloniaProperty
-        .Register<Drawer, double>(nameof(DrawerMinWidth), 0);
+        .Register<Drawer, double>(nameof(DrawerMinWidth));
 
     public double DrawerMinHeight
     {
         get => GetValue(DrawerMinHeightProperty);
         set => SetValue(DrawerMinHeightProperty, value);
     }
+
     public static readonly StyledProperty<double> DrawerMinHeightProperty = AvaloniaProperty
-        .Register<Drawer, double>(nameof(DrawerMinHeight), 0);
+        .Register<Drawer, double>(nameof(DrawerMinHeight));
 
     public double DrawerMaxWidth
     {
         get => GetValue(DrawerMaxWidthProperty);
         set => SetValue(DrawerMaxWidthProperty, value);
     }
+
     public static readonly StyledProperty<double> DrawerMaxWidthProperty = AvaloniaProperty
         .Register<Drawer, double>(nameof(DrawerMaxWidth), double.MaxValue);
 
@@ -97,6 +107,7 @@ public class Drawer : TemplatedControl
         get => GetValue(DrawerMaxHeightProperty);
         set => SetValue(DrawerMaxHeightProperty, value);
     }
+
     public static readonly StyledProperty<double> DrawerMaxHeightProperty = AvaloniaProperty
         .Register<Drawer, double>(nameof(DrawerMaxHeight), double.MaxValue);
 
@@ -105,6 +116,7 @@ public class Drawer : TemplatedControl
         get => GetValue(DrawerWidthProperty);
         set => SetValue(DrawerWidthProperty, value);
     }
+
     public static readonly StyledProperty<double> DrawerWidthProperty = AvaloniaProperty
         .Register<Drawer, double>(nameof(DrawerWidth), double.NaN);
 
@@ -113,19 +125,21 @@ public class Drawer : TemplatedControl
         get => GetValue(DrawerHeightProperty);
         set => SetValue(DrawerHeightProperty, value);
     }
+
     public static readonly StyledProperty<double> DrawerHeightProperty = AvaloniaProperty
         .Register<Drawer, double>(nameof(DrawerHeight), double.NaN);
-    
+
     #endregion
-    
-    
+
+
+
     #region Ctor
 
     static Drawer()
     {
         IsOpenProperty.Changed.AddClassHandler<Drawer>(OnIsOpenChanged);
     }
-    
+
     public Drawer()
     {
         this[!AtomLayer.BoundsAnchorProperty] = this[!OpenOnProperty];
@@ -134,42 +148,36 @@ public class Drawer : TemplatedControl
     #endregion
 
 
+
     #region Open & Close
 
-    private DrawerContainer?     _container;
+    private DrawerContainer? _container;
     private DrawerElementBorder? _element;
 
     private static void OnIsOpenChanged(Drawer drawer, AvaloniaPropertyChangedEventArgs arg)
     {
         if (drawer.IsOpen)
-        {
             drawer.Open();
-        }
         else
-        {
             drawer.Close();
-        }
     }
 
     private void Open()
     {
         _element   ??= new DrawerElementBorder(this);
         _container ??= new DrawerContainer(this, _element);
-        
+
         var layer = this.GetLayer();
         layer?.AddAdorner(this, _container);
-        this._container.IsHitTestVisible = true;
+        _container.IsHitTestVisible = true;
     }
-    
+
     private void Close()
     {
-        if (_container == null)
-        {
-            return;
-        }
-        
-        this.BeginRemovingAdorner(_container, 1000, () => this.IsOpen == false);
-        this._container.IsHitTestVisible = false;
+        if (_container == null) return;
+
+        this.BeginRemovingAdorner(_container, 1000, () => IsOpen == false);
+        _container.IsHitTestVisible = false;
     }
 
     #endregion

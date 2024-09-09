@@ -4,8 +4,8 @@ namespace AtomUI.Demo.Desktop.ShowCase;
 
 public partial class ListBoxShowCase : UserControl
 {
-   public ListBoxShowCase()
-   {
-      InitializeComponent();
-   }
+    public ListBoxShowCase()
+    {
+        InitializeComponent();
+    }
 }

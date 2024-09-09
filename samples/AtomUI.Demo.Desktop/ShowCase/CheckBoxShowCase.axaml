@@ -5,7 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
              mc:Ignorable="d">
     <desktop:ShowCasePanel>
         <desktop:ShowCasePanel.Styles>
@@ -79,7 +78,8 @@
         </desktop:ShowCaseItem>
 
 
-        <desktop:ShowCaseItem Title="Check all" Description="The indeterminate property can help you to achieve a 'check all' effect.">
+        <desktop:ShowCaseItem Title="Check all"
+                              Description="The indeterminate property can help you to achieve a 'check all' effect.">
             <StackPanel HorizontalAlignment="Left"
                         Orientation="Vertical"
                         Spacing="10">
@@ -111,7 +111,8 @@
             </StackPanel>
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Use with Grid" Description="We can use Checkbox and Grid in Checkbox.Group, to implement complex layout.">
+        <desktop:ShowCaseItem Title="Use with Grid"
+                              Description="We can use Checkbox and Grid in Checkbox.Group, to implement complex layout.">
             <Grid Margin="10"
                   ColumnDefinitions="*,*,*"
                   RowDefinitions="Auto,Auto,Auto">

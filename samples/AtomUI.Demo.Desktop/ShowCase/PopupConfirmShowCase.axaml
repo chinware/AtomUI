@@ -5,10 +5,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
              mc:Ignorable="d">
     <desktop:ShowCasePanel>
-        <desktop:ShowCaseItem Title="Basic usage" Description="The basic example supports the title and description props of confirmation.">
+        <desktop:ShowCaseItem Title="Basic usage"
+                              Description="The basic example supports the title and description props of confirmation.">
             <atom:PopupConfirm Title="Delete the task"
                                CancelText="Cancel"
                                ConfirmContent="Are you sure to delete this task?"
@@ -17,7 +17,8 @@
             </atom:PopupConfirm>
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Locale text" Description="Set okText and cancelText props to customize the button's labels.">
+        <desktop:ShowCaseItem Title="Locale text"
+                              Description="Set okText and cancelText props to customize the button's labels.">
             <atom:PopupConfirm Title="Delete the task" ConfirmContent="Are you sure to delete this task?">
                 <atom:Button ButtonType="Default" IsDanger="True">Delete</atom:Button>
             </atom:PopupConfirm>

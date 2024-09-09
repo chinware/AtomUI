@@ -10,34 +10,24 @@ public static class AtomLayerExtension
 {
     public static AtomLayer? GetLayer(this Visual? target)
     {
-        if (target == null)
-        {
-            return null;
-        }
+        if (target == null) return null;
 
         var host   = target.FindAncestorOfType<ScrollContentPresenter>() as Visual;
         var anchor = AtomLayer.GetBoundsAnchor(target);
         if (anchor != null && host != null)
-        {
             while (host != null && host.IsVisualAncestorOf(anchor) == false)
-            {
                 host = host.FindAncestorOfType<ScrollContentPresenter>();
-            }
-        }
 
         host ??= TopLevel.GetTopLevel(target);
-            
-        if (host == null)
-        {
-            return null;
-        }
+
+        if (host == null) return null;
 
         var layer = host.GetVisualChildren().FirstOrDefault(c => c is AtomLayer) as AtomLayer
                     ?? TryInject(host);
-            
+
         return layer;
     }
-    
+
     public static T? GetAdorner<T>(this Visual target) where T : Control
     {
         return target.GetLayer()?.GetAdorner<T>(target);
@@ -63,11 +53,12 @@ public static class AtomLayerExtension
         target.GetLayer()?.RemoveAdorner(adorner);
     }
 
-    public static void BeginRemovingAdorner(this Visual target, Control adorner, int millisecondsToConfirm, Func<bool> confirm)
+    public static void BeginRemovingAdorner(this Visual target, Control adorner, int millisecondsToConfirm,
+        Func<bool> confirm)
     {
         target.GetLayer()?.BeginRemovingAdorner(adorner, millisecondsToConfirm, confirm);
     }
-    
+
     private static AtomLayer? TryInject(Visual host)
     {
         var layer = new AtomLayer
@@ -81,23 +72,15 @@ public static class AtomLayerExtension
 
     private static bool InjectCore(Visual host, AtomLayer layer)
     {
-        if (host.GetVisualChildren() is not IList<Visual> visualChildren)
-        {
-            return false;
-        }
-        if (visualChildren.Any(c => c is AtomLayer))
-        {
-            return false;
-        }
+        if (host.GetVisualChildren() is not IList<Visual> visualChildren) return false;
+        if (visualChildren.Any(c => c is AtomLayer)) return false;
 
         visualChildren.Add(layer);
         ((ISetLogicalParent)layer).SetParent(host);
         layer.Host = host;
 
         if (host is ScrollContentPresenter presenter)
-        {
             layer[!AtomLayer.HostOffsetProperty] = presenter[!ScrollContentPresenter.OffsetProperty];
-        }
 
         return true;
     }

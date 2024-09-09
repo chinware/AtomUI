@@ -7,7 +7,7 @@ namespace AtomUI.Media;
 public static class PenUtils
 {
    /// <summary>
-   /// Smart reuse and update pen properties.
+   ///     Smart reuse and update pen properties.
    /// </summary>
    /// <param name="pen">Old pen to modify.</param>
    /// <param name="brush">The brush used to draw.</param>
@@ -19,50 +19,52 @@ public static class PenUtils
    /// <param name="miterLimit">The miter limit.</param>
    /// <returns>If a new instance was created and visual invalidation required.</returns>
    internal static bool TryModifyOrCreate(ref IPen? pen,
-                                          IBrush? brush,
-                                          double thickness,
-                                          IList<double>? strokeDashArray = null,
-                                          double strokeDaskOffset = default,
-                                          PenLineCap lineCap = PenLineCap.Flat,
-                                          PenLineJoin lineJoin = PenLineJoin.Miter,
-                                          double miterLimit = 10.0)
-   {
-      var previousPen = pen;
-      if (brush is null) {
-         pen = null;
-         return previousPen is not null;
-      }
+        IBrush? brush,
+        double thickness,
+        IList<double>? strokeDashArray = null,
+        double strokeDaskOffset = default,
+        PenLineCap lineCap = PenLineCap.Flat,
+        PenLineJoin lineJoin = PenLineJoin.Miter,
+        double miterLimit = 10.0)
+    {
+        var previousPen = pen;
+        if (brush is null)
+        {
+            pen = null;
+            return previousPen is not null;
+        }
 
-      IDashStyle? dashStyle = null;
-      if (strokeDashArray is { Count: > 0 }) {
-         // strokeDashArray can be IList (instead of AvaloniaList) in future
-         // So, if it supports notification - create a mutable DashStyle
-         dashStyle = strokeDashArray is INotifyCollectionChanged
-            ? new DashStyle(strokeDashArray, strokeDaskOffset)
-            : new ImmutableDashStyle(strokeDashArray, strokeDaskOffset);
-      }
+        IDashStyle? dashStyle = null;
+        if (strokeDashArray is { Count: > 0 })
 
-      if (brush is IImmutableBrush immutableBrush && dashStyle is null or ImmutableDashStyle) {
-         pen = new ImmutablePen(
-            immutableBrush,
-            thickness,
-            (ImmutableDashStyle?)dashStyle,
-            lineCap,
-            lineJoin,
-            miterLimit);
+            // strokeDashArray can be IList (instead of AvaloniaList) in future
+            // So, if it supports notification - create a mutable DashStyle
+            dashStyle = strokeDashArray is INotifyCollectionChanged
+                ? new DashStyle(strokeDashArray, strokeDaskOffset)
+                : new ImmutableDashStyle(strokeDashArray, strokeDaskOffset);
 
-         return true;
-      }
+        if (brush is IImmutableBrush immutableBrush && dashStyle is null or ImmutableDashStyle)
+        {
+            pen = new ImmutablePen(
+                immutableBrush,
+                thickness,
+                (ImmutableDashStyle?)dashStyle,
+                lineCap,
+                lineJoin,
+                miterLimit);
 
-      var mutablePen = previousPen as Pen ?? new Pen();
-      mutablePen.Brush = brush;
-      mutablePen.Thickness = thickness;
-      mutablePen.LineCap = lineCap;
-      mutablePen.LineJoin = lineJoin;
-      mutablePen.DashStyle = dashStyle;
-      mutablePen.MiterLimit = miterLimit;
+            return true;
+        }
 
-      pen = mutablePen;
-      return !Equals(previousPen, pen);
-   }
+        var mutablePen = previousPen as Pen ?? new Pen();
+        mutablePen.Brush      = brush;
+        mutablePen.Thickness  = thickness;
+        mutablePen.LineCap    = lineCap;
+        mutablePen.LineJoin   = lineJoin;
+        mutablePen.DashStyle  = dashStyle;
+        mutablePen.MiterLimit = miterLimit;
+
+        pen = mutablePen;
+        return !Equals(previousPen, pen);
+    }
 }

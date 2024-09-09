@@ -5,7 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
              mc:Ignorable="d">
     <desktop:ShowCasePanel>
         <desktop:ShowCasePanel.Styles>
@@ -118,7 +117,8 @@
             </StackPanel>
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Custom text format" Description="You can set a custom text by setting the format prop.">
+        <desktop:ShowCaseItem Title="Custom text format"
+                              Description="You can set a custom text by setting the format prop.">
             <WrapPanel Orientation="Horizontal">
                 <atom:CircleProgress Maximum="100"
                                      Minimum="0"
@@ -130,7 +130,8 @@
             </WrapPanel>
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Dashboard" Description="By setting type=dashboard, you can get a dashboard style of progress easily. Modify gapDegree to set the degree of gap.">
+        <desktop:ShowCaseItem Title="Dashboard"
+                              Description="By setting type=dashboard, you can get a dashboard style of progress easily. Modify gapDegree to set the degree of gap.">
             <WrapPanel Orientation="Horizontal">
                 <atom:DashboardProgress DashboardGapPosition="Left"
                                         Maximum="100"
@@ -153,7 +154,8 @@
             </WrapPanel>
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Progress bar with success segment" Description="Show several parts of progress with different status.">
+        <desktop:ShowCaseItem Title="Progress bar with success segment"
+                              Description="Show several parts of progress with different status.">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:ProgressBar Maximum="100"
                                   Minimum="0"
@@ -174,7 +176,8 @@
         </desktop:ShowCaseItem>
 
 
-        <desktop:ShowCaseItem Title="Stroke Linecap" Description="By setting strokeLinecap='butt', you can change the linecaps from round to butt, see stroke-linecap for more information.">
+        <desktop:ShowCaseItem Title="Stroke Linecap"
+                              Description="By setting strokeLinecap='butt', you can change the linecaps from round to butt, see stroke-linecap for more information.">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:ProgressBar Maximum="100"
                                   Minimum="0"
@@ -193,7 +196,8 @@
             </StackPanel>
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Custom line gradient" Description="Gradient encapsulation, circle and dashboard will ignore strokeLinecap when setting gradient.">
+        <desktop:ShowCaseItem Title="Custom line gradient"
+                              Description="Gradient encapsulation, circle and dashboard will ignore strokeLinecap when setting gradient.">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:ProgressBar IndicatorBarBrush="{Binding TwoStopsGradientStrokeColor}"
                                   Maximum="100"
@@ -266,7 +270,8 @@
             </StackPanel>
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Circular progress bar whit steps" Description="A circular progress bar that support steps and color segments, default gap is 2px.">
+        <desktop:ShowCaseItem Title="Circular progress bar whit steps"
+                              Description="A circular progress bar that support steps and color segments, default gap is 2px.">
             <StackPanel Orientation="Vertical" Spacing="5">
                 <WrapPanel Orientation="Horizontal">
                     <atom:CircleProgress IndicatorThickness="20"
@@ -327,7 +332,8 @@
             </StackPanel>
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Circular progress bar whit steps" Description="A circular progress bar that support steps and color segments, default gap is 2px.">
+        <desktop:ShowCaseItem Title="Circular progress bar whit steps"
+                              Description="A circular progress bar that support steps and color segments, default gap is 2px.">
             <StackPanel x:Name="CircleWithStep"
                         Orientation="Vertical"
                         Spacing="5">
@@ -424,7 +430,8 @@
             </StackPanel>
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Change progress value position" Description="Change the position of the progress value, you can use percentPosition to adjust it so that the progress bar value is inside, outside or at the bottom of the progress bar.">
+        <desktop:ShowCaseItem Title="Change progress value position"
+                              Description="Change the position of the progress value, you can use percentPosition to adjust it so that the progress bar value is inside, outside or at the bottom of the progress bar.">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:ProgressBar Width="300"
                                   Maximum="100"
@@ -472,7 +479,8 @@
             </StackPanel>
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Change progress value position for StepsProgressBar" Description="Change the position of the progress value, you can use percentPosition to adjust it so that the progress bar value is inside, outside or at the bottom of the progress bar.">
+        <desktop:ShowCaseItem Title="Change progress value position for StepsProgressBar"
+                              Description="Change the position of the progress value, you can use percentPosition to adjust it so that the progress bar value is inside, outside or at the bottom of the progress bar.">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:StepsProgressBar Maximum="100"
                                        Minimum="0"
@@ -520,7 +528,8 @@
             </StackPanel>
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Vertical progress bar" Description="Ordinary linear progress bar, supports position specification of additional areas">
+        <desktop:ShowCaseItem Title="Vertical progress bar"
+                              Description="Ordinary linear progress bar, supports position specification of additional areas">
             <StackPanel Height="300"
                         Orientation="Horizontal"
                         Spacing="10">
@@ -576,7 +585,8 @@
             </StackPanel>
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Vertical progress bar" Description="Ordinary step progress bar, supports position specification of additional areas">
+        <desktop:ShowCaseItem Title="Vertical progress bar"
+                              Description="Ordinary step progress bar, supports position specification of additional areas">
             <StackPanel Height="300"
                         Orientation="Horizontal"
                         Spacing="10">
@@ -618,7 +628,8 @@
             </StackPanel>
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Vertical progress bar" Description="Ordinary step progress bar, supports position specification of additional areas">
+        <desktop:ShowCaseItem Title="Vertical progress bar"
+                              Description="Ordinary step progress bar, supports position specification of additional areas">
             <StackPanel Height="300"
                         Orientation="Horizontal"
                         Spacing="10">
@@ -660,7 +671,8 @@
             </StackPanel>
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="toggle disabled status" Description="The progress bar is in the disabled state and uses the disabled style.">
+        <desktop:ShowCaseItem Title="toggle disabled status"
+                              Description="The progress bar is in the disabled state and uses the disabled style.">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:ProgressBar IsEnabled="{Binding ToggleStatus}"
                                   Maximum="100"

@@ -5,7 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
              mc:Ignorable="d">
     <desktop:ShowCasePanel>
         <desktop:ShowCaseItem Title="Basic" Description="Simplest Usage.">
@@ -59,7 +58,8 @@
             </atom:Menu>
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="menu item with ToggleType" Description="Renders a checkbox or radio button on a menu.">
+        <desktop:ShowCaseItem Title="menu item with ToggleType"
+                              Description="Renders a checkbox or radio button on a menu.">
             <atom:Menu>
                 <atom:MenuItem Header="_Menu A">
                     <atom:MenuItem GroupName="Group1"
@@ -93,7 +93,8 @@
             </atom:Menu>
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Scrollable menu" Description="When there are too many menu items, up and down scroll buttons will appear.">
+        <desktop:ShowCaseItem Title="Scrollable menu"
+                              Description="When there are too many menu items, up and down scroll buttons will appear.">
             <atom:Menu>
                 <atom:MenuItem Header="_Menu">
                     <atom:MenuItem Header="Menu Item" />

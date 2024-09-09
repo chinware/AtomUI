@@ -5,10 +5,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
              mc:Ignorable="d">
     <desktop:ShowCasePanel>
-        <desktop:ShowCaseItem Title="Basic" Description="Basic slider. When range is true, display as dual thumb mode. When disable is true, the slider will not be interactable.">
+        <desktop:ShowCaseItem Title="Basic"
+                              Description="Basic slider. When range is true, display as dual thumb mode. When disable is true, the slider will not be interactable.">
             <StackPanel Orientation="Vertical" Spacing="20">
                 <atom:Slider IsEnabled="{Binding NormalEnabled}"
                              Maximum="100"
@@ -37,7 +37,8 @@
             </StackPanel>
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Customize tooltip" Description="Use tooltip.formatter to format content of Tooltip. If tooltip.formatter is null, hide it.">
+        <desktop:ShowCaseItem Title="Customize tooltip"
+                              Description="Use tooltip.formatter to format content of Tooltip. If tooltip.formatter is null, hide it.">
             <StackPanel Orientation="Vertical" Spacing="20">
                 <atom:Slider IsSnapToTickEnabled="True"
                              Maximum="100"
@@ -84,7 +85,8 @@
             </StackPanel>
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Graduated slider" Description="Using marks property to mark a graduated slider, use value or defaultValue to specify the position of thumb.             When included is false, means that different thumbs are coordinative. when step is null, users can only slide the thumbs onto marks.">
+        <desktop:ShowCaseItem Title="Graduated slider"
+                              Description="Using marks property to mark a graduated slider, use value or defaultValue to specify the position of thumb.             When included is false, means that different thumbs are coordinative. when step is null, users can only slide the thumbs onto marks.">
             <StackPanel Orientation="Vertical" Spacing="20">
                 <TextBlock FontWeight="Bold">included=true</TextBlock>
                 <atom:Slider Marks="{Binding SliderMarks}"

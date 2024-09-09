@@ -5,7 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
              mc:Ignorable="d">
     <desktop:ShowCasePanel>
         <desktop:ShowCaseItem Title="Basic" Description="Basic usage of the GroupBox control.">
@@ -18,7 +17,8 @@
             </atom:GroupBox>
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Header title Position" Description="GroupBox Header supports three position types: Left, Center and Right.">
+        <desktop:ShowCaseItem Title="Header title Position"
+                              Description="GroupBox Header supports three position types: Left, Center and Right.">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:GroupBox HeaderTitle="Title Info">
                     <Panel Height="40">
@@ -44,7 +44,8 @@
             </StackPanel>
         </desktop:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Header title style" Description="GroupBox Header supports customizing some properties of color and font.">
+        <desktop:ShowCaseItem Title="Header title style"
+                              Description="GroupBox Header supports customizing some properties of color and font.">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:GroupBox HeaderFontStyle="Italic" HeaderTitle="Title Info">
                     <Panel Height="40">
