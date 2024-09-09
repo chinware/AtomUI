@@ -27,6 +27,7 @@ namespace AtomUI.Controls;
 internal class RangeCalendarItem : TemplatedControl
 {
    internal const string CalendarDisabledPC = ":calendardisabled";
+   internal const int MonthViewSize = 49; // 7 x 7
    
    #region 公共属性定义
 
@@ -336,6 +337,7 @@ internal class RangeCalendarItem : TemplatedControl
    protected UniformGrid? _headerLayout;
 
    protected DateTime _currentMonth;
+   protected DateTime _nextMonth;
    protected bool _isMouseLeftButtonDown;
    protected bool _isMouseLeftButtonDownYearView;
    protected bool _isControlPressed;
@@ -424,6 +426,8 @@ internal class RangeCalendarItem : TemplatedControl
                cell.Owner = Owner;
             }
 
+            cell.IsInPrimaryMonView = monthView == PrimaryMonthView;
+
             cell.SetValue(Grid.RowProperty, i);
             cell.SetValue(Grid.ColumnProperty, j);
             cell.CalendarDayButtonMouseDown += cellMouseLeftButtonDown;
@@ -451,10 +455,10 @@ internal class RangeCalendarItem : TemplatedControl
       PrimaryNextButton = e.NameScope.Find<IconButton>(RangeCalendarItemTheme.PrimaryNextButtonPart);
       PrimaryNextMonthButton = e.NameScope.Find<IconButton>(RangeCalendarItemTheme.PrimaryNextMonthButtonPart);
       
-      SecondaryPreviousButton = e.NameScope.Find<IconButton>(RangeCalendarItemTheme.PrimaryPreviousButtonPart);
-      SecondaryPreviousMonthButton = e.NameScope.Find<IconButton>(RangeCalendarItemTheme.PrimaryPreviousMonthButtonPart);
-      SecondaryNextButton = e.NameScope.Find<IconButton>(RangeCalendarItemTheme.PrimaryNextButtonPart);
-      SecondaryNextMonthButton = e.NameScope.Find<IconButton>(RangeCalendarItemTheme.PrimaryNextMonthButtonPart);
+      SecondaryPreviousButton = e.NameScope.Find<IconButton>(RangeCalendarItemTheme.SecondaryPreviousButtonPart);
+      SecondaryPreviousMonthButton = e.NameScope.Find<IconButton>(RangeCalendarItemTheme.SecondaryPreviousMonthButtonPart);
+      SecondaryNextButton = e.NameScope.Find<IconButton>(RangeCalendarItemTheme.SecondaryNextButtonPart);
+      SecondaryNextMonthButton = e.NameScope.Find<IconButton>(RangeCalendarItemTheme.SecondaryNextMonthButtonPart);
       
       MonthView = e.NameScope.Find<UniformGrid>(RangeCalendarItemTheme.MonthViewPart);
       PrimaryMonthView = e.NameScope.Find<Grid>(RangeCalendarItemTheme.PrimaryMonthViewPart);
@@ -564,8 +568,10 @@ internal class RangeCalendarItem : TemplatedControl
    {
       if (Owner != null) {
          _currentMonth = Owner.DisplayDateInternal;
+         _nextMonth = Owner.SecondaryDisplayDateInternal;
       } else {
          _currentMonth = DateTime.Today;
+         _nextMonth = DateTime.Today;
       }
 
       SetMonthModeHeaderButton();
@@ -575,10 +581,10 @@ internal class RangeCalendarItem : TemplatedControl
       if (MonthView != null) {
          SetDayTitles();
          if (PrimaryMonthView is not null) {
-            SetCalendarDayButtons(_currentMonth, PrimaryMonthView);
+            SetCalendarDayButtons(_currentMonth, PrimaryMonthView, true);
          }
          if (SecondaryMonthView is not null) {
-            SetCalendarDayButtons(_currentMonth, SecondaryMonthView);
+            SetCalendarDayButtons(_nextMonth, SecondaryMonthView, false);
          }
       }
    }
@@ -626,7 +632,7 @@ internal class RangeCalendarItem : TemplatedControl
       }
    }
 
-   private void SetButtonState(RangeCalendarDayButton childButton, DateTime dateToAdd)
+   private void SetButtonState(RangeCalendarDayButton childButton, DateTime dateToAdd, Grid monthView)
    {
       if (Owner != null) {
          childButton.Opacity = 1;
@@ -651,7 +657,7 @@ internal class RangeCalendarItem : TemplatedControl
 
             // SET IF THE DAY IS INACTIVE OR NOT: set if the day is a
             // trailing day or not
-            childButton.IsInactive = CheckDayInactiveState(dateToAdd);
+            childButton.IsInactive = CheckDayInactiveState(dateToAdd, monthView);
             
             // SET IF THE DAY IS TODAY OR NOT
             childButton.IsToday = CheckDayIsTodayState(dateToAdd);
@@ -684,10 +690,14 @@ internal class RangeCalendarItem : TemplatedControl
       }
    }
 
-   protected virtual bool CheckDayInactiveState(DateTime dateToAdd)
+   protected virtual bool CheckDayInactiveState(DateTime dateToAdd, Grid monthView)
    {
       if (Owner is not null) {
-         return DateTimeHelper.CompareYearMonth(dateToAdd, Owner.DisplayDateInternal) != 0;
+         if (monthView == PrimaryMonthView) {
+            return DateTimeHelper.CompareYearMonth(dateToAdd, Owner.DisplayDateInternal) != 0;
+         } else if (monthView == SecondaryMonthView) {
+            return DateTimeHelper.CompareYearMonth(dateToAdd, Owner.SecondaryDisplayDateInternal) != 0;
+         }
       }
 
       return false;
@@ -702,7 +712,7 @@ internal class RangeCalendarItem : TemplatedControl
       return false;
    }
 
-   protected void SetCalendarDayButtons(DateTime firstDayOfMonth, Grid monthView)
+   protected void SetCalendarDayButtons(DateTime firstDayOfMonth, Grid monthView, bool isClearHoverInfo)
    {
       int lastMonthToDisplay = PreviousMonthDays(firstDayOfMonth);
       DateTime dateToAdd;
@@ -715,9 +725,11 @@ internal class RangeCalendarItem : TemplatedControl
          dateToAdd = firstDayOfMonth;
       }
 
-      if (Owner != null && Owner.HoverEnd != null && Owner.HoverStart != null) {
-         Owner.HoverEndIndex = null;
-         Owner.HoverStartIndex = null;
+      if (isClearHoverInfo) {
+         if (Owner != null && Owner.HoverEnd != null && Owner.HoverStart != null) {
+            Owner.HoverEndIndex = null;
+            Owner.HoverStartIndex = null;
+         }
       }
 
       int count = RangeCalendar.RowsPerMonth * RangeCalendar.ColumnsPerMonth;
@@ -726,7 +738,11 @@ internal class RangeCalendarItem : TemplatedControl
          RangeCalendarDayButton childButton = (RangeCalendarDayButton)monthView!.Children[childIndex];
 
          childButton.Index = childIndex;
-         SetButtonState(childButton, dateToAdd);
+         if (monthView == SecondaryMonthView) {
+            childButton.Index += MonthViewSize;
+         }
+
+         SetButtonState(childButton, dateToAdd, monthView);
 
          // Update the indexes of hoverStart and hoverEnd
          if (Owner != null && Owner.HoverEnd != null && Owner.HoverStart != null) {

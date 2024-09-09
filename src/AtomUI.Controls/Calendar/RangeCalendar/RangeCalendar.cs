@@ -771,7 +771,6 @@ public class RangeCalendar : TemplatedControl
    }
 
    internal DateTime? HoverStart { get; set; }
-   internal int? HoverStartIndex { get; set; }
    internal DateTime? HoverEndInternal { get; set; }
 
    internal DateTime? HoverEnd
@@ -783,10 +782,12 @@ public class RangeCalendar : TemplatedControl
          LastSelectedDate = value;
       }
    }
-
-   internal int? HoverEndIndex { get; set; }
+   
    internal bool HasFocusInternal { get; set; }
    internal bool IsMouseSelection { get; set; }
+   
+   internal int? HoverStartIndex { get; set; }
+   internal int? HoverEndIndex { get; set; }
 
    /// <summary>
    /// Gets or sets a value indicating whether CalendarDatePicker should change its 
@@ -801,9 +802,22 @@ public class RangeCalendar : TemplatedControl
       // REMOVE_RTM: should be updated if we support MultiCalendar
       int count = RowsPerMonth * ColumnsPerMonth;
       if (monthControl != null) {
-         if (monthControl.MonthView != null) {
+         if (monthControl.PrimaryMonthView != null) {
             for (int childIndex = ColumnsPerMonth; childIndex < count; childIndex++) {
-               if (monthControl.MonthView.Children[childIndex] is RangeCalendarDayButton b) {
+               if (monthControl.PrimaryMonthView.Children[childIndex] is RangeCalendarDayButton b) {
+                  var d = b.DataContext as DateTime?;
+
+                  if (d.HasValue) {
+                     if (DateTimeHelper.CompareDays(d.Value, day) == 0) {
+                        return b;
+                     }
+                  }
+               }
+            }
+         }
+         if (monthControl.SecondaryMonthView != null) {
+            for (int childIndex = ColumnsPerMonth; childIndex < count; childIndex++) {
+               if (monthControl.SecondaryMonthView.Children[childIndex] is RangeCalendarDayButton b) {
                   var d = b.DataContext as DateTime?;
 
                   if (d.HasValue) {
@@ -854,9 +868,15 @@ public class RangeCalendar : TemplatedControl
       RangeCalendarItem? monthControl = MonthControl;
       int count = RowsPerMonth * ColumnsPerMonth;
       if (monthControl != null) {
-         if (monthControl.MonthView != null) {
+         if (monthControl.PrimaryMonthView != null) {
             for (int childIndex = ColumnsPerMonth; childIndex < count; childIndex++) {
-               var d = (RangeCalendarDayButton)monthControl.MonthView.Children[childIndex];
+               var d = (RangeCalendarDayButton)monthControl.PrimaryMonthView.Children[childIndex];
+               d.IgnoreMouseOverState();
+            }
+         }
+         if (monthControl.SecondaryMonthView != null) {
+            for (int childIndex = ColumnsPerMonth; childIndex < count; childIndex++) {
+               var d = (RangeCalendarDayButton)monthControl.SecondaryMonthView.Children[childIndex];
                d.IgnoreMouseOverState();
             }
          }
@@ -937,26 +957,39 @@ public class RangeCalendar : TemplatedControl
       if (HoverEnd != null && HoverStart != null) {
          Debug.Assert(MonthControl is not null);
 
-         int startIndex, endIndex, i;
+         int startIndex, endIndex;
          RangeCalendarItem monthControl = MonthControl;
 
          // This assumes a contiguous set of dates:
          if (HoverEndIndex != null && HoverStartIndex != null) {
             SortHoverIndexes(out startIndex, out endIndex);
-            for (i = startIndex; i <= endIndex; i++) {
-               if (monthControl.MonthView!.Children[i] is RangeCalendarDayButton b) {
+            if (monthControl.PrimaryMonthView is not null && endIndex < RangeCalendarItem.MonthViewSize) {
+               HighlightDays(monthControl.PrimaryMonthView, startIndex, endIndex);
+            }
+            if (monthControl.SecondaryMonthView is not null && startIndex >= RangeCalendarItem.MonthViewSize) {
+               startIndex -= RangeCalendarItem.MonthViewSize;
+               endIndex -= RangeCalendarItem.MonthViewSize;
+               HighlightDays(monthControl.SecondaryMonthView, startIndex, endIndex);
+            }
+         }
+      }
+   }
 
-                  b.IsSelected = true;
-                  var d = b.DataContext as DateTime?;
+   private void HighlightDays(Grid targetMonthView, int startIndex, int endIndex)
+   {
+      if (HoverEnd != null && HoverStart != null) {
+         for (int i = startIndex; i <= endIndex; i++) {
+            if (targetMonthView.Children[i] is RangeCalendarDayButton b) {
+               b.IsSelected = true;
+               var d = b.DataContext as DateTime?;
 
-                  if (d.HasValue && DateTimeHelper.CompareDays(HoverEnd.Value, d.Value) == 0) {
-                     if (FocusButton != null) {
-                        FocusButton.IsCurrent = false;
-                     }
-
-                     b.IsCurrent = HasFocusInternal;
-                     FocusButton = b;
+               if (d.HasValue && DateTimeHelper.CompareDays(HoverEnd.Value, d.Value) == 0) {
+                  if (FocusButton != null) {
+                     FocusButton.IsCurrent = false;
                   }
+
+                  b.IsCurrent = HasFocusInternal;
+                  FocusButton = b;
                }
             }
          }
@@ -976,25 +1009,38 @@ public class RangeCalendar : TemplatedControl
          RangeCalendarItem monthControl = MonthControl;
 
          if (HoverEndIndex != null && HoverStartIndex != null) {
-            int i;
             SortHoverIndexes(out int startIndex, out int endIndex);
-            if (SelectionMode == CalendarSelectionMode.MultipleRange) {
-               for (i = startIndex; i <= endIndex; i++) {
-                  if (monthControl.MonthView!.Children[i] is RangeCalendarDayButton b) {
-                     var d = b.DataContext as DateTime?;
+            if (monthControl.PrimaryMonthView is not null  && endIndex < RangeCalendarItem.MonthViewSize) {
+               UnHighlightDays(monthControl.PrimaryMonthView, startIndex, endIndex);
+            }
+            if (monthControl.SecondaryMonthView is not null && startIndex >= RangeCalendarItem.MonthViewSize) {
+               startIndex -= RangeCalendarItem.MonthViewSize;
+               endIndex -= RangeCalendarItem.MonthViewSize;
+               UnHighlightDays(monthControl.SecondaryMonthView, startIndex, endIndex);
+            }
+         }
+      }
+   }
 
-                     if (d.HasValue) {
-                        if (!SelectedDates.Contains(d.Value)) {
-                           b.IsSelected = false;
-                        }
+   private void UnHighlightDays(Grid targetMonthView, int startIndex, int endIndex)
+   {
+      if (HoverEnd != null && HoverStart != null) {
+         if (SelectionMode == CalendarSelectionMode.MultipleRange) {
+            for (int i = startIndex; i <= endIndex; i++) {
+               if (targetMonthView.Children[i] is RangeCalendarDayButton b) {
+                  var d = b.DataContext as DateTime?;
+
+                  if (d.HasValue) {
+                     if (!SelectedDates.Contains(d.Value)) {
+                        b.IsSelected = false;
                      }
                   }
                }
-            } else {
-               // It is SingleRange
-               for (i = startIndex; i <= endIndex; i++) {
-                  ((RangeCalendarDayButton)monthControl.MonthView!.Children[i]).IsSelected = false;
-               }
+            }
+         } else {
+            // It is SingleRange
+            for (int i = startIndex; i <= endIndex; i++) {
+               ((RangeCalendarDayButton)targetMonthView.Children[i]).IsSelected = false;
             }
          }
       }
@@ -1127,7 +1173,7 @@ public class RangeCalendar : TemplatedControl
          LastSelectedDate = selectedDate;
       }
 
-      if (i > 0) {
+      if (i > 1) {
          OnNextClick();
       } else if (i < 0) {
          OnPreviousClick();
