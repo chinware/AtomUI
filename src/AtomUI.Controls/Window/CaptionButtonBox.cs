@@ -1,4 +1,4 @@
-namespace AtomUI.Controls.Window;
+namespace AtomUI.Controls;
 
 using AvaloniaCaptionButtons = Avalonia.Controls.Chrome.CaptionButtons;
 

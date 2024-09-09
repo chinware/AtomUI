@@ -5,7 +5,7 @@ using Avalonia.Data;
 using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Styling;
 
-namespace AtomUI.Utils;
+namespace AtomUI.Theme.Data;
 
 public static class TokenResourceBinder
 {

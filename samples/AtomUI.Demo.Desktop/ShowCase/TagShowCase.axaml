@@ -1,21 +1,19 @@
-<UserControl
-    x:Class="AtomUI.Demo.Desktop.ShowCase.TagShowCase"
-    xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:atom="https://atomui.net"
-    xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
-    mc:Ignorable="d">
-    <showcase:ShowCasePanel>
-        <showcase:ShowCasePanel.Styles>
+<UserControl x:Class="AtomUI.Demo.Desktop.ShowCase.TagShowCase"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:atom="https://atomui.net"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
+             mc:Ignorable="d">
+    <desktop:ShowCasePanel>
+        <desktop:ShowCasePanel.Styles>
             <Style Selector="atom|Tag">
                 <Setter Property="Margin" Value="5" />
             </Style>
-        </showcase:ShowCasePanel.Styles>
-        <showcase:ShowCaseItem
-            Title="Basic"
-            Description="Usage of basic Tag, and it could be IsClosable and customize close button by set closeIcon property,will display default close button when closeIcon is setting to true. IsClosable Tag supports onClose events.">
+        </desktop:ShowCasePanel.Styles>
+        <desktop:ShowCaseItem Title="Basic" Description="Usage of basic Tag, and it could be IsClosable and customize close button by set closeIcon property,will display default close button when closeIcon is setting to true. IsClosable Tag supports onClose events.">
             <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal">
                 <atom:Tag>Tag 1</atom:Tag>
                 <atom:Tag>Link</atom:Tag>
@@ -27,13 +25,15 @@
                     Tag 2
                 </atom:Tag>
             </WrapPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
-            Title="Colorful Tag"
-            Description="We preset a series of colorful tag styles for use in different situations. You can also set it to a hex color string for custom color.">
+        <desktop:ShowCaseItem Title="Colorful Tag" Description="We preset a series of colorful tag styles for use in different situations. You can also set it to a hex color string for custom color.">
             <StackPanel Orientation="Vertical">
-                <TextBlock FontWeight="Bold" FontSize="14" Margin="0, 0, 0, 10">Presets</TextBlock>
+                <TextBlock Margin="0,0,0,10"
+                           FontSize="14"
+                           FontWeight="Bold">
+                    Presets
+                </TextBlock>
                 <WrapPanel HorizontalAlignment="Left">
                     <atom:Tag TagColor="magenta">magenta</atom:Tag>
                     <atom:Tag TagColor="red">red</atom:Tag>
@@ -48,22 +48,28 @@
                     <atom:Tag TagColor="purple">purple</atom:Tag>
                 </WrapPanel>
 
-                <TextBlock FontWeight="Bold" FontSize="14" Margin="0, 20, 0, 10">Custom</TextBlock>
+                <TextBlock Margin="0,20,0,10"
+                           FontSize="14"
+                           FontWeight="Bold">
+                    Custom
+                </TextBlock>
                 <WrapPanel HorizontalAlignment="Left">
                     <atom:Tag TagColor="#f50">#f50</atom:Tag>
-                    <atom:Tag TagColor="#2db7f5" IsClosable="True">#2db7f5</atom:Tag>
+                    <atom:Tag IsClosable="True" TagColor="#2db7f5">#2db7f5</atom:Tag>
                     <atom:Tag TagColor="#87d068">#87d068</atom:Tag>
                     <atom:Tag TagColor="#108ee9">#108ee9</atom:Tag>
                 </WrapPanel>
             </StackPanel>
 
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
-            Title="Status Tag"
-            Description="We preset five different colors, you can set color property such as success,processing,error,default and warning to indicate specific status.">
+        <desktop:ShowCaseItem Title="Status Tag" Description="We preset five different colors, you can set color property such as success,processing,error,default and warning to indicate specific status.">
             <StackPanel Orientation="Vertical">
-                <TextBlock FontWeight="Bold" FontSize="14" Margin="0, 0, 0, 10">Without icon</TextBlock>
+                <TextBlock Margin="0,0,0,10"
+                           FontSize="14"
+                           FontWeight="Bold">
+                    Without icon
+                </TextBlock>
                 <WrapPanel HorizontalAlignment="Left">
                     <atom:Tag TagColor="success">success</atom:Tag>
                     <atom:Tag TagColor="info">processing</atom:Tag>
@@ -72,7 +78,11 @@
                     <atom:Tag TagColor="default">default</atom:Tag>
                 </WrapPanel>
 
-                <TextBlock FontWeight="Bold" FontSize="14" Margin="0, 20, 0, 10">Custom</TextBlock>
+                <TextBlock Margin="0,20,0,10"
+                           FontSize="14"
+                           FontWeight="Bold">
+                    Custom
+                </TextBlock>
                 <WrapPanel HorizontalAlignment="Left">
                     <atom:Tag TagColor="success">
                         <atom:Tag.Icon>
@@ -113,12 +123,9 @@
                 </WrapPanel>
             </StackPanel>
 
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
-            Title="Icon"
-            Description="Tag components can contain an Icon. This is done by setting the icon property or placing an Icon component within the Tag.
-If you want specific control over the positioning and placement of the Icon, then that should be done by placing the Icon component within the Tag rather than using the icon property.">
+        <desktop:ShowCaseItem Title="Icon" Description="Tag components can contain an Icon. This is done by setting the icon property or placing an Icon component within the Tag. If you want specific control over the positioning and placement of the Icon, then that should be done by placing the Icon component within the Tag rather than using the icon property.">
             <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal">
                 <atom:Tag TagColor="#55acee">
                     <atom:Tag.Icon>
@@ -145,11 +152,9 @@ If you want specific control over the positioning and placement of the Icon, the
                     Linkedin
                 </atom:Tag>
             </WrapPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
-            Title="borderless"
-            Description="borderless">
+        <desktop:ShowCaseItem Title="borderless" Description="borderless">
             <StackPanel Orientation="Vertical">
                 <WrapPanel HorizontalAlignment="Left">
                     <atom:Tag Bordered="False">Tag1</atom:Tag>
@@ -158,28 +163,30 @@ If you want specific control over the positioning and placement of the Icon, the
                     <atom:Tag Bordered="False" IsClosable="True">Tag4</atom:Tag>
                 </WrapPanel>
 
-                <atom:Separator FontWeight="Bold" FontSize="14" Margin="0, 20, 0, 20"/>
+                <atom:Separator Margin="0,20,0,20"
+                                FontSize="14"
+                                FontWeight="Bold" />
                 <WrapPanel HorizontalAlignment="Left">
-                    <atom:Tag TagColor="magenta" Bordered="False">magenta</atom:Tag>
-                    <atom:Tag TagColor="red" Bordered="False">red</atom:Tag>
-                    <atom:Tag TagColor="volcano" Bordered="False">volcano</atom:Tag>
-                    <atom:Tag TagColor="orange" Bordered="False">orange</atom:Tag>
-                    <atom:Tag TagColor="gold" Bordered="False">gold</atom:Tag>
-                    <atom:Tag TagColor="lime" Bordered="False">lime</atom:Tag>
-                    <atom:Tag TagColor="green" Bordered="False">green</atom:Tag>
-                    <atom:Tag TagColor="cyan" Bordered="False">cyan</atom:Tag>
-                    <atom:Tag TagColor="blue" Bordered="False">blue</atom:Tag>
-                    <atom:Tag TagColor="geekblue" Bordered="False">geekblue</atom:Tag>
-                    <atom:Tag TagColor="purple" Bordered="False">purple</atom:Tag>
+                    <atom:Tag Bordered="False" TagColor="magenta">magenta</atom:Tag>
+                    <atom:Tag Bordered="False" TagColor="red">red</atom:Tag>
+                    <atom:Tag Bordered="False" TagColor="volcano">volcano</atom:Tag>
+                    <atom:Tag Bordered="False" TagColor="orange">orange</atom:Tag>
+                    <atom:Tag Bordered="False" TagColor="gold">gold</atom:Tag>
+                    <atom:Tag Bordered="False" TagColor="lime">lime</atom:Tag>
+                    <atom:Tag Bordered="False" TagColor="green">green</atom:Tag>
+                    <atom:Tag Bordered="False" TagColor="cyan">cyan</atom:Tag>
+                    <atom:Tag Bordered="False" TagColor="blue">blue</atom:Tag>
+                    <atom:Tag Bordered="False" TagColor="geekblue">geekblue</atom:Tag>
+                    <atom:Tag Bordered="False" TagColor="purple">purple</atom:Tag>
 
-                    <atom:Tag TagColor="success" Bordered="False">success</atom:Tag>
-                    <atom:Tag TagColor="info" Bordered="False">processing</atom:Tag>
-                    <atom:Tag TagColor="error" Bordered="False">error</atom:Tag>
-                    <atom:Tag TagColor="warning" Bordered="False">warning</atom:Tag>
+                    <atom:Tag Bordered="False" TagColor="success">success</atom:Tag>
+                    <atom:Tag Bordered="False" TagColor="info">processing</atom:Tag>
+                    <atom:Tag Bordered="False" TagColor="error">error</atom:Tag>
+                    <atom:Tag Bordered="False" TagColor="warning">warning</atom:Tag>
                 </WrapPanel>
             </StackPanel>
 
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-    </showcase:ShowCasePanel>
+    </desktop:ShowCasePanel>
 </UserControl>

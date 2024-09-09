@@ -2,7 +2,6 @@ using AtomUI.Controls;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
-using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace AtomUI.Demo.Desktop.ShowCase;
 

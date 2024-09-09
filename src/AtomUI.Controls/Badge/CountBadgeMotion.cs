@@ -3,12 +3,12 @@ using Avalonia;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 
-namespace AtomUI.Controls.Badge;
+namespace AtomUI.Controls;
 
 internal class CountBadgeZoomBadgeIn : AbstractMotion
 {
-   public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
-   public MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
+   public AtomUI.MotionScene.MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
+   public AtomUI.MotionScene.MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
    
    public CountBadgeZoomBadgeIn()
    {
@@ -18,7 +18,7 @@ internal class CountBadgeZoomBadgeIn : AbstractMotion
    public void ConfigureOpacity(TimeSpan duration, Easing? easing = null)
    {
       easing ??= new ExponentialEaseOut();
-      var config = new MotionConfig(MotionOpacityProperty)
+      var config = new AtomUI.MotionScene.MotionConfig(MotionOpacityProperty)
       {
          TransitionKind = TransitionKind.Double,
          StartValue = 0d,
@@ -33,7 +33,7 @@ internal class CountBadgeZoomBadgeIn : AbstractMotion
    {
       easing ??= new BackEaseOut();
       
-      var config = new MotionConfig(MotionRenderTransformProperty)
+      var config = new AtomUI.MotionScene.MotionConfig(MotionRenderTransformProperty)
       {
          TransitionKind = TransitionKind.TransformOperations,
          StartValue = BuildScaleTransform(0),
@@ -53,8 +53,8 @@ internal class CountBadgeZoomBadgeIn : AbstractMotion
 
 internal class CountBadgeZoomBadgeOut : AbstractMotion
 {
-   public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
-   public MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
+   public AtomUI.MotionScene.MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
+   public AtomUI.MotionScene.MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
    
    public CountBadgeZoomBadgeOut()
    {
@@ -64,7 +64,7 @@ internal class CountBadgeZoomBadgeOut : AbstractMotion
    public void ConfigureOpacity(TimeSpan duration, Easing? easing = null)
    {
       easing ??= new ExponentialEaseIn();
-      var config = new MotionConfig(MotionOpacityProperty)
+      var config = new AtomUI.MotionScene.MotionConfig(MotionOpacityProperty)
       {
          TransitionKind = TransitionKind.Double,
          StartValue = 1d,
@@ -79,7 +79,7 @@ internal class CountBadgeZoomBadgeOut : AbstractMotion
    {
       easing ??= new ExponentialEaseIn();
       
-      var config = new MotionConfig(MotionRenderTransformProperty)
+      var config = new AtomUI.MotionScene.MotionConfig(MotionRenderTransformProperty)
       {
          TransitionKind = TransitionKind.TransformOperations,
          StartValue = BuildScaleTransform(1),
@@ -100,13 +100,13 @@ internal class CountBadgeZoomBadgeOut : AbstractMotion
 
 internal class CountBadgeNoWrapperZoomBadgeIn : AbstractMotion
 {
-   public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
-   public MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
+   public AtomUI.MotionScene.MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
+   public AtomUI.MotionScene.MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
    
    public void ConfigureOpacity(TimeSpan duration, Easing? easing = null)
    {
       easing ??= new QuarticEaseOut();
-      var config = new MotionConfig(MotionOpacityProperty)
+      var config = new AtomUI.MotionScene.MotionConfig(MotionOpacityProperty)
       {
          TransitionKind = TransitionKind.Double,
          StartValue = 0d,
@@ -121,7 +121,7 @@ internal class CountBadgeNoWrapperZoomBadgeIn : AbstractMotion
    {
       easing ??= new QuarticEaseOut();
       
-      var config = new MotionConfig(MotionRenderTransformProperty)
+      var config = new AtomUI.MotionScene.MotionConfig(MotionRenderTransformProperty)
       {
          TransitionKind = TransitionKind.TransformOperations,
          StartValue = BuildScaleTransform(0),
@@ -135,13 +135,13 @@ internal class CountBadgeNoWrapperZoomBadgeIn : AbstractMotion
 
 internal class CountBadgeNoWrapperZoomBadgeOut : AbstractMotion
 {
-   public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
-   public MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
+   public AtomUI.MotionScene.MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
+   public AtomUI.MotionScene.MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
    
    public void ConfigureOpacity(TimeSpan duration, Easing? easing = null)
    {
       easing ??= new CircularEaseIn();
-      var config = new MotionConfig(MotionOpacityProperty)
+      var config = new AtomUI.MotionScene.MotionConfig(MotionOpacityProperty)
       {
          TransitionKind = TransitionKind.Double,
          StartValue = 1d,
@@ -156,7 +156,7 @@ internal class CountBadgeNoWrapperZoomBadgeOut : AbstractMotion
    {
       easing ??= new CircularEaseIn();
       
-      var config = new MotionConfig(MotionRenderTransformProperty)
+      var config = new AtomUI.MotionScene.MotionConfig(MotionRenderTransformProperty)
       {
          TransitionKind = TransitionKind.TransformOperations,
          StartValue = BuildScaleTransform(1),

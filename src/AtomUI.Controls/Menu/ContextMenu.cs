@@ -2,10 +2,7 @@
 using System.Reflection;
 using AtomUI.Reflection;
 using AtomUI.Theme.Styling;
-using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
 using Avalonia.Input;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 
 namespace AtomUI.Controls;

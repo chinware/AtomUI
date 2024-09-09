@@ -1,145 +1,137 @@
-<UserControl
-    x:Class="AtomUI.Demo.Desktop.ShowCase.TimePickerShowCase"
-    xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:atom="https://atomui.net"
-    xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
-    mc:Ignorable="d">
-    <showcase:ShowCasePanel>
-        <showcase:ShowCaseItem
-            Title="Basic"
-            Description="Click TimePicker, and then we could select or input a time in panel.">
-            <atom:TimePicker Watermark="Select time" Width="200" />
-        </showcase:ShowCaseItem>
-        
-        <showcase:ShowCaseItem
-            Title="Three Sizes"
-            Description="The input box comes in three sizes: large, middle and small. Large is used in the form, while the medium size is the default.">
-           <StackPanel Orientation="Horizontal" Spacing="10">
-               <atom:TimePicker Watermark="Select time" Width="160" SizeType="Large" DefaultTime="12:08:23"/>
-               <atom:TimePicker Watermark="Select time" Width="160" SizeType="Middle" DefaultTime="12:08:23"/>
-               <atom:TimePicker Watermark="Select time" Width="160" SizeType="Small" DefaultTime="12:08:23"/>
-           </StackPanel>
-        </showcase:ShowCaseItem>
-        
-        <showcase:ShowCaseItem
-            Title="Disabled"
-            Description="A disabled state of the TimePicker.">
+<UserControl x:Class="AtomUI.Demo.Desktop.ShowCase.TimePickerShowCase"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:atom="https://atomui.net"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
+             mc:Ignorable="d">
+    <desktop:ShowCasePanel>
+        <desktop:ShowCaseItem Title="Basic" Description="Click TimePicker, and then we could select or input a time in panel.">
+            <atom:TimePicker Width="200" Watermark="Select time" />
+        </desktop:ShowCaseItem>
+
+        <desktop:ShowCaseItem Title="Three Sizes" Description="The input box comes in three sizes: large, middle and small. Large is used in the form, while the medium size is the default.">
             <StackPanel Orientation="Horizontal" Spacing="10">
-                <atom:TimePicker Watermark="Select time" Width="160" IsEnabled="False" DefaultTime="12:08:23"/>
+                <atom:TimePicker Width="160"
+                                 DefaultTime="12:08:23"
+                                 SizeType="Large"
+                                 Watermark="Select time" />
+                <atom:TimePicker Width="160"
+                                 DefaultTime="12:08:23"
+                                 SizeType="Middle"
+                                 Watermark="Select time" />
+                <atom:TimePicker Width="160"
+                                 DefaultTime="12:08:23"
+                                 SizeType="Small"
+                                 Watermark="Select time" />
             </StackPanel>
-        </showcase:ShowCaseItem>
-        
-        <showcase:ShowCaseItem
-            Title="Interval option"
-            Description="Show stepped options by MinuteIncrement SecondIncrement.">
+        </desktop:ShowCaseItem>
+
+        <desktop:ShowCaseItem Title="Disabled" Description="A disabled state of the TimePicker.">
             <StackPanel Orientation="Horizontal" Spacing="10">
-                <atom:TimePicker Watermark="Select time"
-                                 Width="160" 
+                <atom:TimePicker Width="160"
+                                 DefaultTime="12:08:23"
+                                 IsEnabled="False"
+                                 Watermark="Select time" />
+            </StackPanel>
+        </desktop:ShowCaseItem>
+
+        <desktop:ShowCaseItem Title="Interval option" Description="Show stepped options by MinuteIncrement SecondIncrement.">
+            <StackPanel Orientation="Horizontal" Spacing="10">
+                <atom:TimePicker Width="160"
                                  DefaultTime="12:08:23"
                                  MinuteIncrement="15"
                                  SecondIncrement="10"
-                                 />
+                                 Watermark="Select time" />
             </StackPanel>
-        </showcase:ShowCaseItem>
-        
-        <showcase:ShowCaseItem
-            Title="12 hours"
-            Description="TimePicker of 12 hours format, with default format h:mm:ss a.">
+        </desktop:ShowCaseItem>
+
+        <desktop:ShowCaseItem Title="12 hours" Description="TimePicker of 12 hours format, with default format h:mm:ss a.">
             <StackPanel Orientation="Horizontal" Spacing="10">
-                <atom:TimePicker Watermark="Select time"
-                                 Width="160" 
-                                 DefaultTime="12:08:23"
+                <atom:TimePicker Width="160"
                                  ClockIdentifier="HourClock12"
-                />
-                <atom:TimePicker Watermark="Select time"
-                                 Width="160" 
                                  DefaultTime="12:08:23"
+                                 Watermark="Select time" />
+                <atom:TimePicker Width="160"
                                  ClockIdentifier="HourClock24"
-                />
+                                 DefaultTime="12:08:23"
+                                 Watermark="Select time" />
             </StackPanel>
-        </showcase:ShowCaseItem>
-        
-        <showcase:ShowCaseItem
-            Title="Variants"
-            Description="Bordered-less style component.">
+        </desktop:ShowCaseItem>
+
+        <desktop:ShowCaseItem Title="Variants" Description="Bordered-less style component.">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <StackPanel Orientation="Horizontal" Spacing="5">
-                    <atom:TimePicker Watermark="Outline"
-                                     Width="160" 
+                    <atom:TimePicker Width="160"
                                      StyleVariant="Outline"
-                    />
+                                     Watermark="Outline" />
                     <atom:RangeTimePicker Width="320"
-                                          StyleVariant="Outline"
-                                          RangeStartWatermark="Outline"/>
+                                          RangeStartWatermark="Outline"
+                                          StyleVariant="Outline" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Spacing="5">
-                    <atom:TimePicker Watermark="Filled"
-                                     Width="160"
-                                     StyleVariant="Filled" />
+                    <atom:TimePicker Width="160"
+                                     StyleVariant="Filled"
+                                     Watermark="Filled" />
                     <atom:RangeTimePicker Width="320"
-                                          StyleVariant="Outline"
-                                          RangeStartWatermark="Filled"/>
+                                          RangeStartWatermark="Filled"
+                                          StyleVariant="Outline" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Spacing="5">
-                    <atom:TimePicker Watermark="Borderless"
-                                     Width="160"
-                                     StyleVariant="Borderless" />
+                    <atom:TimePicker Width="160"
+                                     StyleVariant="Borderless"
+                                     Watermark="Borderless" />
                     <atom:RangeTimePicker Width="320"
-                                          StyleVariant="Borderless"
-                                          RangeStartWatermark="Borderless"/>
+                                          RangeStartWatermark="Borderless"
+                                          StyleVariant="Borderless" />
                 </StackPanel>
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
-            Title="Status"
-            Description="Add status to TimePicker with status, which could be error or warning.">
+        <desktop:ShowCaseItem Title="Status" Description="Add status to TimePicker with status, which could be error or warning.">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <StackPanel Orientation="Horizontal" Spacing="5">
                     <atom:TimePicker Width="160"
                                      Status="Default"
                                      Watermark="Select time" />
                     <atom:RangeTimePicker Width="320"
-                                          StyleVariant="Outline"
-                                          Status="Default"
+                                          RangeEndWatermark="End time"
                                           RangeStartWatermark="Start time"
-                                          RangeEndWatermark="End time" />
+                                          Status="Default"
+                                          StyleVariant="Outline" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Spacing="5">
                     <atom:TimePicker Width="160"
                                      Status="Warning"
                                      Watermark="Select time" />
                     <atom:RangeTimePicker Width="320"
-                                          StyleVariant="Outline"
-                                          Status="Warning"
+                                          RangeEndWatermark="End time"
                                           RangeStartWatermark="Start time"
-                                          RangeEndWatermark="End time" />
+                                          Status="Warning"
+                                          StyleVariant="Outline" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Spacing="5">
                     <atom:TimePicker Width="160"
                                      Status="Error"
                                      Watermark="Select time" />
                     <atom:RangeTimePicker Width="320"
-                                          StyleVariant="Outline"
-                                          Status="Error"
+                                          RangeEndWatermark="End time"
                                           RangeStartWatermark="Start time"
-                                          RangeEndWatermark="End time"/>
+                                          Status="Error"
+                                          StyleVariant="Outline" />
                 </StackPanel>
             </StackPanel>
-        </showcase:ShowCaseItem>
-        
-        <showcase:ShowCaseItem
-            Title="Time Range Picker"
-            Description="Use time range picker with RangeTimePicker.">
+        </desktop:ShowCaseItem>
+
+        <desktop:ShowCaseItem Title="Time Range Picker" Description="Use time range picker with RangeTimePicker.">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:RangeTimePicker Width="320"
-                                 Status="Default"
-                                 RangeStartWatermark="Start time"
-                                 RangeEndWatermark="End time"/>
+                                      RangeEndWatermark="End time"
+                                      RangeStartWatermark="Start time"
+                                      Status="Default" />
             </StackPanel>
-        </showcase:ShowCaseItem>
-    </showcase:ShowCasePanel>
+        </desktop:ShowCaseItem>
+    </desktop:ShowCasePanel>
 </UserControl>

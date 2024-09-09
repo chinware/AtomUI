@@ -1,161 +1,158 @@
-<UserControl
-    x:Class="AtomUI.Demo.Desktop.ShowCase.AlertShowCase"
-    xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:atom="https://atomui.net"
-    xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
-    mc:Ignorable="d">
-    <showcase:ShowCasePanel>
-        
-        <showcase:ShowCaseItem
-            Title="Basic"
-            Description="The simplest usage for short messages.">
+<UserControl x:Class="AtomUI.Demo.Desktop.ShowCase.AlertShowCase"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:atom="https://atomui.net"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
+             mc:Ignorable="d">
+    <desktop:ShowCasePanel>
+
+        <desktop:ShowCaseItem Title="Basic" Description="The simplest usage for short messages.">
             <StackPanel Orientation="Vertical">
                 <atom:Alert Classes="test" Type="Success">Success Text</atom:Alert>
             </StackPanel>
-        </showcase:ShowCaseItem>
-        
-        <showcase:ShowCaseItem
-            Title="More types"
-            Description="There are 4 types of Alert: success, info, warning, error.">
+        </desktop:ShowCaseItem>
+
+        <desktop:ShowCaseItem Title="More types" Description="There are 4 types of Alert: success, info, warning, error.">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:Alert Type="Success">Success Text</atom:Alert>
                 <atom:Alert Type="Info">Info Text</atom:Alert>
                 <atom:Alert Type="Warning">Warning Text</atom:Alert>
                 <atom:Alert Type="Error">Error Text</atom:Alert>
             </StackPanel>
-        </showcase:ShowCaseItem>
-        
-        <showcase:ShowCaseItem
-            Title="Closable"
-            Description="To show close button.">
+        </desktop:ShowCaseItem>
+
+        <desktop:ShowCaseItem Title="Closable" Description="To show close button.">
             <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:Alert Type="Warning" IsClosable="True">
+                <atom:Alert IsClosable="True" Type="Warning">
                     Warning Text Warning Text Warning Text Warning Text Warning Text Warning TextWarning Text
                 </atom:Alert>
-                <atom:Alert Type="Error" IsClosable="True"
-                            Description="Error Description Error Description Error Description Error Description Error Description Error Description">
+                <atom:Alert Description="Error Description Error Description Error Description Error Description Error Description Error Description"
+                            IsClosable="True"
+                            Type="Error">
                     Error Text
                 </atom:Alert>
-                <atom:Alert Type="Error" IsClosable="True"
+                <atom:Alert CloseIcon="{atom:IconProvider CloseSquareFilled}"
                             Description="Error Description Error Description Error Description Error Description Error Description Error Description"
-                            CloseIcon="{atom:IconProvider CloseSquareFilled}">
+                            IsClosable="True"
+                            Type="Error">
                     Error Text
                 </atom:Alert>
             </StackPanel>
-        </showcase:ShowCaseItem>
-        
-        <showcase:ShowCaseItem
-            Title="Description"
-            Description="Additional description for alert message.">
+        </desktop:ShowCaseItem>
+
+        <desktop:ShowCaseItem Title="Description" Description="Additional description for alert message.">
             <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:Alert Type="Success"
+                <atom:Alert Description="Success Description Success Description Success Description"
                             Message="Success Text"
-                            Description="Success Description Success Description Success Description"/>
-                <atom:Alert Type="Info"
+                            Type="Success" />
+                <atom:Alert Description="Info Description Info Description Info Description Info Description"
                             Message="Info Text"
-                            Description="Info Description Info Description Info Description Info Description"/>
-                <atom:Alert Type="Warning"
+                            Type="Info" />
+                <atom:Alert Description="Warning Description Warning Description Warning Description Warning Description"
                             Message="Warning Text"
-                            Description="Warning Description Warning Description Warning Description Warning Description"/>
-                <atom:Alert Type="Error"
+                            Type="Warning" />
+                <atom:Alert Description="Error Description Error Description Error Description Error Description"
                             Message="Error Text"
-                            Description="Error Description Error Description Error Description Error Description"/>
+                            Type="Error" />
             </StackPanel>
-        </showcase:ShowCaseItem>
-        
-        
-        <showcase:ShowCaseItem
-            Title="Description"
-            Description="Additional description for alert message.">
+        </desktop:ShowCaseItem>
+
+
+        <desktop:ShowCaseItem Title="Description" Description="Additional description for alert message.">
             <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:Alert Type="Success"
-                                     Message="Success Tips"
-                                     IsShowIcon="True"/>
-                <atom:Alert Type="Info"
-                                     Message="Informational Notes"
-                                     IsShowIcon="True"/>
-                <atom:Alert Type="Warning"
-                                     Message="Warning"
-                                     IsShowIcon="True"
-                                     IsClosable="True"/>
-                <atom:Alert Type="Error"
-                                     Message="Error"
-                                     IsShowIcon="True"/>
-        
-                <atom:Alert Type="Success"
-                                     Message="Success Tips"
-                                     IsShowIcon="True"
-                                     Description="Detailed description and advice about successful copywriting."/>
-                <atom:Alert Type="Info"
-                                     Message="Informational Notes"
-                                     IsShowIcon="True"
-                                     Description="Additional description and information about copywriting."/>
-                <atom:Alert Type="Warning"
-                                     Message="Warning"
-                                     IsClosable="True"
-                                     IsShowIcon="True"
-                                     Description="This is a warning notice about copywriting."/>
-                <atom:Alert Type="Error"
-                                     Message="Error"
-                                     IsShowIcon="True"
-                                     Description="This is an error message about copywriting."/>
+                <atom:Alert IsShowIcon="True"
+                            Message="Success Tips"
+                            Type="Success" />
+                <atom:Alert IsShowIcon="True"
+                            Message="Informational Notes"
+                            Type="Info" />
+                <atom:Alert IsClosable="True"
+                            IsShowIcon="True"
+                            Message="Warning"
+                            Type="Warning" />
+                <atom:Alert IsShowIcon="True"
+                            Message="Error"
+                            Type="Error" />
+
+                <atom:Alert Description="Detailed description and advice about successful copywriting."
+                            IsShowIcon="True"
+                            Message="Success Tips"
+                            Type="Success" />
+                <atom:Alert Description="Additional description and information about copywriting."
+                            IsShowIcon="True"
+                            Message="Informational Notes"
+                            Type="Info" />
+                <atom:Alert Description="This is a warning notice about copywriting."
+                            IsClosable="True"
+                            IsShowIcon="True"
+                            Message="Warning"
+                            Type="Warning" />
+                <atom:Alert Description="This is an error message about copywriting."
+                            IsShowIcon="True"
+                            Message="Error"
+                            Type="Error" />
             </StackPanel>
-        </showcase:ShowCaseItem>
-        
-        <showcase:ShowCaseItem
-            Title="Custom action"
-            Description="Custom action.">
+        </desktop:ShowCaseItem>
+
+        <desktop:ShowCaseItem Title="Custom action" Description="Custom action.">
             <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:Alert Type="Success"
-                                     IsShowIcon="True"
-                                     IsClosable="true">
+                <atom:Alert IsClosable="true"
+                            IsShowIcon="True"
+                            Type="Success">
                     <atom:Alert.ExtraAction>
                         <atom:Button ButtonType="Text" SizeType="Small">UNDO</atom:Button>
                     </atom:Alert.ExtraAction>
                     Success Tips
                 </atom:Alert>
-        
-                <atom:Alert Type="Error"
-                                     IsShowIcon="True"
-                                     Description="Error Description Error Description Error Description Error Description">
+
+                <atom:Alert Description="Error Description Error Description Error Description Error Description"
+                            IsShowIcon="True"
+                            Type="Error">
                     <atom:Alert.ExtraAction>
-                        <atom:Button ButtonType="Default" SizeType="Small" IsDanger="True">Detail</atom:Button>
+                        <atom:Button ButtonType="Default"
+                                     IsDanger="True"
+                                     SizeType="Small">
+                            Detail
+                        </atom:Button>
                     </atom:Alert.ExtraAction>
                     Error Text
                 </atom:Alert>
-        
-                <atom:Alert Type="Warning"
-                                     IsClosable="true">
+
+                <atom:Alert IsClosable="true" Type="Warning">
                     <atom:Alert.ExtraAction>
                         <atom:Button ButtonType="Text" SizeType="Small">Done</atom:Button>
                     </atom:Alert.ExtraAction>
                     Warning Text
                 </atom:Alert>
-        
-                <atom:Alert Type="Info"
-                                     IsShowIcon="False"
-                                     IsClosable="true"
-                                     Description="Info Description Info Description Info Description Info Description">
+
+                <atom:Alert Description="Info Description Info Description Info Description Info Description"
+                            IsClosable="true"
+                            IsShowIcon="False"
+                            Type="Info">
                     <atom:Alert.ExtraAction>
                         <StackPanel Orientation="Vertical" Spacing="5">
                             <atom:Button ButtonType="Primary" SizeType="Small">Accept</atom:Button>
-                            <atom:Button SizeType="Small" IsDanger="True" IsGhost="True">Decline</atom:Button>
+                            <atom:Button IsDanger="True"
+                                         IsGhost="True"
+                                         SizeType="Small">
+                                Decline
+                            </atom:Button>
                         </StackPanel>
                     </atom:Alert.ExtraAction>
                     Info Text
                 </atom:Alert>
             </StackPanel>
-        </showcase:ShowCaseItem>
-        
-        <showcase:ShowCaseItem
-            Title="Loop Banner"
-            Description="Show a loop banner.">
-            <atom:Alert Type="Warning" IsShowIcon="True" IsMessageMarqueEnabled="True">
+        </desktop:ShowCaseItem>
+
+        <desktop:ShowCaseItem Title="Loop Banner" Description="Show a loop banner.">
+            <atom:Alert IsMessageMarqueEnabled="True"
+                        IsShowIcon="True"
+                        Type="Warning">
                 I can be a React component, multiple React components, or just some text, Info Description Info Description Info Description Info Description
             </atom:Alert>
-        </showcase:ShowCaseItem>
-    </showcase:ShowCasePanel>
+        </desktop:ShowCaseItem>
+    </desktop:ShowCasePanel>
 </UserControl>

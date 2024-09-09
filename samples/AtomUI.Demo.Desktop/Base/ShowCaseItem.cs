@@ -1,10 +1,9 @@
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 
-namespace AtomUI.Demo.Desktop.ShowCase;
+namespace AtomUI.Demo.Desktop;
 
 public class ShowCaseItem : ContentControl
 {

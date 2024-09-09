@@ -1,6 +1,4 @@
-using AtomUI.Theme.TokenSystem;
-
-namespace AtomUI.Controls.Window;
+namespace AtomUI.Controls;
 
 using AvaloniaWindow = Avalonia.Controls.Window;
 

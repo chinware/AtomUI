@@ -1,6 +1,6 @@
 ﻿using Avalonia.Markup.Xaml;
 
-namespace AtomUI.Demo.Desktop
+namespace AtomUI.Demo.Desktop.Utils
 {
     /// <summary>
     /// Xaml markup to get the enum values.

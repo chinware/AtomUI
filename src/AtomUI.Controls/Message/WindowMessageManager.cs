@@ -7,7 +7,7 @@ using Avalonia.Layout;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 
-namespace AtomUI.Controls.Message;
+namespace AtomUI.Controls;
 
 [TemplatePart(WindowNotificationManagerTheme.ItemsPart, typeof(Panel))]
 public class WindowMessageManager : TemplatedControl, IMessageManager

@@ -1,16 +1,14 @@
-<UserControl
-    x:Class="AtomUI.Demo.Desktop.ShowCase.CollapseShowCase"
-    xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:atom="https://atomui.net"
-    xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
-    mc:Ignorable="d">
-    <showcase:ShowCasePanel>
-        <showcase:ShowCaseItem
-            Title="Collapse"
-            Description="By default, any number of panels can be expanded at a time. The first panel is expanded in this example.">
+<UserControl x:Class="AtomUI.Demo.Desktop.ShowCase.CollapseShowCase"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:atom="https://atomui.net"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
+             mc:Ignorable="d">
+    <desktop:ShowCasePanel>
+        <desktop:ShowCaseItem Title="Collapse" Description="By default, any number of panels can be expanded at a time. The first panel is expanded in this example.">
             <atom:Collapse>
                 <atom:CollapseItem Header="This is panel header 1">
                     <TextBlock TextWrapping="Wrap">
@@ -28,14 +26,15 @@
                     </TextBlock>
                 </atom:CollapseItem>
             </atom:Collapse>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
-            Title="Size"
-            Description="Ant Design supports a default collapse size as well as a large and small size.
-If a large or small collapse is desired, set the size property to either large or small respectively. Omit the size property for a collapse with the default size.">
-            <StackPanel Orientation="Vertical" Spacing="20" Margin="0, 0, 10, 0">
-                <atom:Separator Title="Default Size" TitlePosition="Left" FontWeight="Bold" />
+        <desktop:ShowCaseItem Title="Size" Description="Ant Design supports a default collapse size as well as a large and small size. If a large or small collapse is desired, set the size property to either large or small respectively. Omit the size property for a collapse with the default size.">
+            <StackPanel Margin="0,0,10,0"
+                        Orientation="Vertical"
+                        Spacing="20">
+                <atom:Separator Title="Default Size"
+                                FontWeight="Bold"
+                                TitlePosition="Left" />
                 <atom:Collapse SizeType="Middle">
                     <atom:CollapseItem Header="This is default size panel header">
                         <TextBlock TextWrapping="Wrap">
@@ -43,7 +42,9 @@ If a large or small collapse is desired, set the size property to either large o
                         </TextBlock>
                     </atom:CollapseItem>
                 </atom:Collapse>
-                <atom:Separator Title="Small Size" TitlePosition="Left" FontWeight="Bold" />
+                <atom:Separator Title="Small Size"
+                                FontWeight="Bold"
+                                TitlePosition="Left" />
                 <atom:Collapse SizeType="Small">
                     <atom:CollapseItem Header="This is small size panel header">
                         <TextBlock TextWrapping="Wrap">
@@ -51,7 +52,9 @@ If a large or small collapse is desired, set the size property to either large o
                         </TextBlock>
                     </atom:CollapseItem>
                 </atom:Collapse>
-                <atom:Separator Title="Large Size" TitlePosition="Left" FontWeight="Bold" />
+                <atom:Separator Title="Large Size"
+                                FontWeight="Bold"
+                                TitlePosition="Left" />
                 <atom:Collapse SizeType="Large">
                     <atom:CollapseItem Header="This is large size panel header">
                         <TextBlock TextWrapping="Wrap">
@@ -60,11 +63,9 @@ If a large or small collapse is desired, set the size property to either large o
                     </atom:CollapseItem>
                 </atom:Collapse>
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
-            Title="Accordion"
-            Description="In accordion mode, only one panel can be expanded at a time.">
+        <desktop:ShowCaseItem Title="Accordion" Description="In accordion mode, only one panel can be expanded at a time.">
             <atom:Collapse IsAccordion="True">
                 <atom:CollapseItem Header="This is panel header 1">
                     <TextBlock TextWrapping="Wrap">
@@ -82,11 +83,11 @@ If a large or small collapse is desired, set the size property to either large o
                     </TextBlock>
                 </atom:CollapseItem>
             </atom:Collapse>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
-            Title="Nested panel"
-            Description="Collapse is nested inside the Collapse." Margin="0, 0, 10, 0">
+        <desktop:ShowCaseItem Title="Nested panel"
+                              Margin="0,0,10,0"
+                              Description="Collapse is nested inside the Collapse.">
             <atom:Collapse>
                 <atom:CollapseItem Header="This is panel header 1">
                     <atom:Collapse>
@@ -108,11 +109,11 @@ If a large or small collapse is desired, set the size property to either large o
                     </TextBlock>
                 </atom:CollapseItem>
             </atom:Collapse>
-        </showcase:ShowCaseItem>
-        
-        <showcase:ShowCaseItem
-            Title="Borderless"
-            Description="A borderless style of Collapse." Margin="0, 0, 10, 0">
+        </desktop:ShowCaseItem>
+
+        <desktop:ShowCaseItem Title="Borderless"
+                              Margin="0,0,10,0"
+                              Description="A borderless style of Collapse.">
             <atom:Collapse IsBorderless="True">
                 <atom:CollapseItem Header="This is panel header 1">
                     <TextBlock TextWrapping="Wrap">
@@ -130,11 +131,11 @@ If a large or small collapse is desired, set the size property to either large o
                     </TextBlock>
                 </atom:CollapseItem>
             </atom:Collapse>
-        </showcase:ShowCaseItem>
-        
-        <showcase:ShowCaseItem
-            Title="No Arrow"
-            Description="You can hide the arrow icon by passing IsShowExpandIcon={False} to CollapsePanel component." Margin="0, 0, 10, 0">
+        </desktop:ShowCaseItem>
+
+        <desktop:ShowCaseItem Title="No Arrow"
+                              Margin="0,0,10,0"
+                              Description="You can hide the arrow icon by passing IsShowExpandIcon={False} to CollapsePanel component.">
             <atom:Collapse>
                 <atom:CollapseItem Header="This is panel header 1">
                     <TextBlock TextWrapping="Wrap">
@@ -147,27 +148,24 @@ If a large or small collapse is desired, set the size property to either large o
                     </TextBlock>
                 </atom:CollapseItem>
             </atom:Collapse>
-        </showcase:ShowCaseItem>
-        
-        <showcase:ShowCaseItem
-            Title="Extra node"
-            Description="Render extra element in the top-right corner of each panel." Margin="0, 0, 10, 0">
+        </desktop:ShowCaseItem>
+
+        <desktop:ShowCaseItem Title="Extra node"
+                              Margin="0,0,10,0"
+                              Description="Render extra element in the top-right corner of each panel.">
             <StackPanel Orientation="Vertical" Spacing="20">
-                <atom:Collapse  ExpandIconPosition="{Binding CollapseExpandIconPosition}">
-                    <atom:CollapseItem Header="This is panel header 1"
-                                       AddOnContent="{atom:IconProvider Kind=SettingOutlined}">
+                <atom:Collapse ExpandIconPosition="{Binding CollapseExpandIconPosition}">
+                    <atom:CollapseItem AddOnContent="{atom:IconProvider Kind=SettingOutlined}" Header="This is panel header 1">
                         <TextBlock TextWrapping="Wrap">
                             A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
                         </TextBlock>
                     </atom:CollapseItem>
-                    <atom:CollapseItem Header="This is panel header 2"
-                                       AddOnContent="{atom:IconProvider Kind=SettingOutlined}">
+                    <atom:CollapseItem AddOnContent="{atom:IconProvider Kind=SettingOutlined}" Header="This is panel header 2">
                         <TextBlock TextWrapping="Wrap">
                             A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
                         </TextBlock>
                     </atom:CollapseItem>
-                    <atom:CollapseItem Header="This is panel header 3"
-                                       AddOnContent="{atom:IconProvider Kind=SettingOutlined}">
+                    <atom:CollapseItem AddOnContent="{atom:IconProvider Kind=SettingOutlined}" Header="This is panel header 3">
                         <TextBlock TextWrapping="Wrap">
                             A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
                         </TextBlock>
@@ -176,18 +174,18 @@ If a large or small collapse is desired, set the size property to either large o
 
                 <StackPanel Orientation="Horizontal" Spacing="5">
                     <TextBlock VerticalAlignment="Center">Expand Icon Position:</TextBlock>
-                    <atom:OptionButtonGroup ButtonStyle="Outline" Name="ExpandButtonPosGroup">
+                    <atom:OptionButtonGroup Name="ExpandButtonPosGroup" ButtonStyle="Outline">
                         <atom:OptionButton IsChecked="True">Start</atom:OptionButton>
                         <atom:OptionButton>End</atom:OptionButton>
                     </atom:OptionButtonGroup>
                 </StackPanel>
             </StackPanel>
-            
-        </showcase:ShowCaseItem>
-        
-        <showcase:ShowCaseItem
-            Title="Ghost Collapse"
-            Description="Making collapse's background to transparent." Margin="0, 0, 10, 0">
+
+        </desktop:ShowCaseItem>
+
+        <desktop:ShowCaseItem Title="Ghost Collapse"
+                              Margin="0,0,10,0"
+                              Description="Making collapse's background to transparent.">
             <atom:Collapse IsGhostStyle="True">
                 <atom:CollapseItem Header="This is panel header 1">
                     <TextBlock TextWrapping="Wrap">
@@ -205,11 +203,11 @@ If a large or small collapse is desired, set the size property to either large o
                     </TextBlock>
                 </atom:CollapseItem>
             </atom:Collapse>
-        </showcase:ShowCaseItem>
-        
-        <showcase:ShowCaseItem
-            Title="Collapsible"
-            Description="Specify the trigger area of collapsible by collapsible." Margin="0, 0, 10, 0">
+        </desktop:ShowCaseItem>
+
+        <desktop:ShowCaseItem Title="Collapsible"
+                              Margin="0,0,10,0"
+                              Description="Specify the trigger area of collapsible by collapsible.">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:Collapse>
                     <atom:CollapseItem Header="This panel can only be collapsed by clicking text">
@@ -225,7 +223,7 @@ If a large or small collapse is desired, set the size property to either large o
                         </TextBlock>
                     </atom:CollapseItem>
                 </atom:Collapse>
-                
+
                 <atom:Collapse IsEnabled="False">
                     <atom:CollapseItem Header="This panel can't be collapsed">
                         <TextBlock TextWrapping="Wrap">
@@ -233,7 +231,7 @@ If a large or small collapse is desired, set the size property to either large o
                         </TextBlock>
                     </atom:CollapseItem>
                 </atom:Collapse>
-                
+
                 <atom:Collapse IsEnabled="False">
                     <atom:CollapseItem Header="This panel can't be collapsed" IsSelected="True">
                         <TextBlock TextWrapping="Wrap">
@@ -242,7 +240,7 @@ If a large or small collapse is desired, set the size property to either large o
                     </atom:CollapseItem>
                 </atom:Collapse>
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-    </showcase:ShowCasePanel>
+    </desktop:ShowCasePanel>
 </UserControl>

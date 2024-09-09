@@ -3,6 +3,7 @@
     <Import Project="$(MSBuildThisFileDirectory)..\..\build\Nuget.props" />
 
     <PropertyGroup>
+        <RootNamespace>AtomUI</RootNamespace>
         <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     </PropertyGroup>
     

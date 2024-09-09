@@ -1,4 +1,4 @@
-﻿namespace AtomUI.Controls.DatePicker;
+﻿namespace AtomUI.Controls;
 
 public class DatePickerToken
 {

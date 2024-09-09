@@ -1,10 +1,8 @@
 ﻿using AtomUI.Data;
 using AtomUI.Media;
-using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 
 namespace AtomUI.Controls.Primitives;

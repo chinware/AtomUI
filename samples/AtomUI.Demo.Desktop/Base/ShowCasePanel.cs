@@ -6,7 +6,7 @@ using Avalonia.LogicalTree;
 using Avalonia.Metadata;
 using AvaloniaControlList = Avalonia.Controls.Controls;
 
-namespace AtomUI.Demo.Desktop.ShowCase;
+namespace AtomUI.Demo.Desktop;
 
 public class ShowCasePanel : Control
 {

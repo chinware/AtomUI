@@ -1,15 +1,14 @@
-<UserControl
-    x:Class="AtomUI.Demo.Desktop.ShowCase.IconShowCase"
-    xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:controls="clr-namespace:AtomUI.Demo.Desktop.Controls"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:viewModels="clr-namespace:AtomUI.Demo.Desktop.ViewModels"
-    d:DesignHeight="450"
-    d:DesignWidth="800"
-    x:CompileBindings="True"
-    mc:Ignorable="d">
+<UserControl x:Class="AtomUI.Demo.Desktop.ShowCase.IconShowCase"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:AtomUI.Demo.Desktop.Controls"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:viewModels="clr-namespace:AtomUI.Demo.Desktop.ViewModels"
+             d:DesignHeight="450"
+             d:DesignWidth="800"
+             x:CompileBindings="True"
+             mc:Ignorable="d">
     <Design.DataContext>
         <viewModels:PaletteDemoViewModel />
     </Design.DataContext>
@@ -24,17 +23,17 @@
     <TabControl>
         <TabItem Header="Outlined">
             <ScrollViewer>
-                <controls:IconGallery IconThemeType="Outlined"/>
+                <controls:IconGallery IconThemeType="Outlined" />
             </ScrollViewer>
         </TabItem>
         <TabItem Header="Filled">
             <ScrollViewer>
-                <controls:IconGallery IconThemeType="Filled"/>
+                <controls:IconGallery IconThemeType="Filled" />
             </ScrollViewer>
         </TabItem>
         <TabItem Header="Two Tone">
             <ScrollViewer>
-                <controls:IconGallery IconThemeType="TwoTone"/>
+                <controls:IconGallery IconThemeType="TwoTone" />
             </ScrollViewer>
         </TabItem>
     </TabControl>

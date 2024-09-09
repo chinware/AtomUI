@@ -4,7 +4,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Styling;
 
-namespace AtomUI.Controls.Switch;
+namespace AtomUI.Controls;
 
 [ControlThemeProvider]
 internal class ToggleSwitchTheme : BaseControlTheme

@@ -1,4 +1,4 @@
-﻿namespace AtomUI.Controls.Message;
+﻿namespace AtomUI.Controls;
 
 public interface IMessage
 {

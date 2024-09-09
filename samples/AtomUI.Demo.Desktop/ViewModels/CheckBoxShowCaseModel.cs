@@ -1,4 +1,3 @@
-using AtomUI.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace AtomUI.Demo.Desktop.ViewModels;

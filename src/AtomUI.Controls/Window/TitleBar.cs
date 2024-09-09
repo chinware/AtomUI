@@ -1,4 +1,4 @@
-namespace AtomUI.Controls.Chrome;
+namespace AtomUI.Controls;
 
 using AvaloniaTitleBar = Avalonia.Controls.Chrome.TitleBar;
 

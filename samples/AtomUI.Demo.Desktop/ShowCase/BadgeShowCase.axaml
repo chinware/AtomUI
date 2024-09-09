@@ -1,107 +1,129 @@
-<UserControl
-    x:Class="AtomUI.Demo.Desktop.ShowCase.BadgeShowCase"
-    xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:atom="https://atomui.net"
-    xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
-    mc:Ignorable="d">
-    <showcase:ShowCasePanel>
+<UserControl x:Class="AtomUI.Demo.Desktop.ShowCase.BadgeShowCase"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:atom="https://atomui.net"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
+             mc:Ignorable="d">
+    <desktop:ShowCasePanel>
 
-        <showcase:ShowCaseItem
-            Title="Basic"
-            Description="Simplest Usage. Badge will be hidden when count is 0, but we can use showZero to show it.">
+        <desktop:ShowCaseItem Title="Basic" Description="Simplest Usage. Badge will be hidden when count is 0, but we can use showZero to show it.">
             <StackPanel Orientation="Horizontal" Spacing="20">
                 <atom:CountBadge Count="5">
-                    <Border Width="40" Height="40" CornerRadius="8" Background="rgb(191,191,191)" />
+                    <Border Width="40"
+                            Height="40"
+                            Background="rgb(191,191,191)"
+                            CornerRadius="8" />
                 </atom:CountBadge>
                 <atom:CountBadge Count="0">
-                    <Border Width="40" Height="40" CornerRadius="8" Background="rgb(191,191,191)" />
+                    <Border Width="40"
+                            Height="40"
+                            Background="rgb(191,191,191)"
+                            CornerRadius="8" />
                 </atom:CountBadge>
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
-            Title="Overflow Count"
-            Description="${overflowCount}+ is displayed when count is larger than overflowCount. The default value of overflowCount is 99.">
+        <desktop:ShowCaseItem Title="Overflow Count" Description="${overflowCount}+ is displayed when count is larger than overflowCount. The default value of overflowCount is 99.">
             <StackPanel Orientation="Horizontal" Spacing="20">
                 <atom:CountBadge Count="99">
-                    <Border Width="40" Height="40" CornerRadius="8" Background="rgb(191,191,191)" />
+                    <Border Width="40"
+                            Height="40"
+                            Background="rgb(191,191,191)"
+                            CornerRadius="8" />
                 </atom:CountBadge>
                 <atom:CountBadge Count="100">
-                    <Border Width="40" Height="40" CornerRadius="8" Background="rgb(191,191,191)" />
+                    <Border Width="40"
+                            Height="40"
+                            Background="rgb(191,191,191)"
+                            CornerRadius="8" />
                 </atom:CountBadge>
                 <atom:CountBadge Count="99" OverflowCount="10">
-                    <Border Width="40" Height="40" CornerRadius="8" Background="rgb(191,191,191)" />
+                    <Border Width="40"
+                            Height="40"
+                            Background="rgb(191,191,191)"
+                            CornerRadius="8" />
                 </atom:CountBadge>
                 <atom:CountBadge Count="1000" OverflowCount="999">
-                    <Border Width="40" Height="40" CornerRadius="8" Background="rgb(191,191,191)" />
+                    <Border Width="40"
+                            Height="40"
+                            Background="rgb(191,191,191)"
+                            CornerRadius="8" />
                 </atom:CountBadge>
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
-            Title="Offset"
-            Description="Set offset of the badge dot, the format is [left, top], which represents the offset of the status dot from the left and top of the default position.">
+        <desktop:ShowCaseItem Title="Offset" Description="Set offset of the badge dot, the format is [left, top], which represents the offset of the status dot from the left and top of the default position.">
             <StackPanel Orientation="Horizontal" Spacing="20">
                 <atom:CountBadge Count="5" Offset="10, 10">
-                    <Border Width="40" Height="40" CornerRadius="8" Background="rgb(191,191,191)" />
+                    <Border Width="40"
+                            Height="40"
+                            Background="rgb(191,191,191)"
+                            CornerRadius="8" />
                 </atom:CountBadge>
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
-            Title="Size"
-            Description="Set size of numeral Badge.">
+        <desktop:ShowCaseItem Title="Size" Description="Set size of numeral Badge.">
             <StackPanel Orientation="Horizontal" Spacing="20">
                 <atom:CountBadge Count="5">
-                    <Border Width="40" Height="40" CornerRadius="8" Background="rgb(191,191,191)" />
+                    <Border Width="40"
+                            Height="40"
+                            Background="rgb(191,191,191)"
+                            CornerRadius="8" />
                 </atom:CountBadge>
                 <atom:CountBadge Count="5" Size="Small">
-                    <Border Width="40" Height="40" CornerRadius="8" Background="rgb(191,191,191)" />
+                    <Border Width="40"
+                            Height="40"
+                            Background="rgb(191,191,191)"
+                            CornerRadius="8" />
                 </atom:CountBadge>
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
-            Title="Standalone"
-            Description="Used in standalone when children is empty.">
+        <desktop:ShowCaseItem Title="Standalone" Description="Used in standalone when children is empty.">
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <atom:ToggleSwitch IsChecked="{Binding StandaloneSwitchChecked}" />
-                <atom:CountBadge Count="{Binding StandaloneBadgeCount1}" BadgeColor="#faad14" ShowZero="True" />
+                <atom:CountBadge BadgeColor="#faad14"
+                                 Count="{Binding StandaloneBadgeCount1}"
+                                 ShowZero="True" />
                 <atom:CountBadge Count="{Binding StandaloneBadgeCount2}" />
-                <atom:CountBadge Count="{Binding StandaloneBadgeCount3}" BadgeColor="#52c41a" />
+                <atom:CountBadge BadgeColor="#52c41a" Count="{Binding StandaloneBadgeCount3}" />
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
-            Title="Dynamic"
-            Description="The count will be animated as it changes.">
+        <desktop:ShowCaseItem Title="Dynamic" Description="The count will be animated as it changes.">
             <StackPanel Orientation="Vertical" Spacing="20">
                 <StackPanel Orientation="Horizontal" Spacing="20">
                     <atom:CountBadge Count="{Binding DynamicBadgeCount}" OverflowCount="99">
-                        <Border Width="40" Height="40" CornerRadius="8" Background="rgb(191,191,191)" />
+                        <Border Width="40"
+                                Height="40"
+                                Background="rgb(191,191,191)"
+                                CornerRadius="8" />
                     </atom:CountBadge>
-                    <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
-                        <atom:Button SizeType="Small" Command="{Binding AddDynamicBadgeCount}">Add</atom:Button>
-                        <atom:Button SizeType="Small" Command="{Binding SubDynamicBadgeCount}">Sub</atom:Button>
-                        <atom:Button SizeType="Small" Command="{Binding RandomDynamicBadgeCount}">Random</atom:Button>
+                    <StackPanel VerticalAlignment="Center"
+                                Orientation="Horizontal"
+                                Spacing="10">
+                        <atom:Button Command="{Binding AddDynamicBadgeCount}" SizeType="Small">Add</atom:Button>
+                        <atom:Button Command="{Binding SubDynamicBadgeCount}" SizeType="Small">Sub</atom:Button>
+                        <atom:Button Command="{Binding RandomDynamicBadgeCount}" SizeType="Small">Random</atom:Button>
                     </StackPanel>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Spacing="20">
                     <atom:DotBadge BadgeIsVisible="{Binding DynamicDotBadgeVisible}">
-                        <Border Width="40" Height="40" CornerRadius="8" Background="rgb(191,191,191)" />
+                        <Border Width="40"
+                                Height="40"
+                                Background="rgb(191,191,191)"
+                                CornerRadius="8" />
                     </atom:DotBadge>
-                    <atom:ToggleSwitch VerticalAlignment="Center"
-                                       IsChecked="{Binding DynamicDotBadgeVisible, Mode=TwoWay}" />
+                    <atom:ToggleSwitch VerticalAlignment="Center" IsChecked="{Binding DynamicDotBadgeVisible, Mode=TwoWay}" />
                 </StackPanel>
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
-            Title="Red badge"
-            Description="This will simply display a red badge, without a specific count. If count equals 0, it won't display the dot.">
+        <desktop:ShowCaseItem Title="Red badge" Description="This will simply display a red badge, without a specific count. If count equals 0, it won't display the dot.">
             <StackPanel Orientation="Vertical" Spacing="20">
                 <StackPanel Orientation="Horizontal">
                     <atom:DotBadge Offset="15,9">
@@ -112,11 +134,9 @@
                     </atom:DotBadge>
                 </StackPanel>
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
-            Title="Status"
-            Description="Standalone badge with status.">
+        <desktop:ShowCaseItem Title="Status" Description="Standalone badge with status.">
             <StackPanel Orientation="Vertical" Spacing="20">
                 <StackPanel Orientation="Horizontal" Spacing="10">
                     <atom:DotBadge Status="Success" />
@@ -133,120 +153,177 @@
                     <atom:DotBadge Status="Warning" Text="Warning" />
                 </StackPanel>
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
-            Title="Ribbon"
-            Description="Use ribbon badge.">
-            <StackPanel Orientation="Vertical" Spacing="20" Margin="20, 0, 20, 0">
+        <desktop:ShowCaseItem Title="Ribbon" Description="Use ribbon badge.">
+            <StackPanel Margin="20,0,20,0"
+                        Orientation="Vertical"
+                        Spacing="20">
                 <atom:RibbonBadge Text="精益求精，打造体验优秀的 UISDK">
-                    <Border Height="80" BorderBrush="#d9d9d9" BorderThickness="1" CornerRadius="6"
-                            Padding="10, 0, 10, 0">
+                    <Border Height="80"
+                            Padding="10,0,10,0"
+                            BorderBrush="#d9d9d9"
+                            BorderThickness="1"
+                            CornerRadius="6">
                         <StackPanel Orientation="Vertical">
-                            <TextBlock FontWeight="Bold" Height="38" LineHeight="38">Pushes open the window</TextBlock>
-                            <atom:Separator Orientation="Horizontal" LineColor="#d9d9d9" />
-                            <TextBlock Margin="0, 10, 0, 0">and raises the spyglass.</TextBlock>
+                            <TextBlock Height="38"
+                                       FontWeight="Bold"
+                                       LineHeight="38">
+                                Pushes open the window
+                            </TextBlock>
+                            <atom:Separator LineColor="#d9d9d9" Orientation="Horizontal" />
+                            <TextBlock Margin="0,10,0,0">and raises the spyglass.</TextBlock>
                         </StackPanel>
                     </Border>
                 </atom:RibbonBadge>
 
-                <atom:RibbonBadge Text="甲辰计划雄起" RibbonColor="Pink">
-                    <Border Height="80" BorderBrush="#d9d9d9" BorderThickness="1" CornerRadius="6"
-                            Padding="10, 0, 10, 0">
+                <atom:RibbonBadge RibbonColor="Pink" Text="甲辰计划雄起">
+                    <Border Height="80"
+                            Padding="10,0,10,0"
+                            BorderBrush="#d9d9d9"
+                            BorderThickness="1"
+                            CornerRadius="6">
                         <StackPanel Orientation="Vertical">
-                            <TextBlock FontWeight="Bold" Height="38" LineHeight="38">Pushes open the window</TextBlock>
-                            <atom:Separator Orientation="Horizontal" LineColor="#d9d9d9" />
-                            <TextBlock Margin="0, 10, 0, 0">and raises the spyglass.</TextBlock>
+                            <TextBlock Height="38"
+                                       FontWeight="Bold"
+                                       LineHeight="38">
+                                Pushes open the window
+                            </TextBlock>
+                            <atom:Separator LineColor="#d9d9d9" Orientation="Horizontal" />
+                            <TextBlock Margin="0,10,0,0">and raises the spyglass.</TextBlock>
                         </StackPanel>
                     </Border>
                 </atom:RibbonBadge>
 
-                <atom:RibbonBadge Text="Avalonia 非常优秀" RibbonColor="Cyan">
-                    <Border Height="80" BorderBrush="#d9d9d9" BorderThickness="1" CornerRadius="6"
-                            Padding="10, 0, 10, 0">
+                <atom:RibbonBadge RibbonColor="Cyan" Text="Avalonia 非常优秀">
+                    <Border Height="80"
+                            Padding="10,0,10,0"
+                            BorderBrush="#d9d9d9"
+                            BorderThickness="1"
+                            CornerRadius="6">
                         <StackPanel Orientation="Vertical">
-                            <TextBlock FontWeight="Bold" Height="38" LineHeight="38">Pushes open the window</TextBlock>
-                            <atom:Separator Orientation="Horizontal" LineColor="#d9d9d9" />
-                            <TextBlock Margin="0, 10, 0, 0">and raises the spyglass.</TextBlock>
+                            <TextBlock Height="38"
+                                       FontWeight="Bold"
+                                       LineHeight="38">
+                                Pushes open the window
+                            </TextBlock>
+                            <atom:Separator LineColor="#d9d9d9" Orientation="Horizontal" />
+                            <TextBlock Margin="0,10,0,0">and raises the spyglass.</TextBlock>
                         </StackPanel>
                     </Border>
                 </atom:RibbonBadge>
 
-                <atom:RibbonBadge Text="Hippies" RibbonColor="Green">
-                    <Border Height="80" BorderBrush="#d9d9d9" BorderThickness="1" CornerRadius="6"
-                            Padding="10, 0, 10, 0">
+                <atom:RibbonBadge RibbonColor="Green" Text="Hippies">
+                    <Border Height="80"
+                            Padding="10,0,10,0"
+                            BorderBrush="#d9d9d9"
+                            BorderThickness="1"
+                            CornerRadius="6">
                         <StackPanel Orientation="Vertical">
-                            <TextBlock FontWeight="Bold" Height="38" LineHeight="38">Pushes open the window</TextBlock>
-                            <atom:Separator Orientation="Horizontal" LineColor="#d9d9d9" />
-                            <TextBlock Margin="0, 10, 0, 0">and raises the spyglass.</TextBlock>
+                            <TextBlock Height="38"
+                                       FontWeight="Bold"
+                                       LineHeight="38">
+                                Pushes open the window
+                            </TextBlock>
+                            <atom:Separator LineColor="#d9d9d9" Orientation="Horizontal" />
+                            <TextBlock Margin="0,10,0,0">and raises the spyglass.</TextBlock>
                         </StackPanel>
                     </Border>
                 </atom:RibbonBadge>
 
-                <atom:RibbonBadge Text="Hippies" RibbonColor="purple" Placement="Start">
-                    <Border Height="80" BorderBrush="#d9d9d9" BorderThickness="1" CornerRadius="6"
-                            Padding="10, 0, 10, 0">
+                <atom:RibbonBadge Placement="Start"
+                                  RibbonColor="purple"
+                                  Text="Hippies">
+                    <Border Height="80"
+                            Padding="10,0,10,0"
+                            BorderBrush="#d9d9d9"
+                            BorderThickness="1"
+                            CornerRadius="6">
                         <StackPanel Orientation="Vertical">
-                            <TextBlock FontWeight="Bold" Height="38" LineHeight="38">Pushes open the window</TextBlock>
-                            <atom:Separator Orientation="Horizontal" LineColor="#d9d9d9" />
-                            <TextBlock Margin="0, 10, 0, 0">and raises the spyglass.</TextBlock>
+                            <TextBlock Height="38"
+                                       FontWeight="Bold"
+                                       LineHeight="38">
+                                Pushes open the window
+                            </TextBlock>
+                            <atom:Separator LineColor="#d9d9d9" Orientation="Horizontal" />
+                            <TextBlock Margin="0,10,0,0">and raises the spyglass.</TextBlock>
                         </StackPanel>
                     </Border>
                 </atom:RibbonBadge>
 
-                <atom:RibbonBadge Text="Hippies" RibbonColor="volcano" Placement="Start">
-                    <Border Height="80" BorderBrush="#d9d9d9" BorderThickness="1" CornerRadius="6"
-                            Padding="10, 0, 10, 0">
+                <atom:RibbonBadge Placement="Start"
+                                  RibbonColor="volcano"
+                                  Text="Hippies">
+                    <Border Height="80"
+                            Padding="10,0,10,0"
+                            BorderBrush="#d9d9d9"
+                            BorderThickness="1"
+                            CornerRadius="6">
                         <StackPanel Orientation="Vertical">
-                            <TextBlock FontWeight="Bold" Height="38" LineHeight="38">Pushes open the window</TextBlock>
-                            <atom:Separator Orientation="Horizontal" LineColor="#d9d9d9" />
-                            <TextBlock Margin="0, 10, 0, 0">and raises the spyglass.</TextBlock>
+                            <TextBlock Height="38"
+                                       FontWeight="Bold"
+                                       LineHeight="38">
+                                Pushes open the window
+                            </TextBlock>
+                            <atom:Separator LineColor="#d9d9d9" Orientation="Horizontal" />
+                            <TextBlock Margin="0,10,0,0">and raises the spyglass.</TextBlock>
                         </StackPanel>
                     </Border>
                 </atom:RibbonBadge>
 
-                <atom:RibbonBadge Text="Hippies" RibbonColor="magenta" Placement="Start">
-                    <Border Height="80" BorderBrush="#d9d9d9" BorderThickness="1" CornerRadius="6"
-                            Padding="10, 0, 10, 0">
+                <atom:RibbonBadge Placement="Start"
+                                  RibbonColor="magenta"
+                                  Text="Hippies">
+                    <Border Height="80"
+                            Padding="10,0,10,0"
+                            BorderBrush="#d9d9d9"
+                            BorderThickness="1"
+                            CornerRadius="6">
                         <StackPanel Orientation="Vertical">
-                            <TextBlock FontWeight="Bold" Height="38" LineHeight="38">Pushes open the window</TextBlock>
-                            <atom:Separator Orientation="Horizontal" LineColor="#d9d9d9" />
-                            <TextBlock Margin="0, 10, 0, 0">and raises the spyglass.</TextBlock>
+                            <TextBlock Height="38"
+                                       FontWeight="Bold"
+                                       LineHeight="38">
+                                Pushes open the window
+                            </TextBlock>
+                            <atom:Separator LineColor="#d9d9d9" Orientation="Horizontal" />
+                            <TextBlock Margin="0,10,0,0">and raises the spyglass.</TextBlock>
                         </StackPanel>
                     </Border>
                 </atom:RibbonBadge>
 
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
-            Title="Colorful Badge"
-            Description="We preset a series of colorful Badge styles for use in different situations. You can also set it to a hex color string for custom color.">
+        <desktop:ShowCaseItem Title="Colorful Badge" Description="We preset a series of colorful Badge styles for use in different situations. You can also set it to a hex color string for custom color.">
             <StackPanel Orientation="Vertical" Spacing="20">
-                <atom:Separator Title="Presets" FontWeight="SemiBold" TitlePosition="Left" />
+                <atom:Separator Title="Presets"
+                                FontWeight="SemiBold"
+                                TitlePosition="Left" />
                 <StackPanel Orientation="Vertical" Spacing="10">
-                    <atom:DotBadge Text="Pink" DotColor="Pink" />
-                    <atom:DotBadge Text="Red" DotColor="Red" />
-                    <atom:DotBadge Text="Yellow" DotColor="Yellow" />
-                    <atom:DotBadge Text="Orange" DotColor="Orange" />
-                    <atom:DotBadge Text="Cyan" DotColor="Cyan" />
-                    <atom:DotBadge Text="Green" DotColor="Green" />
-                    <atom:DotBadge Text="Blue" DotColor="Blue" />
-                    <atom:DotBadge Text="Purple" DotColor="Purple" />
-                    <atom:DotBadge Text="GeekBlue" DotColor="GeekBlue" />
-                    <atom:DotBadge Text="Magenta" DotColor="Magenta" />
-                    <atom:DotBadge Text="Volcano" DotColor="Volcano" />
-                    <atom:DotBadge Text="Gold" DotColor="Gold" />
-                    <atom:DotBadge Text="Lime" DotColor="Lime" />
+                    <atom:DotBadge DotColor="Pink" Text="Pink" />
+                    <atom:DotBadge DotColor="Red" Text="Red" />
+                    <atom:DotBadge DotColor="Yellow" Text="Yellow" />
+                    <atom:DotBadge DotColor="Orange" Text="Orange" />
+                    <atom:DotBadge DotColor="Cyan" Text="Cyan" />
+                    <atom:DotBadge DotColor="Green" Text="Green" />
+                    <atom:DotBadge DotColor="Blue" Text="Blue" />
+                    <atom:DotBadge DotColor="Purple" Text="Purple" />
+                    <atom:DotBadge DotColor="GeekBlue" Text="GeekBlue" />
+                    <atom:DotBadge DotColor="Magenta" Text="Magenta" />
+                    <atom:DotBadge DotColor="Volcano" Text="Volcano" />
+                    <atom:DotBadge DotColor="Gold" Text="Gold" />
+                    <atom:DotBadge DotColor="Lime" Text="Lime" />
                 </StackPanel>
-                <atom:Separator Title="Custom" FontWeight="SemiBold" TitlePosition="Left" />
+                <atom:Separator Title="Custom"
+                                FontWeight="SemiBold"
+                                TitlePosition="Left" />
                 <StackPanel Orientation="Vertical" Spacing="10">
-                    <atom:DotBadge Text="#f50" DotColor="#f50" />
-                    <atom:DotBadge Text="rgb(45, 183, 245)" DotColor="rgb(45, 183, 245)" />
-                    <atom:DotBadge Text="hsl(102, 53%, 61%)" DotColor="hsl(102, 53%, 61%)" />
-                    <atom:DotBadge Text="rgb(15, 141, 230)" DotColor="rgb(15, 141, 230)" />
+                    <atom:DotBadge DotColor="#f50" Text="#f50" />
+                    <atom:DotBadge DotColor="rgb(45, 183, 245)" Text="rgb(45, 183, 245)" />
+                    <atom:DotBadge DotColor="hsl(102, 53%, 61%)" Text="hsl(102, 53%, 61%)" />
+                    <atom:DotBadge DotColor="rgb(15, 141, 230)" Text="rgb(15, 141, 230)" />
                 </StackPanel>
             </StackPanel>
-        </showcase:ShowCaseItem>
-    </showcase:ShowCasePanel>
+        </desktop:ShowCaseItem>
+    </desktop:ShowCasePanel>
 </UserControl>

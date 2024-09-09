@@ -1,4 +1,3 @@
-using AtomUI.Controls.Switch;
 using AtomUI.Controls.Utils;
 using AtomUI.Icon;
 using AtomUI.Media;

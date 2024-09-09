@@ -5,7 +5,7 @@ using Avalonia.Controls.Templates;
 using Avalonia.Layout;
 using Avalonia.Styling;
 
-namespace AtomUI.Controls.Message;
+namespace AtomUI.Controls;
 
 [ControlThemeProvider]
 internal class WindowMessageManagerTheme : BaseControlTheme

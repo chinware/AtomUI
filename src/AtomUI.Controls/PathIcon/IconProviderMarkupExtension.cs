@@ -1,5 +1,4 @@
 ﻿using AtomUI.Icon;
-using Avalonia.Data;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 

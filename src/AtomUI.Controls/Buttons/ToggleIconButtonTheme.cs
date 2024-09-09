@@ -4,8 +4,6 @@ using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Templates;
 using Avalonia.Styling;
 using AtomUI.Theme.Styling;
-using Avalonia;
-using Avalonia.Media;
 
 namespace AtomUI.Controls;
 

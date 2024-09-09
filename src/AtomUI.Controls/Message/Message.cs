@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace AtomUI.Controls.Message;
+namespace AtomUI.Controls;
 
 public class Message : IMessage, INotifyPropertyChanged
 {

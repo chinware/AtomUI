@@ -1,10 +1,9 @@
-<ResourceDictionary
-    xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:controls="using:AtomUI.Demo.Desktop.Controls"
-    xmlns:viewModels="clr-namespace:AtomUI.Demo.Desktop.ViewModels"
-    x:CompileBindings="True"
-    x:DataType="viewModels:IconGalleryModel">
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="using:AtomUI.Demo.Desktop.Controls"
+                    xmlns:viewModels="clr-namespace:AtomUI.Demo.Desktop.ViewModels"
+                    x:CompileBindings="True"
+                    x:DataType="viewModels:IconGalleryModel">
 
     <ControlTheme x:Key="{x:Type controls:IconGallery}" TargetType="controls:IconGallery">
         <Setter Property="controls:IconGallery.Template">
@@ -12,14 +11,12 @@
                 <ItemsControl ItemsSource="{Binding IconInfos}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <WrapPanel/>
+                            <WrapPanel />
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="viewModels:IconInfoItemModel">
-                            <controls:IconInfoItem
-                                IconName ="{Binding IconName}"
-                                IconKind="{Binding IconKind}"/>
+                            <controls:IconInfoItem IconKind="{Binding IconKind}" IconName="{Binding IconName}" />
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>

@@ -3,40 +3,38 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:atom="https://atomui.net"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
              mc:Ignorable="d">
-    <showcase:ShowCasePanel>
+    <desktop:ShowCasePanel>
 
-        <showcase:ShowCaseItem Title="Basic" Description="The most basic usage.">
+        <desktop:ShowCaseItem Title="Basic" Description="The most basic usage.">
             <Border Height="300" atom:Watermark.Glyph="{atom:TextGlyph 'AtomUI'}" />
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem Title="Multi-line watermark" Description="Use line-break to specify multi-line text watermark content.">
+        <desktop:ShowCaseItem Title="Multi-line watermark" Description="Use line-break to specify multi-line text watermark content.">
             <Border Height="200" atom:Watermark.Glyph="{atom:TextGlyph 'AtomUI&#x000A;Happy Working', FontSize=18, Foreground=Gray}" />
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem Title="Image watermark" Description="Specify the image address via image. To ensure that the image is high definition and not stretched, set the width and height, and upload at least twice the width and height of the logo image address.">
+        <desktop:ShowCaseItem Title="Image watermark" Description="Specify the image address via image. To ensure that the image is high definition and not stretched, set the width and height, and upload at least twice the width and height of the logo image address.">
             <Border Height="400">
                 <atom:Watermark.Glyph>
-                    <atom:ImageGlyph Source="/Assets/ATOMUI-LOGO.png"/>
+                    <atom:ImageGlyph Source="/Assets/ATOMUI-LOGO.png" />
                     <!-- <atom:ImageGlyph Source="/Assets/avalonia-logo.ico"/> -->
                 </atom:Watermark.Glyph>
             </Border>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem Title="Custom configuration" Description="Preview the watermark effect by configuring custom parameters.">
+        <desktop:ShowCaseItem Title="Custom configuration" Description="Preview the watermark effect by configuring custom parameters.">
             <StackPanel atom:Watermark.Glyph="{atom:TextGlyph 'AtomUI'}">
                 <TextBlock TextWrapping="Wrap">
-                    The light-speed iteration of the digital world makes products more complex. However, human consciousness and attention resources are limited. Facing this design contradiction, the pursuit of natural interaction will be the consistent direction of Ant Design.
-                    <LineBreak /><LineBreak />
-                    Natural user cognition: According to cognitive psychology, about 80% of external information is obtained through visual channels. The most important visual elements in the interface design, including layout, colors, illustrations, icons, etc., should fully absorb the laws of nature, thereby reducing the user's cognitive cost and bringing authentic and smooth feelings. In some scenarios, opportunely adding other sensory channels such as hearing, touch can create a richer and more natural product experience.
-                    <LineBreak /><LineBreak />
-                    Natural user behavior: In the interaction with the system, the designer should fully understand the relationship between users, system roles, and task objectives, and also contextually organize system functions and services. At the same time, a series of methods such as behavior analysis, artificial intelligence and sensors could be applied to assist users to make effective decisions and reduce extra operations of users, to save users' mental and physical resources and make human-computer interaction more natural.
-                </TextBlock>
+                    The light-speed iteration of the digital world makes products more complex. However, human consciousness and attention resources are limited. Facing this design contradiction, the pursuit of natural interaction will be the consistent direction of Ant Design.<LineBreak /><LineBreak />
+                    Natural user cognition: According to cognitive psychology, about 80% of external information is obtained through visual channels. The most important visual elements in the interface design, including layout, colors, illustrations, icons, etc., should fully absorb the laws of nature, thereby reducing the user's cognitive cost and bringing authentic and smooth feelings. In some scenarios, opportunely adding other sensory channels such as hearing, touch can create a richer and more natural product experience.<LineBreak /><LineBreak />
+                    Natural user behavior: In the interaction with the system, the designer should fully understand the relationship between users, system roles, and task objectives, and also contextually organize system functions and services. At the same time, a series of methods such as behavior analysis, artificial intelligence and sensors could be applied to assist users to make effective decisions and reduce extra operations of users, to save users' mental and physical resources and make human-computer interaction more natural.</TextBlock>
                 <Image Source="/Assets/watermark-sample.png" />
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-    </showcase:ShowCasePanel>
+    </desktop:ShowCasePanel>
 </UserControl>

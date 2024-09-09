@@ -1,5 +1,6 @@
 using AtomUI.Data;
 using AtomUI.Media;
+using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using AtomUI.Utils;
@@ -10,7 +11,7 @@ using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Styling;
 
-namespace AtomUI.Controls.Switch;
+namespace AtomUI.Controls;
 
 internal class SwitchKnob : Control, IControlCustomStyle
 {

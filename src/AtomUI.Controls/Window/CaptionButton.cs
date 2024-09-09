@@ -1,12 +1,9 @@
-using AtomUI.Controls.Controls;
-using AtomUI.Data;
-using AtomUI.Theme.TokenSystem;
 using Avalonia;
 using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Media;
 
-namespace AtomUI.Controls.Window;
+namespace AtomUI.Controls;
 
 using AvaloniaButton = Avalonia.Controls.Button;
 

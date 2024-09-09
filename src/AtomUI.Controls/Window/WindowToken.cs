@@ -1,7 +1,7 @@
 using AtomUI.Theme.TokenSystem;
 using Avalonia.Media;
 
-namespace AtomUI.Controls.Window;
+namespace AtomUI.Controls;
 
 [ControlDesignToken]
 public class WindowToken : AbstractControlDesignToken

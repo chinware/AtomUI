@@ -3,7 +3,7 @@ using AtomUI.Theme.TokenSystem;
 using Avalonia;
 using Avalonia.Media;
 
-namespace AtomUI.Controls.Switch;
+namespace AtomUI.Controls;
 
 [ControlDesignToken]
 internal class ToggleSwitchToken : AbstractControlDesignToken

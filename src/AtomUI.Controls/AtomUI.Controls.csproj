@@ -3,7 +3,6 @@
     <Import Project="$(MSBuildThisFileDirectory)..\..\build\Nuget.props" />
 
     <PropertyGroup>
-        <RootNamespace>AtomUI.Controls</RootNamespace>
         <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
         <CompilerGeneratedFilesOutputPath>GeneratedFiles</CompilerGeneratedFilesOutputPath>
     </PropertyGroup>

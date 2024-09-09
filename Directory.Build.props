@@ -1,7 +1,6 @@
 <Project>
     
     <PropertyGroup>
-        <RootNamespace>AtomUI</RootNamespace>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <LangVersion>latest</LangVersion>
