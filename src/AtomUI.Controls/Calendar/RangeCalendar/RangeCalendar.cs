@@ -2,6 +2,7 @@
 using System.Text;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -14,6 +15,15 @@ using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
+public class RangeDateSelectedEventArgs : RoutedEventArgs
+{
+    public CalendarDateRange Range { get; }
+    public RangeDateSelectedEventArgs(CalendarDateRange range)
+    {
+        Range = range;
+    }
+}
+
 [TemplatePart(RangeCalendarTheme.CalendarItemPart, typeof(RangeCalendarItem))]
 [TemplatePart(RangeCalendarTheme.RootPart, typeof(Panel))]
 public class RangeCalendar : TemplatedControl
@@ -22,6 +32,281 @@ public class RangeCalendar : TemplatedControl
     internal const int ColumnsPerMonth = 7;
     internal const int RowsPerYear = 3;
     internal const int ColumnsPerYear = 4;
+
+    #region 公共属性定义
+
+    public static readonly StyledProperty<DayOfWeek> FirstDayOfWeekProperty =
+        AvaloniaProperty.Register<RangeCalendar, DayOfWeek>(
+            nameof(FirstDayOfWeek),
+            DateTimeHelper.GetCurrentDateFormat().FirstDayOfWeek);
+
+    /// <summary>
+    /// Gets or sets the day that is considered the beginning of the week.
+    /// </summary>
+    /// <value>
+    /// A <see cref="T:System.DayOfWeek" /> representing the beginning of
+    /// the week. The default is <see cref="F:System.DayOfWeek.Sunday" />.
+    /// </value>
+    public DayOfWeek FirstDayOfWeek
+    {
+        get => GetValue(FirstDayOfWeekProperty);
+        set => SetValue(FirstDayOfWeekProperty, value);
+    }
+
+    public static readonly StyledProperty<bool> IsTodayHighlightedProperty =
+        AvaloniaProperty.Register<RangeCalendar, bool>(
+            nameof(IsTodayHighlighted),
+            true);
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the current date is
+    /// highlighted.
+    /// </summary>
+    /// <value>
+    /// True if the current date is highlighted; otherwise, false. The
+    /// default is true.
+    /// </value>
+    public bool IsTodayHighlighted
+    {
+        get => GetValue(IsTodayHighlightedProperty);
+        set => SetValue(IsTodayHighlightedProperty, value);
+    }
+
+    public static readonly StyledProperty<IBrush?> HeaderBackgroundProperty =
+        AvaloniaProperty.Register<RangeCalendar, IBrush?>(nameof(HeaderBackground));
+
+    public IBrush? HeaderBackground
+    {
+        get => GetValue(HeaderBackgroundProperty);
+        set => SetValue(HeaderBackgroundProperty, value);
+    }
+
+    public static readonly StyledProperty<CalendarMode> DisplayModeProperty =
+        AvaloniaProperty.Register<RangeCalendar, CalendarMode>(
+            nameof(DisplayMode),
+            validate: IsValidDisplayMode);
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the calendar is displayed in
+    /// months, years, or decades.
+    /// </summary>
+    /// <value>
+    /// A value indicating what length of time the
+    /// <see cref="T:System.Windows.Controls.RangeCalendar" /> should display.
+    /// </value>
+    public CalendarMode DisplayMode
+    {
+        get => GetValue(DisplayModeProperty);
+        set => SetValue(DisplayModeProperty, value);
+    }
+
+    public static readonly StyledProperty<DateTime?> SelectedRangeStartDateProperty =
+        AvaloniaProperty.Register<RangeCalendar, DateTime?>(nameof(SelectedRangeStartDate),
+            defaultBindingMode: BindingMode.TwoWay);
+
+    public DateTime? SelectedRangeStartDate
+    {
+        get => GetValue(SelectedRangeStartDateProperty);
+        set => SetValue(SelectedRangeStartDateProperty, value);
+    }
+
+    public static readonly StyledProperty<DateTime?> SelectedRangeEndDateProperty =
+        AvaloniaProperty.Register<RangeCalendar, DateTime?>(nameof(SelectedRangeEndDate),
+            defaultBindingMode: BindingMode.TwoWay);
+
+    public DateTime? SelectedRangeEndDate
+    {
+        get => GetValue(SelectedRangeEndDateProperty);
+        set => SetValue(SelectedRangeEndDateProperty, value);
+    }
+
+    public static readonly StyledProperty<DateTime> DisplayDateProperty =
+        AvaloniaProperty.Register<RangeCalendar, DateTime>(nameof(DisplayDate),
+            defaultBindingMode: BindingMode.TwoWay);
+
+    /// <summary>
+    /// Gets or sets the date to display.
+    /// </summary>
+    /// <value>The date to display.</value>
+    /// <exception cref="T:System.ArgumentOutOfRangeException">
+    /// The given date is not in the range specified by
+    /// <see cref="P:System.Windows.Controls.RangeCalendar.DisplayDateStart" />
+    /// and
+    /// <see cref="P:System.Windows.Controls.RangeCalendar.DisplayDateEnd" />.
+    /// </exception>
+    /// <remarks>
+    /// <para>
+    ///     This property allows the developer to specify a date to display.  If
+    ///     this property is a null reference (Nothing in Visual Basic),
+    ///     SelectedDate is displayed.  If SelectedDate is also a null reference
+    ///     (Nothing in Visual Basic), Today is displayed.  The default is
+    ///     Today.
+    /// </para>
+    /// <para>
+    ///     To set this property in XAML, use a date specified in the format
+    ///     yyyy/mm/dd.  The mm and dd components must always consist of two
+    ///     characters, with a leading zero if necessary.  For instance, the
+    ///     month of May should be specified as 05.
+    /// </para>
+    /// </remarks>
+    public DateTime DisplayDate
+    {
+        get => GetValue(DisplayDateProperty);
+        set => SetValue(DisplayDateProperty, value);
+    }
+
+    public static readonly StyledProperty<DateTime?> DisplayDateStartProperty =
+        AvaloniaProperty.Register<RangeCalendar, DateTime?>(nameof(DisplayDateStart),
+            defaultBindingMode: BindingMode.TwoWay);
+
+    /// <summary>
+    /// Gets or sets the first date to be displayed.
+    /// </summary>
+    /// <value>The first date to display.</value>
+    /// <remarks>
+    /// To set this property in XAML, use a date specified in the format
+    /// yyyy/mm/dd.  The mm and dd components must always consist of two
+    /// characters, with a leading zero if necessary.  For instance, the
+    /// month of May should be specified as 05.
+    /// </remarks>
+    public DateTime? DisplayDateStart
+    {
+        get => GetValue(DisplayDateStartProperty);
+        set => SetValue(DisplayDateStartProperty, value);
+    }
+
+    public static readonly StyledProperty<DateTime?> DisplayDateEndProperty =
+        AvaloniaProperty.Register<RangeCalendar, DateTime?>(nameof(DisplayDateEnd),
+            defaultBindingMode: BindingMode.TwoWay);
+
+    /// <summary>
+    /// Gets or sets the last date to be displayed.
+    /// </summary>
+    /// <value>The last date to display.</value>
+    /// <remarks>
+    /// To set this property in XAML, use a date specified in the format
+    /// yyyy/mm/dd.  The mm and dd components must always consist of two
+    /// characters, with a leading zero if necessary.  For instance, the
+    /// month of May should be specified as 05.
+    /// </remarks>
+    public DateTime? DisplayDateEnd
+    {
+        get => GetValue(DisplayDateEndProperty);
+        set => SetValue(DisplayDateEndProperty, value);
+    }
+
+    /// <summary>
+    /// 设置是否固定 RangeStart
+    /// </summary>
+    public bool FixedRangeStart { get; set; } = true;
+    
+    /// <summary>
+    /// 是否修复选择结果，当开始日期大于结束日期的时候进行位置调换
+    /// </summary>
+    public bool IsRepairReverseRange { get; set; } = true;
+
+    #endregion
+
+    #region 内部属性定义
+
+    internal RangeCalendarDayButton? FocusButton { get; set; }
+    internal RangeCalendarButton? FocusCalendarButton { get; set; }
+
+    internal Panel? Root { get; set; }
+
+    internal RangeCalendarItem? MonthControl
+    {
+        get
+        {
+            if (Root != null && Root.Children.Count > 0)
+            {
+                return Root.Children[0] as RangeCalendarItem;
+            }
+
+            return null;
+        }
+    }
+
+    internal DateTime? LastSelectedDateInternal { get; set; }
+
+    internal DateTime? LastSelectedDate
+    {
+        get => LastSelectedDateInternal;
+
+        set
+        {
+            LastSelectedDateInternal = value;
+
+            if (FocusButton != null)
+            {
+                FocusButton.IsCurrent = false;
+            }
+
+            FocusButton = FindDayButtonFromDay(LastSelectedDate!.Value);
+            if (FocusButton != null)
+            {
+                FocusButton.IsCurrent = HasFocusInternal;
+            }
+        }
+    }
+
+    internal DateTime SelectedMonth
+    {
+        get => _selectedMonth;
+
+        set
+        {
+            var monthDifferenceStart = DateTimeHelper.CompareYearMonth(value, DisplayDateRangeStart);
+            var monthDifferenceEnd   = DateTimeHelper.CompareYearMonth(value, DisplayDateRangeEnd);
+
+            if (monthDifferenceStart >= 0 && monthDifferenceEnd <= 0)
+            {
+                _selectedMonth = DateTimeHelper.DiscardDayTime(value);
+            }
+            else
+            {
+                if (monthDifferenceStart < 0)
+                {
+                    _selectedMonth = DateTimeHelper.DiscardDayTime(DisplayDateRangeStart);
+                }
+                else
+                {
+                    Debug.Assert(monthDifferenceEnd > 0, "monthDifferenceEnd should be greater than 0!");
+                    _selectedMonth = DateTimeHelper.DiscardDayTime(DisplayDateRangeEnd);
+                }
+            }
+        }
+    }
+
+    internal DateTime SelectedYear
+    {
+        get => _selectedYear;
+
+        set
+        {
+            if (value.Year < DisplayDateRangeStart.Year)
+            {
+                _selectedYear = DisplayDateRangeStart;
+            }
+            else
+            {
+                if (value.Year > DisplayDateRangeEnd.Year)
+                {
+                    _selectedYear = DisplayDateRangeEnd;
+                }
+                else
+                {
+                    _selectedYear = value;
+                }
+            }
+        }
+    }
+
+    internal DateTime DisplayDateInternal { get; set; }
+    internal DateTime SecondaryDisplayDateInternal { get; set; }
+
+    #endregion
+
     private bool _displayDateIsChanging;
 
     private bool _isShiftPressed;
@@ -198,6 +483,21 @@ public class RangeCalendar : TemplatedControl
         DisplayModeChanged?.Invoke(this, args);
     }
 
+    internal void NotifyRangeDateSelected()
+    {
+        if (SelectedRangeStartDate is not null && SelectedRangeEndDate is not null)
+        {
+            var rangeStart = SelectedRangeStartDate.Value;
+            var rangeEnd   = SelectedRangeEndDate.Value;
+            if (DateTimeHelper.CompareDays(SelectedRangeStartDate.Value, SelectedRangeEndDate.Value) > 0 && IsRepairReverseRange)
+            {
+                rangeStart = SelectedRangeEndDate.Value;
+                rangeEnd   = SelectedRangeStartDate.Value;
+            }
+            RangeDateSelected?.Invoke(this, new RangeDateSelectedEventArgs(new CalendarDateRange(rangeStart, rangeEnd)));
+        }
+    }
+
     /// <summary>
     /// Inherited code: Requires comment.
     /// </summary>
@@ -229,16 +529,6 @@ public class RangeCalendar : TemplatedControl
         }
 
         return false;
-    }
-
-    internal void OnSelectedDatesCollectionChanged(SelectionChangedEventArgs e)
-    {
-        if (IsSelectionChanged(e))
-        {
-            e.RoutedEvent = SelectingItemsControl.SelectionChangedEvent;
-            e.Source      = this;
-            SelectedDatesChanged?.Invoke(this, e);
-        }
     }
 
     protected virtual void OnDisplayDateChanged(AvaloniaPropertyChangedEventArgs e)
@@ -544,24 +834,21 @@ public class RangeCalendar : TemplatedControl
         DateTime? rangeStart = default;
         DateTime? rangeEnd   = default;
         SortHoverIndexes(out rangeStart, out rangeEnd);
-        if (rangeStart != null && rangeEnd != null)
+        Debug.Assert(MonthControl is not null);
+        var monthControl = MonthControl;
+        // This assumes a contiguous set of dates:
+        if (monthControl.PrimaryMonthView is not null)
         {
-            Debug.Assert(MonthControl is not null);
-            var monthControl = MonthControl;
-            // This assumes a contiguous set of dates:
-            if (monthControl.PrimaryMonthView is not null)
-            {
-                UpdateHighlightDays(monthControl.PrimaryMonthView, rangeStart.Value, rangeEnd.Value);
-            }
+            UpdateHighlightDays(monthControl.PrimaryMonthView, rangeStart, rangeEnd);
+        }
 
-            if (monthControl.SecondaryMonthView is not null)
-            {
-                UpdateHighlightDays(monthControl.SecondaryMonthView, rangeStart.Value, rangeEnd.Value);
-            }
+        if (monthControl.SecondaryMonthView is not null)
+        {
+            UpdateHighlightDays(monthControl.SecondaryMonthView, rangeStart, rangeEnd);
         }
     }
 
-    private void UpdateHighlightDays(Grid targetMonthView, DateTime rangeStart, DateTime rangeEnd)
+    private void UpdateHighlightDays(Grid targetMonthView, DateTime? rangeStart, DateTime? rangeEnd)
     {
         var count = targetMonthView.Children.Count;
         for (var i = 0; i < count; i++)
@@ -569,17 +856,31 @@ public class RangeCalendar : TemplatedControl
             if (targetMonthView.Children[i] is RangeCalendarDayButton b)
             {
                 var d = b.DataContext as DateTime?;
-                if (d.HasValue && DateTimeHelper.InRange(d.Value, rangeStart, rangeEnd))
+                if (d.HasValue)
                 {
-                    b.IsSelected = true;
-                    // TODO 需要 review
-                    if (DateTimeHelper.CompareDays(rangeEnd, d.Value) == 0)
+                    if (rangeStart is not null && rangeEnd is not null)
+                    {
+                        b.IsSelected = DateTimeHelper.InRange(d.Value, rangeStart.Value, rangeEnd.Value);
+                    } else if (SelectedRangeStartDate is not null)
+                    {
+                        b.IsSelected = DateTimeHelper.CompareDays(SelectedRangeStartDate.Value, d.Value) == 0;
+                    }
+                    else if (SelectedRangeEndDate is not null)
+                    {
+                        b.IsSelected = DateTimeHelper.CompareDays(SelectedRangeEndDate.Value, d.Value) == 0;
+                    }
+                    else
+                    {
+                        b.IsSelected = false;
+                    }
+
+                    if (b.IsSelected)
                     {
                         if (FocusButton != null)
                         {
                             FocusButton.IsCurrent = false;
                         }
-
+                        
                         b.IsCurrent = HasFocusInternal;
                         FocusButton = b;
                     }
@@ -592,6 +893,7 @@ public class RangeCalendar : TemplatedControl
         }
     }
 
+    // 无条件取消所有的所有的高亮
     internal void UnHighlightDays()
     {
         Debug.Assert(MonthControl is not null);
@@ -638,27 +940,29 @@ public class RangeCalendar : TemplatedControl
     {
         if (FixedRangeStart)
         {
-            rangeStart = HoverDateTime;
+            rangeStart = HoverDateTime ?? SelectedRangeStartDate;
             rangeEnd   = SelectedRangeEndDate;
             if (rangeStart is not null && rangeEnd is not null)
             {
                 if (DateTimeHelper.CompareDays(rangeEnd.Value, rangeStart.Value) < 0)
                 {
-                    rangeStart = SelectedRangeEndDate;
-                    rangeEnd   = HoverDateTime;
+                    var temp = rangeStart.Value;
+                    rangeStart = rangeEnd;
+                    rangeEnd   = temp;
                 }
             }
         }
         else
         {
             rangeStart = SelectedRangeStartDate;
-            rangeEnd   = HoverDateTime;
+            rangeEnd   = HoverDateTime ?? SelectedRangeEndDate;
             if (rangeStart is not null && rangeEnd is not null)
             {
                 if (DateTimeHelper.CompareDays(rangeEnd.Value, rangeStart.Value) < 0)
                 {
-                    rangeStart = HoverDateTime;
-                    rangeEnd   = SelectedRangeStartDate;
+                    var temp = rangeStart.Value;
+                    rangeStart = rangeEnd;
+                    rangeEnd   = temp;
                 }
             }
         }
@@ -862,8 +1166,6 @@ public class RangeCalendar : TemplatedControl
         return string.Empty;
     }
 
-    public event EventHandler<SelectionChangedEventArgs>? SelectedDatesChanged;
-
     /// <summary>
     /// Occurs when the
     /// <see cref="P:System.Windows.Controls.RangeCalendar.DisplayDate" />
@@ -885,71 +1187,11 @@ public class RangeCalendar : TemplatedControl
     /// Inherited code: Requires comment.
     /// </summary>
     internal event EventHandler<PointerReleasedEventArgs>? DayButtonMouseUp;
-
-    private void ProcessSelection(bool shift, DateTime? lastSelectedDate, int? index)
-    {
-        // if (lastSelectedDate != null && IsValidKeyboardSelection(this, lastSelectedDate.Value)) {
-        //    if (shift) {
-        //       RangeCalendarDayButton? b;
-        //       _isShiftPressed = true;
-        //       if (HoverStart == null) {
-        //          if (LastSelectedDate != null) {
-        //             HoverStart = LastSelectedDate;
-        //          } else {
-        //             if (DateTimeHelper.CompareYearMonth(DisplayDateInternal, DateTime.Today) == 0) {
-        //                HoverStart = DateTime.Today;
-        //             } else {
-        //                HoverStart = DisplayDateInternal;
-        //             }
-        //          }
-        //
-        //          b = FindDayButtonFromDay(HoverStart.Value);
-        //          if (b != null) {
-        //             HoverStartIndex = b.Index;
-        //          }
-        //       }
-        //
-        //       // the index of the SelectedDate is always the last
-        //       // selectedDate's index
-        //       UnHighlightDays();
-        //       // If we hit a BlackOutDay with keyboard we do not
-        //       // update the HoverEnd
-        //       CalendarDateRange range;
-        //
-        //       if (DateTime.Compare(HoverStart.Value, lastSelectedDate.Value) < 0) {
-        //          range = new CalendarDateRange(HoverStart.Value, lastSelectedDate.Value);
-        //       } else {
-        //          range = new CalendarDateRange(lastSelectedDate.Value, HoverStart.Value);
-        //       }
-        //
-        //       if (!BlackoutDates.ContainsAny(range)) {
-        //          HoverEnd = lastSelectedDate;
-        //
-        //          if (index.HasValue) {
-        //             HoverEndIndex += index;
-        //          } else {
-        //             Debug.Assert(HoverEndInternal is not null);
-        //
-        //             // For Home, End, PageUp and PageDown Keys there
-        //             // is no easy way to predict the index value
-        //             b = FindDayButtonFromDay(HoverEndInternal.Value);
-        //
-        //             if (b != null) {
-        //                HoverEndIndex = b.Index;
-        //             }
-        //          }
-        //       }
-        //
-        //       Debug.Assert(HoverEnd is not null);
-        //       OnDayClick(HoverEnd.Value);
-        //       HighlightDays();
-        //    } else {
-        //       HoverStart = lastSelectedDate;
-        //       HoverEnd = lastSelectedDate;
-        //       OnDayClick(lastSelectedDate.Value);
-        //    }
-        // }
-    }
+    
+    /// <summary>
+    /// 当范围选择完成的时候派发这个事件
+    /// </summary>
+    public event EventHandler<RangeDateSelectedEventArgs>? RangeDateSelected;
 
     protected override void OnPointerReleased(PointerReleasedEventArgs e)
     {
@@ -1097,13 +1339,6 @@ public class RangeCalendar : TemplatedControl
                     SelectedMonth = DisplayDateInternal;
                     SetCurrentValue(DisplayModeProperty, CalendarMode.Year);
                 }
-                else
-                {
-                    var selectedDate =
-                        DateTimeHelper.AddDays(LastSelectedDate.GetValueOrDefault(DateTime.Today), -ColumnsPerMonth);
-                    ProcessSelection(shift, selectedDate, -ColumnsPerMonth);
-                }
-
                 break;
             }
             case CalendarMode.Year:
@@ -1140,13 +1375,6 @@ public class RangeCalendar : TemplatedControl
         {
             case CalendarMode.Month:
             {
-                if (!ctrl || shift)
-                {
-                    var selectedDate =
-                        DateTimeHelper.AddDays(LastSelectedDate.GetValueOrDefault(DateTime.Today), ColumnsPerMonth);
-                    ProcessSelection(shift, selectedDate, ColumnsPerMonth);
-                }
-
                 break;
             }
             case CalendarMode.Year:
@@ -1188,8 +1416,6 @@ public class RangeCalendar : TemplatedControl
         {
             case CalendarMode.Month:
             {
-                var selectedDate = DateTimeHelper.AddDays(LastSelectedDate.GetValueOrDefault(DateTime.Today), -1);
-                ProcessSelection(shift, selectedDate, -1);
                 break;
             }
             case CalendarMode.Year:
@@ -1213,8 +1439,6 @@ public class RangeCalendar : TemplatedControl
         {
             case CalendarMode.Month:
             {
-                var selectedDate = DateTimeHelper.AddDays(LastSelectedDate.GetValueOrDefault(DateTime.Today), 1);
-                ProcessSelection(shift, selectedDate, 1);
                 break;
             }
             case CalendarMode.Year:
@@ -1259,9 +1483,6 @@ public class RangeCalendar : TemplatedControl
         {
             case CalendarMode.Month:
             {
-                // REMOVE_RTM: Not all types of calendars start with Day1. If Non-Gregorian is supported check this:
-                DateTime? selectedDate = new DateTime(DisplayDateInternal.Year, DisplayDateInternal.Month, 1);
-                ProcessSelection(shift, selectedDate, null);
                 break;
             }
             case CalendarMode.Year:
@@ -1285,22 +1506,6 @@ public class RangeCalendar : TemplatedControl
         {
             case CalendarMode.Month:
             {
-                DateTime? selectedDate = new DateTime(DisplayDateInternal.Year, DisplayDateInternal.Month, 1);
-
-                if (DateTimeHelper.CompareYearMonth(DateTime.MaxValue, selectedDate.Value) > 0)
-                {
-                    // since DisplayDate is not equal to
-                    // DateTime.MaxValue we are sure selectedDate is\
-                    // not null
-                    selectedDate = DateTimeHelper.AddMonths(selectedDate.Value, 1)!.Value;
-                    selectedDate = DateTimeHelper.AddDays(selectedDate.Value, -1)!.Value;
-                }
-                else
-                {
-                    selectedDate = DateTime.MaxValue;
-                }
-
-                ProcessSelection(shift, selectedDate, null);
                 break;
             }
             case CalendarMode.Year:
@@ -1330,8 +1535,6 @@ public class RangeCalendar : TemplatedControl
         {
             case CalendarMode.Month:
             {
-                var selectedDate = DateTimeHelper.AddMonths(LastSelectedDate.GetValueOrDefault(DateTime.Today), 1);
-                ProcessSelection(shift, selectedDate, null);
                 break;
             }
             case CalendarMode.Year:
@@ -1361,8 +1564,6 @@ public class RangeCalendar : TemplatedControl
         {
             case CalendarMode.Month:
             {
-                var selectedDate = DateTimeHelper.AddMonths(LastSelectedDate.GetValueOrDefault(DateTime.Today), -1);
-                ProcessSelection(shift, selectedDate, null);
                 break;
             }
             case CalendarMode.Year:
@@ -1495,273 +1696,4 @@ public class RangeCalendar : TemplatedControl
             BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this));
     }
-
-    #region 公共属性定义
-
-    public static readonly StyledProperty<DayOfWeek> FirstDayOfWeekProperty =
-        AvaloniaProperty.Register<RangeCalendar, DayOfWeek>(
-            nameof(FirstDayOfWeek),
-            DateTimeHelper.GetCurrentDateFormat().FirstDayOfWeek);
-
-    /// <summary>
-    /// Gets or sets the day that is considered the beginning of the week.
-    /// </summary>
-    /// <value>
-    /// A <see cref="T:System.DayOfWeek" /> representing the beginning of
-    /// the week. The default is <see cref="F:System.DayOfWeek.Sunday" />.
-    /// </value>
-    public DayOfWeek FirstDayOfWeek
-    {
-        get => GetValue(FirstDayOfWeekProperty);
-        set => SetValue(FirstDayOfWeekProperty, value);
-    }
-
-    public static readonly StyledProperty<bool> IsTodayHighlightedProperty =
-        AvaloniaProperty.Register<RangeCalendar, bool>(
-            nameof(IsTodayHighlighted),
-            true);
-
-    /// <summary>
-    /// Gets or sets a value indicating whether the current date is
-    /// highlighted.
-    /// </summary>
-    /// <value>
-    /// True if the current date is highlighted; otherwise, false. The
-    /// default is true.
-    /// </value>
-    public bool IsTodayHighlighted
-    {
-        get => GetValue(IsTodayHighlightedProperty);
-        set => SetValue(IsTodayHighlightedProperty, value);
-    }
-
-    public static readonly StyledProperty<IBrush?> HeaderBackgroundProperty =
-        AvaloniaProperty.Register<RangeCalendar, IBrush?>(nameof(HeaderBackground));
-
-    public IBrush? HeaderBackground
-    {
-        get => GetValue(HeaderBackgroundProperty);
-        set => SetValue(HeaderBackgroundProperty, value);
-    }
-
-    public static readonly StyledProperty<CalendarMode> DisplayModeProperty =
-        AvaloniaProperty.Register<RangeCalendar, CalendarMode>(
-            nameof(DisplayMode),
-            validate: IsValidDisplayMode);
-
-    /// <summary>
-    /// Gets or sets a value indicating whether the calendar is displayed in
-    /// months, years, or decades.
-    /// </summary>
-    /// <value>
-    /// A value indicating what length of time the
-    /// <see cref="T:System.Windows.Controls.RangeCalendar" /> should display.
-    /// </value>
-    public CalendarMode DisplayMode
-    {
-        get => GetValue(DisplayModeProperty);
-        set => SetValue(DisplayModeProperty, value);
-    }
-
-    public static readonly StyledProperty<DateTime?> SelectedRangeStartDateProperty =
-        AvaloniaProperty.Register<RangeCalendar, DateTime?>(nameof(SelectedRangeStartDate),
-            defaultBindingMode: BindingMode.TwoWay);
-
-    public DateTime? SelectedRangeStartDate
-    {
-        get => GetValue(SelectedRangeStartDateProperty);
-        set => SetValue(SelectedRangeStartDateProperty, value);
-    }
-
-    public static readonly StyledProperty<DateTime?> SelectedRangeEndDateProperty =
-        AvaloniaProperty.Register<RangeCalendar, DateTime?>(nameof(SelectedRangeEndDate),
-            defaultBindingMode: BindingMode.TwoWay);
-
-    public DateTime? SelectedRangeEndDate
-    {
-        get => GetValue(SelectedRangeEndDateProperty);
-        set => SetValue(SelectedRangeEndDateProperty, value);
-    }
-
-    public static readonly StyledProperty<DateTime> DisplayDateProperty =
-        AvaloniaProperty.Register<RangeCalendar, DateTime>(nameof(DisplayDate),
-            defaultBindingMode: BindingMode.TwoWay);
-
-    /// <summary>
-    /// Gets or sets the date to display.
-    /// </summary>
-    /// <value>The date to display.</value>
-    /// <exception cref="T:System.ArgumentOutOfRangeException">
-    /// The given date is not in the range specified by
-    /// <see cref="P:System.Windows.Controls.RangeCalendar.DisplayDateStart" />
-    /// and
-    /// <see cref="P:System.Windows.Controls.RangeCalendar.DisplayDateEnd" />.
-    /// </exception>
-    /// <remarks>
-    /// <para>
-    ///     This property allows the developer to specify a date to display.  If
-    ///     this property is a null reference (Nothing in Visual Basic),
-    ///     SelectedDate is displayed.  If SelectedDate is also a null reference
-    ///     (Nothing in Visual Basic), Today is displayed.  The default is
-    ///     Today.
-    /// </para>
-    /// <para>
-    ///     To set this property in XAML, use a date specified in the format
-    ///     yyyy/mm/dd.  The mm and dd components must always consist of two
-    ///     characters, with a leading zero if necessary.  For instance, the
-    ///     month of May should be specified as 05.
-    /// </para>
-    /// </remarks>
-    public DateTime DisplayDate
-    {
-        get => GetValue(DisplayDateProperty);
-        set => SetValue(DisplayDateProperty, value);
-    }
-
-    public static readonly StyledProperty<DateTime?> DisplayDateStartProperty =
-        AvaloniaProperty.Register<RangeCalendar, DateTime?>(nameof(DisplayDateStart),
-            defaultBindingMode: BindingMode.TwoWay);
-
-    /// <summary>
-    /// Gets or sets the first date to be displayed.
-    /// </summary>
-    /// <value>The first date to display.</value>
-    /// <remarks>
-    /// To set this property in XAML, use a date specified in the format
-    /// yyyy/mm/dd.  The mm and dd components must always consist of two
-    /// characters, with a leading zero if necessary.  For instance, the
-    /// month of May should be specified as 05.
-    /// </remarks>
-    public DateTime? DisplayDateStart
-    {
-        get => GetValue(DisplayDateStartProperty);
-        set => SetValue(DisplayDateStartProperty, value);
-    }
-
-    public static readonly StyledProperty<DateTime?> DisplayDateEndProperty =
-        AvaloniaProperty.Register<RangeCalendar, DateTime?>(nameof(DisplayDateEnd),
-            defaultBindingMode: BindingMode.TwoWay);
-
-    /// <summary>
-    /// Gets or sets the last date to be displayed.
-    /// </summary>
-    /// <value>The last date to display.</value>
-    /// <remarks>
-    /// To set this property in XAML, use a date specified in the format
-    /// yyyy/mm/dd.  The mm and dd components must always consist of two
-    /// characters, with a leading zero if necessary.  For instance, the
-    /// month of May should be specified as 05.
-    /// </remarks>
-    public DateTime? DisplayDateEnd
-    {
-        get => GetValue(DisplayDateEndProperty);
-        set => SetValue(DisplayDateEndProperty, value);
-    }
-
-    /// <summary>
-    /// 设置是否固定 RangeStart
-    /// </summary>
-    public bool FixedRangeStart { get; set; } = true;
-
-    #endregion
-
-    #region 内部属性定义
-
-    internal RangeCalendarDayButton? FocusButton { get; set; }
-    internal RangeCalendarButton? FocusCalendarButton { get; set; }
-
-    internal Panel? Root { get; set; }
-
-    internal RangeCalendarItem? MonthControl
-    {
-        get
-        {
-            if (Root != null && Root.Children.Count > 0)
-            {
-                return Root.Children[0] as RangeCalendarItem;
-            }
-
-            return null;
-        }
-    }
-
-    internal DateTime? LastSelectedDateInternal { get; set; }
-
-    internal DateTime? LastSelectedDate
-    {
-        get => LastSelectedDateInternal;
-
-        set
-        {
-            LastSelectedDateInternal = value;
-
-            if (FocusButton != null)
-            {
-                FocusButton.IsCurrent = false;
-            }
-
-            FocusButton = FindDayButtonFromDay(LastSelectedDate!.Value);
-            if (FocusButton != null)
-            {
-                FocusButton.IsCurrent = HasFocusInternal;
-            }
-        }
-    }
-
-    internal DateTime SelectedMonth
-    {
-        get => _selectedMonth;
-
-        set
-        {
-            var monthDifferenceStart = DateTimeHelper.CompareYearMonth(value, DisplayDateRangeStart);
-            var monthDifferenceEnd   = DateTimeHelper.CompareYearMonth(value, DisplayDateRangeEnd);
-
-            if (monthDifferenceStart >= 0 && monthDifferenceEnd <= 0)
-            {
-                _selectedMonth = DateTimeHelper.DiscardDayTime(value);
-            }
-            else
-            {
-                if (monthDifferenceStart < 0)
-                {
-                    _selectedMonth = DateTimeHelper.DiscardDayTime(DisplayDateRangeStart);
-                }
-                else
-                {
-                    Debug.Assert(monthDifferenceEnd > 0, "monthDifferenceEnd should be greater than 0!");
-                    _selectedMonth = DateTimeHelper.DiscardDayTime(DisplayDateRangeEnd);
-                }
-            }
-        }
-    }
-
-    internal DateTime SelectedYear
-    {
-        get => _selectedYear;
-
-        set
-        {
-            if (value.Year < DisplayDateRangeStart.Year)
-            {
-                _selectedYear = DisplayDateRangeStart;
-            }
-            else
-            {
-                if (value.Year > DisplayDateRangeEnd.Year)
-                {
-                    _selectedYear = DisplayDateRangeEnd;
-                }
-                else
-                {
-                    _selectedYear = value;
-                }
-            }
-        }
-    }
-
-    internal DateTime DisplayDateInternal { get; set; }
-    internal DateTime SecondaryDisplayDateInternal { get; set; }
-
-    #endregion
 }

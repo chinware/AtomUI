@@ -33,6 +33,187 @@ internal class CalendarItem : TemplatedControl
     internal const int NumberOfDaysPerWeek = 7;
 
     protected readonly System.Globalization.Calendar _calendar = new GregorianCalendar();
+    
+        #region 公共属性定义
+
+    public static readonly StyledProperty<IBrush?> HeaderBackgroundProperty =
+        Calendar.HeaderBackgroundProperty.AddOwner<CalendarItem>();
+
+    public IBrush? HeaderBackground
+    {
+        get => GetValue(HeaderBackgroundProperty);
+        set => SetValue(HeaderBackgroundProperty, value);
+    }
+
+    public static readonly StyledProperty<ITemplate<Control>?> DayTitleTemplateProperty =
+        AvaloniaProperty.Register<CalendarItem, ITemplate<Control>?>(
+            nameof(DayTitleTemplate),
+            defaultBindingMode: BindingMode.OneTime);
+
+    public ITemplate<Control>? DayTitleTemplate
+    {
+        get => GetValue(DayTitleTemplateProperty);
+        set => SetValue(DayTitleTemplateProperty, value);
+    }
+
+    #endregion
+
+    #region 内部属性定义
+
+    /// <summary>
+    /// Gets the button that allows switching between month mode, year mode,
+    /// and decade mode.
+    /// </summary>
+    internal HeadTextButton? HeaderButton
+    {
+        get => _headerButton;
+
+        private set
+        {
+            if (_headerButton != null)
+            {
+                _headerButton.Click -= HandleHeaderButtonClick;
+            }
+
+            _headerButton = value;
+
+            if (_headerButton != null)
+            {
+                _headerButton.Click     += HandleHeaderButtonClick;
+                _headerButton.Focusable =  false;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets the button that displays the next page of the calendar when it
+    /// is clicked.
+    /// </summary>
+    internal IconButton? NextButton
+    {
+        get => _nextButton;
+
+        private set
+        {
+            if (_nextButton != null)
+            {
+                _nextButton.Click -= HandleNextButtonClick;
+            }
+
+            _nextButton = value;
+
+            if (_nextButton != null)
+            {
+                // If the user does not provide a Content value in template,
+                // we provide a helper text that can be used in
+                // Accessibility this text is not shown on the UI, just used
+                // for Accessibility purposes
+                if (_nextButton.Content == null)
+                {
+                    _nextButton.Content = "next button";
+                }
+
+                _nextButton.Click     += HandleNextButtonClick;
+                _nextButton.Focusable =  false;
+            }
+        }
+    }
+
+    internal IconButton? NextMonthButton
+    {
+        get => _nextMonthButton;
+
+        private set
+        {
+            if (_nextMonthButton != null)
+            {
+                _nextMonthButton.Click -= HandleNextMonthButtonClick;
+            }
+
+            _nextMonthButton = value;
+
+            if (_nextMonthButton != null)
+            {
+                // If the user does not provide a Content value in template,
+                // we provide a helper text that can be used in
+                // Accessibility this text is not shown on the UI, just used
+                // for Accessibility purposes
+                if (_nextMonthButton.Content == null)
+                {
+                    _nextMonthButton.Content = "next button";
+                }
+
+                _nextMonthButton.Click     += HandleNextMonthButtonClick;
+                _nextMonthButton.Focusable =  false;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets the button that displays the previous page of the calendar when
+    /// it is clicked.
+    /// </summary>
+    internal IconButton? PreviousButton
+    {
+        get => _previousButton;
+
+        private set
+        {
+            if (_previousButton != null)
+            {
+                _previousButton.Click -= HandlePreviousButtonClick;
+            }
+
+            _previousButton = value;
+
+            if (_previousButton != null)
+            {
+                // If the user does not provide a Content value in template,
+                // we provide a helper text that can be used in
+                // Accessibility this text is not shown on the UI, just used
+                // for Accessibility purposes
+                if (_previousButton.Content == null)
+                {
+                    _previousButton.Content = "previous button";
+                }
+
+                _previousButton.Click     += HandlePreviousButtonClick;
+                _previousButton.Focusable =  false;
+            }
+        }
+    }
+
+    internal IconButton? PreviousMonthButton
+    {
+        get => _previousMonthButton;
+
+        private set
+        {
+            if (_previousMonthButton != null)
+            {
+                _previousMonthButton.Click -= HandlePreviousMonthButtonClick;
+            }
+
+            _previousMonthButton = value;
+
+            if (_previousMonthButton != null)
+            {
+                // If the user does not provide a Content value in template,
+                // we provide a helper text that can be used in
+                // Accessibility this text is not shown on the UI, just used
+                // for Accessibility purposes
+                if (_previousMonthButton.Content == null)
+                {
+                    _previousMonthButton.Content = "previous button";
+                }
+
+                _previousMonthButton.Click     += HandlePreviousMonthButtonClick;
+                _previousMonthButton.Focusable =  false;
+            }
+        }
+    }
+
+    #endregion
 
     protected DateTime _currentMonth;
 
@@ -1128,185 +1309,5 @@ internal class CalendarItem : TemplatedControl
     {
         PseudoClasses.Set(CalendarDisabledPC, !isEnabled);
     }
-
-    #region 公共属性定义
-
-    public static readonly StyledProperty<IBrush?> HeaderBackgroundProperty =
-        Calendar.HeaderBackgroundProperty.AddOwner<CalendarItem>();
-
-    public IBrush? HeaderBackground
-    {
-        get => GetValue(HeaderBackgroundProperty);
-        set => SetValue(HeaderBackgroundProperty, value);
-    }
-
-    public static readonly StyledProperty<ITemplate<Control>?> DayTitleTemplateProperty =
-        AvaloniaProperty.Register<CalendarItem, ITemplate<Control>?>(
-            nameof(DayTitleTemplate),
-            defaultBindingMode: BindingMode.OneTime);
-
-    public ITemplate<Control>? DayTitleTemplate
-    {
-        get => GetValue(DayTitleTemplateProperty);
-        set => SetValue(DayTitleTemplateProperty, value);
-    }
-
-    #endregion
-
-    #region 内部属性定义
-
-    /// <summary>
-    /// Gets the button that allows switching between month mode, year mode,
-    /// and decade mode.
-    /// </summary>
-    internal HeadTextButton? HeaderButton
-    {
-        get => _headerButton;
-
-        private set
-        {
-            if (_headerButton != null)
-            {
-                _headerButton.Click -= HandleHeaderButtonClick;
-            }
-
-            _headerButton = value;
-
-            if (_headerButton != null)
-            {
-                _headerButton.Click     += HandleHeaderButtonClick;
-                _headerButton.Focusable =  false;
-            }
-        }
-    }
-
-    /// <summary>
-    /// Gets the button that displays the next page of the calendar when it
-    /// is clicked.
-    /// </summary>
-    internal IconButton? NextButton
-    {
-        get => _nextButton;
-
-        private set
-        {
-            if (_nextButton != null)
-            {
-                _nextButton.Click -= HandleNextButtonClick;
-            }
-
-            _nextButton = value;
-
-            if (_nextButton != null)
-            {
-                // If the user does not provide a Content value in template,
-                // we provide a helper text that can be used in
-                // Accessibility this text is not shown on the UI, just used
-                // for Accessibility purposes
-                if (_nextButton.Content == null)
-                {
-                    _nextButton.Content = "next button";
-                }
-
-                _nextButton.Click     += HandleNextButtonClick;
-                _nextButton.Focusable =  false;
-            }
-        }
-    }
-
-    internal IconButton? NextMonthButton
-    {
-        get => _nextMonthButton;
-
-        private set
-        {
-            if (_nextMonthButton != null)
-            {
-                _nextMonthButton.Click -= HandleNextMonthButtonClick;
-            }
-
-            _nextMonthButton = value;
-
-            if (_nextMonthButton != null)
-            {
-                // If the user does not provide a Content value in template,
-                // we provide a helper text that can be used in
-                // Accessibility this text is not shown on the UI, just used
-                // for Accessibility purposes
-                if (_nextMonthButton.Content == null)
-                {
-                    _nextMonthButton.Content = "next button";
-                }
-
-                _nextMonthButton.Click     += HandleNextMonthButtonClick;
-                _nextMonthButton.Focusable =  false;
-            }
-        }
-    }
-
-    /// <summary>
-    /// Gets the button that displays the previous page of the calendar when
-    /// it is clicked.
-    /// </summary>
-    internal IconButton? PreviousButton
-    {
-        get => _previousButton;
-
-        private set
-        {
-            if (_previousButton != null)
-            {
-                _previousButton.Click -= HandlePreviousButtonClick;
-            }
-
-            _previousButton = value;
-
-            if (_previousButton != null)
-            {
-                // If the user does not provide a Content value in template,
-                // we provide a helper text that can be used in
-                // Accessibility this text is not shown on the UI, just used
-                // for Accessibility purposes
-                if (_previousButton.Content == null)
-                {
-                    _previousButton.Content = "previous button";
-                }
-
-                _previousButton.Click     += HandlePreviousButtonClick;
-                _previousButton.Focusable =  false;
-            }
-        }
-    }
-
-    internal IconButton? PreviousMonthButton
-    {
-        get => _previousMonthButton;
-
-        private set
-        {
-            if (_previousMonthButton != null)
-            {
-                _previousMonthButton.Click -= HandlePreviousMonthButtonClick;
-            }
-
-            _previousMonthButton = value;
-
-            if (_previousMonthButton != null)
-            {
-                // If the user does not provide a Content value in template,
-                // we provide a helper text that can be used in
-                // Accessibility this text is not shown on the UI, just used
-                // for Accessibility purposes
-                if (_previousMonthButton.Content == null)
-                {
-                    _previousMonthButton.Content = "previous button";
-                }
-
-                _previousMonthButton.Click     += HandlePreviousMonthButtonClick;
-                _previousMonthButton.Focusable =  false;
-            }
-        }
-    }
-
-    #endregion
+    
 }

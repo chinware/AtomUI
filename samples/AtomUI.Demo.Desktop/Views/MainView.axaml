@@ -169,6 +169,9 @@
             <TabItem Header="Drawer">
                 <showcases:DrawerShowCase />
             </TabItem>
+            <TabItem Header="Calendar">
+                <showcases:CalendarShowCase />
+            </TabItem>
         </TabControl>
     </Grid>
 

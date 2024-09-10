@@ -5,7 +5,6 @@
     xmlns:atom="https://atomui.net"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop">
     <desktop:ShowCasePanel>
@@ -14,7 +13,7 @@
         </desktop:ShowCaseItem>
 
         <desktop:ShowCaseItem Description="The simplest usage for Calendar." Title="Range Calendar">
-            <atom:RangeCalendar SelectedRangeEndDate="2024-9-12" />
+            <atom:RangeCalendar FixedRangeStart="True" SelectedRangeStartDate="2024-9-10" SelectedRangeEndDate="2024-9-12"/>
         </desktop:ShowCaseItem>
     </desktop:ShowCasePanel>
 </UserControl>
