@@ -3,6 +3,7 @@ using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
+using AtomUI.Utils;
 using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;

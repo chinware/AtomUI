@@ -5,10 +5,11 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:atom="https://atomui.net"
-    xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
+    xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
+
     mc:Ignorable="d">
-    <showcase:ShowCasePanel>
-        <showcase:ShowCaseItem
+    <desktop:ShowCasePanel>
+        <desktop:ShowCaseItem
             Title="Basic"
             Description="Simplest Usage.">
             <atom:Menu>
@@ -24,9 +25,9 @@
                 </atom:MenuItem>
                 <atom:MenuItem Header="Disabled Item" IsEnabled="False" />
             </atom:Menu>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Icon and submenu"
             Description="With icon and submenu.">
             <atom:Menu>
@@ -54,9 +55,9 @@
                     </atom:MenuItem>
                 </atom:MenuItem>
             </atom:Menu>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="menu item with ToggleType"
             Description="Renders a checkbox or radio button on a menu.">
             <atom:Menu>
@@ -76,9 +77,9 @@
                     <atom:MenuItem Header="Disabled" IsEnabled="False" />
                 </atom:MenuItem>
             </atom:Menu>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Scrollable menu"
             Description="When there are too many menu items, up and down scroll buttons will appear.">
             <atom:Menu>
@@ -121,12 +122,12 @@
                     <atom:MenuItem Header="Menu Item" />
                 </atom:MenuItem>
             </atom:Menu>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Context menu"
             Description="Right click to bring up the context menu.">
-            <showcase:ShowCaseItem.Styles>
+            <desktop:ShowCaseItem.Styles>
                 <Style Selector="Border#contextMenuContainer">
                     <Setter Property="BorderBrush" Value="Gray" />
                     <Setter Property="BorderThickness" Value="1" />
@@ -134,7 +135,7 @@
                     <Setter Property="Padding" Value="10" />
                     <Setter Property="Margin" Value="10" />
                 </Style>
-            </showcase:ShowCaseItem.Styles>
+            </desktop:ShowCaseItem.Styles>
             <Border Name="contextMenuContainer">
                 <Border.ContextMenu>
                     <atom:ContextMenu>
@@ -152,12 +153,12 @@
                 </Border.ContextMenu>
                 <TextBlock Text="Right Click to show Context Menu" />
             </Border>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Menu Flyout"
             Description="Right Click to show Context Flyout">
-            <showcase:ShowCaseItem.Styles>
+            <desktop:ShowCaseItem.Styles>
                 <Style Selector="Border#contextFlyoutContainer">
                     <Setter Property="BorderBrush" Value="Gray" />
                     <Setter Property="BorderThickness" Value="1" />
@@ -165,7 +166,7 @@
                     <Setter Property="Padding" Value="10" />
                     <Setter Property="Margin" Value="10" />
                 </Style>
-            </showcase:ShowCaseItem.Styles>
+            </desktop:ShowCaseItem.Styles>
 
             <Border Name="contextFlyoutContainer">
                 <Border.ContextFlyout>
@@ -185,7 +186,7 @@
                 <TextBlock Text="Right Click to show Context Flyout" />
             </Border>
 
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-    </showcase:ShowCasePanel>
+    </desktop:ShowCasePanel>
 </UserControl>

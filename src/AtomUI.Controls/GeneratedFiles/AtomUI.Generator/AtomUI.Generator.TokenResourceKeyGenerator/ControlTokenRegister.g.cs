@@ -38,8 +38,8 @@
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.TimePickerToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.ToolTipToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.TreeViewToken));
-            ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.CaptionButtonToken));
-            ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.WindowToken));
+            ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.Controls.CaptionButtonToken));
+            ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.Window.WindowToken));
         }
     }
 }

@@ -13,7 +13,7 @@ using Avalonia.Data.Converters;
 using Avalonia.Layout;
 using Avalonia.Styling;
 
-namespace AtomUI.Controls.Message;
+namespace AtomUI.Controls;
 
 [ControlThemeProvider]
 internal class MessageCardTheme : BaseControlTheme

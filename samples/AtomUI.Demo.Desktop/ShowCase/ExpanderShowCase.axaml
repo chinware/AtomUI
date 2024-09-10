@@ -5,10 +5,11 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:atom="https://atomui.net"
-    xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
+    xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
+
     mc:Ignorable="d">
-    <showcase:ShowCasePanel>
-        <showcase:ShowCaseItem
+    <desktop:ShowCasePanel>
+        <desktop:ShowCaseItem
             Title="Expander"
             Description="By default, The simplest usage is to expand downward.">
             <atom:Expander Header="This is panel header 1">
@@ -16,9 +17,9 @@
                     A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
                 </TextBlock>
             </atom:Expander>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Size"
             Description="Ant Design supports a default Expander size as well as a large and small size.
 If a large or small Expander is desired, set the size property to either large or small respectively. Omit the size property for a Expander with the default size.">
@@ -42,9 +43,9 @@ If a large or small Expander is desired, set the size property to either large o
                     </TextBlock>
                 </atom:Expander>
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Expanding Direction"
             Description="The content area supports expansion in four directions.">
             <DockPanel Margin="0, 0, 0, 0" Height="300">
@@ -67,9 +68,9 @@ If a large or small Expander is desired, set the size property to either large o
                     </atom:Expander>
                 </Panel>
             </DockPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Nested panel"
             Description="Expander is nested inside the Collapse." Margin="0, 0, 10, 0">
             <atom:Expander Header="This is panel header 1">
@@ -79,9 +80,9 @@ If a large or small Expander is desired, set the size property to either large o
                     </TextBlock>
                 </atom:Expander>
             </atom:Expander>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Borderless"
             Description="A borderless style of Expander." Margin="0, 0, 10, 0">
             <atom:Expander IsBorderless="True" Header="This is panel header 1">
@@ -89,9 +90,9 @@ If a large or small Expander is desired, set the size property to either large o
                     A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
                 </TextBlock>
             </atom:Expander>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="No Arrow"
             Description="You can hide the arrow icon by passing IsShowExpandIcon={False} to CollapsePanel component."
             Margin="0, 0, 10, 0">
@@ -100,9 +101,9 @@ If a large or small Expander is desired, set the size property to either large o
                     A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
                 </TextBlock>
             </atom:Expander>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Extra node"
             Description="Render extra element in the top-right corner of each panel." Margin="0, 0, 10, 0">
             <StackPanel Orientation="Vertical" Spacing="20">
@@ -123,9 +124,9 @@ If a large or small Expander is desired, set the size property to either large o
                 </StackPanel>
             </StackPanel>
 
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Ghost Collapse"
             Description="Making collapse's background to transparent." Margin="0, 0, 10, 0">
             <atom:Expander IsGhostStyle="True" Header="This is panel header 1">
@@ -133,9 +134,9 @@ If a large or small Expander is desired, set the size property to either large o
                     A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
                 </TextBlock>
             </atom:Expander>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Collapsible"
             Description="Specify the trigger area of collapsible by collapsible." Margin="0, 0, 10, 0">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -162,6 +163,6 @@ If a large or small Expander is desired, set the size property to either large o
                     </TextBlock>
                 </atom:Expander>
             </StackPanel>
-        </showcase:ShowCaseItem>
-    </showcase:ShowCasePanel>
+        </desktop:ShowCaseItem>
+    </desktop:ShowCasePanel>
 </UserControl>

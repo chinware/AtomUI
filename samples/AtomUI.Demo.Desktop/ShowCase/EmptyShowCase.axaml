@@ -5,16 +5,17 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:atom="https://atomui.net"
-    xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
+    xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
+
     mc:Ignorable="d">
-    <showcase:ShowCasePanel>
-        <showcase:ShowCaseItem
+    <desktop:ShowCasePanel>
+        <desktop:ShowCaseItem
             Title="Basic"
             Description="Simplest Usage.">
             <atom:EmptyIndicator PresetImage="Default" />
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Size"
             Description="AtomUI supports three sizes of buttons: small, default and large.">
             <StackPanel Orientation="Vertical">
@@ -24,9 +25,9 @@
                     <atom:EmptyIndicator PresetImage="Simple" SizeType="Large" />
                 </StackPanel>
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Customize"
             Description="Customize image source, image size, description and extra content.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -35,12 +36,12 @@
                                      Description="Customize Description" />
                 <atom:Button HorizontalAlignment="Center" ButtonType="Primary">Create Now</atom:Button>
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="No description"
             Description="Simplest Usage with no description.">
             <atom:EmptyIndicator PresetImage="Default" IsShowDescription="False" />
-        </showcase:ShowCaseItem>
-    </showcase:ShowCasePanel>
+        </desktop:ShowCaseItem>
+    </desktop:ShowCasePanel>
 </UserControl>

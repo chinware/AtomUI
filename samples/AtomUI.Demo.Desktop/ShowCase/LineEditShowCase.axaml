@@ -5,16 +5,17 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:atom="https://atomui.net"
-    xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
+    xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
+
     mc:Ignorable="d">
-    <showcase:ShowCasePanel>
-        <showcase:ShowCaseItem
+    <desktop:ShowCasePanel>
+        <desktop:ShowCaseItem
             Title="Basic usage"
             Description="Basic usage example.">
             <atom:LineEdit Watermark="Basic usage" />
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Three sizes of Input"
             Description="There are three sizes of an Input box: large (40px), default (32px) and small (24px).">
             <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
@@ -25,9 +26,9 @@
                 <atom:LineEdit Watermark="Small" SizeType="Small"
                                InnerLeftContent="{atom:IconProvider Kind=UserOutlined}" />
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Variants"
             Description="Variants of Input.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -35,9 +36,9 @@
                 <atom:LineEdit Watermark="Filled" StyleVariant="Filled" />
                 <atom:LineEdit Watermark="Borderless" StyleVariant="Borderless" />
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Pre / Post tab"
             Description="Using pre and post tabs example.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -49,16 +50,16 @@
                 <atom:LineEdit LeftAddOn="http://" InnerRightContent=".com" Width="400" HorizontalAlignment="Left"
                                Text="mysite" />
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="With clear icon"
             Description="Input box with the remove icon, click the icon to delete everything.">
             <atom:LineEdit Watermark="input with clear icon" Width="400" HorizontalAlignment="Left"
                            IsEnableClearButton="True" />
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Password box"
             Description="Input type of password.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -76,9 +77,9 @@
                                IsEnableRevealButton="True"
                                IsEnableClearButton="True" />
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="prefix and suffix"
             Description="Add a prefix or suffix icons inside input.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -88,9 +89,9 @@
                 <atom:LineEdit InnerLeftContent="￥" InnerRightContent="RMB" />
                 <atom:LineEdit InnerLeftContent="￥" InnerRightContent="RMB" IsEnabled="False" />
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Status"
             Description="Add status to Input with status, which could be error or warning.">
             <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
@@ -113,9 +114,9 @@
                                InnerLeftContent="{atom:IconProvider Kind=ClockCircleOutlined}"
                                StyleVariant="Borderless" />
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Search box"
             Description="Example of creating a search box by grouping a standard input with a search button.">
             <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
@@ -143,7 +144,7 @@
                                  IsEnableClearButton="True"
                                  SizeType="Large" />
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-    </showcase:ShowCasePanel>
+    </desktop:ShowCasePanel>
 </UserControl>

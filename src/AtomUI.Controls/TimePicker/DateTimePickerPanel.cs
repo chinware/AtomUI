@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using AtomUI.Controls.TimePickerLang;
 using AtomUI.Data;
+using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;

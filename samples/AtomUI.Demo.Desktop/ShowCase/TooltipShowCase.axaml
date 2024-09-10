@@ -5,10 +5,11 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:atom="https://atomui.net"
-    xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
+    xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
+
     mc:Ignorable="d">
-    <showcase:ShowCasePanel>
-        <showcase:ShowCaseItem
+    <desktop:ShowCasePanel>
+        <desktop:ShowCaseItem
             Title="Basic"
             Description="The simplest usage.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -17,9 +18,9 @@
                     <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
                 </TextBlock>
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Placement"
             Description="There are 12 placement options available.">
             <Grid>
@@ -97,9 +98,9 @@
                 </atom:Button>
 
             </Grid>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Arrow"
             Description="Support show, hide or keep arrow in the center.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -212,16 +213,16 @@
 
                 </Grid>
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Colorful Tooltip"
             Description="We preset a series of colorful Tooltip styles for use in different situations.">
-            <showcase:ShowCaseItem.Styles>
+            <desktop:ShowCaseItem.Styles>
                 <Style Selector="atom|Button">
                     <Setter Property="Margin" Value="5" />
                 </Style>
-            </showcase:ShowCaseItem.Styles>
+            </desktop:ShowCaseItem.Styles>
             <StackPanel Orientation="Vertical">
                 <TextBlock FontWeight="Bold" FontSize="14" Margin="0, 0, 0, 10">Presets</TextBlock>
                 <WrapPanel HorizontalAlignment="Left">
@@ -318,6 +319,6 @@
                     </atom:Button>
                 </WrapPanel>
             </StackPanel>
-        </showcase:ShowCaseItem>
-    </showcase:ShowCasePanel>
+        </desktop:ShowCaseItem>
+    </desktop:ShowCasePanel>
 </UserControl>

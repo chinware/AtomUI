@@ -5,10 +5,11 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:atom="https://atomui.net"
-    xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
+    xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
+
     mc:Ignorable="d">
-    <showcase:ShowCasePanel>
-        <showcase:ShowCaseItem
+    <desktop:ShowCasePanel>
+        <desktop:ShowCaseItem
             Title="Basic usage"
             Description="The basic example supports the title and description props of confirmation.">
             <atom:PopupConfirm
@@ -18,9 +19,9 @@
                 CancelText="Cancel">
                 <atom:Button ButtonType="Default" IsDanger="True">Delete</atom:Button>
             </atom:PopupConfirm>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Locale text"
             Description="Set okText and cancelText props to customize the button's labels.">
             <atom:PopupConfirm
@@ -28,9 +29,9 @@
                 ConfirmContent="Are you sure to delete this task?">
                 <atom:Button ButtonType="Default" IsDanger="True">Delete</atom:Button>
             </atom:PopupConfirm>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Placement"
             Description="There are 12 placement options available.">
             <Grid>
@@ -164,9 +165,9 @@
                 </atom:PopupConfirm>
 
             </Grid>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Customize icon"
             Description="Set icon props to customize the icon.">
             <atom:PopupConfirm
@@ -178,6 +179,6 @@
                 CancelText="Cancel">
                 <atom:Button ButtonType="Default" IsDanger="True">Delete</atom:Button>
             </atom:PopupConfirm>
-        </showcase:ShowCaseItem>
-    </showcase:ShowCasePanel>
+        </desktop:ShowCaseItem>
+    </desktop:ShowCasePanel>
 </UserControl>

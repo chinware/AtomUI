@@ -4,9 +4,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:atom="https://atomui.net"
-             xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase" mc:Ignorable="d">
-    <showcase:ShowCasePanel>
-        <showcase:ShowCaseItem
+             xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
+             mc:Ignorable="d">
+    <desktop:ShowCasePanel>
+        <desktop:ShowCaseItem
             Title="Basic"
             Description="The most basic SplitButton.">
             <atom:SplitButton TriggerType="Hover">
@@ -21,18 +22,18 @@
                     </atom:MenuFlyout>
                 </atom:SplitButton.Flyout>
             </atom:SplitButton>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Size"
             Description="AtomUI supports three sizes of buttons: small, default and large.
 If a large or small button is desired, set the size property to either large or small respectively. Omit the size property for a button with the default size.">
-            <showcase:ShowCaseItem.Styles>
+            <desktop:ShowCaseItem.Styles>
                 <Style Selector="atom|SplitButton">
                     <Setter Property="Margin" Value="5" />
                     <Setter Property="VerticalAlignment" Value="Bottom" />
                 </Style>
-            </showcase:ShowCaseItem.Styles>
+            </desktop:ShowCaseItem.Styles>
             <StackPanel Orientation="Vertical" Spacing="10">
                 <WrapPanel>
                     <atom:SplitButton SizeType="Large">
@@ -117,17 +118,17 @@ If a large or small button is desired, set the size property to either large or 
                     </atom:SplitButton>
                 </WrapPanel>
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Danger Buttons"
             Description="danger is a property of button after antd 4.0.">
-            <showcase:ShowCaseItem.Styles>
+            <desktop:ShowCaseItem.Styles>
                 <Style Selector="atom|SplitButton">
                     <Setter Property="Margin" Value="5" />
                     <Setter Property="VerticalAlignment" Value="Bottom" />
                 </Style>
-            </showcase:ShowCaseItem.Styles>
+            </desktop:ShowCaseItem.Styles>
             <WrapPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
                 <atom:SplitButton IsDanger="true">
                     Default
@@ -157,17 +158,17 @@ If a large or small button is desired, set the size property to either large or 
                     </atom:SplitButton.Flyout>
                 </atom:SplitButton>
             </WrapPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Custom Icon"
             Description="Custom flyout button icon.">
-            <showcase:ShowCaseItem.Styles>
+            <desktop:ShowCaseItem.Styles>
                 <Style Selector="atom|SplitButton">
                     <Setter Property="Margin" Value="5" />
                     <Setter Property="VerticalAlignment" Value="Bottom" />
                 </Style>
-            </showcase:ShowCaseItem.Styles>
+            </desktop:ShowCaseItem.Styles>
             <WrapPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
                 <atom:SplitButton>
                     Default
@@ -197,17 +198,17 @@ If a large or small button is desired, set the size property to either large or 
                     </atom:SplitButton.Flyout>
                 </atom:SplitButton>
             </WrapPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Flyout trigger type"
             Description="Support two kind of Trigger type.">
-            <showcase:ShowCaseItem.Styles>
+            <desktop:ShowCaseItem.Styles>
                 <Style Selector="atom|SplitButton">
                     <Setter Property="Margin" Value="5" />
                     <Setter Property="VerticalAlignment" Value="Bottom" />
                 </Style>
-            </showcase:ShowCaseItem.Styles>
+            </desktop:ShowCaseItem.Styles>
             <WrapPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
                 <atom:SplitButton TriggerType="Hover">
                     Hover Me
@@ -237,6 +238,6 @@ If a large or small button is desired, set the size property to either large or 
                     </atom:SplitButton.Flyout>
                 </atom:SplitButton>
             </WrapPanel>
-        </showcase:ShowCaseItem>
-    </showcase:ShowCasePanel>
+        </desktop:ShowCaseItem>
+    </desktop:ShowCasePanel>
 </UserControl>

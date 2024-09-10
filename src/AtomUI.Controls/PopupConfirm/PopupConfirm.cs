@@ -1,5 +1,6 @@
 ﻿using AtomUI.Controls.PopupConfirmLang;
 using AtomUI.Data;
+using AtomUI.Theme.Data;
 using Avalonia;
 using Avalonia.Controls.Templates;
 using Avalonia.Interactivity;

@@ -1,10 +1,10 @@
 <UserControl x:Class="AtomUI.Demo.Desktop.Views.MainView"
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:base="clr-namespace:AtomUI.Demo.Desktop"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:showcases="using:AtomUI.Demo.Desktop.ShowCase"
+             xmlns:showcases="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
+             xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
              d:DesignHeight="450"
              d:DesignWidth="800"
              mc:Ignorable="d">
@@ -18,15 +18,15 @@
 
     </UserControl.Resources>
     <UserControl.Styles>
-        <Style Selector="base|ShowCasePanel">
+        <Style Selector="desktop|ShowCasePanel">
             <Setter Property="Margin" Value="0, 30, 0, 0" />
         </Style>
-        <Style Selector="base|ShowCaseItem">
+        <Style Selector="desktop|ShowCaseItem">
             <Setter Property="Margin" Value="0, 0, 0, 0" />
         </Style>
     </UserControl.Styles>
     <Grid RowDefinitions="Auto, *">
-        <TabControl x:Name="ShowCaseNav" Name="Tab"
+        <TabControl Name="ShowCaseNav"
                     Grid.Row="1"
                     Margin="8"
                     Padding="20,0,0,0"
@@ -35,12 +35,12 @@
                     TabStripPlacement="Left"
                     Theme="{DynamicResource NavigationTab}">
             <TabControl.Styles>
-                <Style Selector="#ShowCaseNav &gt; TabItem">
+                <Style Selector="#ShowCaseNav > TabItem">
                     <Setter Property="FontSize" Value="18" />
                     <Setter Property="Width" Value="230" />
                 </Style>
             </TabControl.Styles>
-            <TabItem Header="Overview">
+            <TabItem Header="Overview" FontSize="18">
                 <showcases:Overview />
             </TabItem>
             <TabItem Header="Palette">

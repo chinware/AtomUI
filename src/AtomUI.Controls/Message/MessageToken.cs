@@ -2,7 +2,7 @@
 using Avalonia;
 using Avalonia.Media;
 
-namespace AtomUI.Controls.Message;
+namespace AtomUI.Controls;
 
 [ControlDesignToken]
 public class MessageToken : AbstractControlDesignToken

@@ -5,10 +5,11 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:atom="https://atomui.net"
-    xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
+    xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
+
     mc:Ignorable="d">
-    <showcase:ShowCasePanel>
-        <showcase:ShowCaseItem
+    <desktop:ShowCasePanel>
+        <desktop:ShowCaseItem
             Title="Collapse"
             Description="By default, any number of panels can be expanded at a time. The first panel is expanded in this example.">
             <atom:Collapse>
@@ -28,9 +29,9 @@
                     </TextBlock>
                 </atom:CollapseItem>
             </atom:Collapse>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Size"
             Description="Ant Design supports a default collapse size as well as a large and small size.
 If a large or small collapse is desired, set the size property to either large or small respectively. Omit the size property for a collapse with the default size.">
@@ -60,9 +61,9 @@ If a large or small collapse is desired, set the size property to either large o
                     </atom:CollapseItem>
                 </atom:Collapse>
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Accordion"
             Description="In accordion mode, only one panel can be expanded at a time.">
             <atom:Collapse IsAccordion="True">
@@ -82,9 +83,9 @@ If a large or small collapse is desired, set the size property to either large o
                     </TextBlock>
                 </atom:CollapseItem>
             </atom:Collapse>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Nested panel"
             Description="Collapse is nested inside the Collapse." Margin="0, 0, 10, 0">
             <atom:Collapse>
@@ -108,9 +109,9 @@ If a large or small collapse is desired, set the size property to either large o
                     </TextBlock>
                 </atom:CollapseItem>
             </atom:Collapse>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Borderless"
             Description="A borderless style of Collapse." Margin="0, 0, 10, 0">
             <atom:Collapse IsBorderless="True">
@@ -130,9 +131,9 @@ If a large or small collapse is desired, set the size property to either large o
                     </TextBlock>
                 </atom:CollapseItem>
             </atom:Collapse>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="No Arrow"
             Description="You can hide the arrow icon by passing IsShowExpandIcon={False} to CollapsePanel component."
             Margin="0, 0, 10, 0">
@@ -148,9 +149,9 @@ If a large or small collapse is desired, set the size property to either large o
                     </TextBlock>
                 </atom:CollapseItem>
             </atom:Collapse>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Extra node"
             Description="Render extra element in the top-right corner of each panel." Margin="0, 0, 10, 0">
             <StackPanel Orientation="Vertical" Spacing="20">
@@ -184,9 +185,9 @@ If a large or small collapse is desired, set the size property to either large o
                 </StackPanel>
             </StackPanel>
 
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Ghost Collapse"
             Description="Making collapse's background to transparent." Margin="0, 0, 10, 0">
             <atom:Collapse IsGhostStyle="True">
@@ -206,9 +207,9 @@ If a large or small collapse is desired, set the size property to either large o
                     </TextBlock>
                 </atom:CollapseItem>
             </atom:Collapse>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Collapsible"
             Description="Specify the trigger area of collapsible by collapsible." Margin="0, 0, 10, 0">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -243,7 +244,7 @@ If a large or small collapse is desired, set the size property to either large o
                     </atom:CollapseItem>
                 </atom:Collapse>
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-    </showcase:ShowCasePanel>
+    </desktop:ShowCasePanel>
 </UserControl>

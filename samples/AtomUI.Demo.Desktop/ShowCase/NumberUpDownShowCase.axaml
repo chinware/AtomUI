@@ -5,16 +5,17 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:atom="https://atomui.net"
-    xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
+    xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
+
     mc:Ignorable="d">
-    <showcase:ShowCasePanel>
-        <showcase:ShowCaseItem
+    <desktop:ShowCasePanel>
+        <desktop:ShowCaseItem
             Title="Basic usage"
             Description="Numeric-only NumberUpDown.">
             <atom:NumericUpDown Value="3" />
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Three sizes of NumberUpDown"
             Description="There are three sizes of an Input box: large (40px), default (32px) and small (24px).">
             <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
@@ -22,9 +23,9 @@
                 <atom:NumericUpDown SizeType="Middle" Value="3" />
                 <atom:NumericUpDown SizeType="Small" Value="3" />
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Variants"
             Description="Variants of NumberUpDown.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -32,9 +33,9 @@
                 <atom:NumericUpDown Value="3" StyleVariant="Filled" />
                 <atom:NumericUpDown Value="3" StyleVariant="Borderless" />
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Pre / Post tab"
             Description="Using pre and post tabs example.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -46,16 +47,16 @@
                 <atom:NumericUpDown LeftAddOn="http://" InnerRightContent=".com" Width="400" HorizontalAlignment="Left"
                                     Value="3" />
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="With clear icon"
             Description="Input box with the remove icon, click the icon to delete everything.">
             <atom:NumericUpDown Watermark="input with clear icon" Width="400" HorizontalAlignment="Left"
                                 IsEnableClearButton="True" />
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="prefix and suffix"
             Description="Add a prefix or suffix icons inside input.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -65,9 +66,9 @@
                 <atom:NumericUpDown InnerLeftContent="￥" InnerRightContent="RMB" />
                 <atom:NumericUpDown InnerLeftContent="￥" InnerRightContent="RMB" IsEnabled="False" />
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Status"
             Description="Add status to Input with status, which could be error or warning.">
             <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
@@ -92,7 +93,7 @@
                                     InnerLeftContent="{atom:IconProvider Kind=ClockCircleOutlined}"
                                     StyleVariant="Borderless" />
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-    </showcase:ShowCasePanel>
+    </desktop:ShowCasePanel>
 </UserControl>

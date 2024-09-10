@@ -5,10 +5,11 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:atom="https://atomui.net"
-    xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
+    xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
+
     mc:Ignorable="d">
-    <showcase:ShowCasePanel>
-        <showcase:ShowCaseItem
+    <desktop:ShowCasePanel>
+        <desktop:ShowCaseItem
             Title="Basic"
             Description="The most basic example. The size of the floating layer depends on the contents region.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -21,9 +22,9 @@
                     <atom:Button ButtonType="Primary">Hover me</atom:Button>
                 </atom:FlyoutHost>
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Three ways to trigger"
             Description="Mouse to click, focus and move in.">
             <StackPanel Orientation="Horizontal" Spacing="10">
@@ -44,9 +45,9 @@
                     <atom:Button>Click me</atom:Button>
                 </atom:FlyoutHost>
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Placement"
             Description="There are 12 placement options available.">
             <Grid>
@@ -180,9 +181,9 @@
                 </atom:FlyoutHost>
 
             </Grid>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Arrow"
             Description="Support show, hide or keep arrow in the center.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -372,7 +373,7 @@
 
                 </Grid>
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-    </showcase:ShowCasePanel>
+    </desktop:ShowCasePanel>
 </UserControl>

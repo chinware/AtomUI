@@ -5,23 +5,25 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:atom="https://atomui.net"
-    xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
+    xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
+    xmlns:showCase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
+
     mc:Ignorable="d">
-    <showcase:ShowCasePanel>
-        <showcase:ShowCasePanel.Styles>
+    <desktop:ShowCasePanel>
+        <desktop:ShowCasePanel.Styles>
             <Style Selector="atom|RadioButton">
                 <Setter Property="Margin" Value="0, 0, 5, 10" />
             </Style>
-        </showcase:ShowCasePanel.Styles>
-        <showcase:ShowCaseItem
+        </desktop:ShowCasePanel.Styles>
+        <desktop:ShowCaseItem
             Title="Basic"
             Description="The simplest use.">
             <StackPanel HorizontalAlignment="Left" Spacing="10" Orientation="Horizontal">
                 <atom:RadioButton>Radio</atom:RadioButton>
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Disabled"
             Description="Disabled state of RadioButton.">
             <StackPanel HorizontalAlignment="Left" Orientation="Vertical">
@@ -32,14 +34,14 @@
                 <atom:Button ButtonType="Primary"
                              x:Name="ToggleDisabledButton"
                              Margin="0, 20, 0, 0"
-                             Command="{Binding $parent[showcase:RadioButtonShowCase].ToggleDisabledStatus}"
+                             Command="{Binding $parent[showCase:RadioButtonShowCase].ToggleDisabledStatus}"
                              CommandParameter="{Binding ElementName=ToggleDisabledButton}">
                     toggle disabled
                 </atom:Button>
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Radio Group"
             Description="A group of radio components.">
             <WrapPanel Orientation="Horizontal">
@@ -48,9 +50,9 @@
                 <atom:RadioButton>C</atom:RadioButton>
                 <atom:RadioButton>D</atom:RadioButton>
             </WrapPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Vertical Radio Group"
             Description="Vertical Radio Group.">
             <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
@@ -59,9 +61,9 @@
                 <atom:RadioButton>Option C</atom:RadioButton>
                 <atom:RadioButton>Option D</atom:RadioButton>
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Option Button"
             Description="OptionButton Group.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -89,9 +91,9 @@
                     <atom:OptionButton IsEnabled="False">Orange</atom:OptionButton>
                 </atom:OptionButtonGroup>
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="option style"
             Description="The combination of option button style.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -118,9 +120,9 @@
                 </atom:OptionButtonGroup>
 
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Solid option button"
             Description="Solid option button style.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -148,9 +150,9 @@
                 </atom:OptionButtonGroup>
 
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Size type"
             Description="There are three sizes available: large, medium, and small. It can coordinate with input box.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -177,7 +179,7 @@
                 </atom:OptionButtonGroup>
 
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-    </showcase:ShowCasePanel>
+    </desktop:ShowCasePanel>
 </UserControl>

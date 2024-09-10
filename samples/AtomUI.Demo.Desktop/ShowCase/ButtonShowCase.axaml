@@ -5,15 +5,15 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:atom="https://atomui.net"
-    xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
+    xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
     mc:Ignorable="d">
-    <showcase:ShowCasePanel>
-        <showcase:ShowCasePanel.Styles>
+    <desktop:ShowCasePanel>
+        <desktop:ShowCasePanel.Styles>
             <Style Selector="atom|Button">
                 <Setter Property="Margin" Value="5" />
             </Style>
-        </showcase:ShowCasePanel.Styles>
-        <showcase:ShowCaseItem
+        </desktop:ShowCasePanel.Styles>
+        <desktop:ShowCaseItem
             Title="Type"
             Description="There are primary button, default button, dashed button, text button and link button in antd.">
             <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal">
@@ -22,9 +22,9 @@
                 <atom:Button ButtonType="Text">Text Button</atom:Button>
                 <atom:Button ButtonType="Link">Link Button</atom:Button>
             </WrapPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Button Shape"
             Description="Supported button shape display, such as primary, default, dashed and Text, etc.">
             <StackPanel Orientation="Vertical">
@@ -48,9 +48,9 @@
                 </StackPanel>
             </StackPanel>
 
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Size"
             Description="AtomUI supports three sizes of buttons: small, default and large.
 If a large or small button is desired, set the size property to either large or small respectively. Omit the size property for a button with the default size.">
@@ -93,9 +93,9 @@ If a large or small button is desired, set the size property to either large or 
                     </WrapPanel>
                 </StackPanel>
             </DockPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Icon"
             Description="You can add an icon through the icon property and adjust the position of the icon using iconPosition.">
             <StackPanel Orientation="Vertical">
@@ -142,9 +142,9 @@ If a large or small button is desired, set the size property to either large or 
                 </WrapPanel>
             </StackPanel>
 
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Loading"
             Description="A loading indicator can be added to a button by setting the loading property on the Button.">
             <StackPanel HorizontalAlignment="Stretch" Orientation="Vertical" Margin="10">
@@ -164,9 +164,9 @@ If a large or small button is desired, set the size property to either large or 
                 </WrapPanel>
 
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Block Button"
             Description="block property will make the button fit to its parent width.">
             <StackPanel HorizontalAlignment="Stretch" Orientation="Vertical" Margin="10">
@@ -183,9 +183,9 @@ If a large or small button is desired, set the size property to either large or 
                     Link
                 </atom:Button>
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Danger Buttons"
             Description="danger is a property of button after antd 4.0.">
             <WrapPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
@@ -202,9 +202,9 @@ If a large or small button is desired, set the size property to either large or 
                     Link
                 </atom:Button>
             </WrapPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Ghost Button"
             Description="ghost property will make button's background transparent, it is commonly used in colored background.">
             <Border Background="rgb(190, 200, 200)"
@@ -248,9 +248,9 @@ If a large or small button is desired, set the size property to either large or 
                     </WrapPanel>
                 </StackPanel>
             </Border>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Disabled"
             Description="To mark a button as disabled, add the disabled property to the Button.">
             <WrapPanel HorizontalAlignment="Stretch" Orientation="Vertical">
@@ -320,6 +320,6 @@ If a large or small button is desired, set the size property to either large or 
                     </atom:Button>
                 </StackPanel>
             </WrapPanel>
-        </showcase:ShowCaseItem>
-    </showcase:ShowCasePanel>
+        </desktop:ShowCaseItem>
+    </desktop:ShowCasePanel>
 </UserControl>

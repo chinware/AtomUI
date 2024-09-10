@@ -1,4 +1,5 @@
-﻿using AtomUI.Theme;
+﻿using AtomUI.Controls.Switch;
+using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;

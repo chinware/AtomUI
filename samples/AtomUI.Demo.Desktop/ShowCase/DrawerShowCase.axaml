@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
+             
              mc:Ignorable="d">
 
     <UserControl.Styles>
@@ -45,9 +45,9 @@
         </Style>
     </UserControl.Styles>
 
-    <showcase:ShowCasePanel>
+    <desktop:ShowCasePanel>
 
-        <showcase:ShowCaseItem Title="Basic" Description="Basic drawer.">
+        <desktop:ShowCaseItem Title="Basic" Description="Basic drawer.">
             <Panel>
                 <atom:ToggleSwitch x:Name="OpenButton01" Content="Open" />
                 <atom:Drawer IsOpen="{Binding $parent[Panel].((atom:ToggleSwitch)Children[0]).IsChecked}"
@@ -55,9 +55,9 @@
                     <TextBlock Margin="50" Text="Some contents..." />
                 </atom:Drawer>
             </Panel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem Title="Custom Placement"
+        <desktop:ShowCaseItem Title="Custom Placement"
                                Description="The Drawer can appear from any edge of the screen.">
             <Panel>
                 <StackPanel Classes="ControllerPanel">
@@ -74,9 +74,9 @@
                     <TextBlock Margin="50" Text="Some contents..." />
                 </atom:Drawer>
             </Panel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem Title="Extra Actions"
+        <desktop:ShowCaseItem Title="Extra Actions"
                                Description="Extra actions should be placed at corner of drawer in Ant Design, you can use extra prop for that.">
             <Panel>
                 <StackPanel Classes="ControllerPanel">
@@ -93,9 +93,9 @@
                     <TextBlock Margin="50" Text=" TODO " />
                 </atom:Drawer>
             </Panel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem Title="Render in current area" Description="Render in current area.">
+        <desktop:ShowCaseItem Title="Render in current area" Description="Render in current area.">
             <Panel>
                 <StackPanel Height="120"
                             atom:Watermark.Glyph="{atom:TextGlyph AtomUI}"
@@ -108,14 +108,14 @@
 
                 <atom:Drawer
                     IsOpen="{Binding $parent[Panel].((Panel)Children[0]).((atom:ToggleSwitch)Children[1]).IsChecked}"
-                    OpenOn="{Binding $parent[showcase:ShowCaseItem]}"
+                    OpenOn="{Binding $parent[desktop:ShowCaseItem]}"
                     Placement="{Binding $parent[Panel].((Panel)Children[0]).((ListBox)Children[0]).SelectedItem}">
                     <TextBlock Margin="50" Text=" Some contents... " />
                 </atom:Drawer>
             </Panel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem Title="Basic" Description="Basic drawer.">
+        <desktop:ShowCaseItem Title="Basic" Description="Basic drawer.">
             <Grid ColumnDefinitions="Auto,*">
                 <Border Grid.ColumnSpan="2"
                         Height="300"
@@ -169,7 +169,7 @@
                     </Border>
                 </atom:Drawer>
             </Grid>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-    </showcase:ShowCasePanel>
+    </desktop:ShowCasePanel>
 </UserControl>

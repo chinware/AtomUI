@@ -6,7 +6,7 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
 
-namespace AtomUI.Controls.Message;
+namespace AtomUI.Controls;
 
 [PseudoClasses(ErrorPC, InformationPC, SuccessPC, WarningPC, LoadingPC)]
 public class MessageCard : TemplatedControl

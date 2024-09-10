@@ -5,16 +5,17 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:atom="https://atomui.net"
-    xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
+    xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
+
     mc:Ignorable="d">
-    <showcase:ShowCasePanel>
-        <showcase:ShowCaseItem
+    <desktop:ShowCasePanel>
+        <desktop:ShowCaseItem
             Title="Basic"
             Description="Click TimePicker, and then we could select or input a time in panel.">
             <atom:TimePicker Watermark="Select time" Width="200" />
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Three Sizes"
             Description="The input box comes in three sizes: large, middle and small. Large is used in the form, while the medium size is the default.">
             <StackPanel Orientation="Horizontal" Spacing="10">
@@ -22,17 +23,17 @@
                 <atom:TimePicker Watermark="Select time" Width="160" SizeType="Middle" DefaultTime="12:08:23" />
                 <atom:TimePicker Watermark="Select time" Width="160" SizeType="Small" DefaultTime="12:08:23" />
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Disabled"
             Description="A disabled state of the TimePicker.">
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <atom:TimePicker Watermark="Select time" Width="160" IsEnabled="False" DefaultTime="12:08:23" />
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Interval option"
             Description="Show stepped options by MinuteIncrement SecondIncrement.">
             <StackPanel Orientation="Horizontal" Spacing="10">
@@ -42,9 +43,9 @@
                                  MinuteIncrement="15"
                                  SecondIncrement="10" />
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="12 hours"
             Description="TimePicker of 12 hours format, with default format h:mm:ss a.">
             <StackPanel Orientation="Horizontal" Spacing="10">
@@ -57,9 +58,9 @@
                                  DefaultTime="12:08:23"
                                  ClockIdentifier="HourClock24" />
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Variants"
             Description="Bordered-less style component.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -88,9 +89,9 @@
                                           RangeStartWatermark="Borderless" />
                 </StackPanel>
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Status"
             Description="Add status to TimePicker with status, which could be error or warning.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -125,9 +126,9 @@
                                           RangeEndWatermark="End time" />
                 </StackPanel>
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Time Range Picker"
             Description="Use time range picker with RangeTimePicker.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -136,6 +137,6 @@
                                       RangeStartWatermark="Start time"
                                       RangeEndWatermark="End time" />
             </StackPanel>
-        </showcase:ShowCaseItem>
-    </showcase:ShowCasePanel>
+        </desktop:ShowCaseItem>
+    </desktop:ShowCasePanel>
 </UserControl>
