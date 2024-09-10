@@ -23,8 +23,6 @@ public partial class TabControlShowCase : UserControl
         AddTabDemoTabControl.AddTabRequest                     += HandleTabControlAddTabRequest;
     }
 
-
-
     #region TabStrip
 
     public static readonly StyledProperty<Dock> PositionTabStripPlacementProperty =
@@ -55,8 +53,6 @@ public partial class TabControlShowCase : UserControl
     }
 
     #endregion
-
-
 
     #region TabControl
 
@@ -89,42 +85,62 @@ public partial class TabControlShowCase : UserControl
 
     #endregion
 
-
-
     #region TabStrip
 
     private void HandleTabStripPlacementOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
     {
         if (args.Index == 0)
+        {
             PositionTabStripPlacement = Dock.Top;
+        }
         else if (args.Index == 1)
+        {
             PositionTabStripPlacement = Dock.Bottom;
+        }
         else if (args.Index == 2)
+        {
             PositionTabStripPlacement = Dock.Left;
+        }
         else
+        {
             PositionTabStripPlacement = Dock.Right;
+        }
     }
 
     private void HandleCardTabStripPlacementOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
     {
         if (args.Index == 0)
+        {
             PositionCardTabStripPlacement = Dock.Top;
+        }
         else if (args.Index == 1)
+        {
             PositionCardTabStripPlacement = Dock.Bottom;
+        }
         else if (args.Index == 2)
+        {
             PositionCardTabStripPlacement = Dock.Left;
+        }
         else
+        {
             PositionCardTabStripPlacement = Dock.Right;
+        }
     }
 
     private void HandleTabStripSizeTypeOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
     {
         if (args.Index == 0)
+        {
             SizeTypeTabStrip = SizeType.Small;
+        }
         else if (args.Index == 1)
+        {
             SizeTypeTabStrip = SizeType.Middle;
+        }
         else
+        {
             SizeTypeTabStrip = SizeType.Large;
+        }
     }
 
     private void HandleTabStripAddTabRequest(object? sender, RoutedEventArgs args)
@@ -139,42 +155,62 @@ public partial class TabControlShowCase : UserControl
 
     #endregion
 
-
-
     #region TabControl
 
     private void HandleTabControlPlacementOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
     {
         if (args.Index == 0)
+        {
             PositionTabControlPlacement = Dock.Top;
+        }
         else if (args.Index == 1)
+        {
             PositionTabControlPlacement = Dock.Bottom;
+        }
         else if (args.Index == 2)
+        {
             PositionTabControlPlacement = Dock.Left;
+        }
         else
+        {
             PositionTabControlPlacement = Dock.Right;
+        }
     }
 
     private void HandleCardTabControlPlacementOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
     {
         if (args.Index == 0)
+        {
             PositionCardTabControlPlacement = Dock.Top;
+        }
         else if (args.Index == 1)
+        {
             PositionCardTabControlPlacement = Dock.Bottom;
+        }
         else if (args.Index == 2)
+        {
             PositionCardTabControlPlacement = Dock.Left;
+        }
         else
+        {
             PositionCardTabControlPlacement = Dock.Right;
+        }
     }
 
     private void HandleTabControlSizeTypeOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
     {
         if (args.Index == 0)
+        {
             SizeTypeTabControl = SizeType.Small;
+        }
         else if (args.Index == 1)
+        {
             SizeTypeTabControl = SizeType.Middle;
+        }
         else
+        {
             SizeTypeTabControl = SizeType.Large;
+        }
     }
 
     private void HandleTabControlAddTabRequest(object? sender, RoutedEventArgs args)

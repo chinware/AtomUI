@@ -73,12 +73,21 @@ internal class TimePickerFlyoutPresenter : FlyoutPresenter
             {
                 TimePickerRef.NotifyConfirmed(_timePickerPresenter.Time);
             };
-            if (TimePickerRef.DefaultTime is not null) _timePickerPresenter.Time = TimePickerRef.DefaultTime.Value;
+            if (TimePickerRef.DefaultTime is not null)
+            {
+                _timePickerPresenter.Time = TimePickerRef.DefaultTime.Value;
+            }
         }
 
-        if (_confirmButton is not null) _confirmButton.Click += HandleConfirmButtonClicked;
+        if (_confirmButton is not null)
+        {
+            _confirmButton.Click += HandleConfirmButtonClicked;
+        }
 
-        if (_nowButton is not null) _nowButton.Click += HandleNowButtonClicked;
+        if (_nowButton is not null)
+        {
+            _nowButton.Click += HandleNowButtonClicked;
+        }
     }
 
     private void HandleNowButtonClicked(object? sender, RoutedEventArgs args)
@@ -97,10 +106,12 @@ internal class TimePickerFlyoutPresenter : FlyoutPresenter
     {
         base.OnAttachedToVisualTree(e);
         if (_timePickerPresenter is not null)
+        {
             _disposable = TimePickerPresenter.TemporaryTimeProperty.Changed.Subscribe(args =>
             {
                 TimePickerRef.NotifyTemporaryTimeSelected(args.GetNewValue<TimeSpan>());
             });
+        }
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)

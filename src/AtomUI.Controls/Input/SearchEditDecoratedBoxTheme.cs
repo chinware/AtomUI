@@ -54,7 +54,6 @@ internal class SearchEditDecoratedBoxTheme : AddOnDecoratedBoxTheme
             SearchEditDecoratedBox.SearchButtonStyleProperty,
             SearchEditButtonStyle.Default));
 
-
         var decoratorHoverOrFocusStyle = new Style(selector => Selectors.Or(
             selector.Nesting().Template().Name(InnerBoxContentPart).Class(StdPseudoClass.FocusWithIn),
             selector.Nesting().Template().Name(InnerBoxContentPart).Class(StdPseudoClass.PointerOver)));

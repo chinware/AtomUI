@@ -8,7 +8,6 @@ namespace AtomUI.Controls;
 
 using AvaloniaComboBox = Avalonia.Controls.ComboBox;
 
-
 public class ComboBox : AvaloniaComboBox
 {
     public const string ErrorPC = ":error";
@@ -27,8 +26,11 @@ public class ComboBox : AvaloniaComboBox
 
     protected override Size ArrangeOverride(Size finalSize)
     {
-        var size                                = base.ArrangeOverride(finalSize);
-        if (_popup is not null) _popup.MinWidth = size.Width;
+        var size = base.ArrangeOverride(finalSize);
+        if (_popup is not null)
+        {
+            _popup.MinWidth = size.Width;
+        }
 
         return size;
     }
@@ -41,7 +43,9 @@ public class ComboBox : AvaloniaComboBox
         _spinnerInnerBox     = e.NameScope.Find<ComboBoxSpinnerInnerBox>(ComboBoxTheme.SpinnerInnerBoxPart);
 
         if (_openIndicatorButton is not null)
+        {
             _openIndicatorButton.Click += (sender, args) => { SetCurrentValue(IsDropDownOpenProperty, true); };
+        }
 
         UpdatePseudoClasses();
     }
@@ -50,23 +54,26 @@ public class ComboBox : AvaloniaComboBox
     {
         base.PrepareContainerForItemOverride(container, item, index);
         if (container is ComboBoxItem comboBoxItem)
+        {
             BindUtils.RelayBind(this, SizeTypeProperty, comboBoxItem, ComboBoxItem.SizeTypeProperty);
+        }
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
 
-        if (change.Property == StatusProperty) UpdatePseudoClasses();
+        if (change.Property == StatusProperty)
+        {
+            UpdatePseudoClasses();
+        }
     }
 
     private void UpdatePseudoClasses()
     {
-        PseudoClasses.Set(ErrorPC, Status   == AddOnDecoratedStatus.Error);
+        PseudoClasses.Set(ErrorPC, Status == AddOnDecoratedStatus.Error);
         PseudoClasses.Set(WarningPC, Status == AddOnDecoratedStatus.Warning);
     }
-
-
 
     #region 公共属性定义
 

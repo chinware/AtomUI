@@ -28,21 +28,33 @@ public partial class AntDesignIconPackage : IconPackage
     public override IconInfo? GetIcon(string iconKind, ColorInfo colorInfo)
     {
         AntDesignIconKind kind;
-        if (Enum.TryParse(iconKind, out kind)) return GetIcon(kind, colorInfo);
+        if (Enum.TryParse(iconKind, out kind))
+        {
+            return GetIcon(kind, colorInfo);
+        }
+
         return null;
     }
 
     public override IconInfo? GetIcon(string iconKind, TwoToneColorInfo twoToneColorInfo)
     {
         AntDesignIconKind kind;
-        if (Enum.TryParse(iconKind, out kind)) return GetIcon(kind, twoToneColorInfo);
+        if (Enum.TryParse(iconKind, out kind))
+        {
+            return GetIcon(kind, twoToneColorInfo);
+        }
+
         return null;
     }
 
     public override IconInfo? GetIcon(string iconKind)
     {
         AntDesignIconKind kind;
-        if (Enum.TryParse(iconKind, out kind)) return GetIcon(kind);
+        if (Enum.TryParse(iconKind, out kind))
+        {
+            return GetIcon(kind);
+        }
+
         return null;
     }
 }

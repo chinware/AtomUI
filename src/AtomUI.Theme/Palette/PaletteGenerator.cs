@@ -7,40 +7,40 @@ namespace AtomUI.Theme.Palette;
 
 public static class PaletteGenerator
 {
-   /// <summary>
-   ///     色相阶梯
-   /// </summary>
-   public const int HUE_STEP = 2;
+    /// <summary>
+    /// 色相阶梯
+    /// </summary>
+    public const int HUE_STEP = 2;
 
-   /// <summary>
-   ///     饱和度阶梯，浅色部分
-   /// </summary>
-   public const float SATURATION_STEP1 = 0.16f;
+    /// <summary>
+    /// 饱和度阶梯，浅色部分
+    /// </summary>
+    public const float SATURATION_STEP1 = 0.16f;
 
-   /// <summary>
-   ///     饱和度阶梯，深色部分
-   /// </summary>
-   public const float SATURATION_STEP2 = 0.05f;
+    /// <summary>
+    /// 饱和度阶梯，深色部分
+    /// </summary>
+    public const float SATURATION_STEP2 = 0.05f;
 
-   /// <summary>
-   ///     亮度阶梯，浅色部分
-   /// </summary>
-   public const float BRIGHTNESS_STEP1 = 0.05f;
+    /// <summary>
+    /// 亮度阶梯，浅色部分
+    /// </summary>
+    public const float BRIGHTNESS_STEP1 = 0.05f;
 
-   /// <summary>
-   ///     亮度阶梯，深色部分
-   /// </summary>
-   public const float BRIGHTNESS_STEP2 = 0.15f;
+    /// <summary>
+    /// 亮度阶梯，深色部分
+    /// </summary>
+    public const float BRIGHTNESS_STEP2 = 0.15f;
 
-   /// <summary>
-   ///     浅色数量，主色上
-   /// </summary>
-   public const int LIGHT_COLOR_COUNT = 5;
+    /// <summary>
+    /// 浅色数量，主色上
+    /// </summary>
+    public const int LIGHT_COLOR_COUNT = 5;
 
-   /// <summary>
-   ///     深色数量，主色下
-   /// </summary>
-   public const int DARK_COLOR_COUNT = 4;
+    /// <summary>
+    /// 深色数量，主色下
+    /// </summary>
+    public const int DARK_COLOR_COUNT = 4;
 
     private static readonly IReadOnlyList<DarkColorMapItem> sm_darkColorMap;
 
@@ -63,9 +63,13 @@ public static class PaletteGenerator
 
     public static IReadOnlyList<Color> GeneratePalette(Color color, PaletteGenerateOption? option = null)
     {
-        if (option is null) option = new PaletteGenerateOption();
-        var patterns               = new List<Color>();
-        var hsvColor               = color.ToHsv();
+        if (option is null)
+        {
+            option = new PaletteGenerateOption();
+        }
+
+        var patterns = new List<Color>();
+        var hsvColor = color.ToHsv();
         for (var i = LIGHT_COLOR_COUNT; i > 0; --i)
         {
             var rgbColor = HsvColor.ToRgb(GetHsvHue(hsvColor, i, true),
@@ -118,34 +122,56 @@ public static class PaletteGenerator
 
         // 根据色相不同，色相转向不同
         if (Math.Round(hsvColor.H) >= 60d && Math.Round(hsvColor.H) <= 240d)
+        {
             hue = isLight ? Math.Round(hsvColor.H) - HUE_STEP * index : Math.Round(hsvColor.H) + HUE_STEP * index;
+        }
         else
+        {
             hue = isLight ? Math.Round(hsvColor.H) + HUE_STEP * index : Math.Round(hsvColor.H) - HUE_STEP * index;
+        }
 
         if (hue < 0)
-            hue                                               += 360d;
-        else if (MathUtils.GreaterThanOrClose(hue, 360d)) hue -= 360d;
+        {
+            hue += 360d;
+        }
+        else if (MathUtils.GreaterThanOrClose(hue, 360d))
+        {
+            hue -= 360d;
+        }
+
         return hue;
     }
 
     private static double GetHsvSaturation(HsvColor hsvColor, int index, bool isLight)
     {
         // grey color don't change saturation
-        if (MathUtils.IsZero(hsvColor.H) && MathUtils.IsZero(hsvColor.S)) return hsvColor.S;
+        if (MathUtils.IsZero(hsvColor.H) && MathUtils.IsZero(hsvColor.S))
+        {
+            return hsvColor.S;
+        }
 
         double saturation = 0;
         if (isLight)
+        {
             saturation = hsvColor.S - SATURATION_STEP1 * index;
+        }
         else if (index == DARK_COLOR_COUNT)
+        {
             saturation = hsvColor.S + SATURATION_STEP1;
+        }
         else
+        {
             saturation = hsvColor.S + SATURATION_STEP2 * index;
+        }
 
         // 边界值修正
         saturation = Math.Min(saturation, 1d);
 
         // 第一格的 s 限制在 0.06-0.1 之间
-        if (isLight && index == LIGHT_COLOR_COUNT && saturation > 0.1d) saturation = 0.1d;
+        if (isLight && index == LIGHT_COLOR_COUNT && saturation > 0.1d)
+        {
+            saturation = 0.1d;
+        }
 
         saturation = Math.Max(saturation, 0.06d);
         return MathUtils.RoundToFixedPoint(saturation, 2);
@@ -155,14 +181,18 @@ public static class PaletteGenerator
     {
         double value;
         if (isLight)
+        {
             value = hsvColor.V + BRIGHTNESS_STEP1 * index;
+        }
         else
+        {
             value = hsvColor.V - BRIGHTNESS_STEP2 * index;
+        }
+
         value = Math.Min(value, 1d);
         return MathUtils.RoundToFixedPoint(value, 2);
         ;
     }
-
 
     internal struct DarkColorMapItem
     {
@@ -170,7 +200,6 @@ public static class PaletteGenerator
         public double Opacity { get; set; }
     }
 }
-
 
 internal struct RgbF
 {
@@ -185,7 +214,6 @@ internal struct RgbF
     public double G { get; set; }
     public double B { get; set; }
 }
-
 
 public class PaletteGenerateOption
 {

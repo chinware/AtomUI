@@ -13,25 +13,27 @@ public enum PopupConfirmStatus
     Error
 }
 
-
 public class PopupConfirm : FlyoutHost
 {
     public sealed override void ApplyTemplate()
     {
-        if (Flyout is null) Flyout = new PopupConfirmFlyout(this);
+        if (Flyout is null)
+        {
+            Flyout = new PopupConfirmFlyout(this);
+        }
 
         if (Icon is null)
+        {
             Icon = new PathIcon
             {
                 Kind = "ExclamationCircleFilled"
             };
+        }
 
         LanguageResourceBinder.CreateBinding(this, OkTextProperty, PopupConfirmLangResourceKey.OkText);
         LanguageResourceBinder.CreateBinding(this, CancelTextProperty, PopupConfirmLangResourceKey.CancelText);
         base.ApplyTemplate();
     }
-
-
 
     #region 公共属性属性
 
@@ -146,7 +148,6 @@ public class PopupConfirm : FlyoutHost
 
     #endregion
 }
-
 
 public class PopupConfirmClickEventArgs : RoutedEventArgs
 {

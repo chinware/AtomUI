@@ -13,7 +13,6 @@ namespace AtomUI.Controls;
 
 using AvaloniaSeparator = Avalonia.Controls.Separator;
 
-
 public enum SeparatorTitlePosition
 {
     Left,
@@ -21,13 +20,12 @@ public enum SeparatorTitlePosition
     Center
 }
 
-
 public class Separator : AvaloniaSeparator, IControlCustomStyle
 {
     private const double SEPARATOR_LINE_MIN_PROPORTION = 0.25;
-    private double _currentEdgeDistance;
 
     private readonly IControlCustomStyle _customStyle;
+    private double _currentEdgeDistance;
     private Label? _titleLabel;
 
     static Separator()
@@ -65,8 +63,6 @@ public class Separator : AvaloniaSeparator, IControlCustomStyle
         _customStyle.HandleTemplateApplied(e.NameScope);
     }
 
-
-
     #region 公共属性定义
 
     public static readonly StyledProperty<string?> TitleProperty =
@@ -95,7 +91,7 @@ public class Separator : AvaloniaSeparator, IControlCustomStyle
         AvaloniaProperty.Register<Separator, double>(nameof(LineWidth), 1);
 
     /// <summary>
-    ///     分割线的标题
+    /// 分割线的标题
     /// </summary>
     [Content]
     public string? Title
@@ -105,7 +101,7 @@ public class Separator : AvaloniaSeparator, IControlCustomStyle
     }
 
     /// <summary>
-    ///     分割线标题的位置
+    /// 分割线标题的位置
     /// </summary>
     public SeparatorTitlePosition TitlePosition
     {
@@ -114,7 +110,7 @@ public class Separator : AvaloniaSeparator, IControlCustomStyle
     }
 
     /// <summary>
-    ///     分割线标题的颜色
+    /// 分割线标题的颜色
     /// </summary>
     public IBrush? TitleColor
     {
@@ -123,7 +119,7 @@ public class Separator : AvaloniaSeparator, IControlCustomStyle
     }
 
     /// <summary>
-    ///     分割线标题的颜色
+    /// 分割线标题的颜色
     /// </summary>
     public IBrush? LineColor
     {
@@ -132,7 +128,7 @@ public class Separator : AvaloniaSeparator, IControlCustomStyle
     }
 
     /// <summary>
-    ///     分割线的方向，垂直和水平分割线
+    /// 分割线的方向，垂直和水平分割线
     /// </summary>
     public Orientation Orientation
     {
@@ -141,8 +137,8 @@ public class Separator : AvaloniaSeparator, IControlCustomStyle
     }
 
     /// <summary>
-    ///     The margin-left/right between the title and its closest border, while the orientation must be left or right,
-    ///     If a numeric value of type string is provided without a unit, it is assumed to be in pixels (px) by default.
+    /// The margin-left/right between the title and its closest border, while the orientation must be left or right,
+    /// If a numeric value of type string is provided without a unit, it is assumed to be in pixels (px) by default.
     /// </summary>
     /// <returns></returns>
     public double OrientationMargin
@@ -152,7 +148,7 @@ public class Separator : AvaloniaSeparator, IControlCustomStyle
     }
 
     /// <summary>
-    ///     是否为虚线
+    /// 是否为虚线
     /// </summary>
     public bool IsDashedLine
     {
@@ -161,7 +157,7 @@ public class Separator : AvaloniaSeparator, IControlCustomStyle
     }
 
     /// <summary>
-    ///     分割线的宽度，这里的宽度是 RenderScaling 中立的像素值
+    /// 分割线的宽度，这里的宽度是 RenderScaling 中立的像素值
     /// </summary>
     public double LineWidth
     {
@@ -170,8 +166,6 @@ public class Separator : AvaloniaSeparator, IControlCustomStyle
     }
 
     #endregion
-
-
 
     #region 内部属性定义
 
@@ -207,8 +201,6 @@ public class Separator : AvaloniaSeparator, IControlCustomStyle
 
     #endregion
 
-
-
     #region IControlCustomStyle 实现
 
     void IControlCustomStyle.SetupTokenBindings()
@@ -225,15 +217,24 @@ public class Separator : AvaloniaSeparator, IControlCustomStyle
         var targetWidth  = size.Width;
         if (Orientation == Orientation.Horizontal)
         {
-            if (Title is null || Title?.Length == 0) targetHeight = LineWidth * 3;
+            if (Title is null || Title?.Length == 0)
+            {
+                targetHeight = LineWidth * 3;
+            }
 
-            if (!double.IsInfinity(availableSize.Width)) targetWidth = Math.Max(availableSize.Width, targetWidth);
+            if (!double.IsInfinity(availableSize.Width))
+            {
+                targetWidth = Math.Max(availableSize.Width, targetWidth);
+            }
         }
         else
         {
             targetWidth  = Math.Max(1, LineWidth) + VerticalMarginInline;
             targetHeight = FontUtils.ConvertEmToPixel(1, FontSize, TopLevel.GetTopLevel(this)?.RenderScaling ?? 1.0);
-            if (!double.IsInfinity(availableSize.Height)) targetHeight = Math.Max(availableSize.Height, targetHeight);
+            if (!double.IsInfinity(availableSize.Height))
+            {
+                targetHeight = Math.Max(availableSize.Height, targetHeight);
+            }
         }
 
         return new Size(targetWidth, targetHeight);
@@ -263,39 +264,54 @@ public class Separator : AvaloniaSeparator, IControlCustomStyle
             // 线最小得占到 25 %，拍脑袋
             var lineMinWidth = finalSize.Width * SEPARATOR_LINE_MIN_PROPORTION;
             var titleWidth   = _titleLabel!.DesiredSize.Width + 2;
-            var remainWidth  = finalSize.Width                - titleWidth - GetTextPaddingInline() * 2;
+            var remainWidth  = finalSize.Width - titleWidth - GetTextPaddingInline() * 2;
             if (lineMinWidth > remainWidth)
 
                 // 字过多
+            {
                 titleWidth = finalSize.Width - lineMinWidth;
+            }
 
             // 处理完成之后，字的宽度一定在 width 范围内
             // 计算位置
             if (TitlePosition == SeparatorTitlePosition.Left)
             {
                 if (!double.IsNaN(OrientationMargin))
+                {
                     _currentEdgeDistance = Math.Min((finalSize.Width - titleWidth) / 2, OrientationMargin);
+                }
                 else
+                {
                     _currentEdgeDistance = finalSize.Width * OrientationMarginPercent;
+                }
 
                 titleRect = new Rect(new Point(_currentEdgeDistance + GetTextPaddingInline(), 0),
                     new Size(titleWidth, finalSize.Height));
                 var rightDelta = titleRect.Right - finalSize.Width;
                 if (MathUtils.GreaterThan(rightDelta, 0))
+                {
                     titleRect = titleRect.WithWidth(finalSize.Width - titleRect.Left);
+                }
             }
             else if (TitlePosition == SeparatorTitlePosition.Right)
             {
                 if (!double.IsNaN(OrientationMargin))
+                {
                     _currentEdgeDistance = Math.Min((finalSize.Width - titleWidth) / 2, OrientationMargin);
+                }
                 else
+                {
                     _currentEdgeDistance = finalSize.Width * OrientationMarginPercent;
+                }
 
                 titleRect = new Rect(
                     new Point(finalSize.Width - _currentEdgeDistance - titleWidth - GetTextPaddingInline() * 2, 0),
                     new Size(titleWidth, finalSize.Height));
-                var leftDelta                = titleRect.Left - 0;
-                if (leftDelta < 0) titleRect = titleRect.WithX(0);
+                var leftDelta = titleRect.Left - 0;
+                if (leftDelta < 0)
+                {
+                    titleRect = titleRect.WithX(0);
+                }
             }
             else
             {
@@ -314,9 +330,12 @@ public class Separator : AvaloniaSeparator, IControlCustomStyle
         {
             EdgeMode = EdgeMode.Aliased
         });
-        var linePen                         = new Pen(LineColor, LineWidth);
-        var controlRect                     = new Rect(new Point(0, 0), DesiredSize);
-        if (IsDashedLine) linePen.DashStyle = DashStyle.Dash;
+        var linePen     = new Pen(LineColor, LineWidth);
+        var controlRect = new Rect(new Point(0, 0), DesiredSize);
+        if (IsDashedLine)
+        {
+            linePen.DashStyle = DashStyle.Dash;
+        }
 
         if (Orientation == Orientation.Horizontal)
         {
@@ -328,8 +347,10 @@ public class Separator : AvaloniaSeparator, IControlCustomStyle
                 if (TitlePosition == SeparatorTitlePosition.Left)
                 {
                     if (double.IsNaN(OrientationMargin))
+                    {
                         context.DrawLine(linePen, new Point(0, offsetY),
                             new Point(titleRect.Left - GetTextPaddingInline(), offsetY));
+                    }
 
                     context.DrawLine(linePen, new Point(titleRect.Right + GetTextPaddingInline(), offsetY),
                         new Point(controlRect.Right, offsetY));
@@ -339,8 +360,10 @@ public class Separator : AvaloniaSeparator, IControlCustomStyle
                     context.DrawLine(linePen, new Point(0, offsetY),
                         new Point(titleRect.Left - GetTextPaddingInline(), offsetY));
                     if (double.IsNaN(OrientationMargin))
+                    {
                         context.DrawLine(linePen, new Point(titleRect.Right + GetTextPaddingInline(), offsetY),
                             new Point(controlRect.Right, offsetY));
+                    }
                 }
                 else
                 {
@@ -364,7 +387,6 @@ public class Separator : AvaloniaSeparator, IControlCustomStyle
 
     #endregion
 }
-
 
 public class VerticalSeparator : Separator
 {

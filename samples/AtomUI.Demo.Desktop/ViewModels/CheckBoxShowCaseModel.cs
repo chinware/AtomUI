@@ -115,9 +115,13 @@ public class CheckBoxShowCaseModel : ObservableObject
         if (ControlledCheckBoxCheckedStatus.HasValue)
         {
             if (ControlledCheckBoxCheckedStatus.Value)
+            {
                 CheckStatusBtnText = "UnCheck";
+            }
             else
+            {
                 CheckStatusBtnText = "Check";
+            }
         }
         else
         {
@@ -128,18 +132,28 @@ public class CheckBoxShowCaseModel : ObservableObject
     private void SetupEnabledBtnText()
     {
         if (ControlledCheckBoxEnabledStatus)
+        {
             EnableStatusBtnText = "Disable";
+        }
         else
+        {
             EnableStatusBtnText = "Enable";
+        }
     }
 
     private void SetupControlledCheckBoxText()
     {
         var checkedText = "UnChecked";
-        if (ControlledCheckBoxCheckedStatus.HasValue && ControlledCheckBoxCheckedStatus.Value) checkedText = "Checked";
+        if (ControlledCheckBoxCheckedStatus.HasValue && ControlledCheckBoxCheckedStatus.Value)
+        {
+            checkedText = "Checked";
+        }
 
-        var enabledText                                  = "Disabled";
-        if (ControlledCheckBoxEnabledStatus) enabledText = "Enabled";
+        var enabledText = "Disabled";
+        if (ControlledCheckBoxEnabledStatus)
+        {
+            enabledText = "Enabled";
+        }
 
         ControlledCheckBoxText = $"{checkedText}-{enabledText}";
     }
@@ -163,10 +177,16 @@ public class CheckBoxShowCaseModel : ObservableObject
     public void CheckedItemStatusHandler(object arg)
     {
         if (OrangeCheckedStatus && PearCheckedStatus && AppleCheckedStatus)
+        {
             CheckedAllStatus = true;
+        }
         else if (!OrangeCheckedStatus && !PearCheckedStatus && !AppleCheckedStatus)
+        {
             CheckedAllStatus = false;
+        }
         else
+        {
             CheckedAllStatus = null;
+        }
     }
 }

@@ -13,7 +13,6 @@ namespace AtomUI.Controls;
 
 using AvaloniaTabControl = Avalonia.Controls.TabControl;
 
-
 public class BaseTabControl : AvaloniaTabControl
 {
     public const string TopPC = ":top";
@@ -47,9 +46,11 @@ public class BaseTabControl : AvaloniaTabControl
     private void SetupBorderBinding()
     {
         if (_frameDecorator is not null)
+        {
             TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
                 GlobalTokenResourceKey.BorderThickness, BindingPriority.Template,
                 new RenderScaleAwareThicknessConfigure(this));
+        }
 
         TokenResourceBinder.CreateTokenBinding(this, TabAndContentGutterProperty,
             TabControlTokenResourceKey.TabAndContentGutter);
@@ -59,7 +60,9 @@ public class BaseTabControl : AvaloniaTabControl
     {
         base.PrepareContainerForItemOverride(container, item, index);
         if (container is TabItem tabItem)
+        {
             BindUtils.RelayBind(this, SizeTypeProperty, tabItem, TabItem.SizeTypeProperty);
+        }
     }
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -71,28 +74,39 @@ public class BaseTabControl : AvaloniaTabControl
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == TabStripPlacementProperty) HandlePlacementChanged();
+        if (change.Property == TabStripPlacementProperty)
+        {
+            HandlePlacementChanged();
+        }
     }
 
     private void UpdatePseudoClasses()
     {
-        PseudoClasses.Set(TopPC, TabStripPlacement    == Dock.Top);
-        PseudoClasses.Set(RightPC, TabStripPlacement  == Dock.Right);
+        PseudoClasses.Set(TopPC, TabStripPlacement == Dock.Top);
+        PseudoClasses.Set(RightPC, TabStripPlacement == Dock.Right);
         PseudoClasses.Set(BottomPC, TabStripPlacement == Dock.Bottom);
-        PseudoClasses.Set(LeftPC, TabStripPlacement   == Dock.Left);
+        PseudoClasses.Set(LeftPC, TabStripPlacement == Dock.Left);
     }
 
     private void HandlePlacementChanged()
     {
         UpdatePseudoClasses();
         if (TabStripPlacement == Dock.Top)
+        {
             TabStripMargin = new Thickness(0, 0, 0, _tabAndContentGutter);
+        }
         else if (TabStripPlacement == Dock.Right)
+        {
             TabStripMargin = new Thickness(_tabAndContentGutter, 0, 0, 0);
+        }
         else if (TabStripPlacement == Dock.Bottom)
+        {
             TabStripMargin = new Thickness(0, _tabAndContentGutter, 0, 0);
+        }
         else
+        {
             TabStripMargin = new Thickness(0, 0, _tabAndContentGutter, 0);
+        }
     }
 
     private void SetupTabStripBorderPoints()
@@ -105,7 +119,7 @@ public class BaseTabControl : AvaloniaTabControl
             var offsetDelta     = borderThickness / 2;
             if (TabStripPlacement == Dock.Top)
             {
-                _tabStripBorderStartPoint = new Point(0, size.Height          - offsetDelta);
+                _tabStripBorderStartPoint = new Point(0, size.Height - offsetDelta);
                 _tabStripBorderEndPoint   = new Point(size.Width, size.Height - offsetDelta);
             }
             else if (TabStripPlacement == Dock.Right)
@@ -140,8 +154,6 @@ public class BaseTabControl : AvaloniaTabControl
         context.DrawLine(new Pen(BorderBrush, borderThickness), _tabStripBorderStartPoint, _tabStripBorderEndPoint);
     }
 
-
-
     #region 公共属性定义
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
@@ -163,8 +175,6 @@ public class BaseTabControl : AvaloniaTabControl
     }
 
     #endregion
-
-
 
     #region 内部属性实现
 

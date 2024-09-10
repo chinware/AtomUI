@@ -257,9 +257,9 @@ internal class CollapseItemTheme : BaseControlTheme
     private void BuildTriggerStyle()
     {
         var headerTriggerHandleStyle = new Style(selector => selector.Nesting()
-            .PropertyEquals(
-                CollapseItem.TriggerTypeProperty,
-                CollapseTriggerType.Header));
+                                                                     .PropertyEquals(
+                                                                         CollapseItem.TriggerTypeProperty,
+                                                                         CollapseTriggerType.Header));
         var headerDecoratorStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));
         headerDecoratorStyle.Add(InputElement.CursorProperty, new Cursor(StandardCursorType.Hand));
         headerTriggerHandleStyle.Add(headerDecoratorStyle);
@@ -267,7 +267,7 @@ internal class CollapseItemTheme : BaseControlTheme
 
         var iconTriggerHandleStyle =
             new Style(selector => selector.Nesting()
-                .PropertyEquals(CollapseItem.TriggerTypeProperty, CollapseTriggerType.Icon));
+                                          .PropertyEquals(CollapseItem.TriggerTypeProperty, CollapseTriggerType.Icon));
         var expandIconStyle = new Style(selector => selector.Nesting().Template().Name(ExpandButtonPart));
         expandIconStyle.Add(InputElement.CursorProperty, new Cursor(StandardCursorType.Hand));
         iconTriggerHandleStyle.Add(expandIconStyle);
@@ -277,9 +277,9 @@ internal class CollapseItemTheme : BaseControlTheme
     private void BuildTriggerPositionStyle()
     {
         var startPositionStyle = new Style(selector => selector.Nesting()
-            .PropertyEquals(
-                CollapseItem.ExpandIconPositionProperty,
-                CollapseExpandIconPosition.Start));
+                                                               .PropertyEquals(
+                                                                   CollapseItem.ExpandIconPositionProperty,
+                                                                   CollapseExpandIconPosition.Start));
         {
             var expandButtonStyle = new Style(selector => selector.Nesting().Template().Name(ExpandButtonPart));
             expandButtonStyle.Add(Grid.ColumnProperty, 0);
@@ -288,9 +288,9 @@ internal class CollapseItemTheme : BaseControlTheme
         }
         Add(startPositionStyle);
         var endPositionStyle = new Style(selector => selector.Nesting()
-            .PropertyEquals(
-                CollapseItem.ExpandIconPositionProperty,
-                CollapseExpandIconPosition.End));
+                                                             .PropertyEquals(
+                                                                 CollapseItem.ExpandIconPositionProperty,
+                                                                 CollapseExpandIconPosition.End));
         {
             var expandButtonStyle = new Style(selector => selector.Nesting().Template().Name(ExpandButtonPart));
             expandButtonStyle.Add(Grid.ColumnProperty, 3);
@@ -326,7 +326,7 @@ internal class CollapseItemTheme : BaseControlTheme
             new Style(selector => selector.Nesting().Class(StdPseudoClass.Disabled));
         disabledStyle.Add(TemplatedControl.ForegroundProperty, GlobalTokenResourceKey.ColorTextDisabled);
         var headerContentPresenterStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart)
-            .Descendant().OfType<ContentPresenter>());
+                                                                        .Descendant().OfType<ContentPresenter>());
         headerContentPresenterStyle.Add(ContentPresenter.ForegroundProperty, GlobalTokenResourceKey.ColorTextDisabled);
         disabledStyle.Add(headerContentPresenterStyle);
 
@@ -336,7 +336,7 @@ internal class CollapseItemTheme : BaseControlTheme
     private void BuildAddOnContentStyle()
     {
         var addOnContentStyle = new Style(selector => selector.Nesting().Template().Name(AddOnContentPresenterPart)
-            .Descendant().OfType<PathIcon>());
+                                                              .Descendant().OfType<PathIcon>());
         addOnContentStyle.Add(Layoutable.WidthProperty, GlobalTokenResourceKey.IconSize);
         addOnContentStyle.Add(Layoutable.HeightProperty, GlobalTokenResourceKey.IconSize);
         Add(addOnContentStyle);

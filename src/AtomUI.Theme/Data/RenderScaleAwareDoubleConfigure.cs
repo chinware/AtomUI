@@ -21,12 +21,18 @@ internal class RenderScaleAwareDoubleConfigure
             var renderScaling = 1d;
             if (_control.TryGetTarget(out var target))
             {
-                var visualRoot                            = target.GetVisualRoot();
-                if (visualRoot is not null) renderScaling = visualRoot.RenderScaling;
+                var visualRoot = target.GetVisualRoot();
+                if (visualRoot is not null)
+                {
+                    renderScaling = visualRoot.RenderScaling;
+                }
             }
 
             value /= renderScaling;
-            if (_postProcessor is not null) return _postProcessor(value);
+            if (_postProcessor is not null)
+            {
+                return _postProcessor(value);
+            }
 
             return value;
         }

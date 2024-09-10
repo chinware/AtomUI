@@ -15,8 +15,6 @@ public partial class EmptyIndicator
         set => SetValue(DescriptionMarginProperty, value);
     }
 
-
-
     #region Control token 值绑定属性
 
     private IBrush? _colorFillToken;

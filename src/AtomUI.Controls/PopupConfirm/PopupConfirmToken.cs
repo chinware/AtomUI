@@ -14,37 +14,37 @@ internal class PopupConfirmToken : AbstractControlDesignToken
     }
 
     /// <summary>
-    ///     菜单 Popup 最小宽度
+    /// 菜单 Popup 最小宽度
     /// </summary>
     public double PopupMinWidth { get; set; }
 
     /// <summary>
-    ///     菜单 Popup 最小高度
+    /// 菜单 Popup 最小高度
     /// </summary>
     public double PopupMinHeight { get; set; }
 
     /// <summary>
-    ///     按钮的外边距
+    /// 按钮的外边距
     /// </summary>
     public Thickness ButtonMargin { get; set; }
 
     /// <summary>
-    ///     Icon 外边距
+    /// Icon 外边距
     /// </summary>
     public Thickness IconMargin { get; set; }
 
     /// <summary>
-    ///     主内容区域外边距
+    /// 主内容区域外边距
     /// </summary>
     public Thickness ContentContainerMargin { get; set; }
 
     /// <summary>
-    ///     标题栏外边距
+    /// 标题栏外边距
     /// </summary>
     public Thickness TitleMargin { get; set; }
 
     /// <summary>
-    ///     按钮区域外边距
+    /// 按钮区域外边距
     /// </summary>
     public Thickness ButtonContainerMargin { get; set; }
 

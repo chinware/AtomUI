@@ -54,14 +54,22 @@ public static class ObjectExtension
     }
 
     public static T? GetPropertyOrThrow<T>(this object source, string name,
-        BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public |
-                             BindingFlags.FlattenHierarchy)
+                                           BindingFlags flags =
+                                               BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public |
+                                               BindingFlags.FlattenHierarchy)
     {
         var obj = source.GetType().GetPropertyInfoOrThrow(name, flags).GetValue(source);
-        if (obj is T propertyOrThrow) return propertyOrThrow;
+        if (obj is T propertyOrThrow)
+        {
+            return propertyOrThrow;
+        }
+
         if (obj == null)
         {
-            if (typeof(T).IsValueType) throw new Exception(name + " is a value type but the value is null.");
+            if (typeof(T).IsValueType)
+            {
+                throw new Exception(name + " is a value type but the value is null.");
+            }
 
             return default;
         }
@@ -83,11 +91,17 @@ public static class ObjectExtension
         BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
     {
         var obj = declareType.GetPropertyInfoOrThrow(name, flags).GetValue(source);
-        if (obj is T propertyOrThrow) return propertyOrThrow;
+        if (obj is T propertyOrThrow)
+        {
+            return propertyOrThrow;
+        }
 
         if (obj == null)
         {
-            if (typeof(T).IsValueType) throw new Exception(name + " is a value type but the value is null.");
+            if (typeof(T).IsValueType)
+            {
+                throw new Exception(name + " is a value type but the value is null.");
+            }
 
             return default;
         }
@@ -110,7 +124,10 @@ public static class ObjectExtension
         BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic)
     {
         var property = declareType.GetProperty(name, flags);
-        if (property is null) return false;
+        if (property is null)
+        {
+            return false;
+        }
 
         property.SetValue(source, value);
         return true;
@@ -165,15 +182,22 @@ public static class ObjectExtension
     }
 
     public static T? GetFieldOrThrow<T>(this object source, string name,
-        BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public |
-                             BindingFlags.FlattenHierarchy)
+                                        BindingFlags flags =
+                                            BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public |
+                                            BindingFlags.FlattenHierarchy)
     {
         var obj = source.GetType().GetFieldInfoOrThrow(name, flags).GetValue(source);
-        if (obj is T fieldOrThrow) return fieldOrThrow;
+        if (obj is T fieldOrThrow)
+        {
+            return fieldOrThrow;
+        }
 
         if (obj == null)
         {
-            if (typeof(T).IsValueType) throw new Exception(name + " is a value type but the value is null.");
+            if (typeof(T).IsValueType)
+            {
+                throw new Exception(name + " is a value type but the value is null.");
+            }
 
             return default;
         }
@@ -195,10 +219,17 @@ public static class ObjectExtension
         BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
     {
         var obj = declareType.GetFieldInfoOrThrow(name, flags).GetValue(source);
-        if (obj is T fieldOrThrow) return fieldOrThrow;
+        if (obj is T fieldOrThrow)
+        {
+            return fieldOrThrow;
+        }
+
         if (obj == null)
         {
-            if (typeof(T).IsValueType) throw new Exception(name + " is a value type but the value is null.");
+            if (typeof(T).IsValueType)
+            {
+                throw new Exception(name + " is a value type but the value is null.");
+            }
 
             return default;
         }
@@ -221,7 +252,10 @@ public static class ObjectExtension
         BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
     {
         var field = declareType.GetField(name, flags);
-        if (field is null) return false;
+        if (field is null)
+        {
+            return false;
+        }
 
         field.SetValue(source, value);
         return true;

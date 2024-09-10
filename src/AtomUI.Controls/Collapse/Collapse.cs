@@ -20,13 +20,11 @@ public enum CollapseTriggerType
     Icon
 }
 
-
 public enum CollapseExpandIconPosition
 {
     Start,
     End
 }
-
 
 [TemplatePart(CollapseTheme.ItemsPresenterPart, typeof(ItemsPresenter))]
 public class Collapse : SelectingItemsControl
@@ -50,9 +48,15 @@ public class Collapse : SelectingItemsControl
     private void SetupItemsBorderThickness()
     {
         if (VisualRoot is not null)
+        {
             for (var i = 0; i < ItemCount; ++i)
+            {
                 if (Items[i] is CollapseItem collapseItem)
+                {
                     SetupCollapseBorderThickness(collapseItem, i);
+                }
+            }
+        }
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -100,17 +104,24 @@ public class Collapse : SelectingItemsControl
         {
             if (!IsBorderless)
             {
-                if (index == ItemCount - 1 && !collapseItem.IsSelected) headerBorderBottom = 0d;
+                if (index == ItemCount - 1 && !collapseItem.IsSelected)
+                {
+                    headerBorderBottom = 0d;
+                }
             }
             else
             {
                 if (collapseItem.IsSelected || (index == ItemCount - 1 && !collapseItem.IsSelected))
+                {
                     headerBorderBottom = 0d;
+                }
             }
 
             if (index == ItemCount - 1 &&
                 (collapseItem.IsSelected || (!collapseItem.IsSelected && collapseItem.InAnimating)))
+            {
                 contentBorderBottom = 0d;
+            }
         }
         else
         {
@@ -130,8 +141,12 @@ public class Collapse : SelectingItemsControl
         {
             var containerFromEventSource = GetContainerFromEventSource(e.Source);
             if (containerFromEventSource is CollapseItem collapseItem)
+            {
                 if (!collapseItem.InAnimating)
+                {
                     e.Handled = UpdateSelectionFromEventSource(e.Source);
+                }
+            }
         }
     }
 
@@ -142,8 +157,12 @@ public class Collapse : SelectingItemsControl
         {
             var containerFromEventSource = GetContainerFromEventSource(e.Source);
             if (containerFromEventSource is CollapseItem collapseItem)
+            {
                 if (!collapseItem.InAnimating && collapseItem.IsPointInHeaderBounds(e.GetPosition(collapseItem)))
+                {
                     e.Handled = UpdateSelectionFromEventSource(e.Source);
+                }
+            }
         }
     }
 
@@ -154,12 +173,16 @@ public class Collapse : SelectingItemsControl
             var container = GetContainerFromEventSource(e.Source);
             if (container != null
                 && container.GetVisualsAt(e.GetPosition(container))
-                    .Any(c => container == c || container.IsVisualAncestorOf(c)))
+                            .Any(c => container == c || container.IsVisualAncestorOf(c)))
             {
                 var containerFromEventSource = GetContainerFromEventSource(e.Source);
                 if (containerFromEventSource is CollapseItem collapseItem)
+                {
                     if (!collapseItem.InAnimating && collapseItem.IsPointInHeaderBounds(e.GetPosition(collapseItem)))
+                    {
                         e.Handled = UpdateSelectionFromEventSource(e.Source);
+                    }
+                }
             }
         }
     }
@@ -168,33 +191,47 @@ public class Collapse : SelectingItemsControl
     {
         base.OnPropertyChanged(change);
         if (VisualRoot is not null)
+        {
             if (change.Property == IsBorderlessProperty)
+            {
                 SetupEffectiveBorderThickness();
+            }
+        }
 
         if (change.Property == IsAccordionProperty)
+        {
             SetupSelectionMode();
+        }
         else if (change.Property == IsBorderlessProperty ||
                  change.Property == IsGhostStyleProperty)
+        {
             SetupItemsBorderThickness();
+        }
     }
 
     private void SetupEffectiveBorderThickness()
     {
         if (IsBorderless || IsGhostStyle)
+        {
             EffectiveBorderThickness = default;
+        }
         else
+        {
             EffectiveBorderThickness = BorderThickness;
+        }
     }
 
     private void SetupSelectionMode()
     {
         if (IsAccordion)
+        {
             SelectionMode = SelectionMode.Single | SelectionMode.Toggle;
+        }
         else
+        {
             SelectionMode = SelectionMode.Multiple | SelectionMode.Toggle;
+        }
     }
-
-
 
     #region 公共属性定义
 
@@ -253,8 +290,6 @@ public class Collapse : SelectingItemsControl
     }
 
     #endregion
-
-
 
     #region 内部属性定义
 

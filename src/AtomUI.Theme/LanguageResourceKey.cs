@@ -21,9 +21,15 @@ public readonly struct LanguageResourceKey : IEquatable<LanguageResourceKey>
 
     public override bool Equals(object? obj)
     {
-        if (obj is LanguageResourceKey other) return Equals(other);
+        if (obj is LanguageResourceKey other)
+        {
+            return Equals(other);
+        }
 
-        if (obj is string str) return Value == str;
+        if (obj is string str)
+        {
+            return Value == str;
+        }
 
         return false;
     }

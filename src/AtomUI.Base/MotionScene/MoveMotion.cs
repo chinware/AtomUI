@@ -42,7 +42,9 @@ public class MoveDownInMotion : AbstractMotion
     {
         base.NotifyPreBuildTransition(config, motionTarget);
         if (config.Property == MotionRenderTransformProperty)
+        {
             config.StartValue = BuildTranslateTransform(0, -motionTarget.DesiredSize.Height);
+        }
     }
 
     internal override Size CalculateSceneSize(Size motionTargetSize)
@@ -55,7 +57,6 @@ public class MoveDownInMotion : AbstractMotion
         return motionTargetPosition.WithY(motionTargetPosition.Y - motionTargetSize.Height);
     }
 }
-
 
 public class MoveDownOutMotion : AbstractMotion
 {
@@ -94,7 +95,9 @@ public class MoveDownOutMotion : AbstractMotion
     {
         base.NotifyPreBuildTransition(config, motionTarget);
         if (config.Property == MotionRenderTransformProperty)
+        {
             config.EndValue = BuildTranslateTransform(0, -motionTarget.DesiredSize.Height);
+        }
     }
 
     internal override Size CalculateSceneSize(Size motionTargetSize)
@@ -107,7 +110,6 @@ public class MoveDownOutMotion : AbstractMotion
         return motionTargetPosition.WithY(motionTargetPosition.Y - motionTargetSize.Height);
     }
 }
-
 
 public class MoveLeftInMotion : AbstractMotion
 {
@@ -145,7 +147,9 @@ public class MoveLeftInMotion : AbstractMotion
     {
         base.NotifyPreBuildTransition(config, motionTarget);
         if (config.Property == MotionRenderTransformProperty)
+        {
             config.StartValue = BuildTranslateTransform(-motionTarget.DesiredSize.Width, 0);
+        }
     }
 
     internal override Size CalculateSceneSize(Size motionTargetSize)
@@ -158,7 +162,6 @@ public class MoveLeftInMotion : AbstractMotion
         return motionTargetPosition.WithX(motionTargetPosition.X - motionTargetSize.Width);
     }
 }
-
 
 public class MoveLeftOutMotion : AbstractMotion
 {
@@ -197,7 +200,9 @@ public class MoveLeftOutMotion : AbstractMotion
     {
         base.NotifyPreBuildTransition(config, motionTarget);
         if (config.Property == MotionRenderTransformProperty)
+        {
             config.EndValue = BuildTranslateTransform(-motionTarget.DesiredSize.Width, 0);
+        }
     }
 
     internal override Size CalculateSceneSize(Size motionTargetSize)
@@ -210,7 +215,6 @@ public class MoveLeftOutMotion : AbstractMotion
         return motionTargetPosition.WithX(motionTargetPosition.X - motionTargetSize.Width);
     }
 }
-
 
 public class MoveRightInMotion : AbstractMotion
 {
@@ -248,7 +252,9 @@ public class MoveRightInMotion : AbstractMotion
     {
         base.NotifyPreBuildTransition(config, motionTarget);
         if (config.Property == MotionRenderTransformProperty)
+        {
             config.StartValue = BuildTranslateTransform(motionTarget.DesiredSize.Width, 0);
+        }
     }
 
     internal override Size CalculateSceneSize(Size motionTargetSize)
@@ -256,7 +262,6 @@ public class MoveRightInMotion : AbstractMotion
         return motionTargetSize.WithHeight(motionTargetSize.Width * 2);
     }
 }
-
 
 public class MoveRightOutMotion : AbstractMotion
 {
@@ -294,7 +299,9 @@ public class MoveRightOutMotion : AbstractMotion
     {
         base.NotifyPreBuildTransition(config, motionTarget);
         if (config.Property == MotionRenderTransformProperty)
+        {
             config.EndValue = BuildTranslateTransform(motionTarget.DesiredSize.Width, 0);
+        }
     }
 
     internal override Size CalculateSceneSize(Size motionTargetSize)
@@ -302,7 +309,6 @@ public class MoveRightOutMotion : AbstractMotion
         return motionTargetSize.WithHeight(motionTargetSize.Width * 2);
     }
 }
-
 
 public class MoveUpInMotion : AbstractMotion
 {
@@ -341,7 +347,9 @@ public class MoveUpInMotion : AbstractMotion
     {
         base.NotifyPreBuildTransition(config, motionTarget);
         if (config.Property == MotionRenderTransformProperty)
+        {
             config.StartValue = BuildTranslateTransform(0, motionTarget.DesiredSize.Height);
+        }
     }
 
     internal override Size CalculateSceneSize(Size motionTargetSize)
@@ -349,7 +357,6 @@ public class MoveUpInMotion : AbstractMotion
         return motionTargetSize.WithHeight(motionTargetSize.Height * 2);
     }
 }
-
 
 public class MoveUpOutMotion : AbstractMotion
 {
@@ -388,7 +395,9 @@ public class MoveUpOutMotion : AbstractMotion
     {
         base.NotifyPreBuildTransition(config, motionTarget);
         if (config.Property == MotionRenderTransformProperty)
+        {
             config.EndValue = BuildTranslateTransform(0, motionTarget.DesiredSize.Height);
+        }
     }
 
     internal override Size CalculateSceneSize(Size motionTargetSize)

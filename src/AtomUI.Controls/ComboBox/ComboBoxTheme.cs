@@ -254,8 +254,8 @@ internal class ComboBoxTheme : BaseControlTheme
     {
         var borderlessStyle =
             new Style(selector => selector.Nesting()
-                .PropertyEquals(AddOnDecoratedBox.StyleVariantProperty,
-                    AddOnDecoratedVariant.Borderless));
+                                          .PropertyEquals(AddOnDecoratedBox.StyleVariantProperty,
+                                              AddOnDecoratedVariant.Borderless));
 
         {
             var errorStyle = new Style(selector => selector.Nesting().Class(AddOnDecoratedBox.ErrorPC));
@@ -279,8 +279,8 @@ internal class ComboBoxTheme : BaseControlTheme
 
         var filledStyle =
             new Style(selector => selector.Nesting()
-                .PropertyEquals(AddOnDecoratedBox.StyleVariantProperty,
-                    AddOnDecoratedVariant.Filled));
+                                          .PropertyEquals(AddOnDecoratedBox.StyleVariantProperty,
+                                              AddOnDecoratedVariant.Filled));
 
         {
             var errorStyle = new Style(selector => selector.Nesting().Class(AddOnDecoratedBox.ErrorPC));

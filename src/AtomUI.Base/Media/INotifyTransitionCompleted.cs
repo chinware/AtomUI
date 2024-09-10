@@ -10,7 +10,6 @@ public class TransitionCompletedEventArgs : EventArgs
     public bool Status { get; }
 }
 
-
 internal interface INotifyTransitionCompleted
 {
     public IObservable<bool> CompletedObservable { get; }

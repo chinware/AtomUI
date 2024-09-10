@@ -103,7 +103,7 @@ internal class SplitButtonTheme : BaseControlTheme
         Add(buttonStyle);
         var buttonHoverStyle = new Style(selector =>
             selector.Nesting().Template().Name(MainLayoutPart).Child().OfType<Button>()
-                .Class(StdPseudoClass.PointerOver));
+                    .Class(StdPseudoClass.PointerOver));
         buttonHoverStyle.Add(Visual.ZIndexProperty, ActivatedZIndex);
         Add(buttonHoverStyle);
     }

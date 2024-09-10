@@ -33,9 +33,15 @@ public class AddOnDecoratedInnerBox : ContentControl
 
         if (change.Property == LeftAddOnContentProperty || change.Property == RightAddOnContentProperty)
         {
-            if (change.OldValue is Control oldControl) UIStructureUtils.SetTemplateParent(oldControl, null);
+            if (change.OldValue is Control oldControl)
+            {
+                UIStructureUtils.SetTemplateParent(oldControl, null);
+            }
 
-            if (change.NewValue is Control newControl) UIStructureUtils.SetTemplateParent(newControl, this);
+            if (change.NewValue is Control newControl)
+            {
+                UIStructureUtils.SetTemplateParent(newControl, this);
+            }
         }
     }
 
@@ -47,11 +53,20 @@ public class AddOnDecoratedInnerBox : ContentControl
         _rightAddOnLayout = e.NameScope.Find<StackPanel>(AddOnDecoratedInnerBoxTheme.RightAddOnLayoutPart);
         _clearButton      = e.NameScope.Find<IconButton>(AddOnDecoratedInnerBoxTheme.ClearButtonPart);
 
-        if (_leftAddOnLayout is not null) _leftAddOnLayout.SizeChanged   += HandleLayoutSizeChanged;
-        if (_rightAddOnLayout is not null) _rightAddOnLayout.SizeChanged += HandleLayoutSizeChanged;
+        if (_leftAddOnLayout is not null)
+        {
+            _leftAddOnLayout.SizeChanged += HandleLayoutSizeChanged;
+        }
+
+        if (_rightAddOnLayout is not null)
+        {
+            _rightAddOnLayout.SizeChanged += HandleLayoutSizeChanged;
+        }
 
         if (_clearButton is not null)
+        {
             _clearButton.Click += (sender, args) => { NotifyClearButtonClicked(); };
+        }
 
         SetupContentPresenterMargin();
         BuildEffectiveInnerBoxPadding();
@@ -67,16 +82,23 @@ public class AddOnDecoratedInnerBox : ContentControl
         var marginLeft  = 0d;
         var marginRight = 0d;
         if (_leftAddOnLayout is not null)
+        {
             if (_leftAddOnLayout.DesiredSize.Width > 0 && _leftAddOnLayout.DesiredSize.Height > 0)
+            {
                 marginLeft = _marginXSToken;
+            }
+        }
+
         if (_rightAddOnLayout is not null)
+        {
             if (_rightAddOnLayout.DesiredSize.Width > 0 && _rightAddOnLayout.DesiredSize.Height > 0)
+            {
                 marginRight = _marginXSToken;
+            }
+        }
 
         ContentPresenterMargin = new Thickness(marginLeft, 0, marginRight, 0);
     }
-
-
 
     #region 公共属性定义
 
@@ -135,8 +157,6 @@ public class AddOnDecoratedInnerBox : ContentControl
     }
 
     #endregion
-
-
 
     #region 内部属性定义
 

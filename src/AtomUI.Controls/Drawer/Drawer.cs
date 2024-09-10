@@ -16,8 +16,6 @@ public class Drawer : TemplatedControl
         return container?.Drawer;
     }
 
-
-
     #region Properties
 
     [Content]
@@ -131,8 +129,6 @@ public class Drawer : TemplatedControl
 
     #endregion
 
-
-
     #region Ctor
 
     static Drawer()
@@ -147,8 +143,6 @@ public class Drawer : TemplatedControl
 
     #endregion
 
-
-
     #region Open & Close
 
     private DrawerContainer? _container;
@@ -157,9 +151,13 @@ public class Drawer : TemplatedControl
     private static void OnIsOpenChanged(Drawer drawer, AvaloniaPropertyChangedEventArgs arg)
     {
         if (drawer.IsOpen)
+        {
             drawer.Open();
+        }
         else
+        {
             drawer.Close();
+        }
     }
 
     private void Open()
@@ -174,7 +172,10 @@ public class Drawer : TemplatedControl
 
     private void Close()
     {
-        if (_container == null) return;
+        if (_container == null)
+        {
+            return;
+        }
 
         this.BeginRemovingAdorner(_container, 1000, () => IsOpen == false);
         _container.IsHitTestVisible = false;

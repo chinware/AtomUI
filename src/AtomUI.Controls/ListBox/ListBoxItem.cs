@@ -4,7 +4,6 @@ namespace AtomUI.Controls;
 
 using AvaloniaListBoxItem = Avalonia.Controls.ListBoxItem;
 
-
 public class ListBoxItem : AvaloniaListBoxItem
 {
     #region 内部属性定义

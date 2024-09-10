@@ -18,7 +18,11 @@ internal class CircleWavePainter : AbstractWavePainter
 
     public override void Paint(DrawingContext context, object newSize, double newOpacity)
     {
-        if (newSize is not double) throw new ArgumentException("newSize argument must be double type.");
+        if (newSize is not double)
+        {
+            throw new ArgumentException("newSize argument must be double type.");
+        }
+
         var newRadius = (double)newSize;
 
         var originGeometry = new EllipseGeometry

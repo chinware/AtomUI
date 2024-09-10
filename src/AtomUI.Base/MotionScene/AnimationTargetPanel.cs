@@ -10,7 +10,11 @@ internal class AnimationTargetPanel : Panel
 
     protected override Size MeasureOverride(Size availableSize)
     {
-        if (InAnimation && _cacheMeasureSize != default) return _cacheMeasureSize;
+        if (InAnimation && _cacheMeasureSize != default)
+        {
+            return _cacheMeasureSize;
+        }
+
         _cacheMeasureSize = base.MeasureOverride(availableSize);
         return _cacheMeasureSize;
     }

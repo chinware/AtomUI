@@ -104,8 +104,12 @@ public class StepsProgressBar : AbstractLineProgress
     private IBrush GetChunkBrush(int i)
     {
         if (StepsStrokeBrush is not null)
+        {
             if (i >= 0 && i < StepsStrokeBrush.Count)
+            {
                 return StepsStrokeBrush[i];
+            }
+        }
 
         return IndicatorBarBrush!;
     }
@@ -145,8 +149,12 @@ public class StepsProgressBar : AbstractLineProgress
     protected override void CalculateStrokeThickness()
     {
         // 不改变高度
-        var strokeThickness                             = LARGE_STROKE_THICKNESS;
-        if (!double.IsNaN(ChunkHeight)) strokeThickness = ChunkHeight;
+        var strokeThickness = LARGE_STROKE_THICKNESS;
+        if (!double.IsNaN(ChunkHeight))
+        {
+            strokeThickness = ChunkHeight;
+        }
+
         StrokeThickness = strokeThickness;
     }
 
@@ -180,12 +188,16 @@ public class StepsProgressBar : AbstractLineProgress
         double fontSizeSM = default;
         {
             if (TokenResourceUtils.FindGlobalTokenResource(GlobalTokenResourceKey.FontSize) is double value)
+            {
                 fontSize = value;
+            }
         }
 
         {
             if (TokenResourceUtils.FindGlobalTokenResource(GlobalTokenResourceKey.FontSizeSM) is double value)
+            {
                 fontSizeSM = value;
+            }
         }
         var defaultExtraInfoSize = CalculateExtraInfoSize(fontSize);
         var smallExtraInfoSize   = CalculateExtraInfoSize(fontSizeSM);
@@ -235,11 +247,18 @@ public class StepsProgressBar : AbstractLineProgress
         var middleThresholdValue = _sizeTypeThresholdValue[SizeType.Middle];
         var sizeType             = SizeType.Middle;
         if (MathUtils.GreaterThanOrClose(size, largeThresholdValue.NormalStateValue))
+        {
             sizeType = SizeType.Large;
+        }
         else if (MathUtils.GreaterThanOrClose(size, middleThresholdValue.NormalStateValue))
+        {
             sizeType = SizeType.Middle;
+        }
         else
+        {
             sizeType = SizeType.Small;
+        }
+
         return sizeType;
     }
 
@@ -252,11 +271,17 @@ public class StepsProgressBar : AbstractLineProgress
         if (double.IsNaN(ChunkWidth))
         {
             if (EffectiveSizeType == SizeType.Large)
+            {
                 ChunkWidth = LARGE_CHUNK_WIDTH;
+            }
             else if (EffectiveSizeType == SizeType.Middle)
+            {
                 ChunkWidth = MIDDLE_CHUNK_WIDTH;
+            }
             else
+            {
                 ChunkWidth = SMALL_CHUNK_WIDTH;
+            }
         }
     }
 
@@ -270,8 +295,13 @@ public class StepsProgressBar : AbstractLineProgress
     {
         base.NotifyPropertyChanged(e);
         if (e.Property == ChunkHeightProperty)
-            IndicatorThickness                                         = e.GetNewValue<double>();
-        else if (e.Property == IndicatorThicknessProperty) ChunkHeight = e.GetNewValue<double>();
+        {
+            IndicatorThickness = e.GetNewValue<double>();
+        }
+        else if (e.Property == IndicatorThicknessProperty)
+        {
+            ChunkHeight = e.GetNewValue<double>();
+        }
     }
 
     protected override Size MeasureOverride(Size availableSize)
@@ -288,9 +318,13 @@ public class StepsProgressBar : AbstractLineProgress
             if (ShowProgressInfo)
             {
                 if (PercentPosition == LinePercentAlignment.Center)
+                {
                     chunkHeight += _extraInfoSize.Height + LineExtraInfoMargin;
+                }
                 else
+                {
                     targetWidth += _extraInfoSize.Width + LineExtraInfoMargin;
+                }
             }
 
             targetHeight = Math.Max(chunkHeight, MinHeight);
@@ -303,9 +337,13 @@ public class StepsProgressBar : AbstractLineProgress
             if (ShowProgressInfo)
             {
                 if (PercentPosition == LinePercentAlignment.Center)
+                {
                     chunkWidth += _extraInfoSize.Width + LineExtraInfoMargin;
+                }
                 else
+                {
                     targetHeight += _extraInfoSize.Height + LineExtraInfoMargin;
+                }
             }
 
             targetWidth = Math.Max(chunkWidth, MinWidth);
@@ -352,11 +390,17 @@ public class StepsProgressBar : AbstractLineProgress
         else
         {
             if (EffectiveSizeType == SizeType.Large)
+            {
                 chunkWidth = LARGE_CHUNK_WIDTH;
+            }
             else if (EffectiveSizeType == SizeType.Middle)
+            {
                 chunkWidth = MIDDLE_CHUNK_WIDTH;
+            }
             else
+            {
                 chunkWidth = SMALL_CHUNK_WIDTH;
+            }
         }
 
         return chunkWidth;
@@ -366,9 +410,14 @@ public class StepsProgressBar : AbstractLineProgress
     {
         var chunkHeight = 0d;
         if (!double.IsNaN(ChunkHeight))
+        {
             chunkHeight = ChunkHeight;
+        }
         else
+        {
             chunkHeight = StrokeThickness;
+        }
+
         return chunkHeight;
     }
 
@@ -386,11 +435,17 @@ public class StepsProgressBar : AbstractLineProgress
                 var percentLabelWidth  = _extraInfoSize.Width;
                 var percentLabelHeight = _extraInfoSize.Height;
                 if (PercentPosition == LinePercentAlignment.Start)
+                {
                     deflateLeft = percentLabelWidth + LineExtraInfoMargin;
+                }
                 else if (PercentPosition == LinePercentAlignment.Center)
+                {
                     deflateBottom = percentLabelHeight;
+                }
                 else if (PercentPosition == LinePercentAlignment.End)
+                {
                     deflateRight = percentLabelWidth + LineExtraInfoMargin;
+                }
             }
         }
         else
@@ -400,19 +455,28 @@ public class StepsProgressBar : AbstractLineProgress
                 var percentLabelWidth  = _extraInfoSize.Width;
                 var percentLabelHeight = _extraInfoSize.Height;
                 if (PercentPosition == LinePercentAlignment.Start)
+                {
                     deflateTop = percentLabelHeight + LineExtraInfoMargin;
+                }
                 else if (PercentPosition == LinePercentAlignment.Center)
+                {
                     deflateRight = percentLabelWidth;
+                }
                 else if (PercentPosition == LinePercentAlignment.End)
+                {
                     deflateBottom = percentLabelHeight + LineExtraInfoMargin;
+                }
             }
         }
 
         var deflatedControlRect =
             controlRect.Deflate(new Thickness(deflateLeft, deflateTop, deflateRight, deflateBottom));
         if (Orientation == Orientation.Horizontal)
+        {
             return new Rect(new Point(deflatedControlRect.X, (deflatedControlRect.Height - strokeThickness) / 2),
                 new Size(deflatedControlRect.Width, strokeThickness));
+        }
+
         return new Rect(new Point((deflatedControlRect.Width - strokeThickness) / 2, deflatedControlRect.Y),
             new Size(strokeThickness, deflatedControlRect.Height));
     }

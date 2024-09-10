@@ -17,20 +17,17 @@ namespace AtomUI.Controls;
 
 using AvaloniaTabItem = Avalonia.Controls.TabItem;
 
-
 public class TabItem : AvaloniaTabItem, IControlCustomStyle, ICustomHitTest
 {
+    private readonly IControlCustomStyle _customStyle;
     private IconButton? _closeButton;
 
     private StackPanel? _contentLayout;
-    private readonly IControlCustomStyle _customStyle;
 
     public TabItem()
     {
         _customStyle = this;
     }
-
-
 
     #region IControlCustomStyle 实现
 
@@ -48,12 +45,13 @@ public class TabItem : AvaloniaTabItem, IControlCustomStyle, ICustomHitTest
             Transitions = transitions;
         }
 
-        if (_closeButton is not null) _closeButton.Click += HandleCloseRequest;
+        if (_closeButton is not null)
+        {
+            _closeButton.Click += HandleCloseRequest;
+        }
     }
 
     #endregion
-
-
 
     public bool HitTest(Point point)
     {
@@ -78,7 +76,10 @@ public class TabItem : AvaloniaTabItem, IControlCustomStyle, ICustomHitTest
                     GlobalTokenResourceKey.ColorTextDisabled);
             }
 
-            if (_contentLayout is not null) _contentLayout.Children.Insert(0, Icon);
+            if (_contentLayout is not null)
+            {
+                _contentLayout.Children.Insert(0, Icon);
+            }
         }
     }
 
@@ -119,13 +120,17 @@ public class TabItem : AvaloniaTabItem, IControlCustomStyle, ICustomHitTest
     private void HandleCloseRequest(object? sender, RoutedEventArgs args)
     {
         if (Parent is BaseTabControl tabControl)
+        {
             if (tabControl.SelectedItem is TabItem selectedItem)
             {
                 if (selectedItem == this)
                 {
-                    var     selectedIndex                   = tabControl.SelectedIndex;
-                    object? newSelectedItem                 = null;
-                    if (selectedIndex != 0) newSelectedItem = tabControl.Items[--selectedIndex];
+                    var     selectedIndex   = tabControl.SelectedIndex;
+                    object? newSelectedItem = null;
+                    if (selectedIndex != 0)
+                    {
+                        newSelectedItem = tabControl.Items[--selectedIndex];
+                    }
 
                     tabControl.Items.Remove(this);
                     tabControl.SelectedItem = newSelectedItem;
@@ -135,29 +140,41 @@ public class TabItem : AvaloniaTabItem, IControlCustomStyle, ICustomHitTest
                     tabControl.Items.Remove(this);
                 }
             }
+        }
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
         if (VisualRoot is not null)
+        {
             if (change.Property == IconProperty)
             {
                 var oldIcon = change.GetOldValue<PathIcon?>();
-                if (oldIcon != null) UIStructureUtils.SetTemplateParent(oldIcon, null);
+                if (oldIcon != null)
+                {
+                    UIStructureUtils.SetTemplateParent(oldIcon, null);
+                }
 
                 SetupItemIcon();
             }
+        }
 
         if (change.Property == CloseIconProperty)
         {
             var oldIcon = change.GetOldValue<PathIcon?>();
-            if (oldIcon != null) UIStructureUtils.SetTemplateParent(oldIcon, null);
+            if (oldIcon != null)
+            {
+                UIStructureUtils.SetTemplateParent(oldIcon, null);
+            }
 
             SetupCloseIcon();
         }
 
-        if (change.Property == ShapeProperty) HandleShapeChanged();
+        if (change.Property == ShapeProperty)
+        {
+            HandleShapeChanged();
+        }
     }
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -169,12 +186,14 @@ public class TabItem : AvaloniaTabItem, IControlCustomStyle, ICustomHitTest
     private void HandleShapeChanged()
     {
         if (Shape == TabSharp.Line)
+        {
             TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, TabItemTheme.ID);
+        }
         else
+        {
             TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, CardTabItemTheme.ID);
+        }
     }
-
-
 
     #region 公共属性定义
 
@@ -206,8 +225,6 @@ public class TabItem : AvaloniaTabItem, IControlCustomStyle, ICustomHitTest
     }
 
     #endregion
-
-
 
     #region 内部属性定义
 

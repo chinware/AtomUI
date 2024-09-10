@@ -5,7 +5,7 @@ using Avalonia.Utilities;
 namespace AtomUI.Controls.Utils;
 
 /// <summary>
-///     Contains internal helpers used to build and draw various geometries.
+/// Contains internal helpers used to build and draw various geometries.
 /// </summary>
 internal class RoundRectGeometryBuilder
 {
@@ -13,12 +13,12 @@ internal class RoundRectGeometryBuilder
     private const double Epsilon = 0.00000153; // Same as LayoutHelper.LayoutEpsilon
 
     /// <summary>
-    ///     Draws a new rounded rectangle within the given geometry context.
-    ///     Warning: The caller must manage and dispose the <see cref="StreamGeometryContext" /> externally.
+    /// Draws a new rounded rectangle within the given geometry context.
+    /// Warning: The caller must manage and dispose the <see cref="StreamGeometryContext" /> externally.
     /// </summary>
     /// <remarks>
-    ///     WinUI:
-    ///     https://github.com/microsoft/microsoft-ui-xaml/blob/93742a178db8f625ba9299f62c21f656e0b195ad/dxaml/xcp/core/core/elements/geometry.cpp#L1072-L1079
+    /// WinUI:
+    /// https://github.com/microsoft/microsoft-ui-xaml/blob/93742a178db8f625ba9299f62c21f656e0b195ad/dxaml/xcp/core/core/elements/geometry.cpp#L1072-L1079
     /// </remarks>
     /// <param name="context">The geometry context to draw into.</param>
     /// <param name="keypoints">The rounded rectangle keypoints defining the rectangle to draw.</param>
@@ -57,12 +57,14 @@ internal class RoundRectGeometryBuilder
         radiusY = radiusY > 0 ? radiusY : -radiusY;
 
         if (radiusX != 0 || radiusY != 0)
+        {
             context.ArcTo(
                 keypoints.BottomRight,
                 new Size(radiusX, radiusY),
                 0.0,
                 false,
                 SweepDirection.Clockwise);
+        }
 
         // Bottom
         context.LineTo(keypoints.BottomLeft);
@@ -74,12 +76,14 @@ internal class RoundRectGeometryBuilder
         radiusY = radiusY > 0 ? radiusY : -radiusY;
 
         if (radiusX != 0 || radiusY != 0)
+        {
             context.ArcTo(
                 keypoints.LeftBottom,
                 new Size(radiusX, radiusY),
                 0.0,
                 false,
                 SweepDirection.Clockwise);
+        }
 
         // Left
         context.LineTo(keypoints.LeftTop);
@@ -91,19 +95,21 @@ internal class RoundRectGeometryBuilder
         radiusY = radiusY > 0 ? radiusY : -radiusY;
 
         if (radiusX != 0 || radiusY != 0)
+        {
             context.ArcTo(
                 keypoints.TopLeft,
                 new Size(radiusX, radiusY),
                 0.0,
                 false,
                 SweepDirection.Clockwise);
+        }
 
         context.EndFigure(true);
     }
 
     /// <summary>
-    ///     Draws a new rounded rectangle within the given geometry context.
-    ///     Warning: The caller must manage and dispose the <see cref="StreamGeometryContext" /> externally.
+    /// Draws a new rounded rectangle within the given geometry context.
+    /// Warning: The caller must manage and dispose the <see cref="StreamGeometryContext" /> externally.
     /// </summary>
     /// <param name="context">The geometry context to draw into.</param>
     /// <param name="rect">The existing rectangle dimensions without corner radii.</param>
@@ -176,18 +182,18 @@ internal class RoundRectGeometryBuilder
     }
 
     /// <summary>
-    ///     Calculates the keypoints of a rounded rectangle based on the algorithm in WinUI.
-    ///     These keypoints may then be drawn or transformed into other types.
+    /// Calculates the keypoints of a rounded rectangle based on the algorithm in WinUI.
+    /// These keypoints may then be drawn or transformed into other types.
     /// </summary>
     /// <param name="outerBounds">
-    ///     The outer bounds of the rounded rectangle.
-    ///     This should be the overall bounds and size of the shape/control without any
-    ///     corner radii or border thickness adjustments.
+    /// The outer bounds of the rounded rectangle.
+    /// This should be the overall bounds and size of the shape/control without any
+    /// corner radii or border thickness adjustments.
     /// </param>
     /// <param name="borderThickness">The unadjusted border thickness of the rounded rectangle.</param>
     /// <param name="cornerRadius">
-    ///     The unadjusted corner radii of the rounded rectangle.
-    ///     The corner radius is defined to be the middle of the border stroke (center of the border).
+    /// The unadjusted corner radii of the rounded rectangle.
+    /// The corner radius is defined to be the middle of the border stroke (center of the border).
     /// </param>
     /// <param name="sizing">The sizing mode used to calculate the final rounded rectangle size.</param>
     /// <returns>New rounded rectangle keypoints.</returns>
@@ -315,14 +321,14 @@ internal class RoundRectGeometryBuilder
         }
         else
         {
-            fLeftTop     = Math.Max(0.0, cornerRadius.TopLeft     - left);
-            fTopLeft     = Math.Max(0.0, cornerRadius.TopLeft     - top);
-            fTopRight    = Math.Max(0.0, cornerRadius.TopRight    - top);
-            fRightTop    = Math.Max(0.0, cornerRadius.TopRight    - right);
+            fLeftTop     = Math.Max(0.0, cornerRadius.TopLeft - left);
+            fTopLeft     = Math.Max(0.0, cornerRadius.TopLeft - top);
+            fTopRight    = Math.Max(0.0, cornerRadius.TopRight - top);
+            fRightTop    = Math.Max(0.0, cornerRadius.TopRight - right);
             fRightBottom = Math.Max(0.0, cornerRadius.BottomRight - right);
             fBottomRight = Math.Max(0.0, cornerRadius.BottomRight - bottom);
-            fBottomLeft  = Math.Max(0.0, cornerRadius.BottomLeft  - bottom);
-            fLeftBottom  = Math.Max(0.0, cornerRadius.BottomLeft  - left);
+            fBottomLeft  = Math.Max(0.0, cornerRadius.BottomLeft - bottom);
+            fLeftBottom  = Math.Max(0.0, cornerRadius.BottomLeft - left);
         }
 
         var    topLeftX = fLeftTop;
@@ -419,16 +425,15 @@ internal class RoundRectGeometryBuilder
         return keypoints;
     }
 
-
     /// <summary>
-    ///     Represents the keypoints of a rounded rectangle.
-    ///     These keypoints can be shared between methods and turned into geometry.
+    /// Represents the keypoints of a rounded rectangle.
+    /// These keypoints can be shared between methods and turned into geometry.
     /// </summary>
     /// <remarks>
-    ///     A rounded rectangle is the base geometric shape used when drawing borders.
-    ///     It is a superset of a simple rectangle (which has corner radii set to zero).
-    ///     These keypoints can be combined together to produce geometries for both background
-    ///     and border elements.
+    /// A rounded rectangle is the base geometric shape used when drawing borders.
+    /// It is a superset of a simple rectangle (which has corner radii set to zero).
+    /// These keypoints can be combined together to produce geometries for both background
+    /// and border elements.
     /// </remarks>
     internal struct RoundedRectKeypoints
     {
@@ -455,14 +460,14 @@ internal class RoundRectGeometryBuilder
         // BottomLeft = LeftBottom             BottomRight = RightBottom
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="RoundedRectKeypoints" /> struct.
+        /// Initializes a new instance of the <see cref="RoundedRectKeypoints" /> struct.
         /// </summary>
         public RoundedRectKeypoints()
         {
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="RoundedRectKeypoints" /> struct.
+        /// Initializes a new instance of the <see cref="RoundedRectKeypoints" /> struct.
         /// </summary>
         /// <param name="roundedRect">An existing <see cref="RoundedRect" /> to initialize keypoints with.</param>
         public RoundedRectKeypoints(RoundedRect roundedRect)
@@ -494,63 +499,63 @@ internal class RoundRectGeometryBuilder
         }
 
         /// <summary>
-        ///     Gets the topmost point in the left line segment of the rectangle.
+        /// Gets the topmost point in the left line segment of the rectangle.
         /// </summary>
         public Point LeftTop { get; set; }
 
         /// <summary>
-        ///     Gets the leftmost point in the top line segment of the rectangle.
+        /// Gets the leftmost point in the top line segment of the rectangle.
         /// </summary>
         public Point TopLeft { get; set; }
 
         /// <summary>
-        ///     Gets the rightmost point in the top line segment of the rectangle.
+        /// Gets the rightmost point in the top line segment of the rectangle.
         /// </summary>
         public Point TopRight { get; set; }
 
         /// <summary>
-        ///     Gets the topmost point in the right line segment of the rectangle.
+        /// Gets the topmost point in the right line segment of the rectangle.
         /// </summary>
         public Point RightTop { get; set; }
 
         /// <summary>
-        ///     Gets the bottommost point in the right line segment of the rectangle.
+        /// Gets the bottommost point in the right line segment of the rectangle.
         /// </summary>
         public Point RightBottom { get; set; }
 
         /// <summary>
-        ///     Gets the rightmost point in the bottom line segment of the rectangle.
+        /// Gets the rightmost point in the bottom line segment of the rectangle.
         /// </summary>
         public Point BottomRight { get; set; }
 
         /// <summary>
-        ///     Gets the leftmost point in the bottom line segment of the rectangle.
+        /// Gets the leftmost point in the bottom line segment of the rectangle.
         /// </summary>
         public Point BottomLeft { get; set; }
 
         /// <summary>
-        ///     Gets the bottommost point in the left line segment of the rectangle.
+        /// Gets the bottommost point in the left line segment of the rectangle.
         /// </summary>
         public Point LeftBottom { get; set; }
 
         /// <summary>
-        ///     Gets a value indicating whether the rounded rectangle is actually rounded on
-        ///     any corner. If false the key points represent a simple rectangle.
+        /// Gets a value indicating whether the rounded rectangle is actually rounded on
+        /// any corner. If false the key points represent a simple rectangle.
         /// </summary>
         public bool IsRounded =>
-            TopLeft     != LeftTop    ||
-            TopRight    != RightTop   ||
-            BottomLeft  != LeftBottom ||
+            TopLeft != LeftTop ||
+            TopRight != RightTop ||
+            BottomLeft != LeftBottom ||
             BottomRight != RightBottom;
 
         /// <summary>
-        ///     Converts the keypoints into a simple rectangle (with no corners).
-        ///     This is equivalent to the outer rectangle with zero corner radii.
+        /// Converts the keypoints into a simple rectangle (with no corners).
+        /// This is equivalent to the outer rectangle with zero corner radii.
         /// </summary>
         /// <remarks>
-        ///     Warning: This will force the keypoints into a simple rectangle without
-        ///     any rounded corners. Use <see cref="IsRounded" /> to determine if corner
-        ///     information is otherwise available.
+        /// Warning: This will force the keypoints into a simple rectangle without
+        /// any rounded corners. Use <see cref="IsRounded" /> to determine if corner
+        /// information is otherwise available.
         /// </remarks>
         /// <returns>A new rectangle representing the keypoints.</returns>
         public Rect ToRect()
@@ -565,12 +570,12 @@ internal class RoundRectGeometryBuilder
         }
 
         /// <summary>
-        ///     Converts the keypoints into a rounded rectangle with elliptical corner radii.
+        /// Converts the keypoints into a rounded rectangle with elliptical corner radii.
         /// </summary>
         /// <remarks>
-        ///     Elliptical corner radius (represented by <see cref="Vector" />) is more powerful
-        ///     than circular corner radius (represented by a <see cref="CornerRadius" />).
-        ///     Elliptical is a superset of circular.
+        /// Elliptical corner radius (represented by <see cref="Vector" />) is more powerful
+        /// than circular corner radius (represented by a <see cref="CornerRadius" />).
+        /// Elliptical is a superset of circular.
         /// </remarks>
         /// <returns>A new rounded rectangle representing the keypoints.</returns>
         public RoundedRect ToRoundedRect()

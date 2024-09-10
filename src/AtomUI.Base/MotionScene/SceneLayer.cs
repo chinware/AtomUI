@@ -28,7 +28,7 @@ public class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
     }
 
     /// <summary>
-    ///     初始化一个新的动画顶层窗口
+    /// 初始化一个新的动画顶层窗口
     /// </summary>
     /// <param name="parent"></param>
     /// <param name="impl"></param>
@@ -38,11 +38,16 @@ public class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
     {
         ParentTopLevel = parent;
         impl.SetWindowManagerAddShadowHint(false);
-        if (this is WindowBase window) window.SetTransparentForMouseEvents(true);
+        if (this is WindowBase window)
+        {
+            window.SetTransparentForMouseEvents(true);
+        }
 
         if (PlatformImpl?.PopupPositioner is ManagedPopupPositioner managedPopupPositioner)
+        {
             _managedPopupPositionerPopup =
                 ManagedPopupPositionerPopupInfo.GetValue(managedPopupPositioner) as IManagedPopupPositionerPopup;
+        }
 
         _layout   = new Canvas();
         Content   = _layout;
@@ -50,7 +55,7 @@ public class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
     }
 
     /// <summary>
-    ///     Gets the platform-specific window implementation.
+    /// Gets the platform-specific window implementation.
     /// </summary>
     public new IPopupImpl? PlatformImpl => (IPopupImpl?)base.PlatformImpl;
 
@@ -62,7 +67,7 @@ public class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
     }
 
     /// <summary>
-    ///     Gets the control that is hosting the popup root.
+    /// Gets the control that is hosting the popup root.
     /// </summary>
     Visual? IHostedVisualTreeRoot.Host
     {
@@ -74,7 +79,11 @@ public class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
             // if set. This helps to allow the focus manager to restore the focus to the outer
             // scope when the popup is closed.
             var parentVisual = Parent as Visual;
-            if (parentVisual?.GetVisualRoot() != null) return parentVisual;
+            if (parentVisual?.GetVisualRoot() != null)
+            {
+                return parentVisual;
+            }
+
             return ParentTopLevel ?? parentVisual;
         }
     }
@@ -90,9 +99,15 @@ public class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
         var maxAutoSize = PlatformImpl?.MaxAutoSizeHint ?? Size.Infinity;
         var constraint  = availableSize;
 
-        if (double.IsInfinity(constraint.Width)) constraint = constraint.WithWidth(maxAutoSize.Width);
+        if (double.IsInfinity(constraint.Width))
+        {
+            constraint = constraint.WithWidth(maxAutoSize.Width);
+        }
 
-        if (double.IsInfinity(constraint.Height)) constraint = constraint.WithHeight(maxAutoSize.Height);
+        if (double.IsInfinity(constraint.Height))
+        {
+            constraint = constraint.WithHeight(maxAutoSize.Height);
+        }
 
         var measured    = base.MeasureOverride(constraint);
         var width       = measured.Width;
@@ -100,12 +115,18 @@ public class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
         var widthCache  = Width;
         var heightCache = Height;
 
-        if (!double.IsNaN(widthCache)) width = widthCache;
+        if (!double.IsNaN(widthCache))
+        {
+            width = widthCache;
+        }
 
         width = Math.Min(width, MaxWidth);
         width = Math.Max(width, MinWidth);
 
-        if (!double.IsNaN(heightCache)) height = heightCache;
+        if (!double.IsNaN(heightCache))
+        {
+            height = heightCache;
+        }
 
         height = Math.Min(height, MaxHeight);
         height = Math.Max(height, MinHeight);
@@ -129,7 +150,11 @@ public class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
     {
         base.OnOpened(e);
         foreach (var child in _layout.Children)
+        {
             if (child is INotifyCaptureGhostBitmap captureGhost)
+            {
                 captureGhost.NotifyCaptureGhostBitmap();
+            }
+        }
     }
 }

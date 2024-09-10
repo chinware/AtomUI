@@ -7,8 +7,6 @@ internal class ButtonSpinnerDecoratedBox : AddOnDecoratedBox
 {
     protected override Type StyleKeyOverride => typeof(AddOnDecoratedBox);
 
-
-
     #region 内部属性定义
 
     internal static readonly DirectProperty<ButtonSpinnerDecoratedBox, Location> ButtonSpinnerLocationProperty =

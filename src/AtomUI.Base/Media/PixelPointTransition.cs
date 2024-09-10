@@ -9,6 +9,6 @@ public class PixelPointTransition : InterpolatingTransitionBase<PixelPoint>
     {
         var delta = newValue - oldValue;
         return new PixelPoint((int)Math.Round(delta.X * progress + oldValue.X),
-            (int)Math.Round(delta.Y                   * progress + oldValue.Y));
+            (int)Math.Round(delta.Y * progress + oldValue.Y));
     }
 }

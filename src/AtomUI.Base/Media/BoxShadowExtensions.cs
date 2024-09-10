@@ -13,10 +13,10 @@ public static class BoxShadowExtensions
         var spreadRadius = boxShadow.Spread;
 
         var value  = Math.Max(blurRadius + spreadRadius, 0.0); // 可以正负抵消
-        var left   = Math.Max(value      - offsetX, 0.0);
-        var right  = Math.Max(value      + offsetX, 0.0);
-        var top    = Math.Max(value      - offsetY, 0.0);
-        var bottom = Math.Max(value      + offsetY, 0.0);
+        var left   = Math.Max(value - offsetX, 0.0);
+        var right  = Math.Max(value + offsetX, 0.0);
+        var top    = Math.Max(value - offsetY, 0.0);
+        var bottom = Math.Max(value + offsetY, 0.0);
         return new Thickness(left, top, right, bottom);
     }
 

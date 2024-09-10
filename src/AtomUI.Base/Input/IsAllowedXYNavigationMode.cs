@@ -15,7 +15,11 @@ internal static class XYFocusHelpers
         XYFocusNavigationModes modes,
         KeyDeviceType? keyDeviceType)
     {
-        if (!keyDeviceType.HasValue) return true;
+        if (!keyDeviceType.HasValue)
+        {
+            return true;
+        }
+
         switch (keyDeviceType.GetValueOrDefault())
         {
             case KeyDeviceType.Keyboard:

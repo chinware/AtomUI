@@ -6,7 +6,6 @@ namespace AtomUI.Controls;
 
 using AvaloniaButtonSpinner = Avalonia.Controls.ButtonSpinner;
 
-
 public class ButtonSpinner : AvaloniaButtonSpinner
 {
     private ButtonSpinnerDecoratedBox? _decoratedBox;
@@ -17,8 +16,13 @@ public class ButtonSpinner : AvaloniaButtonSpinner
     {
         base.OnPropertyChanged(change);
         if (change.Property == CornerRadiusProperty)
+        {
             SetupSpinnerHandleCornerRadius();
-        else if (change.Property == ButtonSpinnerLocationProperty) SetupSpinnerHandleCornerRadius();
+        }
+        else if (change.Property == ButtonSpinnerLocationProperty)
+        {
+            SetupSpinnerHandleCornerRadius();
+        }
     }
 
     private void SetupSpinnerHandleCornerRadius()
@@ -26,15 +30,19 @@ public class ButtonSpinner : AvaloniaButtonSpinner
         if (_spinnerHandleDecorator is not null)
         {
             if (ButtonSpinnerLocation == Location.Left)
+            {
                 _spinnerHandleDecorator.CornerRadius = new CornerRadius(CornerRadius.TopLeft,
                     0,
                     0,
                     CornerRadius.BottomLeft);
+            }
             else
+            {
                 _spinnerHandleDecorator.CornerRadius = new CornerRadius(0,
                     CornerRadius.TopRight,
                     CornerRadius.BottomRight,
                     0);
+            }
         }
     }
 
@@ -51,8 +59,6 @@ public class ButtonSpinner : AvaloniaButtonSpinner
         base.OnApplyTemplate(e);
         SetupSpinnerHandleCornerRadius();
     }
-
-
 
     #region 公共属性定义
 

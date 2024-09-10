@@ -28,7 +28,10 @@ public class AtomLayer : Canvas
 
         void TargetBoundsOnPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
         {
-            if (e.Property != BoundsProperty) return;
+            if (e.Property != BoundsProperty)
+            {
+                return;
+            }
 
             // Child element's bounds will be updated before it's ancestors do.
             Dispatcher.UIThread.Post(() => UpdateAdornersLocationOfTarget(target), DispatcherPriority.Send);
@@ -36,8 +39,6 @@ public class AtomLayer : Canvas
     }
 
     #endregion
-
-
 
     #region Static
 
@@ -88,8 +89,6 @@ public class AtomLayer : Canvas
 
     #endregion
 
-
-
     #region Properties
 
     public Visual? Host
@@ -114,8 +113,6 @@ public class AtomLayer : Canvas
 
     #endregion
 
-
-
     #region Ctor
 
     static AtomLayer()
@@ -134,7 +131,10 @@ public class AtomLayer : Canvas
     {
         Children.CollectionChanged += (sender, args) =>
         {
-            if (_internalOperation) return;
+            if (_internalOperation)
+            {
+                return;
+            }
 
             throw new InvalidOperationException(
                 $"Please use {nameof(AddAdorner)}() method to add a child to {nameof(AtomLayer)} instead of adding it by Children's Add().");
@@ -142,8 +142,6 @@ public class AtomLayer : Canvas
     }
 
     #endregion
-
-
 
     #region Public Methods
 
@@ -182,7 +180,10 @@ public class AtomLayer : Canvas
     public void RemoveAdorner<T>(Visual target) where T : Control
     {
         var adorners = GetAdorners(target).OfType<T>().ToList();
-        foreach (var adorner in adorners) RemoveChild(adorner);
+        foreach (var adorner in adorners)
+        {
+            RemoveChild(adorner);
+        }
     }
 
     public void RemoveAdorner(Control adorner)
@@ -193,12 +194,13 @@ public class AtomLayer : Canvas
     public async void BeginRemovingAdorner(Control adorner, int millisecondsToConfirm, Func<bool> confirm)
     {
         await Task.Delay(millisecondsToConfirm);
-        if (confirm()) RemoveChild(adorner);
+        if (confirm())
+        {
+            RemoveChild(adorner);
+        }
     }
 
     #endregion
-
-
 
     #region Measure & Arrange
 
@@ -215,13 +217,14 @@ public class AtomLayer : Canvas
 
     #endregion
 
-
-
     #region Update Adorner Location
 
     private void UpdateAdornersLocationOfTarget(Visual target)
     {
-        foreach (var a in GetAdorners(target)) UpdateLocation(target, a);
+        foreach (var a in GetAdorners(target))
+        {
+            UpdateLocation(target, a);
+        }
     }
 
     private void UpdateLocation(Visual target, Control adorner)
@@ -262,13 +265,14 @@ public class AtomLayer : Canvas
 
     #endregion
 
-
-
     #region Attach & Detach
 
     private void OnTargetOnAttachedToVisualTree(object? sender, VisualTreeAttachmentEventArgs args)
     {
-        if (sender is not Visual target) return;
+        if (sender is not Visual target)
+        {
+            return;
+        }
 
         var adorners = new List<Control>();
         for (var i = 0; i < _detachedAdorners.Count; i++)
@@ -282,12 +286,18 @@ public class AtomLayer : Canvas
         }
 
         adorners = adorners.Where(a => Children.Contains(a) == false && GetTarget(a) == target).ToList();
-        foreach (var adorner in adorners) AddChild(adorner);
+        foreach (var adorner in adorners)
+        {
+            AddChild(adorner);
+        }
     }
 
     private void OnTargetOnDetachedFromVisualTree(object? sender, VisualTreeAttachmentEventArgs args)
     {
-        if (sender is not Visual target) return;
+        if (sender is not Visual target)
+        {
+            return;
+        }
 
         var adorners = target.GetAdorners();
         foreach (var adorner in adorners)
@@ -298,8 +308,6 @@ public class AtomLayer : Canvas
     }
 
     #endregion
-
-
 
     #region Children
 

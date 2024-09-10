@@ -4,7 +4,6 @@ namespace AtomUI.Controls;
 
 using AvaloniaCaptionButtons = CaptionButtons;
 
-
 public class CaptionButtonBox : AvaloniaCaptionButtons
 {
 }

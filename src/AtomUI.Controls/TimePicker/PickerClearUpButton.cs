@@ -24,6 +24,8 @@ internal class PickerClearUpButton : TemplatedControl
         base.OnApplyTemplate(e);
         _clearButton = e.NameScope.Get<IconButton>(PickerClearUpButtonTheme.ClearButtonPart);
         if (_clearButton is not null)
+        {
             _clearButton.Click += (sender, args) => { ClearRequest?.Invoke(this, EventArgs.Empty); };
+        }
     }
 }

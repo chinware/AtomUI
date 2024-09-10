@@ -13,7 +13,7 @@ internal class CheckBoxToken : AbstractControlDesignToken
     }
 
     /// <summary>
-    ///     复选框标志的大小
+    /// 复选框标志的大小
     /// </summary>
     public double CheckIndicatorSize { get; set; }
 

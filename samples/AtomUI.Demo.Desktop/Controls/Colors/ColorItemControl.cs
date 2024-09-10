@@ -30,6 +30,9 @@ public class ColorItemControl : TemplatedControl
     protected override void OnPointerPressed(PointerPressedEventArgs e)
     {
         base.OnPointerPressed(e);
-        if (DataContext is ColorItemViewModel v) WeakReferenceMessenger.Default.Send(v);
+        if (DataContext is ColorItemViewModel v)
+        {
+            WeakReferenceMessenger.Default.Send(v);
+        }
     }
 }

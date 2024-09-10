@@ -13,22 +13,22 @@ internal class LoadingIndicatorToken : AbstractControlDesignToken
     }
 
     /// <summary>
-    ///     加载图标尺寸
+    /// 加载图标尺寸
     /// </summary>
     public double DotSize { get; set; }
 
     /// <summary>
-    ///     加载图标尺寸
+    /// 加载图标尺寸
     /// </summary>
     public double DotSizeSM { get; set; }
 
     /// <summary>
-    ///     大号加载图标尺寸
+    /// 大号加载图标尺寸
     /// </summary>
     public double DotSizeLG { get; set; }
 
     /// <summary>
-    ///     加载器的周期时间
+    /// 加载器的周期时间
     /// </summary>
     public TimeSpan IndicatorDuration { get; set; }
 

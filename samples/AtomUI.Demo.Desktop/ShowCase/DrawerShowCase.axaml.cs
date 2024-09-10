@@ -15,9 +15,15 @@ public partial class DrawerShowCase : UserControl
 
     private void Button_OnClick(object? sender, RoutedEventArgs e)
     {
-        if (sender is not Button button) return;
+        if (sender is not Button button)
+        {
+            return;
+        }
 
-        if (Drawer.GetDrawer(button) is not { } drawer) return;
+        if (Drawer.GetDrawer(button) is not { } drawer)
+        {
+            return;
+        }
 
         drawer.IsOpen = false;
     }

@@ -25,12 +25,16 @@ public class TabStrip : BaseTabStrip
 
     private void HandleSelectionChanged(object? sender, SelectionChangedEventArgs args)
     {
-        if (VisualRoot is not null) SetupSelectedIndicator();
+        if (VisualRoot is not null)
+        {
+            SetupSelectedIndicator();
+        }
     }
 
     private void HandleLayoutUpdated(object? sender, EventArgs args)
     {
         if (_selectedIndicator is not null)
+        {
             if (_selectedIndicator.Transitions is null)
             {
                 var transitions = new Transitions();
@@ -41,6 +45,7 @@ public class TabStrip : BaseTabStrip
                 // 只需要执行一次
                 LayoutUpdated -= HandleLayoutUpdated;
             }
+        }
     }
 
     private void SetupSelectedIndicator()
@@ -83,7 +88,11 @@ public class TabStrip : BaseTabStrip
     protected override Size ArrangeOverride(Size finalSize)
     {
         var size = base.ArrangeOverride(finalSize);
-        if (SelectedItem is TabStripItem) SetupSelectedIndicator();
+        if (SelectedItem is TabStripItem)
+        {
+            SetupSelectedIndicator();
+        }
+
         return size;
     }
 
@@ -99,7 +108,10 @@ public class TabStrip : BaseTabStrip
     protected override void PrepareContainerForItemOverride(Control container, object? item, int index)
     {
         base.PrepareContainerForItemOverride(container, item, index);
-        if (container is TabStripItem tabStripItem) tabStripItem.Shape = TabSharp.Line;
+        if (container is TabStripItem tabStripItem)
+        {
+            tabStripItem.Shape = TabSharp.Line;
+        }
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -111,8 +123,6 @@ public class TabStrip : BaseTabStrip
         TokenResourceBinder.CreateGlobalResourceBinding(this, SelectedIndicatorThicknessProperty,
             GlobalTokenResourceKey.LineWidthBold);
     }
-
-
 
     #region 内部属性定义
 

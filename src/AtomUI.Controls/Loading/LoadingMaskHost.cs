@@ -21,7 +21,11 @@ public class LoadingMaskHost : Control, IControlCustomStyle
 
     public void ShowLoading()
     {
-        if (_loadingMask is not null && _loadingMask.IsLoading) return;
+        if (_loadingMask is not null && _loadingMask.IsLoading)
+        {
+            return;
+        }
+
         if (_loadingMask is null && MaskTarget is not null)
         {
             _loadingMask = new LoadingMask();
@@ -41,14 +45,20 @@ public class LoadingMaskHost : Control, IControlCustomStyle
     {
         if (_loadingMask is null ||
             (_loadingMask is not null && !_loadingMask.IsLoading))
+        {
             return;
+        }
+
         _loadingMask?.Hide();
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        if (IsLoading && MaskTarget is not null) ShowLoading();
+        if (IsLoading && MaskTarget is not null)
+        {
+            ShowLoading();
+        }
     }
 
     public sealed override void ApplyTemplate()
@@ -78,16 +88,20 @@ public class LoadingMaskHost : Control, IControlCustomStyle
     {
         base.OnPropertyChanged(change);
         if (_initialized && VisualRoot is not null)
+        {
             if (IsLoadingProperty == change.Property)
             {
                 if (IsLoading)
+                {
                     ShowLoading();
+                }
                 else
+                {
                     HideLoading();
+                }
             }
+        }
     }
-
-
 
     #region 公共属性定义
 

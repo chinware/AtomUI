@@ -27,7 +27,7 @@ internal class DragPreviewAdorner : Decorator
     }
 
     /// <summary>
-    ///     The Preview's Offset in the Y direction from the GridSplitter.
+    /// The Preview's Offset in the Y direction from the GridSplitter.
     /// </summary>
     public double OffsetY
     {
@@ -43,7 +43,6 @@ internal class DragPreviewAdorner : Decorator
         return base.ArrangeOverride(finalSize);
     }
 }
-
 
 internal class DragPreview : Decorator
 {

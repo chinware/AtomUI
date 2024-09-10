@@ -21,7 +21,6 @@ public class PaletteMetaItem
     }
 }
 
-
 public class PaletteDemoViewModel : ObservableObject
 {
     private readonly PaletteMetaItem[] _presetPaletteInfos =
@@ -156,7 +155,6 @@ public class PaletteDemoViewModel : ObservableObject
     }
 }
 
-
 public class ColorGroupViewModel : ObservableObject
 {
     private ObservableCollection<ColorListViewModel>? _colorList;
@@ -167,7 +165,6 @@ public class ColorGroupViewModel : ObservableObject
         set => SetProperty(ref _colorList, value);
     }
 }
-
 
 public class ColorListViewModel : ObservableObject
 {
@@ -196,7 +193,6 @@ public class ColorListViewModel : ObservableObject
     }
 }
 
-
 public class ColorItemViewModel : ObservableObject
 {
     private IBrush _brush = null!;
@@ -213,9 +209,13 @@ public class ColorItemViewModel : ObservableObject
         Brush            = brush;
         Hex              = brush.ToString()!.ToUpperInvariant();
         if ((light && index < 5) || (!light && index >= 5))
+        {
             TextBrush = Brushes.Black;
+        }
         else
+        {
             TextBrush = Brushes.White;
+        }
     }
 
     public IBrush Brush

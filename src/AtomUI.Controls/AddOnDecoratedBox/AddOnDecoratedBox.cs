@@ -17,14 +17,12 @@ public enum AddOnDecoratedVariant
     Borderless
 }
 
-
 public enum AddOnDecoratedStatus
 {
     Default,
     Warning,
     Error
 }
-
 
 [TemplatePart(AddOnDecoratedBoxTheme.LeftAddOnPart, typeof(ContentPresenter))]
 [TemplatePart(AddOnDecoratedBoxTheme.RightAddOnPart, typeof(ContentPresenter))]
@@ -48,17 +46,29 @@ public class AddOnDecoratedBox : ContentControl
         base.OnPropertyChanged(change);
 
         if (VisualRoot is not null)
+        {
             if (change.Property == LeftAddOnProperty || change.Property == RightAddOnProperty)
+            {
                 SetupInnerBoxCornerRadius();
+            }
+        }
 
         if (change.Property == CornerRadiusProperty || change.Property == BorderThicknessProperty)
+        {
             SetupAddOnBorderInfo();
+        }
 
-        if (change.Property == StatusProperty) UpdatePseudoClasses();
+        if (change.Property == StatusProperty)
+        {
+            UpdatePseudoClasses();
+        }
 
         if (change.Property == LeftAddOnProperty || change.Property == RightAddOnProperty)
         {
-            if (change.NewValue is PathIcon icon) SetupIconTypeAddOnSize(icon);
+            if (change.NewValue is PathIcon icon)
+            {
+                SetupIconTypeAddOnSize(icon);
+            }
         }
         else if (change.Property == ContentProperty)
         {
@@ -71,9 +81,15 @@ public class AddOnDecoratedBox : ContentControl
 
         if (change.Property == SizeTypeProperty)
         {
-            if (LeftAddOn is PathIcon leftIconAddOn) SetupIconTypeAddOnSize(leftIconAddOn);
+            if (LeftAddOn is PathIcon leftIconAddOn)
+            {
+                SetupIconTypeAddOnSize(leftIconAddOn);
+            }
 
-            if (RightAddOn is PathIcon rightIconAddOn) SetupIconTypeAddOnSize(rightIconAddOn);
+            if (RightAddOn is PathIcon rightIconAddOn)
+            {
+                SetupIconTypeAddOnSize(rightIconAddOn);
+            }
         }
     }
 
@@ -173,11 +189,9 @@ public class AddOnDecoratedBox : ContentControl
 
     protected virtual void UpdatePseudoClasses()
     {
-        PseudoClasses.Set(ErrorPC, Status   == AddOnDecoratedStatus.Error);
+        PseudoClasses.Set(ErrorPC, Status == AddOnDecoratedStatus.Error);
         PseudoClasses.Set(WarningPC, Status == AddOnDecoratedStatus.Warning);
     }
-
-
 
     #region 公共属性定义
 
@@ -228,8 +242,6 @@ public class AddOnDecoratedBox : ContentControl
     }
 
     #endregion
-
-
 
     #region 内部属性定义
 

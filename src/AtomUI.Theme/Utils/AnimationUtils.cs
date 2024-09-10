@@ -11,12 +11,15 @@ namespace AtomUI.Theme.Utils;
 public static class AnimationUtils
 {
     public static Animation RunAnimation<ValueType>(AvaloniaProperty targetProperty,
-        ValueType startValue,
-        ValueType endValue,
-        TimeSpan duration,
-        Easing? easing = null)
+                                                    ValueType startValue,
+                                                    ValueType endValue,
+                                                    TimeSpan duration,
+                                                    Easing? easing = null)
     {
-        if (easing is null) easing = new LinearEasing();
+        if (easing is null)
+        {
+            easing = new LinearEasing();
+        }
 
         var animation = new Animation
         {
@@ -39,8 +42,8 @@ public static class AnimationUtils
     }
 
     public static ITransition CreateTransition<T>(AvaloniaProperty targetProperty,
-        TokenResourceKey? durationResourceKey = null,
-        Easing? easing = null)
+                                                  TokenResourceKey? durationResourceKey = null,
+                                                  Easing? easing = null)
         where T : TransitionBase, new()
     {
         easing              ??= new LinearEasing();
@@ -52,7 +55,10 @@ public static class AnimationUtils
         };
         var application = Application.Current;
         if (application is not null)
+        {
             transition.Bind(TransitionBase.DurationProperty, application.GetResourceObservable(durationResourceKey));
+        }
+
         return transition;
     }
 }

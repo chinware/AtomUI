@@ -16,7 +16,6 @@ public enum AlertType
     Error
 }
 
-
 public class Alert : TemplatedControl, IControlCustomStyle
 {
     public static readonly StyledProperty<AlertType> TypeProperty =
@@ -125,8 +124,6 @@ public class Alert : TemplatedControl, IControlCustomStyle
         _customStyle.HandleTemplateApplied(e.NameScope);
     }
 
-
-
     #region IControlCustomStyle 实现
 
     void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
@@ -140,8 +137,12 @@ public class Alert : TemplatedControl, IControlCustomStyle
     void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
     {
         if (VisualRoot is not null)
+        {
             if (e.Property == IsClosableProperty)
+            {
                 SetupCloseButton();
+            }
+        }
     }
 
     private void SetupCloseButton()

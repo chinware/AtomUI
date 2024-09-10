@@ -22,11 +22,10 @@ public enum ProgressStatus
     Active
 }
 
-
 [PseudoClasses(IndeterminatePC)]
 public abstract class AbstractProgressBar : RangeBase,
-    ISizeTypeAware,
-    IControlCustomStyle
+                                            ISizeTypeAware,
+                                            IControlCustomStyle
 {
     protected const double LARGE_STROKE_THICKNESS = 8;
     protected const double MIDDLE_STROKE_THICKNESS = 6;
@@ -75,14 +74,19 @@ public abstract class AbstractProgressBar : RangeBase,
     {
         base.OnPropertyChanged(e);
 
-        if (e.Property == ValueProperty           ||
-            e.Property == MinimumProperty         ||
-            e.Property == MaximumProperty         ||
+        if (e.Property == ValueProperty ||
+            e.Property == MinimumProperty ||
+            e.Property == MaximumProperty ||
             e.Property == IsIndeterminateProperty ||
             e.Property == ProgressTextFormatProperty)
+        {
             UpdateProgress();
+        }
 
-        if (e.Property == IsIndeterminateProperty) UpdatePseudoClasses();
+        if (e.Property == IsIndeterminateProperty)
+        {
+            UpdatePseudoClasses();
+        }
 
         _customStyle.HandlePropertyChangedForStyle(e);
     }
@@ -130,7 +134,10 @@ public abstract class AbstractProgressBar : RangeBase,
         if (ShowProgressInfo && _percentageLabel != null)
         {
             if (Status != ProgressStatus.Exception)
+            {
                 _percentageLabel.Content = string.Format(ProgressTextFormat, _percentage);
+            }
+
             NotifyHandleExtraInfoVisibility();
         }
     }
@@ -139,30 +146,28 @@ public abstract class AbstractProgressBar : RangeBase,
     {
     }
 
-
-
     #region 公共属性
 
     /// <summary>
-    ///     Defines the <see cref="IsIndeterminate" /> property.
+    /// Defines the <see cref="IsIndeterminate" /> property.
     /// </summary>
     public static readonly StyledProperty<bool> IsIndeterminateProperty =
         AvaloniaProperty.Register<AbstractProgressBar, bool>(nameof(IsIndeterminate));
 
     /// <summary>
-    ///     Defines the <see cref="ShowProgressInfo" /> property.
+    /// Defines the <see cref="ShowProgressInfo" /> property.
     /// </summary>
     public static readonly StyledProperty<bool> ShowProgressInfoProperty =
         AvaloniaProperty.Register<AbstractProgressBar, bool>(nameof(ShowProgressInfo), true);
 
     /// <summary>
-    ///     Defines the <see cref="ProgressTextFormat" /> property.
+    /// Defines the <see cref="ProgressTextFormat" /> property.
     /// </summary>
     public static readonly StyledProperty<string> ProgressTextFormatProperty =
         AvaloniaProperty.Register<AbstractProgressBar, string>(nameof(ProgressTextFormat), "{0:0}%");
 
     /// <summary>
-    ///     Defines the <see cref="Percentage" /> property.
+    /// Defines the <see cref="Percentage" /> property.
     /// </summary>
     public static readonly DirectProperty<AbstractProgressBar, double> PercentageProperty =
         AvaloniaProperty.RegisterDirect<AbstractProgressBar, double>(
@@ -195,8 +200,8 @@ public abstract class AbstractProgressBar : RangeBase,
         AvaloniaProperty.Register<ProgressBar, IBrush?>(nameof(SuccessThresholdBrush));
 
     /// <summary>
-    ///     Gets or sets a value indicating whether the progress bar shows the actual value or a generic,
-    ///     continues progress indicator (indeterminate state).
+    /// Gets or sets a value indicating whether the progress bar shows the actual value or a generic,
+    /// continues progress indicator (indeterminate state).
     /// </summary>
     public bool IsIndeterminate
     {
@@ -205,7 +210,7 @@ public abstract class AbstractProgressBar : RangeBase,
     }
 
     /// <summary>
-    ///     Gets or sets a value indicating whether progress text will be shown.
+    /// Gets or sets a value indicating whether progress text will be shown.
     /// </summary>
     public bool ShowProgressInfo
     {
@@ -214,7 +219,7 @@ public abstract class AbstractProgressBar : RangeBase,
     }
 
     /// <summary>
-    ///     Gets or sets the format string applied to the internally calculated progress text before it is shown.
+    /// Gets or sets the format string applied to the internally calculated progress text before it is shown.
     /// </summary>
     public string ProgressTextFormat
     {
@@ -249,11 +254,11 @@ public abstract class AbstractProgressBar : RangeBase,
     protected double _percentage;
 
     /// <summary>
-    ///     Gets the overall percentage complete of the progress
+    /// Gets the overall percentage complete of the progress
     /// </summary>
     /// <remarks>
-    ///     This read-only property is automatically calculated using the current <see cref="RangeBase.Value" /> and
-    ///     the effective range (<see cref="RangeBase.Maximum" /> - <see cref="RangeBase.Minimum" />).
+    /// This read-only property is automatically calculated using the current <see cref="RangeBase.Value" /> and
+    /// the effective range (<see cref="RangeBase.Maximum" /> - <see cref="RangeBase.Minimum" />).
     /// </remarks>
     public double Percentage
     {
@@ -286,8 +291,6 @@ public abstract class AbstractProgressBar : RangeBase,
     }
 
     #endregion
-
-
 
     #region 内部属性
 
@@ -355,8 +358,6 @@ public abstract class AbstractProgressBar : RangeBase,
 
     #endregion
 
-
-
     #region IControlCustomStyle 实现
 
     void IControlCustomStyle.AfterUIStructureReady()
@@ -399,18 +400,30 @@ public abstract class AbstractProgressBar : RangeBase,
     void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
     {
         if (e.Property == SizeTypeProperty)
+        {
             EffectiveSizeType = e.GetNewValue<SizeType>();
+        }
         else if (e.Property == EffectiveSizeTypeProperty)
+        {
             if (VisualRoot is not null)
+            {
                 NotifyEffectSizeTypeChanged();
+            }
+        }
 
         if (VisualRoot is not null)
+        {
             if (e.Property == WidthProperty || e.Property == HeightProperty)
+            {
                 NotifyHandleExtraInfoVisibility();
+            }
+        }
 
         if (e.Property == IsEnabledProperty ||
             e.Property == PercentageProperty)
+        {
             _customStyle.CollectStyleState();
+        }
 
         if (e.Property == ValueProperty)
         {
@@ -454,9 +467,13 @@ public abstract class AbstractProgressBar : RangeBase,
         if (e.Property == TrailColorProperty)
         {
             if (TrailColor.HasValue)
+            {
                 GrooveBrush = new SolidColorBrush(TrailColor.Value);
+            }
             else
+            {
                 ClearValue(GrooveBrushProperty);
+            }
         }
     }
 

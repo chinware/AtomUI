@@ -17,11 +17,10 @@ namespace AtomUI.Controls;
 
 using AvaloniaRadioButton = Avalonia.Controls.RadioButton;
 
-
 public class RadioButton : AvaloniaRadioButton,
-    ICustomHitTest,
-    IWaveAdornerInfoProvider,
-    IControlCustomStyle
+                           ICustomHitTest,
+                           IWaveAdornerInfoProvider,
+                           IControlCustomStyle
 {
     internal static readonly StyledProperty<double> RadioSizeProperty =
         AvaloniaProperty.Register<Button, double>(nameof(RadioSize));
@@ -52,8 +51,9 @@ public class RadioButton : AvaloniaRadioButton,
         AvaloniaProperty.Register<RadioButton, double>(
             nameof(DotPadding));
 
-    private IPen? _cachedPen;
     private readonly IControlCustomStyle _customStyle;
+
+    private IPen? _cachedPen;
     private ControlStyleState _styleState;
 
     static RadioButton()
@@ -171,7 +171,10 @@ public class RadioButton : AvaloniaRadioButton,
         for (var i = 0; i < visualCount; i++)
         {
             var visual = visualChildren[i];
-            if (visual is Layoutable layoutable) layoutable.Arrange(arrangeRect);
+            if (visual is Layoutable layoutable)
+            {
+                layoutable.Arrange(arrangeRect);
+            }
         }
 
         return finalSize;
@@ -190,22 +193,28 @@ public class RadioButton : AvaloniaRadioButton,
         }
     }
 
-
-
     #region IControlCustomStyle 实现
 
     void IControlCustomStyle.CollectStyleState()
     {
         ControlStateUtils.InitCommonState(this, ref _styleState);
         if (IsPressed)
+        {
             _styleState |= ControlStyleState.Sunken;
+        }
         else
+        {
             _styleState |= ControlStyleState.Raised;
+        }
 
         if (IsChecked.HasValue && IsChecked.Value)
+        {
             _styleState |= ControlStyleState.On;
+        }
         else
+        {
             _styleState |= ControlStyleState.Off;
+        }
     }
 
     private double CalculateDotSize(bool isEnabled, bool isChecked)
@@ -214,9 +223,13 @@ public class RadioButton : AvaloniaRadioButton,
         if (isChecked)
         {
             if (isEnabled)
+            {
                 targetValue = DotSizeValue;
+            }
             else
+            {
                 targetValue = RadioSize - DotPadding * 2;
+            }
         }
         else
         {
@@ -246,24 +259,28 @@ public class RadioButton : AvaloniaRadioButton,
 
     private Rect RadioTextRect()
     {
-        var offsetX = RadioSize                        + PaddingInline;
+        var offsetX = RadioSize + PaddingInline;
         return new Rect(offsetX, 0d, DesiredSize.Width - offsetX, DesiredSize.Height);
     }
 
     void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
     {
         if (e.Property == IsPointerOverProperty ||
-            e.Property == IsCheckedProperty     ||
+            e.Property == IsCheckedProperty ||
             e.Property == IsEnabledProperty)
         {
             _customStyle.CollectStyleState();
             if (VisualRoot is not null)
+            {
                 RadioDotEffectSize = CalculateDotSize(IsEnabled, IsChecked.HasValue && IsChecked.Value);
+            }
 
-            if (e.Property == IsCheckedProperty                &&
+            if (e.Property == IsCheckedProperty &&
                 _styleState.HasFlag(ControlStyleState.Enabled) &&
                 _styleState.HasFlag(ControlStyleState.On))
+            {
                 WaveSpiritAdorner.ShowWaveAdorner(this, WaveType.CircleWave);
+            }
         }
     }
 

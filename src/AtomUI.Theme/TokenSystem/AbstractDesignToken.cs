@@ -18,7 +18,9 @@ public abstract class AbstractDesignToken : IDesignToken
             typeof(ITokenValueConverter).IsAssignableFrom(type));
         var valueConverters = controlTokenTypes.Select(type => (ITokenValueConverter)Activator.CreateInstance(type)!);
         foreach (var valueConverter in valueConverters)
+        {
             _valueConverters.Add(valueConverter.TargetType(), valueConverter);
+        }
     }
 
     public AbstractDesignToken()
@@ -31,9 +33,9 @@ public abstract class AbstractDesignToken : IDesignToken
         var type = GetType();
 
         // internal 这里也考虑进去，还是具体的 Token 自己处理？
-        var tokenProperties = type.GetProperties(BindingFlags.Public    |
+        var tokenProperties = type.GetProperties(BindingFlags.Public |
                                                  BindingFlags.NonPublic |
-                                                 BindingFlags.Instance  |
+                                                 BindingFlags.Instance |
                                                  BindingFlags.FlattenHierarchy);
         var baseTokenType          = typeof(AbstractDesignToken);
         var tokenResourceNamespace = GetTokenResourceCatalog();
@@ -42,18 +44,27 @@ public abstract class AbstractDesignToken : IDesignToken
             if (baseTokenType.IsAssignableFrom(property.PropertyType))
 
                 // 如果当前的属性是 Token 类型，证明是组合属性，跳过
+            {
                 continue;
+            }
+
             var tokenName  = property.Name;
             var tokenValue = property.GetValue(this);
             if (property.PropertyType == typeof(Color) && tokenValue != null)
+            {
                 tokenValue = new SolidColorBrush((Color)tokenValue);
+            }
+
             dictionary[new TokenResourceKey(tokenName, tokenResourceNamespace)] = tokenValue;
         }
     }
 
     public virtual object? GetTokenValue(string name)
     {
-        if (_tokenAccessCache.ContainsKey(name)) return _tokenAccessCache[name];
+        if (_tokenAccessCache.ContainsKey(name))
+        {
+            return _tokenAccessCache[name];
+        }
 
         var type = GetType();
         var tokenProperty =
@@ -74,7 +85,10 @@ public abstract class AbstractDesignToken : IDesignToken
         var type = GetType();
         var tokenProperty =
             type.GetProperty(name, BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
-        if (tokenProperty is null) return;
+        if (tokenProperty is null)
+        {
+            return;
+        }
 
         _tokenAccessCache.Remove(name);
         tokenProperty.SetValue(this, value);
@@ -89,6 +103,7 @@ public abstract class AbstractDesignToken : IDesignToken
         var cloned        = (AbstractDesignToken)Activator.CreateInstance(type)!;
 
         foreach (var property in tokenProperties)
+        {
             if (baseTokenType.IsAssignableFrom(property.PropertyType))
             {
                 var subToken = (AbstractDesignToken)property.GetValue(this)!;
@@ -98,6 +113,7 @@ public abstract class AbstractDesignToken : IDesignToken
             {
                 property.SetValue(cloned, property.GetValue(this));
             }
+        }
 
         return cloned;
     }
@@ -115,18 +131,24 @@ public abstract class AbstractDesignToken : IDesignToken
                 if (baseTokenType.IsAssignableFrom(property.PropertyType))
 
                     // 如果当前的属性是 Token 类型，证明是组合属性，跳过
+                {
                     continue;
+                }
 
                 var tokenName = property.Name;
                 if (tokenConfigInfo.ContainsKey(tokenName))
                 {
                     var propertyType = property.PropertyType;
                     if (_valueConverters.ContainsKey(propertyType))
+                    {
                         property.SetValue(this, _valueConverters[propertyType].Convert(tokenConfigInfo[tokenName]));
+                    }
                     else
 
                         // TODO 可能会抛出异常？
+                    {
                         property.SetValue(tokenName, tokenConfigInfo[tokenName]);
+                    }
                 }
             }
         }
@@ -141,10 +163,15 @@ public abstract class AbstractDesignToken : IDesignToken
         var tokenType = GetType();
         if (tokenType.GetCustomAttribute<GlobalDesignTokenAttribute>() is GlobalDesignTokenAttribute
             globalTokenAttribute)
+        {
             return globalTokenAttribute.ResourceCatalog;
+        }
+
         if (tokenType.GetCustomAttribute<ControlDesignTokenAttribute>() is ControlDesignTokenAttribute
             controlTokenAttribute)
+        {
             return controlTokenAttribute.ResourceCatalog;
+        }
 
         throw new TokenResourceRegisterException(
             $"The current Token: {tokenType.FullName} lacks the token type annotation");

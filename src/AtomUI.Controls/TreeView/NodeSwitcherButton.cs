@@ -14,8 +14,8 @@ using Avalonia.Media;
 namespace AtomUI.Controls;
 
 /// <summary>
-///     如果 checked icon 和 unchecked icon 都设置的时候，就直接切换
-///     否则就直接改变 render transform
+/// 如果 checked icon 和 unchecked icon 都设置的时候，就直接切换
+/// 否则就直接改变 render transform
 /// </summary>
 internal class NodeSwitcherButton : ToggleIconButton
 {
@@ -35,29 +35,35 @@ internal class NodeSwitcherButton : ToggleIconButton
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         if (LoadingIcon is null)
+        {
             LoadingIcon = new PathIcon
             {
                 Kind = "LoadingOutlined"
             };
+        }
 
         ConfigureFixedSizeIcon(LoadingIcon);
 
         LoadingIcon.LoadingAnimation = IconAnimation.Spin;
 
         if (LeafIcon is null)
+        {
             LeafIcon = new PathIcon
             {
                 Kind = "FileOutlined"
             };
+        }
 
         ConfigureFixedSizeIcon(LeafIcon);
         base.OnApplyTemplate(e);
         ApplyIconToContent();
         if (Transitions is null)
+        {
             Transitions = new Transitions
             {
                 AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty)
             };
+        }
     }
 
     private void ConfigureFixedSizeIcon(PathIcon icon)
@@ -74,16 +80,23 @@ internal class NodeSwitcherButton : ToggleIconButton
     {
         base.OnPropertyChanged(change);
         if (VisualRoot is not null)
+        {
             if (change.Property == IsLeafProperty)
+            {
                 ApplyIconToContent();
+            }
+        }
+
         if (change.Property == LoadingIconProperty ||
             change.Property == LeafIconProperty)
+        {
             if (change.NewValue is PathIcon newIcon)
             {
                 ConfigureFixedSizeIcon(newIcon);
                 ApplyIconToContent();
                 RenderTransform = null;
             }
+        }
 
         if (change.Property == CheckedIconProperty ||
             change.Property == UnCheckedIconProperty)
@@ -103,18 +116,26 @@ internal class NodeSwitcherButton : ToggleIconButton
                 {
                     // 直接切换模式
                     if (IsChecked.Value)
+                    {
                         Content = CheckedIcon;
+                    }
                     else
+                    {
                         Content = UnCheckedIcon;
+                    }
                 }
                 else if (UnCheckedIcon is not null)
                 {
                     // 通过 render transform 进行设置
                     Content = UnCheckedIcon;
                     if (IsChecked.Value)
+                    {
                         RenderTransform = new RotateTransform(90);
+                    }
                     else
+                    {
                         RenderTransform = null;
+                    }
                 }
             }
             else
@@ -132,6 +153,7 @@ internal class NodeSwitcherButton : ToggleIconButton
     public override void Render(DrawingContext context)
     {
         if (IsIconVisible && !IsLeaf)
+        {
             _borderRenderHelper.Render(context,
                 Bounds.Size,
                 new Thickness(),
@@ -140,9 +162,8 @@ internal class NodeSwitcherButton : ToggleIconButton
                 Background,
                 null,
                 default);
+        }
     }
-
-
 
     #region 公共属性
 
@@ -174,8 +195,6 @@ internal class NodeSwitcherButton : ToggleIconButton
     }
 
     #endregion
-
-
 
     #region 内部属性定义
 

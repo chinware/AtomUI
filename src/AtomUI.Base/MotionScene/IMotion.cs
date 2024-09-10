@@ -8,7 +8,7 @@ public interface IMotion
     public IObservable<bool>? CompletedObservable { get; }
 
     /// <summary>
-    ///     获取当前动效激活的动画属性列表
+    /// 获取当前动效激活的动画属性列表
     /// </summary>
     /// <returns></returns>
     public IList<AvaloniaProperty> GetActivatedProperties();

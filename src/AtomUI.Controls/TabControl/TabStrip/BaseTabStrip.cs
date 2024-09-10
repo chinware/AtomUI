@@ -13,7 +13,6 @@ namespace AtomUI.Controls;
 
 using AvaloniaTabStrip = Avalonia.Controls.Primitives.TabStrip;
 
-
 public abstract class BaseTabStrip : AvaloniaTabStrip, ISizeTypeAware
 {
     public const string TopPC = ":top";
@@ -42,9 +41,11 @@ public abstract class BaseTabStrip : AvaloniaTabStrip, ISizeTypeAware
     private void SetupBorderBinding()
     {
         if (_frameDecorator is not null)
+        {
             TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
                 GlobalTokenResourceKey.BorderThickness, BindingPriority.Template,
                 new RenderScaleAwareThicknessConfigure(this));
+        }
     }
 
     protected override void PrepareContainerForItemOverride(Control container, object? item, int index)
@@ -71,18 +72,21 @@ public abstract class BaseTabStrip : AvaloniaTabStrip, ISizeTypeAware
             UpdatePseudoClasses();
             for (var i = 0; i < ItemCount; ++i)
             {
-                var itemContainer                                                              = ContainerFromIndex(i);
-                if (itemContainer is TabStripItem tabStripItem) tabStripItem.TabStripPlacement = TabStripPlacement;
+                var itemContainer = ContainerFromIndex(i);
+                if (itemContainer is TabStripItem tabStripItem)
+                {
+                    tabStripItem.TabStripPlacement = TabStripPlacement;
+                }
             }
         }
     }
 
     private void UpdatePseudoClasses()
     {
-        PseudoClasses.Set(TopPC, TabStripPlacement    == Dock.Top);
-        PseudoClasses.Set(RightPC, TabStripPlacement  == Dock.Right);
+        PseudoClasses.Set(TopPC, TabStripPlacement == Dock.Top);
+        PseudoClasses.Set(RightPC, TabStripPlacement == Dock.Right);
         PseudoClasses.Set(BottomPC, TabStripPlacement == Dock.Bottom);
-        PseudoClasses.Set(LeftPC, TabStripPlacement   == Dock.Left);
+        PseudoClasses.Set(LeftPC, TabStripPlacement == Dock.Left);
     }
 
     public override void Render(DrawingContext context)
@@ -93,7 +97,7 @@ public abstract class BaseTabStrip : AvaloniaTabStrip, ISizeTypeAware
         var   offsetDelta     = borderThickness / 2;
         if (TabStripPlacement == Dock.Top)
         {
-            startPoint = new Point(0, Bounds.Height            - offsetDelta);
+            startPoint = new Point(0, Bounds.Height - offsetDelta);
             endPoint   = new Point(Bounds.Width, Bounds.Height - offsetDelta);
         }
         else if (TabStripPlacement == Dock.Right)
@@ -118,8 +122,6 @@ public abstract class BaseTabStrip : AvaloniaTabStrip, ISizeTypeAware
         });
         context.DrawLine(new Pen(BorderBrush, borderThickness), startPoint, endPoint);
     }
-
-
 
     #region 公共属性定义
 

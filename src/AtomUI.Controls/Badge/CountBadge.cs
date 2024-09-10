@@ -18,7 +18,6 @@ public enum CountBadgeSize
     Small
 }
 
-
 public class CountBadge : Control, IControlCustomStyle
 {
     public static readonly StyledProperty<string?> BadgeColorProperty
@@ -52,11 +51,11 @@ public class CountBadge : Control, IControlCustomStyle
         AvaloniaProperty.Register<CountBadge, TimeSpan>(
             nameof(MotionDuration));
 
+    private readonly IControlCustomStyle _customStyle;
+
     private AdornerLayer? _adornerLayer;
     private bool _animating;
     private CountBadgeAdorner? _badgeAdorner;
-
-    private readonly IControlCustomStyle _customStyle;
 
     static CountBadge()
     {
@@ -143,7 +142,10 @@ public class CountBadge : Control, IControlCustomStyle
     public sealed override void ApplyTemplate()
     {
         base.ApplyTemplate();
-        if (DecoratedTarget is null) CreateBadgeAdorner();
+        if (DecoratedTarget is null)
+        {
+            CreateBadgeAdorner();
+        }
     }
 
     private CountBadgeAdorner CreateBadgeAdorner()
@@ -153,7 +155,10 @@ public class CountBadge : Control, IControlCustomStyle
             _badgeAdorner = new CountBadgeAdorner();
             _customStyle.SetupTokenBindings();
             HandleDecoratedTargetChanged();
-            if (BadgeColor is not null) SetupBadgeColor(BadgeColor);
+            if (BadgeColor is not null)
+            {
+                SetupBadgeColor(BadgeColor);
+            }
         }
 
         return _badgeAdorner;
@@ -167,7 +172,11 @@ public class CountBadge : Control, IControlCustomStyle
             _adornerLayer = AdornerLayer.GetAdornerLayer(this);
 
             // 这里需要抛出异常吗？
-            if (_adornerLayer == null) return;
+            if (_adornerLayer == null)
+            {
+                return;
+            }
+
             AdornerLayer.SetAdornedElement(badgeAdorner, this);
             AdornerLayer.SetIsClipEnabled(badgeAdorner, false);
             _adornerLayer.Children.Add(badgeAdorner);
@@ -178,7 +187,11 @@ public class CountBadge : Control, IControlCustomStyle
     {
         PrepareAdorner();
 
-        if (VisualRoot is null || _animating) return;
+        if (VisualRoot is null || _animating)
+        {
+            return;
+        }
+
         _animating = true;
         var director = Director.Instance;
 
@@ -213,14 +226,22 @@ public class CountBadge : Control, IControlCustomStyle
     private void HideAdorner()
     {
         // 这里需要抛出异常吗？
-        if (_adornerLayer is null || _badgeAdorner is null) return;
+        if (_adornerLayer is null || _badgeAdorner is null)
+        {
+            return;
+        }
+
         _adornerLayer.Children.Remove(_badgeAdorner);
         _adornerLayer = null;
     }
 
     private void HideAdornerWithMotion()
     {
-        if (VisualRoot is null || _animating) return;
+        if (VisualRoot is null || _animating)
+        {
+            return;
+        }
+
         _animating = true;
         var            director = Director.Instance;
         AbstractMotion motion;
@@ -291,7 +312,11 @@ public class CountBadge : Control, IControlCustomStyle
             var badgeIsVisible = e.GetNewValue<bool>();
             if (badgeIsVisible)
             {
-                if (_adornerLayer is not null) return;
+                if (_adornerLayer is not null)
+                {
+                    return;
+                }
+
                 PrepareAdorner();
             }
             else
@@ -304,7 +329,11 @@ public class CountBadge : Control, IControlCustomStyle
             var badgeIsVisible = e.GetNewValue<bool>();
             if (badgeIsVisible)
             {
-                if (_adornerLayer is not null) return;
+                if (_adornerLayer is not null)
+                {
+                    return;
+                }
+
                 PrepareAdornerWithMotion();
             }
             else
@@ -315,17 +344,28 @@ public class CountBadge : Control, IControlCustomStyle
 
         if (VisualRoot is not null)
         {
-            if (e.Property == DecoratedTargetProperty) HandleDecoratedTargetChanged();
+            if (e.Property == DecoratedTargetProperty)
+            {
+                HandleDecoratedTargetChanged();
+            }
 
-            if (e.Property == BadgeColorProperty) SetupBadgeColor(e.GetNewValue<string>());
+            if (e.Property == BadgeColorProperty)
+            {
+                SetupBadgeColor(e.GetNewValue<string>());
+            }
         }
 
         if (e.Property == CountProperty)
         {
             var newCount = e.GetNewValue<int>();
             if (newCount == 0 && !ShowZero)
-                BadgeIsVisible                    = false;
-            else if (newCount > 0) BadgeIsVisible = true;
+            {
+                BadgeIsVisible = false;
+            }
+            else if (newCount > 0)
+            {
+                BadgeIsVisible = true;
+            }
         }
     }
 
@@ -334,12 +374,17 @@ public class CountBadge : Control, IControlCustomStyle
         colorStr = colorStr.Trim().ToLower();
 
         foreach (var presetColor in PresetPrimaryColor.AllColorTypes())
+        {
             if (presetColor.Type.ToString().ToLower() == colorStr)
             {
                 _badgeAdorner!.BadgeColor = new SolidColorBrush(presetColor.Color());
                 return;
             }
+        }
 
-        if (Color.TryParse(colorStr, out var color)) _badgeAdorner!.BadgeColor = new SolidColorBrush(color);
+        if (Color.TryParse(colorStr, out var color))
+        {
+            _badgeAdorner!.BadgeColor = new SolidColorBrush(color);
+        }
     }
 }

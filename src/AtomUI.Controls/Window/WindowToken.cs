@@ -14,12 +14,12 @@ public class WindowToken : AbstractControlDesignToken
     }
 
     /// <summary>
-    ///     窗口默认的背景色
+    /// 窗口默认的背景色
     /// </summary>
     public Color DefaultBackground { get; set; }
 
     /// <summary>
-    ///     窗口默认的前景色
+    /// 窗口默认的前景色
     /// </summary>
     public Color DefaultForeground { get; set; }
 }

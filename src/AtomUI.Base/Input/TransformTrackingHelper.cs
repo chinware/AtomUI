@@ -30,7 +30,10 @@ internal class TransformTrackingHelper : IDisposable
 
     public void Dispose()
     {
-        if (_visual == null) return;
+        if (_visual == null)
+        {
+            return;
+        }
 
         UnsubscribeFromParents();
         _visual.AttachedToVisualTree   -= OnAttachedToVisualTree;
@@ -46,7 +49,10 @@ internal class TransformTrackingHelper : IDisposable
         {
             visual.AttachedToVisualTree   += OnAttachedToVisualTree;
             visual.DetachedFromVisualTree -= OnDetachedFromVisualTree;
-            if (visual.GetVisualRoot() is not null) SubscribeToParents();
+            if (visual.GetVisualRoot() is not null)
+            {
+                SubscribeToParents();
+            }
 
             UpdateMatrix();
         }
@@ -74,7 +80,11 @@ internal class TransformTrackingHelper : IDisposable
 
     private void UnsubscribeFromParents()
     {
-        foreach (var v in _propertyChangedSubscriptions) v.PropertyChanged -= _propertyChangedHandler;
+        foreach (var v in _propertyChangedSubscriptions)
+        {
+            v.PropertyChanged -= _propertyChangedHandler;
+        }
+
         _propertyChangedSubscriptions.Clear();
     }
 
@@ -82,7 +92,9 @@ internal class TransformTrackingHelper : IDisposable
     {
         Matrix? matrix = null;
         if (_visual != null && _visual.GetVisualRoot() != null)
+        {
             matrix = _visual.TransformToVisual((Visual)_visual.GetVisualRoot()!);
+        }
 
         if (Matrix != matrix)
         {
@@ -99,7 +111,10 @@ internal class TransformTrackingHelper : IDisposable
 
     private void EnqueueForUpdate()
     {
-        if (_queuedForUpdate) return;
+        if (_queuedForUpdate)
+        {
+            return;
+        }
 
         _queuedForUpdate = true;
         var priority = (DispatcherPriority)AfterRenderFieldInfo.GetValue(null)!;
@@ -109,7 +124,10 @@ internal class TransformTrackingHelper : IDisposable
     private void PropertyChangedHandler(object? sender, AvaloniaPropertyChangedEventArgs e)
     {
         e.TryGetProperty<bool>("IsEffectiveValueChange", out var isEffectiveValueChange);
-        if (isEffectiveValueChange && e.Property == Visual.BoundsProperty) EnqueueForUpdate();
+        if (isEffectiveValueChange && e.Property == Visual.BoundsProperty)
+        {
+            EnqueueForUpdate();
+        }
     }
 
     private void OnDetachedFromVisualTree(object? sender, VisualTreeAttachmentEventArgs visualTreeAttachmentEventArgs)

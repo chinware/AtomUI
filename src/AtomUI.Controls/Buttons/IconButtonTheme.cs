@@ -53,7 +53,7 @@ internal class IconButtonTheme : BaseControlTheme
         }
         var enableHoverBgStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(IconButton.IsEnableHoverEffectProperty, true)
-                .Class(StdPseudoClass.PointerOver));
+                    .Class(StdPseudoClass.PointerOver));
         {
             var contentStyle = new Style(selector => selector.Nesting().Template().Name(IconContentPart));
             contentStyle.Add(ContentPresenter.BackgroundProperty, GlobalTokenResourceKey.ColorBgTextHover);

@@ -1,15 +1,13 @@
 <UserControl x:Class="AtomUI.Demo.Desktop.ShowCase.Overview"
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:converters="clr-namespace:Avalonia.Markup.Xaml.Converters;assembly=Avalonia.Markup.Xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              d:DesignHeight="1000"
              d:DesignWidth="1920"
              mc:Ignorable="d">
     <UserControl.Resources>
-        <ResourceDictionary>
-        </ResourceDictionary>
+        <ResourceDictionary />
     </UserControl.Resources>
     <UserControl.Styles>
         <Style Selector="Border.CodeBlock">

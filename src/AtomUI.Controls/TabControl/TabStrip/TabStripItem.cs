@@ -17,27 +17,23 @@ namespace AtomUI.Controls;
 
 using AvaloniaTabStripItem = Avalonia.Controls.Primitives.TabStripItem;
 
-
 public enum TabSharp
 {
     Line,
     Card
 }
 
-
 public class TabStripItem : AvaloniaTabStripItem, IControlCustomStyle, ICustomHitTest
 {
+    private readonly IControlCustomStyle _customStyle;
     private IconButton? _closeButton;
 
     private StackPanel? _contentLayout;
-    private readonly IControlCustomStyle _customStyle;
 
     public TabStripItem()
     {
         _customStyle = this;
     }
-
-
 
     #region IControlCustomStyle 实现
 
@@ -55,12 +51,13 @@ public class TabStripItem : AvaloniaTabStripItem, IControlCustomStyle, ICustomHi
             Transitions = transitions;
         }
 
-        if (_closeButton is not null) _closeButton.Click += HandleCloseRequest;
+        if (_closeButton is not null)
+        {
+            _closeButton.Click += HandleCloseRequest;
+        }
     }
 
     #endregion
-
-
 
     public bool HitTest(Point point)
     {
@@ -85,7 +82,10 @@ public class TabStripItem : AvaloniaTabStripItem, IControlCustomStyle, ICustomHi
                     GlobalTokenResourceKey.ColorTextDisabled);
             }
 
-            if (_contentLayout is not null) _contentLayout.Children.Insert(0, Icon);
+            if (_contentLayout is not null)
+            {
+                _contentLayout.Children.Insert(0, Icon);
+            }
         }
     }
 
@@ -126,13 +126,18 @@ public class TabStripItem : AvaloniaTabStripItem, IControlCustomStyle, ICustomHi
     private void HandleCloseRequest(object? sender, RoutedEventArgs args)
     {
         if (Parent is BaseTabStrip tabStrip)
+        {
             if (tabStrip.SelectedItem is TabStripItem selectedItem)
             {
                 if (selectedItem == this)
                 {
-                    var     selectedIndex                   = tabStrip.SelectedIndex;
-                    object? newSelectedItem                 = null;
-                    if (selectedIndex != 0) newSelectedItem = tabStrip.Items[--selectedIndex];
+                    var     selectedIndex   = tabStrip.SelectedIndex;
+                    object? newSelectedItem = null;
+                    if (selectedIndex != 0)
+                    {
+                        newSelectedItem = tabStrip.Items[--selectedIndex];
+                    }
+
                     tabStrip.Items.Remove(this);
                     tabStrip.SelectedItem = newSelectedItem;
                 }
@@ -141,27 +146,41 @@ public class TabStripItem : AvaloniaTabStripItem, IControlCustomStyle, ICustomHi
                     tabStrip.Items.Remove(this);
                 }
             }
+        }
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
         if (VisualRoot is not null)
+        {
             if (change.Property == IconProperty)
             {
                 var oldIcon = change.GetOldValue<PathIcon?>();
-                if (oldIcon != null) UIStructureUtils.SetTemplateParent(oldIcon, null);
+                if (oldIcon != null)
+                {
+                    UIStructureUtils.SetTemplateParent(oldIcon, null);
+                }
+
                 SetupItemIcon();
             }
+        }
 
         if (change.Property == CloseIconProperty)
         {
             var oldIcon = change.GetOldValue<PathIcon?>();
-            if (oldIcon != null) UIStructureUtils.SetTemplateParent(oldIcon, null);
+            if (oldIcon != null)
+            {
+                UIStructureUtils.SetTemplateParent(oldIcon, null);
+            }
+
             SetupCloseIcon();
         }
 
-        if (change.Property == ShapeProperty) HandleShapeChanged();
+        if (change.Property == ShapeProperty)
+        {
+            HandleShapeChanged();
+        }
     }
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -173,12 +192,14 @@ public class TabStripItem : AvaloniaTabStripItem, IControlCustomStyle, ICustomHi
     private void HandleShapeChanged()
     {
         if (Shape == TabSharp.Line)
+        {
             TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, TabStripItemTheme.ID);
+        }
         else
+        {
             TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, CardTabStripItemTheme.ID);
+        }
     }
-
-
 
     #region 公共属性定义
 
@@ -230,8 +251,6 @@ public class TabStripItem : AvaloniaTabStripItem, IControlCustomStyle, ICustomHi
     }
 
     #endregion
-
-
 
     #region 内部属性定义
 

@@ -38,9 +38,13 @@ internal class MotionGhostControl : Control, INotifyCaptureGhostBitmap
     {
         _motionTarget = motionTarget;
         if (_motionTarget.DesiredSize == default)
+        {
             _motionTargetSize = LayoutHelper.MeasureChild(_motionTarget, Size.Infinity, new Thickness());
+        }
         else
+        {
             _motionTargetSize = _motionTarget.DesiredSize;
+        }
 
         _maskOffset = default;
         _maskSize   = _motionTargetSize;
@@ -48,12 +52,12 @@ internal class MotionGhostControl : Control, INotifyCaptureGhostBitmap
         Shadows = fallbackShadows;
         DetectMotionTargetInfo();
         var shadowThickness = Shadows.Thickness();
-        Width  = _motionTargetSize.Width  + shadowThickness.Left + shadowThickness.Right;
-        Height = _motionTargetSize.Height + shadowThickness.Top  + shadowThickness.Bottom;
+        Width  = _motionTargetSize.Width + shadowThickness.Left + shadowThickness.Right;
+        Height = _motionTargetSize.Height + shadowThickness.Top + shadowThickness.Bottom;
     }
 
     /// <summary>
-    ///     渲染的阴影值，一般在探测失败的时候使用
+    /// 渲染的阴影值，一般在探测失败的时候使用
     /// </summary>
     public BoxShadows Shadows
     {
@@ -62,7 +66,7 @@ internal class MotionGhostControl : Control, INotifyCaptureGhostBitmap
     }
 
     /// <summary>
-    ///     mask 的圆角大小，一般在探测失败的时候使用
+    /// mask 的圆角大小，一般在探测失败的时候使用
     /// </summary>
     public CornerRadius MaskCornerRadius
     {
@@ -107,7 +111,10 @@ internal class MotionGhostControl : Control, INotifyCaptureGhostBitmap
         }
 
         // 探测出来的是最准确的，优先级高
-        if (cornerRadius != default) MaskCornerRadius = cornerRadius;
+        if (cornerRadius != default)
+        {
+            MaskCornerRadius = cornerRadius;
+        }
     }
 
     public sealed override void ApplyTemplate()
@@ -127,7 +134,10 @@ internal class MotionGhostControl : Control, INotifyCaptureGhostBitmap
 
             var shadowRenderers = BuildShadowRenderers(Shadows);
 
-            foreach (var renderer in shadowRenderers) _layout.Children.Add(renderer);
+            foreach (var renderer in shadowRenderers)
+            {
+                _layout.Children.Add(renderer);
+            }
 
             var border = new Border
             {
@@ -145,8 +155,8 @@ internal class MotionGhostControl : Control, INotifyCaptureGhostBitmap
     }
 
     /// <summary>
-    ///     目前的 Avalonia 版本中，当控件渲染到 RenderTargetBitmap 的时候，如果 BoxShadows 的 Count > 1 的时候，如果不是主阴影，后面的阴影如果
-    ///     指定 offset，再 RenderScaling > 1 的情况下是错的。
+    /// 目前的 Avalonia 版本中，当控件渲染到 RenderTargetBitmap 的时候，如果 BoxShadows 的 Count > 1 的时候，如果不是主阴影，后面的阴影如果
+    /// 指定 offset，再 RenderScaling > 1 的情况下是错的。
     /// </summary>
     /// <returns></returns>
     private List<Control> BuildShadowRenderers(in BoxShadows shadows)
@@ -183,9 +193,14 @@ internal class MotionGhostControl : Control, INotifyCaptureGhostBitmap
         var  shadowThickness = Shadows.Thickness();
         Size motionTargetSize;
         if (_motionTarget.DesiredSize == default)
+        {
             motionTargetSize = LayoutHelper.MeasureChild(_motionTarget, Size.Infinity, new Thickness());
+        }
         else
+        {
             motionTargetSize = _motionTarget.DesiredSize;
+        }
+
         return motionTargetSize.Inflate(shadowThickness);
     }
 

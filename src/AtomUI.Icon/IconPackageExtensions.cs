@@ -11,18 +11,27 @@ public static class IconPackageExtensions
     }
 
     public static AppBuilder UseIconPackage<T>(this AppBuilder builder, bool isDefault, ColorInfo? colorInfo,
-        TwoToneColorInfo? twoToneColorInfo)
+                                               TwoToneColorInfo? twoToneColorInfo)
         where T : IconPackage, new()
     {
         builder.AfterSetup(builder =>
         {
-            var package                                      = new T();
-            if (colorInfo.HasValue) package.DefaultColorInfo = colorInfo.Value;
+            var package = new T();
+            if (colorInfo.HasValue)
+            {
+                package.DefaultColorInfo = colorInfo.Value;
+            }
 
-            if (twoToneColorInfo.HasValue) package.DefaultTwoToneColorInfo = twoToneColorInfo.Value;
+            if (twoToneColorInfo.HasValue)
+            {
+                package.DefaultTwoToneColorInfo = twoToneColorInfo.Value;
+            }
 
             IconManager.Current.Register(package);
-            if (isDefault) IconManager.Current.DefaultPackage = package.Id;
+            if (isDefault)
+            {
+                IconManager.Current.DefaultPackage = package.Id;
+            }
         });
         return builder;
     }

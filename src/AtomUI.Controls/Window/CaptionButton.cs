@@ -7,7 +7,6 @@ namespace AtomUI.Controls;
 
 using AvaloniaButton = Avalonia.Controls.Button;
 
-
 public class CaptionButton : AvaloniaButton
 {
     public static readonly StreamGeometry WindowCloseIconGlyph = StreamGeometry.Parse(
@@ -28,7 +27,11 @@ public class CaptionButton : AvaloniaButton
     protected override Size MeasureCore(Size availableSize)
     {
         // 创建按钮内容即可
-        if (IsVisible) SetupProperties();
+        if (IsVisible)
+        {
+            SetupProperties();
+        }
+
         return base.MeasureCore(availableSize);
     }
 

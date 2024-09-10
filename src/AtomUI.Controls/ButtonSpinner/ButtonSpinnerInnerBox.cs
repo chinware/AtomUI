@@ -27,11 +27,15 @@ internal class ButtonSpinnerInnerBox : AddOnDecoratedInnerBox, ICustomHitTest
         {
             var padding = _spinnerHandleWidthToken + InnerBoxPadding.Right;
             if (ButtonSpinnerLocation == Location.Right)
+            {
                 EffectiveInnerBoxPadding = new Thickness(InnerBoxPadding.Left, InnerBoxPadding.Top, padding,
                     InnerBoxPadding.Bottom);
+            }
             else
+            {
                 EffectiveInnerBoxPadding = new Thickness(padding, InnerBoxPadding.Top, InnerBoxPadding.Right,
                     InnerBoxPadding.Bottom);
+            }
         }
         else
         {
@@ -77,8 +81,6 @@ internal class ButtonSpinnerInnerBox : AddOnDecoratedInnerBox, ICustomHitTest
         }
     }
 
-
-
     #region 公共属性定义
 
     public static readonly StyledProperty<object?> SpinnerContentProperty =
@@ -91,8 +93,6 @@ internal class ButtonSpinnerInnerBox : AddOnDecoratedInnerBox, ICustomHitTest
     }
 
     #endregion
-
-
 
     #region 内部属性定义
 

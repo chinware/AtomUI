@@ -128,8 +128,12 @@ public partial class ProgressBarShowCase : UserControl
     {
         ToggleStatus = !ToggleStatus;
         if (ToggleStatus)
+        {
             ToggleDisabledText = "Disable";
+        }
         else
+        {
             ToggleDisabledText = "Enable";
+        }
     }
 }

@@ -13,20 +13,17 @@ namespace AtomUI.Controls;
 
 using AvaloniaExpander = Avalonia.Controls.Expander;
 
-
 public enum ExpanderTriggerType
 {
     Header,
     Icon
 }
 
-
 public enum ExpanderIconPosition
 {
     Start,
     End
 }
-
 
 public class Expander : AvaloniaExpander
 {
@@ -55,7 +52,9 @@ public class Expander : AvaloniaExpander
         SetupIconButton();
         HandleExpandedChanged();
         if (_expandButton is not null)
+        {
             _expandButton.Click += (sender, args) => { IsExpanded = !IsExpanded; };
+        }
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -64,38 +63,63 @@ public class Expander : AvaloniaExpander
         if (change.Property == ExpandIconProperty)
         {
             var oldExpandIcon = change.GetOldValue<PathIcon?>();
-            if (oldExpandIcon is not null) UIStructureUtils.SetTemplateParent(oldExpandIcon, null);
+            if (oldExpandIcon is not null)
+            {
+                UIStructureUtils.SetTemplateParent(oldExpandIcon, null);
+            }
+
             SetupIconButton();
         }
         else if (change.Property == AddOnContentProperty)
         {
-            if (change.OldValue is Control oldControl) UIStructureUtils.SetTemplateParent(oldControl, null);
+            if (change.OldValue is Control oldControl)
+            {
+                UIStructureUtils.SetTemplateParent(oldControl, null);
+            }
 
-            if (change.NewValue is Control newControl) UIStructureUtils.SetTemplateParent(newControl, this);
+            if (change.NewValue is Control newControl)
+            {
+                UIStructureUtils.SetTemplateParent(newControl, this);
+            }
         }
 
         if (VisualRoot is not null)
+        {
             if (change.Property == IsBorderlessProperty)
+            {
                 SetupEffectiveBorderThickness();
+            }
+        }
 
         if (change.Property == IsExpandedProperty)
+        {
             HandleExpandedChanged();
+        }
         else if (change.Property == IsGhostStyleProperty ||
                  change.Property == IsBorderlessProperty ||
-                 change.Property == IsExpandedProperty   ||
+                 change.Property == IsExpandedProperty ||
                  change.Property == ExpandDirectionProperty)
+        {
             SetupExpanderBorderThickness();
+        }
     }
 
     private void SetupExpanderBorderThickness()
     {
-        var headerBorderThickness                               = BorderThickness.Bottom;
-        if (IsGhostStyle || IsBorderless) headerBorderThickness = 0d;
+        var headerBorderThickness = BorderThickness.Bottom;
+        if (IsGhostStyle || IsBorderless)
+        {
+            headerBorderThickness = 0d;
+        }
 
         if (ExpandDirection == ExpandDirection.Down || ExpandDirection == ExpandDirection.Left)
+        {
             HeaderBorderThickness = new Thickness(0, 0, 0, headerBorderThickness);
+        }
         else if (ExpandDirection == ExpandDirection.Up || ExpandDirection == ExpandDirection.Right)
+        {
             HeaderBorderThickness = new Thickness(0, headerBorderThickness, 0, 0);
+        }
     }
 
     private void SetupIconButton()
@@ -121,8 +145,11 @@ public class Expander : AvaloniaExpander
             var position = e.GetPosition(_headerDecorator);
             if (_headerDecorator is not null)
             {
-                var targetRect                                = new Rect(_headerDecorator.Bounds.Size);
-                if (targetRect.Contains(position)) IsExpanded = !IsExpanded;
+                var targetRect = new Rect(_headerDecorator.Bounds.Size);
+                if (targetRect.Contains(position))
+                {
+                    IsExpanded = !IsExpanded;
+                }
             }
         }
     }
@@ -132,21 +159,27 @@ public class Expander : AvaloniaExpander
         if (_animationTarget is not null)
         {
             if (IsExpanded)
+            {
                 _animationTarget.IsVisible = true;
+            }
             else
+            {
                 _animationTarget.IsVisible = false;
+            }
         }
     }
 
     private void SetupEffectiveBorderThickness()
     {
         if (IsBorderless || IsGhostStyle)
+        {
             EffectiveBorderThickness = default;
+        }
         else
+        {
             EffectiveBorderThickness = BorderThickness;
+        }
     }
-
-
 
     #region 公共属性定义
 
@@ -232,8 +265,6 @@ public class Expander : AvaloniaExpander
     }
 
     #endregion
-
-
 
     #region 内部属性定义
 

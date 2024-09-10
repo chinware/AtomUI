@@ -14,13 +14,11 @@ namespace AtomUI.Controls;
 using AvaloniaRadioButton = Avalonia.Controls.RadioButton;
 using ButtonSizeType = SizeType;
 
-
 public enum OptionButtonStyle
 {
     Outline,
     Solid
 }
-
 
 public enum OptionButtonPositionTrait
 {
@@ -29,7 +27,6 @@ public enum OptionButtonPositionTrait
     Middle,
     OnlyOne
 }
-
 
 public class OptionButtonPointerEventArgs : EventArgs
 {
@@ -43,11 +40,10 @@ public class OptionButtonPointerEventArgs : EventArgs
     public bool IsHovering { get; set; }
 }
 
-
 public class OptionButton : AvaloniaRadioButton,
-    ISizeTypeAware,
-    IWaveAdornerInfoProvider,
-    IControlCustomStyle
+                            ISizeTypeAware,
+                            IWaveAdornerInfoProvider,
+                            IControlCustomStyle
 {
     public static readonly StyledProperty<ButtonSizeType> SizeTypeProperty =
         AvaloniaProperty.Register<OptionButton, ButtonSizeType>(nameof(SizeType), ButtonSizeType.Middle);
@@ -105,7 +101,7 @@ public class OptionButton : AvaloniaRadioButton,
     }
 
     /// <summary>
-    ///     是否在 Group 中渲染
+    /// 是否在 Group 中渲染
     /// </summary>
     internal bool InOptionGroup
     {
@@ -121,7 +117,10 @@ public class OptionButton : AvaloniaRadioButton,
 
     void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
     {
-        if (Text is null && Content is string content) Text = content;
+        if (Text is null && Content is string content)
+        {
+            Text = content;
+        }
 
         Cursor = new Cursor(StandardCursorType.Hand);
         HandleSizeTypeChanged();
@@ -142,7 +141,7 @@ public class OptionButton : AvaloniaRadioButton,
         var size         = base.MeasureOverride(availableSize);
         var targetWidth  = size.Width;
         var targetHeight = size.Height;
-        targetHeight += Padding.Top  + Padding.Bottom;
+        targetHeight += Padding.Top + Padding.Bottom;
         targetWidth  += Padding.Left + Padding.Right;
         return new Size(targetWidth, targetHeight);
     }
@@ -165,8 +164,6 @@ public class OptionButton : AvaloniaRadioButton,
         CornerRadius        = BuildCornerRadius(GroupPositionTrait, _originCornerRadius!.Value);
     }
 
-
-
     #region IControlCustomStyle 实现
 
     public Rect WaveGeometry()
@@ -183,9 +180,13 @@ public class OptionButton : AvaloniaRadioButton,
     {
         var transitions = new Transitions();
         if (ButtonStyle == OptionButtonStyle.Solid)
+        {
             transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty));
+        }
         else if (ButtonStyle == OptionButtonStyle.Outline)
+        {
             transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(BorderBrushProperty));
+        }
 
         transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty));
         Transitions = transitions;
@@ -195,43 +196,67 @@ public class OptionButton : AvaloniaRadioButton,
     {
         ControlStateUtils.InitCommonState(this, ref _styleState);
         if (IsPressed)
+        {
             _styleState |= ControlStyleState.Sunken;
+        }
         else
+        {
             _styleState |= ControlStyleState.Raised;
+        }
 
-        if (IsChecked.HasValue && IsChecked.Value) _styleState |= ControlStyleState.Selected;
+        if (IsChecked.HasValue && IsChecked.Value)
+        {
+            _styleState |= ControlStyleState.Selected;
+        }
     }
 
     void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
     {
         if (e.Property == IsPointerOverProperty ||
-            e.Property == IsPressedProperty     ||
+            e.Property == IsPressedProperty ||
             e.Property == IsCheckedProperty)
         {
             _customStyle.CollectStyleState();
             if (e.Property == IsPressedProperty)
+            {
                 if (_styleState.HasFlag(ControlStyleState.Raised))
+                {
                     WaveSpiritAdorner.ShowWaveAdorner(this, WaveType.RoundRectWave);
+                }
+            }
         }
 
         if (e.Property == GroupPositionTraitProperty)
+        {
             if (_originCornerRadius.HasValue)
+            {
                 CornerRadius = BuildCornerRadius(GroupPositionTrait, _originCornerRadius!.Value);
+            }
+        }
     }
 
     private CornerRadius BuildCornerRadius(OptionButtonPositionTrait positionTrait, CornerRadius cornerRadius)
     {
         if (positionTrait == OptionButtonPositionTrait.First)
+        {
             return new CornerRadius(cornerRadius.TopLeft,
                 0,
                 0,
                 cornerRadius.BottomLeft);
+        }
+
         if (positionTrait == OptionButtonPositionTrait.Last)
+        {
             return new CornerRadius(0,
                 cornerRadius.TopRight,
                 cornerRadius.BottomRight,
                 0);
-        if (positionTrait == OptionButtonPositionTrait.Middle) return new CornerRadius(0);
+        }
+
+        if (positionTrait == OptionButtonPositionTrait.Middle)
+        {
+            return new CornerRadius(0);
+        }
 
         return cornerRadius;
     }

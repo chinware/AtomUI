@@ -14,13 +14,17 @@ public class LineEdit : TextBox
         if (change.Property == LeftAddOnProperty ||
             change.Property == RightAddOnProperty)
         {
-            if (change.OldValue is Control oldControl) UIStructureUtils.SetTemplateParent(oldControl, null);
+            if (change.OldValue is Control oldControl)
+            {
+                UIStructureUtils.SetTemplateParent(oldControl, null);
+            }
 
-            if (change.NewValue is Control newControl) UIStructureUtils.SetTemplateParent(newControl, this);
+            if (change.NewValue is Control newControl)
+            {
+                UIStructureUtils.SetTemplateParent(newControl, this);
+            }
         }
     }
-
-
 
     #region 公共属性定义
 

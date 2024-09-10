@@ -26,7 +26,12 @@ public partial class CollapseShowCase : UserControl
     private void HandleExpandButtonPosOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
     {
         if (args.Index == 0)
-            CollapseExpandIconPosition                       = CollapseExpandIconPosition.Start;
-        else if (args.Index == 1) CollapseExpandIconPosition = CollapseExpandIconPosition.End;
+        {
+            CollapseExpandIconPosition = CollapseExpandIconPosition.Start;
+        }
+        else if (args.Index == 1)
+        {
+            CollapseExpandIconPosition = CollapseExpandIconPosition.End;
+        }
     }
 }

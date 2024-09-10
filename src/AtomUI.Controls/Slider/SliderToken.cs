@@ -18,112 +18,112 @@ public class SliderToken : AbstractControlDesignToken
     }
 
     /// <summary>
-    ///     滑动条控件的高度
+    /// 滑动条控件的高度
     /// </summary>
     public double SliderTrackSize { get; set; }
 
     /// <summary>
-    ///     轨道高度
+    /// 轨道高度
     /// </summary>
     public double RailSize { get; set; }
 
     /// <summary>
-    ///     Mark 的大小
+    /// Mark 的大小
     /// </summary>
     public double MarkSize { get; set; }
 
     /// <summary>
-    ///     Thumb 推荐的大小，方便风格使用，是最大需要的大小
+    /// Thumb 推荐的大小，方便风格使用，是最大需要的大小
     /// </summary>
     public double ThumbSize { get; set; }
 
     /// <summary>
-    ///     滑块尺寸
+    /// 滑块尺寸
     /// </summary>
     public double ThumbCircleSize { get; set; }
 
     /// <summary>
-    ///     滑块尺寸（悬浮态）
+    /// 滑块尺寸（悬浮态）
     /// </summary>
     public double ThumbCircleSizeHover { get; set; }
 
     /// <summary>
-    ///     滑块边框宽度
+    /// 滑块边框宽度
     /// </summary>
     public Thickness ThumbCircleBorderThickness { get; set; }
 
     /// <summary>
-    ///     滑块边框宽度（悬浮态）
+    /// 滑块边框宽度（悬浮态）
     /// </summary>
     public Thickness ThumbCircleBorderThicknessHover { get; set; }
 
     /// <summary>
-    ///     轨道背景色
+    /// 轨道背景色
     /// </summary>
     public Color RailBg { get; set; }
 
     /// <summary>
-    ///     轨道背景色（悬浮态）
+    /// 轨道背景色（悬浮态）
     /// </summary>
     public Color RailHoverBg { get; set; }
 
     /// <summary>
-    ///     轨道已覆盖部分背景色
+    /// 轨道已覆盖部分背景色
     /// </summary>
     public Color TrackBg { get; set; }
 
     /// <summary>
-    ///     轨道已覆盖部分背景色（悬浮态）
+    /// 轨道已覆盖部分背景色（悬浮态）
     /// </summary>
     public Color TrackHoverBg { get; set; }
 
     /// <summary>
-    ///     Mark 的背景颜色
+    /// Mark 的背景颜色
     /// </summary>
     public Color MarkBorderColor { get; set; }
 
     /// <summary>
-    ///     Mark 的背景 hover 效果
+    /// Mark 的背景 hover 效果
     /// </summary>
     public Color MarkBorderColorHover { get; set; }
 
     /// <summary>
-    ///     Mark 的背景激活时候效果
+    /// Mark 的背景激活时候效果
     /// </summary>
     public Color MarkBorderColorActive { get; set; }
 
     /// <summary>
-    ///     滑块颜色
+    /// 滑块颜色
     /// </summary>
     public Color ThumbCircleBorderColor { get; set; }
 
     /// <summary>
-    ///     滑块颜色 hover
+    /// 滑块颜色 hover
     /// </summary>
     public Color ThumbCircleBorderHoverColor { get; set; }
 
     /// <summary>
-    ///     滑块激活态颜色
+    /// 滑块激活态颜色
     /// </summary>
     public Color ThumbCircleBorderActiveColor { get; set; }
 
     /// <summary>
-    ///     滑块禁用颜色
+    /// 滑块禁用颜色
     /// </summary>
     public Color ThumbCircleBorderColorDisabled { get; set; }
 
     /// <summary>
-    ///     滑块的 outline 环的颜色
+    /// 滑块的 outline 环的颜色
     /// </summary>
     public Color ThumbOutlineColor { get; set; }
 
     /// <summary>
-    ///     滑块的 outline 环的厚度
+    /// 滑块的 outline 环的厚度
     /// </summary>
     public Thickness ThumbOutlineThickness { get; set; }
 
     /// <summary>
-    ///     轨道禁用态背景色
+    /// 轨道禁用态背景色
     /// </summary>
     public Color TrackBgDisabled { get; set; }
 
@@ -172,7 +172,7 @@ public class SliderToken : AbstractControlDesignToken
         SliderPaddingHorizontal =
             new Thickness(SliderTrackSize / 2, (_globalToken.SeedToken.ControlHeight - SliderTrackSize) / 2);
         SliderPaddingVertical = new Thickness((_globalToken.SeedToken.ControlHeight - SliderTrackSize) / 2,
-            SliderTrackSize                                                                            / 2);
+            SliderTrackSize / 2);
         MarginPartWithMark = new Thickness(0, 0, 0, _globalToken.HeightToken.ControlHeightLG - SliderTrackSize);
 
         ThumbOutlineColor = ColorUtils.FromRgbF(0.2, ThumbCircleBorderActiveColor.GetRedF(),

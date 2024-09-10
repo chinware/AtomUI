@@ -17,12 +17,10 @@ public enum GroupBoxTitlePosition
     Center
 }
 
-
 public class GroupBox : ContentControl
 {
-    private Rect _borderBounds;
-
     private readonly BorderRenderHelper _borderRenderHelper;
+    private Rect _borderBounds;
     private Border? _frameDecorator;
     private Control? _headerContentContainer;
 
@@ -88,8 +86,6 @@ public class GroupBox : ContentControl
             }
         }
     }
-
-
 
     #region 公共属性定义
 

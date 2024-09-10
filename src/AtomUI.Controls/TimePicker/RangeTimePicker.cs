@@ -54,7 +54,10 @@ public class RangeTimePicker : TemplatedControl
 
     private bool FlyoutOpenPredicate(Point position)
     {
-        if (!IsEnabled) return false;
+        if (!IsEnabled)
+        {
+            return false;
+        }
 
         if (PositionInRangeStartTextBox(position))
         {
@@ -73,9 +76,17 @@ public class RangeTimePicker : TemplatedControl
 
     private bool PositionInRangeStartTextBox(Point position)
     {
-        if (_rangeStartTextBox is null) return false;
+        if (_rangeStartTextBox is null)
+        {
+            return false;
+        }
+
         var pos = _rangeStartTextBox.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(this)!);
-        if (!pos.HasValue) return false;
+        if (!pos.HasValue)
+        {
+            return false;
+        }
+
         var targetWidth  = _rangeStartTextBox.Bounds.Width;
         var targetHeight = _rangeStartTextBox.Bounds.Height;
         var startOffsetX = pos.Value.X;
@@ -84,21 +95,35 @@ public class RangeTimePicker : TemplatedControl
         if (InnerLeftContent is Control leftContent)
         {
             var leftContentPos = leftContent.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(this)!);
-            if (leftContentPos.HasValue) startOffsetX = leftContentPos.Value.X + leftContent.Bounds.Width;
+            if (leftContentPos.HasValue)
+            {
+                startOffsetX = leftContentPos.Value.X + leftContent.Bounds.Width;
+            }
         }
 
         targetWidth = endOffsetX - startOffsetX;
         var bounds = new Rect(new Point(startOffsetX, offsetY), new Size(targetWidth, targetHeight));
-        if (bounds.Contains(position)) return true;
+        if (bounds.Contains(position))
+        {
+            return true;
+        }
 
         return false;
     }
 
     private bool PositionInRangeEndTextBox(Point position)
     {
-        if (_rangeEndTextBox is null) return false;
+        if (_rangeEndTextBox is null)
+        {
+            return false;
+        }
+
         var pos = _rangeEndTextBox.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(this)!);
-        if (!pos.HasValue) return false;
+        if (!pos.HasValue)
+        {
+            return false;
+        }
+
         var targetWidth  = _rangeEndTextBox.Bounds.Width;
         var targetHeight = _rangeEndTextBox.Bounds.Height;
         var startOffsetX = pos.Value.X;
@@ -108,12 +133,18 @@ public class RangeTimePicker : TemplatedControl
         if (InnerRightContent is Control rightContent)
         {
             var rightContentPos = rightContent.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(this)!);
-            if (rightContentPos.HasValue) endOffsetX = rightContentPos.Value.X;
+            if (rightContentPos.HasValue)
+            {
+                endOffsetX = rightContentPos.Value.X;
+            }
         }
 
         targetWidth = endOffsetX - startOffsetX;
         var bounds = new Rect(new Point(startOffsetX, offsetY), new Size(targetWidth, targetHeight));
-        if (bounds.Contains(position)) return true;
+        if (bounds.Contains(position))
+        {
+            return true;
+        }
 
         return false;
     }
@@ -122,14 +153,23 @@ public class RangeTimePicker : TemplatedControl
     {
         if (hostProvider.PopupHost != args.Root)
         {
-            var inRangeStart                     = PositionInRangeStartTextBox(args.Position);
-            var inRangeEnd                       = PositionInRangeEndTextBox(args.Position);
-            if (inRangeStart) RangeActivatedPart = RangeActivatedPart.Start;
+            var inRangeStart = PositionInRangeStartTextBox(args.Position);
+            var inRangeEnd   = PositionInRangeEndTextBox(args.Position);
+            if (inRangeStart)
+            {
+                RangeActivatedPart = RangeActivatedPart.Start;
+            }
 
-            if (inRangeEnd) RangeActivatedPart = RangeActivatedPart.End;
+            if (inRangeEnd)
+            {
+                RangeActivatedPart = RangeActivatedPart.End;
+            }
+
             if (!inRangeStart &&
                 !inRangeEnd)
+            {
                 return true;
+            }
         }
 
         return false;
@@ -147,18 +187,26 @@ public class RangeTimePicker : TemplatedControl
             if (RangeActivatedPart == RangeActivatedPart.Start)
             {
                 if (RangeStartSelectedTime.HasValue)
+                {
                     _rangeStartTextBox!.Text = DateTimeUtils.FormatTimeSpan(RangeStartSelectedTime.Value,
                         ClockIdentifier == ClockIdentifierType.HourClock12);
+                }
                 else
+                {
                     ResetRangeStartTimeValue();
+                }
             }
             else if (RangeActivatedPart == RangeActivatedPart.End)
             {
                 if (RangeEndSelectedTime.HasValue)
+                {
                     _rangeEndTextBox!.Text = DateTimeUtils.FormatTimeSpan(RangeEndSelectedTime.Value,
                         ClockIdentifier == ClockIdentifierType.HourClock12);
+                }
                 else
+                {
                     ResetRangeEndTimeValue();
+                }
             }
         }
 
@@ -220,26 +268,32 @@ public class RangeTimePicker : TemplatedControl
         SetupFlyoutProperties();
 
         if (_rangePickerIndicator.Transitions is null)
+        {
             _rangePickerIndicator.Transitions = new Transitions
             {
                 AnimationUtils.CreateTransition<DoubleTransition>(OpacityProperty),
                 AnimationUtils.CreateTransition<DoubleTransition>(OpacityProperty)
             };
+        }
 
         if (Transitions is null)
+        {
             Transitions = new Transitions
             {
                 AnimationUtils.CreateTransition<DoubleTransition>(PickerIndicatorOffsetXProperty)
             };
+        }
     }
 
     private void SetupPickerIndicatorPosition()
     {
         if (_rangePickerIndicator is null ||
-            _decoratedBox is null         ||
-            _rangeStartTextBox is null    ||
+            _decoratedBox is null ||
+            _rangeStartTextBox is null ||
             _rangeEndTextBox is null)
+        {
             return;
+        }
 
         if (_rangeActivatedPart == RangeActivatedPart.None)
         {
@@ -279,8 +333,15 @@ public class RangeTimePicker : TemplatedControl
             FlyoutStateHelper.MouseEnterDelayProperty);
         BindUtils.RelayBind(this, MouseLeaveDelayProperty, _flyoutStateHelper,
             FlyoutStateHelper.MouseLeaveDelayProperty);
-        if (RangeStartDefaultTime is not null) RangeStartSelectedTime = RangeStartDefaultTime;
-        if (RangeEndDefaultTime is not null) RangeEndDefaultTime      = RangeEndDefaultTime;
+        if (RangeStartDefaultTime is not null)
+        {
+            RangeStartSelectedTime = RangeStartDefaultTime;
+        }
+
+        if (RangeEndDefaultTime is not null)
+        {
+            RangeEndDefaultTime = RangeEndDefaultTime;
+        }
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -305,46 +366,67 @@ public class RangeTimePicker : TemplatedControl
     private void DetectClearUpButtonState(RawInputEventArgs args)
     {
         if (IsEnabled)
+        {
             if (args is RawPointerEventArgs pointerEventArgs)
+            {
                 if (_rangePickerInner is not null)
                 {
                     var pos = _rangePickerInner.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(this)!);
-                    if (!pos.HasValue) return;
+                    if (!pos.HasValue)
+                    {
+                        return;
+                    }
 
                     var bounds = new Rect(pos.Value, _rangePickerInner.Bounds.Size);
                     if (bounds.Contains(pointerEventArgs.Position))
                     {
                         if (RangeStartSelectedTime is not null || RangeEndSelectedTime is not null)
+                        {
                             _pickerClearUpButton!.IsInClearMode = true;
+                        }
                     }
                     else
                     {
                         _pickerClearUpButton!.IsInClearMode = false;
                     }
                 }
+            }
+        }
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == RangeActivatedPartProperty) HandleRangeActivatedPartChanged();
+        if (change.Property == RangeActivatedPartProperty)
+        {
+            HandleRangeActivatedPartChanged();
+        }
+
         if (VisualRoot is not null)
         {
             if (change.Property == RangeStartSelectedTimeProperty)
             {
                 if (RangeStartSelectedTime.HasValue)
+                {
                     _rangeStartTextBox!.Text = DateTimeUtils.FormatTimeSpan(RangeStartSelectedTime.Value,
                         ClockIdentifier == ClockIdentifierType.HourClock12);
+                }
                 else
+                {
                     ResetRangeStartTimeValue();
+                }
             }
             else if (change.Property == RangeEndSelectedTimeProperty)
             {
                 if (RangeEndSelectedTime.HasValue)
+                {
                     _rangeEndTextBox!.Text = DateTimeUtils.FormatTimeSpan(RangeEndSelectedTime.Value,
                         ClockIdentifier == ClockIdentifierType.HourClock12);
+                }
                 else
+                {
                     ResetRangeEndTimeValue();
+                }
             }
         }
     }
@@ -353,34 +435,46 @@ public class RangeTimePicker : TemplatedControl
     {
         var targetTextBox = _rangeStartTextBox!;
         if (RangeStartDefaultTime is not null)
+        {
             targetTextBox.Text = DateTimeUtils.FormatTimeSpan(RangeStartDefaultTime.Value,
                 ClockIdentifier == ClockIdentifierType.HourClock12);
+        }
         else
+        {
             targetTextBox.Clear();
+        }
     }
 
     protected void ResetRangeEndTimeValue()
     {
         var targetTextBox = _rangeEndTextBox!;
         if (RangeEndDefaultTime is not null)
+        {
             targetTextBox.Text = DateTimeUtils.FormatTimeSpan(RangeEndDefaultTime.Value,
                 ClockIdentifier == ClockIdentifierType.HourClock12);
+        }
         else
+        {
             targetTextBox.Clear();
+        }
     }
 
     protected override Size MeasureOverride(Size availableSize)
     {
         var size = base.MeasureOverride(availableSize);
         if (_decoratedBox is not null)
+        {
             PickerIndicatorOffsetY = _decoratedBox.DesiredSize.Height - _rangePickerIndicator!.Height;
+        }
 
         if (double.IsNaN(PickerIndicatorOffsetX))
+        {
             if (_rangeActivatedPart == RangeActivatedPart.None)
             {
                 var offset = _rangeStartTextBox!.TranslatePoint(new Point(0, 0), this) ?? default;
                 PickerIndicatorOffsetX = offset.X;
             }
+        }
 
         return size;
     }
@@ -390,20 +484,34 @@ public class RangeTimePicker : TemplatedControl
         if (_rangeActivatedPart == RangeActivatedPart.Start)
         {
             PickerPlacement = PlacementMode.BottomEdgeAlignedLeft;
-            if (RangeEndSelectedTime is null) ResetRangeEndTimeValue();
+            if (RangeEndSelectedTime is null)
+            {
+                ResetRangeEndTimeValue();
+            }
 
             _rangeStartTextBox!.Focus();
         }
         else if (_rangeActivatedPart == RangeActivatedPart.End)
         {
             PickerPlacement = PlacementMode.BottomEdgeAlignedRight;
-            if (RangeStartSelectedTime is null) ResetRangeStartTimeValue();
+            if (RangeStartSelectedTime is null)
+            {
+                ResetRangeStartTimeValue();
+            }
+
             _rangeEndTextBox!.Focus();
         }
         else
         {
-            if (RangeStartSelectedTime is null) ResetRangeStartTimeValue();
-            if (RangeEndSelectedTime is null) ResetRangeEndTimeValue();
+            if (RangeStartSelectedTime is null)
+            {
+                ResetRangeStartTimeValue();
+            }
+
+            if (RangeEndSelectedTime is null)
+            {
+                ResetRangeEndTimeValue();
+            }
         }
 
         SetupPickerIndicatorPosition();
@@ -413,18 +521,27 @@ public class RangeTimePicker : TemplatedControl
     {
         _currentValidSelected = true;
         if (RangeActivatedPart == RangeActivatedPart.Start)
-            RangeStartSelectedTime                                                  = value;
-        else if (RangeActivatedPart == RangeActivatedPart.End) RangeEndSelectedTime = value;
+        {
+            RangeStartSelectedTime = value;
+        }
+        else if (RangeActivatedPart == RangeActivatedPart.End)
+        {
+            RangeEndSelectedTime = value;
+        }
     }
 
     internal void NotifyTemporaryTimeSelected(TimeSpan value)
     {
         if (RangeActivatedPart == RangeActivatedPart.Start)
+        {
             _rangeStartTextBox!.Text =
                 DateTimeUtils.FormatTimeSpan(value, ClockIdentifier == ClockIdentifierType.HourClock12);
+        }
         else if (RangeActivatedPart == RangeActivatedPart.End)
+        {
             _rangeEndTextBox!.Text =
                 DateTimeUtils.FormatTimeSpan(value, ClockIdentifier == ClockIdentifierType.HourClock12);
+        }
     }
 
     internal void ClosePickerFlyout()
@@ -436,8 +553,6 @@ public class RangeTimePicker : TemplatedControl
     {
         PseudoClasses.Set(FlyoutOpenPC, _isFlyoutOpen);
     }
-
-
 
     #region 公共属性定义
 
@@ -648,8 +763,6 @@ public class RangeTimePicker : TemplatedControl
 
     #endregion
 
-
-
     #region 内部属性定义
 
     internal static readonly DirectProperty<RangeTimePicker, RangeActivatedPart> RangeActivatedPartProperty =
@@ -684,7 +797,6 @@ public class RangeTimePicker : TemplatedControl
 
     #endregion
 }
-
 
 internal enum RangeActivatedPart
 {

@@ -20,10 +20,10 @@ public class LoadingIndicator : TemplatedControl, ISizeTypeAware, IControlCustom
     internal const double MAX_CONTENT_WIDTH = 120; // 拍脑袋的决定
     internal const double MAX_CONTENT_HEIGHT = 400;
     internal const double DOT_START_OPACITY = 0.3;
-    private Animation? _animation;
-    private CancellationTokenSource? _cancellationTokenSource;
 
     private readonly IControlCustomStyle _customStyle;
+    private Animation? _animation;
+    private CancellationTokenSource? _cancellationTokenSource;
     private TextBlock? _loadingText;
     private Canvas? _mainContainer;
     private RenderInfo? _renderInfo;
@@ -57,13 +57,20 @@ public class LoadingIndicator : TemplatedControl, ISizeTypeAware, IControlCustom
             if (VisualRoot is not null)
             {
                 var oldCustomIcon = e.GetOldValue<PathIcon?>();
-                if (oldCustomIcon is not null) _mainContainer?.Children.Remove(oldCustomIcon);
+                if (oldCustomIcon is not null)
+                {
+                    _mainContainer?.Children.Remove(oldCustomIcon);
+                }
+
                 SetupCustomIndicator();
             }
         }
         else if (e.Property == IndicatorAngleProperty)
         {
-            if (CustomIndicatorIcon is not null) HandleIndicatorAngleChanged();
+            if (CustomIndicatorIcon is not null)
+            {
+                HandleIndicatorAngleChanged();
+            }
         }
     }
 
@@ -128,7 +135,10 @@ public class LoadingIndicator : TemplatedControl, ISizeTypeAware, IControlCustom
                 targetHeight += _loadingText.DesiredSize.Height;
             }
 
-            if (!string.IsNullOrEmpty(LoadingMsg)) targetHeight += GetLoadMsgPaddingTop();
+            if (!string.IsNullOrEmpty(LoadingMsg))
+            {
+                targetHeight += GetLoadMsgPaddingTop();
+            }
         }
 
         var indicatorSize = GetIndicatorSize(SizeType);
@@ -164,8 +174,6 @@ public class LoadingIndicator : TemplatedControl, ISizeTypeAware, IControlCustom
 
         return base.ArrangeOverride(finalSize);
     }
-
-
 
     #region 公共属性定义
 
@@ -225,8 +233,6 @@ public class LoadingIndicator : TemplatedControl, ISizeTypeAware, IControlCustom
 
     #endregion
 
-
-
     #region 内部属性定义
 
     internal static readonly StyledProperty<double> DotSizeProperty =
@@ -275,8 +281,6 @@ public class LoadingIndicator : TemplatedControl, ISizeTypeAware, IControlCustom
 
     #endregion
 
-
-
     #region IControlCustomStyle 实现
 
     private void BuildIndicatorAnimation(bool force = false)
@@ -288,7 +292,7 @@ public class LoadingIndicator : TemplatedControl, ISizeTypeAware, IControlCustom
             {
                 IterationCount = IterationCount.Infinite,
                 Easing         = MotionEasingCurve ?? new LinearEasing(),
-                Duration       = MotionDuration    ?? TimeSpan.FromMilliseconds(300),
+                Duration       = MotionDuration ?? TimeSpan.FromMilliseconds(300),
                 Children =
                 {
                     new KeyFrame
@@ -307,17 +311,23 @@ public class LoadingIndicator : TemplatedControl, ISizeTypeAware, IControlCustom
 
     private Rect GetIndicatorRect()
     {
-        var indicatorSize                                       = GetIndicatorSize(SizeType);
-        var offsetX                                             = (DesiredSize.Width  - indicatorSize) / 2;
-        var offsetY                                             = (DesiredSize.Height - indicatorSize) / 2;
-        if (IsShowLoadingMsg && LoadingMsg is not null) offsetY -= _loadingText!.DesiredSize.Height / 2;
+        var indicatorSize = GetIndicatorSize(SizeType);
+        var offsetX       = (DesiredSize.Width - indicatorSize) / 2;
+        var offsetY       = (DesiredSize.Height - indicatorSize) / 2;
+        if (IsShowLoadingMsg && LoadingMsg is not null)
+        {
+            offsetY -= _loadingText!.DesiredSize.Height / 2;
+        }
 
         return new Rect(new Point(offsetX, offsetY), new Size(indicatorSize, indicatorSize));
     }
 
     private Rect GetLoadingMsgRect()
     {
-        if (!IsShowLoadingMsg) return default;
+        if (!IsShowLoadingMsg)
+        {
+            return default;
+        }
 
         var indicatorRect = GetIndicatorRect();
         var offsetX       = indicatorRect.Left;
@@ -346,7 +356,10 @@ public class LoadingIndicator : TemplatedControl, ISizeTypeAware, IControlCustom
     public override void Render(DrawingContext context)
     {
         _customStyle.PrepareRenderInfo();
-        if (CustomIndicatorIcon is null) RenderBuiltInIndicator(context);
+        if (CustomIndicatorIcon is null)
+        {
+            RenderBuiltInIndicator(context);
+        }
 
         _renderInfo = null;
     }
@@ -371,7 +384,7 @@ public class LoadingIndicator : TemplatedControl, ISizeTypeAware, IControlCustom
             var bottomItemOffset =
                 new Point(centerPoint.X - itemSize / 2, indicatorRect.Bottom - itemEdgeMargin - itemSize);
             var leftItemOffset = new Point(indicatorRect.Left + itemEdgeMargin, centerPoint.Y - itemSize / 2);
-            var topItemOffset  = new Point(centerPoint.X      - itemSize / 2, indicatorRect.Top + itemEdgeMargin);
+            var topItemOffset  = new Point(centerPoint.X - itemSize / 2, indicatorRect.Top + itemEdgeMargin);
 
             var matrix = Matrix.CreateTranslation(-indicatorRect.Center.X, -indicatorRect.Center.Y);
             matrix *= Matrix.CreateRotation(MathUtils.Deg2Rad(IndicatorAngle));
@@ -406,22 +419,34 @@ public class LoadingIndicator : TemplatedControl, ISizeTypeAware, IControlCustom
         _renderInfo         = new RenderInfo();
         _renderInfo.DotSize = DotSize;
         if (SizeType == SizeType.Large)
+        {
             _renderInfo.IndicatorItemSize = (DotSize - IndicatorTextMargin) / 2.5;
+        }
         else if (SizeType == SizeType.Middle)
+        {
             _renderInfo.IndicatorItemSize = (DotSize - IndicatorTextMargin) / 2;
+        }
         else
+        {
             _renderInfo.IndicatorItemSize = (DotSize - IndicatorTextMargin) / 2;
+        }
+
         _renderInfo.IndicatorItemSize *= 0.9;
         if (SizeType == SizeType.Large)
+        {
             _renderInfo.ItemEdgeMargin = _renderInfo.IndicatorItemSize / 1.5;
+        }
         else if (SizeType == SizeType.Middle)
+        {
             _renderInfo.ItemEdgeMargin = _renderInfo.IndicatorItemSize / 1.8;
+        }
         else
+        {
             _renderInfo.ItemEdgeMargin = 0.5;
+        }
 
         _renderInfo.DotBgBrush = DotBgBrush;
     }
-
 
     // 跟渲染相关的数据
     private class RenderInfo

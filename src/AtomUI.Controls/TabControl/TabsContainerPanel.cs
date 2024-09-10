@@ -23,8 +23,11 @@ internal class TabsContainerPanel : Panel
                 var addTabButtonDesiredWidth = _addTabButton.DesiredSize.Width;
                 var totalDesiredWidth        = scrollViewerDesiredWidth + addTabButtonDesiredWidth;
 
-                var btnOffsetY                                = 0d;
-                if (TabStripPlacement == Dock.Top) btnOffsetY = arrangeSize.Height - _addTabButton.DesiredSize.Height;
+                var btnOffsetY = 0d;
+                if (TabStripPlacement == Dock.Top)
+                {
+                    btnOffsetY = arrangeSize.Height - _addTabButton.DesiredSize.Height;
+                }
 
                 if (totalDesiredWidth > arrangeSize.Width)
                 {
@@ -42,11 +45,15 @@ internal class TabsContainerPanel : Panel
             }
             else
             {
-                var scrollViewerDesiredHeight                  = _tabScrollViewer.DesiredSize.Height;
-                var addTabButtonDesiredHeight                  = _addTabButton.DesiredSize.Height;
-                var totalDesiredHeight                         = scrollViewerDesiredHeight + addTabButtonDesiredHeight;
-                var btnOffsetX                                 = 0d;
-                if (TabStripPlacement == Dock.Left) btnOffsetX = arrangeSize.Width - _addTabButton.DesiredSize.Width;
+                var scrollViewerDesiredHeight = _tabScrollViewer.DesiredSize.Height;
+                var addTabButtonDesiredHeight = _addTabButton.DesiredSize.Height;
+                var totalDesiredHeight        = scrollViewerDesiredHeight + addTabButtonDesiredHeight;
+                var btnOffsetX                = 0d;
+                if (TabStripPlacement == Dock.Left)
+                {
+                    btnOffsetX = arrangeSize.Width - _addTabButton.DesiredSize.Width;
+                }
+
                 if (totalDesiredHeight > arrangeSize.Height)
                 {
                     _tabScrollViewer.Arrange(new Rect(new Point(0, 0),
@@ -73,20 +80,30 @@ internal class TabsContainerPanel : Panel
         if (change.Property == TabScrollViewerProperty)
         {
             var oldScrollViewer = change.GetOldValue<BaseTabScrollViewer?>();
-            if (oldScrollViewer is not null) Children.Remove(oldScrollViewer);
+            if (oldScrollViewer is not null)
+            {
+                Children.Remove(oldScrollViewer);
+            }
 
-            if (TabScrollViewer is not null) Children.Add(TabScrollViewer);
+            if (TabScrollViewer is not null)
+            {
+                Children.Add(TabScrollViewer);
+            }
         }
         else if (change.Property == AddTabButtonProperty)
         {
             var oldAddTabButton = change.GetOldValue<IconButton?>();
-            if (oldAddTabButton is not null) Children.Remove(oldAddTabButton);
+            if (oldAddTabButton is not null)
+            {
+                Children.Remove(oldAddTabButton);
+            }
 
-            if (AddTabButton is not null) Children.Add(AddTabButton);
+            if (AddTabButton is not null)
+            {
+                Children.Add(AddTabButton);
+            }
         }
     }
-
-
 
     #region 公共属性定义
 
@@ -117,8 +134,6 @@ internal class TabsContainerPanel : Panel
     }
 
     #endregion
-
-
 
     #region 内部属性定义
 

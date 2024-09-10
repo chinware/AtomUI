@@ -291,7 +291,8 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
     {
         var outlineStyle =
             new Style(selector => selector.Nesting()
-                .PropertyEquals(AddOnDecoratedBox.StyleVariantProperty, AddOnDecoratedVariant.Outline));
+                                          .PropertyEquals(AddOnDecoratedBox.StyleVariantProperty,
+                                              AddOnDecoratedVariant.Outline));
 
         {
             {
@@ -393,7 +394,7 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
         var filledStyle =
             new Style(selector =>
                 selector.Nesting()
-                    .PropertyEquals(AddOnDecoratedBox.StyleVariantProperty, AddOnDecoratedVariant.Filled));
+                        .PropertyEquals(AddOnDecoratedBox.StyleVariantProperty, AddOnDecoratedVariant.Filled));
 
         {
             {

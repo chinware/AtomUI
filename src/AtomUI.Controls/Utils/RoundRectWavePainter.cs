@@ -23,20 +23,26 @@ internal class RoundRectWavePainter : AbstractWavePainter
     public override void Paint(DrawingContext context, object newSize, double newOpacity)
     {
         var newSizeTyped = (Size)newSize;
-        if (newSize is null) throw new ArgumentException("newSize argument must be Size type.");
+        if (newSize is null)
+        {
+            throw new ArgumentException("newSize argument must be Size type.");
+        }
 
         if (_originGeometry is null)
+        {
             _originGeometry = BuildRoundedGeometry(
                 new Rect(OriginPoint.X, OriginPoint.Y, OriginSize.Width, OriginSize.Height),
                 CornerRadius);
+        }
+
         var deltaSize = newSizeTyped - OriginSize;
         var salt      = deltaSize.Width / WaveRange / 2;
         salt += 1;
 
         var currentCornerRadius = new CornerRadius(CornerRadius.TopLeft * salt,
-            CornerRadius.TopRight                                       * salt,
-            CornerRadius.BottomRight                                    * salt,
-            CornerRadius.BottomLeft                                     * salt);
+            CornerRadius.TopRight * salt,
+            CornerRadius.BottomRight * salt,
+            CornerRadius.BottomLeft * salt);
 
         var newPoint = OriginPoint - new Point(deltaSize.Width / 2, deltaSize.Height / 2);
 
@@ -55,7 +61,11 @@ internal class RoundRectWavePainter : AbstractWavePainter
     private Geometry? BuildRoundedGeometry(Rect rect, CornerRadius cornerRadius)
     {
         // 根据四个角是否一样看是使用简单的还是复杂的矢量图形生成算法
-        if (cornerRadius.IsUniform) return new RectangleGeometry(rect, cornerRadius.TopLeft, cornerRadius.TopLeft);
+        if (cornerRadius.IsUniform)
+        {
+            return new RectangleGeometry(rect, cornerRadius.TopLeft, cornerRadius.TopLeft);
+        }
+
         var backgroundOuterKeypoints = RoundRectGeometryBuilder.CalculateRoundedCornersRectangleWinUI(
             rect,
             new Thickness(0),

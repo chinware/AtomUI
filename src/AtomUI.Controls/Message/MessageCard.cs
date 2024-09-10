@@ -20,7 +20,7 @@ public class MessageCard : TemplatedControl
     private bool _isClosing;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="MessageCard" /> class.
+    /// Initializes a new instance of the <see cref="MessageCard" /> class.
     /// </summary>
     public MessageCard()
     {
@@ -29,11 +29,14 @@ public class MessageCard : TemplatedControl
     }
 
     /// <summary>
-    ///     Closes the <see cref="MessageCard" />.
+    /// Closes the <see cref="MessageCard" />.
     /// </summary>
     public void Close()
     {
-        if (IsClosing) return;
+        if (IsClosing)
+        {
+            return;
+        }
 
         IsClosing = true;
     }
@@ -48,11 +51,17 @@ public class MessageCard : TemplatedControl
             UpdateMessageType();
         }
 
-        if (e.Property == MessageTypeProperty) UpdateMessageType();
+        if (e.Property == MessageTypeProperty)
+        {
+            UpdateMessageType();
+        }
 
         if (e.Property == IsClosedProperty)
         {
-            if (!IsClosing && !IsClosed) return;
+            if (!IsClosing && !IsClosed)
+            {
+                return;
+            }
 
             RaiseEvent(new RoutedEventArgs(MessageClosedEvent));
         }
@@ -93,84 +102,107 @@ public class MessageCard : TemplatedControl
                 break;
         }
 
-        if (Icon is not null) SetupMessageIconColor(Icon);
+        if (Icon is not null)
+        {
+            SetupMessageIconColor(Icon);
+        }
     }
 
     private void SetupMessageIconColor(PathIcon icon)
     {
         if (MessageType == MessageType.Error)
+        {
             TokenResourceBinder.CreateGlobalTokenBinding(icon, PathIcon.NormalFilledBrushProperty,
                 GlobalTokenResourceKey.ColorError);
+        }
         else if (MessageType == MessageType.Information ||
                  MessageType == MessageType.Loading)
+        {
             TokenResourceBinder.CreateGlobalTokenBinding(icon, PathIcon.NormalFilledBrushProperty,
                 GlobalTokenResourceKey.ColorPrimary);
+        }
         else if (MessageType == MessageType.Success)
+        {
             TokenResourceBinder.CreateGlobalTokenBinding(icon, PathIcon.NormalFilledBrushProperty,
                 GlobalTokenResourceKey.ColorSuccess);
+        }
         else if (MessageType == MessageType.Warning)
+        {
             TokenResourceBinder.CreateGlobalTokenBinding(icon, PathIcon.NormalFilledBrushProperty,
                 GlobalTokenResourceKey.ColorWarning);
+        }
     }
 
     private void SetupMessageIcon()
     {
         PathIcon? icon = null;
         if (MessageType == MessageType.Information)
+        {
             icon = new PathIcon
             {
                 Kind = "InfoCircleFilled"
             };
+        }
         else if (MessageType == MessageType.Success)
+        {
             icon = new PathIcon
             {
                 Kind = "CheckCircleFilled"
             };
+        }
         else if (MessageType == MessageType.Error)
+        {
             icon = new PathIcon
             {
                 Kind = "CloseCircleFilled"
             };
+        }
         else if (MessageType == MessageType.Warning)
+        {
             icon = new PathIcon
             {
                 Kind = "ExclamationCircleFilled"
             };
+        }
         else if (MessageType == MessageType.Loading)
+        {
             icon = new PathIcon
             {
                 Kind             = "LoadingOutlined",
                 LoadingAnimation = IconAnimation.Spin
             };
+        }
 
-        if (icon is not null) SetupMessageIconColor(icon);
+        if (icon is not null)
+        {
+            SetupMessageIconColor(icon);
+        }
+
         SetCurrentValue(IconProperty, icon);
     }
-
-
 
     #region 公共属性定义
 
     /// <summary>
-    ///     Defines the <see cref="IsClosing" /> property.
+    /// Defines the <see cref="IsClosing" /> property.
     /// </summary>
     public static readonly DirectProperty<MessageCard, bool> IsClosingProperty =
         AvaloniaProperty.RegisterDirect<MessageCard, bool>(nameof(IsClosing), o => o.IsClosing);
 
     /// <summary>
-    ///     Defines the <see cref="IsClosed" /> property.
+    /// Defines the <see cref="IsClosed" /> property.
     /// </summary>
     public static readonly StyledProperty<bool> IsClosedProperty =
         AvaloniaProperty.Register<MessageCard, bool>(nameof(IsClosed));
 
     /// <summary>
-    ///     Defines the <see cref="NotificationType" /> property
+    /// Defines the <see cref="NotificationType" /> property
     /// </summary>
     public static readonly StyledProperty<MessageType> MessageTypeProperty =
         AvaloniaProperty.Register<MessageCard, MessageType>(nameof(NotificationType));
 
     /// <summary>
-    ///     Defines the <see cref="MessageClosed" /> event.
+    /// Defines the <see cref="MessageClosed" /> event.
     /// </summary>
     public static readonly RoutedEvent<RoutedEventArgs> MessageClosedEvent =
         RoutedEvent.Register<MessageCard, RoutedEventArgs>(nameof(MessageClosed), RoutingStrategies.Bubble);
@@ -182,7 +214,7 @@ public class MessageCard : TemplatedControl
         AvaloniaProperty.Register<NotificationCard, string>(nameof(Message));
 
     /// <summary>
-    ///     Determines if the notification is already closing.
+    /// Determines if the notification is already closing.
     /// </summary>
     public bool IsClosing
     {
@@ -191,7 +223,7 @@ public class MessageCard : TemplatedControl
     }
 
     /// <summary>
-    ///     Determines if the notification is closed.
+    /// Determines if the notification is closed.
     /// </summary>
     public bool IsClosed
     {
@@ -200,7 +232,7 @@ public class MessageCard : TemplatedControl
     }
 
     /// <summary>
-    ///     Gets or sets the type of the notification
+    /// Gets or sets the type of the notification
     /// </summary>
     public MessageType MessageType
     {
@@ -209,7 +241,7 @@ public class MessageCard : TemplatedControl
     }
 
     /// <summary>
-    ///     Raised when the <see cref="MessageCard" /> has closed.
+    /// Raised when the <see cref="MessageCard" /> has closed.
     /// </summary>
     public event EventHandler<RoutedEventArgs>? MessageClosed
     {

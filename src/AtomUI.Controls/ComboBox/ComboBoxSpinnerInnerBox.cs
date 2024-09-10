@@ -37,8 +37,6 @@ internal class ComboBoxSpinnerInnerBox : AddOnDecoratedInnerBox, ICustomHitTest
         base.OnApplyTemplate(e);
     }
 
-
-
     #region 公共属性定义
 
     public static readonly StyledProperty<object?> SpinnerContentProperty =
@@ -51,8 +49,6 @@ internal class ComboBoxSpinnerInnerBox : AddOnDecoratedInnerBox, ICustomHitTest
     }
 
     #endregion
-
-
 
     #region 内部属性定义
 

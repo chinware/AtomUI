@@ -46,7 +46,10 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager
 
     public WindowNotificationManager(TopLevel? host) : this()
     {
-        if (host is not null) InstallFromTopLevel(host);
+        if (host is not null)
+        {
+            InstallFromTopLevel(host);
+        }
     }
 
     public WindowNotificationManager()
@@ -97,8 +100,12 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager
 
         // Add style classes if any
         if (classes != null)
+        {
             foreach (var @class in classes)
+            {
                 notificationControl.Classes.Add(@class);
+            }
+        }
 
         notificationControl.PointerPressed += (sender, args) => { onClick?.Invoke(); };
 
@@ -114,7 +121,9 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager
             _items?.Add(notificationControl);
 
             if (_items?.OfType<NotificationCard>().Count(i => !i.IsClosing) > MaxItems)
+            {
                 _items.OfType<NotificationCard>().First(i => !i.IsClosing).Close();
+            }
         });
     }
 
@@ -124,20 +133,34 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager
 
         var itemsControl = e.NameScope.Find<Panel>("PART_Items");
         _items = itemsControl?.Children;
-        if (itemsControl is not null) itemsControl.Children.CollectionChanged += HandleCollectionChanged;
+        if (itemsControl is not null)
+        {
+            itemsControl.Children.CollectionChanged += HandleCollectionChanged;
+        }
     }
 
     private void HandleCardExpiredTimer(object? sender, EventArgs eventArgs)
     {
         if (_items is not null)
+        {
             foreach (var item in _items)
+            {
                 if (item is NotificationCard card)
+                {
                     if (card.NotifyCloseTick(_cardExpiredTimer.Interval))
+                    {
                         if (!_cleanupQueue.Contains(card))
                         {
                             _cleanupQueue.Enqueue(card);
-                            if (!_cleanupTimer.IsEnabled) _cleanupTimer.Start();
+                            if (!_cleanupTimer.IsEnabled)
+                            {
+                                _cleanupTimer.Start();
+                            }
                         }
+                    }
+                }
+            }
+        }
     }
 
     private void HandleCleanupTimerTick(object? sender, EventArgs eventArgs)
@@ -152,7 +175,10 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager
             else if (card.IsClosed)
             {
                 _cleanupQueue.Dequeue();
-                if (_cleanupQueue.Count == 0) _cleanupTimer.Stop();
+                if (_cleanupQueue.Count == 0)
+                {
+                    _cleanupTimer.Stop();
+                }
             }
         }
     }
@@ -162,9 +188,13 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager
         if (_items is not null)
         {
             if (_items.Count > 0)
+            {
                 _cardExpiredTimer.Start();
+            }
             else
+            {
                 _cardExpiredTimer.Stop();
+            }
         }
     }
 
@@ -172,7 +202,10 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager
     {
         base.OnPropertyChanged(change);
 
-        if (change.Property == PositionProperty) UpdatePseudoClasses(change.GetNewValue<NotificationPosition>());
+        if (change.Property == PositionProperty)
+        {
+            UpdatePseudoClasses(change.GetNewValue<NotificationPosition>());
+        }
     }
 
     private void InstallFromTopLevel(TopLevel topLevel)
@@ -202,11 +235,11 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager
 
     private void UpdatePseudoClasses(NotificationPosition position)
     {
-        PseudoClasses.Set(TopLeftPC, position      == NotificationPosition.TopLeft);
-        PseudoClasses.Set(TopRightPC, position     == NotificationPosition.TopRight);
-        PseudoClasses.Set(BottomLeftPC, position   == NotificationPosition.BottomLeft);
-        PseudoClasses.Set(BottomRightPC, position  == NotificationPosition.BottomRight);
-        PseudoClasses.Set(TopCenterPC, position    == NotificationPosition.TopCenter);
+        PseudoClasses.Set(TopLeftPC, position == NotificationPosition.TopLeft);
+        PseudoClasses.Set(TopRightPC, position == NotificationPosition.TopRight);
+        PseudoClasses.Set(BottomLeftPC, position == NotificationPosition.BottomLeft);
+        PseudoClasses.Set(BottomRightPC, position == NotificationPosition.BottomRight);
+        PseudoClasses.Set(TopCenterPC, position == NotificationPosition.TopCenter);
         PseudoClasses.Set(BottomCenterPC, position == NotificationPosition.BottomCenter);
     }
 

@@ -13,28 +13,40 @@ internal class TabStripScrollViewer : BaseTabScrollViewer
 
     #endregion
 
-
-
     protected override Type StyleKeyOverride => typeof(BaseTabScrollViewer);
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        if (_menuIndicator is not null) _menuIndicator.Click += HandleMenuIndicator;
+        if (_menuIndicator is not null)
+        {
+            _menuIndicator.Click += HandleMenuIndicator;
+        }
     }
 
     private void HandleMenuIndicator(object? sender, RoutedEventArgs args)
     {
-        if (_menuFlyout is null) _menuFlyout = new MenuFlyout();
+        if (_menuFlyout is null)
+        {
+            _menuFlyout = new MenuFlyout();
+        }
 
         if (TabStripPlacement == Dock.Top)
+        {
             _menuFlyout.Placement = PlacementMode.BottomEdgeAlignedLeft;
+        }
         else if (TabStripPlacement == Dock.Bottom)
+        {
             _menuFlyout.Placement = PlacementMode.TopEdgeAlignedLeft;
+        }
         else if (TabStripPlacement == Dock.Right)
+        {
             _menuFlyout.Placement = PlacementMode.LeftEdgeAlignedBottom;
+        }
         else
+        {
             _menuFlyout.Placement = PlacementMode.RightEdgeAlignedBottom;
+        }
 
         // 收集没有完全显示的 Tab 列表
         _menuFlyout.Items.Clear();
@@ -46,9 +58,10 @@ internal class TabStripScrollViewer : BaseTabScrollViewer
                 if (itemContainer is TabStripItem tabStripItem)
                 {
                     var itemBounds = itemContainer.Bounds;
-                    var left       = Math.Floor(itemBounds.Left  - Offset.X);
+                    var left       = Math.Floor(itemBounds.Left - Offset.X);
                     var right      = Math.Floor(itemBounds.Right - Offset.X);
                     if (TabStripPlacement == Dock.Top || TabStripPlacement == Dock.Bottom)
+                    {
                         if (left < 0 || right > Viewport.Width)
                         {
                             var menuItem = new TabStripOverflowMenuItem
@@ -61,16 +74,21 @@ internal class TabStripScrollViewer : BaseTabScrollViewer
                             menuItem.CloseTab += HandleCloseTabRequest;
                             _menuFlyout.Items.Add(menuItem);
                         }
+                    }
                 }
             }
 
-            if (_menuFlyout.Items.Count > 0) _menuFlyout.ShowAt(_menuIndicator!);
+            if (_menuFlyout.Items.Count > 0)
+            {
+                _menuFlyout.ShowAt(_menuIndicator!);
+            }
         }
     }
 
     private void HandleMenuItemClicked(object? sender, RoutedEventArgs args)
     {
         if (TabStrip is not null)
+        {
             Dispatcher.UIThread.Post(sender =>
             {
                 if (sender is TabStripOverflowMenuItem tabStripMenuItem)
@@ -83,19 +101,26 @@ internal class TabStripScrollViewer : BaseTabScrollViewer
                     }
                 }
             }, sender);
+        }
     }
 
     private void HandleCloseTabRequest(object? sender, RoutedEventArgs args)
     {
         if (sender is TabStripOverflowMenuItem tabStripMenuItem)
+        {
             if (TabStrip is not null)
+            {
                 if (TabStrip.SelectedItem is TabStripItem selectedItem)
                 {
                     if (selectedItem == tabStripMenuItem.TabStripItem)
                     {
-                        var     selectedIndex                   = TabStrip.SelectedIndex;
-                        object? newSelectedItem                 = null;
-                        if (selectedIndex != 0) newSelectedItem = TabStrip.Items[--selectedIndex];
+                        var     selectedIndex   = TabStrip.SelectedIndex;
+                        object? newSelectedItem = null;
+                        if (selectedIndex != 0)
+                        {
+                            newSelectedItem = TabStrip.Items[--selectedIndex];
+                        }
+
                         TabStrip.Items.Remove(tabStripMenuItem.TabStripItem);
                         TabStrip.SelectedItem = newSelectedItem;
                     }
@@ -104,5 +129,7 @@ internal class TabStripScrollViewer : BaseTabScrollViewer
                         TabStrip.Items.Remove(tabStripMenuItem.TabStripItem);
                     }
                 }
+            }
+        }
     }
 }

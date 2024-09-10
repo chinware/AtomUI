@@ -27,31 +27,30 @@ public enum DateTimePickerPanelType
     TimePeriod //AM or PM
 }
 
-
 public class DateTimePickerPanel : Panel, ILogicalScrollable
 {
-   /// <summary>
-   ///     Defines the <see cref="ItemHeight" /> property
-   /// </summary>
-   public static readonly StyledProperty<double> ItemHeightProperty =
+    /// <summary>
+    /// Defines the <see cref="ItemHeight" /> property
+    /// </summary>
+    public static readonly StyledProperty<double> ItemHeightProperty =
         AvaloniaProperty.Register<DateTimePickerPanel, double>(nameof(ItemHeight), 40.0);
 
-   /// <summary>
-   ///     Defines the <see cref="PanelType" /> property
-   /// </summary>
-   public static readonly StyledProperty<DateTimePickerPanelType> PanelTypeProperty =
+    /// <summary>
+    /// Defines the <see cref="PanelType" /> property
+    /// </summary>
+    public static readonly StyledProperty<DateTimePickerPanelType> PanelTypeProperty =
         AvaloniaProperty.Register<DateTimePickerPanel, DateTimePickerPanelType>(nameof(PanelType));
 
-   /// <summary>
-   ///     Defines the <see cref="ItemFormat" /> property
-   /// </summary>
-   public static readonly StyledProperty<string> ItemFormatProperty =
+    /// <summary>
+    /// Defines the <see cref="ItemFormat" /> property
+    /// </summary>
+    public static readonly StyledProperty<string> ItemFormatProperty =
         AvaloniaProperty.Register<DateTimePickerPanel, string>(nameof(ItemFormat), "yyyy");
 
-   /// <summary>
-   ///     Defines the <see cref="ShouldLoop" /> property
-   /// </summary>
-   public static readonly StyledProperty<bool> ShouldLoopProperty =
+    /// <summary>
+    /// Defines the <see cref="ShouldLoop" /> property
+    /// </summary>
+    public static readonly StyledProperty<bool> ShouldLoopProperty =
         AvaloniaProperty.Register<DateTimePickerPanel, bool>(nameof(ShouldLoop));
 
     private Size _extent;
@@ -87,7 +86,7 @@ public class DateTimePickerPanel : Panel, ILogicalScrollable
     }
 
     /// <summary>
-    ///     Gets or sets what this panel displays in date or time units
+    /// Gets or sets what this panel displays in date or time units
     /// </summary>
     public DateTimePickerPanelType PanelType
     {
@@ -96,7 +95,7 @@ public class DateTimePickerPanel : Panel, ILogicalScrollable
     }
 
     /// <summary>
-    ///     Gets or sets the height of each item
+    /// Gets or sets the height of each item
     /// </summary>
     public double ItemHeight
     {
@@ -105,8 +104,8 @@ public class DateTimePickerPanel : Panel, ILogicalScrollable
     }
 
     /// <summary>
-    ///     Gets or sets the string format for the items, using standard
-    ///     .net DateTime or TimeSpan formatting. Format must match panel type
+    /// Gets or sets the string format for the items, using standard
+    /// .net DateTime or TimeSpan formatting. Format must match panel type
     /// </summary>
     public string ItemFormat
     {
@@ -115,7 +114,7 @@ public class DateTimePickerPanel : Panel, ILogicalScrollable
     }
 
     /// <summary>
-    ///     Gets or sets whether the panel should loop
+    /// Gets or sets whether the panel should loop
     /// </summary>
     public bool ShouldLoop
     {
@@ -124,18 +123,27 @@ public class DateTimePickerPanel : Panel, ILogicalScrollable
     }
 
     /// <summary>
-    ///     Gets or sets the minimum value
+    /// Gets or sets the minimum value
     /// </summary>
     public int MinimumValue
     {
         get => _minimumValue;
+
         set
         {
-            if (value > MaximumValue) throw new InvalidOperationException("Minimum cannot be greater than Maximum");
+            if (value > MaximumValue)
+            {
+                throw new InvalidOperationException("Minimum cannot be greater than Maximum");
+            }
+
             _minimumValue = value;
             UpdateHelperInfo();
-            var sel                                 = CoerceSelected(SelectedValue);
-            if (sel != SelectedValue) SelectedValue = sel;
+            var sel = CoerceSelected(SelectedValue);
+            if (sel != SelectedValue)
+            {
+                SelectedValue = sel;
+            }
+
             UpdateItems();
             InvalidateArrange();
             RaiseScrollInvalidated(EventArgs.Empty);
@@ -143,18 +151,27 @@ public class DateTimePickerPanel : Panel, ILogicalScrollable
     }
 
     /// <summary>
-    ///     Gets or sets the maximum value
+    /// Gets or sets the maximum value
     /// </summary>
     public int MaximumValue
     {
         get => _maximumValue;
+
         set
         {
-            if (value < MinimumValue) throw new InvalidOperationException("Maximum cannot be less than Minimum");
+            if (value < MinimumValue)
+            {
+                throw new InvalidOperationException("Maximum cannot be less than Minimum");
+            }
+
             _maximumValue = value;
             UpdateHelperInfo();
-            var sel                                 = CoerceSelected(SelectedValue);
-            if (sel != SelectedValue) SelectedValue = sel;
+            var sel = CoerceSelected(SelectedValue);
+            if (sel != SelectedValue)
+            {
+                SelectedValue = sel;
+            }
+
             UpdateItems();
             InvalidateArrange();
             RaiseScrollInvalidated(EventArgs.Empty);
@@ -162,24 +179,33 @@ public class DateTimePickerPanel : Panel, ILogicalScrollable
     }
 
     /// <summary>
-    ///     Gets or sets the selected value
+    /// Gets or sets the selected value
     /// </summary>
     public int SelectedValue
     {
         get => _selectedValue;
+
         set
         {
-            if (value > MaximumValue || value < MinimumValue) throw new ArgumentOutOfRangeException(nameof(value));
+            if (value > MaximumValue || value < MinimumValue)
+            {
+                throw new ArgumentOutOfRangeException(nameof(value));
+            }
 
             var sel = CoerceSelected(value);
             _selectedValue = sel;
             _selectedIndex = (value - MinimumValue) / Increment;
 
-            if (!ShouldLoop) CreateOrDestroyItems(Children);
+            if (!ShouldLoop)
+            {
+                CreateOrDestroyItems(Children);
+            }
 
             if (!_suppressUpdateOffset)
+            {
                 _offset = new Vector(
                     0, ShouldLoop ? _selectedIndex * ItemHeight + _extentOne * 50 : _selectedIndex * ItemHeight);
+            }
 
             UpdateItems();
             InvalidateArrange();
@@ -190,18 +216,27 @@ public class DateTimePickerPanel : Panel, ILogicalScrollable
     }
 
     /// <summary>
-    ///     Gets or sets the increment
+    /// Gets or sets the increment
     /// </summary>
     public int Increment
     {
         get => _increment;
+
         set
         {
-            if (value <= 0 || value > _range) throw new ArgumentOutOfRangeException(nameof(value));
+            if (value <= 0 || value > _range)
+            {
+                throw new ArgumentOutOfRangeException(nameof(value));
+            }
+
             _increment = value;
             UpdateHelperInfo();
-            var sel                                 = CoerceSelected(SelectedValue);
-            if (sel != SelectedValue) SelectedValue = sel;
+            var sel = CoerceSelected(SelectedValue);
+            if (sel != SelectedValue)
+            {
+                SelectedValue = sel;
+            }
+
             UpdateItems();
             InvalidateArrange();
             RaiseScrollInvalidated(EventArgs.Empty);
@@ -216,6 +251,7 @@ public class DateTimePickerPanel : Panel, ILogicalScrollable
     public Vector Offset
     {
         get => _offset;
+
         set
         {
             var old = _offset;
@@ -227,28 +263,45 @@ public class DateTimePickerPanel : Panel, ILogicalScrollable
             {
                 var numCountsToMove = 0;
                 for (var i = 0; i < children.Count; i++)
+                {
                     if (children[i].Bounds.Bottom - dy < 0)
+                    {
                         numCountsToMove++;
+                    }
                     else
+                    {
                         break;
+                    }
+                }
 
                 children.MoveRange(0, numCountsToMove, children.Count);
 
                 var scrollHeight = _extent.Height - Viewport.Height;
                 if (ShouldLoop && value.Y >= scrollHeight - _extentOne)
+                {
                     _offset = new Vector(0, value.Y - _extentOne * 50);
+                }
             }
             else if (dy < 0) // Scroll Up
             {
                 var numCountsToMove = 0;
                 for (var i = children.Count - 1; i >= 0; i--)
+                {
                     if (children[i].Bounds.Top - dy > Bounds.Height)
+                    {
                         numCountsToMove++;
+                    }
                     else
+                    {
                         break;
+                    }
+                }
 
                 children.MoveRange(children.Count - numCountsToMove, numCountsToMove, 0);
-                if (ShouldLoop && value.Y < _extentOne) _offset = new Vector(0, value.Y + _extentOne * 50);
+                if (ShouldLoop && value.Y < _extentOne)
+                {
+                    _offset = new Vector(0, value.Y + _extentOne * 50);
+                }
             }
 
             //Setting selection will handle all invalidation
@@ -306,9 +359,14 @@ public class DateTimePickerPanel : Panel, ILogicalScrollable
     {
         if (double.IsInfinity(availableSize.Width) ||
             double.IsInfinity(availableSize.Height))
+        {
             throw new InvalidOperationException("Panel must have finite height");
+        }
 
-        if (!_hasInit) UpdateHelperInfo();
+        if (!_hasInit)
+        {
+            UpdateHelperInfo();
+        }
 
         var initY = availableSize.Height / 2.0 - ItemHeight / 2.0;
         _numItemsAboveBelowSelected = (int)Math.Ceiling(initY / ItemHeight) + 1;
@@ -317,7 +375,10 @@ public class DateTimePickerPanel : Panel, ILogicalScrollable
 
         CreateOrDestroyItems(children);
 
-        for (var i = 0; i < children.Count; i++) children[i].Measure(availableSize);
+        for (var i = 0; i < children.Count; i++)
+        {
+            children[i].Measure(availableSize);
+        }
 
         if (!_hasInit)
         {
@@ -331,7 +392,10 @@ public class DateTimePickerPanel : Panel, ILogicalScrollable
 
     protected override Size ArrangeOverride(Size finalSize)
     {
-        if (Children.Count == 0) return base.ArrangeOverride(finalSize);
+        if (Children.Count == 0)
+        {
+            return base.ArrangeOverride(finalSize);
+        }
 
         var  itemHgt  = ItemHeight;
         var  children = Children;
@@ -404,7 +468,7 @@ public class DateTimePickerPanel : Panel, ILogicalScrollable
     }
 
     /// <summary>
-    ///     Refreshes the content of the visible items
+    /// Refreshes the content of the visible items
     /// </summary>
     public void RefreshItems()
     {
@@ -412,7 +476,7 @@ public class DateTimePickerPanel : Panel, ILogicalScrollable
     }
 
     /// <summary>
-    ///     Scrolls up the specified number of items
+    /// Scrolls up the specified number of items
     /// </summary>
     public void ScrollUp(int numItems = 1)
     {
@@ -421,17 +485,17 @@ public class DateTimePickerPanel : Panel, ILogicalScrollable
     }
 
     /// <summary>
-    ///     Scrolls down the specified number of items
+    /// Scrolls down the specified number of items
     /// </summary>
     public void ScrollDown(int numItems = 1)
     {
         var scrollHeight = Math.Max(Extent.Height - ItemHeight, 0);
-        var newY         = Math.Min(Offset.Y      + numItems * ItemHeight, scrollHeight);
+        var newY         = Math.Min(Offset.Y + numItems * ItemHeight, scrollHeight);
         Offset = new Vector(0, newY);
     }
 
     /// <summary>
-    ///     Updates helper fields used in various calculations
+    /// Updates helper fields used in various calculations
     /// </summary>
     private void UpdateHelperInfo()
     {
@@ -449,7 +513,7 @@ public class DateTimePickerPanel : Panel, ILogicalScrollable
     }
 
     /// <summary>
-    ///     Ensures enough containers are visible in the viewport
+    /// Ensures enough containers are visible in the viewport
     /// </summary>
     /// <param name="children"></param>
     private void CreateOrDestroyItems(Avalonia.Controls.Controls children)
@@ -458,11 +522,17 @@ public class DateTimePickerPanel : Panel, ILogicalScrollable
 
         if (!ShouldLoop)
         {
-            var numItemAboveSelect                                                   = _numItemsAboveBelowSelected;
-            if (_selectedIndex - _numItemsAboveBelowSelected < 0) numItemAboveSelect = _selectedIndex;
-            var numItemBelowSelect                                                   = _numItemsAboveBelowSelected;
+            var numItemAboveSelect = _numItemsAboveBelowSelected;
+            if (_selectedIndex - _numItemsAboveBelowSelected < 0)
+            {
+                numItemAboveSelect = _selectedIndex;
+            }
+
+            var numItemBelowSelect = _numItemsAboveBelowSelected;
             if (_selectedIndex + _numItemsAboveBelowSelected >= _totalItems)
+            {
                 numItemBelowSelect = _totalItems - _selectedIndex - 1;
+            }
 
             totalItemsInViewport = numItemBelowSelect + numItemAboveSelect + 1;
         }
@@ -486,14 +556,14 @@ public class DateTimePickerPanel : Panel, ILogicalScrollable
 
         if (children.Count > totalItemsInViewport)
         {
-            var numToRemove = children.Count    - totalItemsInViewport;
+            var numToRemove = children.Count - totalItemsInViewport;
             children.RemoveRange(children.Count - numToRemove, numToRemove);
         }
     }
 
     /// <summary>
-    ///     Updates item content based on the current selection
-    ///     and the panel type
+    /// Updates item content based on the current selection
+    /// and the panel type
     /// </summary>
     private void UpdateItems()
     {
@@ -527,7 +597,10 @@ public class DateTimePickerPanel : Panel, ILogicalScrollable
             item.Tag        =  first;
             item.IsSelected =  first == selected;
             first           += Increment;
-            if (first > max) first = min;
+            if (first > max)
+            {
+                first = min;
+            }
         }
     }
 
@@ -557,13 +630,20 @@ public class DateTimePickerPanel : Panel, ILogicalScrollable
     }
 
     /// <summary>
-    ///     Ensures the <see cref="SelectedValue" /> is within the bounds and
-    ///     follows the current Increment
+    /// Ensures the <see cref="SelectedValue" /> is within the bounds and
+    /// follows the current Increment
     /// </summary>
     private int CoerceSelected(int newValue)
     {
-        if (newValue < MinimumValue) return MinimumValue;
-        if (newValue > MaximumValue) return MaximumValue;
+        if (newValue < MinimumValue)
+        {
+            return MinimumValue;
+        }
+
+        if (newValue > MaximumValue)
+        {
+            return MaximumValue;
+        }
 
         if (newValue % Increment != 0)
         {
@@ -577,7 +657,7 @@ public class DateTimePickerPanel : Panel, ILogicalScrollable
 
     private void OnItemTapped(object? sender, TappedEventArgs e)
     {
-        if (e.Source is Visual source                            &&
+        if (e.Source is Visual source &&
             GetItemFromSource(source) is ListBoxItem listBoxItem &&
             listBoxItem.Tag is int tag)
         {
@@ -589,8 +669,11 @@ public class DateTimePickerPanel : Panel, ILogicalScrollable
     //Helper to get ListBoxItem from pointerevent source
     private ListBoxItem? GetItemFromSource(Visual src)
     {
-        var item                                            = src;
-        while (item != null && !(item is ListBoxItem)) item = item.GetVisualParent();
+        var item = src;
+        while (item != null && !(item is ListBoxItem))
+        {
+            item = item.GetVisualParent();
+        }
 
         return (ListBoxItem?)item;
     }
@@ -599,6 +682,9 @@ public class DateTimePickerPanel : Panel, ILogicalScrollable
     {
         var snapY = Math.Round(Offset.Y / ItemHeight) * ItemHeight;
 
-        if (!MathUtilities.AreClose(snapY, Offset.Y)) Offset = Offset.WithY(snapY);
+        if (!MathUtilities.AreClose(snapY, Offset.Y))
+        {
+            Offset = Offset.WithY(snapY);
+        }
     }
 }

@@ -51,7 +51,6 @@ internal class CountBadgeZoomBadgeIn : AbstractMotion
     }
 }
 
-
 internal class CountBadgeZoomBadgeOut : AbstractMotion
 {
     public CountBadgeZoomBadgeOut()
@@ -98,7 +97,6 @@ internal class CountBadgeZoomBadgeOut : AbstractMotion
     }
 }
 
-
 internal class CountBadgeNoWrapperZoomBadgeIn : AbstractMotion
 {
     public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
@@ -133,7 +131,6 @@ internal class CountBadgeNoWrapperZoomBadgeIn : AbstractMotion
         AddMotionConfig(config);
     }
 }
-
 
 internal class CountBadgeNoWrapperZoomBadgeOut : AbstractMotion
 {

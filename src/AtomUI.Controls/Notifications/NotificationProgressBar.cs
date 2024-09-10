@@ -37,13 +37,14 @@ internal class NotificationProgressBar : Control
         var indicatorWidth = 0d;
         var total          = Expiration.TotalMilliseconds;
         if (MathUtils.GreaterThan(total, 0))
+        {
             indicatorWidth = CurrentExpiration.TotalMilliseconds / total * Bounds.Width;
+        }
+
         var offsetY       = Bounds.Height - ProgressIndicatorThickness;
         var indicatorRect = new Rect(new Point(0, offsetY), new Size(indicatorWidth, ProgressIndicatorThickness));
         context.FillRectangle(ProgressIndicatorBrush!, indicatorRect);
     }
-
-
 
     #region 公共属性定义
 

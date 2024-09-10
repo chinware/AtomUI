@@ -14,17 +14,17 @@ internal class RadioButtonToken : AbstractControlDesignToken
     }
 
     /// <summary>
-    ///     单选框大小，除去文字部分的
+    /// 单选框大小，除去文字部分的
     /// </summary>
     public double RadioSize { get; set; }
 
     /// <summary>
-    ///     单选框圆点大小
+    /// 单选框圆点大小
     /// </summary>
     public double DotSize { get; set; }
 
     /// <summary>
-    ///     单选框圆点禁用颜色
+    /// 单选框圆点禁用颜色
     /// </summary>
     public Color DotColorDisabled { get; set; }
 
@@ -51,7 +51,7 @@ internal class RadioButtonToken : AbstractControlDesignToken
         var radioSize  = fontSizeLG;
 
         var radioDotSize = wireFrame
-            ? radioSize - dotPadding               * 2
+            ? radioSize - dotPadding * 2
             : radioSize - (dotPadding + lineWidth) * 2;
 
         DotPadding       = dotPadding;

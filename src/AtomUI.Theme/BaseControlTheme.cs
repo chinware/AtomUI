@@ -24,7 +24,10 @@ public abstract class BaseControlTheme : ControlTheme
         BuildThemeAnimations();
         BuildStyles();
         var template = BuildControlTemplate();
-        if (template is not null) Add(new Setter(TemplatedControl.TemplateProperty, template));
+        if (template is not null)
+        {
+            Add(new Setter(TemplatedControl.TemplateProperty, template));
+        }
 
         NotifyBuildCompleted();
     }
@@ -60,9 +63,9 @@ public abstract class BaseControlTheme : ControlTheme
     }
 
     protected static IDisposable CreateTemplateParentBinding(AvaloniaObject target, AvaloniaProperty property,
-        string templateParentPath,
-        BindingMode mode = BindingMode.Default,
-        IValueConverter? converter = null)
+                                                             string templateParentPath,
+                                                             BindingMode mode = BindingMode.Default,
+                                                             IValueConverter? converter = null)
     {
         return target.Bind(property, new Binding(templateParentPath)
         {
@@ -73,9 +76,9 @@ public abstract class BaseControlTheme : ControlTheme
     }
 
     protected static IDisposable CreateTemplateParentBinding<T>(AvaloniaObject target, StyledProperty<T> property,
-        string templateParentPath,
-        BindingMode mode = BindingMode.Default,
-        IValueConverter? converter = null)
+                                                                string templateParentPath,
+                                                                BindingMode mode = BindingMode.Default,
+                                                                IValueConverter? converter = null)
     {
         return target.Bind(property, new Binding(templateParentPath)
         {
@@ -86,9 +89,9 @@ public abstract class BaseControlTheme : ControlTheme
     }
 
     protected static IDisposable CreateTemplateParentBinding<T>(AvaloniaObject target, DirectPropertyBase<T> property,
-        string templateParentPath,
-        BindingMode mode = BindingMode.Default,
-        IValueConverter? converter = null)
+                                                                string templateParentPath,
+                                                                BindingMode mode = BindingMode.Default,
+                                                                IValueConverter? converter = null)
     {
         return target.Bind(property, new Binding(templateParentPath)
         {
@@ -99,9 +102,9 @@ public abstract class BaseControlTheme : ControlTheme
     }
 
     protected static IDisposable CreateTemplateParentBinding(AvaloniaObject target, AvaloniaProperty property,
-        AvaloniaProperty templateParentProperty,
-        BindingMode mode = BindingMode.Default,
-        IValueConverter? converter = null)
+                                                             AvaloniaProperty templateParentProperty,
+                                                             BindingMode mode = BindingMode.Default,
+                                                             IValueConverter? converter = null)
     {
         return CreateTemplateParentBinding(target, property, templateParentProperty.Name, mode, converter);
     }

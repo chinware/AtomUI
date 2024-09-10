@@ -74,11 +74,12 @@ internal class CountBadgeAdorner : Control, IControlCustomStyle
             o => o.Size,
             (o, v) => o.Size = v);
 
+    private readonly IControlCustomStyle _customStyle;
+    private readonly List<FormattedText> _formattedTexts;
+
     private BoxShadows _boxShadows;
     private string? _countText;
     private Size _countTextSize;
-    private readonly IControlCustomStyle _customStyle;
-    private readonly List<FormattedText> _formattedTexts;
 
     private bool _initialized;
 
@@ -217,7 +218,10 @@ internal class CountBadgeAdorner : Control, IControlCustomStyle
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        if (Styles.Count == 0) _customStyle.BuildStyles();
+        if (Styles.Count == 0)
+        {
+            _customStyle.BuildStyles();
+        }
     }
 
     public override void ApplyTemplate()
@@ -236,6 +240,7 @@ internal class CountBadgeAdorner : Control, IControlCustomStyle
     private void BuildBoxShadow()
     {
         if (BadgeShadowColor is not null)
+        {
             _boxShadows = new BoxShadows(new BoxShadow
             {
                 OffsetX = 0,
@@ -244,6 +249,7 @@ internal class CountBadgeAdorner : Control, IControlCustomStyle
                 Spread  = BadgeShadowSize,
                 Color   = ((SolidColorBrush)BadgeShadowColor).Color
             });
+        }
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
@@ -253,7 +259,9 @@ internal class CountBadgeAdorner : Control, IControlCustomStyle
         {
             if (e.Property == BadgeShadowSizeProperty ||
                 e.Property == BadgeShadowColorProperty)
+            {
                 BuildBoxShadow();
+            }
 
             if (e.Property == CountProperty || e.Property == OverflowCountProperty)
             {
@@ -266,7 +274,10 @@ internal class CountBadgeAdorner : Control, IControlCustomStyle
 
     protected override Size MeasureOverride(Size availableSize)
     {
-        if (IsAdornerMode) return availableSize;
+        if (IsAdornerMode)
+        {
+            return availableSize;
+        }
 
         return GetBadgePillSize();
     }
@@ -278,7 +289,10 @@ internal class CountBadgeAdorner : Control, IControlCustomStyle
         if (_countText?.Length > 1)
         {
             targetWidth += PaddingInline;
-            if (Count > _overflowCount) targetWidth += PaddingInline;
+            if (Count > _overflowCount)
+            {
+                targetWidth += PaddingInline;
+            }
         }
 
         targetWidth  = Math.Max(targetWidth, _countTextSize.Width);
@@ -305,9 +319,13 @@ internal class CountBadgeAdorner : Control, IControlCustomStyle
     private void BuildCountText()
     {
         if (Count > _overflowCount)
+        {
             _countText = $"{_overflowCount}+";
+        }
         else
+        {
             _countText = $"{Count}";
+        }
     }
 
     public override void Render(DrawingContext context)
@@ -329,9 +347,13 @@ internal class CountBadgeAdorner : Control, IControlCustomStyle
         {
             Point origin;
             if (AnimationRenderTransformOrigin.HasValue)
+            {
                 origin = AnimationRenderTransformOrigin.Value.ToPixels(badgeRect.Size);
+            }
             else
+            {
                 origin = RenderTransformOrigin.ToPixels(badgeRect.Size);
+            }
 
             var offset          = Matrix.CreateTranslation(new Point(origin.X + offsetX, origin.Y + offsetY));
             var renderTransform = -offset * RenderTransform.Value * offset;
@@ -341,7 +363,7 @@ internal class CountBadgeAdorner : Control, IControlCustomStyle
         context.DrawPilledRect(BadgeColor, null, badgeRect, Orientation.Horizontal, _boxShadows);
 
         // 计算合适的文字 x 坐标
-        var textOffsetX = offsetX + (badgeSize.Width  - _countTextSize.Width)  / 2;
+        var textOffsetX = offsetX + (badgeSize.Width - _countTextSize.Width) / 2;
         var textOffsetY = offsetY + (badgeSize.Height - _countTextSize.Height) / 2;
         foreach (var formattedText in _formattedTexts)
         {
@@ -360,12 +382,18 @@ internal class CountBadgeAdorner : Control, IControlCustomStyle
                 if (Count > _overflowCount)
 
                     // 生成一个即可
+                {
                     _formattedTexts.Add(BuildFormattedText(_countText));
+                }
                 else
 
                     // 没有数字都生成一个
+                {
                     foreach (var c in _countText)
+                    {
                         _formattedTexts.Add(BuildFormattedText(c.ToString()));
+                    }
+                }
             }
         }
     }

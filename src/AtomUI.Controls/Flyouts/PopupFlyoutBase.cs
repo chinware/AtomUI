@@ -15,54 +15,54 @@ using Avalonia.Logging;
 namespace AtomUI.Controls;
 
 /// <summary>
-///     最基本得弹窗 Flyout，在这里不处理那种带箭头得
+/// 最基本得弹窗 Flyout，在这里不处理那种带箭头得
 /// </summary>
 public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
 {
-   /// <summary>
-   ///     距离 anchor 的边距，根据垂直和水平进行设置
-   ///     但是对某些组合无效，比如跟随鼠标的情况
-   ///     还有些 anchor 和 gravity 的组合也没有用
-   /// </summary>
-   public static readonly StyledProperty<double> MarginToAnchorProperty =
+    /// <summary>
+    /// 距离 anchor 的边距，根据垂直和水平进行设置
+    /// 但是对某些组合无效，比如跟随鼠标的情况
+    /// 还有些 anchor 和 gravity 的组合也没有用
+    /// </summary>
+    public static readonly StyledProperty<double> MarginToAnchorProperty =
         Popup.MarginToAnchorProperty.AddOwner<PopupFlyoutBase>();
 
-   /// <inheritdoc cref="Popup.PlacementProperty" />
-   public static readonly StyledProperty<PlacementMode> PlacementProperty =
+    /// <inheritdoc cref="Popup.PlacementProperty" />
+    public static readonly StyledProperty<PlacementMode> PlacementProperty =
         Avalonia.Controls.Primitives.Popup.PlacementProperty.AddOwner<PopupFlyoutBase>();
 
-   /// <inheritdoc cref="Popup.HorizontalOffsetProperty" />
-   public static readonly StyledProperty<double> HorizontalOffsetProperty =
+    /// <inheritdoc cref="Popup.HorizontalOffsetProperty" />
+    public static readonly StyledProperty<double> HorizontalOffsetProperty =
         Avalonia.Controls.Primitives.Popup.HorizontalOffsetProperty.AddOwner<PopupFlyoutBase>();
 
-   /// <inheritdoc cref="Popup.VerticalOffsetProperty" />
-   public static readonly StyledProperty<double> VerticalOffsetProperty =
+    /// <inheritdoc cref="Popup.VerticalOffsetProperty" />
+    public static readonly StyledProperty<double> VerticalOffsetProperty =
         Avalonia.Controls.Primitives.Popup.VerticalOffsetProperty.AddOwner<PopupFlyoutBase>();
 
-   /// <inheritdoc cref="Popup.PlacementAnchorProperty" />
-   public static readonly StyledProperty<PopupAnchor> PlacementAnchorProperty =
+    /// <inheritdoc cref="Popup.PlacementAnchorProperty" />
+    public static readonly StyledProperty<PopupAnchor> PlacementAnchorProperty =
         Avalonia.Controls.Primitives.Popup.PlacementAnchorProperty.AddOwner<PopupFlyoutBase>();
 
-   /// <inheritdoc cref="Popup.PlacementAnchorProperty" />
-   public static readonly StyledProperty<PopupGravity> PlacementGravityProperty =
+    /// <inheritdoc cref="Popup.PlacementAnchorProperty" />
+    public static readonly StyledProperty<PopupGravity> PlacementGravityProperty =
         Avalonia.Controls.Primitives.Popup.PlacementGravityProperty.AddOwner<PopupFlyoutBase>();
 
-   /// <summary>
-   ///     Defines the <see cref="ShowMode" /> property
-   /// </summary>
-   public static readonly StyledProperty<FlyoutShowMode> ShowModeProperty =
+    /// <summary>
+    /// Defines the <see cref="ShowMode" /> property
+    /// </summary>
+    public static readonly StyledProperty<FlyoutShowMode> ShowModeProperty =
         AvaloniaProperty.Register<PopupFlyoutBase, FlyoutShowMode>(nameof(ShowMode));
 
-   /// <summary>
-   ///     Defines the <see cref="OverlayInputPassThroughElement" /> property
-   /// </summary>
-   public static readonly StyledProperty<IInputElement?> OverlayInputPassThroughElementProperty =
+    /// <summary>
+    /// Defines the <see cref="OverlayInputPassThroughElement" /> property
+    /// </summary>
+    public static readonly StyledProperty<IInputElement?> OverlayInputPassThroughElementProperty =
         Avalonia.Controls.Primitives.Popup.OverlayInputPassThroughElementProperty.AddOwner<PopupFlyoutBase>();
 
-   /// <summary>
-   ///     Defines the <see cref="PlacementConstraintAdjustment" /> property
-   /// </summary>
-   public static readonly StyledProperty<PopupPositionerConstraintAdjustment> PlacementConstraintAdjustmentProperty =
+    /// <summary>
+    /// Defines the <see cref="PlacementConstraintAdjustment" /> property
+    /// </summary>
+    public static readonly StyledProperty<PopupPositionerConstraintAdjustment> PlacementConstraintAdjustmentProperty =
         Avalonia.Controls.Primitives.Popup.PlacementConstraintAdjustmentProperty.AddOwner<PopupFlyoutBase>();
 
     private static readonly EventInfo ClosingEventInfo;
@@ -122,7 +122,7 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
     }
 
     /// <summary>
-    ///     Gets or sets the desired ShowMode
+    /// Gets or sets the desired ShowMode
     /// </summary>
     public FlyoutShowMode ShowMode
     {
@@ -131,8 +131,8 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
     }
 
     /// <summary>
-    ///     Gets or sets an element that should receive pointer input events even when underneath
-    ///     the flyout's overlay.
+    /// Gets or sets an element that should receive pointer input events even when underneath
+    /// the flyout's overlay.
     /// </summary>
     public IInputElement? OverlayInputPassThroughElement
     {
@@ -174,9 +174,13 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
         if (Popup.Child!.DesiredSize == default)
 
             // Popup may not have been shown yet. Measure content
+        {
             sz = LayoutHelper.MeasureChild(Popup.Child, Size.Infinity, new Thickness());
+        }
         else
+        {
             sz = Popup.Child.DesiredSize;
+        }
 
         Popup.VerticalOffset   = VerticalOffset;
         Popup.HorizontalOffset = HorizontalOffset;
@@ -199,7 +203,7 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
     public event EventHandler? Opening;
 
     /// <summary>
-    ///     Shows the Flyout at the given Control
+    /// Shows the Flyout at the given Control
     /// </summary>
     /// <param name="placementTarget">The control to show the Flyout at</param>
     public sealed override void ShowAt(Control placementTarget)
@@ -208,7 +212,7 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
     }
 
     /// <summary>
-    ///     Shows the Flyout for the given control at the current pointer location, as in a ContextFlyout
+    /// Shows the Flyout for the given control at the current pointer location, as in a ContextFlyout
     /// </summary>
     /// <param name="placementTarget">The target control</param>
     /// <param name="showAtPointer">True to show at pointer</param>
@@ -218,7 +222,7 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
     }
 
     /// <summary>
-    ///     Hides the Flyout
+    /// Hides the Flyout
     /// </summary>
     public sealed override void Hide()
     {
@@ -228,11 +232,18 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
     /// <returns>True, if action was handled</returns>
     protected virtual bool HideCore(bool canCancel = true)
     {
-        if (!IsOpen) return false;
+        if (!IsOpen)
+        {
+            return false;
+        }
 
         if (canCancel)
+        {
             if (CancelClosing())
+            {
                 return false;
+            }
+        }
 
         IsOpen       = false;
         Popup.IsOpen = false;
@@ -266,7 +277,11 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
     /// <returns>True, if action was handled</returns>
     protected virtual bool ShowAtCore(Control placementTarget, bool showAtPointer = false)
     {
-        if (!PrepareShowPopup(placementTarget, showAtPointer)) return false;
+        if (!PrepareShowPopup(placementTarget, showAtPointer))
+        {
+            return false;
+        }
+
         IsOpen = Popup.IsOpen = true;
         HandlePopupOpened(placementTarget);
 
@@ -275,18 +290,26 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
 
     protected bool PrepareShowPopup(Control placementTarget, bool showAtPointer = false)
     {
-        if (placementTarget == null) throw new ArgumentNullException(nameof(placementTarget));
+        if (placementTarget == null)
+        {
+            throw new ArgumentNullException(nameof(placementTarget));
+        }
 
         if (IsOpen)
         {
             if (placementTarget == Target)
+            {
                 return false;
+            }
 
             // Close before opening a new one
             _ = HideCore(false);
         }
 
-        if (Popup.Parent != null && Popup.Parent != placementTarget) ((ISetLogicalParent)Popup).SetParent(null);
+        if (Popup.Parent != null && Popup.Parent != placementTarget)
+        {
+            ((ISetLogicalParent)Popup).SetParent(null);
+        }
 
         if (Popup.Parent == null || Popup.PlacementTarget != placementTarget)
         {
@@ -295,11 +318,17 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
             UIStructureUtils.SetTemplateParent(Popup, placementTarget.TemplatedParent);
         }
 
-        if (Popup.Child == null) Popup.Child = CreatePresenter();
+        if (Popup.Child == null)
+        {
+            Popup.Child = CreatePresenter();
+        }
 
         Popup.OverlayInputPassThroughElement = OverlayInputPassThroughElement;
 
-        if (CancelOpening()) return false;
+        if (CancelOpening())
+        {
+            return false;
+        }
 
         NotifyPositionPopup(showAtPointer);
         return true;
@@ -377,13 +406,19 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
                 // window will not close this (as pointer events stop), which 
                 // does match UWP
                 var pt = eventRoot.PointToScreen(pArgs.Position);
-                if (!_enlargePopupRectScreenPixelRect?.Contains(pt) ?? false) HideCore(false);
+                if (!_enlargePopupRectScreenPixelRect?.Contains(pt) ?? false)
+                {
+                    HideCore(false);
+                }
             }
             else if (Popup?.Host is OverlayPopupHost)
             {
                 // Same as above here, but just different coordinate space
                 // so we don't need to translate
-                if (!_enlargedPopupRect?.Contains(pArgs.Position) ?? false) HideCore(false);
+                if (!_enlargedPopupRect?.Contains(pArgs.Position) ?? false)
+                {
+                    HideCore(false);
+                }
             }
         }
     }
@@ -399,7 +434,7 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
     }
 
     /// <summary>
-    ///     Used to create the content the Flyout displays
+    /// Used to create the content the Flyout displays
     /// </summary>
     /// <returns></returns>
     protected abstract Control CreatePresenter();
@@ -438,7 +473,10 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
 
     private void OnPopupClosing(object? sender, CancelEventArgs e)
     {
-        if (IsOpen) e.Cancel = CancelClosing();
+        if (IsOpen)
+        {
+            e.Cancel = CancelClosing();
+        }
     }
 
     private void OnPopupClosed(object? sender, EventArgs e)
@@ -457,7 +495,10 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
         {
             var keymap = Application.Current!.PlatformSettings?.HotkeyConfiguration;
 
-            if (keymap?.OpenContextMenu.Any(k => k.Matches(e)) == true) e.Handled = HideCore();
+            if (keymap?.OpenContextMenu.Any(k => k.Matches(e)) == true)
+            {
+                e.Handled = HideCore();
+            }
         }
     }
 
@@ -465,9 +506,15 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
     {
         if (args.Sender is Control c)
         {
-            if (args.OldValue is FlyoutBase) c.ContextRequested -= OnControlContextRequested;
+            if (args.OldValue is FlyoutBase)
+            {
+                c.ContextRequested -= OnControlContextRequested;
+            }
 
-            if (args.NewValue is FlyoutBase) c.ContextRequested += OnControlContextRequested;
+            if (args.NewValue is FlyoutBase)
+            {
+                c.ContextRequested += OnControlContextRequested;
+            }
         }
     }
 
@@ -480,7 +527,7 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
             if (control.ContextMenu != null)
             {
                 Logger.TryGet(LogEventLevel.Verbose, "FlyoutBase")
-                    ?.Log(control, "ContextMenu and ContextFlyout are both set, defaulting to ContextMenu");
+                      ?.Log(control, "ContextMenu and ContextFlyout are both set, defaulting to ContextMenu");
                 return;
             }
 
@@ -514,13 +561,20 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
 
     internal static void SetPresenterClasses(Control? presenter, Classes classes)
     {
-        if (presenter is null) return;
+        if (presenter is null)
+        {
+            return;
+        }
 
         //Remove any classes no longer in use, ignoring pseudo classes
         for (var i = presenter.Classes.Count - 1; i >= 0; i--)
+        {
             if (!classes.Contains(presenter.Classes[i]) &&
                 !presenter.Classes[i].Contains(':'))
+            {
                 presenter.Classes.RemoveAt(i);
+            }
+        }
 
         //Add new classes
         presenter.Classes.AddRange(classes);

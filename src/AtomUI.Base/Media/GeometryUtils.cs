@@ -23,7 +23,7 @@ public static class GeometryUtils
         var newY = rect.Y - offsetYChange;
 
         // 计算新的矩形宽度和高度
-        var newWidth  = rect.Width  * scaleFactorX;
+        var newWidth  = rect.Width * scaleFactorX;
         var newHeight = rect.Height * scaleFactorY;
 
         return new Rect(newX, newY, newWidth, newHeight);
@@ -31,7 +31,10 @@ public static class GeometryUtils
 
     public static double CornerRadiusScalarValue(CornerRadius cornerRadius, bool maxWhenNotUniform = true)
     {
-        if (cornerRadius.IsUniform) return cornerRadius.TopLeft;
+        if (cornerRadius.IsUniform)
+        {
+            return cornerRadius.TopLeft;
+        }
 
         return maxWhenNotUniform
             ? Math.Max(cornerRadius.TopLeft,

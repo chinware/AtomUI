@@ -15,57 +15,57 @@ internal class SegmentedToken : AbstractControlDesignToken
     }
 
     /// <summary>
-    ///     选项文本颜色
+    /// 选项文本颜色
     /// </summary>
     public Color ItemColor { get; set; }
 
     /// <summary>
-    ///     选项悬浮态文本颜色
+    /// 选项悬浮态文本颜色
     /// </summary>
     public Color ItemHoverColor { get; set; }
 
     /// <summary>
-    ///     选项悬浮态背景颜色
+    /// 选项悬浮态背景颜色
     /// </summary>
     public Color ItemHoverBg { get; set; }
 
     /// <summary>
-    ///     选项激活态背景颜色
+    /// 选项激活态背景颜色
     /// </summary>
     public Color ItemActiveBg { get; set; }
 
     /// <summary>
-    ///     选项选中时背景颜色
+    /// 选项选中时背景颜色
     /// </summary>
     public Color ItemSelectedBg { get; set; }
 
     /// <summary>
-    ///     选项选中时文字颜色
+    /// 选项选中时文字颜色
     /// </summary>
     public Color ItemSelectedColor { get; set; }
 
     /// <summary>
-    ///     Segmented 控件容器的 padding
+    /// Segmented 控件容器的 padding
     /// </summary>
     public Thickness TrackPadding { get; set; }
 
     /// <summary>
-    ///     大尺寸选项最小高度
+    /// 大尺寸选项最小高度
     /// </summary>
     public double ItemMinHeightLG { get; set; }
 
     /// <summary>
-    ///     选项最小高度
+    /// 选项最小高度
     /// </summary>
     public double ItemMinHeight { get; set; }
 
     /// <summary>
-    ///     小尺寸选项最小高度
+    /// 小尺寸选项最小高度
     /// </summary>
     public double ItemMinHeightSM { get; set; }
 
     /// <summary>
-    ///     Segmented 控件容器背景色
+    /// Segmented 控件容器背景色
     /// </summary>
     public Color TrackBg { get; set; }
 
@@ -100,7 +100,7 @@ internal class SegmentedToken : AbstractControlDesignToken
         SegmentedItemContentMargin = new Thickness(_globalToken.PaddingXXS, 0, 0, 0);
 
         ItemMinHeightLG = _globalToken.HeightToken.ControlHeightLG - TrackPadding.Top - TrackPadding.Bottom;
-        ItemMinHeight   = _globalToken.SeedToken.ControlHeight     - TrackPadding.Top - TrackPadding.Bottom;
+        ItemMinHeight   = _globalToken.SeedToken.ControlHeight - TrackPadding.Top - TrackPadding.Bottom;
         ItemMinHeightSM = _globalToken.HeightToken.ControlHeightSM - TrackPadding.Top - TrackPadding.Bottom;
     }
 }

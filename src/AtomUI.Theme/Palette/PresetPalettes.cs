@@ -9,7 +9,6 @@ public class PaletteInfo
     public IReadOnlyList<Color> ColorSequence { get; set; } = default!;
 }
 
-
 public static class PresetPalettes
 {
     private static readonly Dictionary<PresetPrimaryColor, PaletteInfo> sm_presetPalettes;
@@ -25,14 +24,21 @@ public static class PresetPalettes
 
     public static PaletteInfo GetPresetPalette(PresetPrimaryColor primaryColor, bool isDark = false)
     {
-        if (isDark) return sm_presetDarkPalettes[primaryColor];
+        if (isDark)
+        {
+            return sm_presetDarkPalettes[primaryColor];
+        }
 
         return sm_presetPalettes[primaryColor];
     }
 
     public static IReadOnlyDictionary<PresetPrimaryColor, PaletteInfo> GetPresetPalettes(bool isDark = false)
     {
-        if (isDark) return sm_presetDarkPalettes;
+        if (isDark)
+        {
+            return sm_presetDarkPalettes;
+        }
+
         return sm_presetPalettes;
     }
 
@@ -40,6 +46,7 @@ public static class PresetPalettes
     {
         var allColors = PresetPrimaryColor.AllColorTypes();
         foreach (var presetColor in allColors)
+        {
             if (isDark)
             {
                 var colorSequence = PaletteGenerator.GeneratePalette(presetColor.Color());
@@ -63,5 +70,6 @@ public static class PresetPalettes
                     ColorSequence = colorSequence
                 };
             }
+        }
     }
 }

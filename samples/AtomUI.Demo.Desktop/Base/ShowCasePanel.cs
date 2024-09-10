@@ -44,9 +44,13 @@ public class ShowCasePanel : Control
         {
             var control = Children[i];
             if (i % 2 == 0)
+            {
                 _leftContainer.Children.Add(control);
+            }
             else
+            {
                 _rightContainer.Children.Add(control);
+            }
         }
 
         var scrollView = new ScrollViewer

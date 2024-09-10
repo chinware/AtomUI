@@ -16,233 +16,233 @@ internal class MenuToken : AbstractControlDesignToken
     }
 
     /// <summary>
-    ///     菜单的圆角
+    /// 菜单的圆角
     /// </summary>
     public CornerRadius MenuPopupBorderRadius { get; set; }
 
     /// <summary>
-    ///     菜单 Popup 阴影
+    /// 菜单 Popup 阴影
     /// </summary>
     public BoxShadows MenuPopupBoxShadows { get; set; }
 
     /// <summary>
-    ///     菜单内容边距
+    /// 菜单内容边距
     /// </summary>
     public Thickness MenuPopupContentPadding { get; set; }
 
     /// <summary>
-    ///     菜单 Popup 最小宽度
+    /// 菜单 Popup 最小宽度
     /// </summary>
     public double MenuPopupMinWidth { get; set; }
 
     /// <summary>
-    ///     菜单 Popup 最大宽度
+    /// 菜单 Popup 最大宽度
     /// </summary>
     public double MenuPopupMaxWidth { get; set; }
 
     /// <summary>
-    ///     菜单 Popup 最小高度
+    /// 菜单 Popup 最小高度
     /// </summary>
     public double MenuPopupMinHeight { get; set; }
 
     /// <summary>
-    ///     菜单 Popup 最大高度
+    /// 菜单 Popup 最大高度
     /// </summary>
     public double MenuPopupMaxHeight { get; set; }
 
     /// <summary>
-    ///     分离菜单项的高度，这个用于菜单中快捷功能的图标显示
-    ///     TODO 暂时还没实现，但是最终会实现
+    /// 分离菜单项的高度，这个用于菜单中快捷功能的图标显示
+    /// TODO 暂时还没实现，但是最终会实现
     /// </summary>
     public double MenuTearOffHeight { get; set; }
 
     /// <summary>
-    ///     弹出框背景色
+    /// 弹出框背景色
     /// </summary>
     public Color MenuBgColor { get; set; }
 
     /// <summary>
-    ///     菜单项文字颜色
+    /// 菜单项文字颜色
     /// </summary>
     public Color ItemColor { get; set; }
 
     /// <summary>
-    ///     快捷键颜色
+    /// 快捷键颜色
     /// </summary>
     public Color KeyGestureColor { get; set; }
 
     /// <summary>
-    ///     菜单项边距
+    /// 菜单项边距
     /// </summary>
     public Thickness ItemMargin { get; set; }
 
     /// <summary>
-    ///     菜单项文字悬浮颜色
+    /// 菜单项文字悬浮颜色
     /// </summary>
     public Color ItemHoverColor { get; set; }
 
     /// <summary>
-    ///     菜单项文字禁用颜色
+    /// 菜单项文字禁用颜色
     /// </summary>
     public Color ItemDisabledColor { get; set; }
 
     /// <summary>
-    ///     危险菜单项文字颜色
+    /// 危险菜单项文字颜色
     /// </summary>
     public Color DangerItemColor { get; set; }
 
     /// <summary>
-    ///     危险菜单项文字悬浮颜色
+    /// 危险菜单项文字悬浮颜色
     /// </summary>
     public Color DangerItemHoverColor { get; set; }
 
     /// <summary>
-    ///     菜单项背景色
+    /// 菜单项背景色
     /// </summary>
     public Color ItemBg { get; set; }
 
     /// <summary>
-    ///     菜单项悬浮态背景色
+    /// 菜单项悬浮态背景色
     /// </summary>
     public Color ItemHoverBg { get; set; }
 
     /// <summary>
-    ///     菜单项高度
+    /// 菜单项高度
     /// </summary>
     public double ItemHeight { get; set; }
 
     /// <summary>
-    ///     图标尺寸
+    /// 图标尺寸
     /// </summary>
     public double ItemIconSize { get; set; }
 
     /// <summary>
-    ///     图标与文字间距
+    /// 图标与文字间距
     /// </summary>
     public double ItemIconMarginInlineEnd { get; set; }
 
     /// <summary>
-    ///     菜单项的圆角
+    /// 菜单项的圆角
     /// </summary>
     public CornerRadius ItemBorderRadius { get; set; }
 
     /// <summary>
-    ///     菜单项横向内间距
+    /// 菜单项横向内间距
     /// </summary>
     public Thickness ItemPaddingInline { get; set; }
 
     /// <summary>
-    ///     顶层菜单项颜色
+    /// 顶层菜单项颜色
     /// </summary>
     public Color TopLevelItemColor { get; set; }
 
     /// <summary>
-    ///     顶层菜单项选中颜色
+    /// 顶层菜单项选中颜色
     /// </summary>
     public Color TopLevelItemSelectedColor { get; set; }
 
     /// <summary>
-    ///     顶层菜单项鼠标放上去的颜色
+    /// 顶层菜单项鼠标放上去的颜色
     /// </summary>
     public Color TopLevelItemHoverColor { get; set; }
 
     /// <summary>
-    ///     顶层菜单项背景色
+    /// 顶层菜单项背景色
     /// </summary>
     public Color TopLevelItemBg { get; set; }
 
     /// <summary>
-    ///     顶层菜单项选中时背景色
+    /// 顶层菜单项选中时背景色
     /// </summary>
     public Color TopLevelItemSelectedBg { get; set; }
 
     /// <summary>
-    ///     顶层菜单项鼠标放上去背景色
+    /// 顶层菜单项鼠标放上去背景色
     /// </summary>
     public Color TopLevelItemHoverBg { get; set; }
 
     /// <summary>
-    ///     顶层菜单项小号圆角
+    /// 顶层菜单项小号圆角
     /// </summary>
     public CornerRadius TopLevelItemBorderRadiusSM { get; set; }
 
     /// <summary>
-    ///     顶层菜单项圆角
+    /// 顶层菜单项圆角
     /// </summary>
     public CornerRadius TopLevelItemBorderRadius { get; set; }
 
     /// <summary>
-    ///     顶层菜单项大号圆角
+    /// 顶层菜单项大号圆角
     /// </summary>
     public CornerRadius TopLevelItemBorderRadiusLG { get; set; }
 
     /// <summary>
-    ///     顶层菜单项小号内间距
+    /// 顶层菜单项小号内间距
     /// </summary>
     public Thickness TopLevelItemPaddingSM { get; set; }
 
     /// <summary>
-    ///     顶层菜单项间距
+    /// 顶层菜单项间距
     /// </summary>
     public Thickness TopLevelItemPadding { get; set; }
 
     /// <summary>
-    ///     顶层菜单项大号内间距
+    /// 顶层菜单项大号内间距
     /// </summary>
     public Thickness TopLevelItemPaddingLG { get; set; }
 
     /// <summary>
-    ///     顶层菜单项小号字体
+    /// 顶层菜单项小号字体
     /// </summary>
     public double TopLevelItemFontSizeSM { get; set; } = double.NaN;
 
     /// <summary>
-    ///     顶层菜单项字体
+    /// 顶层菜单项字体
     /// </summary>
     public double TopLevelItemFontSize { get; set; } = double.NaN;
 
     /// <summary>
-    ///     顶层菜单项大号字体
+    /// 顶层菜单项大号字体
     /// </summary>
     public double TopLevelItemFontSizeLG { get; set; } = double.NaN;
 
     /// <summary>
-    ///     顶层菜单项内容字体行高
+    /// 顶层菜单项内容字体行高
     /// </summary>
     public double TopLevelItemLineHeight { get; set; } = double.NaN;
 
     /// <summary>
-    ///     大号顶层菜单项内容字体行高
+    /// 大号顶层菜单项内容字体行高
     /// </summary>
     public double TopLevelItemLineHeightLG { get; set; } = double.NaN;
 
     /// <summary>
-    ///     小号顶层菜单项内容字体行高
+    /// 小号顶层菜单项内容字体行高
     /// </summary>
     public double TopLevelItemLineHeightSM { get; set; } = double.NaN;
 
     /// <summary>
-    ///     顶层弹出菜单，距离顶层菜单项的边距
+    /// 顶层弹出菜单，距离顶层菜单项的边距
     /// </summary>
     public double TopLevelItemPopupMarginToAnchor { get; set; }
 
     /// <summary>
-    ///     滚动按钮 Icon 大小
+    /// 滚动按钮 Icon 大小
     /// </summary>
     public double ScrollButtonIconSize { get; set; }
 
     /// <summary>
-    ///     滚动按内边距
+    /// 滚动按内边距
     /// </summary>
     public Thickness ScrollButtonPadding { get; set; }
 
     /// <summary>
-    ///     滚动按内边距
+    /// 滚动按内边距
     /// </summary>
     public Thickness ScrollButtonMargin { get; set; }
 
     /// <summary>
-    ///     菜单分割项的高度
+    /// 菜单分割项的高度
     /// </summary>
     public double SeparatorItemHeight { get; set; }
 

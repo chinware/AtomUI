@@ -15,32 +15,32 @@ public class MessageToken : AbstractControlDesignToken
     }
 
     /// <summary>
-    ///     提示框背景色
+    /// 提示框背景色
     /// </summary>
     public Color ContentBg { get; set; }
 
     /// <summary>
-    ///     提示框内边距
+    /// 提示框内边距
     /// </summary>
     public Thickness ContentPadding { get; set; }
 
     /// <summary>
-    ///     提示框高度
+    /// 提示框高度
     /// </summary>
     public double CardHeight { get; set; }
 
     /// <summary>
-    ///     提醒框图标尺寸
+    /// 提醒框图标尺寸
     /// </summary>
     public double MessageIconSize { get; set; }
 
     /// <summary>
-    ///     提醒框图标外边距
+    /// 提醒框图标外边距
     /// </summary>
     public Thickness MessageIconMargin { get; set; }
 
     /// <summary>
-    ///     提醒框上边缘外边距
+    /// 提醒框上边缘外边距
     /// </summary>
     public Thickness MessageTopMargin { get; set; }
 

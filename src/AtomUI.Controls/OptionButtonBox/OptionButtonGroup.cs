@@ -16,7 +16,6 @@ namespace AtomUI.Controls;
 using ButtonSizeType = SizeType;
 using OptionButtons = AvaloniaList<OptionButton>;
 
-
 public class OptionCheckedChangedEventArgs : RoutedEventArgs
 {
     public OptionCheckedChangedEventArgs(RoutedEvent routedEvent, OptionButton option, int index)
@@ -29,7 +28,6 @@ public class OptionCheckedChangedEventArgs : RoutedEventArgs
     public OptionButton CheckedOption { get; }
     public int Index { get; }
 }
-
 
 public class OptionButtonGroup : TemplatedControl, ISizeTypeAware, IControlCustomStyle
 {
@@ -133,7 +131,10 @@ public class OptionButtonGroup : TemplatedControl, ISizeTypeAware, IControlCusto
                     oldChild.InOptionGroup = false;
                     var child = (OptionButton)e.NewItems![i]!;
                     child.InOptionGroup = true;
-                    if (_layout is not null) _layout.Children[index] = child;
+                    if (_layout is not null)
+                    {
+                        _layout.Children[index] = child;
+                    }
                 }
 
                 break;
@@ -154,11 +155,17 @@ public class OptionButtonGroup : TemplatedControl, ISizeTypeAware, IControlCusto
             if (Options.Count > 1)
             {
                 if (i == 0)
+                {
                     button.GroupPositionTrait = OptionButtonPositionTrait.First;
+                }
                 else if (i == Options.Count - 1)
+                {
                     button.GroupPositionTrait = OptionButtonPositionTrait.Last;
+                }
                 else
+                {
                     button.GroupPositionTrait = OptionButtonPositionTrait.Middle;
+                }
             }
         }
     }
@@ -184,12 +191,14 @@ public class OptionButtonGroup : TemplatedControl, ISizeTypeAware, IControlCusto
     private void HandleOptionSelected(object? sender, RoutedEventArgs args)
     {
         if (sender is OptionButton optionButton)
+        {
             if (optionButton.IsChecked.HasValue && optionButton.IsChecked.Value)
             {
                 SelectedOption = optionButton;
                 RaiseEvent(new OptionCheckedChangedEventArgs(OptionCheckedChangedEvent, optionButton,
                     Options.IndexOf(optionButton)));
             }
+        }
     }
 
     private protected virtual void InvalidateMeasureOnOptionsChanged()
@@ -202,8 +211,6 @@ public class OptionButtonGroup : TemplatedControl, ISizeTypeAware, IControlCusto
         base.OnPropertyChanged(e);
         _customStyle.HandlePropertyChangedForStyle(e);
     }
-
-
 
     #region IControlCustomStyle 实现
 
@@ -231,18 +238,29 @@ public class OptionButtonGroup : TemplatedControl, ISizeTypeAware, IControlCusto
     void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
     {
         if (e.Property == SizeTypeProperty)
+        {
             ApplyButtonSizeConfig();
-        else if (e.Property == ButtonStyleProperty) ApplyButtonStyleConfig();
+        }
+        else if (e.Property == ButtonStyleProperty)
+        {
+            ApplyButtonStyleConfig();
+        }
     }
 
     private void ApplyButtonSizeConfig()
     {
-        foreach (var optionButton in Options) optionButton.SizeType = SizeType;
+        foreach (var optionButton in Options)
+        {
+            optionButton.SizeType = SizeType;
+        }
     }
 
     private void ApplyButtonStyleConfig()
     {
-        foreach (var optionButton in Options) optionButton.ButtonStyle = ButtonStyle;
+        foreach (var optionButton in Options)
+        {
+            optionButton.ButtonStyle = ButtonStyle;
+        }
     }
 
     public override void Render(DrawingContext context)
@@ -261,11 +279,16 @@ public class OptionButtonGroup : TemplatedControl, ISizeTypeAware, IControlCusto
         {
             var optionButton = Options[i];
             if (ButtonStyle == OptionButtonStyle.Solid)
+            {
                 if (i <= Options.Count - 2)
                 {
                     var nextOption = Options[i + 1];
-                    if (nextOption == SelectedOption || optionButton == SelectedOption) continue;
+                    if (nextOption == SelectedOption || optionButton == SelectedOption)
+                    {
+                        continue;
+                    }
                 }
+            }
 
             if (i != Options.Count - 1)
             {
@@ -280,6 +303,7 @@ public class OptionButtonGroup : TemplatedControl, ISizeTypeAware, IControlCusto
             }
 
             if (ButtonStyle == OptionButtonStyle.Outline)
+            {
                 if (optionButton.IsEnabled && optionButton.IsChecked.HasValue && optionButton.IsChecked.Value)
                 {
                     // 绘制选中边框
@@ -295,9 +319,13 @@ public class OptionButtonGroup : TemplatedControl, ISizeTypeAware, IControlCusto
                     using var state             = context.PushTransform(translationMatrix);
                     var       cornerRadius      = new CornerRadius(0);
                     if (i == 0)
+                    {
                         cornerRadius = new CornerRadius(CornerRadius.TopLeft, 0, 0, CornerRadius.BottomLeft);
+                    }
                     else if (i == Options.Count - 1)
+                    {
                         cornerRadius = new CornerRadius(0, CornerRadius.TopRight, CornerRadius.BottomRight, 0);
+                    }
 
                     _borderRenderHelper.Render(context,
                         new Size(width, DesiredSize.Height),
@@ -308,6 +336,7 @@ public class OptionButtonGroup : TemplatedControl, ISizeTypeAware, IControlCusto
                         SelectedOptionBorderColor,
                         new BoxShadows());
                 }
+            }
         }
     }
 

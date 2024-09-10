@@ -39,15 +39,24 @@ public class Segmented : SelectingItemsControl
         base.OnApplyTemplate(e);
         var hasDefaultSelected = false;
         foreach (var item in Items)
+        {
             if (item is not null)
             {
                 var container = ContainerFromItem(item);
                 if (container is not null)
+                {
                     if (GetIsSelected(container))
+                    {
                         hasDefaultSelected = true;
+                    }
+                }
             }
+        }
 
-        if (!hasDefaultSelected) SelectedIndex = 0;
+        if (!hasDefaultSelected)
+        {
+            SelectedIndex = 0;
+        }
 
         SetupSelectedThumbRect();
     }
@@ -88,12 +97,18 @@ public class Segmented : SelectingItemsControl
     {
         base.PrepareContainerForItemOverride(container, item, index);
         if (container is SegmentedItem segmentedItemX)
+        {
             BindUtils.RelayBind(this, SizeTypeProperty, segmentedItemX, SegmentedItem.SizeTypeProperty);
+        }
     }
 
     protected override Size ArrangeOverride(Size finalSize)
     {
-        if (Presenter?.Panel is SegmentedStackPanel segmentedStackPanel) segmentedStackPanel.IsExpanding = IsExpanding;
+        if (Presenter?.Panel is SegmentedStackPanel segmentedStackPanel)
+        {
+            segmentedStackPanel.IsExpanding = IsExpanding;
+        }
+
         base.ArrangeOverride(finalSize);
         if (Transitions is null)
         {
@@ -127,8 +142,6 @@ public class Segmented : SelectingItemsControl
             SelectedThumbBoxShadows);
     }
 
-
-
     #region 公共属性定义
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
@@ -150,8 +163,6 @@ public class Segmented : SelectingItemsControl
     }
 
     #endregion
-
-
 
     #region 内部属性定义
 

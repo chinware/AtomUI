@@ -19,14 +19,17 @@ internal class PillWavePainter : AbstractWavePainter
     public override void Paint(DrawingContext context, object newSize, double newOpacity)
     {
         var newSizeTyped = (Size)newSize;
-        if (newSize is null) throw new ArgumentException("newSize argument must be Size type.");
+        if (newSize is null)
+        {
+            throw new ArgumentException("newSize argument must be Size type.");
+        }
 
         var pillRadius = OriginSize.Height / 2;
         var originGeometry = new RectangleGeometry(
             new Rect(OriginPoint.X, OriginPoint.Y, OriginSize.Width, OriginSize.Height),
             pillRadius, pillRadius);
         var deltaSize     = newSizeTyped - OriginSize;
-        var newPoint      = OriginPoint  - new Point(deltaSize.Width / 2, deltaSize.Height / 2);
+        var newPoint      = OriginPoint - new Point(deltaSize.Width / 2, deltaSize.Height / 2);
         var newPillRadius = newSizeTyped.Height / 2;
         var newGeometry = new RectangleGeometry(
             new Rect(newPoint.X, newPoint.Y, newSizeTyped.Width, newSizeTyped.Height),

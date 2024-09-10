@@ -35,18 +35,32 @@ public partial class ExpanderShowCase : UserControl
     private void HandleExpandButtonPosOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
     {
         if (args.Index == 0)
-            ToggleIconPosition                       = ExpanderIconPosition.Start;
-        else if (args.Index == 1) ToggleIconPosition = ExpanderIconPosition.End;
+        {
+            ToggleIconPosition = ExpanderIconPosition.Start;
+        }
+        else if (args.Index == 1)
+        {
+            ToggleIconPosition = ExpanderIconPosition.End;
+        }
     }
 
     private void HandleExpandDirectionOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
     {
         if (args.Index == 0)
+        {
             ExpandDirection = ExpandDirection.Down;
+        }
         else if (args.Index == 1)
+        {
             ExpandDirection = ExpandDirection.Up;
+        }
         else if (args.Index == 2)
-            ExpandDirection                       = ExpandDirection.Left;
-        else if (args.Index == 3) ExpandDirection = ExpandDirection.Right;
+        {
+            ExpandDirection = ExpandDirection.Left;
+        }
+        else if (args.Index == 3)
+        {
+            ExpandDirection = ExpandDirection.Right;
+        }
     }
 }

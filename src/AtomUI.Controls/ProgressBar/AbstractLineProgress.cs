@@ -14,13 +14,11 @@ public enum LinePercentAlignment
     End
 }
 
-
 internal class SizeTypeThresholdValue
 {
     internal double NormalStateValue { get; set; }
     internal double InnerStateValue { get; set; }
 }
-
 
 [PseudoClasses(VerticalPC, HorizontalPC)]
 public abstract class AbstractLineProgress : AbstractProgressBar
@@ -29,7 +27,7 @@ public abstract class AbstractLineProgress : AbstractProgressBar
     public const string HorizontalPC = ":horizontal";
 
     /// <summary>
-    ///     Defines the <see cref="Orientation" /> property.
+    /// Defines the <see cref="Orientation" /> property.
     /// </summary>
     public static readonly StyledProperty<Orientation> OrientationProperty =
         AvaloniaProperty.Register<AbstractProgressBar, Orientation>(nameof(Orientation));
@@ -47,7 +45,7 @@ public abstract class AbstractLineProgress : AbstractProgressBar
     }
 
     /// <summary>
-    ///     Gets or sets the orientation of the <see cref="ProgressBar" />.
+    /// Gets or sets the orientation of the <see cref="ProgressBar" />.
     /// </summary>
     public Orientation Orientation
     {
@@ -61,7 +59,10 @@ public abstract class AbstractLineProgress : AbstractProgressBar
         if (Status == ProgressStatus.Exception || MathUtils.AreClose(Value, Maximum))
 
             // 只要图标
+        {
             return new Size(LineInfoIconSize, LineInfoIconSize);
+        }
+
         var textSize = TextUtils.CalculateTextSize(string.Format(ProgressTextFormat, Value), fontSize, FontFamily);
         return textSize;
     }
@@ -82,7 +83,10 @@ public abstract class AbstractLineProgress : AbstractProgressBar
             calculateEffectiveSize = true;
         }
 
-        if (calculateEffectiveSize) EffectiveSizeType = CalculateEffectiveSizeType(sizeValue);
+        if (calculateEffectiveSize)
+        {
+            EffectiveSizeType = CalculateEffectiveSizeType(sizeValue);
+        }
 
         _extraInfoSize = CalculateExtraInfoSize(FontSize);
         SetupAlignment();
@@ -97,17 +101,21 @@ public abstract class AbstractLineProgress : AbstractProgressBar
 
     private void UpdatePseudoClasses()
     {
-        PseudoClasses.Set(VerticalPC, Orientation   == Orientation.Vertical);
+        PseudoClasses.Set(VerticalPC, Orientation == Orientation.Vertical);
         PseudoClasses.Set(HorizontalPC, Orientation == Orientation.Horizontal);
     }
 
     protected override void NotifyPropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
         base.NotifyPropertyChanged(e);
-        if (e.Property == HeightProperty || e.Property == WidthProperty) SetupAlignment();
+        if (e.Property == HeightProperty || e.Property == WidthProperty)
+        {
+            SetupAlignment();
+        }
+
         if (VisualRoot is not null)
         {
-            if ((e.Property == WidthProperty  && Orientation == Orientation.Vertical) ||
+            if ((e.Property == WidthProperty && Orientation == Orientation.Vertical) ||
                 (e.Property == HeightProperty && Orientation == Orientation.Horizontal))
             {
                 EffectiveSizeType = CalculateEffectiveSizeType(e.GetNewValue<double>());
@@ -141,9 +149,13 @@ public abstract class AbstractLineProgress : AbstractProgressBar
         base.NotifyHandleExtraInfoVisibility();
         var currentStatus = false;
         if (MathUtils.AreClose(Value, Maximum))
+        {
             currentStatus = true;
+        }
         else
+        {
             currentStatus = false;
+        }
 
         if (currentStatus != _lastCompletedStatus)
         {
@@ -151,8 +163,6 @@ public abstract class AbstractLineProgress : AbstractProgressBar
             _extraInfoSize       = CalculateExtraInfoSize(FontSize);
         }
     }
-
-
 
     #region 内部属性定义
 

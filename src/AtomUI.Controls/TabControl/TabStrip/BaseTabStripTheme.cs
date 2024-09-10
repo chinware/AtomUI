@@ -105,7 +105,6 @@ internal class BaseTabStripTheme : BaseControlTheme
             // 左
             var leftStyle = new Style(selector => selector.Nesting().Class(BaseTabStrip.LeftPC));
 
-
             leftStyle.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Left);
             leftStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Stretch);
 

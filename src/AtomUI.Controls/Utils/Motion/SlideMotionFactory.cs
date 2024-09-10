@@ -9,7 +9,7 @@ namespace AtomUI.Controls.Utils;
 public static partial class MotionFactory
 {
     public static MotionConfig BuildSlideUpInMotion(TimeSpan duration, Easing? easing = null,
-        FillMode fillMode = FillMode.None)
+                                                    FillMode fillMode = FillMode.None)
     {
         easing ??= new QuinticEaseOut();
         var           animations      = new List<IAnimation>();
@@ -68,7 +68,7 @@ public static partial class MotionFactory
     }
 
     public static MotionConfig BuildSlideUpOutMotion(TimeSpan duration, Easing? easing = null,
-        FillMode fillMode = FillMode.None)
+                                                     FillMode fillMode = FillMode.None)
     {
         easing ??= new QuinticEaseIn();
         var           animations      = new List<IAnimation>();
@@ -127,7 +127,7 @@ public static partial class MotionFactory
     }
 
     public static MotionConfig BuildSlideDownInMotion(TimeSpan duration, Easing? easing = null,
-        FillMode fillMode = FillMode.None)
+                                                      FillMode fillMode = FillMode.None)
     {
         easing ??= new QuinticEaseOut();
         var           animations      = new List<IAnimation>();
@@ -186,7 +186,7 @@ public static partial class MotionFactory
     }
 
     public static MotionConfig BuildSlideDownOutMotion(TimeSpan duration, Easing? easing = null,
-        FillMode fillMode = FillMode.None)
+                                                       FillMode fillMode = FillMode.None)
     {
         easing ??= new QuinticEaseIn();
         var           animations      = new List<IAnimation>();
@@ -245,7 +245,7 @@ public static partial class MotionFactory
     }
 
     public static MotionConfig BuildSlideLeftInMotion(TimeSpan duration, Easing? easing = null,
-        FillMode fillMode = FillMode.None)
+                                                      FillMode fillMode = FillMode.None)
     {
         easing ??= new QuinticEaseOut();
         var           animations      = new List<IAnimation>();
@@ -304,7 +304,7 @@ public static partial class MotionFactory
     }
 
     public static MotionConfig BuildSlideLeftOutMotion(TimeSpan duration, Easing? easing = null,
-        FillMode fillMode = FillMode.None)
+                                                       FillMode fillMode = FillMode.None)
     {
         easing ??= new QuinticEaseIn();
         var           animations      = new List<IAnimation>();
@@ -363,7 +363,7 @@ public static partial class MotionFactory
     }
 
     public static MotionConfig BuildSlideRightInMotion(TimeSpan duration, Easing? easing = null,
-        FillMode fillMode = FillMode.None)
+                                                       FillMode fillMode = FillMode.None)
     {
         easing ??= new QuinticEaseOut();
         var           animations      = new List<IAnimation>();
@@ -422,7 +422,7 @@ public static partial class MotionFactory
     }
 
     public static MotionConfig BuildSlideRightOutMotion(TimeSpan duration, Easing? easing = null,
-        FillMode fillMode = FillMode.None)
+                                                        FillMode fillMode = FillMode.None)
     {
         easing ??= new QuinticEaseIn();
         var           animations      = new List<IAnimation>();

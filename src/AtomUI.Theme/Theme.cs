@@ -6,7 +6,7 @@ using Avalonia.Styling;
 namespace AtomUI.Theme;
 
 /// <summary>
-///     主要是生成主题资源，绘制相关的管理不在这里，因为是公用的所以放在 ThemeManager 里面
+/// 主要是生成主题资源，绘制相关的管理不在这里，因为是公用的所以放在 ThemeManager 里面
 /// </summary>
 public abstract class Theme : ITheme
 {
@@ -65,7 +65,10 @@ public abstract class Theme : ITheme
 
     public IControlDesignToken? GetControlToken(string tokenId)
     {
-        if (_controlTokens.TryGetValue(tokenId, out var token)) return token;
+        if (_controlTokens.TryGetValue(tokenId, out var token))
+        {
+            return token;
+        }
 
         return null;
     }
@@ -134,13 +137,18 @@ public abstract class Theme : ITheme
             foreach (var entry in _controlTokens)
 
                 // 如果没有修改就使用全局的
+            {
                 entry.Value.AssignGlobalToken(_globalToken);
+            }
 
             foreach (var entry in controlTokenConfig)
             {
                 var tokenId          = entry.Key;
                 var controlTokenInfo = entry.Value;
-                if (!_controlTokens.ContainsKey(tokenId)) continue;
+                if (!_controlTokens.ContainsKey(tokenId))
+                {
+                    continue;
+                }
 
                 var controlAliasToken = (AliasDesignToken)_globalToken.Clone();
                 controlAliasToken.SeedToken.LoadConfig(controlTokenInfo.ControlTokens);
@@ -162,8 +170,10 @@ public abstract class Theme : ITheme
             {
                 (controlToken as AbstractControlDesignToken)!.CalculateFromAlias();
                 if (controlTokenConfig.ContainsKey(controlToken.Id))
+                {
                     (controlToken as AbstractControlDesignToken)!.LoadConfig(controlTokenConfig[controlToken.Id]
                         .ControlTokens);
+                }
 
                 controlToken.BuildResourceDictionary(_resourceDictionary);
             }
@@ -182,23 +192,35 @@ public abstract class Theme : ITheme
     protected void CheckAlgorithmNames(IList<string> algorithms)
     {
         foreach (var algorithm in algorithms)
+        {
             if (!SUPPORTED_ALGORITHMS.Contains(algorithm))
+            {
                 throw new ThemeLoadException(
                     $"Algorithm: {algorithm} is not supported. Supported algorithms are: {string.Join(',', SUPPORTED_ALGORITHMS)}.");
+            }
+        }
     }
 
     protected IThemeVariantCalculator CreateThemeVariantCalculator(string algorithmId,
-        IThemeVariantCalculator? baseAlgorithm)
+                                                                   IThemeVariantCalculator? baseAlgorithm)
     {
         IThemeVariantCalculator calculator = default!;
         if (algorithmId == DefaultThemeVariantCalculator.ID)
+        {
             calculator = new DefaultThemeVariantCalculator();
+        }
         else if (algorithmId == DarkThemeVariantCalculator.ID)
+        {
             calculator = new DarkThemeVariantCalculator(baseAlgorithm!);
+        }
         else if (algorithmId == CompactThemeVariantCalculator.ID)
+        {
             calculator = new CompactThemeVariantCalculator(baseAlgorithm!);
+        }
         else
+        {
             throw new ThemeLoadException($"Algorithm: {algorithmId} is not supported.");
+        }
 
         return calculator;
     }
@@ -210,7 +232,10 @@ public abstract class Theme : ITheme
         foreach (var tokenType in controlTokenTypes)
         {
             var obj = Activator.CreateInstance(tokenType);
-            if (obj is AbstractControlDesignToken controlToken) _controlTokens.Add(controlToken.Id, controlToken);
+            if (obj is AbstractControlDesignToken controlToken)
+            {
+                _controlTokens.Add(controlToken.Id, controlToken);
+            }
         }
     }
 

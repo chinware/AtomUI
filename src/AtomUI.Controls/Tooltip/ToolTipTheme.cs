@@ -28,6 +28,7 @@ internal class ToolTipTheme : BaseControlTheme
                 Name = ToolTipContainerPart
             };
             if (tip.Content is string text)
+            {
                 arrowDecoratedBox.Content = new TextBlock
                 {
                     Text                = text,
@@ -35,7 +36,12 @@ internal class ToolTipTheme : BaseControlTheme
                     HorizontalAlignment = HorizontalAlignment.Center,
                     TextWrapping        = TextWrapping.Wrap
                 };
-            else if (tip.Content is Control control) arrowDecoratedBox.Content = control;
+            }
+            else if (tip.Content is Control control)
+            {
+                arrowDecoratedBox.Content = control;
+            }
+
             CreateTemplateParentBinding(arrowDecoratedBox, ArrowDecoratedBox.IsShowArrowProperty,
                 ToolTip.IsShowArrowEffectiveProperty);
             arrowDecoratedBox.RegisterInNameScope(scope);

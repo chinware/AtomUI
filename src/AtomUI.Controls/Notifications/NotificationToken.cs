@@ -15,72 +15,72 @@ internal class NotificationToken : AbstractControlDesignToken
     }
 
     /// <summary>
-    ///     提醒框背景色
+    /// 提醒框背景色
     /// </summary>
     public Color NotificationBg { get; set; }
 
     /// <summary>
-    ///     提醒框内边距
+    /// 提醒框内边距
     /// </summary>
     public Thickness NotificationPadding { get; set; }
 
     /// <summary>
-    ///     提醒框图标尺寸
+    /// 提醒框图标尺寸
     /// </summary>
     public double NotificationIconSize { get; set; }
 
     /// <summary>
-    ///     提醒框图标外边距
+    /// 提醒框图标外边距
     /// </summary>
     public Thickness NotificationIconMargin { get; set; }
 
     /// <summary>
-    ///     提醒框关闭按钮尺寸
+    /// 提醒框关闭按钮尺寸
     /// </summary>
     public double NotificationCloseButtonSize { get; set; }
 
     /// <summary>
-    ///     提醒框底部外边距
+    /// 提醒框底部外边距
     /// </summary>
     public Thickness NotificationMarginBottom { get; set; }
 
     /// <summary>
-    ///     提醒框上边缘外边距
+    /// 提醒框上边缘外边距
     /// </summary>
     public Thickness NotificationTopMargin { get; set; }
 
     /// <summary>
-    ///     提醒框下边缘外边距
+    /// 提醒框下边缘外边距
     /// </summary>
     public Thickness NotificationBottomMargin { get; set; }
 
     /// <summary>
-    ///     提醒框进度条背景色
+    /// 提醒框进度条背景色
     /// </summary>
     public IBrush? NotificationProgressBg { get; set; }
 
     /// <summary>
-    ///     提醒框进度条高度
+    /// 提醒框进度条高度
     /// </summary>
     public double NotificationProgressHeight { get; set; }
 
     /// <summary>
-    ///     进度条外边距
+    /// 进度条外边距
     /// </summary>
     public Thickness NotificationProgressMargin { get; set; }
 
     /// <summary>
-    ///     提醒框宽度
+    /// 提醒框宽度
     /// </summary>
     public double NotificationWidth { get; set; }
 
     /// <summary>
-    ///     内容外边距
+    /// 内容外边距
     /// </summary>
     public Thickness NotificationContentMargin { get; set; }
 
     /// <summary>
-    ///     标题栏的外边距
+    /// 标题栏的外边距
     /// </summary>
     public Thickness HeaderMargin { get; set; }
 

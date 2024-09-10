@@ -7,7 +7,7 @@ using Avalonia.Utilities;
 namespace AtomUI.Controls.Utils;
 
 /// <summary>
-///     Contains helper methods for rendering a <see cref="Border" />'s background and border to a given context.
+/// Contains helper methods for rendering a <see cref="Border" />'s background and border to a given context.
 /// </summary>
 internal class BorderRenderHelper
 {
@@ -22,7 +22,7 @@ internal class BorderRenderHelper
     private bool _useComplexRendering;
 
     private void Update(Size finalSize, Thickness borderThickness, CornerRadius cornerRadius,
-        BackgroundSizing backgroundSizing)
+                        BackgroundSizing backgroundSizing)
     {
         _size             = finalSize;
         _borderThickness  = borderThickness;
@@ -31,7 +31,7 @@ internal class BorderRenderHelper
         _initialized      = true;
 
         if (borderThickness.IsUniform &&
-            cornerRadius.IsUniform    &&
+            cornerRadius.IsUniform &&
             backgroundSizing == BackgroundSizing.CenterBorder)
         {
             _backgroundGeometryCache = null;
@@ -111,18 +111,26 @@ internal class BorderRenderHelper
         IBrush? borderBrush,
         BoxShadows boxShadows)
     {
-        if (_size                != finalSize
-            || _borderThickness  != borderThickness
-            || _cornerRadius     != cornerRadius
+        if (_size != finalSize
+            || _borderThickness != borderThickness
+            || _cornerRadius != cornerRadius
             || _backgroundSizing != backgroundSizing
             || !_initialized)
+        {
             Update(finalSize, borderThickness, cornerRadius, backgroundSizing);
+        }
 
         if (_useComplexRendering)
         {
-            if (_backgroundGeometryCache != null) context.DrawGeometry(background, null, _backgroundGeometryCache);
+            if (_backgroundGeometryCache != null)
+            {
+                context.DrawGeometry(background, null, _backgroundGeometryCache);
+            }
 
-            if (_borderGeometryCache != null) context.DrawGeometry(borderBrush, null, _borderGeometryCache);
+            if (_borderGeometryCache != null)
+            {
+                context.DrawGeometry(borderBrush, null, _borderGeometryCache);
+            }
         }
         else
         {
@@ -130,8 +138,11 @@ internal class BorderRenderHelper
 
             PenUtils.TryModifyOrCreate(ref _cachedPen, borderBrush, thickness);
 
-            var rect                                   = new Rect(_size);
-            if (!MathUtilities.IsZero(thickness)) rect = rect.Deflate(thickness * 0.5);
+            var rect = new Rect(_size);
+            if (!MathUtilities.IsZero(thickness))
+            {
+                rect = rect.Deflate(thickness * 0.5);
+            }
 
             var rrect = new RoundedRect(rect, _cornerRadius.TopLeft, _cornerRadius.TopRight,
                 _cornerRadius.BottomRight, _cornerRadius.BottomLeft);

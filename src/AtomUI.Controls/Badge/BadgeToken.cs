@@ -15,37 +15,37 @@ internal class BadgeToken : AbstractControlDesignToken
     }
 
     /// <summary>
-    ///     徽标高度
+    /// 徽标高度
     /// </summary>
     public double IndicatorHeight { get; set; }
 
     /// <summary>
-    ///     小号徽标高度
+    /// 小号徽标高度
     /// </summary>
     public double IndicatorHeightSM { get; set; }
 
     /// <summary>
-    ///     点状徽标尺寸
+    /// 点状徽标尺寸
     /// </summary>
     public double DotSize { get; set; }
 
     /// <summary>
-    ///     徽标文本尺寸
+    /// 徽标文本尺寸
     /// </summary>
     public double TextFontSize { get; set; }
 
     /// <summary>
-    ///     小号徽标文本尺寸
+    /// 小号徽标文本尺寸
     /// </summary>
     public double TextFontSizeSM { get; set; }
 
     /// <summary>
-    ///     徽标文本粗细
+    /// 徽标文本粗细
     /// </summary>
     public FontWeight TextFontWeight { get; set; }
 
     /// <summary>
-    ///     状态徽标尺寸
+    /// 状态徽标尺寸
     /// </summary>
     public double StatusSize { get; set; }
 
@@ -77,8 +77,6 @@ internal class BadgeToken : AbstractControlDesignToken
         BadgeRibbonCornerDarkenAmount = 15;
         BadgeRibbonTextPadding        = new Thickness(_globalToken.PaddingXS, 0);
     }
-
-
 
     #region 内部使用的 Token
 

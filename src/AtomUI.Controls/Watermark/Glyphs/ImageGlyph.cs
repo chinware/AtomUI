@@ -29,7 +29,10 @@ public class ImageGlyph : WatermarkGlyph
 
     public override void Render(DrawingContext context)
     {
-        if (Source == null) return;
+        if (Source == null)
+        {
+            return;
+        }
 
         var w = Height / Source.Size.Height * Source.Size.Width;
         Source.Draw(context, new Rect(new Point(), Source.Size), new Rect(new Point(), new Size(w, Height)));
@@ -37,7 +40,11 @@ public class ImageGlyph : WatermarkGlyph
 
     public override Size GetDesiredSize()
     {
-        if (Source == null) return new Size();
+        if (Source == null)
+        {
+            return new Size();
+        }
+
         var w = Height / Source.Size.Height * Source.Size.Width;
         return new Size(w, Height);
     }

@@ -4,7 +4,6 @@ namespace AtomUI.Controls;
 
 using AvaloniaComboBoxItem = Avalonia.Controls.ComboBoxItem;
 
-
 public class ComboBoxItem : AvaloniaComboBoxItem
 {
     #region 内部属性定义

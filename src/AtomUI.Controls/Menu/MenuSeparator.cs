@@ -8,7 +8,6 @@ namespace AtomUI.Controls;
 
 using AvaloniaSeparator = Avalonia.Controls.Separator;
 
-
 public class MenuSeparator : AvaloniaSeparator
 {
     public static readonly StyledProperty<double> LineWidthProperty =

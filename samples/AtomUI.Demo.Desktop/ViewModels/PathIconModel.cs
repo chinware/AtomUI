@@ -29,7 +29,6 @@ public class IconInfoItemModel : ObservableObject
     }
 }
 
-
 public class IconGalleryModel : ObservableObject
 {
     private readonly IconThemeType? _iconThemeType;
@@ -39,7 +38,10 @@ public class IconGalleryModel : ObservableObject
     public IconGalleryModel(IconThemeType? iconThemeType = null)
     {
         _iconThemeType = iconThemeType;
-        if (_iconThemeType.HasValue) LoadThemeIcons(_iconThemeType.Value);
+        if (_iconThemeType.HasValue)
+        {
+            LoadThemeIcons(_iconThemeType.Value);
+        }
     }
 
     public ObservableCollection<IconInfoItemModel>? IconInfos
@@ -51,7 +53,10 @@ public class IconGalleryModel : ObservableObject
     public void LoadThemeIcons(IconThemeType iconThemeType)
     {
         var iconPackage = IconManager.Current.GetIconProvider<AntDesignIconPackage>();
-        if (iconPackage is null) return;
+        if (iconPackage is null)
+        {
+            return;
+        }
 
         IconInfos = new ObservableCollection<IconInfoItemModel>();
         var iconInfos = iconPackage.GetIconInfos(iconThemeType);

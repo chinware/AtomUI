@@ -16,7 +16,6 @@ public record PercentPosition
     public LinePercentAlignment Alignment { get; set; } = LinePercentAlignment.End;
 }
 
-
 [PseudoClasses(IndeterminatePC)]
 public class ProgressBar : AbstractLineProgress
 {
@@ -36,12 +35,21 @@ public class ProgressBar : AbstractLineProgress
         {
             targetHeight = StrokeThickness;
             if (!PercentPosition.IsInner && ShowProgressInfo)
+            {
                 if (PercentPosition.Alignment == LinePercentAlignment.Center)
+                {
                     targetHeight += _extraInfoSize.Height + LineExtraInfoMargin;
+                }
+            }
 
             if (!double.IsInfinity(availableSize.Width))
-                targetWidth                               = availableSize.Width;
-            else if (!double.IsNaN(MinWidth)) targetWidth = MinHeight;
+            {
+                targetWidth = availableSize.Width;
+            }
+            else if (!double.IsNaN(MinWidth))
+            {
+                targetWidth = MinHeight;
+            }
 
             targetHeight = Math.Max(targetHeight, MinHeight);
         }
@@ -49,13 +57,22 @@ public class ProgressBar : AbstractLineProgress
         {
             targetWidth = StrokeThickness;
             if (!PercentPosition.IsInner && ShowProgressInfo)
+            {
                 if (PercentPosition.Alignment == LinePercentAlignment.Center)
+                {
                     targetWidth += _extraInfoSize.Width + LineExtraInfoMargin;
+                }
+            }
 
             targetWidth = Math.Max(targetWidth, MinWidth);
             if (!double.IsInfinity(availableSize.Height))
-                targetHeight                                = availableSize.Height;
-            else if (!double.IsNaN(MinHeight)) targetHeight = MinHeight;
+            {
+                targetHeight = availableSize.Height;
+            }
+            else if (!double.IsNaN(MinHeight))
+            {
+                targetHeight = MinHeight;
+            }
         }
 
         return new Size(targetWidth, targetHeight);
@@ -93,9 +110,13 @@ public class ProgressBar : AbstractLineProgress
         var controlRect = new Rect(new Point(0, 0), Bounds.Size);
         _grooveRect = GetProgressBarRect(controlRect);
         if (StrokeLineCap == PenLineCap.Round)
+        {
             context.DrawPilledRect(GrooveBrush, null, _grooveRect, Orientation);
+        }
         else
+        {
             context.FillRectangle(GrooveBrush!, _grooveRect);
+        }
     }
 
     protected override void RenderIndicatorBar(DrawingContext context)
@@ -103,9 +124,13 @@ public class ProgressBar : AbstractLineProgress
         var deflateValue = 0d;
         var range        = 0d;
         if (Orientation == Orientation.Horizontal)
+        {
             range = _grooveRect.Width;
+        }
         else
+        {
             range = _grooveRect.Height;
+        }
 
         deflateValue = range * (1 - _percentage / 100);
         DrawIndicatorBar(context, deflateValue, IndicatorBarBrush!);
@@ -123,26 +148,44 @@ public class ProgressBar : AbstractLineProgress
     {
         Rect indicatorRect = default;
         if (Orientation == Orientation.Horizontal)
+        {
             indicatorRect = _grooveRect.Deflate(new Thickness(0, 0, deflateValue, 0));
+        }
         else
+        {
             indicatorRect = _grooveRect.Deflate(new Thickness(0, 0, 0, deflateValue));
+        }
+
         if (StrokeLineCap == PenLineCap.Round)
+        {
             context.DrawPilledRect(brush, null, indicatorRect, Orientation);
+        }
         else
+        {
             context.FillRectangle(brush, indicatorRect);
+        }
     }
 
     protected override void CalculateStrokeThickness()
     {
         double strokeThickness;
         if (EffectiveSizeType == SizeType.Large)
+        {
             strokeThickness = LARGE_STROKE_THICKNESS;
+        }
         else if (EffectiveSizeType == SizeType.Middle)
+        {
             strokeThickness = MIDDLE_STROKE_THICKNESS;
+        }
         else
+        {
             strokeThickness = SMALL_STROKE_THICKNESS;
+        }
 
-        if (!double.IsNaN(IndicatorThickness)) strokeThickness = IndicatorThickness;
+        if (!double.IsNaN(IndicatorThickness))
+        {
+            strokeThickness = IndicatorThickness;
+        }
 
         if (ShowProgressInfo && PercentPosition.IsInner)
         {
@@ -152,11 +195,19 @@ public class ProgressBar : AbstractLineProgress
             }
             else
             {
-                if (_extraInfoSize == Size.Infinity) _extraInfoSize = CalculateExtraInfoSize(FontSize);
+                if (_extraInfoSize == Size.Infinity)
+                {
+                    _extraInfoSize = CalculateExtraInfoSize(FontSize);
+                }
+
                 if (PercentPosition.IsInner)
+                {
                     strokeThickness = _extraInfoSize.Width;
+                }
                 else
+                {
                     strokeThickness = MinWidth;
+                }
             }
         }
 
@@ -180,25 +231,37 @@ public class ProgressBar : AbstractLineProgress
         {
             if (size < smallThresholdValue.InnerStateValue ||
                 MathUtils.AreClose(size, smallThresholdValue.InnerStateValue))
+            {
                 sizeType = SizeType.Small;
+            }
             else if (size > smallThresholdValue.InnerStateValue && (size < middleThresholdValue.InnerStateValue ||
                                                                     MathUtils.AreClose(size,
                                                                         middleThresholdValue.InnerStateValue)))
+            {
                 sizeType = SizeType.Middle;
+            }
             else
+            {
                 sizeType = SizeType.Large;
+            }
         }
         else
         {
             if (size < smallThresholdValue.NormalStateValue ||
                 MathUtils.AreClose(size, smallThresholdValue.NormalStateValue))
+            {
                 sizeType = SizeType.Small;
+            }
             else if (size > smallThresholdValue.NormalStateValue && (size < middleThresholdValue.NormalStateValue ||
                                                                      MathUtils.AreClose(size,
                                                                          middleThresholdValue.NormalStateValue)))
+            {
                 sizeType = SizeType.Middle;
+            }
             else
+            {
                 sizeType = SizeType.Large;
+            }
         }
 
         return sizeType;
@@ -210,12 +273,16 @@ public class ProgressBar : AbstractLineProgress
         double fontSizeSM = default;
         {
             if (TokenResourceUtils.FindGlobalTokenResource(GlobalTokenResourceKey.FontSize) is double value)
+            {
                 fontSize = value;
+            }
         }
 
         {
             if (TokenResourceUtils.FindGlobalTokenResource(GlobalTokenResourceKey.FontSizeSM) is double value)
+            {
                 fontSizeSM = value;
+            }
         }
         var defaultExtraInfoSize = CalculateExtraInfoSize(fontSize);
         var smallExtraInfoSize   = CalculateExtraInfoSize(fontSizeSM);
@@ -275,39 +342,58 @@ public class ProgressBar : AbstractLineProgress
         if (Orientation == Orientation.Horizontal)
         {
             if (ShowProgressInfo)
+            {
                 if (!PercentPosition.IsInner)
                 {
                     var percentLabelWidth  = _extraInfoSize.Width;
                     var percentLabelHeight = _extraInfoSize.Height;
                     if (PercentPosition.Alignment == LinePercentAlignment.Start)
+                    {
                         deflateLeft = percentLabelWidth + LineExtraInfoMargin;
+                    }
                     else if (PercentPosition.Alignment == LinePercentAlignment.Center)
+                    {
                         deflateBottom = percentLabelHeight;
+                    }
                     else if (PercentPosition.Alignment == LinePercentAlignment.End)
+                    {
                         deflateRight = percentLabelWidth + LineExtraInfoMargin;
+                    }
                 }
+            }
         }
         else
         {
             if (ShowProgressInfo)
+            {
                 if (!PercentPosition.IsInner)
                 {
                     var percentLabelWidth  = _extraInfoSize.Width;
                     var percentLabelHeight = _extraInfoSize.Height;
                     if (PercentPosition.Alignment == LinePercentAlignment.Start)
+                    {
                         deflateTop = percentLabelHeight + LineExtraInfoMargin;
+                    }
                     else if (PercentPosition.Alignment == LinePercentAlignment.Center)
+                    {
                         deflateRight = percentLabelWidth;
+                    }
                     else if (PercentPosition.Alignment == LinePercentAlignment.End)
+                    {
                         deflateBottom = percentLabelHeight + LineExtraInfoMargin;
+                    }
                 }
+            }
         }
 
         var deflatedControlRect =
             controlRect.Deflate(new Thickness(deflateLeft, deflateTop, deflateRight, deflateBottom));
         if (Orientation == Orientation.Horizontal)
+        {
             return new Rect(new Point(deflatedControlRect.X, (deflatedControlRect.Height - strokeThickness) / 2),
                 new Size(deflatedControlRect.Width, strokeThickness));
+        }
+
         return new Rect(new Point((deflatedControlRect.Width - strokeThickness) / 2, deflatedControlRect.Y),
             new Size(strokeThickness, deflatedControlRect.Height));
     }
@@ -336,11 +422,17 @@ public class ProgressBar : AbstractLineProgress
                     var deflateValue  = range * (1 - Value / (Maximum - Minimum));
                     var indicatorRect = grooveRect.Deflate(new Thickness(0, 0, deflateValue, 0));
                     if (PercentPosition.Alignment == LinePercentAlignment.Start)
+                    {
                         offsetX = LineProgressPadding * 2;
+                    }
                     else if (PercentPosition.Alignment == LinePercentAlignment.Center)
+                    {
                         offsetX = (indicatorRect.Width - targetWidth) / 2;
+                    }
                     else if (PercentPosition.Alignment == LinePercentAlignment.End)
+                    {
                         offsetX = indicatorRect.Right - targetWidth - LineProgressPadding * 2;
+                    }
                 }
                 else
                 {
@@ -372,11 +464,17 @@ public class ProgressBar : AbstractLineProgress
                 var deflateValue  = range * (1 - Value / (Maximum - Minimum));
                 var indicatorRect = grooveRect.Deflate(new Thickness(0, 0, 0, deflateValue));
                 if (PercentPosition.Alignment == LinePercentAlignment.Start)
+                {
                     offsetY = LineExtraInfoMargin;
+                }
                 else if (PercentPosition.Alignment == LinePercentAlignment.Center)
+                {
                     offsetY = (indicatorRect.Height - targetHeight) / 2;
+                }
                 else if (PercentPosition.Alignment == LinePercentAlignment.End)
+                {
                     offsetY = indicatorRect.Bottom - targetHeight - LineExtraInfoMargin;
+                }
             }
             else
             {
@@ -407,11 +505,19 @@ public class ProgressBar : AbstractLineProgress
             !PercentPosition.IsInner)
 
             // 只要图标
+        {
             return new Size(LineInfoIconSize, LineInfoIconSize);
+        }
+
         var textSize = TextUtils.CalculateTextSize(string.Format(ProgressTextFormat, Value), fontSize, FontFamily);
         if (ShowProgressInfo && PercentPosition.IsInner)
+        {
             if (Orientation == Orientation.Vertical)
+            {
                 textSize = new Size(textSize.Height, textSize.Width);
+            }
+        }
+
         return textSize;
     }
 
@@ -431,10 +537,17 @@ public class ProgressBar : AbstractLineProgress
     {
         base.NotifyPropertyChanged(e);
         if (VisualRoot is not null)
+        {
             if (e.Property == IndicatorBarBrushProperty)
+            {
                 SetupPercentLabelForegroundBrush();
+            }
+        }
 
-        if (e.Property == PercentPositionProperty) UpdatePseudoClasses();
+        if (e.Property == PercentPositionProperty)
+        {
+            UpdatePseudoClasses();
+        }
     }
 
     // 需要评估是否需要
@@ -480,7 +593,10 @@ public class ProgressBar : AbstractLineProgress
                 if (GrooveBrush is ISolidColorBrush grooveBrush)
                 {
                     var mostReadable = ColorUtils.MostReadable(grooveBrush.Color, colors);
-                    if (mostReadable.HasValue) _percentageLabel!.Foreground = new SolidColorBrush(mostReadable.Value);
+                    if (mostReadable.HasValue)
+                    {
+                        _percentageLabel!.Foreground = new SolidColorBrush(mostReadable.Value);
+                    }
                 }
             }
             else
@@ -488,7 +604,10 @@ public class ProgressBar : AbstractLineProgress
                 if (IndicatorBarBrush is ISolidColorBrush indicatorBarBrush)
                 {
                     var mostReadable = ColorUtils.MostReadable(indicatorBarBrush.Color, colors);
-                    if (mostReadable.HasValue) _percentageLabel!.Foreground = new SolidColorBrush(mostReadable.Value);
+                    if (mostReadable.HasValue)
+                    {
+                        _percentageLabel!.Foreground = new SolidColorBrush(mostReadable.Value);
+                    }
                 }
             }
         }
@@ -498,8 +617,6 @@ public class ProgressBar : AbstractLineProgress
     {
         PseudoClasses.Set(PercentLabelInnerPC, PercentPosition.IsInner);
     }
-
-
 
     #region 公共属性定义
 
@@ -513,8 +630,6 @@ public class ProgressBar : AbstractLineProgress
     }
 
     #endregion
-
-
 
     #region 内部属性定义
 

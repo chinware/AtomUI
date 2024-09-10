@@ -14,12 +14,16 @@ public class IconManager : IIconPackageContainer, IPackageAwareIconReader
     public string? DefaultPackage
     {
         get => _defaultPackage;
+
         set
         {
             if (value != null)
             {
                 if (!_iconPackageProviders.ContainsKey(value))
+                {
                     throw new ArgumentException($"PathIcon package {value} is not registered.");
+                }
+
                 _defaultPackage = value;
             }
         }
@@ -29,7 +33,10 @@ public class IconManager : IIconPackageContainer, IPackageAwareIconReader
     {
         var packageId = iconPackageProvider.Id;
         if (!_iconPackageProviders.TryAdd(packageId, iconPackageProvider))
+        {
             throw new ArgumentException($"\"{packageId}\" is already registered.");
+        }
+
         return this;
     }
 
@@ -46,22 +53,35 @@ public class IconManager : IIconPackageContainer, IPackageAwareIconReader
 
     public IIconPackageProvider? GetIconProvider(string? id = null)
     {
-        if (id is null) id = DefaultPackage;
-        if (id is null || !_iconPackageProviders.ContainsKey(id)) return default;
+        if (id is null)
+        {
+            id = DefaultPackage;
+        }
+
+        if (id is null || !_iconPackageProviders.ContainsKey(id))
+        {
+            return default;
+        }
 
         return _iconPackageProviders[id];
     }
 
     public IconInfo? GetIcon(string iconKind)
     {
-        if (_defaultPackage != null) return GetIcon(_defaultPackage, iconKind);
+        if (_defaultPackage != null)
+        {
+            return GetIcon(_defaultPackage, iconKind);
+        }
 
         // 顺序搜索，是否增加个优先级？
         var iconPackageProviders = _iconPackageProviders.Values.OrderByDescending(provider => provider.Priority);
         foreach (var provider in iconPackageProviders)
         {
             var iconInfo = provider.GetIcon(iconKind);
-            if (iconInfo != null) return iconInfo;
+            if (iconInfo != null)
+            {
+                return iconInfo;
+            }
         }
 
         return null;
@@ -69,14 +89,20 @@ public class IconManager : IIconPackageContainer, IPackageAwareIconReader
 
     public IconInfo? GetIcon(string iconKind, ColorInfo colorInfo)
     {
-        if (_defaultPackage != null) return GetIcon(_defaultPackage, iconKind, colorInfo);
+        if (_defaultPackage != null)
+        {
+            return GetIcon(_defaultPackage, iconKind, colorInfo);
+        }
 
         // 顺序搜索，是否增加个优先级？
         var iconPackageProviders = _iconPackageProviders.Values.OrderByDescending(provider => provider.Priority);
         foreach (var provider in iconPackageProviders)
         {
             var iconInfo = provider.GetIcon(iconKind, colorInfo);
-            if (iconInfo != null) return iconInfo;
+            if (iconInfo != null)
+            {
+                return iconInfo;
+            }
         }
 
         return null;
@@ -84,12 +110,19 @@ public class IconManager : IIconPackageContainer, IPackageAwareIconReader
 
     public IconInfo? GetIcon(string iconKind, TwoToneColorInfo twoToneColorInfo)
     {
-        if (_defaultPackage != null) return GetIcon(_defaultPackage, iconKind, twoToneColorInfo);
+        if (_defaultPackage != null)
+        {
+            return GetIcon(_defaultPackage, iconKind, twoToneColorInfo);
+        }
+
         var iconPackageProviders = _iconPackageProviders.Values.OrderByDescending(provider => provider.Priority);
         foreach (var provider in iconPackageProviders)
         {
             var iconInfo = provider.GetIcon(iconKind, twoToneColorInfo);
-            if (iconInfo != null) return iconInfo;
+            if (iconInfo != null)
+            {
+                return iconInfo;
+            }
         }
 
         return null;
@@ -97,7 +130,10 @@ public class IconManager : IIconPackageContainer, IPackageAwareIconReader
 
     public IconInfo? GetIcon(string package, string iconKind)
     {
-        if (!_iconPackageProviders.ContainsKey(package)) return null;
+        if (!_iconPackageProviders.ContainsKey(package))
+        {
+            return null;
+        }
 
         var packageProvider = _iconPackageProviders[package];
         return packageProvider.GetIcon(iconKind);
@@ -105,7 +141,10 @@ public class IconManager : IIconPackageContainer, IPackageAwareIconReader
 
     public IconInfo? GetIcon(string package, string iconKind, ColorInfo colorInfo)
     {
-        if (!_iconPackageProviders.ContainsKey(package)) return null;
+        if (!_iconPackageProviders.ContainsKey(package))
+        {
+            return null;
+        }
 
         var packageProvider = _iconPackageProviders[package];
         return packageProvider.GetIcon(iconKind, colorInfo);
@@ -113,7 +152,10 @@ public class IconManager : IIconPackageContainer, IPackageAwareIconReader
 
     public IconInfo? GetIcon(string package, string iconKind, TwoToneColorInfo twoToneColorInfo)
     {
-        if (!_iconPackageProviders.ContainsKey(package)) return null;
+        if (!_iconPackageProviders.ContainsKey(package))
+        {
+            return null;
+        }
 
         var packageProvider = _iconPackageProviders[package];
         return packageProvider.GetIcon(iconKind, twoToneColorInfo);

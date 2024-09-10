@@ -18,7 +18,7 @@ internal class TabControlTheme : BaseTabControlTheme
     }
 
     protected override void NotifyBuildTabStripTemplate(BaseTabControl baseTabControl, INameScope scope,
-        DockPanel container)
+                                                        DockPanel container)
     {
         var alignWrapper = new Panel
         {

@@ -86,7 +86,6 @@ internal class BaseOverflowMenuItemTheme : BaseControlTheme
                 Icon                = menuCloseIcon
             };
 
-
             CreateTemplateParentBinding(closeButton, Visual.IsVisibleProperty, BaseOverflowMenuItem.IsClosableProperty);
             TokenResourceBinder.CreateGlobalTokenBinding(menuCloseIcon, PathIcon.NormalFilledBrushProperty,
                 GlobalTokenResourceKey.ColorIcon);

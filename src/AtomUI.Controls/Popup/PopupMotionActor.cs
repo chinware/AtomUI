@@ -14,10 +14,10 @@ internal class PopupMotionActor : MotionActor
     private readonly double _scaling;
 
     public PopupMotionActor(BoxShadows boxShadows,
-        Point offset,
-        double scaling,
-        Control motionTarget,
-        AbstractMotion motion)
+                            Point offset,
+                            double scaling,
+                            Control motionTarget,
+                            AbstractMotion motion)
         : base(motionTarget, motion)
     {
         _offset     = offset;
@@ -36,9 +36,11 @@ internal class PopupMotionActor : MotionActor
     protected override void BuildGhost()
     {
         if (_ghost is null)
+        {
             _ghost = new MotionGhostControl(MotionTarget, _boxShadows)
             {
                 Shadows = _boxShadows
             };
+        }
     }
 }

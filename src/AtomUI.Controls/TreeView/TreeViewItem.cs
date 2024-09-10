@@ -17,7 +17,6 @@ namespace AtomUI.Controls;
 
 using AvaloniaTreeItem = Avalonia.Controls.TreeViewItem;
 
-
 public class TreeViewItem : AvaloniaTreeItem
 {
     public const string TreeNodeHoverPC = ":treenode-hover";
@@ -69,28 +68,42 @@ public class TreeViewItem : AvaloniaTreeItem
         if (VisualRoot is not null)
         {
             if (change.Property == NodeHoverModeProperty)
+            {
                 CalculateEffectiveBgRect();
-            else if (change.Property == IsShowLineProperty         ||
+            }
+            else if (change.Property == IsShowLineProperty ||
                      change.Property == SwitcherExpandIconProperty ||
                      change.Property == SwitcherCollapseIconProperty)
+            {
                 SetNodeSwitcherIcons();
+            }
             else if (change.Property == IsEnabledProperty ||
                      change.Property == IsCheckableProperty)
+            {
                 SetupCheckBoxEnabled();
+            }
             else if (change.Property == IsCheckedProperty)
 
                 // 我们处理某个节点的点击只有 true 或者 false
+            {
                 if (IsChecked.HasValue)
                 {
                     if (IsChecked.Value)
+                    {
                         OwnerTreeView?.CheckedSubTree(this);
+                    }
                     else
+                    {
                         OwnerTreeView?.UnCheckedSubTree(this);
+                    }
                 }
+            }
         }
 
         if (change.Property == IsShowIconProperty || change.Property == IconProperty)
+        {
             IconEffectiveVisible = IsShowIcon && Icon is not null;
+        }
 
         if (change.Property == ItemCountProperty)
         {
@@ -98,9 +111,15 @@ public class TreeViewItem : AvaloniaTreeItem
         }
         else if (change.Property == IconProperty)
         {
-            if (change.OldValue is PathIcon oldIcon) UIStructureUtils.SetTemplateParent(oldIcon, null);
+            if (change.OldValue is PathIcon oldIcon)
+            {
+                UIStructureUtils.SetTemplateParent(oldIcon, null);
+            }
 
-            if (change.NewValue is PathIcon newIcon) UIStructureUtils.SetTemplateParent(newIcon, this);
+            if (change.NewValue is PathIcon newIcon)
+            {
+                UIStructureUtils.SetTemplateParent(newIcon, this);
+            }
         }
     }
 
@@ -147,15 +166,20 @@ public class TreeViewItem : AvaloniaTreeItem
         SetupCheckBoxEnabled();
 
         if (Transitions is null)
+        {
             Transitions = new Transitions
             {
                 AnimationUtils.CreateTransition<SolidColorBrushTransition>(EffectiveNodeBgProperty)
             };
+        }
     }
 
     private void CalculateEffectiveBgRect()
     {
-        if (_frameDecorator is null) return;
+        if (_frameDecorator is null)
+        {
+            return;
+        }
 
         Point offset       = default;
         var   targetWidth  = 0d;
@@ -164,7 +188,7 @@ public class TreeViewItem : AvaloniaTreeItem
         {
             if (_iconPresenter is not null && _iconPresenter.IsVisible)
             {
-                offset       = _iconPresenter.TranslatePoint(new Point(0, 0), this)         ?? default;
+                offset       = _iconPresenter.TranslatePoint(new Point(0, 0), this) ?? default;
                 targetWidth  = _iconPresenter.Bounds.Width + _headerPresenter?.Bounds.Width ?? 0d;
                 targetHeight = _frameDecorator.Bounds.Height;
             }
@@ -192,15 +216,21 @@ public class TreeViewItem : AvaloniaTreeItem
                 null,
                 default);
         }
-        if (IsShowLine && (IsExpanded || IsLeaf)) RenderTreeNodeLine(context);
+        if (IsShowLine && (IsExpanded || IsLeaf))
+        {
+            RenderTreeNodeLine(context);
+        }
     }
 
     private void RenderTreeNodeLine(DrawingContext context)
     {
-        if (_switcherButton is null) return;
+        if (_switcherButton is null)
+        {
+            return;
+        }
 
         var penWidth = BorderUtils.BuildRenderScaleAwareThickness(BorderThickness, VisualRoot?.RenderScaling ?? 1.0)
-            .Top;
+                                  .Top;
         using var state = context.PushRenderOptions(new RenderOptions
         {
             EdgeMode = EdgeMode.Aliased
@@ -223,8 +253,12 @@ public class TreeViewItem : AvaloniaTreeItem
         {
             var isLastChild = false;
             if (Parent is TreeViewItem parentTreeItem)
+            {
                 if (parentTreeItem.ContainerFromIndex(parentTreeItem.ItemCount - 1) == this)
+                {
                     isLastChild = true;
+                }
+            }
 
             {
                 // 纵向
@@ -236,7 +270,10 @@ public class TreeViewItem : AvaloniaTreeItem
                         new Point(_switcherButton.DesiredSize.Width / 2,
                             isLastChild ? _switcherButton.DesiredSize.Height : DesiredSize.Height), this) ?? default;
 
-                if (isLastChild) childEndPoint = childEndPoint.WithY(childEndPoint.Y / 2);
+                if (isLastChild)
+                {
+                    childEndPoint = childEndPoint.WithY(childEndPoint.Y / 2);
+                }
 
                 context.DrawLine(new Pen(BorderBrush, penWidth), childStartPoint, childEndPoint);
             }
@@ -260,7 +297,10 @@ public class TreeViewItem : AvaloniaTreeItem
 
     private void SetNodeSwitcherIcons()
     {
-        if (_switcherButton is null) return;
+        if (_switcherButton is null)
+        {
+            return;
+        }
 
         if (SwitcherExpandIcon is not null || SwitcherCollapseIcon is not null)
         {
@@ -305,35 +345,51 @@ public class TreeViewItem : AvaloniaTreeItem
     private void SetupCheckBoxEnabled()
     {
         if (!IsEnabled)
+        {
             IsCheckboxEnable = false;
+        }
         else
+        {
             IsCheckboxEnable = IsCheckable;
+        }
     }
 
     private void HandleFrameDecoratorEntered(object? sender, PointerEventArgs? args)
     {
-        if (NodeHoverMode != TreeItemHoverMode.WholeLine) return;
+        if (NodeHoverMode != TreeItemHoverMode.WholeLine)
+        {
+            return;
+        }
 
         PseudoClasses.Set(TreeNodeHoverPC, true);
     }
 
     private void HandleFrameDecoratorExited(object? sender, PointerEventArgs args)
     {
-        if (NodeHoverMode != TreeItemHoverMode.WholeLine) return;
+        if (NodeHoverMode != TreeItemHoverMode.WholeLine)
+        {
+            return;
+        }
 
         PseudoClasses.Set(TreeNodeHoverPC, false);
     }
 
     private void HandleHeaderPresenterEntered(object? sender, PointerEventArgs? args)
     {
-        if (NodeHoverMode == TreeItemHoverMode.WholeLine) return;
+        if (NodeHoverMode == TreeItemHoverMode.WholeLine)
+        {
+            return;
+        }
 
         PseudoClasses.Set(TreeNodeHoverPC, true);
     }
 
     private void HandleHeaderPresenterExited(object? sender, PointerEventArgs args)
     {
-        if (NodeHoverMode == TreeItemHoverMode.WholeLine) return;
+        if (NodeHoverMode == TreeItemHoverMode.WholeLine)
+        {
+            return;
+        }
 
         PseudoClasses.Set(TreeNodeHoverPC, false);
     }
@@ -367,7 +423,10 @@ public class TreeViewItem : AvaloniaTreeItem
             }
         }
 
-        if (_switcherButton is not null && _switcherButton.IsIconVisible) offsetX -= _switcherButton.Bounds.Width;
+        if (_switcherButton is not null && _switcherButton.IsIconVisible)
+        {
+            offsetX -= _switcherButton.Bounds.Width;
+        }
 
         return new Rect(new Point(offsetX, offsetY),
             new Size(Bounds.Width - offsetX,
@@ -391,7 +450,10 @@ public class TreeViewItem : AvaloniaTreeItem
 
     internal bool IsDragOverForOffsetY(Point point)
     {
-        if (OwnerTreeView is null) return false;
+        if (OwnerTreeView is null)
+        {
+            return false;
+        }
 
         return new Rect(Bounds.Size).Contains(point);
     }
@@ -400,8 +462,6 @@ public class TreeViewItem : AvaloniaTreeItem
     {
         return new DragPreviewAdorner(_frameDecorator!);
     }
-
-
 
     #region 公共属性定义
 
@@ -466,8 +526,6 @@ public class TreeViewItem : AvaloniaTreeItem
     public TreeNodeKey? Key { get; set; }
 
     #endregion
-
-
 
     #region 内部属性定义
 
@@ -635,8 +693,6 @@ public class TreeViewItem : AvaloniaTreeItem
     internal TreeView? OwnerTreeView { get; set; }
 
     #endregion
-
-
 
     // #endregion
 }

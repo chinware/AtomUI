@@ -21,9 +21,15 @@ public readonly struct TokenResourceKey : IEquatable<TokenResourceKey>
 
     public override bool Equals(object? obj)
     {
-        if (obj is TokenResourceKey other) return Equals(other);
+        if (obj is TokenResourceKey other)
+        {
+            return Equals(other);
+        }
 
-        if (obj is string str) return Value == str;
+        if (obj is string str)
+        {
+            return Value == str;
+        }
 
         return false;
     }

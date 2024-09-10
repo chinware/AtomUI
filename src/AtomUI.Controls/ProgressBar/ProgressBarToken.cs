@@ -15,32 +15,32 @@ internal class ProgressBarToken : AbstractControlDesignToken
     }
 
     /// <summary>
-    ///     进度条默认颜色
+    /// 进度条默认颜色
     /// </summary>
     public Color DefaultColor { get; set; }
 
     /// <summary>
-    ///     进度条剩余部分颜色
+    /// 进度条剩余部分颜色
     /// </summary>
     public Color RemainingColor { get; set; }
 
     /// <summary>
-    ///     圆形进度条文字颜色
+    /// 圆形进度条文字颜色
     /// </summary>
     public Color CircleTextColor { get; set; }
 
     /// <summary>
-    ///     条状进度条圆角
+    /// 条状进度条圆角
     /// </summary>
     public CornerRadius LineBorderRadius { get; set; }
 
     /// <summary>
-    ///     圆形进度条文本最小大小
+    /// 圆形进度条文本最小大小
     /// </summary>
     public double CircleMinimumTextFontSize { get; set; }
 
     /// <summary>
-    ///     圆形进度条图标最小大小
+    /// 圆形进度条图标最小大小
     /// </summary>
     public double CircleMinimumIconSize { get; set; }
 

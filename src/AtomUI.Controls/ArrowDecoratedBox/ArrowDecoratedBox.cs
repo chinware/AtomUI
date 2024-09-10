@@ -11,89 +11,90 @@ namespace AtomUI.Controls;
 
 public enum ArrowPosition
 {
-   /// <summary>
-   ///     Preferred location is below the target element.
-   /// </summary>
-   Bottom,
+    /// <summary>
+    /// Preferred location is below the target element.
+    /// </summary>
+    Bottom,
 
-   /// <summary>
-   ///     Preferred location is to the right of the target element.
-   /// </summary>
-   Right,
+    /// <summary>
+    /// Preferred location is to the right of the target element.
+    /// </summary>
+    Right,
 
-   /// <summary>
-   ///     Preferred location is to the left of the target element.
-   /// </summary>
-   Left,
+    /// <summary>
+    /// Preferred location is to the left of the target element.
+    /// </summary>
+    Left,
 
-   /// <summary>
-   ///     Preferred location is above the target element.
-   /// </summary>
-   Top,
+    /// <summary>
+    /// Preferred location is above the target element.
+    /// </summary>
+    Top,
 
-   /// <summary>
-   ///     Preferred location is above the target element, with the left edge of the popup
-   ///     aligned with the left edge of the target element.
-   /// </summary>
-   TopEdgeAlignedLeft,
+    /// <summary>
+    /// Preferred location is above the target element, with the left edge of the popup
+    /// aligned with the left edge of the target element.
+    /// </summary>
+    TopEdgeAlignedLeft,
 
-   /// <summary>
-   ///     Preferred location is above the target element, with the right edge of popup aligned with right edge of the target
-   ///     element.
-   /// </summary>
-   TopEdgeAlignedRight,
+    /// <summary>
+    /// Preferred location is above the target element, with the right edge of popup aligned with right edge of the target
+    /// element.
+    /// </summary>
+    TopEdgeAlignedRight,
 
-   /// <summary>
-   ///     Preferred location is below the target element, with the left edge of popup aligned with left edge of the target
-   ///     element.
-   /// </summary>
-   BottomEdgeAlignedLeft,
+    /// <summary>
+    /// Preferred location is below the target element, with the left edge of popup aligned with left edge of the target
+    /// element.
+    /// </summary>
+    BottomEdgeAlignedLeft,
 
-   /// <summary>
-   ///     Preferred location is below the target element, with the right edge of popup aligned with right edge of the target
-   ///     element.
-   /// </summary>
-   BottomEdgeAlignedRight,
+    /// <summary>
+    /// Preferred location is below the target element, with the right edge of popup aligned with right edge of the target
+    /// element.
+    /// </summary>
+    BottomEdgeAlignedRight,
 
-   /// <summary>
-   ///     Preferred location is to the left of the target element, with the top edge of popup aligned with top edge of the
-   ///     target element.
-   /// </summary>
-   LeftEdgeAlignedTop,
+    /// <summary>
+    /// Preferred location is to the left of the target element, with the top edge of popup aligned with top edge of the
+    /// target element.
+    /// </summary>
+    LeftEdgeAlignedTop,
 
-   /// <summary>
-   ///     Preferred location is to the left of the target element, with the bottom edge of popup aligned with bottom edge of
-   ///     the target element.
-   /// </summary>
-   LeftEdgeAlignedBottom,
+    /// <summary>
+    /// Preferred location is to the left of the target element, with the bottom edge of popup aligned with bottom edge of
+    /// the target element.
+    /// </summary>
+    LeftEdgeAlignedBottom,
 
-   /// <summary>
-   ///     Preferred location is to the right of the target element, with the top edge of popup aligned with top edge of the
-   ///     target element.
-   /// </summary>
-   RightEdgeAlignedTop,
+    /// <summary>
+    /// Preferred location is to the right of the target element, with the top edge of popup aligned with top edge of the
+    /// target element.
+    /// </summary>
+    RightEdgeAlignedTop,
 
-   /// <summary>
-   ///     Preferred location is to the right of the target element, with the bottom edge of popup aligned with bottom edge of
-   ///     the target element.
-   /// </summary>
-   RightEdgeAlignedBottom
+    /// <summary>
+    /// Preferred location is to the right of the target element, with the bottom edge of popup aligned with bottom edge of
+    /// the target element.
+    /// </summary>
+    RightEdgeAlignedBottom
 }
 
-
 public class ArrowDecoratedBox : ContentControl,
-    IShadowMaskInfoProvider,
-    IControlCustomStyle
+                                 IShadowMaskInfoProvider,
+                                 IControlCustomStyle
 {
     public static readonly StyledProperty<bool> IsShowArrowProperty =
         AvaloniaProperty.Register<ArrowDecoratedBox, bool>(nameof(IsShowArrow), true);
 
     public static readonly StyledProperty<ArrowPosition> ArrowPositionProperty =
         AvaloniaProperty.Register<ArrowDecoratedBox, ArrowPosition>(
-            nameof(ArrowPosition), ArrowPosition.Bottom);
+            nameof(ArrowPosition));
 
     internal static readonly StyledProperty<double> ArrowSizeProperty
         = AvaloniaProperty.Register<ArrowDecoratedBox, double>(nameof(ArrowSize));
+
+    private readonly IControlCustomStyle _customStyle;
 
     private Geometry? _arrowGeometry;
     private Rect _arrowRect;
@@ -102,8 +103,6 @@ public class ArrowDecoratedBox : ContentControl,
     // 相对坐标
     private (double, double) _arrowVertexPoint;
     private Rect _contentRect;
-
-    private readonly IControlCustomStyle _customStyle;
     private bool _needGenerateArrowVertexPoint = true;
 
     static ArrowDecoratedBox()
@@ -119,7 +118,7 @@ public class ArrowDecoratedBox : ContentControl,
     internal (double, double) ArrowVertexPoint => GetArrowVertexPoint();
 
     /// <summary>
-    ///     是否显示指示箭头
+    /// 是否显示指示箭头
     /// </summary>
     public bool IsShowArrow
     {
@@ -128,7 +127,7 @@ public class ArrowDecoratedBox : ContentControl,
     }
 
     /// <summary>
-    ///     箭头渲染的位置
+    /// 箭头渲染的位置
     /// </summary>
     public ArrowPosition ArrowPosition
     {
@@ -137,7 +136,7 @@ public class ArrowDecoratedBox : ContentControl,
     }
 
     /// <summary>
-    ///     箭头的大小
+    /// 箭头的大小
     /// </summary>
     internal double ArrowSize
     {
@@ -147,7 +146,10 @@ public class ArrowDecoratedBox : ContentControl,
 
     void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
     {
-        if (IsShowArrow) BuildGeometry(true);
+        if (IsShowArrow)
+        {
+            BuildGeometry(true);
+        }
     }
 
     public CornerRadius GetMaskCornerRadius()
@@ -164,20 +166,20 @@ public class ArrowDecoratedBox : ContentControl,
     {
         return arrowPosition switch
         {
-            ArrowPosition.Left                  => Direction.Left,
+            ArrowPosition.Left => Direction.Left,
             ArrowPosition.LeftEdgeAlignedBottom => Direction.Left,
-            ArrowPosition.LeftEdgeAlignedTop    => Direction.Left,
+            ArrowPosition.LeftEdgeAlignedTop => Direction.Left,
 
-            ArrowPosition.Top                 => Direction.Top,
-            ArrowPosition.TopEdgeAlignedLeft  => Direction.Top,
+            ArrowPosition.Top => Direction.Top,
+            ArrowPosition.TopEdgeAlignedLeft => Direction.Top,
             ArrowPosition.TopEdgeAlignedRight => Direction.Top,
 
-            ArrowPosition.Right                  => Direction.Right,
+            ArrowPosition.Right => Direction.Right,
             ArrowPosition.RightEdgeAlignedBottom => Direction.Right,
-            ArrowPosition.RightEdgeAlignedTop    => Direction.Right,
+            ArrowPosition.RightEdgeAlignedTop => Direction.Right,
 
-            ArrowPosition.Bottom                 => Direction.Bottom,
-            ArrowPosition.BottomEdgeAlignedLeft  => Direction.Bottom,
+            ArrowPosition.Bottom => Direction.Bottom,
+            ArrowPosition.BottomEdgeAlignedLeft => Direction.Bottom,
             ArrowPosition.BottomEdgeAlignedRight => Direction.Bottom,
             _ => throw new ArgumentOutOfRangeException(nameof(arrowPosition), arrowPosition,
                 "Invalid value for ArrowPosition")
@@ -196,8 +198,6 @@ public class ArrowDecoratedBox : ContentControl,
         _customStyle.HandleTemplateApplied(e.NameScope);
     }
 
-
-
     #region IControlCustomStyle 实现
 
     private (double, double) GetArrowVertexPoint()
@@ -214,15 +214,17 @@ public class ArrowDecoratedBox : ContentControl,
 
     void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
     {
-        if (e.Property == IsShowArrowProperty   ||
+        if (e.Property == IsShowArrowProperty ||
             e.Property == ArrowPositionProperty ||
-            e.Property == ArrowSizeProperty     ||
+            e.Property == ArrowSizeProperty ||
             e.Property == VisualParentProperty)
         {
             if (e.Property == IsShowArrowProperty && VisualRoot is null)
 
                 // 当开启的时候，但是还没有加入的渲染树，这个时候我们取不到 Token 需要在取值的时候重新生成一下
+            {
                 _needGenerateArrowVertexPoint = true;
+            }
 
             if (VisualRoot is not null)
             {
@@ -234,7 +236,10 @@ public class ArrowDecoratedBox : ContentControl,
 
     private void BuildGeometry(bool force = false)
     {
-        if (_arrowGeometry is null || force) _arrowGeometry = CommonShapeBuilder.BuildArrow(ArrowSize, 1.5);
+        if (_arrowGeometry is null || force)
+        {
+            _arrowGeometry = CommonShapeBuilder.BuildArrow(ArrowSize, 1.5);
+        }
     }
 
     public sealed override void Render(DrawingContext context)
@@ -283,9 +288,13 @@ public class ArrowDecoratedBox : ContentControl,
             var realArrowSize = Math.Min(_arrowGeometry!.Bounds.Size.Height, _arrowGeometry!.Bounds.Size.Width);
             var direction     = GetDirection(ArrowPosition);
             if (direction == Direction.Left || direction == Direction.Right)
+            {
                 targetWidth += realArrowSize;
+            }
             else
+            {
                 targetHeight += realArrowSize;
+            }
         }
 
         var targetSize = new Size(targetWidth, targetHeight);
@@ -301,7 +310,10 @@ public class ArrowDecoratedBox : ContentControl,
         for (var i = 0; i < visualCount; ++i)
         {
             var child = visualChildren[i];
-            if (child is Layoutable layoutable) layoutable.Arrange(_contentRect);
+            if (child is Layoutable layoutable)
+            {
+                layoutable.Arrange(_contentRect);
+            }
         }
 
         return finalSize;
@@ -318,18 +330,30 @@ public class ArrowDecoratedBox : ContentControl,
             var arrowSize = Math.Min(_arrowGeometry!.Bounds.Size.Height, _arrowGeometry!.Bounds.Size.Width) + 0.5;
             var direction = GetDirection(ArrowPosition);
             if (direction == Direction.Left || direction == Direction.Right)
+            {
                 targetWidth -= arrowSize;
+            }
             else
+            {
                 targetHeight -= arrowSize;
+            }
 
             if (direction == Direction.Right)
+            {
                 offsetX = 0.5;
+            }
             else if (direction == Direction.Bottom)
+            {
                 offsetY = 0.5;
+            }
             else if (direction == Direction.Top)
+            {
                 offsetY = arrowSize - 0.5;
+            }
             else
+            {
                 offsetX = arrowSize - 0.5;
+            }
         }
 
         return new Rect(offsetX, offsetY, targetWidth, targetHeight);
@@ -348,7 +372,7 @@ public class ArrowDecoratedBox : ContentControl,
 
             var minValue = Math.Min(size.Width, size.Height);
             var maxValue = Math.Max(size.Width, size.Height);
-            if (position == ArrowPosition.Left               ||
+            if (position == ArrowPosition.Left ||
                 position == ArrowPosition.LeftEdgeAlignedTop ||
                 position == ArrowPosition.LeftEdgeAlignedBottom)
             {
@@ -361,33 +385,47 @@ public class ArrowDecoratedBox : ContentControl,
                 else if (position == ArrowPosition.LeftEdgeAlignedTop)
                 {
                     if (maxValue * 2 > finalSize.Height / 2)
+                    {
                         offsetY = minValue;
+                    }
                     else
+                    {
                         offsetY = maxValue;
+                    }
                 }
                 else
                 {
                     if (maxValue * 2 > finalSize.Height / 2)
+                    {
                         offsetY = finalSize.Height - minValue - maxValue;
+                    }
                     else
+                    {
                         offsetY = finalSize.Height - maxValue * 2;
+                    }
                 }
             }
-            else if (position == ArrowPosition.Top                ||
+            else if (position == ArrowPosition.Top ||
                      position == ArrowPosition.TopEdgeAlignedLeft ||
                      position == ArrowPosition.TopEdgeAlignedRight)
             {
                 if (position == ArrowPosition.TopEdgeAlignedLeft)
+                {
                     offsetX = maxValue;
+                }
                 else if (position == ArrowPosition.Top)
+                {
                     offsetX = (finalSize.Width - maxValue) / 2;
+                }
                 else
+                {
                     offsetX = finalSize.Width - maxValue * 2;
+                }
 
                 targetWidth  = maxValue;
                 targetHeight = minValue;
             }
-            else if (position == ArrowPosition.Right               ||
+            else if (position == ArrowPosition.Right ||
                      position == ArrowPosition.RightEdgeAlignedTop ||
                      position == ArrowPosition.RightEdgeAlignedBottom)
             {
@@ -399,16 +437,24 @@ public class ArrowDecoratedBox : ContentControl,
                 else if (position == ArrowPosition.RightEdgeAlignedTop)
                 {
                     if (maxValue * 2 > finalSize.Height / 2)
+                    {
                         offsetY = minValue;
+                    }
                     else
+                    {
                         offsetY = maxValue;
+                    }
                 }
                 else
                 {
                     if (maxValue * 2 > finalSize.Height / 2)
+                    {
                         offsetY = finalSize.Height - minValue - maxValue;
+                    }
                     else
+                    {
                         offsetY = finalSize.Height - maxValue * 2;
+                    }
                 }
 
                 targetWidth  = minValue;
@@ -420,11 +466,17 @@ public class ArrowDecoratedBox : ContentControl,
                 targetWidth  = maxValue;
                 targetHeight = minValue;
                 if (position == ArrowPosition.BottomEdgeAlignedLeft)
+                {
                     offsetX = maxValue;
+                }
                 else if (position == ArrowPosition.Bottom)
+                {
                     offsetX = (finalSize.Width - maxValue) / 2;
+                }
                 else
+                {
                     offsetX = finalSize.Width - maxValue * 2;
+                }
             }
         }
 
@@ -434,9 +486,13 @@ public class ArrowDecoratedBox : ContentControl,
         // 计算中点
         var direction = GetDirection(position);
         if (direction == Direction.Left || direction == Direction.Right)
+        {
             _arrowVertexPoint = (center.Y, finalSize.Height - center.Y);
+        }
         else if (direction == Direction.Top || direction == Direction.Bottom)
+        {
             _arrowVertexPoint = (center.X, finalSize.Width - center.X);
+        }
 
         return targetRect;
     }

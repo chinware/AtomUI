@@ -46,8 +46,9 @@ internal class SwitchKnob : Control, IControlCustomStyle
         = AvaloniaProperty.Register<SwitchKnob, TimeSpan>(nameof(LoadingAnimationDuration),
             TimeSpan.FromMilliseconds(300));
 
-    private CancellationTokenSource? _cancellationTokenSource;
     private readonly IControlCustomStyle _customStyle;
+
+    private CancellationTokenSource? _cancellationTokenSource;
     private bool _initialized;
     private bool _isLoading;
 
@@ -147,11 +148,17 @@ internal class SwitchKnob : Control, IControlCustomStyle
 
     public void NotifyStartLoading()
     {
-        if (_isLoading) return;
+        if (_isLoading)
+        {
+            return;
+        }
 
         _isLoading = true;
         IsEnabled  = false;
-        if (VisualRoot != null) StartLoadingAnimation();
+        if (VisualRoot != null)
+        {
+            StartLoadingAnimation();
+        }
     }
 
     private void StartLoadingAnimation()
@@ -191,7 +198,10 @@ internal class SwitchKnob : Control, IControlCustomStyle
 
     public void NotifyStopLoading()
     {
-        if (!_isLoading) return;
+        if (!_isLoading)
+        {
+            return;
+        }
 
         _cancellationTokenSource?.Cancel();
         _cancellationTokenSource = null;
@@ -202,13 +212,19 @@ internal class SwitchKnob : Control, IControlCustomStyle
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        if (_isLoading) StartLoadingAnimation();
+        if (_isLoading)
+        {
+            StartLoadingAnimation();
+        }
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        if (_isLoading) _cancellationTokenSource?.Cancel();
+        if (_isLoading)
+        {
+            _cancellationTokenSource?.Cancel();
+        }
     }
 
     protected override Size MeasureOverride(Size availableSize)
@@ -220,9 +236,13 @@ internal class SwitchKnob : Control, IControlCustomStyle
     {
         var targetRect = new Rect(new Point(0, 0), KnobSize);
         if (MathUtils.AreClose(KnobSize.Width, KnobSize.Height))
+        {
             context.DrawEllipse(KnobBackgroundColor, null, targetRect);
+        }
         else
+        {
             context.DrawPilledRect(KnobBackgroundColor, null, targetRect);
+        }
 
         if (_isLoading)
         {

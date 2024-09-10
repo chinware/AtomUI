@@ -16,7 +16,6 @@ internal class StringTokenValueConverter : ITokenValueConverter
     }
 }
 
-
 [TokenValueConverter]
 internal class IntegerTokenValueConverter : ITokenValueConverter
 {
@@ -38,7 +37,6 @@ internal class IntegerTokenValueConverter : ITokenValueConverter
     }
 }
 
-
 [TokenValueConverter]
 internal class BoolTokenValueConverter : ITokenValueConverter
 {
@@ -49,16 +47,21 @@ internal class BoolTokenValueConverter : ITokenValueConverter
 
     public object Convert(string value)
     {
-        var isTrue  = string.Compare(value, "true", StringComparison.InvariantCultureIgnoreCase)  == 0;
+        var isTrue  = string.Compare(value, "true", StringComparison.InvariantCultureIgnoreCase) == 0;
         var isFalse = string.Compare(value, "false", StringComparison.InvariantCultureIgnoreCase) == 0;
-        if (!isTrue && !isFalse) throw new InvalidOperationException($"Convert {value} to bool failed.");
+        if (!isTrue && !isFalse)
+        {
+            throw new InvalidOperationException($"Convert {value} to bool failed.");
+        }
 
-        if (isTrue) return true;
+        if (isTrue)
+        {
+            return true;
+        }
 
         return false;
     }
 }
-
 
 [TokenValueConverter]
 internal class ColorTokenValueConverter : ITokenValueConverter
@@ -81,7 +84,6 @@ internal class ColorTokenValueConverter : ITokenValueConverter
     }
 }
 
-
 [TokenValueConverter]
 internal class BoxShadowTokenValueConverter : ITokenValueConverter
 {
@@ -103,7 +105,6 @@ internal class BoxShadowTokenValueConverter : ITokenValueConverter
     }
 }
 
-
 [TokenValueConverter]
 internal class TextDecorationTokenValueConverter : ITokenValueConverter
 {
@@ -117,38 +118,63 @@ internal class TextDecorationTokenValueConverter : ITokenValueConverter
         try
         {
             if (value.IndexOf("none", StringComparison.InvariantCultureIgnoreCase) != -1)
+            {
                 return new TextDecorationInfo
                 {
                     LineType  = TextDecorationLine.None,
                     Thickness = 0
                 };
+            }
 
             var textDecoration = new TextDecorationInfo();
             if (ContainStr(value, "underline"))
+            {
                 textDecoration.LineType = TextDecorationLine.Underline;
+            }
             else if (ContainStr(value, "overline"))
+            {
                 textDecoration.LineType = TextDecorationLine.Overline;
+            }
             else if (ContainStr(value, "line-through"))
+            {
                 textDecoration.LineType = TextDecorationLine.LineThrough;
+            }
             else
+            {
                 throw new InvalidOperationException($"Unsupported line type in value expression {value}.");
+            }
 
             if (ContainStr(value, "solid"))
+            {
                 textDecoration.LineStyle = LineStyle.Solid;
+            }
             else if (ContainStr(value, "double"))
+            {
                 textDecoration.LineStyle = LineStyle.Double;
+            }
             else if (ContainStr(value, "dotted"))
+            {
                 textDecoration.LineStyle = LineStyle.Dotted;
+            }
             else if (ContainStr(value, "dashed"))
+            {
                 textDecoration.LineStyle = LineStyle.Dashed;
+            }
             else if (ContainStr(value, "Wavy"))
+            {
                 textDecoration.LineStyle = LineStyle.Wavy;
+            }
             else
+            {
                 throw new InvalidOperationException($"Unsupported line style in value expression {value}.");
+            }
 
             var colorExpr = ExtraColorExpr(value);
 
-            if (!string.IsNullOrWhiteSpace(colorExpr)) textDecoration.Color = Color.Parse(colorExpr);
+            if (!string.IsNullOrWhiteSpace(colorExpr))
+            {
+                textDecoration.Color = Color.Parse(colorExpr);
+            }
 
             value = value.Replace(colorExpr, "");
             var alreadySeeNum = false;
@@ -171,7 +197,9 @@ internal class TextDecorationTokenValueConverter : ITokenValueConverter
             if (numExpr.Length > 0)
 
                 // 肯定合法
+            {
                 textDecoration.Thickness = int.Parse(numExpr);
+            }
 
             return textDecoration;
         }
@@ -189,7 +217,11 @@ internal class TextDecorationTokenValueConverter : ITokenValueConverter
         {
             var pos    = valueExpr.IndexOf('#');
             var endPos = pos;
-            while (endPos < count && !char.IsWhiteSpace(valueExpr[endPos])) endPos++;
+            while (endPos < count && !char.IsWhiteSpace(valueExpr[endPos]))
+            {
+                endPos++;
+            }
+
             return valueExpr.Substring(pos, endPos - pos);
         }
 
@@ -197,7 +229,11 @@ internal class TextDecorationTokenValueConverter : ITokenValueConverter
         {
             var pos    = valueExpr.IndexOf("rgb", StringComparison.CurrentCultureIgnoreCase);
             var endPos = pos;
-            while (endPos < count && valueExpr[endPos] != ')') endPos++;
+            while (endPos < count && valueExpr[endPos] != ')')
+            {
+                endPos++;
+            }
+
             return valueExpr.Substring(pos, endPos - pos + 1);
         }
 
@@ -209,7 +245,6 @@ internal class TextDecorationTokenValueConverter : ITokenValueConverter
         return expr.IndexOf(searched, StringComparison.InvariantCultureIgnoreCase) != -1;
     }
 }
-
 
 [TokenValueConverter]
 internal class LineStyleTokenValueConverter : ITokenValueConverter
@@ -223,17 +258,29 @@ internal class LineStyleTokenValueConverter : ITokenValueConverter
     {
         var lineStyle = LineStyle.Solid;
         if (ContainStr(value, "solid"))
+        {
             lineStyle = LineStyle.Solid;
+        }
         else if (ContainStr(value, "double"))
+        {
             lineStyle = LineStyle.Double;
+        }
         else if (ContainStr(value, "dotted"))
+        {
             lineStyle = LineStyle.Dotted;
+        }
         else if (ContainStr(value, "dashed"))
+        {
             lineStyle = LineStyle.Dashed;
+        }
         else if (ContainStr(value, "wavy"))
+        {
             lineStyle = LineStyle.Wavy;
+        }
         else
+        {
             throw new InvalidOperationException($"Unsupported line style in value expression {value}.");
+        }
 
         return lineStyle;
     }

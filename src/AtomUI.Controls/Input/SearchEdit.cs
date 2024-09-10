@@ -12,7 +12,6 @@ public enum SearchEditButtonStyle
     Primary
 }
 
-
 public class SearchEdit : LineEdit
 {
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -23,8 +22,6 @@ public class SearchEdit : LineEdit
             BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this));
     }
-
-
 
     #region 公共属性定义
 

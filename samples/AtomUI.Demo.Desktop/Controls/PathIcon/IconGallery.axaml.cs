@@ -32,7 +32,10 @@ public class IconGallery : TemplatedControl
     protected override void OnPointerPressed(PointerPressedEventArgs e)
     {
         base.OnPointerPressed(e);
-        if (DataContext is ColorItemViewModel v) WeakReferenceMessenger.Default.Send(v);
+        if (DataContext is ColorItemViewModel v)
+        {
+            WeakReferenceMessenger.Default.Send(v);
+        }
     }
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -40,7 +43,11 @@ public class IconGallery : TemplatedControl
         base.OnAttachedToLogicalTree(e);
         if (!_initialized)
         {
-            if (IconThemeType.HasValue) _galleryModel.LoadThemeIcons(IconThemeType.Value);
+            if (IconThemeType.HasValue)
+            {
+                _galleryModel.LoadThemeIcons(IconThemeType.Value);
+            }
+
             _initialized = true;
         }
     }

@@ -32,17 +32,24 @@ public class SegmentedItem : ContentControl, ISelectable
             var p = e.GetCurrentPoint(this);
 
             if (p.Properties.PointerUpdateKind is PointerUpdateKind.LeftButtonReleased)
+            {
                 if (p.Pointer.Type == PointerType.Mouse)
 
                     // If the pressed point comes from a mouse, perform the selection immediately.
+                {
                     e.Handled = owner.UpdateSelectionFromPointerEvent(this, e);
+                }
+            }
         }
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == IconProperty) SetupItemIcon();
+        if (change.Property == IconProperty)
+        {
+            SetupItemIcon();
+        }
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -69,8 +76,6 @@ public class SegmentedItem : ContentControl, ISelectable
         }
     }
 
-
-
     #region 公共属性定义
 
     public static readonly StyledProperty<bool> IsSelectedProperty =
@@ -92,8 +97,6 @@ public class SegmentedItem : ContentControl, ISelectable
     }
 
     #endregion
-
-
 
     #region 内部属性定义
 

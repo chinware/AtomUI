@@ -13,10 +13,9 @@ namespace AtomUI.Controls;
 
 public class CardTabStrip : BaseTabStrip, IControlCustomStyle
 {
+    private readonly IControlCustomStyle _customStyle;
     private IconButton? _addTabButton;
     private Grid? _cardTabStripContainer;
-
-    private readonly IControlCustomStyle _customStyle;
     private ItemsPresenter? _itemsPresenter;
     private BaseTabScrollViewer? _tabScrollViewer;
 
@@ -24,8 +23,6 @@ public class CardTabStrip : BaseTabStrip, IControlCustomStyle
     {
         _customStyle = this;
     }
-
-
 
     #region IControlCustomStyle 实现
 
@@ -35,13 +32,15 @@ public class CardTabStrip : BaseTabStrip, IControlCustomStyle
         _itemsPresenter        = scope.Find<ItemsPresenter>(BaseTabStripTheme.ItemsPresenterPart);
         _cardTabStripContainer = scope.Find<Grid>(CardTabStripTheme.CardTabStripContainerPart);
         _tabScrollViewer       = scope.Find<BaseTabScrollViewer>(CardTabStripTheme.CardTabStripScrollViewerPart);
-        if (_addTabButton is not null) _addTabButton.Click += HandleAddButtonClicked;
+        if (_addTabButton is not null)
+        {
+            _addTabButton.Click += HandleAddButtonClicked;
+        }
+
         HandleSizeTypeChanged();
     }
 
     #endregion
-
-
 
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
     {
@@ -76,8 +75,13 @@ public class CardTabStrip : BaseTabStrip, IControlCustomStyle
     {
         base.OnPropertyChanged(change);
         if (change.Property == SizeTypeProperty)
+        {
             HandleSizeTypeChanged();
-        else if (change.Property == TabStripPlacementProperty) HandleTabStripPlacementChanged();
+        }
+        else if (change.Property == TabStripPlacementProperty)
+        {
+            HandleTabStripPlacementChanged();
+        }
     }
 
     private void HandleAddButtonClicked(object? sender, RoutedEventArgs args)
@@ -88,14 +92,20 @@ public class CardTabStrip : BaseTabStrip, IControlCustomStyle
     private void HandleSizeTypeChanged()
     {
         if (SizeType == SizeType.Large)
+        {
             TokenResourceBinder.CreateGlobalResourceBinding(this, CardBorderRadiusSizeProperty,
                 GlobalTokenResourceKey.BorderRadiusLG);
+        }
         else if (SizeType == SizeType.Middle)
+        {
             TokenResourceBinder.CreateGlobalResourceBinding(this, CardBorderRadiusSizeProperty,
                 GlobalTokenResourceKey.BorderRadius);
+        }
         else
+        {
             TokenResourceBinder.CreateGlobalResourceBinding(this, CardBorderRadiusSizeProperty,
                 GlobalTokenResourceKey.BorderRadiusSM);
+        }
     }
 
     protected override Size ArrangeOverride(Size finalSize)
@@ -151,8 +161,6 @@ public class CardTabStrip : BaseTabStrip, IControlCustomStyle
         }
     }
 
-
-
     #region 公共属性实现
 
     public static readonly StyledProperty<bool> IsShowAddTabButtonProperty =
@@ -176,8 +184,6 @@ public class CardTabStrip : BaseTabStrip, IControlCustomStyle
     }
 
     #endregion
-
-
 
     #region 内部属性实现
 

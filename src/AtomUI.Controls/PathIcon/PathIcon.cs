@@ -63,12 +63,13 @@ public sealed class PathIcon : Control, ICustomHitTest
         = AvaloniaProperty.Register<ToggleSwitch, IBrush?>(
             nameof(IBrush));
 
+    private readonly List<Geometry> _sourceGeometriesData;
+    private readonly List<Matrix> _transforms;
+
     private Animation? _animation;
     private CancellationTokenSource? _animationCancellationTokenSource;
     private IconInfo? _iconInfo;
     private WeakReference<IIconPackageProvider>? _iconPackageRef;
-    private readonly List<Geometry> _sourceGeometriesData;
-    private readonly List<Matrix> _transforms;
     private Rect _viewBox;
 
     static PathIcon()
@@ -146,7 +147,7 @@ public sealed class PathIcon : Control, ICustomHitTest
     }
 
     /// <summary>
-    ///     PathIcon 的模式，只对 Outlined 和 Filled 类型有效
+    /// PathIcon 的模式，只对 Outlined 和 Filled 类型有效
     /// </summary>
     public IconMode IconMode
     {
@@ -155,7 +156,7 @@ public sealed class PathIcon : Control, ICustomHitTest
     }
 
     /// <summary>
-    ///     当是非 TwoTone icon 的时候，填充色是支持渐变的
+    /// 当是非 TwoTone icon 的时候，填充色是支持渐变的
     /// </summary>
     private IBrush? FilledBrush
     {
@@ -193,13 +194,16 @@ public sealed class PathIcon : Control, ICustomHitTest
         if (change.Property == KindProperty)
         {
             // TODO 这里不存在记录日志吗？暂时构造一个默认的
-            if (VisualRoot is not null) BuildSourceRenderData();
+            if (VisualRoot is not null)
+            {
+                BuildSourceRenderData();
+            }
         }
-        else if (change.Property == NormalFilledBrushProperty    ||
-                 change.Property == ActiveFilledBrushProperty    ||
-                 change.Property == SelectedFilledBrushProperty  ||
-                 change.Property == DisabledFilledBrushProperty  ||
-                 change.Property == PrimaryFilledBrushProperty   ||
+        else if (change.Property == NormalFilledBrushProperty ||
+                 change.Property == ActiveFilledBrushProperty ||
+                 change.Property == SelectedFilledBrushProperty ||
+                 change.Property == DisabledFilledBrushProperty ||
+                 change.Property == PrimaryFilledBrushProperty ||
                  change.Property == SecondaryFilledBrushProperty ||
                  change.Property == IconModeProperty)
         {
@@ -211,8 +215,12 @@ public sealed class PathIcon : Control, ICustomHitTest
         }
 
         if (VisualRoot is not null)
+        {
             if (change.Property == LoadingAnimationProperty)
+            {
                 SetupRotateAnimation();
+            }
+        }
     }
 
     private void SetupRotateAnimation()
@@ -244,7 +252,10 @@ public sealed class PathIcon : Control, ICustomHitTest
                     }
                 }
             };
-            if (LoadingAnimation == IconAnimation.Pulse) _animation.Easing = new PulseEasing();
+            if (LoadingAnimation == IconAnimation.Pulse)
+            {
+                _animation.Easing = new PulseEasing();
+            }
 
             if (VisualRoot is not null)
             {
@@ -260,41 +271,70 @@ public sealed class PathIcon : Control, ICustomHitTest
         if (IconMode == IconMode.Normal)
         {
             if (NormalFilledBrush is not null)
-                FilledBrush                          = NormalFilledBrush;
-            else if (colorInfo.HasValue) FilledBrush = new SolidColorBrush(colorInfo.Value.NormalColor);
+            {
+                FilledBrush = NormalFilledBrush;
+            }
+            else if (colorInfo.HasValue)
+            {
+                FilledBrush = new SolidColorBrush(colorInfo.Value.NormalColor);
+            }
         }
         else if (IconMode == IconMode.Active)
         {
             if (ActiveFilledBrush is not null)
+            {
                 FilledBrush = ActiveFilledBrush;
+            }
             else if (NormalFilledBrush is not null)
-                FilledBrush                          = NormalFilledBrush;
-            else if (colorInfo.HasValue) FilledBrush = new SolidColorBrush(colorInfo.Value.ActiveColor);
+            {
+                FilledBrush = NormalFilledBrush;
+            }
+            else if (colorInfo.HasValue)
+            {
+                FilledBrush = new SolidColorBrush(colorInfo.Value.ActiveColor);
+            }
         }
         else if (IconMode == IconMode.Selected)
         {
             if (SelectedFilledBrush is not null)
+            {
                 FilledBrush = SelectedFilledBrush;
+            }
             else if (NormalFilledBrush is not null)
-                FilledBrush                          = NormalFilledBrush;
-            else if (colorInfo.HasValue) FilledBrush = new SolidColorBrush(colorInfo.Value.SelectedColor);
+            {
+                FilledBrush = NormalFilledBrush;
+            }
+            else if (colorInfo.HasValue)
+            {
+                FilledBrush = new SolidColorBrush(colorInfo.Value.SelectedColor);
+            }
         }
         else
         {
             if (DisabledFilledBrush is not null)
+            {
                 FilledBrush = DisabledFilledBrush;
+            }
             else if (NormalFilledBrush is not null)
-                FilledBrush                          = NormalFilledBrush;
-            else if (colorInfo.HasValue) FilledBrush = new SolidColorBrush(colorInfo.Value.DisabledColor);
+            {
+                FilledBrush = NormalFilledBrush;
+            }
+            else if (colorInfo.HasValue)
+            {
+                FilledBrush = new SolidColorBrush(colorInfo.Value.DisabledColor);
+            }
         }
     }
 
     /// <summary>
-    ///     Invalidates the geometry of this shape.
+    /// Invalidates the geometry of this shape.
     /// </summary>
     private void InvalidateGeometry()
     {
-        if (_animation is not null) _animationCancellationTokenSource?.Cancel();
+        if (_animation is not null)
+        {
+            _animationCancellationTokenSource?.Cancel();
+        }
 
         _sourceGeometriesData.Clear();
         _transforms.Clear();
@@ -303,20 +343,25 @@ public sealed class PathIcon : Control, ICustomHitTest
     }
 
     /// <summary>
-    ///     Marks a property as affecting the shape's geometry.
+    /// Marks a property as affecting the shape's geometry.
     /// </summary>
     /// <param name="properties">The properties.</param>
     /// <remarks>
-    ///     After a call to this method in a control's static constructor, any change to the
-    ///     property will cause <see cref="InvalidateGeometry" /> to be called on the element.
+    /// After a call to this method in a control's static constructor, any change to the
+    /// property will cause <see cref="InvalidateGeometry" /> to be called on the element.
     /// </remarks>
     private static void AffectsGeometry(params AvaloniaProperty[] properties)
     {
         foreach (var property in properties)
+        {
             property.Changed.Subscribe(new AnonymousObserver<AvaloniaPropertyChangedEventArgs>(e =>
             {
-                if (e.Sender is PathIcon icon) AffectsGeometryInvalidate(icon, e);
+                if (e.Sender is PathIcon icon)
+                {
+                    AffectsGeometryInvalidate(icon, e);
+                }
             }));
+        }
     }
 
     private static void AffectsGeometryInvalidate(PathIcon control, AvaloniaPropertyChangedEventArgs e)
@@ -327,7 +372,10 @@ public sealed class PathIcon : Control, ICustomHitTest
         {
             var oldBounds = (Rect)e.OldValue!;
             var newBounds = (Rect)e.NewValue!;
-            if (oldBounds.Size == newBounds.Size) return;
+            if (oldBounds.Size == newBounds.Size)
+            {
+                return;
+            }
         }
 
         control.InvalidateGeometry();
@@ -335,7 +383,10 @@ public sealed class PathIcon : Control, ICustomHitTest
 
     private void BuildSourceRenderData()
     {
-        if (_sourceGeometriesData.Count > 0) return;
+        if (_sourceGeometriesData.Count > 0)
+        {
+            return;
+        }
 
         var manager = IconManager.Current;
         PackageProvider ??= manager.DefaultPackage;
@@ -343,14 +394,19 @@ public sealed class PathIcon : Control, ICustomHitTest
         var iconPackage = manager.GetIconProvider(PackageProvider);
 
         // 这里报错还是？
-        if (iconPackage is not null) _iconPackageRef = new WeakReference<IIconPackageProvider>(iconPackage);
+        if (iconPackage is not null)
+        {
+            _iconPackageRef = new WeakReference<IIconPackageProvider>(iconPackage);
+        }
 
         if (_iconPackageRef != null && _iconPackageRef.TryGetTarget(out var iconPackageProvider))
         {
             // TODO 这里可能需要优化，针对 IconInfo 的拷贝问题
             _iconInfo = iconPackageProvider.GetIcon(Kind) ?? new IconInfo();
             foreach (var geometryData in _iconInfo.Data)
+            {
                 _sourceGeometriesData.Add(Geometry.Parse(geometryData.PathData));
+            }
 
             _viewBox = _iconInfo!.ViewBox;
 
@@ -358,14 +414,20 @@ public sealed class PathIcon : Control, ICustomHitTest
             // 裁剪边距算法，暂时先注释掉
             Geometry? combined = null;
             foreach (var geometry in _sourceGeometriesData)
+            {
                 if (combined is null)
+                {
                     combined = geometry;
+                }
                 else
+                {
                     combined = new CombinedGeometry(combined, geometry);
+                }
+            }
 
             var combinedBounds = combined!.Bounds;
 
-            var marginHorizontal = Math.Min(_iconInfo.ViewBox.Right  - combinedBounds.Right, combinedBounds.X);
+            var marginHorizontal = Math.Min(_iconInfo.ViewBox.Right - combinedBounds.Right, combinedBounds.X);
             var marginVertical   = Math.Min(_iconInfo.ViewBox.Bottom - combinedBounds.Bottom, combinedBounds.Y);
             var margin           = Math.Min(marginHorizontal, marginVertical);
 
@@ -422,7 +484,10 @@ public sealed class PathIcon : Control, ICustomHitTest
 
     protected override Size MeasureOverride(Size availableSize)
     {
-        if (_sourceGeometriesData.Count == 0) return default;
+        if (_sourceGeometriesData.Count == 0)
+        {
+            return default;
+        }
 
         Size targetSize = default;
         for (var i = 0; i < _sourceGeometriesData.Count; i++)
@@ -458,8 +523,9 @@ public sealed class PathIcon : Control, ICustomHitTest
     public override void Render(DrawingContext context)
     {
         if (_sourceGeometriesData.Count > 0 &&
-            DesiredSize.Width           > 0 &&
-            DesiredSize.Width           > 0)
+            DesiredSize.Width > 0 &&
+            DesiredSize.Width > 0)
+        {
             for (var i = 0; i < _sourceGeometriesData.Count; i++)
             {
                 var     renderedGeometry = _sourceGeometriesData[i];
@@ -473,16 +539,24 @@ public sealed class PathIcon : Control, ICustomHitTest
                         if (geometryData.IsPrimary)
                         {
                             if (PrimaryFilledBrush is not null)
+                            {
                                 fillBrush = PrimaryFilledBrush;
+                            }
                             else
+                            {
                                 fillBrush = new SolidColorBrush(colorInfo.Value.PrimaryColor);
+                            }
                         }
                         else
                         {
                             if (SecondaryFilledBrush is not null)
+                            {
                                 fillBrush = SecondaryFilledBrush;
+                            }
                             else
+                            {
                                 fillBrush = new SolidColorBrush(colorInfo.Value.SecondaryColor);
+                            }
                         }
                     }
                 }
@@ -494,6 +568,7 @@ public sealed class PathIcon : Control, ICustomHitTest
                 using var state = context.PushTransform(_transforms[i]);
                 context.DrawGeometry(fillBrush, null, renderedGeometry);
             }
+        }
     }
 
     private (Size size, Matrix transform) CalculateSizeAndTransform(Size availableSize, Rect shapeBounds)
@@ -507,11 +582,11 @@ public sealed class PathIcon : Control, ICustomHitTest
         var viewBoxHeight = _viewBox.Height;
 
         // 计算大小的比例因子
-        var shapeWidthScale  = shapeBounds.Width  / viewBoxWidth;
+        var shapeWidthScale  = shapeBounds.Width / viewBoxWidth;
         var shapeHeightScale = shapeBounds.Height / viewBoxHeight;
 
         // 计算位移的比例因子
-        var offsetXScale = Math.Floor(availableSize.Width  / viewBoxWidth);
+        var offsetXScale = Math.Floor(availableSize.Width / viewBoxWidth);
         var offsetYScale = Math.Floor(availableSize.Height / viewBoxHeight);
 
         var offsetX = shapeBounds.X;
@@ -539,14 +614,26 @@ public sealed class PathIcon : Control, ICustomHitTest
             offsetY  *= offsetYScale;
         }
 
-        var translate                 = Matrix.CreateTranslation(-offsetX, -offsetY);
-        if (shapeBounds.Width > 0) sx = desiredX / shapeSize.Width;
+        var translate = Matrix.CreateTranslation(-offsetX, -offsetY);
+        if (shapeBounds.Width > 0)
+        {
+            sx = desiredX / shapeSize.Width;
+        }
 
-        if (shapeBounds.Height > 0) sy = desiredY / shapeSize.Height;
+        if (shapeBounds.Height > 0)
+        {
+            sy = desiredY / shapeSize.Height;
+        }
 
-        if (double.IsInfinity(availableSize.Width)) sx = sy;
+        if (double.IsInfinity(availableSize.Width))
+        {
+            sx = sy;
+        }
 
-        if (double.IsInfinity(availableSize.Height)) sy = sx;
+        if (double.IsInfinity(availableSize.Height))
+        {
+            sy = sx;
+        }
 
         sx = sy = Math.Min(sx, sy);
 
@@ -554,8 +641,6 @@ public sealed class PathIcon : Control, ICustomHitTest
         var size = new Size(shapeSize.Width * sx, shapeSize.Height * sy);
         return (size, translate);
     }
-
-
 
     #region 内部属性定义
 

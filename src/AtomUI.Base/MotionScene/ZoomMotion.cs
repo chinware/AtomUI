@@ -39,7 +39,6 @@ public class ZoomInMotion : AbstractMotion
     }
 }
 
-
 public class ZoomOutMotion : AbstractMotion
 {
     public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
@@ -74,7 +73,6 @@ public class ZoomOutMotion : AbstractMotion
         AddMotionConfig(config);
     }
 }
-
 
 public class ZoomBigInMotion : AbstractMotion
 {
@@ -112,7 +110,6 @@ public class ZoomBigInMotion : AbstractMotion
     }
 }
 
-
 public class ZoomBigOutMotion : AbstractMotion
 {
     public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
@@ -147,7 +144,6 @@ public class ZoomBigOutMotion : AbstractMotion
         AddMotionConfig(config);
     }
 }
-
 
 public class ZoomUpInMotion : AbstractMotion
 {
@@ -195,7 +191,6 @@ public class ZoomUpInMotion : AbstractMotion
     }
 }
 
-
 public class ZoomUpOutMotion : AbstractMotion
 {
     public ZoomUpOutMotion()
@@ -241,7 +236,6 @@ public class ZoomUpOutMotion : AbstractMotion
         motionTarget.RenderTransformOrigin = MotionRenderTransformOrigin;
     }
 }
-
 
 public class ZoomLeftInMotion : AbstractMotion
 {
@@ -289,7 +283,6 @@ public class ZoomLeftInMotion : AbstractMotion
     }
 }
 
-
 public class ZoomLeftOutMotion : AbstractMotion
 {
     public ZoomLeftOutMotion()
@@ -335,7 +328,6 @@ public class ZoomLeftOutMotion : AbstractMotion
         motionTarget.RenderTransformOrigin = MotionRenderTransformOrigin;
     }
 }
-
 
 public class ZoomRightInMotion : AbstractMotion
 {
@@ -383,7 +375,6 @@ public class ZoomRightInMotion : AbstractMotion
     }
 }
 
-
 public class ZoomRightOutMotion : AbstractMotion
 {
     public ZoomRightOutMotion()
@@ -430,7 +421,6 @@ public class ZoomRightOutMotion : AbstractMotion
     }
 }
 
-
 public class ZoomDownInMotion : AbstractMotion
 {
     public ZoomDownInMotion()
@@ -476,7 +466,6 @@ public class ZoomDownInMotion : AbstractMotion
         motionTarget.RenderTransformOrigin = MotionRenderTransformOrigin;
     }
 }
-
 
 public class ZoomDownOutMotion : AbstractMotion
 {

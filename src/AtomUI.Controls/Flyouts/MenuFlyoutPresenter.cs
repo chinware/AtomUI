@@ -22,7 +22,10 @@ public class MenuFlyoutPresenter : MenuBase, IShadowMaskInfoProvider
 
     public CornerRadius GetMaskCornerRadius()
     {
-        if (_arrowDecoratedBox is not null) return _arrowDecoratedBox.CornerRadius;
+        if (_arrowDecoratedBox is not null)
+        {
+            return _arrowDecoratedBox.CornerRadius;
+        }
 
         return new CornerRadius(0);
     }
@@ -43,24 +46,33 @@ public class MenuFlyoutPresenter : MenuBase, IShadowMaskInfoProvider
     {
         // DefaultMenuInteractionHandler calls this
         if (MenuFlyout is not null)
+        {
             if (MenuFlyout.TryGetTarget(out var menuFlyout))
             {
                 SelectedIndex = -1;
                 menuFlyout.Hide();
             }
+        }
     }
 
     protected override void ContainerForItemPreparedOverride(Control container, object? item, int index)
     {
         base.ContainerForItemPreparedOverride(container, item, index);
-        if (container is MenuItem menuItem) BindMenuItemClickedRecursive(menuItem);
+        if (container is MenuItem menuItem)
+        {
+            BindMenuItemClickedRecursive(menuItem);
+        }
     }
 
     private void BindMenuItemClickedRecursive(MenuItem menuItem)
     {
         foreach (var childItem in menuItem.Items)
+        {
             if (childItem is MenuItem childMenuItem)
+            {
                 BindMenuItemClickedRecursive(childMenuItem);
+            }
+        }
 
         // 绑定自己
         menuItem.Click += HandleMenuItemClicked;
@@ -69,8 +81,12 @@ public class MenuFlyoutPresenter : MenuBase, IShadowMaskInfoProvider
     private void ClearMenuItemClickedRecursive(MenuItem menuItem)
     {
         foreach (var childItem in menuItem.Items)
+        {
             if (childItem is MenuItem childMenuItem)
+            {
                 ClearMenuItemClickedRecursive(childMenuItem);
+            }
+        }
 
         // 绑定自己
         menuItem.Click -= HandleMenuItemClicked;
@@ -79,7 +95,10 @@ public class MenuFlyoutPresenter : MenuBase, IShadowMaskInfoProvider
     protected override void ClearContainerForItemOverride(Control container)
     {
         base.ClearContainerForItemOverride(container);
-        if (container is MenuItem menuItem) ClearMenuItemClickedRecursive(menuItem);
+        if (container is MenuItem menuItem)
+        {
+            ClearMenuItemClickedRecursive(menuItem);
+        }
     }
 
     private void HandleMenuItemClicked(object? sender, RoutedEventArgs args)
@@ -107,11 +126,13 @@ public class MenuFlyoutPresenter : MenuBase, IShadowMaskInfoProvider
         base.OnDetachedFromVisualTree(e);
 
         foreach (var i in LogicalChildren)
+        {
             if (i is MenuItem menuItem)
+            {
                 menuItem.IsSubMenuOpen = false;
+            }
+        }
     }
-
-
 
     #region 公共属性定义
 
@@ -127,7 +148,7 @@ public class MenuFlyoutPresenter : MenuBase, IShadowMaskInfoProvider
             RoutingStrategies.Bubble);
 
     /// <summary>
-    ///     是否显示指示箭头
+    /// 是否显示指示箭头
     /// </summary>
     public bool IsShowArrow
     {
@@ -136,7 +157,7 @@ public class MenuFlyoutPresenter : MenuBase, IShadowMaskInfoProvider
     }
 
     /// <summary>
-    ///     箭头渲染的位置
+    /// 箭头渲染的位置
     /// </summary>
     public ArrowPosition ArrowPosition
     {
@@ -155,7 +176,6 @@ public class MenuFlyoutPresenter : MenuBase, IShadowMaskInfoProvider
     #endregion
 }
 
-
 public class FlyoutMenuItemClickedEventArgs : RoutedEventArgs
 {
     public FlyoutMenuItemClickedEventArgs(RoutedEvent routedEvent, MenuItem menuItem)
@@ -165,7 +185,7 @@ public class FlyoutMenuItemClickedEventArgs : RoutedEventArgs
     }
 
     /// <summary>
-    ///     当前鼠标点击的菜单项
+    /// 当前鼠标点击的菜单项
     /// </summary>
     public MenuItem Item { get; }
 }

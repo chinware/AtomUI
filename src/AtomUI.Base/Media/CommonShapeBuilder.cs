@@ -13,8 +13,8 @@ public static class CommonShapeBuilder
         using var context   = checkMark.Open();
 
         var startPoint = new Point(size.Width * 0.25, size.Height * 0.5);
-        var midPoint   = new Point(size.Width * 0.4, size.Height  * 0.7);
-        var endPoint   = new Point(size.Width * 0.7, size.Height  * 0.3);
+        var midPoint   = new Point(size.Width * 0.4, size.Height * 0.7);
+        var endPoint   = new Point(size.Width * 0.7, size.Height * 0.3);
 
         context.BeginFigure(startPoint, true);
         context.LineTo(midPoint);
@@ -25,7 +25,7 @@ public static class CommonShapeBuilder
     }
 
     /// <summary>
-    ///     生成一个以矩形中点为圆心，以宽和高最小的一半为半径的且指定角度的圆弧
+    /// 生成一个以矩形中点为圆心，以宽和高最小的一半为半径的且指定角度的圆弧
     /// </summary>
     /// <param name="rect"></param>
     /// <param name="startAngle"></param>
@@ -33,7 +33,10 @@ public static class CommonShapeBuilder
     /// <returns></returns>
     public static Geometry BuildArc(Rect rect, double startAngle, double sweepAngle)
     {
-        if (MathUtils.IsZero(sweepAngle)) return new StreamGeometry();
+        if (MathUtils.IsZero(sweepAngle))
+        {
+            return new StreamGeometry();
+        }
 
         var angle1 = MathUtilities.Deg2Rad(startAngle);
         var angle2 = angle1 + MathUtilities.Deg2Rad(sweepAngle);
@@ -47,7 +50,9 @@ public static class CommonShapeBuilder
         if (MathUtils.AreClose(normStart, normEnd) && !MathUtils.AreClose(startAngle, sweepAngle))
 
             // Complete ring.
+        {
             return new EllipseGeometry(rect);
+        }
 
         // Partial arc.
         var deflatedRect = rect;
@@ -55,7 +60,7 @@ public static class CommonShapeBuilder
         var centerX = rect.Center.X;
         var centerY = rect.Center.Y;
 
-        var radiusX = deflatedRect.Width  / 2;
+        var radiusX = deflatedRect.Width / 2;
         var radiusY = deflatedRect.Height / 2;
 
         var angleGap = RadToNormRad(sweepAngle - startAngle);

@@ -36,11 +36,18 @@ public abstract class AbstractCircleProgress : AbstractProgressBar
         var largeThresholdValue  = _sizeTypeThresholdValue[SizeType.Large];
         var middleThresholdValue = _sizeTypeThresholdValue[SizeType.Middle];
         if (MathUtils.GreaterThanOrClose(size, largeThresholdValue))
+        {
             sizeType = SizeType.Large;
+        }
         else if (MathUtils.GreaterThanOrClose(size, middleThresholdValue))
+        {
             sizeType = SizeType.Middle;
+        }
         else
+        {
             sizeType = SizeType.Small;
+        }
+
         return sizeType;
     }
 
@@ -65,15 +72,24 @@ public abstract class AbstractCircleProgress : AbstractProgressBar
         if (!double.IsInfinity(availableSize.Width) && !double.IsInfinity(availableSize.Height))
         {
             var minSize = Math.Min(availableSize.Width, availableSize.Height);
-            if (minSize < targetSize || IsStretchAlignment()) targetSize = minSize;
+            if (minSize < targetSize || IsStretchAlignment())
+            {
+                targetSize = minSize;
+            }
         }
         else if (!double.IsInfinity(availableSize.Width) && double.IsInfinity(availableSize.Height))
         {
-            if (availableSize.Width < targetSize || IsStretchAlignment()) targetSize = availableSize.Width;
+            if (availableSize.Width < targetSize || IsStretchAlignment())
+            {
+                targetSize = availableSize.Width;
+            }
         }
         else if (!double.IsInfinity(availableSize.Height) && double.IsInfinity(availableSize.Width))
         {
-            if (availableSize.Height < targetSize || IsStretchAlignment()) targetSize = availableSize.Height;
+            if (availableSize.Height < targetSize || IsStretchAlignment())
+            {
+                targetSize = availableSize.Height;
+            }
         }
 
         return new Size(targetSize, targetSize);
@@ -89,13 +105,21 @@ public abstract class AbstractCircleProgress : AbstractProgressBar
         var targetSize           = 0d;
         var sizeTypeDefaultValue = _sizeTypeThresholdValue[EffectiveSizeType];
         if (double.IsNaN(Width) && double.IsNaN(Height))
+        {
             targetSize = sizeTypeDefaultValue;
+        }
         else if (double.IsNaN(Width) && !double.IsNaN(Height))
+        {
             targetSize = Height;
+        }
         else if (!double.IsNaN(Width) && double.IsNaN(Height))
+        {
             targetSize = Width;
+        }
         else
+        {
             targetSize = Math.Min(Width, Height);
+        }
 
         return targetSize;
     }
@@ -112,9 +136,13 @@ public abstract class AbstractCircleProgress : AbstractProgressBar
         if (_layoutTransformLabel is not null)
         {
             if (extraInfo.Width > extraInfoSize || extraInfo.Height > extraInfoSize)
+            {
                 PercentLabelVisible = false;
+            }
             else
+            {
                 PercentLabelVisible = true;
+            }
         }
 
         if (_exceptionCompletedIcon is not null)
@@ -122,9 +150,13 @@ public abstract class AbstractCircleProgress : AbstractProgressBar
             var exceptionIconWidth  = _exceptionCompletedIcon.Width;
             var exceptionIconHeight = _exceptionCompletedIcon.Height;
             if (exceptionIconWidth > extraInfoSize || exceptionIconHeight > extraInfoSize)
+            {
                 StatusIconVisible = false;
+            }
             else
+            {
                 StatusIconVisible = true;
+            }
         }
 
         if (_successCompletedIcon is not null)
@@ -132,9 +164,13 @@ public abstract class AbstractCircleProgress : AbstractProgressBar
             var successIconWidth  = _successCompletedIcon.Width;
             var successIconHeight = _successCompletedIcon.Height;
             if (successIconWidth > extraInfoSize || successIconHeight > extraInfoSize)
+            {
                 StatusIconVisible = false;
+            }
             else
+            {
                 StatusIconVisible = true;
+            }
         }
     }
 
@@ -143,19 +179,25 @@ public abstract class AbstractCircleProgress : AbstractProgressBar
         base.NotifyPropertyChanged(e);
 
         if (e.Property == WidthProperty || e.Property == HeightProperty)
+        {
             if (VisualRoot is not null)
             {
                 CalculateStrokeThickness();
                 SetupExtraInfoFontSize();
                 SetupExtraInfoIconSize();
             }
+        }
     }
 
     private void SetupExtraInfoFontSize()
     {
-        var circleSize                                     = CalculateCircleSize();
-        var fontSize                                       = circleSize * 0.15 + 6;
-        if (fontSize < CircleMinimumTextFontSize) fontSize = CircleMinimumTextFontSize;
+        var circleSize = CalculateCircleSize();
+        var fontSize   = circleSize * 0.15 + 6;
+        if (fontSize < CircleMinimumTextFontSize)
+        {
+            fontSize = CircleMinimumTextFontSize;
+        }
+
         FontSize = fontSize;
     }
 
@@ -179,28 +221,28 @@ public abstract class AbstractCircleProgress : AbstractProgressBar
             if (_layoutTransformLabel is not null)
             {
                 var labelSize = _layoutTransformLabel.DesiredSize;
-                var offsetX   = (extraInfoRect.Width  - labelSize.Width)  / 2;
+                var offsetX   = (extraInfoRect.Width - labelSize.Width) / 2;
                 var offsetY   = (extraInfoRect.Height - labelSize.Height) / 2;
                 Canvas.SetLeft(_layoutTransformLabel, extraInfoPos.X + offsetX);
-                Canvas.SetTop(_layoutTransformLabel, extraInfoPos.Y  + offsetY);
+                Canvas.SetTop(_layoutTransformLabel, extraInfoPos.Y + offsetY);
             }
 
             if (_successCompletedIcon is not null)
             {
                 var size    = _successCompletedIcon.DesiredSize;
-                var offsetX = (extraInfoRect.Width  - size.Width)  / 2;
+                var offsetX = (extraInfoRect.Width - size.Width) / 2;
                 var offsetY = (extraInfoRect.Height - size.Height) / 2;
                 Canvas.SetLeft(_successCompletedIcon, extraInfoPos.X + offsetX);
-                Canvas.SetTop(_successCompletedIcon, extraInfoPos.Y  + offsetY);
+                Canvas.SetTop(_successCompletedIcon, extraInfoPos.Y + offsetY);
             }
 
             if (_exceptionCompletedIcon is not null)
             {
                 var size    = _exceptionCompletedIcon.DesiredSize;
-                var offsetX = (extraInfoRect.Width  - size.Width)  / 2;
+                var offsetX = (extraInfoRect.Width - size.Width) / 2;
                 var offsetY = (extraInfoRect.Height - size.Height) / 2;
                 Canvas.SetLeft(_exceptionCompletedIcon, extraInfoPos.X + offsetX);
-                Canvas.SetTop(_exceptionCompletedIcon, extraInfoPos.Y  + offsetY);
+                Canvas.SetTop(_exceptionCompletedIcon, extraInfoPos.Y + offsetY);
             }
         }
 
@@ -224,7 +266,9 @@ public abstract class AbstractCircleProgress : AbstractProgressBar
         var calculatedValue = MIDDLE_STROKE_THICKNESS / MIDDLE_CIRCLE_SIZE * circleSize;
         calculatedValue = Math.Max(calculatedValue, CIRCLE_MIN_STROKE_THICKNESS);
         if (!double.IsNaN(IndicatorThickness))
+        {
             calculatedValue = Math.Max(IndicatorThickness, CIRCLE_MIN_STROKE_THICKNESS);
+        }
 
         StrokeThickness = calculatedValue;
     }
@@ -235,8 +279,6 @@ public abstract class AbstractCircleProgress : AbstractProgressBar
         SetupExtraInfoFontSize();
         SetupExtraInfoIconSize();
     }
-
-
 
     #region 公共属性定义
 
@@ -259,8 +301,6 @@ public abstract class AbstractCircleProgress : AbstractProgressBar
     }
 
     #endregion
-
-
 
     #region 内部属性定义
 

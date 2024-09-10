@@ -16,77 +16,77 @@ internal class ToggleSwitchToken : AbstractControlDesignToken
     }
 
     /// <summary>
-    ///     开关高度
+    /// 开关高度
     /// </summary>
     public double TrackHeight { get; set; }
 
     /// <summary>
-    ///     小号开关高度
+    /// 小号开关高度
     /// </summary>
     public double TrackHeightSM { get; set; }
 
     /// <summary>
-    ///     开关最小宽度
+    /// 开关最小宽度
     /// </summary>
     public double TrackMinWidth { get; set; }
 
     /// <summary>
-    ///     小号开关最小宽度
+    /// 小号开关最小宽度
     /// </summary>
     public double TrackMinWidthSM { get; set; }
 
     /// <summary>
-    ///     开关内边距
+    /// 开关内边距
     /// </summary>
     public double TrackPadding { get; set; }
 
     /// <summary>
-    ///     开关把手背景色
+    /// 开关把手背景色
     /// </summary>
     public Color HandleBg { get; set; }
 
     /// <summary>
-    ///     开关把手阴影
+    /// 开关把手阴影
     /// </summary>
     public BoxShadow HandleShadow { get; set; }
 
     /// <summary>
-    ///     开关把手大小
+    /// 开关把手大小
     /// </summary>
     public Size HandleSize { get; set; }
 
     /// <summary>
-    ///     小号开关把手大小
+    /// 小号开关把手大小
     /// </summary>
     public Size HandleSizeSM { get; set; }
 
     /// <summary>
-    ///     内容区域最小边距
+    /// 内容区域最小边距
     /// </summary>
     public double InnerMinMargin { get; set; }
 
     /// <summary>
-    ///     内容区域最大边距
+    /// 内容区域最大边距
     /// </summary>
     public double InnerMaxMargin { get; set; }
 
     /// <summary>
-    ///     小号开关内容区域最小边距
+    /// 小号开关内容区域最小边距
     /// </summary>
     public double InnerMinMarginSM { get; set; }
 
     /// <summary>
-    ///     小号开关内容区域最大边距
+    /// 小号开关内容区域最大边距
     /// </summary>
     public double InnerMaxMarginSM { get; set; }
 
     /// <summary>
-    ///     正常状态的图标大小
+    /// 正常状态的图标大小
     /// </summary>
     public double IconSize { get; set; }
 
     /// <summary>
-    ///     小号状态的图标大小
+    /// 小号状态的图标大小
     /// </summary>
     public double IconSizeSM { get; set; }
 
@@ -109,15 +109,15 @@ internal class ToggleSwitchToken : AbstractControlDesignToken
         var lineHeight    = fontToken.LineHeight;
         var controlHeight = _globalToken.SeedToken.ControlHeight;
 
-        var    height       = fontSize      * lineHeight;
+        var    height       = fontSize * lineHeight;
         var    heightSM     = controlHeight / 2;
         double padding      = 2; // Fixed value
-        var    handleSize   = height   - padding * 2;
+        var    handleSize   = height - padding * 2;
         var    handleSizeSM = heightSM - padding * 2;
 
         TrackHeight     = height;
         TrackHeightSM   = heightSM;
-        TrackMinWidth   = handleSize   * 2 + padding * 4;
+        TrackMinWidth   = handleSize * 2 + padding * 4;
         TrackMinWidthSM = handleSizeSM * 2 + padding * 2;
         TrackPadding    = padding; // Fixed value
         HandleBg        = _globalToken.ColorToken.ColorWhite;
@@ -126,8 +126,8 @@ internal class ToggleSwitchToken : AbstractControlDesignToken
 
         InnerMinMargin   = handleSize / 2;
         InnerMaxMargin   = handleSize + padding * 3;
-        InnerMinMarginSM = handleSizeSM         / 2 - padding;
-        InnerMaxMarginSM = handleSizeSM             + padding * 3;
+        InnerMinMarginSM = handleSizeSM / 2 - padding;
+        InnerMaxMarginSM = handleSizeSM + padding * 3;
 
         SwitchDuration         = _globalToken.StyleToken.MotionDurationMid;
         SwitchColor            = _globalToken.ColorToken.ColorPrimaryToken.ColorPrimary;

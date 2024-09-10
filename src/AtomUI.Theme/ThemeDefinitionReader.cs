@@ -17,15 +17,15 @@ internal class ThemeDefinitionReader
     private const string IdAttrName = "Id";
     private const string AlgorithmAttrName = "Algorithm";
     private const string ValueAttrName = "Value";
-    private ControlTokenConfigInfo? _currentControlToken;
-    private ThemeDefinition? _currentDef;
 
     // 上下文信息
     private readonly Stack<string> _currentElementNames;
+    private readonly StaticTheme _theme;
+    private ControlTokenConfigInfo? _currentControlToken;
+    private ThemeDefinition? _currentDef;
     private bool _inControlTokenCtx;
     private bool _inGlobalTokenCtx;
     private bool _parseFinished;
-    private readonly StaticTheme _theme;
 
     public ThemeDefinitionReader(StaticTheme theme)
     {
@@ -45,13 +45,18 @@ internal class ThemeDefinitionReader
             var    filePath = _theme.DefinitionFilePath;
             Stream stream   = default!;
             if (filePath.StartsWith("avares://"))
+            {
                 stream = AssetLoader.Open(new Uri(filePath));
+            }
             else
+            {
                 stream = File.OpenRead(filePath);
+            }
 
             using (var xmlReader = XmlReader.Create(stream, settings))
             {
                 while (!_parseFinished && xmlReader.Read())
+                {
                     switch (xmlReader.NodeType)
                     {
                         case XmlNodeType.Element:
@@ -61,6 +66,7 @@ internal class ThemeDefinitionReader
                             HandleEndElement(xmlReader.Name);
                             break;
                     }
+                }
             }
         }
         finally
@@ -104,7 +110,10 @@ internal class ThemeDefinitionReader
         else if (name == TokenElementName)
         {
             HandleStartTokenElement(reader);
-            if (reader.IsEmptyElement) HandleEndElement(TokenElementName);
+            if (reader.IsEmptyElement)
+            {
+                HandleEndElement(TokenElementName);
+            }
         }
         else
         {
@@ -134,9 +143,13 @@ internal class ThemeDefinitionReader
     {
         var displayName = reader.GetAttribute(NameAttrName);
         if (displayName is null)
+        {
             EmitRequiredAttrError(reader, NameAttrName);
+        }
         else
+        {
             _currentDef!.DisplayName = displayName;
+        }
     }
 
     private void HandleStartAlgorithmsElement(XmlReader reader)
@@ -151,7 +164,10 @@ internal class ThemeDefinitionReader
     {
         _currentControlToken = new ControlTokenConfigInfo();
         var tokenId = reader.GetAttribute(IdAttrName);
-        if (string.IsNullOrWhiteSpace(tokenId)) EmitRequiredAttrError(reader, IdAttrName);
+        if (string.IsNullOrWhiteSpace(tokenId))
+        {
+            EmitRequiredAttrError(reader, IdAttrName);
+        }
 
         _currentControlToken.TokenId = tokenId!;
         var useAlgorithm = false;
@@ -159,7 +175,10 @@ internal class ThemeDefinitionReader
         if (algorithm is not null)
         {
             algorithm = algorithm.Trim().ToLower();
-            if (algorithm == "true") useAlgorithm = true;
+            if (algorithm == "true")
+            {
+                useAlgorithm = true;
+            }
         }
 
         _currentControlToken.UseAlgorithm = useAlgorithm;
@@ -168,27 +187,48 @@ internal class ThemeDefinitionReader
     private void HandleStartTokenElement(XmlReader reader)
     {
         var tokenName = reader.GetAttribute(NameAttrName);
-        if (string.IsNullOrWhiteSpace(tokenName)) EmitRequiredAttrError(reader, NameAttrName);
+        if (string.IsNullOrWhiteSpace(tokenName))
+        {
+            EmitRequiredAttrError(reader, NameAttrName);
+        }
 
-        var tokenValue                     = reader.GetAttribute(ValueAttrName);
-        if (tokenValue is null) tokenValue = reader.ReadElementContentAsString();
+        var tokenValue = reader.GetAttribute(ValueAttrName);
+        if (tokenValue is null)
+        {
+            tokenValue = reader.ReadElementContentAsString();
+        }
 
-        if (string.IsNullOrWhiteSpace(tokenValue)) EmitRequiredAttrError(reader, NameAttrName);
+        if (string.IsNullOrWhiteSpace(tokenValue))
+        {
+            EmitRequiredAttrError(reader, NameAttrName);
+        }
 
         if (_inGlobalTokenCtx)
+        {
             _currentDef!.GlobalTokens.Add(tokenName!, tokenValue);
+        }
         else if (_inControlTokenCtx)
+        {
             _currentControlToken!.ControlTokens.Add(tokenName!, tokenValue);
+        }
         else
+        {
             EmitErrorMsg(reader, "The Token element must appear under WidgetToken or GlobalToken.");
+        }
     }
 
     private void EmitErrorMsg(XmlReader reader, string? userErrorMsg)
     {
         var errorMsg = $"Error reading {_theme.DefinitionFilePath}";
-        if (reader is IXmlLineInfo lineInfo && lineInfo.HasLineInfo()) errorMsg = $"{errorMsg}: {lineInfo.LineNumber}";
+        if (reader is IXmlLineInfo lineInfo && lineInfo.HasLineInfo())
+        {
+            errorMsg = $"{errorMsg}: {lineInfo.LineNumber}";
+        }
 
-        if (userErrorMsg is not null) errorMsg = $"{errorMsg}: {userErrorMsg}";
+        if (userErrorMsg is not null)
+        {
+            errorMsg = $"{errorMsg}: {userErrorMsg}";
+        }
 
         throw new ThemeDefinitionParserException(errorMsg);
     }

@@ -14,37 +14,37 @@ internal class TimePickerToken : AbstractControlDesignToken
     }
 
     /// <summary>
-    ///     时间选择项高度
+    /// 时间选择项高度
     /// </summary>
     public double ItemHeight { get; set; }
 
     /// <summary>
-    ///     时间选择项内间距
+    /// 时间选择项内间距
     /// </summary>
     public Thickness ItemPadding { get; set; }
 
     /// <summary>
-    ///     按钮区域对上的外边距
+    /// 按钮区域对上的外边距
     /// </summary>
     public Thickness ButtonsMargin { get; set; }
 
     /// <summary>
-    ///     日期选择弹出框宽度
+    /// 日期选择弹出框宽度
     /// </summary>
     public double PickerPopupWidth { get; set; }
 
     /// <summary>
-    ///     日期选择弹出框高度
+    /// 日期选择弹出框高度
     /// </summary>
     public double PickerPopupHeight { get; set; }
 
     /// <summary>
-    ///     范围选择箭头外间距
+    /// 范围选择箭头外间距
     /// </summary>
     public Thickness RangePickerArrowMargin { get; set; }
 
     /// <summary>
-    ///     选择指示器厚度
+    /// 选择指示器厚度
     /// </summary>
     public double RangePickerIndicatorThickness { get; set; }
 

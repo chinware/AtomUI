@@ -10,7 +10,6 @@ namespace AtomUI.Controls;
 
 using AvaloniaListBox = Avalonia.Controls.ListBox;
 
-
 public class ListBox : AvaloniaListBox
 {
     protected override Size ArrangeOverride(Size finalSize)
@@ -40,8 +39,6 @@ public class ListBox : AvaloniaListBox
             BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this));
     }
-
-
 
     #region 公共属性定义
 

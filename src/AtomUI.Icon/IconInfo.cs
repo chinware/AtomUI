@@ -16,7 +16,6 @@ public record class GeometryData
     public bool IsPrimary { get; }
 }
 
-
 public record class IconInfo
 {
     public IconInfo()
@@ -30,11 +29,13 @@ public record class IconInfo
     }
 
     public IconInfo(string name, IconThemeType themeType,
-        Rect viewBox, IList<GeometryData> data,
-        ColorInfo? colorInfo = null)
+                    Rect viewBox, IList<GeometryData> data,
+                    ColorInfo? colorInfo = null)
     {
         if (themeType == IconThemeType.TwoTone)
+        {
             throw new InvalidEnumArgumentException("ColorInfo does not support IconThemeType.TwoTone.");
+        }
 
         Name      = name;
         ColorInfo = colorInfo;

@@ -12,13 +12,11 @@ internal struct RadiusInfo
     public double BorderRadiusOuter { get; set; }
 }
 
-
 internal struct FontSizeInfo
 {
     public double Size { get; set; }
     public double LineHeight { get; set; }
 }
-
 
 internal static class CalculatorUtils
 {
@@ -63,11 +61,11 @@ internal static class CalculatorUtils
             SizeXL  = sizeUnit * (sizeStep + 4), // 32
             SizeLG  = sizeUnit * (sizeStep + 2), // 24
             SizeMD  = sizeUnit * (sizeStep + 1), // 20
-            SizeMS  = sizeUnit * sizeStep,       // 16
-            Size    = sizeUnit * sizeStep,       // 16
+            SizeMS  = sizeUnit * sizeStep, // 16
+            Size    = sizeUnit * sizeStep, // 16
             SizeSM  = sizeUnit * (sizeStep - 1), // 12
             SizeXS  = sizeUnit * (sizeStep - 2), // 8
-            SizeXXS = sizeUnit * (sizeStep - 3)  // 4
+            SizeXXS = sizeUnit * (sizeStep - 3) // 4
         };
         return sizeMapToken;
     }
@@ -102,7 +100,7 @@ internal static class CalculatorUtils
             LineHeightLG = lineHeightLG,
             LineHeightSM = lineHeightSM,
 
-            FontHeight   = Math.Round(lineHeight   * fontSizeMD),
+            FontHeight   = Math.Round(lineHeight * fontSizeMD),
             FontHeightLG = Math.Round(lineHeightLG * fontSizeLG),
             FontHeightSM = Math.Round(lineHeightSM * fontSizeSM),
 
@@ -141,31 +139,59 @@ internal static class CalculatorUtils
 
         // radiusLG
         if (radiusBase < 6 && radiusBase >= 5)
+        {
             radiusLG = radiusBase + 1;
+        }
         else if (radiusBase < 16 && radiusBase >= 6)
-            radiusLG                        = radiusBase + 2;
-        else if (radiusBase >= 16) radiusLG = 16;
+        {
+            radiusLG = radiusBase + 2;
+        }
+        else if (radiusBase >= 16)
+        {
+            radiusLG = 16;
+        }
 
         // radiusSM
         if (radiusBase < 7 && radiusBase >= 5)
+        {
             radiusSM = 4;
+        }
         else if (radiusBase < 8 && radiusBase >= 7)
+        {
             radiusSM = 5;
+        }
         else if (radiusBase < 14 && radiusBase >= 8)
+        {
             radiusSM = 6;
+        }
         else if (radiusBase < 16 && radiusBase >= 14)
-            radiusSM                        = 7;
-        else if (radiusBase >= 16) radiusSM = 8;
+        {
+            radiusSM = 7;
+        }
+        else if (radiusBase >= 16)
+        {
+            radiusSM = 8;
+        }
 
         // radiusXS
         if (radiusBase < 6 && radiusBase >= 2)
-            radiusXS                       = 1;
-        else if (radiusBase >= 6) radiusXS = 2;
+        {
+            radiusXS = 1;
+        }
+        else if (radiusBase >= 6)
+        {
+            radiusXS = 2;
+        }
 
         // radiusOuter
         if (radiusBase > 4 && radiusBase < 8)
-            radiusOuter                       = 4;
-        else if (radiusBase >= 8) radiusOuter = 6;
+        {
+            radiusOuter = 4;
+        }
+        else if (radiusBase >= 8)
+        {
+            radiusOuter = 6;
+        }
 
         return new RadiusInfo
         {
@@ -193,11 +219,13 @@ internal static class CalculatorUtils
         fontSizes[1] = baseValue;
         var results = new List<FontSizeInfo>();
         foreach (var size in fontSizes)
+        {
             results.Add(new FontSizeInfo
             {
                 Size       = size,
                 LineHeight = CalculateLineHeight(size)
             });
+        }
 
         return results;
     }

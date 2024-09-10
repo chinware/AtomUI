@@ -47,9 +47,13 @@ public class IconImage : DrawingImage, IImage
     void IImage.Draw(DrawingContext context, Rect sourceRect, Rect destRect)
     {
         var drawing = Drawing;
-        if (drawing is null) return;
+        if (drawing is null)
+        {
+            return;
+        }
+
         var scale = Matrix.CreateScale(
-            destRect.Width  / sourceRect.Width,
+            destRect.Width / sourceRect.Width,
             destRect.Height / sourceRect.Height
         );
         var translate = Matrix.CreateTranslation(
@@ -69,12 +73,21 @@ public class IconImage : DrawingImage, IImage
                 if (colorInfo is not null)
                 {
                     if (IconMode == IconMode.Normal)
+                    {
                         brush.Color = colorInfo.Value.NormalColor;
+                    }
                     else if (IconMode == IconMode.Active)
+                    {
                         brush.Color = colorInfo.Value.ActiveColor;
+                    }
                     else if (IconMode == IconMode.Selected)
-                        brush.Color                                     = colorInfo.Value.SelectedColor;
-                    else if (IconMode == IconMode.Disabled) brush.Color = colorInfo.Value.DisabledColor;
+                    {
+                        brush.Color = colorInfo.Value.SelectedColor;
+                    }
+                    else if (IconMode == IconMode.Disabled)
+                    {
+                        brush.Color = colorInfo.Value.DisabledColor;
+                    }
                 }
 
                 brush.Color = Colors.Black;
@@ -98,9 +111,13 @@ public class IconImage : DrawingImage, IImage
                     if (twoToneColor is not null)
                     {
                         if (geometryData.IsPrimary)
+                        {
                             brush.Color = twoToneColor.Value.PrimaryColor;
+                        }
                         else
+                        {
                             brush.Color = twoToneColor.Value.SecondaryColor;
+                        }
                     }
 
                     geometryDrawing.Brush = brush;
@@ -116,7 +133,7 @@ public class IconImage : DrawingImage, IImage
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == DataProperty                                                  ||
+        if (change.Property == DataProperty ||
             (change.Property == IconModeProperty && Data.ThemeType != IconThemeType.TwoTone) ||
             change.Property == SizeProperty)
         {

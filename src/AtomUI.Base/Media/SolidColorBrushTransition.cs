@@ -8,12 +8,17 @@ public class SolidColorBrushTransition : InterpolatingTransitionBase<IBrush?>
 {
     protected override IBrush? Interpolate(double progress, IBrush? from, IBrush? to)
     {
-        if (from is null || to is null) return progress >= 0.5 ? to : from;
+        if (from is null || to is null)
+        {
+            return progress >= 0.5 ? to : from;
+        }
 
         if (from is ISolidColorBrush fromBrush && to is ISolidColorBrush toBrush)
+        {
             return new ImmutableSolidColorBrush(
                 InterpolateUtils.ColorInterpolate(fromBrush.Color, toBrush.Color, progress),
                 DoubleInterpolate(progress, from.Opacity, to.Opacity));
+        }
 
         // TODO 不知道这样返回是否合适
         return from;

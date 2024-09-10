@@ -161,23 +161,23 @@ internal class PopupConfirmContainerTheme : BaseControlTheme
             control.Styles.Add(iconStyle);
         }
         var infoStatusStyle = new Style(selector => selector
-            .PropertyEquals(PopupConfirmContainer.ConfirmStatusProperty,
-                PopupConfirmStatus.Info)
-            .Descendant().Name(IconContentPart).Child().OfType<PathIcon>());
+                                                    .PropertyEquals(PopupConfirmContainer.ConfirmStatusProperty,
+                                                        PopupConfirmStatus.Info)
+                                                    .Descendant().Name(IconContentPart).Child().OfType<PathIcon>());
         infoStatusStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorPrimary);
         control.Styles.Add(infoStatusStyle);
 
         var warningStatusStyle = new Style(selector => selector
-            .PropertyEquals(PopupConfirmContainer.ConfirmStatusProperty,
-                PopupConfirmStatus.Warning)
-            .Descendant().Name(IconContentPart).Child().OfType<PathIcon>());
+                                                       .PropertyEquals(PopupConfirmContainer.ConfirmStatusProperty,
+                                                           PopupConfirmStatus.Warning)
+                                                       .Descendant().Name(IconContentPart).Child().OfType<PathIcon>());
         warningStatusStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorWarning);
         control.Styles.Add(warningStatusStyle);
 
         var errorStatusStyle = new Style(selector => selector
-            .PropertyEquals(PopupConfirmContainer.ConfirmStatusProperty,
-                PopupConfirmStatus.Error)
-            .Descendant().Name(IconContentPart).Child().OfType<PathIcon>());
+                                                     .PropertyEquals(PopupConfirmContainer.ConfirmStatusProperty,
+                                                         PopupConfirmStatus.Error)
+                                                     .Descendant().Name(IconContentPart).Child().OfType<PathIcon>());
         errorStatusStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorError);
         control.Styles.Add(errorStatusStyle);
     }

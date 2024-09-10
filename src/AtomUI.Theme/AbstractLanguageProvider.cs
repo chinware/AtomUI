@@ -10,7 +10,9 @@ public class AbstractLanguageProvider : ILanguageProvider
         var type                      = GetType();
         var languageProviderAttribute = type.GetCustomAttribute<LanguageProviderAttribute>();
         if (languageProviderAttribute is null)
+        {
             throw new LanguageMetaInfoParseException("No annotations found LanguageProviderAttribute");
+        }
 
         LangCode        = languageProviderAttribute.LanguageCode;
         LangId          = languageProviderAttribute.LanguageId;

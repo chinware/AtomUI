@@ -15,7 +15,6 @@ public enum RibbonBadgePlacement
     End
 }
 
-
 public class RibbonBadge : Control, IControlCustomStyle
 {
     public static readonly StyledProperty<string?> RibbonColorProperty
@@ -38,9 +37,9 @@ public class RibbonBadge : Control, IControlCustomStyle
     public static readonly StyledProperty<bool> BadgeIsVisibleProperty =
         AvaloniaProperty.Register<RibbonBadge, bool>(nameof(BadgeIsVisible));
 
-    private AdornerLayer? _adornerLayer;
-
     private readonly IControlCustomStyle _customStyle;
+
+    private AdornerLayer? _adornerLayer;
     private RibbonBadgeAdorner? _ribbonBadgeAdorner;
 
     static RibbonBadge()
@@ -126,19 +125,27 @@ public class RibbonBadge : Control, IControlCustomStyle
         colorStr = colorStr.Trim().ToLower();
 
         foreach (var presetColor in PresetPrimaryColor.AllColorTypes())
+        {
             if (presetColor.Type.ToString().ToLower() == colorStr)
             {
                 _ribbonBadgeAdorner!.RibbonColor = new SolidColorBrush(presetColor.Color());
                 return;
             }
+        }
 
-        if (Color.TryParse(colorStr, out var color)) _ribbonBadgeAdorner!.RibbonColor = new SolidColorBrush(color);
+        if (Color.TryParse(colorStr, out var color))
+        {
+            _ribbonBadgeAdorner!.RibbonColor = new SolidColorBrush(color);
+        }
     }
 
     public sealed override void ApplyTemplate()
     {
         base.ApplyTemplate();
-        if (DecoratedTarget is null) CreateBadgeAdorner();
+        if (DecoratedTarget is null)
+        {
+            CreateBadgeAdorner();
+        }
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
@@ -150,7 +157,11 @@ public class RibbonBadge : Control, IControlCustomStyle
             var badgeIsVisible = e.GetNewValue<bool>();
             if (badgeIsVisible)
             {
-                if (_adornerLayer is not null) return;
+                if (_adornerLayer is not null)
+                {
+                    return;
+                }
+
                 PrepareAdorner();
             }
             else
@@ -161,9 +172,15 @@ public class RibbonBadge : Control, IControlCustomStyle
 
         if (VisualRoot is not null)
         {
-            if (e.Property == DecoratedTargetProperty) HandleDecoratedTargetChanged();
+            if (e.Property == DecoratedTargetProperty)
+            {
+                HandleDecoratedTargetChanged();
+            }
 
-            if (e.Property == RibbonColorProperty) SetupRibbonColor(e.GetNewValue<string>());
+            if (e.Property == RibbonColorProperty)
+            {
+                SetupRibbonColor(e.GetNewValue<string>());
+            }
         }
     }
 
@@ -174,7 +191,10 @@ public class RibbonBadge : Control, IControlCustomStyle
             _ribbonBadgeAdorner = new RibbonBadgeAdorner();
             _customStyle.SetupTokenBindings();
             HandleDecoratedTargetChanged();
-            if (RibbonColor is not null) SetupRibbonColor(RibbonColor);
+            if (RibbonColor is not null)
+            {
+                SetupRibbonColor(RibbonColor);
+            }
         }
 
         return _ribbonBadgeAdorner;
@@ -188,7 +208,11 @@ public class RibbonBadge : Control, IControlCustomStyle
             _adornerLayer = AdornerLayer.GetAdornerLayer(this);
 
             // 这里需要抛出异常吗？
-            if (_adornerLayer == null) return;
+            if (_adornerLayer == null)
+            {
+                return;
+            }
+
             AdornerLayer.SetAdornedElement(ribbonBadgeAdorner, this);
             AdornerLayer.SetIsClipEnabled(ribbonBadgeAdorner, false);
             _adornerLayer.Children.Add(ribbonBadgeAdorner);
@@ -198,7 +222,10 @@ public class RibbonBadge : Control, IControlCustomStyle
     private void HideAdorner()
     {
         // 这里需要抛出异常吗？
-        if (_adornerLayer is null || _ribbonBadgeAdorner is null) return;
+        if (_adornerLayer is null || _ribbonBadgeAdorner is null)
+        {
+            return;
+        }
 
         _adornerLayer.Children.Remove(_ribbonBadgeAdorner);
         _adornerLayer = null;

@@ -28,9 +28,13 @@ public partial class NotificationShowCase : UserControl
         if (_basicManager is not null)
         {
             if (args.Index == 0)
+            {
                 _basicManager.IsPauseOnHover = true;
+            }
             else
+            {
                 _basicManager.IsPauseOnHover = false;
+            }
         }
     }
 

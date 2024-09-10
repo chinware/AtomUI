@@ -147,7 +147,7 @@ internal class SegmentedItemTheme : BaseControlTheme
     {
         var hasIconStyle =
             new Style(selector => selector.Nesting()
-                .Not(x => x.Nesting().PropertyEquals(SegmentedItem.IconProperty, null)));
+                                          .Not(x => x.Nesting().PropertyEquals(SegmentedItem.IconProperty, null)));
         {
             var labelStyle = new Style(selector => selector.Nesting().Template().Name(ContentPart));
             labelStyle.Add(Layoutable.MarginProperty, SegmentedTokenResourceKey.SegmentedItemContentMargin);

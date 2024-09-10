@@ -31,14 +31,14 @@ internal class WaveSpiritAdorner : Control
             o => o.LastWaveRadius,
             (o, v) => o.LastWaveRadius = v);
 
+    private readonly AbstractWavePainter _wavePainter;
+
     private CancellationTokenSource? _cancellationTokenSource;
 
     private double _lastWaveOpacity;
     private double _lastWaveRadiusSize;
     private Size _lastWaveSize;
     private Control? _targetControl;
-
-    private readonly AbstractWavePainter _wavePainter;
 
     static WaveSpiritAdorner()
     {
@@ -76,9 +76,13 @@ internal class WaveSpiritAdorner : Control
         _wavePainter.OpacityMotionDuration = motionDurationSlow.Add(TimeSpan.FromMilliseconds(50));
         _wavePainter.WaveRange             = Math.Min(globalToken.WaveAnimationRange, 8);
         if (waveColor is not null)
+        {
             _wavePainter.WaveColor = waveColor.Value;
+        }
         else
+        {
             _wavePainter.WaveColor = globalToken.ColorToken.ColorPrimaryToken.ColorPrimary;
+        }
 
         LayoutUpdated += HandleLayoutUpdated;
     }
@@ -151,7 +155,10 @@ internal class WaveSpiritAdorner : Control
 
     private void HandleTargetControlChanged(object? sender, AvaloniaPropertyChangedEventArgs args)
     {
-        if (args.Property == BoundsProperty) AdjustWaveAdorner();
+        if (args.Property == BoundsProperty)
+        {
+            AdjustWaveAdorner();
+        }
     }
 
     private void AdjustWaveAdorner()
@@ -187,18 +194,30 @@ internal class WaveSpiritAdorner : Control
 
     public void DetachFromTarget()
     {
-        if (_targetControl is not null) _targetControl.PropertyChanged -= HandleTargetControlChanged;
+        if (_targetControl is not null)
+        {
+            _targetControl.PropertyChanged -= HandleTargetControlChanged;
+        }
     }
 
     public sealed override void Render(DrawingContext context)
     {
         // TODO 有时候会被合成器触发渲染
-        if (!IsPlaying) return;
+        if (!IsPlaying)
+        {
+            return;
+        }
+
         object currentSize = default!;
         if (_wavePainter.WaveType == WaveType.CircleWave)
+        {
             currentSize = LastWaveRadius;
+        }
         else
+        {
             currentSize = LastWaveSize;
+        }
+
         _wavePainter.Paint(context, currentSize, LastWaveOpacity);
     }
 
@@ -222,15 +241,22 @@ internal class WaveSpiritAdorner : Control
 
     private void RunWaveAnimation()
     {
-        if (IsPlaying) return;
+        if (IsPlaying)
+        {
+            return;
+        }
 
         var              sizeAnimation    = new Animation();
         var              opacityAnimation = new Animation();
         AvaloniaProperty targetProperty   = default!;
         if (_wavePainter.WaveType == WaveType.CircleWave)
+        {
             targetProperty = LastWaveRadiusProperty;
+        }
         else
+        {
             targetProperty = LastWaveSizeProperty;
+        }
 
         _wavePainter.NotifyBuildSizeAnimation(sizeAnimation, targetProperty);
         _wavePainter.NotifyBuildOpacityAnimation(opacityAnimation, LastWaveOpacityProperty);
@@ -255,9 +281,15 @@ internal class WaveSpiritAdorner : Control
         if (_adornerCache.TryGetValue(target, out var adorner))
 
             // 回调会清除项
+        {
             return;
+        }
+
         var adornerLayer = AdornerLayer.GetAdornerLayer(target);
-        if (adornerLayer == null) return;
+        if (adornerLayer == null)
+        {
+            return;
+        }
 
         adorner = new WaveSpiritAdorner(waveType, waveColor);
         adorner.AttachTo(target);

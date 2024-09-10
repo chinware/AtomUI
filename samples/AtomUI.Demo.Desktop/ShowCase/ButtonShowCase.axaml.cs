@@ -32,11 +32,17 @@ public partial class ButtonShowCase : UserControl
     private void HandleButtonSizeTypeOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
     {
         if (args.Index == 0)
+        {
             ButtonSizeType = SizeType.Large;
+        }
         else if (args.Index == 1)
+        {
             ButtonSizeType = SizeType.Middle;
+        }
         else
+        {
             ButtonSizeType = SizeType.Small;
+        }
     }
 
     private void HandleLoadingBtnClick(object? sender, RoutedEventArgs args)

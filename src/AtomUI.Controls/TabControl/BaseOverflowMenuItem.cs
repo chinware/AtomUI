@@ -14,14 +14,14 @@ internal class BaseOverflowMenuItem : MenuItem
         base.OnApplyTemplate(e);
         _iconButton = e.NameScope.Find<IconButton>(BaseOverflowMenuItemTheme.ItemCloseButtonPart);
         if (_iconButton is not null)
+        {
             _iconButton.Click += (sender, args) => { NotifyCloseRequest(); };
+        }
     }
 
     protected virtual void NotifyCloseRequest()
     {
     }
-
-
 
     #region 公共属性
 
@@ -49,7 +49,6 @@ internal class BaseOverflowMenuItem : MenuItem
 
     #endregion
 }
-
 
 internal class CloseTabRequestEventArgs : RoutedEventArgs
 {

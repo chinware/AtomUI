@@ -34,13 +34,13 @@ internal class Program
 
     public static AppBuilder BuildAvaloniaApp()
         => AppBuilder.Configure<App>()
-            .UseManagedSystemDialogs()
-            .UsePlatformDetect()
-            .UseAtomUI()
+                     .UseManagedSystemDialogs()
+                     .UsePlatformDetect()
+                     .UseAtomUI()
 #if DEBUG
-            .UseDevToolsForAvalonia()
+                     .UseDevToolsForAvalonia()
 #endif
-            .UseIconPackage<AntDesignIconPackage>(true)
-            .With(new Win32PlatformOptions())
-            .LogToTrace();
+                     .UseIconPackage<AntDesignIconPackage>(true)
+                     .With(new Win32PlatformOptions())
+                     .LogToTrace();
 }

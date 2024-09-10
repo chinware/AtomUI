@@ -13,7 +13,7 @@ public class EmptyIndicatorToken : AbstractControlDesignToken
     }
 
     /// <summary>
-    ///     空图片的高度
+    /// 空图片的高度
     /// </summary>
     public double EmptyImgHeight { get; set; }
 

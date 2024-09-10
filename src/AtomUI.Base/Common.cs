@@ -11,7 +11,6 @@ public enum TextDecorationLine
     LineThrough
 }
 
-
 public enum LineStyle
 {
     Solid,
@@ -21,7 +20,6 @@ public enum LineStyle
     Wavy
 }
 
-
 public enum Direction
 {
     Left,
@@ -29,7 +27,6 @@ public enum Direction
     Right,
     Bottom
 }
-
 
 public enum Corner
 {
@@ -41,14 +38,12 @@ public enum Corner
     All = TopLeft | TopRight | BottomLeft | BottomRight
 }
 
-
 public enum SizeType
 {
     Large,
     Middle,
     Small
 }
-
 
 // 文本修饰信息定义
 // 类似 CSS text-decoration
@@ -59,7 +54,6 @@ public class TextDecorationInfo
     public LineStyle LineStyle { get; set; } = LineStyle.Solid;
     public int Thickness { get; set; } = 1;
 }
-
 
 public enum ColorNameFormat
 {

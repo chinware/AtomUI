@@ -12,8 +12,8 @@ using Avalonia.Input;
 namespace AtomUI.Controls;
 
 /// <summary>
-///     Defines the presenter used for selecting a time. Intended for use with
-///     <see cref="TimePicker" /> but can be used independently
+/// Defines the presenter used for selecting a time. Intended for use with
+/// <see cref="TimePicker" /> but can be used independently
 /// </summary>
 [TemplatePart(TimePickerPresenterTheme.HourSelectorPart, typeof(DateTimePickerPanel), IsRequired = true)]
 [TemplatePart(TimePickerPresenterTheme.MinuteSelectorPart, typeof(DateTimePickerPanel), IsRequired = true)]
@@ -38,7 +38,7 @@ public class TimePickerPresenter : PickerPresenterBase
     static TimePickerPresenter()
     {
         KeyboardNavigation.TabNavigationProperty
-            .OverrideDefaultValue<TimePickerPresenter>(KeyboardNavigationMode.Cycle);
+                          .OverrideDefaultValue<TimePickerPresenter>(KeyboardNavigationMode.Cycle);
     }
 
     public TimePickerPresenter()
@@ -68,13 +68,25 @@ public class TimePickerPresenter : PickerPresenterBase
         _secondSelector = e.NameScope.Get<DateTimePickerPanel>(TimePickerPresenterTheme.SecondSelectorPart);
         _periodSelector = e.NameScope.Get<DateTimePickerPanel>(TimePickerPresenterTheme.PeriodSelectorPart);
 
-        if (_hourSelector is not null) _hourSelector.SelectionChanged += HandleSelectionChanged;
+        if (_hourSelector is not null)
+        {
+            _hourSelector.SelectionChanged += HandleSelectionChanged;
+        }
 
-        if (_minuteSelector is not null) _minuteSelector.SelectionChanged += HandleSelectionChanged;
+        if (_minuteSelector is not null)
+        {
+            _minuteSelector.SelectionChanged += HandleSelectionChanged;
+        }
 
-        if (_secondSelector is not null) _secondSelector.SelectionChanged += HandleSelectionChanged;
+        if (_secondSelector is not null)
+        {
+            _secondSelector.SelectionChanged += HandleSelectionChanged;
+        }
 
-        if (_periodSelector is not null) _periodSelector.SelectionChanged += HandleSelectionChanged;
+        if (_periodSelector is not null)
+        {
+            _periodSelector.SelectionChanged += HandleSelectionChanged;
+        }
 
         _spacer3 = e.NameScope.Get<Rectangle>(TimePickerPresenterTheme.ThirdSpacerPart);
     }
@@ -84,9 +96,13 @@ public class TimePickerPresenter : PickerPresenterBase
         var selectedValue = CollectValue();
         TemporaryTime = selectedValue;
         if (IsShowHeader)
+        {
             if (_headerText is not null)
+            {
                 _headerText.Text =
                     DateTimeUtils.FormatTimeSpan(selectedValue, ClockIdentifier == ClockIdentifierType.HourClock12);
+            }
+        }
     }
 
     private TimeSpan CollectValue()
@@ -97,7 +113,9 @@ public class TimePickerPresenter : PickerPresenterBase
         var period = _periodSelector!.SelectedValue;
 
         if (ClockIdentifier == ClockIdentifierType.HourClock12)
+        {
             hour = period == 1 ? hour == 12 ? 12 : hour + 12 : period == 0 && hour == 12 ? 0 : hour;
+        }
 
         return new TimeSpan(hour, minute, second);
     }
@@ -110,7 +128,9 @@ public class TimePickerPresenter : PickerPresenterBase
             change.Property == SecondIncrementProperty ||
             change.Property == ClockIdentifierProperty ||
             change.Property == TimeProperty)
+        {
             InitPicker();
+        }
     }
 
     protected override void OnKeyDown(KeyEventArgs e)
@@ -164,7 +184,11 @@ public class TimePickerPresenter : PickerPresenterBase
 
     private void InitPicker()
     {
-        if (_pickerContainer == null) return;
+        if (_pickerContainer == null)
+        {
+            return;
+        }
+
         var clock12        = ClockIdentifier == ClockIdentifierType.HourClock12;
         var use24HourClock = ClockIdentifier == ClockIdentifierType.HourClock24;
         _hourSelector!.MaximumValue = clock12 ? 12 : 23;
@@ -172,8 +196,8 @@ public class TimePickerPresenter : PickerPresenterBase
         _hourSelector.ItemFormat    = "%h";
         var hour = Time.Hours;
         _hourSelector.SelectedValue = !clock12 ? hour :
-            hour > 12                          ? hour - 12 :
-            hour == 0                          ? 12 : hour;
+            hour > 12 ? hour - 12 :
+            hour == 0 ? 12 : hour;
 
         _minuteSelector!.MaximumValue = 59;
         _minuteSelector.MinimumValue  = 0;
@@ -195,12 +219,10 @@ public class TimePickerPresenter : PickerPresenterBase
         _periodHost!.IsVisible = !use24HourClock;
     }
 
-
-
     #region 公共属性定义
 
     /// <summary>
-    ///     Defines the <see cref="MinuteIncrement" /> property
+    /// Defines the <see cref="MinuteIncrement" /> property
     /// </summary>
     public static readonly StyledProperty<int> MinuteIncrementProperty =
         TimePicker.MinuteIncrementProperty.AddOwner<TimePickerPresenter>();
@@ -209,13 +231,13 @@ public class TimePickerPresenter : PickerPresenterBase
         TimePicker.SecondIncrementProperty.AddOwner<TimePickerPresenter>();
 
     /// <summary>
-    ///     Defines the <see cref="ClockIdentifier" /> property
+    /// Defines the <see cref="ClockIdentifier" /> property
     /// </summary>
     public static readonly StyledProperty<ClockIdentifierType> ClockIdentifierProperty =
         TimePicker.ClockIdentifierProperty.AddOwner<TimePickerPresenter>();
 
     /// <summary>
-    ///     Defines the <see cref="Time" /> property
+    /// Defines the <see cref="Time" /> property
     /// </summary>
     public static readonly StyledProperty<TimeSpan> TimeProperty =
         AvaloniaProperty.Register<TimePickerPresenter, TimeSpan>(nameof(Time));
@@ -227,7 +249,7 @@ public class TimePickerPresenter : PickerPresenterBase
         AvaloniaProperty.Register<TimePickerPresenter, bool>(nameof(IsShowHeader), true);
 
     /// <summary>
-    ///     Gets or sets the minute increment in the selector
+    /// Gets or sets the minute increment in the selector
     /// </summary>
     public int MinuteIncrement
     {
@@ -242,7 +264,7 @@ public class TimePickerPresenter : PickerPresenterBase
     }
 
     /// <summary>
-    ///     Gets or sets the current clock identifier, either 12HourClock or 24HourClock
+    /// Gets or sets the current clock identifier, either 12HourClock or 24HourClock
     /// </summary>
     public ClockIdentifierType ClockIdentifier
     {
@@ -251,7 +273,7 @@ public class TimePickerPresenter : PickerPresenterBase
     }
 
     /// <summary>
-    ///     Gets or sets the current time
+    /// Gets or sets the current time
     /// </summary>
     public TimeSpan Time
     {
@@ -272,8 +294,6 @@ public class TimePickerPresenter : PickerPresenterBase
     }
 
     #endregion
-
-
 
     #region 私有属性定义
 

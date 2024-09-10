@@ -13,15 +13,19 @@ public class SearchEditDecoratedBox : AddOnDecoratedBox
 
     protected override Size ArrangeOverride(Size finalSize)
     {
-        var size                             = base.ArrangeOverride(finalSize);
-        if (_originRect is null) _originRect = _rightAddOnPresenter?.Bounds;
+        var size = base.ArrangeOverride(finalSize);
+        if (_originRect is null)
+        {
+            _originRect = _rightAddOnPresenter?.Bounds;
+        }
+
         if (_rightAddOnPresenter is not null && _originRect.HasValue)
+        {
             _rightAddOnPresenter.Arrange(_originRect.Value.Inflate(new Thickness(BorderThickness.Left, 0, 0, 0)));
+        }
 
         return size;
     }
-
-
 
     #region 公共属性定义
 

@@ -15,10 +15,10 @@ using Avalonia.Rendering;
 namespace AtomUI.Controls;
 
 public class ToggleSwitch : ToggleButton,
-    ISizeTypeAware,
-    ICustomHitTest,
-    IWaveAdornerInfoProvider,
-    IControlCustomStyle
+                            ISizeTypeAware,
+                            ICustomHitTest,
+                            IWaveAdornerInfoProvider,
+                            IControlCustomStyle
 {
     private const double STRETCH_FACTOR = 1.3d;
     private readonly IControlCustomStyle _customStyle;
@@ -50,7 +50,10 @@ public class ToggleSwitch : ToggleButton,
         _togglePanel = scope.Find<Canvas>(ToggleSwitchTheme.MainContainerPart);
         _switchKnob  = scope.Find<SwitchKnob>(ToggleSwitchTheme.SwitchKnobPart);
 
-        if (!IsLoading) Cursor = new Cursor(StandardCursorType.Hand);
+        if (!IsLoading)
+        {
+            Cursor = new Cursor(StandardCursorType.Hand);
+        }
 
         HorizontalAlignment = HorizontalAlignment.Left;
 
@@ -58,9 +61,15 @@ public class ToggleSwitch : ToggleButton,
         var onControl  = SetupContent(OnContent);
 
         // 这里会调用属性函数进行添加到布局
-        if (offControl == OffContent && offControl is not null) _togglePanel?.Children.Add(offControl);
+        if (offControl == OffContent && offControl is not null)
+        {
+            _togglePanel?.Children.Add(offControl);
+        }
 
-        if (onControl == OnContent && onControl is not null) _togglePanel?.Children.Add(onControl);
+        if (onControl == OnContent && onControl is not null)
+        {
+            _togglePanel?.Children.Add(onControl);
+        }
 
         OffContent = offControl;
         OnContent  = onControl;
@@ -71,7 +80,10 @@ public class ToggleSwitch : ToggleButton,
 
     public bool HitTest(Point point)
     {
-        if (!IsEnabled || IsLoading) return false;
+        if (!IsEnabled || IsLoading)
+        {
+            return false;
+        }
 
         var grooveRect = GrooveRect();
         return grooveRect.Contains(point);
@@ -79,7 +91,10 @@ public class ToggleSwitch : ToggleButton,
 
     private void HandleLayoutUpdated(object? sender, EventArgs args)
     {
-        if (Transitions is null) _customStyle.SetupTransitions();
+        if (Transitions is null)
+        {
+            _customStyle.SetupTransitions();
+        }
     }
 
     protected override Size MeasureOverride(Size availableSize)
@@ -148,7 +163,7 @@ public class ToggleSwitch : ToggleButton,
         if (IsChecked.HasValue && IsChecked.Value)
         {
             // 点击的时候如果是选中，需要调整坐标
-            KnobOffset      = new Point(KnobOffset.X      - delta, KnobOffset.Y);
+            KnobOffset      = new Point(KnobOffset.X - delta, KnobOffset.Y);
             OnContentOffset = new Point(OnContentOffset.X - contentOffsetDelta, OffContentOffset.Y);
         }
         else
@@ -156,14 +171,20 @@ public class ToggleSwitch : ToggleButton,
             OffContentOffset = new Point(OffContentOffset.X + contentOffsetDelta, OffContentOffset.Y);
         }
 
-        var handleWidth                                   = handleSize * STRETCH_FACTOR;
-        if (_switchKnob is not null) _switchKnob.KnobSize = new Size(handleWidth, handleSize);
+        var handleWidth = handleSize * STRETCH_FACTOR;
+        if (_switchKnob is not null)
+        {
+            _switchKnob.KnobSize = new Size(handleWidth, handleSize);
+        }
     }
 
     private void AdjustOffsetOnReleased()
     {
-        var handleSize                                    = _switchKnob?.OriginKnobSize.Width ?? 0d;
-        if (_switchKnob is not null) _switchKnob.KnobSize = new Size(handleSize, handleSize);
+        var handleSize = _switchKnob?.OriginKnobSize.Width ?? 0d;
+        if (_switchKnob is not null)
+        {
+            _switchKnob.KnobSize = new Size(handleSize, handleSize);
+        }
 
         CalculateElementsOffset(DesiredSize);
     }
@@ -205,43 +226,41 @@ public class ToggleSwitch : ToggleButton,
         context.DrawPilledRect(GrooveBackground, null, GrooveRect());
     }
 
-
-
     #region 公共属性定义
 
     /// <summary>
-    ///     Defines the <see cref="GrooveBackground" /> property.
+    /// Defines the <see cref="GrooveBackground" /> property.
     /// </summary>
     public static readonly StyledProperty<IBrush?> GrooveBackgroundProperty
         = AvaloniaProperty.Register<ToggleSwitch, IBrush?>(
             nameof(GrooveBackground));
 
     /// <summary>
-    ///     Defines the <see cref="OffContent" /> property.
+    /// Defines the <see cref="OffContent" /> property.
     /// </summary>
     public static readonly StyledProperty<object?> OffContentProperty =
         AvaloniaProperty.Register<ToggleSwitch, object?>(nameof(OffContent));
 
     /// <summary>
-    ///     Defines the <see cref="OnContent" /> property.
+    /// Defines the <see cref="OnContent" /> property.
     /// </summary>
     public static readonly StyledProperty<object?> OnContentProperty =
         AvaloniaProperty.Register<ToggleSwitch, object?>(nameof(OnContent));
 
     /// <summary>
-    ///     设置预置的大小类型
+    /// 设置预置的大小类型
     /// </summary>
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
         AvaloniaProperty.Register<Button, SizeType>(nameof(SizeType), SizeType.Middle);
 
     /// <summary>
-    ///     是否处于加载状态
+    /// 是否处于加载状态
     /// </summary>
     public static readonly StyledProperty<bool> IsLoadingProperty =
         AvaloniaProperty.Register<Button, bool>(nameof(IsLoading));
 
     /// <summary>
-    ///     Gets or Sets the Content that is displayed when in the On State.
+    /// Gets or Sets the Content that is displayed when in the On State.
     /// </summary>
     public object? OnContent
     {
@@ -250,7 +269,7 @@ public class ToggleSwitch : ToggleButton,
     }
 
     /// <summary>
-    ///     Gets or Sets the Content that is displayed when in the Off State.
+    /// Gets or Sets the Content that is displayed when in the Off State.
     /// </summary>
     public object? OffContent
     {
@@ -265,7 +284,7 @@ public class ToggleSwitch : ToggleButton,
     }
 
     /// <summary>
-    ///     是否处于加载状态
+    /// 是否处于加载状态
     /// </summary>
     public bool IsLoading
     {
@@ -280,8 +299,6 @@ public class ToggleSwitch : ToggleButton,
     }
 
     #endregion
-
-
 
     #region 私有属性定义
 
@@ -378,8 +395,6 @@ public class ToggleSwitch : ToggleButton,
 
     #endregion
 
-
-
     #region IControlCustomStyle 实现
 
     private Control? SetupContent(object? content)
@@ -388,10 +403,17 @@ public class ToggleSwitch : ToggleButton,
         if (content is Control offControl)
         {
             if (content is TemplatedControl templatedControl)
+            {
                 templatedControl.Padding = new Thickness(0);
+            }
             else if (content is PathIcon iconControl)
+            {
                 if (iconControl.ThemeType != IconThemeType.TwoTone)
+                {
                     iconControl.NormalFilledBrush ??= Foreground;
+                }
+            }
+
             offControl.Width = offControl.Height = IconSize;
             result           = offControl;
         }
@@ -457,32 +479,50 @@ public class ToggleSwitch : ToggleButton,
         }
 
         if (IsPressed)
+        {
             _styleState |= ControlStyleState.Sunken;
+        }
         else
+        {
             _styleState |= ControlStyleState.Raised;
+        }
     }
 
     void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
     {
         if (e.Property == IsLoadingProperty)
+        {
             HandleLoadingState(IsLoading);
+        }
         else if (e.Property == OffContentProperty || e.Property == OnContentProperty)
+        {
             if (VisualRoot is not null)
             {
-                if (e.OldValue is Control oldChild) _togglePanel?.Children.Remove(oldChild);
+                if (e.OldValue is Control oldChild)
+                {
+                    _togglePanel?.Children.Remove(oldChild);
+                }
 
                 var newControl = SetupContent(e.NewValue);
 
                 if (e.Property == OffContentProperty)
+                {
                     OffContent = newControl;
+                }
                 else
+                {
                     OnContent = newControl;
+                }
 
-                if (newControl is not null) _togglePanel?.Children.Add(newControl);
+                if (newControl is not null)
+                {
+                    _togglePanel?.Children.Add(newControl);
+                }
             }
+        }
 
         if ((e.Property == IsPointerOverProperty && !IsLoading) ||
-            e.Property == IsCheckedProperty                     ||
+            e.Property == IsCheckedProperty ||
             e.Property == IsEnabledProperty)
         {
             _customStyle.CollectStyleState();
@@ -532,7 +572,10 @@ public class ToggleSwitch : ToggleButton,
         }
         else
         {
-            if (IsPressed) handleSize *= STRETCH_FACTOR;
+            if (IsPressed)
+            {
+                handleSize *= STRETCH_FACTOR;
+            }
 
             handlePosX = controlSize.Width - offsetX - handleSize;
             handlePosY = offsetY;
@@ -550,13 +593,18 @@ public class ToggleSwitch : ToggleButton,
         if (isChecked)
         {
             if (OffContent is Control offControl)
+            {
                 yAdjustValue = (controlSize.Height - offControl.DesiredSize.Height) / 2;
+            }
 
             targetRect = targetRect.Inflate(new Thickness(-innerMinMargin, -yAdjustValue, innerMaxMargin, 0));
         }
         else
         {
-            if (OnContent is Control onControl) yAdjustValue = (controlSize.Height - onControl.DesiredSize.Height) / 2;
+            if (OnContent is Control onControl)
+            {
+                yAdjustValue = (controlSize.Height - onControl.DesiredSize.Height) / 2;
+            }
 
             targetRect = targetRect.Inflate(new Thickness(-innerMaxMargin, -yAdjustValue, innerMinMargin, 0));
         }

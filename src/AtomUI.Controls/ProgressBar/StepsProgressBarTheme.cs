@@ -41,7 +41,7 @@ internal class StepsProgressBarTheme : AbstractLineProgressTheme
         {
             var startStyle = new Style(selector =>
                 selector.Nesting()
-                    .PropertyEquals(StepsProgressBar.PercentPositionProperty, LinePercentAlignment.Start));
+                        .PropertyEquals(StepsProgressBar.PercentPositionProperty, LinePercentAlignment.Start));
             {
                 var icons = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
                 icons.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Right);
@@ -61,7 +61,7 @@ internal class StepsProgressBarTheme : AbstractLineProgressTheme
 
             var centerStyle = new Style(selector =>
                 selector.Nesting()
-                    .PropertyEquals(StepsProgressBar.PercentPositionProperty, LinePercentAlignment.Center));
+                        .PropertyEquals(StepsProgressBar.PercentPositionProperty, LinePercentAlignment.Center));
             {
                 var icons = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
                 icons.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Center);
@@ -78,7 +78,7 @@ internal class StepsProgressBarTheme : AbstractLineProgressTheme
         {
             var startStyle = new Style(selector =>
                 selector.Nesting()
-                    .PropertyEquals(StepsProgressBar.PercentPositionProperty, LinePercentAlignment.Start));
+                        .PropertyEquals(StepsProgressBar.PercentPositionProperty, LinePercentAlignment.Start));
             {
                 var icons = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
                 icons.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Bottom);
@@ -98,7 +98,7 @@ internal class StepsProgressBarTheme : AbstractLineProgressTheme
 
             var centerStyle = new Style(selector =>
                 selector.Nesting()
-                    .PropertyEquals(StepsProgressBar.PercentPositionProperty, LinePercentAlignment.Center));
+                        .PropertyEquals(StepsProgressBar.PercentPositionProperty, LinePercentAlignment.Center));
             {
                 var icons = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
                 icons.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Center);

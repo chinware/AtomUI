@@ -19,12 +19,18 @@ public partial class SwitchShowCase : UserControl
 
     public static void ToggleLoadingStatus(object arg)
     {
-        var btn                                                            = (arg as Button)!;
-        var stackPanel                                                     = btn.Parent as StackPanel;
-        var toggleSwitchDefault                                            = stackPanel?.Children[0] as ToggleSwitch;
-        var toggleSwitchSmall                                              = stackPanel?.Children[1] as ToggleSwitch;
-        if (toggleSwitchDefault is not null) toggleSwitchDefault.IsLoading = !toggleSwitchDefault.IsLoading;
+        var btn                 = (arg as Button)!;
+        var stackPanel          = btn.Parent as StackPanel;
+        var toggleSwitchDefault = stackPanel?.Children[0] as ToggleSwitch;
+        var toggleSwitchSmall   = stackPanel?.Children[1] as ToggleSwitch;
+        if (toggleSwitchDefault is not null)
+        {
+            toggleSwitchDefault.IsLoading = !toggleSwitchDefault.IsLoading;
+        }
 
-        if (toggleSwitchSmall is not null) toggleSwitchSmall.IsLoading = !toggleSwitchSmall.IsLoading;
+        if (toggleSwitchSmall is not null)
+        {
+            toggleSwitchSmall.IsLoading = !toggleSwitchSmall.IsLoading;
+        }
     }
 }

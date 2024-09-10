@@ -20,6 +20,7 @@ public class DynamicTheme : Theme
     public IList<string> Algorithms
     {
         get => _algorithms;
+
         set
         {
             _algorithms    = value;
@@ -30,6 +31,7 @@ public class DynamicTheme : Theme
     public IDictionary<string, string> GlobalTokens
     {
         get => _globalTokens;
+
         set
         {
             _globalTokens  = value;
@@ -40,6 +42,7 @@ public class DynamicTheme : Theme
     public IList<ControlTokenConfigInfo> ControlTokens
     {
         get => _controlTokenConfigInfos;
+
         set
         {
             _controlTokenConfigInfos = value;

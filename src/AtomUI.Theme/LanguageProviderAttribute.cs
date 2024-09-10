@@ -7,7 +7,7 @@ public class LanguageProviderAttribute : Attribute
     public const string DefaultResourceCatalog = $"{ResourceCatalogConstants.Root}.{ResourceCatalogConstants.Language}";
 
     public LanguageProviderAttribute(string languageCode, string languageId = DefaultLanguageId,
-        string resourceCatalog = DefaultResourceCatalog)
+                                     string resourceCatalog = DefaultResourceCatalog)
     {
         LanguageCode    = languageCode;
         LanguageId      = languageId;

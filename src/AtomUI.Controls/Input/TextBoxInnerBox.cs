@@ -13,15 +13,19 @@ internal class TextBoxInnerBox : AddOnDecoratedInnerBox
 
     protected override void NotifyClearButtonClicked()
     {
-        if (_textBox.TryGetTarget(out var textBox)) textBox.Clear();
+        if (_textBox.TryGetTarget(out var textBox))
+        {
+            textBox.Clear();
+        }
     }
 
     protected override void BuildEffectiveInnerBoxPadding()
     {
-        if (!_embedMode) base.BuildEffectiveInnerBoxPadding();
+        if (!_embedMode)
+        {
+            base.BuildEffectiveInnerBoxPadding();
+        }
     }
-
-
 
     #region 公共属性定义
 
@@ -44,8 +48,6 @@ internal class TextBoxInnerBox : AddOnDecoratedInnerBox
     }
 
     #endregion
-
-
 
     #region 内部属性定义
 

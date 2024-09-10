@@ -12,7 +12,6 @@ public enum IconMode
     Selected
 }
 
-
 public enum IconAnimation
 {
     None,
@@ -20,14 +19,12 @@ public enum IconAnimation
     Pulse
 }
 
-
 public enum IconThemeType
 {
     Filled,
     Outlined,
     TwoTone
 }
-
 
 public record struct ColorInfo
 {
@@ -78,7 +75,9 @@ public record struct ColorInfo
                         {
                             colorInfo.SelectedColor = Color.Parse(color3Str);
                             if (tokenizer.TryReadString(out var color4Str))
+                            {
                                 colorInfo.DisabledColor = Color.Parse(color4Str);
+                            }
                         }
                     }
                 }
@@ -92,14 +91,16 @@ public record struct ColorInfo
             }
             catch (Exception e)
             {
-                if (e is not FormatException) throw new FormatException(exceptionMessage, e);
+                if (e is not FormatException)
+                {
+                    throw new FormatException(exceptionMessage, e);
+                }
 
                 throw;
             }
         }
     }
 }
-
 
 public record struct TwoToneColorInfo
 {
@@ -112,12 +113,16 @@ public record struct TwoToneColorInfo
         using (var tokenizer = new StringTokenizer(expr, CultureInfo.InvariantCulture, exceptionMessage))
         {
             if (tokenizer.TryReadString(out var color1Str))
+            {
                 if (tokenizer.TryReadString(out var color2Str))
+                {
                     return new TwoToneColorInfo
                     {
                         PrimaryColor   = Color.Parse(color1Str),
                         SecondaryColor = Color.Parse(color2Str)
                     };
+                }
+            }
 
             // 一定要两个，要不就不要定制
             throw new FormatException(exceptionMessage);

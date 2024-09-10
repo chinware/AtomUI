@@ -7,7 +7,6 @@ namespace AtomUI.Controls;
 
 using AvaloniaTextBox = Avalonia.Controls.TextBox;
 
-
 public class TextBox : AvaloniaTextBox
 {
     public const string ErrorPC = ":error";
@@ -29,20 +28,31 @@ public class TextBox : AvaloniaTextBox
         base.OnPropertyChanged(change);
 
         if (change.Property == AcceptsReturnProperty ||
-            change.Property == IsReadOnlyProperty    ||
-            change.Property == TextProperty          ||
+            change.Property == IsReadOnlyProperty ||
+            change.Property == TextProperty ||
             change.Property == IsEnableClearButtonProperty)
+        {
             SetupEffectiveShowClearButton();
+        }
 
-        if (change.Property == StatusProperty) UpdatePseudoClasses();
+        if (change.Property == StatusProperty)
+        {
+            UpdatePseudoClasses();
+        }
 
         // TODO 到底是否需要这样，这些控件的管辖区理论上不应该我们控制
         if (change.Property == InnerLeftContentProperty ||
             change.Property == InnerRightContentProperty)
         {
-            if (change.OldValue is Control oldControl) UIStructureUtils.SetTemplateParent(oldControl, null);
+            if (change.OldValue is Control oldControl)
+            {
+                UIStructureUtils.SetTemplateParent(oldControl, null);
+            }
 
-            if (change.NewValue is Control newControl) UIStructureUtils.SetTemplateParent(newControl, this);
+            if (change.NewValue is Control newControl)
+            {
+                UIStructureUtils.SetTemplateParent(newControl, this);
+            }
         }
     }
 
@@ -59,11 +69,9 @@ public class TextBox : AvaloniaTextBox
 
     private void UpdatePseudoClasses()
     {
-        PseudoClasses.Set(ErrorPC, Status   == AddOnDecoratedStatus.Error);
+        PseudoClasses.Set(ErrorPC, Status == AddOnDecoratedStatus.Error);
         PseudoClasses.Set(WarningPC, Status == AddOnDecoratedStatus.Warning);
     }
-
-
 
     #region 公共属性定义
 
@@ -113,8 +121,6 @@ public class TextBox : AvaloniaTextBox
     }
 
     #endregion
-
-
 
     #region 内部属性定义
 

@@ -9,7 +9,7 @@ namespace AtomUI.Controls.Utils;
 public static partial class MotionFactory
 {
     public static MotionConfig BuildCollapseMotion(Direction direction, TimeSpan duration, Easing? easing = null,
-        FillMode fillMode = FillMode.None)
+                                                   FillMode fillMode = FillMode.None)
     {
         easing ??= new CircularEaseOut();
         var           animations      = new List<IAnimation>();
@@ -86,20 +86,28 @@ public static partial class MotionFactory
         }
 
         if (direction == Direction.Left)
+        {
             transformOrigin = new RelativePoint(0, 0.5, RelativeUnit.Relative);
+        }
         else if (direction == Direction.Right)
+        {
             transformOrigin = new RelativePoint(1, 0.5, RelativeUnit.Relative);
+        }
         else if (direction == Direction.Top)
+        {
             transformOrigin = new RelativePoint(0.5, 0, RelativeUnit.Relative);
+        }
         else
+        {
             transformOrigin = new RelativePoint(0.5, 1, RelativeUnit.Relative);
+        }
 
         animations.Add(animation);
         return new MotionConfig(transformOrigin, animations);
     }
 
     public static MotionConfig BuildExpandMotion(Direction direction, TimeSpan duration, Easing? easing = null,
-        FillMode fillMode = FillMode.None)
+                                                 FillMode fillMode = FillMode.None)
     {
         easing ??= new CircularEaseOut();
         var           animations      = new List<IAnimation>();
@@ -176,13 +184,21 @@ public static partial class MotionFactory
         }
 
         if (direction == Direction.Left)
+        {
             transformOrigin = new RelativePoint(0, 0.5, RelativeUnit.Relative);
+        }
         else if (direction == Direction.Right)
+        {
             transformOrigin = new RelativePoint(1, 0.5, RelativeUnit.Relative);
+        }
         else if (direction == Direction.Top)
+        {
             transformOrigin = new RelativePoint(0.5, 0, RelativeUnit.Relative);
+        }
         else
+        {
             transformOrigin = new RelativePoint(0.5, 1, RelativeUnit.Relative);
+        }
 
         animations.Add(animation);
         return new MotionConfig(transformOrigin, animations);

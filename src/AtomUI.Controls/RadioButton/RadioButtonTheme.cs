@@ -41,7 +41,6 @@ internal class RadioButtonTheme : BaseControlTheme
             new Style(selector => selector.Nesting().PropertyEquals(InputElement.IsEnabledProperty, true));
         enabledStyle.Add(RadioButton.RadioInnerBackgroundProperty, RadioButtonTokenResourceKey.RadioColor);
 
-
         // 选中
         var checkedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Checked));
         checkedStyle.Add(RadioButton.RadioBorderBrushProperty, GlobalTokenResourceKey.ColorPrimary);

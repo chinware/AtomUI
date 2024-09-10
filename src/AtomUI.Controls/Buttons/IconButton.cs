@@ -11,7 +11,6 @@ namespace AtomUI.Controls;
 
 using AvaloniaButton = Avalonia.Controls.Button;
 
-
 public class IconButton : AvaloniaButton, ICustomHitTest
 {
     private ControlStyleState _styleState;
@@ -46,11 +45,14 @@ public class IconButton : AvaloniaButton, ICustomHitTest
             if (e.Property == IconProperty)
             {
                 var oldIcon = e.GetOldValue<PathIcon?>();
-                if (oldIcon is not null) ((ISetLogicalParent)oldIcon).SetParent(null);
+                if (oldIcon is not null)
+                {
+                    ((ISetLogicalParent)oldIcon).SetParent(null);
+                }
 
                 SetupIcon();
             }
-            else if (e.Property == IsPressedProperty     ||
+            else if (e.Property == IsPressedProperty ||
                      e.Property == IsPointerOverProperty ||
                      e.Property == IsEnabledProperty)
             {
@@ -80,8 +82,13 @@ public class IconButton : AvaloniaButton, ICustomHitTest
             {
                 Icon.IconMode = IconMode.Normal;
                 if (_styleState.HasFlag(ControlStyleState.Sunken))
-                    Icon.IconMode                                                        = IconMode.Selected;
-                else if (_styleState.HasFlag(ControlStyleState.MouseOver)) Icon.IconMode = IconMode.Active;
+                {
+                    Icon.IconMode = IconMode.Selected;
+                }
+                else if (_styleState.HasFlag(ControlStyleState.MouseOver))
+                {
+                    Icon.IconMode = IconMode.Active;
+                }
             }
             else
             {
@@ -94,12 +101,14 @@ public class IconButton : AvaloniaButton, ICustomHitTest
     {
         ControlStateUtils.InitCommonState(this, ref _styleState);
         if (IsPressed)
+        {
             _styleState |= ControlStyleState.Sunken;
+        }
         else
+        {
             _styleState |= ControlStyleState.Raised;
+        }
     }
-
-
 
     #region 公共属性定义
 

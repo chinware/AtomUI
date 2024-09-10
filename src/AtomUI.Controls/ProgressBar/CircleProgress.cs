@@ -16,9 +16,13 @@ public class CircleProgress : AbstractCircleProgress
         _currentGrooveRect = new Rect(_currentGrooveRect.Position, new Size(Math.Floor(_currentGrooveRect.Size.Width),
             Math.Floor(_currentGrooveRect.Size.Height)));
         if (StepCount > 0 && StepGap > 0)
+        {
             DrawGrooveStep(context);
+        }
         else
+        {
             DrawGrooveNormal(context);
+        }
     }
 
     private void DrawGrooveNormal(DrawingContext context)
@@ -45,9 +49,13 @@ public class CircleProgress : AbstractCircleProgress
     protected override void RenderIndicatorBar(DrawingContext context)
     {
         if (StepCount > 0 && StepGap > 0)
+        {
             DrawIndicatorBarStep(context);
+        }
         else
+        {
             DrawIndicatorBarNormal(context);
+        }
     }
 
     private void DrawIndicatorBarNormal(DrawingContext context)
@@ -97,8 +105,13 @@ public class CircleProgress : AbstractCircleProgress
         {
             currentPen = pen;
             if (successSteps.HasValue)
+            {
                 if (i < successSteps)
+                {
                     currentPen = successPen;
+                }
+            }
+
             context.DrawArc(currentPen, _currentGrooveRect, startAngle, spanAngle);
             startAngle += StepGap + spanAngle;
         }

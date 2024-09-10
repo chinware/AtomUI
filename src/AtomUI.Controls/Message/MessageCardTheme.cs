@@ -169,7 +169,9 @@ internal class MessageCardTheme : BaseControlTheme
                 AnimationMaxOffsetY, TimeSpan.FromMilliseconds(AnimationDuration), _quadraticEaseOut,
                 FillMode.Forward);
             foreach (var animation in moveRightInMotionConfig.Animations)
+            {
                 layoutTransformStyle.Animations.Add(animation);
+            }
 
             commonStyle.Add(layoutTransformStyle);
         }
@@ -184,7 +186,9 @@ internal class MessageCardTheme : BaseControlTheme
                 AnimationMaxOffsetY, TimeSpan.FromMilliseconds(AnimationDuration), _quadraticEaseIn, FillMode.Forward);
 
             foreach (var animation in moveRightOutMotionConfig.Animations)
+            {
                 layoutTransformStyle.Animations.Add(animation);
+            }
 
             isClosingStyle.Animations.Add(new Animation
             {

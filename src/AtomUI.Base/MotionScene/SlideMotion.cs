@@ -39,7 +39,6 @@ public class SlideUpInMotion : AbstractMotion
     }
 }
 
-
 public class SlideUpOutMotion : AbstractMotion
 {
     public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
@@ -74,7 +73,6 @@ public class SlideUpOutMotion : AbstractMotion
         AddMotionConfig(config);
     }
 }
-
 
 public class SlideDownInMotion : AbstractMotion
 {
@@ -122,7 +120,6 @@ public class SlideDownInMotion : AbstractMotion
     }
 }
 
-
 public class SlideDownOutMotion : AbstractMotion
 {
     public SlideDownOutMotion()
@@ -169,7 +166,6 @@ public class SlideDownOutMotion : AbstractMotion
     }
 }
 
-
 public class SlideLeftInMotion : AbstractMotion
 {
     public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
@@ -205,7 +201,6 @@ public class SlideLeftInMotion : AbstractMotion
     }
 }
 
-
 public class SlideLeftOutMotion : AbstractMotion
 {
     public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
@@ -240,7 +235,6 @@ public class SlideLeftOutMotion : AbstractMotion
         AddMotionConfig(config);
     }
 }
-
 
 public class SlideRightInMotion : AbstractMotion
 {
@@ -287,7 +281,6 @@ public class SlideRightInMotion : AbstractMotion
         motionTarget.RenderTransformOrigin = MotionRenderTransformOrigin;
     }
 }
-
 
 public class SlideRightOutMotion : AbstractMotion
 {

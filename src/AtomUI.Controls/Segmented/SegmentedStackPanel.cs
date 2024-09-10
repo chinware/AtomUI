@@ -16,7 +16,11 @@ internal class SegmentedStackPanel : Panel
 
     protected override Size MeasureOverride(Size availableSize)
     {
-        if (!IsExpanding) return MeasureOverrideNoExpanding(availableSize);
+        if (!IsExpanding)
+        {
+            return MeasureOverrideNoExpanding(availableSize);
+        }
+
         return MeasureOverrideExpanding(availableSize);
     }
 
@@ -28,16 +32,21 @@ internal class SegmentedStackPanel : Panel
         var targetWidth     = 0d;
         var targetHeight    = 0d;
         foreach (var child in Children)
+        {
             if (child is SegmentedItem box)
             {
-                var isVisible                                      = box.IsVisible;
-                if (isVisible && !hasVisibleChild) hasVisibleChild = true;
+                var isVisible = box.IsVisible;
+                if (isVisible && !hasVisibleChild)
+                {
+                    hasVisibleChild = true;
+                }
 
                 box.Measure(layoutSlotSize);
                 var childDesiredSize = box.DesiredSize;
                 targetWidth  += childDesiredSize.Width;
                 targetHeight =  Math.Max(targetHeight, childDesiredSize.Height);
             }
+        }
 
         return new Size(targetWidth, targetHeight);
     }
@@ -49,11 +58,16 @@ internal class SegmentedStackPanel : Panel
         var availableWidth     = availableSize.Width;
         var childAvailableSize = new Size(availableWidth / columns, availableSize.Height);
         foreach (var child in Children)
+        {
             if (child is SegmentedItem box)
             {
                 box.Measure(childAvailableSize);
-                if (box.DesiredSize.Height > maxHeight) maxHeight = box.DesiredSize.Height;
+                if (box.DesiredSize.Height > maxHeight)
+                {
+                    maxHeight = box.DesiredSize.Height;
+                }
             }
+        }
 
         return new Size(availableSize.Width, maxHeight);
     }
@@ -61,9 +75,14 @@ internal class SegmentedStackPanel : Panel
     protected override Size ArrangeOverride(Size finalSize)
     {
         if (!IsExpanding)
+        {
             ArrangeOverrideNoExpanding(finalSize);
+        }
         else
+        {
             ArrangeOverrideExpanding(finalSize);
+        }
+
         return finalSize;
     }
 
@@ -73,15 +92,20 @@ internal class SegmentedStackPanel : Panel
         var offsetX           = 0d;
         var offsetY           = 0d;
         foreach (var child in Children)
+        {
             if (child is SegmentedItem box)
             {
-                if (!box.IsVisible) continue;
+                if (!box.IsVisible)
+                {
+                    continue;
+                }
 
                 previousChildSize = box.DesiredSize.Width;
 
                 box.Arrange(new Rect(new Point(offsetX, offsetY), box.DesiredSize));
                 offsetX += previousChildSize;
             }
+        }
 
         return finalSize;
     }
@@ -97,13 +121,18 @@ internal class SegmentedStackPanel : Panel
         var x = 0;
 
         foreach (var child in Children)
+        {
             if (child is SegmentedItem box)
             {
-                if (!box.IsVisible) continue;
+                if (!box.IsVisible)
+                {
+                    continue;
+                }
 
                 box.Arrange(new Rect(x * width + offsetX, offsetY, width, box.DesiredSize.Height));
                 x++;
             }
+        }
 
         return finalSize;
     }

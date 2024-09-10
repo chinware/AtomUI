@@ -42,11 +42,13 @@ internal abstract class BaseTabScrollViewer : ScrollViewer
         if (change.Property == TabStripPlacementProperty)
         {
             if (Presenter is TabScrollContentPresenter tabStripScrollContentPresenter)
+            {
                 tabStripScrollContentPresenter.TabStripPlacement = TabStripPlacement;
+            }
         }
         else if (change.Property == VerticalScrollBarVisibilityProperty ||
-                 change.Property == OffsetProperty                      ||
-                 change.Property == ExtentProperty                      ||
+                 change.Property == OffsetProperty ||
+                 change.Property == ExtentProperty ||
                  change.Property == ViewportProperty)
         {
             SetupIndicatorsVisibility();
@@ -141,7 +143,9 @@ internal abstract class BaseTabScrollViewer : ScrollViewer
     protected override bool RegisterContentPresenter(ContentPresenter presenter)
     {
         if (presenter is TabScrollContentPresenter tabStripScrollContentPresenter)
+        {
             tabStripScrollContentPresenter.TabStripPlacement = TabStripPlacement;
+        }
 
         return base.RegisterContentPresenter(presenter);
     }
@@ -198,24 +202,26 @@ internal abstract class BaseTabScrollViewer : ScrollViewer
         }
 
         if (_startEdgeIndicator is not null &&
-            scrollUpVisibility is not null  &&
+            scrollUpVisibility is not null &&
             scrollUpVisibility != AvaloniaProperty.UnsetValue)
+        {
             _startEdgeIndicator.IsVisible = (bool)scrollUpVisibility;
+        }
 
-        if (_endEdgeIndicator is not null    &&
+        if (_endEdgeIndicator is not null &&
             scrollDownVisibility is not null &&
             scrollDownVisibility != AvaloniaProperty.UnsetValue)
+        {
             _endEdgeIndicator.IsVisible = (bool)scrollDownVisibility;
+        }
 
         if (_menuIndicator is not null)
         {
             var startEdgeVisible = _startEdgeIndicator?.IsVisible ?? false;
-            var endEdgeVisible   = _endEdgeIndicator?.IsVisible   ?? false;
+            var endEdgeVisible   = _endEdgeIndicator?.IsVisible ?? false;
             _menuIndicator.IsVisible = startEdgeVisible || endEdgeVisible;
         }
     }
-
-
 
     #region 内部属性定义
 

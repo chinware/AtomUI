@@ -7,14 +7,14 @@ public static class InterpolateUtils
     public static Color ColorInterpolate(Color fromColor, Color toColor, double progress)
     {
         var a1 = fromColor.GetAlphaF();
-        var r1 = fromColor.GetRedF()   * a1;
+        var r1 = fromColor.GetRedF() * a1;
         var g1 = fromColor.GetGreenF() * a1;
-        var b1 = fromColor.GetBlueF()  * a1;
+        var b1 = fromColor.GetBlueF() * a1;
 
         var a2 = toColor.GetAlphaF();
-        var r2 = toColor.GetRedF()   * a2;
+        var r2 = toColor.GetRedF() * a2;
         var g2 = toColor.GetGreenF() * a2;
-        var b2 = toColor.GetBlueF()  * a2;
+        var b2 = toColor.GetBlueF() * a2;
 
         var r = DoubleInterpolate(r1, r2, progress);
         var g = DoubleInterpolate(g1, g2, progress);

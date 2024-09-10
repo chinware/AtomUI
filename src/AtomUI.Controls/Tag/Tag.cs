@@ -21,15 +21,13 @@ public enum TagStatus
     Warning
 }
 
-
 internal struct TagCalcColor
 {
-    public Color LightColor { get; set; }       // 1 号色
+    public Color LightColor { get; set; } // 1 号色
     public Color LightBorderColor { get; set; } // 3 号色
-    public Color DarkColor { get; set; }        // 6 号色
-    public Color TextColor { get; set; }        // 7 号色
+    public Color DarkColor { get; set; } // 6 号色
+    public Color TextColor { get; set; } // 7 号色
 }
-
 
 internal struct TagStatusCalcColor
 {
@@ -37,7 +35,6 @@ internal struct TagStatusCalcColor
     public Color Background { get; set; }
     public Color BorderColor { get; set; }
 }
-
 
 public class Tag : TemplatedControl, IControlCustomStyle
 {
@@ -67,9 +64,9 @@ public class Tag : TemplatedControl, IControlCustomStyle
     private static readonly Dictionary<PresetColorType, TagCalcColor> _presetColorMap;
     private static readonly Dictionary<TagStatus, TagStatusCalcColor> _statusColorMap;
     private readonly BorderRenderHelper _borderRenderHelper;
-    private IconButton? _closeButton;
 
     private readonly IControlCustomStyle _customStyle;
+    private IconButton? _closeButton;
     private bool _hasColorSet;
     private bool _isPresetColorTag;
     private Canvas? _layoutPanel;
@@ -142,7 +139,11 @@ public class Tag : TemplatedControl, IControlCustomStyle
         _closeButton = scope.Find<IconButton>(TagTheme.CloseButtonPart);
         _textBlock   = scope.Find<TextBlock>(TagTheme.TagTextLabelPart);
 
-        if (TagColor is not null) SetupTagColorInfo(TagColor);
+        if (TagColor is not null)
+        {
+            SetupTagColorInfo(TagColor);
+        }
+
         SetupTagClosable();
         SetupTagIcon();
         _customStyle.SetupTokenBindings();
@@ -163,15 +164,24 @@ public class Tag : TemplatedControl, IControlCustomStyle
         var targetWidth  = 0d;
         var targetHeight = 0d;
         if (_layoutPanel is not null)
+        {
             foreach (var child in _layoutPanel.Children)
             {
                 targetWidth  += child.DesiredSize.Width;
                 targetHeight =  Math.Max(targetHeight, child.DesiredSize.Height);
             }
+        }
 
-        if (Icon is not null) targetWidth += TagTextPaddingInline;
+        if (Icon is not null)
+        {
+            targetWidth += TagTextPaddingInline;
+        }
 
-        if (IsClosable && _closeButton is not null) targetWidth += TagTextPaddingInline;
+        if (IsClosable && _closeButton is not null)
+        {
+            targetWidth += TagTextPaddingInline;
+        }
+
         targetWidth += Padding.Left + Padding.Right;
         return new Size(targetWidth, targetHeight);
     }
@@ -198,8 +208,11 @@ public class Tag : TemplatedControl, IControlCustomStyle
         // 文字
         if (_textBlock is not null)
         {
-            var offsetX                   = Padding.Left;
-            if (Icon is not null) offsetX += Icon.DesiredSize.Width + TagTextPaddingInline;
+            var offsetX = Padding.Left;
+            if (Icon is not null)
+            {
+                offsetX += Icon.DesiredSize.Width + TagTextPaddingInline;
+            }
 
             // 这个时候已经算好了
             var offsetY = (finalSize.Height - _textBlock.Height) / 2;
@@ -216,8 +229,6 @@ public class Tag : TemplatedControl, IControlCustomStyle
         _customStyle.HandlePropertyChangedForStyle(e);
     }
 
-
-
     #region IControlCustomStyle 实现
 
     void IControlCustomStyle.SetupTokenBindings()
@@ -226,7 +237,10 @@ public class Tag : TemplatedControl, IControlCustomStyle
             BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this, thickness =>
             {
-                if (!Bordered) return new Thickness(0);
+                if (!Bordered)
+                {
+                    return new Thickness(0);
+                }
 
                 return thickness;
             }));
@@ -237,8 +251,13 @@ public class Tag : TemplatedControl, IControlCustomStyle
         if (VisualRoot is not null)
         {
             if (e.Property == IsClosableProperty)
+            {
                 SetupTagClosable();
-            else if (e.Property == IconProperty) SetupTagIcon();
+            }
+            else if (e.Property == IconProperty)
+            {
+                SetupTagIcon();
+            }
         }
     }
 
@@ -252,7 +271,9 @@ public class Tag : TemplatedControl, IControlCustomStyle
             if (globalToken == null)
 
                 // 是否需要输出日志
+            {
                 return;
+            }
 
             foreach (var entry in PresetPrimaryColor.AllColorTypes())
             {
@@ -278,7 +299,9 @@ public class Tag : TemplatedControl, IControlCustomStyle
             if (globalToken == null)
 
                 // 是否需要输出日志
+            {
                 return;
+            }
 
             var colorToken        = globalToken.ColorToken;
             var colorSuccessToken = colorToken.ColorSuccessToken;
@@ -323,6 +346,7 @@ public class Tag : TemplatedControl, IControlCustomStyle
         colorStr          = colorStr.Trim().ToLower();
 
         foreach (var entry in _presetColorMap)
+        {
             if (entry.Key.ToString().ToLower() == colorStr)
             {
                 var colorInfo = _presetColorMap[entry.Key];
@@ -332,8 +356,10 @@ public class Tag : TemplatedControl, IControlCustomStyle
                 _isPresetColorTag = true;
                 return;
             }
+        }
 
         foreach (var entry in _statusColorMap)
+        {
             if (entry.Key.ToString().ToLower() == colorStr)
             {
                 var colorInfo = _statusColorMap[entry.Key];
@@ -343,6 +369,7 @@ public class Tag : TemplatedControl, IControlCustomStyle
                 _isPresetColorTag = true;
                 return;
             }
+        }
 
         if (Color.TryParse(colorStr, out var color))
         {
@@ -357,6 +384,7 @@ public class Tag : TemplatedControl, IControlCustomStyle
     private void SetupTagClosable()
     {
         if (IsClosable)
+        {
             if (CloseIcon is null)
             {
                 CloseIcon = new PathIcon
@@ -379,20 +407,30 @@ public class Tag : TemplatedControl, IControlCustomStyle
                         GlobalTokenResourceKey.ColorIconHover);
                 }
             }
+        }
     }
 
     private void SetupTagIcon()
     {
         if (Icon is not null)
         {
-            if (_layoutPanel?.Children[0] is PathIcon oldIcon) _layoutPanel.Children.Remove(oldIcon);
+            if (_layoutPanel?.Children[0] is PathIcon oldIcon)
+            {
+                _layoutPanel.Children.Remove(oldIcon);
+            }
+
             TokenResourceBinder.CreateTokenBinding(Icon, WidthProperty, TagTokenResourceKey.TagIconSize);
             TokenResourceBinder.CreateTokenBinding(Icon, HeightProperty, TagTokenResourceKey.TagIconSize);
             _layoutPanel?.Children.Insert(0, Icon);
             if (_hasColorSet)
+            {
                 TokenResourceBinder.CreateTokenBinding(Icon, PathIcon.NormalFilledBrushProperty,
                     GlobalTokenResourceKey.ColorTextLightSolid);
-            else if (_isPresetColorTag) Icon.NormalFilledBrush = Foreground;
+            }
+            else if (_isPresetColorTag)
+            {
+                Icon.NormalFilledBrush = Foreground;
+            }
         }
     }
 

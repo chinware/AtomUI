@@ -17,7 +17,6 @@ namespace AtomUI.Controls;
 
 using PopupControl = Popup;
 
-
 public class Flyout : PopupFlyoutBase
 {
     private static readonly DirectProperty<Flyout, TimeSpan> MotionDurationTokenProperty
@@ -45,7 +44,7 @@ public class Flyout : PopupFlyoutBase
     }
 
     /// <summary>
-    ///     Gets the Classes collection to apply to the FlyoutPresenter this Flyout is hosting
+    /// Gets the Classes collection to apply to the FlyoutPresenter this Flyout is hosting
     /// </summary>
     public Classes FlyoutPresenterClasses => _classes ??= new Classes();
 
@@ -58,8 +57,11 @@ public class Flyout : PopupFlyoutBase
     {
         if (flyoutPresenter is null)
         {
-            var child                                                    = popup.Child;
-            if (child is FlyoutPresenter childPresenter) flyoutPresenter = childPresenter;
+            var child = popup.Child;
+            if (child is FlyoutPresenter childPresenter)
+            {
+                flyoutPresenter = childPresenter;
+            }
         }
 
         var placement = Placement;
@@ -69,7 +71,10 @@ public class Flyout : PopupFlyoutBase
         if (flyoutPresenter is not null)
         {
             var arrowPosition = PopupUtils.CalculateArrowPosition(placement, anchor, gravity);
-            if (arrowPosition.HasValue) flyoutPresenter.ArrowPosition = arrowPosition.Value;
+            if (arrowPosition.HasValue)
+            {
+                flyoutPresenter.ArrowPosition = arrowPosition.Value;
+            }
         }
     }
 
@@ -102,14 +107,22 @@ public class Flyout : PopupFlyoutBase
         _compositeDisposable = new CompositeDisposable();
         if (Popup.Child is { } presenter)
         {
-            if (_classes != null) SetPresenterClasses(presenter, FlyoutPresenterClasses);
+            if (_classes != null)
+            {
+                SetPresenterClasses(presenter, FlyoutPresenterClasses);
+            }
 
-            if (FlyoutPresenterTheme is { } theme) presenter.SetValue(StyledElement.ThemeProperty, theme);
+            if (FlyoutPresenterTheme is { } theme)
+            {
+                presenter.SetValue(StyledElement.ThemeProperty, theme);
+            }
         }
 
         base.OnOpening(args);
         if (!args.Cancel)
+        {
             _compositeDisposable.Add(PopupControl.IsFlippedProperty.Changed.Subscribe(HandlePopupPropertyChanged));
+        }
     }
 
     protected override void OnClosed()
@@ -119,37 +132,49 @@ public class Flyout : PopupFlyoutBase
     }
 
     private Point CalculatePopupPositionDelta(Control anchorTarget,
-        Control? flyoutPresenter,
-        PlacementMode placement,
-        PopupAnchor? anchor = null,
-        PopupGravity? gravity = null)
+                                              Control? flyoutPresenter,
+                                              PlacementMode placement,
+                                              PopupAnchor? anchor = null,
+                                              PopupGravity? gravity = null)
     {
         var offsetX = 0d;
         var offsetY = 0d;
         if (IsShowArrow && IsPointAtCenter)
+        {
             if (PopupUtils.CanEnabledArrow(placement, anchor, gravity))
+            {
                 if (flyoutPresenter is ArrowDecoratedBox arrowDecoratedBox)
                 {
                     var arrowVertexPoint = arrowDecoratedBox.ArrowVertexPoint;
 
                     var anchorSize = anchorTarget.Bounds.Size;
-                    var centerX    = anchorSize.Width  / 2;
+                    var centerX    = anchorSize.Width / 2;
                     var centerY    = anchorSize.Height / 2;
 
                     // 这里计算不需要全局坐标
                     if (placement == PlacementMode.TopEdgeAlignedLeft ||
                         placement == PlacementMode.BottomEdgeAlignedLeft)
+                    {
                         offsetX += centerX - arrowVertexPoint.Item1;
+                    }
                     else if (placement == PlacementMode.TopEdgeAlignedRight ||
                              placement == PlacementMode.BottomEdgeAlignedRight)
+                    {
                         offsetX -= centerX - arrowVertexPoint.Item2;
+                    }
                     else if (placement == PlacementMode.RightEdgeAlignedTop ||
                              placement == PlacementMode.LeftEdgeAlignedTop)
+                    {
                         offsetY += centerY - arrowVertexPoint.Item1;
+                    }
                     else if (placement == PlacementMode.RightEdgeAlignedBottom ||
                              placement == PlacementMode.LeftEdgeAlignedBottom)
+                    {
                         offsetY -= centerY - arrowVertexPoint.Item2;
+                    }
                 }
+            }
+        }
 
         return new Point(offsetX, offsetY);
     }
@@ -158,25 +183,38 @@ public class Flyout : PopupFlyoutBase
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
         base.OnPropertyChanged(e);
-        if (e.Property == IsShowArrowProperty     ||
-            e.Property == PlacementProperty       ||
+        if (e.Property == IsShowArrowProperty ||
+            e.Property == PlacementProperty ||
             e.Property == PlacementAnchorProperty ||
             e.Property == PlacementGravityProperty)
+        {
             CalculateShowArrowEffective();
-        if (e.Property == PlacementProperty) SetupArrowPosition(Popup);
+        }
+
+        if (e.Property == PlacementProperty)
+        {
+            SetupArrowPosition(Popup);
+        }
     }
 
     protected void CalculateShowArrowEffective()
     {
         if (IsShowArrow == false)
+        {
             IsShowArrowEffective = false;
+        }
         else
+        {
             IsShowArrowEffective = PopupUtils.CanEnabledArrow(Placement, PlacementAnchor, PlacementGravity);
+        }
     }
 
     protected internal override void NotifyPositionPopup(bool showAtPointer)
     {
-        if (Popup.Child!.DesiredSize == default) LayoutHelper.MeasureChild(Popup.Child, Size.Infinity, new Thickness());
+        if (Popup.Child!.DesiredSize == default)
+        {
+            LayoutHelper.MeasureChild(Popup.Child, Size.Infinity, new Thickness());
+        }
 
         Popup.PlacementAnchor  = PlacementAnchor;
         Popup.PlacementGravity = PlacementGravity;
@@ -210,9 +248,16 @@ public class Flyout : PopupFlyoutBase
 
     protected override bool ShowAtCore(Control placementTarget, bool showAtPointer = false)
     {
-        if (IsOpen) return false;
+        if (IsOpen)
+        {
+            return false;
+        }
 
-        if (!PrepareShowPopup(placementTarget, showAtPointer)) return false;
+        if (!PrepareShowPopup(placementTarget, showAtPointer))
+        {
+            return false;
+        }
+
         IsOpen = true;
         Dispatcher.UIThread.Post(() =>
         {
@@ -224,13 +269,24 @@ public class Flyout : PopupFlyoutBase
 
     protected override bool HideCore(bool canCancel = true)
     {
-        if (!IsOpen) return false;
+        if (!IsOpen)
+        {
+            return false;
+        }
 
         if (canCancel)
+        {
             if (CancelClosing())
+            {
                 return false;
+            }
+        }
 
-        if (Popup.PlacementTarget?.GetVisualRoot() is null) return base.HideCore(false);
+        if (Popup.PlacementTarget?.GetVisualRoot() is null)
+        {
+            return base.HideCore(false);
+        }
+
         IsOpen = false;
         Dispatcher.UIThread.Post(() => { Popup.CloseAnimation(HandlePopupClosed); });
         return true;
@@ -243,12 +299,10 @@ public class Flyout : PopupFlyoutBase
         return eventArgs.Cancel;
     }
 
-
-
     #region 公共属性定义
 
     /// <summary>
-    ///     是否显示指示箭头
+    /// 是否显示指示箭头
     /// </summary>
     public static readonly StyledProperty<bool> IsShowArrowProperty =
         ArrowDecoratedBox.IsShowArrowProperty.AddOwner<PopupFlyoutBase>();
@@ -257,19 +311,19 @@ public class Flyout : PopupFlyoutBase
         Border.BoxShadowProperty.AddOwner<Flyout>();
 
     /// <summary>
-    ///     箭头是否始终指向中心
+    /// 箭头是否始终指向中心
     /// </summary>
     public static readonly StyledProperty<bool> IsPointAtCenterProperty =
         AvaloniaProperty.Register<Flyout, bool>(nameof(IsPointAtCenter));
 
     /// <summary>
-    ///     Defines the <see cref="Content" /> property
+    /// Defines the <see cref="Content" /> property
     /// </summary>
     public static readonly StyledProperty<object> ContentProperty =
         AvaloniaProperty.Register<Flyout, object>(nameof(Content));
 
     /// <summary>
-    ///     Defines the <see cref="FlyoutPresenterTheme" /> property.
+    /// Defines the <see cref="FlyoutPresenterTheme" /> property.
     /// </summary>
     public static readonly StyledProperty<ControlTheme?> FlyoutPresenterThemeProperty =
         AvaloniaProperty.Register<Flyout, ControlTheme?>(nameof(FlyoutPresenterTheme));
@@ -287,8 +341,8 @@ public class Flyout : PopupFlyoutBase
     }
 
     /// <summary>
-    ///     Gets or sets the <see cref="ControlTheme" /> that is applied to the container element generated for the flyout
-    ///     presenter.
+    /// Gets or sets the <see cref="ControlTheme" /> that is applied to the container element generated for the flyout
+    /// presenter.
     /// </summary>
     public ControlTheme? FlyoutPresenterTheme
     {
@@ -297,7 +351,7 @@ public class Flyout : PopupFlyoutBase
     }
 
     /// <summary>
-    ///     Gets or sets the content to display in this flyout
+    /// Gets or sets the content to display in this flyout
     /// </summary>
     [Content]
     public object Content
@@ -314,15 +368,13 @@ public class Flyout : PopupFlyoutBase
 
     #endregion
 
-
-
     #region 内部属性定义
 
     internal static readonly StyledProperty<bool> IsShowArrowEffectiveProperty =
         AvaloniaProperty.Register<Flyout, bool>(nameof(IsShowArrowEffective));
 
     /// <summary>
-    ///     是否实际显示箭头
+    /// 是否实际显示箭头
     /// </summary>
     internal bool IsShowArrowEffective
     {

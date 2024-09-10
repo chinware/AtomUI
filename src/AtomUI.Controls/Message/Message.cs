@@ -9,10 +9,10 @@ public class Message : IMessage, INotifyPropertyChanged
     private PathIcon? _icon;
 
     public Message(string content,
-        MessageType type = MessageType.Information,
-        PathIcon? icon = null,
-        TimeSpan? expiration = null,
-        Action? onClose = null)
+                   MessageType type = MessageType.Information,
+                   PathIcon? icon = null,
+                   TimeSpan? expiration = null,
+                   Action? onClose = null)
     {
         _content   = content;
         _icon      = icon;
@@ -24,6 +24,7 @@ public class Message : IMessage, INotifyPropertyChanged
     public string Content
     {
         get => _content;
+
         set
         {
             if (_content != value)
@@ -37,6 +38,7 @@ public class Message : IMessage, INotifyPropertyChanged
     public PathIcon? Icon
     {
         get => _icon;
+
         set
         {
             if (!ReferenceEquals(_icon, value))

@@ -15,47 +15,47 @@ internal class ToolTipToken : AbstractControlDesignToken
     }
 
     /// <summary>
-    ///     tooltip 的最大宽度，超过了就换行
+    /// tooltip 的最大宽度，超过了就换行
     /// </summary>
     public double ToolTipMaxWidth { get; set; }
 
     /// <summary>
-    ///     ToolTip 默认的前景色
+    /// ToolTip 默认的前景色
     /// </summary>
     public Color ToolTipColor { get; set; }
 
     /// <summary>
-    ///     ToolTip 默认的背景色
+    /// ToolTip 默认的背景色
     /// </summary>
     public Color ToolTipBackground { get; set; }
 
     /// <summary>
-    ///     ToolTip 默认的圆角
+    /// ToolTip 默认的圆角
     /// </summary>
     public CornerRadius BorderRadiusOuter { get; set; }
 
     /// <summary>
-    ///     ToolTip 默认的内间距
+    /// ToolTip 默认的内间距
     /// </summary>
     public Thickness ToolTipPadding { get; set; }
 
     /// <summary>
-    ///     内置阴影
+    /// 内置阴影
     /// </summary>
     public BoxShadows ToolTipShadows { get; set; }
 
     /// <summary>
-    ///     动画时长
+    /// 动画时长
     /// </summary>
     public TimeSpan ToolTipMotionDuration { get; set; }
 
     /// <summary>
-    ///     默认距离锚控件的间距
+    /// 默认距离锚控件的间距
     /// </summary>
     public double MarginToAnchor { get; set; }
 
     /// <summary>
-    ///     ToolTip 箭头三角形大小
+    /// ToolTip 箭头三角形大小
     /// </summary>
     public double ToolTipArrowSize { get; set; }
 

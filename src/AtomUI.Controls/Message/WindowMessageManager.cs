@@ -12,17 +12,17 @@ namespace AtomUI.Controls;
 [TemplatePart(WindowNotificationManagerTheme.ItemsPart, typeof(Panel))]
 public class WindowMessageManager : TemplatedControl, IMessageManager
 {
-   /// <summary>
-   ///     Defines the <see cref="Position" /> property.
-   /// </summary>
-   public static readonly StyledProperty<NotificationPosition> PositionProperty =
+    /// <summary>
+    /// Defines the <see cref="Position" /> property.
+    /// </summary>
+    public static readonly StyledProperty<NotificationPosition> PositionProperty =
         AvaloniaProperty.Register<WindowNotificationManager, NotificationPosition>(
             nameof(Position), NotificationPosition.TopRight);
 
-   /// <summary>
-   ///     Defines the <see cref="MaxItems" /> property.
-   /// </summary>
-   public static readonly StyledProperty<int> MaxItemsProperty =
+    /// <summary>
+    /// Defines the <see cref="MaxItems" /> property.
+    /// </summary>
+    public static readonly StyledProperty<int> MaxItemsProperty =
         AvaloniaProperty.Register<WindowNotificationManager, int>(nameof(MaxItems), 5);
 
     private IList? _items;
@@ -34,16 +34,19 @@ public class WindowMessageManager : TemplatedControl, IMessageManager
     }
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="WindowNotificationManager" /> class.
+    /// Initializes a new instance of the <see cref="WindowNotificationManager" /> class.
     /// </summary>
     /// <param name="host">The TopLevel that will host the control.</param>
     public WindowMessageManager(TopLevel? host)
     {
-        if (host is not null) InstallFromTopLevel(host);
+        if (host is not null)
+        {
+            InstallFromTopLevel(host);
+        }
     }
 
     /// <summary>
-    ///     Defines which corner of the screen notifications can be displayed in.
+    /// Defines which corner of the screen notifications can be displayed in.
     /// </summary>
     /// <seealso cref="NotificationPosition" />
     public NotificationPosition Position
@@ -53,7 +56,7 @@ public class WindowMessageManager : TemplatedControl, IMessageManager
     }
 
     /// <summary>
-    ///     Defines the maximum number of notifications visible at once.
+    /// Defines the maximum number of notifications visible at once.
     /// </summary>
     public int MaxItems
     {
@@ -62,7 +65,7 @@ public class WindowMessageManager : TemplatedControl, IMessageManager
     }
 
     /// <summary>
-    ///     Shows a Notification
+    /// Shows a Notification
     /// </summary>
     /// <param name="message">the content of the message</param>
     /// <param name="classes">style classes to apply</param>
@@ -81,8 +84,12 @@ public class WindowMessageManager : TemplatedControl, IMessageManager
 
         // Add style classes if any
         if (classes != null)
+        {
             foreach (var @class in classes)
+            {
                 messageControl.Classes.Add(@class);
+            }
+        }
 
         messageControl.MessageClosed += (sender, args) =>
         {
@@ -96,10 +103,15 @@ public class WindowMessageManager : TemplatedControl, IMessageManager
             _items?.Add(messageControl);
 
             if (_items?.OfType<MessageCard>().Count(i => !i.IsClosing) > MaxItems)
+            {
                 _items.OfType<MessageCard>().First(i => !i.IsClosing).Close();
+            }
         });
 
-        if (expiration == TimeSpan.Zero) return;
+        if (expiration == TimeSpan.Zero)
+        {
+            return;
+        }
 
         await Task.Delay(expiration);
         messageControl.Close();
@@ -115,7 +127,7 @@ public class WindowMessageManager : TemplatedControl, IMessageManager
     }
 
     /// <summary>
-    ///     Installs the <see cref="WindowNotificationManager" /> within the <see cref="AdornerLayer" />
+    /// Installs the <see cref="WindowNotificationManager" /> within the <see cref="AdornerLayer" />
     /// </summary>
     private void InstallFromTopLevel(TopLevel topLevel)
     {

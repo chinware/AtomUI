@@ -4,7 +4,7 @@ using Avalonia.Controls;
 namespace AtomUI.Theme.TokenSystem;
 
 /// <summary>
-///     所有的组件 Token 定义是除了全局的 Token 的之外的专属于当前的组件的 Token 值
+/// 所有的组件 Token 定义是除了全局的 Token 的之外的专属于当前的组件的 Token 值
 /// </summary>
 public abstract class AbstractControlDesignToken : AbstractDesignToken, IControlDesignToken
 {
@@ -32,21 +32,26 @@ public abstract class AbstractControlDesignToken : AbstractDesignToken, IControl
     {
         var tempDictionary = new ResourceDictionary();
         base.BuildResourceDictionary(tempDictionary);
-        if (IsCustomTokenConfig) _globalToken.BuildResourceDictionary(tempDictionary);
+        if (IsCustomTokenConfig)
+        {
+            _globalToken.BuildResourceDictionary(tempDictionary);
+        }
 
         // 增加自己的命名空间，现在这种方法效率不是很高，需要优化
         // 暂时先用这种方案，后期有更好的方案再做调整
         foreach (var entry in tempDictionary)
+        {
             if (entry.Key is TokenResourceKey entryResourceKey)
             {
                 var resourceKey = new TokenResourceKey($"{Id}.{entryResourceKey.UnQualifiedKey()}",
                     entryResourceKey.Catalog);
                 dictionary.Add(resourceKey, entry.Value);
             }
+        }
     }
 
     /// <summary>
-    ///     一般 control token 尽量不继承, 先看看
+    /// 一般 control token 尽量不继承, 先看看
     /// </summary>
     /// <param name="tokenName"></param>
     /// <returns></returns>

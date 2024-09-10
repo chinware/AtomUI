@@ -15,9 +15,8 @@ public enum PresetEmptyImage
     Default
 }
 
-
 public partial class EmptyIndicator : TemplatedControl,
-    IControlCustomStyle
+                                      IControlCustomStyle
 
 {
     public static readonly StyledProperty<PresetEmptyImage?> PresetEmptyImageProperty =
@@ -94,18 +93,27 @@ public partial class EmptyIndicator : TemplatedControl,
     private void CheckImageSource()
     {
         var imageSettedCount = 0;
-        if (PresetImage is not null) imageSettedCount++;
+        if (PresetImage is not null)
+        {
+            imageSettedCount++;
+        }
 
-        if (ImagePath is not null) imageSettedCount++;
+        if (ImagePath is not null)
+        {
+            imageSettedCount++;
+        }
 
-        if (ImageSource is not null) imageSettedCount++;
+        if (ImageSource is not null)
+        {
+            imageSettedCount++;
+        }
 
         if (imageSettedCount > 1)
+        {
             throw new ApplicationException(
                 "ImagePath, ImageSource and PresetEmptyImage cannot be set at the same time.");
+        }
     }
-
-
 
     #region IControlCustomStyle 实现
 
@@ -122,7 +130,10 @@ public partial class EmptyIndicator : TemplatedControl,
 
     private void SetupImage()
     {
-        if (_svg is null) return;
+        if (_svg is null)
+        {
+            return;
+        }
 
         if (PresetImage is not null)
         {

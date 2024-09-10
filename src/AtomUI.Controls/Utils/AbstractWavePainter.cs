@@ -13,7 +13,6 @@ internal enum WaveType
     PillWave
 }
 
-
 internal abstract class AbstractWavePainter : IWavePainter
 {
     public AbstractWavePainter(Point originPoint)

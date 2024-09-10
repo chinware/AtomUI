@@ -40,7 +40,7 @@ internal class ComboBoxSpinnerInnerBoxTheme : AddOnDecoratedInnerBoxTheme
         var notFilledStyle =
             new Style(selector => selector.Nesting().Not(innerSelector =>
                 innerSelector.Nesting()
-                    .PropertyEquals(AddOnDecoratedBox.StyleVariantProperty, AddOnDecoratedVariant.Filled)));
+                             .PropertyEquals(AddOnDecoratedBox.StyleVariantProperty, AddOnDecoratedVariant.Filled)));
 
         {
             var innerBoxDecoratorStyle =

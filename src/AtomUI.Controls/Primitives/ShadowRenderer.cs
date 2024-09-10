@@ -30,7 +30,7 @@ internal class ShadowRenderer : Control
     }
 
     /// <summary>
-    ///     渲染的阴影值
+    /// 渲染的阴影值
     /// </summary>
     public BoxShadows Shadows
     {
@@ -39,7 +39,7 @@ internal class ShadowRenderer : Control
     }
 
     /// <summary>
-    ///     mask 的圆角大小
+    /// mask 的圆角大小
     /// </summary>
     public CornerRadius MaskCornerRadius
     {
@@ -92,9 +92,11 @@ internal class ShadowRenderer : Control
     {
         base.OnPropertyChanged(e);
         if (e.Property == ShadowsProperty ||
-            e.Property == WidthProperty   ||
+            e.Property == WidthProperty ||
             e.Property == HeightProperty)
+        {
             SetupContentSizeAndPos();
+        }
     }
 
     private void SetupContentSizeAndPos()
@@ -102,8 +104,8 @@ internal class ShadowRenderer : Control
         if (_maskContent is not null)
         {
             var shadowThickness = Shadows.Thickness();
-            var targetWidth     = Width  - shadowThickness.Left - shadowThickness.Right;
-            var targetHeight    = Height - shadowThickness.Top  - shadowThickness.Bottom;
+            var targetWidth     = Width - shadowThickness.Left - shadowThickness.Right;
+            var targetHeight    = Height - shadowThickness.Top - shadowThickness.Bottom;
             _maskContent.Width  = targetWidth;
             _maskContent.Height = targetHeight;
             Canvas.SetLeft(_maskContent, shadowThickness.Left);

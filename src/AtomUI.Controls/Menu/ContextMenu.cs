@@ -9,7 +9,6 @@ namespace AtomUI.Controls;
 
 using AvaloniaContextMenu = Avalonia.Controls.ContextMenu;
 
-
 public class ContextMenu : AvaloniaContextMenu, IControlCustomStyle
 {
     private static readonly FieldInfo PopupFieldInfo;
@@ -51,7 +50,9 @@ public class ContextMenu : AvaloniaContextMenu, IControlCustomStyle
     {
         var parentType = typeof(AvaloniaContextMenu);
         if (parentType.TryGetMethodInfo(methodName, out var methodInfo, BindingFlags.NonPublic | BindingFlags.Instance))
+        {
             return (EventHandler<T>)Delegate.CreateDelegate(typeof(EventHandler<T>), this, methodInfo);
+        }
 
         return null;
     }
@@ -60,7 +61,9 @@ public class ContextMenu : AvaloniaContextMenu, IControlCustomStyle
     {
         var parentType = typeof(ContextMenu);
         if (parentType.TryGetMethodInfo(methodName, out var methodInfo, BindingFlags.NonPublic | BindingFlags.Instance))
+        {
             return (EventHandler)Delegate.CreateDelegate(typeof(EventHandler), this, methodInfo);
+        }
 
         return null;
     }

@@ -15,20 +15,20 @@ public class MenuFlyout : Flyout
     private static readonly MethodInfo SetItemsSourceMethodInfo;
 
     /// <summary>
-    ///     Defines the <see cref="ItemsSource" /> property
+    /// Defines the <see cref="ItemsSource" /> property
     /// </summary>
     public static readonly StyledProperty<IEnumerable?> ItemsSourceProperty =
         AvaloniaProperty.Register<MenuFlyout, IEnumerable?>(
             nameof(ItemsSource));
 
     /// <summary>
-    ///     Defines the <see cref="ItemTemplate" /> property
+    /// Defines the <see cref="ItemTemplate" /> property
     /// </summary>
     public static readonly StyledProperty<IDataTemplate?> ItemTemplateProperty =
         AvaloniaProperty.Register<MenuFlyout, IDataTemplate?>(nameof(ItemTemplate));
 
     /// <summary>
-    ///     Defines the <see cref="ItemContainerTheme" /> property.
+    /// Defines the <see cref="ItemContainerTheme" /> property.
     /// </summary>
     public static readonly StyledProperty<ControlTheme?> ItemContainerThemeProperty =
         ItemsControl.ItemContainerThemeProperty.AddOwner<MenuFlyout>();
@@ -48,7 +48,7 @@ public class MenuFlyout : Flyout
     [Content] public ItemCollection Items { get; }
 
     /// <summary>
-    ///     Gets or sets the items of the MenuFlyout
+    /// Gets or sets the items of the MenuFlyout
     /// </summary>
     public IEnumerable? ItemsSource
     {
@@ -57,7 +57,7 @@ public class MenuFlyout : Flyout
     }
 
     /// <summary>
-    ///     Gets or sets the template used for the items
+    /// Gets or sets the template used for the items
     /// </summary>
     public IDataTemplate? ItemTemplate
     {
@@ -85,8 +85,11 @@ public class MenuFlyout : Flyout
     {
         if (flyoutPresenter is null)
         {
-            var child                                                        = popup.Child;
-            if (child is MenuFlyoutPresenter childPresenter) flyoutPresenter = childPresenter;
+            var child = popup.Child;
+            if (child is MenuFlyoutPresenter childPresenter)
+            {
+                flyoutPresenter = childPresenter;
+            }
         }
 
         var placement = popup.Placement;
@@ -96,15 +99,22 @@ public class MenuFlyout : Flyout
         if (flyoutPresenter is not null)
         {
             var arrowPosition = PopupUtils.CalculateArrowPosition(placement, anchor, gravity);
-            if (arrowPosition.HasValue) flyoutPresenter.ArrowPosition = arrowPosition.Value;
+            if (arrowPosition.HasValue)
+            {
+                flyoutPresenter.ArrowPosition = arrowPosition.Value;
+            }
         }
     }
 
     protected override void OnOpening(CancelEventArgs args)
     {
         if (Popup.Child is { } presenter)
+        {
             if (FlyoutPresenterTheme is { } theme)
+            {
                 presenter.SetValue(StyledElement.ThemeProperty, theme);
+            }
+        }
 
         base.OnOpening(args);
     }
@@ -114,7 +124,9 @@ public class MenuFlyout : Flyout
         base.OnPropertyChanged(change);
 
         if (change.Property == ItemsSourceProperty)
+        {
             SetItemsSourceMethodInfo.Invoke(Items, new object?[] { change.GetNewValue<IEnumerable?>() });
+        }
     }
 
     protected override bool ShowAtCore(Control placementTarget, bool showAtPointer = false)

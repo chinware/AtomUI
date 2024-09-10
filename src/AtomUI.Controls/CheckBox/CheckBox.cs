@@ -18,11 +18,10 @@ namespace AtomUI.Controls;
 
 using AvaloniaCheckBox = Avalonia.Controls.CheckBox;
 
-
 public class CheckBox : AvaloniaCheckBox,
-    ICustomHitTest,
-    IWaveAdornerInfoProvider,
-    IControlCustomStyle
+                        ICustomHitTest,
+                        IWaveAdornerInfoProvider,
+                        IControlCustomStyle
 {
     internal static readonly StyledProperty<double> CheckIndicatorSizeProperty =
         AvaloniaProperty.Register<CheckBox, double>(nameof(CheckIndicatorSize));
@@ -168,7 +167,10 @@ public class CheckBox : AvaloniaCheckBox,
         for (var i = 0; i < visualCount; i++)
         {
             var visual = visualChildren[i];
-            if (visual is Layoutable layoutable) layoutable.Arrange(arrangeRect);
+            if (visual is Layoutable layoutable)
+            {
+                layoutable.Arrange(arrangeRect);
+            }
         }
 
         return finalSize;
@@ -207,8 +209,6 @@ public class CheckBox : AvaloniaCheckBox,
         }
     }
 
-
-
     #region IControlCustomStyle 实现
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -246,9 +246,13 @@ public class CheckBox : AvaloniaCheckBox,
         }
 
         if (IsPressed)
+        {
             _styleState |= ControlStyleState.Sunken;
+        }
         else
+        {
             _styleState |= ControlStyleState.Raised;
+        }
     }
 
     // Measure 之后才有值
@@ -259,7 +263,7 @@ public class CheckBox : AvaloniaCheckBox,
 
     private Rect TextRect()
     {
-        var offsetX = CheckIndicatorSize               + PaddingInline;
+        var offsetX = CheckIndicatorSize + PaddingInline;
         return new Rect(offsetX, 0d, DesiredSize.Width - offsetX, DesiredSize.Height);
     }
 
@@ -268,15 +272,24 @@ public class CheckBox : AvaloniaCheckBox,
         if (_styleState.HasFlag(ControlStyleState.Enabled))
         {
             if (_styleState.HasFlag(ControlStyleState.On))
+            {
                 IndicatorCheckedMarkEffectSize = CheckIndicatorSize;
+            }
             else if (_styleState.HasFlag(ControlStyleState.Off))
+            {
                 IndicatorCheckedMarkEffectSize = CheckIndicatorSize * 0.7;
+            }
             else if (_styleState.HasFlag(ControlStyleState.Indeterminate))
+            {
                 IndicatorCheckedMarkEffectSize = CheckIndicatorSize * 0.7;
+            }
         }
         else
         {
-            if (_styleState.HasFlag(ControlStyleState.On)) IndicatorCheckedMarkEffectSize = CheckIndicatorSize;
+            if (_styleState.HasFlag(ControlStyleState.On))
+            {
+                IndicatorCheckedMarkEffectSize = CheckIndicatorSize;
+            }
         }
     }
 
@@ -295,15 +308,17 @@ public class CheckBox : AvaloniaCheckBox,
     void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
     {
         if (e.Property == IsPointerOverProperty ||
-            e.Property == IsCheckedProperty     ||
+            e.Property == IsCheckedProperty ||
             e.Property == IsEnabledProperty)
         {
             _customStyle.CollectStyleState();
             SetupIndicatorCheckedMarkEffectSize();
-            if (e.Property == IsCheckedProperty                &&
+            if (e.Property == IsCheckedProperty &&
                 _styleState.HasFlag(ControlStyleState.Enabled) &&
                 _styleState.HasFlag(ControlStyleState.On))
+            {
                 WaveSpiritAdorner.ShowWaveAdorner(this, WaveType.RoundRectWave);
+            }
         }
     }
 

@@ -43,16 +43,25 @@ public class CollapseItem : HeaderedContentControl, ISelectable
         {
             if (obj.NewValue is IHeadered headered)
             {
-                if (Header != headered.Header) SetCurrentValue(HeaderProperty, headered.Header);
+                if (Header != headered.Header)
+                {
+                    SetCurrentValue(HeaderProperty, headered.Header);
+                }
             }
             else
             {
-                if (!(obj.NewValue is Control)) SetCurrentValue(HeaderProperty, obj.NewValue);
+                if (!(obj.NewValue is Control))
+                {
+                    SetCurrentValue(HeaderProperty, obj.NewValue);
+                }
             }
         }
         else
         {
-            if (Header == obj.OldValue) SetCurrentValue(HeaderProperty, obj.NewValue);
+            if (Header == obj.OldValue)
+            {
+                SetCurrentValue(HeaderProperty, obj.NewValue);
+            }
         }
     }
 
@@ -68,28 +77,47 @@ public class CollapseItem : HeaderedContentControl, ISelectable
         HandleSelectedChanged();
         _enableAnimation = true;
         if (_expandButton is not null)
+        {
             _expandButton.Click += (sender, args) => { IsSelected = !IsSelected; };
+        }
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == ExpandIconProperty) SetupIconButton();
+        if (change.Property == ExpandIconProperty)
+        {
+            SetupIconButton();
+        }
 
         if (VisualRoot is not null)
+        {
             if (change.Property == IsSelectedProperty)
+            {
                 HandleSelectedChanged();
+            }
+        }
 
         if (change.Property == AddOnContentProperty)
         {
-            if (change.OldValue is Control oldControl) UIStructureUtils.SetTemplateParent(oldControl, null);
+            if (change.OldValue is Control oldControl)
+            {
+                UIStructureUtils.SetTemplateParent(oldControl, null);
+            }
 
-            if (change.NewValue is Control newControl) UIStructureUtils.SetTemplateParent(newControl, this);
+            if (change.NewValue is Control newControl)
+            {
+                UIStructureUtils.SetTemplateParent(newControl, this);
+            }
         }
         else if (change.Property == ExpandIconProperty)
         {
             var oldExpandIcon = change.GetOldValue<PathIcon?>();
-            if (oldExpandIcon is not null) UIStructureUtils.SetTemplateParent(oldExpandIcon, null);
+            if (oldExpandIcon is not null)
+            {
+                UIStructureUtils.SetTemplateParent(oldExpandIcon, null);
+            }
+
             SetupIconButton();
         }
     }
@@ -99,15 +127,22 @@ public class CollapseItem : HeaderedContentControl, ISelectable
         if (Presenter is not null)
         {
             if (IsSelected)
+            {
                 ExpandItemContent();
+            }
             else
+            {
                 CollapseItemContent();
+            }
         }
     }
 
     private void ExpandItemContent()
     {
-        if (_animationTarget is null || InAnimating) return;
+        if (_animationTarget is null || InAnimating)
+        {
+            return;
+        }
 
         if (!_enableAnimation)
         {
@@ -135,7 +170,10 @@ public class CollapseItem : HeaderedContentControl, ISelectable
 
     private void CollapseItemContent()
     {
-        if (_animationTarget is null || InAnimating) return;
+        if (_animationTarget is null || InAnimating)
+        {
+            return;
+        }
 
         if (!_enableAnimation)
         {
@@ -180,11 +218,12 @@ public class CollapseItem : HeaderedContentControl, ISelectable
     internal bool IsPointInHeaderBounds(Point position)
     {
         if (_headerDecorator is not null && TriggerType != CollapseTriggerType.Icon)
+        {
             return _headerDecorator.Bounds.Contains(position);
+        }
+
         return false;
     }
-
-
 
     #region 公共属性定义
 
@@ -234,8 +273,6 @@ public class CollapseItem : HeaderedContentControl, ISelectable
     }
 
     #endregion
-
-
 
     #region 内部属性定义
 

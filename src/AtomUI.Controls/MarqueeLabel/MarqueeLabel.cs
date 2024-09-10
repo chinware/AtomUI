@@ -12,7 +12,7 @@ using Avalonia.Threading;
 namespace AtomUI.Controls;
 
 public class MarqueeLabel : TextBlock,
-    IControlCustomStyle
+                            IControlCustomStyle
 {
     public static readonly StyledProperty<double> CycleSpaceProperty =
         AvaloniaProperty.Register<MarqueeLabel, double>(nameof(CycleSpace));
@@ -23,10 +23,11 @@ public class MarqueeLabel : TextBlock,
     private static readonly StyledProperty<double> PivotOffsetProperty =
         AvaloniaProperty.Register<MarqueeLabel, double>(nameof(PivotOffset));
 
+    private readonly IControlCustomStyle? _customStyle;
+
     private Animation? _animation;
     private bool _animationRunning;
     private CancellationTokenSource? _cancellationTokenSource;
-    private readonly IControlCustomStyle? _customStyle;
     private bool _initialized;
     private double _lastDesiredWidth;
     private double _lastTextWidth;
@@ -44,7 +45,7 @@ public class MarqueeLabel : TextBlock,
     }
 
     /// <summary>
-    ///     默认的间隔
+    /// 默认的间隔
     /// </summary>
     public double CycleSpace
     {
@@ -53,7 +54,7 @@ public class MarqueeLabel : TextBlock,
     }
 
     /// <summary>
-    ///     移动速度
+    /// 移动速度
     /// </summary>
     public double MoveSpeed
     {
@@ -62,7 +63,7 @@ public class MarqueeLabel : TextBlock,
     }
 
     /// <summary>
-    ///     内部动画使用，当前焦点，也就是文字最左侧
+    /// 内部动画使用，当前焦点，也就是文字最左侧
     /// </summary>
     private double PivotOffset
     {
@@ -108,8 +109,6 @@ public class MarqueeLabel : TextBlock,
         HandleLayoutUpdated(size, availableSize);
         return size;
     }
-
-
 
     #region IControlCustomStyle 实现
 
@@ -158,7 +157,10 @@ public class MarqueeLabel : TextBlock,
             {
                 var originRunning = _animationRunning;
                 ReConfigureAnimation();
-                if (originRunning) HandleStartupMarqueeAnimation();
+                if (originRunning)
+                {
+                    HandleStartupMarqueeAnimation();
+                }
             }
         }
     }
@@ -198,7 +200,10 @@ public class MarqueeLabel : TextBlock,
             if (!MathUtils.AreClose(_lastDesiredWidth, size.Width))
             {
                 _lastDesiredWidth = size.Width;
-                if (!MathUtils.AreClose(_lastTextWidth, TextLayout.Width)) _lastTextWidth = TextLayout.Width;
+                if (!MathUtils.AreClose(_lastTextWidth, TextLayout.Width))
+                {
+                    _lastTextWidth = TextLayout.Width;
+                }
             }
 
             if (!_animationRunning)
@@ -211,10 +216,16 @@ public class MarqueeLabel : TextBlock,
 
     private void ReConfigureAnimation()
     {
-        if (_animation is not null && _animationRunning) _cancellationTokenSource?.Cancel();
+        if (_animation is not null && _animationRunning)
+        {
+            _cancellationTokenSource?.Cancel();
+        }
 
-        var cycleWidth                                                   = _lastTextWidth + CycleSpace;
-        if (_pivotOffsetStartValue < -cycleWidth) _pivotOffsetStartValue %= cycleWidth;
+        var cycleWidth = _lastTextWidth + CycleSpace;
+        if (_pivotOffsetStartValue < -cycleWidth)
+        {
+            _pivotOffsetStartValue %= cycleWidth;
+        }
 
         var delta = _pivotOffsetStartValue - cycleWidth - _pivotOffsetStartValue;
         _animation = new Animation
@@ -241,8 +252,11 @@ public class MarqueeLabel : TextBlock,
     protected override void RenderTextLayout(DrawingContext context, Point origin)
     {
         var offset = TextLayout.OverhangLeading + PivotOffset;
-        TextLayout.Draw(context, origin         + new Point(offset, 0));
-        if (PivotOffset < 0) TextLayout.Draw(context, origin + new Point(offset + _lastTextWidth + CycleSpace, 0));
+        TextLayout.Draw(context, origin + new Point(offset, 0));
+        if (PivotOffset < 0)
+        {
+            TextLayout.Draw(context, origin + new Point(offset + _lastTextWidth + CycleSpace, 0));
+        }
     }
 
     #endregion

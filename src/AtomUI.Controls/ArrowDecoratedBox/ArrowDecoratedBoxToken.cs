@@ -14,12 +14,12 @@ public class ArrowDecoratedBoxToken : AbstractControlDesignToken
     }
 
     /// <summary>
-    ///     箭头三角形大小
+    /// 箭头三角形大小
     /// </summary>
     public double ArrowSize { get; set; }
 
     /// <summary>
-    ///     默认的内边距
+    /// 默认的内边距
     /// </summary>
     public Thickness Padding { get; set; }
 

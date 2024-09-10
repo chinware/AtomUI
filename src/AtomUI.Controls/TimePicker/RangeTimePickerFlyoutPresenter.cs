@@ -78,9 +78,15 @@ internal class RangeTimePickerFlyoutPresenter : FlyoutPresenter
             SetupTime();
         }
 
-        if (_confirmButton is not null) _confirmButton.Click += HandleConfirmButtonClicked;
+        if (_confirmButton is not null)
+        {
+            _confirmButton.Click += HandleConfirmButtonClicked;
+        }
 
-        if (_nowButton is not null) _nowButton.Click += HandleNowButtonClicked;
+        if (_nowButton is not null)
+        {
+            _nowButton.Click += HandleNowButtonClicked;
+        }
     }
 
     private void SetupTime()
@@ -88,12 +94,16 @@ internal class RangeTimePickerFlyoutPresenter : FlyoutPresenter
         if (TimePickerRef.RangeActivatedPart == RangeActivatedPart.Start)
         {
             if (TimePickerRef.RangeStartSelectedTime is not null)
+            {
                 _timePickerPresenter!.Time = TimePickerRef.RangeStartSelectedTime.Value;
+            }
         }
         else if (TimePickerRef.RangeActivatedPart == RangeActivatedPart.End)
         {
             if (TimePickerRef.RangeEndSelectedTime is not null)
+            {
                 _timePickerPresenter!.Time = TimePickerRef.RangeEndSelectedTime.Value;
+            }
         }
     }
 
@@ -131,10 +141,13 @@ internal class RangeTimePickerFlyoutPresenter : FlyoutPresenter
         base.OnAttachedToVisualTree(e);
         _compositeDisposable = new CompositeDisposable();
         if (_timePickerPresenter is not null)
+        {
             _compositeDisposable.Add(TimePickerPresenter.TemporaryTimeProperty.Changed.Subscribe(args =>
             {
                 TimePickerRef.NotifyTemporaryTimeSelected(args.GetNewValue<TimeSpan>());
             }));
+        }
+
         _compositeDisposable.Add(
             RangeTimePicker.RangeActivatedPartProperty.Changed.Subscribe(HandleRangeActivatedPartChanged));
         SetupTime();

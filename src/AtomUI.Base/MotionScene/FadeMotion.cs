@@ -22,7 +22,6 @@ public class FadeInMotion : AbstractMotion
     }
 }
 
-
 public class FadeOutMotion : AbstractMotion
 {
     public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);

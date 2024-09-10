@@ -13,7 +13,6 @@ public class ThemeDefinitionParserException : SystemException
     }
 }
 
-
 public class ThemeLoadException : SystemException
 {
     public ThemeLoadException(string? message)
@@ -27,7 +26,6 @@ public class ThemeLoadException : SystemException
     }
 }
 
-
 public class TokenResourceRegisterException : SystemException
 {
     public TokenResourceRegisterException(string? message)
@@ -40,7 +38,6 @@ public class TokenResourceRegisterException : SystemException
     {
     }
 }
-
 
 public class LanguageMetaInfoParseException : SystemException
 {

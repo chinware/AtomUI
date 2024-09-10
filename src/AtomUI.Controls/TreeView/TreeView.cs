@@ -17,14 +17,12 @@ namespace AtomUI.Controls;
 
 using AvaloniaTreeView = Avalonia.Controls.TreeView;
 
-
 public enum TreeItemHoverMode
 {
     Default,
     Block,
     WholeLine
 }
-
 
 [PseudoClasses(DraggablePC)]
 public class TreeView : AvaloniaTreeView
@@ -53,15 +51,25 @@ public class TreeView : AvaloniaTreeView
     public void ExpandAll()
     {
         foreach (var item in Items)
+        {
             if (item is TreeViewItem treeItem)
+            {
                 ExpandSubTree(treeItem);
+            }
+        }
     }
 
     public void CheckedSubTree(TreeViewItem item)
     {
-        if (!IsCheckable) return;
+        if (!IsCheckable)
+        {
+            return;
+        }
 
-        if (!item.IsEnabled || !item.IsCheckable) return;
+        if (!item.IsEnabled || !item.IsCheckable)
+        {
+            return;
+        }
 
         item.IsChecked = true;
         if (item.Presenter?.Panel == null && this.GetVisualRoot() is ILayoutRoot visualRoot)
@@ -71,16 +79,31 @@ public class TreeView : AvaloniaTreeView
         }
 
         foreach (var childItem in item.Items)
+        {
             if (childItem is TreeViewItem treeViewItem)
+            {
                 CheckedSubTree(treeViewItem);
+            }
+        }
 
-        if (item.Parent is TreeViewItem itemParent) SetupParentNodeCheckedStatus(itemParent);
+        if (item.Parent is TreeViewItem itemParent)
+        {
+            SetupParentNodeCheckedStatus(itemParent);
+        }
     }
 
     public void UnCheckedSubTree(TreeViewItem item)
     {
-        if (!IsCheckable) return;
-        if (!item.IsEnabled || !item.IsCheckable) return;
+        if (!IsCheckable)
+        {
+            return;
+        }
+
+        if (!item.IsEnabled || !item.IsCheckable)
+        {
+            return;
+        }
+
         item.IsChecked = false;
         if (item.Presenter?.Panel == null && this.GetVisualRoot() is ILayoutRoot visualRoot)
         {
@@ -89,9 +112,17 @@ public class TreeView : AvaloniaTreeView
         }
 
         foreach (var childItem in item.Items)
+        {
             if (childItem is TreeViewItem treeViewItem)
+            {
                 UnCheckedSubTree(treeViewItem);
-        if (item.Parent is TreeViewItem itemParent) SetupParentNodeCheckedStatus(itemParent);
+            }
+        }
+
+        if (item.Parent is TreeViewItem itemParent)
+        {
+            SetupParentNodeCheckedStatus(itemParent);
+        }
     }
 
     private void UpdatePseudoClasses()
@@ -137,7 +168,10 @@ public class TreeView : AvaloniaTreeView
     {
         base.OnAttachedToVisualTree(e);
         if (IsDefaultExpandAll)
+        {
             Dispatcher.UIThread.Post(() => { ExpandAll(); });
+        }
+
         ApplyDefaultChecked();
     }
 
@@ -152,7 +186,11 @@ public class TreeView : AvaloniaTreeView
 
     private void ApplyDefaultChecked()
     {
-        foreach (var treeItem in DefaultCheckedItems) CheckedSubTree(treeItem);
+        foreach (var treeItem in DefaultCheckedItems)
+        {
+            CheckedSubTree(treeItem);
+        }
+
         DefaultCheckedItems.Clear();
     }
 
@@ -161,7 +199,9 @@ public class TreeView : AvaloniaTreeView
         var isAllChecked = parent.Items.All(item =>
         {
             if (item is TreeViewItem treeViewItem)
+            {
                 return treeViewItem.IsChecked.HasValue && treeViewItem.IsChecked.Value;
+            }
 
             return false;
         });
@@ -169,17 +209,25 @@ public class TreeView : AvaloniaTreeView
         var isAnyChecked = parent.Items.Any(item =>
         {
             if (item is TreeViewItem treeViewItem)
+            {
                 return treeViewItem.IsChecked.HasValue && treeViewItem.IsChecked.Value;
+            }
 
             return false;
         });
 
         if (isAllChecked)
+        {
             parent.IsChecked = true;
+        }
         else if (isAnyChecked)
+        {
             parent.IsChecked = null;
+        }
         else
+        {
             parent.IsChecked = false;
+        }
     }
 
     // 自己优先的查找，用于确认拖动发生的节点
@@ -190,8 +238,14 @@ public class TreeView : AvaloniaTreeView
         {
             var current = ContainerFromIndex(i);
             if (current is TreeViewItem currentTreeItem && currentTreeItem.IsVisible)
+            {
                 result = GetNodeByPositionSelfFirst(position, currentTreeItem);
-            if (result is not null) break;
+            }
+
+            if (result is not null)
+            {
+                break;
+            }
         }
 
         return result;
@@ -199,18 +253,31 @@ public class TreeView : AvaloniaTreeView
 
     private TreeViewItem? GetNodeByPositionSelfFirst(Point position, TreeViewItem current)
     {
-        if (!IsVisibleInViewport(current)) return null;
+        if (!IsVisibleInViewport(current))
+        {
+            return null;
+        }
+
         var localPosition = this.TranslatePoint(position, current) ?? default;
         var result        = current.IsInDragHeaderBounds(localPosition) ? current : null;
 
-        if (result is not null) return result;
+        if (result is not null)
+        {
+            return result;
+        }
 
         for (var i = 0; i < current.ItemCount; i++)
         {
-            var child                                   = current.ContainerFromIndex(i);
-            if (child is TreeViewItem childItem) result = GetNodeByPositionSelfFirst(position, childItem);
+            var child = current.ContainerFromIndex(i);
+            if (child is TreeViewItem childItem)
+            {
+                result = GetNodeByPositionSelfFirst(position, childItem);
+            }
 
-            if (result is not null) break;
+            if (result is not null)
+            {
+                break;
+            }
         }
 
         return result;
@@ -222,9 +289,16 @@ public class TreeView : AvaloniaTreeView
         TreeViewItem? result = null;
         for (var i = 0; i < ItemCount; i++)
         {
-            var child                                   = ContainerFromIndex(i);
-            if (child is TreeViewItem childItem) result = GetNodeByPosition(position, childItem);
-            if (result is not null) break;
+            var child = ContainerFromIndex(i);
+            if (child is TreeViewItem childItem)
+            {
+                result = GetNodeByPosition(position, childItem);
+            }
+
+            if (result is not null)
+            {
+                break;
+            }
         }
 
         return result;
@@ -234,14 +308,23 @@ public class TreeView : AvaloniaTreeView
     {
         TreeViewItem? result = null;
 
-        if (!IsVisibleInViewport(current)) return result;
+        if (!IsVisibleInViewport(current))
+        {
+            return result;
+        }
 
         for (var i = 0; i < current.ItemCount; i++)
         {
-            var child                                   = current.ContainerFromIndex(i);
-            if (child is TreeViewItem childItem) result = GetNodeByPosition(position, childItem);
+            var child = current.ContainerFromIndex(i);
+            if (child is TreeViewItem childItem)
+            {
+                result = GetNodeByPosition(position, childItem);
+            }
 
-            if (result is not null) break;
+            if (result is not null)
+            {
+                break;
+            }
         }
 
         var localPosition = this.TranslatePoint(position, current) ?? default;
@@ -254,9 +337,16 @@ public class TreeView : AvaloniaTreeView
         TreeViewItem? result = null;
         for (var i = 0; i < ItemCount; i++)
         {
-            var child                                   = ContainerFromIndex(i);
-            if (child is TreeViewItem childItem) result = GetNodeByOffsetY(position, childItem);
-            if (result is not null) break;
+            var child = ContainerFromIndex(i);
+            if (child is TreeViewItem childItem)
+            {
+                result = GetNodeByOffsetY(position, childItem);
+            }
+
+            if (result is not null)
+            {
+                break;
+            }
         }
 
         return result;
@@ -266,14 +356,23 @@ public class TreeView : AvaloniaTreeView
     {
         TreeViewItem? result = null;
 
-        if (!IsVisibleInViewport(current)) return result;
+        if (!IsVisibleInViewport(current))
+        {
+            return result;
+        }
 
         for (var i = 0; i < current.ItemCount; i++)
         {
-            var child                                   = current.ContainerFromIndex(i);
-            if (child is TreeViewItem childItem) result = GetNodeByOffsetY(position, childItem);
+            var child = current.ContainerFromIndex(i);
+            if (child is TreeViewItem childItem)
+            {
+                result = GetNodeByOffsetY(position, childItem);
+            }
 
-            if (result is not null) break;
+            if (result is not null)
+            {
+                break;
+            }
         }
 
         var localPosition = this.TranslatePoint(position, current) ?? default;
@@ -295,8 +394,6 @@ public class TreeView : AvaloniaTreeView
             }
         }
     }
-
-
 
     #region 公共属性定义
 
@@ -358,8 +455,6 @@ public class TreeView : AvaloniaTreeView
 
     #endregion
 
-
-
     #region 内部属性定义
 
     internal static readonly DirectProperty<TreeView, bool> IsDraggingProperty =
@@ -416,8 +511,6 @@ public class TreeView : AvaloniaTreeView
 
     #endregion
 
-
-
     #region 拖动相关处理
 
     protected override void OnPointerPressed(PointerPressedEventArgs e)
@@ -436,7 +529,7 @@ public class TreeView : AvaloniaTreeView
         if (_lastPoint.HasValue)
         {
             var delta             = e.GetPosition(this) - _lastPoint.Value;
-            var manhattanDistance = Math.Abs(delta.X)   + Math.Abs(delta.Y);
+            var manhattanDistance = Math.Abs(delta.X) + Math.Abs(delta.Y);
 
             // 先写死
             if (manhattanDistance > 5)
@@ -480,9 +573,15 @@ public class TreeView : AvaloniaTreeView
     {
         _beingDraggedTreeItem = GetNodeByPositionSelfFirst(_lastPoint!.Value);
         if (_beingDraggedTreeItem is not null)
+        {
             Dispatcher.UIThread.Post(() => { _beingDraggedTreeItem.IsDragging = true; });
+        }
+
         var adornerLayer = AdornerLayer.GetAdornerLayer(this);
-        if (adornerLayer == null || _beingDraggedTreeItem is null) return;
+        if (adornerLayer == null || _beingDraggedTreeItem is null)
+        {
+            return;
+        }
 
         _dragPreview = _beingDraggedTreeItem.BuildPreviewAdorner();
         AdornerLayer.SetAdornedElement(_dragPreview, TopLevel.GetTopLevel(this));
@@ -499,7 +598,10 @@ public class TreeView : AvaloniaTreeView
             _dragPreview.OffsetX = basePosition.X + delta.X;
             _dragPreview.OffsetY = basePosition.Y + delta.Y;
             SetupDragOver(position);
-            if (_currentDragOver is not null) _dropTargetNode = GetNodeByOffsetY(position);
+            if (_currentDragOver is not null)
+            {
+                _dropTargetNode = GetNodeByOffsetY(position);
+            }
 
             SetupDragIndicatorRenderInfo(in position);
         }
@@ -508,17 +610,20 @@ public class TreeView : AvaloniaTreeView
     // 正常一个有效的拖动，应该 _currentDragOver 不为空
     private void SetupDragIndicatorRenderInfo(in Point position)
     {
-        if (_currentDragOver is null                  ||
+        if (_currentDragOver is null ||
             _currentDragOver == _beingDraggedTreeItem ||
-            _dropTargetNode  == _beingDraggedTreeItem)
+            _dropTargetNode == _beingDraggedTreeItem)
         {
             _dropTargetInfo         = null;
             DragIndicatorRenderInfo = null;
             return;
         }
 
-        var effectiveDropTarget                              = _currentDragOver;
-        if (_dropTargetNode is not null) effectiveDropTarget = _dropTargetNode;
+        var effectiveDropTarget = _currentDragOver;
+        if (_dropTargetNode is not null)
+        {
+            effectiveDropTarget = _dropTargetNode;
+        }
 
         _dropTargetInfo        = new DropTargetInfo();
         _dropTargetInfo.IsRoot = false;
@@ -554,7 +659,7 @@ public class TreeView : AvaloniaTreeView
                 startPoint            = effectiveDragHeaderBounds.BottomLeft;
                 endPoint              = effectiveDragHeaderBounds.BottomRight;
                 startPoint            = startPoint.WithY(Math.Min(startPoint.Y + offsetYDelta, maxOffsetY));
-                endPoint              = endPoint.WithY(Math.Min(endPoint.Y     + offsetYDelta, maxOffsetY));
+                endPoint              = endPoint.WithY(Math.Min(endPoint.Y + offsetYDelta, maxOffsetY));
                 _dropTargetInfo.Index = effectiveIndex + 1;
             }
             else
@@ -562,7 +667,7 @@ public class TreeView : AvaloniaTreeView
                 startPoint            = effectiveDragHeaderBounds.TopLeft;
                 endPoint              = effectiveDragHeaderBounds.TopRight;
                 startPoint            = startPoint.WithY(Math.Max(startPoint.Y - offsetYDelta, minOffsetY));
-                endPoint              = endPoint.WithY(Math.Max(endPoint.Y     - offsetYDelta, minOffsetY));
+                endPoint              = endPoint.WithY(Math.Max(endPoint.Y - offsetYDelta, minOffsetY));
                 _dropTargetInfo.Index = effectiveIndex;
             }
         }
@@ -570,11 +675,19 @@ public class TreeView : AvaloniaTreeView
         {
             var effectiveIndex = 0;
             if (effectiveDropTarget.Parent is TreeViewItem parentItem)
+            {
                 effectiveIndex = parentItem.IndexFromContainer(effectiveDropTarget);
-            else if (effectiveDropTarget.Level == 0) effectiveIndex = IndexFromContainer(effectiveDropTarget);
+            }
+            else if (effectiveDropTarget.Level == 0)
+            {
+                effectiveIndex = IndexFromContainer(effectiveDropTarget);
+            }
 
             if (effectiveDropTarget.Parent is TreeViewItem parentTreeItem)
+            {
                 _dropTargetInfo.TargetTreeItem = parentTreeItem;
+            }
+
             _dropTargetInfo.IsRoot = effectiveDropTarget.Level == 0;
 
             // TODO 看看是否要固化一下
@@ -587,10 +700,10 @@ public class TreeView : AvaloniaTreeView
                 startPoint            = effectiveDragHeaderBounds.TopLeft;
                 endPoint              = effectiveDragHeaderBounds.TopRight;
                 startPoint            = startPoint.WithY(Math.Max(startPoint.Y - offsetYDelta, minOffsetY));
-                endPoint              = endPoint.WithY(Math.Max(endPoint.Y     - offsetYDelta, minOffsetY));
+                endPoint              = endPoint.WithY(Math.Max(endPoint.Y - offsetYDelta, minOffsetY));
             }
             else if (MathUtils.GreaterThan(offsetY, dropTargetHalfOffsetY - range) &&
-                     MathUtils.LessThan(offsetY, dropTargetHalfOffsetY    + range))
+                     MathUtils.LessThan(offsetY, dropTargetHalfOffsetY + range))
             {
                 startPoint = effectiveDragHeaderBounds.BottomLeft.WithX(effectiveDragHeaderBounds.Left + fixedOffset);
                 endPoint = effectiveDragHeaderBounds.BottomRight;
@@ -606,7 +719,7 @@ public class TreeView : AvaloniaTreeView
                 startPoint            = effectiveDragHeaderBounds.BottomLeft;
                 endPoint              = effectiveDragHeaderBounds.BottomRight;
                 startPoint            = startPoint.WithY(Math.Max(startPoint.Y + offsetYDelta, minOffsetY));
-                endPoint              = endPoint.WithY(Math.Max(endPoint.Y     + offsetYDelta, minOffsetY));
+                endPoint              = endPoint.WithY(Math.Max(endPoint.Y + offsetYDelta, minOffsetY));
             }
         }
 
@@ -673,7 +786,10 @@ public class TreeView : AvaloniaTreeView
 
     private void PerformDropOperation()
     {
-        if (_dropTargetInfo is null || _beingDraggedTreeItem is null) return;
+        if (_dropTargetInfo is null || _beingDraggedTreeItem is null)
+        {
+            return;
+        }
 
         object? sourceItem                 = default;
         var     beingDraggedTreeItemParent = _beingDraggedTreeItem.Parent;
@@ -681,25 +797,39 @@ public class TreeView : AvaloniaTreeView
         if (_beingDraggedTreeItem.Parent is TreeViewItem parentItem)
         {
             sourceItem = parentItem.ItemFromContainer(_beingDraggedTreeItem);
-            if (sourceItem is not null) parentItem.Items.Remove(sourceItem);
+            if (sourceItem is not null)
+            {
+                parentItem.Items.Remove(sourceItem);
+            }
         }
         else if (_beingDraggedTreeItem.Level == 0)
         {
             sourceItem   = ItemFromContainer(_beingDraggedTreeItem);
             sourceIsRoot = true;
-            if (sourceItem is not null) Items.Remove(sourceItem);
+            if (sourceItem is not null)
+            {
+                Items.Remove(sourceItem);
+            }
         }
 
         if (_dropTargetInfo.IsRoot)
         {
-            var indexDelta               = 0;
-            if (sourceIsRoot) indexDelta = 1;
+            var indexDelta = 0;
+            if (sourceIsRoot)
+            {
+                indexDelta = 1;
+            }
+
             Items.Insert(Math.Max(_dropTargetInfo.Index - indexDelta, 0), sourceItem);
         }
         else if (_dropTargetInfo.TargetTreeItem is not null)
         {
-            var indexDelta                                                               = 0;
-            if (_dropTargetInfo.TargetTreeItem == beingDraggedTreeItemParent) indexDelta = 1;
+            var indexDelta = 0;
+            if (_dropTargetInfo.TargetTreeItem == beingDraggedTreeItemParent)
+            {
+                indexDelta = 1;
+            }
+
             _dropTargetInfo.TargetTreeItem.Items.Insert(Math.Max(_dropTargetInfo.Index - indexDelta, 0), sourceItem);
         }
     }
@@ -722,7 +852,10 @@ public class TreeView : AvaloniaTreeView
                 currentItem = currentItem.Parent as TreeViewItem;
             }
 
-            if (!isExpaned) return false;
+            if (!isExpaned)
+            {
+                return false;
+            }
         }
 
         var dragBounds   = item.GetDragBounds();
@@ -734,14 +867,12 @@ public class TreeView : AvaloniaTreeView
     #endregion
 }
 
-
 internal class DropTargetInfo
 {
     public TreeViewItem? TargetTreeItem { get; set; }
     public int Index { get; set; }
     public bool IsRoot { get; set; }
 }
-
 
 internal record DragIndicatorRenderInfo
 {

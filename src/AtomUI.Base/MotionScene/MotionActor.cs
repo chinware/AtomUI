@@ -12,8 +12,8 @@ using Avalonia.VisualTree;
 namespace AtomUI.MotionScene;
 
 /// <summary>
-///     动效配置类，只要给 Director 提供动效相关信息
-///     动效驱动 Actor 的属性，然后由 Actor 驱动动画控件，防止污染动画控件的 Transitions 配置
+/// 动效配置类，只要给 Director 提供动效相关信息
+/// 动效驱动 Actor 的属性，然后由 Actor 驱动动画控件，防止污染动画控件的 Transitions 配置
 /// </summary>
 public class MotionActor : Animatable, IMotionActor
 {
@@ -31,6 +31,7 @@ public class MotionActor : Animatable, IMotionActor
 
     private static readonly MethodInfo EnableTransitionsMethodInfo;
     private static readonly MethodInfo DisableTransitionsMethodInfo;
+    private readonly Dictionary<AvaloniaProperty, AnimationState> _transitionsMap;
 
     protected Control? _ghost;
     protected AbstractMotion _motion;
@@ -40,7 +41,6 @@ public class MotionActor : Animatable, IMotionActor
     private ITransform? _originRenderTransform;
     private RelativePoint _originRenderTransformOrigin;
     private double _originWidth;
-    private readonly Dictionary<AvaloniaProperty, AnimationState> _transitionsMap;
 
     static MotionActor()
     {
@@ -86,7 +86,7 @@ public class MotionActor : Animatable, IMotionActor
     }
 
     /// <summary>
-    ///     当 DispatchInSceneLayer 为 true 的时候，必须指定一个动画 SceneLayer 的父窗口，最好不要是 Popup
+    /// 当 DispatchInSceneLayer 为 true 的时候，必须指定一个动画 SceneLayer 的父窗口，最好不要是 Popup
     /// </summary>
     public TopLevel? SceneParent { get; set; }
 
@@ -97,7 +97,7 @@ public class MotionActor : Animatable, IMotionActor
     public bool CompletedStatus { get; internal set; } = true;
 
     /// <summary>
-    ///     动画实体
+    /// 动画实体
     /// </summary>
     public Control MotionTarget { get; set; }
 
@@ -111,7 +111,11 @@ public class MotionActor : Animatable, IMotionActor
         var oldValue = args.OldValue;
         var newValue = args.NewValue;
         var priority = args.Priority;
-        if (!actor._transitionsMap.ContainsKey(property)) return;
+        if (!actor._transitionsMap.ContainsKey(property))
+        {
+            return;
+        }
+
         var state = actor._transitionsMap[property];
         if (actor.IsAnimating(property) && priority == BindingPriority.Animation)
         {
@@ -124,7 +128,9 @@ public class MotionActor : Animatable, IMotionActor
                 {
                     var transition = state.Transition;
                     if (transition is INotifyTransitionCompleted notifyTransitionCompleted)
+                    {
                         notifyTransitionCompleted.NotifyTransitionCompleted(true);
+                    }
                 }
             }
             else if (property.PropertyType.IsAssignableTo(typeof(ITransform)))
@@ -135,7 +141,9 @@ public class MotionActor : Animatable, IMotionActor
                 {
                     var transition = state.Transition;
                     if (transition is INotifyTransitionCompleted notifyTransitionCompleted)
+                    {
                         notifyTransitionCompleted.NotifyTransitionCompleted(true);
+                    }
                 }
             }
         }
@@ -144,10 +152,13 @@ public class MotionActor : Animatable, IMotionActor
     public bool IsSupportMotionProperty(AvaloniaProperty property)
     {
         if (property == AbstractMotion.MotionOpacityProperty ||
-            property == AbstractMotion.MotionWidthProperty   ||
-            property == AbstractMotion.MotionHeightProperty  ||
+            property == AbstractMotion.MotionWidthProperty ||
+            property == AbstractMotion.MotionHeightProperty ||
             property == AbstractMotion.MotionRenderTransformProperty)
+        {
             return true;
+        }
+
         return false;
     }
 
@@ -161,7 +172,7 @@ public class MotionActor : Animatable, IMotionActor
     }
 
     /// <summary>
-    ///     当在 DispatchInSceneLayer 渲染的时候，Ghost 的全局坐标
+    /// 当在 DispatchInSceneLayer 渲染的时候，Ghost 的全局坐标
     /// </summary>
     /// <returns></returns>
     public Point CalculateGhostPosition()
@@ -174,9 +185,13 @@ public class MotionActor : Animatable, IMotionActor
             {
                 var parentPoint = MotionTarget.TranslatePoint(new Point(0, 0), visualParent);
                 if (parentPoint.HasValue)
+                {
                     point = parentPoint.Value;
+                }
                 else
+                {
                     point = MotionTarget.Bounds.Position;
+                }
             }
         }
         else
@@ -193,12 +208,15 @@ public class MotionActor : Animatable, IMotionActor
     }
 
     /// <summary>
-    ///     在这个接口中，Actor 根据自己的需求对 sceneLayer 进行设置，主要就是位置和大小
+    /// 在这个接口中，Actor 根据自己的需求对 sceneLayer 进行设置，主要就是位置和大小
     /// </summary>
     /// <param name="sceneLayer"></param>
     public virtual void NotifySceneLayerCreated(SceneLayer sceneLayer)
     {
-        if (!DispatchInSceneLayer) return;
+        if (!DispatchInSceneLayer)
+        {
+            return;
+        }
 
         var ghost = GetAnimatableGhost();
 
@@ -208,9 +226,13 @@ public class MotionActor : Animatable, IMotionActor
         if (ghost.DesiredSize == default)
 
             // Popup may not have been shown yet. Measure content
+        {
             motionTargetSize = LayoutHelper.MeasureChild(ghost, Size.Infinity, new Thickness());
+        }
         else
+        {
             motionTargetSize = ghost.DesiredSize;
+        }
 
         var sceneSize     = _motion.CalculateSceneSize(motionTargetSize);
         var scenePosition = _motion.CalculateScenePosition(motionTargetSize, CalculateGhostPosition());
@@ -223,7 +245,11 @@ public class MotionActor : Animatable, IMotionActor
         BuildGhost();
         RelayMotionProperties();
         var transitions = new Transitions();
-        foreach (var transition in _motion.BuildTransitions(GetAnimatableGhost())) transitions.Add(transition);
+        foreach (var transition in _motion.BuildTransitions(GetAnimatableGhost()))
+        {
+            transitions.Add(transition);
+        }
+
         Transitions = transitions;
     }
 
@@ -239,7 +265,7 @@ public class MotionActor : Animatable, IMotionActor
     }
 
     /// <summary>
-    ///     当动画目标控件被添加到动画场景中之后调用，这里需要根据 Motion 的种类设置初始位置和大小
+    /// 当动画目标控件被添加到动画场景中之后调用，这里需要根据 Motion 的种类设置初始位置和大小
     /// </summary>
     /// <param name="motionTarget"></param>
     public virtual void NotifyMotionTargetAddedToScene(Control motionTarget)
@@ -266,11 +292,15 @@ public class MotionActor : Animatable, IMotionActor
     internal virtual void NotifyMotionPreStart()
     {
         if (Transitions is not null)
+        {
             foreach (var transition in Transitions)
+            {
                 _transitionsMap.Add(transition.Property, new AnimationState
                 {
                     Transition = transition
                 });
+            }
+        }
 
         foreach (var motionConfig in _motion.GetMotionConfigs())
         {
@@ -305,6 +335,7 @@ public class MotionActor : Animatable, IMotionActor
     {
         var target = GetAnimatableGhost();
         foreach (var motionConfig in _motion.GetMotionConfigs())
+        {
             if (motionConfig.Property == MotionHeightProperty)
             {
                 _originHeight = target.Height;
@@ -322,13 +353,14 @@ public class MotionActor : Animatable, IMotionActor
                 _originRenderTransform       = target.RenderTransform;
                 _originRenderTransformOrigin = target.RenderTransformOrigin;
             }
+        }
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == MotionWidthProperty   ||
-            change.Property == MotionHeightProperty  ||
+        if (change.Property == MotionWidthProperty ||
+            change.Property == MotionHeightProperty ||
             change.Property == MotionOpacityProperty ||
             change.Property == MotionRenderTransformProperty)
         {
@@ -341,7 +373,9 @@ public class MotionActor : Animatable, IMotionActor
     {
         var target = GetAnimatableGhost();
         if (target == MotionTarget)
+        {
             foreach (var motionConfig in _motion.GetMotionConfigs())
+            {
                 if (motionConfig.Property == MotionHeightProperty)
                 {
                     target.SetValue(MotionHeightProperty, _originHeight);
@@ -360,8 +394,9 @@ public class MotionActor : Animatable, IMotionActor
                     target.SetValue(MotionRenderTransformProperty, _originRenderTransform);
                     target.SetValue(Visual.RenderTransformOriginProperty, _originRenderTransformOrigin);
                 }
+            }
+        }
     }
-
 
     private class AnimationState
     {

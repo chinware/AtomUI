@@ -64,7 +64,10 @@ public class TextGlyph : WatermarkGlyph
 
     private void UpdateFormatText()
     {
-        if (FormattedText == null) return;
+        if (FormattedText == null)
+        {
+            return;
+        }
 
         FormattedText.SetFontSize(FontSize);
         FormattedText.SetForegroundBrush(Foreground);
@@ -72,7 +75,10 @@ public class TextGlyph : WatermarkGlyph
 
     public override void Render(DrawingContext context)
     {
-        if (FormattedText == null) return;
+        if (FormattedText == null)
+        {
+            return;
+        }
 
         context.DrawText(FormattedText, new Point());
     }

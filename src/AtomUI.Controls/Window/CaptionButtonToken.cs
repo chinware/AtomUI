@@ -14,27 +14,27 @@ internal class CaptionButtonToken : AbstractControlDesignToken
     }
 
     /// <summary>
-    ///     Hover 的背景色
+    /// Hover 的背景色
     /// </summary>
     public Color HoverBackgroundColor { get; set; }
 
     /// <summary>
-    ///     鼠标按下的背景色
+    /// 鼠标按下的背景色
     /// </summary>
     public Color PressedBackgroundColor { get; set; }
 
     /// <summary>
-    ///     关闭按钮的背景颜色
+    /// 关闭按钮的背景颜色
     /// </summary>
     public Color CloseHoverBackgroundColor { get; set; }
 
     /// <summary>
-    ///     关闭按钮鼠标按下的背景颜色
+    /// 关闭按钮鼠标按下的背景颜色
     /// </summary>
     public Color ClosePressedBackgroundColor { get; set; }
 
     /// <summary>
-    ///     按钮的前景色
+    /// 按钮的前景色
     /// </summary>
     public Color ForegroundColor { get; set; }
 

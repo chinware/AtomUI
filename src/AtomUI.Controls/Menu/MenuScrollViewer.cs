@@ -11,7 +11,6 @@ namespace AtomUI.Controls;
 
 using AvaloniaScrollViewer = ScrollViewer;
 
-
 [TemplatePart(MenuScrollViewerTheme.ScrollDownButtonPart, typeof(IconButton))]
 [TemplatePart(MenuScrollViewerTheme.ScrollUpButtonPart, typeof(IconButton))]
 [TemplatePart(MenuScrollViewerTheme.ScrollViewContentPart, typeof(ScrollContentPresenter))]
@@ -27,8 +26,6 @@ public class MenuScrollViewer : AvaloniaScrollViewer, IControlCustomStyle
         _customStyle = this;
     }
 
-
-
     #region IControlCustomStyle 实现
 
     void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
@@ -41,8 +38,6 @@ public class MenuScrollViewer : AvaloniaScrollViewer, IControlCustomStyle
     }
 
     #endregion
-
-
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
@@ -61,24 +56,30 @@ public class MenuScrollViewer : AvaloniaScrollViewer, IControlCustomStyle
             MenuScrollingVisibilityConverter.Instance.Convert(args, typeof(bool), 0d, CultureInfo.CurrentCulture);
         var scrollDownVisibility =
             MenuScrollingVisibilityConverter.Instance.Convert(args, typeof(bool), 100d, CultureInfo.CurrentCulture);
-        if (_scrollUpButton is not null    &&
+        if (_scrollUpButton is not null &&
             scrollUpVisibility is not null &&
             scrollUpVisibility != AvaloniaProperty.UnsetValue)
+        {
             _scrollUpButton.IsVisible = (bool)scrollUpVisibility;
+        }
 
-        if (_scrollDownButton is not null    &&
+        if (_scrollDownButton is not null &&
             scrollDownVisibility is not null &&
             scrollDownVisibility != AvaloniaProperty.UnsetValue)
+        {
             _scrollDownButton.IsVisible = (bool)scrollDownVisibility;
+        }
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
         if (change.Property == VerticalScrollBarVisibilityProperty ||
-            change.Property == OffsetProperty                      ||
-            change.Property == ExtentProperty                      ||
+            change.Property == OffsetProperty ||
+            change.Property == ExtentProperty ||
             change.Property == ViewportProperty)
+        {
             SetupScrollButtonVisibility();
+        }
     }
 }

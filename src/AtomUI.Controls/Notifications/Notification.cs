@@ -11,13 +11,13 @@ public class Notification : INotification, INotifyPropertyChanged
     private string _title;
 
     public Notification(string title,
-        object? content,
-        NotificationType type = NotificationType.Information,
-        PathIcon? icon = null,
-        TimeSpan? expiration = null,
-        bool showProgress = false,
-        Action? onClick = null,
-        Action? onClose = null)
+                        object? content,
+                        NotificationType type = NotificationType.Information,
+                        PathIcon? icon = null,
+                        TimeSpan? expiration = null,
+                        bool showProgress = false,
+                        Action? onClick = null,
+                        Action? onClose = null)
     {
         _title       = title;
         _content     = content;
@@ -32,6 +32,7 @@ public class Notification : INotification, INotifyPropertyChanged
     public string Title
     {
         get => _title;
+
         set
         {
             if (_title != value)
@@ -45,6 +46,7 @@ public class Notification : INotification, INotifyPropertyChanged
     public object? Content
     {
         get => _content;
+
         set
         {
             if (!ReferenceEquals(_content, value))
@@ -58,6 +60,7 @@ public class Notification : INotification, INotifyPropertyChanged
     public PathIcon? Icon
     {
         get => _icon;
+
         set
         {
             if (!ReferenceEquals(_icon, value))
@@ -71,6 +74,7 @@ public class Notification : INotification, INotifyPropertyChanged
     public bool ShowProgress
     {
         get => _showProgress;
+
         set
         {
             if (_showProgress != value)

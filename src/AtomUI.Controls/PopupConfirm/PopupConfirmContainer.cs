@@ -23,8 +23,15 @@ internal class PopupConfirmContainer : TemplatedControl
         base.OnApplyTemplate(e);
         _okButton     = e.NameScope.Find<Button>(PopupConfirmContainerTheme.OkButtonPart);
         _cancelButton = e.NameScope.Find<Button>(PopupConfirmContainerTheme.CancelButtonPart);
-        if (_okButton is not null) _okButton.Click         += HandleButtonClicked;
-        if (_cancelButton is not null) _cancelButton.Click += HandleButtonClicked;
+        if (_okButton is not null)
+        {
+            _okButton.Click += HandleButtonClicked;
+        }
+
+        if (_cancelButton is not null)
+        {
+            _cancelButton.Click += HandleButtonClicked;
+        }
     }
 
     private void HandleButtonClicked(object? sender, RoutedEventArgs args)
@@ -49,8 +56,6 @@ internal class PopupConfirmContainer : TemplatedControl
             popupConfirm.HideFlyout(true);
         }
     }
-
-
 
     #region 内部属性定义
 

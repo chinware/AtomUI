@@ -21,7 +21,6 @@ namespace AtomUI.Controls;
 using AvaloniaButton = Avalonia.Controls.Button;
 using ButtonSizeType = SizeType;
 
-
 public enum ButtonType
 {
     Default,
@@ -30,7 +29,6 @@ public enum ButtonType
     Text
 }
 
-
 public enum ButtonShape
 {
     Default,
@@ -38,15 +36,13 @@ public enum ButtonShape
     Round
 }
 
-
 // TODO 目前不能动态切换 ButtonType
-
 
 [PseudoClasses(IconOnlyPC, LoadingPC)]
 public class Button : AvaloniaButton,
-    ISizeTypeAware,
-    IControlCustomStyle,
-    IWaveAdornerInfoProvider
+                      ISizeTypeAware,
+                      IControlCustomStyle,
+                      IWaveAdornerInfoProvider
 {
     public const string IconOnlyPC = ":icononly";
     public const string LoadingPC = ":loading";
@@ -91,6 +87,7 @@ public class Button : AvaloniaButton,
         if (ButtonType == ButtonType.Default)
         {
             if (IsDanger)
+            {
                 Effect = new DropShadowEffect
                 {
                     OffsetX    = DangerShadow.OffsetX,
@@ -98,7 +95,9 @@ public class Button : AvaloniaButton,
                     Color      = DangerShadow.Color,
                     BlurRadius = DangerShadow.Blur
                 };
+            }
             else
+            {
                 Effect = new DropShadowEffect
                 {
                     OffsetX    = DefaultShadow.OffsetX,
@@ -106,10 +105,12 @@ public class Button : AvaloniaButton,
                     Color      = DefaultShadow.Color,
                     BlurRadius = DefaultShadow.Blur
                 };
+            }
         }
         else if (ButtonType == ButtonType.Primary)
         {
             if (IsDanger)
+            {
                 Effect = new DropShadowEffect
                 {
                     OffsetX    = DangerShadow.OffsetX,
@@ -117,7 +118,9 @@ public class Button : AvaloniaButton,
                     Color      = DangerShadow.Color,
                     BlurRadius = DangerShadow.Blur
                 };
+            }
             else
+            {
                 Effect = new DropShadowEffect
                 {
                     OffsetX    = PrimaryShadow.OffsetX,
@@ -125,6 +128,7 @@ public class Button : AvaloniaButton,
                     Color      = PrimaryShadow.Color,
                     BlurRadius = PrimaryShadow.Blur
                 };
+            }
         }
     }
 
@@ -132,9 +136,13 @@ public class Button : AvaloniaButton,
     {
         ControlStateUtils.InitCommonState(this, ref _styleState);
         if (IsPressed)
+        {
             _styleState |= ControlStyleState.Sunken;
+        }
         else
+        {
             _styleState |= ControlStyleState.Raised;
+        }
     }
 
     void IControlCustomStyle.SetupTransitions()
@@ -182,56 +190,79 @@ public class Button : AvaloniaButton,
     void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
     {
         if (e.Property == IsPointerOverProperty ||
-            e.Property == IsPressedProperty     ||
+            e.Property == IsPressedProperty ||
             e.Property == IsEnabledProperty)
         {
             _customStyle.CollectStyleState();
             ApplyIconModeStyleConfig();
             if (e.Property == IsPressedProperty)
+            {
                 if (!IsLoading && _styleState.HasFlag(ControlStyleState.Raised) && (ButtonType == ButtonType.Primary ||
-                        ButtonType                                                             == ButtonType.Default))
+                        ButtonType == ButtonType.Default))
                 {
                     WaveType waveType = default;
                     if (Shape == ButtonShape.Default)
+                    {
                         waveType = WaveType.RoundRectWave;
+                    }
                     else if (Shape == ButtonShape.Round)
-                        waveType                                   = WaveType.PillWave;
-                    else if (Shape == ButtonShape.Circle) waveType = WaveType.CircleWave;
+                    {
+                        waveType = WaveType.PillWave;
+                    }
+                    else if (Shape == ButtonShape.Circle)
+                    {
+                        waveType = WaveType.CircleWave;
+                    }
 
                     Color? waveColor = null;
                     if (IsDanger)
                     {
                         if (ButtonType == ButtonType.Primary && !IsGhost)
+                        {
                             waveColor = Color.Parse(Background?.ToString()!);
+                        }
                         else
+                        {
                             waveColor = Color.Parse(Foreground?.ToString()!);
+                        }
                     }
 
                     WaveSpiritAdorner.ShowWaveAdorner(this, waveType, waveColor);
                 }
+            }
         }
 
         if (e.Property == ButtonTypeProperty)
         {
-            if (VisualRoot is not null) SetupControlTheme();
+            if (VisualRoot is not null)
+            {
+                SetupControlTheme();
+            }
         }
         else if (e.Property == ContentProperty ||
-                 e.Property == TextProperty    ||
+                 e.Property == TextProperty ||
                  e.Property == IsLoadingProperty)
         {
             UpdatePseudoClasses();
         }
 
-        if (e.Property == IconProperty) SetupIcon();
+        if (e.Property == IconProperty)
+        {
+            SetupIcon();
+        }
 
         if (e.Property == IsDangerProperty ||
-            e.Property == IsGhostProperty  ||
+            e.Property == IsGhostProperty ||
             e.Property == ButtonTypeProperty)
+        {
             SetupIconBrush();
+        }
 
         if (e.Property == BorderBrushProperty ||
             e.Property == ButtonTypeProperty)
+        {
             SetupEffectiveBorderThickness();
+        }
     }
 
     public Rect WaveGeometry()
@@ -287,19 +318,29 @@ public class Button : AvaloniaButton,
     private void SetupControlTheme()
     {
         if (ButtonType == ButtonType.Default)
+        {
             TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, DefaultButtonTheme.ID);
+        }
         else if (ButtonType == ButtonType.Primary)
+        {
             TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, PrimaryButtonTheme.ID);
+        }
         else if (ButtonType == ButtonType.Text)
+        {
             TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, TextButtonTheme.ID);
+        }
         else if (ButtonType == ButtonType.Link)
+        {
             TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, LinkButtonTheme.ID);
+        }
     }
 
     private void ApplyShapeStyleConfig()
     {
         if (Shape == ButtonShape.Circle)
+        {
             TokenResourceBinder.CreateTokenBinding(this, PaddingProperty, ButtonTokenResourceKey.CirclePadding);
+        }
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -312,16 +353,25 @@ public class Button : AvaloniaButton,
 
     protected virtual void ApplyIconModeStyleConfig()
     {
-        if (Icon is null) return;
+        if (Icon is null)
+        {
+            return;
+        }
 
         if (_styleState.HasFlag(ControlStyleState.Enabled))
         {
             if (_styleState.HasFlag(ControlStyleState.Sunken))
+            {
                 Icon.IconMode = IconMode.Selected;
+            }
             else if (_styleState.HasFlag(ControlStyleState.MouseOver))
+            {
                 Icon.IconMode = IconMode.Active;
+            }
             else
+            {
                 Icon.IconMode = IconMode.Normal;
+            }
         }
         else
         {
@@ -348,9 +398,13 @@ public class Button : AvaloniaButton,
         else if (ButtonType == ButtonType.Primary)
         {
             if (IsGhost)
+            {
                 EffectiveBorderThickness = BorderThickness;
+            }
             else
+            {
                 EffectiveBorderThickness = new Thickness(0);
+            }
         }
         else
         {
@@ -469,9 +523,9 @@ public class Button : AvaloniaButton,
     }
 
     protected virtual void NotifyIconBrushCalculated(in TokenResourceKey normalFilledBrushKey,
-        in TokenResourceKey selectedFilledBrushKey,
-        in TokenResourceKey activeFilledBrushKey,
-        in TokenResourceKey disabledFilledBrushKey)
+                                                     in TokenResourceKey selectedFilledBrushKey,
+                                                     in TokenResourceKey activeFilledBrushKey,
+                                                     in TokenResourceKey disabledFilledBrushKey)
     {
     }
 
@@ -480,8 +534,6 @@ public class Button : AvaloniaButton,
         PseudoClasses.Set(IconOnlyPC, Icon is not null && Text is null);
         PseudoClasses.Set(LoadingPC, IsLoading);
     }
-
-
 
     #region 公共属性定义
 
@@ -567,8 +619,6 @@ public class Button : AvaloniaButton,
     }
 
     #endregion
-
-
 
     #region 内部属性定义
 

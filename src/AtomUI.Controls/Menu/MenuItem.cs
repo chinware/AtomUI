@@ -17,7 +17,6 @@ namespace AtomUI.Controls;
 
 using AvaloniaMenuItem = Avalonia.Controls.MenuItem;
 
-
 [PseudoClasses(TopLevelPC)]
 public class MenuItem : AvaloniaMenuItem, IControlCustomStyle
 {
@@ -72,11 +71,17 @@ public class MenuItem : AvaloniaMenuItem, IControlCustomStyle
 
     private void HandleToggleTypeChanged()
     {
-        if (IsTopLevel || _togglePresenter is null) return;
+        if (IsTopLevel || _togglePresenter is null)
+        {
+            return;
+        }
 
         if (ToggleType == MenuItemToggleType.None)
         {
-            if (_togglePresenter.Presenter is not null) _togglePresenter.Presenter.IsVisible = false;
+            if (_togglePresenter.Presenter is not null)
+            {
+                _togglePresenter.Presenter.IsVisible = false;
+            }
         }
         else if (ToggleType == MenuItemToggleType.CheckBox)
         {
@@ -100,8 +105,6 @@ public class MenuItem : AvaloniaMenuItem, IControlCustomStyle
         PseudoClasses.Set(TopLevelPC, IsTopLevel);
     }
 
-
-
     #region 公共属性定义
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
@@ -114,8 +117,6 @@ public class MenuItem : AvaloniaMenuItem, IControlCustomStyle
     }
 
     #endregion
-
-
 
     #region IControlCustomStyle 实现
 
@@ -133,9 +134,14 @@ public class MenuItem : AvaloniaMenuItem, IControlCustomStyle
     void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
     {
         if (IsTopLevel)
+        {
             _topLevelContentPresenter = scope.Find<ContentPresenter>(TopLevelMenuItemTheme.HeaderPresenterPart);
+        }
         else
+        {
             _togglePresenter = scope.Find<ContentControl>(MenuItemTheme.TogglePresenterPart);
+        }
+
         HandleToggleTypeChanged();
         _customStyle.SetupTransitions();
         UpdatePseudoClasses();

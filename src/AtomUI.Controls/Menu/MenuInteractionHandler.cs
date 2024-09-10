@@ -11,8 +11,8 @@ public class MenuInteractionHandler : DefaultMenuInteractionHandler
     }
 
     public MenuInteractionHandler(bool isContextMenu,
-        IInputManager? inputManager,
-        Action<Action, TimeSpan> delayRun)
+                                  IInputManager? inputManager,
+                                  Action<Action, TimeSpan> delayRun)
         : base(isContextMenu, inputManager, delayRun)
     {
     }

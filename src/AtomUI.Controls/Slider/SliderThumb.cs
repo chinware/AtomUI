@@ -98,7 +98,10 @@ public class SliderThumb : TemplatedControl
 
     internal void AdjustDrag(Vector v)
     {
-        if (_lastPoint.HasValue) _lastPoint = _lastPoint.Value + v;
+        if (_lastPoint.HasValue)
+        {
+            _lastPoint = _lastPoint.Value + v;
+        }
     }
 
     protected override AutomationPeer OnCreateAutomationPeer()

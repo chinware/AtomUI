@@ -28,9 +28,16 @@ public class ToggleIconButton : ToggleButton
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        if (CheckedIcon is not null) ConfigureIcon(CheckedIcon);
+        if (CheckedIcon is not null)
+        {
+            ConfigureIcon(CheckedIcon);
+        }
 
-        if (UnCheckedIcon is not null) ConfigureIcon(UnCheckedIcon);
+        if (UnCheckedIcon is not null)
+        {
+            ConfigureIcon(UnCheckedIcon);
+        }
+
         ApplyIconToContent();
     }
 
@@ -63,8 +70,13 @@ public class ToggleIconButton : ToggleButton
                     {
                         pathIcon.IconMode = IconMode.Normal;
                         if (_styleState.HasFlag(ControlStyleState.Sunken))
+                        {
                             pathIcon.IconMode = IconMode.Selected;
-                        else if (_styleState.HasFlag(ControlStyleState.MouseOver)) pathIcon.IconMode = IconMode.Active;
+                        }
+                        else if (_styleState.HasFlag(ControlStyleState.MouseOver))
+                        {
+                            pathIcon.IconMode = IconMode.Active;
+                        }
                     }
                     else
                     {
@@ -76,28 +88,38 @@ public class ToggleIconButton : ToggleButton
 
         if (change.Property == CheckedIconProperty ||
             change.Property == UnCheckedIconProperty)
+        {
             if (change.NewValue is PathIcon newIcon)
             {
                 ConfigureIcon(newIcon);
                 ApplyIconToContent();
             }
+        }
     }
 
     internal virtual void ApplyIconToContent()
     {
         if (IsChecked.HasValue && IsChecked.Value)
+        {
             Content = CheckedIcon;
+        }
         else
+        {
             Content = UnCheckedIcon;
+        }
     }
 
     private void CollectStyleState()
     {
         ControlStateUtils.InitCommonState(this, ref _styleState);
         if (IsPressed)
+        {
             _styleState |= ControlStyleState.Sunken;
+        }
         else
+        {
             _styleState |= ControlStyleState.Raised;
+        }
     }
 
     public bool HitTest(Point point)
@@ -109,8 +131,6 @@ public class ToggleIconButton : ToggleButton
     {
         return true;
     }
-
-
 
     #region 公共属性定义
 

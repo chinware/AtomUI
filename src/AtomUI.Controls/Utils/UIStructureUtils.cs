@@ -39,43 +39,64 @@ internal static class UIStructureUtils
     public static void ClearVisualParentRecursive(Visual control, Control? parent)
     {
         SetVisualParent(control, null);
-        foreach (var child in control.GetVisualChildren()) ClearVisualParentRecursive(child, parent);
+        foreach (var child in control.GetVisualChildren())
+        {
+            ClearVisualParentRecursive(child, parent);
+        }
     }
 
     public static void ClearLogicalParentRecursive(ILogical control, Control? parent)
     {
         ((ISetLogicalParent)control).SetParent(parent);
-        foreach (var child in control.GetLogicalChildren()) ClearLogicalParentRecursive(child, parent);
+        foreach (var child in control.GetLogicalChildren())
+        {
+            ClearLogicalParentRecursive(child, parent);
+        }
     }
 
     public static void AddToLogicalChildren(StyledElement parent, Control child)
     {
         var value = LogicalChildrenInfo.GetValue(parent);
-        if (value is IAvaloniaList<ILogical> logicalChildren) logicalChildren.Add(child);
+        if (value is IAvaloniaList<ILogical> logicalChildren)
+        {
+            logicalChildren.Add(child);
+        }
     }
 
     public static void InsertToLogicalChildren(StyledElement parent, int index, Control child)
     {
         var value = LogicalChildrenInfo.GetValue(parent);
-        if (value is IAvaloniaList<ILogical> logicalChildren) logicalChildren.Insert(index, child);
+        if (value is IAvaloniaList<ILogical> logicalChildren)
+        {
+            logicalChildren.Insert(index, child);
+        }
     }
 
     public static void AddToVisualChildren(StyledElement parent, Control child)
     {
         var value = VisualChildrenInfo.GetValue(parent);
-        if (value is IAvaloniaList<Visual> visualChildren) visualChildren.Add(child);
+        if (value is IAvaloniaList<Visual> visualChildren)
+        {
+            visualChildren.Add(child);
+        }
     }
 
     public static void InsertToVisualChildren(StyledElement parent, int index, Control child)
     {
         var value = VisualChildrenInfo.GetValue(parent);
-        if (value is IAvaloniaList<Visual> visualChildren) visualChildren.Insert(index, child);
+        if (value is IAvaloniaList<Visual> visualChildren)
+        {
+            visualChildren.Insert(index, child);
+        }
     }
 
     public static int IndexOfVisualChildren(StyledElement parent, Control child)
     {
         var value = VisualChildrenInfo.GetValue(parent);
-        if (value is IAvaloniaList<Visual> visualChildren) return visualChildren.IndexOf(child);
+        if (value is IAvaloniaList<Visual> visualChildren)
+        {
+            return visualChildren.IndexOf(child);
+        }
 
         return -1;
     }

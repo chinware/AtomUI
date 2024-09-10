@@ -68,7 +68,9 @@ internal class AbstractCircleProgressTheme : AbstractProgressBarTheme
             commonStyle.Add(labelStyle);
         }
         var labelVisibleStyle = new Style(selector => selector.Nesting()
-            .PropertyEquals(AbstractProgressBar.PercentLabelVisibleProperty, true));
+                                                              .PropertyEquals(
+                                                                  AbstractProgressBar.PercentLabelVisibleProperty,
+                                                                  true));
         {
             var labelStyle = new Style(selector => selector.Nesting().Template().OfType<Label>());
             labelStyle.Add(Visual.IsVisibleProperty, true);
@@ -77,7 +79,9 @@ internal class AbstractCircleProgressTheme : AbstractProgressBarTheme
         commonStyle.Add(labelVisibleStyle);
 
         var labelInVisibleStyle = new Style(selector => selector.Nesting()
-            .PropertyEquals(AbstractProgressBar.PercentLabelVisibleProperty, false));
+                                                                .PropertyEquals(
+                                                                    AbstractProgressBar.PercentLabelVisibleProperty,
+                                                                    false));
         {
             var labelStyle = new Style(selector => selector.Nesting().Template().OfType<Label>());
             labelStyle.Add(Visual.IsVisibleProperty, false);

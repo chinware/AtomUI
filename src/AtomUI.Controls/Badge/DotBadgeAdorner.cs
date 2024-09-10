@@ -56,8 +56,9 @@ internal class DotBadgeAdorner : Control, IControlCustomStyle
         AvaloniaProperty.Register<DotBadgeAdorner, Point>(
             nameof(Offset));
 
-    private BoxShadows _boxShadows;
     private readonly IControlCustomStyle _customStyle;
+
+    private BoxShadows _boxShadows;
 
     private bool _initialized;
 
@@ -146,7 +147,10 @@ internal class DotBadgeAdorner : Control, IControlCustomStyle
 
     void IControlCustomStyle.BuildStyles()
     {
-        if (Styles.Count == 0) BuildBadgeColorStyle();
+        if (Styles.Count == 0)
+        {
+            BuildBadgeColorStyle();
+        }
     }
 
     public sealed override void ApplyTemplate()
@@ -230,7 +234,10 @@ internal class DotBadgeAdorner : Control, IControlCustomStyle
             targetWidth  += StatusSize;
             targetWidth  += textSize.Width;
             targetHeight += Math.Max(textSize.Height, StatusSize);
-            if (textSize.Width > 0) targetWidth += BadgeTextMarginInline;
+            if (textSize.Width > 0)
+            {
+                targetWidth += BadgeTextMarginInline;
+            }
         }
 
         return new Size(targetWidth, targetHeight);
@@ -242,9 +249,13 @@ internal class DotBadgeAdorner : Control, IControlCustomStyle
         {
             double textOffsetX = 0;
             if (IsAdornerMode)
+            {
                 textOffsetX += DotSize;
+            }
             else
+            {
                 textOffsetX += StatusSize;
+            }
 
             textOffsetX += BadgeTextMarginInline;
             var textRect = new Rect(new Point(textOffsetX, 0), _textLabel!.DesiredSize);
@@ -259,8 +270,11 @@ internal class DotBadgeAdorner : Control, IControlCustomStyle
         base.OnPropertyChanged(e);
         if (e.Property == IsAdornerModeProperty)
         {
-            var newValue                                     = e.GetNewValue<bool>();
-            if (_textLabel is not null) _textLabel.IsVisible = !newValue;
+            var newValue = e.GetNewValue<bool>();
+            if (_textLabel is not null)
+            {
+                _textLabel.IsVisible = !newValue;
+            }
         }
         else if (e.Property == BadgeShadowSizeProperty ||
                  e.Property == BadgeShadowColorProperty)
@@ -273,9 +287,13 @@ internal class DotBadgeAdorner : Control, IControlCustomStyle
     {
         var dotSize = 0d;
         if (IsAdornerMode)
+        {
             dotSize = DotSize;
+        }
         else
+        {
             dotSize = StatusSize;
+        }
 
         var offsetX = 0d;
         var offsetY = 0d;
@@ -297,9 +315,13 @@ internal class DotBadgeAdorner : Control, IControlCustomStyle
         {
             Point origin;
             if (AnimationRenderTransformOrigin.HasValue)
+            {
                 origin = AnimationRenderTransformOrigin.Value.ToPixels(dotRect.Size);
+            }
             else
+            {
                 origin = RenderTransformOrigin.ToPixels(dotRect.Size);
+            }
 
             var offset          = Matrix.CreateTranslation(new Point(origin.X + offsetX, origin.Y + offsetY));
             var renderTransform = -offset * RenderTransform.Value * offset;
@@ -312,6 +334,7 @@ internal class DotBadgeAdorner : Control, IControlCustomStyle
     private void BuildBoxShadow()
     {
         if (BadgeShadowColor is not null)
+        {
             _boxShadows = new BoxShadows(new BoxShadow
             {
                 OffsetX = 0,
@@ -320,5 +343,6 @@ internal class DotBadgeAdorner : Control, IControlCustomStyle
                 Spread  = BadgeShadowSize,
                 Color   = ((SolidColorBrush)BadgeShadowColor).Color
             });
+        }
     }
 }

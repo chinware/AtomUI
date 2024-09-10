@@ -25,13 +25,23 @@ public partial class ButtonSpinnerShowCase : UserControl
         {
             var value = Array.IndexOf(_spinnerItems, textBlock.Text);
             if (e.Direction == SpinDirection.Increase)
+            {
                 value++;
+            }
             else
+            {
                 value--;
+            }
 
             if (value < 0)
-                value                                     = _spinnerItems.Length - 1;
-            else if (value >= _spinnerItems.Length) value = 0;
+            {
+                value = _spinnerItems.Length - 1;
+            }
+            else if (value >= _spinnerItems.Length)
+            {
+                value = 0;
+            }
+
             textBlock.Text = _spinnerItems[value];
         }
     }

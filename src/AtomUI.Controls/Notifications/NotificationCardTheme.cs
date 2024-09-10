@@ -147,7 +147,10 @@ internal class NotificationCardTheme : BaseControlTheme
             GlobalTokenResourceKey.PaddingXXS, BindingPriority.Template,
             o =>
             {
-                if (o is double dval) return new Thickness(dval);
+                if (o is double dval)
+                {
+                    return new Thickness(dval);
+                }
 
                 return new Thickness(0);
             });
@@ -373,7 +376,9 @@ internal class NotificationCardTheme : BaseControlTheme
                 TimeSpan.FromMilliseconds(AnimationDuration), _quadraticEaseOut,
                 FillMode.Forward);
             foreach (var animation in moveRightInMotionConfig.Animations)
+            {
                 layoutTransformStyle.Animations.Add(animation);
+            }
 
             parentStyle.Add(layoutTransformStyle);
         }
@@ -388,7 +393,9 @@ internal class NotificationCardTheme : BaseControlTheme
                 TimeSpan.FromMilliseconds(AnimationDuration), _quadraticEaseIn, FillMode.Forward);
 
             foreach (var animation in moveRightOutMotionConfig.Animations)
+            {
                 layoutTransformStyle.Animations.Add(animation);
+            }
 
             isClosingStyle.Animations.Add(new Animation
             {
@@ -421,7 +428,10 @@ internal class NotificationCardTheme : BaseControlTheme
             var moveLeftInMotionConfig = MotionFactory.BuildMoveLeftInMotion(AnimationMaxOffsetX,
                 TimeSpan.FromMilliseconds(AnimationDuration), _quadraticEaseOut,
                 FillMode.Forward);
-            foreach (var animation in moveLeftInMotionConfig.Animations) layoutTransformStyle.Animations.Add(animation);
+            foreach (var animation in moveLeftInMotionConfig.Animations)
+            {
+                layoutTransformStyle.Animations.Add(animation);
+            }
 
             parentStyle.Add(layoutTransformStyle);
         }
@@ -435,7 +445,9 @@ internal class NotificationCardTheme : BaseControlTheme
                 TimeSpan.FromMilliseconds(AnimationDuration), _quadraticEaseIn, FillMode.Forward);
 
             foreach (var animation in moveRightOutMotionConfig.Animations)
+            {
                 layoutTransformStyle.Animations.Add(animation);
+            }
 
             isClosingStyle.Animations.Add(new Animation
             {
@@ -469,7 +481,9 @@ internal class NotificationCardTheme : BaseControlTheme
                 TimeSpan.FromMilliseconds(AnimationDuration), _quadraticEaseOut,
                 FillMode.Forward);
             foreach (var animation in moveRightInMotionConfig.Animations)
+            {
                 layoutTransformStyle.Animations.Add(animation);
+            }
 
             parentStyle.Add(layoutTransformStyle);
         }
@@ -484,7 +498,9 @@ internal class NotificationCardTheme : BaseControlTheme
                 TimeSpan.FromMilliseconds(AnimationDuration), _quadraticEaseIn, FillMode.Forward);
 
             foreach (var animation in moveRightOutMotionConfig.Animations)
+            {
                 layoutTransformStyle.Animations.Add(animation);
+            }
 
             isClosingStyle.Animations.Add(new Animation
             {
@@ -518,7 +534,9 @@ internal class NotificationCardTheme : BaseControlTheme
                 TimeSpan.FromMilliseconds(AnimationDuration), _quadraticEaseOut,
                 FillMode.Forward);
             foreach (var animation in moveRightInMotionConfig.Animations)
+            {
                 layoutTransformStyle.Animations.Add(animation);
+            }
 
             parentStyle.Add(layoutTransformStyle);
         }
@@ -533,7 +551,9 @@ internal class NotificationCardTheme : BaseControlTheme
                 TimeSpan.FromMilliseconds(AnimationDuration), _quadraticEaseIn, FillMode.Forward);
 
             foreach (var animation in moveRightOutMotionConfig.Animations)
+            {
                 layoutTransformStyle.Animations.Add(animation);
+            }
 
             isClosingStyle.Animations.Add(new Animation
             {

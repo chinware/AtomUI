@@ -21,9 +21,15 @@ public class DarkThemeVariantCalculator : AbstractThemeVariantCalculator
     {
         var mergedMapToken = _compositeGenerator!.Calculate(seedToken, sourceToken);
 
-        if (seedToken.ColorBgBase.HasValue) _colorBgBase = seedToken.ColorBgBase.Value;
+        if (seedToken.ColorBgBase.HasValue)
+        {
+            _colorBgBase = seedToken.ColorBgBase.Value;
+        }
 
-        if (seedToken.ColorTextBase.HasValue) _colorTextBase = seedToken.ColorTextBase.Value;
+        if (seedToken.ColorTextBase.HasValue)
+        {
+            _colorTextBase = seedToken.ColorTextBase.Value;
+        }
 
         // Dark tokens
         SetupColorPalettes(seedToken, mergedMapToken);
@@ -60,7 +66,7 @@ public class DarkThemeVariantCalculator : AbstractThemeVariantCalculator
 
     protected override ColorNeutralMapDesignToken GenerateNeutralColorPalettes(Color? bgBaseColor, Color? textBaseColor)
     {
-        var colorBgBase   = bgBaseColor   ?? _colorBgBase;
+        var colorBgBase   = bgBaseColor ?? _colorBgBase;
         var colorTextBase = textBaseColor ?? _colorTextBase;
 
         var colorNeutralToken = new ColorNeutralMapDesignToken

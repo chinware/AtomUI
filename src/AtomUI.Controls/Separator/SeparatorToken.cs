@@ -13,17 +13,17 @@ public class SeparatorToken : AbstractControlDesignToken
     }
 
     /// <summary>
-    ///     文本横向内间距 单位 em
+    /// 文本横向内间距 单位 em
     /// </summary>
     public double TextPaddingInline { get; set; }
 
     /// <summary>
-    ///     文本与边缘距离的比例，取值 0 ～ 1
+    /// 文本与边缘距离的比例，取值 0 ～ 1
     /// </summary>
     public double OrientationMarginPercent { get; set; }
 
     /// <summary>
-    ///     纵向分割线的横向外间距
+    /// 纵向分割线的横向外间距
     /// </summary>
     public double VerticalMarginInline { get; set; }
 

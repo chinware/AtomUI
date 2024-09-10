@@ -379,7 +379,10 @@ internal class AlertTheme : BaseControlTheme
             GlobalTokenResourceKey.MarginXS, BindingPriority.Template,
             o =>
             {
-                if (o is double value) return new Thickness(0, value, 0, 0);
+                if (o is double value)
+                {
+                    return new Thickness(0, value, 0, 0);
+                }
 
                 return o;
             });

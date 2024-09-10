@@ -11,11 +11,11 @@ namespace AtomUI.Controls;
 internal static class PopupPositionerExtensions
 {
     public static void ConfigurePosition(ref this PopupPositionerParameters positionerParameters,
-        TopLevel topLevel,
-        Visual target, PlacementMode placement, Point offset,
-        PopupAnchor anchor, PopupGravity gravity,
-        PopupPositionerConstraintAdjustment constraintAdjustment, Rect? rect,
-        FlowDirection flowDirection)
+                                         TopLevel topLevel,
+                                         Visual target, PlacementMode placement, Point offset,
+                                         PopupAnchor anchor, PopupGravity gravity,
+                                         PopupPositionerConstraintAdjustment constraintAdjustment, Rect? rect,
+                                         FlowDirection flowDirection)
     {
         positionerParameters.Offset               = offset;
         positionerParameters.ConstraintAdjustment = constraintAdjustment;
@@ -33,14 +33,21 @@ internal static class PopupPositionerExtensions
         {
             Matrix? matrix;
             if (TryGetAdorner(target, out var adorned, out var adornerLayer))
+            {
                 matrix = adorned!.TransformToVisual(topLevel) * target.TransformToVisual(adornerLayer!);
+            }
             else
+            {
                 matrix = target.TransformToVisual(topLevel);
+            }
 
             if (matrix == null)
             {
                 if (target.GetVisualRoot() == null)
+                {
                     throw new InvalidOperationException("Target control is not attached to the visual tree");
+                }
+
                 throw new InvalidOperationException("Target control is not in the same tree as the popup parent");
             }
 
@@ -50,19 +57,19 @@ internal static class PopupPositionerExtensions
 
             var parameters = placement switch
             {
-                PlacementMode.Bottom                 => (PopupAnchor.Bottom, PopupGravity.Bottom),
-                PlacementMode.Right                  => (PopupAnchor.Right, PopupGravity.Right),
-                PlacementMode.Left                   => (PopupAnchor.Left, PopupGravity.Left),
-                PlacementMode.Top                    => (PopupAnchor.Top, PopupGravity.Top),
-                PlacementMode.Center                 => (PopupAnchor.None, PopupGravity.None),
-                PlacementMode.AnchorAndGravity       => (anchor, gravity),
-                PlacementMode.TopEdgeAlignedRight    => (PopupAnchor.TopRight, PopupGravity.TopLeft),
-                PlacementMode.TopEdgeAlignedLeft     => (PopupAnchor.TopLeft, PopupGravity.TopRight),
-                PlacementMode.BottomEdgeAlignedLeft  => (PopupAnchor.BottomLeft, PopupGravity.BottomRight),
+                PlacementMode.Bottom => (PopupAnchor.Bottom, PopupGravity.Bottom),
+                PlacementMode.Right => (PopupAnchor.Right, PopupGravity.Right),
+                PlacementMode.Left => (PopupAnchor.Left, PopupGravity.Left),
+                PlacementMode.Top => (PopupAnchor.Top, PopupGravity.Top),
+                PlacementMode.Center => (PopupAnchor.None, PopupGravity.None),
+                PlacementMode.AnchorAndGravity => (anchor, gravity),
+                PlacementMode.TopEdgeAlignedRight => (PopupAnchor.TopRight, PopupGravity.TopLeft),
+                PlacementMode.TopEdgeAlignedLeft => (PopupAnchor.TopLeft, PopupGravity.TopRight),
+                PlacementMode.BottomEdgeAlignedLeft => (PopupAnchor.BottomLeft, PopupGravity.BottomRight),
                 PlacementMode.BottomEdgeAlignedRight => (PopupAnchor.BottomRight, PopupGravity.BottomLeft),
-                PlacementMode.LeftEdgeAlignedTop     => (PopupAnchor.TopLeft, PopupGravity.BottomLeft),
-                PlacementMode.LeftEdgeAlignedBottom  => (PopupAnchor.BottomLeft, PopupGravity.TopLeft),
-                PlacementMode.RightEdgeAlignedTop    => (PopupAnchor.TopRight, PopupGravity.BottomRight),
+                PlacementMode.LeftEdgeAlignedTop => (PopupAnchor.TopLeft, PopupGravity.BottomLeft),
+                PlacementMode.LeftEdgeAlignedBottom => (PopupAnchor.BottomLeft, PopupGravity.TopLeft),
+                PlacementMode.RightEdgeAlignedTop => (PopupAnchor.TopRight, PopupGravity.BottomRight),
                 PlacementMode.RightEdgeAlignedBottom => (PopupAnchor.BottomRight, PopupGravity.TopRight),
                 _ => throw new ArgumentOutOfRangeException(nameof(placement), placement,
                     "Invalid value for Popup.PlacementMode")

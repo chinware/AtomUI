@@ -20,7 +20,6 @@ public enum PresetColorType
     Grey
 }
 
-
 public class PresetPrimaryColor : IEquatable<PresetPrimaryColor>
 {
     public static readonly PresetPrimaryColor Red = new(PresetColorType.Red);
@@ -59,21 +58,21 @@ public class PresetPrimaryColor : IEquatable<PresetPrimaryColor>
     {
         return Type switch
         {
-            PresetColorType.Red      => "#F5222D",
-            PresetColorType.Volcano  => "#FA541C",
-            PresetColorType.Orange   => "#FA8C16",
-            PresetColorType.Gold     => "#FAAD14",
-            PresetColorType.Yellow   => "#FADB14",
-            PresetColorType.Lime     => "#A0D911",
-            PresetColorType.Green    => "#52C41A",
-            PresetColorType.Cyan     => "#13C2C2",
-            PresetColorType.Blue     => "#1677FF",
+            PresetColorType.Red => "#F5222D",
+            PresetColorType.Volcano => "#FA541C",
+            PresetColorType.Orange => "#FA8C16",
+            PresetColorType.Gold => "#FAAD14",
+            PresetColorType.Yellow => "#FADB14",
+            PresetColorType.Lime => "#A0D911",
+            PresetColorType.Green => "#52C41A",
+            PresetColorType.Cyan => "#13C2C2",
+            PresetColorType.Blue => "#1677FF",
             PresetColorType.GeekBlue => "#2F54EB",
-            PresetColorType.Purple   => "#722ED1",
-            PresetColorType.Magenta  => "#EB2F96",
-            PresetColorType.Pink     => "#EB2F96",
-            PresetColorType.Grey     => "#666666",
-            _                        => "#666666"
+            PresetColorType.Purple => "#722ED1",
+            PresetColorType.Magenta => "#EB2F96",
+            PresetColorType.Pink => "#EB2F96",
+            PresetColorType.Grey => "#666666",
+            _ => "#666666"
         };
     }
 

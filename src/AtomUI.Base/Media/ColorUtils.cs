@@ -9,13 +9,11 @@ public enum WCAG2Level
     AAA
 }
 
-
 public enum WCAG2Size
 {
     Large,
     Small
 }
-
 
 public class WCAG2Parms
 {
@@ -23,21 +21,19 @@ public class WCAG2Parms
     public WCAG2Size Size { get; set; } = WCAG2Size.Small;
 }
 
-
 public class WCAG2FallbackParms : WCAG2Parms
 {
     public bool IncludeFallbackColors { get; set; }
 }
-
 
 public static class ColorUtils
 {
     public static Color FromRgbF(double alpha, double red, double green, double blue)
     {
         return Color.FromArgb((byte)Math.Round(alpha * 255d),
-            (byte)Math.Round(red                     * 255d),
-            (byte)Math.Round(green                   * 255d),
-            (byte)Math.Round(blue                    * 255d));
+            (byte)Math.Round(red * 255d),
+            (byte)Math.Round(green * 255d),
+            (byte)Math.Round(blue * 255d));
     }
 
     public static Color FromRgbF(double red, double green, double blue)
@@ -123,7 +119,10 @@ public static class ColorUtils
         var fG          = frontColor.GetGreenF();
         var fB          = frontColor.GetBlueF();
         var originAlpha = frontColor.GetAlphaF();
-        if (originAlpha < 1d) return frontColor;
+        if (originAlpha < 1d)
+        {
+            return frontColor;
+        }
 
         var bR = backgroundColor.GetRedF();
         var bG = backgroundColor.GetGreenF();
@@ -135,7 +134,9 @@ public static class ColorUtils
             var g = Math.Round((fG - bG * (1d - fA)) / fA);
             var b = Math.Round((fB - bB * (1d - fA)) / fA);
             if (IsStableColor(r) && IsStableColor(g) && IsStableColor(b))
+            {
                 return FromRgbF(Math.Round(fA * 100d) / 100d, r, g, b);
+            }
         }
 
         // fallback
@@ -145,7 +146,10 @@ public static class ColorUtils
 
     public static Color ParseCssRgbColor(string colorExpr)
     {
-        if (TryParseCssRgbColor(colorExpr, out var color)) return color;
+        if (TryParseCssRgbColor(colorExpr, out var color))
+        {
+            return color;
+        }
 
         throw new FormatException($"Invalid color string: '{colorExpr}'.");
     }
@@ -153,39 +157,63 @@ public static class ColorUtils
     public static bool TryParseCssRgbColor(string? colorExpr, out Color color)
     {
         color = default;
-        if (string.IsNullOrEmpty(colorExpr)) return false;
+        if (string.IsNullOrEmpty(colorExpr))
+        {
+            return false;
+        }
 
-        if (colorExpr[0] == '#') return Color.TryParse(colorExpr, out color);
+        if (colorExpr[0] == '#')
+        {
+            return Color.TryParse(colorExpr, out color);
+        }
 
-        var isRgba         = colorExpr.StartsWith("rgba", StringComparison.InvariantCultureIgnoreCase);
-        var isRgb          = false;
-        if (!isRgba) isRgb = colorExpr.StartsWith("rgb", StringComparison.InvariantCultureIgnoreCase);
+        var isRgba = colorExpr.StartsWith("rgba", StringComparison.InvariantCultureIgnoreCase);
+        var isRgb  = false;
+        if (!isRgba)
+        {
+            isRgb = colorExpr.StartsWith("rgb", StringComparison.InvariantCultureIgnoreCase);
+        }
 
         if (isRgb || isRgba)
         {
             var leftParen  = colorExpr.IndexOf('(');
             var rightParen = colorExpr.IndexOf(')');
-            if (leftParen == -1 || rightParen == -1) return false;
+            if (leftParen == -1 || rightParen == -1)
+            {
+                return false;
+            }
 
             var parts = new List<string>(colorExpr.Substring(leftParen + 1, rightParen - leftParen - 1)
-                .Split(',', StringSplitOptions.RemoveEmptyEntries));
+                                                  .Split(',', StringSplitOptions.RemoveEmptyEntries));
             if (isRgb)
             {
-                if (parts.Count != 3) return false;
+                if (parts.Count != 3)
+                {
+                    return false;
+                }
 
                 parts.Add("255");
             }
             else
             {
-                if (parts.Count != 4) return false;
+                if (parts.Count != 4)
+                {
+                    return false;
+                }
             }
 
             var rgbaValues = new List<int>();
             foreach (var part in parts)
+            {
                 if (int.TryParse(part, out var partValue))
+                {
                     rgbaValues.Add(partValue);
+                }
                 else
+                {
                     return false;
+                }
+            }
 
             color = Color.FromArgb((byte)rgbaValues[0], (byte)rgbaValues[1], (byte)rgbaValues[2], (byte)rgbaValues[3]);
             return true;
@@ -197,8 +225,8 @@ public static class ColorUtils
     /// Readability Functions
     /// ---------------------
     /// <http:// www.w3.org/ TR/2008/ REC-WCAG20-20081211/# contrast-ratiodef ( WCAG Version 2)
-    ///     AKA ` contrast`
-    ///     Analyze the 2 colors and returns the color contrast defined by ( WCAG Version
+    /// AKA ` contrast`
+    /// Analyze the 2 colors and returns the color contrast defined by ( WCAG Version
     /// 2
     /// )
     public static double Readability(Color color1, Color color2)
@@ -222,14 +250,20 @@ public static class ColorUtils
         var readabilityLevel = Readability(color1, color2);
         if (wcag2.Level == WCAG2Level.AA)
         {
-            if (wcag2.Size == WCAG2Size.Large) return MathUtils.GreaterThanOrClose(readabilityLevel, 3);
+            if (wcag2.Size == WCAG2Size.Large)
+            {
+                return MathUtils.GreaterThanOrClose(readabilityLevel, 3);
+            }
 
             return MathUtils.GreaterThanOrClose(readabilityLevel, 4.5);
         }
 
         if (wcag2.Level == WCAG2Level.AAA)
         {
-            if (wcag2.Size == WCAG2Size.Large) return MathUtils.GreaterThanOrClose(readabilityLevel, 4.5);
+            if (wcag2.Size == WCAG2Size.Large)
+            {
+                return MathUtils.GreaterThanOrClose(readabilityLevel, 4.5);
+            }
 
             return MathUtils.GreaterThanOrClose(readabilityLevel, 7);
         }
@@ -272,7 +306,9 @@ public static class ColorUtils
 
         if (IsReadable(baseColor, bestColor!.Value, new WCAG2Parms { Level = args.Level, Size = args.Size }) ||
             !args.IncludeFallbackColors)
+        {
             return bestColor;
+        }
 
         args.IncludeFallbackColors = false;
         return MostReadable(baseColor, new List<Color>

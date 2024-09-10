@@ -10,7 +10,7 @@ public class CollapseMotion : AbstractMotion
     public MotionConfig? HeightConfig => GetMotionConfig(MotionHeightProperty);
 
     /// <summary>
-    ///     收起的方向，垂直还是水平方向
+    /// 收起的方向，垂直还是水平方向
     /// </summary>
     public Orientation Orientation { get; set; } = Orientation.Vertical;
 
@@ -49,20 +49,27 @@ public class CollapseMotion : AbstractMotion
         if (config.Property == MotionHeightProperty)
         {
             if (!double.IsNaN(motionTarget.Height))
+            {
                 config.StartValue = Math.Ceiling(motionTarget.Height);
+            }
             else
+            {
                 config.StartValue = Math.Ceiling(motionTarget.DesiredSize.Height);
+            }
         }
         else if (config.Property == MotionWidthProperty)
         {
             if (!double.IsNaN(motionTarget.Width))
+            {
                 config.StartValue = Math.Ceiling(motionTarget.Width);
+            }
             else
+            {
                 config.StartValue = Math.Ceiling(motionTarget.DesiredSize.Width);
+            }
         }
     }
 }
-
 
 public class ExpandMotion : AbstractMotion
 {
@@ -70,7 +77,7 @@ public class ExpandMotion : AbstractMotion
     public MotionConfig? HeightConfig => GetMotionConfig(MotionHeightProperty);
 
     /// <summary>
-    ///     展开的方向，垂直还是水平方向
+    /// 展开的方向，垂直还是水平方向
     /// </summary>
     public Orientation Orientation { get; set; } = Orientation.Vertical;
 
@@ -109,16 +116,24 @@ public class ExpandMotion : AbstractMotion
         if (config.Property == MotionHeightProperty)
         {
             if (!double.IsNaN(motionTarget.Height))
+            {
                 config.EndValue = Math.Ceiling(motionTarget.Height);
+            }
             else
+            {
                 config.EndValue = Math.Ceiling(motionTarget.DesiredSize.Height);
+            }
         }
         else if (config.Property == MotionWidthProperty)
         {
             if (!double.IsNaN(motionTarget.Width))
+            {
                 config.EndValue = Math.Ceiling(motionTarget.Width);
+            }
             else
+            {
                 config.EndValue = Math.Ceiling(motionTarget.DesiredSize.Width);
+            }
         }
     }
 }

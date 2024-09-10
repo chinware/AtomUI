@@ -44,12 +44,12 @@ internal class BaseTabControlTheme : BaseControlTheme
     }
 
     protected virtual void NotifyBuildTabStripTemplate(BaseTabControl baseTabControl, INameScope scope,
-        DockPanel container)
+                                                       DockPanel container)
     {
     }
 
     protected virtual void NotifyBuildContentPresenter(BaseTabControl baseTabControl, INameScope scope,
-        DockPanel container)
+                                                       DockPanel container)
     {
         var contentPresenter = new ContentPresenter
         {
@@ -135,7 +135,6 @@ internal class BaseTabControlTheme : BaseControlTheme
         {
             // 左
             var leftStyle = new Style(selector => selector.Nesting().Class(BaseTabControl.LeftPC));
-
 
             leftStyle.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Left);
             leftStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Stretch);

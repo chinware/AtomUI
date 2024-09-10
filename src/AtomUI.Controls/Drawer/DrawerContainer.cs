@@ -19,15 +19,11 @@ internal class DrawerContainer : Border
     private readonly Transitions _transitions1;
     private readonly Transitions _transitions2;
 
-
-
     #region Properties
 
     public Drawer Drawer { get; }
 
     #endregion
-
-
 
     #region Close On Click
 
@@ -35,14 +31,18 @@ internal class DrawerContainer : Border
     {
         base.OnPointerPressed(e);
 
-        if (e.Handled || Equals(e.Source, _mask) == false) return;
+        if (e.Handled || Equals(e.Source, _mask) == false)
+        {
+            return;
+        }
 
-        if (e.Pointer.IsPrimary && Drawer.CloseWhenClickOnMask) Drawer.IsOpen = false;
+        if (e.Pointer.IsPrimary && Drawer.CloseWhenClickOnMask)
+        {
+            Drawer.IsOpen = false;
+        }
     }
 
     #endregion
-
-
 
     #region Ctor
 
@@ -103,15 +103,17 @@ internal class DrawerContainer : Border
             UpdatePlacement();
 
             if (Drawer.IsOpen)
+            {
                 OnOpening();
+            }
             else
+            {
                 OnClosing();
+            }
         }
     }
 
     #endregion
-
-
 
     #region On Opening & Closing
 
@@ -185,8 +187,6 @@ internal class DrawerContainer : Border
 
     #endregion
 
-
-
     #region BoxShadow
 
     private bool _isBoxShadowValid;
@@ -194,7 +194,10 @@ internal class DrawerContainer : Border
 
     private void UpdateDropShadow()
     {
-        if (_isBoxShadowValid) return;
+        if (_isBoxShadowValid)
+        {
+            return;
+        }
 
         switch (Drawer.Placement)
         {
@@ -251,7 +254,11 @@ internal class DrawerContainer : Border
 
     private void UpdatePlacement()
     {
-        if (_isPlacementValid) return;
+        if (_isPlacementValid)
+        {
+            return;
+        }
+
         switch (Drawer.Placement)
         {
             case DrawerPlacement.Left:

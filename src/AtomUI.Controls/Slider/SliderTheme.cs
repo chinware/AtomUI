@@ -101,12 +101,11 @@ internal class SliderTheme : BaseControlTheme
 
         var sliderStyleHover = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
         var thumbStyle = new Style(selector => selector.Nesting().Template().OfType<SliderThumb>()
-            .PropertyEquals(InputElement.IsFocusedProperty, false)
-            .Not(x => x.Class(StdPseudoClass.PointerOver)));
+                                                       .PropertyEquals(InputElement.IsFocusedProperty, false)
+                                                       .Not(x => x.Class(StdPseudoClass.PointerOver)));
         thumbStyle.Add(TemplatedControl.BorderBrushProperty, SliderTokenResourceKey.ThumbCircleBorderHoverColor);
         sliderStyleHover.Add(thumbStyle);
         sliderStyle.Add(sliderStyleHover);
-
 
         var sliderTrackHorizontalStyle = new Style(selector =>
             selector.Nesting().Template().OfType<SliderTrack>().Class(StdPseudoClass.Horizontal));

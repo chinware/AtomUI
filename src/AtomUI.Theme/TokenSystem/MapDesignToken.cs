@@ -35,7 +35,10 @@ public class MapDesignToken : AbstractDesignToken
     public ColorMap? GetColorPalette(PresetPrimaryColor primaryColor)
     {
         ColorMap? value;
-        if (ColorPalettes.TryGetValue(primaryColor, out value)) return value;
+        if (ColorPalettes.TryGetValue(primaryColor, out value))
+        {
+            return value;
+        }
 
         return null;
     }

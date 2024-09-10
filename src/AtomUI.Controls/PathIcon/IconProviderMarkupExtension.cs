@@ -51,9 +51,16 @@ public class IconProvider : MarkupExtension
         icon.SetCurrentValue(PathIcon.DisabledFilledBrushProperty, PrimaryFilledColor);
         icon.SetCurrentValue(PathIcon.SecondaryFilledBrushProperty, SecondaryFilledColor);
 
-        if (!double.IsNaN(Width)) icon.SetCurrentValue(Layoutable.WidthProperty, Width);
+        if (!double.IsNaN(Width))
+        {
+            icon.SetCurrentValue(Layoutable.WidthProperty, Width);
+        }
 
-        if (!double.IsNaN(Height)) icon.SetCurrentValue(Layoutable.HeightProperty, Height);
+        if (!double.IsNaN(Height))
+        {
+            icon.SetCurrentValue(Layoutable.HeightProperty, Height);
+        }
+
         return icon;
     }
 }

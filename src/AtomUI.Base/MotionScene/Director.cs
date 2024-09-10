@@ -7,8 +7,8 @@ namespace AtomUI.Controls.MotionScene;
 
 public class Director : IDirector
 {
-    private CompositeDisposable? _compositeDisposable;
     private readonly Dictionary<IMotionActor, MotionActorState> _states;
+    private CompositeDisposable? _compositeDisposable;
 
     public Director()
     {
@@ -18,25 +18,35 @@ public class Director : IDirector
     public static IDirector? Instance => AvaloniaLocator.Current.GetService<IDirector>();
 
     /// <summary>
-    ///     目前的实现暂时一个 Actor 只能投递一次，后面可以实现一个等待队列
+    /// 目前的实现暂时一个 Actor 只能投递一次，后面可以实现一个等待队列
     /// </summary>
     /// <param name="actor"></param>
     public void Schedule(MotionActor actor)
     {
-        if (_states.ContainsKey(actor)) return;
+        if (_states.ContainsKey(actor))
+        {
+            return;
+        }
+
         actor.NotifyPostedToDirector();
-        SceneLayer? sceneLayer                     = default;
-        if (actor.DispatchInSceneLayer) sceneLayer = PrepareSceneLayer(actor);
+        SceneLayer? sceneLayer = default;
+        if (actor.DispatchInSceneLayer)
+        {
+            sceneLayer = PrepareSceneLayer(actor);
+        }
+
         _compositeDisposable = new CompositeDisposable();
         _compositeDisposable.Add(Disposable.Create(sceneLayer, state =>
         {
             if (sceneLayer is not null)
+            {
                 Dispatcher.UIThread.InvokeAsync(async () =>
                 {
                     await Task.Delay(300);
                     sceneLayer.Hide();
                     sceneLayer.Dispose();
                 });
+            }
         }));
         var state = new MotionActorState(actor, _compositeDisposable);
         _states.Add(actor, state);
@@ -64,8 +74,10 @@ public class Director : IDirector
     private SceneLayer PrepareSceneLayer(MotionActor actor)
     {
         if (actor.SceneParent is null)
+        {
             throw new ArgumentException(
                 "When the DispatchInSceneLayer property is true, the SceneParent property cannot be null.");
+        }
 
         // TODO 这里除了 Popup 这种顶层元素以外，还会不会有其他的顶层元素种类
         // 暂时先处理 Popup 这种情况
@@ -91,7 +103,9 @@ public class Director : IDirector
         actor.NotifyMotionPreStart();
         MotionPreStart?.Invoke(this, new MotionEventArgs(actor));
         if (actor.Motion.CompletedObservable is null)
+        {
             throw new InvalidOperationException("The CompletedObservable property of the Motion is empty.");
+        }
 
         // 设置相关的完成检测
         _compositeDisposable?.Add(actor.Motion.CompletedObservable.Subscribe(
@@ -116,14 +130,17 @@ public class Director : IDirector
     {
         if (_states.TryGetValue(actor, out var state))
         {
-            if (state.SceneLayer is not null) state.SceneLayer.Opacity = 0;
+            if (state.SceneLayer is not null)
+            {
+                state.SceneLayer.Opacity = 0;
+            }
+
             actor.NotifyMotionCompleted();
             MotionCompleted?.Invoke(this, new MotionEventArgs(actor));
             state.Dispose();
             _states.Remove(actor);
         }
     }
-
 
     private class MotionActorState : IDisposable
     {
@@ -144,7 +161,6 @@ public class Director : IDirector
         }
     }
 }
-
 
 public class MotionEventArgs : EventArgs
 {

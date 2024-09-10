@@ -12,7 +12,6 @@ public enum DashboardGapPosition
     Bottom
 }
 
-
 public class DashboardProgress : AbstractCircleProgress
 {
     public const double DEFAULT_GAP_DEGREE = 75;
@@ -57,9 +56,13 @@ public class DashboardProgress : AbstractCircleProgress
         _currentGrooveRect = new Rect(_currentGrooveRect.Position, new Size(Math.Floor(_currentGrooveRect.Size.Width),
             Math.Floor(_currentGrooveRect.Size.Height)));
         if (StepCount > 0 && StepGap > 0)
+        {
             DrawGrooveStep(context);
+        }
         else
+        {
             DrawGrooveNormal(context);
+        }
     }
 
     private void DrawGrooveNormal(DrawingContext context)
@@ -89,9 +92,13 @@ public class DashboardProgress : AbstractCircleProgress
     protected override void RenderIndicatorBar(DrawingContext context)
     {
         if (StepCount > 0 && StepGap > 0)
+        {
             DrawIndicatorBarStep(context);
+        }
         else
+        {
             DrawIndicatorBarNormal(context);
+        }
     }
 
     private void DrawIndicatorBarNormal(DrawingContext context)
@@ -139,8 +146,13 @@ public class DashboardProgress : AbstractCircleProgress
         {
             currentPen = pen;
             if (successSteps.HasValue)
+            {
                 if (i < successSteps)
+                {
                     currentPen = successPen;
+                }
+            }
+
             context.DrawArc(currentPen, _currentGrooveRect, startAngle, spanAngle);
             startAngle += StepGap + spanAngle;
         }
@@ -152,13 +164,22 @@ public class DashboardProgress : AbstractCircleProgress
         double spanAngle     = 0;
         var    halfGapDegree = gapDegree / 2;
         if (position == DashboardGapPosition.Bottom)
+        {
             startAngle = 90 + halfGapDegree;
+        }
         else if (position == DashboardGapPosition.Left)
+        {
             startAngle = 180 + halfGapDegree;
+        }
         else if (position == DashboardGapPosition.Top)
+        {
             startAngle = 270 + halfGapDegree;
+        }
         else
+        {
             startAngle = halfGapDegree;
+        }
+
         spanAngle = 360 - gapDegree;
         return (startAngle, spanAngle);
     }
@@ -167,7 +188,9 @@ public class DashboardProgress : AbstractCircleProgress
     {
         base.OnPropertyChanged(e);
         if (e.Property == GapDegreeProperty || e.Property == DashboardGapPositionProperty)
+        {
             _anglePair = CalculateAngle(DashboardGapPosition, GapDegree);
+        }
     }
 
     protected override void NotifyUpdateProgress()

@@ -11,13 +11,11 @@ namespace AtomUI.Controls;
 
 using FlyoutControl = Flyout;
 
-
 public enum FlyoutTriggerType
 {
     Hover,
     Click
 }
-
 
 public class FlyoutHost : Control
 {
@@ -92,33 +90,31 @@ public class FlyoutHost : Control
         _flyoutStateHelper.HideFlyout(immediately);
     }
 
-
-
     #region 公共属性定义
 
     public static readonly StyledProperty<Control?> AnchorTargetProperty =
         AvaloniaProperty.Register<FlyoutHost, Control?>(nameof(AnchorTarget));
 
     /// <summary>
-    ///     Defines the <see cref="Flyout" /> property
+    /// Defines the <see cref="Flyout" /> property
     /// </summary>
     public static readonly StyledProperty<PopupFlyoutBase?> FlyoutProperty =
         AvaloniaProperty.Register<FlyoutHost, PopupFlyoutBase?>(nameof(Flyout));
 
     /// <summary>
-    ///     触发方式
+    /// 触发方式
     /// </summary>
     public static readonly StyledProperty<FlyoutTriggerType> TriggerProperty =
         FlyoutStateHelper.TriggerTypeProperty.AddOwner<FlyoutHost>();
 
     /// <summary>
-    ///     是否显示指示箭头
+    /// 是否显示指示箭头
     /// </summary>
     public static readonly StyledProperty<bool> IsShowArrowProperty =
         ArrowDecoratedBox.IsShowArrowProperty.AddOwner<FlyoutHost>();
 
     /// <summary>
-    ///     箭头是否始终指向中心
+    /// 箭头是否始终指向中心
     /// </summary>
     public static readonly StyledProperty<bool> IsPointAtCenterProperty =
         FlyoutControl.IsPointAtCenterProperty.AddOwner<FlyoutHost>();
@@ -133,9 +129,9 @@ public class FlyoutHost : Control
         Avalonia.Controls.Primitives.Popup.PlacementGravityProperty.AddOwner<FlyoutHost>();
 
     /// <summary>
-    ///     距离 anchor 的边距，根据垂直和水平进行设置
-    ///     但是对某些组合无效，比如跟随鼠标的情况
-    ///     还有些 anchor 和 gravity 的组合也没有用
+    /// 距离 anchor 的边距，根据垂直和水平进行设置
+    /// 但是对某些组合无效，比如跟随鼠标的情况
+    /// 还有些 anchor 和 gravity 的组合也没有用
     /// </summary>
     public static readonly StyledProperty<double> MarginToAnchorProperty =
         Popup.MarginToAnchorProperty.AddOwner<FlyoutHost>();
@@ -147,7 +143,7 @@ public class FlyoutHost : Control
         FlyoutStateHelper.MouseLeaveDelayProperty.AddOwner<FlyoutHost>();
 
     /// <summary>
-    ///     装饰的目标控件
+    /// 装饰的目标控件
     /// </summary>
     [Content]
     public Control? AnchorTarget

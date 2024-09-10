@@ -17,12 +17,18 @@ public class LoadingMask : AvaloniaObject, IDisposable
 
     public LoadingMask(Control? attachTarget = null)
     {
-        if (attachTarget is not null) Attach(attachTarget);
+        if (attachTarget is not null)
+        {
+            Attach(attachTarget);
+        }
     }
 
     public void Dispose()
     {
-        if (_attachTarget is not null) Detach();
+        if (_attachTarget is not null)
+        {
+            Detach();
+        }
 
         _adornerLayer            = null;
         _loadingIndicatorAdorner = null;
@@ -30,7 +36,10 @@ public class LoadingMask : AvaloniaObject, IDisposable
 
     public void Attach(Control attachTarget)
     {
-        if (_attachTarget is not null) Detach();
+        if (_attachTarget is not null)
+        {
+            Detach();
+        }
 
         attachTarget.DetachedFromLogicalTree += HandleTargetDetachedFromVisualTree;
         _attachTarget                        =  attachTarget;
@@ -38,7 +47,11 @@ public class LoadingMask : AvaloniaObject, IDisposable
 
     public void Detach()
     {
-        if (_attachTarget is null) return;
+        if (_attachTarget is null)
+        {
+            return;
+        }
+
         Hide();
         _attachTarget.DetachedFromLogicalTree -= HandleTargetDetachedFromVisualTree;
         _attachTarget                         =  null;
@@ -46,12 +59,18 @@ public class LoadingMask : AvaloniaObject, IDisposable
 
     public void Show()
     {
-        if (_attachTarget is null || IsLoading) return;
+        if (_attachTarget is null || IsLoading)
+        {
+            return;
+        }
 
         if (_adornerLayer is null)
         {
             _adornerLayer = AdornerLayer.GetAdornerLayer(_attachTarget);
-            if (_adornerLayer == null) throw new SystemException("No Adorner Layer found.");
+            if (_adornerLayer == null)
+            {
+                throw new SystemException("No Adorner Layer found.");
+            }
         }
 
         _loadingIndicatorAdorner                  ??= new LoadingIndicatorAdorner();
@@ -82,9 +101,15 @@ public class LoadingMask : AvaloniaObject, IDisposable
 
     public void Hide()
     {
-        if (!IsLoading || _attachTarget is null) return;
+        if (!IsLoading || _attachTarget is null)
+        {
+            return;
+        }
+
         if (_adornerLayer is not null && _loadingIndicatorAdorner is not null)
+        {
             _adornerLayer.Children.Remove(_loadingIndicatorAdorner);
+        }
 
         _attachTarget.Effect = null;
         IsLoading            = false;
@@ -94,8 +119,6 @@ public class LoadingMask : AvaloniaObject, IDisposable
     {
         Dispose();
     }
-
-
 
     #region 公共属性定义
 

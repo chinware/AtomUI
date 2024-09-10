@@ -21,7 +21,6 @@ public enum ClockIdentifierType
     HourClock24
 }
 
-
 [PseudoClasses(FlyoutOpenPC)]
 public class TimePicker : LineEdit
 {
@@ -58,7 +57,11 @@ public class TimePicker : LineEdit
 
     private bool FlyoutOpenPredicate(Point position)
     {
-        if (!IsEnabled) return false;
+        if (!IsEnabled)
+        {
+            return false;
+        }
+
         return PositionInEditKernel(position);
     }
 
@@ -67,7 +70,10 @@ public class TimePicker : LineEdit
         if (_textBoxInnerBox is not null)
         {
             var pos = _textBoxInnerBox.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(this)!);
-            if (!pos.HasValue) return false;
+            if (!pos.HasValue)
+            {
+                return false;
+            }
 
             var targetWidth  = _textBoxInnerBox.Bounds.Width;
             var targetHeight = _textBoxInnerBox.Bounds.Height;
@@ -77,18 +83,27 @@ public class TimePicker : LineEdit
             if (InnerLeftContent is Control leftContent)
             {
                 var leftContentPos = leftContent.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(this)!);
-                if (leftContentPos.HasValue) startOffsetX = leftContentPos.Value.X + leftContent.Bounds.Width;
+                if (leftContentPos.HasValue)
+                {
+                    startOffsetX = leftContentPos.Value.X + leftContent.Bounds.Width;
+                }
             }
 
             if (InnerRightContent is Control rightContent)
             {
                 var rightContentPos = rightContent.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(this)!);
-                if (rightContentPos.HasValue) endOffsetX = rightContentPos.Value.X;
+                if (rightContentPos.HasValue)
+                {
+                    endOffsetX = rightContentPos.Value.X;
+                }
             }
 
             targetWidth = endOffsetX - startOffsetX;
             var bounds = new Rect(new Point(startOffsetX, offsetY), new Size(targetWidth, targetHeight));
-            if (bounds.Contains(position)) return true;
+            if (bounds.Contains(position))
+            {
+                return true;
+            }
         }
 
         return false;
@@ -97,8 +112,12 @@ public class TimePicker : LineEdit
     private bool ClickHideFlyoutPredicate(IPopupHostProvider hostProvider, RawPointerEventArgs args)
     {
         if (hostProvider.PopupHost != args.Root)
+        {
             if (!PositionInEditKernel(args.Position))
+            {
                 return true;
+            }
+        }
 
         return false;
     }
@@ -113,10 +132,14 @@ public class TimePicker : LineEdit
         if (!_currentValidSelected)
         {
             if (SelectedTime.HasValue)
+            {
                 Text = DateTimeUtils.FormatTimeSpan(SelectedTime.Value,
                     ClockIdentifier == ClockIdentifierType.HourClock12);
+            }
             else
+            {
                 ResetTimeValue();
+            }
         }
     }
 
@@ -180,7 +203,10 @@ public class TimePicker : LineEdit
             FlyoutStateHelper.MouseEnterDelayProperty);
         BindUtils.RelayBind(this, MouseLeaveDelayProperty, _flyoutStateHelper,
             FlyoutStateHelper.MouseLeaveDelayProperty);
-        if (DefaultTime is not null) SelectedTime = DefaultTime;
+        if (DefaultTime is not null)
+        {
+            SelectedTime = DefaultTime;
+        }
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -206,54 +232,81 @@ public class TimePicker : LineEdit
     {
         base.OnPropertyChanged(change);
         if (VisualRoot is not null)
+        {
             if (change.Property == SelectedTimeProperty)
             {
                 if (SelectedTime.HasValue)
+                {
                     Text = DateTimeUtils.FormatTimeSpan(SelectedTime.Value,
                         ClockIdentifier == ClockIdentifierType.HourClock12);
+                }
                 else
+                {
                     ResetTimeValue();
+                }
             }
+        }
     }
 
     protected void ResetTimeValue()
     {
         if (DefaultTime is not null)
+        {
             Text = DateTimeUtils.FormatTimeSpan(DefaultTime.Value, ClockIdentifier == ClockIdentifierType.HourClock12);
+        }
         else
+        {
             Clear();
+        }
     }
 
     private void DetectClearUpButtonState(RawInputEventArgs args)
     {
         if (IsEnabled)
+        {
             if (args is RawPointerEventArgs pointerEventArgs)
+            {
                 if (_textBoxInnerBox is not null)
                 {
                     var pos = _textBoxInnerBox.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(this)!);
-                    if (!pos.HasValue) return;
+                    if (!pos.HasValue)
+                    {
+                        return;
+                    }
 
                     var bounds = new Rect(pos.Value, _textBoxInnerBox.Bounds.Size);
                     if (bounds.Contains(pointerEventArgs.Position))
                     {
-                        if (SelectedTime is not null) _pickerClearUpButton!.IsInClearMode = true;
+                        if (SelectedTime is not null)
+                        {
+                            _pickerClearUpButton!.IsInClearMode = true;
+                        }
                     }
                     else
                     {
                         _pickerClearUpButton!.IsInClearMode = false;
                     }
                 }
+            }
+        }
     }
 
     private static int CoerceMinuteIncrement(AvaloniaObject sender, int value)
     {
-        if (value < 1 || value > 59) throw new ArgumentOutOfRangeException(null, "1 >= MinuteIncrement <= 59");
+        if (value < 1 || value > 59)
+        {
+            throw new ArgumentOutOfRangeException(null, "1 >= MinuteIncrement <= 59");
+        }
+
         return value;
     }
 
     private static int CoerceSecondIncrement(AvaloniaObject sender, int value)
     {
-        if (value < 1 || value > 59) throw new ArgumentOutOfRangeException(null, "1 >= SecondIncrement <= 59");
+        if (value < 1 || value > 59)
+        {
+            throw new ArgumentOutOfRangeException(null, "1 >= SecondIncrement <= 59");
+        }
 
         return value;
     }
@@ -273,8 +326,6 @@ public class TimePicker : LineEdit
     {
         PseudoClasses.Set(FlyoutOpenPC, _isFlyoutOpen);
     }
-
-
 
     #region 公共属性定义
 

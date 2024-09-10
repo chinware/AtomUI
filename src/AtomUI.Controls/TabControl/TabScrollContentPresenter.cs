@@ -32,10 +32,13 @@ internal class TabScrollContentPresenter : ScrollContentPresenter, ICustomHitTes
             var scrollable = Child as ILogicalScrollable;
             var isLogical  = scrollable?.IsLogicalScrollEnabled == true;
 
-            var x                                                                        = Offset.X;
-            var y                                                                        = Offset.Y;
-            var delta                                                                    = e.Delta;
-            if (TabStripPlacement == Dock.Top || TabStripPlacement == Dock.Bottom) delta = new Vector(delta.Y, delta.X);
+            var x     = Offset.X;
+            var y     = Offset.Y;
+            var delta = e.Delta;
+            if (TabStripPlacement == Dock.Top || TabStripPlacement == Dock.Bottom)
+            {
+                delta = new Vector(delta.Y, delta.X);
+            }
 
             if (Extent.Height > Viewport.Height)
             {

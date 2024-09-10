@@ -24,13 +24,23 @@ internal class RenderScaleAwareThicknessConfigure
             var renderScaling = 1d;
             if (_control.TryGetTarget(out var target))
             {
-                var visualRoot                            = target.GetVisualRoot();
-                if (visualRoot is not null) renderScaling = visualRoot.RenderScaling;
+                var visualRoot = target.GetVisualRoot();
+                if (visualRoot is not null)
+                {
+                    renderScaling = visualRoot.RenderScaling;
+                }
             }
 
-            if (MathUtils.AreClose(renderScaling, Math.Floor(renderScaling))) renderScaling = 1.0d; // 这种情况很清晰
+            if (MathUtils.AreClose(renderScaling, Math.Floor(renderScaling)))
+            {
+                renderScaling = 1.0d; // 这种情况很清晰
+            }
+
             var result = BorderUtils.BuildRenderScaleAwareThickness(thickness, renderScaling);
-            if (_postProcessor is not null) return _postProcessor(result);
+            if (_postProcessor is not null)
+            {
+                return _postProcessor(result);
+            }
 
             return result;
         }

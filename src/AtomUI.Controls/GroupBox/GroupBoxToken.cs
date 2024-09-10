@@ -14,37 +14,37 @@ internal class GroupBoxToken : AbstractControlDesignToken
     }
 
     /// <summary>
-    ///     文本横向内间距 单位 em
+    /// 文本横向内间距 单位 em
     /// </summary>
     public double TextPaddingInline { get; set; }
 
     /// <summary>
-    ///     文本与边缘距离的比例，取值 0 ～ 1
+    /// 文本与边缘距离的比例，取值 0 ～ 1
     /// </summary>
     public double OrientationMarginPercent { get; set; }
 
     /// <summary>
-    ///     纵向分割线的横向外间距
+    /// 纵向分割线的横向外间距
     /// </summary>
     public double VerticalMarginInline { get; set; }
 
     /// <summary>
-    ///     内容区域内间距
+    /// 内容区域内间距
     /// </summary>
     public Thickness ContentPadding { get; set; }
 
     /// <summary>
-    ///     Header 容器外间距
+    /// Header 容器外间距
     /// </summary>
     public Thickness HeaderContainerMargin { get; set; }
 
     /// <summary>
-    ///     头部图标的外间距
+    /// 头部图标的外间距
     /// </summary>
     public Thickness HeaderIconMargin { get; set; }
 
     /// <summary>
-    ///     Header 内容区域内间距
+    /// Header 内容区域内间距
     /// </summary>
     public Thickness HeaderContentPadding { get; set; }
 

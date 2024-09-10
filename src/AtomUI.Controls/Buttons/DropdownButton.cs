@@ -57,20 +57,29 @@ public class DropdownButton : Button
         base.OnApplyTemplate(e);
         TokenResourceBinder.CreateGlobalTokenBinding(this, MarginToAnchorProperty, GlobalTokenResourceKey.MarginXXS);
         SetupFlyoutProperties();
-        if (IsShowIndicator) RightExtraContent = _openIndicatorIcon;
+        if (IsShowIndicator)
+        {
+            RightExtraContent = _openIndicatorIcon;
+        }
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
         base.OnPropertyChanged(e);
         if (VisualRoot is not null)
+        {
             if (e.Property == IsShowIndicatorProperty)
             {
                 if (IsShowIndicator)
+                {
                     RightExtraContent = _openIndicatorIcon;
+                }
                 else
+                {
                     RightExtraContent = null;
+                }
             }
+        }
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
@@ -107,12 +116,16 @@ public class DropdownButton : Button
         {
             var host = popupHostProvider.PopupHost;
             if (host is PopupRoot popupRoot)
+            {
                 if (popupRoot.Parent is Popup popup)
+                {
                     if (popup.Child is MenuFlyoutPresenter menuFlyoutPresenter)
                     {
                         _menuFlyoutPresenter                =  menuFlyoutPresenter;
                         menuFlyoutPresenter.MenuItemClicked += HandleMenuItemClicked;
                     }
+                }
+            }
         }
     }
 
@@ -132,9 +145,9 @@ public class DropdownButton : Button
     }
 
     protected override void NotifyIconBrushCalculated(in TokenResourceKey normalFilledBrushKey,
-        in TokenResourceKey selectedFilledBrushKey,
-        in TokenResourceKey activeFilledBrushKey,
-        in TokenResourceKey disabledFilledBrushKey)
+                                                      in TokenResourceKey selectedFilledBrushKey,
+                                                      in TokenResourceKey activeFilledBrushKey,
+                                                      in TokenResourceKey disabledFilledBrushKey)
     {
         if (_openIndicatorIcon is not null)
         {
@@ -156,11 +169,17 @@ public class DropdownButton : Button
             if (_styleState.HasFlag(ControlStyleState.Enabled))
             {
                 if (_styleState.HasFlag(ControlStyleState.Sunken))
+                {
                     _openIndicatorIcon.IconMode = IconMode.Selected;
+                }
                 else if (_styleState.HasFlag(ControlStyleState.MouseOver))
+                {
                     _openIndicatorIcon.IconMode = IconMode.Active;
+                }
                 else
+                {
                     _openIndicatorIcon.IconMode = IconMode.Normal;
+                }
             }
             else
             {
@@ -170,8 +189,6 @@ public class DropdownButton : Button
 
         base.ApplyIconModeStyleConfig();
     }
-
-
 
     #region 公共属性定义
 

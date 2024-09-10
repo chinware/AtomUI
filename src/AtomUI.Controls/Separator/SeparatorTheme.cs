@@ -58,7 +58,7 @@ internal class SeparatorTheme : BaseControlTheme
         var titleSelector = default(Selector).Nesting().Template().OfType<Label>().Name(TitlePart);
         var horizontalStyle =
             new Style(selector => selector.Nesting()
-                .PropertyEquals(Separator.OrientationProperty, Orientation.Horizontal));
+                                          .PropertyEquals(Separator.OrientationProperty, Orientation.Horizontal));
         horizontalStyle.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
         horizontalStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Center);
         {

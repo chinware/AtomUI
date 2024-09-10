@@ -50,8 +50,8 @@ internal class RibbonBadgeAdorner : Control, IControlCustomStyle
             (o, v) => o.IsAdornerMode = v);
 
     private readonly BorderRenderHelper _borderRenderHelper;
-    private Geometry? _cornerGeometry;
     private readonly IControlCustomStyle _customStyle;
+    private Geometry? _cornerGeometry;
     private bool _initialized;
 
     private bool _isAdornerMode;
@@ -143,7 +143,10 @@ internal class RibbonBadgeAdorner : Control, IControlCustomStyle
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        if (Styles.Count == 0) _customStyle.BuildStyles();
+        if (Styles.Count == 0)
+        {
+            _customStyle.BuildStyles();
+        }
     }
 
     public sealed override void ApplyTemplate()
@@ -182,7 +185,10 @@ internal class RibbonBadgeAdorner : Control, IControlCustomStyle
 
     protected override Size ArrangeOverride(Size finalSize)
     {
-        if (_textBlock is not null) _textBlock.Arrange(GetTextRect());
+        if (_textBlock is not null)
+        {
+            _textBlock.Arrange(GetTextRect());
+        }
 
         return finalSize;
     }
@@ -191,8 +197,12 @@ internal class RibbonBadgeAdorner : Control, IControlCustomStyle
     {
         base.OnPropertyChanged(e);
         if (VisualRoot is not null)
+        {
             if (e.Property == PlacementProperty)
+            {
                 BuildCornerGeometry(true);
+            }
+        }
     }
 
     public override void Render(DrawingContext context)
@@ -231,7 +241,10 @@ internal class RibbonBadgeAdorner : Control, IControlCustomStyle
 
     private Rect GetTextRect()
     {
-        if (_textBlock is null) return default;
+        if (_textBlock is null)
+        {
+            return default;
+        }
 
         var offsetX = 0d;
         var offsetY = 0d;
@@ -239,9 +252,13 @@ internal class RibbonBadgeAdorner : Control, IControlCustomStyle
         {
             offsetY += BadgeRibbonOffset.Y;
             if (Placement == RibbonBadgePlacement.End)
+            {
                 offsetX = DesiredSize.Width - _textBlock.DesiredSize.Width + BadgeRibbonOffset.X;
+            }
             else
+            {
                 offsetX = -BadgeRibbonOffset.X;
+            }
         }
 
         return new Rect(new Point(offsetX, offsetY), _textBlock.DesiredSize);
@@ -249,7 +266,10 @@ internal class RibbonBadgeAdorner : Control, IControlCustomStyle
 
     private Rect GetCornerRect()
     {
-        if (_cornerGeometry is null) return default;
+        if (_cornerGeometry is null)
+        {
+            return default;
+        }
 
         var targetWidth  = _cornerGeometry.Bounds.Width;
         var targetHeight = _cornerGeometry.Bounds.Height;
@@ -258,12 +278,18 @@ internal class RibbonBadgeAdorner : Control, IControlCustomStyle
         if (!IsAdornerMode)
         {
             offsetY = DesiredSize.Height - targetHeight;
-            if (Placement == RibbonBadgePlacement.End) offsetX = DesiredSize.Width - targetWidth;
+            if (Placement == RibbonBadgePlacement.End)
+            {
+                offsetX = DesiredSize.Width - targetWidth;
+            }
         }
         else
         {
-            var textRect                                       = GetTextRect();
-            if (Placement == RibbonBadgePlacement.End) offsetX = textRect.Right - targetWidth;
+            var textRect = GetTextRect();
+            if (Placement == RibbonBadgePlacement.End)
+            {
+                offsetX = textRect.Right - targetWidth;
+            }
 
             offsetY = textRect.Bottom;
         }
@@ -288,9 +314,15 @@ internal class RibbonBadgeAdorner : Control, IControlCustomStyle
             context.EndFigure(true);
             _cornerGeometry = geometryStream;
             var transforms = new TransformGroup();
-            if (BadgeRibbonCornerTransform is not null) transforms.Children.Add(BadgeRibbonCornerTransform);
+            if (BadgeRibbonCornerTransform is not null)
+            {
+                transforms.Children.Add(BadgeRibbonCornerTransform);
+            }
 
-            if (Placement == RibbonBadgePlacement.Start) transforms.Children.Add(new ScaleTransform(-1, 1));
+            if (Placement == RibbonBadgePlacement.Start)
+            {
+                transforms.Children.Add(new ScaleTransform(-1, 1));
+            }
 
             _cornerGeometry.Transform = transforms;
         }

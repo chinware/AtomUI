@@ -20,9 +20,15 @@ public class DefaultThemeVariantCalculator : AbstractThemeVariantCalculator
     {
         sourceToken.SeedToken = seedToken;
 
-        if (seedToken.ColorBgBase.HasValue) _colorBgBase = seedToken.ColorBgBase.Value;
+        if (seedToken.ColorBgBase.HasValue)
+        {
+            _colorBgBase = seedToken.ColorBgBase.Value;
+        }
 
-        if (seedToken.ColorTextBase.HasValue) _colorTextBase = seedToken.ColorTextBase.Value;
+        if (seedToken.ColorTextBase.HasValue)
+        {
+            _colorTextBase = seedToken.ColorTextBase.Value;
+        }
 
         SetupColorPalettes(seedToken, sourceToken);
         SetupColorToken(seedToken, sourceToken);
@@ -60,7 +66,7 @@ public class DefaultThemeVariantCalculator : AbstractThemeVariantCalculator
 
     protected override ColorNeutralMapDesignToken GenerateNeutralColorPalettes(Color? bgBaseColor, Color? textBaseColor)
     {
-        var colorBgBase   = bgBaseColor   ?? _colorBgBase;
+        var colorBgBase   = bgBaseColor ?? _colorBgBase;
         var colorTextBase = textBaseColor ?? _colorTextBase;
         var colorNeutralToken = new ColorNeutralMapDesignToken
         {

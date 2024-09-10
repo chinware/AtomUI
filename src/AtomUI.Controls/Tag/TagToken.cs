@@ -16,12 +16,12 @@ internal class TagToken : AbstractControlDesignToken
     }
 
     /// <summary>
-    ///     默认背景色
+    /// 默认背景色
     /// </summary>
     public Color DefaultBg { get; set; }
 
     /// <summary>
-    ///     默认文字颜色
+    /// 默认文字颜色
     /// </summary>
     public Color DefaultColor { get; set; }
 

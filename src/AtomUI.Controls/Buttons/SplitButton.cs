@@ -25,11 +25,11 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
     internal const string pcChecked = ":checked";
     internal const string pcPressed = ":pressed";
     internal const string pcFlyoutOpen = ":flyout-open";
+    private readonly FlyoutStateHelper _flyoutStateHelper;
 
     private bool _commandCanExecute = true;
 
     private IDisposable? _flyoutPropertyChangedDisposable;
-    private readonly FlyoutStateHelper _flyoutStateHelper;
     private KeyGesture? _hotkey;
     private bool _isAttachedToLogicalTree;
     private bool _isFlyoutOpen;
@@ -74,7 +74,10 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
 
     private void CanExecuteChanged(ICommand? command, object? parameter)
     {
-        if (!((ILogical)this).IsAttachedToLogicalTree) return;
+        if (!((ILogical)this).IsAttachedToLogicalTree)
+        {
+            return;
+        }
 
         var canExecute = command is null || command.CanExecute(parameter);
 
@@ -86,7 +89,7 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
     }
 
     /// <summary>
-    ///     Updates the visual state of the control by applying latest PseudoClasses.
+    /// Updates the visual state of the control by applying latest PseudoClasses.
     /// </summary>
     protected void UpdatePseudoClasses()
     {
@@ -101,7 +104,7 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
     }
 
     /// <summary>
-    ///     Closes the secondary button's flyout.
+    /// Closes the secondary button's flyout.
     /// </summary>
     protected void CloseFlyout()
     {
@@ -109,7 +112,7 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
     }
 
     /// <summary>
-    ///     Registers all flyout events.
+    /// Registers all flyout events.
     /// </summary>
     /// <param name="flyout">The flyout to connect events to.</param>
     private void RegisterFlyoutEvents(Flyout? flyout)
@@ -120,13 +123,14 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
             flyout.Closed += HandleFlyoutClosed;
 
             _flyoutPropertyChangedDisposable = flyout
-                .GetPropertyChangedObservable(Avalonia.Controls.Primitives.Popup.PlacementProperty)
-                .Subscribe(HandleFlyoutPlacementPropertyChanged);
+                                               .GetPropertyChangedObservable(Avalonia.Controls.Primitives.Popup
+                                                   .PlacementProperty)
+                                               .Subscribe(HandleFlyoutPlacementPropertyChanged);
         }
     }
 
     /// <summary>
-    ///     Explicitly unregisters all flyout events.
+    /// Explicitly unregisters all flyout events.
     /// </summary>
     /// <param name="flyout">The flyout to disconnect events from.</param>
     private void UnregisterFlyoutEvents(Flyout? flyout)
@@ -142,11 +146,14 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
     }
 
     /// <summary>
-    ///     Explicitly unregisters all events related to the two buttons in OnApplyTemplate().
+    /// Explicitly unregisters all events related to the two buttons in OnApplyTemplate().
     /// </summary>
     private void UnregisterEvents()
     {
-        if (_primaryButton != null) _primaryButton.Click -= HandlePrimaryButtonClick;
+        if (_primaryButton != null)
+        {
+            _primaryButton.Click -= HandlePrimaryButtonClick;
+        }
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
@@ -180,13 +187,19 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
         _secondaryButton                = e.NameScope.Find<Button>("PART_SecondaryButton");
         _flyoutStateHelper.AnchorTarget = _secondaryButton;
 
-        if (_primaryButton != null) _primaryButton.Click += HandlePrimaryButtonClick;
+        if (_primaryButton != null)
+        {
+            _primaryButton.Click += HandlePrimaryButtonClick;
+        }
 
         if (FlyoutButtonIcon is null)
+        {
             FlyoutButtonIcon = new PathIcon
             {
                 Kind = "EllipsisOutlined"
             };
+        }
+
         SetupEffectiveButtonType();
         SetupFlyoutProperties();
         RegisterFlyoutEvents(Flyout);
@@ -239,7 +252,10 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
         _hotkey = HotKey;
         SetCurrentValue(HotKeyProperty, null);
 
-        if (Command != null) Command.CanExecuteChanged -= CanExecuteChanged;
+        if (Command != null)
+        {
+            Command.CanExecuteChanged -= CanExecuteChanged;
+        }
 
         _isAttachedToLogicalTree = false;
     }
@@ -254,9 +270,15 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
 
             if (_isAttachedToLogicalTree)
             {
-                if (oldValue is ICommand oldCommand) oldCommand.CanExecuteChanged -= CanExecuteChanged;
+                if (oldValue is ICommand oldCommand)
+                {
+                    oldCommand.CanExecuteChanged -= CanExecuteChanged;
+                }
 
-                if (newValue is ICommand newCommand) newCommand.CanExecuteChanged += CanExecuteChanged;
+                if (newValue is ICommand newCommand)
+                {
+                    newCommand.CanExecuteChanged += CanExecuteChanged;
+                }
             }
 
             CanExecuteChanged(newValue, CommandParameter);
@@ -272,7 +294,10 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
             // If flyout is changed while one is already open, make sure we 
             // close the old one first
             // This is the same behavior as Button
-            if (oldFlyout != null && oldFlyout.IsOpen) oldFlyout.Hide();
+            if (oldFlyout != null && oldFlyout.IsOpen)
+            {
+                oldFlyout.Hide();
+            }
 
             // Must unregister events here while a reference to the old flyout still exists
             UnregisterFlyoutEvents(oldFlyout);
@@ -295,9 +320,13 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
     private void SetupEffectiveButtonType()
     {
         if (IsPrimaryButtonType)
+        {
             EffectiveButtonType = ButtonType.Primary;
+        }
         else
+        {
             EffectiveButtonType = ButtonType.Default;
+        }
     }
 
     private void SetupButtonCornerRadius()
@@ -366,7 +395,7 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
     }
 
     /// <summary>
-    ///     Invokes the <see cref="Click" /> event when the primary button part is clicked.
+    /// Invokes the <see cref="Click" /> event when the primary button part is clicked.
     /// </summary>
     /// <param name="e">The event args from the internal Click event.</param>
     protected virtual void OnClickPrimary(RoutedEventArgs? e)
@@ -388,7 +417,7 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
     }
 
     /// <summary>
-    ///     Invoked when the split button's flyout is opened.
+    /// Invoked when the split button's flyout is opened.
     /// </summary>
     protected virtual void OnFlyoutOpened()
     {
@@ -396,7 +425,7 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
     }
 
     /// <summary>
-    ///     Invoked when the split button's flyout is closed.
+    /// Invoked when the split button's flyout is closed.
     /// </summary>
     protected virtual void OnFlyoutClosed()
     {
@@ -404,7 +433,7 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
     }
 
     /// <summary>
-    ///     Event handler for when the internal primary button part is clicked.
+    /// Event handler for when the internal primary button part is clicked.
     /// </summary>
     private void HandlePrimaryButtonClick(object? sender, RoutedEventArgs e)
     {
@@ -414,7 +443,7 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
     }
 
     /// <summary>
-    ///     Called when the <see cref="PopupFlyoutBase.Placement" /> property changes.
+    /// Called when the <see cref="PopupFlyoutBase.Placement" /> property changes.
     /// </summary>
     private void HandleFlyoutPlacementPropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
@@ -422,12 +451,11 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
     }
 
     /// <summary>
-    ///     Event handler for when the split button's flyout is opened.
+    /// Event handler for when the split button's flyout is opened.
     /// </summary>
     private void HandleFlyoutOpened(object? sender, EventArgs e)
     {
         var flyout = sender as Flyout;
-
 
         // It is possible to share flyouts among multiple controls including SplitButton.
         // This can cause a problem here since all controls that share a flyout receive
@@ -445,7 +473,7 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
     }
 
     /// <summary>
-    ///     Event handler for when the split button's flyout is closed.
+    /// Event handler for when the split button's flyout is closed.
     /// </summary>
     private void HandleFlyoutClosed(object? sender, EventArgs e)
     {
@@ -463,20 +491,27 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
 
     protected override Size ArrangeOverride(Size finalSize)
     {
-        var size                             = base.ArrangeOverride(finalSize);
-        if (_originRect is null) _originRect = _secondaryButton?.Bounds;
+        var size = base.ArrangeOverride(finalSize);
+        if (_originRect is null)
+        {
+            _originRect = _secondaryButton?.Bounds;
+        }
 
         if (!IsPrimaryButtonType)
         {
             if (_secondaryButton is not null && _originRect.HasValue)
+            {
                 _secondaryButton.Arrange(
                     _originRect.Value.Inflate(new Thickness(_secondaryButton.BorderThickness.Left, 0, 0, 0)));
+            }
         }
         else
         {
             if (_secondaryButton is not null && _originRect.HasValue)
+            {
                 _secondaryButton.Arrange(
                     _originRect.Value.Deflate(new Thickness(_secondaryButton.BorderThickness.Left, 0, 0, 0)));
+            }
         }
 
         return size;
@@ -485,10 +520,15 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
     public override void Render(DrawingContext context)
     {
         if (IsPrimaryButtonType)
+        {
             if (_secondaryButton is not null)
             {
                 var offset = _secondaryButton.TranslatePoint(new Point(0, 0), this);
-                if (!offset.HasValue) return;
+                if (!offset.HasValue)
+                {
+                    return;
+                }
+
                 using var optionState = context.PushRenderOptions(new RenderOptions
                 {
                     EdgeMode = EdgeMode.Aliased
@@ -497,9 +537,8 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
                 var endPoint   = new Point(offset.Value.X, Bounds.Height);
                 context.DrawLine(new Pen(BorderBrush, BorderThickness.Left), startPoint, endPoint);
             }
+        }
     }
-
-
 
     #region 公共属性定义
 
@@ -566,7 +605,7 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
         AvaloniaProperty.Register<SplitButton, bool>(nameof(IsPrimaryButtonType));
 
     /// <summary>
-    ///     Raised when the user presses the primary part of the <see cref="SplitButton" />.
+    /// Raised when the user presses the primary part of the <see cref="SplitButton" />.
     /// </summary>
     public event EventHandler<RoutedEventArgs>? Click
     {
@@ -581,7 +620,7 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
     }
 
     /// <summary>
-    ///     Gets or sets a parameter to be passed to the <see cref="Command" />.
+    /// Gets or sets a parameter to be passed to the <see cref="Command" />.
     /// </summary>
     public object? CommandParameter
     {
@@ -590,7 +629,7 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
     }
 
     /// <summary>
-    ///     Gets or sets the <see cref="Flyout" /> that is shown when the secondary part is pressed.
+    /// Gets or sets the <see cref="Flyout" /> that is shown when the secondary part is pressed.
     /// </summary>
     public Flyout? Flyout
     {
@@ -599,7 +638,7 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
     }
 
     /// <summary>
-    ///     Gets or sets an <see cref="KeyGesture" /> associated with this control
+    /// Gets or sets an <see cref="KeyGesture" /> associated with this control
     /// </summary>
     public KeyGesture? HotKey
     {
@@ -698,8 +737,6 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
     }
 
     #endregion
-
-
 
     #region 内部属性定义
 

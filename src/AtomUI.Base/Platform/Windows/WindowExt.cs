@@ -29,9 +29,14 @@ internal static class WindowExt
 
         // 不是确定这样处理是否合适
         if (flag)
+        {
             currentStyles |= WS_EX_TRANSPARENT | WS_EX_LAYERED;
+        }
         else
+        {
             currentStyles &= ~(WS_EX_TRANSPARENT | WS_EX_LAYERED);
+        }
+
         SetExtendedStyle(impl, currentStyles, false);
     }
 
@@ -42,9 +47,14 @@ internal static class WindowExt
 
         // 不是确定这样处理是否合适
         if (flag)
+        {
             currentStyles |= WS_EX_TRANSPARENT | WS_EX_LAYERED;
+        }
         else
+        {
             currentStyles &= ~(WS_EX_TRANSPARENT | WS_EX_LAYERED);
+        }
+
         SetExtendedStyle(impl, currentStyles, false);
     }
 

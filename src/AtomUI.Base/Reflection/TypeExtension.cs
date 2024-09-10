@@ -45,29 +45,39 @@ public static class TypeExtension
         PropertyInfo? info;
 
         if (!type.TryGetPropertyInfo(name, out info, flags))
+        {
             throw new NotSupportedException($"Can not find the '{name}' from type '{type}'. We can not reflect it.");
+        }
 
         return info;
     }
 
     public static FieldInfo GetFieldInfoOrThrow(this Type type, string name,
-        BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public |
-                             BindingFlags.FlattenHierarchy)
+                                                BindingFlags flags =
+                                                    BindingFlags.Instance | BindingFlags.NonPublic |
+                                                    BindingFlags.Public |
+                                                    BindingFlags.FlattenHierarchy)
     {
         FieldInfo? info;
         if (!type.TryGetFieldInfo(name, out info, flags))
+        {
             throw new NotSupportedException($"Can not find the '{name}' from type '{type}'. We can not reflect it.");
+        }
 
         return info;
     }
 
     public static MethodInfo GetMethodInfoOrThrow(this Type type, string name,
-        BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public |
-                             BindingFlags.FlattenHierarchy)
+                                                  BindingFlags flags =
+                                                      BindingFlags.Instance | BindingFlags.NonPublic |
+                                                      BindingFlags.Public |
+                                                      BindingFlags.FlattenHierarchy)
     {
         MethodInfo? info;
         if (!type.TryGetMethodInfo(name, out info, flags))
+        {
             throw new NotSupportedException($"Can not find the '{name}' from type '{type}'. We can not reflect it.");
+        }
 
         return info;
     }

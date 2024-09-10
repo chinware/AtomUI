@@ -15,22 +15,22 @@ internal class CollapseToken : AbstractControlDesignToken
     }
 
     /// <summary>
-    ///     折叠面板头部内边距
+    /// 折叠面板头部内边距
     /// </summary>
     public Thickness HeaderPadding { get; set; }
 
     /// <summary>
-    ///     折叠面板头部背景
+    /// 折叠面板头部背景
     /// </summary>
     public Color HeaderBg { get; set; }
 
     /// <summary>
-    ///     折叠面板内容内边距
+    /// 折叠面板内容内边距
     /// </summary>
     public Thickness ContentPadding { get; set; }
 
     /// <summary>
-    ///     折叠面板内容背景
+    /// 折叠面板内容背景
     /// </summary>
     public Color ContentBg { get; set; }
 
@@ -49,8 +49,6 @@ internal class CollapseToken : AbstractControlDesignToken
         LeftExpandButtonMargin    = new Thickness(0, 0, _globalToken.MarginSM, 0);
         RightExpandButtonMargin   = new Thickness(_globalToken.MarginSM, 0, 0, 0);
     }
-
-
 
     #region 内部 Token 定义
 

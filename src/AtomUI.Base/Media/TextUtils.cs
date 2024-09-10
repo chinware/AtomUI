@@ -7,10 +7,10 @@ namespace AtomUI.Media;
 public static class TextUtils
 {
     public static Size CalculateTextSize(string text,
-        double fontSize,
-        FontFamily fontFamily,
-        FontStyle fontStyle = FontStyle.Normal,
-        FontWeight fontWeight = FontWeight.Normal)
+                                         double fontSize,
+                                         FontFamily fontFamily,
+                                         FontStyle fontStyle = FontStyle.Normal,
+                                         FontWeight fontWeight = FontWeight.Normal)
     {
         var       typeface   = new Typeface(fontFamily, fontStyle, fontWeight);
         using var textLayout = new TextLayout(text, typeface, fontSize, null);
