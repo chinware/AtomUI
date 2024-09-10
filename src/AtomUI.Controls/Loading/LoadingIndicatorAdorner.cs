@@ -5,25 +5,19 @@ using Avalonia.Controls.Primitives;
 
 namespace AtomUI.Controls;
 
-public class LoadingIndicatorAdorner : TemplatedControl, IControlCustomStyle
+public class LoadingIndicatorAdorner : TemplatedControl
 {
-    private readonly IControlCustomStyle _customStyle;
     private LoadingIndicator? _loadingIndicator;
 
     public EventHandler<LoadingIndicatorCreatedEventArgs>? IndicatorCreated;
-
-    public LoadingIndicatorAdorner()
-    {
-        _customStyle = this;
-    }
-
+    
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _customStyle.HandleTemplateApplied(e.NameScope);
+        HandleTemplateApplied(e.NameScope);
     }
 
-    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
+    private void HandleTemplateApplied(INameScope scope)
     {
         _loadingIndicator = scope.Find<LoadingIndicator>(LoadingIndicatorAdornerTheme.LoadingIndicatorPart);
         if (_loadingIndicator is not null)

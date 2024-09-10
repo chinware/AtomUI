@@ -8,7 +8,7 @@ using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
-internal class DotBadgeAdorner : Control, IControlCustomStyle
+internal class DotBadgeAdorner : Control
 {
     public static readonly DirectProperty<DotBadgeAdorner, DotBadgeStatus?> StatusProperty =
         AvaloniaProperty.RegisterDirect<DotBadgeAdorner, DotBadgeStatus?>(
@@ -123,7 +123,6 @@ internal class DotBadgeAdorner : Control, IControlCustomStyle
     }
 
     private bool _initialized;
-    private readonly IControlCustomStyle _customStyle;
     private Label? _textLabel;
 
     private BoxShadows _boxShadows;
@@ -137,12 +136,7 @@ internal class DotBadgeAdorner : Control, IControlCustomStyle
         AffectsMeasure<DotBadge>(TextProperty, IsAdornerModeProperty);
         AffectsRender<DotBadge>(BadgeDotColorProperty, OffsetProperty);
     }
-
-    public DotBadgeAdorner()
-    {
-        _customStyle = this;
-    }
-
+    
     public sealed override void ApplyTemplate()
     {
         base.ApplyTemplate();
@@ -168,10 +162,10 @@ internal class DotBadgeAdorner : Control, IControlCustomStyle
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        _customStyle.BuildStyles();
+        BuildStyles();
     }
 
-    void IControlCustomStyle.BuildStyles()
+    private void BuildStyles()
     {
         if (Styles.Count == 0)
         {

@@ -1,6 +1,5 @@
 ﻿using AtomUI.Data;
 using AtomUI.Theme.Palette;
-using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -15,8 +14,10 @@ public enum RibbonBadgePlacement
     End
 }
 
-public class RibbonBadge : Control, IControlCustomStyle
+public class RibbonBadge : Control
 {
+    #region 公共属性定义
+
     public static readonly StyledProperty<string?> RibbonColorProperty
         = AvaloniaProperty.Register<RibbonBadge, string?>(nameof(RibbonColor));
 
@@ -74,19 +75,15 @@ public class RibbonBadge : Control, IControlCustomStyle
         set => SetValue(BadgeIsVisibleProperty, value);
     }
 
-    public RibbonBadge()
-    {
-        _customStyle = this;
-    }
-
+    #endregion
+    
     static RibbonBadge()
     {
         AffectsMeasure<RibbonBadge>(DecoratedTargetProperty,
             TextProperty);
         AffectsRender<RibbonBadge>(RibbonColorProperty, PlacementProperty);
     }
-
-    private readonly IControlCustomStyle _customStyle;
+    
     private RibbonBadgeAdorner? _ribbonBadgeAdorner;
     private AdornerLayer? _adornerLayer;
 
@@ -128,7 +125,7 @@ public class RibbonBadge : Control, IControlCustomStyle
         }
     }
 
-    void IControlCustomStyle.SetupTokenBindings()
+    private void SetupTokenBindings()
     {
         if (_ribbonBadgeAdorner is not null)
         {
@@ -188,7 +185,7 @@ public class RibbonBadge : Control, IControlCustomStyle
         if (_ribbonBadgeAdorner is null)
         {
             _ribbonBadgeAdorner = new RibbonBadgeAdorner();
-            _customStyle.SetupTokenBindings();
+            SetupTokenBindings();
             HandleDecoratedTargetChanged();
             if (RibbonColor is not null)
             {

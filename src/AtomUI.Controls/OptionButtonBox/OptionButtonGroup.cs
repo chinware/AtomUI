@@ -29,8 +29,10 @@ public class OptionCheckedChangedEventArgs : RoutedEventArgs
     public int Index { get; }
 }
 
-public class OptionButtonGroup : TemplatedControl, ISizeTypeAware, IControlCustomStyle
+public class OptionButtonGroup : TemplatedControl, ISizeTypeAware
 {
+    #region 公共属性定义
+
     public static readonly StyledProperty<ButtonSizeType> SizeTypeProperty =
         AvaloniaProperty.Register<OptionButtonGroup, ButtonSizeType>(nameof(SizeType), ButtonSizeType.Middle);
 
@@ -82,10 +84,11 @@ public class OptionButtonGroup : TemplatedControl, ISizeTypeAware, IControlCusto
         set => SetValue(SelectedOptionBorderColorProperty, value);
     }
 
+    #endregion
+
     [Content] public OptionButtons Options { get; } = new();
 
     private ControlStyleState _styleState;
-    private readonly IControlCustomStyle _customStyle;
     private StackPanel? _layout;
     private readonly BorderRenderHelper _borderRenderHelper = new();
 
@@ -98,7 +101,6 @@ public class OptionButtonGroup : TemplatedControl, ISizeTypeAware, IControlCusto
 
     public OptionButtonGroup()
     {
-        _customStyle              =  this;
         Options.CollectionChanged += OptionsChanged;
     }
 
@@ -208,33 +210,31 @@ public class OptionButtonGroup : TemplatedControl, ISizeTypeAware, IControlCusto
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
         base.OnPropertyChanged(e);
-        _customStyle.HandlePropertyChangedForStyle(e);
+        HandlePropertyChangedForStyle(e);
     }
-
-    #region IControlCustomStyle 实现
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _customStyle.HandleTemplateApplied(e.NameScope);
+        HandleTemplateApplied(e.NameScope);
     }
 
-    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
+    private void HandleTemplateApplied(INameScope scope)
     {
         _layout             = scope.Find<StackPanel>(OptionButtonGroupTheme.MainContainerPart);
         HorizontalAlignment = HorizontalAlignment.Left;
         ApplyButtonSizeConfig();
         ApplyButtonStyleConfig();
         _layout?.Children.AddRange(Options);
-        _customStyle.CollectStyleState();
+        CollectStyleState();
     }
 
-    void IControlCustomStyle.CollectStyleState()
+    private void CollectStyleState()
     {
         ControlStateUtils.InitCommonState(this, ref _styleState);
     }
 
-    void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
+    private void HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
     {
         if (e.Property == SizeTypeProperty)
         {
@@ -338,6 +338,4 @@ public class OptionButtonGroup : TemplatedControl, ISizeTypeAware, IControlCusto
             }
         }
     }
-
-    #endregion
 }

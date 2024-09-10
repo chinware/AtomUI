@@ -42,13 +42,9 @@ public class OptionButtonPointerEventArgs : EventArgs
 
 public class OptionButton : AvaloniaRadioButton,
                             ISizeTypeAware,
-                            IWaveAdornerInfoProvider,
-                            IControlCustomStyle
+                            IWaveAdornerInfoProvider
 {
-    private ControlStyleState _styleState;
-    private readonly IControlCustomStyle _customStyle;
-    private CornerRadius? _originCornerRadius;
-    private readonly BorderRenderHelper _borderRenderHelper;
+    #region 公共属性定义
 
     public static readonly StyledProperty<ButtonSizeType> SizeTypeProperty =
         AvaloniaProperty.Register<OptionButton, ButtonSizeType>(nameof(SizeType), ButtonSizeType.Middle);
@@ -90,6 +86,10 @@ public class OptionButton : AvaloniaRadioButton,
         set => SetValue(TextProperty, value);
     }
 
+    #endregion
+
+    #region 内部属性定义
+
     private bool _inOptionGroup;
 
     /// <summary>
@@ -111,6 +111,12 @@ public class OptionButton : AvaloniaRadioButton,
 
     internal event EventHandler<OptionButtonPointerEventArgs>? OptionButtonPointerEvent;
 
+    #endregion
+    
+    private ControlStyleState _styleState;
+    private CornerRadius? _originCornerRadius;
+    private readonly BorderRenderHelper _borderRenderHelper;
+
     static OptionButton()
     {
         AffectsMeasure<OptionButton>(SizeTypeProperty, ButtonStyleProperty, InOptionGroupProperty);
@@ -119,7 +125,6 @@ public class OptionButton : AvaloniaRadioButton,
 
     public OptionButton()
     {
-        _customStyle        = this;
         _borderRenderHelper = new BorderRenderHelper();
     }
 
@@ -136,16 +141,16 @@ public class OptionButton : AvaloniaRadioButton,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
         base.OnPropertyChanged(e);
-        _customStyle.HandlePropertyChangedForStyle(e);
+        HandlePropertyChangedForStyle(e);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _customStyle.HandleTemplateApplied(e.NameScope);
+        HandleTemplateApplied(e.NameScope);
     }
 
-    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
+    private void HandleTemplateApplied(INameScope scope)
     {
         if (Text is null && Content is string content)
         {
@@ -154,8 +159,8 @@ public class OptionButton : AvaloniaRadioButton,
 
         Cursor = new Cursor(StandardCursorType.Hand);
         HandleSizeTypeChanged();
-        _customStyle.CollectStyleState();
-        _customStyle.SetupTransitions();
+        CollectStyleState();
+        SetupTransitions();
     }
 
     private void HandleSizeTypeChanged()
@@ -163,8 +168,6 @@ public class OptionButton : AvaloniaRadioButton,
         _originCornerRadius = CornerRadius;
         CornerRadius        = BuildCornerRadius(GroupPositionTrait, _originCornerRadius!.Value);
     }
-
-    #region IControlCustomStyle 实现
 
     public Rect WaveGeometry()
     {
@@ -176,7 +179,7 @@ public class OptionButton : AvaloniaRadioButton,
         return CornerRadius;
     }
 
-    void IControlCustomStyle.SetupTransitions()
+    private void SetupTransitions()
     {
         var transitions = new Transitions();
         if (ButtonStyle == OptionButtonStyle.Solid)
@@ -192,7 +195,7 @@ public class OptionButton : AvaloniaRadioButton,
         Transitions = transitions;
     }
 
-    void IControlCustomStyle.CollectStyleState()
+    private void CollectStyleState()
     {
         ControlStateUtils.InitCommonState(this, ref _styleState);
         if (IsPressed)
@@ -210,13 +213,13 @@ public class OptionButton : AvaloniaRadioButton,
         }
     }
 
-    void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
+    private void HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
     {
         if (e.Property == IsPointerOverProperty ||
             e.Property == IsPressedProperty ||
             e.Property == IsCheckedProperty)
         {
-            _customStyle.CollectStyleState();
+            CollectStyleState();
             if (e.Property == IsPressedProperty)
             {
                 if (_styleState.HasFlag(ControlStyleState.Raised))
@@ -312,6 +315,5 @@ public class OptionButton : AvaloniaRadioButton,
             BorderBrush,
             default);
     }
-
-    #endregion
+    
 }

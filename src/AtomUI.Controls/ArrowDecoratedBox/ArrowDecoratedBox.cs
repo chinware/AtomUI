@@ -81,24 +81,17 @@ public enum ArrowPosition
 }
 
 public class ArrowDecoratedBox : ContentControl,
-                                 IShadowMaskInfoProvider,
-                                 IControlCustomStyle
+                                 IShadowMaskInfoProvider
 {
+    #region 公共属性定义
+
     public static readonly StyledProperty<bool> IsShowArrowProperty =
         AvaloniaProperty.Register<ArrowDecoratedBox, bool>(nameof(IsShowArrow), true);
 
     public static readonly StyledProperty<ArrowPosition> ArrowPositionProperty =
         AvaloniaProperty.Register<ArrowDecoratedBox, ArrowPosition>(
             nameof(ArrowPosition), ArrowPosition.Bottom);
-
-    internal static readonly StyledProperty<double> ArrowSizeProperty
-        = AvaloniaProperty.Register<ArrowDecoratedBox, double>(nameof(ArrowSize));
-
-    // 指针最顶点位置
-    // 相对坐标
-    private (double, double) _arrowVertexPoint;
-    internal (double, double) ArrowVertexPoint => GetArrowVertexPoint();
-
+    
     /// <summary>
     /// 是否显示指示箭头
     /// </summary>
@@ -117,6 +110,13 @@ public class ArrowDecoratedBox : ContentControl,
         set => SetValue(ArrowPositionProperty, value);
     }
 
+    #endregion
+
+    #region 内部属性定义
+
+    internal static readonly StyledProperty<double> ArrowSizeProperty
+        = AvaloniaProperty.Register<ArrowDecoratedBox, double>(nameof(ArrowSize));
+    
     /// <summary>
     /// 箭头的大小
     /// </summary>
@@ -126,7 +126,12 @@ public class ArrowDecoratedBox : ContentControl,
         set => SetValue(ArrowSizeProperty, value);
     }
 
-    private readonly IControlCustomStyle _customStyle;
+    #endregion
+
+    // 指针最顶点位置
+    // 相对坐标
+    private (double, double) _arrowVertexPoint;
+    internal (double, double) ArrowVertexPoint => GetArrowVertexPoint();
     private Geometry? _arrowGeometry;
     private Rect _contentRect;
     private Rect _arrowRect;
@@ -135,11 +140,6 @@ public class ArrowDecoratedBox : ContentControl,
     static ArrowDecoratedBox()
     {
         AffectsMeasure<ArrowDecoratedBox>(ArrowPositionProperty, IsShowArrowProperty);
-    }
-
-    public ArrowDecoratedBox()
-    {
-        _customStyle = this;
     }
 
     public static Direction GetDirection(ArrowPosition arrowPosition)
@@ -169,7 +169,7 @@ public class ArrowDecoratedBox : ContentControl,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
         base.OnPropertyChanged(e);
-        _customStyle.HandlePropertyChangedForStyle(e);
+        HandlePropertyChangedForStyle(e);
     }
 
     public CornerRadius GetMaskCornerRadius()
@@ -185,18 +185,16 @@ public class ArrowDecoratedBox : ContentControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _customStyle.HandleTemplateApplied(e.NameScope);
+       HandleTemplateApplied(e.NameScope);
     }
 
-    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
+    private void HandleTemplateApplied(INameScope scope)
     {
         if (IsShowArrow)
         {
             BuildGeometry(true);
         }
     }
-
-    #region IControlCustomStyle 实现
 
     private (double, double) GetArrowVertexPoint()
     {
@@ -210,7 +208,7 @@ public class ArrowDecoratedBox : ContentControl,
         return _arrowVertexPoint;
     }
 
-    void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
+    private void HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
     {
         if (e.Property == IsShowArrowProperty ||
             e.Property == ArrowPositionProperty ||
@@ -494,5 +492,4 @@ public class ArrowDecoratedBox : ContentControl,
         return targetRect;
     }
 
-    #endregion
 }

@@ -12,7 +12,7 @@ using Avalonia.Layout;
 
 namespace AtomUI.Controls;
 
-public class CardTabStrip : BaseTabStrip, IControlCustomStyle
+public class CardTabStrip : BaseTabStrip
 {
     #region 公共属性实现
 
@@ -86,16 +86,8 @@ public class CardTabStrip : BaseTabStrip, IControlCustomStyle
 
     #endregion
 
-    private readonly IControlCustomStyle _customStyle;
     private IconButton? _addTabButton;
     private ItemsPresenter? _itemsPresenter;
-    private Grid? _cardTabStripContainer;
-    private BaseTabScrollViewer? _tabScrollViewer;
-
-    public CardTabStrip()
-    {
-        _customStyle = this;
-    }
 
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
     {
@@ -123,7 +115,14 @@ public class CardTabStrip : BaseTabStrip, IControlCustomStyle
             GlobalTokenResourceKey.BorderThickness, BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this));
         TokenResourceBinder.CreateTokenBinding(this, CardSizeProperty, TabControlTokenResourceKey.CardSize);
-        _customStyle.HandleTemplateApplied(e.NameScope);
+        _addTabButton          = e.NameScope.Find<IconButton>(CardTabStripTheme.AddTabButtonPart);
+        _itemsPresenter        = e.NameScope.Find<ItemsPresenter>(BaseTabStripTheme.ItemsPresenterPart);
+        if (_addTabButton is not null)
+        {
+            _addTabButton.Click += HandleAddButtonClicked;
+        }
+
+        HandleSizeTypeChanged();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -138,25 +137,7 @@ public class CardTabStrip : BaseTabStrip, IControlCustomStyle
             HandleTabStripPlacementChanged();
         }
     }
-
-    #region IControlCustomStyle 实现
-
-    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
-    {
-        _addTabButton          = scope.Find<IconButton>(CardTabStripTheme.AddTabButtonPart);
-        _itemsPresenter        = scope.Find<ItemsPresenter>(BaseTabStripTheme.ItemsPresenterPart);
-        _cardTabStripContainer = scope.Find<Grid>(CardTabStripTheme.CardTabStripContainerPart);
-        _tabScrollViewer       = scope.Find<BaseTabScrollViewer>(CardTabStripTheme.CardTabStripScrollViewerPart);
-        if (_addTabButton is not null)
-        {
-            _addTabButton.Click += HandleAddButtonClicked;
-        }
-
-        HandleSizeTypeChanged();
-    }
-
-    #endregion
-
+    
     private void HandleAddButtonClicked(object? sender, RoutedEventArgs args)
     {
         RaiseEvent(new RoutedEventArgs(AddTabRequestEvent));

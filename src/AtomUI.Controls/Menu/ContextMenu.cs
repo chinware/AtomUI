@@ -9,9 +9,8 @@ namespace AtomUI.Controls;
 
 using AvaloniaContextMenu = Avalonia.Controls.ContextMenu;
 
-public class ContextMenu : AvaloniaContextMenu, IControlCustomStyle
+public class ContextMenu : AvaloniaContextMenu
 {
-    private readonly IControlCustomStyle _customStyle;
     private static readonly FieldInfo PopupFieldInfo;
     private static readonly EventInfo ClosingEventInfo;
 
@@ -24,7 +23,6 @@ public class ContextMenu : AvaloniaContextMenu, IControlCustomStyle
 
     public ContextMenu()
     {
-        _customStyle = this;
         Background   = new SolidColorBrush(Colors.Transparent);
         // 我们在这里有一次初始化的机会
         var popup = new Popup

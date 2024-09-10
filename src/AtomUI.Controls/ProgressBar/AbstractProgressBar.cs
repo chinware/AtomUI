@@ -23,8 +23,7 @@ public enum ProgressStatus
 
 [PseudoClasses(IndeterminatePC)]
 public abstract class AbstractProgressBar : RangeBase,
-                                            ISizeTypeAware,
-                                            IControlCustomStyle
+                                            ISizeTypeAware
 {
     protected const double LARGE_STROKE_THICKNESS = 8;
     protected const double MIDDLE_STROKE_THICKNESS = 6;
@@ -246,7 +245,6 @@ public abstract class AbstractProgressBar : RangeBase,
     #endregion
 
     protected ControlStyleState _styleState;
-    internal IControlCustomStyle _customStyle;
     protected LayoutTransformControl? _layoutTransformLabel;
     protected Label? _percentageLabel;
     protected PathIcon? _successCompletedIcon;
@@ -270,7 +268,6 @@ public abstract class AbstractProgressBar : RangeBase,
 
     public AbstractProgressBar()
     {
-        _customStyle       = this;
         _effectiveSizeType = SizeType;
     }
 
@@ -292,20 +289,15 @@ public abstract class AbstractProgressBar : RangeBase,
             UpdatePseudoClasses();
         }
 
-        _customStyle.HandlePropertyChangedForStyle(e);
+        HandlePropertyChangedForStyle(e);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _customStyle.HandleTemplateApplied(e.NameScope);
-    }
-
-    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
-    {
-        NotifyTemplateApplied(scope);
-        _customStyle.AfterUIStructureReady();
-        _customStyle.SetupTransitions();
+        NotifyTemplateApplied(e.NameScope);
+        AfterUIStructureReady();
+        SetupTransitions();
     }
 
     protected abstract SizeType CalculateEffectiveSizeType(double size);
@@ -323,8 +315,8 @@ public abstract class AbstractProgressBar : RangeBase,
         _percentageLabel = scope.Find<Label>(AbstractProgressBarTheme.PercentageLabelPart);
         _exceptionCompletedIcon = scope.Find<PathIcon>(AbstractProgressBarTheme.ExceptionCompletedIconPart);
         _successCompletedIcon = scope.Find<PathIcon>(AbstractProgressBarTheme.SuccessCompletedIconPart);
-        _customStyle.CollectStyleState();
-        _customStyle.SetupTokenBindings();
+        CollectStyleState();
+        SetupTokenBindings();
         NotifySetupUI();
     }
 
@@ -357,9 +349,7 @@ public abstract class AbstractProgressBar : RangeBase,
     {
     }
 
-    #region IControlCustomStyle 实现
-
-    void IControlCustomStyle.AfterUIStructureReady()
+    private void AfterUIStructureReady()
     {
         NotifyUiStructureReady();
     }
@@ -372,7 +362,7 @@ public abstract class AbstractProgressBar : RangeBase,
         UpdatePseudoClasses();
     }
 
-    void IControlCustomStyle.SetupTransitions()
+    private void SetupTransitions()
     {
         var transitions = new Transitions();
 
@@ -385,18 +375,18 @@ public abstract class AbstractProgressBar : RangeBase,
         Transitions = transitions;
     }
 
-    void IControlCustomStyle.CollectStyleState()
+    void CollectStyleState()
     {
         ControlStateUtils.InitCommonState(this, ref _styleState);
     }
 
-    void IControlCustomStyle.SetupTokenBindings()
+    private void SetupTokenBindings()
     {
         ApplyIndicatorBarBackgroundStyleConfig();
         NotifySetupTokenBindings();
     }
 
-    void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
+    private void HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
     {
         if (e.Property == SizeTypeProperty)
         {
@@ -421,7 +411,7 @@ public abstract class AbstractProgressBar : RangeBase,
         if (e.Property == IsEnabledProperty ||
             e.Property == PercentageProperty)
         {
-            _customStyle.CollectStyleState();
+            CollectStyleState();
         }
 
         if (e.Property == ValueProperty)
@@ -486,6 +476,5 @@ public abstract class AbstractProgressBar : RangeBase,
     protected virtual void NotifyPrepareDrawingContext(DrawingContext context)
     {
     }
-
-    #endregion
+    
 }

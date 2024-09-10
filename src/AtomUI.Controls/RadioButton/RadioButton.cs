@@ -20,10 +20,11 @@ using AvaloniaRadioButton = Avalonia.Controls.RadioButton;
 
 public class RadioButton : AvaloniaRadioButton,
                            ICustomHitTest,
-                           IWaveAdornerInfoProvider,
-                           IControlCustomStyle
+                           IWaveAdornerInfoProvider
 {
-    internal static readonly StyledProperty<double> RadioSizeProperty =
+    #region 内部属性定义
+
+     internal static readonly StyledProperty<double> RadioSizeProperty =
         AvaloniaProperty.Register<Button, double>(nameof(RadioSize));
 
     internal static readonly StyledProperty<double> PaddingInlineProperty =
@@ -106,9 +107,10 @@ public class RadioButton : AvaloniaRadioButton,
         set => SetValue(DotPaddingProperty, value);
     }
 
+    #endregion
+    
     private IPen? _cachedPen;
     private ControlStyleState _styleState;
-    private readonly IControlCustomStyle _customStyle;
 
     static RadioButton()
     {
@@ -120,32 +122,27 @@ public class RadioButton : AvaloniaRadioButton,
             RadioDotEffectSizeProperty);
     }
 
-    public RadioButton()
-    {
-        _customStyle = this;
-    }
-
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
         base.OnPropertyChanged(e);
-        _customStyle.HandlePropertyChangedForStyle(e);
+        HandlePropertyChangedForStyle(e);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _customStyle.HandleTemplateApplied(e.NameScope);
+        HandleTemplateApplied(e.NameScope);
     }
 
-    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
+    private void HandleTemplateApplied(INameScope scope)
     {
         TokenResourceBinder.CreateGlobalResourceBinding(this, RadioBorderThicknessProperty,
             GlobalTokenResourceKey.BorderThickness, BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this));
         Cursor = new Cursor(StandardCursorType.Hand);
-        _customStyle.CollectStyleState();
+        CollectStyleState();
         RadioDotEffectSize = CalculateDotSize(IsEnabled, IsChecked.HasValue && IsChecked.Value);
-        _customStyle.SetupTransitions();
+        SetupTransitions();
     }
 
     protected override Size MeasureOverride(Size availableSize)
@@ -193,9 +190,7 @@ public class RadioButton : AvaloniaRadioButton,
         return true;
     }
 
-    #region IControlCustomStyle 实现
-
-    void IControlCustomStyle.CollectStyleState()
+    private void CollectStyleState()
     {
         ControlStateUtils.InitCommonState(this, ref _styleState);
         if (IsPressed)
@@ -239,7 +234,7 @@ public class RadioButton : AvaloniaRadioButton,
         return targetValue;
     }
 
-    void IControlCustomStyle.SetupTransitions()
+    private void SetupTransitions()
     {
         Transitions = new Transitions
         {
@@ -263,13 +258,13 @@ public class RadioButton : AvaloniaRadioButton,
         return new Rect(offsetX, 0d, DesiredSize.Width - offsetX, DesiredSize.Height);
     }
 
-    void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
+    private void HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
     {
         if (e.Property == IsPointerOverProperty ||
             e.Property == IsCheckedProperty ||
             e.Property == IsEnabledProperty)
         {
-            _customStyle.CollectStyleState();
+            CollectStyleState();
             if (VisualRoot is not null)
             {
                 RadioDotEffectSize = CalculateDotSize(IsEnabled, IsChecked.HasValue && IsChecked.Value);
@@ -293,6 +288,4 @@ public class RadioButton : AvaloniaRadioButton,
     {
         return new CornerRadius(RadioSize / 2);
     }
-
-    #endregion
 }

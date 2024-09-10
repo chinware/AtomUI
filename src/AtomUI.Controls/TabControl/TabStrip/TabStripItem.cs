@@ -23,7 +23,7 @@ public enum TabSharp
     Card
 }
 
-public class TabStripItem : AvaloniaTabStripItem, IControlCustomStyle, ICustomHitTest
+public class TabStripItem : AvaloniaTabStripItem, ICustomHitTest
 {
     #region 公共属性定义
 
@@ -90,13 +90,7 @@ public class TabStripItem : AvaloniaTabStripItem, IControlCustomStyle, ICustomHi
     #endregion
 
     private StackPanel? _contentLayout;
-    private readonly IControlCustomStyle _customStyle;
     private IconButton? _closeButton;
-
-    public TabStripItem()
-    {
-        _customStyle = this;
-    }
 
     private void SetupItemIcon()
     {
@@ -154,12 +148,10 @@ public class TabStripItem : AvaloniaTabStripItem, IControlCustomStyle, ICustomHi
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _customStyle.HandleTemplateApplied(e.NameScope);
+        HandleTemplateApplied(e.NameScope);
     }
 
-    #region IControlCustomStyle 实现
-
-    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
+    private void HandleTemplateApplied(INameScope scope)
     {
         _contentLayout = scope.Find<StackPanel>(BaseTabStripItemTheme.ContentLayoutPart);
         _closeButton   = scope.Find<IconButton>(BaseTabStripItemTheme.ItemCloseButtonPart);
@@ -178,9 +170,7 @@ public class TabStripItem : AvaloniaTabStripItem, IControlCustomStyle, ICustomHi
             _closeButton.Click += HandleCloseRequest;
         }
     }
-
-    #endregion
-
+    
     private void HandleCloseRequest(object? sender, RoutedEventArgs args)
     {
         if (Parent is BaseTabStrip tabStrip)

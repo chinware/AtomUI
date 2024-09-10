@@ -15,10 +15,10 @@ public enum PresetEmptyImage
     Default
 }
 
-public partial class EmptyIndicator : TemplatedControl,
-                                      IControlCustomStyle
-
+public partial class EmptyIndicator : TemplatedControl
 {
+    #region 公共属性定义
+
     public static readonly StyledProperty<PresetEmptyImage?> PresetEmptyImageProperty =
         AvaloniaProperty.Register<EmptyIndicator, PresetEmptyImage?>(nameof(PresetImage));
 
@@ -73,7 +73,9 @@ public partial class EmptyIndicator : TemplatedControl,
         set => SetValue(IsShowDescriptionProperty, value);
     }
 
-    private readonly IControlCustomStyle _customStyle;
+    #endregion
+   
+    
     private Avalonia.Svg.Svg? _svg;
 
     static EmptyIndicator()
@@ -83,11 +85,6 @@ public partial class EmptyIndicator : TemplatedControl,
             ImageSourceProperty,
             DescriptionProperty,
             IsShowDescriptionProperty);
-    }
-
-    public EmptyIndicator()
-    {
-        _customStyle = this;
     }
 
     private void CheckImageSource()
@@ -115,9 +112,7 @@ public partial class EmptyIndicator : TemplatedControl,
         }
     }
 
-    #region IControlCustomStyle 实现
-
-    void IControlCustomStyle.SetupTokenBindings()
+    private void SetupTokenBindings()
     {
         TokenResourceBinder.CreateTokenBinding(this, ColorFillTokenProperty, GlobalTokenResourceKey.ColorFill);
         TokenResourceBinder.CreateTokenBinding(this, ColorFillTertiaryTokenProperty,
@@ -166,11 +161,11 @@ public partial class EmptyIndicator : TemplatedControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _customStyle.SetupTokenBindings();
-        _customStyle.HandleTemplateApplied(e.NameScope);
+        SetupTokenBindings();
+        HandleTemplateApplied(e.NameScope);
     }
 
-    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
+    private void HandleTemplateApplied(INameScope scope)
     {
         _svg                = scope.Find<Avalonia.Svg.Svg>(EmptyIndicatorTheme.SvgImagePart);
         HorizontalAlignment = HorizontalAlignment.Center;
@@ -178,6 +173,4 @@ public partial class EmptyIndicator : TemplatedControl,
         CheckImageSource();
         SetupImage();
     }
-
-    #endregion
 }

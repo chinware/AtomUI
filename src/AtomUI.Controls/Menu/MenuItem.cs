@@ -18,7 +18,7 @@ namespace AtomUI.Controls;
 using AvaloniaMenuItem = Avalonia.Controls.MenuItem;
 
 [PseudoClasses(TopLevelPC)]
-public class MenuItem : AvaloniaMenuItem, IControlCustomStyle
+public class MenuItem : AvaloniaMenuItem
 {
     public const string TopLevelPC = ":toplevel";
 
@@ -34,8 +34,7 @@ public class MenuItem : AvaloniaMenuItem, IControlCustomStyle
     }
 
     #endregion
-
-    private readonly IControlCustomStyle _customStyle;
+    
     private ContentPresenter? _topLevelContentPresenter;
     private ContentControl? _togglePresenter;
 
@@ -45,23 +44,16 @@ public class MenuItem : AvaloniaMenuItem, IControlCustomStyle
     {
         AffectsRender<MenuItem>(BackgroundProperty);
     }
-
-    public MenuItem()
-    {
-        _customStyle = this;
-    }
-
+    
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
         Cursor              = new Cursor(StandardCursorType.Hand);
         HorizontalAlignment = HorizontalAlignment.Stretch;
-        _customStyle.HandleTemplateApplied(e.NameScope);
+        HandleTemplateApplied(e.NameScope);
     }
 
-    #region IControlCustomStyle 实现
-
-    void IControlCustomStyle.SetupTransitions()
+    private void SetupTransitions()
     {
         if (_topLevelContentPresenter is not null && _topLevelContentPresenter.Transitions is null)
         {
@@ -72,7 +64,7 @@ public class MenuItem : AvaloniaMenuItem, IControlCustomStyle
         }
     }
 
-    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
+    private void HandleTemplateApplied(INameScope scope)
     {
         if (IsTopLevel)
         {
@@ -84,12 +76,10 @@ public class MenuItem : AvaloniaMenuItem, IControlCustomStyle
         }
 
         HandleToggleTypeChanged();
-        _customStyle.SetupTransitions();
+        SetupTransitions();
         UpdatePseudoClasses();
     }
-
-    #endregion
-
+    
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
         base.OnPropertyChanged(e);

@@ -17,8 +17,7 @@ namespace AtomUI.Controls;
 
 [PseudoClasses(StdPseudoClass.Open)]
 public class ToolTip : TemplatedControl,
-                       IShadowMaskInfoProvider,
-                       IControlCustomStyle
+                       IShadowMaskInfoProvider
 {
     #region 公共属性定义
 
@@ -201,11 +200,6 @@ public class ToolTip : TemplatedControl,
         AffectsRender<ToolTip>(ForegroundProperty,
             BackgroundProperty);
         AffectsArrange<ToolTip>(FlipPlacementProperty);
-    }
-
-    public ToolTip()
-    {
-        _customStyle = this;
     }
 
     #region 附加属性设置方法
@@ -522,7 +516,6 @@ public class ToolTip : TemplatedControl,
 
     private Popup? _popup;
     private Action<IPopupHost?>? _popupHostChangedHandler;
-    private readonly IControlCustomStyle _customStyle;
     private ArrowDecoratedBox? _arrowDecoratedBox;
     internal Control? AdornedControl { get; private set; }
     internal event EventHandler? Closed;
@@ -776,15 +769,13 @@ public class ToolTip : TemplatedControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _customStyle.HandleTemplateApplied(e.NameScope);
+        HandleTemplateApplied(e.NameScope);
     }
 
-    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
+    private void HandleTemplateApplied(INameScope scope)
     {
         _arrowDecoratedBox = scope.Find<ArrowDecoratedBox>(ToolTipTheme.ToolTipContainerPart);
     }
-
-    #region IControlCustomStyle 实现
 
     public CornerRadius GetMaskCornerRadius()
     {
@@ -853,6 +844,4 @@ public class ToolTip : TemplatedControl,
 
         return new Point(offsetX, offsetY);
     }
-
-    #endregion
 }

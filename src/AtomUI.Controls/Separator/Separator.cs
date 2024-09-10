@@ -19,7 +19,7 @@ public enum SeparatorTitlePosition
     Center
 }
 
-public class Separator : AvaloniaSeparator, IControlCustomStyle
+public class Separator : AvaloniaSeparator
 {
     #region 公共属性定义
 
@@ -158,8 +158,7 @@ public class Separator : AvaloniaSeparator, IControlCustomStyle
     }
 
     #endregion
-
-    private readonly IControlCustomStyle _customStyle;
+    
     private Label? _titleLabel;
     private const double SEPARATOR_LINE_MIN_PROPORTION = 0.25;
     private double _currentEdgeDistance;
@@ -175,33 +174,14 @@ public class Separator : AvaloniaSeparator, IControlCustomStyle
             IsDashedLineProperty);
     }
 
-    public Separator()
-    {
-        _customStyle = this;
-        _customStyle.InitOnConstruct();
-    }
-
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
-    {
-        base.OnPropertyChanged(e);
-        _customStyle.HandlePropertyChangedForStyle(e);
-    }
-
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _customStyle.HandleTemplateApplied(e.NameScope);
+        _titleLabel = e.NameScope.Find<Label>(SeparatorTheme.TitlePart);
+        SetupTokenBindings();
     }
-
-    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
-    {
-        _titleLabel = scope.Find<Label>(SeparatorTheme.TitlePart);
-        _customStyle.SetupTokenBindings();
-    }
-
-    #region IControlCustomStyle 实现
-
-    void IControlCustomStyle.SetupTokenBindings()
+    
+    private void SetupTokenBindings()
     {
         TokenResourceBinder.CreateTokenBinding(this, LineWidthProperty, GlobalTokenResourceKey.LineWidth);
     }
@@ -381,8 +361,6 @@ public class Separator : AvaloniaSeparator, IControlCustomStyle
             context.DrawLine(linePen, new Point(offsetX, 0), new Point(offsetX, controlRect.Bottom));
         }
     }
-
-    #endregion
 }
 
 public class VerticalSeparator : Separator

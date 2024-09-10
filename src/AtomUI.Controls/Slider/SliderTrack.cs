@@ -20,9 +20,11 @@ using Avalonia.Utilities;
 namespace AtomUI.Controls;
 
 [PseudoClasses(StdPseudoClass.Vertical, StdPseudoClass.Horizontal)]
-public class SliderTrack : Control, IControlCustomStyle
+public class SliderTrack : Control
 {
-    public static readonly StyledProperty<double> MinimumProperty =
+    #region 公共属性定义
+
+      public static readonly StyledProperty<double> MinimumProperty =
         RangeBase.MinimumProperty.AddOwner<SliderTrack>();
 
     public static readonly StyledProperty<double> MaximumProperty =
@@ -73,42 +75,7 @@ public class SliderTrack : Control, IControlCustomStyle
 
     public static readonly StyledProperty<FontFamily> MarkLabelFontFamilyProperty =
         TextElement.FontFamilyProperty.AddOwner<SliderTrack>();
-
-    internal static readonly StyledProperty<double> SliderTrackSizeProperty =
-        AvaloniaProperty.Register<SliderTrack, double>(nameof(SliderTrackSize));
-
-    internal static readonly StyledProperty<double> SliderRailSizeProperty =
-        AvaloniaProperty.Register<SliderTrack, double>(nameof(SliderRailSize));
-
-    internal static readonly StyledProperty<double> SliderMarkSizeProperty =
-        AvaloniaProperty.Register<SliderTrack, double>(nameof(SliderMarkSize));
-
-    internal static readonly StyledProperty<Thickness> PaddingProperty =
-        Decorator.PaddingProperty.AddOwner<SliderTrack>();
-
-    internal static readonly StyledProperty<IBrush?> MarkBorderBrushProperty =
-        AvaloniaProperty.Register<SliderTrack, IBrush?>(nameof(MarkBorderBrush));
-
-    internal static readonly StyledProperty<IBrush?> MarkBorderActiveBrushProperty =
-        AvaloniaProperty.Register<SliderTrack, IBrush?>(nameof(MarkBorderActiveBrush));
-
-    internal static readonly StyledProperty<IBrush?> MarkBackgroundBrushProperty =
-        AvaloniaProperty.Register<SliderTrack, IBrush?>(nameof(MarkBackgroundBrush));
-
-    internal static readonly StyledProperty<Thickness> MarkBorderThicknessProperty =
-        AvaloniaProperty.Register<SliderTrack, Thickness>(nameof(MarkBorderThickness));
-
-    internal static readonly RoutedEvent<PointerPressedEventArgs> TrailPressedEvent =
-        RoutedEvent.Register<SliderThumb, PointerPressedEventArgs>(nameof(TrailPressed), RoutingStrategies.Bubble);
-
-    internal static readonly RoutedEvent<PointerReleasedEventArgs> TrailReleasedEvent =
-        RoutedEvent.Register<SliderThumb, PointerReleasedEventArgs>(nameof(TrailReleased), RoutingStrategies.Bubble);
-
-    private VectorEventArgs? _deferredThumbDrag;
-    private Vector _lastDrag;
-    private readonly IControlCustomStyle _customStyle;
-    private RenderContextData? _renderContextData;
-
+    
     public double Minimum
     {
         get => GetValue(MinimumProperty);
@@ -141,23 +108,7 @@ public class SliderTrack : Control, IControlCustomStyle
         get => GetValue(IsRangeModeProperty);
         set => SetValue(IsRangeModeProperty, value);
     }
-
-    /// <summary>
-    /// Gets the value of the <see cref="SliderThumb" />'s current position. This can differ from <see cref="Value" /> when
-    /// <see cref="ScrollViewer.IsDeferredScrollingEnabled" /> is true.
-    /// </summary>
-    private double ThumbValue => Value + (_deferredThumbDrag == null
-        ? 0
-        : ValueFromDistance(_deferredThumbDrag.Vector.X, _deferredThumbDrag.Vector.Y));
-
-    private double ThumbRangeStartValue => RangeValue.StartValue + (_deferredThumbDrag == null
-        ? 0
-        : ValueFromDistance(_deferredThumbDrag.Vector.X, _deferredThumbDrag.Vector.Y));
-
-    private double ThumbRangeEndValue => RangeValue.EndValue + (_deferredThumbDrag == null
-        ? 0
-        : ValueFromDistance(_deferredThumbDrag.Vector.X, _deferredThumbDrag.Vector.Y));
-
+    
     public Orientation Orientation
     {
         get => GetValue(OrientationProperty);
@@ -230,6 +181,41 @@ public class SliderTrack : Control, IControlCustomStyle
         set => SetValue(MarkLabelFontSizeProperty, value);
     }
 
+    #endregion
+
+    #region 内部属性定义
+
+    internal static readonly StyledProperty<double> SliderTrackSizeProperty =
+        AvaloniaProperty.Register<SliderTrack, double>(nameof(SliderTrackSize));
+
+    internal static readonly StyledProperty<double> SliderRailSizeProperty =
+        AvaloniaProperty.Register<SliderTrack, double>(nameof(SliderRailSize));
+
+    internal static readonly StyledProperty<double> SliderMarkSizeProperty =
+        AvaloniaProperty.Register<SliderTrack, double>(nameof(SliderMarkSize));
+
+    internal static readonly StyledProperty<Thickness> PaddingProperty =
+        Decorator.PaddingProperty.AddOwner<SliderTrack>();
+
+    internal static readonly StyledProperty<IBrush?> MarkBorderBrushProperty =
+        AvaloniaProperty.Register<SliderTrack, IBrush?>(nameof(MarkBorderBrush));
+
+    internal static readonly StyledProperty<IBrush?> MarkBorderActiveBrushProperty =
+        AvaloniaProperty.Register<SliderTrack, IBrush?>(nameof(MarkBorderActiveBrush));
+
+    internal static readonly StyledProperty<IBrush?> MarkBackgroundBrushProperty =
+        AvaloniaProperty.Register<SliderTrack, IBrush?>(nameof(MarkBackgroundBrush));
+
+    internal static readonly StyledProperty<Thickness> MarkBorderThicknessProperty =
+        AvaloniaProperty.Register<SliderTrack, Thickness>(nameof(MarkBorderThickness));
+
+    internal static readonly RoutedEvent<PointerPressedEventArgs> TrailPressedEvent =
+        RoutedEvent.Register<SliderThumb, PointerPressedEventArgs>(nameof(TrailPressed), RoutingStrategies.Bubble);
+
+    internal static readonly RoutedEvent<PointerReleasedEventArgs> TrailReleasedEvent =
+        RoutedEvent.Register<SliderThumb, PointerReleasedEventArgs>(nameof(TrailReleased), RoutingStrategies.Bubble);
+    
+    
     internal double SliderTrackSize
     {
         get => GetValue(SliderTrackSizeProperty);
@@ -277,6 +263,10 @@ public class SliderTrack : Control, IControlCustomStyle
         get => GetValue(MarkBorderThicknessProperty);
         set => SetValue(MarkBorderThicknessProperty, value);
     }
+    
+    #endregion
+
+    #region 事件定义
 
     public event EventHandler<PointerPressedEventArgs>? TrailPressed
     {
@@ -290,6 +280,29 @@ public class SliderTrack : Control, IControlCustomStyle
         remove => RemoveHandler(TrailReleasedEvent, value);
     }
 
+    #endregion
+    
+    private VectorEventArgs? _deferredThumbDrag;
+    private Vector _lastDrag;
+    private RenderContextData? _renderContextData;
+    
+
+    /// <summary>
+    /// Gets the value of the <see cref="SliderThumb" />'s current position. This can differ from <see cref="Value" /> when
+    /// <see cref="ScrollViewer.IsDeferredScrollingEnabled" /> is true.
+    /// </summary>
+    private double ThumbValue => Value + (_deferredThumbDrag == null
+        ? 0
+        : ValueFromDistance(_deferredThumbDrag.Vector.X, _deferredThumbDrag.Vector.Y));
+
+    private double ThumbRangeStartValue => RangeValue.StartValue + (_deferredThumbDrag == null
+        ? 0
+        : ValueFromDistance(_deferredThumbDrag.Vector.X, _deferredThumbDrag.Vector.Y));
+
+    private double ThumbRangeEndValue => RangeValue.EndValue + (_deferredThumbDrag == null
+        ? 0
+        : ValueFromDistance(_deferredThumbDrag.Vector.X, _deferredThumbDrag.Vector.Y));
+    
     private double ThumbCenterOffset { get; set; }
     private Point StartThumbCenterOffset { get; set; }
     private Point EndThumbCenterOffset { get; set; }
@@ -316,7 +329,6 @@ public class SliderTrack : Control, IControlCustomStyle
 
     public SliderTrack()
     {
-        _customStyle = this;
         UpdatePseudoClasses(Orientation);
     }
 
@@ -892,7 +904,7 @@ public class SliderTrack : Control, IControlCustomStyle
         return null;
     }
 
-    void IControlCustomStyle.PrepareRenderInfo()
+    private void PrepareRenderInfo()
     {
         _renderContextData = new RenderContextData();
         CalculateThumbValuePivotOffset(Bounds.Size, Orientation == Orientation.Vertical,
@@ -1047,7 +1059,7 @@ public class SliderTrack : Control, IControlCustomStyle
 
     public override void Render(DrawingContext context)
     {
-        _customStyle.PrepareRenderInfo();
+        PrepareRenderInfo();
         DrawGroove(context);
         DrawTrackBar(context);
         DrawMark(context);

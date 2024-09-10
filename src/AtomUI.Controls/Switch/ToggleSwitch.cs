@@ -18,8 +18,7 @@ namespace AtomUI.Controls;
 public class ToggleSwitch : ToggleButton,
                             ISizeTypeAware,
                             ICustomHitTest,
-                            IWaveAdornerInfoProvider,
-                            IControlCustomStyle
+                            IWaveAdornerInfoProvider
 {
     #region 公共属性定义
 
@@ -191,7 +190,6 @@ public class ToggleSwitch : ToggleButton,
     #endregion
 
     private const double STRETCH_FACTOR = 1.3d;
-    private readonly IControlCustomStyle _customStyle;
     private ControlStyleState _styleState;
     private Canvas? _togglePanel;
 
@@ -211,7 +209,6 @@ public class ToggleSwitch : ToggleButton,
 
     public ToggleSwitch()
     {
-        _customStyle  =  this;
         LayoutUpdated += HandleLayoutUpdated;
     }
 
@@ -219,7 +216,7 @@ public class ToggleSwitch : ToggleButton,
     {
         if (Transitions is null)
         {
-            _customStyle.SetupTransitions();
+            SetupTransitions();
         }
     }
 
@@ -337,16 +334,16 @@ public class ToggleSwitch : ToggleButton,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
         base.OnPropertyChanged(e);
-        _customStyle.HandlePropertyChangedForStyle(e);
+        HandlePropertyChangedForStyle(e);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _customStyle.HandleTemplateApplied(e.NameScope);
+        HandleTemplateApplied(e.NameScope);
     }
 
-    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
+    private void HandleTemplateApplied(INameScope scope)
     {
         _togglePanel = scope.Find<Canvas>(ToggleSwitchTheme.MainContainerPart);
         _switchKnob  = scope.Find<SwitchKnob>(ToggleSwitchTheme.SwitchKnobPart);
@@ -376,7 +373,7 @@ public class ToggleSwitch : ToggleButton,
         OnContent  = onControl;
 
         HandleLoadingState(IsLoading);
-        _customStyle.CollectStyleState();
+        CollectStyleState();
     }
 
     public sealed override void Render(DrawingContext context)
@@ -395,8 +392,6 @@ public class ToggleSwitch : ToggleButton,
         var grooveRect = GrooveRect();
         return grooveRect.Contains(point);
     }
-
-    #region IControlCustomStyle 实现
 
     private Control? SetupContent(object? content)
     {
@@ -451,7 +446,7 @@ public class ToggleSwitch : ToggleButton,
         }
     }
 
-    void IControlCustomStyle.SetupTransitions()
+    private void SetupTransitions()
     {
         Transitions = new Transitions
         {
@@ -463,7 +458,7 @@ public class ToggleSwitch : ToggleButton,
         };
     }
 
-    void IControlCustomStyle.CollectStyleState()
+    private void CollectStyleState()
     {
         ControlStateUtils.InitCommonState(this, ref _styleState);
         switch (IsChecked)
@@ -489,7 +484,7 @@ public class ToggleSwitch : ToggleButton,
         }
     }
 
-    void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
+    private void HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
     {
         if (e.Property == IsLoadingProperty)
         {
@@ -526,7 +521,7 @@ public class ToggleSwitch : ToggleButton,
             e.Property == IsCheckedProperty ||
             e.Property == IsEnabledProperty)
         {
-            _customStyle.CollectStyleState();
+            CollectStyleState();
             if (e.Property == IsCheckedProperty)
             {
                 CalculateElementsOffset(DesiredSize);
@@ -622,6 +617,4 @@ public class ToggleSwitch : ToggleButton,
     {
         return new CornerRadius(DesiredSize.Height / 2);
     }
-
-    #endregion
 }

@@ -17,7 +17,7 @@ namespace AtomUI.Controls;
 
 using AvaloniaTabItem = Avalonia.Controls.TabItem;
 
-public class TabItem : AvaloniaTabItem, IControlCustomStyle, ICustomHitTest
+public class TabItem : AvaloniaTabItem, ICustomHitTest
 {
     #region 公共属性定义
 
@@ -73,13 +73,7 @@ public class TabItem : AvaloniaTabItem, IControlCustomStyle, ICustomHitTest
     #endregion
 
     private StackPanel? _contentLayout;
-    private readonly IControlCustomStyle _customStyle;
     private IconButton? _closeButton;
-
-    public TabItem()
-    {
-        _customStyle = this;
-    }
 
     private void SetupItemIcon()
     {
@@ -137,12 +131,10 @@ public class TabItem : AvaloniaTabItem, IControlCustomStyle, ICustomHitTest
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _customStyle.HandleTemplateApplied(e.NameScope);
+        HandleTemplateApplied(e.NameScope);
     }
 
-    #region IControlCustomStyle 实现
-
-    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
+    private void HandleTemplateApplied(INameScope scope)
     {
         _contentLayout = scope.Find<StackPanel>(BaseTabItemTheme.ContentLayoutPart);
         _closeButton   = scope.Find<IconButton>(BaseTabItemTheme.ItemCloseButtonPart);
@@ -161,8 +153,6 @@ public class TabItem : AvaloniaTabItem, IControlCustomStyle, ICustomHitTest
             _closeButton.Click += HandleCloseRequest;
         }
     }
-
-    #endregion
 
     private void HandleCloseRequest(object? sender, RoutedEventArgs args)
     {

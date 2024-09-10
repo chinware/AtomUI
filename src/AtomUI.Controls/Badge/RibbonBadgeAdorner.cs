@@ -10,13 +10,9 @@ using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
-internal class RibbonBadgeAdorner : Control, IControlCustomStyle
+internal class RibbonBadgeAdorner : Control
 {
-    private bool _initialized;
-    private readonly IControlCustomStyle _customStyle;
-    private TextBlock? _textBlock;
-    private Geometry? _cornerGeometry;
-    private readonly BorderRenderHelper _borderRenderHelper;
+    #region 内部属性定义
 
     internal static readonly StyledProperty<IBrush?> RibbonColorProperty =
         AvaloniaProperty.Register<RibbonBadgeAdorner, IBrush?>(
@@ -49,6 +45,12 @@ internal class RibbonBadgeAdorner : Control, IControlCustomStyle
         AvaloniaProperty.Register<RibbonBadgeAdorner, Transform?>(
             nameof(BadgeRibbonCornerTransform));
 
+    internal static readonly DirectProperty<RibbonBadgeAdorner, bool> IsAdornerModeProperty =
+        AvaloniaProperty.RegisterDirect<RibbonBadgeAdorner, bool>(
+            nameof(IsAdornerMode),
+            o => o.IsAdornerMode,
+            (o, v) => o.IsAdornerMode = v);
+    
     internal IBrush? RibbonColor
     {
         get => GetValue(RibbonColorProperty);
@@ -60,13 +62,7 @@ internal class RibbonBadgeAdorner : Control, IControlCustomStyle
         get => GetValue(TextProperty);
         set => SetValue(TextProperty, value);
     }
-
-    internal static readonly DirectProperty<RibbonBadgeAdorner, bool> IsAdornerModeProperty =
-        AvaloniaProperty.RegisterDirect<RibbonBadgeAdorner, bool>(
-            nameof(IsAdornerMode),
-            o => o.IsAdornerMode,
-            (o, v) => o.IsAdornerMode = v);
-
+    
     private bool _isAdornerMode;
 
     internal bool IsAdornerMode
@@ -110,6 +106,13 @@ internal class RibbonBadgeAdorner : Control, IControlCustomStyle
         get => GetValue(BadgeRibbonCornerTransformProperty);
         set => SetValue(BadgeRibbonCornerTransformProperty, value);
     }
+    
+    #endregion
+    
+    private bool _initialized;
+    private TextBlock? _textBlock;
+    private Geometry? _cornerGeometry;
+    private readonly BorderRenderHelper _borderRenderHelper;
 
     static RibbonBadgeAdorner()
     {
@@ -120,7 +123,6 @@ internal class RibbonBadgeAdorner : Control, IControlCustomStyle
 
     public RibbonBadgeAdorner()
     {
-        _customStyle        = this;
         _borderRenderHelper = new BorderRenderHelper();
     }
 
@@ -129,11 +131,11 @@ internal class RibbonBadgeAdorner : Control, IControlCustomStyle
         base.OnAttachedToLogicalTree(e);
         if (Styles.Count == 0)
         {
-            _customStyle.BuildStyles();
+            BuildStyles();
         }
     }
 
-    void IControlCustomStyle.BuildStyles()
+    private void BuildStyles()
     {
         var commonStyle = new Style(selector => selector.OfType<RibbonBadgeAdorner>());
         commonStyle.Add(RibbonColorProperty, GlobalTokenResourceKey.ColorPrimary);

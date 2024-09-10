@@ -10,28 +10,16 @@ using Avalonia.Threading;
 
 namespace AtomUI.Controls;
 
-public class MarqueeLabel : TextBlock,
-                            IControlCustomStyle
+public class MarqueeLabel : TextBlock
 {
-    private readonly IControlCustomStyle? _customStyle;
-    private ControlStyleState _styleState;
-    private CancellationTokenSource? _cancellationTokenSource;
-    private bool _initialized;
-    private Animation? _animation;
-    private bool _animationRunning;
-    private double _lastDesiredWidth;
-    private double _lastTextWidth;
-    private double _pivotOffsetStartValue;
+    #region 公共属性定义
 
     public static readonly StyledProperty<double> CycleSpaceProperty =
         AvaloniaProperty.Register<MarqueeLabel, double>(nameof(CycleSpace));
 
     public static readonly StyledProperty<double> MoveSpeedProperty =
         AvaloniaProperty.Register<MarqueeLabel, double>(nameof(MoveSpeed), 150);
-
-    private static readonly StyledProperty<double> PivotOffsetProperty =
-        AvaloniaProperty.Register<MarqueeLabel, double>(nameof(PivotOffset));
-
+    
     /// <summary>
     /// 默认的间隔
     /// </summary>
@@ -50,23 +38,36 @@ public class MarqueeLabel : TextBlock,
         set => SetValue(MoveSpeedProperty, value);
     }
 
+    #endregion
+
+    #region 内部属性定义
+    
+    internal static readonly StyledProperty<double> PivotOffsetProperty =
+        AvaloniaProperty.Register<MarqueeLabel, double>(nameof(PivotOffset));
+    
     /// <summary>
     /// 内部动画使用，当前焦点，也就是文字最左侧
     /// </summary>
-    private double PivotOffset
+    internal double PivotOffset
     {
         get => GetValue(PivotOffsetProperty);
         set => SetValue(PivotOffsetProperty, value);
     }
 
+    #endregion
+    
+    private ControlStyleState _styleState;
+    private CancellationTokenSource? _cancellationTokenSource;
+    private bool _initialized;
+    private Animation? _animation;
+    private bool _animationRunning;
+    private double _lastDesiredWidth;
+    private double _lastTextWidth;
+    private double _pivotOffsetStartValue;
+
     static MarqueeLabel()
     {
         AffectsRender<MarqueeLabel>(PivotOffsetProperty, CycleSpaceProperty, MoveSpeedProperty);
-    }
-
-    public MarqueeLabel()
-    {
-        _customStyle = this;
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -85,7 +86,7 @@ public class MarqueeLabel : TextBlock,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
         base.OnPropertyChanged(e);
-        _customStyle?.HandlePropertyChangedForStyle(e);
+        HandlePropertyChangedForStyle(e);
     }
 
     public sealed override void ApplyTemplate()
@@ -95,8 +96,8 @@ public class MarqueeLabel : TextBlock,
         {
             HorizontalAlignment = HorizontalAlignment.Stretch;
             TextWrapping        = TextWrapping.NoWrap;
-            _customStyle?.CollectStyleState();
-            _customStyle?.SetupTokenBindings();
+            CollectStyleState();
+            SetupTokenBindings();
             _initialized = true;
         }
     }
@@ -108,32 +109,30 @@ public class MarqueeLabel : TextBlock,
         return size;
     }
 
-    #region IControlCustomStyle 实现
-
     private double CalculateDuration(double distance)
     {
         // 计算持续时间，确保至少有一毫秒的持续时间以避免除以零的错误
         return 4 * Math.Max(1, distance / MoveSpeed * 1000);
     }
 
-    void IControlCustomStyle.CollectStyleState()
+    private void CollectStyleState()
     {
         ControlStateUtils.InitCommonState(this, ref _styleState);
     }
 
-    void IControlCustomStyle.SetupTokenBindings()
+    private void SetupTokenBindings()
     {
         TokenResourceBinder.CreateTokenBinding(this, CycleSpaceProperty, MarqueeLabelTokenResourceKey.CycleSpace);
         TokenResourceBinder.CreateTokenBinding(this, MoveSpeedProperty, MarqueeLabelTokenResourceKey.DefaultSpeed);
     }
 
-    void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
+    private void HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
     {
         if (_initialized)
         {
             if (e.Property == IsPointerOverProperty)
             {
-                _customStyle?.CollectStyleState();
+                CollectStyleState();
                 if (_styleState.HasFlag(ControlStyleState.MouseOver))
                 {
                     _pivotOffsetStartValue = PivotOffset;
@@ -255,6 +254,4 @@ public class MarqueeLabel : TextBlock,
             TextLayout.Draw(context, origin + new Point(offset + _lastTextWidth + CycleSpace, 0));
         }
     }
-
-    #endregion
 }

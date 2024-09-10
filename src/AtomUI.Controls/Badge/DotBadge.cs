@@ -22,8 +22,10 @@ public enum DotBadgeStatus
     Warning
 }
 
-public class DotBadge : Control, IControlCustomStyle
+public class DotBadge : Control
 {
+    #region 公共属性定义
+
     public static readonly StyledProperty<string?> DotColorProperty
         = AvaloniaProperty.Register<DotBadge, string?>(
             nameof(DotColor));
@@ -44,10 +46,6 @@ public class DotBadge : Control, IControlCustomStyle
 
     public static readonly StyledProperty<bool> BadgeIsVisibleProperty =
         AvaloniaProperty.Register<DotBadge, bool>(nameof(BadgeIsVisible));
-
-    internal static readonly StyledProperty<TimeSpan> MotionDurationProperty =
-        AvaloniaProperty.Register<CountBadge, TimeSpan>(
-            nameof(MotionDuration));
 
     public string? DotColor
     {
@@ -85,24 +83,28 @@ public class DotBadge : Control, IControlCustomStyle
         get => GetValue(BadgeIsVisibleProperty);
         set => SetValue(BadgeIsVisibleProperty, value);
     }
+    
+    #endregion
 
-    public TimeSpan MotionDuration
+    #region 内部属性一定
+
+    internal static readonly StyledProperty<TimeSpan> MotionDurationProperty =
+        AvaloniaProperty.Register<CountBadge, TimeSpan>(
+            nameof(MotionDuration));
+
+    internal TimeSpan MotionDuration
     {
         get => GetValue(MotionDurationProperty);
         set => SetValue(MotionDurationProperty, value);
     }
+    
+    #endregion
 
     private readonly bool _initialized = false;
-    private readonly IControlCustomStyle _customStyle;
     private DotBadgeAdorner? _dotBadgeAdorner;
     private AdornerLayer? _adornerLayer;
     private bool _animating;
-
-    public DotBadge()
-    {
-        _customStyle = this;
-    }
-
+    
     static DotBadge()
     {
         AffectsMeasure<DotBadge>(DecoratedTargetProperty, TextProperty);
@@ -120,7 +122,7 @@ public class DotBadge : Control, IControlCustomStyle
         if (_dotBadgeAdorner is null)
         {
             _dotBadgeAdorner = new DotBadgeAdorner();
-            _customStyle.SetupTokenBindings();
+            SetupTokenBindings();
             HandleDecoratedTargetChanged();
             if (DotColor is not null)
             {
@@ -216,7 +218,7 @@ public class DotBadge : Control, IControlCustomStyle
         HideAdorner();
     }
 
-    void IControlCustomStyle.SetupTokenBindings()
+    private void SetupTokenBindings()
     {
         if (_dotBadgeAdorner is not null)
         {

@@ -19,8 +19,10 @@ public enum CountBadgeSize
     Small
 }
 
-public class CountBadge : Control, IControlCustomStyle
+public class CountBadge : Control
 {
+    #region 公共属性定义
+
     public static readonly StyledProperty<string?> BadgeColorProperty
         = AvaloniaProperty.Register<CountBadge, string?>(
             nameof(BadgeColor));
@@ -47,11 +49,7 @@ public class CountBadge : Control, IControlCustomStyle
 
     public static readonly StyledProperty<bool> BadgeIsVisibleProperty =
         AvaloniaProperty.Register<CountBadge, bool>(nameof(BadgeIsVisible));
-
-    internal static readonly StyledProperty<TimeSpan> MotionDurationProperty =
-        AvaloniaProperty.Register<CountBadge, TimeSpan>(
-            nameof(MotionDuration));
-
+    
     public string? BadgeColor
     {
         get => GetValue(BadgeColorProperty);
@@ -101,22 +99,28 @@ public class CountBadge : Control, IControlCustomStyle
         set => SetValue(BadgeIsVisibleProperty, value);
     }
 
+
+
+    #endregion
+
+    #region 内部属性定义
+
+    public static readonly StyledProperty<TimeSpan> MotionDurationProperty =
+        AvaloniaProperty.Register<CountBadge, TimeSpan>(
+            nameof(MotionDuration));
+    
     public TimeSpan MotionDuration
     {
         get => GetValue(MotionDurationProperty);
         set => SetValue(MotionDurationProperty, value);
     }
 
-    private readonly IControlCustomStyle _customStyle;
+    #endregion
+    
     private CountBadgeAdorner? _badgeAdorner;
     private AdornerLayer? _adornerLayer;
     private bool _animating;
-
-    public CountBadge()
-    {
-        _customStyle = this;
-    }
-
+    
     static CountBadge()
     {
         AffectsMeasure<CountBadge>(DecoratedTargetProperty,
@@ -140,7 +144,7 @@ public class CountBadge : Control, IControlCustomStyle
         if (_badgeAdorner is null)
         {
             _badgeAdorner = new CountBadgeAdorner();
-            _customStyle.SetupTokenBindings();
+            SetupTokenBindings();
             HandleDecoratedTargetChanged();
             if (BadgeColor is not null)
             {
@@ -271,7 +275,7 @@ public class CountBadge : Control, IControlCustomStyle
         HideAdorner();
     }
 
-    void IControlCustomStyle.SetupTokenBindings()
+    private void SetupTokenBindings()
     {
         if (_badgeAdorner is not null)
         {

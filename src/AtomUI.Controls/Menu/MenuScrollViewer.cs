@@ -14,27 +14,19 @@ using AvaloniaScrollViewer = ScrollViewer;
 [TemplatePart(MenuScrollViewerTheme.ScrollDownButtonPart, typeof(IconButton))]
 [TemplatePart(MenuScrollViewerTheme.ScrollUpButtonPart, typeof(IconButton))]
 [TemplatePart(MenuScrollViewerTheme.ScrollViewContentPart, typeof(ScrollContentPresenter))]
-public class MenuScrollViewer : AvaloniaScrollViewer, IControlCustomStyle
+public class MenuScrollViewer : AvaloniaScrollViewer
 {
-    private readonly IControlCustomStyle _customStyle;
     private IconButton? _scrollUpButton;
     private IconButton? _scrollDownButton;
     private ScrollContentPresenter? _scrollViewContent;
 
-    public MenuScrollViewer()
-    {
-        _customStyle = this;
-    }
-
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _customStyle.HandleTemplateApplied(e.NameScope);
+        HandleTemplateApplied(e.NameScope);
     }
 
-    #region IControlCustomStyle 实现
-
-    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
+    private void HandleTemplateApplied(INameScope scope)
     {
         _scrollUpButton    = scope.Find<IconButton>(MenuScrollViewerTheme.ScrollUpButtonPart);
         _scrollDownButton  = scope.Find<IconButton>(MenuScrollViewerTheme.ScrollDownButtonPart);
@@ -42,8 +34,6 @@ public class MenuScrollViewer : AvaloniaScrollViewer, IControlCustomStyle
 
         SetupScrollButtonVisibility();
     }
-
-    #endregion
 
     private void SetupScrollButtonVisibility()
     {

@@ -37,8 +37,10 @@ internal struct TagStatusCalcColor
     public Color BorderColor { get; set; }
 }
 
-public class Tag : TemplatedControl, IControlCustomStyle
+public class Tag : TemplatedControl
 {
+    #region 公共属性定义
+
     public static readonly StyledProperty<string?> TagColorProperty
         = AvaloniaProperty.Register<Tag, string?>(
             nameof(Color));
@@ -58,10 +60,7 @@ public class Tag : TemplatedControl, IControlCustomStyle
     public static readonly StyledProperty<string?> TagTextProperty
         = AvaloniaProperty.Register<Tag, string?>(
             nameof(TagText));
-
-    internal static readonly StyledProperty<double> TagTextPaddingInlineProperty
-        = AvaloniaProperty.Register<Tag, double>(nameof(TagTextPaddingInline));
-
+    
     public string? TagColor
     {
         get => GetValue(TagColorProperty);
@@ -99,13 +98,21 @@ public class Tag : TemplatedControl, IControlCustomStyle
         set => SetValue(TagTextProperty, value);
     }
 
+    #endregion
+
+    #region 内部属性定义
+
+    internal static readonly StyledProperty<double> TagTextPaddingInlineProperty
+        = AvaloniaProperty.Register<Tag, double>(nameof(TagTextPaddingInline));
+    
     internal double TagTextPaddingInline
     {
         get => GetValue(TagTextPaddingInlineProperty);
         set => SetValue(TagTextPaddingInlineProperty, value);
     }
 
-    private readonly IControlCustomStyle _customStyle;
+    #endregion
+    
     private bool _isPresetColorTag;
     private bool _hasColorSet;
     private static readonly Dictionary<PresetColorType, TagCalcColor> _presetColorMap;
@@ -129,7 +136,6 @@ public class Tag : TemplatedControl, IControlCustomStyle
 
     public Tag()
     {
-        _customStyle        = this;
         _borderRenderHelper = new BorderRenderHelper();
     }
 
@@ -138,10 +144,10 @@ public class Tag : TemplatedControl, IControlCustomStyle
         SetupPresetColorMap();
         SetupStatusColorMap();
         base.OnApplyTemplate(e);
-        _customStyle.HandleTemplateApplied(e.NameScope);
+        HandleTemplateApplied(e.NameScope);
     }
 
-    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
+    private void HandleTemplateApplied(INameScope scope)
     {
         _layoutPanel = scope.Find<Canvas>(TagTheme.MainContainerPart);
         _closeButton = scope.Find<IconButton>(TagTheme.CloseButtonPart);
@@ -154,8 +160,7 @@ public class Tag : TemplatedControl, IControlCustomStyle
 
         SetupTagClosable();
         SetupTagIcon();
-        _customStyle.SetupTokenBindings();
-        _customStyle.SetupTransitions();
+        SetupTokenBindings();
     }
 
     protected override Size MeasureOverride(Size availableSize)
@@ -226,12 +231,10 @@ public class Tag : TemplatedControl, IControlCustomStyle
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
         base.OnPropertyChanged(e);
-        _customStyle.HandlePropertyChangedForStyle(e);
+        HandlePropertyChangedForStyle(e);
     }
 
-    #region IControlCustomStyle 实现
-
-    void IControlCustomStyle.SetupTokenBindings()
+    private void SetupTokenBindings()
     {
         TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty, GlobalTokenResourceKey.BorderThickness,
             BindingPriority.Template,
@@ -246,7 +249,7 @@ public class Tag : TemplatedControl, IControlCustomStyle
             }));
     }
 
-    void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
+    private void HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
     {
         if (VisualRoot is not null)
         {
@@ -443,6 +446,5 @@ public class Tag : TemplatedControl, IControlCustomStyle
             BorderBrush,
             default);
     }
-
-    #endregion
+    
 }

@@ -17,9 +17,11 @@ public enum AlertType
     Error
 }
 
-public class Alert : TemplatedControl, IControlCustomStyle
+public class Alert : TemplatedControl
 {
-    public static readonly StyledProperty<AlertType> TypeProperty =
+    #region 公共属性定义
+
+     public static readonly StyledProperty<AlertType> TypeProperty =
         AvaloniaProperty.Register<Alert, AlertType>(nameof(Type));
 
     public static readonly StyledProperty<bool> IsShowIconProperty =
@@ -92,7 +94,7 @@ public class Alert : TemplatedControl, IControlCustomStyle
         set => SetValue(ExtraActionProperty, value);
     }
 
-    private readonly IControlCustomStyle _customStyle;
+    #endregion
 
     static Alert()
     {
@@ -107,27 +109,19 @@ public class Alert : TemplatedControl, IControlCustomStyle
         AffectsRender<Segmented>(TypeProperty);
     }
 
-    public Alert()
-    {
-        _customStyle = this;
-        _customStyle.InitOnConstruct();
-    }
-
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
         base.OnPropertyChanged(e);
-        _customStyle.HandlePropertyChangedForStyle(e);
+        HandlePropertyChangedForStyle(e);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _customStyle.HandleTemplateApplied(e.NameScope);
+        HandleTemplateApplied(e.NameScope);
     }
-
-    #region IControlCustomStyle 实现
-
-    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
+    
+    private void HandleTemplateApplied(INameScope scope)
     {
         TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty, GlobalTokenResourceKey.BorderThickness,
             BindingPriority.Template,
@@ -135,7 +129,7 @@ public class Alert : TemplatedControl, IControlCustomStyle
         SetupCloseButton();
     }
 
-    void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
+    private void HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
     {
         if (VisualRoot is not null)
         {
@@ -161,5 +155,4 @@ public class Alert : TemplatedControl, IControlCustomStyle
         }
     }
 
-    #endregion
 }

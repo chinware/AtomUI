@@ -7,7 +7,7 @@ using Avalonia.Metadata;
 
 namespace AtomUI.Controls;
 
-public class LoadingMaskHost : Control, IControlCustomStyle
+public class LoadingMaskHost : Control
 {
     #region 公共属性定义
 
@@ -88,13 +88,7 @@ public class LoadingMaskHost : Control, IControlCustomStyle
 
     private LoadingMask? _loadingMask;
     private bool _initialized;
-    private IControlCustomStyle _customStyle;
-
-    public LoadingMaskHost()
-    {
-        _customStyle = this;
-    }
-
+    
     public void ShowLoading()
     {
         if (_loadingMask is not null && _loadingMask.IsLoading)

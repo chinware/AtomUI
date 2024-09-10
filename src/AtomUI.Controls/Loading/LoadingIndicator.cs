@@ -1,5 +1,4 @@
 ﻿using AtomUI.Controls.Utils;
-using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
@@ -12,7 +11,7 @@ using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
-public class LoadingIndicator : TemplatedControl, ISizeTypeAware, IControlCustomStyle
+public class LoadingIndicator : TemplatedControl, ISizeTypeAware
 {
     #region 公共属性定义
 
@@ -120,7 +119,6 @@ public class LoadingIndicator : TemplatedControl, ISizeTypeAware, IControlCustom
 
     #endregion
 
-    private readonly IControlCustomStyle _customStyle;
     private Animation? _animation;
     private TextBlock? _loadingText;
     private Canvas? _mainContainer;
@@ -142,12 +140,7 @@ public class LoadingIndicator : TemplatedControl, ISizeTypeAware, IControlCustom
             CustomIndicatorIconProperty);
         AffectsRender<LoadingIndicator>(IndicatorAngleProperty);
     }
-
-    public LoadingIndicator()
-    {
-        _customStyle = this;
-    }
-
+    
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
@@ -166,16 +159,16 @@ public class LoadingIndicator : TemplatedControl, ISizeTypeAware, IControlCustom
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
         base.OnPropertyChanged(e);
-        _customStyle.HandlePropertyChangedForStyle(e);
+        HandlePropertyChangedForStyle(e);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _customStyle.HandleTemplateApplied(e.NameScope);
+        HandleTemplateApplied(e.NameScope);
     }
 
-    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
+    private void HandleTemplateApplied(INameScope scope)
     {
         _mainContainer = scope.Find<Canvas>(LoadingIndicatorTheme.MainContainerPart);
         _loadingText   = scope.Find<TextBlock>(LoadingIndicatorTheme.LoadingTextPart);
@@ -183,7 +176,7 @@ public class LoadingIndicator : TemplatedControl, ISizeTypeAware, IControlCustom
         SetupCustomIndicator();
     }
 
-    void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
+    private void HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
     {
         if (e.Property == CustomIndicatorIconProperty)
         {
@@ -281,8 +274,6 @@ public class LoadingIndicator : TemplatedControl, ISizeTypeAware, IControlCustom
         return base.ArrangeOverride(finalSize);
     }
 
-    #region IControlCustomStyle 实现
-
     private void BuildIndicatorAnimation(bool force = false)
     {
         if (force || _animation is null)
@@ -355,7 +346,7 @@ public class LoadingIndicator : TemplatedControl, ISizeTypeAware, IControlCustom
 
     public override void Render(DrawingContext context)
     {
-        _customStyle.PrepareRenderInfo();
+        PrepareRenderInfo();
         if (CustomIndicatorIcon is null)
         {
             RenderBuiltInIndicator(context);
@@ -414,7 +405,7 @@ public class LoadingIndicator : TemplatedControl, ISizeTypeAware, IControlCustom
         }
     }
 
-    void IControlCustomStyle.PrepareRenderInfo()
+    private void PrepareRenderInfo()
     {
         _renderInfo         = new RenderInfo();
         _renderInfo.DotSize = DotSize;
@@ -456,6 +447,4 @@ public class LoadingIndicator : TemplatedControl, ISizeTypeAware, IControlCustom
         public double ItemEdgeMargin { get; set; }
         public IBrush? DotBgBrush { get; set; }
     }
-
-    #endregion
 }

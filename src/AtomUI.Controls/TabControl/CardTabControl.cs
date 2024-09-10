@@ -12,7 +12,7 @@ using Avalonia.Layout;
 
 namespace AtomUI.Controls;
 
-public class CardTabControl : BaseTabControl, IControlCustomStyle
+public class CardTabControl : BaseTabControl
 {
     #region 公共属性实现
 
@@ -85,15 +85,9 @@ public class CardTabControl : BaseTabControl, IControlCustomStyle
     }
 
     #endregion
-
-    private readonly IControlCustomStyle _customStyle;
+    
     private IconButton? _addTabButton;
     private ItemsPresenter? _itemsPresenter;
-
-    public CardTabControl()
-    {
-        _customStyle = this;
-    }
 
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
     {
@@ -121,7 +115,7 @@ public class CardTabControl : BaseTabControl, IControlCustomStyle
             GlobalTokenResourceKey.BorderThickness, BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this));
         TokenResourceBinder.CreateTokenBinding(this, CardSizeProperty, TabControlTokenResourceKey.CardSize);
-        _customStyle.HandleTemplateApplied(e.NameScope);
+        HandleTemplateApplied(e.NameScope);
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -137,9 +131,7 @@ public class CardTabControl : BaseTabControl, IControlCustomStyle
         }
     }
 
-    #region IControlCustomStyle 实现
-
-    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
+    private void HandleTemplateApplied(INameScope scope)
     {
         _addTabButton   = scope.Find<IconButton>(CardTabControlTheme.AddTabButtonPart);
         _itemsPresenter = scope.Find<ItemsPresenter>(BaseTabControlTheme.ItemsPresenterPart);
@@ -150,9 +142,7 @@ public class CardTabControl : BaseTabControl, IControlCustomStyle
 
         HandleSizeTypeChanged();
     }
-
-    #endregion
-
+    
     private void HandleAddButtonClicked(object? sender, RoutedEventArgs args)
     {
         RaiseEvent(new RoutedEventArgs(AddTabRequestEvent));
