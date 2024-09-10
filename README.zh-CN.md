@@ -1,6 +1,5 @@
 <p align="center">
     <img src="./docs/images/ATOMUI.png" />
-</p>
 
 -----
 
@@ -11,6 +10,7 @@
 [![][github-license-shield]][github-license-link]
 
 [更新日志](./CHANGELOG.md) · [提交Bug][github-issues-link] · [提交需求][github-issues-link]
+</p>
 
 ![](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
 
@@ -28,7 +28,6 @@
 [github-issues-link]: https://github.com/chinware/AtomUI/issues
 [github-license-shield]: https://img.shields.io/github/license/chinware/AtomUI?color=white&labelColor=black&style=flat-square
 [github-license-link]: https://github.com/chinware/AtomUI/blob/master/LICENSE
-
 
 -----
 文档语言: [English](README.md) | [简体中文](README.zh-CN.md)
