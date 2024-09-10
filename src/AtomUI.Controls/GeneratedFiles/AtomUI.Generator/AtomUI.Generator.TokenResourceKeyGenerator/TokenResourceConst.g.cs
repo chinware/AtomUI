@@ -188,6 +188,27 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey PopupMarginToAnchor = new TokenResourceKey("ComboBox.PopupMarginToAnchor", "AtomUI.Token");
     }
 
+    public static class DatePickerTokenResourceKey
+    {
+        public static readonly TokenResourceKey CellHoverBg = new TokenResourceKey("DatePicker.CellHoverBg", "AtomUI.Token");
+        public static readonly TokenResourceKey CellActiveWithRangeBg = new TokenResourceKey("DatePicker.CellActiveWithRangeBg", "AtomUI.Token");
+        public static readonly TokenResourceKey CellHoverWithRangeBg = new TokenResourceKey("DatePicker.CellHoverWithRangeBg", "AtomUI.Token");
+        public static readonly TokenResourceKey CellBgDisabled = new TokenResourceKey("DatePicker.CellBgDisabled", "AtomUI.Token");
+        public static readonly TokenResourceKey CellRangeBorderColor = new TokenResourceKey("DatePicker.CellRangeBorderColor", "AtomUI.Token");
+        public static readonly TokenResourceKey CellHeight = new TokenResourceKey("DatePicker.CellHeight", "AtomUI.Token");
+        public static readonly TokenResourceKey CellWidth = new TokenResourceKey("DatePicker.CellWidth", "AtomUI.Token");
+        public static readonly TokenResourceKey CellLineHeight = new TokenResourceKey("DatePicker.CellLineHeight", "AtomUI.Token");
+        public static readonly TokenResourceKey CellMargin = new TokenResourceKey("DatePicker.CellMargin", "AtomUI.Token");
+        public static readonly TokenResourceKey ItemPanelMinWidth = new TokenResourceKey("DatePicker.ItemPanelMinWidth", "AtomUI.Token");
+        public static readonly TokenResourceKey ItemPanelMinHeight = new TokenResourceKey("DatePicker.ItemPanelMinHeight", "AtomUI.Token");
+        public static readonly TokenResourceKey TextHeight = new TokenResourceKey("DatePicker.TextHeight", "AtomUI.Token");
+        public static readonly TokenResourceKey PanelContentPadding = new TokenResourceKey("DatePicker.PanelContentPadding", "AtomUI.Token");
+        public static readonly TokenResourceKey WithoutTimeCellHeight = new TokenResourceKey("DatePicker.WithoutTimeCellHeight", "AtomUI.Token");
+        public static readonly TokenResourceKey DayTitleHeight = new TokenResourceKey("DatePicker.DayTitleHeight", "AtomUI.Token");
+        public static readonly TokenResourceKey HeaderMargin = new TokenResourceKey("DatePicker.HeaderMargin", "AtomUI.Token");
+        public static readonly TokenResourceKey RangeCalendarSpacing = new TokenResourceKey("DatePicker.RangeCalendarSpacing", "AtomUI.Token");
+    }
+
     public static class EmptyIndicatorTokenResourceKey
     {
         public static readonly TokenResourceKey EmptyImgHeight = new TokenResourceKey("EmptyIndicator.EmptyImgHeight", "AtomUI.Token");

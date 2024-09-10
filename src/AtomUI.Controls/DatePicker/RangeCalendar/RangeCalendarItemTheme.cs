@@ -154,7 +154,7 @@ internal class RangeCalendarItemTheme : BaseControlTheme
         CreateTemplateParentBinding(headerLayout, Visual.IsVisibleProperty, RangeCalendarItem.IsMonthViewModeProperty);
 
         TokenResourceBinder.CreateTokenBinding(headerLayout, Layoutable.MarginProperty,
-            CalendarTokenResourceKey.RangeCalendarSpacing, BindingPriority.Template,
+            DatePickerTokenResourceKey.RangeCalendarSpacing, BindingPriority.Template,
             v =>
             {
                 if (v is double dval)
@@ -322,7 +322,7 @@ internal class RangeCalendarItemTheme : BaseControlTheme
         monthView.Children.Add(secondaryMonthView);
 
         TokenResourceBinder.CreateTokenBinding(secondaryMonthView, Layoutable.MarginProperty,
-            CalendarTokenResourceKey.RangeCalendarSpacing, BindingPriority.Template,
+            DatePickerTokenResourceKey.RangeCalendarSpacing, BindingPriority.Template,
             v =>
             {
                 if (v is double dval)
@@ -365,7 +365,7 @@ internal class RangeCalendarItemTheme : BaseControlTheme
     {
         var dayTitleRowDef = new RowDefinition();
         TokenResourceBinder.CreateTokenBinding(dayTitleRowDef, RowDefinition.HeightProperty,
-            CalendarTokenResourceKey.DayTitleHeight);
+            DatePickerTokenResourceKey.DayTitleHeight);
         var monthView = new Grid
         {
             Name                = name,
@@ -400,7 +400,7 @@ internal class RangeCalendarItemTheme : BaseControlTheme
         var commonStyle = new Style(selector => selector.Nesting());
 
         var headerLayoutStyle = new Style(selector => selector.Nesting().Template().Name(HeaderLayoutPart));
-        headerLayoutStyle.Add(Layoutable.MarginProperty, CalendarTokenResourceKey.HeaderMargin);
+        headerLayoutStyle.Add(Layoutable.MarginProperty, DatePickerTokenResourceKey.HeaderMargin);
 
         commonStyle.Add(headerLayoutStyle);
 

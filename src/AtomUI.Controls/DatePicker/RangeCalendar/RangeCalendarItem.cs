@@ -1193,6 +1193,7 @@ internal class RangeCalendarItem : TemplatedControl
                 Owner.HoverDateTime = selectedDate;
                 // Update the States of the buttons
                 Owner.UpdateHighlightDays();
+                Owner.NotifyHoverDateChanged(selectedDate);
             }
         }
     }

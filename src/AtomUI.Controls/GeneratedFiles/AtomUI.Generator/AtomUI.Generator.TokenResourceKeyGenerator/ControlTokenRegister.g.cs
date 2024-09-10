@@ -14,6 +14,7 @@
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.CheckBoxToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.CollapseToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.ComboBoxToken));
+            ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.DatePickerToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.EmptyIndicatorToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.ExpanderToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.FlyoutPresenterToken));

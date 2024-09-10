@@ -15,7 +15,6 @@ public class RangeCalendarTheme : BaseControlTheme
 {
     public const string RootPart = "PART_Root";
     public const string CalendarItemPart = "PART_CalendarItem";
-    public const string SecondaryCalendarItemPart = "PART_SecondaryCalendarItem";
     public const string FramePart = "PART_Frame";
 
     public RangeCalendarTheme()
@@ -45,7 +44,7 @@ public class RangeCalendarTheme : BaseControlTheme
                 ClipToBounds = true
             };
             TokenResourceBinder.CreateTokenBinding(rootLayout, StackPanel.SpacingProperty,
-                CalendarTokenResourceKey.RangeCalendarSpacing);
+                DatePickerTokenResourceKey.RangeCalendarSpacing);
             rootLayout.RegisterInNameScope(scope);
 
             var calendarItem = new RangeCalendarItem
@@ -69,9 +68,9 @@ public class RangeCalendarTheme : BaseControlTheme
         commonStyle.Add(TemplatedControl.BorderBrushProperty, GlobalTokenResourceKey.ColorBorder);
         commonStyle.Add(TemplatedControl.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadius);
         commonStyle.Add(TemplatedControl.BackgroundProperty, GlobalTokenResourceKey.ColorBgContainer);
-        commonStyle.Add(TemplatedControl.PaddingProperty, CalendarTokenResourceKey.PanelContentPadding);
-        commonStyle.Add(Layoutable.MinWidthProperty, CalendarTokenResourceKey.ItemPanelMinWidth);
-        commonStyle.Add(Layoutable.MinHeightProperty, CalendarTokenResourceKey.ItemPanelMinHeight);
+        commonStyle.Add(TemplatedControl.PaddingProperty, DatePickerTokenResourceKey.PanelContentPadding);
+        commonStyle.Add(Layoutable.MinWidthProperty, DatePickerTokenResourceKey.ItemPanelMinWidth);
+        commonStyle.Add(Layoutable.MinHeightProperty, DatePickerTokenResourceKey.ItemPanelMinHeight);
         Add(commonStyle);
     }
 }

@@ -29,7 +29,7 @@ public enum DateTimePickerPanelType
     TimePeriod //AM or PM
 }
 
-public class DateTimePickerPanel : Panel, ILogicalScrollable
+internal class DateTimePickerPanel : Panel, ILogicalScrollable
 {
    /// <summary>
    /// Defines the <see cref="ItemHeight" /> property

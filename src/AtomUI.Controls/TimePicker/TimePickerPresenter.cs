@@ -23,7 +23,7 @@ namespace AtomUI.Controls;
 [TemplatePart(TimePickerPresenterTheme.PeriodSelectorPart, typeof(DateTimePickerPanel), IsRequired = true)]
 [TemplatePart(TimePickerPresenterTheme.PickerContainerPart, typeof(Grid), IsRequired = true)]
 [TemplatePart(TimePickerPresenterTheme.SecondSpacerPart, typeof(Rectangle), IsRequired = true)]
-public class TimePickerPresenter : PickerPresenterBase
+internal class TimePickerPresenter : PickerPresenterBase
 {
     #region 公共属性定义
 

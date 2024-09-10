@@ -24,6 +24,15 @@ public class RangeDateSelectedEventArgs : RoutedEventArgs
     }
 }
 
+public class HoverDateSelectedEventArgs : RoutedEventArgs
+{
+    public DateTime? HoverDate { get; }
+    public HoverDateSelectedEventArgs(DateTime? date)
+    {
+        HoverDate = date;
+    }
+}
+
 [TemplatePart(RangeCalendarTheme.CalendarItemPart, typeof(RangeCalendarItem))]
 [TemplatePart(RangeCalendarTheme.RootPart, typeof(Panel))]
 public class RangeCalendar : TemplatedControl
@@ -308,9 +317,6 @@ public class RangeCalendar : TemplatedControl
     #endregion
 
     private bool _displayDateIsChanging;
-
-    private bool _isShiftPressed;
-
     private DateTime _selectedMonth;
     private DateTime _selectedYear;
 
@@ -496,6 +502,11 @@ public class RangeCalendar : TemplatedControl
             }
             RangeDateSelected?.Invoke(this, new RangeDateSelectedEventArgs(new CalendarDateRange(rangeStart, rangeEnd)));
         }
+    }
+
+    internal void NotifyHoverDateChanged(DateTime? hoverDate)
+    {
+        HoverDateChanged?.Invoke(this, new HoverDateSelectedEventArgs(hoverDate));
     }
 
     /// <summary>
@@ -1192,6 +1203,11 @@ public class RangeCalendar : TemplatedControl
     /// 当范围选择完成的时候派发这个事件
     /// </summary>
     public event EventHandler<RangeDateSelectedEventArgs>? RangeDateSelected;
+    
+    /// <summary>
+    /// 当前 Pointer 选中的日期事件
+    /// </summary>
+    public event EventHandler<HoverDateSelectedEventArgs>? HoverDateChanged;
 
     protected override void OnPointerReleased(PointerReleasedEventArgs e)
     {
