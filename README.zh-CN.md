@@ -1,8 +1,41 @@
-<p align="center">
-    <img src="./docs/images/ATOMUI.png" />
-</p>
+<div align="center"><a name="readme-top"></a>
 
-<div align="center" style = "font-weight: bold">基于 Ant Design 5.0 和 Avalonia 技术的企业级跨平台控件库</div>
+<img height="160" src="./docs/images/ATOMUI.png">
+
+<h1>AtomUI</h1>
+
+AtomUI 是基于 .NET 技术的 Ant Design 实现，致力于将 Ant Design 优秀而高效的设计语言和体验带入 Avalonia/.NET 跨平台桌面软件开发领域。欢迎与 AtomUI 进行交流并提出建议，感谢您为该项目点赞。
+
+[![][github-contributors-shield]][github-contributors-link]
+[![][github-forks-shield]][github-forks-link]
+[![][github-stars-shield]][github-stars-link]
+[![][github-issues-shield]][github-issues-link]
+[![][github-license-shield]][github-license-link]
+
+[更新日志](./CHANGELOG.md) · [提交Bug][github-issues-link] · [提交需求][github-issues-link]
+
+![](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
+
+</div>
+
+[github-release-shield]: https://img.shields.io/github/v/release/chinware/AtomUI?color=369eff&labelColor=black&logo=github&style=flat-square
+[github-release-link]: https://github.com/chinware/AtomUI/releases
+[github-releasedate-shield]: https://img.shields.io/github/release-date/chinware/AtomUI?color=black&labelColor=black&style=flat-square
+[github-releasedate-link]: https://github.com/chinware/AtomUI/releases
+[github-contributors-shield]: https://img.shields.io/github/contributors/chinware/AtomUI?color=c4f042&labelColor=black&style=flat-square
+[github-contributors-link]: https://github.com/chinware/AtomUI/graphs/contributors
+[github-forks-shield]: https://img.shields.io/github/forks/chinware/AtomUI?color=8ae8ff&labelColor=black&style=flat-square
+[github-forks-link]: https://github.com/chinware/AtomUI/network/members
+[github-stars-shield]: https://img.shields.io/github/stars/chinware/AtomUI?color=ffcb47&labelColor=black&style=flat-square
+[github-stars-link]: https://github.com/chinware/AtomUI/network/stargazers
+[github-issues-shield]: https://img.shields.io/github/issues/chinware/AtomUI?color=ff80eb&labelColor=black&style=flat-square
+[github-issues-link]: https://github.com/chinware/AtomUI/issues
+[github-license-shield]: https://img.shields.io/github/license/chinware/AtomUI?color=white&labelColor=black&style=flat-square
+[github-license-link]: https://github.com/chinware/AtomUI/blob/master/LICENSE
+
+
+-----
+文档语言: [English](README.md) | [简体中文](README-zh-cn.md)
 
 #### 介绍
 
