@@ -6,10 +6,10 @@
 /// </summary>
 internal class CalendarButton : BaseCalendarButton
 {
-   protected override Type StyleKeyOverride => typeof(BaseCalendarButton);
-   
-   /// <summary>
-   /// Gets or sets the Calendar associated with this button.
-   /// </summary>
-   internal Calendar? Owner { get; set; }
+    protected override Type StyleKeyOverride => typeof(BaseCalendarButton);
+
+    /// <summary>
+    /// Gets or sets the Calendar associated with this button.
+    /// </summary>
+    internal Calendar? Owner { get; set; }
 }

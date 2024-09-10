@@ -10,15 +10,16 @@ using AvaloniaButton = Avalonia.Controls.Button;
 
 internal class HeadTextButton : AvaloniaButton
 {
-   protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-   {
-      base.OnApplyTemplate(e);
-      if (Transitions is null) {
-         Transitions = new Transitions()
-         {
-            AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty, GlobalTokenResourceKey.MotionDurationFast)
-         };
-      }
-   }
-   
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        if (Transitions is null)
+        {
+            Transitions = new Transitions
+            {
+                AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty,
+                    GlobalTokenResourceKey.MotionDurationFast)
+            };
+        }
+    }
 }

@@ -20,18 +20,18 @@ public sealed class CalendarBlackoutDatesCollection : ObservableCollection<Calen
    /// this object represents.
    /// </param>
    public CalendarBlackoutDatesCollection(Calendar owner)
-   {
-      _owner = owner ?? throw new ArgumentNullException(nameof(owner));
-   }
+    {
+        _owner = owner ?? throw new ArgumentNullException(nameof(owner));
+    }
 
    /// <summary>
    /// Adds all dates before <see cref="P:System.DateTime.Today" /> to the
    /// collection.
    /// </summary>
    public void AddDatesInPast()
-   {
-      Add(new CalendarDateRange(DateTime.MinValue, DateTime.Today.AddDays(-1)));
-   }
+    {
+        Add(new CalendarDateRange(DateTime.MinValue, DateTime.Today.AddDays(-1)));
+    }
 
    /// <summary>
    /// Returns a value that represents whether this collection contains the
@@ -43,16 +43,18 @@ public sealed class CalendarBlackoutDatesCollection : ObservableCollection<Calen
    /// false.
    /// </returns>
    public bool Contains(DateTime date)
-   {
-      int count = Count;
-      for (int i = 0; i < count; i++) {
-         if (DateTimeHelper.InRange(date, this[i])) {
-            return true;
-         }
-      }
+    {
+        var count = Count;
+        for (var i = 0; i < count; i++)
+        {
+            if (DateTimeHelper.InRange(date, this[i]))
+            {
+                return true;
+            }
+        }
 
-      return false;
-   }
+        return false;
+    }
 
    /// <summary>
    /// Returns a value that represents whether this collection contains the
@@ -65,28 +67,33 @@ public sealed class CalendarBlackoutDatesCollection : ObservableCollection<Calen
    /// otherwise, false.
    /// </returns>
    public bool Contains(DateTime start, DateTime end)
-   {
-      DateTime rangeStart;
-      DateTime rangeEnd;
+    {
+        DateTime rangeStart;
+        DateTime rangeEnd;
 
-      if (DateTime.Compare(end, start) > -1) {
-         rangeStart = DateTimeHelper.DiscardTime(start);
-         rangeEnd = DateTimeHelper.DiscardTime(end);
-      } else {
-         rangeStart = DateTimeHelper.DiscardTime(end);
-         rangeEnd = DateTimeHelper.DiscardTime(start);
-      }
+        if (DateTime.Compare(end, start) > -1)
+        {
+            rangeStart = DateTimeHelper.DiscardTime(start);
+            rangeEnd   = DateTimeHelper.DiscardTime(end);
+        }
+        else
+        {
+            rangeStart = DateTimeHelper.DiscardTime(end);
+            rangeEnd   = DateTimeHelper.DiscardTime(start);
+        }
 
-      int count = Count;
-      for (int i = 0; i < count; i++) {
-         CalendarDateRange range = this[i];
-         if (DateTime.Compare(range.Start, rangeStart) == 0 && DateTime.Compare(range.End, rangeEnd) == 0) {
-            return true;
-         }
-      }
+        var count = Count;
+        for (var i = 0; i < count; i++)
+        {
+            var range = this[i];
+            if (DateTime.Compare(range.Start, rangeStart) == 0 && DateTime.Compare(range.End, rangeEnd) == 0)
+            {
+                return true;
+            }
+        }
 
-      return false;
-   }
+        return false;
+    }
 
    /// <summary>
    /// Returns a value that represents whether this collection contains any
@@ -98,9 +105,9 @@ public sealed class CalendarBlackoutDatesCollection : ObservableCollection<Calen
    /// otherwise, false.
    /// </returns>
    public bool ContainsAny(CalendarDateRange range)
-   {
-      return this.Any(r => r.ContainsAny(range));
-   }
+    {
+        return this.Any(r => r.ContainsAny(range));
+    }
 
    /// <summary>
    /// Removes all items from the collection.
@@ -109,12 +116,12 @@ public sealed class CalendarBlackoutDatesCollection : ObservableCollection<Calen
    /// This implementation raises the CollectionChanged event.
    /// </remarks>
    protected override void ClearItems()
-   {
-      EnsureValidThread();
+    {
+        EnsureValidThread();
 
-      base.ClearItems();
-      _owner.UpdateMonths();
-   }
+        base.ClearItems();
+        _owner.UpdateMonths();
+    }
 
    /// <summary>
    /// Inserts an item into the collection at the specified index.
@@ -127,16 +134,17 @@ public sealed class CalendarBlackoutDatesCollection : ObservableCollection<Calen
    /// This implementation raises the CollectionChanged event.
    /// </remarks>
    protected override void InsertItem(int index, CalendarDateRange item)
-   {
-      EnsureValidThread();
+    {
+        EnsureValidThread();
 
-      if (!IsValid(item)) {
-         throw new ArgumentOutOfRangeException(nameof(item), "Value is not valid.");
-      }
+        if (!IsValid(item))
+        {
+            throw new ArgumentOutOfRangeException(nameof(item), "Value is not valid.");
+        }
 
-      base.InsertItem(index, item);
-      _owner.UpdateMonths();
-   }
+        base.InsertItem(index, item);
+        _owner.UpdateMonths();
+    }
 
    /// <summary>
    /// Removes the item at the specified index of the collection.
@@ -148,12 +156,12 @@ public sealed class CalendarBlackoutDatesCollection : ObservableCollection<Calen
    /// This implementation raises the CollectionChanged event.
    /// </remarks>
    protected override void RemoveItem(int index)
-   {
-      EnsureValidThread();
+    {
+        EnsureValidThread();
 
-      base.RemoveItem(index);
-      _owner.UpdateMonths();
-   }
+        base.RemoveItem(index);
+        _owner.UpdateMonths();
+    }
 
    /// <summary>
    /// Replaces the element at the specified index.
@@ -168,30 +176,33 @@ public sealed class CalendarBlackoutDatesCollection : ObservableCollection<Calen
    /// This implementation raises the CollectionChanged event.
    /// </remarks>
    protected override void SetItem(int index, CalendarDateRange item)
-   {
-      EnsureValidThread();
+    {
+        EnsureValidThread();
 
-      if (!IsValid(item)) {
-         throw new ArgumentOutOfRangeException(nameof(item), "Value is not valid.");
-      }
+        if (!IsValid(item))
+        {
+            throw new ArgumentOutOfRangeException(nameof(item), "Value is not valid.");
+        }
 
-      base.SetItem(index, item);
-      _owner.UpdateMonths();
-   }
+        base.SetItem(index, item);
+        _owner.UpdateMonths();
+    }
 
-   private bool IsValid(CalendarDateRange item)
-   {
-      foreach (DateTime day in _owner.SelectedDates) {
-         if (DateTimeHelper.InRange(day, item)) {
-            return false;
-         }
-      }
+    private bool IsValid(CalendarDateRange item)
+    {
+        foreach (var day in _owner.SelectedDates)
+        {
+            if (DateTimeHelper.InRange(day, item))
+            {
+                return false;
+            }
+        }
 
-      return true;
-   }
+        return true;
+    }
 
-   private static void EnsureValidThread()
-   {
-      Dispatcher.UIThread.VerifyAccess();
-   }
+    private static void EnsureValidThread()
+    {
+        Dispatcher.UIThread.VerifyAccess();
+    }
 }
