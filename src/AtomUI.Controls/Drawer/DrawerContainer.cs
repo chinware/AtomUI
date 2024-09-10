@@ -62,13 +62,7 @@ internal class DrawerContainer : Border
                 Easing   = _easing2
             }
         ];
-        _child                     = child;
-        _child[!MinWidthProperty]  = drawer[!Drawer.DrawerMinWidthProperty];
-        _child[!MinHeightProperty] = drawer[!Drawer.DrawerMinHeightProperty];
-        _child[!MaxWidthProperty]  = drawer[!Drawer.DrawerMaxWidthProperty];
-        _child[!MaxHeightProperty] = drawer[!Drawer.DrawerMaxHeightProperty];
-        _child[!WidthProperty]     = drawer[!Drawer.DrawerWidthProperty];
-        _child[!HeightProperty]    = drawer[!Drawer.DrawerHeightProperty];
+        _child = child;
 
         _mask = new Border
         {
@@ -205,11 +199,6 @@ internal class DrawerContainer : Border
     
     private void PushPreviousDrawers()
     {
-        if (string.IsNullOrEmpty(this.Drawer.Group))
-        {
-            return;
-        }
-        
         var layer = this.Drawer.GetLayer();
         if (layer == null)
         {
@@ -220,7 +209,7 @@ internal class DrawerContainer : Border
         var h        = 0d;
         var adorners = layer.Children
             .OfType<DrawerContainer>()
-            .Where(dc => dc.IsClosing == false && dc.Drawer.Group == this.Drawer.Group)
+            .Where(dc => dc.IsClosing == false && IsRelated(dc.Drawer, this.Drawer))
             .Reverse()
             .ToList();
         foreach (var adorner in adorners)
@@ -231,11 +220,6 @@ internal class DrawerContainer : Border
     
     private void PullPreviousDrawers()
     {
-        if (string.IsNullOrEmpty(this.Drawer.Group))
-        {
-            return;
-        }
-
         var layer = this.Drawer.GetLayer();
         if (layer == null)
         {
@@ -246,13 +230,49 @@ internal class DrawerContainer : Border
         var h        = 0d;
         var adorners = layer.Children
             .OfType<DrawerContainer>()
-            .Where(dc => dc.IsClosing == false && dc.Drawer.Group == this.Drawer.Group)
+            .Where(dc => dc.IsClosing == false && IsRelated(dc.Drawer, this.Drawer))
             .Reverse()
             .ToList();
         foreach (var adorner in adorners)
         {
             adorner.PushOffset(ref w, ref h);
         }
+    }
+    
+    private bool IsRelated(Drawer existedDrawer, Drawer currentDrawer)
+    {
+        if (currentDrawer.OpenMode == DrawerOpenMode.Overlay)
+        {
+            return false;
+        }
+        
+        if (existedDrawer.OpenOn != currentDrawer.OpenOn)
+        {
+            return false;
+        }
+        
+        if (existedDrawer.OpenOn != null)
+        {
+            return true;
+        }
+
+        var toplevel = TopLevel.GetTopLevel(this);
+        if (toplevel == null)
+        {
+            return false;
+        }
+
+        if (existedDrawer.TransformToVisual(toplevel) != currentDrawer.TransformToVisual(toplevel))
+        {
+            return false;
+        }
+
+        if (existedDrawer.Bounds != currentDrawer.Bounds)
+        {
+            return false;
+        }
+
+        return true;
     }
     
     private void PushOffset(ref double x, ref double y)
@@ -266,6 +286,10 @@ internal class DrawerContainer : Border
             _                      => throw new ArgumentOutOfRangeException()
         };
 
+        if (this.Drawer.OpenMode == DrawerOpenMode.Overlay)
+        {
+            return;
+        }
         x += this._child.Bounds.Width;
         y += this._child.Bounds.Height;
     }

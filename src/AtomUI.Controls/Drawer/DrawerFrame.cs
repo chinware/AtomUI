@@ -6,10 +6,11 @@ using Avalonia.Controls.Templates;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Metadata;
+// ReSharper disable VirtualMemberCallInConstructor
 
 namespace AtomUI.Controls;
 
-public class DrawerFrame : TemplatedControl
+public abstract class DrawerFrame : TemplatedControl
 {
     [Content]
     public object? Content
@@ -52,39 +53,31 @@ public class DrawerFrame : TemplatedControl
     public static readonly StyledProperty<ICommand?> ConfirmCommandProperty = AvaloniaProperty
         .Register<DrawerFrame, ICommand?>(nameof(ConfirmCommand));
 
-    public DrawerFrame()
+    protected DrawerFrame()
     {
         var header = new ContentControl()
         {
             [!ContentControl.ContentProperty]         = this[!HeaderProperty],
             [!ContentControl.ContentTemplateProperty] = this[!HeaderTemplateProperty],
-            FontWeight                                = FontWeight.Bold,
+            FontWeight                                = FontWeight.Medium,
             Margin                                    = new Thickness(16),
             VerticalAlignment                         = VerticalAlignment.Center,
+            FontSize                                  = 16,
         };
         Grid.SetColumn(header, 0);
-        
+
+        var buttons = BuildButtons();
         var stackPanel = new StackPanel()
         {
             Orientation         = Orientation.Horizontal,
             HorizontalAlignment = HorizontalAlignment.Right,
             Spacing             = 16,
             Margin              = new Thickness(16),
-            Children =
-            {
-                new Button()
-                {
-                    Content = "Cancel",
-                    Command = new CloseDrawerCommand(this),
-                },
-                new Button()
-                {
-                    Content    = "Submit",
-                    ButtonType = ButtonType.Primary,
-                    [!Avalonia.Controls.Button.CommandProperty] = this[!ConfirmCommandProperty]
-                }
-            },
         };
+        foreach (var button in buttons)
+        {
+            stackPanel.Children.Add(button);
+        }
         Grid.SetColumn(stackPanel, 1);
         
         var grid1 = new Grid()
@@ -99,7 +92,6 @@ public class DrawerFrame : TemplatedControl
         {
             BorderThickness = new Thickness(0, 0, 0, 0.5),
             BorderBrush     = Brushes.LightGray,
-            MinWidth        = 378,
             Child           = grid1,
         };
         Grid.SetRow(border, 0);
@@ -113,7 +105,8 @@ public class DrawerFrame : TemplatedControl
 
         var grid2 = new Grid()
         {
-            Children = { border, content }
+            Children = { border, content },
+            MinWidth = 378,
         };
         grid2.RowDefinitions.Add(new RowDefinition(GridLength.Auto));
         grid2.RowDefinitions.Add(new RowDefinition(GridLength.Star));
@@ -121,5 +114,42 @@ public class DrawerFrame : TemplatedControl
         this.VisualChildren.Add(grid2);
         ((ISetLogicalParent)grid2).SetParent(this);
     }
+
+    protected abstract IEnumerable<Control> BuildButtons();
 }
 
+public class ConfirmDrawerFrame : DrawerFrame
+{
+    protected override IEnumerable<Control> BuildButtons()
+    {
+        yield return new Button()
+        {
+            Content = "Cancel",
+            Command = new CloseDrawerCommand(this),
+        };
+        yield return new Button()
+        {
+            Content                                     = "Ok",
+            ButtonType                                  = ButtonType.Primary,
+            [!Avalonia.Controls.Button.CommandProperty] = this[!ConfirmCommandProperty]
+        };
+    }
+}
+
+public class SubmitDrawerFrame : DrawerFrame
+{
+    protected override IEnumerable<Control> BuildButtons()
+    {
+        yield return new Button()
+        {
+            Content = "Cancel",
+            Command = new CloseDrawerCommand(this),
+        };
+        yield return new Button()
+        {
+            Content                                     = "Submit",
+            ButtonType                                  = ButtonType.Primary,
+            [!Avalonia.Controls.Button.CommandProperty] = this[!ConfirmCommandProperty]
+        };
+    }
+}

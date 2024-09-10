@@ -47,6 +47,14 @@ public class Drawer : TemplatedControl
     public static readonly StyledProperty<DrawerPlacement> PlacementProperty = AvaloniaProperty
         .Register<Drawer, DrawerPlacement>(nameof(Placement), DrawerPlacement.Right);
 
+    public DrawerOpenMode OpenMode
+    {
+        get => GetValue(OpenModeProperty);
+        set => SetValue(OpenModeProperty, value);
+    }
+    public static readonly StyledProperty<DrawerOpenMode> OpenModeProperty = AvaloniaProperty
+        .Register<Drawer, DrawerOpenMode>(nameof(OpenMode), DrawerOpenMode.Overlay);
+
     public Visual? OpenOn
     {
         get => GetValue(OpenOnProperty);
@@ -73,68 +81,6 @@ public class Drawer : TemplatedControl
 
     public static readonly StyledProperty<bool> CloseWhenClickOnMaskProperty = AvaloniaProperty
         .Register<Drawer, bool>(nameof(CloseWhenClickOnMask), true);
-
-    public double DrawerMinWidth
-    {
-        get => GetValue(DrawerMinWidthProperty);
-        set => SetValue(DrawerMinWidthProperty, value);
-    }
-
-    public static readonly StyledProperty<double> DrawerMinWidthProperty = AvaloniaProperty
-        .Register<Drawer, double>(nameof(DrawerMinWidth));
-
-    public double DrawerMinHeight
-    {
-        get => GetValue(DrawerMinHeightProperty);
-        set => SetValue(DrawerMinHeightProperty, value);
-    }
-
-    public static readonly StyledProperty<double> DrawerMinHeightProperty = AvaloniaProperty
-        .Register<Drawer, double>(nameof(DrawerMinHeight));
-
-    public double DrawerMaxWidth
-    {
-        get => GetValue(DrawerMaxWidthProperty);
-        set => SetValue(DrawerMaxWidthProperty, value);
-    }
-
-    public static readonly StyledProperty<double> DrawerMaxWidthProperty = AvaloniaProperty
-        .Register<Drawer, double>(nameof(DrawerMaxWidth), double.MaxValue);
-
-    public double DrawerMaxHeight
-    {
-        get => GetValue(DrawerMaxHeightProperty);
-        set => SetValue(DrawerMaxHeightProperty, value);
-    }
-
-    public static readonly StyledProperty<double> DrawerMaxHeightProperty = AvaloniaProperty
-        .Register<Drawer, double>(nameof(DrawerMaxHeight), double.MaxValue);
-
-    public double DrawerWidth
-    {
-        get => GetValue(DrawerWidthProperty);
-        set => SetValue(DrawerWidthProperty, value);
-    }
-
-    public static readonly StyledProperty<double> DrawerWidthProperty = AvaloniaProperty
-        .Register<Drawer, double>(nameof(DrawerWidth), double.NaN);
-
-    public double DrawerHeight
-    {
-        get => GetValue(DrawerHeightProperty);
-        set => SetValue(DrawerHeightProperty, value);
-    }
-
-    public static readonly StyledProperty<double> DrawerHeightProperty = AvaloniaProperty
-        .Register<Drawer, double>(nameof(DrawerHeight), double.NaN);
-
-    public string? Group
-    {
-        get => GetValue(GroupProperty);
-        set => SetValue(GroupProperty, value);
-    }
-    public static readonly StyledProperty<string?> GroupProperty = AvaloniaProperty
-        .Register<Drawer, string?>(nameof(Group));
 
     #endregion
 
