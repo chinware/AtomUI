@@ -35,7 +35,7 @@ AtomUI 是基于 .NET 技术的 Ant Design 实现，致力于将 Ant Design 优�
 
 
 -----
-文档语言: [English](README.md) | [简体中文](README-zh-cn.md)
+文档语言: [English](README.md) | [简体中文](README.zh-CN.md)
 
 #### 介绍
 

@@ -34,7 +34,7 @@ AtomUI is an implementation of Ant Design based on .NET technology, dedicated to
 [github-license-link]: https://github.com/chinware/AtomUI/blob/master/LICENSE
 
 -----
-Documentation Language: [English](README.md) | [简体中文](README-zh-cn.md)
+Documentation Language: [English](README.md) | [简体中文](README.zh-CN.md)
 
 #### Introduce
 
