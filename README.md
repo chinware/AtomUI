@@ -165,6 +165,21 @@ the same time RISC-V will enter the world's top 500 supercomputers in 2025 and t
 age of computer architecture and basic software systems, and the open instruction set architecture has brought a large
 number of new scientific problems and engineering challenges.
 
+### 🤝 Contributing
+
+Contributions of all types are more than welcome, if you are interested in contributing code, feel free to check out our GitHub [Issues][github-issues-link] to get stuck in to show us what you’re made of.
+
+[![][pr-welcome-shield]][pr-welcome-link]
+
+[![][github-contrib-shield]][github-contrib-link]
+
+[github-issues-link]: https://github.com/chinware/AtomUI/issues
+[pr-welcome-shield]: https://img.shields.io/badge/PR%20WELCOME-%E2%86%92-ffcb47?labelColor=black&style=for-the-badge
+[pr-welcome-link]: https://github.com/chinware/AtomUI/pulls
+[github-contrib-shield]: https://contrib.rocks/image?repo=chinware%2FAtomUI
+[github-contrib-link]: https://github.com/chinware/AtomUI/graphs/contributors
+
+
 #### About Chinware
 
 <p align="center">
