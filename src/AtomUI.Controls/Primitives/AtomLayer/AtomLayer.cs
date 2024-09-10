@@ -268,7 +268,7 @@ public class AtomLayer : Canvas
             return;
         }
 
-        var adorners = target.GetAdorners();
+        var adorners = GetAdorners(target);
         foreach (var adorner in adorners)
         {
             RemoveChild(adorner);

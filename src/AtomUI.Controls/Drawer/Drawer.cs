@@ -3,6 +3,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
+using Avalonia.Media;
 using Avalonia.Metadata;
 using Avalonia.VisualTree;
 
@@ -127,6 +128,14 @@ public class Drawer : TemplatedControl
     public static readonly StyledProperty<double> DrawerHeightProperty = AvaloniaProperty
         .Register<Drawer, double>(nameof(DrawerHeight), double.NaN);
 
+    public string? Group
+    {
+        get => GetValue(GroupProperty);
+        set => SetValue(GroupProperty, value);
+    }
+    public static readonly StyledProperty<string?> GroupProperty = AvaloniaProperty
+        .Register<Drawer, string?>(nameof(Group));
+
     #endregion
 
     #region Ctor
@@ -146,7 +155,7 @@ public class Drawer : TemplatedControl
     #region Open & Close
 
     private DrawerContainer? _container;
-    private DrawerElementBorder? _element;
+    private Border?          _element;
 
     private static void OnIsOpenChanged(Drawer drawer, AvaloniaPropertyChangedEventArgs arg)
     {
@@ -162,12 +171,20 @@ public class Drawer : TemplatedControl
 
     private void Open()
     {
-        _element   ??= new DrawerElementBorder(this);
-        _container ??= new DrawerContainer(this, _element);
-
         var layer = this.GetLayer();
-        layer?.AddAdorner(this, _container);
-        _container.IsHitTestVisible = true;
+        if (layer == null)
+        {
+            return;
+        }
+        
+        _element ??= new Border()
+        {
+            Child      = Content,
+            Background = Brushes.White,
+        };
+        _container ??= new DrawerContainer(this, _element);
+        _container.SetIsClosing(false);
+        layer.AddAdorner(this, _container);
     }
 
     private void Close()
@@ -176,9 +193,10 @@ public class Drawer : TemplatedControl
         {
             return;
         }
-
-        this.BeginRemovingAdorner(_container, 1000, () => IsOpen == false);
-        _container.IsHitTestVisible = false;
+        
+        var layer = this.GetLayer();
+        layer?.BeginRemovingAdorner(_container, 1000, () => IsOpen == false);
+        _container.SetIsClosing(true);
     }
 
     #endregion

@@ -38,37 +38,6 @@ public static class AtomLayerExtension
         return layer;
     }
 
-    public static T? GetAdorner<T>(this Visual target) where T : Control
-    {
-        return target.GetLayer()?.GetAdorner<T>(target);
-    }
-
-    public static IEnumerable<Control> GetAdorners(this Visual target)
-    {
-        return target.GetLayer()?.GetAdorners(target) ?? [];
-    }
-
-    public static void AddAdorner(this Visual target, Control adorner)
-    {
-        target.GetLayer()?.AddAdorner(target, adorner);
-    }
-
-    public static void RemoveAdorner<T>(this Visual target) where T : Control
-    {
-        target.GetLayer()?.RemoveAdorner<T>(target);
-    }
-
-    public static void RemoveAdorner(this Visual target, Control adorner)
-    {
-        target.GetLayer()?.RemoveAdorner(adorner);
-    }
-
-    public static void BeginRemovingAdorner(this Visual target, Control adorner, int millisecondsToConfirm,
-                                            Func<bool> confirm)
-    {
-        target.GetLayer()?.BeginRemovingAdorner(adorner, millisecondsToConfirm, confirm);
-    }
-
     private static AtomLayer? TryInject(Visual host)
     {
         var layer = new AtomLayer
