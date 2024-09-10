@@ -30,14 +30,14 @@ public enum OptionButtonPositionTrait
 
 public class OptionButtonPointerEventArgs : EventArgs
 {
+    public OptionButton? Button { get; }
+    public bool IsPressed { get; set; }
+    public bool IsHovering { get; set; }
+
     public OptionButtonPointerEventArgs(OptionButton button)
     {
         Button = button;
     }
-
-    public OptionButton? Button { get; }
-    public bool IsPressed { get; set; }
-    public bool IsHovering { get; set; }
 }
 
 public class OptionButton : AvaloniaRadioButton,
@@ -45,6 +45,11 @@ public class OptionButton : AvaloniaRadioButton,
                             IWaveAdornerInfoProvider,
                             IControlCustomStyle
 {
+    private ControlStyleState _styleState;
+    private readonly IControlCustomStyle _customStyle;
+    private CornerRadius? _originCornerRadius;
+    private readonly BorderRenderHelper _borderRenderHelper;
+
     public static readonly StyledProperty<ButtonSizeType> SizeTypeProperty =
         AvaloniaProperty.Register<OptionButton, ButtonSizeType>(nameof(SizeType), ButtonSizeType.Middle);
 
@@ -67,25 +72,10 @@ public class OptionButton : AvaloniaRadioButton,
             (o, v) => o.GroupPositionTrait = v,
             OptionButtonPositionTrait.OnlyOne);
 
-    private readonly BorderRenderHelper _borderRenderHelper;
-    private readonly IControlCustomStyle _customStyle;
-
-    private OptionButtonPositionTrait _groupPositionTrait = OptionButtonPositionTrait.OnlyOne;
-
-    private bool _inOptionGroup;
-    private CornerRadius? _originCornerRadius;
-    private ControlStyleState _styleState;
-
-    static OptionButton()
+    public ButtonSizeType SizeType
     {
-        AffectsMeasure<OptionButton>(SizeTypeProperty, ButtonStyleProperty, InOptionGroupProperty);
-        AffectsRender<OptionButton>(IsCheckedProperty, CornerRadiusProperty, ForegroundProperty, BackgroundProperty);
-    }
-
-    public OptionButton()
-    {
-        _customStyle        = this;
-        _borderRenderHelper = new BorderRenderHelper();
+        get => GetValue(SizeTypeProperty);
+        set => SetValue(SizeTypeProperty, value);
     }
 
     public OptionButtonStyle ButtonStyle
@@ -100,6 +90,8 @@ public class OptionButton : AvaloniaRadioButton,
         set => SetValue(TextProperty, value);
     }
 
+    private bool _inOptionGroup;
+
     /// <summary>
     /// 是否在 Group 中渲染
     /// </summary>
@@ -109,32 +101,27 @@ public class OptionButton : AvaloniaRadioButton,
         set => SetAndRaise(InOptionGroupProperty, ref _inOptionGroup, value);
     }
 
+    private OptionButtonPositionTrait _groupPositionTrait = OptionButtonPositionTrait.OnlyOne;
+
     internal OptionButtonPositionTrait GroupPositionTrait
     {
         get => _groupPositionTrait;
         set => SetAndRaise(GroupPositionTraitProperty, ref _groupPositionTrait, value);
     }
 
-    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
-    {
-        if (Text is null && Content is string content)
-        {
-            Text = content;
-        }
-
-        Cursor = new Cursor(StandardCursorType.Hand);
-        HandleSizeTypeChanged();
-        _customStyle.CollectStyleState();
-        _customStyle.SetupTransitions();
-    }
-
-    public ButtonSizeType SizeType
-    {
-        get => GetValue(SizeTypeProperty);
-        set => SetValue(SizeTypeProperty, value);
-    }
-
     internal event EventHandler<OptionButtonPointerEventArgs>? OptionButtonPointerEvent;
+
+    static OptionButton()
+    {
+        AffectsMeasure<OptionButton>(SizeTypeProperty, ButtonStyleProperty, InOptionGroupProperty);
+        AffectsRender<OptionButton>(IsCheckedProperty, CornerRadiusProperty, ForegroundProperty, BackgroundProperty);
+    }
+
+    public OptionButton()
+    {
+        _customStyle        = this;
+        _borderRenderHelper = new BorderRenderHelper();
+    }
 
     protected override Size MeasureOverride(Size availableSize)
     {
@@ -156,6 +143,19 @@ public class OptionButton : AvaloniaRadioButton,
     {
         base.OnApplyTemplate(e);
         _customStyle.HandleTemplateApplied(e.NameScope);
+    }
+
+    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
+    {
+        if (Text is null && Content is string content)
+        {
+            Text = content;
+        }
+
+        Cursor = new Cursor(StandardCursorType.Hand);
+        HandleSizeTypeChanged();
+        _customStyle.CollectStyleState();
+        _customStyle.SetupTransitions();
     }
 
     private void HandleSizeTypeChanged()

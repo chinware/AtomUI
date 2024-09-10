@@ -1,17 +1,12 @@
 using AtomUI.Theme.TokenSystem;
 using Avalonia.Media;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Controls.Controls;
 
 [ControlDesignToken]
 internal class CaptionButtonToken : AbstractControlDesignToken
 {
     public const string ID = "CaptionButton";
-
-    public CaptionButtonToken()
-        : base("CaptionButtonToken")
-    {
-    }
 
     /// <summary>
     /// Hover 的背景色
@@ -37,6 +32,11 @@ internal class CaptionButtonToken : AbstractControlDesignToken
     /// 按钮的前景色
     /// </summary>
     public Color ForegroundColor { get; set; }
+
+    public CaptionButtonToken()
+        : base("CaptionButtonToken")
+    {
+    }
 
     internal override void CalculateFromAlias()
     {

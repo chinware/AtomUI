@@ -4,11 +4,16 @@ using Avalonia.Controls;
 namespace AtomUI.Theme.TokenSystem;
 
 /// <summary>
-/// 所有的组件 Token 定义是除了全局的 Token 的之外的专属于当前的组件的 Token 值
+///     所有的组件 Token 定义是除了全局的 Token 的之外的专属于当前的组件的 Token 值
 /// </summary>
 public abstract class AbstractControlDesignToken : AbstractDesignToken, IControlDesignToken
 {
     protected AliasDesignToken _globalToken;
+
+    public string Id { get; init; }
+
+    public bool IsCustomTokenConfig { get; internal set; }
+    public IList<string> CustomTokens { get; internal set; }
 
     protected AbstractControlDesignToken(string id)
     {
@@ -17,11 +22,6 @@ public abstract class AbstractControlDesignToken : AbstractDesignToken, IControl
         _globalToken        = default!;
         CustomTokens        = new List<string>();
     }
-
-    public string Id { get; init; }
-
-    public bool IsCustomTokenConfig { get; internal set; }
-    public IList<string> CustomTokens { get; internal set; }
 
     public void AssignGlobalToken(AliasDesignToken globalToken)
     {
@@ -51,7 +51,7 @@ public abstract class AbstractControlDesignToken : AbstractDesignToken, IControl
     }
 
     /// <summary>
-    /// 一般 control token 尽量不继承, 先看看
+    ///     一般 control token 尽量不继承, 先看看
     /// </summary>
     /// <param name="tokenName"></param>
     /// <returns></returns>

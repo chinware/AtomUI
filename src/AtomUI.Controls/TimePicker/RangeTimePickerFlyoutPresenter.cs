@@ -21,19 +21,6 @@ internal class RangeTimePickerFlyoutPresenter : FlyoutPresenter
     public static readonly StyledProperty<ClockIdentifierType> ClockIdentifierProperty =
         TimePicker.ClockIdentifierProperty.AddOwner<RangeTimePickerFlyoutPresenter>();
 
-    private CompositeDisposable? _compositeDisposable;
-    private Button? _confirmButton;
-    private Button? _nowButton;
-
-    private TimePickerPresenter? _timePickerPresenter;
-
-    public RangeTimePickerFlyoutPresenter(RangeTimePicker timePicker)
-    {
-        TimePickerRef       = timePicker;
-        HorizontalAlignment = HorizontalAlignment.Left;
-        SetCurrentValue(TimeProperty, DateTime.Now.TimeOfDay);
-    }
-
     public int MinuteIncrement
     {
         get => GetValue(MinuteIncrementProperty);
@@ -61,6 +48,18 @@ internal class RangeTimePickerFlyoutPresenter : FlyoutPresenter
     protected override Type StyleKeyOverride => typeof(TimePickerFlyoutPresenter);
 
     internal RangeTimePicker TimePickerRef { get; set; }
+
+    private TimePickerPresenter? _timePickerPresenter;
+    private CompositeDisposable? _compositeDisposable;
+    private Button? _confirmButton;
+    private Button? _nowButton;
+
+    public RangeTimePickerFlyoutPresenter(RangeTimePicker timePicker)
+    {
+        TimePickerRef       = timePicker;
+        HorizontalAlignment = HorizontalAlignment.Left;
+        SetCurrentValue(TimeProperty, DateTime.Now.TimeOfDay);
+    }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {

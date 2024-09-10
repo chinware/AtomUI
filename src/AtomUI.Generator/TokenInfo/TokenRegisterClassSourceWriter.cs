@@ -6,8 +6,8 @@ namespace AtomUI.Generator;
 
 public class TokenRegisterClassSourceWriter
 {
-    private readonly IEnumerable<string> _classes;
     private readonly SourceProductionContext _context;
+    private readonly IEnumerable<string> _classes;
     private readonly List<string> _usingInfos;
 
     public TokenRegisterClassSourceWriter(SourceProductionContext context, IEnumerable<string> classes)

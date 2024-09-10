@@ -1,6 +1,6 @@
 ﻿using AtomUI.Theme;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
@@ -199,7 +199,6 @@ internal class AddOnDecoratedBoxTheme : BaseControlTheme
     {
         var disabledStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Disabled));
         disabledStyle.Add(TemplatedControl.ForegroundProperty, GlobalTokenResourceKey.ColorTextDisabled);
-
         // TODO 暂时这么简单处理吧
         var addOnStyle = new Style(selector => selector.Nesting().Template().OfType<ContentPresenter>());
         addOnStyle.Add(ContentPresenter.ForegroundProperty, GlobalTokenResourceKey.ColorTextDisabled);

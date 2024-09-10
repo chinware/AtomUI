@@ -6,24 +6,36 @@ using Avalonia.Styling;
 namespace AtomUI.Theme;
 
 /// <summary>
-/// 主要是生成主题资源，绘制相关的管理不在这里，因为是公用的所以放在 ThemeManager 里面
+///     主要是生成主题资源，绘制相关的管理不在这里，因为是公用的所以放在 ThemeManager 里面
 /// </summary>
 public abstract class Theme : ITheme
 {
-    public static readonly IList<string> SUPPORTED_ALGORITHMS;
-    protected bool _activated;
-    protected Dictionary<string, IControlDesignToken> _controlTokens;
-    protected bool _darkMode;
-    protected string _definitionFilePath;
-    protected AliasDesignToken _globalToken;
-    protected string _id;
     protected bool _loaded;
     protected bool _loadedStatus = true;
+    protected bool _darkMode;
+    protected bool _activated;
+    protected string _id;
     protected string? _loadErrorMsg;
-    protected ResourceDictionary _resourceDictionary;
-    protected ThemeDefinition? _themeDefinition;
-    protected ThemeVariant _themeVariant;
     protected IThemeVariantCalculator? _themeVariantCalculator;
+    protected ThemeDefinition? _themeDefinition;
+    protected string _definitionFilePath;
+    protected ResourceDictionary _resourceDictionary;
+    protected ThemeVariant _themeVariant;
+    protected AliasDesignToken _globalToken;
+    protected Dictionary<string, IControlDesignToken> _controlTokens;
+
+    public static readonly IList<string> SUPPORTED_ALGORITHMS;
+
+    public string Id => _id;
+    public string DisplayName => string.Empty;
+    public bool LoadStatus => _loadedStatus;
+    public string? LoadErrorMsg => _loadErrorMsg;
+    public bool IsLoaded => _loaded;
+    public ThemeVariant ThemeVariant => _themeVariant;
+    internal ResourceDictionary ThemeResource => _resourceDictionary;
+    public bool IsDarkMode => _darkMode;
+    public bool IsActivated => _activated;
+    public AliasDesignToken GlobalToken => _globalToken;
 
     static Theme()
     {
@@ -46,31 +58,9 @@ public abstract class Theme : ITheme
         _controlTokens                                     = new Dictionary<string, IControlDesignToken>();
     }
 
-    public bool LoadStatus => _loadedStatus;
-    public string? LoadErrorMsg => _loadErrorMsg;
-    internal ResourceDictionary ThemeResource => _resourceDictionary;
-
-    public string Id => _id;
-    public string DisplayName => string.Empty;
-    public bool IsLoaded => _loaded;
-    public ThemeVariant ThemeVariant => _themeVariant;
-    public bool IsDarkMode => _darkMode;
-    public bool IsActivated => _activated;
-    public AliasDesignToken GlobalToken => _globalToken;
-
     public List<string> ThemeResourceKeys
     {
         get { return _resourceDictionary.Keys.Select(s => s.ToString()!).ToList(); }
-    }
-
-    public IControlDesignToken? GetControlToken(string tokenId)
-    {
-        if (_controlTokens.TryGetValue(tokenId, out var token))
-        {
-            return token;
-        }
-
-        return null;
     }
 
     public abstract bool IsDynamic();
@@ -135,9 +125,8 @@ public abstract class Theme : ITheme
 
             CollectControlTokens();
             foreach (var entry in _controlTokens)
-
-                // 如果没有修改就使用全局的
             {
+                // 如果没有修改就使用全局的
                 entry.Value.AssignGlobalToken(_globalToken);
             }
 
@@ -237,6 +226,16 @@ public abstract class Theme : ITheme
                 _controlTokens.Add(controlToken.Id, controlToken);
             }
         }
+    }
+
+    public IControlDesignToken? GetControlToken(string tokenId)
+    {
+        if (_controlTokens.TryGetValue(tokenId, out var token))
+        {
+            return token;
+        }
+
+        return null;
     }
 
     internal virtual void NotifyAboutToActive()

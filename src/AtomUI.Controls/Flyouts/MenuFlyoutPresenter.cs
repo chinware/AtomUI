@@ -8,6 +8,47 @@ namespace AtomUI.Controls;
 
 public class MenuFlyoutPresenter : MenuBase, IShadowMaskInfoProvider
 {
+    #region 公共属性定义
+
+    public static readonly StyledProperty<bool> IsShowArrowProperty =
+        ArrowDecoratedBox.IsShowArrowProperty.AddOwner<MenuFlyoutPresenter>();
+
+    public static readonly StyledProperty<ArrowPosition> ArrowPositionProperty =
+        ArrowDecoratedBox.ArrowPositionProperty.AddOwner<MenuFlyoutPresenter>();
+
+    public static readonly RoutedEvent<FlyoutMenuItemClickedEventArgs> MenuItemClickedEvent =
+        RoutedEvent.Register<DropdownButton, FlyoutMenuItemClickedEventArgs>(
+            nameof(MenuItemClicked),
+            RoutingStrategies.Bubble);
+
+    /// <summary>
+    /// 是否显示指示箭头
+    /// </summary>
+    public bool IsShowArrow
+    {
+        get => GetValue(IsShowArrowProperty);
+        set => SetValue(IsShowArrowProperty, value);
+    }
+
+    /// <summary>
+    /// 箭头渲染的位置
+    /// </summary>
+    public ArrowPosition ArrowPosition
+    {
+        get => GetValue(ArrowPositionProperty);
+        set => SetValue(ArrowPositionProperty, value);
+    }
+
+    public event EventHandler<FlyoutMenuItemClickedEventArgs>? MenuItemClicked
+    {
+        add => AddHandler(MenuItemClickedEvent, value);
+        remove => RemoveHandler(MenuItemClickedEvent, value);
+    }
+
+    public WeakReference<MenuFlyout>? MenuFlyout { get; set; }
+
+    #endregion
+
     private ArrowDecoratedBox? _arrowDecoratedBox;
 
     public MenuFlyoutPresenter()
@@ -18,28 +59,6 @@ public class MenuFlyoutPresenter : MenuBase, IShadowMaskInfoProvider
     public MenuFlyoutPresenter(IMenuInteractionHandler menuInteractionHandler)
         : base(menuInteractionHandler)
     {
-    }
-
-    public CornerRadius GetMaskCornerRadius()
-    {
-        if (_arrowDecoratedBox is not null)
-        {
-            return _arrowDecoratedBox.CornerRadius;
-        }
-
-        return new CornerRadius(0);
-    }
-
-    public Rect GetMaskBounds()
-    {
-        if (_arrowDecoratedBox is not null)
-        {
-            var contentRect = _arrowDecoratedBox.GetContentRect(Bounds.Size);
-            var adjustedPos = _arrowDecoratedBox.TranslatePoint(contentRect.Position, this) ?? default;
-            return new Rect(adjustedPos, contentRect.Size);
-        }
-
-        return Bounds;
     }
 
     public override void Close()
@@ -134,58 +153,39 @@ public class MenuFlyoutPresenter : MenuBase, IShadowMaskInfoProvider
         }
     }
 
-    #region 公共属性定义
-
-    public static readonly StyledProperty<bool> IsShowArrowProperty =
-        ArrowDecoratedBox.IsShowArrowProperty.AddOwner<MenuFlyoutPresenter>();
-
-    public static readonly StyledProperty<ArrowPosition> ArrowPositionProperty =
-        ArrowDecoratedBox.ArrowPositionProperty.AddOwner<MenuFlyoutPresenter>();
-
-    public static readonly RoutedEvent<FlyoutMenuItemClickedEventArgs> MenuItemClickedEvent =
-        RoutedEvent.Register<DropdownButton, FlyoutMenuItemClickedEventArgs>(
-            nameof(MenuItemClicked),
-            RoutingStrategies.Bubble);
-
-    /// <summary>
-    /// 是否显示指示箭头
-    /// </summary>
-    public bool IsShowArrow
+    public CornerRadius GetMaskCornerRadius()
     {
-        get => GetValue(IsShowArrowProperty);
-        set => SetValue(IsShowArrowProperty, value);
+        if (_arrowDecoratedBox is not null)
+        {
+            return _arrowDecoratedBox.CornerRadius;
+        }
+
+        return new CornerRadius(0);
     }
 
-    /// <summary>
-    /// 箭头渲染的位置
-    /// </summary>
-    public ArrowPosition ArrowPosition
+    public Rect GetMaskBounds()
     {
-        get => GetValue(ArrowPositionProperty);
-        set => SetValue(ArrowPositionProperty, value);
+        if (_arrowDecoratedBox is not null)
+        {
+            var contentRect = _arrowDecoratedBox.GetContentRect(Bounds.Size);
+            var adjustedPos = _arrowDecoratedBox.TranslatePoint(contentRect.Position, this) ?? default;
+            return new Rect(adjustedPos, contentRect.Size);
+        }
+
+        return Bounds;
     }
-
-    public event EventHandler<FlyoutMenuItemClickedEventArgs>? MenuItemClicked
-    {
-        add => AddHandler(MenuItemClickedEvent, value);
-        remove => RemoveHandler(MenuItemClickedEvent, value);
-    }
-
-    public WeakReference<MenuFlyout>? MenuFlyout { get; set; }
-
-    #endregion
 }
 
 public class FlyoutMenuItemClickedEventArgs : RoutedEventArgs
 {
+   /// <summary>
+   /// 当前鼠标点击的菜单项
+   /// </summary>
+   public MenuItem Item { get; }
+
     public FlyoutMenuItemClickedEventArgs(RoutedEvent routedEvent, MenuItem menuItem)
         : base(routedEvent)
     {
         Item = menuItem;
     }
-
-    /// <summary>
-    /// 当前鼠标点击的菜单项
-    /// </summary>
-    public MenuItem Item { get; }
 }

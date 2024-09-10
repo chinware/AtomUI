@@ -1,4 +1,3 @@
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
@@ -14,6 +13,16 @@ namespace AtomUI.Controls;
 public class MarqueeLabel : TextBlock,
                             IControlCustomStyle
 {
+    private readonly IControlCustomStyle? _customStyle;
+    private ControlStyleState _styleState;
+    private CancellationTokenSource? _cancellationTokenSource;
+    private bool _initialized;
+    private Animation? _animation;
+    private bool _animationRunning;
+    private double _lastDesiredWidth;
+    private double _lastTextWidth;
+    private double _pivotOffsetStartValue;
+
     public static readonly StyledProperty<double> CycleSpaceProperty =
         AvaloniaProperty.Register<MarqueeLabel, double>(nameof(CycleSpace));
 
@@ -22,27 +31,6 @@ public class MarqueeLabel : TextBlock,
 
     private static readonly StyledProperty<double> PivotOffsetProperty =
         AvaloniaProperty.Register<MarqueeLabel, double>(nameof(PivotOffset));
-
-    private readonly IControlCustomStyle? _customStyle;
-
-    private Animation? _animation;
-    private bool _animationRunning;
-    private CancellationTokenSource? _cancellationTokenSource;
-    private bool _initialized;
-    private double _lastDesiredWidth;
-    private double _lastTextWidth;
-    private double _pivotOffsetStartValue;
-    private ControlStyleState _styleState;
-
-    static MarqueeLabel()
-    {
-        AffectsRender<MarqueeLabel>(PivotOffsetProperty, CycleSpaceProperty, MoveSpeedProperty);
-    }
-
-    public MarqueeLabel()
-    {
-        _customStyle = this;
-    }
 
     /// <summary>
     /// 默认的间隔
@@ -69,6 +57,16 @@ public class MarqueeLabel : TextBlock,
     {
         get => GetValue(PivotOffsetProperty);
         set => SetValue(PivotOffsetProperty, value);
+    }
+
+    static MarqueeLabel()
+    {
+        AffectsRender<MarqueeLabel>(PivotOffsetProperty, CycleSpaceProperty, MoveSpeedProperty);
+    }
+
+    public MarqueeLabel()
+    {
+        _customStyle = this;
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -150,7 +148,6 @@ public class MarqueeLabel : TextBlock,
                         HandleStartupMarqueeAnimation();
                     }
                 }
-
                 // 这里处理暂停事件
             }
             else if (e.Property == CycleSpaceProperty || e.Property == MoveSpeedProperty)

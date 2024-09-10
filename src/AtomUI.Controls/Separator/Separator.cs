@@ -1,5 +1,4 @@
 ﻿using AtomUI.Media;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
@@ -22,47 +21,6 @@ public enum SeparatorTitlePosition
 
 public class Separator : AvaloniaSeparator, IControlCustomStyle
 {
-    private const double SEPARATOR_LINE_MIN_PROPORTION = 0.25;
-
-    private readonly IControlCustomStyle _customStyle;
-    private double _currentEdgeDistance;
-    private Label? _titleLabel;
-
-    static Separator()
-    {
-        AffectsMeasure<Separator>(OrientationProperty,
-            LineWidthProperty,
-            TitleProperty);
-        AffectsArrange<Separator>(TitlePositionProperty);
-        AffectsRender<Separator>(TitleColorProperty,
-            LineColorProperty,
-            IsDashedLineProperty);
-    }
-
-    public Separator()
-    {
-        _customStyle = this;
-        _customStyle.InitOnConstruct();
-    }
-
-    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
-    {
-        _titleLabel = scope.Find<Label>(SeparatorTheme.TitlePart);
-        _customStyle.SetupTokenBindings();
-    }
-
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
-    {
-        base.OnPropertyChanged(e);
-        _customStyle.HandlePropertyChangedForStyle(e);
-    }
-
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        base.OnApplyTemplate(e);
-        _customStyle.HandleTemplateApplied(e.NameScope);
-    }
-
     #region 公共属性定义
 
     public static readonly StyledProperty<string?> TitleProperty =
@@ -201,6 +159,46 @@ public class Separator : AvaloniaSeparator, IControlCustomStyle
 
     #endregion
 
+    private readonly IControlCustomStyle _customStyle;
+    private Label? _titleLabel;
+    private const double SEPARATOR_LINE_MIN_PROPORTION = 0.25;
+    private double _currentEdgeDistance;
+
+    static Separator()
+    {
+        AffectsMeasure<Separator>(OrientationProperty,
+            LineWidthProperty,
+            TitleProperty);
+        AffectsArrange<Separator>(TitlePositionProperty);
+        AffectsRender<Separator>(TitleColorProperty,
+            LineColorProperty,
+            IsDashedLineProperty);
+    }
+
+    public Separator()
+    {
+        _customStyle = this;
+        _customStyle.InitOnConstruct();
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
+    {
+        base.OnPropertyChanged(e);
+        _customStyle.HandlePropertyChangedForStyle(e);
+    }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        _customStyle.HandleTemplateApplied(e.NameScope);
+    }
+
+    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
+    {
+        _titleLabel = scope.Find<Label>(SeparatorTheme.TitlePart);
+        _customStyle.SetupTokenBindings();
+    }
+
     #region IControlCustomStyle 实现
 
     void IControlCustomStyle.SetupTokenBindings()
@@ -266,9 +264,8 @@ public class Separator : AvaloniaSeparator, IControlCustomStyle
             var titleWidth   = _titleLabel!.DesiredSize.Width + 2;
             var remainWidth  = finalSize.Width - titleWidth - GetTextPaddingInline() * 2;
             if (lineMinWidth > remainWidth)
-
-                // 字过多
             {
+                // 字过多
                 titleWidth = finalSize.Width - lineMinWidth;
             }
 

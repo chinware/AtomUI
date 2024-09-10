@@ -6,10 +6,10 @@ namespace AtomUI.Controls;
 
 internal class PickerClearUpButton : TemplatedControl
 {
+    public event EventHandler? ClearRequest;
+
     public static readonly StyledProperty<bool> IsInClearModeProperty =
         AvaloniaProperty.Register<PickerClearUpButton, bool>(nameof(IsInClearMode));
-
-    private IconButton? _clearButton;
 
     public bool IsInClearMode
     {
@@ -17,7 +17,7 @@ internal class PickerClearUpButton : TemplatedControl
         set => SetValue(IsInClearModeProperty, value);
     }
 
-    public event EventHandler? ClearRequest;
+    private IconButton? _clearButton;
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {

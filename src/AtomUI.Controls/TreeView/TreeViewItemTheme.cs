@@ -239,10 +239,10 @@ internal class TreeViewItemTheme : BaseControlTheme
         }
         Add(leafSwitcherButtonStyle);
 
-        var leafAndHideButtonStyle = new Style(selector => selector.Nesting()
-                                                                   .PropertyEquals(TreeViewItem.IsLeafProperty, true)
-                                                                   .PropertyEquals(
-                                                                       TreeViewItem.IsShowLeafSwitcherProperty, false));
+        var leafAndHideButtonStyle = new Style(selector => selector
+                                                           .Nesting().PropertyEquals(TreeViewItem.IsLeafProperty, true)
+                                                           .PropertyEquals(TreeViewItem.IsShowLeafSwitcherProperty,
+                                                               false));
         {
             var switcherButtonStyle = new Style(selector => selector.Nesting().Template().Name(NodeSwitcherButtonPart));
             switcherButtonStyle.Add(NodeSwitcherButton.IsIconVisibleProperty, false);

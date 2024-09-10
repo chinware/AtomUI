@@ -52,62 +52,6 @@ internal class CountBadgeAdorner : Control, IControlCustomStyle
         AvaloniaProperty.Register<CountBadgeAdorner, double>(
             nameof(PaddingInline));
 
-    internal static readonly DirectProperty<DotBadgeAdorner, bool> IsAdornerModeProperty =
-        AvaloniaProperty.RegisterDirect<DotBadgeAdorner, bool>(
-            nameof(IsAdornerMode),
-            o => o.IsAdornerMode,
-            (o, v) => o.IsAdornerMode = v);
-
-    internal static readonly StyledProperty<Point> OffsetProperty =
-        AvaloniaProperty.Register<CountBadgeAdorner, Point>(
-            nameof(Offset));
-
-    public static readonly DirectProperty<CountBadgeAdorner, int> OverflowCountProperty =
-        AvaloniaProperty.RegisterDirect<CountBadgeAdorner, int>(
-            nameof(OverflowCount),
-            o => o.OverflowCount,
-            (o, v) => o.OverflowCount = v);
-
-    public static readonly DirectProperty<CountBadgeAdorner, CountBadgeSize> SizeProperty =
-        AvaloniaProperty.RegisterDirect<CountBadgeAdorner, CountBadgeSize>(
-            nameof(Size),
-            o => o.Size,
-            (o, v) => o.Size = v);
-
-    private readonly IControlCustomStyle _customStyle;
-    private readonly List<FormattedText> _formattedTexts;
-
-    private BoxShadows _boxShadows;
-    private string? _countText;
-    private Size _countTextSize;
-
-    private bool _initialized;
-
-    private bool _isAdornerMode;
-
-    private int _overflowCount;
-
-    private CountBadgeSize _size;
-
-    // 不知道为什么这个值会被 AdornerLayer 重写
-    // 非常不优美，但是能工作
-    internal RelativePoint? AnimationRenderTransformOrigin;
-
-    static CountBadgeAdorner()
-    {
-        AffectsMeasure<CountBadgeAdorner>(OverflowCountProperty,
-            SizeProperty,
-            CountProperty,
-            IsAdornerModeProperty);
-        AffectsRender<CountBadgeAdorner>(BadgeColorProperty, OffsetProperty);
-    }
-
-    public CountBadgeAdorner()
-    {
-        _customStyle    = this;
-        _formattedTexts = new List<FormattedText>();
-    }
-
     public IBrush? BadgeColor
     {
         get => GetValue(BadgeColorProperty);
@@ -168,11 +112,23 @@ internal class CountBadgeAdorner : Control, IControlCustomStyle
         set => SetValue(PaddingInlineProperty, value);
     }
 
+    internal static readonly DirectProperty<DotBadgeAdorner, bool> IsAdornerModeProperty =
+        AvaloniaProperty.RegisterDirect<DotBadgeAdorner, bool>(
+            nameof(IsAdornerMode),
+            o => o.IsAdornerMode,
+            (o, v) => o.IsAdornerMode = v);
+
+    private bool _isAdornerMode;
+
     internal bool IsAdornerMode
     {
         get => _isAdornerMode;
         set => SetAndRaise(IsAdornerModeProperty, ref _isAdornerMode, value);
     }
+
+    internal static readonly StyledProperty<Point> OffsetProperty =
+        AvaloniaProperty.Register<CountBadgeAdorner, Point>(
+            nameof(Offset));
 
     public Point Offset
     {
@@ -180,16 +136,67 @@ internal class CountBadgeAdorner : Control, IControlCustomStyle
         set => SetValue(OffsetProperty, value);
     }
 
+    public static readonly DirectProperty<CountBadgeAdorner, int> OverflowCountProperty =
+        AvaloniaProperty.RegisterDirect<CountBadgeAdorner, int>(
+            nameof(OverflowCount),
+            o => o.OverflowCount,
+            (o, v) => o.OverflowCount = v);
+
+    private int _overflowCount;
+
     public int OverflowCount
     {
         get => _overflowCount;
         set => SetAndRaise(OverflowCountProperty, ref _overflowCount, value);
     }
 
+    public static readonly DirectProperty<CountBadgeAdorner, CountBadgeSize> SizeProperty =
+        AvaloniaProperty.RegisterDirect<CountBadgeAdorner, CountBadgeSize>(
+            nameof(Size),
+            o => o.Size,
+            (o, v) => o.Size = v);
+
+    private CountBadgeSize _size;
+
     public CountBadgeSize Size
     {
         get => _size;
         set => SetAndRaise(SizeProperty, ref _size, value);
+    }
+
+    // 不知道为什么这个值会被 AdornerLayer 重写
+    // 非常不优美，但是能工作
+    internal RelativePoint? AnimationRenderTransformOrigin;
+
+    static CountBadgeAdorner()
+    {
+        AffectsMeasure<CountBadgeAdorner>(OverflowCountProperty,
+            SizeProperty,
+            CountProperty,
+            IsAdornerModeProperty);
+        AffectsRender<CountBadgeAdorner>(BadgeColorProperty, OffsetProperty);
+    }
+
+    private bool _initialized;
+    private readonly IControlCustomStyle _customStyle;
+    private BoxShadows _boxShadows;
+    private Size _countTextSize;
+    private string? _countText;
+    private readonly List<FormattedText> _formattedTexts;
+
+    public CountBadgeAdorner()
+    {
+        _customStyle    = this;
+        _formattedTexts = new List<FormattedText>();
+    }
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        if (Styles.Count == 0)
+        {
+            _customStyle.BuildStyles();
+        }
     }
 
     void IControlCustomStyle.BuildStyles()
@@ -213,15 +220,6 @@ internal class CountBadgeAdorner : Control, IControlCustomStyle
         smallSizeStyle.Add(TextFontSizeProperty, BadgeTokenResourceKey.TextFontSizeSM);
         smallSizeStyle.Add(IndicatorHeightProperty, BadgeTokenResourceKey.IndicatorHeightSM);
         Styles.Add(smallSizeStyle);
-    }
-
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        if (Styles.Count == 0)
-        {
-            _customStyle.BuildStyles();
-        }
     }
 
     public override void ApplyTemplate()
@@ -361,7 +359,6 @@ internal class CountBadgeAdorner : Control, IControlCustomStyle
         }
 
         context.DrawPilledRect(BadgeColor, null, badgeRect, Orientation.Horizontal, _boxShadows);
-
         // 计算合适的文字 x 坐标
         var textOffsetX = offsetX + (badgeSize.Width - _countTextSize.Width) / 2;
         var textOffsetY = offsetY + (badgeSize.Height - _countTextSize.Height) / 2;
@@ -380,15 +377,13 @@ internal class CountBadgeAdorner : Control, IControlCustomStyle
             if (_countText is not null)
             {
                 if (Count > _overflowCount)
-
-                    // 生成一个即可
                 {
+                    // 生成一个即可
                     _formattedTexts.Add(BuildFormattedText(_countText));
                 }
                 else
-
-                    // 没有数字都生成一个
                 {
+                    // 没有数字都生成一个
                     foreach (var c in _countText)
                     {
                         _formattedTexts.Add(BuildFormattedText(c.ToString()));

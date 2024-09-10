@@ -1,6 +1,7 @@
 ﻿using AtomUI.Data;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -23,11 +24,62 @@ public class BaseTabControl : AvaloniaTabControl
     private static readonly FuncTemplate<Panel?> DefaultPanel =
         new(() => new StackPanel());
 
-    private Panel? _alignWrapper;
+    #region 公共属性定义
+
+    public static readonly StyledProperty<SizeType> SizeTypeProperty =
+        AvaloniaProperty.Register<BaseTabControl, SizeType>(nameof(SizeType), SizeType.Middle);
+
+    public static readonly StyledProperty<bool> TabAlignmentCenterProperty =
+        AvaloniaProperty.Register<BaseTabControl, bool>(nameof(TabAlignmentCenter));
+
+    public SizeType SizeType
+    {
+        get => GetValue(SizeTypeProperty);
+        set => SetValue(SizeTypeProperty, value);
+    }
+
+    public bool TabAlignmentCenter
+    {
+        get => GetValue(TabAlignmentCenterProperty);
+        set => SetValue(TabAlignmentCenterProperty, value);
+    }
+
+    #endregion
+
+    #region 内部属性实现
+
+    internal static readonly DirectProperty<BaseTabControl, double> TabAndContentGutterProperty =
+        AvaloniaProperty.RegisterDirect<BaseTabControl, double>(nameof(TabAndContentGutter),
+            o => o.TabAndContentGutter,
+            (o, v) => o.TabAndContentGutter = v);
+
+    private double _tabAndContentGutter;
+
+    internal double TabAndContentGutter
+    {
+        get => _tabAndContentGutter;
+        set => SetAndRaise(TabAndContentGutterProperty, ref _tabAndContentGutter, value);
+    }
+
+    internal static readonly DirectProperty<BaseTabControl, Thickness> TabStripMarginProperty =
+        AvaloniaProperty.RegisterDirect<BaseTabControl, Thickness>(nameof(TabStripMargin),
+            o => o.TabStripMargin,
+            (o, v) => o.TabStripMargin = v);
+
+    private Thickness _tabStripMargin;
+
+    internal Thickness TabStripMargin
+    {
+        get => _tabStripMargin;
+        set => SetAndRaise(TabStripMarginProperty, ref _tabStripMargin, value);
+    }
+
+    #endregion
 
     private Border? _frameDecorator;
-    private Point _tabStripBorderEndPoint;
+    private Panel? _alignWrapper;
     private Point _tabStripBorderStartPoint;
+    private Point _tabStripBorderEndPoint;
 
     static BaseTabControl()
     {
@@ -153,56 +205,4 @@ public class BaseTabControl : AvaloniaTabControl
         });
         context.DrawLine(new Pen(BorderBrush, borderThickness), _tabStripBorderStartPoint, _tabStripBorderEndPoint);
     }
-
-    #region 公共属性定义
-
-    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        AvaloniaProperty.Register<BaseTabControl, SizeType>(nameof(SizeType), SizeType.Middle);
-
-    public static readonly StyledProperty<bool> TabAlignmentCenterProperty =
-        AvaloniaProperty.Register<BaseTabControl, bool>(nameof(TabAlignmentCenter));
-
-    public SizeType SizeType
-    {
-        get => GetValue(SizeTypeProperty);
-        set => SetValue(SizeTypeProperty, value);
-    }
-
-    public bool TabAlignmentCenter
-    {
-        get => GetValue(TabAlignmentCenterProperty);
-        set => SetValue(TabAlignmentCenterProperty, value);
-    }
-
-    #endregion
-
-    #region 内部属性实现
-
-    internal static readonly DirectProperty<BaseTabControl, double> TabAndContentGutterProperty =
-        AvaloniaProperty.RegisterDirect<BaseTabControl, double>(nameof(TabAndContentGutter),
-            o => o.TabAndContentGutter,
-            (o, v) => o.TabAndContentGutter = v);
-
-    private double _tabAndContentGutter;
-
-    internal double TabAndContentGutter
-    {
-        get => _tabAndContentGutter;
-        set => SetAndRaise(TabAndContentGutterProperty, ref _tabAndContentGutter, value);
-    }
-
-    internal static readonly DirectProperty<BaseTabControl, Thickness> TabStripMarginProperty =
-        AvaloniaProperty.RegisterDirect<BaseTabControl, Thickness>(nameof(TabStripMargin),
-            o => o.TabStripMargin,
-            (o, v) => o.TabStripMargin = v);
-
-    private Thickness _tabStripMargin;
-
-    internal Thickness TabStripMargin
-    {
-        get => _tabStripMargin;
-        set => SetAndRaise(TabStripMarginProperty, ref _tabStripMargin, value);
-    }
-
-    #endregion
 }

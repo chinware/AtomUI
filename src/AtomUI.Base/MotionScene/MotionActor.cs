@@ -12,11 +12,16 @@ using Avalonia.VisualTree;
 namespace AtomUI.MotionScene;
 
 /// <summary>
-/// 动效配置类，只要给 Director 提供动效相关信息
-/// 动效驱动 Actor 的属性，然后由 Actor 驱动动画控件，防止污染动画控件的 Transitions 配置
+///     动效配置类，只要给 Director 提供动效相关信息
+///     动效驱动 Actor 的属性，然后由 Actor 驱动动画控件，防止污染动画控件的 Transitions 配置
 /// </summary>
 public class MotionActor : Animatable, IMotionActor
 {
+    public event EventHandler? PreStart;
+    public event EventHandler? Started;
+    public event EventHandler? Completed;
+    public event EventHandler? SceneShowed;
+
     public static readonly StyledProperty<double> MotionOpacityProperty =
         Visual.OpacityProperty.AddOwner<MotionActor>();
 
@@ -31,35 +36,8 @@ public class MotionActor : Animatable, IMotionActor
 
     private static readonly MethodInfo EnableTransitionsMethodInfo;
     private static readonly MethodInfo DisableTransitionsMethodInfo;
-    private readonly Dictionary<AvaloniaProperty, AnimationState> _transitionsMap;
 
-    protected Control? _ghost;
-    protected AbstractMotion _motion;
-    private double _originHeight;
-
-    private double _originOpacity;
-    private ITransform? _originRenderTransform;
-    private RelativePoint _originRenderTransformOrigin;
-    private double _originWidth;
-
-    static MotionActor()
-    {
-        EnableTransitionsMethodInfo =
-            typeof(Animatable).GetMethod("EnableTransitions", BindingFlags.Instance | BindingFlags.NonPublic)!;
-        DisableTransitionsMethodInfo =
-            typeof(Animatable).GetMethod("DisableTransitions", BindingFlags.Instance | BindingFlags.NonPublic)!;
-        MotionWidthProperty.Changed.AddClassHandler<MotionActor>(HandlePropertyChanged);
-        MotionHeightProperty.Changed.AddClassHandler<MotionActor>(HandlePropertyChanged);
-        MotionOpacityProperty.Changed.AddClassHandler<MotionActor>(HandlePropertyChanged);
-        MotionRenderTransformProperty.Changed.AddClassHandler<MotionActor>(HandlePropertyChanged);
-    }
-
-    public MotionActor(Control motionTarget, AbstractMotion motion)
-    {
-        MotionTarget    = motionTarget;
-        _motion         = motion;
-        _transitionsMap = new Dictionary<AvaloniaProperty, AnimationState>();
-    }
+    public bool CompletedStatus { get; internal set; } = true;
 
     protected double MotionOpacity
     {
@@ -85,25 +63,47 @@ public class MotionActor : Animatable, IMotionActor
         set => SetValue(MotionRenderTransformProperty, value);
     }
 
+    private double _originOpacity;
+    private double _originWidth;
+    private double _originHeight;
+    private ITransform? _originRenderTransform;
+    private RelativePoint _originRenderTransformOrigin;
+    private readonly Dictionary<AvaloniaProperty, AnimationState> _transitionsMap;
+
+    private class AnimationState
+    {
+        public ITransition? Transition { get; set; }
+        public object? StartValue { get; set; }
+        public object? EndValue { get; set; }
+    }
+
     /// <summary>
-    /// 当 DispatchInSceneLayer 为 true 的时候，必须指定一个动画 SceneLayer 的父窗口，最好不要是 Popup
-    /// </summary>
-    public TopLevel? SceneParent { get; set; }
-
-    public event EventHandler? PreStart;
-    public event EventHandler? Started;
-    public event EventHandler? Completed;
-
-    public bool CompletedStatus { get; internal set; } = true;
-
-    /// <summary>
-    /// 动画实体
+    ///     动画实体
     /// </summary>
     public Control MotionTarget { get; set; }
 
+    /// <summary>
+    ///     当 DispatchInSceneLayer 为 true 的时候，必须指定一个动画 SceneLayer 的父窗口，最好不要是 Popup
+    /// </summary>
+    public TopLevel? SceneParent { get; set; }
+
     public IMotion Motion => _motion;
     public bool DispatchInSceneLayer { get; set; } = true;
-    public event EventHandler? SceneShowed;
+
+    protected Control? _ghost;
+    protected AbstractMotion _motion;
+
+    static MotionActor()
+    {
+        EnableTransitionsMethodInfo =
+            typeof(Animatable).GetMethod("EnableTransitions", BindingFlags.Instance | BindingFlags.NonPublic)!;
+        DisableTransitionsMethodInfo =
+            typeof(Animatable).GetMethod("DisableTransitions", BindingFlags.Instance | BindingFlags.NonPublic)!;
+        MotionWidthProperty.Changed.AddClassHandler<MotionActor>(HandlePropertyChanged);
+        MotionHeightProperty.Changed.AddClassHandler<MotionActor>(HandlePropertyChanged);
+        MotionOpacityProperty.Changed.AddClassHandler<MotionActor>(HandlePropertyChanged);
+        MotionRenderTransformProperty.Changed.AddClassHandler<MotionActor>(HandlePropertyChanged);
+    }
 
     private static void HandlePropertyChanged(MotionActor actor, AvaloniaPropertyChangedEventArgs args)
     {
@@ -149,6 +149,13 @@ public class MotionActor : Animatable, IMotionActor
         }
     }
 
+    public MotionActor(Control motionTarget, AbstractMotion motion)
+    {
+        MotionTarget    = motionTarget;
+        _motion         = motion;
+        _transitionsMap = new Dictionary<AvaloniaProperty, AnimationState>();
+    }
+
     public bool IsSupportMotionProperty(AvaloniaProperty property)
     {
         if (property == AbstractMotion.MotionOpacityProperty ||
@@ -172,7 +179,7 @@ public class MotionActor : Animatable, IMotionActor
     }
 
     /// <summary>
-    /// 当在 DispatchInSceneLayer 渲染的时候，Ghost 的全局坐标
+    ///     当在 DispatchInSceneLayer 渲染的时候，Ghost 的全局坐标
     /// </summary>
     /// <returns></returns>
     public Point CalculateGhostPosition()
@@ -208,7 +215,7 @@ public class MotionActor : Animatable, IMotionActor
     }
 
     /// <summary>
-    /// 在这个接口中，Actor 根据自己的需求对 sceneLayer 进行设置，主要就是位置和大小
+    ///     在这个接口中，Actor 根据自己的需求对 sceneLayer 进行设置，主要就是位置和大小
     /// </summary>
     /// <param name="sceneLayer"></param>
     public virtual void NotifySceneLayerCreated(SceneLayer sceneLayer)
@@ -221,12 +228,10 @@ public class MotionActor : Animatable, IMotionActor
         var ghost = GetAnimatableGhost();
 
         Size motionTargetSize;
-
         // Popup.Child can't be null here, it was set in ShowAtCore.
         if (ghost.DesiredSize == default)
-
-            // Popup may not have been shown yet. Measure content
         {
+            // Popup may not have been shown yet. Measure content
             motionTargetSize = LayoutHelper.MeasureChild(ghost, Size.Infinity, new Thickness());
         }
         else
@@ -265,7 +270,7 @@ public class MotionActor : Animatable, IMotionActor
     }
 
     /// <summary>
-    /// 当动画目标控件被添加到动画场景中之后调用，这里需要根据 Motion 的种类设置初始位置和大小
+    ///     当动画目标控件被添加到动画场景中之后调用，这里需要根据 Motion 的种类设置初始位置和大小
     /// </summary>
     /// <param name="motionTarget"></param>
     public virtual void NotifyMotionTargetAddedToScene(Control motionTarget)
@@ -396,12 +401,5 @@ public class MotionActor : Animatable, IMotionActor
                 }
             }
         }
-    }
-
-    private class AnimationState
-    {
-        public ITransition? Transition { get; set; }
-        public object? StartValue { get; set; }
-        public object? EndValue { get; set; }
     }
 }

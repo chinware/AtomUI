@@ -2,17 +2,12 @@
 using Avalonia;
 using Avalonia.Media;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Controls.Message;
 
 [ControlDesignToken]
 public class MessageToken : AbstractControlDesignToken
 {
     public const string ID = "Message";
-
-    public MessageToken()
-        : base(ID)
-    {
-    }
 
     /// <summary>
     /// 提示框背景色
@@ -43,6 +38,11 @@ public class MessageToken : AbstractControlDesignToken
     /// 提醒框上边缘外边距
     /// </summary>
     public Thickness MessageTopMargin { get; set; }
+
+    public MessageToken()
+        : base(ID)
+    {
+    }
 
     internal override void CalculateFromAlias()
     {

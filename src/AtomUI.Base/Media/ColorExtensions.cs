@@ -108,7 +108,7 @@ public static class ColorExtensions
     }
 
     /// <summary>
-    /// Returns the perceived brightness of the color, from 0-255.
+    ///     Returns the perceived brightness of the color, from 0-255.
     /// </summary>
     /// <param name="color"></param>
     /// <returns></returns>
@@ -118,7 +118,7 @@ public static class ColorExtensions
     }
 
     /// <summary>
-    /// Returns the perceived luminance of a color, from 0-1.
+    ///     Returns the perceived luminance of a color, from 0-1.
     /// </summary>
     /// <returns></returns>
     public static double GetLuminance(this Color color)
@@ -135,9 +135,8 @@ public static class ColorExtensions
             r = rsRGB / 12.92;
         }
         else
-
-            // eslint-disable-next-line prefer-exponentiation-operator
         {
+            // eslint-disable-next-line prefer-exponentiation-operator
             r = Math.Pow((rsRGB + 0.055) / 1.055, 2.4);
         }
 
@@ -146,9 +145,8 @@ public static class ColorExtensions
             g = gsRGB / 12.92;
         }
         else
-
-            // eslint-disable-next-line prefer-exponentiation-operator
         {
+            // eslint-disable-next-line prefer-exponentiation-operator
             g = Math.Pow((gsRGB + 0.055) / 1.055, 2.4);
         }
 
@@ -157,9 +155,8 @@ public static class ColorExtensions
             b = bsRGB / 12.92;
         }
         else
-
-            // eslint-disable-next-line prefer-exponentiation-operator
         {
+            // eslint-disable-next-line prefer-exponentiation-operator
             b = Math.Pow((bsRGB + 0.055) / 1.055, 2.4);
         }
 

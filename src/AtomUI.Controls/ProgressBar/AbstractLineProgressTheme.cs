@@ -1,5 +1,5 @@
-﻿using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
+﻿using AtomUI.Theme.Styling;
+using AtomUI.Utils;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
@@ -68,7 +68,6 @@ internal class AbstractLineProgressTheme : AbstractProgressBarTheme
             selector.Nesting().PropertyEquals(AbstractProgressBar.EffectiveSizeTypeProperty, SizeType.Large));
         largeSizeTypeStyle.Add(AbstractLineProgress.LineInfoIconSizeProperty,
             ProgressBarTokenResourceKey.LineInfoIconSize);
-
         // icon
         {
             var completedIconsStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
@@ -84,7 +83,6 @@ internal class AbstractLineProgressTheme : AbstractProgressBarTheme
             selector.Nesting().PropertyEquals(AbstractProgressBar.EffectiveSizeTypeProperty, SizeType.Middle));
         middleTypeStyle.Add(AbstractLineProgress.LineInfoIconSizeProperty,
             ProgressBarTokenResourceKey.LineInfoIconSize);
-
         // icon
         {
             var completedIconsStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
@@ -100,7 +98,6 @@ internal class AbstractLineProgressTheme : AbstractProgressBarTheme
             selector.Nesting().PropertyEquals(AbstractProgressBar.EffectiveSizeTypeProperty, SizeType.Small));
         smallTypeStyle.Add(AbstractLineProgress.LineInfoIconSizeProperty,
             ProgressBarTokenResourceKey.LineInfoIconSizeSM);
-
         // icon
         {
             var completedIconsStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());

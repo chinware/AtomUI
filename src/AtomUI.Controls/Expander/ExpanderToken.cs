@@ -54,6 +54,16 @@ internal class ExpanderToken : AbstractControlDesignToken
     /// </summary>
     public Color ContentBg { get; set; }
 
+    #region 内部 Token 定义
+
+    public CornerRadius ExpanderBorderRadius { get; set; }
+    public Thickness LeftExpandButtonHMargin { get; set; }
+    public Thickness RightExpandButtonHMargin { get; set; }
+    public Thickness LeftExpandButtonVMargin { get; set; }
+    public Thickness RightExpandButtonVMargin { get; set; }
+
+    #endregion
+
     internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
@@ -71,14 +81,4 @@ internal class ExpanderToken : AbstractControlDesignToken
         LeftExpandButtonVMargin  = new Thickness(0, 0, 0, _globalToken.MarginSM);
         RightExpandButtonVMargin = new Thickness(0, _globalToken.MarginSM, 0, 0);
     }
-
-    #region 内部 Token 定义
-
-    public CornerRadius ExpanderBorderRadius { get; set; }
-    public Thickness LeftExpandButtonHMargin { get; set; }
-    public Thickness RightExpandButtonHMargin { get; set; }
-    public Thickness LeftExpandButtonVMargin { get; set; }
-    public Thickness RightExpandButtonVMargin { get; set; }
-
-    #endregion
 }

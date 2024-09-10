@@ -36,10 +36,8 @@ internal static class CalculatorUtils
             MotionDurationMid      = TimeSpan.FromMilliseconds(motionBase + motionUnit * 2),
             MotionDurationSlow     = TimeSpan.FromMilliseconds(motionBase + motionUnit * 3),
             MotionDurationVerySlow = TimeSpan.FromMilliseconds(motionBase + motionUnit * 8),
-
             // line
             LineWidthBold = lineWidth + 1,
-
             // radius
             BorderRadiusXS    = new CornerRadius(radiusInfo.BorderRadiusXS),
             BorderRadiusSM    = new CornerRadius(radiusInfo.BorderRadiusSM),
@@ -211,7 +209,6 @@ internal static class CalculatorUtils
             var i        = index - 1;
             var baseSize = baseValue * Math.Pow(2.71828, i / 5.0);
             var intSize  = index > 1 ? Math.Floor(baseSize) : Math.Ceiling(baseSize);
-
             // Convert to even
             fontSizes.Add((int)(Math.Floor(intSize / 2.0d) * 2));
         }

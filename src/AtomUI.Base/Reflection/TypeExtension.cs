@@ -53,10 +53,9 @@ public static class TypeExtension
     }
 
     public static FieldInfo GetFieldInfoOrThrow(this Type type, string name,
-                                                BindingFlags flags =
-                                                    BindingFlags.Instance | BindingFlags.NonPublic |
-                                                    BindingFlags.Public |
-                                                    BindingFlags.FlattenHierarchy)
+                                                BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic |
+                                                                     BindingFlags.Public |
+                                                                     BindingFlags.FlattenHierarchy)
     {
         FieldInfo? info;
         if (!type.TryGetFieldInfo(name, out info, flags))
@@ -68,10 +67,9 @@ public static class TypeExtension
     }
 
     public static MethodInfo GetMethodInfoOrThrow(this Type type, string name,
-                                                  BindingFlags flags =
-                                                      BindingFlags.Instance | BindingFlags.NonPublic |
-                                                      BindingFlags.Public |
-                                                      BindingFlags.FlattenHierarchy)
+                                                  BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic |
+                                                                       BindingFlags.Public |
+                                                                       BindingFlags.FlattenHierarchy)
     {
         MethodInfo? info;
         if (!type.TryGetMethodInfo(name, out info, flags))

@@ -56,7 +56,6 @@ public class DarkThemeVariantCalculator : AbstractThemeVariantCalculator
             Color8  = colors[6],
             Color9  = colors[5],
             Color10 = colors[4]
-
             // Color8 = colors[9],
             // Color9 = colors[8],
             // Color10 = colors[7],

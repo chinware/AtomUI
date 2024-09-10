@@ -11,73 +11,73 @@ namespace AtomUI.Controls;
 
 public enum ArrowPosition
 {
-    /// <summary>
-    /// Preferred location is below the target element.
-    /// </summary>
-    Bottom,
+   /// <summary>
+   /// Preferred location is below the target element.
+   /// </summary>
+   Bottom,
 
-    /// <summary>
-    /// Preferred location is to the right of the target element.
-    /// </summary>
-    Right,
+   /// <summary>
+   /// Preferred location is to the right of the target element.
+   /// </summary>
+   Right,
 
-    /// <summary>
-    /// Preferred location is to the left of the target element.
-    /// </summary>
-    Left,
+   /// <summary>
+   /// Preferred location is to the left of the target element.
+   /// </summary>
+   Left,
 
-    /// <summary>
-    /// Preferred location is above the target element.
-    /// </summary>
-    Top,
+   /// <summary>
+   /// Preferred location is above the target element.
+   /// </summary>
+   Top,
 
-    /// <summary>
-    /// Preferred location is above the target element, with the left edge of the popup
-    /// aligned with the left edge of the target element.
-    /// </summary>
-    TopEdgeAlignedLeft,
+   /// <summary>
+   /// Preferred location is above the target element, with the left edge of the popup
+   /// aligned with the left edge of the target element.
+   /// </summary>
+   TopEdgeAlignedLeft,
 
-    /// <summary>
-    /// Preferred location is above the target element, with the right edge of popup aligned with right edge of the target
-    /// element.
-    /// </summary>
-    TopEdgeAlignedRight,
+   /// <summary>
+   /// Preferred location is above the target element, with the right edge of popup aligned with right edge of the target
+   /// element.
+   /// </summary>
+   TopEdgeAlignedRight,
 
-    /// <summary>
-    /// Preferred location is below the target element, with the left edge of popup aligned with left edge of the target
-    /// element.
-    /// </summary>
-    BottomEdgeAlignedLeft,
+   /// <summary>
+   /// Preferred location is below the target element, with the left edge of popup aligned with left edge of the target
+   /// element.
+   /// </summary>
+   BottomEdgeAlignedLeft,
 
-    /// <summary>
-    /// Preferred location is below the target element, with the right edge of popup aligned with right edge of the target
-    /// element.
-    /// </summary>
-    BottomEdgeAlignedRight,
+   /// <summary>
+   /// Preferred location is below the target element, with the right edge of popup aligned with right edge of the target
+   /// element.
+   /// </summary>
+   BottomEdgeAlignedRight,
 
-    /// <summary>
-    /// Preferred location is to the left of the target element, with the top edge of popup aligned with top edge of the
-    /// target element.
-    /// </summary>
-    LeftEdgeAlignedTop,
+   /// <summary>
+   /// Preferred location is to the left of the target element, with the top edge of popup aligned with top edge of the
+   /// target element.
+   /// </summary>
+   LeftEdgeAlignedTop,
 
-    /// <summary>
-    /// Preferred location is to the left of the target element, with the bottom edge of popup aligned with bottom edge of
-    /// the target element.
-    /// </summary>
-    LeftEdgeAlignedBottom,
+   /// <summary>
+   /// Preferred location is to the left of the target element, with the bottom edge of popup aligned with bottom edge of
+   /// the target element.
+   /// </summary>
+   LeftEdgeAlignedBottom,
 
-    /// <summary>
-    /// Preferred location is to the right of the target element, with the top edge of popup aligned with top edge of the
-    /// target element.
-    /// </summary>
-    RightEdgeAlignedTop,
+   /// <summary>
+   /// Preferred location is to the right of the target element, with the top edge of popup aligned with top edge of the
+   /// target element.
+   /// </summary>
+   RightEdgeAlignedTop,
 
-    /// <summary>
-    /// Preferred location is to the right of the target element, with the bottom edge of popup aligned with bottom edge of
-    /// the target element.
-    /// </summary>
-    RightEdgeAlignedBottom
+   /// <summary>
+   /// Preferred location is to the right of the target element, with the bottom edge of popup aligned with bottom edge of
+   /// the target element.
+   /// </summary>
+   RightEdgeAlignedBottom
 }
 
 public class ArrowDecoratedBox : ContentControl,
@@ -89,32 +89,14 @@ public class ArrowDecoratedBox : ContentControl,
 
     public static readonly StyledProperty<ArrowPosition> ArrowPositionProperty =
         AvaloniaProperty.Register<ArrowDecoratedBox, ArrowPosition>(
-            nameof(ArrowPosition));
+            nameof(ArrowPosition), ArrowPosition.Bottom);
 
     internal static readonly StyledProperty<double> ArrowSizeProperty
         = AvaloniaProperty.Register<ArrowDecoratedBox, double>(nameof(ArrowSize));
 
-    private readonly IControlCustomStyle _customStyle;
-
-    private Geometry? _arrowGeometry;
-    private Rect _arrowRect;
-
     // 指针最顶点位置
     // 相对坐标
     private (double, double) _arrowVertexPoint;
-    private Rect _contentRect;
-    private bool _needGenerateArrowVertexPoint = true;
-
-    static ArrowDecoratedBox()
-    {
-        AffectsMeasure<ArrowDecoratedBox>(ArrowPositionProperty, IsShowArrowProperty);
-    }
-
-    public ArrowDecoratedBox()
-    {
-        _customStyle = this;
-    }
-
     internal (double, double) ArrowVertexPoint => GetArrowVertexPoint();
 
     /// <summary>
@@ -144,22 +126,20 @@ public class ArrowDecoratedBox : ContentControl,
         set => SetValue(ArrowSizeProperty, value);
     }
 
-    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
+    private readonly IControlCustomStyle _customStyle;
+    private Geometry? _arrowGeometry;
+    private Rect _contentRect;
+    private Rect _arrowRect;
+    private bool _needGenerateArrowVertexPoint = true;
+
+    static ArrowDecoratedBox()
     {
-        if (IsShowArrow)
-        {
-            BuildGeometry(true);
-        }
+        AffectsMeasure<ArrowDecoratedBox>(ArrowPositionProperty, IsShowArrowProperty);
     }
 
-    public CornerRadius GetMaskCornerRadius()
+    public ArrowDecoratedBox()
     {
-        return CornerRadius;
-    }
-
-    public Rect GetMaskBounds()
-    {
-        return GetContentRect(DesiredSize).Deflate(0.5);
+        _customStyle = this;
     }
 
     public static Direction GetDirection(ArrowPosition arrowPosition)
@@ -192,10 +172,28 @@ public class ArrowDecoratedBox : ContentControl,
         _customStyle.HandlePropertyChangedForStyle(e);
     }
 
+    public CornerRadius GetMaskCornerRadius()
+    {
+        return CornerRadius;
+    }
+
+    public Rect GetMaskBounds()
+    {
+        return GetContentRect(DesiredSize).Deflate(0.5);
+    }
+
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
         _customStyle.HandleTemplateApplied(e.NameScope);
+    }
+
+    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
+    {
+        if (IsShowArrow)
+        {
+            BuildGeometry(true);
+        }
     }
 
     #region IControlCustomStyle 实现
@@ -220,9 +218,8 @@ public class ArrowDecoratedBox : ContentControl,
             e.Property == VisualParentProperty)
         {
             if (e.Property == IsShowArrowProperty && VisualRoot is null)
-
-                // 当开启的时候，但是还没有加入的渲染树，这个时候我们取不到 Token 需要在取值的时候重新生成一下
             {
+                // 当开启的时候，但是还没有加入的渲染树，这个时候我们取不到 Token 需要在取值的时候重新生成一下
                 _needGenerateArrowVertexPoint = true;
             }
 

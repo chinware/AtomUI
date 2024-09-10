@@ -1,5 +1,4 @@
-﻿using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
+﻿using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -10,42 +9,6 @@ namespace AtomUI.Controls;
 
 internal class NotificationProgressBar : Control
 {
-    static NotificationProgressBar()
-    {
-        AffectsMeasure<NotificationProgressBar>(ProgressIndicatorThicknessProperty);
-        AffectsRender<NotificationProgressBar>(ProgressIndicatorBrushProperty,
-            ExpirationProperty,
-            CurrentExpirationProperty);
-    }
-
-    protected override Size MeasureOverride(Size availableSize)
-    {
-        return new Size(availableSize.Width, ProgressIndicatorThickness);
-    }
-
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        TokenResourceBinder.CreateTokenBinding(this, ProgressIndicatorThicknessProperty,
-            NotificationTokenResourceKey.NotificationProgressHeight);
-        TokenResourceBinder.CreateTokenBinding(this, ProgressIndicatorBrushProperty,
-            NotificationTokenResourceKey.NotificationProgressBg);
-    }
-
-    public override void Render(DrawingContext context)
-    {
-        var indicatorWidth = 0d;
-        var total          = Expiration.TotalMilliseconds;
-        if (MathUtils.GreaterThan(total, 0))
-        {
-            indicatorWidth = CurrentExpiration.TotalMilliseconds / total * Bounds.Width;
-        }
-
-        var offsetY       = Bounds.Height - ProgressIndicatorThickness;
-        var indicatorRect = new Rect(new Point(0, offsetY), new Size(indicatorWidth, ProgressIndicatorThickness));
-        context.FillRectangle(ProgressIndicatorBrush!, indicatorRect);
-    }
-
     #region 公共属性定义
 
     public static readonly StyledProperty<double> ProgressIndicatorThicknessProperty =
@@ -85,4 +48,40 @@ internal class NotificationProgressBar : Control
     }
 
     #endregion
+
+    static NotificationProgressBar()
+    {
+        AffectsMeasure<NotificationProgressBar>(ProgressIndicatorThicknessProperty);
+        AffectsRender<NotificationProgressBar>(ProgressIndicatorBrushProperty,
+            ExpirationProperty,
+            CurrentExpirationProperty);
+    }
+
+    protected override Size MeasureOverride(Size availableSize)
+    {
+        return new Size(availableSize.Width, ProgressIndicatorThickness);
+    }
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        TokenResourceBinder.CreateTokenBinding(this, ProgressIndicatorThicknessProperty,
+            NotificationTokenResourceKey.NotificationProgressHeight);
+        TokenResourceBinder.CreateTokenBinding(this, ProgressIndicatorBrushProperty,
+            NotificationTokenResourceKey.NotificationProgressBg);
+    }
+
+    public override void Render(DrawingContext context)
+    {
+        var indicatorWidth = 0d;
+        var total          = Expiration.TotalMilliseconds;
+        if (MathUtils.GreaterThan(total, 0))
+        {
+            indicatorWidth = CurrentExpiration.TotalMilliseconds / total * Bounds.Width;
+        }
+
+        var offsetY       = Bounds.Height - ProgressIndicatorThickness;
+        var indicatorRect = new Rect(new Point(0, offsetY), new Size(indicatorWidth, ProgressIndicatorThickness));
+        context.FillRectangle(ProgressIndicatorBrush!, indicatorRect);
+    }
 }

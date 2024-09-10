@@ -60,24 +60,6 @@ public class SliderThumb : TemplatedControl
         Transitions = transitions;
     }
 
-    internal IBrush? OutlineBrush
-    {
-        get => GetValue(OutlineBrushProperty);
-        set => SetValue(OutlineBrushProperty, value);
-    }
-
-    internal Thickness OutlineThickness
-    {
-        get => GetValue(OutlineThicknessProperty);
-        set => SetValue(OutlineThicknessProperty, value);
-    }
-
-    internal double ThumbCircleSize
-    {
-        get => GetValue(ThumbCircleSizeProperty);
-        set => SetValue(ThumbCircleSizeProperty, value);
-    }
-
     public event EventHandler<VectorEventArgs>? DragStarted
     {
         add => AddHandler(DragStartedEvent, value);
@@ -94,6 +76,24 @@ public class SliderThumb : TemplatedControl
     {
         add => AddHandler(DragCompletedEvent, value);
         remove => RemoveHandler(DragCompletedEvent, value);
+    }
+
+    internal IBrush? OutlineBrush
+    {
+        get => GetValue(OutlineBrushProperty);
+        set => SetValue(OutlineBrushProperty, value);
+    }
+
+    internal Thickness OutlineThickness
+    {
+        get => GetValue(OutlineThicknessProperty);
+        set => SetValue(OutlineThicknessProperty, value);
+    }
+
+    internal double ThumbCircleSize
+    {
+        get => GetValue(ThumbCircleSizeProperty);
+        set => SetValue(ThumbCircleSizeProperty, value);
     }
 
     internal void AdjustDrag(Vector v)
@@ -199,7 +199,6 @@ public class SliderThumb : TemplatedControl
         var thumbCircleRadius = ThumbCircleSize / 2 + BorderThickness.Left / 2;
         var circlePen         = new Pen(BorderBrush, BorderThickness.Left);
         context.DrawEllipse(Background, circlePen, centerPos, thumbCircleRadius, thumbCircleRadius);
-
         // 绘制 outline
         var outlinePen       = new Pen(OutlineBrush, OutlineThickness.Left);
         var outlinePenRadius = ThumbCircleSize / 2 + BorderThickness.Left / 2 + OutlineThickness.Left / 2;

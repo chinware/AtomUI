@@ -11,9 +11,9 @@ namespace AtomUI.MotionScene;
 
 public class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
 {
+    private readonly IManagedPopupPositionerPopup? _managedPopupPositionerPopup;
     private static readonly FieldInfo ManagedPopupPositionerPopupInfo;
     private readonly Canvas _layout;
-    private readonly IManagedPopupPositionerPopup? _managedPopupPositionerPopup;
 
     static SceneLayer()
     {
@@ -28,7 +28,7 @@ public class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
     }
 
     /// <summary>
-    /// 初始化一个新的动画顶层窗口
+    ///     初始化一个新的动画顶层窗口
     /// </summary>
     /// <param name="parent"></param>
     /// <param name="impl"></param>
@@ -55,19 +55,12 @@ public class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
     }
 
     /// <summary>
-    /// Gets the platform-specific window implementation.
+    ///     Gets the platform-specific window implementation.
     /// </summary>
     public new IPopupImpl? PlatformImpl => (IPopupImpl?)base.PlatformImpl;
 
-    public TopLevel ParentTopLevel { get; }
-
-    public void Dispose()
-    {
-        PlatformImpl?.Dispose();
-    }
-
     /// <summary>
-    /// Gets the control that is hosting the popup root.
+    ///     Gets the control that is hosting the popup root.
     /// </summary>
     Visual? IHostedVisualTreeRoot.Host
     {
@@ -86,6 +79,13 @@ public class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
 
             return ParentTopLevel ?? parentVisual;
         }
+    }
+
+    public TopLevel ParentTopLevel { get; }
+
+    public void Dispose()
+    {
+        PlatformImpl?.Dispose();
     }
 
     public void SetMotionTarget(Control motionTarget)

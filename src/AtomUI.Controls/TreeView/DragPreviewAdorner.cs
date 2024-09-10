@@ -1,5 +1,5 @@
-﻿using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
+﻿using AtomUI.Theme.Styling;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
@@ -9,8 +9,8 @@ namespace AtomUI.Controls;
 
 internal class DragPreviewAdorner : Decorator
 {
-    private readonly DragPreview _dragPreview;
     private readonly TranslateTransform _translation;
+    private readonly DragPreview _dragPreview;
 
     public DragPreviewAdorner(Border previewControl)
     {
@@ -49,6 +49,12 @@ internal class DragPreview : Decorator
     public static readonly StyledProperty<IBrush?> BackgroundProperty =
         Border.BackgroundProperty.AddOwner<DragPreviewAdorner>();
 
+    public IBrush? Background
+    {
+        get => GetValue(BackgroundProperty);
+        set => SetValue(BackgroundProperty, value);
+    }
+
     private readonly VisualBrush _visualBrush;
 
     public DragPreview(Border previewControl)
@@ -63,12 +69,6 @@ internal class DragPreview : Decorator
             Stretch    = Stretch.None,
             AlignmentX = AlignmentX.Left
         };
-    }
-
-    public IBrush? Background
-    {
-        get => GetValue(BackgroundProperty);
-        set => SetValue(BackgroundProperty, value);
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)

@@ -7,6 +7,9 @@ namespace AtomUI.Controls.Utils;
 
 internal class RoundRectWavePainter : AbstractWavePainter
 {
+    public Size OriginSize { get; set; }
+
+    public CornerRadius CornerRadius { get; set; }
     private Geometry? _originGeometry;
 
     public RoundRectWavePainter(Size size = default, Point originPoint = default)
@@ -15,10 +18,6 @@ internal class RoundRectWavePainter : AbstractWavePainter
         OriginSize = size;
         WaveType   = WaveType.RoundRectWave;
     }
-
-    public Size OriginSize { get; set; }
-
-    public CornerRadius CornerRadius { get; set; }
 
     public override void Paint(DrawingContext context, object newSize, double newOpacity)
     {

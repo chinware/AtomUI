@@ -6,8 +6,8 @@ namespace AtomUI.Theme.TokenSystem;
 
 public abstract class AbstractDesignToken : IDesignToken
 {
-    private static readonly Dictionary<Type, ITokenValueConverter> _valueConverters;
     private readonly IDictionary<string, object?> _tokenAccessCache;
+    private static readonly Dictionary<Type, ITokenValueConverter> _valueConverters;
 
     static AbstractDesignToken()
     {
@@ -28,10 +28,47 @@ public abstract class AbstractDesignToken : IDesignToken
         _tokenAccessCache = new Dictionary<string, object?>();
     }
 
+    internal virtual void LoadConfig(IDictionary<string, string> tokenConfigInfo)
+    {
+        try
+        {
+            var type = GetType();
+            var tokenProperties =
+                type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
+            var baseTokenType = typeof(AbstractDesignToken);
+            foreach (var property in tokenProperties)
+            {
+                if (baseTokenType.IsAssignableFrom(property.PropertyType))
+                {
+                    // 如果当前的属性是 Token 类型，证明是组合属性，跳过
+                    continue;
+                }
+
+                var tokenName = property.Name;
+                if (tokenConfigInfo.ContainsKey(tokenName))
+                {
+                    var propertyType = property.PropertyType;
+                    if (_valueConverters.ContainsKey(propertyType))
+                    {
+                        property.SetValue(this, _valueConverters[propertyType].Convert(tokenConfigInfo[tokenName]));
+                    }
+                    else
+                    {
+                        // TODO 可能会抛出异常？
+                        property.SetValue(tokenName, tokenConfigInfo[tokenName]);
+                    }
+                }
+            }
+        }
+        catch (Exception exception)
+        {
+            throw new ThemeLoadException("Load theme design token failed.", exception);
+        }
+    }
+
     public virtual void BuildResourceDictionary(IResourceDictionary dictionary)
     {
         var type = GetType();
-
         // internal 这里也考虑进去，还是具体的 Token 自己处理？
         var tokenProperties = type.GetProperties(BindingFlags.Public |
                                                  BindingFlags.NonPublic |
@@ -42,9 +79,8 @@ public abstract class AbstractDesignToken : IDesignToken
         foreach (var property in tokenProperties)
         {
             if (baseTokenType.IsAssignableFrom(property.PropertyType))
-
-                // 如果当前的属性是 Token 类型，证明是组合属性，跳过
             {
+                // 如果当前的属性是 Token 类型，证明是组合属性，跳过
                 continue;
             }
 
@@ -57,6 +93,25 @@ public abstract class AbstractDesignToken : IDesignToken
 
             dictionary[new TokenResourceKey(tokenName, tokenResourceNamespace)] = tokenValue;
         }
+    }
+
+    private string GetTokenResourceCatalog()
+    {
+        var tokenType = GetType();
+        if (tokenType.GetCustomAttribute<GlobalDesignTokenAttribute>() is GlobalDesignTokenAttribute
+            globalTokenAttribute)
+        {
+            return globalTokenAttribute.ResourceCatalog;
+        }
+
+        if (tokenType.GetCustomAttribute<ControlDesignTokenAttribute>() is ControlDesignTokenAttribute
+            controlTokenAttribute)
+        {
+            return controlTokenAttribute.ResourceCatalog;
+        }
+
+        throw new TokenResourceRegisterException(
+            $"The current Token: {tokenType.FullName} lacks the token type annotation");
     }
 
     public virtual object? GetTokenValue(string name)
@@ -116,64 +171,5 @@ public abstract class AbstractDesignToken : IDesignToken
         }
 
         return cloned;
-    }
-
-    internal virtual void LoadConfig(IDictionary<string, string> tokenConfigInfo)
-    {
-        try
-        {
-            var type = GetType();
-            var tokenProperties =
-                type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
-            var baseTokenType = typeof(AbstractDesignToken);
-            foreach (var property in tokenProperties)
-            {
-                if (baseTokenType.IsAssignableFrom(property.PropertyType))
-
-                    // 如果当前的属性是 Token 类型，证明是组合属性，跳过
-                {
-                    continue;
-                }
-
-                var tokenName = property.Name;
-                if (tokenConfigInfo.ContainsKey(tokenName))
-                {
-                    var propertyType = property.PropertyType;
-                    if (_valueConverters.ContainsKey(propertyType))
-                    {
-                        property.SetValue(this, _valueConverters[propertyType].Convert(tokenConfigInfo[tokenName]));
-                    }
-                    else
-
-                        // TODO 可能会抛出异常？
-                    {
-                        property.SetValue(tokenName, tokenConfigInfo[tokenName]);
-                    }
-                }
-            }
-        }
-        catch (Exception exception)
-        {
-            throw new ThemeLoadException("Load theme design token failed.", exception);
-        }
-    }
-
-    private string GetTokenResourceCatalog()
-    {
-        var tokenType = GetType();
-        if (tokenType.GetCustomAttribute<GlobalDesignTokenAttribute>() is GlobalDesignTokenAttribute
-            globalTokenAttribute)
-        {
-            return globalTokenAttribute.ResourceCatalog;
-        }
-
-        if (tokenType.GetCustomAttribute<ControlDesignTokenAttribute>() is ControlDesignTokenAttribute
-            controlTokenAttribute)
-        {
-            return controlTokenAttribute.ResourceCatalog;
-        }
-
-        throw new TokenResourceRegisterException(
-            $"The current Token: {tokenType.FullName} lacks the token type annotation");
     }
 }

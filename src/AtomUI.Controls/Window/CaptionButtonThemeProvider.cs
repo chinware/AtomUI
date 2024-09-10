@@ -1,6 +1,7 @@
+using AtomUI.Controls.Window;
 using Avalonia.Styling;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Controls.Controls.Window;
 
 public class CaptionButtonThemeProvider
 {

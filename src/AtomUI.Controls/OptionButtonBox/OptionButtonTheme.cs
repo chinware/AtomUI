@@ -100,7 +100,6 @@ internal class OptionButtonTheme : BaseControlTheme
     {
         var enabledStyle =
             new Style(selector => selector.Nesting().PropertyEquals(InputElement.IsEnabledProperty, true));
-
         // 选中状态
         {
             var checkedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Checked));
@@ -187,7 +186,6 @@ internal class OptionButtonTheme : BaseControlTheme
             enabledStyle.Add(checkedStyle);
             outlineStyle.Add(enabledStyle);
         }
-
         // 没选中状态
         {
             enabledStyle.Add(TemplatedControl.BorderBrushProperty, GlobalTokenResourceKey.ColorBorder);

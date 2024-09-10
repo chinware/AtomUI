@@ -5,14 +5,13 @@ namespace AtomUI.Media;
 
 public class NotifiableDoubleTransition : DoubleTransition, INotifyTransitionCompleted
 {
+    public event EventHandler<TransitionCompletedEventArgs>? TransitionCompleted;
     private readonly Subject<bool> _subject;
 
     public NotifiableDoubleTransition()
     {
         _subject = new Subject<bool>();
     }
-
-    public event EventHandler<TransitionCompletedEventArgs>? TransitionCompleted;
 
     void INotifyTransitionCompleted.NotifyTransitionCompleted(bool status)
     {

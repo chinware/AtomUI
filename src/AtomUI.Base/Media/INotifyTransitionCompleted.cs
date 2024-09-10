@@ -2,12 +2,12 @@
 
 public class TransitionCompletedEventArgs : EventArgs
 {
+    public bool Status { get; }
+
     public TransitionCompletedEventArgs(bool status)
     {
         Status = status;
     }
-
-    public bool Status { get; }
 }
 
 internal interface INotifyTransitionCompleted

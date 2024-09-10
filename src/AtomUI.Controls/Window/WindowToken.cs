@@ -1,17 +1,12 @@
 using AtomUI.Theme.TokenSystem;
 using Avalonia.Media;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Controls.Window;
 
 [ControlDesignToken]
 public class WindowToken : AbstractControlDesignToken
 {
     public const string ID = "Window";
-
-    public WindowToken()
-        : base("Window")
-    {
-    }
 
     /// <summary>
     /// 窗口默认的背景色
@@ -22,4 +17,9 @@ public class WindowToken : AbstractControlDesignToken
     /// 窗口默认的前景色
     /// </summary>
     public Color DefaultForeground { get; set; }
+
+    public WindowToken()
+        : base("Window")
+    {
+    }
 }

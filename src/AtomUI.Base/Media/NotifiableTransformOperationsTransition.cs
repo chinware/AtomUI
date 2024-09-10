@@ -5,14 +5,13 @@ namespace AtomUI.Media;
 
 public class NotifiableTransformOperationsTransition : TransformOperationsTransition, INotifyTransitionCompleted
 {
+    public event EventHandler<TransitionCompletedEventArgs>? TransitionCompleted;
     private readonly Subject<bool> _subject;
 
     public NotifiableTransformOperationsTransition()
     {
         _subject = new Subject<bool>();
     }
-
-    public event EventHandler<TransitionCompletedEventArgs>? TransitionCompleted;
 
     void INotifyTransitionCompleted.NotifyTransitionCompleted(bool status)
     {

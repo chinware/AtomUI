@@ -17,11 +17,6 @@ public class IconImage : DrawingImage, IImage
     public static readonly StyledProperty<Size> SizeProperty = AvaloniaProperty.Register<IconImage, Size>(
         nameof(Size), new Size(16, 16));
 
-    public IconImage(IconInfo? data = null)
-    {
-        Data = data ?? new IconInfo();
-    }
-
     public IconInfo Data
     {
         get => GetValue(DataProperty);
@@ -42,6 +37,11 @@ public class IconImage : DrawingImage, IImage
 
     /// <inheritdoc />
     Size IImage.Size => GetValue(SizeProperty);
+
+    public IconImage(IconInfo? data = null)
+    {
+        Data = data ?? new IconInfo();
+    }
 
     /// <inheritdoc />
     void IImage.Draw(DrawingContext context, Rect sourceRect, Rect destRect)
@@ -93,7 +93,6 @@ public class IconImage : DrawingImage, IImage
                 brush.Color = Colors.Black;
 
                 geometryDrawing.Brush = brush;
-
                 // foreach (var geometryData in geometriesData) {
                 //    geometryDrawing.Geometry = StreamGeometry.Parse(geometryData.PathData);
                 //    geometryDrawing.Draw(context);

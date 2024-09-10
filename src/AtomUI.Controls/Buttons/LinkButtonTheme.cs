@@ -30,7 +30,6 @@ internal class LinkButtonTheme : BaseButtonTheme
     private void BuildEnabledStyle()
     {
         var enabledStyle = new Style(selector => selector.Nesting());
-
         // 正常状态
         enabledStyle.Add(TemplatedControl.BackgroundProperty,
             new DynamicResourceExtension(ButtonTokenResourceKey.DefaultBg));
@@ -44,7 +43,6 @@ internal class LinkButtonTheme : BaseButtonTheme
                 new DynamicResourceExtension(GlobalTokenResourceKey.ColorLinkHover));
             enabledStyle.Add(hoverStyle);
         }
-
         // 正常按下
         {
             var pressedStyle = new Style(selector =>
@@ -85,7 +83,6 @@ internal class LinkButtonTheme : BaseButtonTheme
     private void BuildEnabledGhostStyle()
     {
         var ghostStyle = new Style(selector => selector.Nesting().PropertyEquals(Button.IsGhostProperty, true));
-
         // 正常状态
         ghostStyle.Add(TemplatedControl.BackgroundProperty,
             new DynamicResourceExtension(GlobalTokenResourceKey.ColorTransparent));

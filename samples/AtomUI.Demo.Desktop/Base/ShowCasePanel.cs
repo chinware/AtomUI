@@ -6,15 +6,14 @@ using Avalonia.LogicalTree;
 using Avalonia.Metadata;
 using AvaloniaControlList = Avalonia.Controls.Controls;
 
-namespace AtomUI.Demo.Desktop;
+namespace AtomUI.Demo.Desktop.ShowCase;
 
 public class ShowCasePanel : Control
 {
+    public string? Id { get; protected set; }
     private bool _initialized;
     private StackPanel _leftContainer = default!;
     private StackPanel _rightContainer = default!;
-
-    public string? Id { get; protected set; }
 
     [Content] public AvaloniaControlList Children { get; } = new();
 

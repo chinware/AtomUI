@@ -5,12 +5,12 @@ namespace AtomUI.Controls;
 
 internal class TimePickerFlyout : Flyout
 {
+    internal TimePicker TimePickerRef { get; set; }
+
     public TimePickerFlyout(TimePicker timePicker)
     {
         TimePickerRef = timePicker;
     }
-
-    internal TimePicker TimePickerRef { get; set; }
 
     protected override Control CreatePresenter()
     {

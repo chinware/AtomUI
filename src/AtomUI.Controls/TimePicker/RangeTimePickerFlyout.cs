@@ -5,12 +5,12 @@ namespace AtomUI.Controls;
 
 internal class RangeTimePickerFlyout : Flyout
 {
+    internal RangeTimePicker RangeTimePickerRef { get; set; }
+
     public RangeTimePickerFlyout(RangeTimePicker timePicker)
     {
         RangeTimePickerRef = timePicker;
     }
-
-    internal RangeTimePicker RangeTimePickerRef { get; set; }
 
     protected override Control CreatePresenter()
     {

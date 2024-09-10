@@ -1,7 +1,8 @@
 ﻿using System.Diagnostics;
 using AtomUI.Controls.TimePickerLang;
-using AtomUI.Theme.Data;
+using AtomUI.Data;
 using AtomUI.Theme.Styling;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
@@ -29,60 +30,59 @@ public enum DateTimePickerPanelType
 
 public class DateTimePickerPanel : Panel, ILogicalScrollable
 {
-    /// <summary>
-    /// Defines the <see cref="ItemHeight" /> property
-    /// </summary>
-    public static readonly StyledProperty<double> ItemHeightProperty =
+   /// <summary>
+   /// Defines the <see cref="ItemHeight" /> property
+   /// </summary>
+   public static readonly StyledProperty<double> ItemHeightProperty =
         AvaloniaProperty.Register<DateTimePickerPanel, double>(nameof(ItemHeight), 40.0);
 
-    /// <summary>
-    /// Defines the <see cref="PanelType" /> property
-    /// </summary>
-    public static readonly StyledProperty<DateTimePickerPanelType> PanelTypeProperty =
+   /// <summary>
+   /// Defines the <see cref="PanelType" /> property
+   /// </summary>
+   public static readonly StyledProperty<DateTimePickerPanelType> PanelTypeProperty =
         AvaloniaProperty.Register<DateTimePickerPanel, DateTimePickerPanelType>(nameof(PanelType));
 
-    /// <summary>
-    /// Defines the <see cref="ItemFormat" /> property
-    /// </summary>
-    public static readonly StyledProperty<string> ItemFormatProperty =
+   /// <summary>
+   /// Defines the <see cref="ItemFormat" /> property
+   /// </summary>
+   public static readonly StyledProperty<string> ItemFormatProperty =
         AvaloniaProperty.Register<DateTimePickerPanel, string>(nameof(ItemFormat), "yyyy");
 
-    /// <summary>
-    /// Defines the <see cref="ShouldLoop" /> property
-    /// </summary>
-    public static readonly StyledProperty<bool> ShouldLoopProperty =
+   /// <summary>
+   /// Defines the <see cref="ShouldLoop" /> property
+   /// </summary>
+   public static readonly StyledProperty<bool> ShouldLoopProperty =
         AvaloniaProperty.Register<DateTimePickerPanel, bool>(nameof(ShouldLoop));
-
-    private Size _extent;
-    private double _extentOne;
-    private bool _hasInit;
-    private int _increment = 1;
-    private int _maximumValue = 2;
 
     //Backing fields for properties
     private int _minimumValue = 1;
-    private int _numItemsAboveBelowSelected;
-    private Vector _offset;
-    private ScrollContentPresenter? _parentScroller;
-    private int _range;
+    private int _maximumValue = 2;
+    private int _selectedValue = 1;
+    private int _increment = 1;
 
     //Helper fields
     private int _selectedIndex;
-    private int _selectedValue = 1;
-    private bool _suppressUpdateOffset;
     private int _totalItems;
+    private int _numItemsAboveBelowSelected;
+    private int _range;
+    private double _extentOne;
+    private Size _extent;
+    private Vector _offset;
+    private bool _hasInit;
+    private bool _suppressUpdateOffset;
+    private ScrollContentPresenter? _parentScroller;
+
+    public DateTimePickerPanel()
+    {
+        FormatDate = DateTime.Now;
+        AddHandler(TappedEvent, OnItemTapped, RoutingStrategies.Bubble);
+    }
 
     static DateTimePickerPanel()
     {
         FocusableProperty.OverrideDefaultValue<DateTimePickerPanel>(true);
         BackgroundProperty.OverrideDefaultValue<DateTimePickerPanel>(Brushes.Transparent);
         AffectsMeasure<DateTimePickerPanel>(ItemHeightProperty);
-    }
-
-    public DateTimePickerPanel()
-    {
-        FormatDate = DateTime.Now;
-        AddHandler(TappedEvent, OnItemTapped, RoutingStrategies.Bubble);
     }
 
     /// <summary>
@@ -338,21 +338,6 @@ public class DateTimePickerPanel : Panel, ILogicalScrollable
 
     public event EventHandler? ScrollInvalidated;
 
-    public bool BringIntoView(Control target, Rect targetRect)
-    {
-        return false;
-    }
-
-    public Control? GetControlInDirection(NavigationDirection direction, Control? from)
-    {
-        return null;
-    }
-
-    public void RaiseScrollInvalidated(EventArgs e)
-    {
-        ScrollInvalidated?.Invoke(this, e);
-    }
-
     public event EventHandler? SelectionChanged;
 
     protected override Size MeasureOverride(Size availableSize)
@@ -503,7 +488,6 @@ public class DateTimePickerPanel : Panel, ILogicalScrollable
         _totalItems = (int)Math.Ceiling((double)_range / _increment);
 
         var itemHgt = ItemHeight;
-
         //If looping, measure 100x as many items as we actually have
         _extent = new Size(0, ShouldLoop ? _totalItems * itemHgt * 100 : _totalItems * itemHgt);
 
@@ -676,6 +660,21 @@ public class DateTimePickerPanel : Panel, ILogicalScrollable
         }
 
         return (ListBoxItem?)item;
+    }
+
+    public bool BringIntoView(Control target, Rect targetRect)
+    {
+        return false;
+    }
+
+    public Control? GetControlInDirection(NavigationDirection direction, Control? from)
+    {
+        return null;
+    }
+
+    public void RaiseScrollInvalidated(EventArgs e)
+    {
+        ScrollInvalidated?.Invoke(this, e);
     }
 
     private void OnScrollGestureEnded(object? sender, ScrollGestureEndedEventArgs e)

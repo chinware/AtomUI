@@ -7,22 +7,6 @@ namespace AtomUI.Controls;
 
 internal class BaseOverflowMenuItem : MenuItem
 {
-    private IconButton? _iconButton;
-
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        base.OnApplyTemplate(e);
-        _iconButton = e.NameScope.Find<IconButton>(BaseOverflowMenuItemTheme.ItemCloseButtonPart);
-        if (_iconButton is not null)
-        {
-            _iconButton.Click += (sender, args) => { NotifyCloseRequest(); };
-        }
-    }
-
-    protected virtual void NotifyCloseRequest()
-    {
-    }
-
     #region 公共属性
 
     public static readonly DirectProperty<BaseOverflowMenuItem, bool> IsClosableProperty =
@@ -48,6 +32,22 @@ internal class BaseOverflowMenuItem : MenuItem
     }
 
     #endregion
+
+    private IconButton? _iconButton;
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        _iconButton = e.NameScope.Find<IconButton>(BaseOverflowMenuItemTheme.ItemCloseButtonPart);
+        if (_iconButton is not null)
+        {
+            _iconButton.Click += (sender, args) => { NotifyCloseRequest(); };
+        }
+    }
+
+    protected virtual void NotifyCloseRequest()
+    {
+    }
 }
 
 internal class CloseTabRequestEventArgs : RoutedEventArgs

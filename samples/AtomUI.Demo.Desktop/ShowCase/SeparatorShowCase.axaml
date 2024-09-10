@@ -1,14 +1,16 @@
-<UserControl x:Class="AtomUI.Demo.Desktop.ShowCase.SeparatorShowCase"
-             xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:atom="https://atomui.net"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d">
-    <desktop:ShowCasePanel>
-        <desktop:ShowCaseItem Title="Horizontal"
-                              Description="A Separator is horizontal by default. You can add text within Separator.">
+<UserControl
+    x:Class="AtomUI.Demo.Desktop.ShowCase.SeparatorShowCase"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:atom="https://atomui.net"
+    xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
+    mc:Ignorable="d">
+    <showcase:ShowCasePanel>
+        <showcase:ShowCaseItem
+            Title="Horizontal"
+            Description="A Separator is horizontal by default. You can add text within Separator.">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <TextBlock TextWrapping="Wrap">
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
@@ -22,10 +24,11 @@
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
                 </TextBlock>
             </StackPanel>
-        </desktop:ShowCaseItem>
+        </showcase:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Divider with title"
-                              Description="Divider with inner title, set orientation='left/right' to align it.">
+        <showcase:ShowCaseItem
+            Title="Divider with title"
+            Description="Divider with inner title, set orientation='left/right' to align it.">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <TextBlock TextWrapping="Wrap">
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
@@ -34,40 +37,32 @@
                 <TextBlock TextWrapping="Wrap">
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
                 </TextBlock>
-                <atom:Separator Title="Left text"
-                                FontWeight="Bold"
-                                TitlePosition="Left" />
+                <atom:Separator Title="Left text" TitlePosition="Left" FontWeight="Bold" />
                 <TextBlock TextWrapping="Wrap">
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
                 </TextBlock>
-                <atom:Separator Title="Right text"
-                                FontStyle="Oblique"
-                                TitlePosition="Right" />
+                <atom:Separator Title="Right text" TitlePosition="Right" FontStyle="Oblique" />
                 <TextBlock TextWrapping="Wrap">
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
                 </TextBlock>
-                <atom:Separator Title="Left Text with 0 orientationMargin"
-                                FontStyle="Oblique"
-                                FontWeight="Medium"
-                                OrientationMargin="0"
-                                TitlePosition="Left" />
+                <atom:Separator Title="Left Text with 0 orientationMargin" TitlePosition="Left" FontStyle="Oblique"
+                                FontWeight="Medium" OrientationMargin="0" />
                 <TextBlock TextWrapping="Wrap">
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
                 </TextBlock>
 
-                <atom:Separator Title="Right Text with 50px orientationMargin"
+                <atom:Separator Title="Right Text with 50px orientationMargin" TitlePosition="Right" TitleColor="Coral"
                                 FontWeight="Medium"
-                                OrientationMargin="50"
-                                TitleColor="Coral"
-                                TitlePosition="Right" />
+                                OrientationMargin="50" />
                 <TextBlock TextWrapping="Wrap">
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
                 </TextBlock>
             </StackPanel>
-        </desktop:ShowCaseItem>
+        </showcase:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Text without heading style"
-                              Description="You can use non-heading style of divider text by setting the plain property.">
+        <showcase:ShowCaseItem
+            Title="Text without heading style"
+            Description="You can use non-heading style of divider text by setting the plain property.">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <TextBlock TextWrapping="Wrap">
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
@@ -85,9 +80,11 @@
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
                 </TextBlock>
             </StackPanel>
-        </desktop:ShowCaseItem>
+        </showcase:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Vertical" Description="Use type='vertical' to make the divider vertical.">
+        <showcase:ShowCaseItem
+            Title="Vertical"
+            Description="Use type='vertical' to make the divider vertical.">
             <StackPanel Orientation="Horizontal" Spacing="5">
                 <TextBlock>
                     Item1
@@ -101,6 +98,6 @@
                     Item3
                 </TextBlock>
             </StackPanel>
-        </desktop:ShowCaseItem>
-    </desktop:ShowCasePanel>
+        </showcase:ShowCaseItem>
+    </showcase:ShowCasePanel>
 </UserControl>

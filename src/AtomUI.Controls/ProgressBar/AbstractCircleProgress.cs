@@ -15,6 +15,61 @@ public abstract class AbstractCircleProgress : AbstractProgressBar
     protected const double SMALL_CIRCLE_SIZE = 60;
     protected const double CIRCLE_MIN_STROKE_THICKNESS = 3;
 
+    #region 公共属性定义
+
+    public static readonly StyledProperty<int> StepCountProperty =
+        AvaloniaProperty.Register<ProgressBar, int>(nameof(StepCount), coerce: (o, v) => Math.Max(v, 0));
+
+    public static readonly StyledProperty<double> StepGapProperty =
+        AvaloniaProperty.Register<ProgressBar, double>(nameof(StepGap), 2, coerce: (o, v) => Math.Max(v, 0));
+
+    public int StepCount
+    {
+        get => GetValue(StepCountProperty);
+        set => SetValue(StepCountProperty, value);
+    }
+
+    public double StepGap
+    {
+        get => GetValue(StepGapProperty);
+        set => SetValue(StepGapProperty, value);
+    }
+
+    #endregion
+
+    #region 内部属性定义
+
+    internal static readonly StyledProperty<double> IndicatorAngleProperty =
+        AvaloniaProperty.Register<AbstractCircleProgress, double>(nameof(IndicatorAngle));
+
+    internal static readonly StyledProperty<double> CircleMinimumTextFontSizeProperty =
+        AvaloniaProperty.Register<AbstractCircleProgress, double>(
+            nameof(CircleMinimumTextFontSize));
+
+    internal static readonly StyledProperty<double> CircleMinimumIconSizeProperty =
+        AvaloniaProperty.Register<AbstractCircleProgress, double>(
+            nameof(CircleMinimumIconSize));
+
+    internal double IndicatorAngle
+    {
+        get => GetValue(IndicatorAngleProperty);
+        set => SetValue(IndicatorAngleProperty, value);
+    }
+
+    internal double CircleMinimumTextFontSize
+    {
+        get => GetValue(CircleMinimumTextFontSizeProperty);
+        set => SetValue(CircleMinimumTextFontSizeProperty, value);
+    }
+
+    internal double CircleMinimumIconSize
+    {
+        get => GetValue(CircleMinimumIconSizeProperty);
+        set => SetValue(CircleMinimumIconSizeProperty, value);
+    }
+
+    #endregion
+
     internal Dictionary<SizeType, double> _sizeTypeThresholdValue;
 
     static AbstractCircleProgress()
@@ -279,59 +334,4 @@ public abstract class AbstractCircleProgress : AbstractProgressBar
         SetupExtraInfoFontSize();
         SetupExtraInfoIconSize();
     }
-
-    #region 公共属性定义
-
-    public static readonly StyledProperty<int> StepCountProperty =
-        AvaloniaProperty.Register<ProgressBar, int>(nameof(StepCount), coerce: (o, v) => Math.Max(v, 0));
-
-    public static readonly StyledProperty<double> StepGapProperty =
-        AvaloniaProperty.Register<ProgressBar, double>(nameof(StepGap), 2, coerce: (o, v) => Math.Max(v, 0));
-
-    public int StepCount
-    {
-        get => GetValue(StepCountProperty);
-        set => SetValue(StepCountProperty, value);
-    }
-
-    public double StepGap
-    {
-        get => GetValue(StepGapProperty);
-        set => SetValue(StepGapProperty, value);
-    }
-
-    #endregion
-
-    #region 内部属性定义
-
-    internal static readonly StyledProperty<double> IndicatorAngleProperty =
-        AvaloniaProperty.Register<AbstractCircleProgress, double>(nameof(IndicatorAngle));
-
-    internal static readonly StyledProperty<double> CircleMinimumTextFontSizeProperty =
-        AvaloniaProperty.Register<AbstractCircleProgress, double>(
-            nameof(CircleMinimumTextFontSize));
-
-    internal static readonly StyledProperty<double> CircleMinimumIconSizeProperty =
-        AvaloniaProperty.Register<AbstractCircleProgress, double>(
-            nameof(CircleMinimumIconSize));
-
-    internal double IndicatorAngle
-    {
-        get => GetValue(IndicatorAngleProperty);
-        set => SetValue(IndicatorAngleProperty, value);
-    }
-
-    internal double CircleMinimumTextFontSize
-    {
-        get => GetValue(CircleMinimumTextFontSizeProperty);
-        set => SetValue(CircleMinimumTextFontSizeProperty, value);
-    }
-
-    internal double CircleMinimumIconSize
-    {
-        get => GetValue(CircleMinimumIconSizeProperty);
-        set => SetValue(CircleMinimumIconSizeProperty, value);
-    }
-
-    #endregion
 }

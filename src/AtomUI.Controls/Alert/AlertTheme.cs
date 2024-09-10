@@ -1,7 +1,7 @@
 ﻿using AtomUI.Data;
 using AtomUI.Theme;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
@@ -119,7 +119,6 @@ internal class AlertTheme : BaseControlTheme
     private void BuildCloseBtnStyle()
     {
         var closeBtnSelector = default(Selector).Nesting().Template().OfType<IconButton>().Name(CloseBtnPart);
-
         // 设置根据 Description 是否显示 Close 按钮的相关样式
         {
             // 为空

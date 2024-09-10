@@ -2,13 +2,8 @@
 
 public class IconManager : IIconPackageContainer, IPackageAwareIconReader
 {
-    private readonly Dictionary<string, IIconPackageProvider> _iconPackageProviders = new();
     private string? _defaultPackage;
-
-    protected IconManager()
-    {
-    }
-
+    private readonly Dictionary<string, IIconPackageProvider> _iconPackageProviders = new();
     public static IconManager Current { get; } = new();
 
     public string? DefaultPackage
@@ -29,6 +24,10 @@ public class IconManager : IIconPackageContainer, IPackageAwareIconReader
         }
     }
 
+    protected IconManager()
+    {
+    }
+
     public IIconPackageContainer Register(IIconPackageProvider iconPackageProvider)
     {
         var packageId = iconPackageProvider.Id;
@@ -43,27 +42,6 @@ public class IconManager : IIconPackageContainer, IPackageAwareIconReader
     public IIconPackageContainer Register<TIconProvider>() where TIconProvider : IIconPackageProvider, new()
     {
         return Register(new TIconProvider());
-    }
-
-    public TIconPackageProvider? GetIconProvider<TIconPackageProvider>(string? id = null)
-        where TIconPackageProvider : IIconPackageProvider, new()
-    {
-        return (TIconPackageProvider?)GetIconProvider(id);
-    }
-
-    public IIconPackageProvider? GetIconProvider(string? id = null)
-    {
-        if (id is null)
-        {
-            id = DefaultPackage;
-        }
-
-        if (id is null || !_iconPackageProviders.ContainsKey(id))
-        {
-            return default;
-        }
-
-        return _iconPackageProviders[id];
     }
 
     public IconInfo? GetIcon(string iconKind)
@@ -159,5 +137,26 @@ public class IconManager : IIconPackageContainer, IPackageAwareIconReader
 
         var packageProvider = _iconPackageProviders[package];
         return packageProvider.GetIcon(iconKind, twoToneColorInfo);
+    }
+
+    public TIconPackageProvider? GetIconProvider<TIconPackageProvider>(string? id = null)
+        where TIconPackageProvider : IIconPackageProvider, new()
+    {
+        return (TIconPackageProvider?)GetIconProvider(id);
+    }
+
+    public IIconPackageProvider? GetIconProvider(string? id = null)
+    {
+        if (id is null)
+        {
+            id = DefaultPackage;
+        }
+
+        if (id is null || !_iconPackageProviders.ContainsKey(id))
+        {
+            return default;
+        }
+
+        return _iconPackageProviders[id];
     }
 }

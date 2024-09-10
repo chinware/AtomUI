@@ -26,23 +26,45 @@ public abstract class AbstractLineProgress : AbstractProgressBar
     public const string VerticalPC = ":vertical";
     public const string HorizontalPC = ":horizontal";
 
+    #region 内部属性定义
+
+    internal static readonly StyledProperty<double> LineProgressPaddingProperty =
+        AvaloniaProperty.Register<AbstractLineProgress, double>(
+            nameof(LineProgressPadding));
+
+    internal static readonly StyledProperty<double> LineExtraInfoMarginProperty =
+        AvaloniaProperty.Register<AbstractLineProgress, double>(
+            nameof(LineExtraInfoMargin));
+
+    internal static readonly StyledProperty<double> LineInfoIconSizeProperty =
+        AvaloniaProperty.Register<AbstractLineProgress, double>(
+            nameof(LineInfoIconSize));
+
+    internal double LineProgressPadding
+    {
+        get => GetValue(LineProgressPaddingProperty);
+        set => SetValue(LineProgressPaddingProperty, value);
+    }
+
+    internal double LineExtraInfoMargin
+    {
+        get => GetValue(LineExtraInfoMarginProperty);
+        set => SetValue(LineExtraInfoMarginProperty, value);
+    }
+
+    internal double LineInfoIconSize
+    {
+        get => GetValue(LineInfoIconSizeProperty);
+        set => SetValue(LineInfoIconSizeProperty, value);
+    }
+
+    #endregion
+
     /// <summary>
     /// Defines the <see cref="Orientation" /> property.
     /// </summary>
     public static readonly StyledProperty<Orientation> OrientationProperty =
         AvaloniaProperty.Register<AbstractProgressBar, Orientation>(nameof(Orientation));
-
-    protected Size _extraInfoSize = Size.Infinity;
-    protected Rect _grooveRect;
-
-    private bool _lastCompletedStatus;
-
-    internal Dictionary<SizeType, SizeTypeThresholdValue> _sizeTypeThresholdValue;
-
-    public AbstractLineProgress()
-    {
-        _sizeTypeThresholdValue = new Dictionary<SizeType, SizeTypeThresholdValue>();
-    }
 
     /// <summary>
     /// Gets or sets the orientation of the <see cref="ProgressBar" />.
@@ -53,13 +75,21 @@ public abstract class AbstractLineProgress : AbstractProgressBar
         set => SetValue(OrientationProperty, value);
     }
 
+    internal Dictionary<SizeType, SizeTypeThresholdValue> _sizeTypeThresholdValue;
+    protected Size _extraInfoSize = Size.Infinity;
+    protected Rect _grooveRect;
+
+    public AbstractLineProgress()
+    {
+        _sizeTypeThresholdValue = new Dictionary<SizeType, SizeTypeThresholdValue>();
+    }
+
     // 根据当前的状态进行计算
     protected virtual Size CalculateExtraInfoSize(double fontSize)
     {
         if (Status == ProgressStatus.Exception || MathUtils.AreClose(Value, Maximum))
-
-            // 只要图标
         {
+            // 只要图标
             return new Size(LineInfoIconSize, LineInfoIconSize);
         }
 
@@ -144,6 +174,8 @@ public abstract class AbstractLineProgress : AbstractProgressBar
         UpdatePseudoClasses();
     }
 
+    private bool _lastCompletedStatus;
+
     protected override void NotifyHandleExtraInfoVisibility()
     {
         base.NotifyHandleExtraInfoVisibility();
@@ -163,38 +195,4 @@ public abstract class AbstractLineProgress : AbstractProgressBar
             _extraInfoSize       = CalculateExtraInfoSize(FontSize);
         }
     }
-
-    #region 内部属性定义
-
-    internal static readonly StyledProperty<double> LineProgressPaddingProperty =
-        AvaloniaProperty.Register<AbstractLineProgress, double>(
-            nameof(LineProgressPadding));
-
-    internal static readonly StyledProperty<double> LineExtraInfoMarginProperty =
-        AvaloniaProperty.Register<AbstractLineProgress, double>(
-            nameof(LineExtraInfoMargin));
-
-    internal static readonly StyledProperty<double> LineInfoIconSizeProperty =
-        AvaloniaProperty.Register<AbstractLineProgress, double>(
-            nameof(LineInfoIconSize));
-
-    internal double LineProgressPadding
-    {
-        get => GetValue(LineProgressPaddingProperty);
-        set => SetValue(LineProgressPaddingProperty, value);
-    }
-
-    internal double LineExtraInfoMargin
-    {
-        get => GetValue(LineExtraInfoMarginProperty);
-        set => SetValue(LineExtraInfoMarginProperty, value);
-    }
-
-    internal double LineInfoIconSize
-    {
-        get => GetValue(LineInfoIconSizeProperty);
-        set => SetValue(LineInfoIconSizeProperty, value);
-    }
-
-    #endregion
 }

@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Converters;
@@ -20,11 +20,54 @@ namespace AtomUI.Controls;
 internal abstract class BaseTabScrollViewer : ScrollViewer
 {
     private const int EdgeIndicatorZIndex = 1000;
-    private protected Border? _endEdgeIndicator;
-    private protected MenuFlyout? _menuFlyout;
+
+    #region 内部属性定义
+
+    internal static readonly DirectProperty<BaseTabScrollViewer, Dock> TabStripPlacementProperty =
+        AvaloniaProperty.RegisterDirect<BaseTabScrollViewer, Dock>(nameof(TabStripPlacement),
+            o => o.TabStripPlacement,
+            (o, v) => o.TabStripPlacement = v);
+
+    internal static readonly DirectProperty<BaseTabScrollViewer, IBrush?> EdgeShadowStartColorProperty =
+        AvaloniaProperty.RegisterDirect<BaseTabScrollViewer, IBrush?>(nameof(EdgeShadowStartColor),
+            o => o.EdgeShadowStartColor,
+            (o, v) => o.EdgeShadowStartColor = v);
+
+    internal static readonly DirectProperty<BaseTabScrollViewer, double> MenuEdgeThicknessProperty =
+        AvaloniaProperty.RegisterDirect<BaseTabScrollViewer, double>(nameof(MenuEdgeThickness),
+            o => o.MenuEdgeThickness,
+            (o, v) => o.MenuEdgeThickness = v);
+
+    private Dock _tabStripPlacement;
+
+    internal Dock TabStripPlacement
+    {
+        get => _tabStripPlacement;
+        set => SetAndRaise(TabStripPlacementProperty, ref _tabStripPlacement, value);
+    }
+
+    private IBrush? _edgeShadowStartColor;
+
+    internal IBrush? EdgeShadowStartColor
+    {
+        get => _edgeShadowStartColor;
+        set => SetAndRaise(EdgeShadowStartColorProperty, ref _edgeShadowStartColor, value);
+    }
+
+    private double _menuEdgeThickness;
+
+    internal double MenuEdgeThickness
+    {
+        get => _menuEdgeThickness;
+        set => SetAndRaise(MenuEdgeThicknessProperty, ref _menuEdgeThickness, value);
+    }
+
+    #endregion
 
     private protected IconButton? _menuIndicator;
     private protected Border? _startEdgeIndicator;
+    private protected Border? _endEdgeIndicator;
+    private protected MenuFlyout? _menuFlyout;
 
     static BaseTabScrollViewer()
     {
@@ -222,47 +265,4 @@ internal abstract class BaseTabScrollViewer : ScrollViewer
             _menuIndicator.IsVisible = startEdgeVisible || endEdgeVisible;
         }
     }
-
-    #region 内部属性定义
-
-    internal static readonly DirectProperty<BaseTabScrollViewer, Dock> TabStripPlacementProperty =
-        AvaloniaProperty.RegisterDirect<BaseTabScrollViewer, Dock>(nameof(TabStripPlacement),
-            o => o.TabStripPlacement,
-            (o, v) => o.TabStripPlacement = v);
-
-    internal static readonly DirectProperty<BaseTabScrollViewer, IBrush?> EdgeShadowStartColorProperty =
-        AvaloniaProperty.RegisterDirect<BaseTabScrollViewer, IBrush?>(nameof(EdgeShadowStartColor),
-            o => o.EdgeShadowStartColor,
-            (o, v) => o.EdgeShadowStartColor = v);
-
-    internal static readonly DirectProperty<BaseTabScrollViewer, double> MenuEdgeThicknessProperty =
-        AvaloniaProperty.RegisterDirect<BaseTabScrollViewer, double>(nameof(MenuEdgeThickness),
-            o => o.MenuEdgeThickness,
-            (o, v) => o.MenuEdgeThickness = v);
-
-    private Dock _tabStripPlacement;
-
-    internal Dock TabStripPlacement
-    {
-        get => _tabStripPlacement;
-        set => SetAndRaise(TabStripPlacementProperty, ref _tabStripPlacement, value);
-    }
-
-    private IBrush? _edgeShadowStartColor;
-
-    internal IBrush? EdgeShadowStartColor
-    {
-        get => _edgeShadowStartColor;
-        set => SetAndRaise(EdgeShadowStartColorProperty, ref _edgeShadowStartColor, value);
-    }
-
-    private double _menuEdgeThickness;
-
-    internal double MenuEdgeThickness
-    {
-        get => _menuEdgeThickness;
-        set => SetAndRaise(MenuEdgeThicknessProperty, ref _menuEdgeThickness, value);
-    }
-
-    #endregion
 }

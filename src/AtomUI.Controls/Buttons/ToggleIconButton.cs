@@ -11,6 +11,46 @@ namespace AtomUI.Controls;
 
 public class ToggleIconButton : ToggleButton
 {
+    #region 公共属性定义
+
+    public static readonly StyledProperty<PathIcon?> CheckedIconProperty
+        = AvaloniaProperty.Register<ToggleIconButton, PathIcon?>(nameof(CheckedIcon));
+
+    public static readonly StyledProperty<PathIcon?> UnCheckedIconProperty
+        = AvaloniaProperty.Register<ToggleIconButton, PathIcon?>(nameof(UnCheckedIcon));
+
+    public static readonly StyledProperty<double> IconWidthProperty
+        = AvaloniaProperty.Register<ToggleIconButton, double>(nameof(IconWidth));
+
+    public static readonly StyledProperty<double> IconHeightProperty
+        = AvaloniaProperty.Register<ToggleIconButton, double>(nameof(IconHeight));
+
+    public PathIcon? CheckedIcon
+    {
+        get => GetValue(CheckedIconProperty);
+        set => SetValue(CheckedIconProperty, value);
+    }
+
+    public PathIcon? UnCheckedIcon
+    {
+        get => GetValue(UnCheckedIconProperty);
+        set => SetValue(UnCheckedIconProperty, value);
+    }
+
+    public double IconWidth
+    {
+        get => GetValue(IconWidthProperty);
+        set => SetValue(IconWidthProperty, value);
+    }
+
+    public double IconHeight
+    {
+        get => GetValue(IconHeightProperty);
+        set => SetValue(IconHeightProperty, value);
+    }
+
+    #endregion
+
     private ControlStyleState _styleState;
 
     static ToggleIconButton()
@@ -131,44 +171,4 @@ public class ToggleIconButton : ToggleButton
     {
         return true;
     }
-
-    #region 公共属性定义
-
-    public static readonly StyledProperty<PathIcon?> CheckedIconProperty
-        = AvaloniaProperty.Register<ToggleIconButton, PathIcon?>(nameof(CheckedIcon));
-
-    public static readonly StyledProperty<PathIcon?> UnCheckedIconProperty
-        = AvaloniaProperty.Register<ToggleIconButton, PathIcon?>(nameof(UnCheckedIcon));
-
-    public static readonly StyledProperty<double> IconWidthProperty
-        = AvaloniaProperty.Register<ToggleIconButton, double>(nameof(IconWidth));
-
-    public static readonly StyledProperty<double> IconHeightProperty
-        = AvaloniaProperty.Register<ToggleIconButton, double>(nameof(IconHeight));
-
-    public PathIcon? CheckedIcon
-    {
-        get => GetValue(CheckedIconProperty);
-        set => SetValue(CheckedIconProperty, value);
-    }
-
-    public PathIcon? UnCheckedIcon
-    {
-        get => GetValue(UnCheckedIconProperty);
-        set => SetValue(UnCheckedIconProperty, value);
-    }
-
-    public double IconWidth
-    {
-        get => GetValue(IconWidthProperty);
-        set => SetValue(IconWidthProperty, value);
-    }
-
-    public double IconHeight
-    {
-        get => GetValue(IconHeightProperty);
-        set => SetValue(IconHeightProperty, value);
-    }
-
-    #endregion
 }

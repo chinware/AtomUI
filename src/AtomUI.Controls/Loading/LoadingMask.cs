@@ -10,10 +10,69 @@ namespace AtomUI.Controls;
 
 public class LoadingMask : AvaloniaObject, IDisposable
 {
-    private AdornerLayer? _adornerLayer;
+    #region 公共属性定义
+
+    public static readonly StyledProperty<SizeType> SizeTypeProperty =
+        LoadingIndicator.SizeTypeProperty.AddOwner<LoadingMask>();
+
+    public static readonly StyledProperty<string?> LoadingMsgProperty =
+        LoadingIndicator.LoadingMsgProperty.AddOwner<LoadingMask>();
+
+    public static readonly StyledProperty<bool> IsShowLoadingMsgProperty =
+        LoadingIndicator.IsShowLoadingMsgProperty.AddOwner<LoadingMask>();
+
+    public static readonly StyledProperty<PathIcon?> CustomIndicatorIconProperty =
+        LoadingIndicator.CustomIndicatorIconProperty.AddOwner<LoadingMask>();
+
+    public static readonly StyledProperty<TimeSpan?> MotionDurationProperty =
+        LoadingIndicator.MotionDurationProperty.AddOwner<LoadingMask>();
+
+    public static readonly StyledProperty<Easing?> MotionEasingCurveProperty =
+        LoadingIndicator.MotionEasingCurveProperty.AddOwner<LoadingMask>();
+
+    public SizeType SizeType
+    {
+        get => GetValue(SizeTypeProperty);
+        set => SetValue(SizeTypeProperty, value);
+    }
+
+    public string? LoadingMsg
+    {
+        get => GetValue(LoadingMsgProperty);
+        set => SetValue(LoadingMsgProperty, value);
+    }
+
+    public bool IsShowLoadingMsg
+    {
+        get => GetValue(IsShowLoadingMsgProperty);
+        set => SetValue(IsShowLoadingMsgProperty, value);
+    }
+
+    public PathIcon? CustomIndicatorIcon
+    {
+        get => GetValue(CustomIndicatorIconProperty);
+        set => SetValue(CustomIndicatorIconProperty, value);
+    }
+
+    public TimeSpan? MotionDuration
+    {
+        get => GetValue(MotionDurationProperty);
+        set => SetValue(MotionDurationProperty, value);
+    }
+
+    public Easing? MotionEasingCurve
+    {
+        get => GetValue(MotionEasingCurveProperty);
+        set => SetValue(MotionEasingCurveProperty, value);
+    }
+
+    public bool IsLoading { get; private set; }
+
+    #endregion
 
     private Control? _attachTarget;
     private LoadingIndicatorAdorner? _loadingIndicatorAdorner;
+    private AdornerLayer? _adornerLayer;
 
     public LoadingMask(Control? attachTarget = null)
     {
@@ -21,17 +80,6 @@ public class LoadingMask : AvaloniaObject, IDisposable
         {
             Attach(attachTarget);
         }
-    }
-
-    public void Dispose()
-    {
-        if (_attachTarget is not null)
-        {
-            Detach();
-        }
-
-        _adornerLayer            = null;
-        _loadingIndicatorAdorner = null;
     }
 
     public void Attach(Control attachTarget)
@@ -115,68 +163,19 @@ public class LoadingMask : AvaloniaObject, IDisposable
         IsLoading            = false;
     }
 
+    public void Dispose()
+    {
+        if (_attachTarget is not null)
+        {
+            Detach();
+        }
+
+        _adornerLayer            = null;
+        _loadingIndicatorAdorner = null;
+    }
+
     private void HandleTargetDetachedFromVisualTree(object? sender, LogicalTreeAttachmentEventArgs args)
     {
         Dispose();
     }
-
-    #region 公共属性定义
-
-    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        LoadingIndicator.SizeTypeProperty.AddOwner<LoadingMask>();
-
-    public static readonly StyledProperty<string?> LoadingMsgProperty =
-        LoadingIndicator.LoadingMsgProperty.AddOwner<LoadingMask>();
-
-    public static readonly StyledProperty<bool> IsShowLoadingMsgProperty =
-        LoadingIndicator.IsShowLoadingMsgProperty.AddOwner<LoadingMask>();
-
-    public static readonly StyledProperty<PathIcon?> CustomIndicatorIconProperty =
-        LoadingIndicator.CustomIndicatorIconProperty.AddOwner<LoadingMask>();
-
-    public static readonly StyledProperty<TimeSpan?> MotionDurationProperty =
-        LoadingIndicator.MotionDurationProperty.AddOwner<LoadingMask>();
-
-    public static readonly StyledProperty<Easing?> MotionEasingCurveProperty =
-        LoadingIndicator.MotionEasingCurveProperty.AddOwner<LoadingMask>();
-
-    public SizeType SizeType
-    {
-        get => GetValue(SizeTypeProperty);
-        set => SetValue(SizeTypeProperty, value);
-    }
-
-    public string? LoadingMsg
-    {
-        get => GetValue(LoadingMsgProperty);
-        set => SetValue(LoadingMsgProperty, value);
-    }
-
-    public bool IsShowLoadingMsg
-    {
-        get => GetValue(IsShowLoadingMsgProperty);
-        set => SetValue(IsShowLoadingMsgProperty, value);
-    }
-
-    public PathIcon? CustomIndicatorIcon
-    {
-        get => GetValue(CustomIndicatorIconProperty);
-        set => SetValue(CustomIndicatorIconProperty, value);
-    }
-
-    public TimeSpan? MotionDuration
-    {
-        get => GetValue(MotionDurationProperty);
-        set => SetValue(MotionDurationProperty, value);
-    }
-
-    public Easing? MotionEasingCurve
-    {
-        get => GetValue(MotionEasingCurveProperty);
-        set => SetValue(MotionEasingCurveProperty, value);
-    }
-
-    public bool IsLoading { get; private set; }
-
-    #endregion
 }

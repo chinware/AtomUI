@@ -1,6 +1,7 @@
 ﻿using AtomUI.Data;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -29,6 +30,87 @@ public enum CollapseExpandIconPosition
 [TemplatePart(CollapseTheme.ItemsPresenterPart, typeof(ItemsPresenter))]
 public class Collapse : SelectingItemsControl
 {
+    #region 公共属性定义
+
+    public static readonly StyledProperty<SizeType> SizeTypeProperty =
+        AvaloniaProperty.Register<Collapse, SizeType>(nameof(SizeType), SizeType.Middle);
+
+    public static readonly StyledProperty<bool> IsGhostStyleProperty =
+        AvaloniaProperty.Register<Collapse, bool>(nameof(IsGhostStyle));
+
+    public static readonly StyledProperty<bool> IsBorderlessProperty =
+        AvaloniaProperty.Register<Collapse, bool>(nameof(IsBorderless));
+
+    public static readonly StyledProperty<bool> IsAccordionProperty =
+        AvaloniaProperty.Register<Collapse, bool>(nameof(IsAccordion));
+
+    public static readonly StyledProperty<CollapseTriggerType> TriggerTypeProperty =
+        AvaloniaProperty.Register<Collapse, CollapseTriggerType>(nameof(TriggerType));
+
+    public static readonly StyledProperty<CollapseExpandIconPosition> ExpandIconPositionProperty =
+        AvaloniaProperty.Register<Collapse, CollapseExpandIconPosition>(nameof(ExpandIconPosition));
+
+    public SizeType SizeType
+    {
+        get => GetValue(SizeTypeProperty);
+        set => SetValue(SizeTypeProperty, value);
+    }
+
+    public bool IsGhostStyle
+    {
+        get => GetValue(IsGhostStyleProperty);
+        set => SetValue(IsGhostStyleProperty, value);
+    }
+
+    public bool IsBorderless
+    {
+        get => GetValue(IsBorderlessProperty);
+        set => SetValue(IsBorderlessProperty, value);
+    }
+
+    public bool IsAccordion
+    {
+        get => GetValue(IsAccordionProperty);
+        set => SetValue(IsAccordionProperty, value);
+    }
+
+    public CollapseTriggerType TriggerType
+    {
+        get => GetValue(TriggerTypeProperty);
+        set => SetValue(TriggerTypeProperty, value);
+    }
+
+    public CollapseExpandIconPosition ExpandIconPosition
+    {
+        get => GetValue(ExpandIconPositionProperty);
+        set => SetValue(ExpandIconPositionProperty, value);
+    }
+
+    #endregion
+
+    #region 内部属性定义
+
+    internal static readonly DirectProperty<Collapse, Thickness> EffectiveBorderThicknessProperty =
+        AvaloniaProperty.RegisterDirect<Collapse, Thickness>(nameof(EffectiveBorderThickness),
+            o => o.EffectiveBorderThickness,
+            (o, v) => o.EffectiveBorderThickness = v);
+
+    private Thickness _effectiveBorderThickness;
+
+    internal Thickness EffectiveBorderThickness
+    {
+        get => _effectiveBorderThickness;
+        set => SetAndRaise(EffectiveBorderThicknessProperty, ref _effectiveBorderThickness, value);
+    }
+
+    private static readonly FuncTemplate<Panel?> DefaultPanel =
+        new(() => new StackPanel
+        {
+            Orientation = Orientation.Vertical
+        });
+
+    #endregion
+
     static Collapse()
     {
         SelectionModeProperty.OverrideDefaultValue<Collapse>(SelectionMode.Multiple | SelectionMode.Toggle);
@@ -232,85 +314,4 @@ public class Collapse : SelectingItemsControl
             SelectionMode = SelectionMode.Multiple | SelectionMode.Toggle;
         }
     }
-
-    #region 公共属性定义
-
-    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        AvaloniaProperty.Register<Collapse, SizeType>(nameof(SizeType), SizeType.Middle);
-
-    public static readonly StyledProperty<bool> IsGhostStyleProperty =
-        AvaloniaProperty.Register<Collapse, bool>(nameof(IsGhostStyle));
-
-    public static readonly StyledProperty<bool> IsBorderlessProperty =
-        AvaloniaProperty.Register<Collapse, bool>(nameof(IsBorderless));
-
-    public static readonly StyledProperty<bool> IsAccordionProperty =
-        AvaloniaProperty.Register<Collapse, bool>(nameof(IsAccordion));
-
-    public static readonly StyledProperty<CollapseTriggerType> TriggerTypeProperty =
-        AvaloniaProperty.Register<Collapse, CollapseTriggerType>(nameof(TriggerType));
-
-    public static readonly StyledProperty<CollapseExpandIconPosition> ExpandIconPositionProperty =
-        AvaloniaProperty.Register<Collapse, CollapseExpandIconPosition>(nameof(ExpandIconPosition));
-
-    public SizeType SizeType
-    {
-        get => GetValue(SizeTypeProperty);
-        set => SetValue(SizeTypeProperty, value);
-    }
-
-    public bool IsGhostStyle
-    {
-        get => GetValue(IsGhostStyleProperty);
-        set => SetValue(IsGhostStyleProperty, value);
-    }
-
-    public bool IsBorderless
-    {
-        get => GetValue(IsBorderlessProperty);
-        set => SetValue(IsBorderlessProperty, value);
-    }
-
-    public bool IsAccordion
-    {
-        get => GetValue(IsAccordionProperty);
-        set => SetValue(IsAccordionProperty, value);
-    }
-
-    public CollapseTriggerType TriggerType
-    {
-        get => GetValue(TriggerTypeProperty);
-        set => SetValue(TriggerTypeProperty, value);
-    }
-
-    public CollapseExpandIconPosition ExpandIconPosition
-    {
-        get => GetValue(ExpandIconPositionProperty);
-        set => SetValue(ExpandIconPositionProperty, value);
-    }
-
-    #endregion
-
-    #region 内部属性定义
-
-    internal static readonly DirectProperty<Collapse, Thickness> EffectiveBorderThicknessProperty =
-        AvaloniaProperty.RegisterDirect<Collapse, Thickness>(nameof(EffectiveBorderThickness),
-            o => o.EffectiveBorderThickness,
-            (o, v) => o.EffectiveBorderThickness = v);
-
-    private Thickness _effectiveBorderThickness;
-
-    internal Thickness EffectiveBorderThickness
-    {
-        get => _effectiveBorderThickness;
-        set => SetAndRaise(EffectiveBorderThicknessProperty, ref _effectiveBorderThickness, value);
-    }
-
-    private static readonly FuncTemplate<Panel?> DefaultPanel =
-        new(() => new StackPanel
-        {
-            Orientation = Orientation.Vertical
-        });
-
-    #endregion
 }

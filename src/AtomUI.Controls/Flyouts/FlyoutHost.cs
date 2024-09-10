@@ -1,6 +1,6 @@
 ﻿using AtomUI.Data;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives.PopupPositioning;
@@ -19,77 +19,6 @@ public enum FlyoutTriggerType
 
 public class FlyoutHost : Control
 {
-    private readonly FlyoutStateHelper _flyoutStateHelper;
-
-    static FlyoutHost()
-    {
-        PlacementProperty.OverrideDefaultValue<FlyoutHost>(PlacementMode.Top);
-    }
-
-    public FlyoutHost()
-    {
-        _flyoutStateHelper = new FlyoutStateHelper();
-    }
-
-    public override void ApplyTemplate()
-    {
-        base.ApplyTemplate();
-        TokenResourceBinder.CreateGlobalTokenBinding(this, MarginToAnchorProperty, GlobalTokenResourceKey.MarginXXS);
-        SetupFlyoutProperties();
-    }
-
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        BindUtils.RelayBind(this, AnchorTargetProperty, _flyoutStateHelper, FlyoutStateHelper.AnchorTargetProperty);
-        BindUtils.RelayBind(this, FlyoutProperty, _flyoutStateHelper, FlyoutStateHelper.FlyoutProperty);
-        BindUtils.RelayBind(this, MouseEnterDelayProperty, _flyoutStateHelper,
-            FlyoutStateHelper.MouseEnterDelayProperty);
-        BindUtils.RelayBind(this, MouseLeaveDelayProperty, _flyoutStateHelper,
-            FlyoutStateHelper.MouseLeaveDelayProperty);
-        BindUtils.RelayBind(this, TriggerProperty, _flyoutStateHelper, FlyoutStateHelper.TriggerTypeProperty);
-        if (AnchorTarget is not null)
-        {
-            ((ISetLogicalParent)AnchorTarget).SetParent(this);
-            VisualChildren.Add(AnchorTarget);
-        }
-    }
-
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        _flyoutStateHelper.NotifyAttachedToVisualTree();
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        _flyoutStateHelper.NotifyDetachedFromVisualTree();
-    }
-
-    protected virtual void SetupFlyoutProperties()
-    {
-        if (Flyout is not null)
-        {
-            BindUtils.RelayBind(this, PlacementProperty, Flyout);
-            BindUtils.RelayBind(this, PlacementAnchorProperty, Flyout);
-            BindUtils.RelayBind(this, PlacementGravityProperty, Flyout);
-            BindUtils.RelayBind(this, IsShowArrowProperty, Flyout);
-            BindUtils.RelayBind(this, IsPointAtCenterProperty, Flyout);
-            BindUtils.RelayBind(this, MarginToAnchorProperty, Flyout);
-        }
-    }
-
-    public void ShowFlyout(bool immediately)
-    {
-        _flyoutStateHelper.ShowFlyout(immediately);
-    }
-
-    public void HideFlyout(bool immediately)
-    {
-        _flyoutStateHelper.HideFlyout(immediately);
-    }
-
     #region 公共属性定义
 
     public static readonly StyledProperty<Control?> AnchorTargetProperty =
@@ -213,4 +142,75 @@ public class FlyoutHost : Control
     }
 
     #endregion
+
+    static FlyoutHost()
+    {
+        PlacementProperty.OverrideDefaultValue<FlyoutHost>(PlacementMode.Top);
+    }
+
+    private readonly FlyoutStateHelper _flyoutStateHelper;
+
+    public FlyoutHost()
+    {
+        _flyoutStateHelper = new FlyoutStateHelper();
+    }
+
+    public override void ApplyTemplate()
+    {
+        base.ApplyTemplate();
+        TokenResourceBinder.CreateGlobalTokenBinding(this, MarginToAnchorProperty, GlobalTokenResourceKey.MarginXXS);
+        SetupFlyoutProperties();
+    }
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        BindUtils.RelayBind(this, AnchorTargetProperty, _flyoutStateHelper, FlyoutStateHelper.AnchorTargetProperty);
+        BindUtils.RelayBind(this, FlyoutProperty, _flyoutStateHelper, FlyoutStateHelper.FlyoutProperty);
+        BindUtils.RelayBind(this, MouseEnterDelayProperty, _flyoutStateHelper,
+            FlyoutStateHelper.MouseEnterDelayProperty);
+        BindUtils.RelayBind(this, MouseLeaveDelayProperty, _flyoutStateHelper,
+            FlyoutStateHelper.MouseLeaveDelayProperty);
+        BindUtils.RelayBind(this, TriggerProperty, _flyoutStateHelper, FlyoutStateHelper.TriggerTypeProperty);
+        if (AnchorTarget is not null)
+        {
+            ((ISetLogicalParent)AnchorTarget).SetParent(this);
+            VisualChildren.Add(AnchorTarget);
+        }
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        _flyoutStateHelper.NotifyAttachedToVisualTree();
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        _flyoutStateHelper.NotifyDetachedFromVisualTree();
+    }
+
+    protected virtual void SetupFlyoutProperties()
+    {
+        if (Flyout is not null)
+        {
+            BindUtils.RelayBind(this, PlacementProperty, Flyout);
+            BindUtils.RelayBind(this, PlacementAnchorProperty, Flyout);
+            BindUtils.RelayBind(this, PlacementGravityProperty, Flyout);
+            BindUtils.RelayBind(this, IsShowArrowProperty, Flyout);
+            BindUtils.RelayBind(this, IsPointAtCenterProperty, Flyout);
+            BindUtils.RelayBind(this, MarginToAnchorProperty, Flyout);
+        }
+    }
+
+    public void ShowFlyout(bool immediately)
+    {
+        _flyoutStateHelper.ShowFlyout(immediately);
+    }
+
+    public void HideFlyout(bool immediately)
+    {
+        _flyoutStateHelper.HideFlyout(immediately);
+    }
 }

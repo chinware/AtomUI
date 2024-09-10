@@ -8,8 +8,8 @@ public class LangResourceKeyClassSourceWriter
 {
     private readonly SourceProductionContext _context;
     private readonly List<LanguageInfo> _languageInfos;
-    private readonly Dictionary<string, List<LanguageInfo>> _languagesById;
     private readonly List<string> _usingInfos;
+    private readonly Dictionary<string, List<LanguageInfo>> _languagesById;
 
     public LangResourceKeyClassSourceWriter(SourceProductionContext context, List<LanguageInfo> languageInfos)
     {

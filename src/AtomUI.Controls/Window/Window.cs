@@ -1,4 +1,4 @@
-namespace AtomUI.Controls;
+namespace AtomUI.Controls.Window;
 
 using AvaloniaWindow = Avalonia.Controls.Window;
 

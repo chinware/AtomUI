@@ -1,6 +1,5 @@
 ﻿using AtomUI.MotionScene;
 using AtomUI.Theme;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using AtomUI.Utils;
@@ -185,7 +184,6 @@ internal class CollapseItemTheme : BaseControlTheme
     private void BuildSelectedStyle()
     {
         var selectedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Selected));
-
         // Expand Button
         var expandButtonStyle = new Style(selector => selector.Nesting().Template().Name(ExpandButtonPart));
         var transformOptions  = new TransformOperations.Builder(1);

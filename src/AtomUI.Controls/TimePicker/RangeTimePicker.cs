@@ -20,18 +20,261 @@ namespace AtomUI.Controls;
 public class RangeTimePicker : TemplatedControl
 {
     private const string FlyoutOpenPC = ":flyout-open";
-    private readonly FlyoutStateHelper _flyoutStateHelper;
-    private IDisposable? _clearUpButtonDetectDisposable;
-    private bool _currentValidSelected;
+
+    #region 公共属性定义
+
+    public static readonly StyledProperty<object?> LeftAddOnProperty =
+        AvaloniaProperty.Register<RangeTimePicker, object?>(nameof(LeftAddOn));
+
+    public static readonly StyledProperty<object?> RightAddOnProperty =
+        AvaloniaProperty.Register<RangeTimePicker, object?>(nameof(RightAddOn));
+
+    public static readonly StyledProperty<object?> InnerLeftContentProperty
+        = AvaloniaProperty.Register<RangeTimePicker, object?>(nameof(InnerLeftContent));
+
+    public static readonly StyledProperty<object?> InnerRightContentProperty
+        = AvaloniaProperty.Register<RangeTimePicker, object?>(nameof(InnerRightContent));
+
+    public static readonly StyledProperty<SizeType> SizeTypeProperty =
+        AddOnDecoratedBox.SizeTypeProperty.AddOwner<RangeTimePicker>();
+
+    public static readonly StyledProperty<AddOnDecoratedVariant> StyleVariantProperty =
+        AddOnDecoratedBox.StyleVariantProperty.AddOwner<RangeTimePicker>();
+
+    public static readonly StyledProperty<AddOnDecoratedStatus> StatusProperty =
+        AddOnDecoratedBox.StatusProperty.AddOwner<RangeTimePicker>();
+
+    public static readonly StyledProperty<string?> RangeStartWatermarkProperty =
+        AvaloniaProperty.Register<TextBox, string?>(nameof(RangeStartWatermark));
+
+    public static readonly StyledProperty<string?> RangeEndWatermarkProperty =
+        AvaloniaProperty.Register<TextBox, string?>(nameof(RangeEndWatermark));
+
+    public static readonly StyledProperty<PlacementMode> PickerPlacementProperty =
+        AvaloniaProperty.Register<RangeTimePicker, PlacementMode>(nameof(PickerPlacement),
+            PlacementMode.BottomEdgeAlignedLeft);
+
+    public static readonly StyledProperty<bool> IsShowArrowProperty =
+        ArrowDecoratedBox.IsShowArrowProperty.AddOwner<RangeTimePicker>();
+
+    public static readonly StyledProperty<bool> IsPointAtCenterProperty =
+        Flyout.IsPointAtCenterProperty.AddOwner<RangeTimePicker>();
+
+    public static readonly StyledProperty<double> MarginToAnchorProperty =
+        Popup.MarginToAnchorProperty.AddOwner<RangeTimePicker>();
+
+    public static readonly StyledProperty<int> MouseEnterDelayProperty =
+        FlyoutStateHelper.MouseEnterDelayProperty.AddOwner<RangeTimePicker>();
+
+    public static readonly StyledProperty<int> MouseLeaveDelayProperty =
+        FlyoutStateHelper.MouseLeaveDelayProperty.AddOwner<RangeTimePicker>();
+
+    public static readonly StyledProperty<int> MinuteIncrementProperty =
+        TimePicker.MinuteIncrementProperty.AddOwner<RangeTimePicker>();
+
+    public static readonly StyledProperty<int> SecondIncrementProperty =
+        TimePicker.SecondIncrementProperty.AddOwner<RangeTimePicker>();
+
+    public static readonly StyledProperty<ClockIdentifierType> ClockIdentifierProperty =
+        TimePicker.ClockIdentifierProperty.AddOwner<RangeTimePicker>();
+
+    public static readonly StyledProperty<TimeSpan?> RangeStartSelectedTimeProperty =
+        AvaloniaProperty.Register<RangeTimePicker, TimeSpan?>(nameof(RangeStartSelectedTime),
+            defaultBindingMode: BindingMode.TwoWay,
+            enableDataValidation: true);
+
+    public static readonly StyledProperty<TimeSpan?> RangeEndSelectedTimeProperty =
+        AvaloniaProperty.Register<RangeTimePicker, TimeSpan?>(nameof(RangeEndSelectedTime),
+            defaultBindingMode: BindingMode.TwoWay,
+            enableDataValidation: true);
+
+    public static readonly StyledProperty<TimeSpan?> RangeStartDefaultTimeProperty =
+        AvaloniaProperty.Register<RangeTimePicker, TimeSpan?>(nameof(RangeStartDefaultTime),
+            enableDataValidation: true);
+
+    public static readonly StyledProperty<TimeSpan?> RangeEndDefaultTimeProperty =
+        AvaloniaProperty.Register<RangeTimePicker, TimeSpan?>(nameof(RangeEndDefaultTime),
+            enableDataValidation: true);
+
+    public object? LeftAddOn
+    {
+        get => GetValue(LeftAddOnProperty);
+        set => SetValue(LeftAddOnProperty, value);
+    }
+
+    public object? RightAddOn
+    {
+        get => GetValue(RightAddOnProperty);
+        set => SetValue(RightAddOnProperty, value);
+    }
+
+    public object? InnerLeftContent
+    {
+        get => GetValue(InnerLeftContentProperty);
+        set => SetValue(InnerLeftContentProperty, value);
+    }
+
+    public object? InnerRightContent
+    {
+        get => GetValue(InnerRightContentProperty);
+        set => SetValue(InnerRightContentProperty, value);
+    }
+
+    public SizeType SizeType
+    {
+        get => GetValue(SizeTypeProperty);
+        set => SetValue(SizeTypeProperty, value);
+    }
+
+    public AddOnDecoratedVariant StyleVariant
+    {
+        get => GetValue(StyleVariantProperty);
+        set => SetValue(StyleVariantProperty, value);
+    }
+
+    public AddOnDecoratedStatus Status
+    {
+        get => GetValue(StatusProperty);
+        set => SetValue(StatusProperty, value);
+    }
+
+    public string? RangeStartWatermark
+    {
+        get => GetValue(RangeStartWatermarkProperty);
+        set => SetValue(RangeStartWatermarkProperty, value);
+    }
+
+    public string? RangeEndWatermark
+    {
+        get => GetValue(RangeEndWatermarkProperty);
+        set => SetValue(RangeEndWatermarkProperty, value);
+    }
+
+    public PlacementMode PickerPlacement
+    {
+        get => GetValue(PickerPlacementProperty);
+        set => SetValue(PickerPlacementProperty, value);
+    }
+
+    public bool IsShowArrow
+    {
+        get => GetValue(IsShowArrowProperty);
+        set => SetValue(IsShowArrowProperty, value);
+    }
+
+    public bool IsPointAtCenter
+    {
+        get => GetValue(IsPointAtCenterProperty);
+        set => SetValue(IsPointAtCenterProperty, value);
+    }
+
+    public double MarginToAnchor
+    {
+        get => GetValue(MarginToAnchorProperty);
+        set => SetValue(MarginToAnchorProperty, value);
+    }
+
+    public int MouseEnterDelay
+    {
+        get => GetValue(MouseEnterDelayProperty);
+        set => SetValue(MouseEnterDelayProperty, value);
+    }
+
+    public int MouseLeaveDelay
+    {
+        get => GetValue(MouseLeaveDelayProperty);
+        set => SetValue(MouseLeaveDelayProperty, value);
+    }
+
+    public int MinuteIncrement
+    {
+        get => GetValue(MinuteIncrementProperty);
+        set => SetValue(MinuteIncrementProperty, value);
+    }
+
+    public int SecondIncrement
+    {
+        get => GetValue(SecondIncrementProperty);
+        set => SetValue(SecondIncrementProperty, value);
+    }
+
+    public ClockIdentifierType ClockIdentifier
+    {
+        get => GetValue(ClockIdentifierProperty);
+        set => SetValue(ClockIdentifierProperty, value);
+    }
+
+    public TimeSpan? RangeStartSelectedTime
+    {
+        get => GetValue(RangeStartSelectedTimeProperty);
+        set => SetValue(RangeStartSelectedTimeProperty, value);
+    }
+
+    public TimeSpan? RangeEndSelectedTime
+    {
+        get => GetValue(RangeEndSelectedTimeProperty);
+        set => SetValue(RangeEndSelectedTimeProperty, value);
+    }
+
+    public TimeSpan? RangeStartDefaultTime
+    {
+        get => GetValue(RangeStartDefaultTimeProperty);
+        set => SetValue(RangeStartDefaultTimeProperty, value);
+    }
+
+    public TimeSpan? RangeEndDefaultTime
+    {
+        get => GetValue(RangeEndDefaultTimeProperty);
+        set => SetValue(RangeEndDefaultTimeProperty, value);
+    }
+
+    #endregion
+
+    #region 内部属性定义
+
+    internal static readonly DirectProperty<RangeTimePicker, RangeActivatedPart> RangeActivatedPartProperty =
+        AvaloniaProperty.RegisterDirect<RangeTimePicker, RangeActivatedPart>(nameof(RangeActivatedPart),
+            o => o.RangeActivatedPart);
+
+    private RangeActivatedPart _rangeActivatedPart;
+
+    internal RangeActivatedPart RangeActivatedPart
+    {
+        get => _rangeActivatedPart;
+        set => SetAndRaise(RangeActivatedPartProperty, ref _rangeActivatedPart, value);
+    }
+
+    internal static readonly StyledProperty<double> PickerIndicatorOffsetXProperty =
+        AvaloniaProperty.Register<RangeTimePicker, double>(nameof(PickerIndicatorOffsetX), double.NaN);
+
+    internal double PickerIndicatorOffsetX
+    {
+        get => GetValue(PickerIndicatorOffsetXProperty);
+        set => SetValue(PickerIndicatorOffsetXProperty, value);
+    }
+
+    internal static readonly StyledProperty<double> PickerIndicatorOffsetYProperty =
+        AvaloniaProperty.Register<RangeTimePicker, double>(nameof(PickerIndicatorOffsetY));
+
+    internal double PickerIndicatorOffsetY
+    {
+        get => GetValue(PickerIndicatorOffsetYProperty);
+        set => SetValue(PickerIndicatorOffsetYProperty, value);
+    }
+
+    #endregion
 
     private AddOnDecoratedBox? _decoratedBox;
-    private bool _isFlyoutOpen;
     private PickerClearUpButton? _pickerClearUpButton;
+    private readonly FlyoutStateHelper _flyoutStateHelper;
     private RangeTimePickerFlyout? _pickerFlyout;
-    private TextBox? _rangeEndTextBox;
     private Rectangle? _rangePickerIndicator;
-    private AddOnDecoratedInnerBox? _rangePickerInner;
     private TextBox? _rangeStartTextBox;
+    private TextBox? _rangeEndTextBox;
+    private bool _currentValidSelected;
+    private IDisposable? _clearUpButtonDetectDisposable;
+    private AddOnDecoratedInnerBox? _rangePickerInner;
+    private bool _isFlyoutOpen;
 
     static RangeTimePicker()
     {
@@ -553,249 +796,6 @@ public class RangeTimePicker : TemplatedControl
     {
         PseudoClasses.Set(FlyoutOpenPC, _isFlyoutOpen);
     }
-
-    #region 公共属性定义
-
-    public static readonly StyledProperty<object?> LeftAddOnProperty =
-        AvaloniaProperty.Register<RangeTimePicker, object?>(nameof(LeftAddOn));
-
-    public static readonly StyledProperty<object?> RightAddOnProperty =
-        AvaloniaProperty.Register<RangeTimePicker, object?>(nameof(RightAddOn));
-
-    public static readonly StyledProperty<object?> InnerLeftContentProperty
-        = AvaloniaProperty.Register<RangeTimePicker, object?>(nameof(InnerLeftContent));
-
-    public static readonly StyledProperty<object?> InnerRightContentProperty
-        = AvaloniaProperty.Register<RangeTimePicker, object?>(nameof(InnerRightContent));
-
-    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        AddOnDecoratedBox.SizeTypeProperty.AddOwner<RangeTimePicker>();
-
-    public static readonly StyledProperty<AddOnDecoratedVariant> StyleVariantProperty =
-        AddOnDecoratedBox.StyleVariantProperty.AddOwner<RangeTimePicker>();
-
-    public static readonly StyledProperty<AddOnDecoratedStatus> StatusProperty =
-        AddOnDecoratedBox.StatusProperty.AddOwner<RangeTimePicker>();
-
-    public static readonly StyledProperty<string?> RangeStartWatermarkProperty =
-        AvaloniaProperty.Register<TextBox, string?>(nameof(RangeStartWatermark));
-
-    public static readonly StyledProperty<string?> RangeEndWatermarkProperty =
-        AvaloniaProperty.Register<TextBox, string?>(nameof(RangeEndWatermark));
-
-    public static readonly StyledProperty<PlacementMode> PickerPlacementProperty =
-        AvaloniaProperty.Register<RangeTimePicker, PlacementMode>(nameof(PickerPlacement),
-            PlacementMode.BottomEdgeAlignedLeft);
-
-    public static readonly StyledProperty<bool> IsShowArrowProperty =
-        ArrowDecoratedBox.IsShowArrowProperty.AddOwner<RangeTimePicker>();
-
-    public static readonly StyledProperty<bool> IsPointAtCenterProperty =
-        Flyout.IsPointAtCenterProperty.AddOwner<RangeTimePicker>();
-
-    public static readonly StyledProperty<double> MarginToAnchorProperty =
-        Popup.MarginToAnchorProperty.AddOwner<RangeTimePicker>();
-
-    public static readonly StyledProperty<int> MouseEnterDelayProperty =
-        FlyoutStateHelper.MouseEnterDelayProperty.AddOwner<RangeTimePicker>();
-
-    public static readonly StyledProperty<int> MouseLeaveDelayProperty =
-        FlyoutStateHelper.MouseLeaveDelayProperty.AddOwner<RangeTimePicker>();
-
-    public static readonly StyledProperty<int> MinuteIncrementProperty =
-        TimePicker.MinuteIncrementProperty.AddOwner<RangeTimePicker>();
-
-    public static readonly StyledProperty<int> SecondIncrementProperty =
-        TimePicker.SecondIncrementProperty.AddOwner<RangeTimePicker>();
-
-    public static readonly StyledProperty<ClockIdentifierType> ClockIdentifierProperty =
-        TimePicker.ClockIdentifierProperty.AddOwner<RangeTimePicker>();
-
-    public static readonly StyledProperty<TimeSpan?> RangeStartSelectedTimeProperty =
-        AvaloniaProperty.Register<RangeTimePicker, TimeSpan?>(nameof(RangeStartSelectedTime),
-            defaultBindingMode: BindingMode.TwoWay,
-            enableDataValidation: true);
-
-    public static readonly StyledProperty<TimeSpan?> RangeEndSelectedTimeProperty =
-        AvaloniaProperty.Register<RangeTimePicker, TimeSpan?>(nameof(RangeEndSelectedTime),
-            defaultBindingMode: BindingMode.TwoWay,
-            enableDataValidation: true);
-
-    public static readonly StyledProperty<TimeSpan?> RangeStartDefaultTimeProperty =
-        AvaloniaProperty.Register<RangeTimePicker, TimeSpan?>(nameof(RangeStartDefaultTime),
-            enableDataValidation: true);
-
-    public static readonly StyledProperty<TimeSpan?> RangeEndDefaultTimeProperty =
-        AvaloniaProperty.Register<RangeTimePicker, TimeSpan?>(nameof(RangeEndDefaultTime),
-            enableDataValidation: true);
-
-    public object? LeftAddOn
-    {
-        get => GetValue(LeftAddOnProperty);
-        set => SetValue(LeftAddOnProperty, value);
-    }
-
-    public object? RightAddOn
-    {
-        get => GetValue(RightAddOnProperty);
-        set => SetValue(RightAddOnProperty, value);
-    }
-
-    public object? InnerLeftContent
-    {
-        get => GetValue(InnerLeftContentProperty);
-        set => SetValue(InnerLeftContentProperty, value);
-    }
-
-    public object? InnerRightContent
-    {
-        get => GetValue(InnerRightContentProperty);
-        set => SetValue(InnerRightContentProperty, value);
-    }
-
-    public SizeType SizeType
-    {
-        get => GetValue(SizeTypeProperty);
-        set => SetValue(SizeTypeProperty, value);
-    }
-
-    public AddOnDecoratedVariant StyleVariant
-    {
-        get => GetValue(StyleVariantProperty);
-        set => SetValue(StyleVariantProperty, value);
-    }
-
-    public AddOnDecoratedStatus Status
-    {
-        get => GetValue(StatusProperty);
-        set => SetValue(StatusProperty, value);
-    }
-
-    public string? RangeStartWatermark
-    {
-        get => GetValue(RangeStartWatermarkProperty);
-        set => SetValue(RangeStartWatermarkProperty, value);
-    }
-
-    public string? RangeEndWatermark
-    {
-        get => GetValue(RangeEndWatermarkProperty);
-        set => SetValue(RangeEndWatermarkProperty, value);
-    }
-
-    public PlacementMode PickerPlacement
-    {
-        get => GetValue(PickerPlacementProperty);
-        set => SetValue(PickerPlacementProperty, value);
-    }
-
-    public bool IsShowArrow
-    {
-        get => GetValue(IsShowArrowProperty);
-        set => SetValue(IsShowArrowProperty, value);
-    }
-
-    public bool IsPointAtCenter
-    {
-        get => GetValue(IsPointAtCenterProperty);
-        set => SetValue(IsPointAtCenterProperty, value);
-    }
-
-    public double MarginToAnchor
-    {
-        get => GetValue(MarginToAnchorProperty);
-        set => SetValue(MarginToAnchorProperty, value);
-    }
-
-    public int MouseEnterDelay
-    {
-        get => GetValue(MouseEnterDelayProperty);
-        set => SetValue(MouseEnterDelayProperty, value);
-    }
-
-    public int MouseLeaveDelay
-    {
-        get => GetValue(MouseLeaveDelayProperty);
-        set => SetValue(MouseLeaveDelayProperty, value);
-    }
-
-    public int MinuteIncrement
-    {
-        get => GetValue(MinuteIncrementProperty);
-        set => SetValue(MinuteIncrementProperty, value);
-    }
-
-    public int SecondIncrement
-    {
-        get => GetValue(SecondIncrementProperty);
-        set => SetValue(SecondIncrementProperty, value);
-    }
-
-    public ClockIdentifierType ClockIdentifier
-    {
-        get => GetValue(ClockIdentifierProperty);
-        set => SetValue(ClockIdentifierProperty, value);
-    }
-
-    public TimeSpan? RangeStartSelectedTime
-    {
-        get => GetValue(RangeStartSelectedTimeProperty);
-        set => SetValue(RangeStartSelectedTimeProperty, value);
-    }
-
-    public TimeSpan? RangeEndSelectedTime
-    {
-        get => GetValue(RangeEndSelectedTimeProperty);
-        set => SetValue(RangeEndSelectedTimeProperty, value);
-    }
-
-    public TimeSpan? RangeStartDefaultTime
-    {
-        get => GetValue(RangeStartDefaultTimeProperty);
-        set => SetValue(RangeStartDefaultTimeProperty, value);
-    }
-
-    public TimeSpan? RangeEndDefaultTime
-    {
-        get => GetValue(RangeEndDefaultTimeProperty);
-        set => SetValue(RangeEndDefaultTimeProperty, value);
-    }
-
-    #endregion
-
-    #region 内部属性定义
-
-    internal static readonly DirectProperty<RangeTimePicker, RangeActivatedPart> RangeActivatedPartProperty =
-        AvaloniaProperty.RegisterDirect<RangeTimePicker, RangeActivatedPart>(nameof(RangeActivatedPart),
-            o => o.RangeActivatedPart);
-
-    private RangeActivatedPart _rangeActivatedPart;
-
-    internal RangeActivatedPart RangeActivatedPart
-    {
-        get => _rangeActivatedPart;
-        set => SetAndRaise(RangeActivatedPartProperty, ref _rangeActivatedPart, value);
-    }
-
-    internal static readonly StyledProperty<double> PickerIndicatorOffsetXProperty =
-        AvaloniaProperty.Register<RangeTimePicker, double>(nameof(PickerIndicatorOffsetX), double.NaN);
-
-    internal double PickerIndicatorOffsetX
-    {
-        get => GetValue(PickerIndicatorOffsetXProperty);
-        set => SetValue(PickerIndicatorOffsetXProperty, value);
-    }
-
-    internal static readonly StyledProperty<double> PickerIndicatorOffsetYProperty =
-        AvaloniaProperty.Register<RangeTimePicker, double>(nameof(PickerIndicatorOffsetY));
-
-    internal double PickerIndicatorOffsetY
-    {
-        get => GetValue(PickerIndicatorOffsetYProperty);
-        set => SetValue(PickerIndicatorOffsetYProperty, value);
-    }
-
-    #endregion
 }
 
 internal enum RangeActivatedPart

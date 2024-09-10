@@ -1,5 +1,6 @@
 ﻿using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
@@ -14,15 +15,6 @@ public enum SearchEditButtonStyle
 
 public class SearchEdit : LineEdit
 {
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        base.OnApplyTemplate(e);
-        TokenResourceBinder.CreateGlobalResourceBinding(this, BorderThicknessProperty,
-            GlobalTokenResourceKey.BorderThickness,
-            BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this));
-    }
-
     #region 公共属性定义
 
     public static readonly StyledProperty<SearchEditButtonStyle> SearchButtonStyleProperty =
@@ -44,4 +36,13 @@ public class SearchEdit : LineEdit
     }
 
     #endregion
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        TokenResourceBinder.CreateGlobalResourceBinding(this, BorderThicknessProperty,
+            GlobalTokenResourceKey.BorderThickness,
+            BindingPriority.Template,
+            new RenderScaleAwareThicknessConfigure(this));
+    }
 }

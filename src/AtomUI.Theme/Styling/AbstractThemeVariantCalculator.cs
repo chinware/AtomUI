@@ -6,19 +6,17 @@ namespace AtomUI.Theme.Styling;
 
 public abstract class AbstractThemeVariantCalculator : IThemeVariantCalculator
 {
+    protected IThemeVariantCalculator? _compositeGenerator;
     protected Color _colorBgBase;
     protected Color _colorTextBase;
-    protected IThemeVariantCalculator? _compositeGenerator;
+
+    public Color ColorBgBase => _colorBgBase;
+    public Color ColorTextBase => _colorTextBase;
 
     protected AbstractThemeVariantCalculator(IThemeVariantCalculator? calculator)
     {
         _compositeGenerator = calculator;
     }
-
-    public Color ColorBgBase => _colorBgBase;
-    public Color ColorTextBase => _colorTextBase;
-
-    public abstract MapDesignToken Calculate(SeedDesignToken seedToken, MapDesignToken sourceToken);
 
     protected virtual ColorMap GenerateColorPalettes(Color baseColor)
     {
@@ -29,6 +27,8 @@ public abstract class AbstractThemeVariantCalculator : IThemeVariantCalculator
     {
         return default!;
     }
+
+    public abstract MapDesignToken Calculate(SeedDesignToken seedToken, MapDesignToken sourceToken);
 
     protected ColorMapDesignToken GenerateColorMapToken(SeedDesignToken seedToken)
     {

@@ -76,13 +76,13 @@ public class SlideUpOutMotion : AbstractMotion
 
 public class SlideDownInMotion : AbstractMotion
 {
+    public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
+    public MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
+
     public SlideDownInMotion()
     {
         MotionRenderTransformOrigin = RelativePoint.BottomRight;
     }
-
-    public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
-    public MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
 
     public void ConfigureOpacity(TimeSpan duration, Easing? easing = null)
     {
@@ -122,13 +122,13 @@ public class SlideDownInMotion : AbstractMotion
 
 public class SlideDownOutMotion : AbstractMotion
 {
+    public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
+    public MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
+
     public SlideDownOutMotion()
     {
         MotionRenderTransformOrigin = RelativePoint.BottomRight;
     }
-
-    public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
-    public MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
 
     public void ConfigureOpacity(TimeSpan duration, Easing? easing = null)
     {
@@ -238,13 +238,13 @@ public class SlideLeftOutMotion : AbstractMotion
 
 public class SlideRightInMotion : AbstractMotion
 {
+    public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
+    public MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
+
     public SlideRightInMotion()
     {
         MotionRenderTransformOrigin = new RelativePoint(1, 0, RelativeUnit.Relative);
     }
-
-    public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
-    public MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
 
     public void ConfigureOpacity(TimeSpan duration, Easing? easing = null)
     {
@@ -284,13 +284,13 @@ public class SlideRightInMotion : AbstractMotion
 
 public class SlideRightOutMotion : AbstractMotion
 {
+    public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
+    public MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
+
     public SlideRightOutMotion()
     {
         MotionRenderTransformOrigin = new RelativePoint(1, 0, RelativeUnit.Relative);
     }
-
-    public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
-    public MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
 
     public void ConfigureOpacity(TimeSpan duration, Easing? easing = null)
     {

@@ -14,6 +14,18 @@ public partial class InfoFlyoutShowCase : UserControl
 
     private readonly Segmented _segmented;
 
+    public bool ShowArrow
+    {
+        get => GetValue(ShowArrowProperty);
+        set => SetValue(ShowArrowProperty, value);
+    }
+
+    public bool IsPointAtCenter
+    {
+        get => GetValue(IsPointAtCenterProperty);
+        set => SetValue(IsPointAtCenterProperty, value);
+    }
+
     public InfoFlyoutShowCase()
     {
         DataContext = this;
@@ -38,17 +50,5 @@ public partial class InfoFlyoutShowCase : UserControl
                 ShowArrow       = true;
             }
         };
-    }
-
-    public bool ShowArrow
-    {
-        get => GetValue(ShowArrowProperty);
-        set => SetValue(ShowArrowProperty, value);
-    }
-
-    public bool IsPointAtCenter
-    {
-        get => GetValue(IsPointAtCenterProperty);
-        set => SetValue(IsPointAtCenterProperty, value);
     }
 }

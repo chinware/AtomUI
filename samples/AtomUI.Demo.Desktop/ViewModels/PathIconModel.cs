@@ -7,14 +7,7 @@ namespace AtomUI.Demo.Desktop.ViewModels;
 
 public class IconInfoItemModel : ObservableObject
 {
-    private string _iconKind = null!;
     private string _iconName = null!;
-
-    public IconInfoItemModel(string iconName, string iconKind)
-    {
-        IconName = iconName;
-        IconKind = iconKind;
-    }
 
     public string IconName
     {
@@ -22,10 +15,18 @@ public class IconInfoItemModel : ObservableObject
         set => SetProperty(ref _iconName, value);
     }
 
+    private string _iconKind = null!;
+
     public string IconKind
     {
         get => _iconKind;
         set => SetProperty(ref _iconKind, value);
+    }
+
+    public IconInfoItemModel(string iconName, string iconKind)
+    {
+        IconName = iconName;
+        IconKind = iconKind;
     }
 }
 
@@ -35,6 +36,12 @@ public class IconGalleryModel : ObservableObject
 
     private ObservableCollection<IconInfoItemModel>? _iconInfos;
 
+    public ObservableCollection<IconInfoItemModel>? IconInfos
+    {
+        get => _iconInfos;
+        set => SetProperty(ref _iconInfos, value);
+    }
+
     public IconGalleryModel(IconThemeType? iconThemeType = null)
     {
         _iconThemeType = iconThemeType;
@@ -42,12 +49,6 @@ public class IconGalleryModel : ObservableObject
         {
             LoadThemeIcons(_iconThemeType.Value);
         }
-    }
-
-    public ObservableCollection<IconInfoItemModel>? IconInfos
-    {
-        get => _iconInfos;
-        set => SetProperty(ref _iconInfos, value);
     }
 
     public void LoadThemeIcons(IconThemeType iconThemeType)

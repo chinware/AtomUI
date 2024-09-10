@@ -2,8 +2,8 @@
 using AtomUI.Controls.MotionScene;
 using AtomUI.Data;
 using AtomUI.MotionScene;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -20,6 +20,8 @@ using AvaloniaPopup = Avalonia.Controls.Primitives.Popup;
 
 public class Popup : AvaloniaPopup
 {
+    public event EventHandler<PopupFlippedEventArgs>? PositionFlipped;
+
     public static readonly StyledProperty<BoxShadows> MaskShadowsProperty =
         Border.BoxShadowProperty.AddOwner<Popup>();
 
@@ -33,29 +35,6 @@ public class Popup : AvaloniaPopup
         AvaloniaProperty.RegisterDirect<Popup, bool>(nameof(IsFlipped),
             o => o.IsFlipped,
             (o, v) => o.IsFlipped = v);
-
-    protected bool _animating;
-    private CompositeDisposable? _compositeDisposable;
-    private bool _initialized;
-
-    private bool _isFlipped;
-    private ManagedPopupPositionerInfo? _managedPopupPositioner;
-
-    private PopupShadowLayer? _shadowLayer;
-
-    static Popup()
-    {
-        AffectsMeasure<Popup>(PlacementProperty);
-        AffectsMeasure<Popup>(PlacementAnchorProperty);
-        AffectsMeasure<Popup>(PlacementGravityProperty);
-    }
-
-    public Popup()
-    {
-        IsLightDismissEnabled =  false;
-        Closed                += HandleClosed;
-        Opened                += HandleOpened;
-    }
 
     public BoxShadows MaskShadows
     {
@@ -75,15 +54,36 @@ public class Popup : AvaloniaPopup
         set => SetValue(MotionDurationProperty, value);
     }
 
+    private bool _isFlipped;
+
     public bool IsFlipped
     {
         get => _isFlipped;
         private set => SetAndRaise(IsFlippedProperty, ref _isFlipped, value);
     }
 
+    private PopupShadowLayer? _shadowLayer;
+    private CompositeDisposable? _compositeDisposable;
+    private bool _initialized;
+    private ManagedPopupPositionerInfo? _managedPopupPositioner;
+    protected bool _animating;
+
     // 当鼠标移走了，但是打开动画还没完成，我们需要记录下来这个信号
     internal bool RequestCloseWhereAnimationCompleted { get; set; }
-    public event EventHandler<PopupFlippedEventArgs>? PositionFlipped;
+
+    static Popup()
+    {
+        AffectsMeasure<Popup>(PlacementProperty);
+        AffectsMeasure<Popup>(PlacementAnchorProperty);
+        AffectsMeasure<Popup>(PlacementGravityProperty);
+    }
+
+    public Popup()
+    {
+        IsLightDismissEnabled =  false;
+        Closed                += HandleClosed;
+        Opened                += HandleOpened;
+    }
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
@@ -113,7 +113,6 @@ public class Popup : AvaloniaPopup
     {
         var offsetX = HorizontalOffset;
         var offsetY = VerticalOffset;
-
         // 还原位移
         var marginToAnchorOffset =
             PopupUtils.CalculateMarginToAnchorOffset(Placement, MarginToAnchor, PlacementAnchor, PlacementGravity);
@@ -220,7 +219,6 @@ public class Popup : AvaloniaPopup
         }
 
         var geo = GetUnconstrained(anchor, gravity);
-
         // If flipping geometry and anchor is allowed and helps, use the flipped one,
         // otherwise leave it as is
         if (!FitsInBounds(geo, PopupAnchor.HorizontalMask))
@@ -326,12 +324,10 @@ public class Popup : AvaloniaPopup
                 FlowDirection);
 
             Size popupSize;
-
             // Popup.Child can't be null here, it was set in ShowAtCore.
             if (Child!.DesiredSize == default)
-
-                // Popup may not have been shown yet. Measure content
             {
+                // Popup may not have been shown yet. Measure content
                 popupSize = LayoutHelper.MeasureChild(Child, Size.Infinity, new Thickness());
             }
             else
@@ -428,7 +424,6 @@ public class Popup : AvaloniaPopup
 
         Open();
         var popupRoot = (Host as PopupRoot)!;
-
         // 获取 popup 的具体位置，这个就是非常准确的位置，还有大小
         // TODO 暂时只支持 WindowBase popup
         popupRoot.Hide();
@@ -546,10 +541,10 @@ internal class ManagedPopupPositionerInfo
 
 public class PopupFlippedEventArgs : EventArgs
 {
+    public bool Flipped { get; set; }
+
     public PopupFlippedEventArgs(bool flipped)
     {
         Flipped = flipped;
     }
-
-    public bool Flipped { get; set; }
 }

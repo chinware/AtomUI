@@ -9,8 +9,20 @@ public partial class ExpanderShowCase : UserControl
     public static readonly StyledProperty<ExpanderIconPosition> ToggleIconPositionProperty =
         AvaloniaProperty.Register<ExpanderShowCase, ExpanderIconPosition>(nameof(ToggleIconPosition));
 
+    public ExpanderIconPosition ToggleIconPosition
+    {
+        get => GetValue(ToggleIconPositionProperty);
+        set => SetValue(ToggleIconPositionProperty, value);
+    }
+
     public static readonly StyledProperty<ExpandDirection> ExpandDirectionProperty =
         AvaloniaProperty.Register<ExpanderShowCase, ExpandDirection>(nameof(ExpandDirection));
+
+    public ExpandDirection ExpandDirection
+    {
+        get => GetValue(ExpandDirectionProperty);
+        set => SetValue(ExpandDirectionProperty, value);
+    }
 
     public ExpanderShowCase()
     {
@@ -18,18 +30,6 @@ public partial class ExpanderShowCase : UserControl
         DataContext                                     =  this;
         ExpandButtonPosGroup.OptionCheckedChanged       += HandleExpandButtonPosOptionCheckedChanged;
         ExpandDirectionOptionGroup.OptionCheckedChanged += HandleExpandDirectionOptionCheckedChanged;
-    }
-
-    public ExpanderIconPosition ToggleIconPosition
-    {
-        get => GetValue(ToggleIconPositionProperty);
-        set => SetValue(ToggleIconPositionProperty, value);
-    }
-
-    public ExpandDirection ExpandDirection
-    {
-        get => GetValue(ExpandDirectionProperty);
-        set => SetValue(ExpandDirectionProperty, value);
     }
 
     private void HandleExpandButtonPosOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)

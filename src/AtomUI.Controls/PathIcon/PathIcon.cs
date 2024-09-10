@@ -59,39 +59,6 @@ public sealed class PathIcon : Control, ICustomHitTest
     public static readonly StyledProperty<IconMode> IconModeProperty = AvaloniaProperty.Register<PathIcon, IconMode>(
         nameof(IconMode));
 
-    private static readonly StyledProperty<IBrush?> FilledBrushProperty
-        = AvaloniaProperty.Register<ToggleSwitch, IBrush?>(
-            nameof(IBrush));
-
-    private readonly List<Geometry> _sourceGeometriesData;
-    private readonly List<Matrix> _transforms;
-
-    private Animation? _animation;
-    private CancellationTokenSource? _animationCancellationTokenSource;
-    private IconInfo? _iconInfo;
-    private WeakReference<IIconPackageProvider>? _iconPackageRef;
-    private Rect _viewBox;
-
-    static PathIcon()
-    {
-        AffectsGeometry(KindProperty, PackageProviderProperty);
-        AffectsMeasure<PathIcon>(HeightProperty, WidthProperty);
-        AffectsRender<PathIcon>(IconModeProperty,
-            FilledBrushProperty,
-            PrimaryFilledBrushProperty,
-            SecondaryFilledBrushProperty);
-        HorizontalAlignmentProperty.OverrideDefaultValue<PathIcon>(HorizontalAlignment.Left);
-        VerticalAlignmentProperty.OverrideDefaultValue<PathIcon>(VerticalAlignment.Center);
-    }
-
-    public PathIcon()
-    {
-        var rotateTransform = new RotateTransform();
-        RenderTransform       = rotateTransform;
-        _sourceGeometriesData = new List<Geometry>();
-        _transforms           = new List<Matrix>();
-    }
-
     public string Kind
     {
         get => GetValue(KindProperty);
@@ -155,6 +122,10 @@ public sealed class PathIcon : Control, ICustomHitTest
         set => SetValue(IconModeProperty, value);
     }
 
+    private static readonly StyledProperty<IBrush?> FilledBrushProperty
+        = AvaloniaProperty.Register<ToggleSwitch, IBrush?>(
+            nameof(IBrush));
+
     /// <summary>
     /// 当是非 TwoTone icon 的时候，填充色是支持渐变的
     /// </summary>
@@ -172,10 +143,46 @@ public sealed class PathIcon : Control, ICustomHitTest
         set => SetValue(LoadingAnimationProperty, value);
     }
 
-    public bool HitTest(Point point)
+    #region 内部属性定义
+
+    internal static readonly StyledProperty<double> AngleAnimationRotateProperty =
+        AvaloniaProperty.Register<PathIcon, double>(
+            nameof(AngleAnimationRotate));
+
+    internal double AngleAnimationRotate
     {
-        var targetRect = new Rect(0, 0, DesiredSize.Width, DesiredSize.Height);
-        return targetRect.Contains(point);
+        get => GetValue(AngleAnimationRotateProperty);
+        set => SetValue(AngleAnimationRotateProperty, value);
+    }
+
+    #endregion
+
+    private Animation? _animation;
+    private CancellationTokenSource? _animationCancellationTokenSource;
+    private WeakReference<IIconPackageProvider>? _iconPackageRef;
+    private readonly List<Matrix> _transforms;
+    private readonly List<Geometry> _sourceGeometriesData;
+    private IconInfo? _iconInfo;
+    private Rect _viewBox;
+
+    static PathIcon()
+    {
+        AffectsGeometry(KindProperty, PackageProviderProperty);
+        AffectsMeasure<PathIcon>(HeightProperty, WidthProperty);
+        AffectsRender<PathIcon>(IconModeProperty,
+            FilledBrushProperty,
+            PrimaryFilledBrushProperty,
+            SecondaryFilledBrushProperty);
+        HorizontalAlignmentProperty.OverrideDefaultValue<PathIcon>(HorizontalAlignment.Left);
+        VerticalAlignmentProperty.OverrideDefaultValue<PathIcon>(VerticalAlignment.Center);
+    }
+
+    public PathIcon()
+    {
+        var rotateTransform = new RotateTransform();
+        RenderTransform       = rotateTransform;
+        _sourceGeometriesData = new List<Geometry>();
+        _transforms           = new List<Matrix>();
     }
 
     private void SetupTransitions()
@@ -392,7 +399,6 @@ public sealed class PathIcon : Control, ICustomHitTest
         PackageProvider ??= manager.DefaultPackage;
 
         var iconPackage = manager.GetIconProvider(PackageProvider);
-
         // 这里报错还是？
         if (iconPackage is not null)
         {
@@ -409,7 +415,6 @@ public sealed class PathIcon : Control, ICustomHitTest
             }
 
             _viewBox = _iconInfo!.ViewBox;
-
             // 先求最大的 bounds
             // 裁剪边距算法，暂时先注释掉
             Geometry? combined = null;
@@ -642,17 +647,9 @@ public sealed class PathIcon : Control, ICustomHitTest
         return (size, translate);
     }
 
-    #region 内部属性定义
-
-    internal static readonly StyledProperty<double> AngleAnimationRotateProperty =
-        AvaloniaProperty.Register<PathIcon, double>(
-            nameof(AngleAnimationRotate));
-
-    internal double AngleAnimationRotate
+    public bool HitTest(Point point)
     {
-        get => GetValue(AngleAnimationRotateProperty);
-        set => SetValue(AngleAnimationRotateProperty, value);
+        var targetRect = new Rect(0, 0, DesiredSize.Width, DesiredSize.Height);
+        return targetRect.Contains(point);
     }
-
-    #endregion
 }

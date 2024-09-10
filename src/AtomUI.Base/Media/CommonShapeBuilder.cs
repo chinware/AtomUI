@@ -25,7 +25,7 @@ public static class CommonShapeBuilder
     }
 
     /// <summary>
-    /// 生成一个以矩形中点为圆心，以宽和高最小的一半为半径的且指定角度的圆弧
+    ///     生成一个以矩形中点为圆心，以宽和高最小的一半为半径的且指定角度的圆弧
     /// </summary>
     /// <param name="rect"></param>
     /// <param name="startAngle"></param>
@@ -48,9 +48,8 @@ public static class CommonShapeBuilder
         var normEnd   = RadToNormRad(sweepAngle);
 
         if (MathUtils.AreClose(normStart, normEnd) && !MathUtils.AreClose(startAngle, sweepAngle))
-
-            // Complete ring.
         {
+            // Complete ring.
             return new EllipseGeometry(rect);
         }
 
@@ -104,22 +103,16 @@ public static class CommonShapeBuilder
         var p1 = new Point(size / 2.0, size / 2.0 + 1);
         var p2 = new Point(0, size);
         var p3 = new Point(size, size);
-
         // 假设 r 是圆角的半径
         var controlPoint = new Point(p1.X, p1.Y - radius);
-
         // 移动到调整后的底边左顶点
         context.BeginFigure(p2, true);
-
         // 绘制左边的直线到圆角的起始点
         context.LineTo(new Point(p1.X - radius, p1.Y));
-
         // 绘制圆角
         context.QuadraticBezierTo(controlPoint, new Point(p1.X + radius, p1.Y));
-
         // 绘制右边的直线到调整后的底边右顶点
         context.LineTo(p3);
-
         // 绘制底边，闭合路径
         context.LineTo(p2);
         context.EndFigure(true);

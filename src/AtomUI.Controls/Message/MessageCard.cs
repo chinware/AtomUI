@@ -1,12 +1,12 @@
 ﻿using AtomUI.Icon;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Controls.Message;
 
 [PseudoClasses(ErrorPC, InformationPC, SuccessPC, WarningPC, LoadingPC)]
 public class MessageCard : TemplatedControl
@@ -16,6 +16,88 @@ public class MessageCard : TemplatedControl
     public const string SuccessPC = ":success";
     public const string WarningPC = ":warning";
     public const string LoadingPC = ":loading";
+
+    #region 公共属性定义
+
+    /// <summary>
+    /// Defines the <see cref="IsClosing" /> property.
+    /// </summary>
+    public static readonly DirectProperty<MessageCard, bool> IsClosingProperty =
+        AvaloniaProperty.RegisterDirect<MessageCard, bool>(nameof(IsClosing), o => o.IsClosing);
+
+    /// <summary>
+    /// Defines the <see cref="IsClosed" /> property.
+    /// </summary>
+    public static readonly StyledProperty<bool> IsClosedProperty =
+        AvaloniaProperty.Register<MessageCard, bool>(nameof(IsClosed));
+
+    /// <summary>
+    /// Defines the <see cref="NotificationType" /> property
+    /// </summary>
+    public static readonly StyledProperty<MessageType> MessageTypeProperty =
+        AvaloniaProperty.Register<MessageCard, MessageType>(nameof(NotificationType));
+
+    /// <summary>
+    /// Defines the <see cref="MessageClosed" /> event.
+    /// </summary>
+    public static readonly RoutedEvent<RoutedEventArgs> MessageClosedEvent =
+        RoutedEvent.Register<MessageCard, RoutedEventArgs>(nameof(MessageClosed), RoutingStrategies.Bubble);
+
+    public static readonly StyledProperty<PathIcon?> IconProperty
+        = AvaloniaProperty.Register<MessageCard, PathIcon?>(nameof(Icon));
+
+    public static readonly StyledProperty<string> MessageProperty =
+        AvaloniaProperty.Register<NotificationCard, string>(nameof(Message));
+
+    /// <summary>
+    /// Determines if the notification is already closing.
+    /// </summary>
+    public bool IsClosing
+    {
+        get => _isClosing;
+        private set => SetAndRaise(IsClosingProperty, ref _isClosing, value);
+    }
+
+    /// <summary>
+    /// Determines if the notification is closed.
+    /// </summary>
+    public bool IsClosed
+    {
+        get => GetValue(IsClosedProperty);
+        set => SetValue(IsClosedProperty, value);
+    }
+
+    /// <summary>
+    /// Gets or sets the type of the notification
+    /// </summary>
+    public MessageType MessageType
+    {
+        get => GetValue(MessageTypeProperty);
+        set => SetValue(MessageTypeProperty, value);
+    }
+
+    /// <summary>
+    /// Raised when the <see cref="MessageCard" /> has closed.
+    /// </summary>
+    public event EventHandler<RoutedEventArgs>? MessageClosed
+    {
+        add => AddHandler(MessageClosedEvent, value);
+        remove => RemoveHandler(MessageClosedEvent, value);
+    }
+
+    public PathIcon? Icon
+    {
+        get => GetValue(IconProperty);
+        set => SetValue(IconProperty, value);
+    }
+
+    public string Message
+    {
+        get => GetValue(MessageProperty);
+        set => SetValue(MessageProperty, value);
+    }
+
+    #endregion
 
     private bool _isClosing;
 
@@ -180,86 +262,4 @@ public class MessageCard : TemplatedControl
 
         SetCurrentValue(IconProperty, icon);
     }
-
-    #region 公共属性定义
-
-    /// <summary>
-    /// Defines the <see cref="IsClosing" /> property.
-    /// </summary>
-    public static readonly DirectProperty<MessageCard, bool> IsClosingProperty =
-        AvaloniaProperty.RegisterDirect<MessageCard, bool>(nameof(IsClosing), o => o.IsClosing);
-
-    /// <summary>
-    /// Defines the <see cref="IsClosed" /> property.
-    /// </summary>
-    public static readonly StyledProperty<bool> IsClosedProperty =
-        AvaloniaProperty.Register<MessageCard, bool>(nameof(IsClosed));
-
-    /// <summary>
-    /// Defines the <see cref="NotificationType" /> property
-    /// </summary>
-    public static readonly StyledProperty<MessageType> MessageTypeProperty =
-        AvaloniaProperty.Register<MessageCard, MessageType>(nameof(NotificationType));
-
-    /// <summary>
-    /// Defines the <see cref="MessageClosed" /> event.
-    /// </summary>
-    public static readonly RoutedEvent<RoutedEventArgs> MessageClosedEvent =
-        RoutedEvent.Register<MessageCard, RoutedEventArgs>(nameof(MessageClosed), RoutingStrategies.Bubble);
-
-    public static readonly StyledProperty<PathIcon?> IconProperty
-        = AvaloniaProperty.Register<MessageCard, PathIcon?>(nameof(Icon));
-
-    public static readonly StyledProperty<string> MessageProperty =
-        AvaloniaProperty.Register<NotificationCard, string>(nameof(Message));
-
-    /// <summary>
-    /// Determines if the notification is already closing.
-    /// </summary>
-    public bool IsClosing
-    {
-        get => _isClosing;
-        private set => SetAndRaise(IsClosingProperty, ref _isClosing, value);
-    }
-
-    /// <summary>
-    /// Determines if the notification is closed.
-    /// </summary>
-    public bool IsClosed
-    {
-        get => GetValue(IsClosedProperty);
-        set => SetValue(IsClosedProperty, value);
-    }
-
-    /// <summary>
-    /// Gets or sets the type of the notification
-    /// </summary>
-    public MessageType MessageType
-    {
-        get => GetValue(MessageTypeProperty);
-        set => SetValue(MessageTypeProperty, value);
-    }
-
-    /// <summary>
-    /// Raised when the <see cref="MessageCard" /> has closed.
-    /// </summary>
-    public event EventHandler<RoutedEventArgs>? MessageClosed
-    {
-        add => AddHandler(MessageClosedEvent, value);
-        remove => RemoveHandler(MessageClosedEvent, value);
-    }
-
-    public PathIcon? Icon
-    {
-        get => GetValue(IconProperty);
-        set => SetValue(IconProperty, value);
-    }
-
-    public string Message
-    {
-        get => GetValue(MessageProperty);
-        set => SetValue(MessageProperty, value);
-    }
-
-    #endregion
 }

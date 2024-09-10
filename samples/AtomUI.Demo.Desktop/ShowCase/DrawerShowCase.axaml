@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:utils="clr-namespace:AtomUI.Demo.Desktop.Utils"
+             xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
              mc:Ignorable="d">
 
     <UserControl.Styles>
@@ -45,9 +45,9 @@
         </Style>
     </UserControl.Styles>
 
-    <desktop:ShowCasePanel>
+    <showcase:ShowCasePanel>
 
-        <desktop:ShowCaseItem Title="Basic" Description="Basic drawer.">
+        <showcase:ShowCaseItem Title="Basic" Description="Basic drawer.">
             <Panel>
                 <atom:ToggleSwitch x:Name="OpenButton01" Content="Open" />
                 <atom:Drawer IsOpen="{Binding $parent[Panel].((atom:ToggleSwitch)Children[0]).IsChecked}"
@@ -55,13 +55,14 @@
                     <TextBlock Margin="50" Text="Some contents..." />
                 </atom:Drawer>
             </Panel>
-        </desktop:ShowCaseItem>
+        </showcase:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Custom Placement" Description="The Drawer can appear from any edge of the screen.">
+        <showcase:ShowCaseItem Title="Custom Placement"
+                               Description="The Drawer can appear from any edge of the screen.">
             <Panel>
                 <StackPanel Classes="ControllerPanel">
                     <ListBox Classes="PlacementList"
-                             ItemsSource="{utils:Enum atom:DrawerPlacement}"
+                             ItemsSource="{desktop:Enum atom:DrawerPlacement}"
                              SelectedIndex="2" />
                     <atom:ToggleSwitch Content="Open" />
                 </StackPanel>
@@ -73,14 +74,14 @@
                     <TextBlock Margin="50" Text="Some contents..." />
                 </atom:Drawer>
             </Panel>
-        </desktop:ShowCaseItem>
+        </showcase:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Extra Actions"
-                              Description="Extra actions should be placed at corner of drawer in Ant Design, you can use extra prop for that.">
+        <showcase:ShowCaseItem Title="Extra Actions"
+                               Description="Extra actions should be placed at corner of drawer in Ant Design, you can use extra prop for that.">
             <Panel>
                 <StackPanel Classes="ControllerPanel">
                     <ListBox Classes="PlacementList"
-                             ItemsSource="{utils:Enum atom:DrawerPlacement}"
+                             ItemsSource="{desktop:Enum atom:DrawerPlacement}"
                              SelectedIndex="2" />
                     <atom:ToggleSwitch Content="Open" />
                 </StackPanel>
@@ -92,29 +93,29 @@
                     <TextBlock Margin="50" Text=" TODO " />
                 </atom:Drawer>
             </Panel>
-        </desktop:ShowCaseItem>
+        </showcase:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Render in current area" Description="Render in current area.">
+        <showcase:ShowCaseItem Title="Render in current area" Description="Render in current area.">
             <Panel>
                 <StackPanel Height="120"
                             atom:Watermark.Glyph="{atom:TextGlyph AtomUI}"
                             Classes="ControllerPanel">
                     <ListBox Classes="PlacementList"
-                             ItemsSource="{utils:Enum atom:DrawerPlacement}"
+                             ItemsSource="{desktop:Enum atom:DrawerPlacement}"
                              SelectedIndex="2" />
                     <atom:ToggleSwitch Content="Open" />
                 </StackPanel>
 
                 <atom:Drawer
                     IsOpen="{Binding $parent[Panel].((Panel)Children[0]).((atom:ToggleSwitch)Children[1]).IsChecked}"
-                    OpenOn="{Binding $parent[desktop:ShowCaseItem]}"
+                    OpenOn="{Binding $parent[showcase:ShowCaseItem]}"
                     Placement="{Binding $parent[Panel].((Panel)Children[0]).((ListBox)Children[0]).SelectedItem}">
                     <TextBlock Margin="50" Text=" Some contents... " />
                 </atom:Drawer>
             </Panel>
-        </desktop:ShowCaseItem>
+        </showcase:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Basic" Description="Basic drawer.">
+        <showcase:ShowCaseItem Title="Basic" Description="Basic drawer.">
             <Grid ColumnDefinitions="Auto,*">
                 <Border Grid.ColumnSpan="2"
                         Height="300"
@@ -128,7 +129,7 @@
                                    HorizontalAlignment="Right"
                                    VerticalAlignment="Top"
                                    Content="Open Drawer #2" />
-                    <ComboBox x:Name="CbxHorizontalAlignment" ItemsSource="{utils:Enum atom:DrawerPlacement}" />
+                    <ComboBox x:Name="CbxHorizontalAlignment" ItemsSource="{desktop:Enum atom:DrawerPlacement}" />
                     <Button Click="ButtonOpenOnCurrentParent_OnClick" Content="Open On Current's Parent" />
                 </StackPanel>
 
@@ -168,7 +169,7 @@
                     </Border>
                 </atom:Drawer>
             </Grid>
-        </desktop:ShowCaseItem>
+        </showcase:ShowCaseItem>
 
-    </desktop:ShowCasePanel>
+    </showcase:ShowCasePanel>
 </UserControl>

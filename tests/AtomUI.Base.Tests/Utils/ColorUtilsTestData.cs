@@ -2,6 +2,12 @@ namespace AtomUI.Tests.Utils;
 
 public static class ColorUtilsTestData
 {
+    public static IReadOnlyList<string> DESATURATIONS { get; set; }
+    public static IReadOnlyList<string> SATURATIONS { get; set; }
+    public static IReadOnlyList<string> LIGHTENS { get; set; }
+    public static IReadOnlyList<string> BRIGHTENS { get; set; }
+    public static IReadOnlyList<string> DARKENS { get; set; }
+
     static ColorUtilsTestData()
     {
         DESATURATIONS = new List<string>
@@ -529,10 +535,4 @@ public static class ColorUtilsTestData
             "#ff000000"
         };
     }
-
-    public static IReadOnlyList<string> DESATURATIONS { get; set; }
-    public static IReadOnlyList<string> SATURATIONS { get; set; }
-    public static IReadOnlyList<string> LIGHTENS { get; set; }
-    public static IReadOnlyList<string> BRIGHTENS { get; set; }
-    public static IReadOnlyList<string> DARKENS { get; set; }
 }

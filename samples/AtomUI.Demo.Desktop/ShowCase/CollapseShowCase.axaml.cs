@@ -9,18 +9,17 @@ public partial class CollapseShowCase : UserControl
     public static readonly StyledProperty<CollapseExpandIconPosition> CollapseExpandIconPositionProperty =
         AvaloniaProperty.Register<CollapseShowCase, CollapseExpandIconPosition>(nameof(CollapseExpandIconPosition));
 
-    public CollapseShowCase()
-    {
-        InitializeComponent();
-        DataContext = this;
-
-        //ExpandButtonPosGroup.OptionCheckedChanged += HandleExpandButtonPosOptionCheckedChanged;
-    }
-
     public CollapseExpandIconPosition CollapseExpandIconPosition
     {
         get => GetValue(CollapseExpandIconPositionProperty);
         set => SetValue(CollapseExpandIconPositionProperty, value);
+    }
+
+    public CollapseShowCase()
+    {
+        InitializeComponent();
+        DataContext = this;
+        //ExpandButtonPosGroup.OptionCheckedChanged += HandleExpandButtonPosOptionCheckedChanged;
     }
 
     private void HandleExpandButtonPosOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)

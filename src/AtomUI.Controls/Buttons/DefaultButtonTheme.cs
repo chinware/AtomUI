@@ -29,7 +29,6 @@ internal class DefaultButtonTheme : BaseButtonTheme
     private void BuildEnabledStyle()
     {
         var enabledStyle = new Style(selector => selector.Nesting());
-
         // 正常状态
         enabledStyle.Add(TemplatedControl.BackgroundProperty, ButtonTokenResourceKey.DefaultBg);
         enabledStyle.Add(TemplatedControl.BorderBrushProperty, ButtonTokenResourceKey.DefaultBorderColor);
@@ -42,7 +41,6 @@ internal class DefaultButtonTheme : BaseButtonTheme
             hoverStyle.Add(TemplatedControl.ForegroundProperty, ButtonTokenResourceKey.DefaultHoverColor);
             enabledStyle.Add(hoverStyle);
         }
-
         // 正常按下
         {
             var pressedStyle = new Style(selector =>
@@ -82,7 +80,6 @@ internal class DefaultButtonTheme : BaseButtonTheme
     private void BuildEnabledGhostStyle(Style enabledStyle)
     {
         var ghostStyle = new Style(selector => selector.Nesting().PropertyEquals(Button.IsGhostProperty, true));
-
         // 正常状态
         ghostStyle.Add(TemplatedControl.ForegroundProperty, GlobalTokenResourceKey.ColorTextLightSolid);
         ghostStyle.Add(TemplatedControl.BorderBrushProperty, GlobalTokenResourceKey.ColorTextLightSolid);

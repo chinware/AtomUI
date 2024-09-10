@@ -5,7 +5,7 @@ using Avalonia.Data;
 using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Styling;
 
-namespace AtomUI.Theme.Data;
+namespace AtomUI.Utils;
 
 public static class TokenResourceBinder
 {
@@ -60,7 +60,7 @@ public static class TokenResourceBinder
     }
 
     /// <summary>
-    /// 直接在 resource dictionary 中查找，忽略本地覆盖的值
+    ///     直接在 resource dictionary 中查找，忽略本地覆盖的值
     /// </summary>
     public static IObservable<object?> GetGlobalTokenResourceObservable(TokenResourceKey resourceKey,
                                                                         ThemeVariant? themeVariant = null,

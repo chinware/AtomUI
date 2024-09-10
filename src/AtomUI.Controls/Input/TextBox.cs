@@ -12,67 +12,6 @@ public class TextBox : AvaloniaTextBox
     public const string ErrorPC = ":error";
     public const string WarningPC = ":warning";
 
-    static TextBox()
-    {
-        AffectsRender<TextBox>(BorderBrushProperty, BackgroundProperty);
-    }
-
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        base.OnApplyTemplate(e);
-        SetupEffectiveShowClearButton();
-    }
-
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
-    {
-        base.OnPropertyChanged(change);
-
-        if (change.Property == AcceptsReturnProperty ||
-            change.Property == IsReadOnlyProperty ||
-            change.Property == TextProperty ||
-            change.Property == IsEnableClearButtonProperty)
-        {
-            SetupEffectiveShowClearButton();
-        }
-
-        if (change.Property == StatusProperty)
-        {
-            UpdatePseudoClasses();
-        }
-
-        // TODO 到底是否需要这样，这些控件的管辖区理论上不应该我们控制
-        if (change.Property == InnerLeftContentProperty ||
-            change.Property == InnerRightContentProperty)
-        {
-            if (change.OldValue is Control oldControl)
-            {
-                UIStructureUtils.SetTemplateParent(oldControl, null);
-            }
-
-            if (change.NewValue is Control newControl)
-            {
-                UIStructureUtils.SetTemplateParent(newControl, this);
-            }
-        }
-    }
-
-    private void SetupEffectiveShowClearButton()
-    {
-        if (!IsEnableClearButton)
-        {
-            IsEffectiveShowClearButton = false;
-            return;
-        }
-
-        IsEffectiveShowClearButton = !IsReadOnly && !AcceptsReturn && !string.IsNullOrEmpty(Text);
-    }
-
-    private void UpdatePseudoClasses()
-    {
-        PseudoClasses.Set(ErrorPC, Status == AddOnDecoratedStatus.Error);
-        PseudoClasses.Set(WarningPC, Status == AddOnDecoratedStatus.Warning);
-    }
-
     #region 公共属性定义
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
@@ -151,4 +90,65 @@ public class TextBox : AvaloniaTextBox
     }
 
     #endregion
+
+    static TextBox()
+    {
+        AffectsRender<TextBox>(BorderBrushProperty, BackgroundProperty);
+    }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        SetupEffectiveShowClearButton();
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+
+        if (change.Property == AcceptsReturnProperty ||
+            change.Property == IsReadOnlyProperty ||
+            change.Property == TextProperty ||
+            change.Property == IsEnableClearButtonProperty)
+        {
+            SetupEffectiveShowClearButton();
+        }
+
+        if (change.Property == StatusProperty)
+        {
+            UpdatePseudoClasses();
+        }
+
+        // TODO 到底是否需要这样，这些控件的管辖区理论上不应该我们控制
+        if (change.Property == InnerLeftContentProperty ||
+            change.Property == InnerRightContentProperty)
+        {
+            if (change.OldValue is Control oldControl)
+            {
+                UIStructureUtils.SetTemplateParent(oldControl, null);
+            }
+
+            if (change.NewValue is Control newControl)
+            {
+                UIStructureUtils.SetTemplateParent(newControl, this);
+            }
+        }
+    }
+
+    private void SetupEffectiveShowClearButton()
+    {
+        if (!IsEnableClearButton)
+        {
+            IsEffectiveShowClearButton = false;
+            return;
+        }
+
+        IsEffectiveShowClearButton = !IsReadOnly && !AcceptsReturn && !string.IsNullOrEmpty(Text);
+    }
+
+    private void UpdatePseudoClasses()
+    {
+        PseudoClasses.Set(ErrorPC, Status == AddOnDecoratedStatus.Error);
+        PseudoClasses.Set(WarningPC, Status == AddOnDecoratedStatus.Warning);
+    }
 }

@@ -29,24 +29,6 @@ internal class TreeViewToken : AbstractControlDesignToken
     /// </summary>
     public Color NodeSelectedBg { get; set; }
 
-    internal override void CalculateFromAlias()
-    {
-        base.CalculateFromAlias();
-        TitleHeight    = _globalToken.HeightToken.ControlHeightSM;
-        NodeHoverBg    = _globalToken.ControlItemBgHover;
-        NodeSelectedBg = _globalToken.ControlItemBgActive;
-
-        DirectoryNodeSelectedColor = _globalToken.ColorTextLightSolid;
-        DirectoryNodeSelectedBg    = _globalToken.ColorToken.ColorPrimaryToken.ColorPrimary;
-
-        TreeItemMargin         = new Thickness(0, 0, 0, _globalToken.PaddingXS / 2);
-        TreeItemHeaderPadding  = new Thickness(_globalToken.PaddingXS / 2, 0);
-        TreeNodeSwitcherMargin = new Thickness(0, 0, _globalToken.PaddingXS / 2, 0);
-        TreeNodeIconMargin     = new Thickness(_globalToken.PaddingXS / 2, 0, 0, 0);
-
-        DragIndicatorLineWidth = _globalToken.LineWidthFocus;
-    }
-
     #region 内部 Token 定义
 
     /// <summary>
@@ -85,4 +67,22 @@ internal class TreeViewToken : AbstractControlDesignToken
     public double DragIndicatorLineWidth { get; set; }
 
     #endregion
+
+    internal override void CalculateFromAlias()
+    {
+        base.CalculateFromAlias();
+        TitleHeight    = _globalToken.HeightToken.ControlHeightSM;
+        NodeHoverBg    = _globalToken.ControlItemBgHover;
+        NodeSelectedBg = _globalToken.ControlItemBgActive;
+
+        DirectoryNodeSelectedColor = _globalToken.ColorTextLightSolid;
+        DirectoryNodeSelectedBg    = _globalToken.ColorToken.ColorPrimaryToken.ColorPrimary;
+
+        TreeItemMargin         = new Thickness(0, 0, 0, _globalToken.PaddingXS / 2);
+        TreeItemHeaderPadding  = new Thickness(_globalToken.PaddingXS / 2, 0);
+        TreeNodeSwitcherMargin = new Thickness(0, 0, _globalToken.PaddingXS / 2, 0);
+        TreeNodeIconMargin     = new Thickness(_globalToken.PaddingXS / 2, 0, 0, 0);
+
+        DragIndicatorLineWidth = _globalToken.LineWidthFocus;
+    }
 }

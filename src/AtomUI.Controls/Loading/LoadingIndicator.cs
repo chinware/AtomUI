@@ -14,167 +14,6 @@ namespace AtomUI.Controls;
 
 public class LoadingIndicator : TemplatedControl, ISizeTypeAware, IControlCustomStyle
 {
-    internal const double LARGE_INDICATOR_SIZE = 48;
-    internal const double MIDDLE_INDICATOR_SIZE = 32;
-    internal const double SMALL_INDICATOR_SIZE = 16;
-    internal const double MAX_CONTENT_WIDTH = 120; // 拍脑袋的决定
-    internal const double MAX_CONTENT_HEIGHT = 400;
-    internal const double DOT_START_OPACITY = 0.3;
-
-    private readonly IControlCustomStyle _customStyle;
-    private Animation? _animation;
-    private CancellationTokenSource? _cancellationTokenSource;
-    private TextBlock? _loadingText;
-    private Canvas? _mainContainer;
-    private RenderInfo? _renderInfo;
-
-    static LoadingIndicator()
-    {
-        AffectsMeasure<LoadingIndicator>(SizeTypeProperty,
-            LoadingMsgProperty,
-            IsShowLoadingMsgProperty,
-            CustomIndicatorIconProperty);
-        AffectsRender<LoadingIndicator>(IndicatorAngleProperty);
-    }
-
-    public LoadingIndicator()
-    {
-        _customStyle = this;
-    }
-
-    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
-    {
-        _mainContainer = scope.Find<Canvas>(LoadingIndicatorTheme.MainContainerPart);
-        _loadingText   = scope.Find<TextBlock>(LoadingIndicatorTheme.LoadingTextPart);
-
-        SetupCustomIndicator();
-    }
-
-    void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
-    {
-        if (e.Property == CustomIndicatorIconProperty)
-        {
-            if (VisualRoot is not null)
-            {
-                var oldCustomIcon = e.GetOldValue<PathIcon?>();
-                if (oldCustomIcon is not null)
-                {
-                    _mainContainer?.Children.Remove(oldCustomIcon);
-                }
-
-                SetupCustomIndicator();
-            }
-        }
-        else if (e.Property == IndicatorAngleProperty)
-        {
-            if (CustomIndicatorIcon is not null)
-            {
-                HandleIndicatorAngleChanged();
-            }
-        }
-    }
-
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        BuildIndicatorAnimation();
-        _cancellationTokenSource?.Cancel();
-        _cancellationTokenSource = new CancellationTokenSource();
-        _animation?.RunAsync(this, _cancellationTokenSource.Token);
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        _cancellationTokenSource?.Cancel();
-    }
-
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
-    {
-        base.OnPropertyChanged(e);
-        _customStyle.HandlePropertyChangedForStyle(e);
-    }
-
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        base.OnApplyTemplate(e);
-        _customStyle.HandleTemplateApplied(e.NameScope);
-    }
-
-    // 只在使用自定义的 Icon 的时候有效
-    private void HandleIndicatorAngleChanged()
-    {
-        if (CustomIndicatorIcon is not null)
-        {
-            var builder = new TransformOperations.Builder(1);
-            builder.AppendRotate(MathUtils.Deg2Rad(IndicatorAngle));
-            CustomIndicatorIcon.RenderTransform = builder.Build();
-        }
-    }
-
-    private void SetupCustomIndicator()
-    {
-        if (CustomIndicatorIcon is not null)
-        {
-            UIStructureUtils.SetTemplateParent(CustomIndicatorIcon, this);
-            _mainContainer?.Children.Insert(0, CustomIndicatorIcon);
-        }
-    }
-
-    protected override Size MeasureOverride(Size availableSize)
-    {
-        var targetWidth  = 0d;
-        var targetHeight = 0d;
-        base.MeasureOverride(new Size(Math.Min(availableSize.Width, MAX_CONTENT_WIDTH),
-            Math.Min(availableSize.Height, MAX_CONTENT_HEIGHT)));
-        if (IsShowLoadingMsg)
-        {
-            if (_loadingText is not null)
-            {
-                targetWidth  += _loadingText.DesiredSize.Width;
-                targetHeight += _loadingText.DesiredSize.Height;
-            }
-
-            if (!string.IsNullOrEmpty(LoadingMsg))
-            {
-                targetHeight += GetLoadMsgPaddingTop();
-            }
-        }
-
-        var indicatorSize = GetIndicatorSize(SizeType);
-        targetWidth  =  Math.Max(indicatorSize, targetWidth);
-        targetHeight += indicatorSize;
-
-        return new Size(targetWidth, targetHeight);
-    }
-
-    private double GetLoadMsgPaddingTop()
-    {
-        return (DotSize - FontSize) / 2 + 2;
-    }
-
-    protected override Size ArrangeOverride(Size finalSize)
-    {
-        if (IsShowLoadingMsg)
-        {
-            var msgRect = GetLoadingMsgRect();
-            if (_loadingText is not null)
-            {
-                Canvas.SetLeft(_loadingText, msgRect.Left);
-                Canvas.SetTop(_loadingText, msgRect.Top);
-            }
-        }
-
-        if (CustomIndicatorIcon is not null)
-        {
-            var indicatorRect = GetIndicatorRect();
-            Canvas.SetLeft(CustomIndicatorIcon, indicatorRect.Left);
-            Canvas.SetTop(CustomIndicatorIcon, indicatorRect.Top);
-        }
-
-        return base.ArrangeOverride(finalSize);
-    }
-
     #region 公共属性定义
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
@@ -280,6 +119,167 @@ public class LoadingIndicator : TemplatedControl, ISizeTypeAware, IControlCustom
     }
 
     #endregion
+
+    private readonly IControlCustomStyle _customStyle;
+    private Animation? _animation;
+    private TextBlock? _loadingText;
+    private Canvas? _mainContainer;
+    private RenderInfo? _renderInfo;
+    private CancellationTokenSource? _cancellationTokenSource;
+
+    internal const double LARGE_INDICATOR_SIZE = 48;
+    internal const double MIDDLE_INDICATOR_SIZE = 32;
+    internal const double SMALL_INDICATOR_SIZE = 16;
+    internal const double MAX_CONTENT_WIDTH = 120; // 拍脑袋的决定
+    internal const double MAX_CONTENT_HEIGHT = 400;
+    internal const double DOT_START_OPACITY = 0.3;
+
+    static LoadingIndicator()
+    {
+        AffectsMeasure<LoadingIndicator>(SizeTypeProperty,
+            LoadingMsgProperty,
+            IsShowLoadingMsgProperty,
+            CustomIndicatorIconProperty);
+        AffectsRender<LoadingIndicator>(IndicatorAngleProperty);
+    }
+
+    public LoadingIndicator()
+    {
+        _customStyle = this;
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        BuildIndicatorAnimation();
+        _cancellationTokenSource?.Cancel();
+        _cancellationTokenSource = new CancellationTokenSource();
+        _animation?.RunAsync(this, _cancellationTokenSource.Token);
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        _cancellationTokenSource?.Cancel();
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
+    {
+        base.OnPropertyChanged(e);
+        _customStyle.HandlePropertyChangedForStyle(e);
+    }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        _customStyle.HandleTemplateApplied(e.NameScope);
+    }
+
+    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
+    {
+        _mainContainer = scope.Find<Canvas>(LoadingIndicatorTheme.MainContainerPart);
+        _loadingText   = scope.Find<TextBlock>(LoadingIndicatorTheme.LoadingTextPart);
+
+        SetupCustomIndicator();
+    }
+
+    void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
+    {
+        if (e.Property == CustomIndicatorIconProperty)
+        {
+            if (VisualRoot is not null)
+            {
+                var oldCustomIcon = e.GetOldValue<PathIcon?>();
+                if (oldCustomIcon is not null)
+                {
+                    _mainContainer?.Children.Remove(oldCustomIcon);
+                }
+
+                SetupCustomIndicator();
+            }
+        }
+        else if (e.Property == IndicatorAngleProperty)
+        {
+            if (CustomIndicatorIcon is not null)
+            {
+                HandleIndicatorAngleChanged();
+            }
+        }
+    }
+
+    // 只在使用自定义的 Icon 的时候有效
+    private void HandleIndicatorAngleChanged()
+    {
+        if (CustomIndicatorIcon is not null)
+        {
+            var builder = new TransformOperations.Builder(1);
+            builder.AppendRotate(MathUtils.Deg2Rad(IndicatorAngle));
+            CustomIndicatorIcon.RenderTransform = builder.Build();
+        }
+    }
+
+    private void SetupCustomIndicator()
+    {
+        if (CustomIndicatorIcon is not null)
+        {
+            UIStructureUtils.SetTemplateParent(CustomIndicatorIcon, this);
+            _mainContainer?.Children.Insert(0, CustomIndicatorIcon);
+        }
+    }
+
+    protected override Size MeasureOverride(Size availableSize)
+    {
+        var targetWidth  = 0d;
+        var targetHeight = 0d;
+        base.MeasureOverride(new Size(Math.Min(availableSize.Width, MAX_CONTENT_WIDTH),
+            Math.Min(availableSize.Height, MAX_CONTENT_HEIGHT)));
+        if (IsShowLoadingMsg)
+        {
+            if (_loadingText is not null)
+            {
+                targetWidth  += _loadingText.DesiredSize.Width;
+                targetHeight += _loadingText.DesiredSize.Height;
+            }
+
+            if (!string.IsNullOrEmpty(LoadingMsg))
+            {
+                targetHeight += GetLoadMsgPaddingTop();
+            }
+        }
+
+        var indicatorSize = GetIndicatorSize(SizeType);
+        targetWidth  =  Math.Max(indicatorSize, targetWidth);
+        targetHeight += indicatorSize;
+
+        return new Size(targetWidth, targetHeight);
+    }
+
+    private double GetLoadMsgPaddingTop()
+    {
+        return (DotSize - FontSize) / 2 + 2;
+    }
+
+    protected override Size ArrangeOverride(Size finalSize)
+    {
+        if (IsShowLoadingMsg)
+        {
+            var msgRect = GetLoadingMsgRect();
+            if (_loadingText is not null)
+            {
+                Canvas.SetLeft(_loadingText, msgRect.Left);
+                Canvas.SetTop(_loadingText, msgRect.Top);
+            }
+        }
+
+        if (CustomIndicatorIcon is not null)
+        {
+            var indicatorRect = GetIndicatorRect();
+            Canvas.SetLeft(CustomIndicatorIcon, indicatorRect.Left);
+            Canvas.SetTop(CustomIndicatorIcon, indicatorRect.Top);
+        }
+
+        return base.ArrangeOverride(finalSize);
+    }
 
     #region IControlCustomStyle 实现
 

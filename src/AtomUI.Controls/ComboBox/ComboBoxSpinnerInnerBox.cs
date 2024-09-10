@@ -1,5 +1,6 @@
 ﻿using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
@@ -13,30 +14,6 @@ namespace AtomUI.Controls;
 [TemplatePart(ComboBoxSpinnerInnerBoxTheme.SpinnerHandlePart, typeof(ContentPresenter))]
 internal class ComboBoxSpinnerInnerBox : AddOnDecoratedInnerBox, ICustomHitTest
 {
-    public bool HitTest(Point point)
-    {
-        return true;
-    }
-
-    protected override void BuildEffectiveInnerBoxPadding()
-    {
-        var padding = _spinnerHandleWidthToken + InnerBoxPadding.Right;
-        EffectiveInnerBoxPadding =
-            new Thickness(InnerBoxPadding.Left, InnerBoxPadding.Top, padding, InnerBoxPadding.Bottom);
-    }
-
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        TokenResourceBinder.CreateGlobalTokenBinding(this, SpinnerBorderThicknessProperty,
-            GlobalTokenResourceKey.BorderThickness, BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this));
-        TokenResourceBinder.CreateGlobalTokenBinding(this, SpinnerBorderBrushProperty,
-            GlobalTokenResourceKey.ColorBorder);
-        TokenResourceBinder.CreateTokenBinding(this, SpinnerHandleWidthTokenProperty,
-            ButtonSpinnerTokenResourceKey.HandleWidth);
-        base.OnApplyTemplate(e);
-    }
-
     #region 公共属性定义
 
     public static readonly StyledProperty<object?> SpinnerContentProperty =
@@ -92,4 +69,28 @@ internal class ComboBoxSpinnerInnerBox : AddOnDecoratedInnerBox, ICustomHitTest
     }
 
     #endregion
+
+    protected override void BuildEffectiveInnerBoxPadding()
+    {
+        var padding = _spinnerHandleWidthToken + InnerBoxPadding.Right;
+        EffectiveInnerBoxPadding =
+            new Thickness(InnerBoxPadding.Left, InnerBoxPadding.Top, padding, InnerBoxPadding.Bottom);
+    }
+
+    public bool HitTest(Point point)
+    {
+        return true;
+    }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        TokenResourceBinder.CreateGlobalTokenBinding(this, SpinnerBorderThicknessProperty,
+            GlobalTokenResourceKey.BorderThickness, BindingPriority.Template,
+            new RenderScaleAwareThicknessConfigure(this));
+        TokenResourceBinder.CreateGlobalTokenBinding(this, SpinnerBorderBrushProperty,
+            GlobalTokenResourceKey.ColorBorder);
+        TokenResourceBinder.CreateTokenBinding(this, SpinnerHandleWidthTokenProperty,
+            ButtonSpinnerTokenResourceKey.HandleWidth);
+        base.OnApplyTemplate(e);
+    }
 }

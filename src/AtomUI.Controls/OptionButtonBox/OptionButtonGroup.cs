@@ -50,25 +50,16 @@ public class OptionButtonGroup : TemplatedControl, ISizeTypeAware, IControlCusto
             nameof(OptionCheckedChanged),
             RoutingStrategies.Bubble);
 
-    private readonly BorderRenderHelper _borderRenderHelper = new();
-    private readonly IControlCustomStyle _customStyle;
-    private StackPanel? _layout;
-
-    private OptionButton? _optionButton;
-
-    private ControlStyleState _styleState;
-
-    static OptionButtonGroup()
+    public event EventHandler<OptionCheckedChangedEventArgs>? OptionCheckedChanged
     {
-        AffectsMeasure<OptionButtonGroup>(SizeTypeProperty);
-        AffectsRender<OptionButtonGroup>(SelectedOptionProperty, SelectedOptionBorderColorProperty,
-            ButtonStyleProperty);
+        add => AddHandler(OptionCheckedChangedEvent, value);
+        remove => RemoveHandler(OptionCheckedChangedEvent, value);
     }
 
-    public OptionButtonGroup()
+    public ButtonSizeType SizeType
     {
-        _customStyle              =  this;
-        Options.CollectionChanged += OptionsChanged;
+        get => GetValue(SizeTypeProperty);
+        set => SetValue(SizeTypeProperty, value);
     }
 
     public OptionButtonStyle ButtonStyle
@@ -76,6 +67,8 @@ public class OptionButtonGroup : TemplatedControl, ISizeTypeAware, IControlCusto
         get => GetValue(ButtonStyleProperty);
         set => SetValue(ButtonStyleProperty, value);
     }
+
+    private OptionButton? _optionButton;
 
     public OptionButton? SelectedOption
     {
@@ -91,16 +84,22 @@ public class OptionButtonGroup : TemplatedControl, ISizeTypeAware, IControlCusto
 
     [Content] public OptionButtons Options { get; } = new();
 
-    public ButtonSizeType SizeType
+    private ControlStyleState _styleState;
+    private readonly IControlCustomStyle _customStyle;
+    private StackPanel? _layout;
+    private readonly BorderRenderHelper _borderRenderHelper = new();
+
+    static OptionButtonGroup()
     {
-        get => GetValue(SizeTypeProperty);
-        set => SetValue(SizeTypeProperty, value);
+        AffectsMeasure<OptionButtonGroup>(SizeTypeProperty);
+        AffectsRender<OptionButtonGroup>(SelectedOptionProperty, SelectedOptionBorderColorProperty,
+            ButtonStyleProperty);
     }
 
-    public event EventHandler<OptionCheckedChangedEventArgs>? OptionCheckedChanged
+    public OptionButtonGroup()
     {
-        add => AddHandler(OptionCheckedChangedEvent, value);
-        remove => RemoveHandler(OptionCheckedChangedEvent, value);
+        _customStyle              =  this;
+        Options.CollectionChanged += OptionsChanged;
     }
 
     protected virtual void OptionsChanged(object? sender, NotifyCollectionChangedEventArgs e)

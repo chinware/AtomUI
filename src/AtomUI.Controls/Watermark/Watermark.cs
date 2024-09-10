@@ -11,8 +11,22 @@ namespace AtomUI.Controls;
 
 public sealed class Watermark : Control
 {
+    public static WatermarkGlyph? GetGlyph(Visual element)
+    {
+        return element.GetValue(GlyphProperty);
+    }
+
+    public static void SetGlyph(Visual element, WatermarkGlyph? value)
+    {
+        element.SetValue(GlyphProperty, value);
+    }
+
     public static readonly AttachedProperty<WatermarkGlyph?> GlyphProperty = AvaloniaProperty
         .RegisterAttached<Watermark, Visual, WatermarkGlyph?>("Glyph");
+
+    public Visual Target { get; }
+
+    private WatermarkGlyph? Glyph { get; }
 
     static Watermark()
     {
@@ -29,20 +43,6 @@ public sealed class Watermark : Control
         {
             glyph.PropertyChanged += (sender, args) => { InvalidateVisual(); };
         }
-    }
-
-    public Visual Target { get; }
-
-    private WatermarkGlyph? Glyph { get; }
-
-    public static WatermarkGlyph? GetGlyph(Visual element)
-    {
-        return element.GetValue(GlyphProperty);
-    }
-
-    public static void SetGlyph(Visual element, WatermarkGlyph? value)
-    {
-        element.SetValue(GlyphProperty, value);
     }
 
     private static void OnGlyphChanged(Visual target, AvaloniaPropertyChangedEventArgs arg)

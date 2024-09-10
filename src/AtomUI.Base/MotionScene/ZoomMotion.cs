@@ -147,13 +147,13 @@ public class ZoomBigOutMotion : AbstractMotion
 
 public class ZoomUpInMotion : AbstractMotion
 {
+    public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
+    public MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
+
     public ZoomUpInMotion()
     {
         MotionRenderTransformOrigin = new RelativePoint(0.5, 0, RelativeUnit.Relative);
     }
-
-    public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
-    public MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
 
     public void ConfigureOpacity(TimeSpan duration, Easing? easing = null)
     {
@@ -193,13 +193,13 @@ public class ZoomUpInMotion : AbstractMotion
 
 public class ZoomUpOutMotion : AbstractMotion
 {
+    public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
+    public MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
+
     public ZoomUpOutMotion()
     {
         MotionRenderTransformOrigin = new RelativePoint(0.5, 0, RelativeUnit.Relative);
     }
-
-    public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
-    public MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
 
     public void ConfigureOpacity(TimeSpan duration, Easing? easing = null)
     {
@@ -239,13 +239,13 @@ public class ZoomUpOutMotion : AbstractMotion
 
 public class ZoomLeftInMotion : AbstractMotion
 {
+    public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
+    public MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
+
     public ZoomLeftInMotion()
     {
         MotionRenderTransformOrigin = new RelativePoint(0, 0.5, RelativeUnit.Relative);
     }
-
-    public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
-    public MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
 
     public void ConfigureOpacity(TimeSpan duration, Easing? easing = null)
     {
@@ -285,13 +285,13 @@ public class ZoomLeftInMotion : AbstractMotion
 
 public class ZoomLeftOutMotion : AbstractMotion
 {
+    public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
+    public MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
+
     public ZoomLeftOutMotion()
     {
         MotionRenderTransformOrigin = new RelativePoint(0, 0.5, RelativeUnit.Relative);
     }
-
-    public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
-    public MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
 
     public void ConfigureOpacity(TimeSpan duration, Easing? easing = null)
     {
@@ -331,13 +331,13 @@ public class ZoomLeftOutMotion : AbstractMotion
 
 public class ZoomRightInMotion : AbstractMotion
 {
+    public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
+    public MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
+
     public ZoomRightInMotion()
     {
         MotionRenderTransformOrigin = new RelativePoint(1, 0.5, RelativeUnit.Relative);
     }
-
-    public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
-    public MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
 
     public void ConfigureOpacity(TimeSpan duration, Easing? easing = null)
     {
@@ -377,13 +377,13 @@ public class ZoomRightInMotion : AbstractMotion
 
 public class ZoomRightOutMotion : AbstractMotion
 {
+    public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
+    public MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
+
     public ZoomRightOutMotion()
     {
         MotionRenderTransformOrigin = new RelativePoint(1, 0.5, RelativeUnit.Relative);
     }
-
-    public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
-    public MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
 
     public void ConfigureOpacity(TimeSpan duration, Easing? easing = null)
     {
@@ -423,13 +423,13 @@ public class ZoomRightOutMotion : AbstractMotion
 
 public class ZoomDownInMotion : AbstractMotion
 {
+    public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
+    public MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
+
     public ZoomDownInMotion()
     {
         MotionRenderTransformOrigin = new RelativePoint(0.5, 1, RelativeUnit.Relative);
     }
-
-    public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
-    public MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
 
     public void ConfigureOpacity(TimeSpan duration, Easing? easing = null)
     {
@@ -469,13 +469,13 @@ public class ZoomDownInMotion : AbstractMotion
 
 public class ZoomDownOutMotion : AbstractMotion
 {
+    public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
+    public MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
+
     public ZoomDownOutMotion()
     {
         MotionRenderTransformOrigin = new RelativePoint(0.5, 1, RelativeUnit.Relative);
     }
-
-    public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
-    public MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
 
     public void ConfigureOpacity(TimeSpan duration, Easing? easing = null)
     {

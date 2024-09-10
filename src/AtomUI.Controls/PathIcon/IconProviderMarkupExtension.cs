@@ -7,16 +7,6 @@ namespace AtomUI.Controls;
 
 public class IconProvider : MarkupExtension
 {
-    public IconProvider()
-    {
-        Kind = string.Empty;
-    }
-
-    public IconProvider(string kind)
-    {
-        Kind = kind;
-    }
-
     public string Kind { get; set; }
 
     public string? PackageProvider { get; set; }
@@ -34,6 +24,16 @@ public class IconProvider : MarkupExtension
     public double Width { get; set; } = double.NaN;
     public double Height { get; set; } = double.NaN;
     public IconAnimation Animation { get; set; } = IconAnimation.None;
+
+    public IconProvider()
+    {
+        Kind = string.Empty;
+    }
+
+    public IconProvider(string kind)
+    {
+        Kind = kind;
+    }
 
     public override object ProvideValue(IServiceProvider serviceProvider)
     {

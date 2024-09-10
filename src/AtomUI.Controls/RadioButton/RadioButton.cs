@@ -3,6 +3,7 @@ using AtomUI.Media;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
@@ -50,26 +51,6 @@ public class RadioButton : AvaloniaRadioButton,
     internal static readonly StyledProperty<double> DotPaddingProperty =
         AvaloniaProperty.Register<RadioButton, double>(
             nameof(DotPadding));
-
-    private readonly IControlCustomStyle _customStyle;
-
-    private IPen? _cachedPen;
-    private ControlStyleState _styleState;
-
-    static RadioButton()
-    {
-        AffectsRender<RadioButton>(
-            RadioBorderBrushProperty,
-            RadioInnerBackgroundProperty,
-            RadioBackgroundProperty,
-            RadioBorderThicknessProperty,
-            RadioDotEffectSizeProperty);
-    }
-
-    public RadioButton()
-    {
-        _customStyle = this;
-    }
 
     internal double RadioSize
     {
@@ -125,20 +106,23 @@ public class RadioButton : AvaloniaRadioButton,
         set => SetValue(DotPaddingProperty, value);
     }
 
-    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
+    private IPen? _cachedPen;
+    private ControlStyleState _styleState;
+    private readonly IControlCustomStyle _customStyle;
+
+    static RadioButton()
     {
-        TokenResourceBinder.CreateGlobalResourceBinding(this, RadioBorderThicknessProperty,
-            GlobalTokenResourceKey.BorderThickness, BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this));
-        Cursor = new Cursor(StandardCursorType.Hand);
-        _customStyle.CollectStyleState();
-        RadioDotEffectSize = CalculateDotSize(IsEnabled, IsChecked.HasValue && IsChecked.Value);
-        _customStyle.SetupTransitions();
+        AffectsRender<RadioButton>(
+            RadioBorderBrushProperty,
+            RadioInnerBackgroundProperty,
+            RadioBackgroundProperty,
+            RadioBorderThicknessProperty,
+            RadioDotEffectSizeProperty);
     }
 
-    public bool HitTest(Point point)
+    public RadioButton()
     {
-        return true;
+        _customStyle = this;
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
@@ -151,6 +135,17 @@ public class RadioButton : AvaloniaRadioButton,
     {
         base.OnApplyTemplate(e);
         _customStyle.HandleTemplateApplied(e.NameScope);
+    }
+
+    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
+    {
+        TokenResourceBinder.CreateGlobalResourceBinding(this, RadioBorderThicknessProperty,
+            GlobalTokenResourceKey.BorderThickness, BindingPriority.Template,
+            new RenderScaleAwareThicknessConfigure(this));
+        Cursor = new Cursor(StandardCursorType.Hand);
+        _customStyle.CollectStyleState();
+        RadioDotEffectSize = CalculateDotSize(IsEnabled, IsChecked.HasValue && IsChecked.Value);
+        _customStyle.SetupTransitions();
     }
 
     protected override Size MeasureOverride(Size availableSize)
@@ -191,6 +186,11 @@ public class RadioButton : AvaloniaRadioButton,
             var dotDiameter = RadioDotEffectSize / 2;
             context.DrawEllipse(RadioInnerBackground, null, radioRect.Center, dotDiameter, dotDiameter);
         }
+    }
+
+    public bool HitTest(Point point)
+    {
+        return true;
     }
 
     #region IControlCustomStyle 实现

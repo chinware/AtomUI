@@ -14,6 +14,18 @@ public class MenuFlyout : Flyout
 {
     private static readonly MethodInfo SetItemsSourceMethodInfo;
 
+    static MenuFlyout()
+    {
+        SetItemsSourceMethodInfo =
+            typeof(ItemCollection).GetMethod("SetItemsSource", BindingFlags.Instance | BindingFlags.NonPublic)!;
+    }
+
+    public MenuFlyout()
+    {
+        var itemCollectionType = typeof(ItemCollection);
+        Items = (ItemCollection)Activator.CreateInstance(itemCollectionType, true)!;
+    }
+
     /// <summary>
     /// Defines the <see cref="ItemsSource" /> property
     /// </summary>
@@ -32,18 +44,6 @@ public class MenuFlyout : Flyout
     /// </summary>
     public static readonly StyledProperty<ControlTheme?> ItemContainerThemeProperty =
         ItemsControl.ItemContainerThemeProperty.AddOwner<MenuFlyout>();
-
-    static MenuFlyout()
-    {
-        SetItemsSourceMethodInfo =
-            typeof(ItemCollection).GetMethod("SetItemsSource", BindingFlags.Instance | BindingFlags.NonPublic)!;
-    }
-
-    public MenuFlyout()
-    {
-        var itemCollectionType = typeof(ItemCollection);
-        Items = (ItemCollection)Activator.CreateInstance(itemCollectionType, true)!;
-    }
 
     [Content] public ItemCollection Items { get; }
 

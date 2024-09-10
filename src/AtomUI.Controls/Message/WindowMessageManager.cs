@@ -7,11 +7,13 @@ using Avalonia.Layout;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Controls.Message;
 
 [TemplatePart(WindowNotificationManagerTheme.ItemsPart, typeof(Panel))]
 public class WindowMessageManager : TemplatedControl, IMessageManager
 {
+    private IList? _items;
+
     /// <summary>
     /// Defines the <see cref="Position" /> property.
     /// </summary>
@@ -20,17 +22,28 @@ public class WindowMessageManager : TemplatedControl, IMessageManager
             nameof(Position), NotificationPosition.TopRight);
 
     /// <summary>
+    /// Defines which corner of the screen notifications can be displayed in.
+    /// </summary>
+    /// <seealso cref="NotificationPosition" />
+    public NotificationPosition Position
+    {
+        get => GetValue(PositionProperty);
+        set => SetValue(PositionProperty, value);
+    }
+
+    /// <summary>
     /// Defines the <see cref="MaxItems" /> property.
     /// </summary>
     public static readonly StyledProperty<int> MaxItemsProperty =
         AvaloniaProperty.Register<WindowNotificationManager, int>(nameof(MaxItems), 5);
 
-    private IList? _items;
-
-    static WindowMessageManager()
+    /// <summary>
+    /// Defines the maximum number of notifications visible at once.
+    /// </summary>
+    public int MaxItems
     {
-        HorizontalAlignmentProperty.OverrideDefaultValue<WindowMessageManager>(HorizontalAlignment.Stretch);
-        VerticalAlignmentProperty.OverrideDefaultValue<WindowMessageManager>(VerticalAlignment.Stretch);
+        get => GetValue(MaxItemsProperty);
+        set => SetValue(MaxItemsProperty, value);
     }
 
     /// <summary>
@@ -45,23 +58,19 @@ public class WindowMessageManager : TemplatedControl, IMessageManager
         }
     }
 
-    /// <summary>
-    /// Defines which corner of the screen notifications can be displayed in.
-    /// </summary>
-    /// <seealso cref="NotificationPosition" />
-    public NotificationPosition Position
+    static WindowMessageManager()
     {
-        get => GetValue(PositionProperty);
-        set => SetValue(PositionProperty, value);
+        HorizontalAlignmentProperty.OverrideDefaultValue<WindowMessageManager>(HorizontalAlignment.Stretch);
+        VerticalAlignmentProperty.OverrideDefaultValue<WindowMessageManager>(VerticalAlignment.Stretch);
     }
 
-    /// <summary>
-    /// Defines the maximum number of notifications visible at once.
-    /// </summary>
-    public int MaxItems
+    /// <inheritdoc />
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        get => GetValue(MaxItemsProperty);
-        set => SetValue(MaxItemsProperty, value);
+        base.OnApplyTemplate(e);
+
+        var itemsControl = e.NameScope.Find<Panel>("PART_Items");
+        _items = itemsControl?.Children;
     }
 
     /// <summary>
@@ -115,15 +124,6 @@ public class WindowMessageManager : TemplatedControl, IMessageManager
 
         await Task.Delay(expiration);
         messageControl.Close();
-    }
-
-    /// <inheritdoc />
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        base.OnApplyTemplate(e);
-
-        var itemsControl = e.NameScope.Find<Panel>("PART_Items");
-        _items = itemsControl?.Children;
     }
 
     /// <summary>

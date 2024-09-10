@@ -4,10 +4,10 @@ namespace AtomUI.Theme;
 
 public class DynamicTheme : Theme
 {
-    private IList<string> _algorithms;
-    private IList<ControlTokenConfigInfo> _controlTokenConfigInfos;
-    private IDictionary<string, string> _globalTokens;
     private bool _needBroadcast;
+    private IList<string> _algorithms;
+    private IDictionary<string, string> _globalTokens;
+    private IList<ControlTokenConfigInfo> _controlTokenConfigInfos;
 
     public DynamicTheme(string id, string defFilePath)
         : base(id, defFilePath)
@@ -17,6 +17,11 @@ public class DynamicTheme : Theme
         _controlTokenConfigInfos = new List<ControlTokenConfigInfo>();
     }
 
+    public override bool IsDynamic()
+    {
+        return true;
+    }
+
     public IList<string> Algorithms
     {
         get => _algorithms;
@@ -24,6 +29,15 @@ public class DynamicTheme : Theme
         set
         {
             _algorithms    = value;
+            _needBroadcast = true;
+        }
+    }
+
+    public void AddAlgorithm(string algorithm)
+    {
+        if (!_algorithms.Contains(algorithm))
+        {
+            _algorithms.Add(algorithm);
             _needBroadcast = true;
         }
     }
@@ -39,6 +53,12 @@ public class DynamicTheme : Theme
         }
     }
 
+    public void AddGlobalToken(string name, string value)
+    {
+        _globalTokens.Add(name, value);
+        _needBroadcast = true;
+    }
+
     public IList<ControlTokenConfigInfo> ControlTokens
     {
         get => _controlTokenConfigInfos;
@@ -48,26 +68,6 @@ public class DynamicTheme : Theme
             _controlTokenConfigInfos = value;
             _needBroadcast           = true;
         }
-    }
-
-    public override bool IsDynamic()
-    {
-        return true;
-    }
-
-    public void AddAlgorithm(string algorithm)
-    {
-        if (!_algorithms.Contains(algorithm))
-        {
-            _algorithms.Add(algorithm);
-            _needBroadcast = true;
-        }
-    }
-
-    public void AddGlobalToken(string name, string value)
-    {
-        _globalTokens.Add(name, value);
-        _needBroadcast = true;
     }
 
     public void AddControlToken(ControlTokenConfigInfo tokenConfigInfo)

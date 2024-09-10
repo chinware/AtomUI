@@ -21,6 +21,41 @@ public class ProgressBar : AbstractLineProgress
 {
     public const string PercentLabelInnerPC = ":labelinner";
 
+    #region 公共属性定义
+
+    public static readonly StyledProperty<PercentPosition> PercentPositionProperty =
+        AvaloniaProperty.Register<ProgressBar, PercentPosition>(nameof(PercentPosition), new PercentPosition());
+
+    public PercentPosition PercentPosition
+    {
+        get => GetValue(PercentPositionProperty);
+        set => SetValue(PercentPositionProperty, value);
+    }
+
+    #endregion
+
+    #region 内部属性定义
+
+    internal static readonly StyledProperty<IBrush?> ColorTextLabelProperty =
+        AvaloniaProperty.Register<ProgressBar, IBrush?>(nameof(ColorTextLabel));
+
+    internal static readonly StyledProperty<IBrush?> ColorTextLightSolidProperty =
+        AvaloniaProperty.Register<ProgressBar, IBrush?>(nameof(ColorTextLightSolid));
+
+    internal IBrush? ColorTextLabel
+    {
+        get => GetValue(ColorTextLabelProperty);
+        set => SetValue(ColorTextLabelProperty, value);
+    }
+
+    internal IBrush? ColorTextLightSolid
+    {
+        get => GetValue(ColorTextLightSolidProperty);
+        set => SetValue(ColorTextLightSolidProperty, value);
+    }
+
+    #endregion
+
     static ProgressBar()
     {
         AffectsMeasure<ProgressBar>(IndicatorThicknessProperty, PercentPositionProperty);
@@ -503,9 +538,8 @@ public class ProgressBar : AbstractLineProgress
     {
         if ((Status == ProgressStatus.Exception || MathUtils.AreClose(Value, Maximum)) &&
             !PercentPosition.IsInner)
-
-            // 只要图标
         {
+            // 只要图标
             return new Size(LineInfoIconSize, LineInfoIconSize);
         }
 
@@ -617,39 +651,4 @@ public class ProgressBar : AbstractLineProgress
     {
         PseudoClasses.Set(PercentLabelInnerPC, PercentPosition.IsInner);
     }
-
-    #region 公共属性定义
-
-    public static readonly StyledProperty<PercentPosition> PercentPositionProperty =
-        AvaloniaProperty.Register<ProgressBar, PercentPosition>(nameof(PercentPosition), new PercentPosition());
-
-    public PercentPosition PercentPosition
-    {
-        get => GetValue(PercentPositionProperty);
-        set => SetValue(PercentPositionProperty, value);
-    }
-
-    #endregion
-
-    #region 内部属性定义
-
-    internal static readonly StyledProperty<IBrush?> ColorTextLabelProperty =
-        AvaloniaProperty.Register<ProgressBar, IBrush?>(nameof(ColorTextLabel));
-
-    internal static readonly StyledProperty<IBrush?> ColorTextLightSolidProperty =
-        AvaloniaProperty.Register<ProgressBar, IBrush?>(nameof(ColorTextLightSolid));
-
-    internal IBrush? ColorTextLabel
-    {
-        get => GetValue(ColorTextLabelProperty);
-        set => SetValue(ColorTextLabelProperty, value);
-    }
-
-    internal IBrush? ColorTextLightSolid
-    {
-        get => GetValue(ColorTextLightSolidProperty);
-        set => SetValue(ColorTextLightSolidProperty, value);
-    }
-
-    #endregion
 }

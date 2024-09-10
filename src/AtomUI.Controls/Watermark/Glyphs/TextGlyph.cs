@@ -6,27 +6,14 @@ namespace AtomUI.Controls;
 
 public class TextGlyph : WatermarkGlyph
 {
-    public static readonly StyledProperty<string?> TextProperty = AvaloniaProperty
-        .Register<TextGlyph, string?>(nameof(Text));
-
-    public static readonly StyledProperty<double> FontSizeProperty = AvaloniaProperty
-        .Register<TextGlyph, double>(nameof(FontSize), 16);
-
-    public static readonly StyledProperty<IBrush> ForegroundProperty = AvaloniaProperty
-        .Register<TextGlyph, IBrush>(nameof(Foreground), Brushes.Black);
-
-    static TextGlyph()
-    {
-        TextProperty.Changed.AddClassHandler<TextGlyph>((glyph, args) => glyph.RebuildFormatText());
-        FontSizeProperty.Changed.AddClassHandler<TextGlyph>((glyph, args) => glyph.UpdateFormatText());
-        ForegroundProperty.Changed.AddClassHandler<TextGlyph>((glyph, args) => glyph.UpdateFormatText());
-    }
-
     public string? Text
     {
         get => GetValue(TextProperty);
         set => SetValue(TextProperty, value);
     }
+
+    public static readonly StyledProperty<string?> TextProperty = AvaloniaProperty
+        .Register<TextGlyph, string?>(nameof(Text));
 
     public double FontSize
     {
@@ -34,13 +21,26 @@ public class TextGlyph : WatermarkGlyph
         set => SetValue(FontSizeProperty, value);
     }
 
+    public static readonly StyledProperty<double> FontSizeProperty = AvaloniaProperty
+        .Register<TextGlyph, double>(nameof(FontSize), 16);
+
     public IBrush Foreground
     {
         get => GetValue(ForegroundProperty);
         set => SetValue(ForegroundProperty, value);
     }
 
+    public static readonly StyledProperty<IBrush> ForegroundProperty = AvaloniaProperty
+        .Register<TextGlyph, IBrush>(nameof(Foreground), Brushes.Black);
+
     protected FormattedText? FormattedText { get; private set; }
+
+    static TextGlyph()
+    {
+        TextProperty.Changed.AddClassHandler<TextGlyph>((glyph, args) => glyph.RebuildFormatText());
+        FontSizeProperty.Changed.AddClassHandler<TextGlyph>((glyph, args) => glyph.UpdateFormatText());
+        ForegroundProperty.Changed.AddClassHandler<TextGlyph>((glyph, args) => glyph.UpdateFormatText());
+    }
 
     protected virtual void RebuildFormatText()
     {

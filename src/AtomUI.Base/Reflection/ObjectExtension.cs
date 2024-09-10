@@ -54,9 +54,8 @@ public static class ObjectExtension
     }
 
     public static T? GetPropertyOrThrow<T>(this object source, string name,
-                                           BindingFlags flags =
-                                               BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public |
-                                               BindingFlags.FlattenHierarchy)
+                                           BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic |
+                                                                BindingFlags.Public | BindingFlags.FlattenHierarchy)
     {
         var obj = source.GetType().GetPropertyInfoOrThrow(name, flags).GetValue(source);
         if (obj is T propertyOrThrow)
@@ -182,9 +181,8 @@ public static class ObjectExtension
     }
 
     public static T? GetFieldOrThrow<T>(this object source, string name,
-                                        BindingFlags flags =
-                                            BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public |
-                                            BindingFlags.FlattenHierarchy)
+                                        BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic |
+                                                             BindingFlags.Public | BindingFlags.FlattenHierarchy)
     {
         var obj = source.GetType().GetFieldInfoOrThrow(name, flags).GetValue(source);
         if (obj is T fieldOrThrow)

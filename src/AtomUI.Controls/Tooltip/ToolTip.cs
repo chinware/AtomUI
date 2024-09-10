@@ -1,8 +1,8 @@
 ﻿using System.Reflection;
 using AtomUI.Reflection;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Palette;
 using AtomUI.Theme.Styling;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -20,293 +20,6 @@ public class ToolTip : TemplatedControl,
                        IShadowMaskInfoProvider,
                        IControlCustomStyle
 {
-    private static readonly StyledProperty<ThemeVariant?> RequestedThemeVariantProperty;
-    private readonly IControlCustomStyle _customStyle;
-    private ArrowDecoratedBox? _arrowDecoratedBox;
-
-    private Popup? _popup;
-    private Action<IPopupHost?>? _popupHostChangedHandler;
-
-    static ToolTip()
-    {
-        IsOpenProperty.Changed.Subscribe(IsOpenChanged);
-        IsShowArrowProperty.Changed.Subscribe(IsShowArrowChanged);
-
-        var requestedThemeVariantProperty =
-            typeof(ThemeVariant).GetFieldInfoOrThrow("RequestedThemeVariantProperty",
-                BindingFlags.Static | BindingFlags.NonPublic);
-        RequestedThemeVariantProperty = (StyledProperty<ThemeVariant?>)requestedThemeVariantProperty.GetValue(null)!;
-        AffectsRender<ToolTip>(ForegroundProperty,
-            BackgroundProperty);
-        AffectsArrange<ToolTip>(FlipPlacementProperty);
-    }
-
-    public ToolTip()
-    {
-        _customStyle = this;
-    }
-
-    internal Control? AdornedControl { get; private set; }
-
-    internal IPopupHost? PopupHost => _popup?.Host;
-
-    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
-    {
-        _arrowDecoratedBox = scope.Find<ArrowDecoratedBox>(ToolTipTheme.ToolTipContainerPart);
-    }
-
-    internal event EventHandler? Closed;
-
-    private static void IsOpenChanged(AvaloniaPropertyChangedEventArgs e)
-    {
-        var control  = (Control)e.Sender;
-        var newValue = (bool)e.NewValue!;
-
-        if (newValue)
-        {
-            var tip = GetTip(control);
-            if (tip == null)
-            {
-                return;
-            }
-
-            var toolTip = control.GetValue(ToolTipProperty);
-            if (toolTip == null || (tip != toolTip && tip != toolTip.Content))
-            {
-                toolTip?.Close();
-                toolTip = tip as ToolTip ?? new ToolTip
-                {
-                    Content = tip
-                };
-                control.SetValue(ToolTipProperty, toolTip);
-                toolTip.SetValue(RequestedThemeVariantProperty, control.ActualThemeVariant);
-            }
-
-            toolTip.AdornedControl = control;
-            toolTip.Open(control);
-            toolTip?.UpdatePseudoClasses(newValue);
-        }
-        else if (control.GetValue(ToolTipProperty) is { } toolTip)
-        {
-            toolTip.AdornedControl = null;
-            toolTip.Close();
-            toolTip.UpdatePseudoClasses(newValue);
-        }
-    }
-
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
-    {
-        base.OnPropertyChanged(change);
-        if (change.Property == ContentProperty)
-        {
-            if (_arrowDecoratedBox is not null)
-            {
-                if (_arrowDecoratedBox.Content is TextBlock textBlock)
-                {
-                    if (change.NewValue is string text)
-                    {
-                        textBlock.Text = text;
-                    }
-                }
-            }
-        }
-    }
-
-    private static void IsShowArrowChanged(AvaloniaPropertyChangedEventArgs e)
-    {
-        var control = (Control)e.Sender;
-        var toolTip = control.GetValue(ToolTipProperty);
-        if (toolTip is not null)
-        {
-            // 重新配置
-            toolTip.Close();
-            control.SetValue(ToolTipProperty, null);
-        }
-    }
-
-    private event Action<IPopupHost?>? PopupHostChanged
-    {
-        add => _popupHostChangedHandler += value;
-        remove => _popupHostChangedHandler -= value;
-    }
-
-    private void SetToolTipColor(Control control)
-    {
-        // Preset 优先级高
-        var presetColorType = GetPresetColor(control);
-        var color           = GetColor(control);
-        if (presetColorType is not null)
-        {
-            var presetColor = PresetPrimaryColor.GetColor(presetColorType.Value);
-            _arrowDecoratedBox?.SetValue(BackgroundProperty, new SolidColorBrush(presetColor.Color()));
-        }
-        else if (color is not null)
-        {
-            _arrowDecoratedBox?.SetValue(BackgroundProperty, new SolidColorBrush(color.Value));
-        }
-    }
-
-    /// <summary>
-    /// Helper method to set popup's styling and templated parent.
-    /// </summary>
-    internal void SetPopupParent(Popup popup, Control? newParent)
-    {
-        if (popup.Parent != null && popup.Parent != newParent)
-        {
-            ((ISetLogicalParent)popup).SetParent(null);
-        }
-
-        if (popup.Parent == null || popup.PlacementTarget != newParent)
-        {
-            ((ISetLogicalParent)popup).SetParent(newParent);
-        }
-    }
-
-    private static bool TryGetAdorner(Visual target, out Visual? adorned, out Visual? adornerLayer)
-    {
-        var element = target;
-        while (element != null)
-        {
-            if (AdornerLayer.GetAdornedElement(element) is { } adornedElement)
-            {
-                adorned      = adornedElement;
-                adornerLayer = AdornerLayer.GetAdornerLayer(adorned);
-                return true;
-            }
-
-            element = element.GetPropertyOrThrow<Visual?>("VisualParent");
-        }
-
-        adorned      = null;
-        adornerLayer = null;
-        return false;
-    }
-
-    // TODO 当设置跟随鼠标的时候，需要特殊处理
-    private void Open(Control control)
-    {
-        Close();
-
-        if (_popup is null)
-        {
-            _popup                            = new Popup();
-            _popup.Child                      = this;
-            _popup.WindowManagerAddShadowHint = false;
-
-            _popup.Opened          += OnPopupOpened;
-            _popup.Closed          += OnPopupClosed;
-            _popup.PositionFlipped += OnPopupPositionFlipped;
-        }
-
-        SetPopupParent(_popup, control);
-
-        TokenResourceBinder.CreateTokenBinding(_popup, Popup.MaskShadowsProperty,
-            GlobalTokenResourceKey.BoxShadowsSecondary);
-        SetToolTipColor(control);
-
-        var marginToAnchor = GetMarginToAnchor(control);
-        if (double.IsNaN(marginToAnchor))
-        {
-            marginToAnchor = DefaultMarginToAnchor;
-        }
-
-        var placement = GetPlacement(control);
-
-        var offsetX = GetHorizontalOffset(control);
-        var offsetY = GetVerticalOffset(control);
-
-        _popup.HorizontalOffset = offsetX;
-        _popup.VerticalOffset   = offsetY;
-
-        var anchorAndGravity = PopupUtils.GetAnchorAndGravity(placement);
-
-        // TODO 可能是多余的，因为有那个对反转事件的处理
-        SetupArrowPosition(placement);
-        SetupPointCenterOffset(control,
-            placement,
-            anchorAndGravity.Item1,
-            anchorAndGravity.Item2);
-
-        // 后期看能不能检测对应字段的改变
-        CalculateShowArrowEffective(control);
-
-        _popup.MarginToAnchor  = marginToAnchor;
-        _popup.Placement       = placement;
-        _popup.PlacementTarget = control;
-
-        Dispatcher.UIThread.Post(() => { _popup.OpenAnimation(); });
-    }
-
-    private bool CalculateShowArrowEffective(Control control)
-    {
-        if (GetIsShowArrow(control) == false)
-        {
-            IsShowArrowEffective = false;
-        }
-        else
-        {
-            IsShowArrowEffective = PopupUtils.CanEnabledArrow(GetPlacement(control));
-        }
-
-        return IsShowArrowEffective;
-    }
-
-    private void Close()
-    {
-        if (_popup is null)
-        {
-            return;
-        }
-
-        Dispatcher.UIThread.Post(() => { _popup.CloseAnimation(); });
-    }
-
-    private void OnPopupPositionFlipped(object? sender, PopupFlippedEventArgs e)
-    {
-        if (sender is Popup popup)
-        {
-            SetupArrowPosition(popup.Placement);
-        }
-    }
-
-    private void OnPopupClosed(object? sender, EventArgs e)
-    {
-        // This condition is true, when Popup was closed by any other reason outside of ToolTipService/ToolTipOld, keeping IsOpen=true.
-        if (AdornedControl is { } adornedControl
-            && GetIsOpen(adornedControl))
-        {
-            adornedControl.SetCurrentValue(IsOpenProperty, false);
-        }
-
-        _popupHostChangedHandler?.Invoke(null);
-        Closed?.Invoke(this, EventArgs.Empty);
-    }
-
-    private void OnPopupOpened(object? sender, EventArgs e)
-    {
-        _popupHostChangedHandler?.Invoke(((Popup)sender!).Host);
-    }
-
-    private void UpdatePseudoClasses(bool newValue)
-    {
-        PseudoClasses.Set(StdPseudoClass.Open, newValue);
-    }
-
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-
-        // 手动提前应用模板，因为有某些计算需要
-        ApplyStyling();
-        ApplyTemplate();
-    }
-
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        base.OnApplyTemplate(e);
-        _customStyle.HandleTemplateApplied(e.NameScope);
-    }
-
     #region 公共属性定义
 
     /// <summary>
@@ -475,6 +188,25 @@ public class ToolTip : TemplatedControl,
     }
 
     #endregion
+
+    static ToolTip()
+    {
+        IsOpenProperty.Changed.Subscribe(IsOpenChanged);
+        IsShowArrowProperty.Changed.Subscribe(IsShowArrowChanged);
+
+        var requestedThemeVariantProperty =
+            typeof(ThemeVariant).GetFieldInfoOrThrow("RequestedThemeVariantProperty",
+                BindingFlags.Static | BindingFlags.NonPublic);
+        RequestedThemeVariantProperty = (StyledProperty<ThemeVariant?>)requestedThemeVariantProperty.GetValue(null)!;
+        AffectsRender<ToolTip>(ForegroundProperty,
+            BackgroundProperty);
+        AffectsArrange<ToolTip>(FlipPlacementProperty);
+    }
+
+    public ToolTip()
+    {
+        _customStyle = this;
+    }
 
     #region 附加属性设置方法
 
@@ -788,6 +520,270 @@ public class ToolTip : TemplatedControl,
 
     #endregion
 
+    private Popup? _popup;
+    private Action<IPopupHost?>? _popupHostChangedHandler;
+    private readonly IControlCustomStyle _customStyle;
+    private ArrowDecoratedBox? _arrowDecoratedBox;
+    internal Control? AdornedControl { get; private set; }
+    internal event EventHandler? Closed;
+    private static readonly StyledProperty<ThemeVariant?> RequestedThemeVariantProperty;
+
+    private static void IsOpenChanged(AvaloniaPropertyChangedEventArgs e)
+    {
+        var control  = (Control)e.Sender;
+        var newValue = (bool)e.NewValue!;
+
+        if (newValue)
+        {
+            var tip = GetTip(control);
+            if (tip == null)
+            {
+                return;
+            }
+
+            var toolTip = control.GetValue(ToolTipProperty);
+            if (toolTip == null || (tip != toolTip && tip != toolTip.Content))
+            {
+                toolTip?.Close();
+                toolTip = tip as ToolTip ?? new ToolTip
+                {
+                    Content = tip
+                };
+                control.SetValue(ToolTipProperty, toolTip);
+                toolTip.SetValue(RequestedThemeVariantProperty, control.ActualThemeVariant);
+            }
+
+            toolTip.AdornedControl = control;
+            toolTip.Open(control);
+            toolTip?.UpdatePseudoClasses(newValue);
+        }
+        else if (control.GetValue(ToolTipProperty) is { } toolTip)
+        {
+            toolTip.AdornedControl = null;
+            toolTip.Close();
+            toolTip.UpdatePseudoClasses(newValue);
+        }
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == ContentProperty)
+        {
+            if (_arrowDecoratedBox is not null)
+            {
+                if (_arrowDecoratedBox.Content is TextBlock textBlock)
+                {
+                    if (change.NewValue is string text)
+                    {
+                        textBlock.Text = text;
+                    }
+                }
+            }
+        }
+    }
+
+    private static void IsShowArrowChanged(AvaloniaPropertyChangedEventArgs e)
+    {
+        var control = (Control)e.Sender;
+        var toolTip = control.GetValue(ToolTipProperty);
+        if (toolTip is not null)
+        {
+            // 重新配置
+            toolTip.Close();
+            control.SetValue(ToolTipProperty, null);
+        }
+    }
+
+    internal IPopupHost? PopupHost => _popup?.Host;
+
+    private event Action<IPopupHost?>? PopupHostChanged
+    {
+        add => _popupHostChangedHandler += value;
+        remove => _popupHostChangedHandler -= value;
+    }
+
+    private void SetToolTipColor(Control control)
+    {
+        // Preset 优先级高
+        var presetColorType = GetPresetColor(control);
+        var color           = GetColor(control);
+        if (presetColorType is not null)
+        {
+            var presetColor = PresetPrimaryColor.GetColor(presetColorType.Value);
+            _arrowDecoratedBox?.SetValue(BackgroundProperty, new SolidColorBrush(presetColor.Color()));
+        }
+        else if (color is not null)
+        {
+            _arrowDecoratedBox?.SetValue(BackgroundProperty, new SolidColorBrush(color.Value));
+        }
+    }
+
+    /// <summary>
+    /// Helper method to set popup's styling and templated parent.
+    /// </summary>
+    internal void SetPopupParent(Popup popup, Control? newParent)
+    {
+        if (popup.Parent != null && popup.Parent != newParent)
+        {
+            ((ISetLogicalParent)popup).SetParent(null);
+        }
+
+        if (popup.Parent == null || popup.PlacementTarget != newParent)
+        {
+            ((ISetLogicalParent)popup).SetParent(newParent);
+        }
+    }
+
+    private static bool TryGetAdorner(Visual target, out Visual? adorned, out Visual? adornerLayer)
+    {
+        var element = target;
+        while (element != null)
+        {
+            if (AdornerLayer.GetAdornedElement(element) is { } adornedElement)
+            {
+                adorned      = adornedElement;
+                adornerLayer = AdornerLayer.GetAdornerLayer(adorned);
+                return true;
+            }
+
+            element = element.GetPropertyOrThrow<Visual?>("VisualParent");
+        }
+
+        adorned      = null;
+        adornerLayer = null;
+        return false;
+    }
+
+    // TODO 当设置跟随鼠标的时候，需要特殊处理
+    private void Open(Control control)
+    {
+        Close();
+
+        if (_popup is null)
+        {
+            _popup                            = new Popup();
+            _popup.Child                      = this;
+            _popup.WindowManagerAddShadowHint = false;
+
+            _popup.Opened          += OnPopupOpened;
+            _popup.Closed          += OnPopupClosed;
+            _popup.PositionFlipped += OnPopupPositionFlipped;
+        }
+
+        SetPopupParent(_popup, control);
+
+        TokenResourceBinder.CreateTokenBinding(_popup, Popup.MaskShadowsProperty,
+            GlobalTokenResourceKey.BoxShadowsSecondary);
+        SetToolTipColor(control);
+
+        var marginToAnchor = GetMarginToAnchor(control);
+        if (double.IsNaN(marginToAnchor))
+        {
+            marginToAnchor = DefaultMarginToAnchor;
+        }
+
+        var placement = GetPlacement(control);
+
+        var offsetX = GetHorizontalOffset(control);
+        var offsetY = GetVerticalOffset(control);
+
+        _popup.HorizontalOffset = offsetX;
+        _popup.VerticalOffset   = offsetY;
+
+        var anchorAndGravity = PopupUtils.GetAnchorAndGravity(placement);
+
+        // TODO 可能是多余的，因为有那个对反转事件的处理
+        SetupArrowPosition(placement);
+        SetupPointCenterOffset(control,
+            placement,
+            anchorAndGravity.Item1,
+            anchorAndGravity.Item2);
+
+        // 后期看能不能检测对应字段的改变
+        CalculateShowArrowEffective(control);
+
+        _popup.MarginToAnchor  = marginToAnchor;
+        _popup.Placement       = placement;
+        _popup.PlacementTarget = control;
+
+        Dispatcher.UIThread.Post(() => { _popup.OpenAnimation(); });
+    }
+
+    private bool CalculateShowArrowEffective(Control control)
+    {
+        if (GetIsShowArrow(control) == false)
+        {
+            IsShowArrowEffective = false;
+        }
+        else
+        {
+            IsShowArrowEffective = PopupUtils.CanEnabledArrow(GetPlacement(control));
+        }
+
+        return IsShowArrowEffective;
+    }
+
+    private void Close()
+    {
+        if (_popup is null)
+        {
+            return;
+        }
+
+        Dispatcher.UIThread.Post(() => { _popup.CloseAnimation(); });
+    }
+
+    private void OnPopupPositionFlipped(object? sender, PopupFlippedEventArgs e)
+    {
+        if (sender is Popup popup)
+        {
+            SetupArrowPosition(popup.Placement);
+        }
+    }
+
+    private void OnPopupClosed(object? sender, EventArgs e)
+    {
+        // This condition is true, when Popup was closed by any other reason outside of ToolTipService/ToolTipOld, keeping IsOpen=true.
+        if (AdornedControl is { } adornedControl
+            && GetIsOpen(adornedControl))
+        {
+            adornedControl.SetCurrentValue(IsOpenProperty, false);
+        }
+
+        _popupHostChangedHandler?.Invoke(null);
+        Closed?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void OnPopupOpened(object? sender, EventArgs e)
+    {
+        _popupHostChangedHandler?.Invoke(((Popup)sender!).Host);
+    }
+
+    private void UpdatePseudoClasses(bool newValue)
+    {
+        PseudoClasses.Set(StdPseudoClass.Open, newValue);
+    }
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        // 手动提前应用模板，因为有某些计算需要
+        ApplyStyling();
+        ApplyTemplate();
+    }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        _customStyle.HandleTemplateApplied(e.NameScope);
+    }
+
+    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
+    {
+        _arrowDecoratedBox = scope.Find<ArrowDecoratedBox>(ToolTipTheme.ToolTipContainerPart);
+    }
+
     #region IControlCustomStyle 实现
 
     public CornerRadius GetMaskCornerRadius()
@@ -831,7 +827,6 @@ public class ToolTip : TemplatedControl,
                 var anchorSize       = anchorTarget.Bounds.Size;
                 var centerX          = anchorSize.Width / 2;
                 var centerY          = anchorSize.Height / 2;
-
                 // 这里计算不需要全局坐标
                 if (placement == PlacementMode.TopEdgeAlignedLeft ||
                     placement == PlacementMode.BottomEdgeAlignedLeft)

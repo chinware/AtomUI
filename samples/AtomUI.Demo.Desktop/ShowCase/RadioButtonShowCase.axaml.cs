@@ -4,6 +4,8 @@ namespace AtomUI.Demo.Desktop.ShowCase;
 
 public partial class RadioButtonShowCase : UserControl
 {
+    protected List<string> CheckRadios { get; set; }
+
     public RadioButtonShowCase()
     {
         CheckRadios = new List<string>
@@ -13,8 +15,6 @@ public partial class RadioButtonShowCase : UserControl
         };
         InitializeComponent();
     }
-
-    protected List<string> CheckRadios { get; set; }
 
     public static void ToggleDisabledStatus(object arg)
     {

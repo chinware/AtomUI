@@ -4,29 +4,6 @@ namespace AtomUI.Controls;
 
 internal class TextBoxInnerBox : AddOnDecoratedInnerBox
 {
-    private readonly WeakReference<TextBox> _textBox;
-
-    public TextBoxInnerBox(TextBox textBox)
-    {
-        _textBox = new WeakReference<TextBox>(textBox);
-    }
-
-    protected override void NotifyClearButtonClicked()
-    {
-        if (_textBox.TryGetTarget(out var textBox))
-        {
-            textBox.Clear();
-        }
-    }
-
-    protected override void BuildEffectiveInnerBoxPadding()
-    {
-        if (!_embedMode)
-        {
-            base.BuildEffectiveInnerBoxPadding();
-        }
-    }
-
     #region 公共属性定义
 
     public static readonly StyledProperty<bool> IsRevealButtonVisibleProperty =
@@ -65,4 +42,27 @@ internal class TextBoxInnerBox : AddOnDecoratedInnerBox
     }
 
     #endregion
+
+    private readonly WeakReference<TextBox> _textBox;
+
+    public TextBoxInnerBox(TextBox textBox)
+    {
+        _textBox = new WeakReference<TextBox>(textBox);
+    }
+
+    protected override void NotifyClearButtonClicked()
+    {
+        if (_textBox.TryGetTarget(out var textBox))
+        {
+            textBox.Clear();
+        }
+    }
+
+    protected override void BuildEffectiveInnerBoxPadding()
+    {
+        if (!_embedMode)
+        {
+            base.BuildEffectiveInnerBoxPadding();
+        }
+    }
 }

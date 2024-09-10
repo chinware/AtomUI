@@ -26,7 +26,6 @@ internal static class WindowExt
     {
         var impl          = window.PlatformImpl!;
         var currentStyles = GetExtendedStyle(impl);
-
         // 不是确定这样处理是否合适
         if (flag)
         {
@@ -44,7 +43,6 @@ internal static class WindowExt
     {
         var impl          = window.PlatformImpl!;
         var currentStyles = GetExtendedStyle(impl);
-
         // 不是确定这样处理是否合适
         if (flag)
         {

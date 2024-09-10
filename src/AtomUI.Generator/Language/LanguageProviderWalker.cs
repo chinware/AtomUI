@@ -6,6 +6,7 @@ namespace AtomUI.Generator.Language;
 
 public class LanguageProviderWalker : CSharpSyntaxWalker
 {
+    public LanguageInfo LanguageInfo { get; }
     private readonly SemanticModel _semanticModel;
 
     public LanguageProviderWalker(SemanticModel semanticModel)
@@ -13,8 +14,6 @@ public class LanguageProviderWalker : CSharpSyntaxWalker
         _semanticModel = semanticModel;
         LanguageInfo   = new LanguageInfo();
     }
-
-    public LanguageInfo LanguageInfo { get; }
 
     public override void VisitFieldDeclaration(FieldDeclarationSyntax fieldNode)
     {

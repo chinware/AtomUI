@@ -1,9 +1,10 @@
-﻿using AtomUI.Controls.MotionScene;
+﻿using AtomUI.Controls.Badge;
+using AtomUI.Controls.MotionScene;
 using AtomUI.Data;
 using AtomUI.MotionScene;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Palette;
 using AtomUI.Theme.Styling;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -50,26 +51,6 @@ public class CountBadge : Control, IControlCustomStyle
     internal static readonly StyledProperty<TimeSpan> MotionDurationProperty =
         AvaloniaProperty.Register<CountBadge, TimeSpan>(
             nameof(MotionDuration));
-
-    private readonly IControlCustomStyle _customStyle;
-
-    private AdornerLayer? _adornerLayer;
-    private bool _animating;
-    private CountBadgeAdorner? _badgeAdorner;
-
-    static CountBadge()
-    {
-        AffectsMeasure<CountBadge>(DecoratedTargetProperty,
-            CountProperty,
-            OverflowCountProperty,
-            SizeProperty);
-        AffectsRender<CountBadge>(BadgeColorProperty, OffsetProperty);
-    }
-
-    public CountBadge()
-    {
-        _customStyle = this;
-    }
 
     public string? BadgeColor
     {
@@ -126,17 +107,23 @@ public class CountBadge : Control, IControlCustomStyle
         set => SetValue(MotionDurationProperty, value);
     }
 
-    void IControlCustomStyle.SetupTokenBindings()
-    {
-        if (_badgeAdorner is not null)
-        {
-            BindUtils.RelayBind(this, OffsetProperty, _badgeAdorner, CountBadgeAdorner.OffsetProperty);
-            BindUtils.RelayBind(this, SizeProperty, _badgeAdorner, CountBadgeAdorner.SizeProperty);
-            BindUtils.RelayBind(this, OverflowCountProperty, _badgeAdorner, CountBadgeAdorner.OverflowCountProperty);
-            BindUtils.RelayBind(this, CountProperty, _badgeAdorner, CountBadgeAdorner.CountProperty);
-        }
+    private readonly IControlCustomStyle _customStyle;
+    private CountBadgeAdorner? _badgeAdorner;
+    private AdornerLayer? _adornerLayer;
+    private bool _animating;
 
-        TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, GlobalTokenResourceKey.MotionDurationSlow);
+    public CountBadge()
+    {
+        _customStyle = this;
+    }
+
+    static CountBadge()
+    {
+        AffectsMeasure<CountBadge>(DecoratedTargetProperty,
+            CountProperty,
+            OverflowCountProperty,
+            SizeProperty);
+        AffectsRender<CountBadge>(BadgeColorProperty, OffsetProperty);
     }
 
     public sealed override void ApplyTemplate()
@@ -170,7 +157,6 @@ public class CountBadge : Control, IControlCustomStyle
         {
             var badgeAdorner = CreateBadgeAdorner();
             _adornerLayer = AdornerLayer.GetAdornerLayer(this);
-
             // 这里需要抛出异常吗？
             if (_adornerLayer == null)
             {
@@ -283,6 +269,19 @@ public class CountBadge : Control, IControlCustomStyle
     {
         base.OnDetachedFromVisualTree(e);
         HideAdorner();
+    }
+
+    void IControlCustomStyle.SetupTokenBindings()
+    {
+        if (_badgeAdorner is not null)
+        {
+            BindUtils.RelayBind(this, OffsetProperty, _badgeAdorner, CountBadgeAdorner.OffsetProperty);
+            BindUtils.RelayBind(this, SizeProperty, _badgeAdorner, CountBadgeAdorner.SizeProperty);
+            BindUtils.RelayBind(this, OverflowCountProperty, _badgeAdorner, CountBadgeAdorner.OverflowCountProperty);
+            BindUtils.RelayBind(this, CountProperty, _badgeAdorner, CountBadgeAdorner.CountProperty);
+        }
+
+        TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, GlobalTokenResourceKey.MotionDurationSlow);
     }
 
     private void HandleDecoratedTargetChanged()

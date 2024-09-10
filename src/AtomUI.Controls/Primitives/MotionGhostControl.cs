@@ -18,15 +18,32 @@ internal class MotionGhostControl : Control, INotifyCaptureGhostBitmap
     public static readonly StyledProperty<CornerRadius> MaskCornerRadiusProperty =
         Border.CornerRadiusProperty.AddOwner<MotionGhostControl>();
 
-    protected RenderTargetBitmap? _contentBitmap;
-    protected RenderTargetBitmap? _ghostBitmap;
+    /// <summary>
+    /// 渲染的阴影值，一般在探测失败的时候使用
+    /// </summary>
+    public BoxShadows Shadows
+    {
+        get => GetValue(ShadowsProperty);
+        set => SetValue(ShadowsProperty, value);
+    }
+
+    /// <summary>
+    /// mask 的圆角大小，一般在探测失败的时候使用
+    /// </summary>
+    public CornerRadius MaskCornerRadius
+    {
+        get => GetValue(MaskCornerRadiusProperty);
+        set => SetValue(MaskCornerRadiusProperty, value);
+    }
 
     protected bool _initialized;
     protected Canvas? _layout;
+    protected Control _motionTarget;
+    protected RenderTargetBitmap? _ghostBitmap;
+    protected RenderTargetBitmap? _contentBitmap;
+    protected Size _motionTargetSize;
     protected Point _maskOffset;
     protected Size _maskSize;
-    protected Control _motionTarget;
-    protected Size _motionTargetSize;
 
     static MotionGhostControl()
     {
@@ -54,41 +71,6 @@ internal class MotionGhostControl : Control, INotifyCaptureGhostBitmap
         var shadowThickness = Shadows.Thickness();
         Width  = _motionTargetSize.Width + shadowThickness.Left + shadowThickness.Right;
         Height = _motionTargetSize.Height + shadowThickness.Top + shadowThickness.Bottom;
-    }
-
-    /// <summary>
-    /// 渲染的阴影值，一般在探测失败的时候使用
-    /// </summary>
-    public BoxShadows Shadows
-    {
-        get => GetValue(ShadowsProperty);
-        set => SetValue(ShadowsProperty, value);
-    }
-
-    /// <summary>
-    /// mask 的圆角大小，一般在探测失败的时候使用
-    /// </summary>
-    public CornerRadius MaskCornerRadius
-    {
-        get => GetValue(MaskCornerRadiusProperty);
-        set => SetValue(MaskCornerRadiusProperty, value);
-    }
-
-    public void NotifyCaptureGhostBitmap()
-    {
-        if (_ghostBitmap is null)
-        {
-            var scaling = TopLevel.GetTopLevel(this)?.RenderScaling ?? 1.0;
-            _ghostBitmap = new RenderTargetBitmap(
-                new PixelSize((int)(DesiredSize.Width * scaling), (int)(DesiredSize.Height * scaling)),
-                new Vector(96 * scaling, 96 * scaling));
-            _contentBitmap = new RenderTargetBitmap(
-                new PixelSize((int)(_motionTargetSize.Width * scaling), (int)(_motionTargetSize.Height * scaling)),
-                new Vector(96 * scaling, 96 * scaling));
-            _ghostBitmap.Render(this);
-            _contentBitmap.Render(_motionTarget);
-            _layout!.Children.Clear();
-        }
     }
 
     private void DetectMotionTargetInfo()
@@ -216,6 +198,23 @@ internal class MotionGhostControl : Control, INotifyCaptureGhostBitmap
             var offsetY         = shadowThickness.Top;
             context.DrawImage(_contentBitmap, new Rect(new Point(0, 0), _motionTargetSize * scaling),
                 new Rect(new Point(offsetX, offsetY), _motionTargetSize));
+        }
+    }
+
+    public void NotifyCaptureGhostBitmap()
+    {
+        if (_ghostBitmap is null)
+        {
+            var scaling = TopLevel.GetTopLevel(this)?.RenderScaling ?? 1.0;
+            _ghostBitmap = new RenderTargetBitmap(
+                new PixelSize((int)(DesiredSize.Width * scaling), (int)(DesiredSize.Height * scaling)),
+                new Vector(96 * scaling, 96 * scaling));
+            _contentBitmap = new RenderTargetBitmap(
+                new PixelSize((int)(_motionTargetSize.Width * scaling), (int)(_motionTargetSize.Height * scaling)),
+                new Vector(96 * scaling, 96 * scaling));
+            _ghostBitmap.Render(this);
+            _contentBitmap.Render(_motionTarget);
+            _layout!.Children.Clear();
         }
     }
 }

@@ -7,11 +7,6 @@ public class EmptyIndicatorToken : AbstractControlDesignToken
 {
     public const string ID = "EmptyIndicator";
 
-    public EmptyIndicatorToken()
-        : base(ID)
-    {
-    }
-
     /// <summary>
     /// 空图片的高度
     /// </summary>
@@ -19,6 +14,11 @@ public class EmptyIndicatorToken : AbstractControlDesignToken
 
     public double EmptyImgHeightSM { get; set; }
     public double EmptyImgHeightMD { get; set; }
+
+    public EmptyIndicatorToken()
+        : base(ID)
+    {
+    }
 
     internal override void CalculateFromAlias()
     {

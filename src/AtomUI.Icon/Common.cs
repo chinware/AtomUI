@@ -29,13 +29,8 @@ public enum IconThemeType
 public record struct ColorInfo
 {
     private Color? _activeColor;
-    private Color? _disabledColor;
     private Color? _selectedColor;
-
-    public ColorInfo(Color color = default)
-    {
-        NormalColor = color;
-    }
+    private Color? _disabledColor;
 
     public Color NormalColor { get; set; }
 
@@ -55,6 +50,11 @@ public record struct ColorInfo
     {
         get => _disabledColor ?? NormalColor;
         set => _disabledColor = value;
+    }
+
+    public ColorInfo(Color color = default)
+    {
+        NormalColor = color;
     }
 
     public static ColorInfo Parse(string expr)

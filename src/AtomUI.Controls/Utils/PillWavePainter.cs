@@ -7,14 +7,14 @@ namespace AtomUI.Controls.Utils;
 
 internal class PillWavePainter : AbstractWavePainter
 {
+    public Size OriginSize { get; set; }
+
     public PillWavePainter(Size size = default, Point originPoint = default)
         : base(originPoint)
     {
         OriginSize = size;
         WaveType   = WaveType.PillWave;
     }
-
-    public Size OriginSize { get; set; }
 
     public override void Paint(DrawingContext context, object newSize, double newOpacity)
     {

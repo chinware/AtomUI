@@ -1,9 +1,9 @@
 ﻿using AtomUI.Controls.Utils;
 using AtomUI.Icon;
 using AtomUI.Media;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
@@ -25,43 +25,77 @@ public enum TabSharp
 
 public class TabStripItem : AvaloniaTabStripItem, IControlCustomStyle, ICustomHitTest
 {
-    private readonly IControlCustomStyle _customStyle;
-    private IconButton? _closeButton;
+    #region 公共属性定义
 
-    private StackPanel? _contentLayout;
+    public static readonly StyledProperty<SizeType> SizeTypeProperty =
+        BaseTabStrip.SizeTypeProperty.AddOwner<TabStripItem>();
 
-    public TabStripItem()
+    public static readonly StyledProperty<PathIcon?> IconProperty =
+        AvaloniaProperty.Register<TabStripItem, PathIcon?>(nameof(Icon));
+
+    public static readonly StyledProperty<PathIcon?> CloseIconProperty =
+        AvaloniaProperty.Register<TabStripItem, PathIcon?>(nameof(CloseIcon));
+
+    public static readonly StyledProperty<bool> IsClosableProperty =
+        AvaloniaProperty.Register<TabStripItem, bool>(nameof(IsClosable));
+
+    public static readonly DirectProperty<TabStripItem, Dock?> TabStripPlacementProperty =
+        AvaloniaProperty.RegisterDirect<TabStripItem, Dock?>(nameof(TabStripPlacement), o => o.TabStripPlacement);
+
+    public SizeType SizeType
     {
-        _customStyle = this;
+        get => GetValue(SizeTypeProperty);
+        set => SetValue(SizeTypeProperty, value);
     }
 
-    #region IControlCustomStyle 实现
-
-    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
+    public PathIcon? Icon
     {
-        _contentLayout = scope.Find<StackPanel>(BaseTabStripItemTheme.ContentLayoutPart);
-        _closeButton   = scope.Find<IconButton>(BaseTabStripItemTheme.ItemCloseButtonPart);
+        get => GetValue(IconProperty);
+        set => SetValue(IconProperty, value);
+    }
 
-        SetupItemIcon();
-        SetupCloseIcon();
-        if (Transitions is null)
-        {
-            var transitions = new Transitions();
-            transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty));
-            Transitions = transitions;
-        }
+    public PathIcon? CloseIcon
+    {
+        get => GetValue(CloseIconProperty);
+        set => SetValue(CloseIconProperty, value);
+    }
 
-        if (_closeButton is not null)
-        {
-            _closeButton.Click += HandleCloseRequest;
-        }
+    public bool IsClosable
+    {
+        get => GetValue(IsClosableProperty);
+        set => SetValue(IsClosableProperty, value);
+    }
+
+    private Dock? _tabStripPlacement;
+
+    public Dock? TabStripPlacement
+    {
+        get => _tabStripPlacement;
+        internal set => SetAndRaise(TabStripPlacementProperty, ref _tabStripPlacement, value);
     }
 
     #endregion
 
-    public bool HitTest(Point point)
+    #region 内部属性定义
+
+    internal static readonly StyledProperty<TabSharp> ShapeProperty =
+        AvaloniaProperty.Register<TabStripItem, TabSharp>(nameof(Shape));
+
+    public TabSharp Shape
     {
-        return true;
+        get => GetValue(ShapeProperty);
+        set => SetValue(ShapeProperty, value);
+    }
+
+    #endregion
+
+    private StackPanel? _contentLayout;
+    private readonly IControlCustomStyle _customStyle;
+    private IconButton? _closeButton;
+
+    public TabStripItem()
+    {
+        _customStyle = this;
     }
 
     private void SetupItemIcon()
@@ -122,6 +156,30 @@ public class TabStripItem : AvaloniaTabStripItem, IControlCustomStyle, ICustomHi
         base.OnApplyTemplate(e);
         _customStyle.HandleTemplateApplied(e.NameScope);
     }
+
+    #region IControlCustomStyle 实现
+
+    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
+    {
+        _contentLayout = scope.Find<StackPanel>(BaseTabStripItemTheme.ContentLayoutPart);
+        _closeButton   = scope.Find<IconButton>(BaseTabStripItemTheme.ItemCloseButtonPart);
+
+        SetupItemIcon();
+        SetupCloseIcon();
+        if (Transitions is null)
+        {
+            var transitions = new Transitions();
+            transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty));
+            Transitions = transitions;
+        }
+
+        if (_closeButton is not null)
+        {
+            _closeButton.Click += HandleCloseRequest;
+        }
+    }
+
+    #endregion
 
     private void HandleCloseRequest(object? sender, RoutedEventArgs args)
     {
@@ -201,67 +259,8 @@ public class TabStripItem : AvaloniaTabStripItem, IControlCustomStyle, ICustomHi
         }
     }
 
-    #region 公共属性定义
-
-    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        BaseTabStrip.SizeTypeProperty.AddOwner<TabStripItem>();
-
-    public static readonly StyledProperty<PathIcon?> IconProperty =
-        AvaloniaProperty.Register<TabStripItem, PathIcon?>(nameof(Icon));
-
-    public static readonly StyledProperty<PathIcon?> CloseIconProperty =
-        AvaloniaProperty.Register<TabStripItem, PathIcon?>(nameof(CloseIcon));
-
-    public static readonly StyledProperty<bool> IsClosableProperty =
-        AvaloniaProperty.Register<TabStripItem, bool>(nameof(IsClosable));
-
-    public static readonly DirectProperty<TabStripItem, Dock?> TabStripPlacementProperty =
-        AvaloniaProperty.RegisterDirect<TabStripItem, Dock?>(nameof(TabStripPlacement), o => o.TabStripPlacement);
-
-    public SizeType SizeType
+    public bool HitTest(Point point)
     {
-        get => GetValue(SizeTypeProperty);
-        set => SetValue(SizeTypeProperty, value);
+        return true;
     }
-
-    public PathIcon? Icon
-    {
-        get => GetValue(IconProperty);
-        set => SetValue(IconProperty, value);
-    }
-
-    public PathIcon? CloseIcon
-    {
-        get => GetValue(CloseIconProperty);
-        set => SetValue(CloseIconProperty, value);
-    }
-
-    public bool IsClosable
-    {
-        get => GetValue(IsClosableProperty);
-        set => SetValue(IsClosableProperty, value);
-    }
-
-    private Dock? _tabStripPlacement;
-
-    public Dock? TabStripPlacement
-    {
-        get => _tabStripPlacement;
-        internal set => SetAndRaise(TabStripPlacementProperty, ref _tabStripPlacement, value);
-    }
-
-    #endregion
-
-    #region 内部属性定义
-
-    internal static readonly StyledProperty<TabSharp> ShapeProperty =
-        AvaloniaProperty.Register<TabStripItem, TabSharp>(nameof(Shape));
-
-    public TabSharp Shape
-    {
-        get => GetValue(ShapeProperty);
-        set => SetValue(ShapeProperty, value);
-    }
-
-    #endregion
 }

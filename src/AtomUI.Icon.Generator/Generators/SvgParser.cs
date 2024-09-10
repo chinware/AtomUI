@@ -4,14 +4,14 @@ namespace AtomUI.Icon.Generators;
 
 public record PathInfo
 {
+    public string Data { get; set; }
+    public string? FillColor { get; set; }
+
     public PathInfo(string data, string? fillColor = null)
     {
         Data      = data;
         FillColor = fillColor;
     }
-
-    public string Data { get; set; }
-    public string? FillColor { get; set; }
 }
 
 public struct ViewBox
@@ -36,12 +36,12 @@ public class SvgParser
     private const string DataAttrName = "d";
     private const string ViewBoxAttrName = "viewBox";
 
-    // 上下文信息
-    private Stack<string>? _currentElementNames;
-    private bool _parseFinished;
-
     private List<PathInfo>? _pathInfos;
     private ViewBox _viewBox;
+    private bool _parseFinished;
+
+    // 上下文信息
+    private Stack<string>? _currentElementNames;
 
     public SvgParsedInfo Parse(string svg)
     {

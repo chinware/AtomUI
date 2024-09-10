@@ -6,17 +6,16 @@ namespace AtomUI.Generator;
 
 public class TokenPropertyWalker : CSharpSyntaxWalker
 {
-    public const string AbstractDesignTokenName = "AbstractDesignToken";
+    public HashSet<string> TokenNames { get; }
+    public string? TokenResourceCatalog { get; set; }
     private readonly SemanticModel _semanticModel;
+    public const string AbstractDesignTokenName = "AbstractDesignToken";
 
     public TokenPropertyWalker(SemanticModel semanticModel)
     {
         TokenNames     = new HashSet<string>();
         _semanticModel = semanticModel;
     }
-
-    public HashSet<string> TokenNames { get; }
-    public string? TokenResourceCatalog { get; set; }
 
     public override void VisitPropertyDeclaration(PropertyDeclarationSyntax node)
     {

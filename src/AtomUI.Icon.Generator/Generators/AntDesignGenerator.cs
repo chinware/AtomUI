@@ -6,14 +6,14 @@ using Microsoft.CodeAnalysis;
 namespace AtomUI.Icon.Generators;
 
 /// <summary>
-/// 目前仅能针对 AntDesign 暂时不可移植
+///     目前仅能针对 AntDesign 暂时不可移植
 /// </summary>
 [Generator]
 public class AntDesignGenerator : IIncrementalGenerator
 {
     private readonly SvgParser _svgParser;
-    private readonly List<string> _twotoneTplSecondaryColors;
     private List<string> _twotoneTplPrimaryColors;
+    private readonly List<string> _twotoneTplSecondaryColors;
 
     public AntDesignGenerator()
     {

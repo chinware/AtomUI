@@ -7,8 +7,8 @@ namespace AtomUI.Generator.ControlTheme;
 
 public class ControlThemeRegisterClassSourceWriter
 {
-    private readonly ImmutableArray<string> _classes;
     private readonly SourceProductionContext _context;
+    private readonly ImmutableArray<string> _classes;
     private readonly List<string> _usingInfos;
 
     public ControlThemeRegisterClassSourceWriter(SourceProductionContext context, ImmutableArray<string> classes)

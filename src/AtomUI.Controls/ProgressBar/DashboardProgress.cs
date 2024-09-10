@@ -27,16 +27,6 @@ public class DashboardProgress : AbstractCircleProgress
             nameof(DashboardGapPosition), DEFAULT_GAP_DEGREE,
             coerce: (o, value) => Math.Clamp(value, MIN_GAP_DEGREE, MAX_GAP_DEGREE));
 
-    private (double, double) _anglePair;
-
-    private Rect _currentGrooveRect;
-
-    static DashboardProgress()
-    {
-        AffectsRender<DashboardProgress>(DashboardGapPositionProperty,
-            GapDegreeProperty);
-    }
-
     public DashboardGapPosition DashboardGapPosition
     {
         get => GetValue(DashboardGapPositionProperty);
@@ -47,6 +37,15 @@ public class DashboardProgress : AbstractCircleProgress
     {
         get => GetValue(GapDegreeProperty);
         set => SetValue(GapDegreeProperty, value);
+    }
+
+    private Rect _currentGrooveRect;
+    private (double, double) _anglePair;
+
+    static DashboardProgress()
+    {
+        AffectsRender<DashboardProgress>(DashboardGapPositionProperty,
+            GapDegreeProperty);
     }
 
     protected override void RenderGroove(DrawingContext context)

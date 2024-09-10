@@ -1,48 +1,61 @@
-<UserControl x:Class="AtomUI.Demo.Desktop.ShowCase.MessageShowCase"
-             xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:atom="https://atomui.net"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d">
-    <desktop:ShowCasePanel>
-        <desktop:ShowCaseItem Title="Basic" Description="The simplest usage for Message.">
-            <atom:Button ButtonType="Primary" Click="ShowSimpleMessage">
+<UserControl
+    x:Class="AtomUI.Demo.Desktop.ShowCase.MessageShowCase"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:atom="https://atomui.net"
+    xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
+    mc:Ignorable="d">
+    <showcase:ShowCasePanel>
+        <showcase:ShowCaseItem
+            Title="Basic"
+            Description="The simplest usage for Message.">
+            <atom:Button ButtonType="Primary"
+                         Click="ShowSimpleMessage">
                 Display normal message
             </atom:Button>
-        </desktop:ShowCaseItem>
+        </showcase:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Other types of message"
-                              Description="Messages of success, error and warning types.">
+        <showcase:ShowCaseItem
+            Title="Other types of message"
+            Description="Messages of success, error and warning types.">
             <StackPanel Orientation="Horizontal" Spacing="10">
-                <atom:Button ButtonType="Default" Click="ShowSuccessMessage">
+                <atom:Button ButtonType="Default"
+                             Click="ShowSuccessMessage">
                     Success
                 </atom:Button>
-                <atom:Button ButtonType="Default" Click="ShowInfoMessage">
+                <atom:Button ButtonType="Default"
+                             Click="ShowInfoMessage">
                     Info
                 </atom:Button>
-                <atom:Button ButtonType="Default" Click="ShowWarningMessage">
+                <atom:Button ButtonType="Default"
+                             Click="ShowWarningMessage">
                     Warning
                 </atom:Button>
-                <atom:Button ButtonType="Default" Click="ShowErrorMessage">
+                <atom:Button ButtonType="Default"
+                             Click="ShowErrorMessage">
                     Error
                 </atom:Button>
             </StackPanel>
-        </desktop:ShowCaseItem>
+        </showcase:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Message with loading indicator"
-                              Description="Display a global loading indicator, which is dismissed by itself asynchronously.">
-            <atom:Button ButtonType="Default" Click="ShowLoadingMessage">
+        <showcase:ShowCaseItem
+            Title="Message with loading indicator"
+            Description="Display a global loading indicator, which is dismissed by itself asynchronously.">
+            <atom:Button ButtonType="Default"
+                         Click="ShowLoadingMessage">
                 Display a loading indicator
             </atom:Button>
-        </desktop:ShowCaseItem>
+        </showcase:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Callback"
-                              Description="The above example will display a new message when the old message is about to close.">
-            <atom:Button ButtonType="Default" Click="ShowSequentialMessage">
+        <showcase:ShowCaseItem
+            Title="Callback"
+            Description="The above example will display a new message when the old message is about to close.">
+            <atom:Button ButtonType="Default"
+                         Click="ShowSequentialMessage">
                 Display a loading indicator
             </atom:Button>
-        </desktop:ShowCaseItem>
-    </desktop:ShowCasePanel>
+        </showcase:ShowCaseItem>
+    </showcase:ShowCasePanel>
 </UserControl>

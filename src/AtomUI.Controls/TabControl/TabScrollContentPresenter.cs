@@ -10,19 +10,14 @@ namespace AtomUI.Controls;
 
 internal class TabScrollContentPresenter : ScrollContentPresenter, ICustomHitTest
 {
+    internal Dock TabStripPlacement { get; set; } = Dock.Top;
+
     private static readonly MethodInfo SnapOffsetMethodInfo;
 
     static TabScrollContentPresenter()
     {
         SnapOffsetMethodInfo =
             typeof(ScrollContentPresenter).GetMethod("SnapOffset", BindingFlags.Instance | BindingFlags.NonPublic)!;
-    }
-
-    internal Dock TabStripPlacement { get; set; } = Dock.Top;
-
-    public bool HitTest(Point point)
-    {
-        return true;
     }
 
     protected override void OnPointerWheelChanged(PointerWheelEventArgs e)
@@ -63,5 +58,10 @@ internal class TabScrollContentPresenter : ScrollContentPresenter, ICustomHitTes
 
             e.Handled = !IsScrollChainingEnabled || offsetChanged;
         }
+    }
+
+    public bool HitTest(Point point)
+    {
+        return true;
     }
 }

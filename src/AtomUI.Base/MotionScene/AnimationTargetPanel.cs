@@ -5,8 +5,9 @@ namespace AtomUI.MotionScene;
 
 internal class AnimationTargetPanel : Panel
 {
-    private Size _cacheMeasureSize;
     public bool InAnimation { get; set; }
+
+    private Size _cacheMeasureSize;
 
     protected override Size MeasureOverride(Size availableSize)
     {

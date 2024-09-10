@@ -29,7 +29,6 @@ internal class TextButtonTheme : BaseButtonTheme
     private void BuildEnabledStyle()
     {
         var enabledStyle = new Style(selector => selector.Nesting());
-
         // 正常状态
         enabledStyle.Add(TemplatedControl.BackgroundProperty, GlobalTokenResourceKey.ColorTransparent);
         enabledStyle.Add(TemplatedControl.ForegroundProperty, ButtonTokenResourceKey.DefaultColor);
@@ -40,7 +39,6 @@ internal class TextButtonTheme : BaseButtonTheme
             hoverStyle.Add(TemplatedControl.BackgroundProperty, ButtonTokenResourceKey.TextHoverBg);
             enabledStyle.Add(hoverStyle);
         }
-
         // 正常按下
         {
             var pressedStyle = new Style(selector =>

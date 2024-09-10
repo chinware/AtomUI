@@ -6,6 +6,7 @@ using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.TokenSystem;
 using AtomUI.Theme.Utils;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
@@ -35,7 +36,6 @@ public enum ButtonShape
     Circle,
     Round
 }
-
 // TODO 目前不能动态切换 ButtonType
 
 [PseudoClasses(IconOnlyPC, LoadingPC)]
@@ -46,494 +46,6 @@ public class Button : AvaloniaButton,
 {
     public const string IconOnlyPC = ":icononly";
     public const string LoadingPC = ":loading";
-    private readonly IControlCustomStyle _customStyle;
-    private bool _initialized;
-    private PathIcon? _loadingIcon;
-
-    protected ControlStyleState _styleState;
-
-    static Button()
-    {
-        AffectsMeasure<Button>(SizeTypeProperty,
-            ButtonShapeProperty,
-            IconProperty,
-            WidthProperty,
-            HeightProperty,
-            PaddingProperty);
-        AffectsRender<Button>(ButtonTypeProperty,
-            IsDangerProperty,
-            IsGhostProperty,
-            BackgroundProperty,
-            ForegroundProperty);
-        HorizontalAlignmentProperty.OverrideDefaultValue<Button>(HorizontalAlignment.Left);
-        VerticalAlignmentProperty.OverrideDefaultValue<Button>(VerticalAlignment.Center);
-    }
-
-    public Button()
-    {
-        _customStyle = this;
-    }
-
-    void IControlCustomStyle.HandleAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        SetupControlTheme();
-        if (Text is null && Content is string content)
-        {
-            Text    = content;
-            Content = null;
-        }
-
-        PseudoClasses.Set(IconOnlyPC, Icon is not null && Text is null);
-        if (ButtonType == ButtonType.Default)
-        {
-            if (IsDanger)
-            {
-                Effect = new DropShadowEffect
-                {
-                    OffsetX    = DangerShadow.OffsetX,
-                    OffsetY    = DangerShadow.OffsetY,
-                    Color      = DangerShadow.Color,
-                    BlurRadius = DangerShadow.Blur
-                };
-            }
-            else
-            {
-                Effect = new DropShadowEffect
-                {
-                    OffsetX    = DefaultShadow.OffsetX,
-                    OffsetY    = DefaultShadow.OffsetY,
-                    Color      = DefaultShadow.Color,
-                    BlurRadius = DefaultShadow.Blur
-                };
-            }
-        }
-        else if (ButtonType == ButtonType.Primary)
-        {
-            if (IsDanger)
-            {
-                Effect = new DropShadowEffect
-                {
-                    OffsetX    = DangerShadow.OffsetX,
-                    OffsetY    = DangerShadow.OffsetY,
-                    Color      = DangerShadow.Color,
-                    BlurRadius = DangerShadow.Blur
-                };
-            }
-            else
-            {
-                Effect = new DropShadowEffect
-                {
-                    OffsetX    = PrimaryShadow.OffsetX,
-                    OffsetY    = PrimaryShadow.OffsetY,
-                    Color      = PrimaryShadow.Color,
-                    BlurRadius = PrimaryShadow.Blur
-                };
-            }
-        }
-    }
-
-    void IControlCustomStyle.CollectStyleState()
-    {
-        ControlStateUtils.InitCommonState(this, ref _styleState);
-        if (IsPressed)
-        {
-            _styleState |= ControlStyleState.Sunken;
-        }
-        else
-        {
-            _styleState |= ControlStyleState.Raised;
-        }
-    }
-
-    void IControlCustomStyle.SetupTransitions()
-    {
-        if (Transitions is null)
-        {
-            var transitions = new Transitions();
-            if (ButtonType == ButtonType.Primary)
-            {
-                transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty));
-                if (IsGhost)
-                {
-                    transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(BorderBrushProperty));
-                    transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty));
-                }
-            }
-            else if (ButtonType == ButtonType.Default)
-            {
-                transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(BorderBrushProperty));
-                transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty));
-            }
-            else if (ButtonType == ButtonType.Text)
-            {
-                transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty));
-            }
-            else if (ButtonType == ButtonType.Link)
-            {
-                transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty));
-            }
-
-            Transitions = transitions;
-        }
-    }
-
-    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
-    {
-        _customStyle.CollectStyleState();
-        ApplyShapeStyleConfig();
-        ApplyIconModeStyleConfig();
-        UpdatePseudoClasses();
-        SetupIcon();
-        SetupIconBrush();
-    }
-
-    void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
-    {
-        if (e.Property == IsPointerOverProperty ||
-            e.Property == IsPressedProperty ||
-            e.Property == IsEnabledProperty)
-        {
-            _customStyle.CollectStyleState();
-            ApplyIconModeStyleConfig();
-            if (e.Property == IsPressedProperty)
-            {
-                if (!IsLoading && _styleState.HasFlag(ControlStyleState.Raised) && (ButtonType == ButtonType.Primary ||
-                        ButtonType == ButtonType.Default))
-                {
-                    WaveType waveType = default;
-                    if (Shape == ButtonShape.Default)
-                    {
-                        waveType = WaveType.RoundRectWave;
-                    }
-                    else if (Shape == ButtonShape.Round)
-                    {
-                        waveType = WaveType.PillWave;
-                    }
-                    else if (Shape == ButtonShape.Circle)
-                    {
-                        waveType = WaveType.CircleWave;
-                    }
-
-                    Color? waveColor = null;
-                    if (IsDanger)
-                    {
-                        if (ButtonType == ButtonType.Primary && !IsGhost)
-                        {
-                            waveColor = Color.Parse(Background?.ToString()!);
-                        }
-                        else
-                        {
-                            waveColor = Color.Parse(Foreground?.ToString()!);
-                        }
-                    }
-
-                    WaveSpiritAdorner.ShowWaveAdorner(this, waveType, waveColor);
-                }
-            }
-        }
-
-        if (e.Property == ButtonTypeProperty)
-        {
-            if (VisualRoot is not null)
-            {
-                SetupControlTheme();
-            }
-        }
-        else if (e.Property == ContentProperty ||
-                 e.Property == TextProperty ||
-                 e.Property == IsLoadingProperty)
-        {
-            UpdatePseudoClasses();
-        }
-
-        if (e.Property == IconProperty)
-        {
-            SetupIcon();
-        }
-
-        if (e.Property == IsDangerProperty ||
-            e.Property == IsGhostProperty ||
-            e.Property == ButtonTypeProperty)
-        {
-            SetupIconBrush();
-        }
-
-        if (e.Property == BorderBrushProperty ||
-            e.Property == ButtonTypeProperty)
-        {
-            SetupEffectiveBorderThickness();
-        }
-    }
-
-    public Rect WaveGeometry()
-    {
-        return new Rect(0, 0, Bounds.Width, Bounds.Height);
-    }
-
-    public CornerRadius WaveBorderRadius()
-    {
-        return CornerRadius;
-    }
-
-    protected override Size MeasureOverride(Size availableSize)
-    {
-        var size         = base.MeasureOverride(availableSize);
-        var targetWidth  = size.Width;
-        var targetHeight = size.Height;
-
-        targetHeight = Math.Max(targetHeight, ControlHeight);
-
-        targetWidth = Math.Max(targetWidth, targetHeight);
-
-        if (Shape == ButtonShape.Circle)
-        {
-            targetWidth  = targetHeight;
-            CornerRadius = new CornerRadius(targetHeight);
-        }
-        else if (Shape == ButtonShape.Round)
-        {
-            CornerRadius = new CornerRadius(targetHeight);
-            targetWidth  = Math.Max(targetWidth, targetHeight + targetHeight / 2);
-        }
-
-        return new Size(targetWidth, targetHeight);
-    }
-
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        if (!_initialized)
-        {
-            _customStyle.HandleAttachedToLogicalTree(e);
-            _initialized = true;
-        }
-    }
-
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
-    {
-        base.OnPropertyChanged(e);
-        _customStyle.HandlePropertyChangedForStyle(e);
-    }
-
-    private void SetupControlTheme()
-    {
-        if (ButtonType == ButtonType.Default)
-        {
-            TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, DefaultButtonTheme.ID);
-        }
-        else if (ButtonType == ButtonType.Primary)
-        {
-            TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, PrimaryButtonTheme.ID);
-        }
-        else if (ButtonType == ButtonType.Text)
-        {
-            TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, TextButtonTheme.ID);
-        }
-        else if (ButtonType == ButtonType.Link)
-        {
-            TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, LinkButtonTheme.ID);
-        }
-    }
-
-    private void ApplyShapeStyleConfig()
-    {
-        if (Shape == ButtonShape.Circle)
-        {
-            TokenResourceBinder.CreateTokenBinding(this, PaddingProperty, ButtonTokenResourceKey.CirclePadding);
-        }
-    }
-
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        base.OnApplyTemplate(e);
-        _loadingIcon = e.NameScope.Find<PathIcon>(BaseButtonTheme.LoadingIconPart);
-        _customStyle.HandleTemplateApplied(e.NameScope);
-        _customStyle.SetupTransitions();
-    }
-
-    protected virtual void ApplyIconModeStyleConfig()
-    {
-        if (Icon is null)
-        {
-            return;
-        }
-
-        if (_styleState.HasFlag(ControlStyleState.Enabled))
-        {
-            if (_styleState.HasFlag(ControlStyleState.Sunken))
-            {
-                Icon.IconMode = IconMode.Selected;
-            }
-            else if (_styleState.HasFlag(ControlStyleState.MouseOver))
-            {
-                Icon.IconMode = IconMode.Active;
-            }
-            else
-            {
-                Icon.IconMode = IconMode.Normal;
-            }
-        }
-        else
-        {
-            Icon.IconMode = IconMode.Disabled;
-        }
-    }
-
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        TokenResourceBinder.CreateGlobalTokenBinding(this, BorderThicknessProperty,
-            GlobalTokenResourceKey.BorderThickness,
-            BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this));
-        SetupEffectiveBorderThickness();
-    }
-
-    private void SetupEffectiveBorderThickness()
-    {
-        if (ButtonType == ButtonType.Default)
-        {
-            EffectiveBorderThickness = BorderThickness;
-        }
-        else if (ButtonType == ButtonType.Primary)
-        {
-            if (IsGhost)
-            {
-                EffectiveBorderThickness = BorderThickness;
-            }
-            else
-            {
-                EffectiveBorderThickness = new Thickness(0);
-            }
-        }
-        else
-        {
-            EffectiveBorderThickness = new Thickness(0);
-        }
-    }
-
-    private void SetupIcon()
-    {
-        if (Icon is not null)
-        {
-            BindUtils.RelayBind(this, IconSizeProperty, Icon, WidthProperty);
-            BindUtils.RelayBind(this, IconSizeProperty, Icon, HeightProperty);
-            BindUtils.RelayBind(this, IconMarginProperty, Icon, MarginProperty);
-        }
-    }
-
-    private void SetupIconBrush()
-    {
-        var normalFilledBrushKey   = ButtonTokenResourceKey.DefaultColor;
-        var selectedFilledBrushKey = ButtonTokenResourceKey.DefaultActiveColor;
-        var activeFilledBrushKey   = ButtonTokenResourceKey.DefaultHoverColor;
-        var disabledFilledBrushKey = GlobalTokenResourceKey.ColorTextDisabled;
-        if (ButtonType == ButtonType.Default)
-        {
-            if (IsGhost)
-            {
-                normalFilledBrushKey   = GlobalTokenResourceKey.ColorTextLightSolid;
-                selectedFilledBrushKey = GlobalTokenResourceKey.ColorPrimaryActive;
-                activeFilledBrushKey   = GlobalTokenResourceKey.ColorPrimaryHover;
-            }
-
-            if (IsDanger)
-            {
-                normalFilledBrushKey   = GlobalTokenResourceKey.ColorError;
-                selectedFilledBrushKey = GlobalTokenResourceKey.ColorErrorActive;
-                activeFilledBrushKey   = GlobalTokenResourceKey.ColorErrorBorderHover;
-            }
-        }
-        else if (ButtonType == ButtonType.Primary)
-        {
-            normalFilledBrushKey   = ButtonTokenResourceKey.PrimaryColor;
-            selectedFilledBrushKey = ButtonTokenResourceKey.PrimaryColor;
-            activeFilledBrushKey   = ButtonTokenResourceKey.PrimaryColor;
-            if (IsGhost)
-            {
-                normalFilledBrushKey   = GlobalTokenResourceKey.ColorPrimary;
-                selectedFilledBrushKey = GlobalTokenResourceKey.ColorPrimaryActive;
-                activeFilledBrushKey   = GlobalTokenResourceKey.ColorPrimaryHover;
-                if (IsDanger)
-                {
-                    normalFilledBrushKey   = GlobalTokenResourceKey.ColorError;
-                    selectedFilledBrushKey = GlobalTokenResourceKey.ColorErrorActive;
-                    activeFilledBrushKey   = GlobalTokenResourceKey.ColorErrorBorderHover;
-                }
-            }
-        }
-        else if (ButtonType == ButtonType.Text)
-        {
-            normalFilledBrushKey   = ButtonTokenResourceKey.DefaultColor;
-            selectedFilledBrushKey = ButtonTokenResourceKey.DefaultColor;
-            activeFilledBrushKey   = ButtonTokenResourceKey.DefaultColor;
-            if (IsDanger)
-            {
-                normalFilledBrushKey   = GlobalTokenResourceKey.ColorError;
-                selectedFilledBrushKey = GlobalTokenResourceKey.ColorErrorActive;
-                activeFilledBrushKey   = GlobalTokenResourceKey.ColorErrorBorderHover;
-            }
-        }
-        else if (ButtonType == ButtonType.Link)
-        {
-            normalFilledBrushKey   = GlobalTokenResourceKey.ColorLink;
-            selectedFilledBrushKey = ButtonTokenResourceKey.DefaultActiveColor;
-            activeFilledBrushKey   = ButtonTokenResourceKey.DefaultHoverColor;
-            if (IsGhost)
-            {
-                normalFilledBrushKey   = GlobalTokenResourceKey.ColorLink;
-                selectedFilledBrushKey = GlobalTokenResourceKey.ColorPrimaryActive;
-                activeFilledBrushKey   = GlobalTokenResourceKey.ColorPrimaryHover;
-            }
-
-            if (IsDanger)
-            {
-                normalFilledBrushKey   = GlobalTokenResourceKey.ColorError;
-                selectedFilledBrushKey = GlobalTokenResourceKey.ColorErrorActive;
-                activeFilledBrushKey   = GlobalTokenResourceKey.ColorErrorBorderHover;
-            }
-        }
-
-        if (Icon is not null)
-        {
-            TokenResourceBinder.CreateGlobalTokenBinding(Icon, PathIcon.NormalFilledBrushProperty,
-                normalFilledBrushKey);
-            TokenResourceBinder.CreateGlobalTokenBinding(Icon, PathIcon.SelectedFilledBrushProperty,
-                selectedFilledBrushKey);
-            TokenResourceBinder.CreateGlobalTokenBinding(Icon, PathIcon.ActiveFilledBrushProperty,
-                activeFilledBrushKey);
-            TokenResourceBinder.CreateGlobalTokenBinding(Icon, PathIcon.DisabledFilledBrushProperty,
-                disabledFilledBrushKey);
-        }
-
-        if (_loadingIcon is not null)
-        {
-            TokenResourceBinder.CreateGlobalTokenBinding(_loadingIcon, PathIcon.NormalFilledBrushProperty,
-                normalFilledBrushKey);
-            TokenResourceBinder.CreateGlobalTokenBinding(_loadingIcon, PathIcon.SelectedFilledBrushProperty,
-                selectedFilledBrushKey);
-            TokenResourceBinder.CreateGlobalTokenBinding(_loadingIcon, PathIcon.ActiveFilledBrushProperty,
-                activeFilledBrushKey);
-            TokenResourceBinder.CreateGlobalTokenBinding(_loadingIcon, PathIcon.DisabledFilledBrushProperty,
-                disabledFilledBrushKey);
-        }
-
-        NotifyIconBrushCalculated(in normalFilledBrushKey, in selectedFilledBrushKey, in activeFilledBrushKey,
-            in disabledFilledBrushKey);
-    }
-
-    protected virtual void NotifyIconBrushCalculated(in TokenResourceKey normalFilledBrushKey,
-                                                     in TokenResourceKey selectedFilledBrushKey,
-                                                     in TokenResourceKey activeFilledBrushKey,
-                                                     in TokenResourceKey disabledFilledBrushKey)
-    {
-    }
-
-    private void UpdatePseudoClasses()
-    {
-        PseudoClasses.Set(IconOnlyPC, Icon is not null && Text is null);
-        PseudoClasses.Set(LoadingPC, IsLoading);
-    }
 
     #region 公共属性定义
 
@@ -702,4 +214,492 @@ public class Button : AvaloniaButton,
     }
 
     #endregion
+
+    protected ControlStyleState _styleState;
+    private readonly IControlCustomStyle _customStyle;
+    private bool _initialized;
+    private PathIcon? _loadingIcon;
+
+    static Button()
+    {
+        AffectsMeasure<Button>(SizeTypeProperty,
+            ButtonShapeProperty,
+            IconProperty,
+            WidthProperty,
+            HeightProperty,
+            PaddingProperty);
+        AffectsRender<Button>(ButtonTypeProperty,
+            IsDangerProperty,
+            IsGhostProperty,
+            BackgroundProperty,
+            ForegroundProperty);
+        HorizontalAlignmentProperty.OverrideDefaultValue<Button>(HorizontalAlignment.Left);
+        VerticalAlignmentProperty.OverrideDefaultValue<Button>(VerticalAlignment.Center);
+    }
+
+    public Button()
+    {
+        _customStyle = this;
+    }
+
+    protected override Size MeasureOverride(Size availableSize)
+    {
+        var size         = base.MeasureOverride(availableSize);
+        var targetWidth  = size.Width;
+        var targetHeight = size.Height;
+
+        targetHeight = Math.Max(targetHeight, ControlHeight);
+
+        targetWidth = Math.Max(targetWidth, targetHeight);
+
+        if (Shape == ButtonShape.Circle)
+        {
+            targetWidth  = targetHeight;
+            CornerRadius = new CornerRadius(targetHeight);
+        }
+        else if (Shape == ButtonShape.Round)
+        {
+            CornerRadius = new CornerRadius(targetHeight);
+            targetWidth  = Math.Max(targetWidth, targetHeight + targetHeight / 2);
+        }
+
+        return new Size(targetWidth, targetHeight);
+    }
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        if (!_initialized)
+        {
+            _customStyle.HandleAttachedToLogicalTree(e);
+            _initialized = true;
+        }
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
+    {
+        base.OnPropertyChanged(e);
+        _customStyle.HandlePropertyChangedForStyle(e);
+    }
+
+    void IControlCustomStyle.HandleAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        SetupControlTheme();
+        if (Text is null && Content is string content)
+        {
+            Text    = content;
+            Content = null;
+        }
+
+        PseudoClasses.Set(IconOnlyPC, Icon is not null && Text is null);
+        if (ButtonType == ButtonType.Default)
+        {
+            if (IsDanger)
+            {
+                Effect = new DropShadowEffect
+                {
+                    OffsetX    = DangerShadow.OffsetX,
+                    OffsetY    = DangerShadow.OffsetY,
+                    Color      = DangerShadow.Color,
+                    BlurRadius = DangerShadow.Blur
+                };
+            }
+            else
+            {
+                Effect = new DropShadowEffect
+                {
+                    OffsetX    = DefaultShadow.OffsetX,
+                    OffsetY    = DefaultShadow.OffsetY,
+                    Color      = DefaultShadow.Color,
+                    BlurRadius = DefaultShadow.Blur
+                };
+            }
+        }
+        else if (ButtonType == ButtonType.Primary)
+        {
+            if (IsDanger)
+            {
+                Effect = new DropShadowEffect
+                {
+                    OffsetX    = DangerShadow.OffsetX,
+                    OffsetY    = DangerShadow.OffsetY,
+                    Color      = DangerShadow.Color,
+                    BlurRadius = DangerShadow.Blur
+                };
+            }
+            else
+            {
+                Effect = new DropShadowEffect
+                {
+                    OffsetX    = PrimaryShadow.OffsetX,
+                    OffsetY    = PrimaryShadow.OffsetY,
+                    Color      = PrimaryShadow.Color,
+                    BlurRadius = PrimaryShadow.Blur
+                };
+            }
+        }
+    }
+
+    private void SetupControlTheme()
+    {
+        if (ButtonType == ButtonType.Default)
+        {
+            TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, DefaultButtonTheme.ID);
+        }
+        else if (ButtonType == ButtonType.Primary)
+        {
+            TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, PrimaryButtonTheme.ID);
+        }
+        else if (ButtonType == ButtonType.Text)
+        {
+            TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, TextButtonTheme.ID);
+        }
+        else if (ButtonType == ButtonType.Link)
+        {
+            TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, LinkButtonTheme.ID);
+        }
+    }
+
+    private void ApplyShapeStyleConfig()
+    {
+        if (Shape == ButtonShape.Circle)
+        {
+            TokenResourceBinder.CreateTokenBinding(this, PaddingProperty, ButtonTokenResourceKey.CirclePadding);
+        }
+    }
+
+    void IControlCustomStyle.CollectStyleState()
+    {
+        ControlStateUtils.InitCommonState(this, ref _styleState);
+        if (IsPressed)
+        {
+            _styleState |= ControlStyleState.Sunken;
+        }
+        else
+        {
+            _styleState |= ControlStyleState.Raised;
+        }
+    }
+
+    void IControlCustomStyle.SetupTransitions()
+    {
+        if (Transitions is null)
+        {
+            var transitions = new Transitions();
+            if (ButtonType == ButtonType.Primary)
+            {
+                transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty));
+                if (IsGhost)
+                {
+                    transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(BorderBrushProperty));
+                    transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty));
+                }
+            }
+            else if (ButtonType == ButtonType.Default)
+            {
+                transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(BorderBrushProperty));
+                transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty));
+            }
+            else if (ButtonType == ButtonType.Text)
+            {
+                transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty));
+            }
+            else if (ButtonType == ButtonType.Link)
+            {
+                transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty));
+            }
+
+            Transitions = transitions;
+        }
+    }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        _loadingIcon = e.NameScope.Find<PathIcon>(BaseButtonTheme.LoadingIconPart);
+        _customStyle.HandleTemplateApplied(e.NameScope);
+        _customStyle.SetupTransitions();
+    }
+
+    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
+    {
+        _customStyle.CollectStyleState();
+        ApplyShapeStyleConfig();
+        ApplyIconModeStyleConfig();
+        UpdatePseudoClasses();
+        SetupIcon();
+        SetupIconBrush();
+    }
+
+    protected virtual void ApplyIconModeStyleConfig()
+    {
+        if (Icon is null)
+        {
+            return;
+        }
+
+        if (_styleState.HasFlag(ControlStyleState.Enabled))
+        {
+            if (_styleState.HasFlag(ControlStyleState.Sunken))
+            {
+                Icon.IconMode = IconMode.Selected;
+            }
+            else if (_styleState.HasFlag(ControlStyleState.MouseOver))
+            {
+                Icon.IconMode = IconMode.Active;
+            }
+            else
+            {
+                Icon.IconMode = IconMode.Normal;
+            }
+        }
+        else
+        {
+            Icon.IconMode = IconMode.Disabled;
+        }
+    }
+
+    void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
+    {
+        if (e.Property == IsPointerOverProperty ||
+            e.Property == IsPressedProperty ||
+            e.Property == IsEnabledProperty)
+        {
+            _customStyle.CollectStyleState();
+            ApplyIconModeStyleConfig();
+            if (e.Property == IsPressedProperty)
+            {
+                if (!IsLoading && _styleState.HasFlag(ControlStyleState.Raised) && (ButtonType == ButtonType.Primary ||
+                        ButtonType == ButtonType.Default))
+                {
+                    WaveType waveType = default;
+                    if (Shape == ButtonShape.Default)
+                    {
+                        waveType = WaveType.RoundRectWave;
+                    }
+                    else if (Shape == ButtonShape.Round)
+                    {
+                        waveType = WaveType.PillWave;
+                    }
+                    else if (Shape == ButtonShape.Circle)
+                    {
+                        waveType = WaveType.CircleWave;
+                    }
+
+                    Color? waveColor = null;
+                    if (IsDanger)
+                    {
+                        if (ButtonType == ButtonType.Primary && !IsGhost)
+                        {
+                            waveColor = Color.Parse(Background?.ToString()!);
+                        }
+                        else
+                        {
+                            waveColor = Color.Parse(Foreground?.ToString()!);
+                        }
+                    }
+
+                    WaveSpiritAdorner.ShowWaveAdorner(this, waveType, waveColor);
+                }
+            }
+        }
+
+        if (e.Property == ButtonTypeProperty)
+        {
+            if (VisualRoot is not null)
+            {
+                SetupControlTheme();
+            }
+        }
+        else if (e.Property == ContentProperty ||
+                 e.Property == TextProperty ||
+                 e.Property == IsLoadingProperty)
+        {
+            UpdatePseudoClasses();
+        }
+
+        if (e.Property == IconProperty)
+        {
+            SetupIcon();
+        }
+
+        if (e.Property == IsDangerProperty ||
+            e.Property == IsGhostProperty ||
+            e.Property == ButtonTypeProperty)
+        {
+            SetupIconBrush();
+        }
+
+        if (e.Property == BorderBrushProperty ||
+            e.Property == ButtonTypeProperty)
+        {
+            SetupEffectiveBorderThickness();
+        }
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        TokenResourceBinder.CreateGlobalTokenBinding(this, BorderThicknessProperty,
+            GlobalTokenResourceKey.BorderThickness,
+            BindingPriority.Template,
+            new RenderScaleAwareThicknessConfigure(this));
+        SetupEffectiveBorderThickness();
+    }
+
+    private void SetupEffectiveBorderThickness()
+    {
+        if (ButtonType == ButtonType.Default)
+        {
+            EffectiveBorderThickness = BorderThickness;
+        }
+        else if (ButtonType == ButtonType.Primary)
+        {
+            if (IsGhost)
+            {
+                EffectiveBorderThickness = BorderThickness;
+            }
+            else
+            {
+                EffectiveBorderThickness = new Thickness(0);
+            }
+        }
+        else
+        {
+            EffectiveBorderThickness = new Thickness(0);
+        }
+    }
+
+    private void SetupIcon()
+    {
+        if (Icon is not null)
+        {
+            BindUtils.RelayBind(this, IconSizeProperty, Icon, WidthProperty);
+            BindUtils.RelayBind(this, IconSizeProperty, Icon, HeightProperty);
+            BindUtils.RelayBind(this, IconMarginProperty, Icon, MarginProperty);
+        }
+    }
+
+    private void SetupIconBrush()
+    {
+        var normalFilledBrushKey   = ButtonTokenResourceKey.DefaultColor;
+        var selectedFilledBrushKey = ButtonTokenResourceKey.DefaultActiveColor;
+        var activeFilledBrushKey   = ButtonTokenResourceKey.DefaultHoverColor;
+        var disabledFilledBrushKey = GlobalTokenResourceKey.ColorTextDisabled;
+        if (ButtonType == ButtonType.Default)
+        {
+            if (IsGhost)
+            {
+                normalFilledBrushKey   = GlobalTokenResourceKey.ColorTextLightSolid;
+                selectedFilledBrushKey = GlobalTokenResourceKey.ColorPrimaryActive;
+                activeFilledBrushKey   = GlobalTokenResourceKey.ColorPrimaryHover;
+            }
+
+            if (IsDanger)
+            {
+                normalFilledBrushKey   = GlobalTokenResourceKey.ColorError;
+                selectedFilledBrushKey = GlobalTokenResourceKey.ColorErrorActive;
+                activeFilledBrushKey   = GlobalTokenResourceKey.ColorErrorBorderHover;
+            }
+        }
+        else if (ButtonType == ButtonType.Primary)
+        {
+            normalFilledBrushKey   = ButtonTokenResourceKey.PrimaryColor;
+            selectedFilledBrushKey = ButtonTokenResourceKey.PrimaryColor;
+            activeFilledBrushKey   = ButtonTokenResourceKey.PrimaryColor;
+            if (IsGhost)
+            {
+                normalFilledBrushKey   = GlobalTokenResourceKey.ColorPrimary;
+                selectedFilledBrushKey = GlobalTokenResourceKey.ColorPrimaryActive;
+                activeFilledBrushKey   = GlobalTokenResourceKey.ColorPrimaryHover;
+                if (IsDanger)
+                {
+                    normalFilledBrushKey   = GlobalTokenResourceKey.ColorError;
+                    selectedFilledBrushKey = GlobalTokenResourceKey.ColorErrorActive;
+                    activeFilledBrushKey   = GlobalTokenResourceKey.ColorErrorBorderHover;
+                }
+            }
+        }
+        else if (ButtonType == ButtonType.Text)
+        {
+            normalFilledBrushKey   = ButtonTokenResourceKey.DefaultColor;
+            selectedFilledBrushKey = ButtonTokenResourceKey.DefaultColor;
+            activeFilledBrushKey   = ButtonTokenResourceKey.DefaultColor;
+            if (IsDanger)
+            {
+                normalFilledBrushKey   = GlobalTokenResourceKey.ColorError;
+                selectedFilledBrushKey = GlobalTokenResourceKey.ColorErrorActive;
+                activeFilledBrushKey   = GlobalTokenResourceKey.ColorErrorBorderHover;
+            }
+        }
+        else if (ButtonType == ButtonType.Link)
+        {
+            normalFilledBrushKey   = GlobalTokenResourceKey.ColorLink;
+            selectedFilledBrushKey = ButtonTokenResourceKey.DefaultActiveColor;
+            activeFilledBrushKey   = ButtonTokenResourceKey.DefaultHoverColor;
+            if (IsGhost)
+            {
+                normalFilledBrushKey   = GlobalTokenResourceKey.ColorLink;
+                selectedFilledBrushKey = GlobalTokenResourceKey.ColorPrimaryActive;
+                activeFilledBrushKey   = GlobalTokenResourceKey.ColorPrimaryHover;
+            }
+
+            if (IsDanger)
+            {
+                normalFilledBrushKey   = GlobalTokenResourceKey.ColorError;
+                selectedFilledBrushKey = GlobalTokenResourceKey.ColorErrorActive;
+                activeFilledBrushKey   = GlobalTokenResourceKey.ColorErrorBorderHover;
+            }
+        }
+
+        if (Icon is not null)
+        {
+            TokenResourceBinder.CreateGlobalTokenBinding(Icon, PathIcon.NormalFilledBrushProperty,
+                normalFilledBrushKey);
+            TokenResourceBinder.CreateGlobalTokenBinding(Icon, PathIcon.SelectedFilledBrushProperty,
+                selectedFilledBrushKey);
+            TokenResourceBinder.CreateGlobalTokenBinding(Icon, PathIcon.ActiveFilledBrushProperty,
+                activeFilledBrushKey);
+            TokenResourceBinder.CreateGlobalTokenBinding(Icon, PathIcon.DisabledFilledBrushProperty,
+                disabledFilledBrushKey);
+        }
+
+        if (_loadingIcon is not null)
+        {
+            TokenResourceBinder.CreateGlobalTokenBinding(_loadingIcon, PathIcon.NormalFilledBrushProperty,
+                normalFilledBrushKey);
+            TokenResourceBinder.CreateGlobalTokenBinding(_loadingIcon, PathIcon.SelectedFilledBrushProperty,
+                selectedFilledBrushKey);
+            TokenResourceBinder.CreateGlobalTokenBinding(_loadingIcon, PathIcon.ActiveFilledBrushProperty,
+                activeFilledBrushKey);
+            TokenResourceBinder.CreateGlobalTokenBinding(_loadingIcon, PathIcon.DisabledFilledBrushProperty,
+                disabledFilledBrushKey);
+        }
+
+        NotifyIconBrushCalculated(in normalFilledBrushKey, in selectedFilledBrushKey, in activeFilledBrushKey,
+            in disabledFilledBrushKey);
+    }
+
+    protected virtual void NotifyIconBrushCalculated(in TokenResourceKey normalFilledBrushKey,
+                                                     in TokenResourceKey selectedFilledBrushKey,
+                                                     in TokenResourceKey activeFilledBrushKey,
+                                                     in TokenResourceKey disabledFilledBrushKey)
+    {
+    }
+
+    public Rect WaveGeometry()
+    {
+        return new Rect(0, 0, Bounds.Width, Bounds.Height);
+    }
+
+    public CornerRadius WaveBorderRadius()
+    {
+        return CornerRadius;
+    }
+
+    private void UpdatePseudoClasses()
+    {
+        PseudoClasses.Set(IconOnlyPC, Icon is not null && Text is null);
+        PseudoClasses.Set(LoadingPC, IsLoading);
+    }
 }

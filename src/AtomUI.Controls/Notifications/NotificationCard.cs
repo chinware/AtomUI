@@ -1,5 +1,5 @@
-﻿using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
+﻿using AtomUI.Theme.Styling;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -17,10 +17,139 @@ public class NotificationCard : ContentControl
     public const string InformationPC = ":information";
     public const string SuccessPC = ":success";
     public const string WarningPC = ":warning";
-    private readonly WindowNotificationManager _notificationManager;
-    private IconButton? _closeButton;
+
+    #region 公共属性定义
+
+    /// <summary>
+    /// Defines the <see cref="IsClosing" /> property.
+    /// </summary>
+    public static readonly DirectProperty<NotificationCard, bool> IsClosingProperty =
+        AvaloniaProperty.RegisterDirect<NotificationCard, bool>(nameof(IsClosing), o => o.IsClosing);
+
+    /// <summary>
+    /// Defines the <see cref="IsClosed" /> property.
+    /// </summary>
+    public static readonly StyledProperty<bool> IsClosedProperty =
+        AvaloniaProperty.Register<NotificationCard, bool>(nameof(IsClosed));
+
+    public static readonly StyledProperty<bool> IsShowProgressProperty =
+        AvaloniaProperty.Register<NotificationCard, bool>(nameof(IsShowProgress));
+
+    /// <summary>
+    /// Defines the <see cref="NotificationType" /> property
+    /// </summary>
+    public static readonly StyledProperty<NotificationType> NotificationTypeProperty =
+        AvaloniaProperty.Register<NotificationCard, NotificationType>(nameof(NotificationType));
+
+    /// <summary>
+    /// Defines the <see cref="NotificationClosed" /> event.
+    /// </summary>
+    public static readonly RoutedEvent<RoutedEventArgs> NotificationClosedEvent =
+        RoutedEvent.Register<NotificationCard, RoutedEventArgs>(nameof(NotificationClosed), RoutingStrategies.Bubble);
+
+    public static readonly StyledProperty<string> TitleProperty =
+        AvaloniaProperty.Register<NotificationCard, string>(nameof(Title));
+
+    public static readonly StyledProperty<PathIcon?> IconProperty
+        = AvaloniaProperty.Register<NotificationCard, PathIcon?>(nameof(Icon));
+
+    /// <summary>
+    /// Determines if the notification is already closing.
+    /// </summary>
+    public bool IsClosing
+    {
+        get => _isClosing;
+        private set => SetAndRaise(IsClosingProperty, ref _isClosing, value);
+    }
+
+    /// <summary>
+    /// Determines if the notification is closed.
+    /// </summary>
+    public bool IsClosed
+    {
+        get => GetValue(IsClosedProperty);
+        set => SetValue(IsClosedProperty, value);
+    }
+
+    public bool IsShowProgress
+    {
+        get => GetValue(IsShowProgressProperty);
+        set => SetValue(IsShowProgressProperty, value);
+    }
+
+    /// <summary>
+    /// Gets or sets the type of the notification
+    /// </summary>
+    public NotificationType NotificationType
+    {
+        get => GetValue(NotificationTypeProperty);
+        set => SetValue(NotificationTypeProperty, value);
+    }
+
+    public string Title
+    {
+        get => GetValue(TitleProperty);
+        set => SetValue(TitleProperty, value);
+    }
+
+    public PathIcon? Icon
+    {
+        get => GetValue(IconProperty);
+        set => SetValue(IconProperty, value);
+    }
+
+    /// <summary>
+    /// Raised when the <see cref="NotificationCard" /> has closed.
+    /// </summary>
+    public event EventHandler<RoutedEventArgs>? NotificationClosed
+    {
+        add => AddHandler(NotificationClosedEvent, value);
+        remove => RemoveHandler(NotificationClosedEvent, value);
+    }
+
+    #endregion
+
+    #region 内部属性定义
+
+    internal static readonly DirectProperty<NotificationCard, bool> EffectiveShowProgressProperty =
+        AvaloniaProperty.RegisterDirect<NotificationCard, bool>(nameof(EffectiveShowProgress),
+            o => o.EffectiveShowProgress,
+            (o, v) => o.EffectiveShowProgress = v);
+
+    internal static readonly DirectProperty<NotificationCard, NotificationPosition> PositionProperty =
+        AvaloniaProperty.RegisterDirect<NotificationCard, NotificationPosition>(
+            nameof(Position),
+            o => o.Position,
+            (o, v) => o.Position = v);
+
+    private bool _effectiveShowProgress;
+
+    internal bool EffectiveShowProgress
+    {
+        get => _effectiveShowProgress;
+        set => SetAndRaise(EffectiveShowProgressProperty, ref _effectiveShowProgress, value);
+    }
+
+    private NotificationPosition _position;
+
+    internal NotificationPosition Position
+    {
+        get => _position;
+        set => SetAndRaise(PositionProperty, ref _position, value);
+    }
+
+    #endregion
+
+    /// <summary>
+    /// Gets the expiration time of the notification after which it will automatically close.
+    /// If the value is null then the notification will remain open until the user closes it.
+    /// </summary>
+    public TimeSpan? Expiration { get; set; }
+
     private bool _isClosing;
     private NotificationProgressBar? _progressBar;
+    private readonly WindowNotificationManager _notificationManager;
+    private IconButton? _closeButton;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="NotificationCard" /> class.
@@ -31,12 +160,6 @@ public class NotificationCard : ContentControl
         ClipToBounds         = false;
         _notificationManager = manager;
     }
-
-    /// <summary>
-    /// Gets the expiration time of the notification after which it will automatically close.
-    /// If the value is null then the notification will remain open until the user closes it.
-    /// </summary>
-    public TimeSpan? Expiration { get; set; }
 
     /// <summary>
     /// Closes the <see cref="NotificationCard" />.
@@ -317,126 +440,4 @@ public class NotificationCard : ContentControl
         PseudoClasses.Set(WindowNotificationManager.TopCenterPC, position == NotificationPosition.TopCenter);
         PseudoClasses.Set(WindowNotificationManager.BottomCenterPC, position == NotificationPosition.BottomCenter);
     }
-
-    #region 公共属性定义
-
-    /// <summary>
-    /// Defines the <see cref="IsClosing" /> property.
-    /// </summary>
-    public static readonly DirectProperty<NotificationCard, bool> IsClosingProperty =
-        AvaloniaProperty.RegisterDirect<NotificationCard, bool>(nameof(IsClosing), o => o.IsClosing);
-
-    /// <summary>
-    /// Defines the <see cref="IsClosed" /> property.
-    /// </summary>
-    public static readonly StyledProperty<bool> IsClosedProperty =
-        AvaloniaProperty.Register<NotificationCard, bool>(nameof(IsClosed));
-
-    public static readonly StyledProperty<bool> IsShowProgressProperty =
-        AvaloniaProperty.Register<NotificationCard, bool>(nameof(IsShowProgress));
-
-    /// <summary>
-    /// Defines the <see cref="NotificationType" /> property
-    /// </summary>
-    public static readonly StyledProperty<NotificationType> NotificationTypeProperty =
-        AvaloniaProperty.Register<NotificationCard, NotificationType>(nameof(NotificationType));
-
-    /// <summary>
-    /// Defines the <see cref="NotificationClosed" /> event.
-    /// </summary>
-    public static readonly RoutedEvent<RoutedEventArgs> NotificationClosedEvent =
-        RoutedEvent.Register<NotificationCard, RoutedEventArgs>(nameof(NotificationClosed), RoutingStrategies.Bubble);
-
-    public static readonly StyledProperty<string> TitleProperty =
-        AvaloniaProperty.Register<NotificationCard, string>(nameof(Title));
-
-    public static readonly StyledProperty<PathIcon?> IconProperty
-        = AvaloniaProperty.Register<NotificationCard, PathIcon?>(nameof(Icon));
-
-    /// <summary>
-    /// Determines if the notification is already closing.
-    /// </summary>
-    public bool IsClosing
-    {
-        get => _isClosing;
-        private set => SetAndRaise(IsClosingProperty, ref _isClosing, value);
-    }
-
-    /// <summary>
-    /// Determines if the notification is closed.
-    /// </summary>
-    public bool IsClosed
-    {
-        get => GetValue(IsClosedProperty);
-        set => SetValue(IsClosedProperty, value);
-    }
-
-    public bool IsShowProgress
-    {
-        get => GetValue(IsShowProgressProperty);
-        set => SetValue(IsShowProgressProperty, value);
-    }
-
-    /// <summary>
-    /// Gets or sets the type of the notification
-    /// </summary>
-    public NotificationType NotificationType
-    {
-        get => GetValue(NotificationTypeProperty);
-        set => SetValue(NotificationTypeProperty, value);
-    }
-
-    public string Title
-    {
-        get => GetValue(TitleProperty);
-        set => SetValue(TitleProperty, value);
-    }
-
-    public PathIcon? Icon
-    {
-        get => GetValue(IconProperty);
-        set => SetValue(IconProperty, value);
-    }
-
-    /// <summary>
-    /// Raised when the <see cref="NotificationCard" /> has closed.
-    /// </summary>
-    public event EventHandler<RoutedEventArgs>? NotificationClosed
-    {
-        add => AddHandler(NotificationClosedEvent, value);
-        remove => RemoveHandler(NotificationClosedEvent, value);
-    }
-
-    #endregion
-
-    #region 内部属性定义
-
-    internal static readonly DirectProperty<NotificationCard, bool> EffectiveShowProgressProperty =
-        AvaloniaProperty.RegisterDirect<NotificationCard, bool>(nameof(EffectiveShowProgress),
-            o => o.EffectiveShowProgress,
-            (o, v) => o.EffectiveShowProgress = v);
-
-    internal static readonly DirectProperty<NotificationCard, NotificationPosition> PositionProperty =
-        AvaloniaProperty.RegisterDirect<NotificationCard, NotificationPosition>(
-            nameof(Position),
-            o => o.Position,
-            (o, v) => o.Position = v);
-
-    private bool _effectiveShowProgress;
-
-    internal bool EffectiveShowProgress
-    {
-        get => _effectiveShowProgress;
-        set => SetAndRaise(EffectiveShowProgressProperty, ref _effectiveShowProgress, value);
-    }
-
-    private NotificationPosition _position;
-
-    internal NotificationPosition Position
-    {
-        get => _position;
-        set => SetAndRaise(PositionProperty, ref _position, value);
-    }
-
-    #endregion
 }

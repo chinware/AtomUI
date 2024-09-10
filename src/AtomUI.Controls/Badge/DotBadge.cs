@@ -1,9 +1,10 @@
-﻿using AtomUI.Controls.MotionScene;
+﻿using AtomUI.Controls.Badge;
+using AtomUI.Controls.MotionScene;
 using AtomUI.Data;
 using AtomUI.MotionScene;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Palette;
 using AtomUI.Theme.Styling;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -48,25 +49,6 @@ public class DotBadge : Control, IControlCustomStyle
         AvaloniaProperty.Register<CountBadge, TimeSpan>(
             nameof(MotionDuration));
 
-    private readonly IControlCustomStyle _customStyle;
-
-    private readonly bool _initialized = false;
-
-    private AdornerLayer? _adornerLayer;
-    private bool _animating;
-    private DotBadgeAdorner? _dotBadgeAdorner;
-
-    static DotBadge()
-    {
-        AffectsMeasure<DotBadge>(DecoratedTargetProperty, TextProperty);
-        AffectsRender<DotBadge>(DotColorProperty, StatusProperty);
-    }
-
-    public DotBadge()
-    {
-        _customStyle = this;
-    }
-
     public string? DotColor
     {
         get => GetValue(DotColorProperty);
@@ -110,16 +92,21 @@ public class DotBadge : Control, IControlCustomStyle
         set => SetValue(MotionDurationProperty, value);
     }
 
-    void IControlCustomStyle.SetupTokenBindings()
-    {
-        if (_dotBadgeAdorner is not null)
-        {
-            BindUtils.RelayBind(this, StatusProperty, _dotBadgeAdorner, DotBadgeAdorner.StatusProperty);
-            BindUtils.RelayBind(this, TextProperty, _dotBadgeAdorner, DotBadgeAdorner.TextProperty);
-            BindUtils.RelayBind(this, OffsetProperty, _dotBadgeAdorner, DotBadgeAdorner.OffsetProperty);
-        }
+    private readonly bool _initialized = false;
+    private readonly IControlCustomStyle _customStyle;
+    private DotBadgeAdorner? _dotBadgeAdorner;
+    private AdornerLayer? _adornerLayer;
+    private bool _animating;
 
-        TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, GlobalTokenResourceKey.MotionDurationSlow);
+    public DotBadge()
+    {
+        _customStyle = this;
+    }
+
+    static DotBadge()
+    {
+        AffectsMeasure<DotBadge>(DecoratedTargetProperty, TextProperty);
+        AffectsRender<DotBadge>(DotColorProperty, StatusProperty);
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -150,7 +137,6 @@ public class DotBadge : Control, IControlCustomStyle
         {
             var dotBadgeAdorner = CreateDotBadgeAdorner();
             _adornerLayer = AdornerLayer.GetAdornerLayer(this);
-
             // 这里需要抛出异常吗？
             if (_adornerLayer == null)
             {
@@ -228,6 +214,18 @@ public class DotBadge : Control, IControlCustomStyle
     {
         base.OnDetachedFromVisualTree(e);
         HideAdorner();
+    }
+
+    void IControlCustomStyle.SetupTokenBindings()
+    {
+        if (_dotBadgeAdorner is not null)
+        {
+            BindUtils.RelayBind(this, StatusProperty, _dotBadgeAdorner, DotBadgeAdorner.StatusProperty);
+            BindUtils.RelayBind(this, TextProperty, _dotBadgeAdorner, DotBadgeAdorner.TextProperty);
+            BindUtils.RelayBind(this, OffsetProperty, _dotBadgeAdorner, DotBadgeAdorner.OffsetProperty);
+        }
+
+        TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, GlobalTokenResourceKey.MotionDurationSlow);
     }
 
     private void HandleDecoratedTargetChanged()

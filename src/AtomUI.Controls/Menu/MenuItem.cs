@@ -1,8 +1,8 @@
 ﻿using AtomUI.Data;
 using AtomUI.Media;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
@@ -22,11 +22,24 @@ public class MenuItem : AvaloniaMenuItem, IControlCustomStyle
 {
     public const string TopLevelPC = ":toplevel";
 
-    internal static PlatformKeyGestureConverter KeyGestureConverter = new();
+    #region 公共属性定义
+
+    public static readonly StyledProperty<SizeType> SizeTypeProperty =
+        Menu.SizeTypeProperty.AddOwner<MenuItem>();
+
+    public SizeType SizeType
+    {
+        get => GetValue(SizeTypeProperty);
+        set => SetValue(SizeTypeProperty, value);
+    }
+
+    #endregion
 
     private readonly IControlCustomStyle _customStyle;
-    private ContentControl? _togglePresenter;
     private ContentPresenter? _topLevelContentPresenter;
+    private ContentControl? _togglePresenter;
+
+    internal static PlatformKeyGestureConverter KeyGestureConverter = new();
 
     static MenuItem()
     {
@@ -45,6 +58,37 @@ public class MenuItem : AvaloniaMenuItem, IControlCustomStyle
         HorizontalAlignment = HorizontalAlignment.Stretch;
         _customStyle.HandleTemplateApplied(e.NameScope);
     }
+
+    #region IControlCustomStyle 实现
+
+    void IControlCustomStyle.SetupTransitions()
+    {
+        if (_topLevelContentPresenter is not null && _topLevelContentPresenter.Transitions is null)
+        {
+            var transitions = new Transitions();
+            transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty));
+            transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty));
+            _topLevelContentPresenter.Transitions = transitions;
+        }
+    }
+
+    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
+    {
+        if (IsTopLevel)
+        {
+            _topLevelContentPresenter = scope.Find<ContentPresenter>(TopLevelMenuItemTheme.HeaderPresenterPart);
+        }
+        else
+        {
+            _togglePresenter = scope.Find<ContentControl>(MenuItemTheme.TogglePresenterPart);
+        }
+
+        HandleToggleTypeChanged();
+        _customStyle.SetupTransitions();
+        UpdatePseudoClasses();
+    }
+
+    #endregion
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
@@ -104,48 +148,4 @@ public class MenuItem : AvaloniaMenuItem, IControlCustomStyle
     {
         PseudoClasses.Set(TopLevelPC, IsTopLevel);
     }
-
-    #region 公共属性定义
-
-    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        Menu.SizeTypeProperty.AddOwner<MenuItem>();
-
-    public SizeType SizeType
-    {
-        get => GetValue(SizeTypeProperty);
-        set => SetValue(SizeTypeProperty, value);
-    }
-
-    #endregion
-
-    #region IControlCustomStyle 实现
-
-    void IControlCustomStyle.SetupTransitions()
-    {
-        if (_topLevelContentPresenter is not null && _topLevelContentPresenter.Transitions is null)
-        {
-            var transitions = new Transitions();
-            transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty));
-            transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty));
-            _topLevelContentPresenter.Transitions = transitions;
-        }
-    }
-
-    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
-    {
-        if (IsTopLevel)
-        {
-            _topLevelContentPresenter = scope.Find<ContentPresenter>(TopLevelMenuItemTheme.HeaderPresenterPart);
-        }
-        else
-        {
-            _togglePresenter = scope.Find<ContentControl>(MenuItemTheme.TogglePresenterPart);
-        }
-
-        HandleToggleTypeChanged();
-        _customStyle.SetupTransitions();
-        UpdatePseudoClasses();
-    }
-
-    #endregion
 }

@@ -8,21 +8,6 @@ namespace AtomUI.Demo.Desktop.ShowCase;
 
 public partial class TabControlShowCase : UserControl
 {
-    public TabControlShowCase()
-    {
-        InitializeComponent();
-        DataContext                                          =  this;
-        PositionTabStripOptionGroup.OptionCheckedChanged     += HandleTabStripPlacementOptionCheckedChanged;
-        PositionCardTabStripOptionGroup.OptionCheckedChanged += HandleCardTabStripPlacementOptionCheckedChanged;
-        SizeTypeTabStripOptionGroup.OptionCheckedChanged     += HandleTabStripSizeTypeOptionCheckedChanged;
-        AddTabDemoStrip.AddTabRequest                        += HandleTabStripAddTabRequest;
-
-        PositionTabControlOptionGroup.OptionCheckedChanged     += HandleTabControlPlacementOptionCheckedChanged;
-        PositionCardTabControlOptionGroup.OptionCheckedChanged += HandleCardTabControlPlacementOptionCheckedChanged;
-        SizeTypeTabControlOptionGroup.OptionCheckedChanged     += HandleTabControlSizeTypeOptionCheckedChanged;
-        AddTabDemoTabControl.AddTabRequest                     += HandleTabControlAddTabRequest;
-    }
-
     #region TabStrip
 
     public static readonly StyledProperty<Dock> PositionTabStripPlacementProperty =
@@ -84,6 +69,21 @@ public partial class TabControlShowCase : UserControl
     }
 
     #endregion
+
+    public TabControlShowCase()
+    {
+        InitializeComponent();
+        DataContext                                          =  this;
+        PositionTabStripOptionGroup.OptionCheckedChanged     += HandleTabStripPlacementOptionCheckedChanged;
+        PositionCardTabStripOptionGroup.OptionCheckedChanged += HandleCardTabStripPlacementOptionCheckedChanged;
+        SizeTypeTabStripOptionGroup.OptionCheckedChanged     += HandleTabStripSizeTypeOptionCheckedChanged;
+        AddTabDemoStrip.AddTabRequest                        += HandleTabStripAddTabRequest;
+
+        PositionTabControlOptionGroup.OptionCheckedChanged     += HandleTabControlPlacementOptionCheckedChanged;
+        PositionCardTabControlOptionGroup.OptionCheckedChanged += HandleCardTabControlPlacementOptionCheckedChanged;
+        SizeTypeTabControlOptionGroup.OptionCheckedChanged     += HandleTabControlSizeTypeOptionCheckedChanged;
+        AddTabDemoTabControl.AddTabRequest                     += HandleTabControlAddTabRequest;
+    }
 
     #region TabStrip
 

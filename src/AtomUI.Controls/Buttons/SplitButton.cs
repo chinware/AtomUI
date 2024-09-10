@@ -25,20 +25,259 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
     internal const string pcChecked = ":checked";
     internal const string pcPressed = ":pressed";
     internal const string pcFlyoutOpen = ":flyout-open";
-    private readonly FlyoutStateHelper _flyoutStateHelper;
 
-    private bool _commandCanExecute = true;
+    #region 公共属性定义
 
-    private IDisposable? _flyoutPropertyChangedDisposable;
-    private KeyGesture? _hotkey;
-    private bool _isAttachedToLogicalTree;
-    private bool _isFlyoutOpen;
-    private bool _isKeyboardPressed;
+    public static readonly RoutedEvent<RoutedEventArgs> ClickEvent =
+        RoutedEvent.Register<SplitButton, RoutedEventArgs>(
+            nameof(Click),
+            RoutingStrategies.Bubble);
 
-    private Rect? _originRect;
+    public static readonly StyledProperty<ICommand?> CommandProperty =
+        Avalonia.Controls.Button.CommandProperty.AddOwner<SplitButton>();
+
+    public static readonly StyledProperty<object?> CommandParameterProperty =
+        Avalonia.Controls.Button.CommandParameterProperty.AddOwner<SplitButton>();
+
+    public static readonly StyledProperty<Flyout?> FlyoutProperty =
+        AvaloniaProperty.Register<SplitButton, Flyout?>(nameof(Flyout));
+
+    public static readonly StyledProperty<KeyGesture?> HotKeyProperty =
+        Avalonia.Controls.Button.HotKeyProperty.AddOwner<SplitButton>();
+
+    public static readonly StyledProperty<FlyoutTriggerType> TriggerTypeProperty =
+        FlyoutStateHelper.TriggerTypeProperty.AddOwner<SplitButton>();
+
+    public static readonly StyledProperty<bool> IsShowArrowProperty =
+        ArrowDecoratedBox.IsShowArrowProperty.AddOwner<SplitButton>();
+
+    public static readonly StyledProperty<bool> IsPointAtCenterProperty =
+        Flyout.IsPointAtCenterProperty.AddOwner<SplitButton>();
+
+    public static readonly StyledProperty<PlacementMode> PlacementProperty =
+        Avalonia.Controls.Primitives.Popup.PlacementProperty.AddOwner<SplitButton>();
+
+    public static readonly StyledProperty<PopupAnchor> PlacementAnchorProperty =
+        Avalonia.Controls.Primitives.Popup.PlacementAnchorProperty.AddOwner<SplitButton>();
+
+    public static readonly StyledProperty<PopupGravity> PlacementGravityProperty =
+        Avalonia.Controls.Primitives.Popup.PlacementGravityProperty.AddOwner<SplitButton>();
+
+    public static readonly StyledProperty<double> MarginToAnchorProperty =
+        Popup.MarginToAnchorProperty.AddOwner<SplitButton>();
+
+    public static readonly StyledProperty<int> MouseEnterDelayProperty =
+        FlyoutStateHelper.MouseEnterDelayProperty.AddOwner<SplitButton>();
+
+    public static readonly StyledProperty<int> MouseLeaveDelayProperty =
+        FlyoutStateHelper.MouseLeaveDelayProperty.AddOwner<SplitButton>();
+
+    public static readonly StyledProperty<bool> IsShowIndicatorProperty =
+        AvaloniaProperty.Register<SplitButton, bool>(nameof(IsShowIndicator), true);
+
+    public static readonly StyledProperty<SizeType> SizeTypeProperty =
+        Button.SizeTypeProperty.AddOwner<SplitButton>();
+
+    public static readonly StyledProperty<PathIcon?> IconProperty
+        = Button.IconProperty.AddOwner<SplitButton>();
+
+    public static readonly StyledProperty<PathIcon?> FlyoutButtonIconProperty
+        = AvaloniaProperty.Register<SplitButton, PathIcon?>(nameof(FlyoutButtonIcon));
+
+    public static readonly StyledProperty<bool> IsDangerProperty =
+        Button.IsDangerProperty.AddOwner<SplitButton>();
+
+    public static readonly StyledProperty<bool> IsPrimaryButtonTypeProperty =
+        AvaloniaProperty.Register<SplitButton, bool>(nameof(IsPrimaryButtonType));
+
+    /// <summary>
+    /// Raised when the user presses the primary part of the <see cref="SplitButton" />.
+    /// </summary>
+    public event EventHandler<RoutedEventArgs>? Click
+    {
+        add => AddHandler(ClickEvent, value);
+        remove => RemoveHandler(ClickEvent, value);
+    }
+
+    public ICommand? Command
+    {
+        get => GetValue(CommandProperty);
+        set => SetValue(CommandProperty, value);
+    }
+
+    /// <summary>
+    /// Gets or sets a parameter to be passed to the <see cref="Command" />.
+    /// </summary>
+    public object? CommandParameter
+    {
+        get => GetValue(CommandParameterProperty);
+        set => SetValue(CommandParameterProperty, value);
+    }
+
+    /// <summary>
+    /// Gets or sets the <see cref="Flyout" /> that is shown when the secondary part is pressed.
+    /// </summary>
+    public Flyout? Flyout
+    {
+        get => GetValue(FlyoutProperty);
+        set => SetValue(FlyoutProperty, value);
+    }
+
+    /// <summary>
+    /// Gets or sets an <see cref="KeyGesture" /> associated with this control
+    /// </summary>
+    public KeyGesture? HotKey
+    {
+        get => GetValue(HotKeyProperty);
+        set => SetValue(HotKeyProperty, value);
+    }
+
+    public FlyoutTriggerType TriggerType
+    {
+        get => GetValue(TriggerTypeProperty);
+        set => SetValue(TriggerTypeProperty, value);
+    }
+
+    public bool IsShowArrow
+    {
+        get => GetValue(IsShowArrowProperty);
+        set => SetValue(IsShowArrowProperty, value);
+    }
+
+    public bool IsPointAtCenter
+    {
+        get => GetValue(IsPointAtCenterProperty);
+        set => SetValue(IsPointAtCenterProperty, value);
+    }
+
+    public PlacementMode Placement
+    {
+        get => GetValue(PlacementProperty);
+        set => SetValue(PlacementProperty, value);
+    }
+
+    public PopupGravity PlacementGravity
+    {
+        get => GetValue(PlacementGravityProperty);
+        set => SetValue(PlacementGravityProperty, value);
+    }
+
+    public PopupAnchor PlacementAnchor
+    {
+        get => GetValue(PlacementAnchorProperty);
+        set => SetValue(PlacementAnchorProperty, value);
+    }
+
+    public double MarginToAnchor
+    {
+        get => GetValue(MarginToAnchorProperty);
+        set => SetValue(MarginToAnchorProperty, value);
+    }
+
+    public int MouseEnterDelay
+    {
+        get => GetValue(MouseEnterDelayProperty);
+        set => SetValue(MouseEnterDelayProperty, value);
+    }
+
+    public int MouseLeaveDelay
+    {
+        get => GetValue(MouseLeaveDelayProperty);
+        set => SetValue(MouseLeaveDelayProperty, value);
+    }
+
+    public bool IsShowIndicator
+    {
+        get => GetValue(IsShowIndicatorProperty);
+        set => SetValue(IsShowIndicatorProperty, value);
+    }
+
+    public SizeType SizeType
+    {
+        get => GetValue(SizeTypeProperty);
+        set => SetValue(SizeTypeProperty, value);
+    }
+
+    public PathIcon? Icon
+    {
+        get => GetValue(IconProperty);
+        set => SetValue(IconProperty, value);
+    }
+
+    public PathIcon? FlyoutButtonIcon
+    {
+        get => GetValue(FlyoutButtonIconProperty);
+        set => SetValue(FlyoutButtonIconProperty, value);
+    }
+
+    public bool IsDanger
+    {
+        get => GetValue(IsDangerProperty);
+        set => SetValue(IsDangerProperty, value);
+    }
+
+    public bool IsPrimaryButtonType
+    {
+        get => GetValue(IsPrimaryButtonTypeProperty);
+        set => SetValue(IsPrimaryButtonTypeProperty, value);
+    }
+
+    #endregion
+
+    #region 内部属性定义
+
+    internal static readonly DirectProperty<SplitButton, CornerRadius> PrimaryButtonCornerRadiusProperty =
+        AvaloniaProperty.RegisterDirect<SplitButton, CornerRadius>(nameof(PrimaryButtonCornerRadius),
+            o => o.PrimaryButtonCornerRadius,
+            (o, v) => o.PrimaryButtonCornerRadius = v);
+
+    private CornerRadius _primaryButtonCornerRadius;
+
+    internal CornerRadius PrimaryButtonCornerRadius
+    {
+        get => _primaryButtonCornerRadius;
+        set => SetAndRaise(PrimaryButtonCornerRadiusProperty, ref _primaryButtonCornerRadius, value);
+    }
+
+    internal static readonly DirectProperty<SplitButton, CornerRadius> SecondaryButtonCornerRadiusProperty =
+        AvaloniaProperty.RegisterDirect<SplitButton, CornerRadius>(nameof(SecondaryButtonCornerRadius),
+            o => o.SecondaryButtonCornerRadius,
+            (o, v) => o.SecondaryButtonCornerRadius = v);
+
+    private CornerRadius _secondaryButtonCornerRadius;
+
+    internal CornerRadius SecondaryButtonCornerRadius
+    {
+        get => _secondaryButtonCornerRadius;
+        set => SetAndRaise(SecondaryButtonCornerRadiusProperty, ref _secondaryButtonCornerRadius, value);
+    }
+
+    internal static readonly DirectProperty<SplitButton, ButtonType> EffectiveButtonTypeProperty =
+        AvaloniaProperty.RegisterDirect<SplitButton, ButtonType>(nameof(EffectiveButtonType),
+            o => o.EffectiveButtonType,
+            (o, v) => o.EffectiveButtonType = v);
+
+    private ButtonType _effectiveButtonType;
+
+    internal ButtonType EffectiveButtonType
+    {
+        get => _effectiveButtonType;
+        set => SetAndRaise(EffectiveButtonTypeProperty, ref _effectiveButtonType, value);
+    }
+
+    #endregion
 
     private Button? _primaryButton;
     private Button? _secondaryButton;
+    private KeyGesture? _hotkey;
+
+    private bool _commandCanExecute = true;
+    private bool _isAttachedToLogicalTree;
+    private bool _isFlyoutOpen;
+    private bool _isKeyboardPressed;
+    private readonly FlyoutStateHelper _flyoutStateHelper;
+
+    private IDisposable? _flyoutPropertyChangedDisposable;
 
     static SplitButton()
     {
@@ -401,7 +640,6 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
     protected virtual void OnClickPrimary(RoutedEventArgs? e)
     {
         var (command, parameter) = (Command, CommandParameter);
-
         // Note: It is not currently required to check enabled status; however, this is a failsafe
         if (IsEffectivelyEnabled)
         {
@@ -489,6 +727,8 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
         }
     }
 
+    private Rect? _originRect;
+
     protected override Size ArrangeOverride(Size finalSize)
     {
         var size = base.ArrangeOverride(finalSize);
@@ -539,245 +779,4 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
             }
         }
     }
-
-    #region 公共属性定义
-
-    public static readonly RoutedEvent<RoutedEventArgs> ClickEvent =
-        RoutedEvent.Register<SplitButton, RoutedEventArgs>(
-            nameof(Click),
-            RoutingStrategies.Bubble);
-
-    public static readonly StyledProperty<ICommand?> CommandProperty =
-        Avalonia.Controls.Button.CommandProperty.AddOwner<SplitButton>();
-
-    public static readonly StyledProperty<object?> CommandParameterProperty =
-        Avalonia.Controls.Button.CommandParameterProperty.AddOwner<SplitButton>();
-
-    public static readonly StyledProperty<Flyout?> FlyoutProperty =
-        AvaloniaProperty.Register<SplitButton, Flyout?>(nameof(Flyout));
-
-    public static readonly StyledProperty<KeyGesture?> HotKeyProperty =
-        Avalonia.Controls.Button.HotKeyProperty.AddOwner<SplitButton>();
-
-    public static readonly StyledProperty<FlyoutTriggerType> TriggerTypeProperty =
-        FlyoutStateHelper.TriggerTypeProperty.AddOwner<SplitButton>();
-
-    public static readonly StyledProperty<bool> IsShowArrowProperty =
-        ArrowDecoratedBox.IsShowArrowProperty.AddOwner<SplitButton>();
-
-    public static readonly StyledProperty<bool> IsPointAtCenterProperty =
-        Flyout.IsPointAtCenterProperty.AddOwner<SplitButton>();
-
-    public static readonly StyledProperty<PlacementMode> PlacementProperty =
-        Avalonia.Controls.Primitives.Popup.PlacementProperty.AddOwner<SplitButton>();
-
-    public static readonly StyledProperty<PopupAnchor> PlacementAnchorProperty =
-        Avalonia.Controls.Primitives.Popup.PlacementAnchorProperty.AddOwner<SplitButton>();
-
-    public static readonly StyledProperty<PopupGravity> PlacementGravityProperty =
-        Avalonia.Controls.Primitives.Popup.PlacementGravityProperty.AddOwner<SplitButton>();
-
-    public static readonly StyledProperty<double> MarginToAnchorProperty =
-        Popup.MarginToAnchorProperty.AddOwner<SplitButton>();
-
-    public static readonly StyledProperty<int> MouseEnterDelayProperty =
-        FlyoutStateHelper.MouseEnterDelayProperty.AddOwner<SplitButton>();
-
-    public static readonly StyledProperty<int> MouseLeaveDelayProperty =
-        FlyoutStateHelper.MouseLeaveDelayProperty.AddOwner<SplitButton>();
-
-    public static readonly StyledProperty<bool> IsShowIndicatorProperty =
-        AvaloniaProperty.Register<SplitButton, bool>(nameof(IsShowIndicator), true);
-
-    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        Button.SizeTypeProperty.AddOwner<SplitButton>();
-
-    public static readonly StyledProperty<PathIcon?> IconProperty
-        = Button.IconProperty.AddOwner<SplitButton>();
-
-    public static readonly StyledProperty<PathIcon?> FlyoutButtonIconProperty
-        = AvaloniaProperty.Register<SplitButton, PathIcon?>(nameof(FlyoutButtonIcon));
-
-    public static readonly StyledProperty<bool> IsDangerProperty =
-        Button.IsDangerProperty.AddOwner<SplitButton>();
-
-    public static readonly StyledProperty<bool> IsPrimaryButtonTypeProperty =
-        AvaloniaProperty.Register<SplitButton, bool>(nameof(IsPrimaryButtonType));
-
-    /// <summary>
-    /// Raised when the user presses the primary part of the <see cref="SplitButton" />.
-    /// </summary>
-    public event EventHandler<RoutedEventArgs>? Click
-    {
-        add => AddHandler(ClickEvent, value);
-        remove => RemoveHandler(ClickEvent, value);
-    }
-
-    public ICommand? Command
-    {
-        get => GetValue(CommandProperty);
-        set => SetValue(CommandProperty, value);
-    }
-
-    /// <summary>
-    /// Gets or sets a parameter to be passed to the <see cref="Command" />.
-    /// </summary>
-    public object? CommandParameter
-    {
-        get => GetValue(CommandParameterProperty);
-        set => SetValue(CommandParameterProperty, value);
-    }
-
-    /// <summary>
-    /// Gets or sets the <see cref="Flyout" /> that is shown when the secondary part is pressed.
-    /// </summary>
-    public Flyout? Flyout
-    {
-        get => GetValue(FlyoutProperty);
-        set => SetValue(FlyoutProperty, value);
-    }
-
-    /// <summary>
-    /// Gets or sets an <see cref="KeyGesture" /> associated with this control
-    /// </summary>
-    public KeyGesture? HotKey
-    {
-        get => GetValue(HotKeyProperty);
-        set => SetValue(HotKeyProperty, value);
-    }
-
-    public FlyoutTriggerType TriggerType
-    {
-        get => GetValue(TriggerTypeProperty);
-        set => SetValue(TriggerTypeProperty, value);
-    }
-
-    public bool IsShowArrow
-    {
-        get => GetValue(IsShowArrowProperty);
-        set => SetValue(IsShowArrowProperty, value);
-    }
-
-    public bool IsPointAtCenter
-    {
-        get => GetValue(IsPointAtCenterProperty);
-        set => SetValue(IsPointAtCenterProperty, value);
-    }
-
-    public PlacementMode Placement
-    {
-        get => GetValue(PlacementProperty);
-        set => SetValue(PlacementProperty, value);
-    }
-
-    public PopupGravity PlacementGravity
-    {
-        get => GetValue(PlacementGravityProperty);
-        set => SetValue(PlacementGravityProperty, value);
-    }
-
-    public PopupAnchor PlacementAnchor
-    {
-        get => GetValue(PlacementAnchorProperty);
-        set => SetValue(PlacementAnchorProperty, value);
-    }
-
-    public double MarginToAnchor
-    {
-        get => GetValue(MarginToAnchorProperty);
-        set => SetValue(MarginToAnchorProperty, value);
-    }
-
-    public int MouseEnterDelay
-    {
-        get => GetValue(MouseEnterDelayProperty);
-        set => SetValue(MouseEnterDelayProperty, value);
-    }
-
-    public int MouseLeaveDelay
-    {
-        get => GetValue(MouseLeaveDelayProperty);
-        set => SetValue(MouseLeaveDelayProperty, value);
-    }
-
-    public bool IsShowIndicator
-    {
-        get => GetValue(IsShowIndicatorProperty);
-        set => SetValue(IsShowIndicatorProperty, value);
-    }
-
-    public SizeType SizeType
-    {
-        get => GetValue(SizeTypeProperty);
-        set => SetValue(SizeTypeProperty, value);
-    }
-
-    public PathIcon? Icon
-    {
-        get => GetValue(IconProperty);
-        set => SetValue(IconProperty, value);
-    }
-
-    public PathIcon? FlyoutButtonIcon
-    {
-        get => GetValue(FlyoutButtonIconProperty);
-        set => SetValue(FlyoutButtonIconProperty, value);
-    }
-
-    public bool IsDanger
-    {
-        get => GetValue(IsDangerProperty);
-        set => SetValue(IsDangerProperty, value);
-    }
-
-    public bool IsPrimaryButtonType
-    {
-        get => GetValue(IsPrimaryButtonTypeProperty);
-        set => SetValue(IsPrimaryButtonTypeProperty, value);
-    }
-
-    #endregion
-
-    #region 内部属性定义
-
-    internal static readonly DirectProperty<SplitButton, CornerRadius> PrimaryButtonCornerRadiusProperty =
-        AvaloniaProperty.RegisterDirect<SplitButton, CornerRadius>(nameof(PrimaryButtonCornerRadius),
-            o => o.PrimaryButtonCornerRadius,
-            (o, v) => o.PrimaryButtonCornerRadius = v);
-
-    private CornerRadius _primaryButtonCornerRadius;
-
-    internal CornerRadius PrimaryButtonCornerRadius
-    {
-        get => _primaryButtonCornerRadius;
-        set => SetAndRaise(PrimaryButtonCornerRadiusProperty, ref _primaryButtonCornerRadius, value);
-    }
-
-    internal static readonly DirectProperty<SplitButton, CornerRadius> SecondaryButtonCornerRadiusProperty =
-        AvaloniaProperty.RegisterDirect<SplitButton, CornerRadius>(nameof(SecondaryButtonCornerRadius),
-            o => o.SecondaryButtonCornerRadius,
-            (o, v) => o.SecondaryButtonCornerRadius = v);
-
-    private CornerRadius _secondaryButtonCornerRadius;
-
-    internal CornerRadius SecondaryButtonCornerRadius
-    {
-        get => _secondaryButtonCornerRadius;
-        set => SetAndRaise(SecondaryButtonCornerRadiusProperty, ref _secondaryButtonCornerRadius, value);
-    }
-
-    internal static readonly DirectProperty<SplitButton, ButtonType> EffectiveButtonTypeProperty =
-        AvaloniaProperty.RegisterDirect<SplitButton, ButtonType>(nameof(EffectiveButtonType),
-            o => o.EffectiveButtonType,
-            (o, v) => o.EffectiveButtonType = v);
-
-    private ButtonType _effectiveButtonType;
-
-    internal ButtonType EffectiveButtonType
-    {
-        get => _effectiveButtonType;
-        set => SetAndRaise(EffectiveButtonTypeProperty, ref _effectiveButtonType, value);
-    }
-
-    #endregion
 }

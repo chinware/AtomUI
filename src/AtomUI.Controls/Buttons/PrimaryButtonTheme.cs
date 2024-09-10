@@ -79,7 +79,6 @@ internal class PrimaryButtonTheme : BaseButtonTheme
     {
         var ghostStyle = new Style(selector => selector.Nesting().PropertyEquals(Button.IsGhostProperty, true));
         ghostStyle.Add(TemplatedControl.BackgroundProperty, new SolidColorBrush(Colors.Transparent));
-
         // 正常状态
         ghostStyle.Add(TemplatedControl.ForegroundProperty, GlobalTokenResourceKey.ColorPrimary);
         ghostStyle.Add(TemplatedControl.BorderBrushProperty, GlobalTokenResourceKey.ColorPrimary);

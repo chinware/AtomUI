@@ -7,6 +7,11 @@ namespace AtomUI.Controls.MotionScene;
 
 public class Director : IDirector
 {
+    public event EventHandler<MotionEventArgs>? MotionPreStart;
+    public event EventHandler<MotionEventArgs>? MotionStarted;
+    public event EventHandler<MotionEventArgs>? MotionCompleted;
+
+    public static IDirector? Instance => AvaloniaLocator.Current.GetService<IDirector>();
     private readonly Dictionary<IMotionActor, MotionActorState> _states;
     private CompositeDisposable? _compositeDisposable;
 
@@ -15,10 +20,8 @@ public class Director : IDirector
         _states = new Dictionary<IMotionActor, MotionActorState>();
     }
 
-    public static IDirector? Instance => AvaloniaLocator.Current.GetService<IDirector>();
-
     /// <summary>
-    /// 目前的实现暂时一个 Actor 只能投递一次，后面可以实现一个等待队列
+    ///     目前的实现暂时一个 Actor 只能投递一次，后面可以实现一个等待队列
     /// </summary>
     /// <param name="actor"></param>
     public void Schedule(MotionActor actor)
@@ -67,10 +70,6 @@ public class Director : IDirector
         HandleMotionStarted(actor);
     }
 
-    public event EventHandler<MotionEventArgs>? MotionPreStart;
-    public event EventHandler<MotionEventArgs>? MotionStarted;
-    public event EventHandler<MotionEventArgs>? MotionCompleted;
-
     private SceneLayer PrepareSceneLayer(MotionActor actor)
     {
         if (actor.SceneParent is null)
@@ -95,6 +94,25 @@ public class Director : IDirector
             var property = motionConfig.Property;
             var endValue = motionConfig.EndValue;
             actor.SetValue(property, endValue);
+        }
+    }
+
+    private class MotionActorState : IDisposable
+    {
+        private readonly IDisposable _cleanup;
+
+        public IMotionActor MotionActor { get; }
+        public SceneLayer? SceneLayer;
+
+        public MotionActorState(IMotionActor motionActor, IDisposable cleanup)
+        {
+            MotionActor = motionActor;
+            _cleanup    = cleanup;
+        }
+
+        public void Dispose()
+        {
+            _cleanup.Dispose();
         }
     }
 
@@ -139,25 +157,6 @@ public class Director : IDirector
             MotionCompleted?.Invoke(this, new MotionEventArgs(actor));
             state.Dispose();
             _states.Remove(actor);
-        }
-    }
-
-    private class MotionActorState : IDisposable
-    {
-        private readonly IDisposable _cleanup;
-        public SceneLayer? SceneLayer;
-
-        public MotionActorState(IMotionActor motionActor, IDisposable cleanup)
-        {
-            MotionActor = motionActor;
-            _cleanup    = cleanup;
-        }
-
-        public IMotionActor MotionActor { get; }
-
-        public void Dispose()
-        {
-            _cleanup.Dispose();
         }
     }
 }

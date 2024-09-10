@@ -1,6 +1,7 @@
 ﻿using AtomUI.Controls.Utils;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -19,74 +20,6 @@ public enum GroupBoxTitlePosition
 
 public class GroupBox : ContentControl
 {
-    private readonly BorderRenderHelper _borderRenderHelper;
-    private Rect _borderBounds;
-    private Border? _frameDecorator;
-    private Control? _headerContentContainer;
-
-    public GroupBox()
-    {
-        _borderRenderHelper = new BorderRenderHelper();
-    }
-
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        TokenResourceBinder.CreateGlobalTokenBinding(this, BorderThicknessProperty,
-            GlobalTokenResourceKey.BorderThickness,
-            BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this));
-    }
-
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        base.OnApplyTemplate(e);
-        _headerContentContainer = e.NameScope.Find<Decorator>(GroupBoxTheme.HeaderContentPart);
-        _frameDecorator         = e.NameScope.Find<Border>(GroupBoxTheme.FrameDecoratorPart);
-    }
-
-    protected override Size MeasureOverride(Size availableSize)
-    {
-        return LayoutHelper.MeasureChild(_frameDecorator, availableSize, default, BorderThickness);
-    }
-
-    protected override Size ArrangeOverride(Size finalSize)
-    {
-        var size = LayoutHelper.ArrangeChild(_frameDecorator, finalSize, Padding, BorderThickness);
-        if (_headerContentContainer is not null)
-        {
-            var headerOffset = _headerContentContainer.TranslatePoint(new Point(0, 0), this) ?? default;
-            var offsetY      = headerOffset.Y + _headerContentContainer.DesiredSize.Height / 2;
-            _borderBounds = new Rect(new Point(0, offsetY), new Size(finalSize.Width, finalSize.Height - offsetY));
-        }
-
-        return size;
-    }
-
-    public override void Render(DrawingContext context)
-    {
-        {
-            using var state = context.PushTransform(Matrix.CreateTranslation(0, _borderBounds.Y));
-            _borderRenderHelper.Render(context,
-                _borderBounds.Size,
-                BorderThickness,
-                CornerRadius,
-                BackgroundSizing.InnerBorderEdge,
-                Background,
-                BorderBrush,
-                default);
-        }
-        {
-            // 绘制遮挡
-            if (_headerContentContainer is not null)
-            {
-                var headerOffset = _headerContentContainer.TranslatePoint(new Point(0, 0), this) ?? default;
-                var bounds       = new Rect(headerOffset, _headerContentContainer.DesiredSize);
-                context.FillRectangle(Background ?? new SolidColorBrush(Colors.Transparent), bounds);
-            }
-        }
-    }
-
     #region 公共属性定义
 
     public static readonly StyledProperty<string?> HeaderTitleProperty =
@@ -153,4 +86,72 @@ public class GroupBox : ContentControl
     }
 
     #endregion
+
+    private readonly BorderRenderHelper _borderRenderHelper;
+    private Control? _headerContentContainer;
+    private Border? _frameDecorator;
+    private Rect _borderBounds;
+
+    public GroupBox()
+    {
+        _borderRenderHelper = new BorderRenderHelper();
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        TokenResourceBinder.CreateGlobalTokenBinding(this, BorderThicknessProperty,
+            GlobalTokenResourceKey.BorderThickness,
+            BindingPriority.Template,
+            new RenderScaleAwareThicknessConfigure(this));
+    }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        _headerContentContainer = e.NameScope.Find<Decorator>(GroupBoxTheme.HeaderContentPart);
+        _frameDecorator         = e.NameScope.Find<Border>(GroupBoxTheme.FrameDecoratorPart);
+    }
+
+    protected override Size MeasureOverride(Size availableSize)
+    {
+        return LayoutHelper.MeasureChild(_frameDecorator, availableSize, default, BorderThickness);
+    }
+
+    protected override Size ArrangeOverride(Size finalSize)
+    {
+        var size = LayoutHelper.ArrangeChild(_frameDecorator, finalSize, Padding, BorderThickness);
+        if (_headerContentContainer is not null)
+        {
+            var headerOffset = _headerContentContainer.TranslatePoint(new Point(0, 0), this) ?? default;
+            var offsetY      = headerOffset.Y + _headerContentContainer.DesiredSize.Height / 2;
+            _borderBounds = new Rect(new Point(0, offsetY), new Size(finalSize.Width, finalSize.Height - offsetY));
+        }
+
+        return size;
+    }
+
+    public override void Render(DrawingContext context)
+    {
+        {
+            using var state = context.PushTransform(Matrix.CreateTranslation(0, _borderBounds.Y));
+            _borderRenderHelper.Render(context,
+                _borderBounds.Size,
+                BorderThickness,
+                CornerRadius,
+                BackgroundSizing.InnerBorderEdge,
+                Background,
+                BorderBrush,
+                default);
+        }
+        {
+            // 绘制遮挡
+            if (_headerContentContainer is not null)
+            {
+                var headerOffset = _headerContentContainer.TranslatePoint(new Point(0, 0), this) ?? default;
+                var bounds       = new Rect(headerOffset, _headerContentContainer.DesiredSize);
+                context.FillRectangle(Background ?? new SolidColorBrush(Colors.Transparent), bounds);
+            }
+        }
+    }
 }

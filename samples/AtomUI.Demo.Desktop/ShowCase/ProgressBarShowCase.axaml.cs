@@ -7,6 +7,20 @@ namespace AtomUI.Demo.Desktop.ShowCase;
 
 public partial class ProgressBarShowCase : UserControl
 {
+    public LinearGradientBrush TwoStopsGradientStrokeColor { get; set; }
+
+    public LinearGradientBrush ThreeStopsGradientStrokeColor { get; set; }
+
+    public List<IBrush> StepsChunkBrushes { get; set; }
+
+    public PercentPosition InnerStartPercentPosition { get; set; }
+    public PercentPosition InnerCenterPercentPosition { get; set; }
+    public PercentPosition InnerEndPercentPosition { get; set; }
+
+    public PercentPosition OutterStartPercentPosition { get; set; }
+    public PercentPosition OutterCenterPercentPosition { get; set; }
+    public PercentPosition OutterEndPercentPosition { get; set; }
+
     public static readonly StyledProperty<double> ProgressValueProperty =
         AvaloniaProperty.Register<ProgressBarShowCase, double>(nameof(ProgressValue), 30);
 
@@ -15,6 +29,24 @@ public partial class ProgressBarShowCase : UserControl
 
     public static readonly StyledProperty<bool> ToggleStatusProperty =
         AvaloniaProperty.Register<ProgressBarShowCase, bool>(nameof(ToggleStatus), true);
+
+    public double ProgressValue
+    {
+        get => GetValue(ProgressValueProperty);
+        set => SetValue(ProgressValueProperty, value);
+    }
+
+    public string ToggleDisabledText
+    {
+        get => GetValue(ToggleDisabledTextProperty);
+        set => SetValue(ToggleDisabledTextProperty, value);
+    }
+
+    public bool ToggleStatus
+    {
+        get => GetValue(ToggleStatusProperty);
+        set => SetValue(ToggleStatusProperty, value);
+    }
 
     public ProgressBarShowCase()
     {
@@ -76,38 +108,6 @@ public partial class ProgressBarShowCase : UserControl
             IsInner   = false,
             Alignment = LinePercentAlignment.End
         };
-    }
-
-    public LinearGradientBrush TwoStopsGradientStrokeColor { get; set; }
-
-    public LinearGradientBrush ThreeStopsGradientStrokeColor { get; set; }
-
-    public List<IBrush> StepsChunkBrushes { get; set; }
-
-    public PercentPosition InnerStartPercentPosition { get; set; }
-    public PercentPosition InnerCenterPercentPosition { get; set; }
-    public PercentPosition InnerEndPercentPosition { get; set; }
-
-    public PercentPosition OutterStartPercentPosition { get; set; }
-    public PercentPosition OutterCenterPercentPosition { get; set; }
-    public PercentPosition OutterEndPercentPosition { get; set; }
-
-    public double ProgressValue
-    {
-        get => GetValue(ProgressValueProperty);
-        set => SetValue(ProgressValueProperty, value);
-    }
-
-    public string ToggleDisabledText
-    {
-        get => GetValue(ToggleDisabledTextProperty);
-        set => SetValue(ToggleDisabledTextProperty, value);
-    }
-
-    public bool ToggleStatus
-    {
-        get => GetValue(ToggleStatusProperty);
-        set => SetValue(ToggleStatusProperty, value);
     }
 
     public void AddProgressValue()

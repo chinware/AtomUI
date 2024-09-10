@@ -8,11 +8,6 @@ public class ArrowDecoratedBoxToken : AbstractControlDesignToken
 {
     public const string ID = "ArrowDecoratedBox";
 
-    public ArrowDecoratedBoxToken()
-        : base(ID)
-    {
-    }
-
     /// <summary>
     /// 箭头三角形大小
     /// </summary>
@@ -22,6 +17,11 @@ public class ArrowDecoratedBoxToken : AbstractControlDesignToken
     /// 默认的内边距
     /// </summary>
     public Thickness Padding { get; set; }
+
+    public ArrowDecoratedBoxToken()
+        : base(ID)
+    {
+    }
 
     internal override void CalculateFromAlias()
     {

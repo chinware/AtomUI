@@ -1,6 +1,7 @@
 ﻿using AtomUI.Controls.Utils;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -24,16 +25,103 @@ namespace AtomUI.Controls;
 [TemplatePart(TimePickerPresenterTheme.SecondSpacerPart, typeof(Rectangle), IsRequired = true)]
 public class TimePickerPresenter : PickerPresenterBase
 {
-    private TextBlock? _headerText;
-    private DateTimePickerPanel? _hourSelector;
-    private DateTimePickerPanel? _minuteSelector;
-    private Panel? _periodHost;
-    private DateTimePickerPanel? _periodSelector;
+    #region 公共属性定义
 
-    // TemplateItems
-    private Grid? _pickerContainer;
-    private DateTimePickerPanel? _secondSelector;
-    private Rectangle? _spacer3;
+    /// <summary>
+    /// Defines the <see cref="MinuteIncrement" /> property
+    /// </summary>
+    public static readonly StyledProperty<int> MinuteIncrementProperty =
+        TimePicker.MinuteIncrementProperty.AddOwner<TimePickerPresenter>();
+
+    public static readonly StyledProperty<int> SecondIncrementProperty =
+        TimePicker.SecondIncrementProperty.AddOwner<TimePickerPresenter>();
+
+    /// <summary>
+    /// Defines the <see cref="ClockIdentifier" /> property
+    /// </summary>
+    public static readonly StyledProperty<ClockIdentifierType> ClockIdentifierProperty =
+        TimePicker.ClockIdentifierProperty.AddOwner<TimePickerPresenter>();
+
+    /// <summary>
+    /// Defines the <see cref="Time" /> property
+    /// </summary>
+    public static readonly StyledProperty<TimeSpan> TimeProperty =
+        AvaloniaProperty.Register<TimePickerPresenter, TimeSpan>(nameof(Time));
+
+    public static readonly StyledProperty<TimeSpan> TemporaryTimeProperty =
+        AvaloniaProperty.Register<TimePickerPresenter, TimeSpan>(nameof(TemporaryTime));
+
+    public static readonly StyledProperty<bool> IsShowHeaderProperty =
+        AvaloniaProperty.Register<TimePickerPresenter, bool>(nameof(IsShowHeader), true);
+
+    /// <summary>
+    /// Gets or sets the minute increment in the selector
+    /// </summary>
+    public int MinuteIncrement
+    {
+        get => GetValue(MinuteIncrementProperty);
+        set => SetValue(MinuteIncrementProperty, value);
+    }
+
+    public int SecondIncrement
+    {
+        get => GetValue(SecondIncrementProperty);
+        set => SetValue(SecondIncrementProperty, value);
+    }
+
+    /// <summary>
+    /// Gets or sets the current clock identifier, either 12HourClock or 24HourClock
+    /// </summary>
+    public ClockIdentifierType ClockIdentifier
+    {
+        get => GetValue(ClockIdentifierProperty);
+        set => SetValue(ClockIdentifierProperty, value);
+    }
+
+    /// <summary>
+    /// Gets or sets the current time
+    /// </summary>
+    public TimeSpan Time
+    {
+        get => GetValue(TimeProperty);
+        set => SetValue(TimeProperty, value);
+    }
+
+    public TimeSpan TemporaryTime
+    {
+        get => GetValue(TemporaryTimeProperty);
+        set => SetValue(TemporaryTimeProperty, value);
+    }
+
+    public bool IsShowHeader
+    {
+        get => GetValue(IsShowHeaderProperty);
+        set => SetValue(IsShowHeaderProperty, value);
+    }
+
+    #endregion
+
+    #region 私有属性定义
+
+    internal static readonly DirectProperty<TimePickerPresenter, double> SpacerThicknessProperty =
+        AvaloniaProperty.RegisterDirect<TimePickerPresenter, double>(nameof(SpacerWidth),
+            o => o.SpacerWidth,
+            (o, v) => o.SpacerWidth = v);
+
+    private double _spacerWidth;
+
+    public double SpacerWidth
+    {
+        get => _spacerWidth;
+        set => SetAndRaise(SpacerThicknessProperty, ref _spacerWidth, value);
+    }
+
+    #endregion
+
+    public TimePickerPresenter()
+    {
+        SetCurrentValue(TimeProperty, DateTime.Now.TimeOfDay);
+    }
 
     static TimePickerPresenter()
     {
@@ -41,10 +129,15 @@ public class TimePickerPresenter : PickerPresenterBase
                           .OverrideDefaultValue<TimePickerPresenter>(KeyboardNavigationMode.Cycle);
     }
 
-    public TimePickerPresenter()
-    {
-        SetCurrentValue(TimeProperty, DateTime.Now.TimeOfDay);
-    }
+    // TemplateItems
+    private Grid? _pickerContainer;
+    private Rectangle? _spacer3;
+    private Panel? _periodHost;
+    private TextBlock? _headerText;
+    private DateTimePickerPanel? _hourSelector;
+    private DateTimePickerPanel? _minuteSelector;
+    private DateTimePickerPanel? _secondSelector;
+    private DateTimePickerPanel? _periodSelector;
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
@@ -218,97 +311,4 @@ public class TimePickerPresenter : PickerPresenterBase
         _spacer3!.IsVisible    = !use24HourClock;
         _periodHost!.IsVisible = !use24HourClock;
     }
-
-    #region 公共属性定义
-
-    /// <summary>
-    /// Defines the <see cref="MinuteIncrement" /> property
-    /// </summary>
-    public static readonly StyledProperty<int> MinuteIncrementProperty =
-        TimePicker.MinuteIncrementProperty.AddOwner<TimePickerPresenter>();
-
-    public static readonly StyledProperty<int> SecondIncrementProperty =
-        TimePicker.SecondIncrementProperty.AddOwner<TimePickerPresenter>();
-
-    /// <summary>
-    /// Defines the <see cref="ClockIdentifier" /> property
-    /// </summary>
-    public static readonly StyledProperty<ClockIdentifierType> ClockIdentifierProperty =
-        TimePicker.ClockIdentifierProperty.AddOwner<TimePickerPresenter>();
-
-    /// <summary>
-    /// Defines the <see cref="Time" /> property
-    /// </summary>
-    public static readonly StyledProperty<TimeSpan> TimeProperty =
-        AvaloniaProperty.Register<TimePickerPresenter, TimeSpan>(nameof(Time));
-
-    public static readonly StyledProperty<TimeSpan> TemporaryTimeProperty =
-        AvaloniaProperty.Register<TimePickerPresenter, TimeSpan>(nameof(TemporaryTime));
-
-    public static readonly StyledProperty<bool> IsShowHeaderProperty =
-        AvaloniaProperty.Register<TimePickerPresenter, bool>(nameof(IsShowHeader), true);
-
-    /// <summary>
-    /// Gets or sets the minute increment in the selector
-    /// </summary>
-    public int MinuteIncrement
-    {
-        get => GetValue(MinuteIncrementProperty);
-        set => SetValue(MinuteIncrementProperty, value);
-    }
-
-    public int SecondIncrement
-    {
-        get => GetValue(SecondIncrementProperty);
-        set => SetValue(SecondIncrementProperty, value);
-    }
-
-    /// <summary>
-    /// Gets or sets the current clock identifier, either 12HourClock or 24HourClock
-    /// </summary>
-    public ClockIdentifierType ClockIdentifier
-    {
-        get => GetValue(ClockIdentifierProperty);
-        set => SetValue(ClockIdentifierProperty, value);
-    }
-
-    /// <summary>
-    /// Gets or sets the current time
-    /// </summary>
-    public TimeSpan Time
-    {
-        get => GetValue(TimeProperty);
-        set => SetValue(TimeProperty, value);
-    }
-
-    public TimeSpan TemporaryTime
-    {
-        get => GetValue(TemporaryTimeProperty);
-        set => SetValue(TemporaryTimeProperty, value);
-    }
-
-    public bool IsShowHeader
-    {
-        get => GetValue(IsShowHeaderProperty);
-        set => SetValue(IsShowHeaderProperty, value);
-    }
-
-    #endregion
-
-    #region 私有属性定义
-
-    internal static readonly DirectProperty<TimePickerPresenter, double> SpacerThicknessProperty =
-        AvaloniaProperty.RegisterDirect<TimePickerPresenter, double>(nameof(SpacerWidth),
-            o => o.SpacerWidth,
-            (o, v) => o.SpacerWidth = v);
-
-    private double _spacerWidth;
-
-    public double SpacerWidth
-    {
-        get => _spacerWidth;
-        set => SetAndRaise(SpacerThicknessProperty, ref _spacerWidth, value);
-    }
-
-    #endregion
 }

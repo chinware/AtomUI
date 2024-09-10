@@ -9,37 +9,6 @@ namespace AtomUI.Controls.Primitives;
 
 public class AtomLayer : Canvas
 {
-    #region Monitor Target Bounds
-
-    private void MonitorTargetBounds(Visual target)
-    {
-        var provider = GetBoundsAnchor(target);
-        provider ??= target;
-
-        var disposable = GetDisposableForSubscriptionOfTargetBounds(target);
-        disposable?.Dispose();
-        disposable = Disposable.Create(() => provider.PropertyChanged -= TargetBoundsOnPropertyChanged);
-        SetDisposableForSubscriptionOfTargetBounds(target, disposable);
-
-        provider.PropertyChanged -= TargetBoundsOnPropertyChanged;
-        provider.PropertyChanged += TargetBoundsOnPropertyChanged;
-
-        return;
-
-        void TargetBoundsOnPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
-        {
-            if (e.Property != BoundsProperty)
-            {
-                return;
-            }
-
-            // Child element's bounds will be updated before it's ancestors do.
-            Dispatcher.UIThread.Post(() => UpdateAdornersLocationOfTarget(target), DispatcherPriority.Send);
-        }
-    }
-
-    #endregion
-
     #region Static
 
     public static AtomLayer? GetLayer(Visual target)
@@ -304,6 +273,37 @@ public class AtomLayer : Canvas
         {
             RemoveChild(adorner);
             _detachedAdorners.Add(new WeakReference<Control>(adorner));
+        }
+    }
+
+    #endregion
+
+    #region Monitor Target Bounds
+
+    private void MonitorTargetBounds(Visual target)
+    {
+        var provider = GetBoundsAnchor(target);
+        provider ??= target;
+
+        var disposable = GetDisposableForSubscriptionOfTargetBounds(target);
+        disposable?.Dispose();
+        disposable = Disposable.Create(() => provider.PropertyChanged -= TargetBoundsOnPropertyChanged);
+        SetDisposableForSubscriptionOfTargetBounds(target, disposable);
+
+        provider.PropertyChanged -= TargetBoundsOnPropertyChanged;
+        provider.PropertyChanged += TargetBoundsOnPropertyChanged;
+
+        return;
+
+        void TargetBoundsOnPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
+        {
+            if (e.Property != BoundsProperty)
+            {
+                return;
+            }
+
+            // Child element's bounds will be updated before it's ancestors do.
+            Dispatcher.UIThread.Post(() => UpdateAdornersLocationOfTarget(target), DispatcherPriority.Send);
         }
     }
 

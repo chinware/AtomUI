@@ -6,6 +6,16 @@ namespace AtomUI.Theme;
 
 internal class ThemeDefinitionReader
 {
+    private readonly StaticTheme _theme;
+    private ThemeDefinition? _currentDef;
+    private bool _parseFinished;
+
+    // 上下文信息
+    private readonly Stack<string> _currentElementNames;
+    private ControlTokenConfigInfo? _currentControlToken;
+    private bool _inGlobalTokenCtx;
+    private bool _inControlTokenCtx;
+
     private const string ThemeElementName = "Theme";
     private const string AlgorithmsElementName = "Algorithms";
     private const string GlobalTokenElementName = "GlobalToken";
@@ -17,15 +27,6 @@ internal class ThemeDefinitionReader
     private const string IdAttrName = "Id";
     private const string AlgorithmAttrName = "Algorithm";
     private const string ValueAttrName = "Value";
-
-    // 上下文信息
-    private readonly Stack<string> _currentElementNames;
-    private readonly StaticTheme _theme;
-    private ControlTokenConfigInfo? _currentControlToken;
-    private ThemeDefinition? _currentDef;
-    private bool _inControlTokenCtx;
-    private bool _inGlobalTokenCtx;
-    private bool _parseFinished;
 
     public ThemeDefinitionReader(StaticTheme theme)
     {

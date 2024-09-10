@@ -1,5 +1,5 @@
 ﻿using AtomUI.Controls.PopupConfirmLang;
-using AtomUI.Theme.Data;
+using AtomUI.Data;
 using Avalonia;
 using Avalonia.Controls.Templates;
 using Avalonia.Interactivity;
@@ -15,26 +15,6 @@ public enum PopupConfirmStatus
 
 public class PopupConfirm : FlyoutHost
 {
-    public sealed override void ApplyTemplate()
-    {
-        if (Flyout is null)
-        {
-            Flyout = new PopupConfirmFlyout(this);
-        }
-
-        if (Icon is null)
-        {
-            Icon = new PathIcon
-            {
-                Kind = "ExclamationCircleFilled"
-            };
-        }
-
-        LanguageResourceBinder.CreateBinding(this, OkTextProperty, PopupConfirmLangResourceKey.OkText);
-        LanguageResourceBinder.CreateBinding(this, CancelTextProperty, PopupConfirmLangResourceKey.CancelText);
-        base.ApplyTemplate();
-    }
-
     #region 公共属性属性
 
     public static readonly StyledProperty<string> OkTextProperty =
@@ -147,15 +127,35 @@ public class PopupConfirm : FlyoutHost
     }
 
     #endregion
+
+    public sealed override void ApplyTemplate()
+    {
+        if (Flyout is null)
+        {
+            Flyout = new PopupConfirmFlyout(this);
+        }
+
+        if (Icon is null)
+        {
+            Icon = new PathIcon
+            {
+                Kind = "ExclamationCircleFilled"
+            };
+        }
+
+        LanguageResourceBinder.CreateBinding(this, OkTextProperty, PopupConfirmLangResourceKey.OkText);
+        LanguageResourceBinder.CreateBinding(this, CancelTextProperty, PopupConfirmLangResourceKey.CancelText);
+        base.ApplyTemplate();
+    }
 }
 
 public class PopupConfirmClickEventArgs : RoutedEventArgs
 {
+    public bool IsConfirmed { get; }
+
     public PopupConfirmClickEventArgs(RoutedEvent? routedEvent, bool isConfirmed)
         : base(routedEvent)
     {
         IsConfirmed = isConfirmed;
     }
-
-    public bool IsConfirmed { get; }
 }

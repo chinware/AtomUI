@@ -5,12 +5,12 @@ namespace AtomUI.Controls;
 
 internal class PopupConfirmFlyout : Flyout
 {
+    internal WeakReference<PopupConfirm> PopupConfirmRef { get; set; }
+
     public PopupConfirmFlyout(PopupConfirm popupConfirm)
     {
         PopupConfirmRef = new WeakReference<PopupConfirm>(popupConfirm);
     }
-
-    internal WeakReference<PopupConfirm> PopupConfirmRef { get; set; }
 
     protected override Control CreatePresenter()
     {

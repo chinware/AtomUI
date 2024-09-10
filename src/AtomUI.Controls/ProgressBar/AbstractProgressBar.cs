@@ -1,5 +1,4 @@
 using AtomUI.Media;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using AtomUI.Utils;
@@ -33,118 +32,6 @@ public abstract class AbstractProgressBar : RangeBase,
 
     public const string IndeterminatePC = ":indeterminate";
     public const string CompletedPC = ":completed";
-    internal IControlCustomStyle _customStyle;
-    protected PathIcon? _exceptionCompletedIcon;
-    protected LayoutTransformControl? _layoutTransformLabel;
-    protected Label? _percentageLabel;
-
-    protected ControlStyleState _styleState;
-    protected PathIcon? _successCompletedIcon;
-
-    static AbstractProgressBar()
-    {
-        AffectsMeasure<AbstractProgressBar>(EffectiveSizeTypeProperty,
-            ShowProgressInfoProperty,
-            ProgressTextFormatProperty);
-        AffectsRender<AbstractProgressBar>(IndicatorBarBrushProperty,
-            StrokeLineCapProperty,
-            TrailColorProperty,
-            StrokeThicknessProperty,
-            SuccessThresholdBrushProperty,
-            SuccessThresholdProperty,
-            ValueProperty);
-        ValueProperty.OverrideMetadata<AbstractProgressBar>(
-            new StyledPropertyMetadata<double>(defaultBindingMode: BindingMode.OneWay));
-    }
-
-    public AbstractProgressBar()
-    {
-        _customStyle       = this;
-        _effectiveSizeType = SizeType;
-    }
-
-    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
-    {
-        NotifyTemplateApplied(scope);
-        _customStyle.AfterUIStructureReady();
-        _customStyle.SetupTransitions();
-    }
-
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
-    {
-        base.OnPropertyChanged(e);
-
-        if (e.Property == ValueProperty ||
-            e.Property == MinimumProperty ||
-            e.Property == MaximumProperty ||
-            e.Property == IsIndeterminateProperty ||
-            e.Property == ProgressTextFormatProperty)
-        {
-            UpdateProgress();
-        }
-
-        if (e.Property == IsIndeterminateProperty)
-        {
-            UpdatePseudoClasses();
-        }
-
-        _customStyle.HandlePropertyChangedForStyle(e);
-    }
-
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        base.OnApplyTemplate(e);
-        _customStyle.HandleTemplateApplied(e.NameScope);
-    }
-
-    protected abstract SizeType CalculateEffectiveSizeType(double size);
-
-    protected abstract Rect GetProgressBarRect(Rect controlRect);
-    protected abstract Rect GetExtraInfoRect(Rect controlRect);
-
-    protected abstract void RenderGroove(DrawingContext context);
-    protected abstract void RenderIndicatorBar(DrawingContext context);
-    protected abstract void CalculateStrokeThickness();
-
-    protected virtual void NotifyTemplateApplied(INameScope scope)
-    {
-        _layoutTransformLabel = scope.Find<LayoutTransformControl>(AbstractProgressBarTheme.LayoutTransformControlPart);
-        _percentageLabel = scope.Find<Label>(AbstractProgressBarTheme.PercentageLabelPart);
-        _exceptionCompletedIcon = scope.Find<PathIcon>(AbstractProgressBarTheme.ExceptionCompletedIconPart);
-        _successCompletedIcon = scope.Find<PathIcon>(AbstractProgressBarTheme.SuccessCompletedIconPart);
-        _customStyle.CollectStyleState();
-        _customStyle.SetupTokenBindings();
-        NotifySetupUI();
-    }
-
-    protected virtual void NotifyEffectSizeTypeChanged()
-    {
-        CalculateStrokeThickness();
-    }
-
-    private void UpdateProgress()
-    {
-        var percent = Math.Abs(Maximum - Minimum) < double.Epsilon ? 1.0 : (Value - Minimum) / (Maximum - Minimum);
-        Percentage = percent * 100;
-        NotifyUpdateProgress();
-    }
-
-    protected virtual void NotifyUpdateProgress()
-    {
-        if (ShowProgressInfo && _percentageLabel != null)
-        {
-            if (Status != ProgressStatus.Exception)
-            {
-                _percentageLabel.Content = string.Format(ProgressTextFormat, _percentage);
-            }
-
-            NotifyHandleExtraInfoVisibility();
-        }
-    }
-
-    protected virtual void NotifyHandleExtraInfoVisibility()
-    {
-    }
 
     #region 公共属性
 
@@ -357,6 +244,118 @@ public abstract class AbstractProgressBar : RangeBase,
     }
 
     #endregion
+
+    protected ControlStyleState _styleState;
+    internal IControlCustomStyle _customStyle;
+    protected LayoutTransformControl? _layoutTransformLabel;
+    protected Label? _percentageLabel;
+    protected PathIcon? _successCompletedIcon;
+    protected PathIcon? _exceptionCompletedIcon;
+
+    static AbstractProgressBar()
+    {
+        AffectsMeasure<AbstractProgressBar>(EffectiveSizeTypeProperty,
+            ShowProgressInfoProperty,
+            ProgressTextFormatProperty);
+        AffectsRender<AbstractProgressBar>(IndicatorBarBrushProperty,
+            StrokeLineCapProperty,
+            TrailColorProperty,
+            StrokeThicknessProperty,
+            SuccessThresholdBrushProperty,
+            SuccessThresholdProperty,
+            ValueProperty);
+        ValueProperty.OverrideMetadata<AbstractProgressBar>(
+            new StyledPropertyMetadata<double>(defaultBindingMode: BindingMode.OneWay));
+    }
+
+    public AbstractProgressBar()
+    {
+        _customStyle       = this;
+        _effectiveSizeType = SizeType;
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
+    {
+        base.OnPropertyChanged(e);
+
+        if (e.Property == ValueProperty ||
+            e.Property == MinimumProperty ||
+            e.Property == MaximumProperty ||
+            e.Property == IsIndeterminateProperty ||
+            e.Property == ProgressTextFormatProperty)
+        {
+            UpdateProgress();
+        }
+
+        if (e.Property == IsIndeterminateProperty)
+        {
+            UpdatePseudoClasses();
+        }
+
+        _customStyle.HandlePropertyChangedForStyle(e);
+    }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        _customStyle.HandleTemplateApplied(e.NameScope);
+    }
+
+    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
+    {
+        NotifyTemplateApplied(scope);
+        _customStyle.AfterUIStructureReady();
+        _customStyle.SetupTransitions();
+    }
+
+    protected abstract SizeType CalculateEffectiveSizeType(double size);
+
+    protected abstract Rect GetProgressBarRect(Rect controlRect);
+    protected abstract Rect GetExtraInfoRect(Rect controlRect);
+
+    protected abstract void RenderGroove(DrawingContext context);
+    protected abstract void RenderIndicatorBar(DrawingContext context);
+    protected abstract void CalculateStrokeThickness();
+
+    protected virtual void NotifyTemplateApplied(INameScope scope)
+    {
+        _layoutTransformLabel = scope.Find<LayoutTransformControl>(AbstractProgressBarTheme.LayoutTransformControlPart);
+        _percentageLabel = scope.Find<Label>(AbstractProgressBarTheme.PercentageLabelPart);
+        _exceptionCompletedIcon = scope.Find<PathIcon>(AbstractProgressBarTheme.ExceptionCompletedIconPart);
+        _successCompletedIcon = scope.Find<PathIcon>(AbstractProgressBarTheme.SuccessCompletedIconPart);
+        _customStyle.CollectStyleState();
+        _customStyle.SetupTokenBindings();
+        NotifySetupUI();
+    }
+
+    protected virtual void NotifyEffectSizeTypeChanged()
+    {
+        CalculateStrokeThickness();
+    }
+
+    private void UpdateProgress()
+    {
+        var percent = Math.Abs(Maximum - Minimum) < double.Epsilon ? 1.0 : (Value - Minimum) / (Maximum - Minimum);
+        Percentage = percent * 100;
+        NotifyUpdateProgress();
+    }
+
+    protected virtual void NotifyUpdateProgress()
+    {
+        if (ShowProgressInfo && _percentageLabel != null)
+        {
+            if (Status != ProgressStatus.Exception)
+            {
+                _percentageLabel.Content = string.Format(ProgressTextFormat, _percentage);
+            }
+
+            NotifyHandleExtraInfoVisibility();
+        }
+    }
+
+    protected virtual void NotifyHandleExtraInfoVisibility()
+    {
+    }
 
     #region IControlCustomStyle 实现
 

@@ -14,12 +14,6 @@ public partial class TreeViewShowCase : UserControl
     public static readonly StyledProperty<bool> ShowLeafSwitcherSwitchCheckedProperty =
         AvaloniaProperty.Register<TreeViewShowCase, bool>(nameof(ShowLeafSwitcherSwitchChecked));
 
-    public TreeViewShowCase()
-    {
-        InitializeComponent();
-        DataContext = this;
-    }
-
     public bool ShowLineSwitchChecked
     {
         get => GetValue(ShowLineSwitchCheckedProperty);
@@ -36,5 +30,11 @@ public partial class TreeViewShowCase : UserControl
     {
         get => GetValue(ShowLeafSwitcherSwitchCheckedProperty);
         set => SetValue(ShowLeafSwitcherSwitchCheckedProperty, value);
+    }
+
+    public TreeViewShowCase()
+    {
+        InitializeComponent();
+        DataContext = this;
     }
 }

@@ -16,21 +16,27 @@ internal class PopupShadowLayer : LiteWindow, IShadowDecorator
     public static readonly StyledProperty<BoxShadows> MaskShadowsProperty =
         Border.BoxShadowProperty.AddOwner<PopupShadowLayer>();
 
-    private static readonly FieldInfo ManagedPopupPositionerPopupInfo;
-    private readonly IManagedPopupPositionerPopup? _managedPopupPositionerPopup;
-    private CompositeDisposable? _compositeDisposable;
-    private bool _isOpened;
-    private Canvas? _layout;
-    private ShadowRenderer? _shadowRenderer;
+    public BoxShadows MaskShadows
+    {
+        get => GetValue(MaskShadowsProperty);
+        set => SetValue(MaskShadowsProperty, value);
+    }
 
-    private Popup? _target;
-    private TopLevel? _topLevel;
+    private static readonly FieldInfo ManagedPopupPositionerPopupInfo;
 
     static PopupShadowLayer()
     {
         ManagedPopupPositionerPopupInfo = typeof(ManagedPopupPositioner).GetField("_popup",
             BindingFlags.Instance | BindingFlags.NonPublic)!;
     }
+
+    private Popup? _target;
+    private Canvas? _layout;
+    private ShadowRenderer? _shadowRenderer;
+    private CompositeDisposable? _compositeDisposable;
+    private readonly IManagedPopupPositionerPopup? _managedPopupPositionerPopup;
+    private TopLevel? _topLevel;
+    private bool _isOpened;
 
     public PopupShadowLayer(TopLevel topLevel)
         : base(topLevel, topLevel.PlatformImpl?.CreatePopup()!)
@@ -47,12 +53,6 @@ internal class PopupShadowLayer : LiteWindow, IShadowDecorator
             _managedPopupPositionerPopup =
                 ManagedPopupPositionerPopupInfo.GetValue(managedPopupPositioner) as IManagedPopupPositionerPopup;
         }
-    }
-
-    public BoxShadows MaskShadows
-    {
-        get => GetValue(MaskShadowsProperty);
-        set => SetValue(MaskShadowsProperty, value);
     }
 
     public void AttachToTarget(Popup popup)

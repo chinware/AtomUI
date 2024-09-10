@@ -3,6 +3,7 @@ using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Palette;
 using AtomUI.Theme.Styling;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -61,35 +62,6 @@ public class Tag : TemplatedControl, IControlCustomStyle
     internal static readonly StyledProperty<double> TagTextPaddingInlineProperty
         = AvaloniaProperty.Register<Tag, double>(nameof(TagTextPaddingInline));
 
-    private static readonly Dictionary<PresetColorType, TagCalcColor> _presetColorMap;
-    private static readonly Dictionary<TagStatus, TagStatusCalcColor> _statusColorMap;
-    private readonly BorderRenderHelper _borderRenderHelper;
-
-    private readonly IControlCustomStyle _customStyle;
-    private IconButton? _closeButton;
-    private bool _hasColorSet;
-    private bool _isPresetColorTag;
-    private Canvas? _layoutPanel;
-    private TextBlock? _textBlock;
-
-    static Tag()
-    {
-        _presetColorMap = new Dictionary<PresetColorType, TagCalcColor>();
-        _statusColorMap = new Dictionary<TagStatus, TagStatusCalcColor>();
-        AffectsMeasure<Tag>(BorderedProperty,
-            IconProperty,
-            IsClosableProperty);
-        AffectsRender<Tag>(ForegroundProperty,
-            BackgroundProperty,
-            BorderBrushProperty);
-    }
-
-    public Tag()
-    {
-        _customStyle        = this;
-        _borderRenderHelper = new BorderRenderHelper();
-    }
-
     public string? TagColor
     {
         get => GetValue(TagColorProperty);
@@ -133,6 +105,42 @@ public class Tag : TemplatedControl, IControlCustomStyle
         set => SetValue(TagTextPaddingInlineProperty, value);
     }
 
+    private readonly IControlCustomStyle _customStyle;
+    private bool _isPresetColorTag;
+    private bool _hasColorSet;
+    private static readonly Dictionary<PresetColorType, TagCalcColor> _presetColorMap;
+    private static readonly Dictionary<TagStatus, TagStatusCalcColor> _statusColorMap;
+    private Canvas? _layoutPanel;
+    private TextBlock? _textBlock;
+    private IconButton? _closeButton;
+    private readonly BorderRenderHelper _borderRenderHelper;
+
+    static Tag()
+    {
+        _presetColorMap = new Dictionary<PresetColorType, TagCalcColor>();
+        _statusColorMap = new Dictionary<TagStatus, TagStatusCalcColor>();
+        AffectsMeasure<Tag>(BorderedProperty,
+            IconProperty,
+            IsClosableProperty);
+        AffectsRender<Tag>(ForegroundProperty,
+            BackgroundProperty,
+            BorderBrushProperty);
+    }
+
+    public Tag()
+    {
+        _customStyle        = this;
+        _borderRenderHelper = new BorderRenderHelper();
+    }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        SetupPresetColorMap();
+        SetupStatusColorMap();
+        base.OnApplyTemplate(e);
+        _customStyle.HandleTemplateApplied(e.NameScope);
+    }
+
     void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
     {
         _layoutPanel = scope.Find<Canvas>(TagTheme.MainContainerPart);
@@ -148,14 +156,6 @@ public class Tag : TemplatedControl, IControlCustomStyle
         SetupTagIcon();
         _customStyle.SetupTokenBindings();
         _customStyle.SetupTransitions();
-    }
-
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        SetupPresetColorMap();
-        SetupStatusColorMap();
-        base.OnApplyTemplate(e);
-        _customStyle.HandleTemplateApplied(e.NameScope);
     }
 
     protected override Size MeasureOverride(Size availableSize)
@@ -269,9 +269,8 @@ public class Tag : TemplatedControl, IControlCustomStyle
             var activatedTheme = ThemeManager.Current.ActivatedTheme;
             var globalToken    = activatedTheme?.GlobalToken;
             if (globalToken == null)
-
-                // 是否需要输出日志
             {
+                // 是否需要输出日志
                 return;
             }
 
@@ -297,9 +296,8 @@ public class Tag : TemplatedControl, IControlCustomStyle
             var activatedTheme = ThemeManager.Current.ActivatedTheme;
             var globalToken    = activatedTheme?.GlobalToken;
             if (globalToken == null)
-
-                // 是否需要输出日志
             {
+                // 是否需要输出日志
                 return;
             }
 

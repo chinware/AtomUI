@@ -39,13 +39,6 @@ public class LiteWindow : WindowBase, IHostedVisualTreeRoot, IDisposable
     /// </summary>
     public new IPopupImpl? PlatformImpl => (IPopupImpl?)base.PlatformImpl;
 
-    public TopLevel ParentTopLevel { get; }
-
-    public void Dispose()
-    {
-        PlatformImpl?.Dispose();
-    }
-
     /// <summary>
     /// Gets the control that is hosting the popup root.
     /// </summary>
@@ -66,6 +59,13 @@ public class LiteWindow : WindowBase, IHostedVisualTreeRoot, IDisposable
 
             return ParentTopLevel ?? parentVisual;
         }
+    }
+
+    public TopLevel ParentTopLevel { get; }
+
+    public void Dispose()
+    {
+        PlatformImpl?.Dispose();
     }
 
     public void SetChild(Control? control)

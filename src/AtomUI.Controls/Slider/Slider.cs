@@ -40,9 +40,8 @@ public record struct SliderRangeValue
                         endValue = double.Parse(endValueStr);
                     }
                     else
-
-                        // 至少要两个
                     {
+                        // 至少要两个
                         throw new FormatException($"{exceptionMessage}, must have two value.");
                     }
                 }
@@ -88,30 +87,28 @@ public record SliderMark(string Label, double Value)
 [PseudoClasses(StdPseudoClass.Vertical, StdPseudoClass.Horizontal, StdPseudoClass.Pressed)]
 public class Slider : RangeBase
 {
-    private const double Tolerance = 0.0001;
-
-    /// <summary>
-    /// Defines the <see cref="Orientation" /> property.
-    /// </summary>
-    public static readonly StyledProperty<Orientation> OrientationProperty =
+   /// <summary>
+   /// Defines the <see cref="Orientation" /> property.
+   /// </summary>
+   public static readonly StyledProperty<Orientation> OrientationProperty =
         ScrollBar.OrientationProperty.AddOwner<Slider>();
 
-    /// <summary>
-    /// Defines the <see cref="IsDirectionReversed" /> property.
-    /// </summary>
-    public static readonly StyledProperty<bool> IsDirectionReversedProperty =
+   /// <summary>
+   /// Defines the <see cref="IsDirectionReversed" /> property.
+   /// </summary>
+   public static readonly StyledProperty<bool> IsDirectionReversedProperty =
         SliderTrack.IsDirectionReversedProperty.AddOwner<Slider>();
 
-    /// <summary>
-    /// Defines the <see cref="IsSnapToTickEnabled" /> property.
-    /// </summary>
-    public static readonly StyledProperty<bool> IsSnapToTickEnabledProperty =
+   /// <summary>
+   /// Defines the <see cref="IsSnapToTickEnabled" /> property.
+   /// </summary>
+   public static readonly StyledProperty<bool> IsSnapToTickEnabledProperty =
         AvaloniaProperty.Register<Slider, bool>(nameof(IsSnapToTickEnabled));
 
-    /// <summary>
-    /// Defines the <see cref="TickFrequency" /> property.
-    /// </summary>
-    public static readonly StyledProperty<double> TickFrequencyProperty =
+   /// <summary>
+   /// Defines the <see cref="TickFrequency" /> property.
+   /// </summary>
+   public static readonly StyledProperty<double> TickFrequencyProperty =
         AvaloniaProperty.Register<Slider, double>(nameof(TickFrequency));
 
     public static readonly StyledProperty<SliderRangeValue> RangeValueProperty =
@@ -128,39 +125,6 @@ public class Slider : RangeBase
 
     public static readonly StyledProperty<bool> IncludedProperty =
         SliderTrack.IncludedProperty.AddOwner<Slider>();
-
-    private SliderThumb? _graspedThumb;
-
-    // Slider required parts
-    private bool _isFocusEngaged;
-    private IDisposable? _pointerMovedDispose;
-    private IDisposable? _pointerPressDispose;
-    private IDisposable? _pointerReleaseDispose;
-
-    /// <summary>
-    /// Initializes static members of the <see cref="Slider" /> class.
-    /// </summary>
-    static Slider()
-    {
-        PressedMixin.Attach<Slider>();
-        FocusableProperty.OverrideDefaultValue<Slider>(true);
-        OrientationProperty.OverrideDefaultValue(typeof(Slider), Orientation.Horizontal);
-        SliderThumb.DragStartedEvent.AddClassHandler<Slider>((x, e) => x.OnThumbDragStarted(e),
-            RoutingStrategies.Bubble);
-        SliderThumb.DragCompletedEvent.AddClassHandler<Slider>((x, e) => x.OnThumbDragCompleted(e),
-            RoutingStrategies.Bubble);
-
-        ValueProperty.OverrideMetadata<Slider>(new StyledPropertyMetadata<double>(enableDataValidation: true));
-        AutomationProperties.ControlTypeOverrideProperty.OverrideDefaultValue<Slider>(AutomationControlType.Slider);
-    }
-
-    /// <summary>
-    /// Instantiates a new instance of the <see cref="Slider" /> class.
-    /// </summary>
-    public Slider()
-    {
-        UpdatePseudoClasses(Orientation);
-    }
 
     /// <summary>
     /// Gets or sets the orientation of a <see cref="Slider" />.
@@ -231,6 +195,40 @@ public class Slider : RangeBase
     {
         get => GetValue(IncludedProperty);
         set => SetValue(IncludedProperty, value);
+    }
+
+    // Slider required parts
+    private bool _isFocusEngaged;
+    private SliderThumb? _graspedThumb;
+    private IDisposable? _pointerMovedDispose;
+    private IDisposable? _pointerPressDispose;
+    private IDisposable? _pointerReleaseDispose;
+
+    private const double Tolerance = 0.0001;
+
+    /// <summary>
+    /// Initializes static members of the <see cref="Slider" /> class.
+    /// </summary>
+    static Slider()
+    {
+        PressedMixin.Attach<Slider>();
+        FocusableProperty.OverrideDefaultValue<Slider>(true);
+        OrientationProperty.OverrideDefaultValue(typeof(Slider), Orientation.Horizontal);
+        SliderThumb.DragStartedEvent.AddClassHandler<Slider>((x, e) => x.OnThumbDragStarted(e),
+            RoutingStrategies.Bubble);
+        SliderThumb.DragCompletedEvent.AddClassHandler<Slider>((x, e) => x.OnThumbDragCompleted(e),
+            RoutingStrategies.Bubble);
+
+        ValueProperty.OverrideMetadata<Slider>(new StyledPropertyMetadata<double>(enableDataValidation: true));
+        AutomationProperties.ControlTypeOverrideProperty.OverrideDefaultValue<Slider>(AutomationControlType.Slider);
+    }
+
+    /// <summary>
+    /// Instantiates a new instance of the <see cref="Slider" /> class.
+    /// </summary>
+    public Slider()
+    {
+        UpdatePseudoClasses(Orientation);
     }
 
     /// <summary>
@@ -368,7 +366,9 @@ public class Slider : RangeBase
         if (Math.Abs(next - value) < Tolerance
             && !(greaterThan && Math.Abs(value - Maximum) < Tolerance) // Stop if searching up if already at Max
             && !(!greaterThan && Math.Abs(value - Minimum) < Tolerance)) // Stop if searching down if already at Min
+        {
             // var ticks = Ticks;
+
             // If ticks collection is available, use it.
             // // Note that ticks may be unsorted.
             // if (ticks != null && ticks.Count > 0) {
@@ -382,7 +382,7 @@ public class Slider : RangeBase
             //       }
             //    }
             // } else
-        {
+
             if (MathUtilities.GreaterThan(TickFrequency, 0.0))
             {
                 // Find the current tick we are at

@@ -4,23 +4,78 @@ namespace AtomUI.Demo.Desktop.ViewModels;
 
 public class CheckBoxShowCaseModel : ObservableObject
 {
-    private bool _appleCheckedStatus;
+    public bool? _controlledCheckBoxCheckedStatus;
+
+    public bool? ControlledCheckBoxCheckedStatus
+    {
+        get => _controlledCheckBoxCheckedStatus;
+        set => SetProperty(ref _controlledCheckBoxCheckedStatus, value);
+    }
+
+    public bool _controlledCheckBoxEnabledStatus;
+
+    public bool ControlledCheckBoxEnabledStatus
+    {
+        get => _controlledCheckBoxEnabledStatus;
+        set => SetProperty(ref _controlledCheckBoxEnabledStatus, value);
+    }
+
+    private string? _checkStatusBtnText;
+
+    public string? CheckStatusBtnText
+    {
+        get => _checkStatusBtnText;
+        set => SetProperty(ref _checkStatusBtnText, value);
+    }
+
+    private string? _enableStatusBtnText;
+
+    public string? EnableStatusBtnText
+    {
+        get => _enableStatusBtnText;
+        set => SetProperty(ref _enableStatusBtnText, value);
+    }
+
+    private string? _controlledCheckBoxText;
+
+    public string? ControlledCheckBoxText
+    {
+        get => _controlledCheckBoxText;
+        set => SetProperty(ref _controlledCheckBoxText, value);
+    }
 
     // CheckAll 例子
     private bool? _checkedAllStatus;
 
-    private string? _checkStatusBtnText;
-    public bool? _controlledCheckBoxCheckedStatus;
+    public bool? CheckedAllStatus
+    {
+        get => _checkedAllStatus;
+        set => SetProperty(ref _checkedAllStatus, value);
+    }
 
-    public bool _controlledCheckBoxEnabledStatus;
+    private bool _appleCheckedStatus;
 
-    private string? _controlledCheckBoxText;
+    public bool AppleCheckedStatus
+    {
+        get => _appleCheckedStatus;
+        set => SetProperty(ref _appleCheckedStatus, value);
+    }
 
-    private string? _enableStatusBtnText;
+    private bool _pearCheckedStatus;
+
+    public bool PearCheckedStatus
+    {
+        get => _pearCheckedStatus;
+        set => SetProperty(ref _pearCheckedStatus, value);
+    }
 
     private bool _orangeCheckedStatus;
 
-    private bool _pearCheckedStatus;
+    public bool OrangeCheckedStatus
+    {
+        get => _orangeCheckedStatus;
+        set => SetProperty(ref _orangeCheckedStatus, value);
+    }
 
     public CheckBoxShowCaseModel()
     {
@@ -34,60 +89,6 @@ public class CheckBoxShowCaseModel : ObservableObject
         PearCheckedStatus   = true;
         OrangeCheckedStatus = true;
         CheckedAllStatus    = null;
-    }
-
-    public bool? ControlledCheckBoxCheckedStatus
-    {
-        get => _controlledCheckBoxCheckedStatus;
-        set => SetProperty(ref _controlledCheckBoxCheckedStatus, value);
-    }
-
-    public bool ControlledCheckBoxEnabledStatus
-    {
-        get => _controlledCheckBoxEnabledStatus;
-        set => SetProperty(ref _controlledCheckBoxEnabledStatus, value);
-    }
-
-    public string? CheckStatusBtnText
-    {
-        get => _checkStatusBtnText;
-        set => SetProperty(ref _checkStatusBtnText, value);
-    }
-
-    public string? EnableStatusBtnText
-    {
-        get => _enableStatusBtnText;
-        set => SetProperty(ref _enableStatusBtnText, value);
-    }
-
-    public string? ControlledCheckBoxText
-    {
-        get => _controlledCheckBoxText;
-        set => SetProperty(ref _controlledCheckBoxText, value);
-    }
-
-    public bool? CheckedAllStatus
-    {
-        get => _checkedAllStatus;
-        set => SetProperty(ref _checkedAllStatus, value);
-    }
-
-    public bool AppleCheckedStatus
-    {
-        get => _appleCheckedStatus;
-        set => SetProperty(ref _appleCheckedStatus, value);
-    }
-
-    public bool PearCheckedStatus
-    {
-        get => _pearCheckedStatus;
-        set => SetProperty(ref _pearCheckedStatus, value);
-    }
-
-    public bool OrangeCheckedStatus
-    {
-        get => _orangeCheckedStatus;
-        set => SetProperty(ref _orangeCheckedStatus, value);
     }
 
     public void CheckStatusHandler(object arg)

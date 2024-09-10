@@ -16,8 +16,8 @@ public static class MathUtils
     }
 
     /// <summary>
-    /// AreClose - Returns whether or not two doubles are "close".  That is, whether or
-    /// not they are within epsilon of each other.
+    ///     AreClose - Returns whether or not two doubles are "close".  That is, whether or
+    ///     not they are within epsilon of each other.
     /// </summary>
     /// <param name="value1"> The first double to compare. </param>
     /// <param name="value2"> The second double to compare. </param>
@@ -35,8 +35,8 @@ public static class MathUtils
     }
 
     /// <summary>
-    /// AreClose - Returns whether or not two doubles are "close".  That is, whether or
-    /// not they are within epsilon of each other.
+    ///     AreClose - Returns whether or not two doubles are "close".  That is, whether or
+    ///     not they are within epsilon of each other.
     /// </summary>
     /// <param name="value1"> The first double to compare. </param>
     /// <param name="value2"> The second double to compare. </param>
@@ -54,8 +54,8 @@ public static class MathUtils
     }
 
     /// <summary>
-    /// AreClose - Returns whether or not two floats are "close".  That is, whether or
-    /// not they are within epsilon of each other.
+    ///     AreClose - Returns whether or not two floats are "close".  That is, whether or
+    ///     not they are within epsilon of each other.
     /// </summary>
     /// <param name="value1"> The first float to compare. </param>
     /// <param name="value2"> The second float to compare. </param>
@@ -73,9 +73,9 @@ public static class MathUtils
     }
 
     /// <summary>
-    /// LessThan - Returns whether or not the first double is less than the second double.
-    /// That is, whether or not the first is strictly less than *and* not within epsilon of
-    /// the other number.
+    ///     LessThan - Returns whether or not the first double is less than the second double.
+    ///     That is, whether or not the first is strictly less than *and* not within epsilon of
+    ///     the other number.
     /// </summary>
     /// <param name="value1"> The first double to compare. </param>
     /// <param name="value2"> The second double to compare. </param>
@@ -85,9 +85,9 @@ public static class MathUtils
     }
 
     /// <summary>
-    /// LessThan - Returns whether or not the first float is less than the second float.
-    /// That is, whether or not the first is strictly less than *and* not within epsilon of
-    /// the other number.
+    ///     LessThan - Returns whether or not the first float is less than the second float.
+    ///     That is, whether or not the first is strictly less than *and* not within epsilon of
+    ///     the other number.
     /// </summary>
     /// <param name="value1"> The first single float to compare. </param>
     /// <param name="value2"> The second single float to compare. </param>
@@ -97,9 +97,9 @@ public static class MathUtils
     }
 
     /// <summary>
-    /// GreaterThan - Returns whether or not the first double is greater than the second double.
-    /// That is, whether or not the first is strictly greater than *and* not within epsilon of
-    /// the other number.
+    ///     GreaterThan - Returns whether or not the first double is greater than the second double.
+    ///     That is, whether or not the first is strictly greater than *and* not within epsilon of
+    ///     the other number.
     /// </summary>
     /// <param name="value1"> The first double to compare. </param>
     /// <param name="value2"> The second double to compare. </param>
@@ -109,9 +109,9 @@ public static class MathUtils
     }
 
     /// <summary>
-    /// GreaterThan - Returns whether or not the first float is greater than the second float.
-    /// That is, whether or not the first is strictly greater than *and* not within epsilon of
-    /// the other number.
+    ///     GreaterThan - Returns whether or not the first float is greater than the second float.
+    ///     That is, whether or not the first is strictly greater than *and* not within epsilon of
+    ///     the other number.
     /// </summary>
     /// <param name="value1"> The first float to compare. </param>
     /// <param name="value2"> The second float to compare. </param>
@@ -121,9 +121,9 @@ public static class MathUtils
     }
 
     /// <summary>
-    /// LessThanOrClose - Returns whether or not the first double is less than or close to
-    /// the second double.  That is, whether or not the first is strictly less than or within
-    /// epsilon of the other number.
+    ///     LessThanOrClose - Returns whether or not the first double is less than or close to
+    ///     the second double.  That is, whether or not the first is strictly less than or within
+    ///     epsilon of the other number.
     /// </summary>
     /// <param name="value1"> The first double to compare. </param>
     /// <param name="value2"> The second double to compare. </param>
@@ -133,9 +133,9 @@ public static class MathUtils
     }
 
     /// <summary>
-    /// LessThanOrClose - Returns whether or not the first float is less than or close to
-    /// the second float.  That is, whether or not the first is strictly less than or within
-    /// epsilon of the other number.
+    ///     LessThanOrClose - Returns whether or not the first float is less than or close to
+    ///     the second float.  That is, whether or not the first is strictly less than or within
+    ///     epsilon of the other number.
     /// </summary>
     /// <param name="value1"> The first float to compare. </param>
     /// <param name="value2"> The second float to compare. </param>
@@ -145,9 +145,9 @@ public static class MathUtils
     }
 
     /// <summary>
-    /// GreaterThanOrClose - Returns whether or not the first double is greater than or close to
-    /// the second double.  That is, whether or not the first is strictly greater than or within
-    /// epsilon of the other number.
+    ///     GreaterThanOrClose - Returns whether or not the first double is greater than or close to
+    ///     the second double.  That is, whether or not the first is strictly greater than or within
+    ///     epsilon of the other number.
     /// </summary>
     /// <param name="value1"> The first double to compare. </param>
     /// <param name="value2"> The second double to compare. </param>
@@ -157,9 +157,9 @@ public static class MathUtils
     }
 
     /// <summary>
-    /// GreaterThanOrClose - Returns whether or not the first float is greater than or close to
-    /// the second float.  That is, whether or not the first is strictly greater than or within
-    /// epsilon of the other number.
+    ///     GreaterThanOrClose - Returns whether or not the first float is greater than or close to
+    ///     the second float.  That is, whether or not the first is strictly greater than or within
+    ///     epsilon of the other number.
     /// </summary>
     /// <param name="value1"> The first float to compare. </param>
     /// <param name="value2"> The second float to compare. </param>
@@ -169,8 +169,8 @@ public static class MathUtils
     }
 
     /// <summary>
-    /// IsOne - Returns whether or not the double is "close" to 1.  Same as AreClose(double, 1),
-    /// but this is faster.
+    ///     IsOne - Returns whether or not the double is "close" to 1.  Same as AreClose(double, 1),
+    ///     but this is faster.
     /// </summary>
     /// <param name="value"> The double to compare to 1. </param>
     public static bool IsOne(double value)
@@ -179,8 +179,8 @@ public static class MathUtils
     }
 
     /// <summary>
-    /// IsOne - Returns whether or not the float is "close" to 1.  Same as AreClose(float, 1),
-    /// but this is faster.
+    ///     IsOne - Returns whether or not the float is "close" to 1.  Same as AreClose(float, 1),
+    ///     but this is faster.
     /// </summary>
     /// <param name="value"> The float to compare to 1. </param>
     public static bool IsOne(float value)
@@ -189,8 +189,8 @@ public static class MathUtils
     }
 
     /// <summary>
-    /// IsZero - Returns whether or not the double is "close" to 0.  Same as AreClose(double, 0),
-    /// but this is faster.
+    ///     IsZero - Returns whether or not the double is "close" to 0.  Same as AreClose(double, 0),
+    ///     but this is faster.
     /// </summary>
     /// <param name="value"> The double to compare to 0. </param>
     public static bool IsZero(double value)
@@ -199,8 +199,8 @@ public static class MathUtils
     }
 
     /// <summary>
-    /// IsZero - Returns whether or not the float is "close" to 0.  Same as AreClose(float, 0),
-    /// but this is faster.
+    ///     IsZero - Returns whether or not the float is "close" to 0.  Same as AreClose(float, 0),
+    ///     but this is faster.
     /// </summary>
     /// <param name="value"> The float to compare to 0. </param>
     public static bool IsZero(float value)
@@ -209,7 +209,7 @@ public static class MathUtils
     }
 
     /// <summary>
-    /// Converts an angle in degrees to radians.
+    ///     Converts an angle in degrees to radians.
     /// </summary>
     /// <param name="angle">The angle in degrees.</param>
     /// <returns>The angle in radians.</returns>
@@ -219,7 +219,7 @@ public static class MathUtils
     }
 
     /// <summary>
-    /// Converts an angle in gradians to radians.
+    ///     Converts an angle in gradians to radians.
     /// </summary>
     /// <param name="angle">The angle in gradians.</param>
     /// <returns>The angle in radians.</returns>
@@ -229,7 +229,7 @@ public static class MathUtils
     }
 
     /// <summary>
-    /// Converts an angle in turns to radians.
+    ///     Converts an angle in turns to radians.
     /// </summary>
     /// <param name="angle">The angle in turns.</param>
     /// <returns>The angle in radians.</returns>
@@ -239,7 +239,7 @@ public static class MathUtils
     }
 
     /// <summary>
-    /// Calculates the point of an angle on an ellipse.
+    ///     Calculates the point of an angle on an ellipse.
     /// </summary>
     /// <param name="centre">The centre point of the ellipse.</param>
     /// <param name="radiusX">The x radius of the ellipse.</param>

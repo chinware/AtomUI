@@ -9,13 +9,13 @@ namespace AtomUI.Demo.Desktop.ShowCase;
 public partial class NotificationShowCase : UserControl
 {
     private WindowNotificationManager? _basicManager;
+    private WindowNotificationManager? _topLeftManager;
+    private WindowNotificationManager? _topManager;
+    private WindowNotificationManager? _topRightManager;
 
     private WindowNotificationManager? _bottomLeftManager;
     private WindowNotificationManager? _bottomManager;
     private WindowNotificationManager? _bottomRightManager;
-    private WindowNotificationManager? _topLeftManager;
-    private WindowNotificationManager? _topManager;
-    private WindowNotificationManager? _topRightManager;
 
     public NotificationShowCase()
     {

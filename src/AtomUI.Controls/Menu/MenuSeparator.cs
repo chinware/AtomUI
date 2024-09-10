@@ -1,5 +1,6 @@
 ﻿using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Data;
 using Avalonia.Media;
@@ -13,13 +14,13 @@ public class MenuSeparator : AvaloniaSeparator
     public static readonly StyledProperty<double> LineWidthProperty =
         AvaloniaProperty.Register<MenuSeparator, double>(nameof(LineWidth), 1);
 
-    private bool _initialized;
-
     public double LineWidth
     {
         get => GetValue(LineWidthProperty);
         set => SetValue(LineWidthProperty, value);
     }
+
+    private bool _initialized;
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {

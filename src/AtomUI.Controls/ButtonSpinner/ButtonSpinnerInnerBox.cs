@@ -1,5 +1,6 @@
 ﻿using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -14,73 +15,6 @@ namespace AtomUI.Controls;
 [TemplatePart(ButtonSpinnerInnerBoxTheme.SpinnerHandlePart, typeof(ContentPresenter))]
 internal class ButtonSpinnerInnerBox : AddOnDecoratedInnerBox, ICustomHitTest
 {
-    private ContentPresenter? _handleContentPresenter;
-
-    public bool HitTest(Point point)
-    {
-        return true;
-    }
-
-    protected override void BuildEffectiveInnerBoxPadding()
-    {
-        if (ShowButtonSpinner)
-        {
-            var padding = _spinnerHandleWidthToken + InnerBoxPadding.Right;
-            if (ButtonSpinnerLocation == Location.Right)
-            {
-                EffectiveInnerBoxPadding = new Thickness(InnerBoxPadding.Left, InnerBoxPadding.Top, padding,
-                    InnerBoxPadding.Bottom);
-            }
-            else
-            {
-                EffectiveInnerBoxPadding = new Thickness(padding, InnerBoxPadding.Top, InnerBoxPadding.Right,
-                    InnerBoxPadding.Bottom);
-            }
-        }
-        else
-        {
-            EffectiveInnerBoxPadding = InnerBoxPadding;
-        }
-    }
-
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        _handleContentPresenter = e.NameScope.Find<ContentPresenter>(ButtonSpinnerInnerBoxTheme.SpinnerHandlePart);
-        TokenResourceBinder.CreateGlobalTokenBinding(this, SpinnerBorderThicknessProperty,
-            GlobalTokenResourceKey.BorderThickness, BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this));
-        TokenResourceBinder.CreateGlobalTokenBinding(this, SpinnerBorderBrushProperty,
-            GlobalTokenResourceKey.ColorBorder);
-        TokenResourceBinder.CreateTokenBinding(this, SpinnerHandleWidthTokenProperty,
-            ButtonSpinnerTokenResourceKey.HandleWidth);
-        base.OnApplyTemplate(e);
-    }
-
-    public override void Render(DrawingContext context)
-    {
-        if (_handleContentPresenter is not null)
-        {
-            var handleOffset  = _handleContentPresenter.TranslatePoint(new Point(0, 0), this) ?? default;
-            var handleOffsetY = handleOffset.Y + Bounds.Height / 2;
-            using var optionState = context.PushRenderOptions(new RenderOptions
-            {
-                EdgeMode = EdgeMode.Aliased
-            });
-            {
-                // 画竖线
-                var startPoint = new Point(handleOffset.X, 0);
-                var endPoint   = new Point(handleOffset.X, Bounds.Height);
-                context.DrawLine(new Pen(SpinnerBorderBrush, SpinnerBorderThickness.Left), startPoint, endPoint);
-            }
-            {
-                // 画竖线
-                var startPoint = new Point(handleOffset.X, handleOffsetY);
-                var endPoint   = new Point(Bounds.Width, handleOffsetY);
-                context.DrawLine(new Pen(SpinnerBorderBrush, SpinnerBorderThickness.Left), startPoint, endPoint);
-            }
-        }
-    }
-
     #region 公共属性定义
 
     public static readonly StyledProperty<object?> SpinnerContentProperty =
@@ -162,4 +96,71 @@ internal class ButtonSpinnerInnerBox : AddOnDecoratedInnerBox, ICustomHitTest
     }
 
     #endregion
+
+    private ContentPresenter? _handleContentPresenter;
+
+    protected override void BuildEffectiveInnerBoxPadding()
+    {
+        if (ShowButtonSpinner)
+        {
+            var padding = _spinnerHandleWidthToken + InnerBoxPadding.Right;
+            if (ButtonSpinnerLocation == Location.Right)
+            {
+                EffectiveInnerBoxPadding = new Thickness(InnerBoxPadding.Left, InnerBoxPadding.Top, padding,
+                    InnerBoxPadding.Bottom);
+            }
+            else
+            {
+                EffectiveInnerBoxPadding = new Thickness(padding, InnerBoxPadding.Top, InnerBoxPadding.Right,
+                    InnerBoxPadding.Bottom);
+            }
+        }
+        else
+        {
+            EffectiveInnerBoxPadding = InnerBoxPadding;
+        }
+    }
+
+    public bool HitTest(Point point)
+    {
+        return true;
+    }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        _handleContentPresenter = e.NameScope.Find<ContentPresenter>(ButtonSpinnerInnerBoxTheme.SpinnerHandlePart);
+        TokenResourceBinder.CreateGlobalTokenBinding(this, SpinnerBorderThicknessProperty,
+            GlobalTokenResourceKey.BorderThickness, BindingPriority.Template,
+            new RenderScaleAwareThicknessConfigure(this));
+        TokenResourceBinder.CreateGlobalTokenBinding(this, SpinnerBorderBrushProperty,
+            GlobalTokenResourceKey.ColorBorder);
+        TokenResourceBinder.CreateTokenBinding(this, SpinnerHandleWidthTokenProperty,
+            ButtonSpinnerTokenResourceKey.HandleWidth);
+        base.OnApplyTemplate(e);
+    }
+
+    public override void Render(DrawingContext context)
+    {
+        if (_handleContentPresenter is not null)
+        {
+            var handleOffset  = _handleContentPresenter.TranslatePoint(new Point(0, 0), this) ?? default;
+            var handleOffsetY = handleOffset.Y + Bounds.Height / 2;
+            using var optionState = context.PushRenderOptions(new RenderOptions
+            {
+                EdgeMode = EdgeMode.Aliased
+            });
+            {
+                // 画竖线
+                var startPoint = new Point(handleOffset.X, 0);
+                var endPoint   = new Point(handleOffset.X, Bounds.Height);
+                context.DrawLine(new Pen(SpinnerBorderBrush, SpinnerBorderThickness.Left), startPoint, endPoint);
+            }
+            {
+                // 画竖线
+                var startPoint = new Point(handleOffset.X, handleOffsetY);
+                var endPoint   = new Point(Bounds.Width, handleOffsetY);
+                context.DrawLine(new Pen(SpinnerBorderBrush, SpinnerBorderThickness.Left), startPoint, endPoint);
+            }
+        }
+    }
 }

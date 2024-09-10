@@ -11,9 +11,9 @@ using AvaloniaContextMenu = Avalonia.Controls.ContextMenu;
 
 public class ContextMenu : AvaloniaContextMenu, IControlCustomStyle
 {
+    private readonly IControlCustomStyle _customStyle;
     private static readonly FieldInfo PopupFieldInfo;
     private static readonly EventInfo ClosingEventInfo;
-    private readonly IControlCustomStyle _customStyle;
 
     static ContextMenu()
     {
@@ -26,7 +26,6 @@ public class ContextMenu : AvaloniaContextMenu, IControlCustomStyle
     {
         _customStyle = this;
         Background   = new SolidColorBrush(Colors.Transparent);
-
         // 我们在这里有一次初始化的机会
         var popup = new Popup
         {
@@ -36,7 +35,6 @@ public class ContextMenu : AvaloniaContextMenu, IControlCustomStyle
         };
         popup.Opened += CreateEventHandler("PopupOpened");
         popup.Closed += CreateEventHandler<EventArgs>("PopupClosed");
-
         // popup.Closing += PopupClosing;
 
         var closingEventAddMethod = ClosingEventInfo.GetAddMethod(true);

@@ -1,6 +1,6 @@
-﻿using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
+﻿using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
@@ -13,9 +13,25 @@ namespace AtomUI.Controls;
 
 public class TabControl : BaseTabControl
 {
-    private ItemsPresenter? _itemsPresenter;
+    #region 内部属性定义
+
+    internal static readonly DirectProperty<TabControl, double> SelectedIndicatorThicknessProperty =
+        AvaloniaProperty.RegisterDirect<TabControl, double>(nameof(SelectedIndicatorThickness),
+            o => o.SelectedIndicatorThickness,
+            (o, v) => o.SelectedIndicatorThickness = v);
+
+    private double _selectedIndicatorThickness;
+
+    internal double SelectedIndicatorThickness
+    {
+        get => _selectedIndicatorThickness;
+        set => SetAndRaise(SelectedIndicatorThicknessProperty, ref _selectedIndicatorThickness, value);
+    }
+
+    #endregion
 
     private Border? _selectedIndicator;
+    private ItemsPresenter? _itemsPresenter;
 
     public TabControl()
     {
@@ -41,7 +57,6 @@ public class TabControl : BaseTabControl
                 transitions.Add(AnimationUtils.CreateTransition<TransformOperationsTransition>(RenderTransformProperty,
                     GlobalTokenResourceKey.MotionDurationSlow, new ExponentialEaseOut()));
                 _selectedIndicator.Transitions = transitions;
-
                 // 只需要执行一次
                 LayoutUpdated -= HandleLayoutUpdated;
             }
@@ -123,21 +138,4 @@ public class TabControl : BaseTabControl
         TokenResourceBinder.CreateGlobalResourceBinding(this, SelectedIndicatorThicknessProperty,
             GlobalTokenResourceKey.LineWidthBold);
     }
-
-    #region 内部属性定义
-
-    internal static readonly DirectProperty<TabControl, double> SelectedIndicatorThicknessProperty =
-        AvaloniaProperty.RegisterDirect<TabControl, double>(nameof(SelectedIndicatorThickness),
-            o => o.SelectedIndicatorThickness,
-            (o, v) => o.SelectedIndicatorThickness = v);
-
-    private double _selectedIndicatorThickness;
-
-    internal double SelectedIndicatorThickness
-    {
-        get => _selectedIndicatorThickness;
-        set => SetAndRaise(SelectedIndicatorThicknessProperty, ref _selectedIndicatorThickness, value);
-    }
-
-    #endregion
 }

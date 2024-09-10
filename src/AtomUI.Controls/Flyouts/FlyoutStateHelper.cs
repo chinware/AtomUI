@@ -26,15 +26,6 @@ internal class FlyoutStateHelper : AvaloniaObject
     public static readonly StyledProperty<FlyoutTriggerType> TriggerTypeProperty =
         AvaloniaProperty.Register<FlyoutStateHelper, FlyoutTriggerType>(nameof(TriggerType), FlyoutTriggerType.Click);
 
-    private IDisposable? _flyoutCloseDetectDisposable;
-
-    private DispatcherTimer? _mouseEnterDelayTimer;
-    private DispatcherTimer? _mouseLeaveDelayTimer;
-    private CompositeDisposable? _subscriptions;
-    public Func<IPopupHostProvider, RawPointerEventArgs, bool>? ClickHideFlyoutPredicate;
-
-    public Func<Point, bool>? OpenFlyoutPredicate;
-
     public Control? AnchorTarget
     {
         get => GetValue(AnchorTargetProperty);
@@ -70,6 +61,14 @@ internal class FlyoutStateHelper : AvaloniaObject
     public event EventHandler<EventArgs>? FlyoutClosed;
     public event EventHandler<EventArgs>? FlyoutAboutToShow;
 
+    public Func<Point, bool>? OpenFlyoutPredicate;
+    public Func<IPopupHostProvider, RawPointerEventArgs, bool>? ClickHideFlyoutPredicate;
+
+    private DispatcherTimer? _mouseEnterDelayTimer;
+    private DispatcherTimer? _mouseLeaveDelayTimer;
+    private IDisposable? _flyoutCloseDetectDisposable;
+    private CompositeDisposable? _subscriptions;
+
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
@@ -99,9 +98,8 @@ internal class FlyoutStateHelper : AvaloniaObject
         {
             var host = popupHostProvider.PopupHost;
             if (host is PopupRoot popupRoot)
-
-                // 这里 PopupRoot 关闭的时候会被关闭，所以这里的事件处理器是不是不需要删除
             {
+                // 这里 PopupRoot 关闭的时候会被关闭，所以这里的事件处理器是不是不需要删除
                 if (TriggerType == FlyoutTriggerType.Hover)
                 {
                     popupRoot.PointerMoved += (o, args) =>

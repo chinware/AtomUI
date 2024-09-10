@@ -1,3 +1,4 @@
+using AtomUI.Controls.Switch;
 using AtomUI.Controls.Utils;
 using AtomUI.Icon;
 using AtomUI.Media;
@@ -20,212 +21,6 @@ public class ToggleSwitch : ToggleButton,
                             IWaveAdornerInfoProvider,
                             IControlCustomStyle
 {
-    private const double STRETCH_FACTOR = 1.3d;
-    private readonly IControlCustomStyle _customStyle;
-    private ControlStyleState _styleState;
-
-    private SwitchKnob? _switchKnob;
-    private Canvas? _togglePanel;
-
-    static ToggleSwitch()
-    {
-        AffectsMeasure<ToggleSwitch>(SizeTypeProperty);
-        AffectsArrange<ToggleSwitch>(
-            IsPressedProperty,
-            KnobOffsetProperty,
-            OnContentOffsetProperty,
-            OffContentOffsetProperty);
-        AffectsRender<ToggleSwitch>(GrooveBackgroundProperty,
-            SwitchOpacityProperty);
-    }
-
-    public ToggleSwitch()
-    {
-        _customStyle  =  this;
-        LayoutUpdated += HandleLayoutUpdated;
-    }
-
-    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
-    {
-        _togglePanel = scope.Find<Canvas>(ToggleSwitchTheme.MainContainerPart);
-        _switchKnob  = scope.Find<SwitchKnob>(ToggleSwitchTheme.SwitchKnobPart);
-
-        if (!IsLoading)
-        {
-            Cursor = new Cursor(StandardCursorType.Hand);
-        }
-
-        HorizontalAlignment = HorizontalAlignment.Left;
-
-        var offControl = SetupContent(OffContent);
-        var onControl  = SetupContent(OnContent);
-
-        // 这里会调用属性函数进行添加到布局
-        if (offControl == OffContent && offControl is not null)
-        {
-            _togglePanel?.Children.Add(offControl);
-        }
-
-        if (onControl == OnContent && onControl is not null)
-        {
-            _togglePanel?.Children.Add(onControl);
-        }
-
-        OffContent = offControl;
-        OnContent  = onControl;
-
-        HandleLoadingState(IsLoading);
-        _customStyle.CollectStyleState();
-    }
-
-    public bool HitTest(Point point)
-    {
-        if (!IsEnabled || IsLoading)
-        {
-            return false;
-        }
-
-        var grooveRect = GrooveRect();
-        return grooveRect.Contains(point);
-    }
-
-    private void HandleLayoutUpdated(object? sender, EventArgs args)
-    {
-        if (Transitions is null)
-        {
-            _customStyle.SetupTransitions();
-        }
-    }
-
-    protected override Size MeasureOverride(Size availableSize)
-    {
-        double extraInfoWidth = 0;
-
-        if (OffContent is Layoutable offLayoutable)
-        {
-            offLayoutable.Measure(availableSize);
-            extraInfoWidth = Math.Max(extraInfoWidth, offLayoutable.DesiredSize.Width);
-        }
-
-        if (OnContent is Layoutable onLayoutable)
-        {
-            onLayoutable.Measure(availableSize);
-            extraInfoWidth = Math.Max(extraInfoWidth, onLayoutable.DesiredSize.Width);
-        }
-
-        var switchHeight  = TrackHeight;
-        var switchWidth   = extraInfoWidth;
-        var trackMinWidth = TrackMinWidth;
-        switchWidth += InnerMinMargin + InnerMaxMargin;
-        switchWidth =  Math.Max(switchWidth, trackMinWidth);
-        var targetSize = new Size(switchWidth, switchHeight);
-        CalculateElementsOffset(targetSize);
-        return targetSize;
-    }
-
-    protected override Size ArrangeOverride(Size finalSize)
-    {
-        if (_switchKnob is not null)
-        {
-            Canvas.SetLeft(_switchKnob, KnobOffset.X);
-            Canvas.SetTop(_switchKnob, KnobOffset.Y);
-        }
-
-        base.ArrangeOverride(finalSize);
-        AdjustExtraInfoOffset();
-        return finalSize;
-    }
-
-    private void AdjustExtraInfoOffset()
-    {
-        if (OffContent is Control offControl)
-        {
-            Canvas.SetLeft(offControl, OffContentOffset.X);
-            Canvas.SetTop(offControl, OffContentOffset.Y);
-        }
-
-        if (OnContent is Control onControl)
-        {
-            Canvas.SetLeft(onControl, OnContentOffset.X);
-            Canvas.SetTop(onControl, OnContentOffset.Y);
-        }
-    }
-
-    private void AdjustOffsetOnPressed()
-    {
-        var handleRect = HandleRect();
-        KnobOffset = handleRect.TopLeft;
-        var handleSize = _switchKnob?.OriginKnobSize.Width ?? 0d;
-        var delta      = handleRect.Width - handleSize;
-
-        var contentOffsetDelta = handleSize * (STRETCH_FACTOR - 1);
-
-        if (IsChecked.HasValue && IsChecked.Value)
-        {
-            // 点击的时候如果是选中，需要调整坐标
-            KnobOffset      = new Point(KnobOffset.X - delta, KnobOffset.Y);
-            OnContentOffset = new Point(OnContentOffset.X - contentOffsetDelta, OffContentOffset.Y);
-        }
-        else
-        {
-            OffContentOffset = new Point(OffContentOffset.X + contentOffsetDelta, OffContentOffset.Y);
-        }
-
-        var handleWidth = handleSize * STRETCH_FACTOR;
-        if (_switchKnob is not null)
-        {
-            _switchKnob.KnobSize = new Size(handleWidth, handleSize);
-        }
-    }
-
-    private void AdjustOffsetOnReleased()
-    {
-        var handleSize = _switchKnob?.OriginKnobSize.Width ?? 0d;
-        if (_switchKnob is not null)
-        {
-            _switchKnob.KnobSize = new Size(handleSize, handleSize);
-        }
-
-        CalculateElementsOffset(DesiredSize);
-    }
-
-    protected override void OnPointerPressed(PointerPressedEventArgs e)
-    {
-        if (!IsLoading)
-        {
-            base.OnPointerPressed(e);
-            AdjustOffsetOnPressed();
-        }
-    }
-
-    protected override void OnPointerReleased(PointerReleasedEventArgs e)
-    {
-        if (!IsLoading)
-        {
-            base.OnPointerReleased(e);
-            AdjustOffsetOnReleased();
-            InvalidateArrange();
-        }
-    }
-
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
-    {
-        base.OnPropertyChanged(e);
-        _customStyle.HandlePropertyChangedForStyle(e);
-    }
-
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        base.OnApplyTemplate(e);
-        _customStyle.HandleTemplateApplied(e.NameScope);
-    }
-
-    public sealed override void Render(DrawingContext context)
-    {
-        using var state = context.PushOpacity(SwitchOpacity);
-        context.DrawPilledRect(GrooveBackground, null, GrooveRect());
-    }
-
     #region 公共属性定义
 
     /// <summary>
@@ -394,6 +189,212 @@ public class ToggleSwitch : ToggleButton,
     }
 
     #endregion
+
+    private const double STRETCH_FACTOR = 1.3d;
+    private readonly IControlCustomStyle _customStyle;
+    private ControlStyleState _styleState;
+    private Canvas? _togglePanel;
+
+    private SwitchKnob? _switchKnob;
+
+    static ToggleSwitch()
+    {
+        AffectsMeasure<ToggleSwitch>(SizeTypeProperty);
+        AffectsArrange<ToggleSwitch>(
+            IsPressedProperty,
+            KnobOffsetProperty,
+            OnContentOffsetProperty,
+            OffContentOffsetProperty);
+        AffectsRender<ToggleSwitch>(GrooveBackgroundProperty,
+            SwitchOpacityProperty);
+    }
+
+    public ToggleSwitch()
+    {
+        _customStyle  =  this;
+        LayoutUpdated += HandleLayoutUpdated;
+    }
+
+    private void HandleLayoutUpdated(object? sender, EventArgs args)
+    {
+        if (Transitions is null)
+        {
+            _customStyle.SetupTransitions();
+        }
+    }
+
+    protected override Size MeasureOverride(Size availableSize)
+    {
+        double extraInfoWidth = 0;
+
+        if (OffContent is Layoutable offLayoutable)
+        {
+            offLayoutable.Measure(availableSize);
+            extraInfoWidth = Math.Max(extraInfoWidth, offLayoutable.DesiredSize.Width);
+        }
+
+        if (OnContent is Layoutable onLayoutable)
+        {
+            onLayoutable.Measure(availableSize);
+            extraInfoWidth = Math.Max(extraInfoWidth, onLayoutable.DesiredSize.Width);
+        }
+
+        var switchHeight  = TrackHeight;
+        var switchWidth   = extraInfoWidth;
+        var trackMinWidth = TrackMinWidth;
+        switchWidth += InnerMinMargin + InnerMaxMargin;
+        switchWidth =  Math.Max(switchWidth, trackMinWidth);
+        var targetSize = new Size(switchWidth, switchHeight);
+        CalculateElementsOffset(targetSize);
+        return targetSize;
+    }
+
+    protected override Size ArrangeOverride(Size finalSize)
+    {
+        if (_switchKnob is not null)
+        {
+            Canvas.SetLeft(_switchKnob, KnobOffset.X);
+            Canvas.SetTop(_switchKnob, KnobOffset.Y);
+        }
+
+        base.ArrangeOverride(finalSize);
+        AdjustExtraInfoOffset();
+        return finalSize;
+    }
+
+    private void AdjustExtraInfoOffset()
+    {
+        if (OffContent is Control offControl)
+        {
+            Canvas.SetLeft(offControl, OffContentOffset.X);
+            Canvas.SetTop(offControl, OffContentOffset.Y);
+        }
+
+        if (OnContent is Control onControl)
+        {
+            Canvas.SetLeft(onControl, OnContentOffset.X);
+            Canvas.SetTop(onControl, OnContentOffset.Y);
+        }
+    }
+
+    private void AdjustOffsetOnPressed()
+    {
+        var handleRect = HandleRect();
+        KnobOffset = handleRect.TopLeft;
+        var handleSize = _switchKnob?.OriginKnobSize.Width ?? 0d;
+        var delta      = handleRect.Width - handleSize;
+
+        var contentOffsetDelta = handleSize * (STRETCH_FACTOR - 1);
+
+        if (IsChecked.HasValue && IsChecked.Value)
+        {
+            // 点击的时候如果是选中，需要调整坐标
+            KnobOffset      = new Point(KnobOffset.X - delta, KnobOffset.Y);
+            OnContentOffset = new Point(OnContentOffset.X - contentOffsetDelta, OffContentOffset.Y);
+        }
+        else
+        {
+            OffContentOffset = new Point(OffContentOffset.X + contentOffsetDelta, OffContentOffset.Y);
+        }
+
+        var handleWidth = handleSize * STRETCH_FACTOR;
+        if (_switchKnob is not null)
+        {
+            _switchKnob.KnobSize = new Size(handleWidth, handleSize);
+        }
+    }
+
+    private void AdjustOffsetOnReleased()
+    {
+        var handleSize = _switchKnob?.OriginKnobSize.Width ?? 0d;
+        if (_switchKnob is not null)
+        {
+            _switchKnob.KnobSize = new Size(handleSize, handleSize);
+        }
+
+        CalculateElementsOffset(DesiredSize);
+    }
+
+    protected override void OnPointerPressed(PointerPressedEventArgs e)
+    {
+        if (!IsLoading)
+        {
+            base.OnPointerPressed(e);
+            AdjustOffsetOnPressed();
+        }
+    }
+
+    protected override void OnPointerReleased(PointerReleasedEventArgs e)
+    {
+        if (!IsLoading)
+        {
+            base.OnPointerReleased(e);
+            AdjustOffsetOnReleased();
+            InvalidateArrange();
+        }
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
+    {
+        base.OnPropertyChanged(e);
+        _customStyle.HandlePropertyChangedForStyle(e);
+    }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        _customStyle.HandleTemplateApplied(e.NameScope);
+    }
+
+    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
+    {
+        _togglePanel = scope.Find<Canvas>(ToggleSwitchTheme.MainContainerPart);
+        _switchKnob  = scope.Find<SwitchKnob>(ToggleSwitchTheme.SwitchKnobPart);
+
+        if (!IsLoading)
+        {
+            Cursor = new Cursor(StandardCursorType.Hand);
+        }
+
+        HorizontalAlignment = HorizontalAlignment.Left;
+
+        var offControl = SetupContent(OffContent);
+        var onControl  = SetupContent(OnContent);
+
+        // 这里会调用属性函数进行添加到布局
+        if (offControl == OffContent && offControl is not null)
+        {
+            _togglePanel?.Children.Add(offControl);
+        }
+
+        if (onControl == OnContent && onControl is not null)
+        {
+            _togglePanel?.Children.Add(onControl);
+        }
+
+        OffContent = offControl;
+        OnContent  = onControl;
+
+        HandleLoadingState(IsLoading);
+        _customStyle.CollectStyleState();
+    }
+
+    public sealed override void Render(DrawingContext context)
+    {
+        using var state = context.PushOpacity(SwitchOpacity);
+        context.DrawPilledRect(GrooveBackground, null, GrooveRect());
+    }
+
+    public bool HitTest(Point point)
+    {
+        if (!IsEnabled || IsLoading)
+        {
+            return false;
+        }
+
+        var grooveRect = GrooveRect();
+        return grooveRect.Contains(point);
+    }
 
     #region IControlCustomStyle 实现
 

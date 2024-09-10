@@ -34,6 +34,18 @@ internal class CollapseToken : AbstractControlDesignToken
     /// </summary>
     public Color ContentBg { get; set; }
 
+    #region 内部 Token 定义
+
+    public Thickness CollapseHeaderPaddingSM { get; set; }
+    public Thickness CollapseHeaderPaddingLG { get; set; }
+    public Thickness CollapseContentPaddingSM { get; set; }
+    public Thickness CollapseContentPaddingLG { get; set; }
+    public CornerRadius CollapsePanelBorderRadius { get; set; }
+    public Thickness LeftExpandButtonMargin { get; set; }
+    public Thickness RightExpandButtonMargin { get; set; }
+
+    #endregion
+
     internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
@@ -49,16 +61,4 @@ internal class CollapseToken : AbstractControlDesignToken
         LeftExpandButtonMargin    = new Thickness(0, 0, _globalToken.MarginSM, 0);
         RightExpandButtonMargin   = new Thickness(_globalToken.MarginSM, 0, 0, 0);
     }
-
-    #region 内部 Token 定义
-
-    public Thickness CollapseHeaderPaddingSM { get; set; }
-    public Thickness CollapseHeaderPaddingLG { get; set; }
-    public Thickness CollapseContentPaddingSM { get; set; }
-    public Thickness CollapseContentPaddingLG { get; set; }
-    public CornerRadius CollapsePanelBorderRadius { get; set; }
-    public Thickness LeftExpandButtonMargin { get; set; }
-    public Thickness RightExpandButtonMargin { get; set; }
-
-    #endregion
 }

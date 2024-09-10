@@ -1,6 +1,7 @@
 ﻿using AtomUI.Data;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -12,6 +13,28 @@ using AvaloniaListBox = Avalonia.Controls.ListBox;
 
 public class ListBox : AvaloniaListBox
 {
+    #region 公共属性定义
+
+    public static readonly StyledProperty<SizeType> SizeTypeProperty =
+        AvaloniaProperty.Register<ListBox, SizeType>(nameof(SizeType), SizeType.Middle);
+
+    public static readonly StyledProperty<bool> DisabledItemHoverEffectProperty =
+        AvaloniaProperty.Register<ListBox, bool>(nameof(DisabledItemHoverEffect));
+
+    public SizeType SizeType
+    {
+        get => GetValue(SizeTypeProperty);
+        set => SetValue(SizeTypeProperty, value);
+    }
+
+    public bool DisabledItemHoverEffect
+    {
+        get => GetValue(DisabledItemHoverEffectProperty);
+        set => SetValue(DisabledItemHoverEffectProperty, value);
+    }
+
+    #endregion
+
     protected override Size ArrangeOverride(Size finalSize)
     {
         return base.ArrangeOverride(finalSize.Deflate(new Thickness(BorderThickness.Left,
@@ -39,26 +62,4 @@ public class ListBox : AvaloniaListBox
             BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this));
     }
-
-    #region 公共属性定义
-
-    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        AvaloniaProperty.Register<ListBox, SizeType>(nameof(SizeType), SizeType.Middle);
-
-    public static readonly StyledProperty<bool> DisabledItemHoverEffectProperty =
-        AvaloniaProperty.Register<ListBox, bool>(nameof(DisabledItemHoverEffect));
-
-    public SizeType SizeType
-    {
-        get => GetValue(SizeTypeProperty);
-        set => SetValue(SizeTypeProperty, value);
-    }
-
-    public bool DisabledItemHoverEffect
-    {
-        get => GetValue(DisabledItemHoverEffectProperty);
-        set => SetValue(DisabledItemHoverEffectProperty, value);
-    }
-
-    #endregion
 }

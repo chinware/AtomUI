@@ -5,6 +5,9 @@ public class LanguageProviderAttribute : Attribute
 {
     public const string DefaultLanguageId = "Default";
     public const string DefaultResourceCatalog = $"{ResourceCatalogConstants.Root}.{ResourceCatalogConstants.Language}";
+    public string LanguageCode { get; }
+    public string LanguageId { get; }
+    public string ResourceCatalog { get; }
 
     public LanguageProviderAttribute(string languageCode, string languageId = DefaultLanguageId,
                                      string resourceCatalog = DefaultResourceCatalog)
@@ -13,8 +16,4 @@ public class LanguageProviderAttribute : Attribute
         LanguageId      = languageId;
         ResourceCatalog = resourceCatalog;
     }
-
-    public string LanguageCode { get; }
-    public string LanguageId { get; }
-    public string ResourceCatalog { get; }
 }

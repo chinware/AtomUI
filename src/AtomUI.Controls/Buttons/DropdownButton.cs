@@ -1,8 +1,8 @@
 ﻿using AtomUI.Data;
 using AtomUI.Icon;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.TokenSystem;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Diagnostics;
@@ -15,10 +15,123 @@ namespace AtomUI.Controls;
 
 public class DropdownButton : Button
 {
-    private readonly FlyoutStateHelper _flyoutStateHelper;
-    private MenuFlyoutPresenter? _menuFlyoutPresenter;
+    #region 公共属性定义
+
+    public static readonly StyledProperty<MenuFlyout?> DropdownFlyoutProperty =
+        AvaloniaProperty.Register<DropdownButton, MenuFlyout?>(nameof(DropdownFlyout));
+
+    public static readonly StyledProperty<FlyoutTriggerType> TriggerTypeProperty =
+        FlyoutStateHelper.TriggerTypeProperty.AddOwner<DropdownButton>();
+
+    public static readonly StyledProperty<bool> IsShowArrowProperty =
+        ArrowDecoratedBox.IsShowArrowProperty.AddOwner<DropdownButton>();
+
+    public static readonly StyledProperty<bool> IsPointAtCenterProperty =
+        AtomUI.Controls.Flyout.IsPointAtCenterProperty.AddOwner<DropdownButton>();
+
+    public static readonly StyledProperty<PlacementMode> PlacementProperty =
+        Avalonia.Controls.Primitives.Popup.PlacementProperty.AddOwner<DropdownButton>();
+
+    public static readonly StyledProperty<PopupAnchor> PlacementAnchorProperty =
+        Avalonia.Controls.Primitives.Popup.PlacementAnchorProperty.AddOwner<DropdownButton>();
+
+    public static readonly StyledProperty<PopupGravity> PlacementGravityProperty =
+        Avalonia.Controls.Primitives.Popup.PlacementGravityProperty.AddOwner<DropdownButton>();
+
+    public static readonly StyledProperty<double> MarginToAnchorProperty =
+        Popup.MarginToAnchorProperty.AddOwner<DropdownButton>();
+
+    public static readonly StyledProperty<int> MouseEnterDelayProperty =
+        FlyoutStateHelper.MouseEnterDelayProperty.AddOwner<DropdownButton>();
+
+    public static readonly StyledProperty<int> MouseLeaveDelayProperty =
+        FlyoutStateHelper.MouseLeaveDelayProperty.AddOwner<DropdownButton>();
+
+    public static readonly StyledProperty<bool> IsShowIndicatorProperty =
+        AvaloniaProperty.Register<DropdownButton, bool>(nameof(IsShowIndicator), true);
+
+    public static readonly RoutedEvent<FlyoutMenuItemClickedEventArgs> MenuItemClickedEvent =
+        RoutedEvent.Register<DropdownButton, FlyoutMenuItemClickedEventArgs>(
+            nameof(MenuItemClicked),
+            RoutingStrategies.Bubble);
+
+    public MenuFlyout? DropdownFlyout
+    {
+        get => GetValue(DropdownFlyoutProperty);
+        set => SetValue(DropdownFlyoutProperty, value);
+    }
+
+    public FlyoutTriggerType TriggerType
+    {
+        get => GetValue(TriggerTypeProperty);
+        set => SetValue(TriggerTypeProperty, value);
+    }
+
+    public bool IsShowArrow
+    {
+        get => GetValue(IsShowArrowProperty);
+        set => SetValue(IsShowArrowProperty, value);
+    }
+
+    public bool IsPointAtCenter
+    {
+        get => GetValue(IsPointAtCenterProperty);
+        set => SetValue(IsPointAtCenterProperty, value);
+    }
+
+    public PlacementMode Placement
+    {
+        get => GetValue(PlacementProperty);
+        set => SetValue(PlacementProperty, value);
+    }
+
+    public PopupGravity PlacementGravity
+    {
+        get => GetValue(PlacementGravityProperty);
+        set => SetValue(PlacementGravityProperty, value);
+    }
+
+    public PopupAnchor PlacementAnchor
+    {
+        get => GetValue(PlacementAnchorProperty);
+        set => SetValue(PlacementAnchorProperty, value);
+    }
+
+    public double MarginToAnchor
+    {
+        get => GetValue(MarginToAnchorProperty);
+        set => SetValue(MarginToAnchorProperty, value);
+    }
+
+    public int MouseEnterDelay
+    {
+        get => GetValue(MouseEnterDelayProperty);
+        set => SetValue(MouseEnterDelayProperty, value);
+    }
+
+    public int MouseLeaveDelay
+    {
+        get => GetValue(MouseLeaveDelayProperty);
+        set => SetValue(MouseLeaveDelayProperty, value);
+    }
+
+    public bool IsShowIndicator
+    {
+        get => GetValue(IsShowIndicatorProperty);
+        set => SetValue(IsShowIndicatorProperty, value);
+    }
+
+    public event EventHandler<FlyoutMenuItemClickedEventArgs>? MenuItemClicked
+    {
+        add => AddHandler(MenuItemClickedEvent, value);
+        remove => RemoveHandler(MenuItemClickedEvent, value);
+    }
+
+    #endregion
 
     private PathIcon? _openIndicatorIcon;
+    private MenuFlyoutPresenter? _menuFlyoutPresenter;
+    private readonly FlyoutStateHelper _flyoutStateHelper;
 
     static DropdownButton()
     {
@@ -189,118 +302,4 @@ public class DropdownButton : Button
 
         base.ApplyIconModeStyleConfig();
     }
-
-    #region 公共属性定义
-
-    public static readonly StyledProperty<MenuFlyout?> DropdownFlyoutProperty =
-        AvaloniaProperty.Register<DropdownButton, MenuFlyout?>(nameof(DropdownFlyout));
-
-    public static readonly StyledProperty<FlyoutTriggerType> TriggerTypeProperty =
-        FlyoutStateHelper.TriggerTypeProperty.AddOwner<DropdownButton>();
-
-    public static readonly StyledProperty<bool> IsShowArrowProperty =
-        ArrowDecoratedBox.IsShowArrowProperty.AddOwner<DropdownButton>();
-
-    public static readonly StyledProperty<bool> IsPointAtCenterProperty =
-        Controls.Flyout.IsPointAtCenterProperty.AddOwner<DropdownButton>();
-
-    public static readonly StyledProperty<PlacementMode> PlacementProperty =
-        Avalonia.Controls.Primitives.Popup.PlacementProperty.AddOwner<DropdownButton>();
-
-    public static readonly StyledProperty<PopupAnchor> PlacementAnchorProperty =
-        Avalonia.Controls.Primitives.Popup.PlacementAnchorProperty.AddOwner<DropdownButton>();
-
-    public static readonly StyledProperty<PopupGravity> PlacementGravityProperty =
-        Avalonia.Controls.Primitives.Popup.PlacementGravityProperty.AddOwner<DropdownButton>();
-
-    public static readonly StyledProperty<double> MarginToAnchorProperty =
-        Popup.MarginToAnchorProperty.AddOwner<DropdownButton>();
-
-    public static readonly StyledProperty<int> MouseEnterDelayProperty =
-        FlyoutStateHelper.MouseEnterDelayProperty.AddOwner<DropdownButton>();
-
-    public static readonly StyledProperty<int> MouseLeaveDelayProperty =
-        FlyoutStateHelper.MouseLeaveDelayProperty.AddOwner<DropdownButton>();
-
-    public static readonly StyledProperty<bool> IsShowIndicatorProperty =
-        AvaloniaProperty.Register<DropdownButton, bool>(nameof(IsShowIndicator), true);
-
-    public static readonly RoutedEvent<FlyoutMenuItemClickedEventArgs> MenuItemClickedEvent =
-        RoutedEvent.Register<DropdownButton, FlyoutMenuItemClickedEventArgs>(
-            nameof(MenuItemClicked),
-            RoutingStrategies.Bubble);
-
-    public MenuFlyout? DropdownFlyout
-    {
-        get => GetValue(DropdownFlyoutProperty);
-        set => SetValue(DropdownFlyoutProperty, value);
-    }
-
-    public FlyoutTriggerType TriggerType
-    {
-        get => GetValue(TriggerTypeProperty);
-        set => SetValue(TriggerTypeProperty, value);
-    }
-
-    public bool IsShowArrow
-    {
-        get => GetValue(IsShowArrowProperty);
-        set => SetValue(IsShowArrowProperty, value);
-    }
-
-    public bool IsPointAtCenter
-    {
-        get => GetValue(IsPointAtCenterProperty);
-        set => SetValue(IsPointAtCenterProperty, value);
-    }
-
-    public PlacementMode Placement
-    {
-        get => GetValue(PlacementProperty);
-        set => SetValue(PlacementProperty, value);
-    }
-
-    public PopupGravity PlacementGravity
-    {
-        get => GetValue(PlacementGravityProperty);
-        set => SetValue(PlacementGravityProperty, value);
-    }
-
-    public PopupAnchor PlacementAnchor
-    {
-        get => GetValue(PlacementAnchorProperty);
-        set => SetValue(PlacementAnchorProperty, value);
-    }
-
-    public double MarginToAnchor
-    {
-        get => GetValue(MarginToAnchorProperty);
-        set => SetValue(MarginToAnchorProperty, value);
-    }
-
-    public int MouseEnterDelay
-    {
-        get => GetValue(MouseEnterDelayProperty);
-        set => SetValue(MouseEnterDelayProperty, value);
-    }
-
-    public int MouseLeaveDelay
-    {
-        get => GetValue(MouseLeaveDelayProperty);
-        set => SetValue(MouseLeaveDelayProperty, value);
-    }
-
-    public bool IsShowIndicator
-    {
-        get => GetValue(IsShowIndicatorProperty);
-        set => SetValue(IsShowIndicatorProperty, value);
-    }
-
-    public event EventHandler<FlyoutMenuItemClickedEventArgs>? MenuItemClicked
-    {
-        add => AddHandler(MenuItemClickedEvent, value);
-        remove => RemoveHandler(MenuItemClickedEvent, value);
-    }
-
-    #endregion
 }

@@ -5,6 +5,10 @@ namespace AtomUI.Icon;
 public abstract class IconPackage : IIconPackageProvider
 {
     protected IDictionary<int, IconInfo> _iconPool;
+    public ColorInfo DefaultColorInfo { get; set; }
+    public TwoToneColorInfo DefaultTwoToneColorInfo { get; set; }
+    public string Id { get; }
+    public int Priority { get; set; } = 0;
 
     public IconPackage(string id)
     {
@@ -18,24 +22,9 @@ public abstract class IconPackage : IIconPackageProvider
         };
     }
 
-    public ColorInfo DefaultColorInfo { get; set; }
-    public TwoToneColorInfo DefaultTwoToneColorInfo { get; set; }
-    public string Id { get; }
-    public int Priority { get; set; } = 0;
-
     public abstract IconInfo? GetIcon(string iconKind);
     public abstract IconInfo? GetIcon(string iconKind, ColorInfo colorInfo);
     public abstract IconInfo? GetIcon(string iconKind, TwoToneColorInfo twoToneColorInfo);
-
-    public IEnumerable<IconInfo> GetIconInfos(IconThemeType? iconThemeType = null)
-    {
-        if (!iconThemeType.HasValue)
-        {
-            return _iconPool.Values;
-        }
-
-        return _iconPool.Values.Where(iconInfo => iconInfo.ThemeType == iconThemeType.Value);
-    }
 
     protected IconInfo? GetIconRaw(int iconKind)
     {
@@ -99,5 +88,15 @@ public abstract class IconPackage : IIconPackageProvider
         }
 
         return iconInfo;
+    }
+
+    public IEnumerable<IconInfo> GetIconInfos(IconThemeType? iconThemeType = null)
+    {
+        if (!iconThemeType.HasValue)
+        {
+            return _iconPool.Values;
+        }
+
+        return _iconPool.Values.Where(iconInfo => iconInfo.ThemeType == iconThemeType.Value);
     }
 }

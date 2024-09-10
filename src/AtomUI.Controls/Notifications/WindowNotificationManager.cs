@@ -22,6 +22,11 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager
     public const string TopCenterPC = ":topcenter";
     public const string BottomCenterPC = ":bottomcenter";
 
+    private IList? _items;
+    private readonly Queue<NotificationCard> _cleanupQueue;
+    private readonly DispatcherTimer _cardExpiredTimer;
+    private readonly DispatcherTimer _cleanupTimer;
+
     public static readonly StyledProperty<NotificationPosition> PositionProperty =
         AvaloniaProperty.Register<WindowNotificationManager, NotificationPosition>(
             nameof(Position), NotificationPosition.TopRight);
@@ -32,16 +37,22 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager
     public static readonly StyledProperty<bool> IsPauseOnHoverProperty =
         AvaloniaProperty.Register<WindowNotificationManager, bool>(nameof(IsPauseOnHover), true);
 
-    private readonly DispatcherTimer _cardExpiredTimer;
-    private readonly Queue<NotificationCard> _cleanupQueue;
-    private readonly DispatcherTimer _cleanupTimer;
-
-    private IList? _items;
-
-    static WindowNotificationManager()
+    public NotificationPosition Position
     {
-        HorizontalAlignmentProperty.OverrideDefaultValue<WindowNotificationManager>(HorizontalAlignment.Stretch);
-        VerticalAlignmentProperty.OverrideDefaultValue<WindowNotificationManager>(VerticalAlignment.Stretch);
+        get => GetValue(PositionProperty);
+        set => SetValue(PositionProperty, value);
+    }
+
+    public int MaxItems
+    {
+        get => GetValue(MaxItemsProperty);
+        set => SetValue(MaxItemsProperty, value);
+    }
+
+    public bool IsPauseOnHover
+    {
+        get => GetValue(IsPauseOnHoverProperty);
+        set => SetValue(IsPauseOnHoverProperty, value);
     }
 
     public WindowNotificationManager(TopLevel? host) : this()
@@ -62,69 +73,10 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager
         _cleanupQueue          =  new Queue<NotificationCard>();
     }
 
-    public NotificationPosition Position
+    static WindowNotificationManager()
     {
-        get => GetValue(PositionProperty);
-        set => SetValue(PositionProperty, value);
-    }
-
-    public int MaxItems
-    {
-        get => GetValue(MaxItemsProperty);
-        set => SetValue(MaxItemsProperty, value);
-    }
-
-    public bool IsPauseOnHover
-    {
-        get => GetValue(IsPauseOnHoverProperty);
-        set => SetValue(IsPauseOnHoverProperty, value);
-    }
-
-    public void Show(INotification notification, string[]? classes = null)
-    {
-        var expiration = notification.Expiration;
-        var onClick    = notification.OnClick;
-        var onClose    = notification.OnClose;
-        Dispatcher.UIThread.VerifyAccess();
-
-        var notificationControl = new NotificationCard(this)
-        {
-            Title            = notification.Title,
-            Content          = notification.Content,
-            Icon             = notification.Icon,
-            NotificationType = notification.Type,
-            Expiration       = expiration == TimeSpan.Zero ? null : expiration,
-            IsShowProgress   = notification.ShowProgress
-        };
-        BindUtils.RelayBind(this, PositionProperty, notificationControl, NotificationCard.PositionProperty);
-
-        // Add style classes if any
-        if (classes != null)
-        {
-            foreach (var @class in classes)
-            {
-                notificationControl.Classes.Add(@class);
-            }
-        }
-
-        notificationControl.PointerPressed += (sender, args) => { onClick?.Invoke(); };
-
-        notificationControl.NotificationClosed += (sender, args) =>
-        {
-            onClose?.Invoke();
-
-            _items?.Remove(sender);
-        };
-
-        Dispatcher.UIThread.Post(() =>
-        {
-            _items?.Add(notificationControl);
-
-            if (_items?.OfType<NotificationCard>().Count(i => !i.IsClosing) > MaxItems)
-            {
-                _items.OfType<NotificationCard>().First(i => !i.IsClosing).Close();
-            }
-        });
+        HorizontalAlignmentProperty.OverrideDefaultValue<WindowNotificationManager>(HorizontalAlignment.Stretch);
+        VerticalAlignmentProperty.OverrideDefaultValue<WindowNotificationManager>(VerticalAlignment.Stretch);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -196,6 +148,53 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager
                 _cardExpiredTimer.Stop();
             }
         }
+    }
+
+    public void Show(INotification notification, string[]? classes = null)
+    {
+        var expiration = notification.Expiration;
+        var onClick    = notification.OnClick;
+        var onClose    = notification.OnClose;
+        Dispatcher.UIThread.VerifyAccess();
+
+        var notificationControl = new NotificationCard(this)
+        {
+            Title            = notification.Title,
+            Content          = notification.Content,
+            Icon             = notification.Icon,
+            NotificationType = notification.Type,
+            Expiration       = expiration == TimeSpan.Zero ? null : expiration,
+            IsShowProgress   = notification.ShowProgress
+        };
+        BindUtils.RelayBind(this, PositionProperty, notificationControl, NotificationCard.PositionProperty);
+
+        // Add style classes if any
+        if (classes != null)
+        {
+            foreach (var @class in classes)
+            {
+                notificationControl.Classes.Add(@class);
+            }
+        }
+
+        notificationControl.PointerPressed += (sender, args) => { onClick?.Invoke(); };
+
+        notificationControl.NotificationClosed += (sender, args) =>
+        {
+            onClose?.Invoke();
+
+            _items?.Remove(sender);
+        };
+
+        Dispatcher.UIThread.Post(() =>
+        {
+            _items?.Add(notificationControl);
+
+            if (_items?.OfType<NotificationCard>().Count(i => !i.IsClosing) > MaxItems)
+            {
+                _items.OfType<NotificationCard>().First(i => !i.IsClosing).Close();
+            }
+        });
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

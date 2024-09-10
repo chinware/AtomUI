@@ -13,34 +13,15 @@ internal class DrawerContainer : Border
 {
     private readonly TimeSpan _duration = TimeSpan.FromMilliseconds(500);
     private readonly Easing _easing = new SplineEasing(0.3, 0.7, 0.3, 0.7);
-    private readonly DrawerElementBorder _elementBorder;
-    private readonly Border _mask;
     private readonly IBrush _maskBrush = new SolidColorBrush(Colors.Black, 0.45);
     private readonly Transitions _transitions1;
     private readonly Transitions _transitions2;
+    private readonly Border _mask;
+    private readonly DrawerElementBorder _elementBorder;
 
     #region Properties
 
     public Drawer Drawer { get; }
-
-    #endregion
-
-    #region Close On Click
-
-    protected override void OnPointerPressed(PointerPressedEventArgs e)
-    {
-        base.OnPointerPressed(e);
-
-        if (e.Handled || Equals(e.Source, _mask) == false)
-        {
-            return;
-        }
-
-        if (e.Pointer.IsPrimary && Drawer.CloseWhenClickOnMask)
-        {
-            Drawer.IsOpen = false;
-        }
-    }
 
     #endregion
 
@@ -282,6 +263,25 @@ internal class DrawerContainer : Border
         }
 
         _isPlacementValid = true;
+    }
+
+    #endregion
+
+    #region Close On Click
+
+    protected override void OnPointerPressed(PointerPressedEventArgs e)
+    {
+        base.OnPointerPressed(e);
+
+        if (e.Handled || Equals(e.Source, _mask) == false)
+        {
+            return;
+        }
+
+        if (e.Pointer.IsPrimary && Drawer.CloseWhenClickOnMask)
+        {
+            Drawer.IsOpen = false;
+        }
     }
 
     #endregion

@@ -1,7 +1,7 @@
 ﻿using AtomUI.Controls.Utils;
 using AtomUI.Data;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Diagnostics;
@@ -25,14 +25,122 @@ public enum ClockIdentifierType
 public class TimePicker : LineEdit
 {
     private const string FlyoutOpenPC = ":flyout-open";
-    private readonly FlyoutStateHelper _flyoutStateHelper;
-    private IDisposable? _clearUpButtonDetectDisposable;
-    private bool _currentValidSelected;
-    private bool _isFlyoutOpen;
-    private PickerClearUpButton? _pickerClearUpButton;
-    private TimePickerFlyout? _pickerFlyout;
+    protected override Type StyleKeyOverride => typeof(LineEdit);
+
+    #region 公共属性定义
+
+    public static readonly StyledProperty<PlacementMode> PickerPlacementProperty =
+        AvaloniaProperty.Register<TimePicker, PlacementMode>(nameof(PickerPlacement),
+            PlacementMode.BottomEdgeAlignedLeft);
+
+    public static readonly StyledProperty<bool> IsShowArrowProperty =
+        ArrowDecoratedBox.IsShowArrowProperty.AddOwner<TimePicker>();
+
+    public static readonly StyledProperty<bool> IsPointAtCenterProperty =
+        Flyout.IsPointAtCenterProperty.AddOwner<TimePicker>();
+
+    public static readonly StyledProperty<int> MinuteIncrementProperty =
+        AvaloniaProperty.Register<TimePicker, int>(nameof(MinuteIncrement), 1, coerce: CoerceMinuteIncrement);
+
+    public static readonly StyledProperty<int> SecondIncrementProperty =
+        AvaloniaProperty.Register<TimePicker, int>(nameof(SecondIncrement), 1, coerce: CoerceSecondIncrement);
+
+    public static readonly StyledProperty<ClockIdentifierType> ClockIdentifierProperty =
+        AvaloniaProperty.Register<TimePicker, ClockIdentifierType>(nameof(ClockIdentifier));
+
+    public static readonly StyledProperty<TimeSpan?> SelectedTimeProperty =
+        AvaloniaProperty.Register<TimePicker, TimeSpan?>(nameof(SelectedTime),
+            defaultBindingMode: BindingMode.TwoWay,
+            enableDataValidation: true);
+
+    public static readonly StyledProperty<TimeSpan?> DefaultTimeProperty =
+        AvaloniaProperty.Register<TimePicker, TimeSpan?>(nameof(DefaultTime),
+            enableDataValidation: true);
+
+    public static readonly StyledProperty<double> MarginToAnchorProperty =
+        Popup.MarginToAnchorProperty.AddOwner<TimePicker>();
+
+    public static readonly StyledProperty<int> MouseEnterDelayProperty =
+        FlyoutStateHelper.MouseEnterDelayProperty.AddOwner<TimePicker>();
+
+    public static readonly StyledProperty<int> MouseLeaveDelayProperty =
+        FlyoutStateHelper.MouseLeaveDelayProperty.AddOwner<TimePicker>();
+
+    public PlacementMode PickerPlacement
+    {
+        get => GetValue(PickerPlacementProperty);
+        set => SetValue(PickerPlacementProperty, value);
+    }
+
+    public bool IsShowArrow
+    {
+        get => GetValue(IsShowArrowProperty);
+        set => SetValue(IsShowArrowProperty, value);
+    }
+
+    public bool IsPointAtCenter
+    {
+        get => GetValue(IsPointAtCenterProperty);
+        set => SetValue(IsPointAtCenterProperty, value);
+    }
+
+    public int MinuteIncrement
+    {
+        get => GetValue(MinuteIncrementProperty);
+        set => SetValue(MinuteIncrementProperty, value);
+    }
+
+    public int SecondIncrement
+    {
+        get => GetValue(SecondIncrementProperty);
+        set => SetValue(SecondIncrementProperty, value);
+    }
+
+    public ClockIdentifierType ClockIdentifier
+    {
+        get => GetValue(ClockIdentifierProperty);
+        set => SetValue(ClockIdentifierProperty, value);
+    }
+
+    public TimeSpan? SelectedTime
+    {
+        get => GetValue(SelectedTimeProperty);
+        set => SetValue(SelectedTimeProperty, value);
+    }
+
+    public TimeSpan? DefaultTime
+    {
+        get => GetValue(DefaultTimeProperty);
+        set => SetValue(DefaultTimeProperty, value);
+    }
+
+    public double MarginToAnchor
+    {
+        get => GetValue(MarginToAnchorProperty);
+        set => SetValue(MarginToAnchorProperty, value);
+    }
+
+    public int MouseEnterDelay
+    {
+        get => GetValue(MouseEnterDelayProperty);
+        set => SetValue(MouseEnterDelayProperty, value);
+    }
+
+    public int MouseLeaveDelay
+    {
+        get => GetValue(MouseLeaveDelayProperty);
+        set => SetValue(MouseLeaveDelayProperty, value);
+    }
+
+    #endregion
 
     private TextBoxInnerBox? _textBoxInnerBox;
+    private TimePickerFlyout? _pickerFlyout;
+    private readonly FlyoutStateHelper _flyoutStateHelper;
+    private PickerClearUpButton? _pickerClearUpButton;
+    private bool _currentValidSelected;
+    private IDisposable? _clearUpButtonDetectDisposable;
+    private bool _isFlyoutOpen;
 
     static TimePicker()
     {
@@ -52,8 +160,6 @@ public class TimePicker : LineEdit
         _flyoutStateHelper.OpenFlyoutPredicate      =  FlyoutOpenPredicate;
         _flyoutStateHelper.ClickHideFlyoutPredicate =  ClickHideFlyoutPredicate;
     }
-
-    protected override Type StyleKeyOverride => typeof(LineEdit);
 
     private bool FlyoutOpenPredicate(Point position)
     {
@@ -326,111 +432,4 @@ public class TimePicker : LineEdit
     {
         PseudoClasses.Set(FlyoutOpenPC, _isFlyoutOpen);
     }
-
-    #region 公共属性定义
-
-    public static readonly StyledProperty<PlacementMode> PickerPlacementProperty =
-        AvaloniaProperty.Register<TimePicker, PlacementMode>(nameof(PickerPlacement),
-            PlacementMode.BottomEdgeAlignedLeft);
-
-    public static readonly StyledProperty<bool> IsShowArrowProperty =
-        ArrowDecoratedBox.IsShowArrowProperty.AddOwner<TimePicker>();
-
-    public static readonly StyledProperty<bool> IsPointAtCenterProperty =
-        Flyout.IsPointAtCenterProperty.AddOwner<TimePicker>();
-
-    public static readonly StyledProperty<int> MinuteIncrementProperty =
-        AvaloniaProperty.Register<TimePicker, int>(nameof(MinuteIncrement), 1, coerce: CoerceMinuteIncrement);
-
-    public static readonly StyledProperty<int> SecondIncrementProperty =
-        AvaloniaProperty.Register<TimePicker, int>(nameof(SecondIncrement), 1, coerce: CoerceSecondIncrement);
-
-    public static readonly StyledProperty<ClockIdentifierType> ClockIdentifierProperty =
-        AvaloniaProperty.Register<TimePicker, ClockIdentifierType>(nameof(ClockIdentifier));
-
-    public static readonly StyledProperty<TimeSpan?> SelectedTimeProperty =
-        AvaloniaProperty.Register<TimePicker, TimeSpan?>(nameof(SelectedTime),
-            defaultBindingMode: BindingMode.TwoWay,
-            enableDataValidation: true);
-
-    public static readonly StyledProperty<TimeSpan?> DefaultTimeProperty =
-        AvaloniaProperty.Register<TimePicker, TimeSpan?>(nameof(DefaultTime),
-            enableDataValidation: true);
-
-    public static readonly StyledProperty<double> MarginToAnchorProperty =
-        Popup.MarginToAnchorProperty.AddOwner<TimePicker>();
-
-    public static readonly StyledProperty<int> MouseEnterDelayProperty =
-        FlyoutStateHelper.MouseEnterDelayProperty.AddOwner<TimePicker>();
-
-    public static readonly StyledProperty<int> MouseLeaveDelayProperty =
-        FlyoutStateHelper.MouseLeaveDelayProperty.AddOwner<TimePicker>();
-
-    public PlacementMode PickerPlacement
-    {
-        get => GetValue(PickerPlacementProperty);
-        set => SetValue(PickerPlacementProperty, value);
-    }
-
-    public bool IsShowArrow
-    {
-        get => GetValue(IsShowArrowProperty);
-        set => SetValue(IsShowArrowProperty, value);
-    }
-
-    public bool IsPointAtCenter
-    {
-        get => GetValue(IsPointAtCenterProperty);
-        set => SetValue(IsPointAtCenterProperty, value);
-    }
-
-    public int MinuteIncrement
-    {
-        get => GetValue(MinuteIncrementProperty);
-        set => SetValue(MinuteIncrementProperty, value);
-    }
-
-    public int SecondIncrement
-    {
-        get => GetValue(SecondIncrementProperty);
-        set => SetValue(SecondIncrementProperty, value);
-    }
-
-    public ClockIdentifierType ClockIdentifier
-    {
-        get => GetValue(ClockIdentifierProperty);
-        set => SetValue(ClockIdentifierProperty, value);
-    }
-
-    public TimeSpan? SelectedTime
-    {
-        get => GetValue(SelectedTimeProperty);
-        set => SetValue(SelectedTimeProperty, value);
-    }
-
-    public TimeSpan? DefaultTime
-    {
-        get => GetValue(DefaultTimeProperty);
-        set => SetValue(DefaultTimeProperty, value);
-    }
-
-    public double MarginToAnchor
-    {
-        get => GetValue(MarginToAnchorProperty);
-        set => SetValue(MarginToAnchorProperty, value);
-    }
-
-    public int MouseEnterDelay
-    {
-        get => GetValue(MouseEnterDelayProperty);
-        set => SetValue(MouseEnterDelayProperty, value);
-    }
-
-    public int MouseLeaveDelay
-    {
-        get => GetValue(MouseLeaveDelayProperty);
-        set => SetValue(MouseLeaveDelayProperty, value);
-    }
-
-    #endregion
 }

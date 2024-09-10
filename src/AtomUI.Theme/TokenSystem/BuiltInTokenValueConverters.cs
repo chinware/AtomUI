@@ -195,9 +195,8 @@ internal class TextDecorationTokenValueConverter : ITokenValueConverter
             }
 
             if (numExpr.Length > 0)
-
-                // 肯定合法
             {
+                // 肯定合法
                 textDecoration.Thickness = int.Parse(numExpr);
             }
 

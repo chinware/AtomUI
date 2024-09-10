@@ -9,10 +9,86 @@ namespace AtomUI.Controls;
 
 public class LoadingMaskHost : Control, IControlCustomStyle
 {
-    private IControlCustomStyle _customStyle;
-    private bool _initialized;
+    #region 公共属性定义
+
+    public static readonly StyledProperty<SizeType> SizeTypeProperty =
+        LoadingIndicator.SizeTypeProperty.AddOwner<LoadingMaskHost>();
+
+    public static readonly StyledProperty<string?> LoadingMsgProperty =
+        LoadingIndicator.LoadingMsgProperty.AddOwner<LoadingMaskHost>();
+
+    public static readonly StyledProperty<bool> IsShowLoadingMsgProperty =
+        LoadingIndicator.IsShowLoadingMsgProperty.AddOwner<LoadingMaskHost>();
+
+    public static readonly StyledProperty<PathIcon?> CustomIndicatorIconProperty =
+        LoadingIndicator.CustomIndicatorIconProperty.AddOwner<LoadingMaskHost>();
+
+    public static readonly StyledProperty<TimeSpan?> MotionDurationProperty =
+        LoadingIndicator.MotionDurationProperty.AddOwner<LoadingMaskHost>();
+
+    public static readonly StyledProperty<Easing?> MotionEasingCurveProperty =
+        LoadingIndicator.MotionEasingCurveProperty.AddOwner<LoadingMaskHost>();
+
+    public static readonly StyledProperty<bool> IsLoadingProperty =
+        AvaloniaProperty.Register<LoadingMaskHost, bool>(nameof(IsLoading));
+
+    public static readonly StyledProperty<Control?> MaskTargetProperty =
+        AvaloniaProperty.Register<CountBadge, Control?>(nameof(MaskTarget));
+
+    public SizeType SizeType
+    {
+        get => GetValue(SizeTypeProperty);
+        set => SetValue(SizeTypeProperty, value);
+    }
+
+    public string? LoadingMsg
+    {
+        get => GetValue(LoadingMsgProperty);
+        set => SetValue(LoadingMsgProperty, value);
+    }
+
+    public bool IsShowLoadingMsg
+    {
+        get => GetValue(IsShowLoadingMsgProperty);
+        set => SetValue(IsShowLoadingMsgProperty, value);
+    }
+
+    public PathIcon? CustomIndicatorIcon
+    {
+        get => GetValue(CustomIndicatorIconProperty);
+        set => SetValue(CustomIndicatorIconProperty, value);
+    }
+
+    public TimeSpan? MotionDuration
+    {
+        get => GetValue(MotionDurationProperty);
+        set => SetValue(MotionDurationProperty, value);
+    }
+
+    public Easing? MotionEasingCurve
+    {
+        get => GetValue(MotionEasingCurveProperty);
+        set => SetValue(MotionEasingCurveProperty, value);
+    }
+
+    public bool IsLoading
+    {
+        get => GetValue(IsLoadingProperty);
+        set => SetValue(IsLoadingProperty, value);
+    }
+
+    [Content]
+    public Control? MaskTarget
+    {
+        get => GetValue(MaskTargetProperty);
+        set => SetValue(MaskTargetProperty, value);
+    }
+
+    #endregion
 
     private LoadingMask? _loadingMask;
+    private bool _initialized;
+    private IControlCustomStyle _customStyle;
 
     public LoadingMaskHost()
     {
@@ -102,81 +178,4 @@ public class LoadingMaskHost : Control, IControlCustomStyle
             }
         }
     }
-
-    #region 公共属性定义
-
-    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        LoadingIndicator.SizeTypeProperty.AddOwner<LoadingMaskHost>();
-
-    public static readonly StyledProperty<string?> LoadingMsgProperty =
-        LoadingIndicator.LoadingMsgProperty.AddOwner<LoadingMaskHost>();
-
-    public static readonly StyledProperty<bool> IsShowLoadingMsgProperty =
-        LoadingIndicator.IsShowLoadingMsgProperty.AddOwner<LoadingMaskHost>();
-
-    public static readonly StyledProperty<PathIcon?> CustomIndicatorIconProperty =
-        LoadingIndicator.CustomIndicatorIconProperty.AddOwner<LoadingMaskHost>();
-
-    public static readonly StyledProperty<TimeSpan?> MotionDurationProperty =
-        LoadingIndicator.MotionDurationProperty.AddOwner<LoadingMaskHost>();
-
-    public static readonly StyledProperty<Easing?> MotionEasingCurveProperty =
-        LoadingIndicator.MotionEasingCurveProperty.AddOwner<LoadingMaskHost>();
-
-    public static readonly StyledProperty<bool> IsLoadingProperty =
-        AvaloniaProperty.Register<LoadingMaskHost, bool>(nameof(IsLoading));
-
-    public static readonly StyledProperty<Control?> MaskTargetProperty =
-        AvaloniaProperty.Register<CountBadge, Control?>(nameof(MaskTarget));
-
-    public SizeType SizeType
-    {
-        get => GetValue(SizeTypeProperty);
-        set => SetValue(SizeTypeProperty, value);
-    }
-
-    public string? LoadingMsg
-    {
-        get => GetValue(LoadingMsgProperty);
-        set => SetValue(LoadingMsgProperty, value);
-    }
-
-    public bool IsShowLoadingMsg
-    {
-        get => GetValue(IsShowLoadingMsgProperty);
-        set => SetValue(IsShowLoadingMsgProperty, value);
-    }
-
-    public PathIcon? CustomIndicatorIcon
-    {
-        get => GetValue(CustomIndicatorIconProperty);
-        set => SetValue(CustomIndicatorIconProperty, value);
-    }
-
-    public TimeSpan? MotionDuration
-    {
-        get => GetValue(MotionDurationProperty);
-        set => SetValue(MotionDurationProperty, value);
-    }
-
-    public Easing? MotionEasingCurve
-    {
-        get => GetValue(MotionEasingCurveProperty);
-        set => SetValue(MotionEasingCurveProperty, value);
-    }
-
-    public bool IsLoading
-    {
-        get => GetValue(IsLoadingProperty);
-        set => SetValue(IsLoadingProperty, value);
-    }
-
-    [Content]
-    public Control? MaskTarget
-    {
-        get => GetValue(MaskTargetProperty);
-        set => SetValue(MaskTargetProperty, value);
-    }
-
-    #endregion
 }

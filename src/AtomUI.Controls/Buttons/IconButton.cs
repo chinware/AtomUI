@@ -13,6 +13,64 @@ using AvaloniaButton = Avalonia.Controls.Button;
 
 public class IconButton : AvaloniaButton, ICustomHitTest
 {
+    #region 公共属性定义
+
+    public static readonly StyledProperty<PathIcon?> IconProperty
+        = AvaloniaProperty.Register<IconButton, PathIcon?>(nameof(Icon));
+
+    public static readonly StyledProperty<IconAnimation> LoadingAnimationProperty =
+        PathIcon.LoadingAnimationProperty.AddOwner<IconButton>();
+
+    public static readonly StyledProperty<TimeSpan> LoadingAnimationDurationProperty =
+        PathIcon.LoadingAnimationDurationProperty.AddOwner<IconButton>();
+
+    public static readonly StyledProperty<double> IconWidthProperty
+        = AvaloniaProperty.Register<IconButton, double>(nameof(IconWidth));
+
+    public static readonly StyledProperty<double> IconHeightProperty
+        = AvaloniaProperty.Register<IconButton, double>(nameof(IconHeight));
+
+    public static readonly StyledProperty<bool> IsEnableHoverEffectProperty
+        = AvaloniaProperty.Register<IconButton, bool>(nameof(IsEnableHoverEffect));
+
+    public PathIcon? Icon
+    {
+        get => GetValue(IconProperty);
+        set => SetValue(IconProperty, value);
+    }
+
+    public IconAnimation LoadingAnimation
+    {
+        get => GetValue(LoadingAnimationProperty);
+        set => SetValue(LoadingAnimationProperty, value);
+    }
+
+    public TimeSpan LoadingAnimationDuration
+    {
+        get => GetValue(LoadingAnimationDurationProperty);
+        set => SetValue(LoadingAnimationDurationProperty, value);
+    }
+
+    public double IconWidth
+    {
+        get => GetValue(IconWidthProperty);
+        set => SetValue(IconWidthProperty, value);
+    }
+
+    public double IconHeight
+    {
+        get => GetValue(IconHeightProperty);
+        set => SetValue(IconHeightProperty, value);
+    }
+
+    public bool IsEnableHoverEffect
+    {
+        get => GetValue(IsEnableHoverEffectProperty);
+        set => SetValue(IsEnableHoverEffectProperty, value);
+    }
+
+    #endregion
+
     private ControlStyleState _styleState;
 
     static IconButton()
@@ -23,11 +81,6 @@ public class IconButton : AvaloniaButton, ICustomHitTest
     public IconButton()
     {
         Cursor = new Cursor(StandardCursorType.Hand);
-    }
-
-    public bool HitTest(Point point)
-    {
-        return true;
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -110,61 +163,8 @@ public class IconButton : AvaloniaButton, ICustomHitTest
         }
     }
 
-    #region 公共属性定义
-
-    public static readonly StyledProperty<PathIcon?> IconProperty
-        = AvaloniaProperty.Register<IconButton, PathIcon?>(nameof(Icon));
-
-    public static readonly StyledProperty<IconAnimation> LoadingAnimationProperty =
-        PathIcon.LoadingAnimationProperty.AddOwner<IconButton>();
-
-    public static readonly StyledProperty<TimeSpan> LoadingAnimationDurationProperty =
-        PathIcon.LoadingAnimationDurationProperty.AddOwner<IconButton>();
-
-    public static readonly StyledProperty<double> IconWidthProperty
-        = AvaloniaProperty.Register<IconButton, double>(nameof(IconWidth));
-
-    public static readonly StyledProperty<double> IconHeightProperty
-        = AvaloniaProperty.Register<IconButton, double>(nameof(IconHeight));
-
-    public static readonly StyledProperty<bool> IsEnableHoverEffectProperty
-        = AvaloniaProperty.Register<IconButton, bool>(nameof(IsEnableHoverEffect));
-
-    public PathIcon? Icon
+    public bool HitTest(Point point)
     {
-        get => GetValue(IconProperty);
-        set => SetValue(IconProperty, value);
+        return true;
     }
-
-    public IconAnimation LoadingAnimation
-    {
-        get => GetValue(LoadingAnimationProperty);
-        set => SetValue(LoadingAnimationProperty, value);
-    }
-
-    public TimeSpan LoadingAnimationDuration
-    {
-        get => GetValue(LoadingAnimationDurationProperty);
-        set => SetValue(LoadingAnimationDurationProperty, value);
-    }
-
-    public double IconWidth
-    {
-        get => GetValue(IconWidthProperty);
-        set => SetValue(IconWidthProperty, value);
-    }
-
-    public double IconHeight
-    {
-        get => GetValue(IconHeightProperty);
-        set => SetValue(IconHeightProperty, value);
-    }
-
-    public bool IsEnableHoverEffect
-    {
-        get => GetValue(IsEnableHoverEffectProperty);
-        set => SetValue(IsEnableHoverEffectProperty, value);
-    }
-
-    #endregion
 }

@@ -1,6 +1,5 @@
 ﻿using AtomUI.Controls.Utils;
 using AtomUI.Data;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
@@ -28,12 +27,130 @@ public enum TreeItemHoverMode
 public class TreeView : AvaloniaTreeView
 {
     public const string DraggablePC = ":draggable";
-    private TreeViewItem? _beingDraggedTreeItem;
-    private TreeViewItem? _currentDragOver; // 这个不是目标节点，有可能是在父节点上拖动
-    private DragPreviewAdorner? _dragPreview;
-    private DropTargetInfo? _dropTargetInfo;
-    private TreeViewItem? _dropTargetNode; // 目标释放节点
+
+    #region 公共属性定义
+
+    public static readonly StyledProperty<bool> IsDraggableProperty =
+        AvaloniaProperty.Register<TreeView, bool>(nameof(IsDraggable));
+
+    public static readonly StyledProperty<bool> IsCheckableProperty =
+        AvaloniaProperty.Register<TreeView, bool>(nameof(IsCheckable));
+
+    public static readonly StyledProperty<bool> IsShowIconProperty =
+        AvaloniaProperty.Register<TreeView, bool>(nameof(IsShowIcon));
+
+    public static readonly StyledProperty<bool> IsShowLineProperty =
+        AvaloniaProperty.Register<TreeView, bool>(nameof(IsShowLine));
+
+    public static readonly StyledProperty<TreeItemHoverMode> NodeHoverModeProperty =
+        AvaloniaProperty.Register<TreeView, TreeItemHoverMode>(nameof(NodeHoverMode));
+
+    public static readonly StyledProperty<bool> IsShowLeafSwitcherProperty =
+        AvaloniaProperty.Register<TreeView, bool>(nameof(IsShowLeafSwitcher));
+
+    public bool IsDraggable
+    {
+        get => GetValue(IsDraggableProperty);
+        set => SetValue(IsDraggableProperty, value);
+    }
+
+    public bool IsCheckable
+    {
+        get => GetValue(IsCheckableProperty);
+        set => SetValue(IsCheckableProperty, value);
+    }
+
+    public bool IsShowIcon
+    {
+        get => GetValue(IsShowIconProperty);
+        set => SetValue(IsShowIconProperty, value);
+    }
+
+    public bool IsShowLine
+    {
+        get => GetValue(IsShowLineProperty);
+        set => SetValue(IsShowLineProperty, value);
+    }
+
+    public TreeItemHoverMode NodeHoverMode
+    {
+        get => GetValue(NodeHoverModeProperty);
+        set => SetValue(NodeHoverModeProperty, value);
+    }
+
+    public bool IsShowLeafSwitcher
+    {
+        get => GetValue(IsShowLeafSwitcherProperty);
+        set => SetValue(IsShowLeafSwitcherProperty, value);
+    }
+
+    public bool IsDefaultExpandAll { get; set; } = false;
+
+    #endregion
+
+    #region 内部属性定义
+
+    internal static readonly DirectProperty<TreeView, bool> IsDraggingProperty =
+        AvaloniaProperty.RegisterDirect<TreeView, bool>(nameof(IsDragging),
+            o => o.IsDragging,
+            (o, v) => o.IsDragging = v);
+
+    internal static readonly DirectProperty<TreeView, DragIndicatorRenderInfo?> DragIndicatorRenderInfoProperty =
+        AvaloniaProperty.RegisterDirect<TreeView, DragIndicatorRenderInfo?>(nameof(DragIndicatorRenderInfo),
+            o => o.DragIndicatorRenderInfo,
+            (o, v) => o.DragIndicatorRenderInfo = v);
+
+    internal static readonly DirectProperty<TreeView, double> DragIndicatorLineWidthProperty =
+        AvaloniaProperty.RegisterDirect<TreeView, double>(nameof(DragIndicatorLineWidth),
+            o => o.DragIndicatorLineWidth,
+            (o, v) => o.DragIndicatorLineWidth = v);
+
+    internal static readonly DirectProperty<TreeView, IBrush?> DragIndicatorBrushProperty =
+        AvaloniaProperty.RegisterDirect<TreeView, IBrush?>(nameof(DragIndicatorBrush),
+            o => o.DragIndicatorBrush,
+            (o, v) => o.DragIndicatorBrush = v);
+
+    private DragIndicatorRenderInfo? _dragIndicatorRenderInfo;
+
+    internal DragIndicatorRenderInfo? DragIndicatorRenderInfo
+    {
+        get => _dragIndicatorRenderInfo;
+        set => SetAndRaise(DragIndicatorRenderInfoProperty, ref _dragIndicatorRenderInfo, value);
+    }
+
+    private bool _isDragging;
+
+    internal bool IsDragging
+    {
+        get => _isDragging;
+        set => SetAndRaise(IsDraggingProperty, ref _isDragging, value);
+    }
+
+    private double _dragIndicatorLineWidth;
+
+    internal double DragIndicatorLineWidth
+    {
+        get => _dragIndicatorLineWidth;
+        set => SetAndRaise(DragIndicatorLineWidthProperty, ref _dragIndicatorLineWidth, value);
+    }
+
+    private IBrush? _dragIndicatorBrush;
+
+    internal IBrush? DragIndicatorBrush
+    {
+        get => _dragIndicatorBrush;
+        set => SetAndRaise(DragIndicatorBrushProperty, ref _dragIndicatorBrush, value);
+    }
+
+    #endregion
+
+    internal List<TreeViewItem> DefaultCheckedItems { get; set; }
     private Point? _lastPoint;
+    private TreeViewItem? _beingDraggedTreeItem;
+    private DragPreviewAdorner? _dragPreview;
+    private TreeViewItem? _currentDragOver; // 这个不是目标节点，有可能是在父节点上拖动
+    private TreeViewItem? _dropTargetNode; // 目标释放节点
+    private DropTargetInfo? _dropTargetInfo;
 
     static TreeView()
     {
@@ -45,8 +162,6 @@ public class TreeView : AvaloniaTreeView
         UpdatePseudoClasses();
         DefaultCheckedItems = new List<TreeViewItem>();
     }
-
-    internal List<TreeViewItem> DefaultCheckedItems { get; set; }
 
     public void ExpandAll()
     {
@@ -380,137 +495,6 @@ public class TreeView : AvaloniaTreeView
         return result;
     }
 
-    public override void Render(DrawingContext context)
-    {
-        if (IsDragging && _dragIndicatorRenderInfo is not null)
-        {
-            var pen = new Pen(DragIndicatorBrush, DragIndicatorLineWidth);
-            {
-                using var state = context.PushRenderOptions(new RenderOptions
-                {
-                    EdgeMode = EdgeMode.Aliased
-                });
-                context.DrawLine(pen, _dragIndicatorRenderInfo.StartPoint, _dragIndicatorRenderInfo.EndPoint);
-            }
-        }
-    }
-
-    #region 公共属性定义
-
-    public static readonly StyledProperty<bool> IsDraggableProperty =
-        AvaloniaProperty.Register<TreeView, bool>(nameof(IsDraggable));
-
-    public static readonly StyledProperty<bool> IsCheckableProperty =
-        AvaloniaProperty.Register<TreeView, bool>(nameof(IsCheckable));
-
-    public static readonly StyledProperty<bool> IsShowIconProperty =
-        AvaloniaProperty.Register<TreeView, bool>(nameof(IsShowIcon));
-
-    public static readonly StyledProperty<bool> IsShowLineProperty =
-        AvaloniaProperty.Register<TreeView, bool>(nameof(IsShowLine));
-
-    public static readonly StyledProperty<TreeItemHoverMode> NodeHoverModeProperty =
-        AvaloniaProperty.Register<TreeView, TreeItemHoverMode>(nameof(NodeHoverMode));
-
-    public static readonly StyledProperty<bool> IsShowLeafSwitcherProperty =
-        AvaloniaProperty.Register<TreeView, bool>(nameof(IsShowLeafSwitcher));
-
-    public bool IsDraggable
-    {
-        get => GetValue(IsDraggableProperty);
-        set => SetValue(IsDraggableProperty, value);
-    }
-
-    public bool IsCheckable
-    {
-        get => GetValue(IsCheckableProperty);
-        set => SetValue(IsCheckableProperty, value);
-    }
-
-    public bool IsShowIcon
-    {
-        get => GetValue(IsShowIconProperty);
-        set => SetValue(IsShowIconProperty, value);
-    }
-
-    public bool IsShowLine
-    {
-        get => GetValue(IsShowLineProperty);
-        set => SetValue(IsShowLineProperty, value);
-    }
-
-    public TreeItemHoverMode NodeHoverMode
-    {
-        get => GetValue(NodeHoverModeProperty);
-        set => SetValue(NodeHoverModeProperty, value);
-    }
-
-    public bool IsShowLeafSwitcher
-    {
-        get => GetValue(IsShowLeafSwitcherProperty);
-        set => SetValue(IsShowLeafSwitcherProperty, value);
-    }
-
-    public bool IsDefaultExpandAll { get; set; } = false;
-
-    #endregion
-
-    #region 内部属性定义
-
-    internal static readonly DirectProperty<TreeView, bool> IsDraggingProperty =
-        AvaloniaProperty.RegisterDirect<TreeView, bool>(nameof(IsDragging),
-            o => o.IsDragging,
-            (o, v) => o.IsDragging = v);
-
-    internal static readonly DirectProperty<TreeView, DragIndicatorRenderInfo?> DragIndicatorRenderInfoProperty =
-        AvaloniaProperty.RegisterDirect<TreeView, DragIndicatorRenderInfo?>(nameof(DragIndicatorRenderInfo),
-            o => o.DragIndicatorRenderInfo,
-            (o, v) => o.DragIndicatorRenderInfo = v);
-
-    internal static readonly DirectProperty<TreeView, double> DragIndicatorLineWidthProperty =
-        AvaloniaProperty.RegisterDirect<TreeView, double>(nameof(DragIndicatorLineWidth),
-            o => o.DragIndicatorLineWidth,
-            (o, v) => o.DragIndicatorLineWidth = v);
-
-    internal static readonly DirectProperty<TreeView, IBrush?> DragIndicatorBrushProperty =
-        AvaloniaProperty.RegisterDirect<TreeView, IBrush?>(nameof(DragIndicatorBrush),
-            o => o.DragIndicatorBrush,
-            (o, v) => o.DragIndicatorBrush = v);
-
-    private DragIndicatorRenderInfo? _dragIndicatorRenderInfo;
-
-    internal DragIndicatorRenderInfo? DragIndicatorRenderInfo
-    {
-        get => _dragIndicatorRenderInfo;
-        set => SetAndRaise(DragIndicatorRenderInfoProperty, ref _dragIndicatorRenderInfo, value);
-    }
-
-    private bool _isDragging;
-
-    internal bool IsDragging
-    {
-        get => _isDragging;
-        set => SetAndRaise(IsDraggingProperty, ref _isDragging, value);
-    }
-
-    private double _dragIndicatorLineWidth;
-
-    internal double DragIndicatorLineWidth
-    {
-        get => _dragIndicatorLineWidth;
-        set => SetAndRaise(DragIndicatorLineWidthProperty, ref _dragIndicatorLineWidth, value);
-    }
-
-    private IBrush? _dragIndicatorBrush;
-
-    internal IBrush? DragIndicatorBrush
-    {
-        get => _dragIndicatorBrush;
-        set => SetAndRaise(DragIndicatorBrushProperty, ref _dragIndicatorBrush, value);
-    }
-
-    #endregion
-
     #region 拖动相关处理
 
     protected override void OnPointerPressed(PointerPressedEventArgs e)
@@ -530,7 +514,6 @@ public class TreeView : AvaloniaTreeView
         {
             var delta             = e.GetPosition(this) - _lastPoint.Value;
             var manhattanDistance = Math.Abs(delta.X) + Math.Abs(delta.Y);
-
             // 先写死
             if (manhattanDistance > 5)
             {
@@ -865,6 +848,21 @@ public class TreeView : AvaloniaTreeView
     }
 
     #endregion
+
+    public override void Render(DrawingContext context)
+    {
+        if (IsDragging && _dragIndicatorRenderInfo is not null)
+        {
+            var pen = new Pen(DragIndicatorBrush, DragIndicatorLineWidth);
+            {
+                using var state = context.PushRenderOptions(new RenderOptions
+                {
+                    EdgeMode = EdgeMode.Aliased
+                });
+                context.DrawLine(pen, _dragIndicatorRenderInfo.StartPoint, _dragIndicatorRenderInfo.EndPoint);
+            }
+        }
+    }
 }
 
 internal class DropTargetInfo

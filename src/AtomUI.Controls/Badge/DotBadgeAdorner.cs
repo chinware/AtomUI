@@ -16,11 +16,27 @@ internal class DotBadgeAdorner : Control, IControlCustomStyle
             o => o.Status,
             (o, v) => o.Status = v);
 
+    private DotBadgeStatus? _status;
+
+    public DotBadgeStatus? Status
+    {
+        get => _status;
+        set => SetAndRaise(StatusProperty, ref _status, value);
+    }
+
     public static readonly DirectProperty<DotBadgeAdorner, string?> TextProperty =
         AvaloniaProperty.RegisterDirect<DotBadgeAdorner, string?>(
             nameof(Text),
             o => o.Text,
             (o, v) => o.Text = v);
+
+    private string? _text;
+
+    public string? Text
+    {
+        get => _text;
+        set => SetAndRaise(TextProperty, ref _text, value);
+    }
 
     public static readonly DirectProperty<DotBadgeAdorner, bool> IsAdornerModeProperty =
         AvaloniaProperty.RegisterDirect<DotBadgeAdorner, bool>(
@@ -56,46 +72,7 @@ internal class DotBadgeAdorner : Control, IControlCustomStyle
         AvaloniaProperty.Register<DotBadgeAdorner, Point>(
             nameof(Offset));
 
-    private readonly IControlCustomStyle _customStyle;
-
-    private BoxShadows _boxShadows;
-
-    private bool _initialized;
-
     private bool _isAdornerMode;
-
-    private DotBadgeStatus? _status;
-
-    private string? _text;
-
-    private Label? _textLabel;
-
-    // 不知道为什么这个值会被 AdornerLayer 重写
-    // 非常不优美，但是能工作
-    internal RelativePoint? AnimationRenderTransformOrigin;
-
-    static DotBadgeAdorner()
-    {
-        AffectsMeasure<DotBadge>(TextProperty, IsAdornerModeProperty);
-        AffectsRender<DotBadge>(BadgeDotColorProperty, OffsetProperty);
-    }
-
-    public DotBadgeAdorner()
-    {
-        _customStyle = this;
-    }
-
-    public DotBadgeStatus? Status
-    {
-        get => _status;
-        set => SetAndRaise(StatusProperty, ref _status, value);
-    }
-
-    public string? Text
-    {
-        get => _text;
-        set => SetAndRaise(TextProperty, ref _text, value);
-    }
 
     public bool IsAdornerMode
     {
@@ -145,12 +122,25 @@ internal class DotBadgeAdorner : Control, IControlCustomStyle
         set => SetValue(BadgeTextMarginInlineProperty, value);
     }
 
-    void IControlCustomStyle.BuildStyles()
+    private bool _initialized;
+    private readonly IControlCustomStyle _customStyle;
+    private Label? _textLabel;
+
+    private BoxShadows _boxShadows;
+
+    // 不知道为什么这个值会被 AdornerLayer 重写
+    // 非常不优美，但是能工作
+    internal RelativePoint? AnimationRenderTransformOrigin;
+
+    static DotBadgeAdorner()
     {
-        if (Styles.Count == 0)
-        {
-            BuildBadgeColorStyle();
-        }
+        AffectsMeasure<DotBadge>(TextProperty, IsAdornerModeProperty);
+        AffectsRender<DotBadge>(BadgeDotColorProperty, OffsetProperty);
+    }
+
+    public DotBadgeAdorner()
+    {
+        _customStyle = this;
     }
 
     public sealed override void ApplyTemplate()
@@ -179,6 +169,14 @@ internal class DotBadgeAdorner : Control, IControlCustomStyle
     {
         base.OnAttachedToLogicalTree(e);
         _customStyle.BuildStyles();
+    }
+
+    void IControlCustomStyle.BuildStyles()
+    {
+        if (Styles.Count == 0)
+        {
+            BuildBadgeColorStyle();
+        }
     }
 
     private void BuildBadgeColorStyle()

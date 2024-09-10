@@ -6,11 +6,6 @@ namespace AtomUI.Controls;
 
 public class FlyoutPresenter : ArrowDecoratedBox
 {
-    public FlyoutPresenter()
-    {
-        SetValue(CursorProperty, new Cursor(StandardCursorType.Arrow), BindingPriority.Template);
-    }
-
     // 我们在这里并没有增加任何元素或者样式
     protected override Type StyleKeyOverride => typeof(ArrowDecoratedBox);
 
@@ -27,5 +22,10 @@ public class FlyoutPresenter : ArrowDecoratedBox
         }
 
         base.OnKeyDown(e);
+    }
+
+    public FlyoutPresenter()
+    {
+        SetValue(CursorProperty, new Cursor(StandardCursorType.Arrow), BindingPriority.Template);
     }
 }

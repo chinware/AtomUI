@@ -1,20 +1,20 @@
-<UserControl x:Class="AtomUI.Demo.Desktop.ShowCase.TreeViewShowCase"
-             xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:atom="https://atomui.net"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d">
-    <desktop:ShowCasePanel>
-        <desktop:ShowCaseItem Title="Basic"
-                              Description="The most basic usage, tell you how to use checkable, selectable, disabled, defaultExpandKeys, and etc.">
+<UserControl
+    x:Class="AtomUI.Demo.Desktop.ShowCase.TreeViewShowCase"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:atom="https://atomui.net"
+    xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
+    mc:Ignorable="d">
+    <showcase:ShowCasePanel>
+        <showcase:ShowCaseItem
+            Title="Basic"
+            Description="The most basic usage, tell you how to use checkable, selectable, disabled, defaultExpandKeys, and etc.">
             <atom:TreeView IsCheckable="True" IsDefaultExpandAll="True">
                 <atom:TreeViewItem Header="parent 1">
                     <atom:TreeViewItem Header="parent 1-0">
-                        <atom:TreeViewItem Header="leaf"
-                                           IsCheckable="False"
-                                           IsChecked="True" />
+                        <atom:TreeViewItem Header="leaf" IsCheckable="False" IsChecked="True" />
                         <atom:TreeViewItem Header="leaf" />
                     </atom:TreeViewItem>
                     <atom:TreeViewItem Header="parent 1-1" IsChecked="True">
@@ -22,45 +22,44 @@
                     </atom:TreeViewItem>
                 </atom:TreeViewItem>
             </atom:TreeView>
-        </desktop:ShowCaseItem>
+        </showcase:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Block Node" Description="Block Node.">
-            <atom:TreeView IsCheckable="True"
-                           IsDefaultExpandAll="True"
-                           NodeHoverMode="Block">
+        <showcase:ShowCaseItem
+            Title="Block Node"
+            Description="Block Node.">
+            <atom:TreeView IsCheckable="True" IsDefaultExpandAll="True" NodeHoverMode="Block">
                 <atom:TreeViewItem Header="parent">
                     <atom:TreeViewItem Header="child 1" IsEnabled="False" />
                     <atom:TreeViewItem Header="child 2" IsCheckable="False" />
                 </atom:TreeViewItem>
             </atom:TreeView>
-        </desktop:ShowCaseItem>
+        </showcase:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="Tree with line"
-                              Description="Tree with connected line between nodes, turn on by showLine, customize the preset icon by switcherIcon.">
+        <showcase:ShowCaseItem
+            Title="Tree with line"
+            Description="Tree with connected line between nodes, turn on by showLine, customize the preset icon by switcherIcon.">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <StackPanel Orientation="Horizontal" Spacing="10">
                     <TextBlock>showLine:</TextBlock>
-                    <atom:ToggleSwitch IsChecked="{Binding ShowLineSwitchChecked, Mode=TwoWay}" />
+                    <atom:ToggleSwitch IsChecked="{Binding ShowLineSwitchChecked,Mode=TwoWay}" />
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" Spacing="10">
                     <TextBlock>showIcon:</TextBlock>
-                    <atom:ToggleSwitch IsChecked="{Binding ShowIconSwitchChecked, Mode=TwoWay}" />
+                    <atom:ToggleSwitch IsChecked="{Binding ShowIconSwitchChecked,Mode=TwoWay}" />
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" Spacing="10">
                     <TextBlock>ShowLeafSwitcher:</TextBlock>
-                    <atom:ToggleSwitch IsChecked="{Binding ShowLeafSwitcherSwitchChecked, Mode=TwoWay}" />
+                    <atom:ToggleSwitch IsChecked="{Binding ShowLeafSwitcherSwitchChecked,Mode=TwoWay}" />
                 </StackPanel>
 
-                <atom:TreeView IsShowIcon="{Binding ShowIconSwitchChecked}"
-                               IsShowLeafSwitcher="{Binding ShowLeafSwitcherSwitchChecked}"
-                               IsShowLine="{Binding ShowLineSwitchChecked}">
-                    <atom:TreeViewItem Header="parent 1"
-                                       Icon="{atom:IconProvider Kind=CarryOutOutlined}"
+                <atom:TreeView IsShowLine="{Binding ShowLineSwitchChecked}"
+                               IsShowIcon="{Binding ShowIconSwitchChecked}"
+                               IsShowLeafSwitcher="{Binding ShowLeafSwitcherSwitchChecked}">
+                    <atom:TreeViewItem Header="parent 1" Icon="{atom:IconProvider Kind=CarryOutOutlined}"
                                        IsExpanded="True">
-                        <atom:TreeViewItem Header="parent 1-0"
-                                           Icon="{atom:IconProvider Kind=CarryOutOutlined}"
+                        <atom:TreeViewItem Header="parent 1-0" Icon="{atom:IconProvider Kind=CarryOutOutlined}"
                                            IsExpanded="True">
                             <atom:TreeViewItem Header="leaf 1" Icon="{atom:IconProvider Kind=CarryOutOutlined}" />
                             <atom:TreeViewItem Header="leaf 2" Icon="{atom:IconProvider Kind=CarryOutOutlined}" />
@@ -81,11 +80,12 @@
                     </atom:TreeViewItem>
                 </atom:TreeView>
             </StackPanel>
-        </desktop:ShowCaseItem>
+        </showcase:ShowCaseItem>
 
-        <desktop:ShowCaseItem Title="draggable"
-                              Margin="0,0,10,0"
-                              Description="Drag treeNode to insert after the other treeNode or insert into the other parent TreeNode.">
+        <showcase:ShowCaseItem
+            Title="draggable"
+            Description="Drag treeNode to insert after the other treeNode or insert into the other parent TreeNode."
+            Margin="0, 0, 10, 0">
             <atom:TreeView IsDraggable="True" NodeHoverMode="Block">
                 <atom:TreeViewItem Header="0-0">
                     <atom:TreeViewItem Header="0-0-0">
@@ -115,7 +115,7 @@
                 </atom:TreeViewItem>
                 <atom:TreeViewItem Header="0-2" />
             </atom:TreeView>
-        </desktop:ShowCaseItem>
+        </showcase:ShowCaseItem>
 
-    </desktop:ShowCasePanel>
+    </showcase:ShowCasePanel>
 </UserControl>

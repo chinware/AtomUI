@@ -3,17 +3,17 @@ using Avalonia;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Controls.Badge;
 
 internal class CountBadgeZoomBadgeIn : AbstractMotion
 {
+    public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
+    public MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
+
     public CountBadgeZoomBadgeIn()
     {
         MotionRenderTransformOrigin = new RelativePoint(0.5, 0.5, RelativeUnit.Relative);
     }
-
-    public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
-    public MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
 
     public void ConfigureOpacity(TimeSpan duration, Easing? easing = null)
     {
@@ -53,13 +53,13 @@ internal class CountBadgeZoomBadgeIn : AbstractMotion
 
 internal class CountBadgeZoomBadgeOut : AbstractMotion
 {
+    public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
+    public MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
+
     public CountBadgeZoomBadgeOut()
     {
         MotionRenderTransformOrigin = new RelativePoint(0.5, 0.5, RelativeUnit.Relative);
     }
-
-    public MotionConfig? OpacityConfig => GetMotionConfig(MotionOpacityProperty);
-    public MotionConfig? RenderTransformConfig => GetMotionConfig(MotionRenderTransformProperty);
 
     public void ConfigureOpacity(TimeSpan duration, Easing? easing = null)
     {

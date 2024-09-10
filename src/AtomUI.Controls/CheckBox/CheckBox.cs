@@ -3,6 +3,7 @@ using AtomUI.Media;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
@@ -26,37 +27,96 @@ public class CheckBox : AvaloniaCheckBox,
     internal static readonly StyledProperty<double> CheckIndicatorSizeProperty =
         AvaloniaProperty.Register<CheckBox, double>(nameof(CheckIndicatorSize));
 
+    internal double CheckIndicatorSize
+    {
+        get => GetValue(CheckIndicatorSizeProperty);
+        set => SetValue(CheckIndicatorSizeProperty, value);
+    }
+
     internal static readonly StyledProperty<double> PaddingInlineProperty =
         AvaloniaProperty.Register<CheckBox, double>(nameof(PaddingInline));
+
+    internal double PaddingInline
+    {
+        get => GetValue(PaddingInlineProperty);
+        set => SetValue(PaddingInlineProperty, value);
+    }
 
     internal static readonly StyledProperty<IBrush?> IndicatorBorderBrushProperty =
         AvaloniaProperty.Register<CheckBox, IBrush?>(nameof(IndicatorBorderBrush));
 
+    internal IBrush? IndicatorBorderBrush
+    {
+        get => GetValue(IndicatorBorderBrushProperty);
+        set => SetValue(IndicatorBorderBrushProperty, value);
+    }
+
     internal static readonly StyledProperty<IBrush?> IndicatorCheckedMarkBrushProperty =
         AvaloniaProperty.Register<CheckBox, IBrush?>(nameof(IndicatorCheckedMarkBrush));
+
+    internal IBrush? IndicatorCheckedMarkBrush
+    {
+        get => GetValue(IndicatorCheckedMarkBrushProperty);
+        set => SetValue(IndicatorCheckedMarkBrushProperty, value);
+    }
 
     internal static readonly StyledProperty<double> IndicatorCheckedMarkEffectSizeProperty =
         AvaloniaProperty.Register<CheckBox, double>(nameof(IndicatorCheckedMarkEffectSize));
 
+    internal double IndicatorCheckedMarkEffectSize
+    {
+        get => GetValue(IndicatorCheckedMarkEffectSizeProperty);
+        set => SetValue(IndicatorCheckedMarkEffectSizeProperty, value);
+    }
+
     internal static readonly StyledProperty<IBrush?> IndicatorTristateMarkBrushProperty =
         AvaloniaProperty.Register<CheckBox, IBrush?>(nameof(IndicatorTristateMarkBrush));
+
+    internal IBrush? IndicatorTristateMarkBrush
+    {
+        get => GetValue(IndicatorTristateMarkBrushProperty);
+        set => SetValue(IndicatorTristateMarkBrushProperty, value);
+    }
 
     internal static readonly StyledProperty<double> IndicatorTristateMarkSizeProperty =
         AvaloniaProperty.Register<CheckBox, double>(nameof(IndicatorTristateMarkSize));
 
+    internal double IndicatorTristateMarkSize
+    {
+        get => GetValue(IndicatorTristateMarkSizeProperty);
+        set => SetValue(IndicatorTristateMarkSizeProperty, value);
+    }
+
     internal static readonly StyledProperty<IBrush?> IndicatorBackgroundProperty =
         AvaloniaProperty.Register<CheckBox, IBrush?>(nameof(IndicatorBackground));
+
+    internal IBrush? IndicatorBackground
+    {
+        get => GetValue(IndicatorBackgroundProperty);
+        set => SetValue(IndicatorBackgroundProperty, value);
+    }
 
     internal static readonly StyledProperty<Thickness> IndicatorBorderThicknessProperty =
         AvaloniaProperty.Register<CheckBox, Thickness>(nameof(IndicatorBorderThickness));
 
+    internal Thickness IndicatorBorderThickness
+    {
+        get => GetValue(IndicatorBorderThicknessProperty);
+        set => SetValue(IndicatorBorderThicknessProperty, value);
+    }
+
     internal static readonly StyledProperty<CornerRadius> IndicatorBorderRadiusProperty =
         AvaloniaProperty.Register<CheckBox, CornerRadius>(nameof(IndicatorBorderRadius));
 
-    private readonly BorderRenderHelper _borderRenderHelper;
+    internal CornerRadius IndicatorBorderRadius
+    {
+        get => GetValue(IndicatorBorderRadiusProperty);
+        set => SetValue(IndicatorBorderRadiusProperty, value);
+    }
 
     private readonly IControlCustomStyle _customStyle;
     private ControlStyleState _styleState;
+    private readonly BorderRenderHelper _borderRenderHelper;
 
     static CheckBox()
     {
@@ -76,71 +136,6 @@ public class CheckBox : AvaloniaCheckBox,
     {
         _customStyle        = this;
         _borderRenderHelper = new BorderRenderHelper();
-    }
-
-    internal double CheckIndicatorSize
-    {
-        get => GetValue(CheckIndicatorSizeProperty);
-        set => SetValue(CheckIndicatorSizeProperty, value);
-    }
-
-    internal double PaddingInline
-    {
-        get => GetValue(PaddingInlineProperty);
-        set => SetValue(PaddingInlineProperty, value);
-    }
-
-    internal IBrush? IndicatorBorderBrush
-    {
-        get => GetValue(IndicatorBorderBrushProperty);
-        set => SetValue(IndicatorBorderBrushProperty, value);
-    }
-
-    internal IBrush? IndicatorCheckedMarkBrush
-    {
-        get => GetValue(IndicatorCheckedMarkBrushProperty);
-        set => SetValue(IndicatorCheckedMarkBrushProperty, value);
-    }
-
-    internal double IndicatorCheckedMarkEffectSize
-    {
-        get => GetValue(IndicatorCheckedMarkEffectSizeProperty);
-        set => SetValue(IndicatorCheckedMarkEffectSizeProperty, value);
-    }
-
-    internal IBrush? IndicatorTristateMarkBrush
-    {
-        get => GetValue(IndicatorTristateMarkBrushProperty);
-        set => SetValue(IndicatorTristateMarkBrushProperty, value);
-    }
-
-    internal double IndicatorTristateMarkSize
-    {
-        get => GetValue(IndicatorTristateMarkSizeProperty);
-        set => SetValue(IndicatorTristateMarkSizeProperty, value);
-    }
-
-    internal IBrush? IndicatorBackground
-    {
-        get => GetValue(IndicatorBackgroundProperty);
-        set => SetValue(IndicatorBackgroundProperty, value);
-    }
-
-    internal Thickness IndicatorBorderThickness
-    {
-        get => GetValue(IndicatorBorderThicknessProperty);
-        set => SetValue(IndicatorBorderThicknessProperty, value);
-    }
-
-    internal CornerRadius IndicatorBorderRadius
-    {
-        get => GetValue(IndicatorBorderRadiusProperty);
-        set => SetValue(IndicatorBorderRadiusProperty, value);
-    }
-
-    public bool HitTest(Point point)
-    {
-        return true;
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
@@ -207,6 +202,11 @@ public class CheckBox : AvaloniaCheckBox,
                 new Rect(offsetX, offsetY, IndicatorTristateMarkSize, IndicatorTristateMarkSize);
             context.FillRectangle(IndicatorTristateMarkBrush!, indicatorTristateRect);
         }
+    }
+
+    public bool HitTest(Point point)
+    {
+        return true;
     }
 
     #region IControlCustomStyle 实现

@@ -49,6 +49,22 @@ internal class BadgeToken : AbstractControlDesignToken
     /// </summary>
     public double StatusSize { get; set; }
 
+    #region 内部使用的 Token
+
+    public double BadgeFontHeight { get; set; }
+    public Color BadgeTextColor { get; set; }
+    public Color BadgeColor { get; set; }
+    public Color BadgeColorHover { get; set; }
+    public double BadgeShadowSize { get; set; }
+    public Color BadgeShadowColor { get; set; }
+    public TimeSpan BadgeProcessingDuration { get; set; }
+    public Point BadgeRibbonOffset { get; set; }
+    public Transform? BadgeRibbonCornerTransform { get; set; }
+    public int BadgeRibbonCornerDarkenAmount { get; set; }
+    public Thickness BadgeRibbonTextPadding { get; set; }
+
+    #endregion
+
     internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
@@ -77,20 +93,4 @@ internal class BadgeToken : AbstractControlDesignToken
         BadgeRibbonCornerDarkenAmount = 15;
         BadgeRibbonTextPadding        = new Thickness(_globalToken.PaddingXS, 0);
     }
-
-    #region 内部使用的 Token
-
-    public double BadgeFontHeight { get; set; }
-    public Color BadgeTextColor { get; set; }
-    public Color BadgeColor { get; set; }
-    public Color BadgeColorHover { get; set; }
-    public double BadgeShadowSize { get; set; }
-    public Color BadgeShadowColor { get; set; }
-    public TimeSpan BadgeProcessingDuration { get; set; }
-    public Point BadgeRibbonOffset { get; set; }
-    public Transform? BadgeRibbonCornerTransform { get; set; }
-    public int BadgeRibbonCornerDarkenAmount { get; set; }
-    public Thickness BadgeRibbonTextPadding { get; set; }
-
-    #endregion
 }

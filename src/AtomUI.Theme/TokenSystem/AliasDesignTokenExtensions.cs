@@ -15,7 +15,6 @@ public static class AliasDesignTokenExtensions
         var screenXXL = 1600;
 
         var seedToken = aliasToken.SeedToken;
-
         // Motion
         if (!seedToken.Motion)
         {

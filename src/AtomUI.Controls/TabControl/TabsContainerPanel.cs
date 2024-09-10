@@ -5,6 +5,53 @@ namespace AtomUI.Controls;
 
 internal class TabsContainerPanel : Panel
 {
+    #region 公共属性定义
+
+    public static readonly DirectProperty<TabsContainerPanel, BaseTabScrollViewer?> TabScrollViewerProperty =
+        AvaloniaProperty.RegisterDirect<TabsContainerPanel, BaseTabScrollViewer?>(nameof(TabScrollViewer),
+            o => o.TabScrollViewer,
+            (o, v) => o.TabScrollViewer = v);
+
+    private BaseTabScrollViewer? _tabScrollViewer;
+
+    public BaseTabScrollViewer? TabScrollViewer
+    {
+        get => _tabScrollViewer;
+        set => SetAndRaise(TabScrollViewerProperty, ref _tabScrollViewer, value);
+    }
+
+    public static readonly DirectProperty<TabsContainerPanel, IconButton?> AddTabButtonProperty =
+        AvaloniaProperty.RegisterDirect<TabsContainerPanel, IconButton?>(nameof(AddTabButton),
+            o => o.AddTabButton,
+            (o, v) => o.AddTabButton = v);
+
+    private IconButton? _addTabButton;
+
+    public IconButton? AddTabButton
+    {
+        get => _addTabButton;
+        set => SetAndRaise(AddTabButtonProperty, ref _addTabButton, value);
+    }
+
+    #endregion
+
+    #region 内部属性定义
+
+    internal static readonly DirectProperty<TabsContainerPanel, Dock> TabStripPlacementProperty =
+        AvaloniaProperty.RegisterDirect<TabsContainerPanel, Dock>(nameof(TabStripPlacement),
+            o => o.TabStripPlacement,
+            (o, v) => o.TabStripPlacement = v);
+
+    private Dock _tabStripPlacement;
+
+    internal Dock TabStripPlacement
+    {
+        get => _tabStripPlacement;
+        set => SetAndRaise(TabStripPlacementProperty, ref _tabStripPlacement, value);
+    }
+
+    #endregion
+
     static TabsContainerPanel()
     {
         AffectsMeasure<TabsContainerPanel>(TabScrollViewerProperty, AddTabButtonProperty);
@@ -104,51 +151,4 @@ internal class TabsContainerPanel : Panel
             }
         }
     }
-
-    #region 公共属性定义
-
-    public static readonly DirectProperty<TabsContainerPanel, BaseTabScrollViewer?> TabScrollViewerProperty =
-        AvaloniaProperty.RegisterDirect<TabsContainerPanel, BaseTabScrollViewer?>(nameof(TabScrollViewer),
-            o => o.TabScrollViewer,
-            (o, v) => o.TabScrollViewer = v);
-
-    private BaseTabScrollViewer? _tabScrollViewer;
-
-    public BaseTabScrollViewer? TabScrollViewer
-    {
-        get => _tabScrollViewer;
-        set => SetAndRaise(TabScrollViewerProperty, ref _tabScrollViewer, value);
-    }
-
-    public static readonly DirectProperty<TabsContainerPanel, IconButton?> AddTabButtonProperty =
-        AvaloniaProperty.RegisterDirect<TabsContainerPanel, IconButton?>(nameof(AddTabButton),
-            o => o.AddTabButton,
-            (o, v) => o.AddTabButton = v);
-
-    private IconButton? _addTabButton;
-
-    public IconButton? AddTabButton
-    {
-        get => _addTabButton;
-        set => SetAndRaise(AddTabButtonProperty, ref _addTabButton, value);
-    }
-
-    #endregion
-
-    #region 内部属性定义
-
-    internal static readonly DirectProperty<TabsContainerPanel, Dock> TabStripPlacementProperty =
-        AvaloniaProperty.RegisterDirect<TabsContainerPanel, Dock>(nameof(TabStripPlacement),
-            o => o.TabStripPlacement,
-            (o, v) => o.TabStripPlacement = v);
-
-    private Dock _tabStripPlacement;
-
-    internal Dock TabStripPlacement
-    {
-        get => _tabStripPlacement;
-        set => SetAndRaise(TabStripPlacementProperty, ref _tabStripPlacement, value);
-    }
-
-    #endregion
 }

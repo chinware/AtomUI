@@ -15,12 +15,12 @@ namespace AtomUI.Controls;
 internal sealed class ToolTipService : IDisposable
 {
     private readonly IDisposable _subscriptions;
-    private long _lastTipCloseTime;
-    private ulong _lastTipEventTime;
-    private ulong _lastWindowEventTime;
-    private DispatcherTimer? _timer;
 
     private Control? _tipControl;
+    private long _lastTipCloseTime;
+    private DispatcherTimer? _timer;
+    private ulong _lastTipEventTime;
+    private ulong _lastWindowEventTime;
 
     public ToolTipService()
     {
@@ -96,9 +96,8 @@ internal sealed class ToolTipService : IDisposable
     {
         var currentToolTip = _tipControl?.GetValue(ToolTip.ToolTipProperty);
         if (root == currentToolTip?.GetVisualRoot())
-
-            // Don't update while the pointer is over a tooltip
         {
+            // Don't update while the pointer is over a tooltip
             return;
         }
 

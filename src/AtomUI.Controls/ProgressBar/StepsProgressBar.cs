@@ -32,13 +32,6 @@ public class StepsProgressBar : AbstractLineProgress
         AvaloniaProperty.Register<ProgressBar, double>(nameof(ChunkHeight), double.NaN,
             coerce: (o, v) => Math.Max(v, 1));
 
-    static StepsProgressBar()
-    {
-        AffectsMeasure<StepsProgressBar>(StepsProperty, ChunkWidthProperty, ChunkHeightProperty);
-        AffectsArrange<StepsProgressBar>(PercentPositionProperty);
-        AffectsRender<StepsProgressBar>(StepsStrokeBrushProperty);
-    }
-
     public LinePercentAlignment PercentPosition
     {
         get => GetValue(PercentPositionProperty);
@@ -67,6 +60,13 @@ public class StepsProgressBar : AbstractLineProgress
     {
         get => GetValue(ChunkHeightProperty);
         set => SetValue(ChunkHeightProperty, value);
+    }
+
+    static StepsProgressBar()
+    {
+        AffectsMeasure<StepsProgressBar>(StepsProperty, ChunkWidthProperty, ChunkHeightProperty);
+        AffectsArrange<StepsProgressBar>(PercentPositionProperty);
+        AffectsRender<StepsProgressBar>(StepsStrokeBrushProperty);
     }
 
     protected override void RenderGroove(DrawingContext context)

@@ -9,9 +9,9 @@ namespace AtomUI.Demo.Desktop.ViewModels;
 
 public class PaletteMetaItem
 {
+    public string Title;
     public string Desc;
     public PresetPrimaryColor PresetPrimaryColor;
-    public string Title;
 
     public PaletteMetaItem(string title, string desc, PresetPrimaryColor presetPrimaryColor)
     {
@@ -39,16 +39,7 @@ public class PaletteDemoViewModel : ObservableObject
         new("Magenta / 法式洋红", "明快、感性", PresetPrimaryColor.Magenta)
     };
 
-    private ObservableCollection<ColorGroupViewModel>? _darkLists;
-
-    private ObservableCollection<ColorGroupViewModel>? _lightLists;
-
     private ColorItemViewModel _selectedColor = null!;
-
-    public PaletteDemoViewModel()
-    {
-        WeakReferenceMessenger.Default.Register<PaletteDemoViewModel, ColorItemViewModel>(this, OnClickColorItem);
-    }
 
     public ColorItemViewModel SelectedColor
     {
@@ -56,16 +47,25 @@ public class PaletteDemoViewModel : ObservableObject
         set => SetProperty(ref _selectedColor, value);
     }
 
+    private ObservableCollection<ColorGroupViewModel>? _lightLists;
+
     public ObservableCollection<ColorGroupViewModel>? LightLists
     {
         get => _lightLists;
         set => SetProperty(ref _lightLists, value);
     }
 
+    private ObservableCollection<ColorGroupViewModel>? _darkLists;
+
     public ObservableCollection<ColorGroupViewModel>? DarkLists
     {
         get => _darkLists;
         set => SetProperty(ref _darkLists, value);
+    }
+
+    public PaletteDemoViewModel()
+    {
+        WeakReferenceMessenger.Default.Register<PaletteDemoViewModel, ColorItemViewModel>(this, OnClickColorItem);
     }
 
     public void InitializeResources()
@@ -170,21 +170,21 @@ public class ColorListViewModel : ObservableObject
 {
     private ObservableCollection<ColorItemViewModel>? _colors;
 
-    private string? _desc;
-
-    private string? _title;
-
     public ObservableCollection<ColorItemViewModel>? Colors
     {
         get => _colors;
         set => SetProperty(ref _colors, value);
     }
 
+    private string? _title;
+
     public string? Title
     {
         get => _title;
         set => SetProperty(ref _title, value);
     }
+
+    private string? _desc;
 
     public string? Desc
     {
@@ -197,11 +197,35 @@ public class ColorItemViewModel : ObservableObject
 {
     private IBrush _brush = null!;
 
+    public IBrush Brush
+    {
+        get => _brush;
+        set => SetProperty(ref _brush, value);
+    }
+
+    private IBrush _textBrush = null!;
+
+    public IBrush TextBrush
+    {
+        get => _textBrush;
+        set => SetProperty(ref _textBrush, value);
+    }
+
     private string _colorDisplayName = null!;
+
+    public string ColorDisplayName
+    {
+        get => _colorDisplayName;
+        set => SetProperty(ref _colorDisplayName, value);
+    }
 
     private string _hex = null!;
 
-    private IBrush _textBrush = null!;
+    public string Hex
+    {
+        get => _hex;
+        set => SetProperty(ref _hex, value);
+    }
 
     public ColorItemViewModel(string colorDisplayName, ISolidColorBrush brush, bool light, int index)
     {
@@ -216,29 +240,5 @@ public class ColorItemViewModel : ObservableObject
         {
             TextBrush = Brushes.White;
         }
-    }
-
-    public IBrush Brush
-    {
-        get => _brush;
-        set => SetProperty(ref _brush, value);
-    }
-
-    public IBrush TextBrush
-    {
-        get => _textBrush;
-        set => SetProperty(ref _textBrush, value);
-    }
-
-    public string ColorDisplayName
-    {
-        get => _colorDisplayName;
-        set => SetProperty(ref _colorDisplayName, value);
-    }
-
-    public string Hex
-    {
-        get => _hex;
-        set => SetProperty(ref _hex, value);
     }
 }

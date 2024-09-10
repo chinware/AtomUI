@@ -1,5 +1,6 @@
 ﻿using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -41,27 +42,6 @@ public class Alert : TemplatedControl, IControlCustomStyle
 
     public static readonly StyledProperty<Control?> ExtraActionProperty =
         AvaloniaProperty.Register<Alert, Control?>(nameof(Description));
-
-    private readonly IControlCustomStyle _customStyle;
-
-    static Alert()
-    {
-        AffectsMeasure<Segmented>(IsClosableProperty,
-            IsShowIconProperty,
-            MessageProperty,
-            DescriptionProperty,
-            IsMessageMarqueEnabledProperty,
-            PaddingProperty,
-            ExtraActionProperty,
-            IsMessageMarqueEnabledProperty);
-        AffectsRender<Segmented>(TypeProperty);
-    }
-
-    public Alert()
-    {
-        _customStyle = this;
-        _customStyle.InitOnConstruct();
-    }
 
     public AlertType Type
     {
@@ -110,6 +90,27 @@ public class Alert : TemplatedControl, IControlCustomStyle
     {
         get => GetValue(ExtraActionProperty);
         set => SetValue(ExtraActionProperty, value);
+    }
+
+    private readonly IControlCustomStyle _customStyle;
+
+    static Alert()
+    {
+        AffectsMeasure<Segmented>(IsClosableProperty,
+            IsShowIconProperty,
+            MessageProperty,
+            DescriptionProperty,
+            IsMessageMarqueEnabledProperty,
+            PaddingProperty,
+            ExtraActionProperty,
+            IsMessageMarqueEnabledProperty);
+        AffectsRender<Segmented>(TypeProperty);
+    }
+
+    public Alert()
+    {
+        _customStyle = this;
+        _customStyle.InitOnConstruct();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)

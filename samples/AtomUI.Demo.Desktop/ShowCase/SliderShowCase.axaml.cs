@@ -14,6 +14,18 @@ public partial class SliderShowCase : UserControl
     public static readonly StyledProperty<bool> NormalDisabledProperty =
         AvaloniaProperty.Register<SliderShowCase, bool>(nameof(NormalEnabled), true);
 
+    public AvaloniaList<SliderMark>? SliderMarks
+    {
+        get => GetValue(SliderMarksProperty);
+        set => SetValue(SliderMarksProperty, value);
+    }
+
+    public bool NormalEnabled
+    {
+        get => GetValue(NormalDisabledProperty);
+        set => SetValue(NormalDisabledProperty, value);
+    }
+
     public SliderShowCase()
     {
         InitializeComponent();
@@ -27,17 +39,5 @@ public partial class SliderShowCase : UserControl
             LabelBrush      = new SolidColorBrush(Colors.Red)
         });
         DataContext = this;
-    }
-
-    public AvaloniaList<SliderMark>? SliderMarks
-    {
-        get => GetValue(SliderMarksProperty);
-        set => SetValue(SliderMarksProperty, value);
-    }
-
-    public bool NormalEnabled
-    {
-        get => GetValue(NormalDisabledProperty);
-        set => SetValue(NormalDisabledProperty, value);
     }
 }

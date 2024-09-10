@@ -1,6 +1,5 @@
 using AtomUI.Data;
 using AtomUI.Media;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using AtomUI.Utils;
@@ -11,60 +10,17 @@ using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Styling;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Controls.Switch;
 
 internal class SwitchKnob : Control, IControlCustomStyle
 {
+    private bool _initialized;
+    private readonly IControlCustomStyle _customStyle;
+    private bool _isLoading;
+    private CancellationTokenSource? _cancellationTokenSource;
+
     private static readonly StyledProperty<int> RotationProperty
         = AvaloniaProperty.Register<SwitchKnob, int>(nameof(Rotation));
-
-    internal static readonly StyledProperty<IBrush?> LoadIndicatorBrushProperty
-        = AvaloniaProperty.Register<SwitchKnob, IBrush?>(nameof(LoadIndicatorBrush));
-
-    public static readonly StyledProperty<Size> KnobSizeProperty
-        = AvaloniaProperty.Register<SwitchKnob, Size>(nameof(KnobSize));
-
-    internal static readonly StyledProperty<Size> OriginKnobSizeProperty
-        = AvaloniaProperty.Register<SwitchKnob, Size>(nameof(OriginKnobSize));
-
-    public static readonly StyledProperty<bool> IsCheckedStateProperty
-        = AvaloniaProperty.Register<SwitchKnob, bool>(nameof(IsCheckedState));
-
-    public static readonly StyledProperty<IBrush?> KnobBackgroundColorProperty
-        = AvaloniaProperty.Register<SwitchKnob, IBrush?>(nameof(KnobBackgroundColor));
-
-    public static readonly StyledProperty<BoxShadow> KnobBoxShadowProperty
-        = AvaloniaProperty.Register<SwitchKnob, BoxShadow>(nameof(KnobBoxShadow));
-
-    private static readonly DirectProperty<SwitchKnob, double> LoadingBgOpacityTokenProperty
-        = AvaloniaProperty.RegisterDirect<SwitchKnob, double>(nameof(_loadingBgOpacity),
-            o => o._loadingBgOpacity,
-            (o, v) => o._loadingBgOpacity = v);
-
-    // TODO 这个属性可以考虑放出去
-    internal static readonly StyledProperty<TimeSpan> LoadingAnimationDurationProperty
-        = AvaloniaProperty.Register<SwitchKnob, TimeSpan>(nameof(LoadingAnimationDuration),
-            TimeSpan.FromMilliseconds(300));
-
-    private readonly IControlCustomStyle _customStyle;
-
-    private CancellationTokenSource? _cancellationTokenSource;
-    private bool _initialized;
-    private bool _isLoading;
-
-    private double _loadingBgOpacity;
-
-    static SwitchKnob()
-    {
-        AffectsMeasure<SwitchKnob>(KnobSizeProperty);
-        AffectsRender<SwitchKnob>(
-            RotationProperty);
-    }
-
-    public SwitchKnob()
-    {
-        _customStyle = this;
-    }
 
     private int Rotation
     {
@@ -72,11 +28,20 @@ internal class SwitchKnob : Control, IControlCustomStyle
         set => SetValue(RotationProperty, value);
     }
 
+    internal static readonly StyledProperty<IBrush?> LoadIndicatorBrushProperty
+        = AvaloniaProperty.Register<SwitchKnob, IBrush?>(nameof(LoadIndicatorBrush));
+
     internal IBrush? LoadIndicatorBrush
     {
         get => GetValue(LoadIndicatorBrushProperty);
         set => SetValue(LoadIndicatorBrushProperty, value);
     }
+
+    public static readonly StyledProperty<Size> KnobSizeProperty
+        = AvaloniaProperty.Register<SwitchKnob, Size>(nameof(KnobSize));
+
+    internal static readonly StyledProperty<Size> OriginKnobSizeProperty
+        = AvaloniaProperty.Register<SwitchKnob, Size>(nameof(OriginKnobSize));
 
     public Size KnobSize
     {
@@ -90,11 +55,17 @@ internal class SwitchKnob : Control, IControlCustomStyle
         set => SetValue(OriginKnobSizeProperty, value);
     }
 
+    public static readonly StyledProperty<bool> IsCheckedStateProperty
+        = AvaloniaProperty.Register<SwitchKnob, bool>(nameof(IsCheckedState));
+
     public bool IsCheckedState
     {
         get => GetValue(IsCheckedStateProperty);
         set => SetValue(IsCheckedStateProperty, value);
     }
+
+    public static readonly StyledProperty<IBrush?> KnobBackgroundColorProperty
+        = AvaloniaProperty.Register<SwitchKnob, IBrush?>(nameof(KnobBackgroundColor));
 
     protected IBrush? KnobBackgroundColor
     {
@@ -102,11 +73,26 @@ internal class SwitchKnob : Control, IControlCustomStyle
         set => SetValue(KnobBackgroundColorProperty, value);
     }
 
+    public static readonly StyledProperty<BoxShadow> KnobBoxShadowProperty
+        = AvaloniaProperty.Register<SwitchKnob, BoxShadow>(nameof(KnobBoxShadow));
+
     protected BoxShadow KnobBoxShadow
     {
         get => GetValue(KnobBoxShadowProperty);
         set => SetValue(KnobBoxShadowProperty, value);
     }
+
+    private double _loadingBgOpacity;
+
+    private static readonly DirectProperty<SwitchKnob, double> LoadingBgOpacityTokenProperty
+        = AvaloniaProperty.RegisterDirect<SwitchKnob, double>(nameof(_loadingBgOpacity),
+            o => o._loadingBgOpacity,
+            (o, v) => o._loadingBgOpacity = v);
+
+    // TODO 这个属性可以考虑放出去
+    internal static readonly StyledProperty<TimeSpan> LoadingAnimationDurationProperty
+        = AvaloniaProperty.Register<SwitchKnob, TimeSpan>(nameof(LoadingAnimationDuration),
+            TimeSpan.FromMilliseconds(300));
 
     internal TimeSpan LoadingAnimationDuration
     {
@@ -114,18 +100,16 @@ internal class SwitchKnob : Control, IControlCustomStyle
         set => SetValue(LoadingAnimationDurationProperty, value);
     }
 
-    void IControlCustomStyle.SetupTransitions()
+    public SwitchKnob()
     {
-        var transitions = new Transitions();
-        transitions.Add(AnimationUtils.CreateTransition<SizeTransition>(KnobSizeProperty));
-        Transitions = transitions;
+        _customStyle = this;
     }
 
-    void IControlCustomStyle.SetupTokenBindings()
+    static SwitchKnob()
     {
-        TokenResourceBinder.CreateTokenBinding(this, LoadingBgOpacityTokenProperty,
-            ToggleSwitchTokenResourceKey.SwitchDisabledOpacity);
-        LoadingAnimationDuration = TimeSpan.FromMilliseconds(1200);
+        AffectsMeasure<SwitchKnob>(KnobSizeProperty);
+        AffectsRender<SwitchKnob>(
+            RotationProperty);
     }
 
     public sealed override void ApplyTemplate()
@@ -144,6 +128,13 @@ internal class SwitchKnob : Control, IControlCustomStyle
             _customStyle.SetupTransitions();
             _initialized = true;
         }
+    }
+
+    void IControlCustomStyle.SetupTransitions()
+    {
+        var transitions = new Transitions();
+        transitions.Add(AnimationUtils.CreateTransition<SizeTransition>(KnobSizeProperty));
+        Transitions = transitions;
     }
 
     public void NotifyStartLoading()
@@ -225,6 +216,13 @@ internal class SwitchKnob : Control, IControlCustomStyle
         {
             _cancellationTokenSource?.Cancel();
         }
+    }
+
+    void IControlCustomStyle.SetupTokenBindings()
+    {
+        TokenResourceBinder.CreateTokenBinding(this, LoadingBgOpacityTokenProperty,
+            ToggleSwitchTokenResourceKey.SwitchDisabledOpacity);
+        LoadingAnimationDuration = TimeSpan.FromMilliseconds(1200);
     }
 
     protected override Size MeasureOverride(Size availableSize)

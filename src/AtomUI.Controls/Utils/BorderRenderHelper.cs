@@ -11,15 +11,15 @@ namespace AtomUI.Controls.Utils;
 /// </summary>
 internal class BorderRenderHelper
 {
-    private Geometry? _backgroundGeometryCache;
-    private BackgroundSizing _backgroundSizing;
-    private Geometry? _borderGeometryCache;
-    private Thickness _borderThickness;
-    private IPen? _cachedPen;
-    private CornerRadius _cornerRadius;
-    private bool _initialized;
-    private Size _size;
     private bool _useComplexRendering;
+    private Geometry? _backgroundGeometryCache;
+    private Geometry? _borderGeometryCache;
+    private Size _size;
+    private Thickness _borderThickness;
+    private CornerRadius _cornerRadius;
+    private BackgroundSizing _backgroundSizing;
+    private bool _initialized;
+    private IPen? _cachedPen;
 
     private void Update(Size finalSize, Thickness borderThickness, CornerRadius cornerRadius,
                         BackgroundSizing backgroundSizing)

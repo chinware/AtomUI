@@ -56,7 +56,6 @@ public class DefaultThemeVariantCalculator : AbstractThemeVariantCalculator
             Color8  = colors[4],
             Color9  = colors[5],
             Color10 = colors[6]
-
             // Color8 = colors[7],
             // Color9 = colors[8],
             // Color10 = colors[9],

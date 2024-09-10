@@ -10,6 +10,9 @@ namespace AtomDB.UI.Tests.Core;
 
 public class PaletteGeneratorFixture : IDisposable
 {
+    public IList<string> PresetBlueColors { get; init; }
+    public IList<string> PresetBlueDarkColors { get; init; }
+
     public PaletteGeneratorFixture()
     {
         PresetBlueColors = new List<string>
@@ -39,9 +42,6 @@ public class PaletteGeneratorFixture : IDisposable
             "#b7dcfa"
         };
     }
-
-    public IList<string> PresetBlueColors { get; init; }
-    public IList<string> PresetBlueDarkColors { get; init; }
 
     public void Dispose()
     {

@@ -4,6 +4,12 @@ namespace AtomUI.Theme;
 
 public class ThemeDefinition
 {
+    public string Id { get; }
+    public string DisplayName { get; set; }
+    public IList<string> Algorithms { get; set; }
+    public IDictionary<string, ControlTokenConfigInfo> ControlTokens { get; set; }
+    public IDictionary<string, string> GlobalTokens { get; set; }
+
     public ThemeDefinition(string id, string? displayName = null)
     {
         Id            = id;
@@ -12,12 +18,6 @@ public class ThemeDefinition
         GlobalTokens  = new Dictionary<string, string>();
         DisplayName   = displayName ?? id;
     }
-
-    public string Id { get; }
-    public string DisplayName { get; set; }
-    public IList<string> Algorithms { get; set; }
-    public IDictionary<string, ControlTokenConfigInfo> ControlTokens { get; set; }
-    public IDictionary<string, string> GlobalTokens { get; set; }
 
     public void Reset()
     {

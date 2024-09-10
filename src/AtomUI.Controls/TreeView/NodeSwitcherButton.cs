@@ -2,9 +2,9 @@
 using AtomUI.Data;
 using AtomUI.Icon;
 using AtomUI.Media;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls.Primitives;
@@ -19,6 +19,50 @@ namespace AtomUI.Controls;
 /// </summary>
 internal class NodeSwitcherButton : ToggleIconButton
 {
+    #region 公共属性
+
+    public static readonly StyledProperty<PathIcon?> LoadingIconProperty
+        = AvaloniaProperty.Register<NodeSwitcherButton, PathIcon?>(nameof(LoadingIcon));
+
+    public static readonly StyledProperty<PathIcon?> LeafIconProperty
+        = AvaloniaProperty.Register<NodeSwitcherButton, PathIcon?>(nameof(LeafIcon));
+
+    public static readonly StyledProperty<bool> IsLeafProperty
+        = AvaloniaProperty.Register<NodeSwitcherButton, bool>(nameof(IsLeaf));
+
+    public PathIcon? LoadingIcon
+    {
+        get => GetValue(LoadingIconProperty);
+        set => SetValue(LoadingIconProperty, value);
+    }
+
+    public PathIcon? LeafIcon
+    {
+        get => GetValue(LeafIconProperty);
+        set => SetValue(LeafIconProperty, value);
+    }
+
+    public bool IsLeaf
+    {
+        get => GetValue(IsLeafProperty);
+        set => SetValue(IsLeafProperty, value);
+    }
+
+    #endregion
+
+    #region 内部属性定义
+
+    internal static readonly StyledProperty<bool> IsIconVisibleProperty
+        = AvaloniaProperty.Register<NodeSwitcherButton, bool>(nameof(IsIconVisible), true);
+
+    internal bool IsIconVisible
+    {
+        get => GetValue(IsIconVisibleProperty);
+        set => SetValue(IsIconVisibleProperty, value);
+    }
+
+    #endregion
+
     private readonly BorderRenderHelper _borderRenderHelper;
 
     static NodeSwitcherButton()
@@ -164,48 +208,4 @@ internal class NodeSwitcherButton : ToggleIconButton
                 default);
         }
     }
-
-    #region 公共属性
-
-    public static readonly StyledProperty<PathIcon?> LoadingIconProperty
-        = AvaloniaProperty.Register<NodeSwitcherButton, PathIcon?>(nameof(LoadingIcon));
-
-    public static readonly StyledProperty<PathIcon?> LeafIconProperty
-        = AvaloniaProperty.Register<NodeSwitcherButton, PathIcon?>(nameof(LeafIcon));
-
-    public static readonly StyledProperty<bool> IsLeafProperty
-        = AvaloniaProperty.Register<NodeSwitcherButton, bool>(nameof(IsLeaf));
-
-    public PathIcon? LoadingIcon
-    {
-        get => GetValue(LoadingIconProperty);
-        set => SetValue(LoadingIconProperty, value);
-    }
-
-    public PathIcon? LeafIcon
-    {
-        get => GetValue(LeafIconProperty);
-        set => SetValue(LeafIconProperty, value);
-    }
-
-    public bool IsLeaf
-    {
-        get => GetValue(IsLeafProperty);
-        set => SetValue(IsLeafProperty, value);
-    }
-
-    #endregion
-
-    #region 内部属性定义
-
-    internal static readonly StyledProperty<bool> IsIconVisibleProperty
-        = AvaloniaProperty.Register<NodeSwitcherButton, bool>(nameof(IsIconVisible), true);
-
-    internal bool IsIconVisible
-    {
-        get => GetValue(IsIconVisibleProperty);
-        set => SetValue(IsIconVisibleProperty, value);
-    }
-
-    #endregion
 }

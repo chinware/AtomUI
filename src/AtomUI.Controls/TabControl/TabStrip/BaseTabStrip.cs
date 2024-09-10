@@ -1,6 +1,7 @@
 ﻿using AtomUI.Data;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -22,6 +23,37 @@ public abstract class BaseTabStrip : AvaloniaTabStrip, ISizeTypeAware
 
     private static readonly FuncTemplate<Panel?> DefaultPanel =
         new(() => new StackPanel());
+
+    #region 公共属性定义
+
+    public static readonly StyledProperty<SizeType> SizeTypeProperty =
+        AvaloniaProperty.Register<BaseTabStrip, SizeType>(nameof(SizeType), SizeType.Middle);
+
+    public static readonly StyledProperty<Dock> TabStripPlacementProperty =
+        AvaloniaProperty.Register<BaseTabStrip, Dock>(nameof(TabStripPlacement), Dock.Top);
+
+    public static readonly StyledProperty<bool> TabAlignmentCenterProperty =
+        AvaloniaProperty.Register<BaseTabStrip, bool>(nameof(TabAlignmentCenter));
+
+    public SizeType SizeType
+    {
+        get => GetValue(SizeTypeProperty);
+        set => SetValue(SizeTypeProperty, value);
+    }
+
+    public Dock TabStripPlacement
+    {
+        get => GetValue(TabStripPlacementProperty);
+        set => SetValue(TabStripPlacementProperty, value);
+    }
+
+    public bool TabAlignmentCenter
+    {
+        get => GetValue(TabAlignmentCenterProperty);
+        set => SetValue(TabAlignmentCenterProperty, value);
+    }
+
+    #endregion
 
     private Border? _frameDecorator;
 
@@ -122,35 +154,4 @@ public abstract class BaseTabStrip : AvaloniaTabStrip, ISizeTypeAware
         });
         context.DrawLine(new Pen(BorderBrush, borderThickness), startPoint, endPoint);
     }
-
-    #region 公共属性定义
-
-    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        AvaloniaProperty.Register<BaseTabStrip, SizeType>(nameof(SizeType), SizeType.Middle);
-
-    public static readonly StyledProperty<Dock> TabStripPlacementProperty =
-        AvaloniaProperty.Register<BaseTabStrip, Dock>(nameof(TabStripPlacement), Dock.Top);
-
-    public static readonly StyledProperty<bool> TabAlignmentCenterProperty =
-        AvaloniaProperty.Register<BaseTabStrip, bool>(nameof(TabAlignmentCenter));
-
-    public SizeType SizeType
-    {
-        get => GetValue(SizeTypeProperty);
-        set => SetValue(SizeTypeProperty, value);
-    }
-
-    public Dock TabStripPlacement
-    {
-        get => GetValue(TabStripPlacementProperty);
-        set => SetValue(TabStripPlacementProperty, value);
-    }
-
-    public bool TabAlignmentCenter
-    {
-        get => GetValue(TabAlignmentCenterProperty);
-        set => SetValue(TabAlignmentCenterProperty, value);
-    }
-
-    #endregion
 }

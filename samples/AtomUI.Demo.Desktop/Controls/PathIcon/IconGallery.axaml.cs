@@ -10,23 +10,23 @@ namespace AtomUI.Demo.Desktop.Controls;
 
 public class IconGallery : TemplatedControl
 {
+    private bool _initialized;
+    private readonly IconGalleryModel _galleryModel;
+
     public static readonly StyledProperty<IconThemeType?> IconThemeTypeProperty =
         AvaloniaProperty.Register<IconInfoItem, IconThemeType?>(
             nameof(IconThemeType));
-
-    private readonly IconGalleryModel _galleryModel;
-    private bool _initialized;
-
-    public IconGallery()
-    {
-        _galleryModel = new IconGalleryModel();
-        DataContext   = _galleryModel;
-    }
 
     public IconThemeType? IconThemeType
     {
         get => GetValue(IconThemeTypeProperty);
         set => SetValue(IconThemeTypeProperty, value);
+    }
+
+    public IconGallery()
+    {
+        _galleryModel = new IconGalleryModel();
+        DataContext   = _galleryModel;
     }
 
     protected override void OnPointerPressed(PointerPressedEventArgs e)

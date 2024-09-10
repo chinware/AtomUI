@@ -17,6 +17,12 @@ public class LoadingIndicatorAdorner : TemplatedControl, IControlCustomStyle
         _customStyle = this;
     }
 
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        _customStyle.HandleTemplateApplied(e.NameScope);
+    }
+
     void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
     {
         _loadingIndicator = scope.Find<LoadingIndicator>(LoadingIndicatorAdornerTheme.LoadingIndicatorPart);
@@ -24,12 +30,6 @@ public class LoadingIndicatorAdorner : TemplatedControl, IControlCustomStyle
         {
             IndicatorCreated?.Invoke(this, new LoadingIndicatorCreatedEventArgs(_loadingIndicator));
         }
-    }
-
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        base.OnApplyTemplate(e);
-        _customStyle.HandleTemplateApplied(e.NameScope);
     }
 
     protected override Size ArrangeOverride(Size finalSize)
@@ -44,10 +44,10 @@ public class LoadingIndicatorAdorner : TemplatedControl, IControlCustomStyle
 
 public class LoadingIndicatorCreatedEventArgs : EventArgs
 {
+    public LoadingIndicator LoadingIndicator { get; set; }
+
     public LoadingIndicatorCreatedEventArgs(LoadingIndicator indicator)
     {
         LoadingIndicator = indicator;
     }
-
-    public LoadingIndicator LoadingIndicator { get; set; }
 }

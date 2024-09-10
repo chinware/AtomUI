@@ -1,6 +1,6 @@
 ﻿using AtomUI.Media;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -37,23 +37,6 @@ public partial class EmptyIndicator : TemplatedControl,
     public static readonly StyledProperty<bool> IsShowDescriptionProperty =
         AvaloniaProperty.Register<EmptyIndicator, bool>(nameof(IsShowDescription), true);
 
-    private readonly IControlCustomStyle _customStyle;
-    private Avalonia.Svg.Svg? _svg;
-
-    static EmptyIndicator()
-    {
-        AffectsMeasure<EmptyIndicator>(PresetEmptyImageProperty,
-            ImagePathProperty,
-            ImageSourceProperty,
-            DescriptionProperty,
-            IsShowDescriptionProperty);
-    }
-
-    public EmptyIndicator()
-    {
-        _customStyle = this;
-    }
-
     public PresetEmptyImage? PresetImage
     {
         get => GetValue(PresetEmptyImageProperty);
@@ -88,6 +71,23 @@ public partial class EmptyIndicator : TemplatedControl,
     {
         get => GetValue(IsShowDescriptionProperty);
         set => SetValue(IsShowDescriptionProperty, value);
+    }
+
+    private readonly IControlCustomStyle _customStyle;
+    private Avalonia.Svg.Svg? _svg;
+
+    static EmptyIndicator()
+    {
+        AffectsMeasure<EmptyIndicator>(PresetEmptyImageProperty,
+            ImagePathProperty,
+            ImageSourceProperty,
+            DescriptionProperty,
+            IsShowDescriptionProperty);
+    }
+
+    public EmptyIndicator()
+    {
+        _customStyle = this;
     }
 
     private void CheckImageSource()

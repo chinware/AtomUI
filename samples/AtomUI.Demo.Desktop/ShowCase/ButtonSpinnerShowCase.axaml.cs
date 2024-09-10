@@ -4,14 +4,6 @@ namespace AtomUI.Demo.Desktop.ShowCase;
 
 public partial class ButtonSpinnerShowCase : UserControl
 {
-    private readonly string[] _spinnerItems =
-    {
-        "床前明月光",
-        "疑是地上霜",
-        "举头望明月",
-        "低头思故乡"
-    };
-
     public ButtonSpinnerShowCase()
     {
         InitializeComponent();
@@ -45,4 +37,12 @@ public partial class ButtonSpinnerShowCase : UserControl
             textBlock.Text = _spinnerItems[value];
         }
     }
+
+    private readonly string[] _spinnerItems =
+    {
+        "床前明月光",
+        "疑是地上霜",
+        "举头望明月",
+        "低头思故乡"
+    };
 }

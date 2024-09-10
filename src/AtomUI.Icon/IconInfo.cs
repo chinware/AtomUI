@@ -6,18 +6,27 @@ namespace AtomUI.Icon;
 
 public record class GeometryData
 {
+    public string PathData { get; }
+    public bool IsPrimary { get; }
+
     public GeometryData(string pathData, bool isPrimary = true)
     {
         PathData  = pathData;
         IsPrimary = isPrimary;
     }
-
-    public string PathData { get; }
-    public bool IsPrimary { get; }
 }
 
 public record class IconInfo
 {
+    public IList<GeometryData> Data { get; }
+    public ColorInfo? ColorInfo { get; init; }
+    public TwoToneColorInfo? TwoToneColorInfo { get; init; }
+    public bool IsTwoTone => ThemeType == IconThemeType.TwoTone;
+    public IconThemeType ThemeType { get; }
+
+    public string Name { get; }
+    public Rect ViewBox { get; init; }
+
     public IconInfo()
         : this(
             string.Empty,
@@ -52,13 +61,4 @@ public record class IconInfo
         ThemeType        = IconThemeType.TwoTone;
         ViewBox          = viewBox;
     }
-
-    public IList<GeometryData> Data { get; }
-    public ColorInfo? ColorInfo { get; init; }
-    public TwoToneColorInfo? TwoToneColorInfo { get; init; }
-    public bool IsTwoTone => ThemeType == IconThemeType.TwoTone;
-    public IconThemeType ThemeType { get; }
-
-    public string Name { get; }
-    public Rect ViewBox { get; init; }
 }

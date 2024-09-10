@@ -9,11 +9,6 @@ internal class ProgressBarToken : AbstractControlDesignToken
 {
     public const string ID = "ProgressBar";
 
-    public ProgressBarToken()
-        : base(ID)
-    {
-    }
-
     /// <summary>
     /// 进度条默认颜色
     /// </summary>
@@ -53,6 +48,11 @@ internal class ProgressBarToken : AbstractControlDesignToken
     public double LineInfoIconSize { get; set; }
     public double LineInfoIconSizeSM { get; set; }
 
+    public ProgressBarToken()
+        : base(ID)
+    {
+    }
+
     internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
@@ -62,7 +62,6 @@ internal class ProgressBarToken : AbstractControlDesignToken
         DefaultColor     = colorInfoToken.ColorInfo;
         RemainingColor   = colorNeutralToken.ColorFillSecondary;
         LineBorderRadius = new CornerRadius(100); // magic for capsule shape, should be a very large number
-
         // 这两个要通过计算
         CircleMinimumIconSize     = _globalToken.SizeToken.SizeXS;
         CircleMinimumTextFontSize = _globalToken.FontToken.FontSizeSM - 2;

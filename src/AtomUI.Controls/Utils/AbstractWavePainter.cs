@@ -15,21 +15,21 @@ internal enum WaveType
 
 internal abstract class AbstractWavePainter : IWavePainter
 {
-    public AbstractWavePainter(Point originPoint)
-    {
-        WaveType  = WaveType.RoundRectWave;
-        WaveRange = 3;
-    }
-
     public Point OriginPoint { get; set; }
     public Color WaveColor { get; set; }
+    public WaveType WaveType { get; protected set; }
     public double WaveRange { get; set; }
     public TimeSpan SizeMotionDuration { get; set; }
     public TimeSpan OpacityMotionDuration { get; set; }
     public Easing SizeEasingCurve { get; set; } = default!;
     public Easing OpacityEasingCurve { get; set; } = default!;
     public double OriginOpacity { get; set; }
-    public WaveType WaveType { get; protected set; }
+
+    public AbstractWavePainter(Point originPoint)
+    {
+        WaveType  = WaveType.RoundRectWave;
+        WaveRange = 3;
+    }
 
     public abstract void Paint(DrawingContext context, object newSize, double newOpacity);
     public abstract AbstractWavePainter Clone();

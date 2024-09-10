@@ -8,11 +8,11 @@ namespace AtomUI.Input;
 
 internal class TransformTrackingHelper : IDisposable
 {
-    private static readonly FieldInfo AfterRenderFieldInfo;
+    private Visual? _visual;
+    private bool _queuedForUpdate;
     private readonly EventHandler<AvaloniaPropertyChangedEventArgs> _propertyChangedHandler;
     private readonly List<Visual> _propertyChangedSubscriptions = new();
-    private bool _queuedForUpdate;
-    private Visual? _visual;
+    private static readonly FieldInfo AfterRenderFieldInfo;
 
     static TransformTrackingHelper()
     {
@@ -24,21 +24,6 @@ internal class TransformTrackingHelper : IDisposable
     public TransformTrackingHelper()
     {
         _propertyChangedHandler = PropertyChangedHandler;
-    }
-
-    public Matrix? Matrix { get; private set; }
-
-    public void Dispose()
-    {
-        if (_visual == null)
-        {
-            return;
-        }
-
-        UnsubscribeFromParents();
-        _visual.AttachedToVisualTree   -= OnAttachedToVisualTree;
-        _visual.DetachedFromVisualTree -= OnDetachedFromVisualTree;
-        _visual                        =  null;
     }
 
     public void SetVisual(Visual? visual)
@@ -58,12 +43,25 @@ internal class TransformTrackingHelper : IDisposable
         }
     }
 
+    public Matrix? Matrix { get; private set; }
     public event Action? MatrixChanged;
+
+    public void Dispose()
+    {
+        if (_visual == null)
+        {
+            return;
+        }
+
+        UnsubscribeFromParents();
+        _visual.AttachedToVisualTree   -= OnAttachedToVisualTree;
+        _visual.DetachedFromVisualTree -= OnDetachedFromVisualTree;
+        _visual                        =  null;
+    }
 
     private void SubscribeToParents()
     {
         var visual = _visual;
-
         // ReSharper disable once ConditionIsAlwaysTrueOrFalse
         // false positive
         while (visual != null)

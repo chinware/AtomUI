@@ -1,7 +1,7 @@
 ﻿using AtomUI.Controls.Utils;
 using AtomUI.Theme;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
@@ -33,9 +33,9 @@ internal class NotificationCardTheme : BaseControlTheme
     public const double AnimationMaxOffsetY = 150d;
     public const double AnimationMaxOffsetX = 500d;
     public const int AnimationDuration = 400;
-    private readonly Easing _quadraticEaseIn = new QuadraticEaseIn();
 
     private readonly Easing _quadraticEaseOut = new QuadraticEaseOut();
+    private readonly Easing _quadraticEaseIn = new QuadraticEaseIn();
 
     public NotificationCardTheme()
         : base(typeof(NotificationCard))

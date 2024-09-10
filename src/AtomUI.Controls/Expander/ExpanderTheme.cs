@@ -1,6 +1,5 @@
 ﻿using AtomUI.MotionScene;
 using AtomUI.Theme;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using AtomUI.Utils;
@@ -247,7 +246,6 @@ internal class ExpanderTheme : BaseControlTheme
         // 设置水平和垂直对齐
         upStyle.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
         upStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Bottom);
-
         // TODO 看看到底是不是需要，暂时注释掉
         // {
         //    var expandedStyle = new Style(selector => selector.Nesting().Class(Expander.ExpandedPC));
@@ -264,11 +262,9 @@ internal class ExpanderTheme : BaseControlTheme
         Add(upStyle);
 
         var downStyle = new Style(selector => selector.Nesting().Class(Expander.ExpandDownPC));
-
         // 设置水平和垂直对齐
         downStyle.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
         downStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Top);
-
         // TODO 看看到底是不是需要，暂时注释掉
         // {
         //    var expandedStyle = new Style(selector => selector.Nesting().Class(Expander.ExpandedPC));
@@ -285,11 +281,9 @@ internal class ExpanderTheme : BaseControlTheme
         Add(downStyle);
 
         var leftStyle = new Style(selector => selector.Nesting().Class(Expander.ExpandLeftPC));
-
         // 设置水平和垂直对齐
         leftStyle.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Right);
         leftStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Stretch);
-
         // TODO 看看到底是不是需要，暂时注释掉
         // {
         //    var expandedStyle = new Style(selector => selector.Nesting().Class(Expander.ExpandedPC));
@@ -307,10 +301,8 @@ internal class ExpanderTheme : BaseControlTheme
         Add(leftStyle);
 
         var rightStyle = new Style(selector => selector.Nesting().Class(Expander.ExpandRightPC));
-
         // 设置水平和垂直对齐
         rightStyle.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Left);
-
         // TODO 看看到底是不是需要，暂时注释掉
         // {
         //    var expandedStyle = new Style(selector => selector.Nesting().Class(Expander.ExpandedPC));

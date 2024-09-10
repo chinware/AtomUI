@@ -262,7 +262,6 @@ internal abstract class BaseButtonTheme : BaseControlTheme
             loadingIconStyle.Add(Visual.IsVisibleProperty, false);
             Add(loadingIconStyle);
         }
-
         // loading 状态
         var loadingStyle = new Style(selector => selector.Nesting().Class(Button.LoadingPC));
         {

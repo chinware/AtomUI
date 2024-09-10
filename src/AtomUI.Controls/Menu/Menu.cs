@@ -1,5 +1,5 @@
 ﻿using AtomUI.Data;
-using AtomUI.Theme.Data;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.LogicalTree;
@@ -11,6 +11,19 @@ using AvaloniaMenu = Avalonia.Controls.Menu;
 public class Menu : AvaloniaMenu,
                     ISizeTypeAware
 {
+    #region 公共属性定义
+
+    public static readonly StyledProperty<SizeType> SizeTypeProperty =
+        AvaloniaProperty.Register<Menu, SizeType>(nameof(SizeType), SizeType.Middle);
+
+    public SizeType SizeType
+    {
+        get => GetValue(SizeTypeProperty);
+        set => SetValue(SizeTypeProperty, value);
+    }
+
+    #endregion
+
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
@@ -29,17 +42,4 @@ public class Menu : AvaloniaMenu,
 
         base.PrepareContainerForItemOverride(container, item, index);
     }
-
-    #region 公共属性定义
-
-    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        AvaloniaProperty.Register<Menu, SizeType>(nameof(SizeType), SizeType.Middle);
-
-    public SizeType SizeType
-    {
-        get => GetValue(SizeTypeProperty);
-        set => SetValue(SizeTypeProperty, value);
-    }
-
-    #endregion
 }

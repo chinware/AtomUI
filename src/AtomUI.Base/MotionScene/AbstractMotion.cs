@@ -19,23 +19,29 @@ public enum TransitionKind
 
 public record class MotionConfig
 {
-    public MotionConfig(AvaloniaProperty targetProperty, object? startValue = null, object? endValue = null)
-    {
-        Property   = targetProperty;
-        StartValue = startValue;
-        EndValue   = endValue;
-    }
-
     public AvaloniaProperty Property { get; set; }
     public object? StartValue { get; set; }
     public object? EndValue { get; set; }
     public Easing MotionEasing { get; set; } = new LinearEasing();
     public TimeSpan MotionDuration { get; set; } = TimeSpan.FromMilliseconds(300);
     public TransitionKind TransitionKind { get; set; }
+
+    public MotionConfig(AvaloniaProperty targetProperty, object? startValue = null, object? endValue = null)
+    {
+        Property   = targetProperty;
+        StartValue = startValue;
+        EndValue   = endValue;
+    }
 }
 
 public abstract class AbstractMotion : AvaloniaObject, IMotion
 {
+    public bool IsRunning { get; } = false;
+
+    private readonly Dictionary<AvaloniaProperty, MotionConfig> _motionConfigs;
+    private readonly List<ITransition> _transitions;
+    public IObservable<bool>? CompletedObservable { get; private set; }
+
     // 定义我们目前支持的动效属性
     public static readonly StyledProperty<double> MotionOpacityProperty =
         Visual.OpacityProperty.AddOwner<AbstractMotion>();
@@ -51,15 +57,6 @@ public abstract class AbstractMotion : AvaloniaObject, IMotion
 
     public static readonly StyledProperty<ITransform?> MotionRenderTransformProperty =
         Visual.RenderTransformProperty.AddOwner<AbstractMotion>();
-
-    private readonly Dictionary<AvaloniaProperty, MotionConfig> _motionConfigs;
-    private readonly List<ITransition> _transitions;
-
-    public AbstractMotion()
-    {
-        _motionConfigs = new Dictionary<AvaloniaProperty, MotionConfig>();
-        _transitions   = new List<ITransition>();
-    }
 
     protected double MotionOpacity
     {
@@ -91,22 +88,14 @@ public abstract class AbstractMotion : AvaloniaObject, IMotion
         set => SetValue(MotionRenderTransformProperty, value);
     }
 
-    public bool IsRunning { get; } = false;
-
-    public IObservable<bool>? CompletedObservable { get; private set; }
-
-    public IList<AvaloniaProperty> GetActivatedProperties()
+    public AbstractMotion()
     {
-        return _motionConfigs.Keys.ToList();
-    }
-
-    public IList<MotionConfig> GetMotionConfigs()
-    {
-        return _motionConfigs.Values.ToList();
+        _motionConfigs = new Dictionary<AvaloniaProperty, MotionConfig>();
+        _transitions   = new List<ITransition>();
     }
 
     /// <summary>
-    /// 创建动效动画对象
+    ///     创建动效动画对象
     /// </summary>
     /// <param name="motionTarget"></param>
     /// <returns></returns>
@@ -195,12 +184,12 @@ public abstract class AbstractMotion : AvaloniaObject, IMotion
     }
 
     /// <summary>
-    /// 计算顶层动画渲染层的大小
+    ///     计算顶层动画渲染层的大小
     /// </summary>
     /// <param name="motionTargetSize">
-    /// 动画目标控件的大小，如果动画直接调度到控件本身，则是控件本身的大小，如果是顶层动画渲染，那么就是 ghost
-    /// 的大小，如果有阴影这个大小包含阴影的 thickness
-    /// 目前的实现没有加一个固定的 Padding
+    ///     动画目标控件的大小，如果动画直接调度到控件本身，则是控件本身的大小，如果是顶层动画渲染，那么就是 ghost
+    ///     的大小，如果有阴影这个大小包含阴影的 thickness
+    ///     目前的实现没有加一个固定的 Padding
     /// </param>
     /// <returns></returns>
     internal virtual Size CalculateSceneSize(Size motionTargetSize)
@@ -209,7 +198,7 @@ public abstract class AbstractMotion : AvaloniaObject, IMotion
     }
 
     /// <summary>
-    /// 计算动画层的全局坐标
+    ///     计算动画层的全局坐标
     /// </summary>
     /// <param name="motionTargetSize">动画目标控件的大小，包含阴影</param>
     /// <param name="motionTargetPosition">动画目标控件的最终全局坐标位置</param>
@@ -217,6 +206,16 @@ public abstract class AbstractMotion : AvaloniaObject, IMotion
     internal virtual Point CalculateScenePosition(Size motionTargetSize, Point motionTargetPosition)
     {
         return motionTargetPosition;
+    }
+
+    public IList<AvaloniaProperty> GetActivatedProperties()
+    {
+        return _motionConfigs.Keys.ToList();
+    }
+
+    public IList<MotionConfig> GetMotionConfigs()
+    {
+        return _motionConfigs.Values.ToList();
     }
 
     protected TransformOperations BuildScaleTransform(double scaleX, double scaleY)

@@ -37,23 +37,6 @@ public class RibbonBadge : Control, IControlCustomStyle
     public static readonly StyledProperty<bool> BadgeIsVisibleProperty =
         AvaloniaProperty.Register<RibbonBadge, bool>(nameof(BadgeIsVisible));
 
-    private readonly IControlCustomStyle _customStyle;
-
-    private AdornerLayer? _adornerLayer;
-    private RibbonBadgeAdorner? _ribbonBadgeAdorner;
-
-    static RibbonBadge()
-    {
-        AffectsMeasure<RibbonBadge>(DecoratedTargetProperty,
-            TextProperty);
-        AffectsRender<RibbonBadge>(RibbonColorProperty, PlacementProperty);
-    }
-
-    public RibbonBadge()
-    {
-        _customStyle = this;
-    }
-
     [Content]
     public Control? DecoratedTarget
     {
@@ -91,15 +74,21 @@ public class RibbonBadge : Control, IControlCustomStyle
         set => SetValue(BadgeIsVisibleProperty, value);
     }
 
-    void IControlCustomStyle.SetupTokenBindings()
+    public RibbonBadge()
     {
-        if (_ribbonBadgeAdorner is not null)
-        {
-            BindUtils.RelayBind(this, TextProperty, _ribbonBadgeAdorner, RibbonBadgeAdorner.TextProperty);
-            BindUtils.RelayBind(this, OffsetProperty, _ribbonBadgeAdorner, RibbonBadgeAdorner.OffsetProperty);
-            BindUtils.RelayBind(this, PlacementProperty, _ribbonBadgeAdorner, RibbonBadgeAdorner.PlacementProperty);
-        }
+        _customStyle = this;
     }
+
+    static RibbonBadge()
+    {
+        AffectsMeasure<RibbonBadge>(DecoratedTargetProperty,
+            TextProperty);
+        AffectsRender<RibbonBadge>(RibbonColorProperty, PlacementProperty);
+    }
+
+    private readonly IControlCustomStyle _customStyle;
+    private RibbonBadgeAdorner? _ribbonBadgeAdorner;
+    private AdornerLayer? _adornerLayer;
 
     private void HandleDecoratedTargetChanged()
     {
@@ -136,6 +125,16 @@ public class RibbonBadge : Control, IControlCustomStyle
         if (Color.TryParse(colorStr, out var color))
         {
             _ribbonBadgeAdorner!.RibbonColor = new SolidColorBrush(color);
+        }
+    }
+
+    void IControlCustomStyle.SetupTokenBindings()
+    {
+        if (_ribbonBadgeAdorner is not null)
+        {
+            BindUtils.RelayBind(this, TextProperty, _ribbonBadgeAdorner, RibbonBadgeAdorner.TextProperty);
+            BindUtils.RelayBind(this, OffsetProperty, _ribbonBadgeAdorner, RibbonBadgeAdorner.OffsetProperty);
+            BindUtils.RelayBind(this, PlacementProperty, _ribbonBadgeAdorner, RibbonBadgeAdorner.PlacementProperty);
         }
     }
 
@@ -206,7 +205,6 @@ public class RibbonBadge : Control, IControlCustomStyle
         {
             var ribbonBadgeAdorner = CreateBadgeAdorner();
             _adornerLayer = AdornerLayer.GetAdornerLayer(this);
-
             // 这里需要抛出异常吗？
             if (_adornerLayer == null)
             {

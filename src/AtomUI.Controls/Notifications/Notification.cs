@@ -5,10 +5,10 @@ namespace AtomUI.Controls;
 
 public class Notification : INotification, INotifyPropertyChanged
 {
-    private object? _content;
-    private PathIcon? _icon;
-    private bool _showProgress;
     private string _title;
+    private object? _content;
+    private bool _showProgress;
+    private PathIcon? _icon;
 
     public Notification(string title,
                         object? content,

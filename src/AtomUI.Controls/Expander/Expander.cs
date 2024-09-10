@@ -2,6 +2,7 @@
 using AtomUI.MotionScene;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -33,9 +34,137 @@ public class Expander : AvaloniaExpander
     public const string ExpandLeftPC = ":left";
     public const string ExpandRightPC = ":right";
 
+    #region 公共属性定义
+
+    public static readonly StyledProperty<SizeType> SizeTypeProperty =
+        AvaloniaProperty.Register<Collapse, SizeType>(nameof(SizeType), SizeType.Middle);
+
+    public static readonly StyledProperty<bool> IsShowExpandIconProperty =
+        AvaloniaProperty.Register<Expander, bool>(nameof(IsShowExpandIcon), true);
+
+    public static readonly StyledProperty<PathIcon?> ExpandIconProperty =
+        AvaloniaProperty.Register<Expander, PathIcon?>(nameof(ExpandIcon));
+
+    public static readonly StyledProperty<object?> AddOnContentProperty =
+        AvaloniaProperty.Register<Expander, object?>(nameof(AddOnContent));
+
+    public static readonly StyledProperty<IDataTemplate?> AddOnContentTemplateProperty =
+        AvaloniaProperty.Register<Expander, IDataTemplate?>(nameof(AddOnContentTemplate));
+
+    public static readonly StyledProperty<bool> IsGhostStyleProperty =
+        AvaloniaProperty.Register<Expander, bool>(nameof(IsGhostStyle));
+
+    public static readonly StyledProperty<bool> IsBorderlessProperty =
+        AvaloniaProperty.Register<Expander, bool>(nameof(IsBorderless));
+
+    public static readonly StyledProperty<ExpanderTriggerType> TriggerTypeProperty =
+        AvaloniaProperty.Register<Expander, ExpanderTriggerType>(nameof(TriggerType));
+
+    public static readonly StyledProperty<ExpanderIconPosition> ExpandIconPositionProperty =
+        AvaloniaProperty.Register<Expander, ExpanderIconPosition>(nameof(ExpandIconPosition));
+
+    public SizeType SizeType
+    {
+        get => GetValue(SizeTypeProperty);
+        set => SetValue(SizeTypeProperty, value);
+    }
+
+    public bool IsShowExpandIcon
+    {
+        get => GetValue(IsShowExpandIconProperty);
+        set => SetValue(IsShowExpandIconProperty, value);
+    }
+
+    public PathIcon? ExpandIcon
+    {
+        get => GetValue(ExpandIconProperty);
+        set => SetValue(ExpandIconProperty, value);
+    }
+
+    public object? AddOnContent
+    {
+        get => GetValue(AddOnContentProperty);
+        set => SetValue(AddOnContentProperty, value);
+    }
+
+    public IDataTemplate? AddOnContentTemplate
+    {
+        get => GetValue(AddOnContentTemplateProperty);
+        set => SetValue(AddOnContentTemplateProperty, value);
+    }
+
+    public bool IsGhostStyle
+    {
+        get => GetValue(IsGhostStyleProperty);
+        set => SetValue(IsGhostStyleProperty, value);
+    }
+
+    public bool IsBorderless
+    {
+        get => GetValue(IsBorderlessProperty);
+        set => SetValue(IsBorderlessProperty, value);
+    }
+
+    public ExpanderTriggerType TriggerType
+    {
+        get => GetValue(TriggerTypeProperty);
+        set => SetValue(TriggerTypeProperty, value);
+    }
+
+    public ExpanderIconPosition ExpandIconPosition
+    {
+        get => GetValue(ExpandIconPositionProperty);
+        set => SetValue(ExpandIconPositionProperty, value);
+    }
+
+    #endregion
+
+    #region 内部属性定义
+
+    internal static readonly DirectProperty<Expander, Thickness> HeaderBorderThicknessProperty =
+        AvaloniaProperty.RegisterDirect<Expander, Thickness>(nameof(HeaderBorderThickness),
+            o => o.HeaderBorderThickness,
+            (o, v) => o.HeaderBorderThickness = v);
+
+    internal static readonly DirectProperty<Expander, TimeSpan> MotionDurationProperty =
+        AvaloniaProperty.RegisterDirect<Expander, TimeSpan>(nameof(MotionDuration),
+            o => o.MotionDuration,
+            (o, v) => o.MotionDuration = v);
+
+    internal static readonly DirectProperty<Expander, Thickness> EffectiveBorderThicknessProperty =
+        AvaloniaProperty.RegisterDirect<Expander, Thickness>(nameof(EffectiveBorderThickness),
+            o => o.EffectiveBorderThickness,
+            (o, v) => o.EffectiveBorderThickness = v);
+
+    private Thickness _headerBorderThickness;
+
+    internal Thickness HeaderBorderThickness
+    {
+        get => _headerBorderThickness;
+        set => SetAndRaise(HeaderBorderThicknessProperty, ref _headerBorderThickness, value);
+    }
+
+    private TimeSpan _motionDuration;
+
+    internal TimeSpan MotionDuration
+    {
+        get => _motionDuration;
+        set => SetAndRaise(MotionDurationProperty, ref _motionDuration, value);
+    }
+
+    private Thickness _effectiveBorderThickness;
+
+    internal Thickness EffectiveBorderThickness
+    {
+        get => _effectiveBorderThickness;
+        set => SetAndRaise(EffectiveBorderThicknessProperty, ref _effectiveBorderThickness, value);
+    }
+
+    #endregion
+
     private AnimationTargetPanel? _animationTarget;
-    private IconButton? _expandButton;
     private Border? _headerDecorator;
+    private IconButton? _expandButton;
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
@@ -180,132 +309,4 @@ public class Expander : AvaloniaExpander
             EffectiveBorderThickness = BorderThickness;
         }
     }
-
-    #region 公共属性定义
-
-    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        AvaloniaProperty.Register<Collapse, SizeType>(nameof(SizeType), SizeType.Middle);
-
-    public static readonly StyledProperty<bool> IsShowExpandIconProperty =
-        AvaloniaProperty.Register<Expander, bool>(nameof(IsShowExpandIcon), true);
-
-    public static readonly StyledProperty<PathIcon?> ExpandIconProperty =
-        AvaloniaProperty.Register<Expander, PathIcon?>(nameof(ExpandIcon));
-
-    public static readonly StyledProperty<object?> AddOnContentProperty =
-        AvaloniaProperty.Register<Expander, object?>(nameof(AddOnContent));
-
-    public static readonly StyledProperty<IDataTemplate?> AddOnContentTemplateProperty =
-        AvaloniaProperty.Register<Expander, IDataTemplate?>(nameof(AddOnContentTemplate));
-
-    public static readonly StyledProperty<bool> IsGhostStyleProperty =
-        AvaloniaProperty.Register<Expander, bool>(nameof(IsGhostStyle));
-
-    public static readonly StyledProperty<bool> IsBorderlessProperty =
-        AvaloniaProperty.Register<Expander, bool>(nameof(IsBorderless));
-
-    public static readonly StyledProperty<ExpanderTriggerType> TriggerTypeProperty =
-        AvaloniaProperty.Register<Expander, ExpanderTriggerType>(nameof(TriggerType));
-
-    public static readonly StyledProperty<ExpanderIconPosition> ExpandIconPositionProperty =
-        AvaloniaProperty.Register<Expander, ExpanderIconPosition>(nameof(ExpandIconPosition));
-
-    public SizeType SizeType
-    {
-        get => GetValue(SizeTypeProperty);
-        set => SetValue(SizeTypeProperty, value);
-    }
-
-    public bool IsShowExpandIcon
-    {
-        get => GetValue(IsShowExpandIconProperty);
-        set => SetValue(IsShowExpandIconProperty, value);
-    }
-
-    public PathIcon? ExpandIcon
-    {
-        get => GetValue(ExpandIconProperty);
-        set => SetValue(ExpandIconProperty, value);
-    }
-
-    public object? AddOnContent
-    {
-        get => GetValue(AddOnContentProperty);
-        set => SetValue(AddOnContentProperty, value);
-    }
-
-    public IDataTemplate? AddOnContentTemplate
-    {
-        get => GetValue(AddOnContentTemplateProperty);
-        set => SetValue(AddOnContentTemplateProperty, value);
-    }
-
-    public bool IsGhostStyle
-    {
-        get => GetValue(IsGhostStyleProperty);
-        set => SetValue(IsGhostStyleProperty, value);
-    }
-
-    public bool IsBorderless
-    {
-        get => GetValue(IsBorderlessProperty);
-        set => SetValue(IsBorderlessProperty, value);
-    }
-
-    public ExpanderTriggerType TriggerType
-    {
-        get => GetValue(TriggerTypeProperty);
-        set => SetValue(TriggerTypeProperty, value);
-    }
-
-    public ExpanderIconPosition ExpandIconPosition
-    {
-        get => GetValue(ExpandIconPositionProperty);
-        set => SetValue(ExpandIconPositionProperty, value);
-    }
-
-    #endregion
-
-    #region 内部属性定义
-
-    internal static readonly DirectProperty<Expander, Thickness> HeaderBorderThicknessProperty =
-        AvaloniaProperty.RegisterDirect<Expander, Thickness>(nameof(HeaderBorderThickness),
-            o => o.HeaderBorderThickness,
-            (o, v) => o.HeaderBorderThickness = v);
-
-    internal static readonly DirectProperty<Expander, TimeSpan> MotionDurationProperty =
-        AvaloniaProperty.RegisterDirect<Expander, TimeSpan>(nameof(MotionDuration),
-            o => o.MotionDuration,
-            (o, v) => o.MotionDuration = v);
-
-    internal static readonly DirectProperty<Expander, Thickness> EffectiveBorderThicknessProperty =
-        AvaloniaProperty.RegisterDirect<Expander, Thickness>(nameof(EffectiveBorderThickness),
-            o => o.EffectiveBorderThickness,
-            (o, v) => o.EffectiveBorderThickness = v);
-
-    private Thickness _headerBorderThickness;
-
-    internal Thickness HeaderBorderThickness
-    {
-        get => _headerBorderThickness;
-        set => SetAndRaise(HeaderBorderThicknessProperty, ref _headerBorderThickness, value);
-    }
-
-    private TimeSpan _motionDuration;
-
-    internal TimeSpan MotionDuration
-    {
-        get => _motionDuration;
-        set => SetAndRaise(MotionDurationProperty, ref _motionDuration, value);
-    }
-
-    private Thickness _effectiveBorderThickness;
-
-    internal Thickness EffectiveBorderThickness
-    {
-        get => _effectiveBorderThickness;
-        set => SetAndRaise(EffectiveBorderThicknessProperty, ref _effectiveBorderThickness, value);
-    }
-
-    #endregion
 }

@@ -17,13 +17,19 @@ using AvaloniaScrollViewer = ScrollViewer;
 public class MenuScrollViewer : AvaloniaScrollViewer, IControlCustomStyle
 {
     private readonly IControlCustomStyle _customStyle;
-    private IconButton? _scrollDownButton;
     private IconButton? _scrollUpButton;
+    private IconButton? _scrollDownButton;
     private ScrollContentPresenter? _scrollViewContent;
 
     public MenuScrollViewer()
     {
         _customStyle = this;
+    }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        _customStyle.HandleTemplateApplied(e.NameScope);
     }
 
     #region IControlCustomStyle 实现
@@ -38,12 +44,6 @@ public class MenuScrollViewer : AvaloniaScrollViewer, IControlCustomStyle
     }
 
     #endregion
-
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        base.OnApplyTemplate(e);
-        _customStyle.HandleTemplateApplied(e.NameScope);
-    }
 
     private void SetupScrollButtonVisibility()
     {

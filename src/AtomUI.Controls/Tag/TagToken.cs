@@ -10,11 +10,6 @@ internal class TagToken : AbstractControlDesignToken
 {
     public const string ID = "Tag";
 
-    public TagToken()
-        : base(ID)
-    {
-    }
-
     /// <summary>
     /// 默认背景色
     /// </summary>
@@ -33,6 +28,11 @@ internal class TagToken : AbstractControlDesignToken
     public double TagTextPaddingInline { get; set; }
     public Color TagBorderlessBg { get; set; }
 
+    public TagToken()
+        : base(ID)
+    {
+    }
+
     internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
@@ -44,7 +44,6 @@ internal class TagToken : AbstractControlDesignToken
         TagCloseIconSize = _globalToken.IconSizeXS;
         TagIconSize      = _globalToken.FontSizeIcon;
         TagPadding       = new Thickness(8, 0); // Fixed padding.
-
         // TODO 这个地方需要看看
         DefaultBg = ColorUtils.OnBackground(colorNeutralToken.ColorFillQuaternary, colorNeutralToken.ColorBgContainer);
         TagBorderlessBg = DefaultBg;

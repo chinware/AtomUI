@@ -14,6 +14,18 @@ public partial class TooltipShowCase : UserControl
 
     private readonly Segmented _segmented;
 
+    public bool ShowArrow
+    {
+        get => GetValue(ShowArrowProperty);
+        set => SetValue(ShowArrowProperty, value);
+    }
+
+    public bool IsPointAtCenter
+    {
+        get => GetValue(IsPointAtCenterProperty);
+        set => SetValue(IsPointAtCenterProperty, value);
+    }
+
     public TooltipShowCase()
     {
         DataContext = this;
@@ -38,17 +50,5 @@ public partial class TooltipShowCase : UserControl
                 ShowArrow       = true;
             }
         };
-    }
-
-    public bool ShowArrow
-    {
-        get => GetValue(ShowArrowProperty);
-        set => SetValue(ShowArrowProperty, value);
-    }
-
-    public bool IsPointAtCenter
-    {
-        get => GetValue(IsPointAtCenterProperty);
-        set => SetValue(IsPointAtCenterProperty, value);
     }
 }

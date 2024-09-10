@@ -23,12 +23,6 @@ public partial class BadgeShowCase : UserControl
     public static readonly StyledProperty<double> StandaloneBadgeCount3Property =
         AvaloniaProperty.Register<ProgressBarShowCase, double>(nameof(StandaloneBadgeCount3), 109);
 
-    public BadgeShowCase()
-    {
-        DataContext = this;
-        InitializeComponent();
-    }
-
     public double DynamicBadgeCount
     {
         get => GetValue(DynamicBadgeCountProperty);
@@ -63,6 +57,12 @@ public partial class BadgeShowCase : UserControl
     {
         get => GetValue(StandaloneBadgeCount3Property);
         set => SetValue(StandaloneBadgeCount3Property, value);
+    }
+
+    public BadgeShowCase()
+    {
+        DataContext = this;
+        InitializeComponent();
     }
 
     public void AddDynamicBadgeCount()

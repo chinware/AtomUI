@@ -12,6 +12,12 @@ public partial class ButtonShowCase : UserControl
     public static readonly StyledProperty<SizeType> ButtonSizeTypeProperty =
         AvaloniaProperty.Register<ButtonShowCase, SizeType>(nameof(ButtonSizeType));
 
+    public SizeType ButtonSizeType
+    {
+        get => GetValue(ButtonSizeTypeProperty);
+        set => SetValue(ButtonSizeTypeProperty, value);
+    }
+
     public ButtonShowCase()
     {
         InitializeComponent();
@@ -21,12 +27,6 @@ public partial class ButtonShowCase : UserControl
         LoadingBtn1.Click                              += HandleLoadingBtnClick;
         LoadingBtn2.Click                              += HandleLoadingBtnClick;
         LoadingBtn3.Click                              += HandleLoadingBtnClick;
-    }
-
-    public SizeType ButtonSizeType
-    {
-        get => GetValue(ButtonSizeTypeProperty);
-        set => SetValue(ButtonSizeTypeProperty, value);
     }
 
     private void HandleButtonSizeTypeOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)

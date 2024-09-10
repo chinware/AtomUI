@@ -37,16 +37,11 @@ public class PresetPrimaryColor : IEquatable<PresetPrimaryColor>
     public static readonly PresetPrimaryColor Magenta = new(PresetColorType.Magenta);
     public static readonly PresetPrimaryColor Grey = new(PresetColorType.Grey);
 
+    public PresetColorType Type { get; }
+
     private PresetPrimaryColor(PresetColorType colorType)
     {
         Type = colorType;
-    }
-
-    public PresetColorType Type { get; }
-
-    public bool Equals(PresetPrimaryColor? other)
-    {
-        return other is not null && Type == other.Type;
     }
 
     public string Name()
@@ -119,6 +114,11 @@ public class PresetPrimaryColor : IEquatable<PresetPrimaryColor>
             PresetColorType.Grey => Grey,
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, "Invalid value for PresetColorType")
         };
+    }
+
+    public bool Equals(PresetPrimaryColor? other)
+    {
+        return other is not null && Type == other.Type;
     }
 
     public override bool Equals(object? obj)

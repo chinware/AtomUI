@@ -18,17 +18,6 @@ internal class ShadowRenderer : Control
     public static readonly StyledProperty<IBrush?> MaskContentBackgroundProperty =
         Border.BackgroundProperty.AddOwner<ShadowRenderer>();
 
-    protected bool _initialized;
-    protected Canvas? _layout;
-
-    protected Border? _maskContent;
-
-    static ShadowRenderer()
-    {
-        AffectsMeasure<ShadowRenderer>(ShadowsProperty);
-        MaskContentBackgroundProperty.OverrideDefaultValue<ShadowRenderer>(new SolidColorBrush(Colors.White));
-    }
-
     /// <summary>
     /// 渲染的阴影值
     /// </summary>
@@ -51,6 +40,16 @@ internal class ShadowRenderer : Control
     {
         get => GetValue(MaskContentBackgroundProperty);
         set => SetValue(MaskContentBackgroundProperty, value);
+    }
+
+    protected Border? _maskContent;
+    protected bool _initialized;
+    protected Canvas? _layout;
+
+    static ShadowRenderer()
+    {
+        AffectsMeasure<ShadowRenderer>(ShadowsProperty);
+        MaskContentBackgroundProperty.OverrideDefaultValue<ShadowRenderer>(new SolidColorBrush(Colors.White));
     }
 
     public sealed override void ApplyTemplate()
@@ -80,7 +79,6 @@ internal class ShadowRenderer : Control
             HorizontalAlignment = HorizontalAlignment.Stretch,
             VerticalAlignment   = VerticalAlignment.Stretch
         };
-
         // TODO 这个是否需要资源管理起来
         BindUtils.RelayBind(this, ShadowsProperty, maskContent, ShadowsProperty);
         BindUtils.RelayBind(this, MaskCornerRadiusProperty, maskContent, Border.CornerRadiusProperty);

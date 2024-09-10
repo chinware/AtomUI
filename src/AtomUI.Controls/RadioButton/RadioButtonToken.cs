@@ -8,11 +8,6 @@ internal class RadioButtonToken : AbstractControlDesignToken
 {
     public const string ID = "RadioButton";
 
-    public RadioButtonToken()
-        : base(ID)
-    {
-    }
-
     /// <summary>
     /// 单选框大小，除去文字部分的
     /// </summary>
@@ -33,6 +28,11 @@ internal class RadioButtonToken : AbstractControlDesignToken
 
     public Color RadioBgColor { get; set; }
     public double DotPadding { get; set; }
+
+    public RadioButtonToken()
+        : base(ID)
+    {
+    }
 
     internal override void CalculateFromAlias()
     {

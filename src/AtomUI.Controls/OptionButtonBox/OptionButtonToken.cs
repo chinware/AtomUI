@@ -11,11 +11,6 @@ public class OptionButtonToken : AbstractControlDesignToken
 {
     public const string ID = "OptionButton";
 
-    public OptionButtonToken()
-        : base(ID)
-    {
-    }
-
     /// <summary>
     /// 单选框按钮背景色
     /// </summary>
@@ -110,6 +105,11 @@ public class OptionButtonToken : AbstractControlDesignToken
     /// 小号按钮内间距
     /// </summary>
     public Thickness PaddingSM { get; set; }
+
+    public OptionButtonToken()
+        : base(ID)
+    {
+    }
 
     internal override void CalculateFromAlias()
     {

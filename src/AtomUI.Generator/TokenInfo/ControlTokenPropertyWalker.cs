@@ -6,16 +6,15 @@ namespace AtomUI.Generator;
 
 public class ControlTokenPropertyWalker : CSharpSyntaxWalker
 {
+    public ControlTokenInfo ControlTokenInfo { get; }
     private readonly SemanticModel _semanticModel;
+    public string? TokenResourceCatalog { get; set; }
 
     public ControlTokenPropertyWalker(SemanticModel semanticModel)
     {
         _semanticModel   = semanticModel;
         ControlTokenInfo = new ControlTokenInfo();
     }
-
-    public ControlTokenInfo ControlTokenInfo { get; }
-    public string? TokenResourceCatalog { get; set; }
 
     public override void VisitPropertyDeclaration(PropertyDeclarationSyntax node)
     {

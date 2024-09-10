@@ -7,40 +7,40 @@ namespace AtomUI.Theme.Palette;
 
 public static class PaletteGenerator
 {
-    /// <summary>
-    /// 色相阶梯
-    /// </summary>
-    public const int HUE_STEP = 2;
+   /// <summary>
+   ///     色相阶梯
+   /// </summary>
+   public const int HUE_STEP = 2;
 
-    /// <summary>
-    /// 饱和度阶梯，浅色部分
-    /// </summary>
-    public const float SATURATION_STEP1 = 0.16f;
+   /// <summary>
+   ///     饱和度阶梯，浅色部分
+   /// </summary>
+   public const float SATURATION_STEP1 = 0.16f;
 
-    /// <summary>
-    /// 饱和度阶梯，深色部分
-    /// </summary>
-    public const float SATURATION_STEP2 = 0.05f;
+   /// <summary>
+   ///     饱和度阶梯，深色部分
+   /// </summary>
+   public const float SATURATION_STEP2 = 0.05f;
 
-    /// <summary>
-    /// 亮度阶梯，浅色部分
-    /// </summary>
-    public const float BRIGHTNESS_STEP1 = 0.05f;
+   /// <summary>
+   ///     亮度阶梯，浅色部分
+   /// </summary>
+   public const float BRIGHTNESS_STEP1 = 0.05f;
 
-    /// <summary>
-    /// 亮度阶梯，深色部分
-    /// </summary>
-    public const float BRIGHTNESS_STEP2 = 0.15f;
+   /// <summary>
+   ///     亮度阶梯，深色部分
+   /// </summary>
+   public const float BRIGHTNESS_STEP2 = 0.15f;
 
-    /// <summary>
-    /// 浅色数量，主色上
-    /// </summary>
-    public const int LIGHT_COLOR_COUNT = 5;
+   /// <summary>
+   ///     浅色数量，主色上
+   /// </summary>
+   public const int LIGHT_COLOR_COUNT = 5;
 
-    /// <summary>
-    /// 深色数量，主色下
-    /// </summary>
-    public const int DARK_COLOR_COUNT = 4;
+   /// <summary>
+   ///     深色数量，主色下
+   /// </summary>
+   public const int DARK_COLOR_COUNT = 4;
 
     private static readonly IReadOnlyList<DarkColorMapItem> sm_darkColorMap;
 
@@ -119,7 +119,6 @@ public static class PaletteGenerator
     private static double GetHsvHue(HsvColor hsvColor, int index, bool isLight)
     {
         double hue;
-
         // 根据色相不同，色相转向不同
         if (Math.Round(hsvColor.H) >= 60d && Math.Round(hsvColor.H) <= 240d)
         {
@@ -166,7 +165,6 @@ public static class PaletteGenerator
 
         // 边界值修正
         saturation = Math.Min(saturation, 1d);
-
         // 第一格的 s 限制在 0.06-0.1 之间
         if (isLight && index == LIGHT_COLOR_COUNT && saturation > 0.1d)
         {

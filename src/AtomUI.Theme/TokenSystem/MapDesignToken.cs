@@ -7,6 +7,15 @@ namespace AtomUI.Theme.TokenSystem;
 [GlobalDesignToken]
 public class MapDesignToken : AbstractDesignToken
 {
+    public SeedDesignToken SeedToken { get; set; }
+    public StyleMapDesignToken StyleToken { get; set; }
+    public ColorMapDesignToken ColorToken { get; set; }
+    public SizeMapDesignToken SizeToken { get; set; }
+    public HeightMapDesignToken HeightToken { get; set; }
+    public FontMapDesignToken FontToken { get; set; }
+
+    public IDictionary<PresetPrimaryColor, ColorMap> ColorPalettes { get; set; }
+
     public MapDesignToken()
     {
         SeedToken     = new SeedDesignToken();
@@ -17,15 +26,6 @@ public class MapDesignToken : AbstractDesignToken
         FontToken     = new FontMapDesignToken();
         ColorPalettes = new Dictionary<PresetPrimaryColor, ColorMap>();
     }
-
-    public SeedDesignToken SeedToken { get; set; }
-    public StyleMapDesignToken StyleToken { get; set; }
-    public ColorMapDesignToken ColorToken { get; set; }
-    public SizeMapDesignToken SizeToken { get; set; }
-    public HeightMapDesignToken HeightToken { get; set; }
-    public FontMapDesignToken FontToken { get; set; }
-
-    public IDictionary<PresetPrimaryColor, ColorMap> ColorPalettes { get; set; }
 
     public void SetColorPalette(PresetPrimaryColor primaryColor, ColorMap colorMap)
     {

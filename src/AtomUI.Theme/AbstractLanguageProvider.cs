@@ -5,6 +5,12 @@ namespace AtomUI.Theme;
 
 public class AbstractLanguageProvider : ILanguageProvider
 {
+    public string LangCode { get; }
+
+    public string LangId { get; }
+
+    public string ResourceCatalog { get; }
+
     public AbstractLanguageProvider()
     {
         var type                      = GetType();
@@ -18,12 +24,6 @@ public class AbstractLanguageProvider : ILanguageProvider
         LangId          = languageProviderAttribute.LanguageId;
         ResourceCatalog = languageProviderAttribute.ResourceCatalog;
     }
-
-    public string LangCode { get; }
-
-    public string LangId { get; }
-
-    public string ResourceCatalog { get; }
 
     public void BuildResourceDictionary(IResourceDictionary dictionary)
     {

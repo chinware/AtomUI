@@ -1,6 +1,7 @@
 ﻿using AtomUI.Data;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -31,6 +32,125 @@ public class AddOnDecoratedBox : ContentControl
 {
     public const string ErrorPC = ":error";
     public const string WarningPC = ":warning";
+
+    #region 公共属性定义
+
+    public static readonly StyledProperty<object?> LeftAddOnProperty =
+        AvaloniaProperty.Register<AddOnDecoratedBox, object?>(nameof(LeftAddOn));
+
+    public static readonly StyledProperty<object?> RightAddOnProperty =
+        AvaloniaProperty.Register<AddOnDecoratedBox, object?>(nameof(RightAddOn));
+
+    public static readonly StyledProperty<SizeType> SizeTypeProperty =
+        AvaloniaProperty.Register<AddOnDecoratedBox, SizeType>(nameof(SizeType), SizeType.Middle);
+
+    public static readonly StyledProperty<AddOnDecoratedVariant> StyleVariantProperty =
+        AvaloniaProperty.Register<AddOnDecoratedBox, AddOnDecoratedVariant>(
+            nameof(StyleVariant));
+
+    public static readonly StyledProperty<AddOnDecoratedStatus> StatusProperty =
+        AvaloniaProperty.Register<AddOnDecoratedBox, AddOnDecoratedStatus>(nameof(Status));
+
+    public object? LeftAddOn
+    {
+        get => GetValue(LeftAddOnProperty);
+        set => SetValue(LeftAddOnProperty, value);
+    }
+
+    public object? RightAddOn
+    {
+        get => GetValue(RightAddOnProperty);
+        set => SetValue(RightAddOnProperty, value);
+    }
+
+    public SizeType SizeType
+    {
+        get => GetValue(SizeTypeProperty);
+        set => SetValue(SizeTypeProperty, value);
+    }
+
+    public AddOnDecoratedVariant StyleVariant
+    {
+        get => GetValue(StyleVariantProperty);
+        set => SetValue(StyleVariantProperty, value);
+    }
+
+    public AddOnDecoratedStatus Status
+    {
+        get => GetValue(StatusProperty);
+        set => SetValue(StatusProperty, value);
+    }
+
+    #endregion
+
+    #region 内部属性定义
+
+    internal static readonly DirectProperty<AddOnDecoratedBox, CornerRadius> InnerBoxCornerRadiusProperty =
+        AvaloniaProperty.RegisterDirect<AddOnDecoratedBox, CornerRadius>(nameof(InnerBoxCornerRadius),
+            o => o.InnerBoxCornerRadius,
+            (o, v) => o.InnerBoxCornerRadius = v);
+
+    internal static readonly DirectProperty<AddOnDecoratedBox, CornerRadius> LeftAddOnCornerRadiusProperty =
+        AvaloniaProperty.RegisterDirect<AddOnDecoratedBox, CornerRadius>(nameof(LeftAddOnCornerRadius),
+            o => o.LeftAddOnCornerRadius,
+            (o, v) => o.LeftAddOnCornerRadius = v);
+
+    internal static readonly DirectProperty<AddOnDecoratedBox, CornerRadius> RightAddOnCornerRadiusProperty =
+        AvaloniaProperty.RegisterDirect<AddOnDecoratedBox, CornerRadius>(nameof(RightAddOnCornerRadius),
+            o => o.RightAddOnCornerRadius,
+            (o, v) => o.RightAddOnCornerRadius = v);
+
+    internal static readonly DirectProperty<AddOnDecoratedBox, Thickness> LeftAddOnBorderThicknessProperty =
+        AvaloniaProperty.RegisterDirect<AddOnDecoratedBox, Thickness>(nameof(LeftAddOnBorderThickness),
+            o => o.LeftAddOnBorderThickness,
+            (o, v) => o.LeftAddOnBorderThickness = v);
+
+    internal static readonly DirectProperty<AddOnDecoratedBox, Thickness> RightAddOnBorderThicknessProperty =
+        AvaloniaProperty.RegisterDirect<AddOnDecoratedBox, Thickness>(nameof(RightAddOnBorderThickness),
+            o => o.RightAddOnBorderThickness,
+            (o, v) => o.RightAddOnBorderThickness = v);
+
+    private CornerRadius _innerBoxCornerRadius;
+
+    internal CornerRadius InnerBoxCornerRadius
+    {
+        get => _innerBoxCornerRadius;
+        set => SetAndRaise(InnerBoxCornerRadiusProperty, ref _innerBoxCornerRadius, value);
+    }
+
+    private CornerRadius _leftAddOnCornerRadius;
+
+    internal CornerRadius LeftAddOnCornerRadius
+    {
+        get => _leftAddOnCornerRadius;
+        set => SetAndRaise(LeftAddOnCornerRadiusProperty, ref _leftAddOnCornerRadius, value);
+    }
+
+    private CornerRadius _rightAddOnCornerRadius;
+
+    internal CornerRadius RightAddOnCornerRadius
+    {
+        get => _rightAddOnCornerRadius;
+        set => SetAndRaise(RightAddOnCornerRadiusProperty, ref _rightAddOnCornerRadius, value);
+    }
+
+    private Thickness _leftAddOnBorderThickness;
+
+    internal Thickness LeftAddOnBorderThickness
+    {
+        get => _leftAddOnBorderThickness;
+        set => SetAndRaise(LeftAddOnBorderThicknessProperty, ref _leftAddOnBorderThickness, value);
+    }
+
+    private Thickness _rightAddOnBorderThickness;
+
+    internal Thickness RightAddOnBorderThickness
+    {
+        get => _rightAddOnBorderThickness;
+        set => SetAndRaise(RightAddOnBorderThicknessProperty, ref _rightAddOnBorderThickness, value);
+    }
+
+    #endregion
 
     protected Control? _leftAddOnPresenter;
     protected Control? _rightAddOnPresenter;
@@ -192,123 +312,4 @@ public class AddOnDecoratedBox : ContentControl
         PseudoClasses.Set(ErrorPC, Status == AddOnDecoratedStatus.Error);
         PseudoClasses.Set(WarningPC, Status == AddOnDecoratedStatus.Warning);
     }
-
-    #region 公共属性定义
-
-    public static readonly StyledProperty<object?> LeftAddOnProperty =
-        AvaloniaProperty.Register<AddOnDecoratedBox, object?>(nameof(LeftAddOn));
-
-    public static readonly StyledProperty<object?> RightAddOnProperty =
-        AvaloniaProperty.Register<AddOnDecoratedBox, object?>(nameof(RightAddOn));
-
-    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        AvaloniaProperty.Register<AddOnDecoratedBox, SizeType>(nameof(SizeType), SizeType.Middle);
-
-    public static readonly StyledProperty<AddOnDecoratedVariant> StyleVariantProperty =
-        AvaloniaProperty.Register<AddOnDecoratedBox, AddOnDecoratedVariant>(
-            nameof(StyleVariant));
-
-    public static readonly StyledProperty<AddOnDecoratedStatus> StatusProperty =
-        AvaloniaProperty.Register<AddOnDecoratedBox, AddOnDecoratedStatus>(nameof(Status));
-
-    public object? LeftAddOn
-    {
-        get => GetValue(LeftAddOnProperty);
-        set => SetValue(LeftAddOnProperty, value);
-    }
-
-    public object? RightAddOn
-    {
-        get => GetValue(RightAddOnProperty);
-        set => SetValue(RightAddOnProperty, value);
-    }
-
-    public SizeType SizeType
-    {
-        get => GetValue(SizeTypeProperty);
-        set => SetValue(SizeTypeProperty, value);
-    }
-
-    public AddOnDecoratedVariant StyleVariant
-    {
-        get => GetValue(StyleVariantProperty);
-        set => SetValue(StyleVariantProperty, value);
-    }
-
-    public AddOnDecoratedStatus Status
-    {
-        get => GetValue(StatusProperty);
-        set => SetValue(StatusProperty, value);
-    }
-
-    #endregion
-
-    #region 内部属性定义
-
-    internal static readonly DirectProperty<AddOnDecoratedBox, CornerRadius> InnerBoxCornerRadiusProperty =
-        AvaloniaProperty.RegisterDirect<AddOnDecoratedBox, CornerRadius>(nameof(InnerBoxCornerRadius),
-            o => o.InnerBoxCornerRadius,
-            (o, v) => o.InnerBoxCornerRadius = v);
-
-    internal static readonly DirectProperty<AddOnDecoratedBox, CornerRadius> LeftAddOnCornerRadiusProperty =
-        AvaloniaProperty.RegisterDirect<AddOnDecoratedBox, CornerRadius>(nameof(LeftAddOnCornerRadius),
-            o => o.LeftAddOnCornerRadius,
-            (o, v) => o.LeftAddOnCornerRadius = v);
-
-    internal static readonly DirectProperty<AddOnDecoratedBox, CornerRadius> RightAddOnCornerRadiusProperty =
-        AvaloniaProperty.RegisterDirect<AddOnDecoratedBox, CornerRadius>(nameof(RightAddOnCornerRadius),
-            o => o.RightAddOnCornerRadius,
-            (o, v) => o.RightAddOnCornerRadius = v);
-
-    internal static readonly DirectProperty<AddOnDecoratedBox, Thickness> LeftAddOnBorderThicknessProperty =
-        AvaloniaProperty.RegisterDirect<AddOnDecoratedBox, Thickness>(nameof(LeftAddOnBorderThickness),
-            o => o.LeftAddOnBorderThickness,
-            (o, v) => o.LeftAddOnBorderThickness = v);
-
-    internal static readonly DirectProperty<AddOnDecoratedBox, Thickness> RightAddOnBorderThicknessProperty =
-        AvaloniaProperty.RegisterDirect<AddOnDecoratedBox, Thickness>(nameof(RightAddOnBorderThickness),
-            o => o.RightAddOnBorderThickness,
-            (o, v) => o.RightAddOnBorderThickness = v);
-
-    private CornerRadius _innerBoxCornerRadius;
-
-    internal CornerRadius InnerBoxCornerRadius
-    {
-        get => _innerBoxCornerRadius;
-        set => SetAndRaise(InnerBoxCornerRadiusProperty, ref _innerBoxCornerRadius, value);
-    }
-
-    private CornerRadius _leftAddOnCornerRadius;
-
-    internal CornerRadius LeftAddOnCornerRadius
-    {
-        get => _leftAddOnCornerRadius;
-        set => SetAndRaise(LeftAddOnCornerRadiusProperty, ref _leftAddOnCornerRadius, value);
-    }
-
-    private CornerRadius _rightAddOnCornerRadius;
-
-    internal CornerRadius RightAddOnCornerRadius
-    {
-        get => _rightAddOnCornerRadius;
-        set => SetAndRaise(RightAddOnCornerRadiusProperty, ref _rightAddOnCornerRadius, value);
-    }
-
-    private Thickness _leftAddOnBorderThickness;
-
-    internal Thickness LeftAddOnBorderThickness
-    {
-        get => _leftAddOnBorderThickness;
-        set => SetAndRaise(LeftAddOnBorderThicknessProperty, ref _leftAddOnBorderThickness, value);
-    }
-
-    private Thickness _rightAddOnBorderThickness;
-
-    internal Thickness RightAddOnBorderThickness
-    {
-        get => _rightAddOnBorderThickness;
-        set => SetAndRaise(RightAddOnBorderThicknessProperty, ref _rightAddOnBorderThickness, value);
-    }
-
-    #endregion
 }

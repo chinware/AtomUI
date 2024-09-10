@@ -2,12 +2,12 @@
 
 public class StaticTheme : Theme
 {
+    public string DefinitionFilePath => _definitionFilePath;
+
     public StaticTheme(string id, string defFilePath)
         : base(id, defFilePath)
     {
     }
-
-    public string DefinitionFilePath => _definitionFilePath;
 
     public override bool IsDynamic()
     {

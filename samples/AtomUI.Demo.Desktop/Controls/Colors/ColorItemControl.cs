@@ -12,14 +12,14 @@ public class ColorItemControl : TemplatedControl
         AvaloniaProperty.Register<ColorItemControl, string?>(
             nameof(ColorName));
 
-    public static readonly StyledProperty<string?> HexProperty = AvaloniaProperty.Register<ColorItemControl, string?>(
-        nameof(Hex));
-
     public string? ColorName
     {
         get => GetValue(ColorNameProperty);
         set => SetValue(ColorNameProperty, value);
     }
+
+    public static readonly StyledProperty<string?> HexProperty = AvaloniaProperty.Register<ColorItemControl, string?>(
+        nameof(Hex));
 
     public string? Hex
     {

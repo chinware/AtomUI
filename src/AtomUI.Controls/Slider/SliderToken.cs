@@ -134,7 +134,6 @@ public class SliderToken : AbstractControlDesignToken
     internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
-
         // Thumb line width is always width-er 1px
         var increaseThumbWidth   = 1d;
         var controlSize          = _globalToken.HeightToken.ControlHeightLG / 4;

@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel;
 using System.Reactive.Disposables;
 using AtomUI.Data;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives.PopupPositioning;
@@ -19,16 +19,106 @@ using PopupControl = Popup;
 
 public class Flyout : PopupFlyoutBase
 {
+    #region 公共属性定义
+
+    /// <summary>
+    /// 是否显示指示箭头
+    /// </summary>
+    public static readonly StyledProperty<bool> IsShowArrowProperty =
+        ArrowDecoratedBox.IsShowArrowProperty.AddOwner<PopupFlyoutBase>();
+
+    public static readonly StyledProperty<BoxShadows> MaskShadowsProperty =
+        Border.BoxShadowProperty.AddOwner<Flyout>();
+
+    /// <summary>
+    /// 箭头是否始终指向中心
+    /// </summary>
+    public static readonly StyledProperty<bool> IsPointAtCenterProperty =
+        AvaloniaProperty.Register<Flyout, bool>(nameof(IsPointAtCenter));
+
+    /// <summary>
+    /// Defines the <see cref="Content" /> property
+    /// </summary>
+    public static readonly StyledProperty<object> ContentProperty =
+        AvaloniaProperty.Register<Flyout, object>(nameof(Content));
+
+    /// <summary>
+    /// Defines the <see cref="FlyoutPresenterTheme" /> property.
+    /// </summary>
+    public static readonly StyledProperty<ControlTheme?> FlyoutPresenterThemeProperty =
+        AvaloniaProperty.Register<Flyout, ControlTheme?>(nameof(FlyoutPresenterTheme));
+
+    public bool IsShowArrow
+    {
+        get => GetValue(IsShowArrowProperty);
+        set => SetValue(IsShowArrowProperty, value);
+    }
+
+    public bool IsPointAtCenter
+    {
+        get => GetValue(IsPointAtCenterProperty);
+        set => SetValue(IsPointAtCenterProperty, value);
+    }
+
+    /// <summary>
+    /// Gets or sets the <see cref="ControlTheme" /> that is applied to the container element generated for the flyout
+    /// presenter.
+    /// </summary>
+    public ControlTheme? FlyoutPresenterTheme
+    {
+        get => GetValue(FlyoutPresenterThemeProperty);
+        set => SetValue(FlyoutPresenterThemeProperty, value);
+    }
+
+    /// <summary>
+    /// Gets or sets the content to display in this flyout
+    /// </summary>
+    [Content]
+    public object Content
+    {
+        get => GetValue(ContentProperty);
+        set => SetValue(ContentProperty, value);
+    }
+
+    public BoxShadows MaskShadows
+    {
+        get => GetValue(MaskShadowsProperty);
+        set => SetValue(MaskShadowsProperty, value);
+    }
+
+    #endregion
+
+    #region 内部属性定义
+
+    internal static readonly StyledProperty<bool> IsShowArrowEffectiveProperty =
+        AvaloniaProperty.Register<Flyout, bool>(nameof(IsShowArrowEffective));
+
+    /// <summary>
+    /// 是否实际显示箭头
+    /// </summary>
+    internal bool IsShowArrowEffective
+    {
+        get => GetValue(IsShowArrowEffectiveProperty);
+        set => SetValue(IsShowArrowEffectiveProperty, value);
+    }
+
+    #endregion
+
+    private Classes? _classes;
+
+    /// <summary>
+    /// Gets the Classes collection to apply to the FlyoutPresenter this Flyout is hosting
+    /// </summary>
+    public Classes FlyoutPresenterClasses => _classes ??= new Classes();
+
+    private TimeSpan _motionDuration;
+
     private static readonly DirectProperty<Flyout, TimeSpan> MotionDurationTokenProperty
         = AvaloniaProperty.RegisterDirect<Flyout, TimeSpan>(nameof(_motionDuration),
             o => o._motionDuration,
             (o, v) => o._motionDuration = v);
 
-    private Classes? _classes;
-
     protected CompositeDisposable? _compositeDisposable;
-
-    private TimeSpan _motionDuration;
 
     static Flyout()
     {
@@ -42,11 +132,6 @@ public class Flyout : PopupFlyoutBase
         TokenResourceBinder.CreateGlobalTokenBinding(this, MaskShadowsProperty,
             GlobalTokenResourceKey.BoxShadowsSecondary);
     }
-
-    /// <summary>
-    /// Gets the Classes collection to apply to the FlyoutPresenter this Flyout is hosting
-    /// </summary>
-    public Classes FlyoutPresenterClasses => _classes ??= new Classes();
 
     private void HandlePopupPropertyChanged(AvaloniaPropertyChangedEventArgs args)
     {
@@ -150,7 +235,6 @@ public class Flyout : PopupFlyoutBase
                     var anchorSize = anchorTarget.Bounds.Size;
                     var centerX    = anchorSize.Width / 2;
                     var centerY    = anchorSize.Height / 2;
-
                     // 这里计算不需要全局坐标
                     if (placement == PlacementMode.TopEdgeAlignedLeft ||
                         placement == PlacementMode.BottomEdgeAlignedLeft)
@@ -298,89 +382,4 @@ public class Flyout : PopupFlyoutBase
         OnClosing(eventArgs);
         return eventArgs.Cancel;
     }
-
-    #region 公共属性定义
-
-    /// <summary>
-    /// 是否显示指示箭头
-    /// </summary>
-    public static readonly StyledProperty<bool> IsShowArrowProperty =
-        ArrowDecoratedBox.IsShowArrowProperty.AddOwner<PopupFlyoutBase>();
-
-    public static readonly StyledProperty<BoxShadows> MaskShadowsProperty =
-        Border.BoxShadowProperty.AddOwner<Flyout>();
-
-    /// <summary>
-    /// 箭头是否始终指向中心
-    /// </summary>
-    public static readonly StyledProperty<bool> IsPointAtCenterProperty =
-        AvaloniaProperty.Register<Flyout, bool>(nameof(IsPointAtCenter));
-
-    /// <summary>
-    /// Defines the <see cref="Content" /> property
-    /// </summary>
-    public static readonly StyledProperty<object> ContentProperty =
-        AvaloniaProperty.Register<Flyout, object>(nameof(Content));
-
-    /// <summary>
-    /// Defines the <see cref="FlyoutPresenterTheme" /> property.
-    /// </summary>
-    public static readonly StyledProperty<ControlTheme?> FlyoutPresenterThemeProperty =
-        AvaloniaProperty.Register<Flyout, ControlTheme?>(nameof(FlyoutPresenterTheme));
-
-    public bool IsShowArrow
-    {
-        get => GetValue(IsShowArrowProperty);
-        set => SetValue(IsShowArrowProperty, value);
-    }
-
-    public bool IsPointAtCenter
-    {
-        get => GetValue(IsPointAtCenterProperty);
-        set => SetValue(IsPointAtCenterProperty, value);
-    }
-
-    /// <summary>
-    /// Gets or sets the <see cref="ControlTheme" /> that is applied to the container element generated for the flyout
-    /// presenter.
-    /// </summary>
-    public ControlTheme? FlyoutPresenterTheme
-    {
-        get => GetValue(FlyoutPresenterThemeProperty);
-        set => SetValue(FlyoutPresenterThemeProperty, value);
-    }
-
-    /// <summary>
-    /// Gets or sets the content to display in this flyout
-    /// </summary>
-    [Content]
-    public object Content
-    {
-        get => GetValue(ContentProperty);
-        set => SetValue(ContentProperty, value);
-    }
-
-    public BoxShadows MaskShadows
-    {
-        get => GetValue(MaskShadowsProperty);
-        set => SetValue(MaskShadowsProperty, value);
-    }
-
-    #endregion
-
-    #region 内部属性定义
-
-    internal static readonly StyledProperty<bool> IsShowArrowEffectiveProperty =
-        AvaloniaProperty.Register<Flyout, bool>(nameof(IsShowArrowEffective));
-
-    /// <summary>
-    /// 是否实际显示箭头
-    /// </summary>
-    internal bool IsShowArrowEffective
-    {
-        get => GetValue(IsShowArrowEffectiveProperty);
-        set => SetValue(IsShowArrowEffectiveProperty, value);
-    }
-
-    #endregion
 }

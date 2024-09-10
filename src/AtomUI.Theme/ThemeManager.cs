@@ -11,7 +11,7 @@ using Avalonia.Styling;
 namespace AtomUI.Theme;
 
 /// <summary>
-/// 当切换主题时候就是动态的换 ResourceDictionary 里面的东西
+///     当切换主题时候就是动态的换 ResourceDictionary 里面的东西
 /// </summary>
 public class ThemeManager : Styles, IThemeManager
 {
@@ -19,16 +19,47 @@ public class ThemeManager : Styles, IThemeManager
     public const string DEFAULT_THEME_ID = "DaybreakBlueLight";
     public const string DEFAULT_THEME_RES_PATH = $"avares://AtomUI.Theme/Assets/{THEME_DIR}";
     public static readonly CultureInfo DEFAULT_LANGUAGE = new(LanguageCode.zh_CN);
-    private readonly List<string> _builtInThemeDirs;
-    private readonly List<string> _customThemeDirs;
-    private readonly Dictionary<CultureInfo, ResourceDictionary> _languages;
-    private readonly Dictionary<string, Theme> _themePool;
 
     private Theme? _activatedTheme;
+    private readonly Dictionary<string, Theme> _themePool;
+    private readonly List<string> _customThemeDirs;
+    private readonly List<string> _builtInThemeDirs;
     private ResourceDictionary? _controlThemeResources;
+    private readonly Dictionary<CultureInfo, ResourceDictionary> _languages;
+    private List<ILanguageProvider>? _languageProviders;
+
+    public ITheme? ActivatedTheme => _activatedTheme;
+    public IReadOnlyList<string> CustomThemeDirs => _customThemeDirs;
+    public static ThemeManager Current { get; }
+    public string DefaultThemeId { get; set; }
+    public double RenderScaling { get; internal set; }
+    internal List<Type> ControlTokenTypes { get; set; }
 
     private CultureInfo? _cultureInfo;
-    private List<ILanguageProvider>? _languageProviders;
+
+    public CultureInfo? CultureInfo
+    {
+        get => _cultureInfo;
+
+        set
+        {
+            _cultureInfo = value;
+            var languageResource = TryGetLanguageResource(value ?? DEFAULT_LANGUAGE);
+            foreach (var entry in languageResource)
+            {
+                Resources.Add(entry);
+            }
+        }
+    }
+
+    public event EventHandler<ThemeOperateEventArgs>? ThemeCreatedEvent;
+    public event EventHandler<ThemeOperateEventArgs>? ThemeAboutToLoadEvent;
+    public event EventHandler<ThemeOperateEventArgs>? ThemeLoadedEvent;
+    public event EventHandler<ThemeOperateEventArgs>? ThemeLoadFailedEvent;
+    public event EventHandler<ThemeOperateEventArgs>? ThemeAboutToUnloadEvent;
+    public event EventHandler<ThemeOperateEventArgs>? ThemeUnloadedEvent;
+    public event EventHandler<ThemeOperateEventArgs>? ThemeAboutToChangeEvent;
+    public event EventHandler<ThemeChangedEventArgs>? ThemeChangedEvent;
 
     static ThemeManager()
     {
@@ -49,29 +80,6 @@ public class ThemeManager : Styles, IThemeManager
         _languageProviders     = new List<ILanguageProvider>();
         _languages             = new Dictionary<CultureInfo, ResourceDictionary>();
     }
-
-    public IReadOnlyList<string> CustomThemeDirs => _customThemeDirs;
-    public static ThemeManager Current { get; }
-    public string DefaultThemeId { get; set; }
-    public double RenderScaling { get; internal set; }
-    internal List<Type> ControlTokenTypes { get; set; }
-
-    public CultureInfo? CultureInfo
-    {
-        get => _cultureInfo;
-
-        set
-        {
-            _cultureInfo = value;
-            var languageResource = TryGetLanguageResource(value ?? DEFAULT_LANGUAGE);
-            foreach (var entry in languageResource)
-            {
-                Resources.Add(entry);
-            }
-        }
-    }
-
-    public ITheme? ActivatedTheme => _activatedTheme;
 
     public IReadOnlyCollection<ITheme> AvailableThemes
     {
@@ -100,9 +108,8 @@ public class ThemeManager : Styles, IThemeManager
 
         var theme = _themePool[id];
         if (theme.IsLoaded)
-
-            // TODO 这里记录一个日志
         {
+            // TODO 这里记录一个日志
             return theme;
         }
 
@@ -123,29 +130,26 @@ public class ThemeManager : Styles, IThemeManager
     }
 
     /// <summary>
-    /// 取消主题在 avalonia 里面的 resource 资源
+    ///     取消主题在 avalonia 里面的 resource 资源
     /// </summary>
     /// <param name="id"></param>
     public void UnLoadTheme(string id)
     {
         if (!_themePool.ContainsKey(id))
-
-            // TODO 需要记录一个日志
         {
+            // TODO 需要记录一个日志
             return;
         }
 
         if (_activatedTheme != null && _activatedTheme.Id == id)
-
-            // TODO 需要记录一个日志
         {
+            // TODO 需要记录一个日志
             return;
         }
 
         var theme = _themePool[id];
         theme.NotifyAboutToUnload();
         ThemeAboutToUnloadEvent?.Invoke(this, new ThemeOperateEventArgs(theme));
-
         // TODO 进行卸载操作，暂时没有实现
         theme.NotifyUnloaded();
         ThemeUnloadedEvent?.Invoke(this, new ThemeOperateEventArgs(theme));
@@ -154,9 +158,8 @@ public class ThemeManager : Styles, IThemeManager
     public void SetActiveTheme(string id)
     {
         if (!_themePool.ContainsKey(id))
-
-            // TODO 需要记录一个日志
         {
+            // TODO 需要记录一个日志
             return;
         }
 
@@ -187,9 +190,8 @@ public class ThemeManager : Styles, IThemeManager
     public void RegisterDynamicTheme(DynamicTheme dynamicTheme)
     {
         if (_themePool.ContainsKey(dynamicTheme.Id))
-
-            // TODO 需要记录一个日志
         {
+            // TODO 需要记录一个日志
             return;
         }
 
@@ -216,15 +218,6 @@ public class ThemeManager : Styles, IThemeManager
 
         // TODO 如果这里为空的化需要记录一个日志
     }
-
-    public event EventHandler<ThemeOperateEventArgs>? ThemeCreatedEvent;
-    public event EventHandler<ThemeOperateEventArgs>? ThemeAboutToLoadEvent;
-    public event EventHandler<ThemeOperateEventArgs>? ThemeLoadedEvent;
-    public event EventHandler<ThemeOperateEventArgs>? ThemeLoadFailedEvent;
-    public event EventHandler<ThemeOperateEventArgs>? ThemeAboutToUnloadEvent;
-    public event EventHandler<ThemeOperateEventArgs>? ThemeUnloadedEvent;
-    public event EventHandler<ThemeOperateEventArgs>? ThemeAboutToChangeEvent;
-    public event EventHandler<ThemeChangedEventArgs>? ThemeChangedEvent;
 
     private ResourceDictionary TryGetLanguageResource(CultureInfo locale)
     {
@@ -287,7 +280,6 @@ public class ThemeManager : Styles, IThemeManager
     internal void Initialize()
     {
         RegisterServices();
-
         // 收集控件全局初始化接口
         InvokeBootstrapInitializers();
         RegisterControlThemes();
@@ -368,22 +360,22 @@ public class ThemeManager : Styles, IThemeManager
 
 public class ThemeOperateEventArgs : EventArgs
 {
+    public ITheme? Theme { get; }
+
     public ThemeOperateEventArgs(ITheme? theme)
     {
         Theme = theme;
     }
-
-    public ITheme? Theme { get; }
 }
 
 public class ThemeChangedEventArgs : EventArgs
 {
+    public ITheme? OldTheme { get; }
+    public ITheme NewTheme { get; }
+
     public ThemeChangedEventArgs(ITheme newTheme, ITheme? oldTheme)
     {
         NewTheme = newTheme;
         OldTheme = oldTheme;
     }
-
-    public ITheme? OldTheme { get; }
-    public ITheme NewTheme { get; }
 }
