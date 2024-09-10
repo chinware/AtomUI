@@ -4,8 +4,8 @@ namespace AtomUI.Demo.Desktop.ShowCase;
 
 public partial class SplitButtonShowCase : UserControl
 {
-   public SplitButtonShowCase()
-   {
-      InitializeComponent();
-   }
+    public SplitButtonShowCase()
+    {
+        InitializeComponent();
+    }
 }

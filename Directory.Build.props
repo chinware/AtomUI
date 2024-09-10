@@ -1,5 +1,5 @@
 <Project>
-    
+
     <PropertyGroup>
         <RootNamespace>AtomUI</RootNamespace>
         <Nullable>enable</Nullable>
@@ -7,7 +7,7 @@
         <LangVersion>latest</LangVersion>
     </PropertyGroup>
 
-    <Import Project="$(MSBuildThisFileDirectory)\build\Version.props" />
-    <Import Project="$(MSBuildThisFileDirectory)\build\Output.props" />
-    
+    <Import Project="$(MSBuildThisFileDirectory)\build\Version.props"/>
+    <Import Project="$(MSBuildThisFileDirectory)\build\Output.props"/>
+
 </Project>

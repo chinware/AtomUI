@@ -19,169 +19,193 @@ namespace AtomUI.Controls;
 /// </summary>
 internal class NodeSwitcherButton : ToggleIconButton
 {
-   #region 公共属性
+    #region 公共属性
 
-   public static readonly StyledProperty<PathIcon?> LoadingIconProperty
-      = AvaloniaProperty.Register<NodeSwitcherButton, PathIcon?>(nameof(LoadingIcon));
+    public static readonly StyledProperty<PathIcon?> LoadingIconProperty
+        = AvaloniaProperty.Register<NodeSwitcherButton, PathIcon?>(nameof(LoadingIcon));
 
-   public static readonly StyledProperty<PathIcon?> LeafIconProperty
-      = AvaloniaProperty.Register<NodeSwitcherButton, PathIcon?>(nameof(LeafIcon));
+    public static readonly StyledProperty<PathIcon?> LeafIconProperty
+        = AvaloniaProperty.Register<NodeSwitcherButton, PathIcon?>(nameof(LeafIcon));
 
-   public static readonly StyledProperty<bool> IsLeafProperty
-      = AvaloniaProperty.Register<NodeSwitcherButton, bool>(nameof(IsLeaf));
+    public static readonly StyledProperty<bool> IsLeafProperty
+        = AvaloniaProperty.Register<NodeSwitcherButton, bool>(nameof(IsLeaf));
 
-   public PathIcon? LoadingIcon
-   {
-      get => GetValue(LoadingIconProperty);
-      set => SetValue(LoadingIconProperty, value);
-   }
+    public PathIcon? LoadingIcon
+    {
+        get => GetValue(LoadingIconProperty);
+        set => SetValue(LoadingIconProperty, value);
+    }
 
-   public PathIcon? LeafIcon
-   {
-      get => GetValue(LeafIconProperty);
-      set => SetValue(LeafIconProperty, value);
-   }
+    public PathIcon? LeafIcon
+    {
+        get => GetValue(LeafIconProperty);
+        set => SetValue(LeafIconProperty, value);
+    }
 
-   public bool IsLeaf
-   {
-      get => GetValue(IsLeafProperty);
-      set => SetValue(IsLeafProperty, value);
-   }
+    public bool IsLeaf
+    {
+        get => GetValue(IsLeafProperty);
+        set => SetValue(IsLeafProperty, value);
+    }
 
-   #endregion
+    #endregion
 
-   #region 内部属性定义
+    #region 内部属性定义
 
-   internal static readonly StyledProperty<bool> IsIconVisibleProperty
-      = AvaloniaProperty.Register<NodeSwitcherButton, bool>(nameof(IsIconVisible), true);
+    internal static readonly StyledProperty<bool> IsIconVisibleProperty
+        = AvaloniaProperty.Register<NodeSwitcherButton, bool>(nameof(IsIconVisible), true);
 
-   internal bool IsIconVisible
-   {
-      get => GetValue(IsIconVisibleProperty);
-      set => SetValue(IsIconVisibleProperty, value);
-   }
-   
-   #endregion
-   
-   private readonly BorderRenderHelper _borderRenderHelper;
-   
-   static NodeSwitcherButton()
-   {
-      AffectsMeasure<NodeSwitcherButton>(LoadingIconProperty, LeafIconProperty);
-      AffectsRender<NodeSwitcherButton>(BackgroundProperty);
-   }
+    internal bool IsIconVisible
+    {
+        get => GetValue(IsIconVisibleProperty);
+        set => SetValue(IsIconVisibleProperty, value);
+    }
 
-   public NodeSwitcherButton()
-   {
-      _borderRenderHelper = new BorderRenderHelper();
-   }
+    #endregion
 
-   protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-   {
-      if (LoadingIcon is null) {
-         LoadingIcon = new PathIcon()
-         {
-            Kind = "LoadingOutlined"
-         };
-      }
+    private readonly BorderRenderHelper _borderRenderHelper;
 
-      ConfigureFixedSizeIcon(LoadingIcon);
+    static NodeSwitcherButton()
+    {
+        AffectsMeasure<NodeSwitcherButton>(LoadingIconProperty, LeafIconProperty);
+        AffectsRender<NodeSwitcherButton>(BackgroundProperty);
+    }
 
-      LoadingIcon.LoadingAnimation = IconAnimation.Spin;
+    public NodeSwitcherButton()
+    {
+        _borderRenderHelper = new BorderRenderHelper();
+    }
 
-      if (LeafIcon is null) {
-         LeafIcon = new PathIcon()
-         {
-            Kind = "FileOutlined"
-         };
-      }
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        if (LoadingIcon is null)
+        {
+            LoadingIcon = new PathIcon
+            {
+                Kind = "LoadingOutlined"
+            };
+        }
 
-      ConfigureFixedSizeIcon(LeafIcon);
-      base.OnApplyTemplate(e);
-      ApplyIconToContent();
-      if (Transitions is null) {
-         Transitions = new Transitions()
-         {
-            AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty)
-         };
-      }
-   }
+        ConfigureFixedSizeIcon(LoadingIcon);
 
-   private void ConfigureFixedSizeIcon(PathIcon icon)
-   {
-      icon.SetCurrentValue(PathIcon.HorizontalAlignmentProperty, HorizontalAlignment.Center);
-      icon.SetCurrentValue(PathIcon.VerticalAlignmentProperty, VerticalAlignment.Center);
-      UIStructureUtils.SetTemplateParent(icon, this);
-      TokenResourceBinder.CreateGlobalResourceBinding(icon, PathIcon.WidthProperty, GlobalTokenResourceKey.IconSize);
-      TokenResourceBinder.CreateGlobalResourceBinding(icon, PathIcon.HeightProperty, GlobalTokenResourceKey.IconSize);
-      BindUtils.RelayBind(this, IsIconVisibleProperty, icon, PathIcon.IsVisibleProperty);
-   }
-   
-   protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
-   {
-      base.OnPropertyChanged(change);
-      if (VisualRoot is not null) {
-         if (change.Property == IsLeafProperty) {
-            ApplyIconToContent();
-         }
-      }
-      if (change.Property == LoadingIconProperty ||
-          change.Property == LeafIconProperty) {
-         if (change.NewValue is PathIcon newIcon) {
-            ConfigureFixedSizeIcon(newIcon);
-            ApplyIconToContent();
-            RenderTransform = null;
-         }
-      }
+        LoadingIcon.LoadingAnimation = IconAnimation.Spin;
 
-      if (change.Property == CheckedIconProperty ||
-          change.Property == UnCheckedIconProperty) {
-         RenderTransform = null;
-         ApplyIconToContent();
-      }
-   }
+        if (LeafIcon is null)
+        {
+            LeafIcon = new PathIcon
+            {
+                Kind = "FileOutlined"
+            };
+        }
 
-   internal override void ApplyIconToContent()
-   {
-      if (!IsLeaf) {
-         if (IsChecked.HasValue) {
-            if (CheckedIcon is not null && UnCheckedIcon is not null) {
-               // 直接切换模式
-               if (IsChecked.Value) {
-                  Content = CheckedIcon;
-               } else {
-                  Content = UnCheckedIcon;
-               }
-            } else if (UnCheckedIcon is not null) {
-               // 通过 render transform 进行设置
-               Content = UnCheckedIcon;
-               if (IsChecked.Value) {
-                  RenderTransform = new RotateTransform(90);
-               } else {
-                  RenderTransform = null;
-               }
+        ConfigureFixedSizeIcon(LeafIcon);
+        base.OnApplyTemplate(e);
+        ApplyIconToContent();
+        if (Transitions is null)
+        {
+            Transitions = new Transitions
+            {
+                AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty)
+            };
+        }
+    }
+
+    private void ConfigureFixedSizeIcon(PathIcon icon)
+    {
+        icon.SetCurrentValue(HorizontalAlignmentProperty, HorizontalAlignment.Center);
+        icon.SetCurrentValue(VerticalAlignmentProperty, VerticalAlignment.Center);
+        UIStructureUtils.SetTemplateParent(icon, this);
+        TokenResourceBinder.CreateGlobalResourceBinding(icon, WidthProperty, GlobalTokenResourceKey.IconSize);
+        TokenResourceBinder.CreateGlobalResourceBinding(icon, HeightProperty, GlobalTokenResourceKey.IconSize);
+        BindUtils.RelayBind(this, IsIconVisibleProperty, icon, IsVisibleProperty);
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (VisualRoot is not null)
+        {
+            if (change.Property == IsLeafProperty)
+            {
+                ApplyIconToContent();
             }
-         } else {
-            Content = LoadingIcon;
-         }
-      } else {
-         RenderTransform = null;
-         Content = LeafIcon;
-      }
-   }
+        }
 
-   public override void Render(DrawingContext context)
-   {
-      if (IsIconVisible && !IsLeaf) {
-         _borderRenderHelper.Render(context,
-                                    Bounds.Size,
-                                    new Thickness(),
-                                    CornerRadius,
-                                    BackgroundSizing.InnerBorderEdge,
-                                    Background,
-                                    null,
-                                    default);
-      }
+        if (change.Property == LoadingIconProperty ||
+            change.Property == LeafIconProperty)
+        {
+            if (change.NewValue is PathIcon newIcon)
+            {
+                ConfigureFixedSizeIcon(newIcon);
+                ApplyIconToContent();
+                RenderTransform = null;
+            }
+        }
 
-   }
+        if (change.Property == CheckedIconProperty ||
+            change.Property == UnCheckedIconProperty)
+        {
+            RenderTransform = null;
+            ApplyIconToContent();
+        }
+    }
+
+    internal override void ApplyIconToContent()
+    {
+        if (!IsLeaf)
+        {
+            if (IsChecked.HasValue)
+            {
+                if (CheckedIcon is not null && UnCheckedIcon is not null)
+                {
+                    // 直接切换模式
+                    if (IsChecked.Value)
+                    {
+                        Content = CheckedIcon;
+                    }
+                    else
+                    {
+                        Content = UnCheckedIcon;
+                    }
+                }
+                else if (UnCheckedIcon is not null)
+                {
+                    // 通过 render transform 进行设置
+                    Content = UnCheckedIcon;
+                    if (IsChecked.Value)
+                    {
+                        RenderTransform = new RotateTransform(90);
+                    }
+                    else
+                    {
+                        RenderTransform = null;
+                    }
+                }
+            }
+            else
+            {
+                Content = LoadingIcon;
+            }
+        }
+        else
+        {
+            RenderTransform = null;
+            Content         = LeafIcon;
+        }
+    }
+
+    public override void Render(DrawingContext context)
+    {
+        if (IsIconVisible && !IsLeaf)
+        {
+            _borderRenderHelper.Render(context,
+                Bounds.Size,
+                new Thickness(),
+                CornerRadius,
+                BackgroundSizing.InnerBorderEdge,
+                Background,
+                null,
+                default);
+        }
+    }
 }

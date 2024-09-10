@@ -11,7 +11,7 @@
         <showcase:ShowCaseItem
             Title="Basic usage"
             Description="The basic example supports the title and description props of confirmation.">
-            <atom:PopupConfirm 
+            <atom:PopupConfirm
                 Title="Delete the task"
                 ConfirmContent="Are you sure to delete this task?"
                 OkText="Ok"
@@ -19,18 +19,18 @@
                 <atom:Button ButtonType="Default" IsDanger="True">Delete</atom:Button>
             </atom:PopupConfirm>
         </showcase:ShowCaseItem>
-        
+
         <showcase:ShowCaseItem
             Title="Locale text"
             Description="Set okText and cancelText props to customize the button's labels.">
-            <atom:PopupConfirm 
+            <atom:PopupConfirm
                 Title="Delete the task"
                 ConfirmContent="Are you sure to delete this task?">
                 <atom:Button ButtonType="Default" IsDanger="True">Delete</atom:Button>
             </atom:PopupConfirm>
         </showcase:ShowCaseItem>
-        
-         <showcase:ShowCaseItem
+
+        <showcase:ShowCaseItem
             Title="Placement"
             Description="There are 12 placement options available.">
             <Grid>
@@ -41,21 +41,21 @@
                     </Style>
                 </Grid.Styles>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"></ColumnDefinition>
-                    <ColumnDefinition Width="Auto"></ColumnDefinition>
-                    <ColumnDefinition Width="Auto"></ColumnDefinition>
-                    <ColumnDefinition Width="Auto"></ColumnDefinition>
-                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                
-                <atom:PopupConfirm 
+
+                <atom:PopupConfirm
                     Grid.Row="1" Grid.Column="0" Trigger="Click" Placement="LeftEdgeAlignedTop"
                     Title="Delete the task"
                     ConfirmContent="Are you sure to delete this task?"
@@ -63,8 +63,8 @@
                     CancelText="Cancel">
                     <atom:Button ButtonType="Default">LT</atom:Button>
                 </atom:PopupConfirm>
-                
-                <atom:PopupConfirm 
+
+                <atom:PopupConfirm
                     Grid.Row="2" Grid.Column="0" Trigger="Click" Placement="Left"
                     Title="Delete the task"
                     ConfirmContent="Are you sure to delete this task?"
@@ -72,8 +72,8 @@
                     CancelText="Cancel">
                     <atom:Button ButtonType="Default">Left</atom:Button>
                 </atom:PopupConfirm>
-                
-                <atom:PopupConfirm 
+
+                <atom:PopupConfirm
                     Grid.Row="3" Grid.Column="0" Trigger="Click" Placement="LeftEdgeAlignedBottom"
                     Title="Delete the task"
                     ConfirmContent="Are you sure to delete this task?"
@@ -81,8 +81,8 @@
                     CancelText="Cancel">
                     <atom:Button ButtonType="Default">LB</atom:Button>
                 </atom:PopupConfirm>
-                
-                <atom:PopupConfirm 
+
+                <atom:PopupConfirm
                     Grid.Row="0" Grid.Column="1" Trigger="Click" Placement="TopEdgeAlignedLeft"
                     Title="Delete the task"
                     ConfirmContent="Are you sure to delete this task?"
@@ -90,8 +90,8 @@
                     CancelText="Cancel">
                     <atom:Button ButtonType="Default">TL</atom:Button>
                 </atom:PopupConfirm>
-                
-                <atom:PopupConfirm 
+
+                <atom:PopupConfirm
                     Grid.Row="0" Grid.Column="2" Trigger="Click" Placement="Top"
                     Title="Delete the task"
                     ConfirmContent="Are you sure to delete this task?"
@@ -99,8 +99,8 @@
                     CancelText="Cancel">
                     <atom:Button ButtonType="Default">Top</atom:Button>
                 </atom:PopupConfirm>
-                
-                <atom:PopupConfirm 
+
+                <atom:PopupConfirm
                     Grid.Row="0" Grid.Column="3" Trigger="Click" Placement="TopEdgeAlignedRight"
                     Title="Delete the task"
                     ConfirmContent="Are you sure to delete this task?"
@@ -108,8 +108,8 @@
                     CancelText="Cancel">
                     <atom:Button ButtonType="Default">TR</atom:Button>
                 </atom:PopupConfirm>
-                
-                <atom:PopupConfirm 
+
+                <atom:PopupConfirm
                     Grid.Row="1" Grid.Column="4" Trigger="Click" Placement="RightEdgeAlignedTop"
                     Title="Delete the task"
                     ConfirmContent="Are you sure to delete this task?"
@@ -117,8 +117,8 @@
                     CancelText="Cancel">
                     <atom:Button ButtonType="Default">RT</atom:Button>
                 </atom:PopupConfirm>
-                
-                <atom:PopupConfirm 
+
+                <atom:PopupConfirm
                     Grid.Row="2" Grid.Column="4" Trigger="Click" Placement="Right"
                     Title="Delete the task"
                     ConfirmContent="Are you sure to delete this task?"
@@ -126,8 +126,8 @@
                     CancelText="Cancel">
                     <atom:Button ButtonType="Default">Right</atom:Button>
                 </atom:PopupConfirm>
-                
-                <atom:PopupConfirm 
+
+                <atom:PopupConfirm
                     Grid.Row="3" Grid.Column="4" Trigger="Click" Placement="RightEdgeAlignedBottom"
                     Title="Delete the task"
                     ConfirmContent="Are you sure to delete this task?"
@@ -135,8 +135,8 @@
                     CancelText="Cancel">
                     <atom:Button ButtonType="Default">RB</atom:Button>
                 </atom:PopupConfirm>
-                      
-                <atom:PopupConfirm 
+
+                <atom:PopupConfirm
                     Grid.Row="4" Grid.Column="1" Trigger="Click" Placement="BottomEdgeAlignedLeft"
                     Title="Delete the task"
                     ConfirmContent="Are you sure to delete this task?"
@@ -144,8 +144,8 @@
                     CancelText="Cancel">
                     <atom:Button ButtonType="Default">BL</atom:Button>
                 </atom:PopupConfirm>
-                
-                <atom:PopupConfirm 
+
+                <atom:PopupConfirm
                     Grid.Row="4" Grid.Column="2" Trigger="Click" Placement="Bottom"
                     Title="Delete the task"
                     ConfirmContent="Are you sure to delete this task?"
@@ -153,8 +153,8 @@
                     CancelText="Cancel">
                     <atom:Button ButtonType="Default">Bottom</atom:Button>
                 </atom:PopupConfirm>
-                
-                <atom:PopupConfirm 
+
+                <atom:PopupConfirm
                     Grid.Row="4" Grid.Column="3" Trigger="Click" Placement="BottomEdgeAlignedRight"
                     Title="Delete the task"
                     ConfirmContent="Are you sure to delete this task?"
@@ -162,14 +162,14 @@
                     CancelText="Cancel">
                     <atom:Button ButtonType="Default">BR</atom:Button>
                 </atom:PopupConfirm>
-        
+
             </Grid>
         </showcase:ShowCaseItem>
-        
+
         <showcase:ShowCaseItem
             Title="Customize icon"
             Description="Set icon props to customize the icon.">
-            <atom:PopupConfirm 
+            <atom:PopupConfirm
                 Title="Delete the task"
                 ConfirmContent="Are you sure to delete this task?"
                 Icon="{atom:IconProvider Kind=QuestionCircleOutlined}"

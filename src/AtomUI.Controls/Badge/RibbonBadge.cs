@@ -11,208 +11,233 @@ namespace AtomUI.Controls;
 
 public enum RibbonBadgePlacement
 {
-   Start,
-   End
+    Start,
+    End
 }
 
 public class RibbonBadge : Control, IControlCustomStyle
 {
-   public static readonly StyledProperty<string?> RibbonColorProperty
-      = AvaloniaProperty.Register<RibbonBadge, string?>(nameof(RibbonColor));
+    public static readonly StyledProperty<string?> RibbonColorProperty
+        = AvaloniaProperty.Register<RibbonBadge, string?>(nameof(RibbonColor));
 
-   public static readonly StyledProperty<Control?> DecoratedTargetProperty =
-      AvaloniaProperty.Register<RibbonBadge, Control?>(nameof(DecoratedTarget));
+    public static readonly StyledProperty<Control?> DecoratedTargetProperty =
+        AvaloniaProperty.Register<RibbonBadge, Control?>(nameof(DecoratedTarget));
 
-   public static readonly StyledProperty<Point> OffsetProperty =
-      AvaloniaProperty.Register<RibbonBadge, Point>(nameof(Offset));
+    public static readonly StyledProperty<Point> OffsetProperty =
+        AvaloniaProperty.Register<RibbonBadge, Point>(nameof(Offset));
 
-   public static readonly StyledProperty<string?> TextProperty
-      = AvaloniaProperty.Register<RibbonBadge, string?>(nameof(Text));
+    public static readonly StyledProperty<string?> TextProperty
+        = AvaloniaProperty.Register<RibbonBadge, string?>(nameof(Text));
 
-   public static readonly StyledProperty<RibbonBadgePlacement> PlacementProperty
-      = AvaloniaProperty.Register<RibbonBadge, RibbonBadgePlacement>(
-         nameof(Text),
-         RibbonBadgePlacement.End);
-   
-   public static readonly StyledProperty<bool> BadgeIsVisibleProperty =
-      AvaloniaProperty.Register<RibbonBadge, bool>(nameof(BadgeIsVisible));
+    public static readonly StyledProperty<RibbonBadgePlacement> PlacementProperty
+        = AvaloniaProperty.Register<RibbonBadge, RibbonBadgePlacement>(
+            nameof(Text),
+            RibbonBadgePlacement.End);
 
-   [Content]
-   public Control? DecoratedTarget
-   {
-      get => GetValue(DecoratedTargetProperty);
-      set => SetValue(DecoratedTargetProperty, value);
-   }
+    public static readonly StyledProperty<bool> BadgeIsVisibleProperty =
+        AvaloniaProperty.Register<RibbonBadge, bool>(nameof(BadgeIsVisible));
 
-   public string? RibbonColor
-   {
-      get => GetValue(RibbonColorProperty);
-      set => SetValue(RibbonColorProperty, value);
-   }
+    [Content]
+    public Control? DecoratedTarget
+    {
+        get => GetValue(DecoratedTargetProperty);
+        set => SetValue(DecoratedTargetProperty, value);
+    }
 
-   public Point Offset
-   {
-      get => GetValue(OffsetProperty);
-      set => SetValue(OffsetProperty, value);
-   }
+    public string? RibbonColor
+    {
+        get => GetValue(RibbonColorProperty);
+        set => SetValue(RibbonColorProperty, value);
+    }
 
-   public string? Text
-   {
-      get => GetValue(TextProperty);
-      set => SetValue(TextProperty, value);
-   }
+    public Point Offset
+    {
+        get => GetValue(OffsetProperty);
+        set => SetValue(OffsetProperty, value);
+    }
 
-   public RibbonBadgePlacement Placement
-   {
-      get => GetValue(PlacementProperty);
-      set => SetValue(PlacementProperty, value);
-   }
-   
-   public bool BadgeIsVisible
-   {
-      get => GetValue(BadgeIsVisibleProperty);
-      set => SetValue(BadgeIsVisibleProperty, value);
-   }
+    public string? Text
+    {
+        get => GetValue(TextProperty);
+        set => SetValue(TextProperty, value);
+    }
 
-   public RibbonBadge()
-   {
-      _customStyle = this;
-   }
+    public RibbonBadgePlacement Placement
+    {
+        get => GetValue(PlacementProperty);
+        set => SetValue(PlacementProperty, value);
+    }
 
-   static RibbonBadge()
-   {
-      AffectsMeasure<RibbonBadge>(DecoratedTargetProperty,
-                               TextProperty);
-      AffectsRender<RibbonBadge>(RibbonColorProperty, PlacementProperty);
-   }
-   
-   private IControlCustomStyle _customStyle;
-   private RibbonBadgeAdorner? _ribbonBadgeAdorner;
-   private AdornerLayer? _adornerLayer;
+    public bool BadgeIsVisible
+    {
+        get => GetValue(BadgeIsVisibleProperty);
+        set => SetValue(BadgeIsVisibleProperty, value);
+    }
 
-   private void HandleDecoratedTargetChanged()
-   {
-      if (_ribbonBadgeAdorner is not null) {
-         if (DecoratedTarget is null) {
-            VisualChildren.Add(_ribbonBadgeAdorner);
-            ((ISetLogicalParent)_ribbonBadgeAdorner).SetParent(this);
-            _ribbonBadgeAdorner.IsAdornerMode = false;
-         } else if (DecoratedTarget is not null) {
-            _ribbonBadgeAdorner.IsAdornerMode = true;
-            VisualChildren.Add(DecoratedTarget);
-            ((ISetLogicalParent)DecoratedTarget).SetParent(this);
-         }
-      }
-   }
+    public RibbonBadge()
+    {
+        _customStyle = this;
+    }
 
-   private void SetupRibbonColor(string colorStr)
-   {
-      colorStr = colorStr.Trim().ToLower();
+    static RibbonBadge()
+    {
+        AffectsMeasure<RibbonBadge>(DecoratedTargetProperty,
+            TextProperty);
+        AffectsRender<RibbonBadge>(RibbonColorProperty, PlacementProperty);
+    }
 
-      foreach (var presetColor in PresetPrimaryColor.AllColorTypes()) {
-         if (presetColor.Type.ToString().ToLower() == colorStr) {
-            _ribbonBadgeAdorner!.RibbonColor = new SolidColorBrush(presetColor.Color());
-            return;
-         }
-      }
+    private readonly IControlCustomStyle _customStyle;
+    private RibbonBadgeAdorner? _ribbonBadgeAdorner;
+    private AdornerLayer? _adornerLayer;
 
-      if (Color.TryParse(colorStr, out Color color)) {
-         _ribbonBadgeAdorner!.RibbonColor = new SolidColorBrush(color);
-      }
-   }
-   
-   void IControlCustomStyle.SetupTokenBindings()
-   {
-      if (_ribbonBadgeAdorner is not null) {
-         BindUtils.RelayBind(this, TextProperty, _ribbonBadgeAdorner, RibbonBadgeAdorner.TextProperty);
-         BindUtils.RelayBind(this, OffsetProperty, _ribbonBadgeAdorner, RibbonBadgeAdorner.OffsetProperty);
-         BindUtils.RelayBind(this, PlacementProperty, _ribbonBadgeAdorner, RibbonBadgeAdorner.PlacementProperty);
-      }
-   }
-   
-   public sealed override void ApplyTemplate()
-   {
-      base.ApplyTemplate();
-      if (DecoratedTarget is null) {
-         CreateBadgeAdorner();
-      }
-   }
-   
-   protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
-   {
-      base.OnPropertyChanged(e);
-      if (e.Property == IsVisibleProperty ||
-          e.Property == BadgeIsVisibleProperty) {
-         var badgeIsVisible = e.GetNewValue<bool>();
-         if (badgeIsVisible) {
-            if (_adornerLayer is not null) {
-               return;
+    private void HandleDecoratedTargetChanged()
+    {
+        if (_ribbonBadgeAdorner is not null)
+        {
+            if (DecoratedTarget is null)
+            {
+                VisualChildren.Add(_ribbonBadgeAdorner);
+                ((ISetLogicalParent)_ribbonBadgeAdorner).SetParent(this);
+                _ribbonBadgeAdorner.IsAdornerMode = false;
             }
-            PrepareAdorner();
-         } else {
-            HideAdorner();
-         }
-      }
-      if (VisualRoot is not null) {
-         if (e.Property == DecoratedTargetProperty) {
+            else if (DecoratedTarget is not null)
+            {
+                _ribbonBadgeAdorner.IsAdornerMode = true;
+                VisualChildren.Add(DecoratedTarget);
+                ((ISetLogicalParent)DecoratedTarget).SetParent(this);
+            }
+        }
+    }
+
+    private void SetupRibbonColor(string colorStr)
+    {
+        colorStr = colorStr.Trim().ToLower();
+
+        foreach (var presetColor in PresetPrimaryColor.AllColorTypes())
+        {
+            if (presetColor.Type.ToString().ToLower() == colorStr)
+            {
+                _ribbonBadgeAdorner!.RibbonColor = new SolidColorBrush(presetColor.Color());
+                return;
+            }
+        }
+
+        if (Color.TryParse(colorStr, out var color))
+        {
+            _ribbonBadgeAdorner!.RibbonColor = new SolidColorBrush(color);
+        }
+    }
+
+    void IControlCustomStyle.SetupTokenBindings()
+    {
+        if (_ribbonBadgeAdorner is not null)
+        {
+            BindUtils.RelayBind(this, TextProperty, _ribbonBadgeAdorner, RibbonBadgeAdorner.TextProperty);
+            BindUtils.RelayBind(this, OffsetProperty, _ribbonBadgeAdorner, RibbonBadgeAdorner.OffsetProperty);
+            BindUtils.RelayBind(this, PlacementProperty, _ribbonBadgeAdorner, RibbonBadgeAdorner.PlacementProperty);
+        }
+    }
+
+    public sealed override void ApplyTemplate()
+    {
+        base.ApplyTemplate();
+        if (DecoratedTarget is null)
+        {
+            CreateBadgeAdorner();
+        }
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
+    {
+        base.OnPropertyChanged(e);
+        if (e.Property == IsVisibleProperty ||
+            e.Property == BadgeIsVisibleProperty)
+        {
+            var badgeIsVisible = e.GetNewValue<bool>();
+            if (badgeIsVisible)
+            {
+                if (_adornerLayer is not null)
+                {
+                    return;
+                }
+
+                PrepareAdorner();
+            }
+            else
+            {
+                HideAdorner();
+            }
+        }
+
+        if (VisualRoot is not null)
+        {
+            if (e.Property == DecoratedTargetProperty)
+            {
+                HandleDecoratedTargetChanged();
+            }
+
+            if (e.Property == RibbonColorProperty)
+            {
+                SetupRibbonColor(e.GetNewValue<string>());
+            }
+        }
+    }
+
+    private RibbonBadgeAdorner CreateBadgeAdorner()
+    {
+        if (_ribbonBadgeAdorner is null)
+        {
+            _ribbonBadgeAdorner = new RibbonBadgeAdorner();
+            _customStyle.SetupTokenBindings();
             HandleDecoratedTargetChanged();
-         }
-         
-         if (e.Property == RibbonColorProperty) {
-            SetupRibbonColor(e.GetNewValue<string>());
-         }
-      }
-   }
+            if (RibbonColor is not null)
+            {
+                SetupRibbonColor(RibbonColor);
+            }
+        }
 
-   private RibbonBadgeAdorner CreateBadgeAdorner()
-   {
-      if (_ribbonBadgeAdorner is null) {
-         _ribbonBadgeAdorner = new RibbonBadgeAdorner();
-         _customStyle.SetupTokenBindings();
-         HandleDecoratedTargetChanged();
-         if (RibbonColor is not null) {
-            SetupRibbonColor(RibbonColor);
-         }
-      }
+        return _ribbonBadgeAdorner;
+    }
 
-      return _ribbonBadgeAdorner;
-   }
+    private void PrepareAdorner()
+    {
+        if (_adornerLayer is null && DecoratedTarget is not null)
+        {
+            var ribbonBadgeAdorner = CreateBadgeAdorner();
+            _adornerLayer = AdornerLayer.GetAdornerLayer(this);
+            // 这里需要抛出异常吗？
+            if (_adornerLayer == null)
+            {
+                return;
+            }
 
-   private void PrepareAdorner()
-   {
-      if (_adornerLayer is null && DecoratedTarget is not null) {
-         var ribbonBadgeAdorner = CreateBadgeAdorner();
-         _adornerLayer = AdornerLayer.GetAdornerLayer(this);
-         // 这里需要抛出异常吗？
-         if (_adornerLayer == null) {
+            AdornerLayer.SetAdornedElement(ribbonBadgeAdorner, this);
+            AdornerLayer.SetIsClipEnabled(ribbonBadgeAdorner, false);
+            _adornerLayer.Children.Add(ribbonBadgeAdorner);
+        }
+    }
+
+    private void HideAdorner()
+    {
+        // 这里需要抛出异常吗？
+        if (_adornerLayer is null || _ribbonBadgeAdorner is null)
+        {
             return;
-         }
-         AdornerLayer.SetAdornedElement(ribbonBadgeAdorner, this);
-         AdornerLayer.SetIsClipEnabled(ribbonBadgeAdorner, false);
-         _adornerLayer.Children.Add(ribbonBadgeAdorner);
-      }
-   }
-   
-   private void HideAdorner()
-   {
-      // 这里需要抛出异常吗？
-      if (_adornerLayer is null || _ribbonBadgeAdorner is null) {
-         return;
-      }
-      
-      _adornerLayer.Children.Remove(_ribbonBadgeAdorner);
-      _adornerLayer = null;
-   }
+        }
 
-   protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-   {
-      base.OnAttachedToVisualTree(e);
-      PrepareAdorner();
-   }
+        _adornerLayer.Children.Remove(_ribbonBadgeAdorner);
+        _adornerLayer = null;
+    }
 
-   protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-   {
-      base.OnDetachedFromVisualTree(e);
-      HideAdorner();
-   }
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        PrepareAdorner();
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        HideAdorner();
+    }
 }

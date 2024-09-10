@@ -11,23 +11,23 @@ public interface INotification
    /// Gets the notification message.
    /// </summary>
    object? Content { get; }
-   
+
    /// <summary>
    /// 自定义图标
    /// </summary>
    PathIcon? Icon { get; }
 
    /// <summary>
-   /// Gets the <see cref="NotificationType"/> of the notification.
+   /// Gets the <see cref="NotificationType" /> of the notification.
    /// </summary>
    NotificationType Type { get; }
 
    /// <summary>
    /// Gets the expiration time of the notification after which it will automatically close.
-   /// If the value is <see cref="TimeSpan.Zero"/> then the notification will remain open until the user closes it.
+   /// If the value is <see cref="TimeSpan.Zero" /> then the notification will remain open until the user closes it.
    /// </summary>
    TimeSpan Expiration { get; }
-   
+
    /// <summary>
    /// 显示一个进度条
    /// </summary>

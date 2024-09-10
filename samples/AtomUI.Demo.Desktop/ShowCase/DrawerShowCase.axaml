@@ -50,13 +50,15 @@
         <showcase:ShowCaseItem Title="Basic" Description="Basic drawer.">
             <Panel>
                 <atom:ToggleSwitch x:Name="OpenButton01" Content="Open" />
-                <atom:Drawer IsOpen="{Binding $parent[Panel].((atom:ToggleSwitch)Children[0]).IsChecked}" OpenOn="{Binding $parent[TopLevel]}">
+                <atom:Drawer IsOpen="{Binding $parent[Panel].((atom:ToggleSwitch)Children[0]).IsChecked}"
+                             OpenOn="{Binding $parent[TopLevel]}">
                     <TextBlock Margin="50" Text="Some contents..." />
                 </atom:Drawer>
             </Panel>
         </showcase:ShowCaseItem>
 
-        <showcase:ShowCaseItem Title="Custom Placement" Description="The Drawer can appear from any edge of the screen.">
+        <showcase:ShowCaseItem Title="Custom Placement"
+                               Description="The Drawer can appear from any edge of the screen.">
             <Panel>
                 <StackPanel Classes="ControllerPanel">
                     <ListBox Classes="PlacementList"
@@ -65,15 +67,17 @@
                     <atom:ToggleSwitch Content="Open" />
                 </StackPanel>
 
-                <atom:Drawer IsOpen="{Binding $parent[Panel].((Panel)Children[0]).((atom:ToggleSwitch)Children[1]).IsChecked}"
-                             OpenOn="{Binding $parent[TopLevel]}"
-                             Placement="{Binding $parent[Panel].((Panel)Children[0]).((ListBox)Children[0]).SelectedItem}">
+                <atom:Drawer
+                    IsOpen="{Binding $parent[Panel].((Panel)Children[0]).((atom:ToggleSwitch)Children[1]).IsChecked}"
+                    OpenOn="{Binding $parent[TopLevel]}"
+                    Placement="{Binding $parent[Panel].((Panel)Children[0]).((ListBox)Children[0]).SelectedItem}">
                     <TextBlock Margin="50" Text="Some contents..." />
                 </atom:Drawer>
             </Panel>
         </showcase:ShowCaseItem>
 
-        <showcase:ShowCaseItem Title="Extra Actions" Description="Extra actions should be placed at corner of drawer in Ant Design, you can use extra prop for that.">
+        <showcase:ShowCaseItem Title="Extra Actions"
+                               Description="Extra actions should be placed at corner of drawer in Ant Design, you can use extra prop for that.">
             <Panel>
                 <StackPanel Classes="ControllerPanel">
                     <ListBox Classes="PlacementList"
@@ -82,9 +86,10 @@
                     <atom:ToggleSwitch Content="Open" />
                 </StackPanel>
 
-                <atom:Drawer IsOpen="{Binding $parent[Panel].((Panel)Children[0]).((atom:ToggleSwitch)Children[1]).IsChecked}"
-                             OpenOn="{Binding $parent[TopLevel]}"
-                             Placement="{Binding $parent[Panel].((Panel)Children[0]).((ListBox)Children[0]).SelectedItem}">
+                <atom:Drawer
+                    IsOpen="{Binding $parent[Panel].((Panel)Children[0]).((atom:ToggleSwitch)Children[1]).IsChecked}"
+                    OpenOn="{Binding $parent[TopLevel]}"
+                    Placement="{Binding $parent[Panel].((Panel)Children[0]).((ListBox)Children[0]).SelectedItem}">
                     <TextBlock Margin="50" Text=" TODO " />
                 </atom:Drawer>
             </Panel>
@@ -101,9 +106,10 @@
                     <atom:ToggleSwitch Content="Open" />
                 </StackPanel>
 
-                <atom:Drawer IsOpen="{Binding $parent[Panel].((Panel)Children[0]).((atom:ToggleSwitch)Children[1]).IsChecked}"
-                             OpenOn="{Binding $parent[showcase:ShowCaseItem]}"
-                             Placement="{Binding $parent[Panel].((Panel)Children[0]).((ListBox)Children[0]).SelectedItem}">
+                <atom:Drawer
+                    IsOpen="{Binding $parent[Panel].((Panel)Children[0]).((atom:ToggleSwitch)Children[1]).IsChecked}"
+                    OpenOn="{Binding $parent[showcase:ShowCaseItem]}"
+                    Placement="{Binding $parent[Panel].((Panel)Children[0]).((ListBox)Children[0]).SelectedItem}">
                     <TextBlock Margin="50" Text=" Some contents... " />
                 </atom:Drawer>
             </Panel>

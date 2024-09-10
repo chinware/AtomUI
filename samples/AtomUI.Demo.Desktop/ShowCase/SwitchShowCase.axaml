@@ -8,26 +8,26 @@
     xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
     mc:Ignorable="d">
     <showcase:ShowCasePanel>
-    <showcase:ShowCaseItem
-        Title="Basic"
-        Description="The most basic usage.">
-        <StackPanel HorizontalAlignment="Left" Spacing="10" Orientation="Horizontal">
-            <atom:ToggleSwitch />
-        </StackPanel>
-    </showcase:ShowCaseItem>
-    
-    <showcase:ShowCaseItem
-        Title="Disabled"
-        Description="Disabled state of Switch.">
-        <StackPanel HorizontalAlignment="Left" Spacing="10" Orientation="Vertical">
-            <atom:ToggleSwitch x:Name="ToggleDisabledSwitch" />
-            <atom:Button ButtonType="Primary"
-                         Command="{Binding $parent[showcase:SwitchShowCase].ToggleDisabledStatus}"
-                         CommandParameter="{Binding ElementName=ToggleDisabledSwitch}">
-                toggle disabled
-            </atom:Button>
-        </StackPanel>
-    </showcase:ShowCaseItem>
+        <showcase:ShowCaseItem
+            Title="Basic"
+            Description="The most basic usage.">
+            <StackPanel HorizontalAlignment="Left" Spacing="10" Orientation="Horizontal">
+                <atom:ToggleSwitch />
+            </StackPanel>
+        </showcase:ShowCaseItem>
+
+        <showcase:ShowCaseItem
+            Title="Disabled"
+            Description="Disabled state of Switch.">
+            <StackPanel HorizontalAlignment="Left" Spacing="10" Orientation="Vertical">
+                <atom:ToggleSwitch x:Name="ToggleDisabledSwitch" />
+                <atom:Button ButtonType="Primary"
+                             Command="{Binding $parent[showcase:SwitchShowCase].ToggleDisabledStatus}"
+                             CommandParameter="{Binding ElementName=ToggleDisabledSwitch}">
+                    toggle disabled
+                </atom:Button>
+            </StackPanel>
+        </showcase:ShowCaseItem>
 
         <showcase:ShowCaseItem
             Title="Text and icon"
@@ -42,18 +42,18 @@
                     OffContent="关" />
                 <atom:ToggleSwitch>
                     <atom:ToggleSwitch.OnContent>
-                        <atom:PathIcon Kind="TwitterOutlined"/>
+                        <atom:PathIcon Kind="TwitterOutlined" />
                     </atom:ToggleSwitch.OnContent>
                     <atom:ToggleSwitch.OffContent>
-                        <atom:PathIcon Kind="WechatOutlined"/>
+                        <atom:PathIcon Kind="WechatOutlined" />
                     </atom:ToggleSwitch.OffContent>
                 </atom:ToggleSwitch>
                 <atom:ToggleSwitch SizeType="Small">
                     <atom:ToggleSwitch.OnContent>
-                        <atom:PathIcon Kind="CheckOutlined"/>
+                        <atom:PathIcon Kind="CheckOutlined" />
                     </atom:ToggleSwitch.OnContent>
                     <atom:ToggleSwitch.OffContent>
-                        <atom:PathIcon Kind="CloseOutlined"/>
+                        <atom:PathIcon Kind="CloseOutlined" />
                     </atom:ToggleSwitch.OffContent>
                 </atom:ToggleSwitch>
             </StackPanel>
@@ -67,7 +67,7 @@
                 <atom:ToggleSwitch SizeType="Small" />
             </StackPanel>
         </showcase:ShowCaseItem>
-        
+
         <showcase:ShowCaseItem
             Title="Loading"
             Description="Mark a pending state of switch.">

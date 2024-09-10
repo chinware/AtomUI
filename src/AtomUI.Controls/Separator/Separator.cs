@@ -1,14 +1,11 @@
 ﻿using AtomUI.Media;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.Media;
-using Avalonia.Media.Imaging;
 using Avalonia.Metadata;
 
 namespace AtomUI.Controls;
@@ -17,346 +14,383 @@ using AvaloniaSeparator = Avalonia.Controls.Separator;
 
 public enum SeparatorTitlePosition
 {
-   Left,
-   Right,
-   Center
+    Left,
+    Right,
+    Center
 }
 
 public class Separator : AvaloniaSeparator, IControlCustomStyle
 {
-   #region 公共属性定义
+    #region 公共属性定义
 
-   public static readonly StyledProperty<string?> TitleProperty =
-      AvaloniaProperty.Register<Separator, string?>(nameof(Title));
+    public static readonly StyledProperty<string?> TitleProperty =
+        AvaloniaProperty.Register<Separator, string?>(nameof(Title));
 
-   public static readonly StyledProperty<SeparatorTitlePosition> TitlePositionProperty =
-      AvaloniaProperty.Register<Separator, SeparatorTitlePosition>(nameof(TitlePosition),
-                                                                   SeparatorTitlePosition.Center);
+    public static readonly StyledProperty<SeparatorTitlePosition> TitlePositionProperty =
+        AvaloniaProperty.Register<Separator, SeparatorTitlePosition>(nameof(TitlePosition),
+            SeparatorTitlePosition.Center);
 
-   public static readonly StyledProperty<IBrush?> TitleColorProperty =
-      AvaloniaProperty.Register<Separator, IBrush?>(nameof(TitleColor));
+    public static readonly StyledProperty<IBrush?> TitleColorProperty =
+        AvaloniaProperty.Register<Separator, IBrush?>(nameof(TitleColor));
 
-   public static readonly StyledProperty<IBrush?> LineColorProperty =
-      AvaloniaProperty.Register<Separator, IBrush?>(nameof(LineColor));
+    public static readonly StyledProperty<IBrush?> LineColorProperty =
+        AvaloniaProperty.Register<Separator, IBrush?>(nameof(LineColor));
 
-   public static readonly StyledProperty<Orientation> OrientationProperty =
-      AvaloniaProperty.Register<Separator, Orientation>(nameof(Orientation), Orientation.Horizontal);
+    public static readonly StyledProperty<Orientation> OrientationProperty =
+        AvaloniaProperty.Register<Separator, Orientation>(nameof(Orientation));
 
-   public static readonly StyledProperty<double> OrientationMarginProperty =
-      AvaloniaProperty.Register<Separator, double>(nameof(OrientationMargin), double.NaN);
+    public static readonly StyledProperty<double> OrientationMarginProperty =
+        AvaloniaProperty.Register<Separator, double>(nameof(OrientationMargin), double.NaN);
 
-   public static readonly StyledProperty<bool> IsDashedLineProperty =
-      AvaloniaProperty.Register<Separator, bool>(nameof(Orientation), false);
+    public static readonly StyledProperty<bool> IsDashedLineProperty =
+        AvaloniaProperty.Register<Separator, bool>(nameof(Orientation));
 
-   public static readonly StyledProperty<double> LineWidthProperty =
-      AvaloniaProperty.Register<Separator, double>(nameof(LineWidth), 1);
+    public static readonly StyledProperty<double> LineWidthProperty =
+        AvaloniaProperty.Register<Separator, double>(nameof(LineWidth), 1);
 
-   /// <summary>
-   /// 分割线的标题
-   /// </summary>
-   [Content]
-   public string? Title
-   {
-      get => GetValue(TitleProperty);
-      set => SetValue(TitleProperty, value);
-   }
+    /// <summary>
+    /// 分割线的标题
+    /// </summary>
+    [Content]
+    public string? Title
+    {
+        get => GetValue(TitleProperty);
+        set => SetValue(TitleProperty, value);
+    }
 
-   /// <summary>
-   /// 分割线标题的位置
-   /// </summary>
-   public SeparatorTitlePosition TitlePosition
-   {
-      get => GetValue(TitlePositionProperty);
-      set => SetValue(TitlePositionProperty, value);
-   }
+    /// <summary>
+    /// 分割线标题的位置
+    /// </summary>
+    public SeparatorTitlePosition TitlePosition
+    {
+        get => GetValue(TitlePositionProperty);
+        set => SetValue(TitlePositionProperty, value);
+    }
 
-   /// <summary>
-   /// 分割线标题的颜色
-   /// </summary>
-   public IBrush? TitleColor
-   {
-      get => GetValue(TitleColorProperty);
-      set => SetValue(TitleColorProperty, value);
-   }
+    /// <summary>
+    /// 分割线标题的颜色
+    /// </summary>
+    public IBrush? TitleColor
+    {
+        get => GetValue(TitleColorProperty);
+        set => SetValue(TitleColorProperty, value);
+    }
 
-   /// <summary>
-   /// 分割线标题的颜色
-   /// </summary>
-   public IBrush? LineColor
-   {
-      get => GetValue(LineColorProperty);
-      set => SetValue(LineColorProperty, value);
-   }
+    /// <summary>
+    /// 分割线标题的颜色
+    /// </summary>
+    public IBrush? LineColor
+    {
+        get => GetValue(LineColorProperty);
+        set => SetValue(LineColorProperty, value);
+    }
 
-   /// <summary>
-   /// 分割线的方向，垂直和水平分割线
-   /// </summary>
-   public Orientation Orientation
-   {
-      get => GetValue(OrientationProperty);
-      set => SetValue(OrientationProperty, value);
-   }
+    /// <summary>
+    /// 分割线的方向，垂直和水平分割线
+    /// </summary>
+    public Orientation Orientation
+    {
+        get => GetValue(OrientationProperty);
+        set => SetValue(OrientationProperty, value);
+    }
 
-   /// <summary>
-   /// The margin-left/right between the title and its closest border, while the orientation must be left or right,
-   /// If a numeric value of type string is provided without a unit, it is assumed to be in pixels (px) by default.
-   /// </summary>
-   /// <returns></returns>
-   public double OrientationMargin
-   {
-      get => GetValue(OrientationMarginProperty);
-      set => SetValue(OrientationMarginProperty, value);
-   }
+    /// <summary>
+    /// The margin-left/right between the title and its closest border, while the orientation must be left or right,
+    /// If a numeric value of type string is provided without a unit, it is assumed to be in pixels (px) by default.
+    /// </summary>
+    /// <returns></returns>
+    public double OrientationMargin
+    {
+        get => GetValue(OrientationMarginProperty);
+        set => SetValue(OrientationMarginProperty, value);
+    }
 
-   /// <summary>
-   /// 是否为虚线
-   /// </summary>
-   public bool IsDashedLine
-   {
-      get => GetValue(IsDashedLineProperty);
-      set => SetValue(IsDashedLineProperty, value);
-   }
+    /// <summary>
+    /// 是否为虚线
+    /// </summary>
+    public bool IsDashedLine
+    {
+        get => GetValue(IsDashedLineProperty);
+        set => SetValue(IsDashedLineProperty, value);
+    }
 
-   /// <summary>
-   /// 分割线的宽度，这里的宽度是 RenderScaling 中立的像素值
-   /// </summary>
-   public double LineWidth
-   {
-      get => GetValue(LineWidthProperty);
-      set => SetValue(LineWidthProperty, value);
-   }
-   #endregion
+    /// <summary>
+    /// 分割线的宽度，这里的宽度是 RenderScaling 中立的像素值
+    /// </summary>
+    public double LineWidth
+    {
+        get => GetValue(LineWidthProperty);
+        set => SetValue(LineWidthProperty, value);
+    }
 
-   #region 内部属性定义
+    #endregion
 
-   internal static readonly StyledProperty<double> TextPaddingInlineProperty =
-      AvaloniaProperty.Register<Separator, double>(
-         nameof(TextPaddingInline));
+    #region 内部属性定义
 
-   internal static readonly StyledProperty<double> OrientationMarginPercentProperty =
-      AvaloniaProperty.Register<Separator, double>(
-         nameof(OrientationMarginPercent));
+    internal static readonly StyledProperty<double> TextPaddingInlineProperty =
+        AvaloniaProperty.Register<Separator, double>(
+            nameof(TextPaddingInline));
 
-   internal static readonly StyledProperty<double> VerticalMarginInlineProperty =
-      AvaloniaProperty.Register<Separator, double>(
-         nameof(VerticalMarginInline));
-   
-   internal double TextPaddingInline
-   {
-      get => GetValue(TextPaddingInlineProperty);
-      set => SetValue(TextPaddingInlineProperty, value);
-   }
-   
-   internal double OrientationMarginPercent
-   {
-      get => GetValue(OrientationMarginPercentProperty);
-      set => SetValue(OrientationMarginPercentProperty, value);
-   }
-   
-   internal double VerticalMarginInline
-   {
-      get => GetValue(VerticalMarginInlineProperty);
-      set => SetValue(VerticalMarginInlineProperty, value);
-   }
+    internal static readonly StyledProperty<double> OrientationMarginPercentProperty =
+        AvaloniaProperty.Register<Separator, double>(
+            nameof(OrientationMarginPercent));
 
-   #endregion
-   
-   private IControlCustomStyle _customStyle;
-   private Label? _titleLabel;
-   private const double SEPARATOR_LINE_MIN_PROPORTION = 0.25;
-   private double _currentEdgeDistance;
+    internal static readonly StyledProperty<double> VerticalMarginInlineProperty =
+        AvaloniaProperty.Register<Separator, double>(
+            nameof(VerticalMarginInline));
 
-   static Separator()
-   {
-      AffectsMeasure<Separator>(OrientationProperty,
-                                LineWidthProperty,
-                                TitleProperty);
-      AffectsArrange<Separator>(TitlePositionProperty);
-      AffectsRender<Separator>(TitleColorProperty,
-                               LineColorProperty,
-                               IsDashedLineProperty);
-   }
+    internal double TextPaddingInline
+    {
+        get => GetValue(TextPaddingInlineProperty);
+        set => SetValue(TextPaddingInlineProperty, value);
+    }
 
-   public Separator()
-   {
-      _customStyle = this;
-      _customStyle.InitOnConstruct();
-   }
+    internal double OrientationMarginPercent
+    {
+        get => GetValue(OrientationMarginPercentProperty);
+        set => SetValue(OrientationMarginPercentProperty, value);
+    }
 
-   protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
-   {
-      base.OnPropertyChanged(e);
-      _customStyle.HandlePropertyChangedForStyle(e);
-   }
-   
-   protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-   {
-      base.OnApplyTemplate(e);
-      _customStyle.HandleTemplateApplied(e.NameScope);
-   }
+    internal double VerticalMarginInline
+    {
+        get => GetValue(VerticalMarginInlineProperty);
+        set => SetValue(VerticalMarginInlineProperty, value);
+    }
 
-   void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
-   {
-      _titleLabel = scope.Find<Label>(SeparatorTheme.TitlePart);
-      _customStyle.SetupTokenBindings();
-   }
+    #endregion
 
-   #region IControlCustomStyle 实现
+    private readonly IControlCustomStyle _customStyle;
+    private Label? _titleLabel;
+    private const double SEPARATOR_LINE_MIN_PROPORTION = 0.25;
+    private double _currentEdgeDistance;
 
-   void IControlCustomStyle.SetupTokenBindings()
-   {
-      TokenResourceBinder.CreateTokenBinding(this, LineWidthProperty, GlobalTokenResourceKey.LineWidth);
-   }
+    static Separator()
+    {
+        AffectsMeasure<Separator>(OrientationProperty,
+            LineWidthProperty,
+            TitleProperty);
+        AffectsArrange<Separator>(TitlePositionProperty);
+        AffectsRender<Separator>(TitleColorProperty,
+            LineColorProperty,
+            IsDashedLineProperty);
+    }
 
-   // 当为水平分隔线的时候，我们设置最小的高度，当为垂直分割线的时候我们设置一个合适宽度
-   // 然后保持尽可能保持文字尽可能的显示，如果小于最小分隔部分的两倍的时候，文字隐藏。
-   protected override Size MeasureOverride(Size availableSize)
-   {
-      var size = base.MeasureOverride(availableSize);
-      var targetHeight = size.Height;
-      var targetWidth = size.Width;
-      if (Orientation == Orientation.Horizontal) {
-         if (Title is null || Title?.Length == 0) {
-            targetHeight = LineWidth * 3;
-         }
+    public Separator()
+    {
+        _customStyle = this;
+        _customStyle.InitOnConstruct();
+    }
 
-         if (!double.IsInfinity(availableSize.Width)) {
-            targetWidth = Math.Max(availableSize.Width, targetWidth);
-         }
-      } else {
-         targetWidth = Math.Max(1, LineWidth) + VerticalMarginInline;
-         targetHeight = FontUtils.ConvertEmToPixel(1, FontSize, TopLevel.GetTopLevel(this)?.RenderScaling ?? 1.0);
-         if (!double.IsInfinity(availableSize.Height)) {
-            targetHeight = Math.Max(availableSize.Height, targetHeight);
-         }
-      }
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
+    {
+        base.OnPropertyChanged(e);
+        _customStyle.HandlePropertyChangedForStyle(e);
+    }
 
-      return new Size(targetWidth, targetHeight);
-   }
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        _customStyle.HandleTemplateApplied(e.NameScope);
+    }
 
-   protected override Size ArrangeOverride(Size finalSize)
-   {
-      if (Orientation == Orientation.Horizontal && _titleLabel!.IsVisible) {
-         var titleRect = GetTitleRect(finalSize);
-         _titleLabel.Arrange(titleRect);
-      }
+    void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
+    {
+        _titleLabel = scope.Find<Label>(SeparatorTheme.TitlePart);
+        _customStyle.SetupTokenBindings();
+    }
 
-      return finalSize;
-   }
+    #region IControlCustomStyle 实现
 
-   private double GetTextPaddingInline()
-   {
-      return FontSize * TextPaddingInline;
-   }
+    void IControlCustomStyle.SetupTokenBindings()
+    {
+        TokenResourceBinder.CreateTokenBinding(this, LineWidthProperty, GlobalTokenResourceKey.LineWidth);
+    }
 
-   private Rect GetTitleRect(Size finalSize)
-   {
-      Rect titleRect = default;
-      if (Orientation == Orientation.Horizontal && Title?.Length > 0) {
-         // 线最小得占到 25 %，拍脑袋
-         var lineMinWidth = finalSize.Width * SEPARATOR_LINE_MIN_PROPORTION;
-         var titleWidth = _titleLabel!.DesiredSize.Width + 2;
-         var remainWidth = finalSize.Width - titleWidth - GetTextPaddingInline() * 2;
-         if (lineMinWidth > remainWidth) {
-            // 字过多
-            titleWidth = finalSize.Width - lineMinWidth;
-         }
-
-         // 处理完成之后，字的宽度一定在 width 范围内
-         // 计算位置
-         if (TitlePosition == SeparatorTitlePosition.Left) {
-            if (!double.IsNaN(OrientationMargin)) {
-               _currentEdgeDistance = Math.Min((finalSize.Width - titleWidth) / 2, OrientationMargin);
-            } else {
-               _currentEdgeDistance = finalSize.Width * OrientationMarginPercent;
+    // 当为水平分隔线的时候，我们设置最小的高度，当为垂直分割线的时候我们设置一个合适宽度
+    // 然后保持尽可能保持文字尽可能的显示，如果小于最小分隔部分的两倍的时候，文字隐藏。
+    protected override Size MeasureOverride(Size availableSize)
+    {
+        var size         = base.MeasureOverride(availableSize);
+        var targetHeight = size.Height;
+        var targetWidth  = size.Width;
+        if (Orientation == Orientation.Horizontal)
+        {
+            if (Title is null || Title?.Length == 0)
+            {
+                targetHeight = LineWidth * 3;
             }
 
-            titleRect = new Rect(new Point(_currentEdgeDistance + GetTextPaddingInline(), 0),
-                                 new Size(titleWidth, finalSize.Height));
-            var rightDelta = titleRect.Right - finalSize.Width;
-            if (MathUtils.GreaterThan(rightDelta, 0)) {
-               titleRect = titleRect.WithWidth(finalSize.Width - titleRect.Left);
+            if (!double.IsInfinity(availableSize.Width))
+            {
+                targetWidth = Math.Max(availableSize.Width, targetWidth);
             }
-         } else if (TitlePosition == SeparatorTitlePosition.Right) {
-            if (!double.IsNaN(OrientationMargin)) {
-               _currentEdgeDistance = Math.Min((finalSize.Width - titleWidth) / 2, OrientationMargin);
-            } else {
-               _currentEdgeDistance = finalSize.Width * OrientationMarginPercent;
+        }
+        else
+        {
+            targetWidth  = Math.Max(1, LineWidth) + VerticalMarginInline;
+            targetHeight = FontUtils.ConvertEmToPixel(1, FontSize, TopLevel.GetTopLevel(this)?.RenderScaling ?? 1.0);
+            if (!double.IsInfinity(availableSize.Height))
+            {
+                targetHeight = Math.Max(availableSize.Height, targetHeight);
+            }
+        }
+
+        return new Size(targetWidth, targetHeight);
+    }
+
+    protected override Size ArrangeOverride(Size finalSize)
+    {
+        if (Orientation == Orientation.Horizontal && _titleLabel!.IsVisible)
+        {
+            var titleRect = GetTitleRect(finalSize);
+            _titleLabel.Arrange(titleRect);
+        }
+
+        return finalSize;
+    }
+
+    private double GetTextPaddingInline()
+    {
+        return FontSize * TextPaddingInline;
+    }
+
+    private Rect GetTitleRect(Size finalSize)
+    {
+        Rect titleRect = default;
+        if (Orientation == Orientation.Horizontal && Title?.Length > 0)
+        {
+            // 线最小得占到 25 %，拍脑袋
+            var lineMinWidth = finalSize.Width * SEPARATOR_LINE_MIN_PROPORTION;
+            var titleWidth   = _titleLabel!.DesiredSize.Width + 2;
+            var remainWidth  = finalSize.Width - titleWidth - GetTextPaddingInline() * 2;
+            if (lineMinWidth > remainWidth)
+            {
+                // 字过多
+                titleWidth = finalSize.Width - lineMinWidth;
             }
 
-            titleRect = new Rect(
-               new Point(finalSize.Width - _currentEdgeDistance - titleWidth - GetTextPaddingInline() * 2, 0),
-               new Size(titleWidth, finalSize.Height));
-            double leftDelta = titleRect.Left - 0;
-            if (leftDelta < 0) {
-               titleRect = titleRect.WithX(0);
+            // 处理完成之后，字的宽度一定在 width 范围内
+            // 计算位置
+            if (TitlePosition == SeparatorTitlePosition.Left)
+            {
+                if (!double.IsNaN(OrientationMargin))
+                {
+                    _currentEdgeDistance = Math.Min((finalSize.Width - titleWidth) / 2, OrientationMargin);
+                }
+                else
+                {
+                    _currentEdgeDistance = finalSize.Width * OrientationMarginPercent;
+                }
+
+                titleRect = new Rect(new Point(_currentEdgeDistance + GetTextPaddingInline(), 0),
+                    new Size(titleWidth, finalSize.Height));
+                var rightDelta = titleRect.Right - finalSize.Width;
+                if (MathUtils.GreaterThan(rightDelta, 0))
+                {
+                    titleRect = titleRect.WithWidth(finalSize.Width - titleRect.Left);
+                }
             }
-         } else {
-            // 居中
-            titleRect = new Rect(new Point((finalSize.Width - titleWidth) / 2, 0),
-                                 new Size(titleWidth, finalSize.Height));
-         }
-      }
+            else if (TitlePosition == SeparatorTitlePosition.Right)
+            {
+                if (!double.IsNaN(OrientationMargin))
+                {
+                    _currentEdgeDistance = Math.Min((finalSize.Width - titleWidth) / 2, OrientationMargin);
+                }
+                else
+                {
+                    _currentEdgeDistance = finalSize.Width * OrientationMarginPercent;
+                }
 
-      return titleRect;
-   }
-
-   public override void Render(DrawingContext context)
-   {
-      using var state = context.PushRenderOptions(new RenderOptions
-      {
-         EdgeMode = EdgeMode.Aliased
-      });
-      var linePen = new Pen(LineColor, LineWidth);
-      var controlRect = new Rect(new Point(0, 0), DesiredSize);
-      if (IsDashedLine) {
-         linePen.DashStyle = DashStyle.Dash;
-      }
-
-      if (Orientation == Orientation.Horizontal) {
-         var offsetY = controlRect.Height / 2.0;
-         if (Title?.Length > 0) {
-            // 画两个线段
-            var titleRect = GetTitleRect(DesiredSize);
-            if (TitlePosition == SeparatorTitlePosition.Left) {
-               if (double.IsNaN(OrientationMargin)) {
-                  context.DrawLine(linePen, new Point(0, offsetY),
-                                   new Point(titleRect.Left - GetTextPaddingInline(), offsetY));
-               }
-
-               context.DrawLine(linePen, new Point(titleRect.Right + GetTextPaddingInline(), offsetY),
-                                new Point(controlRect.Right, offsetY));
-            } else if (TitlePosition == SeparatorTitlePosition.Right) {
-               context.DrawLine(linePen, new Point(0, offsetY),
-                                new Point(titleRect.Left - GetTextPaddingInline(), offsetY));
-               if (double.IsNaN(OrientationMargin)) {
-                  context.DrawLine(linePen, new Point(titleRect.Right + GetTextPaddingInline(), offsetY),
-                                   new Point(controlRect.Right, offsetY));
-               }
-            } else {
-               context.DrawLine(linePen, new Point(0, offsetY),
-                                new Point(titleRect.Left - GetTextPaddingInline(), offsetY));
-               context.DrawLine(linePen, new Point(titleRect.Right + GetTextPaddingInline(), offsetY),
-                                new Point(controlRect.Right, offsetY));
+                titleRect = new Rect(
+                    new Point(finalSize.Width - _currentEdgeDistance - titleWidth - GetTextPaddingInline() * 2, 0),
+                    new Size(titleWidth, finalSize.Height));
+                var leftDelta = titleRect.Left - 0;
+                if (leftDelta < 0)
+                {
+                    titleRect = titleRect.WithX(0);
+                }
             }
-         } else {
-            context.DrawLine(linePen, new Point(0, offsetY), new Point(controlRect.Right, offsetY));
-         }
-      } else {
-         var offsetX = controlRect.Width / 2.0;
-         context.DrawLine(linePen, new Point(offsetX, 0), new Point(offsetX, controlRect.Bottom));
-      }
-   }
+            else
+            {
+                // 居中
+                titleRect = new Rect(new Point((finalSize.Width - titleWidth) / 2, 0),
+                    new Size(titleWidth, finalSize.Height));
+            }
+        }
 
-   #endregion
+        return titleRect;
+    }
+
+    public override void Render(DrawingContext context)
+    {
+        using var state = context.PushRenderOptions(new RenderOptions
+        {
+            EdgeMode = EdgeMode.Aliased
+        });
+        var linePen     = new Pen(LineColor, LineWidth);
+        var controlRect = new Rect(new Point(0, 0), DesiredSize);
+        if (IsDashedLine)
+        {
+            linePen.DashStyle = DashStyle.Dash;
+        }
+
+        if (Orientation == Orientation.Horizontal)
+        {
+            var offsetY = controlRect.Height / 2.0;
+            if (Title?.Length > 0)
+            {
+                // 画两个线段
+                var titleRect = GetTitleRect(DesiredSize);
+                if (TitlePosition == SeparatorTitlePosition.Left)
+                {
+                    if (double.IsNaN(OrientationMargin))
+                    {
+                        context.DrawLine(linePen, new Point(0, offsetY),
+                            new Point(titleRect.Left - GetTextPaddingInline(), offsetY));
+                    }
+
+                    context.DrawLine(linePen, new Point(titleRect.Right + GetTextPaddingInline(), offsetY),
+                        new Point(controlRect.Right, offsetY));
+                }
+                else if (TitlePosition == SeparatorTitlePosition.Right)
+                {
+                    context.DrawLine(linePen, new Point(0, offsetY),
+                        new Point(titleRect.Left - GetTextPaddingInline(), offsetY));
+                    if (double.IsNaN(OrientationMargin))
+                    {
+                        context.DrawLine(linePen, new Point(titleRect.Right + GetTextPaddingInline(), offsetY),
+                            new Point(controlRect.Right, offsetY));
+                    }
+                }
+                else
+                {
+                    context.DrawLine(linePen, new Point(0, offsetY),
+                        new Point(titleRect.Left - GetTextPaddingInline(), offsetY));
+                    context.DrawLine(linePen, new Point(titleRect.Right + GetTextPaddingInline(), offsetY),
+                        new Point(controlRect.Right, offsetY));
+                }
+            }
+            else
+            {
+                context.DrawLine(linePen, new Point(0, offsetY), new Point(controlRect.Right, offsetY));
+            }
+        }
+        else
+        {
+            var offsetX = controlRect.Width / 2.0;
+            context.DrawLine(linePen, new Point(offsetX, 0), new Point(offsetX, controlRect.Bottom));
+        }
+    }
+
+    #endregion
 }
 
 public class VerticalSeparator : Separator
 {
-   static VerticalSeparator()
-   {
-      OrientationProperty.OverrideDefaultValue<VerticalSeparator>(Orientation.Vertical);
-   }
-   
-   protected override Type StyleKeyOverride => typeof(Separator);
+    static VerticalSeparator()
+    {
+        OrientationProperty.OverrideDefaultValue<VerticalSeparator>(Orientation.Vertical);
+    }
+
+    protected override Type StyleKeyOverride => typeof(Separator);
 }

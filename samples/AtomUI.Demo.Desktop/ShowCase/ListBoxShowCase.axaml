@@ -18,7 +18,7 @@
                 <atom:ListBoxItem>Yellow</atom:ListBoxItem>
             </atom:ListBox>
         </showcase:ShowCaseItem>
-        
+
         <showcase:ShowCaseItem
             Title="Hover effect"
             Description="Disabled item hover effect.">
@@ -29,7 +29,7 @@
                 <atom:ListBoxItem>Yellow</atom:ListBoxItem>
             </atom:ListBox>
         </showcase:ShowCaseItem>
-        
+
         <showcase:ShowCaseItem
             Title="Item disabled"
             Description="Disabled item.">

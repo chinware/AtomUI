@@ -73,7 +73,7 @@
                                    Icon="{atom:IconProvider Kind=CheckOutlined}" />
                     <atom:MenuSeparator />
                     <atom:MenuItem Header="Exit" />
-                    <atom:MenuItem Header="Disabled" IsEnabled="False"/>
+                    <atom:MenuItem Header="Disabled" IsEnabled="False" />
                 </atom:MenuItem>
             </atom:Menu>
         </showcase:ShowCaseItem>
@@ -128,19 +128,21 @@
             Description="Right click to bring up the context menu.">
             <showcase:ShowCaseItem.Styles>
                 <Style Selector="Border#contextMenuContainer">
-                    <Setter Property="BorderBrush" Value="Gray"/>
-                    <Setter Property="BorderThickness" Value="1"/>
-                    <Setter Property="CornerRadius" Value="6"/>
-                    <Setter Property="Padding" Value="10"/>
-                    <Setter Property="Margin" Value="10"/>
+                    <Setter Property="BorderBrush" Value="Gray" />
+                    <Setter Property="BorderThickness" Value="1" />
+                    <Setter Property="CornerRadius" Value="6" />
+                    <Setter Property="Padding" Value="10" />
+                    <Setter Property="Margin" Value="10" />
                 </Style>
             </showcase:ShowCaseItem.Styles>
             <Border Name="contextMenuContainer">
                 <Border.ContextMenu>
                     <atom:ContextMenu>
-                        <atom:MenuItem Header="Cut" InputGesture="Ctrl+X" Icon="{atom:IconProvider Kind=ScissorOutlined}" />
+                        <atom:MenuItem Header="Cut" InputGesture="Ctrl+X"
+                                       Icon="{atom:IconProvider Kind=ScissorOutlined}" />
                         <atom:MenuItem Header="Copy" InputGesture="Ctrl+C" Icon="{atom:IconProvider Kind=CopyOutlined}" />
-                        <atom:MenuItem Header="Delete" InputGesture="Ctrl+D" Icon="{atom:IconProvider Kind=DeleteOutlined}" />
+                        <atom:MenuItem Header="Delete" InputGesture="Ctrl+D"
+                                       Icon="{atom:IconProvider Kind=DeleteOutlined}" />
                         <atom:MenuItem Header="Paste">
                             <atom:MenuItem Header="Paste" InputGesture="Ctrl+P"
                                            Icon="{atom:IconProvider Kind=FileDoneOutlined}" />
@@ -151,26 +153,28 @@
                 <TextBlock Text="Right Click to show Context Menu" />
             </Border>
         </showcase:ShowCaseItem>
-        
+
         <showcase:ShowCaseItem
             Title="Menu Flyout"
             Description="Right Click to show Context Flyout">
             <showcase:ShowCaseItem.Styles>
                 <Style Selector="Border#contextFlyoutContainer">
-                    <Setter Property="BorderBrush" Value="Gray"/>
-                    <Setter Property="BorderThickness" Value="1"/>
-                    <Setter Property="CornerRadius" Value="6"/>
-                    <Setter Property="Padding" Value="10"/>
-                    <Setter Property="Margin" Value="10"/>
+                    <Setter Property="BorderBrush" Value="Gray" />
+                    <Setter Property="BorderThickness" Value="1" />
+                    <Setter Property="CornerRadius" Value="6" />
+                    <Setter Property="Padding" Value="10" />
+                    <Setter Property="Margin" Value="10" />
                 </Style>
             </showcase:ShowCaseItem.Styles>
-        
+
             <Border Name="contextFlyoutContainer">
                 <Border.ContextFlyout>
                     <atom:MenuFlyout>
-                        <atom:MenuItem Header="Cut" InputGesture="Ctrl+X" Icon="{atom:IconProvider Kind=ScissorOutlined}" />
+                        <atom:MenuItem Header="Cut" InputGesture="Ctrl+X"
+                                       Icon="{atom:IconProvider Kind=ScissorOutlined}" />
                         <atom:MenuItem Header="Copy" InputGesture="Ctrl+C" Icon="{atom:IconProvider Kind=CopyOutlined}" />
-                        <atom:MenuItem Header="Delete" InputGesture="Ctrl+D" Icon="{atom:IconProvider Kind=DeleteOutlined}" />
+                        <atom:MenuItem Header="Delete" InputGesture="Ctrl+D"
+                                       Icon="{atom:IconProvider Kind=DeleteOutlined}" />
                         <atom:MenuItem Header="Paste">
                             <atom:MenuItem Header="Paste" InputGesture="Ctrl+P"
                                            Icon="{atom:IconProvider Kind=FileDoneOutlined}" />
@@ -180,7 +184,7 @@
                 </Border.ContextFlyout>
                 <TextBlock Text="Right Click to show Context Flyout" />
             </Border>
-        
+
         </showcase:ShowCaseItem>
 
     </showcase:ShowCasePanel>

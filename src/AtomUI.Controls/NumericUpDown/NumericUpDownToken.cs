@@ -5,10 +5,10 @@ namespace AtomUI.Controls;
 [ControlDesignToken]
 internal class NumericUpDownToken : ButtonSpinnerToken
 {
-   new public const string ID = "NumericUpDown";
-   
-   public NumericUpDownToken()
-      : base(ID)
-   {
-   }
+    public new const string ID = "NumericUpDown";
+
+    public NumericUpDownToken()
+        : base(ID)
+    {
+    }
 }

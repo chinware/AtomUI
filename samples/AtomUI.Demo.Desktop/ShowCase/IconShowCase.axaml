@@ -24,17 +24,17 @@
     <TabControl>
         <TabItem Header="Outlined">
             <ScrollViewer>
-                <controls:IconGallery IconThemeType="Outlined"/>
+                <controls:IconGallery IconThemeType="Outlined" />
             </ScrollViewer>
         </TabItem>
         <TabItem Header="Filled">
             <ScrollViewer>
-                <controls:IconGallery IconThemeType="Filled"/>
+                <controls:IconGallery IconThemeType="Filled" />
             </ScrollViewer>
         </TabItem>
         <TabItem Header="Two Tone">
             <ScrollViewer>
-                <controls:IconGallery IconThemeType="TwoTone"/>
+                <controls:IconGallery IconThemeType="TwoTone" />
             </ScrollViewer>
         </TabItem>
     </TabControl>

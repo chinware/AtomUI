@@ -198,8 +198,8 @@ If a large or small button is desired, set the size property to either large or 
                 </atom:SplitButton>
             </WrapPanel>
         </showcase:ShowCaseItem>
-        
-         <showcase:ShowCaseItem
+
+        <showcase:ShowCaseItem
             Title="Flyout trigger type"
             Description="Support two kind of Trigger type.">
             <showcase:ShowCaseItem.Styles>

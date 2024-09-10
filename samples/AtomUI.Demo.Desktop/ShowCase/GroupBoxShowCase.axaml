@@ -19,7 +19,7 @@
                 </Panel>
             </atom:GroupBox>
         </showcase:ShowCaseItem>
-        
+
         <showcase:ShowCaseItem
             Title="Header title Position"
             Description="GroupBox Header supports three position types: Left, Center and Right.">
@@ -47,7 +47,7 @@
                 </atom:GroupBox>
             </StackPanel>
         </showcase:ShowCaseItem>
-        
+
         <showcase:ShowCaseItem
             Title="Header title style"
             Description="GroupBox Header supports customizing some properties of color and font.">
@@ -73,7 +73,8 @@
                         </TextBlock>
                     </Panel>
                 </atom:GroupBox>
-                <atom:GroupBox HeaderTitle="Title Info" HeaderTitlePosition="Center" HeaderFontStyle="Oblique" HeaderTitleColor="Coral" HeaderFontWeight="Medium">
+                <atom:GroupBox HeaderTitle="Title Info" HeaderTitlePosition="Center" HeaderFontStyle="Oblique"
+                               HeaderTitleColor="Coral" HeaderFontWeight="Medium">
                     <Panel Height="40">
                         <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
                             Content of group box
@@ -82,7 +83,7 @@
                 </atom:GroupBox>
             </StackPanel>
         </showcase:ShowCaseItem>
-        
+
         <showcase:ShowCaseItem
             Title="Header Icon"
             Description="GroupBox Header supports specifying Icon.">

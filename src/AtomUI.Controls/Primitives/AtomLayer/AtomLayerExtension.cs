@@ -26,7 +26,7 @@ public static class AtomLayerExtension
         }
 
         host ??= TopLevel.GetTopLevel(target);
-            
+
         if (host == null)
         {
             return null;
@@ -34,10 +34,10 @@ public static class AtomLayerExtension
 
         var layer = host.GetVisualChildren().FirstOrDefault(c => c is AtomLayer) as AtomLayer
                     ?? TryInject(host);
-            
+
         return layer;
     }
-    
+
     public static T? GetAdorner<T>(this Visual target) where T : Control
     {
         return target.GetLayer()?.GetAdorner<T>(target);
@@ -63,11 +63,12 @@ public static class AtomLayerExtension
         target.GetLayer()?.RemoveAdorner(adorner);
     }
 
-    public static void BeginRemovingAdorner(this Visual target, Control adorner, int millisecondsToConfirm, Func<bool> confirm)
+    public static void BeginRemovingAdorner(this Visual target, Control adorner, int millisecondsToConfirm,
+                                            Func<bool> confirm)
     {
         target.GetLayer()?.BeginRemovingAdorner(adorner, millisecondsToConfirm, confirm);
     }
-    
+
     private static AtomLayer? TryInject(Visual host)
     {
         var layer = new AtomLayer
@@ -85,6 +86,7 @@ public static class AtomLayerExtension
         {
             return false;
         }
+
         if (visualChildren.Any(c => c is AtomLayer))
         {
             return false;

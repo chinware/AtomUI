@@ -36,26 +36,28 @@
                 <atom:LineEdit Watermark="Borderless" StyleVariant="Borderless" />
             </StackPanel>
         </showcase:ShowCaseItem>
-        
+
         <showcase:ShowCaseItem
             Title="Pre / Post tab"
             Description="Using pre and post tabs example.">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:LineEdit LeftAddOn="http://" RightAddOn=".com" Width="400" HorizontalAlignment="Left"
-                               Text="mysite"/>
-                <atom:LineEdit RightAddOn="{atom:IconProvider Kind=SettingOutlined}" Width="400" HorizontalAlignment="Left"
-                               Text="mysite"/>
+                               Text="mysite" />
+                <atom:LineEdit RightAddOn="{atom:IconProvider Kind=SettingOutlined}" Width="400"
+                               HorizontalAlignment="Left"
+                               Text="mysite" />
                 <atom:LineEdit LeftAddOn="http://" InnerRightContent=".com" Width="400" HorizontalAlignment="Left"
-                               Text="mysite"/>
+                               Text="mysite" />
             </StackPanel>
         </showcase:ShowCaseItem>
-        
+
         <showcase:ShowCaseItem
             Title="With clear icon"
             Description="Input box with the remove icon, click the icon to delete everything.">
-            <atom:LineEdit Watermark="input with clear icon" Width="400" HorizontalAlignment="Left" IsEnableClearButton="True"/>
+            <atom:LineEdit Watermark="input with clear icon" Width="400" HorizontalAlignment="Left"
+                           IsEnableClearButton="True" />
         </showcase:ShowCaseItem>
-        
+
         <showcase:ShowCaseItem
             Title="Password box"
             Description="Input type of password.">
@@ -65,63 +67,73 @@
                                PasswordChar="*"
                                RevealPassword="False"
                                HorizontalAlignment="Left"
-                               IsEnableRevealButton="True"/>
+                               IsEnableRevealButton="True" />
                 <atom:LineEdit Watermark="input password"
                                Width="400"
                                PasswordChar="*"
                                RevealPassword="False"
                                HorizontalAlignment="Left"
                                IsEnableRevealButton="True"
-                               IsEnableClearButton="True"/>
+                               IsEnableClearButton="True" />
             </StackPanel>
         </showcase:ShowCaseItem>
-        
+
         <showcase:ShowCaseItem
             Title="prefix and suffix"
             Description="Add a prefix or suffix icons inside input.">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:LineEdit Watermark="Enter your username"
                                InnerLeftContent="{atom:IconProvider Kind=UserOutlined, NormalFilledColor=#D7D7D7}"
-                               InnerRightContent="{atom:IconProvider Kind=InfoCircleOutlined, NormalFilledColor=#8C8C8C}"/>
-                <atom:LineEdit InnerLeftContent="￥" InnerRightContent="RMB"/>
-                <atom:LineEdit InnerLeftContent="￥" InnerRightContent="RMB" IsEnabled="False"/>
+                               InnerRightContent="{atom:IconProvider Kind=InfoCircleOutlined, NormalFilledColor=#8C8C8C}" />
+                <atom:LineEdit InnerLeftContent="￥" InnerRightContent="RMB" />
+                <atom:LineEdit InnerLeftContent="￥" InnerRightContent="RMB" IsEnabled="False" />
             </StackPanel>
         </showcase:ShowCaseItem>
-        
+
         <showcase:ShowCaseItem
             Title="Status"
             Description="Add status to Input with status, which could be error or warning.">
             <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
-                <atom:LineEdit Watermark="Error" Status="Error"/>
-                <atom:LineEdit Watermark="Warning" Status="Warning"/>
-                <atom:LineEdit Watermark="Error with prefix" InnerLeftContent="{atom:IconProvider Kind=ClockCircleOutlined}" Status="Error"/>
-                <atom:LineEdit Watermark="Warning with prefix" InnerLeftContent="{atom:IconProvider Kind=ClockCircleOutlined}" Status="Warning"/>
-        
-                <atom:LineEdit Watermark="Error" Status="Error" InnerLeftContent="{atom:IconProvider Kind=ClockCircleOutlined}" StyleVariant="Filled"/>
-                <atom:LineEdit Watermark="Warning" Status="Warning" InnerLeftContent="{atom:IconProvider Kind=ClockCircleOutlined}" StyleVariant="Filled"/>
-        
-                <atom:LineEdit Watermark="Error" Status="Error" InnerLeftContent="{atom:IconProvider Kind=ClockCircleOutlined}" StyleVariant="Borderless"/>
-                <atom:LineEdit Watermark="Warning" Status="Warning" InnerLeftContent="{atom:IconProvider Kind=ClockCircleOutlined}" StyleVariant="Borderless"/>
+                <atom:LineEdit Watermark="Error" Status="Error" />
+                <atom:LineEdit Watermark="Warning" Status="Warning" />
+                <atom:LineEdit Watermark="Error with prefix"
+                               InnerLeftContent="{atom:IconProvider Kind=ClockCircleOutlined}" Status="Error" />
+                <atom:LineEdit Watermark="Warning with prefix"
+                               InnerLeftContent="{atom:IconProvider Kind=ClockCircleOutlined}" Status="Warning" />
+
+                <atom:LineEdit Watermark="Error" Status="Error"
+                               InnerLeftContent="{atom:IconProvider Kind=ClockCircleOutlined}" StyleVariant="Filled" />
+                <atom:LineEdit Watermark="Warning" Status="Warning"
+                               InnerLeftContent="{atom:IconProvider Kind=ClockCircleOutlined}" StyleVariant="Filled" />
+
+                <atom:LineEdit Watermark="Error" Status="Error"
+                               InnerLeftContent="{atom:IconProvider Kind=ClockCircleOutlined}"
+                               StyleVariant="Borderless" />
+                <atom:LineEdit Watermark="Warning" Status="Warning"
+                               InnerLeftContent="{atom:IconProvider Kind=ClockCircleOutlined}"
+                               StyleVariant="Borderless" />
             </StackPanel>
         </showcase:ShowCaseItem>
-        
+
         <showcase:ShowCaseItem
             Title="Search box"
             Description="Example of creating a search box by grouping a standard input with a search button.">
             <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
-                <atom:SearchEdit Watermark="input search text" Width="400" HorizontalAlignment="Left"/>
-                <atom:SearchEdit Watermark="input search text" Width="400" HorizontalAlignment="Left" SearchButtonText="Search"/>
-        
-                <atom:SearchEdit Watermark="input search text" Width="400" HorizontalAlignment="Left" SearchButtonStyle="Primary" SearchButtonText="Search"/>
-                <atom:SearchEdit Watermark="input search text" Width="400" HorizontalAlignment="Left" SearchButtonStyle="Primary" SearchButtonText="Search"/>
-        
+                <atom:SearchEdit Watermark="input search text" Width="400" HorizontalAlignment="Left" />
+                <atom:SearchEdit Watermark="input search text" Width="400" HorizontalAlignment="Left"
+                                 SearchButtonText="Search" />
+
+                <atom:SearchEdit Watermark="input search text" Width="400" HorizontalAlignment="Left"
+                                 SearchButtonStyle="Primary" SearchButtonText="Search" />
+                <atom:SearchEdit Watermark="input search text" Width="400" HorizontalAlignment="Left"
+                                 SearchButtonStyle="Primary" SearchButtonText="Search" />
+
                 <atom:SearchEdit Watermark="input search text"
                                  Width="400"
                                  HorizontalAlignment="Left"
                                  SearchButtonStyle="Primary"
                                  SearchButtonText="Search"
-                                 IsEnableClearButton="True"
-                                 />
+                                 IsEnableClearButton="True" />
                 <atom:SearchEdit Watermark="input search text"
                                  Width="400"
                                  HorizontalAlignment="Left"
@@ -129,7 +141,7 @@
                                  SearchButtonText="搜索一下"
                                  InnerRightContent="{atom:IconProvider Kind=AudioOutlined, NormalFilledColor=#1677ff, Width=16, Height=16}"
                                  IsEnableClearButton="True"
-                                 SizeType="Large"/>
+                                 SizeType="Large" />
             </StackPanel>
         </showcase:ShowCaseItem>
 

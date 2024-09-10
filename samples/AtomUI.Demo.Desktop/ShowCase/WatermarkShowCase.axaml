@@ -12,20 +12,24 @@
             <Border Height="300" atom:Watermark.Glyph="{atom:TextGlyph 'AtomUI'}" />
         </showcase:ShowCaseItem>
 
-        <showcase:ShowCaseItem Title="Multi-line watermark" Description="Use line-break to specify multi-line text watermark content.">
-            <Border Height="200" atom:Watermark.Glyph="{atom:TextGlyph 'AtomUI&#x000A;Happy Working', FontSize=18, Foreground=Gray}" />
+        <showcase:ShowCaseItem Title="Multi-line watermark"
+                               Description="Use line-break to specify multi-line text watermark content.">
+            <Border Height="200"
+                    atom:Watermark.Glyph="{atom:TextGlyph 'AtomUI&#x000A;Happy Working', FontSize=18, Foreground=Gray}" />
         </showcase:ShowCaseItem>
 
-        <showcase:ShowCaseItem Title="Image watermark" Description="Specify the image address via image. To ensure that the image is high definition and not stretched, set the width and height, and upload at least twice the width and height of the logo image address.">
+        <showcase:ShowCaseItem Title="Image watermark"
+                               Description="Specify the image address via image. To ensure that the image is high definition and not stretched, set the width and height, and upload at least twice the width and height of the logo image address.">
             <Border Height="400">
                 <atom:Watermark.Glyph>
-                    <atom:ImageGlyph Source="/Assets/ATOMUI-LOGO.png"/>
+                    <atom:ImageGlyph Source="/Assets/ATOMUI-LOGO.png" />
                     <!-- <atom:ImageGlyph Source="/Assets/avalonia-logo.ico"/> -->
                 </atom:Watermark.Glyph>
             </Border>
         </showcase:ShowCaseItem>
 
-        <showcase:ShowCaseItem Title="Custom configuration" Description="Preview the watermark effect by configuring custom parameters.">
+        <showcase:ShowCaseItem Title="Custom configuration"
+                               Description="Preview the watermark effect by configuring custom parameters.">
             <StackPanel atom:Watermark.Glyph="{atom:TextGlyph 'AtomUI'}">
                 <TextBlock TextWrapping="Wrap">
                     The light-speed iteration of the digital world makes products more complex. However, human consciousness and attention resources are limited. Facing this design contradiction, the pursuit of natural interaction will be the consistent direction of Ant Design.

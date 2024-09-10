@@ -1,10 +1,9 @@
 using System.Collections.ObjectModel;
-using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace AtomUI.Demo.Desktop.ViewModels;
 
-public class TabControlDemoViewModel: ObservableObject
+public class TabControlDemoViewModel : ObservableObject
 {
     public ObservableCollection<string> Items { get; set; }
 

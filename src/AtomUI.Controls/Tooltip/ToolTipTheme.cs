@@ -1,6 +1,7 @@
 ﻿using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Layout;
 using Avalonia.Media;
@@ -11,53 +12,58 @@ namespace AtomUI.Controls;
 [ControlThemeProvider]
 internal class ToolTipTheme : BaseControlTheme
 {
-   public const string ToolTipContainerPart = "PART_ToolTipContainer";
-   
-   public ToolTipTheme()
-      : base(typeof(ToolTip))
-   {
-   }
-   
-   protected override IControlTemplate? BuildControlTemplate()
-   {
-      return new FuncControlTemplate<ToolTip>((tip, scope) =>
-      {
-         var arrowDecoratedBox = new ArrowDecoratedBox()
-         {
-            Name = ToolTipContainerPart
-         };
-         if (tip.Content is string text) {
-            arrowDecoratedBox.Content = new TextBlock
+    public const string ToolTipContainerPart = "PART_ToolTipContainer";
+
+    public ToolTipTheme()
+        : base(typeof(ToolTip))
+    {
+    }
+
+    protected override IControlTemplate? BuildControlTemplate()
+    {
+        return new FuncControlTemplate<ToolTip>((tip, scope) =>
+        {
+            var arrowDecoratedBox = new ArrowDecoratedBox
             {
-               Text = text,
-               VerticalAlignment = VerticalAlignment.Center,
-               HorizontalAlignment = HorizontalAlignment.Center,
-               TextWrapping = TextWrapping.Wrap,
+                Name = ToolTipContainerPart
             };
-         } else if (tip.Content is Control control) {
-            arrowDecoratedBox.Content = control;
-         }
-         CreateTemplateParentBinding(arrowDecoratedBox, ArrowDecoratedBox.IsShowArrowProperty, ToolTip.IsShowArrowEffectiveProperty);
-         arrowDecoratedBox.RegisterInNameScope(scope);
-         return arrowDecoratedBox;
-      });
-   }
+            if (tip.Content is string text)
+            {
+                arrowDecoratedBox.Content = new TextBlock
+                {
+                    Text                = text,
+                    VerticalAlignment   = VerticalAlignment.Center,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    TextWrapping        = TextWrapping.Wrap
+                };
+            }
+            else if (tip.Content is Control control)
+            {
+                arrowDecoratedBox.Content = control;
+            }
 
-   protected override void BuildStyles()
-   {
-      this.Add(ToolTip.ShadowsProperty, ToolTipTokenResourceKey.ToolTipShadows);
-      this.Add(ToolTip.DefaultMarginToAnchorProperty, ToolTipTokenResourceKey.MarginToAnchor);
-      this.Add(ToolTip.MotionDurationProperty, ToolTipTokenResourceKey.ToolTipMotionDuration);
-      this.Add(ToolTip.BackgroundProperty, GlobalTokenResourceKey.ColorTransparent);
+            CreateTemplateParentBinding(arrowDecoratedBox, ArrowDecoratedBox.IsShowArrowProperty,
+                ToolTip.IsShowArrowEffectiveProperty);
+            arrowDecoratedBox.RegisterInNameScope(scope);
+            return arrowDecoratedBox;
+        });
+    }
 
-      var arrowDecoratedBoxStyle = new Style(selector => selector.Nesting().Template().OfType<ArrowDecoratedBox>());
-      arrowDecoratedBoxStyle.Add(ArrowDecoratedBox.FontSizeProperty, GlobalTokenResourceKey.FontSize);
-      arrowDecoratedBoxStyle.Add(ArrowDecoratedBox.MaxWidthProperty, ToolTipTokenResourceKey.ToolTipMaxWidth);
-      arrowDecoratedBoxStyle.Add(ArrowDecoratedBox.BackgroundProperty, ToolTipTokenResourceKey.ToolTipBackground);
-      arrowDecoratedBoxStyle.Add(ArrowDecoratedBox.ForegroundProperty, ToolTipTokenResourceKey.ToolTipColor);
-      arrowDecoratedBoxStyle.Add(ArrowDecoratedBox.MinHeightProperty, GlobalTokenResourceKey.ControlHeight);
-      arrowDecoratedBoxStyle.Add(ArrowDecoratedBox.PaddingProperty, ToolTipTokenResourceKey.ToolTipPadding);
-      arrowDecoratedBoxStyle.Add(ArrowDecoratedBox.CornerRadiusProperty, ToolTipTokenResourceKey.BorderRadiusOuter);
-      Add(arrowDecoratedBoxStyle);
-   }
+    protected override void BuildStyles()
+    {
+        this.Add(ToolTip.ShadowsProperty, ToolTipTokenResourceKey.ToolTipShadows);
+        this.Add(ToolTip.DefaultMarginToAnchorProperty, ToolTipTokenResourceKey.MarginToAnchor);
+        this.Add(ToolTip.MotionDurationProperty, ToolTipTokenResourceKey.ToolTipMotionDuration);
+        this.Add(TemplatedControl.BackgroundProperty, GlobalTokenResourceKey.ColorTransparent);
+
+        var arrowDecoratedBoxStyle = new Style(selector => selector.Nesting().Template().OfType<ArrowDecoratedBox>());
+        arrowDecoratedBoxStyle.Add(TemplatedControl.FontSizeProperty, GlobalTokenResourceKey.FontSize);
+        arrowDecoratedBoxStyle.Add(Layoutable.MaxWidthProperty, ToolTipTokenResourceKey.ToolTipMaxWidth);
+        arrowDecoratedBoxStyle.Add(TemplatedControl.BackgroundProperty, ToolTipTokenResourceKey.ToolTipBackground);
+        arrowDecoratedBoxStyle.Add(TemplatedControl.ForegroundProperty, ToolTipTokenResourceKey.ToolTipColor);
+        arrowDecoratedBoxStyle.Add(Layoutable.MinHeightProperty, GlobalTokenResourceKey.ControlHeight);
+        arrowDecoratedBoxStyle.Add(TemplatedControl.PaddingProperty, ToolTipTokenResourceKey.ToolTipPadding);
+        arrowDecoratedBoxStyle.Add(TemplatedControl.CornerRadiusProperty, ToolTipTokenResourceKey.BorderRadiusOuter);
+        Add(arrowDecoratedBoxStyle);
+    }
 }

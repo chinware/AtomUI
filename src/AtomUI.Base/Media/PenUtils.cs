@@ -7,7 +7,7 @@ namespace AtomUI.Media;
 public static class PenUtils
 {
    /// <summary>
-   /// Smart reuse and update pen properties.
+   ///     Smart reuse and update pen properties.
    /// </summary>
    /// <param name="pen">Old pen to modify.</param>
    /// <param name="brush">The brush used to draw.</param>
@@ -26,43 +26,46 @@ public static class PenUtils
                                           PenLineCap lineCap = PenLineCap.Flat,
                                           PenLineJoin lineJoin = PenLineJoin.Miter,
                                           double miterLimit = 10.0)
-   {
-      var previousPen = pen;
-      if (brush is null) {
-         pen = null;
-         return previousPen is not null;
-      }
+    {
+        var previousPen = pen;
+        if (brush is null)
+        {
+            pen = null;
+            return previousPen is not null;
+        }
 
-      IDashStyle? dashStyle = null;
-      if (strokeDashArray is { Count: > 0 }) {
-         // strokeDashArray can be IList (instead of AvaloniaList) in future
-         // So, if it supports notification - create a mutable DashStyle
-         dashStyle = strokeDashArray is INotifyCollectionChanged
-            ? new DashStyle(strokeDashArray, strokeDaskOffset)
-            : new ImmutableDashStyle(strokeDashArray, strokeDaskOffset);
-      }
+        IDashStyle? dashStyle = null;
+        if (strokeDashArray is { Count: > 0 })
+        {
+            // strokeDashArray can be IList (instead of AvaloniaList) in future
+            // So, if it supports notification - create a mutable DashStyle
+            dashStyle = strokeDashArray is INotifyCollectionChanged
+                ? new DashStyle(strokeDashArray, strokeDaskOffset)
+                : new ImmutableDashStyle(strokeDashArray, strokeDaskOffset);
+        }
 
-      if (brush is IImmutableBrush immutableBrush && dashStyle is null or ImmutableDashStyle) {
-         pen = new ImmutablePen(
-            immutableBrush,
-            thickness,
-            (ImmutableDashStyle?)dashStyle,
-            lineCap,
-            lineJoin,
-            miterLimit);
+        if (brush is IImmutableBrush immutableBrush && dashStyle is null or ImmutableDashStyle)
+        {
+            pen = new ImmutablePen(
+                immutableBrush,
+                thickness,
+                (ImmutableDashStyle?)dashStyle,
+                lineCap,
+                lineJoin,
+                miterLimit);
 
-         return true;
-      }
+            return true;
+        }
 
-      var mutablePen = previousPen as Pen ?? new Pen();
-      mutablePen.Brush = brush;
-      mutablePen.Thickness = thickness;
-      mutablePen.LineCap = lineCap;
-      mutablePen.LineJoin = lineJoin;
-      mutablePen.DashStyle = dashStyle;
-      mutablePen.MiterLimit = miterLimit;
+        var mutablePen = previousPen as Pen ?? new Pen();
+        mutablePen.Brush      = brush;
+        mutablePen.Thickness  = thickness;
+        mutablePen.LineCap    = lineCap;
+        mutablePen.LineJoin   = lineJoin;
+        mutablePen.DashStyle  = dashStyle;
+        mutablePen.MiterLimit = miterLimit;
 
-      pen = mutablePen;
-      return !Equals(previousPen, pen);
-   }
+        pen = mutablePen;
+        return !Equals(previousPen, pen);
+    }
 }

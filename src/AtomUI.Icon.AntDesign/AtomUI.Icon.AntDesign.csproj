@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <Import Project="$(MSBuildThisFileDirectory)..\..\build\Nuget.props" />
+    <Import Project="$(MSBuildThisFileDirectory)..\..\build\Nuget.props"/>
 
     <ItemGroup>
-        <Compile Remove="$(CompilerGeneratedFilesOutputPath)/**/*.cs" />
+        <Compile Remove="$(CompilerGeneratedFilesOutputPath)/**/*.cs"/>
     </ItemGroup>
-    
+
     <PropertyGroup>
         <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
         <CompilerGeneratedFilesOutputPath>GeneratedFiles</CompilerGeneratedFilesOutputPath>
@@ -15,11 +15,11 @@
         <ProjectReference Include="..\AtomUI.Icon.Generator\AtomUI.Icon.Generator.csproj"
                           OutputItemType="Analyzer"
                           ReferenceOutputAssembly="false"/>
-        <ProjectReference Include="..\AtomUI.Icon\AtomUI.Icon.csproj" />
+        <ProjectReference Include="..\AtomUI.Icon\AtomUI.Icon.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-        <AdditionalFiles Include="Assets\Svg\**\*.svg" />
+        <AdditionalFiles Include="Assets\Svg\**\*.svg"/>
     </ItemGroup>
-    
+
 </Project>

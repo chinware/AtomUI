@@ -4,18 +4,17 @@ namespace AtomUI.Controls;
 
 public class SliderAutomationPeer : RangeBaseAutomationPeer
 {
-   public SliderAutomationPeer(Slider owner) : base(owner)
-   {
-   }
+    public SliderAutomationPeer(Slider owner) : base(owner)
+    {
+    }
 
-   override protected string GetClassNameCore()
-   {
-      return "Slider";
-   }
+    protected override string GetClassNameCore()
+    {
+        return "Slider";
+    }
 
-   override protected AutomationControlType GetAutomationControlTypeCore()
-   {
-      return AutomationControlType.Slider;
-   }
-
+    protected override AutomationControlType GetAutomationControlTypeCore()
+    {
+        return AutomationControlType.Slider;
+    }
 }

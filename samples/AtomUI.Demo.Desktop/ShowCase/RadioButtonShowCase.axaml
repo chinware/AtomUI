@@ -10,7 +10,7 @@
     <showcase:ShowCasePanel>
         <showcase:ShowCasePanel.Styles>
             <Style Selector="atom|RadioButton">
-                <Setter Property="Margin" Value="0, 0, 5, 10"></Setter>
+                <Setter Property="Margin" Value="0, 0, 5, 10" />
             </Style>
         </showcase:ShowCasePanel.Styles>
         <showcase:ShowCaseItem
@@ -20,7 +20,7 @@
                 <atom:RadioButton>Radio</atom:RadioButton>
             </StackPanel>
         </showcase:ShowCaseItem>
-        
+
         <showcase:ShowCaseItem
             Title="Disabled"
             Description="Disabled state of RadioButton.">
@@ -38,7 +38,7 @@
                 </atom:Button>
             </StackPanel>
         </showcase:ShowCaseItem>
-        
+
         <showcase:ShowCaseItem
             Title="Radio Group"
             Description="A group of radio components.">
@@ -49,7 +49,7 @@
                 <atom:RadioButton>D</atom:RadioButton>
             </WrapPanel>
         </showcase:ShowCaseItem>
-        
+
         <showcase:ShowCaseItem
             Title="Vertical Radio Group"
             Description="Vertical Radio Group.">
@@ -90,7 +90,7 @@
                 </atom:OptionButtonGroup>
             </StackPanel>
         </showcase:ShowCaseItem>
-        
+
         <showcase:ShowCaseItem
             Title="option style"
             Description="The combination of option button style.">
@@ -101,55 +101,55 @@
                     <atom:OptionButton>Beijing</atom:OptionButton>
                     <atom:OptionButton>Chengdu</atom:OptionButton>
                 </atom:OptionButtonGroup>
-        
+
                 <atom:OptionButtonGroup>
                     <atom:OptionButton IsChecked="True">Hangzhou</atom:OptionButton>
                     <atom:OptionButton IsEnabled="False">Shanghai</atom:OptionButton>
                     <atom:OptionButton>Beijing</atom:OptionButton>
                     <atom:OptionButton>Chengdu</atom:OptionButton>
                 </atom:OptionButtonGroup>
-        
-        
+
+
                 <atom:OptionButtonGroup>
                     <atom:OptionButton IsChecked="True" IsEnabled="False">Hangzhou</atom:OptionButton>
                     <atom:OptionButton IsEnabled="False">Shanghai</atom:OptionButton>
                     <atom:OptionButton IsEnabled="False">Beijing</atom:OptionButton>
                     <atom:OptionButton IsEnabled="False">Chengdu</atom:OptionButton>
                 </atom:OptionButtonGroup>
-        
+
             </StackPanel>
         </showcase:ShowCaseItem>
-        
+
         <showcase:ShowCaseItem
             Title="Solid option button"
             Description="Solid option button style.">
             <StackPanel Orientation="Vertical" Spacing="10">
-        
+
                 <atom:OptionButtonGroup ButtonStyle="Solid">
                     <atom:OptionButton IsChecked="True">Hangzhou</atom:OptionButton>
                     <atom:OptionButton>Shanghai</atom:OptionButton>
                     <atom:OptionButton>Beijing</atom:OptionButton>
                     <atom:OptionButton>Chengdu</atom:OptionButton>
                 </atom:OptionButtonGroup>
-        
+
                 <atom:OptionButtonGroup ButtonStyle="Solid">
                     <atom:OptionButton IsChecked="True">Hangzhou</atom:OptionButton>
                     <atom:OptionButton IsEnabled="False">Shanghai</atom:OptionButton>
                     <atom:OptionButton>Beijing</atom:OptionButton>
                     <atom:OptionButton>Chengdu</atom:OptionButton>
                 </atom:OptionButtonGroup>
-        
-        
+
+
                 <atom:OptionButtonGroup ButtonStyle="Solid">
                     <atom:OptionButton IsChecked="True" IsEnabled="False">Hangzhou</atom:OptionButton>
                     <atom:OptionButton IsEnabled="False">Shanghai</atom:OptionButton>
                     <atom:OptionButton IsEnabled="False">Beijing</atom:OptionButton>
                     <atom:OptionButton IsEnabled="False">Chengdu</atom:OptionButton>
                 </atom:OptionButtonGroup>
-        
+
             </StackPanel>
         </showcase:ShowCaseItem>
-        
+
         <showcase:ShowCaseItem
             Title="Size type"
             Description="There are three sizes available: large, medium, and small. It can coordinate with input box.">
@@ -160,22 +160,22 @@
                     <atom:OptionButton>Beijing</atom:OptionButton>
                     <atom:OptionButton>Chengdu</atom:OptionButton>
                 </atom:OptionButtonGroup>
-        
+
                 <atom:OptionButtonGroup SizeType="Middle">
                     <atom:OptionButton IsChecked="True">Hangzhou</atom:OptionButton>
                     <atom:OptionButton>Shanghai</atom:OptionButton>
                     <atom:OptionButton>Beijing</atom:OptionButton>
                     <atom:OptionButton>Chengdu</atom:OptionButton>
                 </atom:OptionButtonGroup>
-        
-        
+
+
                 <atom:OptionButtonGroup SizeType="Small">
                     <atom:OptionButton IsChecked="True">Hangzhou</atom:OptionButton>
                     <atom:OptionButton>Shanghai</atom:OptionButton>
                     <atom:OptionButton>Beijing</atom:OptionButton>
                     <atom:OptionButton>Chengdu</atom:OptionButton>
                 </atom:OptionButtonGroup>
-        
+
             </StackPanel>
         </showcase:ShowCaseItem>
 

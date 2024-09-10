@@ -21,7 +21,8 @@
                                         </ItemsPanelTemplate>
                                     </ItemsPresenter.ItemsPanel>
                                 </ItemsPresenter>
-                                <Border Name="PART_BorderSeparator" Background="{DynamicResource TabItemLinePipePressedBorderBrush}" />
+                                <Border Name="PART_BorderSeparator"
+                                        Background="{DynamicResource TabItemLinePipePressedBorderBrush}" />
                             </Panel>
                         </ScrollViewer>
                         <ContentPresenter

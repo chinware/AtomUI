@@ -1,11 +1,11 @@
+using AtomUI.Demo.Desktop.Views;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using AtomUI.Demo.Desktop.Views;
 
 namespace AtomUI.Demo.Desktop;
 
-public partial class App : Application
+public class App : Application
 {
     public override void Initialize()
     {

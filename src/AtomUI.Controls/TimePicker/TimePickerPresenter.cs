@@ -14,7 +14,7 @@ namespace AtomUI.Controls;
 
 /// <summary>
 /// Defines the presenter used for selecting a time. Intended for use with
-/// <see cref="TimePicker"/> but can be used independently
+/// <see cref="TimePicker" /> but can be used independently
 /// </summary>
 [TemplatePart(TimePickerPresenterTheme.HourSelectorPart, typeof(DateTimePickerPanel), IsRequired = true)]
 [TemplatePart(TimePickerPresenterTheme.MinuteSelectorPart, typeof(DateTimePickerPanel), IsRequired = true)]
@@ -25,274 +25,290 @@ namespace AtomUI.Controls;
 [TemplatePart(TimePickerPresenterTheme.SecondSpacerPart, typeof(Rectangle), IsRequired = true)]
 public class TimePickerPresenter : PickerPresenterBase
 {
-   #region 公共属性定义
-   
-   /// <summary>
-   /// Defines the <see cref="MinuteIncrement"/> property
-   /// </summary>
-   public static readonly StyledProperty<int> MinuteIncrementProperty =
-      TimePicker.MinuteIncrementProperty.AddOwner<TimePickerPresenter>();
+    #region 公共属性定义
 
-   public static readonly StyledProperty<int> SecondIncrementProperty =
-      TimePicker.SecondIncrementProperty.AddOwner<TimePickerPresenter>();
+    /// <summary>
+    /// Defines the <see cref="MinuteIncrement" /> property
+    /// </summary>
+    public static readonly StyledProperty<int> MinuteIncrementProperty =
+        TimePicker.MinuteIncrementProperty.AddOwner<TimePickerPresenter>();
 
-   /// <summary>
-   /// Defines the <see cref="ClockIdentifier"/> property
-   /// </summary>
-   public static readonly StyledProperty<ClockIdentifierType> ClockIdentifierProperty =
-      TimePicker.ClockIdentifierProperty.AddOwner<TimePickerPresenter>();
+    public static readonly StyledProperty<int> SecondIncrementProperty =
+        TimePicker.SecondIncrementProperty.AddOwner<TimePickerPresenter>();
 
-   /// <summary>
-   /// Defines the <see cref="Time"/> property
-   /// </summary>
-   public static readonly StyledProperty<TimeSpan> TimeProperty =
-      AvaloniaProperty.Register<TimePickerPresenter, TimeSpan>(nameof(Time));
-   
-   public static readonly StyledProperty<TimeSpan> TemporaryTimeProperty =
-      AvaloniaProperty.Register<TimePickerPresenter, TimeSpan>(nameof(TemporaryTime));
+    /// <summary>
+    /// Defines the <see cref="ClockIdentifier" /> property
+    /// </summary>
+    public static readonly StyledProperty<ClockIdentifierType> ClockIdentifierProperty =
+        TimePicker.ClockIdentifierProperty.AddOwner<TimePickerPresenter>();
 
-   public static readonly StyledProperty<bool> IsShowHeaderProperty =
-      AvaloniaProperty.Register<TimePickerPresenter, bool>(nameof(IsShowHeader), true);
+    /// <summary>
+    /// Defines the <see cref="Time" /> property
+    /// </summary>
+    public static readonly StyledProperty<TimeSpan> TimeProperty =
+        AvaloniaProperty.Register<TimePickerPresenter, TimeSpan>(nameof(Time));
 
-   /// <summary>
-   /// Gets or sets the minute increment in the selector
-   /// </summary>
-   public int MinuteIncrement
-   {
-      get => GetValue(MinuteIncrementProperty);
-      set => SetValue(MinuteIncrementProperty, value);
-   }
+    public static readonly StyledProperty<TimeSpan> TemporaryTimeProperty =
+        AvaloniaProperty.Register<TimePickerPresenter, TimeSpan>(nameof(TemporaryTime));
 
-   public int SecondIncrement
-   {
-      get => GetValue(SecondIncrementProperty);
-      set => SetValue(SecondIncrementProperty, value);
-   }
+    public static readonly StyledProperty<bool> IsShowHeaderProperty =
+        AvaloniaProperty.Register<TimePickerPresenter, bool>(nameof(IsShowHeader), true);
 
-   /// <summary>
-   /// Gets or sets the current clock identifier, either 12HourClock or 24HourClock
-   /// </summary>
-   public ClockIdentifierType ClockIdentifier
-   {
-      get => GetValue(ClockIdentifierProperty);
-      set => SetValue(ClockIdentifierProperty, value);
-   }
+    /// <summary>
+    /// Gets or sets the minute increment in the selector
+    /// </summary>
+    public int MinuteIncrement
+    {
+        get => GetValue(MinuteIncrementProperty);
+        set => SetValue(MinuteIncrementProperty, value);
+    }
 
-   /// <summary>
-   /// Gets or sets the current time
-   /// </summary>
-   public TimeSpan Time
-   {
-      get => GetValue(TimeProperty);
-      set => SetValue(TimeProperty, value);
-   }
-   
-   public TimeSpan TemporaryTime
-   {
-      get => GetValue(TemporaryTimeProperty);
-      set => SetValue(TemporaryTimeProperty, value);
-   }
+    public int SecondIncrement
+    {
+        get => GetValue(SecondIncrementProperty);
+        set => SetValue(SecondIncrementProperty, value);
+    }
 
-   public bool IsShowHeader
-   {
-      get => GetValue(IsShowHeaderProperty);
-      set => SetValue(IsShowHeaderProperty, value);
-   }
+    /// <summary>
+    /// Gets or sets the current clock identifier, either 12HourClock or 24HourClock
+    /// </summary>
+    public ClockIdentifierType ClockIdentifier
+    {
+        get => GetValue(ClockIdentifierProperty);
+        set => SetValue(ClockIdentifierProperty, value);
+    }
 
-   #endregion
+    /// <summary>
+    /// Gets or sets the current time
+    /// </summary>
+    public TimeSpan Time
+    {
+        get => GetValue(TimeProperty);
+        set => SetValue(TimeProperty, value);
+    }
 
-   #region 私有属性定义
+    public TimeSpan TemporaryTime
+    {
+        get => GetValue(TemporaryTimeProperty);
+        set => SetValue(TemporaryTimeProperty, value);
+    }
 
-   internal static readonly DirectProperty<TimePickerPresenter, double> SpacerThicknessProperty =
-      AvaloniaProperty.RegisterDirect<TimePickerPresenter, double>(nameof(SpacerWidth),
-                                                                   o => o.SpacerWidth,
-                                                                   (o, v) => o.SpacerWidth = v);
+    public bool IsShowHeader
+    {
+        get => GetValue(IsShowHeaderProperty);
+        set => SetValue(IsShowHeaderProperty, value);
+    }
 
-   private double _spacerWidth;
+    #endregion
 
-   public double SpacerWidth
-   {
-      get => _spacerWidth;
-      set => SetAndRaise(SpacerThicknessProperty, ref _spacerWidth, value);
-   }
+    #region 私有属性定义
 
-   #endregion
+    internal static readonly DirectProperty<TimePickerPresenter, double> SpacerThicknessProperty =
+        AvaloniaProperty.RegisterDirect<TimePickerPresenter, double>(nameof(SpacerWidth),
+            o => o.SpacerWidth,
+            (o, v) => o.SpacerWidth = v);
 
-   public TimePickerPresenter()
-   {
-      SetCurrentValue(TimeProperty, DateTime.Now.TimeOfDay);
-   }
+    private double _spacerWidth;
 
-   static TimePickerPresenter()
-   {
-      KeyboardNavigation.TabNavigationProperty.OverrideDefaultValue<TimePickerPresenter>(KeyboardNavigationMode.Cycle);
-   }
+    public double SpacerWidth
+    {
+        get => _spacerWidth;
+        set => SetAndRaise(SpacerThicknessProperty, ref _spacerWidth, value);
+    }
 
-   // TemplateItems
-   private Grid? _pickerContainer;
-   private Rectangle? _spacer3;
-   private Panel? _periodHost;
-   private TextBlock? _headerText;
-   private DateTimePickerPanel? _hourSelector;
-   private DateTimePickerPanel? _minuteSelector;
-   private DateTimePickerPanel? _secondSelector;
-   private DateTimePickerPanel? _periodSelector;
+    #endregion
 
-   protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-   {
-      base.OnAttachedToVisualTree(e);
-      TokenResourceBinder.CreateGlobalTokenBinding(this, SpacerThicknessProperty, GlobalTokenResourceKey.LineWidth,
-                                                   BindingPriority.Template,
-                                                   new RenderScaleAwareDoubleConfigure(this));
-      InitPicker();
-   }
+    public TimePickerPresenter()
+    {
+        SetCurrentValue(TimeProperty, DateTime.Now.TimeOfDay);
+    }
 
-   protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-   {
-      base.OnApplyTemplate(e);
+    static TimePickerPresenter()
+    {
+        KeyboardNavigation.TabNavigationProperty
+                          .OverrideDefaultValue<TimePickerPresenter>(KeyboardNavigationMode.Cycle);
+    }
 
-      _pickerContainer = e.NameScope.Get<Grid>(TimePickerPresenterTheme.PickerContainerPart);
-      _periodHost = e.NameScope.Get<Panel>(TimePickerPresenterTheme.PeriodHostPart);
-      _headerText = e.NameScope.Get<TextBlock>(TimePickerPresenterTheme.HeaderTextPart);
+    // TemplateItems
+    private Grid? _pickerContainer;
+    private Rectangle? _spacer3;
+    private Panel? _periodHost;
+    private TextBlock? _headerText;
+    private DateTimePickerPanel? _hourSelector;
+    private DateTimePickerPanel? _minuteSelector;
+    private DateTimePickerPanel? _secondSelector;
+    private DateTimePickerPanel? _periodSelector;
 
-      _hourSelector = e.NameScope.Get<DateTimePickerPanel>(TimePickerPresenterTheme.HourSelectorPart);
-      _minuteSelector = e.NameScope.Get<DateTimePickerPanel>(TimePickerPresenterTheme.MinuteSelectorPart);
-      _secondSelector = e.NameScope.Get<DateTimePickerPanel>(TimePickerPresenterTheme.SecondSelectorPart);
-      _periodSelector = e.NameScope.Get<DateTimePickerPanel>(TimePickerPresenterTheme.PeriodSelectorPart);
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        TokenResourceBinder.CreateGlobalTokenBinding(this, SpacerThicknessProperty, GlobalTokenResourceKey.LineWidth,
+            BindingPriority.Template,
+            new RenderScaleAwareDoubleConfigure(this));
+        InitPicker();
+    }
 
-      if (_hourSelector is not null) {
-         _hourSelector.SelectionChanged += HandleSelectionChanged;
-      }
-      
-      if (_minuteSelector is not null) {
-         _minuteSelector.SelectionChanged += HandleSelectionChanged;
-      }
-      
-      if (_secondSelector is not null) {
-         _secondSelector.SelectionChanged += HandleSelectionChanged;
-      }
-      
-      if (_periodSelector is not null) {
-         _periodSelector.SelectionChanged += HandleSelectionChanged;
-      }
-      
-      _spacer3 = e.NameScope.Get<Rectangle>(TimePickerPresenterTheme.ThirdSpacerPart);
-   }
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
 
-   private void HandleSelectionChanged(object? sender, EventArgs args)
-   {
-      var selectedValue = CollectValue();
-      TemporaryTime = selectedValue;
-      if (IsShowHeader) {
-         if (_headerText is not null) {
-            _headerText.Text = DateTimeUtils.FormatTimeSpan(selectedValue, ClockIdentifier == ClockIdentifierType.HourClock12);
-         }
-      }
-   }
+        _pickerContainer = e.NameScope.Get<Grid>(TimePickerPresenterTheme.PickerContainerPart);
+        _periodHost      = e.NameScope.Get<Panel>(TimePickerPresenterTheme.PeriodHostPart);
+        _headerText      = e.NameScope.Get<TextBlock>(TimePickerPresenterTheme.HeaderTextPart);
 
-   private TimeSpan CollectValue()
-   {
-      var hour = _hourSelector!.SelectedValue;
-      var minute = _minuteSelector!.SelectedValue;
-      var second = _secondSelector!.SelectedValue;
-      var period = _periodSelector!.SelectedValue;
+        _hourSelector   = e.NameScope.Get<DateTimePickerPanel>(TimePickerPresenterTheme.HourSelectorPart);
+        _minuteSelector = e.NameScope.Get<DateTimePickerPanel>(TimePickerPresenterTheme.MinuteSelectorPart);
+        _secondSelector = e.NameScope.Get<DateTimePickerPanel>(TimePickerPresenterTheme.SecondSelectorPart);
+        _periodSelector = e.NameScope.Get<DateTimePickerPanel>(TimePickerPresenterTheme.PeriodSelectorPart);
 
-      if (ClockIdentifier == ClockIdentifierType.HourClock12) {
-         hour = period == 1 ? (hour == 12) ? 12 : hour + 12 : period == 0 && hour == 12 ? 0 : hour;
-      }
+        if (_hourSelector is not null)
+        {
+            _hourSelector.SelectionChanged += HandleSelectionChanged;
+        }
 
-      return new TimeSpan(hour, minute, second);
-   }
+        if (_minuteSelector is not null)
+        {
+            _minuteSelector.SelectionChanged += HandleSelectionChanged;
+        }
 
-   protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
-   {
-      base.OnPropertyChanged(change);
+        if (_secondSelector is not null)
+        {
+            _secondSelector.SelectionChanged += HandleSelectionChanged;
+        }
 
-      if (change.Property == MinuteIncrementProperty ||
-          change.Property == SecondIncrementProperty ||
-          change.Property == ClockIdentifierProperty ||
-          change.Property == TimeProperty) {
-         InitPicker();
-      }
-   }
+        if (_periodSelector is not null)
+        {
+            _periodSelector.SelectionChanged += HandleSelectionChanged;
+        }
 
-   protected override void OnKeyDown(KeyEventArgs e)
-   {
-      switch (e.Key) {
-         case Key.Escape:
-            OnDismiss();
-            e.Handled = true;
-            break;
-         case Key.Tab:
-            if (FocusUtils.GetFocusManager(this)?.GetFocusedElement() is { } focus) {
-               var nextFocus = KeyboardNavigationHandler.GetNext(focus, NavigationDirection.Next);
-               nextFocus?.Focus(NavigationMethod.Tab);
-               e.Handled = true;
+        _spacer3 = e.NameScope.Get<Rectangle>(TimePickerPresenterTheme.ThirdSpacerPart);
+    }
+
+    private void HandleSelectionChanged(object? sender, EventArgs args)
+    {
+        var selectedValue = CollectValue();
+        TemporaryTime = selectedValue;
+        if (IsShowHeader)
+        {
+            if (_headerText is not null)
+            {
+                _headerText.Text =
+                    DateTimeUtils.FormatTimeSpan(selectedValue, ClockIdentifier == ClockIdentifierType.HourClock12);
             }
+        }
+    }
 
-            break;
-         case Key.Enter:
-            OnConfirmed();
-            e.Handled = true;
-            break;
-      }
+    private TimeSpan CollectValue()
+    {
+        var hour   = _hourSelector!.SelectedValue;
+        var minute = _minuteSelector!.SelectedValue;
+        var second = _secondSelector!.SelectedValue;
+        var period = _periodSelector!.SelectedValue;
 
-      base.OnKeyDown(e);
-   }
+        if (ClockIdentifier == ClockIdentifierType.HourClock12)
+        {
+            hour = period == 1 ? hour == 12 ? 12 : hour + 12 : period == 0 && hour == 12 ? 0 : hour;
+        }
 
-   protected override void OnConfirmed()
-   {
-      var value = CollectValue();
-      SetCurrentValue(TimeProperty, value);
-      base.OnConfirmed();
-   }
-   
-   internal void NowConfirm()
-   {
-      SetCurrentValue(TimeProperty, DateTime.Now.TimeOfDay);
-      base.OnConfirmed();
-   }
+        return new TimeSpan(hour, minute, second);
+    }
 
-   internal void Confirm()
-   {
-      OnConfirmed();
-   }
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
 
-   internal void Dismiss()
-   {
-      OnDismiss();
-   }
-   
-   private void InitPicker()
-   {
-      if (_pickerContainer == null) return;
-      bool clock12 = ClockIdentifier == ClockIdentifierType.HourClock12;
-      bool use24HourClock = ClockIdentifier == ClockIdentifierType.HourClock24;
-      _hourSelector!.MaximumValue = clock12 ? 12 : 23;
-      _hourSelector.MinimumValue = clock12 ? 1 : 0;
-      _hourSelector.ItemFormat = "%h";
-      var hour = Time.Hours;
-      _hourSelector.SelectedValue = !clock12 ? hour :
-         hour > 12 ? hour - 12 :
-         hour == 0 ? 12 : hour;
+        if (change.Property == MinuteIncrementProperty ||
+            change.Property == SecondIncrementProperty ||
+            change.Property == ClockIdentifierProperty ||
+            change.Property == TimeProperty)
+        {
+            InitPicker();
+        }
+    }
 
-      _minuteSelector!.MaximumValue = 59;
-      _minuteSelector.MinimumValue = 0;
-      _minuteSelector.Increment = MinuteIncrement;
-      _minuteSelector.SelectedValue = Time.Minutes;
-      _minuteSelector.ItemFormat = "mm";
+    protected override void OnKeyDown(KeyEventArgs e)
+    {
+        switch (e.Key)
+        {
+            case Key.Escape:
+                OnDismiss();
+                e.Handled = true;
+                break;
+            case Key.Tab:
+                if (FocusUtils.GetFocusManager(this)?.GetFocusedElement() is { } focus)
+                {
+                    var nextFocus = KeyboardNavigationHandler.GetNext(focus, NavigationDirection.Next);
+                    nextFocus?.Focus(NavigationMethod.Tab);
+                    e.Handled = true;
+                }
 
-      _secondSelector!.MaximumValue = 59;
-      _secondSelector.MinimumValue = 0;
-      _secondSelector.Increment = SecondIncrement;
-      _secondSelector.SelectedValue = Time.Seconds;
-      _secondSelector.ItemFormat = "ss";
+                break;
+            case Key.Enter:
+                OnConfirmed();
+                e.Handled = true;
+                break;
+        }
 
-      _periodSelector!.MaximumValue = 1;
-      _periodSelector.MinimumValue = 0;
-      _periodSelector.SelectedValue = hour >= 12 ? 1 : 0;
-      
-      _spacer3!.IsVisible = !use24HourClock;
-      _periodHost!.IsVisible = !use24HourClock;
-   }
+        base.OnKeyDown(e);
+    }
+
+    protected override void OnConfirmed()
+    {
+        var value = CollectValue();
+        SetCurrentValue(TimeProperty, value);
+        base.OnConfirmed();
+    }
+
+    internal void NowConfirm()
+    {
+        SetCurrentValue(TimeProperty, DateTime.Now.TimeOfDay);
+        base.OnConfirmed();
+    }
+
+    internal void Confirm()
+    {
+        OnConfirmed();
+    }
+
+    internal void Dismiss()
+    {
+        OnDismiss();
+    }
+
+    private void InitPicker()
+    {
+        if (_pickerContainer == null)
+        {
+            return;
+        }
+
+        var clock12        = ClockIdentifier == ClockIdentifierType.HourClock12;
+        var use24HourClock = ClockIdentifier == ClockIdentifierType.HourClock24;
+        _hourSelector!.MaximumValue = clock12 ? 12 : 23;
+        _hourSelector.MinimumValue  = clock12 ? 1 : 0;
+        _hourSelector.ItemFormat    = "%h";
+        var hour = Time.Hours;
+        _hourSelector.SelectedValue = !clock12 ? hour :
+            hour > 12 ? hour - 12 :
+            hour == 0 ? 12 : hour;
+
+        _minuteSelector!.MaximumValue = 59;
+        _minuteSelector.MinimumValue  = 0;
+        _minuteSelector.Increment     = MinuteIncrement;
+        _minuteSelector.SelectedValue = Time.Minutes;
+        _minuteSelector.ItemFormat    = "mm";
+
+        _secondSelector!.MaximumValue = 59;
+        _secondSelector.MinimumValue  = 0;
+        _secondSelector.Increment     = SecondIncrement;
+        _secondSelector.SelectedValue = Time.Seconds;
+        _secondSelector.ItemFormat    = "ss";
+
+        _periodSelector!.MaximumValue = 1;
+        _periodSelector.MinimumValue  = 0;
+        _periodSelector.SelectedValue = hour >= 12 ? 1 : 0;
+
+        _spacer3!.IsVisible    = !use24HourClock;
+        _periodHost!.IsVisible = !use24HourClock;
+    }
 }

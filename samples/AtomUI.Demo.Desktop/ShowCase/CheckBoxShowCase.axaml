@@ -10,7 +10,7 @@
     <showcase:ShowCasePanel>
         <showcase:ShowCasePanel.Styles>
             <Style Selector="atom|CheckBox">
-                <Setter Property="Margin" Value="0, 0, 5, 5"></Setter>
+                <Setter Property="Margin" Value="0, 0, 5, 5" />
             </Style>
         </showcase:ShowCasePanel.Styles>
         <showcase:ShowCaseItem
@@ -94,13 +94,13 @@
                                    CommandParameter="{Binding ElementName=AppleCheckBox}">
                         Apple
                     </atom:CheckBox>
-                    <atom:CheckBox x:Name="PearCheckBox" 
+                    <atom:CheckBox x:Name="PearCheckBox"
                                    IsChecked="{Binding PearCheckedStatus}"
                                    Command="{Binding CheckedItemStatusHandler}"
                                    CommandParameter="{Binding ElementName=PearCheckBox}">
                         Pear
                     </atom:CheckBox>
-                    <atom:CheckBox x:Name="OrangeCheckBox" 
+                    <atom:CheckBox x:Name="OrangeCheckBox"
                                    IsChecked="{Binding OrangeCheckedStatus}"
                                    Command="{Binding CheckedItemStatusHandler}"
                                    CommandParameter="{Binding ElementName=OrangeCheckBox}">
@@ -109,11 +109,11 @@
                 </WrapPanel>
             </StackPanel>
         </showcase:ShowCaseItem>
-        
+
         <showcase:ShowCaseItem
             Title="Use with Grid"
             Description="We can use Checkbox and Grid in Checkbox.Group, to implement complex layout.">
-            <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto,Auto"  Margin="10">
+            <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto,Auto" Margin="10">
                 <atom:CheckBox Grid.Row="0" Grid.Column="0">A</atom:CheckBox>
                 <atom:CheckBox Grid.Row="0" Grid.Column="1">B</atom:CheckBox>
                 <atom:CheckBox Grid.Row="0" Grid.Column="2">C</atom:CheckBox>

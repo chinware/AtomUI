@@ -15,20 +15,18 @@ public sealed class Watermark : Control
     {
         return element.GetValue(GlyphProperty);
     }
+
     public static void SetGlyph(Visual element, WatermarkGlyph? value)
     {
         element.SetValue(GlyphProperty, value);
     }
+
     public static readonly AttachedProperty<WatermarkGlyph?> GlyphProperty = AvaloniaProperty
         .RegisterAttached<Watermark, Visual, WatermarkGlyph?>("Glyph");
-
-
 
     public Visual Target { get; }
 
     private WatermarkGlyph? Glyph { get; }
-
-
 
     static Watermark()
     {
@@ -43,13 +41,10 @@ public sealed class Watermark : Control
 
         if (glyph != null)
         {
-            glyph.PropertyChanged += (sender, args) =>
-            {
-                InvalidateVisual();
-            };
+            glyph.PropertyChanged += (sender, args) => { InvalidateVisual(); };
         }
     }
-    
+
     private static void OnGlyphChanged(Visual target, AvaloniaPropertyChangedEventArgs arg)
     {
         if (target.IsAttachedToVisualTree())
@@ -88,7 +83,7 @@ public sealed class Watermark : Control
         }
 
         watermark = new Watermark(target, GetGlyph(target));
-        layer.AddAdorner(target ,watermark);
+        layer.AddAdorner(target, watermark);
     }
 
     private static bool CheckLayer(Visual target, [NotNullWhen(true)] out AtomLayer? layer)
@@ -116,7 +111,7 @@ public sealed class Watermark : Control
         {
             return;
         }
-        
+
         using (context.PushClip(new Rect(Target.Bounds.Size)))
         using (context.PushOpacity(Glyph.Opacity))
         {
@@ -127,8 +122,10 @@ public sealed class Watermark : Control
                 var pushState = new DrawingContext.PushedState();
                 if (r % 2 == 1 && Glyph.UseCross)
                 {
-                    pushState = context.PushTransform(Matrix.CreateTranslation((Glyph.HorizontalSpace - size.Width) / 2 + size.Width, 0));
+                    pushState = context.PushTransform(
+                        Matrix.CreateTranslation((Glyph.HorizontalSpace - size.Width) / 2 + size.Width, 0));
                 }
+
                 using (pushState)
                 {
                     var l = Glyph.HorizontalOffset;
@@ -141,7 +138,8 @@ public sealed class Watermark : Control
                             angle = -angle;
                         }
 
-                        var m = MatrixUtil.CreateRotationRadians(angle * Math.PI / 180, size.Width / 2, size.Height / 2);
+                        var m = MatrixUtil.CreateRotationRadians(angle * Math.PI / 180, size.Width / 2,
+                            size.Height / 2);
                         using (context.PushTransform(Matrix.CreateTranslation(l, t)))
                         using (context.PushTransform(m))
                         {

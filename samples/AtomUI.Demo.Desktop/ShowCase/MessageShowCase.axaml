@@ -16,7 +16,7 @@
                 Display normal message
             </atom:Button>
         </showcase:ShowCaseItem>
-        
+
         <showcase:ShowCaseItem
             Title="Other types of message"
             Description="Messages of success, error and warning types.">
@@ -39,7 +39,7 @@
                 </atom:Button>
             </StackPanel>
         </showcase:ShowCaseItem>
-        
+
         <showcase:ShowCaseItem
             Title="Message with loading indicator"
             Description="Display a global loading indicator, which is dismissed by itself asynchronously.">
@@ -48,7 +48,7 @@
                 Display a loading indicator
             </atom:Button>
         </showcase:ShowCaseItem>
-        
+
         <showcase:ShowCaseItem
             Title="Callback"
             Description="The above example will display a new message when the old message is about to close.">

@@ -109,7 +109,7 @@ If a large or small collapse is desired, set the size property to either large o
                 </atom:CollapseItem>
             </atom:Collapse>
         </showcase:ShowCaseItem>
-        
+
         <showcase:ShowCaseItem
             Title="Borderless"
             Description="A borderless style of Collapse." Margin="0, 0, 10, 0">
@@ -131,10 +131,11 @@ If a large or small collapse is desired, set the size property to either large o
                 </atom:CollapseItem>
             </atom:Collapse>
         </showcase:ShowCaseItem>
-        
+
         <showcase:ShowCaseItem
             Title="No Arrow"
-            Description="You can hide the arrow icon by passing IsShowExpandIcon={False} to CollapsePanel component." Margin="0, 0, 10, 0">
+            Description="You can hide the arrow icon by passing IsShowExpandIcon={False} to CollapsePanel component."
+            Margin="0, 0, 10, 0">
             <atom:Collapse>
                 <atom:CollapseItem Header="This is panel header 1">
                     <TextBlock TextWrapping="Wrap">
@@ -148,12 +149,12 @@ If a large or small collapse is desired, set the size property to either large o
                 </atom:CollapseItem>
             </atom:Collapse>
         </showcase:ShowCaseItem>
-        
+
         <showcase:ShowCaseItem
             Title="Extra node"
             Description="Render extra element in the top-right corner of each panel." Margin="0, 0, 10, 0">
             <StackPanel Orientation="Vertical" Spacing="20">
-                <atom:Collapse  ExpandIconPosition="{Binding CollapseExpandIconPosition}">
+                <atom:Collapse ExpandIconPosition="{Binding CollapseExpandIconPosition}">
                     <atom:CollapseItem Header="This is panel header 1"
                                        AddOnContent="{atom:IconProvider Kind=SettingOutlined}">
                         <TextBlock TextWrapping="Wrap">
@@ -182,9 +183,9 @@ If a large or small collapse is desired, set the size property to either large o
                     </atom:OptionButtonGroup>
                 </StackPanel>
             </StackPanel>
-            
+
         </showcase:ShowCaseItem>
-        
+
         <showcase:ShowCaseItem
             Title="Ghost Collapse"
             Description="Making collapse's background to transparent." Margin="0, 0, 10, 0">
@@ -206,7 +207,7 @@ If a large or small collapse is desired, set the size property to either large o
                 </atom:CollapseItem>
             </atom:Collapse>
         </showcase:ShowCaseItem>
-        
+
         <showcase:ShowCaseItem
             Title="Collapsible"
             Description="Specify the trigger area of collapsible by collapsible." Margin="0, 0, 10, 0">
@@ -225,7 +226,7 @@ If a large or small collapse is desired, set the size property to either large o
                         </TextBlock>
                     </atom:CollapseItem>
                 </atom:Collapse>
-                
+
                 <atom:Collapse IsEnabled="False">
                     <atom:CollapseItem Header="This panel can't be collapsed">
                         <TextBlock TextWrapping="Wrap">
@@ -233,7 +234,7 @@ If a large or small collapse is desired, set the size property to either large o
                         </TextBlock>
                     </atom:CollapseItem>
                 </atom:Collapse>
-                
+
                 <atom:Collapse IsEnabled="False">
                     <atom:CollapseItem Header="This panel can't be collapsed" IsSelected="True">
                         <TextBlock TextWrapping="Wrap">

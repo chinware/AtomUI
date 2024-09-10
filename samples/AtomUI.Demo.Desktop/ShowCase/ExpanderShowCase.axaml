@@ -43,7 +43,7 @@ If a large or small Expander is desired, set the size property to either large o
                 </atom:Expander>
             </StackPanel>
         </showcase:ShowCaseItem>
-        
+
         <showcase:ShowCaseItem
             Title="Expanding Direction"
             Description="The content area supports expansion in four directions.">
@@ -57,7 +57,7 @@ If a large or small Expander is desired, set the size property to either large o
                         <atom:OptionButton>Right</atom:OptionButton>
                     </atom:OptionButtonGroup>
                 </StackPanel>
-                
+
                 <Panel Margin="0, 20, 0, 0">
                     <atom:Expander Header="This is panel header" ExpandDirection="{Binding ExpandDirection}"
                                    Name="DirectionDemoExpander">
@@ -68,7 +68,7 @@ If a large or small Expander is desired, set the size property to either large o
                 </Panel>
             </DockPanel>
         </showcase:ShowCaseItem>
-        
+
         <showcase:ShowCaseItem
             Title="Nested panel"
             Description="Expander is nested inside the Collapse." Margin="0, 0, 10, 0">
@@ -80,7 +80,7 @@ If a large or small Expander is desired, set the size property to either large o
                 </atom:Expander>
             </atom:Expander>
         </showcase:ShowCaseItem>
-        
+
         <showcase:ShowCaseItem
             Title="Borderless"
             Description="A borderless style of Expander." Margin="0, 0, 10, 0">
@@ -90,18 +90,19 @@ If a large or small Expander is desired, set the size property to either large o
                 </TextBlock>
             </atom:Expander>
         </showcase:ShowCaseItem>
-        
+
         <showcase:ShowCaseItem
             Title="No Arrow"
-            Description="You can hide the arrow icon by passing IsShowExpandIcon={False} to CollapsePanel component." Margin="0, 0, 10, 0">
+            Description="You can hide the arrow icon by passing IsShowExpandIcon={False} to CollapsePanel component."
+            Margin="0, 0, 10, 0">
             <atom:Expander Header="This is panel header 1" IsShowExpandIcon="False">
                 <TextBlock TextWrapping="Wrap">
                     A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
                 </TextBlock>
             </atom:Expander>
         </showcase:ShowCaseItem>
-        
-         <showcase:ShowCaseItem
+
+        <showcase:ShowCaseItem
             Title="Extra node"
             Description="Render extra element in the top-right corner of each panel." Margin="0, 0, 10, 0">
             <StackPanel Orientation="Vertical" Spacing="20">
@@ -121,9 +122,9 @@ If a large or small Expander is desired, set the size property to either large o
                     </atom:OptionButtonGroup>
                 </StackPanel>
             </StackPanel>
-            
+
         </showcase:ShowCaseItem>
-        
+
         <showcase:ShowCaseItem
             Title="Ghost Collapse"
             Description="Making collapse's background to transparent." Margin="0, 0, 10, 0">
@@ -133,7 +134,7 @@ If a large or small Expander is desired, set the size property to either large o
                 </TextBlock>
             </atom:Expander>
         </showcase:ShowCaseItem>
-        
+
         <showcase:ShowCaseItem
             Title="Collapsible"
             Description="Specify the trigger area of collapsible by collapsible." Margin="0, 0, 10, 0">
@@ -148,13 +149,13 @@ If a large or small Expander is desired, set the size property to either large o
                         A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
                     </TextBlock>
                 </atom:Expander>
-                
+
                 <atom:Expander IsEnabled="False" Header="This panel can't be collapsed">
                     <TextBlock TextWrapping="Wrap">
                         A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
                     </TextBlock>
                 </atom:Expander>
-                
+
                 <atom:Expander IsEnabled="False" Header="This panel can't be collapsed" IsExpanded="True">
                     <TextBlock TextWrapping="Wrap">
                         A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
