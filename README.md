@@ -2,7 +2,8 @@
     <img src="./docs/images/ATOMUI.png" />
 </p>
 
------
+<hr />
+
 <div align="center">
 
 [![][github-contributors-shield]][github-contributors-link]
@@ -32,7 +33,6 @@
 [github-license-shield]: https://img.shields.io/github/license/chinware/AtomUI?color=white&labelColor=black&style=flat-square
 [github-license-link]: https://github.com/chinware/AtomUI/blob/master/LICENSE
 
------
 Documentation Language: [English](README.md) | [简体中文](README.zh-CN.md)
 
 #### Introduce
