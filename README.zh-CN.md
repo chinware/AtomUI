@@ -159,6 +159,21 @@ PS: AtomUI 目前仅在 Windows 11 平台测试<br>
 
 甲辰计划（RISC-V Prosperity 2036）诞生于2024年除夕，由国内多家 RISC-V 软件及芯片团队联合发起，并已经吸引数十家国内外从事 RISC-V 产品及软件开发的企业加入。我们相信RISC-V 生态正在进入前所未有的爆炸式增长的初期阶段：在2025年，RISC-V或将迎来预计超过100万名RISC-V应用开发者，与此同时RISC-V将在2025年进入世界超算TOP500、并在2030年进入TOP10。我们正处于一个计算机体系架构和基础软件系统的黄金时代，开放指令集架构带来了大量新的科学问题和工程挑战。
 
+### 🤝 贡献
+
+欢迎各界人士贡献各种资源，如果您对贡献代码感兴趣，请随意查看我们的 GitHub [问题页面][github-issues-link]，让我们见识一下您的实力。
+
+[![][pr-welcome-shield]][pr-welcome-link]
+
+[![][github-contrib-shield]][github-contrib-link]
+
+[github-issues-link]: https://github.com/chinware/AtomUI/issues
+[pr-welcome-shield]: https://img.shields.io/badge/PR%20WELCOME-%E2%86%92-ffcb47?labelColor=black&style=for-the-badge
+[pr-welcome-link]: https://github.com/chinware/AtomUI/pulls
+[github-contrib-shield]: https://contrib.rocks/image?repo=chinware%2FAtomUI
+[github-contrib-link]: https://github.com/chinware/AtomUI/graphs/contributors
+
+
 #### 关于秦派软件
 
 <p align="center">
