@@ -13,13 +13,15 @@ namespace AtomUI.Controls;
 
 internal class DrawerContainer : Border
 {
-    private readonly TimeSpan _duration = TimeSpan.FromMilliseconds(500);
-    private readonly Easing _easing = new SplineEasing(0.3, 0.7, 0.3, 0.7);
-    private readonly Border _child;
-    private readonly Border _mask;
-    private readonly IBrush _maskBrush = new SolidColorBrush(Colors.Black, 0.45);
+    private readonly TimeSpan    _duration = TimeSpan.FromMilliseconds(500);
+    private readonly Easing      _easing1   = new SplineEasing(0.3, 0.7, 0.3, 0.7);
+    private readonly Easing      _easing2   = new SplineEasing(0.7, 0.3, 0.7, 0.3);
+    private readonly Border      _child;
+    private readonly Border      _mask;
+    private readonly IBrush      _maskBrush = new SolidColorBrush(Colors.Black, 0.45);
     private readonly Transitions _transitions1;
     private readonly Transitions _transitions2;
+    private readonly Transitions _transitions3;
 
     #region Properties
 
@@ -39,7 +41,7 @@ internal class DrawerContainer : Border
             {
                 Property = OpacityProperty,
                 Duration = _duration,
-                Easing   = _easing
+                Easing   = _easing1
             }
         ];
         _transitions2 =
@@ -48,7 +50,16 @@ internal class DrawerContainer : Border
             {
                 Property = RenderTransformProperty,
                 Duration = _duration,
-                Easing   = _easing
+                Easing   = _easing1
+            }
+        ];
+        _transitions3 =
+        [
+            new TransformOperationsTransition
+            {
+                Property = RenderTransformProperty,
+                Duration = _duration,
+                Easing   = _easing2
             }
         ];
         _child                     = child;
@@ -180,7 +191,7 @@ internal class DrawerContainer : Border
 
         _child.Transitions     = null;
         _child.RenderTransform = TransformOperations.Parse("translate(0px,0px)");
-        _child.Transitions     = _transitions2;
+        _child.Transitions     = _transitions3;
         _child.RenderTransform = TransformOperations.Parse($"translate({fromX}px,{fromY}px)");
         
         PullPreviousDrawers();
