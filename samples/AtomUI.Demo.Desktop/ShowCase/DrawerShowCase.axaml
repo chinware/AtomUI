@@ -127,7 +127,7 @@
                             atom:Watermark.Glyph="{atom:TextGlyph AtomUI}"
                             Classes="ControllerPanel">
                     <ListBox Classes="PlacementList"
-                             ItemsSource="{utils:Enum atom:DrawerPlacement}"
+                             ItemsSource="{desktop:Enum atom:DrawerPlacement}"
                              SelectedIndex="2" />
                     <atom:ToggleSwitch Content="Open #1" />
                 </StackPanel>
@@ -165,7 +165,7 @@
                             atom:Watermark.Glyph="{atom:TextGlyph AtomUI}"
                             Classes="ControllerPanel">
                     <ListBox Classes="PlacementList"
-                             ItemsSource="{utils:Enum atom:DrawerPlacement}"
+                             ItemsSource="{desktop:Enum atom:DrawerPlacement}"
                              SelectedIndex="2" />
                     <atom:ToggleSwitch Content="Open #1" />
                 </StackPanel>

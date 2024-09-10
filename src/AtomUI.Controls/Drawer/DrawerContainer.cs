@@ -20,8 +20,6 @@ internal class DrawerContainer : Border
     private readonly IBrush _maskBrush = new SolidColorBrush(Colors.Black, 0.45);
     private readonly Transitions _transitions1;
     private readonly Transitions _transitions2;
-    private readonly Border _mask;
-    private readonly DrawerElementBorder _elementBorder;
 
     #region Properties
 
@@ -30,30 +28,7 @@ internal class DrawerContainer : Border
     internal bool IsClosing { get; set; }
 
     #endregion
-
-
-
-    #region Close On Click
-
-    protected override void OnPointerPressed(PointerPressedEventArgs e)
-    {
-        base.OnPointerPressed(e);
-
-        if (e.Handled || Equals(e.Source, _mask) == false)
-        {
-            return;
-        }
-
-        if (e.Pointer.IsPrimary && Drawer.CloseWhenClickOnMask)
-        {
-            Drawer.IsOpen = false;
-        }
-    }
-
-    #endregion
-
-
-
+    
     #region Ctor
 
     internal DrawerContainer(Drawer drawer, Border child)
