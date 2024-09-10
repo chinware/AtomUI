@@ -1,9 +1,7 @@
 <p align="center">
     <img src="./docs/images/ATOMUI.png" />
 </p>
-
-<hr />
-
+<br/>
 <div align="center">
 
 [![][github-contributors-shield]][github-contributors-link]
