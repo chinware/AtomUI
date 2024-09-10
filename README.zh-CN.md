@@ -1,10 +1,8 @@
-<div align="center"><a name="readme-top"></a>
+<p align="center">
+    <img src="./docs/images/ATOMUI.png" />
+</p>
 
-<img height="160" src="./docs/images/ATOMUI.png">
-
-<h1>AtomUI</h1>
-
-AtomUI 是基于 .NET 技术的 Ant Design 实现，致力于将 Ant Design 优秀而高效的设计语言和体验带入 Avalonia/.NET 跨平台桌面软件开发领域。欢迎与 AtomUI 进行交流并提出建议，感谢您为该项目点赞。
+-----
 
 [![][github-contributors-shield]][github-contributors-link]
 [![][github-forks-shield]][github-forks-link]
@@ -15,8 +13,6 @@ AtomUI 是基于 .NET 技术的 Ant Design 实现，致力于将 Ant Design 优�
 [更新日志](./CHANGELOG.md) · [提交Bug][github-issues-link] · [提交需求][github-issues-link]
 
 ![](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
-
-</div>
 
 [github-release-shield]: https://img.shields.io/github/v/release/chinware/AtomUI?color=369eff&labelColor=black&logo=github&style=flat-square
 [github-release-link]: https://github.com/chinware/AtomUI/releases
@@ -39,9 +35,8 @@ AtomUI 是基于 .NET 技术的 Ant Design 实现，致力于将 Ant Design 优�
 
 #### 介绍
 
-AtomUI 是基于 .NET 技术的 Ant Design 实现，致力于将 Ant Design 优秀高效的设计语言和体验带到 Avalonia/.NET 跨平台桌面软件研发领域。
-
-欢迎交流和给 AtomUI 提相关建议，感谢给项目点 Star。
+AtomUI 是基于 .NET 技术的 Ant Design 实现，致力于将 Ant Design 优秀而高效的设计语言和体验带入 Avalonia/.NET 跨平台桌面软件开发领域。
+欢迎与 AtomUI 进行交流并提出建议，感谢您为该项目点赞。
 
 #### 感谢 Gitee 对 AtomUI 的认可
 

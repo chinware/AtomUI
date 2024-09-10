@@ -1,10 +1,8 @@
-<div align="center"><a name="readme-top"></a>
+<p align="center">
+    <img src="./docs/images/ATOMUI.png" />
+</p>
 
-<img height="160" src="./docs/images/ATOMUI.png">
-
-<h1>AtomUI</h1>
-
-AtomUI is an implementation of Ant Design based on .NET technology, dedicated to bringing the excellent and efficient design language and experience of Ant Design to the Avalonia/.NET cross-platform desktop software development field.  Welcome to communicate and give suggestions to AtomUI, thank you for giving the project a Star.
+-----
 
 [![][github-contributors-shield]][github-contributors-link]
 [![][github-forks-shield]][github-forks-link]
@@ -15,8 +13,6 @@ AtomUI is an implementation of Ant Design based on .NET technology, dedicated to
 [Changelog](./CHANGELOG.md) · [Report Bug][github-issues-link] · [Request Feature][github-issues-link]
 
 ![](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
-
-</div>
 
 [github-release-shield]: https://img.shields.io/github/v/release/chinware/AtomUI?color=369eff&labelColor=black&logo=github&style=flat-square
 [github-release-link]: https://github.com/chinware/AtomUI/releases
