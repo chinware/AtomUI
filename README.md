@@ -1,8 +1,40 @@
-<p align="center">
-    <img src="./docs/images/ATOMUI.png" />
-</p>
+<div align="center"><a name="readme-top"></a>
 
-<div align="center" style = "font-weight: bold">An enterprise cross-platform control library based on Ant Design 5.0 and Avalonia technology</div>
+<img height="160" src="./docs/images/ATOMUI.png">
+
+<h1>AtomUI</h1>
+
+AtomUI is an implementation of Ant Design based on .NET technology, dedicated to bringing the excellent and efficient design language and experience of Ant Design to the Avalonia/.NET cross-platform desktop software development field.  Welcome to communicate and give suggestions to AtomUI, thank you for giving the project a Star.
+
+[![][github-contributors-shield]][github-contributors-link]
+[![][github-forks-shield]][github-forks-link]
+[![][github-stars-shield]][github-stars-link]
+[![][github-issues-shield]][github-issues-link]
+[![][github-license-shield]][github-license-link]
+
+[Changelog](./CHANGELOG.md) · [Report Bug][github-issues-link] · [Request Feature][github-issues-link]
+
+![](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
+
+</div>
+
+[github-release-shield]: https://img.shields.io/github/v/release/chinware/AtomUI?color=369eff&labelColor=black&logo=github&style=flat-square
+[github-release-link]: https://github.com/chinware/AtomUI/releases
+[github-releasedate-shield]: https://img.shields.io/github/release-date/chinware/AtomUI?color=black&labelColor=black&style=flat-square
+[github-releasedate-link]: https://github.com/chinware/AtomUI/releases
+[github-contributors-shield]: https://img.shields.io/github/contributors/chinware/AtomUI?color=c4f042&labelColor=black&style=flat-square
+[github-contributors-link]: https://github.com/chinware/AtomUI/graphs/contributors
+[github-forks-shield]: https://img.shields.io/github/forks/chinware/AtomUI?color=8ae8ff&labelColor=black&style=flat-square
+[github-forks-link]: https://github.com/chinware/AtomUI/network/members
+[github-stars-shield]: https://img.shields.io/github/stars/chinware/AtomUI?color=ffcb47&labelColor=black&style=flat-square
+[github-stars-link]: https://github.com/chinware/AtomUI/network/stargazers
+[github-issues-shield]: https://img.shields.io/github/issues/chinware/AtomUI?color=ff80eb&labelColor=black&style=flat-square
+[github-issues-link]: https://github.com/chinware/AtomUI/issues
+[github-license-shield]: https://img.shields.io/github/license/chinware/AtomUI?color=white&labelColor=black&style=flat-square
+[github-license-link]: https://github.com/chinware/AtomUI/blob/master/LICENSE
+
+-----
+Documentation Language: [English](README.md) | [简体中文](README-zh-cn.md)
 
 #### Introduce
 
