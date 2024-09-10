@@ -1,7 +1,9 @@
 <p align="center">
     <img src="./docs/images/ATOMUI.png" />
+</p>
 
 -----
+<div align="center">
 
 [![][github-contributors-shield]][github-contributors-link]
 [![][github-forks-shield]][github-forks-link]
@@ -10,7 +12,8 @@
 [![][github-license-shield]][github-license-link]
 
 [更新日志](./CHANGELOG.md) · [提交Bug][github-issues-link] · [提交需求][github-issues-link]
-</p>
+
+</div>
 
 ![](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
 
