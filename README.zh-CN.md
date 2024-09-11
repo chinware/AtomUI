@@ -54,6 +54,8 @@ PS: AtomUI 目前仅在 Windows 11 平台测试<br>
 目前我们暂时只创建微信开发者群的交流方式，下面是二维码，有兴趣的同学可以扫码加入：
 <img src="./docs/images/wechat.jpg" width="200" height="200"/>
 
+> PS：扫码请注明来意，比如：学习`AtomUI`或者`Avalonia`爱好者
+
 #### 当前完成度
 ##### (通用) General
 | Control Name | Status |
@@ -128,7 +130,7 @@ PS: AtomUI 目前仅在 Windows 11 平台测试<br>
 | 控件名                  | 完成情况   |
 |:---------------------|:-------|
 | Alert 警告提示           | 已完成 ✅  |
-| Drawer 抽屉            | 进行中 💪 |
+| Drawer 抽屉            | 已完成 ✅  |
 | Message 全局提示         | 已完成 ✅  |
 | Modal 对话框            | 进行中 💪 |
 | Notification 通知提醒框   | 已完成 ✅  |
@@ -137,7 +139,7 @@ PS: AtomUI 目前仅在 Windows 11 平台测试<br>
 | Result 结果            | 需评估 🤔 |
 | Skeleton 骨架屏         | 未完成    |
 | LoadingIndicator 加载中 | 已完成 ✅  |
-| Watermark 水印         | 进行中 💪 |
+| Watermark 水印         | 已完成 ✅  |
 
 #### 运行效果部分截图
 

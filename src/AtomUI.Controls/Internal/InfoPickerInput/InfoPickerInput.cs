@@ -62,9 +62,6 @@ public abstract class InfoPickerInput : TemplatedControl
     
     public static readonly StyledProperty<bool> IsReadOnlyProperty =
         TextBox.IsReadOnlyProperty.AddOwner<InfoPickerInput>();
-    
-    public static readonly StyledProperty<string?> TextProperty =
-        TextBox.TextProperty.AddOwner<InfoPickerInput>();
 
     public object? LeftAddOn
     {
@@ -150,14 +147,22 @@ public abstract class InfoPickerInput : TemplatedControl
         set => SetValue(IsReadOnlyProperty, value);
     }
     
-    public string? Text
+    #endregion
+
+    #region 内部属性定义
+
+    internal static readonly StyledProperty<string?> TextProperty =
+        AvaloniaProperty.Register<TextBlock, string?>(nameof(Text));
+    
+    protected string? Text
     {
         get => GetValue(TextProperty);
         set => SetValue(TextProperty, value);
     }
-    
+
     #endregion
     
+    private protected AddOnDecoratedBox? _decoratedBox;
     private protected PickerClearUpButton? _pickerClearUpButton;
     private protected readonly FlyoutStateHelper _flyoutStateHelper;
     private protected Flyout? _pickerFlyout;
@@ -186,7 +191,7 @@ public abstract class InfoPickerInput : TemplatedControl
         _flyoutStateHelper.ClickHideFlyoutPredicate =  ClickHideFlyoutPredicate;
     }
 
-    public void Clear()
+    public virtual void Clear()
     {
         _infoInputBox?.Clear();
     }
@@ -228,7 +233,7 @@ public abstract class InfoPickerInput : TemplatedControl
         return false;
     }
     
-    private bool FlyoutOpenPredicate(Point position)
+    protected virtual bool FlyoutOpenPredicate(Point position)
     {
         if (!IsEnabled)
         {
@@ -238,7 +243,7 @@ public abstract class InfoPickerInput : TemplatedControl
         return IsPointerInInfoInputBox(position);
     }
 
-    protected bool IsPointerInInfoInputBox(Point position)
+    private bool IsPointerInInfoInputBox(Point position)
     {
         if (_pickerInnerBox is not null)
         {
@@ -300,9 +305,10 @@ public abstract class InfoPickerInput : TemplatedControl
             };
             _flyoutStateHelper.Flyout = _pickerFlyout;
         }
-        _pickerInnerBox                 = e.NameScope.Get<AddOnDecoratedInnerBox>(InfoPickerInputTheme.PickerInnerPart);
-        _infoInputBox                   = e.NameScope.Get<TextBox>(InfoPickerInputTheme.InfoInputBoxPart);
-        _pickerClearUpButton            = e.NameScope.Get<PickerClearUpButton>(InfoPickerInputTheme.ClearUpButtonPart);
+        _decoratedBox        = e.NameScope.Get<AddOnDecoratedBox>(InfoPickerInputTheme.DecoratedBoxPart);
+        _pickerInnerBox      = e.NameScope.Get<AddOnDecoratedInnerBox>(InfoPickerInputTheme.PickerInnerPart);
+        _infoInputBox        = e.NameScope.Get<TextBox>(InfoPickerInputTheme.InfoInputBoxPart);
+        _pickerClearUpButton = e.NameScope.Get<PickerClearUpButton>(InfoPickerInputTheme.ClearUpButtonPart);
 
         if (_pickerClearUpButton is not null)
         {
@@ -319,6 +325,7 @@ public abstract class InfoPickerInput : TemplatedControl
 
     protected virtual void NotifyClearButtonClicked()
     {
+        Clear();
     }
     
     protected virtual void SetupFlyoutProperties()

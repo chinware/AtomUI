@@ -40,8 +40,8 @@
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.SearchEditTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.TextBoxInnerBoxTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.TextBoxTheme());
-            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.Internal.InfoPickerInputTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.PickerClearUpButtonTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.Internal.RangeInfoPickerInputTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.ListBoxItemTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.ListBoxTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.LoadingIndicatorAdornerTheme());

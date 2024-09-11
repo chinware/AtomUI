@@ -70,7 +70,7 @@
                                      StyleVariant="Outline" />
                     <atom:RangeTimePicker Width="320"
                                           StyleVariant="Outline"
-                                          RangeStartWatermark="Outline" />
+                                          Watermark="Outline" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Spacing="5">
                     <atom:TimePicker Watermark="Filled"
@@ -78,7 +78,7 @@
                                      StyleVariant="Filled" />
                     <atom:RangeTimePicker Width="320"
                                           StyleVariant="Outline"
-                                          RangeStartWatermark="Filled" />
+                                          Watermark="Filled" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Spacing="5">
                     <atom:TimePicker Watermark="Borderless"
@@ -86,7 +86,7 @@
                                      StyleVariant="Borderless" />
                     <atom:RangeTimePicker Width="320"
                                           StyleVariant="Borderless"
-                                          RangeStartWatermark="Borderless" />
+                                          Watermark="Borderless" />
                 </StackPanel>
             </StackPanel>
         </desktop:ShowCaseItem>
@@ -102,8 +102,8 @@
                     <atom:RangeTimePicker Width="320"
                                           StyleVariant="Outline"
                                           Status="Default"
-                                          RangeStartWatermark="Start time"
-                                          RangeEndWatermark="End time" />
+                                          Watermark="Start time"
+                                          SecondaryWatermark="End time" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Spacing="5">
                     <atom:TimePicker Width="160"
@@ -112,8 +112,8 @@
                     <atom:RangeTimePicker Width="320"
                                           StyleVariant="Outline"
                                           Status="Warning"
-                                          RangeStartWatermark="Start time"
-                                          RangeEndWatermark="End time" />
+                                          Watermark="Start time"
+                                          SecondaryWatermark="End time" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Spacing="5">
                     <atom:TimePicker Width="160"
@@ -122,8 +122,8 @@
                     <atom:RangeTimePicker Width="320"
                                           StyleVariant="Outline"
                                           Status="Error"
-                                          RangeStartWatermark="Start time"
-                                          RangeEndWatermark="End time" />
+                                          Watermark="Start time"
+                                          SecondaryWatermark="End time" />
                 </StackPanel>
             </StackPanel>
         </desktop:ShowCaseItem>
@@ -134,8 +134,8 @@
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:RangeTimePicker Width="320"
                                       Status="Default"
-                                      RangeStartWatermark="Start time"
-                                      RangeEndWatermark="End time" />
+                                      Watermark="Start time"
+                                      SecondaryWatermark="End time" />
             </StackPanel>
         </desktop:ShowCaseItem>
     </desktop:ShowCasePanel>

@@ -1,5 +1,11 @@
-﻿using Avalonia;
+﻿using AtomUI.Theme.Utils;
+using Avalonia;
+using Avalonia.Animation;
+using Avalonia.Controls;
+using Avalonia.Controls.Diagnostics;
+using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Shapes;
+using Avalonia.Input.Raw;
 
 namespace AtomUI.Controls.Internal;
 
@@ -49,16 +55,269 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
         get => GetValue(PickerIndicatorOffsetYProperty);
         set => SetValue(PickerIndicatorOffsetYProperty, value);
     }
+    
+    internal static readonly StyledProperty<string?> SecondaryTextProperty =
+        AvaloniaProperty.Register<TextBlock, string?>(nameof(SecondaryText));
+    
+    internal string? SecondaryText
+    {
+        get => GetValue(SecondaryTextProperty);
+        set => SetValue(SecondaryTextProperty, value);
+    }
 
     #endregion
-
         
     static RangeInfoPickerInput()
     {
         AffectsArrange<RangeInfoPickerInput>(PickerIndicatorOffsetXProperty, PickerIndicatorOffsetYProperty);
     }
     
-    private Rectangle? _rangePickerIndicator;
-    private TextBox? _rangeStartTextBox;
-    private TextBox? _rangeEndTextBox;
+    private protected Rectangle? _rangePickerIndicator;
+    private protected TextBox? _secondaryInfoInputBox;
+
+    public override void Clear()
+    {
+        _infoInputBox?.Clear();
+        _secondaryInfoInputBox?.Clear();
+    }
+    
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        
+        _secondaryInfoInputBox = e.NameScope.Get<TextBox>(RangeInfoPickerInputTheme.SecondaryInfoInputBoxPart);
+        _rangePickerIndicator  = e.NameScope.Get<Rectangle>(RangeTimePickerTheme.RangePickerIndicatorPart);
+        
+        _rangePickerIndicator.Transitions ??= new Transitions
+        {
+            AnimationUtils.CreateTransition<DoubleTransition>(OpacityProperty),
+            AnimationUtils.CreateTransition<DoubleTransition>(OpacityProperty)
+        };
+        
+        Transitions ??= new Transitions
+        {
+            AnimationUtils.CreateTransition<DoubleTransition>(PickerIndicatorOffsetXProperty)
+        };
+    }
+    
+    protected override bool FlyoutOpenPredicate(Point position)
+    {
+        if (!IsEnabled)
+        {
+            return false;
+        }
+        if (IsPointerInInfoInputBox(position))
+        {
+            RangeActivatedPart = RangeActivatedPart.Start;
+            return true;
+        }
+        
+        if (IsPointerInSecondaryTextBox(position))
+        {
+            RangeActivatedPart = RangeActivatedPart.End;
+            return true;
+        }
+        
+        return false;
+    }
+    
+    private bool IsPointerInInfoInputBox(Point position)
+    {
+        if (_infoInputBox is null)
+        {
+            return false;
+        }
+
+        var pos = _infoInputBox.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(this)!);
+        if (!pos.HasValue)
+        {
+            return false;
+        }
+
+        var targetWidth  = _infoInputBox.Bounds.Width;
+        var targetHeight = _infoInputBox.Bounds.Height;
+        var startOffsetX = pos.Value.X;
+        var endOffsetX   = startOffsetX + targetWidth;
+        var offsetY      = pos.Value.Y;
+        if (InnerLeftContent is Control leftContent)
+        {
+            var leftContentPos = leftContent.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(this)!);
+            if (leftContentPos.HasValue)
+            {
+                startOffsetX = leftContentPos.Value.X + leftContent.Bounds.Width;
+            }
+        }
+
+        targetWidth = endOffsetX - startOffsetX;
+        var bounds = new Rect(new Point(startOffsetX, offsetY), new Size(targetWidth, targetHeight));
+        if (bounds.Contains(position))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private bool IsPointerInSecondaryTextBox(Point position)
+    {
+        if (_secondaryInfoInputBox is null)
+        {
+            return false;
+        }
+
+        var pos = _secondaryInfoInputBox.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(this)!);
+        if (!pos.HasValue)
+        {
+            return false;
+        }
+
+        var targetWidth  = _secondaryInfoInputBox.Bounds.Width;
+        var targetHeight = _secondaryInfoInputBox.Bounds.Height;
+        var startOffsetX = pos.Value.X;
+        var endOffsetX   = startOffsetX + targetWidth;
+        var offsetY      = pos.Value.Y;
+        if (InnerLeftContent is Control leftContent)
+        {
+            var leftContentPos = leftContent.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(this)!);
+            if (leftContentPos.HasValue)
+            {
+                startOffsetX = leftContentPos.Value.X + leftContent.Bounds.Width;
+            }
+        }
+
+        targetWidth = endOffsetX - startOffsetX;
+        var bounds = new Rect(new Point(startOffsetX, offsetY), new Size(targetWidth, targetHeight));
+        if (bounds.Contains(position))
+        {
+            return true;
+        }
+
+        return false;
+    }
+     
+    protected override bool ClickHideFlyoutPredicate(IPopupHostProvider hostProvider, RawPointerEventArgs args)
+    {
+        if (hostProvider.PopupHost != args.Root)
+        {
+            var inRangeStart = IsPointerInInfoInputBox(args.Position);
+            var inRangeEnd   = IsPointerInSecondaryTextBox(args.Position);
+
+            if (inRangeStart)
+            {
+                RangeActivatedPart = RangeActivatedPart.Start;
+            }
+
+            if (inRangeEnd)
+            {
+                RangeActivatedPart = RangeActivatedPart.End;
+            }
+
+            if (!inRangeStart && !inRangeEnd)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == RangeActivatedPartProperty)
+        {
+            HandleRangeActivatedPartChanged();
+        }
+    }
+    
+    protected override Size ArrangeOverride(Size finalSize)
+    {
+        var borderThickness = _decoratedBox?.BorderThickness ?? default;
+        var size            = base.ArrangeOverride(finalSize).Inflate(borderThickness);
+        if (_rangePickerIndicator is not null)
+        {
+            Canvas.SetLeft(_rangePickerIndicator, PickerIndicatorOffsetX);
+            Canvas.SetTop(_rangePickerIndicator, PickerIndicatorOffsetY);
+        }
+
+        return size;
+    }
+    
+    protected override Size MeasureOverride(Size availableSize)
+    {
+        var size = base.MeasureOverride(availableSize);
+        if (_decoratedBox is not null)
+        {
+            PickerIndicatorOffsetY = _decoratedBox.DesiredSize.Height - _rangePickerIndicator!.Height;
+        }
+    
+        if (double.IsNaN(PickerIndicatorOffsetX))
+        {
+            if (_rangeActivatedPart == RangeActivatedPart.None)
+            {
+                var offset = _infoInputBox!.TranslatePoint(new Point(0, 0), this) ?? default;
+                PickerIndicatorOffsetX = offset.X;
+            }
+        }
+    
+        return size;
+    }
+    
+    protected override void NotifyFlyoutAboutToClose(bool selectedIsValid)
+    {
+        RangeActivatedPart = RangeActivatedPart.None;
+    }
+    
+    protected virtual void HandleRangeActivatedPartChanged()
+    {
+        if (RangeActivatedPart == RangeActivatedPart.Start)
+        {
+            PickerPlacement = PlacementMode.BottomEdgeAlignedLeft;
+            _infoInputBox!.Focus();
+        }
+        else if (RangeActivatedPart == RangeActivatedPart.End)
+        {
+            PickerPlacement = PlacementMode.BottomEdgeAlignedRight;
+            _secondaryInfoInputBox!.Focus();
+        }
+
+        SetupPickerIndicatorPosition();
+    }
+    
+    private void SetupPickerIndicatorPosition()
+    {
+        if (_rangePickerIndicator is null ||
+            _decoratedBox is null ||
+            _infoInputBox is null ||
+            _secondaryInfoInputBox is null)
+        {
+            return;
+        }
+
+        if (_rangeActivatedPart == RangeActivatedPart.None)
+        {
+            _rangePickerIndicator.Opacity = 0;
+        }
+        else if (_rangeActivatedPart == RangeActivatedPart.Start)
+        {
+            _rangePickerIndicator.Opacity = 1;
+            _rangePickerIndicator.Width   = _infoInputBox.Bounds.Width;
+            var offset = _infoInputBox.TranslatePoint(new Point(0, 0), this) ?? default;
+            PickerIndicatorOffsetX = offset.X;
+        }
+        else if (_rangeActivatedPart == RangeActivatedPart.End)
+        {
+            _rangePickerIndicator.Opacity = 1;
+            _rangePickerIndicator.Width   = _secondaryInfoInputBox.Bounds.Width;
+            var offset = _secondaryInfoInputBox.TranslatePoint(new Point(0, 0), this) ?? default;
+            PickerIndicatorOffsetX = offset.X;
+        }
+    }
+}
+
+internal enum RangeActivatedPart
+{
+    None,
+    Start,
+    End
 }

@@ -1,6 +1,5 @@
 ﻿using AtomUI.Data;
 using AtomUI.Theme;
-using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
@@ -9,7 +8,6 @@ using Avalonia.Media;
 
 namespace AtomUI.Controls.Internal;
 
-[ControlThemeProvider]
 internal class InfoPickerInputTheme : BaseControlTheme
 {
     public const string DecoratedBoxPart = "PART_DecoratedBox";
@@ -34,7 +32,7 @@ internal class InfoPickerInputTheme : BaseControlTheme
             var innerBox        = BuildPickerInnerBox(infoPickerInput, scope);
             decoratedBox.Content = innerBox;
             indicatorLayout.Children.Add(decoratedBox);
-            BuildExtraElement(indicatorLayout, scope);
+            BuildExtraElement(indicatorLayout, infoPickerInput, scope);
             return indicatorLayout;
         });
     }
@@ -128,11 +126,7 @@ internal class InfoPickerInputTheme : BaseControlTheme
         return pickerTextBox;
     }
     
-    protected virtual void BuildExtraElement(Panel containerLayout, INameScope scope)
-    {
-    }
-    
-    protected override void BuildStyles()
+    protected virtual void BuildExtraElement(Panel containerLayout, InfoPickerInput infoPickerInput, INameScope scope)
     {
     }
     

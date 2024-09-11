@@ -109,19 +109,19 @@ Welcome to communicate and give suggestions to AtomUI, thank you for giving the 
 | Tree           | Completed ✅    |
 
 ##### Feedback
-| Control Name       | Status        |
-|:-------------------|:--------------|
-| Alert              | Completed ✅   |
-| Drawer             | Developing 💪 |
-| Message            | Completed ✅   |
+| Control Name       | Status     |
+|:-------------------|:-----------|
+| Alert              | Completed ✅ |
+| Drawer             | Completed ✅ |
+| Message            | Completed ✅ |
 | Modal              | Developing 💪 |
-| Notification       | Completed ✅   |
-| Popconfirm         | Completed ✅   |
-| ProgressBar        | Completed ✅   |
+| Notification       | Completed ✅ |
+| Popconfirm         | Completed ✅ |
+| ProgressBar        | Completed ✅ |
 | Result             | Need Review 🤔 |
-| Skeleton           | TODO          |
-| LoadingIndicator   | Completed ✅   |
-| Watermark          | Developing 💪 |
+| Skeleton           | TODO       |
+| LoadingIndicator   | Completed ✅ |
+| Watermark          | Completed ✅|
 
 #### Some screenshots of the running effect
 
