@@ -23,6 +23,7 @@
 
     <ItemGroup>
         <InternalsVisibleTo Include="AtomUI.Controls"/>
+        <InternalsVisibleTo Include="AtomUI"/>
     </ItemGroup>
 
     <ItemGroup>

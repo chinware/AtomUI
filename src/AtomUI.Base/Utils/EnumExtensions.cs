@@ -3,7 +3,7 @@
 namespace AtomUI.Utils;
 
 /// <summary>
-///     Provides extension methods for enums.
+/// Provides extension methods for enums.
 /// </summary>
 internal static class EnumExtensions
 {

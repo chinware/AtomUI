@@ -11,9 +11,9 @@ using Avalonia.Styling;
 namespace AtomUI.Theme;
 
 /// <summary>
-///     当切换主题时候就是动态的换 ResourceDictionary 里面的东西
+/// 当切换主题时候就是动态的换 ResourceDictionary 里面的东西
 /// </summary>
-public class ThemeManager : Styles, IThemeManager
+internal class ThemeManager : Styles, IThemeManager
 {
     public const string THEME_DIR = "Themes";
     public const string DEFAULT_THEME_ID = "DaybreakBlueLight";
@@ -130,7 +130,7 @@ public class ThemeManager : Styles, IThemeManager
     }
 
     /// <summary>
-    ///     取消主题在 avalonia 里面的 resource 资源
+    /// 取消主题在 avalonia 里面的 resource 资源
     /// </summary>
     /// <param name="id"></param>
     public void UnLoadTheme(string id)
@@ -277,11 +277,9 @@ public class ThemeManager : Styles, IThemeManager
         }
     }
 
-    internal void Initialize()
+    internal void Configure()
     {
         RegisterServices();
-        // 收集控件全局初始化接口
-        InvokeBootstrapInitializers();
         RegisterControlThemes();
         BuildLanguageResources();
     }
@@ -303,23 +301,6 @@ public class ThemeManager : Styles, IThemeManager
             }
 
             _languageProviders = null;
-        }
-    }
-
-    internal void InvokeBootstrapInitializers()
-    {
-        var assemblies = Assembly.GetEntryAssembly()?.GetReferencedAssemblies()
-                                 .Select(assemblyName => Assembly.Load(assemblyName));
-        var initializers = assemblies?.SelectMany(assembly => assembly.GetTypes())
-                                     .Where(type =>
-                                         type.IsClass && typeof(IBootstrapInitializer).IsAssignableFrom(type))
-                                     .Select(type => (IBootstrapInitializer)Activator.CreateInstance(type)!);
-        if (initializers is not null)
-        {
-            foreach (var initializer in initializers)
-            {
-                initializer.Init();
-            }
         }
     }
 

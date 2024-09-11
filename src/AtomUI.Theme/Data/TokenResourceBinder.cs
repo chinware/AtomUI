@@ -60,7 +60,7 @@ public static class TokenResourceBinder
     }
 
     /// <summary>
-    ///     直接在 resource dictionary 中查找，忽略本地覆盖的值
+    /// 直接在 resource dictionary 中查找，忽略本地覆盖的值
     /// </summary>
     public static IObservable<object?> GetGlobalTokenResourceObservable(TokenResourceKey resourceKey,
                                                                         ThemeVariant? themeVariant = null,

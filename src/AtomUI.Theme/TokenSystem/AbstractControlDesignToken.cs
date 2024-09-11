@@ -4,7 +4,7 @@ using Avalonia.Controls;
 namespace AtomUI.Theme.TokenSystem;
 
 /// <summary>
-///     所有的组件 Token 定义是除了全局的 Token 的之外的专属于当前的组件的 Token 值
+/// 所有的组件 Token 定义是除了全局的 Token 的之外的专属于当前的组件的 Token 值
 /// </summary>
 public abstract class AbstractControlDesignToken : AbstractDesignToken, IControlDesignToken
 {
@@ -51,7 +51,7 @@ public abstract class AbstractControlDesignToken : AbstractDesignToken, IControl
     }
 
     /// <summary>
-    ///     一般 control token 尽量不继承, 先看看
+    /// 一般 control token 尽量不继承, 先看看
     /// </summary>
     /// <param name="tokenName"></param>
     /// <returns></returns>

@@ -145,17 +145,17 @@ public class RangeCalendar : TemplatedControl
     /// </exception>
     /// <remarks>
     /// <para>
-    ///     This property allows the developer to specify a date to display.  If
-    ///     this property is a null reference (Nothing in Visual Basic),
-    ///     SelectedDate is displayed.  If SelectedDate is also a null reference
-    ///     (Nothing in Visual Basic), Today is displayed.  The default is
-    ///     Today.
+    /// This property allows the developer to specify a date to display.  If
+    /// this property is a null reference (Nothing in Visual Basic),
+    /// SelectedDate is displayed.  If SelectedDate is also a null reference
+    /// (Nothing in Visual Basic), Today is displayed.  The default is
+    /// Today.
     /// </para>
     /// <para>
-    ///     To set this property in XAML, use a date specified in the format
-    ///     yyyy/mm/dd.  The mm and dd components must always consist of two
-    ///     characters, with a leading zero if necessary.  For instance, the
-    ///     month of May should be specified as 05.
+    /// To set this property in XAML, use a date specified in the format
+    /// yyyy/mm/dd.  The mm and dd components must always consist of two
+    /// characters, with a leading zero if necessary.  For instance, the
+    /// month of May should be specified as 05.
     /// </para>
     /// </remarks>
     public DateTime DisplayDate
@@ -359,12 +359,12 @@ public class RangeCalendar : TemplatedControl
     /// </exception>
     /// <remarks>
     /// <para>
-    ///     Dates in this collection will appear as disabled on the calendar.
+    /// Dates in this collection will appear as disabled on the calendar.
     /// </para>
     /// <para>
-    ///     To make all past dates not selectable, you can use the
-    ///     AddDatesInPast method provided by the collection returned by this
-    ///     property.
+    /// To make all past dates not selectable, you can use the
+    /// AddDatesInPast method provided by the collection returned by this
+    /// property.
     /// </para>
     /// </remarks>
     public RangeCalendarBlackoutDatesCollection BlackoutDates { get; }

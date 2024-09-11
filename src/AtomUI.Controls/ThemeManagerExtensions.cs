@@ -1,16 +1,16 @@
 ﻿using AtomUI.Theme;
-using AtomUI.Utils;
 using Avalonia;
 
 namespace AtomUI.Controls;
 
-public class BootstrapInitializer : IBootstrapInitializer
+internal static class ThemeManagerExtensions
 {
-    public void Init()
+    public static ThemeManager ConfigureAtomUIControls(this ThemeManager themeManager)
     {
         AvaloniaLocator.CurrentMutable.BindToSelf(new ToolTipService());
         ControlThemeRegister.Register();
         ControlTokenTypeRegister.Register();
         LanguageProviderRegister.Register();
+        return themeManager;
     }
 }

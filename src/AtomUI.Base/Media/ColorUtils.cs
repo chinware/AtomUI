@@ -225,8 +225,8 @@ public static class ColorUtils
     /// Readability Functions
     /// ---------------------
     /// <http:// www.w3.org/ TR/2008/ REC-WCAG20-20081211/# contrast-ratiodef ( WCAG Version 2)
-    ///     AKA ` contrast`
-    ///     Analyze the 2 colors and returns the color contrast defined by ( WCAG Version
+    /// AKA ` contrast`
+    /// Analyze the 2 colors and returns the color contrast defined by ( WCAG Version
     /// 2
     /// )
     public static double Readability(Color color1, Color color2)

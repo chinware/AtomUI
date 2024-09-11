@@ -165,61 +165,61 @@ public class CalendarModeChangedEventArgs : RoutedEventArgs
 /// </summary>
 /// <remarks>
 /// <para>
-///     A Calendar control can be used on its own, or as a drop-down part of a
-///     DatePicker control. For more information, see DatePicker.  A Calendar
-///     displays either the days of a month, the months of a year, or the years
-///     of a decade, depending on the value of the DisplayMode property.  When
-///     displaying the days of a month, the user can select a date, a range of
-///     dates, or multiple ranges of dates.  The kinds of selections that are
-///     allowed are controlled by the SelectionMode property.
+/// A Calendar control can be used on its own, or as a drop-down part of a
+/// DatePicker control. For more information, see DatePicker.  A Calendar
+/// displays either the days of a month, the months of a year, or the years
+/// of a decade, depending on the value of the DisplayMode property.  When
+/// displaying the days of a month, the user can select a date, a range of
+/// dates, or multiple ranges of dates.  The kinds of selections that are
+/// allowed are controlled by the SelectionMode property.
 /// </para>
 /// <para>
-///     The range of dates displayed is governed by the DisplayDateStart and
-///     DisplayDateEnd properties.  If DisplayMode is Year or Decade, only
-///     months or years that contain displayable dates will be displayed.
-///     Setting the displayable range to a range that does not include the
-///     current DisplayDate will throw an ArgumentOutOfRangeException.
+/// The range of dates displayed is governed by the DisplayDateStart and
+/// DisplayDateEnd properties.  If DisplayMode is Year or Decade, only
+/// months or years that contain displayable dates will be displayed.
+/// Setting the displayable range to a range that does not include the
+/// current DisplayDate will throw an ArgumentOutOfRangeException.
 /// </para>
 /// <para>
-///     The BlackoutDates property can be used to specify dates that cannot be
-///     selected. These dates will be displayed as dimmed and disabled.
+/// The BlackoutDates property can be used to specify dates that cannot be
+/// selected. These dates will be displayed as dimmed and disabled.
 /// </para>
 /// <para>
-///     By default, Today is highlighted.  This can be disabled by setting
-///     IsTodayHighlighted to false.
+/// By default, Today is highlighted.  This can be disabled by setting
+/// IsTodayHighlighted to false.
 /// </para>
 /// <para>
-///     The Calendar control provides basic navigation using either the mouse or
-///     keyboard. The following table summarizes keyboard navigation.
-///     Key Combination     DisplayMode     Action
-///     ARROW               Any             Change focused date, unselect
-///     all selected dates, and select
-///     new focused date.
-///     SHIFT+ARROW         Any             If SelectionMode is not set to
-///     SingleDate or None begin
-///     selecting a range of dates.
-///     CTRL+UP ARROW       Any             Switch to the next larger
-///     DisplayMode.  If DisplayMode is
-///     already Decade, no action.
-///     CTRL+DOWN ARROW     Any             Switch to the next smaller
-///     DisplayMode.  If DisplayMode is
-///     already Month, no action.
-///     SPACEBAR            Month           Select focused date.
-///     SPACEBAR            Year or Decade  Switch DisplayMode to the Month
-///     or Year represented by focused
-///     item.
+/// The Calendar control provides basic navigation using either the mouse or
+/// keyboard. The following table summarizes keyboard navigation.
+/// Key Combination     DisplayMode     Action
+/// ARROW               Any             Change focused date, unselect
+/// all selected dates, and select
+/// new focused date.
+/// SHIFT+ARROW         Any             If SelectionMode is not set to
+/// SingleDate or None begin
+/// selecting a range of dates.
+/// CTRL+UP ARROW       Any             Switch to the next larger
+/// DisplayMode.  If DisplayMode is
+/// already Decade, no action.
+/// CTRL+DOWN ARROW     Any             Switch to the next smaller
+/// DisplayMode.  If DisplayMode is
+/// already Month, no action.
+/// SPACEBAR            Month           Select focused date.
+/// SPACEBAR            Year or Decade  Switch DisplayMode to the Month
+/// or Year represented by focused
+/// item.
 /// </para>
 /// <para>
-///     XAML Usage for Classes Derived from Calendar
-///     If you define a class that derives from Calendar, the class can be used
-///     as an object element in XAML, and all of the inherited properties and
-///     events that show a XAML usage in the reference for the Calendar members
-///     can have the same XAML usage for the derived class. However, the object
-///     element itself must have a different prefix mapping than the controls:
-///     mapping shown in the usages, because the derived class comes from an
-///     assembly and namespace that you create and define.  You must define your
-///     own prefix mapping to an XML namespace to use the class as an object
-///     element in XAML.
+/// XAML Usage for Classes Derived from Calendar
+/// If you define a class that derives from Calendar, the class can be used
+/// as an object element in XAML, and all of the inherited properties and
+/// events that show a XAML usage in the reference for the Calendar members
+/// can have the same XAML usage for the derived class. However, the object
+/// element itself must have a different prefix mapping than the controls:
+/// mapping shown in the usages, because the derived class comes from an
+/// assembly and namespace that you create and define.  You must define your
+/// own prefix mapping to an XML namespace to use the class as an object
+/// element in XAML.
 /// </para>
 /// </remarks>
 [TemplatePart(CalendarTheme.CalendarItemPart, typeof(CalendarItem))]
@@ -282,12 +282,12 @@ public class Calendar : TemplatedControl
     /// </exception>
     /// <remarks>
     /// <para>
-    ///     Dates in this collection will appear as disabled on the calendar.
+    /// Dates in this collection will appear as disabled on the calendar.
     /// </para>
     /// <para>
-    ///     To make all past dates not selectable, you can use the
-    ///     AddDatesInPast method provided by the collection returned by this
-    ///     property.
+    /// To make all past dates not selectable, you can use the
+    /// AddDatesInPast method provided by the collection returned by this
+    /// property.
     /// </para>
     /// </remarks>
     public CalendarBlackoutDatesCollection BlackoutDates { get; }
@@ -1955,13 +1955,13 @@ public class Calendar : TemplatedControl
     /// </value>
     /// <remarks>
     /// <para>
-    ///     This property determines whether the Calendar allows no selection,
-    ///     selection of a single date, or selection of multiple dates.  The
-    ///     selection mode is specified with the CalendarSelectionMode
-    ///     enumeration.
+    /// This property determines whether the Calendar allows no selection,
+    /// selection of a single date, or selection of multiple dates.  The
+    /// selection mode is specified with the CalendarSelectionMode
+    /// enumeration.
     /// </para>
     /// <para>
-    ///     When this property is changed, all selected dates will be cleared.
+    /// When this property is changed, all selected dates will be cleared.
     /// </para>
     /// </remarks>
     public CalendarSelectionMode SelectionMode
@@ -2019,17 +2019,17 @@ public class Calendar : TemplatedControl
     /// </exception>
     /// <remarks>
     /// <para>
-    ///     This property allows the developer to specify a date to display.  If
-    ///     this property is a null reference (Nothing in Visual Basic),
-    ///     SelectedDate is displayed.  If SelectedDate is also a null reference
-    ///     (Nothing in Visual Basic), Today is displayed.  The default is
-    ///     Today.
+    /// This property allows the developer to specify a date to display.  If
+    /// this property is a null reference (Nothing in Visual Basic),
+    /// SelectedDate is displayed.  If SelectedDate is also a null reference
+    /// (Nothing in Visual Basic), Today is displayed.  The default is
+    /// Today.
     /// </para>
     /// <para>
-    ///     To set this property in XAML, use a date specified in the format
-    ///     yyyy/mm/dd.  The mm and dd components must always consist of two
-    ///     characters, with a leading zero if necessary.  For instance, the
-    ///     month of May should be specified as 05.
+    /// To set this property in XAML, use a date specified in the format
+    /// yyyy/mm/dd.  The mm and dd components must always consist of two
+    /// characters, with a leading zero if necessary.  For instance, the
+    /// month of May should be specified as 05.
     /// </para>
     /// </remarks>
     public DateTime DisplayDate

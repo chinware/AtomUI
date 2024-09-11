@@ -3,7 +3,7 @@
 namespace AtomUI.Demo.Desktop;
 
 /// <summary>
-///     Xaml markup to get the enum values.
+/// Xaml markup to get the enum values.
 /// </summary>
 /// TODO 优化性能时可以考虑缓存类型和列表
 public class EnumExtension : MarkupExtension

@@ -107,7 +107,7 @@ public static class ColorExtensions
     }
 
     /// <summary>
-    ///     Returns the perceived brightness of the color, from 0-255.
+    /// Returns the perceived brightness of the color, from 0-255.
     /// </summary>
     /// <param name="color"></param>
     /// <returns></returns>
@@ -117,7 +117,7 @@ public static class ColorExtensions
     }
 
     /// <summary>
-    ///     Returns the perceived luminance of a color, from 0-1.
+    /// Returns the perceived luminance of a color, from 0-1.
     /// </summary>
     /// <returns></returns>
     public static double GetLuminance(this Color color)

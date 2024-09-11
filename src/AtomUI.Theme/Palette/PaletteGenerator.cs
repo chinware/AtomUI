@@ -8,37 +8,37 @@ namespace AtomUI.Theme.Palette;
 public static class PaletteGenerator
 {
    /// <summary>
-   ///     色相阶梯
+   /// 色相阶梯
    /// </summary>
    public const int HUE_STEP = 2;
 
    /// <summary>
-   ///     饱和度阶梯，浅色部分
+   /// 饱和度阶梯，浅色部分
    /// </summary>
    public const float SATURATION_STEP1 = 0.16f;
 
    /// <summary>
-   ///     饱和度阶梯，深色部分
+   /// 饱和度阶梯，深色部分
    /// </summary>
    public const float SATURATION_STEP2 = 0.05f;
 
    /// <summary>
-   ///     亮度阶梯，浅色部分
+   /// 亮度阶梯，浅色部分
    /// </summary>
    public const float BRIGHTNESS_STEP1 = 0.05f;
 
    /// <summary>
-   ///     亮度阶梯，深色部分
+   /// 亮度阶梯，深色部分
    /// </summary>
    public const float BRIGHTNESS_STEP2 = 0.15f;
 
    /// <summary>
-   ///     浅色数量，主色上
+   /// 浅色数量，主色上
    /// </summary>
    public const int LIGHT_COLOR_COUNT = 5;
 
    /// <summary>
-   ///     深色数量，主色下
+   /// 深色数量，主色下
    /// </summary>
    public const int DARK_COLOR_COUNT = 4;
 

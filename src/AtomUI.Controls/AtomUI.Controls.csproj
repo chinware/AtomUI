@@ -16,6 +16,10 @@
     </ItemGroup>
 
     <ItemGroup>
+        <InternalsVisibleTo Include="AtomUI"/>
+    </ItemGroup>
+
+    <ItemGroup>
         <ProjectReference Include="..\AtomUI.Theme\AtomUI.Theme.csproj"/>
         <ProjectReference Include="..\AtomUI.Generator\AtomUI.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
     </ItemGroup>

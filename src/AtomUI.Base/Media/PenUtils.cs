@@ -7,7 +7,7 @@ namespace AtomUI.Media;
 public static class PenUtils
 {
    /// <summary>
-   ///     Smart reuse and update pen properties.
+   /// Smart reuse and update pen properties.
    /// </summary>
    /// <param name="pen">Old pen to modify.</param>
    /// <param name="brush">The brush used to draw.</param>

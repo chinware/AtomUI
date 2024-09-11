@@ -10,7 +10,7 @@ public class CollapseMotion : AbstractMotion
     public MotionConfig? HeightConfig => GetMotionConfig(MotionHeightProperty);
 
     /// <summary>
-    ///     收起的方向，垂直还是水平方向
+    /// 收起的方向，垂直还是水平方向
     /// </summary>
     public Orientation Orientation { get; set; } = Orientation.Vertical;
 
@@ -77,7 +77,7 @@ public class ExpandMotion : AbstractMotion
     public MotionConfig? HeightConfig => GetMotionConfig(MotionHeightProperty);
 
     /// <summary>
-    ///     展开的方向，垂直还是水平方向
+    /// 展开的方向，垂直还是水平方向
     /// </summary>
     public Orientation Orientation { get; set; } = Orientation.Vertical;
 

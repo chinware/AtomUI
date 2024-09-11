@@ -6,7 +6,7 @@ using Avalonia.Styling;
 namespace AtomUI.Theme;
 
 /// <summary>
-///     主要是生成主题资源，绘制相关的管理不在这里，因为是公用的所以放在 ThemeManager 里面
+/// 主要是生成主题资源，绘制相关的管理不在这里，因为是公用的所以放在 ThemeManager 里面
 /// </summary>
 public abstract class Theme : ITheme
 {

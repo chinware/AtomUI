@@ -28,7 +28,7 @@ public class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
     }
 
     /// <summary>
-    ///     初始化一个新的动画顶层窗口
+    /// 初始化一个新的动画顶层窗口
     /// </summary>
     /// <param name="parent"></param>
     /// <param name="impl"></param>
@@ -55,12 +55,12 @@ public class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
     }
 
     /// <summary>
-    ///     Gets the platform-specific window implementation.
+    /// Gets the platform-specific window implementation.
     /// </summary>
     public new IPopupImpl? PlatformImpl => (IPopupImpl?)base.PlatformImpl;
 
     /// <summary>
-    ///     Gets the control that is hosting the popup root.
+    /// Gets the control that is hosting the popup root.
     /// </summary>
     Visual? IHostedVisualTreeRoot.Host
     {

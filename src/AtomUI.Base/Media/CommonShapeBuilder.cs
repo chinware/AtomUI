@@ -25,7 +25,7 @@ public static class CommonShapeBuilder
     }
 
     /// <summary>
-    ///     生成一个以矩形中点为圆心，以宽和高最小的一半为半径的且指定角度的圆弧
+    /// 生成一个以矩形中点为圆心，以宽和高最小的一半为半径的且指定角度的圆弧
     /// </summary>
     /// <param name="rect"></param>
     /// <param name="startAngle"></param>

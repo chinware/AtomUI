@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis;
 namespace AtomUI.Icon.Generators;
 
 /// <summary>
-///     目前仅能针对 AntDesign 暂时不可移植
+/// 目前仅能针对 AntDesign 暂时不可移植
 /// </summary>
 [Generator]
 public class AntDesignGenerator : IIncrementalGenerator

@@ -21,7 +21,7 @@ public class Director : IDirector
     }
 
     /// <summary>
-    ///     目前的实现暂时一个 Actor 只能投递一次，后面可以实现一个等待队列
+    /// 目前的实现暂时一个 Actor 只能投递一次，后面可以实现一个等待队列
     /// </summary>
     /// <param name="actor"></param>
     public void Schedule(MotionActor actor)

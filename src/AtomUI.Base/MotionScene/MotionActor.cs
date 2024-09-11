@@ -12,8 +12,8 @@ using Avalonia.VisualTree;
 namespace AtomUI.MotionScene;
 
 /// <summary>
-///     动效配置类，只要给 Director 提供动效相关信息
-///     动效驱动 Actor 的属性，然后由 Actor 驱动动画控件，防止污染动画控件的 Transitions 配置
+/// 动效配置类，只要给 Director 提供动效相关信息
+/// 动效驱动 Actor 的属性，然后由 Actor 驱动动画控件，防止污染动画控件的 Transitions 配置
 /// </summary>
 public class MotionActor : Animatable, IMotionActor
 {
@@ -78,12 +78,12 @@ public class MotionActor : Animatable, IMotionActor
     }
 
     /// <summary>
-    ///     动画实体
+    /// 动画实体
     /// </summary>
     public Control MotionTarget { get; set; }
 
     /// <summary>
-    ///     当 DispatchInSceneLayer 为 true 的时候，必须指定一个动画 SceneLayer 的父窗口，最好不要是 Popup
+    /// 当 DispatchInSceneLayer 为 true 的时候，必须指定一个动画 SceneLayer 的父窗口，最好不要是 Popup
     /// </summary>
     public TopLevel? SceneParent { get; set; }
 
@@ -179,7 +179,7 @@ public class MotionActor : Animatable, IMotionActor
     }
 
     /// <summary>
-    ///     当在 DispatchInSceneLayer 渲染的时候，Ghost 的全局坐标
+    /// 当在 DispatchInSceneLayer 渲染的时候，Ghost 的全局坐标
     /// </summary>
     /// <returns></returns>
     public Point CalculateGhostPosition()
@@ -215,7 +215,7 @@ public class MotionActor : Animatable, IMotionActor
     }
 
     /// <summary>
-    ///     在这个接口中，Actor 根据自己的需求对 sceneLayer 进行设置，主要就是位置和大小
+    /// 在这个接口中，Actor 根据自己的需求对 sceneLayer 进行设置，主要就是位置和大小
     /// </summary>
     /// <param name="sceneLayer"></param>
     public virtual void NotifySceneLayerCreated(SceneLayer sceneLayer)
@@ -270,7 +270,7 @@ public class MotionActor : Animatable, IMotionActor
     }
 
     /// <summary>
-    ///     当动画目标控件被添加到动画场景中之后调用，这里需要根据 Motion 的种类设置初始位置和大小
+    /// 当动画目标控件被添加到动画场景中之后调用，这里需要根据 Motion 的种类设置初始位置和大小
     /// </summary>
     /// <param name="motionTarget"></param>
     public virtual void NotifyMotionTargetAddedToScene(Control motionTarget)
