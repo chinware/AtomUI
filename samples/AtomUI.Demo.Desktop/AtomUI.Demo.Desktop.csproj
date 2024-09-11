@@ -29,9 +29,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\AtomUI.Controls\AtomUI.Controls.csproj"/>
-        <ProjectReference Include="..\..\src\AtomUI.Icon.AntDesign\AtomUI.Icon.AntDesign.csproj"/>
-        <ProjectReference Include="..\..\src\AtomUI.Theme\AtomUI.Theme.csproj"/>
+        <ProjectReference Include="..\..\packages\AtomUI\AtomUI.csproj" />
     </ItemGroup>
 
 </Project>
