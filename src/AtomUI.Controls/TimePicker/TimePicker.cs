@@ -83,6 +83,7 @@ public class TimePicker : InfoPickerInput
     
     protected override void NotifyFlyoutAboutToClose(bool selectedIsValid)
     {
+        base.NotifyFlyoutAboutToClose(selectedIsValid);
         if (!selectedIsValid)
         {
             if (SelectedTime.HasValue)
@@ -92,29 +93,15 @@ public class TimePicker : InfoPickerInput
             }
             else
             {
-                ResetTimeValue();
+                Clear();
             }
         }
     }
-    
-    protected void ResetTimeValue()
+
+    public override void Clear()
     {
-        if (DefaultTime is not null)
-        {
-            Text = DateTimeUtils.FormatTimeSpan(DefaultTime.Value, ClockIdentifier == ClockIdentifierType.HourClock12);
-            SelectedTime = DefaultTime;
-        }
-        else
-        {
-            Clear();
-            SelectedTime = null;
-        }
-    }
-    
-    protected override void NotifyClearButtonClicked()
-    {
-        base.NotifyClearButtonClicked();
-        ResetTimeValue();
+        base.Clear();
+        SelectedTime = DefaultTime;
     }
     
     protected override bool ShowClearButtonPredicate()
@@ -136,7 +123,7 @@ public class TimePicker : InfoPickerInput
                 }
                 else
                 {
-                    ResetTimeValue();
+                    Clear();
                 }
             }
         }
