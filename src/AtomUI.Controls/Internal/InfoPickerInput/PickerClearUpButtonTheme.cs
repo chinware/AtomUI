@@ -3,10 +3,11 @@ using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Data.Converters;
-using Avalonia.Layout;
+using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
@@ -14,6 +15,7 @@ namespace AtomUI.Controls;
 internal class PickerClearUpButtonTheme : BaseControlTheme
 {
     public const string ClearButtonPart = "PART_ClearButton";
+    public const string InfoIconContentPart = "PART_InfoIconContent";
 
     public PickerClearUpButtonTheme() : base(typeof(PickerClearUpButton))
     {
@@ -21,31 +23,27 @@ internal class PickerClearUpButtonTheme : BaseControlTheme
 
     protected override IControlTemplate BuildControlTemplate()
     {
-        return new FuncControlTemplate<PickerClearUpButton>((indicator, scope) =>
+        return new FuncControlTemplate<PickerClearUpButton>((pickerClearUpButton, scope) =>
         {
+            BuildInstanceStyles(pickerClearUpButton);
             var container = new Panel();
             BuildClearButton(container, scope);
-            BuildClockIcon(container, scope);
+            BuildClockIconContent(container, scope);
             return container;
         });
     }
 
-    private void BuildClockIcon(Panel layout, INameScope scope)
+    private void BuildClockIconContent(Panel layout, INameScope scope)
     {
-        var clockIcon = new PathIcon
+        var iconContent = new ContentPresenter()
         {
-            Kind = "ClockCircleOutlined"
+            Name = InfoIconContentPart
         };
-        TokenResourceBinder.CreateGlobalTokenBinding(clockIcon, Layoutable.HeightProperty,
-            GlobalTokenResourceKey.IconSize);
-        TokenResourceBinder.CreateGlobalTokenBinding(clockIcon, Layoutable.WidthProperty,
-            GlobalTokenResourceKey.IconSize);
-        TokenResourceBinder.CreateGlobalTokenBinding(clockIcon, PathIcon.NormalFilledBrushProperty,
-            GlobalTokenResourceKey.ColorTextQuaternary);
-        CreateTemplateParentBinding(clockIcon, Visual.IsVisibleProperty,
+        CreateTemplateParentBinding(iconContent, ContentPresenter.ContentProperty, PickerClearUpButton.IconProperty);
+        CreateTemplateParentBinding(iconContent, Visual.IsVisibleProperty,
             PickerClearUpButton.IsInClearModeProperty, BindingMode.Default,
             BoolConverters.Not);
-        layout.Children.Add(clockIcon);
+        layout.Children.Add(iconContent);
     }
 
     private void BuildClearButton(Panel layout, INameScope scope)
@@ -76,8 +74,13 @@ internal class PickerClearUpButtonTheme : BaseControlTheme
             PickerClearUpButton.IsInClearModeProperty);
         layout.Children.Add(clearButton);
     }
-
-    protected override void BuildStyles()
+    
+    protected override void BuildInstanceStyles(Control control)
     {
+        var iconStyle = new Style(selector => selector.Name(InfoIconContentPart).Child().OfType<PathIcon>());
+        iconStyle.Add(PathIcon.WidthProperty, GlobalTokenResourceKey.IconSize);
+        iconStyle.Add(PathIcon.HeightProperty, GlobalTokenResourceKey.IconSize);
+        iconStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorTextQuaternary);
+        control.Styles.Add(iconStyle);
     }
 }
