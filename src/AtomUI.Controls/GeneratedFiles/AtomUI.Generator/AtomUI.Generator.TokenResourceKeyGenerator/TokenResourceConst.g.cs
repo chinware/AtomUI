@@ -267,6 +267,12 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey RightInnerAddOnMargin = new TokenResourceKey("LineEdit.RightInnerAddOnMargin", "AtomUI.Token");
     }
 
+    public static class InfoPickerInputTokenResourceKey
+    {
+        public static readonly TokenResourceKey RangePickerArrowMargin = new TokenResourceKey("InfoPickerInput.RangePickerArrowMargin", "AtomUI.Token");
+        public static readonly TokenResourceKey RangePickerIndicatorThickness = new TokenResourceKey("InfoPickerInput.RangePickerIndicatorThickness", "AtomUI.Token");
+    }
+
     public static class ListBoxTokenResourceKey
     {
         public static readonly TokenResourceKey ContentPadding = new TokenResourceKey("ListBox.ContentPadding", "AtomUI.Token");

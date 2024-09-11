@@ -20,6 +20,7 @@
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.FlyoutPresenterToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.GroupBoxToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.LineEditToken));
+            ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.Internal.InfoPickerInputToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.ListBoxToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.LoadingIndicatorToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.MarqueeLabelToken));

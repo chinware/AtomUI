@@ -25,7 +25,7 @@ internal class TimePickerToken : AbstractControlDesignToken
 
     /// <summary>
     /// 按钮区域对上的外边距
-    /// </summary>
+    /// </summary> 
     public Thickness ButtonsMargin { get; set; }
 
     /// <summary>
