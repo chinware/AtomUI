@@ -59,7 +59,6 @@ internal class RangeTimePickerFlyoutPresenter : FlyoutPresenter
     {
         TimePickerRef       = timePicker;
         HorizontalAlignment = HorizontalAlignment.Left;
-        SetCurrentValue(TimeProperty, DateTime.Now.TimeOfDay);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -74,8 +73,6 @@ internal class RangeTimePickerFlyoutPresenter : FlyoutPresenter
             {
                 TimePickerRef.NotifyConfirmed(_timePickerPresenter.Time);
             };
-
-            SetupTime();
         }
 
         if (_confirmButton is not null)
@@ -95,14 +92,14 @@ internal class RangeTimePickerFlyoutPresenter : FlyoutPresenter
         {
             if (TimePickerRef.RangeStartSelectedTime is not null)
             {
-                _timePickerPresenter!.Time = TimePickerRef.RangeStartSelectedTime.Value;
+                Time = TimePickerRef.RangeStartSelectedTime.Value;
             }
         }
         else if (TimePickerRef.RangeActivatedPart == RangeActivatedPart.End)
         {
             if (TimePickerRef.RangeEndSelectedTime is not null)
             {
-                _timePickerPresenter!.Time = TimePickerRef.RangeEndSelectedTime.Value;
+                Time = TimePickerRef.RangeEndSelectedTime.Value;
             }
         }
     }
@@ -148,8 +145,7 @@ internal class RangeTimePickerFlyoutPresenter : FlyoutPresenter
             }));
         }
 
-        _compositeDisposable.Add(
-            RangeTimePicker.RangeActivatedPartProperty.Changed.Subscribe(HandleRangeActivatedPartChanged));
+        _compositeDisposable.Add(RangeTimePicker.RangeActivatedPartProperty.Changed.Subscribe(HandleRangeActivatedPartChanged));
         SetupTime();
     }
 
@@ -162,6 +158,7 @@ internal class RangeTimePickerFlyoutPresenter : FlyoutPresenter
     {
         base.OnDetachedFromVisualTree(e);
         _compositeDisposable?.Dispose();
-        _compositeDisposable = null;
+        _compositeDisposable       = null;
+        _timePickerPresenter!.Time = TimeSpan.Zero;
     }
 }

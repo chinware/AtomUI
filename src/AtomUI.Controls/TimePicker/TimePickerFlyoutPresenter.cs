@@ -15,7 +15,7 @@ internal class TimePickerFlyoutPresenter : FlyoutPresenter
         TimePicker.SecondIncrementProperty.AddOwner<TimePickerFlyoutPresenter>();
 
     public static readonly StyledProperty<TimeSpan> TimeProperty =
-        AvaloniaProperty.Register<TimePickerPresenter, TimeSpan>(nameof(Time));
+        AvaloniaProperty.Register<TimePickerFlyoutPresenter, TimeSpan>(nameof(Time));
 
     public static readonly StyledProperty<ClockIdentifierType> ClockIdentifierProperty =
         TimePicker.ClockIdentifierProperty.AddOwner<TimePickerFlyoutPresenter>();
@@ -57,7 +57,6 @@ internal class TimePickerFlyoutPresenter : FlyoutPresenter
     {
         TimePickerRef       = timePicker;
         HorizontalAlignment = HorizontalAlignment.Left;
-        SetCurrentValue(TimeProperty, DateTime.Now.TimeOfDay);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -72,10 +71,6 @@ internal class TimePickerFlyoutPresenter : FlyoutPresenter
             {
                 TimePickerRef.NotifyConfirmed(_timePickerPresenter.Time);
             };
-            if (TimePickerRef.DefaultTime is not null)
-            {
-                _timePickerPresenter.Time = TimePickerRef.DefaultTime.Value;
-            }
         }
 
         if (_confirmButton is not null)

@@ -1,6 +1,7 @@
 ﻿using AtomUI.Controls.Internal;
 using AtomUI.Controls.Utils;
 using Avalonia;
+using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.LogicalTree;
 
@@ -81,10 +82,22 @@ public class RangeTimePicker : RangeInfoPickerInput
     
     #endregion
     
+    /// <summary>
+    /// 清除时间选择器的值，不考虑默认值
+    /// </summary>
     public override void Clear()
     {
         base.Clear();
         
+        RangeStartSelectedTime = null;
+        RangeEndSelectedTime   = null;
+    }
+    
+    /// <summary>
+    /// 重置时间选择器的值，当有默认值设置的时候，会将当前的值设置成默认值
+    /// </summary>
+    public void Reset()
+    {
         RangeStartSelectedTime = RangeStartDefaultTime;
         RangeEndSelectedTime = RangeEndDefaultTime;
     }
@@ -155,7 +168,7 @@ public class RangeTimePicker : RangeInfoPickerInput
             {
                 if (RangeStartSelectedTime.HasValue)
                 {
-                    _infoInputBox!.Text = DateTimeUtils.FormatTimeSpan(RangeStartSelectedTime.Value,
+                    Text = DateTimeUtils.FormatTimeSpan(RangeStartSelectedTime.Value,
                         ClockIdentifier == ClockIdentifierType.HourClock12);
                 }
                 else
@@ -167,7 +180,7 @@ public class RangeTimePicker : RangeInfoPickerInput
             {
                 if (RangeEndSelectedTime.HasValue)
                 {
-                    _secondaryInfoInputBox!.Text = DateTimeUtils.FormatTimeSpan(RangeEndSelectedTime.Value,
+                    SecondaryText = DateTimeUtils.FormatTimeSpan(RangeEndSelectedTime.Value,
                         ClockIdentifier == ClockIdentifierType.HourClock12);
                 }
                 else
@@ -217,14 +230,14 @@ public class RangeTimePicker : RangeInfoPickerInput
         {
             if (RangeEndSelectedTime is null)
             {
-                ResetRangeEndTimeValue();
+                ResetRangeStartTimeValue();
             }
         }
         else if (RangeActivatedPart == RangeActivatedPart.End)
         {
             if (RangeStartSelectedTime is null)
             {
-                ResetRangeStartTimeValue();
+                ResetRangeEndTimeValue();
             }
         }
         else
@@ -240,21 +253,21 @@ public class RangeTimePicker : RangeInfoPickerInput
             }
         }
     }
-    
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        base.OnAttachedToLogicalTree(e);
-        if (RangeStartDefaultTime is not null)
+        base.OnApplyTemplate(e);
+        if (RangeStartDefaultTime is not null && RangeStartSelectedTime is null)
         {
             RangeStartSelectedTime = RangeStartDefaultTime;
         }
-
-        if (RangeEndDefaultTime is not null)
+        
+        if (RangeEndDefaultTime is not null && RangeEndSelectedTime is null)
         {
-            RangeEndDefaultTime = RangeEndDefaultTime;
+            RangeEndSelectedTime = RangeEndDefaultTime;
         }
     }
-    
+
     protected override bool ShowClearButtonPredicate()
     {
         return RangeStartSelectedTime is not null || RangeEndSelectedTime is not null;
@@ -284,4 +297,5 @@ public class RangeTimePicker : RangeInfoPickerInput
             SecondaryText = DateTimeUtils.FormatTimeSpan(value, ClockIdentifier == ClockIdentifierType.HourClock12);
         }
     }
+
 }

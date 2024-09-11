@@ -24,6 +24,8 @@ internal class TimePickerFlyout : Flyout
             TimePickerFlyoutPresenter.SecondIncrementProperty);
         BindUtils.RelayBind(TimePickerRef, TimePicker.ClockIdentifierProperty, presenter,
             TimePickerFlyoutPresenter.ClockIdentifierProperty);
+        BindUtils.RelayBind(TimePickerRef, TimePicker.SelectedTimeProperty, presenter,
+            TimePickerFlyoutPresenter.TimeProperty);
 
         CalculateShowArrowEffective();
         SetupArrowPosition(Popup, presenter);

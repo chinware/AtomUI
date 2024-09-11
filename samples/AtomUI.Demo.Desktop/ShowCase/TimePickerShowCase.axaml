@@ -135,7 +135,9 @@
                 <atom:RangeTimePicker Width="320"
                                       Status="Default"
                                       Watermark="Start time"
-                                      SecondaryWatermark="End time" />
+                                      SecondaryWatermark="End time" 
+                                      RangeStartDefaultTime="10:09:20"
+                                      RangeEndDefaultTime="12:12:20"/>
             </StackPanel>
         </desktop:ShowCaseItem>
     </desktop:ShowCasePanel>

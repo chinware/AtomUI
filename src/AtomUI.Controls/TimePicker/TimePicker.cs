@@ -1,6 +1,7 @@
 ﻿using AtomUI.Controls.Internal;
 using AtomUI.Controls.Utils;
 using Avalonia;
+using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 
 namespace AtomUI.Controls;
@@ -98,9 +99,20 @@ public class TimePicker : InfoPickerInput
         }
     }
 
+    /// <summary>
+    /// 清除时间选择器的值，不考虑默认值
+    /// </summary>
     public override void Clear()
     {
         base.Clear();
+        SelectedTime = null;
+    }
+
+    /// <summary>
+    /// 重置时间选择器的值，当有默认值设置的时候，会将当前的值设置成默认值
+    /// </summary>
+    public void Reset()
+    {
         SelectedTime = DefaultTime;
     }
     
@@ -147,5 +159,14 @@ public class TimePicker : InfoPickerInput
         }
 
         return value;
+    }
+    
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        if (DefaultTime is not null && SelectedTime is null)
+        {
+            SelectedTime = DefaultTime;
+        }
     }
 }
