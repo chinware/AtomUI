@@ -50,6 +50,10 @@ AtomUI 是基于 .NET 技术的 Ant Design 实现，致力于将 Ant Design 优�
 Avalonia 11.1.1 及其以上<br>
 PS: AtomUI 目前仅在 Windows 11 平台测试<br>
 
+#### 中文社区
+目前我们暂时只创建微信开发者群的交流方式，下面是二维码，有兴趣的同学可以扫码加入：
+<img src="./docs/images/wechat.jpg" width="200" height="200"/>
+
 #### 当前完成度
 ##### (通用) General
 | Control Name | Status |
