@@ -18,6 +18,12 @@
         <ApplicationManifest>app.manifest</ApplicationManifest>
     </PropertyGroup>
 
+    <PropertyGroup>
+        <IsTrimmable>true</IsTrimmable>
+        <PublishTrimmed>true</PublishTrimmed>
+        <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+    </PropertyGroup>
+
     <ItemGroup>
         <PackageReference Include="Avalonia"/>
         <PackageReference Include="Avalonia.Desktop"/>
