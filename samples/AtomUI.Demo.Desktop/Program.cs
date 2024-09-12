@@ -18,18 +18,25 @@ internal class Program
     [STAThread]
     public static void Main(string[] args)
     {
-        BuildAvaloniaApp()
-            .With(new FontManagerOptions
-            {
-                FontFallbacks = new[]
+        try
+        {
+            BuildAvaloniaApp()
+                .With(new FontManagerOptions
                 {
+                    FontFallbacks = new[]
+                    {
                     new FontFallback
                     {
                         FontFamily = new FontFamily("Microsoft YaHei")
                     }
-                }
-            })
-            .StartWithClassicDesktopLifetime(args);
+                    }
+                })
+                .StartWithClassicDesktopLifetime(args);
+        }
+        catch (Exception ex)
+        {
+            File.WriteAllText("error.log", ex.ToString());
+        }
     }
 
     public static AppBuilder BuildAvaloniaApp()
