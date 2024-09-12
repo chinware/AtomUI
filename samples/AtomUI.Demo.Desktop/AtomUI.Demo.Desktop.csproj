@@ -17,15 +17,13 @@
     <ItemGroup>
         <TrimmerRootDescriptor Include="Roots.xml" />
     </ItemGroup>
-
-
-    <PropertyGroup>
+    
+    <PropertyGroup Condition="'$(Configuration)' == 'Release'">
         <IsTrimmable>true</IsTrimmable>
         <PublishTrimmed>true</PublishTrimmed>
         <PublishAot>true</PublishAot>
     </PropertyGroup>
-
-
+    
     <PropertyGroup>
         <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
         <ApplicationManifest>app.manifest</ApplicationManifest>
