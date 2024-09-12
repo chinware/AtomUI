@@ -18,7 +18,7 @@
         <desktop:ShowCaseItem
             Title="Basic"
             Description="Click DatePicker, and then we could select or input a date in panel.">
-            <calendarpresenter:Calendar />
+            <calendarpresenter:Calendar SelectedDate="2008-9-3"/>
         </desktop:ShowCaseItem>
     </desktop:ShowCasePanel>
 </UserControl>

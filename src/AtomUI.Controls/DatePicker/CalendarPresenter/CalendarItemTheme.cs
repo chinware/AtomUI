@@ -271,9 +271,6 @@ internal class CalendarItemTheme : BaseControlTheme
 
     private Grid BuildMonthViewItem(string name)
     {
-        var dayTitleRowDef = new RowDefinition();
-        TokenResourceBinder.CreateTokenBinding(dayTitleRowDef, RowDefinition.HeightProperty,
-            DatePickerTokenResourceKey.DayTitleHeight);
         var monthViewLayout = new Grid
         {
             Name                = name,
@@ -281,7 +278,7 @@ internal class CalendarItemTheme : BaseControlTheme
             IsVisible           = false,
             RowDefinitions = new RowDefinitions
             {
-                dayTitleRowDef,
+                new(GridLength.Auto),
                 new(GridLength.Star),
                 new(GridLength.Star),
                 new(GridLength.Star),

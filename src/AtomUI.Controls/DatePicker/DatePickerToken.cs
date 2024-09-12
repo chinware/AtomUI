@@ -94,7 +94,7 @@ internal class DatePickerToken : AbstractControlDesignToken
     /// <summary>
     /// 星期的高度
     /// </summary>
-    public GridLength DayTitleHeight { get; set; }
+    public double DayTitleHeight { get; set; }
 
     /// <summary>
     /// Header 头外边距
@@ -131,7 +131,7 @@ internal class DatePickerToken : AbstractControlDesignToken
         ItemPanelMinWidth      = 225;
         RangeItemPanelMinWidth = 260;
         ItemPanelMinHeight     = 240;
-        DayTitleHeight         = new GridLength(40, GridUnitType.Pixel);
+        DayTitleHeight         = _globalToken.SeedToken.ControlHeight;
         HeaderMargin           = new Thickness(0, 0, 0, _globalToken.MarginSM);
         CellLineHeight         = CellHeight - 2; // 不知道为啥设置成一样，或者不设置文字有些靠下
         RangeCalendarSpacing   = 20;

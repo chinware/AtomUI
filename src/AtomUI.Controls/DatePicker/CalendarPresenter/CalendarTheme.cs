@@ -31,11 +31,7 @@ internal class CalendarTheme : BaseControlTheme
                 Name         = FramePart,
                 ClipToBounds = true
             };
-
-            CreateTemplateParentBinding(frame, Border.BorderBrushProperty, Calendar.BorderBrushProperty);
-            CreateTemplateParentBinding(frame, Border.BorderThicknessProperty,
-                Calendar.BorderThicknessProperty);
-            CreateTemplateParentBinding(frame, Border.CornerRadiusProperty, Calendar.CornerRadiusProperty);
+            
             CreateTemplateParentBinding(frame, Border.BackgroundProperty, Calendar.BackgroundProperty);
             CreateTemplateParentBinding(frame, Border.PaddingProperty, Calendar.PaddingProperty);
             CreateTemplateParentBinding(frame, Border.MinWidthProperty, Calendar.MinWidthProperty);
@@ -60,8 +56,6 @@ internal class CalendarTheme : BaseControlTheme
         base.BuildStyles();
         
         var commonStyle = new Style(selector => selector.Nesting());
-        commonStyle.Add(Calendar.BorderBrushProperty, GlobalTokenResourceKey.ColorBorder);
-        commonStyle.Add(Calendar.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadius);
         commonStyle.Add(Calendar.BackgroundProperty, GlobalTokenResourceKey.ColorBgContainer);
         commonStyle.Add(Calendar.PaddingProperty, DatePickerTokenResourceKey.PanelContentPadding);
         commonStyle.Add(Calendar.HorizontalAlignmentProperty, HorizontalAlignment.Left);

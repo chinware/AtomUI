@@ -1,7 +1,4 @@
 ﻿using System.Diagnostics;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
-using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -13,6 +10,15 @@ using Avalonia.Layout;
 using Avalonia.Media;
 
 namespace AtomUI.Controls.CalendarPresenter;
+
+public class DateSelectedEventArgs : RoutedEventArgs
+{
+    public DateTime? Value { get; }
+    public DateSelectedEventArgs(DateTime? value)
+    {
+        Value = value;
+    }
+}
 
 [TemplatePart(RangeCalendarTheme.CalendarItemPart, typeof(CalendarItem))]
 [TemplatePart(RangeCalendarTheme.RootPart, typeof(Panel))]
@@ -242,6 +248,16 @@ public class Calendar : TemplatedControl
     /// property is changed.
     /// </summary>
     public event EventHandler<CalendarModeChangedEventArgs>? DisplayModeChanged;
+    
+    /// <summary>
+    /// 日期选中事件
+    /// </summary>
+    public event EventHandler<DateSelectedEventArgs>? DateSelected;
+    
+    /// <summary>
+    /// 当前 Pointer 选中的日期变化事件
+    /// </summary>
+    public event EventHandler<DateSelectedEventArgs>? HoverDateChanged;
     
     #endregion
 
@@ -858,12 +874,12 @@ public class Calendar : TemplatedControl
     /// If the day is a trailing day, Update the DisplayDate.
     /// </summary>
     /// <param name="selectedDate">Inherited code: Requires comment.</param>
-    internal void OnDayClick(DateTime selectedDate)
+    internal virtual void NotifyDayClick(DateTime selectedDate)
     {
         Debug.Assert(DisplayMode == CalendarMode.Month, "DisplayMode should be Month!");
         var i = DateTimeHelper.CompareYearMonth(selectedDate, DisplayDateInternal);
 
-        if (i > 1)
+        if (i > 0)
         {
             OnNextMonthClick();
         }
@@ -871,6 +887,16 @@ public class Calendar : TemplatedControl
         {
             OnPreviousMonthClick();
         }
+    }
+    
+    internal void NotifyRangeDateSelected()
+    {
+        DateSelected?.Invoke(this, new DateSelectedEventArgs(SelectedDate));
+    }
+    
+    internal void NotifyHoverDateChanged(DateTime? hoverDate)
+    {
+        HoverDateChanged?.Invoke(this, new DateSelectedEventArgs(hoverDate));
     }
 
     private void OnMonthClick()
@@ -1379,6 +1405,11 @@ public class Calendar : TemplatedControl
     {
         base.OnApplyTemplate(e);
         CalendarItem = e.NameScope.Find<CalendarItem>(RangeCalendarTheme.CalendarItemPart);
+
+        if (SelectedDate is not null)
+        {
+            SetCurrentValue(DisplayDateProperty, SelectedDate);
+        }
     
         SelectedMonth = DisplayDate;
         SelectedYear  = DisplayDate;
@@ -1388,13 +1419,58 @@ public class Calendar : TemplatedControl
             CalendarItem.Owner = this;
         }
     }
-
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    
+    internal virtual void UpdateHighlightDays()
     {
-        base.OnAttachedToVisualTree(e);
-        TokenResourceBinder.CreateGlobalTokenBinding(this, BorderThicknessProperty,
-            GlobalTokenResourceKey.BorderThickness,
-            BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this));
+        Debug.Assert(CalendarItem is not null);
+        // This assumes a contiguous set of dates:
+        if (CalendarItem.MonthView is not null)
+        {
+            var monthView = CalendarItem.MonthView;
+            var count     = monthView.Children.Count;
+            for (var i = 0; i < count; i++)
+            {
+                if (monthView.Children[i] is CalendarDayButton b)
+                {
+                    var d = b.DataContext as DateTime?;
+                    if (d.HasValue)
+                    {
+                        b.IsSelected = SelectedDate.HasValue && DateTimeHelper.CompareDays(SelectedDate.Value, d.Value) == 0;
+
+                        if (b.IsSelected)
+                        {
+                            if (FocusButton != null)
+                            {
+                                FocusButton.IsCurrent = false;
+                            }
+                        
+                            b.IsCurrent = HasFocusInternal;
+                            FocusButton = b;
+                        }
+                    }
+                    else
+                    {
+                        b.IsSelected = false;
+                    }
+                }
+            }
+        }
+    }
+    
+    internal virtual void UnHighlightDays()
+    {
+        Debug.Assert(CalendarItem is not null);
+        if (CalendarItem.MonthView is not null)
+        {
+            var monthView = CalendarItem.MonthView;
+            var count     = monthView.Children.Count;
+            for (var i = 0; i < count; i++)
+            {
+                if (monthView.Children[i] is CalendarDayButton b)
+                {
+                    b.IsSelected = false;
+                }
+            }
+        }
     }
 }

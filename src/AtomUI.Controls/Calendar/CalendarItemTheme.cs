@@ -1,5 +1,4 @@
 ﻿using AtomUI.Theme;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia.Controls;
@@ -292,6 +291,7 @@ internal class DayTitleTemplate : ITemplate<Control>
             VerticalAlignment   = VerticalAlignment.Center
         };
         textBlock.Bind(TextBlock.TextProperty, new Binding());
+        TokenResourceBinder.CreateTokenBinding(textBlock, TextBlock.HeightProperty, DatePickerTokenResourceKey.DayTitleHeight);
         return textBlock;
     }
 

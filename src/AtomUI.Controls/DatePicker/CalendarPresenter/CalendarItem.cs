@@ -979,10 +979,7 @@ internal class CalendarItem : TemplatedControl
                     IsEnabled: true, IsBlackout: false, DataContext: DateTime selectedDate
                 } b)
             {
-                // Owner.HoverDateTime = selectedDate;
-                // // Update the States of the buttons
-                // Owner.UpdateHighlightDays();
-                // Owner.NotifyHoverDateChanged(selectedDate);
+                Owner.NotifyHoverDateChanged(selectedDate);
             }
         }
     }
@@ -1000,22 +997,9 @@ internal class CalendarItem : TemplatedControl
             {
                 if (b.IsEnabled && !b.IsBlackout && b.DataContext is DateTime selectedDate)
                 {
-                    // Set the start or end of the selection
-                    // range
-                    // if (Owner.FixedRangeStart)
-                    // {
-                    //     Owner.SelectedRangeStartDate = selectedDate;
-                    // }
-                    // else
-                    // {
-                    //     Owner.SelectedRangeEndDate = selectedDate;
-                    // }
-                    //
-                    // Owner.UpdateHighlightDays();
-                    // if (Owner.SelectedRangeStartDate is not null && Owner.SelectedRangeEndDate is not null)
-                    // {
-                    //     Owner.NotifyRangeDateSelected();
-                    // }
+                    Owner.SelectedDate = selectedDate;
+                    Owner.UpdateHighlightDays();
+                    Owner.NotifyRangeDateSelected();
                 }
             }
         }
@@ -1037,7 +1021,7 @@ internal class CalendarItem : TemplatedControl
                 // be able to switch months
                 if (b.IsInactive)
                 {
-                    Owner.OnDayClick(selectedDate);
+                    Owner.NotifyDayClick(selectedDate);
                 }
             }
         }
