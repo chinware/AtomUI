@@ -1,14 +1,14 @@
 ﻿using System.Collections.ObjectModel;
 using Avalonia.Threading;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Controls.CalendarPresenter;
 
-public sealed class RangeCalendarBlackoutDatesCollection : ObservableCollection<CalendarDateRange>
+public sealed class CalendarBlackoutDatesCollection : ObservableCollection<CalendarDateRange>
 {
    /// <summary>
    /// The Calendar whose dates this object represents.
    /// </summary>
-   private readonly RangeCalendar _owner;
+   private readonly Calendar _owner;
 
    /// <summary>
    /// Initializes a new instance of the
@@ -19,7 +19,7 @@ public sealed class RangeCalendarBlackoutDatesCollection : ObservableCollection<
    /// The <see cref="T:Avalonia.Controls.Calendar" /> whose dates
    /// this object represents.
    /// </param>
-   public RangeCalendarBlackoutDatesCollection(RangeCalendar owner)
+   public CalendarBlackoutDatesCollection(Calendar owner)
     {
         _owner = owner ?? throw new ArgumentNullException(nameof(owner));
     }
@@ -190,10 +190,8 @@ public sealed class RangeCalendarBlackoutDatesCollection : ObservableCollection<
 
     private bool IsValid(CalendarDateRange item)
     {
-        if ((_owner.SelectedRangeStartDate is not null &&
-             DateTimeHelper.InRange(_owner.SelectedRangeStartDate.Value, item)) ||
-            (_owner.SelectedRangeEndDate is not null &&
-             DateTimeHelper.InRange(_owner.SelectedRangeEndDate.Value, item)))
+        if (_owner.SelectedDate is not null &&
+             DateTimeHelper.InRange(_owner.SelectedDate.Value, item))
         {
             return false;
         }

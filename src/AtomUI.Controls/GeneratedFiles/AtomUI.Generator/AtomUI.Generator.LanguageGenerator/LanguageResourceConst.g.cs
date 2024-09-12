@@ -1,5 +1,13 @@
 ﻿using AtomUI.Theme;
 
+namespace AtomUI.Controls.DatePickerLang
+{
+    public static class DatePickerLangResourceKey
+    {
+        public static readonly LanguageResourceKey Today = new LanguageResourceKey("DatePicker.Today", "AtomUI.Lang");
+    }
+}
+
 namespace AtomUI.Controls.Localization
 {
     public static class CommonLangResourceKey

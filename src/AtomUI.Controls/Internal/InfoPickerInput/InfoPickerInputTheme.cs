@@ -47,13 +47,13 @@ internal class InfoPickerInputTheme : BaseControlTheme
         };
         pickerInnerBox.RegisterInNameScope(scope);
         CreateTemplateParentBinding(pickerInnerBox, AddOnDecoratedInnerBox.LeftAddOnContentProperty,
-            RangeTimePicker.InnerLeftContentProperty);
+            InfoPickerInput.InnerLeftContentProperty);
         CreateTemplateParentBinding(pickerInnerBox, AddOnDecoratedInnerBox.StyleVariantProperty,
-            RangeTimePicker.StyleVariantProperty);
+            InfoPickerInput.StyleVariantProperty);
         CreateTemplateParentBinding(pickerInnerBox, AddOnDecoratedInnerBox.StatusProperty,
-            RangeTimePicker.StatusProperty);
+            InfoPickerInput.StatusProperty);
         CreateTemplateParentBinding(pickerInnerBox, AddOnDecoratedInnerBox.SizeTypeProperty,
-            RangeTimePicker.SizeTypeProperty);
+            InfoPickerInput.SizeTypeProperty);
 
         var clearUpButton = new PickerClearUpButton()
         {
@@ -89,14 +89,16 @@ internal class InfoPickerInputTheme : BaseControlTheme
             Name      = DecoratedBoxPart,
             Focusable = true
         };
+        CreateTemplateParentBinding(decoratedBox, AddOnDecoratedBox.MinWidthProperty,
+            InfoPickerInput.MinWidthProperty);
         CreateTemplateParentBinding(decoratedBox, AddOnDecoratedBox.StyleVariantProperty,
-            RangeTimePicker.StyleVariantProperty);
-        CreateTemplateParentBinding(decoratedBox, AddOnDecoratedBox.SizeTypeProperty, RangeTimePicker.SizeTypeProperty);
-        CreateTemplateParentBinding(decoratedBox, AddOnDecoratedBox.StatusProperty, RangeTimePicker.StatusProperty);
+            InfoPickerInput.StyleVariantProperty);
+        CreateTemplateParentBinding(decoratedBox, AddOnDecoratedBox.SizeTypeProperty, InfoPickerInput.SizeTypeProperty);
+        CreateTemplateParentBinding(decoratedBox, AddOnDecoratedBox.StatusProperty, InfoPickerInput.StatusProperty);
         CreateTemplateParentBinding(decoratedBox, AddOnDecoratedBox.LeftAddOnProperty,
-            RangeTimePicker.LeftAddOnProperty);
+            InfoPickerInput.LeftAddOnProperty);
         CreateTemplateParentBinding(decoratedBox, AddOnDecoratedBox.RightAddOnProperty,
-            RangeTimePicker.RightAddOnProperty);
+            InfoPickerInput.RightAddOnProperty);
         decoratedBox.RegisterInNameScope(scope);
         return decoratedBox;
     }

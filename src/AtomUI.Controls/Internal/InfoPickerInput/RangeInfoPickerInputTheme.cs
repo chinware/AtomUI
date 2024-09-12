@@ -51,12 +51,12 @@ internal class RangeInfoPickerInputTheme : InfoPickerInputTheme
         var rangeStartTextBox = BuildPickerTextBox(InfoInputBoxPart);
         CreateTemplateParentBinding(rangeStartTextBox, TextBox.TextProperty, RangeInfoPickerInput.TextProperty);
         CreateTemplateParentBinding(rangeStartTextBox, TextBox.WatermarkProperty,
-            RangeTimePicker.WatermarkProperty);
+            RangeInfoPickerInput.WatermarkProperty);
 
         var rangeEndTextBox = BuildPickerTextBox(SecondaryInfoInputBoxPart);
         CreateTemplateParentBinding(rangeEndTextBox, TextBox.TextProperty, RangeInfoPickerInput.SecondaryTextProperty);
         CreateTemplateParentBinding(rangeEndTextBox, TextBox.WatermarkProperty,
-            RangeTimePicker.SecondaryWatermarkProperty);
+            RangeInfoPickerInput.SecondaryWatermarkProperty);
 
         rangeStartTextBox.RegisterInNameScope(scope);
         rangeEndTextBox.RegisterInNameScope(scope);
@@ -108,7 +108,7 @@ internal class RangeInfoPickerInputTheme : InfoPickerInputTheme
     {
         {
             var indicatorStyle = new Style(selector => selector.Nesting().Template().Name(RangePickerIndicatorPart));
-            indicatorStyle.Add(Layoutable.HeightProperty, TimePickerTokenResourceKey.RangePickerIndicatorThickness);
+            indicatorStyle.Add(Layoutable.HeightProperty, InfoPickerInputTokenResourceKey.RangePickerIndicatorThickness);
             commonStyle.Add(indicatorStyle);
         }
 

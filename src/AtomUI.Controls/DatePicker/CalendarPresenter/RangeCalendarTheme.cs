@@ -8,10 +8,10 @@ using Avalonia.Controls.Templates;
 using Avalonia.Layout;
 using Avalonia.Styling;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Controls.CalendarPresenter;
 
 [ControlThemeProvider]
-public class RangeCalendarTheme : BaseControlTheme
+internal class RangeCalendarTheme : BaseControlTheme
 {
     public const string RootPart = "PART_Root";
     public const string CalendarItemPart = "PART_CalendarItem";
@@ -69,8 +69,6 @@ public class RangeCalendarTheme : BaseControlTheme
         commonStyle.Add(TemplatedControl.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadius);
         commonStyle.Add(TemplatedControl.BackgroundProperty, GlobalTokenResourceKey.ColorBgContainer);
         commonStyle.Add(TemplatedControl.PaddingProperty, DatePickerTokenResourceKey.PanelContentPadding);
-        commonStyle.Add(Layoutable.MinWidthProperty, DatePickerTokenResourceKey.ItemPanelMinWidth);
-        commonStyle.Add(Layoutable.MinHeightProperty, DatePickerTokenResourceKey.ItemPanelMinHeight);
         Add(commonStyle);
     }
 }

@@ -36,6 +36,9 @@ internal class Program
         catch (Exception ex)
         {
             File.WriteAllText("error.log", ex.ToString());
+#if DEBUG
+            throw;
+#endif
         }
     }
 

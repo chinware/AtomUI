@@ -11,9 +11,6 @@
         <desktop:ShowCaseItem Description="The simplest usage for Calendar." Title="Basic">
             <atom:Calendar />
         </desktop:ShowCaseItem>
-
-        <desktop:ShowCaseItem Description="The simplest usage for Calendar." Title="Range Calendar">
-            <atom:RangeCalendar FixedRangeStart="True" SelectedRangeStartDate="2024-9-10" SelectedRangeEndDate="2024-9-12"/>
-        </desktop:ShowCaseItem>
+        
     </desktop:ShowCasePanel>
 </UserControl>

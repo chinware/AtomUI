@@ -11,7 +11,7 @@ using Avalonia.Data.Converters;
 using Avalonia.Layout;
 using Avalonia.Styling;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Controls.CalendarPresenter;
 
 [ControlThemeProvider]
 internal class RangeCalendarItemTheme : BaseControlTheme

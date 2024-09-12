@@ -29,8 +29,14 @@
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.ComboBoxItemTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.ComboBoxSpinnerInnerBoxTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.ComboBoxTheme());
-            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.RangeCalendarItemTheme());
-            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.RangeCalendarTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.CalendarPresenter.CalendarButtonTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.CalendarPresenter.CalendarDayButtonTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.CalendarPresenter.CalendarItemTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.CalendarPresenter.CalendarTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.CalendarPresenter.RangeCalendarItemTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.CalendarPresenter.RangeCalendarTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.DatePickerPresenterTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.DatePickerTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.EmptyIndicatorTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.ExpanderTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.MenuFlyoutPresenterTheme());

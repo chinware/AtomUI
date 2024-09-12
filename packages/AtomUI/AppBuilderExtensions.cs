@@ -23,9 +23,9 @@ public static class AtomUIExtensions
         builder.AfterSetup(builder =>
         {
             var themeManager = ThemeManager.Current;
+            themeManager.CultureInfo = new CultureInfo(LanguageCode.en_US);
             themeManager.LoadTheme(ThemeManager.DEFAULT_THEME_ID);
             themeManager.SetActiveTheme(ThemeManager.DEFAULT_THEME_ID);
-            themeManager.CultureInfo = new CultureInfo(LanguageCode.en_US);
             builder.Instance!.Styles.Add(themeManager);
         });
         return builder;

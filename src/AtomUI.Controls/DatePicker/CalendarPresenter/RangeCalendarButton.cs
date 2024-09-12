@@ -1,4 +1,4 @@
-﻿namespace AtomUI.Controls;
+﻿namespace AtomUI.Controls.CalendarPresenter;
 
 internal sealed class RangeCalendarButton : BaseCalendarButton
 {

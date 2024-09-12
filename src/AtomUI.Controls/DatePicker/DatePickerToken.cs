@@ -65,6 +65,11 @@ internal class DatePickerToken : AbstractControlDesignToken
     /// 日历项最小宽度
     /// </summary>
     public double ItemPanelMinWidth { get; set; }
+    
+    /// <summary>
+    /// 两个月日历项最小宽度
+    /// </summary>
+    public double RangeItemPanelMinWidth { get; set; }
 
     /// <summary>
     /// 日历项最小高度
@@ -101,28 +106,35 @@ internal class DatePickerToken : AbstractControlDesignToken
     /// </summary>
     public double RangeCalendarSpacing { get; set; }
     
+    /// <summary>
+    /// 日期选择器最小的宽度
+    /// </summary>
+    public double PickerInputMinWidth { get; set; }
+    
     internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
 
         var colorPrimary = _globalToken.ColorToken.ColorPrimaryToken.ColorPrimary;
 
-        CellHoverBg           = _globalToken.ControlItemBgHover;
-        CellActiveWithRangeBg = _globalToken.ControlItemBgActive;
-        CellHoverWithRangeBg  = colorPrimary.Lighten(35);
-        CellRangeBorderColor  = colorPrimary.Lighten(20);
-        CellBgDisabled        = _globalToken.ColorBgContainerDisabled;
-        CellWidth             = _globalToken.HeightToken.ControlHeightSM;
-        CellHeight            = _globalToken.HeightToken.ControlHeightSM;
-        TextHeight            = _globalToken.HeightToken.ControlHeightLG;
-        WithoutTimeCellHeight = _globalToken.HeightToken.ControlHeightLG * 1.65;
-        CellMargin            = new Thickness(_globalToken.MarginXXS);
-        PanelContentPadding   = new Thickness(_globalToken.PaddingSM);
-        ItemPanelMinWidth     = 260;
-        ItemPanelMinHeight    = 290;
-        DayTitleHeight        = new GridLength(40, GridUnitType.Pixel);
-        HeaderMargin          = new Thickness(0, 0, 0, _globalToken.MarginXS);
-        CellLineHeight        = CellHeight - 2; // 不知道为啥设置成一样，或者不设置文字有些靠下
-        RangeCalendarSpacing  = 20;
+        CellHoverBg            = _globalToken.ControlItemBgHover;
+        CellActiveWithRangeBg  = _globalToken.ControlItemBgActive;
+        CellHoverWithRangeBg   = colorPrimary.Lighten(35);
+        CellRangeBorderColor   = colorPrimary.Lighten(20);
+        CellBgDisabled         = _globalToken.ColorBgContainerDisabled;
+        CellWidth              = _globalToken.HeightToken.ControlHeightSM;
+        CellHeight             = _globalToken.HeightToken.ControlHeightSM;
+        TextHeight             = _globalToken.HeightToken.ControlHeightLG;
+        WithoutTimeCellHeight  = _globalToken.HeightToken.ControlHeightLG * 1.65;
+        CellMargin             = new Thickness(_globalToken.MarginXXS);
+        PanelContentPadding    = new Thickness(_globalToken.PaddingSM);
+        ItemPanelMinWidth      = 225;
+        RangeItemPanelMinWidth = 260;
+        ItemPanelMinHeight     = 240;
+        DayTitleHeight         = new GridLength(40, GridUnitType.Pixel);
+        HeaderMargin           = new Thickness(0, 0, 0, _globalToken.MarginSM);
+        CellLineHeight         = CellHeight - 2; // 不知道为啥设置成一样，或者不设置文字有些靠下
+        RangeCalendarSpacing   = 20;
+        PickerInputMinWidth    = 150;
     }
 }
