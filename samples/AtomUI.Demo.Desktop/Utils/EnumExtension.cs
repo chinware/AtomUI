@@ -21,6 +21,6 @@ public class EnumExtension : MarkupExtension
         // Array can not perform well for Items of ListBox.
         // Version : 11.0.0-preview4
         // By nlb at 2023.3.28.
-        return Enum.GetValues(Type).OfType<object>().ToList();
+        return Enum.GetValuesAsUnderlyingType(Type).OfType<object>().ToList();
     }
 }
