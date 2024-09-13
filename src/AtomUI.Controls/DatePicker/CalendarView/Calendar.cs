@@ -887,7 +887,7 @@ public class Calendar : TemplatedControl
     {
         Debug.Assert(DisplayMode == CalendarMode.Month, "DisplayMode should be Month!");
         var i = DateTimeHelper.CompareYearMonth(selectedDate, DisplayDateInternal);
-
+   
         if (i > 0)
         {
             OnNextMonthClick();
@@ -898,7 +898,7 @@ public class Calendar : TemplatedControl
         }
     }
     
-    internal void NotifyRangeDateSelected()
+    internal void NotifyDateSelected()
     {
         DateSelected?.Invoke(this, new DateSelectedEventArgs(SelectedDate));
     }
@@ -1479,6 +1479,28 @@ public class Calendar : TemplatedControl
                 {
                     b.IsSelected = false;
                 }
+            }
+        }
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == SelectedDateProperty)
+        {
+            UpdateHighlightDays();
+        }
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        if (SelectedDate is not null)
+        {
+            if (DisplayDate.Year != SelectedDate.Value.Year ||
+                DisplayDate.Month != SelectedDate.Value.Month)
+            {
+                DisplayDate = SelectedDate.Value;
             }
         }
     }

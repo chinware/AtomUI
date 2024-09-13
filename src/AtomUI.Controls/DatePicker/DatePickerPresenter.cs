@@ -6,6 +6,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
+using Avalonia.Interactivity;
 using Avalonia.Layout;
 using PickerCalendar = AtomUI.Controls.CalendarView.Calendar;
 
@@ -25,10 +26,10 @@ internal class DatePickerPresenter : PickerPresenterBase
     #region 公共属性定义
 
     public static readonly StyledProperty<bool> IsNeedConfirmProperty =
-        AvaloniaProperty.Register<DatePickerPresenter, bool>(nameof(IsNeedConfirm));
+        DatePicker.IsNeedConfirmProperty.AddOwner<DatePickerPresenter>();
     
     public static readonly StyledProperty<bool> IsShowNowProperty =
-        AvaloniaProperty.Register<DatePickerPresenter, bool>(nameof(IsShowNow));
+        DatePicker.IsShowNowProperty.AddOwner<DatePickerPresenter>();
     
     public static readonly StyledProperty<bool> IsShowTimeProperty =
         DatePicker.IsShowTimeProperty.AddOwner<DatePickerPresenter>();
@@ -110,6 +111,7 @@ internal class DatePickerPresenter : PickerPresenterBase
                 ChoosingStatueChanged?.Invoke(this, new ChoosingStatusEventArgs(args.GetNewValue<bool>()));
             });
         }
+     
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
@@ -126,6 +128,12 @@ internal class DatePickerPresenter : PickerPresenterBase
             change.Property == IsShowTimeProperty)
         {
             SetupButtonStatus();
+        } else if (change.Property == SelectedDateTimeProperty)
+        {
+            if (_confirmButton is not null)
+            {
+                _confirmButton.IsEnabled = SelectedDateTime is not null;
+            }
         }
     }
 
@@ -140,6 +148,57 @@ internal class DatePickerPresenter : PickerPresenterBase
         if (_calendarView is not null)
         {
             _calendarView.HoverDateChanged += HandleCalendarViewDateHoverChanged;
+            _calendarView.DateSelected += HandleCalendarViewDateSelected;
+        }
+
+        if (_todayButton is not null)
+        {
+            _todayButton.Click += HandleTodayButtonClicked;
+        }
+
+        if (_nowButton is not null)
+        {
+            _nowButton.Click += HandleNowButtonClicked;
+        }
+
+        if (_confirmButton is not null)
+        {
+            _confirmButton.Click     += HandleConfirmButtonClicked;
+            _confirmButton.IsEnabled =  SelectedDateTime is not null;
+        }
+    }
+
+    private void HandleTodayButtonClicked(object? sender, RoutedEventArgs args)
+    {
+        SelectedDateTime = DateTime.Today;
+        if (_calendarView is not null)
+        {
+            _calendarView.DisplayDate = DateTime.Today;
+        }
+        if (!IsNeedConfirm)
+        {
+            OnConfirmed();
+        }
+    }
+    
+    private void HandleNowButtonClicked(object? sender, RoutedEventArgs args)
+    {
+        SelectedDateTime = DateTime.Now;
+        if (_calendarView is not null)
+        {
+            _calendarView.DisplayDate = DateTime.Now;
+        }
+        if (!IsNeedConfirm)
+        {
+            OnConfirmed();
+        }
+    }
+    
+    private void HandleConfirmButtonClicked(object? sender, RoutedEventArgs args)
+    {
+        if (SelectedDateTime is not null)
+        {
+            OnConfirmed();
         }
     }
 
@@ -147,12 +206,31 @@ internal class DatePickerPresenter : PickerPresenterBase
     {
         // 需要组合日期和时间
         // 暂时没实现
-        DateTime? hoverDateTime = default;
-        if (args.Value is not null)
-        {
-            hoverDateTime = args.Value.Value.Date;
-        }
+        var hoverDateTime = CollectDateTime(args.Value);
         HoverDateTimeChanged?.Invoke(this, new DateSelectedEventArgs(hoverDateTime));
+    }
+
+    private void HandleCalendarViewDateSelected(object? sender, DateSelectedEventArgs args)
+    {
+        if (!IsNeedConfirm)
+        {
+            OnConfirmed();
+        }
+    }
+
+    private DateTime? CollectDateTime(DateTime? date, TimeSpan? timeSpan = null)
+    {
+        DateTime? hoverDateTime = default;
+        if (date is not null)
+        {
+            hoverDateTime = date?.Date;
+            if (timeSpan is not null)
+            {
+                hoverDateTime = hoverDateTime?.Add(timeSpan.Value);
+            }
+        }
+
+        return hoverDateTime;
     }
 
     private void SetupButtonStatus()
@@ -201,11 +279,14 @@ internal class DatePickerPresenter : PickerPresenterBase
 
     protected override void OnConfirmed()
     {
+        ChoosingStatueChanged?.Invoke(this, new ChoosingStatusEventArgs(false));
         base.OnConfirmed();
+        SelectedDateTime = CollectDateTime(_calendarView?.SelectedDate);
     }
 
     protected override void OnDismiss()
     {
         base.OnDismiss();
+        SelectedDateTime = null;
     }
 }

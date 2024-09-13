@@ -1,7 +1,9 @@
 ﻿using AtomUI.Controls.Internal;
+using AtomUI.Data;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Threading;
 
 namespace AtomUI.Controls;
 
@@ -22,6 +24,12 @@ public class DatePicker : InfoPickerInput
     
     public static readonly StyledProperty<bool> IsShowTimeProperty =
         AvaloniaProperty.Register<DatePicker, bool>(nameof(IsShowTime));
+    
+    public static readonly StyledProperty<bool> IsNeedConfirmProperty =
+        AvaloniaProperty.Register<DatePicker, bool>(nameof(IsNeedConfirm));
+    
+    public static readonly StyledProperty<bool> IsShowNowProperty =
+        AvaloniaProperty.Register<DatePicker, bool>(nameof(IsShowNow), true);
 
     public DateTime? SelectedDateTime
     {
@@ -45,6 +53,18 @@ public class DatePicker : InfoPickerInput
     {
         get => GetValue(IsShowTimeProperty);
         set => SetValue(IsShowTimeProperty, value);
+    }
+    
+    public bool IsNeedConfirm
+    {
+        get => GetValue(IsNeedConfirmProperty);
+        set => SetValue(IsNeedConfirmProperty, value);
+    }
+    
+    public bool IsShowNow
+    {
+        get => GetValue(IsShowNowProperty);
+        set => SetValue(IsShowNowProperty, value);
     }
     
     #endregion
@@ -128,6 +148,17 @@ public class DatePicker : InfoPickerInput
                 Text = null;
             }
         };
+
+        presenter.Confirmed += (sender, args) =>
+        {
+            SelectedDateTime = presenter.SelectedDateTime;
+            Dispatcher.UIThread.Post(() => ClosePickerFlyout());
+        };
+        
+        BindUtils.RelayBind(this, SelectedDateTimeProperty, presenter, DatePickerPresenter.SelectedDateTimeProperty);
+        BindUtils.RelayBind(this, IsNeedConfirmProperty, presenter, DatePickerPresenter.IsNeedConfirmProperty);
+        BindUtils.RelayBind(this, IsShowNowProperty, presenter, DatePickerPresenter.IsShowNowProperty);
+        BindUtils.RelayBind(this, IsShowTimeProperty, presenter, DatePickerPresenter.IsShowTimeProperty);
     }
 
     private void ClearHoverSelectedInfo()
@@ -144,5 +175,20 @@ public class DatePicker : InfoPickerInput
         {
             SelectedDateTime = DefaultDateTime;
         }
+        Text = SelectedDateTime?.ToString(EffectiveFormat());
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == SelectedDateTimeProperty)
+        {
+            Text = SelectedDateTime?.ToString(EffectiveFormat());
+        }
+    }
+
+    protected override bool ShowClearButtonPredicate()
+    {
+        return SelectedDateTime is not null;
     }
 }

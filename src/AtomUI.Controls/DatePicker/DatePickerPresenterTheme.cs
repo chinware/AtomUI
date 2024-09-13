@@ -62,8 +62,9 @@ internal class DatePickerPresenterTheme : BaseControlTheme
     {
         var calendarView = new PickerCalendar()
         {
-            Name = CalendarViewPart
+            Name = CalendarViewPart,
         };
+        CreateTemplateParentBinding(calendarView, PickerCalendar.SelectedDateProperty, DatePickerPresenter.SelectedDateTimeProperty);
         calendarView.RegisterInNameScope(scope);
         return calendarView;
     }

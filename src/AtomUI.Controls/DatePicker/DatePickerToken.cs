@@ -140,7 +140,7 @@ internal class DatePickerToken : AbstractControlDesignToken
         ItemPanelMinWidth      = 225;
         ItemPanelMinHeight     = 270;
         RangeItemPanelMinWidth = 260;
-        DayTitleHeight         = _globalToken.SeedToken.ControlHeight;
+        DayTitleHeight         = _globalToken.HeightToken.ControlHeightSM;
         HeaderMargin           = new Thickness(0, 0, 0, _globalToken.MarginSM);
         HeaderPadding          = new Thickness(0, 0, 0, _globalToken.PaddingSM);
         CellLineHeight         = CellHeight - 2; // 不知道为啥设置成一样，或者不设置文字有些靠下
