@@ -138,7 +138,7 @@ Welcome to communicate and give suggestions to AtomUI, thank you for giving the 
 <div style="height:50px"></div>
 
 #### License Description
-The project source code is only free for personal learning and communication or open source projects that follow GPLv3. <strong>Commercial applications (including but not limited to internal company projects, commercial projects developed by individuals using AtomUI, and outsourced projects) require the purchase of a commercial license</strong>. Please contact: Qinpai Software for authorization matters.
+Projects using AtomUI need to comply with the LGPL v3 agreement. <strong>Commercial applications (including but not limited to internal company projects, commercial projects developed by individuals using AtomUI, and outsourced projects) are free when using binary links</strong>. If you want to customize AtomUI based on source code, you need to modify the open source code or purchase a commercial license. If you need a commercial license, please contact: Beijing Chinware Software Technology Co., Ltd.
 
 #### About the Jiachen Project
 <p align="center">
