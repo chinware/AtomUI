@@ -98,6 +98,7 @@ internal class DatePickerPresenter : PickerPresenterBase
     private Button? _confirmButton;
     private PickerCalendar? _calendarView;
     private IDisposable? _choosingStateDisposable;
+    private bool _isConfirmed;
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
@@ -111,7 +112,8 @@ internal class DatePickerPresenter : PickerPresenterBase
                 ChoosingStatueChanged?.Invoke(this, new ChoosingStatusEventArgs(args.GetNewValue<bool>()));
             });
         }
-     
+
+        _isConfirmed = false;
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
@@ -165,6 +167,18 @@ internal class DatePickerPresenter : PickerPresenterBase
         {
             _confirmButton.Click     += HandleConfirmButtonClicked;
             _confirmButton.IsEnabled =  SelectedDateTime is not null;
+            _confirmButton.PointerEntered += (sender, args) =>
+            {
+                if (_calendarView?.SelectedDate is not null)
+                {
+                    var hoverDateTime = CollectDateTime(_calendarView?.SelectedDate);
+                    HoverDateTimeChanged?.Invoke(this, new DateSelectedEventArgs(hoverDateTime));
+                }
+            };
+            _confirmButton.PointerExited += (sender, args) =>
+            {
+                ChoosingStatueChanged?.Invoke(this, new ChoosingStatusEventArgs(false));
+            };
         }
     }
 

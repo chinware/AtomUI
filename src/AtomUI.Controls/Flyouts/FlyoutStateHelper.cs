@@ -60,6 +60,7 @@ internal class FlyoutStateHelper : AvaloniaObject
     public event EventHandler<EventArgs>? FlyoutAboutToClose;
     public event EventHandler<EventArgs>? FlyoutClosed;
     public event EventHandler<EventArgs>? FlyoutAboutToShow;
+    public event EventHandler<EventArgs>? FlyoutOpened;
 
     public Func<Point, bool>? OpenFlyoutPredicate;
     public Func<IPopupHostProvider, RawPointerEventArgs, bool>? ClickHideFlyoutPredicate;
@@ -114,6 +115,7 @@ internal class FlyoutStateHelper : AvaloniaObject
                 }
             }
         }
+        FlyoutOpened?.Invoke(this, EventArgs.Empty);
     }
 
     private void HandleFlyoutClosed(object? sender, EventArgs e)

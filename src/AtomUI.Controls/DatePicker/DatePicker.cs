@@ -1,4 +1,5 @@
-﻿using AtomUI.Controls.Internal;
+﻿using AtomUI.Controls.CalendarView;
+using AtomUI.Controls.Internal;
 using AtomUI.Data;
 using Avalonia;
 using Avalonia.Controls;
@@ -127,44 +128,67 @@ public class DatePicker : InfoPickerInput
         {
             return;
         }
-
-        presenter.ChoosingStatueChanged += (sender, args) =>
-        {
-            _isChoosing = args.IsChoosing;
-            UpdatePseudoClasses();
-            if (!args.IsChoosing)
-            {
-                ClearHoverSelectedInfo();
-            }
-        };
-        presenter.HoverDateTimeChanged += (sender, args) =>
-        {
-            if (args.Value.HasValue)
-            {
-                Text = args.Value.Value.ToString(EffectiveFormat());
-            }
-            else
-            {
-                Text = null;
-            }
-        };
-
-        presenter.Confirmed += (sender, args) =>
-        {
-            SelectedDateTime = presenter.SelectedDateTime;
-            Dispatcher.UIThread.Post(() => ClosePickerFlyout());
-        };
         
         BindUtils.RelayBind(this, SelectedDateTimeProperty, presenter, DatePickerPresenter.SelectedDateTimeProperty);
         BindUtils.RelayBind(this, IsNeedConfirmProperty, presenter, DatePickerPresenter.IsNeedConfirmProperty);
         BindUtils.RelayBind(this, IsShowNowProperty, presenter, DatePickerPresenter.IsShowNowProperty);
         BindUtils.RelayBind(this, IsShowTimeProperty, presenter, DatePickerPresenter.IsShowTimeProperty);
     }
+    
+    protected override void NotifyFlyoutOpened()
+    {
+        base.NotifyFlyoutOpened();
+        if (_pickerPresenter is not null)
+        {
+            _pickerPresenter.ChoosingStatueChanged += HandleChoosingStatueChanged;
+            _pickerPresenter.HoverDateTimeChanged += HandleHoverDateTimeChanged;
+            _pickerPresenter.Confirmed += HandleConfirmed;
+        }
+    }
+    
+    protected override void NotifyFlyoutAboutToClose(bool selectedIsValid)
+    {
+        base.NotifyFlyoutAboutToClose(selectedIsValid);
+        if (_pickerPresenter is not null)
+        {
+            _pickerPresenter.ChoosingStatueChanged -= HandleChoosingStatueChanged;
+            _pickerPresenter.HoverDateTimeChanged  -= HandleHoverDateTimeChanged;
+            _pickerPresenter.Confirmed             -= HandleConfirmed;
+        }
+    }
+
+    private void HandleChoosingStatueChanged(object? sender, ChoosingStatusEventArgs args)
+    {
+        _isChoosing = args.IsChoosing;
+        UpdatePseudoClasses();
+        if (!args.IsChoosing)
+        {
+            ClearHoverSelectedInfo();
+        }
+    }
+    
+    private void HandleHoverDateTimeChanged(object? sender, DateSelectedEventArgs args)
+    {
+        if (args.Value.HasValue)
+        {
+            Text = args.Value.Value.ToString(EffectiveFormat());
+        }
+        else
+        {
+            Text = null;
+        }
+    }
+    
+    private void HandleConfirmed(object? sender, EventArgs args)
+    {
+        SelectedDateTime = _pickerPresenter?.SelectedDateTime;
+        ClosePickerFlyout();
+    }
 
     private void ClearHoverSelectedInfo()
     {
         DateTime? targetValue = default;
-        targetValue = SelectedDateTime ?? DefaultDateTime;
+        targetValue = SelectedDateTime;
         Text        = targetValue?.ToString(EffectiveFormat());
     }
 
