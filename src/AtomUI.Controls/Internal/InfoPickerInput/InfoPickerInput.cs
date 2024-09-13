@@ -10,14 +10,15 @@ using Avalonia.Input;
 using Avalonia.Input.Raw;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
+using Avalonia.Media;
 
 namespace AtomUI.Controls.Internal;
 
 [PseudoClasses(FlyoutOpenPC)]
 public abstract class InfoPickerInput : TemplatedControl
 {
-    private const string FlyoutOpenPC = ":flyout-open";
-    private const string ChoosingPC = ":choosing";
+    internal const string FlyoutOpenPC = ":flyout-open";
+    internal const string ChoosingPC = ":choosing";
 
     #region 公共属性定义
 
@@ -63,6 +64,9 @@ public abstract class InfoPickerInput : TemplatedControl
     
     public static readonly StyledProperty<bool> IsReadOnlyProperty =
         TextBox.IsReadOnlyProperty.AddOwner<InfoPickerInput>();
+
+    public static readonly StyledProperty<Brush?> InputTextBrushProperty =
+        AvaloniaProperty.Register<InfoPickerInput, Brush?>(nameof(InputTextBrush));
 
     public object? LeftAddOn
     {
@@ -146,6 +150,12 @@ public abstract class InfoPickerInput : TemplatedControl
     {
         get => GetValue(IsReadOnlyProperty);
         set => SetValue(IsReadOnlyProperty, value);
+    }
+
+    public Brush? InputTextBrush
+    {
+        get => GetValue(InputTextBrushProperty);
+        set => SetValue(InputTextBrushProperty, value);
     }
     
     #endregion

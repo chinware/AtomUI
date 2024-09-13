@@ -48,6 +48,7 @@ internal class DatePickerPresenterTheme : BaseControlTheme
             };
             CreateTemplateParentBinding(buttonsContainerFrame, Border.BorderThicknessProperty, DatePickerPresenter.BorderThicknessProperty);
             var buttonsPanel          = BuildButtons(presenter, scope);
+            CreateTemplateParentBinding(buttonsContainerFrame, Border.IsVisibleProperty, DatePickerPresenter.ButtonsPanelVisibleProperty);
             buttonsContainerFrame.Child = buttonsPanel;
             
             DockPanel.SetDock(buttonsContainerFrame, Dock.Bottom);
@@ -119,5 +120,7 @@ internal class DatePickerPresenterTheme : BaseControlTheme
         var buttonsPanelStyle = new Style(selector => selector.Nesting().Template().Name(ButtonsContainerPart));
         buttonsPanelStyle.Add(Panel.MarginProperty, DatePickerTokenResourceKey.ButtonsPanelMargin);
         Add(buttonsPanelStyle);
+        
+        
     }
 }

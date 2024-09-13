@@ -1,10 +1,12 @@
 ﻿using AtomUI.Data;
 using AtomUI.Theme;
+using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Layout;
 using Avalonia.Media;
+using Avalonia.Styling;
 
 namespace AtomUI.Controls.Internal;
 
@@ -121,6 +123,7 @@ internal class InfoPickerInputTheme : BaseControlTheme
 
         BindUtils.RelayBind(this, DataValidationErrors.ErrorsProperty, pickerTextBox,
             DataValidationErrors.ErrorsProperty);
+        CreateTemplateParentBinding(pickerTextBox, TextBox.ForegroundProperty, InfoPickerInput.InputTextBrushProperty);
         CreateTemplateParentBinding(pickerTextBox, TextBox.SizeTypeProperty, InfoPickerInput.SizeTypeProperty);
         CreateTemplateParentBinding(pickerTextBox, TextBox.IsReadOnlyProperty,
             InfoPickerInput.IsReadOnlyProperty);
@@ -132,4 +135,11 @@ internal class InfoPickerInputTheme : BaseControlTheme
     {
     }
     
+    protected override void BuildStyles()
+    {
+        base.BuildStyles();
+        var commonStyle = new Style(selector => selector.Nesting());
+        commonStyle.Add(InfoPickerInput.InputTextBrushProperty, GlobalTokenResourceKey.ColorText);
+        Add(commonStyle);
+    }
 }
