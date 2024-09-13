@@ -11,7 +11,7 @@ using Avalonia.Input.Raw;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 
-namespace AtomUI.Controls.CalendarPresenter;
+namespace AtomUI.Controls.CalendarView;
 
 [TemplatePart(RangeCalendarItemTheme.PrimaryHeaderButtonPart, typeof(HeadTextButton))]
 [TemplatePart(RangeCalendarItemTheme.SecondaryHeaderButtonPart, typeof(HeadTextButton))]

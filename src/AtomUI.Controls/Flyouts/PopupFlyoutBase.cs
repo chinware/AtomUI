@@ -14,12 +14,23 @@ using Avalonia.Logging;
 
 namespace AtomUI.Controls;
 
+public class FlyoutPresenterCreatedEventArgs : EventArgs
+{
+    public Control Presenter { get; }
+    public FlyoutPresenterCreatedEventArgs(Control presenter)
+    {
+        Presenter = presenter;
+    }
+}
+
 /// <summary>
 /// 最基本得弹窗 Flyout，在这里不处理那种带箭头得
 /// </summary>
 public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
 {
-   /// <summary>
+    #region 公共属性定义
+
+    /// <summary>
    /// 距离 anchor 的边距，根据垂直和水平进行设置
    /// 但是对某些组合无效，比如跟随鼠标的情况
    /// 还有些 anchor 和 gravity 的组合也没有用
@@ -65,8 +76,12 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
    public static readonly StyledProperty<PopupPositionerConstraintAdjustment> PlacementConstraintAdjustmentProperty =
         Avalonia.Controls.Primitives.Popup.PlacementConstraintAdjustmentProperty.AddOwner<PopupFlyoutBase>();
 
-    protected Popup Popup => _popupLazy.Value;
-
+    public double MarginToAnchor
+    {
+        get => GetValue(MarginToAnchorProperty);
+        set => SetValue(MarginToAnchorProperty, value);
+    }
+    
     /// <inheritdoc cref="Popup.Placement" />
     public PlacementMode Placement
     {
@@ -128,7 +143,24 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
         set => SetValue(PlacementConstraintAdjustmentProperty, value);
     }
 
+    #endregion
+
+    #region 公共事件定义
+
+    event Action<IPopupHost?>? IPopupHostProvider.PopupHostChanged
+    {
+        add => _popupHostChangedHandler += value;
+        remove => _popupHostChangedHandler -= value;
+    }
+
+    public event EventHandler<CancelEventArgs>? Closing;
+    public event EventHandler? Opening;
+    public event EventHandler<FlyoutPresenterCreatedEventArgs>? PresenterCreated;
+
+    #endregion
+
     IPopupHost? IPopupHostProvider.PopupHost => Popup?.Host;
+    protected Popup Popup => _popupLazy.Value;
 
     private readonly Lazy<Popup> _popupLazy;
     private Rect? _enlargedPopupRect;
@@ -136,12 +168,6 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
     private IDisposable? _transientDisposable;
     private Action<IPopupHost?>? _popupHostChangedHandler;
     private static readonly EventInfo ClosingEventInfo;
-
-    public double MarginToAnchor
-    {
-        get => GetValue(MarginToAnchorProperty);
-        set => SetValue(MarginToAnchorProperty, value);
-    }
 
     static PopupFlyoutBase()
     {
@@ -189,15 +215,6 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
             Popup.PlacementConstraintAdjustment = PlacementConstraintAdjustment;
         }
     }
-
-    event Action<IPopupHost?>? IPopupHostProvider.PopupHostChanged
-    {
-        add => _popupHostChangedHandler += value;
-        remove => _popupHostChangedHandler -= value;
-    }
-
-    public event EventHandler<CancelEventArgs>? Closing;
-    public event EventHandler? Opening;
 
     /// <summary>
     /// Shows the Flyout at the given Control
@@ -317,6 +334,7 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
         if (Popup.Child == null)
         {
             Popup.Child = CreatePresenter();
+            PresenterCreated?.Invoke(this, new FlyoutPresenterCreatedEventArgs(Popup.Child));
         }
 
         Popup.OverlayInputPassThroughElement = OverlayInputPassThroughElement;

@@ -207,8 +207,10 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey WithoutTimeCellHeight = new TokenResourceKey("DatePicker.WithoutTimeCellHeight", "AtomUI.Token");
         public static readonly TokenResourceKey DayTitleHeight = new TokenResourceKey("DatePicker.DayTitleHeight", "AtomUI.Token");
         public static readonly TokenResourceKey HeaderMargin = new TokenResourceKey("DatePicker.HeaderMargin", "AtomUI.Token");
+        public static readonly TokenResourceKey HeaderPadding = new TokenResourceKey("DatePicker.HeaderPadding", "AtomUI.Token");
         public static readonly TokenResourceKey RangeCalendarSpacing = new TokenResourceKey("DatePicker.RangeCalendarSpacing", "AtomUI.Token");
         public static readonly TokenResourceKey PickerInputMinWidth = new TokenResourceKey("DatePicker.PickerInputMinWidth", "AtomUI.Token");
+        public static readonly TokenResourceKey ButtonsPanelMargin = new TokenResourceKey("DatePicker.ButtonsPanelMargin", "AtomUI.Token");
     }
 
     public static class EmptyIndicatorTokenResourceKey

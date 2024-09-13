@@ -1,6 +1,9 @@
 ﻿using System.Diagnostics;
 using System.Globalization;
 using AtomUI.Collections.Pooled;
+using AtomUI.Theme.Data;
+using AtomUI.Theme.Styling;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -10,7 +13,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 
-namespace AtomUI.Controls.CalendarPresenter;
+namespace AtomUI.Controls.CalendarView;
 
 [TemplatePart(CalendarItemTheme.HeaderButtonPart, typeof(HeadTextButton))]
 [TemplatePart(CalendarItemTheme.MonthViewPart, typeof(Grid))]
@@ -1095,5 +1098,12 @@ internal class CalendarItem : TemplatedControl
         var monthViewPos = monthView.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(monthView)!) ?? default;
         return new Rect(firstDayPos,
             new Size(monthView.Bounds.Width, monthViewPos.Y + monthView.Bounds.Height - firstDayPos.Y));
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        TokenResourceBinder.CreateGlobalTokenBinding(this, BorderThicknessProperty, GlobalTokenResourceKey.BorderThickness, BindingPriority.Template,
+            new RenderScaleAwareThicknessConfigure(this, thickness => new Thickness(0, 0, 0, thickness.Bottom)));
     }
 }

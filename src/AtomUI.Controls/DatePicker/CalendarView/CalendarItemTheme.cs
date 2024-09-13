@@ -9,7 +9,7 @@ using Avalonia.Controls.Templates;
 using Avalonia.Layout;
 using Avalonia.Styling;
 
-namespace AtomUI.Controls.CalendarPresenter;
+namespace AtomUI.Controls.CalendarView;
 
 [ControlThemeProvider]
 internal class CalendarItemTheme : BaseControlTheme
@@ -20,6 +20,7 @@ internal class CalendarItemTheme : BaseControlTheme
     public const string MonthViewPart = "PART_MonthView";
     public const string YearViewPart = "PART_YearView";
     public const string HeaderLayoutPart = "PART_HeaderLayout";
+    public const string HeaderFramePart = "PART_HeaderFrame";
 
     public const string PreviousButtonPart = "PART_PreviousButton";
     public const string PreviousMonthButtonPart = "PART_PreviousMonthButton";
@@ -66,6 +67,12 @@ internal class CalendarItemTheme : BaseControlTheme
 
     protected virtual void BuildHeader(DockPanel layout, INameScope scope)
     {
+        var headerFrame = new Border()
+        {
+            Name = HeaderFramePart
+        };
+        CreateTemplateParentBinding(headerFrame, Border.BorderThicknessProperty, CalendarItem.BorderThicknessProperty);
+        
         var headerLayout = new UniformGrid
         {
             Name    = HeaderLayoutPart,
@@ -75,8 +82,9 @@ internal class CalendarItemTheme : BaseControlTheme
         headerLayout.RegisterInNameScope(scope);
         BuildHeaderItem(headerLayout, scope);
 
-        DockPanel.SetDock(headerLayout, Dock.Top);
-        layout.Children.Add(headerLayout);
+        DockPanel.SetDock(headerFrame, Dock.Top);
+        headerFrame.Child = headerLayout;
+        layout.Children.Add(headerFrame);
     }
 
     private void BuildHeaderItem(UniformGrid layout, INameScope scope)
@@ -306,10 +314,12 @@ internal class CalendarItemTheme : BaseControlTheme
 
         commonStyle.Add(CalendarItem.MinHeightProperty, DatePickerTokenResourceKey.ItemPanelMinHeight);
         commonStyle.Add(CalendarItem.MinWidthProperty, DatePickerTokenResourceKey.ItemPanelMinWidth);
-        var headerLayoutStyle = new Style(selector => selector.Nesting().Template().Name(HeaderLayoutPart));
-        headerLayoutStyle.Add(Layoutable.MarginProperty, DatePickerTokenResourceKey.HeaderMargin);
+        var headerFrameStyle = new Style(selector => selector.Nesting().Template().Name(HeaderFramePart));
+        headerFrameStyle.Add(Border.MarginProperty, DatePickerTokenResourceKey.HeaderMargin);
+        headerFrameStyle.Add(Border.PaddingProperty, DatePickerTokenResourceKey.HeaderPadding);
+        headerFrameStyle.Add(Border.BorderBrushProperty, GlobalTokenResourceKey.ColorBorderSecondary);
 
-        commonStyle.Add(headerLayoutStyle);
+        commonStyle.Add(headerFrameStyle);
 
         Add(commonStyle);
     }

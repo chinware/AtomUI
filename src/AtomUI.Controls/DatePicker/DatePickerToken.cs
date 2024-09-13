@@ -1,7 +1,6 @@
 ﻿using AtomUI.Media;
 using AtomUI.Theme.TokenSystem;
 using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Media;
 
 namespace AtomUI.Controls;
@@ -97,9 +96,14 @@ internal class DatePickerToken : AbstractControlDesignToken
     public double DayTitleHeight { get; set; }
 
     /// <summary>
-    /// Header 头外边距
+    /// Header 头外间距
     /// </summary>
     public Thickness HeaderMargin { get; set; }
+    
+    /// <summary>
+    /// Header 头内间距
+    /// </summary>
+    public Thickness HeaderPadding { get; set; }
 
     /// <summary>
     /// 范围日历间距
@@ -110,6 +114,11 @@ internal class DatePickerToken : AbstractControlDesignToken
     /// 日期选择器最小的宽度
     /// </summary>
     public double PickerInputMinWidth { get; set; }
+    
+    /// <summary>
+    /// 按钮区域面板外间距
+    /// </summary>
+    public Thickness ButtonsPanelMargin { get; set; }
     
     internal override void CalculateFromAlias()
     {
@@ -129,12 +138,14 @@ internal class DatePickerToken : AbstractControlDesignToken
         CellMargin             = new Thickness(_globalToken.MarginXXS);
         PanelContentPadding    = new Thickness(_globalToken.PaddingSM);
         ItemPanelMinWidth      = 225;
+        ItemPanelMinHeight     = 270;
         RangeItemPanelMinWidth = 260;
-        ItemPanelMinHeight     = 240;
         DayTitleHeight         = _globalToken.SeedToken.ControlHeight;
         HeaderMargin           = new Thickness(0, 0, 0, _globalToken.MarginSM);
+        HeaderPadding          = new Thickness(0, 0, 0, _globalToken.PaddingSM);
         CellLineHeight         = CellHeight - 2; // 不知道为啥设置成一样，或者不设置文字有些靠下
         RangeCalendarSpacing   = 20;
         PickerInputMinWidth    = 150;
+        ButtonsPanelMargin     = new Thickness(0, _globalToken.MarginXS, 0, 0);
     }
 }

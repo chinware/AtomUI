@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using Avalonia.Threading;
 
-namespace AtomUI.Controls.CalendarPresenter;
+namespace AtomUI.Controls.CalendarView;
 
 public sealed class CalendarBlackoutDatesCollection : ObservableCollection<CalendarDateRange>
 {

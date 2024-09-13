@@ -303,7 +303,11 @@ public abstract class InfoPickerInput : TemplatedControl
                 _isFlyoutOpen = false;
                 UpdatePseudoClasses();
             };
-            _flyoutStateHelper.Flyout = _pickerFlyout;
+            _pickerFlyout.PresenterCreated += (sender, args) =>
+            {
+                NotifyPresenterCreated(args.Presenter);
+            };
+            _flyoutStateHelper.Flyout      =  _pickerFlyout;
         }
         _decoratedBox        = e.NameScope.Get<AddOnDecoratedBox>(InfoPickerInputTheme.DecoratedBoxPart);
         _pickerInnerBox      = e.NameScope.Get<AddOnDecoratedInnerBox>(InfoPickerInputTheme.PickerInnerPart);
@@ -326,6 +330,10 @@ public abstract class InfoPickerInput : TemplatedControl
     protected virtual void NotifyClearButtonClicked()
     {
         Clear();
+    }
+
+    protected virtual void NotifyPresenterCreated(Control presenter)
+    {
     }
     
     protected virtual void SetupFlyoutProperties()

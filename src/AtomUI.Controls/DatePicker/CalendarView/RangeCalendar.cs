@@ -1,4 +1,8 @@
 ﻿using System.Diagnostics;
+using System.Text;
+using AtomUI.Theme.Data;
+using AtomUI.Theme.Styling;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -9,62 +13,42 @@ using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Media;
 
-namespace AtomUI.Controls.CalendarPresenter;
+namespace AtomUI.Controls.CalendarView;
 
-public class DateSelectedEventArgs : RoutedEventArgs
+public class RangeDateSelectedEventArgs : RoutedEventArgs
 {
-    public DateTime? Value { get; }
-    public DateSelectedEventArgs(DateTime? value)
+    public CalendarDateRange Range { get; }
+    public RangeDateSelectedEventArgs(CalendarDateRange range)
     {
-        Value = value;
+        Range = range;
     }
 }
 
-[TemplatePart(RangeCalendarTheme.CalendarItemPart, typeof(CalendarItem))]
+public class HoverDateSelectedEventArgs : RoutedEventArgs
+{
+    public DateTime? HoverDate { get; }
+    public HoverDateSelectedEventArgs(DateTime? date)
+    {
+        HoverDate = date;
+    }
+}
+
+[TemplatePart(RangeCalendarTheme.CalendarItemPart, typeof(RangeCalendarItem))]
 [TemplatePart(RangeCalendarTheme.RootPart, typeof(Panel))]
-public class Calendar : TemplatedControl
+public class RangeCalendar : TemplatedControl
 {
     internal const int RowsPerMonth = 7;
     internal const int ColumnsPerMonth = 7;
     internal const int RowsPerYear = 3;
     internal const int ColumnsPerYear = 4;
-    
+
     #region 公共属性定义
-    
+
     public static readonly StyledProperty<DayOfWeek> FirstDayOfWeekProperty =
-        AvaloniaProperty.Register<Calendar, DayOfWeek>(
+        AvaloniaProperty.Register<RangeCalendar, DayOfWeek>(
             nameof(FirstDayOfWeek),
             DateTimeHelper.GetCurrentDateFormat().FirstDayOfWeek);
-    
-    public static readonly StyledProperty<bool> IsTodayHighlightedProperty =
-        AvaloniaProperty.Register<Calendar, bool>(
-            nameof(IsTodayHighlighted),
-            true);
-    
-    public static readonly StyledProperty<IBrush?> HeaderBackgroundProperty =
-        AvaloniaProperty.Register<Calendar, IBrush?>(nameof(HeaderBackground));
-    
-    public static readonly StyledProperty<CalendarMode> DisplayModeProperty =
-        AvaloniaProperty.Register<Calendar, CalendarMode>(
-            nameof(DisplayMode),
-            validate: IsValidDisplayMode);
-    
-    public static readonly StyledProperty<DateTime> DisplayDateProperty =
-        AvaloniaProperty.Register<Calendar, DateTime>(nameof(DisplayDate),
-            defaultBindingMode: BindingMode.TwoWay);
-    
-    public static readonly StyledProperty<DateTime?> DisplayDateStartProperty =
-        AvaloniaProperty.Register<Calendar, DateTime?>(nameof(DisplayDateStart),
-            defaultBindingMode: BindingMode.TwoWay);
-    
-    public static readonly StyledProperty<DateTime?> DisplayDateEndProperty =
-        AvaloniaProperty.Register<Calendar, DateTime?>(nameof(DisplayDateEnd),
-            defaultBindingMode: BindingMode.TwoWay);
-    
-    public static readonly StyledProperty<DateTime?> SelectedDateProperty =
-        AvaloniaProperty.Register<Calendar, DateTime?>(nameof(SelectedDate),
-            defaultBindingMode: BindingMode.TwoWay);
-    
+
     /// <summary>
     /// Gets or sets the day that is considered the beginning of the week.
     /// </summary>
@@ -77,7 +61,12 @@ public class Calendar : TemplatedControl
         get => GetValue(FirstDayOfWeekProperty);
         set => SetValue(FirstDayOfWeekProperty, value);
     }
-    
+
+    public static readonly StyledProperty<bool> IsTodayHighlightedProperty =
+        AvaloniaProperty.Register<RangeCalendar, bool>(
+            nameof(IsTodayHighlighted),
+            true);
+
     /// <summary>
     /// Gets or sets a value indicating whether the current date is
     /// highlighted.
@@ -91,36 +80,68 @@ public class Calendar : TemplatedControl
         get => GetValue(IsTodayHighlightedProperty);
         set => SetValue(IsTodayHighlightedProperty, value);
     }
-    
+
+    public static readonly StyledProperty<IBrush?> HeaderBackgroundProperty =
+        AvaloniaProperty.Register<RangeCalendar, IBrush?>(nameof(HeaderBackground));
+
     public IBrush? HeaderBackground
     {
         get => GetValue(HeaderBackgroundProperty);
         set => SetValue(HeaderBackgroundProperty, value);
     }
-    
+
+    public static readonly StyledProperty<CalendarMode> DisplayModeProperty =
+        AvaloniaProperty.Register<RangeCalendar, CalendarMode>(
+            nameof(DisplayMode),
+            validate: IsValidDisplayMode);
+
     /// <summary>
     /// Gets or sets a value indicating whether the calendar is displayed in
     /// months, years, or decades.
     /// </summary>
     /// <value>
     /// A value indicating what length of time the
-    /// <see cref="T:System.Windows.Controls.Calendar" /> should display.
+    /// <see cref="T:System.Windows.Controls.RangeCalendar" /> should display.
     /// </value>
     public CalendarMode DisplayMode
     {
         get => GetValue(DisplayModeProperty);
         set => SetValue(DisplayModeProperty, value);
     }
-    
+
+    public static readonly StyledProperty<DateTime?> SelectedRangeStartDateProperty =
+        AvaloniaProperty.Register<RangeCalendar, DateTime?>(nameof(SelectedRangeStartDate),
+            defaultBindingMode: BindingMode.TwoWay);
+
+    public DateTime? SelectedRangeStartDate
+    {
+        get => GetValue(SelectedRangeStartDateProperty);
+        set => SetValue(SelectedRangeStartDateProperty, value);
+    }
+
+    public static readonly StyledProperty<DateTime?> SelectedRangeEndDateProperty =
+        AvaloniaProperty.Register<RangeCalendar, DateTime?>(nameof(SelectedRangeEndDate),
+            defaultBindingMode: BindingMode.TwoWay);
+
+    public DateTime? SelectedRangeEndDate
+    {
+        get => GetValue(SelectedRangeEndDateProperty);
+        set => SetValue(SelectedRangeEndDateProperty, value);
+    }
+
+    public static readonly StyledProperty<DateTime> DisplayDateProperty =
+        AvaloniaProperty.Register<RangeCalendar, DateTime>(nameof(DisplayDate),
+            defaultBindingMode: BindingMode.TwoWay);
+
     /// <summary>
     /// Gets or sets the date to display.
     /// </summary>
     /// <value>The date to display.</value>
     /// <exception cref="T:System.ArgumentOutOfRangeException">
     /// The given date is not in the range specified by
-    /// <see cref="P:System.Windows.Controls.Calendar.DisplayDateStart" />
+    /// <see cref="P:System.Windows.Controls.RangeCalendar.DisplayDateStart" />
     /// and
-    /// <see cref="P:System.Windows.Controls.Calendar.DisplayDateEnd" />.
+    /// <see cref="P:System.Windows.Controls.RangeCalendar.DisplayDateEnd" />.
     /// </exception>
     /// <remarks>
     /// <para>
@@ -142,7 +163,11 @@ public class Calendar : TemplatedControl
         get => GetValue(DisplayDateProperty);
         set => SetValue(DisplayDateProperty, value);
     }
-    
+
+    public static readonly StyledProperty<DateTime?> DisplayDateStartProperty =
+        AvaloniaProperty.Register<RangeCalendar, DateTime?>(nameof(DisplayDateStart),
+            defaultBindingMode: BindingMode.TwoWay);
+
     /// <summary>
     /// Gets or sets the first date to be displayed.
     /// </summary>
@@ -159,6 +184,10 @@ public class Calendar : TemplatedControl
         set => SetValue(DisplayDateStartProperty, value);
     }
 
+    public static readonly StyledProperty<DateTime?> DisplayDateEndProperty =
+        AvaloniaProperty.Register<RangeCalendar, DateTime?>(nameof(DisplayDateEnd),
+            defaultBindingMode: BindingMode.TwoWay);
+
     /// <summary>
     /// Gets or sets the last date to be displayed.
     /// </summary>
@@ -174,108 +203,39 @@ public class Calendar : TemplatedControl
         get => GetValue(DisplayDateEndProperty);
         set => SetValue(DisplayDateEndProperty, value);
     }
-    
-    /// <summary>
-    /// Gets or sets the currently selected date.
-    /// </summary>
-    /// <value>The date currently selected. The default is null.</value>
-    /// <exception cref="T:System.ArgumentOutOfRangeException">
-    /// The given date is outside the range specified by
-    /// <see cref="P:System.Windows.Controls.Calendar.DisplayDateStart" />
-    /// and <see cref="P:System.Windows.Controls.Calendar.DisplayDateEnd" />
-    /// -or-
-    /// The given date is in the
-    /// <see cref="P:System.Windows.Controls.Calendar.BlackoutDates" />
-    /// collection.
-    /// </exception>
-    /// <exception cref="T:System.InvalidOperationException">
-    /// If set to anything other than null when
-    /// <see cref="P:System.Windows.Controls.Calendar.SelectionMode" /> is
-    /// set to
-    /// <see cref="F:System.Windows.Controls.CalendarSelectionMode.None" />.
-    /// </exception>
-    /// <remarks>
-    /// Use this property when SelectionMode is set to SingleDate.  In other
-    /// modes, this property will always be the first date in SelectedDates.
-    /// </remarks>
-    public DateTime? SelectedDate
-    {
-        get => GetValue(SelectedDateProperty);
-        set => SetValue(SelectedDateProperty, value);
-    }
-    
-    /// <summary>
-    /// Gets a collection of dates that are marked as not selectable.
-    /// </summary>
-    /// <value>
-    /// A collection of dates that cannot be selected. The default value is
-    /// an empty collection.
-    /// </value>
-    /// <exception cref="System.ArgumentOutOfRangeException">
-    /// Adding a date to this collection when it is already selected or
-    /// adding a date outside the range specified by DisplayDateStart and
-    /// DisplayDateEnd.
-    /// </exception>
-    /// <remarks>
-    /// <para>
-    /// Dates in this collection will appear as disabled on the calendar.
-    /// </para>
-    /// <para>
-    /// To make all past dates not selectable, you can use the
-    /// AddDatesInPast method provided by the collection returned by this
-    /// property.
-    /// </para>
-    /// </remarks>
-    public CalendarBlackoutDatesCollection BlackoutDates { get; }
-    
-    #endregion
-
-    #region 公共事件定义
 
     /// <summary>
-    /// Occurs when the
-    /// <see cref="P:System.Windows.Controls.Calendar.DisplayDate" />
-    /// property is changed.
+    /// 设置是否固定 RangeStart
     /// </summary>
-    /// <remarks>
-    /// This event occurs after DisplayDate is assigned its new value.
-    /// </remarks>
-    public event EventHandler<CalendarDateChangedEventArgs>? DisplayDateChanged;
-
-    /// <summary>
-    /// Occurs when the
-    /// <see cref="P:System.Windows.Controls.Calendar.DisplayMode" />
-    /// property is changed.
-    /// </summary>
-    public event EventHandler<CalendarModeChangedEventArgs>? DisplayModeChanged;
+    public bool FixedRangeStart { get; set; } = true;
     
     /// <summary>
-    /// 日期选中事件
+    /// 是否修复选择结果，当开始日期大于结束日期的时候进行位置调换
     /// </summary>
-    public event EventHandler<DateSelectedEventArgs>? DateSelected;
-    
-    /// <summary>
-    /// 当前 Pointer 选中的日期变化事件
-    /// </summary>
-    public event EventHandler<DateSelectedEventArgs>? HoverDateChanged;
-    
-    #endregion
-
-    #region 内部事件定义
-
-    /// <summary>
-    /// Inherited code: Requires comment.
-    /// </summary>
-    internal event EventHandler<PointerReleasedEventArgs>? DayButtonMouseUp;
+    public bool IsRepairReverseRange { get; set; } = true;
 
     #endregion
 
     #region 内部属性定义
 
-    internal CalendarDayButton? FocusButton { get; set; }
-    internal CalendarButton? FocusCalendarButton { get; set; }
-    internal CalendarItem? CalendarItem { get; private set;}
-    
+    internal RangeCalendarDayButton? FocusButton { get; set; }
+    internal RangeCalendarButton? FocusCalendarButton { get; set; }
+
+    internal Panel? Root { get; set; }
+
+    internal RangeCalendarItem? MonthControl
+    {
+        get
+        {
+            if (Root != null && Root.Children.Count > 0)
+            {
+                return Root.Children[0] as RangeCalendarItem;
+            }
+
+            return null;
+        }
+    }
+
     internal DateTime? LastSelectedDateInternal { get; set; }
 
     internal DateTime? LastSelectedDate
@@ -298,8 +258,7 @@ public class Calendar : TemplatedControl
             }
         }
     }
-    
-    private DateTime _selectedMonth;
+
     internal DateTime SelectedMonth
     {
         get => _selectedMonth;
@@ -328,7 +287,6 @@ public class Calendar : TemplatedControl
         }
     }
 
-    private DateTime _selectedYear;
     internal DateTime SelectedYear
     {
         get => _selectedYear;
@@ -354,35 +312,70 @@ public class Calendar : TemplatedControl
     }
 
     internal DateTime DisplayDateInternal { get; set; }
-    internal DateTime DisplayDateRangeStart => DisplayDateStart.GetValueOrDefault(DateTime.MinValue);
-    internal DateTime DisplayDateRangeEnd => DisplayDateEnd.GetValueOrDefault(DateTime.MaxValue);
-    internal bool HasFocusInternal { get; set; }
+    internal DateTime SecondaryDisplayDateInternal { get; set; }
 
     #endregion
-    
+
     private bool _displayDateIsChanging;
-    
-    static Calendar()
+    private DateTime _selectedMonth;
+    private DateTime _selectedYear;
+
+    static RangeCalendar()
     {
-        IsEnabledProperty.Changed.AddClassHandler<Calendar>((x, e) => x.OnIsEnabledChanged(e));
-        FirstDayOfWeekProperty.Changed.AddClassHandler<Calendar>((x, e) => x.OnFirstDayOfWeekChanged(e));
-        IsTodayHighlightedProperty.Changed.AddClassHandler<Calendar>((x, e) => x.OnIsTodayHighlightedChanged(e));
-        DisplayModeProperty.Changed.AddClassHandler<Calendar>((x, e) => x.OnDisplayModePropertyChanged(e));
-        DisplayDateProperty.Changed.AddClassHandler<Calendar>((x, e) => x.OnDisplayDateChanged(e));
-        DisplayDateStartProperty.Changed.AddClassHandler<Calendar>((x, e) => x.OnDisplayDateStartChanged(e));
-        DisplayDateEndProperty.Changed.AddClassHandler<Calendar>((x, e) => x.OnDisplayDateEndChanged(e));
-        KeyDownEvent.AddClassHandler<Calendar>((x, e) => x.HandleCalendarKeyDown(e));
-        HorizontalAlignmentProperty.OverrideDefaultValue<Calendar>(HorizontalAlignment.Left);
-        VerticalAlignmentProperty.OverrideDefaultValue<Calendar>(VerticalAlignment.Top);
+        IsEnabledProperty.Changed.AddClassHandler<RangeCalendar>((x, e) => x.OnIsEnabledChanged(e));
+        FirstDayOfWeekProperty.Changed.AddClassHandler<RangeCalendar>((x, e) => x.OnFirstDayOfWeekChanged(e));
+        IsTodayHighlightedProperty.Changed.AddClassHandler<RangeCalendar>((x, e) => x.OnIsTodayHighlightedChanged(e));
+        DisplayModeProperty.Changed.AddClassHandler<RangeCalendar>((x, e) => x.OnDisplayModePropertyChanged(e));
+        DisplayDateProperty.Changed.AddClassHandler<RangeCalendar>((x, e) => x.OnDisplayDateChanged(e));
+        DisplayDateStartProperty.Changed.AddClassHandler<RangeCalendar>((x, e) => x.OnDisplayDateStartChanged(e));
+        DisplayDateEndProperty.Changed.AddClassHandler<RangeCalendar>((x, e) => x.OnDisplayDateEndChanged(e));
+        KeyDownEvent.AddClassHandler<RangeCalendar>((x, e) => x.HandleCalendarKeyDown(e));
+        HorizontalAlignmentProperty.OverrideDefaultValue<RangeCalendar>(HorizontalAlignment.Left);
+        VerticalAlignmentProperty.OverrideDefaultValue<RangeCalendar>(VerticalAlignment.Top);
     }
-    
-    public Calendar()
+
+    /// <summary>
+    /// Initializes a new instance of the
+    /// <see cref="T:System.Windows.Controls.RangeCalendar" /> class.
+    /// </summary>
+    public RangeCalendar()
     {
         SetCurrentValue(DisplayDateProperty, DateTime.Today);
         UpdateDisplayDate(this, DisplayDate, DateTime.MinValue);
-        BlackoutDates = new CalendarBlackoutDatesCollection(this);
+        BlackoutDates = new RangeCalendarBlackoutDatesCollection(this);
     }
-    
+
+    /// <summary>
+    /// Gets a collection of dates that are marked as not selectable.
+    /// </summary>
+    /// <value>
+    /// A collection of dates that cannot be selected. The default value is
+    /// an empty collection.
+    /// </value>
+    /// <exception cref="System.ArgumentOutOfRangeException">
+    /// Adding a date to this collection when it is already selected or
+    /// adding a date outside the range specified by DisplayDateStart and
+    /// DisplayDateEnd.
+    /// </exception>
+    /// <remarks>
+    /// <para>
+    /// Dates in this collection will appear as disabled on the calendar.
+    /// </para>
+    /// <para>
+    /// To make all past dates not selectable, you can use the
+    /// AddDatesInPast method provided by the collection returned by this
+    /// property.
+    /// </para>
+    /// </remarks>
+    public RangeCalendarBlackoutDatesCollection BlackoutDates { get; }
+
+    internal DateTime DisplayDateRangeStart => DisplayDateStart.GetValueOrDefault(DateTime.MinValue);
+
+    internal DateTime DisplayDateRangeEnd => DisplayDateEnd.GetValueOrDefault(DateTime.MaxValue);
+
+    internal DateTime? HoverDateTime { get; set; }
+    internal bool HasFocusInternal { get; set; }
+
     /// <summary>
     /// FirstDayOfWeekProperty property changed handler.
     /// </summary>
@@ -398,7 +391,7 @@ public class Calendar : TemplatedControl
             throw new ArgumentOutOfRangeException(nameof(e), "Invalid DayOfWeek");
         }
     }
-    
+
     /// <summary>
     /// Inherited code: Requires comment.
     /// </summary>
@@ -416,7 +409,7 @@ public class Calendar : TemplatedControl
                || day == DayOfWeek.Friday
                || day == DayOfWeek.Saturday;
     }
-    
+
     /// <summary>
     /// IsTodayHighlightedProperty property changed handler.
     /// </summary>
@@ -430,7 +423,7 @@ public class Calendar : TemplatedControl
             UpdateMonths();
         }
     }
-    
+
     /// <summary>
     /// DisplayModeProperty property changed handler.
     /// </summary>
@@ -439,8 +432,9 @@ public class Calendar : TemplatedControl
     {
         var mode         = (CalendarMode)e.NewValue!;
         var oldMode      = (CalendarMode)e.OldValue!;
+        var monthControl = MonthControl;
 
-        if (CalendarItem != null)
+        if (monthControl != null)
         {
             switch (oldMode)
             {
@@ -482,17 +476,70 @@ public class Calendar : TemplatedControl
 
         OnDisplayModeChanged(new CalendarModeChangedEventArgs((CalendarMode)e.OldValue, mode));
     }
-    
+
     private static bool IsValidDisplayMode(CalendarMode mode)
     {
         return mode == CalendarMode.Month
                || mode == CalendarMode.Year
                || mode == CalendarMode.Decade;
     }
-    
+
     private void OnDisplayModeChanged(CalendarModeChangedEventArgs args)
     {
         DisplayModeChanged?.Invoke(this, args);
+    }
+
+    internal void NotifyRangeDateSelected()
+    {
+        if (SelectedRangeStartDate is not null && SelectedRangeEndDate is not null)
+        {
+            var rangeStart = SelectedRangeStartDate.Value;
+            var rangeEnd   = SelectedRangeEndDate.Value;
+            if (DateTimeHelper.CompareDays(SelectedRangeStartDate.Value, SelectedRangeEndDate.Value) > 0 && IsRepairReverseRange)
+            {
+                rangeStart = SelectedRangeEndDate.Value;
+                rangeEnd   = SelectedRangeStartDate.Value;
+            }
+            RangeDateSelected?.Invoke(this, new RangeDateSelectedEventArgs(new CalendarDateRange(rangeStart, rangeEnd)));
+        }
+    }
+
+    internal void NotifyHoverDateChanged(DateTime? hoverDate)
+    {
+        HoverDateChanged?.Invoke(this, new HoverDateSelectedEventArgs(hoverDate));
+    }
+
+    /// <summary>
+    /// Inherited code: Requires comment.
+    /// </summary>
+    /// <param name="value">Inherited code: Requires comment 1.</param>
+    /// <returns>Inherited code: Requires comment 2.</returns>
+    private static bool IsValidSelectionMode(object value)
+    {
+        var mode = (CalendarSelectionMode)value;
+
+        return mode == CalendarSelectionMode.SingleDate
+               || mode == CalendarSelectionMode.SingleRange
+               || mode == CalendarSelectionMode.MultipleRange
+               || mode == CalendarSelectionMode.None;
+    }
+
+    private static bool IsSelectionChanged(SelectionChangedEventArgs e)
+    {
+        if (e.AddedItems.Count != e.RemovedItems.Count)
+        {
+            return true;
+        }
+
+        foreach (DateTime addedDate in e.AddedItems)
+        {
+            if (!e.RemovedItems.Contains(addedDate))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     protected virtual void OnDisplayDateChanged(AvaloniaPropertyChangedEventArgs e)
@@ -500,7 +547,7 @@ public class Calendar : TemplatedControl
         UpdateDisplayDate(this, (DateTime)e.NewValue!, (DateTime)e.OldValue!);
     }
 
-    private static void UpdateDisplayDate(Calendar c, DateTime addedDate, DateTime removedDate)
+    private static void UpdateDisplayDate(RangeCalendar c, DateTime addedDate, DateTime removedDate)
     {
         _ = c ?? throw new ArgumentNullException(nameof(c));
 
@@ -519,12 +566,13 @@ public class Calendar : TemplatedControl
         }
 
         c.DisplayDateInternal          = DateTimeHelper.DiscardDayTime(addedDate);
+        c.SecondaryDisplayDateInternal = DateTimeHelper.AddMonths(c.DisplayDateInternal, 1) ?? c.DisplayDateInternal;
 
         c.UpdateMonths();
         c.OnDisplayDate(new CalendarDateChangedEventArgs(removedDate, addedDate));
     }
-    
-     protected void OnDisplayDate(CalendarDateChangedEventArgs e)
+
+    protected void OnDisplayDate(CalendarDateChangedEventArgs e)
     {
         DisplayDateChanged?.Invoke(this, e);
     }
@@ -537,9 +585,14 @@ public class Calendar : TemplatedControl
 
             if (newValue.HasValue)
             {
-                if (SelectedDate.HasValue && DateTime.Compare(SelectedDate.Value, newValue.Value) < 0)
+                // DisplayDateStart coerces to the value of the
+                // SelectedDateMin if SelectedDateMin < DisplayDateStart
+
+                var selectedDateMin = SelectedRangeStartDate;
+
+                if (selectedDateMin.HasValue && DateTime.Compare(selectedDateMin.Value, newValue.Value) < 0)
                 {
-                    SetCurrentValue(SelectedDateProperty, newValue.Value);
+                    SetCurrentValue(DisplayDateStartProperty, selectedDateMin.Value);
                     return;
                 }
 
@@ -570,9 +623,13 @@ public class Calendar : TemplatedControl
 
             if (newValue.HasValue)
             {
-                if (SelectedDate.HasValue && DateTime.Compare(SelectedDate.Value, newValue.Value) > 0)
+                // DisplayDateEnd coerces to the value of the
+                // SelectedDateMax if SelectedDateMax > DisplayDateEnd
+                var selectedDateMax = SelectedRangeEndDate;
+
+                if (selectedDateMax.HasValue && DateTime.Compare(selectedDateMax.Value, newValue.Value) > 0)
                 {
-                    SetCurrentValue(SelectedDateProperty, newValue.Value);
+                    SetCurrentValue(DisplayDateEndProperty, selectedDateMax.Value);
                     return;
                 }
 
@@ -596,23 +653,47 @@ public class Calendar : TemplatedControl
         }
     }
 
-    internal CalendarDayButton? FindDayButtonFromDay(DateTime day)
+    internal RangeCalendarDayButton? FindDayButtonFromDay(DateTime day)
     {
+        var monthControl = MonthControl;
+
         // REMOVE_RTM: should be updated if we support MultiCalendar
         var count = RowsPerMonth * ColumnsPerMonth;
-        if (CalendarItem?.MonthView != null)
+        if (monthControl != null)
         {
-            for (var childIndex = ColumnsPerMonth; childIndex < count; childIndex++)
+            if (monthControl.PrimaryMonthView != null)
             {
-                if (CalendarItem.MonthView.Children[childIndex] is CalendarDayButton b)
+                for (var childIndex = ColumnsPerMonth; childIndex < count; childIndex++)
                 {
-                    var d = b.DataContext as DateTime?;
-
-                    if (d.HasValue)
+                    if (monthControl.PrimaryMonthView.Children[childIndex] is RangeCalendarDayButton b)
                     {
-                        if (DateTimeHelper.CompareDays(d.Value, day) == 0)
+                        var d = b.DataContext as DateTime?;
+
+                        if (d.HasValue)
                         {
-                            return b;
+                            if (DateTimeHelper.CompareDays(d.Value, day) == 0)
+                            {
+                                return b;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (monthControl.SecondaryMonthView != null)
+            {
+                for (var childIndex = ColumnsPerMonth; childIndex < count; childIndex++)
+                {
+                    if (monthControl.SecondaryMonthView.Children[childIndex] is RangeCalendarDayButton b)
+                    {
+                        var d = b.DataContext as DateTime?;
+
+                        if (d.HasValue)
+                        {
+                            if (DateTimeHelper.CompareDays(d.Value, day) == 0)
+                            {
+                                return b;
+                            }
                         }
                     }
                 }
@@ -646,36 +727,51 @@ public class Calendar : TemplatedControl
     {
         Debug.Assert(DisplayMode == CalendarMode.Year || DisplayMode == CalendarMode.Decade,
             "The DisplayMode should be Year or Decade");
-        if (CalendarItem != null && CalendarItem.MonthView != null && CalendarItem.YearView != null)
+        var monthControl = MonthControl;
+        if (monthControl != null && monthControl.MonthView != null && monthControl.YearView != null)
         {
-            CalendarItem.MonthView.IsVisible = false;
-            CalendarItem.YearView.IsVisible  = true;
+            monthControl.MonthView.IsVisible = false;
+            monthControl.YearView.IsVisible  = true;
             UpdateMonths();
         }
     }
 
     internal void ResetStates()
     {
+        var monthControl = MonthControl;
         var count        = RowsPerMonth * ColumnsPerMonth;
-        if (CalendarItem?.MonthView != null)
+        if (monthControl != null)
         {
-            for (var childIndex = ColumnsPerMonth; childIndex < count; childIndex++)
+            if (monthControl.PrimaryMonthView != null)
             {
-                var d = (CalendarDayButton)CalendarItem.MonthView.Children[childIndex];
-                d.IgnoreMouseOverState();
+                for (var childIndex = ColumnsPerMonth; childIndex < count; childIndex++)
+                {
+                    var d = (RangeCalendarDayButton)monthControl.PrimaryMonthView.Children[childIndex];
+                    d.IgnoreMouseOverState();
+                }
+            }
+
+            if (monthControl.SecondaryMonthView != null)
+            {
+                for (var childIndex = ColumnsPerMonth; childIndex < count; childIndex++)
+                {
+                    var d = (RangeCalendarDayButton)monthControl.SecondaryMonthView.Children[childIndex];
+                    d.IgnoreMouseOverState();
+                }
             }
         }
     }
 
     protected internal virtual void UpdateMonths()
     {
-        if (CalendarItem != null)
+        var monthControl = MonthControl;
+        if (monthControl != null)
         {
-            UpdateCalendarMonths(CalendarItem);
+            UpdateCalendarMonths(monthControl);
         }
     }
 
-    internal void UpdateCalendarMonths(CalendarItem calendarItem)
+    internal void UpdateCalendarMonths(RangeCalendarItem calendarItem)
     {
         switch (DisplayMode)
         {
@@ -697,7 +793,7 @@ public class Calendar : TemplatedControl
         }
     }
 
-    internal static bool IsValidDateSelection(Calendar cal, DateTime? value)
+    internal static bool IsValidDateSelection(RangeCalendar cal, DateTime? value)
     {
         if (!value.HasValue)
         {
@@ -724,7 +820,7 @@ public class Calendar : TemplatedControl
         return true;
     }
 
-    private static bool IsValidKeyboardSelection(Calendar cal, DateTime? value)
+    private static bool IsValidKeyboardSelection(RangeCalendar cal, DateTime? value)
     {
         if (!value.HasValue)
         {
@@ -739,7 +835,150 @@ public class Calendar : TemplatedControl
         return DateTime.Compare(value.Value, cal.DisplayDateRangeStart) >= 0 &&
                DateTime.Compare(value.Value, cal.DisplayDateRangeEnd) <= 0;
     }
-    
+
+    /// <summary>
+    /// This method highlights the days in MultiSelection mode without
+    /// adding them to the SelectedDates collection.
+    /// </summary>
+    internal void UpdateHighlightDays()
+    {
+        DateTime? rangeStart = default;
+        DateTime? rangeEnd   = default;
+        SortHoverIndexes(out rangeStart, out rangeEnd);
+        Debug.Assert(MonthControl is not null);
+        var monthControl = MonthControl;
+        // This assumes a contiguous set of dates:
+        if (monthControl.PrimaryMonthView is not null)
+        {
+            UpdateHighlightDays(monthControl.PrimaryMonthView, rangeStart, rangeEnd);
+        }
+
+        if (monthControl.SecondaryMonthView is not null)
+        {
+            UpdateHighlightDays(monthControl.SecondaryMonthView, rangeStart, rangeEnd);
+        }
+    }
+
+    private void UpdateHighlightDays(Grid targetMonthView, DateTime? rangeStart, DateTime? rangeEnd)
+    {
+        var count = targetMonthView.Children.Count;
+        for (var i = 0; i < count; i++)
+        {
+            if (targetMonthView.Children[i] is RangeCalendarDayButton b)
+            {
+                var d = b.DataContext as DateTime?;
+                if (d.HasValue)
+                {
+                    if (rangeStart is not null && rangeEnd is not null)
+                    {
+                        b.IsSelected = DateTimeHelper.InRange(d.Value, rangeStart.Value, rangeEnd.Value);
+                    } else if (SelectedRangeStartDate is not null)
+                    {
+                        b.IsSelected = DateTimeHelper.CompareDays(SelectedRangeStartDate.Value, d.Value) == 0;
+                    }
+                    else if (SelectedRangeEndDate is not null)
+                    {
+                        b.IsSelected = DateTimeHelper.CompareDays(SelectedRangeEndDate.Value, d.Value) == 0;
+                    }
+                    else
+                    {
+                        b.IsSelected = false;
+                    }
+
+                    if (b.IsSelected)
+                    {
+                        if (FocusButton != null)
+                        {
+                            FocusButton.IsCurrent = false;
+                        }
+                        
+                        b.IsCurrent = HasFocusInternal;
+                        FocusButton = b;
+                    }
+                }
+                else
+                {
+                    b.IsSelected = false;
+                }
+            }
+        }
+    }
+
+    // 无条件取消所有的所有的高亮
+    internal void UnHighlightDays()
+    {
+        Debug.Assert(MonthControl is not null);
+        var monthControl = MonthControl;
+        // This assumes a contiguous set of dates:
+        if (monthControl.PrimaryMonthView is not null)
+        {
+            UnHighlightDays(monthControl.PrimaryMonthView);
+        }
+
+        if (monthControl.SecondaryMonthView is not null)
+        {
+            UnHighlightDays(monthControl.SecondaryMonthView);
+        }
+    }
+
+    private void UnHighlightDays(Grid targetMonthView)
+    {
+        var count = targetMonthView.Children.Count;
+        for (var i = 0; i < count; i++)
+        {
+            if (targetMonthView.Children[i] is RangeCalendarDayButton b)
+            {
+                var d = b.DataContext as DateTime?;
+                if (d.HasValue)
+                {
+                    if ((SelectedRangeStartDate.HasValue &&
+                         DateTimeHelper.CompareDays(d.Value, SelectedRangeStartDate.Value) == 0) ||
+                        (SelectedRangeEndDate.HasValue &&
+                         DateTimeHelper.CompareDays(d.Value, SelectedRangeEndDate.Value) == 0))
+                    {
+                        b.IsSelected = true;
+                    }
+                    else
+                    {
+                        b.IsSelected = false;
+                    }
+                }
+            }
+        }
+    }
+
+    internal void SortHoverIndexes(out DateTime? rangeStart, out DateTime? rangeEnd)
+    {
+        if (FixedRangeStart)
+        {
+            rangeStart = HoverDateTime ?? SelectedRangeStartDate;
+            rangeEnd   = SelectedRangeEndDate;
+            if (rangeStart is not null && rangeEnd is not null)
+            {
+                if (DateTimeHelper.CompareDays(rangeEnd.Value, rangeStart.Value) < 0)
+                {
+                    var temp = rangeStart.Value;
+                    rangeStart = rangeEnd;
+                    rangeEnd   = temp;
+                }
+            }
+        }
+        else
+        {
+            rangeStart = SelectedRangeStartDate;
+            rangeEnd   = HoverDateTime ?? SelectedRangeEndDate;
+            if (rangeStart is not null && rangeEnd is not null)
+            {
+                if (DateTimeHelper.CompareDays(rangeEnd.Value, rangeStart.Value) < 0)
+                {
+                    var temp = rangeStart.Value;
+                    rangeStart = rangeEnd;
+                    rangeEnd   = temp;
+                }
+            }
+        }
+    }
+
     internal void OnPreviousMonthClick()
     {
         if (DisplayMode == CalendarMode.Month)
@@ -874,12 +1113,12 @@ public class Calendar : TemplatedControl
     /// If the day is a trailing day, Update the DisplayDate.
     /// </summary>
     /// <param name="selectedDate">Inherited code: Requires comment.</param>
-    internal virtual void NotifyDayClick(DateTime selectedDate)
+    internal void OnDayClick(DateTime selectedDate)
     {
         Debug.Assert(DisplayMode == CalendarMode.Month, "DisplayMode should be Month!");
         var i = DateTimeHelper.CompareYearMonth(selectedDate, DisplayDateInternal);
 
-        if (i > 0)
+        if (i > 1)
         {
             OnNextMonthClick();
         }
@@ -888,25 +1127,16 @@ public class Calendar : TemplatedControl
             OnPreviousMonthClick();
         }
     }
-    
-    internal void NotifyRangeDateSelected()
-    {
-        DateSelected?.Invoke(this, new DateSelectedEventArgs(SelectedDate));
-    }
-    
-    internal void NotifyHoverDateChanged(DateTime? hoverDate)
-    {
-        HoverDateChanged?.Invoke(this, new DateSelectedEventArgs(hoverDate));
-    }
 
     private void OnMonthClick()
     {
-        Debug.Assert(CalendarItem is not null);
-        
-        if (CalendarItem != null && CalendarItem.YearView != null && CalendarItem.MonthView != null)
+        Debug.Assert(MonthControl is not null);
+
+        var monthControl = MonthControl;
+        if (monthControl != null && monthControl.YearView != null && monthControl.MonthView != null)
         {
-            CalendarItem.YearView.IsVisible  = false;
-            CalendarItem.MonthView.IsVisible = true;
+            monthControl.YearView.IsVisible  = false;
+            monthControl.MonthView.IsVisible = true;
 
             if (!LastSelectedDate.HasValue || DateTimeHelper.CompareYearMonth(LastSelectedDate.Value, DisplayDate) != 0)
             {
@@ -919,15 +1149,65 @@ public class Calendar : TemplatedControl
 
     public override string ToString()
     {
-        if (SelectedDate != null)
+        if (SelectedRangeStartDate != null || SelectedRangeEndDate != null)
         {
-            return SelectedDate.Value.ToString(DateTimeHelper.GetCurrentDateFormat());
+            var builder = new StringBuilder();
+            if (SelectedRangeStartDate != null)
+            {
+                builder.Append(SelectedRangeStartDate.Value.ToString(DateTimeHelper.GetCurrentDateFormat()));
+            }
+            else
+            {
+                builder.Append('?');
+            }
+
+            builder.Append(" - ");
+            if (SelectedRangeEndDate != null)
+            {
+                builder.Append(SelectedRangeEndDate.Value.ToString(DateTimeHelper.GetCurrentDateFormat()));
+            }
+            else
+            {
+                builder.Append('?');
+            }
+
+            return builder.ToString();
         }
-        else
-        {
-            return string.Empty;
-        }
+
+        return string.Empty;
     }
+
+    /// <summary>
+    /// Occurs when the
+    /// <see cref="P:System.Windows.Controls.RangeCalendar.DisplayDate" />
+    /// property is changed.
+    /// </summary>
+    /// <remarks>
+    /// This event occurs after DisplayDate is assigned its new value.
+    /// </remarks>
+    public event EventHandler<CalendarDateChangedEventArgs>? DisplayDateChanged;
+
+    /// <summary>
+    /// Occurs when the
+    /// <see cref="P:System.Windows.Controls.RangeCalendar.DisplayMode" />
+    /// property is changed.
+    /// </summary>
+    public event EventHandler<CalendarModeChangedEventArgs>? DisplayModeChanged;
+
+    /// <summary>
+    /// Inherited code: Requires comment.
+    /// </summary>
+    internal event EventHandler<PointerReleasedEventArgs>? DayButtonMouseUp;
+    
+    /// <summary>
+    /// 当范围选择完成的时候派发这个事件
+    /// </summary>
+    public event EventHandler<RangeDateSelectedEventArgs>? RangeDateSelected;
+    
+    /// <summary>
+    /// 当前 Pointer 选中的日期事件
+    /// </summary>
+    public event EventHandler<HoverDateSelectedEventArgs>? HoverDateChanged;
 
     protected override void OnPointerReleased(PointerReleasedEventArgs e)
     {
@@ -1398,79 +1678,38 @@ public class Calendar : TemplatedControl
         Debug.Assert(e.NewValue is bool, "NewValue should be a boolean!");
         var isEnabled = (bool)e.NewValue;
 
-        CalendarItem?.UpdateDisabled(isEnabled);
+        MonthControl?.UpdateDisabled(isEnabled);
     }
-    
+
+    /// <summary>
+    /// Builds the visual tree for the
+    /// <see cref="T:System.Windows.Controls.RangeCalendar" /> when a new
+    /// template is applied.
+    /// </summary>
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        base.OnApplyTemplate(e);
-        CalendarItem = e.NameScope.Find<CalendarItem>(RangeCalendarTheme.CalendarItemPart);
+        Root = e.NameScope.Find<Panel>(RangeCalendarTheme.RootPart);
 
-        if (SelectedDate is not null)
-        {
-            SetCurrentValue(DisplayDateProperty, SelectedDate);
-        }
-    
         SelectedMonth = DisplayDate;
         SelectedYear  = DisplayDate;
-    
-        if (CalendarItem != null)
-        {
-            CalendarItem.Owner = this;
-        }
-    }
-    
-    internal virtual void UpdateHighlightDays()
-    {
-        Debug.Assert(CalendarItem is not null);
-        // This assumes a contiguous set of dates:
-        if (CalendarItem.MonthView is not null)
-        {
-            var monthView = CalendarItem.MonthView;
-            var count     = monthView.Children.Count;
-            for (var i = 0; i < count; i++)
-            {
-                if (monthView.Children[i] is CalendarDayButton b)
-                {
-                    var d = b.DataContext as DateTime?;
-                    if (d.HasValue)
-                    {
-                        b.IsSelected = SelectedDate.HasValue && DateTimeHelper.CompareDays(SelectedDate.Value, d.Value) == 0;
 
-                        if (b.IsSelected)
-                        {
-                            if (FocusButton != null)
-                            {
-                                FocusButton.IsCurrent = false;
-                            }
-                        
-                            b.IsCurrent = HasFocusInternal;
-                            FocusButton = b;
-                        }
-                    }
-                    else
-                    {
-                        b.IsSelected = false;
-                    }
-                }
+        if (Root != null)
+        {
+            var month = e.NameScope.Find<RangeCalendarItem>(RangeCalendarTheme.CalendarItemPart);
+
+            if (month != null)
+            {
+                month.Owner = this;
             }
         }
     }
-    
-    internal virtual void UnHighlightDays()
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        Debug.Assert(CalendarItem is not null);
-        if (CalendarItem.MonthView is not null)
-        {
-            var monthView = CalendarItem.MonthView;
-            var count     = monthView.Children.Count;
-            for (var i = 0; i < count; i++)
-            {
-                if (monthView.Children[i] is CalendarDayButton b)
-                {
-                    b.IsSelected = false;
-                }
-            }
-        }
+        base.OnAttachedToVisualTree(e);
+        TokenResourceBinder.CreateGlobalTokenBinding(this, BorderThicknessProperty,
+            GlobalTokenResourceKey.BorderThickness,
+            BindingPriority.Template,
+            new RenderScaleAwareThicknessConfigure(this));
     }
 }

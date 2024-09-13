@@ -9,7 +9,7 @@ using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Styling;
 
-namespace AtomUI.Controls.CalendarPresenter;
+namespace AtomUI.Controls.CalendarView;
 
 [ControlThemeProvider]
 internal class CalendarButtonTheme : BaseControlTheme

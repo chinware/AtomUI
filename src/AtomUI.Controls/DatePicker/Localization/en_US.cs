@@ -7,4 +7,5 @@ namespace AtomUI.Controls.DatePickerLang;
 internal class en_US : AbstractLanguageProvider
 {
     public const string Today = "Today";
+    public const string Now = "Now";
 }

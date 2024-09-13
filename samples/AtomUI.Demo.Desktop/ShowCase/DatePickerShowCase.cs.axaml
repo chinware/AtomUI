@@ -5,7 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
-    xmlns:calendarpresenter="clr-namespace:AtomUI.Controls.CalendarPresenter;assembly=AtomUI.Controls"
+    xmlns:calendarpresenter="clr-namespace:AtomUI.Controls.CalendarView;assembly=AtomUI.Controls"
     xmlns:atom="https://atomui.net"
     mc:Ignorable="d">
     <desktop:ShowCasePanel>

@@ -8,7 +8,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using AvaloniaButton = Avalonia.Controls.Button;
 
-namespace AtomUI.Controls.CalendarPresenter;
+namespace AtomUI.Controls.CalendarView;
 
 /// <summary>
 /// Represents a button on a
