@@ -358,6 +358,15 @@ public class Calendar : TemplatedControl
     internal DateTime DisplayDateRangeEnd => DisplayDateEnd.GetValueOrDefault(DateTime.MaxValue);
     internal bool HasFocusInternal { get; set; }
 
+    internal static readonly StyledProperty<bool> IsPointerInMonthViewProperty =
+        AvaloniaProperty.Register<Calendar, bool>(nameof(IsPointerInMonthView), false);
+
+    internal bool IsPointerInMonthView
+    {
+        get => GetValue(IsPointerInMonthViewProperty);
+        set => SetValue(IsPointerInMonthViewProperty, value);
+    }
+
     #endregion
     
     private bool _displayDateIsChanging;
@@ -375,7 +384,7 @@ public class Calendar : TemplatedControl
         HorizontalAlignmentProperty.OverrideDefaultValue<Calendar>(HorizontalAlignment.Left);
         VerticalAlignmentProperty.OverrideDefaultValue<Calendar>(VerticalAlignment.Top);
     }
-    
+
     public Calendar()
     {
         SetCurrentValue(DisplayDateProperty, DateTime.Today);

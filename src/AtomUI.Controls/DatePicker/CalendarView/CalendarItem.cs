@@ -10,6 +10,7 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Input;
+using Avalonia.Input.Raw;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 
@@ -203,6 +204,9 @@ internal class CalendarItem : TemplatedControl
     protected IconButton? _nextMonthButton;
     protected IconButton? _previousButton;
     protected IconButton? _previousMonthButton;
+    
+    // 当鼠标移动到日历单元格外面的时候还原 hover 临时的高亮
+    private IDisposable? _pointerPositionDisposable;
     
     internal Calendar? Owner { get; set; }
 
@@ -1076,6 +1080,41 @@ internal class CalendarItem : TemplatedControl
         PseudoClasses.Set(CalendarDisabledPC, !isEnabled);
     }
     
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        TokenResourceBinder.CreateGlobalTokenBinding(this, BorderThicknessProperty, GlobalTokenResourceKey.BorderThickness, BindingPriority.Template,
+            new RenderScaleAwareThicknessConfigure(this, thickness => new Thickness(0, 0, 0, thickness.Bottom)));
+        var inputManager = AvaloniaLocator.Current.GetService<IInputManager>()!;
+        _pointerPositionDisposable = inputManager.Process.Subscribe(DetectPointerPosition);
+    }
+    
+    private void DetectPointerPosition(RawInputEventArgs args)
+    {
+        if (Owner is null)
+        {
+            return;
+        }
+
+        if (args is RawPointerEventArgs pointerEventArgs)
+        {
+            if (!IsPointerInMonthView(pointerEventArgs.Position))
+            {
+                Owner.IsPointerInMonthView = false;
+            }
+            else
+            {
+                Owner.IsPointerInMonthView = true;
+            }
+        }
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        _pointerPositionDisposable?.Dispose();
+    }
+    
     protected virtual bool IsPointerInMonthView(Point position)
     {
         if (Owner is null)
@@ -1098,12 +1137,5 @@ internal class CalendarItem : TemplatedControl
         var monthViewPos = monthView.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(monthView)!) ?? default;
         return new Rect(firstDayPos,
             new Size(monthView.Bounds.Width, monthViewPos.Y + monthView.Bounds.Height - firstDayPos.Y));
-    }
-
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        TokenResourceBinder.CreateGlobalTokenBinding(this, BorderThicknessProperty, GlobalTokenResourceKey.BorderThickness, BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this, thickness => new Thickness(0, 0, 0, thickness.Bottom)));
     }
 }

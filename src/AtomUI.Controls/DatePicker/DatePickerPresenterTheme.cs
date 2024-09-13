@@ -16,6 +16,7 @@ internal class DatePickerPresenterTheme : BaseControlTheme
 {
     public const string MainLayoutPart = "PART_MainLayout";
     public const string NowButtonPart = "PART_NowButton";
+    public const string TodayButtonPart = "PART_TodayButton";
     public const string ConfirmButtonPart = "PART_ConfirmButton";
     public const string ButtonsContainerPart = "PART_ButtonsContainer";
     public const string ButtonsContainerFramePart = "PART_ButtonsContainerFrame";
@@ -58,10 +59,12 @@ internal class DatePickerPresenterTheme : BaseControlTheme
 
     protected virtual Control BuildCalendarView(DatePickerPresenter presenter, INameScope scope)
     {
-        return new PickerCalendar()
+        var calendarView = new PickerCalendar()
         {
             Name = CalendarViewPart
         };
+        calendarView.RegisterInNameScope(scope);
+        return calendarView;
     }
 
     protected virtual Panel BuildButtons(DatePickerPresenter presenter, INameScope scope)
@@ -81,6 +84,17 @@ internal class DatePickerPresenterTheme : BaseControlTheme
         LanguageResourceBinder.CreateBinding(nowButton, Button.TextProperty, DatePickerLangResourceKey.Now);
         nowButton.RegisterInNameScope(scope);
         buttonsPanel.Children.Add(nowButton);
+        
+        var todayButton = new Button
+        {
+            ButtonType          = ButtonType.Link,
+            Name                = TodayButtonPart,
+            HorizontalAlignment = HorizontalAlignment.Left,
+            SizeType            = SizeType.Small
+        };
+        LanguageResourceBinder.CreateBinding(todayButton, Button.TextProperty, DatePickerLangResourceKey.Today);
+        todayButton.RegisterInNameScope(scope);
+        buttonsPanel.Children.Add(todayButton);
 
         var confirmButton = new Button
         {

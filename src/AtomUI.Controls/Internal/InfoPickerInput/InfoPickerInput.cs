@@ -17,6 +17,7 @@ namespace AtomUI.Controls.Internal;
 public abstract class InfoPickerInput : TemplatedControl
 {
     private const string FlyoutOpenPC = ":flyout-open";
+    private const string ChoosingPC = ":choosing";
 
     #region 公共属性定义
 
@@ -171,7 +172,8 @@ public abstract class InfoPickerInput : TemplatedControl
     protected AddOnDecoratedInnerBox? _pickerInnerBox;
     protected TextBox? _infoInputBox;
     
-    private bool _isFlyoutOpen;
+    private protected bool _isFlyoutOpen;
+    private protected bool _isChoosing;
     
     static InfoPickerInput()
     {
@@ -305,7 +307,7 @@ public abstract class InfoPickerInput : TemplatedControl
             };
             _pickerFlyout.PresenterCreated += (sender, args) =>
             {
-                NotifyPresenterCreated(args.Presenter);
+                NotifyFlyoutPresenterCreated(args.Presenter);
             };
             _flyoutStateHelper.Flyout      =  _pickerFlyout;
         }
@@ -332,7 +334,7 @@ public abstract class InfoPickerInput : TemplatedControl
         Clear();
     }
 
-    protected virtual void NotifyPresenterCreated(Control presenter)
+    protected virtual void NotifyFlyoutPresenterCreated(Control flyoutPresenter)
     {
     }
     
@@ -352,6 +354,7 @@ public abstract class InfoPickerInput : TemplatedControl
     protected virtual void UpdatePseudoClasses()
     {
         PseudoClasses.Set(FlyoutOpenPC, _isFlyoutOpen);
+        PseudoClasses.Set(ChoosingPC, _isChoosing);
     }
     
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
