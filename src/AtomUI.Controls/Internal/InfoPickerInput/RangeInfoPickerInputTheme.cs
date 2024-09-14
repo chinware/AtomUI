@@ -49,6 +49,7 @@ internal class RangeInfoPickerInputTheme : InfoPickerInputTheme
             GlobalTokenResourceKey.ColorTextQuaternary);
 
         var rangeStartTextBox = BuildPickerTextBox(InfoInputBoxPart);
+        
         CreateTemplateParentBinding(rangeStartTextBox, TextBox.TextProperty, RangeInfoPickerInput.TextProperty);
         CreateTemplateParentBinding(rangeStartTextBox, TextBox.WatermarkProperty,
             RangeInfoPickerInput.WatermarkProperty);

@@ -52,9 +52,9 @@ internal class TextBoxTheme : BaseControlTheme
         editInnerBox.RegisterInNameScope(scope);
 
         CreateTemplateParentBinding(editInnerBox, AddOnDecoratedInnerBox.LeftAddOnContentProperty,
-            Avalonia.Controls.TextBox.InnerLeftContentProperty);
+            TextBox.InnerLeftContentProperty);
         CreateTemplateParentBinding(editInnerBox, AddOnDecoratedInnerBox.RightAddOnContentProperty,
-            Avalonia.Controls.TextBox.InnerRightContentProperty);
+            TextBox.InnerRightContentProperty);
         CreateTemplateParentBinding(editInnerBox, AddOnDecoratedInnerBox.SizeTypeProperty, TextBox.SizeTypeProperty);
         CreateTemplateParentBinding(editInnerBox, AddOnDecoratedInnerBox.StyleVariantProperty,
             TextBox.StyleVariantProperty);
@@ -63,7 +63,7 @@ internal class TextBoxTheme : BaseControlTheme
         CreateTemplateParentBinding(editInnerBox, TextBoxInnerBox.IsRevealButtonVisibleProperty,
             TextBox.IsEnableRevealButtonProperty);
         CreateTemplateParentBinding(editInnerBox, TextBoxInnerBox.IsRevealButtonCheckedProperty,
-            Avalonia.Controls.TextBox.RevealPasswordProperty, BindingMode.TwoWay);
+            TextBox.RevealPasswordProperty, BindingMode.TwoWay);
         CreateTemplateParentBinding(editInnerBox, AddOnDecoratedInnerBox.StatusProperty, TextBox.StatusProperty);
         CreateTemplateParentBinding(editInnerBox, TextBoxInnerBox.EmbedModeProperty, TextBox.EmbedModeProperty);
 
@@ -93,15 +93,15 @@ internal class TextBoxTheme : BaseControlTheme
             Opacity = 0.5
         };
         CreateTemplateParentBinding(watermark, Layoutable.HorizontalAlignmentProperty,
-            Avalonia.Controls.TextBox.HorizontalContentAlignmentProperty);
+            TextBox.HorizontalContentAlignmentProperty);
         CreateTemplateParentBinding(watermark, Layoutable.VerticalAlignmentProperty,
-            Avalonia.Controls.TextBox.VerticalContentAlignmentProperty);
-        CreateTemplateParentBinding(watermark, TextBlock.TextProperty, Avalonia.Controls.TextBox.WatermarkProperty);
+            TextBox.VerticalContentAlignmentProperty);
+        CreateTemplateParentBinding(watermark, TextBlock.TextProperty, TextBox.WatermarkProperty);
         CreateTemplateParentBinding(watermark, TextBlock.TextAlignmentProperty,
-            Avalonia.Controls.TextBox.TextAlignmentProperty);
+            TextBox.TextAlignmentProperty);
         CreateTemplateParentBinding(watermark, TextBlock.TextWrappingProperty,
-            Avalonia.Controls.TextBox.TextWrappingProperty);
-        CreateTemplateParentBinding(watermark, Visual.IsVisibleProperty, Avalonia.Controls.TextBox.TextProperty,
+            TextBox.TextWrappingProperty);
+        CreateTemplateParentBinding(watermark, Visual.IsVisibleProperty, TextBox.TextProperty,
             BindingMode.Default,
             StringConverters.IsNullOrEmpty);
 
@@ -113,35 +113,35 @@ internal class TextBoxTheme : BaseControlTheme
         };
 
         CreateTemplateParentBinding(textPresenter, Layoutable.HorizontalAlignmentProperty,
-            Avalonia.Controls.TextBox.HorizontalContentAlignmentProperty);
+            TextBox.HorizontalContentAlignmentProperty);
         CreateTemplateParentBinding(textPresenter, Layoutable.VerticalAlignmentProperty,
-            Avalonia.Controls.TextBox.VerticalContentAlignmentProperty);
+            TextBox.VerticalContentAlignmentProperty);
         CreateTemplateParentBinding(textPresenter, TextPresenter.CaretBlinkIntervalProperty,
-            Avalonia.Controls.TextBox.CaretBlinkIntervalProperty);
+            TextBox.CaretBlinkIntervalProperty);
         CreateTemplateParentBinding(textPresenter, TextPresenter.CaretBrushProperty,
-            Avalonia.Controls.TextBox.CaretBrushProperty);
+            TextBox.CaretBrushProperty);
         CreateTemplateParentBinding(textPresenter, TextPresenter.CaretIndexProperty,
-            Avalonia.Controls.TextBox.CaretIndexProperty);
+            TextBox.CaretIndexProperty);
         CreateTemplateParentBinding(textPresenter, TextPresenter.LineHeightProperty,
-            Avalonia.Controls.TextBox.LineHeightProperty);
+            TextBox.LineHeightProperty);
         CreateTemplateParentBinding(textPresenter, TextPresenter.PasswordCharProperty,
-            Avalonia.Controls.TextBox.PasswordCharProperty);
+            TextBox.PasswordCharProperty);
         CreateTemplateParentBinding(textPresenter, TextPresenter.RevealPasswordProperty,
-            Avalonia.Controls.TextBox.RevealPasswordProperty);
+            TextBox.RevealPasswordProperty);
         CreateTemplateParentBinding(textPresenter, TextPresenter.SelectionBrushProperty,
-            Avalonia.Controls.TextBox.SelectionBrushProperty);
+            TextBox.SelectionBrushProperty);
         CreateTemplateParentBinding(textPresenter, TextPresenter.SelectionStartProperty,
-            Avalonia.Controls.TextBox.SelectionStartProperty);
+            TextBox.SelectionStartProperty);
         CreateTemplateParentBinding(textPresenter, TextPresenter.SelectionEndProperty,
-            Avalonia.Controls.TextBox.SelectionEndProperty);
+            TextBox.SelectionEndProperty);
         CreateTemplateParentBinding(textPresenter, TextPresenter.SelectionForegroundBrushProperty,
-            Avalonia.Controls.TextBox.SelectionForegroundBrushProperty);
-        CreateTemplateParentBinding(textPresenter, TextPresenter.TextProperty, Avalonia.Controls.TextBox.TextProperty,
+            TextBox.SelectionForegroundBrushProperty);
+        CreateTemplateParentBinding(textPresenter, TextPresenter.TextProperty, TextBox.TextProperty,
             BindingMode.TwoWay);
         CreateTemplateParentBinding(textPresenter, TextPresenter.TextAlignmentProperty,
-            Avalonia.Controls.TextBox.TextAlignmentProperty);
+            TextBox.TextAlignmentProperty);
         CreateTemplateParentBinding(textPresenter, TextPresenter.TextWrappingProperty,
-            Avalonia.Controls.TextBox.TextWrappingProperty);
+            TextBox.TextWrappingProperty);
 
         textPresenterLayout.Children.Add(watermark);
         textPresenterLayout.Children.Add(textPresenter);
@@ -167,17 +167,17 @@ internal class TextBoxTheme : BaseControlTheme
         var commonStyle = new Style(selector => selector.Nesting());
         var largeStyle =
             new Style(selector => selector.Nesting().PropertyEquals(TextBox.SizeTypeProperty, SizeType.Large));
-        largeStyle.Add(Avalonia.Controls.TextBox.LineHeightProperty, GlobalTokenResourceKey.FontHeightLG);
+        largeStyle.Add(TextBox.LineHeightProperty, GlobalTokenResourceKey.FontHeightLG);
         commonStyle.Add(largeStyle);
 
         var middleStyle =
             new Style(selector => selector.Nesting().PropertyEquals(TextBox.SizeTypeProperty, SizeType.Middle));
-        middleStyle.Add(Avalonia.Controls.TextBox.LineHeightProperty, GlobalTokenResourceKey.FontHeight);
+        middleStyle.Add(TextBox.LineHeightProperty, GlobalTokenResourceKey.FontHeight);
         commonStyle.Add(middleStyle);
 
         var smallStyle =
             new Style(selector => selector.Nesting().PropertyEquals(TextBox.SizeTypeProperty, SizeType.Small));
-        smallStyle.Add(Avalonia.Controls.TextBox.LineHeightProperty, GlobalTokenResourceKey.FontHeightSM);
+        smallStyle.Add(TextBox.LineHeightProperty, GlobalTokenResourceKey.FontHeightSM);
         commonStyle.Add(smallStyle);
 
         Add(commonStyle);
@@ -185,11 +185,11 @@ internal class TextBoxTheme : BaseControlTheme
 
     private void BuildFixedStyle()
     {
-        this.Add(Avalonia.Controls.TextBox.SelectionBrushProperty, GlobalTokenResourceKey.SelectionBackground);
-        this.Add(Avalonia.Controls.TextBox.SelectionForegroundBrushProperty,
+        this.Add(TextBox.SelectionBrushProperty, GlobalTokenResourceKey.SelectionBackground);
+        this.Add(TextBox.SelectionForegroundBrushProperty,
             GlobalTokenResourceKey.SelectionForeground);
         this.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Center);
-        this.Add(Avalonia.Controls.TextBox.VerticalContentAlignmentProperty, VerticalAlignment.Center);
+        this.Add(TextBox.VerticalContentAlignmentProperty, VerticalAlignment.Center);
         this.Add(ScrollViewer.IsScrollChainingEnabledProperty, true);
     }
 

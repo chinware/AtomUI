@@ -199,6 +199,8 @@ internal class AddOnDecoratedBoxTheme : BaseControlTheme
     {
         var disabledStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Disabled));
         disabledStyle.Add(TemplatedControl.ForegroundProperty, GlobalTokenResourceKey.ColorTextDisabled);
+        disabledStyle.Add(TemplatedControl.BackgroundProperty, GlobalTokenResourceKey.ColorBgContainerDisabled);
+        
         // TODO 暂时这么简单处理吧
         var addOnStyle = new Style(selector => selector.Nesting().Template().OfType<ContentPresenter>());
         addOnStyle.Add(ContentPresenter.ForegroundProperty, GlobalTokenResourceKey.ColorTextDisabled);

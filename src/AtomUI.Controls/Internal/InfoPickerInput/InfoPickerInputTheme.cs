@@ -45,7 +45,7 @@ internal class InfoPickerInputTheme : BaseControlTheme
         {
             Name                     = PickerInnerPart,
             HorizontalAlignment      = HorizontalAlignment.Stretch,
-            VerticalContentAlignment = VerticalAlignment.Stretch
+            VerticalContentAlignment = VerticalAlignment.Stretch,
         };
         pickerInnerBox.RegisterInNameScope(scope);
         CreateTemplateParentBinding(pickerInnerBox, AddOnDecoratedInnerBox.LeftAddOnContentProperty,
@@ -138,13 +138,19 @@ internal class InfoPickerInputTheme : BaseControlTheme
     protected override void BuildStyles()
     {
         base.BuildStyles();
-        var commonStyle = new Style(selector => selector.Nesting());
-        commonStyle.Add(InfoPickerInput.InputTextBrushProperty, GlobalTokenResourceKey.ColorText);
+        var enableStyle = new Style(selector =>
+            selector.Nesting().PropertyEquals(InfoPickerInput.IsEnabledProperty, true));
+        enableStyle.Add(InfoPickerInput.InputTextBrushProperty, GlobalTokenResourceKey.ColorText);
         
         var choosingStyle = new Style(selector => selector.Nesting().Class(InfoPickerInput.ChoosingPC));
         choosingStyle.Add(InfoPickerInput.InputTextBrushProperty, GlobalTokenResourceKey.ColorTextTertiary);
-        commonStyle.Add(choosingStyle);
+        enableStyle.Add(choosingStyle);
         
-        Add(commonStyle);
+        Add(enableStyle);
+        
+        var disabledStyle = new Style(selector =>
+            selector.Nesting().PropertyEquals(InfoPickerInput.IsEnabledProperty, false));
+        disabledStyle.Add(InfoPickerInput.InputTextBrushProperty, GlobalTokenResourceKey.ColorTextDisabled);
+        Add(disabledStyle);
     }
 }

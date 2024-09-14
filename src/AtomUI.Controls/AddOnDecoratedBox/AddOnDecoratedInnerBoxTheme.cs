@@ -215,10 +215,10 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
     protected override void BuildStyles()
     {
         BuildCommonStyle();
-        BuildDisabledStyle();
         BuildOutLineStyle();
         BuildFilledStyle();
         BuildAddOnStyle();
+        BuildDisabledStyle();
     }
 
     private void BuildCommonStyle()
@@ -289,6 +289,8 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
 
     private void BuildOutLineStyle()
     {
+        var enableStyle = new Style(selector =>
+            selector.Nesting().PropertyEquals(AddOnDecoratedInnerBox.IsEnabledProperty, true));
         var outlineStyle =
             new Style(selector => selector.Nesting()
                                           .PropertyEquals(AddOnDecoratedBox.StyleVariantProperty,
@@ -385,12 +387,14 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
             warningStyle.Add(focusStyle);
             outlineStyle.Add(warningStyle);
         }
-
-        Add(outlineStyle);
+        enableStyle.Add(outlineStyle);
+        Add(enableStyle);
     }
 
     private void BuildFilledStyle()
     {
+        var enableStyle = new Style(selector =>
+            selector.Nesting().PropertyEquals(AddOnDecoratedInnerBox.IsEnabledProperty, true));
         var filledStyle =
             new Style(selector =>
                 selector.Nesting()
@@ -496,8 +500,8 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
 
             filledStyle.Add(warningStyle);
         }
-
-        Add(filledStyle);
+        enableStyle.Add(filledStyle);
+        Add(enableStyle);
     }
 
     private void BuildAddOnStyle()

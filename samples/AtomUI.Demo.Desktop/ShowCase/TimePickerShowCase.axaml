@@ -83,7 +83,7 @@
                                      Width="160"
                                      StyleVariant="Filled" />
                     <atom:RangeTimePicker Width="320"
-                                          StyleVariant="Outline"
+                                          StyleVariant="Filled"
                                           Watermark="Filled" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Spacing="5">
