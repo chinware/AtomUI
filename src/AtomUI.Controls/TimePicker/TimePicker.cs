@@ -1,8 +1,9 @@
 ﻿using AtomUI.Controls.Internal;
 using AtomUI.Controls.Utils;
+using AtomUI.Data;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.Data;
 
 namespace AtomUI.Controls;
 
@@ -16,6 +17,12 @@ public class TimePicker : InfoPickerInput
 {
     #region 公共属性定义
     
+    public static readonly StyledProperty<bool> IsNeedConfirmProperty =
+        AvaloniaProperty.Register<TimePicker, bool>(nameof(IsNeedConfirm));
+    
+    public static readonly StyledProperty<bool> IsShowNowProperty =
+        AvaloniaProperty.Register<TimePicker, bool>(nameof(IsShowNow), true);
+    
     public static readonly StyledProperty<int> MinuteIncrementProperty =
         AvaloniaProperty.Register<TimePicker, int>(nameof(MinuteIncrement), 1, coerce: CoerceMinuteIncrement);
 
@@ -27,12 +34,23 @@ public class TimePicker : InfoPickerInput
 
     public static readonly StyledProperty<TimeSpan?> SelectedTimeProperty =
         AvaloniaProperty.Register<TimePicker, TimeSpan?>(nameof(SelectedTime),
-            defaultBindingMode: BindingMode.TwoWay,
             enableDataValidation: true);
 
     public static readonly StyledProperty<TimeSpan?> DefaultTimeProperty =
         AvaloniaProperty.Register<TimePicker, TimeSpan?>(nameof(DefaultTime),
             enableDataValidation: true);
+    
+    public bool IsNeedConfirm
+    {
+        get => GetValue(IsNeedConfirmProperty);
+        set => SetValue(IsNeedConfirmProperty, value);
+    }
+    
+    public bool IsShowNow
+    {
+        get => GetValue(IsShowNowProperty);
+        set => SetValue(IsShowNowProperty, value);
+    }
     
     public int MinuteIncrement
     {
@@ -66,37 +84,95 @@ public class TimePicker : InfoPickerInput
 
     #endregion
     
-    internal void NotifyTemporaryTimeSelected(TimeSpan value)
-    {
-        Text = DateTimeUtils.FormatTimeSpan(value, ClockIdentifier == ClockIdentifierType.HourClock12);
-    }
-
-    internal void NotifyConfirmed(TimeSpan value)
-    {
-        _currentValidSelected = true;
-        SelectedTime          = value;
-    }
+    private TimePickerPresenter? _pickerPresenter;
     
     protected override Flyout CreatePickerFlyout()
     {
-        return new TimePickerFlyout(this);
+        return new TimePickerFlyout();
+    }
+    
+    protected override void NotifyFlyoutPresenterCreated(Control flyoutPresenter)
+    {
+        if (flyoutPresenter is TimePickerFlyoutPresenter timePickerFlyoutPresenter)
+        {
+            timePickerFlyoutPresenter.AttachedToVisualTree += (sender, args) =>
+            {
+                _pickerPresenter = timePickerFlyoutPresenter.TimePickerPresenter;
+                ConfigurePickerPresenter(_pickerPresenter);
+            };
+        }
+    }
+    
+    private void ConfigurePickerPresenter(TimePickerPresenter? presenter)
+    {
+        if (presenter is null)
+        {
+            return;
+        }
+        
+        BindUtils.RelayBind(this, MinuteIncrementProperty, presenter, TimePickerPresenter.MinuteIncrementProperty);
+        BindUtils.RelayBind(this, SecondIncrementProperty, presenter, TimePickerPresenter.SecondIncrementProperty);
+        BindUtils.RelayBind(this, ClockIdentifierProperty, presenter, TimePickerPresenter.ClockIdentifierProperty);
+        BindUtils.RelayBind(this, SelectedTimeProperty, presenter, TimePickerPresenter.SelectedTimeProperty);
+        BindUtils.RelayBind(this, IsNeedConfirmProperty, presenter, TimePickerPresenter.IsNeedConfirmProperty);
+        BindUtils.RelayBind(this, IsShowNowProperty, presenter, TimePickerPresenter.IsShowNowProperty);
+    }
+    
+    protected override void NotifyFlyoutOpened()
+    {
+        base.NotifyFlyoutOpened();
+        if (_pickerPresenter is not null)
+        {
+            _pickerPresenter.ChoosingStatueChanged += HandleChoosingStatueChanged;
+            _pickerPresenter.HoverTimeChanged  += HandleHoverTimeChanged;
+            _pickerPresenter.Confirmed             += HandleConfirmed;
+        }
     }
     
     protected override void NotifyFlyoutAboutToClose(bool selectedIsValid)
     {
         base.NotifyFlyoutAboutToClose(selectedIsValid);
-        if (!selectedIsValid)
+        if (_pickerPresenter is not null)
         {
-            if (SelectedTime.HasValue)
-            {
-                Text = DateTimeUtils.FormatTimeSpan(SelectedTime.Value,
-                    ClockIdentifier == ClockIdentifierType.HourClock12);
-            }
-            else
-            {
-                Clear();
-            }
+            _pickerPresenter.ChoosingStatueChanged -= HandleChoosingStatueChanged;
+            _pickerPresenter.HoverTimeChanged      -= HandleHoverTimeChanged;
+            _pickerPresenter.Confirmed             -= HandleConfirmed;
         }
+    }
+    
+    private void HandleChoosingStatueChanged(object? sender, ChoosingStatusEventArgs args)
+    {
+        _isChoosing = args.IsChoosing;
+        UpdatePseudoClasses();
+        if (!args.IsChoosing)
+        {
+            ClearHoverSelectedInfo();
+        }
+    }
+    
+    private void ClearHoverSelectedInfo()
+    {
+        Text = DateTimeUtils.FormatTimeSpan(SelectedTime,
+            ClockIdentifier == ClockIdentifierType.HourClock12);
+    }
+    
+    private void HandleHoverTimeChanged(object? sender, TimeSelectedEventArgs args)
+    {
+        if (args.Time.HasValue)
+        {
+            Text = DateTimeUtils.FormatTimeSpan(args.Time.Value,
+                ClockIdentifier == ClockIdentifierType.HourClock12);
+        }
+        else
+        {
+            Text = null;
+        }
+    }
+    
+    private void HandleConfirmed(object? sender, EventArgs args)
+    {
+        SelectedTime = _pickerPresenter?.SelectedTime;
+        ClosePickerFlyout();
     }
 
     /// <summary>
@@ -124,20 +200,10 @@ public class TimePicker : InfoPickerInput
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (VisualRoot is not null)
+        if (change.Property == SelectedTimeProperty)
         {
-            if (change.Property == SelectedTimeProperty)
-            {
-                if (SelectedTime.HasValue)
-                {
-                    Text = DateTimeUtils.FormatTimeSpan(SelectedTime.Value,
-                        ClockIdentifier == ClockIdentifierType.HourClock12);
-                }
-                else
-                {
-                    Clear();
-                }
-            }
+            Text = DateTimeUtils.FormatTimeSpan(SelectedTime,
+                ClockIdentifier == ClockIdentifierType.HourClock12);
         }
     }
     

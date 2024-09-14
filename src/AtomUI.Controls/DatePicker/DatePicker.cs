@@ -4,7 +4,6 @@ using AtomUI.Data;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.Threading;
 
 namespace AtomUI.Controls;
 

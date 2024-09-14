@@ -140,6 +140,11 @@ internal class InfoPickerInputTheme : BaseControlTheme
         base.BuildStyles();
         var commonStyle = new Style(selector => selector.Nesting());
         commonStyle.Add(InfoPickerInput.InputTextBrushProperty, GlobalTokenResourceKey.ColorText);
+        
+        var choosingStyle = new Style(selector => selector.Nesting().Class(InfoPickerInput.ChoosingPC));
+        choosingStyle.Add(InfoPickerInput.InputTextBrushProperty, GlobalTokenResourceKey.ColorTextTertiary);
+        commonStyle.Add(choosingStyle);
+        
         Add(commonStyle);
     }
 }

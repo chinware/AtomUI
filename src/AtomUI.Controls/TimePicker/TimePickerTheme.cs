@@ -1,6 +1,7 @@
 ﻿using AtomUI.Controls.Internal;
 using AtomUI.Theme.Styling;
 using Avalonia.Controls;
+using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
@@ -17,5 +18,14 @@ internal class TimePickerTheme : InfoPickerInputTheme
         {
             Kind = "ClockCircleOutlined"
         };
+    }
+    
+    protected override void BuildStyles()
+    {
+        base.BuildStyles();
+        var commonStyle = new Style(selector => selector.Nesting());
+        commonStyle.Add(TimePicker.MinWidthProperty, TimePickerTokenResourceKey.PickerInputMinWidth);
+        
+        Add(commonStyle);
     }
 }

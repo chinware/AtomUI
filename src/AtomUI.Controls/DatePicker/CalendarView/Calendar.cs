@@ -11,7 +11,7 @@ using Avalonia.Media;
 
 namespace AtomUI.Controls.CalendarView;
 
-public class DateSelectedEventArgs : RoutedEventArgs
+public class DateSelectedEventArgs : EventArgs
 {
     public DateTime? Value { get; }
     public DateSelectedEventArgs(DateTime? value)

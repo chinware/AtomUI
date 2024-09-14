@@ -5,27 +5,11 @@ namespace AtomUI.Controls;
 
 internal class TimePickerFlyout : Flyout
 {
-    internal TimePicker TimePickerRef { get; set; }
-
-    public TimePickerFlyout(TimePicker timePicker)
-    {
-        TimePickerRef = timePicker;
-    }
-
     protected override Control CreatePresenter()
     {
-        var presenter = new TimePickerFlyoutPresenter(TimePickerRef);
+        var presenter = new TimePickerFlyoutPresenter();
 
         BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, presenter, IsShowArrowProperty);
-
-        BindUtils.RelayBind(TimePickerRef, TimePicker.MinuteIncrementProperty, presenter,
-            TimePickerFlyoutPresenter.MinuteIncrementProperty);
-        BindUtils.RelayBind(TimePickerRef, TimePicker.SecondIncrementProperty, presenter,
-            TimePickerFlyoutPresenter.SecondIncrementProperty);
-        BindUtils.RelayBind(TimePickerRef, TimePicker.ClockIdentifierProperty, presenter,
-            TimePickerFlyoutPresenter.ClockIdentifierProperty);
-        BindUtils.RelayBind(TimePickerRef, TimePicker.SelectedTimeProperty, presenter,
-            TimePickerFlyoutPresenter.TimeProperty);
 
         CalculateShowArrowEffective();
         SetupArrowPosition(Popup, presenter);

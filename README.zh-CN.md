@@ -51,8 +51,20 @@ Avalonia 11.1.1 及其以上<br>
 PS: AtomUI 目前仅在 Windows 11 平台测试<br>
 
 #### 中文社区
-目前我们暂时只创建微信开发者群的交流方式，下面是二维码，有兴趣的同学可以扫码加入：
-<img src="./docs/images/wechat.jpg" width="200" height="200"/>
+目前我们暂时只创建 QQ 和微信开发者群的交流方式，下面是二维码，有兴趣的同学可以扫码加入：
+
+<table border="0">
+    <tbody>
+        <tr>
+            <td align="center" valign="middle">
+                <img src="./docs/images/wechat.jpg" width="200" height="200"/>
+            </td>
+            <td align="center" valign="middle">
+                <img src="./docs/images/QQ.jpg" width="200" height="200"/>
+            </td>
+        </tr>
+    </tbody>
+<table>
 
 > PS：扫码请注明来意，比如：学习`AtomUI`或者`Avalonia`爱好者
 

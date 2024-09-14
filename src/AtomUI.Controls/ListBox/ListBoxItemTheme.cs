@@ -1,8 +1,5 @@
-﻿using AtomUI.Media;
-using AtomUI.Theme;
+﻿using AtomUI.Theme;
 using AtomUI.Theme.Styling;
-using AtomUI.Theme.Utils;
-using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
@@ -34,11 +31,10 @@ internal class ListBoxItemTheme : BaseControlTheme
                 Name = ContentPresenterPart
             };
 
-            contentPresenter.Transitions = new Transitions
-            {
-                AnimationUtils.CreateTransition<SolidColorBrushTransition>(ContentPresenter.BackgroundProperty)
-            };
-
+            CreateTemplateParentBinding(contentPresenter, ContentPresenter.ForegroundProperty,
+                TemplatedControl.ForegroundProperty);
+            CreateTemplateParentBinding(contentPresenter, ContentPresenter.BackgroundProperty,
+                TemplatedControl.BackgroundProperty);
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.CornerRadiusProperty,
                 TemplatedControl.CornerRadiusProperty);
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty,
@@ -66,32 +62,20 @@ internal class ListBoxItemTheme : BaseControlTheme
     private void BuildCommonStyle()
     {
         var commonStyle = new Style(selector => selector.Nesting());
-        commonStyle.Add(Layoutable.MarginProperty, ListBoxTokenResourceKey.ItemMargin);
-        {
-            var contentPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ContentPresenterPart));
-            contentPresenterStyle.Add(ContentPresenter.ForegroundProperty, ListBoxTokenResourceKey.ItemColor);
-            contentPresenterStyle.Add(ContentPresenter.BackgroundProperty, ListBoxTokenResourceKey.ItemBgColor);
-            commonStyle.Add(contentPresenterStyle);
-        }
+        commonStyle.Add(ListBoxItem.MarginProperty, ListBoxTokenResourceKey.ItemMargin);
+        commonStyle.Add(ListBoxItem.ForegroundProperty, ListBoxTokenResourceKey.ItemColor);
+        commonStyle.Add(ListBoxItem.BackgroundProperty, ListBoxTokenResourceKey.ItemBgColor);
 
         var disabledItemHoverStyle = new Style(selector =>
-            selector.Nesting().PropertyEquals(ListBoxItem.DisabledItemHoverEffectProperty, false));
-        {
-            var contentPresenterStyle = new Style(selector =>
-                selector.Nesting().Template().Name(ContentPresenterPart).Class(StdPseudoClass.PointerOver));
-            contentPresenterStyle.Add(ContentPresenter.ForegroundProperty, ListBoxTokenResourceKey.ItemHoverColor);
-            contentPresenterStyle.Add(ContentPresenter.BackgroundProperty, ListBoxTokenResourceKey.ItemHoverBgColor);
-            disabledItemHoverStyle.Add(contentPresenterStyle);
-        }
+            selector.Nesting().PropertyEquals(ListBoxItem.DisabledItemHoverEffectProperty, false).Class(StdPseudoClass.PointerOver));
+        disabledItemHoverStyle.Add(ListBoxItem.ForegroundProperty, ListBoxTokenResourceKey.ItemHoverColor);
+        disabledItemHoverStyle.Add(ListBoxItem.BackgroundProperty, ListBoxTokenResourceKey.ItemHoverBgColor);
+        
         commonStyle.Add(disabledItemHoverStyle);
 
         var selectedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Selected));
-        {
-            var contentPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ContentPresenterPart));
-            contentPresenterStyle.Add(ContentPresenter.ForegroundProperty, ListBoxTokenResourceKey.ItemSelectedColor);
-            contentPresenterStyle.Add(ContentPresenter.BackgroundProperty, ListBoxTokenResourceKey.ItemSelectedBgColor);
-            selectedStyle.Add(contentPresenterStyle);
-        }
+        selectedStyle.Add(ListBoxItem.ForegroundProperty, ListBoxTokenResourceKey.ItemSelectedColor);
+        selectedStyle.Add(ListBoxItem.BackgroundProperty, ListBoxTokenResourceKey.ItemSelectedBgColor);
         commonStyle.Add(selectedStyle);
         Add(commonStyle);
     }

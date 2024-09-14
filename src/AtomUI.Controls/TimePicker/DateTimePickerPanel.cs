@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using AtomUI.Controls.TimePickerLang;
-using AtomUI.Data;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
@@ -29,31 +28,99 @@ public enum DateTimePickerPanelType
     TimePeriod //AM or PM
 }
 
+public struct CellHoverInfo
+{
+    public DateTimePickerPanelType PanelType { get; }
+    public int CellValue { get; }
+
+    public CellHoverInfo(DateTimePickerPanelType panelType, int cellValue)
+    {
+        PanelType = panelType;
+        CellValue = cellValue;
+    }
+}
+
+internal class CellHoverEventArgs : EventArgs
+{
+    public CellHoverInfo? CellHoverInfo { get; }
+    public CellHoverEventArgs(CellHoverInfo? hoverInfo)
+    {
+        CellHoverInfo = hoverInfo;
+    }
+}
+
 internal class DateTimePickerPanel : Panel, ILogicalScrollable
 {
-   /// <summary>
-   /// Defines the <see cref="ItemHeight" /> property
-   /// </summary>
-   public static readonly StyledProperty<double> ItemHeightProperty =
+    #region 公共属性定义
+
+    /// <summary>
+    /// Defines the <see cref="ItemHeight" /> property
+    /// </summary>
+    public static readonly StyledProperty<double> ItemHeightProperty =
         AvaloniaProperty.Register<DateTimePickerPanel, double>(nameof(ItemHeight), 40.0);
 
-   /// <summary>
-   /// Defines the <see cref="PanelType" /> property
-   /// </summary>
-   public static readonly StyledProperty<DateTimePickerPanelType> PanelTypeProperty =
+    /// <summary>
+    /// Defines the <see cref="PanelType" /> property
+    /// </summary>
+    public static readonly StyledProperty<DateTimePickerPanelType> PanelTypeProperty =
         AvaloniaProperty.Register<DateTimePickerPanel, DateTimePickerPanelType>(nameof(PanelType));
 
-   /// <summary>
-   /// Defines the <see cref="ItemFormat" /> property
-   /// </summary>
-   public static readonly StyledProperty<string> ItemFormatProperty =
+    /// <summary>
+    /// Defines the <see cref="ItemFormat" /> property
+    /// </summary>
+    public static readonly StyledProperty<string> ItemFormatProperty =
         AvaloniaProperty.Register<DateTimePickerPanel, string>(nameof(ItemFormat), "yyyy");
 
-   /// <summary>
-   /// Defines the <see cref="ShouldLoop" /> property
-   /// </summary>
-   public static readonly StyledProperty<bool> ShouldLoopProperty =
+    /// <summary>
+    /// Defines the <see cref="ShouldLoop" /> property
+    /// </summary>
+    public static readonly StyledProperty<bool> ShouldLoopProperty =
         AvaloniaProperty.Register<DateTimePickerPanel, bool>(nameof(ShouldLoop));
+    
+    /// <summary>
+    /// Gets or sets the height of each item
+    /// </summary>
+    public double ItemHeight
+    {
+        get => GetValue(ItemHeightProperty);
+        set => SetValue(ItemHeightProperty, value);
+    }
+    
+    /// <summary>
+    /// Gets or sets what this panel displays in date or time units
+    /// </summary>
+    public DateTimePickerPanelType PanelType
+    {
+        get => GetValue(PanelTypeProperty);
+        set => SetValue(PanelTypeProperty, value);
+    }
+
+    /// <summary>
+    /// Gets or sets the string format for the items, using standard
+    /// .net DateTime or TimeSpan formatting. Format must match panel type
+    /// </summary>
+    public string ItemFormat
+    {
+        get => GetValue(ItemFormatProperty);
+        set => SetValue(ItemFormatProperty, value);
+    }
+
+    /// <summary>
+    /// Gets or sets whether the panel should loop
+    /// </summary>
+    public bool ShouldLoop
+    {
+        get => GetValue(ShouldLoopProperty);
+        set => SetValue(ShouldLoopProperty, value);
+    }
+
+    #endregion
+
+    #region 内部事件定义
+
+    internal event EventHandler<CellHoverEventArgs>? CellHovered;
+
+    #endregion
 
     //Backing fields for properties
     private int _minimumValue = 1;
@@ -76,7 +143,7 @@ internal class DateTimePickerPanel : Panel, ILogicalScrollable
     public DateTimePickerPanel()
     {
         FormatDate = DateTime.Now;
-        AddHandler(TappedEvent, OnItemTapped, RoutingStrategies.Bubble);
+        AddHandler(TappedEvent, HandleItemTapped, RoutingStrategies.Bubble);
     }
 
     static DateTimePickerPanel()
@@ -85,44 +152,7 @@ internal class DateTimePickerPanel : Panel, ILogicalScrollable
         BackgroundProperty.OverrideDefaultValue<DateTimePickerPanel>(Brushes.Transparent);
         AffectsMeasure<DateTimePickerPanel>(ItemHeightProperty);
     }
-
-    /// <summary>
-    /// Gets or sets what this panel displays in date or time units
-    /// </summary>
-    public DateTimePickerPanelType PanelType
-    {
-        get => GetValue(PanelTypeProperty);
-        set => SetValue(PanelTypeProperty, value);
-    }
-
-    /// <summary>
-    /// Gets or sets the height of each item
-    /// </summary>
-    public double ItemHeight
-    {
-        get => GetValue(ItemHeightProperty);
-        set => SetValue(ItemHeightProperty, value);
-    }
-
-    /// <summary>
-    /// Gets or sets the string format for the items, using standard
-    /// .net DateTime or TimeSpan formatting. Format must match panel type
-    /// </summary>
-    public string ItemFormat
-    {
-        get => GetValue(ItemFormatProperty);
-        set => SetValue(ItemFormatProperty, value);
-    }
-
-    /// <summary>
-    /// Gets or sets whether the panel should loop
-    /// </summary>
-    public bool ShouldLoop
-    {
-        get => GetValue(ShouldLoopProperty);
-        set => SetValue(ShouldLoopProperty, value);
-    }
-
+    
     /// <summary>
     /// Gets or sets the minimum value
     /// </summary>
@@ -370,6 +400,7 @@ internal class DateTimePickerPanel : Panel, ILogicalScrollable
         {
             UpdateItems();
             RaiseScrollInvalidated(EventArgs.Empty);
+            EnableCellHoverAnimation();
             _hasInit = true;
         }
 
@@ -532,7 +563,16 @@ internal class DateTimePickerPanel : Panel, ILogicalScrollable
                 HorizontalContentAlignment = HorizontalAlignment.Center,
                 Focusable                  = false,
                 CornerRadius               = new CornerRadius(0),
-                SizeType                   = SizeType.Middle
+                SizeType                   = SizeType.Middle,
+                DisabledItemHoverAnimation = true
+            };
+            item.PointerEntered += (sender, args) =>
+            {
+                if (sender is ListBoxItem target)
+                {
+                    var cellValue = (int)target.Tag!;
+                    CellHovered?.Invoke(this, new CellHoverEventArgs(new CellHoverInfo(PanelType, cellValue)));
+                }
             };
             TokenResourceBinder.CreateTokenBinding(item, TemplatedControl.PaddingProperty,
                 TimePickerTokenResourceKey.ItemPadding, BindingPriority.LocalValue);
@@ -640,7 +680,7 @@ internal class DateTimePickerPanel : Panel, ILogicalScrollable
         return newValue;
     }
 
-    private void OnItemTapped(object? sender, TappedEventArgs e)
+    private void HandleItemTapped(object? sender, TappedEventArgs e)
     {
         if (e.Source is Visual source &&
             GetItemFromSource(source) is ListBoxItem listBoxItem &&
@@ -685,6 +725,16 @@ internal class DateTimePickerPanel : Panel, ILogicalScrollable
         if (!MathUtilities.AreClose(snapY, Offset.Y))
         {
             Offset = Offset.WithY(snapY);
+        }
+    }
+
+    private void EnableCellHoverAnimation()
+    {
+        var children = Children;
+        for (var i = 0; i < children.Count; i++)
+        {
+            var item = (ListBoxItem)children[i];
+            item.DisabledItemHoverAnimation = false;
         }
     }
 }

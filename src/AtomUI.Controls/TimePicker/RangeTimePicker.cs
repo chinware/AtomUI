@@ -104,7 +104,7 @@ public class RangeTimePicker : RangeInfoPickerInput
     
     protected override Flyout CreatePickerFlyout()
     {
-        return new RangeTimePickerFlyout(this);
+        return new TimePickerFlyout();
     }
 
     protected override void NotifyFlyoutAboutToClose(bool selectedIsValid)

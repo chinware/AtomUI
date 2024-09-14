@@ -98,7 +98,6 @@ internal class DatePickerPresenter : PickerPresenterBase
     private Button? _confirmButton;
     private PickerCalendar? _calendarView;
     private IDisposable? _choosingStateDisposable;
-    private bool _isConfirmed;
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
@@ -112,13 +111,12 @@ internal class DatePickerPresenter : PickerPresenterBase
                 ChoosingStatueChanged?.Invoke(this, new ChoosingStatusEventArgs(args.GetNewValue<bool>()));
             });
         }
-
-        _isConfirmed = false;
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
+        _choosingStateDisposable?.Dispose();
         _choosingStateDisposable = null;
     }
 

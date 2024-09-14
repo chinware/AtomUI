@@ -6,9 +6,13 @@ namespace AtomUI.Controls.Utils;
 
 internal static class DateTimeUtils
 {
-    public static string FormatTimeSpan(TimeSpan value, bool is12HourClock = false)
+    public static string FormatTimeSpan(TimeSpan? time, bool is12HourClock = false)
     {
-        var dateTime = DateTime.Today.Add(value);
+        if (time is null)
+        {
+            return string.Empty;
+        }
+        var dateTime = DateTime.Today.Add(time.Value);
         if (is12HourClock)
         {
             var formatInfo = new DateTimeFormatInfo();

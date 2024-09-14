@@ -18,8 +18,8 @@ internal class DatePickerPresenterTheme : BaseControlTheme
     public const string NowButtonPart = "PART_NowButton";
     public const string TodayButtonPart = "PART_TodayButton";
     public const string ConfirmButtonPart = "PART_ConfirmButton";
-    public const string ButtonsContainerPart = "PART_ButtonsContainer";
-    public const string ButtonsContainerFramePart = "PART_ButtonsContainerFrame";
+    public const string ButtonsLayoutPart = "PART_ButtonsLayout";
+    public const string ButtonsFramePart = "PART_ButtonsFrame";
     public const string CalendarViewPart = "PART_CalendarView";
     
     public DatePickerPresenterTheme() : this(typeof(DatePickerPresenter))
@@ -44,7 +44,7 @@ internal class DatePickerPresenterTheme : BaseControlTheme
 
             var buttonsContainerFrame = new Border()
             {
-                Name = ButtonsContainerFramePart
+                Name = ButtonsFramePart
             };
             CreateTemplateParentBinding(buttonsContainerFrame, Border.BorderThicknessProperty, DatePickerPresenter.BorderThicknessProperty);
             var buttonsPanel          = BuildButtons(presenter, scope);
@@ -73,7 +73,7 @@ internal class DatePickerPresenterTheme : BaseControlTheme
     {
         var buttonsPanel = new Panel()
         {
-            Name = ButtonsContainerPart
+            Name = ButtonsLayoutPart
         };
         
         var nowButton = new Button
@@ -114,11 +114,11 @@ internal class DatePickerPresenterTheme : BaseControlTheme
     
     protected override void BuildStyles()
     {
-        var buttonsFrameStyle = new Style(selector => selector.Nesting().Template().Name(ButtonsContainerFramePart));
+        var buttonsFrameStyle = new Style(selector => selector.Nesting().Template().Name(ButtonsFramePart));
         buttonsFrameStyle.Add(Border.BorderBrushProperty, GlobalTokenResourceKey.ColorBorderSecondary);
         Add(buttonsFrameStyle);
 
-        var buttonsPanelStyle = new Style(selector => selector.Nesting().Template().Name(ButtonsContainerPart));
+        var buttonsPanelStyle = new Style(selector => selector.Nesting().Template().Name(ButtonsLayoutPart));
         buttonsPanelStyle.Add(Panel.MarginProperty, DatePickerTokenResourceKey.ButtonsPanelMargin);
         Add(buttonsPanelStyle);
         

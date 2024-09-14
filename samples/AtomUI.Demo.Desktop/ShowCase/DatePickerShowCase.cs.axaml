@@ -5,20 +5,25 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
-    xmlns:calendarpresenter="clr-namespace:AtomUI.Controls.CalendarView;assembly=AtomUI.Controls"
     xmlns:atom="https://atomui.net"
     mc:Ignorable="d">
     <desktop:ShowCasePanel>
         <desktop:ShowCaseItem
             Title="Basic"
             Description="Click DatePicker, and then we could select or input a date in panel.">
-            <atom:DatePicker Watermark="Select date" DefaultDateTime="2029-9-3" IsNeedConfirm="True"/>
+            <atom:DatePicker Watermark="Select date"/>
         </desktop:ShowCaseItem>
-        <!-- -->
-        <!-- <desktop:ShowCaseItem -->
-        <!--     Title="Basic" -->
-        <!--     Description="Click DatePicker, and then we could select or input a date in panel."> -->
-        <!--     <calendarpresenter:Calendar SelectedDate="2008-9-3"/> -->
-        <!-- </desktop:ShowCaseItem> -->
+        
+        <desktop:ShowCaseItem
+            Title="With Time Picker"
+            Description="Date selection panel with time selection.">
+            <atom:DatePicker Watermark="Select date" IsShowTime="True"/>
+        </desktop:ShowCaseItem>
+        
+        <desktop:ShowCaseItem
+            Title="Need Confirm"
+            Description="DatePicker will automatically determine whether to show a confirm button according to the picker property. You can also set the needConfirm property to determine whether to show a confirm button. When needConfirm is set, the user must click the confirm button to complete the selection. Otherwise, the selection will be submitted when the picker loses focus or selects a date.">
+            <atom:DatePicker Watermark="Select date" IsNeedConfirm="True"/>
+        </desktop:ShowCaseItem>
     </desktop:ShowCasePanel>
 </UserControl>
