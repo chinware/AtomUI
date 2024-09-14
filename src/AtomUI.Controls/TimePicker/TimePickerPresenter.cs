@@ -78,12 +78,21 @@ internal class TimePickerPresenter : PickerPresenterBase
         AvaloniaProperty.RegisterDirect<TimePickerPresenter, bool>(nameof(ButtonsPanelVisible),
             o => o.ButtonsPanelVisible,
             (o, v) => o.ButtonsPanelVisible = v);
+    
+    public static readonly StyledProperty<TimeSpan?> TempSelectedTimeProperty =
+        AvaloniaProperty.Register<TimePickerPresenter, TimeSpan?>(nameof(TempSelectedTime));
 
     private bool _buttonsPanelVisible = true;
     internal bool ButtonsPanelVisible
     {
         get => _buttonsPanelVisible;
         set => SetAndRaise(ButtonsPanelVisibleProperty, ref _buttonsPanelVisible, value);
+    }
+    
+    public TimeSpan? TempSelectedTime
+    {
+        get => GetValue(TempSelectedTimeProperty);
+        set => SetValue(TempSelectedTimeProperty, value);
     }
 
     #endregion
@@ -133,6 +142,23 @@ internal class TimePickerPresenter : PickerPresenterBase
         base.OnKeyDown(e);
     }
     
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == IsNeedConfirmProperty ||
+            change.Property == IsShowNowProperty)
+        {
+            SetupButtonStatus();
+        }
+        else if (change.Property == SelectedTimeProperty || change.Property == TempSelectedTimeProperty)
+        {
+            if (_confirmButton is not null)
+            {
+                _confirmButton.IsEnabled = (SelectedTime is not null || TempSelectedTime is not null);
+            }
+        }
+    }
+    
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
@@ -142,8 +168,9 @@ internal class TimePickerPresenter : PickerPresenterBase
         SetupButtonStatus();
         if (_timeView is not null)
         {
-            _timeView.HoverTimeChanged += HandleTimeViewDateHoverChanged;
-            _timeView.TimeSelected     += HandleTimeViewDateSelected;
+            _timeView.HoverTimeChanged += HandleTimeViewHoverChanged;
+            _timeView.TimeSelected     += HandleTimeViewTimeSelected;
+            _timeView.TempTimeSelected += HandleTimeViewTempTimeSelected;
         }
 
         if (_nowButton is not null)
@@ -154,12 +181,12 @@ internal class TimePickerPresenter : PickerPresenterBase
         if (_confirmButton is not null)
         {
             _confirmButton.Click     += HandleConfirmButtonClicked;
-            _confirmButton.IsEnabled =  SelectedTime is not null;
+            _confirmButton.IsEnabled =  (SelectedTime is not null || TempSelectedTime is not null);
             _confirmButton.PointerEntered += (sender, args) =>
             {
-                if (_timeView?.SelectedTime is not null)
+                if (TempSelectedTime is not null)
                 {
-                    HoverTimeChanged?.Invoke(this, new TimeSelectedEventArgs(_timeView?.SelectedTime));
+                    HoverTimeChanged?.Invoke(this, new TimeSelectedEventArgs(TempSelectedTime));
                 }
             };
             _confirmButton.PointerExited += (sender, args) =>
@@ -209,18 +236,19 @@ internal class TimePickerPresenter : PickerPresenterBase
     
     private void HandleConfirmButtonClicked(object? sender, RoutedEventArgs args)
     {
-        if (SelectedTime is not null)
+        if (TempSelectedTime is not null)
         {
+            SelectedTime = TempSelectedTime;
             OnConfirmed();
         }
     }
     
-    private void HandleTimeViewDateHoverChanged(object? sender, TimeSelectedEventArgs args)
+    private void HandleTimeViewHoverChanged(object? sender, TimeSelectedEventArgs args)
     {
         HoverTimeChanged?.Invoke(this, new TimeSelectedEventArgs(args.Time));
     }
 
-    private void HandleTimeViewDateSelected(object? sender, TimeSelectedEventArgs args)
+    private void HandleTimeViewTimeSelected(object? sender, TimeSelectedEventArgs args)
     {
         SelectedTime = args.Time;
         if (!IsNeedConfirm)
@@ -229,10 +257,15 @@ internal class TimePickerPresenter : PickerPresenterBase
         }
     }
     
+    private void HandleTimeViewTempTimeSelected(object? sender, TimeSelectedEventArgs args)
+    {
+        TempSelectedTime = args.Time;
+    }
+    
     protected override void OnConfirmed()
     {
-        base.OnConfirmed();
         ChoosingStatueChanged?.Invoke(this, new ChoosingStatusEventArgs(false));
+        base.OnConfirmed();
     }
     
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)

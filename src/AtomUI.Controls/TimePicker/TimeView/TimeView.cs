@@ -10,6 +10,7 @@ using Avalonia.Controls.Shapes;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Input.Raw;
+using TimeSpan = System.TimeSpan;
 
 namespace AtomUI.Controls;
 
@@ -42,8 +43,8 @@ internal class TimeView : TemplatedControl
     public static readonly StyledProperty<ClockIdentifierType> ClockIdentifierProperty =
         TimePicker.ClockIdentifierProperty.AddOwner<TimeView>();
     
-    public static readonly StyledProperty<TimeSpan> SelectedTimeProperty =
-        AvaloniaProperty.Register<TimeView, TimeSpan>(nameof(SelectedTime));
+    public static readonly StyledProperty<TimeSpan?> SelectedTimeProperty =
+        AvaloniaProperty.Register<TimeView, TimeSpan?>(nameof(SelectedTime));
 
     public static readonly StyledProperty<bool> IsShowHeaderProperty =
         AvaloniaProperty.Register<TimeView, bool>(nameof(IsShowHeader), true);
@@ -72,7 +73,7 @@ internal class TimeView : TemplatedControl
         set => SetValue(ClockIdentifierProperty, value);
     }
     
-    public TimeSpan SelectedTime
+    public TimeSpan? SelectedTime
     {
         get => GetValue(SelectedTimeProperty);
         set => SetValue(SelectedTimeProperty, value);
@@ -116,6 +117,7 @@ internal class TimeView : TemplatedControl
     #region 公共事件定义
 
     public event EventHandler<TimeSelectedEventArgs>? TimeSelected;
+    public event EventHandler<TimeSelectedEventArgs>? TempTimeSelected;
     public event EventHandler<TimeSelectedEventArgs>? HoverTimeChanged;
 
     #endregion
@@ -146,6 +148,7 @@ internal class TimeView : TemplatedControl
             new RenderScaleAwareDoubleConfigure(this));
         var inputManager = AvaloniaLocator.Current.GetService<IInputManager>()!;
         _pointerPositionDisposable = inputManager.Process.Subscribe(DetectPointerPosition);
+        SyncTimeValueToPanel(SelectedTime ?? TimeSpan.Zero);
     }
     
     private void DetectPointerPosition(RawInputEventArgs args)
@@ -217,28 +220,41 @@ internal class TimeView : TemplatedControl
         {
             _hourSelector.SelectionChanged += HandleSelectionChanged;
             _hourSelector.CellHovered      += HandleSelectorCellHovered;
+            _hourSelector.CellDbClicked    += HandleSelectorCellDbClicked;
         }
 
         if (_minuteSelector is not null)
         {
             _minuteSelector.SelectionChanged += HandleSelectionChanged;
             _minuteSelector.CellHovered      += HandleSelectorCellHovered;
+            _minuteSelector.CellDbClicked    += HandleSelectorCellDbClicked;
         }
 
         if (_secondSelector is not null)
         {
             _secondSelector.SelectionChanged += HandleSelectionChanged;
             _secondSelector.CellHovered      += HandleSelectorCellHovered;
+            _secondSelector.CellDbClicked    += HandleSelectorCellDbClicked;
         }
 
         if (_periodSelector is not null)
         {
             _periodSelector.SelectionChanged += HandleSelectionChanged;
             _periodSelector.CellHovered      += HandleSelectorCellHovered;
+            _periodSelector.CellDbClicked    += HandleSelectorCellDbClicked;
         }
 
         _spacer3 = e.NameScope.Get<Rectangle>(TimeViewTheme.ThirdSpacerPart);
         InitPicker();
+    }
+
+    private void HandleSelectorCellDbClicked(object? sender, CellDbClickedEventArgs args)
+    {
+        if (args.IsSelected)
+        {
+            SelectedTime = CollectValue();
+            TimeSelected?.Invoke(this, new TimeSelectedEventArgs(SelectedTime));
+        }
     }
 
     private void HandleSelectorCellHovered(object? sender, CellHoverEventArgs args)
@@ -247,7 +263,7 @@ internal class TimeView : TemplatedControl
         var hour          = selectedTime.Hours;
         var minute        = selectedTime.Minutes;
         var second       = selectedTime.Seconds;
-        var period = _secondSelector?.SelectedValue ?? default;
+        var period = _periodSelector?.SelectedValue ?? default;
         var cellHoverInfo = args.CellHoverInfo;
         
         if (cellHoverInfo.HasValue)
@@ -257,19 +273,7 @@ internal class TimeView : TemplatedControl
             if (panelType == DateTimePickerPanelType.Hour)
             {
                 hour = cellValue;
-                if (ClockIdentifier == ClockIdentifierType.HourClock12)
-                {
-                    if (period == 0 && hour == 12)
-                    {
-                        // AM
-                        hour = 0;
-                    }
-
-                    if (period == 1 && hour != 12)
-                    {
-                        hour += 12;
-                    }
-                }
+              
             } else if (panelType == DateTimePickerPanelType.Minute)
             {
                 minute = cellValue;
@@ -279,6 +283,9 @@ internal class TimeView : TemplatedControl
             } else if (panelType == DateTimePickerPanelType.TimePeriod)
             {
                 period = cellValue;
+            }
+            if (ClockIdentifier == ClockIdentifierType.HourClock12)
+            {
                 if (period == 0 && hour == 12)
                 {
                     // AM
@@ -306,6 +313,8 @@ internal class TimeView : TemplatedControl
                     DateTimeUtils.FormatTimeSpan(selectedValue, ClockIdentifier == ClockIdentifierType.HourClock12);
             }
         }
+
+        TempTimeSelected?.Invoke(this, new TimeSelectedEventArgs(selectedValue));
     }
 
     private TimeSpan CollectValue(bool translate = true)
@@ -332,10 +341,45 @@ internal class TimeView : TemplatedControl
 
         if (change.Property == MinuteIncrementProperty ||
             change.Property == SecondIncrementProperty ||
-            change.Property == ClockIdentifierProperty ||
-            change.Property == SelectedTimeProperty)
+            change.Property == ClockIdentifierProperty)
         {
             InitPicker();
+        }
+
+        if (change.Property == SelectedTimeProperty)
+        {
+            if (VisualRoot is not null && SelectedTime is not null)
+            {
+                SyncTimeValueToPanel(SelectedTime.Value);
+            }
+        }
+
+    }
+
+    private void SyncTimeValueToPanel(TimeSpan time)
+    {
+        var clock12 = ClockIdentifier == ClockIdentifierType.HourClock12;
+        var hour    = time.Hours;
+        if (_hourSelector is not null)
+        {
+            _hourSelector.SelectedValue = !clock12 ? hour :
+                hour > 12 ? hour - 12 :
+                hour == 0 ? 12 : hour;
+        }
+
+        if (_minuteSelector is not null)
+        {
+            _minuteSelector.SelectedValue = time.Minutes;
+        }
+        
+        if (_secondSelector is not null)
+        {
+            _secondSelector.SelectedValue = time.Seconds;
+        }
+        
+        if (_periodSelector is not null)
+        {
+            _periodSelector.SelectedValue = hour >= 12 ? 1 : 0;;
         }
     }
 
@@ -345,32 +389,27 @@ internal class TimeView : TemplatedControl
         {
             return;
         }
-        
+        var selectedTime   = SelectedTime ?? TimeSpan.Zero;
         var clock12        = ClockIdentifier == ClockIdentifierType.HourClock12;
         var use24HourClock = ClockIdentifier == ClockIdentifierType.HourClock24;
         _hourSelector!.MaximumValue = clock12 ? 12 : 23;
         _hourSelector.MinimumValue  = clock12 ? 1 : 0;
         _hourSelector.ItemFormat    = "%h";
-        var hour = SelectedTime.Hours;
-        _hourSelector.SelectedValue = !clock12 ? hour :
-            hour > 12 ? hour - 12 :
-            hour == 0 ? 12 : hour;
 
         _minuteSelector!.MaximumValue = 59;
         _minuteSelector.MinimumValue  = 0;
         _minuteSelector.Increment     = MinuteIncrement;
-        _minuteSelector.SelectedValue = SelectedTime.Minutes;
         _minuteSelector.ItemFormat    = "mm";
 
         _secondSelector!.MaximumValue = 59;
         _secondSelector.MinimumValue  = 0;
         _secondSelector.Increment     = SecondIncrement;
-        _secondSelector.SelectedValue = SelectedTime.Seconds;
         _secondSelector.ItemFormat    = "ss";
 
         _periodSelector!.MaximumValue = 1;
         _periodSelector.MinimumValue  = 0;
-        _periodSelector.SelectedValue = hour >= 12 ? 1 : 0;
+
+        SyncTimeValueToPanel(selectedTime);
 
         _spacer3!.IsVisible    = !use24HourClock;
         _periodHost!.IsVisible = !use24HourClock;

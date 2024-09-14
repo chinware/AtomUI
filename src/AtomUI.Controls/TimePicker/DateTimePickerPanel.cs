@@ -49,6 +49,15 @@ internal class CellHoverEventArgs : EventArgs
     }
 }
 
+internal class CellDbClickedEventArgs : EventArgs
+{
+    public bool IsSelected { get; }
+    public CellDbClickedEventArgs(bool isSelected)
+    {
+        IsSelected = isSelected;
+    }
+}
+
 internal class DateTimePickerPanel : Panel, ILogicalScrollable
 {
     #region 公共属性定义
@@ -119,6 +128,7 @@ internal class DateTimePickerPanel : Panel, ILogicalScrollable
     #region 内部事件定义
 
     internal event EventHandler<CellHoverEventArgs>? CellHovered;
+    internal event EventHandler<CellDbClickedEventArgs>? CellDbClicked;
 
     #endregion
 
@@ -144,6 +154,7 @@ internal class DateTimePickerPanel : Panel, ILogicalScrollable
     {
         FormatDate = DateTime.Now;
         AddHandler(TappedEvent, HandleItemTapped, RoutingStrategies.Bubble);
+        AddHandler(DoubleTappedEvent, HandleItemDoubleTapped, RoutingStrategies.Bubble);
     }
 
     static DateTimePickerPanel()
@@ -574,6 +585,7 @@ internal class DateTimePickerPanel : Panel, ILogicalScrollable
                     CellHovered?.Invoke(this, new CellHoverEventArgs(new CellHoverInfo(PanelType, cellValue)));
                 }
             };
+            
             TokenResourceBinder.CreateTokenBinding(item, TemplatedControl.PaddingProperty,
                 TimePickerTokenResourceKey.ItemPadding, BindingPriority.LocalValue);
             children.Add(item);
@@ -615,7 +627,8 @@ internal class DateTimePickerPanel : Panel, ILogicalScrollable
             var textBlock = new TextBlock
             {
                 VerticalAlignment   = VerticalAlignment.Center,
-                HorizontalAlignment = HorizontalAlignment.Center
+                HorizontalAlignment = HorizontalAlignment.Center,
+                IsHitTestVisible = false
             };
             textBlock.Text  =  FormatContent(first, panelType);
             item.Content    =  textBlock;
@@ -687,6 +700,16 @@ internal class DateTimePickerPanel : Panel, ILogicalScrollable
             listBoxItem.Tag is int tag)
         {
             SelectedValue = tag;
+            e.Handled     = true;
+        }
+    }
+    
+    private void HandleItemDoubleTapped(object? sender, TappedEventArgs e)
+    {
+        if (e.Source is Visual source &&
+            GetItemFromSource(source) is ListBoxItem listBoxItem)
+        {
+            CellDbClicked?.Invoke(this, new CellDbClickedEventArgs(listBoxItem.IsSelected));
             e.Handled     = true;
         }
     }

@@ -128,7 +128,8 @@ internal class DatePickerPresenter : PickerPresenterBase
             change.Property == IsShowTimeProperty)
         {
             SetupButtonStatus();
-        } else if (change.Property == SelectedDateTimeProperty)
+        }
+        else if (change.Property == SelectedDateTimeProperty)
         {
             if (_confirmButton is not null)
             {

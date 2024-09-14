@@ -1,9 +1,10 @@
 ﻿using AtomUI.Controls.Internal;
 using AtomUI.Controls.Utils;
+using AtomUI.Data;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
-using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
 
@@ -37,6 +38,12 @@ public class RangeTimePicker : RangeInfoPickerInput
     
     public static readonly StyledProperty<ClockIdentifierType> ClockIdentifierProperty =
         AvaloniaProperty.Register<RangeTimePicker, ClockIdentifierType>(nameof(ClockIdentifier));
+    
+    public static readonly StyledProperty<bool> IsNeedConfirmProperty =
+        AvaloniaProperty.Register<RangeTimePicker, bool>(nameof(IsNeedConfirm));
+    
+    public static readonly StyledProperty<bool> IsShowNowProperty =
+        AvaloniaProperty.Register<RangeTimePicker, bool>(nameof(IsShowNow), true);
 
     public TimeSpan? RangeStartSelectedTime
     {
@@ -80,7 +87,21 @@ public class RangeTimePicker : RangeInfoPickerInput
         set => SetValue(ClockIdentifierProperty, value);
     }
     
+    public bool IsNeedConfirm
+    {
+        get => GetValue(IsNeedConfirmProperty);
+        set => SetValue(IsNeedConfirmProperty, value);
+    }
+    
+    public bool IsShowNow
+    {
+        get => GetValue(IsShowNowProperty);
+        set => SetValue(IsShowNowProperty, value);
+    }
+    
     #endregion
+    
+    private TimePickerPresenter? _pickerPresenter;
     
     /// <summary>
     /// 清除时间选择器的值，不考虑默认值
@@ -106,32 +127,122 @@ public class RangeTimePicker : RangeInfoPickerInput
     {
         return new TimePickerFlyout();
     }
+    
+    protected override void NotifyFlyoutPresenterCreated(Control flyoutPresenter)
+    {
+        if (flyoutPresenter is TimePickerFlyoutPresenter timePickerFlyoutPresenter)
+        {
+            timePickerFlyoutPresenter.AttachedToVisualTree += (sender, args) =>
+            {
+                _pickerPresenter = timePickerFlyoutPresenter.TimePickerPresenter;
+                ConfigurePickerPresenter(_pickerPresenter);
+            };
+        }
+    }
+    
+    private void ConfigurePickerPresenter(TimePickerPresenter? presenter)
+    {
+        if (presenter is null)
+        {
+            return;
+        }
+        
+        BindUtils.RelayBind(this, MinuteIncrementProperty, presenter, TimePickerPresenter.MinuteIncrementProperty);
+        BindUtils.RelayBind(this, SecondIncrementProperty, presenter, TimePickerPresenter.SecondIncrementProperty);
+        BindUtils.RelayBind(this, ClockIdentifierProperty, presenter, TimePickerPresenter.ClockIdentifierProperty);
+        BindUtils.RelayBind(this, IsNeedConfirmProperty, presenter, TimePickerPresenter.IsNeedConfirmProperty);
+        BindUtils.RelayBind(this, IsShowNowProperty, presenter, TimePickerPresenter.IsShowNowProperty);
+    }
 
+    protected override void NotifyFlyoutOpened()
+    {
+        base.NotifyFlyoutOpened();
+        if (_pickerPresenter is not null)
+        {
+            _pickerPresenter.ChoosingStatueChanged += HandleChoosingStatueChanged;
+            _pickerPresenter.HoverTimeChanged      += HandleHoverTimeChanged;
+            _pickerPresenter.Confirmed             += HandleConfirmed;
+        }
+    }
+    
     protected override void NotifyFlyoutAboutToClose(bool selectedIsValid)
     {
         base.NotifyFlyoutAboutToClose(selectedIsValid);
-        if (!selectedIsValid)
+        if (_pickerPresenter is not null)
         {
-            if (RangeStartSelectedTime.HasValue)
+            _pickerPresenter.ChoosingStatueChanged -= HandleChoosingStatueChanged;
+            _pickerPresenter.HoverTimeChanged      -= HandleHoverTimeChanged;
+            _pickerPresenter.Confirmed             -= HandleConfirmed;
+        }
+    }
+    
+    private void HandleChoosingStatueChanged(object? sender, ChoosingStatusEventArgs args)
+    {
+        _isChoosing = args.IsChoosing;
+        UpdatePseudoClasses();
+        if (!args.IsChoosing)
+        {
+            ClearHoverSelectedInfo();
+        }
+    }
+    
+    private void ClearHoverSelectedInfo()
+    {
+        if (RangeActivatedPart == RangeActivatedPart.Start)
+        {
+            Text = DateTimeUtils.FormatTimeSpan(RangeStartSelectedTime,
+                ClockIdentifier == ClockIdentifierType.HourClock12);
+        }
+        else if (RangeActivatedPart == RangeActivatedPart.End)
+        {
+            SecondaryText = DateTimeUtils.FormatTimeSpan(RangeEndSelectedTime,
+                ClockIdentifier == ClockIdentifierType.HourClock12);
+        }
+    }
+    
+    private void HandleHoverTimeChanged(object? sender, TimeSelectedEventArgs args)
+    {
+        if (args.Time.HasValue)
+        {
+            if (RangeActivatedPart == RangeActivatedPart.Start)
             {
-                Text = DateTimeUtils.FormatTimeSpan(RangeStartSelectedTime.Value,
+                Text = DateTimeUtils.FormatTimeSpan(args.Time.Value,
                     ClockIdentifier == ClockIdentifierType.HourClock12);
             }
-            else
+            else if (RangeActivatedPart == RangeActivatedPart.End)
             {
-                ResetRangeStartTimeValue();
-            }
-            
-            if (RangeStartSelectedTime.HasValue)
-            {
-                Text = DateTimeUtils.FormatTimeSpan(RangeStartSelectedTime.Value,
+                SecondaryText = DateTimeUtils.FormatTimeSpan(args.Time.Value,
                     ClockIdentifier == ClockIdentifierType.HourClock12);
-            }
-            else
-            {
-                ResetRangeEndTimeValue();
             }
         }
+        else
+        {
+            Text = null;
+        }
+    }
+    
+    private void HandleConfirmed(object? sender, EventArgs args)
+    {
+        if (RangeActivatedPart == RangeActivatedPart.Start)
+        {
+            RangeStartSelectedTime = _pickerPresenter?.SelectedTime;
+            if (RangeEndSelectedTime is null)
+            {
+                RangeActivatedPart = RangeActivatedPart.End;
+                return;
+            }
+        }
+        else if (RangeActivatedPart == RangeActivatedPart.End)
+        {
+            RangeEndSelectedTime = _pickerPresenter?.SelectedTime;
+            if (RangeStartSelectedTime is null)
+            {
+                RangeActivatedPart = RangeActivatedPart.Start;
+                return;
+            }
+        }
+
+        ClosePickerFlyout();
     }
     
     private static int CoerceMinuteIncrement(AvaloniaObject sender, int value)
@@ -232,12 +343,21 @@ public class RangeTimePicker : RangeInfoPickerInput
             {
                 ResetRangeStartTimeValue();
             }
+            if (_pickerPresenter is not null)
+            {
+                _pickerPresenter.SelectedTime = RangeStartSelectedTime;
+            }
+
         }
         else if (RangeActivatedPart == RangeActivatedPart.End)
         {
             if (RangeStartSelectedTime is null)
             {
                 ResetRangeEndTimeValue();
+            }
+            if (_pickerPresenter is not null)
+            {
+                _pickerPresenter.SelectedTime = RangeEndSelectedTime;
             }
         }
         else
@@ -250,6 +370,10 @@ public class RangeTimePicker : RangeInfoPickerInput
             if (RangeEndSelectedTime is null)
             {
                 ResetRangeEndTimeValue();
+            }
+            if (_pickerPresenter is not null)
+            {
+                _pickerPresenter.SelectedTime = null;
             }
         }
     }
@@ -271,31 +395,6 @@ public class RangeTimePicker : RangeInfoPickerInput
     protected override bool ShowClearButtonPredicate()
     {
         return RangeStartSelectedTime is not null || RangeEndSelectedTime is not null;
-    }
-    
-    internal void NotifyConfirmed(TimeSpan value)
-    {
-        _currentValidSelected = true;
-        if (RangeActivatedPart == RangeActivatedPart.Start)
-        {
-            RangeStartSelectedTime = value;
-        }
-        else if (RangeActivatedPart == RangeActivatedPart.End)
-        {
-            RangeEndSelectedTime = value;
-        }
-    }
-
-    internal void NotifyTemporaryTimeSelected(TimeSpan value)
-    {
-        if (RangeActivatedPart == RangeActivatedPart.Start)
-        {
-            Text = DateTimeUtils.FormatTimeSpan(value, ClockIdentifier == ClockIdentifierType.HourClock12);
-        }
-        else if (RangeActivatedPart == RangeActivatedPart.End)
-        {
-            SecondaryText = DateTimeUtils.FormatTimeSpan(value, ClockIdentifier == ClockIdentifierType.HourClock12);
-        }
     }
 
 }
