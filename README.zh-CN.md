@@ -60,7 +60,7 @@ PS: AtomUI 目前仅在 Windows 11 平台测试<br>
                 <img src="./docs/images/wechat.jpg" width="200" height="200"/>
             </td>
             <td align="center" valign="middle">
-                <img src="./docs/images/QQ.jpg" width="200" height="200"/>
+                <img src="./docs/images/QQ.png" width="200" height="200"/>
             </td>
         </tr>
     </tbody>
