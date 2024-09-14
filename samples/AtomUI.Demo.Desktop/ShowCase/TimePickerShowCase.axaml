@@ -14,6 +14,12 @@
             Description="Click TimePicker, and then we could select or input a time in panel.">
             <atom:TimePicker Watermark="Select time" Width="200" IsNeedConfirm="False" IsShowNow="True"/>
         </desktop:ShowCaseItem>
+        
+        <desktop:ShowCaseItem
+            Title="12-hour and 24-hour formats"
+            Description="TimePicker supports two time types, 12-hour and 24-hour.">
+            <atom:TimePicker Watermark="Select time" IsNeedConfirm="True" IsShowNow="True" ClockIdentifier="HourClock24"/>
+        </desktop:ShowCaseItem>
 
         <desktop:ShowCaseItem
             Title="Three Sizes"
@@ -24,7 +30,7 @@
                 <atom:TimePicker Watermark="Select time" Width="160" SizeType="Small" DefaultTime="12:08:23" />
             </StackPanel>
         </desktop:ShowCaseItem>
-
+        
         <desktop:ShowCaseItem
             Title="Disabled"
             Description="A disabled state of the TimePicker.">
@@ -32,7 +38,7 @@
                 <atom:TimePicker Watermark="Select time" Width="160" IsEnabled="False" DefaultTime="12:08:23" />
             </StackPanel>
         </desktop:ShowCaseItem>
-
+        
         <desktop:ShowCaseItem
             Title="Interval option"
             Description="Show stepped options by MinuteIncrement SecondIncrement.">
@@ -44,7 +50,7 @@
                                  SecondIncrement="10" />
             </StackPanel>
         </desktop:ShowCaseItem>
-
+        
         <desktop:ShowCaseItem
             Title="12 hours"
             Description="TimePicker of 12 hours format, with default format h:mm:ss a.">
@@ -59,7 +65,7 @@
                                  ClockIdentifier="HourClock24" />
             </StackPanel>
         </desktop:ShowCaseItem>
-
+        
         <desktop:ShowCaseItem
             Title="Variants"
             Description="Bordered-less style component.">
@@ -90,7 +96,7 @@
                 </StackPanel>
             </StackPanel>
         </desktop:ShowCaseItem>
-
+        
         <desktop:ShowCaseItem
             Title="Status"
             Description="Add status to TimePicker with status, which could be error or warning.">
@@ -103,7 +109,9 @@
                                           StyleVariant="Outline"
                                           Status="Default"
                                           Watermark="Start time"
-                                          SecondaryWatermark="End time" />
+                                          SecondaryWatermark="End time"
+                                          IsNeedConfirm="True"
+                                          ClockIdentifier="HourClock24"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Spacing="5">
                     <atom:TimePicker Width="160"
@@ -113,7 +121,9 @@
                                           StyleVariant="Outline"
                                           Status="Warning"
                                           Watermark="Start time"
-                                          SecondaryWatermark="End time" />
+                                          SecondaryWatermark="End time"
+                                          IsNeedConfirm="True"
+                                          ClockIdentifier="HourClock24"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Spacing="5">
                     <atom:TimePicker Width="160"
@@ -123,11 +133,13 @@
                                           StyleVariant="Outline"
                                           Status="Error"
                                           Watermark="Start time"
-                                          SecondaryWatermark="End time" />
+                                          SecondaryWatermark="End time" 
+                                          IsNeedConfirm="True"
+                                          ClockIdentifier="HourClock24"/>
                 </StackPanel>
             </StackPanel>
         </desktop:ShowCaseItem>
-
+        
         <desktop:ShowCaseItem
             Title="Time Range Picker"
             Description="Use time range picker with RangeTimePicker.">
@@ -135,7 +147,7 @@
                 <atom:RangeTimePicker Width="320"
                                       Status="Default"
                                       Watermark="Start time"
-                                      SecondaryWatermark="End time" 
+                                      SecondaryWatermark="End time"
                                       RangeStartDefaultTime="10:09:20"
                                       RangeEndDefaultTime="12:12:20"/>
             </StackPanel>

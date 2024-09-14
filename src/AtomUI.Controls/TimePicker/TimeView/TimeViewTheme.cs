@@ -101,7 +101,7 @@ internal class TimeViewTheme : BaseControlTheme
 
         var hourHost = new Panel
         {
-            Name = HourHostPart
+            Name = HourHostPart,
         };
         Grid.SetColumn(hourHost, 0);
         hourHost.RegisterInNameScope(scope);
@@ -139,7 +139,7 @@ internal class TimeViewTheme : BaseControlTheme
 
         var minuteHost = new Panel
         {
-            Name = MinuteHostPart
+            Name  = MinuteHostPart,
         };
         Grid.SetColumn(minuteHost, 2);
         minuteHost.RegisterInNameScope(scope);
@@ -179,7 +179,7 @@ internal class TimeViewTheme : BaseControlTheme
 
         var secondHost = new Panel
         {
-            Name = SecondHostPart
+            Name  = SecondHostPart,
         };
         Grid.SetColumn(secondHost, 4);
         secondHost.RegisterInNameScope(scope);
@@ -218,7 +218,7 @@ internal class TimeViewTheme : BaseControlTheme
 
         var periodHost = new Panel
         {
-            Name = PeriodHostPart
+            Name  = PeriodHostPart,
         };
         Grid.SetColumn(periodHost, 6);
         periodHost.RegisterInNameScope(scope);
@@ -256,6 +256,22 @@ internal class TimeViewTheme : BaseControlTheme
         headerTextStyle.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Center);
         headerTextStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Center);
         headerTextStyle.Add(TextBlock.FontWeightProperty, FontWeight.SemiBold);
+
+        var hourHostStyle = new Style(selector => selector.Nesting().Template().Name(HourHostPart));
+        hourHostStyle.Add(Panel.WidthProperty, TimePickerTokenResourceKey.ItemWidth);
+        commonStyle.Add(hourHostStyle);
+        
+        var minuteHostStyle = new Style(selector => selector.Nesting().Template().Name(MinuteHostPart));
+        minuteHostStyle.Add(Panel.WidthProperty, TimePickerTokenResourceKey.ItemWidth);
+        commonStyle.Add(minuteHostStyle);
+        
+        var secondHostStyle = new Style(selector => selector.Nesting().Template().Name(SecondHostPart));
+        secondHostStyle.Add(Panel.WidthProperty, TimePickerTokenResourceKey.ItemWidth);
+        commonStyle.Add(secondHostStyle);
+        
+        var periodHostHostStyle = new Style(selector => selector.Nesting().Template().Name(PeriodHostPart));
+        periodHostHostStyle.Add(Panel.WidthProperty, TimePickerTokenResourceKey.ItemWidth);
+        commonStyle.Add(periodHostHostStyle);
 
         commonStyle.Add(headerTextStyle);
         Add(commonStyle);

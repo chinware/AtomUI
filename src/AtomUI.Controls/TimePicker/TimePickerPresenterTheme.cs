@@ -60,7 +60,10 @@ internal class TimePickerPresenterTheme : BaseControlTheme
             Name = TimeViewPart,
             IsShowHeader = false
         };
+        CreateTemplateParentBinding(timeView, TimeView.MinuteIncrementProperty, TimePickerPresenter.MinuteIncrementProperty);
+        CreateTemplateParentBinding(timeView, TimeView.SecondIncrementProperty, TimePickerPresenter.SecondIncrementProperty);
         CreateTemplateParentBinding(timeView, TimeView.SelectedTimeProperty, TimePickerPresenter.SelectedTimeProperty);
+        CreateTemplateParentBinding(timeView, TimeView.ClockIdentifierProperty, TimePickerPresenter.ClockIdentifierProperty);
         timeView.RegisterInNameScope(scope);
         return timeView;
     }
@@ -101,7 +104,6 @@ internal class TimePickerPresenterTheme : BaseControlTheme
     {
         var commonStyle       = new Style(selector => selector.Nesting());
         
-        commonStyle.Add(TimePickerPresenter.WidthProperty, TimePickerTokenResourceKey.PickerPopupWidth);
         commonStyle.Add(TimePickerPresenter.HeightProperty, TimePickerTokenResourceKey.PickerPopupHeight);
         
         var buttonsFrameStyle = new Style(selector => selector.Nesting().Template().Name(ButtonsFramePart));
