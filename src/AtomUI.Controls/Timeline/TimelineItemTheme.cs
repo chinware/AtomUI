@@ -84,7 +84,6 @@ internal class TimelineItemTheme : BaseControlTheme
             Grid.SetColumn(labelBlock, labelIndex);
             grid.Children.Add(labelBlock);
 
-
             var splitPanel = new DockPanel()
             {
                 Width = 10,

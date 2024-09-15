@@ -1,4 +1,3 @@
-using System.Collections;
 using AtomUI.Data;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -92,7 +91,7 @@ public class Timeline : ItemsControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        
+
         TokenResourceBinder.CreateGlobalResourceBinding(this, BorderThicknessProperty,
             GlobalTokenResourceKey.BorderThickness,
             BindingPriority.Template,
