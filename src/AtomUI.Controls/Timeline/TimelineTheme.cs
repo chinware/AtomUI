@@ -28,11 +28,7 @@ internal class TimelineTheme : BaseControlTheme
          {
             Name = FrameDecoratorPart
          };
-         // CreateTemplateParentBinding(frameBorder, Border.BackgroundProperty, Timeline.BackgroundProperty);
-         // CreateTemplateParentBinding(frameBorder, Border.BorderBrushProperty, Timeline.BorderBrushProperty);
-         // CreateTemplateParentBinding(frameBorder, Border.BorderThicknessProperty, Timeline.BorderThicknessProperty);
-         // CreateTemplateParentBinding(frameBorder, Border.CornerRadiusProperty, Timeline.CornerRadiusProperty);
-
+         
          var itemsPresenter = BuildItemsPresenter(timeline, scope);
          var scrollViewer = BuildScrollViewer(timeline, scope);
 
@@ -49,18 +45,6 @@ internal class TimelineTheme : BaseControlTheme
       {
          Name = ScrollViewerPart
       };
-      BindUtils.RelayBind(timeline, ScrollViewer.AllowAutoHideProperty, scrollViewer,
-                          ScrollViewer.AllowAutoHideProperty);
-      BindUtils.RelayBind(timeline, ScrollViewer.HorizontalScrollBarVisibilityProperty, scrollViewer,
-                          ScrollViewer.HorizontalScrollBarVisibilityProperty);
-      BindUtils.RelayBind(timeline, ScrollViewer.VerticalScrollBarVisibilityProperty, scrollViewer,
-                          ScrollViewer.VerticalScrollBarVisibilityProperty);
-      BindUtils.RelayBind(timeline, ScrollViewer.IsScrollChainingEnabledProperty, scrollViewer,
-                          ScrollViewer.IsScrollChainingEnabledProperty);
-      BindUtils.RelayBind(timeline, ScrollViewer.IsDeferredScrollingEnabledProperty, scrollViewer,
-                          ScrollViewer.IsDeferredScrollingEnabledProperty);
-      BindUtils.RelayBind(timeline, ScrollViewer.IsScrollInertiaEnabledProperty, scrollViewer,
-                          ScrollViewer.IsScrollInertiaEnabledProperty);
 
       return scrollViewer;
    }
@@ -72,7 +56,6 @@ internal class TimelineTheme : BaseControlTheme
          Name = ItemsPresenterPart,
       };
       itemsPresenter.RegisterInNameScope(scope);
-      CreateTemplateParentBinding(itemsPresenter, ItemsPresenter.ItemsPanelProperty, Timeline.ItemsPanelProperty);
       return itemsPresenter;
    }
 

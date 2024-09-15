@@ -20,7 +20,7 @@ internal class TimelineItemTheme : BaseControlTheme
     public const string SplitLinePart = "PART_SplitLine";
     public const string LabelPart = "PART_Label";
 
-    public TimelineItemTheme() : this(typeof(TimelineItem))
+    public TimelineItemTheme() : base(typeof(TimelineItem))
     {
     }
 
@@ -56,33 +56,33 @@ internal class TimelineItemTheme : BaseControlTheme
                 },
             };
 
-            if (timelineItem.HasLabel)
+            var labelBlock = new TextBlock()
             {
-                var labelBlock = new TextBlock()
-                {
-                    Name = LabelPart,
-                    VerticalAlignment = VerticalAlignment.Top,
-                    HorizontalAlignment = labelTextAlign,
-                    Margin = new Thickness(0,0,14,0)
-                };
+                Name = LabelPart,
+                VerticalAlignment = VerticalAlignment.Top,
+                HorizontalAlignment = labelTextAlign,
+            };
 
-                CreateTemplateParentBinding(labelBlock, TextBlock.TextProperty, TimelineItem.LabelProperty);
+            CreateTemplateParentBinding(labelBlock, TextBlock.TextProperty, TimelineItem.LabelProperty);
+            CreateTemplateParentBinding(labelBlock, TextBlock.IsVisibleProperty, TimelineItem.HasLabelProperty);
+            CreateTemplateParentBinding(labelBlock, TextBlock.IsVisibleProperty, TimelineItem.HasLabelProperty);
 
-                var labelStyle = new Style(selector => selector.Nesting().Template().Name(LabelPart));
-                labelStyle.Add(ContentPresenter.FontSizeProperty, TimelineTokenResourceKey.FontSize);
-                // todo 未生效
-                if (labelIndex == 0)
-                {
-                    labelStyle.Add(ContentPresenter.MarginProperty, TimelineTokenResourceKey.RightMargin);
-                }
-                else
-                {
-                    labelStyle.Add(ContentPresenter.MarginProperty, TimelineTokenResourceKey.LeftMargin);
-                }
-
-                Grid.SetColumn(labelBlock, labelIndex);
-                grid.Children.Add(labelBlock);
+            var labelStyle = new Style(selector => selector.Nesting().Template().Name(LabelPart));
+            labelStyle.Add(TextBlock.FontSizeProperty, TimelineTokenResourceKey.FontSize);
+            // todo 未生效
+            if (labelIndex == 0)
+            {
+                labelStyle.Add(TextBlock.PaddingProperty, TimelineTokenResourceKey.RightMargin);
             }
+            else
+            {
+                labelStyle.Add(TextBlock.PaddingProperty, TimelineTokenResourceKey.LeftMargin);
+            }
+            
+            Add(labelStyle);
+
+            Grid.SetColumn(labelBlock, labelIndex);
+            grid.Children.Add(labelBlock);
 
 
             var splitPanel = new DockPanel()

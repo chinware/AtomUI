@@ -1,16 +1,14 @@
 <UserControl
+    mc:Ignorable="d"
     x:Class="AtomUI.Demo.Desktop.ShowCase.TimelineShowCase"
     xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:atom="https://atomui.net"
     xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
-    mc:Ignorable="d">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <showcase:ShowCasePanel>
-        <showcase:ShowCaseItem
-            Title="Basic usage"
-            Description="Basic usage example.">
+        <showcase:ShowCaseItem Description="Basic usage example." Title="Basic usage">
             <atom:Timeline>
                 <atom:TimelineItem>
                     <TextBlock>
@@ -31,9 +29,7 @@
             </atom:Timeline>
         </showcase:ShowCaseItem>
 
-        <showcase:ShowCaseItem
-            Title="Color"
-            Description="Set the color of circles. green means completed or success status, red means warning or error, and blue means ongoing or other default status, gray for unfinished or disabled status.">
+        <showcase:ShowCaseItem Description="Set the color of circles. green means completed or success status, red means warning or error, and blue means ongoing or other default status, gray for unfinished or disabled status." Title="Color">
             <atom:Timeline>
                 <atom:TimelineItem Color="green">
                     <TextBlock>
@@ -63,9 +59,7 @@
             </atom:Timeline>
         </showcase:ShowCaseItem>
 
-        <showcase:ShowCaseItem
-            Title="Last node and Reversing"
-            Description="When the timeline is incomplete and ongoing, put a ghost node at last. Set pending as truthy value to enable displaying pending item. You can customize the pending content by passing a React Element. Meanwhile, pendingDot={a React Element} is used to customize the dot of the pending item. reverse={true} is used for reversing nodes.">
+        <showcase:ShowCaseItem Description="When the timeline is incomplete and ongoing, put a ghost node at last. Set pending as truthy value to enable displaying pending item. You can customize the pending content by passing a React Element. Meanwhile, pendingDot={a React Element} is used to customize the dot of the pending item. reverse={true} is used for reversing nodes." Title="Last node and Reversing">
             <atom:Timeline Pending="Recording..." Reverse="True">
                 <atom:TimelineItem Label="2024-01-01">
                     <TextBlock>
@@ -85,9 +79,7 @@
             </atom:Timeline>
         </showcase:ShowCaseItem>
 
-        <showcase:ShowCaseItem
-            Title="Alternate"
-            Description="Alternate timeline.">
+        <showcase:ShowCaseItem Description="Alternate timeline." Title="Alternate">
             <atom:Timeline Mode="alternate">
                 <atom:TimelineItem Label="2024-01-01">
                     <TextBlock>
@@ -112,9 +104,7 @@
             </atom:Timeline>
         </showcase:ShowCaseItem>
 
-        <showcase:ShowCaseItem
-            Title="Label"
-            Description="Use label show time alone.">
+        <showcase:ShowCaseItem Description="Use label show time alone." Title="Label">
             <atom:Timeline Mode="alternate">
                 <atom:TimelineItem Label="2024-01-01">
                     <TextBlock>
@@ -139,9 +129,7 @@
             </atom:Timeline>
         </showcase:ShowCaseItem>
 
-        <showcase:ShowCaseItem
-            Title="Right alternate"
-            Description="Right alternate timeline.">
+        <showcase:ShowCaseItem Description="Right alternate timeline." Title="Right alternate">
             <atom:Timeline Mode="right">
                 <atom:TimelineItem>
                     <TextBlock>

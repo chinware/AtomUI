@@ -1,9 +1,9 @@
+using System.Collections;
 using AtomUI.Data;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
-using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
@@ -40,6 +40,17 @@ public class Timeline : ItemsControl
         {
             SetValue(ReverseProperty, value);
             // Items.Reverse();
+        }
+    }
+    
+    public Timeline()
+    {
+        OnReversePropertyChanged();
+        System.Console.WriteLine("Timelien Reverse {0}", Reverse);
+        if (Reverse)
+        {
+            System.Console.WriteLine("Timelien Reverse 222");
+            OnReversePropertyChanged();
         }
     }
 
@@ -81,9 +92,35 @@ public class Timeline : ItemsControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
+        
         TokenResourceBinder.CreateGlobalResourceBinding(this, BorderThicknessProperty,
             GlobalTokenResourceKey.BorderThickness,
             BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this));
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == ReverseProperty && VisualRoot is not null)
+        {
+            var bb = change.GetNewValue<bool>();
+            System.Console.WriteLine("22 Timelien onpropertychanged {0} {1}", change.Property.Name, bb);
+
+            OnReversePropertyChanged();
+        }
+    }
+    
+    private void OnReversePropertyChanged()
+    {
+        System.Console.WriteLine("OnReversePropertyChanged onpropertychanged, Items {0}", Items.Count);
+
+        var items = Items.Cast<object>().ToList();
+        items.Reverse();
+        Items.Clear();
+        foreach (var item in items)
+        {
+            Items.Add(item);
+        }
     }
 }

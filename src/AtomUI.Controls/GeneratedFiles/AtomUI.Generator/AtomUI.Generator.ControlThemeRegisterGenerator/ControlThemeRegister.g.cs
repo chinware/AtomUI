@@ -8,8 +8,6 @@
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.AddOnDecoratedInnerBoxTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.AlertTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.ArrowDecoratedBoxTheme());
-            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.ButtonSpinnerInnerBoxTheme());
-            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.ButtonSpinnerTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.DefaultButtonTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.DropdownButtonTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.IconButtonTheme());
@@ -18,6 +16,8 @@
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.SplitButtonTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.TextButtonTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.ToggleIconButtonTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.ButtonSpinnerInnerBoxTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.ButtonSpinnerTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.CheckBoxTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.CollapseItemTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.CollapseTheme());
@@ -73,13 +73,13 @@
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.TabStripItemTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.TabStripTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.TagTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.TimelineItemTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.TimelineTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.PickerClearUpButtonTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.RangeTimePickerFlyoutPresenterTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.RangeTimePickerTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.TimePickerFlyoutPresenterTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.TimePickerPresenterTheme());
-            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.TimelineItemTheme());
-            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.TimelineTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.ToolTipTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.NodeSwitcherButtonTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.TreeViewItemTheme());

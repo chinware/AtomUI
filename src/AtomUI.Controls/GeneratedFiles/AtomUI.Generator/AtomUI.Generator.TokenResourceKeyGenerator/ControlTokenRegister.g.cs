@@ -8,8 +8,8 @@
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.AlertToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.ArrowDecoratedBoxToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.BadgeToken));
-            ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.ButtonSpinnerToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.ButtonToken));
+            ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.ButtonSpinnerToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.CheckBoxToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.CollapseToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.ComboBoxToken));
@@ -35,8 +35,8 @@
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.Switch.ToggleSwitchToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.TabControlToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.TagToken));
-            ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.TimePickerToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.TimelineToken));
+            ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.TimePickerToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.ToolTipToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.TreeViewToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.Controls.CaptionButtonToken));
