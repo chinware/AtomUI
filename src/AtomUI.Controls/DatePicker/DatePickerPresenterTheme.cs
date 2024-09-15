@@ -5,6 +5,7 @@ using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.Styling;
 using PickerCalendar = AtomUI.Controls.CalendarView.Calendar;
@@ -21,6 +22,7 @@ internal class DatePickerPresenterTheme : BaseControlTheme
     public const string ButtonsLayoutPart = "PART_ButtonsLayout";
     public const string ButtonsFramePart = "PART_ButtonsFrame";
     public const string CalendarViewPart = "PART_CalendarView";
+    public const string TimeViewPart = "PART_TimeView";
     
     public DatePickerPresenterTheme() : this(typeof(DatePickerPresenter))
     {
@@ -60,13 +62,29 @@ internal class DatePickerPresenterTheme : BaseControlTheme
 
     protected virtual Control BuildCalendarView(DatePickerPresenter presenter, INameScope scope)
     {
+        var calendarLayout = new StackPanel()
+        {
+            Orientation = Orientation.Horizontal
+        };
         var calendarView = new PickerCalendar()
         {
             Name = CalendarViewPart,
         };
         CreateTemplateParentBinding(calendarView, PickerCalendar.SelectedDateProperty, DatePickerPresenter.SelectedDateTimeProperty);
         calendarView.RegisterInNameScope(scope);
-        return calendarView;
+        calendarLayout.Children.Add(calendarView);
+
+        var timeView = new TimeView()
+        {
+            Name   = TimeViewPart,
+            VerticalAlignment = VerticalAlignment.Top,
+        };
+        CreateTemplateParentBinding(timeView, TimeView.ClockIdentifierProperty, DatePickerPresenter.ClockIdentifierProperty);
+        CreateTemplateParentBinding(timeView, TimeView.IsVisibleProperty, DatePickerPresenter.IsShowTimeProperty);
+        timeView.RegisterInNameScope(scope);
+        calendarLayout.Children.Add(timeView);
+        
+        return calendarLayout;
     }
 
     protected virtual Panel BuildButtons(DatePickerPresenter presenter, INameScope scope)
@@ -121,7 +139,9 @@ internal class DatePickerPresenterTheme : BaseControlTheme
         var buttonsPanelStyle = new Style(selector => selector.Nesting().Template().Name(ButtonsLayoutPart));
         buttonsPanelStyle.Add(Panel.MarginProperty, DatePickerTokenResourceKey.ButtonsPanelMargin);
         Add(buttonsPanelStyle);
-        
-        
+
+        var timeViewStyle = new Style(selector => selector.Nesting().Template().Name(TimeViewPart));
+        timeViewStyle.Add(TimePicker.PaddingProperty, DatePickerTokenResourceKey.PanelContentPadding);
+        Add(timeViewStyle);
     }
 }

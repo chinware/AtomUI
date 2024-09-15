@@ -15,8 +15,9 @@ namespace AtomUI.Controls;
 [ControlThemeProvider]
 internal class TimeViewTheme : BaseControlTheme
 {
-    public const string MainContainerPart = "PART_MainContainer";
-    public const string PickerContainerPart = "PART_PickerContainer";
+    public const string RootLayoutPart = "PART_RootLayout";
+    public const string MainFramePart = "PART_MainFrame";
+    public const string PickerSelectorContainerPart = "PART_PickerContainer";
     public const string HeaderTextPart = "PART_HeaderText";
 
     public const string HourHostPart = "PART_HourHost";
@@ -42,9 +43,15 @@ internal class TimeViewTheme : BaseControlTheme
     {
         return new FuncControlTemplate<TimeView>((presenter, scope) =>
         {
-            var mainContainer = new Grid
+            var frame = new Border()
             {
-                Name = MainContainerPart,
+                Name = MainFramePart,
+            };
+            CreateTemplateParentBinding(frame, Border.PaddingProperty, TimeView.PaddingProperty);
+            CreateTemplateParentBinding(frame, Border.BackgroundProperty, TimeView.BackgroundProperty);
+            var rootLayout = new Grid
+            {
+                Name = RootLayoutPart,
                 RowDefinitions = new RowDefinitions
                 {
                     new(GridLength.Auto),
@@ -52,13 +59,14 @@ internal class TimeViewTheme : BaseControlTheme
                     new(GridLength.Star)
                 }
             };
-            BuildHeader(mainContainer, scope);
-            BuildHosts(mainContainer, scope);
-            return mainContainer;
+            BuildHeader(rootLayout, scope);
+            BuildHosts(rootLayout, scope);
+            frame.Child = rootLayout;
+            return frame;
         });
     }
 
-    private void BuildHeader(Grid mainContainer, INameScope scope)
+    private void BuildHeader(Grid rootLayout, INameScope scope)
     {
         var headerText = new TextBlock
         {
@@ -66,26 +74,26 @@ internal class TimeViewTheme : BaseControlTheme
         };
         headerText.RegisterInNameScope(scope);
         CreateTemplateParentBinding(headerText, Visual.IsVisibleProperty, TimeView.IsShowHeaderProperty);
-        mainContainer.Children.Add(headerText);
+        rootLayout.Children.Add(headerText);
         Grid.SetRow(headerText, 0);
         var separator = new Rectangle
         {
-            HorizontalAlignment = HorizontalAlignment.Stretch
+            HorizontalAlignment = HorizontalAlignment.Stretch,
         };
 
         CreateTemplateParentBinding(separator, Layoutable.HeightProperty, TimeView.SpacerThicknessProperty);
         CreateTemplateParentBinding(separator, Visual.IsVisibleProperty, TimeView.IsShowHeaderProperty);
         TokenResourceBinder.CreateGlobalTokenBinding(separator, Shape.FillProperty,
-            GlobalTokenResourceKey.ColorBorder);
-        mainContainer.Children.Add(separator);
+            GlobalTokenResourceKey.ColorBorderSecondary);
+        rootLayout.Children.Add(separator);
         Grid.SetRow(separator, 1);
     }
 
-    private void BuildHosts(Grid mainContainer, INameScope scope)
+    private void BuildHosts(Grid rootLayout, INameScope scope)
     {
         var pickerContainer = new Grid
         {
-            Name = PickerContainerPart,
+            Name = PickerSelectorContainerPart,
             ColumnDefinitions = new ColumnDefinitions
             {
                 new(GridLength.Star),
@@ -133,7 +141,7 @@ internal class TimeViewTheme : BaseControlTheme
         firstSpacer.RegisterInNameScope(scope);
         CreateTemplateParentBinding(firstSpacer, Layoutable.WidthProperty, TimeView.SpacerThicknessProperty);
         TokenResourceBinder.CreateGlobalTokenBinding(firstSpacer, Shape.FillProperty,
-            GlobalTokenResourceKey.ColorBorder);
+            GlobalTokenResourceKey.ColorBorderSecondary);
         Grid.SetColumn(firstSpacer, 1);
         pickerContainer.Children.Add(firstSpacer);
 
@@ -173,7 +181,7 @@ internal class TimeViewTheme : BaseControlTheme
             TimeView.SpacerThicknessProperty);
         secondSpacer.RegisterInNameScope(scope);
         TokenResourceBinder.CreateGlobalTokenBinding(secondSpacer, Shape.FillProperty,
-            GlobalTokenResourceKey.ColorBorder);
+            GlobalTokenResourceKey.ColorBorderSecondary);
         Grid.SetColumn(secondSpacer, 3);
         pickerContainer.Children.Add(secondSpacer);
 
@@ -214,7 +222,7 @@ internal class TimeViewTheme : BaseControlTheme
         Grid.SetColumn(thirdSpacer, 5);
         pickerContainer.Children.Add(thirdSpacer);
         TokenResourceBinder.CreateGlobalTokenBinding(thirdSpacer, Shape.FillProperty,
-            GlobalTokenResourceKey.ColorBorder);
+            GlobalTokenResourceKey.ColorBorderSecondary);
 
         var periodHost = new Panel
         {
@@ -243,8 +251,8 @@ internal class TimeViewTheme : BaseControlTheme
             periodHost.Children.Add(scrollViewer);
         }
 
-        mainContainer.Children.Add(pickerContainer);
-        mainContainer.RegisterInNameScope(scope);
+        rootLayout.Children.Add(pickerContainer);
+        rootLayout.RegisterInNameScope(scope);
         Grid.SetRow(pickerContainer, 2);
     }
 
@@ -252,10 +260,11 @@ internal class TimeViewTheme : BaseControlTheme
     {
         var commonStyle     = new Style(selector => selector.Nesting());
         var headerTextStyle = new Style(selector => selector.Nesting().Template().Name(HeaderTextPart));
-        headerTextStyle.Add(Layoutable.HeightProperty, TimePickerTokenResourceKey.ItemHeight);
-        headerTextStyle.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Center);
-        headerTextStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Center);
+        headerTextStyle.Add(TextBlock.HeightProperty, TimePickerTokenResourceKey.ItemHeight);
+        headerTextStyle.Add(TextBlock.HorizontalAlignmentProperty, HorizontalAlignment.Center);
+        headerTextStyle.Add(TextBlock.VerticalAlignmentProperty, VerticalAlignment.Center);
         headerTextStyle.Add(TextBlock.FontWeightProperty, FontWeight.SemiBold);
+        headerTextStyle.Add(TextBlock.MarginProperty, TimePickerTokenResourceKey.HeaderMargin);
 
         var hourHostStyle = new Style(selector => selector.Nesting().Template().Name(HourHostPart));
         hourHostStyle.Add(Panel.WidthProperty, TimePickerTokenResourceKey.ItemWidth);

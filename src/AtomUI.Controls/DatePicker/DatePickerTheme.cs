@@ -25,6 +25,11 @@ internal class DatePickerTheme : InfoPickerInputTheme
         base.BuildStyles();
         var commonStyle = new Style(selector => selector.Nesting());
         commonStyle.Add(DatePicker.MinWidthProperty, DatePickerTokenResourceKey.PickerInputMinWidth);
+
+        var withTimeStyle =
+            new Style(selector => selector.Nesting().PropertyEquals(DatePicker.IsShowTimeProperty, true));
+        withTimeStyle.Add(DatePicker.MinWidthProperty, DatePickerTokenResourceKey.PickerInputWithTimeMinWidth);
+        commonStyle.Add(withTimeStyle);
         
         Add(commonStyle);
     }

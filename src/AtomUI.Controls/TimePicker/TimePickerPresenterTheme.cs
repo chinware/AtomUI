@@ -104,8 +104,6 @@ internal class TimePickerPresenterTheme : BaseControlTheme
     {
         var commonStyle       = new Style(selector => selector.Nesting());
         
-        commonStyle.Add(TimePickerPresenter.HeightProperty, TimePickerTokenResourceKey.PickerPopupHeight);
-        
         var buttonsFrameStyle = new Style(selector => selector.Nesting().Template().Name(ButtonsFramePart));
         buttonsFrameStyle.Add(Border.BorderBrushProperty, GlobalTokenResourceKey.ColorBorderSecondary);
         commonStyle.Add(buttonsFrameStyle);

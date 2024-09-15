@@ -210,6 +210,7 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey HeaderPadding = new TokenResourceKey("DatePicker.HeaderPadding", "AtomUI.Token");
         public static readonly TokenResourceKey RangeCalendarSpacing = new TokenResourceKey("DatePicker.RangeCalendarSpacing", "AtomUI.Token");
         public static readonly TokenResourceKey PickerInputMinWidth = new TokenResourceKey("DatePicker.PickerInputMinWidth", "AtomUI.Token");
+        public static readonly TokenResourceKey PickerInputWithTimeMinWidth = new TokenResourceKey("DatePicker.PickerInputWithTimeMinWidth", "AtomUI.Token");
         public static readonly TokenResourceKey ButtonsPanelMargin = new TokenResourceKey("DatePicker.ButtonsPanelMargin", "AtomUI.Token");
     }
 
@@ -578,10 +579,10 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey ItemWidth = new TokenResourceKey("TimePicker.ItemWidth", "AtomUI.Token");
         public static readonly TokenResourceKey ItemPadding = new TokenResourceKey("TimePicker.ItemPadding", "AtomUI.Token");
         public static readonly TokenResourceKey ButtonsMargin = new TokenResourceKey("TimePicker.ButtonsMargin", "AtomUI.Token");
-        public static readonly TokenResourceKey PickerPopupHeight = new TokenResourceKey("TimePicker.PickerPopupHeight", "AtomUI.Token");
         public static readonly TokenResourceKey RangePickerArrowMargin = new TokenResourceKey("TimePicker.RangePickerArrowMargin", "AtomUI.Token");
         public static readonly TokenResourceKey RangePickerIndicatorThickness = new TokenResourceKey("TimePicker.RangePickerIndicatorThickness", "AtomUI.Token");
         public static readonly TokenResourceKey PickerInputMinWidth = new TokenResourceKey("TimePicker.PickerInputMinWidth", "AtomUI.Token");
+        public static readonly TokenResourceKey HeaderMargin = new TokenResourceKey("TimePicker.HeaderMargin", "AtomUI.Token");
     }
 
     public static class ToolTipTokenResourceKey

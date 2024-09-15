@@ -575,7 +575,8 @@ internal class DateTimePickerPanel : Panel, ILogicalScrollable
                 Focusable                  = false,
                 CornerRadius               = new CornerRadius(0),
                 SizeType                   = SizeType.Middle,
-                DisabledItemHoverAnimation = true
+                DisabledItemHoverAnimation = true,
+                Cursor = new Cursor(StandardCursorType.Hand)
             };
             item.PointerEntered += (sender, args) =>
             {

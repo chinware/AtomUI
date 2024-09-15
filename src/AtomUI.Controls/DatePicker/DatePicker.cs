@@ -1,6 +1,9 @@
-﻿using AtomUI.Controls.CalendarView;
+﻿using System.Globalization;
+using AtomUI.Controls.CalendarView;
 using AtomUI.Controls.Internal;
+using AtomUI.Controls.TimePickerLang;
 using AtomUI.Data;
+using AtomUI.Theme.Data;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -30,6 +33,9 @@ public class DatePicker : InfoPickerInput
     
     public static readonly StyledProperty<bool> IsShowNowProperty =
         AvaloniaProperty.Register<DatePicker, bool>(nameof(IsShowNow), true);
+    
+    public static readonly StyledProperty<ClockIdentifierType> ClockIdentifierProperty =
+        TimePicker.ClockIdentifierProperty.AddOwner<DatePicker>();
 
     public DateTime? SelectedDateTime
     {
@@ -67,6 +73,12 @@ public class DatePicker : InfoPickerInput
         set => SetValue(IsShowNowProperty, value);
     }
     
+    public ClockIdentifierType ClockIdentifier
+    {
+        get => GetValue(ClockIdentifierProperty);
+        set => SetValue(ClockIdentifierProperty, value);
+    }
+    
     #endregion
     
     private DatePickerPresenter? _pickerPresenter;
@@ -88,7 +100,7 @@ public class DatePicker : InfoPickerInput
         SelectedDateTime = DefaultDateTime;
     }
 
-    private string EffectiveFormat()
+    private string GetEffectiveFormat()
     {
         if (Format is not null)
         {
@@ -98,10 +110,37 @@ public class DatePicker : InfoPickerInput
         var format = "yyyy-MM-dd";
         if (IsShowTime)
         {
-            format = $"{format} HH:mm:ss";
+           
+            if (ClockIdentifier == ClockIdentifierType.HourClock12)
+            {
+                format = $"{format} hh:mm:ss tt";
+            }
+            else
+            {
+                format = $"{format} HH:mm:ss";
+            }
         }
 
         return format;
+    }
+    
+    public string FormatDateTime(DateTime? dateTime)
+    {
+        if (dateTime is null)
+        {
+            return string.Empty;
+        }
+
+        var format = GetEffectiveFormat();
+        if (ClockIdentifier == ClockIdentifierType.HourClock12)
+        {
+            var formatInfo = new DateTimeFormatInfo();
+            formatInfo.AMDesignator = LanguageResourceBinder.GetLangResource(TimePickerLangResourceKey.AMText)!;
+            formatInfo.PMDesignator = LanguageResourceBinder.GetLangResource(TimePickerLangResourceKey.PMText)!;
+            return dateTime.Value.ToString(format, formatInfo);
+        }
+
+        return dateTime.Value.ToString(format);
     }
     
     protected override Flyout CreatePickerFlyout()
@@ -132,6 +171,7 @@ public class DatePicker : InfoPickerInput
         BindUtils.RelayBind(this, IsNeedConfirmProperty, presenter, DatePickerPresenter.IsNeedConfirmProperty);
         BindUtils.RelayBind(this, IsShowNowProperty, presenter, DatePickerPresenter.IsShowNowProperty);
         BindUtils.RelayBind(this, IsShowTimeProperty, presenter, DatePickerPresenter.IsShowTimeProperty);
+        BindUtils.RelayBind(this, ClockIdentifierProperty, presenter, DatePickerPresenter.ClockIdentifierProperty);
     }
     
     protected override void NotifyFlyoutOpened()
@@ -170,7 +210,7 @@ public class DatePicker : InfoPickerInput
     {
         if (args.Value.HasValue)
         {
-            Text = args.Value.Value.ToString(EffectiveFormat());
+            Text = FormatDateTime(args.Value);
         }
         else
         {
@@ -188,7 +228,7 @@ public class DatePicker : InfoPickerInput
     {
         DateTime? targetValue = default;
         targetValue = SelectedDateTime;
-        Text        = targetValue?.ToString(EffectiveFormat());
+        Text        = FormatDateTime(targetValue);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -198,7 +238,7 @@ public class DatePicker : InfoPickerInput
         {
             SelectedDateTime = DefaultDateTime;
         }
-        Text = SelectedDateTime?.ToString(EffectiveFormat());
+        Text = FormatDateTime(SelectedDateTime);
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -206,7 +246,7 @@ public class DatePicker : InfoPickerInput
         base.OnPropertyChanged(change);
         if (change.Property == SelectedDateTimeProperty)
         {
-            Text = SelectedDateTime?.ToString(EffectiveFormat());
+            Text = FormatDateTime(SelectedDateTime);
         }
     }
 

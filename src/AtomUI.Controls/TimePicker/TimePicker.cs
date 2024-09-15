@@ -30,7 +30,7 @@ public class TimePicker : InfoPickerInput
         AvaloniaProperty.Register<TimePicker, int>(nameof(SecondIncrement), 1, coerce: CoerceSecondIncrement);
     
     public static readonly StyledProperty<ClockIdentifierType> ClockIdentifierProperty =
-        AvaloniaProperty.Register<TimePicker, ClockIdentifierType>(nameof(ClockIdentifier));
+        AvaloniaProperty.Register<TimePicker, ClockIdentifierType>(nameof(ClockIdentifier), ClockIdentifierType.HourClock12);
 
     public static readonly StyledProperty<TimeSpan?> SelectedTimeProperty =
         AvaloniaProperty.Register<TimePicker, TimeSpan?>(nameof(SelectedTime),

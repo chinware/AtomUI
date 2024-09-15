@@ -34,11 +34,6 @@ internal class TimePickerToken : AbstractControlDesignToken
     public Thickness ButtonsMargin { get; set; }
 
     /// <summary>
-    /// 日期选择弹出框高度
-    /// </summary>
-    public double PickerPopupHeight { get; set; }
-
-    /// <summary>
     /// 范围选择箭头外间距
     /// </summary>
     public Thickness RangePickerArrowMargin { get; set; }
@@ -53,6 +48,11 @@ internal class TimePickerToken : AbstractControlDesignToken
     /// </summary>
     public double PickerInputMinWidth { get; set; }
 
+    /// <summary>
+    /// Header 头内间距
+    /// </summary>
+    public Thickness HeaderMargin { get; set; }
+    
     internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
@@ -60,9 +60,9 @@ internal class TimePickerToken : AbstractControlDesignToken
         ItemHeight                    = _globalToken.SeedToken.ControlHeight - 4;
         ItemPadding                   = new Thickness(0, _globalToken.PaddingXXS);
         ButtonsMargin                 = new Thickness(0, _globalToken.MarginXS, 0, 0);
-        PickerPopupHeight             = ItemHeight * 8;
         RangePickerArrowMargin        = new Thickness(_globalToken.MarginXS, 0);
         RangePickerIndicatorThickness = _globalToken.LineWidthFocus;
         PickerInputMinWidth           = 120;
+        HeaderMargin                  = new Thickness(0, 0, 0, 3);
     }
 }

@@ -28,7 +28,7 @@ internal class TimeSelectedEventArgs : EventArgs
 [TemplatePart(TimeViewTheme.SecondSelectorPart, typeof(DateTimePickerPanel), IsRequired = true)]
 [TemplatePart(TimeViewTheme.PeriodHostPart, typeof(Panel), IsRequired = true)]
 [TemplatePart(TimeViewTheme.PeriodSelectorPart, typeof(DateTimePickerPanel), IsRequired = true)]
-[TemplatePart(TimeViewTheme.PickerContainerPart, typeof(Grid), IsRequired = true)]
+[TemplatePart(TimeViewTheme.PickerSelectorContainerPart, typeof(Grid), IsRequired = true)]
 [TemplatePart(TimeViewTheme.SecondSpacerPart, typeof(Rectangle), IsRequired = true)]
 internal class TimeView : TemplatedControl
 {
@@ -48,6 +48,9 @@ internal class TimeView : TemplatedControl
 
     public static readonly StyledProperty<bool> IsShowHeaderProperty =
         AvaloniaProperty.Register<TimeView, bool>(nameof(IsShowHeader), true);
+    
+    public static readonly StyledProperty<int> SelectorRowCountProperty =
+        AvaloniaProperty.Register<TimeView, int>(nameof(SelectorRowCount), 7);
 
     /// <summary>
     /// Gets or sets the minute increment in the selector
@@ -85,6 +88,12 @@ internal class TimeView : TemplatedControl
         set => SetValue(IsShowHeaderProperty, value);
     }
 
+    public int SelectorRowCount
+    {
+        get => GetValue(SelectorRowCountProperty);
+        set => SetValue(SelectorRowCountProperty, value);
+    }
+    
     #endregion
 
     #region 内部属性定义
@@ -94,22 +103,33 @@ internal class TimeView : TemplatedControl
             o => o.SpacerWidth,
             (o, v) => o.SpacerWidth = v);
     
+    internal static readonly DirectProperty<TimeView, double> ItemHeightProperty =
+        AvaloniaProperty.RegisterDirect<TimeView, double>(nameof(ItemHeight),
+            o => o.ItemHeight,
+            (o, v) => o.ItemHeight = v);
+    
     internal static readonly StyledProperty<bool> IsPointerInSelectorProperty =
-        AvaloniaProperty.Register<Calendar, bool>(nameof(IsPointerInSelector), false);
+        AvaloniaProperty.Register<TimeView, bool>(nameof(IsPointerInSelector), false);
 
     private double _spacerWidth;
 
-    public double SpacerWidth
+    internal double SpacerWidth
     {
         get => _spacerWidth;
         set => SetAndRaise(SpacerThicknessProperty, ref _spacerWidth, value);
     }
     
-    
     internal bool IsPointerInSelector
     {
         get => GetValue(IsPointerInSelectorProperty);
         set => SetValue(IsPointerInSelectorProperty, value);
+    }
+
+    private double _itemHeight;
+    internal double ItemHeight
+    {
+        get => _itemHeight;
+        set => SetAndRaise(ItemHeightProperty, ref _itemHeight, value);
     }
 
     #endregion
@@ -129,7 +149,7 @@ internal class TimeView : TemplatedControl
     }
 
     // TemplateItems
-    private Grid? _pickerContainer;
+    private Grid? _pickerSelectorContainer;
     private Rectangle? _spacer3;
     private Panel? _periodHost;
     private TextBlock? _headerText;
@@ -207,14 +227,17 @@ internal class TimeView : TemplatedControl
     {
         base.OnApplyTemplate(e);
 
-        _pickerContainer = e.NameScope.Get<Grid>(TimeViewTheme.PickerContainerPart);
-        _periodHost      = e.NameScope.Get<Panel>(TimeViewTheme.PeriodHostPart);
-        _headerText      = e.NameScope.Get<TextBlock>(TimeViewTheme.HeaderTextPart);
+        _pickerSelectorContainer = e.NameScope.Get<Grid>(TimeViewTheme.PickerSelectorContainerPart);
+        _periodHost              = e.NameScope.Get<Panel>(TimeViewTheme.PeriodHostPart);
+        _headerText              = e.NameScope.Get<TextBlock>(TimeViewTheme.HeaderTextPart);
 
         _hourSelector   = e.NameScope.Get<DateTimePickerPanel>(TimeViewTheme.HourSelectorPart);
         _minuteSelector = e.NameScope.Get<DateTimePickerPanel>(TimeViewTheme.MinuteSelectorPart);
         _secondSelector = e.NameScope.Get<DateTimePickerPanel>(TimeViewTheme.SecondSelectorPart);
         _periodSelector = e.NameScope.Get<DateTimePickerPanel>(TimeViewTheme.PeriodSelectorPart);
+        SetupPickerSelectorContainerHeight();
+        
+        TokenResourceBinder.CreateGlobalTokenBinding(this, ItemHeightProperty, TimePickerTokenResourceKey.ItemHeight);
 
         if (_hourSelector is not null)
         {
@@ -354,6 +377,12 @@ internal class TimeView : TemplatedControl
             }
         }
 
+        if (change.Property == ItemHeightProperty ||
+            change.Property == SelectorRowCountProperty)
+        {
+            SetupPickerSelectorContainerHeight();
+        }
+
     }
 
     private void SyncTimeValueToPanel(TimeSpan time)
@@ -385,7 +414,7 @@ internal class TimeView : TemplatedControl
 
     private void InitPicker()
     {
-        if (_pickerContainer == null)
+        if (_pickerSelectorContainer == null)
         {
             return;
         }
@@ -414,5 +443,14 @@ internal class TimeView : TemplatedControl
         _spacer3!.IsVisible    = !use24HourClock;
         _periodHost!.IsVisible = !use24HourClock;
     }
-    
+
+    private void SetupPickerSelectorContainerHeight()
+    {
+        if (_pickerSelectorContainer is null)
+        {
+            return;
+        }
+
+        _pickerSelectorContainer.Height = ItemHeight * SelectorRowCount;
+    }
 }

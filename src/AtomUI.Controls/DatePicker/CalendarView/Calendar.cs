@@ -961,29 +961,13 @@ public class Calendar : TemplatedControl
         base.OnPointerWheelChanged(e);
         if (!e.Handled)
         {
-            CalendarExtensions.GetMetaKeyState(e.KeyModifiers, out var ctrl, out var shift);
-
-            if (!ctrl)
+            if (e.Delta.Y > 0)
             {
-                if (e.Delta.Y > 0)
-                {
-                    ProcessPageUpKey(false);
-                }
-                else
-                {
-                    ProcessPageDownKey(false);
-                }
+                OnNextMonthClick();
             }
             else
             {
-                if (e.Delta.Y > 0)
-                {
-                    ProcessDownKey(ctrl, shift);
-                }
-                else
-                {
-                    ProcessUpKey(ctrl, shift);
-                }
+                OnPreviousMonthClick();
             }
 
             e.Handled = true;
