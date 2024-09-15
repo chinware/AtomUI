@@ -4,8 +4,8 @@ namespace AtomUI.Demo.Desktop.ShowCase;
 
 public partial class CardShowCase : UserControl
 {
-   public CardShowCase()
-   {
-      InitializeComponent();
-   }
+    public CardShowCase()
+    {
+        InitializeComponent();
+    }
 }

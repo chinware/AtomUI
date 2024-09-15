@@ -5,15 +5,15 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:atom="https://atomui.net"
-    xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
+    xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
     mc:Ignorable="d">
-    <showcase:ShowCasePanel>
-        <showcase:ShowCasePanel.Styles>
+    <desktop:ShowCasePanel>
+        <desktop:ShowCasePanel.Styles>
             <Style Selector="atom|Button">
-                <Setter Property="Margin" Value="5"></Setter>
+                <Setter Property="Margin" Value="5" />
             </Style>
-        </showcase:ShowCasePanel.Styles>
-        <showcase:ShowCaseItem
+        </desktop:ShowCasePanel.Styles>
+        <desktop:ShowCaseItem
             Title="Type"
             Description="There are primary button, default button, dashed button, text button and link button in antd.">
             <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal">
@@ -22,9 +22,9 @@
                 <atom:Button ButtonType="Text">Text Button</atom:Button>
                 <atom:Button ButtonType="Link">Link Button</atom:Button>
             </WrapPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Button Shape"
             Description="Supported button shape display, such as primary, default, dashed and Text, etc.">
             <StackPanel Orientation="Vertical">
@@ -48,9 +48,9 @@
                 </StackPanel>
             </StackPanel>
 
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Size"
             Description="AtomUI supports three sizes of buttons: small, default and large.
 If a large or small button is desired, set the size property to either large or small respectively. Omit the size property for a button with the default size.">
@@ -71,28 +71,42 @@ If a large or small button is desired, set the size property to either large or 
                         <atom:Button ButtonType="Link" SizeType="{Binding ButtonSizeType}">Link</atom:Button>
                     </WrapPanel>
                     <WrapPanel>
-                        <atom:Button ButtonType="Primary" Shape="Default" Icon="{atom:IconProvider Kind=DownloadOutlined}" SizeType="{Binding ButtonSizeType}"/>
-                        <atom:Button ButtonType="Primary" Shape="Circle" Icon="{atom:IconProvider Kind=DownloadOutlined}" SizeType="{Binding ButtonSizeType}"/>
-                        <atom:Button ButtonType="Primary" Shape="Round" Icon="{atom:IconProvider Kind=DownloadOutlined}" SizeType="{Binding ButtonSizeType}"/>
-                        <atom:Button ButtonType="Primary" Shape="Round" Icon="{atom:IconProvider Kind=DownloadOutlined}" SizeType="{Binding ButtonSizeType}">Download</atom:Button>
-                        <atom:Button ButtonType="Primary" Shape="Default" Icon="{atom:IconProvider Kind=DownloadOutlined}" SizeType="{Binding ButtonSizeType}">Download</atom:Button>
+                        <atom:Button ButtonType="Primary" Shape="Default"
+                                     Icon="{atom:IconProvider Kind=DownloadOutlined}"
+                                     SizeType="{Binding ButtonSizeType}" />
+                        <atom:Button ButtonType="Primary" Shape="Circle"
+                                     Icon="{atom:IconProvider Kind=DownloadOutlined}"
+                                     SizeType="{Binding ButtonSizeType}" />
+                        <atom:Button ButtonType="Primary" Shape="Round"
+                                     Icon="{atom:IconProvider Kind=DownloadOutlined}"
+                                     SizeType="{Binding ButtonSizeType}" />
+                        <atom:Button ButtonType="Primary" Shape="Round"
+                                     Icon="{atom:IconProvider Kind=DownloadOutlined}"
+                                     SizeType="{Binding ButtonSizeType}">
+                            Download
+                        </atom:Button>
+                        <atom:Button ButtonType="Primary" Shape="Default"
+                                     Icon="{atom:IconProvider Kind=DownloadOutlined}"
+                                     SizeType="{Binding ButtonSizeType}">
+                            Download
+                        </atom:Button>
                     </WrapPanel>
                 </StackPanel>
             </DockPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Icon"
             Description="You can add an icon through the icon property and adjust the position of the icon using iconPosition.">
             <StackPanel Orientation="Vertical">
                 <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal">
-                    <atom:Button ButtonType="Primary" Shape="Circle" Icon="{atom:IconProvider Kind=SearchOutlined}"/>
+                    <atom:Button ButtonType="Primary" Shape="Circle" Icon="{atom:IconProvider Kind=SearchOutlined}" />
                     <atom:Button ButtonType="Primary" Shape="Round"
                                  Icon="{atom:IconProvider Kind=SearchOutlined}">
                         Search
                     </atom:Button>
 
-                    <atom:Button ButtonType="Default" Shape="Circle" Icon="{atom:IconProvider Kind=SearchOutlined}"/>
+                    <atom:Button ButtonType="Default" Shape="Circle" Icon="{atom:IconProvider Kind=SearchOutlined}" />
                     <atom:Button ButtonType="Default" Shape="Round" Icon="{atom:IconProvider Kind=SearchOutlined}">
                         Search
                     </atom:Button>
@@ -111,41 +125,48 @@ If a large or small button is desired, set the size property to either large or 
                         Search
                     </atom:Button>
 
-                    <atom:Button ButtonType="Default" Shape="Round" IsDanger="True" Icon="{atom:IconProvider Kind=SearchOutlined}">
+                    <atom:Button ButtonType="Default" Shape="Round" IsDanger="True"
+                                 Icon="{atom:IconProvider Kind=SearchOutlined}">
                         Search
                     </atom:Button>
 
-                    <atom:Button ButtonType="Text" Shape="Default" IsDanger="True" Icon="{atom:IconProvider Kind=SearchOutlined}">
+                    <atom:Button ButtonType="Text" Shape="Default" IsDanger="True"
+                                 Icon="{atom:IconProvider Kind=SearchOutlined}">
                         Search
                     </atom:Button>
 
-                    <atom:Button ButtonType="Link" Shape="Default" IsDanger="True" Icon="{atom:IconProvider Kind=SearchOutlined}">
+                    <atom:Button ButtonType="Link" Shape="Default" IsDanger="True"
+                                 Icon="{atom:IconProvider Kind=SearchOutlined}">
                         Search
                     </atom:Button>
                 </WrapPanel>
             </StackPanel>
 
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Loading"
             Description="A loading indicator can be added to a button by setting the loading property on the Button.">
             <StackPanel HorizontalAlignment="Stretch" Orientation="Vertical" Margin="10">
                 <WrapPanel>
                     <atom:Button ButtonType="Primary" IsLoading="True">Loading</atom:Button>
                     <atom:Button ButtonType="Primary" SizeType="Small" IsLoading="True">Loading</atom:Button>
-                    <atom:Button ButtonType="Primary" IsLoading="True" Icon="{atom:IconProvider Kind=PoweroffOutlined}"/>
+                    <atom:Button ButtonType="Primary" IsLoading="True" Icon="{atom:IconProvider Kind=PoweroffOutlined}" />
                 </WrapPanel>
                 <WrapPanel>
                     <atom:Button ButtonType="Primary" Name="LoadingBtn1">Click me!</atom:Button>
-                    <atom:Button ButtonType="Primary" Name="LoadingBtn2" Icon="{atom:IconProvider Kind=PoweroffOutlined}">Click me!</atom:Button>
-                    <atom:Button ButtonType="Primary" Name="LoadingBtn3" Icon="{atom:IconProvider Kind=PoweroffOutlined}"/>
+                    <atom:Button ButtonType="Primary" Name="LoadingBtn2"
+                                 Icon="{atom:IconProvider Kind=PoweroffOutlined}">
+                        Click me!
+                    </atom:Button>
+                    <atom:Button ButtonType="Primary" Name="LoadingBtn3"
+                                 Icon="{atom:IconProvider Kind=PoweroffOutlined}" />
                 </WrapPanel>
-        
-            </StackPanel>
-        </showcase:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+            </StackPanel>
+        </desktop:ShowCaseItem>
+
+        <desktop:ShowCaseItem
             Title="Block Button"
             Description="block property will make the button fit to its parent width.">
             <StackPanel HorizontalAlignment="Stretch" Orientation="Vertical" Margin="10">
@@ -162,9 +183,9 @@ If a large or small button is desired, set the size property to either large or 
                     Link
                 </atom:Button>
             </StackPanel>
-        </showcase:ShowCaseItem>
-        
-        <showcase:ShowCaseItem
+        </desktop:ShowCaseItem>
+
+        <desktop:ShowCaseItem
             Title="Danger Buttons"
             Description="danger is a property of button after antd 4.0.">
             <WrapPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
@@ -181,54 +202,55 @@ If a large or small button is desired, set the size property to either large or 
                     Link
                 </atom:Button>
             </WrapPanel>
-        </showcase:ShowCaseItem>
-        
-        <showcase:ShowCaseItem
+        </desktop:ShowCaseItem>
+
+        <desktop:ShowCaseItem
             Title="Ghost Button"
             Description="ghost property will make button's background transparent, it is commonly used in colored background.">
             <Border Background="rgb(190, 200, 200)"
                     Margin="10"
                     Padding="10">
-               <StackPanel Orientation="Vertical">
-                   <WrapPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
-                       <atom:Button ButtonType="Primary" IsGhost="True">
-                           Primary
-                       </atom:Button>
-                       <atom:Button ButtonType="Default" IsGhost="True">
-                           Default
-                       </atom:Button>
-                       <atom:Button ButtonType="Text" IsGhost="True">
-                           Text
-                       </atom:Button>
-                       <atom:Button ButtonType="Link" IsGhost="True">
-                           Link
-                       </atom:Button>
-                       <atom:Button ButtonType="Primary" IsDanger="True" IsGhost="True">
-                           Danger
-                       </atom:Button>
-                   </WrapPanel>
-                   <WrapPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
-                       <atom:Button ButtonType="Primary" IsGhost="True" Icon="{atom:IconProvider Kind=SearchOutlined}">
-                           Primary
-                       </atom:Button>
-                       <atom:Button ButtonType="Default" IsGhost="True" Icon="{atom:IconProvider Kind=SearchOutlined}">
-                           Default
-                       </atom:Button>
-                       <atom:Button ButtonType="Text" IsGhost="True" Icon="{atom:IconProvider Kind=SearchOutlined}">
-                           Text
-                       </atom:Button>
-                       <atom:Button ButtonType="Link" IsGhost="True" Icon="{atom:IconProvider Kind=SearchOutlined}">
-                           Link
-                       </atom:Button>
-                       <atom:Button ButtonType="Primary" IsDanger="True" IsGhost="True" Icon="{atom:IconProvider Kind=SearchOutlined}">
-                           Danger
-                       </atom:Button>
-                   </WrapPanel>
-               </StackPanel>
+                <StackPanel Orientation="Vertical">
+                    <WrapPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
+                        <atom:Button ButtonType="Primary" IsGhost="True">
+                            Primary
+                        </atom:Button>
+                        <atom:Button ButtonType="Default" IsGhost="True">
+                            Default
+                        </atom:Button>
+                        <atom:Button ButtonType="Text" IsGhost="True">
+                            Text
+                        </atom:Button>
+                        <atom:Button ButtonType="Link" IsGhost="True">
+                            Link
+                        </atom:Button>
+                        <atom:Button ButtonType="Primary" IsDanger="True" IsGhost="True">
+                            Danger
+                        </atom:Button>
+                    </WrapPanel>
+                    <WrapPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
+                        <atom:Button ButtonType="Primary" IsGhost="True" Icon="{atom:IconProvider Kind=SearchOutlined}">
+                            Primary
+                        </atom:Button>
+                        <atom:Button ButtonType="Default" IsGhost="True" Icon="{atom:IconProvider Kind=SearchOutlined}">
+                            Default
+                        </atom:Button>
+                        <atom:Button ButtonType="Text" IsGhost="True" Icon="{atom:IconProvider Kind=SearchOutlined}">
+                            Text
+                        </atom:Button>
+                        <atom:Button ButtonType="Link" IsGhost="True" Icon="{atom:IconProvider Kind=SearchOutlined}">
+                            Link
+                        </atom:Button>
+                        <atom:Button ButtonType="Primary" IsDanger="True" IsGhost="True"
+                                     Icon="{atom:IconProvider Kind=SearchOutlined}">
+                            Danger
+                        </atom:Button>
+                    </WrapPanel>
+                </StackPanel>
             </Border>
-        </showcase:ShowCaseItem>
-        
-        <showcase:ShowCaseItem
+        </desktop:ShowCaseItem>
+
+        <desktop:ShowCaseItem
             Title="Disabled"
             Description="To mark a button as disabled, add the disabled property to the Button.">
             <WrapPanel HorizontalAlignment="Stretch" Orientation="Vertical">
@@ -264,7 +286,7 @@ If a large or small button is desired, set the size property to either large or 
                         Link(disabled)
                     </atom:Button>
                 </StackPanel>
-        
+
                 <StackPanel Orientation="Horizontal">
                     <atom:Button ButtonType="Primary" IsDanger="True">
                         Danger Primary
@@ -298,6 +320,6 @@ If a large or small button is desired, set the size property to either large or 
                     </atom:Button>
                 </StackPanel>
             </WrapPanel>
-        </showcase:ShowCaseItem>
-    </showcase:ShowCasePanel>
+        </desktop:ShowCaseItem>
+    </desktop:ShowCasePanel>
 </UserControl>

@@ -5,15 +5,16 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:atom="https://atomui.net"
-    xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
+    xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
+
     mc:Ignorable="d">
-    <showcase:ShowCasePanel>
-        <showcase:ShowCasePanel.Styles>
+    <desktop:ShowCasePanel>
+        <desktop:ShowCasePanel.Styles>
             <Style Selector="atom|Tag">
                 <Setter Property="Margin" Value="5" />
             </Style>
-        </showcase:ShowCasePanel.Styles>
-        <showcase:ShowCaseItem
+        </desktop:ShowCasePanel.Styles>
+        <desktop:ShowCaseItem
             Title="Basic"
             Description="Usage of basic Tag, and it could be IsClosable and customize close button by set closeIcon property,will display default close button when closeIcon is setting to true. IsClosable Tag supports onClose events.">
             <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal">
@@ -27,9 +28,9 @@
                     Tag 2
                 </atom:Tag>
             </WrapPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Colorful Tag"
             Description="We preset a series of colorful tag styles for use in different situations. You can also set it to a hex color string for custom color.">
             <StackPanel Orientation="Vertical">
@@ -57,9 +58,9 @@
                 </WrapPanel>
             </StackPanel>
 
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Status Tag"
             Description="We preset five different colors, you can set color property such as success,processing,error,default and warning to indicate specific status.">
             <StackPanel Orientation="Vertical">
@@ -113,9 +114,9 @@
                 </WrapPanel>
             </StackPanel>
 
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Icon"
             Description="Tag components can contain an Icon. This is done by setting the icon property or placing an Icon component within the Tag.
 If you want specific control over the positioning and placement of the Icon, then that should be done by placing the Icon component within the Tag rather than using the icon property.">
@@ -145,9 +146,9 @@ If you want specific control over the positioning and placement of the Icon, the
                     Linkedin
                 </atom:Tag>
             </WrapPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="borderless"
             Description="borderless">
             <StackPanel Orientation="Vertical">
@@ -158,7 +159,7 @@ If you want specific control over the positioning and placement of the Icon, the
                     <atom:Tag Bordered="False" IsClosable="True">Tag4</atom:Tag>
                 </WrapPanel>
 
-                <atom:Separator FontWeight="Bold" FontSize="14" Margin="0, 20, 0, 20"/>
+                <atom:Separator FontWeight="Bold" FontSize="14" Margin="0, 20, 0, 20" />
                 <WrapPanel HorizontalAlignment="Left">
                     <atom:Tag TagColor="magenta" Bordered="False">magenta</atom:Tag>
                     <atom:Tag TagColor="red" Bordered="False">red</atom:Tag>
@@ -179,7 +180,7 @@ If you want specific control over the positioning and placement of the Icon, the
                 </WrapPanel>
             </StackPanel>
 
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-    </showcase:ShowCasePanel>
+    </desktop:ShowCasePanel>
 </UserControl>

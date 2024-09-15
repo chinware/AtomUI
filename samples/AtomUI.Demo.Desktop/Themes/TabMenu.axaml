@@ -1,16 +1,15 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <!--  Add Resources Here  -->
+    <!-- Add Resources Here -->
     <ControlTheme x:Key="NavigationTab" TargetType="TabControl">
         <Setter Property="TabControl.Template">
-            <!--    -->
+            <!--  -->
             <ControlTemplate TargetType="TabControl">
-                <Border
-                    HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
-                    VerticalAlignment="{TemplateBinding VerticalAlignment}"
-                    Background="{TemplateBinding Background}"
-                    BorderBrush="{TemplateBinding BorderBrush}"
-                    BorderThickness="{TemplateBinding BorderThickness}"
-                    CornerRadius="{TemplateBinding CornerRadius}">
+                <Border HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                        VerticalAlignment="{TemplateBinding VerticalAlignment}"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}">
                     <DockPanel>
                         <ScrollViewer DockPanel.Dock="Left" VerticalScrollBarVisibility="Auto">
                             <Panel DockPanel.Dock="{TemplateBinding TabStripPlacement}">
@@ -21,16 +20,16 @@
                                         </ItemsPanelTemplate>
                                     </ItemsPresenter.ItemsPanel>
                                 </ItemsPresenter>
-                                <Border Name="PART_BorderSeparator" Background="{DynamicResource TabItemLinePipePressedBorderBrush}" />
+                                <Border Name="PART_BorderSeparator"
+                                        Background="{DynamicResource TabItemLinePipePressedBorderBrush}" />
                             </Panel>
                         </ScrollViewer>
-                        <ContentPresenter
-                            Name="PART_SelectedContentHost"
-                            Margin="{TemplateBinding Padding}"
-                            HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                            VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                            Content="{TemplateBinding SelectedContent}"
-                            ContentTemplate="{TemplateBinding SelectedContentTemplate}" />
+                        <ContentPresenter Name="PART_SelectedContentHost"
+                                          Margin="{TemplateBinding Padding}"
+                                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          Content="{TemplateBinding SelectedContent}"
+                                          ContentTemplate="{TemplateBinding SelectedContentTemplate}" />
                     </DockPanel>
                 </Border>
             </ControlTemplate>

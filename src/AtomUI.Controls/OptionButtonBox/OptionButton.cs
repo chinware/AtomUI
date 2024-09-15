@@ -16,282 +16,304 @@ using ButtonSizeType = SizeType;
 
 public enum OptionButtonStyle
 {
-   Outline,
-   Solid
+    Outline,
+    Solid
 }
 
 public enum OptionButtonPositionTrait
 {
-   First,
-   Last,
-   Middle,
-   OnlyOne
+    First,
+    Last,
+    Middle,
+    OnlyOne
 }
 
 public class OptionButtonPointerEventArgs : EventArgs
 {
-   public OptionButton? Button { get; }
-   public bool IsPressed { get; set; }
-   public bool IsHovering { get; set; }
+    public OptionButton? Button { get; }
+    public bool IsPressed { get; set; }
+    public bool IsHovering { get; set; }
 
-   public OptionButtonPointerEventArgs(OptionButton button)
-   {
-      Button = button;
-   }
+    public OptionButtonPointerEventArgs(OptionButton button)
+    {
+        Button = button;
+    }
 }
 
 public class OptionButton : AvaloniaRadioButton,
                             ISizeTypeAware,
-                            IWaveAdornerInfoProvider,
-                            IControlCustomStyle
+                            IWaveAdornerInfoProvider
 {
-   private ControlStyleState _styleState;
-   private IControlCustomStyle _customStyle;
-   private CornerRadius? _originCornerRadius;
-   private readonly BorderRenderHelper _borderRenderHelper;
+    #region 公共属性定义
 
-   public static readonly StyledProperty<ButtonSizeType> SizeTypeProperty =
-      AvaloniaProperty.Register<OptionButton, ButtonSizeType>(nameof(SizeType), ButtonSizeType.Middle);
+    public static readonly StyledProperty<ButtonSizeType> SizeTypeProperty =
+        AvaloniaProperty.Register<OptionButton, ButtonSizeType>(nameof(SizeType), ButtonSizeType.Middle);
 
-   public static readonly StyledProperty<OptionButtonStyle> ButtonStyleProperty =
-      AvaloniaProperty.Register<OptionButton, OptionButtonStyle>(nameof(ButtonStyle), OptionButtonStyle.Outline);
+    public static readonly StyledProperty<OptionButtonStyle> ButtonStyleProperty =
+        AvaloniaProperty.Register<OptionButton, OptionButtonStyle>(nameof(ButtonStyle));
 
-   public static readonly StyledProperty<string?> TextProperty
-      = AvaloniaProperty.Register<OptionButton, string?>(nameof(Text));
+    public static readonly StyledProperty<string?> TextProperty
+        = AvaloniaProperty.Register<OptionButton, string?>(nameof(Text));
 
-   internal static readonly DirectProperty<OptionButton, bool> InOptionGroupProperty =
-      AvaloniaProperty.RegisterDirect<OptionButton, bool>(
-         nameof(InOptionGroup),
-         o => o.InOptionGroup,
-         (o, v) => o.InOptionGroup = v);
+    internal static readonly DirectProperty<OptionButton, bool> InOptionGroupProperty =
+        AvaloniaProperty.RegisterDirect<OptionButton, bool>(
+            nameof(InOptionGroup),
+            o => o.InOptionGroup,
+            (o, v) => o.InOptionGroup = v);
 
-   private static readonly DirectProperty<OptionButton, OptionButtonPositionTrait> GroupPositionTraitProperty =
-      AvaloniaProperty.RegisterDirect<OptionButton, OptionButtonPositionTrait>(
-         nameof(GroupPositionTrait),
-         o => o.GroupPositionTrait,
-         (o, v) => o.GroupPositionTrait = v,
-         OptionButtonPositionTrait.OnlyOne);
+    private static readonly DirectProperty<OptionButton, OptionButtonPositionTrait> GroupPositionTraitProperty =
+        AvaloniaProperty.RegisterDirect<OptionButton, OptionButtonPositionTrait>(
+            nameof(GroupPositionTrait),
+            o => o.GroupPositionTrait,
+            (o, v) => o.GroupPositionTrait = v,
+            OptionButtonPositionTrait.OnlyOne);
 
-   public ButtonSizeType SizeType
-   {
-      get => GetValue(SizeTypeProperty);
-      set => SetValue(SizeTypeProperty, value);
-   }
+    public ButtonSizeType SizeType
+    {
+        get => GetValue(SizeTypeProperty);
+        set => SetValue(SizeTypeProperty, value);
+    }
 
-   public OptionButtonStyle ButtonStyle
-   {
-      get => GetValue(ButtonStyleProperty);
-      set => SetValue(ButtonStyleProperty, value);
-   }
+    public OptionButtonStyle ButtonStyle
+    {
+        get => GetValue(ButtonStyleProperty);
+        set => SetValue(ButtonStyleProperty, value);
+    }
 
-   public string? Text
-   {
-      get => GetValue(TextProperty);
-      set => SetValue(TextProperty, value);
-   }
+    public string? Text
+    {
+        get => GetValue(TextProperty);
+        set => SetValue(TextProperty, value);
+    }
 
-   private bool _inOptionGroup = false;
+    #endregion
 
-   /// <summary>
-   /// 是否在 Group 中渲染
-   /// </summary>
-   internal bool InOptionGroup
-   {
-      get => _inOptionGroup;
-      set => SetAndRaise(InOptionGroupProperty, ref _inOptionGroup, value);
-   }
+    #region 内部属性定义
 
-   private OptionButtonPositionTrait _groupPositionTrait = OptionButtonPositionTrait.OnlyOne;
+    private bool _inOptionGroup;
 
-   internal OptionButtonPositionTrait GroupPositionTrait
-   {
-      get => _groupPositionTrait;
-      set => SetAndRaise(GroupPositionTraitProperty, ref _groupPositionTrait, value);
-   }
+    /// <summary>
+    /// 是否在 Group 中渲染
+    /// </summary>
+    internal bool InOptionGroup
+    {
+        get => _inOptionGroup;
+        set => SetAndRaise(InOptionGroupProperty, ref _inOptionGroup, value);
+    }
 
-   internal event EventHandler<OptionButtonPointerEventArgs>? OptionButtonPointerEvent;
+    private OptionButtonPositionTrait _groupPositionTrait = OptionButtonPositionTrait.OnlyOne;
 
-   static OptionButton()
-   {
-      AffectsMeasure<OptionButton>(SizeTypeProperty, ButtonStyleProperty, InOptionGroupProperty);
-      AffectsRender<OptionButton>(IsCheckedProperty, CornerRadiusProperty, ForegroundProperty, BackgroundProperty);
-   }
+    internal OptionButtonPositionTrait GroupPositionTrait
+    {
+        get => _groupPositionTrait;
+        set => SetAndRaise(GroupPositionTraitProperty, ref _groupPositionTrait, value);
+    }
 
-   public OptionButton()
-   {
-      _customStyle = this;
-      _borderRenderHelper = new BorderRenderHelper();
-   }
+    internal event EventHandler<OptionButtonPointerEventArgs>? OptionButtonPointerEvent;
 
-   protected override Size MeasureOverride(Size availableSize)
-   {
-      var size = base.MeasureOverride(availableSize);
-      var targetWidth = size.Width;
-      var targetHeight = size.Height;
-      targetHeight += Padding.Top + Padding.Bottom;
-      targetWidth += Padding.Left + Padding.Right;
-      return new Size(targetWidth, targetHeight);
-   }
+    #endregion
+    
+    private ControlStyleState _styleState;
+    private CornerRadius? _originCornerRadius;
+    private readonly BorderRenderHelper _borderRenderHelper;
 
-   protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
-   {
-      base.OnPropertyChanged(e);
-      _customStyle.HandlePropertyChangedForStyle(e);
-   }
+    static OptionButton()
+    {
+        AffectsMeasure<OptionButton>(SizeTypeProperty, ButtonStyleProperty, InOptionGroupProperty);
+        AffectsRender<OptionButton>(IsCheckedProperty, CornerRadiusProperty, ForegroundProperty, BackgroundProperty);
+    }
 
-   protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-   {
-      base.OnApplyTemplate(e);
-      _customStyle.HandleTemplateApplied(e.NameScope);
-   }
+    public OptionButton()
+    {
+        _borderRenderHelper = new BorderRenderHelper();
+    }
 
-   void IControlCustomStyle.HandleTemplateApplied(INameScope scope)
-   {
-      if (Text is null && Content is string content) {
-         Text = content;
-      }
+    protected override Size MeasureOverride(Size availableSize)
+    {
+        var size         = base.MeasureOverride(availableSize);
+        var targetWidth  = size.Width;
+        var targetHeight = size.Height;
+        targetHeight += Padding.Top + Padding.Bottom;
+        targetWidth  += Padding.Left + Padding.Right;
+        return new Size(targetWidth, targetHeight);
+    }
 
-      Cursor = new Cursor(StandardCursorType.Hand);
-      HandleSizeTypeChanged();
-      _customStyle.CollectStyleState();
-      _customStyle.SetupTransitions();
-   }
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
+    {
+        base.OnPropertyChanged(e);
+        HandlePropertyChangedForStyle(e);
+    }
 
-   private void HandleSizeTypeChanged()
-   {
-      _originCornerRadius = CornerRadius;
-      CornerRadius = BuildCornerRadius(GroupPositionTrait, _originCornerRadius!.Value);
-   }
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        HandleTemplateApplied(e.NameScope);
+    }
 
-   #region IControlCustomStyle 实现
+    private void HandleTemplateApplied(INameScope scope)
+    {
+        if (Text is null && Content is string content)
+        {
+            Text = content;
+        }
 
-   public Rect WaveGeometry()
-   {
-      return new Rect(0, 0, Bounds.Width, Bounds.Height);
-   }
+        Cursor = new Cursor(StandardCursorType.Hand);
+        HandleSizeTypeChanged();
+        CollectStyleState();
+        SetupTransitions();
+    }
 
-   public CornerRadius WaveBorderRadius()
-   {
-      return CornerRadius;
-   }
+    private void HandleSizeTypeChanged()
+    {
+        _originCornerRadius = CornerRadius;
+        CornerRadius        = BuildCornerRadius(GroupPositionTrait, _originCornerRadius!.Value);
+    }
 
-   void IControlCustomStyle.SetupTransitions()
-   {
-      var transitions = new Transitions();
-      if (ButtonStyle == OptionButtonStyle.Solid) {
-         transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty));
-      } else if (ButtonStyle == OptionButtonStyle.Outline) {
-         transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(BorderBrushProperty));
-      }
+    public Rect WaveGeometry()
+    {
+        return new Rect(0, 0, Bounds.Width, Bounds.Height);
+    }
 
-      transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty));
-      Transitions = transitions;
-   }
+    public CornerRadius WaveBorderRadius()
+    {
+        return CornerRadius;
+    }
 
-   void IControlCustomStyle.CollectStyleState()
-   {
-      ControlStateUtils.InitCommonState(this, ref _styleState);
-      if (IsPressed) {
-         _styleState |= ControlStyleState.Sunken;
-      } else {
-         _styleState |= ControlStyleState.Raised;
-      }
+    private void SetupTransitions()
+    {
+        var transitions = new Transitions();
+        if (ButtonStyle == OptionButtonStyle.Solid)
+        {
+            transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty));
+        }
+        else if (ButtonStyle == OptionButtonStyle.Outline)
+        {
+            transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(BorderBrushProperty));
+        }
 
-      if (IsChecked.HasValue && IsChecked.Value) {
-         _styleState |= ControlStyleState.Selected;
-      }
-   }
+        transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty));
+        Transitions = transitions;
+    }
 
-   void IControlCustomStyle.HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
-   {
-      if (e.Property == IsPointerOverProperty ||
-          e.Property == IsPressedProperty ||
-          e.Property == IsCheckedProperty) {
-         _customStyle.CollectStyleState();
-         if (e.Property == IsPressedProperty) {
-            if (_styleState.HasFlag(ControlStyleState.Raised)) {
-               WaveSpiritAdorner.ShowWaveAdorner(this, WaveType.RoundRectWave);
+    private void CollectStyleState()
+    {
+        ControlStateUtils.InitCommonState(this, ref _styleState);
+        if (IsPressed)
+        {
+            _styleState |= ControlStyleState.Sunken;
+        }
+        else
+        {
+            _styleState |= ControlStyleState.Raised;
+        }
+
+        if (IsChecked.HasValue && IsChecked.Value)
+        {
+            _styleState |= ControlStyleState.Selected;
+        }
+    }
+
+    private void HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
+    {
+        if (e.Property == IsPointerOverProperty ||
+            e.Property == IsPressedProperty ||
+            e.Property == IsCheckedProperty)
+        {
+            CollectStyleState();
+            if (e.Property == IsPressedProperty)
+            {
+                if (_styleState.HasFlag(ControlStyleState.Raised))
+                {
+                    WaveSpiritAdorner.ShowWaveAdorner(this, WaveType.RoundRectWave);
+                }
             }
-         }
-      }
+        }
 
-      if (e.Property == GroupPositionTraitProperty) {
-         if (_originCornerRadius.HasValue) {
-            CornerRadius = BuildCornerRadius(GroupPositionTrait, _originCornerRadius!.Value);
-         }
-      }
-   }
+        if (e.Property == GroupPositionTraitProperty)
+        {
+            if (_originCornerRadius.HasValue)
+            {
+                CornerRadius = BuildCornerRadius(GroupPositionTrait, _originCornerRadius!.Value);
+            }
+        }
+    }
 
-   private CornerRadius BuildCornerRadius(OptionButtonPositionTrait positionTrait, CornerRadius cornerRadius)
-   {
-      if (positionTrait == OptionButtonPositionTrait.First) {
-         return new CornerRadius(cornerRadius.TopLeft,
-                                 0,
-                                 0,
-                                 cornerRadius.BottomLeft);
-      } else if (positionTrait == OptionButtonPositionTrait.Last) {
-         return new CornerRadius(0,
-                                 cornerRadius.TopRight,
-                                 cornerRadius.BottomRight,
-                                 0);
-      } else if (positionTrait == OptionButtonPositionTrait.Middle) {
-         return new CornerRadius(0);
-      }
+    private CornerRadius BuildCornerRadius(OptionButtonPositionTrait positionTrait, CornerRadius cornerRadius)
+    {
+        if (positionTrait == OptionButtonPositionTrait.First)
+        {
+            return new CornerRadius(cornerRadius.TopLeft,
+                0,
+                0,
+                cornerRadius.BottomLeft);
+        }
 
-      return cornerRadius;
-   }
+        if (positionTrait == OptionButtonPositionTrait.Last)
+        {
+            return new CornerRadius(0,
+                cornerRadius.TopRight,
+                cornerRadius.BottomRight,
+                0);
+        }
 
-   protected override void OnPointerPressed(PointerPressedEventArgs e)
-   {
-      base.OnPointerPressed(e);
-      OptionButtonPointerEvent?.Invoke(this, new OptionButtonPointerEventArgs(this)
-      {
-         IsHovering = true,
-         IsPressed = true
-      });
-   }
+        if (positionTrait == OptionButtonPositionTrait.Middle)
+        {
+            return new CornerRadius(0);
+        }
 
-   protected override void OnPointerReleased(PointerReleasedEventArgs e)
-   {
-      base.OnPointerReleased(e);
-      OptionButtonPointerEvent?.Invoke(this, new OptionButtonPointerEventArgs(this)
-      {
-         IsHovering = true,
-         IsPressed = false
-      });
-   }
+        return cornerRadius;
+    }
 
-   protected override void OnPointerEntered(PointerEventArgs e)
-   {
-      base.OnPointerEntered(e);
-      OptionButtonPointerEvent?.Invoke(this, new OptionButtonPointerEventArgs(this)
-      {
-         IsHovering = true,
-         IsPressed = false
-      });
-   }
+    protected override void OnPointerPressed(PointerPressedEventArgs e)
+    {
+        base.OnPointerPressed(e);
+        OptionButtonPointerEvent?.Invoke(this, new OptionButtonPointerEventArgs(this)
+        {
+            IsHovering = true,
+            IsPressed  = true
+        });
+    }
 
-   protected override void OnPointerExited(PointerEventArgs e)
-   {
-      base.OnPointerExited(e);
-      OptionButtonPointerEvent?.Invoke(this, new OptionButtonPointerEventArgs(this)
-      {
-         IsHovering = false,
-         IsPressed = false
-      });
-   }
+    protected override void OnPointerReleased(PointerReleasedEventArgs e)
+    {
+        base.OnPointerReleased(e);
+        OptionButtonPointerEvent?.Invoke(this, new OptionButtonPointerEventArgs(this)
+        {
+            IsHovering = true,
+            IsPressed  = false
+        });
+    }
 
-   public override void Render(DrawingContext context)
-   {
-      _borderRenderHelper.Render(context,
-                                 Bounds.Size,
-                                 BorderUtils.BuildRenderScaleAwareThickness(BorderThickness, VisualRoot?.RenderScaling ?? 1.0),
-                                 CornerRadius,
-                                 BackgroundSizing.InnerBorderEdge,
-                                 Background,
-                                 BorderBrush,
-                                 default);
-   }
+    protected override void OnPointerEntered(PointerEventArgs e)
+    {
+        base.OnPointerEntered(e);
+        OptionButtonPointerEvent?.Invoke(this, new OptionButtonPointerEventArgs(this)
+        {
+            IsHovering = true,
+            IsPressed  = false
+        });
+    }
 
-   #endregion
+    protected override void OnPointerExited(PointerEventArgs e)
+    {
+        base.OnPointerExited(e);
+        OptionButtonPointerEvent?.Invoke(this, new OptionButtonPointerEventArgs(this)
+        {
+            IsHovering = false,
+            IsPressed  = false
+        });
+    }
+
+    public override void Render(DrawingContext context)
+    {
+        _borderRenderHelper.Render(context,
+            Bounds.Size,
+            BorderUtils.BuildRenderScaleAwareThickness(BorderThickness, VisualRoot?.RenderScaling ?? 1.0),
+            CornerRadius,
+            BackgroundSizing.InnerBorderEdge,
+            Background,
+            BorderBrush,
+            default);
+    }
+    
 }

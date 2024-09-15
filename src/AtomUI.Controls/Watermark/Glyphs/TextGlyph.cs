@@ -11,6 +11,7 @@ public class TextGlyph : WatermarkGlyph
         get => GetValue(TextProperty);
         set => SetValue(TextProperty, value);
     }
+
     public static readonly StyledProperty<string?> TextProperty = AvaloniaProperty
         .Register<TextGlyph, string?>(nameof(Text));
 
@@ -19,6 +20,7 @@ public class TextGlyph : WatermarkGlyph
         get => GetValue(FontSizeProperty);
         set => SetValue(FontSizeProperty, value);
     }
+
     public static readonly StyledProperty<double> FontSizeProperty = AvaloniaProperty
         .Register<TextGlyph, double>(nameof(FontSize), 16);
 
@@ -27,9 +29,10 @@ public class TextGlyph : WatermarkGlyph
         get => GetValue(ForegroundProperty);
         set => SetValue(ForegroundProperty, value);
     }
+
     public static readonly StyledProperty<IBrush> ForegroundProperty = AvaloniaProperty
         .Register<TextGlyph, IBrush>(nameof(Foreground), Brushes.Black);
-    
+
     protected FormattedText? FormattedText { get; private set; }
 
     static TextGlyph()
@@ -46,7 +49,7 @@ public class TextGlyph : WatermarkGlyph
             FormattedText = null;
             return;
         }
-        
+
         FormattedText = new FormattedText(
             Text,
             CultureInfo.CurrentCulture,
@@ -58,14 +61,14 @@ public class TextGlyph : WatermarkGlyph
             TextAlignment = TextAlignment.Center
         };
     }
-    
+
     private void UpdateFormatText()
     {
         if (FormattedText == null)
         {
             return;
         }
-        
+
         FormattedText.SetFontSize(FontSize);
         FormattedText.SetForegroundBrush(Foreground);
     }
@@ -76,7 +79,7 @@ public class TextGlyph : WatermarkGlyph
         {
             return;
         }
-        
+
         context.DrawText(FormattedText, new Point());
     }
 

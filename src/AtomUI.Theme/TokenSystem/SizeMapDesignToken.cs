@@ -24,7 +24,7 @@ public class SizeMapDesignToken : AbstractDesignToken
    public double SizeMD { get; set; } = 20;
 
    /// <summary>
-   ///  Same as size by default, but could be larger in compact mode
+   /// Same as size by default, but could be larger in compact mode
    /// </summary>
    public double SizeMS { get; set; }
 
@@ -57,12 +57,12 @@ public class HeightMapDesignToken : AbstractDesignToken
    /// 更小的组件高度
    /// </summary>
    public double ControlHeightXS { get; set; }
-   
+
    /// <summary>
    /// 较小的组件高度
    /// </summary>
    public double ControlHeightSM { get; set; }
-   
+
    /// <summary>
    /// 较高的组件高度
    /// </summary>

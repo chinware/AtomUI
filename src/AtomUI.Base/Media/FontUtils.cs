@@ -10,8 +10,8 @@ public static class FontUtils
    /// <param name="renderScaling"></param>
    /// <returns></returns>
    public static double ConvertEmToPixel(double value, double fontSize, double renderScaling = 1.0)
-   {
-      var fontSizePx = fontSize * value * renderScaling;
-      return fontSizePx * value;
-   }
+    {
+        var fontSizePx = fontSize * value * renderScaling;
+        return fontSizePx * value;
+    }
 }

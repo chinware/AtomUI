@@ -1,116 +1,92 @@
-<UserControl
-    x:Class="AtomUI.Demo.Desktop.ShowCase.NotificationShowCase"
-    xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:atom="https://atomui.net"
-    xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
-    mc:Ignorable="d">
-    <showcase:ShowCasePanel>
-        <showcase:ShowCaseItem
-            Title="Basic"
-            Description="The simplest usage for Notification.">
-            <atom:Button ButtonType="Primary"
-                         Click="ShowSimpleNotification">
+<UserControl x:Class="AtomUI.Demo.Desktop.ShowCase.NotificationShowCase"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:atom="https://atomui.net"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d">
+    <desktop:ShowCasePanel>
+        <desktop:ShowCaseItem Title="Basic" Description="The simplest usage for Notification.">
+            <atom:Button ButtonType="Primary" Click="ShowSimpleNotification">
                 Show Notification
             </atom:Button>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
-            Title="Duration after which the notification box is closed"
-            Description="Duration can be used to specify how long the notification stays open. After the duration time elapses, the notification closes automatically. If not specified, default value is 4.5 seconds. If you set the value to TimeSpan.Zero, the notification box will never close automatically.">
-            <atom:Button ButtonType="Primary"
-                         Click="ShowNeverCloseNotification">
+        <desktop:ShowCaseItem Title="Duration after which the notification box is closed"
+                              Description="Duration can be used to specify how long the notification stays open. After the duration time elapses, the notification closes automatically. If not specified, default value is 4.5 seconds. If you set the value to TimeSpan.Zero, the notification box will never close automatically.">
+            <atom:Button ButtonType="Primary" Click="ShowNeverCloseNotification">
                 Open the notification box
             </atom:Button>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
-            Title="Notification with icon"
-            Description="A notification box with a icon at the left side.">
+        <desktop:ShowCaseItem Title="Notification with icon"
+                              Description="A notification box with a icon at the left side.">
             <StackPanel Orientation="Horizontal" Spacing="10">
-                <atom:Button ButtonType="Default"
-                             Click="ShowSuccessNotification">
+                <atom:Button ButtonType="Default" Click="ShowSuccessNotification">
                     Success
                 </atom:Button>
-                <atom:Button ButtonType="Default"
-                             Click="ShowInfoNotification">
+                <atom:Button ButtonType="Default" Click="ShowInfoNotification">
                     Info
                 </atom:Button>
-                <atom:Button ButtonType="Default"
-                             Click="ShowWarningNotification">
+                <atom:Button ButtonType="Default" Click="ShowWarningNotification">
                     Warning
                 </atom:Button>
-                <atom:Button ButtonType="Default"
-                             Click="ShowErrorNotification">
+                <atom:Button ButtonType="Default" Click="ShowErrorNotification">
                     Error
                 </atom:Button>
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
-            Title="Placement"
-            Description="A notification box can appear from the top bottom topLeft topRight bottomLeft or bottomRight of the viewport via placement.">
+        <desktop:ShowCaseItem Title="Placement"
+                              Description="A notification box can appear from the top bottom topLeft topRight bottomLeft or bottomRight of the viewport via placement.">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <StackPanel Orientation="Horizontal" Spacing="10">
-                    <atom:Button ButtonType="Primary"
-                                 Click="ShowTopNotification">
+                    <atom:Button ButtonType="Primary" Click="ShowTopNotification">
                         Top
                     </atom:Button>
-                    <atom:Button ButtonType="Primary"
-                                 Click="ShowBottomNotification">
+                    <atom:Button ButtonType="Primary" Click="ShowBottomNotification">
                         Bottom
                     </atom:Button>
                 </StackPanel>
                 <atom:Separator />
                 <StackPanel Orientation="Horizontal" Spacing="10">
-                    <atom:Button ButtonType="Primary"
-                                 Click="ShowTopLeftNotification">
+                    <atom:Button ButtonType="Primary" Click="ShowTopLeftNotification">
                         TopLeft
                     </atom:Button>
-                    <atom:Button ButtonType="Primary"
-                                 Click="ShowTopRightNotification">
+                    <atom:Button ButtonType="Primary" Click="ShowTopRightNotification">
                         TopRight
                     </atom:Button>
                 </StackPanel>
                 <atom:Separator />
                 <StackPanel Orientation="Horizontal" Spacing="10">
-                    <atom:Button ButtonType="Primary"
-                                 Click="ShowBottomLeftNotification">
+                    <atom:Button ButtonType="Primary" Click="ShowBottomLeftNotification">
                         BottomLeft
                     </atom:Button>
-                    <atom:Button ButtonType="Primary"
-                                 Click="ShowBottomRightNotification">
+                    <atom:Button ButtonType="Primary" Click="ShowBottomRightNotification">
                         BottomRight
                     </atom:Button>
                 </StackPanel>
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
-            Title="Customized Icon"
-            Description="The icon can be customized to any icon node.">
-            <atom:Button ButtonType="Primary"
-                         Click="ShowCustomIconNotification">
+        <desktop:ShowCaseItem Title="Customized Icon" Description="The icon can be customized to any icon node.">
+            <atom:Button ButtonType="Primary" Click="ShowCustomIconNotification">
                 Open the notification box
             </atom:Button>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
-            Title="Show with progress"
-            Description="Show progress bar for auto-closing notification.">
-            <StackPanel Spacing="10" Orientation="Vertical">
-                <atom:OptionButtonGroup ButtonStyle="Outline" Name="HoverOptionGroup">
+        <desktop:ShowCaseItem Title="Show with progress" Description="Show progress bar for auto-closing notification.">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:OptionButtonGroup Name="HoverOptionGroup" ButtonStyle="Outline">
                     <atom:OptionButton IsChecked="True">Pause on hover</atom:OptionButton>
                     <atom:OptionButton>Don&apos;t pause on hover</atom:OptionButton>
                 </atom:OptionButtonGroup>
-                <atom:Button ButtonType="Primary"
-                             Click="ShowProgressNotification">
+                <atom:Button ButtonType="Primary" Click="ShowProgressNotification">
                     Show Notification
                 </atom:Button>
             </StackPanel>
 
-        </showcase:ShowCaseItem>
-    </showcase:ShowCasePanel>
+        </desktop:ShowCaseItem>
+    </desktop:ShowCasePanel>
 </UserControl>

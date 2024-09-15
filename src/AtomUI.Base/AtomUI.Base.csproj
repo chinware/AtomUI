@@ -1,19 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <Import Project="$(MSBuildThisFileDirectory)..\..\build\Nuget.props" />
+    <Import Project="$(MSBuildThisFileDirectory)..\..\build\Nuget.props"/>
 
     <PropertyGroup>
+        <RootNamespace>AtomUI</RootNamespace>
         <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     </PropertyGroup>
-    
+
     <ItemGroup>
         <PackageReference Include="Avalonia"/>
-        <PackageReference Include="System.Reactive" />
+        <PackageReference Include="System.Reactive"/>
     </ItemGroup>
 
     <ItemGroup>
-        <InternalsVisibleTo Include="AtomUI" />
-        <InternalsVisibleTo Include="AtomUI.Controls" />
+        <InternalsVisibleTo Include="AtomUI"/>
+        <InternalsVisibleTo Include="AtomUI.Controls"/>
     </ItemGroup>
 
 </Project>

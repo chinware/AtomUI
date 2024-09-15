@@ -12,238 +12,253 @@ using Avalonia.Styling;
 
 namespace AtomUI.Controls.Switch;
 
-internal class SwitchKnob : Control, IControlCustomStyle
+internal class SwitchKnob : Control
 {
-   private bool _initialized = false;
-   private IControlCustomStyle _customStyle;
-   private bool _isLoading = false;
-   private CancellationTokenSource? _cancellationTokenSource;
+    #region 公共属性定义
 
-   private static readonly StyledProperty<int> RotationProperty
-      = AvaloniaProperty.Register<SwitchKnob, int>(nameof(Rotation));
+    public static readonly StyledProperty<Size> KnobSizeProperty
+        = AvaloniaProperty.Register<SwitchKnob, Size>(nameof(KnobSize));
+    
+    public static readonly StyledProperty<bool> IsCheckedStateProperty
+        = AvaloniaProperty.Register<SwitchKnob, bool>(nameof(IsCheckedState));
+    
+    public static readonly StyledProperty<IBrush?> KnobBackgroundColorProperty
+        = AvaloniaProperty.Register<SwitchKnob, IBrush?>(nameof(KnobBackgroundColor));
+    
+        
+    public static readonly StyledProperty<BoxShadow> KnobBoxShadowProperty
+        = AvaloniaProperty.Register<SwitchKnob, BoxShadow>(nameof(KnobBoxShadow));
+    
+    public IBrush? KnobBackgroundColor
+    {
+        get => GetValue(KnobBackgroundColorProperty);
+        set => SetValue(KnobBackgroundColorProperty, value);
+    }
+    
+    public Size KnobSize
+    {
+        get => GetValue(KnobSizeProperty);
+        set => SetValue(KnobSizeProperty, value);
+    }
+    
+    public bool IsCheckedState
+    {
+        get => GetValue(IsCheckedStateProperty);
+        set => SetValue(IsCheckedStateProperty, value);
+    }
 
-   private int Rotation
-   {
-      get => GetValue(RotationProperty);
-      set => SetValue(RotationProperty, value);
-   }
+    public BoxShadow KnobBoxShadow
+    {
+        get => GetValue(KnobBoxShadowProperty);
+        set => SetValue(KnobBoxShadowProperty, value);
+    }
 
-   internal static readonly StyledProperty<IBrush?> LoadIndicatorBrushProperty
-      = AvaloniaProperty.Register<SwitchKnob, IBrush?>(nameof(LoadIndicatorBrush));
+    #endregion
+    
+    #region 内部属性定义
 
-   internal IBrush? LoadIndicatorBrush
-   {
-      get => GetValue(LoadIndicatorBrushProperty);
-      set => SetValue(LoadIndicatorBrushProperty, value);
-   }
+    internal static readonly StyledProperty<int> RotationProperty
+        = AvaloniaProperty.Register<SwitchKnob, int>(nameof(Rotation));
+    
+    internal static readonly StyledProperty<IBrush?> LoadIndicatorBrushProperty
+        = AvaloniaProperty.Register<SwitchKnob, IBrush?>(nameof(LoadIndicatorBrush));
 
-   public static readonly StyledProperty<Size> KnobSizeProperty
-      = AvaloniaProperty.Register<SwitchKnob, Size>(nameof(KnobSize));
+    internal static readonly StyledProperty<Size> OriginKnobSizeProperty
+        = AvaloniaProperty.Register<SwitchKnob, Size>(nameof(OriginKnobSize));
+    
+    internal int Rotation
+    {
+        get => GetValue(RotationProperty);
+        set => SetValue(RotationProperty, value);
+    }
+    
+    internal IBrush? LoadIndicatorBrush
+    {
+        get => GetValue(LoadIndicatorBrushProperty);
+        set => SetValue(LoadIndicatorBrushProperty, value);
+    }
+    
+    internal Size OriginKnobSize
+    {
+        get => GetValue(OriginKnobSizeProperty);
+        set => SetValue(OriginKnobSizeProperty, value);
+    }
+    
+    #endregion
+    
+    private bool _initialized;
+    private bool _isLoading;
+    private CancellationTokenSource? _cancellationTokenSource;
 
-   internal static readonly StyledProperty<Size> OriginKnobSizeProperty
-      = AvaloniaProperty.Register<SwitchKnob, Size>(nameof(OriginKnobSize));
+    private double _loadingBgOpacity;
 
-   public Size KnobSize
-   {
-      get => GetValue(KnobSizeProperty);
-      set => SetValue(KnobSizeProperty, value);
-   }
+    private static readonly DirectProperty<SwitchKnob, double> LoadingBgOpacityTokenProperty
+        = AvaloniaProperty.RegisterDirect<SwitchKnob, double>(nameof(_loadingBgOpacity),
+            o => o._loadingBgOpacity,
+            (o, v) => o._loadingBgOpacity = v);
 
-   internal Size OriginKnobSize
-   {
-      get => GetValue(OriginKnobSizeProperty);
-      set => SetValue(OriginKnobSizeProperty, value);
-   }
+    // TODO 这个属性可以考虑放出去
+    internal static readonly StyledProperty<TimeSpan> LoadingAnimationDurationProperty
+        = AvaloniaProperty.Register<SwitchKnob, TimeSpan>(nameof(LoadingAnimationDuration),
+            TimeSpan.FromMilliseconds(300));
 
-   public static readonly StyledProperty<bool> IsCheckedStateProperty
-      = AvaloniaProperty.Register<SwitchKnob, bool>(nameof(IsCheckedState));
+    internal TimeSpan LoadingAnimationDuration
+    {
+        get => GetValue(LoadingAnimationDurationProperty);
+        set => SetValue(LoadingAnimationDurationProperty, value);
+    }
+    
+    static SwitchKnob()
+    {
+        AffectsMeasure<SwitchKnob>(KnobSizeProperty);
+        AffectsRender<SwitchKnob>(
+            RotationProperty);
+    }
 
-   public bool IsCheckedState
-   {
-      get => GetValue(IsCheckedStateProperty);
-      set => SetValue(IsCheckedStateProperty, value);
-   }
-
-   public static readonly StyledProperty<IBrush?> KnobBackgroundColorProperty
-      = AvaloniaProperty.Register<SwitchKnob, IBrush?>(nameof(KnobBackgroundColor));
-
-   protected IBrush? KnobBackgroundColor
-   {
-      get => GetValue(KnobBackgroundColorProperty);
-      set => SetValue(KnobBackgroundColorProperty, value);
-   }
-
-   public static readonly StyledProperty<BoxShadow> KnobBoxShadowProperty
-      = AvaloniaProperty.Register<SwitchKnob, BoxShadow>(nameof(KnobBoxShadow));
-
-   protected BoxShadow KnobBoxShadow
-   {
-      get => GetValue(KnobBoxShadowProperty);
-      set => SetValue(KnobBoxShadowProperty, value);
-   }
-
-   private double _loadingBgOpacity;
-
-   private static readonly DirectProperty<SwitchKnob, double> LoadingBgOpacityTokenProperty
-      = AvaloniaProperty.RegisterDirect<SwitchKnob, double>(nameof(_loadingBgOpacity),
-                                                            (o) => o._loadingBgOpacity,
-                                                            (o, v) => o._loadingBgOpacity = v);
-   
-   // TODO 这个属性可以考虑放出去
-   internal static readonly StyledProperty<TimeSpan> LoadingAnimationDurationProperty
-      = AvaloniaProperty.Register<SwitchKnob, TimeSpan>(nameof(LoadingAnimationDuration), TimeSpan.FromMilliseconds(300));
-
-   internal TimeSpan LoadingAnimationDuration 
-   {
-      get => GetValue(LoadingAnimationDurationProperty);
-      set => SetValue(LoadingAnimationDurationProperty, value);
-   }
-
-   public SwitchKnob()
-   {
-      _customStyle = this;
-   }
-
-   static SwitchKnob()
-   {
-      AffectsMeasure<SwitchKnob>(KnobSizeProperty);
-      AffectsRender<SwitchKnob>(
-         RotationProperty);
-   }
-
-   public sealed override void ApplyTemplate()
-   {
-      base.ApplyTemplate();
-      if (!_initialized) {
-         Effect = new DropShadowEffect
-         {
-            OffsetX = KnobBoxShadow.OffsetX,
-            OffsetY = KnobBoxShadow.OffsetY,
-            Color = KnobBoxShadow.Color,
-            BlurRadius = KnobBoxShadow.Blur,
-         };
-         _customStyle.SetupTokenBindings();
-         _customStyle.SetupTransitions();
-         _initialized = true;
-      }
-   }
-
-   void IControlCustomStyle.SetupTransitions()
-   {
-      var transitions = new Transitions();
-      transitions.Add(AnimationUtils.CreateTransition<SizeTransition>(KnobSizeProperty));
-      Transitions = transitions;
-   }
-
-   public void NotifyStartLoading()
-   {
-      if (_isLoading) {
-         return;
-      }
-
-      _isLoading = true;
-      IsEnabled = false;
-      if (VisualRoot != null) {
-         StartLoadingAnimation();
-      }
-   }
-
-   private void StartLoadingAnimation()
-   {
-      var loadingAnimation = new Animation();
-      BindUtils.RelayBind(this, LoadingAnimationDurationProperty, loadingAnimation, Animation.DurationProperty);
-      loadingAnimation.Duration = LoadingAnimationDuration;
-      loadingAnimation.IterationCount = IterationCount.Infinite;
-      loadingAnimation.Easing = new LinearEasing();
-      loadingAnimation.Children.Add(new KeyFrame
-      {
-         Setters =
-         {
-            new Setter
+    public sealed override void ApplyTemplate()
+    {
+        base.ApplyTemplate();
+        if (!_initialized)
+        {
+            Effect = new DropShadowEffect
             {
-               Property = RotationProperty,
-               Value = 0
-            }
-         },
-         KeyTime = TimeSpan.FromMilliseconds(0)
-      });
-      loadingAnimation.Children.Add(new KeyFrame
-      {
-         Setters =
-         {
-            new Setter
+                OffsetX    = KnobBoxShadow.OffsetX,
+                OffsetY    = KnobBoxShadow.OffsetY,
+                Color      = KnobBoxShadow.Color,
+                BlurRadius = KnobBoxShadow.Blur
+            };
+            SetupTokenBindings();
+            SetupTransitions();
+            _initialized = true;
+        }
+    }
+
+    private void SetupTransitions()
+    {
+        var transitions = new Transitions();
+        transitions.Add(AnimationUtils.CreateTransition<SizeTransition>(KnobSizeProperty));
+        Transitions = transitions;
+    }
+
+    public void NotifyStartLoading()
+    {
+        if (_isLoading)
+        {
+            return;
+        }
+
+        _isLoading = true;
+        IsEnabled  = false;
+        if (VisualRoot != null)
+        {
+            StartLoadingAnimation();
+        }
+    }
+
+    private void StartLoadingAnimation()
+    {
+        var loadingAnimation = new Animation();
+        BindUtils.RelayBind(this, LoadingAnimationDurationProperty, loadingAnimation, Animation.DurationProperty);
+        loadingAnimation.Duration       = LoadingAnimationDuration;
+        loadingAnimation.IterationCount = IterationCount.Infinite;
+        loadingAnimation.Easing         = new LinearEasing();
+        loadingAnimation.Children.Add(new KeyFrame
+        {
+            Setters =
             {
-               Property = RotationProperty,
-               Value = 360
-            }
-         },
-         KeyTime = LoadingAnimationDuration
-      });
-      _cancellationTokenSource = new CancellationTokenSource();
-      loadingAnimation.RunAsync(this, _cancellationTokenSource!.Token);
-   }
+                new Setter
+                {
+                    Property = RotationProperty,
+                    Value    = 0
+                }
+            },
+            KeyTime = TimeSpan.FromMilliseconds(0)
+        });
+        loadingAnimation.Children.Add(new KeyFrame
+        {
+            Setters =
+            {
+                new Setter
+                {
+                    Property = RotationProperty,
+                    Value    = 360
+                }
+            },
+            KeyTime = LoadingAnimationDuration
+        });
+        _cancellationTokenSource = new CancellationTokenSource();
+        loadingAnimation.RunAsync(this, _cancellationTokenSource!.Token);
+    }
 
-   public void NotifyStopLoading()
-   {
-      if (!_isLoading) {
-         return;
-      }
+    public void NotifyStopLoading()
+    {
+        if (!_isLoading)
+        {
+            return;
+        }
 
-      _cancellationTokenSource?.Cancel();
-      _cancellationTokenSource = null;
-      _isLoading = false;
-      IsEnabled = true;
-   }
+        _cancellationTokenSource?.Cancel();
+        _cancellationTokenSource = null;
+        _isLoading               = false;
+        IsEnabled                = true;
+    }
 
-   protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-   {
-      base.OnAttachedToVisualTree(e);
-      if (_isLoading) {
-         StartLoadingAnimation();
-      }
-   }
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        if (_isLoading)
+        {
+            StartLoadingAnimation();
+        }
+    }
 
-   protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-   {
-      base.OnAttachedToVisualTree(e);
-      if (_isLoading) {
-         _cancellationTokenSource?.Cancel();
-      }
-   }
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        if (_isLoading)
+        {
+            _cancellationTokenSource?.Cancel();
+        }
+    }
 
-   void IControlCustomStyle.SetupTokenBindings()
-   {
-      TokenResourceBinder.CreateTokenBinding(this, LoadingBgOpacityTokenProperty, ToggleSwitchTokenResourceKey.SwitchDisabledOpacity);
-      LoadingAnimationDuration = TimeSpan.FromMilliseconds(1200);
-   }
-   
-   protected override Size MeasureOverride(Size availableSize)
-   {
-      return KnobSize;
-   }
+    private void SetupTokenBindings()
+    {
+        TokenResourceBinder.CreateTokenBinding(this, LoadingBgOpacityTokenProperty,
+            ToggleSwitchTokenResourceKey.SwitchDisabledOpacity);
+        LoadingAnimationDuration = TimeSpan.FromMilliseconds(1200);
+    }
 
-   public sealed override void Render(DrawingContext context)
-   {
-      var targetRect = new Rect(new Point(0, 0), KnobSize);
-      if (MathUtils.AreClose(KnobSize.Width, KnobSize.Height)) {
-         context.DrawEllipse(KnobBackgroundColor, null, targetRect);
-      } else {
-         context.DrawPilledRect(KnobBackgroundColor, null, targetRect);
-      }
+    protected override Size MeasureOverride(Size availableSize)
+    {
+        return KnobSize;
+    }
 
-      if (_isLoading) {
-         var delta = 2.5;
-         var loadingRectSize = targetRect.Size.Deflate(new Thickness(delta));
-         var loadingRect = new Rect(new Point(-loadingRectSize.Width / 2, -loadingRectSize.Height / 2),
-                                    loadingRectSize);
-         var pen = new Pen(LoadIndicatorBrush, 1, null, PenLineCap.Round);
-         var translateToCenterMatrix = Matrix.CreateTranslation(targetRect.Center.X, targetRect.Center.Y);
-         var rotationMatrix = Matrix.CreateRotation(Rotation * Math.PI / 180);
-         using var translateToCenterState = context.PushTransform(translateToCenterMatrix);
-         using var rotationMatrixState = context.PushTransform(rotationMatrix);
-         using var bgOpacity = context.PushOpacity(_loadingBgOpacity);
+    public sealed override void Render(DrawingContext context)
+    {
+        var targetRect = new Rect(new Point(0, 0), KnobSize);
+        if (MathUtils.AreClose(KnobSize.Width, KnobSize.Height))
+        {
+            context.DrawEllipse(KnobBackgroundColor, null, targetRect);
+        }
+        else
+        {
+            context.DrawPilledRect(KnobBackgroundColor, null, targetRect);
+        }
 
-         context.DrawArc(pen, loadingRect, 0, 90);
-      }
-   }
+        if (_isLoading)
+        {
+            var delta           = 2.5;
+            var loadingRectSize = targetRect.Size.Deflate(new Thickness(delta));
+            var loadingRect = new Rect(new Point(-loadingRectSize.Width / 2, -loadingRectSize.Height / 2),
+                loadingRectSize);
+            var       pen                     = new Pen(LoadIndicatorBrush, 1, null, PenLineCap.Round);
+            var       translateToCenterMatrix = Matrix.CreateTranslation(targetRect.Center.X, targetRect.Center.Y);
+            var       rotationMatrix          = Matrix.CreateRotation(Rotation * Math.PI / 180);
+            using var translateToCenterState  = context.PushTransform(translateToCenterMatrix);
+            using var rotationMatrixState     = context.PushTransform(rotationMatrix);
+            using var bgOpacity               = context.PushOpacity(_loadingBgOpacity);
+
+            context.DrawArc(pen, loadingRect, 0, 90);
+        }
+    }
 }

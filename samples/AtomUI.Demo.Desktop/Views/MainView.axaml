@@ -1,13 +1,13 @@
-<UserControl
-    d:DesignHeight="450"
-    d:DesignWidth="800"
-    mc:Ignorable="d"
-    x:Class="AtomUI.Demo.Desktop.Views.MainView"
-    xmlns="https://github.com/avaloniaui"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:showcases="using:AtomUI.Demo.Desktop.ShowCase"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+<UserControl x:Class="AtomUI.Demo.Desktop.Views.MainView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:showcases="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
+             xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
+             d:DesignHeight="450"
+             d:DesignWidth="800"
+             mc:Ignorable="d">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -18,31 +18,29 @@
 
     </UserControl.Resources>
     <UserControl.Styles>
-        <Style Selector="showcases|ShowCasePanel">
+        <Style Selector="desktop|ShowCasePanel">
             <Setter Property="Margin" Value="0, 30, 0, 0" />
         </Style>
-        <Style Selector="showcases|ShowCaseItem">
+        <Style Selector="desktop|ShowCaseItem">
             <Setter Property="Margin" Value="0, 0, 0, 0" />
         </Style>
     </UserControl.Styles>
     <Grid RowDefinitions="Auto, *">
-        <TabControl
-            Grid.Row="1"
-            HorizontalAlignment="Stretch"
-            Margin="8"
-            Name="Tab"
-            Padding="20,0,0,0"
-            TabStripPlacement="Left"
-            FontSize="13"
-            x:Name="ShowCaseNav"
-            Theme="{DynamicResource NavigationTab}">
+        <TabControl Name="ShowCaseNav"
+                    Grid.Row="1"
+                    Margin="8"
+                    Padding="20,0,0,0"
+                    HorizontalAlignment="Stretch"
+                    FontSize="13"
+                    TabStripPlacement="Left"
+                    Theme="{DynamicResource NavigationTab}">
             <TabControl.Styles>
                 <Style Selector="#ShowCaseNav > TabItem">
                     <Setter Property="FontSize" Value="18" />
                     <Setter Property="Width" Value="230" />
                 </Style>
             </TabControl.Styles>
-            <TabItem Header="Overview">
+            <TabItem Header="Overview" FontSize="18">
                 <showcases:Overview />
             </TabItem>
             <TabItem Header="Palette">
@@ -167,6 +165,12 @@
             </TabItem>
             <TabItem Header="Watermark">
                 <showcases:WatermarkShowCase />
+            </TabItem>
+            <TabItem Header="Drawer">
+                <showcases:DrawerShowCase />
+            </TabItem>
+            <TabItem Header="Calendar">
+                <showcases:CalendarShowCase />
             </TabItem>
         </TabControl>
     </Grid>

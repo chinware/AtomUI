@@ -5,10 +5,11 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:atom="https://atomui.net"
-    xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
+    xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
+
     mc:Ignorable="d">
-    <showcase:ShowCasePanel>
-        <showcase:ShowCaseItem
+    <desktop:ShowCasePanel>
+        <desktop:ShowCaseItem
             Title="Basic"
             Description="The most basic example. The size of the floating layer depends on the contents region.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -21,9 +22,9 @@
                     <atom:Button ButtonType="Primary">Hover me</atom:Button>
                 </atom:FlyoutHost>
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem
+        <desktop:ShowCaseItem
             Title="Three ways to trigger"
             Description="Mouse to click, focus and move in.">
             <StackPanel Orientation="Horizontal" Spacing="10">
@@ -44,9 +45,9 @@
                     <atom:Button>Click me</atom:Button>
                 </atom:FlyoutHost>
             </StackPanel>
-        </showcase:ShowCaseItem>
-        
-        <showcase:ShowCaseItem
+        </desktop:ShowCaseItem>
+
+        <desktop:ShowCaseItem
             Title="Placement"
             Description="There are 12 placement options available.">
             <Grid>
@@ -57,132 +58,132 @@
                     </Style>
                 </Grid.Styles>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"></ColumnDefinition>
-                    <ColumnDefinition Width="Auto"></ColumnDefinition>
-                    <ColumnDefinition Width="Auto"></ColumnDefinition>
-                    <ColumnDefinition Width="Auto"></ColumnDefinition>
-                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-        
+
                 <atom:FlyoutHost Grid.Row="1" Grid.Column="0" Trigger="Hover" Placement="LeftEdgeAlignedTop">
                     <atom:FlyoutHost.Flyout>
                         <atom:Flyout>
                             <TextBlock Width="200" Height="100" Padding="20">The most basic example.</TextBlock>
                         </atom:Flyout>
                     </atom:FlyoutHost.Flyout>
-                    <atom:Button Text="LT"/>
+                    <atom:Button Text="LT" />
                 </atom:FlyoutHost>
-        
+
                 <atom:FlyoutHost Grid.Row="2" Grid.Column="0" Trigger="Hover" Placement="Left">
                     <atom:FlyoutHost.Flyout>
                         <atom:Flyout>
                             <TextBlock Width="200" Height="100" Padding="20">The most basic example.</TextBlock>
                         </atom:Flyout>
                     </atom:FlyoutHost.Flyout>
-                    <atom:Button Text="Left"/>
+                    <atom:Button Text="Left" />
                 </atom:FlyoutHost>
-        
+
                 <atom:FlyoutHost Grid.Row="3" Grid.Column="0" Trigger="Hover" Placement="LeftEdgeAlignedBottom">
                     <atom:FlyoutHost.Flyout>
                         <atom:Flyout>
                             <TextBlock Width="200" Height="100" Padding="20">The most basic example.</TextBlock>
                         </atom:Flyout>
                     </atom:FlyoutHost.Flyout>
-                    <atom:Button Text="LB"/>
+                    <atom:Button Text="LB" />
                 </atom:FlyoutHost>
-        
+
                 <atom:FlyoutHost Grid.Row="0" Grid.Column="1" Trigger="Hover" Placement="TopEdgeAlignedLeft">
                     <atom:FlyoutHost.Flyout>
                         <atom:Flyout>
                             <TextBlock Width="200" Height="100" Padding="20">The most basic example.</TextBlock>
                         </atom:Flyout>
                     </atom:FlyoutHost.Flyout>
-                    <atom:Button Text="TL"/>
+                    <atom:Button Text="TL" />
                 </atom:FlyoutHost>
-        
+
                 <atom:FlyoutHost Grid.Row="0" Grid.Column="2" Trigger="Hover" Placement="Top">
                     <atom:FlyoutHost.Flyout>
                         <atom:Flyout>
                             <TextBlock Width="200" Height="100" Padding="20">The most basic example.</TextBlock>
                         </atom:Flyout>
                     </atom:FlyoutHost.Flyout>
-                    <atom:Button Text="Top"/>
+                    <atom:Button Text="Top" />
                 </atom:FlyoutHost>
-        
+
                 <atom:FlyoutHost Grid.Row="0" Grid.Column="3" Trigger="Hover" Placement="TopEdgeAlignedRight">
                     <atom:FlyoutHost.Flyout>
                         <atom:Flyout>
                             <TextBlock Width="200" Height="100" Padding="20">The most basic example.</TextBlock>
                         </atom:Flyout>
                     </atom:FlyoutHost.Flyout>
-                    <atom:Button Text="TR"/>
+                    <atom:Button Text="TR" />
                 </atom:FlyoutHost>
-        
+
                 <atom:FlyoutHost Grid.Row="1" Grid.Column="4" Trigger="Hover" Placement="RightEdgeAlignedTop">
                     <atom:FlyoutHost.Flyout>
                         <atom:Flyout>
                             <TextBlock Width="200" Height="100" Padding="20">The most basic example.</TextBlock>
                         </atom:Flyout>
                     </atom:FlyoutHost.Flyout>
-                    <atom:Button Text="RT"/>
+                    <atom:Button Text="RT" />
                 </atom:FlyoutHost>
-                
+
                 <atom:FlyoutHost Grid.Row="2" Grid.Column="4" Trigger="Hover" Placement="Right">
                     <atom:FlyoutHost.Flyout>
                         <atom:Flyout>
                             <TextBlock Width="200" Height="100" Padding="20">The most basic example.</TextBlock>
                         </atom:Flyout>
                     </atom:FlyoutHost.Flyout>
-                    <atom:Button Text="Right"/>
+                    <atom:Button Text="Right" />
                 </atom:FlyoutHost>
-                
+
                 <atom:FlyoutHost Grid.Row="3" Grid.Column="4" Trigger="Hover" Placement="RightEdgeAlignedBottom">
                     <atom:FlyoutHost.Flyout>
                         <atom:Flyout>
                             <TextBlock Width="200" Height="100" Padding="20">The most basic example.</TextBlock>
                         </atom:Flyout>
                     </atom:FlyoutHost.Flyout>
-                    <atom:Button Text="RB"/>
+                    <atom:Button Text="RB" />
                 </atom:FlyoutHost>
-                
+
                 <atom:FlyoutHost Grid.Row="4" Grid.Column="1" Trigger="Hover" Placement="BottomEdgeAlignedLeft">
                     <atom:FlyoutHost.Flyout>
                         <atom:Flyout>
                             <TextBlock Width="200" Height="100" Padding="20">The most basic example.</TextBlock>
                         </atom:Flyout>
                     </atom:FlyoutHost.Flyout>
-                    <atom:Button Text="BL"/>
+                    <atom:Button Text="BL" />
                 </atom:FlyoutHost>
-                
+
                 <atom:FlyoutHost Grid.Row="4" Grid.Column="2" Trigger="Hover" Placement="Bottom">
                     <atom:FlyoutHost.Flyout>
                         <atom:Flyout>
                             <TextBlock Width="200" Height="100" Padding="20">The most basic example.</TextBlock>
                         </atom:Flyout>
                     </atom:FlyoutHost.Flyout>
-                    <atom:Button Text="Bottom"/>
+                    <atom:Button Text="Bottom" />
                 </atom:FlyoutHost>
-                
+
                 <atom:FlyoutHost Grid.Row="4" Grid.Column="3" Trigger="Hover" Placement="BottomEdgeAlignedRight">
                     <atom:FlyoutHost.Flyout>
                         <atom:Flyout>
                             <TextBlock Width="200" Height="100" Padding="20">The most basic example.</TextBlock>
                         </atom:Flyout>
                     </atom:FlyoutHost.Flyout>
-                    <atom:Button Text="BR"/>
+                    <atom:Button Text="BR" />
                 </atom:FlyoutHost>
-        
+
             </Grid>
-        </showcase:ShowCaseItem>
-        
-        <showcase:ShowCaseItem
+        </desktop:ShowCaseItem>
+
+        <desktop:ShowCaseItem
             Title="Arrow"
             Description="Support show, hide or keep arrow in the center.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -199,180 +200,180 @@
                         </Style>
                     </Grid.Styles>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"></ColumnDefinition>
-                        <ColumnDefinition Width="Auto"></ColumnDefinition>
-                        <ColumnDefinition Width="Auto"></ColumnDefinition>
-                        <ColumnDefinition Width="Auto"></ColumnDefinition>
-                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-        
-        
-                  <atom:FlyoutHost Grid.Row="1" Grid.Column="0" 
-                                   Trigger="Hover" 
-                                   Placement="LeftEdgeAlignedTop"
-                                   IsShowArrow="{Binding  ShowArrow}"
-                                   IsPointAtCenter="{Binding  IsPointAtCenter}">
-                    <atom:FlyoutHost.Flyout>
-                        <atom:Flyout>
-                            <TextBlock Width="200" Height="100" Padding="20">The most basic example.</TextBlock>
-                        </atom:Flyout>
-                    </atom:FlyoutHost.Flyout>
-                    <atom:Button Text="LT"/>
-                </atom:FlyoutHost>
-        
-                <atom:FlyoutHost Grid.Row="2" Grid.Column="0"
-                                 Trigger="Hover"
-                                 Placement="Left"
-                                 IsShowArrow="{Binding  ShowArrow}"
-                                 IsPointAtCenter="{Binding  IsPointAtCenter}">
-                    <atom:FlyoutHost.Flyout>
-                        <atom:Flyout>
-                            <TextBlock Width="200" Height="100" Padding="20">The most basic example.</TextBlock>
-                        </atom:Flyout>
-                    </atom:FlyoutHost.Flyout>
-                    <atom:Button Text="Left"/>
-                </atom:FlyoutHost>
-        
-                <atom:FlyoutHost Grid.Row="3" Grid.Column="0"
-                                 Trigger="Hover"
-                                 Placement="LeftEdgeAlignedBottom"
-                                 IsShowArrow="{Binding  ShowArrow}"
-                                 IsPointAtCenter="{Binding  IsPointAtCenter}">
-                    <atom:FlyoutHost.Flyout>
-                        <atom:Flyout>
-                            <TextBlock Width="200" Height="100" Padding="20">The most basic example.</TextBlock>
-                        </atom:Flyout>
-                    </atom:FlyoutHost.Flyout>
-                    <atom:Button Text="LB"/>
-                </atom:FlyoutHost>
-        
-                <atom:FlyoutHost Grid.Row="0" Grid.Column="1"
-                                 Trigger="Hover"
-                                 Placement="TopEdgeAlignedLeft"
-                                 IsShowArrow="{Binding  ShowArrow}"
-                                 IsPointAtCenter="{Binding  IsPointAtCenter}">
-                    <atom:FlyoutHost.Flyout>
-                        <atom:Flyout>
-                            <TextBlock Width="200" Height="100" Padding="20">The most basic example.</TextBlock>
-                        </atom:Flyout>
-                    </atom:FlyoutHost.Flyout>
-                    <atom:Button Text="TL"/>
-                </atom:FlyoutHost>
-        
-                <atom:FlyoutHost Grid.Row="0" Grid.Column="2"
-                                 Trigger="Hover"
-                                 Placement="Top"
-                                 IsShowArrow="{Binding  ShowArrow}"
-                                 IsPointAtCenter="{Binding  IsPointAtCenter}">
-                    <atom:FlyoutHost.Flyout>
-                        <atom:Flyout>
-                            <TextBlock Width="200" Height="100" Padding="20">The most basic example.</TextBlock>
-                        </atom:Flyout>
-                    </atom:FlyoutHost.Flyout>
-                    <atom:Button Text="Top"/>
-                </atom:FlyoutHost>
-        
-                <atom:FlyoutHost Grid.Row="0" Grid.Column="3"
-                                 Trigger="Hover" 
-                                 Placement="TopEdgeAlignedRight"
-                                 IsShowArrow="{Binding  ShowArrow}"
-                                 IsPointAtCenter="{Binding  IsPointAtCenter}">
-                    <atom:FlyoutHost.Flyout>
-                        <atom:Flyout>
-                            <TextBlock Width="200" Height="100" Padding="20">The most basic example.</TextBlock>
-                        </atom:Flyout>
-                    </atom:FlyoutHost.Flyout>
-                    <atom:Button Text="TR"/>
-                </atom:FlyoutHost>
-        
-                <atom:FlyoutHost Grid.Row="1" Grid.Column="4" 
-                                 Trigger="Hover"
-                                 Placement="RightEdgeAlignedTop"
-                                 IsShowArrow="{Binding  ShowArrow}"
-                                 IsPointAtCenter="{Binding  IsPointAtCenter}">
-                    <atom:FlyoutHost.Flyout>
-                        <atom:Flyout>
-                            <TextBlock Width="200" Height="100" Padding="20">The most basic example.</TextBlock>
-                        </atom:Flyout>
-                    </atom:FlyoutHost.Flyout>
-                    <atom:Button Text="RT"/>
-                </atom:FlyoutHost>
-                
-                <atom:FlyoutHost Grid.Row="2" Grid.Column="4" 
-                                 Trigger="Hover" 
-                                 Placement="Right"
-                                 IsShowArrow="{Binding  ShowArrow}"
-                                 IsPointAtCenter="{Binding  IsPointAtCenter}">
-                    <atom:FlyoutHost.Flyout>
-                        <atom:Flyout>
-                            <TextBlock Width="200" Height="100" Padding="20">The most basic example.</TextBlock>
-                        </atom:Flyout>
-                    </atom:FlyoutHost.Flyout>
-                    <atom:Button Text="Right"/>
-                </atom:FlyoutHost>
-                
-                <atom:FlyoutHost Grid.Row="3" Grid.Column="4" 
-                                 Trigger="Hover" 
-                                 Placement="RightEdgeAlignedBottom"
-                                 IsShowArrow="{Binding  ShowArrow}"
-                                 IsPointAtCenter="{Binding  IsPointAtCenter}">
-                    <atom:FlyoutHost.Flyout>
-                        <atom:Flyout>
-                            <TextBlock Width="200" Height="100" Padding="20">The most basic example.</TextBlock>
-                        </atom:Flyout>
-                    </atom:FlyoutHost.Flyout>
-                    <atom:Button Text="RB"/>
-                </atom:FlyoutHost>
-                
-                <atom:FlyoutHost Grid.Row="4" Grid.Column="1"
-                                 Trigger="Hover" 
-                                 Placement="BottomEdgeAlignedLeft"
-                                 IsShowArrow="{Binding  ShowArrow}"
-                                 IsPointAtCenter="{Binding  IsPointAtCenter}">
-                    <atom:FlyoutHost.Flyout>
-                        <atom:Flyout>
-                            <TextBlock Width="200" Height="100" Padding="20">The most basic example.</TextBlock>
-                        </atom:Flyout>
-                    </atom:FlyoutHost.Flyout>
-                    <atom:Button Text="BL"/>
-                </atom:FlyoutHost>
-                
-                <atom:FlyoutHost Grid.Row="4" Grid.Column="2"
-                                 Trigger="Hover" 
-                                 Placement="Bottom"
-                                 IsShowArrow="{Binding  ShowArrow}"
-                                 IsPointAtCenter="{Binding  IsPointAtCenter}">
-                    <atom:FlyoutHost.Flyout>
-                        <atom:Flyout>
-                            <TextBlock Width="200" Height="100" Padding="20">The most basic example.</TextBlock>
-                        </atom:Flyout>
-                    </atom:FlyoutHost.Flyout>
-                    <atom:Button Text="Bottom"/>
-                </atom:FlyoutHost>
-                
-                <atom:FlyoutHost Grid.Row="4" Grid.Column="3" 
-                                 Trigger="Hover" 
-                                 Placement="BottomEdgeAlignedRight"
-                                 IsShowArrow="{Binding  ShowArrow}"
-                                 IsPointAtCenter="{Binding  IsPointAtCenter}">
-                    <atom:FlyoutHost.Flyout>
-                        <atom:Flyout>
-                            <TextBlock Width="200" Height="100" Padding="20">The most basic example.</TextBlock>
-                        </atom:Flyout>
-                    </atom:FlyoutHost.Flyout>
-                    <atom:Button Text="BR"/>
-                </atom:FlyoutHost>
-        
+
+
+                    <atom:FlyoutHost Grid.Row="1" Grid.Column="0"
+                                     Trigger="Hover"
+                                     Placement="LeftEdgeAlignedTop"
+                                     IsShowArrow="{Binding  ShowArrow}"
+                                     IsPointAtCenter="{Binding  IsPointAtCenter}">
+                        <atom:FlyoutHost.Flyout>
+                            <atom:Flyout>
+                                <TextBlock Width="200" Height="100" Padding="20">The most basic example.</TextBlock>
+                            </atom:Flyout>
+                        </atom:FlyoutHost.Flyout>
+                        <atom:Button Text="LT" />
+                    </atom:FlyoutHost>
+
+                    <atom:FlyoutHost Grid.Row="2" Grid.Column="0"
+                                     Trigger="Hover"
+                                     Placement="Left"
+                                     IsShowArrow="{Binding  ShowArrow}"
+                                     IsPointAtCenter="{Binding  IsPointAtCenter}">
+                        <atom:FlyoutHost.Flyout>
+                            <atom:Flyout>
+                                <TextBlock Width="200" Height="100" Padding="20">The most basic example.</TextBlock>
+                            </atom:Flyout>
+                        </atom:FlyoutHost.Flyout>
+                        <atom:Button Text="Left" />
+                    </atom:FlyoutHost>
+
+                    <atom:FlyoutHost Grid.Row="3" Grid.Column="0"
+                                     Trigger="Hover"
+                                     Placement="LeftEdgeAlignedBottom"
+                                     IsShowArrow="{Binding  ShowArrow}"
+                                     IsPointAtCenter="{Binding  IsPointAtCenter}">
+                        <atom:FlyoutHost.Flyout>
+                            <atom:Flyout>
+                                <TextBlock Width="200" Height="100" Padding="20">The most basic example.</TextBlock>
+                            </atom:Flyout>
+                        </atom:FlyoutHost.Flyout>
+                        <atom:Button Text="LB" />
+                    </atom:FlyoutHost>
+
+                    <atom:FlyoutHost Grid.Row="0" Grid.Column="1"
+                                     Trigger="Hover"
+                                     Placement="TopEdgeAlignedLeft"
+                                     IsShowArrow="{Binding  ShowArrow}"
+                                     IsPointAtCenter="{Binding  IsPointAtCenter}">
+                        <atom:FlyoutHost.Flyout>
+                            <atom:Flyout>
+                                <TextBlock Width="200" Height="100" Padding="20">The most basic example.</TextBlock>
+                            </atom:Flyout>
+                        </atom:FlyoutHost.Flyout>
+                        <atom:Button Text="TL" />
+                    </atom:FlyoutHost>
+
+                    <atom:FlyoutHost Grid.Row="0" Grid.Column="2"
+                                     Trigger="Hover"
+                                     Placement="Top"
+                                     IsShowArrow="{Binding  ShowArrow}"
+                                     IsPointAtCenter="{Binding  IsPointAtCenter}">
+                        <atom:FlyoutHost.Flyout>
+                            <atom:Flyout>
+                                <TextBlock Width="200" Height="100" Padding="20">The most basic example.</TextBlock>
+                            </atom:Flyout>
+                        </atom:FlyoutHost.Flyout>
+                        <atom:Button Text="Top" />
+                    </atom:FlyoutHost>
+
+                    <atom:FlyoutHost Grid.Row="0" Grid.Column="3"
+                                     Trigger="Hover"
+                                     Placement="TopEdgeAlignedRight"
+                                     IsShowArrow="{Binding  ShowArrow}"
+                                     IsPointAtCenter="{Binding  IsPointAtCenter}">
+                        <atom:FlyoutHost.Flyout>
+                            <atom:Flyout>
+                                <TextBlock Width="200" Height="100" Padding="20">The most basic example.</TextBlock>
+                            </atom:Flyout>
+                        </atom:FlyoutHost.Flyout>
+                        <atom:Button Text="TR" />
+                    </atom:FlyoutHost>
+
+                    <atom:FlyoutHost Grid.Row="1" Grid.Column="4"
+                                     Trigger="Hover"
+                                     Placement="RightEdgeAlignedTop"
+                                     IsShowArrow="{Binding  ShowArrow}"
+                                     IsPointAtCenter="{Binding  IsPointAtCenter}">
+                        <atom:FlyoutHost.Flyout>
+                            <atom:Flyout>
+                                <TextBlock Width="200" Height="100" Padding="20">The most basic example.</TextBlock>
+                            </atom:Flyout>
+                        </atom:FlyoutHost.Flyout>
+                        <atom:Button Text="RT" />
+                    </atom:FlyoutHost>
+
+                    <atom:FlyoutHost Grid.Row="2" Grid.Column="4"
+                                     Trigger="Hover"
+                                     Placement="Right"
+                                     IsShowArrow="{Binding  ShowArrow}"
+                                     IsPointAtCenter="{Binding  IsPointAtCenter}">
+                        <atom:FlyoutHost.Flyout>
+                            <atom:Flyout>
+                                <TextBlock Width="200" Height="100" Padding="20">The most basic example.</TextBlock>
+                            </atom:Flyout>
+                        </atom:FlyoutHost.Flyout>
+                        <atom:Button Text="Right" />
+                    </atom:FlyoutHost>
+
+                    <atom:FlyoutHost Grid.Row="3" Grid.Column="4"
+                                     Trigger="Hover"
+                                     Placement="RightEdgeAlignedBottom"
+                                     IsShowArrow="{Binding  ShowArrow}"
+                                     IsPointAtCenter="{Binding  IsPointAtCenter}">
+                        <atom:FlyoutHost.Flyout>
+                            <atom:Flyout>
+                                <TextBlock Width="200" Height="100" Padding="20">The most basic example.</TextBlock>
+                            </atom:Flyout>
+                        </atom:FlyoutHost.Flyout>
+                        <atom:Button Text="RB" />
+                    </atom:FlyoutHost>
+
+                    <atom:FlyoutHost Grid.Row="4" Grid.Column="1"
+                                     Trigger="Hover"
+                                     Placement="BottomEdgeAlignedLeft"
+                                     IsShowArrow="{Binding  ShowArrow}"
+                                     IsPointAtCenter="{Binding  IsPointAtCenter}">
+                        <atom:FlyoutHost.Flyout>
+                            <atom:Flyout>
+                                <TextBlock Width="200" Height="100" Padding="20">The most basic example.</TextBlock>
+                            </atom:Flyout>
+                        </atom:FlyoutHost.Flyout>
+                        <atom:Button Text="BL" />
+                    </atom:FlyoutHost>
+
+                    <atom:FlyoutHost Grid.Row="4" Grid.Column="2"
+                                     Trigger="Hover"
+                                     Placement="Bottom"
+                                     IsShowArrow="{Binding  ShowArrow}"
+                                     IsPointAtCenter="{Binding  IsPointAtCenter}">
+                        <atom:FlyoutHost.Flyout>
+                            <atom:Flyout>
+                                <TextBlock Width="200" Height="100" Padding="20">The most basic example.</TextBlock>
+                            </atom:Flyout>
+                        </atom:FlyoutHost.Flyout>
+                        <atom:Button Text="Bottom" />
+                    </atom:FlyoutHost>
+
+                    <atom:FlyoutHost Grid.Row="4" Grid.Column="3"
+                                     Trigger="Hover"
+                                     Placement="BottomEdgeAlignedRight"
+                                     IsShowArrow="{Binding  ShowArrow}"
+                                     IsPointAtCenter="{Binding  IsPointAtCenter}">
+                        <atom:FlyoutHost.Flyout>
+                            <atom:Flyout>
+                                <TextBlock Width="200" Height="100" Padding="20">The most basic example.</TextBlock>
+                            </atom:Flyout>
+                        </atom:FlyoutHost.Flyout>
+                        <atom:Button Text="BR" />
+                    </atom:FlyoutHost>
+
                 </Grid>
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-    </showcase:ShowCasePanel>
+    </desktop:ShowCasePanel>
 </UserControl>

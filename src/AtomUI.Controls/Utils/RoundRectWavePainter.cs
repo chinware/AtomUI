@@ -7,104 +7,112 @@ namespace AtomUI.Controls.Utils;
 
 internal class RoundRectWavePainter : AbstractWavePainter
 {
-   public Size OriginSize { get; set; }
+    public Size OriginSize { get; set; }
 
-   public CornerRadius CornerRadius { get; set; }
-   private Geometry? _originGeometry;
-   
-   public RoundRectWavePainter(Size size = default, Point originPoint = default)
-      : base(originPoint)
-   {
-      OriginSize = size;
-      WaveType = WaveType.RoundRectWave;
-   }
+    public CornerRadius CornerRadius { get; set; }
+    private Geometry? _originGeometry;
 
-   public override void Paint(DrawingContext context, object newSize, double newOpacity)
-   {
-      var newSizeTyped = (Size)newSize;
-      if (newSize is null) {
-         throw new ArgumentException("newSize argument must be Size type.");
-      }
-      
-      if (_originGeometry is null) {
-         _originGeometry = BuildRoundedGeometry(new Rect(OriginPoint.X, OriginPoint.Y, OriginSize.Width, OriginSize.Height),
-            CornerRadius);
-      }
-      var deltaSize = newSizeTyped - OriginSize;
-      var salt = deltaSize.Width / WaveRange / 2;
-      salt += 1;
+    public RoundRectWavePainter(Size size = default, Point originPoint = default)
+        : base(originPoint)
+    {
+        OriginSize = size;
+        WaveType   = WaveType.RoundRectWave;
+    }
 
-      var currentCornerRadius = new CornerRadius(CornerRadius.TopLeft * salt,
-         CornerRadius.TopRight * salt,
-         CornerRadius.BottomRight * salt,
-         CornerRadius.BottomLeft * salt);
-      
-      var newPoint = OriginPoint - new Point(deltaSize.Width / 2, deltaSize.Height / 2);
+    public override void Paint(DrawingContext context, object newSize, double newOpacity)
+    {
+        var newSizeTyped = (Size)newSize;
+        if (newSize is null)
+        {
+            throw new ArgumentException("newSize argument must be Size type.");
+        }
 
-      var newGeometry = BuildRoundedGeometry(new Rect(newPoint.X, newPoint.Y, newSizeTyped.Width, newSizeTyped.Height),
-         currentCornerRadius);
-      var targetGeometry = new CombinedGeometry(GeometryCombineMode.Exclude, newGeometry, _originGeometry);
-      var geometryDrawing = new GeometryDrawing
-      {
-         Brush = new SolidColorBrush(WaveColor, newOpacity),
-         Geometry = targetGeometry
-      };
-      geometryDrawing.Draw(context);
-   }
+        if (_originGeometry is null)
+        {
+            _originGeometry = BuildRoundedGeometry(
+                new Rect(OriginPoint.X, OriginPoint.Y, OriginSize.Width, OriginSize.Height),
+                CornerRadius);
+        }
 
-   private Geometry? BuildRoundedGeometry(Rect rect, CornerRadius cornerRadius)
-   {
-      // 根据四个角是否一样看是使用简单的还是复杂的矢量图形生成算法
-      if (cornerRadius.IsUniform) {
-         return new RectangleGeometry(rect, cornerRadius.TopLeft, cornerRadius.TopLeft);
-      }
-      var backgroundOuterKeypoints = RoundRectGeometryBuilder.CalculateRoundedCornersRectangleWinUI(
-         rect,
-         new Thickness(0),
-         cornerRadius,
-         BackgroundSizing.OuterBorderEdge);
+        var deltaSize = newSizeTyped - OriginSize;
+        var salt      = deltaSize.Width / WaveRange / 2;
+        salt += 1;
 
-      var backgroundGeometry = new StreamGeometry();
-      using (var ctx = backgroundGeometry.Open()) {
-         RoundRectGeometryBuilder.DrawRoundedCornersRectangle(ctx, ref backgroundOuterKeypoints);
-      }
+        var currentCornerRadius = new CornerRadius(CornerRadius.TopLeft * salt,
+            CornerRadius.TopRight * salt,
+            CornerRadius.BottomRight * salt,
+            CornerRadius.BottomLeft * salt);
 
-      return backgroundGeometry;
-   }
+        var newPoint = OriginPoint - new Point(deltaSize.Width / 2, deltaSize.Height / 2);
 
-   public override RoundRectWavePainter Clone()
-   {
-      return new RoundRectWavePainter(OriginSize, OriginPoint);
-   }
-   
-   public override void NotifyBuildSizeAnimation(Animation animation, AvaloniaProperty targetProperty)
-   {
-      animation.Duration = SizeMotionDuration;
-      animation.Easing = SizeEasingCurve;
-      animation.Children.Add(new KeyFrame
-      {
-         Setters =
-         {
-            new Setter
+        var newGeometry = BuildRoundedGeometry(
+            new Rect(newPoint.X, newPoint.Y, newSizeTyped.Width, newSizeTyped.Height),
+            currentCornerRadius);
+        var targetGeometry = new CombinedGeometry(GeometryCombineMode.Exclude, newGeometry, _originGeometry);
+        var geometryDrawing = new GeometryDrawing
+        {
+            Brush    = new SolidColorBrush(WaveColor, newOpacity),
+            Geometry = targetGeometry
+        };
+        geometryDrawing.Draw(context);
+    }
+
+    private Geometry? BuildRoundedGeometry(Rect rect, CornerRadius cornerRadius)
+    {
+        // 根据四个角是否一样看是使用简单的还是复杂的矢量图形生成算法
+        if (cornerRadius.IsUniform)
+        {
+            return new RectangleGeometry(rect, cornerRadius.TopLeft, cornerRadius.TopLeft);
+        }
+
+        var backgroundOuterKeypoints = RoundRectGeometryBuilder.CalculateRoundedCornersRectangleWinUI(
+            rect,
+            new Thickness(0),
+            cornerRadius,
+            BackgroundSizing.OuterBorderEdge);
+
+        var backgroundGeometry = new StreamGeometry();
+        using (var ctx = backgroundGeometry.Open())
+        {
+            RoundRectGeometryBuilder.DrawRoundedCornersRectangle(ctx, ref backgroundOuterKeypoints);
+        }
+
+        return backgroundGeometry;
+    }
+
+    public override RoundRectWavePainter Clone()
+    {
+        return new RoundRectWavePainter(OriginSize, OriginPoint);
+    }
+
+    public override void NotifyBuildSizeAnimation(Animation animation, AvaloniaProperty targetProperty)
+    {
+        animation.Duration = SizeMotionDuration;
+        animation.Easing   = SizeEasingCurve;
+        animation.Children.Add(new KeyFrame
+        {
+            Setters =
             {
-               Property = targetProperty,
-               Value = OriginSize
-            }
-         },
-         KeyTime = TimeSpan.FromMilliseconds(0)
-      });
-      var endValue = OriginSize + new Size(WaveRange * 2, WaveRange * 2);
-      animation.Children.Add(new KeyFrame
-      {
-         Setters =
-         {
-            new Setter
+                new Setter
+                {
+                    Property = targetProperty,
+                    Value    = OriginSize
+                }
+            },
+            KeyTime = TimeSpan.FromMilliseconds(0)
+        });
+        var endValue = OriginSize + new Size(WaveRange * 2, WaveRange * 2);
+        animation.Children.Add(new KeyFrame
+        {
+            Setters =
             {
-               Property = targetProperty,
-               Value = endValue
-            }
-         },
-         KeyTime = SizeMotionDuration
-      });
-   }
+                new Setter
+                {
+                    Property = targetProperty,
+                    Value    = endValue
+                }
+            },
+            KeyTime = SizeMotionDuration
+        });
+    }
 }

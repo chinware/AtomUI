@@ -1,21 +1,18 @@
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using Avalonia.Collections;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace AtomUI.Demo.Desktop.ViewModels;
 
-public class DataGridDemoViewModel: ObservableObject
+public class DataGridDemoViewModel : ObservableObject
 {
     public ObservableCollection<Song> GridData1 { get; set; }
-    
+
     public DataGridCollectionView GridData2 { get; set; }
-    
+
     public ObservableCollection<SongViewModel> GridData3 { get; set; }
-    
+
     public RelayCommand AddCommand { get; set; }
 
     public DataGridDemoViewModel()
@@ -23,13 +20,13 @@ public class DataGridDemoViewModel: ObservableObject
         GridData1 = new ObservableCollection<Song>(Song.Songs);
         GridData2 = new DataGridCollectionView(Song.Songs);
         GridData2.GroupDescriptions.Add(new DataGridPathGroupDescription("Album"));
-        GridData3 = new ObservableCollection<SongViewModel>(Song.Songs.Take(10).Select(a=>new SongViewModel()
+        GridData3 = new ObservableCollection<SongViewModel>(Song.Songs.Take(10).Select(a => new SongViewModel
         {
-            Title = a.Title,
-            Artist = a.Artist,
-            Album = a.Album,
+            Title          = a.Title,
+            Artist         = a.Artist,
+            Album          = a.Album,
             CountOfComment = a.CountOfComment,
-            IsSelected = false
+            IsSelected     = false
         }));
         AddCommand = new RelayCommand(Add);
     }
@@ -51,16 +48,15 @@ public class Song
 
     public Song(string title, string artist, int m, int s, string album, int countOfComment, int netEaseId)
     {
-        Title = title;
-        Artist = artist;
-        Duration = new TimeSpan(0, m, s);
-        Album = album;
+        Title          = title;
+        Artist         = artist;
+        Duration       = new TimeSpan(0, m, s);
+        Album          = album;
         CountOfComment = countOfComment;
-        Url = $"https://music.163.com/song?id={netEaseId}";
-        
+        Url            = $"https://music.163.com/song?id={netEaseId}";
     }
 
-    public static List<Song> Songs { get; set; } = new List<Song>()
+    public static List<Song> Songs { get; set; } = new()
     {
         new("好肚有肚(feat.李玲玉)", "熊猫堂ProducePandas", 2, 50, "A.S.I.A", 730, 1487039339),
         new("荒诞秀", "熊猫堂ProducePandas", 3, 15, "A.S.I.A", 639, 1487037601),
@@ -122,41 +118,45 @@ public class Song
         new("热带季风Remix", "熊猫堂ProducePandas", 3, 22, "W.O.R.L.D.", 23, 2063173319),
         new("加州梦境", "熊猫堂ProducePandas", 2, 56, "W.O.R.L.D.", 1662, 2063173324),
         new("渐近自由", "熊猫堂ProducePandas", 4, 19, "W.O.R.L.D.", 124, 2063173321),
-        new("世界所有的烂漫", "熊猫堂ProducePandas", 3, 30, "W.O.R.L.D.", 335, 2053388775),
+        new("世界所有的烂漫", "熊猫堂ProducePandas", 3, 30, "W.O.R.L.D.", 335, 2053388775)
     };
 }
 
-public class SongViewModel: ObservableObject
+public class SongViewModel : ObservableObject
 {
     private string? _title;
     private string? _artist;
     private string? _album;
     private int _countOfComment;
     private bool? _isSelected;
+
     public string? Title
     {
         get => _title;
         set => SetProperty(ref _title, value);
     }
+
     public string? Artist
     {
         get => _artist;
         set => SetProperty(ref _artist, value);
     }
+
     public string? Album
     {
         get => _album;
         set => SetProperty(ref _album, value);
     }
+
     public int CountOfComment
     {
         get => _countOfComment;
         set => SetProperty(ref _countOfComment, value);
     }
+
     public bool? IsSelected
     {
         get => _isSelected;
         set => SetProperty(ref _isSelected, value);
     }
-    
 }

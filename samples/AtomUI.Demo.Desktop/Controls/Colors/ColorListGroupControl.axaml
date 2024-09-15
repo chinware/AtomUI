@@ -12,18 +12,18 @@
                 <ItemsControl ItemsSource="{Binding ColorList }">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <UniformGrid Rows="1" Columns="2"/>
+                            <UniformGrid Rows="1" Columns="2" />
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="viewModels:ColorListViewModel">
                             <controls:ColorListControl ListData="{Binding}"
-                                                       Margin="10"/>
+                                                       Margin="10" />
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </ControlTemplate>
         </Setter>
-        
+
     </ControlTheme>
 </ResourceDictionary>

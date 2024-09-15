@@ -1,48 +1,46 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-    
-    <Import Project="$(MSBuildThisFileDirectory)..\..\Build\Output.App.props" />
+
+    <Import Project="$(MSBuildThisFileDirectory)..\..\Build\Output.App.props"/>
 
     <PropertyGroup>
         <OutputType>WinExe</OutputType>
         <TargetFramework>net8.0</TargetFramework>
         <RootNamespace>AtomUI.Demo.Desktop</RootNamespace>
+
+        <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     </PropertyGroup>
 
     <ItemGroup>
-        <AvaloniaResource Include="Assets\**" />
-        <TrimmerRootDescriptor Include="Roots.xml" />
+        <AvaloniaResource Include="Assets\**"/>
     </ItemGroup>
 
+    <ItemGroup>
+        <TrimmerRootDescriptor Include="Roots.xml" />
+    </ItemGroup>
+    
+    <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+        <IsTrimmable>true</IsTrimmable>
+        <PublishTrimmed>true</PublishTrimmed>
+        <PublishAot>true</PublishAot>
+    </PropertyGroup>
+    
     <PropertyGroup>
         <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
         <ApplicationManifest>app.manifest</ApplicationManifest>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Avalonia" />
-        <PackageReference Include="Avalonia.Desktop" />
-        <PackageReference Include="Avalonia.Themes.Fluent" />
-        <PackageReference Include="Avalonia.Controls.DataGrid" />
-        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" />
-        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Nlnet.Avalonia.DevTools" />
-        <PackageReference Include="CommunityToolkit.Mvvm" />
+        <PackageReference Include="Avalonia"/>
+        <PackageReference Include="Avalonia.Desktop"/>
+        <PackageReference Include="Avalonia.Themes.Fluent"/>
+        <PackageReference Include="Avalonia.Controls.DataGrid"/>
+        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics"/>
+        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Nlnet.Avalonia.DevTools"/>
+        <PackageReference Include="CommunityToolkit.Mvvm"/>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\AtomUI.Controls\AtomUI.Controls.csproj" />
-        <ProjectReference Include="..\..\src\AtomUI.Icon.AntDesign\AtomUI.Icon.AntDesign.csproj" />
-        <ProjectReference Include="..\..\src\AtomUI.Theme\AtomUI.Theme.csproj" />
+        <ProjectReference Include="..\..\packages\AtomUI\AtomUI.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <AdditionalFiles Include="ShowCase\ButtonSpinnerShowCase.axaml" />
-      <AdditionalFiles Include="ShowCase\GroupBoxShowCase.axaml" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Compile Update="ShowCase\DropdownButtonShowCase.axaml.cs">
-        <DependentUpon>DropdownButtonShowCase.axaml</DependentUpon>
-      </Compile>
-    </ItemGroup>
-    
 </Project>

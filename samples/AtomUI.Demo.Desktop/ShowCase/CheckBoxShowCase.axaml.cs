@@ -5,9 +5,9 @@ namespace AtomUI.Demo.Desktop.ShowCase;
 
 public partial class CheckBoxShowCase : UserControl
 {
-   public CheckBoxShowCase()
-   {
-      DataContext = new CheckBoxShowCaseModel();
-      InitializeComponent();
-   }
+    public CheckBoxShowCase()
+    {
+        DataContext = new CheckBoxShowCaseModel();
+        InitializeComponent();
+    }
 }

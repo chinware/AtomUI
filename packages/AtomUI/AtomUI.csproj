@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <Import Project="$(MSBuildThisFileDirectory)..\..\build\Nuget.props"/>
+    
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <PackageId>AtomUI</PackageId>
+    </PropertyGroup>
+
+    <Import Project="..\..\build\CoreLibraries.props" />
+
+</Project>

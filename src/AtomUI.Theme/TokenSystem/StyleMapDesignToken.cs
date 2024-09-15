@@ -10,7 +10,7 @@ public class StyleMapDesignToken : AbstractDesignToken
    /// 描边类组件的默认线宽，如 Button、Input、Select 等输入类控件。
    /// </summary>
    public double LineWidthBold { get; set; } = 1;
-   
+
    /// <summary>
    /// 边框的宽细
    /// </summary>
@@ -38,33 +38,33 @@ public class StyleMapDesignToken : AbstractDesignToken
    /// 外部圆角
    /// </summary>
    public CornerRadius BorderRadiusOuter { get; set; }
-   
-   // Motion
-   /// <summary>
-   /// 动效播放速度，快速。用于小型元素动画交互
-   /// </summary>
-   public TimeSpan MotionDurationFast { get; set; }
-   
-   /// <summary>
-   /// 动效播放速度，中速。用于中型元素动画交互
-   /// </summary>
-   public TimeSpan MotionDurationMid { get; set; }
-   
-   /// <summary>
-   /// 动效播放速度，慢速。用于大型元素如面板动画交互
-   /// </summary>
-   public TimeSpan MotionDurationSlow { get; set; }
-   
-   /// <summary>
-   /// 动效播放速度，最慢速。用于大型元素如面板动画交互
-   /// </summary>
-   public TimeSpan MotionDurationVerySlow { get; set; }
 
-   public StyleMapDesignToken()
-   {
-      BorderRadiusXS = new CornerRadius(2);
-      BorderRadiusSM = new CornerRadius(4);
-      BorderRadiusLG = new CornerRadius(8);
-      BorderRadiusOuter = new CornerRadius(4);
-   }
+    // Motion
+    /// <summary>
+    /// 动效播放速度，快速。用于小型元素动画交互
+    /// </summary>
+    public TimeSpan MotionDurationFast { get; set; }
+
+    /// <summary>
+    /// 动效播放速度，中速。用于中型元素动画交互
+    /// </summary>
+    public TimeSpan MotionDurationMid { get; set; }
+
+    /// <summary>
+    /// 动效播放速度，慢速。用于大型元素如面板动画交互
+    /// </summary>
+    public TimeSpan MotionDurationSlow { get; set; }
+
+    /// <summary>
+    /// 动效播放速度，最慢速。用于大型元素如面板动画交互
+    /// </summary>
+    public TimeSpan MotionDurationVerySlow { get; set; }
+
+    public StyleMapDesignToken()
+    {
+        BorderRadiusXS    = new CornerRadius(2);
+        BorderRadiusSM    = new CornerRadius(4);
+        BorderRadiusLG    = new CornerRadius(8);
+        BorderRadiusOuter = new CornerRadius(4);
+    }
 }

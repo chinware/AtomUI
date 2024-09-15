@@ -22,8 +22,7 @@
                             HorizontalAlignment="Center"
                             Kind="{Binding IconKind}"
                             Width="48"
-                            Height="48">
-                        </atom:PathIcon>
+                            Height="48" />
                         <TextBlock
                             Margin="0,20, 0, 0"
                             Padding="8"

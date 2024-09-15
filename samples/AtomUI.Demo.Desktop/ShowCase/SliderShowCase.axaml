@@ -5,10 +5,11 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:atom="https://atomui.net"
-    xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
+    xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
+
     mc:Ignorable="d">
-    <showcase:ShowCasePanel>
-        <showcase:ShowCaseItem
+    <desktop:ShowCasePanel>
+        <desktop:ShowCaseItem
             Title="Basic"
             Description="Basic slider. When range is true, display as dual thumb mode. When disable is true, the slider will not be interactable.">
             <StackPanel Orientation="Vertical" Spacing="20">
@@ -17,15 +18,15 @@
                     Minimum="0"
                     TickFrequency="5"
                     IsEnabled="{Binding NormalEnabled}"
-                    Value="50"/>
-        
+                    Value="50" />
+
                 <atom:Slider
                     Maximum="100"
                     Minimum="0"
                     IsRangeMode="True"
                     TickFrequency="5"
                     IsEnabled="{Binding NormalEnabled}"
-                    RangeValue="20, 80"/>
+                    RangeValue="20, 80" />
                 <atom:Slider
                     Maximum="100"
                     Minimum="0"
@@ -34,15 +35,15 @@
                     TickFrequency="5"
                     Marks="{Binding SliderMarks}"
                     RangeValue="20, 80" />
-                
+
                 <StackPanel Orientation="Horizontal" Spacing="2">
                     <TextBlock>Disabled:</TextBlock>
-                    <atom:ToggleSwitch SizeType="Small" IsChecked="{Binding NormalEnabled}"/>
+                    <atom:ToggleSwitch SizeType="Small" IsChecked="{Binding NormalEnabled}" />
                 </StackPanel>
             </StackPanel>
-        </showcase:ShowCaseItem>
-        
-        <showcase:ShowCaseItem
+        </desktop:ShowCaseItem>
+
+        <desktop:ShowCaseItem
             Title="Customize tooltip"
             Description="Use tooltip.formatter to format content of Tooltip. If tooltip.formatter is null, hide it.">
             <StackPanel Orientation="Vertical" Spacing="20">
@@ -52,11 +53,11 @@
                     TickFrequency="1"
                     IsSnapToTickEnabled="True"
                     ValueFormatTemplate="\{0\}%"
-                    Value="20"/>
+                    Value="20" />
             </StackPanel>
-        </showcase:ShowCaseItem>
-        
-        <showcase:ShowCaseItem
+        </desktop:ShowCaseItem>
+
+        <desktop:ShowCaseItem
             Title="Vertical"
             Description="The vertical Slider.">
             <StackPanel Orientation="Horizontal" Spacing="20" Height="300">
@@ -65,7 +66,7 @@
                     Minimum="0"
                     Orientation="Vertical"
                     TickFrequency="1"
-                    Value="20"/>
+                    Value="20" />
                 <atom:Slider
                     Maximum="100"
                     Minimum="0"
@@ -74,16 +75,16 @@
                     IsRangeMode="True"
                     RangeValue="20, 80"
                     IsSnapToTickEnabled="True"
-                    Value="20"/>
-                
+                    Value="20" />
+
                 <atom:Slider
                     Maximum="100"
                     Minimum="0"
                     Orientation="Vertical"
                     TickFrequency="1"
                     Marks="{Binding SliderMarks}"
-                    Value="20"/>
-                
+                    Value="20" />
+
                 <atom:Slider
                     Maximum="100"
                     Minimum="0"
@@ -92,11 +93,11 @@
                     TickFrequency="5"
                     Marks="{Binding SliderMarks}"
                     RangeValue="20, 80" />
-                
+
             </StackPanel>
-        </showcase:ShowCaseItem>
-        
-        <showcase:ShowCaseItem
+        </desktop:ShowCaseItem>
+
+        <desktop:ShowCaseItem
             Title="Graduated slider"
             Description="Using marks property to mark a graduated slider, use value or defaultValue to specify the position of thumb.
             When included is false, means that different thumbs are coordinative. when step is null, users can only slide the thumbs onto marks.">
@@ -107,8 +108,8 @@
                     Minimum="0"
                     TickFrequency="1"
                     Marks="{Binding SliderMarks}"
-                    Value="20"/>
-        
+                    Value="20" />
+
                 <atom:Slider
                     Maximum="100"
                     Minimum="0"
@@ -116,7 +117,7 @@
                     TickFrequency="5"
                     Marks="{Binding SliderMarks}"
                     RangeValue="20, 80" />
-        
+
                 <TextBlock FontWeight="Bold">included=false</TextBlock>
                 <atom:Slider
                     Maximum="100"
@@ -124,8 +125,8 @@
                     TickFrequency="1"
                     Marks="{Binding SliderMarks}"
                     Included="False"
-                    Value="20"/>
-        
+                    Value="20" />
+
                 <atom:Slider
                     Maximum="100"
                     Minimum="0"
@@ -134,8 +135,8 @@
                     Included="False"
                     Marks="{Binding SliderMarks}"
                     RangeValue="20, 80" />
-        
+
             </StackPanel>
-        </showcase:ShowCaseItem>
-    </showcase:ShowCasePanel>
+        </desktop:ShowCaseItem>
+    </desktop:ShowCasePanel>
 </UserControl>

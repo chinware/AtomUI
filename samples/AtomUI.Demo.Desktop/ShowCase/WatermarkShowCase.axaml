@@ -4,28 +4,32 @@
              xmlns:atom="https://atomui.net"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
+             xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
              mc:Ignorable="d">
-    <showcase:ShowCasePanel>
+    <desktop:ShowCasePanel>
 
-        <showcase:ShowCaseItem Title="Basic" Description="The most basic usage.">
+        <desktop:ShowCaseItem Title="Basic" Description="The most basic usage.">
             <Border Height="300" atom:Watermark.Glyph="{atom:TextGlyph 'AtomUI'}" />
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem Title="Multi-line watermark" Description="Use line-break to specify multi-line text watermark content.">
-            <Border Height="200" atom:Watermark.Glyph="{atom:TextGlyph 'AtomUI&#x000A;Happy Working', FontSize=18, Foreground=Gray}" />
-        </showcase:ShowCaseItem>
+        <desktop:ShowCaseItem Title="Multi-line watermark"
+                               Description="Use line-break to specify multi-line text watermark content.">
+            <Border Height="200"
+                    atom:Watermark.Glyph="{atom:TextGlyph 'AtomUI&#x000A;Happy Working', FontSize=18, Foreground=Gray}" />
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem Title="Image watermark" Description="Specify the image address via image. To ensure that the image is high definition and not stretched, set the width and height, and upload at least twice the width and height of the logo image address.">
+        <desktop:ShowCaseItem Title="Image watermark"
+                               Description="Specify the image address via image. To ensure that the image is high definition and not stretched, set the width and height, and upload at least twice the width and height of the logo image address.">
             <Border Height="400">
                 <atom:Watermark.Glyph>
-                    <atom:ImageGlyph Source="/Assets/ATOMUI-LOGO.png"/>
+                    <atom:ImageGlyph Source="/Assets/ATOMUI-LOGO.png" />
                     <!-- <atom:ImageGlyph Source="/Assets/avalonia-logo.ico"/> -->
                 </atom:Watermark.Glyph>
             </Border>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem Title="Custom configuration" Description="Preview the watermark effect by configuring custom parameters.">
+        <desktop:ShowCaseItem Title="Custom configuration"
+                               Description="Preview the watermark effect by configuring custom parameters.">
             <StackPanel atom:Watermark.Glyph="{atom:TextGlyph 'AtomUI'}">
                 <TextBlock TextWrapping="Wrap">
                     The light-speed iteration of the digital world makes products more complex. However, human consciousness and attention resources are limited. Facing this design contradiction, the pursuit of natural interaction will be the consistent direction of Ant Design.
@@ -36,7 +40,7 @@
                 </TextBlock>
                 <Image Source="/Assets/watermark-sample.png" />
             </StackPanel>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-    </showcase:ShowCasePanel>
+    </desktop:ShowCasePanel>
 </UserControl>

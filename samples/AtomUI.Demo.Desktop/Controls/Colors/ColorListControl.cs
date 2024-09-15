@@ -6,12 +6,13 @@ namespace AtomUI.Demo.Desktop.Controls;
 
 public class ColorListControl : TemplatedControl
 {
-   public static readonly StyledProperty<ColorListViewModel> ListDataProperty = AvaloniaProperty.Register<ColorListGroupControl, ColorListViewModel>(
-      nameof(ListData), new ColorListViewModel());
+    public static readonly StyledProperty<ColorListViewModel> ListDataProperty =
+        AvaloniaProperty.Register<ColorListGroupControl, ColorListViewModel>(
+            nameof(ListData), new ColorListViewModel());
 
-   public ColorListViewModel ListData
-   {
-      get => GetValue(ListDataProperty);
-      set => SetValue(ListDataProperty, value);
-   }
+    public ColorListViewModel ListData
+    {
+        get => GetValue(ListDataProperty);
+        set => SetValue(ListDataProperty, value);
+    }
 }

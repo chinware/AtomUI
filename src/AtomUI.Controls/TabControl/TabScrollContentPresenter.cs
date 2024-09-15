@@ -10,54 +10,58 @@ namespace AtomUI.Controls;
 
 internal class TabScrollContentPresenter : ScrollContentPresenter, ICustomHitTest
 {
-   internal Dock TabStripPlacement { get; set; } = Dock.Top;
-   
-   private static readonly MethodInfo SnapOffsetMethodInfo;
+    internal Dock TabStripPlacement { get; set; } = Dock.Top;
 
-   static TabScrollContentPresenter()
-   {
-      SnapOffsetMethodInfo =
-         typeof(ScrollContentPresenter).GetMethod("SnapOffset", BindingFlags.Instance | BindingFlags.NonPublic)!;
-   }
+    private static readonly MethodInfo SnapOffsetMethodInfo;
 
-   protected override void OnPointerWheelChanged(PointerWheelEventArgs e)
-   {
-      if (Extent.Height > Viewport.Height || Extent.Width > Viewport.Width) {
-         var scrollable = Child as ILogicalScrollable;
-         var isLogical = scrollable?.IsLogicalScrollEnabled == true;
+    static TabScrollContentPresenter()
+    {
+        SnapOffsetMethodInfo =
+            typeof(ScrollContentPresenter).GetMethod("SnapOffset", BindingFlags.Instance | BindingFlags.NonPublic)!;
+    }
 
-         var x = Offset.X;
-         var y = Offset.Y;
-         var delta = e.Delta;
-         if (TabStripPlacement == Dock.Top || TabStripPlacement == Dock.Bottom) {
-            delta = new Vector(delta.Y, delta.X);
-         }
+    protected override void OnPointerWheelChanged(PointerWheelEventArgs e)
+    {
+        if (Extent.Height > Viewport.Height || Extent.Width > Viewport.Width)
+        {
+            var scrollable = Child as ILogicalScrollable;
+            var isLogical  = scrollable?.IsLogicalScrollEnabled == true;
 
-         if (Extent.Height > Viewport.Height) {
-            double height = isLogical ? scrollable!.ScrollSize.Height : 50;
-            y += -delta.Y * height;
-            y = Math.Max(y, 0);
-            y = Math.Min(y, Extent.Height - Viewport.Height);
-         }
+            var x     = Offset.X;
+            var y     = Offset.Y;
+            var delta = e.Delta;
+            if (TabStripPlacement == Dock.Top || TabStripPlacement == Dock.Bottom)
+            {
+                delta = new Vector(delta.Y, delta.X);
+            }
 
-         if (Extent.Width > Viewport.Width) {
-            double width = isLogical ? scrollable!.ScrollSize.Width : 50;
-            x += -delta.X * width;
-            x = Math.Max(x, 0);
-            x = Math.Min(x, Extent.Width - Viewport.Width);
-         }
+            if (Extent.Height > Viewport.Height)
+            {
+                var height = isLogical ? scrollable!.ScrollSize.Height : 50;
+                y += -delta.Y * height;
+                y =  Math.Max(y, 0);
+                y =  Math.Min(y, Extent.Height - Viewport.Height);
+            }
 
-         Vector newOffset = (Vector)SnapOffsetMethodInfo.Invoke(this, new object?[] { new Vector(x, y), delta, true })!;
+            if (Extent.Width > Viewport.Width)
+            {
+                var width = isLogical ? scrollable!.ScrollSize.Width : 50;
+                x += -delta.X * width;
+                x =  Math.Max(x, 0);
+                x =  Math.Min(x, Extent.Width - Viewport.Width);
+            }
 
-         bool offsetChanged = newOffset != Offset;
-         SetCurrentValue(OffsetProperty, newOffset);
+            var newOffset = (Vector)SnapOffsetMethodInfo.Invoke(this, new object?[] { new Vector(x, y), delta, true })!;
 
-         e.Handled = !IsScrollChainingEnabled || offsetChanged;
-      }
-   }
+            var offsetChanged = newOffset != Offset;
+            SetCurrentValue(OffsetProperty, newOffset);
 
-   public bool HitTest(Point point)
-   {
-      return true;
-   }
+            e.Handled = !IsScrollChainingEnabled || offsetChanged;
+        }
+    }
+
+    public bool HitTest(Point point)
+    {
+        return true;
+    }
 }

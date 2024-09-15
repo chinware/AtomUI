@@ -42,153 +42,179 @@ public static class PaletteGenerator
    /// </summary>
    public const int DARK_COLOR_COUNT = 4;
 
-   private static IReadOnlyList<DarkColorMapItem> sm_darkColorMap;
+    private static readonly IReadOnlyList<DarkColorMapItem> sm_darkColorMap;
 
-   static PaletteGenerator()
-   {
-      sm_darkColorMap = new List<DarkColorMapItem>
-      {
-         new DarkColorMapItem { Index = 7, Opacity = 0.15f },
-         new DarkColorMapItem { Index = 6, Opacity = 0.25f },
-         new DarkColorMapItem { Index = 5, Opacity = 0.3f },
-         new DarkColorMapItem { Index = 5, Opacity = 0.45f },
-         new DarkColorMapItem { Index = 5, Opacity = 0.65f },
-         new DarkColorMapItem { Index = 5, Opacity = 0.85f },
-         new DarkColorMapItem { Index = 4, Opacity = 0.9f },
-         new DarkColorMapItem { Index = 3, Opacity = 0.95f },
-         new DarkColorMapItem { Index = 2, Opacity = 0.97f },
-         new DarkColorMapItem { Index = 1, Opacity = 0.98f }
-      };
-   }
+    static PaletteGenerator()
+    {
+        sm_darkColorMap = new List<DarkColorMapItem>
+        {
+            new() { Index = 7, Opacity = 0.15f },
+            new() { Index = 6, Opacity = 0.25f },
+            new() { Index = 5, Opacity = 0.3f },
+            new() { Index = 5, Opacity = 0.45f },
+            new() { Index = 5, Opacity = 0.65f },
+            new() { Index = 5, Opacity = 0.85f },
+            new() { Index = 4, Opacity = 0.9f },
+            new() { Index = 3, Opacity = 0.95f },
+            new() { Index = 2, Opacity = 0.97f },
+            new() { Index = 1, Opacity = 0.98f }
+        };
+    }
 
-   public static IReadOnlyList<Color> GeneratePalette(Color color, PaletteGenerateOption? option = null)
-   {
-      if (option is null) {
-         option = new PaletteGenerateOption();
-      }
-      var patterns = new List<Color>();
-      HsvColor hsvColor = color.ToHsv();
-      for (int i = LIGHT_COLOR_COUNT; i > 0; --i) {
-         Color rgbColor = HsvColor.ToRgb(GetHsvHue(hsvColor, i, true),
-            GetHsvSaturation(hsvColor, i, true),
-            GetHsvValue(hsvColor, i, true));
-         patterns.Add(rgbColor);
-      }
+    public static IReadOnlyList<Color> GeneratePalette(Color color, PaletteGenerateOption? option = null)
+    {
+        if (option is null)
+        {
+            option = new PaletteGenerateOption();
+        }
 
-      patterns.Add(color);
-      for (int i = 1; i <= DARK_COLOR_COUNT; ++i) {
-         Color rgbColor = HsvColor.ToRgb(GetHsvHue(hsvColor, i, false),
-            GetHsvSaturation(hsvColor, i, false),
-            GetHsvValue(hsvColor, i, false));
-         patterns.Add(rgbColor);
-      }
+        var patterns = new List<Color>();
+        var hsvColor = color.ToHsv();
+        for (var i = LIGHT_COLOR_COUNT; i > 0; --i)
+        {
+            var rgbColor = HsvColor.ToRgb(GetHsvHue(hsvColor, i, true),
+                GetHsvSaturation(hsvColor, i, true),
+                GetHsvValue(hsvColor, i, true));
+            patterns.Add(rgbColor);
+        }
 
-      // dark theme patterns
-      if (option.ThemeVariant == ThemeVariant.Dark) {
-         var darkPatterns = new List<Color>();
-         foreach (var entry in sm_darkColorMap) {
-            Color color1 = option.BackgroundColor ?? Color.Parse("#141414");
-            Color color2 = patterns[entry.Index];
-            RgbF darkColorRgb = MixRgbF(new RgbF(color1.GetRedF(), color1.GetGreenF(), color1.GetBlueF()),
-               new RgbF(color2.GetRedF(), color2.GetGreenF(), color2.GetBlueF()),
-               entry.Opacity * 100);
-            darkPatterns.Add(ColorUtils.FromRgbF(1.0, darkColorRgb.R, darkColorRgb.G, darkColorRgb.B));
-         }
-         return darkPatterns;
-      }
+        patterns.Add(color);
+        for (var i = 1; i <= DARK_COLOR_COUNT; ++i)
+        {
+            var rgbColor = HsvColor.ToRgb(GetHsvHue(hsvColor, i, false),
+                GetHsvSaturation(hsvColor, i, false),
+                GetHsvValue(hsvColor, i, false));
+            patterns.Add(rgbColor);
+        }
 
-      return patterns;
-   }
+        // dark theme patterns
+        if (option.ThemeVariant == ThemeVariant.Dark)
+        {
+            var darkPatterns = new List<Color>();
+            foreach (var entry in sm_darkColorMap)
+            {
+                var color1 = option.BackgroundColor ?? Color.Parse("#141414");
+                var color2 = patterns[entry.Index];
+                var darkColorRgb = MixRgbF(new RgbF(color1.GetRedF(), color1.GetGreenF(), color1.GetBlueF()),
+                    new RgbF(color2.GetRedF(), color2.GetGreenF(), color2.GetBlueF()),
+                    entry.Opacity * 100);
+                darkPatterns.Add(ColorUtils.FromRgbF(1.0, darkColorRgb.R, darkColorRgb.G, darkColorRgb.B));
+            }
 
-   private static RgbF MixRgbF(RgbF rgb1, RgbF rgb2, double amount)
-   {
-      double p = amount / 100;
-      double r = (rgb2.R - rgb1.R) * p + rgb1.R;
-      double g = (rgb2.G - rgb1.G) * p + rgb1.G;
-      double b = (rgb2.B - rgb1.B) * p + rgb1.B;
-      return new RgbF(r, g, b);
-   }
+            return darkPatterns;
+        }
 
-   private static double GetHsvHue(HsvColor hsvColor, int index, bool isLight)
-   {
-      double hue;
-      // 根据色相不同，色相转向不同
-      if (Math.Round(hsvColor.H) >= 60d && Math.Round(hsvColor.H) <= 240d) {
-         hue = isLight ? Math.Round(hsvColor.H) - HUE_STEP * index : Math.Round(hsvColor.H) + HUE_STEP * index;
-      } else {
-         hue = isLight ? Math.Round(hsvColor.H) + HUE_STEP * index : Math.Round(hsvColor.H) - HUE_STEP * index;
-      }
+        return patterns;
+    }
 
-      if (hue < 0) {
-         hue += 360d;
-      } else if (MathUtils.GreaterThanOrClose(hue, 360d)) {
-         hue -= 360d;
-      }
-      return hue;
-   }
+    private static RgbF MixRgbF(RgbF rgb1, RgbF rgb2, double amount)
+    {
+        var p = amount / 100;
+        var r = (rgb2.R - rgb1.R) * p + rgb1.R;
+        var g = (rgb2.G - rgb1.G) * p + rgb1.G;
+        var b = (rgb2.B - rgb1.B) * p + rgb1.B;
+        return new RgbF(r, g, b);
+    }
 
-   private static double GetHsvSaturation(HsvColor hsvColor, int index, bool isLight)
-   {
-      // grey color don't change saturation
-      if (MathUtils.IsZero(hsvColor.H) && MathUtils.IsZero(hsvColor.S)) {
-         return hsvColor.S;
-      }
+    private static double GetHsvHue(HsvColor hsvColor, int index, bool isLight)
+    {
+        double hue;
+        // 根据色相不同，色相转向不同
+        if (Math.Round(hsvColor.H) >= 60d && Math.Round(hsvColor.H) <= 240d)
+        {
+            hue = isLight ? Math.Round(hsvColor.H) - HUE_STEP * index : Math.Round(hsvColor.H) + HUE_STEP * index;
+        }
+        else
+        {
+            hue = isLight ? Math.Round(hsvColor.H) + HUE_STEP * index : Math.Round(hsvColor.H) - HUE_STEP * index;
+        }
 
-      double saturation = 0;
-      if (isLight) {
-         saturation = hsvColor.S - SATURATION_STEP1 * index;
-      } else if (index == DARK_COLOR_COUNT) {
-         saturation = hsvColor.S + SATURATION_STEP1;
-      } else {
-         saturation = hsvColor.S + SATURATION_STEP2 * index;
-      }
+        if (hue < 0)
+        {
+            hue += 360d;
+        }
+        else if (MathUtils.GreaterThanOrClose(hue, 360d))
+        {
+            hue -= 360d;
+        }
 
-      // 边界值修正
-      saturation = Math.Min(saturation, 1d);
-      // 第一格的 s 限制在 0.06-0.1 之间
-      if (isLight && index == LIGHT_COLOR_COUNT && saturation > 0.1d) {
-         saturation = 0.1d;
-      }
+        return hue;
+    }
 
-      saturation = Math.Max(saturation, 0.06d);
-      return MathUtils.RoundToFixedPoint(saturation, 2);
-   }
+    private static double GetHsvSaturation(HsvColor hsvColor, int index, bool isLight)
+    {
+        // grey color don't change saturation
+        if (MathUtils.IsZero(hsvColor.H) && MathUtils.IsZero(hsvColor.S))
+        {
+            return hsvColor.S;
+        }
 
-   private static double GetHsvValue(HsvColor hsvColor, int index, bool isLight)
-   {
-      double value;
-      if (isLight) {
-         value = hsvColor.V + BRIGHTNESS_STEP1 * index;
-      } else {
-         value = hsvColor.V - BRIGHTNESS_STEP2 * index;
-      }
-      value = Math.Min(value, 1d);
-      return MathUtils.RoundToFixedPoint(value, 2);;
-   }
-   
-   internal struct DarkColorMapItem
-   {
-      public int Index { get; set; }
-      public double Opacity { get; set; }
-   }
+        double saturation = 0;
+        if (isLight)
+        {
+            saturation = hsvColor.S - SATURATION_STEP1 * index;
+        }
+        else if (index == DARK_COLOR_COUNT)
+        {
+            saturation = hsvColor.S + SATURATION_STEP1;
+        }
+        else
+        {
+            saturation = hsvColor.S + SATURATION_STEP2 * index;
+        }
+
+        // 边界值修正
+        saturation = Math.Min(saturation, 1d);
+        // 第一格的 s 限制在 0.06-0.1 之间
+        if (isLight && index == LIGHT_COLOR_COUNT && saturation > 0.1d)
+        {
+            saturation = 0.1d;
+        }
+
+        saturation = Math.Max(saturation, 0.06d);
+        return MathUtils.RoundToFixedPoint(saturation, 2);
+    }
+
+    private static double GetHsvValue(HsvColor hsvColor, int index, bool isLight)
+    {
+        double value;
+        if (isLight)
+        {
+            value = hsvColor.V + BRIGHTNESS_STEP1 * index;
+        }
+        else
+        {
+            value = hsvColor.V - BRIGHTNESS_STEP2 * index;
+        }
+
+        value = Math.Min(value, 1d);
+        return MathUtils.RoundToFixedPoint(value, 2);
+        ;
+    }
+
+    internal struct DarkColorMapItem
+    {
+        public int Index { get; set; }
+        public double Opacity { get; set; }
+    }
 }
 
 internal struct RgbF
 {
-   public RgbF(double r, double g, double b)
-   {
-      R = r;
-      G = g;
-      B = b;
-   }
+    public RgbF(double r, double g, double b)
+    {
+        R = r;
+        G = g;
+        B = b;
+    }
 
-   public double R { get; set; }
-   public double G { get; set; }
-   public double B { get; set; }
+    public double R { get; set; }
+    public double G { get; set; }
+    public double B { get; set; }
 }
 
 public class PaletteGenerateOption
 {
-   public ThemeVariant ThemeVariant { get; set; } = ThemeVariant.Light;
-   public Color? BackgroundColor { get; set; }
+    public ThemeVariant ThemeVariant { get; set; } = ThemeVariant.Light;
+    public Color? BackgroundColor { get; set; }
 }

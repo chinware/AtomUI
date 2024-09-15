@@ -11,13 +11,15 @@ public static class TemplatedControlUtils
    /// <param name="control">The control.</param>
    /// <param name="templatedParent">The templated parent to apply.</param>
    internal static void ApplyTemplatedParent(StyledElement control, AvaloniaObject? templatedParent)
-   {
-      UIStructureUtils.SetTemplateParent(control, templatedParent);
-      var logicalChildren = control.GetLogicalChildren();
-      foreach (var child in logicalChildren) {
-         if (child is StyledElement styledElement && styledElement.TemplatedParent == null) {
-            ApplyTemplatedParent(styledElement, templatedParent);
-         }
-      }
-   }
+    {
+        UIStructureUtils.SetTemplateParent(control, templatedParent);
+        var logicalChildren = control.GetLogicalChildren();
+        foreach (var child in logicalChildren)
+        {
+            if (child is StyledElement styledElement && styledElement.TemplatedParent == null)
+            {
+                ApplyTemplatedParent(styledElement, templatedParent);
+            }
+        }
+    }
 }

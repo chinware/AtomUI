@@ -1,10 +1,9 @@
-<ResourceDictionary
-    xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:controls="using:AtomUI.Demo.Desktop.Controls"
-    xmlns:viewModels="clr-namespace:AtomUI.Demo.Desktop.ViewModels"
-    x:CompileBindings="True"
-    x:DataType="viewModels:ColorItemViewModel">
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="using:AtomUI.Demo.Desktop.Controls"
+                    xmlns:viewModels="clr-namespace:AtomUI.Demo.Desktop.ViewModels"
+                    x:CompileBindings="True"
+                    x:DataType="viewModels:ColorItemViewModel">
     <Design.PreviewWith>
         <controls:ColorItemControl />
     </Design.PreviewWith>
@@ -13,28 +12,25 @@
         <Setter Property="controls:ColorItemControl.Height" Value="35" />
         <Setter Property="controls:ColorItemControl.Template">
             <ControlTemplate TargetType="controls:ColorItemControl">
-                <Border
-                    Width="{TemplateBinding Width}"
-                    Height="{TemplateBinding Height}"
-                    Background="{TemplateBinding Background}">
+                <Border Width="{TemplateBinding Width}"
+                        Height="{TemplateBinding Height}"
+                        Background="{TemplateBinding Background}">
                     <Panel>
-                        <TextBlock
-                            Padding="8"
-                            FontSize="12"
-                            FontWeight="600"
-                            Foreground="{TemplateBinding Foreground}"
-                            Text="{TemplateBinding ColorName}" />
-                        <TextBlock
-                            Name="PART_HexTextBlock"
-                            Padding="8"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Center"
-                            FontWeight="600"
-                            FontSize="10"
-                            Foreground="{TemplateBinding Foreground}"
-                            IsVisible="False"
-                            Opacity="0.8"
-                            Text="{TemplateBinding Hex}" />
+                        <TextBlock Padding="8"
+                                   FontSize="12"
+                                   FontWeight="600"
+                                   Foreground="{TemplateBinding Foreground}"
+                                   Text="{TemplateBinding ColorName}" />
+                        <TextBlock Name="PART_HexTextBlock"
+                                   Padding="8"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Center"
+                                   FontSize="10"
+                                   FontWeight="600"
+                                   Foreground="{TemplateBinding Foreground}"
+                                   IsVisible="False"
+                                   Opacity="0.8"
+                                   Text="{TemplateBinding Hex}" />
                     </Panel>
                 </Border>
             </ControlTemplate>

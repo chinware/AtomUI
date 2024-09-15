@@ -9,28 +9,24 @@ using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
-public sealed class Watermark : Control, IAtomAdorner
+public sealed class Watermark : Control
 {
     public static WatermarkGlyph? GetGlyph(Visual element)
     {
         return element.GetValue(GlyphProperty);
     }
+
     public static void SetGlyph(Visual element, WatermarkGlyph? value)
     {
         element.SetValue(GlyphProperty, value);
     }
+
     public static readonly AttachedProperty<WatermarkGlyph?> GlyphProperty = AvaloniaProperty
         .RegisterAttached<Watermark, Visual, WatermarkGlyph?>("Glyph");
-
-
 
     public Visual Target { get; }
 
     private WatermarkGlyph? Glyph { get; }
-    
-    private AtomLayer Layer { get; }
-
-
 
     static Watermark()
     {
@@ -38,21 +34,17 @@ public sealed class Watermark : Control, IAtomAdorner
         GlyphProperty.Changed.AddClassHandler<Visual>(OnGlyphChanged);
     }
 
-    private Watermark(AtomLayer layer, Visual target, WatermarkGlyph? glyph)
+    private Watermark(Visual target, WatermarkGlyph? glyph)
     {
         Target = target;
         Glyph  = glyph;
-        Layer  = layer;
 
         if (glyph != null)
         {
-            glyph.PropertyChanged += (sender, args) =>
-            {
-                InvalidateVisual();
-            };
+            glyph.PropertyChanged += (sender, args) => { InvalidateVisual(); };
         }
     }
-    
+
     private static void OnGlyphChanged(Visual target, AvaloniaPropertyChangedEventArgs arg)
     {
         if (target.IsAttachedToVisualTree())
@@ -90,8 +82,8 @@ public sealed class Watermark : Control, IAtomAdorner
             return;
         }
 
-        watermark = new Watermark(layer, target, GetGlyph(target));
-        layer.AddAdorner(target ,watermark);
+        watermark = new Watermark(target, GetGlyph(target));
+        layer.AddAdorner(target, watermark);
     }
 
     private static bool CheckLayer(Visual target, [NotNullWhen(true)] out AtomLayer? layer)
@@ -114,24 +106,12 @@ public sealed class Watermark : Control, IAtomAdorner
             return;
         }
 
-        if (CheckLayer(Target, out var layer) == false)
-        {
-            return;
-        }
-
-        var matrix = Target.TransformToVisual(layer);
-        if (matrix == null)
-        {
-            return;
-        }
-
         var size = Glyph.GetDesiredSize();
         if (size.Width == 0 || size.Height == 0)
         {
             return;
         }
-        
-        using (context.PushTransform(matrix.Value))
+
         using (context.PushClip(new Rect(Target.Bounds.Size)))
         using (context.PushOpacity(Glyph.Opacity))
         {
@@ -142,8 +122,10 @@ public sealed class Watermark : Control, IAtomAdorner
                 var pushState = new DrawingContext.PushedState();
                 if (r % 2 == 1 && Glyph.UseCross)
                 {
-                    pushState = context.PushTransform(Matrix.CreateTranslation((Glyph.HorizontalSpace - size.Width) / 2 + size.Width, 0));
+                    pushState = context.PushTransform(
+                        Matrix.CreateTranslation((Glyph.HorizontalSpace - size.Width) / 2 + size.Width, 0));
                 }
+
                 using (pushState)
                 {
                     var l = Glyph.HorizontalOffset;
@@ -156,7 +138,8 @@ public sealed class Watermark : Control, IAtomAdorner
                             angle = -angle;
                         }
 
-                        var m = MatrixUtil.CreateRotationRadians(angle * Math.PI / 180, size.Width / 2, size.Height / 2);
+                        var m = MatrixUtil.CreateRotationRadians(angle * Math.PI / 180, size.Width / 2,
+                            size.Height / 2);
                         using (context.PushTransform(Matrix.CreateTranslation(l, t)))
                         using (context.PushTransform(m))
                         {

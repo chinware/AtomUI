@@ -1,18 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <Import Project="$(MSBuildThisFileDirectory)..\..\Build\Output.Local.props" />
-    
+    <Import Project="$(MSBuildThisFileDirectory)..\..\Build\Output.Local.props"/>
+
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\AtomUI.Theme\AtomUI.Theme.csproj" />
-      <ProjectReference Include="..\AtomUI.TestBase\AtomUI.TestBase.csproj" />
+        <ProjectReference Include="..\..\src\AtomUI.Theme\AtomUI.Theme.csproj"/>
+        <ProjectReference Include="..\AtomUI.TestBase\AtomUI.TestBase.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.NET.Test.Sdk" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk"/>
     </ItemGroup>
 
 </Project>

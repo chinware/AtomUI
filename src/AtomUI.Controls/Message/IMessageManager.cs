@@ -1,6 +1,6 @@
-﻿namespace AtomUI.Controls.Message;
+﻿namespace AtomUI.Controls;
 
 public interface IMessageManager
 {
-   public void Show(IMessage message, string[]? classes = null);
+    public void Show(IMessage message, string[]? classes = null);
 }

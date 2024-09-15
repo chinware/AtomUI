@@ -10,82 +10,102 @@ namespace AtomUI.Theme;
 
 public abstract class BaseControlTheme : ControlTheme
 {
-   public BaseControlTheme() { }
-   public BaseControlTheme(Type targetType) : base(targetType) { }
+    public BaseControlTheme()
+    {
+    }
 
-   public void Build()
-   {
-      NotifyPreBuild();
-      BuildThemeAnimations();
-      BuildStyles();
-      var template = BuildControlTemplate();
-      if (template is not null) {
-         Add(new Setter(TemplatedControl.TemplateProperty, template));
-      }
+    public BaseControlTheme(Type targetType) : base(targetType)
+    {
+    }
 
-      NotifyBuildCompleted();
-   }
+    public void Build()
+    {
+        NotifyPreBuild();
+        BuildThemeAnimations();
+        BuildStyles();
+        var template = BuildControlTemplate();
+        if (template is not null)
+        {
+            Add(new Setter(TemplatedControl.TemplateProperty, template));
+        }
 
-   public virtual string? ThemeResourceKey()
-   {
-      return default;
-   }
+        NotifyBuildCompleted();
+    }
 
-   protected virtual IControlTemplate? BuildControlTemplate()
-   {
-      return default;
-   }
+    public virtual string? ThemeResourceKey()
+    {
+        return default;
+    }
 
-   protected virtual void BuildThemeAnimations() { }
-   protected virtual void BuildStyles() { }
-   protected virtual void BuildInstanceStyles(Control control) { }
-   protected virtual void NotifyPreBuild() { }
-   protected virtual void NotifyBuildCompleted() { }
+    protected virtual IControlTemplate? BuildControlTemplate()
+    {
+        return default;
+    }
 
-   protected static IDisposable CreateTemplateParentBinding(AvaloniaObject target, AvaloniaProperty property,
-                                                            string templateParentPath,
-                                                            BindingMode mode = BindingMode.Default,
-                                                            IValueConverter? converter = null)
-   {
-      return target.Bind(property, new Binding(templateParentPath)
-      {
-         RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent),
-         Mode = mode,
-         Converter = converter
-      });
-   }
+    protected virtual void BuildThemeAnimations()
+    {
+    }
 
-   protected static IDisposable CreateTemplateParentBinding<T>(AvaloniaObject target, StyledProperty<T> property,
-                                                               string templateParentPath,
-                                                               BindingMode mode = BindingMode.Default,
-                                                               IValueConverter? converter = null)
-   {
-      return target.Bind(property, new Binding(templateParentPath)
-      {
-         RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent),
-         Mode = mode,
-         Converter = converter
-      });
-   }
+    protected virtual void BuildStyles()
+    {
+    }
 
-   protected static IDisposable CreateTemplateParentBinding<T>(AvaloniaObject target, DirectPropertyBase<T> property,
-                                                               string templateParentPath,
-                                                               BindingMode mode = BindingMode.Default,
-                                                               IValueConverter? converter = null)
-   {
-      return target.Bind(property, new Binding(templateParentPath)
-      {
-         RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent),
-         Mode = mode,
-         Converter = converter
-      });
-   }
+    protected virtual void BuildInstanceStyles(Control control)
+    {
+    }
 
-   protected static IDisposable CreateTemplateParentBinding(AvaloniaObject target, AvaloniaProperty property,
-                                                            AvaloniaProperty templateParentProperty,
-                                                            BindingMode mode = BindingMode.Default,
-                                                            IValueConverter? converter = null)
-   {
-      return CreateTemplateParentBinding(target, property, templateParentProperty.Name, mode, converter);
-   }
+    protected virtual void NotifyPreBuild()
+    {
+    }
+
+    protected virtual void NotifyBuildCompleted()
+    {
+    }
+
+    protected static IDisposable CreateTemplateParentBinding(AvaloniaObject target, AvaloniaProperty property,
+                                                             string templateParentPath,
+                                                             BindingMode mode = BindingMode.Default,
+                                                             IValueConverter? converter = null)
+    {
+        return target.Bind(property, new Binding(templateParentPath)
+        {
+            RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent),
+            Mode           = mode,
+            Converter      = converter
+        });
+    }
+
+    protected static IDisposable CreateTemplateParentBinding<T>(AvaloniaObject target, StyledProperty<T> property,
+                                                                string templateParentPath,
+                                                                BindingMode mode = BindingMode.Default,
+                                                                IValueConverter? converter = null)
+    {
+        return target.Bind(property, new Binding(templateParentPath)
+        {
+            RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent),
+            Mode           = mode,
+            Converter      = converter
+        });
+    }
+
+    protected static IDisposable CreateTemplateParentBinding<T>(AvaloniaObject target, DirectPropertyBase<T> property,
+                                                                string templateParentPath,
+                                                                BindingMode mode = BindingMode.Default,
+                                                                IValueConverter? converter = null)
+    {
+        return target.Bind(property, new Binding(templateParentPath)
+        {
+            RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent),
+            Mode           = mode,
+            Converter      = converter
+        });
+    }
+
+    protected static IDisposable CreateTemplateParentBinding(AvaloniaObject target, AvaloniaProperty property,
+                                                             AvaloniaProperty templateParentProperty,
+                                                             BindingMode mode = BindingMode.Default,
+                                                             IValueConverter? converter = null)
+    {
+        return CreateTemplateParentBinding(target, property, templateParentProperty.Name, mode, converter);
+    }
 }

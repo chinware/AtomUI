@@ -18,4 +18,5 @@ public static class StdPseudoClass
    public const string Open = ":open";
    public const string Horizontal = ":horizontal";
    public const string Vertical = ":vertical";
+   public const string InActive = ":inactive";
 }

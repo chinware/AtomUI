@@ -4,41 +4,54 @@ using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Dialogs;
 using Avalonia.Media;
-
 #if DEBUG
 using Nlnet.Avalonia.DevTools;
 #endif
 
 namespace AtomUI.Demo.Desktop;
 
-class Program
+internal class Program
 {
-   // Initialization code. Don't use any Avalonia, third-party APIs or any
-   // SynchronizationContext-reliant code before AppMain is called: things aren't initialized
-   // yet and stuff might break.
-   [STAThread]
-   public static void Main(string[] args) => BuildAvaloniaApp()
-                                             .With(new FontManagerOptions
-                                             {
-                                                FontFallbacks = new[]
-                                                {
-                                                   new FontFallback
-                                                   {
-                                                      FontFamily = new FontFamily("Microsoft YaHei")
-                                                   }
-                                                }
-                                             })
-                                             .StartWithClassicDesktopLifetime(args);
-   
-   public static AppBuilder BuildAvaloniaApp()
-      => AppBuilder.Configure<App>()
-                   .UseManagedSystemDialogs()
-                   .UsePlatformDetect()
-                   .UseAtomUI()
+    // Initialization code. Don't use any Avalonia, third-party APIs or any
+    // SynchronizationContext-reliant code before AppMain is called: things aren't initialized
+    // yet and stuff might break.
+    [STAThread]
+    public static void Main(string[] args)
+    {
+        try
+        {
+            BuildAvaloniaApp()
+                .With(new FontManagerOptions
+                {
+                    FontFallbacks = new[]
+                    {
+                    new FontFallback
+                    {
+                        FontFamily = new FontFamily("Microsoft YaHei")
+                    }
+                    }
+                })
+                .StartWithClassicDesktopLifetime(args);
+        }
+        catch (Exception ex)
+        {
+            File.WriteAllText("error.log", ex.ToString());
 #if DEBUG
-                   .UseDevToolsForAvalonia()
+            throw;
 #endif
-                   .UseIconPackage<AntDesignIconPackage>(true)
-                   .With(new Win32PlatformOptions())
-                   .LogToTrace();
+        }
+    }
+
+    public static AppBuilder BuildAvaloniaApp()
+        => AppBuilder.Configure<App>()
+                     .ConfigureAtomUI()
+                     .UseManagedSystemDialogs()
+                     .UsePlatformDetect()
+                     .UseAtomUI()
+#if DEBUG
+                     .UseDevToolsForAvalonia()
+#endif
+                     .UseIconPackage<AntDesignIconPackage>(true)
+                     .With(new Win32PlatformOptions())
+                     .LogToTrace();
 }
