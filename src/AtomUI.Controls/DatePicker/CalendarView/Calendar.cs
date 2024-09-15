@@ -961,15 +961,30 @@ public class Calendar : TemplatedControl
         base.OnPointerWheelChanged(e);
         if (!e.Handled)
         {
-            if (e.Delta.Y > 0)
+            CalendarExtensions.GetMetaKeyState(e.KeyModifiers, out bool ctrl, out bool shift);
+
+            if (!ctrl)
             {
-                OnNextMonthClick();
+                if (e.Delta.Y > 0)
+                {
+                    ProcessPageUpKey(false);
+                }
+                else
+                {
+                    ProcessPageDownKey(false);
+                }
             }
             else
             {
-                OnPreviousMonthClick();
+                if (e.Delta.Y > 0)
+                {
+                    ProcessDownKey(ctrl, shift);
+                }
+                else
+                {
+                    ProcessUpKey(ctrl, shift);
+                }
             }
-
             e.Handled = true;
         }
     }
@@ -1256,7 +1271,7 @@ public class Calendar : TemplatedControl
     {
         if (!shift)
         {
-            OnNextClick();
+            OnNextMonthClick();
             return;
         }
 
@@ -1285,7 +1300,7 @@ public class Calendar : TemplatedControl
     {
         if (!shift)
         {
-            OnPreviousClick();
+            OnPreviousMonthClick();
             return;
         }
 
