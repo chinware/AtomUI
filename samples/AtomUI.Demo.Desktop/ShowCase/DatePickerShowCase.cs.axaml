@@ -6,6 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
     xmlns:atom="https://atomui.net"
+    xmlns:calendarView="clr-namespace:AtomUI.Controls.CalendarView;assembly=AtomUI.Controls"
     mc:Ignorable="d">
     <desktop:ShowCasePanel>
         <!-- <desktop:ShowCaseItem -->
@@ -18,6 +19,12 @@
             Title="With Time Picker"
             Description="Date selection panel with time selection.">
             <atom:DatePicker Watermark="Select date" IsShowTime="True" IsNeedConfirm="True" ClockIdentifier="HourClock12"/>
+        </desktop:ShowCaseItem>
+        
+        <desktop:ShowCaseItem
+            Title="With Time Picker"
+            Description="Date selection panel with time selection.">
+            <calendarView:DualMonthRangeCalendar IsSelectRangeStart="True" SecondarySelectedDate="2024-10-1"/>
         </desktop:ShowCaseItem>
         <!-- -->
         <!-- <desktop:ShowCaseItem -->

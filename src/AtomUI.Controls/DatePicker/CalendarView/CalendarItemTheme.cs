@@ -29,7 +29,11 @@ internal class CalendarItemTheme : BaseControlTheme
     public const string NextButtonPart = "PART_NextButton";
 
     public CalendarItemTheme()
-        : base(typeof(CalendarItem))
+        : this(typeof(CalendarItem))
+    {
+    }
+    
+    public CalendarItemTheme(Type targetType) : base(targetType)
     {
     }
 
@@ -65,7 +69,7 @@ internal class CalendarItemTheme : BaseControlTheme
         calendarItem.DayTitleTemplate = new DayTitleTemplate();
     }
 
-    protected virtual void BuildHeader(DockPanel layout, INameScope scope)
+    protected void BuildHeader(DockPanel layout, INameScope scope)
     {
         var headerFrame = new Border()
         {
@@ -78,16 +82,38 @@ internal class CalendarItemTheme : BaseControlTheme
             Name    = HeaderLayoutPart,
             Columns = 1
         };
-
         headerLayout.RegisterInNameScope(scope);
-        BuildHeaderItem(headerLayout, scope);
+        NotifyConfigureHeaderLayout(headerLayout);
+        NotifyBuildHeaderItems(headerLayout, scope);
 
         DockPanel.SetDock(headerFrame, Dock.Top);
         headerFrame.Child = headerLayout;
         layout.Children.Add(headerFrame);
     }
 
-    private void BuildHeaderItem(UniformGrid layout, INameScope scope)
+    protected virtual void NotifyConfigureHeaderLayout(UniformGrid headerLayout)
+    {
+        headerLayout.Columns = 1;
+    }
+
+    protected virtual void NotifyBuildHeaderItems(UniformGrid headerLayout, INameScope scope)
+    {
+        BuildHeaderItem(headerLayout, 
+            PreviousButtonPart,
+            PreviousMonthButtonPart,
+            HeaderButtonPart,
+            NextButtonPart,
+            NextMonthButtonPart,
+            scope);
+    }
+
+    protected void BuildHeaderItem(UniformGrid layout,
+                                   string previousButtonName,
+                                   string previousMonthButtonName,
+                                   string headerButtonName,
+                                   string nextButtonName,
+                                   string nextMonthButtonName,
+                                   INameScope scope)
     {
         var headerLayout = new Grid
         {
@@ -101,12 +127,12 @@ internal class CalendarItemTheme : BaseControlTheme
             }
         };
 
-        var previousButton = BuildPreviousButton(PreviousButtonPart);
+        var previousButton = BuildPreviousButton(previousButtonName);
         previousButton.RegisterInNameScope(scope);
         Grid.SetColumn(previousButton, 0);
         headerLayout.Children.Add(previousButton);
 
-        var previousMonthButton = BuildPreviousMonthButton(PreviousMonthButtonPart);
+        var previousMonthButton = BuildPreviousMonthButton(previousMonthButtonName);
         CreateTemplateParentBinding(previousMonthButton, Visual.IsVisibleProperty,
             CalendarItem.IsMonthViewModeProperty);
         previousMonthButton.RegisterInNameScope(scope);
@@ -115,20 +141,20 @@ internal class CalendarItemTheme : BaseControlTheme
 
         var headerButton = new HeadTextButton
         {
-            Name = HeaderButtonPart
+            Name = headerButtonName
         };
         Grid.SetColumn(headerButton, 2);
         headerButton.RegisterInNameScope(scope);
         headerLayout.Children.Add(headerButton);
 
-        var nextMonthButton = BuildNextMonthButton(NextMonthButtonPart);
+        var nextMonthButton = BuildNextMonthButton(nextMonthButtonName);
         CreateTemplateParentBinding(nextMonthButton, Visual.IsVisibleProperty, CalendarItem.IsMonthViewModeProperty);
         nextMonthButton.IsVisible = false;
         nextMonthButton.RegisterInNameScope(scope);
         Grid.SetColumn(nextMonthButton, 3);
         headerLayout.Children.Add(nextMonthButton);
 
-        var nextButton = BuildNextButton(NextButtonPart);
+        var nextButton = BuildNextButton(nextButtonName);
         nextButton.RegisterInNameScope(scope);
         Grid.SetColumn(nextButton, 4);
         headerLayout.Children.Add(nextButton);
@@ -245,14 +271,11 @@ internal class CalendarItemTheme : BaseControlTheme
             Columns   = 1,
             IsVisible = false
         };
-
-        var monthView = BuildMonthViewItem(MonthViewPart);
-        monthView.RegisterInNameScope(scope);
-        monthViewLayout.Children.Add(monthView);
-        
-        BindUtils.RelayBind(monthViewLayout, Visual.IsVisibleProperty, monthView, Visual.IsVisibleProperty);
-
         monthViewLayout.RegisterInNameScope(scope);
+
+        NotifyConfigureMonthViewLayout(monthViewLayout, scope);
+        NotifyBuildMonthViews(monthViewLayout, scope);
+        
         layout.Children.Add(monthViewLayout);
 
         var yearView = new Grid
@@ -276,8 +299,21 @@ internal class CalendarItemTheme : BaseControlTheme
         yearView.RegisterInNameScope(scope);
         layout.Children.Add(yearView);
     }
+    
+    protected virtual void NotifyConfigureMonthViewLayout(UniformGrid monthViewLayout, INameScope scope)
+    {
+        monthViewLayout.Columns = 1;
+    }
 
-    private Grid BuildMonthViewItem(string name)
+    protected virtual void NotifyBuildMonthViews(UniformGrid monthViewLayout, INameScope scope)
+    {
+        var monthView = BuildMonthViewItem(MonthViewPart);
+        BindUtils.RelayBind(monthViewLayout, Visual.IsVisibleProperty, monthView, Visual.IsVisibleProperty);
+        monthView.RegisterInNameScope(scope);
+        monthViewLayout.Children.Add(monthView);
+    }
+    
+    protected Grid BuildMonthViewItem(string name)
     {
         var monthViewLayout = new Grid
         {
@@ -314,6 +350,7 @@ internal class CalendarItemTheme : BaseControlTheme
 
         commonStyle.Add(CalendarItem.MinHeightProperty, DatePickerTokenResourceKey.ItemPanelMinHeight);
         commonStyle.Add(CalendarItem.MinWidthProperty, DatePickerTokenResourceKey.ItemPanelMinWidth);
+        
         var headerFrameStyle = new Style(selector => selector.Nesting().Template().Name(HeaderFramePart));
         headerFrameStyle.Add(Border.MarginProperty, DatePickerTokenResourceKey.HeaderMargin);
         headerFrameStyle.Add(Border.PaddingProperty, DatePickerTokenResourceKey.HeaderPadding);
