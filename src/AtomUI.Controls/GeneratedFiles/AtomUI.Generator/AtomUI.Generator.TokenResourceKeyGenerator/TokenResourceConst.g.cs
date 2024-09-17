@@ -1,4 +1,4 @@
-sing AtomUI.Theme.TokenSystem;
+﻿using AtomUI.Theme.TokenSystem;
 
 namespace AtomUI.Theme.Styling
 {
@@ -66,18 +66,6 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey BadgeRibbonTextPadding = new TokenResourceKey("Badge.BadgeRibbonTextPadding", "AtomUI.Token");
     }
 
-    public static class ButtonSpinnerTokenResourceKey
-    {
-        public static readonly TokenResourceKey ControlWidth = new TokenResourceKey("ButtonSpinner.ControlWidth", "AtomUI.Token");
-        public static readonly TokenResourceKey HandleWidth = new TokenResourceKey("ButtonSpinner.HandleWidth", "AtomUI.Token");
-        public static readonly TokenResourceKey HandleIconSize = new TokenResourceKey("ButtonSpinner.HandleIconSize", "AtomUI.Token");
-        public static readonly TokenResourceKey HandleBg = new TokenResourceKey("ButtonSpinner.HandleBg", "AtomUI.Token");
-        public static readonly TokenResourceKey HandleActiveBg = new TokenResourceKey("ButtonSpinner.HandleActiveBg", "AtomUI.Token");
-        public static readonly TokenResourceKey HandleHoverColor = new TokenResourceKey("ButtonSpinner.HandleHoverColor", "AtomUI.Token");
-        public static readonly TokenResourceKey HandleBorderColor = new TokenResourceKey("ButtonSpinner.HandleBorderColor", "AtomUI.Token");
-        public static readonly TokenResourceKey FilledHandleBg = new TokenResourceKey("ButtonSpinner.FilledHandleBg", "AtomUI.Token");
-    }
-
     public static class ButtonTokenResourceKey
     {
         public static readonly TokenResourceKey FontWeight = new TokenResourceKey("Button.FontWeight", "AtomUI.Token");
@@ -126,6 +114,18 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey IconOnyPadding = new TokenResourceKey("Button.IconOnyPadding", "AtomUI.Token");
         public static readonly TokenResourceKey IconOnyPaddingLG = new TokenResourceKey("Button.IconOnyPaddingLG", "AtomUI.Token");
         public static readonly TokenResourceKey IconOnyPaddingSM = new TokenResourceKey("Button.IconOnyPaddingSM", "AtomUI.Token");
+    }
+
+    public static class ButtonSpinnerTokenResourceKey
+    {
+        public static readonly TokenResourceKey ControlWidth = new TokenResourceKey("ButtonSpinner.ControlWidth", "AtomUI.Token");
+        public static readonly TokenResourceKey HandleWidth = new TokenResourceKey("ButtonSpinner.HandleWidth", "AtomUI.Token");
+        public static readonly TokenResourceKey HandleIconSize = new TokenResourceKey("ButtonSpinner.HandleIconSize", "AtomUI.Token");
+        public static readonly TokenResourceKey HandleBg = new TokenResourceKey("ButtonSpinner.HandleBg", "AtomUI.Token");
+        public static readonly TokenResourceKey HandleActiveBg = new TokenResourceKey("ButtonSpinner.HandleActiveBg", "AtomUI.Token");
+        public static readonly TokenResourceKey HandleHoverColor = new TokenResourceKey("ButtonSpinner.HandleHoverColor", "AtomUI.Token");
+        public static readonly TokenResourceKey HandleBorderColor = new TokenResourceKey("ButtonSpinner.HandleBorderColor", "AtomUI.Token");
+        public static readonly TokenResourceKey FilledHandleBg = new TokenResourceKey("ButtonSpinner.FilledHandleBg", "AtomUI.Token");
     }
 
     public static class CalendarTokenResourceKey
@@ -586,6 +586,10 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey LeftMargin = new TokenResourceKey("Timeline.LeftMargin", "AtomUI.Token");
         public static readonly TokenResourceKey LastItemContentMinHeight = new TokenResourceKey("Timeline.LastItemContentMinHeight", "AtomUI.Token");
         public static readonly TokenResourceKey FontSize = new TokenResourceKey("Timeline.FontSize", "AtomUI.Token");
+    }
+
+    public static class TimePickerTokenResourceKey
+    {
         public static readonly TokenResourceKey ItemHeight = new TokenResourceKey("TimePicker.ItemHeight", "AtomUI.Token");
         public static readonly TokenResourceKey ItemWidth = new TokenResourceKey("TimePicker.ItemWidth", "AtomUI.Token");
         public static readonly TokenResourceKey ItemPadding = new TokenResourceKey("TimePicker.ItemPadding", "AtomUI.Token");

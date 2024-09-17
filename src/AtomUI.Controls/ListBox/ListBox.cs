@@ -39,8 +39,6 @@ public class ListBox : AvaloniaListBox
         set => SetValue(DisabledItemHoverEffectProperty, value);
     }
 
-    #endregion
-
     protected override Size ArrangeOverride(Size finalSize)
     {
         return base.ArrangeOverride(finalSize.Deflate(new Thickness(BorderThickness.Left,

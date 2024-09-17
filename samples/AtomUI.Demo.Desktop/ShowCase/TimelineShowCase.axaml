@@ -1,14 +1,14 @@
 <UserControl
-    mc:Ignorable="d"
     x:Class="AtomUI.Demo.Desktop.ShowCase.TimelineShowCase"
     xmlns="https://github.com/avaloniaui"
     xmlns:atom="https://atomui.net"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:showcase="clr-namespace:AtomUI.Demo.Desktop.ShowCase"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <showcase:ShowCasePanel>
-        <showcase:ShowCaseItem Description="Basic usage example." Title="Basic usage">
+
+    <desktop:ShowCasePanel>
+        <desktop:ShowCaseItem Description="Basic usage example." Title="Basic usage">
             <atom:Timeline>
                 <atom:TimelineItem>
                     <TextBlock>
@@ -16,7 +16,7 @@
                     </TextBlock>
                 </atom:TimelineItem>
                 <atom:TimelineItem Color="green">
-                    <TextBlock>
+                    <TextBlock TextWrapping="Wrap">
                         2024-08-12 After more than 7 months of development, AtomUI is officially open-source.
                         Welcome everyone to follow us.
                     </TextBlock>
@@ -27,9 +27,9 @@
                     </TextBlock>
                 </atom:TimelineItem>
             </atom:Timeline>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem Description="Set the color of circles. green means completed or success status, red means warning or error, and blue means ongoing or other default status, gray for unfinished or disabled status." Title="Color">
+        <desktop:ShowCaseItem Description="Set the color of circles. green means completed or success status, red means warning or error, and blue means ongoing or other default status, gray for unfinished or disabled status." Title="Color">
             <atom:Timeline>
                 <atom:TimelineItem Color="green">
                     <TextBlock>
@@ -57,9 +57,9 @@
                     </TextBlock>
                 </atom:TimelineItem>
             </atom:Timeline>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem Description="When the timeline is incomplete and ongoing, put a ghost node at last. Set pending as truthy value to enable displaying pending item. You can customize the pending content by passing a React Element. Meanwhile, pendingDot={a React Element} is used to customize the dot of the pending item. reverse={true} is used for reversing nodes." Title="Last node and Reversing">
+        <desktop:ShowCaseItem Description="When the timeline is incomplete and ongoing, put a ghost node at last. Set pending as truthy value to enable displaying pending item. You can customize the pending content by passing a React Element. Meanwhile, pendingDot={a React Element} is used to customize the dot of the pending item. reverse={true} is used for reversing nodes." Title="Last node and Reversing">
             <atom:Timeline Pending="Recording..." Reverse="True">
                 <atom:TimelineItem Label="2024-01-01">
                     <TextBlock>
@@ -77,9 +77,9 @@
                     </TextBlock>
                 </atom:TimelineItem>
             </atom:Timeline>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem Description="Alternate timeline." Title="Alternate">
+        <desktop:ShowCaseItem Description="Alternate timeline." Title="Alternate">
             <atom:Timeline Mode="alternate">
                 <atom:TimelineItem Label="2024-01-01">
                     <TextBlock>
@@ -96,15 +96,15 @@
                         2024-01-01 AtomUI Officially Initiated
                     </TextBlock>
                 </atom:TimelineItem>
-                <atom:TimelineItem Label="2024-01-01">
+                <atom:TimelineItem DotIcon="{atom:IconProvider Kind=ClockCircleOutlined, NormalFilledColor=LightBlue}" Label="2024-01-01">
                     <TextBlock>
                         2024-01-01 AtomUI Officially Initiated
                     </TextBlock>
                 </atom:TimelineItem>
             </atom:Timeline>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem Description="Use label show time alone." Title="Label">
+        <desktop:ShowCaseItem Description="Use label show time alone." Title="Label">
             <atom:Timeline Mode="alternate">
                 <atom:TimelineItem Label="2024-01-01">
                     <TextBlock>
@@ -127,9 +127,9 @@
                     </TextBlock>
                 </atom:TimelineItem>
             </atom:Timeline>
-        </showcase:ShowCaseItem>
+        </desktop:ShowCaseItem>
 
-        <showcase:ShowCaseItem Description="Right alternate timeline." Title="Right alternate">
+        <desktop:ShowCaseItem Description="Right alternate timeline." Title="Right alternate">
             <atom:Timeline Mode="right">
                 <atom:TimelineItem>
                     <TextBlock>
@@ -152,6 +152,6 @@
                     </TextBlock>
                 </atom:TimelineItem>
             </atom:Timeline>
-        </showcase:ShowCaseItem>
-    </showcase:ShowCasePanel>
+        </desktop:ShowCaseItem>
+    </desktop:ShowCasePanel>
 </UserControl>

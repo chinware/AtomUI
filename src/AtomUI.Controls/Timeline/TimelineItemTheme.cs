@@ -3,7 +3,9 @@ using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
+using Avalonia.Controls.Shapes;
 using Avalonia.Controls.Templates;
+using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Styling;
 using HorizontalAlignment = Avalonia.Layout.HorizontalAlignment;
@@ -15,10 +17,13 @@ namespace AtomUI.Controls;
 internal class TimelineItemTheme : BaseControlTheme
 {
     public const string GridPart = "PART_Grid";
-    public const string ItemsPresenterPart = "PART_ItemsPresenter";
+    public const string ItemsContentPresenterPart = "PART_ItemsContentPresenter";
+    public const string SplitPanelPart = "PART_PanelHead";
     public const string SplitHeadPart = "PART_SplitHead";
+    public const string SplitLineBorderPart = "PART_SplitBorderLine";
     public const string SplitLinePart = "PART_SplitLine";
     public const string LabelPart = "PART_Label";
+    public const string DotPart = "PART_Dot";
 
     public TimelineItemTheme() : base(typeof(TimelineItem))
     {
@@ -32,203 +37,164 @@ internal class TimelineItemTheme : BaseControlTheme
     {
         return new FuncControlTemplate<TimelineItem>((timelineItem, scope) =>
         {
-            var labelIndex = 0;
-            var splitIndex = 1;
-            var contentIndex = 2;
-            var labelTextAlign = HorizontalAlignment.Right;
-            var contentTextAlign = HorizontalAlignment.Right;
-
-            CalculateGridIndex(timelineItem, out labelIndex, out splitIndex, out contentIndex, out labelTextAlign,
-                out contentTextAlign);
-            System.Console.WriteLine(
-                "TimelineItem Mode: {0},hasLabel: {1}, index: {2} labelIndex: {3} splitIndex:{4} contentIndex：{5}",
-                timelineItem.Mode, timelineItem.HasLabel, timelineItem.Index, labelIndex, splitIndex, contentIndex);
-
-            var columnDefinition = CalculateGridColumn(timelineItem, labelIndex);
-
+            var columnDefinition = CalculateGridColumn(timelineItem);
             var grid = new Grid()
             {
-                Name = GridPart,
+                Name              = GridPart,
                 ColumnDefinitions = columnDefinition,
                 RowDefinitions =
                 {
+                    new RowDefinition(GridLength.Star),
                     new RowDefinition(GridLength.Star),
                 },
             };
 
             var labelBlock = new TextBlock()
             {
-                Name = LabelPart,
-                VerticalAlignment = VerticalAlignment.Top,
-                HorizontalAlignment = labelTextAlign,
+                Name                = LabelPart,
+                VerticalAlignment   = VerticalAlignment.Top,
+                HorizontalAlignment = timelineItem.LabelTextAlign,
             };
 
             CreateTemplateParentBinding(labelBlock, TextBlock.TextProperty, TimelineItem.LabelProperty);
             CreateTemplateParentBinding(labelBlock, TextBlock.IsVisibleProperty, TimelineItem.HasLabelProperty);
-            CreateTemplateParentBinding(labelBlock, TextBlock.IsVisibleProperty, TimelineItem.HasLabelProperty);
 
-            var labelStyle = new Style(selector => selector.Nesting().Template().Name(LabelPart));
-            labelStyle.Add(TextBlock.FontSizeProperty, TimelineTokenResourceKey.FontSize);
-            // todo 未生效
-            if (labelIndex == 0)
-            {
-                labelStyle.Add(TextBlock.PaddingProperty, TimelineTokenResourceKey.RightMargin);
-            }
-            else
-            {
-                labelStyle.Add(TextBlock.PaddingProperty, TimelineTokenResourceKey.LeftMargin);
-            }
-            
-            Add(labelStyle);
-
-            Grid.SetColumn(labelBlock, labelIndex);
+            Grid.SetColumn(labelBlock, timelineItem.LabelIndex);
             grid.Children.Add(labelBlock);
 
             var splitPanel = new DockPanel()
             {
+                Name  = SplitPanelPart,
                 Width = 10,
             };
+            splitPanel.RegisterInNameScope(scope);
+            BuildDotIcon(splitPanel, timelineItem, scope);
 
-            var splitHead = new Border()
+            var border = new Border
             {
-                Width = 10,
-                Height = 10,
-                CornerRadius = new CornerRadius(5),
-                BorderThickness = new Thickness(3),
-                Name = SplitHeadPart,
+                Name                = SplitLineBorderPart,
+                VerticalAlignment   = VerticalAlignment.Stretch,
+                HorizontalAlignment = HorizontalAlignment.Stretch
             };
-            var contentPresenterStyle = new Style(selector => selector.Nesting().Template().Name(SplitHeadPart));
 
-            if (timelineItem.Color.StartsWith("#"))
+            var verticalDashedLine = new Rectangle
             {
-                try
-                {
-                    var color = Color.Parse(timelineItem.Color);
-                    var brush = new SolidColorBrush(color);
-                    contentPresenterStyle.Add(ContentPresenter.BorderBrushProperty, brush);
-                }
-                catch (Exception)
-                {
-                    contentPresenterStyle.Add(ContentPresenter.BorderBrushProperty,
-                        GlobalTokenResourceKey.ColorPrimary);
-                }
-            }
-            else
-            {
-                // 转成switch
-                switch (timelineItem.Color)
-                {
-                    case "blue":
-                        contentPresenterStyle.Add(ContentPresenter.BorderBrushProperty,
-                            GlobalTokenResourceKey.ColorPrimary);
-                        break;
-                    case "green":
-                        contentPresenterStyle.Add(ContentPresenter.BorderBrushProperty,
-                            GlobalTokenResourceKey.ColorSuccess);
-                        break;
-                    case "red":
-                        contentPresenterStyle.Add(ContentPresenter.BorderBrushProperty,
-                            GlobalTokenResourceKey.ColorError);
-                        break;
-                    case "gray":
-                        contentPresenterStyle.Add(ContentPresenter.BorderBrushProperty,
-                            GlobalTokenResourceKey.ColorTextDisabled);
-                        break;
-                    default:
-                        contentPresenterStyle.Add(ContentPresenter.BorderBrushProperty,
-                            GlobalTokenResourceKey.ColorPrimary);
-                        break;
-                }
-            }
-
-            contentPresenterStyle.Add(ContentPresenter.BackgroundProperty, TimelineTokenResourceKey.DotBg);
-            Add(contentPresenterStyle);
-
-            DockPanel.SetDock(splitHead, Dock.Top);
-            splitPanel.Children.Add(splitHead);
-
-            var border = new Border()
-            {
-                Name = SplitLinePart,
+                Name                = SplitLinePart,
+                StrokeLineCap       = PenLineCap.Round,
+                Fill                = Brushes.Transparent,
+                VerticalAlignment   = VerticalAlignment.Stretch,
+                HorizontalAlignment = HorizontalAlignment.Stretch
             };
-            var borderStyle = new Style(selector => selector.Nesting().Template().Name(SplitLinePart));
-            borderStyle.Add(ContentPresenter.BackgroundProperty, TimelineTokenResourceKey.TailColor);
-            borderStyle.Add(ContentPresenter.WidthProperty, TimelineTokenResourceKey.TailWidth);
-            borderStyle.Add(ContentPresenter.PaddingProperty, TimelineTokenResourceKey.ItemPaddingBottom);
-            if (timelineItem.IsLast)
-            {
-                borderStyle.Add(ContentPresenter.MinHeightProperty, TimelineTokenResourceKey.LastItemContentMinHeight);
-            }
 
-            Add(borderStyle);
+            verticalDashedLine.RegisterInNameScope(scope);
+
+            border.Child = verticalDashedLine;
 
             splitPanel.Children.Add(border);
-
-            Grid.SetColumn(splitPanel, splitIndex);
+            Grid.SetColumn(splitPanel, timelineItem.SplitIndex);
             grid.Children.Add(splitPanel);
-
 
             var contentPresenter = new ContentPresenter()
             {
-                Name = ItemsPresenterPart,
-                HorizontalAlignment = contentTextAlign,
+                Name                = ItemsContentPresenterPart,
+                HorizontalAlignment = timelineItem.ContentTextAlign,
             };
             contentPresenter.RegisterInNameScope(scope);
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty,
-                TimelineItem.ContentProperty);
+                ContentControl.ContentProperty);
 
-            contentPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ItemsPresenterPart));
-            contentPresenterStyle.Add(ContentPresenter.FontSizeProperty, TimelineTokenResourceKey.FontSize);
-            if (contentIndex == 0)
-            {
-                contentPresenterStyle.Add(ContentPresenter.MarginProperty, TimelineTokenResourceKey.RightMargin);
-            }
-            else
-            {
-                contentPresenterStyle.Add(ContentPresenter.MarginProperty, TimelineTokenResourceKey.LeftMargin);
-            }
-
-            Add(contentPresenterStyle);
-
-            Grid.SetColumn(contentPresenter, contentIndex);
+            Grid.SetColumn(contentPresenter, timelineItem.ContentIndex);
             grid.Children.Add(contentPresenter);
+
             return grid;
         });
     }
 
-    private void CalculateGridIndex(TimelineItem timelineItem, out int labelIndex, out int splitIndex,
-        out int contentIndex, out HorizontalAlignment labelTextAlign, out HorizontalAlignment contentTextAlign)
+    private void BuildDotIcon(DockPanel panel, TimelineItem timelineItem, INameScope scope)
     {
-        labelIndex = 0;
-        splitIndex = 1;
-        contentIndex = 2;
-        labelTextAlign = HorizontalAlignment.Right;
-        contentTextAlign = HorizontalAlignment.Left;
-
-        if (timelineItem.Mode == "right" || (timelineItem.Mode == "alternate" && timelineItem.Index % 2 == 1))
+        if (timelineItem.DotIcon is not null)
         {
-            labelIndex = 2;
-            contentIndex = 0;
-            labelTextAlign = HorizontalAlignment.Left;
-            contentTextAlign = HorizontalAlignment.Right;
+            timelineItem.DotIcon.Width  = 10;
+            timelineItem.DotIcon.Height = 10;
+            timelineItem.DotIcon.Name   = DotPart;
+            timelineItem.DotIcon.RegisterInNameScope(scope);
+            DockPanel.SetDock(timelineItem.DotIcon, Dock.Top);
+            panel.Children.Add(timelineItem.DotIcon);
+        }
+        else
+        {
+            var splitHead = new Border()
+            {
+                Width           = 10,
+                Height          = 10,
+                CornerRadius    = new CornerRadius(5),
+                BorderThickness = new Thickness(3),
+                Name            = SplitHeadPart,
+            };
+            DockPanel.SetDock(splitHead, Dock.Top);
+            panel.Children.Add(splitHead);
         }
 
-        if (!timelineItem.HasLabel && timelineItem.Mode == "left")
+        var dotBorderStyle = new Style(selector => selector.Nesting().Template().Name(SplitHeadPart));
+        var dotIconStyle = new Style(selector =>
+            selector.Nesting().Not(x => x.PropertyEquals(TimelineItem.DotIconProperty, null)).Template().Name(DotPart));
+
+        if (timelineItem.Color.StartsWith("#"))
         {
-            splitIndex = 0;
-            contentIndex = 1;
-            contentTextAlign = HorizontalAlignment.Left;
+            try
+            {
+                var color = Color.Parse(timelineItem.Color);
+                var brush = new SolidColorBrush(color);
+                dotBorderStyle.Add(ContentPresenter.BorderBrushProperty, brush);
+                dotIconStyle.Add(PathIcon.NormalFilledBrushProperty, brush);
+            }
+            catch (Exception)
+            {
+                dotBorderStyle.Add(ContentPresenter.BorderBrushProperty,
+                    GlobalTokenResourceKey.ColorPrimary);
+            }
+        }
+        else
+        {
+            switch (timelineItem.Color)
+            {
+                case "blue":
+                    dotBorderStyle.Add(ContentPresenter.BorderBrushProperty,
+                        GlobalTokenResourceKey.ColorPrimary);
+                    dotIconStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorPrimary);
+                    break;
+                case "green":
+                    dotBorderStyle.Add(ContentPresenter.BorderBrushProperty,
+                        GlobalTokenResourceKey.ColorSuccess);
+                    dotIconStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorSuccess);
+                    break;
+                case "red":
+                    dotBorderStyle.Add(ContentPresenter.BorderBrushProperty,
+                        GlobalTokenResourceKey.ColorError);
+                    dotIconStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorError);
+                    break;
+                case "gray":
+                    dotBorderStyle.Add(ContentPresenter.BorderBrushProperty,
+                        GlobalTokenResourceKey.ColorTextDisabled);
+                    dotIconStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorTextDisabled);
+                    break;
+                default:
+                    dotBorderStyle.Add(ContentPresenter.BorderBrushProperty,
+                        GlobalTokenResourceKey.ColorPrimary);
+                    dotIconStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorPrimary);
+                    break;
+            }
         }
 
-        if (!timelineItem.HasLabel && timelineItem.Mode == "right")
+        dotBorderStyle.Add(ContentPresenter.BackgroundProperty, TimelineTokenResourceKey.DotBg);
+        Add(dotBorderStyle);
+        if (timelineItem.DotIcon?.NormalFilledBrush is null)
         {
-            splitIndex = 1;
-            contentIndex = 0;
-            contentTextAlign = HorizontalAlignment.Right;
+            Add(dotIconStyle);
         }
     }
 
-    private ColumnDefinitions CalculateGridColumn(TimelineItem timelineItem, int labelIndex)
+    private ColumnDefinitions CalculateGridColumn(TimelineItem timelineItem)
     {
         if (timelineItem.HasLabel || timelineItem.Mode == "alternate")
         {
@@ -240,7 +206,7 @@ internal class TimelineItemTheme : BaseControlTheme
             };
         }
 
-        if (labelIndex == 0)
+        if (timelineItem.LabelIndex == 0)
         {
             return new ColumnDefinitions()
             {
@@ -256,5 +222,59 @@ internal class TimelineItemTheme : BaseControlTheme
                 new ColumnDefinition(new GridLength(10))
             };
         }
+    }
+
+    protected override void BuildStyles()
+    {
+        // 分割线样式
+        var splitLineborderStyle = new Style(selector => selector.Nesting().Template().Name(SplitLineBorderPart));
+        splitLineborderStyle.Add(Layoutable.WidthProperty, TimelineTokenResourceKey.TailWidth);
+        Add(splitLineborderStyle);
+
+        var lineStyle = new Style(selector => selector.Nesting().Template().Child().OfType<Rectangle>());
+        lineStyle.Add(Shape.StrokeProperty, TimelineTokenResourceKey.TailColor);
+        lineStyle.Add(Layoutable.WidthProperty, TimelineTokenResourceKey.TailWidth);
+        lineStyle.Add(Shape.StrokeThicknessProperty, TimelineTokenResourceKey.TailWidth);
+
+        Add(lineStyle);
+
+        // 内容样式
+        var contentPresenterStyle =
+            new Style(selector => selector.Nesting().Template().Name(ItemsContentPresenterPart));
+        contentPresenterStyle.Add(ContentPresenter.FontSizeProperty, TimelineTokenResourceKey.FontSize);
+        contentPresenterStyle.Add(ContentPresenter.PaddingProperty, TimelineTokenResourceKey.ItemPaddingBottom);
+
+        var contentPresenterLeftStyle =
+            new Style(selector => selector.Nesting().Template().Name(ItemsContentPresenterPart));
+        contentPresenterLeftStyle.Add(Layoutable.MarginProperty, TimelineTokenResourceKey.RightMargin);
+
+        var contentPresenterRightStyle =
+            new Style(selector => selector.Nesting().Template().Name(ItemsContentPresenterPart));
+        contentPresenterRightStyle.Add(Layoutable.MarginProperty, TimelineTokenResourceKey.LeftMargin);
+
+        var contentLeftStyle  = new Style(selector => selector.Nesting().Class(TimelineItem.ContentLeft));
+        var contentRightStyle = new Style(selector => selector.Nesting().Not(x => x.Class(TimelineItem.ContentLeft)));
+
+        contentLeftStyle.Add(contentPresenterLeftStyle);
+        contentRightStyle.Add(contentPresenterRightStyle);
+
+        Add(contentPresenterStyle);
+        Add(contentLeftStyle);
+        Add(contentRightStyle);
+
+        // 标签样式
+        var labelStyle = new Style(selector => selector.Nesting().Template().Name(LabelPart));
+        labelStyle.Add(TextBlock.FontSizeProperty, TimelineTokenResourceKey.FontSize);
+
+        var labelLeftStyle = new Style(selector =>
+            selector.Nesting().Class(TimelineItem.LabelLeft).Template().Name(LabelPart));
+        var labelRightStyle = new Style(selector =>
+            selector.Nesting().Not(x => x.Class(TimelineItem.LabelLeft)).Template().Name(LabelPart));
+        labelLeftStyle.Add(TextBlock.PaddingProperty, TimelineTokenResourceKey.RightMargin);
+        labelRightStyle.Add(TextBlock.PaddingProperty, TimelineTokenResourceKey.LeftMargin);
+
+        Add(labelStyle);
+        Add(labelLeftStyle);
+        Add(labelRightStyle);
     }
 }

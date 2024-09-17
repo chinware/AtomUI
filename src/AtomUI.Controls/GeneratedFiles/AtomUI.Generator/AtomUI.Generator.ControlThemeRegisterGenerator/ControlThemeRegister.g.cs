@@ -1,4 +1,4 @@
-namespace AtomUI.Theme
+﻿namespace AtomUI.Theme
 {
     internal class ControlThemeRegister
     {
@@ -8,8 +8,6 @@ namespace AtomUI.Theme
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.AddOnDecoratedInnerBoxTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.AlertTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.ArrowDecoratedBoxTheme());
-            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.ButtonSpinnerInnerBoxTheme());
-            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.ButtonSpinnerTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.DefaultButtonTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.DropdownButtonTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.IconButtonTheme());
@@ -18,6 +16,8 @@ namespace AtomUI.Theme
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.SplitButtonTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.TextButtonTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.ToggleIconButtonTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.ButtonSpinnerInnerBoxTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.ButtonSpinnerTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.BaseCalendarButtonTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.BaseCalendarDayButtonTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.CalendarItemTheme());
