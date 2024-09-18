@@ -239,6 +239,9 @@ internal class TimeView : TemplatedControl
         
         TokenResourceBinder.CreateGlobalTokenBinding(this, ItemHeightProperty, TimePickerTokenResourceKey.ItemHeight);
 
+        _spacer3 = e.NameScope.Get<Rectangle>(TimeViewTheme.ThirdSpacerPart);
+        InitPicker();
+        
         if (_hourSelector is not null)
         {
             _hourSelector.SelectionChanged += HandleSelectionChanged;
@@ -266,9 +269,6 @@ internal class TimeView : TemplatedControl
             _periodSelector.CellHovered      += HandleSelectorCellHovered;
             _periodSelector.CellDbClicked    += HandleSelectorCellDbClicked;
         }
-
-        _spacer3 = e.NameScope.Get<Rectangle>(TimeViewTheme.ThirdSpacerPart);
-        InitPicker();
     }
 
     private void HandleSelectorCellDbClicked(object? sender, CellDbClickedEventArgs args)

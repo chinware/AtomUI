@@ -9,9 +9,12 @@ namespace AtomUI.Controls.CalendarView;
 public class RangeDateSelectedEventArgs : EventArgs
 {
     public CalendarDateRange Range { get; }
-    public RangeDateSelectedEventArgs(CalendarDateRange range)
+    public bool IsFixedRange { get; }
+    
+    public RangeDateSelectedEventArgs(CalendarDateRange range, bool isFixedRange)
     {
-        Range = range;
+        Range        = range;
+        IsFixedRange = isFixedRange;
     }
 }
 
@@ -72,7 +75,7 @@ public class RangeCalendar : Calendar
         SortHoverIndexes(out rangeStart, out rangeEnd);
         Debug.Assert(CalendarItem is not null);
         if (CalendarItem.MonthView is not null)
-        {
+        { 
             UpdateHighlightDays(CalendarItem.MonthView, rangeStart, rangeEnd);
         }
     }
@@ -128,28 +131,19 @@ public class RangeCalendar : Calendar
         {
             rangeStart = HoverDateTime ?? SelectedDate;
             rangeEnd   = SecondarySelectedDate;
-            if (rangeStart is not null && rangeEnd is not null)
-            {
-                if (DateTimeHelper.CompareDays(rangeEnd.Value, rangeStart.Value) < 0)
-                {
-                    var temp = rangeStart.Value;
-                    rangeStart = rangeEnd;
-                    rangeEnd   = temp;
-                }
-            }
         }
         else
         {
             rangeStart = SelectedDate;
             rangeEnd   = HoverDateTime ?? SecondarySelectedDate;
-            if (rangeStart is not null && rangeEnd is not null)
+        }
+        if (rangeStart is not null && rangeEnd is not null)
+        {
+            if (DateTimeHelper.CompareDateTime(rangeEnd.Value, rangeStart.Value) < 0)
             {
-                if (DateTimeHelper.CompareDays(rangeEnd.Value, rangeStart.Value) < 0)
-                {
-                    var temp = rangeStart.Value;
-                    rangeStart = rangeEnd;
-                    rangeEnd   = temp;
-                }
+                var temp = rangeStart.Value;
+                rangeStart = rangeEnd;
+                rangeEnd   = temp;
             }
         }
     }
@@ -188,14 +182,16 @@ public class RangeCalendar : Calendar
     {
         if (SelectedDate is not null && SecondarySelectedDate is not null)
         {
-            var rangeStart = SelectedDate.Value;
-            var rangeEnd   = SecondarySelectedDate.Value;
+            var  rangeStart   = SelectedDate.Value;
+            var  rangeEnd     = SecondarySelectedDate.Value;
+            bool isFixedRange = false;
             if (DateTimeHelper.CompareDays(SelectedDate.Value, SecondarySelectedDate.Value) > 0 && IsRepairReverseRange)
             {
-                rangeStart = SecondarySelectedDate.Value;
-                rangeEnd   = SelectedDate.Value;
+                rangeStart   = SecondarySelectedDate.Value;
+                rangeEnd     = SelectedDate.Value;
+                isFixedRange = true;
             }
-            RangeDateSelected?.Invoke(this, new RangeDateSelectedEventArgs(new CalendarDateRange(rangeStart, rangeEnd)));
+            RangeDateSelected?.Invoke(this, new RangeDateSelectedEventArgs(new CalendarDateRange(rangeStart, rangeEnd), isFixedRange));
         }
     }
 

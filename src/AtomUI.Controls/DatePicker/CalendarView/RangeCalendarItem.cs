@@ -71,12 +71,14 @@ internal class RangeCalendarItem : CalendarItem
                     owner.SecondarySelectedDate = selectedDate;
                     owner.NotifyDateSelected(selectedDate);
                 }
-
-                owner.UpdateHighlightDays();
+                
                 if (owner.SelectedDate is not null && owner.SecondarySelectedDate is not null)
                 {
                     owner.NotifyRangeDateSelected();
                 }
+
+                owner.HoverDateTime = null;
+                owner.UpdateHighlightDays();
             }
         }
     }
@@ -85,15 +87,8 @@ internal class RangeCalendarItem : CalendarItem
     {
         if (Owner is RangeCalendar owner)
         {
-            owner.HoverDateTime = owner.IsSelectRangeStart
-                ? owner.SelectedDate
-                : owner.SecondarySelectedDate;
-            // Update the States of the buttons
-            if (originInMonthView)
-            {
-                owner.HoverDateTime = null;
-                Owner.UpdateHighlightDays();
-            }
+            owner.HoverDateTime = null;
+            Owner.UpdateHighlightDays();
         }
     }
 }

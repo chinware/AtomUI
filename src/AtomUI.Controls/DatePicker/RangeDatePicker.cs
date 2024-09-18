@@ -161,6 +161,19 @@ public class RangeDatePicker : RangeInfoPickerInput
             _pickerPresenter.ChoosingStatueChanged += HandleChoosingStatueChanged;
             _pickerPresenter.HoverDateTimeChanged  += HandleHoverDateTimeChanged;
             _pickerPresenter.Confirmed             += HandleConfirmed;
+            _pickerPresenter.RangePartConfirmed    += HandleRangePartConfirmed;
+            
+            _pickerPresenter.SelectedDateTime          = RangeStartSelectedDate;
+            _pickerPresenter.SecondarySelectedDateTime = RangeEndSelectedDate;
+            if (RangeActivatedPart == RangeActivatedPart.Start)
+            {
+                _pickerPresenter.NotifySelectRangeStart(true);
+            }
+            else
+            {
+                _pickerPresenter.NotifySelectRangeStart(false);
+            }
+
         }
     }
     
@@ -172,6 +185,10 @@ public class RangeDatePicker : RangeInfoPickerInput
             _pickerPresenter.ChoosingStatueChanged -= HandleChoosingStatueChanged;
             _pickerPresenter.HoverDateTimeChanged  -= HandleHoverDateTimeChanged;
             _pickerPresenter.Confirmed             -= HandleConfirmed;
+            _pickerPresenter.RangePartConfirmed    -= HandleRangePartConfirmed;
+
+            _pickerPresenter.SelectedDateTime          = null;
+            _pickerPresenter.SecondarySelectedDateTime = null;
         }
     }
 
@@ -250,16 +267,12 @@ public class RangeDatePicker : RangeInfoPickerInput
             }
             else if (RangeActivatedPart == RangeActivatedPart.End)
             {
-                SecondaryText = FormatDateTime(RangeEndDefaultDate);
+                SecondaryText = FormatDateTime(args.Date);
             }
         }
-        else
-        {
-            Text = null;
-        }
     }
-    
-    private void HandleConfirmed(object? sender, EventArgs args)
+
+    private void HandleRangePartConfirmed(object? sender, EventArgs args)
     {
         if (RangeActivatedPart == RangeActivatedPart.Start)
         {
@@ -267,7 +280,7 @@ public class RangeDatePicker : RangeInfoPickerInput
             if (RangeEndSelectedDate is null)
             {
                 RangeActivatedPart = RangeActivatedPart.End;
-                return;
+                _pickerPresenter?.NotifySelectRangeStart(false);
             }
         }
         else if (RangeActivatedPart == RangeActivatedPart.End)
@@ -276,7 +289,26 @@ public class RangeDatePicker : RangeInfoPickerInput
             if (RangeStartSelectedDate is null)
             {
                 RangeActivatedPart = RangeActivatedPart.Start;
-                return;
+                _pickerPresenter?.NotifySelectRangeStart(true);
+            }
+        }
+    }
+    
+    private void HandleConfirmed(object? sender, EventArgs args)
+    {
+        var rangeStart = _pickerPresenter?.SelectedDateTime;
+        var rangeEnd   = _pickerPresenter?.SecondarySelectedDateTime;
+        if (rangeStart is not null && rangeEnd is not null)
+        {
+            if (DateTimeHelper.CompareDays(rangeEnd.Value, rangeStart.Value) < 0)
+            {
+                RangeStartSelectedDate = rangeEnd;
+                RangeEndSelectedDate   = rangeStart;
+            }
+            else
+            {
+                RangeStartSelectedDate = rangeStart;
+                RangeEndSelectedDate   = rangeEnd;
             }
         }
 
@@ -372,12 +404,7 @@ public class RangeDatePicker : RangeInfoPickerInput
             {
                 ResetRangeStartDateValue();
             }
-            if (_pickerPresenter is not null)
-            {
-                _pickerPresenter.SelectedDateTime          = RangeStartSelectedDate;
-                _pickerPresenter.SecondarySelectedDateTime = RangeEndSelectedDate;
-                _pickerPresenter.NotifySelectRangeStart(true);
-            }
+            _pickerPresenter?.NotifySelectRangeStart(true);
         }
         else if (RangeActivatedPart == RangeActivatedPart.End)
         {
@@ -386,12 +413,7 @@ public class RangeDatePicker : RangeInfoPickerInput
             {
                 ResetRangeEndDateValue();
             }
-            if (_pickerPresenter is not null)
-            {
-                _pickerPresenter.SelectedDateTime          = RangeStartSelectedDate;
-                _pickerPresenter.SecondarySelectedDateTime = RangeEndSelectedDate;
-                _pickerPresenter.NotifySelectRangeStart(false);
-            }
+            _pickerPresenter?.NotifySelectRangeStart(false);
         }
         else
         {
@@ -403,12 +425,6 @@ public class RangeDatePicker : RangeInfoPickerInput
             if (RangeEndSelectedDate is null)
             {
                 ResetRangeEndDateValue();
-            }
-            if (_pickerPresenter is not null)
-            {
-                _pickerPresenter.SelectedDateTime          = null;
-                _pickerPresenter.SecondarySelectedDateTime = null;
-                _pickerPresenter.NotifySelectRangeStart(true);
             }
         }
     }

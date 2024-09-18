@@ -1494,16 +1494,7 @@ public class Calendar : TemplatedControl
             }
         }
     }
-
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
-    {
-        base.OnPropertyChanged(change);
-        if (change.Property == SelectedDateProperty)
-        {
-            UpdateHighlightDays();
-        }
-    }
-
+    
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);

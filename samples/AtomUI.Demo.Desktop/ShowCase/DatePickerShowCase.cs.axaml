@@ -9,17 +9,17 @@
     xmlns:calendarView="clr-namespace:AtomUI.Controls.CalendarView;assembly=AtomUI.Controls"
     mc:Ignorable="d">
     <desktop:ShowCasePanel>
-        <!-- <desktop:ShowCaseItem -->
-        <!--     Title="Basic" -->
-        <!--     Description="Click DatePicker, and then we could select or input a date in panel."> -->
-        <!--     <atom:DatePicker Watermark="Select date"/> -->
-        <!-- </desktop:ShowCaseItem> -->
+        <desktop:ShowCaseItem
+            Title="Basic"
+            Description="Click DatePicker, and then we could select or input a date in panel.">
+            <atom:DatePicker Watermark="Select date"/>
+        </desktop:ShowCaseItem>
         
-        <!-- <desktop:ShowCaseItem -->
-        <!--     Title="With Time Picker" -->
-        <!--     Description="Date selection panel with time selection."> -->
-        <!--     <atom:DatePicker Watermark="Select date" IsShowTime="True" IsNeedConfirm="True" ClockIdentifier="HourClock12"/> -->
-        <!-- </desktop:ShowCaseItem> -->
+        <desktop:ShowCaseItem
+            Title="With Time Picker"
+            Description="Date selection panel with time selection.">
+            <atom:DatePicker Watermark="Select date" IsShowTime="True" IsNeedConfirm="True" ClockIdentifier="HourClock12"/>
+        </desktop:ShowCaseItem>
         
         <!-- <desktop:ShowCaseItem -->
         <!--     Title="With Time Picker" -->
@@ -36,7 +36,7 @@
         <desktop:ShowCaseItem
             Title="With Time Picker"
             Description="Date selection panel with time selection.">
-            <atom:RangeDatePicker IsShowTime="true"/>
+            <atom:RangeDatePicker IsShowTime="true" Watermark="Select date"/>
         </desktop:ShowCaseItem>
         <!-- -->
         <!-- <desktop:ShowCaseItem -->

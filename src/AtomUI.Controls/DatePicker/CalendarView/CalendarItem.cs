@@ -1162,6 +1162,7 @@ internal class CalendarItem : TemplatedControl
     
     protected virtual void NotifyPointerOutMonthView(bool originInMonthView)
     {
+        
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
