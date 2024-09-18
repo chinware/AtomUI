@@ -6,49 +6,184 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:desktop="clr-namespace:AtomUI.Demo.Desktop"
     xmlns:atom="https://atomui.net"
-    xmlns:calendarView="clr-namespace:AtomUI.Controls.CalendarView;assembly=AtomUI.Controls"
     mc:Ignorable="d">
     <desktop:ShowCasePanel>
-        <!-- <desktop:ShowCaseItem -->
-        <!--     Title="Basic" -->
-        <!--     Description="Click DatePicker, and then we could select or input a date in panel."> -->
-        <!--     <atom:DatePicker Watermark="Select date"/> -->
-        <!-- </desktop:ShowCaseItem> -->
-        <!-- -->
-        <!-- <desktop:ShowCaseItem -->
-        <!--     Title="With Time Picker" -->
-        <!--     Description="Date selection panel with time selection."> -->
-        <!--     <atom:DatePicker Watermark="Select date" IsShowTime="True" IsNeedConfirm="True" ClockIdentifier="HourClock12"/> -->
-        <!-- </desktop:ShowCaseItem> -->
-        <!-- -->
-        <!-- <desktop:ShowCaseItem -->
-        <!--     Title="With Time Picker" -->
-        <!--     Description="Date selection panel with time selection."> -->
-        <!--     <calendarView:DualMonthRangeCalendar IsSelectRangeStart="True" SecondarySelectedDate="2024-10-1"/> -->
-        <!-- </desktop:ShowCaseItem> -->
+        <desktop:ShowCaseItem
+            Title="Basic"
+            Description="Click DatePicker, and then we could select or input a date in panel.">
+            <atom:DatePicker Watermark="Select date"/>
+        </desktop:ShowCaseItem>
         
-        <!-- <desktop:ShowCaseItem -->
-        <!--     Title="With Time Picker" -->
-        <!--     Description="Date selection panel with time selection."> -->
-        <!--     <calendarView:DualMonthRangeCalendar IsSelectRangeStart="True" SecondarySelectedDate="2024-10-1"/> -->
-        <!-- </desktop:ShowCaseItem> -->
+        <desktop:ShowCaseItem
+            Title="Range Picker"
+            Description="Set range picker type by picker prop.">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:RangeDatePicker IsShowTime="true" Watermark="Select date"/>
+                <atom:RangeDatePicker IsShowTime="False" Watermark="Select date"/>
+            </StackPanel>
+        </desktop:ShowCaseItem>
+        
+        <desktop:ShowCaseItem
+            Title="Need Confirm"
+            Description="DatePicker will automatically determine whether to show a confirm button according to the picker property. You can also set the needConfirm property to determine whether to show a confirm button. When needConfirm is set, the user must click the confirm button to complete the selection. Otherwise, the selection will be submitted when the picker loses focus or selects a date.">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:DatePicker IsNeedConfirm="True" Watermark="Select date"/>
+                <atom:RangeDatePicker IsNeedConfirm="True" IsShowTime="False" Watermark="Select date"/>
+            </StackPanel>
+        </desktop:ShowCaseItem>
+        
+        <desktop:ShowCaseItem
+            Title="Choose Time"
+            Description="This property provides an additional time selection. When showTime is an Object, its properties will be passed on to the built-in TimePicker.">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:DatePicker IsNeedConfirm="True" IsShowTime ="True" Watermark="Select date"/>
+                <atom:RangeDatePicker IsNeedConfirm="True" IsShowTime="True" Watermark="Select date"/>
+            </StackPanel>
+        </desktop:ShowCaseItem>
+        
+        <desktop:ShowCaseItem
+            Title="Disabled"
+            Description="A disabled state of the DatePicker. You can also set as array to disable one of input.">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:DatePicker IsNeedConfirm="True" Watermark="Select date" SelectedDateTime="2024-01-20" IsEnabled="False"/>
+                <atom:DatePicker IsNeedConfirm="True" Watermark="Select date" IsShowTime="True" SelectedDateTime="2024-01-20 12:22:23 AM" IsEnabled="False"/>
+                <atom:RangeDatePicker IsNeedConfirm="True" Watermark="Select date" RangeStartDefaultDate ="2024-01-20" RangeEndDefaultDate ="2024-03-20" IsEnabled="False"/>
+                <atom:RangeDatePicker IsNeedConfirm="True" Watermark="Select date" IsShowTime="True" RangeStartDefaultDate="2024-01-20 12:22:23 AM" RangeEndDefaultDate="2024-02-20 07:22:23 AM" IsEnabled="False"/>
+                <atom:RangeDatePicker IsNeedConfirm="True" Watermark="Select date" IsShowTime="True" RangeStartDefaultDate="2024-01-20 12:22:23 AM" RangeEndDefaultDate="2024-02-20 07:22:23 AM"/>
+                <atom:DatePicker IsNeedConfirm="True" Watermark="Select date" SelectedDateTime="2024-01-20"/>
+            </StackPanel>
+        </desktop:ShowCaseItem>
 
         <desktop:ShowCaseItem
-            Title="With Time Picker"
-            Description="Date selection panel with time selection.">
-            <atom:RangeDatePicker IsShowTime="true" Watermark="Select date"/>
+            Title="Three Sizes"
+            Description="The input box comes in three sizes: small, middle and large. The middle size will be used if size is omitted.">
+            
+            <DockPanel Margin="0, 0, 0, 0">
+                <StackPanel Orientation="Horizontal" Spacing="5" DockPanel.Dock="Top">
+                    <TextBlock VerticalAlignment="Center">Expand direction:</TextBlock>
+                    <atom:OptionButtonGroup ButtonStyle="Outline" Name="PickerSizeTypeOptionGroup">
+                        <atom:OptionButton>Large</atom:OptionButton>
+                        <atom:OptionButton IsChecked="True">Default</atom:OptionButton>
+                        <atom:OptionButton>Small</atom:OptionButton>
+                    </atom:OptionButtonGroup>
+                </StackPanel>
+
+                <StackPanel Orientation="Vertical" Margin="0, 20, 0, 0" Spacing="10">
+                    <atom:DatePicker IsNeedConfirm="True" Watermark="Select date" SelectedDateTime="2024-01-20" SizeType="{Binding PickerSizeType}"/>
+                    <atom:RangeDatePicker IsNeedConfirm="True" Watermark="Select date" IsShowTime="True"
+                                          RangeStartDefaultDate="2024-01-20 12:22:23 AM"
+                                          RangeEndDefaultDate="2024-02-20 07:22:23 AM" 
+                                          SizeType="{Binding PickerSizeType}"/>
+                </StackPanel>
+            </DockPanel>
         </desktop:ShowCaseItem>
         
         <desktop:ShowCaseItem
-            Title="With Time Picker"
-            Description="Date selection panel with time selection.">
-            <atom:RangeDatePicker IsShowTime="False" Watermark="Select date" IsNeedConfirm="True"/>
+            Title="Status"
+            Description="Add status to DatePicker with status, which could be error or warning.">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <StackPanel Orientation="Horizontal" Spacing="5">
+                    <atom:DatePicker Status="Default"
+                                     Watermark="Select time" />
+                    <atom:RangeDatePicker StyleVariant="Outline"
+                                          Status="Default"
+                                          Watermark="Start date"
+                                          SecondaryWatermark="End date"
+                                          IsNeedConfirm="True"
+                                          ClockIdentifier="HourClock24"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="5">
+                    <atom:DatePicker Status="Warning"
+                                     Watermark="Select time" />
+                    <atom:RangeDatePicker StyleVariant="Outline"
+                                          Status="Warning"
+                                          Watermark="Start date"
+                                          SecondaryWatermark="End date"
+                                          IsNeedConfirm="True"
+                                          ClockIdentifier="HourClock24"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="5">
+                    <atom:DatePicker Status="Error"
+                                     Watermark="Select time" />
+                    <atom:RangeDatePicker StyleVariant="Outline"
+                                          Status="Error"
+                                          Watermark="Start date"
+                                          SecondaryWatermark="End date"
+                                          IsNeedConfirm="True"
+                                          ClockIdentifier="HourClock24"/>
+                </StackPanel>
+            </StackPanel>
         </desktop:ShowCaseItem>
-        <!-- -->
-        <!-- <desktop:ShowCaseItem -->
-        <!--     Title="Need Confirm" -->
-        <!--     Description="DatePicker will automatically determine whether to show a confirm button according to the picker property. You can also set the needConfirm property to determine whether to show a confirm button. When needConfirm is set, the user must click the confirm button to complete the selection. Otherwise, the selection will be submitted when the picker loses focus or selects a date."> -->
-        <!--     <atom:DatePicker Watermark="Select date" IsNeedConfirm="True"/> -->
-        <!-- </desktop:ShowCaseItem> -->
+        
+        <desktop:ShowCaseItem
+            Title="Variants"
+            Description="Bordered-less style component.">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <StackPanel Orientation="Horizontal" Spacing="5">
+                    <atom:DatePicker StyleVariant="Outline"
+                                     Watermark="Outline" />
+                    <atom:RangeDatePicker StyleVariant="Outline"
+                                          SecondaryWatermark="End date"
+                                          IsNeedConfirm="True"
+                                          ClockIdentifier="HourClock24"
+                                          Watermark="Outline"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="5">
+                    <atom:DatePicker StyleVariant="Filled"
+                                     Watermark="Filled" />
+                    <atom:RangeDatePicker StyleVariant="Filled"
+                                          SecondaryWatermark="End date"
+                                          IsNeedConfirm="True"
+                                          ClockIdentifier="HourClock24"
+                                          Watermark="Filled"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="5">
+                    <atom:DatePicker StyleVariant="Filled"
+                                     Status="Error"
+                                     Watermark="Filled" />
+                    <atom:RangeDatePicker StyleVariant="Filled"
+                                          Status="Error"
+                                          SecondaryWatermark="End date"
+                                          IsNeedConfirm="True"
+                                          ClockIdentifier="HourClock24"
+                                          Watermark="Filled"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="5">
+                    <atom:DatePicker StyleVariant="Borderless"
+                                     Watermark="Borderless" />
+                    <atom:RangeDatePicker StyleVariant="Borderless"
+                                          SecondaryWatermark="End date"
+                                          IsNeedConfirm="True"
+                                          ClockIdentifier="HourClock24"
+                                          Watermark="Borderless"/>
+                </StackPanel>
+            </StackPanel>
+        </desktop:ShowCaseItem>
+        
+        <desktop:ShowCaseItem
+            Title="Placement"
+            Description="You can manually specify the position of the popup via placement.">
+            
+            <DockPanel Margin="0, 0, 0, 0">
+                <StackPanel Orientation="Horizontal" Spacing="5" DockPanel.Dock="Top">
+                    <TextBlock VerticalAlignment="Center">Expand direction:</TextBlock>
+                    <atom:OptionButtonGroup ButtonStyle="Outline" Name="PickerPlacementOptionGroup">
+                        <atom:OptionButton>TopLeft</atom:OptionButton>
+                        <atom:OptionButton>TopRight</atom:OptionButton>
+                        <atom:OptionButton IsChecked="true">BottomLeft</atom:OptionButton>
+                        <atom:OptionButton>BottomRight</atom:OptionButton>
+                    </atom:OptionButtonGroup>
+                </StackPanel>
+
+                <StackPanel Orientation="Vertical" Margin="0, 20, 0, 0" Spacing="10">
+                    <atom:DatePicker IsNeedConfirm="True" Watermark="Select date" SelectedDateTime="2024-01-20" PickerPlacement="{Binding PickerPlacement}"/>
+                    <atom:RangeDatePicker IsNeedConfirm="True" Watermark="Select date" IsShowTime="True"
+                                          RangeStartDefaultDate="2024-01-20 12:22:23 AM"
+                                          RangeEndDefaultDate="2024-02-20 07:22:23 AM" 
+                                          PickerPlacement="{Binding PickerPlacement}"/>
+                </StackPanel>
+            </DockPanel>
+        </desktop:ShowCaseItem>
+        
     </desktop:ShowCasePanel>
 </UserControl>

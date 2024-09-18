@@ -16,7 +16,7 @@ internal class RangeDatePickerTheme : RangeInfoPickerInputTheme
     {
         return new PathIcon()
         {
-            Kind = "ClockCircleOutlined"
+            Kind = "CalendarOutlined"
         };
     }
     
