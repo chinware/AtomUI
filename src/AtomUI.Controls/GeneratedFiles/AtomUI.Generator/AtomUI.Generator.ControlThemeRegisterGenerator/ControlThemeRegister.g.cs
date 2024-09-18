@@ -38,6 +38,10 @@
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.DatePickerFlyoutPresenterTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.DatePickerPresenterTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.DatePickerTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.DualMonthRangeDatePickerPresenterTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.RangeDatePickerFlyoutPresenterTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.RangeDatePickerTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.TimedRangeDatePickerPresenterTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.EmptyIndicatorTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.ExpanderTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.MenuFlyoutPresenterTheme());

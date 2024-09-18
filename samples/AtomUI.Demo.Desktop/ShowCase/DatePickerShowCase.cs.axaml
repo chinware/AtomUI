@@ -26,6 +26,12 @@
             Description="Date selection panel with time selection.">
             <calendarView:DualMonthRangeCalendar IsSelectRangeStart="True" SecondarySelectedDate="2024-10-1"/>
         </desktop:ShowCaseItem>
+
+        <desktop:ShowCaseItem
+            Title="With Time Picker"
+            Description="Date selection panel with time selection.">
+            <atom:RangeDatePicker IsShowTime="true"/>
+        </desktop:ShowCaseItem>
         <!-- -->
         <!-- <desktop:ShowCaseItem -->
         <!--     Title="Need Confirm" -->

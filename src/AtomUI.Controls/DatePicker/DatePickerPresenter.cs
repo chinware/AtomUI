@@ -267,7 +267,7 @@ internal class DatePickerPresenter : PickerPresenterBase
     {
         // 需要组合日期和时间
         // 暂时没实现
-        var hoverDateTime = CollectDateTime(args.Value, TempSelectedTime);
+        var hoverDateTime = CollectDateTime(args.Date, TempSelectedTime);
         HoverDateTimeChanged?.Invoke(this, new DateSelectedEventArgs(hoverDateTime));
     }
 

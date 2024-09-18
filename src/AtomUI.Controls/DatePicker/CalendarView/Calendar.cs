@@ -13,10 +13,10 @@ namespace AtomUI.Controls.CalendarView;
 
 public class DateSelectedEventArgs : EventArgs
 {
-    public DateTime? Value { get; }
+    public DateTime? Date { get; }
     public DateSelectedEventArgs(DateTime? value)
     {
-        Value = value;
+        Date = value;
     }
 }
 

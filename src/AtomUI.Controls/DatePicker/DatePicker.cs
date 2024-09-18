@@ -26,7 +26,7 @@ public class DatePicker : InfoPickerInput
         AvaloniaProperty.Register<DatePicker, string?>(nameof(Format));
     
     public static readonly StyledProperty<bool> IsShowTimeProperty =
-        AvaloniaProperty.Register<DatePicker, bool>(nameof(IsShowTime));
+        AvaloniaProperty.Register<DatePicker, bool>(nameof(IsShowTime), false);
     
     public static readonly StyledProperty<bool> IsNeedConfirmProperty =
         AvaloniaProperty.Register<DatePicker, bool>(nameof(IsNeedConfirm));
@@ -124,7 +124,7 @@ public class DatePicker : InfoPickerInput
         return format;
     }
     
-    public string FormatDateTime(DateTime? dateTime)
+    protected string FormatDateTime(DateTime? dateTime)
     {
         if (dateTime is null)
         {
@@ -208,9 +208,9 @@ public class DatePicker : InfoPickerInput
     
     private void HandleHoverDateTimeChanged(object? sender, DateSelectedEventArgs args)
     {
-        if (args.Value.HasValue)
+        if (args.Date.HasValue)
         {
-            Text = FormatDateTime(args.Value);
+            Text = FormatDateTime(args.Date);
         }
         else
         {
@@ -226,9 +226,7 @@ public class DatePicker : InfoPickerInput
 
     private void ClearHoverSelectedInfo()
     {
-        DateTime? targetValue = default;
-        targetValue = SelectedDateTime;
-        Text        = FormatDateTime(targetValue);
+        Text = FormatDateTime(SelectedDateTime);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)

@@ -159,7 +159,7 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
 
     #endregion
 
-    IPopupHost? IPopupHostProvider.PopupHost => Popup?.Host;
+    IPopupHost? IPopupHostProvider.PopupHost => Popup.Host;
     protected Popup Popup => _popupLazy.Value;
 
     private readonly Lazy<Popup> _popupLazy;
@@ -590,5 +590,13 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
 
         //Add new classes
         presenter.Classes.AddRange(classes);
+    }
+
+    /// <summary>
+    /// 有时候需要清空 Popup 的 Child控件，强制重新创建
+    /// </summary>
+    internal void ClearUpPopupChild()
+    {
+        Popup.Child = null;
     }
 }

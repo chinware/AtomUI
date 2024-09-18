@@ -5,7 +5,6 @@ using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
-using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.Styling;
 using PickerCalendar = AtomUI.Controls.CalendarView.Calendar;
