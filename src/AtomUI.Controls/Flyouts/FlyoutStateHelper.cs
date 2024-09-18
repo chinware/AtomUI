@@ -257,11 +257,11 @@ internal class FlyoutStateHelper : AvaloniaObject
         {
             return;
         }
-
+        
         _flyoutCloseDetectDisposable?.Dispose();
         _flyoutCloseDetectDisposable = null;
         StopMouseEnterTimer();
-
+        
         if (immediately || MouseLeaveDelay == 0)
         {
             FlyoutAboutToClose?.Invoke(this, EventArgs.Empty);

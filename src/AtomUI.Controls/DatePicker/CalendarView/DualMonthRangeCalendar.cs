@@ -2,7 +2,7 @@
 
 namespace AtomUI.Controls.CalendarView;
 
-public class DualMonthRangeCalendar : RangeCalendar
+internal class DualMonthRangeCalendar : RangeCalendar
 {
     protected override Type StyleKeyOverride => typeof(DualMonthRangeCalendar);
     

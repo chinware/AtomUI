@@ -38,11 +38,11 @@ internal class RangeDatePickerTheme : RangeInfoPickerInputTheme
         withTimeStyle.Add(DatePicker.MinWidthProperty, DatePickerTokenResourceKey.PickerInputWithTimeMinWidth);
         {
             var infoInputBoxStyle = new Style(selector => selector.Nesting().Template().Name(InfoInputBoxPart));
-            infoInputBoxStyle.Add(TextBox.MinWidthProperty, DatePickerTokenResourceKey.PickerInputMinWidth);
+            infoInputBoxStyle.Add(TextBox.MinWidthProperty, DatePickerTokenResourceKey.PickerInputWithTimeMinWidth);
             withTimeStyle.Add(infoInputBoxStyle);
         
             var secondaryInfoInputBoxStyle = new Style(selector => selector.Nesting().Template().Name(SecondaryInfoInputBoxPart));
-            secondaryInfoInputBoxStyle.Add(TextBox.MinWidthProperty, DatePickerTokenResourceKey.PickerInputMinWidth);
+            secondaryInfoInputBoxStyle.Add(TextBox.MinWidthProperty, DatePickerTokenResourceKey.PickerInputWithTimeMinWidth);
             withTimeStyle.Add(secondaryInfoInputBoxStyle);
         }
         Add(withTimeStyle);

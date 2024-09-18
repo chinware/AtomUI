@@ -21,7 +21,7 @@ public class DateSelectedEventArgs : EventArgs
 }
 
 [TemplatePart(CalendarTheme.CalendarItemPart, typeof(CalendarItem))]
-public class Calendar : TemplatedControl
+internal class Calendar : TemplatedControl
 {
     internal const int RowsPerMonth = 7;
     internal const int ColumnsPerMonth = 7;

@@ -94,8 +94,12 @@ internal class RangeDatePickerPresenter : DatePickerPresenter
             }
             else
             {
-               
                 SecondarySelectedDateTime = CollectDateTime(rangeCalendar.SecondarySelectedDate, TempSelectedTime ?? _timeView?.SelectedTime);
+            }
+
+            if (!IsNeedConfirm)
+            {
+                OnConfirmed();
             }
         }
     }

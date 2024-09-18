@@ -18,7 +18,7 @@ public class RangeDateSelectedEventArgs : EventArgs
     }
 }
 
-public class RangeCalendar : Calendar
+internal class RangeCalendar : Calendar
 {
     protected override Type StyleKeyOverride => typeof(RangeCalendar);
     

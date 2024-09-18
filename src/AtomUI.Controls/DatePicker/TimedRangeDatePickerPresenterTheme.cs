@@ -37,8 +37,8 @@ internal class TimedRangeDatePickerPresenterTheme : DatePickerPresenterTheme
             Name              = TimeViewPart,
             VerticalAlignment = VerticalAlignment.Top,
         };
-        CreateTemplateParentBinding(timeView, TimeView.ClockIdentifierProperty, DatePickerPresenter.ClockIdentifierProperty);
-        CreateTemplateParentBinding(timeView, TimeView.IsVisibleProperty, DatePickerPresenter.IsShowTimeProperty);
+        CreateTemplateParentBinding(timeView, TimeView.ClockIdentifierProperty, TimedRangeDatePickerPresenter.ClockIdentifierProperty);
+        CreateTemplateParentBinding(timeView, TimeView.IsVisibleProperty, TimedRangeDatePickerPresenter.IsShowTimeProperty);
         timeView.RegisterInNameScope(scope);
         calendarLayout.Children.Add(timeView);
         

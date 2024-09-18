@@ -180,7 +180,7 @@ internal class DatePickerPresenter : PickerPresenterBase
         _todayButton   = e.NameScope.Get<Button>(DatePickerPresenterTheme.TodayButtonPart);
         _confirmButton = e.NameScope.Get<Button>(DatePickerPresenterTheme.ConfirmButtonPart);
         _calendarView  = e.NameScope.Get<PickerCalendar>(DatePickerPresenterTheme.CalendarViewPart);
-        _timeView      = e.NameScope.Get<TimeView>(DatePickerPresenterTheme.TimeViewPart);
+        _timeView      = e.NameScope.Find<TimeView>(DatePickerPresenterTheme.TimeViewPart);
         SetupButtonStatus();
         if (_calendarView is not null)
         {

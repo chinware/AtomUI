@@ -35,13 +35,11 @@ internal class PopupShadowLayer : LiteWindow, IShadowDecorator
     private ShadowRenderer? _shadowRenderer;
     private CompositeDisposable? _compositeDisposable;
     private readonly IManagedPopupPositionerPopup? _managedPopupPositionerPopup;
-    private TopLevel? _topLevel;
     private bool _isOpened;
 
     public PopupShadowLayer(TopLevel topLevel)
         : base(topLevel, topLevel.PlatformImpl?.CreatePopup()!)
     {
-        _topLevel  = topLevel;
         Background = new SolidColorBrush(Colors.Transparent);
         if (this is WindowBase window)
         {
@@ -190,8 +188,12 @@ internal class PopupShadowLayer : LiteWindow, IShadowDecorator
     {
         if (_target is not null)
         {
-            _target.Opened -= HandleTargetOpened;
-            _target.Closed -= HandleTargetClosed;
+            _target.Opened            -= HandleTargetOpened;
+            _target.Closed            -= HandleTargetClosed;
+            if (_target.Child is not null)
+            {
+                _target.Child.SizeChanged -= HandleChildSizeChange;
+            }
         }
 
         _compositeDisposable?.Dispose();
@@ -204,6 +206,7 @@ internal class PopupShadowLayer : LiteWindow, IShadowDecorator
         {
             if (_target?.Child is not null && _shadowRenderer is not null)
             {
+                _target.Child.SizeChanged += HandleChildSizeChange;
                 // 理论上现在已经有大小了
                 var content            = _target?.Child!;
                 var detectPopupWinSize = DetectShadowWindowSize(_target!);
@@ -241,6 +244,12 @@ internal class PopupShadowLayer : LiteWindow, IShadowDecorator
                 _shadowRenderer.MaskCornerRadius = cornerRadius;
             }
         }
+    }
+
+    private void HandleChildSizeChange(object? sender, SizeChangedEventArgs args)
+    {
+        SetupShadowRenderer();
+        InvalidateMeasure();
     }
 
     private Size CalculateShadowRendererSize(Size content)
