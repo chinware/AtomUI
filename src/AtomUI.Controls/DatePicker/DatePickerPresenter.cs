@@ -112,12 +112,12 @@ internal class DatePickerPresenter : PickerPresenterBase
 
     #endregion
 
-    private Button? _nowButton;
-    private Button? _todayButton;
-    private Button? _confirmButton;
-    private PickerCalendar? _calendarView;
-    private CompositeDisposable? _compositeDisposable;
-    private TimeView? _timeView;
+    protected Button? _nowButton;
+    protected Button? _todayButton;
+    protected Button? _confirmButton;
+    protected PickerCalendar? _calendarView;
+    protected CompositeDisposable? _compositeDisposable;
+    protected TimeView? _timeView;
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {

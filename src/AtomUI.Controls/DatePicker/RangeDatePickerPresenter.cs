@@ -1,4 +1,5 @@
-﻿using Avalonia;
+﻿using AtomUI.Controls.CalendarView;
+using Avalonia;
 
 namespace AtomUI.Controls;
 
@@ -16,4 +17,20 @@ internal class RangeDatePickerPresenter : DatePickerPresenter
     }
 
     #endregion
+
+    internal void NotifySelectRangeStart(bool isStart)
+    {
+        if (_calendarView is RangeCalendar rangeCalendar)
+        {
+            rangeCalendar.IsSelectRangeStart = isStart;
+        }
+    }
+
+    internal void NotifyRepairReverseRange(bool isRepair)
+    {
+        if (_calendarView is RangeCalendar rangeCalendar)
+        {
+            rangeCalendar.IsRepairReverseRange = isRepair;
+        }
+    }
 }

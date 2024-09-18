@@ -17,7 +17,7 @@ internal class TimedRangeDatePickerPresenterTheme : DatePickerPresenterTheme
     {
     }
 
-    protected virtual Control BuildCalendarView(DatePickerPresenter presenter, INameScope scope)
+    protected override Control BuildCalendarView(DatePickerPresenter presenter, INameScope scope)
     {
         var calendarLayout = new StackPanel()
         {
@@ -27,7 +27,8 @@ internal class TimedRangeDatePickerPresenterTheme : DatePickerPresenterTheme
         {
             Name = CalendarViewPart,
         };
-        CreateTemplateParentBinding(calendarView, RangeCalendar.SelectedDateProperty, DatePickerPresenter.SelectedDateTimeProperty);
+        CreateTemplateParentBinding(calendarView, RangeCalendar.SelectedDateProperty, TimedRangeDatePickerPresenter.SelectedDateTimeProperty);
+        CreateTemplateParentBinding(calendarView, RangeCalendar.SecondarySelectedDateProperty, TimedRangeDatePickerPresenter.SecondarySelectedDateTimeProperty);
         calendarView.RegisterInNameScope(scope);
         calendarLayout.Children.Add(calendarView);
 

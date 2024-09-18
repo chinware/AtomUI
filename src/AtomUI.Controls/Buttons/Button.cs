@@ -396,7 +396,8 @@ public class Button : AvaloniaButton,
         }
 
         if (e.Property == BorderBrushProperty ||
-            e.Property == ButtonTypeProperty)
+            e.Property == ButtonTypeProperty ||
+            e.Property == IsEnabledProperty)
         {
             SetupEffectiveBorderThickness();
         }
@@ -539,7 +540,7 @@ public class Button : AvaloniaButton,
         }
         else if (ButtonType == ButtonType.Primary)
         {
-            if (IsGhost)
+            if (IsGhost || !IsEnabled)
             {
                 EffectiveBorderThickness = BorderThickness;
             }

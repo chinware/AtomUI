@@ -17,7 +17,7 @@ public class RangeDateSelectedEventArgs : EventArgs
 
 public class RangeCalendar : Calendar
 {
-    protected override Type StyleKeyOverride => typeof(Calendar);
+    protected override Type StyleKeyOverride => typeof(RangeCalendar);
     
     #region 公共属性定义
 

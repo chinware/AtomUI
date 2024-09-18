@@ -907,6 +907,11 @@ public class Calendar : TemplatedControl
         DateSelected?.Invoke(this, new DateSelectedEventArgs(SelectedDate));
     }
     
+    internal void NotifyDateSelected(DateTime? selected)
+    {
+        DateSelected?.Invoke(this, new DateSelectedEventArgs(selected));
+    }
+    
     internal virtual void NotifyHoverDateChanged(DateTime? hoverDate)
     {
         HoverDateChanged?.Invoke(this, new DateSelectedEventArgs(hoverDate));

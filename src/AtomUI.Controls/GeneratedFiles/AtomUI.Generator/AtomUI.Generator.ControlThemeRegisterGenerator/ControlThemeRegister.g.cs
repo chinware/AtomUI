@@ -35,6 +35,7 @@
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.CalendarView.CalendarTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.CalendarView.DualMonthCalendarItemTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.CalendarView.DualMonthRangeCalendarTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.CalendarView.RangeCalendarTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.DatePickerFlyoutPresenterTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.DatePickerPresenterTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.DatePickerTheme());
