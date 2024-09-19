@@ -128,7 +128,7 @@
             Title="Context menu"
             Description="Right click to bring up the context menu.">
             <desktop:ShowCaseItem.Styles>
-                <Style Selector="Border#contextMenuContainer">
+                <Style Selector="Border#ContextMenuContainer">
                     <Setter Property="BorderBrush" Value="Gray" />
                     <Setter Property="BorderThickness" Value="1" />
                     <Setter Property="CornerRadius" Value="6" />
@@ -136,7 +136,7 @@
                     <Setter Property="Margin" Value="10" />
                 </Style>
             </desktop:ShowCaseItem.Styles>
-            <Border Name="contextMenuContainer">
+            <Border Name="ContextMenuContainer">
                 <Border.ContextMenu>
                     <atom:ContextMenu>
                         <atom:MenuItem Header="Cut" InputGesture="Ctrl+X"
@@ -159,7 +159,7 @@
             Title="Menu Flyout"
             Description="Right Click to show Context Flyout">
             <desktop:ShowCaseItem.Styles>
-                <Style Selector="Border#contextFlyoutContainer">
+                <Style Selector="Border#ContextFlyoutContainer">
                     <Setter Property="BorderBrush" Value="Gray" />
                     <Setter Property="BorderThickness" Value="1" />
                     <Setter Property="CornerRadius" Value="6" />
@@ -168,7 +168,7 @@
                 </Style>
             </desktop:ShowCaseItem.Styles>
 
-            <Border Name="contextFlyoutContainer">
+            <Border Name="ContextFlyoutContainer">
                 <Border.ContextFlyout>
                     <atom:MenuFlyout>
                         <atom:MenuItem Header="Cut" InputGesture="Ctrl+X"

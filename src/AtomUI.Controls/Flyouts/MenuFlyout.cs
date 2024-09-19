@@ -4,7 +4,10 @@ using System.Reflection;
 using AtomUI.Data;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Diagnostics;
 using Avalonia.Controls.Templates;
+using Avalonia.Input;
+using Avalonia.Input.Raw;
 using Avalonia.Metadata;
 using Avalonia.Styling;
 
@@ -117,6 +120,34 @@ public class MenuFlyout : Flyout
         }
 
         base.OnOpening(args);
+    }
+
+    protected override void OnOpened()
+    {
+        base.OnOpened();
+        var inputManager = AvaloniaLocator.Current.GetService<IInputManager>()!;
+        _compositeDisposable?.Add(inputManager.Process.Subscribe(HandleMouseClick));
+    }
+
+    private void HandleMouseClick(RawInputEventArgs args)
+    {
+        if (!IsOpen)
+        {
+            return;
+        }
+        if (args is RawPointerEventArgs pointerEventArgs)
+        {
+            if (pointerEventArgs.Type == RawPointerEventType.LeftButtonUp)
+            {
+                if (this is IPopupHostProvider popupHostProvider)
+                {
+                    if (popupHostProvider.PopupHost != pointerEventArgs.Root)
+                    {
+                        Hide();
+                    }
+                }
+            }
+        }
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
