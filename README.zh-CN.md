@@ -93,7 +93,7 @@ PS: AtomUI 目前仅在 Windows 11 平台测试<br>
 | Cascader 级联选择        | 未完成    |
 | Checkbox 多选框         | 已完成 ✅  |
 | ColorPicker 颜色选择器    | 进行中 💪 |
-| DatePicker 日期选择框     | 进行中 💪 |
+| DatePicker 日期选择框     | 已完成 ✅ |
 | Form 表单              | 未完成    |
 | Input 输入框            | 已完成 ✅  |
 | NumberUpDown 数字输入框   | 已完成 ✅  |

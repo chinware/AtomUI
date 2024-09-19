@@ -65,7 +65,7 @@ Welcome to communicate and give suggestions to AtomUI, thank you for giving the 
 | Cascader        | TODO           |
 | Checkbox        | Completed ✅    |
 | ColorPicker     | Developing 💪  |
-| DatePicker      | Developing 💪  |
+| DatePicker      | Completed ✅    |
 | Form            | TODO           |
 | Input           | Completed ✅    |
 | NumberUpDown    | Completed ✅    |
