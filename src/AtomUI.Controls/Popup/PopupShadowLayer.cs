@@ -153,14 +153,14 @@ internal class PopupShadowLayer : LiteWindow, IShadowDecorator
         {
             return;
         }
-
+        
         _compositeDisposable = new CompositeDisposable();
         var popupRoot = _target?.Host as PopupRoot;
         if (popupRoot is not null)
         {
             popupRoot.PositionChanged += TargetPopupPositionChanged;
         }
-
+        
         _compositeDisposable.Add(Disposable.Create(this, state =>
         {
             state.SetChild(null);

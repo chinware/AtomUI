@@ -426,11 +426,7 @@ public class Popup : AvaloniaPopup
         var placementTarget = GetEffectivePlacementTarget();
         
         Open();
-        if (Placement != PlacementMode.Pointer && Placement != PlacementMode.Center)
-        {
-            AdjustPopupHostPosition(placementTarget!);
-            _isNeedFlip = false;
-        }
+
         var popupRoot = (Host as PopupRoot)!;
         // 获取 popup 的具体位置，这个就是非常准确的位置，还有大小
         // TODO 暂时只支持 WindowBase popup
@@ -453,8 +449,9 @@ public class Popup : AvaloniaPopup
 
         motionActor.Completed += (sender, args) =>
         {
-            popupRoot.Show();
             CreateShadowLayer();
+            popupRoot.Show();
+   
             if (RequestCloseWhereAnimationCompleted)
             {
                 RequestCloseWhereAnimationCompleted = false;
@@ -506,7 +503,8 @@ public class Popup : AvaloniaPopup
 
         motionActor.Completed += (sender, args) =>
         {
-            _animating = false;
+            _animating  = false;
+            _isNeedFlip = true;
             Close();
             if (closed is not null)
             {

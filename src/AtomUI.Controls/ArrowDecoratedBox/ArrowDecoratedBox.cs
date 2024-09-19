@@ -145,10 +145,12 @@ public class ArrowDecoratedBox : ContentControl,
     private Rect _arrowRect;
     private bool _needGenerateArrowVertexPoint = true;
     private Border? _contentDecorator;
+    private Control? _arrowContent;
 
     static ArrowDecoratedBox()
     {
         AffectsMeasure<ArrowDecoratedBox>(IsShowArrowProperty);
+        AffectsArrange<ArrowDecoratedBox>(ArrowDirectionProperty);
     }
 
     public ArrowDecoratedBox()
@@ -184,7 +186,28 @@ public class ArrowDecoratedBox : ContentControl,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
         base.OnPropertyChanged(e);
-        HandlePropertyChangedForStyle(e);
+        if (e.Property == IsShowArrowProperty ||
+            e.Property == ArrowPositionProperty ||
+            e.Property == ArrowSizeProperty ||
+            e.Property == VisualParentProperty)
+        {
+            if (e.Property == IsShowArrowProperty && VisualRoot is null)
+            {
+                // 当开启的时候，但是还没有加入的渲染树，这个时候我们取不到 Token 需要在取值的时候重新生成一下
+                _needGenerateArrowVertexPoint = true;
+            }
+
+            if (VisualRoot is not null)
+            {
+                BuildGeometry(true);
+                _arrowRect = GetArrowRect(DesiredSize);
+            }
+        }
+
+        if (e.Property == ArrowPositionProperty)
+        {
+            ArrowDirection = GetDirection(ArrowPosition);
+        }
     }
 
     public CornerRadius GetMaskCornerRadius()
@@ -194,12 +217,28 @@ public class ArrowDecoratedBox : ContentControl,
 
     public Rect GetMaskBounds()
     {
+        Rect targetRect = default;
         if (_contentDecorator is not null)
         {
-            return _contentDecorator.Bounds;
+            targetRect = _contentDecorator.Bounds;
         }
-
-        return Bounds;
+        
+        if (ArrowDirection == Direction.Left)
+        {
+            targetRect = targetRect.WithX(_arrowContent?.Width ?? default);
+        }
+        else if (ArrowDirection == Direction.Right)
+        {
+            targetRect = targetRect.WithX(0.0d);
+        }
+        else if (ArrowDirection == Direction.Top)
+        {
+            targetRect = targetRect.WithY(_arrowContent?.Height ?? default);
+        } else if (ArrowDirection == Direction.Bottom)
+        {
+            targetRect = targetRect.WithY(0.0d);
+        }
+        return targetRect;
     }
     
 
@@ -207,6 +246,7 @@ public class ArrowDecoratedBox : ContentControl,
     {
         base.OnApplyTemplate(e);
         _contentDecorator = e.NameScope.Get<Border>(ArrowDecoratedBoxTheme.ContentDecoratorPart);
+        _arrowContent     = e.NameScope.Get<Control>(ArrowDecoratedBoxTheme.ArrowContentPart);
         if (IsShowArrow)
         {
             BuildGeometry(true);
@@ -223,35 +263,6 @@ public class ArrowDecoratedBox : ContentControl,
         }
 
         return _arrowVertexPoint;
-    }
-
-    private void HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
-    {
-        if (e.Property == IsShowArrowProperty ||
-            e.Property == ArrowPositionProperty ||
-            e.Property == ArrowSizeProperty ||
-            e.Property == VisualParentProperty)
-        {
-            if (e.Property == IsShowArrowProperty && VisualRoot is null)
-            {
-                // 当开启的时候，但是还没有加入的渲染树，这个时候我们取不到 Token 需要在取值的时候重新生成一下
-                _needGenerateArrowVertexPoint = true;
-                
-            }
-
-            if (VisualRoot is not null)
-            {
-                BuildGeometry(true);
-                _arrowRect = GetArrowRect(DesiredSize);
-                
-                InvalidateArrange();
-            }
-        }
-
-        if (e.Property == ArrowPositionProperty)
-        {
-            ArrowDirection = GetDirection(ArrowPosition);
-        }
     }
 
     private void BuildGeometry(bool force = false)
@@ -434,5 +445,4 @@ public class ArrowDecoratedBox : ContentControl,
 
         return targetRect;
     }
-
 }
