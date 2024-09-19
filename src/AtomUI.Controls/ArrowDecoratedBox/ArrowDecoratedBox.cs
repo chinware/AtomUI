@@ -117,6 +117,9 @@ public class ArrowDecoratedBox : ContentControl,
     internal static readonly StyledProperty<double> ArrowSizeProperty
         = AvaloniaProperty.Register<ArrowDecoratedBox, double>(nameof(ArrowSize));
     
+    internal static readonly StyledProperty<Direction> ArrowDirectionProperty
+        = AvaloniaProperty.Register<ArrowDecoratedBox, Direction>(nameof(ArrowDirection));
+    
     /// <summary>
     /// 箭头的大小
     /// </summary>
@@ -125,7 +128,13 @@ public class ArrowDecoratedBox : ContentControl,
         get => GetValue(ArrowSizeProperty);
         set => SetValue(ArrowSizeProperty, value);
     }
-
+    
+    internal Direction ArrowDirection
+    {
+        get => GetValue(ArrowDirectionProperty);
+        set => SetValue(ArrowDirectionProperty, value);
+    }
+    
     #endregion
 
     // 指针最顶点位置
@@ -133,13 +142,19 @@ public class ArrowDecoratedBox : ContentControl,
     private (double, double) _arrowVertexPoint;
     internal (double, double) ArrowVertexPoint => GetArrowVertexPoint();
     private Geometry? _arrowGeometry;
-    private Rect _contentRect;
     private Rect _arrowRect;
     private bool _needGenerateArrowVertexPoint = true;
+    private Border? _contentDecorator;
 
     static ArrowDecoratedBox()
     {
-        AffectsMeasure<ArrowDecoratedBox>(ArrowPositionProperty, IsShowArrowProperty);
+        AffectsMeasure<ArrowDecoratedBox>(IsShowArrowProperty);
+    }
+
+    public ArrowDecoratedBox()
+    {
+        IsShowArrow   = true;
+        ArrowPosition = ArrowPosition.BottomEdgeAlignedLeft;
     }
 
     public static Direction GetDirection(ArrowPosition arrowPosition)
@@ -179,17 +194,19 @@ public class ArrowDecoratedBox : ContentControl,
 
     public Rect GetMaskBounds()
     {
-        return GetContentRect(DesiredSize).Deflate(0.5);
+        if (_contentDecorator is not null)
+        {
+            return _contentDecorator.Bounds;
+        }
+
+        return Bounds;
     }
+    
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-       HandleTemplateApplied(e.NameScope);
-    }
-
-    private void HandleTemplateApplied(INameScope scope)
-    {
+        _contentDecorator = e.NameScope.Get<Border>(ArrowDecoratedBoxTheme.ContentDecoratorPart);
         if (IsShowArrow)
         {
             BuildGeometry(true);
@@ -219,13 +236,21 @@ public class ArrowDecoratedBox : ContentControl,
             {
                 // 当开启的时候，但是还没有加入的渲染树，这个时候我们取不到 Token 需要在取值的时候重新生成一下
                 _needGenerateArrowVertexPoint = true;
+                
             }
 
             if (VisualRoot is not null)
             {
                 BuildGeometry(true);
                 _arrowRect = GetArrowRect(DesiredSize);
+                
+                InvalidateArrange();
             }
+        }
+
+        if (e.Property == ArrowPositionProperty)
+        {
+            ArrowDirection = GetDirection(ArrowPosition);
         }
     }
 
@@ -241,9 +266,10 @@ public class ArrowDecoratedBox : ContentControl,
     {
         if (IsShowArrow)
         {
+           
             var direction = GetDirection(ArrowPosition);
             var matrix    = Matrix.CreateTranslation(-ArrowSize / 2, -ArrowSize / 2);
-
+    
             if (direction == Direction.Right)
             {
                 matrix *= Matrix.CreateRotation(MathUtils.Deg2Rad(90));
@@ -263,97 +289,12 @@ public class ArrowDecoratedBox : ContentControl,
                 matrix *= Matrix.CreateRotation(MathUtils.Deg2Rad(180));
                 matrix *= Matrix.CreateTranslation(ArrowSize / 2, ArrowSize / 2);
             }
-
             matrix                    *= Matrix.CreateTranslation(_arrowRect.X, _arrowRect.Y);
             _arrowGeometry!.Transform =  new MatrixTransform(matrix);
             context.DrawGeometry(Background, null, _arrowGeometry);
         }
     }
-
-    protected override Size MeasureOverride(Size availableSize)
-    {
-        var size         = base.MeasureOverride(availableSize);
-        var targetWidth  = size.Width;
-        var targetHeight = size.Height;
-        targetHeight = Math.Max(MinHeight, targetHeight);
-
-        if (IsShowArrow)
-        {
-            BuildGeometry();
-            var realArrowSize = Math.Min(_arrowGeometry!.Bounds.Size.Height, _arrowGeometry!.Bounds.Size.Width);
-            var direction     = GetDirection(ArrowPosition);
-            if (direction == Direction.Left || direction == Direction.Right)
-            {
-                targetWidth += realArrowSize;
-            }
-            else
-            {
-                targetHeight += realArrowSize;
-            }
-        }
-
-        var targetSize = new Size(targetWidth, targetHeight);
-        _arrowRect = GetArrowRect(targetSize);
-        return targetSize;
-    }
-
-    protected override Size ArrangeOverride(Size finalSize)
-    {
-        var visualChildren = VisualChildren;
-        var visualCount    = visualChildren.Count;
-        _contentRect = GetContentRect(finalSize);
-        for (var i = 0; i < visualCount; ++i)
-        {
-            var child = visualChildren[i];
-            if (child is Layoutable layoutable)
-            {
-                layoutable.Arrange(_contentRect);
-            }
-        }
-
-        return finalSize;
-    }
-
-    internal Rect GetContentRect(Size finalSize)
-    {
-        var offsetX      = 0d;
-        var offsetY      = 0d;
-        var targetWidth  = finalSize.Width;
-        var targetHeight = finalSize.Height;
-        if (IsShowArrow)
-        {
-            var arrowSize = Math.Min(_arrowGeometry!.Bounds.Size.Height, _arrowGeometry!.Bounds.Size.Width) + 0.5;
-            var direction = GetDirection(ArrowPosition);
-            if (direction == Direction.Left || direction == Direction.Right)
-            {
-                targetWidth -= arrowSize;
-            }
-            else
-            {
-                targetHeight -= arrowSize;
-            }
-
-            if (direction == Direction.Right)
-            {
-                offsetX = 0.5;
-            }
-            else if (direction == Direction.Bottom)
-            {
-                offsetY = 0.5;
-            }
-            else if (direction == Direction.Top)
-            {
-                offsetY = arrowSize - 0.5;
-            }
-            else
-            {
-                offsetX = arrowSize - 0.5;
-            }
-        }
-
-        return new Rect(offsetX, offsetY, targetWidth, targetHeight);
-    }
-
+    
     private Rect GetArrowRect(Size finalSize)
     {
         var offsetX      = 0d;
@@ -371,6 +312,7 @@ public class ArrowDecoratedBox : ContentControl,
                 position == ArrowPosition.LeftEdgeAlignedTop ||
                 position == ArrowPosition.LeftEdgeAlignedBottom)
             {
+                offsetX      = 0.5d;
                 targetWidth  = minValue;
                 targetHeight = maxValue;
                 if (position == ArrowPosition.Left)
@@ -404,6 +346,7 @@ public class ArrowDecoratedBox : ContentControl,
                      position == ArrowPosition.TopEdgeAlignedLeft ||
                      position == ArrowPosition.TopEdgeAlignedRight)
             {
+                offsetY = 0.5d;
                 if (position == ArrowPosition.TopEdgeAlignedLeft)
                 {
                     offsetX = maxValue;
@@ -424,7 +367,7 @@ public class ArrowDecoratedBox : ContentControl,
                      position == ArrowPosition.RightEdgeAlignedTop ||
                      position == ArrowPosition.RightEdgeAlignedBottom)
             {
-                offsetX = finalSize.Width - minValue;
+                offsetX = finalSize.Width - minValue - 1.0d;
                 if (position == ArrowPosition.Right)
                 {
                     offsetY = (finalSize.Height - maxValue) / 2;
@@ -457,7 +400,7 @@ public class ArrowDecoratedBox : ContentControl,
             }
             else
             {
-                offsetY      = finalSize.Height - minValue;
+                offsetY      = finalSize.Height - minValue - 1.0d;
                 targetWidth  = maxValue;
                 targetHeight = minValue;
                 if (position == ArrowPosition.BottomEdgeAlignedLeft)

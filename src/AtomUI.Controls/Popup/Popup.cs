@@ -67,6 +67,7 @@ public class Popup : AvaloniaPopup
     private bool _initialized;
     private ManagedPopupPositionerInfo? _managedPopupPositioner;
     protected bool _animating;
+    private bool _isNeedFlip = true;
 
     // 当鼠标移走了，但是打开动画还没完成，我们需要记录下来这个信号
     internal bool RequestCloseWhereAnimationCompleted { get; set; }
@@ -147,11 +148,14 @@ public class Popup : AvaloniaPopup
                     "Unable to create shadow layer, top level for PlacementTarget is null.");
             }
 
-            if (Placement != PlacementMode.Pointer && Placement != PlacementMode.Center)
+            if (_isNeedFlip)
             {
-                AdjustPopupHostPosition(placementTarget);
+                if (Placement != PlacementMode.Pointer && Placement != PlacementMode.Center)
+                {
+                    AdjustPopupHostPosition(placementTarget!);
+                }
             }
-
+            
             if (!_animating)
             {
                 CreateShadowLayer();
@@ -291,8 +295,6 @@ public class Popup : AvaloniaPopup
     /// <summary>
     /// 在这里处理翻转问题
     /// </summary>
-    /// <param name="popupHost"></param>
-    /// <param name="placementTarget"></param>
     internal void AdjustPopupHostPosition(Control placementTarget)
     {
         var offsetX = HorizontalOffset;
@@ -307,8 +309,7 @@ public class Popup : AvaloniaPopup
         var direction = PopupUtils.GetDirection(Placement);
         var topLevel  = TopLevel.GetTopLevel(placementTarget)!;
 
-        if (Placement != PlacementMode.Center &&
-            Placement != PlacementMode.Pointer)
+        if (Placement != PlacementMode.Center && Placement != PlacementMode.Pointer)
         {
             // 计算是否 flip
             var parameters = new PopupPositionerParameters();
@@ -422,16 +423,22 @@ public class Popup : AvaloniaPopup
 
         _animating = true;
 
+        var placementTarget = GetEffectivePlacementTarget();
+        
         Open();
+        if (Placement != PlacementMode.Pointer && Placement != PlacementMode.Center)
+        {
+            AdjustPopupHostPosition(placementTarget!);
+            _isNeedFlip = false;
+        }
         var popupRoot = (Host as PopupRoot)!;
         // 获取 popup 的具体位置，这个就是非常准确的位置，还有大小
         // TODO 暂时只支持 WindowBase popup
         popupRoot.Hide();
-        var popupOffset     = popupRoot.PlatformImpl!.Position;
-        var offset          = new Point(popupOffset.X, popupOffset.Y);
-        var placementTarget = GetEffectivePlacementTarget();
-        var topLevel        = TopLevel.GetTopLevel(placementTarget);
-        var scaling         = topLevel?.RenderScaling ?? 1.0;
+        var popupOffset = popupRoot.PlatformImpl!.Position;
+        var offset      = new Point(popupOffset.X, popupOffset.Y);
+        var topLevel    = TopLevel.GetTopLevel(placementTarget);
+        var scaling     = topLevel?.RenderScaling ?? 1.0;
 
         // 调度动画
         var director = Director.Instance;

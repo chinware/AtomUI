@@ -41,6 +41,7 @@ namespace AtomUI.Theme.Styling
     public static class ArrowDecoratedBoxTokenResourceKey
     {
         public static readonly TokenResourceKey ArrowSize = new TokenResourceKey("ArrowDecoratedBox.ArrowSize", "AtomUI.Token");
+        public static readonly TokenResourceKey ArrowContentThickness = new TokenResourceKey("ArrowDecoratedBox.ArrowContentThickness", "AtomUI.Token");
         public static readonly TokenResourceKey Padding = new TokenResourceKey("ArrowDecoratedBox.Padding", "AtomUI.Token");
     }
 

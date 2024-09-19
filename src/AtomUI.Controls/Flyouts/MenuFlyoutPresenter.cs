@@ -167,7 +167,7 @@ public class MenuFlyoutPresenter : MenuBase, IShadowMaskInfoProvider
     {
         if (_arrowDecoratedBox is not null)
         {
-            var contentRect = _arrowDecoratedBox.GetContentRect(Bounds.Size);
+            var contentRect = _arrowDecoratedBox.GetMaskBounds();
             var adjustedPos = _arrowDecoratedBox.TranslatePoint(contentRect.Position, this) ?? default;
             return new Rect(adjustedPos, contentRect.Size);
         }
