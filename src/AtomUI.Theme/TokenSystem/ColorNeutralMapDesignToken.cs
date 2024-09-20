@@ -496,12 +496,25 @@ public class ColorMapDesignToken : AbstractDesignToken
    /// </summary>
    public Color SelectionForeground { get; set; }
 
+   [NotTokenDefinition]
     public ColorNeutralMapDesignToken ColorNeutralToken { get; set; }
+    
+    [NotTokenDefinition]
     public ColorPrimaryMapDesignToken ColorPrimaryToken { get; set; }
+    
+    [NotTokenDefinition]
     public ColorSuccessMapDesignToken ColorSuccessToken { get; set; }
+    
+    [NotTokenDefinition]
     public ColorWarningMapDesignToken ColorWarningToken { get; set; }
+    
+    [NotTokenDefinition]
     public ColorErrorMapDesignToken ColorErrorToken { get; set; }
+    
+    [NotTokenDefinition]
     public ColorInfoMapDesignToken ColorInfoToken { get; set; }
+    
+    [NotTokenDefinition]
     public ColorLinkMapDesignToken ColorLinkToken { get; set; }
 
     public ColorMapDesignToken()

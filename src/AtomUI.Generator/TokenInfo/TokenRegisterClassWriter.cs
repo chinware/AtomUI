@@ -4,13 +4,13 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace AtomUI.Generator;
 
-public class TokenRegisterClassSourceWriter
+public class TokenRegisterClassWriter
 {
     private readonly SourceProductionContext _context;
     private readonly IEnumerable<string> _classes;
     private readonly List<string> _usingInfos;
 
-    public TokenRegisterClassSourceWriter(SourceProductionContext context, IEnumerable<string> classes)
+    public TokenRegisterClassWriter(SourceProductionContext context, IEnumerable<string> classes)
     {
         _context    = context;
         _classes    = classes;

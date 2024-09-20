@@ -6,11 +6,10 @@ namespace AtomUI.Generator;
 [Generator]
 public class LanguageGenerator : IIncrementalGenerator
 {
-    public const string LanguageProviderAttribute = "AtomUI.Theme.LanguageProviderAttribute";
-
     public void Initialize(IncrementalGeneratorInitializationContext initContext)
     {
-        var languageProvider = initContext.SyntaxProvider.ForAttributeWithMetadataName(LanguageProviderAttribute,
+        var languageProvider = initContext.SyntaxProvider.ForAttributeWithMetadataName(
+            TargetMarkConstants.LanguageProviderAttribute,
             (node, token) => true,
             (context, token) =>
             {

@@ -7,13 +7,25 @@ namespace AtomUI.Theme.TokenSystem;
 [GlobalDesignToken]
 public class MapDesignToken : AbstractDesignToken
 {
+    [NotTokenDefinition]
     public SeedDesignToken SeedToken { get; set; }
+    
+    [NotTokenDefinition]
     public StyleMapDesignToken StyleToken { get; set; }
+    
+    [NotTokenDefinition]
     public ColorMapDesignToken ColorToken { get; set; }
+    
+    [NotTokenDefinition]
     public SizeMapDesignToken SizeToken { get; set; }
+    
+    [NotTokenDefinition]
     public HeightMapDesignToken HeightToken { get; set; }
+    
+    [NotTokenDefinition]
     public FontMapDesignToken FontToken { get; set; }
 
+    [NotTokenDefinition]
     public IDictionary<PresetPrimaryColor, ColorMap> ColorPalettes { get; set; }
 
     public MapDesignToken()

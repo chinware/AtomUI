@@ -4,13 +4,13 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace AtomUI.Generator;
 
-public class ResourceKeyClassSourceWriter
+public class ResourceKeyClassWriter
 {
     private readonly SourceProductionContext _context;
     private readonly TokenInfo _tokenInfo;
     private readonly List<string> _usingInfos;
 
-    public ResourceKeyClassSourceWriter(SourceProductionContext context, TokenInfo tokenInfo)
+    public ResourceKeyClassWriter(SourceProductionContext context, TokenInfo tokenInfo)
     {
         _context    = context;
         _tokenInfo  = tokenInfo;

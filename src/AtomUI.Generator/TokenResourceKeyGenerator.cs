@@ -5,12 +5,10 @@ namespace AtomUI.Generator;
 [Generator]
 public class TokenResourceKeyGenerator : IIncrementalGenerator
 {
-    public const string GlobalDesignTokenAttribute = "AtomUI.Theme.TokenSystem.GlobalDesignTokenAttribute";
-    public const string ControlDesignTokenAttribute = "AtomUI.Theme.TokenSystem.ControlDesignTokenAttribute";
-
     public void Initialize(IncrementalGeneratorInitializationContext initContext)
     {
-        var globalTokensProvider = initContext.SyntaxProvider.ForAttributeWithMetadataName(GlobalDesignTokenAttribute,
+        var globalTokensProvider = initContext.SyntaxProvider.ForAttributeWithMetadataName(
+            TargetMarkConstants.GlobalDesignTokenAttribute,
             (node, token) => true,
             (context, token) =>
             {
@@ -32,7 +30,8 @@ public class TokenResourceKeyGenerator : IIncrementalGenerator
             return mergedSet;
         });
 
-        var controlTokensProvider = initContext.SyntaxProvider.ForAttributeWithMetadataName(ControlDesignTokenAttribute,
+        var controlTokensProvider = initContext.SyntaxProvider.ForAttributeWithMetadataName(
+            TargetMarkConstants.ControlDesignTokenAttribute,
             (node, token) => true,
             (context, token) =>
             {
@@ -53,7 +52,7 @@ public class TokenResourceKeyGenerator : IIncrementalGenerator
             }
 
             {
-                var classWriter = new ResourceKeyClassSourceWriter(context, tokenInfo);
+                var classWriter = new ResourceKeyClassWriter(context, tokenInfo);
                 classWriter.Write();
             }
 
@@ -69,7 +68,7 @@ public class TokenResourceKeyGenerator : IIncrementalGenerator
                 });
                 if (tokenClassNames.Any())
                 {
-                    var classWriter = new TokenRegisterClassSourceWriter(context, tokenClassNames);
+                    var classWriter = new TokenRegisterClassWriter(context, tokenClassNames);
                     classWriter.Write();
                 }
             }
