@@ -42,7 +42,7 @@ public abstract class NavMenuBase : SelectingItemsControl, IFocusScope, INavMenu
         RoutedEvent.Register<NavMenuBase, RoutedEventArgs>(nameof(Opened), RoutingStrategies.Bubble);
 
     /// <summary>
-    /// Occurs when a <see cref="Menu"/> is opened.
+    /// Occurs when a <see cref="NavMenu"/> is opened.
     /// </summary>
     public event EventHandler<RoutedEventArgs>? Opened
     {
@@ -57,7 +57,7 @@ public abstract class NavMenuBase : SelectingItemsControl, IFocusScope, INavMenu
         RoutedEvent.Register<NavMenuBase, RoutedEventArgs>(nameof(Closed), RoutingStrategies.Bubble);
 
     /// <summary>
-    /// Occurs when a <see cref="Menu"/> is closed.
+    /// Occurs when a <see cref="NavMenu"/> is closed.
     /// </summary>
     public event EventHandler<RoutedEventArgs>? Closed
     {
@@ -68,6 +68,7 @@ public abstract class NavMenuBase : SelectingItemsControl, IFocusScope, INavMenu
     #endregion
 
     INavMenuInteractionHandler INavMenu.InteractionHandler => InteractionHandler;
+    
     IRenderRoot? INavMenu.VisualRoot => VisualRoot;
 
     INavMenuItem? INavMenuElement.SelectedItem
@@ -92,6 +93,11 @@ public abstract class NavMenuBase : SelectingItemsControl, IFocusScope, INavMenu
     {
         InteractionHandler = new DefaultNavMenuInteractionHandler(false);
     }
+    
+    protected NavMenuBase(INavMenuInteractionHandler interactionHandler)
+    {
+        InteractionHandler = interactionHandler ?? throw new ArgumentNullException(nameof(interactionHandler));
+    }
 
     /// <summary>
     /// Closes the menu.
@@ -108,12 +114,12 @@ public abstract class NavMenuBase : SelectingItemsControl, IFocusScope, INavMenu
 
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
     {
-        return new MenuItem();
+        return new NavMenuItem();
     }
 
     protected override bool NeedsContainerOverride(object? item, int index, out object? recycleKey)
     {
-        if (item is MenuItem or Separator)
+        if (item is NavMenuItem or Separator)
         {
             recycleKey = null;
             return false;
@@ -149,9 +155,9 @@ public abstract class NavMenuBase : SelectingItemsControl, IFocusScope, INavMenu
     /// <param name="e">The event args.</param>
     protected virtual void OnSubmenuOpened(RoutedEventArgs e)
     {
-        if (e.Source is MenuItem menuItem && menuItem.Parent == this)
+        if (e.Source is NavMenuItem menuItem && menuItem.Parent == this)
         {
-            foreach (var child in this.GetLogicalChildren().OfType<MenuItem>())
+            foreach (var child in this.GetLogicalChildren().OfType<NavMenuItem>())
             {
                 if (child != menuItem && child.IsSubMenuOpen)
                 {

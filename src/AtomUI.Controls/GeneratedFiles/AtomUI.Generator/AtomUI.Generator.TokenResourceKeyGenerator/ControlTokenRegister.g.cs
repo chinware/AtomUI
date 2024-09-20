@@ -26,6 +26,7 @@
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.MarqueeLabelToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.MenuToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.MessageToken));
+            ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.NavMenu.NavMenuToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.NotificationToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.NumericUpDownToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.OptionButtonToken));

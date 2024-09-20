@@ -139,7 +139,7 @@ public class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
     protected internal virtual void PointerMoved(object? sender, PointerEventArgs e)
     {
         // HACK: #8179 needs to be addressed to correctly implement it in the PointerPressed method.
-        var item = GetMenuItemCore(e.Source as Control) as MenuItem;
+        var item = GetMenuItemCore(e.Source as Control) as NavMenuItem;
 
         if (item == null)
             return;
@@ -268,7 +268,7 @@ public class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
         NavMenu?.Close();
     }
 
-    internal static MenuItem? GetMenuItem(StyledElement? item) => (MenuItem?)GetMenuItemCore(item);
+    internal static NavMenuItem? GetMenuItem(StyledElement? item) => (NavMenuItem?)GetMenuItemCore(item);
 
     internal void AttachCore(INavMenu navMenu)
     {

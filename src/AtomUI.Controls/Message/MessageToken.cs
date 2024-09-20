@@ -5,7 +5,7 @@ using Avalonia.Media;
 namespace AtomUI.Controls;
 
 [ControlDesignToken]
-public class MessageToken : AbstractControlDesignToken
+internal class MessageToken : AbstractControlDesignToken
 {
     public const string ID = "Message";
 

@@ -1,6 +1,15 @@
-﻿namespace AtomUI.Controls.NavMenu;
+﻿using AtomUI.Theme;
+using AtomUI.Theme.Styling;
 
-internal class NavMenuItemTheme
+namespace AtomUI.Controls.NavMenu;
+
+[ControlThemeProvider]
+internal class NavMenuItemTheme : BaseControlTheme
 {
+    public NavMenuItemTheme()
+        : base(typeof(NavMenuItem))
+    {
+    }
+    
     
 }
