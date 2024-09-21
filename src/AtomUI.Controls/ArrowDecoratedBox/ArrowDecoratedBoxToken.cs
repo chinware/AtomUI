@@ -12,11 +12,6 @@ public class ArrowDecoratedBoxToken : AbstractControlDesignToken
     /// 箭头三角形大小
     /// </summary>
     public double ArrowSize { get; set; }
-    
-    /// <summary>
-    /// 绘制箭头的厚度，跟位置有关
-    /// </summary>
-    public double ArrowContentThickness { get; set; }
 
     /// <summary>
     /// 默认的内边距
@@ -31,8 +26,7 @@ public class ArrowDecoratedBoxToken : AbstractControlDesignToken
     internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
-        ArrowSize             = _globalToken.SizePopupArrow / 1.3;
-        ArrowContentThickness = ArrowSize / 2;
-        Padding               = new Thickness(_globalToken.PaddingXS);
+        ArrowSize = _globalToken.SizePopupArrow / 1.3;
+        Padding   = new Thickness(_globalToken.PaddingXS);
     }
 }

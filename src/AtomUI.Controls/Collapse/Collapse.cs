@@ -115,6 +115,7 @@ public class Collapse : SelectingItemsControl
     {
         SelectionModeProperty.OverrideDefaultValue<Collapse>(SelectionMode.Multiple | SelectionMode.Toggle);
         ItemsPanelProperty.OverrideDefaultValue<Collapse>(DefaultPanel);
+        AffectsRender<Collapse>(SelectionModeProperty);
     }
 
     public Collapse()

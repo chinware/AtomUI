@@ -17,7 +17,9 @@ internal class ArrowDecoratedBoxTheme : BaseControlTheme
     public const string ContentDecoratorPart = "PART_ContentDecorator";
     public const string ContentLayoutPart = "PART_ContentLayout";
     public const string ContentPresenterPart = "PART_ContentPresenter";
-    public const string ArrowContentPart = "PART_ArrowContent";
+    public const string ArrowIndicatorPart = "PART_ArrowIndicator";
+    public const string ArrowIndicatorLayoutPart = "PART_ArrowIndicatorLayout";
+    public const string ArrowPositionLayoutPart = "PART_ArrowPositionLayout";
 
     public ArrowDecoratedBoxTheme() : this(typeof(ArrowDecoratedBox))
     {
@@ -36,15 +38,31 @@ internal class ArrowDecoratedBoxTheme : BaseControlTheme
                 Name          = ContentLayoutPart,
                 LastChildFill = true
             };
-
-            var arrowContent = new Control()
+            
+            var arrowIndicatorLayout = new LayoutTransformControl()
             {
-                Name       = ArrowContentPart
+                Name = ArrowIndicatorLayoutPart,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Top
             };
-            CreateTemplateParentBinding(arrowContent, Border.IsVisibleProperty,
-                ArrowDecoratedBox.IsShowArrowProperty);
-            contentLayout.Children.Add(arrowContent);
-            arrowContent.RegisterInNameScope(scope);
+            arrowIndicatorLayout.RegisterInNameScope(scope);
+            CreateTemplateParentBinding(arrowIndicatorLayout, LayoutTransformControl.IsVisibleProperty, ArrowDecoratedBox.IsShowArrowProperty);
+            
+            var arrowIndicator = new ArrowIndicator()
+            {
+                Name = ArrowIndicatorPart
+            };
+            CreateTemplateParentBinding(arrowIndicator, ArrowIndicator.FilledColorProperty, ArrowDecoratedBox.BackgroundProperty);
+            
+            arrowIndicatorLayout.Child = arrowIndicator;
+
+            var arrowPositionLayout = new Panel()
+            {
+                Name = ArrowPositionLayoutPart
+            };
+            arrowPositionLayout.Children.Add(arrowIndicatorLayout);
+            
+            contentLayout.Children.Add(arrowPositionLayout);
       
             var content = BuildContent(scope);
             var contentDecorator = new Border
@@ -53,14 +71,12 @@ internal class ArrowDecoratedBoxTheme : BaseControlTheme
                 Margin = new Thickness(0)
             };
             contentDecorator.RegisterInNameScope(scope);
-;            CreateTemplateParentBinding(contentDecorator, Border.BackgroundSizingProperty,
-                TemplatedControl.BackgroundSizingProperty);
+;           CreateTemplateParentBinding(contentDecorator, Border.BackgroundSizingProperty, TemplatedControl.BackgroundSizingProperty);
             CreateTemplateParentBinding(contentDecorator, Border.BackgroundProperty, TemplatedControl.BackgroundProperty);
             CreateTemplateParentBinding(contentDecorator, Border.CornerRadiusProperty, TemplatedControl.CornerRadiusProperty);
             CreateTemplateParentBinding(contentDecorator, Decorator.PaddingProperty, TemplatedControl.PaddingProperty);
 
             contentDecorator.Child = content;
-        
             contentLayout.Children.Add(contentDecorator);
             return contentLayout;
         });
@@ -94,36 +110,55 @@ internal class ArrowDecoratedBoxTheme : BaseControlTheme
 
     private void BuildArrowDirectionStyle(Style commonStyle)
     {
+        var arrowIndicatorStyle = new Style(selector => selector.Nesting().Template().Name(ArrowIndicatorPart));
+        arrowIndicatorStyle.Add(ArrowIndicator.ArrowSizeProperty, ArrowDecoratedBoxTokenResourceKey.ArrowSize);
+        commonStyle.Add(arrowIndicatorStyle);
+        
         var topDirectionStyle = new Style(selector => selector.Nesting().PropertyEquals(ArrowDecoratedBox.ArrowDirectionProperty, Direction.Top));
         {
-            var arrowContentStyle = new Style(selector => selector.Nesting().Template().Name(ArrowContentPart));
-            arrowContentStyle.Add(DockPanel.DockProperty, Dock.Top);
-            arrowContentStyle.Add(Control.HeightProperty, ArrowDecoratedBoxTokenResourceKey.ArrowContentThickness);
-            topDirectionStyle.Add(arrowContentStyle);
+            var arrowIndicatorLayoutStyle = new Style(selector => selector.Nesting().Template().Name(ArrowIndicatorLayoutPart));
+            topDirectionStyle.Add(arrowIndicatorLayoutStyle);
+        }
+        {
+            var arrowPositionLayoutStyle = new Style(selector => selector.Nesting().Template().Name(ArrowPositionLayoutPart));
+            arrowPositionLayoutStyle.Add(DockPanel.DockProperty, Dock.Top);
+            topDirectionStyle.Add(arrowPositionLayoutStyle);
         }
         commonStyle.Add(topDirectionStyle);
         var rightDirectionStyle = new Style(selector => selector.Nesting().PropertyEquals(ArrowDecoratedBox.ArrowDirectionProperty, Direction.Right));
         {
-            var arrowContentStyle = new Style(selector => selector.Nesting().Template().Name(ArrowContentPart));
-            arrowContentStyle.Add(DockPanel.DockProperty, Dock.Right);
-            arrowContentStyle.Add(Control.WidthProperty, ArrowDecoratedBoxTokenResourceKey.ArrowContentThickness);
-            rightDirectionStyle.Add(arrowContentStyle);
+            var arrowIndicatorLayoutStyle = new Style(selector => selector.Nesting().Template().Name(ArrowIndicatorLayoutPart));
+            arrowIndicatorLayoutStyle.Add(LayoutTransformControl.LayoutTransformProperty, new RotateTransform(90));
+            rightDirectionStyle.Add(arrowIndicatorLayoutStyle);
+        }
+        {
+            var arrowPositionLayoutStyle = new Style(selector => selector.Nesting().Template().Name(ArrowPositionLayoutPart));
+            arrowPositionLayoutStyle.Add(DockPanel.DockProperty, Dock.Right);
+            rightDirectionStyle.Add(arrowPositionLayoutStyle);
         }
         commonStyle.Add(rightDirectionStyle);
         var bottomDirectionStyle = new Style(selector => selector.Nesting().PropertyEquals(ArrowDecoratedBox.ArrowDirectionProperty, Direction.Bottom));
         {
-            var arrowContentStyle = new Style(selector => selector.Nesting().Template().Name(ArrowContentPart));
-            arrowContentStyle.Add(DockPanel.DockProperty, Dock.Bottom);
-            arrowContentStyle.Add(Control.HeightProperty, ArrowDecoratedBoxTokenResourceKey.ArrowContentThickness);
-            bottomDirectionStyle.Add(arrowContentStyle);
+            var arrowIndicatorLayoutStyle = new Style(selector => selector.Nesting().Template().Name(ArrowIndicatorLayoutPart));
+            arrowIndicatorLayoutStyle.Add(LayoutTransformControl.LayoutTransformProperty, new RotateTransform(180));
+            bottomDirectionStyle.Add(arrowIndicatorLayoutStyle);
+        }
+        {
+            var arrowPositionLayoutStyle = new Style(selector => selector.Nesting().Template().Name(ArrowPositionLayoutPart));
+            arrowPositionLayoutStyle.Add(DockPanel.DockProperty, Dock.Bottom);
+            bottomDirectionStyle.Add(arrowPositionLayoutStyle);
         }
         commonStyle.Add(bottomDirectionStyle);
         var leftDirectionStyle = new Style(selector => selector.Nesting().PropertyEquals(ArrowDecoratedBox.ArrowDirectionProperty, Direction.Left));
         {
-            var arrowContentStyle = new Style(selector => selector.Nesting().Template().Name(ArrowContentPart));
-            arrowContentStyle.Add(DockPanel.DockProperty, Dock.Left);
-            arrowContentStyle.Add(Control.WidthProperty, ArrowDecoratedBoxTokenResourceKey.ArrowContentThickness);
-            leftDirectionStyle.Add(arrowContentStyle);
+            var arrowIndicatorLayoutStyle = new Style(selector => selector.Nesting().Template().Name(ArrowIndicatorLayoutPart));
+            arrowIndicatorLayoutStyle.Add(LayoutTransformControl.LayoutTransformProperty, new RotateTransform(-90));
+            leftDirectionStyle.Add(arrowIndicatorLayoutStyle);
+        }
+        {
+            var arrowPositionLayoutStyle = new Style(selector => selector.Nesting().Template().Name(ArrowPositionLayoutPart));
+            arrowPositionLayoutStyle.Add(DockPanel.DockProperty, Dock.Left);
+            leftDirectionStyle.Add(arrowPositionLayoutStyle);
         }
         commonStyle.Add(leftDirectionStyle);
     }
