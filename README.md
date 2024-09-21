@@ -39,6 +39,12 @@ AtomUI is an implementation of Ant Design based on .NET technology, dedicated to
 
 Welcome to communicate and give suggestions to AtomUI, thank you for giving the project a Star.
 
+#### Features
+
+- Enterprise-class UI designed from Ant Design system for cross platform desktop applications.
+- A set of high-quality Avalonia Controls out of the box.
+- Use .NET development to achieve one-stop writing, seamless compilation on mainstream operating system platforms and render a consistent UI experience.
+- Based on Avalonia's powerful style system, Ant Design's theme customization capabilities are fully implemented.
 
 #### Control library completion
 

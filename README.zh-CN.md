@@ -38,17 +38,24 @@
 AtomUI 是基于 .NET 技术的 Ant Design 实现，致力于将 Ant Design 优秀而高效的设计语言和体验带入 Avalonia/.NET 跨平台桌面软件开发领域。
 欢迎与 AtomUI 进行交流并提出建议，感谢您为该项目点赞。
 
-#### 感谢 Gitee 对 AtomUI 的认可
+#### 特性
 
-<p align="center">
-    <img src="./docs/images/GVP.png" width="600"/>
-</p>
+- 实现 Ant Design 提炼自企业级中后台产品的交互语言和视觉风格。
+- 开箱即用的高质量 Avalonia 组件。
+- 使用 .NET 开发，实现一处编写，无缝在主流操作系统平台编译并且渲染出一致的 UI 体验。
+- 基于 Avalonia 强大的风格系统，完整实现了 Ant Design 的主题定制能力。
 
 #### 运行环境
 
 .NET 8 及其以上<br>
 Avalonia 11.1.1 及其以上<br>
 PS: AtomUI 目前仅在 Windows 11 平台测试<br>
+
+#### 感谢 Gitee 对 AtomUI 的认可
+
+<p align="center">
+    <img src="./docs/images/GVP.png" width="600"/>
+</p>
 
 #### 中文社区
 目前我们暂时只创建 QQ 和微信开发者群的交流方式，下面是二维码，有兴趣的同学可以扫码加入：
