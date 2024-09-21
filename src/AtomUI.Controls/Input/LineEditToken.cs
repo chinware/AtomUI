@@ -117,25 +117,25 @@ internal class LineEditToken : AbstractControlDesignToken
     internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
-        var fontSize     = _globalToken.FontToken.FontSize;
-        var fontSizeLG   = _globalToken.FontToken.FontSizeLG;
-        var lineHeight   = _globalToken.FontToken.LineHeight;
-        var lineHeightLG = _globalToken.FontToken.LineHeightLG;
-        var lineWidth    = _globalToken.SeedToken.LineWidth;
+        var fontSize     = _globalToken.FontSize;
+        var fontSizeLG   = _globalToken.FontSizeLG;
+        var lineHeight   = _globalToken.LineHeight;
+        var lineHeightLG = _globalToken.LineHeightLG;
+        var lineWidth    = _globalToken.LineWidth;
         Padding = new Thickness(_globalToken.PaddingSM - lineWidth,
-            Math.Round((_globalToken.SeedToken.ControlHeight - fontSize * lineHeight) / 2 * 10) / 10 - lineWidth);
+            Math.Round((_globalToken.ControlHeight - fontSize * lineHeight) / 2 * 10) / 10 - lineWidth);
         PaddingSM = new Thickness(_globalToken.ControlPaddingSM - lineWidth,
-            Math.Round((_globalToken.HeightToken.ControlHeightSM - fontSize * lineHeight) / 2 * 10) / 10 - lineWidth);
+            Math.Round((_globalToken.ControlHeightSM - fontSize * lineHeight) / 2 * 10) / 10 - lineWidth);
         PaddingLG = new Thickness(_globalToken.ControlPadding - lineWidth,
-            Math.Ceiling((_globalToken.HeightToken.ControlHeightLG - fontSizeLG * lineHeightLG) / 2 * 10) / 10 -
+            Math.Ceiling((_globalToken.ControlHeightLG - fontSizeLG * lineHeightLG) / 2 * 10) / 10 -
             lineWidth);
         AddOnPadding   = new Thickness(_globalToken.PaddingSM, 0);
         AddOnPaddingSM = new Thickness(_globalToken.ControlPaddingSM, 0);
         AddOnPaddingLG = new Thickness(_globalToken.ControlPadding, 0);
 
         AddonBg           = _globalToken.ColorFillAlter;
-        ActiveBorderColor = _globalToken.ColorToken.ColorPrimaryToken.ColorPrimary;
-        HoverBorderColor  = _globalToken.ColorToken.ColorPrimaryToken.ColorPrimaryHover;
+        ActiveBorderColor = _globalToken.ColorPrimary;
+        HoverBorderColor  = _globalToken.ColorPrimaryHover;
         ActiveShadow = new BoxShadow
         {
             Spread = _globalToken.ControlOutlineWidth,
@@ -151,11 +151,11 @@ internal class LineEditToken : AbstractControlDesignToken
             Spread = _globalToken.ControlOutlineWidth,
             Color  = _globalToken.ColorWarningOutline
         };
-        HoverBg         = _globalToken.ColorToken.ColorNeutralToken.ColorBgContainer;
-        ActiveBg        = _globalToken.ColorToken.ColorNeutralToken.ColorBgContainer;
-        InputFontSize   = _globalToken.FontToken.FontSize;
-        InputFontSizeLG = _globalToken.FontToken.FontSizeLG;
-        InputFontSizeSM = _globalToken.FontToken.FontSizeSM;
+        HoverBg         = _globalToken.ColorBgContainer;
+        ActiveBg        = _globalToken.ColorBgContainer;
+        InputFontSize   = _globalToken.FontSize;
+        InputFontSizeLG = _globalToken.FontSizeLG;
+        InputFontSizeSM = _globalToken.FontSizeSM;
 
         LeftInnerAddOnMargin  = new Thickness(0, 0, _globalToken.MarginXXS, 0);
         RightInnerAddOnMargin = new Thickness(_globalToken.MarginXXS, 0, 0, 0);

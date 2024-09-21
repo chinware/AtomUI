@@ -1,13 +1,12 @@
-﻿using AtomUI.Theme.Palette;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Media;
 
 namespace AtomUI.Theme.TokenSystem;
 
 [GlobalDesignToken]
-public class SeedDesignToken : AbstractDesignToken
+public partial class GlobalToken
 {
-   /// <summary>
+     /// <summary>
    /// 品牌主色
    /// 品牌色是体现产品特性和传播理念最直观的视觉元素之一。在你完成品牌主色的选取之后，我们会自动帮你生成一套完整的色板，并赋予它们有效的设计语义
    /// </summary>
@@ -77,7 +76,7 @@ public class SeedDesignToken : AbstractDesignToken
     /// 默认字号
     /// 设计系统中使用最广泛的字体大小，文本梯度也将基于该字号进行派生。
     /// </summary>
-    public int FontSize { get; set; } = 14;
+    public double FontSize { get; set; } = 14;
 
     //  ----------   Line   ---------- //
     /// <summary>
@@ -167,55 +166,4 @@ public class SeedDesignToken : AbstractDesignToken
     /// 用于配置动画效果，为 `false` 时则关闭动画
     /// </summary>
     public bool Motion { get; set; } = true;
-
-    /// <summary>
-    /// 现在这里的实现是写死的主色，后面是不是可以读取配置
-    /// </summary>
-    private readonly IDictionary<PresetColorType, PresetPrimaryColor> _defaultPresetColors;
-
-    public SeedDesignToken()
-    {
-        ColorPrimary = Color.Parse("#1677ff");
-        ColorSuccess = Color.Parse("#52c41a");
-        ColorWarning = Color.Parse("#faad14");
-        ColorError   = Color.Parse("#ff4d4f");
-        ColorInfo    = Color.Parse("#1677ff");
-        FontFamily = new List<string>
-        {
-            "-apple-system",
-            "BlinkMacSystemFont",
-            "Segoe UI",
-            "Roboto",
-            "Helvetica Neue",
-            "Arial",
-            "Noto Sans",
-            "sans-serif",
-            "Apple Color Emoji",
-            "Segoe UI Emoji",
-            "Segoe UI Symbol",
-            "Microsoft YaHei"
-        };
-        FontFamilyCode = new List<string>
-        {
-            "SFMono-Regular",
-            "Consolas",
-            "Liberation Mono",
-            "Menlo",
-            "Courier",
-            "monospace"
-        };
-        _defaultPresetColors = new Dictionary<PresetColorType, PresetPrimaryColor>();
-        foreach (var color in PresetPrimaryColor.AllColorTypes())
-        {
-            _defaultPresetColors[color.Type] = color;
-        }
-
-        BorderRadius     = new CornerRadius(6);
-        ColorTransparent = Colors.Transparent;
-    }
-
-    public PresetPrimaryColor GetPresetPrimaryColor(PresetColorType colorType)
-    {
-        return _defaultPresetColors[colorType];
-    }
 }

@@ -1,18 +1,13 @@
 ﻿namespace AtomUI.Theme.TokenSystem;
 
 [GlobalDesignToken]
-public class FontMapDesignToken : AbstractDesignToken
+public partial class GlobalToken
 {
     // Font Size
     /// <summary>
     /// 小号字体大小
     /// </summary>
     public double FontSizeSM { get; set; }
-
-    /// <summary>
-    /// 标准字体大小
-    /// </summary>
-    public double FontSize { get; set; }
 
     /// <summary>
     /// 大号字体大小

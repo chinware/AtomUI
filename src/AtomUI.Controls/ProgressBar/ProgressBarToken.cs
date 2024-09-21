@@ -56,15 +56,14 @@ internal class ProgressBarToken : AbstractControlDesignToken
     internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
-        var colorNeutralToken = _globalToken.ColorToken.ColorNeutralToken;
-        var colorInfoToken    = _globalToken.ColorToken.ColorInfoToken;
-        CircleTextColor  = colorNeutralToken.ColorText;
-        DefaultColor     = colorInfoToken.ColorInfo;
-        RemainingColor   = colorNeutralToken.ColorFillSecondary;
+
+        CircleTextColor  = _globalToken.ColorText;
+        DefaultColor     = _globalToken.ColorInfo;
+        RemainingColor   = _globalToken.ColorFillSecondary;
         LineBorderRadius = new CornerRadius(100); // magic for capsule shape, should be a very large number
         // 这两个要通过计算
-        CircleMinimumIconSize     = _globalToken.SizeToken.SizeXS;
-        CircleMinimumTextFontSize = _globalToken.FontToken.FontSizeSM - 2;
+        CircleMinimumIconSize     = _globalToken.SizeXS;
+        CircleMinimumTextFontSize = _globalToken.FontSizeSM - 2;
         LineInfoIconSize          = _globalToken.IconSize;
         LineInfoIconSizeSM        = _globalToken.IconSizeSM;
         LineExtraInfoMargin       = _globalToken.ControlPaddingSM;

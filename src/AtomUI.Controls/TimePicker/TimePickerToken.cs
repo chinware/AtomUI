@@ -57,7 +57,7 @@ internal class TimePickerToken : AbstractControlDesignToken
     {
         base.CalculateFromAlias();
         ItemWidth                     = 40;
-        ItemHeight                    = _globalToken.SeedToken.ControlHeight - 4;
+        ItemHeight                    = _globalToken.ControlHeight - 4;
         ItemPadding                   = new Thickness(0, _globalToken.PaddingXXS);
         ButtonsMargin                 = new Thickness(0, _globalToken.MarginXS, 0, 0);
         RangePickerArrowMargin        = new Thickness(_globalToken.MarginXS, 0);

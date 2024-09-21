@@ -1,6 +1,7 @@
 ﻿using AtomUI.Theme.Styling;
 using AtomUI.Theme.TokenSystem;
 using Avalonia.Controls;
+using Avalonia.Media;
 using Avalonia.Styling;
 
 namespace AtomUI.Theme;
@@ -21,7 +22,7 @@ public abstract class Theme : ITheme
     protected string _definitionFilePath;
     protected ResourceDictionary _resourceDictionary;
     protected ThemeVariant _themeVariant;
-    protected AliasDesignToken _globalToken;
+    protected GlobalToken _globalToken;
     protected Dictionary<string, IControlDesignToken> _controlTokens;
 
     public static readonly IList<string> SUPPORTED_ALGORITHMS;
@@ -35,7 +36,7 @@ public abstract class Theme : ITheme
     internal ResourceDictionary ThemeResource => _resourceDictionary;
     public bool IsDarkMode => _darkMode;
     public bool IsActivated => _activated;
-    public AliasDesignToken GlobalToken => _globalToken;
+    public GlobalToken GlobalToken => _globalToken;
 
     static Theme()
     {
@@ -54,7 +55,7 @@ public abstract class Theme : ITheme
         _themeVariant                                      = ThemeVariant.Default;
         _resourceDictionary                                = new ResourceDictionary();
         (_resourceDictionary as IThemeVariantProvider).Key = _themeVariant;
-        _globalToken                                       = new AliasDesignToken();
+        _globalToken                                       = new GlobalToken();
         _controlTokens                                     = new Dictionary<string, IControlDesignToken>();
     }
 
@@ -105,19 +106,17 @@ public abstract class Theme : ITheme
                 calculator     = CreateThemeVariantCalculator(algorithmId, baseCalculator);
                 baseCalculator = calculator;
             }
-
+    
             _themeVariantCalculator = calculator;
-            var seedToken = new SeedDesignToken();
-            _globalToken = new AliasDesignToken();
-            seedToken.LoadConfig(globalTokenConfig);
+            _globalToken.LoadConfig(globalTokenConfig);
 
-            _themeVariantCalculator.Calculate(seedToken, _globalToken);
+            _themeVariantCalculator.Calculate(_globalToken);
 
             // 交付最终的基础色
-            seedToken.ColorBgBase   = _themeVariantCalculator.ColorBgBase;
-            seedToken.ColorTextBase = _themeVariantCalculator.ColorTextBase;
+            _globalToken.ColorBgBase   = _themeVariantCalculator.ColorBgBase;
+            _globalToken.ColorTextBase = _themeVariantCalculator.ColorTextBase;
 
-            _globalToken.CalculateTokenValues();
+            _globalToken.CalculateAliasTokenValues();
 
             // TODO 先用算法，然后再设置配置文件中的值，不知道合理不
             _globalToken.LoadConfig(globalTokenConfig);
@@ -138,14 +137,14 @@ public abstract class Theme : ITheme
                 {
                     continue;
                 }
-
-                var controlAliasToken = (AliasDesignToken)_globalToken.Clone();
-                controlAliasToken.SeedToken.LoadConfig(controlTokenInfo.ControlTokens);
+                // 需要 Review
+                var controlAliasToken = (GlobalToken)_globalToken.Clone();
+                controlAliasToken.LoadConfig(controlTokenInfo.ControlTokens);
 
                 if (controlTokenInfo.UseAlgorithm)
                 {
-                    _themeVariantCalculator.Calculate(controlAliasToken.SeedToken, controlAliasToken);
-                    controlAliasToken.CalculateTokenValues();
+                    _themeVariantCalculator.Calculate(controlAliasToken);
+                    controlAliasToken.CalculateAliasTokenValues();
                 }
 
                 var controlToken = _controlTokens[controlTokenInfo.TokenId];
@@ -280,5 +279,13 @@ public abstract class Theme : ITheme
 
     internal virtual void NotifyRegistered()
     {
+    }
+}
+
+class xxx : GlobalToken
+{
+    public xxx()
+    {
+        base.ColorPrimary = new Color();
     }
 }

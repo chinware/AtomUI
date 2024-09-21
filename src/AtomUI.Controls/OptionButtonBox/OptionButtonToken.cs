@@ -114,21 +114,19 @@ public class OptionButtonToken : AbstractControlDesignToken
     internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
-        var colorNeutralToken = _globalToken.ColorToken.ColorNeutralToken;
-        var colorPrimaryToken = _globalToken.ColorToken.ColorPrimaryToken;
         ButtonSolidCheckedColor            = _globalToken.ColorTextLightSolid;
-        ButtonSolidCheckedBackground       = colorPrimaryToken.ColorPrimary;
-        ButtonSolidCheckedHoverBackground  = colorPrimaryToken.ColorPrimaryHover;
-        ButtonSolidCheckedActiveBackground = colorPrimaryToken.ColorPrimaryActive;
-        ButtonBackground                   = colorNeutralToken.ColorBgContainer;
-        ButtonCheckedBackground            = colorNeutralToken.ColorBgContainer;
-        ButtonColor                        = colorNeutralToken.ColorText;
+        ButtonSolidCheckedBackground       = _globalToken.ColorPrimary;
+        ButtonSolidCheckedHoverBackground  = _globalToken.ColorPrimaryHover;
+        ButtonSolidCheckedActiveBackground = _globalToken.ColorPrimaryActive;
+        ButtonBackground                   = _globalToken.ColorBgContainer;
+        ButtonCheckedBackground            = _globalToken.ColorBgContainer;
+        ButtonColor                        = _globalToken.ColorText;
         ButtonCheckedBgDisabled            = _globalToken.ControlItemBgActiveDisabled;
         ButtonCheckedColorDisabled         = _globalToken.ColorTextDisabled;
         ButtonPadding                      = new Thickness(_globalToken.Padding, 0);
 
-        var fontSize   = _globalToken.FontToken.FontSize;
-        var fontSizeLG = _globalToken.FontToken.FontSizeLG;
+        var fontSize   = _globalToken.FontSize;
+        var fontSizeLG = _globalToken.FontSizeLG;
 
         ContentFontSize   = !MathUtils.AreClose(ContentFontSize, -1) ? ContentFontSize : fontSize;
         ContentFontSizeSM = !MathUtils.AreClose(ContentFontSizeSM, -1) ? ContentFontSizeSM : fontSize;
@@ -143,16 +141,16 @@ public class OptionButtonToken : AbstractControlDesignToken
             ? ContentLineHeightLG
             : CalculatorUtils.CalculateLineHeight(ContentFontSizeLG);
 
-        var controlHeight   = _globalToken.SeedToken.ControlHeight;
-        var controlHeightSM = _globalToken.HeightToken.ControlHeightSM;
-        var controlHeightLG = _globalToken.HeightToken.ControlHeightLG;
-        var lineWidth       = _globalToken.SeedToken.LineWidth;
+        var controlHeight   = _globalToken.ControlHeight;
+        var controlHeightSM = _globalToken.ControlHeightSM;
+        var controlHeightLG = _globalToken.ControlHeightLG;
+        var lineWidth       = _globalToken.LineWidth;
 
         Padding = new Thickness(_globalToken.PaddingContentHorizontal - lineWidth,
             Math.Max((controlHeight - ContentFontSize * ContentLineHeight) / 2 - lineWidth, 0));
         PaddingLG = new Thickness(_globalToken.PaddingContentHorizontal - lineWidth,
             Math.Max((controlHeightSM - ContentFontSizeSM * ContentLineHeightSM) / 2 - lineWidth, 0));
-        PaddingSM = new Thickness(8 - _globalToken.SeedToken.LineWidth,
+        PaddingSM = new Thickness(8 - _globalToken.LineWidth,
             Math.Max((controlHeightLG - controlHeightLG * controlHeightLG) / 2 - lineWidth, 0));
     }
 }

@@ -104,10 +104,9 @@ internal class ToggleSwitchToken : AbstractControlDesignToken
     internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
-        var fontToken     = _globalToken.FontToken;
-        var fontSize      = fontToken.FontSize;
-        var lineHeight    = fontToken.LineHeight;
-        var controlHeight = _globalToken.SeedToken.ControlHeight;
+        var fontSize      = _globalToken.FontSize;
+        var lineHeight    = _globalToken.LineHeight;
+        var controlHeight = _globalToken.ControlHeight;
 
         var    height       = fontSize * lineHeight;
         var    heightSM     = controlHeight / 2;
@@ -120,7 +119,7 @@ internal class ToggleSwitchToken : AbstractControlDesignToken
         TrackMinWidth   = handleSize * 2 + padding * 4;
         TrackMinWidthSM = handleSizeSM * 2 + padding * 2;
         TrackPadding    = padding; // Fixed value
-        HandleBg        = _globalToken.ColorToken.ColorWhite;
+        HandleBg        = _globalToken.ColorWhite;
         HandleSize      = new Size(handleSize, handleSize);
         HandleSizeSM    = new Size(handleSizeSM, handleSizeSM);
 
@@ -129,13 +128,13 @@ internal class ToggleSwitchToken : AbstractControlDesignToken
         InnerMinMarginSM = handleSizeSM / 2 - padding;
         InnerMaxMarginSM = handleSizeSM + padding * 3;
 
-        SwitchDuration         = _globalToken.StyleToken.MotionDurationMid;
-        SwitchColor            = _globalToken.ColorToken.ColorPrimaryToken.ColorPrimary;
+        SwitchDuration         = _globalToken.MotionDurationMid;
+        SwitchColor            = _globalToken.ColorPrimary;
         SwitchDisabledOpacity  = _globalToken.OpacityLoading;
         SwitchLoadingIconSize  = _globalToken.FontSizeIcon * 0.75;
         SwitchLoadingIconColor = ColorUtils.FromRgbF(SwitchDisabledOpacity, 0, 0, 0);
 
-        ExtraInfoFontSize   = _globalToken.FontToken.FontSizeSM;
+        ExtraInfoFontSize   = _globalToken.FontSizeSM;
         ExtraInfoFontSizeSM = ExtraInfoFontSize - 1;
 
         HandleShadow = new BoxShadow

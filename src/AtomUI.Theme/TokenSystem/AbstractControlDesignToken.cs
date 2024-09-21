@@ -8,7 +8,7 @@ namespace AtomUI.Theme.TokenSystem;
 /// </summary>
 public abstract class AbstractControlDesignToken : AbstractDesignToken, IControlDesignToken
 {
-    protected AliasDesignToken _globalToken;
+    protected GlobalToken _globalToken;
 
     public string Id { get; init; }
 
@@ -23,7 +23,7 @@ public abstract class AbstractControlDesignToken : AbstractDesignToken, IControl
         CustomTokens        = new List<string>();
     }
 
-    public void AssignGlobalToken(AliasDesignToken globalToken)
+    public void AssignGlobalToken(GlobalToken globalToken)
     {
         _globalToken = globalToken;
     }

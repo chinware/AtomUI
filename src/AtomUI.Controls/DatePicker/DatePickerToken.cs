@@ -129,23 +129,23 @@ internal class DatePickerToken : AbstractControlDesignToken
     {
         base.CalculateFromAlias();
 
-        var colorPrimary = _globalToken.ColorToken.ColorPrimaryToken.ColorPrimary;
+        var colorPrimary = _globalToken.ColorPrimary;
 
         CellHoverBg                 = _globalToken.ControlItemBgHover;
         CellActiveWithRangeBg       = _globalToken.ControlItemBgActive;
         CellHoverWithRangeBg        = colorPrimary.Lighten(35);
         CellRangeBorderColor        = colorPrimary.Lighten(20);
         CellBgDisabled              = _globalToken.ColorBgContainerDisabled;
-        CellWidth                   = _globalToken.HeightToken.ControlHeightSM;
-        CellHeight                  = _globalToken.HeightToken.ControlHeightSM;
-        TextHeight                  = _globalToken.HeightToken.ControlHeightLG;
-        WithoutTimeCellHeight       = _globalToken.HeightToken.ControlHeightLG * 1.65;
+        CellWidth                   = _globalToken.ControlHeightSM;
+        CellHeight                  = _globalToken.ControlHeightSM;
+        TextHeight                  = _globalToken.ControlHeightLG;
+        WithoutTimeCellHeight       = _globalToken.ControlHeightLG * 1.65;
         CellMargin                  = new Thickness(_globalToken.MarginXXS);
         PanelContentPadding         = new Thickness(_globalToken.PaddingSM);
         ItemPanelMinWidth           = 225;
         ItemPanelMinHeight          = 270;
         RangeItemPanelMinWidth      = 260;
-        DayTitleHeight              = _globalToken.HeightToken.ControlHeightSM;
+        DayTitleHeight              = _globalToken.ControlHeightSM;
         HeaderMargin                = new Thickness(0, 0, 0, _globalToken.MarginSM);
         HeaderPadding               = new Thickness(0, 0, 0, _globalToken.PaddingSM);
         CellLineHeight              = CellHeight - 2; // 不知道为啥设置成一样，或者不设置文字有些靠下

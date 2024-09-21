@@ -312,7 +312,7 @@ internal class NavMenuToken : AbstractControlDesignToken
         var activeBarWidth = !double.IsNaN(ActiveBarWidth) ? ActiveBarWidth : 0.0d;
         var activeBarBorderWidth = !double.IsNaN(ActiveBarBorderWidth)
             ? ActiveBarBorderWidth
-            : _globalToken.SeedToken.LineWidth;
+            : _globalToken.LineWidth;
         var itemMargin    = ItemMargin != default ? ItemMargin : new Thickness(_globalToken.MarginXXS, _globalToken.MarginXXS);
         var colorTextDark = ColorUtils.FromRgbF(
             0.65d,
@@ -320,52 +320,49 @@ internal class NavMenuToken : AbstractControlDesignToken
             colorTextLightSolid.GetGreenF(),
             colorTextLightSolid.GetBlueF());
         
-        var colorNeutralToken = _globalToken.ColorToken.ColorNeutralToken;
-        var colorPrimaryToken = _globalToken.ColorToken.ColorPrimaryToken;
-        var colorErrorToken = _globalToken.ColorToken.ColorErrorToken;
         
         DropDownWidth               = 160d;
-        ItemBorderRadius            = _globalToken.StyleToken.BorderRadiusLG;
-        SubMenuItemBorderRadius     = _globalToken.StyleToken.BorderRadiusSM;
-        ItemColor                   = colorNeutralToken.ColorText;
-        ItemHoverColor              = colorNeutralToken.ColorText;
-        HorizontalItemHoverColor    = colorPrimaryToken.ColorPrimary;
+        ItemBorderRadius            = _globalToken.BorderRadiusLG;
+        SubMenuItemBorderRadius     = _globalToken.BorderRadiusSM;
+        ItemColor                   = _globalToken.ColorText;
+        ItemHoverColor              = _globalToken.ColorText;
+        HorizontalItemHoverColor    = _globalToken.ColorPrimary;
         GroupTitleColor             = _globalToken.ColorTextDescription;
-        ItemSelectedColor           = colorPrimaryToken.ColorPrimary;
-        HorizontalItemSelectedColor = colorPrimaryToken.ColorPrimary;
-        ItemBg                      = colorNeutralToken.ColorBgContainer;
+        ItemSelectedColor           = _globalToken.ColorPrimary;
+        HorizontalItemSelectedColor = _globalToken.ColorPrimary;
+        ItemBg                      = _globalToken.ColorBgContainer;
         ItemHoverBg                 = _globalToken.ColorBgTextHover;
         ItemActiveBg                = _globalToken.ColorFillContent;
         SubMenuItemBg               = _globalToken.ColorFillAlter;
         ItemSelectedBg              = _globalToken.ControlItemBgActive;
         HorizontalItemSelectedBg    = Colors.Transparent;
         ActiveBarWidth              = activeBarWidth;
-        ActiveBarHeight             = _globalToken.StyleToken.LineWidthBold;
+        ActiveBarHeight             = _globalToken.LineWidthBold;
         ActiveBarBorderWidth        = activeBarBorderWidth;
         
         // Disabled
         ItemDisabledColor = _globalToken.ColorTextDisabled;
         
         // Danger
-        DangerItemColor         = colorErrorToken.ColorError;
-        DangerItemHoverColor    = colorErrorToken.ColorError;
-        DangerItemSelectedColor = colorErrorToken.ColorError;
-        DangerItemActiveBg      = colorErrorToken.ColorError;
-        DangerItemSelectedBg    = colorErrorToken.ColorError;
+        DangerItemColor         = _globalToken.ColorError;
+        DangerItemHoverColor    = _globalToken.ColorError;
+        DangerItemSelectedColor = _globalToken.ColorError;
+        DangerItemActiveBg      = _globalToken.ColorError;
+        DangerItemSelectedBg    = _globalToken.ColorError;
 
         ItemMargin                 = itemMargin;
         HorizontalItemBorderRadius = new CornerRadius(0);
         HorizontalItemHoverBg      = Colors.Transparent;
-        ItemHeight                 = _globalToken.HeightToken.ControlHeightLG;
-        GroupTitleLineHeight       = _globalToken.SeedToken.ControlHeight;
-        CollapsedWidth             = _globalToken.HeightToken.ControlHeightLG * 2;
-        PopupBg                    = colorNeutralToken.ColorBgElevated;
+        ItemHeight                 = _globalToken.ControlHeightLG;
+        GroupTitleLineHeight       = _globalToken.ControlHeight;
+        CollapsedWidth             = _globalToken.ControlHeightLG * 2;
+        PopupBg                    = _globalToken.ColorBgElevated;
         ItemPadding                = new Thickness(_globalToken.Padding, 0);
-        HorizontalLineHeight = _globalToken.HeightToken.ControlHeightLG * 1.15;
-        IconSize = _globalToken.FontToken.FontSize;
-        IconMargin = new Thickness(0, 0, _globalToken.HeightToken.ControlHeightSM - _globalToken.FontToken.FontSize, 0);
-        CollapsedIconSize = _globalToken.FontToken.FontSizeLG;
-        GroupTitleFontSize = _globalToken.FontToken.FontSize;
+        HorizontalLineHeight = _globalToken.ControlHeightLG * 1.15;
+        IconSize = _globalToken.FontSize;
+        IconMargin = new Thickness(0, 0, _globalToken.ControlHeightSM - _globalToken.FontSize, 0);
+        CollapsedIconSize = _globalToken.FontSizeLG;
+        GroupTitleFontSize = _globalToken.FontSize;
         
         // Disabled
         DarkItemDisabledColor = ColorUtils.FromRgbF(0.25d,
@@ -375,20 +372,20 @@ internal class NavMenuToken : AbstractControlDesignToken
         
         // Dark
         DarkItemColor       = colorTextDark;
-        DarkDangerItemColor = colorErrorToken.ColorError;
+        DarkDangerItemColor = _globalToken.ColorError;
         DarkItemBg          = Color.Parse("#001529");
         DarkPopupBg         = Color.Parse("#001529");
         DarkSubMenuItemBg   = Color.Parse("#000c17");
 
         DarkItemSelectedColor       = colorTextLightSolid;
-        DarkItemSelectedBg          = colorPrimaryToken.ColorPrimary;
-        DarkDangerItemSelectedBg    = colorErrorToken.ColorError;
+        DarkItemSelectedBg          = _globalToken.ColorPrimary;
+        DarkDangerItemSelectedBg    = _globalToken.ColorError;
         DarkItemHoverBg             = Colors.Transparent;
         DarkGroupTitleColor         = colorTextDark;
         DarkItemHoverColor          = colorTextLightSolid;
-        DarkDangerItemHoverColor    = colorErrorToken.ColorErrorHover;
+        DarkDangerItemHoverColor    = _globalToken.ColorErrorHover;
         DarkDangerItemSelectedColor = colorTextLightSolid;
-        DarkDangerItemActiveBg      = colorErrorToken.ColorError;
+        DarkDangerItemActiveBg      = _globalToken.ColorError;
     }
     
 }

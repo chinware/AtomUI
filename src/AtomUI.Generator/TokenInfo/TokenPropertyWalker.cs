@@ -6,7 +6,7 @@ namespace AtomUI.Generator;
 
 public class TokenPropertyWalker : CSharpSyntaxWalker
 {
-    public const string AbstractDesignTokenName = "AbstractDesignToken";
+    public const string NotTokenDefinitionAttribute = "NotTokenDefinition";
     
     public HashSet<string> TokenNames { get; }
     public string? TokenResourceCatalog { get; set; }
@@ -20,22 +20,11 @@ public class TokenPropertyWalker : CSharpSyntaxWalker
 
     public override void VisitPropertyDeclaration(PropertyDeclarationSyntax node)
     {
-        // 判断属性是不是继承自 Token 接口
-        var propertyType = _semanticModel.GetTypeInfo(node.Type).Type;
-        var normalToken  = true;
-        while (propertyType is not null)
-        {
-            var name = propertyType;
-            if (propertyType.Name == AbstractDesignTokenName)
-            {
-                normalToken = false;
-                break;
-            }
+        var isSkip = node.AttributeLists
+                         .SelectMany(attrList => attrList.Attributes)
+                         .Any(attr => attr.Name.ToString() == NotTokenDefinitionAttribute);
 
-            propertyType = propertyType.BaseType;
-        }
-
-        if (normalToken)
+        if (!isSkip)
         {
             TokenNames.Add(node.Identifier.Text);
         }

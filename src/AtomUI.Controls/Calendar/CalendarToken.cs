@@ -105,17 +105,17 @@ internal class CalendarToken : AbstractControlDesignToken
     {
         base.CalculateFromAlias();
 
-        var colorPrimary = _globalToken.ColorToken.ColorPrimaryToken.ColorPrimary;
+        var colorPrimary = _globalToken.ColorPrimary;
 
         CellHoverBg           = _globalToken.ControlItemBgHover;
         CellActiveWithRangeBg = _globalToken.ControlItemBgActive;
         CellHoverWithRangeBg  = colorPrimary.Lighten(35);
         CellRangeBorderColor  = colorPrimary.Lighten(20);
         CellBgDisabled        = _globalToken.ColorBgContainerDisabled;
-        CellWidth             = _globalToken.HeightToken.ControlHeightSM;
-        CellHeight            = _globalToken.HeightToken.ControlHeightSM;
-        TextHeight            = _globalToken.HeightToken.ControlHeightLG;
-        WithoutTimeCellHeight = _globalToken.HeightToken.ControlHeightLG * 1.65;
+        CellWidth             = _globalToken.ControlHeightSM;
+        CellHeight            = _globalToken.ControlHeightSM;
+        TextHeight            = _globalToken.ControlHeightLG;
+        WithoutTimeCellHeight = _globalToken.ControlHeightLG * 1.65;
         CellMargin            = new Thickness(_globalToken.MarginXXS);
         PanelContentPadding   = new Thickness(_globalToken.PaddingSM);
         ItemPanelMinWidth     = 260;

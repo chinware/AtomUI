@@ -3,9 +3,9 @@
 namespace AtomUI.Theme.TokenSystem;
 
 [GlobalDesignToken]
-public class AliasDesignToken : MapDesignToken
+public partial class GlobalToken
 {
-   /// <summary>
+     /// <summary>
    /// 内容区域背景色（悬停）
    /// 控制内容区域背景色在鼠标悬停时的样式。
    /// </summary>

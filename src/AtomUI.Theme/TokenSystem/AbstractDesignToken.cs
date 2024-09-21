@@ -97,17 +97,25 @@ public abstract class AbstractDesignToken : IDesignToken
 
     private string GetTokenResourceCatalog()
     {
-        var tokenType = GetType();
-        if (tokenType.GetCustomAttribute<GlobalDesignTokenAttribute>() is GlobalDesignTokenAttribute
-            globalTokenAttribute)
+        var tokenType                   = GetType();
+        // 这里我们简单的获取一个，理论上如果多次应用 ResourceCatalog 不同要报错
+        var globalDesignTokenAttributes = tokenType.GetCustomAttributes<GlobalDesignTokenAttribute>();
+        string? tokenResourceCatalog = null;
+        foreach (var globalDesignTokenAttribute in globalDesignTokenAttributes)
         {
-            return globalTokenAttribute.ResourceCatalog;
+            tokenResourceCatalog = globalDesignTokenAttribute.ResourceCatalog;
+            break;
         }
 
-        if (tokenType.GetCustomAttribute<ControlDesignTokenAttribute>() is ControlDesignTokenAttribute
-            controlTokenAttribute)
+        if (tokenResourceCatalog is not null)
         {
-            return controlTokenAttribute.ResourceCatalog;
+            return tokenResourceCatalog;
+        }
+
+        var controlDesignTokenAttribute = tokenType.GetCustomAttribute<ControlDesignTokenAttribute>();
+        if (controlDesignTokenAttribute is not null)
+        {
+            return controlDesignTokenAttribute.ResourceCatalog;
         }
 
         throw new TokenResourceRegisterException(

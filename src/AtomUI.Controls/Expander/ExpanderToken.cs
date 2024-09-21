@@ -72,10 +72,10 @@ internal class ExpanderToken : AbstractControlDesignToken
         ContentPadding           = new Thickness(16, _globalToken.Padding);
         ContentPaddingSM         = new Thickness(_globalToken.PaddingSM);
         ContentPaddingLG         = new Thickness(_globalToken.PaddingLG);
-        ContentBg                = _globalToken.ColorToken.ColorNeutralToken.ColorBgContainer;
+        ContentBg                = _globalToken.ColorBgContainer;
         HeaderPaddingSM          = new Thickness(_globalToken.PaddingSM, _globalToken.PaddingXS);
         HeaderPaddingLG          = new Thickness(_globalToken.PaddingLG, _globalToken.Padding);
-        ExpanderBorderRadius     = _globalToken.StyleToken.BorderRadiusLG;
+        ExpanderBorderRadius     = _globalToken.BorderRadiusLG;
         LeftExpandButtonHMargin  = new Thickness(0, 0, _globalToken.MarginSM, 0);
         RightExpandButtonHMargin = new Thickness(_globalToken.MarginSM, 0, 0, 0);
         LeftExpandButtonVMargin  = new Thickness(0, 0, 0, _globalToken.MarginSM);

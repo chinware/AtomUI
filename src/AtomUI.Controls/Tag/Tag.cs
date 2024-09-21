@@ -304,38 +304,32 @@ public class Tag : TemplatedControl
                 return;
             }
 
-            var colorToken        = globalToken.ColorToken;
-            var colorSuccessToken = colorToken.ColorSuccessToken;
-            var colorInfoToken    = colorToken.ColorInfoToken;
-            var colorWarningToken = colorToken.ColorWarningToken;
-            var colorErrorToken   = colorToken.ColorErrorToken;
-
             _statusColorMap.Add(TagStatus.Success, new TagStatusCalcColor
             {
-                Color       = colorSuccessToken.ColorSuccess,
-                Background  = colorSuccessToken.ColorSuccessBg,
-                BorderColor = colorSuccessToken.ColorSuccessBorder
+                Color       = globalToken.ColorSuccess,
+                Background  = globalToken.ColorSuccessBg,
+                BorderColor = globalToken.ColorSuccessBorder
             });
 
             _statusColorMap.Add(TagStatus.Info, new TagStatusCalcColor
             {
-                Color       = colorInfoToken.ColorInfo,
-                Background  = colorInfoToken.ColorInfoBg,
-                BorderColor = colorInfoToken.ColorInfoBorder
+                Color       = globalToken.ColorInfo,
+                Background  = globalToken.ColorInfoBg,
+                BorderColor = globalToken.ColorInfoBorder
             });
 
             _statusColorMap.Add(TagStatus.Warning, new TagStatusCalcColor
             {
-                Color       = colorWarningToken.ColorWarning,
-                Background  = colorWarningToken.ColorWarningBg,
-                BorderColor = colorWarningToken.ColorWarningBorder
+                Color       = globalToken.ColorWarning,
+                Background  = globalToken.ColorWarningBg,
+                BorderColor = globalToken.ColorWarningBorder
             });
 
             _statusColorMap.Add(TagStatus.Error, new TagStatusCalcColor
             {
-                Color       = colorErrorToken.ColorError,
-                Background  = colorErrorToken.ColorErrorBg,
-                BorderColor = colorErrorToken.ColorErrorBorder
+                Color       = globalToken.ColorError,
+                Background  = globalToken.ColorErrorBg,
+                BorderColor = globalToken.ColorErrorBorder
             });
         }
     }

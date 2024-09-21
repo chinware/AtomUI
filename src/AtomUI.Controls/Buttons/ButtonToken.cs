@@ -252,8 +252,8 @@ internal class ButtonToken : AbstractControlDesignToken
     internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
-        var fontSize   = _globalToken.FontToken.FontSize;
-        var fontSizeLG = _globalToken.FontToken.FontSizeLG;
+        var fontSize   = _globalToken.FontSize;
+        var fontSizeLG = _globalToken.FontSizeLG;
 
         ContentFontSize   = !double.IsNaN(ContentFontSize) ? ContentFontSize : fontSize;
         ContentFontSizeSM = !double.IsNaN(ContentFontSizeSM) ? ContentFontSizeSM : fontSize;
@@ -296,38 +296,35 @@ internal class ButtonToken : AbstractControlDesignToken
             Spread  = 0,
             Color   = _globalToken.ColorErrorOutline
         };
-
-        var colorToken        = _globalToken.ColorToken;
-        var neutralColorToken = colorToken.ColorNeutralToken;
-        var primaryColorToken = colorToken.ColorPrimaryToken;
-        var lineWidth         = _globalToken.SeedToken.LineWidth;
+        
+        var lineWidth         = _globalToken.LineWidth;
 
         PrimaryColor            = _globalToken.ColorTextLightSolid;
         DangerColor             = _globalToken.ColorTextLightSolid;
-        BorderColorDisabled     = neutralColorToken.ColorBorder;
-        DefaultGhostColor       = neutralColorToken.ColorBgContainer;
+        BorderColorDisabled     = _globalToken.ColorBorder;
+        DefaultGhostColor       = _globalToken.ColorBgContainer;
         GhostBg                 = Colors.Transparent;
-        DefaultGhostBorderColor = neutralColorToken.ColorBgContainer;
+        DefaultGhostBorderColor = _globalToken.ColorBgContainer;
 
-        GroupBorderColor           = primaryColorToken.ColorPrimaryHover;
+        GroupBorderColor           = _globalToken.ColorPrimaryHover;
         LinkHoverBg                = Colors.Transparent;
         TextHoverBg                = _globalToken.ColorBgTextHover;
-        DefaultColor               = neutralColorToken.ColorText;
-        DefaultBg                  = neutralColorToken.ColorBgContainer;
-        DefaultBorderColor         = neutralColorToken.ColorBorder;
-        DefaultBorderColorDisabled = neutralColorToken.ColorBorder;
-        DefaultHoverBg             = neutralColorToken.ColorBgContainer;
-        DefaultHoverColor          = primaryColorToken.ColorPrimaryHover;
-        DefaultHoverBorderColor    = primaryColorToken.ColorPrimaryHover;
-        DefaultActiveBg            = neutralColorToken.ColorBgContainer;
-        DefaultActiveColor         = primaryColorToken.ColorPrimaryActive;
-        DefaultActiveBorderColor   = primaryColorToken.ColorPrimaryActive;
+        DefaultColor               = _globalToken.ColorText;
+        DefaultBg                  = _globalToken.ColorBgContainer;
+        DefaultBorderColor         = _globalToken.ColorBorder;
+        DefaultBorderColorDisabled = _globalToken.ColorBorder;
+        DefaultHoverBg             = _globalToken.ColorBgContainer;
+        DefaultHoverColor          = _globalToken.ColorPrimaryHover;
+        DefaultHoverBorderColor    = _globalToken.ColorPrimaryHover;
+        DefaultActiveBg            = _globalToken.ColorBgContainer;
+        DefaultActiveColor         = _globalToken.ColorPrimaryActive;
+        DefaultActiveBorderColor   = _globalToken.ColorPrimaryActive;
 
-        var controlHeightSM = _globalToken.HeightToken.ControlHeightSM;
-        var controlHeight   = _globalToken.SeedToken.ControlHeight;
-        var controlHeightLG = _globalToken.HeightToken.ControlHeightLG;
+        var controlHeightSM = _globalToken.ControlHeightSM;
+        var controlHeight   = _globalToken.ControlHeight;
+        var controlHeightLG = _globalToken.ControlHeightLG;
 
-        PaddingSM = new Thickness(8 - _globalToken.SeedToken.LineWidth,
+        PaddingSM = new Thickness(8 - _globalToken.LineWidth,
             Math.Max((controlHeightSM - ContentLineHeightSM) / 2 - lineWidth, 0));
         Padding = new Thickness(_globalToken.PaddingContentHorizontal - lineWidth,
             Math.Max((controlHeight - ContentLineHeight) / 2 - lineWidth, 0));

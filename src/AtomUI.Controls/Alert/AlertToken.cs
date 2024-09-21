@@ -62,7 +62,7 @@ internal class AlertToken : AbstractControlDesignToken
     {
         base.CalculateFromAlias();
         const double paddingHorizontal = 12; // Fixed value here.
-        WithDescriptionIconSize = _globalToken.FontToken.FontSizeHeading3;
+        WithDescriptionIconSize = _globalToken.FontSizeHeading3;
         DefaultPadding          = new Thickness(paddingHorizontal, _globalToken.PaddingContentVerticalSM);
         WithDescriptionPadding  = new Thickness(_globalToken.PaddingContentHorizontalLG, _globalToken.PaddingMD);
 
@@ -72,6 +72,6 @@ internal class AlertToken : AbstractControlDesignToken
         ExtraElementMargin           = new Thickness(_globalToken.MarginXS, 0, 0, 0);
 
         CloseIconSize = _globalToken.FontSizeIcon + 2;
-        IconSize      = _globalToken.FontToken.FontSizeLG;
+        IconSize      = _globalToken.FontSizeLG;
     }
 }

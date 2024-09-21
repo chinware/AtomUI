@@ -31,7 +31,7 @@ public class ArrowDecoratedBoxToken : AbstractControlDesignToken
     internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
-        ArrowSize             = _globalToken.SeedToken.SizePopupArrow / 1.3;
+        ArrowSize             = _globalToken.SizePopupArrow / 1.3;
         ArrowContentThickness = ArrowSize / 2;
         Padding               = new Thickness(_globalToken.PaddingXS);
     }

@@ -41,10 +41,9 @@ internal class CaptionButtonToken : AbstractControlDesignToken
     internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
-        var colorErrorToken = _globalToken.ColorToken.ColorErrorToken;
-        CloseHoverBackgroundColor   = colorErrorToken.ColorErrorTextActive;
-        ClosePressedBackgroundColor = colorErrorToken.ColorErrorTextHover;
-        ForegroundColor             = _globalToken.ColorToken.ColorNeutralToken.ColorTextSecondary;
+        CloseHoverBackgroundColor   = _globalToken.ColorErrorTextActive;
+        ClosePressedBackgroundColor = _globalToken.ColorErrorTextHover;
+        ForegroundColor             = _globalToken.ColorTextSecondary;
         HoverBackgroundColor        = _globalToken.ColorBgTextHover;
         PressedBackgroundColor      = _globalToken.ColorBgTextActive;
     }

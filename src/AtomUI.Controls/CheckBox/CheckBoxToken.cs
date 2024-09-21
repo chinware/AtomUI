@@ -23,6 +23,6 @@ internal class CheckBoxToken : AbstractControlDesignToken
     {
         base.CalculateFromAlias();
         CheckIndicatorSize        = _globalToken.ControlInteractiveSize;
-        IndicatorTristateMarkSize = _globalToken.FontToken.FontSizeLG / 2;
+        IndicatorTristateMarkSize = _globalToken.FontSizeLG / 2;
     }
 }
