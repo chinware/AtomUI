@@ -1,15 +1,49 @@
-﻿using Avalonia.Automation;
+﻿using Avalonia;
+using Avalonia.Automation;
 using Avalonia.Automation.Peers;
 using Avalonia.Controls;
+using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 
-namespace AtomUI.Controls.NavMenu;
+namespace AtomUI.Controls;
 
+[PseudoClasses(InlineModePC, HorizontalModePC, VerticalModePC)]
 public class NavMenu : NavMenuBase
 {
+    public const string InlineModePC = ":inline-mode";
+    public const string HorizontalModePC = ":horizontal-mode";
+    public const string VerticalModePC = ":vertical-mode";
+    public const string DarkStylePC = ":dark";
+    public const string LightStylePC = ":light";
+    
+    #region 公共属性定义
+
+    /// <summary>
+    /// Defines the <see cref="Mode"/> property.
+    /// </summary>
+    public static readonly StyledProperty<NavMenuMode> ModeProperty =
+        AvaloniaProperty.Register<NavMenuItem, NavMenuMode>(nameof(Mode), NavMenuMode.Horizontal);
+    
+    public static readonly StyledProperty<bool> IsDarkStyleProperty =
+        AvaloniaProperty.Register<NavMenuItem, bool>(nameof(IsDarkStyle), false);
+    
+    public NavMenuMode Mode
+    {
+        get => GetValue(ModeProperty);
+        set => SetValue(ModeProperty, value);
+    }
+    
+    public bool IsDarkStyle
+    {
+        get => GetValue(IsDarkStyleProperty);
+        set => SetValue(IsDarkStyleProperty, value);
+    }
+    
+    #endregion
+    
     private static readonly FuncTemplate<Panel?> DefaultPanel =
         new(() => new StackPanel { Orientation = Orientation.Vertical });
 
@@ -25,6 +59,7 @@ public class NavMenu : NavMenuBase
 
     public NavMenu()
     {
+        UpdatePseudoClasses();
     }
 
     /// <summary>
@@ -34,6 +69,7 @@ public class NavMenu : NavMenuBase
     public NavMenu(INavMenuInteractionHandler interactionHandler)
         : base(interactionHandler)
     {
+        UpdatePseudoClasses();
     }
 
     public override void Close()
@@ -74,6 +110,15 @@ public class NavMenu : NavMenuBase
         });
     }
 
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == ModeProperty)
+        {
+            UpdatePseudoClasses();
+        }
+    }
+
     protected override void PrepareContainerForItemOverride(Control element, object? item, int index)
     {
         base.PrepareContainerForItemOverride(element, item, index);
@@ -84,5 +129,14 @@ public class NavMenu : NavMenuBase
         {
             element.ClearValue(ItemContainerThemeProperty);
         }
+    }
+    
+    private void UpdatePseudoClasses()
+    {
+        PseudoClasses.Set(HorizontalModePC, Mode == NavMenuMode.Horizontal);
+        PseudoClasses.Set(VerticalModePC, Mode == NavMenuMode.Vertical);
+        PseudoClasses.Set(InlineModePC, Mode == NavMenuMode.Inline);
+        PseudoClasses.Set(DarkStylePC, IsDarkStyle);
+        PseudoClasses.Set(LightStylePC, !IsDarkStyle);
     }
 }

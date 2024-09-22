@@ -6,7 +6,7 @@ using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Rendering;
 
-namespace AtomUI.Controls.NavMenu;
+namespace AtomUI.Controls;
 
 public abstract class NavMenuBase : SelectingItemsControl, IFocusScope, INavMenu
 {

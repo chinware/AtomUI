@@ -9,7 +9,7 @@ using Avalonia.Rendering;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 
-namespace AtomUI.Controls.NavMenu;
+namespace AtomUI.Controls;
 
 public class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
 {

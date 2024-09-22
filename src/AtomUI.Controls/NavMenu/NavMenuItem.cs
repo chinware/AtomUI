@@ -12,9 +12,9 @@ using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
 
-namespace AtomUI.Controls.NavMenu;
+namespace AtomUI.Controls;
 
-[TemplatePart("PART_Popup", typeof(Popup))]
+[TemplatePart(ThemeConstants.PopupPart, typeof(Popup))]
 [PseudoClasses(SeparatorPC, IconPC, StdPseudoClass.Open, StdPseudoClass.Pressed, StdPseudoClass.Selected)]
 public class NavMenuItem : HeaderedSelectingItemsControl,
                            INavMenuItem,
@@ -173,6 +173,11 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
 
     /// <inheritdoc/>
     bool INavMenuItem.IsPointerOverSubMenu => _popup?.IsPointerOverPopup ?? false;
+    
+    /// <summary>
+    /// 获取或者设置菜单项的 Key
+    /// </summary>
+    public string? ItemKey { get; set; }
 
     /// <inheritdoc/>
     INavMenuElement? INavMenuItem.Parent => Parent as INavMenuElement;

@@ -2,7 +2,7 @@
 using Avalonia.Input;
 using Avalonia.Rendering;
 
-namespace AtomUI.Controls.NavMenu;
+namespace AtomUI.Controls;
 
 internal interface INavMenu : INavMenuElement, IInputElement
 {

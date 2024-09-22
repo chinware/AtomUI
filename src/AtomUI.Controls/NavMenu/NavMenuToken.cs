@@ -3,7 +3,7 @@ using AtomUI.Theme.TokenSystem;
 using Avalonia;
 using Avalonia.Media;
 
-namespace AtomUI.Controls.NavMenu;
+namespace AtomUI.Controls;
 
 [ControlDesignToken]
 internal class NavMenuToken : AbstractControlDesignToken

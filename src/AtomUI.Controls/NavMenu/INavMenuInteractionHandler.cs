@@ -1,4 +1,4 @@
-﻿namespace AtomUI.Controls.NavMenu;
+﻿namespace AtomUI.Controls;
 
 public interface INavMenuInteractionHandler
 {

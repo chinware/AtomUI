@@ -1,7 +1,12 @@
-﻿namespace AtomUI.Controls.NavMenu;
+﻿namespace AtomUI.Controls;
 
 internal interface INavMenuItem : INavMenuElement
 {
+    /// <summary>
+    /// Gets or sets a value that item key.
+    /// </summary>
+    string? ItemKey { get; }
+    
     /// <summary>
     /// Gets or sets a value that indicates whether the item has a submenu.
     /// </summary>
