@@ -13,7 +13,7 @@ internal class NavMenuToken : AbstractControlDesignToken
     /// <summary>
     /// 弹出菜单的宽度
     /// </summary>
-    public double DropDownWidth { get; set; }
+    public double PopupMinWidth { get; set; }
     
     /// <summary>
     /// 分组标题文字颜色
@@ -321,9 +321,9 @@ internal class NavMenuToken : AbstractControlDesignToken
             colorTextLightSolid.GetRedF(),
             colorTextLightSolid.GetGreenF(),
             colorTextLightSolid.GetBlueF());
-        
-        
-        DropDownWidth               = 160d;
+
+
+        PopupMinWidth               = 160d;
         ItemBorderRadius            = _globalToken.BorderRadiusLG;
         SubMenuItemBorderRadius     = _globalToken.BorderRadiusSM;
         ItemColor                   = _globalToken.ColorText;
@@ -359,11 +359,11 @@ internal class NavMenuToken : AbstractControlDesignToken
         CollapsedWidth             = _globalToken.ControlHeightLG * 2;
         PopupBg                    = _globalToken.ColorBgElevated;
         ItemPadding                = new Thickness(_globalToken.Padding, 0);
-        HorizontalLineHeight = _globalToken.ControlHeightLG * 1.15;
-        IconSize = _globalToken.FontSize;
-        IconMargin = new Thickness(0, 0, _globalToken.ControlHeightSM - _globalToken.FontSize, 0);
-        CollapsedIconSize = _globalToken.FontSizeLG;
-        GroupTitleFontSize = _globalToken.FontSize;
+        HorizontalLineHeight       = _globalToken.ControlHeightLG * 1.15;
+        IconSize                   = _globalToken.FontSize;
+        IconMargin                 = new Thickness(0, 0, _globalToken.ControlHeightSM - _globalToken.FontSize, 0);
+        CollapsedIconSize          = _globalToken.FontSizeLG;
+        GroupTitleFontSize         = _globalToken.FontSize;
         
         // Disabled
         DarkItemDisabledColor = ColorUtils.FromRgbF(0.25d,

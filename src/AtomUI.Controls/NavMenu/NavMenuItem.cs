@@ -1,5 +1,7 @@
 ﻿using System.Windows.Input;
 using AtomUI.Input;
+using AtomUI.Theme.Styling;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -221,6 +223,16 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
             o => o.EffectiveActiveBarWidth, 
             (o, v) => o.EffectiveActiveBarWidth = v);
     
+    internal static readonly DirectProperty<NavMenuItem, double> EffectivePopupMinWidthProperty =
+        AvaloniaProperty.RegisterDirect<NavMenuItem, double>(nameof(EffectivePopupMinWidth),
+            o => o.EffectivePopupMinWidth, 
+            (o, v) => o.EffectivePopupMinWidth = v);
+    
+    internal static readonly DirectProperty<NavMenuItem, double> PopupMinWidthProperty =
+        AvaloniaProperty.RegisterDirect<NavMenuItem, double>(nameof(PopupMinWidth),
+            o => o.PopupMinWidth, 
+            (o, v) => o.PopupMinWidth = v);
+    
     public double ActiveBarWidth
     {
         get => GetValue(ActiveBarWidthProperty);
@@ -238,6 +250,20 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     {
         get => _effectiveActiveBarWidth;
         set => SetAndRaise(EffectiveActiveBarWidthProperty, ref _effectiveActiveBarWidth, value);
+    }
+    
+    private double _effectivePopupMinWidth;
+    public double EffectivePopupMinWidth
+    {
+        get => _effectivePopupMinWidth;
+        set => SetAndRaise(EffectivePopupMinWidthProperty, ref _effectivePopupMinWidth, value);
+    }
+    
+    private double _popupMinWidth;
+    public double PopupMinWidth
+    {
+        get => _popupMinWidth;
+        set => SetAndRaise(PopupMinWidthProperty, ref _popupMinWidth, value);
     }
 
     #endregion
@@ -537,6 +563,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         }
 
         _horizontalFrame = e.NameScope.Find<Border>(TopLevelHorizontalNavMenuItemTheme.FramePart);
+        TokenResourceBinder.CreateTokenBinding(this, PopupMinWidthProperty, NavMenuTokenResourceKey.PopupMinWidth);
     }
 
     protected override void UpdateDataValidation(
@@ -680,9 +707,16 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         else if (change.Property == CommandParameterProperty)
         {
             CommandParameterChanged(change);
-        } else if (change.Property == BoundsProperty)
+        }
+        else if (change.Property == BoundsProperty)
         {
             SetupHorizontalEffectiveIndicatorWidth();
+        }
+
+        if (change.Property == BoundsProperty ||
+            change.Property == PopupMinWidthProperty)
+        {
+            SetupEffectivePopupMinWidth();
         }
     }
 
@@ -694,6 +728,24 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
             width = _horizontalFrame.Bounds.Width;
         }
         EffectiveActiveBarWidth = ActiveBarWidth * width;
+    }
+
+    private void SetupEffectivePopupMinWidth()
+    {
+        if (IsTopLevel)
+        {
+            if (Parent is NavMenu navMenu)
+            {
+                if (navMenu.Mode == NavMenuMode.Horizontal)
+                {
+                    EffectivePopupMinWidth = Math.Max(_horizontalFrame?.Bounds.Width ?? Bounds.Width, PopupMinWidth);
+                }
+                else
+                {
+                    EffectivePopupMinWidth = PopupMinWidth;
+                }
+            }
+        }
     }
 
     /// <summary>

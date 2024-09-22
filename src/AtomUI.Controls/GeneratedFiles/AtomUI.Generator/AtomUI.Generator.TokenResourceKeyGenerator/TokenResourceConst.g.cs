@@ -370,7 +370,7 @@ namespace AtomUI.Theme.Styling
 
     public static class NavMenuTokenResourceKey
     {
-        public static readonly TokenResourceKey DropDownWidth = new TokenResourceKey("NavMenu.DropDownWidth", "AtomUI.Token");
+        public static readonly TokenResourceKey PopupMinWidth = new TokenResourceKey("NavMenu.PopupMinWidth", "AtomUI.Token");
         public static readonly TokenResourceKey GroupTitleColor = new TokenResourceKey("NavMenu.GroupTitleColor", "AtomUI.Token");
         public static readonly TokenResourceKey GroupTitleLineHeight = new TokenResourceKey("NavMenu.GroupTitleLineHeight", "AtomUI.Token");
         public static readonly TokenResourceKey GroupTitleFontSize = new TokenResourceKey("NavMenu.GroupTitleFontSize", "AtomUI.Token");

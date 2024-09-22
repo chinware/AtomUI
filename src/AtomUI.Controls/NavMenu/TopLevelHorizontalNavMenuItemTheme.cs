@@ -138,8 +138,10 @@ internal class TopLevelHorizontalNavMenuItemTheme : BaseControlTheme
             IsLightDismissEnabled      = true,
             Placement                  = PlacementMode.BottomEdgeAlignedLeft
         };
-    
+
         var border = new Border();
+        
+        CreateTemplateParentBinding(border, Border.MinWidthProperty, NavMenuItem.EffectivePopupMinWidthProperty);
     
         TokenResourceBinder.CreateTokenBinding(border, Border.BackgroundProperty,
             GlobalTokenResourceKey.ColorBgContainer);
