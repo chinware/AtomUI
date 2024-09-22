@@ -1,8 +1,11 @@
-﻿using AtomUI.Theme;
+﻿using AtomUI.Data;
+using AtomUI.Theme;
 using AtomUI.Theme.Styling;
+using AtomUI.Utils;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
+using Avalonia.Controls.Shapes;
 using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Layout;
@@ -30,7 +33,17 @@ internal class NavMenuTheme : BaseControlTheme
             };
 
             KeyboardNavigation.SetTabNavigation(itemPresenter, KeyboardNavigationMode.Continue);
+            var rootLayout = new DockPanel()
+            {
+                LastChildFill = true
+            };
 
+            var horizontalLine = new Rectangle();
+            rootLayout.Children.Add(horizontalLine);
+            DockPanel.SetDock(horizontalLine, Dock.Bottom);
+            CreateTemplateParentBinding(horizontalLine, Rectangle.HeightProperty, NavMenu.HorizontalBorderThicknessProperty);
+            TokenResourceBinder.CreateGlobalTokenBinding(horizontalLine, Rectangle.FillProperty, GlobalTokenResourceKey.ColorBorderSecondary);
+            
             var border = new Border
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
@@ -44,7 +57,9 @@ internal class NavMenuTheme : BaseControlTheme
                 TemplatedControl.BorderThicknessProperty);
             CreateTemplateParentBinding(border, Border.BorderBrushProperty, TemplatedControl.BorderBrushProperty);
             CreateTemplateParentBinding(border, Border.CornerRadiusProperty, TemplatedControl.CornerRadiusProperty);
-            return border;
+            
+            rootLayout.Children.Add(border);
+            return rootLayout;
         });
     }
     
@@ -52,11 +67,12 @@ internal class NavMenuTheme : BaseControlTheme
     {
         var commonStyle = new Style(selector => selector.Nesting());
         
-        commonStyle.Add(TemplatedControl.BorderBrushProperty, GlobalTokenResourceKey.ColorBorder);
+        commonStyle.Add(TemplatedControl.BorderBrushProperty, GlobalTokenResourceKey.ColorBorderSecondary);
         commonStyle.Add(TemplatedControl.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadius);
         
         var horizontalStyle = new Style(selector => selector.Nesting().Class(NavMenu.HorizontalModePC));
         horizontalStyle.Add(NavMenu.BackgroundProperty, GlobalTokenResourceKey.ColorBgContainer);
+        horizontalStyle.Add(NavMenu.HeightProperty, NavMenuTokenResourceKey.MenuHorizontalHeight);
         {
             var itemPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ItemsPresenterPart));
             itemPresenterStyle.Add(ItemsPresenter.ItemsPanelProperty, new FuncTemplate<Panel?>(() => new StackPanel

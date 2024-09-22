@@ -392,6 +392,7 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey SubMenuItemBg = new TokenResourceKey("NavMenu.SubMenuItemBg", "AtomUI.Token");
         public static readonly TokenResourceKey ItemActiveBg = new TokenResourceKey("NavMenu.ItemActiveBg", "AtomUI.Token");
         public static readonly TokenResourceKey ItemSelectedBg = new TokenResourceKey("NavMenu.ItemSelectedBg", "AtomUI.Token");
+        public static readonly TokenResourceKey ItemIconSize = new TokenResourceKey("NavMenu.ItemIconSize", "AtomUI.Token");
         public static readonly TokenResourceKey HorizontalItemSelectedBg = new TokenResourceKey("NavMenu.HorizontalItemSelectedBg", "AtomUI.Token");
         public static readonly TokenResourceKey ActiveBarWidth = new TokenResourceKey("NavMenu.ActiveBarWidth", "AtomUI.Token");
         public static readonly TokenResourceKey ActiveBarHeight = new TokenResourceKey("NavMenu.ActiveBarHeight", "AtomUI.Token");

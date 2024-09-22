@@ -98,7 +98,7 @@ internal class MenuItemTheme : BaseControlTheme
 
             Grid.SetColumn(iconPresenter, 1);
             iconPresenter.RegisterInNameScope(scope);
-            CreateTemplateParentBinding(iconPresenter, Viewbox.ChildProperty, Avalonia.Controls.MenuItem.IconProperty);
+            CreateTemplateParentBinding(iconPresenter, Viewbox.ChildProperty, MenuItem.IconProperty);
             TokenResourceBinder.CreateTokenBinding(iconPresenter, Layoutable.MarginProperty,
                 MenuTokenResourceKey.ItemMargin);
             TokenResourceBinder.CreateGlobalTokenBinding(iconPresenter, Layoutable.WidthProperty,

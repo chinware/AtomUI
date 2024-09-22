@@ -15,15 +15,16 @@ using Avalonia.VisualTree;
 namespace AtomUI.Controls;
 
 [TemplatePart(ThemeConstants.PopupPart, typeof(Popup))]
-[PseudoClasses(SeparatorPC, IconPC, StdPseudoClass.Open, StdPseudoClass.Pressed, StdPseudoClass.Selected)]
+[PseudoClasses(SeparatorPC, IconPC, StdPseudoClass.Open, StdPseudoClass.Pressed, StdPseudoClass.Selected, TopLevelPC)]
 public class NavMenuItem : HeaderedSelectingItemsControl,
                            INavMenuItem,
                            ISelectable,
                            ICommandSource,
                            IClickableControl
 {
-    internal const string SeparatorPC = ":separator";
-    internal const string IconPC = ":icon";
+    public const string TopLevelPC = ":toplevel";
+    public const string SeparatorPC = ":separator";
+    public const string IconPC = ":icon";
 
     #region 公共属性定义
 
@@ -317,6 +318,8 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
 
     public NavMenuItem()
     {
+        AffectsRender<MenuItem>(BackgroundProperty);
+        UpdatePseudoClasses();
     }
 
     /// <summary>
@@ -617,6 +620,10 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         {
             HeaderChanged(change);
         }
+        if (change.Property == ParentProperty)
+        {
+            UpdatePseudoClasses();
+        }
         else if (change.Property == IconProperty)
         {
             IconChanged(change);
@@ -656,6 +663,11 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
             PseudoClasses.Remove(SeparatorPC);
             Focusable = true;
         }
+    }
+    
+    private void UpdatePseudoClasses()
+    {
+        PseudoClasses.Set(TopLevelPC, IsTopLevel);
     }
 
     /// <summary>

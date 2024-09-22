@@ -121,6 +121,11 @@ internal class NavMenuToken : AbstractControlDesignToken
     public Color ItemSelectedBg { get; set; }
     
     /// <summary>
+    /// 图标尺寸
+    /// </summary>
+    public double ItemIconSize { get; set; }
+    
+    /// <summary>
     /// 水平菜单项选中态背景色
     /// </summary>
     public Color HorizontalItemSelectedBg { get; set; }
@@ -386,6 +391,13 @@ internal class NavMenuToken : AbstractControlDesignToken
         DarkDangerItemHoverColor    = _globalToken.ColorErrorHover;
         DarkDangerItemSelectedColor = colorTextLightSolid;
         DarkDangerItemActiveBg      = _globalToken.ColorError;
+
+        MenuHorizontalHeight = _globalToken.ControlHeightLG * 1.15;
+        MenuArrowSize        = _globalToken.FontSize / 7 * 5;
+        MenuArrowOffset      = MenuArrowSize * 0.25;
+        MenuSubMenuBg        = _globalToken.ColorBgElevated;
+
+        ItemIconSize = _globalToken.IconSize;
     }
     
 }

@@ -1,5 +1,4 @@
 ﻿using AtomUI.Theme;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia.Controls;
@@ -26,7 +25,7 @@ internal class TopLevelMenuItemTheme : BaseControlTheme
     {
     }
 
-    public override string? ThemeResourceKey()
+    public override string ThemeResourceKey()
     {
         return ID;
     }
