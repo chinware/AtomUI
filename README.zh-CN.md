@@ -38,6 +38,8 @@
 AtomUI 是基于 .NET 技术的 Ant Design 实现，致力于将 Ant Design 优秀而高效的设计语言和体验带入 Avalonia/.NET 跨平台桌面软件开发领域。
 欢迎与 AtomUI 进行交流并提出建议，感谢您为该项目点赞。
 
+<img src="./docs/images/Gallery.png"/>
+
 #### 特性
 
 - 实现 Ant Design 提炼自企业级中后台产品的交互语言和视觉风格。
