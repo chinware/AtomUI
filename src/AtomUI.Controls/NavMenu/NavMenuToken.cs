@@ -129,26 +129,26 @@ internal class NavMenuToken : AbstractControlDesignToken
     /// 水平菜单项选中态背景色
     /// </summary>
     public Color HorizontalItemSelectedBg { get; set; }
-    
+
     /// <summary>
     /// 菜单项指示条宽度
     /// </summary>
-    public double ActiveBarWidth { get; set; }
+    public double ActiveBarWidth { get; set; } = double.NaN;
     
     /// <summary>
     /// 菜单项指示条高度
     /// </summary>
-    public double ActiveBarHeight { get; set; }
+    public double ActiveBarHeight { get; set; } = double.NaN;
     
     /// <summary>
-    /// 菜单项指示条边框宽度
-    /// </summary>
-    public double ActiveBarBorderWidth { get; set; }
-    
-    /// <summary>
-    /// 菜单项横向外间距
+    /// 菜单项外间距
     /// </summary>
     public Thickness ItemMargin { get; set; }
+    
+    /// <summary>
+    /// 水平菜单项外间距
+    /// </summary>
+    public Thickness HorizontalItemMargin { get; set; }
     
     /// <summary>
     /// 菜单项横向内间距
@@ -275,9 +275,6 @@ internal class NavMenuToken : AbstractControlDesignToken
     /// 暗色模式下的危险菜单项激活态背景
     /// </summary>
     public Color DarkDangerItemActiveBg { get; set; }
-    
-    // 内部属性
-    public double ItemWidth { get; set; }
 
     #region 菜单相关 Token
 
@@ -314,10 +311,10 @@ internal class NavMenuToken : AbstractControlDesignToken
         
         var colorTextLightSolid = _globalToken.ColorTextLightSolid;
         
-        var activeBarWidth = !double.IsNaN(ActiveBarWidth) ? ActiveBarWidth : 0.0d;
-        var activeBarBorderWidth = !double.IsNaN(ActiveBarBorderWidth)
-            ? ActiveBarBorderWidth
-            : _globalToken.LineWidth;
+        var activeBarWidth = !double.IsNaN(ActiveBarWidth) ? ActiveBarWidth : 1.0d;
+        var activeBarHeight = !double.IsNaN(ActiveBarHeight)
+            ? ActiveBarHeight
+            : _globalToken.LineWidthBold;
         var itemMargin    = ItemMargin != default ? ItemMargin : new Thickness(_globalToken.MarginXXS, _globalToken.MarginXXS);
         var colorTextDark = ColorUtils.FromRgbF(
             0.65d,
@@ -342,8 +339,7 @@ internal class NavMenuToken : AbstractControlDesignToken
         ItemSelectedBg              = _globalToken.ControlItemBgActive;
         HorizontalItemSelectedBg    = Colors.Transparent;
         ActiveBarWidth              = activeBarWidth;
-        ActiveBarHeight             = _globalToken.LineWidthBold;
-        ActiveBarBorderWidth        = activeBarBorderWidth;
+        ActiveBarHeight             = activeBarHeight;
         
         // Disabled
         ItemDisabledColor = _globalToken.ColorTextDisabled;
@@ -393,6 +389,7 @@ internal class NavMenuToken : AbstractControlDesignToken
         DarkDangerItemActiveBg      = _globalToken.ColorError;
 
         MenuHorizontalHeight = _globalToken.ControlHeightLG * 1.15;
+        HorizontalItemMargin = new Thickness(_globalToken.Padding, 0);
         MenuArrowSize        = _globalToken.FontSize / 7 * 5;
         MenuArrowOffset      = MenuArrowSize * 0.25;
         MenuSubMenuBg        = _globalToken.ColorBgElevated;

@@ -208,6 +208,40 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
 
     #endregion
 
+    #region 内部属性定义
+
+    internal static readonly StyledProperty<double> ActiveBarWidthProperty =
+        NavMenu.ActiveBarWidthProperty.AddOwner<NavMenuItem>();
+    
+    internal static readonly StyledProperty<double> ActiveBarHeightProperty =
+        NavMenu.ActiveBarHeightProperty.AddOwner<NavMenuItem>();
+
+    internal static readonly DirectProperty<NavMenuItem, double> EffectiveActiveBarWidthProperty =
+        AvaloniaProperty.RegisterDirect<NavMenuItem, double>(nameof(EffectiveActiveBarWidth),
+            o => o.EffectiveActiveBarWidth, 
+            (o, v) => o.EffectiveActiveBarWidth = v);
+    
+    public double ActiveBarWidth
+    {
+        get => GetValue(ActiveBarWidthProperty);
+        set => SetValue(ActiveBarWidthProperty, value);
+    }
+    
+    public double ActiveBarHeight
+    {
+        get => GetValue(ActiveBarHeightProperty);
+        set => SetValue(ActiveBarHeightProperty, value);
+    }
+    
+    private double _effectiveActiveBarWidth;
+    public double EffectiveActiveBarWidth
+    {
+        get => _effectiveActiveBarWidth;
+        set => SetAndRaise(EffectiveActiveBarWidthProperty, ref _effectiveActiveBarWidth, value);
+    }
+
+    #endregion
+
     #region 公共事件定义
 
     /// <summary>
@@ -305,6 +339,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     private Popup? _popup;
     private KeyGesture? _hotkey;
     private bool _isEmbeddedInMenu;
+    private Border? _horizontalFrame;
 
     static NavMenuItem()
     {
@@ -500,6 +535,8 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
             _popup.Opened += PopupOpened;
             _popup.Closed += PopupClosed;
         }
+
+        _horizontalFrame = e.NameScope.Find<Border>(TopLevelHorizontalNavMenuItemTheme.FramePart);
     }
 
     protected override void UpdateDataValidation(
@@ -643,7 +680,20 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         else if (change.Property == CommandParameterProperty)
         {
             CommandParameterChanged(change);
+        } else if (change.Property == BoundsProperty)
+        {
+            SetupHorizontalEffectiveIndicatorWidth();
         }
+    }
+
+    private void SetupHorizontalEffectiveIndicatorWidth()
+    {
+        var width = Bounds.Width;
+        if (_horizontalFrame != null)
+        {
+            width = _horizontalFrame.Bounds.Width;
+        }
+        EffectiveActiveBarWidth = ActiveBarWidth * width;
     }
 
     /// <summary>

@@ -396,8 +396,8 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey HorizontalItemSelectedBg = new TokenResourceKey("NavMenu.HorizontalItemSelectedBg", "AtomUI.Token");
         public static readonly TokenResourceKey ActiveBarWidth = new TokenResourceKey("NavMenu.ActiveBarWidth", "AtomUI.Token");
         public static readonly TokenResourceKey ActiveBarHeight = new TokenResourceKey("NavMenu.ActiveBarHeight", "AtomUI.Token");
-        public static readonly TokenResourceKey ActiveBarBorderWidth = new TokenResourceKey("NavMenu.ActiveBarBorderWidth", "AtomUI.Token");
         public static readonly TokenResourceKey ItemMargin = new TokenResourceKey("NavMenu.ItemMargin", "AtomUI.Token");
+        public static readonly TokenResourceKey HorizontalItemMargin = new TokenResourceKey("NavMenu.HorizontalItemMargin", "AtomUI.Token");
         public static readonly TokenResourceKey ItemPadding = new TokenResourceKey("NavMenu.ItemPadding", "AtomUI.Token");
         public static readonly TokenResourceKey HorizontalItemHoverBg = new TokenResourceKey("NavMenu.HorizontalItemHoverBg", "AtomUI.Token");
         public static readonly TokenResourceKey HorizontalItemBorderRadius = new TokenResourceKey("NavMenu.HorizontalItemBorderRadius", "AtomUI.Token");
@@ -423,7 +423,6 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey DarkDangerItemHoverColor = new TokenResourceKey("NavMenu.DarkDangerItemHoverColor", "AtomUI.Token");
         public static readonly TokenResourceKey DarkDangerItemSelectedColor = new TokenResourceKey("NavMenu.DarkDangerItemSelectedColor", "AtomUI.Token");
         public static readonly TokenResourceKey DarkDangerItemActiveBg = new TokenResourceKey("NavMenu.DarkDangerItemActiveBg", "AtomUI.Token");
-        public static readonly TokenResourceKey ItemWidth = new TokenResourceKey("NavMenu.ItemWidth", "AtomUI.Token");
         public static readonly TokenResourceKey MenuHorizontalHeight = new TokenResourceKey("NavMenu.MenuHorizontalHeight", "AtomUI.Token");
         public static readonly TokenResourceKey MenuArrowSize = new TokenResourceKey("NavMenu.MenuArrowSize", "AtomUI.Token");
         public static readonly TokenResourceKey MenuArrowOffset = new TokenResourceKey("NavMenu.MenuArrowOffset", "AtomUI.Token");

@@ -193,7 +193,7 @@
             Description="Horizontal top navigation menu.">
             <atom:NavMenu>
                 <atom:NavMenuItem Header="Navigation One" Icon="{atom:IconProvider Kind=MailOutlined}" />
-                <atom:NavMenuItem Header="Navigation Two" Icon="{atom:IconProvider Kind=AppstoreOutlined}" />
+                <atom:NavMenuItem Header="Navigation Two" Icon="{atom:IconProvider Kind=AppstoreOutlined}" IsEnabled="False"/>
                 <atom:NavMenuItem Header="Navigation Three - Submenu" Icon="{atom:IconProvider Kind=SettingOutlined}">
                     <atom:NavMenuItem Header="Item 1">
                         <atom:NavMenuItem Header="Option 1" />

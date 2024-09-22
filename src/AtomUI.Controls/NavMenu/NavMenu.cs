@@ -7,6 +7,7 @@ using Avalonia.Automation;
 using Avalonia.Automation.Peers;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
+using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Input;
@@ -31,10 +32,17 @@ public class NavMenu : NavMenuBase
     /// Defines the <see cref="Mode"/> property.
     /// </summary>
     public static readonly StyledProperty<NavMenuMode> ModeProperty =
-        AvaloniaProperty.Register<NavMenuItem, NavMenuMode>(nameof(Mode), NavMenuMode.Horizontal);
+        AvaloniaProperty.Register<NavMenu, NavMenuMode>(nameof(Mode), NavMenuMode.Horizontal);
     
     public static readonly StyledProperty<bool> IsDarkStyleProperty =
-        AvaloniaProperty.Register<NavMenuItem, bool>(nameof(IsDarkStyle), false);
+        AvaloniaProperty.Register<NavMenu, bool>(nameof(IsDarkStyle), false);
+    
+    public static readonly StyledProperty<double> ActiveBarWidthProperty =
+        AvaloniaProperty.Register<NavMenu, double>(nameof(ActiveBarWidth), 1.0d,
+            coerce: (o, v) => Math.Max(Math.Min(v, 1.0), 0.0));
+    
+    public static readonly StyledProperty<double> ActiveBarHeightProperty =
+        AvaloniaProperty.Register<NavMenu, double>(nameof(ActiveBarHeight));
     
     public NavMenuMode Mode
     {
@@ -46,6 +54,18 @@ public class NavMenu : NavMenuBase
     {
         get => GetValue(IsDarkStyleProperty);
         set => SetValue(IsDarkStyleProperty, value);
+    }
+    
+    public double ActiveBarWidth
+    {
+        get => GetValue(ActiveBarWidthProperty);
+        set => SetValue(ActiveBarWidthProperty, value);
+    }
+    
+    public double ActiveBarHeight
+    {
+        get => GetValue(ActiveBarHeightProperty);
+        set => SetValue(ActiveBarHeightProperty, value);
     }
     
     #endregion
@@ -146,12 +166,17 @@ public class NavMenu : NavMenuBase
     protected override void PrepareContainerForItemOverride(Control element, object? item, int index)
     {
         base.PrepareContainerForItemOverride(element, item, index);
-
         // Child menu items should not inherit the menu's ItemContainerTheme as that is specific
         // for top-level menu items.
         if ((element as NavMenuItem)?.ItemContainerTheme == ItemContainerTheme)
         {
             element.ClearValue(ItemContainerThemeProperty);
+        }
+
+        if (element is NavMenuItem navMenuItem && Mode == NavMenuMode.Horizontal)
+        {
+            BindUtils.RelayBind(this, ActiveBarHeightProperty, navMenuItem, NavMenuItem.ActiveBarHeightProperty);
+            BindUtils.RelayBind(this, ActiveBarWidthProperty, navMenuItem, NavMenuItem.ActiveBarWidthProperty);
         }
     }
     
@@ -178,7 +203,13 @@ public class NavMenu : NavMenuBase
             BindingPriority.Template,
             new RenderScaleAwareDoubleConfigure(this));
     }
-    
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        TokenResourceBinder.CreateTokenBinding(this, ActiveBarWidthProperty, NavMenuTokenResourceKey.ActiveBarWidth);
+        TokenResourceBinder.CreateTokenBinding(this, ActiveBarHeightProperty, NavMenuTokenResourceKey.ActiveBarHeight);
+    }
 
     private void SetupItemContainerTheme(bool force = false)
     {
