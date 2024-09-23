@@ -9,189 +9,210 @@
 
     mc:Ignorable="d">
     <desktop:ShowCasePanel>
+        <!-- <desktop:ShowCaseItem -->
+        <!--     Title="Basic" -->
+        <!--     Description="Simplest Usage."> -->
+        <!--     <atom:Menu> -->
+        <!--         <atom:MenuItem Header="_File"> -->
+        <!--             <atom:MenuItem Header="New Text File" InputGesture="Ctrl+N" /> -->
+        <!--             <atom:MenuItem Header="New File" InputGesture="Ctrl+Alt+N" /> -->
+        <!--             <atom:MenuItem Header="New Window" InputGesture="Ctrl+Shift+N" /> -->
+        <!--         </atom:MenuItem> -->
+        <!--         <atom:MenuItem Header="_Edit"> -->
+        <!--             <atom:MenuItem Header="Undo" InputGesture="Ctrl+Shift+Z" /> -->
+        <!--             <atom:MenuSeparator /> -->
+        <!--             <atom:MenuItem Header="Cut" InputGesture="Ctrl+X" /> -->
+        <!--         </atom:MenuItem> -->
+        <!--         <atom:MenuItem Header="Disabled Item" IsEnabled="False" /> -->
+        <!--     </atom:Menu> -->
+        <!-- </desktop:ShowCaseItem> -->
+        <!-- -->
+        <!-- <desktop:ShowCaseItem -->
+        <!--     Title="Icon and submenu" -->
+        <!--     Description="With icon and submenu."> -->
+        <!--     <atom:Menu> -->
+        <!--         <atom:MenuItem Header="_File"> -->
+        <!--             <atom:MenuItem Header="New Text File" InputGesture="Ctrl+N" /> -->
+        <!--             <atom:MenuItem Header="New File" InputGesture="Ctrl+Alt+N" /> -->
+        <!--             <atom:MenuItem Header="New Window" InputGesture="Ctrl+Shift+N" /> -->
+        <!--             <atom:MenuSeparator /> -->
+        <!--             <atom:MenuItem Header="Save" InputGesture="Ctrl+S" /> -->
+        <!--             <atom:MenuItem Header="Save As..." InputGesture="Ctrl+Shift+S" /> -->
+        <!--             <atom:MenuItem Header="Save All" InputGesture="Ctrl+K" /> -->
+        <!--             <atom:MenuSeparator /> -->
+        <!--             <atom:MenuItem Header="Exit" /> -->
+        <!--         </atom:MenuItem> -->
+        <!--         <atom:MenuItem Header="_Edit"> -->
+        <!--             <atom:MenuItem Header="Undo" InputGesture="Ctrl+Shift+Z" /> -->
+        <!--             <atom:MenuSeparator /> -->
+        <!--             <atom:MenuItem Header="Cut" InputGesture="Ctrl+X" Icon="{atom:IconProvider Kind=ScissorOutlined}" /> -->
+        <!--             <atom:MenuItem Header="Copy" InputGesture="Ctrl+C" Icon="{atom:IconProvider Kind=CopyOutlined}" /> -->
+        <!--             <atom:MenuItem Header="Delete" InputGesture="Ctrl+D" Icon="{atom:IconProvider Kind=DeleteOutlined}" /> -->
+        <!--             <atom:MenuItem Header="Paste"> -->
+        <!--                 <atom:MenuItem Header="Paste" InputGesture="Ctrl+P" -->
+        <!--                                Icon="{atom:IconProvider Kind=FileDoneOutlined}" /> -->
+        <!--                 <atom:MenuItem Header="Paste from History" InputGesture="Ctrl+Shift+V" /> -->
+        <!--             </atom:MenuItem> -->
+        <!--         </atom:MenuItem> -->
+        <!--     </atom:Menu> -->
+        <!-- </desktop:ShowCaseItem> -->
+        <!-- -->
+        <!-- <desktop:ShowCaseItem -->
+        <!--     Title="menu item with ToggleType" -->
+        <!--     Description="Renders a checkbox or radio button on a menu."> -->
+        <!--     <atom:Menu> -->
+        <!--         <atom:MenuItem Header="_Menu A"> -->
+        <!--             <atom:MenuItem Header="New Text File" InputGesture="Ctrl+N" ToggleType="Radio" GroupName="Group1" /> -->
+        <!--             <atom:MenuItem Header="New File" InputGesture="Ctrl+Alt+N" ToggleType="Radio" GroupName="Group1" /> -->
+        <!--             <atom:MenuItem Header="New Window" InputGesture="Ctrl+Shift+N" ToggleType="Radio" -->
+        <!--                            GroupName="Group1" /> -->
+        <!--             <atom:MenuSeparator /> -->
+        <!--             <atom:MenuItem Header="Save" InputGesture="Ctrl+S" ToggleType="CheckBox" /> -->
+        <!--             <atom:MenuItem Header="Save As..." InputGesture="Ctrl+Shift+S" ToggleType="CheckBox" -->
+        <!--                            Icon="{atom:IconProvider Kind=GithubOutlined}" /> -->
+        <!--             <atom:MenuItem Header="Save All" InputGesture="Ctrl+K" ToggleType="CheckBox" -->
+        <!--                            Icon="{atom:IconProvider Kind=CheckOutlined}" /> -->
+        <!--             <atom:MenuSeparator /> -->
+        <!--             <atom:MenuItem Header="Exit" /> -->
+        <!--             <atom:MenuItem Header="Disabled" IsEnabled="False" /> -->
+        <!--         </atom:MenuItem> -->
+        <!--     </atom:Menu> -->
+        <!-- </desktop:ShowCaseItem> -->
+        <!-- -->
+        <!-- <desktop:ShowCaseItem -->
+        <!--     Title="Scrollable menu" -->
+        <!--     Description="When there are too many menu items, up and down scroll buttons will appear."> -->
+        <!--     <atom:Menu> -->
+        <!--         <atom:MenuItem Header="_Menu"> -->
+        <!--             <atom:MenuItem Header="Menu Item" /> -->
+        <!--             <atom:MenuItem Header="Menu Item" /> -->
+        <!--             <atom:MenuItem Header="Menu Item" /> -->
+        <!--             <atom:MenuItem Header="Menu Item" /> -->
+        <!--             <atom:MenuItem Header="Menu Item" /> -->
+        <!--             <atom:MenuItem Header="Menu Item" /> -->
+        <!--             <atom:MenuItem Header="Menu Item" /> -->
+        <!--             <atom:MenuItem Header="Menu Item" /> -->
+        <!--             <atom:MenuItem Header="Menu Item" /> -->
+        <!--             <atom:MenuItem Header="Menu Item" /> -->
+        <!--             <atom:MenuItem Header="Menu Item" /> -->
+        <!--             <atom:MenuItem Header="Menu Item" /> -->
+        <!--             <atom:MenuItem Header="Menu Item" /> -->
+        <!--             <atom:MenuItem Header="Menu Item" /> -->
+        <!--             <atom:MenuItem Header="Menu Item" /> -->
+        <!--             <atom:MenuItem Header="Menu Item" /> -->
+        <!--             <atom:MenuItem Header="Menu Item" /> -->
+        <!--             <atom:MenuItem Header="Menu Item" /> -->
+        <!--             <atom:MenuItem Header="Menu Item" /> -->
+        <!--             <atom:MenuItem Header="Menu Item" /> -->
+        <!--             <atom:MenuItem Header="Menu Item" /> -->
+        <!--             <atom:MenuItem Header="Menu Item" /> -->
+        <!--             <atom:MenuItem Header="Menu Item" /> -->
+        <!--             <atom:MenuItem Header="Menu Item" /> -->
+        <!--             <atom:MenuItem Header="Menu Item" /> -->
+        <!--             <atom:MenuItem Header="Menu Item" /> -->
+        <!--             <atom:MenuItem Header="Menu Item" /> -->
+        <!--             <atom:MenuItem Header="Menu Item" /> -->
+        <!--             <atom:MenuItem Header="Menu Item" /> -->
+        <!--             <atom:MenuItem Header="Menu Item" /> -->
+        <!--             <atom:MenuItem Header="Menu Item" /> -->
+        <!--             <atom:MenuItem Header="Menu Item" /> -->
+        <!--             <atom:MenuItem Header="Menu Item" /> -->
+        <!--             <atom:MenuItem Header="Menu Item" /> -->
+        <!--             <atom:MenuItem Header="Menu Item" /> -->
+        <!--             <atom:MenuItem Header="Menu Item" /> -->
+        <!--         </atom:MenuItem> -->
+        <!--     </atom:Menu> -->
+        <!-- </desktop:ShowCaseItem> -->
+        <!-- -->
+        <!-- <desktop:ShowCaseItem -->
+        <!--     Title="Context menu" -->
+        <!--     Description="Right click to bring up the context menu."> -->
+        <!--     <desktop:ShowCaseItem.Styles> -->
+        <!--         <Style Selector="Border#ContextMenuContainer"> -->
+        <!--             <Setter Property="BorderBrush" Value="Gray" /> -->
+        <!--             <Setter Property="BorderThickness" Value="1" /> -->
+        <!--             <Setter Property="CornerRadius" Value="6" /> -->
+        <!--             <Setter Property="Padding" Value="10" /> -->
+        <!--             <Setter Property="Margin" Value="10" /> -->
+        <!--         </Style> -->
+        <!--     </desktop:ShowCaseItem.Styles> -->
+        <!--     <Border Name="ContextMenuContainer"> -->
+        <!--         <Border.ContextMenu> -->
+        <!--             <atom:ContextMenu> -->
+        <!--                 <atom:MenuItem Header="Cut" InputGesture="Ctrl+X" -->
+        <!--                                Icon="{atom:IconProvider Kind=ScissorOutlined}" /> -->
+        <!--                 <atom:MenuItem Header="Copy" InputGesture="Ctrl+C" Icon="{atom:IconProvider Kind=CopyOutlined}" /> -->
+        <!--                 <atom:MenuItem Header="Delete" InputGesture="Ctrl+D" -->
+        <!--                                Icon="{atom:IconProvider Kind=DeleteOutlined}" /> -->
+        <!--                 <atom:MenuItem Header="Paste"> -->
+        <!--                     <atom:MenuItem Header="Paste" InputGesture="Ctrl+P" -->
+        <!--                                    Icon="{atom:IconProvider Kind=FileDoneOutlined}" /> -->
+        <!--                     <atom:MenuItem Header="Paste from History" InputGesture="Ctrl+Shift+V" /> -->
+        <!--                 </atom:MenuItem> -->
+        <!--             </atom:ContextMenu> -->
+        <!--         </Border.ContextMenu> -->
+        <!--         <TextBlock Text="Right Click to show Context Menu" /> -->
+        <!--     </Border> -->
+        <!-- </desktop:ShowCaseItem> -->
+        <!-- -->
+        <!-- <desktop:ShowCaseItem -->
+        <!--     Title="Menu Flyout" -->
+        <!--     Description="Right Click to show Context Flyout"> -->
+        <!--     <desktop:ShowCaseItem.Styles> -->
+        <!--         <Style Selector="Border#ContextFlyoutContainer"> -->
+        <!--             <Setter Property="BorderBrush" Value="Gray" /> -->
+        <!--             <Setter Property="BorderThickness" Value="1" /> -->
+        <!--             <Setter Property="CornerRadius" Value="6" /> -->
+        <!--             <Setter Property="Padding" Value="10" /> -->
+        <!--             <Setter Property="Margin" Value="10" /> -->
+        <!--         </Style> -->
+        <!--     </desktop:ShowCaseItem.Styles> -->
+        <!-- -->
+        <!--     <Border Name="ContextFlyoutContainer"> -->
+        <!--         <Border.ContextFlyout> -->
+        <!--             <atom:MenuFlyout> -->
+        <!--                 <atom:MenuItem Header="Cut" InputGesture="Ctrl+X" -->
+        <!--                                Icon="{atom:IconProvider Kind=ScissorOutlined}" /> -->
+        <!--                 <atom:MenuItem Header="Copy" InputGesture="Ctrl+C" Icon="{atom:IconProvider Kind=CopyOutlined}" /> -->
+        <!--                 <atom:MenuItem Header="Delete" InputGesture="Ctrl+D" -->
+        <!--                                Icon="{atom:IconProvider Kind=DeleteOutlined}" /> -->
+        <!--                 <atom:MenuItem Header="Paste"> -->
+        <!--                     <atom:MenuItem Header="Paste" InputGesture="Ctrl+P" -->
+        <!--                                    Icon="{atom:IconProvider Kind=FileDoneOutlined}" /> -->
+        <!--                     <atom:MenuItem Header="Paste from History" InputGesture="Ctrl+Shift+V" /> -->
+        <!--                 </atom:MenuItem> -->
+        <!--             </atom:MenuFlyout> -->
+        <!--         </Border.ContextFlyout> -->
+        <!--         <TextBlock Text="Right Click to show Context Flyout" /> -->
+        <!--     </Border> -->
+        <!-- -->
+        <!-- </desktop:ShowCaseItem> -->
+
+        <!-- <desktop:ShowCaseItem -->
+        <!--     Title="Top Navigation" -->
+        <!--     Description="Horizontal top navigation menu."> -->
+        <!--     <atom:NavMenu> -->
+        <!--         <atom:NavMenuItem Header="Navigation One" Icon="{atom:IconProvider Kind=MailOutlined}" /> -->
+        <!--         <atom:NavMenuItem Header="Navigation Two" Icon="{atom:IconProvider Kind=AppstoreOutlined}" IsEnabled="False"/> -->
+        <!--         <atom:NavMenuItem Header="Navigation Three - Submenu" Icon="{atom:IconProvider Kind=SettingOutlined}"> -->
+        <!--             <atom:NavMenuItem Header="Item 1"> -->
+        <!--                 <atom:NavMenuItem Header="Option 1" /> -->
+        <!--                 <atom:NavMenuItem Header="Option 2" /> -->
+        <!--             </atom:NavMenuItem> -->
+        <!--              -->
+        <!--             <atom:NavMenuItem Header="Item 2"> -->
+        <!--                 <atom:NavMenuItem Header="Option 3" /> -->
+        <!--                 <atom:NavMenuItem Header="Option 4" /> -->
+        <!--             </atom:NavMenuItem> -->
+        <!--         </atom:NavMenuItem> -->
+        <!--         <atom:NavMenuItem Header="Navigation Four"/> -->
+        <!--     </atom:NavMenu> -->
+        <!-- </desktop:ShowCaseItem> -->
+        
         <desktop:ShowCaseItem
-            Title="Basic"
-            Description="Simplest Usage.">
-            <atom:Menu>
-                <atom:MenuItem Header="_File">
-                    <atom:MenuItem Header="New Text File" InputGesture="Ctrl+N" />
-                    <atom:MenuItem Header="New File" InputGesture="Ctrl+Alt+N" />
-                    <atom:MenuItem Header="New Window" InputGesture="Ctrl+Shift+N" />
-                </atom:MenuItem>
-                <atom:MenuItem Header="_Edit">
-                    <atom:MenuItem Header="Undo" InputGesture="Ctrl+Shift+Z" />
-                    <atom:MenuSeparator />
-                    <atom:MenuItem Header="Cut" InputGesture="Ctrl+X" />
-                </atom:MenuItem>
-                <atom:MenuItem Header="Disabled Item" IsEnabled="False" />
-            </atom:Menu>
-        </desktop:ShowCaseItem>
-
-        <desktop:ShowCaseItem
-            Title="Icon and submenu"
-            Description="With icon and submenu.">
-            <atom:Menu>
-                <atom:MenuItem Header="_File">
-                    <atom:MenuItem Header="New Text File" InputGesture="Ctrl+N" />
-                    <atom:MenuItem Header="New File" InputGesture="Ctrl+Alt+N" />
-                    <atom:MenuItem Header="New Window" InputGesture="Ctrl+Shift+N" />
-                    <atom:MenuSeparator />
-                    <atom:MenuItem Header="Save" InputGesture="Ctrl+S" />
-                    <atom:MenuItem Header="Save As..." InputGesture="Ctrl+Shift+S" />
-                    <atom:MenuItem Header="Save All" InputGesture="Ctrl+K" />
-                    <atom:MenuSeparator />
-                    <atom:MenuItem Header="Exit" />
-                </atom:MenuItem>
-                <atom:MenuItem Header="_Edit">
-                    <atom:MenuItem Header="Undo" InputGesture="Ctrl+Shift+Z" />
-                    <atom:MenuSeparator />
-                    <atom:MenuItem Header="Cut" InputGesture="Ctrl+X" Icon="{atom:IconProvider Kind=ScissorOutlined}" />
-                    <atom:MenuItem Header="Copy" InputGesture="Ctrl+C" Icon="{atom:IconProvider Kind=CopyOutlined}" />
-                    <atom:MenuItem Header="Delete" InputGesture="Ctrl+D" Icon="{atom:IconProvider Kind=DeleteOutlined}" />
-                    <atom:MenuItem Header="Paste">
-                        <atom:MenuItem Header="Paste" InputGesture="Ctrl+P"
-                                       Icon="{atom:IconProvider Kind=FileDoneOutlined}" />
-                        <atom:MenuItem Header="Paste from History" InputGesture="Ctrl+Shift+V" />
-                    </atom:MenuItem>
-                </atom:MenuItem>
-            </atom:Menu>
-        </desktop:ShowCaseItem>
-
-        <desktop:ShowCaseItem
-            Title="menu item with ToggleType"
-            Description="Renders a checkbox or radio button on a menu.">
-            <atom:Menu>
-                <atom:MenuItem Header="_Menu A">
-                    <atom:MenuItem Header="New Text File" InputGesture="Ctrl+N" ToggleType="Radio" GroupName="Group1" />
-                    <atom:MenuItem Header="New File" InputGesture="Ctrl+Alt+N" ToggleType="Radio" GroupName="Group1" />
-                    <atom:MenuItem Header="New Window" InputGesture="Ctrl+Shift+N" ToggleType="Radio"
-                                   GroupName="Group1" />
-                    <atom:MenuSeparator />
-                    <atom:MenuItem Header="Save" InputGesture="Ctrl+S" ToggleType="CheckBox" />
-                    <atom:MenuItem Header="Save As..." InputGesture="Ctrl+Shift+S" ToggleType="CheckBox"
-                                   Icon="{atom:IconProvider Kind=GithubOutlined}" />
-                    <atom:MenuItem Header="Save All" InputGesture="Ctrl+K" ToggleType="CheckBox"
-                                   Icon="{atom:IconProvider Kind=CheckOutlined}" />
-                    <atom:MenuSeparator />
-                    <atom:MenuItem Header="Exit" />
-                    <atom:MenuItem Header="Disabled" IsEnabled="False" />
-                </atom:MenuItem>
-            </atom:Menu>
-        </desktop:ShowCaseItem>
-
-        <desktop:ShowCaseItem
-            Title="Scrollable menu"
-            Description="When there are too many menu items, up and down scroll buttons will appear.">
-            <atom:Menu>
-                <atom:MenuItem Header="_Menu">
-                    <atom:MenuItem Header="Menu Item" />
-                    <atom:MenuItem Header="Menu Item" />
-                    <atom:MenuItem Header="Menu Item" />
-                    <atom:MenuItem Header="Menu Item" />
-                    <atom:MenuItem Header="Menu Item" />
-                    <atom:MenuItem Header="Menu Item" />
-                    <atom:MenuItem Header="Menu Item" />
-                    <atom:MenuItem Header="Menu Item" />
-                    <atom:MenuItem Header="Menu Item" />
-                    <atom:MenuItem Header="Menu Item" />
-                    <atom:MenuItem Header="Menu Item" />
-                    <atom:MenuItem Header="Menu Item" />
-                    <atom:MenuItem Header="Menu Item" />
-                    <atom:MenuItem Header="Menu Item" />
-                    <atom:MenuItem Header="Menu Item" />
-                    <atom:MenuItem Header="Menu Item" />
-                    <atom:MenuItem Header="Menu Item" />
-                    <atom:MenuItem Header="Menu Item" />
-                    <atom:MenuItem Header="Menu Item" />
-                    <atom:MenuItem Header="Menu Item" />
-                    <atom:MenuItem Header="Menu Item" />
-                    <atom:MenuItem Header="Menu Item" />
-                    <atom:MenuItem Header="Menu Item" />
-                    <atom:MenuItem Header="Menu Item" />
-                    <atom:MenuItem Header="Menu Item" />
-                    <atom:MenuItem Header="Menu Item" />
-                    <atom:MenuItem Header="Menu Item" />
-                    <atom:MenuItem Header="Menu Item" />
-                    <atom:MenuItem Header="Menu Item" />
-                    <atom:MenuItem Header="Menu Item" />
-                    <atom:MenuItem Header="Menu Item" />
-                    <atom:MenuItem Header="Menu Item" />
-                    <atom:MenuItem Header="Menu Item" />
-                    <atom:MenuItem Header="Menu Item" />
-                    <atom:MenuItem Header="Menu Item" />
-                    <atom:MenuItem Header="Menu Item" />
-                </atom:MenuItem>
-            </atom:Menu>
-        </desktop:ShowCaseItem>
-
-        <desktop:ShowCaseItem
-            Title="Context menu"
-            Description="Right click to bring up the context menu.">
-            <desktop:ShowCaseItem.Styles>
-                <Style Selector="Border#ContextMenuContainer">
-                    <Setter Property="BorderBrush" Value="Gray" />
-                    <Setter Property="BorderThickness" Value="1" />
-                    <Setter Property="CornerRadius" Value="6" />
-                    <Setter Property="Padding" Value="10" />
-                    <Setter Property="Margin" Value="10" />
-                </Style>
-            </desktop:ShowCaseItem.Styles>
-            <Border Name="ContextMenuContainer">
-                <Border.ContextMenu>
-                    <atom:ContextMenu>
-                        <atom:MenuItem Header="Cut" InputGesture="Ctrl+X"
-                                       Icon="{atom:IconProvider Kind=ScissorOutlined}" />
-                        <atom:MenuItem Header="Copy" InputGesture="Ctrl+C" Icon="{atom:IconProvider Kind=CopyOutlined}" />
-                        <atom:MenuItem Header="Delete" InputGesture="Ctrl+D"
-                                       Icon="{atom:IconProvider Kind=DeleteOutlined}" />
-                        <atom:MenuItem Header="Paste">
-                            <atom:MenuItem Header="Paste" InputGesture="Ctrl+P"
-                                           Icon="{atom:IconProvider Kind=FileDoneOutlined}" />
-                            <atom:MenuItem Header="Paste from History" InputGesture="Ctrl+Shift+V" />
-                        </atom:MenuItem>
-                    </atom:ContextMenu>
-                </Border.ContextMenu>
-                <TextBlock Text="Right Click to show Context Menu" />
-            </Border>
-        </desktop:ShowCaseItem>
-
-        <desktop:ShowCaseItem
-            Title="Menu Flyout"
-            Description="Right Click to show Context Flyout">
-            <desktop:ShowCaseItem.Styles>
-                <Style Selector="Border#ContextFlyoutContainer">
-                    <Setter Property="BorderBrush" Value="Gray" />
-                    <Setter Property="BorderThickness" Value="1" />
-                    <Setter Property="CornerRadius" Value="6" />
-                    <Setter Property="Padding" Value="10" />
-                    <Setter Property="Margin" Value="10" />
-                </Style>
-            </desktop:ShowCaseItem.Styles>
-
-            <Border Name="ContextFlyoutContainer">
-                <Border.ContextFlyout>
-                    <atom:MenuFlyout>
-                        <atom:MenuItem Header="Cut" InputGesture="Ctrl+X"
-                                       Icon="{atom:IconProvider Kind=ScissorOutlined}" />
-                        <atom:MenuItem Header="Copy" InputGesture="Ctrl+C" Icon="{atom:IconProvider Kind=CopyOutlined}" />
-                        <atom:MenuItem Header="Delete" InputGesture="Ctrl+D"
-                                       Icon="{atom:IconProvider Kind=DeleteOutlined}" />
-                        <atom:MenuItem Header="Paste">
-                            <atom:MenuItem Header="Paste" InputGesture="Ctrl+P"
-                                           Icon="{atom:IconProvider Kind=FileDoneOutlined}" />
-                            <atom:MenuItem Header="Paste from History" InputGesture="Ctrl+Shift+V" />
-                        </atom:MenuItem>
-                    </atom:MenuFlyout>
-                </Border.ContextFlyout>
-                <TextBlock Text="Right Click to show Context Flyout" />
-            </Border>
-
-        </desktop:ShowCaseItem>
-
-        <desktop:ShowCaseItem
-            Title="Top Navigation"
-            Description="Horizontal top navigation menu.">
-            <atom:NavMenu>
+            Title="Vertical menu"
+            Description="Submenus open as pop-ups.">
+            <atom:NavMenu Mode="Vertical" Width="256" Margin="0, 0, 0, 20">
                 <atom:NavMenuItem Header="Navigation One" Icon="{atom:IconProvider Kind=MailOutlined}" />
                 <atom:NavMenuItem Header="Navigation Two" Icon="{atom:IconProvider Kind=AppstoreOutlined}" IsEnabled="False"/>
                 <atom:NavMenuItem Header="Navigation Three - Submenu" Icon="{atom:IconProvider Kind=SettingOutlined}">

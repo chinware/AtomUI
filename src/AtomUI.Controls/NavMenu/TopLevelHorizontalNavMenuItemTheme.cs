@@ -39,7 +39,7 @@ internal class TopLevelHorizontalNavMenuItemTheme : BaseControlTheme
         return ID;
     }
     
-    protected override IControlTemplate? BuildControlTemplate()
+    protected override IControlTemplate BuildControlTemplate()
     {
         return new FuncControlTemplate<NavMenuItem>((menuItem, scope) =>
         {

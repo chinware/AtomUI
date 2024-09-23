@@ -49,7 +49,7 @@ internal class NavMenuToken : AbstractControlDesignToken
     /// 顶层弹出菜单，距离顶层菜单项的边距
     /// </summary>
     public double TopLevelItemPopupMarginToAnchor { get; set; }
-    
+
     /// <summary>
     /// 分组标题文字颜色
     /// </summary>

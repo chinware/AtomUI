@@ -66,10 +66,11 @@
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.TopLevelMenuItemTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.MessageCardTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.WindowMessageManagerTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.InlineNavMenuItemTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.NavMenuItemTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.NavMenuTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.TopLevelHorizontalNavMenuItemTheme());
-            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.TopLevelVerticalNavMenuItemTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.VerticalNavMenuItemTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.NotificationCardTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.WindowNotificationManagerTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.NumericUpDownTheme());

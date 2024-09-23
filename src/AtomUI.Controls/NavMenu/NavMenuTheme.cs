@@ -7,6 +7,8 @@ using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Shapes;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
+using Avalonia.Data.Converters;
 using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Styling;
@@ -23,13 +25,13 @@ internal class NavMenuTheme : BaseControlTheme
     {
     }
     
-    protected override IControlTemplate? BuildControlTemplate()
+    protected override IControlTemplate BuildControlTemplate()
     {
         return new FuncControlTemplate<NavMenu>((menu, scope) =>
         {
             var itemPresenter = new ItemsPresenter
             {
-                Name                = ItemsPresenterPart,
+                Name                = ItemsPresenterPart
             };
 
             KeyboardNavigation.SetTabNavigation(itemPresenter, KeyboardNavigationMode.Continue);
@@ -42,6 +44,8 @@ internal class NavMenuTheme : BaseControlTheme
             rootLayout.Children.Add(horizontalLine);
             DockPanel.SetDock(horizontalLine, Dock.Bottom);
             CreateTemplateParentBinding(horizontalLine, Rectangle.HeightProperty, NavMenu.HorizontalBorderThicknessProperty);
+            CreateTemplateParentBinding(horizontalLine, Rectangle.IsVisibleProperty, NavMenu.ModeProperty, BindingMode.Default,
+                new FuncValueConverter<NavMenuMode, bool>(v => v == NavMenuMode.Horizontal));
             TokenResourceBinder.CreateGlobalTokenBinding(horizontalLine, Rectangle.FillProperty, GlobalTokenResourceKey.ColorBorderSecondary);
             
             var border = new Border
@@ -72,6 +76,8 @@ internal class NavMenuTheme : BaseControlTheme
         
         var horizontalStyle = new Style(selector => selector.Nesting().Class(NavMenu.HorizontalModePC));
         horizontalStyle.Add(NavMenu.BackgroundProperty, GlobalTokenResourceKey.ColorBgContainer);
+        horizontalStyle.Add(NavMenu.HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
+        horizontalStyle.Add(NavMenu.VerticalAlignmentProperty, VerticalAlignment.Top);
         horizontalStyle.Add(NavMenu.HeightProperty, NavMenuTokenResourceKey.MenuHorizontalHeight);
         {
             var itemPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ItemsPresenterPart));
@@ -79,8 +85,6 @@ internal class NavMenuTheme : BaseControlTheme
             {
                 Orientation = Orientation.Horizontal
             }));
-            itemPresenterStyle.Add(ItemsPresenter.HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
-            itemPresenterStyle.Add(ItemsPresenter.VerticalAlignmentProperty, VerticalAlignment.Center);
             horizontalStyle.Add(itemPresenterStyle);
         }
         
@@ -88,6 +92,8 @@ internal class NavMenuTheme : BaseControlTheme
         
         var verticalOrInlineStyle = new Style(selector => Selectors.Or(selector.Nesting().Class(NavMenu.VerticalModePC),
             selector.Nesting().Class(NavMenu.InlineModePC)));
+        verticalOrInlineStyle.Add(NavMenu.HorizontalAlignmentProperty, HorizontalAlignment.Left);
+        verticalOrInlineStyle.Add(NavMenu.VerticalAlignmentProperty, VerticalAlignment.Stretch);
         verticalOrInlineStyle.Add(NavMenu.BackgroundProperty, GlobalTokenResourceKey.ColorBgContainer);
         var darkStyle = new Style(selector => selector.Nesting().Class(NavMenu.DarkStylePC));
         darkStyle.Add(NavMenu.BackgroundProperty, NavMenuTokenResourceKey.DarkItemBg);
@@ -99,8 +105,8 @@ internal class NavMenuTheme : BaseControlTheme
             {
                 Orientation = Orientation.Vertical
             }));
-            itemPresenterStyle.Add(ItemsPresenter.HorizontalAlignmentProperty, HorizontalAlignment.Left);
-            itemPresenterStyle.Add(ItemsPresenter.VerticalAlignmentProperty, VerticalAlignment.Stretch);
+            // itemPresenterStyle.Add(ItemsPresenter.HorizontalAlignmentProperty, HorizontalAlignment.Left);
+            // itemPresenterStyle.Add(ItemsPresenter.VerticalAlignmentProperty, VerticalAlignment.Stretch);
             verticalOrInlineStyle.Add(itemPresenterStyle);
         }
         

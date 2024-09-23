@@ -215,14 +215,20 @@ public class NavMenu : NavMenuBase
     {
         if (ItemContainerTheme is null || force)
         {
-            if (Mode == NavMenuMode.Inline || Mode == NavMenuMode.Vertical)
+            var resourceKey = string.Empty; 
+            if (Mode == NavMenuMode.Vertical)
             {
-                TokenResourceBinder.CreateGlobalResourceBinding(this, ItemContainerThemeProperty, TopLevelVerticalNavMenuItemTheme.ID);
+                resourceKey = VerticalNavMenuItemTheme.ID;
+            }
+            else if (Mode == NavMenuMode.Inline)
+            {
+                resourceKey = InlineNavMenuItemTheme.ID;
             }
             else
             {
-                TokenResourceBinder.CreateGlobalResourceBinding(this, ItemContainerThemeProperty, TopLevelHorizontalNavMenuItemTheme.ID);
+                resourceKey = TopLevelHorizontalNavMenuItemTheme.ID;
             }
+            TokenResourceBinder.CreateGlobalResourceBinding(this, ItemContainerThemeProperty, resourceKey);
         }
     }
 }
