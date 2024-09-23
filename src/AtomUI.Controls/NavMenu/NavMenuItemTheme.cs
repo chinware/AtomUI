@@ -134,9 +134,9 @@ internal class NavMenuItemTheme : BaseControlTheme
                 Kind                = "RightOutlined"
             };
             TokenResourceBinder.CreateGlobalTokenBinding(menuIndicatorIcon, Layoutable.WidthProperty,
-                GlobalTokenResourceKey.IconSizeXS);
+                NavMenuTokenResourceKey.MenuArrowSize);
             TokenResourceBinder.CreateGlobalTokenBinding(menuIndicatorIcon, Layoutable.HeightProperty,
-                GlobalTokenResourceKey.IconSizeXS);
+                NavMenuTokenResourceKey.MenuArrowSize);
             Grid.SetColumn(menuIndicatorIcon, 3);
             menuIndicatorIcon.RegisterInNameScope(scope);
 

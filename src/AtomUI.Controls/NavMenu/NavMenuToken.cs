@@ -334,11 +334,6 @@ internal class NavMenuToken : AbstractControlDesignToken
     public double MenuArrowSize { get; set; }
     
     /// <summary>
-    /// 菜单箭头偏移量
-    /// </summary>
-    public double MenuArrowOffset { get; set; }
-    
-    /// <summary>
     /// 子菜单背景色
     /// </summary>
     public Color MenuSubMenuBg { get; set; }
@@ -417,7 +412,7 @@ internal class NavMenuToken : AbstractControlDesignToken
         DarkItemColor       = colorTextDark;
         DarkDangerItemColor = _globalToken.ColorError;
         DarkItemBg          = Color.Parse("#001529");
-        DarkMenuPopupBg         = Color.Parse("#001529");
+        DarkMenuPopupBg     = Color.Parse("#001529");
         DarkSubMenuItemBg   = Color.Parse("#000c17");
 
         DarkItemSelectedColor       = colorTextLightSolid;
@@ -437,7 +432,6 @@ internal class NavMenuToken : AbstractControlDesignToken
         HorizontalItemHoverBg      = Colors.Transparent;
         
         MenuArrowSize        = _globalToken.FontSize / 7 * 5;
-        MenuArrowOffset      = MenuArrowSize * 0.25;
         MenuSubMenuBg        = _globalToken.ColorBgElevated;
 
         ItemIconSize = _globalToken.IconSize;

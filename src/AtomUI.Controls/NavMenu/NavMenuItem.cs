@@ -13,6 +13,7 @@ using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
+using Avalonia.Rendering;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
@@ -23,7 +24,8 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
                            INavMenuItem,
                            ISelectable,
                            ICommandSource,
-                           IClickableControl
+                           IClickableControl,
+                           ICustomHitTest
 {
     public const string TopLevelPC = ":toplevel";
     public const string SeparatorPC = ":separator";
@@ -892,5 +894,28 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         {
             RaiseEvent(new RoutedEventArgs(ClickEvent));
         }
+    }
+
+    public bool HitTest(Point point)
+    {
+        if (IsTopLevel)
+        {
+            if (Parent is NavMenu navMenu)
+            {
+                if (navMenu.Mode == NavMenuMode.Horizontal && _horizontalFrame is not null)
+                {
+                    var offset     = _horizontalFrame.TranslatePoint(new Point(0, 0), this) ?? default;
+                    var targetRect = new Rect(offset, _horizontalFrame.Bounds.Size);
+                    if (targetRect.Contains(point))
+                    {
+                        return true;
+                    }
+
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 }

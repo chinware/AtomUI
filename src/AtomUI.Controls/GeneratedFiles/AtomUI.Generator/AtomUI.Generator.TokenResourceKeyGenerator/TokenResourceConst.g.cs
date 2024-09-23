@@ -434,7 +434,6 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey DarkDangerItemActiveBg = new TokenResourceKey("NavMenu.DarkDangerItemActiveBg", "AtomUI.Token");
         public static readonly TokenResourceKey MenuHorizontalHeight = new TokenResourceKey("NavMenu.MenuHorizontalHeight", "AtomUI.Token");
         public static readonly TokenResourceKey MenuArrowSize = new TokenResourceKey("NavMenu.MenuArrowSize", "AtomUI.Token");
-        public static readonly TokenResourceKey MenuArrowOffset = new TokenResourceKey("NavMenu.MenuArrowOffset", "AtomUI.Token");
         public static readonly TokenResourceKey MenuSubMenuBg = new TokenResourceKey("NavMenu.MenuSubMenuBg", "AtomUI.Token");
     }
 
