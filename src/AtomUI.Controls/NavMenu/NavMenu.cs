@@ -101,16 +101,6 @@ public class NavMenu : NavMenuBase
         UpdatePseudoClasses();
     }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="NavMenu"/> class.
-    /// </summary>
-    /// <param name="interactionHandler">The menu interaction handler.</param>
-    public NavMenu(INavMenuInteractionHandler interactionHandler)
-        : base(interactionHandler)
-    {
-        UpdatePseudoClasses();
-    }
-
     public override void Close()
     {
         if (!IsOpen)
@@ -158,6 +148,7 @@ public class NavMenu : NavMenuBase
             if (change.Property == ModeProperty)
             {
                 SetupItemContainerTheme(true);
+                SetupInteractionHandler(true);
             }
             UpdatePseudoClasses();
         }
@@ -173,10 +164,14 @@ public class NavMenu : NavMenuBase
             element.ClearValue(ItemContainerThemeProperty);
         }
 
-        if (element is NavMenuItem navMenuItem && Mode == NavMenuMode.Horizontal)
+        if (element is NavMenuItem navMenuItem)
         {
-            BindUtils.RelayBind(this, ActiveBarHeightProperty, navMenuItem, NavMenuItem.ActiveBarHeightProperty);
-            BindUtils.RelayBind(this, ActiveBarWidthProperty, navMenuItem, NavMenuItem.ActiveBarWidthProperty);
+            if (Mode == NavMenuMode.Horizontal)
+            {
+                BindUtils.RelayBind(this, ActiveBarHeightProperty, navMenuItem, NavMenuItem.ActiveBarHeightProperty);
+                BindUtils.RelayBind(this, ActiveBarWidthProperty, navMenuItem, NavMenuItem.ActiveBarWidthProperty); 
+            }
+            BindUtils.RelayBind(this, ModeProperty, navMenuItem, NavMenuItem.ModeProperty);
         }
     }
     
@@ -193,15 +188,22 @@ public class NavMenu : NavMenuBase
     {
         base.OnAttachedToLogicalTree(e);
         SetupItemContainerTheme();
+        SetupInteractionHandler();
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-
+        InteractionHandler?.Attach(this);
         TokenResourceBinder.CreateGlobalTokenBinding(this, HorizontalBorderThicknessProperty, GlobalTokenResourceKey.LineWidth,
             BindingPriority.Template,
             new RenderScaleAwareDoubleConfigure(this));
+    }
+    
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        InteractionHandler?.Detach(this);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -209,6 +211,26 @@ public class NavMenu : NavMenuBase
         base.OnApplyTemplate(e);
         TokenResourceBinder.CreateTokenBinding(this, ActiveBarWidthProperty, NavMenuTokenResourceKey.ActiveBarWidth);
         TokenResourceBinder.CreateTokenBinding(this, ActiveBarHeightProperty, NavMenuTokenResourceKey.ActiveBarHeight);
+    }
+
+    private void SetupInteractionHandler(bool needMount = false)
+    {
+        if (needMount)
+        {
+            InteractionHandler?.Detach(this);
+        }
+        if (Mode == NavMenuMode.Inline)
+        {
+            InteractionHandler = new InlineNavMenuInteractionHandler();
+        }
+        else
+        {
+            InteractionHandler = new DefaultNavMenuInteractionHandler();
+        }
+        if (needMount)
+        {
+            InteractionHandler?.Attach(this);
+        }
     }
 
     private void SetupItemContainerTheme(bool force = false)
@@ -230,5 +252,10 @@ public class NavMenu : NavMenuBase
             }
             TokenResourceBinder.CreateGlobalResourceBinding(this, ItemContainerThemeProperty, resourceKey);
         }
+    }
+
+    internal void UpdateSelectionFromItem(INavMenuItem? item)
+    {
+        UpdateSelectionFromEventSource(item);
     }
 }

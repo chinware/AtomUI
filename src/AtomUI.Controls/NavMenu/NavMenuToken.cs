@@ -186,6 +186,11 @@ internal class NavMenuToken : AbstractControlDesignToken
     public Thickness ItemContentPadding { get; set; }
     
     /// <summary>
+    /// 垂直面板的元素间距
+    /// </summary>
+    public double VerticalItemsPanelSpacing { get; set; }
+    
+    /// <summary>
     /// 菜单项内部元素边距
     /// </summary>
     public Thickness ItemMargin { get; set; }
@@ -436,9 +441,10 @@ internal class NavMenuToken : AbstractControlDesignToken
         MenuPopupMaxHeight              = ItemHeight * 30;
         TopLevelItemPopupMarginToAnchor = _globalToken.MarginXXS;
         
-        MenuPopupBg             = _globalToken.ColorBgElevated;
-        MenuPopupBorderRadius   = _globalToken.BorderRadiusLG;
-        MenuPopupContentPadding = new Thickness(_globalToken.PaddingXXS, MenuPopupBorderRadius.TopLeft / 2);
-        MenuPopupBoxShadows     = _globalToken.BoxShadowsSecondary;
+        MenuPopupBg               = _globalToken.ColorBgElevated;
+        MenuPopupBorderRadius     = _globalToken.BorderRadiusLG;
+        MenuPopupContentPadding   = new Thickness(_globalToken.PaddingXXS, MenuPopupBorderRadius.TopLeft / 2);
+        MenuPopupBoxShadows       = _globalToken.BoxShadowsSecondary;
+        VerticalItemsPanelSpacing = _globalToken.MarginXXS;
     }
 }

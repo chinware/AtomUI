@@ -236,6 +236,11 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
             o => o.PopupMinWidth, 
             (o, v) => o.PopupMinWidth = v);
     
+    internal static readonly DirectProperty<NavMenuItem, NavMenuMode> ModeProperty =
+        AvaloniaProperty.RegisterDirect<NavMenuItem, NavMenuMode>(nameof(Mode),
+            o => o.Mode, 
+            (o, v) => o.Mode = v);
+    
     public double ActiveBarWidth
     {
         get => GetValue(ActiveBarWidthProperty);
@@ -267,6 +272,13 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     {
         get => _popupMinWidth;
         set => SetAndRaise(PopupMinWidthProperty, ref _popupMinWidth, value);
+    }
+    
+    private NavMenuMode _mode;
+    public NavMenuMode Mode
+    {
+        get => _mode;
+        set => SetAndRaise(ModeProperty, ref _mode, value);
     }
 
     #endregion
@@ -371,6 +383,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     private KeyGesture? _hotkey;
     private bool _isEmbeddedInMenu;
     private Border? _horizontalFrame;
+    private IDisposable? _itemContainerThemeDisposable;
 
     static NavMenuItem()
     {
@@ -721,6 +734,9 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         else if (change.Property == IconProperty)
         {
             SetupItemIcon();
+        } else if (change.Property == ModeProperty)
+        {
+            SetupItemContainerTheme(true);
         }
 
         if (change.Property == BoundsProperty ||
@@ -728,6 +744,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         {
             SetupEffectivePopupMinWidth();
         }
+        
     }
 
     private void SetupItemIcon()
@@ -917,5 +934,17 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         }
 
         return true;
+    }
+    
+    private void SetupItemContainerTheme(bool force = false)
+    {
+        if (ItemContainerTheme is null || force)
+        {
+            _itemContainerThemeDisposable?.Dispose();
+            if (Mode == NavMenuMode.Inline)
+            {
+                _itemContainerThemeDisposable = TokenResourceBinder.CreateGlobalResourceBinding(this, ItemContainerThemeProperty, InlineNavMenuItemTheme.ID);
+            }
+        }
     }
 }

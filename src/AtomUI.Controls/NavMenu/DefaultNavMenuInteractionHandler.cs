@@ -11,25 +11,22 @@ using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
-public class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
+internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
 {
-    private readonly bool _isContextMenu;
     private IDisposable? _inputManagerSubscription;
     private IRenderRoot? _root;
 
-    public DefaultNavMenuInteractionHandler(bool isContextMenu)
-        : this(isContextMenu, AvaloniaLocator.Current.GetService<IInputManager>(), DefaultDelayRun)
+    public DefaultNavMenuInteractionHandler()
+        : this(AvaloniaLocator.Current.GetService<IInputManager>(), DefaultDelayRun)
     {
     }
 
     public DefaultNavMenuInteractionHandler(
-        bool isContextMenu,
         IInputManager? inputManager,
         Action<Action, TimeSpan> delayRun)
     {
         delayRun = delayRun ?? throw new ArgumentNullException(nameof(delayRun));
-
-        _isContextMenu = isContextMenu;
+        
         InputManager   = inputManager;
         DelayRun       = delayRun;
     }
@@ -45,7 +42,7 @@ public class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
 
     public static TimeSpan MenuShowDelay { get; set; } = TimeSpan.FromMilliseconds(400);
 
-    protected internal virtual void GotFocus(object? sender, GotFocusEventArgs e)
+    protected virtual void GotFocus(object? sender, GotFocusEventArgs e)
     {
         var item = GetMenuItemCore(e.Source as Control);
 
@@ -55,7 +52,7 @@ public class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
         }
     }
 
-    protected internal virtual void LostFocus(object? sender, RoutedEventArgs e)
+    protected virtual void LostFocus(object? sender, RoutedEventArgs e)
     {
         var item = GetMenuItemCore(e.Source as Control);
 
@@ -65,36 +62,14 @@ public class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
         }
     }
 
-    protected internal virtual void KeyDown(object? sender, KeyEventArgs e)
+    protected virtual void KeyDown(object? sender, KeyEventArgs e)
     {
         KeyDown(GetMenuItemCore(e.Source as Control), e);
     }
 
-    protected internal virtual void AccessKeyPressed(object? sender, RoutedEventArgs e)
+    protected virtual void PointerEntered(object? sender, RoutedEventArgs e)
     {
         var item = GetMenuItemCore(e.Source as Control);
-
-        if (item == null)
-        {
-            return;
-        }
-
-        if (item.HasSubMenu && item.IsEffectivelyEnabled)
-        {
-            Open(item, true);
-        }
-        else
-        {
-            Click(item);
-        }
-
-        e.Handled = true;
-    }
-
-    protected internal virtual void PointerEntered(object? sender, RoutedEventArgs e)
-    {
-        var item = GetMenuItemCore(e.Source as Control);
-
         if (item?.Parent == null)
         {
             return;
@@ -136,7 +111,7 @@ public class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
         }
     }
 
-    protected internal virtual void PointerMoved(object? sender, PointerEventArgs e)
+    protected virtual void PointerMoved(object? sender, PointerEventArgs e)
     {
         // HACK: #8179 needs to be addressed to correctly implement it in the PointerPressed method.
         var item = GetMenuItemCore(e.Source as Control) as NavMenuItem;
@@ -157,7 +132,7 @@ public class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
         }
     }
 
-    protected internal virtual void PointerExited(object? sender, RoutedEventArgs e)
+    protected virtual void PointerExited(object? sender, RoutedEventArgs e)
     {
         var item = GetMenuItemCore(e.Source as Control);
 
@@ -192,7 +167,7 @@ public class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
         }
     }
 
-    protected internal virtual void PointerPressed(object? sender, PointerPressedEventArgs e)
+    protected virtual void PointerPressed(object? sender, PointerPressedEventArgs e)
     {
         var item = GetMenuItemCore(e.Source as Control);
 
@@ -211,11 +186,6 @@ public class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
             }
             else
             {
-                // if (item.IsTopLevel && item.Parent is IMainMenu mainMenu)
-                // {
-                //     mainNavMenu.Open();
-                // }
-
                 Open(item, false);
             }
 
@@ -223,7 +193,7 @@ public class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
         }
     }
 
-    protected internal virtual void PointerReleased(object? sender, PointerReleasedEventArgs e)
+    protected virtual void PointerReleased(object? sender, PointerReleasedEventArgs e)
     {
         var item = GetMenuItemCore(e.Source as Control);
 
@@ -234,7 +204,7 @@ public class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
         }
     }
 
-    protected internal virtual void MenuOpened(object? sender, RoutedEventArgs e)
+    protected virtual void MenuOpened(object? sender, RoutedEventArgs e)
     {
         if (e.Source is NavMenu)
         {
@@ -242,7 +212,7 @@ public class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
         }
     }
 
-    protected internal virtual void RawInput(RawInputEventArgs e)
+    protected virtual void RawInput(RawInputEventArgs e)
     {
         var mouse = e as RawPointerEventArgs;
 
@@ -252,7 +222,7 @@ public class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
         }
     }
 
-    protected internal virtual void RootPointerPressed(object? sender, PointerPressedEventArgs e)
+    protected virtual void RootPointerPressed(object? sender, PointerPressedEventArgs e)
     {
         if (NavMenu?.IsOpen == true)
         {
@@ -263,7 +233,7 @@ public class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
         }
     }
 
-    protected internal virtual void WindowDeactivated(object? sender, EventArgs e)
+    protected virtual void WindowDeactivated(object? sender, EventArgs e)
     {
         NavMenu?.Close();
     }
@@ -283,10 +253,9 @@ public class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
         NavMenu.KeyDown         += KeyDown;
         NavMenu.PointerPressed  += PointerPressed;
         NavMenu.PointerReleased += PointerReleased;
-        // NavMenu.AddHandler(AccessKeyHandler.AccessKeyPressedEvent, AccessKeyPressed);
-        NavMenu.AddHandler(MenuBase.OpenedEvent, MenuOpened);
-        NavMenu.AddHandler(MenuItem.PointerEnteredItemEvent, PointerEntered);
-        NavMenu.AddHandler(MenuItem.PointerExitedItemEvent, PointerExited);
+        NavMenu.AddHandler(NavMenuBase.OpenedEvent, MenuOpened);
+        NavMenu.AddHandler(NavMenuItem.PointerEnteredItemEvent, PointerEntered);
+        NavMenu.AddHandler(NavMenuItem.PointerExitedItemEvent, PointerExited);
         NavMenu.AddHandler(InputElement.PointerMovedEvent, PointerMoved);
 
         _root = NavMenu.VisualRoot;
@@ -302,7 +271,9 @@ public class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
         }
 
         if (_root is TopLevel tl && tl.PlatformImpl is ITopLevelImpl pimpl)
+        {
             pimpl.LostFocus += TopLevelLostPlatformFocus;
+        }
 
         _inputManagerSubscription = InputManager?.Process.Subscribe(RawInput);
     }
@@ -319,10 +290,9 @@ public class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
         NavMenu.KeyDown         -= KeyDown;
         NavMenu.PointerPressed  -= PointerPressed;
         NavMenu.PointerReleased -= PointerReleased;
-        // NavMenu.RemoveHandler(AccessKeyHandler.AccessKeyPressedEvent, AccessKeyPressed);
-        NavMenu.RemoveHandler(MenuBase.OpenedEvent, MenuOpened);
-        NavMenu.RemoveHandler(MenuItem.PointerEnteredItemEvent, PointerEntered);
-        NavMenu.RemoveHandler(MenuItem.PointerExitedItemEvent, PointerExited);
+        NavMenu.RemoveHandler(NavMenuBase.OpenedEvent, MenuOpened);
+        NavMenu.RemoveHandler(NavMenuItem.PointerEnteredItemEvent, PointerEntered);
+        NavMenu.RemoveHandler(NavMenuItem.PointerExitedItemEvent, PointerExited);
         NavMenu.RemoveHandler(InputElement.PointerMovedEvent, PointerMoved);
 
         if (_root is InputElement inputRoot)
@@ -483,14 +453,7 @@ public class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
 
                 if (direction?.IsDirectional() == true)
                 {
-                    if (item == null && _isContextMenu)
-                    {
-                        if (NavMenu!.MoveSelection(direction.Value, true) == true)
-                        {
-                            e.Handled = true;
-                        }
-                    }
-                    else if (item?.Parent?.MoveSelection(direction.Value, true) == true)
+                    if (item?.Parent?.MoveSelection(direction.Value, true) == true)
                     {
                         // If the the parent is an IMenu which successfully moved its selection,
                         // and the current navMenu is open then close the current navMenu and open the
@@ -557,9 +520,15 @@ public class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
         while (true)
         {
             if (item == null)
+            {
                 return null;
+            }
+
             if (item is INavMenuItem menuItem)
+            {
                 return menuItem;
+            }
+               
             item = item.Parent;
         }
     }
@@ -573,5 +542,4 @@ public class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
     {
         DispatcherTimer.RunOnce(action, timeSpan);
     }
-    
 }

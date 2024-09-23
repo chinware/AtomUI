@@ -175,7 +175,7 @@ internal class TopLevelHorizontalNavMenuItemTheme : BaseControlTheme
         TokenResourceBinder.CreateTokenBinding(popup, Popup.MaskShadowsProperty,
             MenuTokenResourceKey.MenuPopupBoxShadows);
     
-        CreateTemplateParentBinding(popup, Avalonia.Controls.Primitives.Popup.IsOpenProperty,
+        CreateTemplateParentBinding(popup, Popup.IsOpenProperty,
             NavMenuItem.IsSubMenuOpenProperty, BindingMode.TwoWay);
     
         return popup;

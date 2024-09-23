@@ -67,7 +67,7 @@ public abstract class NavMenuBase : SelectingItemsControl, IFocusScope, INavMenu
 
     #endregion
 
-    INavMenuInteractionHandler INavMenu.InteractionHandler => InteractionHandler;
+    INavMenuInteractionHandler? INavMenu.InteractionHandler => InteractionHandler;
     
     IRenderRoot? INavMenu.VisualRoot => VisualRoot;
 
@@ -87,17 +87,7 @@ public abstract class NavMenuBase : SelectingItemsControl, IFocusScope, INavMenu
     /// <summary>
     /// Gets the interaction handler for the menu.
     /// </summary>
-    protected internal INavMenuInteractionHandler InteractionHandler { get; }
-
-    protected NavMenuBase()
-    {
-        InteractionHandler = new DefaultNavMenuInteractionHandler(false);
-    }
-    
-    protected NavMenuBase(INavMenuInteractionHandler interactionHandler)
-    {
-        InteractionHandler = interactionHandler ?? throw new ArgumentNullException(nameof(interactionHandler));
-    }
+    protected internal INavMenuInteractionHandler? InteractionHandler { get; protected set; }
 
     /// <summary>
     /// Closes the menu.
@@ -133,20 +123,6 @@ public abstract class NavMenuBase : SelectingItemsControl, IFocusScope, INavMenu
     protected override void OnKeyDown(KeyEventArgs e)
     {
         // Don't handle here: let the interaction handler handle it.
-    }
-
-    /// <inheritdoc/>
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        InteractionHandler.Attach(this);
-    }
-
-    /// <inheritdoc/>
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        InteractionHandler.Detach(this);
     }
 
     /// <summary>

@@ -9,7 +9,7 @@ internal interface INavMenu : INavMenuElement, IInputElement
     /// <summary>
     /// Gets the menu interaction handler.
     /// </summary>
-    INavMenuInteractionHandler InteractionHandler { get; }
+    INavMenuInteractionHandler? InteractionHandler { get; }
     
     /// <summary>
     /// Gets a value indicating whether the menu is open.

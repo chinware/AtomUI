@@ -36,11 +36,32 @@ public static partial class MotionFactory
             var scaleYSetter = new Setter
             {
                 Property = ScaleTransform.ScaleYProperty,
-                Value    = 0.8
+                Value    = 0.1
             };
             startFrame.Setters.Add(scaleYSetter);
         }
         animation.Children.Add(startFrame);
+        
+        var middleFrame = new KeyFrame
+        {
+            Cue = new Cue(0.9)
+        };
+        {
+            var opacitySetter = new Setter
+            {
+                Property = Visual.OpacityProperty,
+                Value    = 0.2
+            };
+            middleFrame.Setters.Add(opacitySetter);
+
+            var scaleYSetter = new Setter
+            {
+                Property = ScaleTransform.ScaleYProperty,
+                Value    = 0.9
+            };
+            middleFrame.Setters.Add(scaleYSetter);
+        }
+        animation.Children.Add(middleFrame);
 
         var endFrame = new KeyFrame
         {
@@ -100,6 +121,27 @@ public static partial class MotionFactory
             startFrame.Setters.Add(scaleYSetter);
         }
         animation.Children.Add(startFrame);
+        
+        var middleFrame = new KeyFrame
+        {
+            Cue = new Cue(0.9)
+        };
+        {
+            var opacitySetter = new Setter
+            {
+                Property = Visual.OpacityProperty,
+                Value    = 0.2
+            };
+            middleFrame.Setters.Add(opacitySetter);
+
+            var scaleYSetter = new Setter
+            {
+                Property = ScaleTransform.ScaleYProperty,
+                Value    = 0.9
+            };
+            middleFrame.Setters.Add(scaleYSetter);
+        }
+        animation.Children.Add(middleFrame);
 
         var endFrame = new KeyFrame
         {
@@ -115,7 +157,7 @@ public static partial class MotionFactory
             var scaleYSetter = new Setter
             {
                 Property = ScaleTransform.ScaleYProperty,
-                Value    = 0.8
+                Value    = 0.0
             };
             endFrame.Setters.Add(scaleYSetter);
         }
@@ -154,7 +196,7 @@ public static partial class MotionFactory
             var scaleYSetter = new Setter
             {
                 Property = ScaleTransform.ScaleYProperty,
-                Value    = 0.8
+                Value    = 0.1
             };
             startFrame.Setters.Add(scaleYSetter);
         }
@@ -168,7 +210,7 @@ public static partial class MotionFactory
             var opacitySetter = new Setter
             {
                 Property = Visual.OpacityProperty,
-                Value    = 1.0
+                Value    = 0.2
             };
             endFrame.Setters.Add(opacitySetter);
             var scaleYSetter = new Setter

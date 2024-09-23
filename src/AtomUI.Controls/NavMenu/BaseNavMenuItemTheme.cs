@@ -38,109 +38,114 @@ internal class BaseNavMenuItemTheme : BaseControlTheme
             BuildInstanceStyles(item);
             // 仅仅为了把 Popup 包进来，没有其他什么作用
             var layoutWrapper = new Panel();
-            var container = new Border
-            {
-                Name = ItemDecoratorPart
-            };
-
-            var transitions = new Transitions();
-            transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty));
-            container.Transitions = transitions;
-
-            var layout = new Grid
-            {
-                Name = MainContainerPart,
-                ColumnDefinitions =
-                {
-                    new ColumnDefinition(GridLength.Auto)
-                    {
-                        SharedSizeGroup = ThemeConstants.IconPresenterSizeGroup
-                    },
-                    new ColumnDefinition(GridLength.Star),
-                    new ColumnDefinition(GridLength.Auto)
-                    {
-                        SharedSizeGroup = ThemeConstants.InputGestureTextSizeGroup
-                    },
-                    new ColumnDefinition(GridLength.Auto)
-                    {
-                        SharedSizeGroup = ThemeConstants.MenuIndicatorIconSizeGroup
-                    }
-                }
-            };
-            layout.RegisterInNameScope(scope);
-
-            var iconPresenter = new Viewbox
-            {
-                Name                = ItemIconPresenterPart,
-                HorizontalAlignment = HorizontalAlignment.Center,
-                VerticalAlignment   = VerticalAlignment.Center,
-                Stretch             = Stretch.Uniform
-            };
-
-            Grid.SetColumn(iconPresenter, 0);
-            iconPresenter.RegisterInNameScope(scope);
-            CreateTemplateParentBinding(iconPresenter, Viewbox.ChildProperty, NavMenuItem.IconProperty);
-            TokenResourceBinder.CreateTokenBinding(iconPresenter, Layoutable.MarginProperty,
-                NavMenuTokenResourceKey.ItemMargin);
-            TokenResourceBinder.CreateGlobalTokenBinding(iconPresenter, Layoutable.WidthProperty,
-                NavMenuTokenResourceKey.ItemIconSize);
-            TokenResourceBinder.CreateGlobalTokenBinding(iconPresenter, Layoutable.HeightProperty,
-                NavMenuTokenResourceKey.ItemIconSize);
-
-            var itemTextPresenter = new ContentPresenter
-            {
-                Name                = ItemTextPresenterPart,
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment   = VerticalAlignment.Center,
-                RecognizesAccessKey = true,
-                IsHitTestVisible    = false
-            };
-            Grid.SetColumn(itemTextPresenter, 1);
-            TokenResourceBinder.CreateTokenBinding(itemTextPresenter, Layoutable.MarginProperty,
-                NavMenuTokenResourceKey.ItemMargin);
-            CreateTemplateParentBinding(itemTextPresenter, ContentPresenter.ContentProperty,
-                HeaderedSelectingItemsControl.HeaderProperty);
-            CreateTemplateParentBinding(itemTextPresenter, ContentPresenter.ContentTemplateProperty,
-                HeaderedSelectingItemsControl.HeaderTemplateProperty);
-
-            itemTextPresenter.RegisterInNameScope(scope);
-
-            var inputGestureText = new TextBlock
-            {
-                Name                = InputGestureTextPart,
-                HorizontalAlignment = HorizontalAlignment.Right,
-                TextAlignment       = TextAlignment.Right,
-                VerticalAlignment   = VerticalAlignment.Center
-            };
-            Grid.SetColumn(inputGestureText, 2);
-            TokenResourceBinder.CreateTokenBinding(inputGestureText, Layoutable.MarginProperty,
-                NavMenuTokenResourceKey.ItemMargin);
-            CreateTemplateParentBinding(inputGestureText,
-                TextBlock.TextProperty,
-                NavMenuItem.InputGestureProperty,
-                BindingMode.Default,
-                NavMenuItem.KeyGestureConverter);
-
-            inputGestureText.RegisterInNameScope(scope);
-
-            var menuIndicatorIcon = BuildMenuIndicatorIcon();
-            Grid.SetColumn(menuIndicatorIcon, 3);
-            menuIndicatorIcon.RegisterInNameScope(scope);
-            
-            layout.Children.Add(iconPresenter);
-            layout.Children.Add(itemTextPresenter);
-            layout.Children.Add(inputGestureText);
-            layout.Children.Add(menuIndicatorIcon);
-
-            BuildExtraItem(layout, scope);
-
-            container.Child = layout;
-            layoutWrapper.Children.Add(container);
+            var header        = BuildMenuItemContent(scope);
+            BuildExtraItem(layoutWrapper, scope);
+            layoutWrapper.Children.Add(header);
             return layoutWrapper;
         });
     }
 
-    protected virtual void BuildExtraItem(Grid containerLayout, INameScope scope)
+    protected virtual Control BuildMenuItemContent(INameScope scope)
+    {
+        var headerFrame = new Border
+        {
+            Name = ItemDecoratorPart
+        };
+
+        var transitions = new Transitions();
+        transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty));
+        headerFrame.Transitions = transitions;
+
+        var layout = new Grid
+        {
+            Name = MainContainerPart,
+            ColumnDefinitions =
+            {
+                new ColumnDefinition(GridLength.Auto)
+                {
+                    SharedSizeGroup = ThemeConstants.IconPresenterSizeGroup
+                },
+                new ColumnDefinition(GridLength.Star),
+                new ColumnDefinition(GridLength.Auto)
+                {
+                    SharedSizeGroup = ThemeConstants.InputGestureTextSizeGroup
+                },
+                new ColumnDefinition(GridLength.Auto)
+                {
+                    SharedSizeGroup = ThemeConstants.MenuIndicatorIconSizeGroup
+                }
+            }
+        };
+        layout.RegisterInNameScope(scope);
+
+        var iconPresenter = new Viewbox
+        {
+            Name                = ItemIconPresenterPart,
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment   = VerticalAlignment.Center,
+            Stretch             = Stretch.Uniform
+        };
+
+        Grid.SetColumn(iconPresenter, 0);
+        iconPresenter.RegisterInNameScope(scope);
+        CreateTemplateParentBinding(iconPresenter, Viewbox.ChildProperty, NavMenuItem.IconProperty);
+        TokenResourceBinder.CreateTokenBinding(iconPresenter, Layoutable.MarginProperty,
+            NavMenuTokenResourceKey.ItemMargin);
+        TokenResourceBinder.CreateGlobalTokenBinding(iconPresenter, Layoutable.WidthProperty,
+            NavMenuTokenResourceKey.ItemIconSize);
+        TokenResourceBinder.CreateGlobalTokenBinding(iconPresenter, Layoutable.HeightProperty,
+            NavMenuTokenResourceKey.ItemIconSize);
+
+        var itemTextPresenter = new ContentPresenter
+        {
+            Name                = ItemTextPresenterPart,
+            HorizontalAlignment = HorizontalAlignment.Stretch,
+            VerticalAlignment   = VerticalAlignment.Center,
+            RecognizesAccessKey = true,
+            IsHitTestVisible    = false
+        };
+        Grid.SetColumn(itemTextPresenter, 1);
+        TokenResourceBinder.CreateTokenBinding(itemTextPresenter, Layoutable.MarginProperty,
+            NavMenuTokenResourceKey.ItemMargin);
+        CreateTemplateParentBinding(itemTextPresenter, ContentPresenter.ContentProperty,
+            HeaderedSelectingItemsControl.HeaderProperty);
+        CreateTemplateParentBinding(itemTextPresenter, ContentPresenter.ContentTemplateProperty,
+            HeaderedSelectingItemsControl.HeaderTemplateProperty);
+
+        itemTextPresenter.RegisterInNameScope(scope);
+
+        var inputGestureText = new TextBlock
+        {
+            Name                = InputGestureTextPart,
+            HorizontalAlignment = HorizontalAlignment.Right,
+            TextAlignment       = TextAlignment.Right,
+            VerticalAlignment   = VerticalAlignment.Center
+        };
+        Grid.SetColumn(inputGestureText, 2);
+        TokenResourceBinder.CreateTokenBinding(inputGestureText, Layoutable.MarginProperty,
+            NavMenuTokenResourceKey.ItemMargin);
+        CreateTemplateParentBinding(inputGestureText,
+            TextBlock.TextProperty,
+            NavMenuItem.InputGestureProperty,
+            BindingMode.Default,
+            NavMenuItem.KeyGestureConverter);
+
+        inputGestureText.RegisterInNameScope(scope);
+
+        var menuIndicatorIcon = BuildMenuIndicatorIcon();
+        Grid.SetColumn(menuIndicatorIcon, 3);
+        menuIndicatorIcon.RegisterInNameScope(scope);
+            
+        layout.Children.Add(iconPresenter);
+        layout.Children.Add(itemTextPresenter);
+        layout.Children.Add(inputGestureText);
+        layout.Children.Add(menuIndicatorIcon);
+
+        headerFrame.Child = layout;
+        return headerFrame;
+    }
+
+    protected virtual void BuildExtraItem(Panel layout, INameScope scope)
     {
     }
 

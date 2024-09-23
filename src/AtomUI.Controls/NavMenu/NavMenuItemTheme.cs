@@ -22,11 +22,11 @@ internal class NavMenuItemTheme : BaseNavMenuItemTheme
     {
     }
     
-    protected override void BuildExtraItem(Grid containerLayout, INameScope scope)
+    protected override void BuildExtraItem(Panel layout, INameScope scope)
     {
         var popup = CreateMenuPopup();
         popup.RegisterInNameScope(scope);
-        containerLayout.Children.Add(popup);
+        layout.Children.Add(popup);
     }
     
     protected Popup CreateMenuPopup()
