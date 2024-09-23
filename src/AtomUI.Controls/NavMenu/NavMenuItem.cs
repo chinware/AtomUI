@@ -4,6 +4,7 @@ using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Converters;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Mixins;
 using Avalonia.Controls.Primitives;
@@ -353,6 +354,8 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     private EventHandler CanExecuteChangedHandler => _canExecuteChangeHandler ??= new(CanExecuteChanged);
 
     #endregion
+    
+    internal static PlatformKeyGestureConverter KeyGestureConverter = new();
 
     /// <summary>
     /// The default value for the <see cref="ItemsControl.ItemsPanel"/> property.
@@ -563,7 +566,8 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         }
 
         _horizontalFrame = e.NameScope.Find<Border>(TopLevelHorizontalNavMenuItemTheme.FramePart);
-        TokenResourceBinder.CreateTokenBinding(this, PopupMinWidthProperty, NavMenuTokenResourceKey.PopupMinWidth);
+        TokenResourceBinder.CreateTokenBinding(this, PopupMinWidthProperty, NavMenuTokenResourceKey.MenuPopupMinWidth);
+        SetupItemIcon();
     }
 
     protected override void UpdateDataValidation(
@@ -712,11 +716,23 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         {
             SetupHorizontalEffectiveIndicatorWidth();
         }
+        else if (change.Property == IconProperty)
+        {
+            SetupItemIcon();
+        }
 
         if (change.Property == BoundsProperty ||
             change.Property == PopupMinWidthProperty)
         {
             SetupEffectivePopupMinWidth();
+        }
+    }
+
+    private void SetupItemIcon()
+    {
+        if (Icon is not null && Icon is PathIcon menuItemIcon)
+        {
+            menuItemIcon.Name = ThemeConstants.ItemIconPart;
         }
     }
 

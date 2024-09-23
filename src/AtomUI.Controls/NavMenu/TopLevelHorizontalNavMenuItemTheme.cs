@@ -135,7 +135,7 @@ internal class TopLevelHorizontalNavMenuItemTheme : BaseControlTheme
         {
             Name                       = PopupPart,
             WindowManagerAddShadowHint = false,
-            IsLightDismissEnabled      = true,
+            IsLightDismissEnabled      = false,
             Placement                  = PlacementMode.BottomEdgeAlignedLeft
         };
 
@@ -229,7 +229,7 @@ internal class TopLevelHorizontalNavMenuItemTheme : BaseControlTheme
     
     protected override void BuildInstanceStyles(Control control)
     {
-        var iconStyle = new Style(selector => selector.OfType<PathIcon>());
+        var iconStyle = new Style(selector => selector.Name(ThemeConstants.ItemIconPart));
         iconStyle.Add(PathIcon.WidthProperty, NavMenuTokenResourceKey.ItemIconSize);
         iconStyle.Add(PathIcon.HeightProperty, NavMenuTokenResourceKey.ItemIconSize);
         iconStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorText);

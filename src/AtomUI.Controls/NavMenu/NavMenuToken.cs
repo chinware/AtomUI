@@ -11,9 +11,44 @@ internal class NavMenuToken : AbstractControlDesignToken
     public const string ID = "NavMenu";
     
     /// <summary>
-    /// 弹出菜单的宽度
+    /// 菜单的圆角
     /// </summary>
-    public double PopupMinWidth { get; set; }
+    public CornerRadius MenuPopupBorderRadius { get; set; }
+
+    /// <summary>
+    /// 菜单 Popup 阴影
+    /// </summary>
+    public BoxShadows MenuPopupBoxShadows { get; set; }
+
+    /// <summary>
+    /// 菜单内容边距
+    /// </summary>
+    public Thickness MenuPopupContentPadding { get; set; }
+
+    /// <summary>
+    /// 菜单 Popup 最小宽度
+    /// </summary>
+    public double MenuPopupMinWidth { get; set; }
+
+    /// <summary>
+    /// 菜单 Popup 最大宽度
+    /// </summary>
+    public double MenuPopupMaxWidth { get; set; }
+
+    /// <summary>
+    /// 菜单 Popup 最小高度
+    /// </summary>
+    public double MenuPopupMinHeight { get; set; }
+
+    /// <summary>
+    /// 菜单 Popup 最大高度
+    /// </summary>
+    public double MenuPopupMaxHeight { get; set; }
+    
+    /// <summary>
+    /// 顶层弹出菜单，距离顶层菜单项的边距
+    /// </summary>
+    public double TopLevelItemPopupMarginToAnchor { get; set; }
     
     /// <summary>
     /// 分组标题文字颜色
@@ -39,6 +74,11 @@ internal class NavMenuToken : AbstractControlDesignToken
     /// 子菜单项的圆角
     /// </summary>
     public CornerRadius SubMenuItemBorderRadius { get; set; }
+    
+    /// <summary>
+    /// 快捷键颜色
+    /// </summary>
+    public Color KeyGestureColor { get; set; }
     
     /// <summary>
     /// 菜单项文字颜色
@@ -143,17 +183,22 @@ internal class NavMenuToken : AbstractControlDesignToken
     /// <summary>
     /// 菜单项外间距
     /// </summary>
+    public Thickness ItemContentMargin { get; set; }
+    
+    /// <summary>
+    /// 菜单项横向内间距
+    /// </summary>
+    public Thickness ItemContentPadding { get; set; }
+    
+    /// <summary>
+    /// 菜单项内部元素边距
+    /// </summary>
     public Thickness ItemMargin { get; set; }
     
     /// <summary>
     /// 水平菜单项外间距
     /// </summary>
     public Thickness HorizontalItemMargin { get; set; }
-    
-    /// <summary>
-    /// 菜单项横向内间距
-    /// </summary>
-    public Thickness ItemPadding { get; set; }
     
     /// <summary>
     /// 横向菜单项横悬浮态背景色
@@ -178,7 +223,7 @@ internal class NavMenuToken : AbstractControlDesignToken
     /// <summary>
     /// 弹出框背景色
     /// </summary>
-    public Color PopupBg { get; set; }
+    public Color MenuPopupBg { get; set; }
     
     /// <summary>
     /// 横向菜单行高
@@ -204,7 +249,7 @@ internal class NavMenuToken : AbstractControlDesignToken
     /// <summary>
     /// 暗色模式下的浮层菜单的背景颜色
     /// </summary>
-    public Color DarkPopupBg { get; set; }
+    public Color DarkMenuPopupBg { get; set; }
     
     /// <summary>
     /// 暗色模式下的菜单项文字颜色
@@ -315,15 +360,13 @@ internal class NavMenuToken : AbstractControlDesignToken
         var activeBarHeight = !double.IsNaN(ActiveBarHeight)
             ? ActiveBarHeight
             : _globalToken.LineWidthBold;
-        var itemMargin    = ItemMargin != default ? ItemMargin : new Thickness(_globalToken.MarginXXS, _globalToken.MarginXXS);
+        var itemContentMargin    = ItemContentMargin != default ? ItemContentMargin : new Thickness(_globalToken.MarginXXS, _globalToken.MarginXXS);
         var colorTextDark = ColorUtils.FromRgbF(
             0.65d,
             colorTextLightSolid.GetRedF(),
             colorTextLightSolid.GetGreenF(),
             colorTextLightSolid.GetBlueF());
-
-
-        PopupMinWidth               = 160d;
+        
         ItemBorderRadius            = _globalToken.BorderRadiusLG;
         SubMenuItemBorderRadius     = _globalToken.BorderRadiusSM;
         ItemColor                   = _globalToken.ColorText;
@@ -351,19 +394,18 @@ internal class NavMenuToken : AbstractControlDesignToken
         DangerItemActiveBg      = _globalToken.ColorError;
         DangerItemSelectedBg    = _globalToken.ColorError;
 
-        ItemMargin                 = itemMargin;
-        HorizontalItemBorderRadius = new CornerRadius(0);
-        HorizontalItemHoverBg      = Colors.Transparent;
-        ItemHeight                 = _globalToken.ControlHeightLG;
-        GroupTitleLineHeight       = _globalToken.ControlHeight;
-        CollapsedWidth             = _globalToken.ControlHeightLG * 2;
-        PopupBg                    = _globalToken.ColorBgElevated;
-        ItemPadding                = new Thickness(_globalToken.Padding, 0);
-        HorizontalLineHeight       = _globalToken.ControlHeightLG * 1.15;
-        IconSize                   = _globalToken.FontSize;
-        IconMargin                 = new Thickness(0, 0, _globalToken.ControlHeightSM - _globalToken.FontSize, 0);
-        CollapsedIconSize          = _globalToken.FontSizeLG;
-        GroupTitleFontSize         = _globalToken.FontSize;
+        KeyGestureColor = _globalToken.ColorTextSecondary;
+        
+        ItemContentMargin    = itemContentMargin;
+        ItemContentPadding   = new Thickness(_globalToken.Padding, _globalToken.PaddingXXS);
+        ItemMargin           = new Thickness(0, 0, _globalToken.MarginXXS, 0);
+        ItemHeight           = _globalToken.ControlHeight;
+        GroupTitleLineHeight = _globalToken.ControlHeight;
+        CollapsedWidth       = _globalToken.ControlHeight * 2;
+        IconSize             = _globalToken.FontSize;
+        IconMargin           = new Thickness(0, 0, _globalToken.ControlHeightSM - _globalToken.FontSize, 0);
+        CollapsedIconSize    = _globalToken.FontSizeLG;
+        GroupTitleFontSize   = _globalToken.FontSize;
         
         // Disabled
         DarkItemDisabledColor = ColorUtils.FromRgbF(0.25d,
@@ -375,7 +417,7 @@ internal class NavMenuToken : AbstractControlDesignToken
         DarkItemColor       = colorTextDark;
         DarkDangerItemColor = _globalToken.ColorError;
         DarkItemBg          = Color.Parse("#001529");
-        DarkPopupBg         = Color.Parse("#001529");
+        DarkMenuPopupBg         = Color.Parse("#001529");
         DarkSubMenuItemBg   = Color.Parse("#000c17");
 
         DarkItemSelectedColor       = colorTextLightSolid;
@@ -388,13 +430,27 @@ internal class NavMenuToken : AbstractControlDesignToken
         DarkDangerItemSelectedColor = colorTextLightSolid;
         DarkDangerItemActiveBg      = _globalToken.ColorError;
 
-        MenuHorizontalHeight = _globalToken.ControlHeightLG * 1.15;
-        HorizontalItemMargin = new Thickness(_globalToken.Padding, 0);
+        MenuHorizontalHeight       = _globalToken.ControlHeightLG * 1.15;
+        HorizontalItemMargin       = new Thickness(_globalToken.Padding, 0);
+        HorizontalLineHeight       = _globalToken.ControlHeightLG * 1.15;
+        HorizontalItemBorderRadius = new CornerRadius(0);
+        HorizontalItemHoverBg      = Colors.Transparent;
+        
         MenuArrowSize        = _globalToken.FontSize / 7 * 5;
         MenuArrowOffset      = MenuArrowSize * 0.25;
         MenuSubMenuBg        = _globalToken.ColorBgElevated;
 
         ItemIconSize = _globalToken.IconSize;
+        
+        MenuPopupMinWidth               = 160d;
+        MenuPopupMaxWidth               = 800d;
+        MenuPopupMinHeight              = ItemHeight * 3;
+        MenuPopupMaxHeight              = ItemHeight * 30;
+        TopLevelItemPopupMarginToAnchor = _globalToken.MarginXXS;
+        
+        MenuPopupBg             = _globalToken.ColorBgElevated;
+        MenuPopupBorderRadius   = _globalToken.BorderRadiusLG;
+        MenuPopupContentPadding = new Thickness(_globalToken.PaddingXXS, MenuPopupBorderRadius.TopLeft / 2);
+        MenuPopupBoxShadows     = _globalToken.BoxShadowsSecondary;
     }
-    
 }
