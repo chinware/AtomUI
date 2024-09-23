@@ -11,6 +11,7 @@ using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
+using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Styling;
@@ -180,6 +181,7 @@ internal class BaseNavMenuItemTheme : BaseControlTheme
         }
         {
             var borderStyle = new Style(selector => selector.Nesting().Template().Name(ItemDecoratorPart));
+            borderStyle.Add(Border.CursorProperty, new Cursor(StandardCursorType.Hand));
             borderStyle.Add(Layoutable.MinHeightProperty, NavMenuTokenResourceKey.ItemHeight);
             borderStyle.Add(Decorator.PaddingProperty, NavMenuTokenResourceKey.ItemContentPadding);
             borderStyle.Add(Border.BackgroundProperty, NavMenuTokenResourceKey.ItemBg);

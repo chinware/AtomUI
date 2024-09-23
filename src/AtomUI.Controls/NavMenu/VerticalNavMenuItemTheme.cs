@@ -11,7 +11,7 @@ internal class VerticalNavMenuItemTheme : NavMenuItemTheme
     {
     }
     
-    public VerticalNavMenuItemTheme(Type targetType) : base(targetType)
+    protected VerticalNavMenuItemTheme(Type targetType) : base(targetType)
     {
     }
     

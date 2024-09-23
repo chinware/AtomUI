@@ -375,7 +375,6 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey MenuPopupContentPadding = new TokenResourceKey("NavMenu.MenuPopupContentPadding", "AtomUI.Token");
         public static readonly TokenResourceKey MenuPopupMinWidth = new TokenResourceKey("NavMenu.MenuPopupMinWidth", "AtomUI.Token");
         public static readonly TokenResourceKey MenuPopupMaxWidth = new TokenResourceKey("NavMenu.MenuPopupMaxWidth", "AtomUI.Token");
-        public static readonly TokenResourceKey MenuPopupMinHeight = new TokenResourceKey("NavMenu.MenuPopupMinHeight", "AtomUI.Token");
         public static readonly TokenResourceKey MenuPopupMaxHeight = new TokenResourceKey("NavMenu.MenuPopupMaxHeight", "AtomUI.Token");
         public static readonly TokenResourceKey TopLevelItemPopupMarginToAnchor = new TokenResourceKey("NavMenu.TopLevelItemPopupMarginToAnchor", "AtomUI.Token");
         public static readonly TokenResourceKey GroupTitleColor = new TokenResourceKey("NavMenu.GroupTitleColor", "AtomUI.Token");

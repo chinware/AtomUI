@@ -36,11 +36,6 @@ internal class NavMenuToken : AbstractControlDesignToken
     public double MenuPopupMaxWidth { get; set; }
 
     /// <summary>
-    /// 菜单 Popup 最小高度
-    /// </summary>
-    public double MenuPopupMinHeight { get; set; }
-
-    /// <summary>
     /// 菜单 Popup 最大高度
     /// </summary>
     public double MenuPopupMaxHeight { get; set; }
@@ -438,7 +433,6 @@ internal class NavMenuToken : AbstractControlDesignToken
         
         MenuPopupMinWidth               = 160d;
         MenuPopupMaxWidth               = 800d;
-        MenuPopupMinHeight              = ItemHeight * 3;
         MenuPopupMaxHeight              = ItemHeight * 30;
         TopLevelItemPopupMarginToAnchor = _globalToken.MarginXXS;
         

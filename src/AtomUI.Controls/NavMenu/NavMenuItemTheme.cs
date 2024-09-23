@@ -1,5 +1,4 @@
-﻿using AtomUI.Theme;
-using AtomUI.Theme.Styling;
+﻿using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
@@ -49,8 +48,6 @@ internal class NavMenuItemTheme : BaseNavMenuItemTheme
             NavMenuTokenResourceKey.MenuPopupMinWidth);
         TokenResourceBinder.CreateTokenBinding(border, Layoutable.MaxWidthProperty,
             NavMenuTokenResourceKey.MenuPopupMaxWidth);
-        TokenResourceBinder.CreateTokenBinding(border, Layoutable.MinHeightProperty,
-            NavMenuTokenResourceKey.MenuPopupMinHeight);
         TokenResourceBinder.CreateTokenBinding(border, Layoutable.MaxHeightProperty,
             NavMenuTokenResourceKey.MenuPopupMaxHeight);
         TokenResourceBinder.CreateTokenBinding(border, Decorator.PaddingProperty,
