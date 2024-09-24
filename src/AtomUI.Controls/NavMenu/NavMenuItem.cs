@@ -1,6 +1,7 @@
 ﻿using System.Windows.Input;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
+using AtomUI.Icon;
 using AtomUI.Input;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
@@ -84,6 +85,13 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     /// </summary>
     public static readonly StyledProperty<bool> IsCheckedProperty =
         AvaloniaProperty.Register<NavMenuItem, bool>(nameof(IsChecked));
+    
+    /// <summary>
+    /// Defines the <see cref="Level"/> property.
+    /// </summary>
+    public static readonly DirectProperty<NavMenuItem, int> LevelProperty =
+        AvaloniaProperty.RegisterDirect<NavMenuItem, int>(
+            nameof(Level), o => o.Level);
 
     /// <summary>
     /// Gets or sets the command associated with the menu item.
@@ -171,10 +179,25 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         set => SetValue(IsCheckedProperty, value);
     }
 
+    private bool _hasSubMenu;
     /// <summary>
     /// Gets or sets a value that indicates whether the <see cref="NavMenuItem"/> has a submenu.
     /// </summary>
-    public bool HasSubMenu => !Classes.Contains(StdPseudoClass.Empty);
+    public bool HasSubMenu
+    {
+        get => _hasSubMenu;
+        set => SetAndRaise(HasSubMenuProperty, ref _hasSubMenu, value);
+    }
+    
+    private int _level;
+    /// <summary>
+    /// Gets the level/indentation of the item.
+    /// </summary>
+    public int Level
+    {
+        get => _level;
+        private set => SetAndRaise(LevelProperty, ref _level, value);
+    }
 
     /// <summary>
     /// Gets a value that indicates whether the <see cref="NavMenuItem"/> is a top-level main menu item.
@@ -250,6 +273,16 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
             o => o.OpenCloseMotionDuration, 
             (o, v) => o.OpenCloseMotionDuration = v);
     
+    internal static readonly DirectProperty<NavMenuItem, bool> HasSubMenuProperty =
+        AvaloniaProperty.RegisterDirect<NavMenuItem, bool>(nameof(HasSubMenu),
+            o => o.HasSubMenu, 
+            (o, v) => o.HasSubMenu = v);
+    
+    internal static readonly DirectProperty<NavMenuItem, double> InlineItemIndentUnitProperty =
+        AvaloniaProperty.RegisterDirect<NavMenuItem, double>(nameof(InlineItemIndentUnit),
+            o => o.InlineItemIndentUnit, 
+            (o, v) => o.InlineItemIndentUnit = v);
+    
     internal double ActiveBarWidth
     {
         get => GetValue(ActiveBarWidthProperty);
@@ -297,7 +330,14 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         set => SetAndRaise(ModeProperty, ref _mode, value);
     }
 
+    private double _inlineItemIndentUnit;
 
+    internal double InlineItemIndentUnit
+    {
+        get => _inlineItemIndentUnit;
+        set => SetAndRaise(InlineItemIndentUnitProperty, ref _inlineItemIndentUnit, value);
+    }
+    
     #endregion
 
     #region 公共事件定义
@@ -428,31 +468,6 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     /// </remarks>
     public void Open()
     {
-        if (Mode == NavMenuMode.Inline)
-        {
-            if (_childItemsLayoutTransform is not null)
-            {
-                if (_animating)
-                {
-                    return;
-                }
-
-                _animating = true;
-                var slideDownInMotionConfig = MotionFactory.BuildSlideUpInMotion(_openCloseMotionDuration, new QuinticEaseOut(),
-                    FillMode.Forward);
-                SetCurrentValue(IsSubMenuOpenProperty, true);
-                _childItemsLayoutTransform.RenderTransformOrigin = slideDownInMotionConfig.RenderTransformOrigin;
-                MotionInvoker.Invoke(_childItemsLayoutTransform, slideDownInMotionConfig, () =>
-                {
-                    _childItemsLayoutTransform.SetCurrentValue(IsVisibleProperty, true);
-                }, () =>
-                {
-                    _animating = false;
-                });
-                return;
-            }
-        }
-
         SetCurrentValue(IsSubMenuOpenProperty, true);
     }
 
@@ -464,27 +479,6 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     /// </remarks>
     public void Close()
     {
-        if (Mode == NavMenuMode.Inline)
-        {
-            if (_childItemsLayoutTransform is not null)
-            {
-                if (_animating)
-                {
-                    return;
-                }
-
-                _animating = true;
-                SetCurrentValue(IsSubMenuOpenProperty, false);
-                var slideDownOutMotionConfig = MotionFactory.BuildSlideUpOutMotion(_openCloseMotionDuration, new QuinticEaseOut(),
-                    FillMode.Forward);
-                MotionInvoker.Invoke(_childItemsLayoutTransform, slideDownOutMotionConfig, null, () =>
-                {
-                    _childItemsLayoutTransform.SetCurrentValue(IsVisibleProperty, false);
-                    _animating = false;
-                });
-                return;
-            }
-        }
         SetCurrentValue(IsSubMenuOpenProperty, false);
     }
 
@@ -528,6 +522,8 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         }
 
         base.OnAttachedToLogicalTree(e);
+        
+        Level = CalculateDistanceFromLogicalParent<NavMenu>(this) - 1;
 
         (var command, var parameter) = (Command, CommandParameter);
         if (command is not null)
@@ -545,6 +541,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         }
 
         _isEmbeddedInMenu = parent?.FindLogicalAncestorOfType<INavMenu>(true) != null;
+        TokenResourceBinder.CreateTokenBinding(this, InlineItemIndentUnitProperty, NavMenuTokenResourceKey.InlineItemIndentUnit);
     }
 
     /// <inheritdoc />
@@ -590,7 +587,10 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     protected override void OnGotFocus(GotFocusEventArgs e)
     {
         base.OnGotFocus(e);
-        e.Handled = UpdateSelectionFromEventSource(e.Source, true);
+        if (Mode != NavMenuMode.Inline || !HasSubMenu)
+        {
+            e.Handled = UpdateSelectionFromEventSource(e.Source, true);
+        }
     }
 
     /// <inheritdoc/>
@@ -620,15 +620,19 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     protected virtual void OnSubmenuOpened(RoutedEventArgs e)
     {
         var menuItem = e.Source as NavMenuItem;
-
+        
         if (menuItem != null && menuItem.Parent == this)
         {
-            foreach (var child in ((INavMenuItem)this).SubItems)
+            // TODO 我们在这里对模式做一个区分, Inline 暂时不互斥关闭，后面有时间看是否加一个互斥的标记
+            if (Mode != NavMenuMode.Inline)
             {
-                if (child != menuItem && child.IsSubMenuOpen)
+                foreach (var child in ((INavMenuItem)this).SubItems)
                 {
-                    child.IsSubMenuOpen = false;
-                }
+                    if (child != menuItem && child.IsSubMenuOpen)
+                    {
+                        child.IsSubMenuOpen = false;
+                    }
+                }   
             }
         }
     }
@@ -819,6 +823,9 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         } else if (change.Property == ModeProperty)
         {
             SetupItemContainerTheme(true);
+        } else if (change.Property == ItemCountProperty)
+        {
+            HasSubMenu = ItemCount > 0;
         }
 
         if (change.Property == BoundsProperty ||
@@ -917,10 +924,22 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     private void IsSelectedChanged(AvaloniaPropertyChangedEventArgs e)
     {
         var parentMenu = Parent as NavMenu;
-
-        if ((bool)e.NewValue! && (parentMenu is null || parentMenu.IsOpen))
+        var isSelected = e.GetNewValue<bool>();
+        if (isSelected && (parentMenu is null || parentMenu.IsOpen))
         {
             Focus();
+        }
+
+        if (Icon is not null && Icon is PathIcon menuIcon)
+        {
+            if (isSelected)
+            {
+                menuIcon.SetValue(PathIcon.IconModeProperty, IconMode.Selected);
+            }
+            else
+            {
+                menuIcon.SetValue(PathIcon.IconModeProperty, IconMode.Normal);
+            }
         }
     }
 
@@ -932,22 +951,87 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     {
         var value = (bool)e.NewValue!;
 
-        if (value)
+        if (Mode == NavMenuMode.Inline)
         {
-            foreach (var item in ItemsView.OfType<NavMenuItem>())
+            // 在这里我们有一个动画的效果
+            if (value)
             {
-                item.TryUpdateCanExecute();
-            }
+                foreach (var item in ItemsView.OfType<NavMenuItem>())
+                {
+                    item.TryUpdateCanExecute();
+                }
 
-            RaiseEvent(new RoutedEventArgs(SubmenuOpenedEvent));
-            SetCurrentValue(IsSelectedProperty, true);
-            PseudoClasses.Add(StdPseudoClass.Open);
+                RaiseEvent(new RoutedEventArgs(SubmenuOpenedEvent));
+                PseudoClasses.Add(StdPseudoClass.Open);
+                OpenInlineItem();
+            } else
+            {
+                PseudoClasses.Remove(StdPseudoClass.Open);
+                CloseInlineItem();
+            }
         }
         else
         {
-            CloseSubmenus();
-            SelectedIndex = -1;
-            PseudoClasses.Remove(StdPseudoClass.Open);
+            if (value)
+            {
+                foreach (var item in ItemsView.OfType<NavMenuItem>())
+                {
+                    item.TryUpdateCanExecute();
+                }
+                RaiseEvent(new RoutedEventArgs(SubmenuOpenedEvent));
+                SetCurrentValue(IsSelectedProperty, true);
+                PseudoClasses.Add(StdPseudoClass.Open);
+            }
+            else
+            {
+                CloseSubmenus();
+                SelectedIndex = -1;
+                PseudoClasses.Remove(StdPseudoClass.Open);
+            }
+        }
+    }
+    
+    private void OpenInlineItem()
+    {
+        if (_childItemsLayoutTransform is not null)
+        {
+            if (_animating)
+            {
+                return;
+            }
+
+            _animating = true;
+            var slideDownInMotionConfig = MotionFactory.BuildSlideUpInMotion(_openCloseMotionDuration, new QuinticEaseOut(),
+                FillMode.Forward);
+            _childItemsLayoutTransform.RenderTransformOrigin = slideDownInMotionConfig.RenderTransformOrigin;
+            MotionInvoker.Invoke(_childItemsLayoutTransform, slideDownInMotionConfig, () =>
+            {
+                _childItemsLayoutTransform.SetCurrentValue(IsVisibleProperty, true);
+            }, () =>
+            {
+                _animating = false;
+            });
+        }
+    }
+    
+    private void CloseInlineItem()
+    {
+        if (_childItemsLayoutTransform is not null)
+        {
+            if (_animating)
+            {
+                return;
+            }
+
+            _animating = true;
+            SetCurrentValue(IsSubMenuOpenProperty, false);
+            var slideDownOutMotionConfig = MotionFactory.BuildSlideUpOutMotion(_openCloseMotionDuration, new QuinticEaseOut(),
+                FillMode.Forward);
+            MotionInvoker.Invoke(_childItemsLayoutTransform, slideDownOutMotionConfig, null, () =>
+            {
+                _childItemsLayoutTransform.SetCurrentValue(IsVisibleProperty, false);
+                _animating = false;
+            });
         }
     }
 
@@ -1037,5 +1121,30 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         {
             BindUtils.RelayBind(this, ModeProperty, navMenuItem, ModeProperty);
         }
+    }
+
+    internal void SelectItemRecursively()
+    {
+        IsSelected = true;
+        if (!IsTopLevel)
+        {
+            if (Parent is NavMenuItem parent)
+            {
+                parent.SelectItemRecursively();
+            }
+        }
+    }
+    
+    private static int CalculateDistanceFromLogicalParent<T>(ILogical? logical, int @default = -1) where T : class
+    {
+        var result = 0;
+
+        while (logical != null && !(logical is T))
+        {
+            ++result;
+            logical = logical.LogicalParent;
+        }
+
+        return logical != null ? result : @default;
     }
 }

@@ -53,8 +53,9 @@ internal class InlineNavMenuInteractionHandler : INavMenuInteractionHandler
             {
                 if (NavMenu is NavMenu navMenu)
                 {
-                    navMenu.UpdateSelectionFromItem(item);
+                    navMenu.ClearSelection();
                 }
+                item?.SelectItemRecursively();
             }
             
             e.Handled = true;
@@ -66,7 +67,7 @@ internal class InlineNavMenuInteractionHandler : INavMenuInteractionHandler
         item.Open();
     }
     
-    internal static INavMenuItem? GetMenuItemCore(StyledElement? item)
+    internal static NavMenuItem? GetMenuItemCore(StyledElement? item)
     {
         while (true)
         {
@@ -75,7 +76,7 @@ internal class InlineNavMenuInteractionHandler : INavMenuInteractionHandler
                 return null;
             }
 
-            if (item is INavMenuItem menuItem)
+            if (item is NavMenuItem menuItem)
             {
                 return menuItem;
             }

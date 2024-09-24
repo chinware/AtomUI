@@ -4,6 +4,7 @@ using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
+using Avalonia.Controls.Converters;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
@@ -30,10 +31,10 @@ internal class InlineNavMenuItemTheme : BaseNavMenuItemTheme
         return ID;
     }
     
-    protected override Control BuildMenuIndicatorIcon()
+    protected override Control BuildMenuIndicatorIcon(INameScope scope)
     {
-        var indicatorIcon   = base.BuildMenuIndicatorIcon();
-        var menuIndicatorIconPresenter = new ContentPresenter()
+        var indicatorIcon   = base.BuildMenuIndicatorIcon(scope);
+        var menuIndicatorIconPresenter = new Border()
         {
             Name = MenuIndicatorIconLayoutPart,
             Transitions = new Transitions()
@@ -41,18 +42,20 @@ internal class InlineNavMenuItemTheme : BaseNavMenuItemTheme
                 AnimationUtils.CreateTransition<TransformOperationsTransition>(ContentPresenter.RenderTransformProperty)
             }
         };
-        menuIndicatorIconPresenter.Content = indicatorIcon;
+        menuIndicatorIconPresenter.Child = indicatorIcon;
+        menuIndicatorIconPresenter.RegisterInNameScope(scope);
         return menuIndicatorIconPresenter;
     }
 
-    protected override Control BuildMenuItemContent(INameScope scope)
+    protected override Control BuildMenuItemContent(NavMenuItem navMenuItem, INameScope scope)
     {
         var rootLayout = new StackPanel()
         {
             Orientation = Orientation.Vertical
         };
-        var headerContent = base.BuildMenuItemContent(scope);
-
+        
+        var headerContent = base.BuildMenuItemContent(navMenuItem, scope);
+        
         TokenResourceBinder.CreateTokenBinding(headerContent, Control.MarginProperty, NavMenuTokenResourceKey.VerticalItemsPanelSpacing, BindingPriority.Template,
             (v) =>
             {
@@ -84,6 +87,21 @@ internal class InlineNavMenuItemTheme : BaseNavMenuItemTheme
         return rootLayout;
     }
 
+    protected override Grid BuildMenuItemInfoGrid(NavMenuItem navMenuItem, INameScope scope)
+    {
+        var infoGrid = base.BuildMenuItemInfoGrid(navMenuItem, scope);
+        var indentConverter = new MarginMultiplierConverter
+        {
+            Left   = true,
+            Indent = navMenuItem.InlineItemIndentUnit
+        };
+        CreateTemplateParentBinding(infoGrid, Grid.MarginProperty,
+            NavMenuItem.LevelProperty, BindingMode.OneWay,
+            indentConverter);
+
+        return infoGrid;
+    }
+
     protected override void BuildStyles()
     {
         base.BuildStyles();
@@ -100,7 +118,7 @@ internal class InlineNavMenuItemTheme : BaseNavMenuItemTheme
             var menuIndicatorStyle = new Style(selector => selector.Nesting().Template().Name(MenuIndicatorIconLayoutPart));
             var transformOptions   = new TransformOperations.Builder(1);
             transformOptions.AppendRotate(MathUtils.Deg2Rad(90));
-            menuIndicatorStyle.Add(ContentPresenter.RenderTransformProperty, transformOptions.Build());
+            menuIndicatorStyle.Add(Border.RenderTransformProperty, transformOptions.Build());
             menuIndicatorStyle.Add(Visual.IsVisibleProperty, true);
             Add(menuIndicatorStyle);
         }
@@ -109,7 +127,7 @@ internal class InlineNavMenuItemTheme : BaseNavMenuItemTheme
             var menuIndicatorStyle = new Style(selector => selector.Nesting().Template().Name(MenuIndicatorIconLayoutPart));
             var transformOptions   = new TransformOperations.Builder(1);
             transformOptions.AppendRotate(MathUtils.Deg2Rad(-90));
-            menuIndicatorStyle.Add(ContentPresenter.RenderTransformProperty, transformOptions.Build());
+            menuIndicatorStyle.Add(Border.RenderTransformProperty, transformOptions.Build());
             openSubMenuStyle.Add(menuIndicatorStyle);
         }
         Add(openSubMenuStyle);
@@ -121,40 +139,4 @@ internal class InlineNavMenuItemTheme : BaseNavMenuItemTheme
         }
         Add(emptySubMenuStyle);
     }
-
-    // private void BuildAnimationStyle()
-    // {
-    //     var closeSubMenuStyle = new Style(selector => selector.Nesting().Not(selector.Nesting().Class(StdPseudoClass.Open)));
-    //     {
-    //         var layoutTransformStyle =
-    //             new Style(selector => selector.Nesting().Template().Name(ChildItemsLayoutTransformPart));
-    //         var slideDownInMotionConfig = MotionFactory.BuildSlideUpOutMotion(TimeSpan.FromMilliseconds(300), new QuadraticEaseIn(),
-    //             FillMode.Forward);
-    //         foreach (var animation in slideDownInMotionConfig.Animations)
-    //         {
-    //             layoutTransformStyle.Animations.Add(animation);
-    //         }
-    //         layoutTransformStyle.Add(LayoutTransformControl.RenderTransformOriginProperty, slideDownInMotionConfig.RenderTransformOrigin);
-    //         layoutTransformStyle.Add(LayoutTransformControl.IsVisibleProperty, false);
-    //         closeSubMenuStyle.Add(layoutTransformStyle);
-    //     }
-    //     Add(closeSubMenuStyle);
-    //     
-    //     var openSubMenuStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Open));
-    //     {
-    //         var layoutTransformStyle =
-    //             new Style(selector => selector.Nesting().Template().Name(ChildItemsLayoutTransformPart));
-    //         var slideDownInMotionConfig = MotionFactory.BuildSlideUpInMotion(TimeSpan.FromMilliseconds(300), new QuadraticEaseIn(),
-    //             FillMode.Forward);
-    //         foreach (var animation in slideDownInMotionConfig.Animations)
-    //         {
-    //             layoutTransformStyle.Animations.Add(animation);
-    //         }
-    //
-    //         layoutTransformStyle.Add(LayoutTransformControl.RenderTransformOriginProperty, slideDownInMotionConfig.RenderTransformOrigin);
-    //         layoutTransformStyle.Add(LayoutTransformControl.IsVisibleProperty, true);
-    //         openSubMenuStyle.Add(layoutTransformStyle);
-    //     }
-    //     Add(openSubMenuStyle);
-    // }
 }

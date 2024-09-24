@@ -254,8 +254,26 @@ public class NavMenu : NavMenuBase
         }
     }
 
-    internal void UpdateSelectionFromItem(INavMenuItem? item)
+    internal void ClearSelection()
     {
-        UpdateSelectionFromEventSource(item);
+        foreach (var item in Items)
+        {
+            if (item is NavMenuItem navMenuItem)
+            {
+                ClearSelectionRecursively(navMenuItem);
+            }
+        }
+    }
+
+    private void ClearSelectionRecursively(NavMenuItem item)
+    {
+        item.IsSelected = false;
+        foreach (var childItem in item.Items)
+        {
+            if (childItem is NavMenuItem navMenuItem)
+            {
+                ClearSelectionRecursively(navMenuItem);
+            }
+        }
     }
 }

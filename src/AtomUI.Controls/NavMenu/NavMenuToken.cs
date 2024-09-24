@@ -216,6 +216,11 @@ internal class NavMenuToken : AbstractControlDesignToken
     public double ItemHeight { get; set; }
     
     /// <summary>
+    /// 内联菜单项的缩进单位
+    /// </summary>
+    public double InlineItemIndentUnit { get; set; }
+    
+    /// <summary>
     /// 收起后的宽度
     /// </summary>
     public double CollapsedWidth { get; set; }
@@ -446,5 +451,7 @@ internal class NavMenuToken : AbstractControlDesignToken
         MenuPopupContentPadding   = new Thickness(_globalToken.PaddingXXS, MenuPopupBorderRadius.TopLeft / 2);
         MenuPopupBoxShadows       = _globalToken.BoxShadowsSecondary;
         VerticalItemsPanelSpacing = _globalToken.MarginXXS;
+
+        InlineItemIndentUnit = ItemHeight / 2;
     }
 }

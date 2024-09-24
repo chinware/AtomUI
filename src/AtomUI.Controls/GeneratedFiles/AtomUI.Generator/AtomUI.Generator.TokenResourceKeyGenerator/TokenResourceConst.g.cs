@@ -411,6 +411,7 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey HorizontalItemHoverBg = new TokenResourceKey("NavMenu.HorizontalItemHoverBg", "AtomUI.Token");
         public static readonly TokenResourceKey HorizontalItemBorderRadius = new TokenResourceKey("NavMenu.HorizontalItemBorderRadius", "AtomUI.Token");
         public static readonly TokenResourceKey ItemHeight = new TokenResourceKey("NavMenu.ItemHeight", "AtomUI.Token");
+        public static readonly TokenResourceKey InlineItemIndentUnit = new TokenResourceKey("NavMenu.InlineItemIndentUnit", "AtomUI.Token");
         public static readonly TokenResourceKey CollapsedWidth = new TokenResourceKey("NavMenu.CollapsedWidth", "AtomUI.Token");
         public static readonly TokenResourceKey MenuPopupBg = new TokenResourceKey("NavMenu.MenuPopupBg", "AtomUI.Token");
         public static readonly TokenResourceKey HorizontalLineHeight = new TokenResourceKey("NavMenu.HorizontalLineHeight", "AtomUI.Token");

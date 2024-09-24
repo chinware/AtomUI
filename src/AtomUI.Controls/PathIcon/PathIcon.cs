@@ -206,6 +206,14 @@ public sealed class PathIcon : Control, ICustomHitTest
                 BuildSourceRenderData();
             }
         }
+        else if (change.Property == IsEnabledProperty)
+        {
+            // TODO 这个地方需要优化一点，是否需要保存老的，当状态为 Enabled 的时候进行还原
+            if (!IsEnabled)
+            {
+                IconMode = IconMode.Disabled;
+            }
+        }
         else if (change.Property == NormalFilledBrushProperty ||
                  change.Property == ActiveFilledBrushProperty ||
                  change.Property == SelectedFilledBrushProperty ||
