@@ -12,7 +12,7 @@ public static partial class MotionFactory
                                                      FillMode fillMode = FillMode.None)
     {
         easing ??= new QuinticEaseOut();
-        var           animations      = new List<IAnimation>();
+        var           animations      = new List<Animation>();
         RelativePoint transformOrigin = default;
         var animation = new Animation
         {
@@ -111,7 +111,7 @@ public static partial class MotionFactory
                                                       FillMode fillMode = FillMode.None)
     {
         easing ??= new QuinticEaseIn();
-        var           animations      = new List<IAnimation>();
+        var           animations      = new List<Animation>();
         RelativePoint transformOrigin = default;
         var animation = new Animation
         {
@@ -210,7 +210,7 @@ public static partial class MotionFactory
                                                    FillMode fillMode = FillMode.None)
     {
         easing ??= new QuinticEaseOut();
-        var           animations      = new List<IAnimation>();
+        var           animations      = new List<Animation>();
         RelativePoint transformOrigin = default;
         var animation = new Animation
         {
@@ -309,7 +309,7 @@ public static partial class MotionFactory
                                                     FillMode fillMode = FillMode.None)
     {
         easing ??= new QuinticEaseIn();
-        var           animations      = new List<IAnimation>();
+        var           animations      = new List<Animation>();
         RelativePoint transformOrigin = default;
         var animation = new Animation
         {
@@ -408,7 +408,7 @@ public static partial class MotionFactory
                                                      FillMode fillMode = FillMode.None)
     {
         easing ??= new QuinticEaseOut();
-        var           animations      = new List<IAnimation>();
+        var           animations      = new List<Animation>();
         RelativePoint transformOrigin = default;
         var animation = new Animation
         {
@@ -507,7 +507,7 @@ public static partial class MotionFactory
                                                       FillMode fillMode = FillMode.None)
     {
         easing ??= new QuinticEaseIn();
-        var           animations      = new List<IAnimation>();
+        var           animations      = new List<Animation>();
         RelativePoint transformOrigin = default;
         var animation = new Animation
         {
@@ -606,7 +606,7 @@ public static partial class MotionFactory
                                                       FillMode fillMode = FillMode.None)
     {
         easing ??= new QuinticEaseOut();
-        var           animations      = new List<IAnimation>();
+        var           animations      = new List<Animation>();
         RelativePoint transformOrigin = default;
         var animation = new Animation
         {
@@ -705,7 +705,7 @@ public static partial class MotionFactory
                                                        FillMode fillMode = FillMode.None)
     {
         easing ??= new QuinticEaseIn();
-        var           animations      = new List<IAnimation>();
+        var           animations      = new List<Animation>();
         RelativePoint transformOrigin = default;
         var animation = new Animation
         {

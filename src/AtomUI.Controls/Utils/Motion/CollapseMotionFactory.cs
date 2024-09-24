@@ -12,7 +12,7 @@ public static partial class MotionFactory
                                                    FillMode fillMode = FillMode.None)
     {
         easing ??= new CircularEaseOut();
-        var           animations      = new List<IAnimation>();
+        var           animations      = new List<Animation>();
         RelativePoint transformOrigin = default;
         var           isHorizontal    = direction == Direction.Left || direction == Direction.Right;
         var animation = new Animation
@@ -110,7 +110,7 @@ public static partial class MotionFactory
                                                  FillMode fillMode = FillMode.None)
     {
         easing ??= new CircularEaseOut();
-        var           animations      = new List<IAnimation>();
+        var           animations      = new List<Animation>();
         RelativePoint transformOrigin = default;
         var           isHorizontal    = direction == Direction.Left || direction == Direction.Right;
         var animation = new Animation

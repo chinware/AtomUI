@@ -1,8 +1,12 @@
 ﻿using System.Windows.Input;
+using AtomUI.Controls.Utils;
+using AtomUI.Data;
 using AtomUI.Input;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
+using Avalonia.Animation;
+using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.Converters;
 using Avalonia.Controls.Metadata;
@@ -241,45 +245,58 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
             o => o.Mode, 
             (o, v) => o.Mode = v);
     
-    public double ActiveBarWidth
+    internal static readonly DirectProperty<NavMenuItem, TimeSpan> OpenCloseMotionDurationProperty =
+        AvaloniaProperty.RegisterDirect<NavMenuItem, TimeSpan>(nameof(OpenCloseMotionDuration),
+            o => o.OpenCloseMotionDuration, 
+            (o, v) => o.OpenCloseMotionDuration = v);
+    
+    internal double ActiveBarWidth
     {
         get => GetValue(ActiveBarWidthProperty);
         set => SetValue(ActiveBarWidthProperty, value);
     }
     
-    public double ActiveBarHeight
+    internal double ActiveBarHeight
     {
         get => GetValue(ActiveBarHeightProperty);
         set => SetValue(ActiveBarHeightProperty, value);
     }
     
     private double _effectiveActiveBarWidth;
-    public double EffectiveActiveBarWidth
+    internal double EffectiveActiveBarWidth
     {
         get => _effectiveActiveBarWidth;
         set => SetAndRaise(EffectiveActiveBarWidthProperty, ref _effectiveActiveBarWidth, value);
     }
     
     private double _effectivePopupMinWidth;
-    public double EffectivePopupMinWidth
+    internal double EffectivePopupMinWidth
     {
         get => _effectivePopupMinWidth;
         set => SetAndRaise(EffectivePopupMinWidthProperty, ref _effectivePopupMinWidth, value);
     }
     
     private double _popupMinWidth;
-    public double PopupMinWidth
+    internal double PopupMinWidth
     {
         get => _popupMinWidth;
         set => SetAndRaise(PopupMinWidthProperty, ref _popupMinWidth, value);
     }
     
+    private TimeSpan _openCloseMotionDuration;
+    internal TimeSpan OpenCloseMotionDuration
+    {
+        get => _openCloseMotionDuration;
+        set => SetAndRaise(OpenCloseMotionDurationProperty, ref _openCloseMotionDuration, value);
+    }
+    
     private NavMenuMode _mode;
-    public NavMenuMode Mode
+    internal NavMenuMode Mode
     {
         get => _mode;
         set => SetAndRaise(ModeProperty, ref _mode, value);
     }
+
 
     #endregion
 
@@ -384,6 +401,8 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     private bool _isEmbeddedInMenu;
     private Border? _horizontalFrame;
     private IDisposable? _itemContainerThemeDisposable;
+    private LayoutTransformControl? _childItemsLayoutTransform;
+    private bool _animating = false;
 
     static NavMenuItem()
     {
@@ -400,14 +419,42 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         AffectsRender<MenuItem>(BackgroundProperty);
         UpdatePseudoClasses();
     }
-
+    
     /// <summary>
     /// Opens the submenu.
     /// </summary>
     /// <remarks>
     /// This has the same effect as setting <see cref="IsSubMenuOpen"/> to true.
     /// </remarks>
-    public void Open() => SetCurrentValue(IsSubMenuOpenProperty, true);
+    public void Open()
+    {
+        if (Mode == NavMenuMode.Inline)
+        {
+            if (_childItemsLayoutTransform is not null)
+            {
+                if (_animating)
+                {
+                    return;
+                }
+
+                _animating = true;
+                var slideDownInMotionConfig = MotionFactory.BuildSlideUpInMotion(_openCloseMotionDuration, new QuinticEaseOut(),
+                    FillMode.Forward);
+                SetCurrentValue(IsSubMenuOpenProperty, true);
+                _childItemsLayoutTransform.RenderTransformOrigin = slideDownInMotionConfig.RenderTransformOrigin;
+                MotionInvoker.Invoke(_childItemsLayoutTransform, slideDownInMotionConfig, () =>
+                {
+                    _childItemsLayoutTransform.SetCurrentValue(IsVisibleProperty, true);
+                }, () =>
+                {
+                    _animating = false;
+                });
+                return;
+            }
+        }
+
+        SetCurrentValue(IsSubMenuOpenProperty, true);
+    }
 
     /// <summary>
     /// Closes the submenu.
@@ -415,7 +462,31 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     /// <remarks>
     /// This has the same effect as setting <see cref="IsSubMenuOpen"/> to false.
     /// </remarks>
-    public void Close() => SetCurrentValue(IsSubMenuOpenProperty, false);
+    public void Close()
+    {
+        if (Mode == NavMenuMode.Inline)
+        {
+            if (_childItemsLayoutTransform is not null)
+            {
+                if (_animating)
+                {
+                    return;
+                }
+
+                _animating = true;
+                SetCurrentValue(IsSubMenuOpenProperty, false);
+                var slideDownOutMotionConfig = MotionFactory.BuildSlideUpOutMotion(_openCloseMotionDuration, new QuinticEaseOut(),
+                    FillMode.Forward);
+                MotionInvoker.Invoke(_childItemsLayoutTransform, slideDownOutMotionConfig, null, () =>
+                {
+                    _childItemsLayoutTransform.SetCurrentValue(IsVisibleProperty, false);
+                    _animating = false;
+                });
+                return;
+            }
+        }
+        SetCurrentValue(IsSubMenuOpenProperty, false);
+    }
 
     /// <inheritdoc/>
     void INavMenuItem.RaiseClick() => RaiseEvent(new RoutedEventArgs(ClickEvent));
@@ -583,6 +654,17 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         _horizontalFrame = e.NameScope.Find<Border>(TopLevelHorizontalNavMenuItemTheme.FramePart);
         TokenResourceBinder.CreateTokenBinding(this, PopupMinWidthProperty, NavMenuTokenResourceKey.MenuPopupMinWidth);
         SetupItemIcon();
+        if (Mode == NavMenuMode.Inline)
+        {
+            _childItemsLayoutTransform = e.NameScope.Find<LayoutTransformControl>(InlineNavMenuItemTheme.ChildItemsLayoutTransformPart);
+            if (_childItemsLayoutTransform is not null)
+            {
+                _childItemsLayoutTransform.SetCurrentValue(LayoutTransformControl.IsVisibleProperty, IsSubMenuOpen);
+            }
+
+            TokenResourceBinder.CreateGlobalTokenBinding(this, OpenCloseMotionDurationProperty, GlobalTokenResourceKey.MotionDurationMid);
+        }
+        
     }
 
     protected override void UpdateDataValidation(
@@ -945,6 +1027,15 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
             {
                 _itemContainerThemeDisposable = TokenResourceBinder.CreateGlobalResourceBinding(this, ItemContainerThemeProperty, InlineNavMenuItemTheme.ID);
             }
+        }
+    }
+    
+    protected override void PrepareContainerForItemOverride(Control element, object? item, int index)
+    {
+        base.PrepareContainerForItemOverride(element, item, index);
+        if (element is NavMenuItem navMenuItem)
+        {
+            BindUtils.RelayBind(this, ModeProperty, navMenuItem, ModeProperty);
         }
     }
 }

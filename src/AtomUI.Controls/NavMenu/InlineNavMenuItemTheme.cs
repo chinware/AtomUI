@@ -1,17 +1,13 @@
-﻿using AtomUI.Controls.Utils;
-using AtomUI.Theme.Styling;
+﻿using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
-using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
-using Avalonia.Data.Converters;
 using Avalonia.Layout;
-using Avalonia.Media;
 using Avalonia.Media.Transformation;
 using Avalonia.Styling;
 
@@ -71,6 +67,7 @@ internal class InlineNavMenuItemTheme : BaseNavMenuItemTheme
         {
             Name = ChildItemsLayoutTransformPart,
         };
+        childItemsLayoutTransform.RegisterInNameScope(scope);
         
         var itemsPresenter = new ItemsPresenter
         {
@@ -81,7 +78,6 @@ internal class InlineNavMenuItemTheme : BaseNavMenuItemTheme
         CreateTemplateParentBinding(itemsPresenter, ItemsPresenter.ItemsPanelProperty, NavMenuItem.ItemsPanelProperty);
 
         childItemsLayoutTransform.Child = itemsPresenter;
-        CreateTemplateParentBinding(itemsPresenter, Visual.IsVisibleProperty, NavMenuItem.IsSubMenuOpenProperty);
         
         rootLayout.Children.Add(headerContent);
         rootLayout.Children.Add(childItemsLayoutTransform);
