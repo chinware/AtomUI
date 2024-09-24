@@ -3,7 +3,9 @@ using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.Icon;
 using AtomUI.Input;
+using AtomUI.Media;
 using AtomUI.Theme.Styling;
+using AtomUI.Theme.Utils;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
@@ -584,16 +586,6 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     }
 
     /// <inheritdoc/>
-    protected override void OnGotFocus(GotFocusEventArgs e)
-    {
-        base.OnGotFocus(e);
-        if (Mode != NavMenuMode.Inline || !HasSubMenu)
-        {
-            e.Handled = UpdateSelectionFromEventSource(e.Source, true);
-        }
-    }
-
-    /// <inheritdoc/>
     protected override void OnKeyDown(KeyEventArgs e)
     {
         // Don't handle here: let event bubble up to menu.
@@ -668,7 +660,14 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
 
             TokenResourceBinder.CreateGlobalTokenBinding(this, OpenCloseMotionDurationProperty, GlobalTokenResourceKey.MotionDurationMid);
         }
-        
+
+        if (Transitions is null)
+        {
+            Transitions = new Transitions()
+            {
+                AnimationUtils.CreateTransition<SolidColorBrushTransition>(NavMenuItem.ForegroundProperty)
+            };
+        }
     }
 
     protected override void UpdateDataValidation(
@@ -979,13 +978,11 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
                     item.TryUpdateCanExecute();
                 }
                 RaiseEvent(new RoutedEventArgs(SubmenuOpenedEvent));
-                SetCurrentValue(IsSelectedProperty, true);
                 PseudoClasses.Add(StdPseudoClass.Open);
             }
             else
             {
                 CloseSubmenus();
-                SelectedIndex = -1;
                 PseudoClasses.Remove(StdPseudoClass.Open);
             }
         }
@@ -1066,7 +1063,6 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     /// <param name="e">The event args.</param>
     private void PopupClosed(object? sender, EventArgs e)
     {
-        SelectedItem = null;
     }
 
     void ICommandSource.CanExecuteChanged(object sender, EventArgs e) => CanExecuteChangedHandler(sender, e);

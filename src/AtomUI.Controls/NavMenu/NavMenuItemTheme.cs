@@ -5,6 +5,7 @@ using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Layout;
+using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
@@ -73,5 +74,13 @@ internal class NavMenuItemTheme : BaseNavMenuItemTheme
             NavMenuItem.IsSubMenuOpenProperty, BindingMode.TwoWay);
 
         return popup;
+    }
+    
+    protected override void BuildStyles()
+    {
+        base.BuildStyles();
+        var itemsPanelStyle = new Style(selector => selector.Nesting().Template().Name(ItemsPresenterPart).Child().OfType<StackPanel>());
+        itemsPanelStyle.Add(StackPanel.SpacingProperty, NavMenuTokenResourceKey.VerticalItemsPanelSpacing);
+        Add(itemsPanelStyle);
     }
 }

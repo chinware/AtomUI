@@ -105,9 +105,11 @@ internal class NavMenuTheme : BaseControlTheme
             {
                 Orientation = Orientation.Vertical
             }));
-            // itemPresenterStyle.Add(ItemsPresenter.HorizontalAlignmentProperty, HorizontalAlignment.Left);
-            // itemPresenterStyle.Add(ItemsPresenter.VerticalAlignmentProperty, VerticalAlignment.Stretch);
             verticalOrInlineStyle.Add(itemPresenterStyle);
+            
+            var itemsPanelStyle = new Style(selector => selector.Nesting().Template().Name(ItemsPresenterPart).Child().OfType<StackPanel>());
+            itemsPanelStyle.Add(StackPanel.SpacingProperty, NavMenuTokenResourceKey.VerticalItemsPanelSpacing);
+            verticalOrInlineStyle.Add(itemsPanelStyle);
         }
         
         commonStyle.Add(verticalOrInlineStyle);

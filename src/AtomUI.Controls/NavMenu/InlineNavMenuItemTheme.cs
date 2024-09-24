@@ -105,10 +105,6 @@ internal class InlineNavMenuItemTheme : BaseNavMenuItemTheme
     protected override void BuildStyles()
     {
         base.BuildStyles();
-        var childItemsPanelStyle = new Style(selector => selector.Nesting().Template().Name(ChildItemsPresenterPart).Child().OfType<StackPanel>());
-        childItemsPanelStyle.Add(StackPanel.SpacingProperty, NavMenuTokenResourceKey.VerticalItemsPanelSpacing);
-        Add(childItemsPanelStyle);
-
         BuildMenuIndicatorStyle();
     }
 

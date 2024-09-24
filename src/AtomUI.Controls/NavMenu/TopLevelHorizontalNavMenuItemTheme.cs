@@ -211,13 +211,20 @@ internal class TopLevelHorizontalNavMenuItemTheme : BaseControlTheme
             commonStyle.Add(indicatorStyle);
         }
         var hoverStyle = new Style(selector => Selectors.Or(selector.Nesting().Class(StdPseudoClass.PointerOver),
-            selector.Nesting().Class(StdPseudoClass.Open)));
+            selector.Nesting().Class(StdPseudoClass.Open),
+            selector.Nesting().Class(StdPseudoClass.Selected)));
         {
             var indicatorStyle = new Style(selector => selector.Nesting().Template().Name(ActiveIndicatorPart));
             indicatorStyle.Add(Rectangle.FillProperty, GlobalTokenResourceKey.ColorPrimary);
             hoverStyle.Add(indicatorStyle);
         }
         commonStyle.Add(hoverStyle);
+        
+        var selectedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Selected));
+        {
+            selectedStyle.Add(NavMenuItem.ForegroundProperty, GlobalTokenResourceKey.ColorPrimary);
+        }
+        commonStyle.Add(selectedStyle);
     }
     
     private void BuildDisabledStyle()
