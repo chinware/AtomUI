@@ -61,8 +61,8 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     /// <summary>
     /// Defines the <see cref="Icon"/> property.
     /// </summary>
-    public static readonly StyledProperty<object?> IconProperty =
-        AvaloniaProperty.Register<NavMenuItem, object?>(nameof(Icon));
+    public static readonly StyledProperty<PathIcon?> IconProperty =
+        AvaloniaProperty.Register<NavMenuItem, PathIcon?>(nameof(Icon));
 
     /// <summary>
     /// Defines the <see cref="InputGesture"/> property.
@@ -71,7 +71,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         AvaloniaProperty.Register<NavMenuItem, KeyGesture?>(nameof(InputGesture));
 
     /// <summary>
-    /// Defines the <see cref="IsSubMenuOpen"/> property.
+    /// Defines the <see cref="IsSubMenuOpen"/> property.                                                              
     /// </summary>
     public static readonly StyledProperty<bool> IsSubMenuOpenProperty =
         AvaloniaProperty.Register<NavMenuItem, bool>(nameof(IsSubMenuOpen));
@@ -126,7 +126,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     /// <summary>
     /// Gets or sets the icon that appears in a <see cref="NavMenuItem"/>.
     /// </summary>
-    public object? Icon
+    public PathIcon? Icon
     {
         get => GetValue(IconProperty);
         set => SetValue(IconProperty, value);
@@ -285,6 +285,11 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
             o => o.InlineItemIndentUnit, 
             (o, v) => o.InlineItemIndentUnit = v);
     
+    internal static readonly DirectProperty<NavMenuItem, bool> IsDarkStyleProperty =
+        AvaloniaProperty.RegisterDirect<NavMenuItem, bool>(nameof(IsDarkStyle),
+            o => o.IsDarkStyle, 
+            (o, v) => o.IsDarkStyle = v);
+    
     internal double ActiveBarWidth
     {
         get => GetValue(ActiveBarWidthProperty);
@@ -338,6 +343,14 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     {
         get => _inlineItemIndentUnit;
         set => SetAndRaise(InlineItemIndentUnitProperty, ref _inlineItemIndentUnit, value);
+    }
+    
+    private bool _isDarkStyle;
+
+    internal bool IsDarkStyle
+    {
+        get => _isDarkStyle;
+        set => SetAndRaise(IsDarkStyleProperty, ref _isDarkStyle, value);
     }
     
     #endregion
@@ -444,6 +457,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     private Border? _horizontalFrame;
     private IDisposable? _itemContainerThemeDisposable;
     private LayoutTransformControl? _childItemsLayoutTransform;
+    private Border? _headerFrame;
     private bool _animating = false;
 
     static NavMenuItem()
@@ -639,7 +653,13 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
             _popup.DependencyResolver =  null;
         }
 
-        _popup = e.NameScope.Find<Popup>("PART_Popup");
+        _popup       = e.NameScope.Find<Popup>(ThemeConstants.PopupPart);
+        _headerFrame = e.NameScope.Find<Border>(BaseNavMenuItemTheme.HeaderDecoratorPart);
+        if (_headerFrame is not null)
+        {
+            _headerFrame.PointerEntered += HandleHeaderFrameEnter;
+            _headerFrame.PointerExited  += HandleHeaderFrameExit;
+        }
 
         if (_popup != null)
         {
@@ -668,6 +688,34 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
                 AnimationUtils.CreateTransition<SolidColorBrushTransition>(NavMenuItem.ForegroundProperty)
             };
         }
+    }
+
+    private void HandleHeaderFrameEnter(object? sender, PointerEventArgs args)
+    {
+        if (!IsDarkStyle || Icon is null || HasSubMenu)
+        {
+            return;
+        }
+
+        Icon.IconMode = IconMode.Active;
+    }
+    
+    private void HandleHeaderFrameExit(object? sender, PointerEventArgs args)
+    {
+        if (!IsDarkStyle || Icon is null || HasSubMenu)
+        {
+            return;
+        }
+
+        if (IsSelected)
+        {
+            Icon.IconMode = IconMode.Selected;
+        }
+        else
+        {
+            Icon.IconMode = IconMode.Normal;
+        }
+
     }
 
     protected override void UpdateDataValidation(
@@ -816,10 +864,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         {
             SetupHorizontalEffectiveIndicatorWidth();
         }
-        else if (change.Property == IconProperty)
-        {
-            SetupItemIcon();
-        } else if (change.Property == ModeProperty)
+        else if (change.Property == ModeProperty)
         {
             SetupItemContainerTheme(true);
         } else if (change.Property == ItemCountProperty)
@@ -832,14 +877,36 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         {
             SetupEffectivePopupMinWidth();
         }
-        
+
+        if (change.Property == IconProperty ||
+            change.Property == IsDarkStyleProperty)
+        {
+            SetupItemIcon();
+        }
     }
 
     private void SetupItemIcon()
     {
         if (Icon is not null && Icon is PathIcon menuItemIcon)
         {
-            menuItemIcon.Name = ThemeConstants.ItemIconPart;
+            BindUtils.RelayBind(this, IsEnabledProperty, menuItemIcon, PathIcon.IsEnabledProperty);
+            TokenResourceBinder.CreateTokenBinding(menuItemIcon, PathIcon.WidthProperty, NavMenuTokenResourceKey.ItemIconSize);
+            TokenResourceBinder.CreateTokenBinding(menuItemIcon, PathIcon.HeightProperty, NavMenuTokenResourceKey.ItemIconSize);
+            
+            if (IsDarkStyle)
+            {
+                TokenResourceBinder.CreateTokenBinding(menuItemIcon, PathIcon.NormalFilledBrushProperty, NavMenuTokenResourceKey.DarkItemColor);
+                TokenResourceBinder.CreateTokenBinding(menuItemIcon, PathIcon.SelectedFilledBrushProperty, NavMenuTokenResourceKey.DarkItemSelectedColor);
+                TokenResourceBinder.CreateTokenBinding(menuItemIcon, PathIcon.ActiveFilledBrushProperty, NavMenuTokenResourceKey.DarkItemHoverColor);
+                TokenResourceBinder.CreateTokenBinding(menuItemIcon, PathIcon.DisabledFilledBrushProperty, NavMenuTokenResourceKey.DarkItemDisabledColor);
+            }
+            else
+            {
+                TokenResourceBinder.CreateTokenBinding(menuItemIcon, PathIcon.NormalFilledBrushProperty, NavMenuTokenResourceKey.ItemColor);
+                TokenResourceBinder.CreateTokenBinding(menuItemIcon, PathIcon.SelectedFilledBrushProperty, NavMenuTokenResourceKey.ItemSelectedColor);
+                TokenResourceBinder.CreateTokenBinding(menuItemIcon, PathIcon.ActiveFilledBrushProperty, NavMenuTokenResourceKey.ItemHoverColor);
+                TokenResourceBinder.CreateTokenBinding(menuItemIcon, PathIcon.DisabledFilledBrushProperty, NavMenuTokenResourceKey.ItemDisabledColor);
+            }
         }
     }
 
@@ -901,7 +968,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     /// <param name="e">The property change event.</param>
     private void IconChanged(AvaloniaPropertyChangedEventArgs e)
     {
-        var (oldValue, newValue) = e.GetOldAndNewValue<object?>();
+        var (oldValue, newValue) = e.GetOldAndNewValue<PathIcon?>();
 
         if (oldValue is ILogical oldLogical)
         {
@@ -988,7 +1055,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         }
     }
     
-    private void OpenInlineItem()
+    internal void OpenInlineItem()
     {
         if (_childItemsLayoutTransform is not null)
         {
@@ -1011,7 +1078,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         }
     }
     
-    private void CloseInlineItem()
+    internal void CloseInlineItem()
     {
         if (_childItemsLayoutTransform is not null)
         {
@@ -1030,6 +1097,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
                 _animating = false;
             });
         }
+        
     }
 
     /// <summary>
@@ -1116,6 +1184,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         if (element is NavMenuItem navMenuItem)
         {
             BindUtils.RelayBind(this, ModeProperty, navMenuItem, ModeProperty);
+            BindUtils.RelayBind(this, IsDarkStyleProperty, navMenuItem, IsDarkStyleProperty);
         }
     }
 
@@ -1130,6 +1199,20 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
             }
         }
     }
+
+    internal void RegenerateContainers()
+    {
+        foreach (var item in Items)
+        {
+            if (item is NavMenuItem childNavMenuItem)
+            {
+                childNavMenuItem.RegenerateContainers();
+            }
+        }
+
+        ItemsPanel = new FuncTemplate<Panel?>(() => new StackPanel());
+        RefreshContainers();
+    }
     
     private static int CalculateDistanceFromLogicalParent<T>(ILogical? logical, int @default = -1) where T : class
     {
@@ -1143,4 +1226,5 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
 
         return logical != null ? result : @default;
     }
+    
 }

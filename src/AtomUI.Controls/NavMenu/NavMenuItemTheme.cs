@@ -13,6 +13,7 @@ namespace AtomUI.Controls;
 internal class NavMenuItemTheme : BaseNavMenuItemTheme
 {
     public const string ItemsPresenterPart = "PART_ItemsPresenter";
+    public const string PopupFramePart = "PART_PopupFrame";
     
     public NavMenuItemTheme()
         : base(typeof(NavMenuItem))
@@ -37,12 +38,16 @@ internal class NavMenuItemTheme : BaseNavMenuItemTheme
             Name                       = ThemeConstants.PopupPart,
             WindowManagerAddShadowHint = false,
             IsLightDismissEnabled      = false,
-            Placement                  = PlacementMode.RightEdgeAlignedTop
+            Placement                  = PlacementMode.RightEdgeAlignedTop,
         };
 
-        var border = new Border();
-        TokenResourceBinder.CreateTokenBinding(border, Border.BackgroundProperty,
-            GlobalTokenResourceKey.ColorBgContainer);
+        var border = new Border()
+        {
+            Name = PopupFramePart
+        };
+        
+        TokenResourceBinder.CreateTokenBinding(popup, Popup.MarginToAnchorProperty,
+            NavMenuTokenResourceKey.TopLevelItemPopupMarginToAnchor);
         TokenResourceBinder.CreateTokenBinding(border, Border.CornerRadiusProperty,
             NavMenuTokenResourceKey.MenuPopupBorderRadius);
         TokenResourceBinder.CreateTokenBinding(border, Layoutable.MinWidthProperty,
@@ -70,7 +75,7 @@ internal class NavMenuItemTheme : BaseNavMenuItemTheme
             NavMenuTokenResourceKey.TopLevelItemPopupMarginToAnchor);
         TokenResourceBinder.CreateTokenBinding(popup, Popup.MaskShadowsProperty,
             NavMenuTokenResourceKey.MenuPopupBoxShadows);
-        CreateTemplateParentBinding(popup, Avalonia.Controls.Primitives.Popup.IsOpenProperty,
+        CreateTemplateParentBinding(popup, Popup.IsOpenProperty,
             NavMenuItem.IsSubMenuOpenProperty, BindingMode.TwoWay);
 
         return popup;
@@ -82,5 +87,19 @@ internal class NavMenuItemTheme : BaseNavMenuItemTheme
         var itemsPanelStyle = new Style(selector => selector.Nesting().Template().Name(ItemsPresenterPart).Child().OfType<StackPanel>());
         itemsPanelStyle.Add(StackPanel.SpacingProperty, NavMenuTokenResourceKey.VerticalItemsPanelSpacing);
         Add(itemsPanelStyle);
+
+        {
+            var popupFrameStyle = new Style(selector => selector.Nesting().Template().Name(PopupFramePart));
+            popupFrameStyle.Add(Border.BackgroundProperty, GlobalTokenResourceKey.ColorBgContainer);
+            Add(popupFrameStyle);
+        }
+        
+        var darkCommonStyle = new Style(selector => selector.Nesting().PropertyEquals(NavMenuItem.IsDarkStyleProperty, true));
+        {
+            var popupFrameStyle = new Style(selector => selector.Nesting().Template().Name(PopupFramePart));
+            popupFrameStyle.Add(Border.BackgroundProperty, NavMenuTokenResourceKey.DarkItemBg);
+            darkCommonStyle.Add(popupFrameStyle);
+        }
+        Add(darkCommonStyle);
     }
 }

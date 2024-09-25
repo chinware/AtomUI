@@ -56,20 +56,21 @@ internal class InlineNavMenuItemTheme : BaseNavMenuItemTheme
         
         var headerContent = base.BuildMenuItemContent(navMenuItem, scope);
         
-        TokenResourceBinder.CreateTokenBinding(headerContent, Control.MarginProperty, NavMenuTokenResourceKey.VerticalItemsPanelSpacing, BindingPriority.Template,
-            (v) =>
-            {
-                if (v is double dval)
-                {
-                    return new Thickness(0, 0, 0, dval);
-                }
-
-                return new Thickness();
-            });
         var childItemsLayoutTransform = new LayoutTransformControl()
         {
             Name = ChildItemsLayoutTransformPart,
         };
+        TokenResourceBinder.CreateTokenBinding(childItemsLayoutTransform, LayoutTransformControl.MarginProperty, 
+            NavMenuTokenResourceKey.VerticalItemsPanelSpacing, BindingPriority.Template,
+            (v) =>
+            {
+                if (v is double dval)
+                {
+                    return new Thickness(0, dval, 0, 0);
+                }
+
+                return new Thickness();
+            });
         childItemsLayoutTransform.RegisterInNameScope(scope);
         
         var itemsPresenter = new ItemsPresenter
@@ -106,6 +107,10 @@ internal class InlineNavMenuItemTheme : BaseNavMenuItemTheme
     {
         base.BuildStyles();
         BuildMenuIndicatorStyle();
+        
+        var itemsPanelStyle = new Style(selector => selector.Nesting().Template().Name(ChildItemsPresenterPart).Child().OfType<StackPanel>());
+        itemsPanelStyle.Add(StackPanel.SpacingProperty, NavMenuTokenResourceKey.VerticalItemsPanelSpacing);
+        Add(itemsPanelStyle);
     }
 
     private void BuildMenuIndicatorStyle()

@@ -309,7 +309,7 @@ public class ToggleSwitch : ToggleButton,
             _switchKnob.KnobSize = new Size(handleSize, handleSize);
         }
 
-        CalculateElementsOffset(DesiredSize);
+        CalculateElementsOffset(Bounds.Size);
     }
 
     protected override void OnPointerPressed(PointerPressedEventArgs e)
@@ -524,7 +524,7 @@ public class ToggleSwitch : ToggleButton,
             CollectStyleState();
             if (e.Property == IsCheckedProperty)
             {
-                CalculateElementsOffset(DesiredSize);
+                CalculateElementsOffset(Bounds.Size);
                 WaveSpiritAdorner.ShowWaveAdorner(this, WaveType.PillWave);
             }
         }
@@ -546,12 +546,12 @@ public class ToggleSwitch : ToggleButton,
 
     private Rect GrooveRect()
     {
-        return new Rect(new Point(0, 0), DesiredSize);
+        return new Rect(new Point(0, 0), Bounds.Size);
     }
 
     private Rect HandleRect()
     {
-        return HandleRect(IsChecked.HasValue && IsChecked.Value, DesiredSize);
+        return HandleRect(IsChecked.HasValue && IsChecked.Value, Bounds.Size);
     }
 
     private Rect HandleRect(bool isChecked, Size controlSize)

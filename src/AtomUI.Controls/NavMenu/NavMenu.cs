@@ -147,11 +147,18 @@ public class NavMenu : NavMenuBase
         {
             if (change.Property == ModeProperty)
             {
-                SetupItemContainerTheme(true);
-                SetupInteractionHandler(true);
+                HandleModeChanged();
             }
             UpdatePseudoClasses();
         }
+    }
+
+    private void HandleModeChanged()
+    {
+        CloseChildItemsRecursively();
+        SetupItemContainerTheme(true);
+        RegenerateContainersRecursively();
+        SetupInteractionHandler(true);
     }
 
     protected override void PrepareContainerForItemOverride(Control element, object? item, int index)
@@ -172,7 +179,9 @@ public class NavMenu : NavMenuBase
                 BindUtils.RelayBind(this, ActiveBarWidthProperty, navMenuItem, NavMenuItem.ActiveBarWidthProperty); 
             }
             BindUtils.RelayBind(this, ModeProperty, navMenuItem, NavMenuItem.ModeProperty);
+            BindUtils.RelayBind(this, IsDarkStyleProperty, navMenuItem, NavMenuItem.IsDarkStyleProperty);
         }
+
     }
     
     private void UpdatePseudoClasses()
@@ -275,5 +284,49 @@ public class NavMenu : NavMenuBase
                 ClearSelectionRecursively(navMenuItem);
             }
         }
+    }
+
+    private void CloseChildItemsRecursively()
+    {
+        CloseInlineItems();
+        foreach (var i in ((INavMenu)this).SubItems)
+        {
+            i.Close();
+        }
+    }
+
+    private void RegenerateContainersRecursively()
+    {
+        foreach (var item in Items)
+        {
+            if (item is NavMenuItem navMenuItem)
+            {
+                navMenuItem.RegenerateContainers();
+            }
+        }
+    }
+
+    private void CloseInlineItems()
+    {
+        foreach (var item in Items)
+        {
+            if (item is NavMenuItem navMenuItem)
+            {
+                CloseInlineItemRecursively(navMenuItem);
+            }
+        }
+    }
+    
+    private void CloseInlineItemRecursively(NavMenuItem navMenuItem)
+    {
+        foreach (var item in navMenuItem.Items)
+        {
+            if (item is NavMenuItem childNavMenuItem)
+            {
+                CloseInlineItemRecursively(childNavMenuItem);
+            }
+        }
+        navMenuItem.CloseInlineItem();
+        navMenuItem.IsSubMenuOpen = false;
     }
 }

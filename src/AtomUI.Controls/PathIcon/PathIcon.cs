@@ -471,16 +471,16 @@ public sealed class PathIcon : Control, ICustomHitTest
         base.OnAttachedToLogicalTree(e);
         SetupTransitions();
         SetupRotateAnimation();
-        if (_sourceGeometriesData.Count == 0)
-        {
-            BuildSourceRenderData();
-            SetupFilledBrush();
-        }
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
+        if (_sourceGeometriesData.Count == 0)
+        {
+            BuildSourceRenderData();
+            SetupFilledBrush();
+        }
         if (_animation is not null && _animationCancellationTokenSource is null)
         {
             _animationCancellationTokenSource = new CancellationTokenSource();
@@ -516,28 +516,25 @@ public sealed class PathIcon : Control, ICustomHitTest
 
     protected override Size ArrangeOverride(Size finalSize)
     {
-        if (_sourceGeometriesData.Count != 0)
+        _transforms.Clear();
+        // This should probably use GetRenderBounds(strokeThickness) but then the calculations
+        // will multiply the stroke thickness as well, which isn't correct.
+        for (var i = 0; i < _sourceGeometriesData.Count; i++)
         {
-            // This should probably use GetRenderBounds(strokeThickness) but then the calculations
-            // will multiply the stroke thickness as well, which isn't correct.
-            for (var i = 0; i < _sourceGeometriesData.Count; i++)
-            {
-                var sourceGeometry = _sourceGeometriesData[i];
-                var (_, transform) = CalculateSizeAndTransform(finalSize, sourceGeometry.Bounds);
-                _transforms.Insert(i, transform);
-            }
-
-            return finalSize;
+            var sourceGeometry = _sourceGeometriesData[i];
+            var (_, transform) = CalculateSizeAndTransform(finalSize, sourceGeometry.Bounds);
+            _transforms.Insert(i, transform);
         }
 
-        return default;
+        return finalSize;
     }
 
     public override void Render(DrawingContext context)
     {
-        if (_sourceGeometriesData.Count > 0 &&
-            DesiredSize.Width > 0 &&
-            DesiredSize.Width > 0)
+        if (IsVisible && 
+            _sourceGeometriesData.Count > 0 &&
+            Bounds.Width > 0 &&
+            Bounds.Width > 0)
         {
             for (var i = 0; i < _sourceGeometriesData.Count; i++)
             {
@@ -577,7 +574,7 @@ public sealed class PathIcon : Control, ICustomHitTest
                 {
                     fillBrush = FilledBrush;
                 }
-
+  
                 using var state = context.PushTransform(_transforms[i]);
                 context.DrawGeometry(fillBrush, null, renderedGeometry);
             }

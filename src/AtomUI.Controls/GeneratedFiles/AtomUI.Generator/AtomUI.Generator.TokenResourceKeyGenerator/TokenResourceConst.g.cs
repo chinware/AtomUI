@@ -406,6 +406,7 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey ItemContentMargin = new TokenResourceKey("NavMenu.ItemContentMargin", "AtomUI.Token");
         public static readonly TokenResourceKey ItemContentPadding = new TokenResourceKey("NavMenu.ItemContentPadding", "AtomUI.Token");
         public static readonly TokenResourceKey VerticalItemsPanelSpacing = new TokenResourceKey("NavMenu.VerticalItemsPanelSpacing", "AtomUI.Token");
+        public static readonly TokenResourceKey VerticalMenuContentPadding = new TokenResourceKey("NavMenu.VerticalMenuContentPadding", "AtomUI.Token");
         public static readonly TokenResourceKey ItemMargin = new TokenResourceKey("NavMenu.ItemMargin", "AtomUI.Token");
         public static readonly TokenResourceKey HorizontalItemMargin = new TokenResourceKey("NavMenu.HorizontalItemMargin", "AtomUI.Token");
         public static readonly TokenResourceKey HorizontalItemHoverBg = new TokenResourceKey("NavMenu.HorizontalItemHoverBg", "AtomUI.Token");

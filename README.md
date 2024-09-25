@@ -63,6 +63,7 @@ Welcome to communicate and give suggestions to AtomUI, thank you for giving the 
 | Breadcrumb   | TODO        |
 | Dropdown     | Completed ✅ |
 | Menu         | Completed ✅ |
+| NavMenu      | Completed ✅ |
 | Pagination   | TODO        |
 | Steps        | TODO        |
 

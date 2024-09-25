@@ -72,7 +72,6 @@ internal class NavMenuTheme : BaseControlTheme
         var commonStyle = new Style(selector => selector.Nesting());
         
         commonStyle.Add(TemplatedControl.BorderBrushProperty, GlobalTokenResourceKey.ColorBorderSecondary);
-        commonStyle.Add(TemplatedControl.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadius);
         
         var horizontalStyle = new Style(selector => selector.Nesting().Class(NavMenu.HorizontalModePC));
         horizontalStyle.Add(NavMenu.BackgroundProperty, GlobalTokenResourceKey.ColorBgContainer);
@@ -92,6 +91,7 @@ internal class NavMenuTheme : BaseControlTheme
         
         var verticalOrInlineStyle = new Style(selector => Selectors.Or(selector.Nesting().Class(NavMenu.VerticalModePC),
             selector.Nesting().Class(NavMenu.InlineModePC)));
+        verticalOrInlineStyle.Add(NavMenu.PaddingProperty, NavMenuTokenResourceKey.VerticalMenuContentPadding);
         verticalOrInlineStyle.Add(NavMenu.HorizontalAlignmentProperty, HorizontalAlignment.Left);
         verticalOrInlineStyle.Add(NavMenu.VerticalAlignmentProperty, VerticalAlignment.Stretch);
         verticalOrInlineStyle.Add(NavMenu.BackgroundProperty, GlobalTokenResourceKey.ColorBgContainer);

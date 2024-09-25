@@ -241,7 +241,7 @@
                         <atom:NavMenuItem Header="Option 1" />
                         <atom:NavMenuItem Header="Option 2" />
                     </atom:NavMenuItem>
-                    
+        
                     <atom:NavMenuItem Header="Item 2">
                         <atom:NavMenuItem Header="Option 3" />
                         <atom:NavMenuItem Header="Option 4" />
@@ -249,6 +249,36 @@
                 </atom:NavMenuItem>
                 <atom:NavMenuItem Header="Navigation Four"/>
             </atom:NavMenu>
+        </desktop:ShowCaseItem>
+        
+        <desktop:ShowCaseItem
+            Title="Switch the menu type"
+            Description="Show the dynamic switching mode (between inline and vertical).">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <StackPanel Orientation="Horizontal" Spacing="5">
+                    <atom:ToggleSwitch Name="ChangeModeSwitch"/>
+                    <TextBlock>Change Mode</TextBlock>
+                    <atom:ToggleSwitch Margin="10, 0, 0, 0" Name="ChangeStyleSwitch"/>
+                    <TextBlock>Change Style</TextBlock>
+                </StackPanel>
+                <atom:NavMenu Mode="{Binding Mode}" Width="256" Margin="0, 0, 0, 20" IsDarkStyle="{Binding IsDark}">
+                    <atom:NavMenuItem Header="Navigation One" Icon="{atom:IconProvider Kind=MailOutlined}" />
+                    <atom:NavMenuItem Header="Navigation Two" Icon="{atom:IconProvider Kind=AppstoreOutlined}" IsEnabled="False"/>
+                    <atom:NavMenuItem Header="Navigation Three - Submenu" Icon="{atom:IconProvider Kind=SettingOutlined}">
+                        <atom:NavMenuItem Header="Item 1">
+                            <atom:NavMenuItem Header="Option 1" />
+                            <atom:NavMenuItem Header="Option 2" />
+                        </atom:NavMenuItem>
+                    
+                        <atom:NavMenuItem Header="Item 2">
+                            <atom:NavMenuItem Header="Option 3" />
+                            <atom:NavMenuItem Header="Option 4" />
+                        </atom:NavMenuItem>
+                    </atom:NavMenuItem>
+                    <atom:NavMenuItem Header="Navigation Four"/>
+                </atom:NavMenu>
+            </StackPanel>
+            
         </desktop:ShowCaseItem>
 
     </desktop:ShowCasePanel>

@@ -70,8 +70,8 @@ public class Popup : AvaloniaPopup
     private IDisposable? _selfLightDismissDisposable;
     private bool _initialized;
     private ManagedPopupPositionerInfo? _managedPopupPositioner;
-    protected bool _animating;
     private bool _isNeedFlip = true;
+    protected bool _animating;
 
     // 当鼠标移走了，但是打开动画还没完成，我们需要记录下来这个信号
     internal bool RequestCloseWhereAnimationCompleted { get; set; }
