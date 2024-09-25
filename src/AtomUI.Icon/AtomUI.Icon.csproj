@@ -1,5 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+	<Import Project="$(MSBuildThisFileDirectory)..\..\build\Common.props"/>
     <Import Project="$(MSBuildThisFileDirectory)..\..\build\Nuget.props"/>
 
     <ItemGroup>

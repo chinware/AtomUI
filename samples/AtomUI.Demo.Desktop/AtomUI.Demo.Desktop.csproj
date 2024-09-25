@@ -1,5 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+	<Import Project="$(MSBuildThisFileDirectory)..\..\build\Common.props"/>
     <Import Project="$(MSBuildThisFileDirectory)..\..\Build\Output.App.props"/>
 
     <PropertyGroup>
@@ -39,8 +40,12 @@
         <PackageReference Include="CommunityToolkit.Mvvm"/>
     </ItemGroup>
 
-    <ItemGroup>
+    <ItemGroup Condition=" '$(Configuration)' == 'DEBUG' ">
         <ProjectReference Include="..\..\packages\AtomUI\AtomUI.csproj" />
     </ItemGroup>
+
+	<ItemGroup Condition=" '$(Configuration)' == 'RELEASE' ">
+		<PackageReference Include="AtomUI" />
+	</ItemGroup>
 
 </Project>

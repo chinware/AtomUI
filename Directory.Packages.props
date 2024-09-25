@@ -1,5 +1,4 @@
 <Project>
-    <Import Project="$(MSBuildThisFileDirectory)\build\Common.props"/>
     <PropertyGroup>
         <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     </PropertyGroup>
@@ -11,6 +10,8 @@
         <PackageVersion Include="Avalonia.Controls.DataGrid" Version="$(AvaloniaVersionThatLibrariesUsed)"/>
         <PackageVersion Include="Avalonia.Themes.Fluent" Version="$(AvaloniaVersionThatLibrariesUsed)"/>
         <PackageVersion Include="Avalonia.Win32" Version="$(AvaloniaVersionThatLibrariesUsed)"/>
+
+        <PackageVersion Include="AtomUI" Version="$(NugetPackageVersion)"/>
 
         <!-- TODO 版本是否跟随 AvaloniaVersionThatLibrariesUsed？-->
         <PackageVersion Include="Avalonia.Svg" Version="11.1.0"/>

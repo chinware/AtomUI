@@ -1,9 +1,0 @@
-<Project>
-    <ItemGroup>
-        <ProjectReference Include="$(MSBuildThisFileDirectory)/../src/AtomUI.Base/AtomUI.Base.csproj" />
-        <ProjectReference Include="$(MSBuildThisFileDirectory)/../src/AtomUI.Theme/AtomUI.Theme.csproj" />
-        <ProjectReference Include="$(MSBuildThisFileDirectory)/../src/AtomUI.Controls/AtomUI.Controls.csproj" />
-        <ProjectReference Include="$(MSBuildThisFileDirectory)/../src/AtomUI.Icon/AtomUI.Icon.csproj" />
-        <ProjectReference Include="$(MSBuildThisFileDirectory)/../src/AtomUI.Icon.AntDesign/AtomUI.Icon.AntDesign.csproj" />
-    </ItemGroup>
-</Project>
