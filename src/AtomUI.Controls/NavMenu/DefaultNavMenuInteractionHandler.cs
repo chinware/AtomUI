@@ -143,52 +143,71 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
     protected virtual void PointerPressed(object? sender, PointerPressedEventArgs e)
     {
         var item = GetMenuItemCore(e.Source as Control);
-
-        if (sender is Visual visual &&
-            e.GetCurrentPoint(visual).Properties.IsLeftButtonPressed)
+        if (item is null) 
         {
-            if (item?.HasSubMenu == true)
+            return;
+        }
+
+        if (item is NavMenuItem navMenuItem)
+        {
+            if (!navMenuItem.PointInNavMenuItemHeader(e.GetCurrentPoint(navMenuItem).Position))
             {
-                if (item.IsSubMenuOpen)
+                return;
+            }
+            if (sender is Visual visual &&
+                e.GetCurrentPoint(visual).Properties.IsLeftButtonPressed)
+            {
+                if (navMenuItem.HasSubMenu)
                 {
-                    // PointerPressed events may bubble from disabled items in sub-menus. In this case,
-                    // keep the sub-navMenu open.
-                    var popup = (e.Source as ILogical)?.FindLogicalAncestorOfType<Popup>();
-                    if (item.IsTopLevel && popup == null)
+                    if (navMenuItem.IsSubMenuOpen)
                     {
-                        CloseMenu(item);
+                        // PointerPressed events may bubble from disabled items in sub-menus. In this case,
+                        // keep the sub-navMenu open.
+                        var popup = (e.Source as ILogical)?.FindLogicalAncestorOfType<Popup>();
+                        if (navMenuItem.IsTopLevel && popup == null)
+                        {
+                            CloseMenu(navMenuItem);
+                        }
+                    }
+                    else
+                    {
+                        navMenuItem.Open();
                     }
                 }
                 else
                 {
-                    item.Open();
-                }
-            }
-            else
-            {
-                if (NavMenu is NavMenu navMenu)
-                {
-                    navMenu.ClearSelection();
-                }
+                    if (NavMenu is NavMenu navMenu)
+                    {
+                        navMenu.ClearSelection();
+                    }
 
-                if (item is NavMenuItem navMenuItem)
-                {
                     navMenuItem.SelectItemRecursively();
                 }
-            }
             
-            e.Handled = true;
+                e.Handled = true;
+            }
         }
     }
 
     protected virtual void PointerReleased(object? sender, PointerReleasedEventArgs e)
     {
         var item = GetMenuItemCore(e.Source as Control);
-
-        if (e.InitialPressMouseButton == MouseButton.Left && item?.HasSubMenu == false)
+        if (item is null) 
         {
-            Click(item);
-            e.Handled = true;
+            return;
+        }
+
+        if (item is NavMenuItem navMenuItem)
+        {
+            if (!navMenuItem.PointInNavMenuItemHeader(e.GetCurrentPoint(navMenuItem).Position))
+            {
+                return;
+            }
+            if (e.InitialPressMouseButton == MouseButton.Left && item?.HasSubMenu == false)
+            {
+                Click(item);
+                e.Handled = true;
+            }
         }
     }
 
@@ -299,7 +318,9 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
     internal void Click(INavMenuItem item)
     {
         item.RaiseClick();
-
+        var navMenu = FindNavMenu(item);
+        navMenu?.RaiseNavMenuItemClick(item);
+        
         if (!item.StaysOpenOnClick)
         {
             CloseMenu(item);
@@ -308,14 +329,25 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
 
     internal void CloseMenu(INavMenuItem item)
     {
-        var current = (INavMenuElement?)item;
+        var navMenu = FindNavMenu(item);
+        navMenu?.Close();
+    }
 
-        while (current != null && !(current is INavMenu))
+    private static NavMenu? FindNavMenu(INavMenuItem item)
+    {
+        var       current = (INavMenuElement?)item;
+        NavMenu? result  = null;
+
+        while (current != null && !(current is NavMenu))
         {
             current = (current as INavMenuItem)?.Parent;
         }
 
-        current?.Close();
+        if (current is NavMenu navMenu)
+        {
+            result = navMenu;
+        }
+        return result;
     }
 
     internal void CloseWithDelay(INavMenuItem item)

@@ -220,9 +220,6 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     protected override bool IsEnabledCore => base.IsEnabledCore && _commandCanExecute;
 
     /// <inheritdoc/>
-    bool INavMenuElement.MoveSelection(NavigationDirection direction, bool wrap) => MoveSelection(direction, wrap);
-
-    /// <inheritdoc/>
     INavMenuItem? INavMenuElement.SelectedItem
     {
         get
@@ -1225,6 +1222,19 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         }
 
         return logical != null ? result : @default;
+    }
+
+    internal bool PointInNavMenuItemHeader(Point point)
+    {
+        var targetFrame = Mode == NavMenuMode.Horizontal && IsTopLevel ? _horizontalFrame : _headerFrame;
+        if (targetFrame is null)
+        {
+            return false;
+        }
+
+        var offset     = targetFrame.TranslatePoint(new Point(0, 0), this) ?? default;
+        var targetRect = new Rect(offset, targetFrame.Bounds.Size);
+        return targetRect.Contains(point);
     }
     
 }

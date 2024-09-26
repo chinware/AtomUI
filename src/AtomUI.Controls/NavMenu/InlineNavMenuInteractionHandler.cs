@@ -17,8 +17,9 @@ internal class InlineNavMenuInteractionHandler : INavMenuInteractionHandler
         {
             throw new NotSupportedException("InlineNavMenuInteractionHandler is already attached.");
         }
-        NavMenu                =  navMenu;
-        NavMenu.PointerPressed += PointerPressed;
+        NavMenu                 =  navMenu;
+        NavMenu.PointerPressed  += PointerPressed;
+        NavMenu.PointerReleased += PointerReleased;
     }
 
     internal void DetachCore(INavMenu navMenu)
@@ -27,18 +28,23 @@ internal class InlineNavMenuInteractionHandler : INavMenuInteractionHandler
         {
             throw new NotSupportedException("InlineNavMenuInteractionHandler is not attached to the navMenu.");
         }
-        NavMenu.PointerPressed -= PointerPressed;
-        NavMenu                =  null;
+        NavMenu.PointerPressed  -= PointerPressed;
+        NavMenu.PointerReleased -= PointerReleased;
+        NavMenu                 =  null;
     }
     
     protected virtual void PointerPressed(object? sender, PointerPressedEventArgs e)
     {
         var item = GetMenuItemCore(e.Source as Control);
+        if (item is null || !item.PointInNavMenuItemHeader(e.GetCurrentPoint(item).Position)) 
+        {
+            return;
+        }
         
         if (sender is Visual visual &&
             e.GetCurrentPoint(visual).Properties.IsLeftButtonPressed)
         {
-            if (item?.HasSubMenu == true)
+            if (item.HasSubMenu)
             {
                 if (item.IsSubMenuOpen)
                 {
@@ -62,6 +68,28 @@ internal class InlineNavMenuInteractionHandler : INavMenuInteractionHandler
         }
     }
     
+    protected virtual void PointerReleased(object? sender, PointerReleasedEventArgs e)
+    {
+        var item = GetMenuItemCore(e.Source as Control);
+        if (item is null || !item.PointInNavMenuItemHeader(e.GetCurrentPoint(item).Position)) 
+        {
+            return;
+        }
+
+        if (e.InitialPressMouseButton == MouseButton.Left && !item.HasSubMenu)
+        {
+            Click(item);
+            e.Handled = true;
+        }
+    }
+    
+    internal void Click(INavMenuItem item)
+    {
+        item.RaiseClick();
+        var navMenu = FindNavMenu(item);
+        navMenu?.RaiseNavMenuItemClick(item);
+    }
+    
     internal void Open(INavMenuItem item)
     {
         item.Open();
@@ -83,5 +111,22 @@ internal class InlineNavMenuInteractionHandler : INavMenuInteractionHandler
                
             item = item.Parent;
         }
+    }
+    
+    private static NavMenu? FindNavMenu(INavMenuItem item)
+    {
+        var      current = (INavMenuElement?)item;
+        NavMenu? result  = null;
+
+        while (current != null && !(current is NavMenu))
+        {
+            current = (current as INavMenuItem)?.Parent;
+        }
+
+        if (current is NavMenu navMenu)
+        {
+            result = navMenu;
+        }
+        return result;
     }
 }

@@ -99,9 +99,6 @@ public abstract class NavMenuBase : SelectingItemsControl, IFocusScope, INavMenu
     /// </summary>
     public abstract void Open();
 
-    /// <inheritdoc/>
-    bool INavMenuElement.MoveSelection(NavigationDirection direction, bool wrap) => MoveSelection(direction, wrap);
-
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
     {
         return new NavMenuItem();

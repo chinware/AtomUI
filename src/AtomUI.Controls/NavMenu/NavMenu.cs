@@ -17,6 +17,17 @@ using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
 
+public class NavMenuItemClickEventArgs : RoutedEventArgs
+{
+    public NavMenuItemClickEventArgs(RoutedEvent routedEvent, INavMenuItem navMenuItem)
+        : base(routedEvent)
+    {
+        NavMenuItem = navMenuItem;
+    }
+
+    public INavMenuItem NavMenuItem { get; }
+}
+
 [PseudoClasses(InlineModePC, HorizontalModePC, VerticalModePC)]
 public class NavMenu : NavMenuBase
 {
@@ -68,6 +79,21 @@ public class NavMenu : NavMenuBase
         set => SetValue(ActiveBarHeightProperty, value);
     }
     
+    #endregion
+
+    #region 公共事件定义
+
+    public static readonly RoutedEvent<NavMenuItemClickEventArgs> NavMenuItemClickEvent =
+        RoutedEvent.Register<NavMenu, NavMenuItemClickEventArgs>(
+            nameof(NavMenuItemClick),
+            RoutingStrategies.Bubble);
+    
+    public event EventHandler<NavMenuItemClickEventArgs>? NavMenuItemClick
+    {
+        add => AddHandler(NavMenuItemClickEvent, value);
+        remove => RemoveHandler(NavMenuItemClickEvent, value);
+    }
+
     #endregion
 
     #region 内部属性定义
@@ -328,5 +354,10 @@ public class NavMenu : NavMenuBase
         }
         navMenuItem.CloseInlineItem();
         navMenuItem.IsSubMenuOpen = false;
+    }
+    
+    internal void RaiseNavMenuItemClick(INavMenuItem navMenuItem)
+    {
+        RaiseEvent(new NavMenuItemClickEventArgs(NavMenuItemClickEvent, navMenuItem));
     }
 }

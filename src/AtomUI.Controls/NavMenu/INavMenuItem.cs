@@ -1,6 +1,6 @@
 ﻿namespace AtomUI.Controls;
 
-internal interface INavMenuItem : INavMenuElement
+public interface INavMenuItem : INavMenuElement
 {
     /// <summary>
     /// Gets or sets a value that item key.
