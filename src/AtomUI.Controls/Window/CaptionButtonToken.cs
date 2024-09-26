@@ -1,7 +1,7 @@
 using AtomUI.Theme.TokenSystem;
 using Avalonia.Media;
 
-namespace AtomUI.Controls.Controls;
+namespace AtomUI.Controls;
 
 [ControlDesignToken]
 internal class CaptionButtonToken : AbstractControlDesignToken
