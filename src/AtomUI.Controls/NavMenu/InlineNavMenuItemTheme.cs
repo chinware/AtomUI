@@ -17,7 +17,7 @@ namespace AtomUI.Controls;
 [ControlThemeProvider]
 internal class InlineNavMenuItemTheme : BaseNavMenuItemTheme
 {
-    public new const string ID = "InlineNavMenuItem";
+    public const string ID = "InlineNavMenuItem";
     public const string MenuIndicatorIconLayoutPart = "PART_MenuIndicatorIconLayout";
     public const string ChildItemsPresenterPart = "PART_ChildItemsPresenter";
     public const string ChildItemsLayoutTransformPart = "PART_ChildItemsLayoutTransform";
