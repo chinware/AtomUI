@@ -2,7 +2,6 @@
 using AtomUI.Theme.Styling;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
-using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Layout;
 using Avalonia.Styling;
@@ -72,5 +71,6 @@ internal class VerticalNavMenuTheme : BaseNavMenuTheme
         }
 
         commonStyle.Add(verticalOrInlineStyle);
+        Add(commonStyle);
     }
 }

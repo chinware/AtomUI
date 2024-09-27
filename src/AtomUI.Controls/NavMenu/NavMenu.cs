@@ -122,6 +122,8 @@ public class NavMenu : NavMenuBase
         AutomationProperties.ControlTypeOverrideProperty.OverrideDefaultValue<NavMenu>(AutomationControlType.Menu);
     }
 
+    private bool _initialized;
+
     public NavMenu()
     {
         UpdatePseudoClasses();
@@ -168,14 +170,31 @@ public class NavMenu : NavMenuBase
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        
-        if (VisualRoot is not null)
+
+        if (change.Property == IsDarkStyleProperty ||
+            change.Property == ModeProperty)
         {
-            if (change.Property == ModeProperty)
+            UpdatePseudoClasses();
+        }
+        if (change.Property == ModeProperty)
+        {
+            if (VisualRoot is not null)
             {
+                SetupControlTheme();
                 HandleModeChanged();
             }
-            UpdatePseudoClasses();
+        }
+    }
+    
+    private void SetupControlTheme()
+    {
+        if (Mode == NavMenuMode.Horizontal)
+        {
+            TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, HorizontalNavMenuTheme.ID);
+        }
+        else
+        {
+            TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, VerticalNavMenuTheme.ID);
         }
     }
 
@@ -222,8 +241,13 @@ public class NavMenu : NavMenuBase
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        SetupItemContainerTheme();
-        SetupInteractionHandler();
+        if (!_initialized)
+        {
+            SetupControlTheme();
+            SetupItemContainerTheme();
+            SetupInteractionHandler();
+            _initialized = true;
+        }
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)

@@ -53,7 +53,8 @@ internal class BaseNavMenuItemTheme : BaseControlTheme
             {
                 AnimationUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty),
                 AnimationUtils.CreateTransition<SolidColorBrushTransition>(TemplatedControl.ForegroundProperty)
-            }
+            },
+            
         };
         headerFrame.RegisterInNameScope(scope);
         headerFrame.Child = BuildMenuItemInfoGrid(navMenuItem, scope);
