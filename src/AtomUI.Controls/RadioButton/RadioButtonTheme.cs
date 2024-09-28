@@ -47,8 +47,8 @@ internal class RadioButtonTheme : BaseControlTheme
             {
                 Name = IndicatorPart
             };
-
-            CreateTemplateParentBinding(indicator, CheckBoxIndicator.IsCheckedProperty, RadioButton.IsCheckedProperty);
+            CreateTemplateParentBinding(indicator, RadioIndicator.IsEnabledProperty, RadioButton.IsEnabledProperty);
+            CreateTemplateParentBinding(indicator, RadioIndicator.IsCheckedProperty, RadioButton.IsCheckedProperty);
             layout.Children.Add(indicator);
 
             var contentPresenter = new ContentPresenter()
