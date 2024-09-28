@@ -46,6 +46,7 @@ internal class CheckBoxTheme : BaseControlTheme
             {
                 Name = IndicatorPart
             };
+            DockPanel.SetDock(indicator, Dock.Left);
             CreateTemplateParentBinding(indicator, CheckBoxIndicator.IsEnabledProperty, CheckBox.IsEnabledProperty);
             CreateTemplateParentBinding(indicator, CheckBoxIndicator.IsCheckedProperty, CheckBox.IsCheckedProperty);
             layout.Children.Add(indicator);

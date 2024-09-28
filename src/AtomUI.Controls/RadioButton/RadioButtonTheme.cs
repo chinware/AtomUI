@@ -45,8 +45,10 @@ internal class RadioButtonTheme : BaseControlTheme
 
             var indicator = new RadioIndicator()
             {
-                Name = IndicatorPart
+                Name = IndicatorPart,
+                VerticalAlignment = VerticalAlignment.Center
             };
+            DockPanel.SetDock(indicator, Dock.Left);
             CreateTemplateParentBinding(indicator, RadioIndicator.IsEnabledProperty, RadioButton.IsEnabledProperty);
             CreateTemplateParentBinding(indicator, RadioIndicator.IsCheckedProperty, RadioButton.IsCheckedProperty);
             layout.Children.Add(indicator);
@@ -85,7 +87,7 @@ internal class RadioButtonTheme : BaseControlTheme
         commonStyle.Add(disableStyle);
 
         var contentPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ContentPresenterPart));
-        contentPresenterStyle.Add(ContentPresenter.MarginProperty, CheckBoxTokenResourceKey.TextMargin);
+        contentPresenterStyle.Add(ContentPresenter.MarginProperty, RadioButtonTokenResourceKey.TextMargin);
         commonStyle.Add(contentPresenterStyle);
 
         Add(commonStyle);
@@ -100,7 +102,6 @@ internal class RadioButtonTheme : BaseControlTheme
             indicatorStyle.Add(RadioIndicator.RadioSizeProperty, RadioButtonTokenResourceKey.RadioSize);
             indicatorStyle.Add(RadioIndicator.WidthProperty, RadioButtonTokenResourceKey.RadioSize);
             indicatorStyle.Add(RadioIndicator.HeightProperty, RadioButtonTokenResourceKey.RadioSize);
-            indicatorStyle.Add(RadioIndicator.PaddingInlineProperty, GlobalTokenResourceKey.PaddingXS);
             indicatorStyle.Add(RadioIndicator.DotSizeValueProperty, RadioButtonTokenResourceKey.DotSize);
             indicatorStyle.Add(RadioIndicator.DotPaddingProperty, RadioButtonTokenResourceKey.DotPadding);
             Add(indicatorStyle);

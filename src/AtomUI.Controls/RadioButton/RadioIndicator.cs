@@ -201,11 +201,12 @@ internal class RadioIndicator : Control, IWaveAdornerInfoProvider
     {
         var penWidth = RadioBorderThickness.Top;
         PenUtils.TryModifyOrCreate(ref _cachedPen, RadioBorderBrush, RadioBorderThickness.Top);
-        context.DrawEllipse(RadioBackground, _cachedPen, Bounds.Deflate(penWidth / 2));
+        var targetRect = new Rect(0, 0, Bounds.Width, Bounds.Height);
+        context.DrawEllipse(RadioBackground, _cachedPen, targetRect.Deflate(penWidth / 2));
         if (IsChecked.HasValue && IsChecked.Value)
         {
             var dotDiameter = RadioDotEffectSize / 2;
-            context.DrawEllipse(RadioInnerBackground, null, Bounds.Center, dotDiameter, dotDiameter);
+            context.DrawEllipse(RadioInnerBackground, null, targetRect.Center, dotDiameter, dotDiameter);
         }
     }
 
