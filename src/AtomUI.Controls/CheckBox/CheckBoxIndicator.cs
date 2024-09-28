@@ -130,7 +130,6 @@ internal class CheckBoxIndicator : Control, IWaveAdornerInfoProvider
     public override void ApplyTemplate()
     {
         base.ApplyTemplate();
-        SetupIndicatorCheckedMarkEffectSize();
         Transitions ??= new Transitions
         {
             AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty),
@@ -176,6 +175,12 @@ internal class CheckBoxIndicator : Control, IWaveAdornerInfoProvider
             {
                 WaveSpiritAdorner.ShowWaveAdorner(this, WaveType.RoundRectWave);
             }
+        }
+
+        if (e.Property == SizeProperty)
+        {
+            CollectStyleState();
+            SetupIndicatorCheckedMarkEffectSize();
         }
     }
     
