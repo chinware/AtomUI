@@ -36,7 +36,7 @@ internal class VerticalNavMenuTheme : BaseNavMenuTheme
             ScrollViewer.IsScrollChainingEnabledProperty);
         BindUtils.RelayBind(navMenu, ScrollViewer.IsDeferredScrollingEnabledProperty, scrollViewer,
             ScrollViewer.IsDeferredScrollingEnabledProperty);
-        var presenter    = BuildItemPresenter(scope);
+        var presenter    = BuildItemPresenter(false, scope);
         scrollViewer.Content = presenter;
         return scrollViewer;
     }

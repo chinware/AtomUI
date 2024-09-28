@@ -40,7 +40,7 @@ internal class HorizontalNavMenuTheme : BaseNavMenuTheme
         TokenResourceBinder.CreateGlobalTokenBinding(horizontalLine, Rectangle.FillProperty,
             GlobalTokenResourceKey.ColorBorderSecondary);
 
-        layout.Children.Add(BuildItemPresenter(scope));
+        layout.Children.Add(BuildItemPresenter(true, scope));
         return layout;
     }
 

@@ -25,12 +25,17 @@ internal abstract class BaseNavMenuTheme : BaseControlTheme
 
     protected abstract Control BuildMenuContent(NavMenu navMenu, INameScope scope);
 
-    protected Control BuildItemPresenter(INameScope scope)
+    protected Control BuildItemPresenter(bool isHorizontal, INameScope scope)
     {
         var itemPresenter = new ItemsPresenter
         {
             Name = ItemsPresenterPart
         };
+
+        itemPresenter.ItemsPanel = new FuncTemplate<Panel?>(() => new StackPanel
+        {
+            Orientation = isHorizontal ? Orientation.Horizontal : Orientation.Vertical
+        });
 
         KeyboardNavigation.SetTabNavigation(itemPresenter, KeyboardNavigationMode.Continue);
 
