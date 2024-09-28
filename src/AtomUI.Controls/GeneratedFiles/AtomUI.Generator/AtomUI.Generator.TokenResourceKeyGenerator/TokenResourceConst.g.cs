@@ -153,6 +153,7 @@ namespace AtomUI.Theme.Styling
     {
         public static readonly TokenResourceKey CheckIndicatorSize = new TokenResourceKey("CheckBox.CheckIndicatorSize", "AtomUI.Token");
         public static readonly TokenResourceKey IndicatorTristateMarkSize = new TokenResourceKey("CheckBox.IndicatorTristateMarkSize", "AtomUI.Token");
+        public static readonly TokenResourceKey TextMargin = new TokenResourceKey("CheckBox.TextMargin", "AtomUI.Token");
     }
 
     public static class CollapseTokenResourceKey
