@@ -11,6 +11,8 @@ internal class InlineNavMenuInteractionHandler : INavMenuInteractionHandler
     public void Attach(NavMenuBase navMenu) => AttachCore(navMenu);
     public void Detach(NavMenuBase navMenu) => DetachCore(navMenu);
 
+    private bool _currentPressedIsValid = false;
+
     internal void AttachCore(INavMenu navMenu)
     {
         if (NavMenu != null)
@@ -40,6 +42,8 @@ internal class InlineNavMenuInteractionHandler : INavMenuInteractionHandler
         {
             return;
         }
+
+        _currentPressedIsValid = true;
         
         if (sender is Visual visual &&
             e.GetCurrentPoint(visual).Properties.IsLeftButtonPressed)
@@ -71,10 +75,12 @@ internal class InlineNavMenuInteractionHandler : INavMenuInteractionHandler
     protected virtual void PointerReleased(object? sender, PointerReleasedEventArgs e)
     {
         var item = GetMenuItemCore(e.Source as Control);
-        if (item is null || !item.PointInNavMenuItemHeader(e.GetCurrentPoint(item).Position)) 
+        if (item is null || !_currentPressedIsValid) 
         {
             return;
         }
+
+        _currentPressedIsValid = false;
 
         if (e.InitialPressMouseButton == MouseButton.Left && !item.HasSubMenu)
         {

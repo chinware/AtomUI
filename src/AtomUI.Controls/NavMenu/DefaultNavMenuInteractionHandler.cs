@@ -16,6 +16,7 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
     private IDisposable? _inputManagerSubscription;
     private IRenderRoot? _root;
     private IDisposable? _currentDelayRunDisposable;
+    private bool _currentPressedIsValid = false;
 
     public DefaultNavMenuInteractionHandler()
         : this(AvaloniaLocator.Current.GetService<IInputManager>(), DefaultDelayRun)
@@ -154,6 +155,8 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
             {
                 return;
             }
+
+            _currentPressedIsValid = true;
             if (sender is Visual visual &&
                 e.GetCurrentPoint(visual).Properties.IsLeftButtonPressed)
             {
@@ -192,22 +195,16 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
     protected virtual void PointerReleased(object? sender, PointerReleasedEventArgs e)
     {
         var item = GetMenuItemCore(e.Source as Control);
-        if (item is null) 
+        if (item is null || !_currentPressedIsValid) 
         {
             return;
         }
 
-        if (item is NavMenuItem navMenuItem)
+        _currentPressedIsValid = false;
+        if (e.InitialPressMouseButton == MouseButton.Left && item?.HasSubMenu == false)
         {
-            if (!navMenuItem.PointInNavMenuItemHeader(e.GetCurrentPoint(navMenuItem).Position))
-            {
-                return;
-            }
-            if (e.InitialPressMouseButton == MouseButton.Left && item?.HasSubMenu == false)
-            {
-                Click(item);
-                e.Handled = true;
-            }
+            Click(item);
+            e.Handled = true;
         }
     }
 
