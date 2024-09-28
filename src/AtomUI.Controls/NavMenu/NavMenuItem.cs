@@ -481,6 +481,13 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     /// </remarks>
     public void Open()
     {
+        if (Mode == NavMenuMode.Inline)
+        {
+            if (_animating)
+            {
+                return;
+            }
+        }
         SetCurrentValue(IsSubMenuOpenProperty, true);
     }
 
@@ -492,6 +499,13 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     /// </remarks>
     public void Close()
     {
+        if (Mode == NavMenuMode.Inline)
+        {
+            if (_animating)
+            {
+                return;
+            }
+        }
         SetCurrentValue(IsSubMenuOpenProperty, false);
     }
 
