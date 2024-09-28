@@ -19,7 +19,7 @@ public partial class CollapseShowCase : UserControl
     {
         InitializeComponent();
         DataContext = this;
-        //ExpandButtonPosGroup.OptionCheckedChanged += HandleExpandButtonPosOptionCheckedChanged;
+        ExpandButtonPosGroup.OptionCheckedChanged += HandleExpandButtonPosOptionCheckedChanged;
     }
 
     private void HandleExpandButtonPosOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)

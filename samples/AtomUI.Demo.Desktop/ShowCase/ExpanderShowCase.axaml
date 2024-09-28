@@ -104,8 +104,8 @@ If a large or small Expander is desired, set the size property to either large o
         </desktop:ShowCaseItem>
 
         <desktop:ShowCaseItem
-            Title="Extra node"
-            Description="Render extra element in the top-right corner of each panel." Margin="0, 0, 10, 0">
+            Title="Expand icon location"
+            Description="The expand icon can be placed in front or in the back." Margin="0, 0, 10, 0">
             <StackPanel Orientation="Vertical" Spacing="20">
                 <atom:Expander Header="This is panel header 1"
                                AddOnContent="{atom:IconProvider Kind=SettingOutlined}"
