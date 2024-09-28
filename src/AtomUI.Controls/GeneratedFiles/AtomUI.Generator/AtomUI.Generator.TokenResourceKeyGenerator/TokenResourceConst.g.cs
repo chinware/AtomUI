@@ -517,6 +517,7 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey RadioColor = new TokenResourceKey("RadioButton.RadioColor", "AtomUI.Token");
         public static readonly TokenResourceKey RadioBgColor = new TokenResourceKey("RadioButton.RadioBgColor", "AtomUI.Token");
         public static readonly TokenResourceKey DotPadding = new TokenResourceKey("RadioButton.DotPadding", "AtomUI.Token");
+        public static readonly TokenResourceKey TextMargin = new TokenResourceKey("RadioButton.TextMargin", "AtomUI.Token");
     }
 
     public static class SegmentedTokenResourceKey

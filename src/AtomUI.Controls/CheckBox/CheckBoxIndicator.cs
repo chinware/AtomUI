@@ -48,8 +48,8 @@ internal class CheckBoxIndicator : Control, IWaveAdornerInfoProvider
     
     public bool? IsChecked
     {
-        get => GetValue(ToggleButton.IsCheckedProperty);
-        set => SetValue(ToggleButton.IsCheckedProperty, value);
+        get => GetValue(IsCheckedProperty);
+        set => SetValue(IsCheckedProperty, value);
     }
 
     public double Size

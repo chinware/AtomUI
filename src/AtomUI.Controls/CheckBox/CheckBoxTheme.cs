@@ -72,11 +72,12 @@ internal class CheckBoxTheme : BaseControlTheme
         var commonStyle = new Style(selector => selector.Nesting());
         commonStyle.Add(CheckBox.CursorProperty, new Cursor(StandardCursorType.Hand));
         commonStyle.Add(CheckBox.HorizontalAlignmentProperty, HorizontalAlignment.Left);
-        Add(commonStyle);
-
+        
         var contentPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ContentPresenterPart));
         contentPresenterStyle.Add(ContentPresenter.MarginProperty, CheckBoxTokenResourceKey.TextMargin);
-        Add(contentPresenterStyle);
+        commonStyle.Add(contentPresenterStyle);
+        
+        Add(commonStyle);
         
         var disableStyle =
             new Style(selector => selector.Nesting().PropertyEquals(InputElement.IsEnabledProperty, false));

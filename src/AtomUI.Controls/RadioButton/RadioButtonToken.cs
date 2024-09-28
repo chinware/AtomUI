@@ -1,4 +1,5 @@
 using AtomUI.Theme.TokenSystem;
+using Avalonia;
 using Avalonia.Media;
 
 namespace AtomUI.Controls;
@@ -27,7 +28,10 @@ internal class RadioButtonToken : AbstractControlDesignToken
     public Color RadioColor { get; set; }
 
     public Color RadioBgColor { get; set; }
+    
     public double DotPadding { get; set; }
+    
+    public Thickness TextMargin { get; set; }
 
     public RadioButtonToken()
         : base(ID)
@@ -59,5 +63,6 @@ internal class RadioButtonToken : AbstractControlDesignToken
         // internal
         RadioColor   = wireFrame ? colorPrimary : colorWhite;
         RadioBgColor = wireFrame ? colorBgContainer : colorPrimary;
+        TextMargin   = new Thickness(_globalToken.MarginXXS, 0, 0, 0);
     }
 }
