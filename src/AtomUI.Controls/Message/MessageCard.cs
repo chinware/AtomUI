@@ -1,7 +1,12 @@
-﻿using AtomUI.Icon;
+﻿using AtomUI.Controls.Primitives;
+using AtomUI.Controls.Utils;
+using AtomUI.Icon;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
+using Avalonia.Animation;
+using Avalonia.Animation.Easings;
+using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
@@ -16,6 +21,8 @@ public class MessageCard : TemplatedControl
     public const string SuccessPC = ":success";
     public const string WarningPC = ":warning";
     public const string LoadingPC = ":loading";
+    
+    internal const double AnimationMaxOffsetY = 100d;
 
     #region 公共属性定义
 
@@ -99,7 +106,24 @@ public class MessageCard : TemplatedControl
 
     #endregion
 
+    #region 内部属性定义
+
+    internal static readonly DirectProperty<MessageCard, TimeSpan> OpenCloseMotionDurationProperty =
+        AvaloniaProperty.RegisterDirect<MessageCard, TimeSpan>(nameof(OpenCloseMotionDuration),
+            o => o.OpenCloseMotionDuration, 
+            (o, v) => o.OpenCloseMotionDuration = v);
+    
+    private TimeSpan _openCloseMotionDuration;
+    internal TimeSpan OpenCloseMotionDuration
+    {
+        get => _openCloseMotionDuration;
+        set => SetAndRaise(OpenCloseMotionDurationProperty, ref _openCloseMotionDuration, value);
+    }
+
+    #endregion
+
     private bool _isClosing;
+    private MotionActorControl? _motionActor;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="MessageCard" /> class.
@@ -147,6 +171,14 @@ public class MessageCard : TemplatedControl
 
             RaiseEvent(new RoutedEventArgs(MessageClosedEvent));
         }
+
+        if (e.Property == IsClosingProperty)
+        {
+            if (IsClosing)
+            {
+                ApplyHideMotion();
+            }
+        }
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -157,8 +189,40 @@ public class MessageCard : TemplatedControl
             SetupMessageIcon();
             UpdateMessageType();
         }
+        TokenResourceBinder.CreateGlobalTokenBinding(this, OpenCloseMotionDurationProperty, GlobalTokenResourceKey.MotionDurationMid);
+        _motionActor           = e.NameScope.Find<MotionActorControl>(MessageCardTheme.MotionActorPart);
+        ApplyShowMotion();
     }
 
+    private void ApplyShowMotion()
+    {
+        if (_motionActor is not null)
+        {
+            _motionActor.IsVisible = false;
+            var moveUpInMotionConfig = MotionFactory.BuildMoveUpInMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseOut(),
+                FillMode.Forward);
+            _motionActor.RenderTransformOrigin = moveUpInMotionConfig.RenderTransformOrigin;
+            MotionInvoker.Invoke(_motionActor, moveUpInMotionConfig, () =>
+            {
+                _motionActor.IsVisible = true;
+            });
+        }
+    }
+
+    private void ApplyHideMotion()
+    {
+        if (_motionActor is not null)
+        {
+            var moveUpOutMotionConfig = MotionFactory.BuildMoveUpOutMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseIn(),
+                FillMode.Forward);
+            _motionActor.RenderTransformOrigin = moveUpOutMotionConfig.RenderTransformOrigin;
+            MotionInvoker.Invoke(_motionActor, moveUpOutMotionConfig, null, () =>
+            {
+                IsClosed = true;
+            });
+        }
+    }
+    
     private void UpdateMessageType()
     {
         switch (MessageType)

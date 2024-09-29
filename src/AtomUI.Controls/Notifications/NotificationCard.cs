@@ -1,6 +1,10 @@
-﻿using AtomUI.Theme.Styling;
+﻿using AtomUI.Controls.Primitives;
+using AtomUI.Controls.Utils;
+using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
+using Avalonia.Animation;
+using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
@@ -17,6 +21,9 @@ public class NotificationCard : ContentControl
     public const string InformationPC = ":information";
     public const string SuccessPC = ":success";
     public const string WarningPC = ":warning";
+    
+    internal const double AnimationMaxOffsetY = 150d;
+    internal const double AnimationMaxOffsetX = 500d;
 
     #region 公共属性定义
 
@@ -121,6 +128,11 @@ public class NotificationCard : ContentControl
             nameof(Position),
             o => o.Position,
             (o, v) => o.Position = v);
+    
+    internal static readonly DirectProperty<NotificationCard, TimeSpan> OpenCloseMotionDurationProperty =
+        AvaloniaProperty.RegisterDirect<NotificationCard, TimeSpan>(nameof(OpenCloseMotionDuration),
+            o => o.OpenCloseMotionDuration, 
+            (o, v) => o.OpenCloseMotionDuration = v);
 
     private bool _effectiveShowProgress;
 
@@ -138,8 +150,15 @@ public class NotificationCard : ContentControl
         set => SetAndRaise(PositionProperty, ref _position, value);
     }
 
+    private TimeSpan _openCloseMotionDuration;
+    internal TimeSpan OpenCloseMotionDuration
+    {
+        get => _openCloseMotionDuration;
+        set => SetAndRaise(OpenCloseMotionDurationProperty, ref _openCloseMotionDuration, value);
+    }
+    
     #endregion
-
+    
     /// <summary>
     /// Gets the expiration time of the notification after which it will automatically close.
     /// If the value is null then the notification will remain open until the user closes it.
@@ -150,6 +169,7 @@ public class NotificationCard : ContentControl
     private NotificationProgressBar? _progressBar;
     private readonly WindowNotificationManager _notificationManager;
     private IconButton? _closeButton;
+    private MotionActorControl? _motionActor;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="NotificationCard" /> class.
@@ -188,9 +208,11 @@ public class NotificationCard : ContentControl
             SetupNotificationIcon();
             UpdateNotificationType();
         }
-
+        TokenResourceBinder.CreateGlobalTokenBinding(this, OpenCloseMotionDurationProperty, GlobalTokenResourceKey.MotionDurationMid);
         _progressBar = e.NameScope.Find<NotificationProgressBar>(NotificationCardTheme.ProgressBarPart);
         _closeButton = e.NameScope.Find<IconButton>(NotificationCardTheme.CloseButtonPart);
+        _motionActor = e.NameScope.Find<MotionActorControl>(NotificationCardTheme.MotionActorPart);
+        
         if (_progressBar is not null)
         {
             if (Expiration is null)
@@ -209,6 +231,79 @@ public class NotificationCard : ContentControl
         }
 
         SetupEffectiveShowProgress();
+        ApplyShowMotion();
+    }
+
+    private void ApplyShowMotion()
+    {
+        if (_motionActor is null)
+        {
+            return;
+        }
+
+        MotionConfig? motionConfig;
+        if (Position == NotificationPosition.TopLeft || Position == NotificationPosition.BottomLeft)
+        {
+            motionConfig = MotionFactory.BuildMoveLeftInMotion(AnimationMaxOffsetX, _openCloseMotionDuration, new CubicEaseOut(),
+                FillMode.Forward);
+        }
+        else if (Position == NotificationPosition.TopRight || Position == NotificationPosition.BottomRight)
+        {
+            motionConfig = MotionFactory.BuildMoveRightInMotion(AnimationMaxOffsetX, _openCloseMotionDuration, new CubicEaseOut(),
+                FillMode.Forward);
+        }
+        else if (Position == NotificationPosition.TopCenter)
+        {
+            motionConfig = MotionFactory.BuildMoveUpInMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseOut(),
+                FillMode.Forward);
+        }
+        else
+        {
+            motionConfig = MotionFactory.BuildMoveDownInMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseOut(),
+                FillMode.Forward);
+        }
+        
+        _motionActor.IsVisible = false;
+        _motionActor.RenderTransformOrigin = motionConfig.RenderTransformOrigin;
+        MotionInvoker.Invoke(_motionActor, motionConfig, () =>
+        {
+            _motionActor.IsVisible = true;
+        });
+    }
+    
+    private void ApplyHideMotion()
+    {
+        if (_motionActor is null)
+        {
+            return;
+        }
+        MotionConfig? motionConfig;
+        if (Position == NotificationPosition.TopLeft || Position == NotificationPosition.BottomLeft)
+        {
+            motionConfig = MotionFactory.BuildMoveLeftOutMotion(AnimationMaxOffsetX, _openCloseMotionDuration, new CubicEaseIn(),
+                FillMode.Forward);
+        }
+        else if (Position == NotificationPosition.TopRight || Position == NotificationPosition.BottomRight)
+        {
+            motionConfig = MotionFactory.BuildMoveRightOutMotion(AnimationMaxOffsetX, _openCloseMotionDuration, new CubicEaseIn(),
+                FillMode.Forward);
+        }
+        else if (Position == NotificationPosition.TopCenter)
+        {
+            motionConfig = MotionFactory.BuildMoveUpOutMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseIn(),
+                FillMode.Forward);
+        }
+        else
+        {
+            motionConfig = MotionFactory.BuildMoveDownOutMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseIn(),
+                FillMode.Forward);
+        }
+        
+        _motionActor.RenderTransformOrigin = motionConfig.RenderTransformOrigin;
+        MotionInvoker.Invoke(_motionActor, motionConfig, null, () =>
+        {
+            IsClosed = true;
+        });
     }
 
     private void HandleCloseButtonClose(object? sender, EventArgs args)
@@ -253,6 +348,14 @@ public class NotificationCard : ContentControl
         if (e.Property == PositionProperty)
         {
             UpdatePseudoClasses(e.GetNewValue<NotificationPosition>());
+        }
+        
+        if (e.Property == IsClosingProperty)
+        {
+            if (IsClosing)
+            {
+                ApplyHideMotion();
+            }
         }
     }
 

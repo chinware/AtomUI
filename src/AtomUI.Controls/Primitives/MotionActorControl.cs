@@ -87,7 +87,6 @@ public class MotionActorControl : Decorator
             MotionTransformRoot.RenderTransform       = _matrixTransform;
             MotionTransformRoot.RenderTransformOrigin = new RelativePoint(0, 0, RelativeUnit.Absolute);
         }
-
         ApplyMotionTransform();
     }
 
@@ -111,6 +110,7 @@ public class MotionActorControl : Decorator
 
         _transformation         = matrix;
         _matrixTransform.Matrix = FilterScaleTransform(matrix);
+        RenderTransform         = _matrixTransform;
         // New transform means re-layout is necessary
         InvalidateMeasure();
     }

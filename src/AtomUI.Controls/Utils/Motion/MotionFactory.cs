@@ -46,4 +46,12 @@ internal static partial class MotionFactory
         builder.AppendTranslate(offsetX, offsetY);
         return builder.Build();
     }
+
+    static TransformOperations BuildTranslateScaleAndTransform(double scaleX, double scaleY, double offsetX, double offsetY)
+    {
+        var builder = new TransformOperations.Builder(2);
+        builder.AppendScale(scaleX, scaleY);
+        builder.AppendTranslate(offsetX, offsetY);
+        return builder.Build();
+    }
 }

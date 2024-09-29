@@ -1,4 +1,5 @@
-﻿using AtomUI.Controls.Utils;
+﻿using AtomUI.Controls.Primitives;
+using AtomUI.Controls.Utils;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
@@ -26,16 +27,10 @@ internal class NotificationCardTheme : BaseControlTheme
     public const string HeaderTitlePart = "PART_HeaderTitle";
     public const string ContentPart = "PART_Content";
     public const string CloseButtonPart = "PART_CloseButton";
-    public const string LayoutTransformControlPart = "PART_LayoutTransformControl";
+    public const string MotionActorPart = "PART_MotionActor";
     public const string ProgressBarPart = "PART_ProgressBar";
     public const string MarginGhostDecoratorPart = "PART_MarginGhostDecorator";
-
-    public const double AnimationMaxOffsetY = 150d;
-    public const double AnimationMaxOffsetX = 500d;
-    public const int AnimationDuration = 400;
-
-    private readonly Easing _quadraticEaseOut = new QuadraticEaseOut();
-    private readonly Easing _quadraticEaseIn = new QuadraticEaseIn();
+    
 
     public NotificationCardTheme()
         : base(typeof(NotificationCard))
@@ -47,12 +42,12 @@ internal class NotificationCardTheme : BaseControlTheme
         return new FuncControlTemplate<NotificationCard>((card, scope) =>
         {
             BuildInstanceStyles(card);
-            var layoutTransformControl = new LayoutTransformControl
+            var motionActor = new MotionActorControl()
             {
-                Name         = LayoutTransformControlPart,
+                Name         = MotionActorPart,
                 ClipToBounds = false
             };
-            layoutTransformControl.RegisterInNameScope(scope);
+            motionActor.RegisterInNameScope(scope);
 
             // 防止关闭的时候抖动，如果直接设置到 NotificationCard，layoutTransformControl没有办法平滑处理
             var marginGhostDecorator = new Border
@@ -88,8 +83,8 @@ internal class NotificationCardTheme : BaseControlTheme
             BuildProgressBar(mainLayout, scope);
             frameDecorator.RegisterInNameScope(scope);
 
-            layoutTransformControl.Child = marginGhostDecorator;
-            return layoutTransformControl;
+            motionActor.Child = marginGhostDecorator;
+            return motionActor;
         });
     }
 
@@ -209,7 +204,6 @@ internal class NotificationCardTheme : BaseControlTheme
         BuildCommonStyle();
         BuildHeaderStyle();
         BuildContentStyle();
-        BuildAnimationStyle();
     }
 
     private void BuildCommonStyle()
@@ -328,253 +322,5 @@ internal class NotificationCardTheme : BaseControlTheme
         iconStyle.Add(Layoutable.WidthProperty, NotificationTokenResourceKey.NotificationIconSize);
         iconStyle.Add(Layoutable.HeightProperty, NotificationTokenResourceKey.NotificationIconSize);
         control.Styles.Add(iconStyle);
-    }
-
-    private void BuildAnimationStyle()
-    {
-        var commonStyle = new Style(selector => selector.Nesting());
-
-        var topLeftStyle = new Style(selector =>
-            selector.Nesting().PropertyEquals(NotificationCard.PositionProperty, NotificationPosition.TopLeft));
-        BuildLeftEdgeAnimation(topLeftStyle);
-        commonStyle.Add(topLeftStyle);
-
-        var topCenterStyle = new Style(selector =>
-            selector.Nesting().PropertyEquals(NotificationCard.PositionProperty, NotificationPosition.TopCenter));
-
-        commonStyle.Add(topCenterStyle);
-        BuildTopCenterEdgeAnimation(topCenterStyle);
-        var topRightStyle = new Style(selector =>
-            selector.Nesting().PropertyEquals(NotificationCard.PositionProperty, NotificationPosition.TopRight));
-
-        commonStyle.Add(topRightStyle);
-        BuildRightEdgeAnimation(topRightStyle);
-        var bottomLeftStyle = new Style(selector =>
-            selector.Nesting().PropertyEquals(NotificationCard.PositionProperty, NotificationPosition.BottomLeft));
-        BuildLeftEdgeAnimation(bottomLeftStyle);
-        commonStyle.Add(bottomLeftStyle);
-
-        var bottomCenterStyle = new Style(selector =>
-            selector.Nesting().PropertyEquals(NotificationCard.PositionProperty, NotificationPosition.BottomCenter));
-        BuildBottomCenterEdgeAnimation(bottomCenterStyle);
-        commonStyle.Add(bottomCenterStyle);
-
-        var bottomRightStyle = new Style(selector =>
-            selector.Nesting().PropertyEquals(NotificationCard.PositionProperty, NotificationPosition.BottomRight));
-        BuildRightEdgeAnimation(bottomRightStyle);
-        commonStyle.Add(bottomRightStyle);
-
-        Add(commonStyle);
-    }
-
-    private void BuildRightEdgeAnimation(Style parentStyle)
-    {
-        {
-            var layoutTransformStyle =
-                new Style(selector => selector.Nesting().Template().Name(LayoutTransformControlPart));
-            var moveRightInMotionConfig = MotionFactory.BuildMoveRightInMotion(AnimationMaxOffsetX,
-                TimeSpan.FromMilliseconds(AnimationDuration), _quadraticEaseOut,
-                FillMode.Forward);
-            foreach (var animation in moveRightInMotionConfig.Animations)
-            {
-                layoutTransformStyle.Animations.Add(animation);
-            }
-
-            parentStyle.Add(layoutTransformStyle);
-        }
-
-        var isClosingStyle = new Style(selector =>
-            selector.Nesting().PropertyEquals(NotificationCard.IsClosingProperty, true));
-        {
-            var layoutTransformStyle =
-                new Style(selector => selector.Nesting().Template().Name(LayoutTransformControlPart));
-
-            var moveRightOutMotionConfig = MotionFactory.BuildMoveRightOutMotion(AnimationMaxOffsetX,
-                TimeSpan.FromMilliseconds(AnimationDuration), _quadraticEaseIn, FillMode.Forward);
-
-            foreach (var animation in moveRightOutMotionConfig.Animations)
-            {
-                layoutTransformStyle.Animations.Add(animation);
-            }
-
-            isClosingStyle.Animations.Add(new Animation
-            {
-                Duration = TimeSpan.FromMilliseconds(AnimationDuration * 1.2),
-                Easing   = _quadraticEaseIn,
-                FillMode = FillMode.Forward,
-                Children =
-                {
-                    new KeyFrame
-                    {
-                        Cue = new Cue(1.0),
-                        Setters =
-                        {
-                            new Setter(NotificationCard.IsClosedProperty, true)
-                        }
-                    }
-                }
-            });
-
-            isClosingStyle.Add(layoutTransformStyle);
-        }
-        parentStyle.Add(isClosingStyle);
-    }
-
-    private void BuildLeftEdgeAnimation(Style parentStyle)
-    {
-        {
-            var layoutTransformStyle =
-                new Style(selector => selector.Nesting().Template().Name(LayoutTransformControlPart));
-            var moveLeftInMotionConfig = MotionFactory.BuildMoveLeftInMotion(AnimationMaxOffsetX,
-                TimeSpan.FromMilliseconds(AnimationDuration), _quadraticEaseOut,
-                FillMode.Forward);
-            foreach (var animation in moveLeftInMotionConfig.Animations)
-            {
-                layoutTransformStyle.Animations.Add(animation);
-            }
-
-            parentStyle.Add(layoutTransformStyle);
-        }
-
-        var isClosingStyle = new Style(selector =>
-            selector.Nesting().PropertyEquals(NotificationCard.IsClosingProperty, true));
-        {
-            var layoutTransformStyle =
-                new Style(selector => selector.Nesting().Template().Name(LayoutTransformControlPart));
-            var moveRightOutMotionConfig = MotionFactory.BuildMoveLeftOutMotion(AnimationMaxOffsetX,
-                TimeSpan.FromMilliseconds(AnimationDuration), _quadraticEaseIn, FillMode.Forward);
-
-            foreach (var animation in moveRightOutMotionConfig.Animations)
-            {
-                layoutTransformStyle.Animations.Add(animation);
-            }
-
-            isClosingStyle.Animations.Add(new Animation
-            {
-                Duration = TimeSpan.FromMilliseconds(AnimationDuration * 1.2),
-                Easing   = _quadraticEaseIn,
-                FillMode = FillMode.Forward,
-                Children =
-                {
-                    new KeyFrame
-                    {
-                        Cue = new Cue(1.0),
-                        Setters =
-                        {
-                            new Setter(NotificationCard.IsClosedProperty, true)
-                        }
-                    }
-                }
-            });
-
-            isClosingStyle.Add(layoutTransformStyle);
-        }
-        parentStyle.Add(isClosingStyle);
-    }
-
-    private void BuildTopCenterEdgeAnimation(Style parentStyle)
-    {
-        {
-            var layoutTransformStyle =
-                new Style(selector => selector.Nesting().Template().Name(LayoutTransformControlPart));
-            var moveRightInMotionConfig = MotionFactory.BuildMoveUpInMotion(AnimationMaxOffsetY,
-                TimeSpan.FromMilliseconds(AnimationDuration), _quadraticEaseOut,
-                FillMode.Forward);
-            foreach (var animation in moveRightInMotionConfig.Animations)
-            {
-                layoutTransformStyle.Animations.Add(animation);
-            }
-
-            parentStyle.Add(layoutTransformStyle);
-        }
-
-        var isClosingStyle = new Style(selector =>
-            selector.Nesting().PropertyEquals(NotificationCard.IsClosingProperty, true));
-        {
-            var layoutTransformStyle =
-                new Style(selector => selector.Nesting().Template().Name(LayoutTransformControlPart));
-
-            var moveRightOutMotionConfig = MotionFactory.BuildMoveUpOutMotion(AnimationMaxOffsetY,
-                TimeSpan.FromMilliseconds(AnimationDuration), _quadraticEaseIn, FillMode.Forward);
-
-            foreach (var animation in moveRightOutMotionConfig.Animations)
-            {
-                layoutTransformStyle.Animations.Add(animation);
-            }
-
-            isClosingStyle.Animations.Add(new Animation
-            {
-                Duration = TimeSpan.FromMilliseconds(AnimationDuration * 1.2),
-                Easing   = _quadraticEaseIn,
-                FillMode = FillMode.Forward,
-                Children =
-                {
-                    new KeyFrame
-                    {
-                        Cue = new Cue(1.0),
-                        Setters =
-                        {
-                            new Setter(NotificationCard.IsClosedProperty, true)
-                        }
-                    }
-                }
-            });
-
-            isClosingStyle.Add(layoutTransformStyle);
-        }
-        parentStyle.Add(isClosingStyle);
-    }
-
-    private void BuildBottomCenterEdgeAnimation(Style parentStyle)
-    {
-        {
-            var layoutTransformStyle =
-                new Style(selector => selector.Nesting().Template().Name(LayoutTransformControlPart));
-            var moveRightInMotionConfig = MotionFactory.BuildMoveDownInMotion(AnimationMaxOffsetY,
-                TimeSpan.FromMilliseconds(AnimationDuration), _quadraticEaseOut,
-                FillMode.Forward);
-            foreach (var animation in moveRightInMotionConfig.Animations)
-            {
-                layoutTransformStyle.Animations.Add(animation);
-            }
-
-            parentStyle.Add(layoutTransformStyle);
-        }
-
-        var isClosingStyle = new Style(selector =>
-            selector.Nesting().PropertyEquals(NotificationCard.IsClosingProperty, true));
-        {
-            var layoutTransformStyle =
-                new Style(selector => selector.Nesting().Template().Name(LayoutTransformControlPart));
-
-            var moveRightOutMotionConfig = MotionFactory.BuildMoveDownOutMotion(AnimationMaxOffsetY,
-                TimeSpan.FromMilliseconds(AnimationDuration), _quadraticEaseIn, FillMode.Forward);
-
-            foreach (var animation in moveRightOutMotionConfig.Animations)
-            {
-                layoutTransformStyle.Animations.Add(animation);
-            }
-
-            isClosingStyle.Animations.Add(new Animation
-            {
-                Duration = TimeSpan.FromMilliseconds(AnimationDuration * 1.2),
-                Easing   = _quadraticEaseIn,
-                FillMode = FillMode.Forward,
-                Children =
-                {
-                    new KeyFrame
-                    {
-                        Cue = new Cue(1.0),
-                        Setters =
-                        {
-                            new Setter(NotificationCard.IsClosedProperty, true)
-                        }
-                    }
-                }
-            });
-
-            isClosingStyle.Add(layoutTransformStyle);
-        }
-        parentStyle.Add(isClosingStyle);
     }
 }

@@ -1,4 +1,4 @@
-﻿using AtomUI.Controls.Utils;
+﻿using AtomUI.Controls.Primitives;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
@@ -22,14 +22,8 @@ internal class MessageCardTheme : BaseControlTheme
     public const string IconContentPart = "PART_IconContent";
     public const string HeaderContainerPart = "PART_HeaderContainer";
     public const string MessagePart = "PART_Message";
-    public const string LayoutTransformControlPart = "PART_LayoutTransformControl";
+    public const string MotionActorPart = "PART_MotionActor";
     public const string MarginGhostDecoratorPart = "PART_MarginGhostDecorator";
-
-    public const double AnimationMaxOffsetY = 100d;
-    public const int AnimationDuration = 400;
-
-    private readonly Easing _quadraticEaseOut = new QuadraticEaseOut();
-    private readonly Easing _quadraticEaseIn = new QuadraticEaseIn();
 
     public MessageCardTheme()
         : base(typeof(MessageCard))
@@ -41,12 +35,12 @@ internal class MessageCardTheme : BaseControlTheme
         return new FuncControlTemplate<MessageCard>((card, scope) =>
         {
             BuildInstanceStyles(card);
-            var layoutTransformControl = new LayoutTransformControl
+            var motionActor = new MotionActorControl()
             {
-                Name         = LayoutTransformControlPart,
+                Name         = MotionActorPart,
                 ClipToBounds = false
             };
-            layoutTransformControl.RegisterInNameScope(scope);
+            motionActor.RegisterInNameScope(scope);
 
             // 防止关闭的时候抖动，如果直接设置到 MessageCard，layoutTransformControl没有办法平滑处理
             var marginGhostDecorator = new Border
@@ -67,8 +61,8 @@ internal class MessageCardTheme : BaseControlTheme
 
             frameDecorator.RegisterInNameScope(scope);
 
-            layoutTransformControl.Child = marginGhostDecorator;
-            return layoutTransformControl;
+            motionActor.Child = marginGhostDecorator;
+            return motionActor;
         });
     }
 
@@ -112,7 +106,6 @@ internal class MessageCardTheme : BaseControlTheme
         BuildCommonStyle();
         BuildContentStyle();
         BuildContentStyle();
-        BuildAnimationStyle();
     }
 
     private void BuildCommonStyle()
@@ -156,62 +149,5 @@ internal class MessageCardTheme : BaseControlTheme
         iconStyle.Add(Layoutable.WidthProperty, MessageTokenResourceKey.MessageIconSize);
         iconStyle.Add(Layoutable.HeightProperty, MessageTokenResourceKey.MessageIconSize);
         control.Styles.Add(iconStyle);
-    }
-
-    private void BuildAnimationStyle()
-    {
-        var commonStyle = new Style(selector => selector.Nesting());
-
-        {
-            var layoutTransformStyle =
-                new Style(selector => selector.Nesting().Template().Name(LayoutTransformControlPart));
-            var moveRightInMotionConfig = MotionFactory.BuildMoveUpInMotion(
-                AnimationMaxOffsetY, TimeSpan.FromMilliseconds(AnimationDuration), _quadraticEaseOut,
-                FillMode.Forward);
-            foreach (var animation in moveRightInMotionConfig.Animations)
-            {
-                layoutTransformStyle.Animations.Add(animation);
-            }
-
-            commonStyle.Add(layoutTransformStyle);
-        }
-
-        var isClosingStyle =
-            new Style(selector => selector.Nesting().PropertyEquals(MessageCard.IsClosingProperty, true));
-        {
-            var layoutTransformStyle =
-                new Style(selector => selector.Nesting().Template().Name(LayoutTransformControlPart));
-
-            var moveRightOutMotionConfig = MotionFactory.BuildMoveUpOutMotion(
-                AnimationMaxOffsetY, TimeSpan.FromMilliseconds(AnimationDuration), _quadraticEaseIn, FillMode.Forward);
-
-            foreach (var animation in moveRightOutMotionConfig.Animations)
-            {
-                layoutTransformStyle.Animations.Add(animation);
-            }
-
-            isClosingStyle.Animations.Add(new Animation
-            {
-                Duration = TimeSpan.FromMilliseconds(AnimationDuration * 1.2),
-                Easing   = _quadraticEaseIn,
-                FillMode = FillMode.Forward,
-                Children =
-                {
-                    new KeyFrame
-                    {
-                        Cue = new Cue(1.0),
-                        Setters =
-                        {
-                            new Setter(MessageCard.IsClosedProperty, true)
-                        }
-                    }
-                }
-            });
-
-            isClosingStyle.Add(layoutTransformStyle);
-        }
-        commonStyle.Add(isClosingStyle);
-
-        Add(commonStyle);
     }
 }

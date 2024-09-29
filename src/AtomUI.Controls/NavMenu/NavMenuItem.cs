@@ -467,8 +467,6 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         ItemsPanelProperty.OverrideDefaultValue<NavMenuItem>(DefaultPanel);
         ClickEvent.AddClassHandler<NavMenuItem>((x, e) => x.OnClick(e));
         SubmenuOpenedEvent.AddClassHandler<NavMenuItem>((x, e) => x.OnSubmenuOpened(e));
-
-        Animation.RegisterCustomAnimator<TransformOperations, MotionTransformOptionsAnimator>();
     }
 
     public NavMenuItem()
@@ -1103,7 +1101,6 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
             }
         
             _animating = true;
-            SetCurrentValue(IsSubMenuOpenProperty, false);
             var slideDownOutMotionConfig = MotionFactory.BuildSlideUpOutMotion(_openCloseMotionDuration, new CubicEaseIn(),
                 FillMode.Forward);
             MotionInvoker.Invoke(_childItemsLayoutTransform, slideDownOutMotionConfig, null, () =>
