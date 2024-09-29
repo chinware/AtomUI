@@ -1,4 +1,5 @@
 ﻿using System.Windows.Input;
+using AtomUI.Controls.Primitives;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.Icon;
@@ -20,6 +21,7 @@ using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
+using Avalonia.Media.Transformation;
 using Avalonia.Rendering;
 using Avalonia.VisualTree;
 
@@ -453,7 +455,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     private bool _isEmbeddedInMenu;
     private Border? _horizontalFrame;
     private IDisposable? _itemContainerThemeDisposable;
-    private LayoutTransformControl? _childItemsLayoutTransform;
+    private MotionActorControl? _childItemsLayoutTransform;
     private Border? _headerFrame;
     private bool _animating = false;
 
@@ -465,6 +467,8 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         ItemsPanelProperty.OverrideDefaultValue<NavMenuItem>(DefaultPanel);
         ClickEvent.AddClassHandler<NavMenuItem>((x, e) => x.OnClick(e));
         SubmenuOpenedEvent.AddClassHandler<NavMenuItem>((x, e) => x.OnSubmenuOpened(e));
+
+        Animation.RegisterCustomAnimator<TransformOperations, MotionTransformOptionsAnimator>();
     }
 
     public NavMenuItem()
@@ -683,13 +687,13 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         SetupItemIcon();
         if (Mode == NavMenuMode.Inline)
         {
-            _childItemsLayoutTransform = e.NameScope.Find<LayoutTransformControl>(InlineNavMenuItemTheme.ChildItemsLayoutTransformPart);
+            _childItemsLayoutTransform = e.NameScope.Find<MotionActorControl>(InlineNavMenuItemTheme.ChildItemsLayoutTransformPart);
             if (_childItemsLayoutTransform is not null)
             {
-                _childItemsLayoutTransform.SetCurrentValue(LayoutTransformControl.IsVisibleProperty, IsSubMenuOpen);
+                _childItemsLayoutTransform.SetCurrentValue(MotionActorControl.IsVisibleProperty, IsSubMenuOpen);
             }
 
-            TokenResourceBinder.CreateGlobalTokenBinding(this, OpenCloseMotionDurationProperty, GlobalTokenResourceKey.MotionDurationMid);
+            TokenResourceBinder.CreateGlobalTokenBinding(this, OpenCloseMotionDurationProperty, GlobalTokenResourceKey.MotionDurationSlow);
         }
 
         if (Transitions is null)
@@ -1074,9 +1078,9 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
             {
                 return;
             }
-
+            
             _animating = true;
-            var slideDownInMotionConfig = MotionFactory.BuildSlideUpInMotion(_openCloseMotionDuration, new QuinticEaseOut(),
+            var slideDownInMotionConfig = MotionFactory.BuildSlideUpInMotion(_openCloseMotionDuration, new CubicEaseOut(),
                 FillMode.Forward);
             _childItemsLayoutTransform.RenderTransformOrigin = slideDownInMotionConfig.RenderTransformOrigin;
             MotionInvoker.Invoke(_childItemsLayoutTransform, slideDownInMotionConfig, () =>
@@ -1097,10 +1101,10 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
             {
                 return;
             }
-
+        
             _animating = true;
             SetCurrentValue(IsSubMenuOpenProperty, false);
-            var slideDownOutMotionConfig = MotionFactory.BuildSlideUpOutMotion(_openCloseMotionDuration, new QuinticEaseOut(),
+            var slideDownOutMotionConfig = MotionFactory.BuildSlideUpOutMotion(_openCloseMotionDuration, new CubicEaseIn(),
                 FillMode.Forward);
             MotionInvoker.Invoke(_childItemsLayoutTransform, slideDownOutMotionConfig, null, () =>
             {
@@ -1108,7 +1112,6 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
                 _animating = false;
             });
         }
-        
     }
 
     /// <summary>

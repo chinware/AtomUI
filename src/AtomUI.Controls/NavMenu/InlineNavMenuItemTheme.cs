@@ -1,4 +1,5 @@
-﻿using AtomUI.Theme.Styling;
+﻿using AtomUI.Controls.Primitives;
+using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using AtomUI.Utils;
 using Avalonia;
@@ -56,11 +57,11 @@ internal class InlineNavMenuItemTheme : BaseNavMenuItemTheme
         
         var headerContent = base.BuildMenuItemContent(navMenuItem, scope);
         
-        var childItemsLayoutTransform = new LayoutTransformControl()
+        var childItemsLayoutTransform = new MotionActorControl()
         {
-            Name = ChildItemsLayoutTransformPart,
+            Name        = ChildItemsLayoutTransformPart,
         };
-        TokenResourceBinder.CreateTokenBinding(childItemsLayoutTransform, LayoutTransformControl.MarginProperty, 
+        TokenResourceBinder.CreateTokenBinding(childItemsLayoutTransform, MotionActorControl.MarginProperty, 
             NavMenuTokenResourceKey.VerticalItemsPanelSpacing, BindingPriority.Template,
             (v) =>
             {
