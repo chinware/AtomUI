@@ -4,7 +4,7 @@ using Avalonia.Media.Transformation;
 
 namespace AtomUI.Controls.Utils;
 
-public class MotionTransformOptionsAnimator : InterpolatingAnimator<TransformOperations>
+internal class MotionTransformOptionsAnimator : InterpolatingAnimator<TransformOperations>
 {
     public override TransformOperations Interpolate(double progress, TransformOperations oldValue, TransformOperations newValue)
     {

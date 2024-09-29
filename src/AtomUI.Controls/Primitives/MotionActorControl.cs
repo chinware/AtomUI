@@ -2,6 +2,7 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
+using Avalonia.Media.Transformation;
 
 namespace AtomUI.Controls.Primitives;
 
@@ -9,10 +10,10 @@ public class MotionActorControl : Decorator
 {
     #region 公共属性定义
 
-    public static readonly StyledProperty<ITransform?> MotionTransformProperty =
-        AvaloniaProperty.Register<MotionActorControl, ITransform?>(nameof(MotionTransform));
+    public static readonly StyledProperty<TransformOperations?> MotionTransformProperty =
+        AvaloniaProperty.Register<MotionActorControl, TransformOperations?>(nameof(MotionTransform));
 
-    public ITransform? MotionTransform
+    public TransformOperations? MotionTransform
     {
         get => GetValue(MotionTransformProperty);
         set => SetValue(MotionTransformProperty, value);
@@ -58,6 +59,7 @@ public class MotionActorControl : Decorator
 
         ChildProperty.Changed
                      .AddClassHandler<MotionActorControl>((x, _) => x.HandleChildChanged());
+        AffectsRender<MotionActorControl>(MotionTransformProperty);
     }
 
     private void HandleLayoutTransformChanged(AvaloniaPropertyChangedEventArgs e)
@@ -108,7 +110,7 @@ public class MotionActorControl : Decorator
         }
 
         _transformation         = matrix;
-        _matrixTransform.Matrix = matrix;
+        _matrixTransform.Matrix = FilterScaleTransform(matrix);
         // New transform means re-layout is necessary
         InvalidateMeasure();
     }
@@ -126,6 +128,17 @@ public class MotionActorControl : Decorator
             Math.Round(matrix.M12, decimals),
             Math.Round(matrix.M21, decimals),
             Math.Round(matrix.M22, decimals),
+            matrix.M31,
+            matrix.M32);
+    }
+
+    private static Matrix FilterScaleTransform(Matrix matrix)
+    {
+        return new Matrix(
+            1.0,
+            matrix.M12,
+            matrix.M21,
+            1.0,
             matrix.M31,
             matrix.M32);
     }
@@ -184,7 +197,6 @@ public class MotionActorControl : Decorator
 
     protected override Size MeasureOverride(Size availableSize)
     {
-        Console.WriteLine(MotionTransform);
         if (MotionTransformRoot == null || MotionTransform == null)
         {
             return base.MeasureOverride(availableSize);

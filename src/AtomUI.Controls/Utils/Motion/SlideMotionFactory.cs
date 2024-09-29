@@ -1,17 +1,19 @@
-﻿using Avalonia;
+﻿using AtomUI.Controls.Primitives;
+using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Media;
+using Avalonia.Media.Transformation;
 using Avalonia.Styling;
 
 namespace AtomUI.Controls.Utils;
 
-public static partial class MotionFactory
+internal static partial class MotionFactory
 {
     public static MotionConfig BuildSlideUpInMotion(TimeSpan duration, Easing? easing = null,
                                                     FillMode fillMode = FillMode.None)
     {
-        easing ??= new QuinticEaseOut();
+        easing ??= new CubicEaseOut();
         var           animations      = new List<Animation>();
         RelativePoint transformOrigin = default;
         var animation = new Animation
@@ -32,36 +34,14 @@ public static partial class MotionFactory
                 Value    = 0.0
             };
             startFrame.Setters.Add(opacitySetter);
-
             var scaleYSetter = new Setter
             {
-                Property = ScaleTransform.ScaleYProperty,
-                Value    = 0.1
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildScaleYTransform(0.01) // // 不知道为啥设置成 0.0, 子元素渲染不正常
             };
             startFrame.Setters.Add(scaleYSetter);
         }
         animation.Children.Add(startFrame);
-        
-        var middleFrame = new KeyFrame
-        {
-            Cue = new Cue(0.9)
-        };
-        {
-            var opacitySetter = new Setter
-            {
-                Property = Visual.OpacityProperty,
-                Value    = 0.2
-            };
-            middleFrame.Setters.Add(opacitySetter);
-
-            var scaleYSetter = new Setter
-            {
-                Property = ScaleTransform.ScaleYProperty,
-                Value    = 0.9
-            };
-            middleFrame.Setters.Add(scaleYSetter);
-        }
-        animation.Children.Add(middleFrame);
 
         var endFrame = new KeyFrame
         {
@@ -76,8 +56,8 @@ public static partial class MotionFactory
             endFrame.Setters.Add(opacitySetter);
             var scaleYSetter = new Setter
             {
-                Property = ScaleTransform.ScaleYProperty,
-                Value    = 1.0
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildScaleYTransform(1.0)
             };
             endFrame.Setters.Add(scaleYSetter);
         }
@@ -91,7 +71,7 @@ public static partial class MotionFactory
     public static MotionConfig BuildSlideUpOutMotion(TimeSpan duration, Easing? easing = null,
                                                      FillMode fillMode = FillMode.None)
     {
-        easing ??= new QuinticEaseIn();
+        easing ??= new CubicEaseIn();
         var           animations      = new List<Animation>();
         RelativePoint transformOrigin = default;
         var animation = new Animation
@@ -115,33 +95,12 @@ public static partial class MotionFactory
 
             var scaleYSetter = new Setter
             {
-                Property = ScaleTransform.ScaleYProperty,
-                Value    = 1.0
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildScaleYTransform(1.0)
             };
             startFrame.Setters.Add(scaleYSetter);
         }
         animation.Children.Add(startFrame);
-        
-        var middleFrame = new KeyFrame
-        {
-            Cue = new Cue(0.9)
-        };
-        {
-            var opacitySetter = new Setter
-            {
-                Property = Visual.OpacityProperty,
-                Value    = 0.2
-            };
-            middleFrame.Setters.Add(opacitySetter);
-
-            var scaleYSetter = new Setter
-            {
-                Property = ScaleTransform.ScaleYProperty,
-                Value    = 0.9
-            };
-            middleFrame.Setters.Add(scaleYSetter);
-        }
-        animation.Children.Add(middleFrame);
 
         var endFrame = new KeyFrame
         {
@@ -156,8 +115,8 @@ public static partial class MotionFactory
             endFrame.Setters.Add(opacitySetter);
             var scaleYSetter = new Setter
             {
-                Property = ScaleTransform.ScaleYProperty,
-                Value    = 0.0
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildScaleYTransform(0.0)
             };
             endFrame.Setters.Add(scaleYSetter);
         }

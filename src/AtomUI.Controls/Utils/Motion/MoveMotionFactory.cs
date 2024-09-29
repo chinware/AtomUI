@@ -6,7 +6,7 @@ using Avalonia.Styling;
 
 namespace AtomUI.Controls.Utils;
 
-public static partial class MotionFactory
+internal static partial class MotionFactory
 {
     public static MotionConfig BuildMoveDownInMotion(double offset, TimeSpan duration, Easing? easing = null,
                                                      FillMode fillMode = FillMode.None)
