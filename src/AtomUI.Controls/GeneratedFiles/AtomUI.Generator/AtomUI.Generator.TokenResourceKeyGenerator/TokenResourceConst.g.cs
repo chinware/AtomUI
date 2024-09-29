@@ -586,6 +586,8 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey LeftMargin = new TokenResourceKey("Timeline.LeftMargin", "AtomUI.Token");
         public static readonly TokenResourceKey LastItemContentMinHeight = new TokenResourceKey("Timeline.LastItemContentMinHeight", "AtomUI.Token");
         public static readonly TokenResourceKey FontSize = new TokenResourceKey("Timeline.FontSize", "AtomUI.Token");
+        public static readonly TokenResourceKey ItemHeadSize = new TokenResourceKey("Timeline.ItemHeadSize", "AtomUI.Token");
+        public static readonly TokenResourceKey CustomHeadSize = new TokenResourceKey("Timeline.CustomHeadSize", "AtomUI.Token");
     }
 
     public static class TimePickerTokenResourceKey

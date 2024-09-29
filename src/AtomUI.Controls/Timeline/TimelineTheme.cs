@@ -4,7 +4,6 @@ using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
-using Avalonia.Layout;
 using Avalonia.Styling;
 
 namespace AtomUI.Controls;
@@ -16,8 +15,7 @@ internal class TimelineTheme : BaseControlTheme
    public const string ScrollViewerPart = "PART_ScrollViewer";
    public const string ItemsPresenterPart = "PART_ItemsPresenter";
 
-   public TimelineTheme() : this(typeof(Timeline)) { }
-   protected TimelineTheme(Type targetType) : base(targetType) { }
+   public TimelineTheme() : base(typeof(Timeline)) { }
 
    protected override IControlTemplate BuildControlTemplate()
    {

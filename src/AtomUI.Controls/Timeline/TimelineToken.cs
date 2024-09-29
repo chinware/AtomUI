@@ -1,4 +1,3 @@
-using AtomUI.Theme.Styling;
 using AtomUI.Theme.TokenSystem;
 using Avalonia;
 using Avalonia.Media;
@@ -71,6 +70,15 @@ internal class TimelineToken : AbstractControlDesignToken
    /// </summary>
    public double FontSize { get; set; }
    
+   /// <summary>
+   /// item head size
+   /// </summary>
+   public double ItemHeadSize { get; set; }
+   
+   /// <summary>
+   /// custom head size
+   /// </summary>
+   public double CustomHeadSize { get; set; }
    
    internal override void CalculateFromAlias()
    {
@@ -89,8 +97,9 @@ internal class TimelineToken : AbstractControlDesignToken
       RightMargin = new Thickness(0, 0, _globalToken.MarginSM, 0);
 
       LastItemContentMinHeight = _globalToken.HeightToken.ControlHeightLG * 1.2;
-      FontSize = _globalToken.FontToken.FontSize;
-      
+      FontSize                 = _globalToken.FontToken.FontSize;
+      ItemHeadSize             = 10;
+      CustomHeadSize           = _globalToken.FontToken.FontSize;
 
    }
 }

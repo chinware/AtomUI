@@ -11,12 +11,19 @@ using Avalonia.Layout;
 
 namespace AtomUI.Controls;
 
+public enum TimeLineMode
+{
+    Left,
+    Right,
+    Alternate
+}
+
 public class Timeline : ItemsControl
 {
     #region 公共属性定义
 
-    public static readonly StyledProperty<string> ModeProperty =
-        AvaloniaProperty.Register<Timeline, string>(nameof(Mode), "left");
+    public static readonly StyledProperty<TimeLineMode> ModeProperty =
+        AvaloniaProperty.Register<Timeline, TimeLineMode>(nameof(Mode), TimeLineMode.Left);
 
     public static readonly StyledProperty<string> PendingProperty =
         AvaloniaProperty.Register<Timeline, string>(nameof(Pending), "");
@@ -27,7 +34,7 @@ public class Timeline : ItemsControl
     public static readonly StyledProperty<PathIcon?> PendingIconProperty =
         AvaloniaProperty.Register<Alert, PathIcon?>(nameof(PendingIcon));
 
-    public string Mode
+    public TimeLineMode Mode
     {
         get => GetValue(ModeProperty);
         set => SetValue(ModeProperty, value);
@@ -52,54 +59,11 @@ public class Timeline : ItemsControl
     }
 
     #endregion
-
-    public Timeline()
-    {
-        if (Reverse)
-        {
-            OnReversePropertyChanged();
-        }
-    }
-
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-
-        if (!String.IsNullOrEmpty(Pending))
-        {
-            var item      = new TimelineItem();
-            var textBlock = new TextBlock();
-
-            if (PendingIcon is null)
-            {
-                PendingIcon = new PathIcon
-                {
-                    Kind                = "LoadingOutlined",
-                    Width               = 10,
-                    Height              = 10,
-                    LoadingAnimation    = IconAnimation.Spin,
-                    VerticalAlignment   = VerticalAlignment.Top,
-                    HorizontalAlignment = HorizontalAlignment.Center,
-                };
-            }
-
-            item.DotIcon   = PendingIcon;
-            item.IsPending = true;
-            item.Content   = textBlock;
-            BindUtils.RelayBind(this, PendingProperty, textBlock, TextBlock.TextProperty);
-
-            Items.Add(item);
-        }
-
-        if (Reverse)
-        {
-            OnReversePropertyChanged();
-        }
-    }
+    
+    private TimelineItem? _pendingItem;
 
     static Timeline()
     {
-        ReverseProperty.Changed.AddClassHandler<Timeline>((x, e) => x.OnReversePropertyChanged());
     }
 
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
@@ -117,23 +81,9 @@ public class Timeline : ItemsControl
         base.PrepareContainerForItemOverride(element, item, index);
         if (element is TimelineItem timelineItem)
         {
-            timelineItem.Index   = index;
-            timelineItem.Mode    = Mode;
-            timelineItem.IsLast  = Items.Count - 1 == index;
-            timelineItem.IsFirst = index == 0;
             BindUtils.RelayBind(this, ModeProperty, timelineItem, TimelineItem.ModeProperty);
             BindUtils.RelayBind(this, ReverseProperty, timelineItem, TimelineItem.ReverseProperty);
-            foreach (var child in Items)
-            {
-                if (child is TimelineItem otherItem)
-                {
-                    if (!string.IsNullOrEmpty(otherItem.Label))
-                    {
-                        timelineItem.HasLabel = true;
-                        break;
-                    }
-                }
-            }
+            BindUtils.RelayBind(this, ItemCountProperty, timelineItem, TimelineItem.CountProperty);
         }
     }
 
@@ -141,7 +91,10 @@ public class Timeline : ItemsControl
     {
         base.OnApplyTemplate(e);
 
-        TokenResourceBinder.CreateGlobalResourceBinding(this, BorderThicknessProperty,
+        OnReversePropertyChanged();
+        addPendingItem();
+
+        TokenResourceBinder.CreateGlobalTokenBinding(this, BorderThicknessProperty,
             GlobalTokenResourceKey.BorderThickness,
             BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this));
@@ -154,6 +107,73 @@ public class Timeline : ItemsControl
         {
             OnReversePropertyChanged();
         }
+        
+        if (change.Property == ItemCountProperty && VisualRoot is not null)
+        {
+            OnItemCountPropertyChanged();
+        }
+        
+        if (change.Property == PendingProperty && VisualRoot is not null)
+        {
+            OnPendingPropertyChanged();
+        }
+        
+    }
+    
+    private void OnPendingPropertyChanged()
+    {
+        foreach (var item in Items)
+        {
+            if (item is TimelineItem timelineItem && timelineItem.IsPending)
+            {
+                Items.Remove(item);
+                break;
+            }
+        }
+        addPendingItem();
+    }
+
+    private void addPendingItem()
+    {
+        if (!String.IsNullOrEmpty(Pending))
+        {
+            if (_pendingItem is null)
+            {
+                _pendingItem     = new TimelineItem();
+                var textBlock = new TextBlock();
+
+                if (PendingIcon is null)
+                {
+                    PendingIcon = new PathIcon
+                    {
+                        Kind                = "LoadingOutlined",
+                        Width               = 10,
+                        Height              = 10,
+                        LoadingAnimation    = IconAnimation.Spin,
+                        VerticalAlignment   = VerticalAlignment.Top,
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                    };
+                }
+
+                _pendingItem.DotIcon   = PendingIcon;
+                _pendingItem.IsPending = true;
+                _pendingItem.Content   = textBlock;
+                BindUtils.RelayBind(this, PendingProperty, textBlock, TextBlock.TextProperty);   
+            }
+
+            if (Reverse)
+            {
+                Items.Insert(0, _pendingItem);
+            }
+            else
+            {
+                Items.Add(_pendingItem);
+            }
+        }
+    }
+    
+    private void OnItemCountPropertyChanged()
+    {
     }
 
     private void OnReversePropertyChanged()
@@ -164,6 +184,18 @@ public class Timeline : ItemsControl
         foreach (var item in items)
         {
             Items.Add(item);
+            if (item is TimelineItem timelineItem)
+            {
+                timelineItem.Index = Items.IndexOf(item);
+            }
+        }
+        foreach (var item in items)
+        {
+            if (item is TimelineItem timelineItem)
+            {
+                timelineItem.Index = Items.IndexOf(item);
+            }
         }
     }
+    
 }

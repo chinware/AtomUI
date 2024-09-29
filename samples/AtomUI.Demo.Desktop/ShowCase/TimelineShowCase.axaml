@@ -23,7 +23,7 @@
                 </atom:TimelineItem>
                 <atom:TimelineItem Color="red">
                     <TextBlock>
-                        2024-10-01 Release of the 1.0 Preview Version
+                        2024-10-01 Release of the 0.0.1 Preview Version
                     </TextBlock>
                 </atom:TimelineItem>
             </atom:Timeline>
@@ -60,27 +60,32 @@
         </desktop:ShowCaseItem>
 
         <desktop:ShowCaseItem Description="When the timeline is incomplete and ongoing, put a ghost node at last. Set pending as truthy value to enable displaying pending item. You can customize the pending content by passing a React Element. Meanwhile, pendingDot={a React Element} is used to customize the dot of the pending item. reverse={true} is used for reversing nodes." Title="Last node and Reversing">
-            <atom:Timeline Pending="Recording..." Reverse="True">
-                <atom:TimelineItem Label="2024-01-01">
-                    <TextBlock>
-                        2024-01-01 AtomUI Officially Initiated. 1
-                    </TextBlock>
-                </atom:TimelineItem>
-                <atom:TimelineItem Label="2024-08-12">
-                    <TextBlock>
-                        2024-01-01 AtomUI Officially Initiated. 2
-                    </TextBlock>
-                </atom:TimelineItem>
-                <atom:TimelineItem Label="2024-10-01">
-                    <TextBlock>
-                        2024-01-01 AtomUI Officially Initiated. 3
-                    </TextBlock>
-                </atom:TimelineItem>
-            </atom:Timeline>
+            <StackPanel>
+                <atom:Timeline x:Name="ReverseTimeline" Pending="Recording..." Reverse="True">
+                    <atom:TimelineItem Label="2024-01-01">
+                        <TextBlock>
+                            2024-01-01 AtomUI Officially Initiated. 1
+                        </TextBlock>
+                    </atom:TimelineItem>
+                    <atom:TimelineItem Label="2024-08-12">
+                        <TextBlock>
+                            2024-01-01 AtomUI Officially Initiated. 2
+                        </TextBlock>
+                    </atom:TimelineItem>
+                    <atom:TimelineItem Label="2024-10-01">
+                        <TextBlock>
+                            2024-01-01 AtomUI Officially Initiated. 3
+                        </TextBlock>
+                    </atom:TimelineItem>
+                </atom:Timeline>
+                <DockPanel>
+                    <atom:Button ButtonType="Primary" x:Name="ReverseButton">Toggle Reverse</atom:Button>
+                </DockPanel>
+            </StackPanel>
         </desktop:ShowCaseItem>
 
         <desktop:ShowCaseItem Description="Alternate timeline." Title="Alternate">
-            <atom:Timeline Mode="alternate">
+            <atom:Timeline Mode="Alternate">
                 <atom:TimelineItem Label="2024-01-01">
                     <TextBlock>
                         2024-01-01 AtomUI Officially Initiated
@@ -96,7 +101,7 @@
                         2024-01-01 AtomUI Officially Initiated
                     </TextBlock>
                 </atom:TimelineItem>
-                <atom:TimelineItem DotIcon="{atom:IconProvider Kind=ClockCircleOutlined, NormalFilledColor=LightBlue}" Label="2024-01-01">
+                <atom:TimelineItem DotIcon="{atom:IconProvider Kind=ClockCircleOutlined, NormalFilledColor=Red}" Label="2024-01-01">
                     <TextBlock>
                         2024-01-01 AtomUI Officially Initiated
                     </TextBlock>
@@ -105,32 +110,39 @@
         </desktop:ShowCaseItem>
 
         <desktop:ShowCaseItem Description="Use label show time alone." Title="Label">
-            <atom:Timeline Mode="alternate">
-                <atom:TimelineItem Label="2024-01-01">
-                    <TextBlock>
-                        2024-01-01 AtomUI Officially Initiated
-                    </TextBlock>
-                </atom:TimelineItem>
-                <atom:TimelineItem>
-                    <TextBlock>
-                        2024-01-01 AtomUI Officially Initiated
-                    </TextBlock>
-                </atom:TimelineItem>
-                <atom:TimelineItem Label="2024-01-01">
-                    <TextBlock>
-                        2024-01-01 AtomUI Officially Initiated
-                    </TextBlock>
-                </atom:TimelineItem>
-                <atom:TimelineItem Label="2024-01-01">
-                    <TextBlock>
-                        2024-01-01 AtomUI Officially Initiated
-                    </TextBlock>
-                </atom:TimelineItem>
-            </atom:Timeline>
+            <StackPanel>
+                <WrapPanel Orientation="Horizontal" Margin="0, 0, 0, 20">
+                    <atom:RadioButton x:Name="ModeLeft" IsChecked="True">Left</atom:RadioButton>
+                    <atom:RadioButton x:Name="ModeRight">Right</atom:RadioButton>
+                    <atom:RadioButton x:Name="ModeAlternate">Alternate</atom:RadioButton>
+                </WrapPanel>
+                <atom:Timeline Mode="Left" x:Name="LabelTimeline">
+                    <atom:TimelineItem Label="2024-01-01">
+                        <TextBlock>
+                            2024-01-01 AtomUI Officially Initiated
+                        </TextBlock>
+                    </atom:TimelineItem>
+                    <atom:TimelineItem>
+                        <TextBlock>
+                            2024-01-01 AtomUI Officially Initiated
+                        </TextBlock>
+                    </atom:TimelineItem>
+                    <atom:TimelineItem Label="2024-01-01">
+                        <TextBlock>
+                            2024-01-01 AtomUI Officially Initiated
+                        </TextBlock>
+                    </atom:TimelineItem>
+                    <atom:TimelineItem Label="2024-01-01">
+                        <TextBlock>
+                            2024-01-01 AtomUI Officially Initiated
+                        </TextBlock>
+                    </atom:TimelineItem>
+                </atom:Timeline>
+            </StackPanel>
         </desktop:ShowCaseItem>
 
         <desktop:ShowCaseItem Description="Right alternate timeline." Title="Right alternate">
-            <atom:Timeline Mode="right">
+            <atom:Timeline Mode="Right">
                 <atom:TimelineItem>
                     <TextBlock>
                         2024-01-01 AtomUI Officially Initiated

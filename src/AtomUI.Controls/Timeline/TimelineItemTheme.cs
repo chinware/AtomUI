@@ -29,37 +29,39 @@ internal class TimelineItemTheme : BaseControlTheme
     {
     }
 
-    protected TimelineItemTheme(Type targetType) : base(targetType)
-    {
-    }
-
     protected override IControlTemplate BuildControlTemplate()
     {
         return new FuncControlTemplate<TimelineItem>((timelineItem, scope) =>
         {
-            var columnDefinition = CalculateGridColumn(timelineItem);
             var grid = new Grid()
             {
-                Name              = GridPart,
-                ColumnDefinitions = columnDefinition,
+                Name = GridPart,
+                ColumnDefinitions = new ColumnDefinitions()
+                {
+                    new ColumnDefinition(GridLength.Star),
+                    new ColumnDefinition(new GridLength(10)),
+                    new ColumnDefinition(GridLength.Star)
+                },
                 RowDefinitions =
                 {
                     new RowDefinition(GridLength.Star),
                     new RowDefinition(GridLength.Star),
                 },
             };
+            grid.RegisterInNameScope(scope);
 
             var labelBlock = new TextBlock()
             {
-                Name                = LabelPart,
-                VerticalAlignment   = VerticalAlignment.Top,
-                HorizontalAlignment = timelineItem.LabelTextAlign,
+                Name              = LabelPart,
+                VerticalAlignment = VerticalAlignment.Top,
             };
+            labelBlock.RegisterInNameScope(scope);
 
             CreateTemplateParentBinding(labelBlock, TextBlock.TextProperty, TimelineItem.LabelProperty);
-            CreateTemplateParentBinding(labelBlock, TextBlock.IsVisibleProperty, TimelineItem.HasLabelProperty);
+            CreateTemplateParentBinding(labelBlock, Visual.IsVisibleProperty, TimelineItem.HasLabelProperty);
+            CreateTemplateParentBinding(labelBlock, Layoutable.HorizontalAlignmentProperty,
+                TimelineItem.LabelTextAlignProperty);
 
-            Grid.SetColumn(labelBlock, timelineItem.LabelIndex);
             grid.Children.Add(labelBlock);
 
             var splitPanel = new DockPanel()
@@ -91,19 +93,19 @@ internal class TimelineItemTheme : BaseControlTheme
             border.Child = verticalDashedLine;
 
             splitPanel.Children.Add(border);
-            Grid.SetColumn(splitPanel, timelineItem.SplitIndex);
             grid.Children.Add(splitPanel);
 
             var contentPresenter = new ContentPresenter()
             {
-                Name                = ItemsContentPresenterPart,
-                HorizontalAlignment = timelineItem.ContentTextAlign,
+                Name = ItemsContentPresenterPart,
             };
             contentPresenter.RegisterInNameScope(scope);
+
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty,
                 ContentControl.ContentProperty);
+            CreateTemplateParentBinding(contentPresenter, Layoutable.HorizontalAlignmentProperty,
+                TimelineItem.ContentTextAlignProperty);
 
-            Grid.SetColumn(contentPresenter, timelineItem.ContentIndex);
             grid.Children.Add(contentPresenter);
 
             return grid;
@@ -114,9 +116,9 @@ internal class TimelineItemTheme : BaseControlTheme
     {
         if (timelineItem.DotIcon is not null)
         {
-            timelineItem.DotIcon.Width  = 10;
-            timelineItem.DotIcon.Height = 10;
-            timelineItem.DotIcon.Name   = DotPart;
+            timelineItem.DotIcon.Width             = 10;
+            timelineItem.DotIcon.Height            = 10;
+            timelineItem.DotIcon.Name              = DotPart;
             timelineItem.DotIcon.RegisterInNameScope(scope);
             DockPanel.SetDock(timelineItem.DotIcon, Dock.Top);
             panel.Children.Add(timelineItem.DotIcon);
@@ -131,96 +133,9 @@ internal class TimelineItemTheme : BaseControlTheme
                 BorderThickness = new Thickness(3),
                 Name            = SplitHeadPart,
             };
+            splitHead.RegisterInNameScope(scope);
             DockPanel.SetDock(splitHead, Dock.Top);
             panel.Children.Add(splitHead);
-        }
-
-        var dotBorderStyle = new Style(selector => selector.Nesting().Template().Name(SplitHeadPart));
-        var dotIconStyle = new Style(selector =>
-            selector.Nesting().Not(x => x.PropertyEquals(TimelineItem.DotIconProperty, null)).Template().Name(DotPart));
-
-        if (timelineItem.Color.StartsWith("#"))
-        {
-            try
-            {
-                var color = Color.Parse(timelineItem.Color);
-                var brush = new SolidColorBrush(color);
-                dotBorderStyle.Add(ContentPresenter.BorderBrushProperty, brush);
-                dotIconStyle.Add(PathIcon.NormalFilledBrushProperty, brush);
-            }
-            catch (Exception)
-            {
-                dotBorderStyle.Add(ContentPresenter.BorderBrushProperty,
-                    GlobalTokenResourceKey.ColorPrimary);
-            }
-        }
-        else
-        {
-            switch (timelineItem.Color)
-            {
-                case "blue":
-                    dotBorderStyle.Add(ContentPresenter.BorderBrushProperty,
-                        GlobalTokenResourceKey.ColorPrimary);
-                    dotIconStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorPrimary);
-                    break;
-                case "green":
-                    dotBorderStyle.Add(ContentPresenter.BorderBrushProperty,
-                        GlobalTokenResourceKey.ColorSuccess);
-                    dotIconStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorSuccess);
-                    break;
-                case "red":
-                    dotBorderStyle.Add(ContentPresenter.BorderBrushProperty,
-                        GlobalTokenResourceKey.ColorError);
-                    dotIconStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorError);
-                    break;
-                case "gray":
-                    dotBorderStyle.Add(ContentPresenter.BorderBrushProperty,
-                        GlobalTokenResourceKey.ColorTextDisabled);
-                    dotIconStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorTextDisabled);
-                    break;
-                default:
-                    dotBorderStyle.Add(ContentPresenter.BorderBrushProperty,
-                        GlobalTokenResourceKey.ColorPrimary);
-                    dotIconStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorPrimary);
-                    break;
-            }
-        }
-
-        dotBorderStyle.Add(ContentPresenter.BackgroundProperty, TimelineTokenResourceKey.DotBg);
-        Add(dotBorderStyle);
-        if (timelineItem.DotIcon?.NormalFilledBrush is null)
-        {
-            Add(dotIconStyle);
-        }
-    }
-
-    private ColumnDefinitions CalculateGridColumn(TimelineItem timelineItem)
-    {
-        if (timelineItem.HasLabel || timelineItem.Mode == "alternate")
-        {
-            return new ColumnDefinitions()
-            {
-                new ColumnDefinition(GridLength.Star),
-                new ColumnDefinition(new GridLength(10)),
-                new ColumnDefinition(GridLength.Star)
-            };
-        }
-
-        if (timelineItem.LabelIndex == 0)
-        {
-            return new ColumnDefinitions()
-            {
-                new ColumnDefinition(new GridLength(10)),
-                new ColumnDefinition(GridLength.Star)
-            };
-        }
-        else
-        {
-            return new ColumnDefinitions()
-            {
-                new ColumnDefinition(GridLength.Star),
-                new ColumnDefinition(new GridLength(10))
-            };
         }
     }
 
@@ -230,14 +145,14 @@ internal class TimelineItemTheme : BaseControlTheme
         var splitLineborderStyle = new Style(selector => selector.Nesting().Template().Name(SplitLineBorderPart));
         splitLineborderStyle.Add(Layoutable.WidthProperty, TimelineTokenResourceKey.TailWidth);
         Add(splitLineborderStyle);
-
+        
         var lineStyle = new Style(selector => selector.Nesting().Template().Child().OfType<Rectangle>());
         lineStyle.Add(Shape.StrokeProperty, TimelineTokenResourceKey.TailColor);
         lineStyle.Add(Layoutable.WidthProperty, TimelineTokenResourceKey.TailWidth);
         lineStyle.Add(Shape.StrokeThicknessProperty, TimelineTokenResourceKey.TailWidth);
 
         Add(lineStyle);
-
+        
         // 内容样式
         var contentPresenterStyle =
             new Style(selector => selector.Nesting().Template().Name(ItemsContentPresenterPart));
@@ -252,8 +167,8 @@ internal class TimelineItemTheme : BaseControlTheme
             new Style(selector => selector.Nesting().Template().Name(ItemsContentPresenterPart));
         contentPresenterRightStyle.Add(Layoutable.MarginProperty, TimelineTokenResourceKey.LeftMargin);
 
-        var contentLeftStyle  = new Style(selector => selector.Nesting().Class(TimelineItem.ContentLeft));
-        var contentRightStyle = new Style(selector => selector.Nesting().Not(x => x.Class(TimelineItem.ContentLeft)));
+        var contentLeftStyle  = new Style(selector => selector.Nesting().Class(TimelineItem.ContentLeftPC));
+        var contentRightStyle = new Style(selector => selector.Nesting().Not(x => x.Class(TimelineItem.ContentLeftPC)));
 
         contentLeftStyle.Add(contentPresenterLeftStyle);
         contentRightStyle.Add(contentPresenterRightStyle);
@@ -267,9 +182,9 @@ internal class TimelineItemTheme : BaseControlTheme
         labelStyle.Add(TextBlock.FontSizeProperty, TimelineTokenResourceKey.FontSize);
 
         var labelLeftStyle = new Style(selector =>
-            selector.Nesting().Class(TimelineItem.LabelLeft).Template().Name(LabelPart));
+            selector.Nesting().Class(TimelineItem.LabelLeftPC).Template().Name(LabelPart));
         var labelRightStyle = new Style(selector =>
-            selector.Nesting().Not(x => x.Class(TimelineItem.LabelLeft)).Template().Name(LabelPart));
+            selector.Nesting().Not(x => x.Class(TimelineItem.LabelLeftPC)).Template().Name(LabelPart));
         labelLeftStyle.Add(TextBlock.PaddingProperty, TimelineTokenResourceKey.RightMargin);
         labelRightStyle.Add(TextBlock.PaddingProperty, TimelineTokenResourceKey.LeftMargin);
 
