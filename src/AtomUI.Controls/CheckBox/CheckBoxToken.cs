@@ -1,4 +1,5 @@
 using AtomUI.Theme.TokenSystem;
+using Avalonia;
 
 namespace AtomUI.Controls;
 
@@ -11,18 +12,18 @@ internal class CheckBoxToken : AbstractControlDesignToken
         : base(ID)
     {
     }
-
-    /// <summary>
-    /// 复选框标志的大小
-    /// </summary>
+    
     public double CheckIndicatorSize { get; set; }
 
     public double IndicatorTristateMarkSize { get; set; }
+    
+    public Thickness TextMargin { get; set; }
 
     internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
         CheckIndicatorSize        = _globalToken.ControlInteractiveSize;
-        IndicatorTristateMarkSize = _globalToken.FontToken.FontSizeLG / 2;
+        IndicatorTristateMarkSize = _globalToken.FontSizeLG / 2;
+        TextMargin                = new Thickness(_globalToken.MarginXXS, 0, 0, 0);
     }
 }

@@ -6,6 +6,7 @@ namespace AtomUI.Generator;
 
 public class ControlTokenPropertyWalker : CSharpSyntaxWalker
 {
+    public const string NotTokenDefinitionAttribute = "NotTokenDefinition";
     public ControlTokenInfo ControlTokenInfo { get; }
     private readonly SemanticModel _semanticModel;
     public string? TokenResourceCatalog { get; set; }
@@ -18,7 +19,13 @@ public class ControlTokenPropertyWalker : CSharpSyntaxWalker
 
     public override void VisitPropertyDeclaration(PropertyDeclarationSyntax node)
     {
-        ControlTokenInfo.Tokens.Add(new TokenName(node.Identifier.Text, TokenResourceCatalog!));
+        var isSkip = node.AttributeLists
+                         .SelectMany(attrList => attrList.Attributes)
+                         .Any(attr => attr.Name.ToString() == NotTokenDefinitionAttribute);
+        if (!isSkip)
+        {
+            ControlTokenInfo.Tokens.Add(new TokenName(node.Identifier.Text, TokenResourceCatalog!));
+        }
     }
 
     public override void VisitClassDeclaration(ClassDeclarationSyntax node)

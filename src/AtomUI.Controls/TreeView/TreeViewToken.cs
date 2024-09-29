@@ -71,12 +71,12 @@ internal class TreeViewToken : AbstractControlDesignToken
     internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
-        TitleHeight    = _globalToken.HeightToken.ControlHeightSM;
+        TitleHeight    = _globalToken.ControlHeightSM;
         NodeHoverBg    = _globalToken.ControlItemBgHover;
         NodeSelectedBg = _globalToken.ControlItemBgActive;
 
         DirectoryNodeSelectedColor = _globalToken.ColorTextLightSolid;
-        DirectoryNodeSelectedBg    = _globalToken.ColorToken.ColorPrimaryToken.ColorPrimary;
+        DirectoryNodeSelectedBg    = _globalToken.ColorPrimary;
 
         TreeItemMargin         = new Thickness(0, 0, 0, _globalToken.PaddingXS / 2);
         TreeItemHeaderPadding  = new Thickness(_globalToken.PaddingXS / 2, 0);

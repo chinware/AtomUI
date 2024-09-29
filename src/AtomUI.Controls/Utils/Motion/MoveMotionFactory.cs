@@ -1,4 +1,5 @@
-﻿using Avalonia;
+﻿using AtomUI.Controls.Primitives;
+using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Media;
@@ -6,13 +7,15 @@ using Avalonia.Styling;
 
 namespace AtomUI.Controls.Utils;
 
-public static partial class MotionFactory
+internal static partial class MotionFactory
 {
-    public static MotionConfig BuildMoveDownInMotion(double offset, TimeSpan duration, Easing? easing = null,
+    public static MotionConfig BuildMoveDownInMotion(double offset, 
+                                                     TimeSpan duration, 
+                                                     Easing? easing = null,
                                                      FillMode fillMode = FillMode.None)
     {
         easing ??= new QuinticEaseOut();
-        var           animations      = new List<IAnimation>();
+        var           animations      = new List<Animation>();
         RelativePoint transformOrigin = default;
         var animation = new Animation
         {
@@ -33,25 +36,18 @@ public static partial class MotionFactory
             };
             startFrame.Setters.Add(opacitySetter);
 
-            var translateYSetter = new Setter
+            var transformSetter = new Setter
             {
-                Property = TranslateTransform.YProperty,
-                Value    = offset
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildTranslateScaleAndTransform(1.0, 0.01, 0.0, offset)
             };
-            startFrame.Setters.Add(translateYSetter);
-
-            var scaleYSetter = new Setter
-            {
-                Property = ScaleTransform.ScaleYProperty,
-                Value    = 0.0
-            };
-            startFrame.Setters.Add(scaleYSetter);
+            startFrame.Setters.Add(transformSetter);
         }
         animation.Children.Add(startFrame);
 
         var middleFrame = new KeyFrame
         {
-            Cue = new Cue(0.6)
+            Cue = new Cue(0.8)
         };
         {
             var opacitySetter = new Setter
@@ -60,18 +56,13 @@ public static partial class MotionFactory
                 Value    = 0.1
             };
             middleFrame.Setters.Add(opacitySetter);
-            var translateYSetter = new Setter
+
+            var transformSetter = new Setter
             {
-                Property = TranslateTransform.YProperty,
-                Value    = offset / 4
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, offset / 4)
             };
-            middleFrame.Setters.Add(translateYSetter);
-            var scaleYSetter = new Setter
-            {
-                Property = ScaleTransform.ScaleYProperty,
-                Value    = 1.0
-            };
-            middleFrame.Setters.Add(scaleYSetter);
+            middleFrame.Setters.Add(transformSetter);
         }
         animation.Children.Add(middleFrame);
 
@@ -86,19 +77,13 @@ public static partial class MotionFactory
                 Value    = 1.0
             };
             endFrame.Setters.Add(opacitySetter);
-            var translateYSetter = new Setter
-            {
-                Property = TranslateTransform.YProperty,
-                Value    = 0.0
-            };
-            endFrame.Setters.Add(translateYSetter);
 
-            var scaleYSetter = new Setter
+            var transformSetter = new Setter
             {
-                Property = ScaleTransform.ScaleYProperty,
-                Value    = 1.0
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0)
             };
-            endFrame.Setters.Add(scaleYSetter);
+            endFrame.Setters.Add(transformSetter);
         }
         animation.Children.Add(endFrame);
         transformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
@@ -107,11 +92,13 @@ public static partial class MotionFactory
         return new MotionConfig(transformOrigin, animations);
     }
 
-    public static MotionConfig BuildMoveDownOutMotion(double offset, TimeSpan duration, Easing? easing = null,
+    public static MotionConfig BuildMoveDownOutMotion(double offset, 
+                                                      TimeSpan duration, 
+                                                      Easing? easing = null,
                                                       FillMode fillMode = FillMode.None)
     {
         easing ??= new QuinticEaseIn();
-        var           animations      = new List<IAnimation>();
+        var           animations      = new List<Animation>();
         RelativePoint transformOrigin = default;
         var animation = new Animation
         {
@@ -132,45 +119,34 @@ public static partial class MotionFactory
             };
             startFrame.Setters.Add(opacitySetter);
 
-            var translateYSetter = new Setter
+            var transformSetter = new Setter
             {
-                Property = TranslateTransform.YProperty,
-                Value    = 0.0
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0)
             };
-            startFrame.Setters.Add(translateYSetter);
 
-            var scaleYSetter = new Setter
-            {
-                Property = ScaleTransform.ScaleYProperty,
-                Value    = 1.0
-            };
-            startFrame.Setters.Add(scaleYSetter);
+            startFrame.Setters.Add(transformSetter);
         }
         animation.Children.Add(startFrame);
 
         var middleFrame = new KeyFrame
         {
-            Cue = new Cue(0.35)
+            Cue = new Cue(0.8)
         };
         {
             var opacitySetter = new Setter
             {
                 Property = Visual.OpacityProperty,
-                Value    = 0.0
+                Value    = 0.1
             };
             middleFrame.Setters.Add(opacitySetter);
-            var translateYSetter = new Setter
+
+            var transformSetter = new Setter
             {
-                Property = TranslateTransform.YProperty,
-                Value    = offset / 2
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, offset / 4)
             };
-            middleFrame.Setters.Add(translateYSetter);
-            var scaleYSetter = new Setter
-            {
-                Property = ScaleTransform.ScaleYProperty,
-                Value    = 1.0
-            };
-            middleFrame.Setters.Add(scaleYSetter);
+            middleFrame.Setters.Add(transformSetter);
         }
         animation.Children.Add(middleFrame);
 
@@ -185,19 +161,13 @@ public static partial class MotionFactory
                 Value    = 0.0
             };
             endFrame.Setters.Add(opacitySetter);
-            var translateYSetter = new Setter
-            {
-                Property = TranslateTransform.YProperty,
-                Value    = offset
-            };
-            endFrame.Setters.Add(translateYSetter);
 
-            var scaleYSetter = new Setter
+            var transformSetter = new Setter
             {
-                Property = ScaleTransform.ScaleYProperty,
-                Value    = 0.0
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildTranslateScaleAndTransform(1.0, 0.0, 0.0, offset)
             };
-            endFrame.Setters.Add(scaleYSetter);
+            endFrame.Setters.Add(transformSetter);
         }
         animation.Children.Add(endFrame);
         transformOrigin = new RelativePoint(0, 0, RelativeUnit.Relative);
@@ -210,7 +180,7 @@ public static partial class MotionFactory
                                                    FillMode fillMode = FillMode.None)
     {
         easing ??= new QuinticEaseOut();
-        var           animations      = new List<IAnimation>();
+        var           animations      = new List<Animation>();
         RelativePoint transformOrigin = default;
         var animation = new Animation
         {
@@ -231,25 +201,18 @@ public static partial class MotionFactory
             };
             startFrame.Setters.Add(opacitySetter);
 
-            var translateYSetter = new Setter
+            var transformSetter = new Setter
             {
-                Property = TranslateTransform.YProperty,
-                Value    = -offset
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildTranslateScaleAndTransform(1.0, 0.01, 0.0, -offset)
             };
-            startFrame.Setters.Add(translateYSetter);
-
-            var scaleYSetter = new Setter
-            {
-                Property = ScaleTransform.ScaleYProperty,
-                Value    = 0.0
-            };
-            startFrame.Setters.Add(scaleYSetter);
+            startFrame.Setters.Add(transformSetter);
         }
         animation.Children.Add(startFrame);
 
         var middleFrame = new KeyFrame
         {
-            Cue = new Cue(0.6)
+            Cue = new Cue(0.8)
         };
         {
             var opacitySetter = new Setter
@@ -258,18 +221,13 @@ public static partial class MotionFactory
                 Value    = 0.1
             };
             middleFrame.Setters.Add(opacitySetter);
-            var translateYSetter = new Setter
+
+            var transformSetter = new Setter
             {
-                Property = TranslateTransform.YProperty,
-                Value    = -offset / 4
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, -offset / 4)
             };
-            middleFrame.Setters.Add(translateYSetter);
-            var scaleYSetter = new Setter
-            {
-                Property = ScaleTransform.ScaleYProperty,
-                Value    = 1.0
-            };
-            middleFrame.Setters.Add(scaleYSetter);
+            middleFrame.Setters.Add(transformSetter);
         }
         animation.Children.Add(middleFrame);
 
@@ -284,19 +242,13 @@ public static partial class MotionFactory
                 Value    = 1.0
             };
             endFrame.Setters.Add(opacitySetter);
-            var translateYSetter = new Setter
-            {
-                Property = TranslateTransform.YProperty,
-                Value    = 0.0
-            };
-            endFrame.Setters.Add(translateYSetter);
 
-            var scaleYSetter = new Setter
+            var transformSetter = new Setter
             {
-                Property = ScaleTransform.ScaleYProperty,
-                Value    = 1.0
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0)
             };
-            endFrame.Setters.Add(scaleYSetter);
+            endFrame.Setters.Add(transformSetter);
         }
         animation.Children.Add(endFrame);
         transformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
@@ -309,7 +261,7 @@ public static partial class MotionFactory
                                                     FillMode fillMode = FillMode.None)
     {
         easing ??= new QuinticEaseIn();
-        var           animations      = new List<IAnimation>();
+        var           animations      = new List<Animation>();
         RelativePoint transformOrigin = default;
         var animation = new Animation
         {
@@ -337,38 +289,35 @@ public static partial class MotionFactory
             };
             startFrame.Setters.Add(translateYSetter);
 
-            var scaleYSetter = new Setter
+            var transformSetter = new Setter
             {
-                Property = ScaleTransform.ScaleYProperty,
-                Value    = 1.0
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0)
             };
-            startFrame.Setters.Add(scaleYSetter);
+
+            startFrame.Setters.Add(transformSetter);
         }
         animation.Children.Add(startFrame);
 
         var middleFrame = new KeyFrame
         {
-            Cue = new Cue(0.35)
+            Cue = new Cue(0.8)
         };
         {
             var opacitySetter = new Setter
             {
                 Property = Visual.OpacityProperty,
-                Value    = 0.0
+                Value    = 0.1
             };
             middleFrame.Setters.Add(opacitySetter);
-            var translateYSetter = new Setter
+
+            var transformSetter = new Setter
             {
-                Property = TranslateTransform.YProperty,
-                Value    = -offset / 2
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, -offset / 4)
             };
-            middleFrame.Setters.Add(translateYSetter);
-            var scaleYSetter = new Setter
-            {
-                Property = ScaleTransform.ScaleYProperty,
-                Value    = 1.0
-            };
-            middleFrame.Setters.Add(scaleYSetter);
+
+            middleFrame.Setters.Add(transformSetter);
         }
         animation.Children.Add(middleFrame);
 
@@ -383,19 +332,14 @@ public static partial class MotionFactory
                 Value    = 0.0
             };
             endFrame.Setters.Add(opacitySetter);
-            var translateYSetter = new Setter
-            {
-                Property = TranslateTransform.YProperty,
-                Value    = -offset
-            };
-            endFrame.Setters.Add(translateYSetter);
 
-            var scaleYSetter = new Setter
+            var transformSetter = new Setter
             {
-                Property = ScaleTransform.ScaleYProperty,
-                Value    = 0.0
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildTranslateScaleAndTransform(1.0, 0.0, 0.0, -offset)
             };
-            endFrame.Setters.Add(scaleYSetter);
+
+            endFrame.Setters.Add(transformSetter);
         }
         animation.Children.Add(endFrame);
         transformOrigin = new RelativePoint(0, 0, RelativeUnit.Relative);
@@ -408,7 +352,7 @@ public static partial class MotionFactory
                                                      FillMode fillMode = FillMode.None)
     {
         easing ??= new QuinticEaseOut();
-        var           animations      = new List<IAnimation>();
+        var           animations      = new List<Animation>();
         RelativePoint transformOrigin = default;
         var animation = new Animation
         {
@@ -429,45 +373,35 @@ public static partial class MotionFactory
             };
             startFrame.Setters.Add(opacitySetter);
 
-            var translateXSetter = new Setter
+            var transformSetter = new Setter
             {
-                Property = TranslateTransform.XProperty,
-                Value    = -offset
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildTranslateScaleAndTransform(1.0, 0.01, -offset, 0.0)
             };
-            startFrame.Setters.Add(translateXSetter);
 
-            var scaleYSetter = new Setter
-            {
-                Property = ScaleTransform.ScaleYProperty,
-                Value    = 0.0
-            };
-            startFrame.Setters.Add(scaleYSetter);
+            startFrame.Setters.Add(transformSetter);
         }
         animation.Children.Add(startFrame);
 
         var middleFrame = new KeyFrame
         {
-            Cue = new Cue(0.7)
+            Cue = new Cue(0.8)
         };
         {
             var opacitySetter = new Setter
             {
                 Property = Visual.OpacityProperty,
-                Value    = 0.0
+                Value    = 0.1
             };
             middleFrame.Setters.Add(opacitySetter);
-            var translateXSetter = new Setter
+
+            var transformSetter = new Setter
             {
-                Property = TranslateTransform.XProperty,
-                Value    = -offset
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, -offset / 2, 0.0)
             };
-            middleFrame.Setters.Add(translateXSetter);
-            var scaleYSetter = new Setter
-            {
-                Property = ScaleTransform.ScaleYProperty,
-                Value    = 1.0
-            };
-            middleFrame.Setters.Add(scaleYSetter);
+
+            middleFrame.Setters.Add(transformSetter);
         }
         animation.Children.Add(middleFrame);
 
@@ -482,19 +416,14 @@ public static partial class MotionFactory
                 Value    = 1.0
             };
             endFrame.Setters.Add(opacitySetter);
-            var translateXSetter = new Setter
-            {
-                Property = TranslateTransform.XProperty,
-                Value    = 0.0
-            };
-            endFrame.Setters.Add(translateXSetter);
 
-            var scaleYSetter = new Setter
+            var transformSetter = new Setter
             {
-                Property = ScaleTransform.ScaleYProperty,
-                Value    = 1.0
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0)
             };
-            endFrame.Setters.Add(scaleYSetter);
+
+            endFrame.Setters.Add(transformSetter);
         }
         animation.Children.Add(endFrame);
         transformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
@@ -507,7 +436,7 @@ public static partial class MotionFactory
                                                       FillMode fillMode = FillMode.None)
     {
         easing ??= new QuinticEaseIn();
-        var           animations      = new List<IAnimation>();
+        var           animations      = new List<Animation>();
         RelativePoint transformOrigin = default;
         var animation = new Animation
         {
@@ -528,45 +457,32 @@ public static partial class MotionFactory
             };
             startFrame.Setters.Add(opacitySetter);
 
-            var translateXSetter = new Setter
+            var transformSetter = new Setter
             {
-                Property = TranslateTransform.XProperty,
-                Value    = 0.0
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0)
             };
-            startFrame.Setters.Add(translateXSetter);
-
-            var scaleYSetter = new Setter
-            {
-                Property = ScaleTransform.ScaleYProperty,
-                Value    = 1.0
-            };
-            startFrame.Setters.Add(scaleYSetter);
+            startFrame.Setters.Add(transformSetter);
         }
         animation.Children.Add(startFrame);
 
         var middleFrame = new KeyFrame
         {
-            Cue = new Cue(0.75)
+            Cue = new Cue(0.8)
         };
         {
             var opacitySetter = new Setter
             {
                 Property = Visual.OpacityProperty,
-                Value    = 1.0
+                Value    = 0.1
             };
             middleFrame.Setters.Add(opacitySetter);
-            var translateXSetter = new Setter
+            var transformSetter = new Setter
             {
-                Property = TranslateTransform.XProperty,
-                Value    = -offset
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, -offset / 2, 0.0)
             };
-            middleFrame.Setters.Add(translateXSetter);
-            var scaleYSetter = new Setter
-            {
-                Property = ScaleTransform.ScaleYProperty,
-                Value    = 1.0
-            };
-            middleFrame.Setters.Add(scaleYSetter);
+            middleFrame.Setters.Add(transformSetter);
         }
         animation.Children.Add(middleFrame);
 
@@ -581,19 +497,13 @@ public static partial class MotionFactory
                 Value    = 0.0
             };
             endFrame.Setters.Add(opacitySetter);
-            var translateXSetter = new Setter
-            {
-                Property = TranslateTransform.XProperty,
-                Value    = -offset
-            };
-            endFrame.Setters.Add(translateXSetter);
 
-            var scaleYSetter = new Setter
+            var transformSetter = new Setter
             {
-                Property = ScaleTransform.ScaleYProperty,
-                Value    = 0.0
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildTranslateScaleAndTransform(1.0, 0.0, -offset, 0.0)
             };
-            endFrame.Setters.Add(scaleYSetter);
+            endFrame.Setters.Add(transformSetter);
         }
         animation.Children.Add(endFrame);
         transformOrigin = new RelativePoint(0, 0, RelativeUnit.Relative);
@@ -606,7 +516,7 @@ public static partial class MotionFactory
                                                       FillMode fillMode = FillMode.None)
     {
         easing ??= new QuinticEaseOut();
-        var           animations      = new List<IAnimation>();
+        var           animations      = new List<Animation>();
         RelativePoint transformOrigin = default;
         var animation = new Animation
         {
@@ -627,45 +537,33 @@ public static partial class MotionFactory
             };
             startFrame.Setters.Add(opacitySetter);
 
-            var translateXSetter = new Setter
+            var transformSetter = new Setter
             {
-                Property = TranslateTransform.XProperty,
-                Value    = offset
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildTranslateScaleAndTransform(1.0, 0.01, offset, 0.0)
             };
-            startFrame.Setters.Add(translateXSetter);
-
-            var scaleYSetter = new Setter
-            {
-                Property = ScaleTransform.ScaleYProperty,
-                Value    = 0.0
-            };
-            startFrame.Setters.Add(scaleYSetter);
+            startFrame.Setters.Add(transformSetter);
         }
         animation.Children.Add(startFrame);
 
         var middleFrame = new KeyFrame
         {
-            Cue = new Cue(0.7)
+            Cue = new Cue(0.8)
         };
         {
             var opacitySetter = new Setter
             {
                 Property = Visual.OpacityProperty,
-                Value    = 0.0
+                Value    = 0.1
             };
             middleFrame.Setters.Add(opacitySetter);
-            var translateXSetter = new Setter
+
+            var transformSetter = new Setter
             {
-                Property = TranslateTransform.XProperty,
-                Value    = offset
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, offset / 2, 0.0)
             };
-            middleFrame.Setters.Add(translateXSetter);
-            var scaleYSetter = new Setter
-            {
-                Property = ScaleTransform.ScaleYProperty,
-                Value    = 1.0
-            };
-            middleFrame.Setters.Add(scaleYSetter);
+            middleFrame.Setters.Add(transformSetter);
         }
         animation.Children.Add(middleFrame);
 
@@ -680,19 +578,13 @@ public static partial class MotionFactory
                 Value    = 1.0
             };
             endFrame.Setters.Add(opacitySetter);
-            var translateXSetter = new Setter
-            {
-                Property = TranslateTransform.XProperty,
-                Value    = 0.0
-            };
-            endFrame.Setters.Add(translateXSetter);
 
-            var scaleYSetter = new Setter
+            var transformSetter = new Setter
             {
-                Property = ScaleTransform.ScaleYProperty,
-                Value    = 1.0
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0)
             };
-            endFrame.Setters.Add(scaleYSetter);
+            endFrame.Setters.Add(transformSetter);
         }
         animation.Children.Add(endFrame);
         transformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
@@ -705,7 +597,7 @@ public static partial class MotionFactory
                                                        FillMode fillMode = FillMode.None)
     {
         easing ??= new QuinticEaseIn();
-        var           animations      = new List<IAnimation>();
+        var           animations      = new List<Animation>();
         RelativePoint transformOrigin = default;
         var animation = new Animation
         {
@@ -726,25 +618,18 @@ public static partial class MotionFactory
             };
             startFrame.Setters.Add(opacitySetter);
 
-            var translateXSetter = new Setter
+            var transformSetter = new Setter
             {
-                Property = TranslateTransform.XProperty,
-                Value    = 0.0
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0)
             };
-            startFrame.Setters.Add(translateXSetter);
-
-            var scaleYSetter = new Setter
-            {
-                Property = ScaleTransform.ScaleYProperty,
-                Value    = 1.0
-            };
-            startFrame.Setters.Add(scaleYSetter);
+            startFrame.Setters.Add(transformSetter);
         }
         animation.Children.Add(startFrame);
 
         var middleFrame = new KeyFrame
         {
-            Cue = new Cue(0.75)
+            Cue = new Cue(0.8)
         };
         {
             var opacitySetter = new Setter
@@ -753,18 +638,13 @@ public static partial class MotionFactory
                 Value    = 1.0
             };
             middleFrame.Setters.Add(opacitySetter);
-            var translateXSetter = new Setter
+
+            var transformSetter = new Setter
             {
-                Property = TranslateTransform.XProperty,
-                Value    = offset
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, offset / 2, 0.0)
             };
-            middleFrame.Setters.Add(translateXSetter);
-            var scaleYSetter = new Setter
-            {
-                Property = ScaleTransform.ScaleYProperty,
-                Value    = 1.0
-            };
-            middleFrame.Setters.Add(scaleYSetter);
+            middleFrame.Setters.Add(transformSetter);
         }
         animation.Children.Add(middleFrame);
 
@@ -779,19 +659,13 @@ public static partial class MotionFactory
                 Value    = 0.0
             };
             endFrame.Setters.Add(opacitySetter);
-            var translateXSetter = new Setter
-            {
-                Property = TranslateTransform.XProperty,
-                Value    = offset
-            };
-            endFrame.Setters.Add(translateXSetter);
 
-            var scaleYSetter = new Setter
+            var transformSetter = new Setter
             {
-                Property = ScaleTransform.ScaleYProperty,
-                Value    = 0.0
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildTranslateScaleAndTransform(1.0, 0.0, offset, 0.0)
             };
-            endFrame.Setters.Add(scaleYSetter);
+            endFrame.Setters.Add(transformSetter);
         }
         animation.Children.Add(endFrame);
         transformOrigin = new RelativePoint(0, 0, RelativeUnit.Relative);

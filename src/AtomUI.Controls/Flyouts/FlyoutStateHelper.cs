@@ -199,13 +199,13 @@ internal class FlyoutStateHelper : AvaloniaObject
         _subscriptions = new CompositeDisposable();
         if (TriggerType == FlyoutTriggerType.Hover)
         {
-            InputElement.IsPointerOverProperty.Changed.Subscribe(args =>
+            _subscriptions.Add(InputElement.IsPointerOverProperty.Changed.Subscribe(args =>
             {
                 if (args.Sender == AnchorTarget)
                 {
                     HandleAnchorTargetHover(args);
                 }
-            });
+            }));
         }
         else if (TriggerType == FlyoutTriggerType.Click)
         {
@@ -257,11 +257,11 @@ internal class FlyoutStateHelper : AvaloniaObject
         {
             return;
         }
-
+        
         _flyoutCloseDetectDisposable?.Dispose();
         _flyoutCloseDetectDisposable = null;
         StopMouseEnterTimer();
-
+        
         if (immediately || MouseLeaveDelay == 0)
         {
             FlyoutAboutToClose?.Invoke(this, EventArgs.Empty);

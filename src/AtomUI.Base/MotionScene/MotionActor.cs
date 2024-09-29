@@ -248,7 +248,6 @@ public class MotionActor : Animatable, IMotionActor
     {
         DisableMotion();
         BuildGhost();
-        RelayMotionProperties();
         var transitions = new Transitions();
         foreach (var transition in _motion.BuildTransitions(GetAnimatableGhost()))
         {
@@ -256,17 +255,6 @@ public class MotionActor : Animatable, IMotionActor
         }
 
         Transitions = transitions;
-    }
-
-    protected void RelayMotionProperties()
-    {
-        // var ghost = GetAnimatableGhost();
-        // // TODO 这个看是否需要管理起来
-        //
-        // var motionProperties = Motion.GetActivatedProperties();
-        // foreach (var property in motionProperties) {
-        //    BindUtils.RelayBind(this, property, ghost, property);
-        // }
     }
 
     /// <summary>

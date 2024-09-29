@@ -17,25 +17,23 @@ public class DarkThemeVariantCalculator : AbstractThemeVariantCalculator
         _colorTextBase = Color.FromRgb(255, 255, 255);
     }
 
-    public override MapDesignToken Calculate(SeedDesignToken seedToken, MapDesignToken sourceToken)
+    public override void Calculate(GlobalToken globalToken)
     {
-        var mergedMapToken = _compositeGenerator!.Calculate(seedToken, sourceToken);
+        _compositeGenerator!.Calculate(globalToken);
 
-        if (seedToken.ColorBgBase.HasValue)
+        if (globalToken.ColorBgBase.HasValue)
         {
-            _colorBgBase = seedToken.ColorBgBase.Value;
+            _colorBgBase = globalToken.ColorBgBase.Value;
         }
 
-        if (seedToken.ColorTextBase.HasValue)
+        if (globalToken.ColorTextBase.HasValue)
         {
-            _colorTextBase = seedToken.ColorTextBase.Value;
+            _colorTextBase = globalToken.ColorTextBase.Value;
         }
 
         // Dark tokens
-        SetupColorPalettes(seedToken, mergedMapToken);
-        SetupColorToken(seedToken, mergedMapToken);
-
-        return mergedMapToken;
+        SetupColorPalettes(globalToken);
+        CalculateColorMapTokenValues(globalToken);
     }
 
     protected override ColorMap GenerateColorPalettes(Color baseColor)
@@ -63,33 +61,30 @@ public class DarkThemeVariantCalculator : AbstractThemeVariantCalculator
         return colorMap;
     }
 
-    protected override ColorNeutralMapDesignToken GenerateNeutralColorPalettes(Color? bgBaseColor, Color? textBaseColor)
+    protected override void CalculateNeutralColorPalettes(Color? bgBaseColor, Color? textBaseColor, 
+        GlobalToken globalToken)
     {
         var colorBgBase   = bgBaseColor ?? _colorBgBase;
         var colorTextBase = textBaseColor ?? _colorTextBase;
 
-        var colorNeutralToken = new ColorNeutralMapDesignToken
-        {
-            ColorText           = AlphaColor(colorTextBase, 0.85),
-            ColorTextSecondary  = AlphaColor(colorTextBase, 0.65),
-            ColorTextTertiary   = AlphaColor(colorTextBase, 0.45),
-            ColorTextQuaternary = AlphaColor(colorTextBase, 0.25),
+        globalToken.ColorText           = AlphaColor(colorTextBase, 0.85);
+        globalToken.ColorTextSecondary  = AlphaColor(colorTextBase, 0.65);
+        globalToken.ColorTextTertiary   = AlphaColor(colorTextBase, 0.45);
+        globalToken.ColorTextQuaternary = AlphaColor(colorTextBase, 0.25);
 
-            ColorFill           = AlphaColor(colorTextBase, 0.18),
-            ColorFillSecondary  = AlphaColor(colorTextBase, 0.12),
-            ColorFillTertiary   = AlphaColor(colorTextBase, 0.08),
-            ColorFillQuaternary = AlphaColor(colorTextBase, 0.04),
+        globalToken.ColorFill           = AlphaColor(colorTextBase, 0.18);
+        globalToken.ColorFillSecondary  = AlphaColor(colorTextBase, 0.12);
+        globalToken.ColorFillTertiary   = AlphaColor(colorTextBase, 0.08);
+        globalToken.ColorFillQuaternary = AlphaColor(colorTextBase, 0.04);
 
-            ColorBgElevated  = SolidColor(colorBgBase, 12),
-            ColorBgContainer = SolidColor(colorBgBase, 8),
-            ColorBgLayout    = SolidColor(colorBgBase, 0),
-            ColorBgSpotlight = SolidColor(colorBgBase, 26),
-            ColorBgBlur      = AlphaColor(colorTextBase, 0.04),
+        globalToken.ColorBgElevated  = SolidColor(colorBgBase, 12);
+        globalToken.ColorBgContainer = SolidColor(colorBgBase, 8);
+        globalToken.ColorBgLayout    = SolidColor(colorBgBase, 0);
+        globalToken.ColorBgSpotlight = SolidColor(colorBgBase, 26);
+        globalToken.ColorBgBlur      = AlphaColor(colorTextBase, 0.04);
 
-            ColorBorder          = SolidColor(colorBgBase, 26),
-            ColorBorderSecondary = SolidColor(colorBgBase, 19)
-        };
-        return colorNeutralToken;
+        globalToken.ColorBorder          = SolidColor(colorBgBase, 26);
+        globalToken.ColorBorderSecondary = SolidColor(colorBgBase, 19);
     }
 
     private Color AlphaColor(in Color baseColor, double alpha)
@@ -102,24 +97,18 @@ public class DarkThemeVariantCalculator : AbstractThemeVariantCalculator
         return baseColor.Lighten(brightness);
     }
 
-    private void SetupColorPalettes(SeedDesignToken seedToken, MapDesignToken sourceToken)
+    private void SetupColorPalettes(GlobalToken globalToken)
     {
         // 生成所有预置颜色的色系
         foreach (var presetColor in PresetPrimaryColor.AllColorTypes())
         {
-            var colors = PaletteGenerator.GeneratePalette(seedToken.GetPresetPrimaryColor(presetColor.Type).Color(),
+            var colors = PaletteGenerator.GeneratePalette(globalToken.GetPresetPrimaryColor(presetColor.Type).Color(),
                 new PaletteGenerateOption
                 {
                     ThemeVariant = ThemeVariant.Dark
                 });
             var colorMap = ColorMap.FromColors(colors);
-            sourceToken.SetColorPalette(presetColor, colorMap);
+            globalToken.SetColorPalette(presetColor, colorMap);
         }
-    }
-
-    private void SetupColorToken(SeedDesignToken seedToken, MapDesignToken sourceToken)
-    {
-        var colorMapToken = GenerateColorMapToken(seedToken);
-        sourceToken.ColorToken = colorMapToken;
     }
 }

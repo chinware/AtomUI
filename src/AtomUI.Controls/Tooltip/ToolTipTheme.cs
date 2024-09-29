@@ -1,4 +1,5 @@
-﻿using AtomUI.Theme;
+﻿using AtomUI.Data;
+using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -19,7 +20,7 @@ internal class ToolTipTheme : BaseControlTheme
     {
     }
 
-    protected override IControlTemplate? BuildControlTemplate()
+    protected override IControlTemplate BuildControlTemplate()
     {
         return new FuncControlTemplate<ToolTip>((tip, scope) =>
         {
@@ -42,8 +43,7 @@ internal class ToolTipTheme : BaseControlTheme
                 arrowDecoratedBox.Content = control;
             }
 
-            CreateTemplateParentBinding(arrowDecoratedBox, ArrowDecoratedBox.IsShowArrowProperty,
-                ToolTip.IsShowArrowEffectiveProperty);
+            BindUtils.RelayBind(tip, ToolTip.IsShowArrowEffectiveProperty, arrowDecoratedBox, ArrowDecoratedBox.IsShowArrowProperty);
             arrowDecoratedBox.RegisterInNameScope(scope);
             return arrowDecoratedBox;
         });

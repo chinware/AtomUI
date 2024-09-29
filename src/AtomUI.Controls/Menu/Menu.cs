@@ -8,8 +8,7 @@ namespace AtomUI.Controls;
 
 using AvaloniaMenu = Avalonia.Controls.Menu;
 
-public class Menu : AvaloniaMenu,
-                    ISizeTypeAware
+public class Menu : AvaloniaMenu, ISizeTypeAware
 {
     #region 公共属性定义
 

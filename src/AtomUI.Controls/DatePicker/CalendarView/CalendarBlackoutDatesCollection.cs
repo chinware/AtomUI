@@ -3,7 +3,7 @@ using Avalonia.Threading;
 
 namespace AtomUI.Controls.CalendarView;
 
-public sealed class CalendarBlackoutDatesCollection : ObservableCollection<CalendarDateRange>
+internal sealed class CalendarBlackoutDatesCollection : ObservableCollection<CalendarDateRange>
 {
    /// <summary>
    /// The Calendar whose dates this object represents.

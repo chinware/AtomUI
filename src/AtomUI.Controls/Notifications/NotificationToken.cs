@@ -91,9 +91,9 @@ internal class NotificationToken : AbstractControlDesignToken
         NotificationProgressMargin = new Thickness(0, 0, 0, 1);
         NotificationContentMargin = new Thickness(0, 0, 0, _globalToken.PaddingMD);
         NotificationPadding = new Thickness(_globalToken.PaddingLG, _globalToken.PaddingMD, _globalToken.PaddingLG, 0);
-        NotificationBg = _globalToken.ColorToken.ColorNeutralToken.ColorBgElevated;
-        NotificationIconSize = _globalToken.FontToken.FontSizeLG * _globalToken.FontToken.LineHeightLG;
-        NotificationCloseButtonSize = _globalToken.HeightToken.ControlHeightLG * 0.55;
+        NotificationBg = _globalToken.ColorBgElevated;
+        NotificationIconSize = _globalToken.FontSizeLG * _globalToken.LineHeightLG;
+        NotificationCloseButtonSize = _globalToken.ControlHeightLG * 0.55;
         NotificationMarginBottom = new Thickness(0, 0, 0, _globalToken.Margin);
         NotificationTopMargin = new Thickness(_globalToken.MarginLG, _globalToken.MarginLG, _globalToken.MarginLG, 0);
         NotificationBottomMargin =
@@ -105,8 +105,8 @@ internal class NotificationToken : AbstractControlDesignToken
             EndPoint   = new RelativePoint(1, 0.5, RelativeUnit.Relative),
             GradientStops = new GradientStops
             {
-                new() { Color = _globalToken.ColorToken.ColorPrimaryToken.ColorPrimaryHover, Offset = 0 },
-                new() { Color = _globalToken.ColorToken.ColorPrimaryToken.ColorPrimary, Offset      = 1 }
+                new() { Color = _globalToken.ColorPrimaryHover, Offset = 0 },
+                new() { Color = _globalToken.ColorPrimary, Offset      = 1 }
             }
         };
         NotificationWidth      = 384;

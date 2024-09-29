@@ -1,23 +1,21 @@
-﻿using System.Reflection;
-using AtomUI.Reflection;
+﻿using AtomUI.Reflection;
 using AtomUI.Theme.Palette;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Diagnostics;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
-using Avalonia.Styling;
 using Avalonia.Threading;
 
 namespace AtomUI.Controls;
 
 [PseudoClasses(StdPseudoClass.Open)]
-public class ToolTip : TemplatedControl,
-                       IShadowMaskInfoProvider
+public class ToolTip : TemplatedControl, IShadowMaskInfoProvider
 {
     #region 公共属性定义
 
@@ -192,14 +190,8 @@ public class ToolTip : TemplatedControl,
     {
         IsOpenProperty.Changed.Subscribe(IsOpenChanged);
         IsShowArrowProperty.Changed.Subscribe(IsShowArrowChanged);
-
-        var requestedThemeVariantProperty =
-            typeof(ThemeVariant).GetFieldInfoOrThrow("RequestedThemeVariantProperty",
-                BindingFlags.Static | BindingFlags.NonPublic);
-        RequestedThemeVariantProperty = (StyledProperty<ThemeVariant?>)requestedThemeVariantProperty.GetValue(null)!;
-        AffectsRender<ToolTip>(ForegroundProperty,
-            BackgroundProperty);
-        AffectsArrange<ToolTip>(FlipPlacementProperty);
+        AffectsRender<ToolTip>(ForegroundProperty, BackgroundProperty);
+        AffectsArrange<ToolTip>(FlipPlacementProperty, IsShowArrowProperty);
     }
 
     #region 附加属性设置方法
@@ -519,7 +511,6 @@ public class ToolTip : TemplatedControl,
     private ArrowDecoratedBox? _arrowDecoratedBox;
     internal Control? AdornedControl { get; private set; }
     internal event EventHandler? Closed;
-    private static readonly StyledProperty<ThemeVariant?> RequestedThemeVariantProperty;
 
     private static void IsOpenChanged(AvaloniaPropertyChangedEventArgs e)
     {
@@ -543,12 +534,11 @@ public class ToolTip : TemplatedControl,
                     Content = tip
                 };
                 control.SetValue(ToolTipProperty, toolTip);
-                toolTip.SetValue(RequestedThemeVariantProperty, control.ActualThemeVariant);
             }
 
             toolTip.AdornedControl = control;
             toolTip.Open(control);
-            toolTip?.UpdatePseudoClasses(newValue);
+            toolTip.UpdatePseudoClasses(newValue);
         }
         else if (control.GetValue(ToolTipProperty) is { } toolTip)
         {
@@ -684,15 +674,13 @@ public class ToolTip : TemplatedControl,
         _popup.HorizontalOffset = offsetX;
         _popup.VerticalOffset   = offsetY;
 
-        var anchorAndGravity = PopupUtils.GetAnchorAndGravity(placement);
-
+        if (_popup is IPopupHostProvider popupHostProvider)
+        {
+            popupHostProvider.PopupHostChanged += HandlePopupHostChanged;
+        }
+        
         // TODO 可能是多余的，因为有那个对反转事件的处理
         SetupArrowPosition(placement);
-        SetupPointCenterOffset(control,
-            placement,
-            anchorAndGravity.Item1,
-            anchorAndGravity.Item2);
-
         // 后期看能不能检测对应字段的改变
         CalculateShowArrowEffective(control);
 
@@ -700,7 +688,24 @@ public class ToolTip : TemplatedControl,
         _popup.Placement       = placement;
         _popup.PlacementTarget = control;
 
-        Dispatcher.UIThread.Post(() => { _popup.OpenAnimation(); });
+        _popup.OpenAnimation();
+    }
+
+    private void HandlePopupHostChanged(IPopupHost? host)
+    {
+        if (_popup is not null)
+        {
+            var control = _popup.PlacementTarget;
+            if (control is not null)
+            {
+                var placement        = GetPlacement(control);
+                var anchorAndGravity = PopupUtils.GetAnchorAndGravity(placement);
+                SetupPointCenterOffset(control,
+                    placement,
+                    anchorAndGravity.Item1,
+                    anchorAndGravity.Item2);
+            }
+        }
     }
 
     private bool CalculateShowArrowEffective(Control control)
@@ -723,8 +728,12 @@ public class ToolTip : TemplatedControl,
         {
             return;
         }
+        if (_popup is IPopupHostProvider popupHostProvider)
+        {
+            popupHostProvider.PopupHostChanged -= HandlePopupHostChanged;
+        }
 
-        Dispatcher.UIThread.Post(() => { _popup.CloseAnimation(); });
+        _popup.CloseAnimation();
     }
 
     private void OnPopupPositionFlipped(object? sender, PopupFlippedEventArgs e)

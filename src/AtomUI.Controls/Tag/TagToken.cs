@@ -36,18 +36,15 @@ internal class TagToken : AbstractControlDesignToken
     internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
-        var fontToken         = _globalToken.FontToken;
-        var colorNeutralToken = _globalToken.ColorToken.ColorNeutralToken;
-        var lineHeightSM      = fontToken.LineHeightSM;
-        TagFontSize      = fontToken.FontSizeSM;
-        TagLineHeight    = lineHeightSM * TagFontSize;
+        TagFontSize      = _globalToken.FontSizeSM;
+        TagLineHeight    = _globalToken.LineHeightSM * TagFontSize;
         TagCloseIconSize = _globalToken.IconSizeXS;
         TagIconSize      = _globalToken.FontSizeIcon;
         TagPadding       = new Thickness(8, 0); // Fixed padding.
         // TODO 这个地方需要看看
-        DefaultBg = ColorUtils.OnBackground(colorNeutralToken.ColorFillQuaternary, colorNeutralToken.ColorBgContainer);
-        TagBorderlessBg = DefaultBg;
-        DefaultColor = colorNeutralToken.ColorText;
+        DefaultBg            = ColorUtils.OnBackground(_globalToken.ColorFillQuaternary, _globalToken.ColorBgContainer);
+        TagBorderlessBg      = DefaultBg;
+        DefaultColor         = _globalToken.ColorText;
         TagTextPaddingInline = _globalToken.PaddingXXS;
     }
 }

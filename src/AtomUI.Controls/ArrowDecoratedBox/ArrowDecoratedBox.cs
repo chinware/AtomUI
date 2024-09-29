@@ -1,11 +1,6 @@
-﻿using AtomUI.Media;
-using AtomUI.Theme.Styling;
-using AtomUI.Utils;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.Layout;
-using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
@@ -80,8 +75,7 @@ public enum ArrowPosition
    RightEdgeAlignedBottom
 }
 
-public class ArrowDecoratedBox : ContentControl,
-                                 IShadowMaskInfoProvider
+public class ArrowDecoratedBox : ContentControl, IShadowMaskInfoProvider
 {
     #region 公共属性定义
 
@@ -117,6 +111,9 @@ public class ArrowDecoratedBox : ContentControl,
     internal static readonly StyledProperty<double> ArrowSizeProperty
         = AvaloniaProperty.Register<ArrowDecoratedBox, double>(nameof(ArrowSize));
     
+    internal static readonly StyledProperty<Direction> ArrowDirectionProperty
+        = AvaloniaProperty.Register<ArrowDecoratedBox, Direction>(nameof(ArrowDirection));
+    
     /// <summary>
     /// 箭头的大小
     /// </summary>
@@ -125,21 +122,25 @@ public class ArrowDecoratedBox : ContentControl,
         get => GetValue(ArrowSizeProperty);
         set => SetValue(ArrowSizeProperty, value);
     }
-
+    
+    internal Direction ArrowDirection
+    {
+        get => GetValue(ArrowDirectionProperty);
+        set => SetValue(ArrowDirectionProperty, value);
+    }
+    
     #endregion
 
     // 指针最顶点位置
     // 相对坐标
-    private (double, double) _arrowVertexPoint;
     internal (double, double) ArrowVertexPoint => GetArrowVertexPoint();
-    private Geometry? _arrowGeometry;
-    private Rect _contentRect;
-    private Rect _arrowRect;
-    private bool _needGenerateArrowVertexPoint = true;
+    private Border? _contentDecorator;
+    private Control? _arrowIndicatorLayout;
 
     static ArrowDecoratedBox()
     {
-        AffectsMeasure<ArrowDecoratedBox>(ArrowPositionProperty, IsShowArrowProperty);
+        AffectsMeasure<ArrowDecoratedBox>(IsShowArrowProperty);
+        AffectsArrange<ArrowDecoratedBox>(ArrowDirectionProperty, ArrowPositionProperty);
     }
 
     public static Direction GetDirection(ArrowPosition arrowPosition)
@@ -169,7 +170,10 @@ public class ArrowDecoratedBox : ContentControl,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
         base.OnPropertyChanged(e);
-        HandlePropertyChangedForStyle(e);
+        if (e.Property == ArrowPositionProperty)
+        {
+            ArrowDirection = GetDirection(ArrowPosition);
+        }
     }
 
     public CornerRadius GetMaskCornerRadius()
@@ -179,317 +183,162 @@ public class ArrowDecoratedBox : ContentControl,
 
     public Rect GetMaskBounds()
     {
-        return GetContentRect(DesiredSize).Deflate(0.5);
+        Rect targetRect = default;
+        if (_contentDecorator is not null)
+        {
+            targetRect = _contentDecorator.Bounds;
+        }
+        return targetRect;
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-       HandleTemplateApplied(e.NameScope);
-    }
-
-    private void HandleTemplateApplied(INameScope scope)
-    {
-        if (IsShowArrow)
-        {
-            BuildGeometry(true);
-        }
+        _contentDecorator     = e.NameScope.Get<Border>(ArrowDecoratedBoxTheme.ContentDecoratorPart);
+        _arrowIndicatorLayout = e.NameScope.Get<Control>(ArrowDecoratedBoxTheme.ArrowIndicatorLayoutPart);
+        ArrowDirection        = GetDirection(ArrowPosition);
     }
 
     private (double, double) GetArrowVertexPoint()
     {
-        if (_needGenerateArrowVertexPoint)
+        if (_arrowIndicatorLayout is null)
         {
-            BuildGeometry(true);
-            _arrowRect                    = GetArrowRect(DesiredSize);
-            _needGenerateArrowVertexPoint = false;
+            return default;
         }
-
-        return _arrowVertexPoint;
-    }
-
-    private void HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
-    {
-        if (e.Property == IsShowArrowProperty ||
-            e.Property == ArrowPositionProperty ||
-            e.Property == ArrowSizeProperty ||
-            e.Property == VisualParentProperty)
+        var targetRect = _arrowIndicatorLayout.Bounds;
+        var center     = targetRect.Center;
+        var controlSize       = Bounds.Size;
+        
+        // 计算中点
+        var direction = GetDirection(ArrowPosition);
+        if (direction == Direction.Left || direction == Direction.Right)
         {
-            if (e.Property == IsShowArrowProperty && VisualRoot is null)
-            {
-                // 当开启的时候，但是还没有加入的渲染树，这个时候我们取不到 Token 需要在取值的时候重新生成一下
-                _needGenerateArrowVertexPoint = true;
-            }
-
-            if (VisualRoot is not null)
-            {
-                BuildGeometry(true);
-                _arrowRect = GetArrowRect(DesiredSize);
-            }
+            return (center.Y, controlSize.Height - center.Y);
         }
-    }
-
-    private void BuildGeometry(bool force = false)
-    {
-        if (_arrowGeometry is null || force)
-        {
-            _arrowGeometry = CommonShapeBuilder.BuildArrow(ArrowSize, 1.5);
-        }
-    }
-
-    public sealed override void Render(DrawingContext context)
-    {
-        if (IsShowArrow)
-        {
-            var direction = GetDirection(ArrowPosition);
-            var matrix    = Matrix.CreateTranslation(-ArrowSize / 2, -ArrowSize / 2);
-
-            if (direction == Direction.Right)
-            {
-                matrix *= Matrix.CreateRotation(MathUtils.Deg2Rad(90));
-                matrix *= Matrix.CreateTranslation(ArrowSize / 2, ArrowSize / 2);
-            }
-            else if (direction == Direction.Top)
-            {
-                matrix *= Matrix.CreateTranslation(ArrowSize / 2, 0);
-            }
-            else if (direction == Direction.Left)
-            {
-                matrix *= Matrix.CreateRotation(MathUtils.Deg2Rad(-90));
-                matrix *= Matrix.CreateTranslation(0, ArrowSize / 2);
-            }
-            else
-            {
-                matrix *= Matrix.CreateRotation(MathUtils.Deg2Rad(180));
-                matrix *= Matrix.CreateTranslation(ArrowSize / 2, ArrowSize / 2);
-            }
-
-            matrix                    *= Matrix.CreateTranslation(_arrowRect.X, _arrowRect.Y);
-            _arrowGeometry!.Transform =  new MatrixTransform(matrix);
-            context.DrawGeometry(Background, null, _arrowGeometry);
-        }
-    }
-
-    protected override Size MeasureOverride(Size availableSize)
-    {
-        var size         = base.MeasureOverride(availableSize);
-        var targetWidth  = size.Width;
-        var targetHeight = size.Height;
-        targetHeight = Math.Max(MinHeight, targetHeight);
-
-        if (IsShowArrow)
-        {
-            BuildGeometry();
-            var realArrowSize = Math.Min(_arrowGeometry!.Bounds.Size.Height, _arrowGeometry!.Bounds.Size.Width);
-            var direction     = GetDirection(ArrowPosition);
-            if (direction == Direction.Left || direction == Direction.Right)
-            {
-                targetWidth += realArrowSize;
-            }
-            else
-            {
-                targetHeight += realArrowSize;
-            }
-        }
-
-        var targetSize = new Size(targetWidth, targetHeight);
-        _arrowRect = GetArrowRect(targetSize);
-        return targetSize;
+        return (center.X, controlSize.Width - center.X);
     }
 
     protected override Size ArrangeOverride(Size finalSize)
     {
-        var visualChildren = VisualChildren;
-        var visualCount    = visualChildren.Count;
-        _contentRect = GetContentRect(finalSize);
-        for (var i = 0; i < visualCount; ++i)
-        {
-            var child = visualChildren[i];
-            if (child is Layoutable layoutable)
-            {
-                layoutable.Arrange(_contentRect);
-            }
-        }
-
-        return finalSize;
-    }
-
-    internal Rect GetContentRect(Size finalSize)
-    {
-        var offsetX      = 0d;
-        var offsetY      = 0d;
-        var targetWidth  = finalSize.Width;
-        var targetHeight = finalSize.Height;
+        var size = base.ArrangeOverride(finalSize);
         if (IsShowArrow)
         {
-            var arrowSize = Math.Min(_arrowGeometry!.Bounds.Size.Height, _arrowGeometry!.Bounds.Size.Width) + 0.5;
-            var direction = GetDirection(ArrowPosition);
-            if (direction == Direction.Left || direction == Direction.Right)
-            {
-                targetWidth -= arrowSize;
-            }
-            else
-            {
-                targetHeight -= arrowSize;
-            }
-
-            if (direction == Direction.Right)
-            {
-                offsetX = 0.5;
-            }
-            else if (direction == Direction.Bottom)
-            {
-                offsetY = 0.5;
-            }
-            else if (direction == Direction.Top)
-            {
-                offsetY = arrowSize - 0.5;
-            }
-            else
-            {
-                offsetX = arrowSize - 0.5;
-            }
+            ArrangeArrow(finalSize);
         }
-
-        return new Rect(offsetX, offsetY, targetWidth, targetHeight);
+        return size;
     }
 
-    private Rect GetArrowRect(Size finalSize)
+    private void ArrangeArrow(Size finalSize)
     {
+        if (_arrowIndicatorLayout is null)
+        {
+            return;
+        }
         var offsetX      = 0d;
         var offsetY      = 0d;
-        var targetWidth  = 0d;
-        var targetHeight = 0d;
         var position     = ArrowPosition;
-        if (IsShowArrow)
+        var size         = _arrowIndicatorLayout.DesiredSize;
+    
+        var minValue = Math.Min(size.Width, size.Height);
+        var maxValue = Math.Max(size.Width, size.Height);
+        if (position == ArrowPosition.Left ||
+            position == ArrowPosition.LeftEdgeAlignedTop ||
+            position == ArrowPosition.LeftEdgeAlignedBottom)
         {
-            var size = _arrowGeometry!.Bounds.Size;
-
-            var minValue = Math.Min(size.Width, size.Height);
-            var maxValue = Math.Max(size.Width, size.Height);
-            if (position == ArrowPosition.Left ||
-                position == ArrowPosition.LeftEdgeAlignedTop ||
-                position == ArrowPosition.LeftEdgeAlignedBottom)
+            offsetX = 0.5d;
+            if (position == ArrowPosition.Left)
             {
-                targetWidth  = minValue;
-                targetHeight = maxValue;
-                if (position == ArrowPosition.Left)
-                {
-                    offsetY = (finalSize.Height - maxValue) / 2;
-                }
-                else if (position == ArrowPosition.LeftEdgeAlignedTop)
-                {
-                    if (maxValue * 2 > finalSize.Height / 2)
-                    {
-                        offsetY = minValue;
-                    }
-                    else
-                    {
-                        offsetY = maxValue;
-                    }
-                }
-                else
-                {
-                    if (maxValue * 2 > finalSize.Height / 2)
-                    {
-                        offsetY = finalSize.Height - minValue - maxValue;
-                    }
-                    else
-                    {
-                        offsetY = finalSize.Height - maxValue * 2;
-                    }
-                }
+                offsetY = (finalSize.Height - maxValue) / 2;
             }
-            else if (position == ArrowPosition.Top ||
-                     position == ArrowPosition.TopEdgeAlignedLeft ||
-                     position == ArrowPosition.TopEdgeAlignedRight)
+            else if (position == ArrowPosition.LeftEdgeAlignedTop)
             {
-                if (position == ArrowPosition.TopEdgeAlignedLeft)
+                if (maxValue * 2 > finalSize.Height / 2)
                 {
-                    offsetX = maxValue;
-                }
-                else if (position == ArrowPosition.Top)
-                {
-                    offsetX = (finalSize.Width - maxValue) / 2;
+                    offsetY = minValue;
                 }
                 else
                 {
-                    offsetX = finalSize.Width - maxValue * 2;
+                    offsetY = maxValue;
                 }
-
-                targetWidth  = maxValue;
-                targetHeight = minValue;
-            }
-            else if (position == ArrowPosition.Right ||
-                     position == ArrowPosition.RightEdgeAlignedTop ||
-                     position == ArrowPosition.RightEdgeAlignedBottom)
-            {
-                offsetX = finalSize.Width - minValue;
-                if (position == ArrowPosition.Right)
-                {
-                    offsetY = (finalSize.Height - maxValue) / 2;
-                }
-                else if (position == ArrowPosition.RightEdgeAlignedTop)
-                {
-                    if (maxValue * 2 > finalSize.Height / 2)
-                    {
-                        offsetY = minValue;
-                    }
-                    else
-                    {
-                        offsetY = maxValue;
-                    }
-                }
-                else
-                {
-                    if (maxValue * 2 > finalSize.Height / 2)
-                    {
-                        offsetY = finalSize.Height - minValue - maxValue;
-                    }
-                    else
-                    {
-                        offsetY = finalSize.Height - maxValue * 2;
-                    }
-                }
-
-                targetWidth  = minValue;
-                targetHeight = maxValue;
             }
             else
             {
-                offsetY      = finalSize.Height - minValue;
-                targetWidth  = maxValue;
-                targetHeight = minValue;
-                if (position == ArrowPosition.BottomEdgeAlignedLeft)
+                if (maxValue * 2 > finalSize.Height / 2)
                 {
-                    offsetX = maxValue;
-                }
-                else if (position == ArrowPosition.Bottom)
-                {
-                    offsetX = (finalSize.Width - maxValue) / 2;
+                    offsetY = finalSize.Height - minValue - maxValue;
                 }
                 else
                 {
-                    offsetX = finalSize.Width - maxValue * 2;
+                    offsetY = finalSize.Height - maxValue * 2;
                 }
             }
         }
-
-        var targetRect = new Rect(offsetX, offsetY, targetWidth, targetHeight);
-        var center     = targetRect.Center;
-
-        // 计算中点
-        var direction = GetDirection(position);
-        if (direction == Direction.Left || direction == Direction.Right)
+        else if (position == ArrowPosition.Top ||
+                 position == ArrowPosition.TopEdgeAlignedLeft ||
+                 position == ArrowPosition.TopEdgeAlignedRight)
         {
-            _arrowVertexPoint = (center.Y, finalSize.Height - center.Y);
+            offsetY = 0.5d;
+            if (position == ArrowPosition.TopEdgeAlignedLeft)
+            {
+                offsetX = maxValue;
+            }
+            else if (position == ArrowPosition.Top)
+            {
+                offsetX = (finalSize.Width - maxValue) / 2;
+            }
+            else
+            {
+                offsetX = finalSize.Width - maxValue * 2;
+            }
         }
-        else if (direction == Direction.Top || direction == Direction.Bottom)
+        else if (position == ArrowPosition.Right ||
+                 position == ArrowPosition.RightEdgeAlignedTop ||
+                 position == ArrowPosition.RightEdgeAlignedBottom)
         {
-            _arrowVertexPoint = (center.X, finalSize.Width - center.X);
+            offsetX = -0.5d;
+            if (position == ArrowPosition.Right)
+            {
+                offsetY = (finalSize.Height - maxValue) / 2;
+            }
+            else if (position == ArrowPosition.RightEdgeAlignedTop)
+            {
+                if (maxValue * 2 > finalSize.Height / 2)
+                {
+                    offsetY = minValue;
+                }
+                else
+                {
+                    offsetY = maxValue;
+                }
+            }
+            else
+            {
+                if (maxValue * 2 > finalSize.Height / 2)
+                {
+                    offsetY = finalSize.Height - minValue - maxValue;
+                }
+                else
+                {
+                    offsetY = finalSize.Height - maxValue * 2;
+                }
+            }
         }
-
-        return targetRect;
+        else
+        {
+            offsetY = -0.5d;
+            if (position == ArrowPosition.BottomEdgeAlignedLeft)
+            {
+                offsetX = maxValue;
+            }
+            else if (position == ArrowPosition.Bottom)
+            {
+                offsetX = (finalSize.Width - maxValue) / 2;
+            }
+            else
+            {
+                offsetX = finalSize.Width - maxValue * 2;
+            }
+        }
+        _arrowIndicatorLayout.Arrange(new Rect(new Point(offsetX, offsetY), size));
     }
-
 }

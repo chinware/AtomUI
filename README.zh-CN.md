@@ -33,22 +33,33 @@
 
 文档语言: [English](README.md) | [简体中文](README.zh-CN.md)
 
+<img src="./docs/images/Release.jpg"/>
+
 #### 介绍
 
 AtomUI 是基于 .NET 技术的 Ant Design 实现，致力于将 Ant Design 优秀而高效的设计语言和体验带入 Avalonia/.NET 跨平台桌面软件开发领域。
 欢迎与 AtomUI 进行交流并提出建议，感谢您为该项目点赞。
 
-#### 感谢 Gitee 对 AtomUI 的认可
+<img src="./docs/images/Gallery.png"/>
 
-<p align="center">
-    <img src="./docs/images/GVP.png" width="600"/>
-</p>
+#### 特性
+
+- 实现 Ant Design 提炼自企业级中后台产品的交互语言和视觉风格。
+- 开箱即用的高质量 Avalonia 组件。
+- 使用 .NET 开发，实现一处编写，无缝在主流操作系统平台编译并且渲染出一致的 UI 体验。
+- 基于 Avalonia 强大的风格系统，完整实现了 Ant Design 的主题定制能力。
 
 #### 运行环境
 
 .NET 8 及其以上<br>
 Avalonia 11.1.1 及其以上<br>
 PS: AtomUI 目前仅在 Windows 11 平台测试<br>
+
+#### 感谢 Gitee 对 AtomUI 的认可
+
+<p align="center">
+    <img src="./docs/images/GVP.png" width="600"/>
+</p>
 
 #### 中文社区
 目前我们暂时只创建 QQ 和微信开发者群的交流方式，下面是二维码，有兴趣的同学可以扫码加入：
@@ -64,106 +75,56 @@ PS: AtomUI 目前仅在 Windows 11 平台测试<br>
             </td>
         </tr>
     </tbody>
-<table>
+</table>
 
 > PS：扫码请注明来意，比如：学习`AtomUI`或者`Avalonia`爱好者
 
-#### 当前完成度
-##### (通用) General
-| Control Name | Status |
-|:-------------|:-------|
-| Button       | 已完成 ✅  |
-| PathIcon     | 已完成 ✅  |
-| SpiltButton  | 已完成 ✅ |
-
-##### （导航）Navigation
-| 控件名            | 完成情况   |
-|:---------------|:-------|
-| Breadcrumb 面包屑 | 未完成    |
-| Dropdown 下拉菜单  | 已完成 ✅  |
-| Menu 导航菜单      | 已完成 ✅  |
-| Pagination 分页  | 进行中 💪 |
-| Steps 步骤条      | 未完成    |
-
-##### （数据录入）Data Entry
-| 控件名                  | 完成情况   |
-|:---------------------|:-------|
-| AutoComplete 自动完成    | 未完成    |
-| ComboBox 下拉选择        | 进行中 💪 |
-| Cascader 级联选择        | 未完成    |
-| Checkbox 多选框         | 已完成 ✅  |
-| ColorPicker 颜色选择器    | 进行中 💪 |
-| DatePicker 日期选择框     | 进行中 💪 |
-| Form 表单              | 未完成    |
-| Input 输入框            | 已完成 ✅  |
-| NumberUpDown 数字输入框   | 已完成 ✅  |
-| ButtonSpinner 按钮切换控件 | 已完成 ✅  |
-| Mentions 提及          | 未完成    |
-| Radio 单选框            | 已完成 ✅  |
-| OptionButtonBox 单选组  | 已完成 ✅  |
-| Rate 评分              | 未完成    |
-| Select 选择器           | 进行中 💪 |
-| Slider 滑动输入条         | 已完成 ✅  |
-| Switch 开关            | 已完成 ✅  |
-| TimePicker 时间选择框     | 已完成 ✅  |
-| Transfer 穿梭框         | 未完成    |
-| Upload 上传            | 需评估 🤔 |
-
-##### （数据展示）Data Display
-| 控件名                    | 完成情况   |
-|:-----------------------|:-------|
-| Avatar 头像              | 未完成    |
-| Badge 徽标数              | 已完成 ✅  |
-| Calendar 日历            | 进行中 💪 |
-| Card 卡片                | 未完成    |
-| GroupBox 控件            | 已完成 ✅  |
-| Carousel 走马灯           | 进行中 💪 |
-| Collapse 折叠面板          | 已完成 ✅  |
-| Expander 折叠面板          | 已完成 ✅  |
-| Descriptions 描述列表      | 未完成    |
-| EmptyIndicator 空状态     | 已完成 ✅  |
-| PathIcon 图标            | 已完成 ✅  |
-| Image 图片               | 未完成    |
-| ListBox 列表             | 已完成 ✅  |
-| Popover 气泡卡片           | 已完成 ✅  |
-| QRCode 二维码             | 未完成    |
-| Segmented 分段控制器        | 已完成 ✅  |
-| Statistic 统计数值         | 未完成    |
-| Table 表格               | 未完成    |
-| TabControl 标签页         | 已完成 ✅  |
-| Tag 标签                 | 已完成 ✅  |
-| MarqueeLabel 跑马灯 Label | 已完成 ✅  |
-| Timeline 时间轴           | 进行中 💪 |
-| Tooltip 文字提示           | 已完成 ✅  |
-| Tour 漫游式引导             | 未完成    |
-| Tree 树形控件              | 已完成 ✅  |
-
-##### （反馈）Feedback
-| 控件名                  | 完成情况   |
-|:---------------------|:-------|
-| Alert 警告提示           | 已完成 ✅  |
-| Drawer 抽屉            | 已完成 ✅  |
-| Message 全局提示         | 已完成 ✅  |
-| Modal 对话框            | 进行中 💪 |
-| Notification 通知提醒框   | 已完成 ✅  |
-| Popconfirm 气泡确认框     | 已完成 ✅  |
-| ProgressBar 进度条      | 已完成 ✅  |
-| Result 结果            | 需评估 🤔 |
-| Skeleton 骨架屏         | 未完成    |
-| LoadingIndicator 加载中 | 已完成 ✅  |
-| Watermark 水印         | 已完成 ✅  |
-
 #### 运行效果部分截图
 
-#### 按钮控件
-
-![按钮控件](docs/images/controls/ButtonControl.png)
-
-#### 进度条控件
-![进度条控件](docs/images/controls/ProgressBarControl.png)
-
-#### Slider 控件
-![Slider 控件](docs/images/controls/SliderControl.png)
+<table border="0">
+    <tbody>
+        <tr>
+            <td align="center" valign="middle" style="padding: 2px">
+                 <img src="./docs/images/controls/Button.png"/>
+            </td>
+            <td align="center" valign="middle" style="padding: 2px">
+                <img src="./docs/images/controls/Badge.png" />
+            </td>
+        </tr>
+        <tr>
+            <td align="center" valign="middle" style="padding: 2px">
+                <img src="./docs/images/controls/DatePicker.png"/>
+            </td>
+            <td align="center" valign="middle" style="padding: 2px">
+                <img src="./docs/images/controls/LineEdit.png"/>
+            </td>
+        </tr>
+        <tr>
+            <td align="center" valign="middle" style="padding: 2px">
+                <img src="./docs/images/controls/Menu.png"/>
+            </td>
+            <td align="center" valign="middle" style="padding: 2px">
+                <img src="./docs/images/controls/Notification.png"/>
+            </td>
+        </tr>
+        <tr>
+            <td align="center" valign="middle" style="padding: 2px">
+                <img src="./docs/images/controls/PopupConfirm.png"/>
+            </td>
+            <td align="center" valign="middle" style="padding: 2px">
+                <img src="./docs/images/controls/ProgressBar.png"/>
+            </td>
+        </tr>
+        <tr>
+            <td align="center" valign="middle" style="padding: 2px">
+                <img src="./docs/images/controls/RadioButton.png"/>
+            </td>
+            <td align="center" valign="middle" style="padding: 2px">
+                <img src="./docs/images/controls/TreeView.png"/>
+            </td>
+        </tr>
+    </tbody>
+</table>
 
 <div style="height:50px"></div>
 

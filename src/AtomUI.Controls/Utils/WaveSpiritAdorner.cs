@@ -126,11 +126,11 @@ internal class WaveSpiritAdorner : Control
         else
         {
             var roundWavePainter = new RoundRectWavePainter();
-            roundWavePainter.CornerRadius = globalToken.SeedToken.BorderRadius;
+            roundWavePainter.CornerRadius = globalToken.BorderRadius;
             _wavePainter                  = roundWavePainter;
         }
 
-        var motionDurationSlow = globalToken.StyleToken.MotionDurationSlow;
+        var motionDurationSlow = globalToken.MotionDurationSlow;
         _wavePainter.SizeEasingCurve       = new CubicEaseOut();
         _wavePainter.OpacityEasingCurve    = new CubicEaseOut();
         _wavePainter.OriginOpacity         = Math.Clamp(globalToken.WaveStartOpacity, 0.0, 1.0);
@@ -143,7 +143,7 @@ internal class WaveSpiritAdorner : Control
         }
         else
         {
-            _wavePainter.WaveColor = globalToken.ColorToken.ColorPrimaryToken.ColorPrimary;
+            _wavePainter.WaveColor = globalToken.ColorPrimary;
         }
 
         LayoutUpdated += HandleLayoutUpdated;

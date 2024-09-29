@@ -33,107 +33,69 @@
 
 Documentation Language: [English](README.md) | [简体中文](README.zh-CN.md)
 
+<img src="./docs/images/Release.jpg"/>
+
 #### Introduce
 
 AtomUI is an implementation of Ant Design based on .NET technology, dedicated to bringing the excellent and efficient design language and experience of Ant Design to the Avalonia/.NET cross-platform desktop software development field.
 
 Welcome to communicate and give suggestions to AtomUI, thank you for giving the project a Star.
 
+<img src="./docs/images/Gallery.png"/>
 
-#### Control library completion
+#### Features
 
-##### General
-| Control Name | Status     |
-|:-------------|:-----------|
-| Button       | Completed ✅|
-| PathIcon     | Completed ✅|
-| SpiltButton  | Completed ✅|
-
-##### Navigation
-| Control Name | Status      |
-|:-------------|:------------|
-| Breadcrumb   | TODO        |
-| Dropdown     | Completed ✅ |
-| Menu         | Completed ✅ |
-| Pagination   | TODO        |
-| Steps        | TODO        |
-
-##### Data Entry
-| Control Name    | Status         |
-|:----------------|:---------------|
-| AutoComplete    | TODO           |
-| Cascader        | TODO           |
-| Checkbox        | Completed ✅    |
-| ColorPicker     | Developing 💪  |
-| DatePicker      | Developing 💪  |
-| Form            | TODO           |
-| Input           | Completed ✅    |
-| NumberUpDown    | Completed ✅    |
-| ButtonSpinner   | Completed ✅    |
-| Mentions        | TODO           |
-| Radio           | Completed ✅    |
-| OptionButtonBox | Completed ✅    |
-| Rate            | TODO           |
-| Select          | TODO           |
-| Slider          | Completed ✅    |
-| Switch          | Completed ✅    |
-| TimePicker      | Completed ✅    |
-| Transfer        | TODO           |
-| Upload          | Need Review 🤔 |
-
-##### Data Display
-| Control Name   | Status         |
-|:---------------|:---------------|
-| Avatar         | TODO           |
-| Badge          | Completed ✅    |
-| Calendar       | Developing 💪|
-| Card           | TODO           |
-| GroupBox       | Completed ✅    |
-| Carousel       | Developing 💪  |
-| Collapse       | Completed ✅    |
-| Expander       | Completed ✅    |
-| Descriptions   | TODO           |
-| EmptyIndicator | Completed ✅    |
-| Image          | TODO           |
-| ListBox        | Completed ✅    |
-| Popover        | Completed ✅    |
-| QRCode         | TODO           |
-| Segmented      | Completed ✅    |
-| Statistic      | TODO           |
-| Table          | TODO           |
-| TabControl     | Completed ✅    |
-| Tag            | Completed ✅    |
-| Timeline       | Developing 💪  |
-| Tooltip        | Completed ✅    |
-| Tour           | TODO           |
-| Tree           | Completed ✅    |
-
-##### Feedback
-| Control Name       | Status     |
-|:-------------------|:-----------|
-| Alert              | Completed ✅ |
-| Drawer             | Completed ✅ |
-| Message            | Completed ✅ |
-| Modal              | Developing 💪 |
-| Notification       | Completed ✅ |
-| Popconfirm         | Completed ✅ |
-| ProgressBar        | Completed ✅ |
-| Result             | Need Review 🤔 |
-| Skeleton           | TODO       |
-| LoadingIndicator   | Completed ✅ |
-| Watermark          | Completed ✅|
+- Enterprise-class UI designed from Ant Design system for cross platform desktop applications.
+- A set of high-quality Avalonia Controls out of the box.
+- Use .NET development to achieve one-stop writing, seamless compilation on mainstream operating system platforms and render a consistent UI experience.
+- Based on Avalonia's powerful style system, Ant Design's theme customization capabilities are fully implemented.
 
 #### Some screenshots of the running effect
 
-#### Button Controls
-
-![Button](docs/images/controls/ButtonControl.png)
-
-#### Progress bar control
-![Progress](docs/images/controls/ProgressBarControl.png)
-
-#### Slider control
-![Slider](docs/images/controls/SliderControl.png)
+<table border="0">
+    <tbody>
+        <tr>
+            <td align="center" valign="middle" style="padding: 2px">
+                 <img src="./docs/images/controls/Button.png"/>
+            </td>
+            <td align="center" valign="middle" style="padding: 2px">
+                <img src="./docs/images/controls/Badge.png" />
+            </td>
+        </tr>
+        <tr>
+            <td align="center" valign="middle" style="padding: 2px">
+                <img src="./docs/images/controls/DatePicker.png"/>
+            </td>
+            <td align="center" valign="middle" style="padding: 2px">
+                <img src="./docs/images/controls/LineEdit.png"/>
+            </td>
+        </tr>
+        <tr>
+            <td align="center" valign="middle" style="padding: 2px">
+                <img src="./docs/images/controls/Menu.png"/>
+            </td>
+            <td align="center" valign="middle" style="padding: 2px">
+                <img src="./docs/images/controls/Notification.png"/>
+            </td>
+        </tr>
+        <tr>
+            <td align="center" valign="middle" style="padding: 2px">
+                <img src="./docs/images/controls/PopupConfirm.png"/>
+            </td>
+            <td align="center" valign="middle" style="padding: 2px">
+                <img src="./docs/images/controls/ProgressBar.png"/>
+            </td>
+        </tr>
+        <tr>
+            <td align="center" valign="middle" style="padding: 2px">
+                <img src="./docs/images/controls/RadioButton.png"/>
+            </td>
+            <td align="center" valign="middle" style="padding: 2px">
+                <img src="./docs/images/controls/TreeView.png"/>
+            </td>
+        </tr>
+    </tbody>
+</table>
 
 <div style="height:50px"></div>
 

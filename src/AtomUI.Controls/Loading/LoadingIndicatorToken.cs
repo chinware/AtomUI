@@ -35,11 +35,11 @@ internal class LoadingIndicatorToken : AbstractControlDesignToken
     internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
-        var controlHeightLG = _globalToken.HeightToken.ControlHeightLG;
-        var controlHeight   = _globalToken.SeedToken.ControlHeight;
+        var controlHeightLG = _globalToken.ControlHeightLG;
+        var controlHeight   = _globalToken.ControlHeight;
         DotSize           = controlHeightLG / 2;
         DotSizeSM         = controlHeightLG * 0.35;
         DotSizeLG         = controlHeight;
-        IndicatorDuration = _globalToken.StyleToken.MotionDurationSlow * 4;
+        IndicatorDuration = _globalToken.MotionDurationSlow * 4;
     }
 }

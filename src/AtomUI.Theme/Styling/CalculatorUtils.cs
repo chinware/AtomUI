@@ -20,57 +20,51 @@ internal struct FontSizeInfo
 
 internal static class CalculatorUtils
 {
-    public static StyleMapDesignToken GenerateStyleMapToken(SeedDesignToken seedToken)
+    public static void CalculateStyleMapTokenValues(GlobalToken globalToken)
     {
-        var motionUnit   = seedToken.MotionUnit;
-        var motionBase   = seedToken.MotionBase;
-        var borderRadius = seedToken.BorderRadius.TopLeft;
-        var lineWidth    = seedToken.LineWidth;
+        var motionUnit   = globalToken.MotionUnit;
+        var motionBase   = globalToken.MotionBase;
+        var borderRadius = globalToken.BorderRadius.TopLeft;
+        var lineWidth    = globalToken.LineWidth;
 
         var radiusInfo = CalculateRadius(borderRadius);
 
-        var token = new StyleMapDesignToken
-        {
-            // motion
-            MotionDurationFast     = TimeSpan.FromMilliseconds(motionBase + motionUnit),
-            MotionDurationMid      = TimeSpan.FromMilliseconds(motionBase + motionUnit * 2),
-            MotionDurationSlow     = TimeSpan.FromMilliseconds(motionBase + motionUnit * 3),
-            MotionDurationVerySlow = TimeSpan.FromMilliseconds(motionBase + motionUnit * 8),
-            // line
-            LineWidthBold = lineWidth + 1,
-            // radius
-            BorderRadiusXS    = new CornerRadius(radiusInfo.BorderRadiusXS),
-            BorderRadiusSM    = new CornerRadius(radiusInfo.BorderRadiusSM),
-            BorderRadiusLG    = new CornerRadius(radiusInfo.BorderRadiusLG),
-            BorderRadiusOuter = new CornerRadius(radiusInfo.BorderRadiusOuter),
-            BorderThickness   = new Thickness(lineWidth)
-        };
-        return token;
+        // motion
+        globalToken.MotionDurationFast     = TimeSpan.FromMilliseconds(motionBase + motionUnit);
+        globalToken.MotionDurationMid      = TimeSpan.FromMilliseconds(motionBase + motionUnit * 2);
+        globalToken.MotionDurationSlow     = TimeSpan.FromMilliseconds(motionBase + motionUnit * 3);
+        globalToken.MotionDurationVerySlow = TimeSpan.FromMilliseconds(motionBase + motionUnit * 8);
+        
+        // line
+        globalToken.LineWidthBold = lineWidth + 1;
+        
+        // radius
+        globalToken.BorderRadiusXS    = new CornerRadius(radiusInfo.BorderRadiusXS);
+        globalToken.BorderRadiusSM    = new CornerRadius(radiusInfo.BorderRadiusSM);
+        globalToken.BorderRadiusLG    = new CornerRadius(radiusInfo.BorderRadiusLG);
+        globalToken.BorderRadiusOuter = new CornerRadius(radiusInfo.BorderRadiusOuter);
+        globalToken.BorderThickness   = new Thickness(lineWidth);
     }
 
-    public static SizeMapDesignToken GenerateSizeMapToken(SeedDesignToken seedToken)
+    public static void CalculateSizeMapTokenValues(GlobalToken globalToken)
     {
-        var sizeUnit = seedToken.SizeUnit;
-        var sizeStep = seedToken.SizeStep;
+        var sizeUnit = globalToken.SizeUnit;
+        var sizeStep = globalToken.SizeStep;
 
-        var sizeMapToken = new SizeMapDesignToken
-        {
-            SizeXXL = sizeUnit * (sizeStep + 8), // 48
-            SizeXL  = sizeUnit * (sizeStep + 4), // 32
-            SizeLG  = sizeUnit * (sizeStep + 2), // 24
-            SizeMD  = sizeUnit * (sizeStep + 1), // 20
-            SizeMS  = sizeUnit * sizeStep, // 16
-            Size    = sizeUnit * sizeStep, // 16
-            SizeSM  = sizeUnit * (sizeStep - 1), // 12
-            SizeXS  = sizeUnit * (sizeStep - 2), // 8
-            SizeXXS = sizeUnit * (sizeStep - 3) // 4
-        };
-        return sizeMapToken;
+        globalToken.SizeXXL = sizeUnit * (sizeStep + 8); // 48
+        globalToken.SizeXL  = sizeUnit * (sizeStep + 4); // 32
+        globalToken.SizeLG  = sizeUnit * (sizeStep + 2); // 24
+        globalToken.SizeMD  = sizeUnit * (sizeStep + 1); // 20
+        globalToken.SizeMS  = sizeUnit * sizeStep; // 16
+        globalToken.Size    = sizeUnit * sizeStep; // 16
+        globalToken.SizeSM  = sizeUnit * (sizeStep - 1); // 12
+        globalToken.SizeXS  = sizeUnit * (sizeStep - 2); // 8
+        globalToken.SizeXXS = sizeUnit * (sizeStep - 3); // 4
     }
 
-    public static FontMapDesignToken GenerateFontMapToken(double fontSize)
+    public static void CalculateFontMapTokenValues(GlobalToken globalToken)
     {
-        var           fontSizePairs = CalculateFontSize(fontSize);
+        var           fontSizePairs = CalculateFontSize(globalToken.FontSize); // Smaller size font-size as base
         IList<double> fontSizes     = fontSizePairs.Select(item => item.Size).ToList();
         IList<double> lineHeights   = fontSizePairs.Select(item => item.LineHeight).ToList();
 
@@ -81,46 +75,38 @@ internal static class CalculatorUtils
         var lineHeightSM = lineHeights[0];
         var lineHeightLG = lineHeights[2];
 
-        var fontMapToken = new FontMapDesignToken
-        {
-            FontSizeSM = fontSizeSM,
-            FontSize   = fontSizeMD,
-            FontSizeLG = fontSizeLG,
-            FontSizeXL = fontSizes[3],
+        globalToken.FontSizeSM = fontSizeSM;
+        globalToken.FontSize   = fontSizeMD;
+        globalToken.FontSizeLG = fontSizeLG;
+        globalToken.FontSizeXL = fontSizes[3];
 
-            FontSizeHeading1 = fontSizes[6],
-            FontSizeHeading2 = fontSizes[5],
-            FontSizeHeading3 = fontSizes[4],
-            FontSizeHeading4 = fontSizes[3],
-            FontSizeHeading5 = fontSizes[2],
+        globalToken.FontSizeHeading1 = fontSizes[6];
+        globalToken.FontSizeHeading2 = fontSizes[5];
+        globalToken.FontSizeHeading3 = fontSizes[4];
+        globalToken.FontSizeHeading4 = fontSizes[3];
+        globalToken.FontSizeHeading5 = fontSizes[2];
 
-            LineHeight   = lineHeight,
-            LineHeightLG = lineHeightLG,
-            LineHeightSM = lineHeightSM,
+        globalToken.LineHeight   = lineHeight;
+        globalToken.LineHeightLG = lineHeightLG;
+        globalToken.LineHeightSM = lineHeightSM;
 
-            FontHeight   = Math.Round(lineHeight * fontSizeMD),
-            FontHeightLG = Math.Round(lineHeightLG * fontSizeLG),
-            FontHeightSM = Math.Round(lineHeightSM * fontSizeSM),
+        globalToken.FontHeight   = Math.Round(lineHeight * fontSizeMD);
+        globalToken.FontHeightLG = Math.Round(lineHeightLG * fontSizeLG);
+        globalToken.FontHeightSM = Math.Round(lineHeightSM * fontSizeSM);
 
-            LineHeightHeading1 = lineHeights[6],
-            LineHeightHeading2 = lineHeights[5],
-            LineHeightHeading3 = lineHeights[4],
-            LineHeightHeading4 = lineHeights[3],
-            LineHeightHeading5 = lineHeights[2]
-        };
-        return fontMapToken;
+        globalToken.LineHeightHeading1 = lineHeights[6];
+        globalToken.LineHeightHeading2 = lineHeights[5];
+        globalToken.LineHeightHeading3 = lineHeights[4];
+        globalToken.LineHeightHeading4 = lineHeights[3];
+        globalToken.LineHeightHeading5 = lineHeights[2];
     }
 
-    public static HeightMapDesignToken GenerateControlHeightMapToken(SeedDesignToken seedToken)
+    public static void CalculateControlHeightMapTokenValues(GlobalToken globalToken)
     {
-        var controlHeight = seedToken.ControlHeight;
-        var token = new HeightMapDesignToken
-        {
-            ControlHeightSM = controlHeight * 0.75,
-            ControlHeightXS = controlHeight * 0.5,
-            ControlHeightLG = controlHeight * 1.25
-        };
-        return token;
+        var controlHeight = globalToken.ControlHeight;
+        globalToken.ControlHeightSM = controlHeight * 0.75;
+        globalToken.ControlHeightXS = controlHeight * 0.5;
+        globalToken.ControlHeightLG = controlHeight * 1.25;
     }
 
     public static double CalculateLineHeight(double fontSize)

@@ -5,7 +5,7 @@ using Avalonia.Media;
 namespace AtomUI.Controls;
 
 [ControlDesignToken]
-public class MessageToken : AbstractControlDesignToken
+internal class MessageToken : AbstractControlDesignToken
 {
     public const string ID = "Message";
 
@@ -47,13 +47,13 @@ public class MessageToken : AbstractControlDesignToken
     internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
-        ContentBg = _globalToken.ColorToken.ColorNeutralToken.ColorBgElevated;
+        ContentBg = _globalToken.ColorBgElevated;
         ContentPadding = new Thickness(
-            (_globalToken.HeightToken.ControlHeightLG -
-             _globalToken.FontToken.FontSize * _globalToken.FontToken.LineHeight) / 2,
+            (_globalToken.ControlHeightLG -
+             _globalToken.FontSize * _globalToken.LineHeight) / 2,
             _globalToken.PaddingXS);
         MessageIconMargin = new Thickness(0, 0, _globalToken.MarginXS, 0);
         MessageTopMargin  = new Thickness(_globalToken.Margin, _globalToken.Margin, _globalToken.Margin, 0);
-        MessageIconSize   = _globalToken.FontToken.FontSizeSM * _globalToken.FontToken.LineHeightSM;
+        MessageIconSize   = _globalToken.FontSizeSM * _globalToken.LineHeightSM;
     }
 }

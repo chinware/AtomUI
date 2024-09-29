@@ -6,6 +6,7 @@ using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives.PopupPositioning;
+using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Metadata;
@@ -149,9 +150,9 @@ public class Flyout : PopupFlyoutBase
             }
         }
 
-        var placement = Placement;
-        var anchor    = PlacementAnchor;
-        var gravity   = PlacementGravity;
+        var placement = popup.Placement;
+        var anchor    = popup.PlacementAnchor;
+        var gravity   = popup.PlacementGravity;
 
         if (flyoutPresenter is not null)
         {
@@ -178,11 +179,11 @@ public class Flyout : PopupFlyoutBase
     protected internal override void NotifyPopupCreated(Popup popup)
     {
         base.NotifyPopupCreated(popup);
-        BindUtils.RelayBind(this, PlacementProperty, popup, Avalonia.Controls.Primitives.Popup.PlacementProperty);
+        BindUtils.RelayBind(this, PlacementProperty, popup, Popup.PlacementProperty);
         BindUtils.RelayBind(this, PlacementAnchorProperty, popup,
-            Avalonia.Controls.Primitives.Popup.PlacementAnchorProperty);
+            Popup.PlacementAnchorProperty);
         BindUtils.RelayBind(this, PlacementGravityProperty, popup,
-            Avalonia.Controls.Primitives.Popup.PlacementGravityProperty);
+            Popup.PlacementGravityProperty);
         BindUtils.RelayBind(this, MaskShadowsProperty, popup, Popup.MaskShadowsProperty);
         SetupArrowPosition(popup);
     }

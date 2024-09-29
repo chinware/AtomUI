@@ -77,16 +77,15 @@ internal class SegmentedToken : AbstractControlDesignToken
     internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
-        var colorNeutralToken = _globalToken.ColorToken.ColorNeutralToken;
-        TrackPadding      = new Thickness(_globalToken.StyleToken.LineWidthBold);
-        TrackBg           = colorNeutralToken.ColorBgLayout;
+        TrackPadding      = new Thickness(_globalToken.LineWidthBold);
+        TrackBg           = _globalToken.ColorBgLayout;
         ItemColor         = _globalToken.ColorTextLabel;
-        ItemHoverColor    = colorNeutralToken.ColorText;
-        ItemHoverBg       = colorNeutralToken.ColorFillSecondary;
-        ItemSelectedBg    = colorNeutralToken.ColorBgElevated;
-        ItemActiveBg      = colorNeutralToken.ColorFill;
-        ItemSelectedColor = colorNeutralToken.ColorText;
-        var lineWidth = _globalToken.SeedToken.LineWidth;
+        ItemHoverColor    = _globalToken.ColorText;
+        ItemHoverBg       = _globalToken.ColorFillSecondary;
+        ItemSelectedBg    = _globalToken.ColorBgElevated;
+        ItemActiveBg      = _globalToken.ColorFill;
+        ItemSelectedColor = _globalToken.ColorText;
+        var lineWidth = _globalToken.LineWidth;
         SegmentedItemPadding = new Thickness(
             Math.Max(_globalToken.ControlPadding - lineWidth, 0),
             0,
@@ -99,8 +98,8 @@ internal class SegmentedToken : AbstractControlDesignToken
             0);
         SegmentedItemContentMargin = new Thickness(_globalToken.PaddingXXS, 0, 0, 0);
 
-        ItemMinHeightLG = _globalToken.HeightToken.ControlHeightLG - TrackPadding.Top - TrackPadding.Bottom;
-        ItemMinHeight   = _globalToken.SeedToken.ControlHeight - TrackPadding.Top - TrackPadding.Bottom;
-        ItemMinHeightSM = _globalToken.HeightToken.ControlHeightSM - TrackPadding.Top - TrackPadding.Bottom;
+        ItemMinHeightLG = _globalToken.ControlHeightLG - TrackPadding.Top - TrackPadding.Bottom;
+        ItemMinHeight   = _globalToken.ControlHeight - TrackPadding.Top - TrackPadding.Bottom;
+        ItemMinHeightSM = _globalToken.ControlHeightSM - TrackPadding.Top - TrackPadding.Bottom;
     }
 }

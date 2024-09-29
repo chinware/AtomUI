@@ -1,16 +1,16 @@
-﻿using AtomUI.Controls.MotionScene;
+﻿using AtomUI.Controls.Primitives;
 using AtomUI.Controls.Utils;
-using AtomUI.MotionScene;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
+using Avalonia.Animation;
+using Avalonia.Animation.Easings;
 using Avalonia.Automation.Peers;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Mixins;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
-using Avalonia.Layout;
 
 namespace AtomUI.Controls;
 
@@ -183,7 +183,7 @@ public class CollapseItem : HeaderedContentControl, ISelectable
     }
 
     private bool _enableAnimation = true;
-    private AnimationTargetPanel? _animationTarget;
+    private MotionActorControl? _motionActor;
     private Border? _headerDecorator;
     private IconButton? _expandButton;
 
@@ -225,7 +225,7 @@ public class CollapseItem : HeaderedContentControl, ISelectable
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _animationTarget = e.NameScope.Find<AnimationTargetPanel>(CollapseItemTheme.ContentAnimationTargetPart);
+        _motionActor     = e.NameScope.Find<MotionActorControl>(CollapseItemTheme.ContentMotionActorPart);
         _headerDecorator = e.NameScope.Find<Border>(CollapseItemTheme.HeaderDecoratorPart);
         _expandButton    = e.NameScope.Find<IconButton>(CollapseItemTheme.ExpandButtonPart);
         TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, GlobalTokenResourceKey.MotionDurationSlow);
@@ -296,65 +296,51 @@ public class CollapseItem : HeaderedContentControl, ISelectable
 
     private void ExpandItemContent()
     {
-        if (_animationTarget is null || InAnimating)
+        if (_motionActor is null || InAnimating)
         {
             return;
         }
 
         if (!_enableAnimation)
         {
-            _animationTarget.IsVisible = true;
+            _motionActor.IsVisible = true;
             return;
         }
-
-        _animationTarget.IsVisible = true;
-        LayoutHelper.MeasureChild(_animationTarget, new Size(Bounds.Width, double.PositiveInfinity), new Thickness());
+        
         InAnimating = true;
-        var director = Director.Instance;
-        var motion   = new ExpandMotion();
-        motion.ConfigureOpacity(MotionDuration);
-        motion.ConfigureHeight(MotionDuration);
-        var motionActor = new MotionActor(_animationTarget, motion);
-        motionActor.DispatchInSceneLayer = false;
-        _animationTarget.InAnimation     = true;
-        motionActor.Completed += (sender, args) =>
+        var slideDownInMotionConfig = MotionFactory.BuildSlideUpInMotion(MotionDuration, new CubicEaseOut(),
+            FillMode.Forward);
+        _motionActor.RenderTransformOrigin = slideDownInMotionConfig.RenderTransformOrigin;
+        MotionInvoker.Invoke(_motionActor, slideDownInMotionConfig, () =>
         {
-            _animationTarget.InAnimation = false;
-            InAnimating                  = false;
-        };
-        director?.Schedule(motionActor);
+            _motionActor.SetCurrentValue(IsVisibleProperty, true);
+        }, () =>
+        {
+            InAnimating = false;
+        });
     }
 
     private void CollapseItemContent()
     {
-        if (_animationTarget is null || InAnimating)
+        if (_motionActor is null || InAnimating)
         {
             return;
         }
 
         if (!_enableAnimation)
         {
-            _animationTarget.IsVisible = false;
+            _motionActor.IsVisible = false;
             return;
         }
 
         InAnimating = true;
-
-        LayoutHelper.MeasureChild(_animationTarget, new Size(Bounds.Width, double.PositiveInfinity), new Thickness());
-        var director = Director.Instance;
-        var motion   = new CollapseMotion();
-        motion.ConfigureOpacity(MotionDuration);
-        motion.ConfigureHeight(MotionDuration);
-        var motionActor = new MotionActor(_animationTarget!, motion);
-        motionActor.DispatchInSceneLayer = false;
-        _animationTarget.InAnimation     = true;
-        motionActor.Completed += (sender, args) =>
+        var slideDownOutMotionConfig = MotionFactory.BuildSlideUpOutMotion(MotionDuration, new CubicEaseIn(),
+            FillMode.Forward);
+        MotionInvoker.Invoke(_motionActor, slideDownOutMotionConfig, null, () =>
         {
-            InAnimating                  = false;
-            _animationTarget.InAnimation = false;
-            _animationTarget.IsVisible   = false;
-        };
-        director?.Schedule(motionActor);
+            _motionActor.SetCurrentValue(IsVisibleProperty, false);
+            InAnimating = false;
+        });
     }
 
     private void SetupIconButton()

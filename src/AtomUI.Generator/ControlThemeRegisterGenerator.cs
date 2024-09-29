@@ -7,11 +7,10 @@ namespace AtomUI.Generator;
 [Generator]
 public class ControlThemeRegisterGenerator : IIncrementalGenerator
 {
-    public const string ControlDesignTokenAttribute = "AtomUI.Theme.Styling.ControlThemeProviderAttribute";
-
     public void Initialize(IncrementalGeneratorInitializationContext initContext)
     {
-        var controlThemesProvider = initContext.SyntaxProvider.ForAttributeWithMetadataName(ControlDesignTokenAttribute,
+        var controlThemesProvider = initContext.SyntaxProvider.ForAttributeWithMetadataName(
+            TargetMarkConstants.ControlThemeProviderAttribute,
             (node, token) => true,
             (context, token) =>
             {

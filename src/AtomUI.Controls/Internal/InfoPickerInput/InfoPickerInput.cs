@@ -200,6 +200,7 @@ public abstract class InfoPickerInput : TemplatedControl
         _flyoutStateHelper.FlyoutAboutToShow        += HandleFlyoutAboutToShow;
         _flyoutStateHelper.FlyoutAboutToClose       += HandleFlyoutAboutToClose;
         _flyoutStateHelper.FlyoutOpened             += HandleFlyoutOpened;
+        _flyoutStateHelper.FlyoutClosed             += HandleFlyoutClosed;
         _flyoutStateHelper.OpenFlyoutPredicate      =  FlyoutOpenPredicate;
         _flyoutStateHelper.ClickHideFlyoutPredicate =  ClickHideFlyoutPredicate;
     }
@@ -238,11 +239,19 @@ public abstract class InfoPickerInput : TemplatedControl
         NotifyFlyoutOpened();
     }
     
-
     protected virtual void NotifyFlyoutOpened()
     {
     }
-    
+
+    private void HandleFlyoutClosed(object? sender, EventArgs args)
+    {
+        NotifyFlyoutClosed();
+    }
+
+    protected virtual void NotifyFlyoutClosed()
+    {
+    }
+
     protected virtual bool ClickHideFlyoutPredicate(IPopupHostProvider hostProvider, RawPointerEventArgs args)
     {
         if (hostProvider.PopupHost != args.Root)

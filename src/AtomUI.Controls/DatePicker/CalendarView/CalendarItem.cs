@@ -13,7 +13,6 @@ using Avalonia.Input;
 using Avalonia.Input.Raw;
 using Avalonia.Interactivity;
 using Avalonia.Media;
-using Avalonia.Threading;
 
 namespace AtomUI.Controls.CalendarView;
 
@@ -225,10 +224,7 @@ internal class CalendarItem : TemplatedControl
 
     private void PopulateGrids()
     {
-        if (MonthView != null)
-        {
-            PopulateMonthViewGrids(MonthView);
-        }
+        PopulateMonthViewsGrid();
 
         if (YearView != null)
         {
@@ -263,7 +259,15 @@ internal class CalendarItem : TemplatedControl
         }
     }
 
-    private void PopulateMonthViewGrids(Grid monthView)
+    protected virtual void PopulateMonthViewsGrid()
+    {
+        if (MonthView != null)
+        {
+            PopulateMonthViewGrid(MonthView);
+        }
+    }
+
+    protected void PopulateMonthViewGrid(Grid monthView)
     {
         var       childCount = Calendar.RowsPerMonth + Calendar.RowsPerMonth * Calendar.ColumnsPerMonth;
         using var children   = new PooledList<Control>(childCount);
@@ -315,17 +319,17 @@ internal class CalendarItem : TemplatedControl
     /// </summary>
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        HeaderButton   = e.NameScope.Find<HeadTextButton>(CalendarItemTheme.HeaderButtonPart);
-        PreviousButton = e.NameScope.Find<IconButton>(CalendarItemTheme.PreviousButtonPart);
+        HeaderButton   = e.NameScope.Get<HeadTextButton>(CalendarItemTheme.HeaderButtonPart);
+        PreviousButton = e.NameScope.Get<IconButton>(CalendarItemTheme.PreviousButtonPart);
         PreviousMonthButton =
-            e.NameScope.Find<IconButton>(CalendarItemTheme.PreviousMonthButtonPart);
-        NextButton      = e.NameScope.Find<IconButton>(CalendarItemTheme.NextButtonPart);
-        NextMonthButton = e.NameScope.Find<IconButton>(CalendarItemTheme.NextMonthButtonPart);
+            e.NameScope.Get<IconButton>(CalendarItemTheme.PreviousMonthButtonPart);
+        NextButton      = e.NameScope.Get<IconButton>(CalendarItemTheme.NextButtonPart);
+        NextMonthButton = e.NameScope.Get<IconButton>(CalendarItemTheme.NextMonthButtonPart);
 
-        MonthViewLayout          = e.NameScope.Find<UniformGrid>(CalendarItemTheme.MonthViewLayoutPart);
-        MonthView   = e.NameScope.Find<Grid>(CalendarItemTheme.MonthViewPart);
-        YearView           = e.NameScope.Find<Grid>(CalendarItemTheme.YearViewPart);
-        _headerLayout      = e.NameScope.Find<UniformGrid>(CalendarItemTheme.HeaderLayoutPart);
+        MonthViewLayout = e.NameScope.Get<UniformGrid>(CalendarItemTheme.MonthViewLayoutPart);
+        MonthView       = e.NameScope.Get<Grid>(CalendarItemTheme.MonthViewPart);
+        YearView        = e.NameScope.Get<Grid>(CalendarItemTheme.YearViewPart);
+        _headerLayout   = e.NameScope.Get<UniformGrid>(CalendarItemTheme.HeaderLayoutPart);
 
         if (Owner != null)
         {
@@ -373,7 +377,7 @@ internal class CalendarItem : TemplatedControl
         SetupHeaderForDisplayModeChanged();
     }
 
-    private void SetupHeaderForDisplayModeChanged()
+    protected virtual void SetupHeaderForDisplayModeChanged()
     {
         if (Owner is null || MonthViewLayout is null || _headerLayout is null)
         {
@@ -383,7 +387,7 @@ internal class CalendarItem : TemplatedControl
         IsMonthViewMode = Owner.DisplayMode == CalendarMode.Month;
     }
 
-    protected void SetDayTitles()
+    protected virtual void SetDayTitles()
     {
         if (MonthView is not null)
         {
@@ -455,10 +459,15 @@ internal class CalendarItem : TemplatedControl
         if (MonthViewLayout != null)
         {
             SetDayTitles();
-            if (MonthView is not null)
-            {
-                SetCalendarDayButtons(_currentMonth, MonthView);
-            }
+            SetCalendarDayButtons();
+        }
+    }
+
+    protected virtual void SetCalendarDayButtons()
+    {
+        if (MonthView is not null)
+        {
+            SetCalendarDayButtons(_currentMonth, MonthView);
         }
     }
 
@@ -540,17 +549,12 @@ internal class CalendarItem : TemplatedControl
 
                 // SET IF THE DAY IS INACTIVE OR NOT: set if the day is a
                 // trailing day or not
-                childButton.IsInactive = CheckDayInactiveState(dateToAdd);
+                childButton.IsInactive = CheckDayInactiveState(childButton, dateToAdd);
 
                 // SET IF THE DAY IS TODAY OR NOT
                 childButton.IsToday = CheckDayIsTodayState(dateToAdd);
 
-                // SET IF THE DAY IS SELECTED OR NOT
-                childButton.IsSelected = false;
-                if (Owner.SelectedDate.HasValue)
-                {
-                    childButton.IsSelected = DateTimeHelper.CompareDays(Owner.SelectedDate.Value, dateToAdd) == 0;
-                }
+                CheckButtonSelectedState(childButton, dateToAdd);
 
                 // SET THE FOCUS ELEMENT
                 if (Owner.LastSelectedDate != null)
@@ -577,7 +581,20 @@ internal class CalendarItem : TemplatedControl
         }
     }
 
-    protected virtual bool CheckDayInactiveState(DateTime dateToAdd)
+    protected virtual void CheckButtonSelectedState(CalendarDayButton childButton, DateTime dateToAdd)
+    {
+        // SET IF THE DAY IS SELECTED OR NOT
+        childButton.IsSelected = false;
+        if (Owner is not null)
+        {
+            if (Owner.SelectedDate.HasValue)
+            {
+                childButton.IsSelected = DateTimeHelper.CompareDays(Owner.SelectedDate.Value, dateToAdd) == 0;
+            }
+        }
+    }
+
+    protected virtual bool CheckDayInactiveState(CalendarDayButton childButton, DateTime dateToAdd)
     {
         if (Owner is not null)
         {
@@ -985,13 +1002,21 @@ internal class CalendarItem : TemplatedControl
             if (sender is CalendarDayButton
                 {
                     IsEnabled: true, IsBlackout: false, DataContext: DateTime selectedDate
-                } b)
+                } dayButton)
             {
-                Owner.NotifyHoverDateChanged(selectedDate);
+                NotifyCellMouseEntered(dayButton, selectedDate);
             }
         }
     }
 
+    protected virtual void NotifyCellMouseEntered(CalendarDayButton dayButton, DateTime selectedDate)
+    {
+        if (Owner != null)
+        {
+            Owner.NotifyHoverDateChanged(selectedDate);
+        }
+    }
+    
     internal void HandleCellMouseLeftButtonDown(object? sender, PointerPressedEventArgs e)
     {
         if (Owner != null)
@@ -1001,14 +1026,22 @@ internal class CalendarItem : TemplatedControl
                 Owner.Focus();
             }
 
-            if (sender is CalendarDayButton b)
+            if (sender is CalendarDayButton dayButton)
             {
-                if (b.IsEnabled && !b.IsBlackout && b.DataContext is DateTime selectedDate)
-                {
-                    Owner.SelectedDate = selectedDate;
-                    Owner.NotifyDateSelected();
-                    Owner.UpdateHighlightDays();
-                }
+                NotifyCellMouseLeftButtonDown(dayButton);
+            }
+        }
+    }
+
+    protected virtual void NotifyCellMouseLeftButtonDown(CalendarDayButton dayButton)
+    {
+        if (Owner is not null)
+        {
+            if (dayButton.IsEnabled && !dayButton.IsBlackout && dayButton.DataContext is DateTime selectedDate)
+            {
+                Owner.SelectedDate = selectedDate;
+                Owner.NotifyDateSelected();
+                Owner.UpdateHighlightDays();
             }
         }
     }
@@ -1017,17 +1050,27 @@ internal class CalendarItem : TemplatedControl
     {
         if (Owner != null)
         {
-            CalendarDayButton? b = sender as CalendarDayButton;
-            if (b != null && !b.IsBlackout)
+            if (sender is CalendarDayButton dayButton)
             {
-                Owner.OnDayButtonMouseUp(e);
-            }
+                if (!dayButton.IsBlackout)
+                {
+                    Owner.OnDayButtonMouseUp(e);
+                }
 
-            if (b != null && b.DataContext is DateTime selectedDate)
+                NotifyCellMouseLeftButtonUp(dayButton);
+            }
+        }
+    }
+
+    protected virtual void NotifyCellMouseLeftButtonUp(CalendarDayButton dayButton)
+    {
+        if (Owner is not null)
+        {
+            if (dayButton.DataContext is DateTime selectedDate)
             {
                 // If the day is Disabled but a trailing day we should
                 // be able to switch months
-                if (b.IsInactive)
+                if (dayButton.IsInactive)
                 {
                     Owner.NotifyDayClick(selectedDate);
                 }
@@ -1099,15 +1142,27 @@ internal class CalendarItem : TemplatedControl
 
         if (args is RawPointerEventArgs pointerEventArgs)
         {
+            var originState = Owner.IsPointerInMonthView;
             if (!IsPointerInMonthView(pointerEventArgs.Position))
             {
                 Owner.IsPointerInMonthView = false;
+                NotifyPointerOutMonthView(originState);
             }
             else
             {
                 Owner.IsPointerInMonthView = true;
+                NotifyPointerInMonthView(originState);
             }
         }
+    }
+
+    protected virtual void NotifyPointerInMonthView(bool originInMonthView)
+    {
+    }
+    
+    protected virtual void NotifyPointerOutMonthView(bool originInMonthView)
+    {
+        
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
@@ -1131,7 +1186,7 @@ internal class CalendarItem : TemplatedControl
         return false;
     }
 
-    private Rect GetMonthViewRect(Grid monthView)
+    protected Rect GetMonthViewRect(Grid monthView)
     {
         var firstDay     = (monthView.Children[7] as CalendarDayButton)!;
         var firstDayPos  = firstDay.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(monthView)!) ?? default;

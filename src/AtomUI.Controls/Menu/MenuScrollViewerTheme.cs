@@ -22,7 +22,6 @@ internal class MenuScrollViewerTheme : BaseControlTheme
     public const string ScrollUpButtonPart = "PART_ScrollUpButton";
     public const string ScrollDownButtonPart = "PART_ScrollDownButton";
     public const string ScrollViewContentPart = "PART_ContentPresenter";
-    public const string MainContainerPart = "PART_MainContainer";
 
     public MenuScrollViewerTheme()
         : base(typeof(MenuScrollViewer))
@@ -51,9 +50,9 @@ internal class MenuScrollViewerTheme : BaseControlTheme
             };
             CreateTemplateParentBinding(scrollUpButton, Avalonia.Controls.Button.CommandProperty,
                 nameof(MenuScrollViewer.LineUp));
-            TokenResourceBinder.CreateTokenBinding(scrollUpButton.Icon, Layoutable.WidthProperty,
+            TokenResourceBinder.CreateTokenBinding(scrollUpButton, IconButton.IconWidthProperty,
                 MenuTokenResourceKey.ScrollButtonIconSize);
-            TokenResourceBinder.CreateTokenBinding(scrollUpButton.Icon, Layoutable.HeightProperty,
+            TokenResourceBinder.CreateTokenBinding(scrollUpButton, IconButton.IconHeightProperty,
                 MenuTokenResourceKey.ScrollButtonIconSize);
             DockPanel.SetDock(scrollUpButton, Dock.Top);
             var scrollDownButton = new IconButton
@@ -70,9 +69,9 @@ internal class MenuScrollViewerTheme : BaseControlTheme
             };
             CreateTemplateParentBinding(scrollDownButton, Avalonia.Controls.Button.CommandProperty,
                 nameof(MenuScrollViewer.LineDown));
-            TokenResourceBinder.CreateTokenBinding(scrollDownButton.Icon, Layoutable.WidthProperty,
+            TokenResourceBinder.CreateTokenBinding(scrollDownButton, IconButton.IconWidthProperty,
                 MenuTokenResourceKey.ScrollButtonIconSize);
-            TokenResourceBinder.CreateTokenBinding(scrollDownButton.Icon, Layoutable.HeightProperty,
+            TokenResourceBinder.CreateTokenBinding(scrollDownButton, IconButton.IconHeightProperty,
                 MenuTokenResourceKey.ScrollButtonIconSize);
             DockPanel.SetDock(scrollDownButton, Dock.Bottom);
 

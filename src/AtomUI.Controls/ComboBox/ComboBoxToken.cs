@@ -88,20 +88,19 @@ internal class ComboBoxToken : ButtonSpinnerToken
     {
         base.CalculateFromAlias();
         OpenIndicatorWidth  = _globalToken.IconSizeSM * 2.5;
-        PopupBorderRadius   = _globalToken.StyleToken.BorderRadiusLG;
+        PopupBorderRadius   = _globalToken.BorderRadiusLG;
         PopupContentPadding = new Thickness(_globalToken.PaddingXXS, PopupBorderRadius.TopLeft / 2);
         PopupBoxShadows     = _globalToken.BoxShadowsSecondary;
         PopupMarginToAnchor = _globalToken.MarginXXS;
-
-        var colorNeutralToken  = _globalToken.ColorToken.ColorNeutralToken;
+        
         var colorTextDisabled  = _globalToken.ColorTextDisabled;
-        var colorTextSecondary = colorNeutralToken.ColorTextSecondary;
-        var colorBgContainer   = colorNeutralToken.ColorBgContainer;
+        var colorTextSecondary = _globalToken.ColorTextSecondary;
+        var colorBgContainer   = _globalToken.ColorBgContainer;
         var colorBgTextHover   = _globalToken.ColorBgTextHover;
 
         ItemColor         = colorTextSecondary;
         ItemHoverColor    = colorTextSecondary;
-        ItemSelectedColor = colorNeutralToken.ColorText;
+        ItemSelectedColor = _globalToken.ColorText;
 
         ItemBgColor         = colorBgContainer;
         ItemHoverBgColor    = colorBgTextHover;

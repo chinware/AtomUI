@@ -1,4 +1,5 @@
 using AtomUI.Theme.TokenSystem;
+using Avalonia;
 using Avalonia.Media;
 
 namespace AtomUI.Controls;
@@ -27,7 +28,10 @@ internal class RadioButtonToken : AbstractControlDesignToken
     public Color RadioColor { get; set; }
 
     public Color RadioBgColor { get; set; }
+    
     public double DotPadding { get; set; }
+    
+    public Thickness TextMargin { get; set; }
 
     public RadioButtonToken()
         : base(ID)
@@ -37,15 +41,12 @@ internal class RadioButtonToken : AbstractControlDesignToken
     internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
-        var colorNeutralToken = _globalToken.ColorToken.ColorNeutralToken;
-        var colorPrimaryToken = _globalToken.ColorToken.ColorPrimaryToken;
-        var seedToken         = _globalToken.SeedToken;
-        var wireFrame         = seedToken.Wireframe;
-        var lineWidth         = seedToken.LineWidth;
-        var fontSizeLG        = _globalToken.FontToken.FontSizeLG;
-        var colorBgContainer  = colorNeutralToken.ColorBgContainer;
-        var colorPrimary      = colorPrimaryToken.ColorPrimary;
-        var colorWhite        = _globalToken.ColorToken.ColorWhite;
+        var wireFrame        = _globalToken.Wireframe;
+        var lineWidth        = _globalToken.LineWidth;
+        var fontSizeLG       = _globalToken.FontSizeLG;
+        var colorBgContainer = _globalToken.ColorBgContainer;
+        var colorPrimary     = _globalToken.ColorPrimary;
+        var colorWhite       = _globalToken.ColorWhite;
 
         var dotPadding = 4; // 魔术值，需要看有没有好办法消除
         var radioSize  = fontSizeLG;
@@ -62,5 +63,6 @@ internal class RadioButtonToken : AbstractControlDesignToken
         // internal
         RadioColor   = wireFrame ? colorPrimary : colorWhite;
         RadioBgColor = wireFrame ? colorBgContainer : colorPrimary;
+        TextMargin   = new Thickness(_globalToken.MarginXXS, 0, 0, 0);
     }
 }

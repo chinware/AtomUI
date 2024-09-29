@@ -49,6 +49,11 @@ internal static class DateTimeHelper
     {
         return DateTime.Compare(DiscardTime(dt1), DiscardTime(dt2));
     }
+    
+    public static int CompareDateTime(DateTime dt1, DateTime dt2)
+    {
+        return DateTime.Compare(dt1, dt2);
+    }
 
     public static int CompareYearMonth(DateTime dt1, DateTime dt2)
     {

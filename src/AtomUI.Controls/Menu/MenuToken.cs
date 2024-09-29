@@ -249,26 +249,24 @@ internal class MenuToken : AbstractControlDesignToken
     internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
-        var colorErrorToken   = _globalToken.ColorToken.ColorErrorToken;
-        var colorNeutralToken = _globalToken.ColorToken.ColorNeutralToken;
 
         var colorTextDisabled  = _globalToken.ColorTextDisabled;
-        var colorError         = colorErrorToken.ColorError;
-        var colorTextSecondary = colorNeutralToken.ColorTextQuaternary;
-        var colorBgContainer   = colorNeutralToken.ColorBgContainer;
+        var colorError         = _globalToken.ColorError;
+        var colorTextSecondary = _globalToken.ColorTextQuaternary;
+        var colorBgContainer   = _globalToken.ColorBgContainer;
         var colorBgTextHover   = _globalToken.ColorBgTextHover;
-        var colorBgElevated    = colorNeutralToken.ColorBgElevated;
+        var colorBgElevated    = _globalToken.ColorBgElevated;
         var padding            = _globalToken.Padding;
-        var controlHeight      = _globalToken.SeedToken.ControlHeight;
-        var controlHeightSM    = _globalToken.HeightToken.ControlHeightSM;
-        var controlHeightLG    = _globalToken.HeightToken.ControlHeightLG;
+        var controlHeight      = _globalToken.ControlHeight;
+        var controlHeightSM    = _globalToken.ControlHeightSM;
+        var controlHeightLG    = _globalToken.ControlHeightLG;
 
-        var fontSize   = _globalToken.FontToken.FontSize;
-        var fontSizeLG = _globalToken.FontToken.FontSizeLG;
+        var fontSize   = _globalToken.FontSize;
+        var fontSizeLG = _globalToken.FontSizeLG;
 
         KeyGestureColor  = colorTextSecondary;
-        ItemBorderRadius = _globalToken.SeedToken.BorderRadius;
-        ItemColor        = colorNeutralToken.ColorText;
+        ItemBorderRadius = _globalToken.BorderRadius;
+        ItemColor        = _globalToken.ColorText;
         ItemHoverColor   = ItemColor;
         ItemBg           = colorBgContainer;
         ItemHoverBg      = colorBgTextHover;
@@ -288,17 +286,17 @@ internal class MenuToken : AbstractControlDesignToken
         ItemIconSize            = _globalToken.IconSize;
         ItemIconMarginInlineEnd = controlHeightSM - fontSize;
 
-        TopLevelItemColor         = colorNeutralToken.ColorText;
-        TopLevelItemSelectedColor = colorNeutralToken.ColorTextSecondary;
-        TopLevelItemHoverColor    = colorNeutralToken.ColorTextSecondary;
+        TopLevelItemColor         = _globalToken.ColorText;
+        TopLevelItemSelectedColor = _globalToken.ColorTextSecondary;
+        TopLevelItemHoverColor    = _globalToken.ColorTextSecondary;
 
         TopLevelItemBg         = colorBgContainer;
         TopLevelItemHoverBg    = colorBgTextHover;
         TopLevelItemSelectedBg = colorBgTextHover;
 
-        TopLevelItemBorderRadiusSM = _globalToken.StyleToken.BorderRadiusSM;
-        TopLevelItemBorderRadius   = _globalToken.SeedToken.BorderRadius;
-        TopLevelItemBorderRadiusLG = _globalToken.StyleToken.BorderRadiusLG;
+        TopLevelItemBorderRadiusSM = _globalToken.BorderRadiusSM;
+        TopLevelItemBorderRadius   = _globalToken.BorderRadius;
+        TopLevelItemBorderRadiusLG = _globalToken.BorderRadiusLG;
 
         TopLevelItemFontSize   = !double.IsNaN(TopLevelItemFontSize) ? TopLevelItemFontSize : fontSize;
         TopLevelItemFontSizeSM = !double.IsNaN(TopLevelItemFontSizeSM) ? TopLevelItemFontSizeSM : fontSize;
@@ -323,7 +321,7 @@ internal class MenuToken : AbstractControlDesignToken
 
         TopLevelItemPopupMarginToAnchor = _globalToken.MarginXXS;
 
-        MenuPopupBorderRadius = _globalToken.StyleToken.BorderRadiusLG;
+        MenuPopupBorderRadius = _globalToken.BorderRadiusLG;
 
         MenuPopupMinWidth = 120;
         MenuPopupMaxWidth = 800;
@@ -331,7 +329,7 @@ internal class MenuToken : AbstractControlDesignToken
         MenuPopupMinHeight = ItemHeight * 3;
         MenuPopupMaxHeight = ItemHeight * 30;
 
-        SeparatorItemHeight = _globalToken.SeedToken.LineWidth * 5; // 上下两像素，留一像素给自己
+        SeparatorItemHeight = _globalToken.LineWidth * 5; // 上下两像素，留一像素给自己
 
         MenuTearOffHeight = ItemHeight * 1.2; // 暂时这么定义吧
 

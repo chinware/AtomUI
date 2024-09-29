@@ -82,15 +82,14 @@ internal class ListBoxToken : AbstractControlDesignToken
     internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
-        var colorNeutralToken  = _globalToken.ColorToken.ColorNeutralToken;
         var colorTextDisabled  = _globalToken.ColorTextDisabled;
-        var colorTextSecondary = colorNeutralToken.ColorTextSecondary;
-        var colorBgContainer   = colorNeutralToken.ColorBgContainer;
+        var colorTextSecondary = _globalToken.ColorTextSecondary;
+        var colorBgContainer   = _globalToken.ColorBgContainer;
         var colorBgTextHover   = _globalToken.ColorBgTextHover;
 
         ItemColor         = colorTextSecondary;
         ItemHoverColor    = colorTextSecondary;
-        ItemSelectedColor = colorNeutralToken.ColorText;
+        ItemSelectedColor = _globalToken.ColorText;
 
         ItemBgColor         = colorBgContainer;
         ItemHoverBgColor    = colorBgTextHover;

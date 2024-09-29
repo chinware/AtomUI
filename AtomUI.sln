@@ -1,31 +1,34 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtomUI.Theme", "src\AtomUI.Theme\AtomUI.Theme.csproj", "{87085491-3C99-4C8F-8FA6-F179B9569CE8}"
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35125.118
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AtomUI.Theme", "src\AtomUI.Theme\AtomUI.Theme.csproj", "{87085491-3C99-4C8F-8FA6-F179B9569CE8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtomUI.Base", "src\AtomUI.Base\AtomUI.Base.csproj", "{8FFEB15F-7E48-4AF4-B708-8E96A68CF2D9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AtomUI.Base", "src\AtomUI.Base\AtomUI.Base.csproj", "{8FFEB15F-7E48-4AF4-B708-8E96A68CF2D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtomUI.Icon", "src\AtomUI.Icon\AtomUI.Icon.csproj", "{B2A7349B-4B38-45CB-8D22-3E06D1E3650F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AtomUI.Icon", "src\AtomUI.Icon\AtomUI.Icon.csproj", "{B2A7349B-4B38-45CB-8D22-3E06D1E3650F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtomUI.Icon.Generator", "src\AtomUI.Icon.Generator\AtomUI.Icon.Generator.csproj", "{954FB7F2-7706-4E2B-86D1-624F66C1EFF0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AtomUI.Icon.Generator", "src\AtomUI.Icon.Generator\AtomUI.Icon.Generator.csproj", "{954FB7F2-7706-4E2B-86D1-624F66C1EFF0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtomUI.Icon.AntDesign", "src\AtomUI.Icon.AntDesign\AtomUI.Icon.AntDesign.csproj", "{021AE0B0-B148-4925-9C22-EBD5A7B43E95}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AtomUI.Icon.AntDesign", "src\AtomUI.Icon.AntDesign\AtomUI.Icon.AntDesign.csproj", "{021AE0B0-B148-4925-9C22-EBD5A7B43E95}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtomUI.Generator", "src\AtomUI.Generator\AtomUI.Generator.csproj", "{30910056-F8F6-4429-B25E-722C57440210}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AtomUI.Generator", "src\AtomUI.Generator\AtomUI.Generator.csproj", "{30910056-F8F6-4429-B25E-722C57440210}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtomUI.Demo.Desktop", "Samples\AtomUI.Demo.Desktop\AtomUI.Demo.Desktop.csproj", "{59931F42-8DD8-4DFC-9060-563841F39669}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AtomUI.Demo.Desktop", "Samples\AtomUI.Demo.Desktop\AtomUI.Demo.Desktop.csproj", "{59931F42-8DD8-4DFC-9060-563841F39669}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtomUI.TestBase", "tests\AtomUI.TestBase\AtomUI.TestBase.csproj", "{EADEF2AC-B7E5-436A-8B39-8BBECF8706AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AtomUI.TestBase", "tests\AtomUI.TestBase\AtomUI.TestBase.csproj", "{EADEF2AC-B7E5-436A-8B39-8BBECF8706AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtomUI.Base.Tests", "tests\AtomUI.Base.Tests\AtomUI.Base.Tests.csproj", "{E41D737A-5CF0-4B33-9F51-2C1B1541659C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AtomUI.Base.Tests", "tests\AtomUI.Base.Tests\AtomUI.Base.Tests.csproj", "{E41D737A-5CF0-4B33-9F51-2C1B1541659C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtomUI.Controls", "src\AtomUI.Controls\AtomUI.Controls.csproj", "{A07CB66E-7A5F-4C44-BB16-02A0A99D6C2D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AtomUI.Controls", "src\AtomUI.Controls\AtomUI.Controls.csproj", "{A07CB66E-7A5F-4C44-BB16-02A0A99D6C2D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{5EB2524C-30A5-4031-B424-4510E36C753E}"
 	ProjectSection(SolutionItems) = preProject
-		Directory.Build.props = Directory.Build.props
-		Directory.Packages.props = Directory.Packages.props
-		Directory.Build.targets = Directory.Build.targets
 		build\Common.props = build\Common.props
+		Directory.Build.props = Directory.Build.props
+		Directory.Build.targets = Directory.Build.targets
+		Directory.Packages.props = Directory.Packages.props
 		build\Internal.Using.props = build\Internal.Using.props
 		build\Nuget.props = build\Nuget.props
 		build\Output.App.props = build\Output.App.props
@@ -38,7 +41,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{279BC2C9
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Generators", "Generators", "{B4C46C3E-0CCC-4861-95B6-CA08D501A46F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtomUI", "packages\AtomUI\AtomUI.csproj", "{89A98C0D-B6F7-48CD-91C4-79FC0FED3615}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AtomUI", "packages\AtomUI\AtomUI.csproj", "{89A98C0D-B6F7-48CD-91C4-79FC0FED3615}"
+	ProjectSection(ProjectDependencies) = postProject
+		{021AE0B0-B148-4925-9C22-EBD5A7B43E95} = {021AE0B0-B148-4925-9C22-EBD5A7B43E95}
+		{87085491-3C99-4C8F-8FA6-F179B9569CE8} = {87085491-3C99-4C8F-8FA6-F179B9569CE8}
+		{8FFEB15F-7E48-4AF4-B708-8E96A68CF2D9} = {8FFEB15F-7E48-4AF4-B708-8E96A68CF2D9}
+		{A07CB66E-7A5F-4C44-BB16-02A0A99D6C2D} = {A07CB66E-7A5F-4C44-BB16-02A0A99D6C2D}
+		{B2A7349B-4B38-45CB-8D22-3E06D1E3650F} = {B2A7349B-4B38-45CB-8D22-3E06D1E3650F}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -73,15 +83,12 @@ Global
 		{59931F42-8DD8-4DFC-9060-563841F39669}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{59931F42-8DD8-4DFC-9060-563841F39669}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{59931F42-8DD8-4DFC-9060-563841F39669}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{59931F42-8DD8-4DFC-9060-563841F39669}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EADEF2AC-B7E5-436A-8B39-8BBECF8706AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EADEF2AC-B7E5-436A-8B39-8BBECF8706AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EADEF2AC-B7E5-436A-8B39-8BBECF8706AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EADEF2AC-B7E5-436A-8B39-8BBECF8706AB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E41D737A-5CF0-4B33-9F51-2C1B1541659C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E41D737A-5CF0-4B33-9F51-2C1B1541659C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E41D737A-5CF0-4B33-9F51-2C1B1541659C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E41D737A-5CF0-4B33-9F51-2C1B1541659C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A07CB66E-7A5F-4C44-BB16-02A0A99D6C2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A07CB66E-7A5F-4C44-BB16-02A0A99D6C2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A07CB66E-7A5F-4C44-BB16-02A0A99D6C2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -89,13 +96,18 @@ Global
 		{89A98C0D-B6F7-48CD-91C4-79FC0FED3615}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{89A98C0D-B6F7-48CD-91C4-79FC0FED3615}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{89A98C0D-B6F7-48CD-91C4-79FC0FED3615}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{89A98C0D-B6F7-48CD-91C4-79FC0FED3615}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{E41D737A-5CF0-4B33-9F51-2C1B1541659C} = {279BC2C9-A818-4D6C-9274-678649932057}
-		{59931F42-8DD8-4DFC-9060-563841F39669} = {279BC2C9-A818-4D6C-9274-678649932057}
 		{954FB7F2-7706-4E2B-86D1-624F66C1EFF0} = {B4C46C3E-0CCC-4861-95B6-CA08D501A46F}
 		{30910056-F8F6-4429-B25E-722C57440210} = {B4C46C3E-0CCC-4861-95B6-CA08D501A46F}
+		{59931F42-8DD8-4DFC-9060-563841F39669} = {279BC2C9-A818-4D6C-9274-678649932057}
 		{EADEF2AC-B7E5-436A-8B39-8BBECF8706AB} = {279BC2C9-A818-4D6C-9274-678649932057}
+		{E41D737A-5CF0-4B33-9F51-2C1B1541659C} = {279BC2C9-A818-4D6C-9274-678649932057}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {056F1B83-F604-4F7D-A255-0B40FB31A8F6}
 	EndGlobalSection
 EndGlobal

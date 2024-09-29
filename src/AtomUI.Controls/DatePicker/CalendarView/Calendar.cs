@@ -13,16 +13,15 @@ namespace AtomUI.Controls.CalendarView;
 
 public class DateSelectedEventArgs : EventArgs
 {
-    public DateTime? Value { get; }
+    public DateTime? Date { get; }
     public DateSelectedEventArgs(DateTime? value)
     {
-        Value = value;
+        Date = value;
     }
 }
 
-[TemplatePart(RangeCalendarTheme.CalendarItemPart, typeof(CalendarItem))]
-[TemplatePart(RangeCalendarTheme.RootPart, typeof(Panel))]
-public class Calendar : TemplatedControl
+[TemplatePart(CalendarTheme.CalendarItemPart, typeof(CalendarItem))]
+internal class Calendar : TemplatedControl
 {
     internal const int RowsPerMonth = 7;
     internal const int ColumnsPerMonth = 7;
@@ -446,8 +445,8 @@ public class Calendar : TemplatedControl
     /// <param name="e">The DependencyPropertyChangedEventArgs.</param>
     private void OnDisplayModePropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
-        var mode         = (CalendarMode)e.NewValue!;
-        var oldMode      = (CalendarMode)e.OldValue!;
+        var mode    = (CalendarMode)e.NewValue!;
+        var oldMode = (CalendarMode)e.OldValue!;
 
         if (CalendarItem != null)
         {
@@ -527,13 +526,17 @@ public class Calendar : TemplatedControl
             return;
         }
 
-        c.DisplayDateInternal          = DateTimeHelper.DiscardDayTime(addedDate);
-
+        c.SetupDisplayDateInternal(addedDate);
         c.UpdateMonths();
         c.OnDisplayDate(new CalendarDateChangedEventArgs(removedDate, addedDate));
     }
+
+    protected virtual void SetupDisplayDateInternal(DateTime displayDate)
+    {
+        DisplayDateInternal = DateTimeHelper.DiscardDayTime(displayDate);
+    }
     
-     protected void OnDisplayDate(CalendarDateChangedEventArgs e)
+    protected void OnDisplayDate(CalendarDateChangedEventArgs e)
     {
         DisplayDateChanged?.Invoke(this, e);
     }
@@ -663,9 +666,10 @@ public class Calendar : TemplatedControl
         }
     }
 
-    internal void ResetStates()
+    internal virtual void ResetStates()
     {
-        var count        = RowsPerMonth * ColumnsPerMonth;
+        var count = RowsPerMonth * ColumnsPerMonth;
+        
         if (CalendarItem?.MonthView != null)
         {
             for (var childIndex = ColumnsPerMonth; childIndex < count; childIndex++)
@@ -903,7 +907,12 @@ public class Calendar : TemplatedControl
         DateSelected?.Invoke(this, new DateSelectedEventArgs(SelectedDate));
     }
     
-    internal void NotifyHoverDateChanged(DateTime? hoverDate)
+    internal void NotifyDateSelected(DateTime? selected)
+    {
+        DateSelected?.Invoke(this, new DateSelectedEventArgs(selected));
+    }
+    
+    internal virtual void NotifyHoverDateChanged(DateTime? hoverDate)
     {
         HoverDateChanged?.Invoke(this, new DateSelectedEventArgs(hoverDate));
     }
@@ -1412,7 +1421,7 @@ public class Calendar : TemplatedControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        CalendarItem = e.NameScope.Find<CalendarItem>(RangeCalendarTheme.CalendarItemPart);
+        CalendarItem = e.NameScope.Find<CalendarItem>(CalendarTheme.CalendarItemPart);
 
         if (SelectedDate is not null)
         {
@@ -1470,27 +1479,22 @@ public class Calendar : TemplatedControl
         Debug.Assert(CalendarItem is not null);
         if (CalendarItem.MonthView is not null)
         {
-            var monthView = CalendarItem.MonthView;
-            var count     = monthView.Children.Count;
-            for (var i = 0; i < count; i++)
+            UnHighlightDays(CalendarItem.MonthView);
+        }
+    }
+
+    protected void UnHighlightDays(Grid monthView)
+    {
+        var count     = monthView.Children.Count;
+        for (var i = 0; i < count; i++)
+        {
+            if (monthView.Children[i] is CalendarDayButton dayButton)
             {
-                if (monthView.Children[i] is CalendarDayButton b)
-                {
-                    b.IsSelected = false;
-                }
+                dayButton.IsSelected = false;
             }
         }
     }
-
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
-    {
-        base.OnPropertyChanged(change);
-        if (change.Property == SelectedDateProperty)
-        {
-            UpdateHighlightDays();
-        }
-    }
-
+    
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);

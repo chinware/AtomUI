@@ -6,8 +6,11 @@ using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Diagnostics;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Primitives.PopupPositioning;
+using Avalonia.Input;
+using Avalonia.Input.Raw;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
@@ -64,8 +67,10 @@ public class Popup : AvaloniaPopup
 
     private PopupShadowLayer? _shadowLayer;
     private CompositeDisposable? _compositeDisposable;
+    private IDisposable? _selfLightDismissDisposable;
     private bool _initialized;
     private ManagedPopupPositionerInfo? _managedPopupPositioner;
+    private bool _isNeedFlip = true;
     protected bool _animating;
 
     // 当鼠标移走了，但是打开动画还没完成，我们需要记录下来这个信号
@@ -76,13 +81,14 @@ public class Popup : AvaloniaPopup
         AffectsMeasure<Popup>(PlacementProperty);
         AffectsMeasure<Popup>(PlacementAnchorProperty);
         AffectsMeasure<Popup>(PlacementGravityProperty);
+        
+        IsLightDismissEnabledProperty.OverrideDefaultValue<Popup>(false);
     }
 
     public Popup()
     {
-        IsLightDismissEnabled =  false;
-        Closed                += HandleClosed;
-        Opened                += HandleOpened;
+        Closed += HandleClosed;
+        Opened += HandleOpened;
     }
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -123,7 +129,9 @@ public class Popup : AvaloniaPopup
         VerticalOffset   = offsetY;
 
         _compositeDisposable?.Dispose();
-        _shadowLayer = null;
+        _selfLightDismissDisposable?.Dispose();
+        _firstDetected = true;
+        _shadowLayer   = null;
     }
 
     private void HandleOpened(object? sender, EventArgs? args)
@@ -147,14 +155,52 @@ public class Popup : AvaloniaPopup
                     "Unable to create shadow layer, top level for PlacementTarget is null.");
             }
 
-            if (Placement != PlacementMode.Pointer && Placement != PlacementMode.Center)
+            if (_isNeedFlip)
             {
-                AdjustPopupHostPosition(placementTarget);
+                if (Placement != PlacementMode.Pointer && Placement != PlacementMode.Center)
+                {
+                    AdjustPopupHostPosition(placementTarget!);
+                }
             }
-
+            
             if (!_animating)
             {
                 CreateShadowLayer();
+            }
+
+            // 如果没有启动，我们使用自己的处理函数，一版是为了增加我们自己的动画效果
+            if (!IsLightDismissEnabled)
+            {
+                var inputManager = AvaloniaLocator.Current.GetService<IInputManager>()!;
+                _selfLightDismissDisposable = inputManager.Process.Subscribe(HandleMouseClick);
+            }
+        }
+    }
+    
+    private bool _firstDetected = true;
+    
+    private void HandleMouseClick(RawInputEventArgs args)
+    {
+        if (!IsOpen)
+        {
+            return;
+        }
+        if (args is RawPointerEventArgs pointerEventArgs)
+        {
+            if (pointerEventArgs.Type == RawPointerEventType.LeftButtonUp)
+            {
+                if (_firstDetected)
+                {
+                    _firstDetected = false;
+                    return;
+                }
+                if (this is IPopupHostProvider popupHostProvider)
+                {
+                    if (popupHostProvider.PopupHost != pointerEventArgs.Root)
+                    {
+                        CloseAnimation();
+                    }
+                }
             }
         }
     }
@@ -266,6 +312,7 @@ public class Popup : AvaloniaPopup
                ?? new Rect(0, 0, double.MaxValue, double.MaxValue);
     }
 
+    // TODO review 后可能需要删除
     private static IReadOnlyList<ManagedPopupPositionerScreenInfo> GetScreenInfos(TopLevel topLevel)
     {
         if (topLevel is WindowBase window)
@@ -276,10 +323,11 @@ public class Popup : AvaloniaPopup
                                  new ManagedPopupPositionerScreenInfo(s.Bounds.ToRect(1), s.WorkingArea.ToRect(1)))
                              .ToArray();
         }
-
+    
         return Array.Empty<ManagedPopupPositionerScreenInfo>();
     }
-
+    
+    // TODO review 后可能需要删除
     private static Rect GetParentClientAreaScreenGeometry(TopLevel topLevel)
     {
         // Popup positioner operates with abstract coordinates, but in our case they are pixel ones
@@ -291,8 +339,6 @@ public class Popup : AvaloniaPopup
     /// <summary>
     /// 在这里处理翻转问题
     /// </summary>
-    /// <param name="popupHost"></param>
-    /// <param name="placementTarget"></param>
     internal void AdjustPopupHostPosition(Control placementTarget)
     {
         var offsetX = HorizontalOffset;
@@ -307,8 +353,7 @@ public class Popup : AvaloniaPopup
         var direction = PopupUtils.GetDirection(Placement);
         var topLevel  = TopLevel.GetTopLevel(placementTarget)!;
 
-        if (Placement != PlacementMode.Center &&
-            Placement != PlacementMode.Pointer)
+        if (Placement != PlacementMode.Center && Placement != PlacementMode.Pointer)
         {
             // 计算是否 flip
             var parameters = new PopupPositionerParameters();
@@ -422,16 +467,18 @@ public class Popup : AvaloniaPopup
 
         _animating = true;
 
+        var placementTarget = GetEffectivePlacementTarget();
+        
         Open();
+
         var popupRoot = (Host as PopupRoot)!;
         // 获取 popup 的具体位置，这个就是非常准确的位置，还有大小
         // TODO 暂时只支持 WindowBase popup
         popupRoot.Hide();
-        var popupOffset     = popupRoot.PlatformImpl!.Position;
-        var offset          = new Point(popupOffset.X, popupOffset.Y);
-        var placementTarget = GetEffectivePlacementTarget();
-        var topLevel        = TopLevel.GetTopLevel(placementTarget);
-        var scaling         = topLevel?.RenderScaling ?? 1.0;
+        var popupOffset = popupRoot.PlatformImpl!.Position;
+        var offset      = new Point(popupOffset.X, popupOffset.Y);
+        var topLevel    = TopLevel.GetTopLevel(placementTarget);
+        var scaling     = topLevel?.RenderScaling ?? 1.0;
 
         // 调度动画
         var director = Director.Instance;
@@ -446,8 +493,9 @@ public class Popup : AvaloniaPopup
 
         motionActor.Completed += (sender, args) =>
         {
-            popupRoot.Show();
             CreateShadowLayer();
+            popupRoot.Show();
+   
             if (RequestCloseWhereAnimationCompleted)
             {
                 RequestCloseWhereAnimationCompleted = false;
@@ -499,7 +547,8 @@ public class Popup : AvaloniaPopup
 
         motionActor.Completed += (sender, args) =>
         {
-            _animating = false;
+            _animating  = false;
+            _isNeedFlip = true;
             Close();
             if (closed is not null)
             {

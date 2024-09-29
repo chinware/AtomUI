@@ -23,22 +23,21 @@ public abstract class AbstractThemeVariantCalculator : IThemeVariantCalculator
         return default!;
     }
 
-    protected virtual ColorNeutralMapDesignToken GenerateNeutralColorPalettes(Color? bgBaseColor, Color? textBaseColor)
+    protected virtual void CalculateNeutralColorPalettes(Color? bgBaseColor, Color? textBaseColor, GlobalToken globalToken)
     {
-        return default!;
     }
 
-    public abstract MapDesignToken Calculate(SeedDesignToken seedToken, MapDesignToken sourceToken);
+    public abstract void Calculate(GlobalToken globalToken);
 
-    protected ColorMapDesignToken GenerateColorMapToken(SeedDesignToken seedToken)
+    protected void CalculateColorMapTokenValues(GlobalToken globalToken)
     {
-        var colorSuccessBase = seedToken.ColorSuccess;
-        var colorWarningBase = seedToken.ColorWarning;
-        var colorErrorBase   = seedToken.ColorError;
-        var colorInfoBase    = seedToken.ColorInfo;
-        var colorPrimaryBase = seedToken.ColorPrimary;
-        var colorBgBase      = seedToken.ColorBgBase;
-        var colorTextBase    = seedToken.ColorTextBase;
+        var colorSuccessBase = globalToken.ColorSuccess;
+        var colorWarningBase = globalToken.ColorWarning;
+        var colorErrorBase   = globalToken.ColorError;
+        var colorInfoBase    = globalToken.ColorInfo;
+        var colorPrimaryBase = globalToken.ColorPrimary;
+        var colorBgBase      = globalToken.ColorBgBase;
+        var colorTextBase    = globalToken.ColorTextBase;
 
         var primaryColors = GenerateColorPalettes(colorPrimaryBase);
         var successColors = GenerateColorPalettes(colorSuccessBase);
@@ -46,97 +45,74 @@ public abstract class AbstractThemeVariantCalculator : IThemeVariantCalculator
         var errorColors   = GenerateColorPalettes(colorErrorBase);
         var infoColors    = GenerateColorPalettes(colorInfoBase);
 
-        var colorNeutralMapToken = GenerateNeutralColorPalettes(colorBgBase, colorTextBase);
-        var colorLink            = seedToken.ColorLink ?? seedToken.ColorInfo;
+        CalculateNeutralColorPalettes(colorBgBase, colorTextBase, globalToken);
+        var colorLink            = globalToken.ColorLink ?? globalToken.ColorInfo;
         var linkColors           = GenerateColorPalettes(colorLink);
-        var colorMapDesignToken = new ColorMapDesignToken
-        {
-            ColorNeutralToken = colorNeutralMapToken,
-            ColorPrimaryToken = new ColorPrimaryMapDesignToken
-            {
-                ColorPrimaryBg          = primaryColors.Color1,
-                ColorPrimaryBgHover     = primaryColors.Color2,
-                ColorPrimaryBorder      = primaryColors.Color3,
-                ColorPrimaryBorderHover = primaryColors.Color4,
-                ColorPrimaryHover       = primaryColors.Color5,
-                ColorPrimary            = primaryColors.Color6,
-                ColorPrimaryActive      = primaryColors.Color7,
-                ColorPrimaryTextHover   = primaryColors.Color8,
-                ColorPrimaryText        = primaryColors.Color9,
-                ColorPrimaryTextActive  = primaryColors.Color10
-            },
 
-            ColorSuccessToken = new ColorSuccessMapDesignToken
-            {
-                ColorSuccessBg          = successColors.Color1,
-                ColorSuccessBgHover     = successColors.Color2,
-                ColorSuccessBorder      = successColors.Color3,
-                ColorSuccessBorderHover = successColors.Color4,
-                ColorSuccessHover       = successColors.Color4,
-                ColorSuccess            = successColors.Color6,
-                ColorSuccessActive      = successColors.Color7,
-                ColorSuccessTextHover   = successColors.Color8,
-                ColorSuccessText        = successColors.Color9,
-                ColorSuccessTextActive  = successColors.Color10
-            },
+        globalToken.ColorPrimaryBg          = primaryColors.Color1;
+        globalToken.ColorPrimaryBgHover     = primaryColors.Color2;
+        globalToken.ColorPrimaryBorder      = primaryColors.Color3;
+        globalToken.ColorPrimaryBorderHover = primaryColors.Color4;
+        globalToken.ColorPrimaryHover       = primaryColors.Color5;
+        globalToken.ColorPrimary            = primaryColors.Color6;
+        globalToken.ColorPrimaryActive      = primaryColors.Color7;
+        globalToken.ColorPrimaryTextHover   = primaryColors.Color8;
+        globalToken.ColorPrimaryText        = primaryColors.Color9;
+        globalToken.ColorPrimaryTextActive  = primaryColors.Color10;
 
-            ColorErrorToken = new ColorErrorMapDesignToken
-            {
-                ColorErrorBg          = errorColors.Color1,
-                ColorErrorBgHover     = errorColors.Color2,
-                ColorErrorBgActive    = errorColors.Color3,
-                ColorErrorBorder      = errorColors.Color3,
-                ColorErrorBorderHover = errorColors.Color4,
-                ColorErrorHover       = errorColors.Color5,
-                ColorError            = errorColors.Color6,
-                ColorErrorActive      = errorColors.Color7,
-                ColorErrorTextHover   = errorColors.Color8,
-                ColorErrorText        = errorColors.Color9,
-                ColorErrorTextActive  = errorColors.Color10
-            },
+        globalToken.ColorSuccessBg          = successColors.Color1;
+        globalToken.ColorSuccessBgHover     = successColors.Color2;
+        globalToken.ColorSuccessBorder      = successColors.Color3;
+        globalToken.ColorSuccessBorderHover = successColors.Color4;
+        globalToken.ColorSuccessHover       = successColors.Color4;
+        globalToken.ColorSuccess            = successColors.Color6;
+        globalToken.ColorSuccessActive      = successColors.Color7;
+        globalToken.ColorSuccessTextHover   = successColors.Color8;
+        globalToken.ColorSuccessText        = successColors.Color9;
+        globalToken.ColorSuccessTextActive  = successColors.Color10;
 
-            ColorWarningToken = new ColorWarningMapDesignToken
-            {
-                ColorWarningBg          = warningColors.Color1,
-                ColorWarningBgHover     = warningColors.Color2,
-                ColorWarningBorder      = warningColors.Color3,
-                ColorWarningBorderHover = warningColors.Color4,
-                ColorWarningHover       = warningColors.Color4,
-                ColorWarning            = warningColors.Color6,
-                ColorWarningActive      = warningColors.Color7,
-                ColorWarningTextHover   = warningColors.Color8,
-                ColorWarningText        = warningColors.Color9,
-                ColorWarningTextActive  = warningColors.Color10
-            },
+        globalToken.ColorErrorBg          = errorColors.Color1;
+        globalToken.ColorErrorBgHover     = errorColors.Color2;
+        globalToken.ColorErrorBgActive    = errorColors.Color3;
+        globalToken.ColorErrorBorder      = errorColors.Color3;
+        globalToken.ColorErrorBorderHover = errorColors.Color4;
+        globalToken.ColorErrorHover       = errorColors.Color5;
+        globalToken.ColorError            = errorColors.Color6;
+        globalToken.ColorErrorActive      = errorColors.Color7;
+        globalToken.ColorErrorTextHover   = errorColors.Color8;
+        globalToken.ColorErrorText        = errorColors.Color9;
+        globalToken.ColorErrorTextActive  = errorColors.Color10;
 
-            ColorInfoToken = new ColorInfoMapDesignToken
-            {
-                ColorInfoBg          = infoColors.Color1,
-                ColorInfoBgHover     = infoColors.Color2,
-                ColorInfoBorder      = infoColors.Color3,
-                ColorInfoBorderHover = infoColors.Color4,
-                ColorInfoHover       = infoColors.Color4,
-                ColorInfo            = infoColors.Color6,
-                ColorInfoActive      = infoColors.Color7,
-                ColorInfoTextHover   = infoColors.Color8,
-                ColorInfoText        = infoColors.Color9,
-                ColorInfoTextActive  = infoColors.Color10
-            },
+        globalToken.ColorWarningBg          = warningColors.Color1;
+        globalToken.ColorWarningBgHover     = warningColors.Color2;
+        globalToken.ColorWarningBorder      = warningColors.Color3;
+        globalToken.ColorWarningBorderHover = warningColors.Color4;
+        globalToken.ColorWarningHover       = warningColors.Color4;
+        globalToken.ColorWarning            = warningColors.Color6;
+        globalToken.ColorWarningActive      = warningColors.Color7;
+        globalToken.ColorWarningTextHover   = warningColors.Color8;
+        globalToken.ColorWarningText        = warningColors.Color9;
+        globalToken.ColorWarningTextActive  = warningColors.Color10;
 
-            ColorLinkToken = new ColorLinkMapDesignToken
-            {
-                ColorLinkHover  = linkColors.Color4,
-                ColorLink       = linkColors.Color6,
-                ColorLinkActive = linkColors.Color7
-            },
+        globalToken.ColorInfoBg          = infoColors.Color1;
+        globalToken.ColorInfoBgHover     = infoColors.Color2;
+        globalToken.ColorInfoBorder      = infoColors.Color3;
+        globalToken.ColorInfoBorderHover = infoColors.Color4;
+        globalToken.ColorInfoHover       = infoColors.Color4;
+        globalToken.ColorInfo            = infoColors.Color6;
+        globalToken.ColorInfoActive      = infoColors.Color7;
+        globalToken.ColorInfoTextHover   = infoColors.Color8;
+        globalToken.ColorInfoText        = infoColors.Color9;
+        globalToken.ColorInfoTextActive  = infoColors.Color10;
 
-            ColorBgMask         = ColorUtils.FromRgbF(0.45, 0, 0, 0),
-            ColorWhite          = Color.FromRgb(255, 255, 255),
-            ColorBlack          = Color.FromRgb(0, 0, 0),
-            SelectionBackground = primaryColors.Color6,
-            SelectionForeground = Color.FromRgb(255, 255, 255)
-        };
+        globalToken.ColorLinkHover  = linkColors.Color4;
+        globalToken.ColorLink       = linkColors.Color6;
+        globalToken.ColorLinkActive = linkColors.Color7;
 
-        return colorMapDesignToken;
+        globalToken.ColorBgMask         = ColorUtils.FromRgbF(0.45, 0, 0, 0);
+        globalToken.ColorWhite         = Color.FromRgb(255, 255, 255);
+        globalToken.ColorBlack         = Color.FromRgb(0, 0, 0);
+        globalToken.SelectionBackground = primaryColors.Color6;
+        globalToken.SelectionForeground = Color.FromRgb(255, 255, 255);
     }
 }

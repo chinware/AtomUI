@@ -37,18 +37,22 @@ internal class CalendarTheme : BaseControlTheme
             CreateTemplateParentBinding(frame, Border.MinWidthProperty, Calendar.MinWidthProperty);
             CreateTemplateParentBinding(frame, Border.MinHeightProperty, Calendar.MinHeightProperty);
 
-            var calendarItem = new CalendarItem
-            {
-                Name                = CalendarItemPart,
-                HorizontalAlignment = HorizontalAlignment.Stretch
-            };
-
-            calendarItem.RegisterInNameScope(scope);
-
-            frame.Child = calendarItem;
+            frame.Child = BuildCalendarItem(scope);
 
             return frame;
         });
+    }
+
+    protected virtual CalendarItem BuildCalendarItem(INameScope scope)
+    {
+        var calendarItem = new CalendarItem
+        {
+            Name                = CalendarItemPart,
+            HorizontalAlignment = HorizontalAlignment.Stretch
+        };
+
+        calendarItem.RegisterInNameScope(scope);
+        return calendarItem;
     }
 
     protected override void BuildStyles()

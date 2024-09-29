@@ -1,4 +1,5 @@
-﻿using Avalonia;
+﻿using AtomUI.Controls.Primitives;
+using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Media;
@@ -6,13 +7,13 @@ using Avalonia.Styling;
 
 namespace AtomUI.Controls.Utils;
 
-public static partial class MotionFactory
+internal static partial class MotionFactory
 {
     public static MotionConfig BuildCollapseMotion(Direction direction, TimeSpan duration, Easing? easing = null,
                                                    FillMode fillMode = FillMode.None)
     {
         easing ??= new CircularEaseOut();
-        var           animations      = new List<IAnimation>();
+        var           animations      = new List<Animation>();
         RelativePoint transformOrigin = default;
         var           isHorizontal    = direction == Direction.Left || direction == Direction.Right;
         var animation = new Animation
@@ -37,8 +38,8 @@ public static partial class MotionFactory
             {
                 var scaleXSetter = new Setter
                 {
-                    Property = ScaleTransform.ScaleXProperty,
-                    Value    = 1.0
+                    Property = MotionActorControl.MotionTransformProperty,
+                    Value    = BuildScaleXTransform(1.0)
                 };
                 startFrame.Setters.Add(scaleXSetter);
             }
@@ -46,8 +47,8 @@ public static partial class MotionFactory
             {
                 var scaleYSetter = new Setter
                 {
-                    Property = ScaleTransform.ScaleYProperty,
-                    Value    = 1.0
+                    Property = MotionActorControl.MotionTransformProperty,
+                    Value    = BuildScaleYTransform(1.0)
                 };
                 startFrame.Setters.Add(scaleYSetter);
             }
@@ -69,8 +70,8 @@ public static partial class MotionFactory
             {
                 var scaleXSetter = new Setter
                 {
-                    Property = ScaleTransform.ScaleXProperty,
-                    Value    = 0.0
+                    Property = MotionActorControl.MotionTransformProperty,
+                    Value    = BuildScaleXTransform(0.0)
                 };
                 endFrame.Setters.Add(scaleXSetter);
             }
@@ -78,8 +79,8 @@ public static partial class MotionFactory
             {
                 var scaleYSetter = new Setter
                 {
-                    Property = ScaleTransform.ScaleYProperty,
-                    Value    = 0.0
+                    Property = MotionActorControl.MotionTransformProperty,
+                    Value    = BuildScaleYTransform(0.0)
                 };
                 endFrame.Setters.Add(scaleYSetter);
             }
@@ -110,7 +111,7 @@ public static partial class MotionFactory
                                                  FillMode fillMode = FillMode.None)
     {
         easing ??= new CircularEaseOut();
-        var           animations      = new List<IAnimation>();
+        var           animations      = new List<Animation>();
         RelativePoint transformOrigin = default;
         var           isHorizontal    = direction == Direction.Left || direction == Direction.Right;
         var animation = new Animation
@@ -135,8 +136,8 @@ public static partial class MotionFactory
             {
                 var scaleXSetter = new Setter
                 {
-                    Property = ScaleTransform.ScaleXProperty,
-                    Value    = 0.0
+                    Property = MotionActorControl.MotionTransformProperty,
+                    Value    = BuildScaleXTransform(0.01)
                 };
                 startFrame.Setters.Add(scaleXSetter);
             }
@@ -144,8 +145,8 @@ public static partial class MotionFactory
             {
                 var scaleYSetter = new Setter
                 {
-                    Property = ScaleTransform.ScaleYProperty,
-                    Value    = 0.0
+                    Property = MotionActorControl.MotionTransformProperty,
+                    Value    = BuildScaleYTransform(0.01)
                 };
                 startFrame.Setters.Add(scaleYSetter);
             }
@@ -167,8 +168,8 @@ public static partial class MotionFactory
             {
                 var scaleXSetter = new Setter
                 {
-                    Property = ScaleTransform.ScaleXProperty,
-                    Value    = 1.0
+                    Property = MotionActorControl.MotionTransformProperty,
+                    Value    = BuildScaleXTransform(1.0)
                 };
                 endFrame.Setters.Add(scaleXSetter);
             }
@@ -176,8 +177,8 @@ public static partial class MotionFactory
             {
                 var scaleYSetter = new Setter
                 {
-                    Property = ScaleTransform.ScaleYProperty,
-                    Value    = 1.0
+                    Property = MotionActorControl.MotionTransformProperty,
+                    Value    = BuildScaleYTransform(1.0)
                 };
                 endFrame.Setters.Add(scaleYSetter);
             }

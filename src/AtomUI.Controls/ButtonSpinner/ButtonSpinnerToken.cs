@@ -62,15 +62,14 @@ internal class ButtonSpinnerToken : LineEditToken
     internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
-        var colorNeutral = _globalToken.ColorToken.ColorNeutralToken;
         ControlWidth   = 90;
-        HandleWidth    = _globalToken.HeightToken.ControlHeightSM;
-        HandleIconSize = _globalToken.FontToken.FontSize / 2;
+        HandleWidth    = _globalToken.ControlHeightSM;
+        HandleIconSize = _globalToken.FontSize / 2;
         HandleActiveBg = _globalToken.ColorFillAlter;
-        HandleBg       = colorNeutral.ColorBgContainer;
-        FilledHandleBg = ColorUtils.OnBackground(colorNeutral.ColorFillSecondary,
+        HandleBg       = _globalToken.ColorBgContainer;
+        FilledHandleBg = ColorUtils.OnBackground(_globalToken.ColorFillSecondary,
             HandleBg);
-        HandleHoverColor  = _globalToken.ColorToken.ColorPrimaryToken.ColorPrimary;
-        HandleBorderColor = colorNeutral.ColorBorder;
+        HandleHoverColor  = _globalToken.ColorPrimary;
+        HandleBorderColor = _globalToken.ColorBorder;
     }
 }

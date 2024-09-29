@@ -284,7 +284,7 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
         SetupPickerIndicatorPosition();
     }
     
-    private void SetupPickerIndicatorPosition()
+    protected void SetupPickerIndicatorPosition()
     {
         if (_rangePickerIndicator is null ||
             _decoratedBox is null ||

@@ -162,28 +162,26 @@ internal class TabControlToken : AbstractControlDesignToken
     internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
-        var lineHeight = _globalToken.FontToken.LineHeight;
-        var lineWidth  = _globalToken.SeedToken.LineWidth;
-        var fontToken  = _globalToken.FontToken;
-        var colorToken = _globalToken.ColorToken;
+        var lineHeight = _globalToken.LineHeight;
+        var lineWidth  = _globalToken.LineWidth;
 
         CardBg = _globalToken.ColorFillAlter;
 
-        CardSize = _globalToken.HeightToken.ControlHeightLG;
+        CardSize = _globalToken.ControlHeightLG;
 
         CardPadding = new Thickness(_globalToken.Padding,
-            (CardSize - Math.Round(_globalToken.FontToken.FontSize * lineHeight)) / 2 - lineWidth);
+            (CardSize - Math.Round(_globalToken.FontSize * lineHeight)) / 2 - lineWidth);
         CardPaddingSM = new Thickness(_globalToken.Padding, _globalToken.PaddingXXS * 1.5);
         CardPaddingLG = new Thickness(top: _globalToken.PaddingXS,
             bottom: _globalToken.PaddingXXS * 1.5,
             left: _globalToken.Padding,
             right: _globalToken.Padding);
 
-        TitleFontSize   = fontToken.FontSize;
-        TitleFontSizeLG = fontToken.FontSizeLG;
-        TitleFontSizeSM = fontToken.FontSize;
+        TitleFontSize   = _globalToken.FontSize;
+        TitleFontSizeLG = _globalToken.FontSizeLG;
+        TitleFontSizeSM = _globalToken.FontSize;
 
-        InkBarColor = colorToken.ColorPrimaryToken.ColorPrimary;
+        InkBarColor = _globalToken.ColorPrimary;
 
         HorizontalMargin     = new Thickness(0, 0, _globalToken.Margin, 0);
         HorizontalItemGutter = 32;
@@ -196,9 +194,9 @@ internal class TabControlToken : AbstractControlDesignToken
         VerticalItemGutter  = _globalToken.Margin;
         VerticalItemPadding = new Thickness(_globalToken.PaddingXS, _globalToken.PaddingXS);
 
-        ItemColor         = colorToken.ColorNeutralToken.ColorText;
-        ItemSelectedColor = colorToken.ColorPrimaryToken.ColorPrimary;
-        ItemHoverColor    = colorToken.ColorPrimaryToken.ColorPrimaryHover;
+        ItemColor         = _globalToken.ColorText;
+        ItemSelectedColor = _globalToken.ColorPrimary;
+        ItemHoverColor    = _globalToken.ColorPrimaryHover;
 
         CardGutter                   = _globalToken.MarginXXS / 2;
         AddTabButtonMarginHorizontal = new Thickness(CardGutter, 0, 0, 0);

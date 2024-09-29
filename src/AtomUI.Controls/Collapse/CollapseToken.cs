@@ -54,10 +54,10 @@ internal class CollapseToken : AbstractControlDesignToken
         ContentPadding            = new Thickness(16, _globalToken.Padding);
         CollapseContentPaddingSM  = new Thickness(_globalToken.PaddingSM);
         CollapseContentPaddingLG  = new Thickness(_globalToken.PaddingLG);
-        ContentBg                 = _globalToken.ColorToken.ColorNeutralToken.ColorBgContainer;
+        ContentBg                 = _globalToken.ColorBgContainer;
         CollapseHeaderPaddingSM   = new Thickness(_globalToken.PaddingSM, _globalToken.PaddingXS);
         CollapseHeaderPaddingLG   = new Thickness(_globalToken.PaddingLG, _globalToken.Padding);
-        CollapsePanelBorderRadius = _globalToken.StyleToken.BorderRadiusLG;
+        CollapsePanelBorderRadius = _globalToken.BorderRadiusLG;
         LeftExpandButtonMargin    = new Thickness(0, 0, _globalToken.MarginSM, 0);
         RightExpandButtonMargin   = new Thickness(_globalToken.MarginSM, 0, 0, 0);
     }
