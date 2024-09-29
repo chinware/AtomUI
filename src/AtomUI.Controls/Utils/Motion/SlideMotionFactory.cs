@@ -130,7 +130,7 @@ internal static partial class MotionFactory
     public static MotionConfig BuildSlideDownInMotion(TimeSpan duration, Easing? easing = null,
                                                       FillMode fillMode = FillMode.None)
     {
-        easing ??= new QuinticEaseOut();
+        easing ??= new CubicEaseOut();
         var           animations      = new List<Animation>();
         RelativePoint transformOrigin = default;
         var animation = new Animation
@@ -154,8 +154,8 @@ internal static partial class MotionFactory
 
             var scaleYSetter = new Setter
             {
-                Property = ScaleTransform.ScaleYProperty,
-                Value    = 0.1
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildScaleYTransform(0.01)
             };
             startFrame.Setters.Add(scaleYSetter);
         }
@@ -174,8 +174,8 @@ internal static partial class MotionFactory
             endFrame.Setters.Add(opacitySetter);
             var scaleYSetter = new Setter
             {
-                Property = ScaleTransform.ScaleYProperty,
-                Value    = 1.0
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildScaleYTransform(1.0)
             };
             endFrame.Setters.Add(scaleYSetter);
         }
@@ -189,7 +189,7 @@ internal static partial class MotionFactory
     public static MotionConfig BuildSlideDownOutMotion(TimeSpan duration, Easing? easing = null,
                                                        FillMode fillMode = FillMode.None)
     {
-        easing ??= new QuinticEaseIn();
+        easing ??= new CubicEaseIn();
         var           animations      = new List<Animation>();
         RelativePoint transformOrigin = default;
         var animation = new Animation
@@ -213,8 +213,8 @@ internal static partial class MotionFactory
 
             var scaleYSetter = new Setter
             {
-                Property = ScaleTransform.ScaleYProperty,
-                Value    = 1.0
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildScaleYTransform(1.0)
             };
             startFrame.Setters.Add(scaleYSetter);
         }
@@ -233,13 +233,13 @@ internal static partial class MotionFactory
             endFrame.Setters.Add(opacitySetter);
             var scaleYSetter = new Setter
             {
-                Property = ScaleTransform.ScaleYProperty,
-                Value    = 0.8
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildScaleYTransform(0.0)
             };
             endFrame.Setters.Add(scaleYSetter);
         }
         animation.Children.Add(endFrame);
-        transformOrigin = new RelativePoint(0.5, 1.0, RelativeUnit.Relative);
+        transformOrigin = new RelativePoint(1.0, 1.0, RelativeUnit.Relative);
 
         animations.Add(animation);
         return new MotionConfig(transformOrigin, animations);
@@ -248,7 +248,7 @@ internal static partial class MotionFactory
     public static MotionConfig BuildSlideLeftInMotion(TimeSpan duration, Easing? easing = null,
                                                       FillMode fillMode = FillMode.None)
     {
-        easing ??= new QuinticEaseOut();
+        easing ??= new CubicEaseOut();
         var           animations      = new List<Animation>();
         RelativePoint transformOrigin = default;
         var animation = new Animation
@@ -272,8 +272,8 @@ internal static partial class MotionFactory
 
             var scaleXSetter = new Setter
             {
-                Property = ScaleTransform.ScaleXProperty,
-                Value    = 0.8
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildScaleXTransform(0.01)
             };
             startFrame.Setters.Add(scaleXSetter);
         }
@@ -292,8 +292,8 @@ internal static partial class MotionFactory
             endFrame.Setters.Add(opacitySetter);
             var scaleXSetter = new Setter
             {
-                Property = ScaleTransform.ScaleXProperty,
-                Value    = 1.0
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildScaleXTransform(1.0)
             };
             endFrame.Setters.Add(scaleXSetter);
         }
@@ -307,7 +307,7 @@ internal static partial class MotionFactory
     public static MotionConfig BuildSlideLeftOutMotion(TimeSpan duration, Easing? easing = null,
                                                        FillMode fillMode = FillMode.None)
     {
-        easing ??= new QuinticEaseIn();
+        easing ??= new CubicEaseIn();
         var           animations      = new List<Animation>();
         RelativePoint transformOrigin = default;
         var animation = new Animation
@@ -331,8 +331,8 @@ internal static partial class MotionFactory
 
             var scaleXSetter = new Setter
             {
-                Property = ScaleTransform.ScaleXProperty,
-                Value    = 1.0
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildScaleXTransform(1.0)
             };
             startFrame.Setters.Add(scaleXSetter);
         }
@@ -351,8 +351,8 @@ internal static partial class MotionFactory
             endFrame.Setters.Add(opacitySetter);
             var scaleXSetter = new Setter
             {
-                Property = ScaleTransform.ScaleXProperty,
-                Value    = 0.8
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildScaleXTransform(0.0)
             };
             endFrame.Setters.Add(scaleXSetter);
         }
@@ -366,7 +366,7 @@ internal static partial class MotionFactory
     public static MotionConfig BuildSlideRightInMotion(TimeSpan duration, Easing? easing = null,
                                                        FillMode fillMode = FillMode.None)
     {
-        easing ??= new QuinticEaseOut();
+        easing ??= new CubicEaseOut();
         var           animations      = new List<Animation>();
         RelativePoint transformOrigin = default;
         var animation = new Animation
@@ -390,8 +390,8 @@ internal static partial class MotionFactory
 
             var scaleXSetter = new Setter
             {
-                Property = ScaleTransform.ScaleXProperty,
-                Value    = 0.8
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildScaleXTransform(0.01)
             };
             startFrame.Setters.Add(scaleXSetter);
         }
@@ -410,8 +410,8 @@ internal static partial class MotionFactory
             endFrame.Setters.Add(opacitySetter);
             var scaleXSetter = new Setter
             {
-                Property = ScaleTransform.ScaleXProperty,
-                Value    = 1.0
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildScaleXTransform(1.0)
             };
             endFrame.Setters.Add(scaleXSetter);
         }
@@ -425,7 +425,7 @@ internal static partial class MotionFactory
     public static MotionConfig BuildSlideRightOutMotion(TimeSpan duration, Easing? easing = null,
                                                         FillMode fillMode = FillMode.None)
     {
-        easing ??= new QuinticEaseIn();
+        easing ??= new CubicEaseIn();
         var           animations      = new List<Animation>();
         RelativePoint transformOrigin = default;
         var animation = new Animation
@@ -449,8 +449,8 @@ internal static partial class MotionFactory
 
             var scaleXSetter = new Setter
             {
-                Property = ScaleTransform.ScaleXProperty,
-                Value    = 1.0
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildScaleXTransform(1.0)
             };
             startFrame.Setters.Add(scaleXSetter);
         }
@@ -469,8 +469,8 @@ internal static partial class MotionFactory
             endFrame.Setters.Add(opacitySetter);
             var scaleXSetter = new Setter
             {
-                Property = ScaleTransform.ScaleXProperty,
-                Value    = 0.8
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildScaleXTransform(0.0)
             };
             endFrame.Setters.Add(scaleXSetter);
         }
