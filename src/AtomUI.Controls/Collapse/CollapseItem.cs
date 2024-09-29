@@ -310,7 +310,6 @@ public class CollapseItem : HeaderedContentControl, ISelectable
         InAnimating = true;
         var slideDownInMotionConfig = MotionFactory.BuildSlideUpInMotion(MotionDuration, new CubicEaseOut(),
             FillMode.Forward);
-        _motionActor.RenderTransformOrigin = slideDownInMotionConfig.RenderTransformOrigin;
         MotionInvoker.Invoke(_motionActor, slideDownInMotionConfig, () =>
         {
             _motionActor.SetCurrentValue(IsVisibleProperty, true);

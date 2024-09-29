@@ -1,4 +1,4 @@
-﻿using AtomUI.MotionScene;
+﻿using AtomUI.Controls.Primitives;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
@@ -30,7 +30,7 @@ internal class ExpanderTheme : BaseControlTheme
     public const string HeaderDecoratorPart = "PART_HeaderDecorator";
     public const string ContentPresenterPart = "PART_ContentPresenter";
     public const string AddOnContentPresenterPart = "PART_AddOnContentPresenter";
-    public const string ContentAnimationTargetPart = "PART_ContentAnimationTarget";
+    public const string ContentMotionActorPart = "PART_ContentMotionActor";
 
     public ExpanderTheme() : base(typeof(Expander))
     {
@@ -56,17 +56,17 @@ internal class ExpanderTheme : BaseControlTheme
             };
 
             BuildHeader(mainLayout, scope);
-            var animationPanel = new AnimationTargetPanel
+            var motionActor = new MotionActorControl()
             {
-                Name         = ContentAnimationTargetPart,
+                Name         = ContentMotionActorPart,
                 ClipToBounds = true
             };
             var contentPresenter = new ContentPresenter
             {
                 Name = ContentPresenterPart
             };
-            animationPanel.SetCurrentValue(Visual.IsVisibleProperty, false);
-            animationPanel.Children.Add(contentPresenter);
+            motionActor.SetCurrentValue(Visual.IsVisibleProperty, false);
+            motionActor.Child = contentPresenter;
             TokenResourceBinder.CreateGlobalTokenBinding(contentPresenter, ContentPresenter.BorderBrushProperty,
                 GlobalTokenResourceKey.ColorBorder);
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty,
@@ -74,8 +74,8 @@ internal class ExpanderTheme : BaseControlTheme
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentTemplateProperty,
                 ContentControl.ContentTemplateProperty);
 
-            mainLayout.Children.Add(animationPanel);
-            animationPanel.RegisterInNameScope(scope);
+            mainLayout.Children.Add(motionActor);
+            motionActor.RegisterInNameScope(scope);
             contentPresenter.RegisterInNameScope(scope);
 
             frameDecorator.Child = mainLayout;

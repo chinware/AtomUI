@@ -215,7 +215,10 @@ public class MotionActorControl : Decorator
         }
 
         // Perform a measure on the MotionTransformRoot (containing Child)
-        MotionTransformRoot.Measure(measureSize);
+        if (MotionTransformRoot.DesiredSize == default)
+        {
+            MotionTransformRoot.Measure(measureSize);
+        }
 
         var desiredSize = MotionTransformRoot.DesiredSize;
 

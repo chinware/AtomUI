@@ -201,7 +201,6 @@ public class MessageCard : TemplatedControl
             _motionActor.IsVisible = false;
             var moveUpInMotionConfig = MotionFactory.BuildMoveUpInMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseOut(),
                 FillMode.Forward);
-            _motionActor.RenderTransformOrigin = moveUpInMotionConfig.RenderTransformOrigin;
             MotionInvoker.Invoke(_motionActor, moveUpInMotionConfig, () =>
             {
                 _motionActor.IsVisible = true;
@@ -215,7 +214,6 @@ public class MessageCard : TemplatedControl
         {
             var moveUpOutMotionConfig = MotionFactory.BuildMoveUpOutMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseIn(),
                 FillMode.Forward);
-            _motionActor.RenderTransformOrigin = moveUpOutMotionConfig.RenderTransformOrigin;
             MotionInvoker.Invoke(_motionActor, moveUpOutMotionConfig, null, () =>
             {
                 IsClosed = true;

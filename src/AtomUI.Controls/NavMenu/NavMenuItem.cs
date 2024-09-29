@@ -1080,7 +1080,6 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
             _animating = true;
             var slideDownInMotionConfig = MotionFactory.BuildSlideUpInMotion(_openCloseMotionDuration, new CubicEaseOut(),
                 FillMode.Forward);
-            _childItemsLayoutTransform.RenderTransformOrigin = slideDownInMotionConfig.RenderTransformOrigin;
             MotionInvoker.Invoke(_childItemsLayoutTransform, slideDownInMotionConfig, () =>
             {
                 _childItemsLayoutTransform.SetCurrentValue(IsVisibleProperty, true);

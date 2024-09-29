@@ -1,9 +1,11 @@
-﻿using AtomUI.Controls.Utils;
-using AtomUI.MotionScene;
+﻿using AtomUI.Controls.Primitives;
+using AtomUI.Controls.Utils;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
+using Avalonia.Animation;
+using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
@@ -162,14 +164,16 @@ public class Expander : AvaloniaExpander
 
     #endregion
 
-    private AnimationTargetPanel? _animationTarget;
+    private MotionActorControl? _motionActor;
     private Border? _headerDecorator;
     private IconButton? _expandButton;
+    private bool _animating;
+    private bool _enableAnimation = true;
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _animationTarget = e.NameScope.Find<AnimationTargetPanel>(ExpanderTheme.ContentAnimationTargetPart);
+        _motionActor     = e.NameScope.Find<MotionActorControl>(ExpanderTheme.ContentMotionActorPart);
         _headerDecorator = e.NameScope.Find<Border>(ExpanderTheme.HeaderDecoratorPart);
         _expandButton    = e.NameScope.Find<IconButton>(ExpanderTheme.ExpandButtonPart);
         TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, GlobalTokenResourceKey.MotionDurationSlow);
@@ -179,10 +183,19 @@ public class Expander : AvaloniaExpander
         SetupEffectiveBorderThickness();
         SetupExpanderBorderThickness();
         SetupIconButton();
+        _enableAnimation = false;
         HandleExpandedChanged();
+        _enableAnimation = true;
         if (_expandButton is not null)
         {
-            _expandButton.Click += (sender, args) => { IsExpanded = !IsExpanded; };
+            _expandButton.Click += (sender, args) =>
+            {
+                if (_animating)
+                {
+                    return;
+                }
+                IsExpanded = !IsExpanded;
+            };
         }
     }
 
@@ -277,6 +290,10 @@ public class Expander : AvaloniaExpander
                 var targetRect = new Rect(_headerDecorator.Bounds.Size);
                 if (targetRect.Contains(position))
                 {
+                    if (_animating)
+                    {
+                        return;
+                    }
                     IsExpanded = !IsExpanded;
                 }
             }
@@ -285,17 +302,76 @@ public class Expander : AvaloniaExpander
 
     private void HandleExpandedChanged()
     {
-        if (_animationTarget is not null)
+        if (IsExpanded)
         {
-            if (IsExpanded)
-            {
-                _animationTarget.IsVisible = true;
-            }
-            else
-            {
-                _animationTarget.IsVisible = false;
-            }
+            ExpandItemContent();
         }
+        else
+        {
+            CollapseItemContent();
+        }
+    }
+    
+    private void ExpandItemContent()
+    {
+        if (_motionActor is null || _animating)
+        {
+            return;
+        }
+        
+        if (!_enableAnimation)
+        {
+            _motionActor.IsVisible = true;
+            return;
+        }
+        
+        _animating = true;
+        var expandMotionConfig = MotionFactory.BuildExpandMotion(DirectionFromExpandDirection(ExpandDirection), 
+            MotionDuration,
+            new CubicEaseOut(),
+            FillMode.Forward);
+        MotionInvoker.Invoke(_motionActor, expandMotionConfig, () =>
+        {
+            _motionActor.SetCurrentValue(IsVisibleProperty, true);
+        }, () =>
+        {
+            _animating = false;
+        });
+    }
+    
+    private void CollapseItemContent()
+    {
+        if (_motionActor is null || _animating)
+        {
+            return;
+        }
+        if (!_enableAnimation)
+        {
+            _motionActor.IsVisible = false;
+            return;
+        }
+        
+        _animating = true;
+        var slideDownOutMotionConfig = MotionFactory.BuildCollapseMotion(DirectionFromExpandDirection(ExpandDirection), 
+            MotionDuration,
+            new CubicEaseIn(),
+            FillMode.Forward);
+        MotionInvoker.Invoke(_motionActor, slideDownOutMotionConfig, null, () =>
+        {
+            _motionActor.SetCurrentValue(IsVisibleProperty, false);
+            _animating = false;
+        });
+    }
+
+    private static Direction DirectionFromExpandDirection(ExpandDirection expandDirection)
+    {
+        return expandDirection switch
+        {
+            ExpandDirection.Left => Direction.Left,
+            ExpandDirection.Up => Direction.Top,
+            ExpandDirection.Right => Direction.Right,
+            ExpandDirection.Down => Direction.Bottom,
+        };
     }
 
     private void SetupEffectiveBorderThickness()

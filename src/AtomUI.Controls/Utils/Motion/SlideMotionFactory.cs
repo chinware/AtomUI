@@ -2,8 +2,6 @@
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
-using Avalonia.Media;
-using Avalonia.Media.Transformation;
 using Avalonia.Styling;
 
 namespace AtomUI.Controls.Utils;

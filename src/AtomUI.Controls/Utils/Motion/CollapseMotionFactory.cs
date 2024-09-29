@@ -2,7 +2,6 @@
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
-using Avalonia.Media;
 using Avalonia.Styling;
 
 namespace AtomUI.Controls.Utils;
@@ -12,7 +11,7 @@ internal static partial class MotionFactory
     public static MotionConfig BuildCollapseMotion(Direction direction, TimeSpan duration, Easing? easing = null,
                                                    FillMode fillMode = FillMode.None)
     {
-        easing ??= new CircularEaseOut();
+        easing ??= new CubicEaseOut();
         var           animations      = new List<Animation>();
         RelativePoint transformOrigin = default;
         var           isHorizontal    = direction == Direction.Left || direction == Direction.Right;
@@ -85,22 +84,23 @@ internal static partial class MotionFactory
                 endFrame.Setters.Add(scaleYSetter);
             }
         }
+        animation.Children.Add(endFrame);
 
         if (direction == Direction.Left)
         {
-            transformOrigin = new RelativePoint(0, 0.5, RelativeUnit.Relative);
+            transformOrigin = new RelativePoint(1, 0.5, RelativeUnit.Relative);
         }
         else if (direction == Direction.Right)
         {
-            transformOrigin = new RelativePoint(1, 0.5, RelativeUnit.Relative);
+            transformOrigin = new RelativePoint(0, 0.5, RelativeUnit.Relative);
         }
         else if (direction == Direction.Top)
         {
-            transformOrigin = new RelativePoint(0.5, 0, RelativeUnit.Relative);
+            transformOrigin = new RelativePoint(0.5, 1.0, RelativeUnit.Relative);
         }
         else
         {
-            transformOrigin = new RelativePoint(0.5, 1, RelativeUnit.Relative);
+            transformOrigin = new RelativePoint(0.5, 0.0, RelativeUnit.Relative);
         }
 
         animations.Add(animation);
@@ -110,7 +110,7 @@ internal static partial class MotionFactory
     public static MotionConfig BuildExpandMotion(Direction direction, TimeSpan duration, Easing? easing = null,
                                                  FillMode fillMode = FillMode.None)
     {
-        easing ??= new CircularEaseOut();
+        easing ??= new CubicEaseIn();
         var           animations      = new List<Animation>();
         RelativePoint transformOrigin = default;
         var           isHorizontal    = direction == Direction.Left || direction == Direction.Right;
@@ -183,22 +183,24 @@ internal static partial class MotionFactory
                 endFrame.Setters.Add(scaleYSetter);
             }
         }
+        
+        animation.Children.Add(endFrame);
 
         if (direction == Direction.Left)
         {
-            transformOrigin = new RelativePoint(0, 0.5, RelativeUnit.Relative);
+            transformOrigin = new RelativePoint(1.0, 0.5, RelativeUnit.Relative);
         }
         else if (direction == Direction.Right)
         {
-            transformOrigin = new RelativePoint(1, 0.5, RelativeUnit.Relative);
+            transformOrigin = new RelativePoint(0.0, 0.5, RelativeUnit.Relative);
         }
         else if (direction == Direction.Top)
         {
-            transformOrigin = new RelativePoint(0.5, 0, RelativeUnit.Relative);
+            transformOrigin = new RelativePoint(0.5, 1.0, RelativeUnit.Relative);
         }
         else
         {
-            transformOrigin = new RelativePoint(0.5, 1, RelativeUnit.Relative);
+            transformOrigin = new RelativePoint(0.5, 1.0, RelativeUnit.Relative);
         }
 
         animations.Add(animation);

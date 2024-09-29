@@ -264,7 +264,6 @@ public class NotificationCard : ContentControl
         }
         
         _motionActor.IsVisible = false;
-        _motionActor.RenderTransformOrigin = motionConfig.RenderTransformOrigin;
         MotionInvoker.Invoke(_motionActor, motionConfig, () =>
         {
             _motionActor.IsVisible = true;
@@ -299,7 +298,6 @@ public class NotificationCard : ContentControl
                 FillMode.Forward);
         }
         
-        _motionActor.RenderTransformOrigin = motionConfig.RenderTransformOrigin;
         MotionInvoker.Invoke(_motionActor, motionConfig, null, () =>
         {
             IsClosed = true;
