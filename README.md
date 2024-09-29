@@ -33,7 +33,7 @@
 
 Documentation Language: [English](README.md) | [简体中文](README.zh-CN.md)
 
-<img src="./docs/images/Release.jpg"/>
+<img src="./docs/images/Release.png"/>
 
 #### Introduce
 
