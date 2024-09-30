@@ -1,5 +1,4 @@
-﻿using AtomUI.Controls.Primitives;
-using AtomUI.Controls.Utils;
+﻿using AtomUI.MotionScene;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
@@ -241,7 +240,7 @@ public class NotificationCard : ContentControl
             return;
         }
 
-        MotionConfig? motionConfig;
+        MotionConfigX? motionConfig;
         if (Position == NotificationPosition.TopLeft || Position == NotificationPosition.BottomLeft)
         {
             motionConfig = MotionFactory.BuildMoveLeftInMotion(AnimationMaxOffsetX, _openCloseMotionDuration, new CubicEaseOut(),
@@ -276,7 +275,7 @@ public class NotificationCard : ContentControl
         {
             return;
         }
-        MotionConfig? motionConfig;
+        MotionConfigX? motionConfig;
         if (Position == NotificationPosition.TopLeft || Position == NotificationPosition.BottomLeft)
         {
             motionConfig = MotionFactory.BuildMoveLeftOutMotion(AnimationMaxOffsetX, _openCloseMotionDuration, new CubicEaseIn(),

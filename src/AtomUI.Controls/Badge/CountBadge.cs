@@ -98,9 +98,7 @@ public class CountBadge : Control
         get => GetValue(BadgeIsVisibleProperty);
         set => SetValue(BadgeIsVisibleProperty, value);
     }
-
-
-
+    
     #endregion
 
     #region 内部属性定义

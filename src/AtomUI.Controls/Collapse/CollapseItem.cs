@@ -1,5 +1,5 @@
-﻿using AtomUI.Controls.Primitives;
-using AtomUI.Controls.Utils;
+﻿using AtomUI.Controls.Utils;
+using AtomUI.MotionScene;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;

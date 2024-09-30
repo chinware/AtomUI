@@ -4,7 +4,7 @@ using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Media.Transformation;
 
-namespace AtomUI.Controls.Primitives;
+namespace AtomUI.MotionScene;
 
 public class MotionActorControl : Decorator
 {
@@ -12,6 +12,9 @@ public class MotionActorControl : Decorator
 
     public static readonly StyledProperty<TransformOperations?> MotionTransformProperty =
         AvaloniaProperty.Register<MotionActorControl, TransformOperations?>(nameof(MotionTransform));
+    
+    public static readonly StyledProperty<bool> UseRenderTransformProperty =
+        AvaloniaProperty.Register<LayoutTransformControl, bool>(nameof(UseRenderTransform));
 
     public TransformOperations? MotionTransform
     {
@@ -19,6 +22,12 @@ public class MotionActorControl : Decorator
         set => SetValue(MotionTransformProperty, value);
     }
 
+    public bool UseRenderTransform
+    {
+        get => GetValue(UseRenderTransformProperty);
+        set => SetValue(UseRenderTransformProperty, value);
+    }
+    
     public Control? MotionTransformRoot => Child;
 
     #endregion
@@ -107,9 +116,9 @@ public class MotionActorControl : Decorator
         {
             return;
         }
-
+ 
         _transformation         = matrix;
-        _matrixTransform.Matrix = FilterScaleTransform(matrix);
+        _matrixTransform.Matrix = UseRenderTransform ? matrix : FilterScaleTransform(matrix);
         RenderTransform         = _matrixTransform;
         // New transform means re-layout is necessary
         InvalidateMeasure();
@@ -145,15 +154,15 @@ public class MotionActorControl : Decorator
 
     protected override Size ArrangeOverride(Size finalSize)
     {
-        if (MotionTransformRoot == null || MotionTransform == null)
+        if (MotionTransformRoot == null || MotionTransform == null || UseRenderTransform)
         {
             // TODO 这里可能会引起混淆，因为我们不会对 Target 实施 Scale 转换
-            SetCurrentValue(MotionTransformProperty, RenderTransform);
             return base.ArrangeOverride(finalSize);
         }
 
         // Determine the largest available size after the transformation
         Size finalSizeTransformed = ComputeLargestTransformedSize(finalSize);
+    
         if (IsSizeSmaller(finalSizeTransformed, MotionTransformRoot.DesiredSize))
         {
             // Some elements do not like being given less space than they asked for (ex: TextBlock)
@@ -181,9 +190,9 @@ public class MotionActorControl : Decorator
         {
             //// Unfortunately, all the work so far is invalid because the wrong DesiredSize was used
             //// Make a note of the actual DesiredSize
-            //_childActualSize = arrangedsize;
-            //// Force a new measure/arrange pass
-            //InvalidateMeasure();
+            // _childActualSize = arrangedsize;
+            // //// Force a new measure/arrange pass
+            // InvalidateMeasure();
         }
         else
         {
@@ -197,12 +206,12 @@ public class MotionActorControl : Decorator
 
     protected override Size MeasureOverride(Size availableSize)
     {
-        if (MotionTransformRoot == null || MotionTransform == null)
+        if (MotionTransformRoot == null || MotionTransform == null || UseRenderTransform)
         {
             return base.MeasureOverride(availableSize);
         }
 
-        Size measureSize;
+        Size measureSize ;
         if (_childActualSize == default)
         {
             // Determine the largest size after the transformation

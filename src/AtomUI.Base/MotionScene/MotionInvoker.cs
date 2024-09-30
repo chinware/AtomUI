@@ -1,16 +1,16 @@
-﻿using AtomUI.Controls.Primitives;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Threading;
 
-namespace AtomUI.Controls.Utils;
+namespace AtomUI.MotionScene;
 
 internal static class MotionInvoker
 {
     public static void Invoke(MotionActorControl target,
-                              MotionConfig motionConfig,
+                              MotionConfigX motionConfig,
                               Action? aboutToStart = null,
-                              Action? completedAction = null)
+                              Action? completedAction = null,
+                              CancellationToken cancellationToken = default)
     {
         Dispatcher.UIThread.InvokeAsync(async () =>
         {
@@ -23,7 +23,7 @@ internal static class MotionInvoker
 
             foreach (var animation in motionConfig.Animations)
             {
-                await animation.RunAsync(target);
+                await animation.RunAsync(target, cancellationToken);
             }
 
             if (completedAction != null)
