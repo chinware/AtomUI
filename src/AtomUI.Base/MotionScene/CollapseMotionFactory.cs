@@ -1,14 +1,13 @@
-﻿using AtomUI.Controls.Primitives;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Styling;
 
-namespace AtomUI.Controls.Utils;
+namespace AtomUI.MotionScene;
 
 internal static partial class MotionFactory
 {
-    public static MotionConfig BuildCollapseMotion(Direction direction, TimeSpan duration, Easing? easing = null,
+    public static MotionConfigX BuildCollapseMotion(Direction direction, TimeSpan duration, Easing? easing = null,
                                                    FillMode fillMode = FillMode.None)
     {
         easing ??= new CubicEaseOut();
@@ -104,10 +103,10 @@ internal static partial class MotionFactory
         }
 
         animations.Add(animation);
-        return new MotionConfig(transformOrigin, animations);
+        return new MotionConfigX(transformOrigin, animations);
     }
 
-    public static MotionConfig BuildExpandMotion(Direction direction, TimeSpan duration, Easing? easing = null,
+    public static MotionConfigX BuildExpandMotion(Direction direction, TimeSpan duration, Easing? easing = null,
                                                  FillMode fillMode = FillMode.None)
     {
         easing ??= new CubicEaseIn();
@@ -183,7 +182,7 @@ internal static partial class MotionFactory
                 endFrame.Setters.Add(scaleYSetter);
             }
         }
-        
+
         animation.Children.Add(endFrame);
 
         if (direction == Direction.Left)
@@ -204,6 +203,6 @@ internal static partial class MotionFactory
         }
 
         animations.Add(animation);
-        return new MotionConfig(transformOrigin, animations);
+        return new MotionConfigX(transformOrigin, animations);
     }
 }

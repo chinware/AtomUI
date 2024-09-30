@@ -1,4 +1,5 @@
 ﻿using AtomUI.Controls.Utils;
+using AtomUI.MotionScene;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Animation;

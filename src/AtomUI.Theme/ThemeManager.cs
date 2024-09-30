@@ -1,7 +1,4 @@
 ﻿using System.Globalization;
-using System.Reflection;
-using AtomUI.Controls.MotionScene;
-using AtomUI.MotionScene;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -279,7 +276,6 @@ internal class ThemeManager : Styles, IThemeManager
 
     internal void Configure()
     {
-        RegisterServices();
         RegisterControlThemes();
         BuildLanguageResources();
     }
@@ -330,13 +326,7 @@ internal class ThemeManager : Styles, IThemeManager
     {
         ControlTokenTypes.Add(tokenType);
     }
-
-    private void RegisterServices()
-    {
-        var motionDirector = new Director();
-        AvaloniaLocator.CurrentMutable.Bind<IDirector>()
-                       .ToConstant(motionDirector);
-    }
+    
 }
 
 public class ThemeOperateEventArgs : EventArgs

@@ -246,9 +246,9 @@ public class Separator : AvaloniaSeparator
             if (lineMinWidth > remainWidth)
             {
                 // 字过多
-                titleWidth = finalSize.Width - lineMinWidth;
+                titleWidth = Math.Max(finalSize.Width - lineMinWidth, lineMinWidth);
             }
-
+            
             // 处理完成之后，字的宽度一定在 width 范围内
             // 计算位置
             if (TitlePosition == SeparatorTitlePosition.Left)
@@ -267,7 +267,7 @@ public class Separator : AvaloniaSeparator
                 var rightDelta = titleRect.Right - finalSize.Width;
                 if (MathUtils.GreaterThan(rightDelta, 0))
                 {
-                    titleRect = titleRect.WithWidth(finalSize.Width - titleRect.Left);
+                    titleRect = titleRect.WithWidth(Math.Max(finalSize.Width - titleRect.Left, lineMinWidth));
                 }
             }
             else if (TitlePosition == SeparatorTitlePosition.Right)
@@ -297,7 +297,6 @@ public class Separator : AvaloniaSeparator
                     new Size(titleWidth, finalSize.Height));
             }
         }
-
         return titleRect;
     }
 

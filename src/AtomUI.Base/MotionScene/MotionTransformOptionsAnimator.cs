@@ -2,7 +2,7 @@
 using Avalonia.Media;
 using Avalonia.Media.Transformation;
 
-namespace AtomUI.Controls.Utils;
+namespace AtomUI.MotionScene;
 
 internal class MotionTransformOptionsAnimator : InterpolatingAnimator<TransformOperations>
 {

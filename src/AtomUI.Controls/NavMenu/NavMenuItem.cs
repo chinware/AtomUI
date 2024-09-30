@@ -1,10 +1,9 @@
 ﻿using System.Windows.Input;
-using AtomUI.Controls.Primitives;
-using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.Icon;
 using AtomUI.Input;
 using AtomUI.Media;
+using AtomUI.MotionScene;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using AtomUI.Utils;
@@ -21,7 +20,6 @@ using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
-using Avalonia.Media.Transformation;
 using Avalonia.Rendering;
 using Avalonia.VisualTree;
 

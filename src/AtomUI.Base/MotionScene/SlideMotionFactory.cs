@@ -1,14 +1,13 @@
-﻿using AtomUI.Controls.Primitives;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Styling;
 
-namespace AtomUI.Controls.Utils;
+namespace AtomUI.MotionScene;
 
 internal static partial class MotionFactory
 {
-    public static MotionConfig BuildSlideUpInMotion(TimeSpan duration, Easing? easing = null,
+    public static MotionConfigX BuildSlideUpInMotion(TimeSpan duration, Easing? easing = null,
                                                     FillMode fillMode = FillMode.None)
     {
         easing ??= new CubicEaseOut();
@@ -63,10 +62,10 @@ internal static partial class MotionFactory
         transformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
 
         animations.Add(animation);
-        return new MotionConfig(transformOrigin, animations);
+        return new MotionConfigX(transformOrigin, animations);
     }
 
-    public static MotionConfig BuildSlideUpOutMotion(TimeSpan duration, Easing? easing = null,
+    public static MotionConfigX BuildSlideUpOutMotion(TimeSpan duration, Easing? easing = null,
                                                      FillMode fillMode = FillMode.None)
     {
         easing ??= new CubicEaseIn();
@@ -122,10 +121,10 @@ internal static partial class MotionFactory
         transformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
 
         animations.Add(animation);
-        return new MotionConfig(transformOrigin, animations);
+        return new MotionConfigX(transformOrigin, animations);
     }
 
-    public static MotionConfig BuildSlideDownInMotion(TimeSpan duration, Easing? easing = null,
+    public static MotionConfigX BuildSlideDownInMotion(TimeSpan duration, Easing? easing = null,
                                                       FillMode fillMode = FillMode.None)
     {
         easing ??= new CubicEaseOut();
@@ -181,10 +180,10 @@ internal static partial class MotionFactory
         transformOrigin = new RelativePoint(1.0, 1.0, RelativeUnit.Relative);
 
         animations.Add(animation);
-        return new MotionConfig(transformOrigin, animations);
+        return new MotionConfigX(transformOrigin, animations);
     }
 
-    public static MotionConfig BuildSlideDownOutMotion(TimeSpan duration, Easing? easing = null,
+    public static MotionConfigX BuildSlideDownOutMotion(TimeSpan duration, Easing? easing = null,
                                                        FillMode fillMode = FillMode.None)
     {
         easing ??= new CubicEaseIn();
@@ -240,10 +239,10 @@ internal static partial class MotionFactory
         transformOrigin = new RelativePoint(1.0, 1.0, RelativeUnit.Relative);
 
         animations.Add(animation);
-        return new MotionConfig(transformOrigin, animations);
+        return new MotionConfigX(transformOrigin, animations);
     }
 
-    public static MotionConfig BuildSlideLeftInMotion(TimeSpan duration, Easing? easing = null,
+    public static MotionConfigX BuildSlideLeftInMotion(TimeSpan duration, Easing? easing = null,
                                                       FillMode fillMode = FillMode.None)
     {
         easing ??= new CubicEaseOut();
@@ -299,10 +298,10 @@ internal static partial class MotionFactory
         transformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
 
         animations.Add(animation);
-        return new MotionConfig(transformOrigin, animations);
+        return new MotionConfigX(transformOrigin, animations);
     }
 
-    public static MotionConfig BuildSlideLeftOutMotion(TimeSpan duration, Easing? easing = null,
+    public static MotionConfigX BuildSlideLeftOutMotion(TimeSpan duration, Easing? easing = null,
                                                        FillMode fillMode = FillMode.None)
     {
         easing ??= new CubicEaseIn();
@@ -358,10 +357,10 @@ internal static partial class MotionFactory
         transformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
 
         animations.Add(animation);
-        return new MotionConfig(transformOrigin, animations);
+        return new MotionConfigX(transformOrigin, animations);
     }
 
-    public static MotionConfig BuildSlideRightInMotion(TimeSpan duration, Easing? easing = null,
+    public static MotionConfigX BuildSlideRightInMotion(TimeSpan duration, Easing? easing = null,
                                                        FillMode fillMode = FillMode.None)
     {
         easing ??= new CubicEaseOut();
@@ -417,10 +416,10 @@ internal static partial class MotionFactory
         transformOrigin = new RelativePoint(1.0, 0.0, RelativeUnit.Relative);
 
         animations.Add(animation);
-        return new MotionConfig(transformOrigin, animations);
+        return new MotionConfigX(transformOrigin, animations);
     }
 
-    public static MotionConfig BuildSlideRightOutMotion(TimeSpan duration, Easing? easing = null,
+    public static MotionConfigX BuildSlideRightOutMotion(TimeSpan duration, Easing? easing = null,
                                                         FillMode fillMode = FillMode.None)
     {
         easing ??= new CubicEaseIn();
@@ -476,6 +475,6 @@ internal static partial class MotionFactory
         transformOrigin = new RelativePoint(1.0, 0.0, RelativeUnit.Relative);
 
         animations.Add(animation);
-        return new MotionConfig(transformOrigin, animations);
+        return new MotionConfigX(transformOrigin, animations);
     }
 }

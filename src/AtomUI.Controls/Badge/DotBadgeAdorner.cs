@@ -1,20 +1,32 @@
-﻿using AtomUI.Theme.Styling;
+﻿using AtomUI.Controls.Badge;
+using AtomUI.MotionScene;
+using AtomUI.Theme.Styling;
+using AtomUI.Utils;
 using Avalonia;
+using Avalonia.Animation;
 using Avalonia.Controls;
-using Avalonia.Layout;
-using Avalonia.LogicalTree;
+using Avalonia.Controls.Primitives;
 using Avalonia.Media;
-using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
-internal class DotBadgeAdorner : Control
+internal class DotBadgeAdorner : TemplatedControl
 {
+    public static readonly StyledProperty<IBrush?> BadgeDotColorProperty =
+        AvaloniaProperty.Register<DotBadgeAdorner, IBrush?>(
+            nameof(BadgeDotColor));
+    
     public static readonly DirectProperty<DotBadgeAdorner, DotBadgeStatus?> StatusProperty =
         AvaloniaProperty.RegisterDirect<DotBadgeAdorner, DotBadgeStatus?>(
             nameof(Status),
             o => o.Status,
             (o, v) => o.Status = v);
+    
+    internal IBrush? BadgeDotColor
+    {
+        get => GetValue(BadgeDotColorProperty);
+        set => SetValue(BadgeDotColorProperty, value);
+    }
 
     private DotBadgeStatus? _status;
 
@@ -44,30 +56,6 @@ internal class DotBadgeAdorner : Control
             o => o.IsAdornerMode,
             (o, v) => o.IsAdornerMode = v);
 
-    internal static readonly StyledProperty<IBrush?> BadgeDotColorProperty =
-        AvaloniaProperty.Register<DotBadgeAdorner, IBrush?>(
-            nameof(BadgeDotColor));
-
-    internal static readonly StyledProperty<double> DotSizeProperty =
-        AvaloniaProperty.Register<DotBadgeAdorner, double>(
-            nameof(DotSize));
-
-    internal static readonly StyledProperty<double> StatusSizeProperty =
-        AvaloniaProperty.Register<DotBadgeAdorner, double>(
-            nameof(StatusSize));
-
-    internal static readonly StyledProperty<IBrush?> BadgeShadowColorProperty =
-        AvaloniaProperty.Register<DotBadgeAdorner, IBrush?>(
-            nameof(BadgeShadowColor));
-
-    private static readonly StyledProperty<double> BadgeShadowSizeProperty =
-        AvaloniaProperty.Register<DotBadgeAdorner, double>(
-            nameof(BadgeShadowSize));
-
-    private static readonly StyledProperty<double> BadgeTextMarginInlineProperty =
-        AvaloniaProperty.Register<DotBadgeAdorner, double>(
-            nameof(BadgeTextMarginInline));
-
     public static readonly StyledProperty<Point> OffsetProperty =
         AvaloniaProperty.Register<DotBadgeAdorner, Point>(
             nameof(Offset));
@@ -85,256 +73,151 @@ internal class DotBadgeAdorner : Control
         get => GetValue(OffsetProperty);
         set => SetValue(OffsetProperty, value);
     }
+    
+    #region 内部属性定义
 
-    public double DotSize
+    internal static readonly StyledProperty<TimeSpan> MotionDurationProperty =
+        AvaloniaProperty.Register<DotBadgeAdorner, TimeSpan>(
+            nameof(MotionDuration));
+
+    internal TimeSpan MotionDuration
     {
-        get => GetValue(DotSizeProperty);
-        set => SetValue(DotSizeProperty, value);
+        get => GetValue(MotionDurationProperty);
+        set => SetValue(MotionDurationProperty, value);
     }
-
-    public double StatusSize
-    {
-        get => GetValue(StatusSizeProperty);
-        set => SetValue(StatusSizeProperty, value);
-    }
-
-    internal IBrush? BadgeDotColor
-    {
-        get => GetValue(BadgeDotColorProperty);
-        set => SetValue(BadgeDotColorProperty, value);
-    }
-
-    internal IBrush? BadgeShadowColor
-    {
-        get => GetValue(BadgeShadowColorProperty);
-        set => SetValue(BadgeShadowColorProperty, value);
-    }
-
-    public double BadgeShadowSize
-    {
-        get => GetValue(BadgeShadowSizeProperty);
-        set => SetValue(BadgeShadowSizeProperty, value);
-    }
-
-    public double BadgeTextMarginInline
-    {
-        get => GetValue(BadgeTextMarginInlineProperty);
-        set => SetValue(BadgeTextMarginInlineProperty, value);
-    }
-
-    private bool _initialized;
-    private Label? _textLabel;
-
-    private BoxShadows _boxShadows;
-
-    // 不知道为什么这个值会被 AdornerLayer 重写
-    // 非常不优美，但是能工作
-    internal RelativePoint? AnimationRenderTransformOrigin;
+    
+    #endregion
+    
+    private MotionActorControl? _indicatorMotionActor;
+    private CancellationTokenSource? _motionCancellationTokenSource;
 
     static DotBadgeAdorner()
     {
         AffectsMeasure<DotBadge>(TextProperty, IsAdornerModeProperty);
-        AffectsRender<DotBadge>(BadgeDotColorProperty, OffsetProperty);
+    }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, GlobalTokenResourceKey.MotionDurationMid);
+        SetupBadgeColor();
+        _indicatorMotionActor = e.NameScope.Get<MotionActorControl>(DotBadgeAdornerTheme.IndicatorMotionActorPart);
+    }
+
+    private void ApplyShowMotion()
+    {
+        if (_indicatorMotionActor is not null)
+        {
+            _indicatorMotionActor.IsVisible = false;
+            var zoomBadgeInMotionConfig = BadgeMotionFactory.BuildBadgeZoomBadgeInMotion(MotionDuration, null,
+                FillMode.Forward);
+            MotionInvoker.Invoke(_indicatorMotionActor, zoomBadgeInMotionConfig, () =>
+            {
+                _indicatorMotionActor.IsVisible = true;
+            }, null, _motionCancellationTokenSource!.Token);
+        }
     }
     
-    public sealed override void ApplyTemplate()
+    private void ApplyHideMotion(Action completedAction)
     {
-        base.ApplyTemplate();
-        if (!_initialized)
+        if (_indicatorMotionActor is not null)
         {
-            _textLabel = new Label
+            var zoomBadgeOutMotionConfig = BadgeMotionFactory.BuildBadgeZoomBadgeOutMotion(MotionDuration, null,
+                FillMode.Forward);
+            _motionCancellationTokenSource?.Cancel();
+            _motionCancellationTokenSource  = new CancellationTokenSource();
+            
+            MotionInvoker.Invoke(_indicatorMotionActor, zoomBadgeOutMotionConfig, null, () =>
             {
-                Content                    = Text,
-                HorizontalAlignment        = HorizontalAlignment.Left,
-                VerticalAlignment          = VerticalAlignment.Center,
-                HorizontalContentAlignment = HorizontalAlignment.Center,
-                VerticalContentAlignment   = VerticalAlignment.Center,
-                Padding                    = new Thickness(0)
-            };
-
-            ((ISetLogicalParent)_textLabel).SetParent(this);
-            VisualChildren.Add(_textLabel);
-            BuildBoxShadow();
-            _initialized = true;
+                completedAction();
+            }, _motionCancellationTokenSource.Token);
         }
     }
 
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        base.OnAttachedToLogicalTree(e);
-        BuildStyles();
-    }
-
-    private void BuildStyles()
-    {
-        if (Styles.Count == 0)
+        base.OnPropertyChanged(change);
+        if (VisualRoot is not null)
         {
-            BuildBadgeColorStyle();
-        }
-    }
-
-    private void BuildBadgeColorStyle()
-    {
-        var commonStyle = new Style(selector => selector.OfType<DotBadgeAdorner>());
-        commonStyle.Add(BadgeTextMarginInlineProperty, GlobalTokenResourceKey.MarginXS);
-        commonStyle.Add(BadgeDotColorProperty, BadgeTokenResourceKey.BadgeColor);
-        commonStyle.Add(DotSizeProperty, BadgeTokenResourceKey.DotSize);
-        commonStyle.Add(StatusSizeProperty, BadgeTokenResourceKey.StatusSize);
-        commonStyle.Add(BadgeShadowSizeProperty, BadgeTokenResourceKey.BadgeShadowSize);
-        commonStyle.Add(BadgeShadowColorProperty, BadgeTokenResourceKey.BadgeShadowColor);
-
-        var errorStatusStyle =
-            new Style(selector => selector.Nesting().PropertyEquals(StatusProperty, DotBadgeStatus.Error));
-        errorStatusStyle.Add(BadgeDotColorProperty, GlobalTokenResourceKey.ColorError);
-        commonStyle.Add(errorStatusStyle);
-
-        var successStatusStyle =
-            new Style(selector => selector.Nesting().PropertyEquals(StatusProperty, DotBadgeStatus.Success));
-        successStatusStyle.Add(BadgeDotColorProperty, GlobalTokenResourceKey.ColorSuccess);
-        commonStyle.Add(successStatusStyle);
-
-        var warningStatusStyle =
-            new Style(selector => selector.Nesting().PropertyEquals(StatusProperty, DotBadgeStatus.Warning));
-        warningStatusStyle.Add(BadgeDotColorProperty, GlobalTokenResourceKey.ColorWarning);
-        commonStyle.Add(warningStatusStyle);
-
-        var defaultStatusStyle =
-            new Style(selector => selector.Nesting().PropertyEquals(StatusProperty, DotBadgeStatus.Default));
-        defaultStatusStyle.Add(BadgeDotColorProperty, GlobalTokenResourceKey.ColorTextPlaceholder);
-        commonStyle.Add(defaultStatusStyle);
-
-        var processingStatusStyle = new Style(selector =>
-            selector.Nesting().PropertyEquals(StatusProperty, DotBadgeStatus.Processing));
-        processingStatusStyle.Add(BadgeDotColorProperty, GlobalTokenResourceKey.ColorInfo);
-        commonStyle.Add(processingStatusStyle);
-
-        Styles.Add(commonStyle);
-    }
-
-    protected override Size MeasureOverride(Size availableSize)
-    {
-        var targetWidth  = 0d;
-        var targetHeight = 0d;
-        if (IsAdornerMode)
-        {
-            targetWidth  = availableSize.Width;
-            targetHeight = availableSize.Height;
-        }
-        else
-        {
-            var textSize = base.MeasureOverride(availableSize);
-            targetWidth  += StatusSize;
-            targetWidth  += textSize.Width;
-            targetHeight += Math.Max(textSize.Height, StatusSize);
-            if (textSize.Width > 0)
+            if (change.Property == StatusProperty)
             {
-                targetWidth += BadgeTextMarginInline;
+                SetupBadgeColor();
             }
         }
-
-        return new Size(targetWidth, targetHeight);
+    }
+    
+    private void SetupBadgeColor()
+    {
+        if (Status is not null)
+        {
+            if (Status == DotBadgeStatus.Error)
+            {
+                TokenResourceBinder.CreateGlobalTokenBinding(this, BadgeDotColorProperty,
+                    GlobalTokenResourceKey.ColorError);
+            }
+            else if (Status == DotBadgeStatus.Success)
+            {
+                TokenResourceBinder.CreateGlobalTokenBinding(this, BadgeDotColorProperty,
+                    GlobalTokenResourceKey.ColorSuccess);
+            }
+            else if (Status == DotBadgeStatus.Warning)
+            {
+                TokenResourceBinder.CreateGlobalTokenBinding(this, BadgeDotColorProperty,
+                    GlobalTokenResourceKey.ColorWarning);
+            }
+            else if (Status == DotBadgeStatus.Processing)
+            {
+                TokenResourceBinder.CreateGlobalTokenBinding(this, BadgeDotColorProperty,
+                    GlobalTokenResourceKey.ColorInfo);
+            }
+            else if (Status == DotBadgeStatus.Default)
+            {
+                TokenResourceBinder.CreateGlobalTokenBinding(this, BadgeDotColorProperty,
+                    GlobalTokenResourceKey.ColorTextPlaceholder);
+            }
+        }
     }
 
     protected override Size ArrangeOverride(Size finalSize)
     {
-        if (!IsAdornerMode)
+        var size = base.ArrangeOverride(finalSize);
+        if (IsAdornerMode && _indicatorMotionActor is not null)
         {
-            double textOffsetX = 0;
-            if (IsAdornerMode)
-            {
-                textOffsetX += DotSize;
-            }
-            else
-            {
-                textOffsetX += StatusSize;
-            }
-
-            textOffsetX += BadgeTextMarginInline;
-            var textRect = new Rect(new Point(textOffsetX, 0), _textLabel!.DesiredSize);
-            _textLabel.Arrange(textRect);
+            var offsetX = Offset.X;
+            var offsetY = Offset.Y;
+            var dotSize = _indicatorMotionActor.Bounds.Size;
+            offsetX += dotSize.Width / 3;
+            offsetY += dotSize.Height / 3;
+            _indicatorMotionActor.Arrange(new Rect(new Point(offsetX, -offsetY), dotSize));
         }
-
-        return finalSize;
+        return size;
     }
 
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
+    internal void ApplyToTarget(AdornerLayer? adornerLayer, Control adorned)
     {
-        base.OnPropertyChanged(e);
-        if (e.Property == IsAdornerModeProperty)
+        if (adornerLayer is null)
         {
-            var newValue = e.GetNewValue<bool>();
-            if (_textLabel is not null)
-            {
-                _textLabel.IsVisible = !newValue;
-            }
+            return;
         }
-        else if (e.Property == BadgeShadowSizeProperty ||
-                 e.Property == BadgeShadowColorProperty)
-        {
-            BuildBoxShadow();
-        }
+        
+        adornerLayer.Children.Remove(this);
+        
+        AdornerLayer.SetAdornedElement(this, adorned);
+        AdornerLayer.SetIsClipEnabled(this, false);
+        adornerLayer.Children.Add(this);
+        
+        _motionCancellationTokenSource?.Cancel();
+        _motionCancellationTokenSource  = new CancellationTokenSource();
+        
+        ApplyShowMotion();
     }
 
-    public override void Render(DrawingContext context)
+    internal void DetachFromTarget(AdornerLayer? adornerLayer)
     {
-        var dotSize = 0d;
-        if (IsAdornerMode)
+        if (adornerLayer is null)
         {
-            dotSize = DotSize;
+            return;
         }
-        else
-        {
-            dotSize = StatusSize;
-        }
-
-        var offsetX = 0d;
-        var offsetY = 0d;
-        if (IsAdornerMode)
-        {
-            offsetX =  DesiredSize.Width - dotSize / 2;
-            offsetY =  -dotSize / 2;
-            offsetX -= Offset.X;
-            offsetY += Offset.Y;
-        }
-        else
-        {
-            offsetY = (DesiredSize.Height - dotSize) / 2;
-        }
-
-        var dotRect = new Rect(new Point(offsetX, offsetY), new Size(dotSize, dotSize));
-
-        if (RenderTransform is not null)
-        {
-            Point origin;
-            if (AnimationRenderTransformOrigin.HasValue)
-            {
-                origin = AnimationRenderTransformOrigin.Value.ToPixels(dotRect.Size);
-            }
-            else
-            {
-                origin = RenderTransformOrigin.ToPixels(dotRect.Size);
-            }
-
-            var offset          = Matrix.CreateTranslation(new Point(origin.X + offsetX, origin.Y + offsetY));
-            var renderTransform = -offset * RenderTransform.Value * offset;
-            context.PushTransform(renderTransform);
-        }
-
-        context.DrawRectangle(BadgeDotColor, null, dotRect, dotSize, dotSize, _boxShadows);
-    }
-
-    private void BuildBoxShadow()
-    {
-        if (BadgeShadowColor is not null)
-        {
-            _boxShadows = new BoxShadows(new BoxShadow
-            {
-                OffsetX = 0,
-                OffsetY = 0,
-                Blur    = 0,
-                Spread  = BadgeShadowSize,
-                Color   = ((SolidColorBrush)BadgeShadowColor).Color
-            });
-        }
+        ApplyHideMotion(() => adornerLayer.Children.Remove(this));
     }
 }
