@@ -7,7 +7,7 @@
         <AvaloniaVersionThatSampleUsed>11.1.3</AvaloniaVersionThatSampleUsed>
         <LibVersion>0.0.1</LibVersion>
         <NugetPackageVersion>$(LibVersion)-local.1</NugetPackageVersion>
-        <NugetPackageVersion>$(LibVersion)-preview.1</NugetPackageVersion>
+        <NugetPackageVersion>$(LibVersion)-build-$([System.DateTime]::Now.ToString("yyyyMMdd"))</NugetPackageVersion>
         <FileVersion>$([System.DateTime]::Now.ToString("yyyy.MM.dd HH:mm:ss"))</FileVersion>
         <AssemblyVersion>$(LibVersion)</AssemblyVersion>
 
