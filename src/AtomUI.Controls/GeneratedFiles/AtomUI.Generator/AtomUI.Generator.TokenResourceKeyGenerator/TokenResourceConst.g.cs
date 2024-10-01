@@ -65,6 +65,9 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey BadgeRibbonCornerDarkenAmount = new TokenResourceKey("Badge.BadgeRibbonCornerDarkenAmount", "AtomUI.Token");
         public static readonly TokenResourceKey BadgeRibbonTextPadding = new TokenResourceKey("Badge.BadgeRibbonTextPadding", "AtomUI.Token");
         public static readonly TokenResourceKey DotBadgeLabelMargin = new TokenResourceKey("Badge.DotBadgeLabelMargin", "AtomUI.Token");
+        public static readonly TokenResourceKey CountBadgeTextPadding = new TokenResourceKey("Badge.CountBadgeTextPadding", "AtomUI.Token");
+        public static readonly TokenResourceKey CountBadgeCornerRadius = new TokenResourceKey("Badge.CountBadgeCornerRadius", "AtomUI.Token");
+        public static readonly TokenResourceKey CountBadgeCornerRadiusSM = new TokenResourceKey("Badge.CountBadgeCornerRadiusSM", "AtomUI.Token");
     }
 
     public static class ButtonSpinnerTokenResourceKey

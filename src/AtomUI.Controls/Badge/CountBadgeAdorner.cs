@@ -1,36 +1,45 @@
-﻿using System.Globalization;
-using AtomUI.Media;
+﻿using AtomUI.Controls.Badge;
+using AtomUI.MotionScene;
 using AtomUI.Theme.Styling;
+using AtomUI.Utils;
 using Avalonia;
+using Avalonia.Animation;
 using Avalonia.Controls;
-using Avalonia.Controls.Documents;
-using Avalonia.Layout;
-using Avalonia.LogicalTree;
+using Avalonia.Controls.Primitives;
 using Avalonia.Media;
-using Avalonia.Media.TextFormatting;
-using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
-internal class CountBadgeAdorner : Control
+internal class CountBadgeAdorner : TemplatedControl
 {
     #region 公共属性定义
 
     public static readonly StyledProperty<IBrush?> BadgeColorProperty =
         AvaloniaProperty.Register<CountBadgeAdorner, IBrush?>(
             nameof(BadgeColor));
+    
+    internal static readonly StyledProperty<Point> OffsetProperty =
+        AvaloniaProperty.Register<CountBadgeAdorner, Point>(
+            nameof(Offset));
 
-    public static readonly DirectProperty<CountBadgeAdorner, int> OverflowCountProperty =
-        AvaloniaProperty.RegisterDirect<CountBadgeAdorner, int>(
-            nameof(OverflowCount),
-            o => o.OverflowCount,
-            (o, v) => o.OverflowCount = v);
+    public static readonly StyledProperty<int> OverflowCountProperty =
+        AvaloniaProperty.Register<CountBadgeAdorner, int>(nameof(OverflowCount));
 
-    public static readonly DirectProperty<CountBadgeAdorner, CountBadgeSize> SizeProperty =
-        AvaloniaProperty.RegisterDirect<CountBadgeAdorner, CountBadgeSize>(
-            nameof(Size),
-            o => o.Size,
-            (o, v) => o.Size = v);
+    public static readonly StyledProperty<CountBadgeSize> SizeProperty =
+        AvaloniaProperty.Register<CountBadgeAdorner, CountBadgeSize>(
+            nameof(Size));
+    
+    internal static readonly StyledProperty<int> CountProperty =
+        AvaloniaProperty.Register<CountBadgeAdorner, int>(
+            nameof(Count));
+    
+    internal static readonly StyledProperty<IBrush?> BadgeShadowColorProperty =
+        AvaloniaProperty.Register<CountBadgeAdorner, IBrush?>(
+            nameof(BadgeShadowColor));
+
+    internal static readonly StyledProperty<double> BadgeShadowSizeProperty =
+        AvaloniaProperty.Register<CountBadgeAdorner, double>(
+            nameof(BadgeShadowSize));
 
     public IBrush? BadgeColor
     {
@@ -44,116 +53,64 @@ internal class CountBadgeAdorner : Control
         set => SetValue(OffsetProperty, value);
     }
 
-    private int _overflowCount;
-
     public int OverflowCount
     {
-        get => _overflowCount;
-        set => SetAndRaise(OverflowCountProperty, ref _overflowCount, value);
+        get => GetValue(OverflowCountProperty);
+        set => SetValue(OverflowCountProperty, value);
     }
 
-    #endregion
-
-    #region 内部属性定义
-
-    internal static readonly StyledProperty<IBrush?> BadgeTextColorProperty =
-        AvaloniaProperty.Register<CountBadgeAdorner, IBrush?>(
-            nameof(BadgeTextColor));
-
-    internal static readonly StyledProperty<double> TextFontSizeProperty =
-        AvaloniaProperty.Register<CountBadgeAdorner, double>(
-            nameof(TextFontSize));
-
-    internal static readonly StyledProperty<double> IndicatorHeightProperty =
-        AvaloniaProperty.Register<CountBadgeAdorner, double>(
-            nameof(IndicatorHeight));
-
-    internal static readonly StyledProperty<int> CountProperty =
-        AvaloniaProperty.Register<CountBadgeAdorner, int>(
-            nameof(Count));
-
-    internal static readonly StyledProperty<FontFamily> FontFamilyProperty =
-        TextElement.FontFamilyProperty.AddOwner<CountBadgeAdorner>();
-
-    internal static readonly StyledProperty<FontWeight> TextFontWeightProperty =
-        TextElement.FontWeightProperty.AddOwner<CountBadgeAdorner>();
-
-    internal static readonly StyledProperty<IBrush?> BadgeShadowColorProperty =
-        AvaloniaProperty.Register<CountBadgeAdorner, IBrush?>(
-            nameof(BadgeShadowColor));
-
-    internal static readonly StyledProperty<double> BadgeShadowSizeProperty =
-        AvaloniaProperty.Register<CountBadgeAdorner, double>(
-            nameof(BadgeShadowSize));
-
-    internal static readonly StyledProperty<double> PaddingInlineProperty =
-        AvaloniaProperty.Register<CountBadgeAdorner, double>(
-            nameof(PaddingInline));
-
-    internal static readonly DirectProperty<DotBadgeAdorner, bool> IsAdornerModeProperty =
-        AvaloniaProperty.RegisterDirect<DotBadgeAdorner, bool>(
-            nameof(IsAdornerMode),
-            o => o.IsAdornerMode,
-            (o, v) => o.IsAdornerMode = v);
-
-    internal static readonly StyledProperty<Point> OffsetProperty =
-        AvaloniaProperty.Register<CountBadgeAdorner, Point>(
-            nameof(Offset));
-
-    internal IBrush? BadgeTextColor
+    public CountBadgeSize Size
     {
-        get => GetValue(BadgeTextColorProperty);
-        set => SetValue(BadgeTextColorProperty, value);
+        get => GetValue(SizeProperty);
+        set => SetValue(SizeProperty, value);
     }
-
-    internal double TextFontSize
-    {
-        get => GetValue(TextFontSizeProperty);
-        set => SetValue(TextFontSizeProperty, value);
-    }
-
-    internal double IndicatorHeight
-    {
-        get => GetValue(IndicatorHeightProperty);
-        set => SetValue(IndicatorHeightProperty, value);
-    }
-
-    internal int Count
+    
+    public int Count
     {
         get => GetValue(CountProperty);
         set => SetValue(CountProperty, value);
     }
-
-    internal FontFamily FontFamily
-    {
-        get => GetValue(FontFamilyProperty);
-        set => SetValue(FontFamilyProperty, value);
-    }
-
-    internal FontWeight TextFontWeight
-    {
-        get => GetValue(TextFontWeightProperty);
-        set => SetValue(TextFontWeightProperty, value);
-    }
-
-    internal IBrush? BadgeShadowColor
+    
+    public IBrush? BadgeShadowColor
     {
         get => GetValue(BadgeShadowColorProperty);
         set => SetValue(BadgeShadowColorProperty, value);
     }
 
-    internal double BadgeShadowSize
+    public double BadgeShadowSize
     {
         get => GetValue(BadgeShadowSizeProperty);
         set => SetValue(BadgeShadowSizeProperty, value);
     }
+    
+    #endregion
 
-    internal double PaddingInline
-    {
-        get => GetValue(PaddingInlineProperty);
-        set => SetValue(PaddingInlineProperty, value);
-    }
+    #region 内部属性定义
+    
+    internal static readonly DirectProperty<CountBadgeAdorner, bool> IsAdornerModeProperty =
+        AvaloniaProperty.RegisterDirect<CountBadgeAdorner, bool>(
+            nameof(IsAdornerMode),
+            o => o.IsAdornerMode,
+            (o, v) => o.IsAdornerMode = v);
 
+    internal static readonly DirectProperty<CountBadgeAdorner, BoxShadows> BoxShadowProperty =
+        AvaloniaProperty.RegisterDirect<CountBadgeAdorner, BoxShadows>(
+            nameof(BoxShadow),
+            o => o.BoxShadow,
+            (o, v) => o.BoxShadow = v);
+    
+    internal static readonly DirectProperty<CountBadgeAdorner, string?> CountTextProperty =
+        AvaloniaProperty.RegisterDirect<CountBadgeAdorner, string?>(
+            nameof(CountText),
+            o => o.CountText,
+            (o, v) => o.CountText = v);
+    
+    internal static readonly DirectProperty<CountBadgeAdorner, TimeSpan> MotionDurationProperty =
+        AvaloniaProperty.RegisterDirect<CountBadgeAdorner, TimeSpan>(
+            nameof(MotionDuration),
+            o => o.MotionDuration,
+            (o, v) => o.MotionDuration = v);
+    
     private bool _isAdornerMode;
 
     internal bool IsAdornerMode
@@ -161,20 +118,34 @@ internal class CountBadgeAdorner : Control
         get => _isAdornerMode;
         set => SetAndRaise(IsAdornerModeProperty, ref _isAdornerMode, value);
     }
-
-    private CountBadgeSize _size;
-
-    public CountBadgeSize Size
+    
+    private BoxShadows _boxShadow;
+    public BoxShadows BoxShadow
     {
-        get => _size;
-        set => SetAndRaise(SizeProperty, ref _size, value);
+        get => _boxShadow;
+        set => SetAndRaise(BoxShadowProperty, ref _boxShadow, value);
+    }
+    
+    private string? _countText;
+    public string? CountText
+    {
+        get => _countText;
+        set => SetAndRaise(CountTextProperty, ref _countText, value);
+    }
+    
+    private TimeSpan _motionDuration;
+    public TimeSpan MotionDuration
+    {
+        get => _motionDuration;
+        set => SetAndRaise(MotionDurationProperty, ref _motionDuration, value);
     }
 
     #endregion
-
-    // 不知道为什么这个值会被 AdornerLayer 重写
-    // 非常不优美，但是能工作
-    internal RelativePoint? AnimationRenderTransformOrigin;
+    
+    private Panel? _rootLayout;
+    private MotionActorControl? _indicatorMotionActor;
+    private CancellationTokenSource? _motionCancellationTokenSource;
+    private bool _needInitialHide;
 
     static CountBadgeAdorner()
     {
@@ -185,66 +156,28 @@ internal class CountBadgeAdorner : Control
         AffectsRender<CountBadgeAdorner>(BadgeColorProperty, OffsetProperty);
     }
 
-    private bool _initialized;
-    private BoxShadows _boxShadows;
-    private Size _countTextSize;
-    private string? _countText;
-    private readonly List<FormattedText> _formattedTexts;
-
-    public CountBadgeAdorner()
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        _formattedTexts = new List<FormattedText>();
-    }
-
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        if (Styles.Count == 0)
+        base.OnApplyTemplate(e);
+        TokenResourceBinder.CreateTokenBinding(this, BadgeShadowSizeProperty, BadgeTokenResourceKey.BadgeShadowSize);
+        TokenResourceBinder.CreateTokenBinding(this, BadgeShadowColorProperty, BadgeTokenResourceKey.BadgeShadowColor);
+        TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, GlobalTokenResourceKey.MotionDurationMid);
+        TokenResourceBinder.CreateTokenBinding(this, BadgeColorProperty, BadgeTokenResourceKey.BadgeColor);
+        _indicatorMotionActor = e.NameScope.Get<MotionActorControl>(CountBadgeAdornerTheme.IndicatorMotionActorPart);
+        if (_needInitialHide)
         {
-            BuildStyles();
+            _indicatorMotionActor.IsVisible = false;
+            _needInitialHide                = false;
         }
-    }
-
-    private void BuildStyles()
-    {
-        var commonStyle = new Style();
-        commonStyle.Add(TextFontWeightProperty, BadgeTokenResourceKey.TextFontWeight);
-        commonStyle.Add(BadgeColorProperty, BadgeTokenResourceKey.BadgeColor);
-        commonStyle.Add(BadgeShadowSizeProperty, BadgeTokenResourceKey.BadgeShadowSize);
-        commonStyle.Add(BadgeShadowColorProperty, BadgeTokenResourceKey.BadgeShadowColor);
-        commonStyle.Add(BadgeTextColorProperty, BadgeTokenResourceKey.BadgeTextColor);
-        commonStyle.Add(PaddingInlineProperty, GlobalTokenResourceKey.PaddingXS);
-        Styles.Add(commonStyle);
-
-        var defaultSizeStyle =
-            new Style(selector => selector.PropertyEquals(SizeProperty, CountBadgeSize.Default));
-        defaultSizeStyle.Add(TextFontSizeProperty, BadgeTokenResourceKey.TextFontSize);
-        defaultSizeStyle.Add(IndicatorHeightProperty, BadgeTokenResourceKey.IndicatorHeight);
-        Styles.Add(defaultSizeStyle);
-
-        var smallSizeStyle = new Style(selector => selector.PropertyEquals(SizeProperty, CountBadgeSize.Small));
-        smallSizeStyle.Add(TextFontSizeProperty, BadgeTokenResourceKey.TextFontSizeSM);
-        smallSizeStyle.Add(IndicatorHeightProperty, BadgeTokenResourceKey.IndicatorHeightSM);
-        Styles.Add(smallSizeStyle);
-    }
-
-    public override void ApplyTemplate()
-    {
-        if (!_initialized)
-        {
-            BuildBoxShadow();
-            BuildCountText();
-            CalculateCountTextSize();
-            BuildFormattedTexts();
-            _initialized = true;
-        }
+        BuildBoxShadow();
+        BuildCountText();
     }
 
     private void BuildBoxShadow()
     {
         if (BadgeShadowColor is not null)
         {
-            _boxShadows = new BoxShadows(new BoxShadow
+            BoxShadow = new BoxShadows(new BoxShadow
             {
                 OffsetX = 0,
                 OffsetY = 0,
@@ -269,143 +202,100 @@ internal class CountBadgeAdorner : Control
             if (e.Property == CountProperty || e.Property == OverflowCountProperty)
             {
                 BuildCountText();
-                CalculateCountTextSize(true);
-                BuildFormattedTexts(true);
             }
-        }
-    }
-
-    protected override Size MeasureOverride(Size availableSize)
-    {
-        if (IsAdornerMode)
-        {
-            return availableSize;
-        }
-
-        return GetBadgePillSize();
-    }
-
-    protected Size GetBadgePillSize()
-    {
-        var targetWidth  = IndicatorHeight;
-        var targetHeight = IndicatorHeight;
-        if (_countText?.Length > 1)
-        {
-            targetWidth += PaddingInline;
-            if (Count > _overflowCount)
-            {
-                targetWidth += PaddingInline;
-            }
-        }
-
-        targetWidth  = Math.Max(targetWidth, _countTextSize.Width);
-        targetHeight = Math.Max(targetHeight, _countTextSize.Height);
-        return new Size(targetWidth, targetHeight);
-    }
-
-    private void CalculateCountTextSize(bool force = false)
-    {
-        if (force || _countTextSize == default)
-        {
-            var fontSize = TextFontSize;
-            var typeface = new Typeface(FontFamily, FontStyle.Normal, TextFontWeight);
-            var textLayout = new TextLayout(_countText,
-                typeface,
-                null,
-                fontSize,
-                null,
-                lineHeight: IndicatorHeight);
-            _countTextSize = new Size(Math.Round(textLayout.Width), Math.Round(textLayout.Height));
         }
     }
 
     private void BuildCountText()
     {
-        if (Count > _overflowCount)
+        CountText = Count > OverflowCount ? $"{OverflowCount}+" : $"{Count}";
+    }
+    
+    protected override Size ArrangeOverride(Size finalSize)
+    {
+        var size = base.ArrangeOverride(finalSize);
+        if (IsAdornerMode && _indicatorMotionActor is not null)
         {
-            _countText = $"{_overflowCount}+";
+            var offsetX = Offset.X;
+            var offsetY = Offset.Y;
+            var indicatorSize = _indicatorMotionActor.DesiredSize;
+            offsetX += finalSize.Width - indicatorSize.Width / 2;
+            offsetY -= indicatorSize.Height / 2;
+            _indicatorMotionActor.Arrange(new Rect(new Point(offsetX, offsetY), indicatorSize));
+        }
+        return size;
+    }
+    
+    private void ApplyShowMotion()
+    {
+        if (_indicatorMotionActor is not null)
+        {
+            _indicatorMotionActor.IsVisible = false;
+            var zoomBadgeInMotionConfig = BadgeMotionFactory.BuildBadgeZoomBadgeInMotion(MotionDuration, null,
+                FillMode.Forward);
+            MotionInvoker.Invoke(_indicatorMotionActor, zoomBadgeInMotionConfig, () =>
+            {
+                _indicatorMotionActor.IsVisible = true;
+            }, null, _motionCancellationTokenSource!.Token);
+        }
+    }
+    
+    private void ApplyHideMotion(Action completedAction)
+    {
+        if (_indicatorMotionActor is not null)
+        {
+            var zoomBadgeOutMotionConfig = BadgeMotionFactory.BuildBadgeZoomBadgeOutMotion(MotionDuration, null,
+                FillMode.Forward);
+            _motionCancellationTokenSource?.Cancel();
+            _motionCancellationTokenSource  = new CancellationTokenSource();
+            
+            MotionInvoker.Invoke(_indicatorMotionActor, zoomBadgeOutMotionConfig, null, () =>
+            {
+                completedAction();
+            }, _motionCancellationTokenSource.Token);
         }
         else
         {
-            _countText = $"{Count}";
+            _needInitialHide = true;
         }
     }
-
-    public override void Render(DrawingContext context)
+    
+    internal void ApplyToTarget(AdornerLayer? adornerLayer, Control adorned)
     {
-        var offsetX   = 0d;
-        var offsetY   = 0d;
-        var badgeSize = GetBadgePillSize();
-        if (IsAdornerMode)
+        if (adornerLayer is not null)
         {
-            offsetX =  DesiredSize.Width - badgeSize.Width / 2;
-            offsetY =  -badgeSize.Height / 2;
-            offsetX += Offset.X;
-            offsetY += Offset.Y;
+            adornerLayer.Children.Remove(this);
+        
+            AdornerLayer.SetAdornedElement(this, adorned);
+            AdornerLayer.SetIsClipEnabled(this, false);
+            adornerLayer.Children.Add(this);
         }
-
-        var badgeRect = new Rect(new Point(offsetX, offsetY), badgeSize);
-
-        if (RenderTransform is not null)
-        {
-            Point origin;
-            if (AnimationRenderTransformOrigin.HasValue)
-            {
-                origin = AnimationRenderTransformOrigin.Value.ToPixels(badgeRect.Size);
-            }
-            else
-            {
-                origin = RenderTransformOrigin.ToPixels(badgeRect.Size);
-            }
-
-            var offset          = Matrix.CreateTranslation(new Point(origin.X + offsetX, origin.Y + offsetY));
-            var renderTransform = -offset * RenderTransform.Value * offset;
-            context.PushTransform(renderTransform);
-        }
-
-        context.DrawPilledRect(BadgeColor, null, badgeRect, Orientation.Horizontal, _boxShadows);
-        // 计算合适的文字 x 坐标
-        var textOffsetX = offsetX + (badgeSize.Width - _countTextSize.Width) / 2;
-        var textOffsetY = offsetY + (badgeSize.Height - _countTextSize.Height) / 2;
-        foreach (var formattedText in _formattedTexts)
-        {
-            context.DrawText(formattedText, new Point(textOffsetX, textOffsetY));
-            textOffsetX += formattedText.Width;
-        }
+        
+        _motionCancellationTokenSource?.Cancel();
+        _motionCancellationTokenSource  = new CancellationTokenSource();
+        
+        ApplyShowMotion();
     }
 
-    private void BuildFormattedTexts(bool force = false)
+    internal void DetachFromTarget(AdornerLayer? adornerLayer, bool enableMotion = true)
     {
-        if (_formattedTexts.Count == 0 || force)
+
+        if (enableMotion)
         {
-            _formattedTexts.Clear();
-            if (_countText is not null)
+            ApplyHideMotion(() =>
             {
-                if (Count > _overflowCount)
+                if (adornerLayer is not null)
                 {
-                    // 生成一个即可
-                    _formattedTexts.Add(BuildFormattedText(_countText));
+                    adornerLayer.Children.Remove(this);   
                 }
-                else
-                {
-                    // 没有数字都生成一个
-                    foreach (var c in _countText)
-                    {
-                        _formattedTexts.Add(BuildFormattedText(c.ToString()));
-                    }
-                }
+            });
+        }
+        else
+        {
+            if (adornerLayer is not null)
+            {
+                adornerLayer.Children.Remove(this);
             }
         }
-    }
-
-    private FormattedText BuildFormattedText(string text)
-    {
-        var typeface = new Typeface(FontFamily, FontStyle.Normal, TextFontWeight);
-        var formattedText = new FormattedText(text, CultureInfo.CurrentUICulture, GetFlowDirection(this),
-            typeface, 1, BadgeTextColor);
-        formattedText.SetFontSize(TextFontSize);
-        formattedText.TextAlignment = TextAlignment.Left;
-        formattedText.LineHeight    = IndicatorHeight;
-        return formattedText;
     }
 }

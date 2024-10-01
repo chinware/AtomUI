@@ -125,20 +125,20 @@ public class DotBadge : Control
         }
     }
     
-    private void HideAdorner()
+    private void HideAdorner(bool enableMotion)
     {
         // 这里需要抛出异常吗？
         if ( _dotBadgeAdorner is null)
         {
             return;
         }
-        _dotBadgeAdorner.DetachFromTarget(_adornerLayer);
+        _dotBadgeAdorner.DetachFromTarget(_adornerLayer, enableMotion);
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        HideAdorner();
+        HideAdorner(false);
     }
     
     private void SetupTokenBindings()
@@ -186,32 +186,17 @@ public class DotBadge : Control
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
         base.OnPropertyChanged(e);
-        if (e.Property == IsVisibleProperty)
+        if (e.Property == IsVisibleProperty ||
+            e.Property == BadgeIsVisibleProperty)
         {
             var badgeIsVisible = e.GetNewValue<bool>();
             if (badgeIsVisible)
             {
-                if (_adornerLayer is not null)
-                {
-                    return;
-                }
-
                 PrepareAdorner();
             }
             else
             {
-                HideAdorner();
-            }
-        }
-        else if (e.Property == BadgeIsVisibleProperty)
-        {
-            if (BadgeIsVisible)
-            {
-                PrepareAdorner();
-            }
-            else
-            {
-                HideAdorner();
+                HideAdorner(true);
             }
         }
 

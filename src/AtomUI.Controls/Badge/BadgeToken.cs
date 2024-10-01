@@ -63,7 +63,10 @@ internal class BadgeToken : AbstractControlDesignToken
     public int BadgeRibbonCornerDarkenAmount { get; set; }
     public Thickness BadgeRibbonTextPadding { get; set; }
     public Thickness DotBadgeLabelMargin { get; set; }
-
+    public Thickness CountBadgeTextPadding { get; set; }
+    public CornerRadius CountBadgeCornerRadius { get; set; }
+    public CornerRadius CountBadgeCornerRadiusSM { get; set; }
+    
     #endregion
 
     internal override void CalculateFromAlias()
@@ -92,5 +95,8 @@ internal class BadgeToken : AbstractControlDesignToken
         BadgeRibbonCornerDarkenAmount = 15;
         BadgeRibbonTextPadding        = new Thickness(_globalToken.PaddingXS, 0);
         DotBadgeLabelMargin           = new Thickness(_globalToken.MarginXS, 0, 0, 0);
+        CountBadgeTextPadding         = new Thickness(_globalToken.PaddingXXS, 0);
+        CountBadgeCornerRadius        = new CornerRadius(IndicatorHeight);
+        CountBadgeCornerRadiusSM      = new CornerRadius(IndicatorHeightSM);
     }
 }

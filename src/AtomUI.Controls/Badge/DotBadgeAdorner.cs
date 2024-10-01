@@ -187,8 +187,8 @@ internal class DotBadgeAdorner : TemplatedControl
             var offsetY = Offset.Y;
             var dotSize = _indicatorMotionActor.Bounds.Size;
             offsetX += dotSize.Width / 3;
-            offsetY += dotSize.Height / 3;
-            _indicatorMotionActor.Arrange(new Rect(new Point(offsetX, -offsetY), dotSize));
+            offsetY -= dotSize.Height / 3;
+            _indicatorMotionActor.Arrange(new Rect(new Point(offsetX, offsetY), dotSize));
         }
         return size;
     }
@@ -212,12 +212,20 @@ internal class DotBadgeAdorner : TemplatedControl
         ApplyShowMotion();
     }
 
-    internal void DetachFromTarget(AdornerLayer? adornerLayer)
+    internal void DetachFromTarget(AdornerLayer? adornerLayer, bool enableMotion = true)
     {
         if (adornerLayer is null)
         {
             return;
         }
-        ApplyHideMotion(() => adornerLayer.Children.Remove(this));
+
+        if (enableMotion)
+        {
+            ApplyHideMotion(() => adornerLayer.Children.Remove(this));
+        }
+        else
+        {
+            adornerLayer.Children.Remove(this);
+        }
     }
 }

@@ -23,7 +23,7 @@ internal class DotBadgeAdornerTheme : BaseControlTheme
     {
     }
 
-    protected override IControlTemplate? BuildControlTemplate()
+    protected override IControlTemplate BuildControlTemplate()
     {
         return new FuncControlTemplate<DotBadgeAdorner>((adorner, scope) =>
         {
