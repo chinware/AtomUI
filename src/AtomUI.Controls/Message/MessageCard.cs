@@ -3,7 +3,6 @@ using AtomUI.MotionScene;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
-using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -198,9 +197,8 @@ public class MessageCard : TemplatedControl
         if (_motionActor is not null)
         {
             _motionActor.IsVisible = false;
-            var moveUpInMotionConfig = MotionFactory.BuildMoveUpInMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseOut(),
-                FillMode.Forward);
-            MotionInvoker.Invoke(_motionActor, moveUpInMotionConfig, () =>
+            var motion = new MoveUpInMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseOut());
+            MotionInvoker.Invoke(_motionActor, motion, () =>
             {
                 _motionActor.IsVisible = true;
             });
@@ -211,9 +209,8 @@ public class MessageCard : TemplatedControl
     {
         if (_motionActor is not null)
         {
-            var moveUpOutMotionConfig = MotionFactory.BuildMoveUpOutMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseIn(),
-                FillMode.Forward);
-            MotionInvoker.Invoke(_motionActor, moveUpOutMotionConfig, null, () =>
+            var motion = new MoveUpOutMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseIn());
+            MotionInvoker.Invoke(_motionActor, motion, null, () =>
             {
                 IsClosed = true;
             });

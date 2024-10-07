@@ -12,7 +12,7 @@ internal class CollapseMotion : AbstractMotion
     public CollapseMotion(Direction direction,
                           TimeSpan duration,
                           Easing? easing = null,
-                          FillMode fillMode = FillMode.None)
+                          FillMode fillMode = FillMode.Forward)
         : base(duration, easing ?? new CubicEaseOut(), fillMode)
     {
         Direction = direction;
@@ -115,7 +115,7 @@ internal class ExpandMotion : AbstractMotion
     public ExpandMotion(Direction direction,
                         TimeSpan duration,
                         Easing? easing = null,
-                        FillMode fillMode = FillMode.None)
+                        FillMode fillMode = FillMode.Forward)
         : base(duration, easing ?? new CubicEaseIn(), fillMode)
     {
         Direction = direction;

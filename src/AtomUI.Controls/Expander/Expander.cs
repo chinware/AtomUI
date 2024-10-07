@@ -4,7 +4,6 @@ using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
-using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -194,6 +193,7 @@ public class Expander : AvaloniaExpander
                 {
                     return;
                 }
+
                 IsExpanded = !IsExpanded;
             };
         }
@@ -294,6 +294,7 @@ public class Expander : AvaloniaExpander
                     {
                         return;
                     }
+
                     IsExpanded = !IsExpanded;
                 }
             }
@@ -311,52 +312,46 @@ public class Expander : AvaloniaExpander
             CollapseItemContent();
         }
     }
-    
+
     private void ExpandItemContent()
     {
         if (_motionActor is null || _animating)
         {
             return;
         }
-        
+
         if (!_enableAnimation)
         {
             _motionActor.IsVisible = true;
             return;
         }
-        
+
         _animating = true;
-        var expandMotionConfig = MotionFactory.BuildExpandMotion(DirectionFromExpandDirection(ExpandDirection), 
+        var motion = new ExpandMotion(DirectionFromExpandDirection(ExpandDirection),
             MotionDuration,
-            new CubicEaseOut(),
-            FillMode.Forward);
-        MotionInvoker.Invoke(_motionActor, expandMotionConfig, () =>
-        {
-            _motionActor.SetCurrentValue(IsVisibleProperty, true);
-        }, () =>
-        {
-            _animating = false;
-        });
+            new CubicEaseOut());
+        MotionInvoker.Invoke(_motionActor, motion, () => { _motionActor.SetCurrentValue(IsVisibleProperty, true); },
+            () => { _animating = false; });
     }
-    
+
     private void CollapseItemContent()
     {
         if (_motionActor is null || _animating)
         {
             return;
         }
+
         if (!_enableAnimation)
         {
             _motionActor.IsVisible = false;
             return;
         }
-        
+
         _animating = true;
-        var slideDownOutMotionConfig = MotionFactory.BuildCollapseMotion(DirectionFromExpandDirection(ExpandDirection), 
+        var motion = new CollapseMotion(DirectionFromExpandDirection(ExpandDirection),
             MotionDuration,
-            new CubicEaseIn(),
-            FillMode.Forward);
-        MotionInvoker.Invoke(_motionActor, slideDownOutMotionConfig, null, () =>
+            new CubicEaseIn());
+        MotionInvoker.Invoke(_motionActor, motion, null, () =>
         {
             _motionActor.SetCurrentValue(IsVisibleProperty, false);
             _animating = false;
@@ -371,6 +366,8 @@ public class Expander : AvaloniaExpander
             ExpandDirection.Up => Direction.Top,
             ExpandDirection.Right => Direction.Right,
             ExpandDirection.Down => Direction.Bottom,
+            _ => throw new ArgumentOutOfRangeException(nameof(expandDirection), expandDirection,
+                "Invalid value for ExpandDirection")
         };
     }
 

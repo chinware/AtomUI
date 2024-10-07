@@ -3,7 +3,6 @@ using AtomUI.MotionScene;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
-using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Automation.Peers;
 using Avalonia.Controls;
@@ -308,9 +307,8 @@ public class CollapseItem : HeaderedContentControl, ISelectable
         }
         
         InAnimating = true;
-        var slideDownInMotionConfig = MotionFactory.BuildSlideUpInMotion(MotionDuration, new CubicEaseOut(),
-            FillMode.Forward);
-        MotionInvoker.Invoke(_motionActor, slideDownInMotionConfig, () =>
+        var motion = new SlideUpInMotion(MotionDuration, new CubicEaseOut());
+        MotionInvoker.Invoke(_motionActor, motion, () =>
         {
             _motionActor.SetCurrentValue(IsVisibleProperty, true);
         }, () =>
@@ -333,9 +331,8 @@ public class CollapseItem : HeaderedContentControl, ISelectable
         }
 
         InAnimating = true;
-        var slideDownOutMotionConfig = MotionFactory.BuildSlideUpOutMotion(MotionDuration, new CubicEaseIn(),
-            FillMode.Forward);
-        MotionInvoker.Invoke(_motionActor, slideDownOutMotionConfig, null, () =>
+        var motion = new SlideUpOutMotion(MotionDuration, new CubicEaseIn());
+        MotionInvoker.Invoke(_motionActor, motion, null, () =>
         {
             _motionActor.SetCurrentValue(IsVisibleProperty, false);
             InAnimating = false;

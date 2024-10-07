@@ -1,27 +1,23 @@
 ﻿using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
-using Avalonia.Media;
 using Avalonia.Styling;
 
 namespace AtomUI.MotionScene;
 
-internal class MoveDownInMotion : AbstractMotion
+internal class ZoomInMotion : AbstractMotion
 {
-    public double Offset { get; }
-
-    public MoveDownInMotion(double offset,
-                            TimeSpan duration,
-                            Easing? easing = null,
-                            FillMode fillMode = FillMode.Forward)
-        : base(duration, easing ?? new QuinticEaseOut(), fillMode)
+    public ZoomInMotion(TimeSpan duration,
+                        Easing? easing = null,
+                        FillMode fillMode = FillMode.Forward)
+        : base(duration, easing ?? new CircularEaseOut(), fillMode)
     {
-        Offset = offset;
     }
 
     protected override void Configure()
     {
         var animation = CreateAnimation();
+
         var startFrame = new KeyFrame
         {
             Cue = new Cue(0.0)
@@ -37,32 +33,11 @@ internal class MoveDownInMotion : AbstractMotion
             var transformSetter = new Setter
             {
                 Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildTranslateScaleAndTransform(1.0, 0.01, 0.0, Offset)
+                Value    = BuildScaleTransform(0.01)
             };
             startFrame.Setters.Add(transformSetter);
         }
         animation.Children.Add(startFrame);
-
-        var middleFrame = new KeyFrame
-        {
-            Cue = new Cue(0.8)
-        };
-        {
-            var opacitySetter = new Setter
-            {
-                Property = Visual.OpacityProperty,
-                Value    = 0.1
-            };
-            middleFrame.Setters.Add(opacitySetter);
-
-            var transformSetter = new Setter
-            {
-                Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, Offset / 4)
-            };
-            middleFrame.Setters.Add(transformSetter);
-        }
-        animation.Children.Add(middleFrame);
 
         var endFrame = new KeyFrame
         {
@@ -79,33 +54,29 @@ internal class MoveDownInMotion : AbstractMotion
             var transformSetter = new Setter
             {
                 Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0)
+                Value    = BuildScaleTransform(1.0)
             };
             endFrame.Setters.Add(transformSetter);
         }
         animation.Children.Add(endFrame);
         RenderTransformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
-
         Animations.Add(animation);
     }
 }
 
-internal class MoveDownOutMotion : AbstractMotion
+internal class ZoomOutMotion : AbstractMotion
 {
-    public double Offset { get; }
-
-    public MoveDownOutMotion(double offset,
-                             TimeSpan duration,
-                             Easing? easing = null,
-                             FillMode fillMode = FillMode.Forward)
-        : base(duration, easing ?? new QuinticEaseIn(), fillMode)
+    public ZoomOutMotion(TimeSpan duration,
+                         Easing? easing = null,
+                         FillMode fillMode = FillMode.Forward)
+        : base(duration, easing ?? new CircularEaseOut(), fillMode)
     {
-        Offset = offset;
     }
 
     protected override void Configure()
     {
         var animation = CreateAnimation();
+
         var startFrame = new KeyFrame
         {
             Cue = new Cue(0.0)
@@ -121,33 +92,11 @@ internal class MoveDownOutMotion : AbstractMotion
             var transformSetter = new Setter
             {
                 Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0)
+                Value    = BuildScaleTransform(1.0)
             };
-
             startFrame.Setters.Add(transformSetter);
         }
         animation.Children.Add(startFrame);
-
-        var middleFrame = new KeyFrame
-        {
-            Cue = new Cue(0.8)
-        };
-        {
-            var opacitySetter = new Setter
-            {
-                Property = Visual.OpacityProperty,
-                Value    = 0.1
-            };
-            middleFrame.Setters.Add(opacitySetter);
-
-            var transformSetter = new Setter
-            {
-                Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, Offset / 4)
-            };
-            middleFrame.Setters.Add(transformSetter);
-        }
-        animation.Children.Add(middleFrame);
 
         var endFrame = new KeyFrame
         {
@@ -164,117 +113,29 @@ internal class MoveDownOutMotion : AbstractMotion
             var transformSetter = new Setter
             {
                 Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildTranslateScaleAndTransform(1.0, 0.0, 0.0, Offset)
-            };
-            endFrame.Setters.Add(transformSetter);
-        }
-        animation.Children.Add(endFrame);
-        RenderTransformOrigin = new RelativePoint(0, 0, RelativeUnit.Relative);
-
-        Animations.Add(animation);
-    }
-}
-
-internal class MoveUpInMotion : AbstractMotion
-{
-    public double Offset { get; }
-
-    public MoveUpInMotion(double offset,
-                          TimeSpan duration,
-                          Easing? easing = null,
-                          FillMode fillMode = FillMode.Forward)
-        : base(duration, easing ?? new QuinticEaseOut(), fillMode)
-    {
-        Offset = offset;
-    }
-
-    protected override void Configure()
-    {
-        var animation = CreateAnimation();
-        var startFrame = new KeyFrame
-        {
-            Cue = new Cue(0.0)
-        };
-        {
-            var opacitySetter = new Setter
-            {
-                Property = Visual.OpacityProperty,
-                Value    = 0.0
-            };
-            startFrame.Setters.Add(opacitySetter);
-
-            var transformSetter = new Setter
-            {
-                Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildTranslateScaleAndTransform(1.0, 0.01, 0.0, -Offset)
-            };
-            startFrame.Setters.Add(transformSetter);
-        }
-        animation.Children.Add(startFrame);
-
-        var middleFrame = new KeyFrame
-        {
-            Cue = new Cue(0.8)
-        };
-        {
-            var opacitySetter = new Setter
-            {
-                Property = Visual.OpacityProperty,
-                Value    = 0.1
-            };
-            middleFrame.Setters.Add(opacitySetter);
-
-            var transformSetter = new Setter
-            {
-                Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, -Offset / 4)
-            };
-            middleFrame.Setters.Add(transformSetter);
-        }
-        animation.Children.Add(middleFrame);
-
-        var endFrame = new KeyFrame
-        {
-            Cue = new Cue(1.0)
-        };
-        {
-            var opacitySetter = new Setter
-            {
-                Property = Visual.OpacityProperty,
-                Value    = 1.0
-            };
-            endFrame.Setters.Add(opacitySetter);
-
-            var transformSetter = new Setter
-            {
-                Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0)
+                Value    = BuildScaleTransform(0.01)
             };
             endFrame.Setters.Add(transformSetter);
         }
         animation.Children.Add(endFrame);
         RenderTransformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
-
         Animations.Add(animation);
     }
 }
 
-internal class MoveUpOutMotion : AbstractMotion
+internal class ZoomBigInMotion : AbstractMotion
 {
-    public double Offset { get; }
-
-    public MoveUpOutMotion(double offset,
-                           TimeSpan duration,
+    public ZoomBigInMotion(TimeSpan duration,
                            Easing? easing = null,
                            FillMode fillMode = FillMode.Forward)
-        : base(duration, easing ?? new QuinticEaseIn(), fillMode)
+        : base(duration, easing ?? new CircularEaseOut(), fillMode)
     {
-        Offset = offset;
     }
 
     protected override void Configure()
     {
         var animation = CreateAnimation();
+
         var startFrame = new KeyFrame
         {
             Cue = new Cue(0.0)
@@ -283,48 +144,18 @@ internal class MoveUpOutMotion : AbstractMotion
             var opacitySetter = new Setter
             {
                 Property = Visual.OpacityProperty,
-                Value    = 1.0
+                Value    = 0.0
             };
             startFrame.Setters.Add(opacitySetter);
 
-            var translateYSetter = new Setter
-            {
-                Property = TranslateTransform.YProperty,
-                Value    = 0.0
-            };
-            startFrame.Setters.Add(translateYSetter);
-
             var transformSetter = new Setter
             {
                 Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0)
+                Value    = BuildScaleTransform(0.8)
             };
-
             startFrame.Setters.Add(transformSetter);
         }
         animation.Children.Add(startFrame);
-
-        var middleFrame = new KeyFrame
-        {
-            Cue = new Cue(0.8)
-        };
-        {
-            var opacitySetter = new Setter
-            {
-                Property = Visual.OpacityProperty,
-                Value    = 0.1
-            };
-            middleFrame.Setters.Add(opacitySetter);
-
-            var transformSetter = new Setter
-            {
-                Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, -Offset / 4)
-            };
-
-            middleFrame.Setters.Add(transformSetter);
-        }
-        animation.Children.Add(middleFrame);
 
         var endFrame = new KeyFrame
         {
@@ -334,128 +165,36 @@ internal class MoveUpOutMotion : AbstractMotion
             var opacitySetter = new Setter
             {
                 Property = Visual.OpacityProperty,
-                Value    = 0.0
+                Value    = 1.0
             };
             endFrame.Setters.Add(opacitySetter);
 
             var transformSetter = new Setter
             {
                 Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildTranslateScaleAndTransform(1.0, 0.0, 0.0, -Offset)
+                Value    = BuildScaleTransform(1.0)
             };
-
             endFrame.Setters.Add(transformSetter);
         }
         animation.Children.Add(endFrame);
-        RenderTransformOrigin = new RelativePoint(0, 0, RelativeUnit.Relative);
-
+        RenderTransformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
         Animations.Add(animation);
     }
 }
 
-internal class MoveLeftInMotion : AbstractMotion
+internal class ZoomBigOutMotion : AbstractMotion
 {
-    public double Offset { get; }
-
-    public MoveLeftInMotion(double offset,
-                            TimeSpan duration,
+    public ZoomBigOutMotion(TimeSpan duration,
                             Easing? easing = null,
                             FillMode fillMode = FillMode.Forward)
-        : base(duration, easing ?? new QuinticEaseOut(), fillMode)
+        : base(duration, easing ?? new CircularEaseOut(), fillMode)
     {
-        Offset = offset;
     }
 
     protected override void Configure()
     {
         var animation = CreateAnimation();
-        var startFrame = new KeyFrame
-        {
-            Cue = new Cue(0.0)
-        };
-        {
-            var opacitySetter = new Setter
-            {
-                Property = Visual.OpacityProperty,
-                Value    = 0.0
-            };
-            startFrame.Setters.Add(opacitySetter);
 
-            var transformSetter = new Setter
-            {
-                Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildTranslateScaleAndTransform(1.0, 0.01, -Offset, 0.0)
-            };
-
-            startFrame.Setters.Add(transformSetter);
-        }
-        animation.Children.Add(startFrame);
-
-        var middleFrame = new KeyFrame
-        {
-            Cue = new Cue(0.8)
-        };
-        {
-            var opacitySetter = new Setter
-            {
-                Property = Visual.OpacityProperty,
-                Value    = 0.1
-            };
-            middleFrame.Setters.Add(opacitySetter);
-
-            var transformSetter = new Setter
-            {
-                Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, -Offset / 2, 0.0)
-            };
-
-            middleFrame.Setters.Add(transformSetter);
-        }
-        animation.Children.Add(middleFrame);
-
-        var endFrame = new KeyFrame
-        {
-            Cue = new Cue(1.0)
-        };
-        {
-            var opacitySetter = new Setter
-            {
-                Property = Visual.OpacityProperty,
-                Value    = 1.0
-            };
-            endFrame.Setters.Add(opacitySetter);
-
-            var transformSetter = new Setter
-            {
-                Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0)
-            };
-
-            endFrame.Setters.Add(transformSetter);
-        }
-        animation.Children.Add(endFrame);
-        RenderTransformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
-
-        Animations.Add(animation);
-    }
-}
-
-internal class MoveLeftOutMotion : AbstractMotion
-{
-    public double Offset { get; }
-
-    public MoveLeftOutMotion(double offset,
-                             TimeSpan duration,
-                             Easing? easing = null,
-                             FillMode fillMode = FillMode.Forward)
-        : base(duration, easing ?? new QuinticEaseIn(), fillMode)
-    {
-        Offset = offset;
-    }
-
-    protected override void Configure()
-    {
-        var animation = CreateAnimation();
         var startFrame = new KeyFrame
         {
             Cue = new Cue(0.0)
@@ -471,31 +210,11 @@ internal class MoveLeftOutMotion : AbstractMotion
             var transformSetter = new Setter
             {
                 Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0)
+                Value    = BuildScaleTransform(1.0)
             };
             startFrame.Setters.Add(transformSetter);
         }
         animation.Children.Add(startFrame);
-
-        var middleFrame = new KeyFrame
-        {
-            Cue = new Cue(0.8)
-        };
-        {
-            var opacitySetter = new Setter
-            {
-                Property = Visual.OpacityProperty,
-                Value    = 0.1
-            };
-            middleFrame.Setters.Add(opacitySetter);
-            var transformSetter = new Setter
-            {
-                Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, -Offset / 2, 0.0)
-            };
-            middleFrame.Setters.Add(transformSetter);
-        }
-        animation.Children.Add(middleFrame);
 
         var endFrame = new KeyFrame
         {
@@ -512,118 +231,324 @@ internal class MoveLeftOutMotion : AbstractMotion
             var transformSetter = new Setter
             {
                 Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildTranslateScaleAndTransform(1.0, 0.0, -Offset, 0.0)
-            };
-            endFrame.Setters.Add(transformSetter);
-        }
-        animation.Children.Add(endFrame);
-        RenderTransformOrigin = new RelativePoint(0, 0, RelativeUnit.Relative);
-
-        Animations.Add(animation);
-    }
-}
-
-internal class MoveRightInMotion : AbstractMotion
-{
-    public double Offset { get; }
-
-    public MoveRightInMotion(double offset,
-                             TimeSpan duration,
-                             Easing? easing = null,
-                             FillMode fillMode = FillMode.Forward)
-        : base(duration, easing ?? new QuinticEaseOut(), fillMode)
-    {
-        Offset = offset;
-    }
-
-    protected override void Configure()
-    {
-        var animation = CreateAnimation();
-
-        var startFrame = new KeyFrame
-        {
-            Cue = new Cue(0.0)
-        };
-        {
-            var opacitySetter = new Setter
-            {
-                Property = Visual.OpacityProperty,
-                Value    = 0.0
-            };
-            startFrame.Setters.Add(opacitySetter);
-
-            var transformSetter = new Setter
-            {
-                Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildTranslateScaleAndTransform(1.0, 0.01, Offset, 0.0)
-            };
-            startFrame.Setters.Add(transformSetter);
-        }
-        animation.Children.Add(startFrame);
-
-        var middleFrame = new KeyFrame
-        {
-            Cue = new Cue(0.8)
-        };
-        {
-            var opacitySetter = new Setter
-            {
-                Property = Visual.OpacityProperty,
-                Value    = 0.1
-            };
-            middleFrame.Setters.Add(opacitySetter);
-
-            var transformSetter = new Setter
-            {
-                Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, Offset / 2, 0.0)
-            };
-            middleFrame.Setters.Add(transformSetter);
-        }
-        animation.Children.Add(middleFrame);
-
-        var endFrame = new KeyFrame
-        {
-            Cue = new Cue(1.0)
-        };
-        {
-            var opacitySetter = new Setter
-            {
-                Property = Visual.OpacityProperty,
-                Value    = 1.0
-            };
-            endFrame.Setters.Add(opacitySetter);
-
-            var transformSetter = new Setter
-            {
-                Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0)
+                Value    = BuildScaleTransform(0.8)
             };
             endFrame.Setters.Add(transformSetter);
         }
         animation.Children.Add(endFrame);
         RenderTransformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
-
         Animations.Add(animation);
     }
 }
 
-internal class MoveRightOutMotion : AbstractMotion
+internal class ZoomUpInMotion : AbstractMotion
 {
-    public double Offset { get; }
+    public ZoomUpInMotion(TimeSpan duration,
+                          Easing? easing = null,
+                          FillMode fillMode = FillMode.Forward)
+        : base(duration, easing ?? new CircularEaseOut(), fillMode)
+    {
+    }
 
-    public MoveRightOutMotion(double offset,
-                              TimeSpan duration,
+    protected override void Configure()
+    {
+        var animation = CreateAnimation();
+
+        var startFrame = new KeyFrame
+        {
+            Cue = new Cue(0.0)
+        };
+        {
+            var opacitySetter = new Setter
+            {
+                Property = Visual.OpacityProperty,
+                Value    = 0.0
+            };
+            startFrame.Setters.Add(opacitySetter);
+
+            var transformSetter = new Setter
+            {
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildScaleTransform(0.01)
+            };
+            startFrame.Setters.Add(transformSetter);
+        }
+        animation.Children.Add(startFrame);
+
+        var endFrame = new KeyFrame
+        {
+            Cue = new Cue(1.0)
+        };
+        {
+            var opacitySetter = new Setter
+            {
+                Property = Visual.OpacityProperty,
+                Value    = 1.0
+            };
+            endFrame.Setters.Add(opacitySetter);
+
+            var transformSetter = new Setter
+            {
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildScaleTransform(1.0)
+            };
+            endFrame.Setters.Add(transformSetter);
+        }
+        animation.Children.Add(endFrame);
+        RenderTransformOrigin = new RelativePoint(0.5, 0.0, RelativeUnit.Relative);
+        Animations.Add(animation);
+    }
+}
+
+internal class ZoomUpOutMotion : AbstractMotion
+{
+    public ZoomUpOutMotion(TimeSpan duration,
+                           Easing? easing = null,
+                           FillMode fillMode = FillMode.Forward)
+        : base(duration, easing ?? new CircularEaseOut(), fillMode)
+    {
+    }
+
+    protected override void Configure()
+    {
+        var animation = CreateAnimation();
+
+        var startFrame = new KeyFrame
+        {
+            Cue = new Cue(0.0)
+        };
+        {
+            var opacitySetter = new Setter
+            {
+                Property = Visual.OpacityProperty,
+                Value    = 1.0
+            };
+            startFrame.Setters.Add(opacitySetter);
+
+            var transformSetter = new Setter
+            {
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildScaleTransform(1.0)
+            };
+            startFrame.Setters.Add(transformSetter);
+        }
+        animation.Children.Add(startFrame);
+
+        var endFrame = new KeyFrame
+        {
+            Cue = new Cue(1.0)
+        };
+        {
+            var opacitySetter = new Setter
+            {
+                Property = Visual.OpacityProperty,
+                Value    = 0.0
+            };
+            endFrame.Setters.Add(opacitySetter);
+
+            var transformSetter = new Setter
+            {
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildScaleTransform(0.01)
+            };
+            endFrame.Setters.Add(transformSetter);
+        }
+        animation.Children.Add(endFrame);
+        RenderTransformOrigin = new RelativePoint(0.5, 0.0, RelativeUnit.Relative);
+        Animations.Add(animation);
+    }
+}
+
+internal class ZoomLeftInMotion : AbstractMotion
+{
+    public ZoomLeftInMotion(TimeSpan duration,
+                            Easing? easing = null,
+                            FillMode fillMode = FillMode.Forward)
+        : base(duration, easing ?? new CircularEaseOut(), fillMode)
+    {
+    }
+
+    protected override void Configure()
+    {
+        var animation = CreateAnimation();
+
+        var startFrame = new KeyFrame
+        {
+            Cue = new Cue(0.0)
+        };
+        {
+            var opacitySetter = new Setter
+            {
+                Property = Visual.OpacityProperty,
+                Value    = 0.0
+            };
+            startFrame.Setters.Add(opacitySetter);
+
+            var transformSetter = new Setter
+            {
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildScaleTransform(0.01)
+            };
+            startFrame.Setters.Add(transformSetter);
+        }
+        animation.Children.Add(startFrame);
+
+        var endFrame = new KeyFrame
+        {
+            Cue = new Cue(1.0)
+        };
+        {
+            var opacitySetter = new Setter
+            {
+                Property = Visual.OpacityProperty,
+                Value    = 1.0
+            };
+            endFrame.Setters.Add(opacitySetter);
+
+            var transformSetter = new Setter
+            {
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildScaleTransform(1.0)
+            };
+            endFrame.Setters.Add(transformSetter);
+        }
+        animation.Children.Add(endFrame);
+        RenderTransformOrigin = new RelativePoint(0.0, 0.5, RelativeUnit.Relative);
+        Animations.Add(animation);
+    }
+}
+
+internal class ZoomLeftOutMotion : AbstractMotion
+{
+    public ZoomLeftOutMotion(TimeSpan duration,
+                             Easing? easing = null,
+                             FillMode fillMode = FillMode.Forward)
+        : base(duration, easing ?? new CircularEaseOut(), fillMode)
+    {
+    }
+
+    protected override void Configure()
+    {
+        var animation = CreateAnimation();
+
+        var startFrame = new KeyFrame
+        {
+            Cue = new Cue(0.0)
+        };
+        {
+            var opacitySetter = new Setter
+            {
+                Property = Visual.OpacityProperty,
+                Value    = 1.0
+            };
+            startFrame.Setters.Add(opacitySetter);
+
+            var transformSetter = new Setter
+            {
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildScaleTransform(1.0)
+            };
+            startFrame.Setters.Add(transformSetter);
+        }
+        animation.Children.Add(startFrame);
+
+        var endFrame = new KeyFrame
+        {
+            Cue = new Cue(1.0)
+        };
+        {
+            var opacitySetter = new Setter
+            {
+                Property = Visual.OpacityProperty,
+                Value    = 0.0
+            };
+            endFrame.Setters.Add(opacitySetter);
+
+            var transformSetter = new Setter
+            {
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildScaleTransform(0.01)
+            };
+            endFrame.Setters.Add(transformSetter);
+        }
+        animation.Children.Add(endFrame);
+        RenderTransformOrigin = new RelativePoint(0.0, 0.5, RelativeUnit.Relative);
+        Animations.Add(animation);
+    }
+}
+
+internal class ZoomRightInMotion : AbstractMotion
+{
+    public ZoomRightInMotion(TimeSpan duration,
+                             Easing? easing = null,
+                             FillMode fillMode = FillMode.Forward)
+        : base(duration, easing ?? new CircularEaseOut(), fillMode)
+    {
+    }
+
+    protected override void Configure()
+    {
+        var animation = CreateAnimation();
+
+        var startFrame = new KeyFrame
+        {
+            Cue = new Cue(0.0)
+        };
+        {
+            var opacitySetter = new Setter
+            {
+                Property = Visual.OpacityProperty,
+                Value    = 0.0
+            };
+            startFrame.Setters.Add(opacitySetter);
+
+            var transformSetter = new Setter
+            {
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildScaleTransform(0.01)
+            };
+            startFrame.Setters.Add(transformSetter);
+        }
+        animation.Children.Add(startFrame);
+
+        var endFrame = new KeyFrame
+        {
+            Cue = new Cue(1.0)
+        };
+        {
+            var opacitySetter = new Setter
+            {
+                Property = Visual.OpacityProperty,
+                Value    = 1.0
+            };
+            endFrame.Setters.Add(opacitySetter);
+
+            var transformSetter = new Setter
+            {
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildScaleTransform(1.0)
+            };
+            endFrame.Setters.Add(transformSetter);
+        }
+        animation.Children.Add(endFrame);
+        RenderTransformOrigin = new RelativePoint(1.0, 0.5, RelativeUnit.Relative);
+        Animations.Add(animation);
+    }
+}
+
+internal class ZoomRightOutMotion : AbstractMotion
+{
+    public ZoomRightOutMotion(TimeSpan duration,
                               Easing? easing = null,
                               FillMode fillMode = FillMode.Forward)
-        : base(duration, easing ?? new QuinticEaseIn(), fillMode)
+        : base(duration, easing ?? new CircularEaseOut(), fillMode)
     {
-        Offset = offset;
     }
 
     protected override void Configure()
     {
         var animation = CreateAnimation();
+
         var startFrame = new KeyFrame
         {
             Cue = new Cue(0.0)
@@ -639,32 +564,11 @@ internal class MoveRightOutMotion : AbstractMotion
             var transformSetter = new Setter
             {
                 Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0)
+                Value    = BuildScaleTransform(1.0)
             };
             startFrame.Setters.Add(transformSetter);
         }
         animation.Children.Add(startFrame);
-
-        var middleFrame = new KeyFrame
-        {
-            Cue = new Cue(0.8)
-        };
-        {
-            var opacitySetter = new Setter
-            {
-                Property = Visual.OpacityProperty,
-                Value    = 1.0
-            };
-            middleFrame.Setters.Add(opacitySetter);
-
-            var transformSetter = new Setter
-            {
-                Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, Offset / 2, 0.0)
-            };
-            middleFrame.Setters.Add(transformSetter);
-        }
-        animation.Children.Add(middleFrame);
 
         var endFrame = new KeyFrame
         {
@@ -681,13 +585,130 @@ internal class MoveRightOutMotion : AbstractMotion
             var transformSetter = new Setter
             {
                 Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildTranslateScaleAndTransform(1.0, 0.0, Offset, 0.0)
+                Value    = BuildScaleTransform(0.01)
             };
             endFrame.Setters.Add(transformSetter);
         }
         animation.Children.Add(endFrame);
-        RenderTransformOrigin = new RelativePoint(0, 0, RelativeUnit.Relative);
+        RenderTransformOrigin = new RelativePoint(1.0, 0.5, RelativeUnit.Relative);
+        Animations.Add(animation);
+    }
+}
 
+internal class ZoomDownInMotion : AbstractMotion
+{
+    public ZoomDownInMotion(TimeSpan duration,
+                            Easing? easing = null,
+                            FillMode fillMode = FillMode.Forward)
+        : base(duration, easing ?? new CircularEaseOut(), fillMode)
+    {
+    }
+
+    protected override void Configure()
+    {
+        var animation = CreateAnimation();
+
+        var startFrame = new KeyFrame
+        {
+            Cue = new Cue(0.0)
+        };
+        {
+            var opacitySetter = new Setter
+            {
+                Property = Visual.OpacityProperty,
+                Value    = 0.0
+            };
+            startFrame.Setters.Add(opacitySetter);
+
+            var transformSetter = new Setter
+            {
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildScaleTransform(0.01)
+            };
+            startFrame.Setters.Add(transformSetter);
+        }
+        animation.Children.Add(startFrame);
+
+        var endFrame = new KeyFrame
+        {
+            Cue = new Cue(1.0)
+        };
+        {
+            var opacitySetter = new Setter
+            {
+                Property = Visual.OpacityProperty,
+                Value    = 1.0
+            };
+            endFrame.Setters.Add(opacitySetter);
+
+            var transformSetter = new Setter
+            {
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildScaleTransform(1.0)
+            };
+            endFrame.Setters.Add(transformSetter);
+        }
+        animation.Children.Add(endFrame);
+        RenderTransformOrigin = new RelativePoint(0.5, 1.0, RelativeUnit.Relative);
+        Animations.Add(animation);
+    }
+}
+
+internal class ZoomDownOutMotion : AbstractMotion
+{
+    public ZoomDownOutMotion(TimeSpan duration,
+                             Easing? easing = null,
+                             FillMode fillMode = FillMode.Forward)
+        : base(duration, easing ?? new CircularEaseOut(), fillMode)
+    {
+    }
+
+    protected override void Configure()
+    {
+        var animation = CreateAnimation();
+
+        var startFrame = new KeyFrame
+        {
+            Cue = new Cue(0.0)
+        };
+        {
+            var opacitySetter = new Setter
+            {
+                Property = Visual.OpacityProperty,
+                Value    = 1.0
+            };
+            startFrame.Setters.Add(opacitySetter);
+
+            var transformSetter = new Setter
+            {
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildScaleTransform(1.0)
+            };
+            startFrame.Setters.Add(transformSetter);
+        }
+        animation.Children.Add(startFrame);
+
+        var endFrame = new KeyFrame
+        {
+            Cue = new Cue(1.0)
+        };
+        {
+            var opacitySetter = new Setter
+            {
+                Property = Visual.OpacityProperty,
+                Value    = 0.0
+            };
+            endFrame.Setters.Add(opacitySetter);
+
+            var transformSetter = new Setter
+            {
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildScaleTransform(0.01)
+            };
+            endFrame.Setters.Add(transformSetter);
+        }
+        animation.Children.Add(endFrame);
+        RenderTransformOrigin = new RelativePoint(0.5, 1.0, RelativeUnit.Relative);
         Animations.Add(animation);
     }
 }

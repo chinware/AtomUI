@@ -6,6 +6,8 @@ namespace AtomUI.MotionScene;
 
 internal class SceneMotionActorControl : MotionActorControl
 {
+    public event EventHandler? SceneShowed;
+    
     #region 内部属性定义
 
     /// <summary>
@@ -25,12 +27,17 @@ internal class SceneMotionActorControl : MotionActorControl
     {
         return _ghost ?? this;
     }
+
+    protected virtual Point CalculateTopLevelGhostPosition()
+    {
+        return default;
+    }
     
     /// <summary>
     /// 在这个接口中，Actor 根据自己的需求对 sceneLayer 进行设置，主要就是位置和大小
     /// </summary>
     /// <param name="sceneLayer"></param>
-    public virtual void NotifySceneLayerCreated(SceneLayer sceneLayer)
+    public virtual void NotifySceneLayerCreated(AbstractMotion motion, SceneLayer sceneLayer)
     {
         var ghost = GetAnimatableGhost();
 
@@ -46,9 +53,9 @@ internal class SceneMotionActorControl : MotionActorControl
             motionTargetSize = ghost.DesiredSize;
         }
 
-        // var sceneSize     = _motion.CalculateSceneSize(motionTargetSize);
-        // var scenePosition = _motion.CalculateScenePosition(motionTargetSize, CalculateGhostPosition());
-        // sceneLayer.MoveAndResize(scenePosition, sceneSize);
+        var sceneSize     = motion.CalculateSceneSize(motionTargetSize);
+        var scenePosition = motion.CalculateScenePosition(motionTargetSize, CalculateTopLevelGhostPosition());
+        sceneLayer.MoveAndResize(scenePosition, sceneSize);
     }
     
     /// <summary>
@@ -61,11 +68,8 @@ internal class SceneMotionActorControl : MotionActorControl
         Canvas.SetTop(motionTarget, 0);
     }
     
-    internal virtual void NotifyMotionStarted()
+    public virtual void NotifySceneShowed()
     {
-    }
-
-    internal virtual void NotifyMotionCompleted()
-    {
+        SceneShowed?.Invoke(this, EventArgs.Empty);
     }
 }

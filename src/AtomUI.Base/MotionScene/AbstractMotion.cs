@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
+using Avalonia.Controls;
 using Avalonia.Media.Transformation;
 using Avalonia.Threading;
 
@@ -16,7 +17,7 @@ internal class AbstractMotion : IMotion
     public Easing Easing { get; }
     public FillMode PropertyValueFillMode { get; }
 
-    public AbstractMotion(TimeSpan duration, Easing? easing = null, FillMode fillMode = FillMode.None)
+    public AbstractMotion(TimeSpan duration, Easing? easing = null, FillMode fillMode = FillMode.Forward)
     {
         Animations            = new List<Animation>();
         Duration              = duration;
@@ -38,7 +39,7 @@ internal class AbstractMotion : IMotion
             {
                 aboutToStart();
             }
-
+            actor.NotifyMotionPreStart();
             NotifyPreStart();
 
             foreach (var animation in Animations)
@@ -50,7 +51,7 @@ internal class AbstractMotion : IMotion
             {
                 completedAction();
             }
-
+            actor.NotifyMotionCompleted();
             NotifyCompleted();
         });
     }
@@ -139,5 +140,22 @@ internal class AbstractMotion : IMotion
             FillMode = PropertyValueFillMode
         };
         return animation;
+    }
+}
+
+internal class RenderTransformOriginRestore : IDisposable
+{
+    RelativePoint _origin;
+    Control _target;
+
+    public RenderTransformOriginRestore(Control target)
+    {
+        _target = target;
+        _origin = target.RenderTransformOrigin;
+    }
+
+    public void Dispose()
+    {
+        _target.RenderTransformOrigin = _origin;
     }
 }

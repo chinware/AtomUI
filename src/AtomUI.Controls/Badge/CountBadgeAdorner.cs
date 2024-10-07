@@ -3,7 +3,6 @@ using AtomUI.MotionScene;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
-using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Media;
@@ -231,9 +230,8 @@ internal class CountBadgeAdorner : TemplatedControl
         if (_indicatorMotionActor is not null)
         {
             _indicatorMotionActor.IsVisible = false;
-            var zoomBadgeInMotionConfig = BadgeMotionFactory.BuildBadgeZoomBadgeInMotion(MotionDuration, null,
-                FillMode.Forward);
-            MotionInvoker.Invoke(_indicatorMotionActor, zoomBadgeInMotionConfig, () =>
+            var motion = new BadgeZoomBadgeInMotion(MotionDuration);
+            MotionInvoker.Invoke(_indicatorMotionActor, motion, () =>
             {
                 _indicatorMotionActor.IsVisible = true;
             }, null, _motionCancellationTokenSource!.Token);
@@ -244,12 +242,11 @@ internal class CountBadgeAdorner : TemplatedControl
     {
         if (_indicatorMotionActor is not null)
         {
-            var zoomBadgeOutMotionConfig = BadgeMotionFactory.BuildBadgeZoomBadgeOutMotion(MotionDuration, null,
-                FillMode.Forward);
+            var motion = new BadgeZoomBadgeOutMotion(MotionDuration);
             _motionCancellationTokenSource?.Cancel();
             _motionCancellationTokenSource  = new CancellationTokenSource();
             
-            MotionInvoker.Invoke(_indicatorMotionActor, zoomBadgeOutMotionConfig, null, () =>
+            MotionInvoker.Invoke(_indicatorMotionActor, motion, null, () =>
             {
                 completedAction();
             }, _motionCancellationTokenSource.Token);

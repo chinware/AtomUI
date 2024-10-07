@@ -31,6 +31,13 @@ internal class MotionActorControl : Decorator
     public Control? MotionTransformRoot => Child;
 
     #endregion
+
+    #region 公共事件定义
+
+    public event EventHandler? PreStart;
+    public event EventHandler? Completed;
+
+    #endregion
     
     /// <summary>
     /// RenderTransform/MatrixTransform applied to MotionTransformRoot.
@@ -393,5 +400,15 @@ internal class MotionActorControl : Decorator
     private static bool IsSizeSmaller(Size a, Size b)
     {
         return (a.Width + AcceptableDelta < b.Width) || (a.Height + AcceptableDelta < b.Height);
+    }
+    
+    internal virtual void NotifyMotionPreStart()
+    {
+        PreStart?.Invoke(this, EventArgs.Empty);
+    }
+
+    internal virtual void NotifyMotionCompleted()
+    {
+        Completed?.Invoke(this, EventArgs.Empty);
     }
 }
