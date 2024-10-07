@@ -141,7 +141,6 @@ internal class CountBadgeAdorner : TemplatedControl
 
     #endregion
     
-    private Panel? _rootLayout;
     private MotionActorControl? _indicatorMotionActor;
     private CancellationTokenSource? _motionCancellationTokenSource;
     private bool _needInitialHide;

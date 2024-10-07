@@ -5,6 +5,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Input;
+using Avalonia.Layout;
 using Avalonia.Styling;
 
 namespace AtomUI.Controls;
@@ -46,7 +47,7 @@ internal class ToggleSwitchTheme : BaseControlTheme
         this.Add(TemplatedControl.ForegroundProperty, GlobalTokenResourceKey.ColorTextLightSolid);
         this.Add(ToggleSwitch.TrackPaddingProperty, ToggleSwitchTokenResourceKey.TrackPadding);
         BuildSizeTypeStyle();
-        BuildEnabledStyle();
+        BuildCommonStyle();
 
         var disabledStyle =
             new Style(selector => selector.Nesting().PropertyEquals(InputElement.IsEnabledProperty, false));
@@ -59,10 +60,13 @@ internal class ToggleSwitchTheme : BaseControlTheme
         Add(loadingStyle);
     }
 
-    private void BuildEnabledStyle()
+    private void BuildCommonStyle()
     {
-        var enabledStyle = new Style(selector => selector.Nesting());
-        enabledStyle.Add(ToggleSwitch.SwitchOpacityProperty, 1d);
+        var commonStyle = new Style(selector => selector.Nesting());
+        commonStyle.Add(ToggleSwitch.SwitchOpacityProperty, 1d);
+        commonStyle.Add(ToggleSwitch.HorizontalAlignmentProperty, HorizontalAlignment.Left);
+        commonStyle.Add(ToggleSwitch.VerticalAlignmentProperty, VerticalAlignment.Top);
+        
         var checkedStyle =
             new Style(selector => selector.Nesting().PropertyEquals(ToggleButton.IsCheckedProperty, true));
         checkedStyle.Add(ToggleSwitch.GrooveBackgroundProperty, ToggleSwitchTokenResourceKey.SwitchColor);
@@ -71,7 +75,7 @@ internal class ToggleSwitchTheme : BaseControlTheme
             hoverStyle.Add(ToggleSwitch.GrooveBackgroundProperty, GlobalTokenResourceKey.ColorPrimaryHover);
             checkedStyle.Add(hoverStyle);
         }
-        enabledStyle.Add(checkedStyle);
+        commonStyle.Add(checkedStyle);
 
         var unCheckedStyle =
             new Style(selector => selector.Nesting().PropertyEquals(ToggleButton.IsCheckedProperty, false));
@@ -81,8 +85,8 @@ internal class ToggleSwitchTheme : BaseControlTheme
             hoverStyle.Add(ToggleSwitch.GrooveBackgroundProperty, GlobalTokenResourceKey.ColorTextTertiary);
             unCheckedStyle.Add(hoverStyle);
         }
-        enabledStyle.Add(unCheckedStyle);
-        Add(enabledStyle);
+        commonStyle.Add(unCheckedStyle);
+        Add(commonStyle);
     }
 
     private void BuildSizeTypeStyle()
