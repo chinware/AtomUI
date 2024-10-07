@@ -1,186 +1,70 @@
-﻿using System.Diagnostics;
-using System.Reactive.Linq;
-using AtomUI.Media;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
-using Avalonia.Controls;
-using Avalonia.Layout;
-using Avalonia.Media;
 using Avalonia.Media.Transformation;
+using Avalonia.Threading;
 
 namespace AtomUI.MotionScene;
 
-public enum TransitionKind
+internal class AbstractMotion : IMotion
 {
-    Double,
-    TransformOperations
-}
+    public bool IsRunning { get; }
 
-public record class MotionConfig
-{
-    public AvaloniaProperty Property { get; set; }
-    public object? StartValue { get; set; }
-    public object? EndValue { get; set; }
-    public Easing MotionEasing { get; set; } = new LinearEasing();
-    public TimeSpan MotionDuration { get; set; } = TimeSpan.FromMilliseconds(300);
-    public TransitionKind TransitionKind { get; set; }
+    public RelativePoint RenderTransformOrigin { get; protected set; }
+    public IList<Animation> Animations { get; }
+    public TimeSpan Duration { get; }
+    public Easing Easing { get; }
+    public FillMode PropertyValueFillMode { get; }
 
-    public MotionConfig(AvaloniaProperty targetProperty, object? startValue = null, object? endValue = null)
+    public AbstractMotion(TimeSpan duration, Easing? easing = null, FillMode fillMode = FillMode.None)
     {
-        Property   = targetProperty;
-        StartValue = startValue;
-        EndValue   = endValue;
-    }
-}
-
-public abstract class AbstractMotion : AvaloniaObject, IMotion
-{
-    public bool IsRunning { get; } = false;
-
-    private readonly Dictionary<AvaloniaProperty, MotionConfig> _motionConfigs;
-    private readonly List<ITransition> _transitions;
-    public IObservable<bool>? CompletedObservable { get; private set; }
-
-    // 定义我们目前支持的动效属性
-    public static readonly StyledProperty<double> MotionOpacityProperty =
-        Visual.OpacityProperty.AddOwner<AbstractMotion>();
-
-    public static readonly StyledProperty<double> MotionWidthProperty =
-        Layoutable.WidthProperty.AddOwner<AbstractMotion>();
-
-    public static readonly StyledProperty<double> MotionHeightProperty =
-        Layoutable.HeightProperty.AddOwner<AbstractMotion>();
-
-    public static readonly StyledProperty<RelativePoint> MotionRenderTransformOriginProperty =
-        Visual.RenderTransformOriginProperty.AddOwner<AbstractMotion>();
-
-    public static readonly StyledProperty<ITransform?> MotionRenderTransformProperty =
-        Visual.RenderTransformProperty.AddOwner<AbstractMotion>();
-
-    protected double MotionOpacity
-    {
-        get => GetValue(MotionOpacityProperty);
-        set => SetValue(MotionOpacityProperty, value);
+        Animations            = new List<Animation>();
+        Duration              = duration;
+        Easing                = easing ?? new LinearEasing();
+        PropertyValueFillMode = fillMode;
     }
 
-    protected double MotionWidth
+    public async Task RunAsync(MotionActorControl actor,
+                               Action? aboutToStart = null,
+                               Action? completedAction = null,
+                               CancellationToken cancellationToken = default)
     {
-        get => GetValue(MotionWidthProperty);
-        set => SetValue(MotionWidthProperty, value);
-    }
-
-    protected double MotionHeight
-    {
-        get => GetValue(MotionHeightProperty);
-        set => SetValue(MotionHeightProperty, value);
-    }
-
-    internal RelativePoint MotionRenderTransformOrigin
-    {
-        get => GetValue(MotionRenderTransformOriginProperty);
-        set => SetValue(MotionRenderTransformOriginProperty, value);
-    }
-
-    protected ITransform? MotionRenderTransform
-    {
-        get => GetValue(MotionRenderTransformProperty);
-        set => SetValue(MotionRenderTransformProperty, value);
-    }
-
-    public AbstractMotion()
-    {
-        _motionConfigs = new Dictionary<AvaloniaProperty, MotionConfig>();
-        _transitions   = new List<ITransition>();
-    }
-
-    /// <summary>
-    /// 创建动效动画对象
-    /// </summary>
-    /// <param name="motionTarget"></param>
-    /// <returns></returns>
-    internal List<ITransition> BuildTransitions(Control motionTarget)
-    {
-        foreach (var entry in _motionConfigs)
+        Configure();
+        await Dispatcher.UIThread.InvokeAsync(async () =>
         {
-            var config = entry.Value;
-            NotifyPreBuildTransition(config, motionTarget);
-            var transition = NotifyBuildTransition(config);
-            _transitions.Add(transition);
-        }
-
-        var completedObservables = new IObservable<bool>[_transitions.Count];
-        for (var i = 0; i < _transitions.Count; ++i)
-        {
-            var transition = _transitions[i];
-            if (transition is INotifyTransitionCompleted notifyTransitionCompleted)
+            using var originRestore = new RenderTransformOriginRestore(actor);
+            actor.RenderTransformOrigin = RenderTransformOrigin;
+            if (aboutToStart is not null)
             {
-                completedObservables[i] = notifyTransitionCompleted.CompletedObservable;
+                aboutToStart();
             }
-        }
 
-        CompletedObservable =
-            Observable.CombineLatest(completedObservables).Select(list => { return list.All(v => v); });
-        return _transitions;
+            NotifyPreStart();
+
+            foreach (var animation in Animations)
+            {
+                await animation.RunAsync(actor, cancellationToken);
+            }
+
+            if (completedAction is not null)
+            {
+                completedAction();
+            }
+
+            NotifyCompleted();
+        });
     }
 
-    // 生命周期接口
-    internal virtual void NotifyPreStart()
+    protected virtual void Configure()
     {
     }
 
-    internal virtual void NotifyStarted()
+    protected virtual void NotifyPreStart()
     {
     }
 
-    internal virtual void NotifyCompleted()
+    protected virtual void NotifyCompleted()
     {
-    }
-
-    internal virtual void NotifyConfigMotionTarget(Control motionTarget)
-    {
-    }
-
-    internal virtual void NotifyRestoreMotionTarget(Control motionTarget)
-    {
-    }
-
-    protected virtual void NotifyPreBuildTransition(MotionConfig config, Control motionTarget)
-    {
-    }
-
-    protected virtual ITransition NotifyBuildTransition(MotionConfig config)
-    {
-        TransitionBase transition = default!;
-        if (config.TransitionKind == TransitionKind.Double)
-        {
-            transition = new NotifiableDoubleTransition();
-        }
-        else if (config.TransitionKind == TransitionKind.TransformOperations)
-        {
-            transition = new NotifiableTransformOperationsTransition();
-        }
-
-        transition.Property = config.Property;
-        transition.Duration = config.MotionDuration;
-        transition.Easing   = config.MotionEasing;
-        return transition;
-    }
-
-    protected MotionConfig? GetMotionConfig(AvaloniaProperty property)
-    {
-        if (_motionConfigs.TryGetValue(property, out var motionConfig))
-        {
-            return motionConfig;
-        }
-
-        return null;
-    }
-
-    protected void AddMotionConfig(MotionConfig config)
-    {
-        Debug.Assert(!_motionConfigs.ContainsKey(config.Property));
-        _motionConfigs.Add(config.Property, config);
     }
 
     /// <summary>
@@ -208,42 +92,52 @@ public abstract class AbstractMotion : AvaloniaObject, IMotion
         return motionTargetPosition;
     }
 
-    public IList<AvaloniaProperty> GetActivatedProperties()
-    {
-        return _motionConfigs.Keys.ToList();
-    }
-
-    public IList<MotionConfig> GetMotionConfigs()
-    {
-        return _motionConfigs.Values.ToList();
-    }
-
-    protected TransformOperations BuildScaleTransform(double scaleX, double scaleY)
+    protected static TransformOperations BuildScaleTransform(double scaleX, double scaleY)
     {
         var builder = new TransformOperations.Builder(1);
         builder.AppendScale(scaleX, scaleY);
         return builder.Build();
     }
 
-    protected TransformOperations BuildScaleTransform(double scale)
+    protected static TransformOperations BuildScaleTransform(double scale)
     {
         return BuildScaleTransform(scale, scale);
     }
 
-    protected TransformOperations BuildScaleXTransform(double scale)
+    protected static TransformOperations BuildScaleXTransform(double scale)
     {
         return BuildScaleTransform(scale, 1.0);
     }
 
-    protected TransformOperations BuildScaleYTransform(double scale)
+    protected static TransformOperations BuildScaleYTransform(double scale)
     {
         return BuildScaleTransform(1.0, scale);
     }
 
-    protected TransformOperations BuildTranslateTransform(double offsetX, double offsetY)
+    protected static TransformOperations BuildTranslateTransform(double offsetX, double offsetY)
     {
         var builder = new TransformOperations.Builder(1);
         builder.AppendTranslate(offsetX, offsetY);
         return builder.Build();
+    }
+
+    protected static TransformOperations BuildTranslateScaleAndTransform(
+        double scaleX, double scaleY, double offsetX, double offsetY)
+    {
+        var builder = new TransformOperations.Builder(2);
+        builder.AppendScale(scaleX, scaleY);
+        builder.AppendTranslate(offsetX, offsetY);
+        return builder.Build();
+    }
+
+    protected Animation CreateAnimation()
+    {
+        var animation = new Animation
+        {
+            Duration = Duration,
+            Easing   = Easing,
+            FillMode = PropertyValueFillMode
+        };
+        return animation;
     }
 }
