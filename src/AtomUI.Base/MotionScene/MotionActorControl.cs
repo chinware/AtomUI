@@ -65,6 +65,11 @@ internal class MotionActorControl : Decorator
     /// Actual DesiredSize of Child element (the value it returned from its MeasureOverride method).
     /// </summary>
     private Size _childActualSize;
+    
+    /// <summary>
+    /// 动画是否在
+    /// </summary>
+    private bool _animating = false;
 
     static MotionActorControl()
     {
@@ -232,7 +237,7 @@ internal class MotionActorControl : Decorator
         }
 
         // Perform a measure on the MotionTransformRoot (containing Child)
-        if (MotionTransformRoot.DesiredSize == default)
+        if (MotionTransformRoot.DesiredSize == default || _animating == false)
         {
             MotionTransformRoot.Measure(measureSize);
         }
@@ -405,10 +410,13 @@ internal class MotionActorControl : Decorator
     internal virtual void NotifyMotionPreStart()
     {
         PreStart?.Invoke(this, EventArgs.Empty);
+        _animating = true;
     }
 
     internal virtual void NotifyMotionCompleted()
     {
+        _animating = false;
+        InvalidateMeasure();
         Completed?.Invoke(this, EventArgs.Empty);
     }
 }
