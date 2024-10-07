@@ -7,8 +7,8 @@ namespace AtomUI.MotionScene;
 
 internal static partial class MotionFactory
 {
-    public static MotionConfigX BuildSlideUpInMotion(TimeSpan duration, Easing? easing = null,
-                                                    FillMode fillMode = FillMode.None)
+    public static MotionConfig BuildSlideUpInMotion(TimeSpan duration, Easing? easing = null,
+                                                     FillMode fillMode = FillMode.None)
     {
         easing ??= new CubicEaseOut();
         var           animations      = new List<Animation>();
@@ -62,11 +62,11 @@ internal static partial class MotionFactory
         transformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
 
         animations.Add(animation);
-        return new MotionConfigX(transformOrigin, animations);
+        return new MotionConfig(transformOrigin, animations);
     }
 
-    public static MotionConfigX BuildSlideUpOutMotion(TimeSpan duration, Easing? easing = null,
-                                                     FillMode fillMode = FillMode.None)
+    public static MotionConfig BuildSlideUpOutMotion(TimeSpan duration, Easing? easing = null,
+                                                      FillMode fillMode = FillMode.None)
     {
         easing ??= new CubicEaseIn();
         var           animations      = new List<Animation>();
@@ -121,11 +121,11 @@ internal static partial class MotionFactory
         transformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
 
         animations.Add(animation);
-        return new MotionConfigX(transformOrigin, animations);
+        return new MotionConfig(transformOrigin, animations);
     }
 
-    public static MotionConfigX BuildSlideDownInMotion(TimeSpan duration, Easing? easing = null,
-                                                      FillMode fillMode = FillMode.None)
+    public static MotionConfig BuildSlideDownInMotion(TimeSpan duration, Easing? easing = null,
+                                                       FillMode fillMode = FillMode.None)
     {
         easing ??= new CubicEaseOut();
         var           animations      = new List<Animation>();
@@ -180,11 +180,11 @@ internal static partial class MotionFactory
         transformOrigin = new RelativePoint(1.0, 1.0, RelativeUnit.Relative);
 
         animations.Add(animation);
-        return new MotionConfigX(transformOrigin, animations);
+        return new MotionConfig(transformOrigin, animations);
     }
 
-    public static MotionConfigX BuildSlideDownOutMotion(TimeSpan duration, Easing? easing = null,
-                                                       FillMode fillMode = FillMode.None)
+    public static MotionConfig BuildSlideDownOutMotion(TimeSpan duration, Easing? easing = null,
+                                                        FillMode fillMode = FillMode.None)
     {
         easing ??= new CubicEaseIn();
         var           animations      = new List<Animation>();
@@ -239,11 +239,11 @@ internal static partial class MotionFactory
         transformOrigin = new RelativePoint(1.0, 1.0, RelativeUnit.Relative);
 
         animations.Add(animation);
-        return new MotionConfigX(transformOrigin, animations);
+        return new MotionConfig(transformOrigin, animations);
     }
 
-    public static MotionConfigX BuildSlideLeftInMotion(TimeSpan duration, Easing? easing = null,
-                                                      FillMode fillMode = FillMode.None)
+    public static MotionConfig BuildSlideLeftInMotion(TimeSpan duration, Easing? easing = null,
+                                                       FillMode fillMode = FillMode.None)
     {
         easing ??= new CubicEaseOut();
         var           animations      = new List<Animation>();
@@ -298,10 +298,10 @@ internal static partial class MotionFactory
         transformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
 
         animations.Add(animation);
-        return new MotionConfigX(transformOrigin, animations);
+        return new MotionConfig(transformOrigin, animations);
     }
 
-    public static MotionConfigX BuildSlideLeftOutMotion(TimeSpan duration, Easing? easing = null,
+    public static MotionConfig BuildSlideLeftOutMotion(TimeSpan duration, Easing? easing = null,
                                                        FillMode fillMode = FillMode.None)
     {
         easing ??= new CubicEaseIn();
@@ -357,71 +357,71 @@ internal static partial class MotionFactory
         transformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
 
         animations.Add(animation);
-        return new MotionConfigX(transformOrigin, animations);
+        return new MotionConfig(transformOrigin, animations);
     }
 
-    public static MotionConfigX BuildSlideRightInMotion(TimeSpan duration, Easing? easing = null,
-                                                       FillMode fillMode = FillMode.None)
-    {
-        easing ??= new CubicEaseOut();
-        var           animations      = new List<Animation>();
-        RelativePoint transformOrigin = default;
-        var animation = new Animation
-        {
-            Duration = duration,
-            Easing   = easing,
-            FillMode = fillMode
-        };
-
-        var startFrame = new KeyFrame
-        {
-            Cue = new Cue(0.0)
-        };
-        {
-            var opacitySetter = new Setter
-            {
-                Property = Visual.OpacityProperty,
-                Value    = 0.0
-            };
-            startFrame.Setters.Add(opacitySetter);
-
-            var scaleXSetter = new Setter
-            {
-                Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildScaleXTransform(0.01)
-            };
-            startFrame.Setters.Add(scaleXSetter);
-        }
-        animation.Children.Add(startFrame);
-
-        var endFrame = new KeyFrame
-        {
-            Cue = new Cue(1.0)
-        };
-        {
-            var opacitySetter = new Setter
-            {
-                Property = Visual.OpacityProperty,
-                Value    = 1.0
-            };
-            endFrame.Setters.Add(opacitySetter);
-            var scaleXSetter = new Setter
-            {
-                Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildScaleXTransform(1.0)
-            };
-            endFrame.Setters.Add(scaleXSetter);
-        }
-        animation.Children.Add(endFrame);
-        transformOrigin = new RelativePoint(1.0, 0.0, RelativeUnit.Relative);
-
-        animations.Add(animation);
-        return new MotionConfigX(transformOrigin, animations);
-    }
-
-    public static MotionConfigX BuildSlideRightOutMotion(TimeSpan duration, Easing? easing = null,
+    public static MotionConfig BuildSlideRightInMotion(TimeSpan duration, Easing? easing = null,
                                                         FillMode fillMode = FillMode.None)
     {
+        easing ??= new CubicEaseOut();
+        var           animations      = new List<Animation>();
+        RelativePoint transformOrigin = default;
+        var animation = new Animation
+        {
+            Duration = duration,
+            Easing   = easing,
+            FillMode = fillMode
+        };
+
+        var startFrame = new KeyFrame
+        {
+            Cue = new Cue(0.0)
+        };
+        {
+            var opacitySetter = new Setter
+            {
+                Property = Visual.OpacityProperty,
+                Value    = 0.0
+            };
+            startFrame.Setters.Add(opacitySetter);
+
+            var scaleXSetter = new Setter
+            {
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildScaleXTransform(0.01)
+            };
+            startFrame.Setters.Add(scaleXSetter);
+        }
+        animation.Children.Add(startFrame);
+
+        var endFrame = new KeyFrame
+        {
+            Cue = new Cue(1.0)
+        };
+        {
+            var opacitySetter = new Setter
+            {
+                Property = Visual.OpacityProperty,
+                Value    = 1.0
+            };
+            endFrame.Setters.Add(opacitySetter);
+            var scaleXSetter = new Setter
+            {
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildScaleXTransform(1.0)
+            };
+            endFrame.Setters.Add(scaleXSetter);
+        }
+        animation.Children.Add(endFrame);
+        transformOrigin = new RelativePoint(1.0, 0.0, RelativeUnit.Relative);
+
+        animations.Add(animation);
+        return new MotionConfig(transformOrigin, animations);
+    }
+
+    public static MotionConfig BuildSlideRightOutMotion(TimeSpan duration, Easing? easing = null,
+                                                         FillMode fillMode = FillMode.None)
+    {
         easing ??= new CubicEaseIn();
         var           animations      = new List<Animation>();
         RelativePoint transformOrigin = default;
@@ -475,6 +475,6 @@ internal static partial class MotionFactory
         transformOrigin = new RelativePoint(1.0, 0.0, RelativeUnit.Relative);
 
         animations.Add(animation);
-        return new MotionConfigX(transformOrigin, animations);
+        return new MotionConfig(transformOrigin, animations);
     }
 }

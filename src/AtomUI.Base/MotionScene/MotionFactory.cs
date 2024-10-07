@@ -4,12 +4,12 @@ using Avalonia.Media.Transformation;
 
 namespace AtomUI.MotionScene;
 
-internal record MotionConfigX
+internal record MotionConfig
 {
     public RelativePoint RenderTransformOrigin { get; }
     public IList<Animation> Animations { get; }
 
-    public MotionConfigX(RelativePoint renderTransformOrigin, IList<Animation> animations)
+    public MotionConfig(RelativePoint renderTransformOrigin, IList<Animation> animations)
     {
         RenderTransformOrigin = renderTransformOrigin;
         Animations            = animations;

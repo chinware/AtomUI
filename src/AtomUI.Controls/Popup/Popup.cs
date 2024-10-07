@@ -1,13 +1,10 @@
 ﻿using System.Reactive.Disposables;
-using AtomUI.Controls.MotionScene;
 using AtomUI.Data;
-using AtomUI.MotionScene;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Diagnostics;
-using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Input;
 using Avalonia.Input.Raw;
@@ -464,47 +461,49 @@ public class Popup : AvaloniaPopup
         {
             return;
         }
-
-        _animating = true;
-
-        var placementTarget = GetEffectivePlacementTarget();
-        
         Open();
+        return;
 
-        var popupRoot = (Host as PopupRoot)!;
-        // 获取 popup 的具体位置，这个就是非常准确的位置，还有大小
-        // TODO 暂时只支持 WindowBase popup
-        popupRoot.Hide();
-        var popupOffset = popupRoot.PlatformImpl!.Position;
-        var offset      = new Point(popupOffset.X, popupOffset.Y);
-        var topLevel    = TopLevel.GetTopLevel(placementTarget);
-        var scaling     = topLevel?.RenderScaling ?? 1.0;
-
-        // 调度动画
-        var director = Director.Instance;
-        var motion   = new ZoomBigInMotion();
-        motion.ConfigureOpacity(MotionDuration);
-        motion.ConfigureRenderTransform(MotionDuration);
-
-        var motionActor =
-            new PopupMotionActor(MaskShadows, offset, scaling, Child ?? popupRoot, motion);
-        motionActor.DispatchInSceneLayer = true;
-        motionActor.SceneParent          = topLevel;
-
-        motionActor.Completed += (sender, args) =>
-        {
-            CreateShadowLayer();
-            popupRoot.Show();
-   
-            if (RequestCloseWhereAnimationCompleted)
-            {
-                RequestCloseWhereAnimationCompleted = false;
-                Dispatcher.UIThread.Post(() => { CloseAnimation(); });
-            }
-
-            _animating = false;
-        };
-        director?.Schedule(motionActor);
+        // _animating = true;
+        //
+        // var placementTarget = GetEffectivePlacementTarget();
+        //
+        // Open();
+        //
+        // var popupRoot = (Host as PopupRoot)!;
+        // // 获取 popup 的具体位置，这个就是非常准确的位置，还有大小
+        // // TODO 暂时只支持 WindowBase popup
+        // popupRoot.Hide();
+        // var popupOffset = popupRoot.PlatformImpl!.Position;
+        // var offset      = new Point(popupOffset.X, popupOffset.Y);
+        // var topLevel    = TopLevel.GetTopLevel(placementTarget);
+        // var scaling     = topLevel?.RenderScaling ?? 1.0;
+        //
+        // // 调度动画
+        // var director = Director.Instance;
+        // var motion   = new ZoomBigInMotion();
+        // motion.ConfigureOpacity(MotionDuration);
+        // motion.ConfigureRenderTransform(MotionDuration);
+        //
+        // var motionActor =
+        //     new PopupMotionActor(MaskShadows, offset, scaling, Child ?? popupRoot, motion);
+        // motionActor.DispatchInSceneLayer = true;
+        // motionActor.SceneParent          = topLevel;
+        //
+        // motionActor.Completed += (sender, args) =>
+        // {
+        //     CreateShadowLayer();
+        //     popupRoot.Show();
+        //
+        //     if (RequestCloseWhereAnimationCompleted)
+        //     {
+        //         RequestCloseWhereAnimationCompleted = false;
+        //         Dispatcher.UIThread.Post(() => { CloseAnimation(); });
+        //     }
+        //
+        //     _animating = false;
+        // };
+        // director?.Schedule(motionActor);
     }
 
     public void CloseAnimation(Action? closed = null)
@@ -519,44 +518,46 @@ public class Popup : AvaloniaPopup
         {
             return;
         }
+        
+        Close();
 
-        _animating = true;
-
-        var director = Director.Instance;
-        var motion   = new ZoomBigOutMotion();
-        motion.ConfigureOpacity(MotionDuration);
-        motion.ConfigureRenderTransform(MotionDuration);
-
-        var popupRoot       = (Host as PopupRoot)!;
-        var popupOffset     = popupRoot.PlatformImpl!.Position;
-        var offset          = new Point(popupOffset.X, popupOffset.Y);
-        var placementTarget = GetEffectivePlacementTarget();
-        var topLevel        = TopLevel.GetTopLevel(placementTarget);
-
-        var scaling = topLevel?.RenderScaling ?? 1.0;
-
-        var motionActor = new PopupMotionActor(MaskShadows, offset, scaling, Child ?? popupRoot, motion);
-        motionActor.DispatchInSceneLayer = true;
-        motionActor.SceneParent          = topLevel;
-
-        motionActor.SceneShowed += (sender, args) =>
-        {
-            HideShadowLayer();
-            popupRoot.Opacity = 0;
-        };
-
-        motionActor.Completed += (sender, args) =>
-        {
-            _animating  = false;
-            _isNeedFlip = true;
-            Close();
-            if (closed is not null)
-            {
-                closed();
-            }
-        };
-
-        director?.Schedule(motionActor);
+        // _animating = true;
+        //
+        // var director = Director.Instance;
+        // var motion   = new ZoomBigOutMotion();
+        // motion.ConfigureOpacity(MotionDuration);
+        // motion.ConfigureRenderTransform(MotionDuration);
+        //
+        // var popupRoot       = (Host as PopupRoot)!;
+        // var popupOffset     = popupRoot.PlatformImpl!.Position;
+        // var offset          = new Point(popupOffset.X, popupOffset.Y);
+        // var placementTarget = GetEffectivePlacementTarget();
+        // var topLevel        = TopLevel.GetTopLevel(placementTarget);
+        //
+        // var scaling = topLevel?.RenderScaling ?? 1.0;
+        //
+        // var motionActor = new PopupMotionActor(MaskShadows, offset, scaling, Child ?? popupRoot, motion);
+        // motionActor.DispatchInSceneLayer = true;
+        // motionActor.SceneParent          = topLevel;
+        //
+        // motionActor.SceneShowed += (sender, args) =>
+        // {
+        //     HideShadowLayer();
+        //     popupRoot.Opacity = 0;
+        // };
+        //
+        // motionActor.Completed += (sender, args) =>
+        // {
+        //     _animating  = false;
+        //     _isNeedFlip = true;
+        //     Close();
+        //     if (closed is not null)
+        //     {
+        //         closed();
+        //     }
+        // };
+        //
+        // director?.Schedule(motionActor);
     }
 }
 

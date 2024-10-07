@@ -8,7 +8,7 @@ namespace AtomUI.Controls.Badge;
 
 internal static class BadgeMotionFactory
 {
-    public static MotionConfigX BuildBadgeZoomBadgeInMotion(TimeSpan duration, Easing? easing = null,
+    public static MotionConfig BuildBadgeZoomBadgeInMotion(TimeSpan duration, Easing? easing = null,
                                                                 FillMode fillMode = FillMode.None)
     {
         easing ??= new ExponentialEaseOut();
@@ -65,10 +65,10 @@ internal static class BadgeMotionFactory
         transformOrigin = new RelativePoint(0.5, 0.5, RelativeUnit.Relative);
 
         animations.Add(animation);
-        return new MotionConfigX(transformOrigin, animations);
+        return new MotionConfig(transformOrigin, animations);
     }
 
-    public static MotionConfigX BuildBadgeZoomBadgeOutMotion(TimeSpan duration, Easing? easing = null,
+    public static MotionConfig BuildBadgeZoomBadgeOutMotion(TimeSpan duration, Easing? easing = null,
                                                                  FillMode fillMode = FillMode.None)
     {
         easing ??= new ExponentialEaseIn();
@@ -125,10 +125,10 @@ internal static class BadgeMotionFactory
         transformOrigin = new RelativePoint(0.5, 0.5, RelativeUnit.Relative);
 
         animations.Add(animation);
-        return new MotionConfigX(transformOrigin, animations);
+        return new MotionConfig(transformOrigin, animations);
     }
 
-    public static MotionConfigX BuildCountBadgeNoWrapperZoomBadgeInMotion(TimeSpan duration, Easing? easing = null,
+    public static MotionConfig BuildCountBadgeNoWrapperZoomBadgeInMotion(TimeSpan duration, Easing? easing = null,
                                                                          FillMode fillMode = FillMode.None)
     {
         easing ??= new CircularEaseOut();
@@ -185,10 +185,10 @@ internal static class BadgeMotionFactory
         transformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
 
         animations.Add(animation);
-        return new MotionConfigX(transformOrigin, animations);
+        return new MotionConfig(transformOrigin, animations);
     }
 
-    public static MotionConfigX BuildCountBadgeNoWrapperZoomBadgeOutMotion(TimeSpan duration, Easing? easing = null,
+    public static MotionConfig BuildCountBadgeNoWrapperZoomBadgeOutMotion(TimeSpan duration, Easing? easing = null,
                                                                           FillMode fillMode = FillMode.None)
     {
         easing ??= new CircularEaseIn();
@@ -245,6 +245,6 @@ internal static class BadgeMotionFactory
         transformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
 
         animations.Add(animation);
-        return new MotionConfigX(transformOrigin, animations);
+        return new MotionConfig(transformOrigin, animations);
     }
 }

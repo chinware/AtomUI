@@ -8,7 +8,7 @@ namespace AtomUI.MotionScene;
 
 internal static partial class MotionFactory
 {
-    public static MotionConfigX BuildMoveDownInMotion(double offset, 
+    public static MotionConfig BuildMoveDownInMotion(double offset, 
                                                      TimeSpan duration, 
                                                      Easing? easing = null,
                                                      FillMode fillMode = FillMode.None)
@@ -88,10 +88,10 @@ internal static partial class MotionFactory
         transformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
 
         animations.Add(animation);
-        return new MotionConfigX(transformOrigin, animations);
+        return new MotionConfig(transformOrigin, animations);
     }
 
-    public static MotionConfigX BuildMoveDownOutMotion(double offset, 
+    public static MotionConfig BuildMoveDownOutMotion(double offset, 
                                                       TimeSpan duration, 
                                                       Easing? easing = null,
                                                       FillMode fillMode = FillMode.None)
@@ -172,10 +172,10 @@ internal static partial class MotionFactory
         transformOrigin = new RelativePoint(0, 0, RelativeUnit.Relative);
 
         animations.Add(animation);
-        return new MotionConfigX(transformOrigin, animations);
+        return new MotionConfig(transformOrigin, animations);
     }
 
-    public static MotionConfigX BuildMoveUpInMotion(double offset, TimeSpan duration, Easing? easing = null,
+    public static MotionConfig BuildMoveUpInMotion(double offset, TimeSpan duration, Easing? easing = null,
                                                    FillMode fillMode = FillMode.None)
     {
         easing ??= new QuinticEaseOut();
@@ -253,10 +253,10 @@ internal static partial class MotionFactory
         transformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
 
         animations.Add(animation);
-        return new MotionConfigX(transformOrigin, animations);
+        return new MotionConfig(transformOrigin, animations);
     }
 
-    public static MotionConfigX BuildMoveUpOutMotion(double offset, TimeSpan duration, Easing? easing = null,
+    public static MotionConfig BuildMoveUpOutMotion(double offset, TimeSpan duration, Easing? easing = null,
                                                     FillMode fillMode = FillMode.None)
     {
         easing ??= new QuinticEaseIn();
@@ -344,10 +344,10 @@ internal static partial class MotionFactory
         transformOrigin = new RelativePoint(0, 0, RelativeUnit.Relative);
 
         animations.Add(animation);
-        return new MotionConfigX(transformOrigin, animations);
+        return new MotionConfig(transformOrigin, animations);
     }
 
-    public static MotionConfigX BuildMoveLeftInMotion(double offset, TimeSpan duration, Easing? easing = null,
+    public static MotionConfig BuildMoveLeftInMotion(double offset, TimeSpan duration, Easing? easing = null,
                                                      FillMode fillMode = FillMode.None)
     {
         easing ??= new QuinticEaseOut();
@@ -428,10 +428,10 @@ internal static partial class MotionFactory
         transformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
 
         animations.Add(animation);
-        return new MotionConfigX(transformOrigin, animations);
+        return new MotionConfig(transformOrigin, animations);
     }
 
-    public static MotionConfigX BuildMoveLeftOutMotion(double offset, TimeSpan duration, Easing? easing = null,
+    public static MotionConfig BuildMoveLeftOutMotion(double offset, TimeSpan duration, Easing? easing = null,
                                                       FillMode fillMode = FillMode.None)
     {
         easing ??= new QuinticEaseIn();
@@ -508,10 +508,10 @@ internal static partial class MotionFactory
         transformOrigin = new RelativePoint(0, 0, RelativeUnit.Relative);
 
         animations.Add(animation);
-        return new MotionConfigX(transformOrigin, animations);
+        return new MotionConfig(transformOrigin, animations);
     }
 
-    public static MotionConfigX BuildMoveRightInMotion(double offset, TimeSpan duration, Easing? easing = null,
+    public static MotionConfig BuildMoveRightInMotion(double offset, TimeSpan duration, Easing? easing = null,
                                                       FillMode fillMode = FillMode.None)
     {
         easing ??= new QuinticEaseOut();
@@ -589,10 +589,10 @@ internal static partial class MotionFactory
         transformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
 
         animations.Add(animation);
-        return new MotionConfigX(transformOrigin, animations);
+        return new MotionConfig(transformOrigin, animations);
     }
 
-    public static MotionConfigX BuildMoveRightOutMotion(double offset, TimeSpan duration, Easing? easing = null,
+    public static MotionConfig BuildMoveRightOutMotion(double offset, TimeSpan duration, Easing? easing = null,
                                                        FillMode fillMode = FillMode.None)
     {
         easing ??= new QuinticEaseIn();
@@ -670,6 +670,6 @@ internal static partial class MotionFactory
         transformOrigin = new RelativePoint(0, 0, RelativeUnit.Relative);
 
         animations.Add(animation);
-        return new MotionConfigX(transformOrigin, animations);
+        return new MotionConfig(transformOrigin, animations);
     }
 }

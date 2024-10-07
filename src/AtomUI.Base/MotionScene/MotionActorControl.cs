@@ -6,13 +6,13 @@ using Avalonia.Media.Transformation;
 
 namespace AtomUI.MotionScene;
 
-public class MotionActorControl : Decorator
+internal class MotionActorControl : Decorator
 {
     #region 公共属性定义
 
     public static readonly StyledProperty<TransformOperations?> MotionTransformProperty =
         AvaloniaProperty.Register<MotionActorControl, TransformOperations?>(nameof(MotionTransform));
-    
+
     public static readonly StyledProperty<bool> UseRenderTransformProperty =
         AvaloniaProperty.Register<LayoutTransformControl, bool>(nameof(UseRenderTransform));
 
@@ -27,11 +27,11 @@ public class MotionActorControl : Decorator
         get => GetValue(UseRenderTransformProperty);
         set => SetValue(UseRenderTransformProperty, value);
     }
-    
+
     public Control? MotionTransformRoot => Child;
 
     #endregion
-
+    
     /// <summary>
     /// RenderTransform/MatrixTransform applied to MotionTransformRoot.
     /// </summary>
@@ -96,6 +96,7 @@ public class MotionActorControl : Decorator
             MotionTransformRoot.RenderTransform       = _matrixTransform;
             MotionTransformRoot.RenderTransformOrigin = new RelativePoint(0, 0, RelativeUnit.Absolute);
         }
+
         ApplyMotionTransform();
     }
 
@@ -116,7 +117,7 @@ public class MotionActorControl : Decorator
         {
             return;
         }
- 
+
         _transformation         = matrix;
         _matrixTransform.Matrix = UseRenderTransform ? matrix : FilterScaleTransform(matrix);
         RenderTransform         = _matrixTransform;
@@ -162,7 +163,7 @@ public class MotionActorControl : Decorator
 
         // Determine the largest available size after the transformation
         Size finalSizeTransformed = ComputeLargestTransformedSize(finalSize);
-    
+
         if (IsSizeSmaller(finalSizeTransformed, MotionTransformRoot.DesiredSize))
         {
             // Some elements do not like being given less space than they asked for (ex: TextBlock)
@@ -211,7 +212,7 @@ public class MotionActorControl : Decorator
             return base.MeasureOverride(availableSize);
         }
 
-        Size measureSize ;
+        Size measureSize;
         if (_childActualSize == default)
         {
             // Determine the largest size after the transformation

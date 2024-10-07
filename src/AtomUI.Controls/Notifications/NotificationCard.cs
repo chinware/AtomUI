@@ -240,7 +240,7 @@ public class NotificationCard : ContentControl
             return;
         }
 
-        MotionConfigX? motionConfig;
+        MotionConfig? motionConfig;
         if (Position == NotificationPosition.TopLeft || Position == NotificationPosition.BottomLeft)
         {
             motionConfig = MotionFactory.BuildMoveLeftInMotion(AnimationMaxOffsetX, _openCloseMotionDuration, new CubicEaseOut(),
@@ -275,7 +275,7 @@ public class NotificationCard : ContentControl
         {
             return;
         }
-        MotionConfigX? motionConfig;
+        MotionConfig? motionConfig;
         if (Position == NotificationPosition.TopLeft || Position == NotificationPosition.BottomLeft)
         {
             motionConfig = MotionFactory.BuildMoveLeftOutMotion(AnimationMaxOffsetX, _openCloseMotionDuration, new CubicEaseIn(),

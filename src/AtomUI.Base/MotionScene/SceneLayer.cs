@@ -9,7 +9,7 @@ using Avalonia.VisualTree;
 
 namespace AtomUI.MotionScene;
 
-public class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
+internal class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
 {
     private readonly IManagedPopupPositionerPopup? _managedPopupPositionerPopup;
     private static readonly FieldInfo ManagedPopupPositionerPopupInfo;

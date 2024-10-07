@@ -7,7 +7,7 @@ namespace AtomUI.MotionScene;
 
 internal static partial class MotionFactory
 {
-    public static MotionConfigX BuildCollapseMotion(Direction direction, TimeSpan duration, Easing? easing = null,
+    public static MotionConfig BuildCollapseMotion(Direction direction, TimeSpan duration, Easing? easing = null,
                                                    FillMode fillMode = FillMode.None)
     {
         easing ??= new CubicEaseOut();
@@ -103,10 +103,10 @@ internal static partial class MotionFactory
         }
 
         animations.Add(animation);
-        return new MotionConfigX(transformOrigin, animations);
+        return new MotionConfig(transformOrigin, animations);
     }
 
-    public static MotionConfigX BuildExpandMotion(Direction direction, TimeSpan duration, Easing? easing = null,
+    public static MotionConfig BuildExpandMotion(Direction direction, TimeSpan duration, Easing? easing = null,
                                                  FillMode fillMode = FillMode.None)
     {
         easing ??= new CubicEaseIn();
@@ -203,6 +203,6 @@ internal static partial class MotionFactory
         }
 
         animations.Add(animation);
-        return new MotionConfigX(transformOrigin, animations);
+        return new MotionConfig(transformOrigin, animations);
     }
 }
