@@ -10,7 +10,6 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
-using Avalonia.Threading;
 
 namespace AtomUI.Controls;
 
@@ -678,7 +677,7 @@ public class ToolTip : TemplatedControl, IShadowMaskInfoProvider
         {
             popupHostProvider.PopupHostChanged += HandlePopupHostChanged;
         }
-        
+
         // TODO 可能是多余的，因为有那个对反转事件的处理
         SetupArrowPosition(placement);
         // 后期看能不能检测对应字段的改变
@@ -728,6 +727,7 @@ public class ToolTip : TemplatedControl, IShadowMaskInfoProvider
         {
             return;
         }
+
         if (_popup is IPopupHostProvider popupHostProvider)
         {
             popupHostProvider.PopupHostChanged -= HandlePopupHostChanged;

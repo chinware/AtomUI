@@ -14,6 +14,7 @@ internal class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
     private readonly IManagedPopupPositionerPopup? _managedPopupPositionerPopup;
     private static readonly FieldInfo ManagedPopupPositionerPopupInfo;
     private readonly Canvas _layout;
+    private SceneMotionActorControl? _motionActorControl;
 
     static SceneLayer()
     {
@@ -88,9 +89,10 @@ internal class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
         PlatformImpl?.Dispose();
     }
 
-    public void SetMotionTarget(Control motionTarget)
+    public void SetMotionActor(SceneMotionActorControl actorControl)
     {
-        _layout.Children.Add(motionTarget);
+        _motionActorControl = actorControl;
+        _layout.Children.Add(actorControl);
     }
 
     // 这个地方我们可以需要定制
@@ -149,12 +151,9 @@ internal class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
     protected override void OnOpened(EventArgs e)
     {
         base.OnOpened(e);
-        foreach (var child in _layout.Children)
+        if (_motionActorControl is not null)
         {
-            if (child is INotifyCaptureGhostBitmap captureGhost)
-            {
-                captureGhost.NotifyCaptureGhostBitmap();
-            }
+            _motionActorControl.NotifySceneLayerHostWinOpened();
         }
     }
 }

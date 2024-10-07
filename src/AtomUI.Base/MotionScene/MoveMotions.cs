@@ -88,6 +88,16 @@ internal class MoveDownInMotion : AbstractMotion
 
         Animations.Add(animation);
     }
+    
+    internal override Size CalculateSceneSize(Size actorSize)
+    {
+        return actorSize.WithHeight(actorSize.Height * 2);
+    }
+
+    internal override Point CalculateScenePosition(Size actorSize, Point actorPosition)
+    {
+        return actorPosition.WithY(actorPosition.Y + actorSize.Height);
+    }
 }
 
 internal class MoveDownOutMotion : AbstractMotion
@@ -173,6 +183,11 @@ internal class MoveDownOutMotion : AbstractMotion
 
         Animations.Add(animation);
     }
+    
+    internal override Size CalculateSceneSize(Size actorSize)
+    {
+        return actorSize.WithHeight(actorSize.Height * 2);
+    }
 }
 
 internal class MoveUpInMotion : AbstractMotion
@@ -256,6 +271,16 @@ internal class MoveUpInMotion : AbstractMotion
         RenderTransformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
 
         Animations.Add(animation);
+    }
+    
+    internal override Size CalculateSceneSize(Size actorSize)
+    {
+        return actorSize.WithHeight(actorSize.Height * 2);
+    }
+    
+    internal override Point CalculateScenePosition(Size actorSize, Point actorPosition)
+    {
+        return actorPosition.WithY(actorPosition.Y - actorSize.Height);
     }
 }
 
@@ -351,6 +376,11 @@ internal class MoveUpOutMotion : AbstractMotion
 
         Animations.Add(animation);
     }
+    
+    internal override Size CalculateSceneSize(Size actorSize)
+    {
+        return actorSize.WithHeight(actorSize.Height * 2);
+    }
 }
 
 internal class MoveLeftInMotion : AbstractMotion
@@ -438,6 +468,16 @@ internal class MoveLeftInMotion : AbstractMotion
 
         Animations.Add(animation);
     }
+    
+    internal override Size CalculateSceneSize(Size actorSize)
+    {
+        return actorSize.WithWidth(actorSize.Width * 2);
+    }
+
+    internal override Point CalculateScenePosition(Size actorSize, Point actorPosition)
+    {
+        return actorPosition.WithX(actorPosition.X - actorSize.Width);
+    }
 }
 
 internal class MoveLeftOutMotion : AbstractMotion
@@ -520,6 +560,11 @@ internal class MoveLeftOutMotion : AbstractMotion
         RenderTransformOrigin = new RelativePoint(0, 0, RelativeUnit.Relative);
 
         Animations.Add(animation);
+    }
+    
+    internal override Size CalculateSceneSize(Size actorSize)
+    {
+        return actorSize.WithHeight(actorSize.Width * 2);
     }
 }
 
@@ -606,6 +651,16 @@ internal class MoveRightInMotion : AbstractMotion
 
         Animations.Add(animation);
     }
+    
+    internal override Size CalculateSceneSize(Size actorSize)
+    {
+        return actorSize.WithHeight(actorSize.Width * 2);
+    }
+    
+    internal override Point CalculateScenePosition(Size actorSize, Point actorPosition)
+    {
+        return actorPosition.WithY(actorPosition.X + actorSize.Height);
+    }
 }
 
 internal class MoveRightOutMotion : AbstractMotion
@@ -689,5 +744,10 @@ internal class MoveRightOutMotion : AbstractMotion
         RenderTransformOrigin = new RelativePoint(0, 0, RelativeUnit.Relative);
 
         Animations.Add(animation);
+    }
+    
+    internal override Size CalculateSceneSize(Size actorSize)
+    {
+        return actorSize.WithHeight(actorSize.Width * 2);
     }
 }

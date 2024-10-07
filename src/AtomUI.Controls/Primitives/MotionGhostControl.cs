@@ -149,7 +149,7 @@ internal class MotionGhostControl : Control, INotifyCaptureGhostBitmap
 
         offsetX += _maskOffset.X;
         offsetY += _maskOffset.Y;
-
+        // 不知道这里为啥不行
         var renderers = new List<Control>();
         for (var i = 0; i < shadows.Count; ++i)
         {
@@ -216,5 +216,11 @@ internal class MotionGhostControl : Control, INotifyCaptureGhostBitmap
             _contentBitmap.Render(_motionTarget);
             _layout!.Children.Clear();
         }
+    }
+
+    public void NotifyClearGhostBitmap()
+    {
+        _ghostBitmap = null;
+        InvalidateVisual();
     }
 }

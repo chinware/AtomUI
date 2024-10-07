@@ -151,7 +151,7 @@ internal class ZoomBigInMotion : AbstractMotion
             var transformSetter = new Setter
             {
                 Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildScaleTransform(0.8)
+                Value    = BuildScaleTransform(0.85)
             };
             startFrame.Setters.Add(transformSetter);
         }
@@ -177,7 +177,7 @@ internal class ZoomBigInMotion : AbstractMotion
             endFrame.Setters.Add(transformSetter);
         }
         animation.Children.Add(endFrame);
-        RenderTransformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
+        RenderTransformOrigin = new RelativePoint(1.0, 1.0, RelativeUnit.Relative);
         Animations.Add(animation);
     }
 }
@@ -231,12 +231,12 @@ internal class ZoomBigOutMotion : AbstractMotion
             var transformSetter = new Setter
             {
                 Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildScaleTransform(0.8)
+                Value    = BuildScaleTransform(0.85)
             };
             endFrame.Setters.Add(transformSetter);
         }
         animation.Children.Add(endFrame);
-        RenderTransformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
+        RenderTransformOrigin = new RelativePoint(1.0, 1.0, RelativeUnit.Relative);
         Animations.Add(animation);
     }
 }

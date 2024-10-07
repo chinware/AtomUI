@@ -35,24 +35,24 @@ internal class AbstractMotion : IMotion
         {
             using var originRestore = new RenderTransformOriginRestore(actor);
             actor.RenderTransformOrigin = RenderTransformOrigin;
+            actor.NotifyMotionPreStart();
+            NotifyPreStart();
             if (aboutToStart is not null)
             {
                 aboutToStart();
             }
-            actor.NotifyMotionPreStart();
-            NotifyPreStart();
-
+            actor.IsVisible = true;
             foreach (var animation in Animations)
             {
                 await animation.RunAsync(actor, cancellationToken);
             }
-
+            
+            actor.NotifyMotionCompleted();
+            NotifyCompleted();
             if (completedAction is not null)
             {
                 completedAction();
             }
-            actor.NotifyMotionCompleted();
-            NotifyCompleted();
         });
     }
 

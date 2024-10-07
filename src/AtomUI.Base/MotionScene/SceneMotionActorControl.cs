@@ -7,6 +7,15 @@ namespace AtomUI.MotionScene;
 internal class SceneMotionActorControl : MotionActorControl
 {
     public event EventHandler? SceneShowed;
+
+    #region 公共属性定义
+
+    /// <summary>
+    /// 动画实体
+    /// </summary>
+    public Control MotionTarget { get; set; }
+
+    #endregion
     
     #region 内部属性定义
 
@@ -18,8 +27,14 @@ internal class SceneMotionActorControl : MotionActorControl
     #endregion
     
     protected Control? _ghost;
+
+    public SceneMotionActorControl(Control motionTarget)
+    {
+        MotionTarget = motionTarget;
+        UseRenderTransform = true;
+    }
     
-    protected virtual void BuildGhost()
+    internal virtual void BuildGhost()
     {
     }
     
@@ -36,6 +51,7 @@ internal class SceneMotionActorControl : MotionActorControl
     /// <summary>
     /// 在这个接口中，Actor 根据自己的需求对 sceneLayer 进行设置，主要就是位置和大小
     /// </summary>
+    /// <param name="motion"></param>
     /// <param name="sceneLayer"></param>
     public virtual void NotifySceneLayerCreated(AbstractMotion motion, SceneLayer sceneLayer)
     {
@@ -61,15 +77,31 @@ internal class SceneMotionActorControl : MotionActorControl
     /// <summary>
     /// 当动画目标控件被添加到动画场景中之后调用，这里需要根据 Motion 的种类设置初始位置和大小
     /// </summary>
-    /// <param name="motionTarget"></param>
-    public virtual void NotifyMotionTargetAddedToScene(Control motionTarget)
+    public virtual void NotifyMotionTargetAddedToScene()
     {
-        Canvas.SetLeft(motionTarget, 0);
-        Canvas.SetTop(motionTarget, 0);
+        Canvas.SetLeft(this, 0);
+        Canvas.SetTop(this, 0);
     }
     
     public virtual void NotifySceneShowed()
     {
         SceneShowed?.Invoke(this, EventArgs.Empty);
+    }
+
+    internal virtual void NotifySceneLayerHostWinOpened()
+    {
+        if (_ghost is INotifyCaptureGhostBitmap captureGhost)
+        {
+            captureGhost.NotifyCaptureGhostBitmap();
+        }
+    }
+
+    internal override void NotifyMotionCompleted()
+    {
+        base.NotifyMotionCompleted();
+        if (_ghost is INotifyCaptureGhostBitmap notifyCaptureGhostBitmap)
+        {
+            notifyCaptureGhostBitmap.NotifyClearGhostBitmap();
+        }
     }
 }

@@ -44,32 +44,32 @@ internal static class MotionInvoker
                                                      Action? completedAction = null,
                                                      CancellationToken cancellationToken = default)
     {
+        actor.BuildGhost();
         SceneLayer sceneLayer          = PrepareSceneLayer(motion, actor);
         var        compositeDisposable = new CompositeDisposable();
         compositeDisposable.Add(Disposable.Create(sceneLayer, (state) =>
         {
             Dispatcher.UIThread.Invoke(async () =>
             {
-                await Task.Delay(300);
+                await Task.Delay(100);
                 sceneLayer.Hide();
                 sceneLayer.Dispose();
             });
         }));
-        var ghost = actor.GetAnimatableGhost();
-        sceneLayer.SetMotionTarget(ghost);
-        actor.NotifyMotionTargetAddedToScene(ghost);
+        sceneLayer.SetMotionActor(actor);
+        actor.NotifyMotionTargetAddedToScene();
         sceneLayer.Show();
         sceneLayer.Topmost = true;
         actor.NotifySceneShowed();
-
+        actor.IsVisible = false;
+        
         await motion.RunAsync(actor, aboutToStart, () =>
         {
+            compositeDisposable.Dispose();
             if (completedAction is not null)
             {
                 completedAction();
             }
-
-            compositeDisposable.Dispose();
         }, cancellationToken);
     }
 
