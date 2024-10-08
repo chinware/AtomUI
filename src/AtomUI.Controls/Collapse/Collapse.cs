@@ -178,6 +178,14 @@ public class Collapse : SelectingItemsControl
             SetupCollapseBorderThickness(collapseItem, index);
         }
     }
+    
+    protected override void ContainerIndexChangedOverride(Control container, int oldIndex, int newIndex)
+    {
+        if (container is CollapseItem collapseItem)
+        {
+            SetupCollapseBorderThickness(collapseItem, newIndex);
+        }
+    }
 
     private void SetupCollapseBorderThickness(CollapseItem collapseItem, int index)
     {
