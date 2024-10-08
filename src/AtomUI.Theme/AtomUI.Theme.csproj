@@ -30,14 +30,5 @@
     <ItemGroup>
         <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics"/>
     </ItemGroup>
-
-    <ItemGroup>
-        <Compile Remove="Platform/**/*.cs"/>
-    </ItemGroup>
-
-    <ItemGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
-        <Compile Include="Platform\Windows\*.cs"/>
-        <PackageReference Include="Avalonia.Win32"/>
-    </ItemGroup>
-
+    
 </Project>

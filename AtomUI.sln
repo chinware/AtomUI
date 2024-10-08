@@ -50,6 +50,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AtomUI", "packages\AtomUI\A
 		{B2A7349B-4B38-45CB-8D22-3E06D1E3650F} = {B2A7349B-4B38-45CB-8D22-3E06D1E3650F}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtomUI.Platform.Win32", "src\AtomUI.Platform.Win32\AtomUI.Platform.Win32.csproj", "{9BF7EF51-4100-4EAE-8A95-FC5F1BD4A1E4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -96,6 +98,10 @@ Global
 		{89A98C0D-B6F7-48CD-91C4-79FC0FED3615}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{89A98C0D-B6F7-48CD-91C4-79FC0FED3615}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{89A98C0D-B6F7-48CD-91C4-79FC0FED3615}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9BF7EF51-4100-4EAE-8A95-FC5F1BD4A1E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9BF7EF51-4100-4EAE-8A95-FC5F1BD4A1E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9BF7EF51-4100-4EAE-8A95-FC5F1BD4A1E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9BF7EF51-4100-4EAE-8A95-FC5F1BD4A1E4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
