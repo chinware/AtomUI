@@ -1,7 +1,7 @@
-﻿using AtomUI.Media;
+﻿using AtomUI.Controls.Utils;
+using AtomUI.Media;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
-using AtomUI.Theme.Utils;
 using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;

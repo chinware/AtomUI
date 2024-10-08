@@ -1,5 +1,5 @@
-﻿using AtomUI.Media;
-using AtomUI.Theme.Utils;
+﻿using AtomUI.Controls.Utils;
+using AtomUI.Media;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.LogicalTree;

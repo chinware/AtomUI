@@ -1,6 +1,5 @@
-﻿using AtomUI.Controls.Utils;
-using AtomUI.Icon;
-using AtomUI.Media;
+﻿using AtomUI.Media;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
@@ -11,7 +10,7 @@ using Avalonia.Reactive;
 using Avalonia.Rendering;
 using Avalonia.Styling;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Icon;
 
 public sealed class PathIcon : Control, ICustomHitTest
 {
@@ -55,9 +54,13 @@ public sealed class PathIcon : Control, ICustomHitTest
     public static readonly StyledProperty<TimeSpan> LoadingAnimationDurationProperty =
         AvaloniaProperty.Register<PathIcon, TimeSpan>(
             nameof(LoadingAnimationDuration), TimeSpan.FromSeconds(1));
+    
+    public static readonly StyledProperty<TimeSpan> FillAnimationDurationProperty =
+        AvaloniaProperty.Register<PathIcon, TimeSpan>(
+            nameof(FillAnimationDuration), TimeSpan.FromSeconds(300));
 
-    public static readonly StyledProperty<IconMode> IconModeProperty = AvaloniaProperty.Register<PathIcon, IconMode>(
-        nameof(IconMode));
+    public static readonly StyledProperty<IconMode> IconModeProperty =
+        AvaloniaProperty.Register<PathIcon, IconMode>(nameof(IconMode));
 
     public string Kind
     {
@@ -111,6 +114,12 @@ public sealed class PathIcon : Control, ICustomHitTest
     {
         get => GetValue(LoadingAnimationDurationProperty);
         set => SetValue(LoadingAnimationDurationProperty, value);
+    }
+    
+    public TimeSpan FillAnimationDuration
+    {
+        get => GetValue(FillAnimationDurationProperty);
+        set => SetValue(FillAnimationDurationProperty, value);
     }
 
     /// <summary>
@@ -187,12 +196,10 @@ public sealed class PathIcon : Control, ICustomHitTest
 
     private void SetupTransitions()
     {
-        if (Transitions is null)
+        Transitions ??= new Transitions()
         {
-            var transitions = new Transitions();
-            transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(FilledBrushProperty));
-            Transitions = transitions;
-        }
+            AnimationUtils.CreateTransition<SolidColorBrushTransition>(FilledBrushProperty, FillAnimationDuration)
+        };
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

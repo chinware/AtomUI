@@ -7,4 +7,8 @@
         <PackageReference Include="Avalonia"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\AtomUI.Base\AtomUI.Base.csproj" />
+    </ItemGroup>
+
 </Project>

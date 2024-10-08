@@ -1,7 +1,7 @@
 ﻿using AtomUI.Icon;
 using AtomUI.MotionScene;
+using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
-using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;

@@ -1,11 +1,9 @@
-﻿using AtomUI.Theme.Styling;
-using AtomUI.Utils;
+﻿using AtomUI.Theme.Data;
+using AtomUI.Theme.Styling;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Shapes;
 using Avalonia.Controls.Templates;
-using Avalonia.Data;
-using Avalonia.Data.Converters;
 using Avalonia.Layout;
 using Avalonia.Styling;
 
@@ -15,12 +13,12 @@ namespace AtomUI.Controls;
 internal class HorizontalNavMenuTheme : BaseNavMenuTheme
 {
     public const string ID = "HorizontalNavMenu";
-    
+
     public HorizontalNavMenuTheme()
         : base(typeof(NavMenu))
     {
     }
-    
+
     public override string ThemeResourceKey()
     {
         return ID;

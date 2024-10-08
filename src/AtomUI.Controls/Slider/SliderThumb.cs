@@ -1,6 +1,6 @@
-﻿using AtomUI.Media;
+﻿using AtomUI.Controls.Utils;
+using AtomUI.Media;
 using AtomUI.Theme.Styling;
-using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Automation.Peers;

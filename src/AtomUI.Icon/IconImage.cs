@@ -3,7 +3,7 @@ using Avalonia.Media;
 
 namespace AtomUI.Icon;
 
-public class IconImage : DrawingImage, IImage
+internal class IconImage : DrawingImage, IImage
 {
     public static readonly StyledProperty<IconInfo> DataProperty = AvaloniaProperty.Register<
         IconImage,
