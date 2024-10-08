@@ -51,7 +51,7 @@ internal static class MotionInvoker
         {
             Dispatcher.UIThread.Invoke(async () =>
             {
-                await Task.Delay(100);
+                await Task.Delay(300);
                 sceneLayer.Hide();
                 sceneLayer.Dispose();
             });
