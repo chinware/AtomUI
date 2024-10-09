@@ -7,12 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AtomUI.Theme", "src\AtomUI.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AtomUI.Base", "src\AtomUI.Base\AtomUI.Base.csproj", "{8FFEB15F-7E48-4AF4-B708-8E96A68CF2D9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AtomUI.Icon", "src\AtomUI.Icon\AtomUI.Icon.csproj", "{B2A7349B-4B38-45CB-8D22-3E06D1E3650F}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AtomUI.Icon.Generator", "src\AtomUI.Icon.Generator\AtomUI.Icon.Generator.csproj", "{954FB7F2-7706-4E2B-86D1-624F66C1EFF0}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AtomUI.Icon.AntDesign", "src\AtomUI.Icon.AntDesign\AtomUI.Icon.AntDesign.csproj", "{021AE0B0-B148-4925-9C22-EBD5A7B43E95}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AtomUI.Generator", "src\AtomUI.Generator\AtomUI.Generator.csproj", "{30910056-F8F6-4429-B25E-722C57440210}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AtomUI.Demo.Desktop", "Samples\AtomUI.Demo.Desktop\AtomUI.Demo.Desktop.csproj", "{59931F42-8DD8-4DFC-9060-563841F39669}"
@@ -52,6 +46,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AtomUI", "packages\AtomUI\A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtomUI.Platform.Win32", "src\AtomUI.Platform.Win32\AtomUI.Platform.Win32.csproj", "{9BF7EF51-4100-4EAE-8A95-FC5F1BD4A1E4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtomUI.IconPkg", "src\AtomUI.IconPkg\AtomUI.IconPkg.csproj", "{70AC4A1D-2D88-4703-9AB2-89E753E1A04B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtomUI.IconPkg.AntDesign", "src\AtomUI.IconPkg.AntDesign\AtomUI.IconPkg.AntDesign.csproj", "{796AC3CF-7A12-4183-9096-291738A62292}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtomUI.IconPkg.Generator", "src\AtomUI.IconPkg.Generator\AtomUI.IconPkg.Generator.csproj", "{C8BFCDBE-0DC2-411F-B2E4-439A0A8E1752}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -66,18 +66,6 @@ Global
 		{8FFEB15F-7E48-4AF4-B708-8E96A68CF2D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8FFEB15F-7E48-4AF4-B708-8E96A68CF2D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8FFEB15F-7E48-4AF4-B708-8E96A68CF2D9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B2A7349B-4B38-45CB-8D22-3E06D1E3650F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B2A7349B-4B38-45CB-8D22-3E06D1E3650F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B2A7349B-4B38-45CB-8D22-3E06D1E3650F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B2A7349B-4B38-45CB-8D22-3E06D1E3650F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{954FB7F2-7706-4E2B-86D1-624F66C1EFF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{954FB7F2-7706-4E2B-86D1-624F66C1EFF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{954FB7F2-7706-4E2B-86D1-624F66C1EFF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{954FB7F2-7706-4E2B-86D1-624F66C1EFF0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{021AE0B0-B148-4925-9C22-EBD5A7B43E95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{021AE0B0-B148-4925-9C22-EBD5A7B43E95}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{021AE0B0-B148-4925-9C22-EBD5A7B43E95}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{021AE0B0-B148-4925-9C22-EBD5A7B43E95}.Release|Any CPU.Build.0 = Release|Any CPU
 		{30910056-F8F6-4429-B25E-722C57440210}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{30910056-F8F6-4429-B25E-722C57440210}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{30910056-F8F6-4429-B25E-722C57440210}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -102,12 +90,23 @@ Global
 		{9BF7EF51-4100-4EAE-8A95-FC5F1BD4A1E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9BF7EF51-4100-4EAE-8A95-FC5F1BD4A1E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9BF7EF51-4100-4EAE-8A95-FC5F1BD4A1E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70AC4A1D-2D88-4703-9AB2-89E753E1A04B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70AC4A1D-2D88-4703-9AB2-89E753E1A04B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70AC4A1D-2D88-4703-9AB2-89E753E1A04B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70AC4A1D-2D88-4703-9AB2-89E753E1A04B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{796AC3CF-7A12-4183-9096-291738A62292}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{796AC3CF-7A12-4183-9096-291738A62292}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{796AC3CF-7A12-4183-9096-291738A62292}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{796AC3CF-7A12-4183-9096-291738A62292}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8BFCDBE-0DC2-411F-B2E4-439A0A8E1752}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8BFCDBE-0DC2-411F-B2E4-439A0A8E1752}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8BFCDBE-0DC2-411F-B2E4-439A0A8E1752}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8BFCDBE-0DC2-411F-B2E4-439A0A8E1752}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{954FB7F2-7706-4E2B-86D1-624F66C1EFF0} = {B4C46C3E-0CCC-4861-95B6-CA08D501A46F}
 		{30910056-F8F6-4429-B25E-722C57440210} = {B4C46C3E-0CCC-4861-95B6-CA08D501A46F}
 		{59931F42-8DD8-4DFC-9060-563841F39669} = {279BC2C9-A818-4D6C-9274-678649932057}
 		{EADEF2AC-B7E5-436A-8B39-8BBECF8706AB} = {279BC2C9-A818-4D6C-9274-678649932057}
