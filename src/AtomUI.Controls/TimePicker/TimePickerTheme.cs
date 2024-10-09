@@ -1,4 +1,6 @@
 ﻿using AtomUI.Controls.Internal;
+using AtomUI.IconPkg;
+using AtomUI.IconPkg.AntDesign;
 using AtomUI.Theme.Styling;
 using Avalonia.Controls;
 using Avalonia.Styling;
@@ -12,12 +14,9 @@ internal class TimePickerTheme : InfoPickerInputTheme
     {
     }
     
-    protected override PathIcon BuildInfoIcon(InfoPickerInput infoPickerInput, INameScope scope)
+    protected override Icon BuildInfoIcon(InfoPickerInput infoPickerInput, INameScope scope)
     {
-        return new PathIcon()
-        {
-            Kind = "ClockCircleOutlined"
-        };
+        return AntDesignIconPackage.ClockCircleOutlined();
     }
     
     protected override void BuildStyles()

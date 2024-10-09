@@ -133,22 +133,22 @@ public partial class GlobalToken
     public double FontSizeIcon { get; set; }
 
     /// <summary>
-    /// 内联 PathIcon 大小定义, 最小的尺寸
+    /// 内联 Icon 大小定义, 最小的尺寸
     /// </summary>
     public double IconSizeXS { get; set; }
 
     /// <summary>
-    /// 内联 PathIcon 大小定义
+    /// 内联 Icon 大小定义
     /// </summary>
     public double IconSizeSM { get; set; }
 
     /// <summary>
-    /// 内联 PathIcon 大小定义, 正常的尺寸
+    /// 内联 Icon 大小定义, 正常的尺寸
     /// </summary>
     public double IconSize { get; set; }
 
     /// <summary>
-    /// 内联 PathIcon 大小定义, 最大的尺寸
+    /// 内联 Icon 大小定义, 最大的尺寸
     /// </summary>
     public double IconSizeLG { get; set; }
 

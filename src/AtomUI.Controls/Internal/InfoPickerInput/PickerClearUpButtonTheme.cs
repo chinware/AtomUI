@@ -1,4 +1,6 @@
-﻿using AtomUI.Theme;
+﻿using AtomUI.IconPkg;
+using AtomUI.IconPkg.AntDesign;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -48,10 +50,7 @@ internal class PickerClearUpButtonTheme : BaseControlTheme
 
     private void BuildClearButton(Panel layout, INameScope scope)
     {
-        var closeIcon = new PathIcon
-        {
-            Kind = "CloseCircleFilled"
-        };
+        var closeIcon = AntDesignIconPackage.CloseCircleFilled();
         var clearButton = new IconButton
         {
             Name = ClearButtonPart,
@@ -62,11 +61,11 @@ internal class PickerClearUpButtonTheme : BaseControlTheme
             GlobalTokenResourceKey.IconSize);
         TokenResourceBinder.CreateGlobalTokenBinding(clearButton, IconButton.IconWidthProperty,
             GlobalTokenResourceKey.IconSize);
-        TokenResourceBinder.CreateGlobalTokenBinding(closeIcon, PathIcon.NormalFilledBrushProperty,
+        TokenResourceBinder.CreateGlobalTokenBinding(closeIcon, Icon.NormalFilledBrushProperty,
             GlobalTokenResourceKey.ColorTextQuaternary);
-        TokenResourceBinder.CreateGlobalTokenBinding(closeIcon, PathIcon.ActiveFilledBrushProperty,
+        TokenResourceBinder.CreateGlobalTokenBinding(closeIcon, Icon.ActiveFilledBrushProperty,
             GlobalTokenResourceKey.ColorTextTertiary);
-        TokenResourceBinder.CreateGlobalTokenBinding(closeIcon, PathIcon.SelectedFilledBrushProperty,
+        TokenResourceBinder.CreateGlobalTokenBinding(closeIcon, Icon.SelectedFilledBrushProperty,
             GlobalTokenResourceKey.ColorText);
 
         clearButton.RegisterInNameScope(scope);
@@ -77,10 +76,10 @@ internal class PickerClearUpButtonTheme : BaseControlTheme
 
     protected override void BuildInstanceStyles(Control control)
     {
-        var iconStyle = new Style(selector => selector.Name(InfoIconContentPart).Child().OfType<PathIcon>());
-        iconStyle.Add(PathIcon.WidthProperty, GlobalTokenResourceKey.IconSize);
-        iconStyle.Add(PathIcon.HeightProperty, GlobalTokenResourceKey.IconSize);
-        iconStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorTextQuaternary);
+        var iconStyle = new Style(selector => selector.Name(InfoIconContentPart).Child().OfType<Icon>());
+        iconStyle.Add(Icon.WidthProperty, GlobalTokenResourceKey.IconSize);
+        iconStyle.Add(Icon.HeightProperty, GlobalTokenResourceKey.IconSize);
+        iconStyle.Add(Icon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorTextQuaternary);
         control.Styles.Add(iconStyle);
     }
 }

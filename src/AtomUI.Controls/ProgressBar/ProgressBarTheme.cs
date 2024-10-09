@@ -1,4 +1,5 @@
-﻿using AtomUI.Theme.Styling;
+﻿using AtomUI.IconPkg;
+using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
@@ -42,7 +43,7 @@ internal class ProgressBarTheme : AbstractLineProgressTheme
                     Alignment = LinePercentAlignment.Start
                 }));
             {
-                var icons = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
+                var icons = new Style(selector => selector.Nesting().Template().OfType<Icon>());
                 icons.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Right);
                 notInnerStartStyle.Add(icons);
             }
@@ -56,7 +57,7 @@ internal class ProgressBarTheme : AbstractLineProgressTheme
                     Alignment = LinePercentAlignment.End
                 }));
             {
-                var icons = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
+                var icons = new Style(selector => selector.Nesting().Template().OfType<Icon>());
                 icons.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Left);
                 notInnerEndStyle.Add(icons);
             }
@@ -69,7 +70,7 @@ internal class ProgressBarTheme : AbstractLineProgressTheme
                     Alignment = LinePercentAlignment.Center
                 }));
             {
-                var icons = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
+                var icons = new Style(selector => selector.Nesting().Template().OfType<Icon>());
                 icons.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Center);
                 notInnerCenterStyle.Add(icons);
             }
@@ -89,7 +90,7 @@ internal class ProgressBarTheme : AbstractLineProgressTheme
                     Alignment = LinePercentAlignment.Start
                 }));
             {
-                var icons = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
+                var icons = new Style(selector => selector.Nesting().Template().OfType<Icon>());
                 icons.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Bottom);
                 notInnerStartStyle.Add(icons);
             }
@@ -103,7 +104,7 @@ internal class ProgressBarTheme : AbstractLineProgressTheme
                     Alignment = LinePercentAlignment.End
                 }));
             {
-                var icons = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
+                var icons = new Style(selector => selector.Nesting().Template().OfType<Icon>());
                 icons.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Top);
                 notInnerEndStyle.Add(icons);
             }
@@ -116,7 +117,7 @@ internal class ProgressBarTheme : AbstractLineProgressTheme
                     Alignment = LinePercentAlignment.Center
                 }));
             {
-                var icons = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
+                var icons = new Style(selector => selector.Nesting().Template().OfType<Icon>());
                 icons.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Center);
                 notInnerCenterStyle.Add(icons);
             }
@@ -130,7 +131,7 @@ internal class ProgressBarTheme : AbstractLineProgressTheme
     private void BuildCompletedIconStyle()
     {
         var labelInnerStyle = new Style(selector => selector.Nesting().Class(ProgressBar.PercentLabelInnerPC));
-        var icons           = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
+        var icons           = new Style(selector => selector.Nesting().Template().OfType<Icon>());
         icons.Add(Visual.IsVisibleProperty, false);
         labelInnerStyle.Add(icons);
         var labelStyle = new Style(selector => selector.Nesting().Template().OfType<LayoutTransformControl>());

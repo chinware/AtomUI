@@ -1,3 +1,4 @@
+using AtomUI.IconPkg;
 using AtomUI.Media;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -248,8 +249,8 @@ public abstract class AbstractProgressBar : RangeBase,
     protected ControlStyleState _styleState;
     protected LayoutTransformControl? _layoutTransformLabel;
     protected Label? _percentageLabel;
-    protected PathIcon? _successCompletedIcon;
-    protected PathIcon? _exceptionCompletedIcon;
+    protected Icon? _successCompletedIcon;
+    protected Icon? _exceptionCompletedIcon;
 
     static AbstractProgressBar()
     {
@@ -314,8 +315,8 @@ public abstract class AbstractProgressBar : RangeBase,
     {
         _layoutTransformLabel = scope.Find<LayoutTransformControl>(AbstractProgressBarTheme.LayoutTransformControlPart);
         _percentageLabel = scope.Find<Label>(AbstractProgressBarTheme.PercentageLabelPart);
-        _exceptionCompletedIcon = scope.Find<PathIcon>(AbstractProgressBarTheme.ExceptionCompletedIconPart);
-        _successCompletedIcon = scope.Find<PathIcon>(AbstractProgressBarTheme.SuccessCompletedIconPart);
+        _exceptionCompletedIcon = scope.Find<Icon>(AbstractProgressBarTheme.ExceptionCompletedIconPart);
+        _successCompletedIcon = scope.Find<Icon>(AbstractProgressBarTheme.SuccessCompletedIconPart);
         CollectStyleState();
         SetupTokenBindings();
         NotifySetupUI();

@@ -86,7 +86,8 @@ public abstract class AbstractDesignToken : IDesignToken
 
             var tokenName  = property.Name;
             var tokenValue = property.GetValue(this);
-            if (property.PropertyType == typeof(Color) && tokenValue != null)
+            if ((property.PropertyType == typeof(Color) || property.PropertyType == typeof(Color?)) && 
+                tokenValue is not null)
             {
                 tokenValue = new SolidColorBrush((Color)tokenValue);
             }

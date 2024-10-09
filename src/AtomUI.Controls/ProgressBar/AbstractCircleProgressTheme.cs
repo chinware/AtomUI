@@ -1,4 +1,6 @@
-﻿using AtomUI.Theme.Data;
+﻿using AtomUI.IconPkg;
+using AtomUI.IconPkg.AntDesign;
+using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
@@ -22,30 +24,26 @@ internal class AbstractCircleProgressTheme : AbstractProgressBarTheme
 
     private void CreateCompletedIcons(INameScope scope, Canvas container)
     {
-        var exceptionCompletedIcon = new PathIcon
-        {
-            Name                = ExceptionCompletedIconPart,
-            Kind                = "CloseOutlined",
-            HorizontalAlignment = HorizontalAlignment.Center,
-            VerticalAlignment   = VerticalAlignment.Center
-        };
+        var exceptionCompletedIcon = AntDesignIconPackage.CloseOutlined();
+        exceptionCompletedIcon.Name                = ExceptionCompletedIconPart;
+        exceptionCompletedIcon.HorizontalAlignment = HorizontalAlignment.Center;
+        exceptionCompletedIcon.VerticalAlignment   = VerticalAlignment.Center;
+        
         exceptionCompletedIcon.RegisterInNameScope(scope);
-        TokenResourceBinder.CreateGlobalTokenBinding(exceptionCompletedIcon, PathIcon.NormalFilledBrushProperty,
+        TokenResourceBinder.CreateGlobalTokenBinding(exceptionCompletedIcon, Icon.NormalFilledBrushProperty,
             GlobalTokenResourceKey.ColorError);
-        TokenResourceBinder.CreateGlobalTokenBinding(exceptionCompletedIcon, PathIcon.DisabledFilledBrushProperty,
+        TokenResourceBinder.CreateGlobalTokenBinding(exceptionCompletedIcon, Icon.DisabledFilledBrushProperty,
             GlobalTokenResourceKey.ControlItemBgActiveDisabled);
 
-        var successCompletedIcon = new PathIcon
-        {
-            Name                = SuccessCompletedIconPart,
-            Kind                = "CheckOutlined",
-            HorizontalAlignment = HorizontalAlignment.Center,
-            VerticalAlignment   = VerticalAlignment.Center
-        };
+        var successCompletedIcon = AntDesignIconPackage.CheckOutlined();
+        successCompletedIcon.Name                = SuccessCompletedIconPart;
+        successCompletedIcon.HorizontalAlignment = HorizontalAlignment.Center;
+        successCompletedIcon.VerticalAlignment   = VerticalAlignment.Center;
+        
         successCompletedIcon.RegisterInNameScope(scope);
-        TokenResourceBinder.CreateGlobalTokenBinding(successCompletedIcon, PathIcon.NormalFilledBrushProperty,
+        TokenResourceBinder.CreateGlobalTokenBinding(successCompletedIcon, Icon.NormalFilledBrushProperty,
             GlobalTokenResourceKey.ColorSuccess);
-        TokenResourceBinder.CreateGlobalTokenBinding(successCompletedIcon, PathIcon.DisabledFilledBrushProperty,
+        TokenResourceBinder.CreateGlobalTokenBinding(successCompletedIcon, Icon.DisabledFilledBrushProperty,
             GlobalTokenResourceKey.ControlItemBgActiveDisabled);
 
         container.Children.Add(exceptionCompletedIcon);

@@ -1,7 +1,7 @@
 ﻿using AtomUI.Data;
+using AtomUI.IconPkg;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
-using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -185,7 +185,7 @@ public class AddOnDecoratedBox : ContentControl
 
         if (change.Property == LeftAddOnProperty || change.Property == RightAddOnProperty)
         {
-            if (change.NewValue is PathIcon icon)
+            if (change.NewValue is Icon icon)
             {
                 SetupIconTypeAddOnSize(icon);
             }
@@ -201,19 +201,19 @@ public class AddOnDecoratedBox : ContentControl
 
         if (change.Property == SizeTypeProperty)
         {
-            if (LeftAddOn is PathIcon leftIconAddOn)
+            if (LeftAddOn is Icon leftIconAddOn)
             {
                 SetupIconTypeAddOnSize(leftIconAddOn);
             }
 
-            if (RightAddOn is PathIcon rightIconAddOn)
+            if (RightAddOn is Icon rightIconAddOn)
             {
                 SetupIconTypeAddOnSize(rightIconAddOn);
             }
         }
     }
 
-    private void SetupIconTypeAddOnSize(PathIcon icon)
+    private void SetupIconTypeAddOnSize(Icon icon)
     {
         if (SizeType == SizeType.Large)
         {

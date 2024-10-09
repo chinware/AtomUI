@@ -1,4 +1,6 @@
-﻿using AtomUI.Theme;
+﻿using AtomUI.IconPkg;
+using AtomUI.IconPkg.AntDesign;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia.Controls;
@@ -112,15 +114,12 @@ internal class CalendarItemTheme : BaseControlTheme
 
     protected virtual IconButton BuildPreviousButton()
     {
-        var previousButtonIcon = new PathIcon
-        {
-            Kind = "DoubleLeftOutlined"
-        };
-        TokenResourceBinder.CreateGlobalTokenBinding(previousButtonIcon, PathIcon.NormalFilledBrushProperty,
+        var previousButtonIcon = AntDesignIconPackage.DoubleLeftOutlined();
+        TokenResourceBinder.CreateGlobalTokenBinding(previousButtonIcon, Icon.NormalFilledBrushProperty,
             GlobalTokenResourceKey.ColorTextDescription);
-        TokenResourceBinder.CreateGlobalTokenBinding(previousButtonIcon, PathIcon.ActiveFilledBrushProperty,
+        TokenResourceBinder.CreateGlobalTokenBinding(previousButtonIcon, Icon.ActiveFilledBrushProperty,
             GlobalTokenResourceKey.ColorText);
-        TokenResourceBinder.CreateGlobalTokenBinding(previousButtonIcon, PathIcon.SelectedFilledBrushProperty,
+        TokenResourceBinder.CreateGlobalTokenBinding(previousButtonIcon, Icon.SelectedFilledBrushProperty,
             GlobalTokenResourceKey.ColorText);
 
         var previousButton = new IconButton
@@ -138,15 +137,12 @@ internal class CalendarItemTheme : BaseControlTheme
 
     protected virtual IconButton BuildPreviousMonthButton()
     {
-        var previousMonthButtonIcon = new PathIcon
-        {
-            Kind = "LeftOutlined"
-        };
-        TokenResourceBinder.CreateGlobalTokenBinding(previousMonthButtonIcon, PathIcon.NormalFilledBrushProperty,
+        var previousMonthButtonIcon = AntDesignIconPackage.LeftOutlined();
+        TokenResourceBinder.CreateGlobalTokenBinding(previousMonthButtonIcon, Icon.NormalFilledBrushProperty,
             GlobalTokenResourceKey.ColorTextDescription);
-        TokenResourceBinder.CreateGlobalTokenBinding(previousMonthButtonIcon, PathIcon.ActiveFilledBrushProperty,
+        TokenResourceBinder.CreateGlobalTokenBinding(previousMonthButtonIcon, Icon.ActiveFilledBrushProperty,
             GlobalTokenResourceKey.ColorText);
-        TokenResourceBinder.CreateGlobalTokenBinding(previousMonthButtonIcon, PathIcon.SelectedFilledBrushProperty,
+        TokenResourceBinder.CreateGlobalTokenBinding(previousMonthButtonIcon, Icon.SelectedFilledBrushProperty,
             GlobalTokenResourceKey.ColorText);
 
         var previousMonthButton = new IconButton
@@ -164,15 +160,12 @@ internal class CalendarItemTheme : BaseControlTheme
 
     protected virtual IconButton BuildNextButton()
     {
-        var nextButtonIcon = new PathIcon
-        {
-            Kind = "DoubleRightOutlined"
-        };
-        TokenResourceBinder.CreateGlobalTokenBinding(nextButtonIcon, PathIcon.NormalFilledBrushProperty,
+        var nextButtonIcon = AntDesignIconPackage.DoubleRightOutlined();
+        TokenResourceBinder.CreateGlobalTokenBinding(nextButtonIcon, Icon.NormalFilledBrushProperty,
             GlobalTokenResourceKey.ColorTextDescription);
-        TokenResourceBinder.CreateGlobalTokenBinding(nextButtonIcon, PathIcon.ActiveFilledBrushProperty,
+        TokenResourceBinder.CreateGlobalTokenBinding(nextButtonIcon, Icon.ActiveFilledBrushProperty,
             GlobalTokenResourceKey.ColorText);
-        TokenResourceBinder.CreateGlobalTokenBinding(nextButtonIcon, PathIcon.SelectedFilledBrushProperty,
+        TokenResourceBinder.CreateGlobalTokenBinding(nextButtonIcon, Icon.SelectedFilledBrushProperty,
             GlobalTokenResourceKey.ColorText);
 
         var nextButton = new IconButton
@@ -189,15 +182,12 @@ internal class CalendarItemTheme : BaseControlTheme
 
     protected virtual IconButton BuildNextMonthButton()
     {
-        var nextMonthButtonIcon = new PathIcon
-        {
-            Kind = "RightOutlined"
-        };
-        TokenResourceBinder.CreateGlobalTokenBinding(nextMonthButtonIcon, PathIcon.NormalFilledBrushProperty,
+        var nextMonthButtonIcon = AntDesignIconPackage.RightOutlined();
+        TokenResourceBinder.CreateGlobalTokenBinding(nextMonthButtonIcon, Icon.NormalFilledBrushProperty,
             GlobalTokenResourceKey.ColorTextDescription);
-        TokenResourceBinder.CreateGlobalTokenBinding(nextMonthButtonIcon, PathIcon.ActiveFilledBrushProperty,
+        TokenResourceBinder.CreateGlobalTokenBinding(nextMonthButtonIcon, Icon.ActiveFilledBrushProperty,
             GlobalTokenResourceKey.ColorText);
-        TokenResourceBinder.CreateGlobalTokenBinding(nextMonthButtonIcon, PathIcon.SelectedFilledBrushProperty,
+        TokenResourceBinder.CreateGlobalTokenBinding(nextMonthButtonIcon, Icon.SelectedFilledBrushProperty,
             GlobalTokenResourceKey.ColorText);
         var nextMonthButton = new IconButton
         {

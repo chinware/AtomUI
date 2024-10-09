@@ -1,4 +1,6 @@
-﻿using AtomUI.Media;
+﻿using AtomUI.IconPkg;
+using AtomUI.IconPkg.AntDesign;
+using AtomUI.Media;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -185,10 +187,7 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
 
     protected virtual void BuildClearButton(StackPanel addOnLayout, INameScope scope)
     {
-        var closeIcon = new PathIcon
-        {
-            Kind = "CloseCircleFilled"
-        };
+        var closeIcon = AntDesignIconPackage.CloseCircleFilled();
         var clearButton = new IconButton
         {
             Name = ClearButtonPart,
@@ -199,11 +198,11 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
             GlobalTokenResourceKey.IconSize);
         TokenResourceBinder.CreateGlobalTokenBinding(clearButton, IconButton.IconWidthProperty,
             GlobalTokenResourceKey.IconSize);
-        TokenResourceBinder.CreateGlobalTokenBinding(closeIcon, PathIcon.NormalFilledBrushProperty,
+        TokenResourceBinder.CreateGlobalTokenBinding(closeIcon, Icon.NormalFilledBrushProperty,
             GlobalTokenResourceKey.ColorTextQuaternary);
-        TokenResourceBinder.CreateGlobalTokenBinding(closeIcon, PathIcon.ActiveFilledBrushProperty,
+        TokenResourceBinder.CreateGlobalTokenBinding(closeIcon, Icon.ActiveFilledBrushProperty,
             GlobalTokenResourceKey.ColorTextTertiary);
-        TokenResourceBinder.CreateGlobalTokenBinding(closeIcon, PathIcon.SelectedFilledBrushProperty,
+        TokenResourceBinder.CreateGlobalTokenBinding(closeIcon, Icon.SelectedFilledBrushProperty,
             GlobalTokenResourceKey.ColorText);
 
         clearButton.RegisterInNameScope(scope);
@@ -241,7 +240,7 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
             largeStyle.Add(innerBoxContentStyle);
         }
         {
-            var iconStyle = new Style(selector => selector.Nesting().Template().Descendant().OfType<PathIcon>());
+            var iconStyle = new Style(selector => selector.Nesting().Template().Descendant().OfType<Icon>());
             iconStyle.Add(Layoutable.WidthProperty, GlobalTokenResourceKey.IconSizeLG);
             iconStyle.Add(Layoutable.HeightProperty, GlobalTokenResourceKey.IconSizeLG);
             largeStyle.Add(iconStyle);
@@ -259,7 +258,7 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
             middleStyle.Add(innerBoxContentStyle);
         }
         {
-            var iconStyle = new Style(selector => selector.Nesting().Template().Descendant().OfType<PathIcon>());
+            var iconStyle = new Style(selector => selector.Nesting().Template().Descendant().OfType<Icon>());
             iconStyle.Add(Layoutable.WidthProperty, GlobalTokenResourceKey.IconSize);
             iconStyle.Add(Layoutable.HeightProperty, GlobalTokenResourceKey.IconSize);
             middleStyle.Add(iconStyle);
@@ -277,7 +276,7 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
             smallStyle.Add(innerBoxContentStyle);
         }
         {
-            var iconStyle = new Style(selector => selector.Nesting().Template().Descendant().OfType<PathIcon>());
+            var iconStyle = new Style(selector => selector.Nesting().Template().Descendant().OfType<Icon>());
             iconStyle.Add(Layoutable.WidthProperty, GlobalTokenResourceKey.IconSizeSM);
             iconStyle.Add(Layoutable.HeightProperty, GlobalTokenResourceKey.IconSizeSM);
             smallStyle.Add(iconStyle);
@@ -511,8 +510,8 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
                 selector.Nesting().PropertyEquals(AddOnDecoratedInnerBox.StatusProperty, AddOnDecoratedStatus.Error));
             {
                 var iconStyle = new Style(selector => Selectors.Or(selector.Nesting().Template().Name(LeftAddOnPart),
-                    selector.Nesting().Template().Name(RightAddOnPart)).Nesting().Descendant().OfType<PathIcon>());
-                iconStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorError);
+                    selector.Nesting().Template().Name(RightAddOnPart)).Nesting().Descendant().OfType<Icon>());
+                iconStyle.Add(Icon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorError);
                 errorStyle.Add(iconStyle);
             }
             Add(errorStyle);
@@ -523,8 +522,8 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
                 selector.Nesting().PropertyEquals(AddOnDecoratedInnerBox.StatusProperty, AddOnDecoratedStatus.Warning));
             {
                 var iconStyle = new Style(selector => Selectors.Or(selector.Nesting().Template().Name(LeftAddOnPart),
-                    selector.Nesting().Template().Name(RightAddOnPart)).Nesting().Descendant().OfType<PathIcon>());
-                iconStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorWarning);
+                    selector.Nesting().Template().Name(RightAddOnPart)).Nesting().Descendant().OfType<Icon>());
+                iconStyle.Add(Icon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorWarning);
                 warningStyle.Add(iconStyle);
             }
             Add(warningStyle);

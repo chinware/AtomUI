@@ -1,4 +1,6 @@
 ﻿using AtomUI.Data;
+using AtomUI.IconPkg;
+using AtomUI.IconPkg.AntDesign;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -142,13 +144,13 @@ internal class AlertTheme : BaseControlTheme
 
     private void BuildInfoIconStyle()
     {
-        var infoIconSelector = default(Selector).Nesting().Template().OfType<PathIcon>().Name(InfoIconPart);
+        var infoIconSelector = default(Selector).Nesting().Template().OfType<Icon>().Name(InfoIconPart);
         {
             var successStyle = new Style(selector =>
                 selector.Nesting().PropertyEquals(Alert.TypeProperty, AlertType.Success));
             var infoIconStyle = new Style(selector => infoIconSelector);
-            infoIconStyle.Add(PathIcon.KindProperty, "CheckCircleFilled");
-            infoIconStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorSuccess);
+            infoIconStyle.Add(Icon.IconInfoProperty, AntDesignIconPackage.Current.GetIconInfo(AntDesignIconKind.CheckCircleFilled));
+            infoIconStyle.Add(Icon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorSuccess);
             successStyle.Add(infoIconStyle);
             Add(successStyle);
         }
@@ -157,8 +159,8 @@ internal class AlertTheme : BaseControlTheme
             var infoStyle = new Style(selector =>
                 selector.Nesting().PropertyEquals(Alert.TypeProperty, AlertType.Info));
             var infoIconStyle = new Style(selector => infoIconSelector);
-            infoIconStyle.Add(PathIcon.KindProperty, "InfoCircleFilled");
-            infoIconStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorPrimary);
+            infoIconStyle.Add(Icon.IconInfoProperty, AntDesignIconPackage.Current.GetIconInfo(AntDesignIconKind.InfoCircleFilled));
+            infoIconStyle.Add(Icon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorPrimary);
             infoStyle.Add(infoIconStyle);
             Add(infoStyle);
         }
@@ -167,8 +169,8 @@ internal class AlertTheme : BaseControlTheme
             var warningStyle = new Style(selector =>
                 selector.Nesting().PropertyEquals(Alert.TypeProperty, AlertType.Warning));
             var infoIconStyle = new Style(selector => infoIconSelector);
-            infoIconStyle.Add(PathIcon.KindProperty, "ExclamationCircleFilled");
-            infoIconStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorWarning);
+            infoIconStyle.Add(Icon.IconInfoProperty, AntDesignIconPackage.Current.GetIconInfo(AntDesignIconKind.ExclamationCircleFilled));
+            infoIconStyle.Add(Icon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorWarning);
             warningStyle.Add(infoIconStyle);
             Add(warningStyle);
         }
@@ -177,8 +179,8 @@ internal class AlertTheme : BaseControlTheme
             var errorStyle = new Style(selector =>
                 selector.Nesting().PropertyEquals(Alert.TypeProperty, AlertType.Error));
             var infoIconStyle = new Style(selector => infoIconSelector);
-            infoIconStyle.Add(PathIcon.KindProperty, "CloseCircleFilled");
-            infoIconStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorError);
+            infoIconStyle.Add(Icon.IconInfoProperty, AntDesignIconPackage.Current.GetIconInfo(AntDesignIconKind.CloseCircleFilled));
+            infoIconStyle.Add(Icon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorError);
             errorStyle.Add(infoIconStyle);
             Add(errorStyle);
         }
@@ -311,9 +313,9 @@ internal class AlertTheme : BaseControlTheme
         return closeBtn;
     }
 
-    private PathIcon CreateInfoIcon(INameScope scope)
+    private Icon CreateInfoIcon(INameScope scope)
     {
-        var infoIcon = new PathIcon
+        var infoIcon = new Icon
         {
             Name = InfoIconPart
         };

@@ -1,5 +1,6 @@
 ﻿using AtomUI.Controls.Utils;
-using AtomUI.Icon;
+using AtomUI.IconPkg;
+using AtomUI.IconPkg.AntDesign;
 using AtomUI.Media;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -20,22 +21,22 @@ public class TabItem : AvaloniaTabItem, ICustomHitTest
 {
     #region 公共属性定义
 
-    public static readonly StyledProperty<PathIcon?> IconProperty =
-        AvaloniaProperty.Register<TabItem, PathIcon?>(nameof(Icon));
+    public static readonly StyledProperty<Icon?> IconProperty =
+        AvaloniaProperty.Register<TabItem, Icon?>(nameof(Icon));
 
-    public static readonly StyledProperty<PathIcon?> CloseIconProperty =
-        AvaloniaProperty.Register<TabItem, PathIcon?>(nameof(CloseIcon));
+    public static readonly StyledProperty<Icon?> CloseIconProperty =
+        AvaloniaProperty.Register<TabItem, Icon?>(nameof(CloseIcon));
 
     public static readonly StyledProperty<bool> IsClosableProperty =
         AvaloniaProperty.Register<TabItem, bool>(nameof(IsClosable));
 
-    public PathIcon? Icon
+    public Icon? Icon
     {
         get => GetValue(IconProperty);
         set => SetValue(IconProperty, value);
     }
 
-    public PathIcon? CloseIcon
+    public Icon? CloseIcon
     {
         get => GetValue(CloseIconProperty);
         set => SetValue(CloseIconProperty, value);
@@ -82,13 +83,13 @@ public class TabItem : AvaloniaTabItem, ICustomHitTest
             Icon.Name = BaseTabItemTheme.ItemIconPart;
             if (Icon.ThemeType != IconThemeType.TwoTone)
             {
-                TokenResourceBinder.CreateTokenBinding(Icon, PathIcon.NormalFilledBrushProperty,
+                TokenResourceBinder.CreateTokenBinding(Icon, Icon.NormalFilledBrushProperty,
                     TabControlTokenResourceKey.ItemColor);
-                TokenResourceBinder.CreateTokenBinding(Icon, PathIcon.ActiveFilledBrushProperty,
+                TokenResourceBinder.CreateTokenBinding(Icon, Icon.ActiveFilledBrushProperty,
                     TabControlTokenResourceKey.ItemHoverColor);
-                TokenResourceBinder.CreateTokenBinding(Icon, PathIcon.SelectedFilledBrushProperty,
+                TokenResourceBinder.CreateTokenBinding(Icon, Icon.SelectedFilledBrushProperty,
                     TabControlTokenResourceKey.ItemSelectedColor);
-                TokenResourceBinder.CreateTokenBinding(Icon, PathIcon.DisabledFilledBrushProperty,
+                TokenResourceBinder.CreateTokenBinding(Icon, Icon.DisabledFilledBrushProperty,
                     GlobalTokenResourceKey.ColorTextDisabled);
             }
 
@@ -103,10 +104,7 @@ public class TabItem : AvaloniaTabItem, ICustomHitTest
     {
         if (CloseIcon is null)
         {
-            CloseIcon = new PathIcon
-            {
-                Kind = "CloseOutlined"
-            };
+            CloseIcon = AntDesignIconPackage.CloseOutlined();
             TokenResourceBinder.CreateGlobalResourceBinding(CloseIcon, WidthProperty,
                 GlobalTokenResourceKey.IconSizeSM);
             TokenResourceBinder.CreateGlobalResourceBinding(CloseIcon, HeightProperty,
@@ -118,11 +116,11 @@ public class TabItem : AvaloniaTabItem, ICustomHitTest
         UIStructureUtils.SetTemplateParent(CloseIcon, this);
         if (CloseIcon.ThemeType != IconThemeType.TwoTone)
         {
-            TokenResourceBinder.CreateTokenBinding(CloseIcon, PathIcon.NormalFilledBrushProperty,
+            TokenResourceBinder.CreateTokenBinding(CloseIcon, Icon.NormalFilledBrushProperty,
                 GlobalTokenResourceKey.ColorIcon);
-            TokenResourceBinder.CreateTokenBinding(CloseIcon, PathIcon.ActiveFilledBrushProperty,
+            TokenResourceBinder.CreateTokenBinding(CloseIcon, Icon.ActiveFilledBrushProperty,
                 GlobalTokenResourceKey.ColorIconHover);
-            TokenResourceBinder.CreateTokenBinding(CloseIcon, PathIcon.DisabledFilledBrushProperty,
+            TokenResourceBinder.CreateTokenBinding(CloseIcon, Icon.DisabledFilledBrushProperty,
                 GlobalTokenResourceKey.ColorTextDisabled);
         }
     }
@@ -186,7 +184,7 @@ public class TabItem : AvaloniaTabItem, ICustomHitTest
         {
             if (change.Property == IconProperty)
             {
-                var oldIcon = change.GetOldValue<PathIcon?>();
+                var oldIcon = change.GetOldValue<Icon?>();
                 if (oldIcon != null)
                 {
                     UIStructureUtils.SetTemplateParent(oldIcon, null);
@@ -198,7 +196,7 @@ public class TabItem : AvaloniaTabItem, ICustomHitTest
 
         if (change.Property == CloseIconProperty)
         {
-            var oldIcon = change.GetOldValue<PathIcon?>();
+            var oldIcon = change.GetOldValue<Icon?>();
             if (oldIcon != null)
             {
                 UIStructureUtils.SetTemplateParent(oldIcon, null);

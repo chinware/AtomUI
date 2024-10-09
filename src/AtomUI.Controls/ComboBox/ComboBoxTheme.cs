@@ -1,4 +1,6 @@
-﻿using AtomUI.Theme;
+﻿using AtomUI.IconPkg;
+using AtomUI.IconPkg.AntDesign;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -97,14 +99,11 @@ internal class ComboBoxTheme : BaseControlTheme
 
         spinnerHandleDecorator.RegisterInNameScope(scope);
 
-        var decreaseButtonIcon = new PathIcon
-        {
-            Kind = "DownOutlined"
-        };
+        var decreaseButtonIcon = AntDesignIconPackage.DownOutlined();
 
-        TokenResourceBinder.CreateGlobalTokenBinding(decreaseButtonIcon, PathIcon.ActiveFilledBrushProperty,
+        TokenResourceBinder.CreateGlobalTokenBinding(decreaseButtonIcon, Icon.ActiveFilledBrushProperty,
             ButtonSpinnerTokenResourceKey.HandleHoverColor);
-        TokenResourceBinder.CreateGlobalTokenBinding(decreaseButtonIcon, PathIcon.SelectedFilledBrushProperty,
+        TokenResourceBinder.CreateGlobalTokenBinding(decreaseButtonIcon, Icon.SelectedFilledBrushProperty,
             GlobalTokenResourceKey.ColorPrimaryActive);
 
         var openButton = new IconButton

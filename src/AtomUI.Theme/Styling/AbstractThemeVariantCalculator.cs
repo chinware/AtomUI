@@ -23,7 +23,8 @@ public abstract class AbstractThemeVariantCalculator : IThemeVariantCalculator
         return default!;
     }
 
-    protected virtual void CalculateNeutralColorPalettes(Color? bgBaseColor, Color? textBaseColor, GlobalToken globalToken)
+    protected virtual void CalculateNeutralColorPalettes(Color? bgBaseColor, Color? textBaseColor,
+                                                         GlobalToken globalToken)
     {
     }
 
@@ -46,8 +47,8 @@ public abstract class AbstractThemeVariantCalculator : IThemeVariantCalculator
         var infoColors    = GenerateColorPalettes(colorInfoBase);
 
         CalculateNeutralColorPalettes(colorBgBase, colorTextBase, globalToken);
-        var colorLink            = globalToken.ColorLink ?? globalToken.ColorInfo;
-        var linkColors           = GenerateColorPalettes(colorLink);
+        var colorLink  = globalToken.ColorLink ?? globalToken.ColorInfo;
+        var linkColors = GenerateColorPalettes(colorLink);
 
         globalToken.ColorPrimaryBg          = primaryColors.Color1;
         globalToken.ColorPrimaryBgHover     = primaryColors.Color2;
@@ -110,8 +111,8 @@ public abstract class AbstractThemeVariantCalculator : IThemeVariantCalculator
         globalToken.ColorLinkActive = linkColors.Color7;
 
         globalToken.ColorBgMask         = ColorUtils.FromRgbF(0.45, 0, 0, 0);
-        globalToken.ColorWhite         = Color.FromRgb(255, 255, 255);
-        globalToken.ColorBlack         = Color.FromRgb(0, 0, 0);
+        globalToken.ColorWhite          = Color.FromRgb(255, 255, 255);
+        globalToken.ColorBlack          = Color.FromRgb(0, 0, 0);
         globalToken.SelectionBackground = primaryColors.Color6;
         globalToken.SelectionForeground = Color.FromRgb(255, 255, 255);
     }

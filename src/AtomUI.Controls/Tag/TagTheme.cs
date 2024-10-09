@@ -57,10 +57,10 @@ internal class TagTheme : BaseControlTheme
             };
             closeBtn.RegisterInNameScope(scope);
 
-            TokenResourceBinder.CreateTokenBinding(closeBtn, Layoutable.WidthProperty,
-                GlobalTokenResourceKey.IconSizeSM);
-            TokenResourceBinder.CreateTokenBinding(closeBtn, Layoutable.HeightProperty,
-                GlobalTokenResourceKey.IconSizeSM);
+            TokenResourceBinder.CreateTokenBinding(closeBtn, IconButton.IconWidthProperty,
+                GlobalTokenResourceKey.IconSizeXS);
+            TokenResourceBinder.CreateTokenBinding(closeBtn, IconButton.IconHeightProperty,
+                GlobalTokenResourceKey.IconSizeXS);
             TokenResourceBinder.CreateTokenBinding(textBlock, Layoutable.HeightProperty,
                 TagTokenResourceKey.TagLineHeight);
             TokenResourceBinder.CreateTokenBinding(textBlock, TextBlock.LineHeightProperty,

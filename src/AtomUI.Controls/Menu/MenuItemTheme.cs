@@ -1,4 +1,5 @@
-﻿using AtomUI.Media;
+﻿using AtomUI.IconPkg.AntDesign;
+using AtomUI.Media;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -141,14 +142,12 @@ internal class MenuItemTheme : BaseControlTheme
                 MenuItem.KeyGestureConverter);
 
             inputGestureText.RegisterInNameScope(scope);
-
-            var menuIndicatorIcon = new PathIcon
-            {
-                Name                = MenuIndicatorIconPart,
-                HorizontalAlignment = HorizontalAlignment.Right,
-                VerticalAlignment   = VerticalAlignment.Center,
-                Kind                = "RightOutlined"
-            };
+            
+            var menuIndicatorIcon = AntDesignIconPackage.RightOutlined();
+            menuIndicatorIcon.Name                = MenuIndicatorIconPart;
+            menuIndicatorIcon.HorizontalAlignment = HorizontalAlignment.Right;
+            menuIndicatorIcon.VerticalAlignment   = VerticalAlignment.Center;
+            
             TokenResourceBinder.CreateGlobalTokenBinding(menuIndicatorIcon, Layoutable.WidthProperty,
                 GlobalTokenResourceKey.IconSizeXS);
             TokenResourceBinder.CreateGlobalTokenBinding(menuIndicatorIcon, Layoutable.HeightProperty,

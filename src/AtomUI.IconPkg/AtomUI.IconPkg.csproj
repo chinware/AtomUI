@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+	  <RootNamespace>AtomUI.IconPkg</RootNamespace>
+	</PropertyGroup>
+
+	<Import Project="$(MSBuildThisFileDirectory)..\..\build\Common.props"/>
+    <Import Project="$(MSBuildThisFileDirectory)..\..\build\Nuget.props"/>
+
+    <ItemGroup>
+        <PackageReference Include="Avalonia"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\AtomUI.Base\AtomUI.Base.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="AtomUI.Controls" />
+    </ItemGroup>
+</Project>

@@ -1,4 +1,6 @@
-﻿using AtomUI.MotionScene;
+﻿using AtomUI.IconPkg;
+using AtomUI.IconPkg.AntDesign;
+using AtomUI.MotionScene;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -56,8 +58,8 @@ public class NotificationCard : ContentControl
     public static readonly StyledProperty<string> TitleProperty =
         AvaloniaProperty.Register<NotificationCard, string>(nameof(Title));
 
-    public static readonly StyledProperty<PathIcon?> IconProperty
-        = AvaloniaProperty.Register<NotificationCard, PathIcon?>(nameof(Icon));
+    public static readonly StyledProperty<Icon?> IconProperty
+        = AvaloniaProperty.Register<NotificationCard, Icon?>(nameof(Icon));
 
     /// <summary>
     /// Determines if the notification is already closing.
@@ -98,7 +100,7 @@ public class NotificationCard : ContentControl
         set => SetValue(TitleProperty, value);
     }
 
-    public PathIcon? Icon
+    public Icon? Icon
     {
         get => GetValue(IconProperty);
         set => SetValue(IconProperty, value);
@@ -402,26 +404,26 @@ public class NotificationCard : ContentControl
         }
     }
 
-    private void SetupNotificationIconColor(PathIcon icon)
+    private void SetupNotificationIconColor(Icon icon)
     {
         if (NotificationType == NotificationType.Error)
         {
-            TokenResourceBinder.CreateGlobalTokenBinding(icon, PathIcon.NormalFilledBrushProperty,
+            TokenResourceBinder.CreateGlobalTokenBinding(icon, Icon.NormalFilledBrushProperty,
                 GlobalTokenResourceKey.ColorError);
         }
         else if (NotificationType == NotificationType.Information)
         {
-            TokenResourceBinder.CreateGlobalTokenBinding(icon, PathIcon.NormalFilledBrushProperty,
+            TokenResourceBinder.CreateGlobalTokenBinding(icon, Icon.NormalFilledBrushProperty,
                 GlobalTokenResourceKey.ColorPrimary);
         }
         else if (NotificationType == NotificationType.Success)
         {
-            TokenResourceBinder.CreateGlobalTokenBinding(icon, PathIcon.NormalFilledBrushProperty,
+            TokenResourceBinder.CreateGlobalTokenBinding(icon, Icon.NormalFilledBrushProperty,
                 GlobalTokenResourceKey.ColorSuccess);
         }
         else if (NotificationType == NotificationType.Warning)
         {
-            TokenResourceBinder.CreateGlobalTokenBinding(icon, PathIcon.NormalFilledBrushProperty,
+            TokenResourceBinder.CreateGlobalTokenBinding(icon, Icon.NormalFilledBrushProperty,
                 GlobalTokenResourceKey.ColorWarning);
         }
     }
@@ -444,34 +446,22 @@ public class NotificationCard : ContentControl
 
     private void SetupNotificationIcon()
     {
-        PathIcon? icon = null;
+        Icon? icon = null;
         if (NotificationType == NotificationType.Information)
         {
-            icon = new PathIcon
-            {
-                Kind = "InfoCircleFilled"
-            };
+            icon = AntDesignIconPackage.InfoCircleFilled();
         }
         else if (NotificationType == NotificationType.Success)
         {
-            icon = new PathIcon
-            {
-                Kind = "CheckCircleFilled"
-            };
+            icon = AntDesignIconPackage.CheckCircleFilled();
         }
         else if (NotificationType == NotificationType.Error)
         {
-            icon = new PathIcon
-            {
-                Kind = "CloseCircleFilled"
-            };
+            icon = AntDesignIconPackage.CloseCircleFilled();
         }
         else if (NotificationType == NotificationType.Warning)
         {
-            icon = new PathIcon
-            {
-                Kind = "ExclamationCircleFilled"
-            };
+            icon = AntDesignIconPackage.ExclamationCircleFilled();
         }
 
         if (icon is not null)

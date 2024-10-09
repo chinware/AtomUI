@@ -1,5 +1,5 @@
 using AtomUI.Data;
-using AtomUI.Icon;
+using AtomUI.IconPkg;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
@@ -15,14 +15,14 @@ public class IconButton : AvaloniaButton, ICustomHitTest
 {
     #region 公共属性定义
 
-    public static readonly StyledProperty<PathIcon?> IconProperty
-        = AvaloniaProperty.Register<IconButton, PathIcon?>(nameof(Icon));
+    public static readonly StyledProperty<Icon?> IconProperty
+        = AvaloniaProperty.Register<IconButton, Icon?>(nameof(Icon));
 
     public static readonly StyledProperty<IconAnimation> LoadingAnimationProperty =
-        PathIcon.LoadingAnimationProperty.AddOwner<IconButton>();
+        Icon.LoadingAnimationProperty.AddOwner<IconButton>();
 
     public static readonly StyledProperty<TimeSpan> LoadingAnimationDurationProperty =
-        PathIcon.LoadingAnimationDurationProperty.AddOwner<IconButton>();
+        Icon.LoadingAnimationDurationProperty.AddOwner<IconButton>();
 
     public static readonly StyledProperty<double> IconWidthProperty
         = AvaloniaProperty.Register<IconButton, double>(nameof(IconWidth));
@@ -33,7 +33,7 @@ public class IconButton : AvaloniaButton, ICustomHitTest
     public static readonly StyledProperty<bool> IsEnableHoverEffectProperty
         = AvaloniaProperty.Register<IconButton, bool>(nameof(IsEnableHoverEffect));
 
-    public PathIcon? Icon
+    public Icon? Icon
     {
         get => GetValue(IconProperty);
         set => SetValue(IconProperty, value);
@@ -97,7 +97,7 @@ public class IconButton : AvaloniaButton, ICustomHitTest
         {
             if (e.Property == IconProperty)
             {
-                var oldIcon = e.GetOldValue<PathIcon?>();
+                var oldIcon = e.GetOldValue<Icon?>();
                 if (oldIcon is not null)
                 {
                     ((ISetLogicalParent)oldIcon).SetParent(null);
@@ -118,9 +118,9 @@ public class IconButton : AvaloniaButton, ICustomHitTest
     {
         if (Icon is not null)
         {
-            BindUtils.RelayBind(this, LoadingAnimationProperty, Icon, PathIcon.LoadingAnimationProperty);
+            BindUtils.RelayBind(this, LoadingAnimationProperty, Icon, Icon.LoadingAnimationProperty);
             BindUtils.RelayBind(this, LoadingAnimationDurationProperty, Icon,
-                PathIcon.LoadingAnimationDurationProperty);
+                Icon.LoadingAnimationDurationProperty);
             BindUtils.RelayBind(this, IconHeightProperty, Icon, HeightProperty);
             BindUtils.RelayBind(this, IconWidthProperty, Icon, WidthProperty);
         }

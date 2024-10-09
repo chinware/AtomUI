@@ -1,8 +1,9 @@
-﻿using AtomUI.Media;
+﻿using AtomUI.IconPkg;
+using AtomUI.IconPkg.AntDesign;
+using AtomUI.Media;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
-using AtomUI.Theme.Utils;
 using AtomUI.Utils;
 using Avalonia.Animation;
 using Avalonia.Controls;
@@ -104,15 +105,12 @@ internal class ButtonSpinnerTheme : BaseControlTheme
 
         TokenResourceBinder.CreateTokenBinding(spinnerLayout, Layoutable.WidthProperty,
             ButtonSpinnerTokenResourceKey.HandleWidth);
+        
+        var increaseButtonIcon = AntDesignIconPackage.UpOutlined();
 
-        var increaseButtonIcon = new PathIcon
-        {
-            Kind = "UpOutlined"
-        };
-
-        TokenResourceBinder.CreateGlobalTokenBinding(increaseButtonIcon, PathIcon.ActiveFilledBrushProperty,
+        TokenResourceBinder.CreateGlobalTokenBinding(increaseButtonIcon, Icon.ActiveFilledBrushProperty,
             ButtonSpinnerTokenResourceKey.HandleHoverColor);
-        TokenResourceBinder.CreateGlobalTokenBinding(increaseButtonIcon, PathIcon.SelectedFilledBrushProperty,
+        TokenResourceBinder.CreateGlobalTokenBinding(increaseButtonIcon, Icon.SelectedFilledBrushProperty,
             GlobalTokenResourceKey.ColorPrimaryActive);
 
         var increaseButton = new IconButton
@@ -140,14 +138,11 @@ internal class ButtonSpinnerTheme : BaseControlTheme
             ButtonSpinnerTokenResourceKey.HandleIconSize);
         increaseButton.RegisterInNameScope(scope);
 
-        var decreaseButtonIcon = new PathIcon
-        {
-            Kind = "DownOutlined"
-        };
+        var decreaseButtonIcon = AntDesignIconPackage.DownOutlined();
 
-        TokenResourceBinder.CreateGlobalTokenBinding(decreaseButtonIcon, PathIcon.ActiveFilledBrushProperty,
+        TokenResourceBinder.CreateGlobalTokenBinding(decreaseButtonIcon, Icon.ActiveFilledBrushProperty,
             ButtonSpinnerTokenResourceKey.HandleHoverColor);
-        TokenResourceBinder.CreateGlobalTokenBinding(decreaseButtonIcon, PathIcon.SelectedFilledBrushProperty,
+        TokenResourceBinder.CreateGlobalTokenBinding(decreaseButtonIcon, Icon.SelectedFilledBrushProperty,
             GlobalTokenResourceKey.ColorPrimaryActive);
 
         var decreaseButton = new IconButton

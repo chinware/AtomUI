@@ -1,4 +1,5 @@
-﻿using AtomUI.Theme;
+﻿using AtomUI.IconPkg;
+using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
@@ -156,7 +157,7 @@ internal class SegmentedItemTheme : BaseControlTheme
 
         Add(hasIconStyle);
 
-        var iconSelector = default(Selector).Nesting().Template().Name(IconContentPart).Child().OfType<PathIcon>();
+        var iconSelector = default(Selector).Nesting().Template().Name(IconContentPart).Child().OfType<Icon>();
         var largeSizeStyle =
             new Style(selector => selector.Nesting().PropertyEquals(SegmentedItem.SizeTypeProperty, SizeType.Large));
         {

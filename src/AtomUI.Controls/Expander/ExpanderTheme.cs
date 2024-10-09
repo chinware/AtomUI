@@ -1,4 +1,5 @@
-﻿using AtomUI.MotionScene;
+﻿using AtomUI.IconPkg;
+using AtomUI.MotionScene;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -198,7 +199,7 @@ internal class ExpanderTheme : BaseControlTheme
 
         // ExpandIcon 
         var expandIconStyle = new Style(selector =>
-            selector.Nesting().Template().Name(ExpandButtonPart).Descendant().OfType<PathIcon>());
+            selector.Nesting().Template().Name(ExpandButtonPart).Descendant().OfType<Icon>());
         expandIconStyle.Add(Layoutable.WidthProperty, GlobalTokenResourceKey.IconSizeSM);
         expandIconStyle.Add(Layoutable.HeightProperty, GlobalTokenResourceKey.IconSizeSM);
         commonStyle.Add(expandIconStyle);
@@ -486,7 +487,7 @@ internal class ExpanderTheme : BaseControlTheme
     private void BuildAddOnContentStyle()
     {
         var addOnContentStyle = new Style(selector =>
-            selector.Nesting().Template().Name(AddOnContentPresenterPart).Descendant().OfType<PathIcon>());
+            selector.Nesting().Template().Name(AddOnContentPresenterPart).Descendant().OfType<Icon>());
         addOnContentStyle.Add(Layoutable.WidthProperty, GlobalTokenResourceKey.IconSize);
         addOnContentStyle.Add(Layoutable.HeightProperty, GlobalTokenResourceKey.IconSize);
         Add(addOnContentStyle);

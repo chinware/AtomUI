@@ -1,4 +1,5 @@
-﻿using AtomUI.Icon;
+﻿using AtomUI.IconPkg;
+using AtomUI.IconPkg.AntDesign;
 using AtomUI.MotionScene;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -48,8 +49,8 @@ public class MessageCard : TemplatedControl
     public static readonly RoutedEvent<RoutedEventArgs> MessageClosedEvent =
         RoutedEvent.Register<MessageCard, RoutedEventArgs>(nameof(MessageClosed), RoutingStrategies.Bubble);
 
-    public static readonly StyledProperty<PathIcon?> IconProperty
-        = AvaloniaProperty.Register<MessageCard, PathIcon?>(nameof(Icon));
+    public static readonly StyledProperty<Icon?> IconProperty
+        = AvaloniaProperty.Register<MessageCard, Icon?>(nameof(Icon));
 
     public static readonly StyledProperty<string> MessageProperty =
         AvaloniaProperty.Register<NotificationCard, string>(nameof(Message));
@@ -90,7 +91,7 @@ public class MessageCard : TemplatedControl
         remove => RemoveHandler(MessageClosedEvent, value);
     }
 
-    public PathIcon? Icon
+    public Icon? Icon
     {
         get => GetValue(IconProperty);
         set => SetValue(IconProperty, value);
@@ -248,69 +249,54 @@ public class MessageCard : TemplatedControl
         }
     }
 
-    private void SetupMessageIconColor(PathIcon icon)
+    private void SetupMessageIconColor(Icon Icon)
     {
         if (MessageType == MessageType.Error)
         {
-            TokenResourceBinder.CreateGlobalTokenBinding(icon, PathIcon.NormalFilledBrushProperty,
+            TokenResourceBinder.CreateGlobalTokenBinding(Icon, Icon.NormalFilledBrushProperty,
                 GlobalTokenResourceKey.ColorError);
         }
         else if (MessageType == MessageType.Information ||
                  MessageType == MessageType.Loading)
         {
-            TokenResourceBinder.CreateGlobalTokenBinding(icon, PathIcon.NormalFilledBrushProperty,
+            TokenResourceBinder.CreateGlobalTokenBinding(Icon, Icon.NormalFilledBrushProperty,
                 GlobalTokenResourceKey.ColorPrimary);
         }
         else if (MessageType == MessageType.Success)
         {
-            TokenResourceBinder.CreateGlobalTokenBinding(icon, PathIcon.NormalFilledBrushProperty,
+            TokenResourceBinder.CreateGlobalTokenBinding(Icon, Icon.NormalFilledBrushProperty,
                 GlobalTokenResourceKey.ColorSuccess);
         }
         else if (MessageType == MessageType.Warning)
         {
-            TokenResourceBinder.CreateGlobalTokenBinding(icon, PathIcon.NormalFilledBrushProperty,
+            TokenResourceBinder.CreateGlobalTokenBinding(Icon, Icon.NormalFilledBrushProperty,
                 GlobalTokenResourceKey.ColorWarning);
         }
     }
 
     private void SetupMessageIcon()
     {
-        PathIcon? icon = null;
+        Icon? icon = null;
         if (MessageType == MessageType.Information)
         {
-            icon = new PathIcon
-            {
-                Kind = "InfoCircleFilled"
-            };
+            icon = AntDesignIconPackage.InfoCircleFilled();
         }
         else if (MessageType == MessageType.Success)
         {
-            icon = new PathIcon
-            {
-                Kind = "CheckCircleFilled"
-            };
+            icon = AntDesignIconPackage.CheckCircleFilled();
         }
         else if (MessageType == MessageType.Error)
         {
-            icon = new PathIcon
-            {
-                Kind = "CloseCircleFilled"
-            };
+            icon = AntDesignIconPackage.CloseCircleFilled();
         }
         else if (MessageType == MessageType.Warning)
         {
-            icon = new PathIcon
-            {
-                Kind = "ExclamationCircleFilled"
-            };
+            icon = AntDesignIconPackage.ExclamationCircleFilled();
         }
         else if (MessageType == MessageType.Loading)
         {
-            icon = new PathIcon
-            {
-                Kind             = "LoadingOutlined",
-                LoadingAnimation = IconAnimation.Spin
-            };
+            icon                  = AntDesignIconPackage.LoadingOutlined();
+            icon.LoadingAnimation = IconAnimation.Spin;
         }
 
         if (icon is not null)

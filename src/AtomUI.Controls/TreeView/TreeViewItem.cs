@@ -1,4 +1,6 @@
 ﻿using AtomUI.Controls.Utils;
+using AtomUI.IconPkg;
+using AtomUI.IconPkg.AntDesign;
 using AtomUI.Media;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -26,17 +28,17 @@ public class TreeViewItem : AvaloniaTreeItem
     public static readonly StyledProperty<bool> IsCheckableProperty =
         AvaloniaProperty.Register<TreeViewItem, bool>(nameof(IsCheckable), true);
 
-    public static readonly StyledProperty<PathIcon?> IconProperty
-        = AvaloniaProperty.Register<TreeViewItem, PathIcon?>(nameof(Icon));
+    public static readonly StyledProperty<Icon?> IconProperty
+        = AvaloniaProperty.Register<TreeViewItem, Icon?>(nameof(Icon));
 
     public static readonly StyledProperty<bool?> IsCheckedProperty
         = AvaloniaProperty.Register<TreeViewItem, bool?>(nameof(IsChecked), false);
 
-    public static readonly StyledProperty<PathIcon?> SwitcherExpandIconProperty
-        = AvaloniaProperty.Register<TreeViewItem, PathIcon?>(nameof(SwitcherExpandIcon));
+    public static readonly StyledProperty<Icon?> SwitcherExpandIconProperty
+        = AvaloniaProperty.Register<TreeViewItem, Icon?>(nameof(SwitcherExpandIcon));
 
-    public static readonly StyledProperty<PathIcon?> SwitcherCollapseIconProperty
-        = AvaloniaProperty.Register<TreeViewItem, PathIcon?>(nameof(SwitcherCollapseIcon));
+    public static readonly StyledProperty<Icon?> SwitcherCollapseIconProperty
+        = AvaloniaProperty.Register<TreeViewItem, Icon?>(nameof(SwitcherCollapseIcon));
 
     public static readonly DirectProperty<TreeViewItem, bool> IsLeafProperty
         = AvaloniaProperty.RegisterDirect<TreeViewItem, bool>(nameof(IsLeaf),
@@ -49,19 +51,19 @@ public class TreeViewItem : AvaloniaTreeItem
         set => SetValue(IsCheckableProperty, value);
     }
 
-    public PathIcon? Icon
+    public Icon? Icon
     {
         get => GetValue(IconProperty);
         set => SetValue(IconProperty, value);
     }
 
-    public PathIcon? SwitcherExpandIcon
+    public Icon? SwitcherExpandIcon
     {
         get => GetValue(SwitcherExpandIconProperty);
         set => SetValue(SwitcherExpandIconProperty, value);
     }
 
-    public PathIcon? SwitcherCollapseIcon
+    public Icon? SwitcherCollapseIcon
     {
         get => GetValue(SwitcherCollapseIconProperty);
         set => SetValue(SwitcherCollapseIconProperty, value);
@@ -340,12 +342,12 @@ public class TreeViewItem : AvaloniaTreeItem
         }
         else if (change.Property == IconProperty)
         {
-            if (change.OldValue is PathIcon oldIcon)
+            if (change.OldValue is Icon oldIcon)
             {
                 UIStructureUtils.SetTemplateParent(oldIcon, null);
             }
 
-            if (change.NewValue is PathIcon newIcon)
+            if (change.NewValue is Icon newIcon)
             {
                 UIStructureUtils.SetTemplateParent(newIcon, this);
             }
@@ -544,14 +546,8 @@ public class TreeViewItem : AvaloniaTreeItem
 
         if (IsShowLine)
         {
-            _switcherButton.UnCheckedIcon = new PathIcon
-            {
-                Kind = "PlusSquareOutlined"
-            };
-            _switcherButton.CheckedIcon = new PathIcon
-            {
-                Kind = "MinusSquareOutlined"
-            };
+            _switcherButton.UnCheckedIcon = AntDesignIconPackage.PlusSquareOutlined();
+            _switcherButton.CheckedIcon   = AntDesignIconPackage.MinusSquareOutlined();
             TokenResourceBinder.CreateTokenBinding(_switcherButton, ToggleIconButton.IconWidthProperty,
                 GlobalTokenResourceKey.IconSize);
             TokenResourceBinder.CreateTokenBinding(_switcherButton, ToggleIconButton.IconHeightProperty,
@@ -559,11 +555,8 @@ public class TreeViewItem : AvaloniaTreeItem
         }
         else
         {
-            _switcherButton.CheckedIcon = null;
-            _switcherButton.UnCheckedIcon = new PathIcon
-            {
-                Kind = "CaretRightOutlined"
-            };
+            _switcherButton.CheckedIcon   = null;
+            _switcherButton.UnCheckedIcon = AntDesignIconPackage.CaretRightOutlined();
             TokenResourceBinder.CreateTokenBinding(_switcherButton, ToggleIconButton.IconWidthProperty,
                 GlobalTokenResourceKey.IconSizeXS);
             TokenResourceBinder.CreateTokenBinding(_switcherButton, ToggleIconButton.IconHeightProperty,

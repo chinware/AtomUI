@@ -1,4 +1,6 @@
-﻿namespace AtomUI.Controls;
+﻿using AtomUI.IconPkg;
+
+namespace AtomUI.Controls;
 
 public interface INotification
 {
@@ -15,7 +17,7 @@ public interface INotification
    /// <summary>
    /// 自定义图标
    /// </summary>
-   PathIcon? Icon { get; }
+   Icon? Icon { get; }
 
    /// <summary>
    /// Gets the <see cref="NotificationType" /> of the notification.

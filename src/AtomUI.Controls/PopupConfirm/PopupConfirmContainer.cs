@@ -1,4 +1,5 @@
-﻿using Avalonia;
+﻿using AtomUI.IconPkg;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
@@ -31,7 +32,7 @@ internal class PopupConfirmContainer : TemplatedControl
     internal static readonly StyledProperty<IDataTemplate?> ConfirmContentTemplateProperty =
         PopupConfirm.ConfirmContentTemplateProperty.AddOwner<PopupConfirmContainer>();
 
-    internal static readonly StyledProperty<PathIcon?> IconProperty =
+    internal static readonly StyledProperty<Icon?> IconProperty =
         PopupConfirm.IconProperty.AddOwner<PopupConfirmContainer>();
 
     internal static readonly StyledProperty<PopupConfirmStatus> ConfirmStatusProperty
@@ -79,7 +80,7 @@ internal class PopupConfirmContainer : TemplatedControl
         set => SetValue(ConfirmContentTemplateProperty, value);
     }
 
-    public PathIcon? Icon
+    public Icon? Icon
     {
         get => GetValue(IconProperty);
         set => SetValue(IconProperty, value);

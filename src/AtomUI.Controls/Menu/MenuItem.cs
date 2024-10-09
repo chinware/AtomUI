@@ -89,11 +89,11 @@ public class MenuItem : AvaloniaMenuItem
         }
         else if (e.Property == IconProperty)
         {
-            if (Icon is not null && Icon is PathIcon pathIcon)
+            if (Icon is not null && Icon is IconPkg.Icon icon)
             {
-                TokenResourceBinder.CreateTokenBinding(pathIcon, WidthProperty, MenuTokenResourceKey.ItemIconSize);
-                TokenResourceBinder.CreateTokenBinding(pathIcon, HeightProperty, MenuTokenResourceKey.ItemIconSize);
-                TokenResourceBinder.CreateTokenBinding(pathIcon, PathIcon.NormalFilledBrushProperty,
+                TokenResourceBinder.CreateTokenBinding(icon, WidthProperty, MenuTokenResourceKey.ItemIconSize);
+                TokenResourceBinder.CreateTokenBinding(icon, HeightProperty, MenuTokenResourceKey.ItemIconSize);
+                TokenResourceBinder.CreateTokenBinding(icon, IconPkg.Icon.NormalFilledBrushProperty,
                     MenuTokenResourceKey.ItemColor);
             }
         }

@@ -1,5 +1,7 @@
 ﻿using System.Windows.Input;
 using AtomUI.Data;
+using AtomUI.IconPkg;
+using AtomUI.IconPkg.AntDesign;
 using AtomUI.Input;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -78,11 +80,11 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
         Button.SizeTypeProperty.AddOwner<SplitButton>();
 
-    public static readonly StyledProperty<PathIcon?> IconProperty
+    public static readonly StyledProperty<Icon?> IconProperty
         = Button.IconProperty.AddOwner<SplitButton>();
 
-    public static readonly StyledProperty<PathIcon?> FlyoutButtonIconProperty
-        = AvaloniaProperty.Register<SplitButton, PathIcon?>(nameof(FlyoutButtonIcon));
+    public static readonly StyledProperty<Icon?> FlyoutButtonIconProperty
+        = AvaloniaProperty.Register<SplitButton, Icon?>(nameof(FlyoutButtonIcon));
 
     public static readonly StyledProperty<bool> IsDangerProperty =
         Button.IsDangerProperty.AddOwner<SplitButton>();
@@ -198,13 +200,13 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
         set => SetValue(SizeTypeProperty, value);
     }
 
-    public PathIcon? Icon
+    public Icon? Icon
     {
         get => GetValue(IconProperty);
         set => SetValue(IconProperty, value);
     }
 
-    public PathIcon? FlyoutButtonIcon
+    public Icon? FlyoutButtonIcon
     {
         get => GetValue(FlyoutButtonIconProperty);
         set => SetValue(FlyoutButtonIconProperty, value);
@@ -431,13 +433,7 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
             _primaryButton.Click += HandlePrimaryButtonClick;
         }
 
-        if (FlyoutButtonIcon is null)
-        {
-            FlyoutButtonIcon = new PathIcon
-            {
-                Kind = "EllipsisOutlined"
-            };
-        }
+        FlyoutButtonIcon ??= AntDesignIconPackage.EllipsisOutlined();
 
         SetupEffectiveButtonType();
         SetupFlyoutProperties();

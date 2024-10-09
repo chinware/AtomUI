@@ -1,5 +1,6 @@
 ﻿using AtomUI.Controls.PopupConfirmLang;
-using AtomUI.Data;
+using AtomUI.IconPkg;
+using AtomUI.IconPkg.AntDesign;
 using AtomUI.Theme.Data;
 using Avalonia;
 using Avalonia.Controls.Templates;
@@ -39,8 +40,8 @@ public class PopupConfirm : FlyoutHost
     public static readonly StyledProperty<IDataTemplate?> ConfirmContentTemplateProperty =
         AvaloniaProperty.Register<PopupConfirm, IDataTemplate?>(nameof(ConfirmContentTemplate));
 
-    public static readonly StyledProperty<PathIcon?> IconProperty
-        = AvaloniaProperty.Register<PopupConfirm, PathIcon?>(nameof(Icon));
+    public static readonly StyledProperty<Icon?> IconProperty
+        = AvaloniaProperty.Register<PopupConfirm, Icon?>(nameof(Icon));
 
     public static readonly StyledProperty<PopupConfirmStatus> ConfirmStatusProperty
         = AvaloniaProperty.Register<PopupConfirm, PopupConfirmStatus>(nameof(ConfirmStatus),
@@ -97,7 +98,7 @@ public class PopupConfirm : FlyoutHost
         set => SetValue(ConfirmContentTemplateProperty, value);
     }
 
-    public PathIcon? Icon
+    public Icon? Icon
     {
         get => GetValue(IconProperty);
         set => SetValue(IconProperty, value);
@@ -136,13 +137,7 @@ public class PopupConfirm : FlyoutHost
             Flyout = new PopupConfirmFlyout(this);
         }
 
-        if (Icon is null)
-        {
-            Icon = new PathIcon
-            {
-                Kind = "ExclamationCircleFilled"
-            };
-        }
+        Icon ??= AntDesignIconPackage.ExclamationCircleFilled();
 
         LanguageResourceBinder.CreateBinding(this, OkTextProperty, PopupConfirmLangResourceKey.OkText);
         LanguageResourceBinder.CreateBinding(this, CancelTextProperty, PopupConfirmLangResourceKey.CancelText);

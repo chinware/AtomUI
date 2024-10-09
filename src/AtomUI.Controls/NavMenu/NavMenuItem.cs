@@ -1,7 +1,7 @@
 ﻿using System.Windows.Input;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
-using AtomUI.Icon;
+using AtomUI.IconPkg;
 using AtomUI.Input;
 using AtomUI.Media;
 using AtomUI.MotionScene;
@@ -61,8 +61,8 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     /// <summary>
     /// Defines the <see cref="Icon"/> property.
     /// </summary>
-    public static readonly StyledProperty<PathIcon?> IconProperty =
-        AvaloniaProperty.Register<NavMenuItem, PathIcon?>(nameof(Icon));
+    public static readonly StyledProperty<Icon?> IconProperty =
+        AvaloniaProperty.Register<NavMenuItem, Icon?>(nameof(Icon));
 
     /// <summary>
     /// Defines the <see cref="InputGesture"/> property.
@@ -126,7 +126,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     /// <summary>
     /// Gets or sets the icon that appears in a <see cref="NavMenuItem"/>.
     /// </summary>
-    public PathIcon? Icon
+    public Icon? Icon
     {
         get => GetValue(IconProperty);
         set => SetValue(IconProperty, value);
@@ -911,34 +911,34 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
 
     private void SetupItemIcon()
     {
-        if (Icon is not null && Icon is PathIcon menuItemIcon)
+        if (Icon is not null && Icon is Icon menuItemIcon)
         {
-            BindUtils.RelayBind(this, IsEnabledProperty, menuItemIcon, PathIcon.IsEnabledProperty);
-            TokenResourceBinder.CreateTokenBinding(menuItemIcon, PathIcon.WidthProperty,
+            BindUtils.RelayBind(this, IsEnabledProperty, menuItemIcon, Icon.IsEnabledProperty);
+            TokenResourceBinder.CreateTokenBinding(menuItemIcon, Icon.WidthProperty,
                 NavMenuTokenResourceKey.ItemIconSize);
-            TokenResourceBinder.CreateTokenBinding(menuItemIcon, PathIcon.HeightProperty,
+            TokenResourceBinder.CreateTokenBinding(menuItemIcon, Icon.HeightProperty,
                 NavMenuTokenResourceKey.ItemIconSize);
 
             if (IsDarkStyle)
             {
-                TokenResourceBinder.CreateTokenBinding(menuItemIcon, PathIcon.NormalFilledBrushProperty,
+                TokenResourceBinder.CreateTokenBinding(menuItemIcon, Icon.NormalFilledBrushProperty,
                     NavMenuTokenResourceKey.DarkItemColor);
-                TokenResourceBinder.CreateTokenBinding(menuItemIcon, PathIcon.SelectedFilledBrushProperty,
+                TokenResourceBinder.CreateTokenBinding(menuItemIcon, Icon.SelectedFilledBrushProperty,
                     NavMenuTokenResourceKey.DarkItemSelectedColor);
-                TokenResourceBinder.CreateTokenBinding(menuItemIcon, PathIcon.ActiveFilledBrushProperty,
+                TokenResourceBinder.CreateTokenBinding(menuItemIcon, Icon.ActiveFilledBrushProperty,
                     NavMenuTokenResourceKey.DarkItemHoverColor);
-                TokenResourceBinder.CreateTokenBinding(menuItemIcon, PathIcon.DisabledFilledBrushProperty,
+                TokenResourceBinder.CreateTokenBinding(menuItemIcon, Icon.DisabledFilledBrushProperty,
                     NavMenuTokenResourceKey.DarkItemDisabledColor);
             }
             else
             {
-                TokenResourceBinder.CreateTokenBinding(menuItemIcon, PathIcon.NormalFilledBrushProperty,
+                TokenResourceBinder.CreateTokenBinding(menuItemIcon, Icon.NormalFilledBrushProperty,
                     NavMenuTokenResourceKey.ItemColor);
-                TokenResourceBinder.CreateTokenBinding(menuItemIcon, PathIcon.SelectedFilledBrushProperty,
+                TokenResourceBinder.CreateTokenBinding(menuItemIcon, Icon.SelectedFilledBrushProperty,
                     NavMenuTokenResourceKey.ItemSelectedColor);
-                TokenResourceBinder.CreateTokenBinding(menuItemIcon, PathIcon.ActiveFilledBrushProperty,
+                TokenResourceBinder.CreateTokenBinding(menuItemIcon, Icon.ActiveFilledBrushProperty,
                     NavMenuTokenResourceKey.ItemHoverColor);
-                TokenResourceBinder.CreateTokenBinding(menuItemIcon, PathIcon.DisabledFilledBrushProperty,
+                TokenResourceBinder.CreateTokenBinding(menuItemIcon, Icon.DisabledFilledBrushProperty,
                     NavMenuTokenResourceKey.ItemDisabledColor);
             }
         }
@@ -1003,7 +1003,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     /// <param name="e">The property change event.</param>
     private void IconChanged(AvaloniaPropertyChangedEventArgs e)
     {
-        var (oldValue, newValue) = e.GetOldAndNewValue<PathIcon?>();
+        var (oldValue, newValue) = e.GetOldAndNewValue<Icon?>();
 
         if (oldValue is ILogical oldLogical)
         {
@@ -1031,15 +1031,15 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
             Focus();
         }
 
-        if (Icon is not null && Icon is PathIcon menuIcon)
+        if (Icon is not null && Icon is Icon menuIcon)
         {
             if (isSelected)
             {
-                menuIcon.SetValue(PathIcon.IconModeProperty, IconMode.Selected);
+                menuIcon.SetValue(Icon.IconModeProperty, IconMode.Selected);
             }
             else
             {
-                menuIcon.SetValue(PathIcon.IconModeProperty, IconMode.Normal);
+                menuIcon.SetValue(Icon.IconModeProperty, IconMode.Normal);
             }
         }
     }

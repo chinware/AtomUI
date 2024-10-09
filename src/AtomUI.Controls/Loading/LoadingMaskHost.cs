@@ -1,5 +1,5 @@
 ﻿using AtomUI.Data;
-using AtomUI.Theme.Styling;
+using AtomUI.IconPkg;
 using Avalonia;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
@@ -20,7 +20,7 @@ public class LoadingMaskHost : Control
     public static readonly StyledProperty<bool> IsShowLoadingMsgProperty =
         LoadingIndicator.IsShowLoadingMsgProperty.AddOwner<LoadingMaskHost>();
 
-    public static readonly StyledProperty<PathIcon?> CustomIndicatorIconProperty =
+    public static readonly StyledProperty<Icon?> CustomIndicatorIconProperty =
         LoadingIndicator.CustomIndicatorIconProperty.AddOwner<LoadingMaskHost>();
 
     public static readonly StyledProperty<TimeSpan?> MotionDurationProperty =
@@ -53,7 +53,7 @@ public class LoadingMaskHost : Control
         set => SetValue(IsShowLoadingMsgProperty, value);
     }
 
-    public PathIcon? CustomIndicatorIcon
+    public Icon? CustomIndicatorIcon
     {
         get => GetValue(CustomIndicatorIconProperty);
         set => SetValue(CustomIndicatorIconProperty, value);

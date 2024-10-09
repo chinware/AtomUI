@@ -1,4 +1,5 @@
-﻿using AtomUI.Icon;
+﻿using AtomUI.IconPkg;
+using AtomUI.IconPkg.AntDesign;
 using AtomUI.Media;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
@@ -154,15 +155,12 @@ internal class BaseNavMenuItemTheme : BaseControlTheme
 
     protected virtual Control BuildMenuIndicatorIcon(INameScope scope)
     {
-        var menuIndicatorIcon = new PathIcon
-        {
-            Name                = MenuIndicatorIconPart,
-            HorizontalAlignment = HorizontalAlignment.Right,
-            VerticalAlignment   = VerticalAlignment.Center,
-            Kind                = "RightOutlined"
-        };
+        var menuIndicatorIcon = AntDesignIconPackage.RightOutlined();
+        menuIndicatorIcon.Name                = MenuIndicatorIconPart;
+        menuIndicatorIcon.HorizontalAlignment = HorizontalAlignment.Right;
+        menuIndicatorIcon.VerticalAlignment   = VerticalAlignment.Center;
 
-        CreateTemplateParentBinding(menuIndicatorIcon, PathIcon.IsEnabledProperty, NavMenuItem.IsEnabledProperty);
+        CreateTemplateParentBinding(menuIndicatorIcon, Icon.IsEnabledProperty, NavMenuItem.IsEnabledProperty);
         
         TokenResourceBinder.CreateGlobalTokenBinding(menuIndicatorIcon, Layoutable.WidthProperty,
             NavMenuTokenResourceKey.MenuArrowSize);
@@ -290,43 +288,43 @@ internal class BaseNavMenuItemTheme : BaseControlTheme
 
     private void BuildMenuIndicatorStyle()
     {
-        {
-            var menuIndicatorStyle = new Style(selector => selector.Nesting().Template().Name(MenuIndicatorIconPart));
-            menuIndicatorStyle.Add(Visual.IsVisibleProperty, true);
-            menuIndicatorStyle.Add(PathIcon.NormalFilledBrushProperty, NavMenuTokenResourceKey.ItemColor);
-            menuIndicatorStyle.Add(PathIcon.SelectedFilledBrushProperty, NavMenuTokenResourceKey.ItemSelectedColor);
-            menuIndicatorStyle.Add(PathIcon.DisabledFilledBrushProperty, NavMenuTokenResourceKey.ItemDisabledColor);
-            // 设置颜色
-            
-            Add(menuIndicatorStyle);
-        }
-        {
-            var darkCommonStyle = new Style(selector => selector.Nesting().PropertyEquals(NavMenuItem.IsDarkStyleProperty, true));
-            {
-                var menuIndicatorStyle = new Style(selector => selector.Nesting().Template().Name(MenuIndicatorIconPart));
-                menuIndicatorStyle.Add(PathIcon.NormalFilledBrushProperty, NavMenuTokenResourceKey.DarkItemColor);
-                menuIndicatorStyle.Add(PathIcon.SelectedFilledBrushProperty, NavMenuTokenResourceKey.DarkItemSelectedColor);
-                menuIndicatorStyle.Add(PathIcon.DisabledFilledBrushProperty, NavMenuTokenResourceKey.DarkItemDisabledColor);
-                darkCommonStyle.Add(menuIndicatorStyle);
-            }
-            Add(darkCommonStyle);
-        }
-
-        var selectedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Selected));
-        {
-            var menuIndicatorStyle = new Style(selector => selector.Nesting().Template().Name(MenuIndicatorIconPart));
-            menuIndicatorStyle.Add(PathIcon.IconModeProperty, IconMode.Selected);
-            selectedStyle.Add(menuIndicatorStyle);
-        }
-        Add(selectedStyle);
-        
-        var hasNoSubMenuStyle = new Style(selector => selector.Nesting().PropertyEquals(NavMenuItem.HasSubMenuProperty, false));
-        {
-            var menuIndicatorStyle = new Style(selector => selector.Nesting().Template().Name(MenuIndicatorIconPart));
-            menuIndicatorStyle.Add(Visual.IsVisibleProperty, false);
-            hasNoSubMenuStyle.Add(menuIndicatorStyle);
-        }
-        Add(hasNoSubMenuStyle);
+        // {
+        //     var menuIndicatorStyle = new Style(selector => selector.Nesting().Template().Name(MenuIndicatorIconPart));
+        //     menuIndicatorStyle.Add(Visual.IsVisibleProperty, true);
+        //     menuIndicatorStyle.Add(Icon.NormalFilledBrushProperty, NavMenuTokenResourceKey.ItemColor);
+        //     menuIndicatorStyle.Add(Icon.SelectedFilledBrushProperty, NavMenuTokenResourceKey.ItemSelectedColor);
+        //     menuIndicatorStyle.Add(Icon.DisabledFilledBrushProperty, NavMenuTokenResourceKey.ItemDisabledColor);
+        //     // 设置颜色
+        //     
+        //     Add(menuIndicatorStyle);
+        // }
+        // {
+        //     var darkCommonStyle = new Style(selector => selector.Nesting().PropertyEquals(NavMenuItem.IsDarkStyleProperty, true));
+        //     {
+        //         var menuIndicatorStyle = new Style(selector => selector.Nesting().Template().Name(MenuIndicatorIconPart));
+        //         menuIndicatorStyle.Add(Icon.NormalFilledBrushProperty, NavMenuTokenResourceKey.DarkItemColor);
+        //         menuIndicatorStyle.Add(Icon.SelectedFilledBrushProperty, NavMenuTokenResourceKey.DarkItemSelectedColor);
+        //         menuIndicatorStyle.Add(Icon.DisabledFilledBrushProperty, NavMenuTokenResourceKey.DarkItemDisabledColor);
+        //         darkCommonStyle.Add(menuIndicatorStyle);
+        //     }
+        //     Add(darkCommonStyle);
+        // }
+        //
+        // var selectedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Selected));
+        // {
+        //     var menuIndicatorStyle = new Style(selector => selector.Nesting().Template().Name(MenuIndicatorIconPart));
+        //     menuIndicatorStyle.Add(Icon.IconModeProperty, IconMode.Selected);
+        //     selectedStyle.Add(menuIndicatorStyle);
+        // }
+        // Add(selectedStyle);
+        //
+        // var hasNoSubMenuStyle = new Style(selector => selector.Nesting().PropertyEquals(NavMenuItem.HasSubMenuProperty, false));
+        // {
+        //     var menuIndicatorStyle = new Style(selector => selector.Nesting().Template().Name(MenuIndicatorIconPart));
+        //     menuIndicatorStyle.Add(Visual.IsVisibleProperty, false);
+        //     hasNoSubMenuStyle.Add(menuIndicatorStyle);
+        // }
+        // Add(hasNoSubMenuStyle);
     }
 
     private void BuildMenuIconStyle()

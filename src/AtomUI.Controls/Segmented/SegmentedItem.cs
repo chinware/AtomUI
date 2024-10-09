@@ -1,4 +1,5 @@
 ﻿using AtomUI.Controls.Utils;
+using AtomUI.IconPkg;
 using AtomUI.Media;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -20,10 +21,10 @@ public class SegmentedItem : ContentControl, ISelectable
     public static readonly StyledProperty<bool> IsSelectedProperty =
         SelectingItemsControl.IsSelectedProperty.AddOwner<SegmentedItem>();
 
-    public static readonly StyledProperty<PathIcon?> IconProperty
-        = AvaloniaProperty.Register<SegmentedItem, PathIcon?>(nameof(Icon));
+    public static readonly StyledProperty<Icon?> IconProperty
+        = AvaloniaProperty.Register<SegmentedItem, Icon?>(nameof(Icon));
 
-    public PathIcon? Icon
+    public Icon? Icon
     {
         get => GetValue(IconProperty);
         set => SetValue(IconProperty, value);
@@ -99,11 +100,11 @@ public class SegmentedItem : ContentControl, ISelectable
     {
         if (Icon is not null)
         {
-            TokenResourceBinder.CreateTokenBinding(Icon, PathIcon.NormalFilledBrushProperty,
+            TokenResourceBinder.CreateTokenBinding(Icon, Icon.NormalFilledBrushProperty,
                 SegmentedTokenResourceKey.ItemColor);
-            TokenResourceBinder.CreateTokenBinding(Icon, PathIcon.ActiveFilledBrushProperty,
+            TokenResourceBinder.CreateTokenBinding(Icon, Icon.ActiveFilledBrushProperty,
                 SegmentedTokenResourceKey.ItemHoverColor);
-            TokenResourceBinder.CreateTokenBinding(Icon, PathIcon.SelectedFilledBrushProperty,
+            TokenResourceBinder.CreateTokenBinding(Icon, Icon.SelectedFilledBrushProperty,
                 SegmentedTokenResourceKey.ItemSelectedColor);
             UIStructureUtils.SetTemplateParent(Icon, this);
         }

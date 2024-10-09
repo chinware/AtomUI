@@ -1,6 +1,7 @@
 ﻿using AtomUI.Controls.Utils;
 using AtomUI.Data;
-using AtomUI.Icon;
+using AtomUI.IconPkg;
+using AtomUI.IconPkg.AntDesign;
 using AtomUI.Media;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -20,22 +21,22 @@ internal class NodeSwitcherButton : ToggleIconButton
 {
     #region 公共属性
 
-    public static readonly StyledProperty<PathIcon?> LoadingIconProperty
-        = AvaloniaProperty.Register<NodeSwitcherButton, PathIcon?>(nameof(LoadingIcon));
+    public static readonly StyledProperty<Icon?> LoadingIconProperty
+        = AvaloniaProperty.Register<NodeSwitcherButton, Icon?>(nameof(LoadingIcon));
 
-    public static readonly StyledProperty<PathIcon?> LeafIconProperty
-        = AvaloniaProperty.Register<NodeSwitcherButton, PathIcon?>(nameof(LeafIcon));
+    public static readonly StyledProperty<Icon?> LeafIconProperty
+        = AvaloniaProperty.Register<NodeSwitcherButton, Icon?>(nameof(LeafIcon));
 
     public static readonly StyledProperty<bool> IsLeafProperty
         = AvaloniaProperty.Register<NodeSwitcherButton, bool>(nameof(IsLeaf));
 
-    public PathIcon? LoadingIcon
+    public Icon? LoadingIcon
     {
         get => GetValue(LoadingIconProperty);
         set => SetValue(LoadingIconProperty, value);
     }
 
-    public PathIcon? LeafIcon
+    public Icon? LeafIcon
     {
         get => GetValue(LeafIconProperty);
         set => SetValue(LeafIconProperty, value);
@@ -77,39 +78,22 @@ internal class NodeSwitcherButton : ToggleIconButton
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        if (LoadingIcon is null)
-        {
-            LoadingIcon = new PathIcon
-            {
-                Kind = "LoadingOutlined"
-            };
-        }
-
+        LoadingIcon ??= AntDesignIconPackage.LoadingOutlined();
         ConfigureFixedSizeIcon(LoadingIcon);
-
         LoadingIcon.LoadingAnimation = IconAnimation.Spin;
 
-        if (LeafIcon is null)
-        {
-            LeafIcon = new PathIcon
-            {
-                Kind = "FileOutlined"
-            };
-        }
+        LeafIcon ??= AntDesignIconPackage.FileOutlined();
 
         ConfigureFixedSizeIcon(LeafIcon);
         base.OnApplyTemplate(e);
         ApplyIconToContent();
-        if (Transitions is null)
+        Transitions ??= new Transitions
         {
-            Transitions = new Transitions
-            {
-                AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty)
-            };
-        }
+            AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty)
+        };
     }
 
-    private void ConfigureFixedSizeIcon(PathIcon icon)
+    private void ConfigureFixedSizeIcon(Icon icon)
     {
         icon.SetCurrentValue(HorizontalAlignmentProperty, HorizontalAlignment.Center);
         icon.SetCurrentValue(VerticalAlignmentProperty, VerticalAlignment.Center);
@@ -133,7 +117,7 @@ internal class NodeSwitcherButton : ToggleIconButton
         if (change.Property == LoadingIconProperty ||
             change.Property == LeafIconProperty)
         {
-            if (change.NewValue is PathIcon newIcon)
+            if (change.NewValue is Icon newIcon)
             {
                 ConfigureFixedSizeIcon(newIcon);
                 ApplyIconToContent();

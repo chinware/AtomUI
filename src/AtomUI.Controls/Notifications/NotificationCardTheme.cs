@@ -1,4 +1,6 @@
-﻿using AtomUI.MotionScene;
+﻿using AtomUI.IconPkg;
+using AtomUI.IconPkg.AntDesign;
+using AtomUI.MotionScene;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -118,13 +120,11 @@ internal class NotificationCardTheme : BaseControlTheme
             GlobalTokenResourceKey.SelectionForeground);
 
         CreateTemplateParentBinding(headerTitle, TextBlock.TextProperty, NotificationCard.TitleProperty);
-        var closeIcon = new PathIcon
-        {
-            Kind = "CloseOutlined"
-        };
-        TokenResourceBinder.CreateTokenBinding(closeIcon, PathIcon.NormalFilledBrushProperty,
+   
+        var closeIcon = AntDesignIconPackage.CloseOutlined();
+        TokenResourceBinder.CreateTokenBinding(closeIcon, Icon.NormalFilledBrushProperty,
             GlobalTokenResourceKey.ColorIcon);
-        TokenResourceBinder.CreateTokenBinding(closeIcon, PathIcon.ActiveFilledBrushProperty,
+        TokenResourceBinder.CreateTokenBinding(closeIcon, Icon.ActiveFilledBrushProperty,
             GlobalTokenResourceKey.ColorIconHover);
         var closeIconButton = new IconButton
         {
@@ -315,7 +315,7 @@ internal class NotificationCardTheme : BaseControlTheme
 
     protected override void BuildInstanceStyles(Control control)
     {
-        var iconStyle = new Style(selector => selector.Name(IconContentPart).Child().OfType<PathIcon>());
+        var iconStyle = new Style(selector => selector.Name(IconContentPart).Child().OfType<Icon>());
         iconStyle.Add(Layoutable.WidthProperty, NotificationTokenResourceKey.NotificationIconSize);
         iconStyle.Add(Layoutable.HeightProperty, NotificationTokenResourceKey.NotificationIconSize);
         control.Styles.Add(iconStyle);

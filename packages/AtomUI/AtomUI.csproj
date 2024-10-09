@@ -10,24 +10,24 @@
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(Configuration)' == 'DEBUG' ">
-		<ProjectReference Include="../../src/AtomUI.Base/AtomUI.Base.csproj" />
-		<ProjectReference Include="../../src/AtomUI.Controls/AtomUI.Controls.csproj" />
-		<ProjectReference Include="../../src/AtomUI.Icon/AtomUI.Icon.csproj" />
-		<ProjectReference Include="../../src/AtomUI.Icon.AntDesign/AtomUI.Icon.AntDesign.csproj" />
-		<ProjectReference Include="../../src/AtomUI.Theme/AtomUI.Theme.csproj" />
+		<ProjectReference Include="..\..\src\AtomUI.Base\AtomUI.Base.csproj" />
+		<ProjectReference Include="..\..\src\AtomUI.Controls\AtomUI.Controls.csproj" />
+		<ProjectReference Include="..\..\src\AtomUI.IconPkg\AtomUI.IconPkg.csproj" />
+		<ProjectReference Include="..\..\src\AtomUI.IconPkg.AntDesign\AtomUI.IconPkg.AntDesign.csproj" />
+		<ProjectReference Include="..\..\src\AtomUI.Theme\AtomUI.Theme.csproj" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(Configuration)' == 'DEBUG' And $([MSBuild]::IsOSPlatform('Windows')) ">
-		<ProjectReference Include="../../src/AtomUI.Platform.Win32/AtomUI.Platform.Win32.csproj" />
+		<ProjectReference Include="..\..\src\AtomUI.Platform.Win32\AtomUI.Platform.Win32.csproj" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(Configuration)' == 'RELEASE' ">
-		<Reference Include="../../_output/Bin/Release/AtomUI.Base.dll" />
-		<Reference Include="../../_output/Bin/Release/AtomUI.Controls.dll" />
-		<Reference Include="../../_output/Bin/Release/AtomUI.Icon.dll" />
-		<Reference Include="../../_output/Bin/Release/AtomUI.Icon.AntDesign.dll" />
-		<Reference Include="../../_output/Bin/Release/AtomUI.Theme.dll" />
-		<Reference Include="../../_output/Bin/Release/AtomUI.Platform.Win32.dll" />
+		<Reference Include="..\..\_output\Bin\Release\AtomUI.Base.dll" />
+		<Reference Include="..\..\_output\Bin\Release\AtomUI.Controls.dll" />
+		<Reference Include="..\..\_output\Bin\Release\AtomUI.Icon.dll" />
+		<Reference Include="..\..\_output\Bin\Release\AtomUI.Icon.AntDesign.dll" />
+		<Reference Include="..\..\_output\Bin\Release\AtomUI.Theme.dll" />
+		<Reference Include="..\..\_output\Bin\Release\AtomUI.Platform.Win32.dll" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(Configuration)' == 'RELEASE' ">

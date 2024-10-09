@@ -1,4 +1,5 @@
-﻿using AtomUI.Theme.Styling;
+﻿using AtomUI.IconPkg.AntDesign;
+using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -17,10 +18,7 @@ internal class SearchEditDecoratedBoxTheme : AddOnDecoratedBoxTheme
 
     protected override void BuildRightAddOn(Grid layout, INameScope scope)
     {
-        var searchIcon = new PathIcon
-        {
-            Kind = "SearchOutlined"
-        };
+        var searchIcon = AntDesignIconPackage.SearchOutlined();
 
         var searchButton = new Button
         {

@@ -1,4 +1,6 @@
 ﻿using AtomUI.Controls.Utils;
+using AtomUI.IconPkg;
+using AtomUI.IconPkg.AntDesign;
 using AtomUI.MotionScene;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -24,8 +26,8 @@ public class CollapseItem : HeaderedContentControl, ISelectable
     public static readonly StyledProperty<bool> IsShowExpandIconProperty =
         AvaloniaProperty.Register<CollapseItem, bool>(nameof(IsShowExpandIcon), true);
 
-    public static readonly StyledProperty<PathIcon?> ExpandIconProperty =
-        AvaloniaProperty.Register<CollapseItem, PathIcon?>(nameof(ExpandIcon));
+    public static readonly StyledProperty<Icon?> ExpandIconProperty =
+        AvaloniaProperty.Register<CollapseItem, Icon?>(nameof(ExpandIcon));
 
     public static readonly StyledProperty<object?> AddOnContentProperty =
         AvaloniaProperty.Register<CollapseItem, object?>(nameof(AddOnContent));
@@ -45,7 +47,7 @@ public class CollapseItem : HeaderedContentControl, ISelectable
         set => SetValue(IsShowExpandIconProperty, value);
     }
 
-    public PathIcon? ExpandIcon
+    public Icon? ExpandIcon
     {
         get => GetValue(ExpandIconProperty);
         set => SetValue(ExpandIconProperty, value);
@@ -268,7 +270,7 @@ public class CollapseItem : HeaderedContentControl, ISelectable
         }
         else if (change.Property == ExpandIconProperty)
         {
-            var oldExpandIcon = change.GetOldValue<PathIcon?>();
+            var oldExpandIcon = change.GetOldValue<Icon?>();
             if (oldExpandIcon is not null)
             {
                 UIStructureUtils.SetTemplateParent(oldExpandIcon, null);
@@ -343,11 +345,8 @@ public class CollapseItem : HeaderedContentControl, ISelectable
     {
         if (ExpandIcon is null)
         {
-            ExpandIcon = new PathIcon
-            {
-                Kind = "RightOutlined"
-            };
-            TokenResourceBinder.CreateGlobalTokenBinding(ExpandIcon, PathIcon.DisabledFilledBrushProperty,
+            ExpandIcon = AntDesignIconPackage.RightOutlined();
+            TokenResourceBinder.CreateGlobalTokenBinding(ExpandIcon, Icon.DisabledFilledBrushProperty,
                 GlobalTokenResourceKey.ColorTextDisabled);
         }
 

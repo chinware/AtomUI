@@ -1,6 +1,7 @@
-﻿using AtomUI.Theme.Data;
+﻿using AtomUI.IconPkg;
+using AtomUI.IconPkg.AntDesign;
+using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
-using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
@@ -51,17 +52,14 @@ internal class CardTabControlTheme : BaseTabControlTheme
         var contentPanel = CreateTabStripContentPanel(scope);
         tabScrollViewer.Content    = contentPanel;
         tabScrollViewer.TabControl = baseTabControl;
+        
+        var addTabIcon = AntDesignIconPackage.PlusOutlined();
 
-        var addTabIcon = new PathIcon
-        {
-            Kind = "PlusOutlined"
-        };
-
-        TokenResourceBinder.CreateTokenBinding(addTabIcon, PathIcon.NormalFilledBrushProperty,
+        TokenResourceBinder.CreateTokenBinding(addTabIcon, Icon.NormalFilledBrushProperty,
             TabControlTokenResourceKey.ItemColor);
-        TokenResourceBinder.CreateTokenBinding(addTabIcon, PathIcon.ActiveFilledBrushProperty,
+        TokenResourceBinder.CreateTokenBinding(addTabIcon, Icon.ActiveFilledBrushProperty,
             TabControlTokenResourceKey.ItemHoverColor);
-        TokenResourceBinder.CreateTokenBinding(addTabIcon, PathIcon.DisabledFilledBrushProperty,
+        TokenResourceBinder.CreateTokenBinding(addTabIcon, Icon.DisabledFilledBrushProperty,
             GlobalTokenResourceKey.ColorTextDisabled);
 
         var addTabButton = new IconButton
