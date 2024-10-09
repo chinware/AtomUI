@@ -14,6 +14,7 @@ using Avalonia.Input;
 using Avalonia.Input.Raw;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Utilities;
 
@@ -75,6 +76,9 @@ public class SliderTrack : Control
 
     public static readonly StyledProperty<FontFamily> MarkLabelFontFamilyProperty =
         TextElement.FontFamilyProperty.AddOwner<SliderTrack>();
+
+    public static readonly StyledProperty<IBrush?> MarkLabelBrushProperty =
+        AvaloniaProperty.Register<SliderTrack, IBrush?>(nameof(MarkLabelBrush));
     
     public double Minimum
     {
@@ -179,6 +183,12 @@ public class SliderTrack : Control
     {
         get => GetValue(MarkLabelFontFamilyProperty);
         set => SetValue(MarkLabelFontSizeProperty, value);
+    }
+    
+    public IBrush? MarkLabelBrush
+    {
+        get => GetValue(MarkLabelBrushProperty);
+        set => SetValue(MarkLabelBrushProperty, value);
     }
 
     #endregion
@@ -324,7 +334,8 @@ public class SliderTrack : Control
         AffectsRender<SliderTrack>(TrackBarBrushProperty,
             TrackGrooveBrushProperty,
             IncludedProperty,
-            MarkBorderBrushProperty);
+            MarkBorderBrushProperty,
+            MarkLabelBrushProperty);
     }
 
     public SliderTrack()
@@ -369,14 +380,13 @@ public class SliderTrack : Control
 
         HandleRangeModeChanged();
         CalculateMaxMarkSize();
-        if (Transitions is null)
+
+        Transitions ??= new Transitions()
         {
-            var transitions = new Transitions();
-            transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(TrackGrooveBrushProperty));
-            transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(TrackBarBrushProperty));
-            transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(MarkBorderBrushProperty));
-            Transitions = transitions;
-        }
+            AnimationUtils.CreateTransition<SolidColorBrushTransition>(TrackGrooveBrushProperty),
+            AnimationUtils.CreateTransition<SolidColorBrushTransition>(TrackBarBrushProperty),
+            AnimationUtils.CreateTransition<SolidColorBrushTransition>(MarkBorderBrushProperty)
+        };
     }
 
     private void HandleRangeModeChanged()
@@ -418,6 +428,24 @@ public class SliderTrack : Control
                 }
             }
         });
+    }
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        SetupMarkLabelBrush();
+    }
+
+    private void SetupMarkLabelBrush()
+    {
+        if (IsEnabled)
+        {
+            TokenResourceBinder.CreateGlobalTokenBinding(this, MarkLabelBrushProperty, GlobalTokenResourceKey.ColorText);
+        }
+        else
+        {
+            TokenResourceBinder.CreateGlobalTokenBinding(this, MarkLabelBrushProperty, GlobalTokenResourceKey.ColorTextDisabled);
+        }
     }
 
     private void HandleGlobalMousePressed(Point point)
@@ -680,6 +708,10 @@ public class SliderTrack : Control
             {
                 CalculateMaxMarkSize();
             }
+        } else if (change.Property == IsEnabledProperty)
+        {
+            SetupMarkLabelBrush();
+            CalculateMaxMarkSize(true);
         }
     }
 
@@ -855,7 +887,6 @@ public class SliderTrack : Control
         {
             var targetWidth  = 0d;
             var targetHeight = 0d;
-            var topLevel     = TopLevel.GetTopLevel(this)!;
             if (Marks is not null)
             {
                 foreach (var mark in Marks)
@@ -869,11 +900,11 @@ public class SliderTrack : Control
                     targetWidth    = Math.Max(targetWidth, markTextSize.Width);
                     targetHeight   = Math.Max(targetHeight, markTextSize.Height);
 
-                    var typeface = new Typeface(topLevel.FontFamily, mark.LabelFontStyle, mark.LabelFontWeight);
+                    var typeface = new Typeface(MarkLabelFontFamily, mark.LabelFontStyle, mark.LabelFontWeight);
                     var formattedText = new FormattedText(mark.Label, CultureInfo.CurrentUICulture,
                         GetFlowDirection(this),
-                        typeface, 1, mark.LabelBrush ?? topLevel.Foreground);
-                    formattedText.SetFontSize(topLevel.FontSize);
+                        typeface, 1, mark.LabelBrush is not null && IsEnabled ? mark.LabelBrush : MarkLabelBrush);
+                    formattedText.SetFontSize(MarkLabelFontSize);
                     formattedText.TextAlignment = TextAlignment.Left;
                     mark.FormattedText          = formattedText;
                 }

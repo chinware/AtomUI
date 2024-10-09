@@ -48,6 +48,8 @@ internal class SliderTheme : BaseControlTheme
                 EndSliderThumb   = endSliderThumb
             };
 
+            CreateTemplateParentBinding(sliderTrack, SliderTrack.IsEnabledProperty,
+                Slider.IsEnabledProperty);
             CreateTemplateParentBinding(sliderTrack, SliderTrack.IsDirectionReversedProperty,
                 Slider.IsDirectionReversedProperty);
             CreateTemplateParentBinding(sliderTrack, SliderTrack.MinimumProperty, RangeBase.MinimumProperty);
