@@ -288,43 +288,43 @@ internal class BaseNavMenuItemTheme : BaseControlTheme
 
     private void BuildMenuIndicatorStyle()
     {
-        // {
-        //     var menuIndicatorStyle = new Style(selector => selector.Nesting().Template().Name(MenuIndicatorIconPart));
-        //     menuIndicatorStyle.Add(Visual.IsVisibleProperty, true);
-        //     menuIndicatorStyle.Add(Icon.NormalFilledBrushProperty, NavMenuTokenResourceKey.ItemColor);
-        //     menuIndicatorStyle.Add(Icon.SelectedFilledBrushProperty, NavMenuTokenResourceKey.ItemSelectedColor);
-        //     menuIndicatorStyle.Add(Icon.DisabledFilledBrushProperty, NavMenuTokenResourceKey.ItemDisabledColor);
-        //     // 设置颜色
-        //     
-        //     Add(menuIndicatorStyle);
-        // }
-        // {
-        //     var darkCommonStyle = new Style(selector => selector.Nesting().PropertyEquals(NavMenuItem.IsDarkStyleProperty, true));
-        //     {
-        //         var menuIndicatorStyle = new Style(selector => selector.Nesting().Template().Name(MenuIndicatorIconPart));
-        //         menuIndicatorStyle.Add(Icon.NormalFilledBrushProperty, NavMenuTokenResourceKey.DarkItemColor);
-        //         menuIndicatorStyle.Add(Icon.SelectedFilledBrushProperty, NavMenuTokenResourceKey.DarkItemSelectedColor);
-        //         menuIndicatorStyle.Add(Icon.DisabledFilledBrushProperty, NavMenuTokenResourceKey.DarkItemDisabledColor);
-        //         darkCommonStyle.Add(menuIndicatorStyle);
-        //     }
-        //     Add(darkCommonStyle);
-        // }
-        //
-        // var selectedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Selected));
-        // {
-        //     var menuIndicatorStyle = new Style(selector => selector.Nesting().Template().Name(MenuIndicatorIconPart));
-        //     menuIndicatorStyle.Add(Icon.IconModeProperty, IconMode.Selected);
-        //     selectedStyle.Add(menuIndicatorStyle);
-        // }
-        // Add(selectedStyle);
-        //
-        // var hasNoSubMenuStyle = new Style(selector => selector.Nesting().PropertyEquals(NavMenuItem.HasSubMenuProperty, false));
-        // {
-        //     var menuIndicatorStyle = new Style(selector => selector.Nesting().Template().Name(MenuIndicatorIconPart));
-        //     menuIndicatorStyle.Add(Visual.IsVisibleProperty, false);
-        //     hasNoSubMenuStyle.Add(menuIndicatorStyle);
-        // }
-        // Add(hasNoSubMenuStyle);
+        {
+            var menuIndicatorStyle = new Style(selector => selector.Nesting().Template().Name(MenuIndicatorIconPart));
+            menuIndicatorStyle.Add(Visual.IsVisibleProperty, true);
+            menuIndicatorStyle.Add(Icon.NormalFilledBrushProperty, NavMenuTokenResourceKey.ItemColor);
+            menuIndicatorStyle.Add(Icon.SelectedFilledBrushProperty, NavMenuTokenResourceKey.ItemSelectedColor);
+            menuIndicatorStyle.Add(Icon.DisabledFilledBrushProperty, NavMenuTokenResourceKey.ItemDisabledColor);
+            // 设置颜色
+            
+            Add(menuIndicatorStyle);
+        }
+        {
+            var darkCommonStyle = new Style(selector => selector.Nesting().PropertyEquals(NavMenuItem.IsDarkStyleProperty, true));
+            {
+                var menuIndicatorStyle = new Style(selector => selector.Nesting().Template().Name(MenuIndicatorIconPart));
+                menuIndicatorStyle.Add(Icon.NormalFilledBrushProperty, NavMenuTokenResourceKey.DarkItemColor);
+                menuIndicatorStyle.Add(Icon.SelectedFilledBrushProperty, NavMenuTokenResourceKey.DarkItemSelectedColor);
+                menuIndicatorStyle.Add(Icon.DisabledFilledBrushProperty, NavMenuTokenResourceKey.DarkItemDisabledColor);
+                darkCommonStyle.Add(menuIndicatorStyle);
+            }
+            Add(darkCommonStyle);
+        }
+        
+        var selectedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Selected));
+        {
+            var menuIndicatorStyle = new Style(selector => selector.Nesting().Template().Name(MenuIndicatorIconPart));
+            menuIndicatorStyle.Add(Icon.IconModeProperty, IconMode.Selected);
+            selectedStyle.Add(menuIndicatorStyle);
+        }
+        Add(selectedStyle);
+        
+        var hasNoSubMenuStyle = new Style(selector => selector.Nesting().PropertyEquals(NavMenuItem.HasSubMenuProperty, false));
+        {
+            var menuIndicatorStyle = new Style(selector => selector.Nesting().Template().Name(MenuIndicatorIconPart));
+            menuIndicatorStyle.Add(Visual.IsVisibleProperty, false);
+            hasNoSubMenuStyle.Add(menuIndicatorStyle);
+        }
+        Add(hasNoSubMenuStyle);
     }
 
     private void BuildMenuIconStyle()

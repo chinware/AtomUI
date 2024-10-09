@@ -403,7 +403,7 @@ internal class NavMenuToken : AbstractControlDesignToken
         
         ItemContentMargin    = itemContentMargin;
         ItemContentPadding   = new Thickness(_globalToken.Padding, _globalToken.PaddingXXS);
-        ItemMargin           = new Thickness(0, 0, _globalToken.MarginXXS, 0);
+        ItemMargin           = new Thickness(0, 0, _globalToken.MarginXS, 0);
         ItemHeight           = _globalToken.ControlHeight;
         GroupTitleLineHeight = _globalToken.ControlHeight;
         CollapsedWidth       = _globalToken.ControlHeight * 2;

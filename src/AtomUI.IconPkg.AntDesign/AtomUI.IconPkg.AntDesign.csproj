@@ -3,6 +3,12 @@
 	<Import Project="$(MSBuildThisFileDirectory)..\..\build\Common.props"/>
     <Import Project="$(MSBuildThisFileDirectory)..\..\build\Nuget.props"/>
 
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
     <ItemGroup>
         <Compile Remove="$(CompilerGeneratedFilesOutputPath)/**/*.cs"/>
     </ItemGroup>

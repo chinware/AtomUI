@@ -97,23 +97,24 @@ public class IconPackageGenerator : IIncrementalGenerator
         sourceText.AppendLine("///");
         sourceText.AppendLine("using Avalonia;");
         sourceText.AppendLine("using System;");
+        sourceText.AppendLine("using AtomUI.IconPkg;");
         sourceText.AppendLine($"namespace {ns};");
         sourceText.AppendLine($"public partial class {packageClassName}");
         sourceText.AppendLine("{");
 
         foreach (var info in fileInfos)
         {
-            sourceText.AppendLine($"    public static Icon {info.Name}{info.ThemeType}()");
+            sourceText.AppendLine($"    public static AtomUI.IconPkg.Icon {info.Name}{info.ThemeType}()");
             sourceText.AppendLine("    {");
             sourceText.AppendLine($"        return {packageClassName}.Current.BuildIcon({packageName}IconKind.{info.Name}{info.ThemeType});");
             sourceText.AppendLine("    }\n");
             
-            sourceText.AppendLine($"    public static Icon {info.Name}{info.ThemeType}(ColorInfo colorInfo)");
+            sourceText.AppendLine($"    public static AtomUI.IconPkg.Icon {info.Name}{info.ThemeType}(ColorInfo colorInfo)");
             sourceText.AppendLine("    {");
             sourceText.AppendLine($"        return {packageClassName}.Current.BuildIcon({packageName}IconKind.{info.Name}{info.ThemeType}, colorInfo);");
             sourceText.AppendLine("    }\n");
             
-            sourceText.AppendLine($"    public static Icon {info.Name}{info.ThemeType}(TwoToneColorInfo twoToneColorInfo)");
+            sourceText.AppendLine($"    public static AtomUI.IconPkg.Icon {info.Name}{info.ThemeType}(TwoToneColorInfo twoToneColorInfo)");
             sourceText.AppendLine("    {");
             sourceText.AppendLine($"        return {packageClassName}.Current.BuildIcon({packageName}IconKind.{info.Name}{info.ThemeType}, twoToneColorInfo);");
             sourceText.AppendLine("    }\n");
@@ -128,7 +129,7 @@ public class IconPackageGenerator : IIncrementalGenerator
   
             var viewBox       = svgParsedInfo.ViewBox;
             sourceText.Append(
-                $"      _iconInfoPool.Add((int){packageName}IconKind.{info.Name}{info.ThemeType}, ");
+                $"        _iconInfoPool.Add((int){packageName}IconKind.{info.Name}{info.ThemeType}, ");
             
             sourceText.Append("new Lazy<IconInfo>(() => new IconInfo(");
             sourceText.Append($"\"{info.Name}{info.ThemeType}\", ");
