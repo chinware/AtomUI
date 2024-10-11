@@ -2,6 +2,6 @@ namespace AtomUI.Controls;
 
 public enum DrawerOpenMode
 {
-    Overlay,
-    Push,
+    Overlay = 0,
+    Push = 1,
 }
