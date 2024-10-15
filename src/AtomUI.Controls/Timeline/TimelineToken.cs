@@ -86,20 +86,20 @@ internal class TimelineToken : AbstractControlDesignToken
       
 
       TailColor = _globalToken.ColorSplit;
-      TailWidth = _globalToken.StyleToken.LineWidthBold;
-      DotBorderWidth = _globalToken.SeedToken.Wireframe
-         ? _globalToken.StyleToken.LineWidthBold
-         : _globalToken.SeedToken.LineWidth * 3;
-      DotBg = _globalToken.ColorToken.ColorNeutralToken.ColorBgContainer;
+      TailWidth = _globalToken.LineWidthBold;
+      DotBorderWidth = _globalToken.Wireframe
+         ? _globalToken.LineWidthBold
+         : _globalToken.LineWidth * 3;
+      DotBg = _globalToken.ColorBgContainer;
       ItemPaddingBottom = new Thickness(0, 0, 0, _globalToken.Padding * 1.25);
       
       LeftMargin = new Thickness(_globalToken.Margin, 0, 0, 0);
       RightMargin = new Thickness(0, 0, _globalToken.MarginSM, 0);
 
-      LastItemContentMinHeight = _globalToken.HeightToken.ControlHeightLG * 1.2;
-      FontSize                 = _globalToken.FontToken.FontSize;
+      LastItemContentMinHeight = _globalToken.ControlHeightLG * 1.2;
+      FontSize                 = _globalToken.FontSize;
       ItemHeadSize             = 10;
-      CustomHeadSize           = _globalToken.FontToken.FontSize;
+      CustomHeadSize           = _globalToken.FontSize;
 
    }
 }
