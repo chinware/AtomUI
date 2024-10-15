@@ -1,9 +1,8 @@
 using AtomUI.Controls.Switch;
 using AtomUI.Controls.Utils;
-using AtomUI.Icon;
+using AtomUI.IconPkg;
 using AtomUI.Media;
 using AtomUI.Theme.Styling;
-using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
@@ -402,7 +401,7 @@ public class ToggleSwitch : ToggleButton,
             {
                 templatedControl.Padding = new Thickness(0);
             }
-            else if (content is PathIcon iconControl)
+            else if (content is Icon iconControl)
             {
                 if (iconControl.ThemeType != IconThemeType.TwoTone)
                 {

@@ -1,10 +1,10 @@
 ﻿using AtomUI.Controls.Utils;
+using AtomUI.IconPkg;
+using AtomUI.IconPkg.AntDesign;
 using AtomUI.MotionScene;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
-using AtomUI.Utils;
 using Avalonia;
-using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -44,8 +44,8 @@ public class Expander : AvaloniaExpander
     public static readonly StyledProperty<bool> IsShowExpandIconProperty =
         AvaloniaProperty.Register<Expander, bool>(nameof(IsShowExpandIcon), true);
 
-    public static readonly StyledProperty<PathIcon?> ExpandIconProperty =
-        AvaloniaProperty.Register<Expander, PathIcon?>(nameof(ExpandIcon));
+    public static readonly StyledProperty<Icon?> ExpandIconProperty =
+        AvaloniaProperty.Register<Expander, Icon?>(nameof(ExpandIcon));
 
     public static readonly StyledProperty<object?> AddOnContentProperty =
         AvaloniaProperty.Register<Expander, object?>(nameof(AddOnContent));
@@ -77,7 +77,7 @@ public class Expander : AvaloniaExpander
         set => SetValue(IsShowExpandIconProperty, value);
     }
 
-    public PathIcon? ExpandIcon
+    public Icon? ExpandIcon
     {
         get => GetValue(ExpandIconProperty);
         set => SetValue(ExpandIconProperty, value);
@@ -194,6 +194,7 @@ public class Expander : AvaloniaExpander
                 {
                     return;
                 }
+
                 IsExpanded = !IsExpanded;
             };
         }
@@ -204,7 +205,7 @@ public class Expander : AvaloniaExpander
         base.OnPropertyChanged(change);
         if (change.Property == ExpandIconProperty)
         {
-            var oldExpandIcon = change.GetOldValue<PathIcon?>();
+            var oldExpandIcon = change.GetOldValue<Icon?>();
             if (oldExpandIcon is not null)
             {
                 UIStructureUtils.SetTemplateParent(oldExpandIcon, null);
@@ -268,11 +269,8 @@ public class Expander : AvaloniaExpander
     {
         if (ExpandIcon is null)
         {
-            ExpandIcon = new PathIcon
-            {
-                Kind = "RightOutlined"
-            };
-            TokenResourceBinder.CreateGlobalTokenBinding(ExpandIcon, PathIcon.DisabledFilledBrushProperty,
+            ExpandIcon = AntDesignIconPackage.RightOutlined();
+            TokenResourceBinder.CreateGlobalTokenBinding(ExpandIcon, Icon.DisabledFilledBrushProperty,
                 GlobalTokenResourceKey.ColorTextDisabled);
         }
 
@@ -294,6 +292,7 @@ public class Expander : AvaloniaExpander
                     {
                         return;
                     }
+
                     IsExpanded = !IsExpanded;
                 }
             }
@@ -311,52 +310,46 @@ public class Expander : AvaloniaExpander
             CollapseItemContent();
         }
     }
-    
+
     private void ExpandItemContent()
     {
         if (_motionActor is null || _animating)
         {
             return;
         }
-        
+
         if (!_enableAnimation)
         {
             _motionActor.IsVisible = true;
             return;
         }
-        
+
         _animating = true;
-        var expandMotionConfig = MotionFactory.BuildExpandMotion(DirectionFromExpandDirection(ExpandDirection), 
+        var motion = new ExpandMotion(DirectionFromExpandDirection(ExpandDirection),
             MotionDuration,
-            new CubicEaseOut(),
-            FillMode.Forward);
-        MotionInvoker.Invoke(_motionActor, expandMotionConfig, () =>
-        {
-            _motionActor.SetCurrentValue(IsVisibleProperty, true);
-        }, () =>
-        {
-            _animating = false;
-        });
+            new CubicEaseOut());
+        MotionInvoker.Invoke(_motionActor, motion, () => { _motionActor.SetCurrentValue(IsVisibleProperty, true); },
+            () => { _animating = false; });
     }
-    
+
     private void CollapseItemContent()
     {
         if (_motionActor is null || _animating)
         {
             return;
         }
+
         if (!_enableAnimation)
         {
             _motionActor.IsVisible = false;
             return;
         }
-        
+
         _animating = true;
-        var slideDownOutMotionConfig = MotionFactory.BuildCollapseMotion(DirectionFromExpandDirection(ExpandDirection), 
+        var motion = new CollapseMotion(DirectionFromExpandDirection(ExpandDirection),
             MotionDuration,
-            new CubicEaseIn(),
-            FillMode.Forward);
-        MotionInvoker.Invoke(_motionActor, slideDownOutMotionConfig, null, () =>
+            new CubicEaseIn());
+        MotionInvoker.Invoke(_motionActor, motion, null, () =>
         {
             _motionActor.SetCurrentValue(IsVisibleProperty, false);
             _animating = false;
@@ -371,6 +364,8 @@ public class Expander : AvaloniaExpander
             ExpandDirection.Up => Direction.Top,
             ExpandDirection.Right => Direction.Right,
             ExpandDirection.Down => Direction.Bottom,
+            _ => throw new ArgumentOutOfRangeException(nameof(expandDirection), expandDirection,
+                "Invalid value for ExpandDirection")
         };
     }
 

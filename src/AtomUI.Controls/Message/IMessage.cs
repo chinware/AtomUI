@@ -1,4 +1,6 @@
-﻿namespace AtomUI.Controls;
+﻿using AtomUI.IconPkg;
+
+namespace AtomUI.Controls;
 
 public interface IMessage
 {
@@ -10,7 +12,7 @@ public interface IMessage
    /// <summary>
    /// 自定义图标
    /// </summary>
-   PathIcon? Icon { get; }
+   Icon? Icon { get; }
 
    /// <summary>
    /// Gets the <see cref="MessageType" /> of the notification.

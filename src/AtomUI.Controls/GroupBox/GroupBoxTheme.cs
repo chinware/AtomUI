@@ -1,4 +1,5 @@
-﻿using AtomUI.Theme;
+﻿using AtomUI.IconPkg;
+using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
@@ -172,7 +173,7 @@ internal class GroupBoxTheme : BaseControlTheme
 
     protected override void BuildInstanceStyles(Control control)
     {
-        var iconStyle = new Style(selector => selector.Name(HeaderIconPart).Descendant().OfType<PathIcon>());
+        var iconStyle = new Style(selector => selector.Name(HeaderIconPart).Descendant().OfType<Icon>());
         iconStyle.Add(Layoutable.WidthProperty, GlobalTokenResourceKey.IconSizeLG);
         iconStyle.Add(Layoutable.HeightProperty, GlobalTokenResourceKey.IconSizeLG);
         iconStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Center);

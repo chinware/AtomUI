@@ -1,7 +1,9 @@
-﻿using AtomUI.Media;
+﻿using AtomUI.IconPkg;
+using AtomUI.IconPkg.AntDesign;
+using AtomUI.Media;
 using AtomUI.Theme;
+using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
-using AtomUI.Theme.Utils;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
@@ -70,13 +72,10 @@ internal class BaseOverflowMenuItemTheme : BaseControlTheme
                 HeaderedSelectingItemsControl.HeaderTemplateProperty);
 
             itemTextPresenter.RegisterInNameScope(scope);
-
-            var menuCloseIcon = new PathIcon
-            {
-                HorizontalAlignment = HorizontalAlignment.Right,
-                VerticalAlignment   = VerticalAlignment.Center,
-                Kind                = "CloseOutlined"
-            };
+            
+            var menuCloseIcon = AntDesignIconPackage.CloseOutlined();
+            menuCloseIcon.HorizontalAlignment = HorizontalAlignment.Right;
+            menuCloseIcon.VerticalAlignment   = VerticalAlignment.Center;
 
             var closeButton = new IconButton
             {
@@ -87,9 +86,9 @@ internal class BaseOverflowMenuItemTheme : BaseControlTheme
             };
 
             CreateTemplateParentBinding(closeButton, Visual.IsVisibleProperty, BaseOverflowMenuItem.IsClosableProperty);
-            TokenResourceBinder.CreateGlobalTokenBinding(menuCloseIcon, PathIcon.NormalFilledBrushProperty,
+            TokenResourceBinder.CreateGlobalTokenBinding(menuCloseIcon, Icon.NormalFilledBrushProperty,
                 GlobalTokenResourceKey.ColorIcon);
-            TokenResourceBinder.CreateGlobalTokenBinding(menuCloseIcon, PathIcon.ActiveFilledBrushProperty,
+            TokenResourceBinder.CreateGlobalTokenBinding(menuCloseIcon, Icon.ActiveFilledBrushProperty,
                 GlobalTokenResourceKey.ColorIconHover);
 
             TokenResourceBinder.CreateGlobalTokenBinding(menuCloseIcon, Layoutable.WidthProperty,

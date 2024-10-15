@@ -1,4 +1,4 @@
-﻿using AtomUI.Icon;
+﻿using AtomUI.IconPkg;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using Avalonia.Animation.Easings;
@@ -63,15 +63,15 @@ internal class LoadingIndicatorTheme : BaseControlTheme
 
     private void BuildCustomIconStyle()
     {
-        var customIconStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
-        customIconStyle.Add(PathIcon.IconModeProperty, IconMode.Normal);
+        var customIconStyle = new Style(selector => selector.Nesting().Template().OfType<Icon>());
+        customIconStyle.Add(Icon.IconModeProperty, IconMode.Normal);
         customIconStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Center);
         customIconStyle.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Center);
         Add(customIconStyle);
 
         var largeSizeStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(LoadingIndicator.SizeTypeProperty, SizeType.Large));
-        var largeIconStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
+        var largeIconStyle = new Style(selector => selector.Nesting().Template().OfType<Icon>());
         largeIconStyle.Add(Layoutable.WidthProperty, LoadingIndicator.LARGE_INDICATOR_SIZE);
         largeIconStyle.Add(Layoutable.HeightProperty, LoadingIndicator.LARGE_INDICATOR_SIZE);
         largeSizeStyle.Add(largeIconStyle);
@@ -79,7 +79,7 @@ internal class LoadingIndicatorTheme : BaseControlTheme
 
         var middleSizeStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(LoadingIndicator.SizeTypeProperty, SizeType.Middle));
-        var middleIconStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
+        var middleIconStyle = new Style(selector => selector.Nesting().Template().OfType<Icon>());
         middleIconStyle.Add(Layoutable.WidthProperty, LoadingIndicator.MIDDLE_INDICATOR_SIZE);
         middleIconStyle.Add(Layoutable.HeightProperty, LoadingIndicator.MIDDLE_INDICATOR_SIZE);
         middleSizeStyle.Add(middleIconStyle);
@@ -87,7 +87,7 @@ internal class LoadingIndicatorTheme : BaseControlTheme
 
         var smallSizeStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(LoadingIndicator.SizeTypeProperty, SizeType.Small));
-        var smallIconStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
+        var smallIconStyle = new Style(selector => selector.Nesting().Template().OfType<Icon>());
         smallIconStyle.Add(Layoutable.WidthProperty, LoadingIndicator.SMALL_INDICATOR_SIZE);
         smallIconStyle.Add(Layoutable.HeightProperty, LoadingIndicator.SMALL_INDICATOR_SIZE);
         smallSizeStyle.Add(smallIconStyle);

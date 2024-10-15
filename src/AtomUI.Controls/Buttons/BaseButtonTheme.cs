@@ -1,4 +1,5 @@
-﻿using AtomUI.Icon;
+﻿using AtomUI.IconPkg;
+using AtomUI.IconPkg.AntDesign;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -31,12 +32,9 @@ internal abstract class BaseButtonTheme : BaseControlTheme
     {
         return new FuncControlTemplate<Button>((button, scope) =>
         {
-            var loadingIcon = new PathIcon
-            {
-                Kind = "LoadingOutlined",
-                Name = LoadingIconPart
-            };
-
+            var loadingIcon = AntDesignIconPackage.LoadingOutlined();
+            loadingIcon.Name = LoadingIconPart;
+            
             loadingIcon.RegisterInNameScope(scope);
 
             CreateTemplateParentBinding(loadingIcon, Layoutable.WidthProperty, Button.IconSizeProperty);
@@ -271,7 +269,7 @@ internal abstract class BaseButtonTheme : BaseControlTheme
 
             var loadingIconStyle = new Style(selector => selector.Nesting().Template().Name(LoadingIconPart));
             loadingIconStyle.Add(Visual.IsVisibleProperty, true);
-            loadingIconStyle.Add(PathIcon.LoadingAnimationProperty, IconAnimation.Spin);
+            loadingIconStyle.Add(Icon.LoadingAnimationProperty, IconAnimation.Spin);
             loadingStyle.Add(loadingIconStyle);
         }
         loadingStyle.Add(Visual.OpacityProperty, GlobalTokenResourceKey.OpacityLoading);

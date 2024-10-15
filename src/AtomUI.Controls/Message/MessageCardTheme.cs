@@ -1,11 +1,9 @@
-﻿using AtomUI.Controls.Primitives;
+﻿using AtomUI.IconPkg;
 using AtomUI.MotionScene;
 using AtomUI.Theme;
+using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
-using AtomUI.Utils;
 using Avalonia;
-using Avalonia.Animation;
-using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Templates;
@@ -146,7 +144,7 @@ internal class MessageCardTheme : BaseControlTheme
 
     protected override void BuildInstanceStyles(Control control)
     {
-        var iconStyle = new Style(selector => selector.Name(IconContentPart).Child().OfType<PathIcon>());
+        var iconStyle = new Style(selector => selector.Name(IconContentPart).Child().OfType<Icon>());
         iconStyle.Add(Layoutable.WidthProperty, MessageTokenResourceKey.MessageIconSize);
         iconStyle.Add(Layoutable.HeightProperty, MessageTokenResourceKey.MessageIconSize);
         control.Styles.Add(iconStyle);

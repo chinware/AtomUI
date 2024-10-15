@@ -1,8 +1,9 @@
 ﻿using AtomUI.Data;
-using AtomUI.Icon;
+using AtomUI.IconPkg;
+using AtomUI.IconPkg.AntDesign;
+using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.TokenSystem;
-using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Diagnostics;
@@ -129,7 +130,7 @@ public class DropdownButton : Button
 
     #endregion
 
-    private PathIcon? _openIndicatorIcon;
+    private Icon? _openIndicatorIcon;
     private MenuFlyoutPresenter? _menuFlyoutPresenter;
     private readonly FlyoutStateHelper _flyoutStateHelper;
 
@@ -160,12 +161,10 @@ public class DropdownButton : Button
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        _openIndicatorIcon = new PathIcon
-        {
-            Kind = "DownOutlined"
-        };
-        BindUtils.RelayBind(this, IconSizeProperty, _openIndicatorIcon, WidthProperty);
-        BindUtils.RelayBind(this, IconSizeProperty, _openIndicatorIcon, HeightProperty);
+        _openIndicatorIcon = AntDesignIconPackage.DownOutlined();
+
+        TokenResourceBinder.CreateGlobalTokenBinding(_openIndicatorIcon, Icon.WidthProperty, GlobalTokenResourceKey.IconSizeSM);
+        TokenResourceBinder.CreateGlobalTokenBinding(_openIndicatorIcon, Icon.HeightProperty, GlobalTokenResourceKey.IconSizeSM);
 
         base.OnApplyTemplate(e);
         TokenResourceBinder.CreateGlobalTokenBinding(this, MarginToAnchorProperty, GlobalTokenResourceKey.MarginXXS);
@@ -264,13 +263,13 @@ public class DropdownButton : Button
     {
         if (_openIndicatorIcon is not null)
         {
-            TokenResourceBinder.CreateGlobalTokenBinding(_openIndicatorIcon, PathIcon.NormalFilledBrushProperty,
+            TokenResourceBinder.CreateGlobalTokenBinding(_openIndicatorIcon, Icon.NormalFilledBrushProperty,
                 normalFilledBrushKey);
-            TokenResourceBinder.CreateGlobalTokenBinding(_openIndicatorIcon, PathIcon.SelectedFilledBrushProperty,
+            TokenResourceBinder.CreateGlobalTokenBinding(_openIndicatorIcon, Icon.SelectedFilledBrushProperty,
                 selectedFilledBrushKey);
-            TokenResourceBinder.CreateGlobalTokenBinding(_openIndicatorIcon, PathIcon.ActiveFilledBrushProperty,
+            TokenResourceBinder.CreateGlobalTokenBinding(_openIndicatorIcon, Icon.ActiveFilledBrushProperty,
                 activeFilledBrushKey);
-            TokenResourceBinder.CreateGlobalTokenBinding(_openIndicatorIcon, PathIcon.DisabledFilledBrushProperty,
+            TokenResourceBinder.CreateGlobalTokenBinding(_openIndicatorIcon, Icon.DisabledFilledBrushProperty,
                 disabledFilledBrushKey);
         }
     }

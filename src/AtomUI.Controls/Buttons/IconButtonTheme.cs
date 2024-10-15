@@ -1,7 +1,8 @@
-﻿using AtomUI.Media;
+﻿using AtomUI.Controls.Utils;
+using AtomUI.IconPkg;
+using AtomUI.Media;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
-using AtomUI.Theme.Utils;
 using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
@@ -65,7 +66,7 @@ internal class IconButtonTheme : BaseControlTheme
 
     protected override void BuildInstanceStyles(Control control)
     {
-        var iconStyle = new Style(selector => selector.Name(IconContentPart).Child().OfType<PathIcon>());
+        var iconStyle = new Style(selector => selector.Name(IconContentPart).Child().OfType<Icon>());
         iconStyle.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Center);
         iconStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Center);
         control.Styles.Add(iconStyle);

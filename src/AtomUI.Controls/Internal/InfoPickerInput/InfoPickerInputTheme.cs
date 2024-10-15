@@ -1,4 +1,5 @@
 ﻿using AtomUI.Data;
+using AtomUI.IconPkg;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -70,7 +71,7 @@ internal class InfoPickerInputTheme : BaseControlTheme
         return pickerInnerBox;
     }
 
-    protected virtual PathIcon? BuildInfoIcon(InfoPickerInput infoPickerInput, INameScope scope)
+    protected virtual Icon? BuildInfoIcon(InfoPickerInput infoPickerInput, INameScope scope)
     {
         return default;
     }

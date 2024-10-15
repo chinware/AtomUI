@@ -1,52 +1,90 @@
-﻿using Avalonia;
-using Avalonia.Controls;
+﻿using System.Reactive.Disposables;
 using Avalonia.Threading;
 
 namespace AtomUI.MotionScene;
 
 internal static class MotionInvoker
 {
-    public static void Invoke(MotionActorControl target,
-                              MotionConfigX motionConfig,
+    public static void Invoke(MotionActorControl actor,
+                              AbstractMotion motion,
                               Action? aboutToStart = null,
                               Action? completedAction = null,
                               CancellationToken cancellationToken = default)
     {
-        Dispatcher.UIThread.InvokeAsync(async () =>
+        Dispatcher.UIThread.Invoke(async () =>
         {
-            using var originRestore = new RenderTransformOriginRestore(target);
-            target.RenderTransformOrigin = motionConfig.RenderTransformOrigin;
-            if (aboutToStart != null)
-            {
-                aboutToStart();
-            }
+            await motion.RunAsync(actor, aboutToStart, completedAction, cancellationToken);
+        });
+    }
 
-            foreach (var animation in motionConfig.Animations)
-            {
-                await animation.RunAsync(target, cancellationToken);
-            }
+    public static async Task InvokeAsync(MotionActorControl actor,
+                                         AbstractMotion motion,
+                                         Action? aboutToStart = null,
+                                         Action? completedAction = null,
+                                         CancellationToken cancellationToken = default)
+    {
+        await motion.RunAsync(actor, aboutToStart, completedAction, cancellationToken);
+    }
 
-            if (completedAction != null)
+    public static void InvokeInPopupLayer(SceneMotionActorControl actor,
+                                          AbstractMotion motion,
+                                          Action? aboutToStart = null,
+                                          Action? completedAction = null,
+                                          CancellationToken cancellationToken = default)
+    {
+        Dispatcher.UIThread.Invoke(async () =>
+        {
+            await InvokeInPopupLayerAsync(actor, motion, aboutToStart, completedAction, cancellationToken);
+        });
+    }
+
+    public static async Task InvokeInPopupLayerAsync(SceneMotionActorControl actor,
+                                                     AbstractMotion motion,
+                                                     Action? aboutToStart = null,
+                                                     Action? completedAction = null,
+                                                     CancellationToken cancellationToken = default)
+    {
+        actor.BuildGhost();
+        SceneLayer sceneLayer          = PrepareSceneLayer(motion, actor);
+        var        compositeDisposable = new CompositeDisposable();
+        compositeDisposable.Add(Disposable.Create(sceneLayer, (state) =>
+        {
+            Dispatcher.UIThread.Invoke(async () =>
+            {
+                await Task.Delay(300);
+                sceneLayer.Hide();
+                sceneLayer.Dispose();
+            });
+        }));
+        sceneLayer.SetMotionActor(actor);
+        actor.NotifyMotionTargetAddedToScene();
+        sceneLayer.Show();
+        sceneLayer.Topmost = true;
+        actor.NotifySceneShowed();
+        actor.IsVisible = false;
+        
+        await motion.RunAsync(actor, aboutToStart, () =>
+        {
+            compositeDisposable.Dispose();
+            if (completedAction is not null)
             {
                 completedAction();
             }
-        });
-    }
-}
-
-internal class RenderTransformOriginRestore : IDisposable
-{
-    RelativePoint _origin;
-    Control _target;
-
-    public RenderTransformOriginRestore(Control target)
-    {
-        _target = target;
-        _origin = target.RenderTransformOrigin;
+        }, cancellationToken);
     }
 
-    public void Dispose()
+    private static SceneLayer PrepareSceneLayer(AbstractMotion motion, SceneMotionActorControl actor)
     {
-        _target.RenderTransformOrigin = _origin;
+        if (actor.SceneParent is null)
+        {
+            throw new ArgumentException(
+                "When the DispatchInSceneLayer property is true, the SceneParent property cannot be null.");
+        }
+
+        // TODO 这里除了 Popup 这种顶层元素以外，还会不会有其他的顶层元素种类
+        // 暂时先处理 Popup 这种情况
+        var sceneLayer = new SceneLayer(actor.SceneParent, actor.SceneParent.PlatformImpl!.CreatePopup()!);
+        actor.NotifySceneLayerCreated(motion, sceneLayer);
+        return sceneLayer;
     }
 }

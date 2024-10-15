@@ -6,13 +6,13 @@ using Avalonia.Media.Transformation;
 
 namespace AtomUI.MotionScene;
 
-public class MotionActorControl : Decorator
+internal class MotionActorControl : Decorator
 {
     #region 公共属性定义
 
     public static readonly StyledProperty<TransformOperations?> MotionTransformProperty =
         AvaloniaProperty.Register<MotionActorControl, TransformOperations?>(nameof(MotionTransform));
-    
+
     public static readonly StyledProperty<bool> UseRenderTransformProperty =
         AvaloniaProperty.Register<LayoutTransformControl, bool>(nameof(UseRenderTransform));
 
@@ -27,11 +27,18 @@ public class MotionActorControl : Decorator
         get => GetValue(UseRenderTransformProperty);
         set => SetValue(UseRenderTransformProperty, value);
     }
-    
+
     public Control? MotionTransformRoot => Child;
 
     #endregion
 
+    #region 公共事件定义
+
+    public event EventHandler? PreStart;
+    public event EventHandler? Completed;
+
+    #endregion
+    
     /// <summary>
     /// RenderTransform/MatrixTransform applied to MotionTransformRoot.
     /// </summary>
@@ -58,6 +65,11 @@ public class MotionActorControl : Decorator
     /// Actual DesiredSize of Child element (the value it returned from its MeasureOverride method).
     /// </summary>
     private Size _childActualSize;
+    
+    /// <summary>
+    /// 动画是否在
+    /// </summary>
+    private bool _animating = false;
 
     static MotionActorControl()
     {
@@ -96,6 +108,7 @@ public class MotionActorControl : Decorator
             MotionTransformRoot.RenderTransform       = _matrixTransform;
             MotionTransformRoot.RenderTransformOrigin = new RelativePoint(0, 0, RelativeUnit.Absolute);
         }
+
         ApplyMotionTransform();
     }
 
@@ -116,7 +129,7 @@ public class MotionActorControl : Decorator
         {
             return;
         }
- 
+
         _transformation         = matrix;
         _matrixTransform.Matrix = UseRenderTransform ? matrix : FilterScaleTransform(matrix);
         RenderTransform         = _matrixTransform;
@@ -162,7 +175,7 @@ public class MotionActorControl : Decorator
 
         // Determine the largest available size after the transformation
         Size finalSizeTransformed = ComputeLargestTransformedSize(finalSize);
-    
+
         if (IsSizeSmaller(finalSizeTransformed, MotionTransformRoot.DesiredSize))
         {
             // Some elements do not like being given less space than they asked for (ex: TextBlock)
@@ -211,7 +224,7 @@ public class MotionActorControl : Decorator
             return base.MeasureOverride(availableSize);
         }
 
-        Size measureSize ;
+        Size measureSize;
         if (_childActualSize == default)
         {
             // Determine the largest size after the transformation
@@ -224,7 +237,7 @@ public class MotionActorControl : Decorator
         }
 
         // Perform a measure on the MotionTransformRoot (containing Child)
-        if (MotionTransformRoot.DesiredSize == default)
+        if (MotionTransformRoot.DesiredSize == default || _animating == false)
         {
             MotionTransformRoot.Measure(measureSize);
         }
@@ -392,5 +405,18 @@ public class MotionActorControl : Decorator
     private static bool IsSizeSmaller(Size a, Size b)
     {
         return (a.Width + AcceptableDelta < b.Width) || (a.Height + AcceptableDelta < b.Height);
+    }
+    
+    internal virtual void NotifyMotionPreStart()
+    {
+        PreStart?.Invoke(this, EventArgs.Empty);
+        _animating = true;
+    }
+
+    internal virtual void NotifyMotionCompleted()
+    {
+        _animating = false;
+        InvalidateMeasure();
+        Completed?.Invoke(this, EventArgs.Empty);
     }
 }

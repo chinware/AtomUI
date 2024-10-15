@@ -1,3 +1,4 @@
+using AtomUI.IconPkg;
 using AtomUI.Media;
 using AtomUI.Utils;
 using Avalonia;
@@ -164,8 +165,8 @@ public abstract class AbstractLineProgress : AbstractProgressBar
 
     protected override void NotifyTemplateApplied(INameScope scope)
     {
-        _exceptionCompletedIcon = scope.Find<PathIcon>(AbstractProgressBarTheme.ExceptionCompletedIconPart);
-        _successCompletedIcon   = scope.Find<PathIcon>(AbstractProgressBarTheme.SuccessCompletedIconPart);
+        _exceptionCompletedIcon = scope.Find<Icon>(AbstractProgressBarTheme.ExceptionCompletedIconPart);
+        _successCompletedIcon   = scope.Find<Icon>(AbstractProgressBarTheme.SuccessCompletedIconPart);
         base.NotifyTemplateApplied(scope);
     }
 

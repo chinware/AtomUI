@@ -1,7 +1,7 @@
 ﻿using AtomUI.Data;
 using AtomUI.Media;
+using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
-using AtomUI.Theme.Utils;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
@@ -89,11 +89,11 @@ public class MenuItem : AvaloniaMenuItem
         }
         else if (e.Property == IconProperty)
         {
-            if (Icon is not null && Icon is PathIcon pathIcon)
+            if (Icon is not null && Icon is IconPkg.Icon icon)
             {
-                TokenResourceBinder.CreateTokenBinding(pathIcon, WidthProperty, MenuTokenResourceKey.ItemIconSize);
-                TokenResourceBinder.CreateTokenBinding(pathIcon, HeightProperty, MenuTokenResourceKey.ItemIconSize);
-                TokenResourceBinder.CreateTokenBinding(pathIcon, PathIcon.NormalFilledBrushProperty,
+                TokenResourceBinder.CreateTokenBinding(icon, WidthProperty, MenuTokenResourceKey.ItemIconSize);
+                TokenResourceBinder.CreateTokenBinding(icon, HeightProperty, MenuTokenResourceKey.ItemIconSize);
+                TokenResourceBinder.CreateTokenBinding(icon, IconPkg.Icon.NormalFilledBrushProperty,
                     MenuTokenResourceKey.ItemColor);
             }
         }

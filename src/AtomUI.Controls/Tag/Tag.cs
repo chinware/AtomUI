@@ -1,4 +1,6 @@
 using AtomUI.Controls.Utils;
+using AtomUI.IconPkg;
+using AtomUI.IconPkg.AntDesign;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Palette;
@@ -51,11 +53,11 @@ public class Tag : TemplatedControl
     public static readonly StyledProperty<bool> BorderedProperty
         = AvaloniaProperty.Register<Tag, bool>(nameof(Bordered), true);
 
-    public static readonly StyledProperty<PathIcon?> IconProperty
-        = AvaloniaProperty.Register<Tag, PathIcon?>(nameof(Icon));
+    public static readonly StyledProperty<Icon?> IconProperty
+        = AvaloniaProperty.Register<Tag, Icon?>(nameof(Icon));
 
-    public static readonly StyledProperty<PathIcon?> CloseIconProperty
-        = AvaloniaProperty.Register<Tag, PathIcon?>(nameof(CloseIcon));
+    public static readonly StyledProperty<Icon?> CloseIconProperty
+        = AvaloniaProperty.Register<Tag, Icon?>(nameof(CloseIcon));
 
     public static readonly StyledProperty<string?> TagTextProperty
         = AvaloniaProperty.Register<Tag, string?>(
@@ -79,13 +81,13 @@ public class Tag : TemplatedControl
         set => SetValue(BorderedProperty, value);
     }
 
-    public PathIcon? Icon
+    public Icon? Icon
     {
         get => GetValue(IconProperty);
         set => SetValue(IconProperty, value);
     }
 
-    public PathIcon? CloseIcon
+    public Icon? CloseIcon
     {
         get => GetValue(CloseIconProperty);
         set => SetValue(CloseIconProperty, value);
@@ -382,23 +384,20 @@ public class Tag : TemplatedControl
         {
             if (CloseIcon is null)
             {
-                CloseIcon = new PathIcon
-                {
-                    Kind = "CloseOutlined"
-                };
+                CloseIcon = AntDesignIconPackage.CloseOutlined();
 
                 TokenResourceBinder.CreateTokenBinding(CloseIcon, WidthProperty, TagTokenResourceKey.TagCloseIconSize);
                 TokenResourceBinder.CreateTokenBinding(CloseIcon, HeightProperty, TagTokenResourceKey.TagCloseIconSize);
                 if (_hasColorSet && !_isPresetColorTag)
                 {
-                    TokenResourceBinder.CreateTokenBinding(CloseIcon, PathIcon.NormalFilledBrushProperty,
+                    TokenResourceBinder.CreateTokenBinding(CloseIcon, Icon.NormalFilledBrushProperty,
                         GlobalTokenResourceKey.ColorTextLightSolid);
                 }
                 else
                 {
-                    TokenResourceBinder.CreateTokenBinding(CloseIcon, PathIcon.NormalFilledBrushProperty,
+                    TokenResourceBinder.CreateTokenBinding(CloseIcon, Icon.NormalFilledBrushProperty,
                         GlobalTokenResourceKey.ColorIcon);
-                    TokenResourceBinder.CreateTokenBinding(CloseIcon, PathIcon.ActiveFilledBrushProperty,
+                    TokenResourceBinder.CreateTokenBinding(CloseIcon, Icon.ActiveFilledBrushProperty,
                         GlobalTokenResourceKey.ColorIconHover);
                 }
             }
@@ -409,7 +408,7 @@ public class Tag : TemplatedControl
     {
         if (Icon is not null)
         {
-            if (_layoutPanel?.Children[0] is PathIcon oldIcon)
+            if (_layoutPanel?.Children[0] is Icon oldIcon)
             {
                 _layoutPanel.Children.Remove(oldIcon);
             }
@@ -419,7 +418,7 @@ public class Tag : TemplatedControl
             _layoutPanel?.Children.Insert(0, Icon);
             if (_hasColorSet)
             {
-                TokenResourceBinder.CreateTokenBinding(Icon, PathIcon.NormalFilledBrushProperty,
+                TokenResourceBinder.CreateTokenBinding(Icon, Icon.NormalFilledBrushProperty,
                     GlobalTokenResourceKey.ColorTextLightSolid);
             }
             else if (_isPresetColorTag)

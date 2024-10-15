@@ -1,9 +1,8 @@
 ﻿using System.Reactive.Disposables;
-using AtomUI.Controls.MotionScene;
 using AtomUI.Data;
 using AtomUI.MotionScene;
+using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
-using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Diagnostics;
@@ -81,7 +80,7 @@ public class Popup : AvaloniaPopup
         AffectsMeasure<Popup>(PlacementProperty);
         AffectsMeasure<Popup>(PlacementAnchorProperty);
         AffectsMeasure<Popup>(PlacementGravityProperty);
-        
+
         IsLightDismissEnabledProperty.OverrideDefaultValue<Popup>(false);
     }
 
@@ -162,7 +161,7 @@ public class Popup : AvaloniaPopup
                     AdjustPopupHostPosition(placementTarget!);
                 }
             }
-            
+
             if (!_animating)
             {
                 CreateShadowLayer();
@@ -176,15 +175,16 @@ public class Popup : AvaloniaPopup
             }
         }
     }
-    
+
     private bool _firstDetected = true;
-    
+
     private void HandleMouseClick(RawInputEventArgs args)
     {
         if (!IsOpen)
         {
             return;
         }
+
         if (args is RawPointerEventArgs pointerEventArgs)
         {
             if (pointerEventArgs.Type == RawPointerEventType.LeftButtonUp)
@@ -194,6 +194,7 @@ public class Popup : AvaloniaPopup
                     _firstDetected = false;
                     return;
                 }
+
                 if (this is IPopupHostProvider popupHostProvider)
                 {
                     if (popupHostProvider.PopupHost != pointerEventArgs.Root)
@@ -323,10 +324,10 @@ public class Popup : AvaloniaPopup
                                  new ManagedPopupPositionerScreenInfo(s.Bounds.ToRect(1), s.WorkingArea.ToRect(1)))
                              .ToArray();
         }
-    
+
         return Array.Empty<ManagedPopupPositionerScreenInfo>();
     }
-    
+
     // TODO review 后可能需要删除
     private static Rect GetParentClientAreaScreenGeometry(TopLevel topLevel)
     {
@@ -466,11 +467,11 @@ public class Popup : AvaloniaPopup
         }
 
         _animating = true;
-
+        
         var placementTarget = GetEffectivePlacementTarget();
         
         Open();
-
+        
         var popupRoot = (Host as PopupRoot)!;
         // 获取 popup 的具体位置，这个就是非常准确的位置，还有大小
         // TODO 暂时只支持 WindowBase popup
@@ -479,32 +480,26 @@ public class Popup : AvaloniaPopup
         var offset      = new Point(popupOffset.X, popupOffset.Y);
         var topLevel    = TopLevel.GetTopLevel(placementTarget);
         var scaling     = topLevel?.RenderScaling ?? 1.0;
-
+        
         // 调度动画
-        var director = Director.Instance;
-        var motion   = new ZoomBigInMotion();
-        motion.ConfigureOpacity(MotionDuration);
-        motion.ConfigureRenderTransform(MotionDuration);
+        var motion   = new ZoomBigInMotion(MotionDuration);
 
-        var motionActor =
-            new PopupMotionActor(MaskShadows, offset, scaling, Child ?? popupRoot, motion);
-        motionActor.DispatchInSceneLayer = true;
-        motionActor.SceneParent          = topLevel;
-
-        motionActor.Completed += (sender, args) =>
+        var motionActor = new PopupMotionActor(MaskShadows, offset, scaling, Child ?? popupRoot);
+        motionActor.SceneParent = topLevel;
+        
+        MotionInvoker.InvokeInPopupLayer(motionActor, motion, null, () =>
         {
             CreateShadowLayer();
             popupRoot.Show();
-   
+            
             if (RequestCloseWhereAnimationCompleted)
             {
                 RequestCloseWhereAnimationCompleted = false;
                 Dispatcher.UIThread.Post(() => { CloseAnimation(); });
             }
-
+        
             _animating = false;
-        };
-        director?.Schedule(motionActor);
+        });
     }
 
     public void CloseAnimation(Action? closed = null)
@@ -514,38 +509,32 @@ public class Popup : AvaloniaPopup
             RequestCloseWhereAnimationCompleted = true;
             return;
         }
-
+        
         if (!IsOpen)
         {
             return;
         }
-
+        
         _animating = true;
-
-        var director = Director.Instance;
-        var motion   = new ZoomBigOutMotion();
-        motion.ConfigureOpacity(MotionDuration);
-        motion.ConfigureRenderTransform(MotionDuration);
-
+        
+        var motion   = new ZoomBigOutMotion(MotionDuration);
+        
         var popupRoot       = (Host as PopupRoot)!;
         var popupOffset     = popupRoot.PlatformImpl!.Position;
         var offset          = new Point(popupOffset.X, popupOffset.Y);
         var placementTarget = GetEffectivePlacementTarget();
         var topLevel        = TopLevel.GetTopLevel(placementTarget);
-
+        
         var scaling = topLevel?.RenderScaling ?? 1.0;
-
-        var motionActor = new PopupMotionActor(MaskShadows, offset, scaling, Child ?? popupRoot, motion);
-        motionActor.DispatchInSceneLayer = true;
+        
+        var motionActor = new PopupMotionActor(MaskShadows, offset, scaling, Child ?? popupRoot);
         motionActor.SceneParent          = topLevel;
-
-        motionActor.SceneShowed += (sender, args) =>
+        
+        MotionInvoker.InvokeInPopupLayer(motionActor, motion, () =>
         {
             HideShadowLayer();
             popupRoot.Opacity = 0;
-        };
-
-        motionActor.Completed += (sender, args) =>
+        }, () =>
         {
             _animating  = false;
             _isNeedFlip = true;
@@ -554,9 +543,7 @@ public class Popup : AvaloniaPopup
             {
                 closed();
             }
-        };
-
-        director?.Schedule(motionActor);
+        });
     }
 }
 

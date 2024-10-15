@@ -1,8 +1,8 @@
-﻿using AtomUI.Icon;
+﻿using AtomUI.IconPkg;
 using AtomUI.Media;
 using AtomUI.Theme;
+using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
-using AtomUI.Theme.Utils;
 using AtomUI.Utils;
 using Avalonia.Animation;
 using Avalonia.Controls;
@@ -237,15 +237,15 @@ internal class TopLevelHorizontalNavMenuItemTheme : BaseControlTheme
     protected override void BuildInstanceStyles(Control control)
     {
         var iconStyle = new Style(selector => selector.Name(ThemeConstants.ItemIconPart));
-        iconStyle.Add(PathIcon.WidthProperty, NavMenuTokenResourceKey.ItemIconSize);
-        iconStyle.Add(PathIcon.HeightProperty, NavMenuTokenResourceKey.ItemIconSize);
-        iconStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorText);
-        iconStyle.Add(PathIcon.DisabledFilledBrushProperty, NavMenuTokenResourceKey.ItemDisabledColor);
-        iconStyle.Add(PathIcon.SelectedFilledBrushProperty, GlobalTokenResourceKey.ColorPrimary);
+        iconStyle.Add(Icon.WidthProperty, NavMenuTokenResourceKey.ItemIconSize);
+        iconStyle.Add(Icon.HeightProperty, NavMenuTokenResourceKey.ItemIconSize);
+        iconStyle.Add(Icon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorText);
+        iconStyle.Add(Icon.DisabledFilledBrushProperty, NavMenuTokenResourceKey.ItemDisabledColor);
+        iconStyle.Add(Icon.SelectedFilledBrushProperty, GlobalTokenResourceKey.ColorPrimary);
         control.Styles.Add(iconStyle);
         
-        var disabledIconStyle = new Style(selector => selector.OfType<PathIcon>().Class(StdPseudoClass.Disabled));
-        disabledIconStyle.Add(PathIcon.IconModeProperty, IconMode.Disabled);
+        var disabledIconStyle = new Style(selector => selector.OfType<Icon>().Class(StdPseudoClass.Disabled));
+        disabledIconStyle.Add(Icon.IconModeProperty, IconMode.Disabled);
         control.Styles.Add(disabledIconStyle);
     }
 }

@@ -1,8 +1,9 @@
 ﻿using AtomUI.Data;
+using AtomUI.IconPkg;
+using AtomUI.IconPkg.AntDesign;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
-using AtomUI.Utils;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
@@ -42,15 +43,12 @@ internal class BaseTabScrollViewerTheme : BaseControlTheme
             {
                 Name = ScrollViewLayoutPart
             };
+            
+            var menuIndicatorIcon = AntDesignIconPackage.EllipsisOutlined();
+            menuIndicatorIcon.HorizontalAlignment = HorizontalAlignment.Center;
+            menuIndicatorIcon.VerticalAlignment   = VerticalAlignment.Center;
 
-            var menuIndicatorIcon = new PathIcon
-            {
-                Kind                = "EllipsisOutlined",
-                HorizontalAlignment = HorizontalAlignment.Center,
-                VerticalAlignment   = VerticalAlignment.Center
-            };
-
-            TokenResourceBinder.CreateTokenBinding(menuIndicatorIcon, PathIcon.NormalFilledBrushProperty,
+            TokenResourceBinder.CreateTokenBinding(menuIndicatorIcon, Icon.NormalFilledBrushProperty,
                 GlobalTokenResourceKey.ColorTextSecondary);
 
             var menuIndicator = new IconButton

@@ -1,12 +1,11 @@
 ﻿using System.ComponentModel;
 using System.Reactive.Disposables;
 using AtomUI.Data;
+using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
-using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives.PopupPositioning;
-using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Metadata;
@@ -26,7 +25,7 @@ public class Flyout : PopupFlyoutBase
     /// 是否显示指示箭头
     /// </summary>
     public static readonly StyledProperty<bool> IsShowArrowProperty =
-        ArrowDecoratedBox.IsShowArrowProperty.AddOwner<PopupFlyoutBase>();
+        ArrowDecoratedBox.IsShowArrowProperty.AddOwner<Flyout>();
 
     public static readonly StyledProperty<BoxShadows> MaskShadowsProperty =
         Border.BoxShadowProperty.AddOwner<Flyout>();
@@ -320,6 +319,7 @@ public class Flyout : PopupFlyoutBase
 
         var offsetX = HorizontalOffset;
         var offsetY = VerticalOffset;
+
         if (IsPointAtCenter)
         {
             offsetX += pointAtCenterOffset.X;

@@ -1,4 +1,5 @@
-﻿using AtomUI.Theme.Styling;
+﻿using AtomUI.IconPkg;
+using AtomUI.Theme.Styling;
 using Avalonia.Layout;
 using Avalonia.Styling;
 
@@ -43,7 +44,7 @@ internal class StepsProgressBarTheme : AbstractLineProgressTheme
                 selector.Nesting()
                         .PropertyEquals(StepsProgressBar.PercentPositionProperty, LinePercentAlignment.Start));
             {
-                var icons = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
+                var icons = new Style(selector => selector.Nesting().Template().OfType<Icon>());
                 icons.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Right);
                 startStyle.Add(icons);
             }
@@ -53,7 +54,7 @@ internal class StepsProgressBarTheme : AbstractLineProgressTheme
             var endStyle = new Style(selector =>
                 selector.Nesting().PropertyEquals(StepsProgressBar.PercentPositionProperty, LinePercentAlignment.End));
             {
-                var icons = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
+                var icons = new Style(selector => selector.Nesting().Template().OfType<Icon>());
                 icons.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Left);
                 endStyle.Add(icons);
             }
@@ -63,7 +64,7 @@ internal class StepsProgressBarTheme : AbstractLineProgressTheme
                 selector.Nesting()
                         .PropertyEquals(StepsProgressBar.PercentPositionProperty, LinePercentAlignment.Center));
             {
-                var icons = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
+                var icons = new Style(selector => selector.Nesting().Template().OfType<Icon>());
                 icons.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Center);
                 centerStyle.Add(icons);
             }
@@ -80,7 +81,7 @@ internal class StepsProgressBarTheme : AbstractLineProgressTheme
                 selector.Nesting()
                         .PropertyEquals(StepsProgressBar.PercentPositionProperty, LinePercentAlignment.Start));
             {
-                var icons = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
+                var icons = new Style(selector => selector.Nesting().Template().OfType<Icon>());
                 icons.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Bottom);
                 startStyle.Add(icons);
             }
@@ -90,7 +91,7 @@ internal class StepsProgressBarTheme : AbstractLineProgressTheme
             var endStyle = new Style(selector =>
                 selector.Nesting().PropertyEquals(StepsProgressBar.PercentPositionProperty, LinePercentAlignment.End));
             {
-                var icons = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
+                var icons = new Style(selector => selector.Nesting().Template().OfType<Icon>());
                 icons.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Top);
                 endStyle.Add(icons);
             }
@@ -100,7 +101,7 @@ internal class StepsProgressBarTheme : AbstractLineProgressTheme
                 selector.Nesting()
                         .PropertyEquals(StepsProgressBar.PercentPositionProperty, LinePercentAlignment.Center));
             {
-                var icons = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
+                var icons = new Style(selector => selector.Nesting().Template().OfType<Icon>());
                 icons.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Center);
                 centerStyle.Add(icons);
             }

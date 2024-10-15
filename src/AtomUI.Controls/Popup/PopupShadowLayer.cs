@@ -188,8 +188,8 @@ internal class PopupShadowLayer : LiteWindow, IShadowDecorator
     {
         if (_target is not null)
         {
-            _target.Opened            -= HandleTargetOpened;
-            _target.Closed            -= HandleTargetClosed;
+            _target.Opened -= HandleTargetOpened;
+            _target.Closed -= HandleTargetClosed;
             if (_target.Child is not null)
             {
                 _target.Child.SizeChanged -= HandleChildSizeChange;
@@ -248,8 +248,7 @@ internal class PopupShadowLayer : LiteWindow, IShadowDecorator
 
     private void HandleChildSizeChange(object? sender, SizeChangedEventArgs args)
     {
-        SetupShadowRenderer();
-        InvalidateMeasure();
+        SetupPositionAndSize();
     }
 
     private Size CalculateShadowRendererSize(Size content)

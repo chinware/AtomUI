@@ -1,7 +1,7 @@
-﻿using AtomUI.Icon;
+﻿using AtomUI.IconPkg;
 using AtomUI.Theme;
+using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
-using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
@@ -92,7 +92,7 @@ internal class BaseTabItemTheme : BaseControlTheme
         hoverStyle.Add(TemplatedControl.ForegroundProperty, TabControlTokenResourceKey.ItemHoverColor);
         {
             var iconStyle = new Style(selector => selector.Nesting().Template().Name(ItemIconPart));
-            iconStyle.Add(PathIcon.IconModeProperty, IconMode.Active);
+            iconStyle.Add(Icon.IconModeProperty, IconMode.Active);
             hoverStyle.Add(iconStyle);
         }
 
@@ -103,7 +103,7 @@ internal class BaseTabItemTheme : BaseControlTheme
         selectedStyle.Add(TemplatedControl.ForegroundProperty, TabControlTokenResourceKey.ItemSelectedColor);
         {
             var iconStyle = new Style(selector => selector.Nesting().Template().Name(ItemIconPart));
-            iconStyle.Add(PathIcon.IconModeProperty, IconMode.Selected);
+            iconStyle.Add(Icon.IconModeProperty, IconMode.Selected);
             selectedStyle.Add(iconStyle);
         }
         commonStyle.Add(selectedStyle);
@@ -164,7 +164,7 @@ internal class BaseTabItemTheme : BaseControlTheme
             // 上
             var topStyle = new Style(selector =>
                 selector.Nesting().PropertyEquals(Avalonia.Controls.TabItem.TabStripPlacementProperty, Dock.Top));
-            var iconStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
+            var iconStyle = new Style(selector => selector.Nesting().Template().OfType<Icon>());
             iconStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Center);
             topStyle.Add(iconStyle);
             Add(topStyle);
@@ -174,7 +174,7 @@ internal class BaseTabItemTheme : BaseControlTheme
             // 右
             var rightStyle = new Style(selector =>
                 selector.Nesting().PropertyEquals(Avalonia.Controls.TabItem.TabStripPlacementProperty, Dock.Right));
-            var iconStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
+            var iconStyle = new Style(selector => selector.Nesting().Template().OfType<Icon>());
             iconStyle.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Left);
             iconStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Center);
             rightStyle.Add(iconStyle);
@@ -185,7 +185,7 @@ internal class BaseTabItemTheme : BaseControlTheme
             var bottomStyle = new Style(selector =>
                 selector.Nesting().PropertyEquals(Avalonia.Controls.TabItem.TabStripPlacementProperty, Dock.Bottom));
 
-            var iconStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
+            var iconStyle = new Style(selector => selector.Nesting().Template().OfType<Icon>());
             iconStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Center);
             bottomStyle.Add(iconStyle);
             Add(bottomStyle);
@@ -194,7 +194,7 @@ internal class BaseTabItemTheme : BaseControlTheme
             // 左
             var leftStyle = new Style(selector =>
                 selector.Nesting().PropertyEquals(Avalonia.Controls.TabItem.TabStripPlacementProperty, Dock.Left));
-            var iconStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
+            var iconStyle = new Style(selector => selector.Nesting().Template().OfType<Icon>());
             iconStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Center);
             iconStyle.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Left);
             leftStyle.Add(iconStyle);

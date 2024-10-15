@@ -1,7 +1,7 @@
 ﻿using AtomUI.Controls.Badge;
 using AtomUI.MotionScene;
+using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
-using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
@@ -15,13 +15,13 @@ internal class DotBadgeAdorner : TemplatedControl
     public static readonly StyledProperty<IBrush?> BadgeDotColorProperty =
         AvaloniaProperty.Register<DotBadgeAdorner, IBrush?>(
             nameof(BadgeDotColor));
-    
+
     public static readonly DirectProperty<DotBadgeAdorner, DotBadgeStatus?> StatusProperty =
         AvaloniaProperty.RegisterDirect<DotBadgeAdorner, DotBadgeStatus?>(
             nameof(Status),
             o => o.Status,
             (o, v) => o.Status = v);
-    
+
     internal IBrush? BadgeDotColor
     {
         get => GetValue(BadgeDotColorProperty);
@@ -73,7 +73,7 @@ internal class DotBadgeAdorner : TemplatedControl
         get => GetValue(OffsetProperty);
         set => SetValue(OffsetProperty, value);
     }
-    
+
     #region 内部属性定义
 
     internal static readonly StyledProperty<TimeSpan> MotionDurationProperty =
@@ -85,9 +85,9 @@ internal class DotBadgeAdorner : TemplatedControl
         get => GetValue(MotionDurationProperty);
         set => SetValue(MotionDurationProperty, value);
     }
-    
+
     #endregion
-    
+
     private MotionActorControl? _indicatorMotionActor;
     private CancellationTokenSource? _motionCancellationTokenSource;
 
@@ -109,28 +109,23 @@ internal class DotBadgeAdorner : TemplatedControl
         if (_indicatorMotionActor is not null)
         {
             _indicatorMotionActor.IsVisible = false;
-            var zoomBadgeInMotionConfig = BadgeMotionFactory.BuildBadgeZoomBadgeInMotion(MotionDuration, null,
-                FillMode.Forward);
-            MotionInvoker.Invoke(_indicatorMotionActor, zoomBadgeInMotionConfig, () =>
-            {
-                _indicatorMotionActor.IsVisible = true;
-            }, null, _motionCancellationTokenSource!.Token);
+            _motionCancellationTokenSource?.Cancel();
+            _motionCancellationTokenSource = new CancellationTokenSource();
+            var motion = new BadgeZoomBadgeInMotion(MotionDuration, null, FillMode.Forward);
+            MotionInvoker.Invoke(_indicatorMotionActor, motion, () => _indicatorMotionActor.IsVisible = true,
+                null, _motionCancellationTokenSource.Token);
         }
     }
-    
+
     private void ApplyHideMotion(Action completedAction)
     {
         if (_indicatorMotionActor is not null)
         {
-            var zoomBadgeOutMotionConfig = BadgeMotionFactory.BuildBadgeZoomBadgeOutMotion(MotionDuration, null,
-                FillMode.Forward);
             _motionCancellationTokenSource?.Cancel();
-            _motionCancellationTokenSource  = new CancellationTokenSource();
-            
-            MotionInvoker.Invoke(_indicatorMotionActor, zoomBadgeOutMotionConfig, null, () =>
-            {
-                completedAction();
-            }, _motionCancellationTokenSource.Token);
+            _motionCancellationTokenSource = new CancellationTokenSource();
+            var motion = new BadgeZoomBadgeOutMotion(MotionDuration, null, FillMode.Forward);
+            MotionInvoker.Invoke(_indicatorMotionActor, motion, null, () => completedAction(),
+                _motionCancellationTokenSource.Token);
         }
     }
 
@@ -145,7 +140,7 @@ internal class DotBadgeAdorner : TemplatedControl
             }
         }
     }
-    
+
     private void SetupBadgeColor()
     {
         if (Status is not null)
@@ -190,6 +185,7 @@ internal class DotBadgeAdorner : TemplatedControl
             offsetY -= dotSize.Height / 3;
             _indicatorMotionActor.Arrange(new Rect(new Point(offsetX, offsetY), dotSize));
         }
+
         return size;
     }
 
@@ -199,16 +195,16 @@ internal class DotBadgeAdorner : TemplatedControl
         {
             return;
         }
-        
+
         adornerLayer.Children.Remove(this);
-        
+
         AdornerLayer.SetAdornedElement(this, adorned);
         AdornerLayer.SetIsClipEnabled(this, false);
         adornerLayer.Children.Add(this);
-        
+
         _motionCancellationTokenSource?.Cancel();
-        _motionCancellationTokenSource  = new CancellationTokenSource();
-        
+        _motionCancellationTokenSource = new CancellationTokenSource();
+
         ApplyShowMotion();
     }
 

@@ -1,7 +1,7 @@
 ﻿using AtomUI.Controls.Utils;
+using AtomUI.IconPkg;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
-using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -28,8 +28,8 @@ public class GroupBox : ContentControl
     public static readonly StyledProperty<IBrush?> HeaderTitleColorProperty =
         AvaloniaProperty.Register<GroupBox, IBrush?>(nameof(HeaderTitleColor));
 
-    public static readonly StyledProperty<PathIcon?> HeaderIconProperty
-        = AvaloniaProperty.Register<GroupBox, PathIcon?>(nameof(HeaderIcon));
+    public static readonly StyledProperty<Icon?> HeaderIconProperty
+        = AvaloniaProperty.Register<GroupBox, Icon?>(nameof(HeaderIcon));
 
     public static readonly StyledProperty<GroupBoxTitlePosition> HeaderTitlePositionProperty =
         AvaloniaProperty.Register<GroupBox, GroupBoxTitlePosition>(nameof(HeaderTitlePosition));
@@ -55,7 +55,7 @@ public class GroupBox : ContentControl
         set => SetValue(HeaderTitleColorProperty, value);
     }
 
-    public PathIcon? HeaderIcon
+    public Icon? HeaderIcon
     {
         get => GetValue(HeaderIconProperty);
         set => SetValue(HeaderIconProperty, value);

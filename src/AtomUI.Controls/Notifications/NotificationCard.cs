@@ -1,6 +1,8 @@
-﻿using AtomUI.MotionScene;
+﻿using AtomUI.IconPkg;
+using AtomUI.IconPkg.AntDesign;
+using AtomUI.MotionScene;
+using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
-using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
@@ -56,8 +58,8 @@ public class NotificationCard : ContentControl
     public static readonly StyledProperty<string> TitleProperty =
         AvaloniaProperty.Register<NotificationCard, string>(nameof(Title));
 
-    public static readonly StyledProperty<PathIcon?> IconProperty
-        = AvaloniaProperty.Register<NotificationCard, PathIcon?>(nameof(Icon));
+    public static readonly StyledProperty<Icon?> IconProperty
+        = AvaloniaProperty.Register<NotificationCard, Icon?>(nameof(Icon));
 
     /// <summary>
     /// Determines if the notification is already closing.
@@ -98,7 +100,7 @@ public class NotificationCard : ContentControl
         set => SetValue(TitleProperty, value);
     }
 
-    public PathIcon? Icon
+    public Icon? Icon
     {
         get => GetValue(IconProperty);
         set => SetValue(IconProperty, value);
@@ -240,30 +242,30 @@ public class NotificationCard : ContentControl
             return;
         }
 
-        MotionConfigX? motionConfig;
+        AbstractMotion? motion = default;
         if (Position == NotificationPosition.TopLeft || Position == NotificationPosition.BottomLeft)
         {
-            motionConfig = MotionFactory.BuildMoveLeftInMotion(AnimationMaxOffsetX, _openCloseMotionDuration, new CubicEaseOut(),
+            motion = new MoveLeftInMotion(AnimationMaxOffsetX, _openCloseMotionDuration, new CubicEaseOut(),
                 FillMode.Forward);
         }
         else if (Position == NotificationPosition.TopRight || Position == NotificationPosition.BottomRight)
         {
-            motionConfig = MotionFactory.BuildMoveRightInMotion(AnimationMaxOffsetX, _openCloseMotionDuration, new CubicEaseOut(),
+            motion = new MoveRightInMotion(AnimationMaxOffsetX, _openCloseMotionDuration, new CubicEaseOut(),
                 FillMode.Forward);
         }
         else if (Position == NotificationPosition.TopCenter)
         {
-            motionConfig = MotionFactory.BuildMoveUpInMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseOut(),
+            motion = new MoveUpInMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseOut(),
                 FillMode.Forward);
         }
         else
         {
-            motionConfig = MotionFactory.BuildMoveDownInMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseOut(),
+            motion = new MoveDownInMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseOut(),
                 FillMode.Forward);
         }
         
         _motionActor.IsVisible = false;
-        MotionInvoker.Invoke(_motionActor, motionConfig, () =>
+        MotionInvoker.Invoke(_motionActor, motion, () =>
         {
             _motionActor.IsVisible = true;
         });
@@ -275,29 +277,29 @@ public class NotificationCard : ContentControl
         {
             return;
         }
-        MotionConfigX? motionConfig;
+        AbstractMotion? motion = default;
         if (Position == NotificationPosition.TopLeft || Position == NotificationPosition.BottomLeft)
         {
-            motionConfig = MotionFactory.BuildMoveLeftOutMotion(AnimationMaxOffsetX, _openCloseMotionDuration, new CubicEaseIn(),
+            motion = new MoveLeftOutMotion(AnimationMaxOffsetX, _openCloseMotionDuration, new CubicEaseIn(),
                 FillMode.Forward);
         }
         else if (Position == NotificationPosition.TopRight || Position == NotificationPosition.BottomRight)
         {
-            motionConfig = MotionFactory.BuildMoveRightOutMotion(AnimationMaxOffsetX, _openCloseMotionDuration, new CubicEaseIn(),
+            motion = new MoveRightOutMotion(AnimationMaxOffsetX, _openCloseMotionDuration, new CubicEaseIn(),
                 FillMode.Forward);
         }
         else if (Position == NotificationPosition.TopCenter)
         {
-            motionConfig = MotionFactory.BuildMoveUpOutMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseIn(),
+            motion = new MoveUpOutMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseIn(),
                 FillMode.Forward);
         }
         else
         {
-            motionConfig = MotionFactory.BuildMoveDownOutMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseIn(),
+            motion = new MoveDownOutMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseIn(),
                 FillMode.Forward);
         }
         
-        MotionInvoker.Invoke(_motionActor, motionConfig, null, () =>
+        MotionInvoker.Invoke(_motionActor, motion, null, () =>
         {
             IsClosed = true;
         });
@@ -402,26 +404,26 @@ public class NotificationCard : ContentControl
         }
     }
 
-    private void SetupNotificationIconColor(PathIcon icon)
+    private void SetupNotificationIconColor(Icon icon)
     {
         if (NotificationType == NotificationType.Error)
         {
-            TokenResourceBinder.CreateGlobalTokenBinding(icon, PathIcon.NormalFilledBrushProperty,
+            TokenResourceBinder.CreateGlobalTokenBinding(icon, Icon.NormalFilledBrushProperty,
                 GlobalTokenResourceKey.ColorError);
         }
         else if (NotificationType == NotificationType.Information)
         {
-            TokenResourceBinder.CreateGlobalTokenBinding(icon, PathIcon.NormalFilledBrushProperty,
+            TokenResourceBinder.CreateGlobalTokenBinding(icon, Icon.NormalFilledBrushProperty,
                 GlobalTokenResourceKey.ColorPrimary);
         }
         else if (NotificationType == NotificationType.Success)
         {
-            TokenResourceBinder.CreateGlobalTokenBinding(icon, PathIcon.NormalFilledBrushProperty,
+            TokenResourceBinder.CreateGlobalTokenBinding(icon, Icon.NormalFilledBrushProperty,
                 GlobalTokenResourceKey.ColorSuccess);
         }
         else if (NotificationType == NotificationType.Warning)
         {
-            TokenResourceBinder.CreateGlobalTokenBinding(icon, PathIcon.NormalFilledBrushProperty,
+            TokenResourceBinder.CreateGlobalTokenBinding(icon, Icon.NormalFilledBrushProperty,
                 GlobalTokenResourceKey.ColorWarning);
         }
     }
@@ -444,34 +446,22 @@ public class NotificationCard : ContentControl
 
     private void SetupNotificationIcon()
     {
-        PathIcon? icon = null;
+        Icon? icon = null;
         if (NotificationType == NotificationType.Information)
         {
-            icon = new PathIcon
-            {
-                Kind = "InfoCircleFilled"
-            };
+            icon = AntDesignIconPackage.InfoCircleFilled();
         }
         else if (NotificationType == NotificationType.Success)
         {
-            icon = new PathIcon
-            {
-                Kind = "CheckCircleFilled"
-            };
+            icon = AntDesignIconPackage.CheckCircleFilled();
         }
         else if (NotificationType == NotificationType.Error)
         {
-            icon = new PathIcon
-            {
-                Kind = "CloseCircleFilled"
-            };
+            icon = AntDesignIconPackage.CloseCircleFilled();
         }
         else if (NotificationType == NotificationType.Warning)
         {
-            icon = new PathIcon
-            {
-                Kind = "ExclamationCircleFilled"
-            };
+            icon = AntDesignIconPackage.ExclamationCircleFilled();
         }
 
         if (icon is not null)

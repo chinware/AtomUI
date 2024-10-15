@@ -14,7 +14,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\AtomUI.Base\AtomUI.Base.csproj"/>
-        <ProjectReference Include="..\AtomUI.Icon\AtomUI.Icon.csproj"/>
+        <ProjectReference Include="..\AtomUI.IconPkg\AtomUI.IconPkg.csproj" />
         <ProjectReference Include="..\AtomUI.Generator\AtomUI.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
     </ItemGroup>
 
@@ -30,14 +30,5 @@
     <ItemGroup>
         <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics"/>
     </ItemGroup>
-
-    <ItemGroup>
-        <Compile Remove="Platform/**/*.cs"/>
-    </ItemGroup>
-
-    <ItemGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
-        <Compile Include="Platform\Windows\*.cs"/>
-        <PackageReference Include="Avalonia.Win32"/>
-    </ItemGroup>
-
+    
 </Project>

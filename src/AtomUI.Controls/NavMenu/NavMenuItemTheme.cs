@@ -1,5 +1,5 @@
-﻿using AtomUI.Theme.Styling;
-using AtomUI.Utils;
+﻿using AtomUI.Theme.Data;
+using AtomUI.Theme.Styling;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Templates;
@@ -14,23 +14,23 @@ internal class NavMenuItemTheme : BaseNavMenuItemTheme
 {
     public const string ItemsPresenterPart = "PART_ItemsPresenter";
     public const string PopupFramePart = "PART_PopupFrame";
-    
+
     public NavMenuItemTheme()
         : base(typeof(NavMenuItem))
     {
     }
-    
+
     protected NavMenuItemTheme(Type targetType) : base(targetType)
     {
     }
-    
+
     protected override void BuildExtraItem(Panel layout, INameScope scope)
     {
         var popup = CreateMenuPopup();
         popup.RegisterInNameScope(scope);
         layout.Children.Add(popup);
     }
-    
+
     protected Popup CreateMenuPopup()
     {
         var popup = new Popup
@@ -45,7 +45,7 @@ internal class NavMenuItemTheme : BaseNavMenuItemTheme
         {
             Name = PopupFramePart
         };
-        
+
         TokenResourceBinder.CreateTokenBinding(popup, Popup.MarginToAnchorProperty,
             NavMenuTokenResourceKey.TopLevelItemPopupMarginToAnchor);
         TokenResourceBinder.CreateTokenBinding(border, Border.CornerRadiusProperty,
@@ -80,11 +80,12 @@ internal class NavMenuItemTheme : BaseNavMenuItemTheme
 
         return popup;
     }
-    
+
     protected override void BuildStyles()
     {
         base.BuildStyles();
-        var itemsPanelStyle = new Style(selector => selector.Nesting().Template().Name(ItemsPresenterPart).Child().OfType<StackPanel>());
+        var itemsPanelStyle = new Style(selector =>
+            selector.Nesting().Template().Name(ItemsPresenterPart).Child().OfType<StackPanel>());
         itemsPanelStyle.Add(StackPanel.SpacingProperty, NavMenuTokenResourceKey.VerticalItemsPanelSpacing);
         Add(itemsPanelStyle);
 
@@ -93,8 +94,9 @@ internal class NavMenuItemTheme : BaseNavMenuItemTheme
             popupFrameStyle.Add(Border.BackgroundProperty, GlobalTokenResourceKey.ColorBgContainer);
             Add(popupFrameStyle);
         }
-        
-        var darkCommonStyle = new Style(selector => selector.Nesting().PropertyEquals(NavMenuItem.IsDarkStyleProperty, true));
+
+        var darkCommonStyle =
+            new Style(selector => selector.Nesting().PropertyEquals(NavMenuItem.IsDarkStyleProperty, true));
         {
             var popupFrameStyle = new Style(selector => selector.Nesting().Template().Name(PopupFramePart));
             popupFrameStyle.Add(Border.BackgroundProperty, NavMenuTokenResourceKey.DarkItemBg);

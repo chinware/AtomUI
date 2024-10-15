@@ -63,14 +63,12 @@ internal class EmptyIndicatorTheme : BaseControlTheme
         var sizeSmallAndMiddleStyle = new Style(selector => Selectors.Or(
             selector.Nesting().PropertyEquals(EmptyIndicator.SizeTypeProperty, SizeType.Middle),
             selector.Nesting().PropertyEquals(EmptyIndicator.SizeTypeProperty, SizeType.Small)));
-        sizeSmallAndMiddleStyle.Add(EmptyIndicator.DescriptionMarginProperty,
-            new DynamicResourceExtension(GlobalTokenResourceKey.MarginXS));
+        sizeSmallAndMiddleStyle.Add(EmptyIndicator.DescriptionMarginProperty, GlobalTokenResourceKey.MarginXS);
         Add(sizeSmallAndMiddleStyle);
 
         var sizeLargeStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(EmptyIndicator.SizeTypeProperty, SizeType.Large));
-        sizeLargeStyle.Add(EmptyIndicator.DescriptionMarginProperty,
-            new DynamicResourceExtension(GlobalTokenResourceKey.MarginSM));
+        sizeLargeStyle.Add(EmptyIndicator.DescriptionMarginProperty, GlobalTokenResourceKey.MarginSM);
         Add(sizeLargeStyle);
 
         BuildSvgStyle();
@@ -83,8 +81,7 @@ internal class EmptyIndicatorTheme : BaseControlTheme
             var largeSizeStyle = new Style(selector =>
                 selector.Nesting().PropertyEquals(EmptyIndicator.SizeTypeProperty, SizeType.Large));
             var svgStyle = new Style(selector => svgSelector);
-            svgStyle.Add(Layoutable.HeightProperty,
-                new DynamicResourceExtension(EmptyIndicatorTokenResourceKey.EmptyImgHeight));
+            svgStyle.Add(Layoutable.HeightProperty, EmptyIndicatorTokenResourceKey.EmptyImgHeight);
             largeSizeStyle.Add(svgStyle);
             Add(largeSizeStyle);
         }
@@ -93,8 +90,7 @@ internal class EmptyIndicatorTheme : BaseControlTheme
             var middleSizeStyle = new Style(selector =>
                 selector.Nesting().PropertyEquals(EmptyIndicator.SizeTypeProperty, SizeType.Middle));
             var svgStyle = new Style(selector => svgSelector);
-            svgStyle.Add(Layoutable.HeightProperty,
-                new DynamicResourceExtension(EmptyIndicatorTokenResourceKey.EmptyImgHeightMD));
+            svgStyle.Add(Layoutable.HeightProperty, EmptyIndicatorTokenResourceKey.EmptyImgHeightMD);
             middleSizeStyle.Add(svgStyle);
             Add(middleSizeStyle);
         }
@@ -103,8 +99,7 @@ internal class EmptyIndicatorTheme : BaseControlTheme
             var smallSizeStyle = new Style(selector =>
                 selector.Nesting().PropertyEquals(EmptyIndicator.SizeTypeProperty, SizeType.Small));
             var svgStyle = new Style(selector => svgSelector);
-            svgStyle.Add(Layoutable.HeightProperty,
-                new DynamicResourceExtension(EmptyIndicatorTokenResourceKey.EmptyImgHeightSM));
+            svgStyle.Add(Layoutable.HeightProperty, EmptyIndicatorTokenResourceKey.EmptyImgHeightSM);
             smallSizeStyle.Add(svgStyle);
             Add(smallSizeStyle);
         }

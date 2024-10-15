@@ -1,9 +1,9 @@
 ﻿using AtomUI.Data;
+using AtomUI.IconPkg.AntDesign;
 using AtomUI.Media;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
-using AtomUI.Theme.Utils;
 using AtomUI.Utils;
 using Avalonia.Animation;
 using Avalonia.Controls;
@@ -39,10 +39,7 @@ internal class MenuScrollViewerTheme : BaseControlTheme
             var scrollUpButton = new IconButton
             {
                 Name = ScrollUpButtonPart,
-                Icon = new PathIcon
-                {
-                    Kind = "UpOutlined"
-                },
+                Icon = AntDesignIconPackage.UpOutlined(),
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment   = VerticalAlignment.Center,
                 Transitions         = transitions,
@@ -58,10 +55,7 @@ internal class MenuScrollViewerTheme : BaseControlTheme
             var scrollDownButton = new IconButton
             {
                 Name = ScrollDownButtonPart,
-                Icon = new PathIcon
-                {
-                    Kind = "DownOutlined"
-                },
+                Icon = AntDesignIconPackage.DownOutlined(),
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment   = VerticalAlignment.Center,
                 Transitions         = transitions,

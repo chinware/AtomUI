@@ -1,12 +1,10 @@
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
-using AtomUI.Icon;
+using AtomUI.IconPkg;
 using AtomUI.Media;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.TokenSystem;
-using AtomUI.Theme.Utils;
-using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
@@ -66,8 +64,8 @@ public class Button : AvaloniaButton,
     public static readonly StyledProperty<ButtonSizeType> SizeTypeProperty =
         AvaloniaProperty.Register<Button, ButtonSizeType>(nameof(SizeType), ButtonSizeType.Middle);
 
-    public static readonly StyledProperty<PathIcon?> IconProperty
-        = AvaloniaProperty.Register<Button, PathIcon?>(nameof(Icon));
+    public static readonly StyledProperty<Icon?> IconProperty
+        = AvaloniaProperty.Register<Button, Icon?>(nameof(Icon));
 
     public static readonly StyledProperty<string?> TextProperty
         = AvaloniaProperty.Register<Button, string?>(nameof(Text));
@@ -111,7 +109,7 @@ public class Button : AvaloniaButton,
         set => SetValue(SizeTypeProperty, value);
     }
 
-    public PathIcon? Icon
+    public Icon? Icon
     {
         get => GetValue(IconProperty);
         set => SetValue(IconProperty, value);
@@ -216,7 +214,7 @@ public class Button : AvaloniaButton,
 
     protected ControlStyleState _styleState;
     private bool _initialized;
-    private PathIcon? _loadingIcon;
+    private Icon? _loadingIcon;
 
     static Button()
     {
@@ -318,7 +316,6 @@ public class Button : AvaloniaButton,
                     };
                 }
             }
-
             _initialized = true;
         }
     }
@@ -383,23 +380,27 @@ public class Button : AvaloniaButton,
             UpdatePseudoClasses();
         }
 
-        if (e.Property == IconProperty)
-        {
-            SetupIcon();
-        }
-
-        if (e.Property == IsDangerProperty ||
-            e.Property == IsGhostProperty ||
-            e.Property == ButtonTypeProperty)
-        {
-            SetupIconBrush();
-        }
-
         if (e.Property == BorderBrushProperty ||
             e.Property == ButtonTypeProperty ||
             e.Property == IsEnabledProperty)
         {
             SetupEffectiveBorderThickness();
+        }
+
+        if (VisualRoot is not null)
+        {
+            if (e.Property == IconProperty)
+            {
+                SetupIcon();
+                SetupIconBrush();
+            }
+
+            if (e.Property == IsDangerProperty ||
+                e.Property == IsGhostProperty ||
+                e.Property == ButtonTypeProperty)
+            {
+                SetupIconBrush();
+            }
         }
     }
 
@@ -479,7 +480,7 @@ public class Button : AvaloniaButton,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _loadingIcon = e.NameScope.Find<PathIcon>(BaseButtonTheme.LoadingIconPart);
+        _loadingIcon = e.NameScope.Find<Icon>(BaseButtonTheme.LoadingIconPart);
         HandleTemplateApplied(e.NameScope);
         SetupTransitions();
     }
@@ -620,44 +621,38 @@ public class Button : AvaloniaButton,
         else if (ButtonType == ButtonType.Link)
         {
             normalFilledBrushKey   = GlobalTokenResourceKey.ColorLink;
-            selectedFilledBrushKey = ButtonTokenResourceKey.DefaultActiveColor;
-            activeFilledBrushKey   = ButtonTokenResourceKey.DefaultHoverColor;
-            if (IsGhost)
-            {
-                normalFilledBrushKey   = GlobalTokenResourceKey.ColorLink;
-                selectedFilledBrushKey = GlobalTokenResourceKey.ColorPrimaryActive;
-                activeFilledBrushKey   = GlobalTokenResourceKey.ColorPrimaryHover;
-            }
+            selectedFilledBrushKey = GlobalTokenResourceKey.ColorLinkActive;
+            activeFilledBrushKey   = GlobalTokenResourceKey.ColorLinkHover;
 
             if (IsDanger)
             {
                 normalFilledBrushKey   = GlobalTokenResourceKey.ColorError;
                 selectedFilledBrushKey = GlobalTokenResourceKey.ColorErrorActive;
-                activeFilledBrushKey   = GlobalTokenResourceKey.ColorErrorBorderHover;
+                activeFilledBrushKey   = GlobalTokenResourceKey.ColorErrorHover;
             }
         }
 
         if (Icon is not null)
         {
-            TokenResourceBinder.CreateGlobalTokenBinding(Icon, PathIcon.NormalFilledBrushProperty,
+            TokenResourceBinder.CreateTokenBinding(Icon, Icon.NormalFilledBrushProperty,
                 normalFilledBrushKey);
-            TokenResourceBinder.CreateGlobalTokenBinding(Icon, PathIcon.SelectedFilledBrushProperty,
+            TokenResourceBinder.CreateTokenBinding(Icon, Icon.SelectedFilledBrushProperty,
                 selectedFilledBrushKey);
-            TokenResourceBinder.CreateGlobalTokenBinding(Icon, PathIcon.ActiveFilledBrushProperty,
+            TokenResourceBinder.CreateTokenBinding(Icon, Icon.ActiveFilledBrushProperty,
                 activeFilledBrushKey);
-            TokenResourceBinder.CreateGlobalTokenBinding(Icon, PathIcon.DisabledFilledBrushProperty,
+            TokenResourceBinder.CreateTokenBinding(Icon, Icon.DisabledFilledBrushProperty,
                 disabledFilledBrushKey);
         }
 
         if (_loadingIcon is not null)
         {
-            TokenResourceBinder.CreateGlobalTokenBinding(_loadingIcon, PathIcon.NormalFilledBrushProperty,
+            TokenResourceBinder.CreateTokenBinding(_loadingIcon, Icon.NormalFilledBrushProperty,
                 normalFilledBrushKey);
-            TokenResourceBinder.CreateGlobalTokenBinding(_loadingIcon, PathIcon.SelectedFilledBrushProperty,
+            TokenResourceBinder.CreateTokenBinding(_loadingIcon, Icon.SelectedFilledBrushProperty,
                 selectedFilledBrushKey);
-            TokenResourceBinder.CreateGlobalTokenBinding(_loadingIcon, PathIcon.ActiveFilledBrushProperty,
+            TokenResourceBinder.CreateTokenBinding(_loadingIcon, Icon.ActiveFilledBrushProperty,
                 activeFilledBrushKey);
-            TokenResourceBinder.CreateGlobalTokenBinding(_loadingIcon, PathIcon.DisabledFilledBrushProperty,
+            TokenResourceBinder.CreateTokenBinding(_loadingIcon, Icon.DisabledFilledBrushProperty,
                 disabledFilledBrushKey);
         }
 

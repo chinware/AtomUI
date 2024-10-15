@@ -1,6 +1,7 @@
-﻿using AtomUI.Media;
+﻿using AtomUI.Controls.Utils;
+using AtomUI.IconPkg;
+using AtomUI.Media;
 using AtomUI.Theme.Styling;
-using AtomUI.Theme.Utils;
 using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -148,7 +149,7 @@ internal class CardTabItemTheme : BaseTabItemTheme
             // 上
             var topStyle = new Style(selector =>
                 selector.Nesting().PropertyEquals(Avalonia.Controls.TabItem.TabStripPlacementProperty, Dock.Top));
-            var iconStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
+            var iconStyle = new Style(selector => selector.Nesting().Template().OfType<Icon>());
             iconStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Center);
             topStyle.Add(iconStyle);
 
@@ -162,7 +163,7 @@ internal class CardTabItemTheme : BaseTabItemTheme
             // 右
             var rightStyle = new Style(selector =>
                 selector.Nesting().PropertyEquals(Avalonia.Controls.TabItem.TabStripPlacementProperty, Dock.Right));
-            var iconStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
+            var iconStyle = new Style(selector => selector.Nesting().Template().OfType<Icon>());
             iconStyle.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Center);
             rightStyle.Add(iconStyle);
             Add(rightStyle);
@@ -172,7 +173,7 @@ internal class CardTabItemTheme : BaseTabItemTheme
             var bottomStyle = new Style(selector =>
                 selector.Nesting().PropertyEquals(Avalonia.Controls.TabItem.TabStripPlacementProperty, Dock.Bottom));
 
-            var iconStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
+            var iconStyle = new Style(selector => selector.Nesting().Template().OfType<Icon>());
             iconStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Center);
             bottomStyle.Add(iconStyle);
             Add(bottomStyle);
@@ -181,7 +182,7 @@ internal class CardTabItemTheme : BaseTabItemTheme
             // 左
             var leftStyle = new Style(selector =>
                 selector.Nesting().PropertyEquals(Avalonia.Controls.TabItem.TabStripPlacementProperty, Dock.Left));
-            var iconStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
+            var iconStyle = new Style(selector => selector.Nesting().Template().OfType<Icon>());
             iconStyle.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Center);
             leftStyle.Add(iconStyle);
             Add(leftStyle);

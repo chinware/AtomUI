@@ -1,4 +1,5 @@
 ﻿using AtomUI.Controls.Utils;
+using AtomUI.IconPkg;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
@@ -24,8 +25,8 @@ public class LoadingIndicator : TemplatedControl, ISizeTypeAware
     public static readonly StyledProperty<bool> IsShowLoadingMsgProperty =
         AvaloniaProperty.Register<LoadingIndicator, bool>(nameof(IsShowLoadingMsg));
 
-    public static readonly StyledProperty<PathIcon?> CustomIndicatorIconProperty =
-        AvaloniaProperty.Register<LoadingIndicator, PathIcon?>(nameof(CustomIndicatorIcon));
+    public static readonly StyledProperty<Icon?> CustomIndicatorIconProperty =
+        AvaloniaProperty.Register<LoadingIndicator, Icon?>(nameof(CustomIndicatorIcon));
 
     public static readonly StyledProperty<TimeSpan?> MotionDurationProperty =
         AvaloniaProperty.Register<LoadingIndicator, TimeSpan?>(nameof(MotionDuration));
@@ -51,7 +52,7 @@ public class LoadingIndicator : TemplatedControl, ISizeTypeAware
         set => SetValue(IsShowLoadingMsgProperty, value);
     }
 
-    public PathIcon? CustomIndicatorIcon
+    public Icon? CustomIndicatorIcon
     {
         get => GetValue(CustomIndicatorIconProperty);
         set => SetValue(CustomIndicatorIconProperty, value);
@@ -182,7 +183,7 @@ public class LoadingIndicator : TemplatedControl, ISizeTypeAware
         {
             if (VisualRoot is not null)
             {
-                var oldCustomIcon = e.GetOldValue<PathIcon?>();
+                var oldCustomIcon = e.GetOldValue<Icon?>();
                 if (oldCustomIcon is not null)
                 {
                     _mainContainer?.Children.Remove(oldCustomIcon);

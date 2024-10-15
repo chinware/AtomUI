@@ -7,7 +7,7 @@ using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
-internal class PopupMotionActor : MotionActor
+internal class PopupMotionActor : SceneMotionActorControl
 {
     private readonly BoxShadows _boxShadows;
     private readonly Point _offset;
@@ -16,9 +16,8 @@ internal class PopupMotionActor : MotionActor
     public PopupMotionActor(BoxShadows boxShadows,
                             Point offset,
                             double scaling,
-                            Control motionTarget,
-                            AbstractMotion motion)
-        : base(motionTarget, motion)
+                            Control motionTarget)
+        : base(motionTarget)
     {
         _offset     = offset;
         _scaling    = scaling;
@@ -33,7 +32,7 @@ internal class PopupMotionActor : MotionActor
         return new Point(winPos.X - scaledThickness.Left, winPos.Y - scaledThickness.Top);
     }
 
-    protected override void BuildGhost()
+    internal override void BuildGhost()
     {
         if (_ghost is null)
         {
@@ -41,6 +40,7 @@ internal class PopupMotionActor : MotionActor
             {
                 Shadows = _boxShadows
             };
+            Child = _ghost;
         }
     }
 }

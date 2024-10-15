@@ -1,5 +1,7 @@
-﻿using AtomUI.Theme.Styling;
-using AtomUI.Utils;
+﻿using AtomUI.IconPkg;
+using AtomUI.IconPkg.AntDesign;
+using AtomUI.Theme.Data;
+using AtomUI.Theme.Styling;
 using Avalonia.Controls;
 using Avalonia.Controls.Shapes;
 using Avalonia.Controls.Templates;
@@ -35,17 +37,14 @@ internal class RangeInfoPickerInputTheme : InfoPickerInputTheme
             }
         };
 
-        var arrowIcon = new PathIcon
-        {
-            Kind = "SwapRightOutlined",
-            Name = RangePickerArrowPart
-        };
+        var arrowIcon = AntDesignIconPackage.SwapRightOutlined();
+        arrowIcon.Name = RangePickerArrowPart;
 
         TokenResourceBinder.CreateGlobalTokenBinding(arrowIcon, Layoutable.HeightProperty,
             GlobalTokenResourceKey.IconSize);
         TokenResourceBinder.CreateGlobalTokenBinding(arrowIcon, Layoutable.WidthProperty,
             GlobalTokenResourceKey.IconSize);
-        TokenResourceBinder.CreateGlobalTokenBinding(arrowIcon, PathIcon.NormalFilledBrushProperty,
+        TokenResourceBinder.CreateGlobalTokenBinding(arrowIcon, Icon.NormalFilledBrushProperty,
             GlobalTokenResourceKey.ColorTextQuaternary);
 
         var rangeStartTextBox = BuildPickerTextBox(InfoInputBoxPart);

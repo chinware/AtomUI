@@ -1,17 +1,20 @@
 ﻿using Avalonia;
+using Avalonia.Animation;
+using Avalonia.Animation.Easings;
 
 namespace AtomUI.MotionScene;
 
-public interface IMotion
+internal interface IMotion
 {
     public bool IsRunning { get; }
+    public RelativePoint RenderTransformOrigin { get; }
+    public IList<Animation> Animations { get; }
+    public TimeSpan Duration { get; }
+    public Easing Easing { get; }
+    public FillMode PropertyValueFillMode { get; }
 
-    /// <summary>
-    /// 获取当前动效激活的动画属性列表
-    /// </summary>
-    /// <returns></returns>
-    public IList<AvaloniaProperty> GetActivatedProperties();
-
-    public IList<MotionConfig> GetMotionConfigs();
-    public IObservable<bool>? CompletedObservable { get; }
+    public Task RunAsync(MotionActorControl actor,
+                         Action? aboutToStart = null,
+                         Action? completedAction = null,
+                         CancellationToken cancellationToken = default);
 }

@@ -1,4 +1,6 @@
 ﻿using AtomUI.Controls.Internal;
+using AtomUI.IconPkg;
+using AtomUI.IconPkg.AntDesign;
 using AtomUI.Theme.Styling;
 using Avalonia.Controls;
 using Avalonia.Styling;
@@ -12,12 +14,9 @@ internal class DatePickerTheme : InfoPickerInputTheme
     {
     }
     
-    protected override PathIcon BuildInfoIcon(InfoPickerInput infoPickerInput, INameScope scope)
+    protected override Icon BuildInfoIcon(InfoPickerInput infoPickerInput, INameScope scope)
     {
-        return new PathIcon()
-        {
-            Kind = "CalendarOutlined"
-        };
+        return AntDesignIconPackage.CalendarOutlined();
     }
     
     protected override void BuildStyles()

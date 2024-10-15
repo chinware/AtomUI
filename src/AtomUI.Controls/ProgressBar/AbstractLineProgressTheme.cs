@@ -1,5 +1,7 @@
-﻿using AtomUI.Theme.Styling;
-using AtomUI.Utils;
+﻿using AtomUI.IconPkg;
+using AtomUI.IconPkg.AntDesign;
+using AtomUI.Theme.Data;
+using AtomUI.Theme.Styling;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
@@ -22,28 +24,24 @@ internal class AbstractLineProgressTheme : AbstractProgressBarTheme
 
     private void CreateCompletedIcons(INameScope scope, Canvas container)
     {
-        var exceptionCompletedIcon = new PathIcon
-        {
-            Name                = ExceptionCompletedIconPart,
-            Kind                = "CloseCircleFilled",
-            HorizontalAlignment = HorizontalAlignment.Left
-        };
+        var exceptionCompletedIcon = AntDesignIconPackage.CloseCircleFilled();
+        exceptionCompletedIcon.Name                = ExceptionCompletedIconPart;
+        exceptionCompletedIcon.HorizontalAlignment = HorizontalAlignment.Left;
+        
         exceptionCompletedIcon.RegisterInNameScope(scope);
-        TokenResourceBinder.CreateGlobalTokenBinding(exceptionCompletedIcon, PathIcon.NormalFilledBrushProperty,
+        TokenResourceBinder.CreateGlobalTokenBinding(exceptionCompletedIcon, Icon.NormalFilledBrushProperty,
             GlobalTokenResourceKey.ColorError);
-        TokenResourceBinder.CreateGlobalTokenBinding(exceptionCompletedIcon, PathIcon.DisabledFilledBrushProperty,
+        TokenResourceBinder.CreateGlobalTokenBinding(exceptionCompletedIcon, Icon.DisabledFilledBrushProperty,
             GlobalTokenResourceKey.ControlItemBgActiveDisabled);
-
-        var successCompletedIcon = new PathIcon
-        {
-            Name                = SuccessCompletedIconPart,
-            Kind                = "CheckCircleFilled",
-            HorizontalAlignment = HorizontalAlignment.Left
-        };
+        
+        var successCompletedIcon = AntDesignIconPackage.CheckCircleFilled();
+        successCompletedIcon.Name                = SuccessCompletedIconPart;
+        successCompletedIcon.HorizontalAlignment = HorizontalAlignment.Left;
+        
         successCompletedIcon.RegisterInNameScope(scope);
-        TokenResourceBinder.CreateGlobalTokenBinding(successCompletedIcon, PathIcon.NormalFilledBrushProperty,
+        TokenResourceBinder.CreateGlobalTokenBinding(successCompletedIcon, Icon.NormalFilledBrushProperty,
             GlobalTokenResourceKey.ColorSuccess);
-        TokenResourceBinder.CreateGlobalTokenBinding(successCompletedIcon, PathIcon.DisabledFilledBrushProperty,
+        TokenResourceBinder.CreateGlobalTokenBinding(successCompletedIcon, Icon.DisabledFilledBrushProperty,
             GlobalTokenResourceKey.ControlItemBgActiveDisabled);
 
         container.Children.Add(exceptionCompletedIcon);
@@ -70,7 +68,7 @@ internal class AbstractLineProgressTheme : AbstractProgressBarTheme
             ProgressBarTokenResourceKey.LineInfoIconSize);
         // icon
         {
-            var completedIconsStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
+            var completedIconsStyle = new Style(selector => selector.Nesting().Template().OfType<Icon>());
             completedIconsStyle.Add(Layoutable.WidthProperty, ProgressBarTokenResourceKey.LineInfoIconSize);
             completedIconsStyle.Add(Layoutable.HeightProperty, ProgressBarTokenResourceKey.LineInfoIconSize);
             largeSizeTypeStyle.Add(completedIconsStyle);
@@ -85,7 +83,7 @@ internal class AbstractLineProgressTheme : AbstractProgressBarTheme
             ProgressBarTokenResourceKey.LineInfoIconSize);
         // icon
         {
-            var completedIconsStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
+            var completedIconsStyle = new Style(selector => selector.Nesting().Template().OfType<Icon>());
             completedIconsStyle.Add(Layoutable.WidthProperty, ProgressBarTokenResourceKey.LineInfoIconSizeSM);
             completedIconsStyle.Add(Layoutable.HeightProperty, ProgressBarTokenResourceKey.LineInfoIconSizeSM);
             middleTypeStyle.Add(completedIconsStyle);
@@ -100,7 +98,7 @@ internal class AbstractLineProgressTheme : AbstractProgressBarTheme
             ProgressBarTokenResourceKey.LineInfoIconSizeSM);
         // icon
         {
-            var completedIconsStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
+            var completedIconsStyle = new Style(selector => selector.Nesting().Template().OfType<Icon>());
             completedIconsStyle.Add(Layoutable.WidthProperty, ProgressBarTokenResourceKey.LineInfoIconSizeSM);
             completedIconsStyle.Add(Layoutable.HeightProperty, ProgressBarTokenResourceKey.LineInfoIconSizeSM);
             smallTypeStyle.Add(completedIconsStyle);

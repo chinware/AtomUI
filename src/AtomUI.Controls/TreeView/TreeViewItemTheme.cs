@@ -1,4 +1,5 @@
-﻿using AtomUI.Theme;
+﻿using AtomUI.IconPkg;
+using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
@@ -174,7 +175,7 @@ internal class TreeViewItemTheme : BaseControlTheme
 
         // 节点 Icon 的大小
         var treeItemIconStyle = new Style(selector =>
-            selector.Nesting().Template().Name(IconPresenterPart).Descendant().OfType<PathIcon>());
+            selector.Nesting().Template().Name(IconPresenterPart).Descendant().OfType<Icon>());
         treeItemIconStyle.Add(Layoutable.WidthProperty, GlobalTokenResourceKey.IconSize);
         treeItemIconStyle.Add(Layoutable.HeightProperty, GlobalTokenResourceKey.IconSize);
         treeItemIconStyle.Add(Layoutable.MarginProperty, TreeViewTokenResourceKey.TreeNodeIconMargin);

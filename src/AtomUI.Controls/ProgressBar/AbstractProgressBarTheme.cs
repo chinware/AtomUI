@@ -1,4 +1,4 @@
-﻿using AtomUI.Icon;
+﻿using AtomUI.IconPkg;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -77,12 +77,12 @@ internal class AbstractProgressBarTheme : BaseControlTheme
             selector.Nesting().PropertyEquals(AbstractProgressBar.StatusProperty, ProgressStatus.Exception));
         {
             var exceptionIconStyle = new Style(selector =>
-                selector.Nesting().Template().OfType<PathIcon>().Name(ExceptionCompletedIconPart));
+                selector.Nesting().Template().OfType<Icon>().Name(ExceptionCompletedIconPart));
             exceptionIconStyle.Add(Visual.IsVisibleProperty, true);
             exceptionStatusStyle.Add(exceptionIconStyle);
 
             var successIconStyle = new Style(selector =>
-                selector.Nesting().Template().OfType<PathIcon>().Name(SuccessCompletedIconPart));
+                selector.Nesting().Template().OfType<Icon>().Name(SuccessCompletedIconPart));
             successIconStyle.Add(Visual.IsVisibleProperty, false);
             exceptionStatusStyle.Add(successIconStyle);
 
@@ -100,12 +100,12 @@ internal class AbstractProgressBarTheme : BaseControlTheme
             selector.Nesting().PropertyEquals(AbstractProgressBar.StatusProperty, ProgressStatus.Success));
         {
             var exceptionIconStyle = new Style(selector =>
-                selector.Nesting().Template().OfType<PathIcon>().Name(ExceptionCompletedIconPart));
+                selector.Nesting().Template().OfType<Icon>().Name(ExceptionCompletedIconPart));
             exceptionIconStyle.Add(Visual.IsVisibleProperty, false);
             successStatusStyle.Add(exceptionIconStyle);
 
             var successIconStyle = new Style(selector =>
-                selector.Nesting().Template().OfType<PathIcon>().Name(SuccessCompletedIconPart));
+                selector.Nesting().Template().OfType<Icon>().Name(SuccessCompletedIconPart));
             successIconStyle.Add(Visual.IsVisibleProperty, true);
             successStatusStyle.Add(successIconStyle);
 
@@ -125,13 +125,13 @@ internal class AbstractProgressBarTheme : BaseControlTheme
         {
             {
                 var exceptionIconStyle = new Style(selector =>
-                    selector.Nesting().Template().OfType<PathIcon>().Name(ExceptionCompletedIconPart));
+                    selector.Nesting().Template().OfType<Icon>().Name(ExceptionCompletedIconPart));
                 exceptionIconStyle.Add(Visual.IsVisibleProperty, false);
                 normalOrActiveStatusStyle.Add(exceptionIconStyle);
             }
             {
                 var successIconStyle = new Style(selector =>
-                    selector.Nesting().Template().OfType<PathIcon>().Name(SuccessCompletedIconPart));
+                    selector.Nesting().Template().OfType<Icon>().Name(SuccessCompletedIconPart));
                 successIconStyle.Add(Visual.IsVisibleProperty, false);
                 normalOrActiveStatusStyle.Add(successIconStyle);
             }
@@ -139,7 +139,7 @@ internal class AbstractProgressBarTheme : BaseControlTheme
                 var completedStyle = new Style(selector => selector.Nesting().Class(AbstractProgressBar.CompletedPC));
                 completedStyle.Add(AbstractProgressBar.IndicatorBarBrushProperty, GlobalTokenResourceKey.ColorSuccess);
                 var successIconStyle = new Style(selector =>
-                    selector.Nesting().Template().OfType<PathIcon>().Name(SuccessCompletedIconPart));
+                    selector.Nesting().Template().OfType<Icon>().Name(SuccessCompletedIconPart));
                 successIconStyle.Add(Visual.IsVisibleProperty, true);
                 completedStyle.Add(successIconStyle);
                 normalOrActiveStatusStyle.Add(completedStyle);
@@ -167,8 +167,8 @@ internal class AbstractProgressBarTheme : BaseControlTheme
         disableStyle.Add(AbstractProgressBar.IndicatorBarBrushProperty,
             GlobalTokenResourceKey.ControlItemBgActiveDisabled);
         disableStyle.Add(TemplatedControl.ForegroundProperty, GlobalTokenResourceKey.ColorTextDisabled);
-        var statusIconStyle = new Style(selector => selector.Nesting().Template().OfType<PathIcon>());
-        statusIconStyle.Add(PathIcon.IconModeProperty, IconMode.Disabled);
+        var statusIconStyle = new Style(selector => selector.Nesting().Template().OfType<Icon>());
+        statusIconStyle.Add(Icon.IconModeProperty, IconMode.Disabled);
         disableStyle.Add(statusIconStyle);
         Add(disableStyle);
     }

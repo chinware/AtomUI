@@ -1,6 +1,7 @@
-﻿using AtomUI.Theme;
+﻿using AtomUI.IconPkg;
+using AtomUI.Theme;
+using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
-using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
@@ -154,7 +155,7 @@ internal class PopupConfirmContainerTheme : BaseControlTheme
     protected override void BuildInstanceStyles(Control control)
     {
         {
-            var iconStyle = new Style(selector => selector.Name(IconContentPart).Child().OfType<PathIcon>());
+            var iconStyle = new Style(selector => selector.Name(IconContentPart).Child().OfType<Icon>());
             iconStyle.Add(Layoutable.WidthProperty, GlobalTokenResourceKey.IconSizeLG);
             iconStyle.Add(Layoutable.HeightProperty, GlobalTokenResourceKey.IconSizeLG);
             iconStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Top);
@@ -163,22 +164,22 @@ internal class PopupConfirmContainerTheme : BaseControlTheme
         var infoStatusStyle = new Style(selector => selector
                                                     .PropertyEquals(PopupConfirmContainer.ConfirmStatusProperty,
                                                         PopupConfirmStatus.Info)
-                                                    .Descendant().Name(IconContentPart).Child().OfType<PathIcon>());
-        infoStatusStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorPrimary);
+                                                    .Descendant().Name(IconContentPart).Child().OfType<Icon>());
+        infoStatusStyle.Add(Icon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorPrimary);
         control.Styles.Add(infoStatusStyle);
 
         var warningStatusStyle = new Style(selector => selector
                                                        .PropertyEquals(PopupConfirmContainer.ConfirmStatusProperty,
                                                            PopupConfirmStatus.Warning)
-                                                       .Descendant().Name(IconContentPart).Child().OfType<PathIcon>());
-        warningStatusStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorWarning);
+                                                       .Descendant().Name(IconContentPart).Child().OfType<Icon>());
+        warningStatusStyle.Add(Icon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorWarning);
         control.Styles.Add(warningStatusStyle);
 
         var errorStatusStyle = new Style(selector => selector
                                                      .PropertyEquals(PopupConfirmContainer.ConfirmStatusProperty,
                                                          PopupConfirmStatus.Error)
-                                                     .Descendant().Name(IconContentPart).Child().OfType<PathIcon>());
-        errorStatusStyle.Add(PathIcon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorError);
+                                                     .Descendant().Name(IconContentPart).Child().OfType<Icon>());
+        errorStatusStyle.Add(Icon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorError);
         control.Styles.Add(errorStatusStyle);
     }
 

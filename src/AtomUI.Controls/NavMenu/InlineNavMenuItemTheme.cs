@@ -1,7 +1,6 @@
-﻿using AtomUI.Controls.Primitives;
-using AtomUI.MotionScene;
+﻿using AtomUI.MotionScene;
+using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
-using AtomUI.Theme.Utils;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
@@ -23,19 +22,19 @@ internal class InlineNavMenuItemTheme : BaseNavMenuItemTheme
     public const string MenuIndicatorIconLayoutPart = "PART_MenuIndicatorIconLayout";
     public const string ChildItemsPresenterPart = "PART_ChildItemsPresenter";
     public const string ChildItemsLayoutTransformPart = "PART_ChildItemsLayoutTransform";
-    
+
     public InlineNavMenuItemTheme() : base(typeof(NavMenuItem))
     {
     }
-    
+
     public override string ThemeResourceKey()
     {
         return ID;
     }
-    
+
     protected override Control BuildMenuIndicatorIcon(INameScope scope)
     {
-        var indicatorIcon   = base.BuildMenuIndicatorIcon(scope);
+        var indicatorIcon = base.BuildMenuIndicatorIcon(scope);
         var menuIndicatorIconPresenter = new Border()
         {
             Name = MenuIndicatorIconLayoutPart,
@@ -55,14 +54,14 @@ internal class InlineNavMenuItemTheme : BaseNavMenuItemTheme
         {
             Orientation = Orientation.Vertical
         };
-        
+
         var headerContent = base.BuildMenuItemContent(navMenuItem, scope);
-        
+
         var childItemsLayoutTransform = new MotionActorControl()
         {
-            Name        = ChildItemsLayoutTransformPart,
+            Name = ChildItemsLayoutTransformPart,
         };
-        TokenResourceBinder.CreateTokenBinding(childItemsLayoutTransform, MotionActorControl.MarginProperty, 
+        TokenResourceBinder.CreateTokenBinding(childItemsLayoutTransform, MotionActorControl.MarginProperty,
             NavMenuTokenResourceKey.VerticalItemsPanelSpacing, BindingPriority.Template,
             (v) =>
             {
@@ -74,7 +73,7 @@ internal class InlineNavMenuItemTheme : BaseNavMenuItemTheme
                 return new Thickness();
             });
         childItemsLayoutTransform.RegisterInNameScope(scope);
-        
+
         var itemsPresenter = new ItemsPresenter
         {
             Name      = ChildItemsPresenterPart,
@@ -84,7 +83,7 @@ internal class InlineNavMenuItemTheme : BaseNavMenuItemTheme
         CreateTemplateParentBinding(itemsPresenter, ItemsPresenter.ItemsPanelProperty, NavMenuItem.ItemsPanelProperty);
 
         childItemsLayoutTransform.Child = itemsPresenter;
-        
+
         rootLayout.Children.Add(headerContent);
         rootLayout.Children.Add(childItemsLayoutTransform);
         return rootLayout;
@@ -109,8 +108,9 @@ internal class InlineNavMenuItemTheme : BaseNavMenuItemTheme
     {
         base.BuildStyles();
         BuildMenuIndicatorStyle();
-        
-        var itemsPanelStyle = new Style(selector => selector.Nesting().Template().Name(ChildItemsPresenterPart).Child().OfType<StackPanel>());
+
+        var itemsPanelStyle = new Style(selector =>
+            selector.Nesting().Template().Name(ChildItemsPresenterPart).Child().OfType<StackPanel>());
         itemsPanelStyle.Add(StackPanel.SpacingProperty, NavMenuTokenResourceKey.VerticalItemsPanelSpacing);
         Add(itemsPanelStyle);
     }
@@ -118,8 +118,9 @@ internal class InlineNavMenuItemTheme : BaseNavMenuItemTheme
     private void BuildMenuIndicatorStyle()
     {
         {
-            var menuIndicatorStyle = new Style(selector => selector.Nesting().Template().Name(MenuIndicatorIconLayoutPart));
-            var transformOptions   = new TransformOperations.Builder(1);
+            var menuIndicatorStyle =
+                new Style(selector => selector.Nesting().Template().Name(MenuIndicatorIconLayoutPart));
+            var transformOptions = new TransformOperations.Builder(1);
             transformOptions.AppendRotate(MathUtils.Deg2Rad(90));
             menuIndicatorStyle.Add(Border.RenderTransformProperty, transformOptions.Build());
             menuIndicatorStyle.Add(Visual.IsVisibleProperty, true);
@@ -127,8 +128,9 @@ internal class InlineNavMenuItemTheme : BaseNavMenuItemTheme
         }
         var openSubMenuStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Open));
         {
-            var menuIndicatorStyle = new Style(selector => selector.Nesting().Template().Name(MenuIndicatorIconLayoutPart));
-            var transformOptions   = new TransformOperations.Builder(1);
+            var menuIndicatorStyle =
+                new Style(selector => selector.Nesting().Template().Name(MenuIndicatorIconLayoutPart));
+            var transformOptions = new TransformOperations.Builder(1);
             transformOptions.AppendRotate(MathUtils.Deg2Rad(-90));
             menuIndicatorStyle.Add(Border.RenderTransformProperty, transformOptions.Build());
             openSubMenuStyle.Add(menuIndicatorStyle);
@@ -136,7 +138,8 @@ internal class InlineNavMenuItemTheme : BaseNavMenuItemTheme
         Add(openSubMenuStyle);
         var emptySubMenuStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Empty));
         {
-            var menuIndicatorStyle = new Style(selector => selector.Nesting().Template().Name(MenuIndicatorIconLayoutPart));
+            var menuIndicatorStyle =
+                new Style(selector => selector.Nesting().Template().Name(MenuIndicatorIconLayoutPart));
             menuIndicatorStyle.Add(Visual.IsVisibleProperty, false);
             emptySubMenuStyle.Add(menuIndicatorStyle);
         }

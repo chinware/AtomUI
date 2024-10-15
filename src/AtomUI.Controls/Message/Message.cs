@@ -1,16 +1,17 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using AtomUI.IconPkg;
 
 namespace AtomUI.Controls;
 
 public class Message : IMessage, INotifyPropertyChanged
 {
     private string _content;
-    private PathIcon? _icon;
+    private Icon? _icon;
 
     public Message(string content,
                    MessageType type = MessageType.Information,
-                   PathIcon? icon = null,
+                   Icon? icon = null,
                    TimeSpan? expiration = null,
                    Action? onClose = null)
     {
@@ -35,7 +36,7 @@ public class Message : IMessage, INotifyPropertyChanged
         }
     }
 
-    public PathIcon? Icon
+    public Icon? Icon
     {
         get => _icon;
 

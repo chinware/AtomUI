@@ -1,6 +1,7 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
+using Avalonia.Controls.Primitives;
 using Avalonia.Layout;
 using Avalonia.VisualTree;
 
@@ -24,6 +25,8 @@ public static class AtomLayerExtension
                 host = host.FindAncestorOfType<ScrollContentPresenter>();
             }
         }
+
+        host ??= target.FindAncestorOfType<VisualLayerManager>();
 
         host ??= TopLevel.GetTopLevel(target);
 

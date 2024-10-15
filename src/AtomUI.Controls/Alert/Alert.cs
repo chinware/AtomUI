@@ -1,6 +1,7 @@
-﻿using AtomUI.Theme.Data;
+﻿using AtomUI.IconPkg;
+using AtomUI.IconPkg.AntDesign;
+using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
-using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -33,8 +34,8 @@ public class Alert : TemplatedControl
     public static readonly StyledProperty<bool> IsClosableProperty =
         AvaloniaProperty.Register<Alert, bool>(nameof(IsClosable));
 
-    public static readonly StyledProperty<PathIcon?> CloseIconProperty =
-        AvaloniaProperty.Register<Alert, PathIcon?>(nameof(CloseIcon));
+    public static readonly StyledProperty<Icon?> CloseIconProperty =
+        AvaloniaProperty.Register<Alert, Icon?>(nameof(CloseIcon));
 
     public static readonly StyledProperty<string> MessageProperty =
         AvaloniaProperty.Register<Alert, string>(nameof(Message));
@@ -69,7 +70,7 @@ public class Alert : TemplatedControl
         set => SetValue(IsClosableProperty, value);
     }
 
-    public PathIcon? CloseIcon
+    public Icon? CloseIcon
     {
         get => GetValue(CloseIconProperty);
         set => SetValue(CloseIconProperty, value);
@@ -144,13 +145,10 @@ public class Alert : TemplatedControl
     {
         if (CloseIcon is null)
         {
-            CloseIcon = new PathIcon
-            {
-                Kind = "CloseOutlined"
-            };
-            TokenResourceBinder.CreateTokenBinding(CloseIcon, PathIcon.NormalFilledBrushProperty,
+            CloseIcon = AntDesignIconPackage.CloseOutlined();
+            TokenResourceBinder.CreateTokenBinding(CloseIcon, Icon.NormalFilledBrushProperty,
                 GlobalTokenResourceKey.ColorIcon);
-            TokenResourceBinder.CreateTokenBinding(CloseIcon, PathIcon.ActiveFilledBrushProperty,
+            TokenResourceBinder.CreateTokenBinding(CloseIcon, Icon.ActiveFilledBrushProperty,
                 GlobalTokenResourceKey.ColorIconHover);
         }
     }
