@@ -18,8 +18,14 @@ public class ListBox : AvaloniaListBox
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
         AvaloniaProperty.Register<ListBox, SizeType>(nameof(SizeType), SizeType.Middle);
 
+   #endregion
     public static readonly StyledProperty<bool> DisabledItemHoverEffectProperty =
         AvaloniaProperty.Register<ListBox, bool>(nameof(DisabledItemHoverEffect));
+   
+   protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
+   {
+      return new ListBoxItem();
+   }
 
     public SizeType SizeType
     {
@@ -32,8 +38,6 @@ public class ListBox : AvaloniaListBox
         get => GetValue(DisabledItemHoverEffectProperty);
         set => SetValue(DisabledItemHoverEffectProperty, value);
     }
-
-    #endregion
 
     protected override Size ArrangeOverride(Size finalSize)
     {

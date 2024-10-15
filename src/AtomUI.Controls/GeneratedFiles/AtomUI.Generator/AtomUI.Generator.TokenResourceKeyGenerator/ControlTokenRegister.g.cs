@@ -1,4 +1,4 @@
-﻿namespace AtomUI.Theme
+namespace AtomUI.Theme
 {
     internal class ControlTokenTypeRegister
     {
