@@ -39,6 +39,7 @@
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.ToggleSwitchToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.TabControlToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.TagToken));
+            ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.TimelineToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.TimePickerToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.ToolTipToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.TreeViewToken));
