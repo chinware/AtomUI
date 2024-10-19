@@ -1,8 +1,8 @@
 using AtomUI.Data;
-using AtomUI.Icon;
+using AtomUI.IconPkg;
+using AtomUI.IconPkg.AntDesign;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
-using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -31,8 +31,8 @@ public class Timeline : ItemsControl
     public static readonly StyledProperty<bool> ReverseProperty =
         AvaloniaProperty.Register<Timeline, bool>(nameof(Reverse), false);
 
-    public static readonly StyledProperty<PathIcon?> PendingIconProperty =
-        AvaloniaProperty.Register<Alert, PathIcon?>(nameof(PendingIcon));
+    public static readonly StyledProperty<Icon?> PendingIconProperty =
+        AvaloniaProperty.Register<Alert, Icon?>(nameof(PendingIcon));
 
     public TimeLineMode Mode
     {
@@ -52,7 +52,7 @@ public class Timeline : ItemsControl
         set { SetValue(ReverseProperty, value); }
     }
 
-    public PathIcon? PendingIcon
+    public Icon? PendingIcon
     {
         get => GetValue(PendingIconProperty);
         set => SetValue(PendingIconProperty, value);
@@ -144,15 +144,12 @@ public class Timeline : ItemsControl
 
                 if (PendingIcon is null)
                 {
-                    PendingIcon = new PathIcon
-                    {
-                        Kind                = "LoadingOutlined",
-                        Width               = 10,
-                        Height              = 10,
-                        LoadingAnimation    = IconAnimation.Spin,
-                        VerticalAlignment   = VerticalAlignment.Top,
-                        HorizontalAlignment = HorizontalAlignment.Center,
-                    };
+                    PendingIcon = AntDesignIconPackage.LoadingOutlined();
+                    PendingIcon.Width = 10;
+                    PendingIcon.Height = 10;
+                    PendingIcon.LoadingAnimation = IconAnimation.Spin;
+                    PendingIcon.VerticalAlignment = VerticalAlignment.Top;
+                    PendingIcon.HorizontalAlignment = HorizontalAlignment.Center;
                 }
 
                 _pendingItem.DotIcon   = PendingIcon;
