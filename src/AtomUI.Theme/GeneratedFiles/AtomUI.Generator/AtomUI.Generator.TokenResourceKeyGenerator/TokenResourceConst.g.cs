@@ -1,4 +1,4 @@
-using AtomUI.Theme.TokenSystem;
+﻿using AtomUI.Theme.TokenSystem;
 
 namespace AtomUI.Theme.Styling
 {

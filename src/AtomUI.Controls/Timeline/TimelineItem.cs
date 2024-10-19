@@ -1,5 +1,6 @@
+using AtomUI.IconPkg;
 using AtomUI.Theme.Styling;
-using AtomUI.Utils;
+using AtomUI.Theme.Data;
 using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;
@@ -22,8 +23,8 @@ public class TimelineItem : ContentControl
     public static readonly StyledProperty<string?> LabelProperty =
         AvaloniaProperty.Register<TimelineItem, string?>(nameof(Label));
 
-    public static readonly StyledProperty<PathIcon?> DotIconProperty =
-        AvaloniaProperty.Register<Alert, PathIcon?>(nameof(DotIcon));
+    public static readonly StyledProperty<Icon?> DotIconProperty =
+        AvaloniaProperty.Register<Alert, Icon?>(nameof(DotIcon));
 
     public static readonly StyledProperty<string> ColorProperty =
         AvaloniaProperty.Register<TimelineItem, string>(nameof(Color), "blue");
@@ -34,7 +35,7 @@ public class TimelineItem : ContentControl
         set => SetValue(LabelProperty, value);
     }
 
-    public PathIcon? DotIcon
+    public Icon? DotIcon
     {
         get => GetValue(DotIconProperty);
         set => SetValue(DotIconProperty, value);
@@ -143,7 +144,7 @@ public class TimelineItem : ContentControl
     private TextBlock? _labelBlock;
     private ContentPresenter? _itemsContentPresenter;
     private Border? _splitHeadPart;
-    private PathIcon? _dotPart;
+    private Icon? _dotPart;
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
@@ -169,7 +170,7 @@ public class TimelineItem : ContentControl
         _labelBlock            = scope.Find<TextBlock>(TimelineItemTheme.LabelPart);
         _itemsContentPresenter = scope.Find<ContentPresenter>(TimelineItemTheme.ItemsContentPresenterPart);
         _splitHeadPart         = scope.Find<Border>(TimelineItemTheme.SplitHeadPart);
-        _dotPart               = scope.Find<PathIcon>(TimelineItemTheme.DotPart);
+        _dotPart               = scope.Find<Icon>(TimelineItemTheme.DotPart);
         
         UpdateAll();
     }
@@ -316,7 +317,7 @@ public class TimelineItem : ContentControl
             {
                 if (_dotPart is not null && _dotPart.NormalFilledBrush is null)
                 {
-                    TokenResourceBinder.CreateGlobalTokenBinding(_dotPart, PathIcon.NormalFilledBrushProperty,
+                    TokenResourceBinder.CreateGlobalTokenBinding(_dotPart, Icon.NormalFilledBrushProperty,
                         GlobalTokenResourceKey.ColorPrimary);
                 }
 
@@ -347,7 +348,7 @@ public class TimelineItem : ContentControl
             }
             if (_dotPart is not null && _dotPart.NormalFilledBrush is null)
             {
-                TokenResourceBinder.CreateGlobalTokenBinding(_dotPart, PathIcon.NormalFilledBrushProperty,
+                TokenResourceBinder.CreateGlobalTokenBinding(_dotPart, Icon.NormalFilledBrushProperty,
                     tokenText);
             }
 
