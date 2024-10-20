@@ -1,4 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+	
+	<PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
+		<DefineConstants>PLATFORM_WINDOWS</DefineConstants>
+	</PropertyGroup>
 
 	<Import Project="$(MSBuildThisFileDirectory)..\..\build\Common.props"/>
 	<Import Project="$(MSBuildThisFileDirectory)..\..\build\Nuget.props"/>

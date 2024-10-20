@@ -5,7 +5,10 @@ using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Media;
 using Avalonia.Platform;
 using Avalonia.VisualTree;
+
+#if PLATFORM_WINDOWS
 using AtomUI.Platform.Windows;
+#endif
 
 namespace AtomUI.MotionScene;
 
@@ -39,10 +42,12 @@ internal class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
     {
         ParentTopLevel = parent;
         impl.SetWindowManagerAddShadowHint(false);
+#if PLATFORM_WINDOWS
         if (this is WindowBase window)
         {
             window.SetTransparentForMouseEvents(true);
         }
+#endif
 
         if (PlatformImpl?.PopupPositioner is ManagedPopupPositioner managedPopupPositioner)
         {
