@@ -1,8 +1,8 @@
 <Project>
     <PropertyGroup>
         <NoWarn>$(NoWarn);CS7035</NoWarn>
-        <AvaloniaVersion>11.1.3</AvaloniaVersion>
-        <AtomUIVersion>0.0.1</AtomUIVersion>
+        <AvaloniaVersion>11.2.3</AvaloniaVersion>
+        <AtomUIVersion>0.0.2</AtomUIVersion>
         <NugetPackageVersion>$(AtomUIVersion)-build-$([System.DateTime]::Now.ToString("yyyyMMdd"))</NugetPackageVersion>
         <FileVersion>$([System.DateTime]::Now.ToString("yyyy.MM.dd HH:mm:ss"))</FileVersion>
         <AssemblyVersion>$(AtomUIVersion)</AssemblyVersion>

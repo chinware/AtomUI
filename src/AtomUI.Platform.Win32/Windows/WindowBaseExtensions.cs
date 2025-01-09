@@ -14,25 +14,25 @@ internal static class WindowBaseExtensions
     
     private static WindowStyles GetWindowStyle(this WindowBase window)
     {
-        var hwnd = window.PlatformImpl!.Handle.Handle;
+        var hwnd = window.PlatformImpl!.Handle!.Handle;
         return (WindowStyles)Win32API.GetWindowLong(hwnd, (int)WindowLongParam.GWL_STYLE);
     }
     
     private static void SetWindowStyle(this WindowBase window, WindowStyles style)
     {
-        var hwnd = window.PlatformImpl!.Handle.Handle;
+        var hwnd = window.PlatformImpl!.Handle!.Handle;
         Win32API.SetWindowLong(hwnd, (int)WindowLongParam.GWL_STYLE, (uint)style);
     }
     
     private static WindowStyles GetWindowExtendedStyle(this WindowBase window)
     {
-        var hwnd = window.PlatformImpl!.Handle.Handle;
+        var hwnd = window.PlatformImpl!.Handle!.Handle;
         return (WindowStyles)Win32API.GetWindowLong(hwnd, (int)WindowLongParam.GWL_EXSTYLE);
     }
     
     private static void SetWindowExtendedStyle(this WindowBase window, WindowStyles style)
     {
-        var hwnd = window.PlatformImpl!.Handle.Handle;
+        var hwnd = window.PlatformImpl!.Handle!.Handle;
         Win32API.SetWindowLong(hwnd, (int)WindowLongParam.GWL_EXSTYLE, (uint)style);
     }
     

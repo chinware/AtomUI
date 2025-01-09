@@ -146,7 +146,7 @@ public class Popup : AvaloniaPopup
             }
 
             // 目前我们只支持 WindowBase Popup
-            _managedPopupPositioner = new ManagedPopupPositionerInfo((toplevel as WindowBase)!.PlatformImpl!);
+            _managedPopupPositioner = new ManagedPopupPositionerInfo((toplevel as WindowBase)!);
 
             if (toplevel is null)
             {
@@ -318,11 +318,10 @@ public class Popup : AvaloniaPopup
     {
         if (topLevel is WindowBase window)
         {
-            var windowImpl = window.PlatformImpl!;
-            return windowImpl.Screen.AllScreens
-                             .Select(s =>
-                                 new ManagedPopupPositionerScreenInfo(s.Bounds.ToRect(1), s.WorkingArea.ToRect(1)))
-                             .ToArray();
+            return window.Screens.All
+                         .Select(s =>
+                             new ManagedPopupPositionerScreenInfo(s.Bounds.ToRect(1), s.WorkingArea.ToRect(1)))
+                         .ToArray();
         }
 
         return Array.Empty<ManagedPopupPositionerScreenInfo>();
@@ -549,15 +548,15 @@ public class Popup : AvaloniaPopup
 
 internal class ManagedPopupPositionerInfo
 {
-    private readonly IWindowBaseImpl _parent;
+    private readonly WindowBase _parent;
 
-    public ManagedPopupPositionerInfo(IWindowBaseImpl parent)
+    public ManagedPopupPositionerInfo(WindowBase parent)
     {
         _parent = parent;
     }
 
     public IReadOnlyList<ManagedPopupPositionerScreenInfo> Screens =>
-        _parent.Screen.AllScreens
+        _parent.Screens.All
                .Select(s => new ManagedPopupPositionerScreenInfo(s.Bounds.ToRect(1), s.WorkingArea.ToRect(1)))
                .ToArray();
 
