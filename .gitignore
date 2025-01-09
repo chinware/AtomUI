@@ -197,3 +197,6 @@ coc-settings.json
 *.map
 node_modules
 api/diff
+
+# Project generation intermediate results storage
+output/

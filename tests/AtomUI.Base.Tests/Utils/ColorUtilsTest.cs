@@ -32,7 +32,7 @@ public class ColorUtilsTest
         var items = ColorUtilsTestData.DESATURATIONS;
         for (var i = 0; i < items.Count; ++i)
         {
-            // _output.WriteLine($"{i} - {ColorUtils.Desaturate(Color.Parse("red"), i).HexName()} - {items[i]}");
+            // output.WriteLine($"{i} - {ColorUtils.Desaturate(Color.Parse("red"), i).HexName()} - {items[i]}");
             ColorUtils.Desaturate("red", i).HexName().ShouldBeEquivalentTo(items[i]);
         }
     }
@@ -43,7 +43,7 @@ public class ColorUtilsTest
         var items = ColorUtilsTestData.SATURATIONS;
         for (var i = 0; i < items.Count; ++i)
         {
-            // _output.WriteLine($"{i} - {ColorUtils.Saturate(Color.Parse("red"), i).HexName()} - {items[i]}");
+            // output.WriteLine($"{i} - {ColorUtils.Saturate(Color.Parse("red"), i).HexName()} - {items[i]}");
             ColorUtils.Saturate("red", i).HexName().ShouldBeEquivalentTo(items[i]);
         }
     }
@@ -54,7 +54,7 @@ public class ColorUtilsTest
         var items = ColorUtilsTestData.LIGHTENS;
         for (var i = 0; i < items.Count; ++i)
         {
-            //_output.WriteLine($"{i} - {ColorUtils.Lighten(Color.Parse("red"), i).HexName()} - {items[i]}"); 
+            //output.WriteLine($"{i} - {ColorUtils.Lighten(Color.Parse("red"), i).HexName()} - {items[i]}"); 
             ColorUtils.Lighten("red", i).HexName().ShouldBeEquivalentTo(items[i]);
         }
     }
@@ -65,7 +65,7 @@ public class ColorUtilsTest
         var items = ColorUtilsTestData.BRIGHTENS;
         for (var i = 0; i < items.Count; ++i)
         {
-            //_output.WriteLine($"{i} - {ColorUtils.Brighten(Color.Parse("red"), i).HexName()} - {items[i]}"); 
+            //output.WriteLine($"{i} - {ColorUtils.Brighten(Color.Parse("red"), i).HexName()} - {items[i]}"); 
             ColorUtils.Brighten("red", i).HexName().ShouldBeEquivalentTo(items[i]);
         }
     }
@@ -76,7 +76,7 @@ public class ColorUtilsTest
         var items = ColorUtilsTestData.DARKENS;
         for (var i = 0; i < items.Count; ++i)
         {
-            // _output.WriteLine($"{i} - {ColorUtils.Darken(Color.Parse("red"), i).HexName()} - {items[i]}"); 
+            // output.WriteLine($"{i} - {ColorUtils.Darken(Color.Parse("red"), i).HexName()} - {items[i]}"); 
             ColorUtils.Darken("red", i).HexName().ShouldBeEquivalentTo(items[i]);
         }
     }
@@ -85,7 +85,7 @@ public class ColorUtilsTest
     public void TestSpin()
     {
         var testColor = Color.Parse("#f00");
-        //_output.WriteLine(ColorUtils.Spin(Color.Parse("#f00"), -1234).HexName());
+        //output.WriteLine(ColorUtils.Spin(Color.Parse("#f00"), -1234).HexName());
         Math.Round(testColor.Spin(-1234).ToHsl().H).ShouldBe(206);
         Math.Round(testColor.Spin(-360).ToHsl().H).ShouldBe(0);
         Math.Round(testColor.Spin(-120).ToHsl().H).ShouldBe(240);
@@ -101,22 +101,22 @@ public class ColorUtilsTest
         {
             var targetColor = ColorUtils.OnBackground(Color.Parse("#ffffff"), Color.Parse("#000"));
             targetColor.HexName().ShouldBe("#ffffffff");
-            // _output.WriteLine(targetColor.HexName());
+            // output.WriteLine(targetColor.HexName());
         }
         {
             var targetColor = ColorUtils.OnBackground(Color.Parse("#ffffff00"), Color.Parse("#000"));
             targetColor.HexName().ShouldBe("#ffffff00");
-            // _output.WriteLine(targetColor.HexName());
+            // output.WriteLine(targetColor.HexName());
         }
         {
             var targetColor = ColorUtils.OnBackground(Color.Parse("#ffffff77"), Color.Parse("#000"));
             targetColor.HexName().ShouldBe("#ffffff77");
-            // _output.WriteLine(targetColor.HexName());
+            // output.WriteLine(targetColor.HexName());
         }
         {
             var targetColor = ColorUtils.OnBackground(Color.Parse("#262a6d82"), Color.Parse("#644242"));
             targetColor.HexName().ShouldBe("#ff5b484c");
-            // _output.WriteLine(targetColor.HexName());
+            // output.WriteLine(targetColor.HexName());
         }
     }
 }

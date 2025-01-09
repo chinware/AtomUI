@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="./docs/images/ATOMUI.png" />
+    <img src="./resources/images/readme/ATOMUI.png" />
 </p>
 <br/>
 <div align="center">
@@ -33,14 +33,14 @@
 
 文档语言: [English](README.md) | [简体中文](README.zh-CN.md)
 
-<img src="./docs/images/Release.png"/>
+<img src="./resources/images/readme/Release.png"/>
 
 #### 介绍
 
 AtomUI 是基于 .NET 技术的 Ant Design 实现，致力于将 Ant Design 优秀而高效的设计语言和体验带入 Avalonia/.NET 跨平台桌面软件开发领域。
 欢迎与 AtomUI 进行交流并提出建议，感谢您为该项目点赞。
 
-<img src="./docs/images/Gallery.png"/>
+<img src="./resources/images/readme/Gallery.png"/>
 
 #### 特性
 
@@ -58,7 +58,7 @@ PS: AtomUI 目前仅在 Windows 11 平台测试<br>
 #### 感谢 Gitee 对 AtomUI 的认可
 
 <p align="center">
-    <img src="./docs/images/GVP.png" width="600"/>
+    <img src="./resources/images/readme/GVP.png" width="600"/>
 </p>
 
 #### 中文社区
@@ -68,10 +68,10 @@ PS: AtomUI 目前仅在 Windows 11 平台测试<br>
     <tbody>
         <tr>
             <td align="center" valign="middle">
-                <img src="./docs/images/wechat.jpg" width="200" height="200"/>
+                <img src="./resources/images/readme/wechat.jpg" width="200" height="200"/>
             </td>
             <td align="center" valign="middle">
-                <img src="./docs/images/QQ.png" width="200" height="200"/>
+                <img src="./resources/images/readme/QQ.png" width="200" height="200"/>
             </td>
         </tr>
     </tbody>
@@ -85,42 +85,42 @@ PS: AtomUI 目前仅在 Windows 11 平台测试<br>
     <tbody>
         <tr>
             <td align="center" valign="middle" style="padding: 2px">
-                 <img src="./docs/images/controls/Button.png"/>
+                 <img src="./resources/images/readme/controls/Button.png"/>
             </td>
             <td align="center" valign="middle" style="padding: 2px">
-                <img src="./docs/images/controls/Badge.png" />
-            </td>
-        </tr>
-        <tr>
-            <td align="center" valign="middle" style="padding: 2px">
-                <img src="./docs/images/controls/DatePicker.png"/>
-            </td>
-            <td align="center" valign="middle" style="padding: 2px">
-                <img src="./docs/images/controls/LineEdit.png"/>
+                <img src="./resources/images/readme/controls/Badge.png" />
             </td>
         </tr>
         <tr>
             <td align="center" valign="middle" style="padding: 2px">
-                <img src="./docs/images/controls/Menu.png"/>
+                <img src="./resources/images/readme/controls/DatePicker.png"/>
             </td>
             <td align="center" valign="middle" style="padding: 2px">
-                <img src="./docs/images/controls/Notification.png"/>
-            </td>
-        </tr>
-        <tr>
-            <td align="center" valign="middle" style="padding: 2px">
-                <img src="./docs/images/controls/PopupConfirm.png"/>
-            </td>
-            <td align="center" valign="middle" style="padding: 2px">
-                <img src="./docs/images/controls/ProgressBar.png"/>
+                <img src="./resources/images/readme/controls/LineEdit.png"/>
             </td>
         </tr>
         <tr>
             <td align="center" valign="middle" style="padding: 2px">
-                <img src="./docs/images/controls/RadioButton.png"/>
+                <img src="./resources/images/readme/controls/Menu.png"/>
             </td>
             <td align="center" valign="middle" style="padding: 2px">
-                <img src="./docs/images/controls/TreeView.png"/>
+                <img src="./resources/images/readme/controls/Notification.png"/>
+            </td>
+        </tr>
+        <tr>
+            <td align="center" valign="middle" style="padding: 2px">
+                <img src="./resources/images/readme/controls/PopupConfirm.png"/>
+            </td>
+            <td align="center" valign="middle" style="padding: 2px">
+                <img src="./resources/images/readme/controls/ProgressBar.png"/>
+            </td>
+        </tr>
+        <tr>
+            <td align="center" valign="middle" style="padding: 2px">
+                <img src="./resources/images/readme/controls/RadioButton.png"/>
+            </td>
+            <td align="center" valign="middle" style="padding: 2px">
+                <img src="./resources/images/readme/controls/TreeView.png"/>
             </td>
         </tr>
     </tbody>
@@ -133,7 +133,7 @@ PS: AtomUI 目前仅在 Windows 11 平台测试<br>
 
 #### 关于甲辰计划
 <p align="center">
-    <img src="./docs/images/jiachenjihua.png" width="300" />
+    <img src="./resources/images/readme/jiachenjihua.png" width="300" />
 </p>
 
 甲辰计划（RISC-V Prosperity 2036）诞生于2024年除夕，由国内多家 RISC-V 软件及芯片团队联合发起，并已经吸引数十家国内外从事 RISC-V 产品及软件开发的企业加入。我们相信RISC-V 生态正在进入前所未有的爆炸式增长的初期阶段：在2025年，RISC-V或将迎来预计超过100万名RISC-V应用开发者，与此同时RISC-V将在2025年进入世界超算TOP500、并在2030年进入TOP10。我们正处于一个计算机体系架构和基础软件系统的黄金时代，开放指令集架构带来了大量新的科学问题和工程挑战。
@@ -156,7 +156,7 @@ PS: AtomUI 目前仅在 Windows 11 平台测试<br>
 #### 关于秦派软件
 
 <p align="center">
-    <img src="./docs/images/Chinware.png" width="300" />
+    <img src="./resources/images/readme/Chinware.png" width="300" />
 </p>
 
 北京秦派软件科技有限公司(Pulsarware® Technologies Ltd.)是一家致力于开发生产力工具软件的技术公司，成立之初立志要在工具软件领域深耕，践行精益求精的研发精神，努力推出优质的生产力工具软件服务国内外的开发者，提升开发者的工作效率，同时创造出商业价值和社会价值。

@@ -1,6 +1,6 @@
 %~dp0
 
-rd/s/q ../_output/
+rd/s/q ../output/
 
 cd ../
 

@@ -5,7 +5,7 @@
 	</PropertyGroup>
 
 	<Import Project="$(MSBuildThisFileDirectory)..\..\build\Common.props"/>
-    <Import Project="$(MSBuildThisFileDirectory)..\..\build\Nuget.props"/>
+    <Import Project="$(MSBuildThisFileDirectory)..\..\build\PackageMetaInfo.props"/>
 
     <ItemGroup>
         <PackageReference Include="Avalonia"/>
