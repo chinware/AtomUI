@@ -5,7 +5,7 @@
 	</PropertyGroup>
 
 	<Import Project="$(MSBuildThisFileDirectory)..\..\build\Common.props"/>
-	<Import Project="$(MSBuildThisFileDirectory)..\..\build\Nuget.props"/>
+	<Import Project="$(MSBuildThisFileDirectory)..\..\build\PackageMetaInfo.props"/>
 
 	<ItemGroup>
 		<PackageReference Include="Avalonia"/>
@@ -26,27 +26,27 @@
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(Configuration)' == 'RELEASE' ">
-		<Reference Include="..\..\_output\Bin\Release\AtomUI.Base.dll" />
-		<Reference Include="..\..\_output\Bin\Release\AtomUI.Controls.dll" />
-		<Reference Include="..\..\_output\Bin\Release\AtomUI.IconPkg.dll" />
-		<Reference Include="..\..\_output\Bin\Release\AtomUI.IconPkg.AntDesign.dll" />
-		<Reference Include="..\..\_output\Bin\Release\AtomUI.Theme.dll" />
-		<Reference Include="..\..\_output\Bin\Release\AtomUI.Platform.Win32.dll" />
+		<Reference Include="..\..\output\Bin\Release\AtomUI.Base.dll" />
+		<Reference Include="..\..\output\Bin\Release\AtomUI.Controls.dll" />
+		<Reference Include="..\..\output\Bin\Release\AtomUI.IconPkg.dll" />
+		<Reference Include="..\..\output\Bin\Release\AtomUI.IconPkg.AntDesign.dll" />
+		<Reference Include="..\..\output\Bin\Release\AtomUI.Theme.dll" />
+		<Reference Include="..\..\output\Bin\Release\AtomUI.Platform.Win32.dll" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(Configuration)' == 'RELEASE' ">
-		<Content Pack="true" Visible="false" PackagePath="lib\$(TargetFramework)" Include="$(MSBuildThisFileDirectory)..\..\_output\Bin\Release\AtomUI.Base.dll" />
-		<Content Pack="true" Visible="false" PackagePath="lib\$(TargetFramework)" Include="$(MSBuildThisFileDirectory)..\..\_output\Bin\Release\AtomUI.Base.pdb" />
-		<Content Pack="true" Visible="false" PackagePath="lib\$(TargetFramework)" Include="$(MSBuildThisFileDirectory)..\..\_output\Bin\Release\AtomUI.Controls.dll" />
-		<Content Pack="true" Visible="false" PackagePath="lib\$(TargetFramework)" Include="$(MSBuildThisFileDirectory)..\..\_output\Bin\Release\AtomUI.Controls.pdb" />
-		<Content Pack="true" Visible="false" PackagePath="lib\$(TargetFramework)" Include="$(MSBuildThisFileDirectory)..\..\_output\Bin\Release\AtomUI.IconPkg.dll" />
-		<Content Pack="true" Visible="false" PackagePath="lib\$(TargetFramework)" Include="$(MSBuildThisFileDirectory)..\..\_output\Bin\Release\AtomUI.IconPkg.pdb" />
-		<Content Pack="true" Visible="false" PackagePath="lib\$(TargetFramework)" Include="$(MSBuildThisFileDirectory)..\..\_output\Bin\Release\AtomUI.IconPkg.AntDesign.dll" />
-		<Content Pack="true" Visible="false" PackagePath="lib\$(TargetFramework)" Include="$(MSBuildThisFileDirectory)..\..\_output\Bin\Release\AtomUI.IconPkg.AntDesign.pdb" />
-		<Content Pack="true" Visible="false" PackagePath="lib\$(TargetFramework)" Include="$(MSBuildThisFileDirectory)..\..\_output\Bin\Release\AtomUI.Theme.dll" />
-		<Content Pack="true" Visible="false" PackagePath="lib\$(TargetFramework)" Include="$(MSBuildThisFileDirectory)..\..\_output\Bin\Release\AtomUI.Theme.pdb" />
-		<Content Pack="true" Visible="false" PackagePath="lib\$(TargetFramework)" Include="$(MSBuildThisFileDirectory)..\..\_output\Bin\Release\AtomUI.Platform.Win32.dll" />
-		<Content Pack="true" Visible="false" PackagePath="lib\$(TargetFramework)" Include="$(MSBuildThisFileDirectory)..\..\_output\Bin\Release\AtomUI.Platform.Win32.pdb" />
+		<Content Pack="true" Visible="false" PackagePath="lib\$(TargetFramework)" Include="$(MSBuildThisFileDirectory)..\..\output\Bin\Release\AtomUI.Base.dll" />
+		<Content Pack="true" Visible="false" PackagePath="lib\$(TargetFramework)" Include="$(MSBuildThisFileDirectory)..\..\output\Bin\Release\AtomUI.Base.pdb" />
+		<Content Pack="true" Visible="false" PackagePath="lib\$(TargetFramework)" Include="$(MSBuildThisFileDirectory)..\..\output\Bin\Release\AtomUI.Controls.dll" />
+		<Content Pack="true" Visible="false" PackagePath="lib\$(TargetFramework)" Include="$(MSBuildThisFileDirectory)..\..\output\Bin\Release\AtomUI.Controls.pdb" />
+		<Content Pack="true" Visible="false" PackagePath="lib\$(TargetFramework)" Include="$(MSBuildThisFileDirectory)..\..\output\Bin\Release\AtomUI.IconPkg.dll" />
+		<Content Pack="true" Visible="false" PackagePath="lib\$(TargetFramework)" Include="$(MSBuildThisFileDirectory)..\..\output\Bin\Release\AtomUI.IconPkg.pdb" />
+		<Content Pack="true" Visible="false" PackagePath="lib\$(TargetFramework)" Include="$(MSBuildThisFileDirectory)..\..\output\Bin\Release\AtomUI.IconPkg.AntDesign.dll" />
+		<Content Pack="true" Visible="false" PackagePath="lib\$(TargetFramework)" Include="$(MSBuildThisFileDirectory)..\..\output\Bin\Release\AtomUI.IconPkg.AntDesign.pdb" />
+		<Content Pack="true" Visible="false" PackagePath="lib\$(TargetFramework)" Include="$(MSBuildThisFileDirectory)..\..\output\Bin\Release\AtomUI.Theme.dll" />
+		<Content Pack="true" Visible="false" PackagePath="lib\$(TargetFramework)" Include="$(MSBuildThisFileDirectory)..\..\output\Bin\Release\AtomUI.Theme.pdb" />
+		<Content Pack="true" Visible="false" PackagePath="lib\$(TargetFramework)" Include="$(MSBuildThisFileDirectory)..\..\output\Bin\Release\AtomUI.Platform.Win32.dll" />
+		<Content Pack="true" Visible="false" PackagePath="lib\$(TargetFramework)" Include="$(MSBuildThisFileDirectory)..\..\output\Bin\Release\AtomUI.Platform.Win32.pdb" />
 	</ItemGroup>
 
 </Project>

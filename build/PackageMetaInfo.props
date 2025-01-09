@@ -1,23 +1,17 @@
 <Project>
-
     <PropertyGroup>
         <GeneratePackageOnBuild Condition=" '$(Configuration)' == 'Release' ">True</GeneratePackageOnBuild>
-
         <PackageId>$(MSBuildProjectName)</PackageId>
-
         <!--Nuget-->
         <Title>AtomUI</Title>
-        <Author>Chinware Technologies Ltd.</Author>
+        <Author>Qinware Technologies Ltd.</Author>
         <Authors>$(Author)</Authors>
-
         <Description>AtomUI is an implementation of Ant Design based on .NET technology, and is committed to bringing Ant Design's excellent and efficient design language and experience to the Avalonia/.NET cross-platform desktop software development field.</Description>
         <PackageTags>avalonia;antdesign;ui;control</PackageTags>
-
-        <ProjectUrl>https://atomui.net</ProjectUrl>
+        <ProjectUrl>https://qinware.com</ProjectUrl>
         <RepositoryUrl>https://github.com/chinware/AtomUI</RepositoryUrl>
-        <PackageProjectUrl>https://atomui.net</PackageProjectUrl>
-        <Company>Chinware Technologies Ltd.</Company>
-        <Copyright>Copyright ©2018-2024, Chinware Technologies Ltd, All Rights Reserved.</Copyright>
+        <Company>Qinware Technologies Ltd.</Company>
+        <Copyright>Copyright ©2018-2025, Qinware Technologies Ltd., All Rights Reserved.</Copyright>
         <PackageIcon>logo.png</PackageIcon>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
@@ -25,7 +19,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <None Include="$(MSBuildThisFileDirectory)..\logo.png" Visible="False" Pack="True" PackagePath="\"/>
+        <None Include="$(MSBuildThisFileDirectory)..resources\logo.png" Visible="False" Pack="True" PackagePath="\"/>
         <None Include="$(MSBuildThisFileDirectory)..\LICENSE" Visible="False" Pack="True" PackagePath="\"/>
         <None Include="$(MSBuildThisFileDirectory)..\README.md" Visible="False" Pack="True" PackagePath="\"/>
     </ItemGroup>

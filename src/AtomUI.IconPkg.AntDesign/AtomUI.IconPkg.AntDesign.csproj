@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<Import Project="$(MSBuildThisFileDirectory)..\..\build\Common.props"/>
-    <Import Project="$(MSBuildThisFileDirectory)..\..\build\Nuget.props"/>
+    <Import Project="$(MSBuildThisFileDirectory)..\..\build\PackageMetaInfo.props"/>
 
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
