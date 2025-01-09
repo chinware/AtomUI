@@ -11,6 +11,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Media;
+using Avalonia.Platform;
 
 namespace AtomUI.Controls;
 
@@ -43,12 +44,21 @@ internal class PopupShadowLayer : LiteWindow, IShadowDecorator
     public PopupShadowLayer(TopLevel topLevel)
         : base(topLevel, topLevel.PlatformImpl?.CreatePopup()!)
     {
-        Background = new SolidColorBrush(Colors.Transparent);
+        if (topLevel.PlatformImpl is not null)
+        {
+            topLevel.PlatformImpl.SetTransparencyLevelHint(new []
+            {
+                WindowTransparencyLevel.Transparent
+            });
+        }
+        
 #if PLATFORM_WINDOWS
         if (this is WindowBase window)
         {
             window.SetTransparentForMouseEvents(true);
-        } 
+        }
+#elif PLATFORM_MACOS
+    
 #endif
 
         if (PlatformImpl?.PopupPositioner is ManagedPopupPositioner managedPopupPositioner)
@@ -79,7 +89,7 @@ internal class PopupShadowLayer : LiteWindow, IShadowDecorator
         if (_shadowRenderer is null)
         {
             _shadowRenderer ??= new ShadowRenderer();
-            _layout         =   new Canvas();
+            _layout = new Canvas();
             _layout.Children.Add(_shadowRenderer);
             SetChild(_layout);
         }
@@ -110,12 +120,12 @@ internal class PopupShadowLayer : LiteWindow, IShadowDecorator
 
     private Size DetectShadowWindowSize(Popup attachedPopup)
     {
-        var targetWidth  = 0d;
+        var targetWidth = 0d;
         var targetHeight = 0d;
-        var content      = attachedPopup.Child;
+        var content = attachedPopup.Child;
         if (content is not null)
         {
-            targetWidth  = content.DesiredSize.Width;
+            targetWidth = content.DesiredSize.Width;
             targetHeight = content.DesiredSize.Height;
         }
 
@@ -158,14 +168,14 @@ internal class PopupShadowLayer : LiteWindow, IShadowDecorator
         {
             return;
         }
-        
+
         _compositeDisposable = new CompositeDisposable();
         var popupRoot = _target?.Host as PopupRoot;
         if (popupRoot is not null)
         {
             popupRoot.PositionChanged += TargetPopupPositionChanged;
         }
-        
+
         _compositeDisposable.Add(Disposable.Create(this, state =>
         {
             state.SetChild(null);
@@ -213,18 +223,18 @@ internal class PopupShadowLayer : LiteWindow, IShadowDecorator
             {
                 _target.Child.SizeChanged += HandleChildSizeChange;
                 // 理论上现在已经有大小了
-                var content            = _target?.Child!;
+                var content = _target?.Child!;
                 var detectPopupWinSize = DetectShadowWindowSize(_target!);
                 _shadowRenderer.Shadows = MaskShadows;
                 CornerRadius cornerRadius = default;
                 if (content is IShadowMaskInfoProvider shadowMaskInfoProvider)
                 {
                     cornerRadius = shadowMaskInfoProvider.GetMaskCornerRadius();
-                    var maskBounds   = shadowMaskInfoProvider.GetMaskBounds();
+                    var maskBounds = shadowMaskInfoProvider.GetMaskBounds();
                     var rendererSize = CalculateShadowRendererSize(new Size(maskBounds.Width, maskBounds.Height));
                     Canvas.SetLeft(_shadowRenderer, maskBounds.Left);
                     Canvas.SetTop(_shadowRenderer, maskBounds.Top);
-                    _shadowRenderer.Width  = rendererSize.Width;
+                    _shadowRenderer.Width = rendererSize.Width;
                     _shadowRenderer.Height = rendererSize.Height;
                 }
                 else if (content is Border bordered)
@@ -233,7 +243,7 @@ internal class PopupShadowLayer : LiteWindow, IShadowDecorator
                     var rendererSize = CalculateShadowRendererSize(new Size(
                         Math.Max(detectPopupWinSize.Width, content.DesiredSize.Width),
                         Math.Max(detectPopupWinSize.Height, content.DesiredSize.Height)));
-                    _shadowRenderer.Width  = rendererSize.Width;
+                    _shadowRenderer.Width = rendererSize.Width;
                     _shadowRenderer.Height = rendererSize.Height;
                 }
                 else if (content is TemplatedControl templatedControl)
@@ -242,7 +252,7 @@ internal class PopupShadowLayer : LiteWindow, IShadowDecorator
                     var rendererSize = CalculateShadowRendererSize(new Size(
                         Math.Max(detectPopupWinSize.Width, templatedControl.DesiredSize.Width),
                         Math.Max(detectPopupWinSize.Height, templatedControl.DesiredSize.Height)));
-                    _shadowRenderer.Width  = rendererSize.Width;
+                    _shadowRenderer.Width = rendererSize.Width;
                     _shadowRenderer.Height = rendererSize.Height;
                 }
 
@@ -259,9 +269,9 @@ internal class PopupShadowLayer : LiteWindow, IShadowDecorator
     private Size CalculateShadowRendererSize(Size content)
     {
         var shadowThickness = MaskShadows.Thickness();
-        var targetWidth     = shadowThickness.Left + shadowThickness.Right;
-        var targetHeight    = shadowThickness.Top + shadowThickness.Bottom;
-        targetWidth  += content.Width;
+        var targetWidth = shadowThickness.Left + shadowThickness.Right;
+        var targetHeight = shadowThickness.Top + shadowThickness.Bottom;
+        targetWidth += content.Width;
         targetHeight += content.Height;
         return new Size(targetWidth, targetHeight);
     }
@@ -270,12 +280,12 @@ internal class PopupShadowLayer : LiteWindow, IShadowDecorator
     {
         if (_target?.Host is PopupRoot popupRoot)
         {
-            var    impl            = popupRoot.PlatformImpl!;
-            var    targetPosition  = impl.Position;
-            double offsetX         = targetPosition.X;
-            double offsetY         = targetPosition.Y;
-            var    scaling         = _managedPopupPositionerPopup!.Scaling;
-            var    shadowThickness = MaskShadows.Thickness();
+            var impl = popupRoot.PlatformImpl!;
+            var targetPosition = impl.Position;
+            double offsetX = targetPosition.X;
+            double offsetY = targetPosition.Y;
+            var scaling = _managedPopupPositionerPopup!.Scaling;
+            var shadowThickness = MaskShadows.Thickness();
             offsetX -= shadowThickness.Left * scaling;
             offsetY -= shadowThickness.Top * scaling;
 

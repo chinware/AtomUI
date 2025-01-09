@@ -4,6 +4,7 @@
     <Import Project="$(MSBuildThisFileDirectory)..\..\build\PackageMetaInfo.props"/>
 
     <PropertyGroup>
+        <TargetFramework>$(AtomUICurrentTargetFramework)</TargetFramework>
         <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
         <CompilerGeneratedFilesOutputPath>GeneratedFiles</CompilerGeneratedFilesOutputPath>
     </PropertyGroup>

@@ -1,7 +1,6 @@
 ﻿using AtomUI.Theme.Styling;
 using AtomUI.Theme.TokenSystem;
 using Avalonia.Controls;
-using Avalonia.Media;
 using Avalonia.Styling;
 
 namespace AtomUI.Theme;
@@ -11,31 +10,31 @@ namespace AtomUI.Theme;
 /// </summary>
 public abstract class Theme : ITheme
 {
-    protected bool _loaded;
-    protected bool _loadedStatus = true;
-    protected bool _darkMode;
-    protected bool _activated;
-    protected string _id;
-    protected string? _loadErrorMsg;
-    protected IThemeVariantCalculator? _themeVariantCalculator;
-    protected ThemeDefinition? _themeDefinition;
-    protected string _definitionFilePath;
-    protected ResourceDictionary _resourceDictionary;
-    protected ThemeVariant _themeVariant;
-    protected GlobalToken _globalToken;
-    protected Dictionary<string, IControlDesignToken> _controlTokens;
-
+    private string _id;
+    private string? _loadErrorMsg;
+    private ThemeVariant _themeVariant;
+    private GlobalToken _globalToken;
+    
+    protected bool Loaded;
+    protected bool LoadedStatus = true;
+    protected bool DarkMode;
+    protected bool Activated;
+    protected IThemeVariantCalculator? ThemeVariantCalculator;
+    protected ThemeDefinition? ThemeDefinition;
+    protected ResourceDictionary ResourceDictionary;
+    protected Dictionary<string, IControlDesignToken> ControlTokens;
     public static readonly IList<string> SUPPORTED_ALGORITHMS;
+    public string DefinitionFilePath { get; }
 
     public string Id => _id;
     public string DisplayName => string.Empty;
-    public bool LoadStatus => _loadedStatus;
+    public bool LoadStatus => LoadedStatus;
     public string? LoadErrorMsg => _loadErrorMsg;
-    public bool IsLoaded => _loaded;
+    public bool IsLoaded => Loaded;
     public ThemeVariant ThemeVariant => _themeVariant;
-    internal ResourceDictionary ThemeResource => _resourceDictionary;
-    public bool IsDarkMode => _darkMode;
-    public bool IsActivated => _activated;
+    internal ResourceDictionary ThemeResource => ResourceDictionary;
+    public bool IsDarkMode => DarkMode;
+    public bool IsActivated => Activated;
     public GlobalToken GlobalToken => _globalToken;
 
     static Theme()
@@ -51,17 +50,17 @@ public abstract class Theme : ITheme
     public Theme(string id, string defFilePath)
     {
         _id                                                = id;
-        _definitionFilePath                                = defFilePath;
+        DefinitionFilePath                                = defFilePath;
         _themeVariant                                      = ThemeVariant.Default;
-        _resourceDictionary                                = new ResourceDictionary();
-        (_resourceDictionary as IThemeVariantProvider).Key = _themeVariant;
+        ResourceDictionary                                = new ResourceDictionary();
+        (ResourceDictionary as IThemeVariantProvider).Key = _themeVariant;
         _globalToken                                       = new GlobalToken();
-        _controlTokens                                     = new Dictionary<string, IControlDesignToken>();
+        ControlTokens                                     = new Dictionary<string, IControlDesignToken>();
     }
 
     public List<string> ThemeResourceKeys
     {
-        get { return _resourceDictionary.Keys.Select(s => s.ToString()!).ToList(); }
+        get { return ResourceDictionary.Keys.Select(s => s.ToString()!).ToList(); }
     }
 
     public abstract bool IsDynamic();
@@ -70,9 +69,9 @@ public abstract class Theme : ITheme
     {
         try
         {
-            _themeDefinition = new ThemeDefinition(_id);
+            ThemeDefinition = new ThemeDefinition(_id);
             NotifyLoadThemeDef();
-            var themeDef           = _themeDefinition!;
+            var themeDef           = ThemeDefinition!;
             var globalTokenConfig  = themeDef.GlobalTokens;
             var controlTokenConfig = themeDef.ControlTokens;
             CheckAlgorithmNames(themeDef.Algorithms);
@@ -90,12 +89,12 @@ public abstract class Theme : ITheme
 
             if (themeDef.Algorithms.Contains(DarkThemeVariantCalculator.ID))
             {
-                _darkMode     = true;
+                DarkMode     = true;
                 _themeVariant = ThemeVariant.Dark;
             }
             else
             {
-                _darkMode     = false;
+                DarkMode     = false;
                 _themeVariant = ThemeVariant.Light;
             }
 
@@ -107,23 +106,23 @@ public abstract class Theme : ITheme
                 baseCalculator = calculator;
             }
     
-            _themeVariantCalculator = calculator;
+            ThemeVariantCalculator = calculator;
             _globalToken.LoadConfig(globalTokenConfig);
 
-            _themeVariantCalculator.Calculate(_globalToken);
+            ThemeVariantCalculator.Calculate(_globalToken);
 
             // 交付最终的基础色
-            _globalToken.ColorBgBase   = _themeVariantCalculator.ColorBgBase;
-            _globalToken.ColorTextBase = _themeVariantCalculator.ColorTextBase;
+            _globalToken.ColorBgBase   = ThemeVariantCalculator.ColorBgBase;
+            _globalToken.ColorTextBase = ThemeVariantCalculator.ColorTextBase;
 
             _globalToken.CalculateAliasTokenValues();
 
             // TODO 先用算法，然后再设置配置文件中的值，不知道合理不
             _globalToken.LoadConfig(globalTokenConfig);
-            _globalToken.BuildResourceDictionary(_resourceDictionary);
+            _globalToken.BuildResourceDictionary(ResourceDictionary);
 
             CollectControlTokens();
-            foreach (var entry in _controlTokens)
+            foreach (var entry in ControlTokens)
             {
                 // 如果没有修改就使用全局的
                 entry.Value.AssignGlobalToken(_globalToken);
@@ -133,7 +132,7 @@ public abstract class Theme : ITheme
             {
                 var tokenId          = entry.Key;
                 var controlTokenInfo = entry.Value;
-                if (!_controlTokens.ContainsKey(tokenId))
+                if (!ControlTokens.ContainsKey(tokenId))
                 {
                     continue;
                 }
@@ -143,18 +142,18 @@ public abstract class Theme : ITheme
 
                 if (controlTokenInfo.UseAlgorithm)
                 {
-                    _themeVariantCalculator.Calculate(controlAliasToken);
+                    ThemeVariantCalculator.Calculate(controlAliasToken);
                     controlAliasToken.CalculateAliasTokenValues();
                 }
 
-                var controlToken = _controlTokens[controlTokenInfo.TokenId];
+                var controlToken = ControlTokens[controlTokenInfo.TokenId];
                 controlToken.AssignGlobalToken(controlAliasToken);
                 (controlToken as AbstractControlDesignToken)!.IsCustomTokenConfig = true;
                 (controlToken as AbstractControlDesignToken)!.CustomTokens =
                     controlTokenInfo.ControlTokens.Keys.ToList();
             }
 
-            foreach (var controlToken in _controlTokens.Values)
+            foreach (var controlToken in ControlTokens.Values)
             {
                 (controlToken as AbstractControlDesignToken)!.CalculateFromAlias();
                 if (controlTokenConfig.ContainsKey(controlToken.Id))
@@ -163,16 +162,16 @@ public abstract class Theme : ITheme
                         .ControlTokens);
                 }
 
-                controlToken.BuildResourceDictionary(_resourceDictionary);
+                controlToken.BuildResourceDictionary(ResourceDictionary);
             }
 
-            _loadedStatus = true;
-            _loaded       = true;
+            LoadedStatus = true;
+            Loaded       = true;
         }
         catch (Exception exception)
         {
             _loadErrorMsg = exception.Message;
-            _loadedStatus = false;
+            LoadedStatus = false;
             throw;
         }
     }
@@ -215,21 +214,21 @@ public abstract class Theme : ITheme
 
     protected void CollectControlTokens()
     {
-        _controlTokens.Clear();
+        ControlTokens.Clear();
         var controlTokenTypes = ThemeManager.Current.ControlTokenTypes;
         foreach (var tokenType in controlTokenTypes)
         {
             var obj = Activator.CreateInstance(tokenType);
             if (obj is AbstractControlDesignToken controlToken)
             {
-                _controlTokens.Add(controlToken.Id, controlToken);
+                ControlTokens.Add(controlToken.Id, controlToken);
             }
         }
     }
 
     public IControlDesignToken? GetControlToken(string tokenId)
     {
-        if (_controlTokens.TryGetValue(tokenId, out var token))
+        if (ControlTokens.TryGetValue(tokenId, out var token))
         {
             return token;
         }
@@ -243,7 +242,7 @@ public abstract class Theme : ITheme
 
     internal virtual void NotifyActivated()
     {
-        _activated = true;
+        Activated = true;
     }
 
     internal virtual void NotifyAboutToDeActive()
@@ -252,7 +251,7 @@ public abstract class Theme : ITheme
 
     internal virtual void NotifyDeActivated()
     {
-        _activated = false;
+        Activated = false;
     }
 
     internal virtual void NotifyAboutToLoad()
@@ -279,13 +278,5 @@ public abstract class Theme : ITheme
 
     internal virtual void NotifyRegistered()
     {
-    }
-}
-
-class xxx : GlobalToken
-{
-    public xxx()
-    {
-        base.ColorPrimary = new Color();
     }
 }

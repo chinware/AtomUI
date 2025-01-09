@@ -1,8 +1,7 @@
 <Project>
     <PropertyGroup>
-
+        <AtomUICurrentTargetFramework>net8.0</AtomUICurrentTargetFramework>
         <OutputType>Library</OutputType>
-        <TargetFramework>net6.0</TargetFramework>
         <TrimMode>copyused</TrimMode>
         <BuiltInComInteropSupport>false</BuiltInComInteropSupport>
 
@@ -15,7 +14,7 @@
 
         <IsTestProject Condition="$(MSBuildProjectFullPath.Contains('test')) and ($(MSBuildProjectName.EndsWith('.Tests')) or $(MSBuildProjectName.EndsWith('.TestBase')))">true</IsTestProject>
         <AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>
-        <NoWarn>$(NoWarn);CS1591;CS0436;CS7035</NoWarn>
+        <NoWarn>$(NoWarn);CS1591;CS0436;CS7035;AVA3001</NoWarn>
         <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
         <GenerateAssemblyConfigurationAttribute>true</GenerateAssemblyConfigurationAttribute>
         <GenerateAssemblyCompanyAttribute>true</GenerateAssemblyCompanyAttribute>
@@ -28,4 +27,18 @@
         <Avalonia_I_Want_To_Use_Private_Apis_In_Nuget_Package_And_Promise_To_Pin_The_Exact_Avalonia_Version_In_Package_Dependency>true</Avalonia_I_Want_To_Use_Private_Apis_In_Nuget_Package_And_Promise_To_Pin_The_Exact_Avalonia_Version_In_Package_Dependency>
 
     </PropertyGroup>
+
+    <Choose>
+        <When Condition="$([MSBuild]::IsOSPlatform('Windows'))">
+            <PropertyGroup >
+                <DefineConstants>$(DefineConstants);PLATFORM_WINDOWS</DefineConstants>
+            </PropertyGroup>
+        </When>
+        <When Condition="$([MSBuild]::IsOSPlatform('OSX'))">
+            <PropertyGroup >
+                <DefineConstants>$(DefineConstants);PLATFORM_MACOS</DefineConstants>
+            </PropertyGroup>
+        </When>
+    </Choose>
+    
 </Project>

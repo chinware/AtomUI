@@ -1,21 +1,12 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
     <Import Project="$(MSBuildThisFileDirectory)..\..\build\Common.props"/>
     <Import Project="$(MSBuildThisFileDirectory)..\..\build\PackageMetaInfo.props"/>
-    
+
     <PropertyGroup>
         <TargetFramework>$(AtomUICurrentTargetFramework)</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
-
-    <ItemGroup>
-        <InternalsVisibleTo Include="AtomUI.Base" />
-        <InternalsVisibleTo Include="AtomUI.Controls" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <PackageReference Include="Avalonia"/>
-    </ItemGroup>
 
 </Project>

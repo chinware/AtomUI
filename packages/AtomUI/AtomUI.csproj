@@ -1,11 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-	
-	<PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
-		<DefineConstants>PLATFORM_WINDOWS</DefineConstants>
-	</PropertyGroup>
-
 	<Import Project="$(MSBuildThisFileDirectory)..\..\build\Common.props"/>
 	<Import Project="$(MSBuildThisFileDirectory)..\..\build\PackageMetaInfo.props"/>
+	
+	<PropertyGroup>
+		<TargetFramework>$(AtomUICurrentTargetFramework)</TargetFramework>
+	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Avalonia"/>

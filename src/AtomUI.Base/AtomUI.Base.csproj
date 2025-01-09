@@ -1,11 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<Import Project="$(MSBuildThisFileDirectory)..\..\build\Common.props"/>
+    <Import Project="$(MSBuildThisFileDirectory)..\..\build\Common.props"/>
     <Import Project="$(MSBuildThisFileDirectory)..\..\build\PackageMetaInfo.props"/>
 
     <PropertyGroup>
+        <TargetFramework>$(AtomUICurrentTargetFramework)</TargetFramework>
         <RootNamespace>AtomUI</RootNamespace>
-        <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
     <ItemGroup>
@@ -19,7 +20,11 @@
     </ItemGroup>
 
     <ItemGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
-        <ProjectReference Include="..\AtomUI.Platform.Win32\AtomUI.Platform.Win32.csproj" />
+        <ProjectReference Include="..\AtomUI.Platform.Win32\AtomUI.Platform.Win32.csproj"/>
     </ItemGroup>
 
+    <ItemGroup Condition="$([MSBuild]::IsOSPlatform('OSX'))">
+      <ProjectReference Include="..\AtomUI.Platform.MacOS\AtomUI.Platform.MacOS.csproj" />
+    </ItemGroup>
+    
 </Project>

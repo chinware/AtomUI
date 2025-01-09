@@ -2,8 +2,6 @@
 
 public class StaticTheme : Theme
 {
-    public string DefinitionFilePath => _definitionFilePath;
-
     public StaticTheme(string id, string defFilePath)
         : base(id, defFilePath)
     {
@@ -17,7 +15,7 @@ public class StaticTheme : Theme
     internal override void NotifyLoadThemeDef()
     {
         var reader = new ThemeDefinitionReader(this);
-        reader.Load(_themeDefinition!);
+        reader.Load(ThemeDefinition!);
     }
 
     internal override void NotifyResetLoadStatus()

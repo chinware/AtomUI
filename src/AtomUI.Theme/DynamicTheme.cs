@@ -59,7 +59,7 @@ public class DynamicTheme : Theme
         _needBroadcast = true;
     }
 
-    public IList<ControlTokenConfigInfo> ControlTokens
+    public IList<ControlTokenConfigInfo> ControlTokenInfos
     {
         get => _controlTokenConfigInfos;
 
