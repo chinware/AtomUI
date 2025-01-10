@@ -200,3 +200,4 @@ api/diff
 
 # Project generation intermediate results storage
 output/
+cmake-build-debug/
