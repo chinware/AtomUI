@@ -75,7 +75,7 @@ function(atomui_add_unittest test_suite test_name)
 
     atomui_extend_target(${test_name}
             DEPENDS ${_arg_DEPENDS} ${IMPLICIT_DEPENDS}
-            INCLUDES ${ATOMUI_INCLUDE_DIR} ${ATOMUI_MAIN_INCLUDE_DIR} ${_arg_INCLUDES}
+            INCLUDES ${ATOMUI_BINARY_INCLUDE_DIR} ${ATOMUI_INCLUDE_DIR} ${_arg_INCLUDES}
             DEFINES ${_arg_DEFINES} ${TEST_DEFINES} ${default_defines_copy}
     )
 

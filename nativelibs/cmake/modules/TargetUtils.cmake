@@ -81,29 +81,7 @@ function(atomui_add_library name)
         set(_arg_CONDITION ON)
     endif ()
 
-    string(TOUPPER "ATOMUI_BUILD_LIBRARY_${name}" _build_library_var)
-    if (DEFINED _arg_BUILD_DEFAULT)
-        set(_build_library_default ${_arg_BUILD_DEFAULT})
-    else ()
-        set(_build_library_default ${ATOMUI_BUILD_LIBRARIES_BY_DEFAULT})
-    endif ()
-    if (DEFINED ENV{${_build_library_var}})
-        set(_build_library_default "$ENV{${_build_library_var}}")
-    endif ()
-    set(${_build_library_var} "${_build_library_default}" CACHE BOOL "Build library ${name}.")
-
-    if ((${_arg_CONDITION}) AND ${_build_library_var})
-        set(_library_enabled ON)
-    else ()
-        set(_library_enabled OFF)
-    endif ()
-
-    if (DEFINED _arg_FEATURE_INFO)
-        add_feature_info("Library ${name}" _library_enabled "${_extra_text}")
-    endif ()
-    if (NOT _library_enabled)
-        return()
-    endif ()
+    add_feature_info("Library ${name}" ON "${_extra_text}")
 
     set(library_type SHARED)
     if (_arg_STATIC)
@@ -116,9 +94,7 @@ function(atomui_add_library name)
     add_library(${name} ${library_type})
     add_library(AtomUI::${name} ALIAS ${name})
 
-    if (${name} MATCHES "^[^0-9-]+$")
-        string(TOUPPER "ATOMUI_${name}_LIBRARY" EXPORT_SYMBOL)
-    endif ()
+    string(TOUPPER "ATOMUI_LIBRARY" EXPORT_SYMBOL)
 
     if (ATOMUI_WITH_TESTS)
         set(TEST_DEFINES WITH_TESTS SRCDIR="${CMAKE_CURRENT_SOURCE_DIR}")
@@ -146,8 +122,8 @@ function(atomui_add_library name)
                 PRIVATE
                 "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
                 PUBLIC
+                "$<BUILD_INTERFACE:${ATOMUI_BINARY_INCLUDE_DIR}>"
                 "$<BUILD_INTERFACE:${ATOMUI_INCLUDE_DIR}>"
-                "$<BUILD_INTERFACE:${ATOMUI_MAIN_INCLUDE_DIR}>"
                 "$<INSTALL_INTERFACE:${ATOMUI_HEADER_INSTALL_PATH}>"
         )
     endif ()
@@ -162,8 +138,8 @@ function(atomui_add_library name)
     set_target_properties(${name} PROPERTIES
             LINK_DEPENDS_NO_SHARED ON
             SOURCES_DIR "${CMAKE_CURRENT_SOURCE_DIR}"
-            VERSION "${ATOMUI_VERSION}"
-            SOVERSION "${ATOMUI_VERSION_MAJOR}"
+#            VERSION "${ATOMUI_VERSION}"
+#            SOVERSION "${ATOMUI_VERSION_MAJOR}"
             MACHO_CURRENT_VERSION ${ATOMUI_VERSION}
             MACHO_COMPATIBILITY_VERSION ${ATOMUI_VERSION_COMPAT}
             CXX_EXTENSIONS OFF

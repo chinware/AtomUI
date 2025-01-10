@@ -23,8 +23,8 @@ set_property(GLOBAL PROPERTY JOB_POOLS "${CMAKE_JOB_POOLS}")
 set(ATOMUI_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}") # --src-root
 set(ATOMUI_BINARY_DIR "${CMAKE_CURRENT_BINARY_DIR}") # --prefix
 set(ATOMUI_CMAKE_MODULES_DIR "${ATOMUI_SOURCE_DIR}/cmake/modules")
-set(ATOMUI_MAIN_INCLUDE_DIR "${ATOMUI_SOURCE_DIR}/include")
-set(ATOMUI_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}/include") # --includedir
+set(ATOMUI_INCLUDE_DIR "${ATOMUI_SOURCE_DIR}/include")
+set(ATOMUI_BINARY_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}/include") # --includedir
 set(ATOMUI_TEST_DIR "${ATOMUI_SOURCE_DIR}/tests")
 set(ATOMUI_TEST_BIN_DIR "tests/bin")
 set(ATOMUI_SYSTEM_NAME ${CMAKE_HOST_SYSTEM_NAME})
@@ -69,15 +69,18 @@ include(TargetUtils)
 include(TestUtils)
 
 include_directories(${ATOMUI_SOURCE_DIR}
-        ${ATOMUI_MAIN_INCLUDE_DIR}
-        ${ATOMUI_MAIN_INCLUDE_DIR}/atomui
         ${ATOMUI_INCLUDE_DIR}
         ${ATOMUI_INCLUDE_DIR}/atomui
+        ${ATOMUI_BINARY_INCLUDE_DIR}
+        ${ATOMUI_BINARY_INCLUDE_DIR}/atomui
         ${CMAKE_CURRENT_BINARY_DIR})
 
 if (ATOMUI_BUILD_UNITTESTS)
     enable_testing()
     add_subdirectory(tests/unittests)
 endif()
+
+add_subdirectory(include/atomui)
+add_subdirectory(src)
 
 include(SummaryOutput)

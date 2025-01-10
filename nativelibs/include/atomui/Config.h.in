@@ -1,0 +1,32 @@
+// This source file is part of the atomui project
+//
+// Copyright (c) 2017 - 2025 qinware, All rights reserved.
+// Copyright (c) 2017 - 2025 chinboy <chinware@163.com>
+//
+// See https://qinware.com/LICENSE.txt for license information
+//
+// Created by chinboy on 2025/01/10.
+
+#pragma once
+
+#include "atomui/Compiler.h"
+
+#define ATOMUI_VERSION_MAJOR   ${PROJECT_VERSION_MAJOR}
+#define ATOMUI_VERSION_MINOR   ${PROJECT_VERSION_MINOR}
+#define ATOMUI_VERSION_RELEASE ${PROJECT_VERSION_PATCH}
+
+#cmakedefine ATOMUI_REVISION
+
+namespace atomui {
+
+const char ATOMUI_VERSION_LONG[] = "${PROJECT_VERSION}";
+const char ATOMUI_AUTHOR[]       = "Qinware Technologies Ltd.";
+const char ATOMUI_YEAR[]         = "${ATOMUI_COPYRIGHT_YEAR}";
+
+const char ATOMUI_DISPLAY_NAME[] = "${ATOMUI_DISPLAY_NAME}";
+const char ATOMUI_PACKAGE_NAME[]           = "${ATOMUI_PACKAGE_NAME}";
+const char ATOMUI_PACKAGE_CASED_NAME[]     = "${ATOMUI_PACKAGE_CASED_NAME}";
+
+const char ATOMUI_COMPANY_NAME[] = "Qinware";
+
+}
