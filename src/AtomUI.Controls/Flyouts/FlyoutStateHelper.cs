@@ -277,7 +277,7 @@ internal class FlyoutStateHelper : AvaloniaObject
     {
         if (args is RawPointerEventArgs pointerEventArgs)
         {
-            if (AnchorTarget is not null && pointerEventArgs.Type == RawPointerEventType.LeftButtonUp)
+            if (AnchorTarget is not null && pointerEventArgs.Type == RawPointerEventType.LeftButtonDown)
             {
                 if (Flyout is null)
                 {

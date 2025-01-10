@@ -215,13 +215,13 @@ public class Popup : AvaloniaPopup
         var placementTarget = GetEffectivePlacementTarget();
         if (placementTarget is not null)
         {
-            var toplevel = TopLevel.GetTopLevel(placementTarget);
+            var popupRoot = Host as PopupRoot;
+            var toplevel = TopLevel.GetTopLevel(popupRoot);
             if (toplevel is null)
             {
                 throw new InvalidOperationException(
                     "Unable to create shadow layer, top level for PlacementTarget is null.");
             }
-
             _compositeDisposable = new CompositeDisposable();
             _shadowLayer         = new PopupShadowLayer(toplevel);
             _compositeDisposable?.Add(BindUtils.RelayBind(this, MaskShadowsProperty, _shadowLayer!));
@@ -458,6 +458,8 @@ public class Popup : AvaloniaPopup
     // TODO Review 需要评估这里等待的变成模式是否正确高效
     public void OpenAnimation()
     {
+        Open();
+        return;
         // AbstractPopup is currently open
         if (IsOpen || _animating)
         {
@@ -502,6 +504,8 @@ public class Popup : AvaloniaPopup
 
     public void CloseAnimation(Action? closed = null)
     {
+        Close();
+        return;
         if (_animating)
         {
             RequestCloseWhereAnimationCompleted = true;

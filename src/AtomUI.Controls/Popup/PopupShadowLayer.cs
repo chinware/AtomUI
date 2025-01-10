@@ -44,12 +44,14 @@ internal class PopupShadowLayer : LiteWindow, IShadowDecorator
     public PopupShadowLayer(TopLevel topLevel)
         : base(topLevel, topLevel.PlatformImpl?.CreatePopup()!)
     {
-        if (topLevel.PlatformImpl is not null)
+        Background = new SolidColorBrush(Colors.Transparent);
+        if (PlatformImpl is not null)
         {
-            topLevel.PlatformImpl.SetTransparencyLevelHint(new []
+            PlatformImpl.SetTransparencyLevelHint(new []
             {
                 WindowTransparencyLevel.Transparent
             });
+            PlatformImpl!.SetWindowManagerAddShadowHint(false);
         }
         
 #if PLATFORM_WINDOWS
@@ -186,11 +188,10 @@ internal class PopupShadowLayer : LiteWindow, IShadowDecorator
         ((ISetLogicalParent)this).SetParent(_target);
         SetupPositionAndSize();
         _isOpened = true;
+        PlatformImpl?.SetTopmost(true);
+        popupRoot?.PlatformImpl?.SetTopmost(true);
         Show();
-        if (popupRoot is not null)
-        {
-            popupRoot.PlatformImpl!.SetTopmost(true);
-        }
+        popupRoot?.Activate();
     }
 
     private void TargetPopupPositionChanged(object? sender, PixelPointEventArgs e)
