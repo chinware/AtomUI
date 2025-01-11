@@ -1,0 +1,69 @@
+﻿<Project>
+    <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk"/>
+    <Import Project="$(MSBuildThisFileDirectory)..\..\build\Common.props"/>
+    <Import Project="$(MSBuildThisFileDirectory)..\..\build\PackageMetaInfo.props"/>
+    <PropertyGroup>
+        <TargetFramework>$(AtomUICurrentTargetFramework)</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    </PropertyGroup>
+
+    <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk"/>
+
+    <PropertyGroup>
+        <AtomUINavtiveDeployPath>$(OutputPath)</AtomUINavtiveDeployPath>
+        <AtomUINavtiveBuildPath>$([System.IO.Path]::Combine($(MSBuildProjectDirectory), $(IntermediateOutputPath), 'AtomUINative'))</AtomUINavtiveBuildPath>
+        <AtomUINativeSrcPath>$([System.IO.Path]::GetFullPath('$(MSBuildProjectDirectory)/../../nativelibs'))</AtomUINativeSrcPath>
+        <AtomUINativeArtifactName Condition="$([MSBuild]::IsOSPlatform('Linux'))">libAtomUI.so</AtomUINativeArtifactName>
+        <AtomUINativeArtifactName Condition="$([MSBuild]::IsOSPlatform('OSX'))">libAtomUI.dylib</AtomUINativeArtifactName>
+        <AtomUINativeArtifactName Condition="$([MSBuild]::IsOSPlatform('Windows'))">AtomUI.dll</AtomUINativeArtifactName>
+    </PropertyGroup>
+    
+    <ItemGroup>
+        <AtomUINativeSources Include="$(AtomUINativeSrcPath)/include/**/*.*"/>
+        <AtomUINativeSources Include="$(AtomUINativeSrcPath)/src/**/*.*"/>
+        <AtomUINativeArtifact Include="$(AtomUINavtiveDeployPath)/lib/$(AtomUINativeArtifactName)"/>
+    </ItemGroup>
+    
+    <Choose>
+        <When Condition="'$(Configuration)' == 'Debug'">
+            <PropertyGroup>
+                <CMakeBuildType>Debug</CMakeBuildType>
+            </PropertyGroup>
+        </When>
+        <Otherwise>
+            <PropertyGroup>
+                <CMakeBuildType>Release</CMakeBuildType>
+            </PropertyGroup>
+        </Otherwise>
+    </Choose>
+
+    <Target Name="BildAtomUINative" 
+            BeforeTargets="Build" 
+            Inputs="@(AtomUINativeSources)"
+            Outputs="@(AtomUINativeArtifact)"
+    >
+        <Message Text="@(AtomUINativeSources)" Importance="high"/>
+        <PropertyGroup>
+            <CPUCount>$([System.Environment]::ProcessorCount)</CPUCount>
+        </PropertyGroup>
+        <MakeDir Directories="$(AtomUINavtiveBuildPath)" Condition="!Exists('$(AtomUINavtiveBuildPath)')"/>
+        <Exec Command="cmake -B $(AtomUINavtiveBuildPath) -S $(AtomUINativeSrcPath) --install-prefix $(AtomUINavtiveDeployPath) -DCMAKE_BUILD_TYPE=$(CMakeBuildType) -G Ninja"
+              WorkingDirectory="$(AtomUINavtiveBuildPath)"
+              ConsoleToMsBuild="false"
+        >
+            <Output TaskParameter="ConsoleOutput" PropertyName="CmakeOutput" />
+            <Output TaskParameter="ExitCode" PropertyName="BildAtomUINativeExitCode"/>
+        </Exec>
+        <Exec Command="ninja -j $(CPUCount) -C $(AtomUINavtiveBuildPath)"
+              WorkingDirectory="$(AtomUINavtiveBuildPath)"
+              ConsoleToMsBuild="false"
+        />
+
+        <Exec Command="ninja install"
+              WorkingDirectory="$(AtomUINavtiveBuildPath)"
+              ConsoleToMsBuild="false"
+        />
+    </Target>
+</Project>

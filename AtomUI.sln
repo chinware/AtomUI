@@ -50,6 +50,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{5EB2524C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtomUI.Platform.MacOS", "src\AtomUI.Platform.MacOS\AtomUI.Platform.MacOS.csproj", "{2049CD2E-5E01-4DB2-83F9-542778DD9CC2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtomUI.Native", "src\AtomUI.Native\AtomUI.Native.csproj", "{90F1E4BC-4513-450E-B2B8-C64A779C8A0D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -101,6 +103,10 @@ Global
 		{2049CD2E-5E01-4DB2-83F9-542778DD9CC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2049CD2E-5E01-4DB2-83F9-542778DD9CC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2049CD2E-5E01-4DB2-83F9-542778DD9CC2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90F1E4BC-4513-450E-B2B8-C64A779C8A0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90F1E4BC-4513-450E-B2B8-C64A779C8A0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90F1E4BC-4513-450E-B2B8-C64A779C8A0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90F1E4BC-4513-450E-B2B8-C64A779C8A0D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

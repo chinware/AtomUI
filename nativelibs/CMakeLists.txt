@@ -65,6 +65,7 @@ include(HandleHostEnv)
 include(Utils)
 include(HandleRequirePackages)
 include(HandleConfig)
+include(HandleAppPath)
 include(TargetUtils)
 include(TestUtils)
 
