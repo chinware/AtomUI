@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using AtomUI.Native;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives.PopupPositioning;
@@ -42,13 +43,21 @@ internal class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
     {
         ParentTopLevel = parent;
         impl.SetWindowManagerAddShadowHint(false);
+        if (PlatformImpl is not null)
+        {
+            PlatformImpl.SetTransparencyLevelHint(new []
+            {
+                WindowTransparencyLevel.Transparent
+            });
+            PlatformImpl!.SetWindowManagerAddShadowHint(false);
+        }
 #if PLATFORM_WINDOWS
         if (this is WindowBase window)
         {
             window.SetTransparentForMouseEvents(true);
         }
 #endif
-
+        WindowUtils.SetWindowIgnoreMouseEvents(this, true);
         if (PlatformImpl?.PopupPositioner is ManagedPopupPositioner managedPopupPositioner)
         {
             _managedPopupPositionerPopup =

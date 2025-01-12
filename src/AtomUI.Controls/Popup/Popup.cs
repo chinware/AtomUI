@@ -458,8 +458,6 @@ public class Popup : AvaloniaPopup
     // TODO Review 需要评估这里等待的变成模式是否正确高效
     public void OpenAnimation()
     {
-        Open();
-        return;
         // AbstractPopup is currently open
         if (IsOpen || _animating)
         {
@@ -504,8 +502,6 @@ public class Popup : AvaloniaPopup
 
     public void CloseAnimation(Action? closed = null)
     {
-        Close();
-        return;
         if (_animating)
         {
             RequestCloseWhereAnimationCompleted = true;

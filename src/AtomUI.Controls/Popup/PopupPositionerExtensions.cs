@@ -11,13 +11,13 @@ namespace AtomUI.Controls;
 internal static class PopupPositionerExtensions
 {
     public static void ConfigurePosition(ref this PopupPositionerParameters positionerParameters,
-                                         TopLevel topLevel,
-                                         Visual target, PlacementMode placement, Point offset,
-                                         PopupAnchor anchor, PopupGravity gravity,
-                                         PopupPositionerConstraintAdjustment constraintAdjustment, Rect? rect,
-                                         FlowDirection flowDirection)
+        TopLevel topLevel,
+        Visual target, PlacementMode placement, Point offset,
+        PopupAnchor anchor, PopupGravity gravity,
+        PopupPositionerConstraintAdjustment constraintAdjustment, Rect? rect,
+        FlowDirection flowDirection)
     {
-        positionerParameters.Offset               = offset;
+        positionerParameters.Offset = offset;
         positionerParameters.ConstraintAdjustment = constraintAdjustment;
         if (placement == PlacementMode.Pointer)
         {
@@ -26,8 +26,8 @@ internal static class PopupPositionerExtensions
             var position = topLevel.PointToClient(lastPointerPosition ?? default);
 
             positionerParameters.AnchorRectangle = new Rect(position, new Size(1, 1));
-            positionerParameters.Anchor          = PopupAnchor.TopLeft;
-            positionerParameters.Gravity         = PopupGravity.BottomRight;
+            positionerParameters.Anchor = PopupAnchor.TopLeft;
+            positionerParameters.Gravity = PopupGravity.BottomRight;
         }
         else
         {
@@ -51,7 +51,7 @@ internal static class PopupPositionerExtensions
                 throw new InvalidOperationException("Target control is not in the same tree as the popup parent");
             }
 
-            var bounds     = new Rect(default, target.Bounds.Size);
+            var bounds = new Rect(default, target.Bounds.Size);
             var anchorRect = rect ?? bounds;
             positionerParameters.AnchorRectangle = anchorRect.Intersect(bounds).TransformToAABB(matrix.Value);
 
@@ -74,7 +74,7 @@ internal static class PopupPositionerExtensions
                 _ => throw new ArgumentOutOfRangeException(nameof(placement), placement,
                     "Invalid value for Popup.PlacementMode")
             };
-            positionerParameters.Anchor  = parameters.Item1;
+            positionerParameters.Anchor = parameters.Item1;
             positionerParameters.Gravity = parameters.Item2;
         }
 
@@ -112,7 +112,7 @@ internal static class PopupPositionerExtensions
         {
             if (AdornerLayer.GetAdornedElement(element) is { } adornedElement)
             {
-                adorned      = adornedElement;
+                adorned = adornedElement;
                 adornerLayer = AdornerLayer.GetAdornerLayer(adorned);
                 return true;
             }
@@ -120,7 +120,7 @@ internal static class PopupPositionerExtensions
             element = element.GetVisualParent();
         }
 
-        adorned      = null;
+        adorned = null;
         adornerLayer = null;
         return false;
     }
