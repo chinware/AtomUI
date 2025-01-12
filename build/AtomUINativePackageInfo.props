@@ -1,0 +1,11 @@
+<Project>
+    <PropertyGroup>
+        <AtomUINativeArtifactName Condition="$([MSBuild]::IsOSPlatform('Linux'))">libAtomUI.so</AtomUINativeArtifactName>
+        <AtomUINativeArtifactName Condition="$([MSBuild]::IsOSPlatform('OSX'))">libAtomUI.dylib</AtomUINativeArtifactName>
+        <AtomUINativeArtifactName Condition="$([MSBuild]::IsOSPlatform('Windows'))">AtomUI.dll</AtomUINativeArtifactName>
+        <AtomUINativeRuntimeType Condition="$([MSBuild]::IsOSPlatform('Linux'))">linux</AtomUINativeRuntimeType>
+        <AtomUINativeRuntimeType Condition="$([MSBuild]::IsOSPlatform('OSX'))">osx</AtomUINativeRuntimeType>
+        <AtomUINativeRuntimeType Condition="$([MSBuild]::IsOSPlatform('Windows'))">win</AtomUINativeRuntimeType>
+        <AtomUINativeDeployPath>runtimes/$(AtomUINativeRuntimeType)/native</AtomUINativeDeployPath>
+    </PropertyGroup>
+</Project>

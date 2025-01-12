@@ -113,12 +113,12 @@
 #  if defined(__clang__)
 /* Clang also masquerades as GCC */
 #    if defined(__apple_build_version__)
-      // The Clang version reported by Apple Clang in __clang_major__
-      // and __clang_minor__ does _not_ reflect the actual upstream
-      // version of the compiler. To allow consumers to use a single
-      // define to verify the Clang version we hard-code the versions
-      // based on the best available info we have about the actual
-      // version: http://en.wikipedia.org/wiki/Xcode#Toolchain_Versions
+// The Clang version reported by Apple Clang in __clang_major__
+// and __clang_minor__ does _not_ reflect the actual upstream
+// version of the compiler. To allow consumers to use a single
+// define to verify the Clang version we hard-code the versions
+// based on the best available info we have about the actual
+// version: http://en.wikipedia.org/wiki/Xcode#Toolchain_Versions
 #      if __apple_build_version__   >= 14030022 // Xcode 14.3
 #        define ATOMUI_CC_CLANG 1500
 #      elif __apple_build_version__ >= 14000029 // Xcode 14.0
@@ -544,7 +544,7 @@
 /* C++11 features, see http://clang.llvm.org/cxx_status.html */
 #  if (defined(__cplusplus) && __cplusplus >= 201103L) \
       || defined(__GXX_EXPERIMENTAL_CXX0X__)
-    /* Detect C++ features using __has_feature(), see http://clang.llvm.org/docs/LanguageExtensions.html#cxx11 */
+/* Detect C++ features using __has_feature(), see http://clang.llvm.org/docs/LanguageExtensions.html#cxx11 */
 #    if __has_feature(cxx_alignas)
 #      define ATOMUI_COMPILER_ALIGNAS
 #      define ATOMUI_COMPILER_ALIGNOF
@@ -637,7 +637,7 @@
 #    if __has_feature(cxx_variadic_templates)
 #      define ATOMUI_COMPILER_VARIADIC_TEMPLATES
 #    endif
-    /* Features that have no __has_feature() check */
+/* Features that have no __has_feature() check */
 #    if ATOMUI_CC_CLANG >= 209 /* since clang 2.9 */
 #      define ATOMUI_COMPILER_EXTERN_TEMPLATES
 #    endif
@@ -780,7 +780,7 @@
 #      define ATOMUI_COMPILER_STATIC_ASSERT
 #    endif
 #    if ATOMUI_CC_GNU >= 409 && defined(__has_include)
-       /* C11 features supported in GCC 4.9: */
+/* C11 features supported in GCC 4.9: */
 #      if __has_include(<threads.h>)
 #        define ATOMUI_COMPILER_THREAD_LOCAL
 #      endif

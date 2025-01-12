@@ -10,9 +10,10 @@
 #include "atomui/Global.h"
 #include <string>
 
-namespace atomui {
-std::string version_string() {
-    return std::string{ATOMUI_VERSION_LONG};
-}
-
+namespace atomui
+{
+    std::string version_string()
+    {
+        return std::string{ATOMUI_VERSION_LONG};
+    }
 }

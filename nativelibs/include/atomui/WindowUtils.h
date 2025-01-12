@@ -10,10 +10,12 @@
 #pragma once
 #include "atomui/Global.h"
 
-namespace atomui {
-class WindowUtils {
-public:
-    WindowUtils() = delete;
-    static void setIgnoresMouseEvents(ATOMUI_HANDLE windowHandle, bool flag);
-};
+namespace atomui
+{
+    class WindowUtils
+    {
+    public:
+        WindowUtils() = delete;
+        static void setIgnoresMouseEvents(ATOMUI_HANDLE windowHandle, bool flag);
+    };
 }

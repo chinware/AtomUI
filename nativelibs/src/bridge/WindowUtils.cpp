@@ -12,6 +12,7 @@
 
 using namespace atomui;
 
-void AtomUISetWindowIgnoresMouseEvents(ATOMUI_HANDLE windowHandle, bool flag) {
+void AtomUISetWindowIgnoresMouseEvents(ATOMUI_HANDLE windowHandle, bool flag)
+{
     WindowUtils::setIgnoresMouseEvents(windowHandle, flag);
 }

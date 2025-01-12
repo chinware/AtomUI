@@ -19,13 +19,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{279BC2C9
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Generators", "Generators", "{B4C46C3E-0CCC-4861-95B6-CA08D501A46F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AtomUI", "packages\AtomUI\AtomUI.csproj", "{89A98C0D-B6F7-48CD-91C4-79FC0FED3615}"
-	ProjectSection(ProjectDependencies) = postProject
-		{87085491-3C99-4C8F-8FA6-F179B9569CE8} = {87085491-3C99-4C8F-8FA6-F179B9569CE8}
-		{8FFEB15F-7E48-4AF4-B708-8E96A68CF2D9} = {8FFEB15F-7E48-4AF4-B708-8E96A68CF2D9}
-		{A07CB66E-7A5F-4C44-BB16-02A0A99D6C2D} = {A07CB66E-7A5F-4C44-BB16-02A0A99D6C2D}
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtomUI.Platform.Win32", "src\AtomUI.Platform.Win32\AtomUI.Platform.Win32.csproj", "{9BF7EF51-4100-4EAE-8A95-FC5F1BD4A1E4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtomUI.IconPkg", "src\AtomUI.IconPkg\AtomUI.IconPkg.csproj", "{70AC4A1D-2D88-4703-9AB2-89E753E1A04B}"
@@ -46,11 +39,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{5EB2524C
 		build\Output.Local.props = build\Output.Local.props
 		build\Output.props = build\Output.props
 		build\Version.props = build\Version.props
+		build\AtomUINativePackageInfo.props = build\AtomUINativePackageInfo.props
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtomUI.Platform.MacOS", "src\AtomUI.Platform.MacOS\AtomUI.Platform.MacOS.csproj", "{2049CD2E-5E01-4DB2-83F9-542778DD9CC2}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtomUI.Native", "src\AtomUI.Native\AtomUI.Native.csproj", "{90F1E4BC-4513-450E-B2B8-C64A779C8A0D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtomUI", "packages\AtomUI\AtomUI.csproj", "{EF9E3D8A-7D43-42A4-839E-5B20553B1B72}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -80,9 +74,6 @@ Global
 		{A07CB66E-7A5F-4C44-BB16-02A0A99D6C2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A07CB66E-7A5F-4C44-BB16-02A0A99D6C2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A07CB66E-7A5F-4C44-BB16-02A0A99D6C2D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{89A98C0D-B6F7-48CD-91C4-79FC0FED3615}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{89A98C0D-B6F7-48CD-91C4-79FC0FED3615}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{89A98C0D-B6F7-48CD-91C4-79FC0FED3615}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9BF7EF51-4100-4EAE-8A95-FC5F1BD4A1E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9BF7EF51-4100-4EAE-8A95-FC5F1BD4A1E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9BF7EF51-4100-4EAE-8A95-FC5F1BD4A1E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -99,14 +90,14 @@ Global
 		{C8BFCDBE-0DC2-411F-B2E4-439A0A8E1752}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C8BFCDBE-0DC2-411F-B2E4-439A0A8E1752}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C8BFCDBE-0DC2-411F-B2E4-439A0A8E1752}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2049CD2E-5E01-4DB2-83F9-542778DD9CC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2049CD2E-5E01-4DB2-83F9-542778DD9CC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2049CD2E-5E01-4DB2-83F9-542778DD9CC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2049CD2E-5E01-4DB2-83F9-542778DD9CC2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{90F1E4BC-4513-450E-B2B8-C64A779C8A0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{90F1E4BC-4513-450E-B2B8-C64A779C8A0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{90F1E4BC-4513-450E-B2B8-C64A779C8A0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{90F1E4BC-4513-450E-B2B8-C64A779C8A0D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF9E3D8A-7D43-42A4-839E-5B20553B1B72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF9E3D8A-7D43-42A4-839E-5B20553B1B72}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF9E3D8A-7D43-42A4-839E-5B20553B1B72}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF9E3D8A-7D43-42A4-839E-5B20553B1B72}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

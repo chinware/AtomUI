@@ -1,51 +1,87 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-	<Import Project="$(MSBuildThisFileDirectory)..\..\build\Common.props"/>
-	<Import Project="$(MSBuildThisFileDirectory)..\..\build\PackageMetaInfo.props"/>
-	
-	<PropertyGroup>
-		<TargetFramework>$(AtomUICurrentTargetFramework)</TargetFramework>
-	</PropertyGroup>
 
-	<ItemGroup>
-		<PackageReference Include="Avalonia"/>
-		<PackageReference Include="Avalonia.Svg"/>
-		<PackageReference Include="System.Reactive"/>
-	</ItemGroup>
+    <Import Project="$(MSBuildThisFileDirectory)../../build/Common.props"/>
+    <Import Project="$(MSBuildThisFileDirectory)../../build/PackageMetaInfo.props"/>
+    <Import Project="$(MSBuildThisFileDirectory)../../build/AtomUINativePackageInfo.props"/>
 
-	<ItemGroup Condition=" '$(Configuration)' == 'DEBUG' ">
-		<ProjectReference Include="..\..\src\AtomUI.Base\AtomUI.Base.csproj" />
-		<ProjectReference Include="..\..\src\AtomUI.Controls\AtomUI.Controls.csproj" />
-		<ProjectReference Include="..\..\src\AtomUI.IconPkg\AtomUI.IconPkg.csproj" />
-		<ProjectReference Include="..\..\src\AtomUI.IconPkg.AntDesign\AtomUI.IconPkg.AntDesign.csproj" />
-		<ProjectReference Include="..\..\src\AtomUI.Theme\AtomUI.Theme.csproj" />
-	</ItemGroup>
+    <PropertyGroup>
+        <TargetFramework>$(AtomUICurrentTargetFramework)</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>AtomUI</RootNamespace>
+        <IncludeBuildOutput>true</IncludeBuildOutput>
+    </PropertyGroup>
 
-	<ItemGroup Condition=" '$(Configuration)' == 'DEBUG' And $([MSBuild]::IsOSPlatform('Windows')) ">
-		<ProjectReference Include="..\..\src\AtomUI.Platform.Win32\AtomUI.Platform.Win32.csproj" />
-	</ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Avalonia"/>
+        <PackageReference Include="Avalonia.Svg"/>
+        <PackageReference Include="System.Reactive"/>
+    </ItemGroup>
 
-	<ItemGroup Condition=" '$(Configuration)' == 'RELEASE' ">
-		<Reference Include="..\..\output\Bin\Release\AtomUI.Base.dll" />
-		<Reference Include="..\..\output\Bin\Release\AtomUI.Controls.dll" />
-		<Reference Include="..\..\output\Bin\Release\AtomUI.IconPkg.dll" />
-		<Reference Include="..\..\output\Bin\Release\AtomUI.IconPkg.AntDesign.dll" />
-		<Reference Include="..\..\output\Bin\Release\AtomUI.Theme.dll" />
-		<Reference Include="..\..\output\Bin\Release\AtomUI.Platform.Win32.dll" />
-	</ItemGroup>
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+        <IncludeAssets>all</IncludeAssets>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+        <IncludeAssets>none</IncludeAssets>
+    </PropertyGroup>
+    <ItemGroup>
+        <ProjectReference Include="$(MSBuildThisFileDirectory)/../../src/AtomUI.Base/AtomUI.Base.csproj">
+            <IncludeAssets>$(IncludeAssets)</IncludeAssets>
+        </ProjectReference>
+        <ProjectReference Include="$(MSBuildThisFileDirectory)/../../src/AtomUI.Controls/AtomUI.Controls.csproj">
+            <IncludeAssets>$(IncludeAssets)</IncludeAssets>
+        </ProjectReference>
+        <ProjectReference Include="$(MSBuildThisFileDirectory)/../../src/AtomUI.IconPkg/AtomUI.IconPkg.csproj">
+            <IncludeAssets>$(IncludeAssets)</IncludeAssets>
+        </ProjectReference>
+        <ProjectReference Include="$(MSBuildThisFileDirectory)/../../src/AtomUI.Native/AtomUI.Native.csproj">
+            <IncludeAssets>$(IncludeAssets)</IncludeAssets>
+        </ProjectReference>
+        <ProjectReference Include="$(MSBuildThisFileDirectory)/../../src/AtomUI.Theme/AtomUI.Theme.csproj">
+            <IncludeAssets>$(IncludeAssets)</IncludeAssets>
+        </ProjectReference>
+    </ItemGroup>
 
-	<ItemGroup Condition=" '$(Configuration)' == 'RELEASE' ">
-		<Content Pack="true" Visible="false" PackagePath="lib\$(TargetFramework)" Include="$(MSBuildThisFileDirectory)..\..\output\Bin\Release\AtomUI.Base.dll" />
-		<Content Pack="true" Visible="false" PackagePath="lib\$(TargetFramework)" Include="$(MSBuildThisFileDirectory)..\..\output\Bin\Release\AtomUI.Base.pdb" />
-		<Content Pack="true" Visible="false" PackagePath="lib\$(TargetFramework)" Include="$(MSBuildThisFileDirectory)..\..\output\Bin\Release\AtomUI.Controls.dll" />
-		<Content Pack="true" Visible="false" PackagePath="lib\$(TargetFramework)" Include="$(MSBuildThisFileDirectory)..\..\output\Bin\Release\AtomUI.Controls.pdb" />
-		<Content Pack="true" Visible="false" PackagePath="lib\$(TargetFramework)" Include="$(MSBuildThisFileDirectory)..\..\output\Bin\Release\AtomUI.IconPkg.dll" />
-		<Content Pack="true" Visible="false" PackagePath="lib\$(TargetFramework)" Include="$(MSBuildThisFileDirectory)..\..\output\Bin\Release\AtomUI.IconPkg.pdb" />
-		<Content Pack="true" Visible="false" PackagePath="lib\$(TargetFramework)" Include="$(MSBuildThisFileDirectory)..\..\output\Bin\Release\AtomUI.IconPkg.AntDesign.dll" />
-		<Content Pack="true" Visible="false" PackagePath="lib\$(TargetFramework)" Include="$(MSBuildThisFileDirectory)..\..\output\Bin\Release\AtomUI.IconPkg.AntDesign.pdb" />
-		<Content Pack="true" Visible="false" PackagePath="lib\$(TargetFramework)" Include="$(MSBuildThisFileDirectory)..\..\output\Bin\Release\AtomUI.Theme.dll" />
-		<Content Pack="true" Visible="false" PackagePath="lib\$(TargetFramework)" Include="$(MSBuildThisFileDirectory)..\..\output\Bin\Release\AtomUI.Theme.pdb" />
-		<Content Pack="true" Visible="false" PackagePath="lib\$(TargetFramework)" Include="$(MSBuildThisFileDirectory)..\..\output\Bin\Release\AtomUI.Platform.Win32.dll" />
-		<Content Pack="true" Visible="false" PackagePath="lib\$(TargetFramework)" Include="$(MSBuildThisFileDirectory)..\..\output\Bin\Release\AtomUI.Platform.Win32.pdb" />
-	</ItemGroup>
+    <PropertyGroup>
+        <AtomUIPackageOutput>$(MSBuildThisFileDirectory)../../output/Bin/$(Configuration)</AtomUIPackageOutput>
+    </PropertyGroup>
 
+    <ItemGroup Condition=" '$(Configuration)' == 'Release' ">
+        <Reference Include="$(AtomUIPackageOutput)/AtomUI.Base.dll"/>
+        <Reference Include="$(AtomUIPackageOutput)/AtomUI.Controls.dll"/>
+        <Reference Include="$(AtomUIPackageOutput)/AtomUI.IconPkg.dll"/>
+        <Reference Include="$(AtomUIPackageOutput)/AtomUI.IconPkg.AntDesign.dll"/>
+        <Reference Include="$(AtomUIPackageOutput)/AtomUI.Theme.dll"/>
+        <Reference Include="$(AtomUIPackageOutput)/AtomUI.Native.dll"/>
+    </ItemGroup>
+
+    <ItemGroup Condition=" '$(Configuration)' == 'Release' ">
+        <Content Pack="true" Visible="false" PackagePath="lib/$(TargetFramework)" Include="$(AtomUIPackageOutput)/AtomUI.Base.dll"/>
+        <Content Pack="true" Visible="false" PackagePath="lib/$(TargetFramework)" Include="$(AtomUIPackageOutput)/AtomUI.Base.pdb"/>
+        <Content Pack="true" Visible="false" PackagePath="lib/$(TargetFramework)" Include="$(AtomUIPackageOutput)/AtomUI.Controls.dll"/>
+        <Content Pack="true" Visible="false" PackagePath="lib/$(TargetFramework)" Include="$(AtomUIPackageOutput)/AtomUI.Controls.pdb"/>
+        <Content Pack="true" Visible="false" PackagePath="lib/$(TargetFramework)" Include="$(AtomUIPackageOutput)/AtomUI.IconPkg.dll"/>
+        <Content Pack="true" Visible="false" PackagePath="lib/$(TargetFramework)" Include="$(AtomUIPackageOutput)/AtomUI.IconPkg.pdb"/>
+        <Content Pack="true" Visible="false" PackagePath="lib/$(TargetFramework)" Include="$(AtomUIPackageOutput)/AtomUI.IconPkg.AntDesign.dll"/>
+        <Content Pack="true" Visible="false" PackagePath="lib/$(TargetFramework)" Include="$(AtomUIPackageOutput)/AtomUI.IconPkg.AntDesign.pdb"/>
+        <Content Pack="true" Visible="false" PackagePath="lib/$(TargetFramework)" Include="$(AtomUIPackageOutput)/AtomUI.Theme.dll"/>
+        <Content Pack="true" Visible="false" PackagePath="lib/$(TargetFramework)" Include="$(AtomUIPackageOutput)/AtomUI.Theme.pdb"/>
+        <Content Pack="true" Visible="false" PackagePath="lib/$(TargetFramework)" Include="$(AtomUIPackageOutput)/AtomUI.Native.dll"/>
+        <Content Pack="true" Visible="false" PackagePath="lib/$(TargetFramework)" Include="$(AtomUIPackageOutput)/AtomUI.Native.pdb"/>
+
+        <Content Include="$(AtomUIPackageOutput)/$(AtomUINativeDeployPath)/$(AtomUINativeArtifactName)">
+            <Link>$(AtomUINativeArtifactName)</Link>
+            <PackagePath>$(AtomUINativeDeployPath)</PackagePath>
+            <Pack>true</Pack>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+        </Content>
+    </ItemGroup>
+
+    <ItemGroup Condition=" '$(Configuration)' == 'Debug' ">
+        <Content Include="$(AtomUIPackageOutput)/$(AtomUINativeDeployPath)/$(AtomUINativeArtifactName)">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <Link>$(AtomUINativeDeployPath)/$(AtomUINativeArtifactName)</Link>
+        </Content>
+    </ItemGroup>
 </Project>

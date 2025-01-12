@@ -18,7 +18,8 @@ inline void atomui_noop()
 #ifdef __cplusplus
     noexcept
 #endif
-{}
+{
+}
 
 #if defined(ATOMUI_LIBRARY)
 #  define ATOMUI_EXPORT ATOMUI_DECL_EXPORT
@@ -28,11 +29,12 @@ inline void atomui_noop()
 #  define ATOMUI_EXPORT ATOMUI_DECL_IMPORT
 #endif
 
-namespace atomui {
-ATOMUI_EXPORT std::string version_string();
+namespace atomui
+{
+    ATOMUI_EXPORT std::string version_string();
 }
 
-typedef void * ATOMUI_HANDLE;
+typedef void* ATOMUI_HANDLE;
 
 #if defined(ATOMUI_OS_WIN)
 #ifndef STD_CALL_TYPE

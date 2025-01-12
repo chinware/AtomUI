@@ -2,6 +2,7 @@
 using System.Reflection;
 using AtomUI.Controls.Primitives;
 using AtomUI.Media;
+using AtomUI.Native;
 
 #if PLATFORM_WINDOWS
 using AtomUI.Platform.Windows;
@@ -62,6 +63,7 @@ internal class PopupShadowLayer : LiteWindow, IShadowDecorator
 #elif PLATFORM_MACOS
     
 #endif
+        WindowUtils.SetWindowIgnoreMouseEvents(this, true);
 
         if (PlatformImpl?.PopupPositioner is ManagedPopupPositioner managedPopupPositioner)
         {
