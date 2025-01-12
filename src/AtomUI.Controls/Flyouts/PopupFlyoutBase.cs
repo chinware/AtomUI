@@ -412,7 +412,7 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
                 return;
             }
 
-            if (Popup?.Host is PopupRoot && pArgs.Root is Visual eventRoot)
+            if (Popup.Host is PopupRoot && pArgs.Root is Visual eventRoot)
             {
                 // As long as the pointer stays within the enlargedPopupRect
                 // the flyout stays open. If it leaves, close it
@@ -425,7 +425,7 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
                     HideCore(false);
                 }
             }
-            else if (Popup?.Host is OverlayPopupHost)
+            else if (Popup.Host is OverlayPopupHost)
             {
                 // Same as above here, but just different coordinate space
                 // so we don't need to translate

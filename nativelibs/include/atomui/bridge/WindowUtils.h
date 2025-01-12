@@ -12,3 +12,4 @@
 #include "atomui/Global.h"
 
 extern "C" ATOMUI_EXPORT void AtomUISetWindowIgnoresMouseEvents(ATOMUI_HANDLE windowHandle, bool flag);
+extern "C" ATOMUI_EXPORT bool AtomUIGetWindowIgnoresMouseEvents(ATOMUI_HANDLE windowHandle);

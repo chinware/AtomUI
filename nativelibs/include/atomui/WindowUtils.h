@@ -17,5 +17,6 @@ namespace atomui
     public:
         WindowUtils() = delete;
         static void setIgnoresMouseEvents(ATOMUI_HANDLE windowHandle, bool flag);
+        static bool ignoresMouseEvents(ATOMUI_HANDLE windowHandle);
     };
 }

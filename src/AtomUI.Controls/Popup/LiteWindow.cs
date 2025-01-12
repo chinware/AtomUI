@@ -11,7 +11,7 @@ public class LiteWindow : WindowBase, IHostedVisualTreeRoot, IDisposable
 {
     static LiteWindow()
     {
-        BackgroundProperty.OverrideDefaultValue(typeof(LiteWindow), Brushes.White);
+        BackgroundProperty.OverrideDefaultValue(typeof(LiteWindow), Brushes.Transparent);
     }
 
     public LiteWindow(TopLevel parent, IPopupImpl impl)

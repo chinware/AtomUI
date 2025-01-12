@@ -644,9 +644,13 @@ public class ToolTip : TemplatedControl, IShadowMaskInfoProvider
 
         if (_popup is null)
         {
-            _popup                            = new Popup();
+            _popup = new Popup
+            {
+                WindowManagerAddShadowHint = false,
+                IsLightDismissEnabled = false,
+                OverlayDismissEventPassThrough = false
+            };
             _popup.Child                      = this;
-            _popup.WindowManagerAddShadowHint = false;
 
             _popup.Opened          += OnPopupOpened;
             _popup.Closed          += OnPopupClosed;

@@ -13,22 +13,20 @@ internal class PopupMotionActor : SceneMotionActorControl
     private readonly Point _offset;
     private readonly double _scaling;
 
-    public PopupMotionActor(BoxShadows boxShadows,
-                            Point offset,
-                            double scaling,
-                            Control motionTarget)
+    public PopupMotionActor(BoxShadows boxShadows, Point offset, double scaling, Control motionTarget)
         : base(motionTarget)
     {
-        _offset     = offset;
-        _scaling    = scaling;
+        _offset = offset;
+        _scaling = scaling;
         _boxShadows = boxShadows;
     }
 
     protected override Point CalculateTopLevelGhostPosition()
     {
         var boxShadowsThickness = _boxShadows.Thickness();
-        var winPos              = _offset; // TODO 可能需要乘以 scaling
-        var scaledThickness     = boxShadowsThickness * _scaling;
+        var winPos = _offset;
+        // TODO review 这个地方有差异性，在macOS 不需要乘以 scaling，但是貌似在 windows 系统下需要
+        var scaledThickness = boxShadowsThickness; 
         return new Point(winPos.X - scaledThickness.Left, winPos.Y - scaledThickness.Top);
     }
 

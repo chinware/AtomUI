@@ -9,4 +9,8 @@ internal static partial class WindowUtilsImpl
     [LibraryImport(NativeLibName)]
     internal static partial void AtomUISetWindowIgnoresMouseEvents(IntPtr handle,
                                                                    [MarshalAs(UnmanagedType.Bool)] bool flag);
+    
+    [LibraryImport(NativeLibName)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static partial bool AtomUIGetWindowIgnoresMouseEvents(IntPtr handle);
 }

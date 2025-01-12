@@ -7,8 +7,10 @@ namespace AtomUI.Controls;
 
 internal static class PopupUtils
 {
-    internal static ArrowPosition? CalculateArrowPosition(PlacementMode placement, PopupAnchor? anchor,
-                                                          PopupGravity? gravity)
+    internal static ArrowPosition? CalculateArrowPosition(
+        PlacementMode placement,
+        PopupAnchor? anchor,
+        PopupGravity? gravity)
     {
         if (!CanEnabledArrow(placement, anchor, gravity))
         {
@@ -18,7 +20,7 @@ internal static class PopupUtils
         if (placement != PlacementMode.AnchorAndGravity)
         {
             var ret = GetAnchorAndGravity(placement);
-            anchor  = ret.Item1;
+            anchor = ret.Item1;
             gravity = ret.Item2;
         }
 
@@ -77,7 +79,7 @@ internal static class PopupUtils
     /// <param name="gravity"></param>
     /// <returns></returns>
     internal static bool CanEnabledArrow(PlacementMode placement, PopupAnchor? anchor = null,
-                                         PopupGravity? gravity = null)
+        PopupGravity? gravity = null)
     {
         if (placement == PlacementMode.Center ||
             placement == PlacementMode.Pointer)
@@ -123,10 +125,10 @@ internal static class PopupUtils
     }
 
     internal static Rect Calculate(Size translatedSize,
-                                   Rect anchorRect, PopupAnchor anchor, PopupGravity gravity,
-                                   PopupPositionerConstraintAdjustment constraintAdjustment, Point offset,
-                                   Rect parentGeometry,
-                                   IReadOnlyList<ManagedPopupPositionerScreenInfo> screens)
+        Rect anchorRect, PopupAnchor anchor, PopupGravity gravity,
+        PopupPositionerConstraintAdjustment constraintAdjustment, Point offset,
+        Rect parentGeometry,
+        IReadOnlyList<ManagedPopupPositionerScreenInfo> screens)
     {
         anchorRect = anchorRect.Translate(parentGeometry.TopLeft);
 
@@ -388,9 +390,9 @@ internal static class PopupUtils
     }
 
     internal static Point CalculateMarginToAnchorOffset(PlacementMode placement,
-                                                        double margin,
-                                                        PopupAnchor? popupAnchor = null,
-                                                        PopupGravity? popupGravity = null)
+        double margin,
+        PopupAnchor? popupAnchor = null,
+        PopupGravity? popupGravity = null)
     {
         var offsetX = 0d;
         var offsetY = 0d;

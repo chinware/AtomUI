@@ -12,7 +12,6 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Media;
-using Avalonia.Platform;
 
 namespace AtomUI.Controls;
 
@@ -46,22 +45,23 @@ internal class PopupShadowLayer : LiteWindow, IShadowDecorator
         : base(topLevel, topLevel.PlatformImpl?.CreatePopup()!)
     {
         Background = new SolidColorBrush(Colors.Transparent);
+        IsHitTestVisible = false;
         if (PlatformImpl is not null)
         {
-            PlatformImpl.SetTransparencyLevelHint(new []
+            PlatformImpl.SetTransparencyLevelHint(new[]
             {
                 WindowTransparencyLevel.Transparent
             });
             PlatformImpl!.SetWindowManagerAddShadowHint(false);
         }
-        
+
 #if PLATFORM_WINDOWS
         if (this is WindowBase window)
         {
             window.SetTransparentForMouseEvents(true);
         }
 #elif PLATFORM_MACOS
-    
+
 #endif
         WindowUtils.SetWindowIgnoreMouseEvents(this, true);
 

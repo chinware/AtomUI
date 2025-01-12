@@ -344,10 +344,12 @@ public class Flyout : PopupFlyoutBase
         }
 
         IsOpen = true;
-        Dispatcher.UIThread.Post(() =>
+        Dispatcher.UIThread.Invoke(() =>
         {
-            Popup.OpenAnimation();
-            HandlePopupOpened(placementTarget);
+            Popup.OpenAnimation(() =>
+            {
+                HandlePopupOpened(placementTarget);
+            });
         });
         return true;
     }
@@ -373,7 +375,7 @@ public class Flyout : PopupFlyoutBase
         }
 
         IsOpen = false;
-        Dispatcher.UIThread.Post(() => { Popup.CloseAnimation(HandlePopupClosed); });
+        Dispatcher.UIThread.Invoke(() => { Popup.CloseAnimation(HandlePopupClosed); });
         return true;
     }
 

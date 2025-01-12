@@ -1,4 +1,5 @@
 ﻿using System.Reactive.Disposables;
+using AtomUI.MotionScene;
 using AtomUI.Reflection;
 using Avalonia;
 using Avalonia.Controls;
@@ -95,6 +96,10 @@ internal sealed class ToolTipService : IDisposable
     public void Update(IInputRoot root, Visual? candidateToolTipHost)
     {
         var currentToolTip = _tipControl?.GetValue(ToolTip.ToolTipProperty);
+        if (root is SceneLayer || root is PopupShadowLayer)
+        {
+            return;
+        }
         if (root == currentToolTip?.GetVisualRoot())
         {
             // Don't update while the pointer is over a tooltip
@@ -103,8 +108,7 @@ internal sealed class ToolTipService : IDisposable
 
         while (candidateToolTipHost != null)
         {
-            if (candidateToolTipHost ==
-                currentToolTip) // when OverlayPopupHost is in use, the tooltip is in the same window as the host control
+            if (candidateToolTipHost == currentToolTip) // when OverlayPopupHost is in use, the tooltip is in the same window as the host control
             {
                 return;
             }

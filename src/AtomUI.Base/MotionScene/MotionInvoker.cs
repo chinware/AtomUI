@@ -6,10 +6,10 @@ namespace AtomUI.MotionScene;
 internal static class MotionInvoker
 {
     public static void Invoke(MotionActorControl actor,
-                              AbstractMotion motion,
-                              Action? aboutToStart = null,
-                              Action? completedAction = null,
-                              CancellationToken cancellationToken = default)
+        AbstractMotion motion,
+        Action? aboutToStart = null,
+        Action? completedAction = null,
+        CancellationToken cancellationToken = default)
     {
         Dispatcher.UIThread.Invoke(async () =>
         {
@@ -18,19 +18,19 @@ internal static class MotionInvoker
     }
 
     public static async Task InvokeAsync(MotionActorControl actor,
-                                         AbstractMotion motion,
-                                         Action? aboutToStart = null,
-                                         Action? completedAction = null,
-                                         CancellationToken cancellationToken = default)
+        AbstractMotion motion,
+        Action? aboutToStart = null,
+        Action? completedAction = null,
+        CancellationToken cancellationToken = default)
     {
         await motion.RunAsync(actor, aboutToStart, completedAction, cancellationToken);
     }
 
     public static void InvokeInPopupLayer(SceneMotionActorControl actor,
-                                          AbstractMotion motion,
-                                          Action? aboutToStart = null,
-                                          Action? completedAction = null,
-                                          CancellationToken cancellationToken = default)
+        AbstractMotion motion,
+        Action? aboutToStart = null,
+        Action? completedAction = null,
+        CancellationToken cancellationToken = default)
     {
         Dispatcher.UIThread.Invoke(async () =>
         {
@@ -39,38 +39,42 @@ internal static class MotionInvoker
     }
 
     public static async Task InvokeInPopupLayerAsync(SceneMotionActorControl actor,
-                                                     AbstractMotion motion,
-                                                     Action? aboutToStart = null,
-                                                     Action? completedAction = null,
-                                                     CancellationToken cancellationToken = default)
+        AbstractMotion motion,
+        Action? aboutToStart = null,
+        Action? completedAction = null,
+        CancellationToken cancellationToken = default)
     {
         actor.BuildGhost();
-        SceneLayer sceneLayer          = PrepareSceneLayer(motion, actor);
-        var        compositeDisposable = new CompositeDisposable();
+        var sceneLayer = PrepareSceneLayer(motion, actor);
+        var compositeDisposable = new CompositeDisposable();
         compositeDisposable.Add(Disposable.Create(sceneLayer, (state) =>
         {
-            Dispatcher.UIThread.Invoke(async () =>
+            Dispatcher.UIThread.Invoke(() =>
             {
-                await Task.Delay(300);
                 sceneLayer.Hide();
                 sceneLayer.Dispose();
             });
         }));
         sceneLayer.SetMotionActor(actor);
         actor.NotifyMotionTargetAddedToScene();
-        sceneLayer.Show();
         sceneLayer.Topmost = true;
+        sceneLayer.Show();
+        sceneLayer.Activate();
         actor.NotifySceneShowed();
         actor.IsVisible = false;
-        
-        await motion.RunAsync(actor, aboutToStart, () =>
+
+        await Dispatcher.UIThread.InvokeAsync(async () =>
         {
-            compositeDisposable.Dispose();
-            if (completedAction is not null)
+            await Task.Delay(TimeSpan.FromMilliseconds(5), cancellationToken);
+            await motion.RunAsync(actor, aboutToStart, () =>
             {
-                completedAction();
-            }
-        }, cancellationToken);
+                if (completedAction is not null)
+                {
+                    completedAction();
+                }
+                compositeDisposable.Dispose();
+            }, cancellationToken);
+        });
     }
 
     private static SceneLayer PrepareSceneLayer(AbstractMotion motion, SceneMotionActorControl actor)
