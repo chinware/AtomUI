@@ -514,7 +514,12 @@ public class Popup : AvaloniaPopup
         var placementTarget = GetEffectivePlacementTarget();
         var topLevel = TopLevel.GetTopLevel(placementTarget);
 
-        var scaling = topLevel?.RenderScaling ?? 1.0;
+        var scaling = 1.0;
+
+        if (topLevel is WindowBase windowBase)
+        {
+            scaling = windowBase.DesktopScaling;
+        }
 
         var motionActor = new PopupMotionActor(MaskShadows, offset, scaling, Child ?? popupRoot);
         motionActor.SceneParent = topLevel;

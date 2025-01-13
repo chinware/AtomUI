@@ -54,11 +54,14 @@
             Outputs="@(AtomUINativeArtifact)">
         <PropertyGroup>
             <CPUCount>$([System.Environment]::ProcessorCount)</CPUCount>
+            <PowerShellExecutable Condition="$([MSBuild]::IsOSPlatform('OSX'))">pwsh</PowerShellExecutable>
+            <PowerShellExecutable Condition="$([MSBuild]::IsOSPlatform('Linux'))">pwsh</PowerShellExecutable>
+            <PowerShellExecutable Condition="$([MSBuild]::IsOSPlatform('Windows'))">powershell</PowerShellExecutable>
         </PropertyGroup>
         <MakeDir Directories="$(AtomUINavtiveBuildPath)" Condition="!Exists('$(AtomUINavtiveBuildPath)')"/>
         <MakeDir Directories="$(AtomUITempInstallPrefix)" Condition="!Exists('$(AtomUITempInstallPrefix)')"/>
         <MakeDir Directories="$(AtomUINativeAbsoluteDeployPath)" Condition="!Exists('$(AtomUINativeAbsoluteDeployPath)')"/>
-        <Exec Command='powershell -NonInteractive -executionpolicy Unrestricted $(AtomUIBuildPwShScript) -buildDir "$(AtomUINavtiveBuildPath)" -sourceDir "$(AtomUINativeSrcPath)" -installPrefix "$(AtomUITempInstallPrefix.TrimEnd("\"))" -deployDir "$(AtomUINativeAbsoluteDeployPath)" -buildType "$(CMakeBuildType)"'
+        <Exec Command='$(PowerShellExecutable) -NonInteractive -executionpolicy Unrestricted $(AtomUIBuildPwShScript) -buildDir "$(AtomUINavtiveBuildPath)" -sourceDir "$(AtomUINativeSrcPath)" -installPrefix "$(AtomUITempInstallPrefix.TrimEnd("\"))" -deployDir "$(AtomUINativeAbsoluteDeployPath)" -buildType "$(CMakeBuildType)" -libName "$(AtomUINativeArtifactName)"'
               WorkingDirectory="$(AtomUINavtiveBuildPath)"
               ConsoleToMsBuild="true"
         />

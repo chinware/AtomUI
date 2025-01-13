@@ -62,6 +62,8 @@ internal static class MotionInvoker
 
         await Dispatcher.UIThread.InvokeAsync(async () =>
         {
+            // 主要等待正常窗体显示出来再隐藏对话层，不然感觉会闪屏
+            await Task.Delay(TimeSpan.FromMilliseconds(100), cancellationToken);
             await motion.RunAsync(actor, aboutToStart, () =>
             {
                 if (completedAction is not null)
@@ -69,8 +71,6 @@ internal static class MotionInvoker
                     completedAction();
                 }
             }, cancellationToken);
-            // 主要等待正常窗体显示出来再隐藏对话层，不然感觉会闪屏
-            await Task.Delay(TimeSpan.FromMilliseconds(80), cancellationToken);
             compositeDisposable.Dispose();
         });
     }

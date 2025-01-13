@@ -8,7 +8,8 @@
         <AtomUINativeRuntimeType Condition="$([MSBuild]::IsOSPlatform('Windows'))">win</AtomUINativeRuntimeType>
         <CPUArchitecture>$([System.Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture)</CPUArchitecture>
         <CPUArchitecture>$(CPUArchitecture.ToLower)</CPUArchitecture>
-        <AtomUIRuntimeDir>$(AtomUINativeRuntimeType)-$(CPUArchitecture)</AtomUIRuntimeDir>
+        <AtomUIRuntimeDir Condition="$([MSBuild]::IsOSPlatform('Windows'))">$(AtomUINativeRuntimeType)-$(CPUArchitecture)</AtomUIRuntimeDir>
+        <AtomUIRuntimeDir Condition="$([MSBuild]::IsOSPlatform('OSX'))">$(AtomUINativeRuntimeType)</AtomUIRuntimeDir>
         <AtomUINativeDeployPath>runtimes/$(AtomUIRuntimeDir)/native</AtomUINativeDeployPath>
     </PropertyGroup>
 </Project>
