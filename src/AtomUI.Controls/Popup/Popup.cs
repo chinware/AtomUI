@@ -456,7 +456,11 @@ public class Popup : AvaloniaPopup
         popupRoot.Hide();
         var popupOffset = popupRoot.PlatformImpl!.Position;
         var topLevel = TopLevel.GetTopLevel(placementTarget);
-        var scaling = topLevel?.RenderScaling ?? 1.0;
+        var scaling = 1.0;
+        if (topLevel is WindowBase windowBase)
+        {
+            scaling = windowBase.DesktopScaling;
+        }
         var offset = new Point(popupOffset.X, popupOffset.Y);
 
         // 调度动画

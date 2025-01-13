@@ -73,7 +73,7 @@
 #      define ATOMUI_OS_MACOS
 #    endif
 #  else
-#    error "AtomUI has not been ported to this Apple platform
+#    error "AtomUI has not been ported to this Apple platform"
 #  endif
 #elif defined(__WEBOS__)
 #  define ATOMUI_OS_WEBOS
@@ -129,7 +129,7 @@
 #  define ATOMUI_OS_HAIKU
 #elif defined(__MAKEDEPEND__)
 #else
-#  error "AtomUI has not been ported to this OS
+#  error "AtomUI has not been ported to this OS"
 #endif
 
 #if defined(ATOMUI_OS_WIN32) || defined(ATOMUI_OS_WIN64)

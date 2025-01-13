@@ -7,8 +7,6 @@
 #
 # Created by chinboy on 2025/01/10.
 
-atomui_check_prog_awk()
-
 if (APPLE)
    find_library(FWCoreFoundation CoreFoundation)
    find_library(FWCoreServices CoreServices)

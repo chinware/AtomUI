@@ -4,7 +4,7 @@ namespace AtomUI.Native.Interop;
 
 internal static partial class WindowUtilsImpl
 {
-    private const string NativeLibName = "AtomUI";
+    private const string NativeLibName = "AtomUINative";
 
     [LibraryImport(NativeLibName)]
     internal static partial void AtomUISetWindowIgnoresMouseEvents(IntPtr handle,

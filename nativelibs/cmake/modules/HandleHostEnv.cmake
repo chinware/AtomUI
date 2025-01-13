@@ -14,3 +14,7 @@ if (WIN32)
            WINVER=0x0602 _WIN32_WINNT=0x0602
            WIN32_LEAN_AND_MEAN)
 endif()
+
+if (MSVC)
+   atomui_append_flag(/Zc:__cplusplus CMAKE_CXX_FLAGS)
+endif ()

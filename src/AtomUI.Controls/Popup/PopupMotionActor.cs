@@ -27,7 +27,7 @@ internal class PopupMotionActor : SceneMotionActorControl
         var winPos = _offset;
         // TODO review 这个地方有差异性，在macOS 不需要乘以 scaling，但是貌似在 windows 系统下需要
         var scaledThickness = boxShadowsThickness; 
-        return new Point(winPos.X - scaledThickness.Left, winPos.Y - scaledThickness.Top);
+        return new Point(winPos.X - scaledThickness.Left * _scaling, winPos.Y - scaledThickness.Top * _scaling);
     }
 
     internal override void BuildGhost()

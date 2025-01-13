@@ -7,10 +7,6 @@ using Avalonia.Media;
 using Avalonia.Platform;
 using Avalonia.VisualTree;
 
-#if PLATFORM_WINDOWS
-using AtomUI.Platform.Windows;
-#endif
-
 namespace AtomUI.MotionScene;
 
 internal class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
@@ -52,12 +48,6 @@ internal class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
             });
             PlatformImpl!.SetWindowManagerAddShadowHint(false);
         }
-#if PLATFORM_WINDOWS
-        if (this is WindowBase window)
-        {
-            window.SetTransparentForMouseEvents(true);
-        }
-#endif
         WindowUtils.SetWindowIgnoreMouseEvents(this, true);
         if (PlatformImpl?.PopupPositioner is ManagedPopupPositioner managedPopupPositioner)
         {

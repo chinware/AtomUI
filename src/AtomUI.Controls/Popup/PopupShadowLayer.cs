@@ -3,10 +3,6 @@ using System.Reflection;
 using AtomUI.Controls.Primitives;
 using AtomUI.Media;
 using AtomUI.Native;
-
-#if PLATFORM_WINDOWS
-using AtomUI.Platform.Windows;
-#endif
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -54,15 +50,7 @@ internal class PopupShadowLayer : LiteWindow, IShadowDecorator
             });
             PlatformImpl!.SetWindowManagerAddShadowHint(false);
         }
-
-#if PLATFORM_WINDOWS
-        if (this is WindowBase window)
-        {
-            window.SetTransparentForMouseEvents(true);
-        }
-#elif PLATFORM_MACOS
-
-#endif
+        
         WindowUtils.SetWindowIgnoreMouseEvents(this, true);
 
         if (PlatformImpl?.PopupPositioner is ManagedPopupPositioner managedPopupPositioner)

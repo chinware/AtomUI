@@ -42,6 +42,10 @@ include(FeatureSummary)
 project(${ATOMUI_PACKAGE_NAME} LANGUAGES C CXX
         VERSION ${ATOMUI_VERSION_MAJOR}.${ATOMUI_VERSION_MINOR}.${ATOMUI_VERSION_PATCH})
 
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Debug CACHE STRING "Build type" FORCE)
+endif()
+
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(ATOMUI_DEBUG_BUILD ON)
 endif()
@@ -61,8 +65,8 @@ option(ATOMUI_BUILD_UNITTESTS "Generate build targets for the atomui library uni
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-include(HandleHostEnv)
 include(Utils)
+include(HandleHostEnv)
 include(HandleRequirePackages)
 include(HandleConfig)
 include(HandleAppPath)

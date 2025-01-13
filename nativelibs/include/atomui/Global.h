@@ -10,6 +10,10 @@
 #pragma once
 
 #include "atomui/Config.h"
+#include <iostream>
+#ifdef ATOMUI_OS_WINDOWS
+#include <windows.h>
+#endif
 
 #ifdef __cplusplus
 constexpr
@@ -31,10 +35,8 @@ inline void atomui_noop()
 
 namespace atomui
 {
-    ATOMUI_EXPORT std::string version_string();
+ATOMUI_EXPORT std::string version_string();
 }
-
-typedef void* ATOMUI_HANDLE;
 
 #if defined(ATOMUI_OS_WIN)
 #ifndef STD_CALL_TYPE

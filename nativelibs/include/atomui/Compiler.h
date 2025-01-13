@@ -413,7 +413,7 @@
 #  define ATOMUI_BROKEN_TEMPLATE_SPECIALIZATION
 
 #else
-#  error "AtomUI has not been tested with this compiler
+#  error "AtomUI has not been tested with this compiler"
 #endif
 
 /*

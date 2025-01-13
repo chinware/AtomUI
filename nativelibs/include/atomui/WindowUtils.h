@@ -10,13 +10,19 @@
 #pragma once
 #include "atomui/Global.h"
 
+#ifdef ATOMUI_OS_WINDOWS
+using ATOMUI_WIN_HANDLE = HWND;
+#else
+using ATOMUI_WIN_HANDLE = void*;
+#endif
+
 namespace atomui
 {
-    class WindowUtils
-    {
-    public:
-        WindowUtils() = delete;
-        static void setIgnoresMouseEvents(ATOMUI_HANDLE windowHandle, bool flag);
-        static bool ignoresMouseEvents(ATOMUI_HANDLE windowHandle);
-    };
+class ATOMUI_EXPORT WindowUtils
+{
+public:
+    WindowUtils() = delete;
+    static void setIgnoresMouseEvents(ATOMUI_WIN_HANDLE windowHandle, bool flag);
+    static bool ignoresMouseEvents(ATOMUI_WIN_HANDLE windowHandle);
+};
 }

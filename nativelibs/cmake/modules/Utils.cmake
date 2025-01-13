@@ -9,6 +9,8 @@
 
 include_guard(GLOBAL)
 include(CheckCSourceCompiles)
+include(CheckCCompilerFlag)
+include(CheckCXXCompilerFlag)
 include(CheckSymbolExists)
 
 # handle SCCACHE hack
@@ -18,7 +20,7 @@ include(CheckSymbolExists)
 # This increases memory usage, disk space usage and linking time, so should only be
 # enabled if necessary.
 # Must be called after project(...).
-function(atomui_handle_sccache_support)
+function(ATOMUI_WIN_HANDLE_sccache_support)
     if (MSVC AND WITH_SCCACHE_SUPPORT)
         foreach (config DEBUG RELWITHDEBINFO)
             foreach (lang C CXX)
@@ -604,28 +606,6 @@ function(atomui_set_output_directory target)
         endif ()
     endif ()
 endfunction()
-
-macro(atomui_check_prog_awk)
-    find_program(ATOMUI_PROGRAM_AWK awk NAMES gawk nawk mawk
-            PATHS /usr/xpg4/bin/)
-    if (NOT ATOMUI_PROGRAM_AWK)
-        message(FATAL_ERROR "Could not find awk; Install GNU awk")
-    else ()
-        if (ATOMUI_PROGRAM_AWK MATCHES ".*mawk")
-            message(WARNING "mawk is known to have problems on some systems. You should install GNU awk")
-        else ()
-            message(STATUS "checking wether ${ATOMUI_PROGRAM_AWK} is broken")
-            execute_process(COMMAND ${ATOMUI_PROGRAM_AWK} "function foo() {}" ">/dev/null 2>&1"
-                    RESULT_VARIABLE _awkExecRet)
-            if (_awkExecRet)
-                message(FATAL_ERROR "You should install GNU awk")
-                unset(ATOMUI_PROGRAM_AWK)
-            else ()
-                message(STATUS "${ATOMUI_PROGRAM_AWK} is works")
-            endif ()
-        endif ()
-    endif ()
-endmacro()
 
 function(atomui_set_if_target var target)
     if (TARGET "${target}")

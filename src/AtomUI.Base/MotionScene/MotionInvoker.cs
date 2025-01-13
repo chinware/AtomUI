@@ -49,11 +49,8 @@ internal static class MotionInvoker
         var compositeDisposable = new CompositeDisposable();
         compositeDisposable.Add(Disposable.Create(sceneLayer, (state) =>
         {
-            Dispatcher.UIThread.Invoke(() =>
-            {
-                sceneLayer.Hide();
-                sceneLayer.Dispose();
-            });
+            sceneLayer.Hide();
+            sceneLayer.Dispose();
         }));
         sceneLayer.SetMotionActor(actor);
         actor.NotifyMotionTargetAddedToScene();
@@ -65,15 +62,16 @@ internal static class MotionInvoker
 
         await Dispatcher.UIThread.InvokeAsync(async () =>
         {
-            await Task.Delay(TimeSpan.FromMilliseconds(5), cancellationToken);
             await motion.RunAsync(actor, aboutToStart, () =>
             {
                 if (completedAction is not null)
                 {
                     completedAction();
                 }
-                compositeDisposable.Dispose();
             }, cancellationToken);
+            // 主要等待正常窗体显示出来再隐藏对话层，不然感觉会闪屏
+            await Task.Delay(TimeSpan.FromMilliseconds(80), cancellationToken);
+            compositeDisposable.Dispose();
         });
     }
 

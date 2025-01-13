@@ -22,9 +22,5 @@
     <ItemGroup>
         <ProjectReference Include="..\AtomUI.Native\AtomUI.Native.csproj" />
     </ItemGroup>
-
-    <ItemGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
-        <ProjectReference Include="..\AtomUI.Platform.Win32\AtomUI.Platform.Win32.csproj"/>
-    </ItemGroup>
     
 </Project>

@@ -7,7 +7,7 @@
 #
 # Created by chinboy on 2025/01/10.
 
-atomui_add_library(AtomUI
+atomui_add_library(AtomUINative
     BUILD_DEFAULT
     SOURCES
     Global.cpp
@@ -15,9 +15,16 @@ atomui_add_library(AtomUI
     ${ATOMUI_INCLUDE_DIR}/atomui/WindowUtils.h
 )
 
-atomui_extend_library(AtomUI CONDITION APPLE
+atomui_extend_library(AtomUINative CONDITION APPLE
     SOURCES
     macos/WindowUtils.mm
+    DEPENDS
+    ${FWFoundation} ${FWAppKit}
+)
+
+atomui_extend_library(AtomUINative CONDITION WIN32
+    SOURCES
+    windows/WindowsUtils.cpp
     DEPENDS
     ${FWFoundation} ${FWAppKit}
 )

@@ -3,8 +3,13 @@
         <NoWarn>$(NoWarn);CS7035</NoWarn>
         <AvaloniaVersion>11.2.3</AvaloniaVersion>
         <AtomUIVersion>0.0.2</AtomUIVersion>
-        <NugetPackageVersion>$(AtomUIVersion)-build-$([System.DateTime]::Now.ToString("yyyyMMdd"))</NugetPackageVersion>
-        <FileVersion>$([System.DateTime]::Now.ToString("yyyy.MM.dd HH:mm:ss"))</FileVersion>
+        <NugetPackageVersion>$(AtomUIVersion)</NugetPackageVersion>
         <AssemblyVersion>$(AtomUIVersion)</AssemblyVersion>
     </PropertyGroup>
+    
+    <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+        <FileVersion>$([System.DateTime]::Now.ToString("yyyy.MM.dd HH:mm:ss"))</FileVersion>
+        <NugetPackageVersion>$(NugetPackageVersion)+build.$([System.DateTime]::Now.ToString("yyyyMMdd"))</NugetPackageVersion>
+    </PropertyGroup>
+    
 </Project>

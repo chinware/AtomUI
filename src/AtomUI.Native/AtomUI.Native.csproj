@@ -24,6 +24,9 @@
     <PropertyGroup>
         <AtomUINavtiveBuildPath>$([System.IO.Path]::Combine($(MSBuildProjectDirectory), $(IntermediateOutputPath), 'AtomUINative'))</AtomUINavtiveBuildPath>
         <AtomUINativeSrcPath>$([System.IO.Path]::GetFullPath('$(MSBuildProjectDirectory)/../../nativelibs'))</AtomUINativeSrcPath>
+        <AtomUITempInstallPrefix>$([System.IO.Path]::GetFullPath('$(OutputPath)'))</AtomUITempInstallPrefix>
+        <AtomUINativeAbsoluteDeployPath>$(OutputPath)$(AtomUINativeDeployPath)</AtomUINativeAbsoluteDeployPath>
+        <AtomUIBuildPwShScript>$([System.IO.Path]::GetFullPath('$(MSBuildProjectDirectory)/../../scripts/BuildAtomUINative.ps1'))</AtomUIBuildPwShScript>
     </PropertyGroup>
 
     <ItemGroup>
@@ -49,28 +52,16 @@
             BeforeTargets="Build"
             Inputs="@(AtomUINativeSources)"
             Outputs="@(AtomUINativeArtifact)">
-        <Message Text="@(AtomUINativeArtifact)" Importance="high"/>
         <PropertyGroup>
             <CPUCount>$([System.Environment]::ProcessorCount)</CPUCount>
         </PropertyGroup>
         <MakeDir Directories="$(AtomUINavtiveBuildPath)" Condition="!Exists('$(AtomUINavtiveBuildPath)')"/>
-        <Exec Command="cmake -B $(AtomUINavtiveBuildPath) -S $(AtomUINativeSrcPath) --install-prefix $(OutputPath) -DCMAKE_BUILD_TYPE=$(CMakeBuildType) -G Ninja"
-              WorkingDirectory="$(AtomUINavtiveBuildPath)"
-              ConsoleToMsBuild="true"
-        >
-            <Output TaskParameter="ConsoleOutput" PropertyName="CmakeOutput"/>
-            <Output TaskParameter="ExitCode" PropertyName="BildAtomUINativeExitCode"/>
-        </Exec>
-        <Exec Command="ninja -j $(CPUCount) -C $(AtomUINavtiveBuildPath)"
+        <MakeDir Directories="$(AtomUITempInstallPrefix)" Condition="!Exists('$(AtomUITempInstallPrefix)')"/>
+        <MakeDir Directories="$(AtomUINativeAbsoluteDeployPath)" Condition="!Exists('$(AtomUINativeAbsoluteDeployPath)')"/>
+        <Exec Command='powershell -NonInteractive -executionpolicy Unrestricted $(AtomUIBuildPwShScript) -buildDir "$(AtomUINavtiveBuildPath)" -sourceDir "$(AtomUINativeSrcPath)" -installPrefix "$(AtomUITempInstallPrefix.TrimEnd("\"))" -deployDir "$(AtomUINativeAbsoluteDeployPath)" -buildType "$(CMakeBuildType)"'
               WorkingDirectory="$(AtomUINavtiveBuildPath)"
               ConsoleToMsBuild="true"
         />
-
-        <Exec Command="ninja install"
-              WorkingDirectory="$(AtomUINavtiveBuildPath)"
-              ConsoleToMsBuild="true"
-        />
-        <Copy SourceFiles="$(OutputPath)lib/$(AtomUINativeArtifactName)" DestinationFolder="$(OutputPath)$(AtomUINativeDeployPath)"/>
 
         <ItemGroup Condition="'$(Configuration)' == 'Release'">
             <Content Include="@(AtomUINativeArtifact)">

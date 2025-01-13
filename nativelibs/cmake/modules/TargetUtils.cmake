@@ -135,11 +135,10 @@ function(atomui_add_library name)
 
     atomui_output_binary_dir(_output_binary_dir)
     string(REGEX MATCH "^[0-9]*" ATOMUI_VERSION_MAJOR ${ATOMUI_VERSION})
+
     set_target_properties(${name} PROPERTIES
             LINK_DEPENDS_NO_SHARED ON
             SOURCES_DIR "${CMAKE_CURRENT_SOURCE_DIR}"
-#            VERSION "${ATOMUI_VERSION}"
-#            SOVERSION "${ATOMUI_VERSION_MAJOR}"
             MACHO_CURRENT_VERSION ${ATOMUI_VERSION}
             MACHO_COMPATIBILITY_VERSION ${ATOMUI_VERSION_COMPAT}
             CXX_EXTENSIONS OFF
@@ -377,7 +376,7 @@ function(atomui_add_public_header header)
 
     atomui_source_dir(atomui_source_dir)
     get_filename_component(source_dir ${header} DIRECTORY)
-    file(RELATIVE_PATH include_dir_relative_path ${atomui_source_dir} ${source_dir})
+    file(RELATIVE_PATH include_dir_relative_path "${atomui_source_dir}" "${source_dir}")
 
     install(
             FILES ${header}

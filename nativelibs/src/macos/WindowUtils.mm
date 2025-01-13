@@ -13,12 +13,12 @@
 
 namespace atomui {
 
-void WindowUtils::setIgnoresMouseEvents(ATOMUI_HANDLE windowHandle, bool flag) {
+void WindowUtils::setIgnoresMouseEvents(ATOMUI_WIN_HANDLE windowHandle, bool flag) {
     NSWindow *window = reinterpret_cast<NSWindow *>(windowHandle);
     [window setIgnoresMouseEvents:flag];
 }
 
-bool WindowUtils::ignoresMouseEvents(ATOMUI_HANDLE windowHandle) {
+bool WindowUtils::ignoresMouseEvents(ATOMUI_WIN_HANDLE windowHandle) {
     NSWindow *window = reinterpret_cast<NSWindow *>(windowHandle);
     return [window ignoresMouseEvents];
 }
