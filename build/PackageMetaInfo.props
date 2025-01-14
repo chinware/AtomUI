@@ -1,6 +1,5 @@
 <Project>
     <PropertyGroup>
-        <GeneratePackageOnBuild Condition=" '$(Configuration)' == 'Release' ">True</GeneratePackageOnBuild>
         <PackageId>$(MSBuildProjectName)</PackageId>
         <Title>AtomUI</Title>
         <Author>Qinware Technologies Ltd.</Author>
@@ -14,7 +13,7 @@
         <PackageIcon>logo.png</PackageIcon>
         <PackageReadmeFile>README.nuget.md</PackageReadmeFile>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
-        <Version>$(NugetPackageVersion)</Version>
+        <Version>$(AtomUIVersion)</Version>
     </PropertyGroup>
 
     <ItemGroup>

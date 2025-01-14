@@ -1,19 +1,73 @@
-trigger:
-  - manual
+trigger: none
+pr: none
 
-jobs:
-- job: Linux
-  pool:
-    vmImage: 'ubuntu-latest'
-  steps:
-  - script: cmake --version
-- job: macOS
-  pool:
-    vmImage: 'macOS-latest'
-  steps:
-  - script: cmake --version
-- job: Windows
-  pool:
-    vmImage: 'windows-latest'
-  steps:
-  - script: cmake --version
+variables:
+   SourceDir: $(Build.SourcesDirectory)
+   NativeLibSrcDir: '$(sourceDir)/nativelibs'
+   BuildDir: $(Build.BinariesDirectory)
+   BaseOutputDir: '$(Build.ArtifactStagingDirectory)/output'
+   MacOutputDir: '$(baseOutputDir)/osx'
+   WinOutputDir: '$(baseOutputDir)/windows'
+   Win64Output: '$(winOutputDir)/win-x64'
+   Win32Output: '$(winOutputDir)/win-x86'
+parameters:
+   -  name: IsNightlyBuild
+      displayName: 'Is it a nightly build:'
+      type: boolean
+      default: false
+   -  name: BuildConfiguration
+      displayName: 'Build configuration:'
+      type: string
+      default: "Release"
+
+stages:
+   -  stage:
+      jobs:
+         -  job: BuildAtomUINativeMacOS
+            displayName: "Build AtomUINative for macOS"
+            pool:
+               vmImage: 'macOS-latest'
+            steps:
+               -  pwsh: |
+                     brew install ninja
+                     cmake -B $(buildDir) -S $(nativeLibSrcDir) -DCMAKE_INSTALL_PREFIX="$(macOutputDir)" -DCMAKE_OSX_ARCHITECTURES:STRING="x86_64;arm64" -DCMAKE_BUILD_TYPE="${{ parameters.BuildConfiguration }}" -G "Ninja"
+                     ninja -C $(buildDir)
+                     ninja -C $(buildDir) install
+                  displayName: "Build AtomUINative"
+               -  task: PublishPipelineArtifact@1
+                  inputs:
+                     targetPath: $(macOutputDir)
+                     artifactName: AtomUINativeMac
+                  displayName: "Push libAtomUINative.dylib to pipeline"
+         -  job: BuildAtomUINuget
+            displayName: "Build AtomUI nupkg"
+            pool:
+               vmImage: 'windows-latest'
+            steps:
+               -  task: DownloadPipelineArtifact@2
+                  inputs:
+                     artifact: AtomUINativeMac
+                  displayName: "Download libAtomUINative.dylib to pipeline"
+               -  pwsh: |
+                     $osxNativeLibDir = "$(SourceDir)/output/Bin/Release/runtimes/osx/native"
+                     New-Item -ItemType Directory -Force -Path $osxNativeLibDir
+                     Copy-Item -Path $(Pipeline.Workspace)/lib/libAtomUINative.dylib -Destination $osxNativeLibDir
+                     dotnet build --property:Configuration=${{ parameters.BuildConfiguration }} --property:IsNightlyBuild=${{ parameters.IsNightlyBuild }} $(SourceDir)/AtomUI.sln
+                  displayName: "Build AtomUI projects"
+               -  pwsh: |
+                     dotnet pack --no-build --output $(Build.ArtifactStagingDirectory) --configuration=${{ parameters.BuildConfiguration }} /p:IsNightlyBuild=${{ parameters.IsNightlyBuild }} $(SourceDir)/packages/AtomUI/AtomUI.csproj
+                  displayName: "Pack AtomUI Umbrella project"
+               -  task: DotNetCoreCLI@2
+                  displayName: "Publish AtomUI project"
+                  inputs:
+                     command: "push"
+                     nuGetFeedType: "internal"
+                     packagesToPush: "$(Build.ArtifactStagingDirectory)/*.nupkg"
+                     publishVstsFeed: "$(NuGetFeed)"
+               -  task: PublishBuildArtifacts@1
+                  displayName: "Publish AtomUI project pipeline"
+                  inputs:
+                     PathtoPublish: "$(Build.ArtifactStagingDirectory)"
+                     ArtifactName: "NuGetPackages"
+                     TargetPath: "nugets"
+            dependsOn: BuildAtomUINativeMacOS

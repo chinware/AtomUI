@@ -55,6 +55,11 @@
         <Reference Include="$(AtomUIPackageOutput)/AtomUI.Native.dll"/>
     </ItemGroup>
 
+    <PropertyGroup>
+        <AtomUINativeWindowsX64Artifact>$(OutputPath)$(AtomUINativeWindowsX64DeployPath)/$(AtomUINativeWindowsArtifactName)</AtomUINativeWindowsX64Artifact>
+        <AtomUINativeMacOSArtifact>$(OutputPath)$(AtomUINativeMacOSDeployPath)/$(AtomUINativeMacOSArtifactName)</AtomUINativeMacOSArtifact>
+    </PropertyGroup>
+
     <ItemGroup Condition=" '$(Configuration)' == 'Release' ">
         <Content Pack="true" Visible="false" PackagePath="lib/$(TargetFramework)" Include="$(AtomUIPackageOutput)/AtomUI.Base.dll"/>
         <Content Pack="true" Visible="false" PackagePath="lib/$(TargetFramework)" Include="$(AtomUIPackageOutput)/AtomUI.Base.pdb"/>
@@ -68,14 +73,20 @@
         <Content Pack="true" Visible="false" PackagePath="lib/$(TargetFramework)" Include="$(AtomUIPackageOutput)/AtomUI.Theme.pdb"/>
         <Content Pack="true" Visible="false" PackagePath="lib/$(TargetFramework)" Include="$(AtomUIPackageOutput)/AtomUI.Native.dll"/>
         <Content Pack="true" Visible="false" PackagePath="lib/$(TargetFramework)" Include="$(AtomUIPackageOutput)/AtomUI.Native.pdb"/>
-
-        <Content Include="$(AtomUIPackageOutput)/$(AtomUINativeDeployPath)/$(AtomUINativeArtifactName)">
-            <Link>$(AtomUINativeArtifactName)</Link>
-            <PackagePath>$(AtomUINativeDeployPath)</PackagePath>
+        
+        <Content Include="$(AtomUINativeMacOSArtifact)">
+            <Link>$(AtomUINativeMacOSArtifactName)</Link>
+            <PackagePath>$(AtomUINativeMacOSDeployPath)</PackagePath>
             <Pack>true</Pack>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
         </Content>
+        <Content Include="$(AtomUINativeWindowsX64Artifact)">
+            <Link>$(AtomUINativeWindowsArtifactName)</Link>
+            <PackagePath>$(AtomUINativeWindowsX64DeployPath)</PackagePath>
+            <Pack>true</Pack>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        
     </ItemGroup>
 
     <ItemGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -84,4 +95,5 @@
             <Link>$(AtomUINativeDeployPath)/$(AtomUINativeArtifactName)</Link>
         </Content>
     </ItemGroup>
+    
 </Project>

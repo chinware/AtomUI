@@ -27,6 +27,9 @@
         <AtomUITempInstallPrefix>$([System.IO.Path]::GetFullPath('$(OutputPath)'))</AtomUITempInstallPrefix>
         <AtomUINativeAbsoluteDeployPath>$(OutputPath)$(AtomUINativeDeployPath)</AtomUINativeAbsoluteDeployPath>
         <AtomUIBuildPwShScript>$([System.IO.Path]::GetFullPath('$(MSBuildProjectDirectory)/../../scripts/BuildAtomUINative.ps1'))</AtomUIBuildPwShScript>
+        
+        <AtomUINativeWindowsX64Artifact>$(OutputPath)$(AtomUINativeWindowsX64DeployPath)/$(AtomUINativeWindowsArtifactName)</AtomUINativeWindowsX64Artifact>
+        <AtomUINativeMacOSArtifact>$(OutputPath)$(AtomUINativeMacOSDeployPath)/$(AtomUINativeMacOSArtifactName)</AtomUINativeMacOSArtifact>
     </PropertyGroup>
 
     <ItemGroup>
@@ -54,26 +57,14 @@
             Outputs="@(AtomUINativeArtifact)">
         <PropertyGroup>
             <CPUCount>$([System.Environment]::ProcessorCount)</CPUCount>
-            <PowerShellExecutable Condition="$([MSBuild]::IsOSPlatform('OSX'))">pwsh</PowerShellExecutable>
-            <PowerShellExecutable Condition="$([MSBuild]::IsOSPlatform('Linux'))">pwsh</PowerShellExecutable>
-            <PowerShellExecutable Condition="$([MSBuild]::IsOSPlatform('Windows'))">powershell</PowerShellExecutable>
         </PropertyGroup>
         <MakeDir Directories="$(AtomUINavtiveBuildPath)" Condition="!Exists('$(AtomUINavtiveBuildPath)')"/>
         <MakeDir Directories="$(AtomUITempInstallPrefix)" Condition="!Exists('$(AtomUITempInstallPrefix)')"/>
         <MakeDir Directories="$(AtomUINativeAbsoluteDeployPath)" Condition="!Exists('$(AtomUINativeAbsoluteDeployPath)')"/>
-        <Exec Command='$(PowerShellExecutable) -NonInteractive -executionpolicy Unrestricted $(AtomUIBuildPwShScript) -buildDir "$(AtomUINavtiveBuildPath)" -sourceDir "$(AtomUINativeSrcPath)" -installPrefix "$(AtomUITempInstallPrefix.TrimEnd("\"))" -deployDir "$(AtomUINativeAbsoluteDeployPath)" -buildType "$(CMakeBuildType)" -libName "$(AtomUINativeArtifactName)"'
+        <Exec Command='pwsh -NonInteractive -executionpolicy Unrestricted $(AtomUIBuildPwShScript) -buildDir "$(AtomUINavtiveBuildPath)" -sourceDir "$(AtomUINativeSrcPath)" -installPrefix "$(AtomUITempInstallPrefix.TrimEnd("\"))" -deployDir "$(AtomUINativeAbsoluteDeployPath)" -buildType "$(CMakeBuildType)" -libName "$(AtomUINativeArtifactName)"'
               WorkingDirectory="$(AtomUINavtiveBuildPath)"
               ConsoleToMsBuild="true"
         />
-
-        <ItemGroup Condition="'$(Configuration)' == 'Release'">
-            <Content Include="@(AtomUINativeArtifact)">
-                <Link>$(AtomUINativeArtifactName)</Link>
-                <PackagePath>$(AtomUINativeDeployPath)</PackagePath>
-                <Pack>true</Pack>
-                <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            </Content>
-        </ItemGroup>
         
     </Target>
 
