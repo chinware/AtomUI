@@ -532,7 +532,8 @@ internal class CollectionViewGroupRoot : DataGridCollectionViewGroupInternal, IN
         /// <returns>We do not return a value here</returns>
         public override object GroupKeyFromItem(object item, int level, CultureInfo culture)
         {
-            throw new NotImplementedException("We have to implement this abstract method, but it should never be called");
+            throw new NotImplementedException(
+                "We have to implement this abstract method, but it should never be called");
         }
     }
 }

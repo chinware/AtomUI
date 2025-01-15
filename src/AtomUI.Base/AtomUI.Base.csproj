@@ -1,7 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+    <Import Project="$(MSBuildThisFileDirectory)..\..\build\Common.props"/>
+    <Import Project="$(MSBuildThisFileDirectory)..\..\build\PackageMetaInfo.props"/>
+
     <PropertyGroup>
-        <TargetFrameworks>$(AtomUIDevelopTargetFramework);$(AtomUIProductionTargetFramework)</TargetFrameworks>
+        <TargetFramework>$(AtomUICurrentTargetFramework)</TargetFramework>
         <RootNamespace>AtomUI</RootNamespace>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
@@ -16,10 +19,11 @@
         <InternalsVisibleTo Include="AtomUI.Controls"/>
         <InternalsVisibleTo Include="AtomUI.Theme"/>
         <InternalsVisibleTo Include="AtomUI.IconPkg"/>
+        <InternalsVisibleTo Include="AtomUI.Controls.DataGrid"/>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="../AtomUI.Native/AtomUI.Native.csproj" />
+        <ProjectReference Include="..\AtomUI.Native\AtomUI.Native.csproj" />
     </ItemGroup>
     
 </Project>
