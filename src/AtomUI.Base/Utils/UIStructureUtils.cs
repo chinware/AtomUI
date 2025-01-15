@@ -5,11 +5,12 @@ using Avalonia.Controls;
 using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
 
-namespace AtomUI.Controls.Utils;
+namespace AtomUI.Utils;
 
 internal static class UIStructureUtils
 {
     private static readonly MethodInfo SetVisualParentMethodInfo;
+    private static readonly PropertyInfo VisualParentInfo;
     private static readonly PropertyInfo LogicalChildrenInfo;
     private static readonly PropertyInfo VisualChildrenInfo;
     private static readonly PropertyInfo TemplateParentInfo;
@@ -22,6 +23,7 @@ internal static class UIStructureUtils
             typeof(StyledElement).GetProperty("LogicalChildren", BindingFlags.Instance | BindingFlags.NonPublic)!;
         VisualChildrenInfo =
             typeof(Visual).GetProperty("VisualChildren", BindingFlags.Instance | BindingFlags.NonPublic)!;
+        VisualParentInfo = typeof(Visual).GetProperty("VisualParent", BindingFlags.Instance | BindingFlags.NonPublic)!;
         TemplateParentInfo =
             typeof(StyledElement).GetProperty("TemplatedParent", BindingFlags.Instance | BindingFlags.Public)!;
     }
@@ -30,7 +32,7 @@ internal static class UIStructureUtils
     {
         SetVisualParentMethodInfo.Invoke(control, new object?[] { parent });
     }
-
+    
     public static void SetLogicalParent(ILogical control, ILogical? parent)
     {
         ((ISetLogicalParent)control).SetParent(parent);
@@ -52,6 +54,11 @@ internal static class UIStructureUtils
         {
             ClearLogicalParentRecursive(child, parent);
         }
+    }
+    
+    public static Visual? GetVisualParent(Visual control)
+    {
+        return (Visual?)VisualParentInfo.GetValue(control);
     }
 
     public static void AddToLogicalChildren(StyledElement parent, Control child)
