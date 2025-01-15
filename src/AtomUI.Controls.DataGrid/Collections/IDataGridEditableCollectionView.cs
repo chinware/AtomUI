@@ -5,7 +5,7 @@
 
 namespace AtomUI.Controls.Collections;
 
-public interface IDataGridEditableCollectionView
+public interface IDataGridEditableCollectionView : IDataGridCollectionView
 {
     bool CanAddNew { get; }
     object AddNew();
