@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <Import Project="$(MSBuildThisFileDirectory)..\..\build\Common.props"/>
+    <Import Project="$(MSBuildThisFileDirectory)..\..\build\PackageMetaInfo.props"/>
+    
+    <PropertyGroup>
+        <TargetFramework>$(AtomUICurrentTargetFramework)</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+        <RootNamespace>AtomUI.Controls</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="AtomUI"/>
+    </ItemGroup>
+    
+    <ItemGroup>
+        <ProjectReference Include="..\AtomUI.IconPkg.AntDesign\AtomUI.IconPkg.AntDesign.csproj" />
+        <ProjectReference Include="..\AtomUI.Theme\AtomUI.Theme.csproj"/>
+    </ItemGroup>
+
+</Project>
