@@ -142,7 +142,7 @@ internal class DataGridDisplayData
         }
     }
 
-    internal void CorrectSlotsAfterInsertion(int slot, Control element, bool isCollapsed)
+    internal void CorrectSlotsAfterInsertion(int slot, Control? element, bool isCollapsed)
     {
         if (slot < FirstScrollingSlot)
         {

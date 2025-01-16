@@ -34,7 +34,7 @@ internal class DataGridFillerColumn : DataGridColumn
         return null;
     }
 
-    protected override Control? GenerateEditingElement(DataGridCell cell, object dataItem,
+    protected override Control? GenerateEditingElement(DataGridCell cell, object? dataItem,
                                                        out ICellEditBinding? editBinding)
     {
         editBinding = null;

@@ -86,7 +86,7 @@ public class DataGridTemplateColumn : DataGridColumn
         }
     }
 
-    protected override Control? GenerateEditingElement(DataGridCell cell, object dataItem, out ICellEditBinding? binding)
+    protected override Control? GenerateEditingElement(DataGridCell cell, object? dataItem, out ICellEditBinding? binding)
     {
         binding = null;
         if (CellEditingTemplate != null)

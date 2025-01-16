@@ -694,7 +694,7 @@ public abstract class DataGridColumn : AvaloniaObject
     /// <returns>
     /// A new editing element that is bound to the column's <see cref="P:Avalonia.Controls.DataGridBoundColumn.Binding" /> property value.
     /// </returns>
-    protected abstract Control? GenerateEditingElement(DataGridCell cell, object dataItem, out ICellEditBinding? binding);
+    protected abstract Control? GenerateEditingElement(DataGridCell cell, object? dataItem, out ICellEditBinding? binding);
 
     /// <summary>
     /// When overridden in a derived class, gets a read-only element that is bound to the column's
@@ -1062,7 +1062,7 @@ public abstract class DataGridColumn : AvaloniaObject
     }
 
     //TODO Binding
-    internal Control? GenerateEditingElementInternal(DataGridCell cell, object dataItem)
+    internal Control? GenerateEditingElementInternal(DataGridCell cell, object? dataItem)
     {
         if (_editingElement == null)
         {

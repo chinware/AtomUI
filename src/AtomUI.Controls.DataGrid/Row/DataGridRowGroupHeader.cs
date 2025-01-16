@@ -58,13 +58,13 @@ public class DataGridRowGroupHeader : TemplatedControl
         set => SetValue(ItemCountFormatProperty, value);
     }
 
-    public static readonly StyledProperty<string> PropertyNameProperty =
-        AvaloniaProperty.Register<DataGridRowGroupHeader, string>(nameof(PropertyName));
+    public static readonly StyledProperty<string?> PropertyNameProperty =
+        AvaloniaProperty.Register<DataGridRowGroupHeader, string?>(nameof(PropertyName));
 
     /// <summary>
     /// Gets or sets the name of the property that this <see cref="T:Avalonia.Controls.DataGrid" /> row is bound to.
     /// </summary>
-    public string PropertyName
+    public string? PropertyName
     {
         get => GetValue(PropertyNameProperty);
         set => SetValue(PropertyNameProperty, value);
@@ -332,7 +332,7 @@ public class DataGridRowGroupHeader : TemplatedControl
     internal void EnsureExpanderButtonIsChecked()
     {
         if (_expanderButton != null && RowGroupInfo != null &&
-            RowGroupInfo.CollectionViewGroup.ItemCount != 0)
+            RowGroupInfo.CollectionViewGroup!.ItemCount != 0)
         {
             SetIsCheckedNoCallBack(RowGroupInfo.IsVisible);
         }
@@ -402,7 +402,7 @@ public class DataGridRowGroupHeader : TemplatedControl
 
     internal void ToggleExpandCollapse(bool isVisible, bool setCurrent)
     {
-        if (RowGroupInfo!.CollectionViewGroup.ItemCount != 0)
+        if (RowGroupInfo!.CollectionViewGroup!.ItemCount != 0)
         {
             if (OwningGrid == null)
             {
@@ -440,7 +440,7 @@ public class DataGridRowGroupHeader : TemplatedControl
         if (_itemCountElement != null && RowGroupInfo != null)
         {
             string formatString;
-            if (RowGroupInfo.CollectionViewGroup.ItemCount == 1)
+            if (RowGroupInfo.CollectionViewGroup!.ItemCount == 1)
             {
                 formatString = ItemCountFormat ?? "({0} Item)";
             }

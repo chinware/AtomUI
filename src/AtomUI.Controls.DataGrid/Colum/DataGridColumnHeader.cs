@@ -774,7 +774,7 @@ public class DataGridColumnHeader : ContentControl
                             isVisible: true,
                             isFrozen: OwningColumn.IsFrozen,
                             isReadOnly: null);
-                    targetPosition = targetColumn.HeaderCell!.Translate(OwningGrid.ColumnHeaders, targetPosition);
+                    targetPosition = targetColumn!.HeaderCell!.Translate(OwningGrid.ColumnHeaders, targetPosition);
 
                     targetPosition = targetPosition.WithX(targetPosition.X + targetColumn.ActualWidth);
                 }

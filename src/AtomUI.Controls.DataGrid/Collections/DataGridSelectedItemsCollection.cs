@@ -33,7 +33,7 @@ internal class DataGridSelectedItemsCollection : IList
 
             int slot = _selectedSlotsTable.GetNthIndex(index);
             Debug.Assert(slot > -1);
-            return OwningGrid.DataConnection.GetDataItem(OwningGrid.RowIndexFromSlot(slot));
+            return OwningGrid.DataConnection!.GetDataItem(OwningGrid.RowIndexFromSlot(slot));
         }
 
         set { throw new NotSupportedException(); }
@@ -49,7 +49,7 @@ internal class DataGridSelectedItemsCollection : IList
             throw DataGridError.DataGridSelectedItemsCollection.CannotChangeSelectedItemsCollectionInSingleMode();
         }
         
-        int itemIndex = OwningGrid.DataConnection.IndexOf(dataItem);
+        int itemIndex = OwningGrid.DataConnection!.IndexOf(dataItem);
         if (itemIndex == -1)
         {
             throw DataGridError.DataGrid.ItemIsNotContainedInTheItemsSource("dataItem");
@@ -92,7 +92,7 @@ internal class DataGridSelectedItemsCollection : IList
 
     public bool Contains(object? dataItem)
     {
-        int itemIndex = OwningGrid.DataConnection.IndexOf(dataItem);
+        int itemIndex = OwningGrid.DataConnection!.IndexOf(dataItem);
         if (itemIndex == -1)
         {
             return false;
@@ -105,7 +105,7 @@ internal class DataGridSelectedItemsCollection : IList
 
     public int IndexOf(object? dataItem)
     {
-        var itemIndex = OwningGrid.DataConnection.IndexOf(dataItem);
+        var itemIndex = OwningGrid.DataConnection!.IndexOf(dataItem);
         if (itemIndex == -1)
         {
             return -1;
@@ -128,7 +128,7 @@ internal class DataGridSelectedItemsCollection : IList
             throw DataGridError.DataGridSelectedItemsCollection.CannotChangeSelectedItemsCollectionInSingleMode();
         }
         
-        var itemIndex = OwningGrid.DataConnection.IndexOf(dataItem);
+        var itemIndex = OwningGrid.DataConnection!.IndexOf(dataItem);
         if (itemIndex == -1)
         {
             return;
@@ -192,7 +192,7 @@ internal class DataGridSelectedItemsCollection : IList
         {
             int rowIndex = OwningGrid.RowIndexFromSlot(slot);
             Debug.Assert(rowIndex > -1);
-            yield return OwningGrid.DataConnection.GetDataItem(rowIndex);
+            yield return OwningGrid.DataConnection!.GetDataItem(rowIndex);
         }
     }
 
@@ -282,7 +282,7 @@ internal class DataGridSelectedItemsCollection : IList
         // have been added and removed since the last time this method was called
         foreach (int newSlot in _selectedSlotsTable.GetIndexes())
         {
-            var newItem = OwningGrid.DataConnection.GetDataItem(OwningGrid.RowIndexFromSlot(newSlot));
+            var newItem = OwningGrid.DataConnection!.GetDataItem(OwningGrid.RowIndexFromSlot(newSlot));
             if (_oldSelectedSlotsTable.Contains(newSlot))
             {
                 _oldSelectedSlotsTable.RemoveValue(newSlot);
@@ -327,7 +327,7 @@ internal class DataGridSelectedItemsCollection : IList
         int rowIndex = OwningGrid.RowIndexFromSlot(slot);
         if (rowIndex != -1)
         {
-            var insertedItem = OwningGrid.DataConnection.GetDataItem(rowIndex);
+            var insertedItem = OwningGrid.DataConnection!.GetDataItem(rowIndex);
             if (insertedItem != null && _oldSelectedItemsCache.Contains(insertedItem))
             {
                 _oldSelectedSlotsTable.AddValue(slot, true);
@@ -346,7 +346,7 @@ internal class DataGridSelectedItemsCollection : IList
         {
             if (!_selectedSlotsTable.Contains(slot))
             {
-                var dataItem = OwningGrid.DataConnection.GetDataItem(OwningGrid.RowIndexFromSlot(slot));
+                var dataItem = OwningGrid.DataConnection!.GetDataItem(OwningGrid.RowIndexFromSlot(slot));
                 if (dataItem != null)
                 {
                     _selectedItemsCache.Add(dataItem);
@@ -360,7 +360,7 @@ internal class DataGridSelectedItemsCollection : IList
         {
             if (_selectedSlotsTable.Contains(slot))
             {
-                var dataItem = OwningGrid.DataConnection.GetDataItem(OwningGrid.RowIndexFromSlot(slot));
+                var dataItem = OwningGrid.DataConnection!.GetDataItem(OwningGrid.RowIndexFromSlot(slot));
                 if (dataItem != null)
                 {
                     _selectedItemsCache.Remove(dataItem);
@@ -388,7 +388,7 @@ internal class DataGridSelectedItemsCollection : IList
                 {
                     if (!_selectedSlotsTable.Contains(slot))
                     {
-                        var dataItem = OwningGrid.DataConnection.GetDataItem(OwningGrid.RowIndexFromSlot(slot));
+                        var dataItem = OwningGrid.DataConnection!.GetDataItem(OwningGrid.RowIndexFromSlot(slot));
                         if (dataItem != null)
                         {
                             _selectedItemsCache.Add(dataItem);
@@ -413,7 +413,7 @@ internal class DataGridSelectedItemsCollection : IList
                 {
                     if (_selectedSlotsTable.Contains(slot))
                     {
-                        var dataItem = OwningGrid.DataConnection.GetDataItem(OwningGrid.RowIndexFromSlot(slot));
+                        var dataItem = OwningGrid.DataConnection!.GetDataItem(OwningGrid.RowIndexFromSlot(slot));
                         if (dataItem != null)
                         {
                             _selectedItemsCache.Remove(dataItem);
@@ -432,7 +432,7 @@ internal class DataGridSelectedItemsCollection : IList
         _oldSelectedSlotsTable.Clear();
         _selectedSlotsTable.Clear();
 
-        if (OwningGrid.DataConnection.DataSource == null)
+        if (OwningGrid.DataConnection!.DataSource == null)
         {
             if (SelectedItemsCache.Count > 0)
             {
@@ -445,7 +445,7 @@ internal class DataGridSelectedItemsCollection : IList
             List<object> tempSelectedItemsCache = new List<object>();
             foreach (object item in _selectedItemsCache)
             {
-                int index = OwningGrid.DataConnection.IndexOf(item);
+                int index = OwningGrid.DataConnection!.IndexOf(item);
                 if (index != -1)
                 {
                     tempSelectedItemsCache.Add(item);
@@ -455,7 +455,7 @@ internal class DataGridSelectedItemsCollection : IList
 
             foreach (object item in _oldSelectedItemsCache)
             {
-                int index = OwningGrid.DataConnection.IndexOf(item);
+                int index = OwningGrid.DataConnection!.IndexOf(item);
                 if (index == -1)
                 {
                     OwningGrid.SelectionHasChanged = true;
