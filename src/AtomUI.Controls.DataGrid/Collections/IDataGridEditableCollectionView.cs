@@ -12,7 +12,7 @@ public interface IDataGridEditableCollectionView : IDataGridCollectionView
     void CommitNew();
     void CancelNew();
     bool IsAddingNew { get; }
-    object CurrentAddItem { get; }
+    object? CurrentAddItem { get; }
     bool CanRemove { get; }
     void RemoveAt(int index);
     void Remove(object item);
@@ -21,5 +21,5 @@ public interface IDataGridEditableCollectionView : IDataGridCollectionView
     void CancelEdit();
     bool CanCancelEdit { get; }
     bool IsEditingItem { get; }
-    object CurrentEditItem { get; }
+    object? CurrentEditItem { get; }
 }

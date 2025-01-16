@@ -33,7 +33,7 @@ public abstract class DataGridGroupDescription : INotifyPropertyChanged
     }
 
     public virtual string PropertyName => String.Empty;
-    public abstract object GroupKeyFromItem(object item, int level, CultureInfo culture);
+    public abstract object GroupKeyFromItem(object item, int level, CultureInfo? culture);
     public virtual bool KeysMatch(object groupKey, object itemKey)
     {
         return object.Equals(groupKey, itemKey);

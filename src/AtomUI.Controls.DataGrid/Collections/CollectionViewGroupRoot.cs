@@ -67,7 +67,7 @@ internal class CollectionViewGroupRoot : DataGridCollectionViewGroupInternal, IN
     /// <summary>
     /// Gets the culture to use during sorting.
     /// </summary>
-    internal CultureInfo Culture
+    internal CultureInfo? Culture
     {
         get
         {
@@ -192,7 +192,7 @@ internal class CollectionViewGroupRoot : DataGridCollectionViewGroupInternal, IN
     /// <param name="index">Index to remove from</param>
     /// <param name="item">Item to remove</param>
     /// <param name="loading">Whether we are currently loading</param>
-    internal void RemoveSpecialItem(int index, object item, bool loading)
+    internal void RemoveSpecialItem(int index, object? item, bool loading)
     {
         Debug.Assert(Object.Equals(item, ProtectedItems[index]), "RemoveSpecialItem finds inconsistent data");
         int globalIndex = -1;
@@ -530,7 +530,7 @@ internal class CollectionViewGroupRoot : DataGridCollectionViewGroupInternal, IN
         /// <param name="level">The level of grouping</param>
         /// <param name="culture">Culture used for sorting</param>
         /// <returns>We do not return a value here</returns>
-        public override object GroupKeyFromItem(object item, int level, CultureInfo culture)
+        public override object GroupKeyFromItem(object item, int level, CultureInfo? culture)
         {
             throw new NotImplementedException(
                 "We have to implement this abstract method, but it should never be called");

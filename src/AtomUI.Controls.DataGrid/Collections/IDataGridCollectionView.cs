@@ -12,22 +12,22 @@ namespace AtomUI.Controls.Collections;
 
 public interface IDataGridCollectionView : IEnumerable, INotifyCollectionChanged
 {
-    CultureInfo Culture { get; set; }
+    CultureInfo? Culture { get; set; }
     bool Contains(object item);
     IEnumerable SourceCollection { get; }
-    Func<object, bool> Filter { get; set; }
+    Func<object, bool>? Filter { get; set; }
     bool CanFilter { get; }
-    DataGridSortDescriptionCollection SortDescriptions { get; }
+    DataGridSortDescriptionCollection? SortDescriptions { get; }
     bool CanSort { get; }
     bool CanGroup { get; }
     bool IsGrouping { get; }
     int GroupingDepth { get; }
     string GetGroupingPropertyNameAtDepth(int level);
-    IAvaloniaReadOnlyList<object> Groups { get; }
+    IAvaloniaReadOnlyList<object>? Groups { get; }
     bool IsEmpty { get; }
     void Refresh();
     IDisposable DeferRefresh();
-    object CurrentItem { get; }
+    object? CurrentItem { get; }
     int CurrentPosition { get; }
     bool IsCurrentAfterLast { get; }
     bool IsCurrentBeforeFirst { get; }
@@ -38,6 +38,6 @@ public interface IDataGridCollectionView : IEnumerable, INotifyCollectionChanged
     bool MoveCurrentTo(object? item);
     bool MoveCurrentToPosition(int position);
 
-    event EventHandler<DataGridCurrentChangingEventArgs> CurrentChanging;
-    event EventHandler CurrentChanged;
+    event EventHandler<DataGridCurrentChangingEventArgs>? CurrentChanging;
+    event EventHandler? CurrentChanged;
 }
