@@ -372,7 +372,7 @@ public class DataGridColumnHeader : ContentControl
             DataGridColumn? previousColumn    = null;
             if (!(OwningColumn is DataGridFillerColumn))
             {
-                previousColumn = OwningGrid.ColumnsInternal.GetPreviousVisibleNonFillerColumn(currentColumn);
+                previousColumn = OwningGrid.ColumnsInternal.GetPreviousVisibleNonFillerColumn(currentColumn!);
             }
 
             if (_dragMode == DragMode.MouseDown && _dragColumn == null &&
@@ -534,8 +534,8 @@ public class DataGridColumnHeader : ContentControl
     private DataGridColumn? GetReorderingTargetColumn(Point mousePositionHeaders, bool scroll, out double scrollAmount)
     {
         scrollAmount = 0;
-        double leftEdge = OwningGrid?.ColumnsInternal.RowGroupSpacerColumn.IsRepresented
-            ? OwningGrid?.ColumnsInternal.RowGroupSpacerColumn.ActualWidth
+        double leftEdge = OwningGrid!.ColumnsInternal.RowGroupSpacerColumn.IsRepresented
+            ? OwningGrid!.ColumnsInternal.RowGroupSpacerColumn.ActualWidth
             : 0;
         var rightEdge = OwningGrid!.CellsWidth;
         if (OwningColumn!.IsFrozen)
