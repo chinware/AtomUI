@@ -113,7 +113,7 @@ public abstract class DataGridColumn : AvaloniaObject
 
     internal bool HasHeaderCell => _headerCell != null;
 
-    internal DataGridColumnHeader HeaderCell
+    internal DataGridColumnHeader? HeaderCell
     {
         get
         {
@@ -852,7 +852,7 @@ public abstract class DataGridColumn : AvaloniaObject
     {
         if (OwningGrid != null && OwningGrid.UseLayoutRounding)
         {
-            var scale     = LayoutHelper.GetLayoutScale(HeaderCell);
+            var scale     = LayoutHelper.GetLayoutScale(HeaderCell!);
             var roundSize = LayoutHelper.RoundLayoutSizeUp(new Size(leftEdge + ActualWidth, 1), scale, scale);
             LayoutRoundedWidth = roundSize.Width - leftEdge;
         }
