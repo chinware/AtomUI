@@ -153,7 +153,7 @@ public sealed class DataGridCellsPresenter : Panel, IChildIndexProvider
 
     internal void EnsureFillerVisibility()
     {
-        DataGridFillerColumn fillerColumn  = OwningGrid?.ColumnsInternal.FillerColumn;
+        DataGridFillerColumn fillerColumn  = OwningGrid!.ColumnsInternal.FillerColumn;
         bool                 newVisibility = fillerColumn.IsActive;
         if (OwningRow is not null && OwningRow.FillerCell.IsVisible != newVisibility)
         {
@@ -167,7 +167,7 @@ public sealed class DataGridCellsPresenter : Panel, IChildIndexProvider
         // This must be done after the Filler visibility is determined.  This also must be done
         // regardless of whether or not the filler visibility actually changed values because
         // we could scroll in a cell that didn't have EnsureGridLine called yet
-        DataGridColumn lastVisibleColumn = OwningGrid?.ColumnsInternal.LastVisibleColumn;
+        var lastVisibleColumn = OwningGrid!.ColumnsInternal.LastVisibleColumn;
         if (OwningRow is not null && lastVisibleColumn is not null)
         {
             DataGridCell cell = OwningRow.Cells[lastVisibleColumn.Index];
@@ -213,7 +213,7 @@ public sealed class DataGridCellsPresenter : Panel, IChildIndexProvider
         double totalDisplayWidth = 0;
         double scrollingLeftEdge = -OwningGrid.HorizontalOffset;
         OwningGrid.ColumnsInternal.EnsureVisibleEdgedColumnsWidth();
-        DataGridColumn lastVisibleColumn = OwningGrid.ColumnsInternal.LastVisibleColumn;
+        var lastVisibleColumn = OwningGrid.ColumnsInternal.LastVisibleColumn;
         foreach (DataGridColumn column in OwningGrid.ColumnsInternal.GetVisibleColumns())
         {
             var cell = OwningRow?.Cells[column.Index]!;
