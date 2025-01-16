@@ -459,7 +459,7 @@ internal static class TypeHelper
         return propertyValue;
     }
     
-    internal static Type? GetNestedPropertyType(this Type? parentType, string propertyPath)
+    internal static Type? GetNestedPropertyType(this Type? parentType, string? propertyPath)
     {
         if (parentType == null || string.IsNullOrEmpty(propertyPath))
         {

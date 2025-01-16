@@ -18,7 +18,7 @@ internal static class KeyboardHelper
         alt       = modifiers.HasFlag(KeyModifiers.Alt);
     }
 
-    public static KeyModifiers GetPlatformCtrlOrCmdKeyModifier(Control target)
+    public static KeyModifiers GetPlatformCtrlOrCmdKeyModifier(Control? target)
     {
         var keymap = TopLevel.GetTopLevel(target)!.PlatformSettings!.HotkeyConfiguration;
         return keymap.CommandModifiers;
