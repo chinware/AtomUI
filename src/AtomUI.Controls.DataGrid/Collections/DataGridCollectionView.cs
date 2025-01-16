@@ -67,7 +67,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     /// <summary>
     /// CultureInfo used in this DataGridCollectionView
     /// </summary>
-    private CultureInfo? _culture;
+    private CultureInfo _culture;
 
     /// <summary>
     /// Private accessor for the Monitor we use to prevent recursion
@@ -201,6 +201,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     /// <param name="isDataInGroupOrder">Whether the source is already in the correct order for grouping</param>
     public DataGridCollectionView(IEnumerable source, bool isDataSorted, bool isDataInGroupOrder)
     {
+        _culture = CultureInfo.CurrentUICulture;
         _sourceCollection = source ?? throw new ArgumentNullException(nameof(source));
 
         SetFlag(CollectionViewFlags.IsDataSorted, isDataSorted);
@@ -445,7 +446,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     /// <summary>
     /// Gets or sets Culture to use during sorting.
     /// </summary>
-    public CultureInfo? Culture
+    public CultureInfo Culture
     {
         get => _culture;
 

@@ -12,7 +12,7 @@ namespace AtomUI.Controls.Collections;
 
 public interface IDataGridCollectionView : IEnumerable, INotifyCollectionChanged
 {
-    CultureInfo? Culture { get; set; }
+    CultureInfo Culture { get; set; }
     bool Contains(object item);
     IEnumerable SourceCollection { get; }
     Func<object, bool>? Filter { get; set; }

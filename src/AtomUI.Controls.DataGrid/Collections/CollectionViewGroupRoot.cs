@@ -67,7 +67,7 @@ internal class CollectionViewGroupRoot : DataGridCollectionViewGroupInternal, IN
     /// <summary>
     /// Gets the culture to use during sorting.
     /// </summary>
-    internal CultureInfo? Culture
+    internal CultureInfo Culture
     {
         get
         {

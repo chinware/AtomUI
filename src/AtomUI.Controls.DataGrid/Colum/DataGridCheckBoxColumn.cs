@@ -82,7 +82,7 @@ public class DataGridCheckBoxColumn : DataGridBoundColumn
     ///  <returns>
     ///  A new <see cref="T:System.Windows.Controls.CheckBox" /> control that is bound to the column's <see cref="P:System.Windows.Controls.DataGridBoundColumn.Binding" /> property value.
     ///  </returns>
-    protected override Control GenerateEditingElementDirect(DataGridCell cell, object dataItem)
+    protected override Control GenerateEditingElementDirect(DataGridCell cell, object? dataItem)
     {
         var checkBox = new CheckBox
         {

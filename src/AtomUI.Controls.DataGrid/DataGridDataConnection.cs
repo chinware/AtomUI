@@ -536,7 +536,7 @@ internal class DataGridDataConnection
         }
         else if (CollectionView != null)
         {
-            _owner.UpdateStateOnCurrentChanged(CollectionView.CurrentItem, CollectionView.CurrentPosition);
+            _owner.UpdateStateOnCurrentChanged(CollectionView.CurrentItem!, CollectionView.CurrentPosition);
         }
     }
 
@@ -570,7 +570,7 @@ internal class DataGridDataConnection
         // refresh sort description
         foreach (DataGridColumn column in _owner.ColumnsItemsInternal)
         {
-            column.HeaderCell.UpdatePseudoClasses();
+            column.HeaderCell!.UpdatePseudoClasses();
         }
     }
 
