@@ -1,6 +1,7 @@
 ﻿using AtomUI.Controls.Switch;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
+using AtomUI.Utils;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
