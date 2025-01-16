@@ -2,7 +2,7 @@ using Avalonia;
 
 namespace AtomUI.Controls.Utils;
 
-public static class VisualExtensions
+internal static class VisualExtensions
 {
     internal static Point Translate(this Visual fromElement, Visual toElement, Point fromPoint)
     {
