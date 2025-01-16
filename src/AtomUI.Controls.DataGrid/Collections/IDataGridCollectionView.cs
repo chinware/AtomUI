@@ -35,7 +35,7 @@ public interface IDataGridCollectionView : IEnumerable, INotifyCollectionChanged
     bool MoveCurrentToLast();
     bool MoveCurrentToNext();
     bool MoveCurrentToPrevious();
-    bool MoveCurrentTo(object item);
+    bool MoveCurrentTo(object? item);
     bool MoveCurrentToPosition(int position);
 
     event EventHandler<DataGridCurrentChangingEventArgs> CurrentChanging;

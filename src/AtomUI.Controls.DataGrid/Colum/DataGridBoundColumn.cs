@@ -129,7 +129,7 @@ public abstract class DataGridBoundColumn : DataGridColumn
 
     internal void SetHeaderFromBinding()
     {
-        if (OwningGrid != null && OwningGrid.DataConnection.DataType != null
+        if (OwningGrid != null && OwningGrid.DataConnection?.DataType != null
                                && Header == null && Binding != null && Binding is BindingBase binding)
         {
             var path = (binding as Binding)?.Path ?? (binding as CompiledBindingExtension)?.Path.ToString();
