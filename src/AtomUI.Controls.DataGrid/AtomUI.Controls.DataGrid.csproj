@@ -18,5 +18,11 @@
         <ProjectReference Include="..\AtomUI.IconPkg.AntDesign\AtomUI.IconPkg.AntDesign.csproj" />
         <ProjectReference Include="..\AtomUI.Theme\AtomUI.Theme.csproj"/>
     </ItemGroup>
+    
+    <ItemGroup>
+      <Folder Include="Colum\" />
+      <Folder Include="Header\" />
+      <Folder Include="Row\" />
+    </ItemGroup>
 
 </Project>
