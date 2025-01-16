@@ -1,11 +1,12 @@
-﻿using AtomUI.Controls.Utils;
-using AtomUI.Media;
+﻿using AtomUI.Media;
 using AtomUI.Theme.Styling;
+using AtomUI.Utils;
 using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
+using AnimationUtils = AtomUI.Controls.Utils.AnimationUtils;
 using AvaloniaButton = Avalonia.Controls.Button;
 
 namespace AtomUI.Controls;
