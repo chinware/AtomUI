@@ -1253,7 +1253,7 @@ public partial class DataGrid
                 _rowGroupHeightsByLevel![groupHeader.Level] = groupHeader.DesiredSize.Height;
             }
 
-            if (row != null && RowHeightEstimate == DataGrid.DATAGRID_defaultRowHeight && double.IsNaN(row.Height))
+            if (row != null && RowHeightEstimate == DataGrid.DefaultRowHeight && double.IsNaN(row.Height))
             {
                 RowHeightEstimate = element.DesiredSize.Height;
             }
@@ -2574,7 +2574,7 @@ public partial class DataGrid
                 {
                     // Default height for now, the actual heights are updated as the RowGroupHeaders
                     // are added and measured
-                    _rowGroupHeightsByLevel[i] = DATAGRID_defaultRowHeight;
+                    _rowGroupHeightsByLevel[i] = DefaultRowHeight;
                 }
             }
 
@@ -2584,7 +2584,7 @@ public partial class DataGrid
                 double indent;
                 for (int i = 0; i < groupLevelCount; i++)
                 {
-                    indent                     = DATAGRID_defaultRowGroupSublevelIndent;
+                    indent                     = DefaultRowGroupSublevelIndent;
                     RowGroupSublevelIndents[i] = indent;
                     if (i > 0)
                     {

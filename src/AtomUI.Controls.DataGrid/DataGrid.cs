@@ -28,29 +28,32 @@ namespace AtomUI.Controls;
 /// <summary>
 /// Displays data in a customizable grid.
 /// </summary>
-[TemplatePart(DATAGRID_elementBottomRightCornerHeaderName, typeof(Visual))]
-[TemplatePart(DATAGRID_elementColumnHeadersPresenterName, typeof(DataGridColumnHeadersPresenter))]
-[TemplatePart(DATAGRID_elementFrozenColumnScrollBarSpacerName, typeof(Control))]
-[TemplatePart(DATAGRID_elementHorizontalScrollbarName, typeof(ScrollBar))]
-[TemplatePart(DATAGRID_elementRowsPresenterName, typeof(DataGridRowsPresenter))]
-[TemplatePart(DATAGRID_elementTopLeftCornerHeaderName, typeof(ContentControl))]
-[TemplatePart(DATAGRID_elementTopRightCornerHeaderName, typeof(ContentControl))]
-[TemplatePart(DATAGRID_elementVerticalScrollbarName, typeof(ScrollBar))]
-[PseudoClasses(":invalid", ":empty-rows", ":empty-columns")]
+[TemplatePart(ElementBottomRightCornerHeaderPart, typeof(Visual))]
+[TemplatePart(ElementColumnHeadersPresenterPart, typeof(DataGridColumnHeadersPresenter))]
+[TemplatePart(ElementFrozenColumnScrollBarSpacerPart, typeof(Control))]
+[TemplatePart(ElementHorizontalScrollbarPart, typeof(ScrollBar))]
+[TemplatePart(ElementRowsPresenterNamePart, typeof(DataGridRowsPresenter))]
+[TemplatePart(ElementTopLeftCornerHeaderPart, typeof(ContentControl))]
+[TemplatePart(ElementTopRightCornerHeaderPart, typeof(ContentControl))]
+[TemplatePart(ElementVerticalScrollbarPart, typeof(ScrollBar))]
+[PseudoClasses(StdPseudoClass.Invalid, EmptyRowsPC, EmptyColumnsPC)]
 public partial class DataGrid : TemplatedControl
 {
-    
-    private const string DATAGRID_elementRowsPresenterName = "PART_RowsPresenter";
-    private const string DATAGRID_elementColumnHeadersPresenterName = "PART_ColumnHeadersPresenter";
-    private const string DATAGRID_elementFrozenColumnScrollBarSpacerName = "PART_FrozenColumnScrollBarSpacer";
-    private const string DATAGRID_elementHorizontalScrollbarName = "PART_HorizontalScrollbar";
-    private const string DATAGRID_elementTopLeftCornerHeaderName = "PART_TopLeftCornerHeader";
-    private const string DATAGRID_elementTopRightCornerHeaderName = "PART_TopRightCornerHeader";
-    private const string DATAGRID_elementBottomRightCornerHeaderName = "PART_BottomRightCorner";
-    private const string DATAGRID_elementVerticalScrollbarName = "PART_VerticalScrollbar";
-    internal const bool DATAGRID_defaultCanUserReorderColumns = true;
-    internal const bool DATAGRID_defaultCanUserResizeColumns = true;
-    internal const bool DATAGRID_defaultCanUserSortColumns = true;
+    private const string ElementRowsPresenterNamePart = "PART_RowsPresenter";
+    private const string ElementColumnHeadersPresenterPart = "PART_ColumnHeadersPresenter";
+    private const string ElementFrozenColumnScrollBarSpacerPart = "PART_FrozenColumnScrollBarSpacer";
+    private const string ElementHorizontalScrollbarPart = "PART_HorizontalScrollbar";
+    private const string ElementVerticalScrollbarPart = "PART_VerticalScrollbar";
+    private const string ElementTopLeftCornerHeaderPart = "PART_TopLeftCornerHeader";
+    private const string ElementTopRightCornerHeaderPart = "PART_TopRightCornerHeader";
+    private const string ElementBottomRightCornerHeaderPart = "PART_BottomRightCornerHeader";
+
+    internal const string EmptyRowsPC = ":empty-rows";
+    internal const string EmptyColumnsPC = ":empty-columns";
+
+    internal const bool DefaultCanUserReorderColumns = true;
+    internal const bool DefaultCanUserResizeColumns = true;
+    internal const bool DefaultCanUserSortColumns = true;
 
     /// <summary>
     /// The default order to use for columns when there is no <see cref="DisplayAttribute.Order"/>
@@ -60,20 +63,20 @@ public partial class DataGrid : TemplatedControl
     /// The value of 10,000 comes from the DataAnnotations spec, allowing
     /// some properties to be ordered at the beginning and some at the end.
     /// </remarks>
-    private const int DATAGRID_defaultColumnDisplayOrder = 10000;
+    private const int DefaultColumnDisplayOrder = 10000;
 
-    private const double DATAGRID_horizontalGridLinesThickness = 1;
-    private const double DATAGRID_minimumRowHeaderWidth = 4;
-    private const double DATAGRID_minimumColumnHeaderHeight = 4;
-    internal const double DATAGRID_maximumStarColumnWidth = 10000;
-    internal const double DATAGRID_minimumStarColumnWidth = 0.001;
-    private const double DATAGRID_mouseWheelDelta = 50.0;
-    private const double DATAGRID_maxHeadersThickness = 32768;
+    private const double DefaultHorizontalGridLinesThickness = 1;
+    private const double DefaultMinimumRowHeaderWidth = 4;
+    private const double DefaultMinimumColumnHeaderHeight = 4;
+    internal const double DefaultMaximumStarColumnWidth = 10000;
+    internal const double DefaultMinimumStarColumnWidth = 0.001;
+    private const double DefaultMouseWheelDelta = 50.0;
+    private const double DefaultMaxHeadersThickness = 32768;
 
-    private const double DATAGRID_defaultRowHeight = 22;
-    internal const double DATAGRID_defaultRowGroupSublevelIndent = 20;
-    private const double DATAGRID_defaultMinColumnWidth = 20;
-    private const double DATAGRID_defaultMaxColumnWidth = double.PositiveInfinity;
+    private const double DefaultRowHeight = 22;
+    internal const double DefaultRowGroupSublevelIndent = 20;
+    private const double DefaultMinColumnWidth = 20;
+    private const double DefaultMaxColumnWidth = double.PositiveInfinity;
 
     private List<Exception> _bindingValidationErrors;
     private IDisposable? _validationSubscription;
@@ -208,7 +211,7 @@ public partial class DataGrid : TemplatedControl
     private static bool IsValidColumnHeaderHeight(double value)
     {
         return double.IsNaN(value) ||
-               (value >= DATAGRID_minimumColumnHeaderHeight && value <= DATAGRID_maxHeadersThickness);
+               (value >= DefaultMinimumColumnHeaderHeight && value <= DefaultMaxHeadersThickness);
     }
 
     /// <summary>
@@ -383,7 +386,7 @@ public partial class DataGrid : TemplatedControl
     public bool AreRowGroupHeadersFrozen
     {
         get => GetValue(AreRowGroupHeadersFrozenProperty);
-        set => SetValue(AreRowGroupHeadersFrozenProperty, value); 
+        set => SetValue(AreRowGroupHeadersFrozenProperty, value);
     }
 
     private void OnAreRowGroupHeadersFrozenChanged(AvaloniaPropertyChangedEventArgs e)
@@ -443,7 +446,7 @@ public partial class DataGrid : TemplatedControl
     public static readonly StyledProperty<double> MaxColumnWidthProperty =
         AvaloniaProperty.Register<DataGrid, double>(
             nameof(MaxColumnWidth),
-            defaultValue: DATAGRID_defaultMaxColumnWidth,
+            defaultValue: DefaultMaxColumnWidth,
             validate: IsValidColumnWidth);
 
     private static bool IsValidColumnWidth(double value)
@@ -463,7 +466,7 @@ public partial class DataGrid : TemplatedControl
     public static readonly StyledProperty<double> MinColumnWidthProperty =
         AvaloniaProperty.Register<DataGrid, double>(
             nameof(MinColumnWidth),
-            defaultValue: DATAGRID_defaultMinColumnWidth,
+            defaultValue: DefaultMinColumnWidth,
             validate: IsValidMinColumnWidth);
 
     private static bool IsValidMinColumnWidth(double value)
@@ -523,8 +526,8 @@ public partial class DataGrid : TemplatedControl
     private static bool IsValidRowHeaderWidth(double value)
     {
         return double.IsNaN(value) ||
-               (value >= DATAGRID_minimumRowHeaderWidth &&
-                value <= DATAGRID_maxHeadersThickness);
+               (value >= DefaultMinimumRowHeaderWidth &&
+                value <= DefaultMaxHeadersThickness);
     }
 
     /// <summary>
@@ -782,7 +785,7 @@ public partial class DataGrid : TemplatedControl
         ColumnsInternal                   =  CreateColumnsInstance();
         ColumnsInternal.CollectionChanged += ColumnsInternal_CollectionChanged;
 
-        RowHeightEstimate        = DATAGRID_defaultRowHeight;
+        RowHeightEstimate        = DefaultRowHeight;
         RowDetailsHeightEstimate = 0;
         _rowHeaderDesiredWidth   = 0;
 
@@ -796,7 +799,7 @@ public partial class DataGrid : TemplatedControl
         _mouseOverRowIndex     = null;
         CurrentCellCoordinates = new DataGridCellCoordinates(-1, -1);
 
-        RowGroupHeaderHeightEstimate = DATAGRID_defaultRowHeight;
+        RowGroupHeaderHeightEstimate = DefaultRowHeight;
 
         UpdatePseudoClasses();
     }
@@ -888,7 +891,7 @@ public partial class DataGrid : TemplatedControl
 
             // Wrap an IEnumerable in an ICollectionView if it's not already one
             bool setDefaultSelection = false;
-            var newCollectionView   = newItemsSource as IDataGridCollectionView;
+            var  newCollectionView   = newItemsSource as IDataGridCollectionView;
             if (newCollectionView is not null)
             {
                 setDefaultSelection = true;
@@ -1596,7 +1599,7 @@ public partial class DataGrid : TemplatedControl
     // This property exists to account for this scenario, and avoid collapsing the incorrect cells.
     internal double HorizontalAdjustment { get; private set; }
 
-    internal static double HorizontalGridLinesThickness => DATAGRID_horizontalGridLinesThickness;
+    internal static double HorizontalGridLinesThickness => DefaultHorizontalGridLinesThickness;
 
     // the sum of the widths in pixels of the scrolling columns preceding
     // the first displayed scrolling column
@@ -1978,7 +1981,7 @@ public partial class DataGrid : TemplatedControl
         }
         else
         {
-            int                  slot         = -1;
+            int                   slot         = -1;
             DataGridRowGroupInfo? rowGroupInfo = null;
             if (item is DataGridCollectionViewGroup collectionViewGroup)
             {
@@ -2238,7 +2241,7 @@ public partial class DataGrid : TemplatedControl
             delta = new Vector(delta.Y, delta.X);
         }
 
-        if (UpdateScroll(delta * DATAGRID_mouseWheelDelta))
+        if (UpdateScroll(delta * DefaultMouseWheelDelta))
         {
             e.Handled = true;
         }
@@ -2375,11 +2378,11 @@ public partial class DataGrid : TemplatedControl
             if (x == null && y == null)
             {
                 return 0;
-            } 
+            }
             else if (x == null && y != null)
             {
                 return -1;
-            } 
+            }
             else if (x != null && y == null)
             {
                 return 1;
@@ -2407,7 +2410,7 @@ public partial class DataGrid : TemplatedControl
         }
 
         _columnHeadersPresenter =
-            e.NameScope.Find<DataGridColumnHeadersPresenter>(DATAGRID_elementColumnHeadersPresenterName);
+            e.NameScope.Find<DataGridColumnHeadersPresenter>(ElementColumnHeadersPresenterPart);
 
         if (_columnHeadersPresenter != null)
         {
@@ -2433,7 +2436,7 @@ public partial class DataGrid : TemplatedControl
             UnloadElements(recycle: false);
         }
 
-        _rowsPresenter = e.NameScope.Find<DataGridRowsPresenter>(DATAGRID_elementRowsPresenterName);
+        _rowsPresenter = e.NameScope.Find<DataGridRowsPresenter>(ElementRowsPresenterNamePart);
 
         if (_rowsPresenter != null)
         {
@@ -2442,14 +2445,14 @@ public partial class DataGrid : TemplatedControl
             UpdateRowDetailsHeightEstimate();
         }
 
-        _frozenColumnScrollBarSpacer = e.NameScope.Find<Control>(DATAGRID_elementFrozenColumnScrollBarSpacerName);
+        _frozenColumnScrollBarSpacer = e.NameScope.Find<Control>(ElementFrozenColumnScrollBarSpacerPart);
 
         if (_hScrollBar != null)
         {
             _hScrollBar.Scroll -= HorizontalScrollBar_Scroll;
         }
 
-        _hScrollBar = e.NameScope.Find<ScrollBar>(DATAGRID_elementHorizontalScrollbarName);
+        _hScrollBar = e.NameScope.Find<ScrollBar>(ElementHorizontalScrollbarPart);
 
         if (_hScrollBar != null)
         {
@@ -2465,7 +2468,7 @@ public partial class DataGrid : TemplatedControl
             _vScrollBar.Scroll -= VerticalScrollBar_Scroll;
         }
 
-        _vScrollBar = e.NameScope.Find<ScrollBar>(DATAGRID_elementVerticalScrollbarName);
+        _vScrollBar = e.NameScope.Find<ScrollBar>(ElementVerticalScrollbarPart);
 
         if (_vScrollBar != null)
         {
@@ -2476,10 +2479,10 @@ public partial class DataGrid : TemplatedControl
             _vScrollBar.Scroll      += VerticalScrollBar_Scroll;
         }
 
-        _topLeftCornerHeader = e.NameScope.Find<ContentControl>(DATAGRID_elementTopLeftCornerHeaderName);
+        _topLeftCornerHeader = e.NameScope.Find<ContentControl>(ElementTopLeftCornerHeaderPart);
         EnsureTopLeftCornerHeader(); // EnsureTopLeftCornerHeader checks for a null _topLeftCornerHeader;
-        _topRightCornerHeader = e.NameScope.Find<ContentControl>(DATAGRID_elementTopRightCornerHeaderName);
-        _bottomRightCorner    = e.NameScope.Find<Visual>(DATAGRID_elementBottomRightCornerHeaderName);
+        _topRightCornerHeader = e.NameScope.Find<ContentControl>(ElementTopRightCornerHeaderPart);
+        _bottomRightCorner    = e.NameScope.Find<Visual>(ElementBottomRightCornerHeaderPart);
     }
 
     /// <summary>
@@ -3036,7 +3039,7 @@ public partial class DataGrid : TemplatedControl
                 return false;
             }
 
-            int    newCurrentPosition = -1;
+            int     newCurrentPosition = -1;
             object? item               = ItemFromSlot(slot, ref newCurrentPosition);
 
             if (EditingRow != null && slot != EditingRow.Slot && !CommitEdit(DataGridEditingUnit.Row, true))
@@ -3164,7 +3167,7 @@ public partial class DataGrid : TemplatedControl
         if (EditingRow != null && EditingColumnIndex != -1 && !_executingLostFocusActions)
         {
             DataGridColumn editingColumn  = ColumnsItemsInternal[EditingColumnIndex];
-            Control?        editingElement = editingColumn.GetCellContent(EditingRow);
+            Control?       editingElement = editingColumn.GetCellContent(EditingRow);
             if (editingElement != null && editingElement.ContainsChild(_focusedObject))
             {
                 Debug.Assert(_lostFocusActions != null);
@@ -4789,8 +4792,8 @@ public partial class DataGrid : TemplatedControl
     private bool ProcessDownKeyInternal(bool shift, bool ctrl)
     {
         DataGridColumn? dataGridColumn          = ColumnsInternal.FirstVisibleColumn;
-        int            firstVisibleColumnIndex = (dataGridColumn == null) ? -1 : dataGridColumn.Index;
-        int            lastSlot                = LastVisibleSlot;
+        int             firstVisibleColumnIndex = (dataGridColumn == null) ? -1 : dataGridColumn.Index;
+        int             lastSlot                = LastVisibleSlot;
         if (firstVisibleColumnIndex == -1 || lastSlot == -1)
         {
             return false;
@@ -4878,9 +4881,9 @@ public partial class DataGrid : TemplatedControl
     private bool ProcessEndKey(bool shift, bool ctrl)
     {
         DataGridColumn? dataGridColumn         = ColumnsInternal.LastVisibleColumn;
-        int            lastVisibleColumnIndex = (dataGridColumn == null) ? -1 : dataGridColumn.Index;
-        int            firstVisibleSlot       = FirstVisibleSlot;
-        int            lastVisibleSlot        = LastVisibleSlot;
+        int             lastVisibleColumnIndex = (dataGridColumn == null) ? -1 : dataGridColumn.Index;
+        int             firstVisibleSlot       = FirstVisibleSlot;
+        int             lastVisibleSlot        = LastVisibleSlot;
         if (lastVisibleColumnIndex == -1 || firstVisibleSlot == -1)
         {
             return false;
@@ -5003,8 +5006,8 @@ public partial class DataGrid : TemplatedControl
     private bool ProcessHomeKey(bool shift, bool ctrl)
     {
         DataGridColumn? dataGridColumn          = ColumnsInternal.FirstVisibleNonFillerColumn;
-        int            firstVisibleColumnIndex = (dataGridColumn == null) ? -1 : dataGridColumn.Index;
-        int            firstVisibleSlot        = FirstVisibleSlot;
+        int             firstVisibleColumnIndex = (dataGridColumn == null) ? -1 : dataGridColumn.Index;
+        int             firstVisibleSlot        = FirstVisibleSlot;
         if (firstVisibleColumnIndex == -1 || firstVisibleSlot == -1)
         {
             return false;
@@ -5042,8 +5045,8 @@ public partial class DataGrid : TemplatedControl
     private bool ProcessLeftKey(bool shift, bool ctrl)
     {
         DataGridColumn? dataGridColumn          = ColumnsInternal.FirstVisibleNonFillerColumn;
-        int            firstVisibleColumnIndex = (dataGridColumn == null) ? -1 : dataGridColumn.Index;
-        int            firstVisibleSlot        = FirstVisibleSlot;
+        int             firstVisibleColumnIndex = (dataGridColumn == null) ? -1 : dataGridColumn.Index;
+        int             firstVisibleSlot        = FirstVisibleSlot;
         if (firstVisibleColumnIndex == -1 || firstVisibleSlot == -1)
         {
             return false;
@@ -5143,7 +5146,7 @@ public partial class DataGrid : TemplatedControl
     private bool ProcessNextKey(bool shift, bool ctrl)
     {
         var dataGridColumn          = ColumnsInternal.FirstVisibleNonFillerColumn;
-        int            firstVisibleColumnIndex = (dataGridColumn == null) ? -1 : dataGridColumn.Index;
+        int firstVisibleColumnIndex = (dataGridColumn == null) ? -1 : dataGridColumn.Index;
         if (firstVisibleColumnIndex == -1 || DisplayData.FirstScrollingSlot == -1)
         {
             return false;
@@ -5197,7 +5200,7 @@ public partial class DataGrid : TemplatedControl
     private bool ProcessPriorKey(bool shift, bool ctrl)
     {
         DataGridColumn? dataGridColumn          = ColumnsInternal.FirstVisibleNonFillerColumn;
-        int            firstVisibleColumnIndex = (dataGridColumn == null) ? -1 : dataGridColumn.Index;
+        int             firstVisibleColumnIndex = (dataGridColumn == null) ? -1 : dataGridColumn.Index;
         if (firstVisibleColumnIndex == -1 || DisplayData.FirstScrollingSlot == -1)
         {
             return false;
@@ -5253,8 +5256,8 @@ public partial class DataGrid : TemplatedControl
     private bool ProcessRightKey(bool shift, bool ctrl)
     {
         DataGridColumn? dataGridColumn         = ColumnsInternal.LastVisibleColumn;
-        int            lastVisibleColumnIndex = (dataGridColumn == null) ? -1 : dataGridColumn.Index;
-        int            firstVisibleSlot       = FirstVisibleSlot;
+        int             lastVisibleColumnIndex = (dataGridColumn == null) ? -1 : dataGridColumn.Index;
+        int             firstVisibleSlot       = FirstVisibleSlot;
         if (lastVisibleColumnIndex == -1 || firstVisibleSlot == -1)
         {
             return false;
@@ -5373,7 +5376,7 @@ public partial class DataGrid : TemplatedControl
         Debug.Assert(CurrentColumnIndex != -1);
         Debug.Assert(CurrentSlot != -1);
 
-        int            neighborVisibleWritableColumnIndex, neighborSlot;
+        int             neighborVisibleWritableColumnIndex, neighborSlot;
         DataGridColumn? dataGridColumn;
         if (shift)
         {
@@ -5473,8 +5476,8 @@ public partial class DataGrid : TemplatedControl
     private bool ProcessUpKey(bool shift, bool ctrl)
     {
         DataGridColumn? dataGridColumn          = ColumnsInternal.FirstVisibleNonFillerColumn;
-        int            firstVisibleColumnIndex = (dataGridColumn == null) ? -1 : dataGridColumn.Index;
-        int            firstVisibleSlot        = FirstVisibleSlot;
+        int             firstVisibleColumnIndex = (dataGridColumn == null) ? -1 : dataGridColumn.Index;
+        int             firstVisibleSlot        = FirstVisibleSlot;
         if (firstVisibleColumnIndex == -1 || firstVisibleSlot == -1)
         {
             return false;
@@ -5640,7 +5643,7 @@ public partial class DataGrid : TemplatedControl
             return true;
         }
 
-        Control?                 oldDisplayedElement = null;
+        Control?                oldDisplayedElement = null;
         DataGridCellCoordinates oldCurrentCell      = new DataGridCellCoordinates(CurrentCellCoordinates);
 
         object? newCurrentItem = null;
@@ -6071,7 +6074,7 @@ public partial class DataGrid : TemplatedControl
             return null;
         }
 
-        int                  groupHeaderSlot = RowGroupHeadersTable.GetPreviousIndex(SlotFromRowIndex(itemIndex));
+        int                   groupHeaderSlot = RowGroupHeadersTable.GetPreviousIndex(SlotFromRowIndex(itemIndex));
         DataGridRowGroupInfo? rowGroupInfo    = RowGroupHeadersTable.GetValueAt(groupHeaderSlot);
         while (rowGroupInfo != null && rowGroupInfo.Level != groupLevel)
         {
@@ -6130,7 +6133,7 @@ public partial class DataGrid : TemplatedControl
             return;
         }
 
-        int                  previousHeaderSlot = RowGroupHeadersTable.GetPreviousIndex(slot + 1);
+        int                   previousHeaderSlot = RowGroupHeadersTable.GetPreviousIndex(slot + 1);
         DataGridRowGroupInfo? rowGroupInfo       = null;
         while (previousHeaderSlot >= 0)
         {
@@ -6231,7 +6234,7 @@ public partial class DataGrid : TemplatedControl
 
             for (int index = 0; index < SelectedItems.Count; index++)
             {
-                object?                        item     = SelectedItems[index];
+                object?                       item     = SelectedItems[index];
                 DataGridRowClipboardEventArgs itemArgs = new DataGridRowClipboardEventArgs(item!, false);
                 foreach (DataGridColumn column in ColumnsInternal.GetVisibleColumns())
                 {

@@ -939,7 +939,7 @@ public partial class DataGrid
 
             remainingAdjustment -= adjustment;
             totalStarWeights    -= starColumnPair.Key.Width.Value;
-            starColumnPair.Key.SetWidthDisplayValue(Math.Max(DataGrid.DATAGRID_minimumStarColumnWidth,
+            starColumnPair.Key.SetWidthDisplayValue(Math.Max(DataGrid.DefaultMinimumStarColumnWidth,
                 starColumnPair.Key.Width.DisplayValue + adjustment));
         }
 
@@ -1774,7 +1774,7 @@ public partial class DataGrid
             foreach (PropertyInfo propertyInfo in DataConnection.DataProperties)
             {
                 string columnHeader = propertyInfo.Name;
-                int    columnOrder  = DATAGRID_defaultColumnDisplayOrder;
+                int    columnOrder  = DefaultColumnDisplayOrder;
 
                 // Check if DisplayAttribute is defined on the property
                 object[] attributes = propertyInfo.GetCustomAttributes(typeof(DisplayAttribute), true);

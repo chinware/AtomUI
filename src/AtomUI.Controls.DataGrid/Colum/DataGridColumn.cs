@@ -96,7 +96,7 @@ public abstract class DataGridColumn : AvaloniaObject
             double minWidth = _minWidth ?? OwningGrid?.MinColumnWidth ?? 0;
             if (Width.IsStar)
             {
-                return Math.Max(DataGrid.DATAGRID_minimumStarColumnWidth, minWidth);
+                return Math.Max(DataGrid.DefaultMinimumStarColumnWidth, minWidth);
             }
 
             return minWidth;
@@ -235,7 +235,7 @@ public abstract class DataGridColumn : AvaloniaObject
     {
         get => CanUserReorderInternal ??
                OwningGrid?.CanUserReorderColumns ??
-               DataGrid.DATAGRID_defaultCanUserResizeColumns;
+               DataGrid.DefaultCanUserResizeColumns;
         set => CanUserReorderInternal = value;
     }
 
@@ -252,7 +252,7 @@ public abstract class DataGridColumn : AvaloniaObject
             return
                 CanUserResizeInternal ??
                 OwningGrid?.CanUserResizeColumns ??
-                DataGrid.DATAGRID_defaultCanUserResizeColumns;
+                DataGrid.DefaultCanUserResizeColumns;
         }
 
         set
@@ -292,7 +292,7 @@ public abstract class DataGridColumn : AvaloniaObject
             }
             else
             {
-                return DataGrid.DATAGRID_defaultCanUserSortColumns;
+                return DataGrid.DefaultCanUserSortColumns;
             }
         }
 

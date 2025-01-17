@@ -85,7 +85,7 @@ public class DataGridRowGroupHeader : TemplatedControl
     public static readonly StyledProperty<double> SublevelIndentProperty =
         AvaloniaProperty.Register<DataGridRowGroupHeader, double>(
             nameof(SublevelIndent),
-            defaultValue: DataGrid.DATAGRID_defaultRowGroupSublevelIndent,
+            defaultValue: DataGrid.DefaultRowGroupSublevelIndent,
             validate: IsValidSublevelIndent);
 
     private static bool IsValidSublevelIndent(double value)
