@@ -1,3 +1,7 @@
+// This source is subject to the Microsoft Public License (Ms-PL).
+// Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
+// All other rights reserved.
+
 using System.Collections;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -32,14 +36,14 @@ namespace AtomUI.Controls;
 [TemplatePart(ElementColumnHeadersPresenterPart, typeof(DataGridColumnHeadersPresenter))]
 [TemplatePart(ElementFrozenColumnScrollBarSpacerPart, typeof(Control))]
 [TemplatePart(ElementHorizontalScrollbarPart, typeof(ScrollBar))]
-[TemplatePart(ElementRowsPresenterNamePart, typeof(DataGridRowsPresenter))]
+[TemplatePart(ElementVerticalScrollbarPart, typeof(ScrollBar))]
+[TemplatePart(ElementRowsPresenterPart, typeof(DataGridRowsPresenter))]
 [TemplatePart(ElementTopLeftCornerHeaderPart, typeof(ContentControl))]
 [TemplatePart(ElementTopRightCornerHeaderPart, typeof(ContentControl))]
-[TemplatePart(ElementVerticalScrollbarPart, typeof(ScrollBar))]
 [PseudoClasses(StdPseudoClass.Invalid, EmptyRowsPC, EmptyColumnsPC)]
 public partial class DataGrid : TemplatedControl
 {
-    private const string ElementRowsPresenterNamePart = "PART_RowsPresenter";
+    private const string ElementRowsPresenterPart = "PART_RowsPresenter";
     private const string ElementColumnHeadersPresenterPart = "PART_ColumnHeadersPresenter";
     private const string ElementFrozenColumnScrollBarSpacerPart = "PART_FrozenColumnScrollBarSpacer";
     private const string ElementHorizontalScrollbarPart = "PART_HorizontalScrollbar";
@@ -230,6 +234,15 @@ public partial class DataGrid : TemplatedControl
         AvaloniaProperty.Register<DataGrid, DataGridLength>(nameof(ColumnWidth), defaultValue: DataGridLength.Auto);
 
     /// <summary>
+    /// Gets or sets the standard width or automatic sizing mode of columns in the control.
+    /// </summary>
+    public DataGridLength ColumnWidth
+    {
+        get => GetValue(ColumnWidthProperty);
+        set => SetValue(ColumnWidthProperty, value);
+    }
+
+    /// <summary>
     /// Identifies the <see cref="RowTheme"/> dependency property.
     /// </summary>
     public static readonly StyledProperty<ControlTheme> RowThemeProperty =
@@ -287,15 +300,6 @@ public partial class DataGrid : TemplatedControl
     {
         get => GetValue(RowGroupThemeProperty);
         set => SetValue(RowGroupThemeProperty, value);
-    }
-
-    /// <summary>
-    /// Gets or sets the standard width or automatic sizing mode of columns in the control.
-    /// </summary>
-    public DataGridLength ColumnWidth
-    {
-        get => GetValue(ColumnWidthProperty);
-        set => SetValue(ColumnWidthProperty, value);
     }
 
     public static readonly StyledProperty<int> FrozenColumnCountProperty =
@@ -389,7 +393,7 @@ public partial class DataGrid : TemplatedControl
         set => SetValue(AreRowGroupHeadersFrozenProperty, value);
     }
 
-    private void OnAreRowGroupHeadersFrozenChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleAreRowGroupHeadersFrozenChanged(AvaloniaPropertyChangedEventArgs e)
     {
         var value = (bool?)e.NewValue ?? false;
         ProcessFrozenColumnCount();
@@ -439,7 +443,7 @@ public partial class DataGrid : TemplatedControl
         internal set
         {
             SetAndRaise(IsValidProperty, ref _isValid, value);
-            PseudoClasses.Set(":invalid", !value);
+            PseudoClasses.Set(StdPseudoClass.Invalid, !value);
         }
     }
 
@@ -459,8 +463,8 @@ public partial class DataGrid : TemplatedControl
     /// </summary>
     public double MaxColumnWidth
     {
-        get { return GetValue(MaxColumnWidthProperty); }
-        set { SetValue(MaxColumnWidthProperty, value); }
+        get => GetValue(MaxColumnWidthProperty);
+        set => SetValue(MaxColumnWidthProperty, value);
     }
 
     public static readonly StyledProperty<double> MinColumnWidthProperty =
@@ -479,8 +483,8 @@ public partial class DataGrid : TemplatedControl
     /// </summary>
     public double MinColumnWidth
     {
-        get { return GetValue(MinColumnWidthProperty); }
-        set { SetValue(MinColumnWidthProperty, value); }
+        get => GetValue(MinColumnWidthProperty);
+        set => SetValue(MinColumnWidthProperty, value);
     }
 
     public static readonly StyledProperty<IBrush> RowBackgroundProperty =
@@ -491,8 +495,8 @@ public partial class DataGrid : TemplatedControl
     /// </summary>
     public IBrush RowBackground
     {
-        get { return GetValue(RowBackgroundProperty); }
-        set { SetValue(RowBackgroundProperty, value); }
+        get => GetValue(RowBackgroundProperty);
+        set => SetValue(RowBackgroundProperty, value);
     }
 
     public static readonly StyledProperty<double> RowHeightProperty =
@@ -513,8 +517,8 @@ public partial class DataGrid : TemplatedControl
     /// </summary>
     public double RowHeight
     {
-        get { return GetValue(RowHeightProperty); }
-        set { SetValue(RowHeightProperty, value); }
+        get => GetValue(RowHeightProperty);
+        set => SetValue(RowHeightProperty, value);
     }
 
     public static readonly StyledProperty<double> RowHeaderWidthProperty =
@@ -535,8 +539,8 @@ public partial class DataGrid : TemplatedControl
     /// </summary>
     public double RowHeaderWidth
     {
-        get { return GetValue(RowHeaderWidthProperty); }
-        set { SetValue(RowHeaderWidthProperty, value); }
+        get => GetValue(RowHeaderWidthProperty);
+        set => SetValue(RowHeaderWidthProperty, value);
     }
 
     public static readonly StyledProperty<DataGridSelectionMode> SelectionModeProperty =
@@ -547,8 +551,8 @@ public partial class DataGrid : TemplatedControl
     /// </summary>
     public DataGridSelectionMode SelectionMode
     {
-        get { return GetValue(SelectionModeProperty); }
-        set { SetValue(SelectionModeProperty, value); }
+        get => GetValue(SelectionModeProperty);
+        set => SetValue(SelectionModeProperty, value);
     }
 
     public static readonly StyledProperty<IBrush> VerticalGridLinesBrushProperty =
@@ -559,8 +563,8 @@ public partial class DataGrid : TemplatedControl
     /// </summary>
     public IBrush VerticalGridLinesBrush
     {
-        get { return GetValue(VerticalGridLinesBrushProperty); }
-        set { SetValue(VerticalGridLinesBrushProperty, value); }
+        get => GetValue(VerticalGridLinesBrushProperty);
+        set => SetValue(VerticalGridLinesBrushProperty, value);
     }
 
     public static readonly StyledProperty<ScrollBarVisibility> VerticalScrollBarVisibilityProperty =
@@ -571,8 +575,8 @@ public partial class DataGrid : TemplatedControl
     /// </summary>
     public ScrollBarVisibility VerticalScrollBarVisibility
     {
-        get { return GetValue(VerticalScrollBarVisibilityProperty); }
-        set { SetValue(VerticalScrollBarVisibilityProperty, value); }
+        get => GetValue(VerticalScrollBarVisibilityProperty);
+        set => SetValue(VerticalScrollBarVisibilityProperty, value);
     }
 
     public static readonly StyledProperty<ITemplate<Control>> DropLocationIndicatorTemplateProperty =
@@ -583,8 +587,8 @@ public partial class DataGrid : TemplatedControl
     /// </summary>
     public ITemplate<Control> DropLocationIndicatorTemplate
     {
-        get { return GetValue(DropLocationIndicatorTemplateProperty); }
-        set { SetValue(DropLocationIndicatorTemplateProperty, value); }
+        get => GetValue(DropLocationIndicatorTemplateProperty);
+        set => SetValue(DropLocationIndicatorTemplateProperty, value);
     }
 
     private int _selectedIndex = -1;
@@ -605,8 +609,8 @@ public partial class DataGrid : TemplatedControl
     /// </returns>
     public int SelectedIndex
     {
-        get { return _selectedIndex; }
-        set { SetAndRaise(SelectedIndexProperty, ref _selectedIndex, value); }
+        get => _selectedIndex;
+        set => SetAndRaise(SelectedIndexProperty, ref _selectedIndex, value);
     }
 
     public static readonly DirectProperty<DataGrid, object?> SelectedItemProperty =
@@ -635,8 +639,8 @@ public partial class DataGrid : TemplatedControl
     /// </summary>
     public DataGridClipboardCopyMode ClipboardCopyMode
     {
-        get { return GetValue(ClipboardCopyModeProperty); }
-        set { SetValue(ClipboardCopyModeProperty, value); }
+        get => GetValue(ClipboardCopyModeProperty);
+        set => SetValue(ClipboardCopyModeProperty, value);
     }
 
     public static readonly StyledProperty<bool> AutoGenerateColumnsProperty =
@@ -648,11 +652,11 @@ public partial class DataGrid : TemplatedControl
     /// </summary>
     public bool AutoGenerateColumns
     {
-        get { return GetValue(AutoGenerateColumnsProperty); }
-        set { SetValue(AutoGenerateColumnsProperty, value); }
+        get => GetValue(AutoGenerateColumnsProperty);
+        set => SetValue(AutoGenerateColumnsProperty, value);
     }
 
-    private void OnAutoGenerateColumnsChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleAutoGenerateColumnsChanged(AvaloniaPropertyChangedEventArgs e)
     {
         var value = (bool?)e.NewValue ?? false;
         if (value)
@@ -725,7 +729,7 @@ public partial class DataGrid : TemplatedControl
     /// Gets current <see cref="IDataGridCollectionView"/>.
     /// </summary>
     public IDataGridCollectionView? CollectionView =>
-        DataConnection?.CollectionView;
+        DataConnection.CollectionView;
 
     static DataGrid()
     {
@@ -734,31 +738,32 @@ public partial class DataGrid : TemplatedControl
             HorizontalScrollBarVisibilityProperty,
             VerticalScrollBarVisibilityProperty);
 
-        ItemsSourceProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.OnItemsSourcePropertyChanged(e));
-        CanUserResizeColumnsProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.OnCanUserResizeColumnsChanged(e));
-        ColumnWidthProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.OnColumnWidthChanged(e));
-        FrozenColumnCountProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.OnFrozenColumnCountChanged(e));
-        GridLinesVisibilityProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.OnGridLinesVisibilityChanged(e));
-        HeadersVisibilityProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.OnHeadersVisibilityChanged(e));
+        ItemsSourceProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleItemsSourcePropertyChanged(e));
+        CanUserResizeColumnsProperty.Changed.AddClassHandler<DataGrid>((x, e) =>
+            x.HandleCanUserResizeColumnsChanged(e));
+        ColumnWidthProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleColumnWidthChanged(e));
+        FrozenColumnCountProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleFrozenColumnCountChanged(e));
+        GridLinesVisibilityProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleGridLinesVisibilityChanged(e));
+        HeadersVisibilityProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleHeadersVisibilityChanged(e));
         HorizontalGridLinesBrushProperty.Changed.AddClassHandler<DataGrid>((x, e) =>
-            x.OnHorizontalGridLinesBrushChanged(e));
-        IsReadOnlyProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.OnIsReadOnlyChanged(e));
-        MaxColumnWidthProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.OnMaxColumnWidthChanged(e));
-        MinColumnWidthProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.OnMinColumnWidthChanged(e));
-        RowHeightProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.OnRowHeightChanged(e));
-        RowHeaderWidthProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.OnRowHeaderWidthChanged(e));
-        SelectionModeProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.OnSelectionModeChanged(e));
+            x.HandleHorizontalGridLinesBrushChanged(e));
+        IsReadOnlyProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleIsReadOnlyChanged(e));
+        MaxColumnWidthProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleMaxColumnWidthChanged(e));
+        MinColumnWidthProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleMinColumnWidthChanged(e));
+        RowHeightProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleRowHeightChanged(e));
+        RowHeaderWidthProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleRowHeaderWidthChanged(e));
+        SelectionModeProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleSelectionModeChanged(e));
         VerticalGridLinesBrushProperty.Changed.AddClassHandler<DataGrid>((x, e) =>
-            x.OnVerticalGridLinesBrushChanged(e));
-        SelectedIndexProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.OnSelectedIndexChanged(e));
-        SelectedItemProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.OnSelectedItemChanged(e));
+            x.HandleVerticalGridLinesBrushChanged(e));
+        SelectedIndexProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleSelectedIndexChanged(e));
+        SelectedItemProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleSelectedItemChanged(e));
         IsEnabledProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.DataGrid_IsEnabledChanged(e));
         AreRowGroupHeadersFrozenProperty.Changed.AddClassHandler<DataGrid>((x, e) =>
-            x.OnAreRowGroupHeadersFrozenChanged(e));
-        RowDetailsTemplateProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.OnRowDetailsTemplateChanged(e));
+            x.HandleAreRowGroupHeadersFrozenChanged(e));
+        RowDetailsTemplateProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleRowDetailsTemplateChanged(e));
         RowDetailsVisibilityModeProperty.Changed.AddClassHandler<DataGrid>((x, e) =>
-            x.OnRowDetailsVisibilityModeChanged(e));
-        AutoGenerateColumnsProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.OnAutoGenerateColumnsChanged(e));
+            x.HandleRowDetailsVisibilityModeChanged(e));
+        AutoGenerateColumnsProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleAutoGenerateColumnsChanged(e));
 
         FocusableProperty.OverrideDefaultValue<DataGrid>(true);
     }
@@ -768,22 +773,23 @@ public partial class DataGrid : TemplatedControl
     /// </summary>
     public DataGrid()
     {
-        KeyDown += DataGrid_KeyDown;
-        KeyUp   += DataGrid_KeyUp;
+        KeyDown += HandleKeyDown;
+        KeyUp   += HandleKeyUp;
 
         //TODO: Check if override works
-        GotFocus  += DataGrid_GotFocus;
-        LostFocus += DataGrid_LostFocus;
+        GotFocus  += HandleGotFocus;
+        LostFocus += HandleLostFocus;
 
         _loadedRows              = new List<DataGridRow>();
         _lostFocusActions        = new Queue<Action>();
         _selectedItems           = new DataGridSelectedItemsCollection(this);
-        RowGroupHeadersTable     = new IndexToValueTable<DataGridRowGroupInfo>();
         _bindingValidationErrors = new List<Exception>();
+
+        RowGroupHeadersTable = new IndexToValueTable<DataGridRowGroupInfo>();
 
         DisplayData                       =  new DataGridDisplayData(this);
         ColumnsInternal                   =  CreateColumnsInstance();
-        ColumnsInternal.CollectionChanged += ColumnsInternal_CollectionChanged;
+        ColumnsInternal.CollectionChanged += HandleColumnsInternalCollectionChanged;
 
         RowHeightEstimate        = DefaultRowHeight;
         RowDetailsHeightEstimate = 0;
@@ -823,7 +829,7 @@ public partial class DataGrid : TemplatedControl
         }
     }
 
-    private void OnRowDetailsVisibilityModeChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleRowDetailsVisibilityModeChanged(AvaloniaPropertyChangedEventArgs e)
     {
         var newValue = (DataGridRowDetailsVisibilityMode?)e.NewValue;
         if (newValue != null)
@@ -832,7 +838,7 @@ public partial class DataGrid : TemplatedControl
         }
     }
 
-    private void OnRowDetailsTemplateChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleRowDetailsTemplateChanged(AvaloniaPropertyChangedEventArgs e)
     {
         // Update the RowDetails templates if necessary
         if (_rowsPresenter != null)
@@ -855,7 +861,7 @@ public partial class DataGrid : TemplatedControl
     /// ItemsSourceProperty property changed handler.
     /// </summary>
     /// <param name="e">The event arguments.</param>
-    private void OnItemsSourcePropertyChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleItemsSourcePropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
         if (!_areHandlersSuspended)
         {
@@ -878,7 +884,7 @@ public partial class DataGrid : TemplatedControl
                 CancelEdit(DataGridEditingUnit.Row, false);
             }
 
-            DataConnection.UnWireEvents(DataConnection.DataSource!);
+            DataConnection.UnWireEvents(DataConnection.DataSource);
             DataConnection.ClearDataProperties();
             ClearRowGroupHeadersTable();
 
@@ -954,11 +960,11 @@ public partial class DataGrid : TemplatedControl
         }
     }
 
-    private void ColumnsInternal_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    private void HandleColumnsInternalCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        if (e.Action == NotifyCollectionChangedAction.Add
-            || e.Action == NotifyCollectionChangedAction.Remove
-            || e.Action == NotifyCollectionChangedAction.Reset)
+        if (e.Action == NotifyCollectionChangedAction.Add || 
+            e.Action == NotifyCollectionChangedAction.Remove ||
+            e.Action == NotifyCollectionChangedAction.Reset)
         {
             UpdatePseudoClasses();
         }
@@ -966,33 +972,34 @@ public partial class DataGrid : TemplatedControl
 
     internal void UpdatePseudoClasses()
     {
-        PseudoClasses.Set(":empty-columns", !ColumnsInternal.GetVisibleColumns().Any());
-        PseudoClasses.Set(":empty-rows", !DataConnection!.Any());
+        PseudoClasses.Set(EmptyColumnsPC, ColumnsInternal.GetVisibleColumns().Any());
+        PseudoClasses.Set(EmptyRowsPC, DataConnection.Any());
     }
 
-    private void OnSelectedIndexChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleSelectedIndexChanged(AvaloniaPropertyChangedEventArgs e)
     {
         if (!_areHandlersSuspended)
         {
-            int index = (int)e.NewValue!;
+            // TODO 这么处理不知道是不是合适
+            var index = (int?)e.NewValue ?? -1;
 
             // GetDataItem returns null if index is >= Count, we do not check newValue
             // against Count here to avoid enumerating through an Enumerable twice
             // Setting SelectedItem coerces the finally value of the SelectedIndex
-            object? newSelectedItem = (index < 0) ? null : DataConnection!.GetDataItem(index);
-            SelectedItem = newSelectedItem;
+            var newSelectedItem = (index < 0) ? null : DataConnection.GetDataItem(index);
             if (SelectedItem != newSelectedItem)
             {
-                SetValueNoCallback(SelectedIndexProperty, (int)e.OldValue!);
+                SetValueNoCallback(SelectedIndexProperty, index);
+                SelectedItem = newSelectedItem;
             }
         }
     }
 
-    private void OnSelectedItemChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleSelectedItemChanged(AvaloniaPropertyChangedEventArgs e)
     {
         if (!_areHandlersSuspended)
         {
-            int rowIndex = (e.NewValue == null) ? -1 : DataConnection!.IndexOf(e.NewValue);
+            var rowIndex = e.NewValue == null ? -1 : DataConnection.IndexOf(e.NewValue);
             if (rowIndex == -1)
             {
                 // If the Item is null or it's not found, clear the Selection
@@ -1006,14 +1013,14 @@ public partial class DataGrid : TemplatedControl
                 // Clear all row selections
                 ClearRowSelection(resetAnchorSlot: true);
 
-                if (DataConnection!.CollectionView != null)
+                if (DataConnection.CollectionView is not null)
                 {
                     DataConnection.CollectionView.MoveCurrentTo(null);
                 }
             }
             else
             {
-                int slot = SlotFromRowIndex(rowIndex);
+                var slot = SlotFromRowIndex(rowIndex);
                 if (slot != CurrentSlot)
                 {
                     if (!CommitEdit(DataGridEditingUnit.Row, exitEditingMode: true))
@@ -1025,19 +1032,19 @@ public partial class DataGrid : TemplatedControl
 
                     if (slot >= SlotCount || slot < -1)
                     {
-                        if (DataConnection!.CollectionView != null)
+                        if (DataConnection.CollectionView != null)
                         {
                             DataConnection.CollectionView.MoveCurrentToPosition(rowIndex);
                         }
                     }
                 }
 
-                int oldSelectedIndex = SelectedIndex;
+                var oldSelectedIndex = SelectedIndex;
                 SetValueNoCallback(SelectedIndexProperty, rowIndex);
                 try
                 {
                     _noSelectionChangeCount++;
-                    int columnIndex = CurrentColumnIndex;
+                    var columnIndex = CurrentColumnIndex;
 
                     if (columnIndex == -1)
                     {
@@ -1067,7 +1074,7 @@ public partial class DataGrid : TemplatedControl
         }
     }
 
-    private void OnVerticalGridLinesBrushChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleVerticalGridLinesBrushChanged(AvaloniaPropertyChangedEventArgs e)
     {
         if (_rowsPresenter != null)
         {
@@ -1078,7 +1085,7 @@ public partial class DataGrid : TemplatedControl
         }
     }
 
-    private void OnSelectionModeChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleSelectionModeChanged(AvaloniaPropertyChangedEventArgs e)
     {
         if (!_areHandlersSuspended)
         {
@@ -1086,7 +1093,7 @@ public partial class DataGrid : TemplatedControl
         }
     }
 
-    private void OnRowHeaderWidthChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleRowHeaderWidthChanged(AvaloniaPropertyChangedEventArgs e)
     {
         if (!_areHandlersSuspended)
         {
@@ -1094,7 +1101,7 @@ public partial class DataGrid : TemplatedControl
         }
     }
 
-    private void OnRowHeightChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleRowHeightChanged(AvaloniaPropertyChangedEventArgs e)
     {
         if (!_areHandlersSuspended)
         {
@@ -1106,23 +1113,24 @@ public partial class DataGrid : TemplatedControl
         }
     }
 
-    private void OnMinColumnWidthChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleMinColumnWidthChanged(AvaloniaPropertyChangedEventArgs e)
     {
         if (!_areHandlersSuspended)
         {
-            double oldValue = (double)e.OldValue!;
-            foreach (DataGridColumn column in ColumnsInternal.GetDisplayedColumns())
+            // TODO 这样设置不知道会不会有问题
+            var oldValue = (double?)e.OldValue ?? double.NaN;
+            foreach (var column in ColumnsInternal.GetDisplayedColumns())
             {
                 OnColumnMinWidthChanged(column, Math.Max(column.MinWidth, oldValue));
             }
         }
     }
 
-    private void OnMaxColumnWidthChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleMaxColumnWidthChanged(AvaloniaPropertyChangedEventArgs e)
     {
         if (!_areHandlersSuspended)
         {
-            var oldValue = (double)e.OldValue!;
+            var oldValue = (double?)e.OldValue ?? double.NaN;
             foreach (DataGridColumn column in ColumnsInternal.GetDisplayedColumns())
             {
                 OnColumnMaxWidthChanged(column, Math.Min(column.MaxWidth, oldValue));
@@ -1130,11 +1138,11 @@ public partial class DataGrid : TemplatedControl
         }
     }
 
-    private void OnIsReadOnlyChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleIsReadOnlyChanged(AvaloniaPropertyChangedEventArgs e)
     {
         if (!_areHandlersSuspended)
         {
-            var value = (bool)e.NewValue!;
+            var value = (bool?)e.NewValue ?? false;
             if (value && !CommitEdit(DataGridEditingUnit.Row, exitEditingMode: true))
             {
                 CancelEdit(DataGridEditingUnit.Row, raiseEvents: false);
@@ -1142,27 +1150,32 @@ public partial class DataGrid : TemplatedControl
         }
     }
 
-    private void OnHorizontalGridLinesBrushChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleHorizontalGridLinesBrushChanged(AvaloniaPropertyChangedEventArgs e)
     {
         if (!_areHandlersSuspended && _rowsPresenter != null)
         {
-            foreach (DataGridRow row in GetAllRows())
+            foreach (var row in GetAllRows())
             {
                 row.EnsureGridLines();
             }
         }
     }
 
-    private void OnHeadersVisibilityChanged(AvaloniaPropertyChangedEventArgs e)
+    private bool HasHeadersVisibilityFlag(DataGridHeadersVisibility value, DataGridHeadersVisibility flags)
     {
-        var oldValue = (DataGridHeadersVisibility)e.OldValue!;
-        var newValue = (DataGridHeadersVisibility)e.NewValue!;
-        bool hasFlags(DataGridHeadersVisibility value, DataGridHeadersVisibility flags) => ((value & flags) == flags);
+        return (value & flags) == flags;
+    }
+    
+    private void HandleHeadersVisibilityChanged(AvaloniaPropertyChangedEventArgs e)
+    {
+        // TODO 这样设置不知道会不会有问题
+        var oldValue = (DataGridHeadersVisibility?)e.OldValue ?? DataGridHeadersVisibility.All;
+        var newValue = (DataGridHeadersVisibility?)e.NewValue ?? DataGridHeadersVisibility.All;
 
-        bool newValueCols = hasFlags(newValue, DataGridHeadersVisibility.Column);
-        bool newValueRows = hasFlags(newValue, DataGridHeadersVisibility.Row);
-        bool oldValueCols = hasFlags(oldValue, DataGridHeadersVisibility.Column);
-        bool oldValueRows = hasFlags(oldValue, DataGridHeadersVisibility.Row);
+        var newValueCols = HasHeadersVisibilityFlag(newValue, DataGridHeadersVisibility.Column);
+        var newValueRows = HasHeadersVisibilityFlag(newValue, DataGridHeadersVisibility.Row);
+        var oldValueCols = HasHeadersVisibilityFlag(oldValue, DataGridHeadersVisibility.Column);
+        var oldValueRows = HasHeadersVisibilityFlag(oldValue, DataGridHeadersVisibility.Row);
 
         // Columns
         if (newValueCols != oldValueCols)
@@ -1188,7 +1201,7 @@ public partial class DataGrid : TemplatedControl
         {
             if (_rowsPresenter != null)
             {
-                foreach (Control element in _rowsPresenter.Children)
+                foreach (var element in _rowsPresenter.Children)
                 {
                     if (element is DataGridRow row)
                     {
@@ -1220,16 +1233,16 @@ public partial class DataGrid : TemplatedControl
         }
     }
 
-    private void OnGridLinesVisibilityChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleGridLinesVisibilityChanged(AvaloniaPropertyChangedEventArgs e)
     {
-        foreach (DataGridRow row in GetAllRows())
+        foreach (var row in GetAllRows())
         {
             row.EnsureGridLines();
             row.InvalidateHorizontalArrange();
         }
     }
 
-    private void OnFrozenColumnCountChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleFrozenColumnCountChanged(AvaloniaPropertyChangedEventArgs e)
     {
         ProcessFrozenColumnCount();
     }
@@ -1243,22 +1256,25 @@ public partial class DataGrid : TemplatedControl
         InvalidateCellsArrange();
     }
 
-    private void OnColumnWidthChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleColumnWidthChanged(AvaloniaPropertyChangedEventArgs e)
     {
-        var value = (DataGridLength)e.NewValue!;
+        var lengthValue = (DataGridLength?)e.NewValue;
 
         foreach (DataGridColumn column in ColumnsInternal.GetDisplayedColumns())
         {
             if (column.InheritsWidth)
             {
-                column.SetWidthInternalNoCallback(value);
+                if (lengthValue.HasValue)
+                {
+                    column.SetWidthInternalNoCallback(lengthValue.Value);
+                }
             }
         }
 
         EnsureHorizontalLayout();
     }
 
-    private void OnCanUserResizeColumnsChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleCanUserResizeColumnsChanged(AvaloniaPropertyChangedEventArgs e)
     {
         EnsureHorizontalLayout();
     }
@@ -1379,15 +1395,9 @@ public partial class DataGrid : TemplatedControl
     /// <summary>
     /// Gets a collection that contains all the columns in the control.
     /// </summary>
-    public ObservableCollection<DataGridColumn> Columns
-    {
-        get
-        {
-            // we use a backing field here because the field's type
-            // is a subclass of the property's
-            return ColumnsInternal;
-        }
-    }
+    // we use a backing field here because the field's type
+    // is a subclass of the property's
+    public ObservableCollection<DataGridColumn> Columns => ColumnsInternal;
 
     /// <summary>
     /// Gets or sets the column that contains the current cell.
@@ -1400,7 +1410,6 @@ public partial class DataGrid : TemplatedControl
             {
                 return null;
             }
-
             Debug.Assert(CurrentColumnIndex < ColumnsItemsInternal.Count);
             return ColumnsItemsInternal[CurrentColumnIndex];
         }
@@ -1433,7 +1442,7 @@ public partial class DataGrid : TemplatedControl
                     throw DataGridError.DataGrid.NoCurrentRow();
                 }
 
-                bool beginEdit = _editingColumnIndex != -1;
+                var beginEdit = _editingColumnIndex != -1;
 
                 //exitEditingMode, keepFocus, raiseEvents
                 if (!EndCellEdit(DataGridEditAction.Commit, true, ContainsFocus, true))
@@ -1464,10 +1473,7 @@ public partial class DataGrid : TemplatedControl
     /// <summary>
     /// Gets a list that contains the data items corresponding to the selected rows.
     /// </summary>
-    public IList SelectedItems
-    {
-        get { return _selectedItems as IList; }
-    }
+    public IList SelectedItems => _selectedItems;
 
     internal DataGridColumnCollection ColumnsInternal { get; }
 
@@ -1481,10 +1487,7 @@ public partial class DataGrid : TemplatedControl
             {
                 return 0;
             }
-            else
-            {
-                return !double.IsNaN(RowHeaderWidth) ? RowHeaderWidth : RowHeadersDesiredWidth;
-            }
+            return !double.IsNaN(RowHeaderWidth) ? RowHeaderWidth : RowHeadersDesiredWidth;
         }
     }
 
@@ -1501,31 +1504,25 @@ public partial class DataGrid : TemplatedControl
         }
     }
 
-    internal bool AreColumnHeadersVisible
-    {
-        get { return (HeadersVisibility & DataGridHeadersVisibility.Column) == DataGridHeadersVisibility.Column; }
-    }
+    internal bool AreColumnHeadersVisible => (HeadersVisibility & DataGridHeadersVisibility.Column) == DataGridHeadersVisibility.Column;
 
-    internal bool AreRowHeadersVisible
-    {
-        get { return (HeadersVisibility & DataGridHeadersVisibility.Row) == DataGridHeadersVisibility.Row; }
-    }
-
+    internal bool AreRowHeadersVisible => (HeadersVisibility & DataGridHeadersVisibility.Row) == DataGridHeadersVisibility.Row;
+    
     /// <summary>
     /// Indicates whether or not at least one auto-sizing column is waiting for all the rows
     /// to be measured before its final width is determined.
     /// </summary>
     internal bool AutoSizingColumns
     {
-        get { return _autoSizingColumns; }
+        get => _autoSizingColumns;
 
         set
         {
-            if (_autoSizingColumns && !value && ColumnsInternal != null)
+            if (_autoSizingColumns && !value)
             {
-                double adjustment = CellsWidth - ColumnsInternal.VisibleEdgedColumnsWidth;
+                var adjustment = CellsWidth - ColumnsInternal.VisibleEdgedColumnsWidth;
                 AdjustColumnWidths(0, adjustment, false);
-                foreach (DataGridColumn column in ColumnsInternal.GetVisibleColumns())
+                foreach (var column in ColumnsInternal.GetVisibleColumns())
                 {
                     column.IsInitialDesiredWidthDetermined = true;
                 }
@@ -1542,10 +1539,7 @@ public partial class DataGrid : TemplatedControl
 
     internal double AvailableSlotElementRoom { get; set; }
 
-    internal double CellsEstimatedHeight
-    {
-        get { return RowsPresenterAvailableSize?.Height ?? 0; }
-    }
+    internal double CellsEstimatedHeight => RowsPresenterAvailableSize?.Height ?? 0;
 
     // Width currently available for cells this value is smaller.  This width is reduced by the existence of RowHeaders
     // or a vertical scrollbar.  Layout is asynchronous so changes to the RowHeaders or the vertical scrollbar are
@@ -1554,7 +1548,7 @@ public partial class DataGrid : TemplatedControl
     {
         get
         {
-            double rowsWidth = double.PositiveInfinity;
+            var rowsWidth = double.PositiveInfinity;
             if (RowsPresenterAvailableSize.HasValue)
             {
                 rowsWidth = Math.Max(0, RowsPresenterAvailableSize.Value.Width - ActualRowHeaderWidth);
@@ -1572,19 +1566,17 @@ public partial class DataGrid : TemplatedControl
 
     internal int CurrentColumnIndex
     {
-        get { return CurrentCellCoordinates.ColumnIndex; }
-
-        private set { CurrentCellCoordinates.ColumnIndex = value; }
+        get => CurrentCellCoordinates.ColumnIndex;
+        private set => CurrentCellCoordinates.ColumnIndex = value;
     }
 
     internal int CurrentSlot
     {
-        get { return CurrentCellCoordinates.Slot; }
-
-        private set { CurrentCellCoordinates.Slot = value; }
+        get => CurrentCellCoordinates.Slot;
+        private set => CurrentCellCoordinates.Slot = value;
     }
 
-    internal DataGridDataConnection? DataConnection { get; private set; }
+    internal DataGridDataConnection DataConnection { get; private set; }
 
     internal DataGridDisplayData DisplayData { get; private set; }
 
@@ -1605,7 +1597,7 @@ public partial class DataGrid : TemplatedControl
     // the first displayed scrolling column
     internal double HorizontalOffset
     {
-        get { return _horizontalOffset; }
+        get => _horizontalOffset;
 
         set
         {
@@ -1614,18 +1606,18 @@ public partial class DataGrid : TemplatedControl
                 value = 0;
             }
 
-            double widthNotVisible = Math.Max(0, ColumnsInternal.VisibleEdgedColumnsWidth - CellsWidth);
+            var widthNotVisible = Math.Max(0, ColumnsInternal.VisibleEdgedColumnsWidth - CellsWidth);
             if (value > widthNotVisible)
             {
                 value = widthNotVisible;
             }
 
-            if (value == _horizontalOffset)
+            if (MathUtils.AreClose(value, _horizontalOffset))
             {
                 return;
             }
 
-            if (_hScrollBar != null && value != _hScrollBar.Value)
+            if (_hScrollBar != null && !MathUtils.AreClose(value, _hScrollBar.Value))
             {
                 _hScrollBar.Value = value;
             }
@@ -1648,7 +1640,7 @@ public partial class DataGrid : TemplatedControl
 
     internal int? MouseOverRowIndex
     {
-        get { return _mouseOverRowIndex; }
+        get => _mouseOverRowIndex;
 
         set
         {
@@ -1657,7 +1649,7 @@ public partial class DataGrid : TemplatedControl
                 DataGridRow? oldMouseOverRow = null;
                 if (_mouseOverRowIndex.HasValue)
                 {
-                    int oldSlot = SlotFromRowIndex(_mouseOverRowIndex.Value);
+                    var oldSlot = SlotFromRowIndex(_mouseOverRowIndex.Value);
                     if (IsSlotVisible(oldSlot))
                     {
                         oldMouseOverRow = DisplayData.GetDisplayedElement(oldSlot) as DataGridRow;
@@ -1674,15 +1666,12 @@ public partial class DataGrid : TemplatedControl
 
                 if (_mouseOverRowIndex.HasValue)
                 {
-                    int newSlot = SlotFromRowIndex(_mouseOverRowIndex.Value);
+                    var newSlot = SlotFromRowIndex(_mouseOverRowIndex.Value);
                     if (IsSlotVisible(newSlot))
                     {
-                        DataGridRow? newMouseOverRow = DisplayData.GetDisplayedElement(newSlot) as DataGridRow;
+                        var newMouseOverRow = DisplayData.GetDisplayedElement(newSlot) as DataGridRow;
                         Debug.Assert(newMouseOverRow != null);
-                        if (newMouseOverRow != null)
-                        {
-                            newMouseOverRow.ApplyState();
-                        }
+                        newMouseOverRow.ApplyState();
                     }
                 }
             }
@@ -1693,7 +1682,7 @@ public partial class DataGrid : TemplatedControl
 
     internal int NoCurrentCellChangeCount
     {
-        get { return _noCurrentCellChangeCount; }
+        get => _noCurrentCellChangeCount;
 
         set
         {
@@ -1709,16 +1698,16 @@ public partial class DataGrid : TemplatedControl
 
     internal double RowHeadersDesiredWidth
     {
-        get { return _rowHeaderDesiredWidth; }
+        get => _rowHeaderDesiredWidth;
 
         set
         {
             // We only auto grow
             if (_rowHeaderDesiredWidth < value)
             {
-                double oldActualRowHeaderWidth = ActualRowHeaderWidth;
+                var oldActualRowHeaderWidth = ActualRowHeaderWidth;
                 _rowHeaderDesiredWidth = value;
-                if (oldActualRowHeaderWidth != ActualRowHeaderWidth)
+                if (!MathUtils.AreClose(oldActualRowHeaderWidth, ActualRowHeaderWidth))
                 {
                     EnsureRowHeaderWidth();
                 }
@@ -1732,12 +1721,12 @@ public partial class DataGrid : TemplatedControl
 
     internal Size? RowsPresenterAvailableSize
     {
-        get { return _rowsPresenterAvailableSize; }
+        get => _rowsPresenterAvailableSize;
 
         set
         {
             if (_rowsPresenterAvailableSize.HasValue && value.HasValue &&
-                value.Value.Width > RowsPresenterAvailableSize!.Value.Width)
+                value.Value.Width > _rowsPresenterAvailableSize.Value.Width)
             {
                 // When the available cells width increases, the horizontal offset can be incorrect.
                 // Store away an adjustment to use during the CellsPresenter's measure, so that the
@@ -1750,7 +1739,7 @@ public partial class DataGrid : TemplatedControl
                 //     |  column0  |  column1  |   column2   |  column3   |<----->|
                 //     |           |           |             |            |  adj. |
                 //
-                double adjustment = (_horizontalOffset + value.Value.Width) - ColumnsInternal.VisibleEdgedColumnsWidth;
+                var adjustment = (_horizontalOffset + value.Value.Width) - ColumnsInternal.VisibleEdgedColumnsWidth;
                 HorizontalAdjustment = Math.Min(HorizontalOffset, Math.Max(0, adjustment));
             }
             else
@@ -1775,20 +1764,9 @@ public partial class DataGrid : TemplatedControl
     /// then star sizing doesn't make sense.  In this case, all star columns grow to a predefined size of
     /// 10,000 pixels in order to show the developer that star columns shouldn't be used.
     /// </summary>
-    internal bool UsesStarSizing
-    {
-        get
-        {
-            if (ColumnsInternal != null)
-            {
-                return ColumnsInternal.VisibleStarColumnCount > 0 &&
-                       (!RowsPresenterAvailableSize.HasValue ||
-                        !double.IsPositiveInfinity(RowsPresenterAvailableSize.Value.Width));
-            }
-
-            return false;
-        }
-    }
+    internal bool UsesStarSizing => ColumnsInternal.VisibleStarColumnCount > 0 &&
+                                    (!RowsPresenterAvailableSize.HasValue ||
+                                     !double.IsPositiveInfinity(RowsPresenterAvailableSize.Value.Width));
 
     internal ScrollBar? VerticalScrollBar => _vScrollBar;
 
@@ -1806,7 +1784,7 @@ public partial class DataGrid : TemplatedControl
                 return null;
             }
 
-            return DataConnection!.GetDataItem(RowIndexFromSlot(CurrentSlot));
+            return DataConnection.GetDataItem(RowIndexFromSlot(CurrentSlot));
         }
     }
 
@@ -1816,43 +1794,31 @@ public partial class DataGrid : TemplatedControl
     {
         get
         {
-            DataGridColumn? column = ColumnsInternal.FirstVisibleNonFillerColumn;
-            if (column != null)
+            var column = ColumnsInternal.FirstVisibleNonFillerColumn;
+            if (column is not null)
             {
                 if (column.IsFrozen)
                 {
                     return column.Index;
                 }
-                else
+                if (DisplayData.FirstDisplayedScrollingCol >= column.Index)
                 {
-                    if (DisplayData.FirstDisplayedScrollingCol >= column.Index)
-                    {
-                        return DisplayData.FirstDisplayedScrollingCol;
-                    }
-                    else
-                    {
-                        return column.Index;
-                    }
+                    return DisplayData.FirstDisplayedScrollingCol;
                 }
+                return column.Index;
             }
 
             return -1;
         }
     }
 
-    private bool IsHorizontalScrollBarOverCells
-    {
-        get { return _columnHeadersPresenter != null && Grid.GetColumnSpan(_columnHeadersPresenter) == 2; }
-    }
+    private bool IsHorizontalScrollBarOverCells => _columnHeadersPresenter != null && Grid.GetColumnSpan(_columnHeadersPresenter) == 2;
 
-    private bool IsVerticalScrollBarOverCells
-    {
-        get { return _rowsPresenter != null && Grid.GetRowSpan(_rowsPresenter) == 2; }
-    }
+    private bool IsVerticalScrollBarOverCells => _rowsPresenter != null && Grid.GetRowSpan(_rowsPresenter) == 2;
 
     private int NoSelectionChangeCount
     {
-        get { return _noSelectionChangeCount; }
+        get => _noSelectionChangeCount;
 
         set
         {
@@ -1863,22 +1829,13 @@ public partial class DataGrid : TemplatedControl
             }
         }
     }
-
-    /// <summary>
-    /// Enters editing mode for the current cell and current row (if they're not already in editing mode).
-    /// </summary>
-    /// <returns>True if operation was successful. False otherwise.</returns>
-    public bool BeginEdit()
-    {
-        return BeginEdit(null);
-    }
-
+    
     /// <summary>
     /// Enters editing mode for the current cell and current row (if they're not already in editing mode).
     /// </summary>
     /// <param name="editingEventArgs">Provides information about the user gesture that caused the call to BeginEdit. Can be null.</param>
     /// <returns>True if operation was successful. False otherwise.</returns>
-    public bool BeginEdit(RoutedEventArgs? editingEventArgs)
+    public bool BeginEdit(RoutedEventArgs? editingEventArgs = null)
     {
         if (CurrentColumnIndex == -1 || !GetRowSelection(CurrentSlot))
         {
@@ -1901,31 +1858,13 @@ public partial class DataGrid : TemplatedControl
     }
 
     /// <summary>
-    /// Cancels editing mode and restores the original value.
-    /// </summary>
-    /// <returns>True if operation was successful. False otherwise.</returns>
-    public bool CancelEdit()
-    {
-        return CancelEdit(DataGridEditingUnit.Row);
-    }
-
-    /// <summary>
     /// Cancels editing mode for the specified DataGridEditingUnit and restores its original value.
     /// </summary>
     /// <param name="editingUnit">Specifies whether to cancel edit for a Cell or Row.</param>
     /// <returns>True if operation was successful. False otherwise.</returns>
-    public bool CancelEdit(DataGridEditingUnit editingUnit)
+    public bool CancelEdit(DataGridEditingUnit editingUnit = DataGridEditingUnit.Row)
     {
         return CancelEdit(editingUnit, raiseEvents: true);
-    }
-
-    /// <summary>
-    /// Commits editing mode and pushes changes to the backend.
-    /// </summary>
-    /// <returns>True if operation was successful. False otherwise.</returns>
-    public bool CommitEdit()
-    {
-        return CommitEdit(DataGridEditingUnit.Row, true);
     }
 
     /// <summary>
@@ -1934,11 +1873,11 @@ public partial class DataGrid : TemplatedControl
     /// <param name="editingUnit">Specifies whether to commit edit for a Cell or Row.</param>
     /// <param name="exitEditingMode">Editing mode is left if True.</param>
     /// <returns>True if operation was successful. False otherwise.</returns>
-    public bool CommitEdit(DataGridEditingUnit editingUnit, bool exitEditingMode)
+    public bool CommitEdit(DataGridEditingUnit editingUnit = DataGridEditingUnit.Row, bool exitEditingMode = true)
     {
         if (!EndCellEdit(
                 editAction: DataGridEditAction.Commit,
-                exitEditingMode: editingUnit == DataGridEditingUnit.Cell ? exitEditingMode : true,
+                exitEditingMode: (editingUnit == DataGridEditingUnit.Cell && exitEditingMode) || true,
                 keepFocus: ContainsFocus,
                 raiseEvents: true))
         {
@@ -1981,7 +1920,7 @@ public partial class DataGrid : TemplatedControl
         }
         else
         {
-            int                   slot         = -1;
+            var                   slot         = -1;
             DataGridRowGroupInfo? rowGroupInfo = null;
             if (item is DataGridCollectionViewGroup collectionViewGroup)
             {
@@ -1997,7 +1936,7 @@ public partial class DataGrid : TemplatedControl
             else
             {
                 // the row index will be set to -1 if the item is null or not in the list
-                int rowIndex = DataConnection!.IndexOf(item);
+                var rowIndex = DataConnection.IndexOf(item);
                 if (rowIndex == -1)
                 {
                     return;
@@ -2006,7 +1945,7 @@ public partial class DataGrid : TemplatedControl
                 slot = SlotFromRowIndex(rowIndex);
             }
 
-            int columnIndex = (column == null) ? FirstDisplayedNonFillerColumnIndex : column.Index;
+            var columnIndex = column is null ? FirstDisplayedNonFillerColumnIndex : column.Index;
 
             if (_collapsedSlotsTable.Contains(slot))
             {
@@ -2019,10 +1958,7 @@ public partial class DataGrid : TemplatedControl
                 {
                     rowGroupInfo = RowGroupHeadersTable.GetValueAt(RowGroupHeadersTable.GetPreviousIndex(slot));
                     Debug.Assert(rowGroupInfo != null);
-                    if (rowGroupInfo != null)
-                    {
-                        ExpandRowGroupParentChain(rowGroupInfo.Level, rowGroupInfo.Slot);
-                    }
+                    ExpandRowGroupParentChain(rowGroupInfo.Level, rowGroupInfo.Slot);
                 }
 
                 // Update Scrollbar and display information
@@ -2043,7 +1979,7 @@ public partial class DataGrid : TemplatedControl
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        if (DataConnection!.DataSource != null && !DataConnection.EventsWired)
+        if (DataConnection.DataSource != null && !DataConnection.EventsWired)
         {
             DataConnection.WireEvents(DataConnection.DataSource);
             InitializeElements(true /*recycleRows*/);
@@ -2054,7 +1990,7 @@ public partial class DataGrid : TemplatedControl
     {
         base.OnDetachedFromVisualTree(e);
         // When wired to INotifyCollectionChanged, the DataGrid will be cleaned up by GC
-        if (DataConnection!.DataSource != null && DataConnection.EventsWired)
+        if (DataConnection.DataSource != null && DataConnection.EventsWired)
         {
             DataConnection.UnWireEvents(DataConnection.DataSource);
         }
@@ -2076,7 +2012,7 @@ public partial class DataGrid : TemplatedControl
             MakeFirstDisplayedCellCurrentCell();
         }
 
-        if (Bounds.Width != finalSize.Width)
+        if (!MathUtils.AreClose(Bounds.Width, finalSize.Width))
         {
             // If our final width has changed, we might need to update the filler
             InvalidateColumnHeadersArrange();
@@ -2143,9 +2079,7 @@ public partial class DataGrid : TemplatedControl
             }
 
             InvalidateColumnHeadersMeasure();
-
             desiredSize = base.MeasureOverride(availableSize);
-
             ComputeScrollBarsLayout();
         }
 
@@ -2156,7 +2090,6 @@ public partial class DataGrid : TemplatedControl
     protected override void OnDataContextBeginUpdate()
     {
         base.OnDataContextBeginUpdate();
-
         NotifyDataContextPropertyForAllRowCells(GetAllRows(), true);
     }
 
@@ -2164,14 +2097,13 @@ public partial class DataGrid : TemplatedControl
     protected override void OnDataContextEndUpdate()
     {
         base.OnDataContextEndUpdate();
-
         NotifyDataContextPropertyForAllRowCells(GetAllRows(), false);
     }
 
     /// <summary>
     /// Raises the BeginningEdit event.
     /// </summary>
-    protected virtual void OnBeginningEdit(DataGridBeginningEditEventArgs e)
+    protected virtual void HandleBeginningEdit(DataGridBeginningEditEventArgs e)
     {
         BeginningEdit?.Invoke(this, e);
     }
@@ -2179,7 +2111,7 @@ public partial class DataGrid : TemplatedControl
     /// <summary>
     /// Raises the CellEditEnded event.
     /// </summary>
-    protected virtual void OnCellEditEnded(DataGridCellEditEndedEventArgs e)
+    protected virtual void HandleCellEditEnded(DataGridCellEditEndedEventArgs e)
     {
         CellEditEnded?.Invoke(this, e);
     }
@@ -2187,7 +2119,7 @@ public partial class DataGrid : TemplatedControl
     /// <summary>
     /// Raises the CellEditEnding event.
     /// </summary>
-    protected virtual void OnCellEditEnding(DataGridCellEditEndingEventArgs e)
+    protected virtual void HandleCellEditEnding(DataGridCellEditEndingEventArgs e)
     {
         CellEditEnding?.Invoke(this, e);
     }
@@ -2195,7 +2127,7 @@ public partial class DataGrid : TemplatedControl
     /// <summary>
     /// Raises the CellPointerPressed event.
     /// </summary>
-    internal virtual void OnCellPointerPressed(DataGridCellPointerPressedEventArgs e)
+    internal virtual void HandleCellPointerPressed(DataGridCellPointerPressedEventArgs e)
     {
         CellPointerPressed?.Invoke(this, e);
     }
@@ -2203,7 +2135,7 @@ public partial class DataGrid : TemplatedControl
     /// <summary>
     /// Raises the CurrentCellChanged event.
     /// </summary>
-    protected virtual void OnCurrentCellChanged(EventArgs e)
+    protected virtual void HandleCurrentCellChanged(EventArgs e)
     {
         CurrentCellChanged?.Invoke(this, e);
     }
@@ -2211,7 +2143,7 @@ public partial class DataGrid : TemplatedControl
     /// <summary>
     /// Raises the LoadingRow event for row preparation.
     /// </summary>
-    protected virtual void OnLoadingRow(DataGridRowEventArgs e)
+    protected virtual void HandleLoadingRow(DataGridRowEventArgs e)
     {
         EventHandler<DataGridRowEventArgs>? handler = LoadingRow;
         if (handler != null)
@@ -2324,7 +2256,7 @@ public partial class DataGrid : TemplatedControl
     /// <summary>
     /// Raises the PreparingCellForEdit event.
     /// </summary>
-    protected virtual void OnPreparingCellForEdit(DataGridPreparingCellForEditEventArgs e)
+    protected virtual void HandlePreparingCellForEdit(DataGridPreparingCellForEditEventArgs e)
     {
         PreparingCellForEdit?.Invoke(this, e);
     }
@@ -2332,7 +2264,7 @@ public partial class DataGrid : TemplatedControl
     /// <summary>
     /// Raises the RowEditEnded event.
     /// </summary>
-    protected virtual void OnRowEditEnded(DataGridRowEditEndedEventArgs e)
+    protected virtual void HandleRowEditEnded(DataGridRowEditEndedEventArgs e)
     {
         RowEditEnded?.Invoke(this, e);
     }
@@ -2340,7 +2272,7 @@ public partial class DataGrid : TemplatedControl
     /// <summary>
     /// Raises the RowEditEnding event.
     /// </summary>
-    protected virtual void OnRowEditEnding(DataGridRowEditEndingEventArgs e)
+    protected virtual void HandleRowEditEnding(DataGridRowEditEndingEventArgs e)
     {
         RowEditEnding?.Invoke(this, e);
     }
@@ -2349,7 +2281,7 @@ public partial class DataGrid : TemplatedControl
     /// Raises the SelectionChanged event and clears the _selectionChanged.
     /// This event won't get raised again until after _selectionChanged is set back to true.
     /// </summary>
-    protected virtual void OnSelectionChanged(SelectionChangedEventArgs e)
+    protected virtual void HandleSelectionChanged(SelectionChangedEventArgs e)
     {
         RaiseEvent(e);
     }
@@ -2357,7 +2289,7 @@ public partial class DataGrid : TemplatedControl
     /// <summary>
     /// Raises the UnloadingRow event for row recycling.
     /// </summary>
-    protected virtual void OnUnloadingRow(DataGridRowEventArgs e)
+    protected virtual void HandleUnloadingRow(DataGridRowEventArgs e)
     {
         EventHandler<DataGridRowEventArgs>? handler = UnloadingRow;
         if (handler != null)
@@ -2414,15 +2346,11 @@ public partial class DataGrid : TemplatedControl
 
         if (_columnHeadersPresenter != null)
         {
-            if (ColumnsInternal.FillerColumn != null)
-            {
-                ColumnsInternal.FillerColumn.IsRepresented = false;
-            }
-
+            ColumnsInternal.FillerColumn.IsRepresented = false;
             _columnHeadersPresenter.OwningGrid = this;
 
             // Columns were added before our Template was applied, add the ColumnHeaders now
-            List<DataGridColumn> sortedInternal = new List<DataGridColumn>(ColumnsItemsInternal);
+            var sortedInternal = new List<DataGridColumn>(ColumnsItemsInternal);
             sortedInternal.Sort(new DisplayIndexComparer());
             foreach (DataGridColumn column in sortedInternal)
             {
@@ -2436,7 +2364,7 @@ public partial class DataGrid : TemplatedControl
             UnloadElements(recycle: false);
         }
 
-        _rowsPresenter = e.NameScope.Find<DataGridRowsPresenter>(ElementRowsPresenterNamePart);
+        _rowsPresenter = e.NameScope.Find<DataGridRowsPresenter>(ElementRowsPresenterPart);
 
         if (_rowsPresenter != null)
         {
@@ -2449,7 +2377,7 @@ public partial class DataGrid : TemplatedControl
 
         if (_hScrollBar != null)
         {
-            _hScrollBar.Scroll -= HorizontalScrollBar_Scroll;
+            _hScrollBar.Scroll -= HandleHorizontalScrollBarScroll;
         }
 
         _hScrollBar = e.NameScope.Find<ScrollBar>(ElementHorizontalScrollbarPart);
@@ -2460,7 +2388,7 @@ public partial class DataGrid : TemplatedControl
             _hScrollBar.Maximum     =  0.0;
             _hScrollBar.Orientation =  Orientation.Horizontal;
             _hScrollBar.IsVisible   =  false;
-            _hScrollBar.Scroll      += HorizontalScrollBar_Scroll;
+            _hScrollBar.Scroll      += HandleHorizontalScrollBarScroll;
         }
 
         if (_vScrollBar != null)
@@ -2544,7 +2472,7 @@ public partial class DataGrid : TemplatedControl
     internal static DataGridCell? GetOwningCell(Control? element)
     {
         Debug.Assert(element != null);
-        DataGridCell? cell = element as DataGridCell;
+        var cell = element as DataGridCell;
         while (element != null && cell == null)
         {
             element = element.Parent as Control;
@@ -2556,8 +2484,8 @@ public partial class DataGrid : TemplatedControl
 
     internal IEnumerable<object> GetSelectionInclusive(int startRowIndex, int endRowIndex)
     {
-        int endSlot = SlotFromRowIndex(endRowIndex);
-        foreach (int slot in _selectedItems.GetSlots(SlotFromRowIndex(startRowIndex)))
+        var endSlot = SlotFromRowIndex(endRowIndex);
+        foreach (var slot in _selectedItems.GetSlots(SlotFromRowIndex(startRowIndex)))
         {
             if (slot > endSlot)
             {
@@ -2579,7 +2507,7 @@ public partial class DataGrid : TemplatedControl
             CancelEdit(DataGridEditingUnit.Row, raiseEvents: false);
 
             // We want to persist selection throughout a reset, so store away the selected items
-            List<object> selectedItemsCache = new List<object>(_selectedItems.SelectedItemsCache);
+            var selectedItemsCache = new List<object>(_selectedItems.SelectedItemsCache);
 
             if (recycleRows)
             {
@@ -2614,11 +2542,8 @@ public partial class DataGrid : TemplatedControl
             _clickedElement = null;
             return true;
         }
-        else
-        {
-            _clickedElement = element;
-            return false;
-        }
+        _clickedElement = element;
+        return false;
     }
 
     // Returns the item or the CollectionViewGroup that is used as the DataContext for a given slot.
@@ -2629,11 +2554,8 @@ public partial class DataGrid : TemplatedControl
         {
             return RowGroupHeadersTable.GetValueAt(slot)?.CollectionViewGroup;
         }
-        else
-        {
-            rowIndex = RowIndexFromSlot(slot);
-            return DataConnection?.GetDataItem(rowIndex);
-        }
+        rowIndex = RowIndexFromSlot(slot);
+        return DataConnection?.GetDataItem(rowIndex);
     }
 
     internal bool ProcessDownKey(KeyEventArgs e)
@@ -2669,7 +2591,7 @@ public partial class DataGrid : TemplatedControl
 
         // If the user scrolls with the buttons, we need to update the new value of the scroll bar since we delay
         // this calculation.  If they scroll in another other way, the scroll bar's correct value has already been set
-        double scrollBarValueDifference = 0;
+        var scrollBarValueDifference = 0d;
         if (scrollEventType == ScrollEventType.SmallIncrement)
         {
             scrollBarValueDifference = GetHorizontalSmallScrollIncrease();
@@ -2735,7 +2657,7 @@ public partial class DataGrid : TemplatedControl
         _noCurrentCellChangeCount++;
         try
         {
-            int slot = -1;
+            var slot = -1;
             if (item is DataGridCollectionViewGroup group)
             {
                 DataGridRowGroupInfo? groupInfo = RowGroupInfoFromCollectionViewGroup(group);
@@ -2860,7 +2782,7 @@ public partial class DataGrid : TemplatedControl
             if (scrollEventType == ScrollEventType.SmallIncrement)
             {
                 DisplayData.PendingVerticalScrollHeight = GetVerticalSmallScrollIncrease();
-                double newVerticalOffset = _verticalOffset + DisplayData.PendingVerticalScrollHeight;
+                var newVerticalOffset = _verticalOffset + DisplayData.PendingVerticalScrollHeight;
                 if (newVerticalOffset > _vScrollBar.Maximum)
                 {
                     DisplayData.PendingVerticalScrollHeight -= newVerticalOffset - _vScrollBar.Maximum;
@@ -2874,7 +2796,7 @@ public partial class DataGrid : TemplatedControl
                 }
                 else
                 {
-                    int previousScrollingSlot = GetPreviousVisibleSlot(DisplayData.FirstScrollingSlot);
+                    var previousScrollingSlot = GetPreviousVisibleSlot(DisplayData.FirstScrollingSlot);
                     if (previousScrollingSlot >= 0)
                     {
                         ScrollSlotIntoView(previousScrollingSlot, scrolledHorizontally: false);
@@ -2981,7 +2903,7 @@ public partial class DataGrid : TemplatedControl
             }
         }
 
-        double oldHorizontalOffset = HorizontalOffset;
+        var oldHorizontalOffset = HorizontalOffset;
 
         //scroll horizontally unless we're on a RowGroupHeader and we're not forcing horizontal scrolling
         if ((forceHorizontalScroll || (slot != -1))
@@ -2991,7 +2913,7 @@ public partial class DataGrid : TemplatedControl
         }
 
         //scroll vertically
-        if (!ScrollSlotIntoView(slot, scrolledHorizontally: oldHorizontalOffset != HorizontalOffset))
+        if (!ScrollSlotIntoView(slot, scrolledHorizontally: !MathUtils.AreClose(oldHorizontalOffset, HorizontalOffset)))
         {
             return false;
         }
@@ -3007,7 +2929,7 @@ public partial class DataGrid : TemplatedControl
 
     internal bool UpdateHorizontalOffset(double newValue)
     {
-        if (HorizontalOffset != newValue)
+        if (!MathUtils.AreClose(HorizontalOffset, newValue))
         {
             HorizontalOffset = newValue;
 
@@ -3066,7 +2988,7 @@ public partial class DataGrid : TemplatedControl
         return _successfullyUpdatedSelection;
     }
 
-    internal void UpdateStateOnCurrentChanged(object currentItem, int currentPosition)
+    internal void UpdateStateOnCurrentChanged(object? currentItem, int currentPosition)
     {
         if (currentItem == CurrentItem && currentItem == SelectedItem && currentPosition == SelectedIndex)
         {
@@ -3185,7 +3107,7 @@ public partial class DataGrid : TemplatedControl
     /// <summary>
     /// Raises the LoadingRowDetails for row details preparation
     /// </summary>
-    protected virtual void OnLoadingRowDetails(DataGridRowDetailsEventArgs e)
+    protected virtual void HandleLoadingRowDetails(DataGridRowDetailsEventArgs e)
     {
         EventHandler<DataGridRowDetailsEventArgs>? handler = LoadingRowDetails;
         if (handler != null)
@@ -3199,7 +3121,7 @@ public partial class DataGrid : TemplatedControl
     /// <summary>
     /// Raises the UnloadingRowDetails event
     /// </summary>
-    protected virtual void OnUnloadingRowDetails(DataGridRowDetailsEventArgs e)
+    protected virtual void HandleUnloadingRowDetails(DataGridRowDetailsEventArgs e)
     {
         EventHandler<DataGridRowDetailsEventArgs>? handler = UnloadingRowDetails;
         if (handler != null)
@@ -3210,7 +3132,7 @@ public partial class DataGrid : TemplatedControl
         }
     }
 
-    internal void OnRowDetailsChanged()
+    internal void HandleRowDetailsChanged()
     {
         if (!_scrollingByHeight)
         {
@@ -3228,7 +3150,7 @@ public partial class DataGrid : TemplatedControl
             {
                 if (cell.Content is StyledElement cellContent)
                 {
-                    // TODO 需要重构
+                    // TODO Error 需要重构
                     //DataContextProperty.Notifying?.Invoke(cellContent, arg2);
                 }
             }
@@ -3237,7 +3159,7 @@ public partial class DataGrid : TemplatedControl
 
     private void UpdateRowDetailsVisibilityMode(DataGridRowDetailsVisibilityMode newDetailsMode)
     {
-        int itemCount = DataConnection!.Count;
+        var itemCount = DataConnection.Count;
         if (_rowsPresenter != null && itemCount > 0)
         {
             bool newDetailsVisibility = false;
@@ -3256,7 +3178,7 @@ public partial class DataGrid : TemplatedControl
                     break;
             }
 
-            bool updated = false;
+            var updated = false;
             foreach (DataGridRow row in GetAllRows())
             {
                 if (row.IsVisible)
@@ -3286,7 +3208,7 @@ public partial class DataGrid : TemplatedControl
 
     private void AddNewCellPrivate(DataGridRow row, DataGridColumn column)
     {
-        DataGridCell newCell = new DataGridCell();
+        var newCell = new DataGridCell();
         PopulateCellContent(
             isCellEdited: false,
             dataGridColumn: column,
@@ -3328,7 +3250,7 @@ public partial class DataGrid : TemplatedControl
         }
 
         // Get or generate the editing row if it doesn't exist
-        DataGridRow? dataGridRow = EditingRow;
+        var dataGridRow = EditingRow;
         if (dataGridRow == null)
         {
             if (IsSlotVisible(CurrentSlot))
@@ -3345,14 +3267,13 @@ public partial class DataGrid : TemplatedControl
         Debug.Assert(dataGridRow != null);
 
         // Cache these to see if they change later
-        int currentRowIndex    = CurrentSlot;
-        int currentColumnIndex = CurrentColumnIndex;
+        var currentRowIndex    = CurrentSlot;
+        var currentColumnIndex = CurrentColumnIndex;
 
         // Raise the BeginningEdit event
-        DataGridCell dataGridCell = dataGridRow.Cells[CurrentColumnIndex];
-        DataGridBeginningEditEventArgs e =
-            new DataGridBeginningEditEventArgs(CurrentColumn, dataGridRow, editingEventArgs!);
-        OnBeginningEdit(e);
+        var dataGridCell = dataGridRow.Cells[CurrentColumnIndex];
+        var e = new DataGridBeginningEditEventArgs(CurrentColumn, dataGridRow, editingEventArgs!);
+        HandleBeginningEdit(e);
         if (e.Cancel
             || currentRowIndex != CurrentSlot
             || currentColumnIndex != CurrentColumnIndex
@@ -3388,7 +3309,7 @@ public partial class DataGrid : TemplatedControl
         Debug.Assert(CurrentSlot >= -1);
         Debug.Assert(CurrentSlot < SlotCount);
 
-        if (DataConnection!.BeginEdit(dataGridRow.DataContext))
+        if (DataConnection.BeginEdit(dataGridRow.DataContext))
         {
             EditingRow = dataGridRow;
             GenerateEditingElements();
@@ -3409,8 +3330,8 @@ public partial class DataGrid : TemplatedControl
         Debug.Assert(EditingRow.Slot < SlotCount);
         Debug.Assert(CurrentColumn != null);
 
-        object? dataItem = EditingRow.DataContext;
-        if (!DataConnection!.CancelEdit(dataItem!))
+        var dataItem = EditingRow.DataContext;
+        if (!DataConnection.CancelEdit(dataItem!))
         {
             return false;
         }
@@ -3504,10 +3425,10 @@ public partial class DataGrid : TemplatedControl
     private void CompleteCellsCollection(DataGridRow dataGridRow)
     {
         Debug.Assert(dataGridRow != null);
-        int cellsInCollection = dataGridRow.Cells.Count;
+        var cellsInCollection = dataGridRow.Cells.Count;
         if (ColumnsItemsInternal.Count > cellsInCollection)
         {
-            for (int columnIndex = cellsInCollection; columnIndex < ColumnsItemsInternal.Count; columnIndex++)
+            for (var columnIndex = cellsInCollection; columnIndex < ColumnsItemsInternal.Count; columnIndex++)
             {
                 AddNewCellPrivate(dataGridRow, ColumnsItemsInternal[columnIndex]);
             }
@@ -3519,18 +3440,17 @@ public partial class DataGrid : TemplatedControl
         if (_ignoreNextScrollBarsLayout)
         {
             _ignoreNextScrollBarsLayout = false;
-            //
         }
 
-        bool isHorizontalScrollBarOverCells = IsHorizontalScrollBarOverCells;
-        bool isVerticalScrollBarOverCells   = IsVerticalScrollBarOverCells;
+        var isHorizontalScrollBarOverCells = IsHorizontalScrollBarOverCells;
+        var isVerticalScrollBarOverCells   = IsVerticalScrollBarOverCells;
 
-        double cellsWidth  = CellsWidth;
-        double cellsHeight = CellsEstimatedHeight;
+        var    cellsWidth  = CellsWidth;
+        var cellsHeight = CellsEstimatedHeight;
 
-        bool   allowHorizScrollbar  = false;
-        bool   forceHorizScrollbar  = false;
-        double horizScrollBarHeight = 0;
+        var allowHorizScrollbar  = false;
+        var forceHorizScrollbar  = false;
+        var horizScrollBarHeight = 0d;
         if (_hScrollBar != null)
         {
             forceHorizScrollbar = HorizontalScrollBarVisibility == ScrollBarVisibility.Visible;
@@ -3553,9 +3473,9 @@ public partial class DataGrid : TemplatedControl
             }
         }
 
-        bool   allowVertScrollbar = false;
-        bool   forceVertScrollbar = false;
-        double vertScrollBarWidth = 0;
+        var allowVertScrollbar = false;
+        var forceVertScrollbar = false;
+        var vertScrollBarWidth = 0d;
         if (_vScrollBar != null)
         {
             forceVertScrollbar = VerticalScrollBarVisibility == ScrollBarVisibility.Visible;
@@ -3580,14 +3500,14 @@ public partial class DataGrid : TemplatedControl
         // Now cellsWidth is the width potentially available for displaying data cells.
         // Now cellsHeight is the height potentially available for displaying data cells.
 
-        bool needHorizScrollbar = false;
-        bool needVertScrollbar  = false;
+        var needHorizScrollbar = false;
+        var needVertScrollbar  = false;
 
-        double totalVisibleWidth       = ColumnsInternal.VisibleEdgedColumnsWidth;
-        double totalVisibleFrozenWidth = ColumnsInternal.GetVisibleFrozenEdgedColumnsWidth();
+        var totalVisibleWidth       = ColumnsInternal.VisibleEdgedColumnsWidth;
+        var totalVisibleFrozenWidth = ColumnsInternal.GetVisibleFrozenEdgedColumnsWidth();
 
         UpdateDisplayedRows(DisplayData.FirstScrollingSlot, CellsEstimatedHeight);
-        double totalVisibleHeight = EdgedRowsHeightCalculated;
+        var totalVisibleHeight = EdgedRowsHeightCalculated;
 
         if (!forceHorizScrollbar && !forceVertScrollbar)
         {
@@ -3598,7 +3518,7 @@ public partial class DataGrid : TemplatedControl
                 MathUtilities.LessThan(totalVisibleFrozenWidth, cellsWidth) &&
                 MathUtilities.LessThanOrClose(horizScrollBarHeight, cellsHeight))
             {
-                double oldDataHeight = cellsHeight;
+                var oldDataHeight = cellsHeight;
                 cellsHeight -= horizScrollBarHeight;
                 Debug.Assert(cellsHeight >= 0);
                 needHorizScrollbarWithoutVertScrollbar = needHorizScrollbar = true;
@@ -3627,7 +3547,7 @@ public partial class DataGrid : TemplatedControl
             // Store the current FirstScrollingSlot because removing the horizontal scrollbar could scroll
             // the DataGrid up; however, if we realize later that we need to keep the horizontal scrollbar
             // then we should use the first slot stored here which is not scrolled.
-            int firstScrollingSlot = DisplayData.FirstScrollingSlot;
+            var firstScrollingSlot = DisplayData.FirstScrollingSlot;
 
             UpdateDisplayedRows(firstScrollingSlot, cellsHeight);
             if (allowVertScrollbar &&
@@ -3808,7 +3728,7 @@ public partial class DataGrid : TemplatedControl
 
             if (_rowsPresenter != null)
             {
-                bool updated = false;
+                var updated = false;
 
                 foreach (Control element in _rowsPresenter.Children)
                 {
@@ -3816,14 +3736,14 @@ public partial class DataGrid : TemplatedControl
                     {
                         // If the RowHeader resulted in a different width the last time it was measured, we need
                         // to re-measure it
-                        if (row.HeaderCell != null && row.HeaderCell.DesiredSize.Width != ActualRowHeaderWidth)
+                        if (row.HeaderCell != null && !MathUtils.AreClose(row.HeaderCell.DesiredSize.Width, ActualRowHeaderWidth))
                         {
                             row.HeaderCell.InvalidateMeasure();
                             updated = true;
                         }
                     }
                     else if (element is DataGridRowGroupHeader groupHeader && groupHeader.HeaderCell != null &&
-                             groupHeader.HeaderCell.DesiredSize.Width != ActualRowHeaderWidth)
+                             !MathUtils.AreClose(groupHeader.HeaderCell.DesiredSize.Width, ActualRowHeaderWidth))
                     {
                         groupHeader.HeaderCell.InvalidateMeasure();
                         updated = true;
@@ -3852,7 +3772,7 @@ public partial class DataGrid : TemplatedControl
     {
         if (_topLeftCornerHeader != null)
         {
-            _topLeftCornerHeader.IsVisible = (HeadersVisibility == DataGridHeadersVisibility.All);
+            _topLeftCornerHeader.IsVisible = HeadersVisibility == DataGridHeadersVisibility.All;
 
             if (_topLeftCornerHeader.IsVisible)
             {
@@ -3872,7 +3792,7 @@ public partial class DataGrid : TemplatedControl
 
     private void InvalidateCellsArrange()
     {
-        foreach (DataGridRow row in GetAllRows())
+        foreach (var row in GetAllRows())
         {
             row.InvalidateHorizontalArrange();
         }
@@ -3920,7 +3840,7 @@ public partial class DataGrid : TemplatedControl
     }
 
     //TODO: Make override?
-    private void DataGrid_GotFocus(object? sender, RoutedEventArgs e)
+    private void HandleGotFocus(object? sender, RoutedEventArgs e)
     {
         if (!ContainsFocus)
         {
@@ -3958,7 +3878,7 @@ public partial class DataGrid : TemplatedControl
     {
     }
 
-    private void DataGrid_KeyDown(object? sender, KeyEventArgs e)
+    private void HandleKeyDown(object? sender, KeyEventArgs e)
     {
         if (!e.Handled)
         {
@@ -3966,7 +3886,7 @@ public partial class DataGrid : TemplatedControl
         }
     }
 
-    private void DataGrid_KeyUp(object? sender, KeyEventArgs e)
+    private void HandleKeyUp(object? sender, KeyEventArgs e)
     {
         if (e.Key == Key.Tab && CurrentColumnIndex != -1 && e.Source == this)
         {
@@ -3984,8 +3904,9 @@ public partial class DataGrid : TemplatedControl
     }
 
     //TODO: Make override?
-    private void DataGrid_LostFocus(object? sender, RoutedEventArgs e)
+    private void HandleLostFocus(object? sender, RoutedEventArgs e)
     {
+        // TODO 需要重构
         // _focusedObject = null;
         // if (ContainsFocus)
         // {
@@ -4056,12 +3977,12 @@ public partial class DataGrid : TemplatedControl
         // }
     }
 
-    private void EditingElement_Initialized(object? sender, EventArgs e)
+    private void HandleEditingElementInitialized(object? sender, EventArgs e)
     {
         var element = sender as Control;
         if (element != null)
         {
-            element.Initialized -= EditingElement_Initialized;
+            element.Initialized -= HandleEditingElementInitialized;
         }
 
         PreparingCellForEditPrivate(element);
@@ -4088,12 +4009,12 @@ public partial class DataGrid : TemplatedControl
         Debug.Assert(_editingColumnIndex == CurrentColumnIndex);
 
         // Cache these to see if they change later
-        int currentSlot        = CurrentSlot;
-        int currentColumnIndex = CurrentColumnIndex;
+        var currentSlot        = CurrentSlot;
+        var currentColumnIndex = CurrentColumnIndex;
 
         // We're ready to start ending, so raise the event
-        DataGridCell editingCell    = editingRow.Cells[_editingColumnIndex];
-        var          editingElement = editingCell.Content as Control;
+        var editingCell    = editingRow.Cells[_editingColumnIndex];
+        var editingElement = editingCell.Content as Control;
         if (editingElement == null)
         {
             return false;
@@ -4101,9 +4022,8 @@ public partial class DataGrid : TemplatedControl
 
         if (raiseEvents)
         {
-            DataGridCellEditEndingEventArgs e =
-                new DataGridCellEditEndingEventArgs(CurrentColumn!, editingRow, editingElement, editAction);
-            OnCellEditEnding(e);
+            var e = new DataGridCellEditEndingEventArgs(CurrentColumn!, editingRow, editingElement, editAction);
+            HandleCellEditEnding(e);
             if (e.Cancel)
             {
                 // CellEditEnding has been cancelled
@@ -4151,33 +4071,23 @@ public partial class DataGrid : TemplatedControl
                 if (binding.IsValid)
                 {
                     ResetValidationStatus();
-                    if (editingElement != null)
-                    {
-                        DataValidationErrors.ClearErrors(editingElement);
-                    }
+                    DataValidationErrors.ClearErrors(editingElement);
                 }
                 else
                 {
-                    if (editingRow != null)
+                    if (editingCell.IsValid)
                     {
-                        if (editingCell.IsValid)
-                        {
-                            editingCell.IsValid = false;
-                            editingCell.UpdatePseudoClasses();
-                        }
-
-                        if (editingRow.IsValid)
-                        {
-                            editingRow.IsValid = false;
-                            editingRow.ApplyState();
-                        }
+                        editingCell.IsValid = false;
+                        editingCell.UpdatePseudoClasses();
                     }
 
-                    if (editingElement != null)
+                    if (editingRow.IsValid)
                     {
-                        DataValidationErrors.SetError(editingElement,
-                            new AggregateException(binding.ValidationErrors));
+                        editingRow.IsValid = false;
+                        editingRow.ApplyState();
                     }
+
+                    DataValidationErrors.SetError(editingElement, new AggregateException(binding.ValidationErrors));
                 }
             }
 
@@ -4228,7 +4138,7 @@ public partial class DataGrid : TemplatedControl
         // We're done, so raise the CellEditEnded event
         if (raiseEvents)
         {
-            OnCellEditEnded(new DataGridCellEditEndedEventArgs(CurrentColumn!, editingRow, editAction));
+            HandleCellEditEnded(new DataGridCellEditEndedEventArgs(CurrentColumn!, editingRow, editAction));
         }
 
         // There's a chance that somebody reopened this cell for edit within the CellEditEnded handler,
@@ -4262,7 +4172,7 @@ public partial class DataGrid : TemplatedControl
         if (raiseEvents)
         {
             DataGridRowEditEndingEventArgs e = new DataGridRowEditEndingEventArgs(EditingRow, editAction);
-            OnRowEditEnding(e);
+            HandleRowEditEnding(e);
             if (e.Cancel)
             {
                 // RowEditEnding has been cancelled
@@ -4310,7 +4220,7 @@ public partial class DataGrid : TemplatedControl
         // Raise the RowEditEnded event
         if (raiseEvents)
         {
-            OnRowEditEnded(new DataGridRowEditEndedEventArgs(editingRow, editAction));
+            HandleRowEditEnded(new DataGridRowEditEndedEventArgs(editingRow, editAction));
         }
 
         return true;
@@ -4386,7 +4296,7 @@ public partial class DataGrid : TemplatedControl
         if (sender is Control element)
         {
             element.LostFocus -= ExternalEditingElement_LostFocus;
-            DataGrid_LostFocus(sender, e);
+            HandleLostFocus(sender, e);
         }
     }
 
@@ -4425,7 +4335,7 @@ public partial class DataGrid : TemplatedControl
             _previousCurrentColumn = CurrentColumn;
             _previousCurrentItem   = CurrentItem;
 
-            OnCurrentCellChanged(EventArgs.Empty);
+            HandleCurrentCellChanged(EventArgs.Empty);
         }
 
         _flushCurrentCellChanged = false;
@@ -4452,7 +4362,7 @@ public partial class DataGrid : TemplatedControl
             SelectionChangedEventArgs e = _selectedItems.GetSelectionChangedEventArgs();
             if (e.AddedItems.Count > 0 || e.RemovedItems.Count > 0)
             {
-                OnSelectionChanged(e);
+                HandleSelectionChanged(e);
             }
         }
     }
@@ -4470,8 +4380,8 @@ public partial class DataGrid : TemplatedControl
         //IsTabStop = false;
         _focusEditingControl = false;
 
-        bool         success      = false;
-        DataGridCell dataGridCell = EditingRow.Cells[_editingColumnIndex];
+        var success      = false;
+        var dataGridCell = EditingRow.Cells[_editingColumnIndex];
         if (setFocus)
         {
             if (dataGridCell.ContainsFocusedElement())
@@ -4499,22 +4409,16 @@ public partial class DataGrid : TemplatedControl
         {
             return _negHorizontalOffset;
         }
-        else
+        // The entire first column is displayed, show the entire previous column when the user clicks
+        // the left button
+        DataGridColumn? previousColumn = ColumnsInternal.GetPreviousVisibleScrollingColumn(
+            ColumnsItemsInternal[DisplayData.FirstDisplayedScrollingCol]);
+        if (previousColumn != null)
         {
-            // The entire first column is displayed, show the entire previous column when the user clicks
-            // the left button
-            DataGridColumn? previousColumn = ColumnsInternal.GetPreviousVisibleScrollingColumn(
-                ColumnsItemsInternal[DisplayData.FirstDisplayedScrollingCol]);
-            if (previousColumn != null)
-            {
-                return GetEdgedColumnWidth(previousColumn);
-            }
-            else
-            {
-                // There's no previous column so don't move
-                return 0;
-            }
+            return GetEdgedColumnWidth(previousColumn);
         }
+        // There's no previous column so don't move
+        return 0;
     }
 
     // Calculates the amount to scroll for the ScrollRight button
@@ -4542,7 +4446,7 @@ public partial class DataGrid : TemplatedControl
         return 0;
     }
 
-    private void HorizontalScrollBar_Scroll(object? sender, ScrollEventArgs e)
+    private void HandleHorizontalScrollBarScroll(object? sender, ScrollEventArgs e)
     {
         ProcessHorizontalScroll(e.ScrollEventType);
         HorizontalScroll?.Invoke(sender, e);
@@ -4575,11 +4479,8 @@ public partial class DataGrid : TemplatedControl
             Debug.Assert(slot >= 0 && slot < SlotCount);
             return false;
         }
-        else
-        {
-            int rowIndex = RowIndexFromSlot(slot);
-            return rowIndex < 0 || rowIndex >= DataConnection!.Count;
-        }
+        var rowIndex = RowIndexFromSlot(slot);
+        return rowIndex < 0 || rowIndex >= DataConnection.Count;
     }
 
     private void MakeFirstDisplayedCellCurrentCell()
@@ -4600,7 +4501,7 @@ public partial class DataGrid : TemplatedControl
 
         // No current cell, therefore no selection either - try to set the current cell to the
         // ItemsSource's ICollectionView.CurrentItem if it exists, otherwise use the first displayed cell.
-        int slot = 0;
+        var slot = 0;
         if (DataConnection.CollectionView != null)
         {
             if (DataConnection.CollectionView.IsCurrentBeforeFirst ||
@@ -4630,7 +4531,7 @@ public partial class DataGrid : TemplatedControl
             }
         }
 
-        int columnIndex = FirstDisplayedNonFillerColumnIndex;
+        var columnIndex = FirstDisplayedNonFillerColumnIndex;
         if (_desiredCurrentColumnIndex >= 0 && _desiredCurrentColumnIndex < ColumnsItemsInternal.Count)
         {
             columnIndex = _desiredCurrentColumnIndex;
@@ -4651,9 +4552,9 @@ public partial class DataGrid : TemplatedControl
         Debug.Assert(dataGridColumn != null);
         Debug.Assert(dataGridRow != null);
         Debug.Assert(dataGridCell != null);
-
-        Control?             element             = null;
-        DataGridBoundColumn? dataGridBoundColumn = dataGridColumn as DataGridBoundColumn;
+        Debug.Assert(dataGridRow.DataContext != null);
+        Control? element = null;
+        
         if (isCellEdited)
         {
             // Generate EditingElement and apply column style if available
@@ -4663,19 +4564,19 @@ public partial class DataGrid : TemplatedControl
                 dataGridCell.Content = element;
                 if (element.IsInitialized)
                 {
-                    PreparingCellForEditPrivate(element as Control);
+                    PreparingCellForEditPrivate(element);
                 }
                 else
                 {
                     // Subscribe to the new element's events
-                    element.Initialized += EditingElement_Initialized;
+                    element.Initialized += HandleEditingElementInitialized;
                 }
             }
         }
         else
         {
             // Generate Element and apply column style if available
-            element              = dataGridColumn.GenerateElementInternal(dataGridCell, dataGridRow.DataContext!);
+            element              = dataGridColumn.GenerateElementInternal(dataGridCell, dataGridRow.DataContext);
             dataGridCell.Content = element;
         }
     }
@@ -4700,9 +4601,10 @@ public partial class DataGrid : TemplatedControl
         FocusEditingCell(setFocus: ContainsFocus || _focusEditingControl);
 
         // Prepare the cell for editing and raise the PreparingCellForEdit event for all columns
-        DataGridColumn? dataGridColumn = CurrentColumn;
+        var dataGridColumn = CurrentColumn;
         _uneditedValue = dataGridColumn!.PrepareCellForEditInternal(editingElement!, _editingEventArgs!);
-        OnPreparingCellForEdit(new DataGridPreparingCellForEditEventArgs(dataGridColumn, EditingRow, _editingEventArgs!,
+        HandlePreparingCellForEdit(new DataGridPreparingCellForEditEventArgs(dataGridColumn, EditingRow,
+            _editingEventArgs!,
             editingElement!));
     }
 
@@ -4723,7 +4625,7 @@ public partial class DataGrid : TemplatedControl
     //TODO FlowDirection
     private bool ProcessDataGridKey(KeyEventArgs e)
     {
-        bool focusDataGrid = false;
+        var focusDataGrid = false;
         switch (e.Key)
         {
             case Key.Tab:
@@ -4792,8 +4694,8 @@ public partial class DataGrid : TemplatedControl
     private bool ProcessDownKeyInternal(bool shift, bool ctrl)
     {
         DataGridColumn? dataGridColumn          = ColumnsInternal.FirstVisibleColumn;
-        int             firstVisibleColumnIndex = (dataGridColumn == null) ? -1 : dataGridColumn.Index;
-        int             lastSlot                = LastVisibleSlot;
+        var             firstVisibleColumnIndex = (dataGridColumn is null) ? -1 : dataGridColumn.Index;
+        var             lastSlot                = LastVisibleSlot;
         if (firstVisibleColumnIndex == -1 || lastSlot == -1)
         {
             return false;
@@ -4804,7 +4706,7 @@ public partial class DataGrid : TemplatedControl
             return true;
         }
 
-        int nextSlot = -1;
+        var nextSlot = -1;
         if (CurrentSlot != -1)
         {
             nextSlot = GetNextVisibleSlot(CurrentSlot);
@@ -4880,10 +4782,10 @@ public partial class DataGrid : TemplatedControl
 
     private bool ProcessEndKey(bool shift, bool ctrl)
     {
-        DataGridColumn? dataGridColumn         = ColumnsInternal.LastVisibleColumn;
-        int             lastVisibleColumnIndex = (dataGridColumn == null) ? -1 : dataGridColumn.Index;
-        int             firstVisibleSlot       = FirstVisibleSlot;
-        int             lastVisibleSlot        = LastVisibleSlot;
+        var dataGridColumn         = ColumnsInternal.LastVisibleColumn;
+        var lastVisibleColumnIndex = (dataGridColumn is null) ? -1 : dataGridColumn.Index;
+        var firstVisibleSlot       = FirstVisibleSlot;
+        var lastVisibleSlot        = LastVisibleSlot;
         if (lastVisibleColumnIndex == -1 || firstVisibleSlot == -1)
         {
             return false;
@@ -5005,9 +4907,9 @@ public partial class DataGrid : TemplatedControl
 
     private bool ProcessHomeKey(bool shift, bool ctrl)
     {
-        DataGridColumn? dataGridColumn          = ColumnsInternal.FirstVisibleNonFillerColumn;
-        int             firstVisibleColumnIndex = (dataGridColumn == null) ? -1 : dataGridColumn.Index;
-        int             firstVisibleSlot        = FirstVisibleSlot;
+        var dataGridColumn          = ColumnsInternal.FirstVisibleNonFillerColumn;
+        var firstVisibleColumnIndex = (dataGridColumn is null) ? -1 : dataGridColumn.Index;
+        var firstVisibleSlot        = FirstVisibleSlot;
         if (firstVisibleColumnIndex == -1 || firstVisibleSlot == -1)
         {
             return false;
@@ -5044,9 +4946,9 @@ public partial class DataGrid : TemplatedControl
 
     private bool ProcessLeftKey(bool shift, bool ctrl)
     {
-        DataGridColumn? dataGridColumn          = ColumnsInternal.FirstVisibleNonFillerColumn;
-        int             firstVisibleColumnIndex = (dataGridColumn == null) ? -1 : dataGridColumn.Index;
-        int             firstVisibleSlot        = FirstVisibleSlot;
+        var dataGridColumn          = ColumnsInternal.FirstVisibleNonFillerColumn;
+        var firstVisibleColumnIndex = (dataGridColumn is null) ? -1 : dataGridColumn.Index;
+        var firstVisibleSlot        = FirstVisibleSlot;
         if (firstVisibleColumnIndex == -1 || firstVisibleSlot == -1)
         {
             return false;
@@ -5057,7 +4959,7 @@ public partial class DataGrid : TemplatedControl
             return true;
         }
 
-        int previousVisibleColumnIndex = -1;
+        var previousVisibleColumnIndex = -1;
         if (CurrentColumnIndex != -1)
         {
             dataGridColumn =
@@ -5146,7 +5048,7 @@ public partial class DataGrid : TemplatedControl
     private bool ProcessNextKey(bool shift, bool ctrl)
     {
         var dataGridColumn          = ColumnsInternal.FirstVisibleNonFillerColumn;
-        int firstVisibleColumnIndex = (dataGridColumn == null) ? -1 : dataGridColumn.Index;
+        var firstVisibleColumnIndex = (dataGridColumn is null) ? -1 : dataGridColumn.Index;
         if (firstVisibleColumnIndex == -1 || DisplayData.FirstScrollingSlot == -1)
         {
             return false;
@@ -5157,11 +5059,11 @@ public partial class DataGrid : TemplatedControl
             return true;
         }
 
-        int nextPageSlot = CurrentSlot == -1 ? DisplayData.FirstScrollingSlot : CurrentSlot;
+        var nextPageSlot = CurrentSlot == -1 ? DisplayData.FirstScrollingSlot : CurrentSlot;
         Debug.Assert(nextPageSlot != -1);
-        int slot = GetNextVisibleSlot(nextPageSlot);
+        var slot = GetNextVisibleSlot(nextPageSlot);
 
-        int scrollCount = DisplayData.NumTotallyDisplayedScrollingElements;
+        var scrollCount = DisplayData.NumTotallyDisplayedScrollingElements;
         while (scrollCount > 0 && slot < SlotCount)
         {
             nextPageSlot = slot;
@@ -5199,8 +5101,8 @@ public partial class DataGrid : TemplatedControl
 
     private bool ProcessPriorKey(bool shift, bool ctrl)
     {
-        DataGridColumn? dataGridColumn          = ColumnsInternal.FirstVisibleNonFillerColumn;
-        int             firstVisibleColumnIndex = (dataGridColumn == null) ? -1 : dataGridColumn.Index;
+        var dataGridColumn          = ColumnsInternal.FirstVisibleNonFillerColumn;
+        var firstVisibleColumnIndex = (dataGridColumn is null) ? -1 : dataGridColumn.Index;
         if (firstVisibleColumnIndex == -1 || DisplayData.FirstScrollingSlot == -1)
         {
             return false;
@@ -5211,11 +5113,11 @@ public partial class DataGrid : TemplatedControl
             return true;
         }
 
-        int previousPageSlot = (CurrentSlot == -1) ? DisplayData.FirstScrollingSlot : CurrentSlot;
+        var previousPageSlot = (CurrentSlot == -1) ? DisplayData.FirstScrollingSlot : CurrentSlot;
         Debug.Assert(previousPageSlot != -1);
 
-        int scrollCount = DisplayData.NumTotallyDisplayedScrollingElements;
-        int slot        = GetPreviousVisibleSlot(previousPageSlot);
+        var scrollCount = DisplayData.NumTotallyDisplayedScrollingElements;
+        var slot        = GetPreviousVisibleSlot(previousPageSlot);
         while (scrollCount > 0 && slot != -1)
         {
             previousPageSlot = slot;
@@ -5255,9 +5157,9 @@ public partial class DataGrid : TemplatedControl
 
     private bool ProcessRightKey(bool shift, bool ctrl)
     {
-        DataGridColumn? dataGridColumn         = ColumnsInternal.LastVisibleColumn;
-        int             lastVisibleColumnIndex = (dataGridColumn == null) ? -1 : dataGridColumn.Index;
-        int             firstVisibleSlot       = FirstVisibleSlot;
+        var dataGridColumn         = ColumnsInternal.LastVisibleColumn;
+        var lastVisibleColumnIndex = (dataGridColumn is null) ? -1 : dataGridColumn.Index;
+        var firstVisibleSlot       = FirstVisibleSlot;
         if (lastVisibleColumnIndex == -1 || firstVisibleSlot == -1)
         {
             return false;
@@ -5268,7 +5170,7 @@ public partial class DataGrid : TemplatedControl
             return true;
         }
 
-        int nextVisibleColumnIndex = -1;
+        var nextVisibleColumnIndex = -1;
         if (CurrentColumnIndex != -1)
         {
             dataGridColumn = ColumnsInternal.GetNextVisibleColumn(ColumnsItemsInternal[CurrentColumnIndex]);
@@ -5475,9 +5377,9 @@ public partial class DataGrid : TemplatedControl
 
     private bool ProcessUpKey(bool shift, bool ctrl)
     {
-        DataGridColumn? dataGridColumn          = ColumnsInternal.FirstVisibleNonFillerColumn;
-        int             firstVisibleColumnIndex = (dataGridColumn == null) ? -1 : dataGridColumn.Index;
-        int             firstVisibleSlot        = FirstVisibleSlot;
+        var dataGridColumn          = ColumnsInternal.FirstVisibleNonFillerColumn;
+        var firstVisibleColumnIndex = (dataGridColumn is null) ? -1 : dataGridColumn.Index;
+        var firstVisibleSlot        = FirstVisibleSlot;
         if (firstVisibleColumnIndex == -1 || firstVisibleSlot == -1)
         {
             return false;
@@ -5488,7 +5390,7 @@ public partial class DataGrid : TemplatedControl
             return true;
         }
 
-        int previousVisibleSlot = (CurrentSlot != -1) ? GetPreviousVisibleSlot(CurrentSlot) : -1;
+        var previousVisibleSlot = (CurrentSlot != -1) ? GetPreviousVisibleSlot(CurrentSlot) : -1;
 
         _noSelectionChangeCount++;
 
@@ -5580,9 +5482,9 @@ public partial class DataGrid : TemplatedControl
 
     private void ResetEditingRow()
     {
-        if (EditingRow != null
-            && EditingRow != _focusedRow
-            && !IsSlotVisible(EditingRow.Slot))
+        if (EditingRow != null &&
+            EditingRow != _focusedRow &&
+            !IsSlotVisible(EditingRow.Slot))
         {
             // Unload the old editing row if it's off screen
             EditingRow.Clip = null;
@@ -5595,9 +5497,9 @@ public partial class DataGrid : TemplatedControl
 
     private void ResetFocusedRow()
     {
-        if (_focusedRow != null
-            && _focusedRow != EditingRow
-            && !IsSlotVisible(_focusedRow.Slot))
+        if (_focusedRow != null &&
+            _focusedRow != EditingRow &&
+            !IsSlotVisible(_focusedRow.Slot))
         {
             // Unload the old focused row if it's off screen
             _focusedRow.Clip = null;
@@ -5634,8 +5536,7 @@ public partial class DataGrid : TemplatedControl
         Debug.Assert(columnIndex == -1 || ColumnsItemsInternal[columnIndex].IsVisible);
         Debug.Assert(!(columnIndex > -1 && slot == -1));
 
-        if (columnIndex == CurrentColumnIndex &&
-            slot == CurrentSlot)
+        if (columnIndex == CurrentColumnIndex && slot == CurrentSlot)
         {
             Debug.Assert(DataConnection != null);
             Debug.Assert(_editingColumnIndex == -1 || _editingColumnIndex == CurrentColumnIndex);
@@ -5825,7 +5726,7 @@ public partial class DataGrid : TemplatedControl
                     _hScrollBar.LargeChange  = viewPortSize;
                     // The ScrollBar should be in sync with HorizontalOffset at this point.  There's a resize case
                     // where the ScrollBar will coerce an old value here, but we don't want that
-                    if (_hScrollBar.Value != _horizontalOffset)
+                    if (!MathUtils.AreClose(_hScrollBar.Value, _horizontalOffset))
                     {
                         _hScrollBar.Value = _horizontalOffset;
                     }
@@ -6068,14 +5969,14 @@ public partial class DataGrid : TemplatedControl
     /// <returns>The group the given item falls under or null if the item is not in the ItemsSource</returns>
     public DataGridCollectionViewGroup? GetGroupFromItem(object item, int groupLevel)
     {
-        int itemIndex = DataConnection!.IndexOf(item);
+        var itemIndex = DataConnection.IndexOf(item);
         if (itemIndex == -1)
         {
             return null;
         }
 
-        int                   groupHeaderSlot = RowGroupHeadersTable.GetPreviousIndex(SlotFromRowIndex(itemIndex));
-        DataGridRowGroupInfo? rowGroupInfo    = RowGroupHeadersTable.GetValueAt(groupHeaderSlot);
+        var groupHeaderSlot = RowGroupHeadersTable.GetPreviousIndex(SlotFromRowIndex(itemIndex));
+        var rowGroupInfo    = RowGroupHeadersTable.GetValueAt(groupHeaderSlot);
         while (rowGroupInfo != null && rowGroupInfo.Level != groupLevel)
         {
             groupHeaderSlot = RowGroupHeadersTable.GetPreviousIndex(rowGroupInfo.Slot);
@@ -6089,7 +5990,7 @@ public partial class DataGrid : TemplatedControl
     /// Raises the LoadingRowGroup event
     /// </summary>
     /// <param name="e">EventArgs</param>
-    protected virtual void OnLoadingRowGroup(DataGridRowGroupHeaderEventArgs e)
+    protected virtual void HandleLoadingRowGroup(DataGridRowGroupHeaderEventArgs e)
     {
         EventHandler<DataGridRowGroupHeaderEventArgs>? handler = LoadingRowGroup;
         if (handler != null)
@@ -6104,7 +6005,7 @@ public partial class DataGrid : TemplatedControl
     /// Raises the UnLoadingRowGroup event
     /// </summary>
     /// <param name="e">EventArgs</param>
-    protected virtual void OnUnloadingRowGroup(DataGridRowGroupHeaderEventArgs e)
+    protected virtual void HandleUnloadingRowGroup(DataGridRowGroupHeaderEventArgs e)
     {
         EventHandler<DataGridRowGroupHeaderEventArgs>? handler = UnloadingRowGroup;
         if (handler != null)
@@ -6133,7 +6034,7 @@ public partial class DataGrid : TemplatedControl
             return;
         }
 
-        int                   previousHeaderSlot = RowGroupHeadersTable.GetPreviousIndex(slot + 1);
+        var                   previousHeaderSlot = RowGroupHeadersTable.GetPreviousIndex(slot + 1);
         DataGridRowGroupInfo? rowGroupInfo       = null;
         while (previousHeaderSlot >= 0)
         {
@@ -6171,7 +6072,7 @@ public partial class DataGrid : TemplatedControl
     /// This method raises the CopyingRowClipboardContent event.
     /// </summary>
     /// <param name="e">Contains the necessary information for generating the row clipboard content.</param>
-    protected virtual void OnCopyingRowClipboardContent(DataGridRowClipboardEventArgs e)
+    protected virtual void HandleCopyingRowClipboardContent(DataGridRowClipboardEventArgs e)
     {
         CopyingRowClipboardContent?.Invoke(this, e);
     }
@@ -6187,7 +6088,7 @@ public partial class DataGrid : TemplatedControl
         var text                = StringBuilderCache.Acquire();
         var clipboardRowContent = e.ClipboardRowContent;
         var numberOfItem        = clipboardRowContent.Count;
-        for (int cellIndex = 0; cellIndex < numberOfItem; cellIndex++)
+        for (var cellIndex = 0; cellIndex < numberOfItem; cellIndex++)
         {
             var cellContent = clipboardRowContent[cellIndex].Content?.ToString();
             cellContent = cellContent?.Replace("\"", "\"\"");
@@ -6228,7 +6129,7 @@ public partial class DataGrid : TemplatedControl
                     headerArgs.ClipboardRowContent.Add(new DataGridClipboardCellContent(null, column, column.Header!));
                 }
 
-                OnCopyingRowClipboardContent(headerArgs);
+                HandleCopyingRowClipboardContent(headerArgs);
                 textBuilder.Append(FormatClipboardContent(headerArgs));
             }
 
@@ -6242,7 +6143,7 @@ public partial class DataGrid : TemplatedControl
                     itemArgs.ClipboardRowContent.Add(new DataGridClipboardCellContent(item!, column, content!));
                 }
 
-                OnCopyingRowClipboardContent(itemArgs);
+                HandleCopyingRowClipboardContent(itemArgs);
                 textBuilder.Append(FormatClipboardContent(itemArgs));
             }
 
@@ -6314,7 +6215,7 @@ public partial class DataGrid : TemplatedControl
     /// <summary>
     /// Raises the AutoGeneratingColumn event.
     /// </summary>
-    protected virtual void OnAutoGeneratingColumn(DataGridAutoGeneratingColumnEventArgs e)
+    protected virtual void HandleAutoGeneratingColumn(DataGridAutoGeneratingColumnEventArgs e)
     {
         AutoGeneratingColumn?.Invoke(this, e);
     }
