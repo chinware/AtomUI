@@ -342,7 +342,7 @@ public sealed class DataGridColumnHeadersPresenter : Panel, IChildIndexProvider
                 // In the edge-case where we're given infinite width and we have star columns, the 
                 // star columns grow to their predefined limit of 10,000 (or their MaxWidth)
                 double newDisplayWidth = column.Width.IsStar
-                    ? Math.Min(column.ActualMaxWidth, DataGrid.DATAGRID_maximumStarColumnWidth)
+                    ? Math.Min(column.ActualMaxWidth, DataGrid.DefaultMaximumStarColumnWidth)
                     : Math.Max(column.ActualMinWidth, Math.Min(column.ActualMaxWidth, column.Width.DesiredValue));
                 column.SetWidthDisplayValue(newDisplayWidth);
             }
