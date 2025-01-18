@@ -1,3 +1,5 @@
+using System.Globalization;
+
 namespace AtomUI.Controls;
 
 internal class DataGridCellCoordinates
