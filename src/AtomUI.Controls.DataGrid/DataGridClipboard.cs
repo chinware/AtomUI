@@ -76,10 +76,7 @@ public struct DataGridClipboardCellContent
         {
             return _column == content._column && _content == content._content && _item == content._item;
         }
-        else
-        {
-            return false;
-        }
+        return false;
     }
 
     /// <summary>
