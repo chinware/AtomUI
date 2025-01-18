@@ -1,3 +1,8 @@
+// (c) Copyright Microsoft Corporation.
+// This source is subject to the Microsoft Public License (Ms-PL).
+// Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
+// All other rights reserved.
+
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 
@@ -134,7 +139,6 @@ internal class DataGridColumnCollection : ObservableCollection<DataGridColumn>
             // insert the column into our internal list
             ItemsInternal.Insert(columnIndexWithFiller, dataGridColumn);
             dataGridColumn.Index      = columnIndexWithFiller;
-            dataGridColumn.OwningGrid = _owningGrid;
             dataGridColumn.RemoveEditingElement();
             if (dataGridColumn.IsVisible)
             {

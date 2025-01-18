@@ -125,10 +125,7 @@ public class DataGridLengthConverter : TypeConverter
             // WPF returns Auto in this case as well
             return DataGridLength.Auto;
         }
-        else
-        {
-            return new DataGridLength(doubleValue);
-        }
+        return new DataGridLength(doubleValue);
     }
 
     /// <summary>
@@ -174,33 +171,30 @@ public class DataGridLengthConverter : TypeConverter
         {
             throw DataGridError.DataGridLengthConverter.InvalidDataGridLength("value");
         }
-        else
+        // Convert dataGridLength to a string
+        switch (dataGridLength.Value.UnitType)
         {
-            // Convert dataGridLength to a string
-            switch (dataGridLength.Value.UnitType)
-            {
-                //  for Auto print out "Auto". value is always "1.0"
-                case DataGridLengthUnitType.Auto:
-                    return "Auto";
+            //  for Auto print out "Auto". value is always "1.0"
+            case DataGridLengthUnitType.Auto:
+                return "Auto";
 
-                case DataGridLengthUnitType.SizeToHeader:
-                    return "SizeToHeader";
+            case DataGridLengthUnitType.SizeToHeader:
+                return "SizeToHeader";
 
-                case DataGridLengthUnitType.SizeToCells:
-                    return "SizeToCells";
+            case DataGridLengthUnitType.SizeToCells:
+                return "SizeToCells";
 
-                //  Star has one special case when value is "1.0".
-                //  in this case drop value part and print only "Star"
-                case DataGridLengthUnitType.Star:
-                    return (
-                        MathUtilities.AreClose(1.0, dataGridLength.Value.Value)
-                            ? _starSuffix
-                            : Convert.ToString(dataGridLength.Value.Value, culture ?? CultureInfo.CurrentCulture) +
-                              DataGridLengthConverter._starSuffix);
+            //  Star has one special case when value is "1.0".
+            //  in this case drop value part and print only "Star"
+            case DataGridLengthUnitType.Star:
+                return (
+                    MathUtilities.AreClose(1.0, dataGridLength.Value.Value)
+                        ? _starSuffix
+                        : Convert.ToString(dataGridLength.Value.Value, culture ?? CultureInfo.CurrentCulture) +
+                          DataGridLengthConverter._starSuffix);
 
-                default:
-                    return (Convert.ToString(dataGridLength.Value.Value, culture ?? CultureInfo.CurrentCulture));
-            }
+            default:
+                return (Convert.ToString(dataGridLength.Value.Value, culture ?? CultureInfo.CurrentCulture));
         }
     }
 }

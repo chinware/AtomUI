@@ -1,3 +1,8 @@
+// (c) Copyright Microsoft Corporation.
+// This source is subject to the Microsoft Public License (Ms-PL).
+// Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
+// All other rights reserved.
+
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -2910,15 +2915,13 @@ public partial class DataGrid
             // If the new item is a root level element, it has no parent group, so create an empty RowGroupInfo
             return new DataGridRowGroupInfo(null, true, -1, -1, -1);
         }
-        else
+        
+        foreach (int slot in RowGroupHeadersTable.GetIndexes())
         {
-            foreach (int slot in RowGroupHeadersTable.GetIndexes())
+            DataGridRowGroupInfo? groupInfo = RowGroupHeadersTable.GetValueAt(slot);
+            if (groupInfo!.CollectionViewGroup!.Items == collection)
             {
-                DataGridRowGroupInfo? groupInfo = RowGroupHeadersTable.GetValueAt(slot);
-                if (groupInfo!.CollectionViewGroup!.Items == collection)
-                {
-                    return groupInfo;
-                }
+                return groupInfo;
             }
         }
 
@@ -3062,12 +3065,12 @@ public partial class DataGrid
             return indexCount - _showDetailsTable.GetIndexCount(lowerBound, upperBound, false) -
                    RowGroupHeadersTable.GetIndexCount(lowerBound, upperBound);
         }
-        else if (RowDetailsVisibilityMode == DataGridRowDetailsVisibilityMode.Collapsed)
+        if (RowDetailsVisibilityMode == DataGridRowDetailsVisibilityMode.Collapsed)
         {
             // Total rows with details explicitly turned on
             return _showDetailsTable.GetIndexCount(lowerBound, upperBound, true);
-        }
-        else if (RowDetailsVisibilityMode == DataGridRowDetailsVisibilityMode.VisibleWhenSelected)
+        } 
+        if (RowDetailsVisibilityMode == DataGridRowDetailsVisibilityMode.VisibleWhenSelected)
         {
             // Total number of remaining rows that are selected
             return _selectedItems.GetIndexCount(lowerBound, upperBound);

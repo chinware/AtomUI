@@ -64,7 +64,7 @@ internal class DataGridDisplayData
         {
             return _recyclableGroupHeaders.Pop();
         }
-        else if (_fullyRecycledGroupHeaders.Count > 0)
+        if (_fullyRecycledGroupHeaders.Count > 0)
         {
             // For fully recycled rows, we need to set the Visibility back to Visible
             var groupHeader = _fullyRecycledGroupHeaders.Pop();
@@ -227,7 +227,8 @@ internal class DataGridDisplayData
         {
             return _recyclableRows.Pop();
         }
-        else if (_fullyRecycledRows.Count > 0)
+        
+        if (_fullyRecycledRows.Count > 0)
         {
             // For fully recycled rows, we need to set the Visibility back to Visible
             var row = _fullyRecycledRows.Pop();

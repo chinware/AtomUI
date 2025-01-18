@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Reactive.Linq;
 using AtomUI.Controls.Utils;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -12,19 +13,19 @@ using DataGridFrozenGrid = AtomUI.Controls.Utils.DataGridFrozenGrid;
 
 namespace AtomUI.Controls;
 
-[TemplatePart(DATAGRIDROWGROUPHEADER_expanderButton, typeof(ToggleButton))]
-[TemplatePart(DATAGRIDROWGROUPHEADER_indentSpacer, typeof(Control))]
-[TemplatePart(DATAGRIDROWGROUPHEADER_itemCountElement, typeof(TextBlock))]
-[TemplatePart(DATAGRIDROWGROUPHEADER_propertyNameElement, typeof(TextBlock))]
-[TemplatePart(DataGridRow.DATAGRIDROW_elementRoot, typeof(Panel))]
-[TemplatePart(DataGridRow.DATAGRIDROW_elementRowHeader, typeof(DataGridRowHeader))]
-[PseudoClasses(":pressed", ":current", ":expanded")]
+[TemplatePart(ExpanderButtonPC, typeof(ToggleButton))]
+[TemplatePart(IndentSpacerPC, typeof(Control))]
+[TemplatePart(ItemCountElementPC, typeof(TextBlock))]
+[TemplatePart(PropertyNameElementPC, typeof(TextBlock))]
+[TemplatePart(DataGridRow.ElementRootPC, typeof(Panel))]
+[TemplatePart(DataGridRow.ElementRowHeaderPC, typeof(DataGridRowHeader))]
+[PseudoClasses(StdPseudoClass.Pressed, StdPseudoClass.Current, StdPseudoClass.Expanded)]
 public class DataGridRowGroupHeader : TemplatedControl
 {
-    private const string DATAGRIDROWGROUPHEADER_expanderButton = "PART_ExpanderButton";
-    private const string DATAGRIDROWGROUPHEADER_indentSpacer = "PART_IndentSpacer";
-    private const string DATAGRIDROWGROUPHEADER_itemCountElement = "PART_ItemCountElement";
-    private const string DATAGRIDROWGROUPHEADER_propertyNameElement = "PART_PropertyNameElement";
+    private const string ExpanderButtonPC = "PART_ExpanderButton";
+    private const string IndentSpacerPC = "PART_IndentSpacer";
+    private const string ItemCountElementPC = "PART_ItemCountElement";
+    private const string PropertyNameElementPC = "PART_PropertyNameElement";
 
     private bool _areIsCheckedHandlersSuspended;
     private ToggleButton? _expanderButton;
@@ -165,10 +166,10 @@ public class DataGridRowGroupHeader : TemplatedControl
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        _rootElement = e.NameScope.Find<Panel>(DataGridRow.DATAGRIDROW_elementRoot);
+        _rootElement = e.NameScope.Find<Panel>(DataGridRow.ElementRootPC);
 
         _expanderButtonSubscription?.Dispose();
-        _expanderButton = e.NameScope.Find<ToggleButton>(DATAGRIDROWGROUPHEADER_expanderButton);
+        _expanderButton = e.NameScope.Find<ToggleButton>(ExpanderButtonPC);
         if (_expanderButton != null)
         {
             EnsureExpanderButtonIsChecked();
@@ -178,21 +179,21 @@ public class DataGridRowGroupHeader : TemplatedControl
                                .Subscribe(v => OnExpanderButtonIsCheckedChanged(v));
         }
 
-        _headerElement = e.NameScope.Find<DataGridRowHeader>(DataGridRow.DATAGRIDROW_elementRowHeader);
+        _headerElement = e.NameScope.Find<DataGridRowHeader>(DataGridRow.ElementRowHeaderPC);
         if (_headerElement != null)
         {
             _headerElement.Owner = this;
             EnsureHeaderVisibility();
         }
 
-        _indentSpacer = e.NameScope.Find<Control>(DATAGRIDROWGROUPHEADER_indentSpacer);
+        _indentSpacer = e.NameScope.Find<Control>(IndentSpacerPC);
         if (_indentSpacer != null)
         {
             _indentSpacer.Width = _totalIndent;
         }
 
-        _itemCountElement    = e.NameScope.Find<TextBlock>(DATAGRIDROWGROUPHEADER_itemCountElement);
-        _propertyNameElement = e.NameScope.Find<TextBlock>(DATAGRIDROWGROUPHEADER_propertyNameElement);
+        _itemCountElement    = e.NameScope.Find<TextBlock>(ItemCountElementPC);
+        _propertyNameElement = e.NameScope.Find<TextBlock>(PropertyNameElementPC);
         UpdateTitleElements();
     }
 

@@ -151,7 +151,7 @@ internal static class TypeHelper
         var           type          = parentType;
         PropertyInfo? propertyInfo  = null;
         var           propertyNames = SplitPropertyPath(propertyPath);
-        for (int i = 0; i < propertyNames.Count; i++)
+        for (var i = 0; i < propertyNames.Count; i++)
         {
             // if we can't find the property or it is not of the correct type,
             // treat it as a null value
@@ -265,15 +265,15 @@ internal static class TypeHelper
 
         if (elementType != null)
         {
+            var genericList = typeof(List<>).MakeGenericType(elementType);
             // If the object is of type IList, try to use its default indexer.
-            if (typeof(IList<>).MakeGenericType(elementType) is Type genericList
-                && genericList.IsAssignableFrom(type))
+            if (genericList.IsAssignableFrom(type))
             {
                 indexer = FindIndexerInMembers(genericList.GetDefaultMembers(), stringIndex, out index);
             }
-
-            if (typeof(IReadOnlyList<>).MakeGenericType(elementType) is Type genericReadOnlyList
-                && genericReadOnlyList.IsAssignableFrom(type))
+            
+            var genericReadOnlyList = typeof(List<>).MakeGenericType(elementType);
+            if (genericReadOnlyList.IsAssignableFrom(type))
             {
                 indexer = FindIndexerInMembers(genericReadOnlyList.GetDefaultMembers(), stringIndex, out index);
             }
@@ -419,11 +419,20 @@ internal static class TypeHelper
         {
             // We haven't located a type yet.. try a different approach.
             // Does the list have anything in it?
-
             var enumerator = list.GetEnumerator();
-            if (enumerator.MoveNext() && enumerator.Current != null)
+            try
             {
-                return enumerator.Current.GetType();
+                if (enumerator.MoveNext() && enumerator.Current != null)
+                {
+                    return enumerator.Current.GetType();
+                }
+            }
+            finally
+            {
+                if (enumerator is IDisposable disposable)
+                {
+                    disposable.Dispose();
+                }
             }
         }
 

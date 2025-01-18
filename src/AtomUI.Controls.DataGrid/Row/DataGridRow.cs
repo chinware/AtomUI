@@ -21,23 +21,23 @@ using DataGridFrozenGrid = AtomUI.Controls.Utils.DataGridFrozenGrid;
 
 namespace AtomUI.Controls;
 
-[TemplatePart(DATAGRIDROW_elementBottomGridLine, typeof(Rectangle))]
-[TemplatePart(DATAGRIDROW_elementCells, typeof(DataGridCellsPresenter))]
-[TemplatePart(DATAGRIDROW_elementDetails, typeof(DataGridDetailsPresenter))]
-[TemplatePart(DATAGRIDROW_elementRoot, typeof(Panel))]
-[TemplatePart(DATAGRIDROW_elementRowHeader, typeof(DataGridRowHeader))]
-[PseudoClasses(":selected", ":editing", ":invalid")]
+[TemplatePart(ElementBottomGridLinePC, typeof(Rectangle))]
+[TemplatePart(ElementCellsPC, typeof(DataGridCellsPresenter))]
+[TemplatePart(ElementDetailsPC, typeof(DataGridDetailsPresenter))]
+[TemplatePart(ElementRootPC, typeof(Panel))]
+[TemplatePart(ElementRowHeaderPC, typeof(DataGridRowHeader))]
+[PseudoClasses(StdPseudoClass.Selected, StdPseudoClass.Editing, StdPseudoClass.Invalid)]
 public class DataGridRow : TemplatedControl
 {
-    private const byte DATAGRIDROW_defaultMinHeight = 0;
-    internal const int DATAGRIDROW_maximumHeight = 65536;
-    internal const double DATAGRIDROW_minimumHeight = 0;
+    private const byte DefaultMinHeight = 0;
+    internal const int MaximumHeight = 65536;
+    internal const double MinimumHeight = 0;
 
-    private const string DATAGRIDROW_elementBottomGridLine = "PART_BottomGridLine";
-    private const string DATAGRIDROW_elementCells = "PART_CellsPresenter";
-    private const string DATAGRIDROW_elementDetails = "PART_DetailsPresenter";
-    internal const string DATAGRIDROW_elementRoot = "PART_Root";
-    internal const string DATAGRIDROW_elementRowHeader = "PART_RowHeader";
+    private const string ElementBottomGridLinePC = "PART_BottomGridLine";
+    private const string ElementCellsPC = "PART_CellsPresenter";
+    private const string ElementDetailsPC = "PART_DetailsPresenter";
+    internal const string ElementRootPC = "PART_Root";
+    internal const string ElementRowHeaderPC = "PART_RowHeader";
 
     private DataGridCellsPresenter? _cellsElement;
     private DataGridCell? _fillerCell;
@@ -150,7 +150,7 @@ public class DataGridRow : TemplatedControl
     /// </summary>
     public DataGridRow()
     {
-        MinHeight = DATAGRIDROW_defaultMinHeight;
+        MinHeight = DefaultMinHeight;
 
         Index                     =  -1;
         IsValid                   =  true;
@@ -527,7 +527,7 @@ public class DataGridRow : TemplatedControl
     /// </summary>
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        RootElement = e.NameScope.Find<Panel>(DATAGRIDROW_elementRoot);
+        RootElement = e.NameScope.Find<Panel>(ElementRootPC);
         if (RootElement != null)
         {
             ApplyState();
@@ -541,7 +541,7 @@ public class DataGridRow : TemplatedControl
             updateVerticalScrollBar = true;
         }
 
-        _cellsElement = e.NameScope.Find<DataGridCellsPresenter>(DATAGRIDROW_elementCells);
+        _cellsElement = e.NameScope.Find<DataGridCellsPresenter>(ElementCellsPC);
         if (_cellsElement != null)
         {
             _cellsElement.OwningRow = this;
@@ -556,7 +556,7 @@ public class DataGridRow : TemplatedControl
             }
         }
 
-        _detailsElement = e.NameScope.Find<DataGridDetailsPresenter>(DATAGRIDROW_elementDetails);
+        _detailsElement = e.NameScope.Find<DataGridDetailsPresenter>(ElementDetailsPC);
         if (_detailsElement != null && OwningGrid != null)
         {
             _detailsElement.OwningRow = this;
@@ -569,10 +569,10 @@ public class DataGridRow : TemplatedControl
             }
         }
 
-        _bottomGridLine = e.NameScope.Find<Rectangle>(DATAGRIDROW_elementBottomGridLine);
+        _bottomGridLine = e.NameScope.Find<Rectangle>(ElementBottomGridLinePC);
         EnsureGridLines();
 
-        _headerElement = e.NameScope.Find<DataGridRowHeader>(DATAGRIDROW_elementRowHeader);
+        _headerElement = e.NameScope.Find<DataGridRowHeader>(ElementRowHeaderPC);
         if (_headerElement != null)
         {
             _headerElement.Owner = this;
