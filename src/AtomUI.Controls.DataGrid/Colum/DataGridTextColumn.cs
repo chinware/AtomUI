@@ -3,7 +3,6 @@ using AtomUI.Controls.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Documents;
-using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
@@ -128,11 +127,11 @@ public class DataGridTextColumn : DataGridBoundColumn
     {
         base.OnPropertyChanged(change);
 
-        if (change.Property == FontFamilyProperty
-            || change.Property == FontSizeProperty
-            || change.Property == FontStyleProperty
-            || change.Property == FontWeightProperty
-            || change.Property == ForegroundProperty)
+        if (change.Property == FontFamilyProperty ||
+            change.Property == FontSizeProperty ||
+            change.Property == FontStyleProperty ||
+            change.Property == FontWeightProperty ||
+            change.Property == ForegroundProperty)
         {
             NotifyPropertyChanged(change.Property.Name);
         }

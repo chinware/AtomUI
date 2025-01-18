@@ -137,7 +137,7 @@ internal class IndexToValueTable<T> : IEnumerable<Range<T>>
     public bool ContainsIndexAndValue(int index, T value)
     {
         var lowerRangeIndex = FindRangeIndex(index);
-        return ((IsCorrectRangeIndex(lowerRangeIndex, index)) && (_list[lowerRangeIndex].ContainsValue(value)));
+        return IsCorrectRangeIndex(lowerRangeIndex, index) && _list[lowerRangeIndex].ContainsValue(value);
     }
 
     /// <summary>
@@ -168,10 +168,7 @@ internal class IndexToValueTable<T> : IEnumerable<Range<T>>
 
             return _list[rangeIndex].UpperBound + 1;
         }
-        else
-        {
-            return targetIndex;
-        }
+        return targetIndex;
     }
 
     public int GetNextIndex(int index)
@@ -182,11 +179,8 @@ internal class IndexToValueTable<T> : IEnumerable<Range<T>>
         {
             return targetIndex;
         }
-        else
-        {
-            rangeIndex++;
-            return rangeIndex < _list.Count ? _list[rangeIndex].LowerBound : -1;
-        }
+        rangeIndex++;
+        return rangeIndex < _list.Count ? _list[rangeIndex].LowerBound : -1;
     }
 
     public int GetPreviousGap(int index)
@@ -202,10 +196,7 @@ internal class IndexToValueTable<T> : IEnumerable<Range<T>>
 
             return _list[rangeIndex].LowerBound - 1;
         }
-        else
-        {
-            return targetIndex;
-        }
+        return targetIndex;
     }
 
     public int GetPreviousIndex(int index)
@@ -216,10 +207,7 @@ internal class IndexToValueTable<T> : IEnumerable<Range<T>>
         {
             return targetIndex;
         }
-        else
-        {
-            return rangeIndex >= 0 && rangeIndex < _list.Count ? _list[rangeIndex].UpperBound : -1;
-        }
+        return rangeIndex >= 0 && rangeIndex < _list.Count ? _list[rangeIndex].UpperBound : -1;
     }
 
     /// <summary>
@@ -390,10 +378,7 @@ internal class IndexToValueTable<T> : IEnumerable<Range<T>>
             {
                 return range.LowerBound + n - cumulatedEntries;
             }
-            else
-            {
-                cumulatedEntries += range.Count;
-            }
+            cumulatedEntries += range.Count;
         }
 
         return -1;
@@ -423,11 +408,8 @@ internal class IndexToValueTable<T> : IEnumerable<Range<T>>
             found = true;
             return _list[rangeIndex].Value;
         }
-        else
-        {
-            found = false;
-            return default;
-        }
+        found = false;
+        return default;
     }
 
     /// <summary>
@@ -445,10 +427,7 @@ internal class IndexToValueTable<T> : IEnumerable<Range<T>>
                 cumulatedIndexes += index - range.LowerBound;
                 break;
             }
-            else
-            {
-                cumulatedIndexes += range.Count;
-            }
+            cumulatedIndexes += range.Count;
         }
 
         return cumulatedIndexes;
@@ -495,7 +474,7 @@ internal class IndexToValueTable<T> : IEnumerable<Range<T>>
         Debug.Assert(count > 0);
         var lowerRangeIndex = FindRangeIndex(startIndex);
         InsertIndexesPrivate(startIndex, count, lowerRangeIndex);
-        if ((lowerRangeIndex >= 0) && (_list[lowerRangeIndex].LowerBound > startIndex))
+        if (lowerRangeIndex >= 0 && _list[lowerRangeIndex].LowerBound > startIndex)
         {
             // Because of the insert, the original range no longer contains the startIndex
             lowerRangeIndex--;
@@ -618,7 +597,7 @@ internal class IndexToValueTable<T> : IEnumerable<Range<T>>
             lowerRangeIndex = 0;
         }
 
-        while ((lowerRangeIndex < _list.Count) && (_list[lowerRangeIndex].UpperBound < startIndex))
+        while (lowerRangeIndex < _list.Count && _list[lowerRangeIndex].UpperBound < startIndex)
         {
             lowerRangeIndex++;
         }
@@ -712,7 +691,7 @@ internal class IndexToValueTable<T> : IEnumerable<Range<T>>
             // At this point the newRange has been inserted in the correct place, now we need to remove
             // any subsequent ranges that no longer make sense and possibly update the one at newRange.UpperBound
             var upperRangeIndex = lowerRangeIndex + 1;
-            while ((upperRangeIndex < _list.Count) && (_list[upperRangeIndex].UpperBound < endIndex))
+            while (upperRangeIndex < _list.Count && _list[upperRangeIndex].UpperBound < endIndex)
             {
                 _list.RemoveAt(upperRangeIndex);
             }
@@ -771,17 +750,11 @@ internal class IndexToValueTable<T> : IEnumerable<Range<T>>
                 // we found it or the index isn't there and we're one range before
                 return front;
             }
-            else
-            {
-                // not found and we're one range after
-                return front - 1;
-            }
+            // not found and we're one range after
+            return front - 1;
         }
-        else
-        {
-            // end is one index before front in this case so it's the range before
-            return end;
-        }
+        // end is one index before front in this case so it's the range before
+        return end;
     }
 
     private bool Merge(int lowerRangeIndex)
@@ -808,7 +781,7 @@ internal class IndexToValueTable<T> : IEnumerable<Range<T>>
         Debug.Assert(count > 0);
 
         // Same as AddRange after we fix the indicies affected by the insertion
-        var startRangeIndex = (lowerRangeIndex >= 0) ? lowerRangeIndex : 0;
+        var startRangeIndex = lowerRangeIndex >= 0 ? lowerRangeIndex : 0;
         for (var i = startRangeIndex; i < _list.Count; i++)
         {
             Range<T> range = _list[i];
@@ -837,7 +810,7 @@ internal class IndexToValueTable<T> : IEnumerable<Range<T>>
 
     private bool IsCorrectRangeIndex(int rangeIndex, int index)
     {
-        return (-1 != rangeIndex) && (_list[rangeIndex].ContainsIndex(index));
+        return -1 != rangeIndex && _list[rangeIndex].ContainsIndex(index);
     }
 
     private bool RemoveRangeIfInvalid(Range<T> range, int rangeIndex)

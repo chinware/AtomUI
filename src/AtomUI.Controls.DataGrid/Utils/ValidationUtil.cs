@@ -41,8 +41,8 @@ internal static class ValidationUtil
         {
             if (oldValidationResult.ErrorMessage == target.ErrorMessage)
             {
-                bool                movedOld         = true;
-                bool                movedTarget      = true;
+                bool                      movedOld         = true;
+                bool                      movedTarget      = true;
                 using IEnumerator<string> oldEnumerator    = oldValidationResult.MemberNames.GetEnumerator();
                 using IEnumerator<string> targetEnumerator = target.MemberNames.GetEnumerator();
                 while (movedOld && movedTarget)
@@ -160,9 +160,9 @@ internal static class ValidationUtil
     /// <returns>True if the process cannot be recovered from the exception.</returns>
     public static bool IsCriticalException(Exception exception)
     {
-        return (exception is OutOfMemoryException) ||
-               (exception is StackOverflowException) ||
-               (exception is AccessViolationException) ||
-               (exception is ThreadAbortException);
+        return exception is OutOfMemoryException ||
+               exception is StackOverflowException ||
+               exception is AccessViolationException ||
+               exception is ThreadAbortException;
     }
 }

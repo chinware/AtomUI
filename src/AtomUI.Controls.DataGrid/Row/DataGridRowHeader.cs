@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Automation;
 using Avalonia.Controls;
@@ -12,11 +13,11 @@ namespace AtomUI.Controls;
 /// <summary>
 /// Represents an individual <see cref="T:Avalonia.Controls.DataGrid" /> row header. 
 /// </summary>
-[TemplatePart(DATAGRIDROWHEADER_elementRootName, typeof(Control))]
-[PseudoClasses(":invalid", ":selected", ":editing", ":current")]
+[TemplatePart(ElementRootNamePC, typeof(Control))]
+[PseudoClasses(StdPseudoClass.Invalid, StdPseudoClass.Selected, StdPseudoClass.Editing, StdPseudoClass.Current)]
 public class DataGridRowHeader : ContentControl
 {
-    private const string DATAGRIDROWHEADER_elementRootName = "PART_Root";
+    private const string ElementRootNamePC = "PART_Root";
     private Control? _rootElement;
 
     public static readonly StyledProperty<IBrush> SeparatorBrushProperty =
@@ -100,7 +101,7 @@ public class DataGridRowHeader : ContentControl
     /// </summary>
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        _rootElement = e.NameScope.Find<Control>(DATAGRIDROWHEADER_elementRootName);
+        _rootElement = e.NameScope.Find<Control>(ElementRootNamePC);
         if (_rootElement != null)
         {
             UpdatePseudoClasses();
@@ -142,20 +143,18 @@ public class DataGridRowHeader : ContentControl
         {
             if (OwningRow != null)
             {
-                PseudoClasses.Set(":invalid", !OwningRow.IsValid);
-
-                PseudoClasses.Set(":selected", OwningRow.IsSelected);
-
-                PseudoClasses.Set(":editing", OwningRow.IsEditing);
+                PseudoClasses.Set(StdPseudoClass.Invalid, !OwningRow.IsValid);
+                PseudoClasses.Set(StdPseudoClass.Selected, OwningRow.IsSelected);
+                PseudoClasses.Set(StdPseudoClass.Editing, OwningRow.IsEditing);
 
                 if (OwningGrid != null)
                 {
-                    PseudoClasses.Set(":current", OwningRow.Slot == OwningGrid.CurrentSlot);
+                    PseudoClasses.Set(StdPseudoClass.Current, OwningRow.Slot == OwningGrid.CurrentSlot);
                 }
             }
             else if (OwningRowGroupHeader != null && OwningGrid != null)
             {
-                PseudoClasses.Set(":current", OwningRowGroupHeader.RowGroupInfo?.Slot == OwningGrid.CurrentSlot);
+                PseudoClasses.Set(StdPseudoClass.Current, OwningRowGroupHeader.RowGroupInfo?.Slot == OwningGrid.CurrentSlot);
             }
         }
     }

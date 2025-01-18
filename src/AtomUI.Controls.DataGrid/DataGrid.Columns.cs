@@ -1,3 +1,8 @@
+// (c) Copyright Microsoft Corporation.
+// This source is subject to the Microsoft Public License (Ms-PL).
+// Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
+// All other rights reserved.
+
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Reflection;
@@ -479,7 +484,7 @@ public partial class DataGrid
             CurrentColumn == targetColumn)
         {
             // Column of the current cell is made invisible. Trying to move the current cell to a neighbor column. May throw an exception.
-            DataGridColumn? dataGridColumn = ColumnsInternal.GetNextVisibleColumn(targetColumn);
+            var dataGridColumn = ColumnsInternal.GetNextVisibleColumn(targetColumn);
             if (dataGridColumn == null)
             {
                 dataGridColumn = ColumnsInternal.GetPreviousVisibleNonFillerColumn(targetColumn);
@@ -756,7 +761,7 @@ public partial class DataGrid
                 _horizontalOffset -= GetEdgedColumnWidth(dataGridColumn);
             }
 
-            if (_hScrollBar != null && _hScrollBar.IsVisible) // 
+            if (_hScrollBar != null && _hScrollBar.IsVisible)
             {
                 _hScrollBar.Value = _horizontalOffset;
             }
@@ -862,7 +867,7 @@ public partial class DataGrid
         if (scaleStarWeights)
         {
             double starRatio = (totalStarColumnsWidth + adjustment - remainingAdjustment) / totalStarColumnsWidth;
-            foreach (DataGridColumn starColumn in starColumns)
+            foreach (var starColumn in starColumns)
             {
                 starColumn.SetWidthStarValue(Math.Min(double.MaxValue, starRatio * starColumn.Width.Value));
             }
@@ -1156,21 +1161,15 @@ public partial class DataGrid
                 _negHorizontalOffset = 0;
                 return -1;
             }
-            else
+            if (!MathUtils.AreClose(_negHorizontalOffset, _horizontalOffset))
             {
-                if (!MathUtils.AreClose(_negHorizontalOffset, _horizontalOffset))
-                {
-                    _negHorizontalOffset = 0;
-                }
-
-                return dataGridColumn.Index;
+                _negHorizontalOffset = 0;
             }
-        }
-        else
-        {
-            _negHorizontalOffset = GetEdgedColumnWidth(dataGridColumn) - (cx - _horizontalOffset);
+
             return dataGridColumn.Index;
         }
+        _negHorizontalOffset = GetEdgedColumnWidth(dataGridColumn) - (cx - _horizontalOffset);
+        return dataGridColumn.Index;
     }
 
     private void CorrectColumnDisplayIndexesAfterDeletion(DataGridColumn deletedColumn)
@@ -1739,7 +1738,7 @@ public partial class DataGrid
 
     private void AutoGenerateColumnsPrivate()
     {
-        if (!_measured || (_autoGeneratingColumnOperationCount > 0))
+        if (!_measured || _autoGeneratingColumnOperationCount > 0)
         {
             // Reading the DataType when we generate columns could cause the CollectionView to 
             // raise a Reset if its Enumeration changed.  In that case, we don't want to generate again.

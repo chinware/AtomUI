@@ -508,8 +508,8 @@ public partial class DataGrid : TemplatedControl
     private static bool IsValidRowHeight(double value)
     {
         return double.IsNaN(value) ||
-               (value >= DataGridRow.DATAGRIDROW_minimumHeight &&
-                value <= DataGridRow.DATAGRIDROW_maximumHeight);
+               (value >= DataGridRow.MinimumHeight &&
+                value <= DataGridRow.MaximumHeight);
     }
 
     /// <summary>
@@ -843,7 +843,7 @@ public partial class DataGrid : TemplatedControl
         // Update the RowDetails templates if necessary
         if (_rowsPresenter != null)
         {
-            foreach (DataGridRow row in GetAllRows())
+            foreach (var row in GetAllRows())
             {
                 if (GetRowDetailsVisibility(row.Index))
                 {

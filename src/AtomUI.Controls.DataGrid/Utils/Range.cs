@@ -33,10 +33,7 @@ internal class Range<T>
         {
             return value == null;
         }
-        else
-        {
-            return Value.Equals(value);
-        }
+        return Value.Equals(value);
     }
 
     public Range<T> Copy()

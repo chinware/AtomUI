@@ -331,8 +331,8 @@ public class DataGridRowEditEndedEventArgs : EventArgs
     /// <param name="editAction">The editing action that has been taken.</param>
     public DataGridRowEditEndedEventArgs(DataGridRow row, DataGridEditAction editAction)
     {
-        this.Row        = row;
-        this.EditAction = editAction;
+        Row        = row;
+        EditAction = editAction;
     }
 
     /// <summary>

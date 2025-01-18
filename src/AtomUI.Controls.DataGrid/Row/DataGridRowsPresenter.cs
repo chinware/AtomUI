@@ -74,7 +74,7 @@ public sealed class DataGridRowsPresenter : Panel, IChildIndexProvider
                                  OwningGrid.ColumnsInternal.VisibleEdgedColumnsWidth +
                                  OwningGrid.ColumnsInternal.FillerColumn.FillerWidth;
         double topEdge = -OwningGrid.NegVerticalOffset;
-        foreach (Control element in OwningGrid.DisplayData.GetScrollingElements())
+        foreach (var element in OwningGrid.DisplayData.GetScrollingElements())
         {
             if (element is DataGridRow row)
             {
