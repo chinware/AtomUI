@@ -35,10 +35,7 @@ internal class DataGridDataConnection
             {
                 return true;
             }
-            else
-            {
-                return !List.IsReadOnly;
-            }
+            return !List.IsReadOnly;
         }
     }
 
@@ -55,10 +52,7 @@ internal class DataGridDataConnection
             {
                 return false;
             }
-            else
-            {
-                return CollectionView.CanSort;
-            }
+            return CollectionView.CanSort;
         }
     }
 
@@ -133,10 +127,7 @@ internal class DataGridDataConnection
             {
                 return CollectionView.SortDescriptions;
             }
-            else
-            {
-                return null;
-            }
+            return null;
         }
     }
 
@@ -182,11 +173,8 @@ internal class DataGridDataConnection
             {
                 return true;
             }
-            else
-            {
-                editableCollectionView.EditItem(dataItem);
-                return editableCollectionView.IsEditingItem || editableCollectionView.IsAddingNew;
-            }
+            editableCollectionView.EditItem(dataItem);
+            return editableCollectionView.IsEditingItem || editableCollectionView.IsAddingNew;
         }
 
         if (dataItem is IEditableObject editableDataItem)
@@ -233,22 +221,22 @@ internal class DataGridDataConnection
         type = type.GetNonNullableType();
 
         return
-            type.IsEnum
-            || type == typeof(String)
-            || type == typeof(Char)
-            || type == typeof(DateTime)
-            || type == typeof(Boolean)
-            || type == typeof(Byte)
-            || type == typeof(SByte)
-            || type == typeof(Single)
-            || type == typeof(Double)
-            || type == typeof(Decimal)
-            || type == typeof(Int16)
-            || type == typeof(Int32)
-            || type == typeof(Int64)
-            || type == typeof(UInt16)
-            || type == typeof(UInt32)
-            || type == typeof(UInt64);
+            type.IsEnum ||
+            type == typeof(String) ||
+            type == typeof(Char) ||
+            type == typeof(DateTime) ||
+            type == typeof(Boolean) ||
+            type == typeof(Byte) ||
+            type == typeof(SByte) ||
+            type == typeof(Single) ||
+            type == typeof(Double) ||
+            type == typeof(Decimal) ||
+            type == typeof(Int16) ||
+            type == typeof(Int32) ||
+            type == typeof(Int64) ||
+            type == typeof(UInt16) ||
+            type == typeof(UInt32) ||
+            type == typeof(UInt64);
     }
 
     /// <summary>
@@ -256,7 +244,7 @@ internal class DataGridDataConnection
     /// </summary>
     /// <param name="dataItem">The entity being edited</param>
     /// <returns>True if a commit operation was invoked.</returns>
-    public bool EndEdit(object dataItem)
+    public bool EndEdit(object? dataItem)
     {
         var editableCollectionView = EditableCollectionView;
         if (editableCollectionView != null)
@@ -313,15 +301,26 @@ internal class DataGridDataConnection
         if (enumerable != null)
         {
             IEnumerator enumerator = enumerable.GetEnumerator();
-            int         i          = -1;
-            while (enumerator.MoveNext() && i < index)
+            try
             {
-                i++;
-                if (i == index)
+                int i = -1;
+                while (enumerator.MoveNext() && i < index)
                 {
-                    return enumerator.Current;
+                    i++;
+                    if (i == index)
+                    {
+                        return enumerator.Current;
+                    }
                 }
             }
+            finally
+            {
+                if (enumerator is IDisposable disposable)
+                {
+                    disposable.Dispose();
+                }
+            }
+         
         }
 
         return null;
@@ -331,7 +330,7 @@ internal class DataGridDataConnection
     {
         if (DataType != null)
         {
-            if (!String.IsNullOrEmpty(propertyName))
+            if (!string.IsNullOrEmpty(propertyName))
             {
                 Type          propertyType  = DataType;
                 PropertyInfo? propertyInfo  = null;
@@ -429,7 +428,7 @@ internal class DataGridDataConnection
     {
         if (dataType != null)
         {
-            var type = TypeHelper.GetNonNullableType(dataType); // no-opt if dataType isn't nullable
+            var type = dataType.GetNonNullableType(); // no-opt if dataType isn't nullable
             return type.IsPrimitive || type == typeof(string) || type == typeof(DateTime) || type == typeof(Decimal);
         }
 
@@ -447,29 +446,27 @@ internal class DataGridDataConnection
             _selectionActionForCurrentChanged = action;
             _scrollForCurrentChanged          = scrollIntoView;
             _backupSlotForCurrentChanged      = backupSlot;
-
             CollectionView.MoveCurrentTo(item is DataGridCollectionViewGroup ? null : item);
-
             _expectingCurrentChanged = false;
         }
     }
 
-    internal void UnWireEvents(IEnumerable value)
+    internal void UnWireEvents(IEnumerable? value)
     {
         if (value is INotifyCollectionChanged notifyingDataSource)
         {
-            notifyingDataSource.CollectionChanged -= NotifyingDataSource_CollectionChanged;
+            notifyingDataSource.CollectionChanged -= HandleNotifyingDataSourceCollectionChanged;
         }
 
         if (SortDescriptions != null)
         {
-            SortDescriptions.CollectionChanged -= CollectionView_SortDescriptions_CollectionChanged;
+            SortDescriptions.CollectionChanged -= HandleCollectionViewSortDescriptionsCollectionChanged;
         }
 
         if (CollectionView != null)
         {
-            CollectionView.CurrentChanged  -= CollectionView_CurrentChanged;
-            CollectionView.CurrentChanging -= CollectionView_CurrentChanging;
+            CollectionView.CurrentChanged  -= HandleCollectionViewCurrentChanged;
+            CollectionView.CurrentChanging -= HandleCollectionViewCurrentChanging;
         }
 
         EventsWired = false;
@@ -479,24 +476,24 @@ internal class DataGridDataConnection
     {
         if (value is INotifyCollectionChanged notifyingDataSource)
         {
-            notifyingDataSource.CollectionChanged += NotifyingDataSource_CollectionChanged;
+            notifyingDataSource.CollectionChanged += HandleNotifyingDataSourceCollectionChanged;
         }
 
         if (SortDescriptions != null)
         {
-            SortDescriptions.CollectionChanged += CollectionView_SortDescriptions_CollectionChanged;
+            SortDescriptions.CollectionChanged += HandleCollectionViewSortDescriptionsCollectionChanged;
         }
 
         if (CollectionView != null)
         {
-            CollectionView.CurrentChanged  += CollectionView_CurrentChanged;
-            CollectionView.CurrentChanging += CollectionView_CurrentChanging;
+            CollectionView.CurrentChanged  += HandleCollectionViewCurrentChanged;
+            CollectionView.CurrentChanging += HandleCollectionViewCurrentChanging;
         }
 
         EventsWired = true;
     }
 
-    private void CollectionView_CurrentChanged(object? sender, EventArgs e)
+    private void HandleCollectionViewCurrentChanged(object? sender, EventArgs e)
     {
         if (_expectingCurrentChanged)
         {
@@ -540,7 +537,7 @@ internal class DataGridDataConnection
         }
     }
 
-    private void CollectionView_CurrentChanging(object? sender, DataGridCurrentChangingEventArgs e)
+    private void HandleCollectionViewCurrentChanging(object? sender, DataGridCurrentChangingEventArgs e)
     {
         if (_owner.NoCurrentCellChangeCount == 0 &&
             !_expectingCurrentChanged &&
@@ -560,7 +557,7 @@ internal class DataGridDataConnection
         }
     }
 
-    private void CollectionView_SortDescriptions_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    private void HandleCollectionViewSortDescriptionsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
         if (_owner.ColumnsItemsInternal.Count == 0)
         {
@@ -574,7 +571,7 @@ internal class DataGridDataConnection
         }
     }
 
-    private void NotifyingDataSource_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    private void HandleNotifyingDataSourceCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
         if (_owner.LoadingOrUnloadingRow)
         {
