@@ -22,11 +22,8 @@ internal class DataGridCellCollection
         _cells     = new List<DataGridCell>();
     }
 
-    public int Count
-    {
-        get { return _cells.Count; }
-    }
-
+    public int Count => _cells.Count;
+    
     public IEnumerator GetEnumerator()
     {
         return _cells.GetEnumerator();
