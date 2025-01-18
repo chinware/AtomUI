@@ -17,8 +17,7 @@ using Avalonia.Input;
 namespace AtomUI.Controls;
 
 [TemplatePart(ElementRightGridLinePart, typeof(Rectangle))]
-[PseudoClasses(
-    StdPseudoClass.Selected,
+[PseudoClasses(StdPseudoClass.Selected,
     StdPseudoClass.Current,
     StdPseudoClass.Edited,
     StdPseudoClass.Invalid,
@@ -40,7 +39,7 @@ public class DataGridCell : ContentControl
     static DataGridCell()
     {
         PointerPressedEvent.AddClassHandler<DataGridCell>(
-            (x, e) => x.DataGridCell_PointerPressed(e), handledEventsToo: true);
+            (x, e) => x.HandleDataGridCellPointerPressed(e), handledEventsToo: true);
         FocusableProperty.OverrideDefaultValue<DataGridCell>(true);
         IsTabStopProperty.OverrideDefaultValue<DataGridCell>(false);
         AutomationProperties.IsOffscreenBehaviorProperty.OverrideDefaultValue<DataGridCell>(
@@ -79,8 +78,8 @@ public class DataGridCell : ContentControl
 
     internal int RowIndex => OwningRow?.Index ?? -1;
 
-    internal bool IsCurrent => OwningGrid != null && 
-                               OwningColumn != null && 
+    internal bool IsCurrent => OwningGrid != null &&
+                               OwningColumn != null &&
                                OwningRow != null &&
                                OwningGrid.CurrentColumnIndex == OwningColumn.Index &&
                                OwningGrid.CurrentSlot == OwningRow.Slot;
@@ -153,15 +152,15 @@ public class DataGridCell : ContentControl
     }
 
     //TODO TabStop
-    private void DataGridCell_PointerPressed(PointerPressedEventArgs e)
+    private void HandleDataGridCellPointerPressed(PointerPressedEventArgs e)
     {
         // OwningGrid is null for TopLeftHeaderCell and TopRightHeaderCell because they have no OwningRow
-        if (OwningGrid == null)
+        if (OwningGrid == null || OwningRow == null || OwningColumn == null)
         {
             return;
         }
 
-        OwningGrid.OnCellPointerPressed(new DataGridCellPointerPressedEventArgs(this, OwningRow!, OwningColumn!, e));
+        OwningGrid.HandleCellPointerPressed(new DataGridCellPointerPressedEventArgs(this, OwningRow, OwningColumn, e));
         if (e.Handled)
         {
             return;
@@ -208,11 +207,11 @@ public class DataGridCell : ContentControl
             return;
         }
 
-        PseudoClasses.Set(":selected", OwningRow.IsSelected);
-        PseudoClasses.Set(":current", IsCurrent);
-        PseudoClasses.Set(":edited", IsEdited);
-        PseudoClasses.Set(":invalid", !IsValid);
-        PseudoClasses.Set(":focus", OwningGrid.IsFocused && IsCurrent);
+        PseudoClasses.Set(StdPseudoClass.Selected, OwningRow.IsSelected);
+        PseudoClasses.Set(StdPseudoClass.Current, IsCurrent);
+        PseudoClasses.Set(StdPseudoClass.Edited, IsEdited);
+        PseudoClasses.Set(StdPseudoClass.Invalid, !IsValid);
+        PseudoClasses.Set(StdPseudoClass.Focus, OwningGrid.IsFocused && IsCurrent);
     }
 
     // Makes sure the right gridline has the proper stroke and visibility. If lastVisibleColumn is specified, the 
