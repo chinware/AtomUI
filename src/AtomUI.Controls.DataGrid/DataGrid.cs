@@ -1567,13 +1567,21 @@ public partial class DataGrid : TemplatedControl
     internal int CurrentColumnIndex
     {
         get => CurrentCellCoordinates.ColumnIndex;
-        private set => CurrentCellCoordinates.ColumnIndex = value;
+
+        private set => CurrentCellCoordinates = CurrentCellCoordinates with
+        {
+            ColumnIndex = value
+        };
     }
 
     internal int CurrentSlot
     {
         get => CurrentCellCoordinates.Slot;
-        private set => CurrentCellCoordinates.Slot = value;
+
+        private set => CurrentCellCoordinates = CurrentCellCoordinates with
+        {
+            Slot = value
+        };
     }
 
     internal DataGridDataConnection DataConnection { get; private set; }
@@ -1835,7 +1843,7 @@ public partial class DataGrid : TemplatedControl
     /// </summary>
     /// <param name="editingEventArgs">Provides information about the user gesture that caused the call to BeginEdit. Can be null.</param>
     /// <returns>True if operation was successful. False otherwise.</returns>
-    public bool BeginEdit(RoutedEventArgs editingEventArgs)
+    public bool BeginEdit(RoutedEventArgs? editingEventArgs = null)
     {
         if (CurrentColumnIndex == -1 || !GetRowSelection(CurrentSlot))
         {
@@ -3233,7 +3241,7 @@ public partial class DataGrid : TemplatedControl
         row.Cells.Insert(column.Index, newCell);
     }
 
-    private bool BeginCellEdit(RoutedEventArgs editingEventArgs)
+    private bool BeginCellEdit(RoutedEventArgs? editingEventArgs)
     {
         if (CurrentColumnIndex == -1 || !GetRowSelection(CurrentSlot))
         {

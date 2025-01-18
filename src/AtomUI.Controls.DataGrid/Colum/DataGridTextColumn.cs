@@ -22,10 +22,10 @@ public class DataGridTextColumn : DataGridBoundColumn
     /// <summary>
     /// Initializes a new instance of the <see cref="T:Avalonia.Controls.DataGridTextColumn" /> class.
     /// </summary>
-    public DataGridTextColumn()
+    public DataGridTextColumn(DataGrid ownerGrid)
+        : base(ownerGrid)
     {
         BindingTarget = TextBox.TextProperty;
-
         _cellTextBoxTheme = new Lazy<ControlTheme?>(() =>
             OwningGrid!.TryFindResource("DataGridCellTextBoxTheme", out var theme) ? (ControlTheme)theme! : null);
         _cellTextBlockTheme = new Lazy<ControlTheme?>(() =>

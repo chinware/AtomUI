@@ -8,7 +8,7 @@ namespace AtomUI.Controls.Collections;
 public interface IDataGridEditableCollectionView : IDataGridCollectionView
 {
     bool CanAddNew { get; }
-    object AddNew();
+    object? AddNew();
     void CommitNew();
     void CancelNew();
     bool IsAddingNew { get; }

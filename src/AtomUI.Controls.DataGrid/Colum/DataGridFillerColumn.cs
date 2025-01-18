@@ -7,9 +7,9 @@ namespace AtomUI.Controls;
 internal class DataGridFillerColumn : DataGridColumn
 {
     public DataGridFillerColumn(DataGrid owningGrid)
+        : base(owningGrid)
     {
         IsReadOnly = true;
-        OwningGrid = owningGrid;
         MinWidth   = 0;
         MaxWidth   = int.MaxValue;
     }

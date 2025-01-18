@@ -33,10 +33,10 @@ internal class DataGridSelectedItemsCollection : IList
 
             int slot = _selectedSlotsTable.GetNthIndex(index);
             Debug.Assert(slot > -1);
-            return OwningGrid.DataConnection!.GetDataItem(OwningGrid.RowIndexFromSlot(slot));
+            return OwningGrid.DataConnection.GetDataItem(OwningGrid.RowIndexFromSlot(slot));
         }
 
-        set { throw new NotSupportedException(); }
+        set => throw new NotSupportedException();
     }
 
     public bool IsFixedSize => false;
@@ -49,7 +49,7 @@ internal class DataGridSelectedItemsCollection : IList
             throw DataGridError.DataGridSelectedItemsCollection.CannotChangeSelectedItemsCollectionInSingleMode();
         }
         
-        int itemIndex = OwningGrid.DataConnection!.IndexOf(dataItem);
+        var itemIndex = OwningGrid.DataConnection.IndexOf(dataItem);
         if (itemIndex == -1)
         {
             throw DataGridError.DataGrid.ItemIsNotContainedInTheItemsSource("dataItem");
@@ -188,7 +188,7 @@ internal class DataGridSelectedItemsCollection : IList
         Debug.Assert(OwningGrid.DataConnection != null);
         Debug.Assert(_selectedSlotsTable != null);
 
-        foreach (int slot in _selectedSlotsTable.GetIndexes())
+        foreach (var slot in _selectedSlotsTable.GetIndexes())
         {
             int rowIndex = OwningGrid.RowIndexFromSlot(slot);
             Debug.Assert(rowIndex > -1);
@@ -200,7 +200,7 @@ internal class DataGridSelectedItemsCollection : IList
 
     internal List<object> SelectedItemsCache
     {
-        get { return _selectedItemsCache; }
+        get => _selectedItemsCache;
 
         set
         {
@@ -278,8 +278,8 @@ internal class DataGridSelectedItemsCollection : IList
 
     internal SelectionChangedEventArgs GetSelectionChangedEventArgs()
     {
-        List<object> addedSelectedItems   = new List<object>();
-        List<object> removedSelectedItems = new List<object>();
+        var addedSelectedItems   = new List<object>();
+        var removedSelectedItems = new List<object>();
 
         // Compare the old selected indexes with the current selection to determine which items
         // have been added and removed since the last time this method was called
@@ -312,8 +312,7 @@ internal class DataGridSelectedItemsCollection : IList
         _oldSelectedSlotsTable = _selectedSlotsTable.Copy();
         _oldSelectedItemsCache = new List<object>(_selectedItemsCache);
 
-        return
-            new SelectionChangedEventArgs(DataGrid.SelectionChangedEvent, removedSelectedItems, addedSelectedItems)
+        return new SelectionChangedEventArgs(DataGrid.SelectionChangedEvent, removedSelectedItems, addedSelectedItems)
             {
                 Source = OwningGrid
             };
@@ -445,7 +444,7 @@ internal class DataGridSelectedItemsCollection : IList
         }
         else
         {
-            List<object> tempSelectedItemsCache = new List<object>();
+            var tempSelectedItemsCache = new List<object>();
             foreach (object item in _selectedItemsCache)
             {
                 int index = OwningGrid.DataConnection!.IndexOf(item);

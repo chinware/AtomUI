@@ -35,6 +35,10 @@ public class DataGridTemplateColumn : DataGridColumn
             nameof(CellEditingTemplate),
             o => o.CellEditingTemplate,
             (o, v) => o.CellEditingTemplate = v);
+    
+    public DataGridTemplateColumn(DataGrid ownerGrid)
+        : base(ownerGrid)
+    {}
 
     /// <summary>
     /// Gets or sets the <see cref="IDataTemplate"/> which is used for the editing mode of the current <see cref="DataGridCell"/>
