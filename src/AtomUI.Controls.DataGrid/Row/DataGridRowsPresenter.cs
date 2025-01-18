@@ -39,7 +39,7 @@ public sealed class DataGridRowsPresenter : Panel, IChildIndexProvider
 
     bool IChildIndexProvider.TryGetTotalCount(out int count)
     {
-        return OwningGrid!.DataConnection!.TryGetCount(false, true, out count);
+        return OwningGrid!.DataConnection.TryGetCount(false, true, out count);
     }
 
     internal void InvalidateChildIndex(DataGridRow row)
@@ -152,7 +152,7 @@ public sealed class DataGridRowsPresenter : Panel, IChildIndexProvider
         double totalCellsWidth = OwningGrid.ColumnsInternal.VisibleEdgedColumnsWidth;
 
         double headerWidth = 0;
-        foreach (Control element in OwningGrid.DisplayData.GetScrollingElements())
+        foreach (var element in OwningGrid.DisplayData.GetScrollingElements())
         {
             var row = element as DataGridRow;
             if (row != null)
@@ -194,7 +194,7 @@ public sealed class DataGridRowsPresenter : Panel, IChildIndexProvider
 #if DEBUG
         internal void PrintChildren()
         {
-            foreach (Control element in Children)
+            foreach (var element in Children)
             {
                 if (element is DataGridRow row)
                 {
@@ -202,7 +202,7 @@ public sealed class DataGridRowsPresenter : Panel, IChildIndexProvider
                 }
                 else if (element is DataGridRowGroupHeader groupHeader)
                 {
-                    Debug.WriteLine(String.Format(System.Globalization.CultureInfo.InvariantCulture, "Slot: {0} GroupHeader: {1} Visibility: {2}", groupHeader.RowGroupInfo.Slot, groupHeader.RowGroupInfo.CollectionViewGroup.Key, groupHeader.IsVisible));
+                    Debug.WriteLine(String.Format(System.Globalization.CultureInfo.InvariantCulture, "Slot: {0} GroupHeader: {1} Visibility: {2}", groupHeader.RowGroupInfo?.Slot, groupHeader.RowGroupInfo?.CollectionViewGroup?.Key, groupHeader.IsVisible));
                 }
             }
         }

@@ -1,6 +1,5 @@
 using System.ComponentModel;
-using System.Globalization;
-using Avalonia.Utilities;
+using AtomUI.Utils;
 
 namespace AtomUI.Controls;
 
@@ -26,16 +25,16 @@ public struct DataGridLength : IEquatable<DataGridLength>
 
     //  static instances of value invariant DataGridLengths
     private static readonly DataGridLength _auto =
-        new DataGridLength(DATAGRIDLENGTH_DefaultValue, DataGridLengthUnitType.Auto);
+        new DataGridLength(DefaultValue, DataGridLengthUnitType.Auto);
 
     private static readonly DataGridLength _sizeToCells =
-        new DataGridLength(DATAGRIDLENGTH_DefaultValue, DataGridLengthUnitType.SizeToCells);
+        new DataGridLength(DefaultValue, DataGridLengthUnitType.SizeToCells);
 
     private static readonly DataGridLength _sizeToHeader =
-        new DataGridLength(DATAGRIDLENGTH_DefaultValue, DataGridLengthUnitType.SizeToHeader);
+        new DataGridLength(DefaultValue, DataGridLengthUnitType.SizeToHeader);
 
     // WPF uses 1.0 as the default value as well
-    internal const double DATAGRIDLENGTH_DefaultValue = 1.0;
+    internal const double DefaultValue = 1.0;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="T:Avalonia.Controls.DataGridLength" /> class. 
@@ -132,7 +131,7 @@ public struct DataGridLength : IEquatable<DataGridLength>
 
         _desiredValue = desiredValue;
         _displayValue = displayValue;
-        _unitValue    = (type == DataGridLengthUnitType.Auto) ? DATAGRIDLENGTH_DefaultValue : value;
+        _unitValue    = type == DataGridLengthUnitType.Auto ? DefaultValue : value;
         _unitType     = type;
     }
 
@@ -220,10 +219,10 @@ public struct DataGridLength : IEquatable<DataGridLength>
     /// unit type, desired value, and display value.</returns>
     public static bool operator ==(DataGridLength gl1, DataGridLength gl2)
     {
-        return (gl1.UnitType == gl2.UnitType
-                && gl1.Value == gl2.Value
-                && gl1.DesiredValue == gl2.DesiredValue
-                && gl1.DisplayValue == gl2.DisplayValue);
+        return gl1.UnitType == gl2.UnitType && 
+               MathUtils.AreClose(gl1.Value, gl2.Value) &&
+               MathUtils.AreClose(gl1.DesiredValue, gl2.DesiredValue) &&
+               MathUtils.AreClose(gl1.DisplayValue, gl2.DisplayValue);
     }
 
     /// <summary>
@@ -235,10 +234,10 @@ public struct DataGridLength : IEquatable<DataGridLength>
     /// unit type, desired value, or display value.</returns>
     public static bool operator !=(DataGridLength gl1, DataGridLength gl2)
     {
-        return (gl1.UnitType != gl2.UnitType
-                || gl1.Value != gl2.Value
-                || gl1.DesiredValue != gl2.DesiredValue
-                || gl1.DisplayValue != gl2.DisplayValue);
+        return gl1.UnitType != gl2.UnitType ||
+               !MathUtils.AreClose(gl1.Value, gl2.Value) ||
+               !MathUtils.AreClose(gl1.DesiredValue, gl2.DesiredValue) ||
+               !MathUtils.AreClose(gl1.DisplayValue, gl2.DisplayValue);
     }
 
     /// <summary>
@@ -249,7 +248,7 @@ public struct DataGridLength : IEquatable<DataGridLength>
     /// and unit type as gridLength.</returns>
     public bool Equals(DataGridLength other)
     {
-        return (this == other);
+        return this == other;
     }
 
     /// <summary>
@@ -260,12 +259,10 @@ public struct DataGridLength : IEquatable<DataGridLength>
     /// and unit type as oCompare.</returns>
     public override bool Equals(object? obj)
     {
-        DataGridLength? dataGridLength = obj as DataGridLength?;
-        if (dataGridLength.HasValue)
+        if (obj is DataGridLength dataGridLength)
         {
-            return (this == dataGridLength);
+            return this == dataGridLength;
         }
-
         return false;
     }
 
