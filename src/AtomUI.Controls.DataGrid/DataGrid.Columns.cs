@@ -1700,7 +1700,7 @@ public partial class DataGrid
         }
 
         double newColOffset = 0;
-        foreach (DataGridColumn dataGridColumn in ColumnsInternal.GetVisibleScrollingColumns())
+        foreach (var dataGridColumn in ColumnsInternal.GetVisibleScrollingColumns())
         {
             if (dataGridColumn == newFirstVisibleScrollingCol)
             {

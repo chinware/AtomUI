@@ -240,7 +240,7 @@ internal class DataGridSelectedItemsCollection : IList
     }
 
     // Called when an item is deleted from the ItemsSource as opposed to just being unselected
-    internal void Delete(int slot, object item)
+    internal void Delete(int slot, object? item)
     {
         if (_oldSelectedSlotsTable.Contains(slot))
         {
@@ -248,7 +248,10 @@ internal class DataGridSelectedItemsCollection : IList
         }
 
         DeleteSlot(slot);
-        _selectedItemsCache.Remove(item);
+        if (item is not null)
+        {
+            _selectedItemsCache.Remove(item);
+        }
     }
 
     internal void DeleteSlot(int slot)

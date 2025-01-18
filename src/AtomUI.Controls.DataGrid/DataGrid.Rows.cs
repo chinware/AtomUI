@@ -1591,7 +1591,7 @@ public partial class DataGrid
         else if (element is DataGridRowGroupHeader groupHeader)
         {
             HandleUnloadingRowGroup(new DataGridRowGroupHeaderEventArgs(groupHeader));
-            DisplayData.AddRecylableRowGroupHeader(groupHeader);
+            DisplayData.AddRecyclableRowGroupHeader(groupHeader);
         }
         else if (_rowsPresenter != null)
         {
@@ -2954,7 +2954,7 @@ public partial class DataGrid
         Debug.Assert(DataConnection.CollectionView != null);
         Debug.Assert(RowGroupSublevelIndents != null);
 
-        int groupLevelCount = DataConnection.CollectionView.GroupingDepth;
+        var groupLevelCount = DataConnection.CollectionView.GroupingDepth;
         Debug.Assert(groupHeader.Level >= 0 && groupHeader.Level < groupLevelCount);
 
         double oldValue = RowGroupSublevelIndents[groupHeader.Level];
@@ -2976,7 +2976,7 @@ public partial class DataGrid
 
     internal DataGridRowGroupInfo? RowGroupInfoFromCollectionViewGroup(DataGridCollectionViewGroup? collectionViewGroup)
     {
-        foreach (int slot in RowGroupHeadersTable.GetIndexes())
+        foreach (var slot in RowGroupHeadersTable.GetIndexes())
         {
             DataGridRowGroupInfo? rowGroupInfo = RowGroupHeadersTable.GetValueAt(slot);
             if (rowGroupInfo?.CollectionViewGroup == collectionViewGroup)
@@ -3005,7 +3005,7 @@ public partial class DataGrid
 
         if (collapseAllSubgroups)
         {
-            foreach (object groupObj in collectionViewGroup.Items)
+            foreach (var groupObj in collectionViewGroup.Items)
             {
                 if (groupObj is DataGridCollectionViewGroup subGroup)
                 {

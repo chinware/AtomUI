@@ -8,6 +8,7 @@ using Avalonia.Controls.Mixins;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Media;
+using DataGridFrozenGrid = AtomUI.Controls.Utils.DataGridFrozenGrid;
 
 namespace AtomUI.Controls;
 
@@ -233,7 +234,7 @@ public class DataGridRowGroupHeader : TemplatedControl
             else
             {
                 double frozenLeftEdge = 0;
-                foreach (Control child in _rootElement.Children)
+                foreach (var child in _rootElement.Children)
                 {
                     if (DataGridFrozenGrid.GetIsFrozen(child) && child.IsVisible)
                     {

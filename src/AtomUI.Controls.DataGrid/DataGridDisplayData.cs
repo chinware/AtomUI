@@ -10,16 +10,17 @@ internal class DataGridDisplayData
     private int _headScrollingElements; // index of the row in _scrollingRows that is the first displayed row
     private DataGrid _owner;
 
-    private Stack<DataGridRow>
-        _recyclableRows; // list of Rows which have not been fully recycled (avoids Measure in several cases)
+    // list of Rows which have not been fully recycled (avoids Measure in several cases)
+    private Stack<DataGridRow> _recyclableRows;
 
-    private List<Control> _scrollingElements; // circular list of displayed elements
+    // circular list of displayed elements
+    private List<Control> _scrollingElements;
 
-    private Stack<DataGridRowGroupHeader>
-        _fullyRecycledGroupHeaders; // list of GroupHeaders that have been fully recycled (Collapsed)
+    // list of GroupHeaders that have been fully recycled (Collapsed)
+    private Stack<DataGridRowGroupHeader> _fullyRecycledGroupHeaders;
 
-    private Stack<DataGridRowGroupHeader>
-        _recyclableGroupHeaders; // list of GroupHeaders which have not been fully recycled (avoids Measure in several cases)
+    // list of GroupHeaders which have not been fully recycled (avoids Measure in several cases)
+    private Stack<DataGridRowGroupHeader> _recyclableGroupHeaders; 
 
     public DataGridDisplayData(DataGrid owner)
     {
@@ -44,10 +45,7 @@ internal class DataGridDisplayData
 
     public int LastTotallyDisplayedScrollingCol { get; set; }
 
-    public int NumDisplayedScrollingElements
-    {
-        get { return _scrollingElements.Count; }
-    }
+    public int NumDisplayedScrollingElements => _scrollingElements.Count;
 
     public int NumTotallyDisplayedScrollingElements { get; set; }
 
@@ -69,7 +67,7 @@ internal class DataGridDisplayData
         else if (_fullyRecycledGroupHeaders.Count > 0)
         {
             // For fully recycled rows, we need to set the Visibility back to Visible
-            DataGridRowGroupHeader groupHeader = _fullyRecycledGroupHeaders.Pop();
+            var groupHeader = _fullyRecycledGroupHeaders.Pop();
             groupHeader.IsVisible = true;
             return groupHeader;
         }
@@ -77,7 +75,7 @@ internal class DataGridDisplayData
         return null;
     }
 
-    internal void AddRecylableRowGroupHeader(DataGridRowGroupHeader groupHeader)
+    internal void AddRecyclableRowGroupHeader(DataGridRowGroupHeader groupHeader)
     {
         Debug.Assert(!_recyclableGroupHeaders.Contains(groupHeader));
         groupHeader.IsRecycled = true;
@@ -104,7 +102,7 @@ internal class DataGridDisplayData
                 }
                 else if (element is DataGridRowGroupHeader groupHeader)
                 {
-                    AddRecylableRowGroupHeader(groupHeader);
+                    AddRecyclableRowGroupHeader(groupHeader);
                 }
             }
         }
@@ -154,7 +152,7 @@ internal class DataGridDisplayData
         {
             LastScrollingSlot++;
         }
-        else if ((_owner.GetPreviousVisibleSlot(slot) <= LastScrollingSlot) || (LastScrollingSlot == -1))
+        else if (_owner.GetPreviousVisibleSlot(slot) <= LastScrollingSlot || LastScrollingSlot == -1)
         {
             Debug.Assert(element != null);
             // The row was inserted in our viewport, add it as a scrolling row
@@ -174,7 +172,7 @@ internal class DataGridDisplayData
         // Fully recycle Recyclable rows and transfer them to Recycled rows
         while (_recyclableRows.Count > 0)
         {
-            DataGridRow row = _recyclableRows.Pop();
+            var row = _recyclableRows.Pop();
             Debug.Assert(row != null);
             row.IsVisible = false;
             Debug.Assert(!_fullyRecycledRows.Contains(row));
@@ -184,7 +182,7 @@ internal class DataGridDisplayData
         // Fully recycle Recyclable GroupHeaders and transfer them to Recycled GroupHeaders
         while (_recyclableGroupHeaders.Count > 0)
         {
-            DataGridRowGroupHeader groupHeader = _recyclableGroupHeaders.Pop();
+            var groupHeader = _recyclableGroupHeaders.Pop();
             Debug.Assert(groupHeader != null);
             groupHeader.IsVisible = false;
             Debug.Assert(!_fullyRecycledGroupHeaders.Contains(groupHeader));
@@ -207,9 +205,9 @@ internal class DataGridDisplayData
 
     internal IEnumerable<Control> GetScrollingElements(Predicate<object>? filter = null)
     {
-        for (int i = 0; i < _scrollingElements.Count; i++)
+        for (var i = 0; i < _scrollingElements.Count; i++)
         {
-            Control element = _scrollingElements[(_headScrollingElements + i) % _scrollingElements.Count];
+            var element = _scrollingElements[(_headScrollingElements + i) % _scrollingElements.Count];
             if (filter == null || filter(element))
             {
                 // _scrollingRows is a circular list that wraps
@@ -232,7 +230,7 @@ internal class DataGridDisplayData
         else if (_fullyRecycledRows.Count > 0)
         {
             // For fully recycled rows, we need to set the Visibility back to Visible
-            DataGridRow row = _fullyRecycledRows.Pop();
+            var row = _fullyRecycledRows.Pop();
             row.IsVisible = true;
             return row;
         }
@@ -294,7 +292,7 @@ internal class DataGridDisplayData
     internal void UnloadScrollingElement(int slot, bool updateSlotInformation, bool wasDeleted)
     {
         Debug.Assert(_owner.IsSlotVisible(slot));
-        int elementIndex = GetCircularListIndex(slot, false /*wrap*/);
+        var elementIndex = GetCircularListIndex(slot, false /*wrap*/);
         if (elementIndex > _scrollingElements.Count)
         {
             // We need to wrap around from the top to the bottom of our circular list
@@ -329,11 +327,11 @@ internal class DataGridDisplayData
             {
                 if (element is DataGridRow row)
                 {
-                    Debug.WriteLine(String.Format(System.Globalization.CultureInfo.InvariantCulture, "Slot: {0} Row: {1} ", row.Slot, row.Index));
+                    Debug.WriteLine(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Slot: {0} Row: {1} ", row.Slot, row.Index));
                 }
                 else if (element is DataGridRowGroupHeader groupHeader)
                 {
-                    Debug.WriteLine(String.Format(System.Globalization.CultureInfo.InvariantCulture, "Slot: {0} GroupHeader: {1}", groupHeader.RowGroupInfo.Slot, groupHeader.RowGroupInfo.CollectionViewGroup.Key));
+                    Debug.WriteLine(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Slot: {0} GroupHeader: {1}", groupHeader.RowGroupInfo?.Slot, groupHeader.RowGroupInfo?.CollectionViewGroup?.Key));
                 }
             }
         }

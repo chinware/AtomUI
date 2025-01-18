@@ -1,5 +1,4 @@
 ﻿using AtomUI.Controls;
-using Avalonia.Controls;
 
 namespace Avalonia.Automation.Peers
 {

@@ -119,7 +119,7 @@ public class DataGridLengthConverter : TypeConverter
         }
 
         // Conversion from numeric type, WPF lets Convert exceptions bubble out here as well
-        double doubleValue = Convert.ToDouble(value, culture ?? CultureInfo.CurrentCulture);
+        var doubleValue = Convert.ToDouble(value, culture ?? CultureInfo.CurrentCulture);
         if (double.IsNaN(doubleValue))
         {
             // WPF returns Auto in this case as well
@@ -169,7 +169,7 @@ public class DataGridLengthConverter : TypeConverter
             throw DataGridError.DataGridLengthConverter.CannotConvertTo(destinationType.ToString());
         }
 
-        DataGridLength? dataGridLength = value as DataGridLength?;
+        var dataGridLength = (DataGridLength?)value;
         if (!dataGridLength.HasValue)
         {
             throw DataGridError.DataGridLengthConverter.InvalidDataGridLength("value");
