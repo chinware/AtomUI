@@ -153,25 +153,27 @@ public sealed class DataGridCellsPresenter : Panel, IChildIndexProvider
 
     internal void EnsureFillerVisibility()
     {
-        DataGridFillerColumn fillerColumn  = OwningGrid!.ColumnsInternal.FillerColumn;
-        bool                 newVisibility = fillerColumn.IsActive;
-        if (OwningRow is not null && OwningRow.FillerCell.IsVisible != newVisibility)
+        if (OwningGrid is not null && OwningRow is not null)
         {
-            OwningRow.FillerCell.IsVisible = newVisibility;
-            if (newVisibility)
+            DataGridFillerColumn fillerColumn  = OwningGrid.ColumnsInternal.FillerColumn;
+            bool                 newVisibility = fillerColumn.IsActive;
+            if (OwningRow.FillerCell.IsVisible != newVisibility)
             {
-                OwningRow.FillerCell.Arrange(new Rect(_fillerLeftEdge, 0, fillerColumn.FillerWidth, Bounds.Height));
+                OwningRow.FillerCell.IsVisible = newVisibility;
+                if (newVisibility)
+                {
+                    OwningRow.FillerCell.Arrange(new Rect(_fillerLeftEdge, 0, fillerColumn.FillerWidth, Bounds.Height));
+                }
             }
-        }
-
-        // This must be done after the Filler visibility is determined.  This also must be done
-        // regardless of whether or not the filler visibility actually changed values because
-        // we could scroll in a cell that didn't have EnsureGridLine called yet
-        var lastVisibleColumn = OwningGrid!.ColumnsInternal.LastVisibleColumn;
-        if (OwningRow is not null && lastVisibleColumn is not null)
-        {
-            DataGridCell cell = OwningRow.Cells[lastVisibleColumn.Index];
-            cell.EnsureGridLine(lastVisibleColumn);
+            // This must be done after the Filler visibility is determined.  This also must be done
+            // regardless of whether or not the filler visibility actually changed values because
+            // we could scroll in a cell that didn't have EnsureGridLine called yet
+            var lastVisibleColumn = OwningGrid.ColumnsInternal.LastVisibleColumn;
+            if (OwningRow is not null && lastVisibleColumn is not null)
+            {
+                DataGridCell cell = OwningRow.Cells[lastVisibleColumn.Index];
+                cell.EnsureGridLine(lastVisibleColumn);
+            }
         }
     }
 
