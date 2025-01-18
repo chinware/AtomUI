@@ -109,13 +109,10 @@ internal class DataGridCollectionViewGroupInternal : DataGridCollectionViewGroup
 
                 return AvaloniaProperty.UnsetValue;
             }
-            else
-            {
-                // the group is empty, or it has explicit subgroups.
-                // In either case, we cannot determine the first item -
-                // it could have gone into any of the subgroups.
-                return AvaloniaProperty.UnsetValue;
-            }
+            // the group is empty, or it has explicit subgroups.
+            // In either case, we cannot determine the first item -
+            // it could have gone into any of the subgroups.
+            return AvaloniaProperty.UnsetValue;
         }
     }
 

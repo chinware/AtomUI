@@ -84,7 +84,7 @@ internal class DataGridColumnCollection : ObservableCollection<DataGridColumn>
                 }
 
                 _owningGrid.OnClearingColumns();
-                for (int columnIndex = 0; columnIndex < ItemsInternal.Count; columnIndex++)
+                for (var columnIndex = 0; columnIndex < ItemsInternal.Count; columnIndex++)
                 {
                     // Detach the column...
                     ItemsInternal[columnIndex].OwningGrid = null;
@@ -211,7 +211,7 @@ internal class DataGridColumnCollection : ObservableCollection<DataGridColumn>
         VisibleEdgedColumnsWidth = 0;
         VisibleColumnCount       = 0;
 
-        for (int columnIndex = 0; columnIndex < ItemsInternal.Count; columnIndex++)
+        for (var columnIndex = 0; columnIndex < ItemsInternal.Count; columnIndex++)
         {
             var item = ItemsInternal[columnIndex];
             if (item.IsVisible)
@@ -241,7 +241,7 @@ internal class DataGridColumnCollection : ObservableCollection<DataGridColumn>
 
     internal int GetColumnCount(bool isVisible, bool isFrozen, int fromColumnIndex, int toColumnIndex)
     {
-        int            columnCount    = 0;
+        int columnCount    = 0;
         var dataGridColumn = ItemsInternal[fromColumnIndex];
 
         while (dataGridColumn != ItemsInternal[toColumnIndex])
@@ -313,7 +313,7 @@ internal class DataGridColumnCollection : ObservableCollection<DataGridColumn>
     internal DataGridColumn? GetFirstColumn(bool? isVisible, bool? isFrozen, bool? isReadOnly)
     {
         Debug.Assert(ItemsInternal.Count == DisplayIndexMap.Count);
-        int index = 0;
+        var index = 0;
         while (index < DisplayIndexMap.Count)
         {
             var dataGridColumn = GetColumnAtDisplayIndex(index);
@@ -364,12 +364,12 @@ internal class DataGridColumnCollection : ObservableCollection<DataGridColumn>
         Debug.Assert(ItemsInternal.Contains(dataGridColumnStart));
         Debug.Assert(ItemsInternal.Count == DisplayIndexMap.Count);
 
-        int index = dataGridColumnStart.DisplayIndexWithFiller + 1;
+        var index = dataGridColumnStart.DisplayIndexWithFiller + 1;
         while (index < DisplayIndexMap.Count)
         {
             var dataGridColumn = GetColumnAtDisplayIndex(index);
 
-            if (dataGridColumn is not null && 
+            if (dataGridColumn is not null &&
                 (isVisible == null || (dataGridColumn.IsVisible) == isVisible) &&
                 (isFrozen == null || dataGridColumn.IsFrozen == isFrozen) &&
                 (isReadOnly == null || dataGridColumn.IsReadOnly == isReadOnly))
@@ -401,11 +401,11 @@ internal class DataGridColumnCollection : ObservableCollection<DataGridColumn>
     internal DataGridColumn? GetPreviousColumn(DataGridColumn dataGridColumnStart,
                                                bool? isVisible, bool? isFrozen, bool? isReadOnly)
     {
-        int index = dataGridColumnStart.DisplayIndexWithFiller - 1;
+        var index = dataGridColumnStart.DisplayIndexWithFiller - 1;
         while (index >= 0)
         {
             var dataGridColumn = GetColumnAtDisplayIndex(index);
-            if (dataGridColumn is not null && 
+            if (dataGridColumn is not null &&
                 (isVisible == null || (dataGridColumn.IsVisible) == isVisible) &&
                 (isFrozen == null || dataGridColumn.IsFrozen == isFrozen) &&
                 (isReadOnly == null || dataGridColumn.IsReadOnly == isReadOnly))
@@ -438,7 +438,7 @@ internal class DataGridColumnCollection : ObservableCollection<DataGridColumn>
 
     internal int GetVisibleColumnCount(int fromColumnIndex, int toColumnIndex)
     {
-        int            columnCount    = 0;
+        var columnCount    = 0;
         var dataGridColumn = ItemsInternal[fromColumnIndex];
 
         while (dataGridColumn != ItemsInternal[toColumnIndex])
@@ -465,7 +465,7 @@ internal class DataGridColumnCollection : ObservableCollection<DataGridColumn>
     internal double GetVisibleFrozenEdgedColumnsWidth()
     {
         double visibleFrozenColumnsWidth = 0;
-        for (int columnIndex = 0; columnIndex < ItemsInternal.Count; columnIndex++)
+        for (var columnIndex = 0; columnIndex < ItemsInternal.Count; columnIndex++)
         {
             if (ItemsInternal[columnIndex].IsVisible && ItemsInternal[columnIndex].IsFrozen)
             {

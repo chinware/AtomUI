@@ -110,14 +110,15 @@ public abstract class DataGridBoundColumn : DataGridColumn
         {
             if (result.Source is IAtomUISubject<object?> subject)
             {
-                var bindingHelper   = new CellEditBinding(subject);
-                var instanceBinding = InstancedBindingFactory.CreateInstancedBinding(bindingHelper.InternalSubject, result.Mode, result.Priority);
+                var bindingHelper = new CellEditBinding(subject);
+                var instanceBinding = InstancedBindingFactory.CreateInstancedBinding(bindingHelper.InternalSubject,
+                    result.Mode, result.Priority);
 
-                BindingOperations.Apply(target, property, instanceBinding, null);
+                BindingOperations.Apply(target, property, instanceBinding);
                 return bindingHelper;
             }
 
-            BindingOperations.Apply(target, property, result, null);
+            BindingOperations.Apply(target, property, result);
         }
 
         return null;
@@ -127,9 +128,14 @@ public abstract class DataGridBoundColumn : DataGridColumn
 
     protected AvaloniaProperty? BindingTarget { get; set; }
 
+    public DataGridBoundColumn(DataGrid ownerGrid)
+        : base(ownerGrid)
+    {
+    }
+
     internal void SetHeaderFromBinding()
     {
-        if (OwningGrid != null && OwningGrid.DataConnection?.DataType != null
+        if (OwningGrid != null && OwningGrid.DataConnection.DataType != null
                                && Header == null && Binding != null && Binding is BindingBase binding)
         {
             var path = (binding as Binding)?.Path ?? (binding as CompiledBindingExtension)?.Path.ToString();

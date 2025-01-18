@@ -66,11 +66,11 @@ public class DataGridBeginningEditEventArgs : CancelEventArgs
     /// </param>
     public DataGridBeginningEditEventArgs(DataGridColumn column,
                                           DataGridRow row,
-                                          RoutedEventArgs editingEventArgs)
+                                          RoutedEventArgs? editingEventArgs)
     {
-        this.Column           = column;
-        this.Row              = row;
-        this.EditingEventArgs = editingEventArgs;
+        Column           = column;
+        Row              = row;
+        EditingEventArgs = editingEventArgs;
     }
 
     /// <summary>
@@ -81,7 +81,7 @@ public class DataGridBeginningEditEventArgs : CancelEventArgs
     /// <summary>
     /// Gets information about the user gesture that caused the cell to enter edit mode.
     /// </summary>
-    public RoutedEventArgs EditingEventArgs { get; private set; }
+    public RoutedEventArgs? EditingEventArgs { get; private set; }
 
     /// <summary>
     /// Gets the row that contains the cell to be edited.

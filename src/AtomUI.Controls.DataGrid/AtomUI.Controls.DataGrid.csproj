@@ -18,5 +18,9 @@
         <ProjectReference Include="..\AtomUI.IconPkg.AntDesign\AtomUI.IconPkg.AntDesign.csproj" />
         <ProjectReference Include="..\AtomUI.Theme\AtomUI.Theme.csproj"/>
     </ItemGroup>
+    
+    <ItemGroup>
+        <PackageReference Include="Avalonia"/>
+    </ItemGroup>
 
 </Project>

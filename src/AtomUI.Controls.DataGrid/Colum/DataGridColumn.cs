@@ -19,8 +19,9 @@ namespace AtomUI.Controls;
 
 public abstract class DataGridColumn : AvaloniaObject
 {
-    internal const int DATAGRIDCOLUMN_maximumWidth = 65536;
-    private const bool DATAGRIDCOLUMN_defaultIsReadOnly = false;
+    internal const int MaximumWidth = 65536;
+    private const bool DefaultIsReadOnly = false;
+    
     private bool? _isReadOnly;
     private double? _maxWidth;
     private double? _minWidth;
@@ -49,11 +50,12 @@ public abstract class DataGridColumn : AvaloniaObject
     /// <summary>
     /// Initializes a new instance of the <see cref="T:Avalonia.Controls.DataGridColumn" /> class.
     /// </summary>
-    protected internal DataGridColumn()
+    protected internal DataGridColumn(DataGrid owningGrid)
     {
         _displayIndexWithFiller         = -1;
         IsInitialDesiredWidthDetermined = false;
         InheritsWidth                   = true;
+        OwningGrid                      = owningGrid;
     }
 
     /// <summary>
@@ -83,10 +85,7 @@ public abstract class DataGridColumn : AvaloniaObject
     }
 
     // MaxWidth from local setting or DataGrid setting
-    internal double ActualMaxWidth
-    {
-        get { return _maxWidth ?? OwningGrid?.MaxColumnWidth ?? double.PositiveInfinity; }
-    }
+    internal double ActualMaxWidth => _maxWidth ?? OwningGrid?.MaxColumnWidth ?? double.PositiveInfinity;
 
     // MinWidth from local setting or DataGrid setting
     internal double ActualMinWidth
@@ -247,13 +246,9 @@ public abstract class DataGridColumn : AvaloniaObject
     /// </returns>
     public bool CanUserResize
     {
-        get
-        {
-            return
-                CanUserResizeInternal ??
-                OwningGrid?.CanUserResizeColumns ??
-                DataGrid.DefaultCanUserResizeColumns;
-        }
+        get => CanUserResizeInternal ??
+               OwningGrid?.CanUserResizeColumns ??
+               DataGrid.DefaultCanUserResizeColumns;
 
         set
         {
@@ -327,10 +322,7 @@ public abstract class DataGridColumn : AvaloniaObject
             {
                 return _displayIndexWithFiller - 1;
             }
-            else
-            {
-                return _displayIndexWithFiller;
-            }
+            return _displayIndexWithFiller;
         }
 
         set
@@ -449,7 +441,7 @@ public abstract class DataGridColumn : AvaloniaObject
         {
             if (OwningGrid == null)
             {
-                return _isReadOnly ?? DATAGRIDCOLUMN_defaultIsReadOnly;
+                return _isReadOnly ?? DefaultIsReadOnly;
             }
 
             if (_isReadOnly != null)
@@ -457,7 +449,7 @@ public abstract class DataGridColumn : AvaloniaObject
                 return _isReadOnly.Value || OwningGrid.IsReadOnly;
             }
 
-            return OwningGrid.GetColumnReadOnlyState(this, DATAGRIDCOLUMN_defaultIsReadOnly);
+            return OwningGrid.GetColumnReadOnlyState(this, DefaultIsReadOnly);
         }
 
         set
@@ -490,7 +482,7 @@ public abstract class DataGridColumn : AvaloniaObject
             {
                 double oldValue = ActualMaxWidth;
                 _maxWidth = value;
-                if (OwningGrid != null && OwningGrid.ColumnsInternal != null)
+                if (OwningGrid != null)
                 {
                     OwningGrid.OnColumnMaxWidthChanged(this, oldValue);
                 }
@@ -528,7 +520,7 @@ public abstract class DataGridColumn : AvaloniaObject
             {
                 double oldValue = ActualMinWidth;
                 _minWidth = value;
-                if (OwningGrid != null && OwningGrid.ColumnsInternal != null)
+                if (OwningGrid != null)
                 {
                     OwningGrid.OnColumnMinWidthChanged(this, oldValue);
                 }
@@ -537,9 +529,7 @@ public abstract class DataGridColumn : AvaloniaObject
     }
 
     public static readonly StyledProperty<DataGridLength> WidthProperty = AvaloniaProperty
-        .Register<DataGridColumn, DataGridLength>(nameof(Width)
-            , coerce: CoerceWidth
-        );
+        .Register<DataGridColumn, DataGridLength>(nameof(Width), coerce: CoerceWidth);
 
     public DataGridLength Width
     {
@@ -789,7 +779,7 @@ public abstract class DataGridColumn : AvaloniaObject
         double desiredValue = width.DesiredValue;
         if (double.IsNaN(desiredValue))
         {
-            if (width.IsStar && target.OwningGrid != null && target.OwningGrid.ColumnsInternal != null)
+            if (width.IsStar && target.OwningGrid != null)
             {
                 double totalStarValues           = 0;
                 double totalStarDesiredValues    = 0;
@@ -930,7 +920,7 @@ public abstract class DataGridColumn : AvaloniaObject
                 starColumnsCount  += (column != this && column.Width.IsStar) ? 1 : 0;
             }
         }
-        
+
         bool hasInfiniteAvailableWidth = !OwningGrid!.RowsPresenterAvailableSize.HasValue ||
                                          double.IsPositiveInfinity(OwningGrid.RowsPresenterAvailableSize.Value.Width);
 
@@ -1103,7 +1093,6 @@ public abstract class DataGridColumn : AvaloniaObject
     internal DataGridSortDescription? GetSortDescription()
     {
         if (OwningGrid != null && 
-            OwningGrid.DataConnection != null &&
             OwningGrid.DataConnection.SortDescriptions != null)
         {
             if (CustomSortComparer != null)

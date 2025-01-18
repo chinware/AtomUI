@@ -20,7 +20,8 @@ public class DataGridCheckBoxColumn : DataGridBoundColumn
     /// <summary>
     /// Initializes a new instance of the <see cref="T:System.Windows.Controls.DataGridCheckBoxColumn" /> class. 
     /// </summary>
-    public DataGridCheckBoxColumn()
+    public DataGridCheckBoxColumn(DataGrid ownerGrid)
+        : base(ownerGrid)
     {
         BindingTarget = CheckBox.IsCheckedProperty;
     }
@@ -236,14 +237,15 @@ public class DataGridCheckBoxColumn : DataGridBoundColumn
         }
     }
 
-    private void Columns_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    private void HandleColumnsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        if (e.Action == NotifyCollectionChangedAction.Remove && e.OldItems != null && e.OldItems.Contains(this) && _owningGrid != null)
+        if (e.Action == NotifyCollectionChangedAction.Remove && e.OldItems != null && e.OldItems.Contains(this) &&
+            _owningGrid != null)
         {
-            _owningGrid.Columns.CollectionChanged -= Columns_CollectionChanged;
-            _owningGrid.CurrentCellChanged        -= OwningGrid_CurrentCellChanged;
-            _owningGrid.KeyDown                   -= OwningGrid_KeyDown;
-            _owningGrid.LoadingRow                -= OwningGrid_LoadingRow;
+            _owningGrid.Columns.CollectionChanged -= HandleColumnsCollectionChanged;
+            _owningGrid.CurrentCellChanged        -= HandleOwningGridCurrentCellChanged;
+            _owningGrid.KeyDown                   -= HandleOwningGridKeyDown;
+            _owningGrid.LoadingRow                -= HandleOwningGridLoadingRow;
             _owningGrid                           =  null;
         }
     }
@@ -262,10 +264,10 @@ public class DataGridCheckBoxColumn : DataGridBoundColumn
             if (OwningGrid != _owningGrid)
             {
                 _owningGrid                           =  OwningGrid;
-                _owningGrid.Columns.CollectionChanged += Columns_CollectionChanged;
-                _owningGrid.CurrentCellChanged        += OwningGrid_CurrentCellChanged;
-                _owningGrid.KeyDown                   += OwningGrid_KeyDown;
-                _owningGrid.LoadingRow                += OwningGrid_LoadingRow;
+                _owningGrid.Columns.CollectionChanged += HandleColumnsCollectionChanged;
+                _owningGrid.CurrentCellChanged        += HandleOwningGridCurrentCellChanged;
+                _owningGrid.KeyDown                   += HandleOwningGridKeyDown;
+                _owningGrid.LoadingRow                += HandleOwningGridLoadingRow;
             }
 
             return true;
@@ -274,7 +276,7 @@ public class DataGridCheckBoxColumn : DataGridBoundColumn
         return false;
     }
 
-    private void OwningGrid_CurrentCellChanged(object? sender, EventArgs e)
+    private void HandleOwningGridCurrentCellChanged(object? sender, EventArgs e)
     {
         if (_currentCheckBox != null)
         {
@@ -297,7 +299,7 @@ public class DataGridCheckBoxColumn : DataGridBoundColumn
         }
     }
 
-    private void OwningGrid_KeyDown(object? sender, KeyEventArgs e)
+    private void HandleOwningGridKeyDown(object? sender, KeyEventArgs e)
     {
         if (e.Key == Key.Space && OwningGrid != null &&
             OwningGrid.CurrentColumn == this)
@@ -313,7 +315,7 @@ public class DataGridCheckBoxColumn : DataGridBoundColumn
         }
     }
 
-    private void OwningGrid_LoadingRow(object? sender, DataGridRowEventArgs e)
+    private void HandleOwningGridLoadingRow(object? sender, DataGridRowEventArgs e)
     {
         if (OwningGrid != null)
         {

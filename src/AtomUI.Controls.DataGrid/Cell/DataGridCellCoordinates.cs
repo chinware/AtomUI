@@ -2,7 +2,7 @@ using System.Globalization;
 
 namespace AtomUI.Controls;
 
-internal class DataGridCellCoordinates
+internal record DataGridCellCoordinates
 {
     public DataGridCellCoordinates(int columnIndex, int slot)
     {
@@ -10,25 +10,16 @@ internal class DataGridCellCoordinates
         Slot        = slot;
     }
 
-    public DataGridCellCoordinates(DataGridCellCoordinates dataGridCellCoordinates) : this(
-        dataGridCellCoordinates.ColumnIndex, dataGridCellCoordinates.Slot)
+    public DataGridCellCoordinates(DataGridCellCoordinates dataGridCellCoordinates)
     {
+        ColumnIndex = dataGridCellCoordinates.ColumnIndex;
+        Slot        = dataGridCellCoordinates.Slot;
     }
 
-    public int ColumnIndex { get; set; }
+    public int ColumnIndex { get; init;  }
 
-    public int Slot { get; set; }
-
-    public override bool Equals(object? o)
-    {
-        if (o is DataGridCellCoordinates dataGridCellCoordinates)
-        {
-            return dataGridCellCoordinates.ColumnIndex == ColumnIndex && dataGridCellCoordinates.Slot == Slot;
-        }
-
-        return false;
-    }
-
+    public int Slot { get; init; }
+    
 #if DEBUG
         public override string ToString()
         {

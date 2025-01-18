@@ -18,7 +18,7 @@ public abstract class DataGridCollectionViewGroup : INotifyPropertyChanged
 
     protected int ProtectedItemCount
     {
-        get { return _itemCount; }
+        get => _itemCount;
 
         set
         {

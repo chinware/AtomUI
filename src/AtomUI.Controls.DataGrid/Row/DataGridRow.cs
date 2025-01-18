@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using System.Reactive.Disposables;
-using AtomUI.Controls.Primitives;
-using AtomUI.Controls.Utils;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Automation;
 using Avalonia.Automation.Peers;
@@ -17,6 +16,8 @@ using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.Utilities;
 using Avalonia.VisualTree;
+using DataGridCellsPresenter = AtomUI.Controls.Primitives.DataGridCellsPresenter;
+using DataGridFrozenGrid = AtomUI.Controls.Utils.DataGridFrozenGrid;
 
 namespace AtomUI.Controls;
 
@@ -197,7 +198,7 @@ public class DataGridRow : TemplatedControl
 
         if (!_areHandlersSuspended && OwningGrid != null)
         {
-            IDataTemplate ActualDetailsTemplate(IDataTemplate? template) => (template ?? OwningGrid.RowDetailsTemplate);
+            IDataTemplate? ActualDetailsTemplate(IDataTemplate? template) => (template ?? OwningGrid.RowDetailsTemplate);
 
             // We don't always want to apply the new Template because they might have set the same one
             // we inherited from the DataGrid
@@ -223,7 +224,7 @@ public class DataGridRow : TemplatedControl
             }
 
             var newValue = (bool?)e.NewValue ?? false;
-            OwningGrid.OnRowDetailsVisibilityPropertyChanged(Index, newValue);
+            OwningGrid.HandleRowDetailsVisibilityPropertyChanged(Index, newValue);
             SetDetailsVisibilityInternal(newValue, raiseNotification: true, animate: true);
         }
     }
@@ -760,12 +761,12 @@ public class DataGridRow : TemplatedControl
 
     private void OnRowDetailsChanged()
     {
-        OwningGrid?.OnRowDetailsChanged();
+        OwningGrid?.HandleRowDetailsChanged();
     }
 
     // Returns the actual template that should be sued for Details: either explicity set on this row
     // or inherited from the DataGrid
-    private IDataTemplate ActualDetailsTemplate
+    private IDataTemplate? ActualDetailsTemplate
     {
         get
         {
@@ -800,7 +801,7 @@ public class DataGridRow : TemplatedControl
             {
                 if (_detailsLoaded)
                 {
-                    OwningGrid!.OnUnloadingRowDetails(this, _detailsContent);
+                    OwningGrid?.HandleUnloadingRowDetails(this, _detailsContent);
                 }
 
                 _detailsContent.DataContext = null;
@@ -993,7 +994,7 @@ public class DataGridRow : TemplatedControl
                     _detailsContentSizeSubscription = null;
                     if (_detailsLoaded)
                     {
-                        OwningGrid!.OnUnloadingRowDetails(this, _detailsContent);
+                        OwningGrid?.HandleUnloadingRowDetails(this, _detailsContent);
                         _detailsLoaded = false;
                     }
                 }
@@ -1030,7 +1031,7 @@ public class DataGridRow : TemplatedControl
             {
                 _detailsLoaded              = true;
                 _detailsContent.DataContext = DataContext;
-                OwningGrid!.OnLoadingRowDetails(this, _detailsContent);
+                OwningGrid?.HandleLoadingRowDetails(this, _detailsContent);
             }
 
             if (initializeDetailsPreferredHeight && double.IsNaN(_detailsDesiredHeight) &&
@@ -1075,7 +1076,7 @@ public class DataGridRow : TemplatedControl
                 OwningGrid.SetRowSelection(Slot, value, false);
             }
 
-            PseudoClasses.Set(":selected", value);
+            PseudoClasses.Set(StdPseudoClass.Selected, value);
         }
 
         base.OnPropertyChanged(change);
