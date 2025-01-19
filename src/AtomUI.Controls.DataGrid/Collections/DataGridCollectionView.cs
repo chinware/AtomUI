@@ -1008,7 +1008,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     /// </summary>
     //TODO Paging
     private bool UsesLocalArray => (SortDescriptions != null && SortDescriptions.Count > 0) || Filter != null ||
-                                   _pageSize > 0 || (GroupDescriptions != null && GroupDescriptions.Count > 0);
+                                   _pageSize > 0 || GroupDescriptions.Count > 0;
 
     /// <summary>
     /// Return the item at the specified index

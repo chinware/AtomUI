@@ -16,7 +16,7 @@ public abstract class DataGridGroupDescription : INotifyPropertyChanged
     public DataGridGroupDescription()
     {
         GroupKeys = new AvaloniaList<object>();
-        GroupKeys.CollectionChanged += (sender, e) => OnPropertyChanged(new PropertyChangedEventArgs(nameof(GroupKeys)));
+        GroupKeys.CollectionChanged += (sender, e) => NotifyPropertyChanged(new PropertyChangedEventArgs(nameof(GroupKeys)));
     }
     
     protected virtual event PropertyChangedEventHandler? PropertyChanged;
@@ -27,7 +27,7 @@ public abstract class DataGridGroupDescription : INotifyPropertyChanged
         remove => PropertyChanged -= value;
     }
     
-    protected virtual void OnPropertyChanged(PropertyChangedEventArgs e)
+    protected virtual void NotifyPropertyChanged(PropertyChangedEventArgs e)
     {
         PropertyChanged?.Invoke(this, e);
     }

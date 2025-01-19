@@ -323,7 +323,7 @@ public partial class DataGrid
                !_collapsedSlotsTable.Contains(slot);
     }
 
-    internal void OnRowsMeasure()
+    internal void NotifyRowsMeasure()
     {
         if (!MathUtilities.IsZero(DisplayData.PendingVerticalScrollHeight))
         {
@@ -431,7 +431,7 @@ public partial class DataGrid
             // The row is already displayed in its entirety
             return true;
         }
-        else if (DisplayData.FirstScrollingSlot == slot && slot != -1)
+        if (DisplayData.FirstScrollingSlot == slot && slot != -1)
         {
             if (!MathUtilities.IsZero(NegVerticalOffset))
             {
@@ -479,11 +479,8 @@ public partial class DataGrid
                     // We're already at the very bottom so we don't need to scroll down further
                     return true;
                 }
-                else
-                {
-                    // We're already showing the entire last row so don't count it as part of the delta
-                    firstFullSlot++;
-                }
+                // We're already showing the entire last row so don't count it as part of the delta
+                firstFullSlot++;
             }
             else if (rowHeight > availableHeight)
             {
@@ -673,7 +670,7 @@ public partial class DataGrid
         {
             if (groupSlots is IDisposable groupSlotsDisposable)
             {
-                groupSlots.Dispose();
+                groupSlotsDisposable.Dispose();
             }
         }
     }
@@ -1083,7 +1080,7 @@ public partial class DataGrid
     /// </summary>
     private double GetExactSlotElementHeight(int slot)
     {
-        Debug.Assert((slot >= 0) && slot < SlotCount);
+        Debug.Assert(slot >= 0 && slot < SlotCount);
 
         if (IsSlotVisible(slot))
         {
@@ -1116,17 +1113,14 @@ public partial class DataGrid
             Debug.Assert(DisplayData.GetDisplayedElement(slot) != null);
             return DisplayData.GetDisplayedElement(slot).DesiredSize.Height;
         }
-        else
+        var rowGroupInfo = RowGroupHeadersTable.GetValueAt(slot);
+        if (rowGroupInfo != null && _rowGroupHeightsByLevel != null)
         {
-            var rowGroupInfo = RowGroupHeadersTable.GetValueAt(slot);
-            if (rowGroupInfo != null && _rowGroupHeightsByLevel != null)
-            {
-                return _rowGroupHeightsByLevel[rowGroupInfo.Level];
-            }
-
-            // Assume it's a row since we're either not grouping or it wasn't a RowGroupHeader
-            return RowHeightEstimate + (GetRowDetailsVisibility(slot) ? RowDetailsHeightEstimate : 0);
+            return _rowGroupHeightsByLevel[rowGroupInfo.Level];
         }
+
+        // Assume it's a row since we're either not grouping or it wasn't a RowGroupHeader
+        return RowHeightEstimate + (GetRowDetailsVisibility(slot) ? RowDetailsHeightEstimate : 0);
     }
 
     /// <summary>
@@ -2581,7 +2575,7 @@ public partial class DataGrid
                 double indent;
                 for (int i = 0; i < groupLevelCount; i++)
                 {
-                    indent                     = DefaultRowGroupSublevelIndent;
+                    indent                     = DefaultRowGroupSubLevelIndent;
                     RowGroupSublevelIndents[i] = indent;
                     if (i > 0)
                     {
@@ -2673,7 +2667,7 @@ public partial class DataGrid
     {
         int count = 0;
         headersHeight = 0;
-        foreach (int slot in RowGroupHeadersTable.GetIndexes(startSlot))
+        foreach (var slot in RowGroupHeadersTable.GetIndexes(startSlot))
         {
             if (slot > endSlot)
             {
@@ -2709,7 +2703,7 @@ public partial class DataGrid
         if (newIsVisible)
         {
             // Expand
-            foreach (int slot in RowGroupHeadersTable.GetIndexes(targetRowGroupInfo.Slot + 1))
+            foreach (var slot in RowGroupHeadersTable.GetIndexes(targetRowGroupInfo.Slot + 1))
             {
                 if (slot >= startSlot)
                 {

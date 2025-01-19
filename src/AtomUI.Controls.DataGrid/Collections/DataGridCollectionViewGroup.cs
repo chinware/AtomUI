@@ -23,7 +23,7 @@ public abstract class DataGridCollectionViewGroup : INotifyPropertyChanged
         set
         {
             _itemCount = value;
-            OnPropertyChanged(new PropertyChangedEventArgs(nameof(ItemCount)));
+            NotifyPropertyChanged(new PropertyChangedEventArgs(nameof(ItemCount)));
         }
     }
 
@@ -43,7 +43,7 @@ public abstract class DataGridCollectionViewGroup : INotifyPropertyChanged
         remove => PropertyChanged -= value;
     }
 
-    protected virtual void OnPropertyChanged(PropertyChangedEventArgs e)
+    protected virtual void NotifyPropertyChanged(PropertyChangedEventArgs e)
     {
         PropertyChanged?.Invoke(this, e);
     }

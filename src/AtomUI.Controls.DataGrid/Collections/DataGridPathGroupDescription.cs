@@ -39,10 +39,7 @@ public class DataGridPathGroupDescription : DataGridGroupDescription
         }
 
         var key = GetKey(item);
-        if (key == null)
-        {
-            key = item;
-        }
+        key ??= item;
 
         var valueConverter = ValueConverter;
         if (valueConverter != null)

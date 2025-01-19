@@ -84,10 +84,7 @@ public class DataGridTemplateColumn : DataGridColumn
         {
             return null;
         }
-        else
-        {
-            throw DataGridError.DataGridTemplateColumn.MissingTemplateForType(typeof(DataGridTemplateColumn));
-        }
+        throw DataGridError.DataGridTemplateColumn.MissingTemplateForType(typeof(DataGridTemplateColumn));
     }
 
     protected override Control? GenerateEditingElement(DataGridCell cell, object? dataItem, out ICellEditBinding? binding)
@@ -97,7 +94,7 @@ public class DataGridTemplateColumn : DataGridColumn
         {
             return CellEditingTemplate.Build(dataItem);
         }
-        else if (CellTemplate != null)
+        if (CellTemplate != null)
         {
             return CellTemplate.Build(dataItem);
         }
@@ -106,10 +103,7 @@ public class DataGridTemplateColumn : DataGridColumn
         {
             return null;
         }
-        else
-        {
-            throw DataGridError.DataGridTemplateColumn.MissingTemplateForType(typeof(DataGridTemplateColumn));
-        }
+        throw DataGridError.DataGridTemplateColumn.MissingTemplateForType(typeof(DataGridTemplateColumn));
     }
 
     protected override object? PrepareCellForEdit(Control editingElement, RoutedEventArgs editingEventArgs)

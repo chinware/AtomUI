@@ -50,10 +50,10 @@ public class DataGridColumnHeader : ContentControl
     private static double _frozenColumnsWidth;
     private static Lazy<Cursor> _resizeCursor = new Lazy<Cursor>(() => new Cursor(StandardCursorType.SizeWestEast));
 
-    public static readonly StyledProperty<IBrush> SeparatorBrushProperty =
-        AvaloniaProperty.Register<DataGridColumnHeader, IBrush>(nameof(SeparatorBrush));
+    public static readonly StyledProperty<IBrush?> SeparatorBrushProperty =
+        AvaloniaProperty.Register<DataGridColumnHeader, IBrush?>(nameof(SeparatorBrush));
 
-    public IBrush SeparatorBrush
+    public IBrush? SeparatorBrush
     {
         get => GetValue(SeparatorBrushProperty);
         set => SetValue(SeparatorBrushProperty, value);
@@ -73,7 +73,7 @@ public class DataGridColumnHeader : ContentControl
     static DataGridColumnHeader()
     {
         AreSeparatorsVisibleProperty.Changed.AddClassHandler<DataGridColumnHeader>((x, e) =>
-            x.OnAreSeparatorsVisibleChanged(e));
+            x.HandleAreSeparatorsVisibleChanged(e));
         PressedMixin.Attach<DataGridColumnHeader>();
         IsTabStopProperty.OverrideDefaultValue<DataGridColumnHeader>(false);
         AutomationProperties.IsOffscreenBehaviorProperty.OverrideDefaultValue<DataGridColumnHeader>(IsOffscreenBehavior
@@ -98,7 +98,7 @@ public class DataGridColumnHeader : ContentControl
         return new DataGridColumnHeaderAutomationPeer(this);
     }
 
-    private void OnAreSeparatorsVisibleChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleAreSeparatorsVisibleChanged(AvaloniaPropertyChangedEventArgs e)
     {
         if (!_areHandlersSuspended)
         {
@@ -115,6 +115,7 @@ public class DataGridColumnHeader : ContentControl
     }
 
     internal DataGridColumn? OwningColumn { get; set; }
+    
     internal DataGrid? OwningGrid => OwningColumn?.OwningGrid;
 
     internal int ColumnIndex
@@ -227,7 +228,7 @@ public class DataGridColumnHeader : ContentControl
             OwningColumn.CanUserSort)
         {
             var ea = new DataGridColumnEventArgs(OwningColumn);
-            OwningGrid.OnColumnSorting(ea);
+            OwningGrid.NotifyColumnSorting(ea);
 
             if (!ea.Handled && OwningGrid.DataConnection!.AllowSort &&
                 OwningGrid.DataConnection.SortDescriptions != null)
@@ -236,7 +237,7 @@ public class DataGridColumnHeader : ContentControl
                 // - SortDescriptionsCollection exists, and
                 // - the column's data type is comparable
 
-                DataGrid                owningGrid = OwningGrid;
+                var                     owningGrid = OwningGrid;
                 DataGridSortDescription newSort;
 
                 KeyboardHelper.GetMetaKeyState(this, keyModifiers, out bool ctrl, out bool shift);
@@ -314,10 +315,10 @@ public class DataGridColumnHeader : ContentControl
 
     private bool CanReorderColumn(DataGridColumn column)
     {
-        return OwningGrid != null && OwningGrid.CanUserReorderColumns
-                                  && !(column is DataGridFillerColumn)
-                                  && (column.CanUserReorderInternal.HasValue && column.CanUserReorderInternal.Value ||
-                                      !column.CanUserReorderInternal.HasValue);
+        return OwningGrid != null && 
+               OwningGrid.CanUserReorderColumns &&
+               !(column is DataGridFillerColumn) &&
+               (column.CanUserReorderInternal.HasValue && column.CanUserReorderInternal.Value || !column.CanUserReorderInternal.HasValue);
     }
 
     /// <summary>
@@ -424,7 +425,7 @@ public class DataGridColumnHeader : ContentControl
                         OwningColumn.DisplayIndex = targetIndex;
 
                         var ea = new DataGridColumnEventArgs(OwningColumn);
-                        OwningGrid.OnColumnReordered(ea);
+                        OwningGrid.NotifyColumnReordered(ea);
                     }
                 }
             }
@@ -584,7 +585,7 @@ public class DataGridColumnHeader : ContentControl
             {
                 return column;
             }
-            else if (mousePosition.X > columnMiddle && mousePosition.X < column.HeaderCell.Bounds.Width)
+            if (mousePosition.X > columnMiddle && mousePosition.X < column.HeaderCell.Bounds.Width)
             {
                 return OwningGrid.ColumnsInternal.GetNextVisibleColumn(column);
             }
@@ -608,10 +609,7 @@ public class DataGridColumnHeader : ContentControl
                 ? targetColumn.DisplayIndex - 1
                 : targetColumn.DisplayIndex;
         }
-        else
-        {
-            return OwningGrid!.Columns.Count - 1;
-        }
+        return OwningGrid!.Columns.Count - 1;
     }
 
     /// <summary>
@@ -678,6 +676,7 @@ public class DataGridColumnHeader : ContentControl
 
     private void HandleMouseMoveBeginReorder(Point mousePosition)
     {
+        Debug.Assert(OwningGrid != null);
         var dragIndicator = new DataGridColumnHeader
         {
             OwningColumn    = OwningColumn,
@@ -685,17 +684,17 @@ public class DataGridColumnHeader : ContentControl
             Content         = Content,
             ContentTemplate = ContentTemplate
         };
-        if (OwningGrid!.ColumnHeaderTheme is { } columnHeaderTheme)
+        if (OwningGrid.ColumnHeaderTheme is { } columnHeaderTheme)
         {
             dragIndicator.SetValue(ThemeProperty, columnHeaderTheme, BindingPriority.Template);
         }
 
         dragIndicator.PseudoClasses.Add(StdPseudoClass.DragIndicator);
 
-        Control? dropLocationIndicator = OwningGrid?.DropLocationIndicatorTemplate.Build();
+        var dropLocationIndicator = OwningGrid.DropLocationIndicatorTemplate.Build();
 
         // If the user didn't style the dropLocationIndicator's Height, default to the column header's height
-        if (dropLocationIndicator != null && double.IsNaN(dropLocationIndicator.Height))
+        if (double.IsNaN(dropLocationIndicator.Height))
         {
             dropLocationIndicator.Height = Bounds.Height;
         }
@@ -706,7 +705,7 @@ public class DataGridColumnHeader : ContentControl
             DropLocationIndicator = dropLocationIndicator,
             DragIndicator         = dragIndicator
         };
-        OwningGrid!.OnColumnReordering(columnReorderingEventArgs);
+        OwningGrid.NotifyColumnReordering(columnReorderingEventArgs);
         if (columnReorderingEventArgs.Cancel)
         {
             return;
@@ -717,8 +716,9 @@ public class DataGridColumnHeader : ContentControl
         _dragMode   = DragMode.Reorder;
         _dragStart  = mousePosition;
 
+        Debug.Assert(OwningGrid.ColumnHeaders != null);
         // Display the reordering thumb
-        OwningGrid.ColumnHeaders!.DragColumn           = OwningColumn;
+        OwningGrid.ColumnHeaders.DragColumn           = OwningColumn;
         OwningGrid.ColumnHeaders.DragIndicator         = columnReorderingEventArgs.DragIndicator;
         OwningGrid.ColumnHeaders.DropLocationIndicator = columnReorderingEventArgs.DropLocationIndicator;
 
@@ -823,8 +823,8 @@ public class DataGridColumnHeader : ContentControl
 
         // set mouse if we can resize column
 
-        double          distanceFromLeft  = mousePosition.X;
-        double          distanceFromRight = Bounds.Width - distanceFromLeft;
+        var             distanceFromLeft  = mousePosition.X;
+        var             distanceFromRight = Bounds.Width - distanceFromLeft;
         DataGridColumn? currentColumn     = OwningColumn;
         DataGridColumn? previousColumn    = null;
 

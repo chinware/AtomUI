@@ -219,7 +219,7 @@ public struct DataGridLength : IEquatable<DataGridLength>
     /// unit type, desired value, and display value.</returns>
     public static bool operator ==(DataGridLength gl1, DataGridLength gl2)
     {
-        return gl1.UnitType == gl2.UnitType && 
+        return gl1.UnitType == gl2.UnitType &&
                MathUtils.AreClose(gl1.Value, gl2.Value) &&
                MathUtils.AreClose(gl1.DesiredValue, gl2.DesiredValue) &&
                MathUtils.AreClose(gl1.DisplayValue, gl2.DisplayValue);
@@ -263,6 +263,7 @@ public struct DataGridLength : IEquatable<DataGridLength>
         {
             return this == dataGridLength;
         }
+
         return false;
     }
 

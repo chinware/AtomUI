@@ -28,7 +28,7 @@ internal static class TreeHelper
                 // Walk up the visual tree.  If we hit the root, try using the framework element's
                 // parent.  We do this because Popups behave differently with respect to the visual tree,
                 // and it could have a parent even if the VisualTreeHelper doesn't find it.
-                var parent = child?.GetVisualParent();
+                var parent = child.GetVisualParent();
                 if (parent == null)
                 {
                     if (child is Control childElement)

@@ -47,31 +47,31 @@ internal class DataGridCollectionViewGroupInternal : DataGridCollectionViewGroup
 
             if (_groupBy != null)
             {
-                ((INotifyPropertyChanged)_groupBy).PropertyChanged -= OnGroupByChanged;
+                ((INotifyPropertyChanged)_groupBy).PropertyChanged -= NotifyGroupByChanged;
             }
 
             _groupBy = value;
 
             if (_groupBy != null)
             {
-                ((INotifyPropertyChanged)_groupBy).PropertyChanged += OnGroupByChanged;
+                ((INotifyPropertyChanged)_groupBy).PropertyChanged += NotifyGroupByChanged;
             }
 
             if (oldIsBottomLevel != IsBottomLevel)
             {
-                OnPropertyChanged(new PropertyChangedEventArgs(nameof(IsBottomLevel)));
+                NotifyPropertyChanged(new PropertyChangedEventArgs(nameof(IsBottomLevel)));
             }
         }
     }
 
-    private void OnGroupByChanged(object? sender, PropertyChangedEventArgs e)
+    private void NotifyGroupByChanged(object? sender, PropertyChangedEventArgs e)
     {
-        OnGroupByChanged();
+        NotifyGroupByChanged();
     }
 
-    protected virtual void OnGroupByChanged()
+    protected virtual void NotifyGroupByChanged()
     {
-        _parentGroup?.OnGroupByChanged();
+        _parentGroup?.NotifyGroupByChanged();
     }
 
     /// <summary>
@@ -242,10 +242,7 @@ internal class DataGridCollectionViewGroupInternal : DataGridCollectionViewGroup
                 {
                     return subgroup.LeafAt(index);
                 }
-                else
-                {
-                    index -= subgroup.ItemCount;
-                }
+                index -= subgroup.ItemCount;
             }
             else
             {
@@ -254,10 +251,7 @@ internal class DataGridCollectionViewGroupInternal : DataGridCollectionViewGroup
                 {
                     return Items[k];
                 }
-                else
-                {
-                    index -= 1;
-                }
+                index -= 1;
             }
         }
 
@@ -286,14 +280,14 @@ internal class DataGridCollectionViewGroupInternal : DataGridCollectionViewGroup
             for (int k = 0, n = group.Items.Count; k < n; ++k)
             {
                 // if we've reached the item, move up to the next level
-                if ((index < 0 && Object.Equals(item, group.Items[k])) ||
+                if ((index < 0 && object.Equals(item, group.Items[k])) ||
                     index == k)
                 {
                     break;
                 }
 
                 // accumulate leaf count
-                DataGridCollectionViewGroupInternal? subgroup = group.Items[k] as DataGridCollectionViewGroupInternal;
+                var subgroup = group.Items[k] as DataGridCollectionViewGroupInternal;
                 result += subgroup?.ItemCount ?? 1;
             }
         }
@@ -331,10 +325,7 @@ internal class DataGridCollectionViewGroupInternal : DataGridCollectionViewGroup
                 {
                     return leaves;
                 }
-                else
-                {
-                    leaves += 1;
-                }
+                leaves += 1;
             }
         }
 

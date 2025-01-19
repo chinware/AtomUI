@@ -25,7 +25,7 @@ internal static class ValidationUtil
             memberNameCount++;
         }
 
-        return (memberNameCount == 0 && string.IsNullOrEmpty(target));
+        return memberNameCount == 0 && string.IsNullOrEmpty(target);
     }
 
     /// <summary>
@@ -104,7 +104,7 @@ internal static class ValidationUtil
     public static bool ContainsEqualValidationResult(this ICollection<ValidationResult> collection,
                                                      ValidationResult target)
     {
-        return (collection.FindEqualValidationResult(target) != null);
+        return collection.FindEqualValidationResult(target) != null;
     }
 
     /// <summary>
