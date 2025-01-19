@@ -20,10 +20,10 @@ public class DataGridRowHeader : ContentControl
     private const string ElementRootNamePC = "PART_Root";
     private Control? _rootElement;
 
-    public static readonly StyledProperty<IBrush> SeparatorBrushProperty =
-        AvaloniaProperty.Register<DataGridRowHeader, IBrush>(nameof(SeparatorBrush));
+    public static readonly StyledProperty<IBrush?> SeparatorBrushProperty =
+        AvaloniaProperty.Register<DataGridRowHeader, IBrush?>(nameof(SeparatorBrush));
 
-    public IBrush SeparatorBrush
+    public IBrush? SeparatorBrush
     {
         get => GetValue(SeparatorBrushProperty);
         set => SetValue(SeparatorBrushProperty, value);
@@ -47,7 +47,7 @@ public class DataGridRowHeader : ContentControl
     /// </summary>
     public DataGridRowHeader()
     {
-        AddHandler(PointerPressedEvent, DataGridRowHeader_PointerPressed, handledEventsToo: true);
+        AddHandler(PointerPressedEvent, HandleDataGridRowHeaderPointerPressed, handledEventsToo: true);
     }
 
     static DataGridRowHeader()
@@ -70,7 +70,7 @@ public class DataGridRowHeader : ContentControl
             {
                 return OwningRow.OwningGrid;
             }
-            else if (OwningRowGroupHeader != null)
+            if (OwningRowGroupHeader != null)
             {
                 return OwningRowGroupHeader.OwningGrid;
             }
@@ -87,7 +87,7 @@ public class DataGridRowHeader : ContentControl
             {
                 return OwningRow.Slot;
             }
-            else if (OwningRowGroupHeader?.RowGroupInfo != null)
+            if (OwningRowGroupHeader?.RowGroupInfo != null)
             {
                 return OwningRowGroupHeader.RowGroupInfo.Slot;
             }
@@ -124,9 +124,9 @@ public class DataGridRowHeader : ContentControl
             return base.MeasureOverride(availableSize);
         }
 
-        double measureHeight = double.IsNaN(OwningGrid.RowHeight) ? availableSize.Height : OwningGrid.RowHeight;
-        double measureWidth = double.IsNaN(OwningGrid.RowHeaderWidth) ? availableSize.Width : OwningGrid.RowHeaderWidth;
-        Size   measuredSize = base.MeasureOverride(new Size(measureWidth, measureHeight));
+        var measureHeight = double.IsNaN(OwningGrid.RowHeight) ? availableSize.Height : OwningGrid.RowHeight;
+        var measureWidth  = double.IsNaN(OwningGrid.RowHeaderWidth) ? availableSize.Width : OwningGrid.RowHeaderWidth;
+        var measuredSize  = base.MeasureOverride(new Size(measureWidth, measureHeight));
 
         // Auto grow the row header or force it to a fixed width based on the DataGrid's setting
         if (!double.IsNaN(OwningGrid.RowHeaderWidth) || measuredSize.Width < OwningGrid.ActualRowHeaderWidth)
@@ -180,7 +180,7 @@ public class DataGridRowHeader : ContentControl
     }
 
     //TODO TabStop
-    private void DataGridRowHeader_PointerPressed(object? sender, PointerPressedEventArgs e)
+    private void HandleDataGridRowHeaderPointerPressed(object? sender, PointerPressedEventArgs e)
     {
         if (OwningGrid == null)
         {
@@ -189,8 +189,8 @@ public class DataGridRowHeader : ContentControl
 
         if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
         {
+            //if (!e.Handled && OwningGrid.IsTabStop)
             if (!e.Handled)
-                //if (!e.Handled && OwningGrid.IsTabStop)
             {
                 OwningGrid.Focus();
             }

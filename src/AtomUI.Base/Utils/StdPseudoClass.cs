@@ -22,5 +22,6 @@ public static class StdPseudoClass
     public const string InActive = ":inactive";
     public const string Current = ":current";
     public const string Edited = ":edited";
+    public const string Editing = ":editing";
     public const string Invalid = ":invalid";
 }

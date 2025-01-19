@@ -116,11 +116,7 @@ public abstract class DataGridColumn : AvaloniaObject
     {
         get
         {
-            if (_headerCell == null)
-            {
-                _headerCell = CreateHeader();
-            }
-
+            _headerCell ??= CreateHeader();
             return _headerCell;
         }
     }
@@ -353,8 +349,8 @@ public abstract class DataGridColumn : AvaloniaObject
                     try
                     {
                         OwningGrid.InDisplayIndexAdjustments = true;
-                        OwningGrid.OnColumnDisplayIndexChanged(this);
-                        OwningGrid.OnColumnDisplayIndexChanged_PostNotification();
+                        OwningGrid.NotifyColumnDisplayIndexChanged(this);
+                        OwningGrid.NotifyColumnDisplayIndexChangedPostNotification();
                     }
                     finally
                     {
@@ -518,7 +514,7 @@ public abstract class DataGridColumn : AvaloniaObject
 
             if (!_minWidth.HasValue || !MathUtilities.AreClose(_minWidth.Value, value))
             {
-                double oldValue = ActualMinWidth;
+                var oldValue = ActualMinWidth;
                 _minWidth = value;
                 if (OwningGrid != null)
                 {
@@ -533,7 +529,7 @@ public abstract class DataGridColumn : AvaloniaObject
 
     public DataGridLength Width
     {
-        get => this.GetValue(WidthProperty);
+        get => GetValue(WidthProperty);
         set => SetValue(WidthProperty, value);
     }
 

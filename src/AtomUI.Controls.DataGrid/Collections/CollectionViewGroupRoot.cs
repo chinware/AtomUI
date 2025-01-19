@@ -162,7 +162,7 @@ internal class CollectionViewGroupRoot : DataGridCollectionViewGroupInternal, IN
     /// <summary>
     /// Notify host that a group description has changed somewhere in the tree
     /// </summary>
-    protected override void OnGroupByChanged()
+    protected override void NotifyGroupByChanged()
     {
         GroupDescriptionChanged?.Invoke(this, EventArgs.Empty);
     }

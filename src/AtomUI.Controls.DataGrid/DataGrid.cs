@@ -68,17 +68,16 @@ public partial class DataGrid : TemplatedControl
     /// some properties to be ordered at the beginning and some at the end.
     /// </remarks>
     private const int DefaultColumnDisplayOrder = 10000;
-
     private const double DefaultHorizontalGridLinesThickness = 1;
     private const double DefaultMinimumRowHeaderWidth = 4;
     private const double DefaultMinimumColumnHeaderHeight = 4;
-    internal const double DefaultMaximumStarColumnWidth = 10000;
-    internal const double DefaultMinimumStarColumnWidth = 0.001;
     private const double DefaultMouseWheelDelta = 50.0;
     private const double DefaultMaxHeadersThickness = 32768;
+    internal const double DefaultMaximumStarColumnWidth = 10000;
+    internal const double DefaultMinimumStarColumnWidth = 0.001;
 
     private const double DefaultRowHeight = 22;
-    internal const double DefaultRowGroupSublevelIndent = 20;
+    internal const double DefaultRowGroupSubLevelIndent = 20;
     private const double DefaultMinColumnWidth = 20;
     private const double DefaultMaxColumnWidth = double.PositiveInfinity;
 
@@ -658,6 +657,7 @@ public partial class DataGrid : TemplatedControl
 
     private void HandleAutoGenerateColumnsChanged(AvaloniaPropertyChangedEventArgs e)
     {
+        // TODO 需要审查，null 的情况当成 false 是否合适
         var value = (bool?)e.NewValue ?? false;
         if (value)
         {
@@ -757,7 +757,7 @@ public partial class DataGrid : TemplatedControl
             x.HandleVerticalGridLinesBrushChanged(e));
         SelectedIndexProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleSelectedIndexChanged(e));
         SelectedItemProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleSelectedItemChanged(e));
-        IsEnabledProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.DataGrid_IsEnabledChanged(e));
+        IsEnabledProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleDataGridIsEnabledChanged(e));
         AreRowGroupHeadersFrozenProperty.Changed.AddClassHandler<DataGrid>((x, e) =>
             x.HandleAreRowGroupHeadersFrozenChanged(e));
         RowDetailsTemplateProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleRowDetailsTemplateChanged(e));
@@ -788,7 +788,7 @@ public partial class DataGrid : TemplatedControl
         RowGroupHeadersTable = new IndexToValueTable<DataGridRowGroupInfo>();
 
         DisplayData                       =  new DataGridDisplayData(this);
-        ColumnsInternal                   =  CreateColumnsInstance();
+        ColumnsInternal                   =  new DataGridColumnCollection(this);
         ColumnsInternal.CollectionChanged += HandleColumnsInternalCollectionChanged;
 
         RowHeightEstimate        = DefaultRowHeight;
@@ -896,10 +896,11 @@ public partial class DataGrid : TemplatedControl
             CoerceSelectedItem();
 
             // Wrap an IEnumerable in an ICollectionView if it's not already one
-            bool setDefaultSelection = false;
-            var  newCollectionView   = newItemsSource as IDataGridCollectionView;
-            if (newCollectionView is not null)
+            var                     setDefaultSelection = false;
+            IDataGridCollectionView? newCollectionView   = null;
+            if (newItemsSource is IDataGridCollectionView dataGridCollectionView)
             {
+                newCollectionView = dataGridCollectionView;
                 setDefaultSelection = true;
             }
             else
@@ -955,7 +956,6 @@ public partial class DataGrid : TemplatedControl
             // can be set when the DataGrid is not part of the visual tree
             _measured = false;
             InvalidateMeasure();
-
             UpdatePseudoClasses();
         }
     }
@@ -972,8 +972,8 @@ public partial class DataGrid : TemplatedControl
 
     internal void UpdatePseudoClasses()
     {
-        PseudoClasses.Set(EmptyColumnsPC, ColumnsInternal.GetVisibleColumns().Any());
-        PseudoClasses.Set(EmptyRowsPC, DataConnection.Any());
+        PseudoClasses.Set(EmptyColumnsPC, !ColumnsInternal.GetVisibleColumns().Any());
+        PseudoClasses.Set(EmptyRowsPC, !DataConnection.Any());
     }
 
     private void HandleSelectedIndexChanged(AvaloniaPropertyChangedEventArgs e)
@@ -986,7 +986,7 @@ public partial class DataGrid : TemplatedControl
             // GetDataItem returns null if index is >= Count, we do not check newValue
             // against Count here to avoid enumerating through an Enumerable twice
             // Setting SelectedItem coerces the finally value of the SelectedIndex
-            var newSelectedItem = (index < 0) ? null : DataConnection.GetDataItem(index);
+            var newSelectedItem = index < 0 ? null : DataConnection.GetDataItem(index);
             if (SelectedItem != newSelectedItem)
             {
                 SetValueNoCallback(SelectedIndexProperty, index);
@@ -1032,7 +1032,7 @@ public partial class DataGrid : TemplatedControl
 
                     if (slot >= SlotCount || slot < -1)
                     {
-                        if (DataConnection.CollectionView != null)
+                        if (DataConnection.CollectionView is not null)
                         {
                             DataConnection.CollectionView.MoveCurrentToPosition(rowIndex);
                         }
@@ -1078,7 +1078,7 @@ public partial class DataGrid : TemplatedControl
     {
         if (_rowsPresenter != null)
         {
-            foreach (DataGridRow row in GetAllRows())
+            foreach (var row in GetAllRows())
             {
                 row.EnsureGridLines();
             }
@@ -1259,19 +1259,17 @@ public partial class DataGrid : TemplatedControl
     private void HandleColumnWidthChanged(AvaloniaPropertyChangedEventArgs e)
     {
         var lengthValue = (DataGridLength?)e.NewValue;
-
-        foreach (DataGridColumn column in ColumnsInternal.GetDisplayedColumns())
+        if (lengthValue.HasValue)
         {
-            if (column.InheritsWidth)
+            foreach (var column in ColumnsInternal.GetDisplayedColumns())
             {
-                if (lengthValue.HasValue)
+                if (column.InheritsWidth)
                 {
                     column.SetWidthInternalNoCallback(lengthValue.Value);
                 }
             }
+            EnsureHorizontalLayout();
         }
-
-        EnsureHorizontalLayout();
     }
 
     private void HandleCanUserResizeColumnsChanged(AvaloniaPropertyChangedEventArgs e)
@@ -2319,18 +2317,15 @@ public partial class DataGrid : TemplatedControl
             {
                 return 0;
             }
-            else if (x == null && y != null)
+            if (x == null && y != null)
             {
                 return -1;
             }
-            else if (x != null && y == null)
+            if (x != null && y == null)
             {
                 return 1;
             }
-            else
-            {
-                return (x!.DisplayIndexWithFiller < y!.DisplayIndexWithFiller) ? -1 : 1;
-            }
+            return x!.DisplayIndexWithFiller < y!.DisplayIndexWithFiller ? -1 : 1;
         }
     }
 
@@ -2349,8 +2344,7 @@ public partial class DataGrid : TemplatedControl
             _columnHeadersPresenter.Children.Clear();
         }
 
-        _columnHeadersPresenter =
-            e.NameScope.Find<DataGridColumnHeadersPresenter>(ElementColumnHeadersPresenterPart);
+        _columnHeadersPresenter = e.NameScope.Find<DataGridColumnHeadersPresenter>(ElementColumnHeadersPresenterPart);
 
         if (_columnHeadersPresenter != null)
         {
@@ -2360,7 +2354,7 @@ public partial class DataGrid : TemplatedControl
             // Columns were added before our Template was applied, add the ColumnHeaders now
             var sortedInternal = new List<DataGridColumn>(ColumnsItemsInternal);
             sortedInternal.Sort(new DisplayIndexComparer());
-            foreach (DataGridColumn column in sortedInternal)
+            foreach (var column in sortedInternal)
             {
                 InsertDisplayedColumnHeader(column);
             }
@@ -2401,7 +2395,7 @@ public partial class DataGrid : TemplatedControl
 
         if (_vScrollBar != null)
         {
-            _vScrollBar.Scroll -= VerticalScrollBar_Scroll;
+            _vScrollBar.Scroll -= HandleVerticalScrollBarScroll;
         }
 
         _vScrollBar = e.NameScope.Find<ScrollBar>(ElementVerticalScrollbarPart);
@@ -2412,7 +2406,7 @@ public partial class DataGrid : TemplatedControl
             _vScrollBar.Maximum     =  0.0;
             _vScrollBar.Orientation =  Orientation.Vertical;
             _vScrollBar.IsVisible   =  false;
-            _vScrollBar.Scroll      += VerticalScrollBar_Scroll;
+            _vScrollBar.Scroll      += HandleVerticalScrollBarScroll;
         }
 
         _topLeftCornerHeader = e.NameScope.Find<ContentControl>(ElementTopLeftCornerHeaderPart);
@@ -3108,7 +3102,7 @@ public partial class DataGrid : TemplatedControl
             {
                 Debug.Assert(_lostFocusActions != null);
                 _lostFocusActions.Enqueue(action);
-                editingElement.LostFocus += EditingElement_LostFocus;
+                editingElement.LostFocus += HandleEditingElementLostFocus;
                 //IsTabStop = true;
                 Focus();
                 return true;
@@ -3176,7 +3170,7 @@ public partial class DataGrid : TemplatedControl
         var itemCount = DataConnection.Count;
         if (_rowsPresenter != null && itemCount > 0)
         {
-            bool newDetailsVisibility = false;
+            var newDetailsVisibility = false;
             switch (newDetailsMode)
             {
                 case DataGridRowDetailsVisibilityMode.Visible:
@@ -3193,7 +3187,7 @@ public partial class DataGrid : TemplatedControl
             }
 
             var updated = false;
-            foreach (DataGridRow row in GetAllRows())
+            foreach (var row in GetAllRows())
             {
                 if (row.IsVisible)
                 {
@@ -3460,7 +3454,7 @@ public partial class DataGrid : TemplatedControl
         var isHorizontalScrollBarOverCells = IsHorizontalScrollBarOverCells;
         var isVerticalScrollBarOverCells   = IsVerticalScrollBarOverCells;
 
-        var    cellsWidth  = CellsWidth;
+        var cellsWidth  = CellsWidth;
         var cellsHeight = CellsEstimatedHeight;
 
         var allowHorizScrollbar  = false;
@@ -3697,11 +3691,11 @@ public partial class DataGrid : TemplatedControl
     /// </summary>
     /// <param name="sender">Editing element</param>
     /// <param name="e">RoutedEventArgs</param>
-    private void EditingElement_LostFocus(object? sender, RoutedEventArgs e)
+    private void HandleEditingElementLostFocus(object? sender, RoutedEventArgs e)
     {
         if (sender is Control editingElement)
         {
-            editingElement.LostFocus -= EditingElement_LostFocus;
+            editingElement.LostFocus -= HandleEditingElementLostFocus;
             if (EditingRow != null && _editingColumnIndex != -1)
             {
                 FocusEditingCell(true);
@@ -3889,7 +3883,7 @@ public partial class DataGrid : TemplatedControl
     }
 
     //TODO: Check
-    private void DataGrid_IsEnabledChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleDataGridIsEnabledChanged(AvaloniaPropertyChangedEventArgs e)
     {
     }
 
@@ -3986,7 +3980,7 @@ public partial class DataGrid : TemplatedControl
         //     {
         //         if (focusedObject is Control focusedElement)
         //         {
-        //             focusedElement.LostFocus += ExternalEditingElement_LostFocus;
+        //             focusedElement.LostFocus += ExternalHandleEditingElementLostFocus;
         //         }
         //     }
         // }
@@ -4306,11 +4300,11 @@ public partial class DataGrid : TemplatedControl
         }
     }
 
-    private void ExternalEditingElement_LostFocus(object? sender, RoutedEventArgs e)
+    private void ExternalHandleEditingElementLostFocus(object? sender, RoutedEventArgs e)
     {
         if (sender is Control element)
         {
-            element.LostFocus -= ExternalEditingElement_LostFocus;
+            element.LostFocus -= ExternalHandleEditingElementLostFocus;
             HandleLostFocus(sender, e);
         }
     }
@@ -5492,7 +5486,7 @@ public partial class DataGrid : TemplatedControl
 
     private bool ResetCurrentCellCore()
     {
-        return (CurrentColumnIndex == -1 || SetCurrentCellCore(-1, -1));
+        return CurrentColumnIndex == -1 || SetCurrentCellCore(-1, -1);
     }
 
     private void ResetEditingRow()
@@ -5849,7 +5843,7 @@ public partial class DataGrid : TemplatedControl
         }
     }
 
-    private void VerticalScrollBar_Scroll(object? sender, ScrollEventArgs e)
+    private void HandleVerticalScrollBarScroll(object? sender, ScrollEventArgs e)
     {
         ProcessVerticalScroll(e.ScrollEventType);
         VerticalScroll?.Invoke(sender, e);

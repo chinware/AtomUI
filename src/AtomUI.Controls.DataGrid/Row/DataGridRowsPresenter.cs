@@ -62,18 +62,13 @@ public sealed class DataGridRowsPresenter : Panel, IChildIndexProvider
         {
             return base.ArrangeOverride(finalSize);
         }
-
-        if (OwningGrid.RowsPresenterAvailableSize.HasValue)
-        {
-            var availableHeight = OwningGrid.RowsPresenterAvailableSize.Value.Height;
-        }
-
+        
         OwningGrid.OnFillerColumnWidthNeeded(finalSize.Width);
 
-        double rowDesiredWidth = OwningGrid.RowHeadersDesiredWidth +
-                                 OwningGrid.ColumnsInternal.VisibleEdgedColumnsWidth +
-                                 OwningGrid.ColumnsInternal.FillerColumn.FillerWidth;
-        double topEdge = -OwningGrid.NegVerticalOffset;
+        var rowDesiredWidth = OwningGrid.RowHeadersDesiredWidth +
+                              OwningGrid.ColumnsInternal.VisibleEdgedColumnsWidth +
+                              OwningGrid.ColumnsInternal.FillerColumn.FillerWidth;
+        var topEdge = -OwningGrid.NegVerticalOffset;
         foreach (var element in OwningGrid.DisplayData.GetScrollingElements())
         {
             if (element is DataGridRow row)
@@ -88,7 +83,7 @@ public sealed class DataGridRowsPresenter : Panel, IChildIndexProvider
             }
             else if (element is DataGridRowGroupHeader groupHeader)
             {
-                double leftEdge = (OwningGrid.AreRowGroupHeadersFrozen) ? 0 : -OwningGrid.HorizontalOffset;
+                var leftEdge = OwningGrid.AreRowGroupHeadersFrozen ? 0 : -OwningGrid.HorizontalOffset;
                 groupHeader.Arrange(new Rect(leftEdge, topEdge, rowDesiredWidth - leftEdge,
                     element.DesiredSize.Height));
             }
@@ -96,7 +91,7 @@ public sealed class DataGridRowsPresenter : Panel, IChildIndexProvider
             topEdge += element.DesiredSize.Height;
         }
 
-        double finalHeight = Math.Max(topEdge + OwningGrid.NegVerticalOffset, finalSize.Height);
+        var finalHeight = Math.Max(topEdge + OwningGrid.NegVerticalOffset, finalSize.Height);
 
         // Clip the RowsPresenter so rows cannot overlap other elements in certain styling scenarios
         var rg = new RectangleGeometry
@@ -124,7 +119,7 @@ public sealed class DataGridRowsPresenter : Panel, IChildIndexProvider
         {
             if (VisualRoot is TopLevel topLevel)
             {
-                double maxHeight = topLevel.IsArrangeValid
+                var maxHeight = topLevel.IsArrangeValid
                     ? topLevel.Bounds.Height
                     : LayoutHelper.ApplyLayoutConstraints(topLevel, availableSize).Height;
 
@@ -138,29 +133,27 @@ public sealed class DataGridRowsPresenter : Panel, IChildIndexProvider
         }
 
         // If the Width of our RowsPresenter changed then we need to invalidate our rows
-        bool invalidateRows = (!OwningGrid.RowsPresenterAvailableSize.HasValue ||
-                               !MathUtilities.AreClose(availableSize.Width, OwningGrid.RowsPresenterAvailableSize.Value.Width))
-                              && !double.IsInfinity(availableSize.Width);
+        var invalidateRows = (!OwningGrid.RowsPresenterAvailableSize.HasValue ||
+                              !MathUtilities.AreClose(availableSize.Width,
+                                  OwningGrid.RowsPresenterAvailableSize.Value.Width))
+                             && !double.IsInfinity(availableSize.Width);
 
         // The DataGrid uses the RowsPresenter available size in order to autogrow
         // and calculate the scrollbars
         OwningGrid.RowsPresenterAvailableSize = availableSize;
 
-        OwningGrid.OnRowsMeasure();
+        OwningGrid.NotifyRowsMeasure();
 
-        double totalHeight     = -OwningGrid.NegVerticalOffset;
-        double totalCellsWidth = OwningGrid.ColumnsInternal.VisibleEdgedColumnsWidth;
+        var totalHeight     = -OwningGrid.NegVerticalOffset;
+        var totalCellsWidth = OwningGrid.ColumnsInternal.VisibleEdgedColumnsWidth;
 
-        double headerWidth = 0;
+        var headerWidth = 0d;
         foreach (var element in OwningGrid.DisplayData.GetScrollingElements())
         {
             var row = element as DataGridRow;
-            if (row != null)
+            if (row != null && invalidateRows)
             {
-                if (invalidateRows)
-                {
-                    row.InvalidateMeasure();
-                }
+                row.InvalidateMeasure();
             }
 
             element.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
@@ -198,11 +191,11 @@ public sealed class DataGridRowsPresenter : Panel, IChildIndexProvider
             {
                 if (element is DataGridRow row)
                 {
-                    Debug.WriteLine(String.Format(System.Globalization.CultureInfo.InvariantCulture, "Slot: {0} Row: {1} Visibility: {2} ", row.Slot, row.Index, row.IsVisible));
+                    Debug.WriteLine(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Slot: {0} Row: {1} Visibility: {2} ", row.Slot, row.Index, row.IsVisible));
                 }
                 else if (element is DataGridRowGroupHeader groupHeader)
                 {
-                    Debug.WriteLine(String.Format(System.Globalization.CultureInfo.InvariantCulture, "Slot: {0} GroupHeader: {1} Visibility: {2}", groupHeader.RowGroupInfo?.Slot, groupHeader.RowGroupInfo?.CollectionViewGroup?.Key, groupHeader.IsVisible));
+                    Debug.WriteLine(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Slot: {0} GroupHeader: {1} Visibility: {2}", groupHeader.RowGroupInfo?.Slot, groupHeader.RowGroupInfo?.CollectionViewGroup?.Key, groupHeader.IsVisible));
                 }
             }
         }

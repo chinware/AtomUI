@@ -59,7 +59,7 @@ public sealed class DataGridColumnHeadersPresenter : Panel, IChildIndexProvider
     /// </summary>
     internal Control? DropLocationIndicator
     {
-        get { return _dropLocationIndicator; }
+        get => _dropLocationIndicator;
 
         set
         {
@@ -425,7 +425,6 @@ public sealed class DataGridColumnHeadersPresenter : Panel, IChildIndexProvider
     protected override void ChildrenChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
         base.ChildrenChanged(sender, e);
-
         InvalidateChildIndex();
     }
 

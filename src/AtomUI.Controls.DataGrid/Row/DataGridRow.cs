@@ -138,7 +138,7 @@ public class DataGridRow : TemplatedControl
         HeaderProperty.Changed.AddClassHandler<DataGridRow>((x, e) => x.OnHeaderChanged(e));
         DetailsTemplateProperty.Changed.AddClassHandler<DataGridRow>((x, e) => x.OnDetailsTemplateChanged(e));
         AreDetailsVisibleProperty.Changed.AddClassHandler<DataGridRow>((x, e) => x.OnAreDetailsVisibleChanged(e));
-        PointerPressedEvent.AddClassHandler<DataGridRow>((x, e) => x.DataGridRow_PointerPressed(e),
+        PointerPressedEvent.AddClassHandler<DataGridRow>((x, e) => x.HandleDataGridRowPointerPressed(e),
             handledEventsToo: true);
         IsTabStopProperty.OverrideDefaultValue<DataGridRow>(false);
         AutomationProperties.IsOffscreenBehaviorProperty
@@ -160,8 +160,8 @@ public class DataGridRow : TemplatedControl
         _detailsLoaded            =  false;
         _appliedDetailsVisibility =  false;
         Cells                     =  new DataGridCellCollection(this);
-        Cells.CellAdded           += DataGridCellCollection_CellAdded;
-        Cells.CellRemoved         += DataGridCellCollection_CellRemoved;
+        Cells.CellAdded           += HandleDataGridCellCollectionCellAdded;
+        Cells.CellRemoved         += HandleDataGridCellCollectionCellRemoved;
     }
 
     protected override AutomationPeer OnCreateAutomationPeer()
@@ -198,7 +198,7 @@ public class DataGridRow : TemplatedControl
 
         if (!_areHandlersSuspended && OwningGrid != null)
         {
-            IDataTemplate? ActualDetailsTemplate(IDataTemplate? template) => (template ?? OwningGrid.RowDetailsTemplate);
+            IDataTemplate? ActualDetailsTemplate(IDataTemplate? template) => template ?? OwningGrid.RowDetailsTemplate;
 
             // We don't always want to apply the new Template because they might have set the same one
             // we inherited from the DataGrid
@@ -223,9 +223,12 @@ public class DataGridRow : TemplatedControl
                 throw DataGridError.DataGridRow.InvalidRowIndexCannotCompleteOperation();
             }
 
-            var newValue = (bool?)e.NewValue ?? false;
-            OwningGrid.HandleRowDetailsVisibilityPropertyChanged(Index, newValue);
-            SetDetailsVisibilityInternal(newValue, raiseNotification: true, animate: true);
+            var newValue = (bool?)e.NewValue;
+            if (newValue != null)
+            {
+                OwningGrid.HandleRowDetailsVisibilityPropertyChanged(Index, newValue.Value);
+                SetDetailsVisibilityInternal(newValue.Value, raiseNotification: true, animate: true);
+            }
         }
     }
 
@@ -303,7 +306,7 @@ public class DataGridRow : TemplatedControl
 
     internal bool IsMouseOver
     {
-        get { return OwningGrid != null && OwningGrid.MouseOverRowIndex == Index; }
+        get => OwningGrid != null && OwningGrid.MouseOverRowIndex == Index;
 
         set
         {
@@ -383,29 +386,14 @@ public class DataGridRow : TemplatedControl
             {
                 return Height;
             }
-            else if (_detailsElement != null && _appliedDetailsVisibility == true && _appliedDetailsTemplate != null)
+            if (_detailsElement != null && _appliedDetailsVisibility == true && _appliedDetailsTemplate != null)
             {
                 Debug.Assert(!double.IsNaN(_detailsElement.ContentHeight));
                 Debug.Assert(!double.IsNaN(_detailsDesiredHeight));
                 return DesiredSize.Height + _detailsDesiredHeight - _detailsElement.ContentHeight;
             }
-            else
-            {
-                return DesiredSize.Height;
-            }
+            return DesiredSize.Height;
         }
-    }
-
-    /// <summary>
-    /// Returns the index of the current row.
-    /// </summary>
-    /// <returns>
-    /// The index of the current row.
-    /// </returns>
-    [Obsolete("This API is going to be removed in a future version. Use the Index property instead.")]
-    public int GetIndex()
-    {
-        return Index;
     }
 
     /// <summary>
@@ -518,7 +506,7 @@ public class DataGridRow : TemplatedControl
             _detailsElement.InvalidateMeasure();
         }
 
-        Size desiredSize = base.MeasureOverride(availableSize);
+        var desiredSize = base.MeasureOverride(availableSize);
         return desiredSize.WithWidth(Math.Max(desiredSize.Width, OwningGrid.CellsWidth));
     }
 
@@ -533,7 +521,7 @@ public class DataGridRow : TemplatedControl
             ApplyState();
         }
 
-        bool updateVerticalScrollBar = false;
+        var updateVerticalScrollBar = false;
         if (_cellsElement != null)
         {
             // If we're applying a new template, we  want to remove the cells from the previous _cellsElement
@@ -625,8 +613,8 @@ public class DataGridRow : TemplatedControl
         {
             var isSelected = Slot != -1 && OwningGrid.GetRowSelection(Slot);
             IsSelected = isSelected;
-            PseudoClasses.Set(":editing", IsEditing);
-            PseudoClasses.Set(":invalid", !IsValid);
+            PseudoClasses.Set(StdPseudoClass.Editing, IsEditing);
+            PseudoClasses.Set(StdPseudoClass.Invalid, !IsValid);
             ApplyHeaderStatus();
         }
     }
@@ -736,17 +724,17 @@ public class DataGridRow : TemplatedControl
         _bottomGridLine = null;
     }
 
-    private void DataGridCellCollection_CellAdded(object? sender, DataGridCellEventArgs e)
+    private void HandleDataGridCellCollectionCellAdded(object? sender, DataGridCellEventArgs e)
     {
         _cellsElement?.Children.Add(e.Cell);
     }
 
-    private void DataGridCellCollection_CellRemoved(object? sender, DataGridCellEventArgs e)
+    private void HandleDataGridCellCollectionCellRemoved(object? sender, DataGridCellEventArgs e)
     {
         _cellsElement?.Children.Remove(e.Cell);
     }
 
-    private void DataGridRow_PointerPressed(PointerPressedEventArgs e)
+    private void HandleDataGridRowPointerPressed(PointerPressedEventArgs e)
     {
         if (!e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
         {
@@ -835,14 +823,13 @@ public class DataGridRow : TemplatedControl
     //TODO Animation
     internal void EnsureDetailsContentHeight()
     {
-        if (_detailsElement != null
-            && _detailsContent != null
-            && double.IsNaN(_detailsContent.Height)
-            && AreDetailsVisible
-            && !double.IsNaN(_detailsDesiredHeight)
-            && !MathUtilities.AreClose(_detailsContent.Bounds.Inflate(_detailsContent.Margin).Height,
-                _detailsDesiredHeight)
-            && Slot != -1)
+        if (_detailsElement != null && 
+            _detailsContent != null &&
+            double.IsNaN(_detailsContent.Height) &&
+            AreDetailsVisible &&
+            !double.IsNaN(_detailsDesiredHeight) &&
+            !MathUtilities.AreClose(_detailsContent.Bounds.Inflate(_detailsContent.Margin).Height, _detailsDesiredHeight) &&
+            Slot != -1)
         {
             _detailsDesiredHeight = _detailsContent.Bounds.Inflate(_detailsContent.Margin).Height;
 
@@ -876,7 +863,7 @@ public class DataGridRow : TemplatedControl
     double? _previousDetailsHeight = null;
 
     //TODO Animation
-    private void DetailsContent_HeightChanged(double newValue)
+    private void HandleDetailsContentHeightChanged(double newValue)
     {
         if (_previousDetailsHeight.HasValue)
         {
@@ -903,25 +890,25 @@ public class DataGridRow : TemplatedControl
         }
     }
 
-    private void DetailsContent_SizeChanged(Rect newValue)
+    private void HandleDetailsContentSizeChanged(Rect newValue)
     {
-        DetailsContent_HeightChanged(newValue.Height);
+        HandleDetailsContentHeightChanged(newValue.Height);
     }
 
-    private void DetailsContent_MarginChanged(Thickness newValue)
+    private void HandleDetailsContentMarginChanged(Thickness newValue)
     {
         if (_detailsContent != null)
-            DetailsContent_SizeChanged(_detailsContent.Bounds.Inflate(newValue));
+            HandleDetailsContentSizeChanged(_detailsContent.Bounds.Inflate(newValue));
     }
 
-    private void DetailsContent_LayoutUpdated(object? sender, EventArgs e)
+    private void HandleDetailsContentLayoutUpdated(object? sender, EventArgs e)
     {
         if (_detailsContent != null)
         {
             var margin = _detailsContent.Margin;
             var height = _detailsContent.DesiredSize.Height + margin.Top + margin.Bottom;
 
-            DetailsContent_HeightChanged(height);
+            HandleDetailsContentHeightChanged(height);
         }
     }
 
@@ -1008,19 +995,19 @@ public class DataGridRow : TemplatedControl
                 {
                     if (_detailsContent is Layoutable layoutableContent)
                     {
-                        layoutableContent.LayoutUpdated += DetailsContent_LayoutUpdated;
+                        layoutableContent.LayoutUpdated += HandleDetailsContentLayoutUpdated;
 
                         _detailsContentSizeSubscription = new CompositeDisposable(2)
                         {
-                            Disposable.Create(() => layoutableContent.LayoutUpdated -= DetailsContent_LayoutUpdated),
-                            _detailsContent.GetObservable(MarginProperty).Subscribe(DetailsContent_MarginChanged)
+                            Disposable.Create(() => layoutableContent.LayoutUpdated -= HandleDetailsContentLayoutUpdated),
+                            _detailsContent.GetObservable(MarginProperty).Subscribe(HandleDetailsContentMarginChanged)
                         };
                     }
                     else
                     {
                         _detailsContentSizeSubscription =
                             _detailsContent.GetObservable(MarginProperty)
-                                           .Subscribe(DetailsContent_MarginChanged);
+                                           .Subscribe(HandleDetailsContentMarginChanged);
                     }
 
                     _detailsElement.Children.Add(_detailsContent);

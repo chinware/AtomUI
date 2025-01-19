@@ -73,9 +73,9 @@ public sealed class DataGridDetailsPresenter : Panel
 
         // Details should not extend through the indented area
         width -= rowGroupSpacerWidth;
-        double height = Math.Max(0, double.IsNaN(ContentHeight) ? 0 : ContentHeight);
+        var height = Math.Max(0, double.IsNaN(ContentHeight) ? 0 : ContentHeight);
 
-        foreach (Control child in Children)
+        foreach (var child in Children)
         {
             child.Arrange(new Rect(leftEdge, 0, width, height));
         }

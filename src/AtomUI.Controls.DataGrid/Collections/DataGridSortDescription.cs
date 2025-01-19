@@ -14,7 +14,9 @@ namespace AtomUI.Controls.Collections;
 public abstract class DataGridSortDescription
 {
     public virtual string? PropertyPath => null;
+    
     public virtual ListSortDirection Direction => ListSortDirection.Ascending;
+    
     public bool HasPropertyPath => !string.IsNullOrEmpty(PropertyPath);
 
     public abstract IComparer<object> Comparer { get; }
@@ -164,9 +166,10 @@ public abstract class DataGridSortDescription
         private IComparer GetComparerForType(Type type)
         {
             if (type == typeof(string))
+            {
                 return _cultureSensitiveComparer.Value;
-            else
-                return GetComparerForNotStringType(type);
+            }
+            return GetComparerForNotStringType(type);
         }
 
         internal static IComparer GetComparerForNotStringType(Type type)
@@ -185,15 +188,12 @@ public abstract class DataGridSortDescription
                         return (x as IComparable)!.CompareTo(y);
                     });
                 }
-                else if (type.IsAssignableTo(typeof(IComparable)))
+                if (type.IsAssignableTo(typeof(IComparable)))
                 {
                     //enum should be here
                     return Comparer<object>.Create((x, y) => (x as IComparable)!.CompareTo(y));
                 }
-                else
-                {
-                    return Comparer<object>.Create((x, y) => 0); //avoid using reflection to avoid crash on AOT
-                }
+                return Comparer<object>.Create((x, y) => 0); //avoid using reflection to avoid crash on AOT
             }
             return (typeof(Comparer<>).MakeGenericType(type).GetProperty("Default")!.GetValue(null, null) as
                 IComparer)!;
@@ -267,10 +267,7 @@ public abstract class DataGridSortDescription
             {
                 return seq.ThenByDescending(o => GetValue(o), InternalComparer);
             }
-            else
-            {
-                return seq.ThenBy(o => GetValue(o), InternalComparer);
-            }
+            return seq.ThenBy(o => GetValue(o), InternalComparer);
         }
 
         public override DataGridSortDescription SwitchSortDirection()
@@ -323,9 +320,10 @@ public class DataGridComparerSortDescription : DataGridSortDescription
         int result = _innerComparer.Compare(x, y);
 
         if (Direction == ListSortDirection.Descending)
+        {
             return -result;
-        else
-            return result;
+        }
+        return result;
     }
 
     public override DataGridSortDescription SwitchSortDirection()

@@ -87,7 +87,7 @@ public class DataGridRowGroupHeader : TemplatedControl
     public static readonly StyledProperty<double> SublevelIndentProperty =
         AvaloniaProperty.Register<DataGridRowGroupHeader, double>(
             nameof(SublevelIndent),
-            defaultValue: DataGrid.DefaultRowGroupSublevelIndent,
+            defaultValue: DataGrid.DefaultRowGroupSubLevelIndent,
             validate: IsValidSublevelIndent);
 
     private static bool IsValidSublevelIndent(double value)
@@ -125,7 +125,7 @@ public class DataGridRowGroupHeader : TemplatedControl
     /// </summary>
     public DataGridRowGroupHeader()
     {
-        AddHandler(InputElement.PointerPressedEvent, (s, e) => DataGridRowGroupHeader_PointerPressed(e),
+        AddHandler(InputElement.PointerPressedEvent, (s, e) => HandleDataGridRowGroupHeaderPointerPressed(e),
             handledEventsToo: true);
     }
 
@@ -250,7 +250,7 @@ public class DataGridRowGroupHeader : TemplatedControl
                 }
 
                 // Clip the non-frozen elements so they don't overlap the frozen ones
-                foreach (Control child in _rootElement.Children)
+                foreach (var child in _rootElement.Children)
                 {
                     if (!DataGridFrozenGrid.GetIsFrozen(child))
                     {
@@ -275,7 +275,7 @@ public class DataGridRowGroupHeader : TemplatedControl
     }
 
     //TODO TabStop
-    private void DataGridRowGroupHeader_PointerPressed(PointerPressedEventArgs e)
+    private void HandleDataGridRowGroupHeaderPointerPressed(PointerPressedEventArgs e)
     {
         if (OwningGrid == null)
         {

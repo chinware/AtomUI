@@ -9,6 +9,9 @@ using AtomUI.Controls.Utils;
 
 namespace AtomUI.Controls;
 
+/// <summary>
+/// 作为数据源和 UI 之间桥梁，兼容多种类型的数据源
+/// </summary>
 internal class DataGridDataConnection
 {
     private int _backupSlotForCurrentChanged;
@@ -18,13 +21,13 @@ internal class DataGridDataConnection
     private Type? _dataType;
     private bool _expectingCurrentChanged;
     private object? _itemToSelectOnCurrentChanged;
-    private DataGrid _owner;
+    private DataGrid _ownerGrid;
     private bool _scrollForCurrentChanged;
     private DataGridSelectionAction _selectionActionForCurrentChanged;
 
-    public DataGridDataConnection(DataGrid owner)
+    public DataGridDataConnection(DataGrid ownerGrid)
     {
-        _owner = owner;
+        _ownerGrid = ownerGrid;
     }
 
     public bool AllowEdit
@@ -96,9 +99,9 @@ internal class DataGridDataConnection
             // We need to use the raw ItemsSource as opposed to DataSource because DataSource
             // may be the ItemsSource wrapped in a collection view, in which case we wouldn't
             // be able to take T to be the type if we're given IEnumerable<T>
-            if (_dataType == null && _owner.ItemsSource != null)
+            if (_dataType == null && _ownerGrid.ItemsSource != null)
             {
-                _dataType = _owner.ItemsSource.GetItemType();
+                _dataType = _ownerGrid.ItemsSource.GetItemType();
             }
 
             return _dataType;
@@ -113,6 +116,7 @@ internal class DataGridDataConnection
                                CollectionView.GroupingDepth > 0;
 
     public IList? List => DataSource as IList;
+    
     public bool ShouldAutoGenerateColumns => false;
 
     public IDataGridCollectionView? CollectionView => DataSource as IDataGridCollectionView;
@@ -169,7 +173,7 @@ internal class DataGridDataConnection
         var editableCollectionView = EditableCollectionView;
         if (editableCollectionView != null)
         {
-            if (editableCollectionView.IsEditingItem && (dataItem == editableCollectionView.CurrentEditItem))
+            if (editableCollectionView.IsEditingItem && dataItem == editableCollectionView.CurrentEditItem)
             {
                 return true;
             }
@@ -251,7 +255,7 @@ internal class DataGridDataConnection
         {
             // IEditableCollectionView.CommitEdit can potentially change currency. If it does,
             // we don't want to attempt a second commit inside our CurrentChanging event handler.
-            _owner.NoCurrentCellChangeCount++;
+            _ownerGrid.NoCurrentCellChangeCount++;
             CommittingEdit = true;
             try
             {
@@ -266,7 +270,7 @@ internal class DataGridDataConnection
             }
             finally
             {
-                _owner.NoCurrentCellChangeCount--;
+                _ownerGrid.NoCurrentCellChangeCount--;
                 CommittingEdit = false;
             }
 
@@ -288,19 +292,19 @@ internal class DataGridDataConnection
 
         if (DataSource is DataGridCollectionView collectionView)
         {
-            return (index < collectionView.Count) ? collectionView.GetItemAt(index) : null;
+            return index < collectionView.Count ? collectionView.GetItemAt(index) : null;
         }
 
         var list = List;
         if (list != null)
         {
-            return (index < list.Count) ? list[index] : null;
+            return index < list.Count ? list[index] : null;
         }
 
         var enumerable = DataSource;
         if (enumerable != null)
         {
-            IEnumerator enumerator = enumerable.GetEnumerator();
+            var enumerator = enumerable.GetEnumerator();
             try
             {
                 int i = -1;
@@ -335,7 +339,7 @@ internal class DataGridDataConnection
                 Type          propertyType  = DataType;
                 PropertyInfo? propertyInfo  = null;
                 List<string>  propertyNames = TypeHelper.SplitPropertyPath(propertyName);
-                for (int i = 0; i < propertyNames.Count; i++)
+                for (var i = 0; i < propertyNames.Count; i++)
                 {
                     propertyInfo = propertyType.GetPropertyOrIndexer(propertyNames[i], out _);
                     if (propertyInfo == null || propertyType.GetIsReadOnly() || propertyInfo.GetIsReadOnly())
@@ -360,7 +364,7 @@ internal class DataGridDataConnection
 
                 return propertyInfo == null || !propertyInfo.CanWrite || !AllowEdit || !CanEdit(propertyType);
             }
-            else if (DataType.GetIsReadOnly())
+            if (DataType.GetIsReadOnly())
             {
                 return true;
             }
@@ -385,8 +389,8 @@ internal class DataGridDataConnection
         var enumerable = DataSource;
         if (enumerable != null && dataItem != null)
         {
-            int index = 0;
-            foreach (object dataItemTmp in enumerable)
+            var index = 0;
+            foreach (var dataItemTmp in enumerable)
             {
                 if ((dataItem is null && dataItemTmp is null) ||
                     (dataItem is not null && dataItem.Equals(dataItemTmp)))
@@ -501,30 +505,30 @@ internal class DataGridDataConnection
             // this case, we need to update the item.
             if (_itemToSelectOnCurrentChanged is DataGridCollectionViewGroup collectionViewGroup)
             {
-                var groupInfo = _owner.RowGroupInfoFromCollectionViewGroup(collectionViewGroup);
+                var groupInfo = _ownerGrid.RowGroupInfoFromCollectionViewGroup(collectionViewGroup);
                 if (groupInfo == null)
                 {
                     // Move to the next slot if the target slot isn't visible                        
-                    if (!_owner.IsSlotVisible(_backupSlotForCurrentChanged))
+                    if (!_ownerGrid.IsSlotVisible(_backupSlotForCurrentChanged))
                     {
-                        _backupSlotForCurrentChanged = _owner.GetNextVisibleSlot(_backupSlotForCurrentChanged);
+                        _backupSlotForCurrentChanged = _ownerGrid.GetNextVisibleSlot(_backupSlotForCurrentChanged);
                     }
 
                     // Move to the next best slot if we've moved past all the slots.  This could happen if multiple
                     // groups were removed.
-                    if (_backupSlotForCurrentChanged >= _owner.SlotCount)
+                    if (_backupSlotForCurrentChanged >= _ownerGrid.SlotCount)
                     {
-                        _backupSlotForCurrentChanged = _owner.GetPreviousVisibleSlot(_owner.SlotCount);
+                        _backupSlotForCurrentChanged = _ownerGrid.GetPreviousVisibleSlot(_ownerGrid.SlotCount);
                     }
 
                     // Update the itemToSelect
                     int newCurrentPosition = -1;
                     _itemToSelectOnCurrentChanged =
-                        _owner.ItemFromSlot(_backupSlotForCurrentChanged, ref newCurrentPosition);
+                        _ownerGrid.ItemFromSlot(_backupSlotForCurrentChanged, ref newCurrentPosition);
                 }
             }
 
-            _owner.ProcessSelectionAndCurrency(
+            _ownerGrid.ProcessSelectionAndCurrency(
                 _columnForCurrentChanged,
                 _itemToSelectOnCurrentChanged,
                 _backupSlotForCurrentChanged,
@@ -533,16 +537,16 @@ internal class DataGridDataConnection
         }
         else if (CollectionView != null)
         {
-            _owner.UpdateStateOnCurrentChanged(CollectionView.CurrentItem!, CollectionView.CurrentPosition);
+            _ownerGrid.UpdateStateOnCurrentChanged(CollectionView.CurrentItem!, CollectionView.CurrentPosition);
         }
     }
 
     private void HandleCollectionViewCurrentChanging(object? sender, DataGridCurrentChangingEventArgs e)
     {
-        if (_owner.NoCurrentCellChangeCount == 0 &&
+        if (_ownerGrid.NoCurrentCellChangeCount == 0 &&
             !_expectingCurrentChanged &&
             !CommittingEdit &&
-            !_owner.CommitEdit())
+            !_ownerGrid.CommitEdit())
         {
             // If CommitEdit failed, then the user has most likely input invalid data.
             // We should cancel the current change if we can, otherwise we have to abort the edit.
@@ -552,20 +556,20 @@ internal class DataGridDataConnection
             }
             else
             {
-                _owner.CancelEdit(DataGridEditingUnit.Row, false);
+                _ownerGrid.CancelEdit(DataGridEditingUnit.Row, false);
             }
         }
     }
 
     private void HandleCollectionViewSortDescriptionsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        if (_owner.ColumnsItemsInternal.Count == 0)
+        if (_ownerGrid.ColumnsItemsInternal.Count == 0)
         {
             return;
         }
 
         // refresh sort description
-        foreach (DataGridColumn column in _owner.ColumnsItemsInternal)
+        foreach (DataGridColumn column in _ownerGrid.ColumnsItemsInternal)
         {
             column.HeaderCell!.UpdatePseudoClasses();
         }
@@ -573,7 +577,7 @@ internal class DataGridDataConnection
 
     private void HandleNotifyingDataSourceCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        if (_owner.LoadingOrUnloadingRow)
+        if (_ownerGrid.LoadingOrUnloadingRow)
         {
             throw DataGridError.DataGrid.CannotChangeItemsWhenLoadingRows();
         }
@@ -585,14 +589,14 @@ internal class DataGridDataConnection
                 if (ShouldAutoGenerateColumns)
                 {
                     // The columns are also affected (not just rows) in this case so we need to reset everything
-                    _owner.InitializeElements(false /*recycleRows*/);
+                    _ownerGrid.InitializeElements(false /*recycleRows*/);
                 }
                 else if (!IsGrouping)
                 {
                     // If we're grouping then we handle this through the CollectionViewGroup notifications
                     // According to WPF, Add is a single item operation
                     Debug.Assert(e.NewItems.Count == 1);
-                    _owner.InsertRowAt(e.NewStartingIndex);
+                    _ownerGrid.InsertRowAt(e.NewStartingIndex);
                 }
 
                 break;
@@ -611,13 +615,13 @@ internal class DataGridDataConnection
                     foreach (var item in e.OldItems)
                     {
                         Debug.Assert(item != null);
-                        _owner.RemoveRowAt(e.OldStartingIndex, item);
+                        _ownerGrid.RemoveRowAt(e.OldStartingIndex, item);
                     }
                 }
 
                 break;
             case NotifyCollectionChangedAction.Replace:
-                throw new NotSupportedException(); // 
+                throw new NotSupportedException();
 
             case NotifyCollectionChangedAction.Reset:
                 // Did the data type change during the reset?  If not, we can recycle
@@ -628,17 +632,17 @@ internal class DataGridDataConnection
                 if (previousDataType != DataType)
                 {
                     ClearDataProperties();
-                    _owner.InitializeElements(false /*recycleRows*/);
+                    _ownerGrid.InitializeElements(false /*recycleRows*/);
                 }
                 else
                 {
-                    _owner.InitializeElements(!ShouldAutoGenerateColumns /*recycleRows*/);
+                    _ownerGrid.InitializeElements(!ShouldAutoGenerateColumns /*recycleRows*/);
                 }
 
                 break;
         }
 
-        _owner.UpdatePseudoClasses();
+        _ownerGrid.UpdatePseudoClasses();
     }
 
     private void UpdateDataProperties()

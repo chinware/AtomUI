@@ -40,6 +40,7 @@ internal class DataGridSelectedItemsCollection : IList
     }
 
     public bool IsFixedSize => false;
+    
     public bool IsReadOnly => false;
 
     public int Add(object? dataItem)
@@ -445,7 +446,7 @@ internal class DataGridSelectedItemsCollection : IList
         else
         {
             var tempSelectedItemsCache = new List<object>();
-            foreach (object item in _selectedItemsCache)
+            foreach (var item in _selectedItemsCache)
             {
                 int index = OwningGrid.DataConnection!.IndexOf(item);
                 if (index != -1)
@@ -455,7 +456,7 @@ internal class DataGridSelectedItemsCollection : IList
                 }
             }
 
-            foreach (object item in _oldSelectedItemsCache)
+            foreach (var item in _oldSelectedItemsCache)
             {
                 int index = OwningGrid.DataConnection!.IndexOf(item);
                 if (index == -1)

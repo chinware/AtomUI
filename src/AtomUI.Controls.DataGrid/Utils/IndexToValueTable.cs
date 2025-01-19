@@ -3,6 +3,7 @@
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
 // All other rights reserved.
 
+using System.Collections;
 using System.Diagnostics;
 
 namespace AtomUI.Controls.Utils;
@@ -829,7 +830,7 @@ internal class IndexToValueTable<T> : IEnumerable<Range<T>>
         return _list.GetEnumerator();
     }
 
-    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+    IEnumerator System.Collections.IEnumerable.GetEnumerator()
     {
         return _list.GetEnumerator();
     }
