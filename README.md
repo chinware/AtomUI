@@ -33,7 +33,7 @@
 
 Documentation Language: [English](README.md) | [简体中文](README.zh-CN.md)
 
-<img src="./resources/images/readme/Release.png"/>
+<img src="./resources/images/readme/ChineseNewYear.jpg"/>
 
 #### Introduce
 
