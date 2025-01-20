@@ -1,5 +1,6 @@
 ﻿using AtomUI.Theme;
 using AtomUI.Theme.Styling;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
@@ -17,27 +18,28 @@ internal class CheckBoxTheme : BaseControlTheme
 {
     internal const string FramePart = "PART_Frame";
     internal const string IndicatorPart = "PART_Indicator";
-    internal const string ContentPresenterPart = "PART_ContentPresenter";
+    internal const string LabelTextPart = "PART_LabelText";
     
     public CheckBoxTheme()
         : base(typeof(CheckBox))
     {
     }
     
-    protected override IControlTemplate? BuildControlTemplate()
+    protected override IControlTemplate BuildControlTemplate()
     {
         return new FuncControlTemplate<CheckBox>((checkBox, scope) =>
         {
             var frame = new Border()
             {
-                Name = FramePart
+                Name = FramePart,
+                Padding = new Thickness(0, 1, 0, 1)
             };
             CreateTemplateParentBinding(frame, Border.BackgroundProperty, CheckBox.BackgroundProperty);
             CreateTemplateParentBinding(frame, Border.BorderBrushProperty, CheckBox.BorderBrushProperty);
             CreateTemplateParentBinding(frame, Border.BorderThicknessProperty, CheckBox.BorderThicknessProperty);
             CreateTemplateParentBinding(frame, Border.CornerRadiusProperty, CheckBox.CornerRadiusProperty);
 
-            var layout = new DockPanel()
+            var layout = new DockPanel
             {
                 LastChildFill = true
             };
@@ -46,22 +48,23 @@ internal class CheckBoxTheme : BaseControlTheme
             {
                 Name = IndicatorPart
             };
+            
             DockPanel.SetDock(indicator, Dock.Left);
             CreateTemplateParentBinding(indicator, CheckBoxIndicator.IsEnabledProperty, CheckBox.IsEnabledProperty);
             CreateTemplateParentBinding(indicator, CheckBoxIndicator.IsCheckedProperty, CheckBox.IsCheckedProperty);
             layout.Children.Add(indicator);
 
-            var contentPresenter = new ContentPresenter()
+            var labelText = new TextBlock
             {
-                Name = ContentPresenterPart,
-                RecognizesAccessKey = true
+                Name = LabelTextPart,
+                VerticalAlignment = VerticalAlignment.Center,
             };
-            CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentTemplateProperty, CheckBox.ContentTemplateProperty);
-            CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty, CheckBox.ContentProperty);
-            CreateTemplateParentBinding(contentPresenter, ContentPresenter.FontSizeProperty, CheckBox.FontSizeProperty);
-            CreateTemplateParentBinding(contentPresenter, ContentPresenter.IsVisibleProperty, CheckBox.ContentProperty,
+            CreateTemplateParentBinding(labelText, TextBlock.TextProperty, CheckBox.ContentProperty, BindingMode.Default,
+                new FuncValueConverter<object?, string?>(content => content?.ToString()));
+            CreateTemplateParentBinding(labelText, TextBlock.FontSizeProperty, CheckBox.FontSizeProperty);
+            CreateTemplateParentBinding(labelText, TextBlock.IsVisibleProperty, CheckBox.ContentProperty,
                 BindingMode.Default, ObjectConverters.IsNotNull);
-            layout.Children.Add(contentPresenter);
+            layout.Children.Add(labelText);
             frame.Child = layout;
             return frame;
         });
@@ -75,9 +78,9 @@ internal class CheckBoxTheme : BaseControlTheme
         commonStyle.Add(CheckBox.CursorProperty, new Cursor(StandardCursorType.Hand));
         commonStyle.Add(CheckBox.HorizontalAlignmentProperty, HorizontalAlignment.Left);
         
-        var contentPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ContentPresenterPart));
-        contentPresenterStyle.Add(ContentPresenter.MarginProperty, CheckBoxTokenResourceKey.TextMargin);
-        commonStyle.Add(contentPresenterStyle);
+        var labelTextStyle = new Style(selector => selector.Nesting().Template().Name(LabelTextPart));
+        labelTextStyle.Add(ContentPresenter.MarginProperty, CheckBoxTokenResourceKey.TextMargin);
+        commonStyle.Add(labelTextStyle);
         
         Add(commonStyle);
         

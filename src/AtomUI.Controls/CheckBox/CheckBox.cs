@@ -5,8 +5,7 @@ namespace AtomUI.Controls;
 
 using AvaloniaCheckBox = Avalonia.Controls.CheckBox;
 
-public class CheckBox : AvaloniaCheckBox,
-                        ICustomHitTest
+public class CheckBox : AvaloniaCheckBox, ICustomHitTest
 {
     public bool HitTest(Point point)
     {

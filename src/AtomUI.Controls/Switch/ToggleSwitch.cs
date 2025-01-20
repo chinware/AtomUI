@@ -414,10 +414,10 @@ public class ToggleSwitch : ToggleButton,
         }
         else if (content is string offStr)
         {
-            var label = new Label
+            var label = new TextBlock
             {
-                Content = offStr,
-                Padding = new Thickness(0)
+                Text = offStr,
+                VerticalAlignment = VerticalAlignment.Center,
             };
             result = label;
         }

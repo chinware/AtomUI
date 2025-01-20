@@ -21,7 +21,7 @@ internal class ToggleSwitchTheme : BaseControlTheme
     {
     }
 
-    protected override IControlTemplate? BuildControlTemplate()
+    protected override IControlTemplate BuildControlTemplate()
     {
         return new FuncControlTemplate<ToggleSwitch>((toggleSwitch, scope) =>
         {

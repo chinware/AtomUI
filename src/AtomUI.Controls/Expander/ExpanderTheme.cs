@@ -135,7 +135,10 @@ internal class ExpanderTheme : BaseControlTheme
         {
             Name                       = HeaderPresenterPart,
             HorizontalAlignment        = HorizontalAlignment.Stretch,
-            HorizontalContentAlignment = HorizontalAlignment.Left
+            HorizontalContentAlignment = HorizontalAlignment.Left,
+            VerticalContentAlignment = VerticalAlignment.Center,
+            VerticalAlignment = VerticalAlignment.Center,
+            Margin = new Thickness(0, 1, 0, 0)
         };
         Grid.SetColumn(headerPresenter, 1);
         CreateTemplateParentBinding(headerPresenter, ContentPresenter.ContentProperty,
@@ -247,12 +250,6 @@ internal class ExpanderTheme : BaseControlTheme
         // 设置水平和垂直对齐
         upStyle.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
         upStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Bottom);
-        // TODO 看看到底是不是需要，暂时注释掉
-        // {
-        //    var expandedStyle = new Style(selector => selector.Nesting().Class(Expander.ExpandedPC));
-        //    expandedStyle.Add(Expander.VerticalAlignmentProperty, VerticalAlignment.Stretch);
-        //    upStyle.Add(expandedStyle);
-        // }
 
         {
             var headerLayoutTransformStyle =
@@ -266,12 +263,6 @@ internal class ExpanderTheme : BaseControlTheme
         // 设置水平和垂直对齐
         downStyle.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
         downStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Top);
-        // TODO 看看到底是不是需要，暂时注释掉
-        // {
-        //    var expandedStyle = new Style(selector => selector.Nesting().Class(Expander.ExpandedPC));
-        //    expandedStyle.Add(Expander.VerticalAlignmentProperty, VerticalAlignment.Stretch);
-        //    downStyle.Add(expandedStyle);
-        // }
 
         {
             var headerLayoutTransformStyle =
@@ -285,12 +276,6 @@ internal class ExpanderTheme : BaseControlTheme
         // 设置水平和垂直对齐
         leftStyle.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Right);
         leftStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Stretch);
-        // TODO 看看到底是不是需要，暂时注释掉
-        // {
-        //    var expandedStyle = new Style(selector => selector.Nesting().Class(Expander.ExpandedPC));
-        //    expandedStyle.Add(Expander.HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
-        //    leftStyle.Add(expandedStyle);
-        // }
 
         {
             var headerLayoutTransformStyle =
@@ -304,12 +289,7 @@ internal class ExpanderTheme : BaseControlTheme
         var rightStyle = new Style(selector => selector.Nesting().Class(Expander.ExpandRightPC));
         // 设置水平和垂直对齐
         rightStyle.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Left);
-        // TODO 看看到底是不是需要，暂时注释掉
-        // {
-        //    var expandedStyle = new Style(selector => selector.Nesting().Class(Expander.ExpandedPC));
-        //    expandedStyle.Add(Expander.HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
-        //    rightStyle.Add(expandedStyle);
-        // }
+
         rightStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Stretch);
         {
             var headerLayoutTransformStyle =

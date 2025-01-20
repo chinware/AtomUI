@@ -47,16 +47,14 @@ internal abstract class BaseButtonTheme : BaseControlTheme
             };
             CreateTemplateParentBinding(iconPresenter, ContentPresenter.ContentProperty, Button.IconProperty);
 
-            var label = new Label
+            var labelText = new TextBlock
             {
                 Name                       = LabelPart,
-                Padding                    = new Thickness(0),
-                VerticalContentAlignment   = VerticalAlignment.Center,
-                HorizontalContentAlignment = HorizontalAlignment.Center,
-                VerticalAlignment          = VerticalAlignment.Center
+                VerticalAlignment = VerticalAlignment.Center
             };
-            CreateTemplateParentBinding(label, ContentControl.ContentProperty, Button.TextProperty);
-            label.RegisterInNameScope(scope);
+                
+            CreateTemplateParentBinding(labelText, TextBlock.TextProperty, Button.TextProperty);
+            labelText.RegisterInNameScope(scope);
 
             var mainInfoLayout = new StackPanel
             {
@@ -69,7 +67,7 @@ internal abstract class BaseButtonTheme : BaseControlTheme
             mainInfoLayout.RegisterInNameScope(scope);
             mainInfoLayout.Children.Add(loadingIcon);
             mainInfoLayout.Children.Add(iconPresenter);
-            mainInfoLayout.Children.Add(label);
+            mainInfoLayout.Children.Add(labelText);
 
             var extraContentPresenter = new ContentPresenter
             {

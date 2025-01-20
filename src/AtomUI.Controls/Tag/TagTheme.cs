@@ -6,6 +6,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Layout;
+using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
@@ -62,8 +63,6 @@ internal class TagTheme : BaseControlTheme
             TokenResourceBinder.CreateTokenBinding(closeBtn, IconButton.IconHeightProperty,
                 GlobalTokenResourceKey.IconSizeXS);
             TokenResourceBinder.CreateTokenBinding(textBlock, Layoutable.HeightProperty,
-                TagTokenResourceKey.TagLineHeight);
-            TokenResourceBinder.CreateTokenBinding(textBlock, TextBlock.LineHeightProperty,
                 TagTokenResourceKey.TagLineHeight);
 
             CreateTemplateParentBinding(closeBtn, Visual.IsVisibleProperty, Tag.IsClosableProperty);

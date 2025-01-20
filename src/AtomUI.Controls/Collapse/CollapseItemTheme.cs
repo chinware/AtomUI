@@ -11,6 +11,8 @@ using Avalonia.Controls.Documents;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
+using Avalonia.Data.Converters;
 using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Media.Transformation;
@@ -121,7 +123,10 @@ internal class CollapseItemTheme : BaseControlTheme
         {
             Name                       = HeaderPresenterPart,
             HorizontalAlignment        = HorizontalAlignment.Stretch,
-            HorizontalContentAlignment = HorizontalAlignment.Left
+            HorizontalContentAlignment = HorizontalAlignment.Left,
+            VerticalContentAlignment = VerticalAlignment.Center,
+            VerticalAlignment = VerticalAlignment.Center,
+            Margin = new Thickness(0, 1, 0, 0)
         };
         CreateTemplateParentBinding(headerPresenter, ContentPresenter.ContentProperty,
             HeaderedContentControl.HeaderProperty);

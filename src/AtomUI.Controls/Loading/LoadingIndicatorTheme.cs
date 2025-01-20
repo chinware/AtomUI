@@ -29,7 +29,7 @@ internal class LoadingIndicatorTheme : BaseControlTheme
             {
                 Name                = LoadingTextPart,
                 HorizontalAlignment = HorizontalAlignment.Center,
-                VerticalAlignment   = VerticalAlignment.Center
+                VerticalAlignment   = VerticalAlignment.Center,
             };
             CreateTemplateParentBinding(textBlock, TextBlock.TextProperty, LoadingIndicator.LoadingMsgProperty);
             textBlock.RegisterInNameScope(scope);

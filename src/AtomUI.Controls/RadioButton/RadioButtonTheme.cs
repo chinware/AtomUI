@@ -1,5 +1,6 @@
 ﻿using AtomUI.Theme;
 using AtomUI.Theme.Styling;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
@@ -17,7 +18,7 @@ internal class RadioButtonTheme : BaseControlTheme
 {
     internal const string FramePart = "PART_Frame";
     internal const string IndicatorPart = "PART_Indicator";
-    internal const string ContentPresenterPart = "PART_ContentPresenter";
+    internal const string LabelTextPart = "PART_LabelText";
 
     public RadioButtonTheme()
         : base(typeof(RadioButton))
@@ -30,7 +31,8 @@ internal class RadioButtonTheme : BaseControlTheme
         {
             var frame = new Border
             {
-                Name = FramePart
+                Name = FramePart,
+                Padding = new Thickness(0, 1, 0, 1)
             };
 
             CreateTemplateParentBinding(frame, Border.BackgroundProperty, RadioButton.BackgroundProperty);
@@ -53,23 +55,19 @@ internal class RadioButtonTheme : BaseControlTheme
             CreateTemplateParentBinding(indicator, RadioIndicator.IsCheckedProperty, RadioButton.IsCheckedProperty);
             layout.Children.Add(indicator);
 
-            var contentPresenter = new ContentPresenter()
+            var labelText = new TextBlock
             {
-                Name                = ContentPresenterPart,
-                RecognizesAccessKey = true
+                Name = LabelTextPart,
+                VerticalAlignment = VerticalAlignment.Center,
             };
 
-            CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentTemplateProperty,
-                RadioButton.ContentTemplateProperty);
-            CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty,
-                RadioButton.ContentProperty);
-            CreateTemplateParentBinding(contentPresenter, ContentPresenter.FontSizeProperty,
-                RadioButton.FontSizeProperty);
-            CreateTemplateParentBinding(contentPresenter, ContentPresenter.IsVisibleProperty,
-                RadioButton.ContentProperty,
+            CreateTemplateParentBinding(labelText, TextBlock.TextProperty, RadioButton.ContentProperty, BindingMode.Default,
+                new FuncValueConverter<object?, string?>(content => content?.ToString()));
+            CreateTemplateParentBinding(labelText, TextBlock.FontSizeProperty, RadioButton.FontSizeProperty);
+            CreateTemplateParentBinding(labelText, TextBlock.IsVisibleProperty, RadioButton.ContentProperty,
                 BindingMode.Default, ObjectConverters.IsNotNull);
 
-            layout.Children.Add(contentPresenter);
+            layout.Children.Add(labelText);
             frame.Child = layout;
             return frame;
         });
@@ -86,9 +84,9 @@ internal class RadioButtonTheme : BaseControlTheme
         disableStyle.Add(TemplatedControl.ForegroundProperty, GlobalTokenResourceKey.ColorTextDisabled);
         commonStyle.Add(disableStyle);
 
-        var contentPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ContentPresenterPart));
-        contentPresenterStyle.Add(ContentPresenter.MarginProperty, RadioButtonTokenResourceKey.TextMargin);
-        commonStyle.Add(contentPresenterStyle);
+        var labelTextStyle = new Style(selector => selector.Nesting().Template().Name(LabelTextPart));
+        labelTextStyle.Add(ContentPresenter.MarginProperty, RadioButtonTokenResourceKey.TextMargin);
+        commonStyle.Add(labelTextStyle);
 
         Add(commonStyle);
 
