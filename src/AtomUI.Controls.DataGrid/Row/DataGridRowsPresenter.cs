@@ -63,7 +63,7 @@ public sealed class DataGridRowsPresenter : Panel, IChildIndexProvider
             return base.ArrangeOverride(finalSize);
         }
         
-        OwningGrid.OnFillerColumnWidthNeeded(finalSize.Width);
+        OwningGrid.NotifyFillerColumnWidthNeeded(finalSize.Width);
 
         var rowDesiredWidth = OwningGrid.RowHeadersDesiredWidth +
                               OwningGrid.ColumnsInternal.VisibleEdgedColumnsWidth +

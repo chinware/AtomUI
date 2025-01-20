@@ -42,7 +42,9 @@ public interface IDataGridCollectionViewFactory
 /// <summary>
 /// DataGrid-readable view over an IEnumerable.
 /// </summary>
-public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridEditableCollectionView, IList,
+public sealed class DataGridCollectionView : IDataGridCollectionView, 
+                                             IDataGridEditableCollectionView, 
+                                             IList,
                                              INotifyPropertyChanged
 {
     /// <summary>
@@ -185,21 +187,12 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     private IEnumerator _trackingEnumerator;
 
     /// <summary>
-    /// Helper constructor that sets default values for isDataSorted and isDataInGroupOrder.
-    /// </summary>
-    /// <param name="source">The source for the collection</param>
-    public DataGridCollectionView(IEnumerable source)
-        : this(source, false /*isDataSorted*/, false /*isDataInGroupOrder*/)
-    {
-    }
-
-    /// <summary>
     /// Initializes a new instance of the DataGridCollectionView class.
     /// </summary>
     /// <param name="source">The source for the collection</param>
     /// <param name="isDataSorted">Determines whether the source is already sorted</param>
     /// <param name="isDataInGroupOrder">Whether the source is already in the correct order for grouping</param>
-    public DataGridCollectionView(IEnumerable source, bool isDataSorted, bool isDataInGroupOrder)
+    public DataGridCollectionView(IEnumerable source, bool isDataSorted = false, bool isDataInGroupOrder = false)
     {
         _culture          = CultureInfo.CurrentUICulture;
         _sourceCollection = source ?? throw new ArgumentNullException(nameof(source));
@@ -2572,15 +2565,18 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     private void CopySourceToInternalList()
     {
         _internalList = new List<object>();
-
-        IEnumerator enumerator = SourceCollection.GetEnumerator();
-
-        while (enumerator.MoveNext())
+        var enumerator = SourceCollection.GetEnumerator();
+        try
         {
-            _internalList.Add(enumerator.Current);
+            while (enumerator.MoveNext())
+            {
+                _internalList.Add(enumerator.Current);
+            }
         }
-
-        ((IDisposable)enumerator).Dispose();
+        finally
+        {
+            ((IDisposable)enumerator).Dispose();
+        }
     }
 
     /// <summary>
@@ -3234,8 +3230,8 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
         // if we are paging, we may have to fire another notification for the item
         // that needs to be removed for the one we added on this page.
         if (PageSize > 0 && !OnLastLocalPage &&
-            (((IsGrouping && removeNotificationItem != null) ||
-              (!IsGrouping && (PageIndex + 1) * PageSize > InternalIndexOf(addedItem)))))
+            ((IsGrouping && removeNotificationItem != null) ||
+              (!IsGrouping && (PageIndex + 1) * PageSize > InternalIndexOf(addedItem))))
         {
             if (removeNotificationItem != null && removeNotificationItem != addedItem)
             {
@@ -3720,7 +3716,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     /// <param name="newPosition">New CurrentPosition</param>
     private void SetCurrent(object? newItem, int newPosition)
     {
-        int count = (newItem != null) ? 0 : (IsEmpty ? 0 : Count);
+        int count = newItem != null ? 0 : (IsEmpty ? 0 : Count);
         SetCurrent(newItem, newPosition, count);
     }
 
@@ -4264,7 +4260,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
                 {
                     return index;
                 }
-                else if (result > 0)
+                if (result > 0)
                 {
                     min = index + 1;
                 }

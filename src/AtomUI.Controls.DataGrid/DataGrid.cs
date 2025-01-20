@@ -741,7 +741,7 @@ public partial class DataGrid : TemplatedControl
         ItemsSourceProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleItemsSourcePropertyChanged(e));
         CanUserResizeColumnsProperty.Changed.AddClassHandler<DataGrid>((x, e) =>
             x.HandleCanUserResizeColumnsChanged(e));
-        ColumnWidthProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleColumnWidthChanged(e));
+        ColumnWidthProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.NotifyColumnWidthChanged(e));
         FrozenColumnCountProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleFrozenColumnCountChanged(e));
         GridLinesVisibilityProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleGridLinesVisibilityChanged(e));
         HeadersVisibilityProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleHeadersVisibilityChanged(e));
@@ -1121,7 +1121,7 @@ public partial class DataGrid : TemplatedControl
             var oldValue = (double?)e.OldValue ?? double.NaN;
             foreach (var column in ColumnsInternal.GetDisplayedColumns())
             {
-                OnColumnMinWidthChanged(column, Math.Max(column.MinWidth, oldValue));
+                NotifyColumnMinWidthChanged(column, Math.Max(column.MinWidth, oldValue));
             }
         }
     }
@@ -1131,9 +1131,9 @@ public partial class DataGrid : TemplatedControl
         if (!_areHandlersSuspended)
         {
             var oldValue = (double?)e.OldValue ?? double.NaN;
-            foreach (DataGridColumn column in ColumnsInternal.GetDisplayedColumns())
+            foreach (var column in ColumnsInternal.GetDisplayedColumns())
             {
-                OnColumnMaxWidthChanged(column, Math.Min(column.MaxWidth, oldValue));
+                NotifyColumnMaxWidthChanged(column, Math.Min(column.MaxWidth, oldValue));
             }
         }
     }
@@ -1256,7 +1256,7 @@ public partial class DataGrid : TemplatedControl
         InvalidateCellsArrange();
     }
 
-    private void HandleColumnWidthChanged(AvaloniaPropertyChangedEventArgs e)
+    private void NotifyColumnWidthChanged(AvaloniaPropertyChangedEventArgs e)
     {
         var lengthValue = (DataGridLength?)e.NewValue;
         if (lengthValue.HasValue)
@@ -2557,7 +2557,7 @@ public partial class DataGrid : TemplatedControl
             return RowGroupHeadersTable.GetValueAt(slot)?.CollectionViewGroup;
         }
         rowIndex = RowIndexFromSlot(slot);
-        return DataConnection?.GetDataItem(rowIndex);
+        return DataConnection.GetDataItem(rowIndex);
     }
 
     internal bool ProcessDownKey(KeyEventArgs e)
@@ -3840,7 +3840,7 @@ public partial class DataGrid : TemplatedControl
 
             if (invalidateIndividualElements)
             {
-                foreach (Control element in _rowsPresenter.Children)
+                foreach (var element in _rowsPresenter.Children)
                 {
                     element.InvalidateMeasure();
                 }
@@ -4166,7 +4166,7 @@ public partial class DataGrid : TemplatedControl
         if (_editingColumnIndex != -1 || (editAction == DataGridEditAction.Cancel && raiseEvents &&
                                           !((DataConnection.EditableCollectionView != null &&
                                              DataConnection.EditableCollectionView.CanCancelEdit) ||
-                                            (EditingRow.DataContext is IEditableObject))))
+                                            EditingRow.DataContext is IEditableObject)))
         {
             // Ending the row edit will fail immediately under the following conditions:
             // 1. We haven't ended the cell edit yet.
