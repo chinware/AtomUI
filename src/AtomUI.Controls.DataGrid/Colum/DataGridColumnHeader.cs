@@ -577,10 +577,10 @@ public class DataGridColumnHeader : ContentControl
             mousePositionHeaders = mousePositionHeaders.WithX(rightEdge - 1);
         }
 
-        foreach (DataGridColumn column in OwningGrid.ColumnsInternal.GetDisplayedColumns())
+        foreach (var column in OwningGrid.ColumnsInternal.GetDisplayedColumns())
         {
-            Point  mousePosition = OwningGrid.ColumnHeaders!.Translate(column.HeaderCell!, mousePositionHeaders);
-            double columnMiddle  = column.HeaderCell!.Bounds.Width / 2;
+            Point  mousePosition = OwningGrid.ColumnHeaders!.Translate(column.HeaderCell, mousePositionHeaders);
+            double columnMiddle  = column.HeaderCell.Bounds.Width / 2;
             if (mousePosition.X >= 0 && mousePosition.X <= columnMiddle)
             {
                 return column;
@@ -638,7 +638,7 @@ public class DataGridColumnHeader : ContentControl
         // When we stop interacting with the column headers, we need to reset the drag mode
         // and close any popups if they are open.
 
-        if (_dragColumn != null && _dragColumn.HeaderCell != null)
+        if (_dragColumn != null)
         {
             _dragColumn.HeaderCell.Cursor = _originalCursor;
         }
@@ -773,13 +773,13 @@ public class DataGridColumnHeader : ContentControl
                             isVisible: true,
                             isFrozen: OwningColumn.IsFrozen,
                             isReadOnly: null);
-                    targetPosition = targetColumn!.HeaderCell!.Translate(OwningGrid.ColumnHeaders, targetPosition);
+                    targetPosition = targetColumn!.HeaderCell.Translate(OwningGrid.ColumnHeaders, targetPosition);
 
                     targetPosition = targetPosition.WithX(targetPosition.X + targetColumn.ActualWidth);
                 }
                 else
                 {
-                    targetPosition = targetColumn.HeaderCell!.Translate(OwningGrid.ColumnHeaders, targetPosition);
+                    targetPosition = targetColumn.HeaderCell.Translate(OwningGrid.ColumnHeaders, targetPosition);
                 }
 
                 OwningGrid.ColumnHeaders.DropLocationIndicatorOffset = targetPosition.X - scrollAmount;

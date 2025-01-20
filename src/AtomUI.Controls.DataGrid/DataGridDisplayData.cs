@@ -8,7 +8,7 @@ internal class DataGridDisplayData
 {
     private Stack<DataGridRow> _fullyRecycledRows; // list of Rows that have been fully recycled (Collapsed)
     private int _headScrollingElements; // index of the row in _scrollingRows that is the first displayed row
-    private DataGrid _owner;
+    private DataGrid _ownerGrid;
 
     // list of Rows which have not been fully recycled (avoids Measure in several cases)
     private Stack<DataGridRow> _recyclableRows;
@@ -24,7 +24,7 @@ internal class DataGridDisplayData
 
     public DataGridDisplayData(DataGrid owner)
     {
-        _owner = owner;
+        _ownerGrid = owner;
 
         ResetSlotIndexes();
         FirstDisplayedScrollingCol       = -1;
@@ -87,7 +87,7 @@ internal class DataGridDisplayData
         ResetSlotIndexes();
         if (recycle)
         {
-            foreach (Control element in _scrollingElements)
+            foreach (var element in _scrollingElements)
             {
                 if (element is DataGridRow row)
                 {
@@ -126,9 +126,9 @@ internal class DataGridDisplayData
                 LastScrollingSlot--;
             }
         }
-        else if (_owner.IsSlotVisible(slot))
+        else if (_ownerGrid.IsSlotVisible(slot))
         {
-            UnloadScrollingElement(slot, true /*updateSlotInformation*/, true /*wasDeleted*/);
+            UnloadScrollingElement(slot, updateSlotInformation:true, wasDeleted:true);
         }
 
         // This cannot be an else condition because if there are 2 rows left, and you delete the first one
@@ -152,18 +152,18 @@ internal class DataGridDisplayData
         {
             LastScrollingSlot++;
         }
-        else if (_owner.GetPreviousVisibleSlot(slot) <= LastScrollingSlot || LastScrollingSlot == -1)
+        else if (_ownerGrid.GetPreviousVisibleSlot(slot) <= LastScrollingSlot || LastScrollingSlot == -1)
         {
             Debug.Assert(element != null);
             // The row was inserted in our viewport, add it as a scrolling row
-            LoadScrollingSlot(slot, element, true /*updateSlotInformation*/);
+            LoadScrollingSlot(slot, element, updateSlotInformation:true);
         }
     }
 
     private int GetCircularListIndex(int slot, bool wrap)
     {
         int index = slot - FirstScrollingSlot - _headScrollingElements -
-                    _owner.GetCollapsedSlotCount(FirstScrollingSlot, slot);
+                    _ownerGrid.GetCollapsedSlotCount(FirstScrollingSlot, slot);
         return wrap ? index % _scrollingElements.Count : index;
     }
 
@@ -195,12 +195,12 @@ internal class DataGridDisplayData
         Debug.Assert(slot >= FirstScrollingSlot);
         Debug.Assert(slot <= LastScrollingSlot);
 
-        return _scrollingElements[GetCircularListIndex(slot, true /*wrap*/)];
+        return _scrollingElements[GetCircularListIndex(slot, wrap:true)];
     }
 
     internal DataGridRow? GetDisplayedRow(int rowIndex)
     {
-        return GetDisplayedElement(_owner.SlotFromRowIndex(rowIndex)) as DataGridRow;
+        return GetDisplayedElement(_ownerGrid.SlotFromRowIndex(rowIndex)) as DataGridRow;
     }
 
     internal IEnumerable<Control> GetScrollingElements(Predicate<object>? filter = null)
@@ -250,8 +250,8 @@ internal class DataGridDisplayData
         else
         {
             // The slot should be adjacent to the other slots being displayed
-            Debug.Assert(slot >= _owner.GetPreviousVisibleSlot(FirstScrollingSlot) &&
-                         slot <= _owner.GetNextVisibleSlot(LastScrollingSlot));
+            Debug.Assert(slot >= _ownerGrid.GetPreviousVisibleSlot(FirstScrollingSlot) &&
+                         slot <= _ownerGrid.GetNextVisibleSlot(LastScrollingSlot));
             if (updateSlotInformation)
             {
                 if (slot < FirstScrollingSlot)
@@ -260,11 +260,11 @@ internal class DataGridDisplayData
                 }
                 else
                 {
-                    LastScrollingSlot = _owner.GetNextVisibleSlot(LastScrollingSlot);
+                    LastScrollingSlot = _ownerGrid.GetNextVisibleSlot(LastScrollingSlot);
                 }
             }
 
-            int insertIndex = GetCircularListIndex(slot, false /*wrap*/);
+            var insertIndex = GetCircularListIndex(slot, wrap:false);
             if (insertIndex > _scrollingElements.Count)
             {
                 // We need to wrap around from the bottom to the top of our circular list; as a result the head of the list moves forward
@@ -292,8 +292,8 @@ internal class DataGridDisplayData
     // Stops tracking the element at the given slot as a scrolling element
     internal void UnloadScrollingElement(int slot, bool updateSlotInformation, bool wasDeleted)
     {
-        Debug.Assert(_owner.IsSlotVisible(slot));
-        var elementIndex = GetCircularListIndex(slot, false /*wrap*/);
+        Debug.Assert(_ownerGrid.IsSlotVisible(slot));
+        var elementIndex = GetCircularListIndex(slot, wrap:false);
         if (elementIndex > _scrollingElements.Count)
         {
             // We need to wrap around from the top to the bottom of our circular list
@@ -307,11 +307,11 @@ internal class DataGridDisplayData
         {
             if (slot == FirstScrollingSlot && !wasDeleted)
             {
-                FirstScrollingSlot = _owner.GetNextVisibleSlot(FirstScrollingSlot);
+                FirstScrollingSlot = _ownerGrid.GetNextVisibleSlot(FirstScrollingSlot);
             }
             else
             {
-                LastScrollingSlot = _owner.GetPreviousVisibleSlot(LastScrollingSlot);
+                LastScrollingSlot = _ownerGrid.GetPreviousVisibleSlot(LastScrollingSlot);
             }
 
             if (LastScrollingSlot < FirstScrollingSlot)

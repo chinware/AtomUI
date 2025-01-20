@@ -307,7 +307,7 @@ internal class DataGridDataConnection
             var enumerator = enumerable.GetEnumerator();
             try
             {
-                int i = -1;
+                var i = -1;
                 while (enumerator.MoveNext() && i < index)
                 {
                     i++;
@@ -336,9 +336,9 @@ internal class DataGridDataConnection
         {
             if (!string.IsNullOrEmpty(propertyName))
             {
-                Type          propertyType  = DataType;
+                var          propertyType  = DataType;
                 PropertyInfo? propertyInfo  = null;
-                List<string>  propertyNames = TypeHelper.SplitPropertyPath(propertyName);
+                var  propertyNames = TypeHelper.SplitPropertyPath(propertyName);
                 for (var i = 0; i < propertyNames.Count; i++)
                 {
                     propertyInfo = propertyType.GetPropertyOrIndexer(propertyNames[i], out _);

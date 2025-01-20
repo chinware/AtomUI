@@ -88,7 +88,7 @@ internal class DataGridColumnCollection : ObservableCollection<DataGridColumn>
                     throw DataGridError.DataGrid.CannotChangeColumnCollectionWhileAdjustingDisplayIndexes();
                 }
 
-                _owningGrid.OnClearingColumns();
+                _owningGrid.NotifyClearingColumns();
                 for (var columnIndex = 0; columnIndex < ItemsInternal.Count; columnIndex++)
                 {
                     // Detach the column...
@@ -134,7 +134,7 @@ internal class DataGridColumnCollection : ObservableCollection<DataGridColumn>
 
             // get the new current cell coordinates
             DataGridCellCoordinates newCurrentCellCoordinates =
-                _owningGrid.OnInsertingColumn(columnIndex, dataGridColumn);
+                _owningGrid.NotifyInsertingColumn(columnIndex, dataGridColumn);
 
             // insert the column into our internal list
             ItemsInternal.Insert(columnIndexWithFiller, dataGridColumn);
@@ -146,7 +146,7 @@ internal class DataGridColumnCollection : ObservableCollection<DataGridColumn>
             }
 
             // continue with the base insert
-            _owningGrid.HandleInsertedColumnPreNotification(dataGridColumn);
+            _owningGrid.NotifyInsertedColumnPreNotification(dataGridColumn);
             _owningGrid.NotifyColumnCollectionChangedPreNotification(true /*columnsGrew*/);
 
             if (dataGridColumn != RowGroupSpacerColumn)

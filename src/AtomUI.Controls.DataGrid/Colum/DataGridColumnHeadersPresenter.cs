@@ -139,7 +139,7 @@ public sealed class DataGridColumnHeadersPresenter : Panel, IChildIndexProvider
         double dragIndicatorLeftEdge = 0;
         double frozenLeftEdge        = 0;
         double scrollingLeftEdge     = -OwningGrid.HorizontalOffset;
-        foreach (DataGridColumn dataGridColumn in OwningGrid.ColumnsInternal.GetVisibleColumns())
+        foreach (var dataGridColumn in OwningGrid.ColumnsInternal.GetVisibleColumns())
         {
             var columnHeader = dataGridColumn.HeaderCell;
             Debug.Assert(columnHeader?.OwningColumn == dataGridColumn);
@@ -179,41 +179,39 @@ public sealed class DataGridColumnHeadersPresenter : Panel, IChildIndexProvider
 
                 var height = DragIndicator.Bounds.Height;
                 if (height <= 0)
+                {
                     height = DragIndicator.DesiredSize.Height;
+                }
 
                 DragIndicator.Arrange(new Rect(dragIndicatorLeftEdge, 0, DragIndicator.Bounds.Width, height));
             }
 
             if (DropLocationIndicator != null)
             {
-                if (DropLocationIndicator is Control element)
-                {
-                    EnsureColumnReorderingClip(element, finalSize.Height, frozenLeftEdge, DropLocationIndicatorOffset);
-                }
-
+                EnsureColumnReorderingClip(DropLocationIndicator, finalSize.Height, frozenLeftEdge, DropLocationIndicatorOffset);
                 DropLocationIndicator.Arrange(new Rect(DropLocationIndicatorOffset, 0,
                     DropLocationIndicator.Bounds.Width, DropLocationIndicator.Bounds.Height));
             }
         }
 
         // Arrange filler
-        OwningGrid.OnFillerColumnWidthNeeded(finalSize.Width);
+        OwningGrid.NotifyFillerColumnWidthNeeded(finalSize.Width);
         var fillerColumn = OwningGrid.ColumnsInternal.FillerColumn;
         if (fillerColumn.FillerWidth > 0)
         {
-            fillerColumn.HeaderCell!.IsVisible = true;
+            fillerColumn.HeaderCell.IsVisible = true;
             fillerColumn.HeaderCell.Arrange(new Rect(scrollingLeftEdge, 0, fillerColumn.FillerWidth, finalSize.Height));
         }
         else
         {
-            fillerColumn.HeaderCell!.IsVisible = false;
+            fillerColumn.HeaderCell.IsVisible = false;
         }
 
         // This needs to be updated after the filler column is configured
         var lastVisibleColumn = OwningGrid.ColumnsInternal.LastVisibleColumn;
         if (lastVisibleColumn != null)
         {
-            lastVisibleColumn.HeaderCell!.UpdateSeparatorVisibility(lastVisibleColumn);
+            lastVisibleColumn.HeaderCell.UpdateSeparatorVisibility(lastVisibleColumn);
         }
 
         return finalSize;
@@ -309,8 +307,8 @@ public sealed class DataGridColumnHeadersPresenter : Panel, IChildIndexProvider
             return default;
         }
 
-        double height = OwningGrid.ColumnHeaderHeight;
-        bool   autoSizeHeight;
+        var  height = OwningGrid.ColumnHeaderHeight;
+        bool autoSizeHeight;
         if (double.IsNaN(height))
         {
             // No explicit height values were set so we can autosize
@@ -322,14 +320,14 @@ public sealed class DataGridColumnHeadersPresenter : Panel, IChildIndexProvider
             autoSizeHeight = false;
         }
 
-        double totalDisplayWidth = 0;
+        var totalDisplayWidth = 0d;
         OwningGrid.ColumnsInternal.EnsureVisibleEdgedColumnsWidth();
         var lastVisibleColumn = OwningGrid.ColumnsInternal.LastVisibleColumn;
         foreach (var column in OwningGrid.ColumnsInternal.GetVisibleColumns())
         {
             // Measure each column header
-            bool                 autoGrowWidth = column.Width.IsAuto || column.Width.IsSizeToHeader;
-            var columnHeader  = column.HeaderCell!;
+            var autoGrowWidth = column.Width.IsAuto || column.Width.IsSizeToHeader;
+            var columnHeader  = column.HeaderCell;
             if (column != lastVisibleColumn)
             {
                 columnHeader.UpdateSeparatorVisibility(lastVisibleColumn);
@@ -341,7 +339,7 @@ public sealed class DataGridColumnHeadersPresenter : Panel, IChildIndexProvider
             {
                 // In the edge-case where we're given infinite width and we have star columns, the 
                 // star columns grow to their predefined limit of 10,000 (or their MaxWidth)
-                double newDisplayWidth = column.Width.IsStar
+                var newDisplayWidth = column.Width.IsStar
                     ? Math.Min(column.ActualMaxWidth, DataGrid.DefaultMaximumStarColumnWidth)
                     : Math.Max(column.ActualMinWidth, Math.Min(column.ActualMaxWidth, column.Width.DesiredValue));
                 column.SetWidthDisplayValue(newDisplayWidth);
@@ -380,11 +378,11 @@ public sealed class DataGridColumnHeadersPresenter : Panel, IChildIndexProvider
 
             // Since we didn't know the final widths of the columns until we resized,
             // we waited until now to measure each header
-            double leftEdge = 0;
+            var leftEdge = 0d;
             foreach (DataGridColumn column in OwningGrid.ColumnsInternal.GetVisibleColumns())
             {
                 column.ComputeLayoutRoundedWidth(leftEdge);
-                column.HeaderCell?.Measure(new Size(column.LayoutRoundedWidth, double.PositiveInfinity));
+                column.HeaderCell.Measure(new Size(column.LayoutRoundedWidth, double.PositiveInfinity));
                 if (autoSizeHeight)
                 {
                     height = Math.Max(height, column.HeaderCell!.DesiredSize.Height);
@@ -395,7 +393,7 @@ public sealed class DataGridColumnHeadersPresenter : Panel, IChildIndexProvider
         }
 
         // Add the filler column if it's not represented.  We won't know whether we need it or not until Arrange
-        DataGridFillerColumn fillerColumn = OwningGrid.ColumnsInternal.FillerColumn;
+        var fillerColumn = OwningGrid.ColumnsInternal.FillerColumn;
         if (!fillerColumn.IsRepresented)
         {
             Debug.Assert(!Children.Contains(fillerColumn.HeaderCell!));
@@ -406,7 +404,7 @@ public sealed class DataGridColumnHeadersPresenter : Panel, IChildIndexProvider
             fillerColumn.HeaderCell.IsVisible = false;
         }
 
-        fillerColumn.HeaderCell?.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+        fillerColumn.HeaderCell.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
 
         if (DragIndicator != null)
         {

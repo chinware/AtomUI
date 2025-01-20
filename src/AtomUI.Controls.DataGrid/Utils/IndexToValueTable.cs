@@ -24,7 +24,7 @@ internal class IndexToValueTable<T> : IEnumerable<Range<T>>
     {
         get
         {
-            int indexCount = 0;
+            var indexCount = 0;
             foreach (Range<T> range in _list)
             {
                 indexCount += range.Count;
@@ -650,7 +650,7 @@ internal class IndexToValueTable<T> : IEnumerable<Range<T>>
         else
         {
             var lowerRangeIndex = startRangeIndex ?? FindRangeIndex(startIndex);
-            var lowerRange      = (lowerRangeIndex < 0) ? null : _list[lowerRangeIndex];
+            var lowerRange      = lowerRangeIndex < 0 ? null : _list[lowerRangeIndex];
             if (lowerRange == null)
             {
                 if (lowerRangeIndex < 0)
@@ -746,7 +746,7 @@ internal class IndexToValueTable<T> : IEnumerable<Range<T>>
         if (front == end)
         {
             range = _list[front];
-            if (range.ContainsIndex(index) || (range.UpperBound < index))
+            if (range.ContainsIndex(index) || range.UpperBound < index)
             {
                 // we found it or the index isn't there and we're one range before
                 return front;
