@@ -155,12 +155,11 @@ public class TabStripItem : AvaloniaTabStripItem, ICustomHitTest
 
         SetupItemIcon();
         SetupCloseIcon();
-        if (Transitions is null)
+
+        Transitions ??= new Transitions
         {
-            var transitions = new Transitions();
-            transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty));
-            Transitions = transitions;
-        }
+            AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty)
+        };
 
         if (_closeButton is not null)
         {

@@ -704,13 +704,10 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
                 GlobalTokenResourceKey.MotionDurationSlow);
         }
 
-        if (Transitions is null)
+        Transitions ??= new Transitions()
         {
-            Transitions = new Transitions()
-            {
-                AnimationUtils.CreateTransition<SolidColorBrushTransition>(NavMenuItem.ForegroundProperty)
-            };
-        }
+            AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty)
+        };
     }
 
     private void HandleHeaderFrameEnter(object? sender, PointerEventArgs args)

@@ -49,17 +49,15 @@ public class TabStrip : BaseTabStrip
 
     private void HandleLayoutUpdated(object? sender, EventArgs args)
     {
-        if (_selectedIndicator is not null)
+        if (_selectedIndicator?.Transitions is not null)
         {
-            if (_selectedIndicator.Transitions is null)
+            _selectedIndicator.Transitions = new Transitions()
             {
-                var transitions = new Transitions();
-                transitions.Add(AnimationUtils.CreateTransition<TransformOperationsTransition>(RenderTransformProperty,
-                    GlobalTokenResourceKey.MotionDurationSlow, new ExponentialEaseOut()));
-                _selectedIndicator.Transitions = transitions;
-                // 只需要执行一次
-                LayoutUpdated -= HandleLayoutUpdated;
-            }
+                AnimationUtils.CreateTransition<TransformOperationsTransition>(RenderTransformProperty,
+                    GlobalTokenResourceKey.MotionDurationSlow, new ExponentialEaseOut())
+            };
+            // 只需要执行一次
+            LayoutUpdated -= HandleLayoutUpdated;
         }
     }
 

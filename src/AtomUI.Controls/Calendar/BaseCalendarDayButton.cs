@@ -171,14 +171,11 @@ internal class BaseCalendarDayButton : AvaloniaButton
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         SetPseudoClasses();
-        if (Transitions is null)
+        Transitions ??= new Transitions
         {
-            Transitions = new Transitions
-            {
-                AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty,
-                    GlobalTokenResourceKey.MotionDurationFast)
-            };
-        }
+            AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty,
+                GlobalTokenResourceKey.MotionDurationFast)
+        };
     }
 
     private void SetPseudoClasses()

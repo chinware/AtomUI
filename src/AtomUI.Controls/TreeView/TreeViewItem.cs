@@ -396,13 +396,10 @@ public class TreeViewItem : AvaloniaTreeItem
         SetNodeSwitcherIcons();
         SetupCheckBoxEnabled();
 
-        if (Transitions is null)
+        Transitions ??= new Transitions
         {
-            Transitions = new Transitions
-            {
-                AnimationUtils.CreateTransition<SolidColorBrushTransition>(EffectiveNodeBgProperty)
-            };
-        }
+            AnimationUtils.CreateTransition<SolidColorBrushTransition>(EffectiveNodeBgProperty)
+        };
     }
 
     private void CalculateEffectiveBgRect()

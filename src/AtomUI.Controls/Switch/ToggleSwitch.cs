@@ -213,10 +213,14 @@ public class ToggleSwitch : ToggleButton,
 
     private void HandleLayoutUpdated(object? sender, EventArgs args)
     {
-        if (Transitions is null)
+        Transitions ??= new Transitions
         {
-            SetupTransitions();
-        }
+            AnimationUtils.CreateTransition<PointTransition>(KnobOffsetProperty),
+            AnimationUtils.CreateTransition<PointTransition>(OnContentOffsetProperty),
+            AnimationUtils.CreateTransition<PointTransition>(OffContentOffsetProperty),
+            AnimationUtils.CreateTransition<SolidColorBrushTransition>(GrooveBackgroundProperty),
+            AnimationUtils.CreateTransition<DoubleTransition>(SwitchOpacityProperty)
+        };
     }
 
     protected override Size MeasureOverride(Size availableSize)
@@ -443,18 +447,6 @@ public class ToggleSwitch : ToggleButton,
             OffContentOffset = offExtraInfoRect.TopLeft;
             OnContentOffset  = new Point(-offExtraInfoRect.Width, offExtraInfoRect.Top);
         }
-    }
-
-    private void SetupTransitions()
-    {
-        Transitions = new Transitions
-        {
-            AnimationUtils.CreateTransition<PointTransition>(KnobOffsetProperty),
-            AnimationUtils.CreateTransition<PointTransition>(OnContentOffsetProperty),
-            AnimationUtils.CreateTransition<PointTransition>(OffContentOffsetProperty),
-            AnimationUtils.CreateTransition<SolidColorBrushTransition>(GrooveBackgroundProperty),
-            AnimationUtils.CreateTransition<DoubleTransition>(SwitchOpacityProperty)
-        };
     }
 
     private void CollectStyleState()

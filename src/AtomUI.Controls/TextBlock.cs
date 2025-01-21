@@ -19,7 +19,7 @@ public class TextBlock : AvaloniaTextBlock
 
         return size.WithHeight(height);
     }
-    
+
     protected override void RenderTextLayout(DrawingContext context, Point origin)
     {
         var textHeight = TextLayout.Height;
@@ -28,7 +28,7 @@ public class TextBlock : AvaloniaTextBlock
         switch (VerticalAlignment)
         {
             case VerticalAlignment.Center:
-                top += (Bounds.Height - textHeight) / 2 + (TextLayout.Extent - TextLayout.Baseline) / 4;
+                top += (Bounds.Height - textHeight) / 2 + (TextLayout.Extent - TextLayout.Baseline) / 3;
                 break;
 
             case VerticalAlignment.Bottom:

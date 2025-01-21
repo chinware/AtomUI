@@ -13,13 +13,10 @@ internal class HeadTextButton : AvaloniaButton
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        if (Transitions is null)
+        Transitions ??= new Transitions
         {
-            Transitions = new Transitions
-            {
-                AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty,
-                    GlobalTokenResourceKey.MotionDurationFast)
-            };
-        }
+            AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty,
+                GlobalTokenResourceKey.MotionDurationFast)
+        };
     }
 }

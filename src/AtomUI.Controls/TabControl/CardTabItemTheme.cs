@@ -28,12 +28,10 @@ internal class CardTabItemTheme : BaseTabItemTheme
     {
         base.NotifyBuildControlTemplate(tabItem, scope, container);
 
-        if (container.Transitions is null)
+        container.Transitions ??= new Transitions
         {
-            var transitions = new Transitions();
-            transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty));
-            container.Transitions = transitions;
-        }
+            AnimationUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty)
+        };
 
         CreateTemplateParentBinding(container, Border.BorderThicknessProperty,
             TemplatedControl.BorderThicknessProperty);
