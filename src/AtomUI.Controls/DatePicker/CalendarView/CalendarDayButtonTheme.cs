@@ -1,4 +1,5 @@
-﻿using AtomUI.Theme;
+﻿using AtomUI.Data;
+using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
@@ -27,9 +28,24 @@ internal class CalendarDayButtonTheme : BaseControlTheme
         {
             var contentPresenter = new ContentPresenter
             {
-                Name = ContentPart
+                Name = ContentPart,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                HorizontalContentAlignment = HorizontalAlignment.Center,
+                VerticalContentAlignment = VerticalAlignment.Center,
             };
-
+            
+            var buttonLabel = new TextBlock()
+            {
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+            };
+            
+            contentPresenter.Content = buttonLabel;
+            BindUtils.RelayBind(calendarDayButton, BaseCalendarDayButton.ContentProperty, buttonLabel, TextBlock.TextProperty,
+                input => input?.ToString());
+            BindUtils.RelayBind(calendarDayButton, BaseCalendarDayButton.ForegroundProperty, buttonLabel, TextBlock.ForegroundProperty);
+            
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.PaddingProperty,
                 TemplatedControl.PaddingProperty);
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.ForegroundProperty,
@@ -44,10 +60,6 @@ internal class CalendarDayButtonTheme : BaseControlTheme
                 TemplatedControl.BorderThicknessProperty);
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.FontSizeProperty,
                 TemplatedControl.FontSizeProperty);
-            CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty,
-                ContentControl.ContentProperty);
-            CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentTemplateProperty,
-                ContentControl.ContentTemplateProperty);
             CreateTemplateParentBinding(contentPresenter, Layoutable.HorizontalAlignmentProperty,
                 Layoutable.HorizontalAlignmentProperty);
             CreateTemplateParentBinding(contentPresenter, Layoutable.VerticalAlignmentProperty,

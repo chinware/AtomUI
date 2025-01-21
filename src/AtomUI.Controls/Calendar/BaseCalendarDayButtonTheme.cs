@@ -6,9 +6,9 @@ using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
-using Avalonia.Data.Converters;
 using Avalonia.Input;
 using Avalonia.Layout;
+using Avalonia.Media;
 using Avalonia.Styling;
 
 namespace AtomUI.Controls;
@@ -29,7 +29,11 @@ internal class BaseCalendarDayButtonTheme : BaseControlTheme
         {
             var contentPresenter = new ContentPresenter
             {
-                Name = ContentPart
+                Name = ContentPart,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                HorizontalContentAlignment = HorizontalAlignment.Center,
+                VerticalContentAlignment = VerticalAlignment.Center,
             };
 
             var buttonLabel = new TextBlock()
@@ -41,6 +45,7 @@ internal class BaseCalendarDayButtonTheme : BaseControlTheme
             contentPresenter.Content = buttonLabel;
             BindUtils.RelayBind(calendarDayButton, BaseCalendarDayButton.ContentProperty, buttonLabel, TextBlock.TextProperty,
                 input => input?.ToString());
+            BindUtils.RelayBind(calendarDayButton, BaseCalendarDayButton.ForegroundProperty, buttonLabel, TextBlock.ForegroundProperty);
 
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.PaddingProperty,
                 TemplatedControl.PaddingProperty);

@@ -48,12 +48,9 @@ public class TextBlock : AvaloniaTextBlock
                 }
             }
             
-            if (textWidth < Bounds.Width)
+            if (HorizontalAlignment == HorizontalAlignment.Center)
             {
-                if (HorizontalAlignment == HorizontalAlignment.Center)
-                {
-                    left += (TextLayout.OverhangLeading + TextLayout.OverhangTrailing) / 2;
-                }
+                left += (TextLayout.OverhangLeading + TextLayout.OverhangTrailing) / 2;
             }
         }
         TextLayout.Draw(context, origin + new Point(left, top));
