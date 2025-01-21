@@ -1,10 +1,12 @@
-﻿using AtomUI.Theme;
+﻿using AtomUI.Data;
+using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Data.Converters;
 using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Styling;
@@ -30,6 +32,16 @@ internal class BaseCalendarDayButtonTheme : BaseControlTheme
                 Name = ContentPart
             };
 
+            var buttonLabel = new TextBlock()
+            {
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+            };
+            
+            contentPresenter.Content = buttonLabel;
+            BindUtils.RelayBind(calendarDayButton, BaseCalendarDayButton.ContentProperty, buttonLabel, TextBlock.TextProperty,
+                input => input?.ToString());
+
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.PaddingProperty,
                 TemplatedControl.PaddingProperty);
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.ForegroundProperty,
@@ -44,10 +56,6 @@ internal class BaseCalendarDayButtonTheme : BaseControlTheme
                 TemplatedControl.BorderThicknessProperty);
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.FontSizeProperty,
                 TemplatedControl.FontSizeProperty);
-            CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty,
-                ContentControl.ContentProperty);
-            CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentTemplateProperty,
-                ContentControl.ContentTemplateProperty);
             CreateTemplateParentBinding(contentPresenter, Layoutable.HorizontalAlignmentProperty,
                 Layoutable.HorizontalAlignmentProperty);
             CreateTemplateParentBinding(contentPresenter, Layoutable.VerticalAlignmentProperty,
