@@ -284,7 +284,7 @@ internal class FlyoutStateHelper : AvaloniaObject
                     return;
                 }
 
-                if (!Flyout.IsOpen)
+                if (!Flyout.IsOpen && TopLevel.GetTopLevel(AnchorTarget) == args.Root)
                 {
                     if (OpenFlyoutPredicate is not null)
                     {
