@@ -15,21 +15,6 @@ namespace AtomUI.Controls;
 
 public class MenuFlyout : Flyout
 {
-    private static readonly MethodInfo SetItemsSourceMethodInfo;
-    public Func<IPopupHostProvider, RawPointerEventArgs, bool>? ClickHideFlyoutPredicate;
-    
-    static MenuFlyout()
-    {
-        SetItemsSourceMethodInfo =
-            typeof(ItemCollection).GetMethod("SetItemsSource", BindingFlags.Instance | BindingFlags.NonPublic)!;
-    }
-
-    public MenuFlyout()
-    {
-        var itemCollectionType = typeof(ItemCollection);
-        Items = (ItemCollection)Activator.CreateInstance(itemCollectionType, true)!;
-    }
-
     /// <summary>
     /// Defines the <see cref="ItemsSource" /> property
     /// </summary>
@@ -45,6 +30,26 @@ public class MenuFlyout : Flyout
     
     public static readonly StyledProperty<ControlTheme?> ItemContainerThemeProperty =
         ItemsControl.ItemContainerThemeProperty.AddOwner<MenuFlyout>();
+    
+    internal static readonly StyledProperty<bool> IsDetectMouseClickEnabledProperty =
+        AvaloniaProperty.Register<Popup, bool>(nameof(IsDetectMouseClickEnabled), true);
+    
+    private static readonly MethodInfo SetItemsSourceMethodInfo;
+    public Func<IPopupHostProvider, RawPointerEventArgs, bool>? ClickHideFlyoutPredicate;
+    
+    private IDisposable? _detectMouseClickDisposable;
+    
+    static MenuFlyout()
+    {
+        SetItemsSourceMethodInfo =
+            typeof(ItemCollection).GetMethod("SetItemsSource", BindingFlags.Instance | BindingFlags.NonPublic)!;
+    }
+
+    public MenuFlyout()
+    {
+        var itemCollectionType = typeof(ItemCollection);
+        Items = (ItemCollection)Activator.CreateInstance(itemCollectionType, true)!;
+    }
 
     [Content] public ItemCollection Items { get; }
 
@@ -64,6 +69,12 @@ public class MenuFlyout : Flyout
     {
         get => GetValue(ItemTemplateProperty);
         set => SetValue(ItemTemplateProperty, value);
+    }
+    
+    internal bool IsDetectMouseClickEnabled
+    {
+        get => GetValue(IsDetectMouseClickEnabledProperty);
+        set => SetValue(IsDetectMouseClickEnabledProperty, value);
     }
 
     protected override Control CreatePresenter()
@@ -124,7 +135,11 @@ public class MenuFlyout : Flyout
     {
         base.OnOpened();
         var inputManager = AvaloniaLocator.Current.GetService<IInputManager>()!;
-        _compositeDisposable?.Add(inputManager.Process.Subscribe(HandleMouseClick));
+        if (IsDetectMouseClickEnabled)
+        {
+            _detectMouseClickDisposable = inputManager.Process.Subscribe(HandleMouseClick);
+            CompositeDisposable?.Add(_detectMouseClickDisposable);
+        }
     }
 
     private void HandleMouseClick(RawInputEventArgs args)
@@ -165,6 +180,27 @@ public class MenuFlyout : Flyout
         if (change.Property == ItemsSourceProperty)
         {
             SetItemsSourceMethodInfo.Invoke(Items, new object?[] { change.GetNewValue<IEnumerable?>() });
+        } 
+        else if (change.Property == IsDetectMouseClickEnabledProperty && IsOpen)
+        {
+            if (IsDetectMouseClickEnabled)
+            {
+                if (_detectMouseClickDisposable is not null) 
+                {
+                    CompositeDisposable?.Remove(_detectMouseClickDisposable);
+                }
+
+                var inputManager = AvaloniaLocator.Current.GetService<IInputManager>()!;
+                _detectMouseClickDisposable = inputManager.Process.Subscribe(HandleMouseClick);
+                CompositeDisposable?.Add(_detectMouseClickDisposable);
+            }
+            else
+            {
+                if (_detectMouseClickDisposable is not null) 
+                {
+                    CompositeDisposable?.Remove(_detectMouseClickDisposable);
+                }
+            }
         }
     }
 

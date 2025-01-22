@@ -9,6 +9,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Diagnostics;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Primitives.PopupPositioning;
+using Avalonia.Input.Raw;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 
@@ -146,6 +147,7 @@ public class DropdownButton : Button
         {
             AnchorTarget = this
         };
+        _flyoutStateHelper.ClickHideFlyoutPredicate = ClickHideFlyoutPredicate;
     }
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -216,10 +218,30 @@ public class DropdownButton : Button
             BindUtils.RelayBind(this, IsShowArrowProperty, DropdownFlyout);
             BindUtils.RelayBind(this, IsPointAtCenterProperty, DropdownFlyout);
             BindUtils.RelayBind(this, MarginToAnchorProperty, DropdownFlyout);
-
+            
             DropdownFlyout.Opened += HandleFlyoutOpened;
             DropdownFlyout.Closed += HandleFlyoutClosed;
+            DropdownFlyout.IsDetectMouseClickEnabled = false;
         }
+    }
+    
+    private bool ClickHideFlyoutPredicate(IPopupHostProvider hostProvider, RawPointerEventArgs args)
+    {
+        if (hostProvider.PopupHost != args.Root)
+        {
+            if (TriggerType == FlyoutTriggerType.Click)
+            {
+                return true;
+            }
+            // 只有 TriggerType 为 Hover 的时候会判断
+            var secondaryButtonOrigin = this.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(this)!);
+            var secondaryBounds = secondaryButtonOrigin.HasValue ? new Rect(secondaryButtonOrigin.Value, Bounds.Size) : new Rect();
+            if (!secondaryBounds.Contains(args.Position))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void HandleFlyoutOpened(object? sender, EventArgs e)

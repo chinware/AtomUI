@@ -718,6 +718,11 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
         {
             if (_secondaryButton is not null)
             {
+                if (TriggerType == FlyoutTriggerType.Click)
+                {
+                    return true;
+                }
+                // 只有 TriggerType 为 Hover 的时候会判断
                 var secondaryButtonOrigin = _secondaryButton.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(_secondaryButton)!);
                 var secondaryBounds = secondaryButtonOrigin.HasValue ? new Rect(secondaryButtonOrigin.Value, _secondaryButton.Bounds.Size) : new Rect();
                 if (!secondaryBounds.Contains(args.Position))
@@ -741,7 +746,6 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
         {
             _isFlyoutOpen = false;
             UpdatePseudoClasses();
-
             OnFlyoutClosed();
         }
     }

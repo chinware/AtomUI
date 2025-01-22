@@ -60,8 +60,8 @@ public class Popup : AvaloniaPopup
 
     internal bool IsDetectMouseClickEnabled
     {
-        get => GetValue(IsLightDismissEnabledProperty);
-        set => SetValue(IsLightDismissEnabledProperty, value);
+        get => GetValue(IsDetectMouseClickEnabledProperty);
+        set => SetValue(IsDetectMouseClickEnabledProperty, value);
     }
 
     private bool _isFlipped;

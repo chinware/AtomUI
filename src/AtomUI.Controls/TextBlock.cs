@@ -18,7 +18,7 @@ public class TextBlock : AvaloniaTextBlock
             var width = size.Width;
             if (VerticalAlignment == VerticalAlignment.Center)
             {
-                height += (TextLayout.Extent - TextLayout.Baseline) / 4;
+                height += (TextLayout.Extent - TextLayout.Baseline) / 2;
             }
 
             return new Size(width, height);

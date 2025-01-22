@@ -118,7 +118,7 @@ public class Flyout : PopupFlyoutBase
             o => o._motionDuration,
             (o, v) => o._motionDuration = v);
 
-    protected CompositeDisposable? _compositeDisposable;
+    protected CompositeDisposable? CompositeDisposable;
 
     static Flyout()
     {
@@ -189,7 +189,7 @@ public class Flyout : PopupFlyoutBase
 
     protected override void OnOpening(CancelEventArgs args)
     {
-        _compositeDisposable = new CompositeDisposable();
+        CompositeDisposable = new CompositeDisposable();
         if (Popup.Child is { } presenter)
         {
             if (_classes != null)
@@ -206,14 +206,14 @@ public class Flyout : PopupFlyoutBase
         base.OnOpening(args);
         if (!args.Cancel)
         {
-            _compositeDisposable.Add(PopupControl.IsFlippedProperty.Changed.Subscribe(HandlePopupPropertyChanged));
+            CompositeDisposable.Add(PopupControl.IsFlippedProperty.Changed.Subscribe(HandlePopupPropertyChanged));
         }
     }
 
     protected override void OnClosed()
     {
         base.OnClosed();
-        _compositeDisposable?.Dispose();
+        CompositeDisposable?.Dispose();
     }
 
     private Point CalculatePopupPositionDelta(Control anchorTarget,
