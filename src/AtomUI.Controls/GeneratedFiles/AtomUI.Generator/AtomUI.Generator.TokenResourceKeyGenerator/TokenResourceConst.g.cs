@@ -701,6 +701,7 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey DirectoryNodeSelectedBg = new TokenResourceKey("TreeView.DirectoryNodeSelectedBg", "AtomUI.Token");
         public static readonly TokenResourceKey TreeItemMargin = new TokenResourceKey("TreeView.TreeItemMargin", "AtomUI.Token");
         public static readonly TokenResourceKey TreeItemHeaderPadding = new TokenResourceKey("TreeView.TreeItemHeaderPadding", "AtomUI.Token");
+        public static readonly TokenResourceKey TreeItemHeaderMargin = new TokenResourceKey("TreeView.TreeItemHeaderMargin", "AtomUI.Token");
         public static readonly TokenResourceKey TreeNodeSwitcherMargin = new TokenResourceKey("TreeView.TreeNodeSwitcherMargin", "AtomUI.Token");
         public static readonly TokenResourceKey TreeNodeIconMargin = new TokenResourceKey("TreeView.TreeNodeIconMargin", "AtomUI.Token");
         public static readonly TokenResourceKey DragIndicatorLineWidth = new TokenResourceKey("TreeView.DragIndicatorLineWidth", "AtomUI.Token");

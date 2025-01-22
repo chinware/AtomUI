@@ -29,7 +29,7 @@ internal class TreeViewItemTheme : BaseControlTheme
     {
     }
 
-    protected override IControlTemplate? BuildControlTemplate()
+    protected override IControlTemplate BuildControlTemplate()
     {
         return new FuncControlTemplate<TreeViewItem>((treeViewItem, scope) =>
         {
@@ -123,7 +123,7 @@ internal class TreeViewItemTheme : BaseControlTheme
                 Cursor                     = new Cursor(StandardCursorType.Hand),
                 HorizontalContentAlignment = HorizontalAlignment.Left,
                 VerticalAlignment          = VerticalAlignment.Center,
-                VerticalContentAlignment   = VerticalAlignment.Center
+                VerticalContentAlignment   = VerticalAlignment.Center,
             };
 
             CreateTemplateParentBinding(contentPresenter, InputElement.IsEnabledProperty,
@@ -185,6 +185,7 @@ internal class TreeViewItemTheme : BaseControlTheme
         {
             var headerPresenterStyle = new Style(selector => selector.Nesting().Template().Name(HeaderPresenterPart));
             headerPresenterStyle.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Left);
+            headerPresenterStyle.Add(Layoutable.MarginProperty, TreeViewTokenResourceKey.TreeItemHeaderMargin);
             commonStyle.Add(headerPresenterStyle);
         }
 
@@ -205,7 +206,7 @@ internal class TreeViewItemTheme : BaseControlTheme
         {
             var headerPresenterStyle = new Style(selector => selector.Nesting().Template().Name(HeaderPresenterPart));
             headerPresenterStyle.Add(ContentPresenter.PaddingProperty, TreeViewTokenResourceKey.TreeItemHeaderPadding);
-            enabledStyle.Add(headerPresenterStyle);
+            commonStyle.Add(headerPresenterStyle);
         }
 
         var hoverStyle = new Style(selector => selector.Nesting().Class(TreeViewItem.TreeNodeHoverPC));

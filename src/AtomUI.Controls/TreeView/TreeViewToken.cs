@@ -29,8 +29,6 @@ internal class TreeViewToken : AbstractControlDesignToken
     /// </summary>
     public Color NodeSelectedBg { get; set; }
 
-    #region 内部 Token 定义
-
     /// <summary>
     /// 目录树节点选中文字颜色
     /// </summary>
@@ -52,6 +50,11 @@ internal class TreeViewToken : AbstractControlDesignToken
     public Thickness TreeItemHeaderPadding { get; set; }
 
     /// <summary>
+    /// 树节点标题的外间距
+    /// </summary>
+    public Thickness TreeItemHeaderMargin { get; set; }
+
+    /// <summary>
     /// 树节点展开按钮外边距
     /// </summary>
     public Thickness TreeNodeSwitcherMargin { get; set; }
@@ -66,22 +69,21 @@ internal class TreeViewToken : AbstractControlDesignToken
     /// </summary>
     public double DragIndicatorLineWidth { get; set; }
 
-    #endregion
-
     internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
-        TitleHeight    = _globalToken.ControlHeightSM;
-        NodeHoverBg    = _globalToken.ControlItemBgHover;
+        TitleHeight = _globalToken.ControlHeightSM;
+        NodeHoverBg = _globalToken.ControlItemBgHover;
         NodeSelectedBg = _globalToken.ControlItemBgActive;
 
         DirectoryNodeSelectedColor = _globalToken.ColorTextLightSolid;
-        DirectoryNodeSelectedBg    = _globalToken.ColorPrimary;
+        DirectoryNodeSelectedBg = _globalToken.ColorPrimary;
 
-        TreeItemMargin         = new Thickness(0, 0, 0, _globalToken.PaddingXS / 2);
-        TreeItemHeaderPadding  = new Thickness(_globalToken.PaddingXS / 2, 0);
+        TreeItemMargin = new Thickness(0, 0, 0, _globalToken.PaddingXS / 2);
+        TreeItemHeaderPadding = new Thickness(_globalToken.PaddingXS / 2, 0);
+        TreeItemHeaderMargin = new Thickness(_globalToken.MarginXS / 2, 0, 0, 0);
         TreeNodeSwitcherMargin = new Thickness(0, 0, _globalToken.PaddingXS / 2, 0);
-        TreeNodeIconMargin     = new Thickness(_globalToken.PaddingXS / 2, 0, 0, 0);
+        TreeNodeIconMargin = new Thickness(_globalToken.PaddingXS / 2, 0, 0, 0);
 
         DragIndicatorLineWidth = _globalToken.LineWidthFocus;
     }

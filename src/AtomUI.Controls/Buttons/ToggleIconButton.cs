@@ -103,24 +103,24 @@ public class ToggleIconButton : ToggleButton
                      change.Property == IsPointerOverProperty)
             {
                 CollectStyleState();
-                var Icon = IsChecked.HasValue && IsChecked.Value ? CheckedIcon : UnCheckedIcon;
-                if (Icon is not null)
+                var icon = IsChecked.HasValue && IsChecked.Value ? CheckedIcon : UnCheckedIcon;
+                if (icon is not null)
                 {
                     if (_styleState.HasFlag(ControlStyleState.Enabled))
                     {
-                        Icon.IconMode = IconMode.Normal;
+                        icon.IconMode = IconMode.Normal;
                         if (_styleState.HasFlag(ControlStyleState.Sunken))
                         {
-                            Icon.IconMode = IconMode.Selected;
+                            icon.IconMode = IconMode.Selected;
                         }
                         else if (_styleState.HasFlag(ControlStyleState.MouseOver))
                         {
-                            Icon.IconMode = IconMode.Active;
+                            icon.IconMode = IconMode.Active;
                         }
                     }
                     else
                     {
-                        Icon.IconMode = IconMode.Disabled;
+                        icon.IconMode = IconMode.Disabled;
                     }
                 }
             }
