@@ -394,7 +394,7 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
             if (_enlargedPopupRect == null && _enlargePopupRectScreenPixelRect == null)
             {
                 // Only do this once when the Flyout opens & cache the result
-                if (Popup?.Host is PopupRoot root)
+                if (Popup.Host is PopupRoot root)
                 {
                     // Get the popup root bounds and convert to screen coordinates
 
@@ -402,7 +402,7 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
                     _enlargePopupRectScreenPixelRect =
                         new PixelRect(root.PointToScreen(tmp.TopLeft), root.PointToScreen(tmp.BottomRight));
                 }
-                else if (Popup?.Host is OverlayPopupHost host)
+                else if (Popup.Host is OverlayPopupHost host)
                 {
                     // Overlay popups are in OverlayLayer coordinates, just use that
                     _enlargedPopupRect = host.Bounds.Inflate(100);

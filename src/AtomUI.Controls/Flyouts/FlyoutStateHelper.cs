@@ -5,6 +5,7 @@ using Avalonia.Controls.Diagnostics;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Input.Raw;
+using Avalonia.LogicalTree;
 using Avalonia.Threading;
 
 namespace AtomUI.Controls;
@@ -357,7 +358,7 @@ internal class FlyoutStateHelper : AvaloniaObject
                         current = current.Parent;
                     }
                 }
-                else if (Equals(pointerEventArgs.Root, AnchorTarget))
+                else if (CheckRootAncestor(pointerEventArgs.Root))
                 {
                     found = true;
                 }
@@ -369,5 +370,27 @@ internal class FlyoutStateHelper : AvaloniaObject
                 }
             }
         }
+    }
+
+    private bool CheckRootAncestor(IInputRoot root)
+    {
+        if (root.Equals(AnchorTarget))
+        {
+            return true;
+        }
+        if (root is ILogical logical)
+        {
+            ILogical? current = logical;
+            while (current != null)
+            {
+                if (current.Equals(AnchorTarget))
+                {
+                    return true;
+                }
+                current = current.LogicalParent;
+            }
+        }
+
+        return false;
     }
 }
