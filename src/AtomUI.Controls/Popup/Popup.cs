@@ -193,7 +193,6 @@ public class Popup : AvaloniaPopup
         {
             return;
         }
-
         if (IsDetectMouseClickEnabled)
         {
             if (args is RawPointerEventArgs pointerEventArgs)

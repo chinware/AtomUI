@@ -31,9 +31,6 @@ public class MenuFlyout : Flyout
     public static readonly StyledProperty<ControlTheme?> ItemContainerThemeProperty =
         ItemsControl.ItemContainerThemeProperty.AddOwner<MenuFlyout>();
     
-    internal static readonly StyledProperty<bool> IsDetectMouseClickEnabledProperty =
-        AvaloniaProperty.Register<Popup, bool>(nameof(IsDetectMouseClickEnabled), true);
-    
     private static readonly MethodInfo SetItemsSourceMethodInfo;
     public Func<IPopupHostProvider, RawPointerEventArgs, bool>? ClickHideFlyoutPredicate;
     
@@ -69,12 +66,6 @@ public class MenuFlyout : Flyout
     {
         get => GetValue(ItemTemplateProperty);
         set => SetValue(ItemTemplateProperty, value);
-    }
-    
-    internal bool IsDetectMouseClickEnabled
-    {
-        get => GetValue(IsDetectMouseClickEnabledProperty);
-        set => SetValue(IsDetectMouseClickEnabledProperty, value);
     }
 
     protected override Control CreatePresenter()
@@ -208,6 +199,5 @@ public class MenuFlyout : Flyout
     {
         base.NotifyPopupCreated(popup);
         popup.IsLightDismissEnabled = false;
-        popup.IsDetectMouseClickEnabled = false;
     }
 }

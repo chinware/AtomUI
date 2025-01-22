@@ -145,6 +145,19 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
 
     #endregion
 
+    #region 内部属性定义
+
+    internal static readonly StyledProperty<bool> IsDetectMouseClickEnabledProperty =
+        AvaloniaProperty.Register<Flyout, bool>(nameof(IsDetectMouseClickEnabled), true);
+    
+    internal bool IsDetectMouseClickEnabled
+    {
+        get => GetValue(IsDetectMouseClickEnabledProperty);
+        set => SetValue(IsDetectMouseClickEnabledProperty, value);
+    }
+
+    #endregion
+
     #region 公共事件定义
 
     event Action<IPopupHost?>? IPopupHostProvider.PopupHostChanged
@@ -183,6 +196,7 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
     protected internal virtual void NotifyPopupCreated(Popup popup)
     {
         BindUtils.RelayBind(this, MarginToAnchorProperty, popup);
+        BindUtils.RelayBind(this, IsDetectMouseClickEnabledProperty, popup, Popup.IsDetectMouseClickEnabledProperty);
     }
 
     protected internal virtual void NotifyPositionPopup(bool showAtPointer)

@@ -88,7 +88,7 @@ internal class FlyoutStateHelper : AvaloniaObject
                 newFlyout.Closed += HandleFlyoutClosed;
             }
         }
-        else if (change.Property == AnchorTargetProperty)
+        else if (change.Property == AnchorTargetProperty || change.Property == TriggerTypeProperty)
         {
             SetupTriggerHandler();
         }
@@ -196,7 +196,7 @@ internal class FlyoutStateHelper : AvaloniaObject
         {
             return;
         }
-
+        _subscriptions?.Dispose();
         _subscriptions = new CompositeDisposable();
         if (TriggerType == FlyoutTriggerType.Hover)
         {

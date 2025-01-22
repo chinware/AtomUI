@@ -201,6 +201,7 @@ public class FlyoutHost : Control
             BindUtils.RelayBind(this, IsShowArrowProperty, Flyout);
             BindUtils.RelayBind(this, IsPointAtCenterProperty, Flyout);
             BindUtils.RelayBind(this, MarginToAnchorProperty, Flyout);
+            Flyout.IsDetectMouseClickEnabled = false;
         }
     }
 
