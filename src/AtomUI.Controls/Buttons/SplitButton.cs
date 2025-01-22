@@ -8,11 +8,13 @@ using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Diagnostics;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Data;
 using Avalonia.Input;
+using Avalonia.Input.Raw;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
@@ -20,14 +22,10 @@ using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
-[TemplatePart("PART_PrimaryButton", typeof(Button))]
-[TemplatePart("PART_SecondaryButton", typeof(Button))]
+[TemplatePart(SplitButtonTheme.PrimaryButtonPart, typeof(Button))]
+[TemplatePart(SplitButtonTheme.SecondaryButtonPart, typeof(Button))]
 public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
 {
-    internal const string pcChecked = ":checked";
-    internal const string pcPressed = ":pressed";
-    internal const string pcFlyoutOpen = ":flyout-open";
-
     #region 公共属性定义
 
     public static readonly RoutedEvent<RoutedEventArgs> ClickEvent =
@@ -334,9 +332,9 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
     /// </summary>
     protected void UpdatePseudoClasses()
     {
-        PseudoClasses.Set(pcFlyoutOpen, _isFlyoutOpen);
-        PseudoClasses.Set(pcPressed, _isKeyboardPressed);
-        PseudoClasses.Set(pcChecked, InternalIsChecked);
+        PseudoClasses.Set(StdPseudoClass.FlyoutOpen, _isFlyoutOpen);
+        PseudoClasses.Set(StdPseudoClass.Pressed, _isKeyboardPressed);
+        PseudoClasses.Set(StdPseudoClass.Checked, InternalIsChecked);
     }
 
     protected void OpenFlyout()
@@ -362,6 +360,10 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
         {
             flyout.Opened += HandleFlyoutOpened;
             flyout.Closed += HandleFlyoutClosed;
+            if (flyout is MenuFlyout menuFlyout)
+            {
+                menuFlyout.ClickHideFlyoutPredicate = ClickHideFlyoutPredicate;
+            }
 
             _flyoutPropertyChangedDisposable = flyout
                                                .GetPropertyChangedObservable(Avalonia.Controls.Primitives.Popup
@@ -380,6 +382,11 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
         {
             flyout.Opened -= HandleFlyoutOpened;
             flyout.Closed -= HandleFlyoutClosed;
+            
+            if (flyout is MenuFlyout menuFlyout)
+            {
+                menuFlyout.ClickHideFlyoutPredicate = null;
+            }
 
             _flyoutPropertyChangedDisposable?.Dispose();
             _flyoutPropertyChangedDisposable = null;
@@ -424,8 +431,8 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
         UnregisterEvents();
         UnregisterFlyoutEvents(Flyout);
 
-        _primaryButton                  = e.NameScope.Find<Button>("PART_PrimaryButton");
-        _secondaryButton                = e.NameScope.Find<Button>("PART_SecondaryButton");
+        _primaryButton                  = e.NameScope.Find<Button>(SplitButtonTheme.PrimaryButtonPart);
+        _secondaryButton                = e.NameScope.Find<Button>(SplitButtonTheme.SecondaryButtonPart);
         _flyoutStateHelper.AnchorTarget = _secondaryButton;
 
         if (_primaryButton != null)
@@ -505,14 +512,14 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
 
             if (_isAttachedToLogicalTree)
             {
-                if (oldValue is ICommand oldCommand)
+                if (oldValue is not null)
                 {
-                    oldCommand.CanExecuteChanged -= CanExecuteChanged;
+                    oldValue.CanExecuteChanged -= CanExecuteChanged;
                 }
 
-                if (newValue is ICommand newCommand)
+                if (newValue is not null)
                 {
-                    newCommand.CanExecuteChanged += CanExecuteChanged;
+                    newValue.CanExecuteChanged += CanExecuteChanged;
                 }
             }
 
@@ -701,9 +708,25 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
         {
             _isFlyoutOpen = true;
             UpdatePseudoClasses();
-
             OnFlyoutOpened();
         }
+    }
+
+    private bool ClickHideFlyoutPredicate(IPopupHostProvider hostProvider, RawPointerEventArgs args)
+    {
+        if (hostProvider.PopupHost != args.Root)
+        {
+            if (_secondaryButton is not null)
+            {
+                var secondaryButtonOrigin = _secondaryButton.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(_secondaryButton)!);
+                var secondaryBounds = secondaryButtonOrigin.HasValue ? new Rect(secondaryButtonOrigin.Value, _secondaryButton.Bounds.Size) : new Rect();
+                if (!secondaryBounds.Contains(args.Position))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /// <summary>
@@ -759,19 +782,8 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
         {
             if (_secondaryButton is not null)
             {
-                var offset = _secondaryButton.TranslatePoint(new Point(0, 0), this);
-                if (!offset.HasValue)
-                {
-                    return;
-                }
-
-                using var optionState = context.PushRenderOptions(new RenderOptions
-                {
-                    EdgeMode = EdgeMode.Aliased
-                });
-                var startPoint = new Point(offset.Value.X, 0);
-                var endPoint   = new Point(offset.Value.X, Bounds.Height);
-                context.DrawLine(new Pen(BorderBrush, BorderThickness.Left), startPoint, endPoint);
+                var cornerRadius = (float)CornerRadius.TopLeft;
+                context.FillRectangle(BorderBrush ?? Brushes.White, new Rect(0, 0, Bounds.Width, Bounds.Height), cornerRadius);
             }
         }
     }

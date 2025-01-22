@@ -16,7 +16,8 @@ namespace AtomUI.Controls;
 public class MenuFlyout : Flyout
 {
     private static readonly MethodInfo SetItemsSourceMethodInfo;
-
+    public Func<IPopupHostProvider, RawPointerEventArgs, bool>? ClickHideFlyoutPredicate;
+    
     static MenuFlyout()
     {
         SetItemsSourceMethodInfo =
@@ -41,10 +42,7 @@ public class MenuFlyout : Flyout
     /// </summary>
     public static readonly StyledProperty<IDataTemplate?> ItemTemplateProperty =
         AvaloniaProperty.Register<MenuFlyout, IDataTemplate?>(nameof(ItemTemplate));
-
-    /// <summary>
-    /// Defines the <see cref="ItemContainerTheme" /> property.
-    /// </summary>
+    
     public static readonly StyledProperty<ControlTheme?> ItemContainerThemeProperty =
         ItemsControl.ItemContainerThemeProperty.AddOwner<MenuFlyout>();
 
@@ -141,9 +139,19 @@ public class MenuFlyout : Flyout
             {
                 if (this is IPopupHostProvider popupHostProvider)
                 {
-                    if (popupHostProvider.PopupHost != pointerEventArgs.Root)
+                    if (ClickHideFlyoutPredicate is not null)
                     {
-                        Hide();
+                        if (ClickHideFlyoutPredicate(popupHostProvider, pointerEventArgs))
+                        {
+                            Hide();
+                        }
+                    }
+                    else
+                    {
+                        if (popupHostProvider.PopupHost != pointerEventArgs.Root)
+                        {
+                            Hide();
+                        }
                     }
                 }
             }
@@ -160,9 +168,10 @@ public class MenuFlyout : Flyout
         }
     }
 
-    protected override bool ShowAtCore(Control placementTarget, bool showAtPointer = false)
+    protected internal override void NotifyPopupCreated(Popup popup)
     {
-        Popup.IsLightDismissEnabled = false;
-        return base.ShowAtCore(placementTarget, showAtPointer);
+        base.NotifyPopupCreated(popup);
+        popup.IsLightDismissEnabled = false;
+        popup.IsDetectMouseClickEnabled = false;
     }
 }

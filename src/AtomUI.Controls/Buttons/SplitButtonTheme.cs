@@ -15,7 +15,6 @@ internal class SplitButtonTheme : BaseControlTheme
     public const string MainLayoutPart = "PART_MainLayout";
     public const string PrimaryButtonPart = "PART_PrimaryButton";
     public const string SecondaryButtonPart = "PART_SecondaryButton";
-    public const string SeparatorLinePart = "PART_SeparatorLine";
 
     public const int NormalZIndex = 1000;
     public const int ActivatedZIndex = 2000;
@@ -103,7 +102,7 @@ internal class SplitButtonTheme : BaseControlTheme
         Add(buttonStyle);
         var buttonHoverStyle = new Style(selector =>
             selector.Nesting().Template().Name(MainLayoutPart).Child().OfType<Button>()
-                    .Class(StdPseudoClass.PointerOver));
+                .Class(StdPseudoClass.PointerOver));
         buttonHoverStyle.Add(Visual.ZIndexProperty, ActivatedZIndex);
         Add(buttonHoverStyle);
     }

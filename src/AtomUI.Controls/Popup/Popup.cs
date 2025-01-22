@@ -1,7 +1,6 @@
 ﻿using System.Reactive.Disposables;
 using AtomUI.Data;
 using AtomUI.MotionScene;
-using AtomUI.Native;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -30,13 +29,16 @@ public class Popup : AvaloniaPopup
     public static readonly StyledProperty<double> MarginToAnchorProperty =
         AvaloniaProperty.Register<Popup, double>(nameof(MarginToAnchor), 4);
 
-    private static readonly StyledProperty<TimeSpan> MotionDurationProperty
+    public static readonly StyledProperty<TimeSpan> MotionDurationProperty
         = AvaloniaProperty.Register<Popup, TimeSpan>(nameof(MotionDuration));
 
     public static readonly DirectProperty<Popup, bool> IsFlippedProperty =
         AvaloniaProperty.RegisterDirect<Popup, bool>(nameof(IsFlipped),
             o => o.IsFlipped,
             (o, v) => o.IsFlipped = v);
+
+    internal static readonly StyledProperty<bool> IsDetectMouseClickEnabledProperty =
+        AvaloniaProperty.Register<Popup, bool>(nameof(IsDetectMouseClickEnabled), true);
 
     public BoxShadows MaskShadows
     {
@@ -56,6 +58,12 @@ public class Popup : AvaloniaPopup
         set => SetValue(MotionDurationProperty, value);
     }
 
+    internal bool IsDetectMouseClickEnabled
+    {
+        get => GetValue(IsLightDismissEnabledProperty);
+        set => SetValue(IsLightDismissEnabledProperty, value);
+    }
+
     private bool _isFlipped;
 
     public bool IsFlipped
@@ -72,7 +80,7 @@ public class Popup : AvaloniaPopup
     private bool _isNeedFlip = true;
     private bool _openAnimating;
     private bool _closeAnimating;
-    
+
     // 当鼠标移走了，但是打开动画还没完成，我们需要记录下来这个信号
     internal bool RequestCloseWhereAnimationCompleted { get; set; }
 
@@ -186,21 +194,24 @@ public class Popup : AvaloniaPopup
             return;
         }
 
-        if (args is RawPointerEventArgs pointerEventArgs)
+        if (IsDetectMouseClickEnabled)
         {
-            if (pointerEventArgs.Type == RawPointerEventType.LeftButtonUp)
+            if (args is RawPointerEventArgs pointerEventArgs)
             {
-                if (_firstDetected)
+                if (pointerEventArgs.Type == RawPointerEventType.LeftButtonUp)
                 {
-                    _firstDetected = false;
-                    return;
-                }
-
-                if (this is IPopupHostProvider popupHostProvider)
-                {
-                    if (popupHostProvider.PopupHost != pointerEventArgs.Root)
+                    if (_firstDetected)
                     {
-                        CloseAnimation();
+                        _firstDetected = false;
+                        return;
+                    }
+
+                    if (this is IPopupHostProvider popupHostProvider)
+                    {
+                        if (popupHostProvider.PopupHost != pointerEventArgs.Root)
+                        {
+                            CloseAnimation();
+                        }
                     }
                 }
             }
@@ -461,6 +472,7 @@ public class Popup : AvaloniaPopup
         {
             scaling = windowBase.DesktopScaling;
         }
+
         var offset = new Point(popupOffset.X, popupOffset.Y);
 
         // 调度动画
@@ -477,6 +489,7 @@ public class Popup : AvaloniaPopup
             {
                 opened();
             }
+
             _openAnimating = false;
             if (RequestCloseWhereAnimationCompleted)
             {

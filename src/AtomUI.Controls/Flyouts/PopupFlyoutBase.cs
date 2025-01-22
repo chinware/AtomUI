@@ -258,7 +258,6 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
                 return false;
             }
         }
-
         IsOpen       = false;
         Popup.IsOpen = false;
 
