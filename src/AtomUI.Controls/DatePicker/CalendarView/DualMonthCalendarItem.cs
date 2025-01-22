@@ -11,6 +11,7 @@ internal class DualMonthCalendarItem : RangeCalendarItem
     #region 内部属性定义
     
     protected HeadTextButton? _secondaryHeaderButton;
+    
     internal HeadTextButton? SecondaryHeaderButton
     {
         get => _secondaryHeaderButton;
@@ -288,5 +289,4 @@ internal class DualMonthCalendarItem : RangeCalendarItem
             }
         }
     }
-    
 }
