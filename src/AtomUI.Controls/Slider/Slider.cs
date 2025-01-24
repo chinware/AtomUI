@@ -367,22 +367,6 @@ public class Slider : RangeBase
             && !(greaterThan && Math.Abs(value - Maximum) < Tolerance) // Stop if searching up if already at Max
             && !(!greaterThan && Math.Abs(value - Minimum) < Tolerance)) // Stop if searching down if already at Min
         {
-            // var ticks = Ticks;
-
-            // If ticks collection is available, use it.
-            // // Note that ticks may be unsorted.
-            // if (ticks != null && ticks.Count > 0) {
-            //    foreach (var tick in ticks) {
-            //       // Find the smallest tick greater than value or the largest tick less than value
-            //       if (greaterThan && MathUtilities.GreaterThan(tick, value) &&
-            //           (MathUtilities.LessThan(tick, next) || Math.Abs(next - value) < Tolerance)
-            //           || !greaterThan && MathUtilities.LessThan(tick, value) &&
-            //           (MathUtilities.GreaterThan(tick, next) || Math.Abs(next - value) < Tolerance)) {
-            //          next = tick;
-            //       }
-            //    }
-            // } else
-
             if (MathUtilities.GreaterThan(TickFrequency, 0.0))
             {
                 // Find the current tick we are at
@@ -687,26 +671,7 @@ public class Slider : RangeBase
         {
             var previous = Minimum;
             var next     = Maximum;
-
-            // This property is rarely set so let's try to avoid the GetValue
-            // var ticks = Ticks;
-
-            // If ticks collection is available, use it.
-            // Note that ticks may be unsorted.
-            // if (ticks != null && ticks.Count > 0) {
-            //    foreach (var tick in ticks) {
-            //       if (MathUtilities.AreClose(tick, value)) {
-            //          return value;
-            //       }
-            //
-            //       if (MathUtilities.LessThan(tick, value) && MathUtilities.GreaterThan(tick, previous)) {
-            //          previous = tick;
-            //       } else if (MathUtilities.GreaterThan(tick, value) && MathUtilities.LessThan(tick, next)) {
-            //          next = tick;
-            //       }
-            //    }
-            // } else 
-
+            
             if (MathUtilities.GreaterThan(TickFrequency, 0.0))
             {
                 previous = Minimum + Math.Round((value - Minimum) / TickFrequency) * TickFrequency;

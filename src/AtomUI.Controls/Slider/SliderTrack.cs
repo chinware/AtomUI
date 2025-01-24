@@ -998,7 +998,7 @@ public class SliderTrack : Control
                         var markRect = new Rect(new Point(offsetX, offsetY), new Size(SliderMarkSize, SliderMarkSize));
                         _renderContextData.MarkRects.Add((markRect, i, markIncluded));
 
-                        var textOffsetX = offsetX - mark.LabelSize.Width / 2;
+                        var textOffsetX = offsetX - mark.LabelSize.Width / 3;
                         var textOffsetY = railCenterY + thumbSize / 2;
 
                         if (i == Marks.Count - 1)

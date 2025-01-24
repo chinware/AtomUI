@@ -136,7 +136,7 @@ public class SliderThumb : TemplatedControl
             RaiseEvent(ev);
         }
 
-        PseudoClasses.Remove(":pressed");
+        PseudoClasses.Remove(StdPseudoClass.Pressed);
 
         base.OnPointerCaptureLost(e);
     }
@@ -166,7 +166,7 @@ public class SliderThumb : TemplatedControl
             Vector      = (Vector)_lastPoint
         };
 
-        PseudoClasses.Add(":pressed");
+        PseudoClasses.Add(StdPseudoClass.Pressed);
 
         e.PreventGestureRecognition();
 
@@ -189,7 +189,7 @@ public class SliderThumb : TemplatedControl
             RaiseEvent(ev);
         }
 
-        PseudoClasses.Remove(":pressed");
+        PseudoClasses.Remove(StdPseudoClass.Pressed);
     }
 
     public override void Render(DrawingContext context)
