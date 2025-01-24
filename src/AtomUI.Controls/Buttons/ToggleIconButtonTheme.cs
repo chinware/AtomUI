@@ -50,7 +50,7 @@ internal class ToggleIconButtonTheme : BaseControlTheme
                 enabledStyle.Add(iconStyle);
             }
 
-            var hoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Selected));
+            var hoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
             {
                 var iconStyle = new Style(selector => selector.Nesting().Template().OfType<Icon>());
                 iconStyle.Add(Icon.IconModeProperty, IconMode.Active);

@@ -74,14 +74,22 @@ internal class TreeViewItemTheme : BaseControlTheme
                 Focusable = false
             };
             nodeSwitcherButton.RegisterInNameScope(scope);
-            CreateTemplateParentBinding(nodeSwitcherButton, ToggleIconButton.CheckedIconProperty,
+            CreateTemplateParentBinding(nodeSwitcherButton, NodeSwitcherButton.CollapseIconProperty,
                 TreeViewItem.SwitcherCollapseIconProperty);
-            CreateTemplateParentBinding(nodeSwitcherButton, ToggleIconButton.UnCheckedIconProperty,
+            CreateTemplateParentBinding(nodeSwitcherButton, NodeSwitcherButton.ExpandIconProperty,
                 TreeViewItem.SwitcherExpandIconProperty);
+            CreateTemplateParentBinding(nodeSwitcherButton, NodeSwitcherButton.RotationIconProperty,
+                TreeViewItem.SwitcherRotationIconProperty);
+            CreateTemplateParentBinding(nodeSwitcherButton, NodeSwitcherButton.LoadingIconProperty,
+                TreeViewItem.SwitcherLoadingIconProperty);
+            CreateTemplateParentBinding(nodeSwitcherButton, NodeSwitcherButton.LeafIconProperty,
+                TreeViewItem.SwitcherLeafIconProperty);
             CreateTemplateParentBinding(nodeSwitcherButton, ToggleButton.IsCheckedProperty,
                 Avalonia.Controls.TreeViewItem.IsExpandedProperty, BindingMode.TwoWay);
             CreateTemplateParentBinding(nodeSwitcherButton, NodeSwitcherButton.IsLeafProperty,
                 TreeViewItem.IsLeafProperty);
+            CreateTemplateParentBinding(nodeSwitcherButton, NodeSwitcherButton.IsLoadingProperty,
+                TreeViewItem.IsLoadingProperty);
 
             treeItemLayout.Children.Add(nodeSwitcherButton);
             Grid.SetColumn(nodeSwitcherButton, 0);
@@ -241,13 +249,15 @@ internal class TreeViewItemTheme : BaseControlTheme
         }
         Add(leafSwitcherButtonStyle);
 
-        var leafAndHideButtonStyle = new Style(selector => selector
-                                                           .Nesting().PropertyEquals(TreeViewItem.IsLeafProperty, true)
-                                                           .PropertyEquals(TreeViewItem.IsShowLeafSwitcherProperty,
-                                                               false));
+        var leafAndHideButtonStyle = new Style(selector => Selectors.Or(selector
+            .Nesting().PropertyEquals(TreeViewItem.IsLeafProperty, true)
+            .PropertyEquals(TreeViewItem.IsShowLeafIconProperty,
+                false),
+            selector
+                .Nesting().PropertyEquals(TreeViewItem.IsLeafProperty, false)));
         {
             var switcherButtonStyle = new Style(selector => selector.Nesting().Template().Name(NodeSwitcherButtonPart));
-            switcherButtonStyle.Add(NodeSwitcherButton.IsIconVisibleProperty, false);
+            switcherButtonStyle.Add(NodeSwitcherButton.IsLeafIconVisibleProperty, false);
             leafAndHideButtonStyle.Add(switcherButtonStyle);
         }
         Add(leafAndHideButtonStyle);

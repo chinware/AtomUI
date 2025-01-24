@@ -46,8 +46,8 @@ public class TreeView : AvaloniaTreeView
     public static readonly StyledProperty<TreeItemHoverMode> NodeHoverModeProperty =
         AvaloniaProperty.Register<TreeView, TreeItemHoverMode>(nameof(NodeHoverMode));
 
-    public static readonly StyledProperty<bool> IsShowLeafSwitcherProperty =
-        AvaloniaProperty.Register<TreeView, bool>(nameof(IsShowLeafSwitcher));
+    public static readonly StyledProperty<bool> IsShowLeafIconProperty =
+        AvaloniaProperty.Register<TreeView, bool>(nameof(IsShowLeafIcon));
 
     public bool IsDraggable
     {
@@ -79,10 +79,10 @@ public class TreeView : AvaloniaTreeView
         set => SetValue(NodeHoverModeProperty, value);
     }
 
-    public bool IsShowLeafSwitcher
+    public bool IsShowLeafIcon
     {
-        get => GetValue(IsShowLeafSwitcherProperty);
-        set => SetValue(IsShowLeafSwitcherProperty, value);
+        get => GetValue(IsShowLeafIconProperty);
+        set => SetValue(IsShowLeafIconProperty, value);
     }
 
     public bool IsDefaultExpandAll { get; set; } = false;
@@ -274,8 +274,8 @@ public class TreeView : AvaloniaTreeView
             BindUtils.RelayBind(this, NodeHoverModeProperty, treeViewItem, TreeViewItem.NodeHoverModeProperty);
             BindUtils.RelayBind(this, IsShowLineProperty, treeViewItem, TreeViewItem.IsShowLineProperty);
             BindUtils.RelayBind(this, IsShowIconProperty, treeViewItem, TreeViewItem.IsShowIconProperty);
-            BindUtils.RelayBind(this, IsShowLeafSwitcherProperty, treeViewItem,
-                TreeViewItem.IsShowLeafSwitcherProperty);
+            BindUtils.RelayBind(this, IsShowLeafIconProperty, treeViewItem,
+                TreeViewItem.IsShowLeafIconProperty);
             BindUtils.RelayBind(this, IsCheckableProperty, treeViewItem, TreeViewItem.IsCheckboxVisibleProperty);
         }
     }

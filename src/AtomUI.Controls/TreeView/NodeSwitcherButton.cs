@@ -1,25 +1,34 @@
-﻿using AtomUI.Controls.Utils;
-using AtomUI.Data;
+using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.Media;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls.Primitives;
+using Avalonia.Data;
+using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
-/// <summary>
-/// 如果 checked icon 和 unchecked icon 都设置的时候，就直接切换
-/// 否则就直接改变 render transform
-/// </summary>
-internal class NodeSwitcherButton : ToggleIconButton
+internal enum NodeSwitcherButtonIconMode
+{
+    Default,
+    Rotation,
+    Leaf,
+    Loading
+}
+
+internal class NodeSwitcherButton : ToggleButton
 {
     #region 公共属性
+    
+    public static readonly StyledProperty<Icon?> ExpandIconProperty
+        = AvaloniaProperty.Register<NodeSwitcherButton, Icon?>(nameof(ExpandIcon));
+
+    public static readonly StyledProperty<Icon?> CollapseIconProperty
+        = AvaloniaProperty.Register<NodeSwitcherButton, Icon?>(nameof(CollapseIcon));
 
     public static readonly StyledProperty<Icon?> LoadingIconProperty
         = AvaloniaProperty.Register<NodeSwitcherButton, Icon?>(nameof(LoadingIcon));
@@ -29,6 +38,12 @@ internal class NodeSwitcherButton : ToggleIconButton
 
     public static readonly StyledProperty<bool> IsLeafProperty
         = AvaloniaProperty.Register<NodeSwitcherButton, bool>(nameof(IsLeaf));
+    
+    public static readonly StyledProperty<bool> IsLoadingProperty
+        = AvaloniaProperty.Register<NodeSwitcherButton, bool>(nameof(IsLoading), false);
+    
+    public static readonly StyledProperty<Icon?> RotationIconProperty
+        = AvaloniaProperty.Register<NodeSwitcherButton, Icon?>(nameof(RotationIcon));
 
     public Icon? LoadingIcon
     {
@@ -47,18 +62,82 @@ internal class NodeSwitcherButton : ToggleIconButton
         get => GetValue(IsLeafProperty);
         set => SetValue(IsLeafProperty, value);
     }
+    
+    public bool IsLoading
+    {
+        get => GetValue(IsLoadingProperty);
+        set => SetValue(IsLoadingProperty, value);
+    }
+    
+    public Icon? RotationIcon
+    {
+        get => GetValue(RotationIconProperty);
+        set => SetValue(RotationIconProperty, value);
+    }
+    
+    public Icon? ExpandIcon
+    {
+        get => GetValue(ExpandIconProperty);
+        set => SetValue(ExpandIconProperty, value);
+    }
 
+    public Icon? CollapseIcon
+    {
+        get => GetValue(CollapseIconProperty);
+        set => SetValue(CollapseIconProperty, value);
+    }
+    
     #endregion
 
     #region 内部属性定义
 
-    internal static readonly StyledProperty<bool> IsIconVisibleProperty
-        = AvaloniaProperty.Register<NodeSwitcherButton, bool>(nameof(IsIconVisible), true);
+    internal static readonly StyledProperty<bool> IsLeafIconVisibleProperty
+        = AvaloniaProperty.Register<NodeSwitcherButton, bool>(nameof(IsLeafIconVisible), true);
+    
+    internal static readonly DirectProperty<NodeSwitcherButton, NodeSwitcherButtonIconMode> IconModeProperty =
+        AvaloniaProperty.RegisterDirect<NodeSwitcherButton, NodeSwitcherButtonIconMode>(
+            nameof(IconMode),
+            o => o.IconMode,
+            (o, v) => o.IconMode = v);
+    
+    internal static readonly DirectProperty<NodeSwitcherButton, bool> ExpandIconVisibleProperty =
+        AvaloniaProperty.RegisterDirect<NodeSwitcherButton, bool>(
+            nameof(ExpandIconVisible),
+            o => o.ExpandIconVisible,
+            (o, v) => o.ExpandIconVisible = v);
+    
+    internal static readonly DirectProperty<NodeSwitcherButton, bool> CollapseIconVisibleProperty =
+        AvaloniaProperty.RegisterDirect<NodeSwitcherButton, bool>(
+            nameof(CollapseIconVisible),
+            o => o.CollapseIconVisible,
+            (o, v) => o.CollapseIconVisible = v);
 
-    internal bool IsIconVisible
+    internal bool IsLeafIconVisible
     {
-        get => GetValue(IsIconVisibleProperty);
-        set => SetValue(IsIconVisibleProperty, value);
+        get => GetValue(IsLeafIconVisibleProperty);
+        set => SetValue(IsLeafIconVisibleProperty, value);
+    }
+    
+    private NodeSwitcherButtonIconMode _iconMode;
+
+    internal NodeSwitcherButtonIconMode IconMode
+    {
+        get => _iconMode;
+        set => SetAndRaise(IconModeProperty, ref _iconMode, value);
+    }
+    
+    private bool _expandIconVisible;
+    internal bool ExpandIconVisible
+    {
+        get => _expandIconVisible;
+        set => SetAndRaise(ExpandIconVisibleProperty, ref _expandIconVisible, value);
+    }
+    
+    private bool _collapseIconVisible;
+    internal bool CollapseIconVisible
+    {
+        get => _collapseIconVisible;
+        set => SetAndRaise(CollapseIconVisibleProperty, ref _collapseIconVisible, value);
     }
 
     #endregion
@@ -67,119 +146,73 @@ internal class NodeSwitcherButton : ToggleIconButton
 
     static NodeSwitcherButton()
     {
-        AffectsMeasure<NodeSwitcherButton>(LoadingIconProperty, LeafIconProperty);
         AffectsRender<NodeSwitcherButton>(BackgroundProperty);
+        AffectsMeasure<NodeSwitcherButton>(ExpandIconProperty, CollapseIconProperty, IsCheckedProperty,
+            LoadingIconProperty, LeafIconProperty);
     }
 
     public NodeSwitcherButton()
     {
+        SetCurrentValue(CursorProperty, new Cursor(StandardCursorType.Hand));
         _borderRenderHelper = new BorderRenderHelper();
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        LoadingIcon ??= AntDesignIconPackage.LoadingOutlined();
-        ConfigureFixedSizeIcon(LoadingIcon);
-        LoadingIcon.LoadingAnimation = IconAnimation.Spin;
-
-        LeafIcon ??= AntDesignIconPackage.FileOutlined();
-
-        ConfigureFixedSizeIcon(LeafIcon);
+        SetupIconVisibility(IsChecked ?? false);
         base.OnApplyTemplate(e);
-        ApplyIconToContent();
         Transitions ??= new Transitions
         {
             AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty)
         };
     }
 
-    private void ConfigureFixedSizeIcon(Icon icon)
-    {
-        icon.SetCurrentValue(HorizontalAlignmentProperty, HorizontalAlignment.Center);
-        icon.SetCurrentValue(VerticalAlignmentProperty, VerticalAlignment.Center);
-        UIStructureUtils.SetTemplateParent(icon, this);
-        TokenResourceBinder.CreateGlobalResourceBinding(icon, WidthProperty, GlobalTokenResourceKey.IconSize);
-        TokenResourceBinder.CreateGlobalResourceBinding(icon, HeightProperty, GlobalTokenResourceKey.IconSize);
-        BindUtils.RelayBind(this, IsIconVisibleProperty, icon, IsVisibleProperty);
-    }
-
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (VisualRoot is not null)
+        if (change.Property == CollapseIconProperty ||
+            change.Property == ExpandIconProperty ||
+            change.Property == LoadingIconProperty ||
+            change.Property == RotationIconProperty)
         {
-            if (change.Property == IsLeafProperty)
+            if (change.NewValue is Icon icon)
             {
-                ApplyIconToContent();
+                icon.HorizontalAlignment = HorizontalAlignment.Center;
+                icon.VerticalAlignment = VerticalAlignment.Center;
             }
         }
-
-        if (change.Property == LoadingIconProperty ||
-            change.Property == LeafIconProperty)
+        else if (change.Property == IsCheckedProperty)
         {
-            if (change.NewValue is Icon newIcon)
-            {
-                ConfigureFixedSizeIcon(newIcon);
-                ApplyIconToContent();
-                RenderTransform = null;
-            }
-        }
-
-        if (change.Property == CheckedIconProperty ||
-            change.Property == UnCheckedIconProperty)
-        {
-            RenderTransform = null;
-            ApplyIconToContent();
+            var isChecked = (bool?)change.NewValue ?? false;
+            SetupIconVisibility(isChecked);
         }
     }
 
-    internal override void ApplyIconToContent()
+    private void SetupIconVisibility(bool isChecked)
     {
-        if (!IsLeaf)
+        if (_iconMode != NodeSwitcherButtonIconMode.Default)
         {
-            if (IsChecked.HasValue)
-            {
-                if (CheckedIcon is not null && UnCheckedIcon is not null)
-                {
-                    // 直接切换模式
-                    if (IsChecked.Value)
-                    {
-                        Content = CheckedIcon;
-                    }
-                    else
-                    {
-                        Content = UnCheckedIcon;
-                    }
-                }
-                else if (UnCheckedIcon is not null)
-                {
-                    // 通过 render transform 进行设置
-                    Content = UnCheckedIcon;
-                    if (IsChecked.Value)
-                    {
-                        RenderTransform = new RotateTransform(90);
-                    }
-                    else
-                    {
-                        RenderTransform = null;
-                    }
-                }
-            }
-            else
-            {
-                Content = LoadingIcon;
-            }
+            ExpandIconVisible = false;
+            CollapseIconVisible = false;
         }
         else
         {
-            RenderTransform = null;
-            Content         = LeafIcon;
+            if (isChecked)
+            {
+                ExpandIconVisible = false;
+                CollapseIconVisible = true;
+            }
+            else
+            {
+                ExpandIconVisible = true;
+                CollapseIconVisible = false;
+            }
         }
     }
 
     public override void Render(DrawingContext context)
     {
-        if (IsIconVisible && !IsLeaf)
+        if (_iconMode != NodeSwitcherButtonIconMode.Leaf)
         {
             _borderRenderHelper.Render(context,
                 Bounds.Size,

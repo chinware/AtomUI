@@ -39,11 +39,26 @@ public class TreeViewItem : AvaloniaTreeItem
 
     public static readonly StyledProperty<Icon?> SwitcherCollapseIconProperty
         = AvaloniaProperty.Register<TreeViewItem, Icon?>(nameof(SwitcherCollapseIcon));
-
+    
+    public static readonly StyledProperty<Icon?> SwitcherRotationIconProperty
+        = AvaloniaProperty.Register<TreeViewItem, Icon?>(nameof(SwitcherRotationIcon));
+    
+    public static readonly StyledProperty<Icon?> SwitcherLoadingIconProperty
+        = AvaloniaProperty.Register<TreeViewItem, Icon?>(nameof(SwitcherRotationIcon));
+    
+    public static readonly StyledProperty<Icon?> SwitcherLeafIconProperty
+        = AvaloniaProperty.Register<TreeViewItem, Icon?>(nameof(SwitcherLeafIcon));
+    
     public static readonly DirectProperty<TreeViewItem, bool> IsLeafProperty
         = AvaloniaProperty.RegisterDirect<TreeViewItem, bool>(nameof(IsLeaf),
             o => o.IsLeaf,
             (o, v) => o.IsLeaf = v);
+    
+    public static readonly StyledProperty<bool> IsShowLeafIconProperty =
+        AvaloniaProperty.Register<TreeViewItem, bool>(nameof(IsShowLeafIcon));
+    
+    public static readonly StyledProperty<bool> IsLoadingProperty
+        = AvaloniaProperty.Register<TreeViewItem, bool>(nameof(IsLoading), false);
 
     public bool IsCheckable
     {
@@ -69,6 +84,30 @@ public class TreeViewItem : AvaloniaTreeItem
         set => SetValue(SwitcherCollapseIconProperty, value);
     }
 
+    public Icon? SwitcherRotationIcon
+    {
+        get => GetValue(SwitcherRotationIconProperty);
+        set => SetValue(SwitcherRotationIconProperty, value);
+    }
+    
+    public Icon? SwitcherLoadingIcon
+    {
+        get => GetValue(SwitcherLoadingIconProperty);
+        set => SetValue(SwitcherLoadingIconProperty, value);
+    }
+    
+    public Icon? SwitcherLeafIcon
+    {
+        get => GetValue(SwitcherLeafIconProperty);
+        set => SetValue(SwitcherLeafIconProperty, value);
+    }
+    
+    internal bool IsShowLeafIcon
+    {
+        get => GetValue(IsShowLeafIconProperty);
+        set => SetValue(IsShowLeafIconProperty, value);
+    }
+
     public bool? IsChecked
     {
         get => GetValue(IsCheckedProperty);
@@ -81,6 +120,12 @@ public class TreeViewItem : AvaloniaTreeItem
     {
         get => _isLeaf;
         internal set => SetAndRaise(IsLeafProperty, ref _isLeaf, value);
+    }
+    
+    public bool IsLoading
+    {
+        get => GetValue(IsLoadingProperty);
+        set => SetValue(IsLoadingProperty, value);
     }
 
     public TreeNodeKey? Key { get; set; }
@@ -113,11 +158,6 @@ public class TreeViewItem : AvaloniaTreeItem
         AvaloniaProperty.RegisterDirect<TreeViewItem, bool>(nameof(IconEffectiveVisible),
             o => o.IconEffectiveVisible,
             (o, v) => o.IconEffectiveVisible = v);
-
-    internal static readonly DirectProperty<TreeViewItem, bool> IsShowLeafSwitcherProperty =
-        AvaloniaProperty.RegisterDirect<TreeViewItem, bool>(nameof(IsShowLeafSwitcher),
-            o => o.IsShowLeafSwitcher,
-            (o, v) => o.IsShowLeafSwitcher = v);
 
     internal static readonly DirectProperty<TreeViewItem, bool> IsCheckboxVisibleProperty =
         AvaloniaProperty.RegisterDirect<TreeViewItem, bool>(nameof(IsCheckboxVisible),
@@ -190,14 +230,6 @@ public class TreeViewItem : AvaloniaTreeItem
         set => SetAndRaise(IconEffectiveVisibleProperty, ref _iconEffectiveVisible, value);
     }
 
-    private bool _isShowLeafSwitcher;
-
-    internal bool IsShowLeafSwitcher
-    {
-        get => _isShowLeafSwitcher;
-        set => SetAndRaise(IsShowLeafSwitcherProperty, ref _isShowLeafSwitcher, value);
-    }
-
     private bool _isCheckboxVisible;
 
     internal bool IsCheckboxVisible
@@ -267,7 +299,7 @@ public class TreeViewItem : AvaloniaTreeItem
         AffectsRender<TreeViewItem>(EffectiveNodeCornerRadiusProperty,
             EffectiveNodeBgProperty,
             IsShowLineProperty,
-            IsShowLeafSwitcherProperty,
+            IsShowLeafIconProperty,
             IsDraggingProperty,
             IsDragOverProperty);
     }
@@ -289,7 +321,10 @@ public class TreeViewItem : AvaloniaTreeItem
                 // 注册到 TreeView
                 OwnerTreeView?.DefaultCheckedItems.Add(this);
             }
-
+            
+            CreateNodeSwitcherDefaultIcons();
+            SetNodeSwitcherIcons();
+            SetupSwitcherButtonIconMode();
             _initialized = true;
         }
     }
@@ -303,11 +338,12 @@ public class TreeViewItem : AvaloniaTreeItem
             {
                 CalculateEffectiveBgRect();
             }
-            else if (change.Property == IsShowLineProperty ||
-                     change.Property == SwitcherExpandIconProperty ||
-                     change.Property == SwitcherCollapseIconProperty)
+            else if (change.Property == SwitcherExpandIconProperty ||
+                     change.Property == SwitcherCollapseIconProperty ||
+                     change.Property == SwitcherRotationIconProperty)
             {
                 SetNodeSwitcherIcons();
+                SetupSwitcherButtonIconMode();
             }
             else if (change.Property == IsEnabledProperty ||
                      change.Property == IsCheckableProperty)
@@ -328,6 +364,11 @@ public class TreeViewItem : AvaloniaTreeItem
                         OwnerTreeView?.UnCheckedSubTree(this);
                     }
                 }
+            }      
+            else if (change.Property == IsShowLineProperty)
+            {
+                CreateNodeSwitcherDefaultIcons();
+                SetNodeSwitcherIcons();
             }
         }
 
@@ -351,6 +392,74 @@ public class TreeViewItem : AvaloniaTreeItem
             {
                 UIStructureUtils.SetTemplateParent(newIcon, this);
             }
+        } 
+        else if (change.Property == IsLoadingProperty || change.Property == IsLeafProperty)
+        {
+            SetupSwitcherButtonIconMode();
+        }
+    }
+
+    private void SetupSwitcherButtonIconMode()
+    {
+        if (_switcherButton is not null)
+        {
+            if (!IsLeaf)
+            {
+                if (IsLoading)
+                {
+                    _switcherButton.IconMode = NodeSwitcherButtonIconMode.Loading;
+                }
+                else
+                {
+                    if (SwitcherExpandIcon != null && SwitcherCollapseIcon != null)
+                    {
+                        _switcherButton.IconMode = NodeSwitcherButtonIconMode.Default;
+                    } 
+                    else if (SwitcherRotationIcon != null)
+                    {
+                        _switcherButton.IconMode = NodeSwitcherButtonIconMode.Rotation;
+                    }
+                }
+            }
+            else
+            {
+                _switcherButton.IconMode = NodeSwitcherButtonIconMode.Leaf;
+            }
+        }
+    }
+
+    private void CreateNodeSwitcherDefaultIcons()
+    {
+        if (IsShowLine)
+        {
+            if (SwitcherExpandIcon == null)
+            {
+                SetValue(SwitcherExpandIconProperty, AntDesignIconPackage.PlusSquareOutlined(), BindingPriority.Template);
+            }
+
+            if (SwitcherCollapseIcon == null)
+            {
+                SetValue(SwitcherCollapseIconProperty, AntDesignIconPackage.MinusSquareOutlined(), BindingPriority.Template);
+            }
+        }
+        else
+        {
+            if (SwitcherRotationIcon == null)
+            {
+                SetValue(SwitcherRotationIconProperty, AntDesignIconPackage.CaretRightOutlined(), BindingPriority.Template);
+            }
+        }
+        
+        if (SwitcherLoadingIcon == null)
+        {
+            var loadingIcon = AntDesignIconPackage.LoadingOutlined();
+            loadingIcon.LoadingAnimation = IconAnimation.Spin;
+            SetValue(SwitcherLoadingIconProperty, loadingIcon, BindingPriority.Template);
+        }
+        
+        if (SwitcherLeafIcon == null)
+        {
+            SetValue(SwitcherLeafIconProperty, AntDesignIconPackage.FileOutlined(), BindingPriority.Template);
         }
     }
 
@@ -367,12 +476,15 @@ public class TreeViewItem : AvaloniaTreeItem
             GlobalTokenResourceKey.BorderThickness,
             BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this));
-
+        
         base.OnApplyTemplate(e);
+        SetNodeSwitcherIcons();
         _headerPresenter = e.NameScope.Find<ContentPresenter>(TreeViewItemTheme.HeaderPresenterPart);
         _iconPresenter   = e.NameScope.Find<ContentPresenter>(TreeViewItemTheme.IconPresenterPart);
         _frameDecorator  = e.NameScope.Find<Border>(TreeViewItemTheme.FrameDecoratorPart);
         _switcherButton  = e.NameScope.Find<NodeSwitcherButton>(TreeViewItemTheme.NodeSwitcherButtonPart);
+        
+        SetupSwitcherButtonIconMode();
 
         if (_frameDecorator is not null)
         {
@@ -393,7 +505,6 @@ public class TreeViewItem : AvaloniaTreeItem
         }
 
         IsLeaf = ItemCount == 0;
-        SetNodeSwitcherIcons();
         SetupCheckBoxEnabled();
 
         Transitions ??= new Transitions
@@ -463,8 +574,17 @@ public class TreeViewItem : AvaloniaTreeItem
         {
             EdgeMode = EdgeMode.Aliased
         });
+        
+        var isLastChild = false;
+        if (Parent is ItemsControl parentTreeItem)
+        {
+            if (parentTreeItem.ContainerFromIndex(parentTreeItem.ItemCount - 1) == this)
+            {
+                isLastChild = true;
+            }
+        }
 
-        if (!IsLeaf)
+        if (!IsLeaf && !isLastChild)
         {
             var switcherMiddleBottom =
                 _switcherButton.TranslatePoint(
@@ -477,17 +597,8 @@ public class TreeViewItem : AvaloniaTreeItem
         }
 
         // 画孩子线条
-        if (!IsShowLeafSwitcher && IsLeaf)
+        if (!IsShowLeafIcon && IsLeaf)
         {
-            var isLastChild = false;
-            if (Parent is TreeViewItem parentTreeItem)
-            {
-                if (parentTreeItem.ContainerFromIndex(parentTreeItem.ItemCount - 1) == this)
-                {
-                    isLastChild = true;
-                }
-            }
-
             {
                 // 纵向
                 var childStartPoint =
@@ -525,39 +636,44 @@ public class TreeViewItem : AvaloniaTreeItem
 
     private void SetNodeSwitcherIcons()
     {
-        if (_switcherButton is null)
+        if (SwitcherExpandIcon is not null)
         {
-            return;
+            TokenResourceBinder.CreateGlobalResourceBinding(SwitcherExpandIcon, WidthProperty,
+                GlobalTokenResourceKey.IconSize);
+            TokenResourceBinder.CreateGlobalResourceBinding(SwitcherExpandIcon, HeightProperty,
+                GlobalTokenResourceKey.IconSize);
         }
 
-        if (SwitcherExpandIcon is not null || SwitcherCollapseIcon is not null)
+        if (SwitcherCollapseIcon is not null)
         {
-            _switcherButton.UnCheckedIcon = SwitcherExpandIcon;
-            _switcherButton.CheckedIcon   = SwitcherCollapseIcon;
-            TokenResourceBinder.CreateTokenBinding(_switcherButton, ToggleIconButton.IconWidthProperty,
+            TokenResourceBinder.CreateGlobalResourceBinding(SwitcherCollapseIcon, WidthProperty,
                 GlobalTokenResourceKey.IconSize);
-            TokenResourceBinder.CreateTokenBinding(_switcherButton, ToggleIconButton.IconHeightProperty,
+            TokenResourceBinder.CreateGlobalResourceBinding(SwitcherCollapseIcon, HeightProperty,
                 GlobalTokenResourceKey.IconSize);
-            return;
         }
 
-        if (IsShowLine)
+        if (SwitcherRotationIcon is not null)
         {
-            _switcherButton.UnCheckedIcon = AntDesignIconPackage.PlusSquareOutlined();
-            _switcherButton.CheckedIcon   = AntDesignIconPackage.MinusSquareOutlined();
-            TokenResourceBinder.CreateTokenBinding(_switcherButton, ToggleIconButton.IconWidthProperty,
+            TokenResourceBinder.CreateGlobalResourceBinding(SwitcherRotationIcon, WidthProperty,
+                GlobalTokenResourceKey.IconSizeXS);
+            TokenResourceBinder.CreateGlobalResourceBinding(SwitcherRotationIcon, HeightProperty,
+                GlobalTokenResourceKey.IconSizeXS);
+        }
+
+        if (SwitcherLoadingIcon is not null)
+        {
+            TokenResourceBinder.CreateGlobalResourceBinding(SwitcherLoadingIcon, WidthProperty,
                 GlobalTokenResourceKey.IconSize);
-            TokenResourceBinder.CreateTokenBinding(_switcherButton, ToggleIconButton.IconHeightProperty,
+            TokenResourceBinder.CreateGlobalResourceBinding(SwitcherLoadingIcon, HeightProperty,
                 GlobalTokenResourceKey.IconSize);
         }
-        else
+
+        if (SwitcherLeafIcon is not null)
         {
-            _switcherButton.CheckedIcon   = null;
-            _switcherButton.UnCheckedIcon = AntDesignIconPackage.CaretRightOutlined();
-            TokenResourceBinder.CreateTokenBinding(_switcherButton, ToggleIconButton.IconWidthProperty,
-                GlobalTokenResourceKey.IconSizeXS);
-            TokenResourceBinder.CreateTokenBinding(_switcherButton, ToggleIconButton.IconHeightProperty,
-                GlobalTokenResourceKey.IconSizeXS);
+            TokenResourceBinder.CreateGlobalResourceBinding(SwitcherLeafIcon, WidthProperty,
+                GlobalTokenResourceKey.IconSize);
+            TokenResourceBinder.CreateGlobalResourceBinding(SwitcherLeafIcon, HeightProperty,
+                GlobalTokenResourceKey.IconSize);
         }
     }
 
@@ -642,7 +758,7 @@ public class TreeViewItem : AvaloniaTreeItem
             }
         }
 
-        if (_switcherButton is not null && _switcherButton.IsIconVisible)
+        if (_switcherButton is not null && _switcherButton.IsLeafIconVisible)
         {
             offsetX -= _switcherButton.Bounds.Width;
         }
@@ -681,6 +797,4 @@ public class TreeViewItem : AvaloniaTreeItem
     {
         return new DragPreviewAdorner(_frameDecorator!);
     }
-
-    // #endregion
 }
