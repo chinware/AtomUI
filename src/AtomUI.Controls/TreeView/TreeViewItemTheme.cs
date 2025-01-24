@@ -24,6 +24,8 @@ internal class TreeViewItemTheme : BaseControlTheme
     public const string IconPresenterPart = "PART_IconPresenter";
     public const string NodeSwitcherButtonPart = "PART_NodeSwitcherButton";
 
+    public const double DisableOpacity = 0.3;
+
     public TreeViewItemTheme()
         : base(typeof(TreeViewItem))
     {
@@ -112,7 +114,6 @@ internal class TreeViewItemTheme : BaseControlTheme
             var iconContentPresenter = new ContentPresenter
             {
                 Name   = IconPresenterPart,
-                Cursor = new Cursor(StandardCursorType.Hand)
             };
             iconContentPresenter.RegisterInNameScope(scope);
             CreateTemplateParentBinding(iconContentPresenter, ContentPresenter.ContentProperty,
@@ -277,7 +278,17 @@ internal class TreeViewItemTheme : BaseControlTheme
         var disabledStyle        = new Style(selector => selector.Nesting().Class(StdPseudoClass.Disabled));
         var headerPresenterStyle = new Style(selector => selector.Nesting().Template().Name(HeaderPresenterPart));
         headerPresenterStyle.Add(ContentPresenter.ForegroundProperty, GlobalTokenResourceKey.ColorTextDisabled);
+        
         disabledStyle.Add(headerPresenterStyle);
+        
+        var iconPresenterStyle = new Style(selector => selector.Nesting().Template().Name(IconPresenterPart));
+        iconPresenterStyle.Add(ContentPresenter.OpacityProperty, DisableOpacity);
+        disabledStyle.Add(iconPresenterStyle);
+
+        var nodeSwitcherButtonStyle = new Style(selector => selector.Nesting().Template().Name(NodeSwitcherButtonPart));
+        nodeSwitcherButtonStyle.Add(ContentPresenter.OpacityProperty, DisableOpacity);
+        disabledStyle.Add(nodeSwitcherButtonStyle);
+        
         Add(disabledStyle);
     }
 
