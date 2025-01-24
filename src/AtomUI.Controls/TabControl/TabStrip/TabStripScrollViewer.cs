@@ -28,7 +28,11 @@ internal class TabStripScrollViewer : BaseTabScrollViewer
     {
         if (_menuFlyout is null)
         {
-            _menuFlyout = new MenuFlyout();
+            _menuFlyout = new MenuFlyout()
+            {
+                IsShowArrow = false,
+                ClickHideFlyoutPredicate = ClickHideFlyoutPredicate
+            };
         }
 
         if (TabStripPlacement == Dock.Top)

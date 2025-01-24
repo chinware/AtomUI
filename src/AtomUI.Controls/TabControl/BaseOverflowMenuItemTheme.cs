@@ -56,11 +56,11 @@ internal class BaseOverflowMenuItemTheme : BaseControlTheme
 
             var itemTextPresenter = new ContentPresenter
             {
-                Name                = ItemTextPresenterPart,
+                Name = ItemTextPresenterPart,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment   = VerticalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
                 RecognizesAccessKey = true,
-                IsHitTestVisible    = false
+                IsHitTestVisible = false
             };
 
             Grid.SetColumn(itemTextPresenter, 0);
@@ -72,17 +72,17 @@ internal class BaseOverflowMenuItemTheme : BaseControlTheme
                 HeaderedSelectingItemsControl.HeaderTemplateProperty);
 
             itemTextPresenter.RegisterInNameScope(scope);
-            
+
             var menuCloseIcon = AntDesignIconPackage.CloseOutlined();
             menuCloseIcon.HorizontalAlignment = HorizontalAlignment.Right;
-            menuCloseIcon.VerticalAlignment   = VerticalAlignment.Center;
+            menuCloseIcon.VerticalAlignment = VerticalAlignment.Center;
 
             var closeButton = new IconButton
             {
-                Name                = ItemCloseButtonPart,
+                Name = ItemCloseButtonPart,
                 HorizontalAlignment = HorizontalAlignment.Right,
-                VerticalAlignment   = VerticalAlignment.Center,
-                Icon                = menuCloseIcon
+                VerticalAlignment = VerticalAlignment.Center,
+                Icon = menuCloseIcon
             };
 
             CreateTemplateParentBinding(closeButton, Visual.IsVisibleProperty, BaseOverflowMenuItem.IsClosableProperty);

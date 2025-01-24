@@ -1,5 +1,8 @@
-﻿using Avalonia.Controls;
+﻿using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.Diagnostics;
 using Avalonia.Controls.Primitives;
+using Avalonia.Input.Raw;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
 
@@ -30,7 +33,8 @@ internal class TabControlScrollViewer : BaseTabScrollViewer
         {
             _menuFlyout = new MenuFlyout
             {
-                IsShowArrow = false
+                IsShowArrow = false,
+                ClickHideFlyoutPredicate = ClickHideFlyoutPredicate
             };
         }
 

@@ -4,9 +4,11 @@ using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Converters;
+using Avalonia.Controls.Diagnostics;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
+using Avalonia.Input.Raw;
 using Avalonia.Media;
 using Colors = Avalonia.Media.Colors;
 using GradientStop = Avalonia.Media.GradientStop;
@@ -264,5 +266,20 @@ internal abstract class BaseTabScrollViewer : ScrollViewer
             var endEdgeVisible   = _endEdgeIndicator?.IsVisible ?? false;
             _menuIndicator.IsVisible = startEdgeVisible || endEdgeVisible;
         }
+    }
+    
+    protected bool ClickHideFlyoutPredicate(IPopupHostProvider hostProvider, RawPointerEventArgs args)
+    {
+        if (hostProvider.PopupHost != args.Root)
+        {
+            // 只有 TriggerType 为 Hover 的时候会判断
+            var secondaryButtonOrigin = this.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(_menuIndicator)!);
+            var secondaryBounds = secondaryButtonOrigin.HasValue ? new Rect(secondaryButtonOrigin.Value, Bounds.Size) : new Rect();
+            if (!secondaryBounds.Contains(args.Position))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }
