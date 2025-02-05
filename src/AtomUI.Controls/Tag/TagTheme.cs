@@ -3,10 +3,10 @@ using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Layout;
-using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
@@ -14,6 +14,7 @@ namespace AtomUI.Controls;
 internal class TagTheme : BaseControlTheme
 {
     public const string MainContainerPart = "PART_MainContainer";
+    public const string IconPart = "PART_Icon";
     public const string CloseButtonPart = "PART_CloseButton";
     public const string TagTextLabelPart = "PART_TagTextLabel";
 
@@ -41,7 +42,16 @@ internal class TagTheme : BaseControlTheme
             {
                 Name = MainContainerPart
             };
+            
             layout.RegisterInNameScope(scope);
+            
+            var iconContentPresenter = new ContentPresenter()
+            {
+                Name = IconPart
+            };
+            iconContentPresenter.RegisterInNameScope(scope);
+            CreateTemplateParentBinding(iconContentPresenter, ContentPresenter.ContentProperty, Tag.IconProperty);
+            layout.Children.Add(iconContentPresenter);
 
             var textBlock = new TextBlock
             {

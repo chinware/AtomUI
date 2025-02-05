@@ -92,6 +92,11 @@ public class GroupBox : ContentControl
     private Border? _frameDecorator;
     private Rect _borderBounds;
 
+    static GroupBox()
+    {
+        AffectsMeasure<GroupBox>(HeaderIconProperty);
+    }
+
     public GroupBox()
     {
         _borderRenderHelper = new BorderRenderHelper();
@@ -111,6 +116,11 @@ public class GroupBox : ContentControl
         base.OnApplyTemplate(e);
         _headerContentContainer = e.NameScope.Find<Decorator>(GroupBoxTheme.HeaderContentPart);
         _frameDecorator         = e.NameScope.Find<Border>(GroupBoxTheme.FrameDecoratorPart);
+        if (HeaderIcon is not null)
+        {
+            TokenResourceBinder.CreateTokenBinding(HeaderIcon, Icon.NormalFilledBrushProperty,
+                GlobalTokenResourceKey.ColorIcon);
+        }
     }
 
     protected override Size MeasureOverride(Size availableSize)

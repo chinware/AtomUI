@@ -8,6 +8,7 @@ using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Media;
@@ -62,7 +63,7 @@ public class Tag : TemplatedControl
     public static readonly StyledProperty<string?> TagTextProperty
         = AvaloniaProperty.Register<Tag, string?>(
             nameof(TagText));
-    
+
     public string? TagColor
     {
         get => GetValue(TagColorProperty);
@@ -106,7 +107,7 @@ public class Tag : TemplatedControl
 
     internal static readonly StyledProperty<double> TagTextPaddingInlineProperty
         = AvaloniaProperty.Register<Tag, double>(nameof(TagTextPaddingInline));
-    
+
     internal double TagTextPaddingInline
     {
         get => GetValue(TagTextPaddingInlineProperty);
@@ -114,13 +115,14 @@ public class Tag : TemplatedControl
     }
 
     #endregion
-    
+
     private bool _isPresetColorTag;
     private bool _hasColorSet;
     private static readonly Dictionary<PresetColorType, TagCalcColor> _presetColorMap;
     private static readonly Dictionary<TagStatus, TagStatusCalcColor> _statusColorMap;
     private Canvas? _layoutPanel;
     private TextBlock? _textBlock;
+    private ContentPresenter? _iconContentPresenter;
     private IconButton? _closeButton;
     private readonly BorderRenderHelper _borderRenderHelper;
 
@@ -151,9 +153,10 @@ public class Tag : TemplatedControl
 
     private void HandleTemplateApplied(INameScope scope)
     {
-        _layoutPanel = scope.Find<Canvas>(TagTheme.MainContainerPart);
-        _closeButton = scope.Find<IconButton>(TagTheme.CloseButtonPart);
-        _textBlock   = scope.Find<TextBlock>(TagTheme.TagTextLabelPart);
+        _layoutPanel          = scope.Find<Canvas>(TagTheme.MainContainerPart);
+        _closeButton          = scope.Find<IconButton>(TagTheme.CloseButtonPart);
+        _textBlock            = scope.Find<TextBlock>(TagTheme.TagTextLabelPart);
+        _iconContentPresenter = scope.Find<ContentPresenter>(TagTheme.IconPart);
 
         if (TagColor is not null)
         {
@@ -204,12 +207,12 @@ public class Tag : TemplatedControl
         }
 
         // icon
-        if (Icon is not null)
+        if (_iconContentPresenter is not null)
         {
             var offsetX = Padding.Left;
-            var offsetY = (finalSize.Height - Icon.DesiredSize.Height) / 2;
-            Canvas.SetLeft(Icon, offsetX);
-            Canvas.SetTop(Icon, offsetY);
+            var offsetY = (finalSize.Height - _iconContentPresenter.DesiredSize.Height) / 2;
+            Canvas.SetLeft(_iconContentPresenter, offsetX);
+            Canvas.SetTop(_iconContentPresenter, offsetY);
         }
 
         // 文字
@@ -408,14 +411,8 @@ public class Tag : TemplatedControl
     {
         if (Icon is not null)
         {
-            if (_layoutPanel?.Children[0] is Icon oldIcon)
-            {
-                _layoutPanel.Children.Remove(oldIcon);
-            }
-
             TokenResourceBinder.CreateTokenBinding(Icon, WidthProperty, TagTokenResourceKey.TagIconSize);
             TokenResourceBinder.CreateTokenBinding(Icon, HeightProperty, TagTokenResourceKey.TagIconSize);
-            _layoutPanel?.Children.Insert(0, Icon);
             if (_hasColorSet)
             {
                 TokenResourceBinder.CreateTokenBinding(Icon, Icon.NormalFilledBrushProperty,
@@ -439,5 +436,4 @@ public class Tag : TemplatedControl
             BorderBrush,
             default);
     }
-    
 }
