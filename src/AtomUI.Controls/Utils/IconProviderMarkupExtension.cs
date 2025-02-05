@@ -8,6 +8,9 @@ namespace AtomUI.Controls.Utils;
 
 public class IconProvider : MarkupExtension
 {
+    public static IBrush? DefaultFilledColor { get; set; }
+    public static IBrush? DefaultPrimaryFilledColor { get; set; }
+    public static IBrush? DefaultSecondaryFilledColor { get; set; }
     public string Kind { get; set; }
 
     // Filled 和 Outlined
@@ -38,13 +41,12 @@ public class IconProvider : MarkupExtension
     {
         var icon = AntDesignIconPackage.Current.BuildIcon(Kind) ?? new Icon();
         icon.SetCurrentValue(Icon.LoadingAnimationProperty, Animation);
-        icon.SetCurrentValue(Icon.NormalFilledBrushProperty, NormalFilledColor);
-        icon.SetCurrentValue(Icon.ActiveFilledBrushProperty, ActiveFilledColor);
-        icon.SetCurrentValue(Icon.SelectedFilledBrushProperty, SelectedFilledColor);
-        icon.SetCurrentValue(Icon.DisabledFilledBrushProperty, DisabledFilledColor);
-        icon.SetCurrentValue(Icon.PrimaryFilledBrushProperty, SelectedFilledColor);
-        icon.SetCurrentValue(Icon.DisabledFilledBrushProperty, PrimaryFilledColor);
-        icon.SetCurrentValue(Icon.SecondaryFilledBrushProperty, SecondaryFilledColor);
+        icon.SetCurrentValue(Icon.NormalFilledBrushProperty, NormalFilledColor ?? DefaultFilledColor);
+        icon.SetCurrentValue(Icon.ActiveFilledBrushProperty, ActiveFilledColor ?? DefaultFilledColor);
+        icon.SetCurrentValue(Icon.SelectedFilledBrushProperty, SelectedFilledColor ?? DefaultFilledColor);
+        icon.SetCurrentValue(Icon.DisabledFilledBrushProperty, DisabledFilledColor ?? DefaultFilledColor);
+        icon.SetCurrentValue(Icon.PrimaryFilledBrushProperty, PrimaryFilledColor ?? DefaultPrimaryFilledColor);
+        icon.SetCurrentValue(Icon.SecondaryFilledBrushProperty, SecondaryFilledColor ?? DefaultSecondaryFilledColor);
 
         if (!double.IsNaN(Width))
         {

@@ -1,8 +1,11 @@
 ﻿using AtomUI.Controls.Utils;
 using AtomUI.MotionScene;
 using AtomUI.Theme;
+using AtomUI.Theme.Data;
+using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Animation;
+using Avalonia.Media;
 using Avalonia.Media.Transformation;
 
 namespace AtomUI.Controls;
@@ -16,6 +19,29 @@ internal static class ThemeManagerExtensions
         ControlThemeRegister.Register();
         ControlTokenTypeRegister.Register();
         LanguageProviderRegister.Register();
+        return themeManager;
+    }
+
+    public static ThemeManager ThemeInitialized(this ThemeManager themeManager)
+    {
+        var colorTextTertiary = TokenResourceUtils.FindGlobalTokenResource(GlobalTokenResourceKey.ColorTextTertiary);
+        if (colorTextTertiary is IBrush defaultFilledColor)
+        {
+            IconProvider.DefaultFilledColor = defaultFilledColor;
+        }
+
+        var colorInfoText = TokenResourceUtils.FindGlobalTokenResource(GlobalTokenResourceKey.ColorTextTertiary);
+        var colorInfoBg   = TokenResourceUtils.FindGlobalTokenResource(GlobalTokenResourceKey.ColorInfoBg);
+
+        if (colorInfoText is IBrush primaryFilledColor)
+        {
+            IconProvider.DefaultPrimaryFilledColor = primaryFilledColor;
+        }
+
+        if (colorInfoBg is IBrush secondaryFilledColor)
+        {
+            IconProvider.DefaultSecondaryFilledColor = secondaryFilledColor;
+        }
         return themeManager;
     }
 }

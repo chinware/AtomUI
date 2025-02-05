@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel;
-using AtomUI.Media;
 using Avalonia;
 using Avalonia.Media;
 

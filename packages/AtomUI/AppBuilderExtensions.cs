@@ -27,6 +27,7 @@ public static class AtomUIExtensions
             themeManager.LoadTheme(ThemeManager.DEFAULT_THEME_ID);
             themeManager.SetActiveTheme(ThemeManager.DEFAULT_THEME_ID);
             builder.Instance!.Styles.Add(themeManager);
+            themeManager.ThemeInitialized();
         });
         return builder;
     }

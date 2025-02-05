@@ -55,7 +55,7 @@ public sealed class Icon : Control, ICustomHitTest
             nameof(FillAnimationDuration), TimeSpan.FromMilliseconds(300));
 
     public static readonly StyledProperty<IconMode> IconModeProperty =
-        AvaloniaProperty.Register<Icon, IconMode>(nameof(IconMode));
+        AvaloniaProperty.Register<Icon, IconMode>(nameof(IconMode), IconMode.Normal);
 
     public IconInfo? IconInfo
     {
@@ -120,19 +120,6 @@ public sealed class Icon : Control, ICustomHitTest
         set => SetValue(IconModeProperty, value);
     }
 
-    private static readonly StyledProperty<IBrush?> FilledBrushProperty
-        = AvaloniaProperty.Register<ToggleSwitch, IBrush?>(
-            nameof(IBrush));
-
-    /// <summary>
-    /// 当是非 TwoTone icon 的时候，填充色是支持渐变的
-    /// </summary>
-    private IBrush? FilledBrush
-    {
-        get => GetValue(FilledBrushProperty);
-        set => SetValue(FilledBrushProperty, value);
-    }
-
     public IconThemeType ThemeType => IconInfo?.ThemeType ?? IconThemeType.Filled;
 
     public IconAnimation LoadingAnimation
@@ -151,6 +138,19 @@ public sealed class Icon : Control, ICustomHitTest
     {
         get => GetValue(AngleAnimationRotateProperty);
         set => SetValue(AngleAnimationRotateProperty, value);
+    }
+    
+    internal static readonly StyledProperty<IBrush?> FilledBrushProperty
+        = AvaloniaProperty.Register<Icon, IBrush?>(
+            nameof(FilledBrush));
+
+    /// <summary>
+    /// 当是非 TwoTone icon 的时候，填充色是支持渐变的
+    /// </summary>
+    internal IBrush? FilledBrush
+    {
+        get => GetValue(FilledBrushProperty);
+        set => SetValue(FilledBrushProperty, value);
     }
 
     #endregion
@@ -178,12 +178,16 @@ public sealed class Icon : Control, ICustomHitTest
         _sourceGeometriesData = new List<Geometry>();
         _transforms           = new List<Matrix>();
     }
-    
+
     public override void ApplyTemplate()
     {
         base.ApplyTemplate();
         BuildSourceRenderData();
         SetupFilledBrush();
+        Transitions ??= new Transitions
+        {
+            AnimationUtils.CreateTransition<SolidColorBrushTransition>(FilledBrushProperty, FillAnimationDuration)
+        };
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -201,17 +205,6 @@ public sealed class Icon : Control, ICustomHitTest
                 IconMode = IconMode.Disabled;
             }
         }
-        else if (change.Property == NormalFilledBrushProperty ||
-                 change.Property == ActiveFilledBrushProperty ||
-                 change.Property == SelectedFilledBrushProperty ||
-                 change.Property == DisabledFilledBrushProperty ||
-                 change.Property == PrimaryFilledBrushProperty ||
-                 change.Property == SecondaryFilledBrushProperty ||
-                 change.Property == IconModeProperty ||
-                 change.Property == IconInfoProperty)
-        {
-            SetupFilledBrush();
-        }
         else if (change.Property == AngleAnimationRotateProperty)
         {
             SetCurrentValue(RenderTransformProperty, new RotateTransform(AngleAnimationRotate));
@@ -223,6 +216,17 @@ public sealed class Icon : Control, ICustomHitTest
             {
                 SetupRotateAnimation();
             }
+            else if (change.Property == NormalFilledBrushProperty ||
+                     change.Property == ActiveFilledBrushProperty ||
+                     change.Property == SelectedFilledBrushProperty ||
+                     change.Property == DisabledFilledBrushProperty ||
+                     change.Property == PrimaryFilledBrushProperty ||
+                     change.Property == SecondaryFilledBrushProperty ||
+                     change.Property == IconModeProperty ||
+                     change.Property == IconInfoProperty)
+            {
+                SetupFilledBrush();
+            }
         }
     }
 
@@ -231,7 +235,7 @@ public sealed class Icon : Control, ICustomHitTest
         if (_animation is not null)
         {
             _animationCancellationTokenSource?.Cancel();
-            _animation                        = null;
+            _animation = null;
         }
 
         if (LoadingAnimation == IconAnimation.Spin || LoadingAnimation == IconAnimation.Pulse)
@@ -339,6 +343,7 @@ public sealed class Icon : Control, ICustomHitTest
         {
             return;
         }
+
         foreach (var geometryData in IconInfo.Data)
         {
             _sourceGeometriesData.Add(Geometry.Parse(geometryData.PathData));
@@ -383,17 +388,13 @@ public sealed class Icon : Control, ICustomHitTest
                 _sourceGeometriesData[i] =  cloned;
             }
 
-            _viewBox = combined!.Bounds;
+            _viewBox = combined.Bounds;
         }
     }
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        Transitions ??= new Transitions()
-        {
-            AnimationUtils.CreateTransition<SolidColorBrushTransition>(FilledBrushProperty, FillAnimationDuration)
-        };
         SetupRotateAnimation();
     }
 
@@ -490,6 +491,7 @@ public sealed class Icon : Control, ICustomHitTest
                 {
                     fillBrush = FilledBrush;
                 }
+                
                 using var state = context.PushTransform(_transforms[i]);
                 context.DrawGeometry(fillBrush, null, renderedGeometry);
             }
