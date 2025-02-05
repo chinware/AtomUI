@@ -28,9 +28,9 @@ internal class RadioButtonToken : AbstractControlDesignToken
     public Color RadioColor { get; set; }
 
     public Color RadioBgColor { get; set; }
-    
+
     public double DotPadding { get; set; }
-    
+
     public Thickness TextMargin { get; set; }
 
     public RadioButtonToken()

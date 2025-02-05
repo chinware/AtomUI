@@ -524,6 +524,14 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey TextMargin = new TokenResourceKey("RadioButton.TextMargin", "AtomUI.Token");
     }
 
+    public static class ScrollBarTokenResourceKey
+    {
+        public static readonly TokenResourceKey ThumbThickness = new TokenResourceKey("ScrollBar.ThumbThickness", "AtomUI.Token");
+        public static readonly TokenResourceKey ThumbBg = new TokenResourceKey("ScrollBar.ThumbBg", "AtomUI.Token");
+        public static readonly TokenResourceKey ThumbHoverBg = new TokenResourceKey("ScrollBar.ThumbHoverBg", "AtomUI.Token");
+        public static readonly TokenResourceKey ThumbActiveOpacity = new TokenResourceKey("ScrollBar.ThumbActiveOpacity", "AtomUI.Token");
+    }
+
     public static class SegmentedTokenResourceKey
     {
         public static readonly TokenResourceKey ItemColor = new TokenResourceKey("Segmented.ItemColor", "AtomUI.Token");
