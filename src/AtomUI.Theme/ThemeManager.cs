@@ -256,7 +256,7 @@ internal class ThemeManager : Styles, IThemeManager
                 continue;
             }
 
-            var theme = new StaticTheme(themeId, filePath);
+            var theme = new Theme(themeId, filePath);
             ThemeCreatedEvent?.Invoke(this, new ThemeOperateEventArgs(theme));
             themes.Add(themeId, theme);
             theme.NotifyRegistered();

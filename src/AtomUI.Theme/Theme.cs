@@ -8,7 +8,7 @@ namespace AtomUI.Theme;
 /// <summary>
 /// 主要是生成主题资源，绘制相关的管理不在这里，因为是公用的所以放在 ThemeManager 里面
 /// </summary>
-public abstract class Theme : ITheme
+public class Theme : ITheme
 {
     private string _id;
     private string? _loadErrorMsg;
@@ -63,8 +63,6 @@ public abstract class Theme : ITheme
     {
         get { return ResourceDictionary.Keys.Select(s => s.ToString()!).ToList(); }
     }
-
-    public abstract bool IsDynamic();
 
     internal void Load()
     {
@@ -276,7 +274,11 @@ public abstract class Theme : ITheme
     {
     }
 
-    internal abstract void NotifyLoadThemeDef();
+    internal virtual void NotifyLoadThemeDef()
+    {
+        var reader = new ThemeDefinitionReader(this);
+        reader.Load(ThemeDefinition!);
+    }
 
     internal virtual void NotifyRegistered()
     {

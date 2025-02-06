@@ -6,7 +6,7 @@ namespace AtomUI.Theme;
 
 internal class ThemeDefinitionReader
 {
-    private readonly StaticTheme _theme;
+    private readonly Theme _theme;
     private ThemeDefinition? _currentDef;
     private bool _parseFinished;
 
@@ -28,7 +28,7 @@ internal class ThemeDefinitionReader
     private const string AlgorithmAttrName = "Algorithm";
     private const string ValueAttrName = "Value";
 
-    public ThemeDefinitionReader(StaticTheme theme)
+    public ThemeDefinitionReader(Theme theme)
     {
         _theme               = theme;
         _currentElementNames = new Stack<string>();
