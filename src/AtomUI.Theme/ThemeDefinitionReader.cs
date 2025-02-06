@@ -18,7 +18,7 @@ internal class ThemeDefinitionReader
 
     private const string ThemeElementName = "Theme";
     private const string AlgorithmsElementName = "Algorithms";
-    private const string GlobalTokenElementName = "GlobalToken";
+    private const string GlobalTokensElementName = "GlobalTokens";
     private const string ControlTokensElementName = "ControlTokens";
     private const string ControlTokenElementName = "ControlToken";
     private const string TokenElementName = "Token";
@@ -44,7 +44,7 @@ internal class ThemeDefinitionReader
                 CloseInput = true
             };
             var    filePath = _theme.DefinitionFilePath;
-            Stream stream   = default!;
+            Stream stream;
             if (filePath.StartsWith("avares://"))
             {
                 stream = AssetLoader.Open(new Uri(filePath));
@@ -92,7 +92,7 @@ internal class ThemeDefinitionReader
         {
             HandleStartAlgorithmsElement(reader);
         }
-        else if (name == GlobalTokenElementName)
+        else if (name == GlobalTokensElementName)
         {
             _currentDef?.GlobalTokens.Clear();
             _inGlobalTokenCtx  = true;
@@ -118,8 +118,7 @@ internal class ThemeDefinitionReader
         }
         else
         {
-            EmitErrorMsg(reader,
-                string.Format("Element tag: {0} not supported.", string.Join('.', _currentElementNames)));
+            EmitErrorMsg(reader, $"Element tag: {string.Join('.', _currentElementNames)} not supported.");
         }
     }
 
@@ -132,7 +131,7 @@ internal class ThemeDefinitionReader
             _currentControlToken = null;
             _inControlTokenCtx   = false;
         }
-        else if (name == GlobalTokenElementName)
+        else if (name == GlobalTokensElementName)
         {
             _inGlobalTokenCtx = false;
         }
@@ -214,7 +213,7 @@ internal class ThemeDefinitionReader
         }
         else
         {
-            EmitErrorMsg(reader, "The Token element must appear under WidgetToken or GlobalToken.");
+            EmitErrorMsg(reader, "The Token element must appear under WidgetToken or GlobalTokens.");
         }
     }
 

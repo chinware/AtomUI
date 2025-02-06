@@ -1,33 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Theme name="Daybreak Blue Dark">
     <Algorithms>DarkAlgorithm</Algorithms>
-    <GlobalToken>
-        <Token Name="BorderRadius" Value="8"/>
-        <Token Name="Wireframe" Value="true"/>
-        <Token Name="SizeStep" Value="6"/>
-        <Token Name="SizeUnit" Value="6"/>
-        <Token Name="FontSize" Value="16"/>
-        <Token Name="ColorPrimaryActive" Value="#4e5f7b"/>
-        <Token Name="ColorPrimaryBorderHover" Value="#155091"/>
-        <Token Name="ColorSuccess" Value="#62a840"/>
-        <Token Name="ColorWarningTextActive" Value="#6e4805"/>
-    </GlobalToken>
+    <GlobalTokens>
+    </GlobalTokens>
     <ControlTokens>
-        <ControlToken Id="Button" Algorithm="true">
-            <Token Name="ControlHeight" Value="34"/>
-            <Token Name="PaddingInlineSM" Value="11"/>
-            <Token Name="PrimaryColor" Value="rgb(213, 163, 163)"/>
-            <Token Name="ColorPrimaryBorder" Value="rgb(66, 89, 111)"/>
-            <Token Name="CnlyIconSizeSM" Value="13"/>
-        </ControlToken>
-        <ControlToken Id="LineEdit">
-            <Token Name="ColorTextTertiary" Value="rgba(145, 44, 44, 0.45)"/>
-            <Token Name="ActiveBg" Value="rgb(221, 72, 72)"/>
-            <Token Name="ColorBgContainer" Value="rgb(245, 1, 1)"/>
-            <Token Name="ColorError" Value="rgb(194, 67, 69)"/>
-            <Token Name="ActiveBorderColor" Value="rgb(91, 128, 183)"/>
-            <Token Name="ControlHeightLG" Value="35"/>
-            <Token Name="PaddingInline" Value="10"/>
-        </ControlToken>
     </ControlTokens>
 </Theme>

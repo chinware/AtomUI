@@ -67,9 +67,10 @@ internal class ThemeManager : Styles, IThemeManager
     {
         _themePool       = new Dictionary<string, Theme>();
         _customThemeDirs = new List<string>();
+        var appName = Application.Current?.Name ?? "AtomUIApplication";
         _builtInThemeDirs = new List<string>
         {
-            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), THEME_DIR)
+            Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), appName), THEME_DIR)
         };
         DefaultThemeId         = DEFAULT_THEME_ID;
         _controlThemeResources = new ResourceDictionary();
