@@ -8,7 +8,7 @@ namespace AtomUI.Theme.TokenSystem;
 /// </summary>
 public abstract class AbstractControlDesignToken : AbstractDesignToken, IControlDesignToken
 {
-    protected GlobalToken _globalToken;
+    protected DesignToken SharedToken;
 
     public string Id { get; init; }
 
@@ -19,13 +19,13 @@ public abstract class AbstractControlDesignToken : AbstractDesignToken, IControl
     {
         Id                  = id;
         IsCustomTokenConfig = false;
-        _globalToken        = default!;
+        SharedToken         = default!;
         CustomTokens        = new List<string>();
     }
 
-    public void AssignGlobalToken(GlobalToken globalToken)
+    public void AssignSharedToken(DesignToken sharedToken)
     {
-        _globalToken = globalToken;
+        SharedToken = sharedToken;
     }
 
     public override void BuildResourceDictionary(IResourceDictionary dictionary)
@@ -34,7 +34,7 @@ public abstract class AbstractControlDesignToken : AbstractDesignToken, IControl
         base.BuildResourceDictionary(tempDictionary);
         if (IsCustomTokenConfig)
         {
-            _globalToken.BuildResourceDictionary(tempDictionary);
+            SharedToken.BuildResourceDictionary(tempDictionary);
         }
 
         // 增加自己的命名空间，现在这种方法效率不是很高，需要优化

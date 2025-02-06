@@ -701,7 +701,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
             }
 
             TokenResourceBinder.CreateGlobalTokenBinding(this, OpenCloseMotionDurationProperty,
-                GlobalTokenResourceKey.MotionDurationSlow);
+                DesignTokenKey.MotionDurationSlow);
         }
 
         Transitions ??= new Transitions()

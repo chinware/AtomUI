@@ -252,8 +252,8 @@ internal class ButtonToken : AbstractControlDesignToken
     internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
-        var fontSize   = _globalToken.FontSize;
-        var fontSizeLG = _globalToken.FontSizeLG;
+        var fontSize   = SharedToken.FontSize;
+        var fontSizeLG = SharedToken.FontSizeLG;
 
         ContentFontSize   = !double.IsNaN(ContentFontSize) ? ContentFontSize : fontSize;
         ContentFontSizeSM = !double.IsNaN(ContentFontSizeSM) ? ContentFontSizeSM : fontSize;
@@ -268,7 +268,7 @@ internal class ButtonToken : AbstractControlDesignToken
             ? ContentLineHeightLG
             : CalculatorUtils.CalculateLineHeight(ContentFontSizeLG) * ContentFontSizeLG;
 
-        var controlOutlineWidth = _globalToken.ControlOutlineWidth;
+        var controlOutlineWidth = SharedToken.ControlOutlineWidth;
         FontWeight = 400;
         DefaultShadow = new BoxShadow
         {
@@ -276,7 +276,7 @@ internal class ButtonToken : AbstractControlDesignToken
             OffsetY = controlOutlineWidth / 2,
             Blur    = 3,
             Spread  = 0,
-            Color   = _globalToken.ColorControlOutline
+            Color   = SharedToken.ColorControlOutline
         };
 
         PrimaryShadow = new BoxShadow
@@ -285,7 +285,7 @@ internal class ButtonToken : AbstractControlDesignToken
             OffsetY = controlOutlineWidth,
             Blur    = 3,
             Spread  = 0,
-            Color   = _globalToken.ColorControlOutline
+            Color   = SharedToken.ColorControlOutline
         };
 
         DangerShadow = new BoxShadow
@@ -294,41 +294,41 @@ internal class ButtonToken : AbstractControlDesignToken
             OffsetY = controlOutlineWidth,
             Blur    = 3,
             Spread  = 0,
-            Color   = _globalToken.ColorErrorOutline
+            Color   = SharedToken.ColorErrorOutline
         };
         
-        var lineWidth         = _globalToken.LineWidth;
+        var lineWidth         = SharedToken.LineWidth;
 
-        PrimaryColor            = _globalToken.ColorTextLightSolid;
-        DangerColor             = _globalToken.ColorTextLightSolid;
-        BorderColorDisabled     = _globalToken.ColorBorder;
-        DefaultGhostColor       = _globalToken.ColorBgContainer;
+        PrimaryColor            = SharedToken.ColorTextLightSolid;
+        DangerColor             = SharedToken.ColorTextLightSolid;
+        BorderColorDisabled     = SharedToken.ColorBorder;
+        DefaultGhostColor       = SharedToken.ColorBgContainer;
         GhostBg                 = Colors.Transparent;
-        DefaultGhostBorderColor = _globalToken.ColorBgContainer;
+        DefaultGhostBorderColor = SharedToken.ColorBgContainer;
 
-        GroupBorderColor           = _globalToken.ColorPrimaryHover;
+        GroupBorderColor           = SharedToken.ColorPrimaryHover;
         LinkHoverBg                = Colors.Transparent;
-        TextHoverBg                = _globalToken.ColorBgTextHover;
-        DefaultColor               = _globalToken.ColorText;
-        DefaultBg                  = _globalToken.ColorBgContainer;
-        DefaultBorderColor         = _globalToken.ColorBorder;
-        DefaultBorderColorDisabled = _globalToken.ColorBorder;
-        DefaultHoverBg             = _globalToken.ColorBgContainer;
-        DefaultHoverColor          = _globalToken.ColorPrimaryHover;
-        DefaultHoverBorderColor    = _globalToken.ColorPrimaryHover;
-        DefaultActiveBg            = _globalToken.ColorBgContainer;
-        DefaultActiveColor         = _globalToken.ColorPrimaryActive;
-        DefaultActiveBorderColor   = _globalToken.ColorPrimaryActive;
+        TextHoverBg                = SharedToken.ColorBgTextHover;
+        DefaultColor               = SharedToken.ColorText;
+        DefaultBg                  = SharedToken.ColorBgContainer;
+        DefaultBorderColor         = SharedToken.ColorBorder;
+        DefaultBorderColorDisabled = SharedToken.ColorBorder;
+        DefaultHoverBg             = SharedToken.ColorBgContainer;
+        DefaultHoverColor          = SharedToken.ColorPrimaryHover;
+        DefaultHoverBorderColor    = SharedToken.ColorPrimaryHover;
+        DefaultActiveBg            = SharedToken.ColorBgContainer;
+        DefaultActiveColor         = SharedToken.ColorPrimaryActive;
+        DefaultActiveBorderColor   = SharedToken.ColorPrimaryActive;
 
-        var controlHeightSM = _globalToken.ControlHeightSM;
-        var controlHeight   = _globalToken.ControlHeight;
-        var controlHeightLG = _globalToken.ControlHeightLG;
+        var controlHeightSM = SharedToken.ControlHeightSM;
+        var controlHeight   = SharedToken.ControlHeight;
+        var controlHeightLG = SharedToken.ControlHeightLG;
 
-        PaddingSM = new Thickness(8 - _globalToken.LineWidth,
+        PaddingSM = new Thickness(8 - SharedToken.LineWidth,
             Math.Max((controlHeightSM - ContentLineHeightSM) / 2 - lineWidth, 0));
-        Padding = new Thickness(_globalToken.PaddingContentHorizontal - lineWidth,
+        Padding = new Thickness(SharedToken.PaddingContentHorizontal - lineWidth,
             Math.Max((controlHeight - ContentLineHeight) / 2 - lineWidth, 0));
-        PaddingLG = new Thickness(_globalToken.PaddingContentHorizontal - lineWidth,
+        PaddingLG = new Thickness(SharedToken.PaddingContentHorizontal - lineWidth,
             Math.Max((controlHeightLG - ContentLineHeightLG) / 2 - lineWidth, 0));
 
         ExtraContentMarginSM = new Thickness(PaddingSM.Left / 2, 0, 0, 0);
@@ -336,15 +336,15 @@ internal class ButtonToken : AbstractControlDesignToken
         ExtraContentMarginLG = new Thickness(PaddingLG.Left / 2, 0, 0, 0);
 
         CirclePadding  = new Thickness(PaddingSM.Left / 2);
-        OnlyIconSizeSM = _globalToken.IconSize;
-        OnlyIconSize   = _globalToken.IconSizeLG;
-        OnlyIconSizeLG = _globalToken.IconSizeLG;
+        OnlyIconSizeSM = SharedToken.IconSize;
+        OnlyIconSize   = SharedToken.IconSizeLG;
+        OnlyIconSizeLG = SharedToken.IconSizeLG;
 
-        IconSizeSM = _globalToken.IconSizeSM;
-        IconSize   = _globalToken.IconSize;
-        IconSizeLG = _globalToken.IconSize;
+        IconSizeSM = SharedToken.IconSizeSM;
+        IconSize   = SharedToken.IconSize;
+        IconSizeLG = SharedToken.IconSize;
 
-        IconMargin = new Thickness(0, 0, _globalToken.PaddingXXS, 0);
+        IconMargin = new Thickness(0, 0, SharedToken.PaddingXXS, 0);
 
         IconOnyPadding   = new Thickness(Math.Max((controlHeight - ContentLineHeight) / 2 - lineWidth, 0));
         IconOnyPaddingLG = new Thickness(Math.Max((controlHeightLG - ContentLineHeightLG) / 2 - lineWidth, 0));

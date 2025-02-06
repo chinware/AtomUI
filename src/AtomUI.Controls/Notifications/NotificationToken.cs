@@ -89,15 +89,15 @@ internal class NotificationToken : AbstractControlDesignToken
         base.CalculateFromAlias();
         NotificationProgressHeight = 2;
         NotificationProgressMargin = new Thickness(0, 0, 0, 1);
-        NotificationContentMargin = new Thickness(0, 0, 0, _globalToken.PaddingMD);
-        NotificationPadding = new Thickness(_globalToken.PaddingLG, _globalToken.PaddingMD, _globalToken.PaddingLG, 0);
-        NotificationBg = _globalToken.ColorBgElevated;
-        NotificationIconSize = _globalToken.FontSizeLG * _globalToken.LineHeightLG;
-        NotificationCloseButtonSize = _globalToken.ControlHeightLG * 0.55;
-        NotificationMarginBottom = new Thickness(0, 0, 0, _globalToken.Margin);
-        NotificationTopMargin = new Thickness(_globalToken.MarginLG, _globalToken.MarginLG, _globalToken.MarginLG, 0);
+        NotificationContentMargin = new Thickness(0, 0, 0, SharedToken.PaddingMD);
+        NotificationPadding = new Thickness(SharedToken.PaddingLG, SharedToken.PaddingMD, SharedToken.PaddingLG, 0);
+        NotificationBg = SharedToken.ColorBgElevated;
+        NotificationIconSize = SharedToken.FontSizeLG * SharedToken.LineHeightLG;
+        NotificationCloseButtonSize = SharedToken.ControlHeightLG * 0.55;
+        NotificationMarginBottom = new Thickness(0, 0, 0, SharedToken.Margin);
+        NotificationTopMargin = new Thickness(SharedToken.MarginLG, SharedToken.MarginLG, SharedToken.MarginLG, 0);
         NotificationBottomMargin =
-            new Thickness(_globalToken.MarginLG, 0, _globalToken.MarginLG, _globalToken.MarginLG);
+            new Thickness(SharedToken.MarginLG, 0, SharedToken.MarginLG, SharedToken.MarginLG);
 
         NotificationProgressBg = new LinearGradientBrush
         {
@@ -105,12 +105,12 @@ internal class NotificationToken : AbstractControlDesignToken
             EndPoint   = new RelativePoint(1, 0.5, RelativeUnit.Relative),
             GradientStops = new GradientStops
             {
-                new() { Color = _globalToken.ColorPrimaryHover, Offset = 0 },
-                new() { Color = _globalToken.ColorPrimary, Offset      = 1 }
+                new() { Color = SharedToken.ColorPrimaryHover, Offset = 0 },
+                new() { Color = SharedToken.ColorPrimary, Offset      = 1 }
             }
         };
         NotificationWidth      = 384;
-        HeaderMargin           = new Thickness(0, 0, 0, _globalToken.MarginXS);
-        NotificationIconMargin = new Thickness(0, 0, _globalToken.MarginSM, 0);
+        HeaderMargin           = new Thickness(0, 0, 0, SharedToken.MarginXS);
+        NotificationIconMargin = new Thickness(0, 0, SharedToken.MarginSM, 0);
     }
 }

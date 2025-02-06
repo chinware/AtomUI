@@ -141,17 +141,17 @@ internal class InfoPickerInputTheme : BaseControlTheme
         base.BuildStyles();
         var enableStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(InfoPickerInput.IsEnabledProperty, true));
-        enableStyle.Add(InfoPickerInput.InputTextBrushProperty, GlobalTokenResourceKey.ColorText);
+        enableStyle.Add(InfoPickerInput.InputTextBrushProperty, DesignTokenKey.ColorText);
         
         var choosingStyle = new Style(selector => selector.Nesting().Class(InfoPickerInput.ChoosingPC));
-        choosingStyle.Add(InfoPickerInput.InputTextBrushProperty, GlobalTokenResourceKey.ColorTextTertiary);
+        choosingStyle.Add(InfoPickerInput.InputTextBrushProperty, DesignTokenKey.ColorTextTertiary);
         enableStyle.Add(choosingStyle);
         
         Add(enableStyle);
         
         var disabledStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(InfoPickerInput.IsEnabledProperty, false));
-        disabledStyle.Add(InfoPickerInput.InputTextBrushProperty, GlobalTokenResourceKey.ColorTextDisabled);
+        disabledStyle.Add(InfoPickerInput.InputTextBrushProperty, DesignTokenKey.ColorTextDisabled);
         Add(disabledStyle);
     }
 }

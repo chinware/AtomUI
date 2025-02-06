@@ -48,13 +48,13 @@ internal class LoadingIndicatorTheme : BaseControlTheme
         var commonStyle = new Style(selector => selector.Nesting());
         commonStyle.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Left);
         commonStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Top);
-        commonStyle.Add(TemplatedControl.FontSizeProperty, GlobalTokenResourceKey.FontSize);
+        commonStyle.Add(TemplatedControl.FontSizeProperty, DesignTokenKey.FontSize);
         commonStyle.Add(LoadingIndicator.MotionEasingCurveProperty, new LinearEasing());
         commonStyle.Add(LoadingIndicator.MotionDurationProperty, LoadingIndicatorTokenResourceKey.IndicatorDuration);
-        commonStyle.Add(LoadingIndicator.DotBgBrushProperty, GlobalTokenResourceKey.ColorPrimary);
-        commonStyle.Add(LoadingIndicator.IndicatorTextMarginProperty, GlobalTokenResourceKey.MarginXXS);
+        commonStyle.Add(LoadingIndicator.DotBgBrushProperty, DesignTokenKey.ColorPrimary);
+        commonStyle.Add(LoadingIndicator.IndicatorTextMarginProperty, DesignTokenKey.MarginXXS);
         var loadingTextStyle = new Style(selector => selector.Nesting().Template().OfType<TextBlock>());
-        loadingTextStyle.Add(TextBlock.ForegroundProperty, GlobalTokenResourceKey.ColorPrimary);
+        loadingTextStyle.Add(TextBlock.ForegroundProperty, DesignTokenKey.ColorPrimary);
         commonStyle.Add(loadingTextStyle);
         BuildDotSizeStyle(commonStyle);
         BuildCustomIconStyle();

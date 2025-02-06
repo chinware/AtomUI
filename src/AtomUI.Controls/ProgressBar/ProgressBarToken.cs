@@ -57,16 +57,16 @@ internal class ProgressBarToken : AbstractControlDesignToken
     {
         base.CalculateFromAlias();
 
-        CircleTextColor  = _globalToken.ColorText;
-        DefaultColor     = _globalToken.ColorInfo;
-        RemainingColor   = _globalToken.ColorFillSecondary;
+        CircleTextColor  = SharedToken.ColorText;
+        DefaultColor     = SharedToken.ColorInfo;
+        RemainingColor   = SharedToken.ColorFillSecondary;
         LineBorderRadius = new CornerRadius(100); // magic for capsule shape, should be a very large number
         // 这两个要通过计算
-        CircleMinimumIconSize     = _globalToken.SizeXS;
-        CircleMinimumTextFontSize = _globalToken.FontSizeSM - 2;
-        LineInfoIconSize          = _globalToken.IconSize;
-        LineInfoIconSizeSM        = _globalToken.IconSizeSM;
-        LineExtraInfoMargin       = _globalToken.ControlPaddingSM;
-        LineProgressPadding       = _globalToken.PaddingXXS / 2;
+        CircleMinimumIconSize     = SharedToken.SizeXS;
+        CircleMinimumTextFontSize = SharedToken.FontSizeSM - 2;
+        LineInfoIconSize          = SharedToken.IconSize;
+        LineInfoIconSizeSM        = SharedToken.IconSizeSM;
+        LineExtraInfoMargin       = SharedToken.ControlPaddingSM;
+        LineProgressPadding       = SharedToken.PaddingXXS / 2;
     }
 }

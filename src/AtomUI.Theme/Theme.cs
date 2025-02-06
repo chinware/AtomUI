@@ -13,8 +13,8 @@ public abstract class Theme : ITheme
     private string _id;
     private string? _loadErrorMsg;
     private ThemeVariant _themeVariant;
-    private GlobalToken _globalToken;
-    
+    private DesignToken _sharedToken;
+
     protected bool Loaded;
     protected bool LoadedStatus = true;
     protected bool DarkMode;
@@ -24,6 +24,7 @@ public abstract class Theme : ITheme
     protected ResourceDictionary ResourceDictionary;
     protected Dictionary<string, IControlDesignToken> ControlTokens;
     public static readonly IList<string> SUPPORTED_ALGORITHMS;
+
     public string DefinitionFilePath { get; }
 
     public string Id => _id;
@@ -35,7 +36,7 @@ public abstract class Theme : ITheme
     internal ResourceDictionary ThemeResource => ResourceDictionary;
     public bool IsDarkMode => DarkMode;
     public bool IsActivated => Activated;
-    public GlobalToken GlobalToken => _globalToken;
+    public DesignToken SharedToken => _sharedToken;
 
     static Theme()
     {
@@ -49,12 +50,12 @@ public abstract class Theme : ITheme
 
     public Theme(string id, string defFilePath)
     {
-        _id                                                = id;
+        _id                                               = id;
         DefinitionFilePath                                = defFilePath;
-        _themeVariant                                      = ThemeVariant.Default;
+        _themeVariant                                     = ThemeVariant.Default;
         ResourceDictionary                                = new ResourceDictionary();
         (ResourceDictionary as IThemeVariantProvider).Key = _themeVariant;
-        _globalToken                                       = new GlobalToken();
+        _sharedToken                                      = new DesignToken();
         ControlTokens                                     = new Dictionary<string, IControlDesignToken>();
     }
 
@@ -89,12 +90,12 @@ public abstract class Theme : ITheme
 
             if (themeDef.Algorithms.Contains(DarkThemeVariantCalculator.ID))
             {
-                DarkMode     = true;
+                DarkMode      = true;
                 _themeVariant = ThemeVariant.Dark;
             }
             else
             {
-                DarkMode     = false;
+                DarkMode      = false;
                 _themeVariant = ThemeVariant.Light;
             }
 
@@ -105,27 +106,27 @@ public abstract class Theme : ITheme
                 calculator     = CreateThemeVariantCalculator(algorithmId, baseCalculator);
                 baseCalculator = calculator;
             }
-    
-            ThemeVariantCalculator = calculator;
-            _globalToken.LoadConfig(globalTokenConfig);
 
-            ThemeVariantCalculator.Calculate(_globalToken);
+            ThemeVariantCalculator = calculator;
+            _sharedToken.LoadConfig(globalTokenConfig);
+
+            ThemeVariantCalculator.Calculate(_sharedToken);
 
             // 交付最终的基础色
-            _globalToken.ColorBgBase   = ThemeVariantCalculator.ColorBgBase;
-            _globalToken.ColorTextBase = ThemeVariantCalculator.ColorTextBase;
+            _sharedToken.ColorBgBase   = ThemeVariantCalculator.ColorBgBase;
+            _sharedToken.ColorTextBase = ThemeVariantCalculator.ColorTextBase;
 
-            _globalToken.CalculateAliasTokenValues();
+            _sharedToken.CalculateAliasTokenValues();
 
             // TODO 先用算法，然后再设置配置文件中的值，不知道合理不
-            _globalToken.LoadConfig(globalTokenConfig);
-            _globalToken.BuildResourceDictionary(ResourceDictionary);
+            _sharedToken.LoadConfig(globalTokenConfig);
+            _sharedToken.BuildResourceDictionary(ResourceDictionary);
 
             CollectControlTokens();
             foreach (var entry in ControlTokens)
             {
                 // 如果没有修改就使用全局的
-                entry.Value.AssignGlobalToken(_globalToken);
+                entry.Value.AssignSharedToken(_sharedToken);
             }
 
             foreach (var entry in controlTokenConfig)
@@ -136,8 +137,9 @@ public abstract class Theme : ITheme
                 {
                     continue;
                 }
+
                 // 需要 Review
-                var controlAliasToken = (GlobalToken)_globalToken.Clone();
+                var controlAliasToken = (DesignToken)_sharedToken.Clone();
                 controlAliasToken.LoadConfig(controlTokenInfo.ControlTokens);
 
                 if (controlTokenInfo.UseAlgorithm)
@@ -147,7 +149,7 @@ public abstract class Theme : ITheme
                 }
 
                 var controlToken = ControlTokens[controlTokenInfo.TokenId];
-                controlToken.AssignGlobalToken(controlAliasToken);
+                controlToken.AssignSharedToken(controlAliasToken);
                 (controlToken as AbstractControlDesignToken)!.IsCustomTokenConfig = true;
                 (controlToken as AbstractControlDesignToken)!.CustomTokens =
                     controlTokenInfo.ControlTokens.Keys.ToList();
@@ -171,7 +173,7 @@ public abstract class Theme : ITheme
         catch (Exception exception)
         {
             _loadErrorMsg = exception.Message;
-            LoadedStatus = false;
+            LoadedStatus  = false;
             throw;
         }
     }
@@ -189,9 +191,9 @@ public abstract class Theme : ITheme
     }
 
     protected IThemeVariantCalculator CreateThemeVariantCalculator(string algorithmId,
-                                                                   IThemeVariantCalculator? baseAlgorithm)
+        IThemeVariantCalculator? baseAlgorithm)
     {
-        IThemeVariantCalculator calculator = default!;
+        IThemeVariantCalculator calculator;
         if (algorithmId == DefaultThemeVariantCalculator.ID)
         {
             calculator = new DefaultThemeVariantCalculator();

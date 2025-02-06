@@ -63,13 +63,13 @@ internal class ButtonSpinnerToken : LineEditToken
     {
         base.CalculateFromAlias();
         ControlWidth   = 90;
-        HandleWidth    = _globalToken.ControlHeightSM;
-        HandleIconSize = _globalToken.FontSize / 2;
-        HandleActiveBg = _globalToken.ColorFillAlter;
-        HandleBg       = _globalToken.ColorBgContainer;
-        FilledHandleBg = ColorUtils.OnBackground(_globalToken.ColorFillSecondary,
+        HandleWidth    = SharedToken.ControlHeightSM;
+        HandleIconSize = SharedToken.FontSize / 2;
+        HandleActiveBg = SharedToken.ColorFillAlter;
+        HandleBg       = SharedToken.ColorBgContainer;
+        FilledHandleBg = ColorUtils.OnBackground(SharedToken.ColorFillSecondary,
             HandleBg);
-        HandleHoverColor  = _globalToken.ColorPrimary;
-        HandleBorderColor = _globalToken.ColorBorder;
+        HandleHoverColor  = SharedToken.ColorPrimary;
+        HandleBorderColor = SharedToken.ColorBorder;
     }
 }

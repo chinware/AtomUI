@@ -41,7 +41,7 @@ public class SearchEdit : LineEdit
     {
         base.OnApplyTemplate(e);
         TokenResourceBinder.CreateGlobalResourceBinding(this, BorderThicknessProperty,
-            GlobalTokenResourceKey.BorderThickness,
+            DesignTokenKey.BorderThickness,
             BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this));
     }

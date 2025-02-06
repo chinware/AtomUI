@@ -117,47 +117,47 @@ internal class LineEditToken : AbstractControlDesignToken
     internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
-        var fontSize     = _globalToken.FontSize;
-        var fontSizeLG   = _globalToken.FontSizeLG;
-        var lineHeight   = _globalToken.LineHeight;
-        var lineHeightLG = _globalToken.LineHeightLG;
-        var lineWidth    = _globalToken.LineWidth;
-        Padding = new Thickness(_globalToken.PaddingSM - lineWidth,
-            Math.Round((_globalToken.ControlHeight - fontSize * lineHeight) / 2 * 10) / 10 - lineWidth);
-        PaddingSM = new Thickness(_globalToken.ControlPaddingSM - lineWidth,
-            Math.Round((_globalToken.ControlHeightSM - fontSize * lineHeight) / 2 * 10) / 10 - lineWidth);
-        PaddingLG = new Thickness(_globalToken.ControlPadding - lineWidth,
-            Math.Ceiling((_globalToken.ControlHeightLG - fontSizeLG * lineHeightLG) / 2 * 10) / 10 -
+        var fontSize     = SharedToken.FontSize;
+        var fontSizeLG   = SharedToken.FontSizeLG;
+        var lineHeight   = SharedToken.LineHeight;
+        var lineHeightLG = SharedToken.LineHeightLG;
+        var lineWidth    = SharedToken.LineWidth;
+        Padding = new Thickness(SharedToken.PaddingSM - lineWidth,
+            Math.Round((SharedToken.ControlHeight - fontSize * lineHeight) / 2 * 10) / 10 - lineWidth);
+        PaddingSM = new Thickness(SharedToken.ControlPaddingSM - lineWidth,
+            Math.Round((SharedToken.ControlHeightSM - fontSize * lineHeight) / 2 * 10) / 10 - lineWidth);
+        PaddingLG = new Thickness(SharedToken.ControlPadding - lineWidth,
+            Math.Ceiling((SharedToken.ControlHeightLG - fontSizeLG * lineHeightLG) / 2 * 10) / 10 -
             lineWidth);
-        AddOnPadding   = new Thickness(_globalToken.PaddingSM, 0);
-        AddOnPaddingSM = new Thickness(_globalToken.ControlPaddingSM, 0);
-        AddOnPaddingLG = new Thickness(_globalToken.ControlPadding, 0);
+        AddOnPadding   = new Thickness(SharedToken.PaddingSM, 0);
+        AddOnPaddingSM = new Thickness(SharedToken.ControlPaddingSM, 0);
+        AddOnPaddingLG = new Thickness(SharedToken.ControlPadding, 0);
 
-        AddonBg           = _globalToken.ColorFillAlter;
-        ActiveBorderColor = _globalToken.ColorPrimary;
-        HoverBorderColor  = _globalToken.ColorPrimaryHover;
+        AddonBg           = SharedToken.ColorFillAlter;
+        ActiveBorderColor = SharedToken.ColorPrimary;
+        HoverBorderColor  = SharedToken.ColorPrimaryHover;
         ActiveShadow = new BoxShadow
         {
-            Spread = _globalToken.ControlOutlineWidth,
-            Color  = _globalToken.ColorControlOutline
+            Spread = SharedToken.ControlOutlineWidth,
+            Color  = SharedToken.ColorControlOutline
         };
         ErrorActiveShadow = new BoxShadow
         {
-            Spread = _globalToken.ControlOutlineWidth,
-            Color  = _globalToken.ColorErrorOutline
+            Spread = SharedToken.ControlOutlineWidth,
+            Color  = SharedToken.ColorErrorOutline
         };
         WarningActiveShadow = new BoxShadow
         {
-            Spread = _globalToken.ControlOutlineWidth,
-            Color  = _globalToken.ColorWarningOutline
+            Spread = SharedToken.ControlOutlineWidth,
+            Color  = SharedToken.ColorWarningOutline
         };
-        HoverBg         = _globalToken.ColorBgContainer;
-        ActiveBg        = _globalToken.ColorBgContainer;
-        InputFontSize   = _globalToken.FontSize;
-        InputFontSizeLG = _globalToken.FontSizeLG;
-        InputFontSizeSM = _globalToken.FontSizeSM;
+        HoverBg         = SharedToken.ColorBgContainer;
+        ActiveBg        = SharedToken.ColorBgContainer;
+        InputFontSize   = SharedToken.FontSize;
+        InputFontSizeLG = SharedToken.FontSizeLG;
+        InputFontSizeSM = SharedToken.FontSizeSM;
 
-        LeftInnerAddOnMargin  = new Thickness(0, 0, _globalToken.MarginXXS, 0);
-        RightInnerAddOnMargin = new Thickness(_globalToken.MarginXXS, 0, 0, 0);
+        LeftInnerAddOnMargin  = new Thickness(0, 0, SharedToken.MarginXXS, 0);
+        RightInnerAddOnMargin = new Thickness(SharedToken.MarginXXS, 0, 0, 0);
     }
 }

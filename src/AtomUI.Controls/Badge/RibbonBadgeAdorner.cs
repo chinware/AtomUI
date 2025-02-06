@@ -138,13 +138,13 @@ internal class RibbonBadgeAdorner : Control
     private void BuildStyles()
     {
         var commonStyle = new Style(selector => selector.OfType<RibbonBadgeAdorner>());
-        commonStyle.Add(RibbonColorProperty, GlobalTokenResourceKey.ColorPrimary);
-        commonStyle.Add(CornerRadiusProperty, GlobalTokenResourceKey.BorderRadiusSM);
+        commonStyle.Add(RibbonColorProperty, DesignTokenKey.ColorPrimary);
+        commonStyle.Add(CornerRadiusProperty, DesignTokenKey.BorderRadiusSM);
         commonStyle.Add(BadgeRibbonOffsetProperty, BadgeTokenResourceKey.BadgeRibbonOffset);
         commonStyle.Add(BadgeRibbonCornerTransformProperty, BadgeTokenResourceKey.BadgeRibbonCornerTransform);
         commonStyle.Add(BadgeRibbonCornerDarkenAmountProperty, BadgeTokenResourceKey.BadgeRibbonCornerDarkenAmount);
         var labelStyle = new Style(selector => selector.Nesting().Child().OfType<TextBlock>());
-        labelStyle.Add(TextBlock.ForegroundProperty, GlobalTokenResourceKey.ColorTextLightSolid);
+        labelStyle.Add(TextBlock.ForegroundProperty, DesignTokenKey.ColorTextLightSolid);
         labelStyle.Add(TextBlock.LineHeightProperty, BadgeTokenResourceKey.BadgeFontHeight);
         labelStyle.Add(TextBlock.PaddingProperty, BadgeTokenResourceKey.BadgeRibbonTextPadding);
         commonStyle.Add(labelStyle);

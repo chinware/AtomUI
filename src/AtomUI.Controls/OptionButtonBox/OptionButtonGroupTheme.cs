@@ -38,26 +38,26 @@ internal class OptionButtonGroupTheme : BaseControlTheme
         var largeSizeStyle =
             new Style(selector =>
                 selector.Nesting().PropertyEquals(OptionButtonGroup.SizeTypeProperty, SizeType.Large));
-        largeSizeStyle.Add(TemplatedControl.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadiusLG);
-        largeSizeStyle.Add(Layoutable.MaxHeightProperty, GlobalTokenResourceKey.ControlHeightLG);
+        largeSizeStyle.Add(TemplatedControl.CornerRadiusProperty, DesignTokenKey.BorderRadiusLG);
+        largeSizeStyle.Add(Layoutable.MaxHeightProperty, DesignTokenKey.ControlHeightLG);
         Add(largeSizeStyle);
 
         var middleSizeStyle =
             new Style(
                 selector => selector.Nesting().PropertyEquals(OptionButtonGroup.SizeTypeProperty, SizeType.Middle));
-        middleSizeStyle.Add(TemplatedControl.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadius);
-        middleSizeStyle.Add(Layoutable.MaxHeightProperty, GlobalTokenResourceKey.ControlHeight);
+        middleSizeStyle.Add(TemplatedControl.CornerRadiusProperty, DesignTokenKey.BorderRadius);
+        middleSizeStyle.Add(Layoutable.MaxHeightProperty, DesignTokenKey.ControlHeight);
         Add(middleSizeStyle);
 
         var smallSizeStyle =
             new Style(selector =>
                 selector.Nesting().PropertyEquals(OptionButtonGroup.SizeTypeProperty, SizeType.Small));
-        smallSizeStyle.Add(TemplatedControl.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadiusSM);
-        smallSizeStyle.Add(Layoutable.MaxHeightProperty, GlobalTokenResourceKey.ControlHeightSM);
+        smallSizeStyle.Add(TemplatedControl.CornerRadiusProperty, DesignTokenKey.BorderRadiusSM);
+        smallSizeStyle.Add(Layoutable.MaxHeightProperty, DesignTokenKey.ControlHeightSM);
         Add(smallSizeStyle);
 
-        this.Add(TemplatedControl.BorderBrushProperty, GlobalTokenResourceKey.ColorBorder);
-        this.Add(OptionButtonGroup.SelectedOptionBorderColorProperty, GlobalTokenResourceKey.ColorPrimary);
-        this.Add(TemplatedControl.BorderThicknessProperty, GlobalTokenResourceKey.BorderThickness);
+        this.Add(TemplatedControl.BorderBrushProperty, DesignTokenKey.ColorBorder);
+        this.Add(OptionButtonGroup.SelectedOptionBorderColorProperty, DesignTokenKey.ColorPrimary);
+        this.Add(TemplatedControl.BorderThicknessProperty, DesignTokenKey.BorderThickness);
     }
 }

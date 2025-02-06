@@ -87,13 +87,13 @@ internal class SegmentedItemTheme : BaseControlTheme
         // 选中状态
         var selectedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Selected));
         selectedStyle.Add(TemplatedControl.ForegroundProperty, SegmentedTokenResourceKey.ItemSelectedColor);
-        selectedStyle.Add(TemplatedControl.BackgroundProperty, GlobalTokenResourceKey.ColorTransparent);
+        selectedStyle.Add(TemplatedControl.BackgroundProperty, DesignTokenKey.ColorTransparent);
         enabledStyle.Add(selectedStyle);
 
         // 没有被选中的状态
         var notSelectedStyle =
             new Style(selector => selector.Nesting().Not(x => x.Nesting().Class(StdPseudoClass.Selected)));
-        notSelectedStyle.Add(TemplatedControl.BackgroundProperty, GlobalTokenResourceKey.ColorTransparent);
+        notSelectedStyle.Add(TemplatedControl.BackgroundProperty, DesignTokenKey.ColorTransparent);
         notSelectedStyle.Add(TemplatedControl.ForegroundProperty, SegmentedTokenResourceKey.ItemColor);
 
         // Hover 状态
@@ -120,24 +120,24 @@ internal class SegmentedItemTheme : BaseControlTheme
     {
         var largeSizeStyle =
             new Style(selector => selector.Nesting().PropertyEquals(SegmentedItem.SizeTypeProperty, SizeType.Large));
-        largeSizeStyle.Add(TemplatedControl.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadius);
-        largeSizeStyle.Add(TemplatedControl.FontSizeProperty, GlobalTokenResourceKey.FontSizeLG);
+        largeSizeStyle.Add(TemplatedControl.CornerRadiusProperty, DesignTokenKey.BorderRadius);
+        largeSizeStyle.Add(TemplatedControl.FontSizeProperty, DesignTokenKey.FontSizeLG);
         largeSizeStyle.Add(Layoutable.MinHeightProperty, SegmentedTokenResourceKey.ItemMinHeightLG);
         largeSizeStyle.Add(TemplatedControl.PaddingProperty, SegmentedTokenResourceKey.SegmentedItemPadding);
         Add(largeSizeStyle);
 
         var middleSizeStyle =
             new Style(selector => selector.Nesting().PropertyEquals(SegmentedItem.SizeTypeProperty, SizeType.Middle));
-        middleSizeStyle.Add(TemplatedControl.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadiusSM);
-        middleSizeStyle.Add(TemplatedControl.FontSizeProperty, GlobalTokenResourceKey.FontSize);
+        middleSizeStyle.Add(TemplatedControl.CornerRadiusProperty, DesignTokenKey.BorderRadiusSM);
+        middleSizeStyle.Add(TemplatedControl.FontSizeProperty, DesignTokenKey.FontSize);
         middleSizeStyle.Add(Layoutable.MinHeightProperty, SegmentedTokenResourceKey.ItemMinHeight);
         middleSizeStyle.Add(TemplatedControl.PaddingProperty, SegmentedTokenResourceKey.SegmentedItemPadding);
         Add(middleSizeStyle);
 
         var smallSizeStyle =
             new Style(selector => selector.Nesting().PropertyEquals(SegmentedItem.SizeTypeProperty, SizeType.Small));
-        smallSizeStyle.Add(TemplatedControl.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadiusXS);
-        smallSizeStyle.Add(TemplatedControl.FontSizeProperty, GlobalTokenResourceKey.FontSize);
+        smallSizeStyle.Add(TemplatedControl.CornerRadiusProperty, DesignTokenKey.BorderRadiusXS);
+        smallSizeStyle.Add(TemplatedControl.FontSizeProperty, DesignTokenKey.FontSize);
         smallSizeStyle.Add(Layoutable.MinHeightProperty, SegmentedTokenResourceKey.ItemMinHeightSM);
         smallSizeStyle.Add(TemplatedControl.PaddingProperty, SegmentedTokenResourceKey.SegmentedItemPaddingSM);
 
@@ -162,8 +162,8 @@ internal class SegmentedItemTheme : BaseControlTheme
             new Style(selector => selector.Nesting().PropertyEquals(SegmentedItem.SizeTypeProperty, SizeType.Large));
         {
             var iconStyle = new Style(selector => iconSelector);
-            iconStyle.Add(Layoutable.WidthProperty, GlobalTokenResourceKey.IconSizeLG);
-            iconStyle.Add(Layoutable.HeightProperty, GlobalTokenResourceKey.IconSizeLG);
+            iconStyle.Add(Layoutable.WidthProperty, DesignTokenKey.IconSizeLG);
+            iconStyle.Add(Layoutable.HeightProperty, DesignTokenKey.IconSizeLG);
             largeSizeStyle.Add(iconStyle);
         }
         Add(largeSizeStyle);
@@ -172,8 +172,8 @@ internal class SegmentedItemTheme : BaseControlTheme
             new Style(selector => selector.Nesting().PropertyEquals(SegmentedItem.SizeTypeProperty, SizeType.Middle));
         {
             var iconStyle = new Style(selector => iconSelector);
-            iconStyle.Add(Layoutable.WidthProperty, GlobalTokenResourceKey.IconSize);
-            iconStyle.Add(Layoutable.HeightProperty, GlobalTokenResourceKey.IconSize);
+            iconStyle.Add(Layoutable.WidthProperty, DesignTokenKey.IconSize);
+            iconStyle.Add(Layoutable.HeightProperty, DesignTokenKey.IconSize);
             middleSizeStyle.Add(iconStyle);
         }
         Add(middleSizeStyle);
@@ -182,8 +182,8 @@ internal class SegmentedItemTheme : BaseControlTheme
             new Style(selector => selector.Nesting().PropertyEquals(SegmentedItem.SizeTypeProperty, SizeType.Small));
         {
             var iconStyle = new Style(selector => iconSelector);
-            iconStyle.Add(Layoutable.WidthProperty, GlobalTokenResourceKey.IconSizeSM);
-            iconStyle.Add(Layoutable.HeightProperty, GlobalTokenResourceKey.IconSizeSM);
+            iconStyle.Add(Layoutable.WidthProperty, DesignTokenKey.IconSizeSM);
+            iconStyle.Add(Layoutable.HeightProperty, DesignTokenKey.IconSizeSM);
             smallSizeStyle.Add(iconStyle);
         }
         Add(smallSizeStyle);
@@ -192,7 +192,7 @@ internal class SegmentedItemTheme : BaseControlTheme
     private void BuildDisabledStyle()
     {
         var disabledStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Disabled));
-        disabledStyle.Add(TemplatedControl.ForegroundProperty, GlobalTokenResourceKey.ColorTextDisabled);
+        disabledStyle.Add(TemplatedControl.ForegroundProperty, DesignTokenKey.ColorTextDisabled);
         Add(disabledStyle);
     }
 }

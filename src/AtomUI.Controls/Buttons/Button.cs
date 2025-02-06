@@ -527,7 +527,7 @@ public class Button : AvaloniaButton,
     {
         base.OnAttachedToVisualTree(e);
         TokenResourceBinder.CreateGlobalTokenBinding(this, BorderThicknessProperty,
-            GlobalTokenResourceKey.BorderThickness,
+            DesignTokenKey.BorderThickness,
             BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this));
         SetupEffectiveBorderThickness();
@@ -571,21 +571,21 @@ public class Button : AvaloniaButton,
         var normalFilledBrushKey   = ButtonTokenResourceKey.DefaultColor;
         var selectedFilledBrushKey = ButtonTokenResourceKey.DefaultActiveColor;
         var activeFilledBrushKey   = ButtonTokenResourceKey.DefaultHoverColor;
-        var disabledFilledBrushKey = GlobalTokenResourceKey.ColorTextDisabled;
+        var disabledFilledBrushKey = DesignTokenKey.ColorTextDisabled;
         if (ButtonType == ButtonType.Default)
         {
             if (IsGhost)
             {
-                normalFilledBrushKey   = GlobalTokenResourceKey.ColorTextLightSolid;
-                selectedFilledBrushKey = GlobalTokenResourceKey.ColorPrimaryActive;
-                activeFilledBrushKey   = GlobalTokenResourceKey.ColorPrimaryHover;
+                normalFilledBrushKey   = DesignTokenKey.ColorTextLightSolid;
+                selectedFilledBrushKey = DesignTokenKey.ColorPrimaryActive;
+                activeFilledBrushKey   = DesignTokenKey.ColorPrimaryHover;
             }
 
             if (IsDanger)
             {
-                normalFilledBrushKey   = GlobalTokenResourceKey.ColorError;
-                selectedFilledBrushKey = GlobalTokenResourceKey.ColorErrorActive;
-                activeFilledBrushKey   = GlobalTokenResourceKey.ColorErrorBorderHover;
+                normalFilledBrushKey   = DesignTokenKey.ColorError;
+                selectedFilledBrushKey = DesignTokenKey.ColorErrorActive;
+                activeFilledBrushKey   = DesignTokenKey.ColorErrorBorderHover;
             }
         }
         else if (ButtonType == ButtonType.Primary)
@@ -595,14 +595,14 @@ public class Button : AvaloniaButton,
             activeFilledBrushKey   = ButtonTokenResourceKey.PrimaryColor;
             if (IsGhost)
             {
-                normalFilledBrushKey   = GlobalTokenResourceKey.ColorPrimary;
-                selectedFilledBrushKey = GlobalTokenResourceKey.ColorPrimaryActive;
-                activeFilledBrushKey   = GlobalTokenResourceKey.ColorPrimaryHover;
+                normalFilledBrushKey   = DesignTokenKey.ColorPrimary;
+                selectedFilledBrushKey = DesignTokenKey.ColorPrimaryActive;
+                activeFilledBrushKey   = DesignTokenKey.ColorPrimaryHover;
                 if (IsDanger)
                 {
-                    normalFilledBrushKey   = GlobalTokenResourceKey.ColorError;
-                    selectedFilledBrushKey = GlobalTokenResourceKey.ColorErrorActive;
-                    activeFilledBrushKey   = GlobalTokenResourceKey.ColorErrorBorderHover;
+                    normalFilledBrushKey   = DesignTokenKey.ColorError;
+                    selectedFilledBrushKey = DesignTokenKey.ColorErrorActive;
+                    activeFilledBrushKey   = DesignTokenKey.ColorErrorBorderHover;
                 }
             }
         }
@@ -613,22 +613,22 @@ public class Button : AvaloniaButton,
             activeFilledBrushKey   = ButtonTokenResourceKey.DefaultColor;
             if (IsDanger)
             {
-                normalFilledBrushKey   = GlobalTokenResourceKey.ColorError;
-                selectedFilledBrushKey = GlobalTokenResourceKey.ColorErrorActive;
-                activeFilledBrushKey   = GlobalTokenResourceKey.ColorErrorBorderHover;
+                normalFilledBrushKey   = DesignTokenKey.ColorError;
+                selectedFilledBrushKey = DesignTokenKey.ColorErrorActive;
+                activeFilledBrushKey   = DesignTokenKey.ColorErrorBorderHover;
             }
         }
         else if (ButtonType == ButtonType.Link)
         {
-            normalFilledBrushKey   = GlobalTokenResourceKey.ColorLink;
-            selectedFilledBrushKey = GlobalTokenResourceKey.ColorLinkActive;
-            activeFilledBrushKey   = GlobalTokenResourceKey.ColorLinkHover;
+            normalFilledBrushKey   = DesignTokenKey.ColorLink;
+            selectedFilledBrushKey = DesignTokenKey.ColorLinkActive;
+            activeFilledBrushKey   = DesignTokenKey.ColorLinkHover;
 
             if (IsDanger)
             {
-                normalFilledBrushKey   = GlobalTokenResourceKey.ColorError;
-                selectedFilledBrushKey = GlobalTokenResourceKey.ColorErrorActive;
-                activeFilledBrushKey   = GlobalTokenResourceKey.ColorErrorHover;
+                normalFilledBrushKey   = DesignTokenKey.ColorError;
+                selectedFilledBrushKey = DesignTokenKey.ColorErrorActive;
+                activeFilledBrushKey   = DesignTokenKey.ColorErrorHover;
             }
         }
 

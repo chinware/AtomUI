@@ -12,6 +12,6 @@ public interface ITheme
     public bool IsActivated { get; }
     public List<string> ThemeResourceKeys { get; }
     public IControlDesignToken? GetControlToken(string tokenId);
-    public GlobalToken GlobalToken { get; }
+    public DesignToken SharedToken { get; }
     public ThemeVariant ThemeVariant { get; }
 }

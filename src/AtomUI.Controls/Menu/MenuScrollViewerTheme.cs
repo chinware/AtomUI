@@ -118,7 +118,7 @@ internal class MenuScrollViewerTheme : BaseControlTheme
             var iconButtonStyle = new Style(selector => selector.Nesting().Template().OfType<IconButton>());
             iconButtonStyle.Add(TemplatedControl.PaddingProperty, MenuTokenResourceKey.ScrollButtonPadding);
             iconButtonStyle.Add(Layoutable.MarginProperty, MenuTokenResourceKey.ScrollButtonMargin);
-            iconButtonStyle.Add(TemplatedControl.BackgroundProperty, GlobalTokenResourceKey.ColorTransparent);
+            iconButtonStyle.Add(TemplatedControl.BackgroundProperty, DesignTokenKey.ColorTransparent);
             Add(iconButtonStyle);
         }
 

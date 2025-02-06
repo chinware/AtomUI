@@ -158,7 +158,7 @@ public class FlyoutHost : Control
     public override void ApplyTemplate()
     {
         base.ApplyTemplate();
-        TokenResourceBinder.CreateGlobalTokenBinding(this, MarginToAnchorProperty, GlobalTokenResourceKey.MarginXXS);
+        TokenResourceBinder.CreateGlobalTokenBinding(this, MarginToAnchorProperty, DesignTokenKey.MarginXXS);
         SetupFlyoutProperties();
     }
 

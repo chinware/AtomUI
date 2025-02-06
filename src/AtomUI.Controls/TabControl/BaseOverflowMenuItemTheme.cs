@@ -87,14 +87,14 @@ internal class BaseOverflowMenuItemTheme : BaseControlTheme
 
             CreateTemplateParentBinding(closeButton, Visual.IsVisibleProperty, BaseOverflowMenuItem.IsClosableProperty);
             TokenResourceBinder.CreateGlobalTokenBinding(menuCloseIcon, Icon.NormalFilledBrushProperty,
-                GlobalTokenResourceKey.ColorIcon);
+                DesignTokenKey.ColorIcon);
             TokenResourceBinder.CreateGlobalTokenBinding(menuCloseIcon, Icon.ActiveFilledBrushProperty,
-                GlobalTokenResourceKey.ColorIconHover);
+                DesignTokenKey.ColorIconHover);
 
             TokenResourceBinder.CreateGlobalTokenBinding(menuCloseIcon, Layoutable.WidthProperty,
-                GlobalTokenResourceKey.IconSizeSM);
+                DesignTokenKey.IconSizeSM);
             TokenResourceBinder.CreateGlobalTokenBinding(menuCloseIcon, Layoutable.HeightProperty,
-                GlobalTokenResourceKey.IconSizeSM);
+                DesignTokenKey.IconSizeSM);
 
             Grid.SetColumn(menuCloseIcon, 4);
             closeButton.RegisterInNameScope(scope);

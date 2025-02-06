@@ -132,7 +132,7 @@ internal abstract class BaseButtonTheme : BaseControlTheme
     {
         var largeSizeStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(Button.SizeTypeProperty, SizeType.Large));
-        largeSizeStyle.Add(Button.ControlHeightTokenProperty, GlobalTokenResourceKey.ControlHeightLG);
+        largeSizeStyle.Add(Button.ControlHeightTokenProperty, DesignTokenKey.ControlHeightLG);
         largeSizeStyle.Add(TemplatedControl.FontSizeProperty, ButtonTokenResourceKey.ContentFontSizeLG);
         {
             var notCircleTypeStyle = new Style(selector => selector.Nesting().Not(nest =>
@@ -140,7 +140,7 @@ internal abstract class BaseButtonTheme : BaseControlTheme
             notCircleTypeStyle.Add(TemplatedControl.PaddingProperty, ButtonTokenResourceKey.PaddingLG);
             largeSizeStyle.Add(notCircleTypeStyle);
         }
-        largeSizeStyle.Add(TemplatedControl.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadiusLG);
+        largeSizeStyle.Add(TemplatedControl.CornerRadiusProperty, DesignTokenKey.BorderRadiusLG);
         {
             var iconOnlyStyle = new Style(selector => selector.Nesting().Class(Button.IconOnlyPC));
             iconOnlyStyle.Add(TemplatedControl.PaddingProperty, ButtonTokenResourceKey.IconOnyPaddingLG);
@@ -155,9 +155,9 @@ internal abstract class BaseButtonTheme : BaseControlTheme
 
         var middleSizeStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(Button.SizeTypeProperty, SizeType.Middle));
-        middleSizeStyle.Add(Button.ControlHeightTokenProperty, GlobalTokenResourceKey.ControlHeight);
+        middleSizeStyle.Add(Button.ControlHeightTokenProperty, DesignTokenKey.ControlHeight);
         middleSizeStyle.Add(TemplatedControl.FontSizeProperty, ButtonTokenResourceKey.ContentFontSize);
-        middleSizeStyle.Add(TemplatedControl.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadius);
+        middleSizeStyle.Add(TemplatedControl.CornerRadiusProperty, DesignTokenKey.BorderRadius);
         {
             var notCircleTypeStyle = new Style(selector => selector.Nesting().Not(nest =>
                 nest.Nesting().PropertyEquals(Button.ButtonShapeProperty, ButtonShape.Circle)));
@@ -178,9 +178,9 @@ internal abstract class BaseButtonTheme : BaseControlTheme
 
         var smallSizeStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(Button.SizeTypeProperty, SizeType.Small));
-        smallSizeStyle.Add(Button.ControlHeightTokenProperty, GlobalTokenResourceKey.ControlHeightSM);
+        smallSizeStyle.Add(Button.ControlHeightTokenProperty, DesignTokenKey.ControlHeightSM);
         smallSizeStyle.Add(TemplatedControl.FontSizeProperty, ButtonTokenResourceKey.ContentFontSizeSM);
-        smallSizeStyle.Add(TemplatedControl.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadiusSM);
+        smallSizeStyle.Add(TemplatedControl.CornerRadiusProperty, DesignTokenKey.BorderRadiusSM);
         {
             var notCircleTypeStyle = new Style(selector => selector.Nesting().Not(nest =>
                 nest.Nesting().PropertyEquals(Button.ButtonShapeProperty, ButtonShape.Circle)));
@@ -206,17 +206,17 @@ internal abstract class BaseButtonTheme : BaseControlTheme
         {
             var largeSizeStyle = new Style(selector =>
                 selector.Nesting().PropertyEquals(Button.SizeTypeProperty, SizeType.Large));
-            largeSizeStyle.Add(Button.IconSizeProperty, GlobalTokenResourceKey.IconSizeLG);
+            largeSizeStyle.Add(Button.IconSizeProperty, DesignTokenKey.IconSizeLG);
             Add(largeSizeStyle);
 
             var middleSizeStyle = new Style(selector =>
                 selector.Nesting().PropertyEquals(Button.SizeTypeProperty, SizeType.Middle));
-            middleSizeStyle.Add(Button.IconSizeProperty, GlobalTokenResourceKey.IconSize);
+            middleSizeStyle.Add(Button.IconSizeProperty, DesignTokenKey.IconSize);
             Add(middleSizeStyle);
 
             var smallSizeStyle = new Style(selector =>
                 selector.Nesting().PropertyEquals(Button.SizeTypeProperty, SizeType.Small));
-            smallSizeStyle.Add(Button.IconSizeProperty, GlobalTokenResourceKey.IconSizeSM);
+            smallSizeStyle.Add(Button.IconSizeProperty, DesignTokenKey.IconSizeSM);
             Add(smallSizeStyle);
         }
 
@@ -270,7 +270,7 @@ internal abstract class BaseButtonTheme : BaseControlTheme
             loadingIconStyle.Add(Icon.LoadingAnimationProperty, IconAnimation.Spin);
             loadingStyle.Add(loadingIconStyle);
         }
-        loadingStyle.Add(Visual.OpacityProperty, GlobalTokenResourceKey.OpacityLoading);
+        loadingStyle.Add(Visual.OpacityProperty, DesignTokenKey.OpacityLoading);
         Add(loadingStyle);
     }
 }

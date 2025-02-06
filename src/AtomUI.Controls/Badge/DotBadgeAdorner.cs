@@ -99,7 +99,7 @@ internal class DotBadgeAdorner : TemplatedControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, GlobalTokenResourceKey.MotionDurationMid);
+        TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, DesignTokenKey.MotionDurationMid);
         SetupBadgeColor();
         _indicatorMotionActor = e.NameScope.Get<MotionActorControl>(DotBadgeAdornerTheme.IndicatorMotionActorPart);
     }
@@ -148,27 +148,27 @@ internal class DotBadgeAdorner : TemplatedControl
             if (Status == DotBadgeStatus.Error)
             {
                 TokenResourceBinder.CreateGlobalTokenBinding(this, BadgeDotColorProperty,
-                    GlobalTokenResourceKey.ColorError);
+                    DesignTokenKey.ColorError);
             }
             else if (Status == DotBadgeStatus.Success)
             {
                 TokenResourceBinder.CreateGlobalTokenBinding(this, BadgeDotColorProperty,
-                    GlobalTokenResourceKey.ColorSuccess);
+                    DesignTokenKey.ColorSuccess);
             }
             else if (Status == DotBadgeStatus.Warning)
             {
                 TokenResourceBinder.CreateGlobalTokenBinding(this, BadgeDotColorProperty,
-                    GlobalTokenResourceKey.ColorWarning);
+                    DesignTokenKey.ColorWarning);
             }
             else if (Status == DotBadgeStatus.Processing)
             {
                 TokenResourceBinder.CreateGlobalTokenBinding(this, BadgeDotColorProperty,
-                    GlobalTokenResourceKey.ColorInfo);
+                    DesignTokenKey.ColorInfo);
             }
             else if (Status == DotBadgeStatus.Default)
             {
                 TokenResourceBinder.CreateGlobalTokenBinding(this, BadgeDotColorProperty,
-                    GlobalTokenResourceKey.ColorTextPlaceholder);
+                    DesignTokenKey.ColorTextPlaceholder);
             }
         }
     }

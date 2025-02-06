@@ -29,8 +29,8 @@ internal class TagTheme : BaseControlTheme
         this.Add(TemplatedControl.ForegroundProperty, TagTokenResourceKey.DefaultColor);
         this.Add(TemplatedControl.FontSizeProperty, TagTokenResourceKey.TagFontSize);
         this.Add(TemplatedControl.PaddingProperty, TagTokenResourceKey.TagPadding);
-        this.Add(TemplatedControl.BorderBrushProperty, GlobalTokenResourceKey.ColorBorder);
-        this.Add(TemplatedControl.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadiusSM);
+        this.Add(TemplatedControl.BorderBrushProperty, DesignTokenKey.ColorBorder);
+        this.Add(TemplatedControl.CornerRadiusProperty, DesignTokenKey.BorderRadiusSM);
         this.Add(Tag.TagTextPaddingInlineProperty, TagTokenResourceKey.TagTextPaddingInline);
     }
 
@@ -69,9 +69,9 @@ internal class TagTheme : BaseControlTheme
             closeBtn.RegisterInNameScope(scope);
 
             TokenResourceBinder.CreateTokenBinding(closeBtn, IconButton.IconWidthProperty,
-                GlobalTokenResourceKey.IconSizeXS);
+                DesignTokenKey.IconSizeXS);
             TokenResourceBinder.CreateTokenBinding(closeBtn, IconButton.IconHeightProperty,
-                GlobalTokenResourceKey.IconSizeXS);
+                DesignTokenKey.IconSizeXS);
             TokenResourceBinder.CreateTokenBinding(textBlock, Layoutable.HeightProperty,
                 TagTokenResourceKey.TagLineHeight);
 

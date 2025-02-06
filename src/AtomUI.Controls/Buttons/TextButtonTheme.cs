@@ -30,7 +30,7 @@ internal class TextButtonTheme : BaseButtonTheme
     {
         var enabledStyle = new Style(selector => selector.Nesting());
         // 正常状态
-        enabledStyle.Add(TemplatedControl.BackgroundProperty, GlobalTokenResourceKey.ColorTransparent);
+        enabledStyle.Add(TemplatedControl.BackgroundProperty, DesignTokenKey.ColorTransparent);
         enabledStyle.Add(TemplatedControl.ForegroundProperty, ButtonTokenResourceKey.DefaultColor);
 
         // 正常 hover
@@ -43,18 +43,18 @@ internal class TextButtonTheme : BaseButtonTheme
         {
             var pressedStyle = new Style(selector =>
                 selector.Nesting().Class(StdPseudoClass.PointerOver).Class(StdPseudoClass.Pressed));
-            pressedStyle.Add(TemplatedControl.BackgroundProperty, GlobalTokenResourceKey.ColorBgTextActive);
+            pressedStyle.Add(TemplatedControl.BackgroundProperty, DesignTokenKey.ColorBgTextActive);
             enabledStyle.Add(pressedStyle);
         }
 
         // 危险按钮状态
         var dangerStyle = new Style(selector => selector.Nesting().PropertyEquals(Button.IsDangerProperty, true));
-        dangerStyle.Add(TemplatedControl.ForegroundProperty, GlobalTokenResourceKey.ColorError);
+        dangerStyle.Add(TemplatedControl.ForegroundProperty, DesignTokenKey.ColorError);
 
         // 危险状态 hover
         {
             var hoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
-            hoverStyle.Add(TemplatedControl.BackgroundProperty, GlobalTokenResourceKey.ColorErrorBgHover);
+            hoverStyle.Add(TemplatedControl.BackgroundProperty, DesignTokenKey.ColorErrorBgHover);
             dangerStyle.Add(hoverStyle);
         }
 
@@ -62,7 +62,7 @@ internal class TextButtonTheme : BaseButtonTheme
         {
             var pressedStyle = new Style(selector =>
                 selector.Nesting().Class(StdPseudoClass.PointerOver).Class(StdPseudoClass.Pressed));
-            pressedStyle.Add(TemplatedControl.BackgroundProperty, GlobalTokenResourceKey.ColorErrorBgActive);
+            pressedStyle.Add(TemplatedControl.BackgroundProperty, DesignTokenKey.ColorErrorBgActive);
             dangerStyle.Add(pressedStyle);
         }
         enabledStyle.Add(dangerStyle);
@@ -73,7 +73,7 @@ internal class TextButtonTheme : BaseButtonTheme
     private void BuildDisabledStyle()
     {
         var disabledStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Disabled));
-        disabledStyle.Add(TemplatedControl.ForegroundProperty, GlobalTokenResourceKey.ColorTextDisabled);
+        disabledStyle.Add(TemplatedControl.ForegroundProperty, DesignTokenKey.ColorTextDisabled);
         Add(disabledStyle);
     }
 }

@@ -209,7 +209,7 @@ public class NotificationCard : ContentControl
             SetupNotificationIcon();
             UpdateNotificationType();
         }
-        TokenResourceBinder.CreateGlobalTokenBinding(this, OpenCloseMotionDurationProperty, GlobalTokenResourceKey.MotionDurationMid);
+        TokenResourceBinder.CreateGlobalTokenBinding(this, OpenCloseMotionDurationProperty, DesignTokenKey.MotionDurationMid);
         _progressBar = e.NameScope.Find<NotificationProgressBar>(NotificationCardTheme.ProgressBarPart);
         _closeButton = e.NameScope.Find<IconButton>(NotificationCardTheme.CloseButtonPart);
         _motionActor = e.NameScope.Find<MotionActorControl>(NotificationCardTheme.MotionActorPart);
@@ -409,22 +409,22 @@ public class NotificationCard : ContentControl
         if (NotificationType == NotificationType.Error)
         {
             TokenResourceBinder.CreateGlobalTokenBinding(icon, Icon.NormalFilledBrushProperty,
-                GlobalTokenResourceKey.ColorError);
+                DesignTokenKey.ColorError);
         }
         else if (NotificationType == NotificationType.Information)
         {
             TokenResourceBinder.CreateGlobalTokenBinding(icon, Icon.NormalFilledBrushProperty,
-                GlobalTokenResourceKey.ColorPrimary);
+                DesignTokenKey.ColorPrimary);
         }
         else if (NotificationType == NotificationType.Success)
         {
             TokenResourceBinder.CreateGlobalTokenBinding(icon, Icon.NormalFilledBrushProperty,
-                GlobalTokenResourceKey.ColorSuccess);
+                DesignTokenKey.ColorSuccess);
         }
         else if (NotificationType == NotificationType.Warning)
         {
             TokenResourceBinder.CreateGlobalTokenBinding(icon, Icon.NormalFilledBrushProperty,
-                GlobalTokenResourceKey.ColorWarning);
+                DesignTokenKey.ColorWarning);
         }
     }
 
@@ -437,9 +437,9 @@ public class NotificationCard : ContentControl
                 Text = content
             };
             TokenResourceBinder.CreateGlobalTokenBinding(textBlock, SelectableTextBlock.SelectionBrushProperty,
-                GlobalTokenResourceKey.SelectionBackground);
+                DesignTokenKey.SelectionBackground);
             TokenResourceBinder.CreateGlobalTokenBinding(textBlock,
-                SelectableTextBlock.SelectionForegroundBrushProperty, GlobalTokenResourceKey.SelectionForeground);
+                SelectableTextBlock.SelectionForegroundBrushProperty, DesignTokenKey.SelectionForeground);
             Content = textBlock;
         }
     }

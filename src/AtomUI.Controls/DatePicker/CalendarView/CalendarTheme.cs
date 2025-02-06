@@ -60,7 +60,7 @@ internal class CalendarTheme : BaseControlTheme
         base.BuildStyles();
         
         var commonStyle = new Style(selector => selector.Nesting());
-        commonStyle.Add(Calendar.BackgroundProperty, GlobalTokenResourceKey.ColorBgContainer);
+        commonStyle.Add(Calendar.BackgroundProperty, DesignTokenKey.ColorBgContainer);
         commonStyle.Add(Calendar.PaddingProperty, DatePickerTokenResourceKey.PanelContentPadding);
         commonStyle.Add(Calendar.HorizontalAlignmentProperty, HorizontalAlignment.Left);
         commonStyle.Add(Calendar.VerticalAlignmentProperty, VerticalAlignment.Top);

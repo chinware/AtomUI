@@ -5,7 +5,7 @@ namespace AtomUI.Theme.Styling;
 
 public interface IThemeVariantCalculator
 {
-    public void Calculate(GlobalToken globalToken);
+    public void Calculate(DesignToken designToken);
     public Color ColorBgBase { get; }
     public Color ColorTextBase { get; }
 }

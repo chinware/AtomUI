@@ -41,11 +41,11 @@ internal class RangeInfoPickerInputTheme : InfoPickerInputTheme
         arrowIcon.Name = RangePickerArrowPart;
 
         TokenResourceBinder.CreateGlobalTokenBinding(arrowIcon, Layoutable.HeightProperty,
-            GlobalTokenResourceKey.IconSize);
+            DesignTokenKey.IconSize);
         TokenResourceBinder.CreateGlobalTokenBinding(arrowIcon, Layoutable.WidthProperty,
-            GlobalTokenResourceKey.IconSize);
+            DesignTokenKey.IconSize);
         TokenResourceBinder.CreateGlobalTokenBinding(arrowIcon, Icon.NormalFilledBrushProperty,
-            GlobalTokenResourceKey.ColorTextQuaternary);
+            DesignTokenKey.ColorTextQuaternary);
 
         var rangeStartTextBox = BuildPickerTextBox(InfoInputBoxPart);
         
@@ -117,7 +117,7 @@ internal class RangeInfoPickerInputTheme : InfoPickerInputTheme
 
         {
             var indicatorStyle = new Style(selector => selector.Nesting().Template().Name(RangePickerIndicatorPart));
-            indicatorStyle.Add(Shape.FillProperty, GlobalTokenResourceKey.ColorPrimary);
+            indicatorStyle.Add(Shape.FillProperty, DesignTokenKey.ColorPrimary);
 
             defaultStyle.Add(indicatorStyle);
         }
@@ -128,7 +128,7 @@ internal class RangeInfoPickerInputTheme : InfoPickerInputTheme
 
         {
             var indicatorStyle = new Style(selector => selector.Nesting().Template().Name(RangePickerIndicatorPart));
-            indicatorStyle.Add(Shape.FillProperty, GlobalTokenResourceKey.ColorError);
+            indicatorStyle.Add(Shape.FillProperty, DesignTokenKey.ColorError);
             errorStyle.Add(indicatorStyle);
         }
 
@@ -139,7 +139,7 @@ internal class RangeInfoPickerInputTheme : InfoPickerInputTheme
 
         {
             var indicatorStyle = new Style(selector => selector.Nesting().Template().Name(RangePickerIndicatorPart));
-            indicatorStyle.Add(Shape.FillProperty, GlobalTokenResourceKey.ColorWarning);
+            indicatorStyle.Add(Shape.FillProperty, DesignTokenKey.ColorWarning);
             warningStyle.Add(indicatorStyle);
         }
 

@@ -67,18 +67,18 @@ internal class ExpanderToken : AbstractControlDesignToken
     internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
-        HeaderPadding            = new Thickness(_globalToken.Padding, _globalToken.PaddingSM);
-        HeaderBg                 = _globalToken.ColorFillAlter;
-        ContentPadding           = new Thickness(16, _globalToken.Padding);
-        ContentPaddingSM         = new Thickness(_globalToken.PaddingSM);
-        ContentPaddingLG         = new Thickness(_globalToken.PaddingLG);
-        ContentBg                = _globalToken.ColorBgContainer;
-        HeaderPaddingSM          = new Thickness(_globalToken.PaddingSM, _globalToken.PaddingXS);
-        HeaderPaddingLG          = new Thickness(_globalToken.PaddingLG, _globalToken.Padding);
-        ExpanderBorderRadius     = _globalToken.BorderRadiusLG;
-        LeftExpandButtonHMargin  = new Thickness(0, 0, _globalToken.MarginSM, 0);
-        RightExpandButtonHMargin = new Thickness(_globalToken.MarginSM, 0, 0, 0);
-        LeftExpandButtonVMargin  = new Thickness(0, 0, 0, _globalToken.MarginSM);
-        RightExpandButtonVMargin = new Thickness(0, _globalToken.MarginSM, 0, 0);
+        HeaderPadding            = new Thickness(SharedToken.Padding, SharedToken.PaddingSM);
+        HeaderBg                 = SharedToken.ColorFillAlter;
+        ContentPadding           = new Thickness(16, SharedToken.Padding);
+        ContentPaddingSM         = new Thickness(SharedToken.PaddingSM);
+        ContentPaddingLG         = new Thickness(SharedToken.PaddingLG);
+        ContentBg                = SharedToken.ColorBgContainer;
+        HeaderPaddingSM          = new Thickness(SharedToken.PaddingSM, SharedToken.PaddingXS);
+        HeaderPaddingLG          = new Thickness(SharedToken.PaddingLG, SharedToken.Padding);
+        ExpanderBorderRadius     = SharedToken.BorderRadiusLG;
+        LeftExpandButtonHMargin  = new Thickness(0, 0, SharedToken.MarginSM, 0);
+        RightExpandButtonHMargin = new Thickness(SharedToken.MarginSM, 0, 0, 0);
+        LeftExpandButtonVMargin  = new Thickness(0, 0, 0, SharedToken.MarginSM);
+        RightExpandButtonVMargin = new Thickness(0, SharedToken.MarginSM, 0, 0);
     }
 }

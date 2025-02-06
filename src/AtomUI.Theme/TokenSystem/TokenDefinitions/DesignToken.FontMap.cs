@@ -1,7 +1,7 @@
 ﻿namespace AtomUI.Theme.TokenSystem;
 
 [GlobalDesignToken]
-public partial class GlobalToken
+public partial class DesignToken
 {
     // Font Size
     /// <summary>

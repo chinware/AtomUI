@@ -374,7 +374,7 @@ public class SliderTrack : Control
         TokenResourceBinder.CreateTokenBinding(this, SliderMarkSizeProperty, SliderTokenResourceKey.MarkSize);
         TokenResourceBinder.CreateTokenBinding(this, SliderRailSizeProperty, SliderTokenResourceKey.RailSize);
         TokenResourceBinder.CreateTokenBinding(this, MarkBackgroundBrushProperty,
-            GlobalTokenResourceKey.ColorBgElevated);
+            DesignTokenKey.ColorBgElevated);
         TokenResourceBinder.CreateTokenBinding(this, MarkBorderThicknessProperty,
             SliderTokenResourceKey.ThumbCircleBorderThickness);
 
@@ -440,11 +440,11 @@ public class SliderTrack : Control
     {
         if (IsEnabled)
         {
-            TokenResourceBinder.CreateGlobalTokenBinding(this, MarkLabelBrushProperty, GlobalTokenResourceKey.ColorText);
+            TokenResourceBinder.CreateGlobalTokenBinding(this, MarkLabelBrushProperty, DesignTokenKey.ColorText);
         }
         else
         {
-            TokenResourceBinder.CreateGlobalTokenBinding(this, MarkLabelBrushProperty, GlobalTokenResourceKey.ColorTextDisabled);
+            TokenResourceBinder.CreateGlobalTokenBinding(this, MarkLabelBrushProperty, DesignTokenKey.ColorTextDisabled);
         }
     }
 

@@ -660,7 +660,7 @@ public class ToolTip : TemplatedControl, IShadowMaskInfoProvider
         SetPopupParent(_popup, control);
 
         TokenResourceBinder.CreateTokenBinding(_popup, Popup.MaskShadowsProperty,
-            GlobalTokenResourceKey.BoxShadowsSecondary);
+            DesignTokenKey.BoxShadowsSecondary);
         SetToolTipColor(control);
 
         var marginToAnchor = GetMarginToAnchor(control);

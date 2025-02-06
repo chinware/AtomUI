@@ -17,7 +17,7 @@ internal class TextBoxInnerBoxTheme : AddOnDecoratedInnerBoxTheme
             selector.Nesting().PropertyEquals(TextBoxInnerBox.EmbedModeProperty, false));
         var disabledStyle  = new Style(selector => selector.Nesting().Class(StdPseudoClass.Disabled));
         var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(InnerBoxDecoratorPart));
-        decoratorStyle.Add(Border.BackgroundProperty, GlobalTokenResourceKey.ColorBgContainerDisabled);
+        decoratorStyle.Add(Border.BackgroundProperty, DesignTokenKey.ColorBgContainerDisabled);
         disabledStyle.Add(decoratorStyle);
         embedModeStyle.Add(disabledStyle);
         Add(embedModeStyle);

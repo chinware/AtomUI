@@ -11,6 +11,8 @@
 
     <ItemGroup>
         <Compile Remove="$(CompilerGeneratedFilesOutputPath)/**/*.cs"/>
+        <Compile Remove="TokenSystem\TokenDefinitions\GlobalToken.Alias.cs" />
+        <Compile Remove="TokenSystem\TokenDefinitions\GlobalToken.cs" />
     </ItemGroup>
 
     <ItemGroup>

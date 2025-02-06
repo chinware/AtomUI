@@ -49,7 +49,7 @@ internal class BaseTabScrollViewerTheme : BaseControlTheme
             menuIndicatorIcon.VerticalAlignment   = VerticalAlignment.Center;
 
             TokenResourceBinder.CreateTokenBinding(menuIndicatorIcon, Icon.NormalFilledBrushProperty,
-                GlobalTokenResourceKey.ColorTextSecondary);
+                DesignTokenKey.ColorTextSecondary);
 
             var menuIndicator = new IconButton
             {
@@ -57,9 +57,9 @@ internal class BaseTabScrollViewerTheme : BaseControlTheme
                 Icon = menuIndicatorIcon
             };
             TokenResourceBinder.CreateTokenBinding(menuIndicator, IconButton.IconWidthProperty,
-                GlobalTokenResourceKey.IconSize);
+                DesignTokenKey.IconSize);
             TokenResourceBinder.CreateTokenBinding(menuIndicator, IconButton.IconHeightProperty,
-                GlobalTokenResourceKey.IconSize);
+                DesignTokenKey.IconSize);
             menuIndicator.RegisterInNameScope(scope);
 
             var scrollViewContent = CreateScrollContentPresenter();

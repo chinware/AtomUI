@@ -44,7 +44,7 @@ internal class ToggleSwitchTheme : BaseControlTheme
 
     protected override void BuildStyles()
     {
-        this.Add(TemplatedControl.ForegroundProperty, GlobalTokenResourceKey.ColorTextLightSolid);
+        this.Add(TemplatedControl.ForegroundProperty, DesignTokenKey.ColorTextLightSolid);
         this.Add(ToggleSwitch.TrackPaddingProperty, ToggleSwitchTokenResourceKey.TrackPadding);
         BuildSizeTypeStyle();
         BuildCommonStyle();
@@ -72,17 +72,17 @@ internal class ToggleSwitchTheme : BaseControlTheme
         checkedStyle.Add(ToggleSwitch.GrooveBackgroundProperty, ToggleSwitchTokenResourceKey.SwitchColor);
         {
             var hoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
-            hoverStyle.Add(ToggleSwitch.GrooveBackgroundProperty, GlobalTokenResourceKey.ColorPrimaryHover);
+            hoverStyle.Add(ToggleSwitch.GrooveBackgroundProperty, DesignTokenKey.ColorPrimaryHover);
             checkedStyle.Add(hoverStyle);
         }
         commonStyle.Add(checkedStyle);
 
         var unCheckedStyle =
             new Style(selector => selector.Nesting().PropertyEquals(ToggleButton.IsCheckedProperty, false));
-        unCheckedStyle.Add(ToggleSwitch.GrooveBackgroundProperty, GlobalTokenResourceKey.ColorTextQuaternary);
+        unCheckedStyle.Add(ToggleSwitch.GrooveBackgroundProperty, DesignTokenKey.ColorTextQuaternary);
         {
             var hoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
-            hoverStyle.Add(ToggleSwitch.GrooveBackgroundProperty, GlobalTokenResourceKey.ColorTextTertiary);
+            hoverStyle.Add(ToggleSwitch.GrooveBackgroundProperty, DesignTokenKey.ColorTextTertiary);
             unCheckedStyle.Add(hoverStyle);
         }
         commonStyle.Add(unCheckedStyle);
@@ -144,7 +144,7 @@ internal class ToggleSwitchTheme : BaseControlTheme
             var switchKnobStyle = new Style(selector => selector.Nesting().Template().OfType<SwitchKnob>());
             switchKnobStyle.Add(SwitchKnob.KnobBackgroundColorProperty, ToggleSwitchTokenResourceKey.HandleBg);
             switchKnobStyle.Add(SwitchKnob.KnobBoxShadowProperty, ToggleSwitchTokenResourceKey.HandleShadow);
-            switchKnobStyle.Add(SwitchKnob.LoadIndicatorBrushProperty, GlobalTokenResourceKey.ColorTextQuaternary);
+            switchKnobStyle.Add(SwitchKnob.LoadIndicatorBrushProperty, DesignTokenKey.ColorTextQuaternary);
             var checkedStyle =
                 new Style(selector => selector.Nesting().PropertyEquals(SwitchKnob.IsCheckedStateProperty, true));
             checkedStyle.Add(SwitchKnob.LoadIndicatorBrushProperty, ToggleSwitchTokenResourceKey.SwitchColor);

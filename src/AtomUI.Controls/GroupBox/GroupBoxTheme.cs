@@ -115,11 +115,11 @@ internal class GroupBoxTheme : BaseControlTheme
     protected override void BuildStyles()
     {
         var commonStyle = new Style(selector => selector.Nesting());
-        commonStyle.Add(TemplatedControl.BackgroundProperty, GlobalTokenResourceKey.ColorBgContainer);
-        commonStyle.Add(TemplatedControl.BorderBrushProperty, GlobalTokenResourceKey.ColorBorder);
-        commonStyle.Add(TemplatedControl.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadius);
-        commonStyle.Add(GroupBox.HeaderTitleColorProperty, GlobalTokenResourceKey.ColorText);
-        commonStyle.Add(GroupBox.HeaderFontSizeProperty, GlobalTokenResourceKey.FontSize);
+        commonStyle.Add(TemplatedControl.BackgroundProperty, DesignTokenKey.ColorBgContainer);
+        commonStyle.Add(TemplatedControl.BorderBrushProperty, DesignTokenKey.ColorBorder);
+        commonStyle.Add(TemplatedControl.CornerRadiusProperty, DesignTokenKey.BorderRadius);
+        commonStyle.Add(GroupBox.HeaderTitleColorProperty, DesignTokenKey.ColorText);
+        commonStyle.Add(GroupBox.HeaderFontSizeProperty, DesignTokenKey.FontSize);
 
         var headerContainerStyle = new Style(selector => selector.Nesting().Template().Name(HeaderContainerPart));
         headerContainerStyle.Add(Layoutable.MarginProperty, GroupBoxTokenResourceKey.HeaderContainerMargin);
@@ -174,8 +174,8 @@ internal class GroupBoxTheme : BaseControlTheme
     protected override void BuildInstanceStyles(Control control)
     {
         var iconStyle = new Style(selector => selector.Name(HeaderIconPart).Descendant().OfType<Icon>());
-        iconStyle.Add(Layoutable.WidthProperty, GlobalTokenResourceKey.IconSizeLG);
-        iconStyle.Add(Layoutable.HeightProperty, GlobalTokenResourceKey.IconSizeLG);
+        iconStyle.Add(Layoutable.WidthProperty, DesignTokenKey.IconSizeLG);
+        iconStyle.Add(Layoutable.HeightProperty, DesignTokenKey.IconSizeLG);
         iconStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Center);
         control.Styles.Add(iconStyle);
     }

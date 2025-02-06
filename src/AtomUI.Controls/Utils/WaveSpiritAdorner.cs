@@ -114,7 +114,7 @@ internal class WaveSpiritAdorner : Control
     public WaveSpiritAdorner(WaveType waveType, Color? waveColor = null)
     {
         var theme       = ThemeManager.Current.ActivatedTheme!;
-        var globalToken = theme.GlobalToken;
+        var sharedToken = theme.SharedToken;
         if (waveType == WaveType.CircleWave)
         {
             _wavePainter = new CircleWavePainter();
@@ -126,24 +126,24 @@ internal class WaveSpiritAdorner : Control
         else
         {
             var roundWavePainter = new RoundRectWavePainter();
-            roundWavePainter.CornerRadius = globalToken.BorderRadius;
+            roundWavePainter.CornerRadius = sharedToken.BorderRadius;
             _wavePainter                  = roundWavePainter;
         }
 
-        var motionDurationSlow = globalToken.MotionDurationSlow;
+        var motionDurationSlow = sharedToken.MotionDurationSlow;
         _wavePainter.SizeEasingCurve       = new CubicEaseOut();
         _wavePainter.OpacityEasingCurve    = new CubicEaseOut();
-        _wavePainter.OriginOpacity         = Math.Clamp(globalToken.WaveStartOpacity, 0.0, 1.0);
+        _wavePainter.OriginOpacity         = Math.Clamp(sharedToken.WaveStartOpacity, 0.0, 1.0);
         _wavePainter.SizeMotionDuration    = motionDurationSlow;
         _wavePainter.OpacityMotionDuration = motionDurationSlow.Add(TimeSpan.FromMilliseconds(50));
-        _wavePainter.WaveRange             = Math.Min(globalToken.WaveAnimationRange, 8);
+        _wavePainter.WaveRange             = Math.Min(sharedToken.WaveAnimationRange, 8);
         if (waveColor is not null)
         {
             _wavePainter.WaveColor = waveColor.Value;
         }
         else
         {
-            _wavePainter.WaveColor = globalToken.ColorPrimary;
+            _wavePainter.WaveColor = sharedToken.ColorPrimary;
         }
 
         LayoutUpdated += HandleLayoutUpdated;

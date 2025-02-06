@@ -156,8 +156,8 @@ internal class PopupConfirmContainerTheme : BaseControlTheme
     {
         {
             var iconStyle = new Style(selector => selector.Name(IconContentPart).Child().OfType<Icon>());
-            iconStyle.Add(Layoutable.WidthProperty, GlobalTokenResourceKey.IconSizeLG);
-            iconStyle.Add(Layoutable.HeightProperty, GlobalTokenResourceKey.IconSizeLG);
+            iconStyle.Add(Layoutable.WidthProperty, DesignTokenKey.IconSizeLG);
+            iconStyle.Add(Layoutable.HeightProperty, DesignTokenKey.IconSizeLG);
             iconStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Top);
             control.Styles.Add(iconStyle);
         }
@@ -165,21 +165,21 @@ internal class PopupConfirmContainerTheme : BaseControlTheme
                                                     .PropertyEquals(PopupConfirmContainer.ConfirmStatusProperty,
                                                         PopupConfirmStatus.Info)
                                                     .Descendant().Name(IconContentPart).Child().OfType<Icon>());
-        infoStatusStyle.Add(Icon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorPrimary);
+        infoStatusStyle.Add(Icon.NormalFilledBrushProperty, DesignTokenKey.ColorPrimary);
         control.Styles.Add(infoStatusStyle);
 
         var warningStatusStyle = new Style(selector => selector
                                                        .PropertyEquals(PopupConfirmContainer.ConfirmStatusProperty,
                                                            PopupConfirmStatus.Warning)
                                                        .Descendant().Name(IconContentPart).Child().OfType<Icon>());
-        warningStatusStyle.Add(Icon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorWarning);
+        warningStatusStyle.Add(Icon.NormalFilledBrushProperty, DesignTokenKey.ColorWarning);
         control.Styles.Add(warningStatusStyle);
 
         var errorStatusStyle = new Style(selector => selector
                                                      .PropertyEquals(PopupConfirmContainer.ConfirmStatusProperty,
                                                          PopupConfirmStatus.Error)
                                                      .Descendant().Name(IconContentPart).Child().OfType<Icon>());
-        errorStatusStyle.Add(Icon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorError);
+        errorStatusStyle.Add(Icon.NormalFilledBrushProperty, DesignTokenKey.ColorError);
         control.Styles.Add(errorStatusStyle);
     }
 
@@ -193,7 +193,7 @@ internal class PopupConfirmContainerTheme : BaseControlTheme
 
         var titleStyle = new Style(selector => selector.Nesting().Template().Name(TitlePart));
         titleStyle.Add(Layoutable.MarginProperty, PopupConfirmTokenResourceKey.TitleMargin);
-        titleStyle.Add(TextBlock.ForegroundProperty, GlobalTokenResourceKey.ColorTextHeading);
+        titleStyle.Add(TextBlock.ForegroundProperty, DesignTokenKey.ColorTextHeading);
         titleStyle.Add(TextBlock.FontWeightProperty, FontWeight.SemiBold);
         commonStyle.Add(titleStyle);
 

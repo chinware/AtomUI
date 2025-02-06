@@ -41,12 +41,12 @@ internal class RadioButtonToken : AbstractControlDesignToken
     internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
-        var wireFrame        = _globalToken.Wireframe;
-        var lineWidth        = _globalToken.LineWidth;
-        var fontSizeLG       = _globalToken.FontSizeLG;
-        var colorBgContainer = _globalToken.ColorBgContainer;
-        var colorPrimary     = _globalToken.ColorPrimary;
-        var colorWhite       = _globalToken.ColorWhite;
+        var wireFrame        = SharedToken.Wireframe;
+        var lineWidth        = SharedToken.LineWidth;
+        var fontSizeLG       = SharedToken.FontSizeLG;
+        var colorBgContainer = SharedToken.ColorBgContainer;
+        var colorPrimary     = SharedToken.ColorPrimary;
+        var colorWhite       = SharedToken.ColorWhite;
 
         var dotPadding = 4; // 魔术值，需要看有没有好办法消除
         var radioSize  = fontSizeLG;
@@ -58,11 +58,11 @@ internal class RadioButtonToken : AbstractControlDesignToken
         DotPadding       = dotPadding;
         RadioSize        = radioSize;
         DotSize          = radioDotSize;
-        DotColorDisabled = _globalToken.ColorTextDisabled;
+        DotColorDisabled = SharedToken.ColorTextDisabled;
 
         // internal
         RadioColor   = wireFrame ? colorPrimary : colorWhite;
         RadioBgColor = wireFrame ? colorBgContainer : colorPrimary;
-        TextMargin   = new Thickness(_globalToken.MarginXXS, 0, 0, 0);
+        TextMargin   = new Thickness(SharedToken.MarginXXS, 0, 0, 0);
     }
 }

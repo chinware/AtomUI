@@ -54,14 +54,14 @@ internal class ToolTipTheme : BaseControlTheme
         this.Add(ToolTip.ShadowsProperty, ToolTipTokenResourceKey.ToolTipShadows);
         this.Add(ToolTip.DefaultMarginToAnchorProperty, ToolTipTokenResourceKey.MarginToAnchor);
         this.Add(ToolTip.MotionDurationProperty, ToolTipTokenResourceKey.ToolTipMotionDuration);
-        this.Add(TemplatedControl.BackgroundProperty, GlobalTokenResourceKey.ColorTransparent);
+        this.Add(TemplatedControl.BackgroundProperty, DesignTokenKey.ColorTransparent);
 
         var arrowDecoratedBoxStyle = new Style(selector => selector.Nesting().Template().OfType<ArrowDecoratedBox>());
-        arrowDecoratedBoxStyle.Add(TemplatedControl.FontSizeProperty, GlobalTokenResourceKey.FontSize);
+        arrowDecoratedBoxStyle.Add(TemplatedControl.FontSizeProperty, DesignTokenKey.FontSize);
         arrowDecoratedBoxStyle.Add(Layoutable.MaxWidthProperty, ToolTipTokenResourceKey.ToolTipMaxWidth);
         arrowDecoratedBoxStyle.Add(TemplatedControl.BackgroundProperty, ToolTipTokenResourceKey.ToolTipBackground);
         arrowDecoratedBoxStyle.Add(TemplatedControl.ForegroundProperty, ToolTipTokenResourceKey.ToolTipColor);
-        arrowDecoratedBoxStyle.Add(Layoutable.MinHeightProperty, GlobalTokenResourceKey.ControlHeight);
+        arrowDecoratedBoxStyle.Add(Layoutable.MinHeightProperty, DesignTokenKey.ControlHeight);
         arrowDecoratedBoxStyle.Add(TemplatedControl.PaddingProperty, ToolTipTokenResourceKey.ToolTipPadding);
         arrowDecoratedBoxStyle.Add(TemplatedControl.CornerRadiusProperty, ToolTipTokenResourceKey.BorderRadiusOuter);
         Add(arrowDecoratedBoxStyle);

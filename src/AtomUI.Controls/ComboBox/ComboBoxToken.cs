@@ -87,28 +87,28 @@ internal class ComboBoxToken : ButtonSpinnerToken
     internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
-        OpenIndicatorWidth  = _globalToken.IconSizeSM * 2.5;
-        PopupBorderRadius   = _globalToken.BorderRadiusLG;
-        PopupContentPadding = new Thickness(_globalToken.PaddingXXS, PopupBorderRadius.TopLeft / 2);
-        PopupBoxShadows     = _globalToken.BoxShadowsSecondary;
-        PopupMarginToAnchor = _globalToken.MarginXXS;
+        OpenIndicatorWidth  = SharedToken.IconSizeSM * 2.5;
+        PopupBorderRadius   = SharedToken.BorderRadiusLG;
+        PopupContentPadding = new Thickness(SharedToken.PaddingXXS, PopupBorderRadius.TopLeft / 2);
+        PopupBoxShadows     = SharedToken.BoxShadowsSecondary;
+        PopupMarginToAnchor = SharedToken.MarginXXS;
         
-        var colorTextDisabled  = _globalToken.ColorTextDisabled;
-        var colorTextSecondary = _globalToken.ColorTextSecondary;
-        var colorBgContainer   = _globalToken.ColorBgContainer;
-        var colorBgTextHover   = _globalToken.ColorBgTextHover;
+        var colorTextDisabled  = SharedToken.ColorTextDisabled;
+        var colorTextSecondary = SharedToken.ColorTextSecondary;
+        var colorBgContainer   = SharedToken.ColorBgContainer;
+        var colorBgTextHover   = SharedToken.ColorBgTextHover;
 
         ItemColor         = colorTextSecondary;
         ItemHoverColor    = colorTextSecondary;
-        ItemSelectedColor = _globalToken.ColorText;
+        ItemSelectedColor = SharedToken.ColorText;
 
         ItemBgColor         = colorBgContainer;
         ItemHoverBgColor    = colorBgTextHover;
-        ItemSelectedBgColor = _globalToken.ControlItemBgActive;
+        ItemSelectedBgColor = SharedToken.ControlItemBgActive;
 
         ItemDisabledColor = colorTextDisabled;
 
-        ItemPadding = new Thickness(_globalToken.PaddingSM, _globalToken.PaddingXS);
+        ItemPadding = new Thickness(SharedToken.PaddingSM, SharedToken.PaddingXS);
         ItemMargin  = new Thickness(0, 0.5);
     }
 }

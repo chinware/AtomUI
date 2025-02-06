@@ -174,7 +174,7 @@ internal class BaseCalendarDayButton : AvaloniaButton
         Transitions ??= new Transitions
         {
             AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty,
-                GlobalTokenResourceKey.MotionDurationFast)
+                DesignTokenKey.MotionDurationFast)
         };
     }
 
@@ -266,7 +266,7 @@ internal class BaseCalendarDayButton : AvaloniaButton
     {
         base.OnAttachedToVisualTree(e);
         TokenResourceBinder.CreateGlobalTokenBinding(this, BorderThicknessProperty,
-            GlobalTokenResourceKey.BorderThickness, BindingPriority.Template,
+            DesignTokenKey.BorderThickness, BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this));
     }
 }

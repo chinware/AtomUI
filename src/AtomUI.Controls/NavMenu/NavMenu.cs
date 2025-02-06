@@ -254,7 +254,7 @@ public class NavMenu : NavMenuBase
     {
         base.OnAttachedToVisualTree(e);
         InteractionHandler?.Attach(this);
-        TokenResourceBinder.CreateGlobalTokenBinding(this, HorizontalBorderThicknessProperty, GlobalTokenResourceKey.LineWidth,
+        TokenResourceBinder.CreateGlobalTokenBinding(this, HorizontalBorderThicknessProperty, DesignTokenKey.LineWidth,
             BindingPriority.Template,
             new RenderScaleAwareDoubleConfigure(this));
     }

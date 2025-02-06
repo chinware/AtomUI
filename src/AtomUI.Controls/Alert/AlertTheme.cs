@@ -42,27 +42,27 @@ internal class AlertTheme : BaseControlTheme
 
     private void BuildAlertTypeStyle()
     {
-        this.Add(TemplatedControl.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadiusLG);
+        this.Add(TemplatedControl.CornerRadiusProperty, DesignTokenKey.BorderRadiusLG);
         var successStyle =
             new Style(selector => selector.Nesting().PropertyEquals(Alert.TypeProperty, AlertType.Success));
-        successStyle.Add(TemplatedControl.BackgroundProperty, GlobalTokenResourceKey.ColorSuccessBg);
-        successStyle.Add(TemplatedControl.BorderBrushProperty, GlobalTokenResourceKey.ColorSuccessBorder);
+        successStyle.Add(TemplatedControl.BackgroundProperty, DesignTokenKey.ColorSuccessBg);
+        successStyle.Add(TemplatedControl.BorderBrushProperty, DesignTokenKey.ColorSuccessBorder);
         Add(successStyle);
 
         var infoStyle = new Style(selector => selector.Nesting().PropertyEquals(Alert.TypeProperty, AlertType.Info));
-        infoStyle.Add(TemplatedControl.BackgroundProperty, GlobalTokenResourceKey.ColorInfoBg);
-        infoStyle.Add(TemplatedControl.BorderBrushProperty, GlobalTokenResourceKey.ColorInfoBorder);
+        infoStyle.Add(TemplatedControl.BackgroundProperty, DesignTokenKey.ColorInfoBg);
+        infoStyle.Add(TemplatedControl.BorderBrushProperty, DesignTokenKey.ColorInfoBorder);
         Add(infoStyle);
 
         var warningStyle =
             new Style(selector => selector.Nesting().PropertyEquals(Alert.TypeProperty, AlertType.Warning));
-        warningStyle.Add(TemplatedControl.BackgroundProperty, GlobalTokenResourceKey.ColorWarningBg);
-        warningStyle.Add(TemplatedControl.BorderBrushProperty, GlobalTokenResourceKey.ColorWarningBorder);
+        warningStyle.Add(TemplatedControl.BackgroundProperty, DesignTokenKey.ColorWarningBg);
+        warningStyle.Add(TemplatedControl.BorderBrushProperty, DesignTokenKey.ColorWarningBorder);
         Add(warningStyle);
 
         var errorStyle = new Style(selector => selector.Nesting().PropertyEquals(Alert.TypeProperty, AlertType.Error));
-        errorStyle.Add(TemplatedControl.BackgroundProperty, GlobalTokenResourceKey.ColorErrorBg);
-        errorStyle.Add(TemplatedControl.BorderBrushProperty, GlobalTokenResourceKey.ColorErrorBorder);
+        errorStyle.Add(TemplatedControl.BackgroundProperty, DesignTokenKey.ColorErrorBg);
+        errorStyle.Add(TemplatedControl.BorderBrushProperty, DesignTokenKey.ColorErrorBorder);
         Add(errorStyle);
 
         // 根据是否显示 Description 设置 Padding
@@ -92,7 +92,7 @@ internal class AlertTheme : BaseControlTheme
             var descriptionStyle = new Style(selector =>
                 selector.Nesting().Not(x => x.PropertyEquals(Alert.DescriptionProperty, null)));
             var commonLabelStyle = new Style(selector => commonLabelSelector);
-            commonLabelStyle.Add(TemplatedControl.FontSizeProperty, GlobalTokenResourceKey.FontSizeLG);
+            commonLabelStyle.Add(TemplatedControl.FontSizeProperty, DesignTokenKey.FontSizeLG);
             commonLabelStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Top);
             descriptionStyle.Add(commonLabelStyle);
             Add(descriptionStyle);
@@ -101,7 +101,7 @@ internal class AlertTheme : BaseControlTheme
             var descriptionStyle =
                 new Style(selector => selector.Nesting().PropertyEquals(Alert.DescriptionProperty, null));
             var commonLabelStyle = new Style(selector => commonLabelSelector);
-            commonLabelStyle.Add(TemplatedControl.FontSizeProperty, GlobalTokenResourceKey.FontSize);
+            commonLabelStyle.Add(TemplatedControl.FontSizeProperty, DesignTokenKey.FontSize);
             commonLabelStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Stretch);
             descriptionStyle.Add(commonLabelStyle);
             Add(descriptionStyle);
@@ -150,7 +150,7 @@ internal class AlertTheme : BaseControlTheme
                 selector.Nesting().PropertyEquals(Alert.TypeProperty, AlertType.Success));
             var infoIconStyle = new Style(selector => infoIconSelector);
             infoIconStyle.Add(Icon.IconInfoProperty, AntDesignIconPackage.Current.GetIconInfo(AntDesignIconKind.CheckCircleFilled));
-            infoIconStyle.Add(Icon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorSuccess);
+            infoIconStyle.Add(Icon.NormalFilledBrushProperty, DesignTokenKey.ColorSuccess);
             successStyle.Add(infoIconStyle);
             Add(successStyle);
         }
@@ -160,7 +160,7 @@ internal class AlertTheme : BaseControlTheme
                 selector.Nesting().PropertyEquals(Alert.TypeProperty, AlertType.Info));
             var infoIconStyle = new Style(selector => infoIconSelector);
             infoIconStyle.Add(Icon.IconInfoProperty, AntDesignIconPackage.Current.GetIconInfo(AntDesignIconKind.InfoCircleFilled));
-            infoIconStyle.Add(Icon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorPrimary);
+            infoIconStyle.Add(Icon.NormalFilledBrushProperty, DesignTokenKey.ColorPrimary);
             infoStyle.Add(infoIconStyle);
             Add(infoStyle);
         }
@@ -170,7 +170,7 @@ internal class AlertTheme : BaseControlTheme
                 selector.Nesting().PropertyEquals(Alert.TypeProperty, AlertType.Warning));
             var infoIconStyle = new Style(selector => infoIconSelector);
             infoIconStyle.Add(Icon.IconInfoProperty, AntDesignIconPackage.Current.GetIconInfo(AntDesignIconKind.ExclamationCircleFilled));
-            infoIconStyle.Add(Icon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorWarning);
+            infoIconStyle.Add(Icon.NormalFilledBrushProperty, DesignTokenKey.ColorWarning);
             warningStyle.Add(infoIconStyle);
             Add(warningStyle);
         }
@@ -180,7 +180,7 @@ internal class AlertTheme : BaseControlTheme
                 selector.Nesting().PropertyEquals(Alert.TypeProperty, AlertType.Error));
             var infoIconStyle = new Style(selector => infoIconSelector);
             infoIconStyle.Add(Icon.IconInfoProperty, AntDesignIconPackage.Current.GetIconInfo(AntDesignIconKind.CloseCircleFilled));
-            infoIconStyle.Add(Icon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorError);
+            infoIconStyle.Add(Icon.NormalFilledBrushProperty, DesignTokenKey.ColorError);
             errorStyle.Add(infoIconStyle);
             Add(errorStyle);
         }
@@ -299,9 +299,9 @@ internal class AlertTheme : BaseControlTheme
         };
 
         TokenResourceBinder.CreateTokenBinding(closeBtn, IconButton.IconWidthProperty,
-            GlobalTokenResourceKey.IconSizeSM);
+            DesignTokenKey.IconSizeSM);
         TokenResourceBinder.CreateTokenBinding(closeBtn, IconButton.IconHeightProperty,
-            GlobalTokenResourceKey.IconSizeSM);
+            DesignTokenKey.IconSizeSM);
         TokenResourceBinder.CreateTokenBinding(closeBtn, Layoutable.MarginProperty,
             AlertTokenResourceKey.ExtraElementMargin);
 
@@ -377,7 +377,7 @@ internal class AlertTheme : BaseControlTheme
             IsVisible                  = !string.IsNullOrEmpty(alert.Description)
         };
         TokenResourceBinder.CreateTokenBinding(descriptionLabel, Layoutable.MarginProperty,
-            GlobalTokenResourceKey.MarginXS, BindingPriority.Template,
+            DesignTokenKey.MarginXS, BindingPriority.Template,
             o =>
             {
                 if (o is double value)

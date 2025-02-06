@@ -6,7 +6,7 @@ using Avalonia.Media;
 
 namespace AtomUI.Theme.TokenSystem;
 
-public partial class GlobalToken : AbstractDesignToken
+public partial class DesignToken : AbstractDesignToken
 {
      /// <summary>
     /// 现在这里的实现是写死的主色，后面是不是可以读取配置
@@ -16,7 +16,7 @@ public partial class GlobalToken : AbstractDesignToken
     [NotTokenDefinition]
     public IDictionary<PresetPrimaryColor, ColorMap> ColorPalettes { get; set; }
 
-    public GlobalToken()
+    public DesignToken()
     {
         InitSeedTokenValues();
         ColorPalettes        = new Dictionary<PresetPrimaryColor, ColorMap>();
@@ -82,31 +82,6 @@ public partial class GlobalToken : AbstractDesignToken
 
         return null;
     }
-
-    // internal void AssignSeedTokenValues(SeedDesignToken seedToken)
-    // {
-    //     var seedType = typeof(SeedDesignToken);
-    //     var seedTokenProperties =
-    //         seedType.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
-    //     foreach (var seedTokenProperty in seedTokenProperties)
-    //     {
-    //         var notTokenDefinitionAttribute = seedTokenProperty.GetCustomAttribute<NotTokenDefinitionAttribute>();
-    //         if (notTokenDefinitionAttribute != null)
-    //         {
-    //             continue;
-    //         }
-    //         
-    //         var seedTokenName = seedTokenProperty.Name;
-    //
-    //         var type = GetType();
-    //         var targetProperty = type.GetProperty(seedTokenName);
-    //
-    //         if (targetProperty is not null && targetProperty.PropertyType == seedTokenProperty.PropertyType)
-    //         {
-    //             targetProperty.SetValue(this, seedTokenProperty.GetValue(seedToken));
-    //         }
-    //     }
-    // }
 
     internal void CalculateAliasTokenValues()
     {

@@ -77,29 +77,29 @@ internal class SegmentedToken : AbstractControlDesignToken
     internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
-        TrackPadding      = new Thickness(_globalToken.LineWidthBold);
-        TrackBg           = _globalToken.ColorBgLayout;
-        ItemColor         = _globalToken.ColorTextLabel;
-        ItemHoverColor    = _globalToken.ColorText;
-        ItemHoverBg       = _globalToken.ColorFillSecondary;
-        ItemSelectedBg    = _globalToken.ColorBgElevated;
-        ItemActiveBg      = _globalToken.ColorFill;
-        ItemSelectedColor = _globalToken.ColorText;
-        var lineWidth = _globalToken.LineWidth;
+        TrackPadding      = new Thickness(SharedToken.LineWidthBold);
+        TrackBg           = SharedToken.ColorBgLayout;
+        ItemColor         = SharedToken.ColorTextLabel;
+        ItemHoverColor    = SharedToken.ColorText;
+        ItemHoverBg       = SharedToken.ColorFillSecondary;
+        ItemSelectedBg    = SharedToken.ColorBgElevated;
+        ItemActiveBg      = SharedToken.ColorFill;
+        ItemSelectedColor = SharedToken.ColorText;
+        var lineWidth = SharedToken.LineWidth;
         SegmentedItemPadding = new Thickness(
-            Math.Max(_globalToken.ControlPadding - lineWidth, 0),
+            Math.Max(SharedToken.ControlPadding - lineWidth, 0),
             0,
-            Math.Max(_globalToken.ControlPadding - lineWidth, 0),
+            Math.Max(SharedToken.ControlPadding - lineWidth, 0),
             0);
         SegmentedItemPaddingSM = new Thickness(
-            Math.Max(_globalToken.ControlPaddingSM - lineWidth, 0),
+            Math.Max(SharedToken.ControlPaddingSM - lineWidth, 0),
             0,
-            Math.Max(_globalToken.ControlPaddingSM - lineWidth, 0),
+            Math.Max(SharedToken.ControlPaddingSM - lineWidth, 0),
             0);
-        SegmentedItemContentMargin = new Thickness(_globalToken.PaddingXXS, 0, 0, 0);
+        SegmentedItemContentMargin = new Thickness(SharedToken.PaddingXXS, 0, 0, 0);
 
-        ItemMinHeightLG = _globalToken.ControlHeightLG - TrackPadding.Top - TrackPadding.Bottom;
-        ItemMinHeight   = _globalToken.ControlHeight - TrackPadding.Top - TrackPadding.Bottom;
-        ItemMinHeightSM = _globalToken.ControlHeightSM - TrackPadding.Top - TrackPadding.Bottom;
+        ItemMinHeightLG = SharedToken.ControlHeightLG - TrackPadding.Top - TrackPadding.Bottom;
+        ItemMinHeight   = SharedToken.ControlHeight - TrackPadding.Top - TrackPadding.Bottom;
+        ItemMinHeightSM = SharedToken.ControlHeightSM - TrackPadding.Top - TrackPadding.Bottom;
     }
 }

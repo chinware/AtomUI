@@ -116,11 +116,11 @@ internal class CalendarItemTheme : BaseControlTheme
     {
         var previousButtonIcon = AntDesignIconPackage.DoubleLeftOutlined();
         TokenResourceBinder.CreateGlobalTokenBinding(previousButtonIcon, Icon.NormalFilledBrushProperty,
-            GlobalTokenResourceKey.ColorTextDescription);
+            DesignTokenKey.ColorTextDescription);
         TokenResourceBinder.CreateGlobalTokenBinding(previousButtonIcon, Icon.ActiveFilledBrushProperty,
-            GlobalTokenResourceKey.ColorText);
+            DesignTokenKey.ColorText);
         TokenResourceBinder.CreateGlobalTokenBinding(previousButtonIcon, Icon.SelectedFilledBrushProperty,
-            GlobalTokenResourceKey.ColorText);
+            DesignTokenKey.ColorText);
 
         var previousButton = new IconButton
         {
@@ -129,9 +129,9 @@ internal class CalendarItemTheme : BaseControlTheme
         };
 
         TokenResourceBinder.CreateGlobalTokenBinding(previousButton, IconButton.IconWidthProperty,
-            GlobalTokenResourceKey.IconSizeSM);
+            DesignTokenKey.IconSizeSM);
         TokenResourceBinder.CreateGlobalTokenBinding(previousButton, IconButton.IconHeightProperty,
-            GlobalTokenResourceKey.IconSizeSM);
+            DesignTokenKey.IconSizeSM);
         return previousButton;
     }
 
@@ -139,11 +139,11 @@ internal class CalendarItemTheme : BaseControlTheme
     {
         var previousMonthButtonIcon = AntDesignIconPackage.LeftOutlined();
         TokenResourceBinder.CreateGlobalTokenBinding(previousMonthButtonIcon, Icon.NormalFilledBrushProperty,
-            GlobalTokenResourceKey.ColorTextDescription);
+            DesignTokenKey.ColorTextDescription);
         TokenResourceBinder.CreateGlobalTokenBinding(previousMonthButtonIcon, Icon.ActiveFilledBrushProperty,
-            GlobalTokenResourceKey.ColorText);
+            DesignTokenKey.ColorText);
         TokenResourceBinder.CreateGlobalTokenBinding(previousMonthButtonIcon, Icon.SelectedFilledBrushProperty,
-            GlobalTokenResourceKey.ColorText);
+            DesignTokenKey.ColorText);
 
         var previousMonthButton = new IconButton
         {
@@ -152,9 +152,9 @@ internal class CalendarItemTheme : BaseControlTheme
         };
 
         TokenResourceBinder.CreateGlobalTokenBinding(previousMonthButton, IconButton.IconWidthProperty,
-            GlobalTokenResourceKey.IconSizeSM);
+            DesignTokenKey.IconSizeSM);
         TokenResourceBinder.CreateGlobalTokenBinding(previousMonthButton, IconButton.IconHeightProperty,
-            GlobalTokenResourceKey.IconSizeSM);
+            DesignTokenKey.IconSizeSM);
         return previousMonthButton;
     }
 
@@ -162,11 +162,11 @@ internal class CalendarItemTheme : BaseControlTheme
     {
         var nextButtonIcon = AntDesignIconPackage.DoubleRightOutlined();
         TokenResourceBinder.CreateGlobalTokenBinding(nextButtonIcon, Icon.NormalFilledBrushProperty,
-            GlobalTokenResourceKey.ColorTextDescription);
+            DesignTokenKey.ColorTextDescription);
         TokenResourceBinder.CreateGlobalTokenBinding(nextButtonIcon, Icon.ActiveFilledBrushProperty,
-            GlobalTokenResourceKey.ColorText);
+            DesignTokenKey.ColorText);
         TokenResourceBinder.CreateGlobalTokenBinding(nextButtonIcon, Icon.SelectedFilledBrushProperty,
-            GlobalTokenResourceKey.ColorText);
+            DesignTokenKey.ColorText);
 
         var nextButton = new IconButton
         {
@@ -174,9 +174,9 @@ internal class CalendarItemTheme : BaseControlTheme
             Icon = nextButtonIcon
         };
         TokenResourceBinder.CreateGlobalTokenBinding(nextButton, IconButton.IconWidthProperty,
-            GlobalTokenResourceKey.IconSizeSM);
+            DesignTokenKey.IconSizeSM);
         TokenResourceBinder.CreateGlobalTokenBinding(nextButton, IconButton.IconHeightProperty,
-            GlobalTokenResourceKey.IconSizeSM);
+            DesignTokenKey.IconSizeSM);
         return nextButton;
     }
 
@@ -184,20 +184,20 @@ internal class CalendarItemTheme : BaseControlTheme
     {
         var nextMonthButtonIcon = AntDesignIconPackage.RightOutlined();
         TokenResourceBinder.CreateGlobalTokenBinding(nextMonthButtonIcon, Icon.NormalFilledBrushProperty,
-            GlobalTokenResourceKey.ColorTextDescription);
+            DesignTokenKey.ColorTextDescription);
         TokenResourceBinder.CreateGlobalTokenBinding(nextMonthButtonIcon, Icon.ActiveFilledBrushProperty,
-            GlobalTokenResourceKey.ColorText);
+            DesignTokenKey.ColorText);
         TokenResourceBinder.CreateGlobalTokenBinding(nextMonthButtonIcon, Icon.SelectedFilledBrushProperty,
-            GlobalTokenResourceKey.ColorText);
+            DesignTokenKey.ColorText);
         var nextMonthButton = new IconButton
         {
             Name = NextMonthButtonPart,
             Icon = nextMonthButtonIcon
         };
         TokenResourceBinder.CreateGlobalTokenBinding(nextMonthButton, IconButton.IconWidthProperty,
-            GlobalTokenResourceKey.IconSizeSM);
+            DesignTokenKey.IconSizeSM);
         TokenResourceBinder.CreateGlobalTokenBinding(nextMonthButton, IconButton.IconHeightProperty,
-            GlobalTokenResourceKey.IconSizeSM);
+            DesignTokenKey.IconSizeSM);
         return nextMonthButton;
     }
 

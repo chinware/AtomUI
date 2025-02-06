@@ -105,23 +105,23 @@ internal class CalendarToken : AbstractControlDesignToken
     {
         base.CalculateFromAlias();
 
-        var colorPrimary = _globalToken.ColorPrimary;
+        var colorPrimary = SharedToken.ColorPrimary;
 
-        CellHoverBg           = _globalToken.ControlItemBgHover;
-        CellActiveWithRangeBg = _globalToken.ControlItemBgActive;
+        CellHoverBg           = SharedToken.ControlItemBgHover;
+        CellActiveWithRangeBg = SharedToken.ControlItemBgActive;
         CellHoverWithRangeBg  = colorPrimary.Lighten(35);
         CellRangeBorderColor  = colorPrimary.Lighten(20);
-        CellBgDisabled        = _globalToken.ColorBgContainerDisabled;
-        CellWidth             = _globalToken.ControlHeightSM;
-        CellHeight            = _globalToken.ControlHeightSM;
-        TextHeight            = _globalToken.ControlHeightLG;
-        WithoutTimeCellHeight = _globalToken.ControlHeightLG * 1.65;
-        CellMargin            = new Thickness(_globalToken.MarginXXS);
-        PanelContentPadding   = new Thickness(_globalToken.PaddingSM);
+        CellBgDisabled        = SharedToken.ColorBgContainerDisabled;
+        CellWidth             = SharedToken.ControlHeightSM;
+        CellHeight            = SharedToken.ControlHeightSM;
+        TextHeight            = SharedToken.ControlHeightLG;
+        WithoutTimeCellHeight = SharedToken.ControlHeightLG * 1.65;
+        CellMargin            = new Thickness(SharedToken.MarginXXS);
+        PanelContentPadding   = new Thickness(SharedToken.PaddingSM);
         ItemPanelMinWidth     = 260;
         ItemPanelMinHeight    = 290;
         DayTitleHeight        = new GridLength(40, GridUnitType.Pixel);
-        HeaderMargin          = new Thickness(0, 0, 0, _globalToken.MarginXS);
+        HeaderMargin          = new Thickness(0, 0, 0, SharedToken.MarginXS);
         CellLineHeight        = CellHeight - 2; // 不知道为啥设置成一样，或者不设置文字有些靠下
         RangeCalendarSpacing  = 20;
     }

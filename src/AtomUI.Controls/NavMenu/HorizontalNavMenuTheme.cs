@@ -36,7 +36,7 @@ internal class HorizontalNavMenuTheme : BaseNavMenuTheme
         CreateTemplateParentBinding(horizontalLine, Rectangle.HeightProperty,
             NavMenu.HorizontalBorderThicknessProperty);
         TokenResourceBinder.CreateGlobalTokenBinding(horizontalLine, Rectangle.FillProperty,
-            GlobalTokenResourceKey.ColorBorderSecondary);
+            DesignTokenKey.ColorBorderSecondary);
 
         layout.Children.Add(BuildItemPresenter(true, scope));
         return layout;
@@ -48,7 +48,7 @@ internal class HorizontalNavMenuTheme : BaseNavMenuTheme
         var commonStyle = new Style(selector => selector.Nesting());
 
         var horizontalStyle = new Style(selector => selector.Nesting().Class(NavMenu.HorizontalModePC));
-        horizontalStyle.Add(NavMenu.BackgroundProperty, GlobalTokenResourceKey.ColorBgContainer);
+        horizontalStyle.Add(NavMenu.BackgroundProperty, DesignTokenKey.ColorBgContainer);
         horizontalStyle.Add(NavMenu.HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
         horizontalStyle.Add(NavMenu.VerticalAlignmentProperty, VerticalAlignment.Top);
         horizontalStyle.Add(NavMenu.HeightProperty, NavMenuTokenResourceKey.MenuHorizontalHeight);

@@ -241,7 +241,7 @@ public class Tag : TemplatedControl
 
     private void SetupTokenBindings()
     {
-        TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty, GlobalTokenResourceKey.BorderThickness,
+        TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty, DesignTokenKey.BorderThickness,
             BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this, thickness =>
             {
@@ -275,8 +275,8 @@ public class Tag : TemplatedControl
         {
             // TODO 根据当前的主题风格设置，是否需要根据风格不一样进行动态调整呢？
             var activatedTheme = ThemeManager.Current.ActivatedTheme;
-            var globalToken    = activatedTheme?.GlobalToken;
-            if (globalToken == null)
+            var sharedToken    = activatedTheme?.SharedToken;
+            if (sharedToken == null)
             {
                 // 是否需要输出日志
                 return;
@@ -284,7 +284,7 @@ public class Tag : TemplatedControl
 
             foreach (var entry in PresetPrimaryColor.AllColorTypes())
             {
-                var colorMap = globalToken.GetColorPalette(entry)!;
+                var colorMap = sharedToken.GetColorPalette(entry)!;
                 var calcColor = new TagCalcColor
                 {
                     LightColor       = colorMap.Color1,
@@ -302,8 +302,8 @@ public class Tag : TemplatedControl
         if (_statusColorMap.Count == 0)
         {
             var activatedTheme = ThemeManager.Current.ActivatedTheme;
-            var globalToken    = activatedTheme?.GlobalToken;
-            if (globalToken == null)
+            var sharedToken    = activatedTheme?.SharedToken;
+            if (sharedToken == null)
             {
                 // 是否需要输出日志
                 return;
@@ -311,30 +311,30 @@ public class Tag : TemplatedControl
 
             _statusColorMap.Add(TagStatus.Success, new TagStatusCalcColor
             {
-                Color       = globalToken.ColorSuccess,
-                Background  = globalToken.ColorSuccessBg,
-                BorderColor = globalToken.ColorSuccessBorder
+                Color       = sharedToken.ColorSuccess,
+                Background  = sharedToken.ColorSuccessBg,
+                BorderColor = sharedToken.ColorSuccessBorder
             });
 
             _statusColorMap.Add(TagStatus.Info, new TagStatusCalcColor
             {
-                Color       = globalToken.ColorInfo,
-                Background  = globalToken.ColorInfoBg,
-                BorderColor = globalToken.ColorInfoBorder
+                Color       = sharedToken.ColorInfo,
+                Background  = sharedToken.ColorInfoBg,
+                BorderColor = sharedToken.ColorInfoBorder
             });
 
             _statusColorMap.Add(TagStatus.Warning, new TagStatusCalcColor
             {
-                Color       = globalToken.ColorWarning,
-                Background  = globalToken.ColorWarningBg,
-                BorderColor = globalToken.ColorWarningBorder
+                Color       = sharedToken.ColorWarning,
+                Background  = sharedToken.ColorWarningBg,
+                BorderColor = sharedToken.ColorWarningBorder
             });
 
             _statusColorMap.Add(TagStatus.Error, new TagStatusCalcColor
             {
-                Color       = globalToken.ColorError,
-                Background  = globalToken.ColorErrorBg,
-                BorderColor = globalToken.ColorErrorBorder
+                Color       = sharedToken.ColorError,
+                Background  = sharedToken.ColorErrorBg,
+                BorderColor = sharedToken.ColorErrorBorder
             });
         }
     }
@@ -377,7 +377,7 @@ public class Tag : TemplatedControl
             _hasColorSet = true;
             Background   = new SolidColorBrush(color);
             TokenResourceBinder.CreateTokenBinding(this, ForegroundProperty,
-                GlobalTokenResourceKey.ColorTextLightSolid);
+                DesignTokenKey.ColorTextLightSolid);
         }
     }
 
@@ -394,14 +394,14 @@ public class Tag : TemplatedControl
                 if (_hasColorSet && !_isPresetColorTag)
                 {
                     TokenResourceBinder.CreateTokenBinding(CloseIcon, Icon.NormalFilledBrushProperty,
-                        GlobalTokenResourceKey.ColorTextLightSolid);
+                        DesignTokenKey.ColorTextLightSolid);
                 }
                 else
                 {
                     TokenResourceBinder.CreateTokenBinding(CloseIcon, Icon.NormalFilledBrushProperty,
-                        GlobalTokenResourceKey.ColorIcon);
+                        DesignTokenKey.ColorIcon);
                     TokenResourceBinder.CreateTokenBinding(CloseIcon, Icon.ActiveFilledBrushProperty,
-                        GlobalTokenResourceKey.ColorIconHover);
+                        DesignTokenKey.ColorIconHover);
                 }
             }
         }
@@ -416,7 +416,7 @@ public class Tag : TemplatedControl
             if (_hasColorSet)
             {
                 TokenResourceBinder.CreateTokenBinding(Icon, Icon.NormalFilledBrushProperty,
-                    GlobalTokenResourceKey.ColorTextLightSolid);
+                    DesignTokenKey.ColorTextLightSolid);
             }
             else if (_isPresetColorTag)
             {

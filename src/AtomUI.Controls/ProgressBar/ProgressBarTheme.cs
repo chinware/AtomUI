@@ -19,8 +19,8 @@ internal class ProgressBarTheme : AbstractLineProgressTheme
     {
         base.BuildStyles();
         var commonStyle = new Style(selector => selector.Nesting());
-        commonStyle.Add(ProgressBar.ColorTextLabelProperty, GlobalTokenResourceKey.ColorTextLabel);
-        commonStyle.Add(ProgressBar.ColorTextLightSolidProperty, GlobalTokenResourceKey.ColorTextLightSolid);
+        commonStyle.Add(ProgressBar.ColorTextLabelProperty, DesignTokenKey.ColorTextLabel);
+        commonStyle.Add(ProgressBar.ColorTextLightSolidProperty, DesignTokenKey.ColorTextLightSolid);
         Add(commonStyle);
         BuildPercentPositionStyle();
         BuildCompletedIconStyle();

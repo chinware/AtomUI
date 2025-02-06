@@ -91,9 +91,9 @@ internal class MessageCardTheme : BaseControlTheme
             Name = MessagePart
         };
         TokenResourceBinder.CreateGlobalTokenBinding(message, SelectableTextBlock.SelectionBrushProperty,
-            GlobalTokenResourceKey.SelectionBackground);
+            DesignTokenKey.SelectionBackground);
         TokenResourceBinder.CreateGlobalTokenBinding(message, SelectableTextBlock.SelectionForegroundBrushProperty,
-            GlobalTokenResourceKey.SelectionForeground);
+            DesignTokenKey.SelectionForeground);
 
         CreateTemplateParentBinding(message, TextBlock.TextProperty, MessageCard.MessageProperty);
         headerLayout.Children.Add(message);
@@ -120,9 +120,9 @@ internal class MessageCardTheme : BaseControlTheme
 
         var frameDecoratorStyle = new Style(selector => selector.Nesting().Template().Name(FrameDecoratorPart));
         frameDecoratorStyle.Add(Decorator.PaddingProperty, MessageTokenResourceKey.ContentPadding);
-        frameDecoratorStyle.Add(Border.BoxShadowProperty, GlobalTokenResourceKey.BoxShadows);
+        frameDecoratorStyle.Add(Border.BoxShadowProperty, DesignTokenKey.BoxShadows);
         frameDecoratorStyle.Add(Border.BackgroundProperty, MessageTokenResourceKey.ContentBg);
-        frameDecoratorStyle.Add(Border.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadiusLG);
+        frameDecoratorStyle.Add(Border.CornerRadiusProperty, DesignTokenKey.BorderRadiusLG);
         commonStyle.Add(frameDecoratorStyle);
 
         var closedStyle =
@@ -136,9 +136,9 @@ internal class MessageCardTheme : BaseControlTheme
     private void BuildContentStyle()
     {
         var titleStyle = new Style(selector => selector.Nesting().Template().Name(MessagePart));
-        titleStyle.Add(ContentPresenter.LineHeightProperty, GlobalTokenResourceKey.FontHeight);
-        titleStyle.Add(ContentPresenter.FontSizeProperty, GlobalTokenResourceKey.FontSize);
-        titleStyle.Add(ContentPresenter.ForegroundProperty, GlobalTokenResourceKey.ColorText);
+        titleStyle.Add(ContentPresenter.LineHeightProperty, DesignTokenKey.FontHeight);
+        titleStyle.Add(ContentPresenter.FontSizeProperty, DesignTokenKey.FontSize);
+        titleStyle.Add(ContentPresenter.ForegroundProperty, DesignTokenKey.ColorText);
         Add(titleStyle);
     }
 

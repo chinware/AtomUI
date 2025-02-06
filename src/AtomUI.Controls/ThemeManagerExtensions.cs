@@ -24,14 +24,14 @@ internal static class ThemeManagerExtensions
 
     public static ThemeManager ThemeInitialized(this ThemeManager themeManager)
     {
-        var colorTextTertiary = TokenResourceUtils.FindGlobalTokenResource(GlobalTokenResourceKey.ColorTextTertiary);
+        var colorTextTertiary = TokenResourceUtils.FindGlobalTokenResource(DesignTokenKey.ColorTextTertiary);
         if (colorTextTertiary is IBrush defaultFilledColor)
         {
             IconProvider.DefaultFilledColor = defaultFilledColor;
         }
 
-        var colorInfoText = TokenResourceUtils.FindGlobalTokenResource(GlobalTokenResourceKey.ColorTextTertiary);
-        var colorInfoBg   = TokenResourceUtils.FindGlobalTokenResource(GlobalTokenResourceKey.ColorInfoBg);
+        var colorInfoText = TokenResourceUtils.FindGlobalTokenResource(DesignTokenKey.ColorTextTertiary);
+        var colorInfoBg   = TokenResourceUtils.FindGlobalTokenResource(DesignTokenKey.ColorInfoBg);
 
         if (colorInfoText is IBrush primaryFilledColor)
         {

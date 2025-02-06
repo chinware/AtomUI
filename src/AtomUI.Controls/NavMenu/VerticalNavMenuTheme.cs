@@ -51,7 +51,7 @@ internal class VerticalNavMenuTheme : BaseNavMenuTheme
         verticalOrInlineStyle.Add(NavMenu.PaddingProperty, NavMenuTokenResourceKey.VerticalMenuContentPadding);
         verticalOrInlineStyle.Add(NavMenu.HorizontalAlignmentProperty, HorizontalAlignment.Left);
         verticalOrInlineStyle.Add(NavMenu.VerticalAlignmentProperty, VerticalAlignment.Stretch);
-        verticalOrInlineStyle.Add(NavMenu.BackgroundProperty, GlobalTokenResourceKey.ColorBgContainer);
+        verticalOrInlineStyle.Add(NavMenu.BackgroundProperty, DesignTokenKey.ColorBgContainer);
         var darkStyle = new Style(selector => selector.Nesting().Class(NavMenu.DarkStylePC));
         darkStyle.Add(NavMenu.BackgroundProperty, NavMenuTokenResourceKey.DarkItemBg);
         verticalOrInlineStyle.Add(darkStyle);

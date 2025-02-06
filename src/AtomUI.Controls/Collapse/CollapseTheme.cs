@@ -50,7 +50,7 @@ internal class CollapseTheme : BaseControlTheme
     protected override void BuildStyles()
     {
         var commonStyle = new Style(selector => selector.Nesting());
-        commonStyle.Add(TemplatedControl.BorderBrushProperty, GlobalTokenResourceKey.ColorBorder);
+        commonStyle.Add(TemplatedControl.BorderBrushProperty, DesignTokenKey.ColorBorder);
         commonStyle.Add(TemplatedControl.CornerRadiusProperty, CollapseTokenResourceKey.CollapsePanelBorderRadius);
 
         Add(commonStyle);

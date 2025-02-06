@@ -71,9 +71,9 @@ internal class TimelineTheme : BaseControlTheme
    private void BuildCommonStyle()
    {
       var commonStyle = new Style(selector => selector.Nesting());
-      commonStyle.Add(Border.BorderBrushProperty, GlobalTokenResourceKey.ColorBorder);
+      commonStyle.Add(Border.BorderBrushProperty, DesignTokenKey.ColorBorder);
       var frameStyle = new Style(selector => selector.Nesting().Template().Name(FrameDecoratorPart));
-      frameStyle.Add(Border.BackgroundProperty, GlobalTokenResourceKey.ColorBgContainer);
+      frameStyle.Add(Border.BackgroundProperty, DesignTokenKey.ColorBgContainer);
       commonStyle.Add(frameStyle);
       Add(commonStyle);
    }

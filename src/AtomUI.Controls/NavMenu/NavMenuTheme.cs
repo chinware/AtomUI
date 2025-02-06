@@ -48,7 +48,7 @@ internal class NavMenuTheme : BaseControlTheme
                 BindingMode.Default,
                 new FuncValueConverter<NavMenuMode, bool>(v => v == NavMenuMode.Horizontal));
             TokenResourceBinder.CreateGlobalTokenBinding(horizontalLine, Rectangle.FillProperty,
-                GlobalTokenResourceKey.ColorBorderSecondary);
+                DesignTokenKey.ColorBorderSecondary);
 
             var border = new Border
             {
@@ -73,10 +73,10 @@ internal class NavMenuTheme : BaseControlTheme
     {
         var commonStyle = new Style(selector => selector.Nesting());
 
-        commonStyle.Add(TemplatedControl.BorderBrushProperty, GlobalTokenResourceKey.ColorBorderSecondary);
+        commonStyle.Add(TemplatedControl.BorderBrushProperty, DesignTokenKey.ColorBorderSecondary);
 
         var horizontalStyle = new Style(selector => selector.Nesting().Class(NavMenu.HorizontalModePC));
-        horizontalStyle.Add(NavMenu.BackgroundProperty, GlobalTokenResourceKey.ColorBgContainer);
+        horizontalStyle.Add(NavMenu.BackgroundProperty, DesignTokenKey.ColorBgContainer);
         horizontalStyle.Add(NavMenu.HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
         horizontalStyle.Add(NavMenu.VerticalAlignmentProperty, VerticalAlignment.Top);
         horizontalStyle.Add(NavMenu.HeightProperty, NavMenuTokenResourceKey.MenuHorizontalHeight);
@@ -96,7 +96,7 @@ internal class NavMenuTheme : BaseControlTheme
         verticalOrInlineStyle.Add(NavMenu.PaddingProperty, NavMenuTokenResourceKey.VerticalMenuContentPadding);
         verticalOrInlineStyle.Add(NavMenu.HorizontalAlignmentProperty, HorizontalAlignment.Left);
         verticalOrInlineStyle.Add(NavMenu.VerticalAlignmentProperty, VerticalAlignment.Stretch);
-        verticalOrInlineStyle.Add(NavMenu.BackgroundProperty, GlobalTokenResourceKey.ColorBgContainer);
+        verticalOrInlineStyle.Add(NavMenu.BackgroundProperty, DesignTokenKey.ColorBgContainer);
         var darkStyle = new Style(selector => selector.Nesting().Class(NavMenu.DarkStylePC));
         darkStyle.Add(NavMenu.BackgroundProperty, NavMenuTokenResourceKey.DarkItemBg);
         verticalOrInlineStyle.Add(darkStyle);

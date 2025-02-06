@@ -48,9 +48,9 @@ internal class SeparatorTheme : BaseControlTheme
     protected override void BuildStyles()
     {
         // 默认的一些样式
-        this.Add(Separator.TitleColorProperty, GlobalTokenResourceKey.ColorText);
-        this.Add(TemplatedControl.FontSizeProperty, GlobalTokenResourceKey.FontSize);
-        this.Add(Separator.LineColorProperty, GlobalTokenResourceKey.ColorSplit);
+        this.Add(Separator.TitleColorProperty, DesignTokenKey.ColorText);
+        this.Add(TemplatedControl.FontSizeProperty, DesignTokenKey.FontSize);
+        this.Add(Separator.LineColorProperty, DesignTokenKey.ColorSplit);
         this.Add(Separator.TextPaddingInlineProperty, SeparatorTokenResourceKey.TextPaddingInline);
         this.Add(Separator.OrientationMarginPercentProperty, SeparatorTokenResourceKey.OrientationMarginPercent);
         this.Add(Separator.VerticalMarginInlineProperty, SeparatorTokenResourceKey.VerticalMarginInline);

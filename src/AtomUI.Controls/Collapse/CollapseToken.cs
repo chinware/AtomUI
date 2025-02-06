@@ -49,16 +49,16 @@ internal class CollapseToken : AbstractControlDesignToken
     internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
-        HeaderPadding             = new Thickness(_globalToken.Padding, _globalToken.PaddingSM);
-        HeaderBg                  = _globalToken.ColorFillAlter;
-        ContentPadding            = new Thickness(16, _globalToken.Padding);
-        CollapseContentPaddingSM  = new Thickness(_globalToken.PaddingSM);
-        CollapseContentPaddingLG  = new Thickness(_globalToken.PaddingLG);
-        ContentBg                 = _globalToken.ColorBgContainer;
-        CollapseHeaderPaddingSM   = new Thickness(_globalToken.PaddingSM, _globalToken.PaddingXS);
-        CollapseHeaderPaddingLG   = new Thickness(_globalToken.PaddingLG, _globalToken.Padding);
-        CollapsePanelBorderRadius = _globalToken.BorderRadiusLG;
-        LeftExpandButtonMargin    = new Thickness(0, 0, _globalToken.MarginSM, 0);
-        RightExpandButtonMargin   = new Thickness(_globalToken.MarginSM, 0, 0, 0);
+        HeaderPadding             = new Thickness(SharedToken.Padding, SharedToken.PaddingSM);
+        HeaderBg                  = SharedToken.ColorFillAlter;
+        ContentPadding            = new Thickness(16, SharedToken.Padding);
+        CollapseContentPaddingSM  = new Thickness(SharedToken.PaddingSM);
+        CollapseContentPaddingLG  = new Thickness(SharedToken.PaddingLG);
+        ContentBg                 = SharedToken.ColorBgContainer;
+        CollapseHeaderPaddingSM   = new Thickness(SharedToken.PaddingSM, SharedToken.PaddingXS);
+        CollapseHeaderPaddingLG   = new Thickness(SharedToken.PaddingLG, SharedToken.Padding);
+        CollapsePanelBorderRadius = SharedToken.BorderRadiusLG;
+        LeftExpandButtonMargin    = new Thickness(0, 0, SharedToken.MarginSM, 0);
+        RightExpandButtonMargin   = new Thickness(SharedToken.MarginSM, 0, 0, 0);
     }
 }

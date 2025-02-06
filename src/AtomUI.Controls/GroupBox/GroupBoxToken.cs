@@ -53,10 +53,10 @@ internal class GroupBoxToken : AbstractControlDesignToken
         base.CalculateFromAlias();
         TextPaddingInline        = 1.0;
         OrientationMarginPercent = 0.05;
-        VerticalMarginInline     = _globalToken.MarginXS;
-        ContentPadding           = new Thickness(_globalToken.PaddingXS);
-        HeaderContainerMargin    = new Thickness(_globalToken.Margin, _globalToken.MarginXS, _globalToken.Margin, 0);
-        HeaderContentPadding     = new Thickness(_globalToken.PaddingXXS, 0);
-        HeaderIconMargin         = new Thickness(0, 0, _globalToken.MarginXXS, 0);
+        VerticalMarginInline     = SharedToken.MarginXS;
+        ContentPadding           = new Thickness(SharedToken.PaddingXS);
+        HeaderContainerMargin    = new Thickness(SharedToken.Margin, SharedToken.MarginXS, SharedToken.Margin, 0);
+        HeaderContentPadding     = new Thickness(SharedToken.PaddingXXS, 0);
+        HeaderIconMargin         = new Thickness(0, 0, SharedToken.MarginXXS, 0);
     }
 }

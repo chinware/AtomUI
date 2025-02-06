@@ -43,13 +43,13 @@ internal class HeadTextButtonTheme : BaseControlTheme
     {
         var commonStyle = new Style(selector => selector.Nesting());
         commonStyle.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Center);
-        commonStyle.Add(TemplatedControl.BackgroundProperty, GlobalTokenResourceKey.ColorTransparent);
+        commonStyle.Add(TemplatedControl.BackgroundProperty, DesignTokenKey.ColorTransparent);
         commonStyle.Add(TemplatedControl.FontWeightProperty, FontWeight.SemiBold);
-        commonStyle.Add(TemplatedControl.FontSizeProperty, GlobalTokenResourceKey.FontSize);
+        commonStyle.Add(TemplatedControl.FontSizeProperty, DesignTokenKey.FontSize);
         commonStyle.Add(InputElement.CursorProperty, new Cursor(StandardCursorType.Hand));
 
         var hoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
-        hoverStyle.Add(TemplatedControl.ForegroundProperty, GlobalTokenResourceKey.ColorPrimary);
+        hoverStyle.Add(TemplatedControl.ForegroundProperty, DesignTokenKey.ColorPrimary);
         commonStyle.Add(hoverStyle);
 
         Add(commonStyle);

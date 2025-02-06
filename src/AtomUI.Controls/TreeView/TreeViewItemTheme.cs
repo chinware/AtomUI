@@ -173,10 +173,10 @@ internal class TreeViewItemTheme : BaseControlTheme
     private void BuildCommonStyle()
     {
         var commonStyle = new Style(selector => selector.Nesting());
-        commonStyle.Add(TreeViewItem.EffectiveNodeCornerRadiusProperty, GlobalTokenResourceKey.BorderRadius);
-        commonStyle.Add(TemplatedControl.BorderBrushProperty, GlobalTokenResourceKey.ColorBorder);
-        commonStyle.Add(TemplatedControl.BorderThicknessProperty, GlobalTokenResourceKey.BorderThickness);
-        commonStyle.Add(TreeViewItem.EffectiveNodeBgProperty, GlobalTokenResourceKey.ColorTransparent);
+        commonStyle.Add(TreeViewItem.EffectiveNodeCornerRadiusProperty, DesignTokenKey.BorderRadius);
+        commonStyle.Add(TemplatedControl.BorderBrushProperty, DesignTokenKey.ColorBorder);
+        commonStyle.Add(TemplatedControl.BorderThicknessProperty, DesignTokenKey.BorderThickness);
+        commonStyle.Add(TreeViewItem.EffectiveNodeBgProperty, DesignTokenKey.ColorTransparent);
         var frameDecoratorStyle = new Style(selector => selector.Nesting().Template().Name(FrameDecoratorPart));
         frameDecoratorStyle.Add(Layoutable.HeightProperty, TreeViewTokenResourceKey.TitleHeight);
         frameDecoratorStyle.Add(Layoutable.MarginProperty, TreeViewTokenResourceKey.TreeItemMargin);
@@ -185,8 +185,8 @@ internal class TreeViewItemTheme : BaseControlTheme
         // 节点 Icon 的大小
         var treeItemIconStyle = new Style(selector =>
             selector.Nesting().Template().Name(IconPresenterPart).Descendant().OfType<Icon>());
-        treeItemIconStyle.Add(Layoutable.WidthProperty, GlobalTokenResourceKey.IconSize);
-        treeItemIconStyle.Add(Layoutable.HeightProperty, GlobalTokenResourceKey.IconSize);
+        treeItemIconStyle.Add(Layoutable.WidthProperty, DesignTokenKey.IconSize);
+        treeItemIconStyle.Add(Layoutable.HeightProperty, DesignTokenKey.IconSize);
         treeItemIconStyle.Add(Layoutable.MarginProperty, TreeViewTokenResourceKey.TreeNodeIconMargin);
         commonStyle.Add(treeItemIconStyle);
 
@@ -205,8 +205,8 @@ internal class TreeViewItemTheme : BaseControlTheme
         {
             var headerPresenterStyle = new Style(selector => selector.Nesting().Template().Name(HeaderPresenterPart));
             headerPresenterStyle.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
-            headerPresenterStyle.Add(ContentPresenter.BackgroundProperty, GlobalTokenResourceKey.ColorTransparent);
-            headerPresenterStyle.Add(ContentPresenter.FontSizeProperty, GlobalTokenResourceKey.FontSize);
+            headerPresenterStyle.Add(ContentPresenter.BackgroundProperty, DesignTokenKey.ColorTransparent);
+            headerPresenterStyle.Add(ContentPresenter.FontSizeProperty, DesignTokenKey.FontSize);
             blockNodeHoverModeStyle.Add(headerPresenterStyle);
         }
         enabledStyle.Add(blockNodeHoverModeStyle);
@@ -277,7 +277,7 @@ internal class TreeViewItemTheme : BaseControlTheme
     {
         var disabledStyle        = new Style(selector => selector.Nesting().Class(StdPseudoClass.Disabled));
         var headerPresenterStyle = new Style(selector => selector.Nesting().Template().Name(HeaderPresenterPart));
-        headerPresenterStyle.Add(ContentPresenter.ForegroundProperty, GlobalTokenResourceKey.ColorTextDisabled);
+        headerPresenterStyle.Add(ContentPresenter.ForegroundProperty, DesignTokenKey.ColorTextDisabled);
         
         disabledStyle.Add(headerPresenterStyle);
         
@@ -297,7 +297,7 @@ internal class TreeViewItemTheme : BaseControlTheme
         var draggingStyle =
             new Style(selector => selector.Nesting().PropertyEquals(TreeViewItem.IsDraggingProperty, true));
         var frameDecoratorStyle = new Style(selector => selector.Nesting().Template().Name(FrameDecoratorPart));
-        frameDecoratorStyle.Add(Border.BorderBrushProperty, GlobalTokenResourceKey.ColorPrimary);
+        frameDecoratorStyle.Add(Border.BorderBrushProperty, DesignTokenKey.ColorPrimary);
         draggingStyle.Add(frameDecoratorStyle);
         Add(draggingStyle);
     }

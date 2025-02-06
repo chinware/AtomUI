@@ -307,14 +307,14 @@ public class ProgressBar : AbstractLineProgress
         double fontSize   = default;
         double fontSizeSM = default;
         {
-            if (TokenResourceUtils.FindGlobalTokenResource(GlobalTokenResourceKey.FontSize) is double value)
+            if (TokenResourceUtils.FindGlobalTokenResource(DesignTokenKey.FontSize) is double value)
             {
                 fontSize = value;
             }
         }
 
         {
-            if (TokenResourceUtils.FindGlobalTokenResource(GlobalTokenResourceKey.FontSizeSM) is double value)
+            if (TokenResourceUtils.FindGlobalTokenResource(DesignTokenKey.FontSizeSM) is double value)
             {
                 fontSizeSM = value;
             }

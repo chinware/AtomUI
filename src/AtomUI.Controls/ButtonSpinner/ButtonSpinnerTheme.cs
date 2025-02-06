@@ -111,7 +111,7 @@ internal class ButtonSpinnerTheme : BaseControlTheme
         TokenResourceBinder.CreateGlobalTokenBinding(increaseButtonIcon, Icon.ActiveFilledBrushProperty,
             ButtonSpinnerTokenResourceKey.HandleHoverColor);
         TokenResourceBinder.CreateGlobalTokenBinding(increaseButtonIcon, Icon.SelectedFilledBrushProperty,
-            GlobalTokenResourceKey.ColorPrimaryActive);
+            DesignTokenKey.ColorPrimaryActive);
 
         var increaseButton = new IconButton
         {
@@ -143,7 +143,7 @@ internal class ButtonSpinnerTheme : BaseControlTheme
         TokenResourceBinder.CreateGlobalTokenBinding(decreaseButtonIcon, Icon.ActiveFilledBrushProperty,
             ButtonSpinnerTokenResourceKey.HandleHoverColor);
         TokenResourceBinder.CreateGlobalTokenBinding(decreaseButtonIcon, Icon.SelectedFilledBrushProperty,
-            GlobalTokenResourceKey.ColorPrimaryActive);
+            DesignTokenKey.ColorPrimaryActive);
 
         var decreaseButton = new IconButton
         {
@@ -183,19 +183,19 @@ internal class ButtonSpinnerTheme : BaseControlTheme
         var largeStyle =
             new Style(selector =>
                 selector.Nesting().PropertyEquals(AddOnDecoratedBox.SizeTypeProperty, SizeType.Large));
-        largeStyle.Add(TemplatedControl.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadiusLG);
+        largeStyle.Add(TemplatedControl.CornerRadiusProperty, DesignTokenKey.BorderRadiusLG);
         commonStyle.Add(largeStyle);
 
         var middleStyle =
             new Style(
                 selector => selector.Nesting().PropertyEquals(AddOnDecoratedBox.SizeTypeProperty, SizeType.Middle));
-        middleStyle.Add(TemplatedControl.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadius);
+        middleStyle.Add(TemplatedControl.CornerRadiusProperty, DesignTokenKey.BorderRadius);
         commonStyle.Add(middleStyle);
 
         var smallStyle =
             new Style(selector =>
                 selector.Nesting().PropertyEquals(AddOnDecoratedBox.SizeTypeProperty, SizeType.Small));
-        smallStyle.Add(TemplatedControl.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadiusSM);
+        smallStyle.Add(TemplatedControl.CornerRadiusProperty, DesignTokenKey.BorderRadiusSM);
         commonStyle.Add(smallStyle);
 
         Add(commonStyle);

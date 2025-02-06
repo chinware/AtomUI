@@ -3,7 +3,7 @@
 namespace AtomUI.Theme.TokenSystem;
 
 [GlobalDesignToken]
-public partial class GlobalToken
+public partial class DesignToken
 {
     /// <summary>
     /// 信息色的浅色背景颜色

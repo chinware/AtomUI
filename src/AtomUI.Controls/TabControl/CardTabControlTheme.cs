@@ -60,7 +60,7 @@ internal class CardTabControlTheme : BaseTabControlTheme
         TokenResourceBinder.CreateTokenBinding(addTabIcon, Icon.ActiveFilledBrushProperty,
             TabControlTokenResourceKey.ItemHoverColor);
         TokenResourceBinder.CreateTokenBinding(addTabIcon, Icon.DisabledFilledBrushProperty,
-            GlobalTokenResourceKey.ColorTextDisabled);
+            DesignTokenKey.ColorTextDisabled);
 
         var addTabButton = new IconButton
         {
@@ -70,9 +70,9 @@ internal class CardTabControlTheme : BaseTabControlTheme
         };
         DockPanel.SetDock(addTabButton, Dock.Right);
         TokenResourceBinder.CreateGlobalResourceBinding(addTabButton, IconButton.IconHeightProperty,
-            GlobalTokenResourceKey.IconSize);
+            DesignTokenKey.IconSize);
         TokenResourceBinder.CreateGlobalResourceBinding(addTabButton, IconButton.IconWidthProperty,
-            GlobalTokenResourceKey.IconSize);
+            DesignTokenKey.IconSize);
         CreateTemplateParentBinding(addTabButton, TemplatedControl.BorderThicknessProperty,
             CardTabControl.CardBorderThicknessProperty);
         CreateTemplateParentBinding(addTabButton, TemplatedControl.CornerRadiusProperty,
@@ -80,7 +80,7 @@ internal class CardTabControlTheme : BaseTabControlTheme
         CreateTemplateParentBinding(addTabButton, Visual.IsVisibleProperty, CardTabControl.IsShowAddTabButtonProperty);
 
         TokenResourceBinder.CreateGlobalResourceBinding(addTabButton, TemplatedControl.BorderBrushProperty,
-            GlobalTokenResourceKey.ColorBorderSecondary);
+            DesignTokenKey.ColorBorderSecondary);
 
         addTabButton.RegisterInNameScope(scope);
 

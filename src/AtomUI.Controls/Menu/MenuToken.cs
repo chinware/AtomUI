@@ -250,27 +250,27 @@ internal class MenuToken : AbstractControlDesignToken
     {
         base.CalculateFromAlias();
 
-        var colorTextDisabled  = _globalToken.ColorTextDisabled;
-        var colorError         = _globalToken.ColorError;
-        var colorTextSecondary = _globalToken.ColorTextQuaternary;
-        var colorBgContainer   = _globalToken.ColorBgContainer;
-        var colorBgTextHover   = _globalToken.ColorBgTextHover;
-        var colorBgElevated    = _globalToken.ColorBgElevated;
-        var padding            = _globalToken.Padding;
-        var controlHeight      = _globalToken.ControlHeight;
-        var controlHeightSM    = _globalToken.ControlHeightSM;
-        var controlHeightLG    = _globalToken.ControlHeightLG;
+        var colorTextDisabled  = SharedToken.ColorTextDisabled;
+        var colorError         = SharedToken.ColorError;
+        var colorTextSecondary = SharedToken.ColorTextQuaternary;
+        var colorBgContainer   = SharedToken.ColorBgContainer;
+        var colorBgTextHover   = SharedToken.ColorBgTextHover;
+        var colorBgElevated    = SharedToken.ColorBgElevated;
+        var padding            = SharedToken.Padding;
+        var controlHeight      = SharedToken.ControlHeight;
+        var controlHeightSM    = SharedToken.ControlHeightSM;
+        var controlHeightLG    = SharedToken.ControlHeightLG;
 
-        var fontSize   = _globalToken.FontSize;
-        var fontSizeLG = _globalToken.FontSizeLG;
+        var fontSize   = SharedToken.FontSize;
+        var fontSizeLG = SharedToken.FontSizeLG;
 
         KeyGestureColor  = colorTextSecondary;
-        ItemBorderRadius = _globalToken.BorderRadius;
-        ItemColor        = _globalToken.ColorText;
+        ItemBorderRadius = SharedToken.BorderRadius;
+        ItemColor        = SharedToken.ColorText;
         ItemHoverColor   = ItemColor;
         ItemBg           = colorBgContainer;
         ItemHoverBg      = colorBgTextHover;
-        ItemMargin       = new Thickness(0, 0, _globalToken.MarginXXS, 0);
+        ItemMargin       = new Thickness(0, 0, SharedToken.MarginXXS, 0);
 
         // Disabled
         ItemDisabledColor = colorTextDisabled;
@@ -282,21 +282,21 @@ internal class MenuToken : AbstractControlDesignToken
         ItemHeight  = controlHeightSM;
         MenuBgColor = colorBgElevated;
 
-        ItemPaddingInline       = new Thickness(padding, _globalToken.PaddingXXS);
-        ItemIconSize            = _globalToken.IconSize;
+        ItemPaddingInline       = new Thickness(padding, SharedToken.PaddingXXS);
+        ItemIconSize            = SharedToken.IconSize;
         ItemIconMarginInlineEnd = controlHeightSM - fontSize;
 
-        TopLevelItemColor         = _globalToken.ColorText;
-        TopLevelItemSelectedColor = _globalToken.ColorTextSecondary;
-        TopLevelItemHoverColor    = _globalToken.ColorTextSecondary;
+        TopLevelItemColor         = SharedToken.ColorText;
+        TopLevelItemSelectedColor = SharedToken.ColorTextSecondary;
+        TopLevelItemHoverColor    = SharedToken.ColorTextSecondary;
 
         TopLevelItemBg         = colorBgContainer;
         TopLevelItemHoverBg    = colorBgTextHover;
         TopLevelItemSelectedBg = colorBgTextHover;
 
-        TopLevelItemBorderRadiusSM = _globalToken.BorderRadiusSM;
-        TopLevelItemBorderRadius   = _globalToken.BorderRadius;
-        TopLevelItemBorderRadiusLG = _globalToken.BorderRadiusLG;
+        TopLevelItemBorderRadiusSM = SharedToken.BorderRadiusSM;
+        TopLevelItemBorderRadius   = SharedToken.BorderRadius;
+        TopLevelItemBorderRadiusLG = SharedToken.BorderRadiusLG;
 
         TopLevelItemFontSize   = !double.IsNaN(TopLevelItemFontSize) ? TopLevelItemFontSize : fontSize;
         TopLevelItemFontSizeSM = !double.IsNaN(TopLevelItemFontSizeSM) ? TopLevelItemFontSizeSM : fontSize;
@@ -312,16 +312,16 @@ internal class MenuToken : AbstractControlDesignToken
             ? TopLevelItemLineHeightLG
             : CalculatorUtils.CalculateLineHeight(TopLevelItemFontSizeLG) * TopLevelItemFontSizeLG;
 
-        TopLevelItemPaddingSM = new Thickness(_globalToken.PaddingContentHorizontalXS * 0.7,
+        TopLevelItemPaddingSM = new Thickness(SharedToken.PaddingContentHorizontalXS * 0.7,
             Math.Max((controlHeightSM - TopLevelItemLineHeightSM) / 2, 0));
-        TopLevelItemPadding = new Thickness(_globalToken.PaddingContentHorizontalXS,
+        TopLevelItemPadding = new Thickness(SharedToken.PaddingContentHorizontalXS,
             Math.Max((controlHeight - TopLevelItemLineHeight) / 2, 0));
-        TopLevelItemPaddingLG = new Thickness(_globalToken.PaddingContentHorizontalSM,
+        TopLevelItemPaddingLG = new Thickness(SharedToken.PaddingContentHorizontalSM,
             Math.Max((controlHeightLG - TopLevelItemLineHeightLG) / 2, 0));
 
-        TopLevelItemPopupMarginToAnchor = _globalToken.MarginXXS;
+        TopLevelItemPopupMarginToAnchor = SharedToken.MarginXXS;
 
-        MenuPopupBorderRadius = _globalToken.BorderRadiusLG;
+        MenuPopupBorderRadius = SharedToken.BorderRadiusLG;
 
         MenuPopupMinWidth = 120;
         MenuPopupMaxWidth = 800;
@@ -329,15 +329,15 @@ internal class MenuToken : AbstractControlDesignToken
         MenuPopupMinHeight = ItemHeight * 3;
         MenuPopupMaxHeight = ItemHeight * 30;
 
-        SeparatorItemHeight = _globalToken.LineWidth * 5; // 上下两像素，留一像素给自己
+        SeparatorItemHeight = SharedToken.LineWidth * 5; // 上下两像素，留一像素给自己
 
         MenuTearOffHeight = ItemHeight * 1.2; // 暂时这么定义吧
 
-        MenuPopupContentPadding = new Thickness(_globalToken.PaddingXXS, MenuPopupBorderRadius.TopLeft / 2);
-        MenuPopupBoxShadows     = _globalToken.BoxShadowsSecondary;
+        MenuPopupContentPadding = new Thickness(SharedToken.PaddingXXS, MenuPopupBorderRadius.TopLeft / 2);
+        MenuPopupBoxShadows     = SharedToken.BoxShadowsSecondary;
 
-        ScrollButtonIconSize = _globalToken.IconSizeSM;
-        ScrollButtonPadding  = new Thickness(_globalToken.PaddingXS);
-        ScrollButtonMargin   = new Thickness(_globalToken.MarginXXS / 2);
+        ScrollButtonIconSize = SharedToken.IconSizeSM;
+        ScrollButtonPadding  = new Thickness(SharedToken.PaddingXS);
+        ScrollButtonMargin   = new Thickness(SharedToken.MarginXXS / 2);
     }
 }

@@ -93,19 +93,19 @@ internal class ListBoxTheme : BaseControlTheme
     {
         var largeStyle =
             new Style(selector => selector.Nesting().PropertyEquals(ListBox.SizeTypeProperty, SizeType.Large));
-        largeStyle.Add(Border.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadiusLG);
+        largeStyle.Add(Border.CornerRadiusProperty, DesignTokenKey.BorderRadiusLG);
 
         Add(largeStyle);
 
         var middleStyle =
             new Style(selector => selector.Nesting().PropertyEquals(ListBox.SizeTypeProperty, SizeType.Middle));
-        middleStyle.Add(Border.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadius);
+        middleStyle.Add(Border.CornerRadiusProperty, DesignTokenKey.BorderRadius);
 
         Add(middleStyle);
 
         var smallStyle =
             new Style(selector => selector.Nesting().PropertyEquals(ListBox.SizeTypeProperty, SizeType.Small));
-        smallStyle.Add(Border.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadiusSM);
+        smallStyle.Add(Border.CornerRadiusProperty, DesignTokenKey.BorderRadiusSM);
         Add(smallStyle);
     }
 
@@ -119,10 +119,10 @@ internal class ListBoxTheme : BaseControlTheme
     private void BuildCommonStyle()
     {
         var commonStyle = new Style(selector => selector.Nesting());
-        commonStyle.Add(Border.BorderBrushProperty, GlobalTokenResourceKey.ColorBorder);
+        commonStyle.Add(Border.BorderBrushProperty, DesignTokenKey.ColorBorder);
         var frameStyle = new Style(selector => selector.Nesting().Template().Name(FrameDecoratorPart));
         frameStyle.Add(Decorator.PaddingProperty, ListBoxTokenResourceKey.ContentPadding);
-        frameStyle.Add(Border.BackgroundProperty, GlobalTokenResourceKey.ColorBgContainer);
+        frameStyle.Add(Border.BackgroundProperty, DesignTokenKey.ColorBgContainer);
         commonStyle.Add(frameStyle);
         Add(commonStyle);
     }

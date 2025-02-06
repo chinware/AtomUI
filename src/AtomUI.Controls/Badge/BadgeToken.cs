@@ -72,30 +72,30 @@ internal class BadgeToken : AbstractControlDesignToken
     internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
-        var lineWidth = _globalToken.LineWidth;
-        IndicatorHeight   = Math.Round(_globalToken.FontSize * _globalToken.LineHeight) - 2 * lineWidth;
-        IndicatorHeightSM = _globalToken.FontSize;
-        DotSize           = _globalToken.FontSizeSM / 2;
-        TextFontSize      = _globalToken.FontSizeSM;
-        TextFontSizeSM    = _globalToken.FontSizeSM;
+        var lineWidth = SharedToken.LineWidth;
+        IndicatorHeight   = Math.Round(SharedToken.FontSize * SharedToken.LineHeight) - 2 * lineWidth;
+        IndicatorHeightSM = SharedToken.FontSize;
+        DotSize           = SharedToken.FontSizeSM / 2;
+        TextFontSize      = SharedToken.FontSizeSM;
+        TextFontSizeSM    = SharedToken.FontSizeSM;
         TextFontWeight    = FontWeight.Normal;
-        StatusSize        = _globalToken.FontSizeSM / 2;
+        StatusSize        = SharedToken.FontSizeSM / 2;
 
         // 设置内部 token
-        BadgeFontHeight         = _globalToken.FontHeight;
+        BadgeFontHeight         = SharedToken.FontHeight;
         BadgeShadowSize         = lineWidth;
-        BadgeTextColor          = _globalToken.ColorBgContainer;
-        BadgeColor              = _globalToken.ColorError;
-        BadgeColorHover         = _globalToken.ColorErrorHover;
-        BadgeShadowColor        = _globalToken.ColorBorderBg;
+        BadgeTextColor          = SharedToken.ColorBgContainer;
+        BadgeColor              = SharedToken.ColorError;
+        BadgeColorHover         = SharedToken.ColorErrorHover;
+        BadgeShadowColor        = SharedToken.ColorBorderBg;
         BadgeProcessingDuration = TimeSpan.FromMilliseconds(1200);
-        BadgeRibbonOffset       = new Point(_globalToken.MarginXS, _globalToken.MarginXS);
+        BadgeRibbonOffset       = new Point(SharedToken.MarginXS, SharedToken.MarginXS);
 
         BadgeRibbonCornerTransform    = new ScaleTransform(1, 0.75);
         BadgeRibbonCornerDarkenAmount = 15;
-        BadgeRibbonTextPadding        = new Thickness(_globalToken.PaddingXS, 0);
-        DotBadgeLabelMargin           = new Thickness(_globalToken.MarginXS, 0, 0, 0);
-        CountBadgeTextPadding         = new Thickness(_globalToken.PaddingXXS, 0);
+        BadgeRibbonTextPadding        = new Thickness(SharedToken.PaddingXS, 0);
+        DotBadgeLabelMargin           = new Thickness(SharedToken.MarginXS, 0, 0, 0);
+        CountBadgeTextPadding         = new Thickness(SharedToken.PaddingXXS, 0);
         CountBadgeCornerRadius        = new CornerRadius(IndicatorHeight);
         CountBadgeCornerRadiusSM      = new CornerRadius(IndicatorHeightSM);
     }

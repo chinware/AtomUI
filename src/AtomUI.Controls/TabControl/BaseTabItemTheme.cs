@@ -122,8 +122,8 @@ internal class BaseTabItemTheme : BaseControlTheme
         {
             // Icon
             var iconStyle = new Style(selector => selector.Nesting().Template().Name(ItemIconPart));
-            iconStyle.Add(Layoutable.WidthProperty, GlobalTokenResourceKey.IconSize);
-            iconStyle.Add(Layoutable.HeightProperty, GlobalTokenResourceKey.IconSize);
+            iconStyle.Add(Layoutable.WidthProperty, DesignTokenKey.IconSize);
+            iconStyle.Add(Layoutable.HeightProperty, DesignTokenKey.IconSize);
             largeSizeStyle.Add(iconStyle);
         }
 
@@ -134,8 +134,8 @@ internal class BaseTabItemTheme : BaseControlTheme
         {
             // Icon
             var iconStyle = new Style(selector => selector.Nesting().Template().Name(ItemIconPart));
-            iconStyle.Add(Layoutable.WidthProperty, GlobalTokenResourceKey.IconSize);
-            iconStyle.Add(Layoutable.HeightProperty, GlobalTokenResourceKey.IconSize);
+            iconStyle.Add(Layoutable.WidthProperty, DesignTokenKey.IconSize);
+            iconStyle.Add(Layoutable.HeightProperty, DesignTokenKey.IconSize);
             middleSizeStyle.Add(iconStyle);
         }
         middleSizeStyle.Add(TemplatedControl.FontSizeProperty, TabControlTokenResourceKey.TitleFontSize);
@@ -147,8 +147,8 @@ internal class BaseTabItemTheme : BaseControlTheme
         {
             // Icon
             var iconStyle = new Style(selector => selector.Nesting().Template().Name(ItemIconPart));
-            iconStyle.Add(Layoutable.WidthProperty, GlobalTokenResourceKey.IconSizeSM);
-            iconStyle.Add(Layoutable.HeightProperty, GlobalTokenResourceKey.IconSizeSM);
+            iconStyle.Add(Layoutable.WidthProperty, DesignTokenKey.IconSizeSM);
+            iconStyle.Add(Layoutable.HeightProperty, DesignTokenKey.IconSizeSM);
             smallSizeType.Add(iconStyle);
         }
 
@@ -205,7 +205,7 @@ internal class BaseTabItemTheme : BaseControlTheme
     private void BuildDisabledStyle()
     {
         var disabledStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Disabled));
-        disabledStyle.Add(TemplatedControl.ForegroundProperty, GlobalTokenResourceKey.ColorTextDisabled);
+        disabledStyle.Add(TemplatedControl.ForegroundProperty, DesignTokenKey.ColorTextDisabled);
         Add(disabledStyle);
     }
 }

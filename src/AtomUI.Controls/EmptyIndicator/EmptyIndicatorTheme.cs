@@ -47,7 +47,7 @@ internal class EmptyIndicatorTheme : BaseControlTheme
             };
 
             TokenResourceBinder.CreateTokenBinding(description, TextBlock.ForegroundProperty,
-                GlobalTokenResourceKey.ColorTextDescription);
+                DesignTokenKey.ColorTextDescription);
             BindUtils.RelayBind(indicator, EmptyIndicator.DescriptionMarginProperty, description,
                 Layoutable.MarginProperty,
                 d => new Thickness(0, d, 0, 0));
@@ -63,12 +63,12 @@ internal class EmptyIndicatorTheme : BaseControlTheme
         var sizeSmallAndMiddleStyle = new Style(selector => Selectors.Or(
             selector.Nesting().PropertyEquals(EmptyIndicator.SizeTypeProperty, SizeType.Middle),
             selector.Nesting().PropertyEquals(EmptyIndicator.SizeTypeProperty, SizeType.Small)));
-        sizeSmallAndMiddleStyle.Add(EmptyIndicator.DescriptionMarginProperty, GlobalTokenResourceKey.MarginXS);
+        sizeSmallAndMiddleStyle.Add(EmptyIndicator.DescriptionMarginProperty, DesignTokenKey.MarginXS);
         Add(sizeSmallAndMiddleStyle);
 
         var sizeLargeStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(EmptyIndicator.SizeTypeProperty, SizeType.Large));
-        sizeLargeStyle.Add(EmptyIndicator.DescriptionMarginProperty, GlobalTokenResourceKey.MarginSM);
+        sizeLargeStyle.Add(EmptyIndicator.DescriptionMarginProperty, DesignTokenKey.MarginSM);
         Add(sizeLargeStyle);
 
         BuildSvgStyle();

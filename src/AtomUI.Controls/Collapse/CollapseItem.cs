@@ -229,7 +229,7 @@ public class CollapseItem : HeaderedContentControl, ISelectable
         _motionActor     = e.NameScope.Find<MotionActorControl>(CollapseItemTheme.ContentMotionActorPart);
         _headerDecorator = e.NameScope.Find<Border>(CollapseItemTheme.HeaderDecoratorPart);
         _expandButton    = e.NameScope.Find<IconButton>(CollapseItemTheme.ExpandButtonPart);
-        TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, GlobalTokenResourceKey.MotionDurationSlow);
+        TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, DesignTokenKey.MotionDurationSlow);
         SetupIconButton();
         _enableAnimation = false;
         HandleSelectedChanged();
@@ -347,7 +347,7 @@ public class CollapseItem : HeaderedContentControl, ISelectable
         {
             ExpandIcon = AntDesignIconPackage.RightOutlined();
             TokenResourceBinder.CreateGlobalTokenBinding(ExpandIcon, Icon.DisabledFilledBrushProperty,
-                GlobalTokenResourceKey.ColorTextDisabled);
+                DesignTokenKey.ColorTextDisabled);
         }
 
         UIStructureUtils.SetTemplateParent(ExpandIcon, this);

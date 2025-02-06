@@ -79,7 +79,7 @@ internal class TopLevelMenuItemTheme : BaseControlTheme
         var border = new Border();
 
         TokenResourceBinder.CreateTokenBinding(border, Border.BackgroundProperty,
-            GlobalTokenResourceKey.ColorBgContainer);
+            DesignTokenKey.ColorBgContainer);
         TokenResourceBinder.CreateTokenBinding(border, Border.CornerRadiusProperty,
             MenuTokenResourceKey.MenuPopupBorderRadius);
         TokenResourceBinder.CreateTokenBinding(border, Layoutable.MinWidthProperty,
@@ -129,13 +129,13 @@ internal class TopLevelMenuItemTheme : BaseControlTheme
     {
         var commonStyle =
             new Style(selector => selector.Nesting().PropertyEquals(InputElement.IsEnabledProperty, true));
-        commonStyle.Add(TemplatedControl.BackgroundProperty, GlobalTokenResourceKey.ColorTransparent);
+        commonStyle.Add(TemplatedControl.BackgroundProperty, DesignTokenKey.ColorTransparent);
 
         // 正常状态
         {
             var contentPresenterStyle = new Style(selector =>
                 selector.Nesting().Template().OfType<ContentPresenter>().Name(HeaderPresenterPart));
-            contentPresenterStyle.Add(ContentPresenter.BackgroundProperty, GlobalTokenResourceKey.ColorTransparent);
+            contentPresenterStyle.Add(ContentPresenter.BackgroundProperty, DesignTokenKey.ColorTransparent);
             commonStyle.Add(contentPresenterStyle);
         }
 
@@ -177,7 +177,7 @@ internal class TopLevelMenuItemTheme : BaseControlTheme
         var largeSizeStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(MenuItem.SizeTypeProperty, SizeType.Large));
         largeSizeStyle.Add(TemplatedControl.CornerRadiusProperty, MenuTokenResourceKey.TopLevelItemBorderRadiusLG);
-        largeSizeStyle.Add(Layoutable.MinHeightProperty, GlobalTokenResourceKey.ControlHeightLG);
+        largeSizeStyle.Add(Layoutable.MinHeightProperty, DesignTokenKey.ControlHeightLG);
         largeSizeStyle.Add(TemplatedControl.PaddingProperty, MenuTokenResourceKey.TopLevelItemPaddingLG);
         largeSizeStyle.Add(TemplatedControl.FontSizeProperty, MenuTokenResourceKey.TopLevelItemFontSizeLG);
         {
@@ -191,7 +191,7 @@ internal class TopLevelMenuItemTheme : BaseControlTheme
         var middleSizeStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(MenuItem.SizeTypeProperty, SizeType.Middle));
         middleSizeStyle.Add(TemplatedControl.CornerRadiusProperty, MenuTokenResourceKey.TopLevelItemBorderRadius);
-        middleSizeStyle.Add(Layoutable.MinHeightProperty, GlobalTokenResourceKey.ControlHeight);
+        middleSizeStyle.Add(Layoutable.MinHeightProperty, DesignTokenKey.ControlHeight);
         middleSizeStyle.Add(TemplatedControl.PaddingProperty, MenuTokenResourceKey.TopLevelItemPadding);
         middleSizeStyle.Add(TemplatedControl.FontSizeProperty, MenuTokenResourceKey.TopLevelItemFontSize);
         {
@@ -204,7 +204,7 @@ internal class TopLevelMenuItemTheme : BaseControlTheme
         var smallSizeStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(MenuItem.SizeTypeProperty, SizeType.Small));
         smallSizeStyle.Add(TemplatedControl.CornerRadiusProperty, MenuTokenResourceKey.TopLevelItemBorderRadiusSM);
-        smallSizeStyle.Add(Layoutable.MinHeightProperty, GlobalTokenResourceKey.ControlHeightSM);
+        smallSizeStyle.Add(Layoutable.MinHeightProperty, DesignTokenKey.ControlHeightSM);
         smallSizeStyle.Add(TemplatedControl.PaddingProperty, MenuTokenResourceKey.TopLevelItemPaddingSM);
         smallSizeStyle.Add(TemplatedControl.FontSizeProperty, MenuTokenResourceKey.TopLevelItemFontSizeSM);
         {

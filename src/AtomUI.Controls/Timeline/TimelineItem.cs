@@ -318,32 +318,32 @@ public class TimelineItem : ContentControl
                 if (_dotPart is not null && _dotPart.NormalFilledBrush is null)
                 {
                     TokenResourceBinder.CreateGlobalTokenBinding(_dotPart, Icon.NormalFilledBrushProperty,
-                        GlobalTokenResourceKey.ColorPrimary);
+                        DesignTokenKey.ColorPrimary);
                 }
 
                 if (_splitHeadPart is not null)
                 {
                     TokenResourceBinder.CreateGlobalTokenBinding(_splitHeadPart, Border.BorderBrushProperty,
-                        GlobalTokenResourceKey.ColorPrimary);
+                        DesignTokenKey.ColorPrimary);
                 }
             }
         }
         else
         {
-            var tokenText = GlobalTokenResourceKey.ColorSuccess;
+            var tokenText = DesignTokenKey.ColorSuccess;
             switch (Color)
             {
                 case "blue":
-                    tokenText = GlobalTokenResourceKey.ColorPrimary;
+                    tokenText = DesignTokenKey.ColorPrimary;
                     break;
                 case "green":
-                    tokenText = GlobalTokenResourceKey.ColorSuccess;
+                    tokenText = DesignTokenKey.ColorSuccess;
                     break;
                 case "red":
-                    tokenText = GlobalTokenResourceKey.ColorError;
+                    tokenText = DesignTokenKey.ColorError;
                     break;
                 case "gray":
-                    tokenText = GlobalTokenResourceKey.ColorTextDisabled;
+                    tokenText = DesignTokenKey.ColorTextDisabled;
                     break;
             }
             if (_dotPart is not null && _dotPart.NormalFilledBrush is null)

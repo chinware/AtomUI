@@ -23,7 +23,7 @@ public class EmptyIndicatorToken : AbstractControlDesignToken
     internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
-        var controlHeightLG = _globalToken.ControlHeightLG;
+        var controlHeightLG = SharedToken.ControlHeightLG;
         EmptyImgHeight   = controlHeightLG * 2.5;
         EmptyImgHeightMD = controlHeightLG;
         EmptyImgHeightSM = controlHeightLG * 0.875;

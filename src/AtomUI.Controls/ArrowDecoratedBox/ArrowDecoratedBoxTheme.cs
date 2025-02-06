@@ -98,12 +98,12 @@ internal class ArrowDecoratedBoxTheme : BaseControlTheme
     protected override void BuildStyles()
     {
         var commonStyle = new Style(selector => selector.Nesting());
-        commonStyle.Add(TemplatedControl.ForegroundProperty, GlobalTokenResourceKey.ColorText);
-        commonStyle.Add(TemplatedControl.BackgroundProperty, GlobalTokenResourceKey.ColorBgContainer);
-        commonStyle.Add(Layoutable.MinHeightProperty, GlobalTokenResourceKey.ControlHeight);
+        commonStyle.Add(TemplatedControl.ForegroundProperty, DesignTokenKey.ColorText);
+        commonStyle.Add(TemplatedControl.BackgroundProperty, DesignTokenKey.ColorBgContainer);
+        commonStyle.Add(Layoutable.MinHeightProperty, DesignTokenKey.ControlHeight);
         commonStyle.Add(TemplatedControl.PaddingProperty, ArrowDecoratedBoxTokenResourceKey.Padding);
         commonStyle.Add(ArrowDecoratedBox.ArrowSizeProperty, ArrowDecoratedBoxTokenResourceKey.ArrowSize);
-        commonStyle.Add(TemplatedControl.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadius);
+        commonStyle.Add(TemplatedControl.CornerRadiusProperty, DesignTokenKey.BorderRadius);
         BuildArrowDirectionStyle(commonStyle);
         Add(commonStyle);
     }

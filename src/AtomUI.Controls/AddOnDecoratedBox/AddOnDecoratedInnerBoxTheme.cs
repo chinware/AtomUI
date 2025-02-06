@@ -109,7 +109,7 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
             Orientation = Orientation.Horizontal
         };
         TokenResourceBinder.CreateGlobalTokenBinding(addLayout, StackPanel.SpacingProperty,
-            GlobalTokenResourceKey.PaddingXXS);
+            DesignTokenKey.PaddingXXS);
         addLayout.RegisterInNameScope(scope);
 
         var leftAddOnContentPresenter = new ContentPresenter
@@ -157,7 +157,7 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
             Orientation = Orientation.Horizontal
         };
         TokenResourceBinder.CreateGlobalTokenBinding(addLayout, StackPanel.SpacingProperty,
-            GlobalTokenResourceKey.PaddingXXS);
+            DesignTokenKey.PaddingXXS);
         addLayout.RegisterInNameScope(scope);
 
         BuildRightAddOnItems(addLayout, scope);
@@ -195,15 +195,15 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
         };
 
         TokenResourceBinder.CreateGlobalTokenBinding(clearButton, IconButton.IconHeightProperty,
-            GlobalTokenResourceKey.IconSize);
+            DesignTokenKey.IconSize);
         TokenResourceBinder.CreateGlobalTokenBinding(clearButton, IconButton.IconWidthProperty,
-            GlobalTokenResourceKey.IconSize);
+            DesignTokenKey.IconSize);
         TokenResourceBinder.CreateGlobalTokenBinding(closeIcon, Icon.NormalFilledBrushProperty,
-            GlobalTokenResourceKey.ColorTextQuaternary);
+            DesignTokenKey.ColorTextQuaternary);
         TokenResourceBinder.CreateGlobalTokenBinding(closeIcon, Icon.ActiveFilledBrushProperty,
-            GlobalTokenResourceKey.ColorTextTertiary);
+            DesignTokenKey.ColorTextTertiary);
         TokenResourceBinder.CreateGlobalTokenBinding(closeIcon, Icon.SelectedFilledBrushProperty,
-            GlobalTokenResourceKey.ColorText);
+            DesignTokenKey.ColorText);
 
         clearButton.RegisterInNameScope(scope);
         CreateTemplateParentBinding(clearButton, Visual.IsVisibleProperty,
@@ -235,14 +235,14 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
 
         {
             var innerBoxContentStyle = new Style(selector => selector.Nesting().Template().Name(ContentPresenterPart));
-            innerBoxContentStyle.Add(TextBlock.LineHeightProperty, GlobalTokenResourceKey.FontHeightLG);
-            innerBoxContentStyle.Add(Layoutable.MinHeightProperty, GlobalTokenResourceKey.FontHeightLG);
+            innerBoxContentStyle.Add(TextBlock.LineHeightProperty, DesignTokenKey.FontHeightLG);
+            innerBoxContentStyle.Add(Layoutable.MinHeightProperty, DesignTokenKey.FontHeightLG);
             largeStyle.Add(innerBoxContentStyle);
         }
         {
             var iconStyle = new Style(selector => selector.Nesting().Template().Descendant().OfType<Icon>());
-            iconStyle.Add(Layoutable.WidthProperty, GlobalTokenResourceKey.IconSizeLG);
-            iconStyle.Add(Layoutable.HeightProperty, GlobalTokenResourceKey.IconSizeLG);
+            iconStyle.Add(Layoutable.WidthProperty, DesignTokenKey.IconSizeLG);
+            iconStyle.Add(Layoutable.HeightProperty, DesignTokenKey.IconSizeLG);
             largeStyle.Add(iconStyle);
         }
         commonStyle.Add(largeStyle);
@@ -253,14 +253,14 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
         middleStyle.Add(AddOnDecoratedInnerBox.InnerBoxPaddingProperty, AddOnDecoratedBoxTokenResourceKey.Padding);
         {
             var innerBoxContentStyle = new Style(selector => selector.Nesting().Template().Name(ContentPresenterPart));
-            innerBoxContentStyle.Add(TextBlock.LineHeightProperty, GlobalTokenResourceKey.FontHeight);
-            innerBoxContentStyle.Add(Layoutable.MinHeightProperty, GlobalTokenResourceKey.FontHeight);
+            innerBoxContentStyle.Add(TextBlock.LineHeightProperty, DesignTokenKey.FontHeight);
+            innerBoxContentStyle.Add(Layoutable.MinHeightProperty, DesignTokenKey.FontHeight);
             middleStyle.Add(innerBoxContentStyle);
         }
         {
             var iconStyle = new Style(selector => selector.Nesting().Template().Descendant().OfType<Icon>());
-            iconStyle.Add(Layoutable.WidthProperty, GlobalTokenResourceKey.IconSize);
-            iconStyle.Add(Layoutable.HeightProperty, GlobalTokenResourceKey.IconSize);
+            iconStyle.Add(Layoutable.WidthProperty, DesignTokenKey.IconSize);
+            iconStyle.Add(Layoutable.HeightProperty, DesignTokenKey.IconSize);
             middleStyle.Add(iconStyle);
         }
         commonStyle.Add(middleStyle);
@@ -271,14 +271,14 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
         smallStyle.Add(AddOnDecoratedInnerBox.InnerBoxPaddingProperty, AddOnDecoratedBoxTokenResourceKey.PaddingSM);
         {
             var innerBoxContentStyle = new Style(selector => selector.Nesting().Template().Name(ContentPresenterPart));
-            innerBoxContentStyle.Add(TextBlock.LineHeightProperty, GlobalTokenResourceKey.FontHeightSM);
-            innerBoxContentStyle.Add(Layoutable.MinHeightProperty, GlobalTokenResourceKey.FontHeightSM);
+            innerBoxContentStyle.Add(TextBlock.LineHeightProperty, DesignTokenKey.FontHeightSM);
+            innerBoxContentStyle.Add(Layoutable.MinHeightProperty, DesignTokenKey.FontHeightSM);
             smallStyle.Add(innerBoxContentStyle);
         }
         {
             var iconStyle = new Style(selector => selector.Nesting().Template().Descendant().OfType<Icon>());
-            iconStyle.Add(Layoutable.WidthProperty, GlobalTokenResourceKey.IconSizeSM);
-            iconStyle.Add(Layoutable.HeightProperty, GlobalTokenResourceKey.IconSizeSM);
+            iconStyle.Add(Layoutable.WidthProperty, DesignTokenKey.IconSizeSM);
+            iconStyle.Add(Layoutable.HeightProperty, DesignTokenKey.IconSizeSM);
             smallStyle.Add(iconStyle);
         }
         commonStyle.Add(smallStyle);
@@ -299,8 +299,8 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
             {
                 var innerBoxDecoratorStyle =
                     new Style(selector => selector.Nesting().Template().Name(InnerBoxDecoratorPart));
-                innerBoxDecoratorStyle.Add(Border.BorderBrushProperty, GlobalTokenResourceKey.ColorBorder);
-                innerBoxDecoratorStyle.Add(Border.BackgroundProperty, GlobalTokenResourceKey.ColorTransparent);
+                innerBoxDecoratorStyle.Add(Border.BorderBrushProperty, DesignTokenKey.ColorBorder);
+                innerBoxDecoratorStyle.Add(Border.BackgroundProperty, DesignTokenKey.ColorTransparent);
                 outlineStyle.Add(innerBoxDecoratorStyle);
             }
 
@@ -332,7 +332,7 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
             {
                 var innerBoxDecoratorStyle =
                     new Style(selector => selector.Nesting().Template().Name(InnerBoxDecoratorPart));
-                innerBoxDecoratorStyle.Add(Border.BorderBrushProperty, GlobalTokenResourceKey.ColorError);
+                innerBoxDecoratorStyle.Add(Border.BorderBrushProperty, DesignTokenKey.ColorError);
                 errorStyle.Add(innerBoxDecoratorStyle);
             }
 
@@ -340,7 +340,7 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
             {
                 var innerBoxDecoratorStyle =
                     new Style(selector => selector.Nesting().Template().Name(InnerBoxDecoratorPart));
-                innerBoxDecoratorStyle.Add(Border.BorderBrushProperty, GlobalTokenResourceKey.ColorErrorBorderHover);
+                innerBoxDecoratorStyle.Add(Border.BorderBrushProperty, DesignTokenKey.ColorErrorBorderHover);
                 hoverStyle.Add(innerBoxDecoratorStyle);
             }
             errorStyle.Add(hoverStyle);
@@ -349,7 +349,7 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
             {
                 var innerBoxDecoratorStyle =
                     new Style(selector => selector.Nesting().Template().Name(InnerBoxDecoratorPart));
-                innerBoxDecoratorStyle.Add(Border.BorderBrushProperty, GlobalTokenResourceKey.ColorError);
+                innerBoxDecoratorStyle.Add(Border.BorderBrushProperty, DesignTokenKey.ColorError);
                 focusStyle.Add(innerBoxDecoratorStyle);
             }
             errorStyle.Add(focusStyle);
@@ -363,7 +363,7 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
             {
                 var innerBoxDecoratorStyle =
                     new Style(selector => selector.Nesting().Template().Name(InnerBoxDecoratorPart));
-                innerBoxDecoratorStyle.Add(Border.BorderBrushProperty, GlobalTokenResourceKey.ColorWarning);
+                innerBoxDecoratorStyle.Add(Border.BorderBrushProperty, DesignTokenKey.ColorWarning);
                 warningStyle.Add(innerBoxDecoratorStyle);
             }
 
@@ -371,7 +371,7 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
             {
                 var innerBoxDecoratorStyle =
                     new Style(selector => selector.Nesting().Template().Name(InnerBoxDecoratorPart));
-                innerBoxDecoratorStyle.Add(Border.BorderBrushProperty, GlobalTokenResourceKey.ColorWarningBorderHover);
+                innerBoxDecoratorStyle.Add(Border.BorderBrushProperty, DesignTokenKey.ColorWarningBorderHover);
                 hoverStyle.Add(innerBoxDecoratorStyle);
             }
             warningStyle.Add(hoverStyle);
@@ -380,7 +380,7 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
             {
                 var innerBoxDecoratorStyle =
                     new Style(selector => selector.Nesting().Template().Name(InnerBoxDecoratorPart));
-                innerBoxDecoratorStyle.Add(Border.BorderBrushProperty, GlobalTokenResourceKey.ColorWarning);
+                innerBoxDecoratorStyle.Add(Border.BorderBrushProperty, DesignTokenKey.ColorWarning);
                 focusStyle.Add(innerBoxDecoratorStyle);
             }
             warningStyle.Add(focusStyle);
@@ -404,8 +404,8 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
                 var innerBoxDecoratorStyle =
                     new Style(selector => selector.Nesting().Template().Name(InnerBoxDecoratorPart));
 
-                innerBoxDecoratorStyle.Add(Border.BorderBrushProperty, GlobalTokenResourceKey.ColorTransparent);
-                innerBoxDecoratorStyle.Add(Border.BackgroundProperty, GlobalTokenResourceKey.ColorFillTertiary);
+                innerBoxDecoratorStyle.Add(Border.BorderBrushProperty, DesignTokenKey.ColorTransparent);
+                innerBoxDecoratorStyle.Add(Border.BackgroundProperty, DesignTokenKey.ColorFillTertiary);
                 filledStyle.Add(innerBoxDecoratorStyle);
             }
 
@@ -413,7 +413,7 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
             {
                 var innerBoxDecoratorStyle =
                     new Style(selector => selector.Nesting().Template().Name(InnerBoxDecoratorPart));
-                innerBoxDecoratorStyle.Add(Border.BackgroundProperty, GlobalTokenResourceKey.ColorFillSecondary);
+                innerBoxDecoratorStyle.Add(Border.BackgroundProperty, DesignTokenKey.ColorFillSecondary);
                 hoverStyle.Add(innerBoxDecoratorStyle);
             }
             filledStyle.Add(hoverStyle);
@@ -424,7 +424,7 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
                     new Style(selector => selector.Nesting().Template().Name(InnerBoxDecoratorPart));
                 innerBoxDecoratorStyle.Add(Border.BorderBrushProperty,
                     AddOnDecoratedBoxTokenResourceKey.ActiveBorderColor);
-                innerBoxDecoratorStyle.Add(Border.BackgroundProperty, GlobalTokenResourceKey.ColorTransparent);
+                innerBoxDecoratorStyle.Add(Border.BackgroundProperty, DesignTokenKey.ColorTransparent);
                 focusStyle.Add(innerBoxDecoratorStyle);
             }
             filledStyle.Add(focusStyle);
@@ -438,8 +438,8 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
                 var innerBoxDecoratorStyle =
                     new Style(selector => selector.Nesting().Template().Name(InnerBoxDecoratorPart));
 
-                innerBoxDecoratorStyle.Add(Border.BorderBrushProperty, GlobalTokenResourceKey.ColorTransparent);
-                innerBoxDecoratorStyle.Add(Border.BackgroundProperty, GlobalTokenResourceKey.ColorErrorBg);
+                innerBoxDecoratorStyle.Add(Border.BorderBrushProperty, DesignTokenKey.ColorTransparent);
+                innerBoxDecoratorStyle.Add(Border.BackgroundProperty, DesignTokenKey.ColorErrorBg);
                 errorStyle.Add(innerBoxDecoratorStyle);
             }
 
@@ -447,7 +447,7 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
             {
                 var innerBoxDecoratorStyle =
                     new Style(selector => selector.Nesting().Template().Name(InnerBoxDecoratorPart));
-                innerBoxDecoratorStyle.Add(Border.BackgroundProperty, GlobalTokenResourceKey.ColorErrorBgHover);
+                innerBoxDecoratorStyle.Add(Border.BackgroundProperty, DesignTokenKey.ColorErrorBgHover);
                 hoverStyle.Add(innerBoxDecoratorStyle);
             }
             errorStyle.Add(hoverStyle);
@@ -456,7 +456,7 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
             {
                 var innerBoxDecoratorStyle =
                     new Style(selector => selector.Nesting().Template().Name(InnerBoxDecoratorPart));
-                innerBoxDecoratorStyle.Add(Border.BorderBrushProperty, GlobalTokenResourceKey.ColorError);
+                innerBoxDecoratorStyle.Add(Border.BorderBrushProperty, DesignTokenKey.ColorError);
                 innerBoxDecoratorStyle.Add(Border.BackgroundProperty, AddOnDecoratedBoxTokenResourceKey.ActiveBg);
                 focusStyle.Add(innerBoxDecoratorStyle);
             }
@@ -473,8 +473,8 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
                 var innerBoxDecoratorStyle =
                     new Style(selector => selector.Nesting().Template().Name(InnerBoxDecoratorPart));
 
-                innerBoxDecoratorStyle.Add(Border.BorderBrushProperty, GlobalTokenResourceKey.ColorTransparent);
-                innerBoxDecoratorStyle.Add(Border.BackgroundProperty, GlobalTokenResourceKey.ColorWarningBg);
+                innerBoxDecoratorStyle.Add(Border.BorderBrushProperty, DesignTokenKey.ColorTransparent);
+                innerBoxDecoratorStyle.Add(Border.BackgroundProperty, DesignTokenKey.ColorWarningBg);
                 warningStyle.Add(innerBoxDecoratorStyle);
             }
 
@@ -482,7 +482,7 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
             {
                 var innerBoxDecoratorStyle =
                     new Style(selector => selector.Nesting().Template().Name(InnerBoxDecoratorPart));
-                innerBoxDecoratorStyle.Add(Border.BackgroundProperty, GlobalTokenResourceKey.ColorWarningBgHover);
+                innerBoxDecoratorStyle.Add(Border.BackgroundProperty, DesignTokenKey.ColorWarningBgHover);
                 hoverStyle.Add(innerBoxDecoratorStyle);
             }
             warningStyle.Add(hoverStyle);
@@ -491,7 +491,7 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
             {
                 var innerBoxDecoratorStyle =
                     new Style(selector => selector.Nesting().Template().Name(InnerBoxDecoratorPart));
-                innerBoxDecoratorStyle.Add(Border.BorderBrushProperty, GlobalTokenResourceKey.ColorWarning);
+                innerBoxDecoratorStyle.Add(Border.BorderBrushProperty, DesignTokenKey.ColorWarning);
                 innerBoxDecoratorStyle.Add(Border.BackgroundProperty, AddOnDecoratedBoxTokenResourceKey.ActiveBg);
                 focusStyle.Add(innerBoxDecoratorStyle);
             }
@@ -511,7 +511,7 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
             {
                 var iconStyle = new Style(selector => Selectors.Or(selector.Nesting().Template().Name(LeftAddOnPart),
                     selector.Nesting().Template().Name(RightAddOnPart)).Nesting().Descendant().OfType<Icon>());
-                iconStyle.Add(Icon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorError);
+                iconStyle.Add(Icon.NormalFilledBrushProperty, DesignTokenKey.ColorError);
                 errorStyle.Add(iconStyle);
             }
             Add(errorStyle);
@@ -523,7 +523,7 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
             {
                 var iconStyle = new Style(selector => Selectors.Or(selector.Nesting().Template().Name(LeftAddOnPart),
                     selector.Nesting().Template().Name(RightAddOnPart)).Nesting().Descendant().OfType<Icon>());
-                iconStyle.Add(Icon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorWarning);
+                iconStyle.Add(Icon.NormalFilledBrushProperty, DesignTokenKey.ColorWarning);
                 warningStyle.Add(iconStyle);
             }
             Add(warningStyle);
@@ -534,7 +534,7 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
     {
         var disabledStyle  = new Style(selector => selector.Nesting().Class(StdPseudoClass.Disabled));
         var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(InnerBoxDecoratorPart));
-        decoratorStyle.Add(Border.BackgroundProperty, GlobalTokenResourceKey.ColorBgContainerDisabled);
+        decoratorStyle.Add(Border.BackgroundProperty, DesignTokenKey.ColorBgContainerDisabled);
         disabledStyle.Add(decoratorStyle);
         Add(disabledStyle);
     }

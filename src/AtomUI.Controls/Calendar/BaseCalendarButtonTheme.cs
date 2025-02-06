@@ -67,15 +67,15 @@ internal class BaseCalendarButtonTheme : BaseControlTheme
 
         commonStyle.Add(Avalonia.Controls.Button.ClickModeProperty, ClickMode.Release);
         commonStyle.Add(InputElement.CursorProperty, new Cursor(StandardCursorType.Hand));
-        commonStyle.Add(TemplatedControl.BackgroundProperty, GlobalTokenResourceKey.ColorTransparent);
-        commonStyle.Add(TemplatedControl.ForegroundProperty, GlobalTokenResourceKey.ColorTextLabel);
-        commonStyle.Add(TemplatedControl.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadiusSM);
-        commonStyle.Add(TemplatedControl.BorderBrushProperty, GlobalTokenResourceKey.ColorTransparent);
+        commonStyle.Add(TemplatedControl.BackgroundProperty, DesignTokenKey.ColorTransparent);
+        commonStyle.Add(TemplatedControl.ForegroundProperty, DesignTokenKey.ColorTextLabel);
+        commonStyle.Add(TemplatedControl.CornerRadiusProperty, DesignTokenKey.BorderRadiusSM);
+        commonStyle.Add(TemplatedControl.BorderBrushProperty, DesignTokenKey.ColorTransparent);
         commonStyle.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
         commonStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Stretch);
         commonStyle.Add(ContentControl.HorizontalContentAlignmentProperty, HorizontalAlignment.Center);
         commonStyle.Add(ContentControl.VerticalContentAlignmentProperty, VerticalAlignment.Center);
-        commonStyle.Add(TemplatedControl.FontSizeProperty, GlobalTokenResourceKey.FontSize);
+        commonStyle.Add(TemplatedControl.FontSizeProperty, DesignTokenKey.FontSize);
         commonStyle.Add(Layoutable.HeightProperty, CalendarTokenResourceKey.CellHeight);
         commonStyle.Add(Layoutable.MarginProperty, CalendarTokenResourceKey.CellMargin);
 
@@ -88,12 +88,12 @@ internal class BaseCalendarButtonTheme : BaseControlTheme
         commonStyle.Add(hoverStyle);
 
         var inactiveStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.InActive));
-        inactiveStyle.Add(TemplatedControl.ForegroundProperty, GlobalTokenResourceKey.ColorTextDisabled);
+        inactiveStyle.Add(TemplatedControl.ForegroundProperty, DesignTokenKey.ColorTextDisabled);
         commonStyle.Add(inactiveStyle);
 
         var selectedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Selected));
-        selectedStyle.Add(TemplatedControl.BackgroundProperty, GlobalTokenResourceKey.ColorPrimary);
-        selectedStyle.Add(TemplatedControl.ForegroundProperty, GlobalTokenResourceKey.ColorWhite);
+        selectedStyle.Add(TemplatedControl.BackgroundProperty, DesignTokenKey.ColorPrimary);
+        selectedStyle.Add(TemplatedControl.ForegroundProperty, DesignTokenKey.ColorWhite);
         selectedStyle.Add(TemplatedControl.BorderThicknessProperty, new Thickness(0));
         commonStyle.Add(selectedStyle);
 

@@ -47,13 +47,13 @@ internal class MessageToken : AbstractControlDesignToken
     internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
-        ContentBg = _globalToken.ColorBgElevated;
+        ContentBg = SharedToken.ColorBgElevated;
         ContentPadding = new Thickness(
-            (_globalToken.ControlHeightLG -
-             _globalToken.FontSize * _globalToken.LineHeight) / 2,
-            _globalToken.PaddingXS);
-        MessageIconMargin = new Thickness(0, 0, _globalToken.MarginXS, 0);
-        MessageTopMargin  = new Thickness(_globalToken.Margin, _globalToken.Margin, _globalToken.Margin, 0);
-        MessageIconSize   = _globalToken.FontSizeSM * _globalToken.LineHeightSM;
+            (SharedToken.ControlHeightLG -
+             SharedToken.FontSize * SharedToken.LineHeight) / 2,
+            SharedToken.PaddingXS);
+        MessageIconMargin = new Thickness(0, 0, SharedToken.MarginXS, 0);
+        MessageTopMargin  = new Thickness(SharedToken.Margin, SharedToken.Margin, SharedToken.Margin, 0);
+        MessageIconSize   = SharedToken.FontSizeSM * SharedToken.LineHeightSM;
     }
 }

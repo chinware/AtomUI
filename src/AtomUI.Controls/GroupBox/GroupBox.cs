@@ -106,7 +106,7 @@ public class GroupBox : ContentControl
     {
         base.OnAttachedToVisualTree(e);
         TokenResourceBinder.CreateGlobalTokenBinding(this, BorderThicknessProperty,
-            GlobalTokenResourceKey.BorderThickness,
+            DesignTokenKey.BorderThickness,
             BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this));
     }
@@ -119,7 +119,7 @@ public class GroupBox : ContentControl
         if (HeaderIcon is not null)
         {
             TokenResourceBinder.CreateTokenBinding(HeaderIcon, Icon.NormalFilledBrushProperty,
-                GlobalTokenResourceKey.ColorIcon);
+                DesignTokenKey.ColorIcon);
         }
     }
 

@@ -90,7 +90,7 @@ public class TabItem : AvaloniaTabItem, ICustomHitTest
                 TokenResourceBinder.CreateTokenBinding(Icon, Icon.SelectedFilledBrushProperty,
                     TabControlTokenResourceKey.ItemSelectedColor);
                 TokenResourceBinder.CreateTokenBinding(Icon, Icon.DisabledFilledBrushProperty,
-                    GlobalTokenResourceKey.ColorTextDisabled);
+                    DesignTokenKey.ColorTextDisabled);
             }
 
             if (_contentLayout is not null)
@@ -106,9 +106,9 @@ public class TabItem : AvaloniaTabItem, ICustomHitTest
         {
             CloseIcon = AntDesignIconPackage.CloseOutlined();
             TokenResourceBinder.CreateGlobalResourceBinding(CloseIcon, WidthProperty,
-                GlobalTokenResourceKey.IconSizeSM);
+                DesignTokenKey.IconSizeSM);
             TokenResourceBinder.CreateGlobalResourceBinding(CloseIcon, HeightProperty,
-                GlobalTokenResourceKey.IconSizeSM);
+                DesignTokenKey.IconSizeSM);
         }
 
         CloseIcon.SetValue(VerticalAlignmentProperty, VerticalAlignment.Center);
@@ -117,11 +117,11 @@ public class TabItem : AvaloniaTabItem, ICustomHitTest
         if (CloseIcon.ThemeType != IconThemeType.TwoTone)
         {
             TokenResourceBinder.CreateTokenBinding(CloseIcon, Icon.NormalFilledBrushProperty,
-                GlobalTokenResourceKey.ColorIcon);
+                DesignTokenKey.ColorIcon);
             TokenResourceBinder.CreateTokenBinding(CloseIcon, Icon.ActiveFilledBrushProperty,
-                GlobalTokenResourceKey.ColorIconHover);
+                DesignTokenKey.ColorIconHover);
             TokenResourceBinder.CreateTokenBinding(CloseIcon, Icon.DisabledFilledBrushProperty,
-                GlobalTokenResourceKey.ColorTextDisabled);
+                DesignTokenKey.ColorTextDisabled);
         }
     }
 

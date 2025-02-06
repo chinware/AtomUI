@@ -54,7 +54,7 @@ public class TabControl : BaseTabControl
             _selectedIndicator.Transitions = new Transitions
             {
                 AnimationUtils.CreateTransition<TransformOperationsTransition>(RenderTransformProperty,
-                    GlobalTokenResourceKey.MotionDurationSlow, new ExponentialEaseOut())
+                    DesignTokenKey.MotionDurationSlow, new ExponentialEaseOut())
             };
             // 只需要执行一次
             LayoutUpdated -= HandleLayoutUpdated;
@@ -134,6 +134,6 @@ public class TabControl : BaseTabControl
         _itemsPresenter    = e.NameScope.Find<ItemsPresenter>(BaseTabControlTheme.ItemsPresenterPart);
 
         TokenResourceBinder.CreateGlobalResourceBinding(this, SelectedIndicatorThicknessProperty,
-            GlobalTokenResourceKey.LineWidthBold);
+            DesignTokenKey.LineWidthBold);
     }
 }

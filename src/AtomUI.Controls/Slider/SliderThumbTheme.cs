@@ -19,7 +19,7 @@ internal class SliderThumbTheme : BaseControlTheme
     {
         var commonStyle = new Style(selector => selector.Nesting());
         commonStyle.Add(InputElement.FocusableProperty, true);
-        commonStyle.Add(TemplatedControl.BackgroundProperty, GlobalTokenResourceKey.ColorBgContainer);
+        commonStyle.Add(TemplatedControl.BackgroundProperty, DesignTokenKey.ColorBgContainer);
         commonStyle.Add(TemplatedControl.BorderThicknessProperty, SliderTokenResourceKey.ThumbCircleBorderThickness);
         commonStyle.Add(TemplatedControl.BorderBrushProperty, SliderTokenResourceKey.ThumbCircleBorderColor);
         commonStyle.Add(SliderThumb.OutlineBrushProperty, SliderTokenResourceKey.ThumbOutlineColor);

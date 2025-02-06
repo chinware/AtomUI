@@ -62,16 +62,16 @@ internal class AlertToken : AbstractControlDesignToken
     {
         base.CalculateFromAlias();
         const double paddingHorizontal = 12; // Fixed value here.
-        WithDescriptionIconSize = _globalToken.FontSizeHeading3;
-        DefaultPadding          = new Thickness(paddingHorizontal, _globalToken.PaddingContentVerticalSM);
-        WithDescriptionPadding  = new Thickness(_globalToken.PaddingContentHorizontalLG, _globalToken.PaddingMD);
+        WithDescriptionIconSize = SharedToken.FontSizeHeading3;
+        DefaultPadding          = new Thickness(paddingHorizontal, SharedToken.PaddingContentVerticalSM);
+        WithDescriptionPadding  = new Thickness(SharedToken.PaddingContentHorizontalLG, SharedToken.PaddingMD);
 
-        MessageWithDescriptionMargin = new Thickness(0, 0, 0, _globalToken.MarginXS);
-        IconDefaultMargin            = new Thickness(0, 0, _globalToken.MarginXS, 0);
-        IconWithDescriptionMargin    = new Thickness(0, 0, _globalToken.MarginSM, 0);
-        ExtraElementMargin           = new Thickness(_globalToken.MarginXS, 0, 0, 0);
+        MessageWithDescriptionMargin = new Thickness(0, 0, 0, SharedToken.MarginXS);
+        IconDefaultMargin            = new Thickness(0, 0, SharedToken.MarginXS, 0);
+        IconWithDescriptionMargin    = new Thickness(0, 0, SharedToken.MarginSM, 0);
+        ExtraElementMargin           = new Thickness(SharedToken.MarginXS, 0, 0, 0);
 
-        CloseIconSize = _globalToken.FontSizeIcon + 2;
-        IconSize      = _globalToken.FontSizeLG;
+        CloseIconSize = SharedToken.FontSizeIcon + 2;
+        IconSize      = SharedToken.FontSizeLG;
     }
 }

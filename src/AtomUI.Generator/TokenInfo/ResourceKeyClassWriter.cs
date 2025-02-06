@@ -84,7 +84,7 @@ public class ResourceKeyClassWriter
         return fieldSyntax;
     }
 
-    private void AddGlobalResourceKeyField(ref ClassDeclarationSyntax classSyntax)
+    private void AddDesignResourceKeyField(ref ClassDeclarationSyntax classSyntax)
     {
         var resourceKeyFields = new List<MemberDeclarationSyntax>();
         foreach (var tokenName in _tokenInfo.Tokens)
@@ -112,11 +112,11 @@ public class ResourceKeyClassWriter
         return controlClassSyntax;
     }
 
-    private ClassDeclarationSyntax BuildGlobalResourceKeyClassSyntax()
+    private ClassDeclarationSyntax BuildDesignResourceKeyClassSyntax()
     {
-        var globalClassSyntax = BuildClassSyntax("GlobalTokenResourceKey");
+        var globalClassSyntax = BuildClassSyntax("DesignTokenKey");
         // 添加全局的 Token 定义
-        AddGlobalResourceKeyField(ref globalClassSyntax);
+        AddDesignResourceKeyField(ref globalClassSyntax);
         return globalClassSyntax;
     }
 
@@ -138,7 +138,7 @@ public class ResourceKeyClassWriter
         var namespaceSyntax = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.ParseName("AtomUI.Theme.Styling"));
         if (_tokenInfo.Tokens.Count != 0)
         {
-            namespaceSyntax = namespaceSyntax.AddMembers(BuildGlobalResourceKeyClassSyntax());
+            namespaceSyntax = namespaceSyntax.AddMembers(BuildDesignResourceKeyClassSyntax());
         }
 
         var controlInfoClassSyntaxList = new List<MemberDeclarationSyntax>();

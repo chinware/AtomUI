@@ -91,7 +91,7 @@ internal class NavMenuItemTheme : BaseNavMenuItemTheme
 
         {
             var popupFrameStyle = new Style(selector => selector.Nesting().Template().Name(PopupFramePart));
-            popupFrameStyle.Add(Border.BackgroundProperty, GlobalTokenResourceKey.ColorBgContainer);
+            popupFrameStyle.Add(Border.BackgroundProperty, DesignTokenKey.ColorBgContainer);
             Add(popupFrameStyle);
         }
 

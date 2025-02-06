@@ -149,9 +149,9 @@ internal class MenuItemTheme : BaseControlTheme
             menuIndicatorIcon.VerticalAlignment   = VerticalAlignment.Center;
             
             TokenResourceBinder.CreateGlobalTokenBinding(menuIndicatorIcon, Layoutable.WidthProperty,
-                GlobalTokenResourceKey.IconSizeXS);
+                DesignTokenKey.IconSizeXS);
             TokenResourceBinder.CreateGlobalTokenBinding(menuIndicatorIcon, Layoutable.HeightProperty,
-                GlobalTokenResourceKey.IconSizeXS);
+                DesignTokenKey.IconSizeXS);
             Grid.SetColumn(menuIndicatorIcon, 4);
             menuIndicatorIcon.RegisterInNameScope(scope);
 
@@ -183,7 +183,7 @@ internal class MenuItemTheme : BaseControlTheme
 
         var border = new Border();
         TokenResourceBinder.CreateTokenBinding(border, Border.BackgroundProperty,
-            GlobalTokenResourceKey.ColorBgContainer);
+            DesignTokenKey.ColorBgContainer);
         TokenResourceBinder.CreateTokenBinding(border, Border.CornerRadiusProperty,
             MenuTokenResourceKey.MenuPopupBorderRadius);
         TokenResourceBinder.CreateTokenBinding(border, Layoutable.MinWidthProperty,

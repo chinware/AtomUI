@@ -105,7 +105,7 @@ internal class TimePickerPresenterTheme : BaseControlTheme
         var commonStyle       = new Style(selector => selector.Nesting());
         
         var buttonsFrameStyle = new Style(selector => selector.Nesting().Template().Name(ButtonsFramePart));
-        buttonsFrameStyle.Add(Border.BorderBrushProperty, GlobalTokenResourceKey.ColorBorderSecondary);
+        buttonsFrameStyle.Add(Border.BorderBrushProperty, DesignTokenKey.ColorBorderSecondary);
         commonStyle.Add(buttonsFrameStyle);
 
         var buttonsPanelStyle = new Style(selector => selector.Nesting().Template().Name(ButtonsLayoutPart));

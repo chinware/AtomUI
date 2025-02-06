@@ -72,19 +72,19 @@ internal class TreeViewToken : AbstractControlDesignToken
     internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
-        TitleHeight = _globalToken.ControlHeightSM;
-        NodeHoverBg = _globalToken.ControlItemBgHover;
-        NodeSelectedBg = _globalToken.ControlItemBgActive;
+        TitleHeight = SharedToken.ControlHeightSM;
+        NodeHoverBg = SharedToken.ControlItemBgHover;
+        NodeSelectedBg = SharedToken.ControlItemBgActive;
 
-        DirectoryNodeSelectedColor = _globalToken.ColorTextLightSolid;
-        DirectoryNodeSelectedBg = _globalToken.ColorPrimary;
+        DirectoryNodeSelectedColor = SharedToken.ColorTextLightSolid;
+        DirectoryNodeSelectedBg = SharedToken.ColorPrimary;
 
-        TreeItemMargin = new Thickness(0, 0, 0, _globalToken.PaddingXS / 2);
-        TreeItemHeaderPadding = new Thickness(_globalToken.PaddingXS / 2, 0);
-        TreeItemHeaderMargin = new Thickness(_globalToken.MarginXS / 2, 0, 0, 0);
-        TreeNodeSwitcherMargin = new Thickness(0, 0, _globalToken.PaddingXS / 2, 0);
-        TreeNodeIconMargin = new Thickness(_globalToken.PaddingXS / 2, 0, 0, 0);
+        TreeItemMargin = new Thickness(0, 0, 0, SharedToken.PaddingXS / 2);
+        TreeItemHeaderPadding = new Thickness(SharedToken.PaddingXS / 2, 0);
+        TreeItemHeaderMargin = new Thickness(SharedToken.MarginXS / 2, 0, 0, 0);
+        TreeNodeSwitcherMargin = new Thickness(0, 0, SharedToken.PaddingXS / 2, 0);
+        TreeNodeIconMargin = new Thickness(SharedToken.PaddingXS / 2, 0, 0, 0);
 
-        DragIndicatorLineWidth = _globalToken.LineWidthFocus;
+        DragIndicatorLineWidth = SharedToken.LineWidthFocus;
     }
 }

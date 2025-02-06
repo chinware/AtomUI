@@ -84,7 +84,7 @@ internal class TimeViewTheme : BaseControlTheme
         CreateTemplateParentBinding(separator, Layoutable.HeightProperty, TimeView.SpacerThicknessProperty);
         CreateTemplateParentBinding(separator, Visual.IsVisibleProperty, TimeView.IsShowHeaderProperty);
         TokenResourceBinder.CreateGlobalTokenBinding(separator, Shape.FillProperty,
-            GlobalTokenResourceKey.ColorBorderSecondary);
+            DesignTokenKey.ColorBorderSecondary);
         rootLayout.Children.Add(separator);
         Grid.SetRow(separator, 1);
     }
@@ -141,7 +141,7 @@ internal class TimeViewTheme : BaseControlTheme
         firstSpacer.RegisterInNameScope(scope);
         CreateTemplateParentBinding(firstSpacer, Layoutable.WidthProperty, TimeView.SpacerThicknessProperty);
         TokenResourceBinder.CreateGlobalTokenBinding(firstSpacer, Shape.FillProperty,
-            GlobalTokenResourceKey.ColorBorderSecondary);
+            DesignTokenKey.ColorBorderSecondary);
         Grid.SetColumn(firstSpacer, 1);
         pickerContainer.Children.Add(firstSpacer);
 
@@ -181,7 +181,7 @@ internal class TimeViewTheme : BaseControlTheme
             TimeView.SpacerThicknessProperty);
         secondSpacer.RegisterInNameScope(scope);
         TokenResourceBinder.CreateGlobalTokenBinding(secondSpacer, Shape.FillProperty,
-            GlobalTokenResourceKey.ColorBorderSecondary);
+            DesignTokenKey.ColorBorderSecondary);
         Grid.SetColumn(secondSpacer, 3);
         pickerContainer.Children.Add(secondSpacer);
 
@@ -222,7 +222,7 @@ internal class TimeViewTheme : BaseControlTheme
         Grid.SetColumn(thirdSpacer, 5);
         pickerContainer.Children.Add(thirdSpacer);
         TokenResourceBinder.CreateGlobalTokenBinding(thirdSpacer, Shape.FillProperty,
-            GlobalTokenResourceKey.ColorBorderSecondary);
+            DesignTokenKey.ColorBorderSecondary);
 
         var periodHost = new Panel
         {

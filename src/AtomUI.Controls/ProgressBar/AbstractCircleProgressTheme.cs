@@ -31,9 +31,9 @@ internal class AbstractCircleProgressTheme : AbstractProgressBarTheme
         
         exceptionCompletedIcon.RegisterInNameScope(scope);
         TokenResourceBinder.CreateGlobalTokenBinding(exceptionCompletedIcon, Icon.NormalFilledBrushProperty,
-            GlobalTokenResourceKey.ColorError);
+            DesignTokenKey.ColorError);
         TokenResourceBinder.CreateGlobalTokenBinding(exceptionCompletedIcon, Icon.DisabledFilledBrushProperty,
-            GlobalTokenResourceKey.ControlItemBgActiveDisabled);
+            DesignTokenKey.ControlItemBgActiveDisabled);
 
         var successCompletedIcon = AntDesignIconPackage.CheckOutlined();
         successCompletedIcon.Name                = SuccessCompletedIconPart;
@@ -42,9 +42,9 @@ internal class AbstractCircleProgressTheme : AbstractProgressBarTheme
         
         successCompletedIcon.RegisterInNameScope(scope);
         TokenResourceBinder.CreateGlobalTokenBinding(successCompletedIcon, Icon.NormalFilledBrushProperty,
-            GlobalTokenResourceKey.ColorSuccess);
+            DesignTokenKey.ColorSuccess);
         TokenResourceBinder.CreateGlobalTokenBinding(successCompletedIcon, Icon.DisabledFilledBrushProperty,
-            GlobalTokenResourceKey.ControlItemBgActiveDisabled);
+            DesignTokenKey.ControlItemBgActiveDisabled);
 
         container.Children.Add(exceptionCompletedIcon);
         container.Children.Add(successCompletedIcon);

@@ -64,15 +64,15 @@ internal class ToolTipToken : AbstractControlDesignToken
         base.CalculateFromAlias();
 
         ToolTipMaxWidth   = 250;
-        ToolTipColor      = _globalToken.ColorTextLightSolid;
-        ToolTipBackground = _globalToken.ColorBgSpotlight;
+        ToolTipColor      = SharedToken.ColorTextLightSolid;
+        ToolTipBackground = SharedToken.ColorBgSpotlight;
         BorderRadiusOuter = new CornerRadius(Math.Max(BorderRadiusOuter.TopLeft, 4),
             Math.Max(BorderRadiusOuter.TopRight, 4),
             Math.Max(BorderRadiusOuter.BottomLeft, 4),
             Math.Max(BorderRadiusOuter.BottomRight, 4));
-        ToolTipPadding        = new Thickness(_globalToken.PaddingSM, _globalToken.PaddingSM / 2 + 2);
-        ToolTipShadows        = _globalToken.BoxShadowsSecondary;
-        ToolTipMotionDuration = _globalToken.MotionDurationMid;
-        MarginToAnchor        = _globalToken.MarginXXS / 2;
+        ToolTipPadding        = new Thickness(SharedToken.PaddingSM, SharedToken.PaddingSM / 2 + 2);
+        ToolTipShadows        = SharedToken.BoxShadowsSecondary;
+        ToolTipMotionDuration = SharedToken.MotionDurationMid;
+        MarginToAnchor        = SharedToken.MarginXXS / 2;
     }
 }

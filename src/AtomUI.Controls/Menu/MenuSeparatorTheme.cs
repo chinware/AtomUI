@@ -18,7 +18,7 @@ internal class MenuSeparatorTheme : BaseControlTheme
     {
         var commonStyle = new Style(selector => selector.Nesting());
         commonStyle.Add(Layoutable.MinHeightProperty, MenuTokenResourceKey.SeparatorItemHeight);
-        commonStyle.Add(TemplatedControl.BorderBrushProperty, GlobalTokenResourceKey.ColorBorder);
+        commonStyle.Add(TemplatedControl.BorderBrushProperty, DesignTokenKey.ColorBorder);
         Add(commonStyle);
     }
 }

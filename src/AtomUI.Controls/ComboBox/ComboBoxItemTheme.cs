@@ -56,16 +56,16 @@ internal class ComboBoxItemTheme : BaseControlTheme
     private void BuildCommonStyle()
     {
         var commonStyle = new Style(selector => selector.Nesting());
-        commonStyle.Add(TemplatedControl.FontSizeProperty, GlobalTokenResourceKey.FontSize);
+        commonStyle.Add(TemplatedControl.FontSizeProperty, DesignTokenKey.FontSize);
         commonStyle.Add(Layoutable.MarginProperty, ComboBoxTokenResourceKey.ItemMargin);
 
         {
             var contentPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ContentPresenterPart));
             contentPresenterStyle.Add(ContentPresenter.ForegroundProperty, ComboBoxTokenResourceKey.ItemColor);
             contentPresenterStyle.Add(ContentPresenter.BackgroundProperty, ComboBoxTokenResourceKey.ItemBgColor);
-            contentPresenterStyle.Add(Layoutable.MinHeightProperty, GlobalTokenResourceKey.ControlHeight);
+            contentPresenterStyle.Add(Layoutable.MinHeightProperty, DesignTokenKey.ControlHeight);
             contentPresenterStyle.Add(ContentPresenter.PaddingProperty, ComboBoxTokenResourceKey.ItemPadding);
-            contentPresenterStyle.Add(ContentPresenter.CornerRadiusProperty, GlobalTokenResourceKey.BorderRadiusSM);
+            contentPresenterStyle.Add(ContentPresenter.CornerRadiusProperty, DesignTokenKey.BorderRadiusSM);
             commonStyle.Add(contentPresenterStyle);
         }
 
@@ -94,7 +94,7 @@ internal class ComboBoxItemTheme : BaseControlTheme
     {
         var disabledStyle         = new Style(selector => selector.Nesting().Class(StdPseudoClass.Disabled));
         var contentPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ContentPresenterPart));
-        contentPresenterStyle.Add(ContentPresenter.ForegroundProperty, GlobalTokenResourceKey.ColorTextDisabled);
+        contentPresenterStyle.Add(ContentPresenter.ForegroundProperty, DesignTokenKey.ColorTextDisabled);
         disabledStyle.Add(contentPresenterStyle);
         Add(disabledStyle);
     }

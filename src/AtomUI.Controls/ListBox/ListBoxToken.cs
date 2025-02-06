@@ -82,26 +82,26 @@ internal class ListBoxToken : AbstractControlDesignToken
     internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
-        var colorTextDisabled  = _globalToken.ColorTextDisabled;
-        var colorTextSecondary = _globalToken.ColorTextSecondary;
-        var colorBgContainer   = _globalToken.ColorBgContainer;
-        var colorBgTextHover   = _globalToken.ColorBgTextHover;
+        var colorTextDisabled  = SharedToken.ColorTextDisabled;
+        var colorTextSecondary = SharedToken.ColorTextSecondary;
+        var colorBgContainer   = SharedToken.ColorBgContainer;
+        var colorBgTextHover   = SharedToken.ColorBgTextHover;
 
         ItemColor         = colorTextSecondary;
         ItemHoverColor    = colorTextSecondary;
-        ItemSelectedColor = _globalToken.ColorText;
+        ItemSelectedColor = SharedToken.ColorText;
 
         ItemBgColor         = colorBgContainer;
         ItemHoverBgColor    = colorBgTextHover;
-        ItemSelectedBgColor = _globalToken.ControlItemBgActive;
+        ItemSelectedBgColor = SharedToken.ControlItemBgActive;
 
         ItemDisabledColor = colorTextDisabled;
 
-        ItemPaddingLG = new Thickness(_globalToken.Padding);
-        ItemPaddingSM = new Thickness(_globalToken.PaddingXS, _globalToken.PaddingXS);
-        ItemPadding   = new Thickness(_globalToken.PaddingSM, _globalToken.PaddingXS);
+        ItemPaddingLG = new Thickness(SharedToken.Padding);
+        ItemPaddingSM = new Thickness(SharedToken.PaddingXS, SharedToken.PaddingXS);
+        ItemPadding   = new Thickness(SharedToken.PaddingSM, SharedToken.PaddingXS);
 
-        ContentPadding = new Thickness(_globalToken.PaddingXXS / 2);
+        ContentPadding = new Thickness(SharedToken.PaddingXXS / 2);
         ItemMargin     = new Thickness(0, 0.5);
     }
 }

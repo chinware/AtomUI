@@ -11,36 +11,36 @@ public class CompactThemeVariantCalculator : AbstractThemeVariantCalculator
     {
     }
 
-    public override void Calculate(GlobalToken globalToken)
+    public override void Calculate(DesignToken designToken)
     {
-        _compositeGenerator!.Calculate(globalToken);
+        _compositeGenerator!.Calculate(designToken);
 
         _colorBgBase   = _compositeGenerator.ColorBgBase;
         _colorTextBase = _compositeGenerator.ColorTextBase;
         
-        var controlHeight = globalToken.ControlHeight - 4;
+        var controlHeight = designToken.ControlHeight - 4;
 
-        CalculateCompactSizeMapTokenValues(globalToken);
-        CalculatorUtils.CalculateFontMapTokenValues(globalToken);
+        CalculateCompactSizeMapTokenValues(designToken);
+        CalculatorUtils.CalculateFontMapTokenValues(designToken);
 
-        globalToken.ControlHeight = controlHeight;
-        CalculatorUtils.CalculateControlHeightMapTokenValues(globalToken);
+        designToken.ControlHeight = controlHeight;
+        CalculatorUtils.CalculateControlHeightMapTokenValues(designToken);
     }
 
-    private void CalculateCompactSizeMapTokenValues(GlobalToken globalToken)
+    private void CalculateCompactSizeMapTokenValues(DesignToken designToken)
     {
-        var sizeUnit        = globalToken.SizeUnit;
-        var sizeStep        = globalToken.SizeStep;
+        var sizeUnit        = designToken.SizeUnit;
+        var sizeStep        = designToken.SizeStep;
         var compactSizeStep = sizeStep - 2;
 
-        globalToken.SizeXXL = sizeUnit * (compactSizeStep + 10);
-        globalToken.SizeXL  = sizeUnit * (compactSizeStep + 6);
-        globalToken.SizeLG  = sizeUnit * (compactSizeStep + 2);
-        globalToken.SizeMD  = sizeUnit * (compactSizeStep + 2);
-        globalToken.SizeMS  = sizeUnit * (compactSizeStep + 1);
-        globalToken.Size    = sizeUnit * compactSizeStep;
-        globalToken.SizeSM  = sizeUnit * compactSizeStep;
-        globalToken.SizeXS  = sizeUnit * (compactSizeStep - 1);
-        globalToken.SizeXXS = sizeUnit * (compactSizeStep - 1);
+        designToken.SizeXXL = sizeUnit * (compactSizeStep + 10);
+        designToken.SizeXL  = sizeUnit * (compactSizeStep + 6);
+        designToken.SizeLG  = sizeUnit * (compactSizeStep + 2);
+        designToken.SizeMD  = sizeUnit * (compactSizeStep + 2);
+        designToken.SizeMS  = sizeUnit * (compactSizeStep + 1);
+        designToken.Size    = sizeUnit * compactSizeStep;
+        designToken.SizeSM  = sizeUnit * compactSizeStep;
+        designToken.SizeXS  = sizeUnit * (compactSizeStep - 1);
+        designToken.SizeXXS = sizeUnit * (compactSizeStep - 1);
     }
 }

@@ -30,9 +30,9 @@ internal class AbstractLineProgressTheme : AbstractProgressBarTheme
         
         exceptionCompletedIcon.RegisterInNameScope(scope);
         TokenResourceBinder.CreateGlobalTokenBinding(exceptionCompletedIcon, Icon.NormalFilledBrushProperty,
-            GlobalTokenResourceKey.ColorError);
+            DesignTokenKey.ColorError);
         TokenResourceBinder.CreateGlobalTokenBinding(exceptionCompletedIcon, Icon.DisabledFilledBrushProperty,
-            GlobalTokenResourceKey.ControlItemBgActiveDisabled);
+            DesignTokenKey.ControlItemBgActiveDisabled);
         
         var successCompletedIcon = AntDesignIconPackage.CheckCircleFilled();
         successCompletedIcon.Name                = SuccessCompletedIconPart;
@@ -40,9 +40,9 @@ internal class AbstractLineProgressTheme : AbstractProgressBarTheme
         
         successCompletedIcon.RegisterInNameScope(scope);
         TokenResourceBinder.CreateGlobalTokenBinding(successCompletedIcon, Icon.NormalFilledBrushProperty,
-            GlobalTokenResourceKey.ColorSuccess);
+            DesignTokenKey.ColorSuccess);
         TokenResourceBinder.CreateGlobalTokenBinding(successCompletedIcon, Icon.DisabledFilledBrushProperty,
-            GlobalTokenResourceKey.ControlItemBgActiveDisabled);
+            DesignTokenKey.ControlItemBgActiveDisabled);
 
         container.Children.Add(exceptionCompletedIcon);
         container.Children.Add(successCompletedIcon);
@@ -73,7 +73,7 @@ internal class AbstractLineProgressTheme : AbstractProgressBarTheme
             completedIconsStyle.Add(Layoutable.HeightProperty, ProgressBarTokenResourceKey.LineInfoIconSize);
             largeSizeTypeStyle.Add(completedIconsStyle);
         }
-        largeSizeTypeStyle.Add(TemplatedControl.FontSizeProperty, GlobalTokenResourceKey.FontSize);
+        largeSizeTypeStyle.Add(TemplatedControl.FontSizeProperty, DesignTokenKey.FontSize);
 
         Add(largeSizeTypeStyle);
 
@@ -89,7 +89,7 @@ internal class AbstractLineProgressTheme : AbstractProgressBarTheme
             middleTypeStyle.Add(completedIconsStyle);
         }
 
-        middleTypeStyle.Add(TemplatedControl.FontSizeProperty, GlobalTokenResourceKey.FontSizeSM);
+        middleTypeStyle.Add(TemplatedControl.FontSizeProperty, DesignTokenKey.FontSizeSM);
         Add(middleTypeStyle);
 
         var smallTypeStyle = new Style(selector =>
@@ -103,7 +103,7 @@ internal class AbstractLineProgressTheme : AbstractProgressBarTheme
             completedIconsStyle.Add(Layoutable.HeightProperty, ProgressBarTokenResourceKey.LineInfoIconSizeSM);
             smallTypeStyle.Add(completedIconsStyle);
         }
-        smallTypeStyle.Add(TemplatedControl.FontSizeProperty, GlobalTokenResourceKey.FontSizeSM);
+        smallTypeStyle.Add(TemplatedControl.FontSizeProperty, DesignTokenKey.FontSizeSM);
         Add(smallTypeStyle);
     }
 }

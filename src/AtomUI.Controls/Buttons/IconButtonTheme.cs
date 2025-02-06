@@ -49,7 +49,7 @@ internal class IconButtonTheme : BaseControlTheme
     {
         {
             var contentStyle = new Style(selector => selector.Nesting().Template().Name(IconContentPart));
-            contentStyle.Add(ContentPresenter.BackgroundProperty, GlobalTokenResourceKey.ColorTransparent);
+            contentStyle.Add(ContentPresenter.BackgroundProperty, DesignTokenKey.ColorTransparent);
             Add(contentStyle);
         }
         var enableHoverBgStyle = new Style(selector =>
@@ -57,7 +57,7 @@ internal class IconButtonTheme : BaseControlTheme
                     .Class(StdPseudoClass.PointerOver));
         {
             var contentStyle = new Style(selector => selector.Nesting().Template().Name(IconContentPart));
-            contentStyle.Add(ContentPresenter.BackgroundProperty, GlobalTokenResourceKey.ColorBgTextHover);
+            contentStyle.Add(ContentPresenter.BackgroundProperty, DesignTokenKey.ColorBgTextHover);
             Add(contentStyle);
             enableHoverBgStyle.Add(contentStyle);
         }

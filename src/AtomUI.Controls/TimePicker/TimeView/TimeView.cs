@@ -163,7 +163,7 @@ internal class TimeView : TemplatedControl
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        TokenResourceBinder.CreateGlobalTokenBinding(this, SpacerThicknessProperty, GlobalTokenResourceKey.LineWidth,
+        TokenResourceBinder.CreateGlobalTokenBinding(this, SpacerThicknessProperty, DesignTokenKey.LineWidth,
             BindingPriority.Template,
             new RenderScaleAwareDoubleConfigure(this));
         var inputManager = AvaloniaLocator.Current.GetService<IInputManager>()!;

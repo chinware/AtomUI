@@ -2,7 +2,7 @@
 
 namespace AtomUI.Theme.Styling
 {
-    public static class GlobalTokenResourceKey
+    public static class DesignTokenKey
     {
         public static readonly TokenResourceKey ColorFillContentHover = new TokenResourceKey("ColorFillContentHover", "AtomUI.Token");
         public static readonly TokenResourceKey ColorFillAlter = new TokenResourceKey("ColorFillAlter", "AtomUI.Token");

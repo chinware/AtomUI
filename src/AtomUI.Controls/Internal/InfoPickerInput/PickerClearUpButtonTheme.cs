@@ -58,15 +58,15 @@ internal class PickerClearUpButtonTheme : BaseControlTheme
         };
 
         TokenResourceBinder.CreateGlobalTokenBinding(clearButton, IconButton.IconHeightProperty,
-            GlobalTokenResourceKey.IconSize);
+            DesignTokenKey.IconSize);
         TokenResourceBinder.CreateGlobalTokenBinding(clearButton, IconButton.IconWidthProperty,
-            GlobalTokenResourceKey.IconSize);
+            DesignTokenKey.IconSize);
         TokenResourceBinder.CreateGlobalTokenBinding(closeIcon, Icon.NormalFilledBrushProperty,
-            GlobalTokenResourceKey.ColorTextQuaternary);
+            DesignTokenKey.ColorTextQuaternary);
         TokenResourceBinder.CreateGlobalTokenBinding(closeIcon, Icon.ActiveFilledBrushProperty,
-            GlobalTokenResourceKey.ColorTextTertiary);
+            DesignTokenKey.ColorTextTertiary);
         TokenResourceBinder.CreateGlobalTokenBinding(closeIcon, Icon.SelectedFilledBrushProperty,
-            GlobalTokenResourceKey.ColorText);
+            DesignTokenKey.ColorText);
 
         clearButton.RegisterInNameScope(scope);
         CreateTemplateParentBinding(clearButton, Visual.IsVisibleProperty,
@@ -77,9 +77,9 @@ internal class PickerClearUpButtonTheme : BaseControlTheme
     protected override void BuildInstanceStyles(Control control)
     {
         var iconStyle = new Style(selector => selector.Name(InfoIconContentPart).Child().OfType<Icon>());
-        iconStyle.Add(Icon.WidthProperty, GlobalTokenResourceKey.IconSize);
-        iconStyle.Add(Icon.HeightProperty, GlobalTokenResourceKey.IconSize);
-        iconStyle.Add(Icon.NormalFilledBrushProperty, GlobalTokenResourceKey.ColorTextQuaternary);
+        iconStyle.Add(Icon.WidthProperty, DesignTokenKey.IconSize);
+        iconStyle.Add(Icon.HeightProperty, DesignTokenKey.IconSize);
+        iconStyle.Add(Icon.NormalFilledBrushProperty, DesignTokenKey.ColorTextQuaternary);
         control.Styles.Add(iconStyle);
     }
 }

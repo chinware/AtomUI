@@ -1869,7 +1869,7 @@ public class Calendar : TemplatedControl
     {
         base.OnAttachedToVisualTree(e);
         TokenResourceBinder.CreateGlobalTokenBinding(this, BorderThicknessProperty,
-            GlobalTokenResourceKey.BorderThickness,
+            DesignTokenKey.BorderThickness,
             BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this));
     }

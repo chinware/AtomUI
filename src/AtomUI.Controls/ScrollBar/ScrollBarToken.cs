@@ -54,12 +54,12 @@ internal class ScrollBarToken : AbstractControlDesignToken
     internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
-        ThumbBg            = _globalToken.ColorBorderSecondary;
-        ThumbHoverBg       = _globalToken.ColorBorder;
-        ThumbThickness     = _globalToken.SizeXS;
-        ScrollBarThickness = _globalToken.SizeSM;
-        ThumbCornerRadius  = new CornerRadius(_globalToken.SizeXS / 2.0);
-        ContentHPadding    = new Thickness(_globalToken.PaddingXXS, 0d);
-        ContentVPadding    = new Thickness(0d, _globalToken.PaddingXXS);
+        ThumbBg            = SharedToken.ColorBorderSecondary;
+        ThumbHoverBg       = SharedToken.ColorBorder;
+        ThumbThickness     = SharedToken.SizeXS;
+        ScrollBarThickness = SharedToken.SizeSM;
+        ThumbCornerRadius  = new CornerRadius(SharedToken.SizeXS / 2.0);
+        ContentHPadding    = new Thickness(SharedToken.PaddingXXS, 0d);
+        ContentVPadding    = new Thickness(0d, SharedToken.PaddingXXS);
     }
 }
