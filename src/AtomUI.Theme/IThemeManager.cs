@@ -9,7 +9,6 @@ public interface IThemeManager
     public void UnLoadTheme(string id);
 
     public void SetActiveTheme(string id);
-    public void RegisterDynamicTheme(DynamicTheme dynamicTheme);
 
     public void ScanThemes();
 }

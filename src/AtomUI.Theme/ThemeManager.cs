@@ -184,19 +184,7 @@ internal class ThemeManager : Styles, IThemeManager
 
         ThemeChangedEvent?.Invoke(this, new ThemeChangedEventArgs(theme, oldTheme));
     }
-
-    public void RegisterDynamicTheme(DynamicTheme dynamicTheme)
-    {
-        if (_themePool.ContainsKey(dynamicTheme.Id))
-        {
-            // TODO 需要记录一个日志
-            return;
-        }
-
-        _themePool.Add(dynamicTheme.Id, dynamicTheme);
-        dynamicTheme.NotifyRegistered();
-    }
-
+    
     public void ScanThemes()
     {
         // 最开始的是用户指定的目录
