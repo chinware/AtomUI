@@ -147,17 +147,17 @@ public class CardTabStrip : BaseTabStrip
     {
         if (SizeType == SizeType.Large)
         {
-            TokenResourceBinder.CreateGlobalResourceBinding(this, CardBorderRadiusSizeProperty,
+            TokenResourceBinder.CreateSharedResourceBinding(this, CardBorderRadiusSizeProperty,
                 DesignTokenKey.BorderRadiusLG);
         }
         else if (SizeType == SizeType.Middle)
         {
-            TokenResourceBinder.CreateGlobalResourceBinding(this, CardBorderRadiusSizeProperty,
+            TokenResourceBinder.CreateSharedResourceBinding(this, CardBorderRadiusSizeProperty,
                 DesignTokenKey.BorderRadius);
         }
         else
         {
-            TokenResourceBinder.CreateGlobalResourceBinding(this, CardBorderRadiusSizeProperty,
+            TokenResourceBinder.CreateSharedResourceBinding(this, CardBorderRadiusSizeProperty,
                 DesignTokenKey.BorderRadiusSM);
         }
     }

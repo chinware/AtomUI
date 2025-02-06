@@ -94,7 +94,7 @@ public class Timeline : ItemsControl
         OnReversePropertyChanged();
         addPendingItem();
 
-        TokenResourceBinder.CreateGlobalTokenBinding(this, BorderThicknessProperty,
+        TokenResourceBinder.CreateSharedTokenBinding(this, BorderThicknessProperty,
             DesignTokenKey.BorderThickness,
             BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this));

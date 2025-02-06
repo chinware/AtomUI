@@ -217,18 +217,18 @@ public class AddOnDecoratedBox : ContentControl
     {
         if (SizeType == SizeType.Large)
         {
-            TokenResourceBinder.CreateGlobalTokenBinding(icon, WidthProperty, DesignTokenKey.IconSizeLG);
-            TokenResourceBinder.CreateGlobalTokenBinding(icon, HeightProperty, DesignTokenKey.IconSizeLG);
+            TokenResourceBinder.CreateSharedTokenBinding(icon, WidthProperty, DesignTokenKey.IconSizeLG);
+            TokenResourceBinder.CreateSharedTokenBinding(icon, HeightProperty, DesignTokenKey.IconSizeLG);
         }
         else if (SizeType == SizeType.Middle)
         {
-            TokenResourceBinder.CreateGlobalTokenBinding(icon, WidthProperty, DesignTokenKey.IconSize);
-            TokenResourceBinder.CreateGlobalTokenBinding(icon, HeightProperty, DesignTokenKey.IconSize);
+            TokenResourceBinder.CreateSharedTokenBinding(icon, WidthProperty, DesignTokenKey.IconSize);
+            TokenResourceBinder.CreateSharedTokenBinding(icon, HeightProperty, DesignTokenKey.IconSize);
         }
         else
         {
-            TokenResourceBinder.CreateGlobalTokenBinding(icon, WidthProperty, DesignTokenKey.IconSizeSM);
-            TokenResourceBinder.CreateGlobalTokenBinding(icon, HeightProperty, DesignTokenKey.IconSizeSM);
+            TokenResourceBinder.CreateSharedTokenBinding(icon, WidthProperty, DesignTokenKey.IconSizeSM);
+            TokenResourceBinder.CreateSharedTokenBinding(icon, HeightProperty, DesignTokenKey.IconSizeSM);
         }
     }
 
@@ -272,7 +272,7 @@ public class AddOnDecoratedBox : ContentControl
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        TokenResourceBinder.CreateGlobalResourceBinding(this, BorderThicknessProperty,
+        TokenResourceBinder.CreateSharedResourceBinding(this, BorderThicknessProperty,
             DesignTokenKey.BorderThickness,
             BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this));

@@ -165,11 +165,11 @@ public class DropdownButton : Button
     {
         _openIndicatorIcon = AntDesignIconPackage.DownOutlined();
 
-        TokenResourceBinder.CreateGlobalTokenBinding(_openIndicatorIcon, Icon.WidthProperty, DesignTokenKey.IconSizeSM);
-        TokenResourceBinder.CreateGlobalTokenBinding(_openIndicatorIcon, Icon.HeightProperty, DesignTokenKey.IconSizeSM);
+        TokenResourceBinder.CreateSharedTokenBinding(_openIndicatorIcon, Icon.WidthProperty, DesignTokenKey.IconSizeSM);
+        TokenResourceBinder.CreateSharedTokenBinding(_openIndicatorIcon, Icon.HeightProperty, DesignTokenKey.IconSizeSM);
 
         base.OnApplyTemplate(e);
-        TokenResourceBinder.CreateGlobalTokenBinding(this, MarginToAnchorProperty, DesignTokenKey.MarginXXS);
+        TokenResourceBinder.CreateSharedTokenBinding(this, MarginToAnchorProperty, DesignTokenKey.MarginXXS);
         SetupFlyoutProperties();
         if (IsShowIndicator)
         {
@@ -285,13 +285,13 @@ public class DropdownButton : Button
     {
         if (_openIndicatorIcon is not null)
         {
-            TokenResourceBinder.CreateGlobalTokenBinding(_openIndicatorIcon, Icon.NormalFilledBrushProperty,
+            TokenResourceBinder.CreateSharedTokenBinding(_openIndicatorIcon, Icon.NormalFilledBrushProperty,
                 normalFilledBrushKey);
-            TokenResourceBinder.CreateGlobalTokenBinding(_openIndicatorIcon, Icon.SelectedFilledBrushProperty,
+            TokenResourceBinder.CreateSharedTokenBinding(_openIndicatorIcon, Icon.SelectedFilledBrushProperty,
                 selectedFilledBrushKey);
-            TokenResourceBinder.CreateGlobalTokenBinding(_openIndicatorIcon, Icon.ActiveFilledBrushProperty,
+            TokenResourceBinder.CreateSharedTokenBinding(_openIndicatorIcon, Icon.ActiveFilledBrushProperty,
                 activeFilledBrushKey);
-            TokenResourceBinder.CreateGlobalTokenBinding(_openIndicatorIcon, Icon.DisabledFilledBrushProperty,
+            TokenResourceBinder.CreateSharedTokenBinding(_openIndicatorIcon, Icon.DisabledFilledBrushProperty,
                 disabledFilledBrushKey);
         }
     }

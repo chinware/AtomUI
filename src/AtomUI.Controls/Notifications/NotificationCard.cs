@@ -209,7 +209,7 @@ public class NotificationCard : ContentControl
             SetupNotificationIcon();
             UpdateNotificationType();
         }
-        TokenResourceBinder.CreateGlobalTokenBinding(this, OpenCloseMotionDurationProperty, DesignTokenKey.MotionDurationMid);
+        TokenResourceBinder.CreateSharedTokenBinding(this, OpenCloseMotionDurationProperty, DesignTokenKey.MotionDurationMid);
         _progressBar = e.NameScope.Find<NotificationProgressBar>(NotificationCardTheme.ProgressBarPart);
         _closeButton = e.NameScope.Find<IconButton>(NotificationCardTheme.CloseButtonPart);
         _motionActor = e.NameScope.Find<MotionActorControl>(NotificationCardTheme.MotionActorPart);
@@ -408,22 +408,22 @@ public class NotificationCard : ContentControl
     {
         if (NotificationType == NotificationType.Error)
         {
-            TokenResourceBinder.CreateGlobalTokenBinding(icon, Icon.NormalFilledBrushProperty,
+            TokenResourceBinder.CreateSharedTokenBinding(icon, Icon.NormalFilledBrushProperty,
                 DesignTokenKey.ColorError);
         }
         else if (NotificationType == NotificationType.Information)
         {
-            TokenResourceBinder.CreateGlobalTokenBinding(icon, Icon.NormalFilledBrushProperty,
+            TokenResourceBinder.CreateSharedTokenBinding(icon, Icon.NormalFilledBrushProperty,
                 DesignTokenKey.ColorPrimary);
         }
         else if (NotificationType == NotificationType.Success)
         {
-            TokenResourceBinder.CreateGlobalTokenBinding(icon, Icon.NormalFilledBrushProperty,
+            TokenResourceBinder.CreateSharedTokenBinding(icon, Icon.NormalFilledBrushProperty,
                 DesignTokenKey.ColorSuccess);
         }
         else if (NotificationType == NotificationType.Warning)
         {
-            TokenResourceBinder.CreateGlobalTokenBinding(icon, Icon.NormalFilledBrushProperty,
+            TokenResourceBinder.CreateSharedTokenBinding(icon, Icon.NormalFilledBrushProperty,
                 DesignTokenKey.ColorWarning);
         }
     }
@@ -436,9 +436,9 @@ public class NotificationCard : ContentControl
             {
                 Text = content
             };
-            TokenResourceBinder.CreateGlobalTokenBinding(textBlock, SelectableTextBlock.SelectionBrushProperty,
+            TokenResourceBinder.CreateSharedTokenBinding(textBlock, SelectableTextBlock.SelectionBrushProperty,
                 DesignTokenKey.SelectionBackground);
-            TokenResourceBinder.CreateGlobalTokenBinding(textBlock,
+            TokenResourceBinder.CreateSharedTokenBinding(textBlock,
                 SelectableTextBlock.SelectionForegroundBrushProperty, DesignTokenKey.SelectionForeground);
             Content = textBlock;
         }

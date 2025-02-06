@@ -188,7 +188,7 @@ public class MessageCard : TemplatedControl
             SetupMessageIcon();
             UpdateMessageType();
         }
-        TokenResourceBinder.CreateGlobalTokenBinding(this, OpenCloseMotionDurationProperty, DesignTokenKey.MotionDurationMid);
+        TokenResourceBinder.CreateSharedTokenBinding(this, OpenCloseMotionDurationProperty, DesignTokenKey.MotionDurationMid);
         _motionActor           = e.NameScope.Find<MotionActorControl>(MessageCardTheme.MotionActorPart);
         ApplyShowMotion();
     }
@@ -253,23 +253,23 @@ public class MessageCard : TemplatedControl
     {
         if (MessageType == MessageType.Error)
         {
-            TokenResourceBinder.CreateGlobalTokenBinding(Icon, Icon.NormalFilledBrushProperty,
+            TokenResourceBinder.CreateSharedTokenBinding(Icon, Icon.NormalFilledBrushProperty,
                 DesignTokenKey.ColorError);
         }
         else if (MessageType == MessageType.Information ||
                  MessageType == MessageType.Loading)
         {
-            TokenResourceBinder.CreateGlobalTokenBinding(Icon, Icon.NormalFilledBrushProperty,
+            TokenResourceBinder.CreateSharedTokenBinding(Icon, Icon.NormalFilledBrushProperty,
                 DesignTokenKey.ColorPrimary);
         }
         else if (MessageType == MessageType.Success)
         {
-            TokenResourceBinder.CreateGlobalTokenBinding(Icon, Icon.NormalFilledBrushProperty,
+            TokenResourceBinder.CreateSharedTokenBinding(Icon, Icon.NormalFilledBrushProperty,
                 DesignTokenKey.ColorSuccess);
         }
         else if (MessageType == MessageType.Warning)
         {
-            TokenResourceBinder.CreateGlobalTokenBinding(Icon, Icon.NormalFilledBrushProperty,
+            TokenResourceBinder.CreateSharedTokenBinding(Icon, Icon.NormalFilledBrushProperty,
                 DesignTokenKey.ColorWarning);
         }
     }

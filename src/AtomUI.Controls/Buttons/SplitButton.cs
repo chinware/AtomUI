@@ -421,9 +421,9 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
     {
         base.OnApplyTemplate(e);
 
-        TokenResourceBinder.CreateGlobalResourceBinding(this, Border.BorderBrushProperty,
+        TokenResourceBinder.CreateSharedResourceBinding(this, Border.BorderBrushProperty,
             DesignTokenKey.ColorBorder);
-        TokenResourceBinder.CreateGlobalResourceBinding(this, Border.BorderThicknessProperty,
+        TokenResourceBinder.CreateSharedResourceBinding(this, Border.BorderThicknessProperty,
             DesignTokenKey.BorderThickness,
             BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this));

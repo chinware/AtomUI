@@ -68,7 +68,7 @@ internal class ExpanderTheme : BaseControlTheme
             };
             motionActor.SetCurrentValue(Visual.IsVisibleProperty, false);
             motionActor.Child = contentPresenter;
-            TokenResourceBinder.CreateGlobalTokenBinding(contentPresenter, ContentPresenter.BorderBrushProperty,
+            TokenResourceBinder.CreateSharedTokenBinding(contentPresenter, ContentPresenter.BorderBrushProperty,
                 DesignTokenKey.ColorBorder);
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty,
                 ContentControl.ContentProperty);
@@ -117,9 +117,9 @@ internal class ExpanderTheme : BaseControlTheme
             VerticalAlignment   = VerticalAlignment.Center,
             HorizontalAlignment = HorizontalAlignment.Left
         };
-        TokenResourceBinder.CreateGlobalTokenBinding(expandButton, IconButton.IconWidthProperty,
+        TokenResourceBinder.CreateSharedTokenBinding(expandButton, IconButton.IconWidthProperty,
             DesignTokenKey.IconSize);
-        TokenResourceBinder.CreateGlobalTokenBinding(expandButton, IconButton.IconHeightProperty,
+        TokenResourceBinder.CreateSharedTokenBinding(expandButton, IconButton.IconHeightProperty,
             DesignTokenKey.IconSize);
 
         expandButton.RegisterInNameScope(scope);

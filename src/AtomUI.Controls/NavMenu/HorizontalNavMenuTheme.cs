@@ -35,7 +35,7 @@ internal class HorizontalNavMenuTheme : BaseNavMenuTheme
         DockPanel.SetDock(horizontalLine, Dock.Bottom);
         CreateTemplateParentBinding(horizontalLine, Rectangle.HeightProperty,
             NavMenu.HorizontalBorderThicknessProperty);
-        TokenResourceBinder.CreateGlobalTokenBinding(horizontalLine, Rectangle.FillProperty,
+        TokenResourceBinder.CreateSharedTokenBinding(horizontalLine, Rectangle.FillProperty,
             DesignTokenKey.ColorBorderSecondary);
 
         layout.Children.Add(BuildItemPresenter(true, scope));

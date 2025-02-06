@@ -108,9 +108,9 @@ internal class ButtonSpinnerTheme : BaseControlTheme
         
         var increaseButtonIcon = AntDesignIconPackage.UpOutlined();
 
-        TokenResourceBinder.CreateGlobalTokenBinding(increaseButtonIcon, Icon.ActiveFilledBrushProperty,
+        TokenResourceBinder.CreateSharedTokenBinding(increaseButtonIcon, Icon.ActiveFilledBrushProperty,
             ButtonSpinnerTokenResourceKey.HandleHoverColor);
-        TokenResourceBinder.CreateGlobalTokenBinding(increaseButtonIcon, Icon.SelectedFilledBrushProperty,
+        TokenResourceBinder.CreateSharedTokenBinding(increaseButtonIcon, Icon.SelectedFilledBrushProperty,
             DesignTokenKey.ColorPrimaryActive);
 
         var increaseButton = new IconButton
@@ -140,9 +140,9 @@ internal class ButtonSpinnerTheme : BaseControlTheme
 
         var decreaseButtonIcon = AntDesignIconPackage.DownOutlined();
 
-        TokenResourceBinder.CreateGlobalTokenBinding(decreaseButtonIcon, Icon.ActiveFilledBrushProperty,
+        TokenResourceBinder.CreateSharedTokenBinding(decreaseButtonIcon, Icon.ActiveFilledBrushProperty,
             ButtonSpinnerTokenResourceKey.HandleHoverColor);
-        TokenResourceBinder.CreateGlobalTokenBinding(decreaseButtonIcon, Icon.SelectedFilledBrushProperty,
+        TokenResourceBinder.CreateSharedTokenBinding(decreaseButtonIcon, Icon.SelectedFilledBrushProperty,
             DesignTokenKey.ColorPrimaryActive);
 
         var decreaseButton = new IconButton

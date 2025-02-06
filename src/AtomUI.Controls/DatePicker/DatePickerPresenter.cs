@@ -122,7 +122,7 @@ internal class DatePickerPresenter : PickerPresenterBase
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        TokenResourceBinder.CreateGlobalTokenBinding(this, BorderThicknessProperty, DesignTokenKey.BorderThickness, BindingPriority.Template,
+        TokenResourceBinder.CreateSharedTokenBinding(this, BorderThicknessProperty, DesignTokenKey.BorderThickness, BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this, thickness => new Thickness(0, thickness.Top, 0, 0)));
         _compositeDisposable = new CompositeDisposable();
         if (_calendarView is not null)

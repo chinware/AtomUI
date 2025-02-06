@@ -108,7 +108,7 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
             Name        = LeftAddOnLayoutPart,
             Orientation = Orientation.Horizontal
         };
-        TokenResourceBinder.CreateGlobalTokenBinding(addLayout, StackPanel.SpacingProperty,
+        TokenResourceBinder.CreateSharedTokenBinding(addLayout, StackPanel.SpacingProperty,
             DesignTokenKey.PaddingXXS);
         addLayout.RegisterInNameScope(scope);
 
@@ -156,7 +156,7 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
             Name        = RightAddOnLayoutPart,
             Orientation = Orientation.Horizontal
         };
-        TokenResourceBinder.CreateGlobalTokenBinding(addLayout, StackPanel.SpacingProperty,
+        TokenResourceBinder.CreateSharedTokenBinding(addLayout, StackPanel.SpacingProperty,
             DesignTokenKey.PaddingXXS);
         addLayout.RegisterInNameScope(scope);
 
@@ -194,15 +194,15 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
             Icon = closeIcon
         };
 
-        TokenResourceBinder.CreateGlobalTokenBinding(clearButton, IconButton.IconHeightProperty,
+        TokenResourceBinder.CreateSharedTokenBinding(clearButton, IconButton.IconHeightProperty,
             DesignTokenKey.IconSize);
-        TokenResourceBinder.CreateGlobalTokenBinding(clearButton, IconButton.IconWidthProperty,
+        TokenResourceBinder.CreateSharedTokenBinding(clearButton, IconButton.IconWidthProperty,
             DesignTokenKey.IconSize);
-        TokenResourceBinder.CreateGlobalTokenBinding(closeIcon, Icon.NormalFilledBrushProperty,
+        TokenResourceBinder.CreateSharedTokenBinding(closeIcon, Icon.NormalFilledBrushProperty,
             DesignTokenKey.ColorTextQuaternary);
-        TokenResourceBinder.CreateGlobalTokenBinding(closeIcon, Icon.ActiveFilledBrushProperty,
+        TokenResourceBinder.CreateSharedTokenBinding(closeIcon, Icon.ActiveFilledBrushProperty,
             DesignTokenKey.ColorTextTertiary);
-        TokenResourceBinder.CreateGlobalTokenBinding(closeIcon, Icon.SelectedFilledBrushProperty,
+        TokenResourceBinder.CreateSharedTokenBinding(closeIcon, Icon.SelectedFilledBrushProperty,
             DesignTokenKey.ColorText);
 
         clearButton.RegisterInNameScope(scope);

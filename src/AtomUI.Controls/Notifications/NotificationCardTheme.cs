@@ -114,9 +114,9 @@ internal class NotificationCardTheme : BaseControlTheme
         {
             Name = HeaderTitlePart
         };
-        TokenResourceBinder.CreateGlobalTokenBinding(headerTitle, SelectableTextBlock.SelectionBrushProperty,
+        TokenResourceBinder.CreateSharedTokenBinding(headerTitle, SelectableTextBlock.SelectionBrushProperty,
             DesignTokenKey.SelectionBackground);
-        TokenResourceBinder.CreateGlobalTokenBinding(headerTitle, SelectableTextBlock.SelectionForegroundBrushProperty,
+        TokenResourceBinder.CreateSharedTokenBinding(headerTitle, SelectableTextBlock.SelectionForegroundBrushProperty,
             DesignTokenKey.SelectionForeground);
 
         CreateTemplateParentBinding(headerTitle, TextBlock.TextProperty, NotificationCard.TitleProperty);

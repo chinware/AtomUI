@@ -101,9 +101,9 @@ internal class ComboBoxTheme : BaseControlTheme
 
         var decreaseButtonIcon = AntDesignIconPackage.DownOutlined();
 
-        TokenResourceBinder.CreateGlobalTokenBinding(decreaseButtonIcon, Icon.ActiveFilledBrushProperty,
+        TokenResourceBinder.CreateSharedTokenBinding(decreaseButtonIcon, Icon.ActiveFilledBrushProperty,
             ButtonSpinnerTokenResourceKey.HandleHoverColor);
-        TokenResourceBinder.CreateGlobalTokenBinding(decreaseButtonIcon, Icon.SelectedFilledBrushProperty,
+        TokenResourceBinder.CreateSharedTokenBinding(decreaseButtonIcon, Icon.SelectedFilledBrushProperty,
             DesignTokenKey.ColorPrimaryActive);
 
         var openButton = new IconButton

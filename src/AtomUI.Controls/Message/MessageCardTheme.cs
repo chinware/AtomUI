@@ -90,9 +90,9 @@ internal class MessageCardTheme : BaseControlTheme
         {
             Name = MessagePart
         };
-        TokenResourceBinder.CreateGlobalTokenBinding(message, SelectableTextBlock.SelectionBrushProperty,
+        TokenResourceBinder.CreateSharedTokenBinding(message, SelectableTextBlock.SelectionBrushProperty,
             DesignTokenKey.SelectionBackground);
-        TokenResourceBinder.CreateGlobalTokenBinding(message, SelectableTextBlock.SelectionForegroundBrushProperty,
+        TokenResourceBinder.CreateSharedTokenBinding(message, SelectableTextBlock.SelectionForegroundBrushProperty,
             DesignTokenKey.SelectionForeground);
 
         CreateTemplateParentBinding(message, TextBlock.TextProperty, MessageCard.MessageProperty);

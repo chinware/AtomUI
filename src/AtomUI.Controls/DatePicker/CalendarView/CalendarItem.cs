@@ -1124,7 +1124,7 @@ internal class CalendarItem : TemplatedControl
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        TokenResourceBinder.CreateGlobalTokenBinding(this, BorderThicknessProperty,
+        TokenResourceBinder.CreateSharedTokenBinding(this, BorderThicknessProperty,
             DesignTokenKey.BorderThickness, BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this, thickness => new Thickness(0, 0, 0, thickness.Bottom)));
         var inputManager = AvaloniaLocator.Current.GetService<IInputManager>()!;

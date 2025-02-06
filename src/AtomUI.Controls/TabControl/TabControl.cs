@@ -133,7 +133,7 @@ public class TabControl : BaseTabControl
         _selectedIndicator = e.NameScope.Find<Border>(TabControlTheme.SelectedItemIndicatorPart);
         _itemsPresenter    = e.NameScope.Find<ItemsPresenter>(BaseTabControlTheme.ItemsPresenterPart);
 
-        TokenResourceBinder.CreateGlobalResourceBinding(this, SelectedIndicatorThicknessProperty,
+        TokenResourceBinder.CreateSharedResourceBinding(this, SelectedIndicatorThicknessProperty,
             DesignTokenKey.LineWidthBold);
     }
 }

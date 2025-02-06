@@ -293,7 +293,7 @@ public class TimelineItem : ContentControl
 
         if (IsLast || isPendingItem)
         {
-            TokenResourceBinder.CreateGlobalTokenBinding(this, Layoutable.MinHeightProperty,
+            TokenResourceBinder.CreateSharedTokenBinding(this, Layoutable.MinHeightProperty,
                 TimelineTokenResourceKey.LastItemContentMinHeight);
         }
 
@@ -317,13 +317,13 @@ public class TimelineItem : ContentControl
             {
                 if (_dotPart is not null && _dotPart.NormalFilledBrush is null)
                 {
-                    TokenResourceBinder.CreateGlobalTokenBinding(_dotPart, Icon.NormalFilledBrushProperty,
+                    TokenResourceBinder.CreateSharedTokenBinding(_dotPart, Icon.NormalFilledBrushProperty,
                         DesignTokenKey.ColorPrimary);
                 }
 
                 if (_splitHeadPart is not null)
                 {
-                    TokenResourceBinder.CreateGlobalTokenBinding(_splitHeadPart, Border.BorderBrushProperty,
+                    TokenResourceBinder.CreateSharedTokenBinding(_splitHeadPart, Border.BorderBrushProperty,
                         DesignTokenKey.ColorPrimary);
                 }
             }
@@ -348,13 +348,13 @@ public class TimelineItem : ContentControl
             }
             if (_dotPart is not null && _dotPart.NormalFilledBrush is null)
             {
-                TokenResourceBinder.CreateGlobalTokenBinding(_dotPart, Icon.NormalFilledBrushProperty,
+                TokenResourceBinder.CreateSharedTokenBinding(_dotPart, Icon.NormalFilledBrushProperty,
                     tokenText);
             }
 
             if (_splitHeadPart is not null)
             {
-                TokenResourceBinder.CreateGlobalTokenBinding(_splitHeadPart, Border.BorderBrushProperty,
+                TokenResourceBinder.CreateSharedTokenBinding(_splitHeadPart, Border.BorderBrushProperty,
                     tokenText);
             }
         }

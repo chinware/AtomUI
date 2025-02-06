@@ -98,9 +98,9 @@ internal class BaseNavMenuItemTheme : BaseControlTheme
         CreateTemplateParentBinding(iconPresenter, ContentPresenter.ContentProperty, NavMenuItem.IconProperty);
         TokenResourceBinder.CreateTokenBinding(iconPresenter, Layoutable.MarginProperty,
             NavMenuTokenResourceKey.ItemMargin);
-        TokenResourceBinder.CreateGlobalTokenBinding(iconPresenter, Layoutable.WidthProperty,
+        TokenResourceBinder.CreateSharedTokenBinding(iconPresenter, Layoutable.WidthProperty,
             NavMenuTokenResourceKey.ItemIconSize);
-        TokenResourceBinder.CreateGlobalTokenBinding(iconPresenter, Layoutable.HeightProperty,
+        TokenResourceBinder.CreateSharedTokenBinding(iconPresenter, Layoutable.HeightProperty,
             NavMenuTokenResourceKey.ItemIconSize);
 
         var itemTextPresenter = new ContentPresenter
@@ -162,9 +162,9 @@ internal class BaseNavMenuItemTheme : BaseControlTheme
 
         CreateTemplateParentBinding(menuIndicatorIcon, Icon.IsEnabledProperty, NavMenuItem.IsEnabledProperty);
         
-        TokenResourceBinder.CreateGlobalTokenBinding(menuIndicatorIcon, Layoutable.WidthProperty,
+        TokenResourceBinder.CreateSharedTokenBinding(menuIndicatorIcon, Layoutable.WidthProperty,
             NavMenuTokenResourceKey.MenuArrowSize);
-        TokenResourceBinder.CreateGlobalTokenBinding(menuIndicatorIcon, Layoutable.HeightProperty,
+        TokenResourceBinder.CreateSharedTokenBinding(menuIndicatorIcon, Layoutable.HeightProperty,
             NavMenuTokenResourceKey.MenuArrowSize);
         menuIndicatorIcon.RegisterInNameScope(scope);
         

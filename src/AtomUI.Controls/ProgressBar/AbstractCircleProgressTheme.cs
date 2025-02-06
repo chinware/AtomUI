@@ -30,9 +30,9 @@ internal class AbstractCircleProgressTheme : AbstractProgressBarTheme
         exceptionCompletedIcon.VerticalAlignment   = VerticalAlignment.Center;
         
         exceptionCompletedIcon.RegisterInNameScope(scope);
-        TokenResourceBinder.CreateGlobalTokenBinding(exceptionCompletedIcon, Icon.NormalFilledBrushProperty,
+        TokenResourceBinder.CreateSharedTokenBinding(exceptionCompletedIcon, Icon.NormalFilledBrushProperty,
             DesignTokenKey.ColorError);
-        TokenResourceBinder.CreateGlobalTokenBinding(exceptionCompletedIcon, Icon.DisabledFilledBrushProperty,
+        TokenResourceBinder.CreateSharedTokenBinding(exceptionCompletedIcon, Icon.DisabledFilledBrushProperty,
             DesignTokenKey.ControlItemBgActiveDisabled);
 
         var successCompletedIcon = AntDesignIconPackage.CheckOutlined();
@@ -41,9 +41,9 @@ internal class AbstractCircleProgressTheme : AbstractProgressBarTheme
         successCompletedIcon.VerticalAlignment   = VerticalAlignment.Center;
         
         successCompletedIcon.RegisterInNameScope(scope);
-        TokenResourceBinder.CreateGlobalTokenBinding(successCompletedIcon, Icon.NormalFilledBrushProperty,
+        TokenResourceBinder.CreateSharedTokenBinding(successCompletedIcon, Icon.NormalFilledBrushProperty,
             DesignTokenKey.ColorSuccess);
-        TokenResourceBinder.CreateGlobalTokenBinding(successCompletedIcon, Icon.DisabledFilledBrushProperty,
+        TokenResourceBinder.CreateSharedTokenBinding(successCompletedIcon, Icon.DisabledFilledBrushProperty,
             DesignTokenKey.ControlItemBgActiveDisabled);
 
         container.Children.Add(exceptionCompletedIcon);

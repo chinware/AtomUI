@@ -133,7 +133,7 @@ public class TabStrip : BaseTabStrip
         _selectedIndicator = e.NameScope.Find<Border>(TabStripTheme.SelectedItemIndicatorPart);
         _itemsPresenter    = e.NameScope.Find<ItemsPresenter>(BaseTabStripTheme.ItemsPresenterPart);
 
-        TokenResourceBinder.CreateGlobalResourceBinding(this, SelectedIndicatorThicknessProperty,
+        TokenResourceBinder.CreateSharedResourceBinding(this, SelectedIndicatorThicknessProperty,
             DesignTokenKey.LineWidthBold);
     }
 }

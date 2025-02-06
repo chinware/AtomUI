@@ -147,27 +147,27 @@ internal class DotBadgeAdorner : TemplatedControl
         {
             if (Status == DotBadgeStatus.Error)
             {
-                TokenResourceBinder.CreateGlobalTokenBinding(this, BadgeDotColorProperty,
+                TokenResourceBinder.CreateSharedTokenBinding(this, BadgeDotColorProperty,
                     DesignTokenKey.ColorError);
             }
             else if (Status == DotBadgeStatus.Success)
             {
-                TokenResourceBinder.CreateGlobalTokenBinding(this, BadgeDotColorProperty,
+                TokenResourceBinder.CreateSharedTokenBinding(this, BadgeDotColorProperty,
                     DesignTokenKey.ColorSuccess);
             }
             else if (Status == DotBadgeStatus.Warning)
             {
-                TokenResourceBinder.CreateGlobalTokenBinding(this, BadgeDotColorProperty,
+                TokenResourceBinder.CreateSharedTokenBinding(this, BadgeDotColorProperty,
                     DesignTokenKey.ColorWarning);
             }
             else if (Status == DotBadgeStatus.Processing)
             {
-                TokenResourceBinder.CreateGlobalTokenBinding(this, BadgeDotColorProperty,
+                TokenResourceBinder.CreateSharedTokenBinding(this, BadgeDotColorProperty,
                     DesignTokenKey.ColorInfo);
             }
             else if (Status == DotBadgeStatus.Default)
             {
-                TokenResourceBinder.CreateGlobalTokenBinding(this, BadgeDotColorProperty,
+                TokenResourceBinder.CreateSharedTokenBinding(this, BadgeDotColorProperty,
                     DesignTokenKey.ColorTextPlaceholder);
             }
         }

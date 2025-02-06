@@ -355,7 +355,7 @@ public abstract class InfoPickerInput : TemplatedControl
         }
         
         _flyoutStateHelper.AnchorTarget = _pickerInnerBox;
-        TokenResourceBinder.CreateGlobalTokenBinding(this, MarginToAnchorProperty, DesignTokenKey.MarginXXS);
+        TokenResourceBinder.CreateSharedTokenBinding(this, MarginToAnchorProperty, DesignTokenKey.MarginXXS);
         SetupFlyoutProperties();
     }
 

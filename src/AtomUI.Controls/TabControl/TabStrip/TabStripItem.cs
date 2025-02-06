@@ -122,9 +122,9 @@ public class TabStripItem : AvaloniaTabStripItem, ICustomHitTest
         if (CloseIcon is null)
         {
             CloseIcon = AntDesignIconPackage.CloseOutlined();
-            TokenResourceBinder.CreateGlobalResourceBinding(CloseIcon, WidthProperty,
+            TokenResourceBinder.CreateSharedResourceBinding(CloseIcon, WidthProperty,
                 DesignTokenKey.IconSizeSM);
-            TokenResourceBinder.CreateGlobalResourceBinding(CloseIcon, HeightProperty,
+            TokenResourceBinder.CreateSharedResourceBinding(CloseIcon, HeightProperty,
                 DesignTokenKey.IconSizeSM);
         }
 

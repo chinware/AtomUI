@@ -136,7 +136,7 @@ internal class CheckBoxIndicator : Control, IWaveAdornerInfoProvider
             AnimationUtils.CreateTransition<DoubleTransition>(CheckedMarkEffectSizeProperty,
                 DesignTokenKey.MotionDurationMid, new BackEaseOut())
         };
-        TokenResourceBinder.CreateGlobalResourceBinding(this, BorderThicknessProperty,
+        TokenResourceBinder.CreateSharedResourceBinding(this, BorderThicknessProperty,
             DesignTokenKey.BorderThickness, BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this));
     }
