@@ -527,9 +527,12 @@ namespace AtomUI.Theme.Styling
     public static class ScrollBarTokenResourceKey
     {
         public static readonly TokenResourceKey ThumbThickness = new TokenResourceKey("ScrollBar.ThumbThickness", "AtomUI.Token");
+        public static readonly TokenResourceKey ScrollBarThickness = new TokenResourceKey("ScrollBar.ScrollBarThickness", "AtomUI.Token");
         public static readonly TokenResourceKey ThumbBg = new TokenResourceKey("ScrollBar.ThumbBg", "AtomUI.Token");
         public static readonly TokenResourceKey ThumbHoverBg = new TokenResourceKey("ScrollBar.ThumbHoverBg", "AtomUI.Token");
-        public static readonly TokenResourceKey ThumbActiveOpacity = new TokenResourceKey("ScrollBar.ThumbActiveOpacity", "AtomUI.Token");
+        public static readonly TokenResourceKey ThumbCornerRadius = new TokenResourceKey("ScrollBar.ThumbCornerRadius", "AtomUI.Token");
+        public static readonly TokenResourceKey ContentHPadding = new TokenResourceKey("ScrollBar.ContentHPadding", "AtomUI.Token");
+        public static readonly TokenResourceKey ContentVPadding = new TokenResourceKey("ScrollBar.ContentVPadding", "AtomUI.Token");
     }
 
     public static class SegmentedTokenResourceKey

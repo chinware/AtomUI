@@ -23,13 +23,17 @@ public abstract class BaseControlTheme : ControlTheme
         NotifyPreBuild();
         BuildThemeAnimations();
         BuildStyles();
+        BuildTemplateStyle();
+        NotifyBuildCompleted();
+    }
+
+    protected virtual void BuildTemplateStyle()
+    {
         var template = BuildControlTemplate();
         if (template is not null)
         {
             Add(new Setter(TemplatedControl.TemplateProperty, template));
         }
-
-        NotifyBuildCompleted();
     }
 
     public virtual string? ThemeResourceKey()
