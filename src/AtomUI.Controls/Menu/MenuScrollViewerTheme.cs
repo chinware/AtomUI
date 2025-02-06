@@ -45,7 +45,7 @@ internal class MenuScrollViewerTheme : BaseControlTheme
                 Transitions         = transitions,
                 RenderTransform     = null
             };
-            CreateTemplateParentBinding(scrollUpButton, Avalonia.Controls.Button.CommandProperty,
+            CreateTemplateParentBinding(scrollUpButton, Button.CommandProperty,
                 nameof(MenuScrollViewer.LineUp));
             TokenResourceBinder.CreateTokenBinding(scrollUpButton, IconButton.IconWidthProperty,
                 MenuTokenResourceKey.ScrollButtonIconSize);

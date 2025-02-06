@@ -70,7 +70,8 @@ internal class ThemeManager : Styles, IThemeManager
         var appName = Application.Current?.Name ?? "AtomUIApplication";
         _builtInThemeDirs = new List<string>
         {
-            Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), appName), THEME_DIR)
+            Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), appName),
+                THEME_DIR)
         };
         DefaultThemeId         = DEFAULT_THEME_ID;
         _controlThemeResources = new ResourceDictionary();
@@ -184,7 +185,7 @@ internal class ThemeManager : Styles, IThemeManager
 
         ThemeChangedEvent?.Invoke(this, new ThemeChangedEventArgs(theme, oldTheme));
     }
-    
+
     public void ScanThemes()
     {
         // 最开始的是用户指定的目录
@@ -315,7 +316,6 @@ internal class ThemeManager : Styles, IThemeManager
     {
         ControlTokenTypes.Add(tokenType);
     }
-    
 }
 
 public class ThemeOperateEventArgs : EventArgs

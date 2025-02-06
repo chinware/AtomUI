@@ -4,6 +4,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.Styling;
 
@@ -34,7 +35,6 @@ internal class ScrollBarTheme : BaseControlTheme
     {
         var tpl = new FuncControlTemplate<ScrollBar>((scrollBar, scope) =>
         {
-            FixedScrollViewOffsetSync(scrollBar);
             var frame = new Border
             {
                 Name       = FramePart,
@@ -64,7 +64,6 @@ internal class ScrollBarTheme : BaseControlTheme
     {
         var tpl = new FuncControlTemplate<ScrollBar>((scrollBar, scope) =>
         {
-            FixedScrollViewOffsetSync(scrollBar);
             var frame = new Border
             {
                 Name = FramePart,
@@ -87,30 +86,7 @@ internal class ScrollBarTheme : BaseControlTheme
         style.Add(new Setter(TemplatedControl.TemplateProperty, tpl));
         Add(style);
     }
-
-    private void FixedScrollViewOffsetSync(ScrollBar scrollBar)
-    {
-        var scrollViewer = scrollBar.TemplatedParent as ScrollViewer;
-        if (scrollViewer != null)
-        {
-            scrollViewer.PropertyChanged += (s, args) =>
-            {
-                if (args.Property == ScrollViewer.OffsetProperty)
-                {
-                    var offset = scrollViewer.Offset;
-                    if (scrollBar.Orientation == Orientation.Horizontal)
-                    {
-                        scrollBar.Value = offset.X;
-                    }
-                    else
-                    {
-                        scrollBar.Value = offset.Y;
-                    }
-                }
-            };
-        }
-    }
-
+    
     private Track BuildTrack(bool isVertical, INameScope scope)
     {
         var track = new Track
@@ -130,7 +106,7 @@ internal class ScrollBarTheme : BaseControlTheme
 
         CreateTemplateParentBinding(track, Track.MinimumProperty, RangeBase.MinimumProperty);
         CreateTemplateParentBinding(track, Track.MaximumProperty, RangeBase.MaximumProperty);
-        CreateTemplateParentBinding(track, Track.ValueProperty, RangeBase.ValueProperty);
+        CreateTemplateParentBinding(track, Track.ValueProperty, RangeBase.ValueProperty, BindingMode.TwoWay);
         CreateTemplateParentBinding(track, Track.DeferThumbDragProperty, ScrollViewer.IsDeferredScrollingEnabledProperty);
         CreateTemplateParentBinding(track, Track.ViewportSizeProperty, ScrollBar.ViewportSizeProperty);
         CreateTemplateParentBinding(track, Track.OrientationProperty, ScrollBar.OrientationProperty);

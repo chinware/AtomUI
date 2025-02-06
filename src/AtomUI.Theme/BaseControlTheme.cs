@@ -66,7 +66,49 @@ public abstract class BaseControlTheme : ControlTheme
     {
     }
 
-    protected static IDisposable CreateTemplateParentBinding(AvaloniaObject target, AvaloniaProperty property,
+    protected static IDisposable CreateTemplateParentBinding<T>(
+        AvaloniaObject target, 
+        StyledProperty<T> property,
+        AvaloniaProperty parentProperty,
+        BindingMode mode = BindingMode.Default,
+        IValueConverter? converter = null)
+    {
+        return target.Bind(property, new TemplateBinding(parentProperty)
+        {
+            Mode      = mode,
+            Converter = converter
+        }, BindingPriority.Template);
+    }
+
+    protected static IDisposable CreateTemplateParentBinding<T>(
+        AvaloniaObject target, 
+        DirectPropertyBase<T> property,
+        AvaloniaProperty parentProperty,
+        BindingMode mode = BindingMode.Default,
+        IValueConverter? converter = null)
+    {
+        return target.Bind(property, new TemplateBinding(parentProperty)
+        {
+            Mode           = mode,
+            Converter      = converter
+        }, BindingPriority.Template);
+    }
+    
+    protected static IDisposable CreateTemplateParentBinding(
+        AvaloniaObject target, 
+        AvaloniaProperty property,
+        AvaloniaProperty parentProperty,
+        BindingMode mode = BindingMode.Default,
+        IValueConverter? converter = null)
+    {
+        return target.Bind(property, new TemplateBinding(parentProperty)
+        {
+            Mode      = mode,
+            Converter = converter
+        }, BindingPriority.Template);
+    }
+    
+        protected static IDisposable CreateTemplateParentBinding(AvaloniaObject target, AvaloniaProperty property,
                                                              string templateParentPath,
                                                              BindingMode mode = BindingMode.Default,
                                                              IValueConverter? converter = null)
@@ -103,13 +145,5 @@ public abstract class BaseControlTheme : ControlTheme
             Mode           = mode,
             Converter      = converter
         });
-    }
-
-    protected static IDisposable CreateTemplateParentBinding(AvaloniaObject target, AvaloniaProperty property,
-                                                             AvaloniaProperty templateParentProperty,
-                                                             BindingMode mode = BindingMode.Default,
-                                                             IValueConverter? converter = null)
-    {
-        return CreateTemplateParentBinding(target, property, templateParentProperty.Name, mode, converter);
     }
 }
