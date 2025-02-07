@@ -34,7 +34,7 @@ internal abstract class BaseButtonTheme : BaseControlTheme
         {
             var loadingIcon = AntDesignIconPackage.LoadingOutlined();
             loadingIcon.Name = LoadingIconPart;
-            
+
             loadingIcon.RegisterInNameScope(scope);
 
             CreateTemplateParentBinding(loadingIcon, Layoutable.WidthProperty, Button.IconSizeProperty);
@@ -49,10 +49,10 @@ internal abstract class BaseButtonTheme : BaseControlTheme
 
             var labelText = new TextBlock
             {
-                Name                       = LabelPart,
+                Name              = LabelPart,
                 VerticalAlignment = VerticalAlignment.Center
             };
-                
+
             CreateTemplateParentBinding(labelText, TextBlock.TextProperty, Button.TextProperty);
             labelText.RegisterInNameScope(scope);
 

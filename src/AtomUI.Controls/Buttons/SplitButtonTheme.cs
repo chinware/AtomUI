@@ -39,8 +39,8 @@ internal class SplitButtonTheme : BaseControlTheme
             CreateTemplateParentBinding(primaryButton, ContentControl.ContentProperty, ContentControl.ContentProperty);
             CreateTemplateParentBinding(primaryButton, ContentControl.ContentTemplateProperty,
                 ContentControl.ContentTemplateProperty);
-            CreateTemplateParentBinding(primaryButton, TemplatedControl.CornerRadiusProperty,
-                SplitButton.PrimaryButtonCornerRadiusProperty);
+            // CreateTemplateParentBinding(primaryButton, TemplatedControl.CornerRadiusProperty,
+            //     SplitButton.PrimaryButtonCornerRadiusProperty);
             CreateTemplateParentBinding(primaryButton, Button.SizeTypeProperty, SplitButton.SizeTypeProperty);
             CreateTemplateParentBinding(primaryButton, Button.IconProperty, SplitButton.IconProperty);
             CreateTemplateParentBinding(primaryButton, InputElement.IsEnabledProperty, InputElement.IsEnabledProperty);
@@ -53,8 +53,8 @@ internal class SplitButtonTheme : BaseControlTheme
             {
                 Name = SecondaryButtonPart
             };
-            CreateTemplateParentBinding(secondaryButton, TemplatedControl.CornerRadiusProperty,
-                SplitButton.SecondaryButtonCornerRadiusProperty);
+            // CreateTemplateParentBinding(secondaryButton, TemplatedControl.CornerRadiusProperty,
+            //     SplitButton.SecondaryButtonCornerRadiusProperty);
             CreateTemplateParentBinding(secondaryButton, Button.SizeTypeProperty, SplitButton.SizeTypeProperty);
             CreateTemplateParentBinding(secondaryButton, Button.IconProperty, SplitButton.FlyoutButtonIconProperty);
             CreateTemplateParentBinding(secondaryButton, InputElement.IsEnabledProperty,

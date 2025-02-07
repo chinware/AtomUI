@@ -226,32 +226,6 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
 
     #region 内部属性定义
 
-    internal static readonly DirectProperty<SplitButton, CornerRadius> PrimaryButtonCornerRadiusProperty =
-        AvaloniaProperty.RegisterDirect<SplitButton, CornerRadius>(nameof(PrimaryButtonCornerRadius),
-            o => o.PrimaryButtonCornerRadius,
-            (o, v) => o.PrimaryButtonCornerRadius = v);
-
-    private CornerRadius _primaryButtonCornerRadius;
-
-    internal CornerRadius PrimaryButtonCornerRadius
-    {
-        get => _primaryButtonCornerRadius;
-        set => SetAndRaise(PrimaryButtonCornerRadiusProperty, ref _primaryButtonCornerRadius, value);
-    }
-
-    internal static readonly DirectProperty<SplitButton, CornerRadius> SecondaryButtonCornerRadiusProperty =
-        AvaloniaProperty.RegisterDirect<SplitButton, CornerRadius>(nameof(SecondaryButtonCornerRadius),
-            o => o.SecondaryButtonCornerRadius,
-            (o, v) => o.SecondaryButtonCornerRadius = v);
-
-    private CornerRadius _secondaryButtonCornerRadius;
-
-    internal CornerRadius SecondaryButtonCornerRadius
-    {
-        get => _secondaryButtonCornerRadius;
-        set => SetAndRaise(SecondaryButtonCornerRadiusProperty, ref _secondaryButtonCornerRadius, value);
-    }
-
     internal static readonly DirectProperty<SplitButton, ButtonType> EffectiveButtonTypeProperty =
         AvaloniaProperty.RegisterDirect<SplitButton, ButtonType>(nameof(EffectiveButtonType),
             o => o.EffectiveButtonType,
@@ -362,13 +336,14 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
             flyout.Closed += HandleFlyoutClosed;
             if (flyout is MenuFlyout menuFlyout)
             {
-                menuFlyout.ClickHideFlyoutPredicate = ClickHideFlyoutPredicate;
+                menuFlyout.IsDetectMouseClickEnabled = false;
+                menuFlyout.ClickHideFlyoutPredicate  = ClickHideFlyoutPredicate;
             }
 
             _flyoutPropertyChangedDisposable = flyout
-                                               .GetPropertyChangedObservable(Avalonia.Controls.Primitives.Popup
-                                                   .PlacementProperty)
-                                               .Subscribe(HandleFlyoutPlacementPropertyChanged);
+                .GetPropertyChangedObservable(Avalonia.Controls.Primitives.Popup
+                    .PlacementProperty)
+                .Subscribe(HandleFlyoutPlacementPropertyChanged);
         }
     }
 
@@ -382,7 +357,7 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
         {
             flyout.Opened -= HandleFlyoutOpened;
             flyout.Closed -= HandleFlyoutClosed;
-            
+
             if (flyout is MenuFlyout menuFlyout)
             {
                 menuFlyout.ClickHideFlyoutPredicate = null;
@@ -441,7 +416,7 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
         }
 
         FlyoutButtonIcon ??= AntDesignIconPackage.EllipsisOutlined();
-
+        SetupButtonCornerRadius();
         SetupEffectiveButtonType();
         SetupFlyoutProperties();
         RegisterFlyoutEvents(Flyout);
@@ -573,14 +548,23 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
 
     private void SetupButtonCornerRadius()
     {
-        PrimaryButtonCornerRadius = new CornerRadius(CornerRadius.TopLeft,
+        var primaryButtonCornerRadius = new CornerRadius(CornerRadius.TopLeft,
             0,
             0,
             CornerRadius.BottomLeft);
-        SecondaryButtonCornerRadius = new CornerRadius(0,
+        var secondaryButtonCornerRadius = new CornerRadius(0,
             CornerRadius.TopRight,
             CornerRadius.BottomRight,
             0);
+        if (_primaryButton is not null)
+        {
+            _primaryButton.CornerRadius = primaryButtonCornerRadius;
+        }
+
+        if (_secondaryButton is not null)
+        {
+            _secondaryButton.CornerRadius = secondaryButtonCornerRadius;
+        }
     }
 
     /// <inheritdoc />
@@ -722,15 +706,20 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
                 {
                     return true;
                 }
+
                 // 只有 TriggerType 为 Hover 的时候会判断
-                var secondaryButtonOrigin = _secondaryButton.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(_secondaryButton)!);
-                var secondaryBounds = secondaryButtonOrigin.HasValue ? new Rect(secondaryButtonOrigin.Value, _secondaryButton.Bounds.Size) : new Rect();
+                var secondaryButtonOrigin =
+                    _secondaryButton.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(_secondaryButton)!);
+                var secondaryBounds = secondaryButtonOrigin.HasValue
+                    ? new Rect(secondaryButtonOrigin.Value, _secondaryButton.Bounds.Size)
+                    : new Rect();
                 if (!secondaryBounds.Contains(args.Position))
                 {
                     return true;
                 }
             }
         }
+
         return false;
     }
 
@@ -787,7 +776,8 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
             if (_secondaryButton is not null)
             {
                 var cornerRadius = (float)CornerRadius.TopLeft;
-                context.FillRectangle(BorderBrush ?? Brushes.White, new Rect(0, 0, Bounds.Width, Bounds.Height), cornerRadius);
+                context.FillRectangle(BorderBrush ?? Brushes.White, new Rect(0, 0, Bounds.Width, Bounds.Height),
+                    cornerRadius);
             }
         }
     }

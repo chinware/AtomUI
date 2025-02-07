@@ -100,6 +100,7 @@ internal sealed class ToolTipService : IDisposable
         {
             return;
         }
+
         if (root == currentToolTip?.GetVisualRoot())
         {
             // Don't update while the pointer is over a tooltip
@@ -108,7 +109,8 @@ internal sealed class ToolTipService : IDisposable
 
         while (candidateToolTipHost != null)
         {
-            if (candidateToolTipHost == currentToolTip) // when OverlayPopupHost is in use, the tooltip is in the same window as the host control
+            if (candidateToolTipHost ==
+                currentToolTip) // when OverlayPopupHost is in use, the tooltip is in the same window as the host control
             {
                 return;
             }
