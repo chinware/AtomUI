@@ -20,7 +20,6 @@ public class Theme : ITheme
 
     protected bool Loaded;
     protected bool LoadedStatus = true;
-    protected bool DarkMode;
     protected bool Activated;
     protected IThemeVariantCalculator? ThemeVariantCalculator;
     protected ThemeDefinition? ThemeDefinition;
@@ -36,7 +35,7 @@ public class Theme : ITheme
     public bool IsLoaded => Loaded;
     public ThemeVariant ThemeVariant => _themeVariant;
     internal ResourceDictionary ThemeResource => ResourceDictionary;
-    public bool IsDarkMode => DarkMode;
+    public bool IsDarkMode { get; protected set; }
     public bool IsActivated => Activated;
     public DesignToken SharedToken => _sharedToken;
 
@@ -90,12 +89,12 @@ public class Theme : ITheme
 
             if (themeDef.Algorithms.Contains(DarkThemeVariantCalculator.ID))
             {
-                DarkMode      = true;
+                IsDarkMode    = true;
                 _themeVariant = ThemeVariant.Dark;
             }
             else
             {
-                DarkMode      = false;
+                IsDarkMode    = false;
                 _themeVariant = ThemeVariant.Light;
             }
 
@@ -106,6 +105,7 @@ public class Theme : ITheme
                 calculator     = CreateThemeVariantCalculator(algorithmId, baseCalculator);
                 baseCalculator = calculator;
             }
+
             Debug.Assert(calculator != null);
             ThemeVariantCalculator = calculator;
             _sharedToken.LoadConfig(sharedTokenConfig);

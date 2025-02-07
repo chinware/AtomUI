@@ -6,18 +6,28 @@ namespace AtomUI.Theme;
 
 internal class TokenResourceLayer : Styles, ITokenResourceLayer
 {
-    private DesignToken _designToken;
-    private Dictionary<string, IControlDesignToken> _controlTokens;
-    private IList<string> _algorithms;
-    private IList<ControlTokenConfigInfo> _controlTokenConfigInfos;
     private IThemeVariantCalculator? _themeVariantCalculator;
-    private bool _darkMode;
+    
+    public DesignToken SharedToken { get; protected set; }
+    public Dictionary<string, IControlDesignToken> ControlTokens { get; protected set; }
+    
+    public IList<string> Algorithms { get; protected set; }
+    public bool IsDarkMode { get; protected set; }
 
     public TokenResourceLayer()
     {
-        _controlTokens           = new Dictionary<string, IControlDesignToken>();
-        _controlTokenConfigInfos = new List<ControlTokenConfigInfo>();
-        _algorithms              = new List<string>();
-        _designToken             = new DesignToken();
+        ControlTokens = new Dictionary<string, IControlDesignToken>();
+        Algorithms    = new List<string>();
+        SharedToken   = new DesignToken();
+    }
+
+    public void Calculate()
+    {
+        
+    }
+
+    public void MountTokenResources(ThemeConfigProvider themeConfigProvider)
+    {
+        
     }
 }
