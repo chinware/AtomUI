@@ -13,12 +13,12 @@ internal class ThemeDefinitionReader
     // 上下文信息
     private readonly Stack<string> _currentElementNames;
     private ControlTokenConfigInfo? _currentControlToken;
-    private bool _inGlobalTokenCtx;
+    private bool _inSharedTokenCtx;
     private bool _inControlTokenCtx;
 
     private const string ThemeElementName = "Theme";
     private const string AlgorithmsElementName = "Algorithms";
-    private const string GlobalTokensElementName = "GlobalTokens";
+    private const string SharedTokensElementName = "SharedTokens";
     private const string ControlTokensElementName = "ControlTokens";
     private const string ControlTokenElementName = "ControlToken";
     private const string TokenElementName = "Token";
@@ -75,7 +75,7 @@ internal class ThemeDefinitionReader
             _currentControlToken = null;
             _currentElementNames.Clear();
             _inControlTokenCtx = false;
-            _inGlobalTokenCtx  = false;
+            _inSharedTokenCtx  = false;
             _currentDef        = null;
         }
     }
@@ -92,10 +92,10 @@ internal class ThemeDefinitionReader
         {
             HandleStartAlgorithmsElement(reader);
         }
-        else if (name == GlobalTokensElementName)
+        else if (name == SharedTokensElementName)
         {
-            _currentDef?.GlobalTokens.Clear();
-            _inGlobalTokenCtx  = true;
+            _currentDef?.SharedTokens.Clear();
+            _inSharedTokenCtx  = true;
             _inControlTokenCtx = false;
         }
         else if (name == ControlTokensElementName)
@@ -104,7 +104,7 @@ internal class ThemeDefinitionReader
         }
         else if (name == ControlTokenElementName)
         {
-            _inGlobalTokenCtx  = false;
+            _inSharedTokenCtx  = false;
             _inControlTokenCtx = true;
             HandleStartControlTokenElement(reader);
         }
@@ -131,9 +131,9 @@ internal class ThemeDefinitionReader
             _currentControlToken = null;
             _inControlTokenCtx   = false;
         }
-        else if (name == GlobalTokensElementName)
+        else if (name == SharedTokensElementName)
         {
-            _inGlobalTokenCtx = false;
+            _inSharedTokenCtx = false;
         }
 
         _parseFinished = name == ThemeElementName;
@@ -203,17 +203,17 @@ internal class ThemeDefinitionReader
             EmitRequiredAttrError(reader, NameAttrName);
         }
 
-        if (_inGlobalTokenCtx)
+        if (_inSharedTokenCtx)
         {
-            _currentDef!.GlobalTokens.Add(tokenName!, tokenValue);
+            _currentDef!.SharedTokens.Add(tokenName!, tokenValue);
         }
         else if (_inControlTokenCtx)
         {
-            _currentControlToken!.ControlTokens.Add(tokenName!, tokenValue);
+            _currentControlToken!.Tokens.Add(tokenName!, tokenValue);
         }
         else
         {
-            EmitErrorMsg(reader, "The Token element must appear under WidgetToken or GlobalTokens.");
+            EmitErrorMsg(reader, "The Token element must appear under WidgetToken or SharedTokens.");
         }
     }
 

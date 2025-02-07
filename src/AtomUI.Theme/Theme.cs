@@ -1,4 +1,5 @@
-﻿using AtomUI.Theme.Styling;
+﻿using System.Diagnostics;
+using AtomUI.Theme.Styling;
 using AtomUI.Theme.TokenSystem;
 using Avalonia.Controls;
 using Avalonia.Styling;
@@ -10,6 +11,8 @@ namespace AtomUI.Theme;
 /// </summary>
 public class Theme : ITheme
 {
+    public static readonly IList<string> SUPPORTED_ALGORITHMS;
+
     private string _id;
     private string? _loadErrorMsg;
     private ThemeVariant _themeVariant;
@@ -23,7 +26,6 @@ public class Theme : ITheme
     protected ThemeDefinition? ThemeDefinition;
     protected ResourceDictionary ResourceDictionary;
     protected Dictionary<string, IControlDesignToken> ControlTokens;
-    public static readonly IList<string> SUPPORTED_ALGORITHMS;
 
     public string DefinitionFilePath { get; }
 
@@ -70,8 +72,8 @@ public class Theme : ITheme
         {
             ThemeDefinition = new ThemeDefinition(_id);
             NotifyLoadThemeDef();
-            var themeDef           = ThemeDefinition!;
-            var globalTokenConfig  = themeDef.GlobalTokens;
+            var themeDef           = ThemeDefinition;
+            var sharedTokenConfig  = themeDef.SharedTokens;
             var controlTokenConfig = themeDef.ControlTokens;
             CheckAlgorithmNames(themeDef.Algorithms);
 
@@ -98,26 +100,26 @@ public class Theme : ITheme
             }
 
             IThemeVariantCalculator? baseCalculator = null;
-            IThemeVariantCalculator  calculator     = default!;
+            IThemeVariantCalculator? calculator     = null;
             foreach (var algorithmId in themeDef.Algorithms)
             {
                 calculator     = CreateThemeVariantCalculator(algorithmId, baseCalculator);
                 baseCalculator = calculator;
             }
-
+            Debug.Assert(calculator != null);
             ThemeVariantCalculator = calculator;
-            _sharedToken.LoadConfig(globalTokenConfig);
+            _sharedToken.LoadConfig(sharedTokenConfig);
 
-            ThemeVariantCalculator.Calculate(_sharedToken);
+            ThemeVariantCalculator?.Calculate(_sharedToken);
 
             // 交付最终的基础色
-            _sharedToken.ColorBgBase   = ThemeVariantCalculator.ColorBgBase;
-            _sharedToken.ColorTextBase = ThemeVariantCalculator.ColorTextBase;
+            _sharedToken.ColorBgBase   = ThemeVariantCalculator?.ColorBgBase;
+            _sharedToken.ColorTextBase = ThemeVariantCalculator?.ColorTextBase;
 
             _sharedToken.CalculateAliasTokenValues();
 
             // TODO 先用算法，然后再设置配置文件中的值，不知道合理不
-            _sharedToken.LoadConfig(globalTokenConfig);
+            _sharedToken.LoadConfig(sharedTokenConfig);
             _sharedToken.BuildResourceDictionary(ResourceDictionary);
 
             CollectControlTokens();
@@ -138,11 +140,11 @@ public class Theme : ITheme
 
                 // 需要 Review
                 var controlAliasToken = (DesignToken)_sharedToken.Clone();
-                controlAliasToken.LoadConfig(controlTokenInfo.ControlTokens);
+                controlAliasToken.LoadConfig(controlTokenInfo.Tokens);
 
                 if (controlTokenInfo.UseAlgorithm)
                 {
-                    ThemeVariantCalculator.Calculate(controlAliasToken);
+                    ThemeVariantCalculator?.Calculate(controlAliasToken);
                     controlAliasToken.CalculateAliasTokenValues();
                 }
 
@@ -150,7 +152,7 @@ public class Theme : ITheme
                 controlToken.AssignSharedToken(controlAliasToken);
                 (controlToken as AbstractControlDesignToken)!.IsCustomTokenConfig = true;
                 (controlToken as AbstractControlDesignToken)!.CustomTokens =
-                    controlTokenInfo.ControlTokens.Keys.ToList();
+                    controlTokenInfo.Tokens.Keys.ToList();
             }
 
             foreach (var controlToken in ControlTokens.Values)
@@ -159,7 +161,7 @@ public class Theme : ITheme
                 if (controlTokenConfig.ContainsKey(controlToken.Id))
                 {
                     (controlToken as AbstractControlDesignToken)!.LoadConfig(controlTokenConfig[controlToken.Id]
-                        .ControlTokens);
+                        .Tokens);
                 }
 
                 controlToken.BuildResourceDictionary(ResourceDictionary);
@@ -228,12 +230,7 @@ public class Theme : ITheme
 
     public IControlDesignToken? GetControlToken(string tokenId)
     {
-        if (ControlTokens.TryGetValue(tokenId, out var token))
-        {
-            return token;
-        }
-
-        return null;
+        return ControlTokens.GetValueOrDefault(tokenId);
     }
 
     internal virtual void NotifyAboutToActive()
