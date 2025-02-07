@@ -86,20 +86,21 @@ internal class MenuItemTheme : BaseControlTheme
             };
             CreateTemplateParentBinding(togglePresenter, InputElement.IsEnabledProperty,
                 InputElement.IsEnabledProperty);
+            TokenResourceBinder.CreateTokenBinding(togglePresenter, Layoutable.MarginProperty,
+                MenuTokenResourceKey.ItemMargin);
             Grid.SetColumn(togglePresenter, 0);
             togglePresenter.RegisterInNameScope(scope);
 
-            var iconPresenter = new Viewbox
+            var iconPresenter = new ContentControl()
             {
                 Name                = ItemIconPresenterPart,
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment   = VerticalAlignment.Center,
-                Stretch             = Stretch.Uniform
             };
 
             Grid.SetColumn(iconPresenter, 1);
             iconPresenter.RegisterInNameScope(scope);
-            CreateTemplateParentBinding(iconPresenter, Viewbox.ChildProperty, MenuItem.IconProperty);
+            CreateTemplateParentBinding(iconPresenter, ContentControl.ContentProperty, MenuItem.IconProperty);
             TokenResourceBinder.CreateTokenBinding(iconPresenter, Layoutable.MarginProperty,
                 MenuTokenResourceKey.ItemMargin);
             TokenResourceBinder.CreateSharedTokenBinding(iconPresenter, Layoutable.WidthProperty,
@@ -276,16 +277,16 @@ internal class MenuItemTheme : BaseControlTheme
     private void BuildMenuIconStyle()
     {
         {
-            var iconViewBoxStyle = new Style(selector => selector.Nesting().Template().Name(ItemIconPresenterPart));
-            iconViewBoxStyle.Add(Visual.IsVisibleProperty, false);
-            Add(iconViewBoxStyle);
+            var iconPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ItemIconPresenterPart));
+            iconPresenterStyle.Add(Visual.IsVisibleProperty, false);
+            Add(iconPresenterStyle);
         }
 
         var hasIconStyle = new Style(selector => selector.Nesting().Class(":icon"));
         {
-            var iconViewBoxStyle = new Style(selector => selector.Nesting().Template().Name(ItemIconPresenterPart));
-            iconViewBoxStyle.Add(Visual.IsVisibleProperty, true);
-            hasIconStyle.Add(iconViewBoxStyle);
+            var iconPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ItemIconPresenterPart));
+            iconPresenterStyle.Add(Visual.IsVisibleProperty, true);
+            hasIconStyle.Add(iconPresenterStyle);
         }
         Add(hasIconStyle);
     }
