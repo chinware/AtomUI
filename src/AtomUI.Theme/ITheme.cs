@@ -11,7 +11,7 @@ public interface ITheme
     public bool IsDarkMode { get; }
     public bool IsActivated { get; }
     public List<string> ThemeResourceKeys { get; }
-    public IControlDesignToken? GetControlToken(string tokenId);
+    public IControlDesignToken? GetControlToken(string tokenId, string? catalog = null);
     public DesignToken SharedToken { get; }
     public ThemeVariant ThemeVariant { get; }
 }

@@ -2,6 +2,7 @@ using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.IconPkg;
 using AtomUI.Media;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.TokenSystem;
@@ -213,7 +214,8 @@ public class Button : AvaloniaButton, ISizeTypeAware, IWaveAdornerInfoProvider
     protected ControlStyleState _styleState;
     private bool _initialized;
     private Icon? _loadingIcon;
-
+    private ControlTokenResourceRegister _controlTokenResourceRegister;
+    
     static Button()
     {
         AffectsMeasure<Button>(SizeTypeProperty,
@@ -229,6 +231,12 @@ public class Button : AvaloniaButton, ISizeTypeAware, IWaveAdornerInfoProvider
             ForegroundProperty);
         HorizontalAlignmentProperty.OverrideDefaultValue<Button>(HorizontalAlignment.Left);
         VerticalAlignmentProperty.OverrideDefaultValue<Button>(VerticalAlignment.Center);
+    }
+
+    public Button()
+    {
+        _controlTokenResourceRegister = new ControlTokenResourceRegister(this, ButtonToken.ID);
+        _controlTokenResourceRegister.RegisterResources();
     }
 
     protected override Size MeasureOverride(Size availableSize)

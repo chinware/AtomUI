@@ -34,16 +34,9 @@ public abstract class AbstractDesignToken : IDesignToken
         {
             var type = GetType();
             var tokenProperties =
-                type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
-            var baseTokenType = typeof(AbstractDesignToken);
+                type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
             foreach (var property in tokenProperties)
             {
-                if (baseTokenType.IsAssignableFrom(property.PropertyType))
-                {
-                    // 如果当前的属性是 Token 类型，证明是组合属性，跳过
-                    continue;
-                }
-
                 var tokenName = property.Name;
                 if (tokenConfigInfo.ContainsKey(tokenName))
                 {
@@ -80,16 +73,9 @@ public abstract class AbstractDesignToken : IDesignToken
                                                  BindingFlags.NonPublic |
                                                  BindingFlags.Instance |
                                                  BindingFlags.FlattenHierarchy);
-        var baseTokenType          = typeof(AbstractDesignToken);
         var tokenResourceNamespace = GetTokenResourceCatalog();
         foreach (var property in tokenProperties)
         {
-            if (baseTokenType.IsAssignableFrom(property.PropertyType))
-            {
-                // 如果当前的属性是 Token 类型，证明是组合属性，跳过
-                continue;
-            }
-
             var tokenName  = property.Name;
             var tokenValue = property.GetValue(this);
             if ((property.PropertyType == typeof(Color) || property.PropertyType == typeof(Color?)) && 
@@ -130,7 +116,7 @@ public abstract class AbstractDesignToken : IDesignToken
 
         var type = GetType();
         var tokenProperty =
-            type.GetProperty(name, BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
+            type.GetProperty(name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
         if (tokenProperty is null)
         {
             _tokenAccessCache[name] = null;
@@ -146,7 +132,7 @@ public abstract class AbstractDesignToken : IDesignToken
     {
         var type = GetType();
         var tokenProperty =
-            type.GetProperty(name, BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
+            type.GetProperty(name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
         if (tokenProperty is null)
         {
             return;
@@ -160,21 +146,12 @@ public abstract class AbstractDesignToken : IDesignToken
     {
         var type = GetType();
         var tokenProperties =
-            type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
-        var baseTokenType = typeof(AbstractDesignToken);
+            type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
         var cloned        = (AbstractDesignToken)Activator.CreateInstance(type)!;
 
         foreach (var property in tokenProperties)
         {
-            if (baseTokenType.IsAssignableFrom(property.PropertyType))
-            {
-                var subToken = (AbstractDesignToken)property.GetValue(this)!;
-                property.SetValue(cloned, subToken.Clone());
-            }
-            else
-            {
-                property.SetValue(cloned, property.GetValue(this));
-            }
+            property.SetValue(cloned, property.GetValue(this));
         }
 
         return cloned;

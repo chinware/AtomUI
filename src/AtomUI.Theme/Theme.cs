@@ -142,35 +142,38 @@ public class Theme : ITheme
                     continue;
                 }
 
-                // 需要 Review
-                var controlAliasToken = (DesignToken)_sharedToken.Clone();
-                controlAliasToken.LoadConfig(controlTokenInfo.Tokens);
+                var copiedSharedToken = (DesignToken)_sharedToken.Clone();
+                copiedSharedToken.LoadConfig(ExtraSharedTokenInfos(controlTokenInfo));
 
                 if (controlTokenInfo.EnableAlgorithm)
                 {
-                    ThemeVariantCalculator?.Calculate(controlAliasToken);
-                    controlAliasToken.CalculateAliasTokenValues();
+                    ThemeVariantCalculator?.Calculate(copiedSharedToken);
+                    copiedSharedToken.CalculateAliasTokenValues();
                 }
 
-                var controlToken = ControlTokens[qualifiedTokenKey];
-                controlToken.AssignSharedToken(controlAliasToken);
-                (controlToken as AbstractControlDesignToken)!.IsCustomTokenConfig = true;
-                (controlToken as AbstractControlDesignToken)!.CustomTokens = controlTokenInfo.Tokens.Keys.ToList();
+                var controlToken = (ControlTokens[qualifiedTokenKey] as AbstractControlDesignToken)!;
+                controlToken.AssignSharedToken(copiedSharedToken);
+                controlToken.SetHasCustomTokenConfig(true);
+                controlToken.SetCustomTokens(controlTokenInfo.Tokens.Keys.ToList());
             }
-            
-            foreach (var controlToken in ControlTokens.Values)
+
+            foreach (var token in ControlTokens.Values)
             {
-                (controlToken as AbstractControlDesignToken)!.CalculateFromAlias();
+                var controlToken = (token as AbstractControlDesignToken)!;
+                controlToken.CalculateFromAlias();
                 var controlTokenType  = controlToken.GetType();
                 var tokenAttr         = controlTokenType.GetCustomAttribute<ControlDesignTokenAttribute>();
-                var qualifiedTokenKey = GenerateTokenQualifiedKey(controlToken.Id, tokenAttr?.ResourceCatalog);
+                var qualifiedTokenKey = GenerateTokenQualifiedKey(controlToken.GetId(), tokenAttr?.ResourceCatalog);
                 if (controlTokenConfig.ContainsKey(qualifiedTokenKey))
                 {
-                    (controlToken as AbstractControlDesignToken)!.LoadConfig(controlTokenConfig[qualifiedTokenKey]
-                        .Tokens);
+                    controlToken.LoadConfig(controlTokenConfig[qualifiedTokenKey].Tokens);
                 }
 
                 controlToken.BuildResourceDictionary(ResourceDictionary);
+                if (controlToken.HasCustomTokenConfig())
+                {
+                    controlToken.BuildSharedResourceDeltaDictionary(_sharedToken);
+                }
             }
 
             LoadedStatus = true;
@@ -182,6 +185,27 @@ public class Theme : ITheme
             LoadedStatus  = false;
             throw;
         }
+    }
+
+    private IDictionary<string, string> ExtraSharedTokenInfos(ControlTokenConfigInfo controlTokenConfigInfo)
+    {
+        var qualifiedKey = GenerateTokenQualifiedKey(controlTokenConfigInfo.TokenId, controlTokenConfigInfo.Catalog);
+        var tokenType    = ControlTokens[qualifiedKey].GetType();
+        var tokenInfos   = new Dictionary<string, string>();
+        var tokenProperties = tokenType.GetProperties(BindingFlags.Public |
+                                                      BindingFlags.NonPublic |
+                                                      BindingFlags.Instance |
+                                                      BindingFlags.FlattenHierarchy)
+            .Select(p => p.Name).ToHashSet();
+        foreach (var entry in controlTokenConfigInfo.Tokens)
+        {
+            if (!tokenProperties.Contains(entry.Key))
+            {
+                tokenInfos.Add(entry.Key, entry.Value);
+            }
+        }
+
+        return tokenInfos;
     }
 
     protected void CheckAlgorithmNames(IList<string> algorithms)
@@ -196,8 +220,7 @@ public class Theme : ITheme
         }
     }
 
-    protected IThemeVariantCalculator CreateThemeVariantCalculator(string algorithmId,
-        IThemeVariantCalculator? baseAlgorithm)
+    protected IThemeVariantCalculator CreateThemeVariantCalculator(string algorithmId, IThemeVariantCalculator? baseAlgorithm)
     {
         IThemeVariantCalculator calculator;
         if (algorithmId == DefaultThemeVariantCalculator.ID)
@@ -231,7 +254,7 @@ public class Theme : ITheme
             {
                 var attr = tokenType.GetCustomAttribute<ControlDesignTokenAttribute>();
                 Debug.Assert(attr != null);
-                var qualifiedKey = GenerateTokenQualifiedKey(controlToken.Id, attr.ResourceCatalog);
+                var qualifiedKey = GenerateTokenQualifiedKey(controlToken.GetId(), attr.ResourceCatalog);
                 ControlTokens.Add(qualifiedKey, controlToken);
             }
         }
@@ -248,9 +271,10 @@ public class Theme : ITheme
         return $"{qualifiedPrefix}{tokenId}";
     }
 
-    public IControlDesignToken? GetControlToken(string tokenId)
+    public IControlDesignToken? GetControlToken(string tokenId, string? catalog = null)
     {
-        return ControlTokens.GetValueOrDefault(tokenId);
+        var qualifiedKey = GenerateTokenQualifiedKey(tokenId, catalog);
+        return ControlTokens.GetValueOrDefault(qualifiedKey);
     }
 
     internal virtual void NotifyAboutToActive()
