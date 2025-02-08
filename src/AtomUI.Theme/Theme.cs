@@ -38,7 +38,7 @@ public class Theme : ITheme
     internal ResourceDictionary ThemeResource => ResourceDictionary;
     public bool IsDarkMode { get; protected set; }
     public bool IsActivated => Activated;
-    
+
     public DesignToken SharedToken => _sharedToken;
 
     static Theme()
@@ -130,13 +130,14 @@ public class Theme : ITheme
                 // 如果没有修改就使用全局的
                 entry.Value.AssignSharedToken(_sharedToken);
             }
-            
+
             foreach (var entry in controlTokenConfig)
             {
-                var tokenId          = entry.Key;
-                var catalog          = entry.Value.Catalog;
-                var controlTokenInfo = entry.Value;
-                if (!ControlTokens.ContainsKey(tokenId))
+                var tokenId           = entry.Key;
+                var catalog           = entry.Value.Catalog;
+                var qualifiedTokenKey = GenerateTokenQualifiedKey(tokenId, catalog);
+                var controlTokenInfo  = entry.Value;
+                if (!ControlTokens.ContainsKey(qualifiedTokenKey))
                 {
                     continue;
                 }
@@ -151,19 +152,22 @@ public class Theme : ITheme
                     controlAliasToken.CalculateAliasTokenValues();
                 }
 
-                var controlToken = ControlTokens[controlTokenInfo.TokenId];
+                var controlToken = ControlTokens[qualifiedTokenKey];
                 controlToken.AssignSharedToken(controlAliasToken);
                 (controlToken as AbstractControlDesignToken)!.IsCustomTokenConfig = true;
-                (controlToken as AbstractControlDesignToken)!.CustomTokens =
-                    controlTokenInfo.Tokens.Keys.ToList();
+                (controlToken as AbstractControlDesignToken)!.CustomTokens = controlTokenInfo.Tokens.Keys.ToList();
             }
+
 
             foreach (var controlToken in ControlTokens.Values)
             {
                 (controlToken as AbstractControlDesignToken)!.CalculateFromAlias();
-                if (controlTokenConfig.ContainsKey(controlToken.Id))
+                var controlTokenType  = controlToken.GetType();
+                var tokenAttr         = controlTokenType.GetCustomAttribute<ControlDesignTokenAttribute>();
+                var qualifiedTokenKey = GenerateTokenQualifiedKey(controlToken.Id, tokenAttr?.ResourceCatalog);
+                if (controlTokenConfig.ContainsKey(qualifiedTokenKey))
                 {
-                    (controlToken as AbstractControlDesignToken)!.LoadConfig(controlTokenConfig[controlToken.Id]
+                    (controlToken as AbstractControlDesignToken)!.LoadConfig(controlTokenConfig[qualifiedTokenKey]
                         .Tokens);
                 }
 
@@ -228,15 +232,21 @@ public class Theme : ITheme
             {
                 var attr = tokenType.GetCustomAttribute<ControlDesignTokenAttribute>();
                 Debug.Assert(attr != null);
-                var qualifiedPrefix = "";
-                if (!string.IsNullOrEmpty(attr.ResourceCatalog))
-                {
-                    qualifiedPrefix += $"{attr.ResourceCatalog}{TokenResourceKey.CatalogSeparator}";
-                }
-                
-                ControlTokens.Add($"{qualifiedPrefix}{controlToken.Id}", controlToken);
+                var qualifiedKey = GenerateTokenQualifiedKey(controlToken.Id, attr.ResourceCatalog);
+                ControlTokens.Add(qualifiedKey, controlToken);
             }
         }
+    }
+
+    private string GenerateTokenQualifiedKey(string tokenId, string? catalog)
+    {
+        var qualifiedPrefix = "";
+        if (!string.IsNullOrEmpty(catalog))
+        {
+            qualifiedPrefix += $"{catalog}{TokenResourceKey.CatalogSeparator}";
+        }
+
+        return $"{qualifiedPrefix}{tokenId}";
     }
 
     public IControlDesignToken? GetControlToken(string tokenId)

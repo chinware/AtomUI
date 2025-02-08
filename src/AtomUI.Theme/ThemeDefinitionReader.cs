@@ -129,7 +129,14 @@ internal class ThemeDefinitionReader
         _currentElementNames.Pop();
         if (name == ControlTokenElementName)
         {
-            _currentDef?.ControlTokens.Add(_currentControlToken!.TokenId, _currentControlToken);
+            var qualifiedTokenKey = "";
+            if (!string.IsNullOrEmpty(_currentControlToken?.Catalog))
+            {
+                qualifiedTokenKey += $"{_currentControlToken?.Catalog}{TokenResourceKey.CatalogSeparator}";
+            }
+
+            qualifiedTokenKey += _currentControlToken!.TokenId;
+            _currentDef?.ControlTokens.Add(qualifiedTokenKey, _currentControlToken);
             _currentControlToken = null;
             _inControlTokenCtx   = false;
         }
