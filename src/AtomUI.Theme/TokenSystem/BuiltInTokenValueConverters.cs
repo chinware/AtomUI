@@ -1,4 +1,5 @@
-﻿using Avalonia.Media;
+﻿using Avalonia;
+using Avalonia.Media;
 
 namespace AtomUI.Theme.TokenSystem;
 
@@ -33,6 +34,48 @@ internal class IntegerTokenValueConverter : ITokenValueConverter
         catch (Exception exception)
         {
             throw new InvalidOperationException($"Convert {value} to int failed.", exception);
+        }
+    }
+}
+
+[TokenValueConverter]
+internal class DoubleTokenValueConverter : ITokenValueConverter
+{
+    public Type TargetType()
+    {
+        return typeof(double);
+    }
+    
+    public object Convert(string value)
+    {
+        try
+        {
+            return double.Parse(value);
+        }
+        catch (Exception exception)
+        {
+            throw new InvalidOperationException($"Convert {value} to double failed.", exception);
+        }
+    }
+}
+
+[TokenValueConverter]
+internal class FloatTokenValueConverter : ITokenValueConverter
+{
+    public Type TargetType()
+    {
+        return typeof(float);
+    }
+    
+    public object Convert(string value)
+    {
+        try
+        {
+            return float.Parse(value);
+        }
+        catch (Exception exception)
+        {
+            throw new InvalidOperationException($"Convert {value} to float failed.", exception);
         }
     }
 }
@@ -287,5 +330,47 @@ internal class LineStyleTokenValueConverter : ITokenValueConverter
     protected bool ContainStr(string expr, string searched)
     {
         return expr.IndexOf(searched, StringComparison.InvariantCultureIgnoreCase) != -1;
+    }
+}
+
+[TokenValueConverter]
+internal class ThicknessTokenValueConverter : ITokenValueConverter
+{
+    public Type TargetType()
+    {
+        return typeof(Thickness);
+    }
+
+    public object Convert(string value)
+    {
+        try
+        {
+            return Thickness.Parse(value);
+        }
+        catch (Exception exception)
+        {
+            throw new InvalidOperationException($"Convert {value} to Thickness failed.", exception);
+        }
+    }
+}
+
+[TokenValueConverter]
+internal class CornerRadiusTokenValueConverter : ITokenValueConverter
+{
+    public Type TargetType()
+    {
+        return typeof(CornerRadius);
+    }
+
+    public object Convert(string value)
+    {
+        try
+        {
+            return CornerRadius.Parse(value);
+        }
+        catch (Exception exception)
+        {
+            throw new InvalidOperationException($"Convert {value} to CornerRadius failed.", exception);
+        }
     }
 }

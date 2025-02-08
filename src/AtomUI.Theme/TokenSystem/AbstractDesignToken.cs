@@ -54,8 +54,14 @@ public abstract class AbstractDesignToken : IDesignToken
                     }
                     else
                     {
-                        // TODO 可能会抛出异常？
-                        property.SetValue(tokenName, tokenConfigInfo[tokenName]);
+                        try
+                        {
+                            property.SetValue(tokenName, tokenConfigInfo[tokenName]);
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new InvalidOperationException($"Unable to set token property: {tokenName}, maybe value type mismatch.", ex);
+                        }
                     }
                 }
             }

@@ -157,8 +157,7 @@ public class Theme : ITheme
                 (controlToken as AbstractControlDesignToken)!.IsCustomTokenConfig = true;
                 (controlToken as AbstractControlDesignToken)!.CustomTokens = controlTokenInfo.Tokens.Keys.ToList();
             }
-
-
+            
             foreach (var controlToken in ControlTokens.Values)
             {
                 (controlToken as AbstractControlDesignToken)!.CalculateFromAlias();
