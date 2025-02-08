@@ -69,7 +69,7 @@ internal class ExpanderTheme : BaseControlTheme
             motionActor.SetCurrentValue(Visual.IsVisibleProperty, false);
             motionActor.Child = contentPresenter;
             TokenResourceBinder.CreateSharedTokenBinding(contentPresenter, ContentPresenter.BorderBrushProperty,
-                DesignTokenKey.ColorBorder);
+                SharedTokenKey.ColorBorder);
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty,
                 ContentControl.ContentProperty);
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentTemplateProperty,
@@ -118,9 +118,9 @@ internal class ExpanderTheme : BaseControlTheme
             HorizontalAlignment = HorizontalAlignment.Left
         };
         TokenResourceBinder.CreateSharedTokenBinding(expandButton, IconButton.IconWidthProperty,
-            DesignTokenKey.IconSize);
+            SharedTokenKey.IconSize);
         TokenResourceBinder.CreateSharedTokenBinding(expandButton, IconButton.IconHeightProperty,
-            DesignTokenKey.IconSize);
+            SharedTokenKey.IconSize);
 
         expandButton.RegisterInNameScope(scope);
         expandButton.Transitions = new Transitions();
@@ -185,26 +185,26 @@ internal class ExpanderTheme : BaseControlTheme
         var commonStyle = new Style(selector => selector.Nesting());
 
         var frameDecoratorStyle = new Style(selector => selector.Nesting().Template().Name(FrameDecoratorPart));
-        frameDecoratorStyle.Add(Border.BorderBrushProperty, DesignTokenKey.ColorBorder);
-        frameDecoratorStyle.Add(Border.CornerRadiusProperty, ExpanderTokenResourceKey.ExpanderBorderRadius);
+        frameDecoratorStyle.Add(Border.BorderBrushProperty, SharedTokenKey.ColorBorder);
+        frameDecoratorStyle.Add(Border.CornerRadiusProperty, ExpanderTokenKey.ExpanderBorderRadius);
         commonStyle.Add(frameDecoratorStyle);
 
         {
             var headerDecoratorStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));
-            headerDecoratorStyle.Add(Border.BackgroundProperty, ExpanderTokenResourceKey.HeaderBg);
-            headerDecoratorStyle.Add(Border.BorderBrushProperty, DesignTokenKey.ColorTransparent);
+            headerDecoratorStyle.Add(Border.BackgroundProperty, ExpanderTokenKey.HeaderBg);
+            headerDecoratorStyle.Add(Border.BorderBrushProperty, SharedTokenKey.ColorTransparent);
             commonStyle.Add(headerDecoratorStyle);
         }
 
         var headerPresenter = new Style(selector => selector.Nesting().Template().Name(HeaderPresenterPart));
-        headerPresenter.Add(ContentPresenter.ForegroundProperty, DesignTokenKey.ColorTextHeading);
+        headerPresenter.Add(ContentPresenter.ForegroundProperty, SharedTokenKey.ColorTextHeading);
         commonStyle.Add(headerPresenter);
 
         // ExpandIcon 
         var expandIconStyle = new Style(selector =>
             selector.Nesting().Template().Name(ExpandButtonPart).Descendant().OfType<Icon>());
-        expandIconStyle.Add(Layoutable.WidthProperty, DesignTokenKey.IconSizeSM);
-        expandIconStyle.Add(Layoutable.HeightProperty, DesignTokenKey.IconSizeSM);
+        expandIconStyle.Add(Layoutable.WidthProperty, SharedTokenKey.IconSizeSM);
+        expandIconStyle.Add(Layoutable.HeightProperty, SharedTokenKey.IconSizeSM);
         commonStyle.Add(expandIconStyle);
 
         // 设置打开状态
@@ -212,7 +212,7 @@ internal class ExpanderTheme : BaseControlTheme
             selector.Nesting().PropertyEquals(Avalonia.Controls.Expander.IsExpandedProperty, true));
         {
             var headerDecoratorStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));
-            headerDecoratorStyle.Add(Border.BorderBrushProperty, DesignTokenKey.ColorBorder);
+            headerDecoratorStyle.Add(Border.BorderBrushProperty, SharedTokenKey.ColorBorder);
             expandedStyle.Add(headerDecoratorStyle);
         }
         commonStyle.Add(expandedStyle);
@@ -228,7 +228,7 @@ internal class ExpanderTheme : BaseControlTheme
         {
             var expandButtonStyle = new Style(selector => selector.Nesting().Template().Name(ExpandButtonPart));
             expandButtonStyle.Add(Grid.ColumnProperty, 0);
-            expandButtonStyle.Add(Layoutable.MarginProperty, ExpanderTokenResourceKey.LeftExpandButtonHMargin);
+            expandButtonStyle.Add(Layoutable.MarginProperty, ExpanderTokenKey.LeftExpandButtonHMargin);
             startPositionStyle.Add(expandButtonStyle);
         }
         Add(startPositionStyle);
@@ -237,7 +237,7 @@ internal class ExpanderTheme : BaseControlTheme
         {
             var expandButtonStyle = new Style(selector => selector.Nesting().Template().Name(ExpandButtonPart));
             expandButtonStyle.Add(Grid.ColumnProperty, 3);
-            expandButtonStyle.Add(Layoutable.MarginProperty, ExpanderTokenResourceKey.RightExpandButtonHMargin);
+            expandButtonStyle.Add(Layoutable.MarginProperty, ExpanderTokenKey.RightExpandButtonHMargin);
             endPositionStyle.Add(expandButtonStyle);
         }
         Add(endPositionStyle);
@@ -364,15 +364,15 @@ internal class ExpanderTheme : BaseControlTheme
             selector.Nesting().PropertyEquals(Expander.SizeTypeProperty, SizeType.Large));
         {
             var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));
-            decoratorStyle.Add(Decorator.PaddingProperty, ExpanderTokenResourceKey.HeaderPaddingLG);
-            decoratorStyle.Add(TextElement.FontSizeProperty, DesignTokenKey.FontSizeLG);
-            decoratorStyle.Add(TextBlock.LineHeightProperty, DesignTokenKey.FontHeightLG);
+            decoratorStyle.Add(Decorator.PaddingProperty, ExpanderTokenKey.HeaderPaddingLG);
+            decoratorStyle.Add(TextElement.FontSizeProperty, SharedTokenKey.FontSizeLG);
+            decoratorStyle.Add(TextBlock.LineHeightProperty, SharedTokenKey.FontHeightLG);
             largeSizeStyle.Add(decoratorStyle);
         }
 
         {
             var contentPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ContentPresenterPart));
-            contentPresenterStyle.Add(ContentPresenter.PaddingProperty, ExpanderTokenResourceKey.ContentPaddingLG);
+            contentPresenterStyle.Add(ContentPresenter.PaddingProperty, ExpanderTokenKey.ContentPaddingLG);
             largeSizeStyle.Add(contentPresenterStyle);
         }
 
@@ -382,15 +382,15 @@ internal class ExpanderTheme : BaseControlTheme
             selector.Nesting().PropertyEquals(Expander.SizeTypeProperty, SizeType.Middle));
         {
             var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));
-            decoratorStyle.Add(Decorator.PaddingProperty, ExpanderTokenResourceKey.HeaderPadding);
-            decoratorStyle.Add(TextElement.FontSizeProperty, DesignTokenKey.FontSize);
-            decoratorStyle.Add(TextBlock.LineHeightProperty, DesignTokenKey.FontHeight);
+            decoratorStyle.Add(Decorator.PaddingProperty, ExpanderTokenKey.HeaderPadding);
+            decoratorStyle.Add(TextElement.FontSizeProperty, SharedTokenKey.FontSize);
+            decoratorStyle.Add(TextBlock.LineHeightProperty, SharedTokenKey.FontHeight);
             middleSizeStyle.Add(decoratorStyle);
         }
 
         {
             var contentPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ContentPresenterPart));
-            contentPresenterStyle.Add(ContentPresenter.PaddingProperty, ExpanderTokenResourceKey.ContentPadding);
+            contentPresenterStyle.Add(ContentPresenter.PaddingProperty, ExpanderTokenKey.ContentPadding);
             middleSizeStyle.Add(contentPresenterStyle);
         }
         Add(middleSizeStyle);
@@ -399,15 +399,15 @@ internal class ExpanderTheme : BaseControlTheme
             selector.Nesting().PropertyEquals(Expander.SizeTypeProperty, SizeType.Small));
         {
             var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));
-            decoratorStyle.Add(Decorator.PaddingProperty, ExpanderTokenResourceKey.HeaderPaddingSM);
-            decoratorStyle.Add(TextElement.FontSizeProperty, DesignTokenKey.FontSize);
-            decoratorStyle.Add(TextBlock.LineHeightProperty, DesignTokenKey.FontHeight);
+            decoratorStyle.Add(Decorator.PaddingProperty, ExpanderTokenKey.HeaderPaddingSM);
+            decoratorStyle.Add(TextElement.FontSizeProperty, SharedTokenKey.FontSize);
+            decoratorStyle.Add(TextBlock.LineHeightProperty, SharedTokenKey.FontHeight);
             smallSizeStyle.Add(decoratorStyle);
         }
 
         {
             var contentPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ContentPresenterPart));
-            contentPresenterStyle.Add(ContentPresenter.PaddingProperty, ExpanderTokenResourceKey.ContentPaddingSM);
+            contentPresenterStyle.Add(ContentPresenter.PaddingProperty, ExpanderTokenKey.ContentPaddingSM);
             smallSizeStyle.Add(contentPresenterStyle);
         }
 
@@ -436,7 +436,7 @@ internal class ExpanderTheme : BaseControlTheme
         var borderlessStyle =
             new Style(selector => selector.Nesting().PropertyEquals(Expander.IsBorderlessProperty, true));
         var contentPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ContentPresenterPart));
-        contentPresenterStyle.Add(ContentPresenter.BackgroundProperty, CollapseTokenResourceKey.HeaderBg);
+        contentPresenterStyle.Add(ContentPresenter.BackgroundProperty, CollapseTokenKey.HeaderBg);
         borderlessStyle.Add(contentPresenterStyle);
         Add(borderlessStyle);
     }
@@ -446,7 +446,7 @@ internal class ExpanderTheme : BaseControlTheme
         var ghostStyle =
             new Style(selector => selector.Nesting().PropertyEquals(Expander.IsGhostStyleProperty, true));
         var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));
-        decoratorStyle.Add(Border.BackgroundProperty, ExpanderTokenResourceKey.ContentBg);
+        decoratorStyle.Add(Border.BackgroundProperty, ExpanderTokenKey.ContentBg);
         ghostStyle.Add(decoratorStyle);
         Add(ghostStyle);
     }
@@ -455,10 +455,10 @@ internal class ExpanderTheme : BaseControlTheme
     {
         var disabledStyle =
             new Style(selector => selector.Nesting().Class(StdPseudoClass.Disabled));
-        disabledStyle.Add(TemplatedControl.ForegroundProperty, DesignTokenKey.ColorTextDisabled);
+        disabledStyle.Add(TemplatedControl.ForegroundProperty, SharedTokenKey.ColorTextDisabled);
         var headerContentPresenterStyle = new Style(selector =>
             selector.Nesting().Template().Name(HeaderDecoratorPart).Descendant().OfType<ContentPresenter>());
-        headerContentPresenterStyle.Add(ContentPresenter.ForegroundProperty, DesignTokenKey.ColorTextDisabled);
+        headerContentPresenterStyle.Add(ContentPresenter.ForegroundProperty, SharedTokenKey.ColorTextDisabled);
         disabledStyle.Add(headerContentPresenterStyle);
 
         Add(disabledStyle);
@@ -468,8 +468,8 @@ internal class ExpanderTheme : BaseControlTheme
     {
         var addOnContentStyle = new Style(selector =>
             selector.Nesting().Template().Name(AddOnContentPresenterPart).Descendant().OfType<Icon>());
-        addOnContentStyle.Add(Layoutable.WidthProperty, DesignTokenKey.IconSize);
-        addOnContentStyle.Add(Layoutable.HeightProperty, DesignTokenKey.IconSize);
+        addOnContentStyle.Add(Layoutable.WidthProperty, SharedTokenKey.IconSize);
+        addOnContentStyle.Add(Layoutable.HeightProperty, SharedTokenKey.IconSize);
         Add(addOnContentStyle);
     }
 }

@@ -32,19 +32,19 @@ internal class ContextMenuTheme : BaseControlTheme
                 Name = RootContainerPart
             };
             TokenResourceBinder.CreateTokenBinding(wrapper, Border.BackgroundProperty,
-                MenuTokenResourceKey.MenuBgColor);
+                MenuTokenKey.MenuBgColor);
             TokenResourceBinder.CreateTokenBinding(wrapper, Layoutable.MinWidthProperty,
-                MenuTokenResourceKey.MenuPopupMinWidth);
+                MenuTokenKey.MenuPopupMinWidth);
             TokenResourceBinder.CreateTokenBinding(wrapper, Layoutable.MaxWidthProperty,
-                MenuTokenResourceKey.MenuPopupMaxWidth);
+                MenuTokenKey.MenuPopupMaxWidth);
             TokenResourceBinder.CreateTokenBinding(wrapper, Layoutable.MinHeightProperty,
-                MenuTokenResourceKey.MenuPopupMinHeight);
+                MenuTokenKey.MenuPopupMinHeight);
             TokenResourceBinder.CreateTokenBinding(wrapper, Layoutable.MaxHeightProperty,
-                MenuTokenResourceKey.MenuPopupMaxHeight);
+                MenuTokenKey.MenuPopupMaxHeight);
             TokenResourceBinder.CreateTokenBinding(wrapper, Decorator.PaddingProperty,
-                MenuTokenResourceKey.MenuPopupContentPadding);
+                MenuTokenKey.MenuPopupContentPadding);
             TokenResourceBinder.CreateTokenBinding(wrapper, Border.CornerRadiusProperty,
-                MenuTokenResourceKey.MenuPopupBorderRadius);
+                MenuTokenKey.MenuPopupBorderRadius);
 
             var scrollViewer = new MenuScrollViewer();
             var itemsPresenter = new ItemsPresenter
@@ -64,6 +64,6 @@ internal class ContextMenuTheme : BaseControlTheme
     protected override void BuildStyles()
     {
         this.Add(TemplatedControl.BackgroundProperty, new SolidColorBrush(Colors.Transparent));
-        this.Add(TemplatedControl.CornerRadiusProperty, MenuTokenResourceKey.MenuPopupBorderRadius);
+        this.Add(TemplatedControl.CornerRadiusProperty, MenuTokenKey.MenuPopupBorderRadius);
     }
 }

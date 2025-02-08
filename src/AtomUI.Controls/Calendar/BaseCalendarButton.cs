@@ -106,7 +106,7 @@ internal class BaseCalendarButton : AvaloniaButton
         Transitions ??= new Transitions
         {
             AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty,
-                DesignTokenKey.MotionDurationFast)
+                SharedTokenKey.MotionDurationFast)
         };
     }
 

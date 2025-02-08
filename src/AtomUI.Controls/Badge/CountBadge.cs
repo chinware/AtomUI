@@ -211,7 +211,7 @@ public class CountBadge : Control
             BindUtils.RelayBind(this, CountProperty, _badgeAdorner, CountBadgeAdorner.CountProperty);
         }
 
-        TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, DesignTokenKey.MotionDurationSlow);
+        TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, SharedTokenKey.MotionDurationSlow);
     }
 
     private void HandleDecoratedTargetChanged()

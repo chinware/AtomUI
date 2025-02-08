@@ -48,9 +48,9 @@ internal class CardTabStripItemTheme : BaseTabStripItemTheme
 
         {
             var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(DecoratorPart));
-            decoratorStyle.Add(Layoutable.MarginProperty, TabControlTokenResourceKey.HorizontalItemMargin);
-            decoratorStyle.Add(Border.BackgroundProperty, TabControlTokenResourceKey.CardBg);
-            decoratorStyle.Add(Border.BorderBrushProperty, DesignTokenKey.ColorBorderSecondary);
+            decoratorStyle.Add(Layoutable.MarginProperty, TabControlTokenKey.HorizontalItemMargin);
+            decoratorStyle.Add(Border.BackgroundProperty, TabControlTokenKey.CardBg);
+            decoratorStyle.Add(Border.BorderBrushProperty, SharedTokenKey.ColorBorderSecondary);
             commonStyle.Add(decoratorStyle);
         }
 
@@ -58,7 +58,7 @@ internal class CardTabStripItemTheme : BaseTabStripItemTheme
         var selectedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Selected));
         {
             var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(DecoratorPart));
-            decoratorStyle.Add(Border.BackgroundProperty, DesignTokenKey.ColorBgContainer);
+            decoratorStyle.Add(Border.BackgroundProperty, SharedTokenKey.ColorBgContainer);
             selectedStyle.Add(decoratorStyle);
         }
         commonStyle.Add(selectedStyle);
@@ -80,7 +80,7 @@ internal class CardTabStripItemTheme : BaseTabStripItemTheme
                 selector.Nesting().PropertyEquals(TabStripItem.SizeTypeProperty, SizeType.Large));
             {
                 var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(DecoratorPart));
-                decoratorStyle.Add(Decorator.PaddingProperty, TabControlTokenResourceKey.CardPaddingLG);
+                decoratorStyle.Add(Decorator.PaddingProperty, TabControlTokenKey.CardPaddingLG);
                 largeSizeStyle.Add(decoratorStyle);
             }
             topOrBottomStyle.Add(largeSizeStyle);
@@ -89,7 +89,7 @@ internal class CardTabStripItemTheme : BaseTabStripItemTheme
                 selector.Nesting().PropertyEquals(TabStripItem.SizeTypeProperty, SizeType.Middle));
             {
                 var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(DecoratorPart));
-                decoratorStyle.Add(Decorator.PaddingProperty, TabControlTokenResourceKey.CardPadding);
+                decoratorStyle.Add(Decorator.PaddingProperty, TabControlTokenKey.CardPadding);
                 middleSizeStyle.Add(decoratorStyle);
             }
             topOrBottomStyle.Add(middleSizeStyle);
@@ -98,7 +98,7 @@ internal class CardTabStripItemTheme : BaseTabStripItemTheme
                 selector.Nesting().PropertyEquals(TabStripItem.SizeTypeProperty, SizeType.Small));
             {
                 var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(DecoratorPart));
-                decoratorStyle.Add(Decorator.PaddingProperty, TabControlTokenResourceKey.CardPaddingSM);
+                decoratorStyle.Add(Decorator.PaddingProperty, TabControlTokenKey.CardPaddingSM);
                 smallSizeType.Add(decoratorStyle);
             }
 
@@ -114,7 +114,7 @@ internal class CardTabStripItemTheme : BaseTabStripItemTheme
                 selector.Nesting().PropertyEquals(TabStripItem.SizeTypeProperty, SizeType.Large));
             {
                 var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(DecoratorPart));
-                decoratorStyle.Add(Decorator.PaddingProperty, TabControlTokenResourceKey.VerticalItemPadding);
+                decoratorStyle.Add(Decorator.PaddingProperty, TabControlTokenKey.VerticalItemPadding);
                 largeSizeStyle.Add(decoratorStyle);
             }
             leftOrRightStyle.Add(largeSizeStyle);
@@ -123,7 +123,7 @@ internal class CardTabStripItemTheme : BaseTabStripItemTheme
                 selector.Nesting().PropertyEquals(TabStripItem.SizeTypeProperty, SizeType.Middle));
             {
                 var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(DecoratorPart));
-                decoratorStyle.Add(Decorator.PaddingProperty, TabControlTokenResourceKey.VerticalItemPadding);
+                decoratorStyle.Add(Decorator.PaddingProperty, TabControlTokenKey.VerticalItemPadding);
                 middleSizeStyle.Add(decoratorStyle);
             }
             leftOrRightStyle.Add(middleSizeStyle);
@@ -132,7 +132,7 @@ internal class CardTabStripItemTheme : BaseTabStripItemTheme
                 selector.Nesting().PropertyEquals(TabStripItem.SizeTypeProperty, SizeType.Small));
             {
                 var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(DecoratorPart));
-                decoratorStyle.Add(Decorator.PaddingProperty, TabControlTokenResourceKey.VerticalItemPadding);
+                decoratorStyle.Add(Decorator.PaddingProperty, TabControlTokenKey.VerticalItemPadding);
                 smallSizeType.Add(decoratorStyle);
             }
 
@@ -154,7 +154,7 @@ internal class CardTabStripItemTheme : BaseTabStripItemTheme
             topStyle.Add(iconStyle);
 
             var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(DecoratorPart));
-            decoratorStyle.Add(Border.BorderBrushProperty, DesignTokenKey.ColorBorderSecondary);
+            decoratorStyle.Add(Border.BorderBrushProperty, SharedTokenKey.ColorBorderSecondary);
 
             Add(topStyle);
         }
@@ -193,7 +193,7 @@ internal class CardTabStripItemTheme : BaseTabStripItemTheme
     {
         var disabledStyle  = new Style(selector => selector.Nesting().Class(StdPseudoClass.Disabled));
         var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(DecoratorPart));
-        decoratorStyle.Add(Border.BackgroundProperty, DesignTokenKey.ColorBgContainerDisabled);
+        decoratorStyle.Add(Border.BackgroundProperty, SharedTokenKey.ColorBgContainerDisabled);
         disabledStyle.Add(decoratorStyle);
         Add(disabledStyle);
     }

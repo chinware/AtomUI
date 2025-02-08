@@ -254,7 +254,7 @@ public class NavMenu : NavMenuBase
     {
         base.OnAttachedToVisualTree(e);
         InteractionHandler?.Attach(this);
-        TokenResourceBinder.CreateSharedTokenBinding(this, HorizontalBorderThicknessProperty, DesignTokenKey.LineWidth,
+        TokenResourceBinder.CreateSharedTokenBinding(this, HorizontalBorderThicknessProperty, SharedTokenKey.LineWidth,
             BindingPriority.Template,
             new RenderScaleAwareDoubleConfigure(this));
     }
@@ -268,8 +268,8 @@ public class NavMenu : NavMenuBase
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        TokenResourceBinder.CreateTokenBinding(this, ActiveBarWidthProperty, NavMenuTokenResourceKey.ActiveBarWidth);
-        TokenResourceBinder.CreateTokenBinding(this, ActiveBarHeightProperty, NavMenuTokenResourceKey.ActiveBarHeight);
+        TokenResourceBinder.CreateTokenBinding(this, ActiveBarWidthProperty, NavMenuTokenKey.ActiveBarWidth);
+        TokenResourceBinder.CreateTokenBinding(this, ActiveBarHeightProperty, NavMenuTokenKey.ActiveBarHeight);
     }
 
     private void SetupInteractionHandler(bool needMount = false)

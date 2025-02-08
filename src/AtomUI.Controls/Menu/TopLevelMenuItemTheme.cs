@@ -79,19 +79,19 @@ internal class TopLevelMenuItemTheme : BaseControlTheme
         var border = new Border();
 
         TokenResourceBinder.CreateTokenBinding(border, Border.BackgroundProperty,
-            DesignTokenKey.ColorBgContainer);
+            SharedTokenKey.ColorBgContainer);
         TokenResourceBinder.CreateTokenBinding(border, Border.CornerRadiusProperty,
-            MenuTokenResourceKey.MenuPopupBorderRadius);
+            MenuTokenKey.MenuPopupBorderRadius);
         TokenResourceBinder.CreateTokenBinding(border, Layoutable.MinWidthProperty,
-            MenuTokenResourceKey.MenuPopupMinWidth);
+            MenuTokenKey.MenuPopupMinWidth);
         TokenResourceBinder.CreateTokenBinding(border, Layoutable.MaxWidthProperty,
-            MenuTokenResourceKey.MenuPopupMaxWidth);
+            MenuTokenKey.MenuPopupMaxWidth);
         TokenResourceBinder.CreateTokenBinding(border, Layoutable.MinHeightProperty,
-            MenuTokenResourceKey.MenuPopupMinHeight);
+            MenuTokenKey.MenuPopupMinHeight);
         TokenResourceBinder.CreateTokenBinding(border, Layoutable.MaxHeightProperty,
-            MenuTokenResourceKey.MenuPopupMaxHeight);
+            MenuTokenKey.MenuPopupMaxHeight);
         TokenResourceBinder.CreateTokenBinding(border, Decorator.PaddingProperty,
-            MenuTokenResourceKey.MenuPopupContentPadding);
+            MenuTokenKey.MenuPopupContentPadding);
 
         var scrollViewer = new MenuScrollViewer();
         var itemsPresenter = new ItemsPresenter
@@ -106,9 +106,9 @@ internal class TopLevelMenuItemTheme : BaseControlTheme
         popup.Child          = border;
 
         TokenResourceBinder.CreateTokenBinding(popup, Popup.MarginToAnchorProperty,
-            MenuTokenResourceKey.TopLevelItemPopupMarginToAnchor);
+            MenuTokenKey.TopLevelItemPopupMarginToAnchor);
         TokenResourceBinder.CreateTokenBinding(popup, Popup.MaskShadowsProperty,
-            MenuTokenResourceKey.MenuPopupBoxShadows);
+            MenuTokenKey.MenuPopupBoxShadows);
 
         CreateTemplateParentBinding(popup, Avalonia.Controls.Primitives.Popup.IsOpenProperty,
             Avalonia.Controls.MenuItem.IsSubMenuOpenProperty, BindingMode.TwoWay);
@@ -129,13 +129,13 @@ internal class TopLevelMenuItemTheme : BaseControlTheme
     {
         var commonStyle =
             new Style(selector => selector.Nesting().PropertyEquals(InputElement.IsEnabledProperty, true));
-        commonStyle.Add(TemplatedControl.BackgroundProperty, DesignTokenKey.ColorTransparent);
+        commonStyle.Add(TemplatedControl.BackgroundProperty, SharedTokenKey.ColorTransparent);
 
         // 正常状态
         {
             var contentPresenterStyle = new Style(selector =>
                 selector.Nesting().Template().OfType<ContentPresenter>().Name(HeaderPresenterPart));
-            contentPresenterStyle.Add(ContentPresenter.BackgroundProperty, DesignTokenKey.ColorTransparent);
+            contentPresenterStyle.Add(ContentPresenter.BackgroundProperty, SharedTokenKey.ColorTransparent);
             commonStyle.Add(contentPresenterStyle);
         }
 
@@ -145,9 +145,9 @@ internal class TopLevelMenuItemTheme : BaseControlTheme
             var contentPresenterHoverStyle = new Style(selector =>
                 selector.Nesting().Template().OfType<ContentPresenter>().Name(HeaderPresenterPart));
             contentPresenterHoverStyle.Add(ContentPresenter.BackgroundProperty,
-                MenuTokenResourceKey.TopLevelItemHoverBg);
+                MenuTokenKey.TopLevelItemHoverBg);
             contentPresenterHoverStyle.Add(ContentPresenter.ForegroundProperty,
-                MenuTokenResourceKey.TopLevelItemHoverColor);
+                MenuTokenKey.TopLevelItemHoverColor);
             contentPresenterHoverStyle.Add(InputElement.CursorProperty, new Cursor(StandardCursorType.Hand));
             hoverStyle.Add(contentPresenterHoverStyle);
         }
@@ -160,9 +160,9 @@ internal class TopLevelMenuItemTheme : BaseControlTheme
             var contentPresenterHoverStyle = new Style(selector =>
                 selector.Nesting().Template().OfType<ContentPresenter>().Name(HeaderPresenterPart));
             contentPresenterHoverStyle.Add(ContentPresenter.BackgroundProperty,
-                MenuTokenResourceKey.TopLevelItemHoverBg);
+                MenuTokenKey.TopLevelItemHoverBg);
             contentPresenterHoverStyle.Add(ContentPresenter.ForegroundProperty,
-                MenuTokenResourceKey.TopLevelItemHoverColor);
+                MenuTokenKey.TopLevelItemHoverColor);
             contentPresenterHoverStyle.Add(InputElement.CursorProperty, new Cursor(StandardCursorType.Hand));
             openedStyle.Add(contentPresenterHoverStyle);
         }
@@ -176,40 +176,40 @@ internal class TopLevelMenuItemTheme : BaseControlTheme
     {
         var largeSizeStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(MenuItem.SizeTypeProperty, SizeType.Large));
-        largeSizeStyle.Add(TemplatedControl.CornerRadiusProperty, MenuTokenResourceKey.TopLevelItemBorderRadiusLG);
-        largeSizeStyle.Add(Layoutable.MinHeightProperty, DesignTokenKey.ControlHeightLG);
-        largeSizeStyle.Add(TemplatedControl.PaddingProperty, MenuTokenResourceKey.TopLevelItemPaddingLG);
-        largeSizeStyle.Add(TemplatedControl.FontSizeProperty, MenuTokenResourceKey.TopLevelItemFontSizeLG);
+        largeSizeStyle.Add(TemplatedControl.CornerRadiusProperty, MenuTokenKey.TopLevelItemBorderRadiusLG);
+        largeSizeStyle.Add(Layoutable.MinHeightProperty, SharedTokenKey.ControlHeightLG);
+        largeSizeStyle.Add(TemplatedControl.PaddingProperty, MenuTokenKey.TopLevelItemPaddingLG);
+        largeSizeStyle.Add(TemplatedControl.FontSizeProperty, MenuTokenKey.TopLevelItemFontSizeLG);
         {
             var presenterStyle = new Style(selector => selector.Nesting().Template().Name(HeaderPresenterPart));
 
-            presenterStyle.Add(ContentPresenter.LineHeightProperty, MenuTokenResourceKey.TopLevelItemLineHeightLG);
+            presenterStyle.Add(ContentPresenter.LineHeightProperty, MenuTokenKey.TopLevelItemLineHeightLG);
             largeSizeStyle.Add(presenterStyle);
         }
         topLevelStyle.Add(largeSizeStyle);
 
         var middleSizeStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(MenuItem.SizeTypeProperty, SizeType.Middle));
-        middleSizeStyle.Add(TemplatedControl.CornerRadiusProperty, MenuTokenResourceKey.TopLevelItemBorderRadius);
-        middleSizeStyle.Add(Layoutable.MinHeightProperty, DesignTokenKey.ControlHeight);
-        middleSizeStyle.Add(TemplatedControl.PaddingProperty, MenuTokenResourceKey.TopLevelItemPadding);
-        middleSizeStyle.Add(TemplatedControl.FontSizeProperty, MenuTokenResourceKey.TopLevelItemFontSize);
+        middleSizeStyle.Add(TemplatedControl.CornerRadiusProperty, MenuTokenKey.TopLevelItemBorderRadius);
+        middleSizeStyle.Add(Layoutable.MinHeightProperty, SharedTokenKey.ControlHeight);
+        middleSizeStyle.Add(TemplatedControl.PaddingProperty, MenuTokenKey.TopLevelItemPadding);
+        middleSizeStyle.Add(TemplatedControl.FontSizeProperty, MenuTokenKey.TopLevelItemFontSize);
         {
             var presenterStyle = new Style(selector => selector.Nesting().Template().Name(HeaderPresenterPart));
-            presenterStyle.Add(ContentPresenter.LineHeightProperty, MenuTokenResourceKey.TopLevelItemLineHeight);
+            presenterStyle.Add(ContentPresenter.LineHeightProperty, MenuTokenKey.TopLevelItemLineHeight);
             middleSizeStyle.Add(presenterStyle);
         }
         topLevelStyle.Add(middleSizeStyle);
 
         var smallSizeStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(MenuItem.SizeTypeProperty, SizeType.Small));
-        smallSizeStyle.Add(TemplatedControl.CornerRadiusProperty, MenuTokenResourceKey.TopLevelItemBorderRadiusSM);
-        smallSizeStyle.Add(Layoutable.MinHeightProperty, DesignTokenKey.ControlHeightSM);
-        smallSizeStyle.Add(TemplatedControl.PaddingProperty, MenuTokenResourceKey.TopLevelItemPaddingSM);
-        smallSizeStyle.Add(TemplatedControl.FontSizeProperty, MenuTokenResourceKey.TopLevelItemFontSizeSM);
+        smallSizeStyle.Add(TemplatedControl.CornerRadiusProperty, MenuTokenKey.TopLevelItemBorderRadiusSM);
+        smallSizeStyle.Add(Layoutable.MinHeightProperty, SharedTokenKey.ControlHeightSM);
+        smallSizeStyle.Add(TemplatedControl.PaddingProperty, MenuTokenKey.TopLevelItemPaddingSM);
+        smallSizeStyle.Add(TemplatedControl.FontSizeProperty, MenuTokenKey.TopLevelItemFontSizeSM);
         {
             var presenterStyle = new Style(selector => selector.Nesting().Template().Name(HeaderPresenterPart));
-            presenterStyle.Add(ContentPresenter.LineHeightProperty, MenuTokenResourceKey.TopLevelItemLineHeightSM);
+            presenterStyle.Add(ContentPresenter.LineHeightProperty, MenuTokenKey.TopLevelItemLineHeightSM);
             smallSizeStyle.Add(presenterStyle);
         }
         topLevelStyle.Add(smallSizeStyle);
@@ -218,7 +218,7 @@ internal class TopLevelMenuItemTheme : BaseControlTheme
     private void BuildDisabledStyle(Style topLevelStyle)
     {
         var disabledStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Disabled));
-        disabledStyle.Add(TemplatedControl.ForegroundProperty, MenuTokenResourceKey.ItemDisabledColor);
+        disabledStyle.Add(TemplatedControl.ForegroundProperty, MenuTokenKey.ItemDisabledColor);
         topLevelStyle.Add(disabledStyle);
     }
 }

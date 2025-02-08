@@ -85,12 +85,12 @@ internal class ComboBoxSpinnerInnerBox : AddOnDecoratedInnerBox, ICustomHitTest
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         TokenResourceBinder.CreateSharedTokenBinding(this, SpinnerBorderThicknessProperty,
-            DesignTokenKey.BorderThickness, BindingPriority.Template,
+            SharedTokenKey.BorderThickness, BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this));
         TokenResourceBinder.CreateSharedTokenBinding(this, SpinnerBorderBrushProperty,
-            DesignTokenKey.ColorBorder);
+            SharedTokenKey.ColorBorder);
         TokenResourceBinder.CreateTokenBinding(this, SpinnerHandleWidthTokenProperty,
-            ButtonSpinnerTokenResourceKey.HandleWidth);
+            ButtonSpinnerTokenKey.HandleWidth);
         base.OnApplyTemplate(e);
     }
 }

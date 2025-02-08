@@ -24,24 +24,24 @@ internal class RangeDatePickerTheme : RangeInfoPickerInputTheme
         base.BuildStyles();
         {
             var infoInputBoxStyle = new Style(selector => selector.Nesting().Template().Name(InfoInputBoxPart));
-            infoInputBoxStyle.Add(TextBox.MinWidthProperty, DatePickerTokenResourceKey.PickerInputMinWidth);
+            infoInputBoxStyle.Add(TextBox.MinWidthProperty, DatePickerTokenKey.PickerInputMinWidth);
             Add(infoInputBoxStyle);
         
             var secondaryInfoInputBoxStyle = new Style(selector => selector.Nesting().Template().Name(SecondaryInfoInputBoxPart));
-            secondaryInfoInputBoxStyle.Add(TextBox.MinWidthProperty, DatePickerTokenResourceKey.PickerInputMinWidth);
+            secondaryInfoInputBoxStyle.Add(TextBox.MinWidthProperty, DatePickerTokenKey.PickerInputMinWidth);
             Add(secondaryInfoInputBoxStyle);
         }
 
         var withTimeStyle =
             new Style(selector => selector.Nesting().PropertyEquals(DatePicker.IsShowTimeProperty, true));
-        withTimeStyle.Add(DatePicker.MinWidthProperty, DatePickerTokenResourceKey.PickerInputWithTimeMinWidth);
+        withTimeStyle.Add(DatePicker.MinWidthProperty, DatePickerTokenKey.PickerInputWithTimeMinWidth);
         {
             var infoInputBoxStyle = new Style(selector => selector.Nesting().Template().Name(InfoInputBoxPart));
-            infoInputBoxStyle.Add(TextBox.MinWidthProperty, DatePickerTokenResourceKey.PickerInputWithTimeMinWidth);
+            infoInputBoxStyle.Add(TextBox.MinWidthProperty, DatePickerTokenKey.PickerInputWithTimeMinWidth);
             withTimeStyle.Add(infoInputBoxStyle);
         
             var secondaryInfoInputBoxStyle = new Style(selector => selector.Nesting().Template().Name(SecondaryInfoInputBoxPart));
-            secondaryInfoInputBoxStyle.Add(TextBox.MinWidthProperty, DatePickerTokenResourceKey.PickerInputWithTimeMinWidth);
+            secondaryInfoInputBoxStyle.Add(TextBox.MinWidthProperty, DatePickerTokenKey.PickerInputWithTimeMinWidth);
             withTimeStyle.Add(secondaryInfoInputBoxStyle);
         }
         Add(withTimeStyle);

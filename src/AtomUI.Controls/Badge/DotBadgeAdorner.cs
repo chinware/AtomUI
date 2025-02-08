@@ -99,7 +99,7 @@ internal class DotBadgeAdorner : TemplatedControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, DesignTokenKey.MotionDurationMid);
+        TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, SharedTokenKey.MotionDurationMid);
         SetupBadgeColor();
         _indicatorMotionActor = e.NameScope.Get<MotionActorControl>(DotBadgeAdornerTheme.IndicatorMotionActorPart);
     }
@@ -148,27 +148,27 @@ internal class DotBadgeAdorner : TemplatedControl
             if (Status == DotBadgeStatus.Error)
             {
                 TokenResourceBinder.CreateSharedTokenBinding(this, BadgeDotColorProperty,
-                    DesignTokenKey.ColorError);
+                    SharedTokenKey.ColorError);
             }
             else if (Status == DotBadgeStatus.Success)
             {
                 TokenResourceBinder.CreateSharedTokenBinding(this, BadgeDotColorProperty,
-                    DesignTokenKey.ColorSuccess);
+                    SharedTokenKey.ColorSuccess);
             }
             else if (Status == DotBadgeStatus.Warning)
             {
                 TokenResourceBinder.CreateSharedTokenBinding(this, BadgeDotColorProperty,
-                    DesignTokenKey.ColorWarning);
+                    SharedTokenKey.ColorWarning);
             }
             else if (Status == DotBadgeStatus.Processing)
             {
                 TokenResourceBinder.CreateSharedTokenBinding(this, BadgeDotColorProperty,
-                    DesignTokenKey.ColorInfo);
+                    SharedTokenKey.ColorInfo);
             }
             else if (Status == DotBadgeStatus.Default)
             {
                 TokenResourceBinder.CreateSharedTokenBinding(this, BadgeDotColorProperty,
-                    DesignTokenKey.ColorTextPlaceholder);
+                    SharedTokenKey.ColorTextPlaceholder);
             }
         }
     }

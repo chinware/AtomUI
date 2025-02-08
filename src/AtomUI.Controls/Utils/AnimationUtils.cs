@@ -15,7 +15,7 @@ public sealed class AnimationUtils : AtomUI.Utils.AnimationUtils
         where T : TransitionBase, new()
     {
         easing              ??= new LinearEasing();
-        durationResourceKey ??= DesignTokenKey.MotionDurationMid;
+        durationResourceKey ??= SharedTokenKey.MotionDurationMid;
         var transition = new T
         {
             Property = targetProperty,

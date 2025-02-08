@@ -100,12 +100,12 @@ public class BaseTabControl : AvaloniaTabControl
         if (_frameDecorator is not null)
         {
             TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
-                DesignTokenKey.BorderThickness, BindingPriority.Template,
+                SharedTokenKey.BorderThickness, BindingPriority.Template,
                 new RenderScaleAwareThicknessConfigure(this));
         }
 
         TokenResourceBinder.CreateTokenBinding(this, TabAndContentGutterProperty,
-            TabControlTokenResourceKey.TabAndContentGutter);
+            TabControlTokenKey.TabAndContentGutter);
     }
 
     protected override void PrepareContainerForItemOverride(Control container, object? item, int index)

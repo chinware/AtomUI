@@ -60,12 +60,12 @@ internal class CalendarTheme : BaseControlTheme
     protected override void BuildStyles()
     {
         var commonStyle = new Style(selector => selector.Nesting());
-        commonStyle.Add(TemplatedControl.BorderBrushProperty, DesignTokenKey.ColorBorder);
-        commonStyle.Add(TemplatedControl.CornerRadiusProperty, DesignTokenKey.BorderRadius);
-        commonStyle.Add(TemplatedControl.BackgroundProperty, DesignTokenKey.ColorBgContainer);
-        commonStyle.Add(TemplatedControl.PaddingProperty, CalendarTokenResourceKey.PanelContentPadding);
-        commonStyle.Add(Layoutable.MinWidthProperty, CalendarTokenResourceKey.ItemPanelMinWidth);
-        commonStyle.Add(Layoutable.MinHeightProperty, CalendarTokenResourceKey.ItemPanelMinHeight);
+        commonStyle.Add(TemplatedControl.BorderBrushProperty, SharedTokenKey.ColorBorder);
+        commonStyle.Add(TemplatedControl.CornerRadiusProperty, SharedTokenKey.BorderRadius);
+        commonStyle.Add(TemplatedControl.BackgroundProperty, SharedTokenKey.ColorBgContainer);
+        commonStyle.Add(TemplatedControl.PaddingProperty, CalendarTokenKey.PanelContentPadding);
+        commonStyle.Add(Layoutable.MinWidthProperty, CalendarTokenKey.ItemPanelMinWidth);
+        commonStyle.Add(Layoutable.MinHeightProperty, CalendarTokenKey.ItemPanelMinHeight);
         Add(commonStyle);
     }
 }

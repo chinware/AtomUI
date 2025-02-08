@@ -42,27 +42,27 @@ internal class AlertTheme : BaseControlTheme
 
     private void BuildAlertTypeStyle()
     {
-        this.Add(TemplatedControl.CornerRadiusProperty, DesignTokenKey.BorderRadiusLG);
+        this.Add(TemplatedControl.CornerRadiusProperty, SharedTokenKey.BorderRadiusLG);
         var successStyle =
             new Style(selector => selector.Nesting().PropertyEquals(Alert.TypeProperty, AlertType.Success));
-        successStyle.Add(TemplatedControl.BackgroundProperty, DesignTokenKey.ColorSuccessBg);
-        successStyle.Add(TemplatedControl.BorderBrushProperty, DesignTokenKey.ColorSuccessBorder);
+        successStyle.Add(TemplatedControl.BackgroundProperty, SharedTokenKey.ColorSuccessBg);
+        successStyle.Add(TemplatedControl.BorderBrushProperty, SharedTokenKey.ColorSuccessBorder);
         Add(successStyle);
 
         var infoStyle = new Style(selector => selector.Nesting().PropertyEquals(Alert.TypeProperty, AlertType.Info));
-        infoStyle.Add(TemplatedControl.BackgroundProperty, DesignTokenKey.ColorInfoBg);
-        infoStyle.Add(TemplatedControl.BorderBrushProperty, DesignTokenKey.ColorInfoBorder);
+        infoStyle.Add(TemplatedControl.BackgroundProperty, SharedTokenKey.ColorInfoBg);
+        infoStyle.Add(TemplatedControl.BorderBrushProperty, SharedTokenKey.ColorInfoBorder);
         Add(infoStyle);
 
         var warningStyle =
             new Style(selector => selector.Nesting().PropertyEquals(Alert.TypeProperty, AlertType.Warning));
-        warningStyle.Add(TemplatedControl.BackgroundProperty, DesignTokenKey.ColorWarningBg);
-        warningStyle.Add(TemplatedControl.BorderBrushProperty, DesignTokenKey.ColorWarningBorder);
+        warningStyle.Add(TemplatedControl.BackgroundProperty, SharedTokenKey.ColorWarningBg);
+        warningStyle.Add(TemplatedControl.BorderBrushProperty, SharedTokenKey.ColorWarningBorder);
         Add(warningStyle);
 
         var errorStyle = new Style(selector => selector.Nesting().PropertyEquals(Alert.TypeProperty, AlertType.Error));
-        errorStyle.Add(TemplatedControl.BackgroundProperty, DesignTokenKey.ColorErrorBg);
-        errorStyle.Add(TemplatedControl.BorderBrushProperty, DesignTokenKey.ColorErrorBorder);
+        errorStyle.Add(TemplatedControl.BackgroundProperty, SharedTokenKey.ColorErrorBg);
+        errorStyle.Add(TemplatedControl.BorderBrushProperty, SharedTokenKey.ColorErrorBorder);
         Add(errorStyle);
 
         // 根据是否显示 Description 设置 Padding
@@ -70,14 +70,14 @@ internal class AlertTheme : BaseControlTheme
             // 为空
             var paddingStyle =
                 new Style(selector => selector.Nesting().PropertyEquals(Alert.DescriptionProperty, null));
-            paddingStyle.Add(TemplatedControl.PaddingProperty, AlertTokenResourceKey.DefaultPadding);
+            paddingStyle.Add(TemplatedControl.PaddingProperty, AlertTokenKey.DefaultPadding);
             Add(paddingStyle);
         }
         {
             // 不为空
             var paddingStyle = new Style(selector =>
                 selector.Nesting().Not(x => x.PropertyEquals(Alert.DescriptionProperty, null)));
-            paddingStyle.Add(TemplatedControl.PaddingProperty, AlertTokenResourceKey.WithDescriptionPadding);
+            paddingStyle.Add(TemplatedControl.PaddingProperty, AlertTokenKey.WithDescriptionPadding);
             Add(paddingStyle);
         }
     }
@@ -92,7 +92,7 @@ internal class AlertTheme : BaseControlTheme
             var descriptionStyle = new Style(selector =>
                 selector.Nesting().Not(x => x.PropertyEquals(Alert.DescriptionProperty, null)));
             var commonLabelStyle = new Style(selector => commonLabelSelector);
-            commonLabelStyle.Add(TemplatedControl.FontSizeProperty, DesignTokenKey.FontSizeLG);
+            commonLabelStyle.Add(TemplatedControl.FontSizeProperty, SharedTokenKey.FontSizeLG);
             commonLabelStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Top);
             descriptionStyle.Add(commonLabelStyle);
             Add(descriptionStyle);
@@ -101,7 +101,7 @@ internal class AlertTheme : BaseControlTheme
             var descriptionStyle =
                 new Style(selector => selector.Nesting().PropertyEquals(Alert.DescriptionProperty, null));
             var commonLabelStyle = new Style(selector => commonLabelSelector);
-            commonLabelStyle.Add(TemplatedControl.FontSizeProperty, DesignTokenKey.FontSize);
+            commonLabelStyle.Add(TemplatedControl.FontSizeProperty, SharedTokenKey.FontSize);
             commonLabelStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Stretch);
             descriptionStyle.Add(commonLabelStyle);
             Add(descriptionStyle);
@@ -150,7 +150,7 @@ internal class AlertTheme : BaseControlTheme
                 selector.Nesting().PropertyEquals(Alert.TypeProperty, AlertType.Success));
             var infoIconStyle = new Style(selector => infoIconSelector);
             infoIconStyle.Add(Icon.IconInfoProperty, AntDesignIconPackage.Current.GetIconInfo(AntDesignIconKind.CheckCircleFilled));
-            infoIconStyle.Add(Icon.NormalFilledBrushProperty, DesignTokenKey.ColorSuccess);
+            infoIconStyle.Add(Icon.NormalFilledBrushProperty, SharedTokenKey.ColorSuccess);
             successStyle.Add(infoIconStyle);
             Add(successStyle);
         }
@@ -160,7 +160,7 @@ internal class AlertTheme : BaseControlTheme
                 selector.Nesting().PropertyEquals(Alert.TypeProperty, AlertType.Info));
             var infoIconStyle = new Style(selector => infoIconSelector);
             infoIconStyle.Add(Icon.IconInfoProperty, AntDesignIconPackage.Current.GetIconInfo(AntDesignIconKind.InfoCircleFilled));
-            infoIconStyle.Add(Icon.NormalFilledBrushProperty, DesignTokenKey.ColorPrimary);
+            infoIconStyle.Add(Icon.NormalFilledBrushProperty, SharedTokenKey.ColorPrimary);
             infoStyle.Add(infoIconStyle);
             Add(infoStyle);
         }
@@ -170,7 +170,7 @@ internal class AlertTheme : BaseControlTheme
                 selector.Nesting().PropertyEquals(Alert.TypeProperty, AlertType.Warning));
             var infoIconStyle = new Style(selector => infoIconSelector);
             infoIconStyle.Add(Icon.IconInfoProperty, AntDesignIconPackage.Current.GetIconInfo(AntDesignIconKind.ExclamationCircleFilled));
-            infoIconStyle.Add(Icon.NormalFilledBrushProperty, DesignTokenKey.ColorWarning);
+            infoIconStyle.Add(Icon.NormalFilledBrushProperty, SharedTokenKey.ColorWarning);
             warningStyle.Add(infoIconStyle);
             Add(warningStyle);
         }
@@ -180,7 +180,7 @@ internal class AlertTheme : BaseControlTheme
                 selector.Nesting().PropertyEquals(Alert.TypeProperty, AlertType.Error));
             var infoIconStyle = new Style(selector => infoIconSelector);
             infoIconStyle.Add(Icon.IconInfoProperty, AntDesignIconPackage.Current.GetIconInfo(AntDesignIconKind.CloseCircleFilled));
-            infoIconStyle.Add(Icon.NormalFilledBrushProperty, DesignTokenKey.ColorError);
+            infoIconStyle.Add(Icon.NormalFilledBrushProperty, SharedTokenKey.ColorError);
             errorStyle.Add(infoIconStyle);
             Add(errorStyle);
         }
@@ -191,9 +191,9 @@ internal class AlertTheme : BaseControlTheme
             var wrapperStyle =
                 new Style(selector => selector.Nesting().PropertyEquals(Alert.DescriptionProperty, null));
             var infoIconStyle = new Style(selector => infoIconSelector);
-            infoIconStyle.Add(Layoutable.WidthProperty, AlertTokenResourceKey.IconSize);
-            infoIconStyle.Add(Layoutable.HeightProperty, AlertTokenResourceKey.IconSize);
-            infoIconStyle.Add(Layoutable.MarginProperty, AlertTokenResourceKey.IconDefaultMargin);
+            infoIconStyle.Add(Layoutable.WidthProperty, AlertTokenKey.IconSize);
+            infoIconStyle.Add(Layoutable.HeightProperty, AlertTokenKey.IconSize);
+            infoIconStyle.Add(Layoutable.MarginProperty, AlertTokenKey.IconDefaultMargin);
             infoIconStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Center);
             wrapperStyle.Add(infoIconStyle);
             Add(wrapperStyle);
@@ -203,9 +203,9 @@ internal class AlertTheme : BaseControlTheme
             var wrapperStyle = new Style(selector =>
                 selector.Nesting().Not(x => x.PropertyEquals(Alert.DescriptionProperty, null)));
             var infoIconStyle = new Style(selector => infoIconSelector);
-            infoIconStyle.Add(Layoutable.WidthProperty, AlertTokenResourceKey.WithDescriptionIconSize);
-            infoIconStyle.Add(Layoutable.HeightProperty, AlertTokenResourceKey.WithDescriptionIconSize);
-            infoIconStyle.Add(Layoutable.MarginProperty, AlertTokenResourceKey.IconWithDescriptionMargin);
+            infoIconStyle.Add(Layoutable.WidthProperty, AlertTokenKey.WithDescriptionIconSize);
+            infoIconStyle.Add(Layoutable.HeightProperty, AlertTokenKey.WithDescriptionIconSize);
+            infoIconStyle.Add(Layoutable.MarginProperty, AlertTokenKey.IconWithDescriptionMargin);
             infoIconStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Top);
             wrapperStyle.Add(infoIconStyle);
             Add(wrapperStyle);
@@ -299,11 +299,11 @@ internal class AlertTheme : BaseControlTheme
         };
 
         TokenResourceBinder.CreateTokenBinding(closeBtn, IconButton.IconWidthProperty,
-            DesignTokenKey.IconSizeSM);
+            SharedTokenKey.IconSizeSM);
         TokenResourceBinder.CreateTokenBinding(closeBtn, IconButton.IconHeightProperty,
-            DesignTokenKey.IconSizeSM);
+            SharedTokenKey.IconSizeSM);
         TokenResourceBinder.CreateTokenBinding(closeBtn, Layoutable.MarginProperty,
-            AlertTokenResourceKey.ExtraElementMargin);
+            AlertTokenKey.ExtraElementMargin);
 
         CreateTemplateParentBinding(closeBtn, Visual.IsVisibleProperty, Alert.IsClosableProperty);
         CreateTemplateParentBinding(closeBtn, IconButton.IconProperty, Alert.CloseIconProperty);
@@ -377,7 +377,7 @@ internal class AlertTheme : BaseControlTheme
             IsVisible                  = !string.IsNullOrEmpty(alert.Description)
         };
         TokenResourceBinder.CreateTokenBinding(descriptionLabel, Layoutable.MarginProperty,
-            DesignTokenKey.MarginXS, BindingPriority.Template,
+            SharedTokenKey.MarginXS, BindingPriority.Template,
             o =>
             {
                 if (o is double value)

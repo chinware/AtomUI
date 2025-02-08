@@ -369,9 +369,9 @@ public abstract class AbstractProgressBar : RangeBase,
         var transitions = new Transitions();
 
         transitions.Add(AnimationUtils.CreateTransition<DoubleTransition>(ValueProperty,
-            DesignTokenKey.MotionDurationVerySlow, new ExponentialEaseOut()));
+            SharedTokenKey.MotionDurationVerySlow, new ExponentialEaseOut()));
         transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(IndicatorBarBrushProperty,
-            DesignTokenKey.MotionDurationFast));
+            SharedTokenKey.MotionDurationFast));
 
         NotifySetupTransitions(ref transitions);
         Transitions = transitions;
@@ -450,7 +450,7 @@ public abstract class AbstractProgressBar : RangeBase,
     protected virtual void NotifySetupTokenBindings()
     {
         TokenResourceBinder.CreateTokenBinding(this, SuccessThresholdBrushProperty,
-            DesignTokenKey.ColorSuccess);
+            SharedTokenKey.ColorSuccess);
     }
 
     protected virtual void NotifyPropertyChanged(AvaloniaPropertyChangedEventArgs e)

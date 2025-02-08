@@ -1,6 +1,7 @@
 using AtomUI.Theme.TokenSystem;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.LogicalTree;
 using Avalonia.Metadata;
 
 namespace AtomUI.Theme;
@@ -19,13 +20,25 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
     }
 
     public DesignToken SharedToken => _tokenResourceLayer.SharedToken;
+    
     public Dictionary<string, IControlDesignToken> ControlTokens => _tokenResourceLayer.ControlTokens;
+    
     public IList<string> Algorithms => _tokenResourceLayer.Algorithms;
+    
     public bool IsDarkMode => _tokenResourceLayer.IsDarkMode;
     
+    public IList<TokenSetter> SharedTokenSetters => _sharedTokenSetters ??= new();
+    
+    #endregion
+
+    #region 内部属性定义
+
+    private List<TokenSetter> _sharedTokenSetters;
+
     #endregion
     
     private TokenResourceLayer _tokenResourceLayer;
+    private bool _needCalculateTokenResources = true;
 
     static ThemeConfigProvider()
     {
@@ -36,6 +49,7 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
     public ThemeConfigProvider()
     {
         _tokenResourceLayer = new TokenResourceLayer();
+        _sharedTokenSetters = new List<TokenSetter>();
     }
     
     private void ContentChanged(AvaloniaPropertyChangedEventArgs e)
@@ -55,6 +69,17 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
             ((ISetLogicalParent)newChild).SetParent(this);
             VisualChildren.Add(newChild);
             LogicalChildren.Add(newChild);
+        }
+    }
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        if (_needCalculateTokenResources)
+        {
+            _tokenResourceLayer.Calculate();
+            _tokenResourceLayer.MountTokenResources(this);
+            _needCalculateTokenResources = false;
         }
     }
 }

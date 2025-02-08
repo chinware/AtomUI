@@ -78,7 +78,7 @@ internal class TopLevelHorizontalNavMenuItemTheme : BaseControlTheme
                 BindingMode.Default,
                 ObjectConverters.IsNotNull);
             TokenResourceBinder.CreateTokenBinding(iconPresenter, Layoutable.MarginProperty,
-                NavMenuTokenResourceKey.IconMargin);
+                NavMenuTokenKey.IconMargin);
             
             contentLayout.Children.Add(iconPresenter);
             
@@ -144,19 +144,19 @@ internal class TopLevelHorizontalNavMenuItemTheme : BaseControlTheme
         CreateTemplateParentBinding(border, Border.MinWidthProperty, NavMenuItem.EffectivePopupMinWidthProperty);
     
         TokenResourceBinder.CreateTokenBinding(border, Border.BackgroundProperty,
-            DesignTokenKey.ColorBgContainer);
+            SharedTokenKey.ColorBgContainer);
         TokenResourceBinder.CreateTokenBinding(border, Border.CornerRadiusProperty,
-            MenuTokenResourceKey.MenuPopupBorderRadius);
+            MenuTokenKey.MenuPopupBorderRadius);
         TokenResourceBinder.CreateTokenBinding(border, Layoutable.MinWidthProperty,
-            MenuTokenResourceKey.MenuPopupMinWidth);
+            MenuTokenKey.MenuPopupMinWidth);
         TokenResourceBinder.CreateTokenBinding(border, Layoutable.MaxWidthProperty,
-            MenuTokenResourceKey.MenuPopupMaxWidth);
+            MenuTokenKey.MenuPopupMaxWidth);
         TokenResourceBinder.CreateTokenBinding(border, Layoutable.MinHeightProperty,
-            MenuTokenResourceKey.MenuPopupMinHeight);
+            MenuTokenKey.MenuPopupMinHeight);
         TokenResourceBinder.CreateTokenBinding(border, Layoutable.MaxHeightProperty,
-            MenuTokenResourceKey.MenuPopupMaxHeight);
+            MenuTokenKey.MenuPopupMaxHeight);
         TokenResourceBinder.CreateTokenBinding(border, Decorator.PaddingProperty,
-            MenuTokenResourceKey.MenuPopupContentPadding);
+            MenuTokenKey.MenuPopupContentPadding);
     
         var scrollViewer = new MenuScrollViewer();
         var itemsPresenter = new ItemsPresenter
@@ -171,9 +171,9 @@ internal class TopLevelHorizontalNavMenuItemTheme : BaseControlTheme
         popup.Child          = border;
     
         TokenResourceBinder.CreateTokenBinding(popup, Popup.MarginToAnchorProperty,
-            MenuTokenResourceKey.TopLevelItemPopupMarginToAnchor);
+            MenuTokenKey.TopLevelItemPopupMarginToAnchor);
         TokenResourceBinder.CreateTokenBinding(popup, Popup.MaskShadowsProperty,
-            MenuTokenResourceKey.MenuPopupBoxShadows);
+            MenuTokenKey.MenuPopupBoxShadows);
     
         CreateTemplateParentBinding(popup, Popup.IsOpenProperty,
             NavMenuItem.IsSubMenuOpenProperty, BindingMode.TwoWay);
@@ -185,17 +185,17 @@ internal class TopLevelHorizontalNavMenuItemTheme : BaseControlTheme
     {
         var commonStyle =
             new Style(selector => selector.Nesting());
-        commonStyle.Add(TemplatedControl.BackgroundProperty, DesignTokenKey.ColorTransparent);
+        commonStyle.Add(TemplatedControl.BackgroundProperty, SharedTokenKey.ColorTransparent);
         commonStyle.Add(NavMenuItem.CursorProperty, new Cursor(StandardCursorType.Hand));
-        commonStyle.Add(TemplatedControl.FontSizeProperty, DesignTokenKey.FontSize);
+        commonStyle.Add(TemplatedControl.FontSizeProperty, SharedTokenKey.FontSize);
         {
             var frameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
-            frameStyle.Add(Border.MarginProperty, NavMenuTokenResourceKey.HorizontalItemMargin);
+            frameStyle.Add(Border.MarginProperty, NavMenuTokenKey.HorizontalItemMargin);
             commonStyle.Add(frameStyle);
         }
         
         var presenterStyle = new Style(selector => selector.Nesting().Template().Name(HeaderPresenterPart));
-        presenterStyle.Add(ContentPresenter.LineHeightProperty, NavMenuTokenResourceKey.HorizontalLineHeight);
+        presenterStyle.Add(ContentPresenter.LineHeightProperty, NavMenuTokenKey.HorizontalLineHeight);
         commonStyle.Add(presenterStyle);
         
         BuildActiveIndicatorStyle(commonStyle);
@@ -215,14 +215,14 @@ internal class TopLevelHorizontalNavMenuItemTheme : BaseControlTheme
             selector.Nesting().Class(StdPseudoClass.Selected)));
         {
             var indicatorStyle = new Style(selector => selector.Nesting().Template().Name(ActiveIndicatorPart));
-            indicatorStyle.Add(Rectangle.FillProperty, DesignTokenKey.ColorPrimary);
+            indicatorStyle.Add(Rectangle.FillProperty, SharedTokenKey.ColorPrimary);
             hoverStyle.Add(indicatorStyle);
         }
         commonStyle.Add(hoverStyle);
         
         var selectedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Selected));
         {
-            selectedStyle.Add(NavMenuItem.ForegroundProperty, DesignTokenKey.ColorPrimary);
+            selectedStyle.Add(NavMenuItem.ForegroundProperty, SharedTokenKey.ColorPrimary);
         }
         commonStyle.Add(selectedStyle);
     }
@@ -230,18 +230,18 @@ internal class TopLevelHorizontalNavMenuItemTheme : BaseControlTheme
     private void BuildDisabledStyle()
     {
         var disabledStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Disabled));
-        disabledStyle.Add(TemplatedControl.ForegroundProperty, NavMenuTokenResourceKey.ItemDisabledColor);
+        disabledStyle.Add(TemplatedControl.ForegroundProperty, NavMenuTokenKey.ItemDisabledColor);
         Add(disabledStyle);
     }
     
     protected override void BuildInstanceStyles(Control control)
     {
         var iconStyle = new Style(selector => selector.Name(ThemeConstants.ItemIconPart));
-        iconStyle.Add(Icon.WidthProperty, NavMenuTokenResourceKey.ItemIconSize);
-        iconStyle.Add(Icon.HeightProperty, NavMenuTokenResourceKey.ItemIconSize);
-        iconStyle.Add(Icon.NormalFilledBrushProperty, DesignTokenKey.ColorText);
-        iconStyle.Add(Icon.DisabledFilledBrushProperty, NavMenuTokenResourceKey.ItemDisabledColor);
-        iconStyle.Add(Icon.SelectedFilledBrushProperty, DesignTokenKey.ColorPrimary);
+        iconStyle.Add(Icon.WidthProperty, NavMenuTokenKey.ItemIconSize);
+        iconStyle.Add(Icon.HeightProperty, NavMenuTokenKey.ItemIconSize);
+        iconStyle.Add(Icon.NormalFilledBrushProperty, SharedTokenKey.ColorText);
+        iconStyle.Add(Icon.DisabledFilledBrushProperty, NavMenuTokenKey.ItemDisabledColor);
+        iconStyle.Add(Icon.SelectedFilledBrushProperty, SharedTokenKey.ColorPrimary);
         control.Styles.Add(iconStyle);
         
         var disabledIconStyle = new Style(selector => selector.OfType<Icon>().Class(StdPseudoClass.Disabled));

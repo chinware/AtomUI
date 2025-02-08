@@ -98,7 +98,7 @@ internal class NotificationCardTheme : BaseControlTheme
             ObjectConverters.IsNotNull);
         CreateTemplateParentBinding(iconContent, ContentPresenter.ContentProperty, NotificationCard.IconProperty);
         TokenResourceBinder.CreateTokenBinding(iconContent, Layoutable.MarginProperty,
-            NotificationTokenResourceKey.NotificationIconMargin);
+            NotificationTokenKey.NotificationIconMargin);
         Grid.SetRow(iconContent, 0);
         Grid.SetColumn(iconContent, 0);
 
@@ -115,17 +115,17 @@ internal class NotificationCardTheme : BaseControlTheme
             Name = HeaderTitlePart
         };
         TokenResourceBinder.CreateSharedTokenBinding(headerTitle, SelectableTextBlock.SelectionBrushProperty,
-            DesignTokenKey.SelectionBackground);
+            SharedTokenKey.SelectionBackground);
         TokenResourceBinder.CreateSharedTokenBinding(headerTitle, SelectableTextBlock.SelectionForegroundBrushProperty,
-            DesignTokenKey.SelectionForeground);
+            SharedTokenKey.SelectionForeground);
 
         CreateTemplateParentBinding(headerTitle, TextBlock.TextProperty, NotificationCard.TitleProperty);
    
         var closeIcon = AntDesignIconPackage.CloseOutlined();
         TokenResourceBinder.CreateTokenBinding(closeIcon, Icon.NormalFilledBrushProperty,
-            DesignTokenKey.ColorIcon);
+            SharedTokenKey.ColorIcon);
         TokenResourceBinder.CreateTokenBinding(closeIcon, Icon.ActiveFilledBrushProperty,
-            DesignTokenKey.ColorIconHover);
+            SharedTokenKey.ColorIconHover);
         var closeIconButton = new IconButton
         {
             Name                = CloseButtonPart,
@@ -136,7 +136,7 @@ internal class NotificationCardTheme : BaseControlTheme
         };
         closeIconButton.RegisterInNameScope(scope);
         TokenResourceBinder.CreateTokenBinding(closeIconButton, TemplatedControl.PaddingProperty,
-            DesignTokenKey.PaddingXXS, BindingPriority.Template,
+            SharedTokenKey.PaddingXXS, BindingPriority.Template,
             o =>
             {
                 if (o is double dval)
@@ -147,11 +147,11 @@ internal class NotificationCardTheme : BaseControlTheme
                 return new Thickness(0);
             });
         TokenResourceBinder.CreateTokenBinding(closeIconButton, TemplatedControl.CornerRadiusProperty,
-            DesignTokenKey.BorderRadiusSM);
+            SharedTokenKey.BorderRadiusSM);
         TokenResourceBinder.CreateTokenBinding(closeIconButton, IconButton.IconHeightProperty,
-            DesignTokenKey.IconSizeSM);
+            SharedTokenKey.IconSizeSM);
         TokenResourceBinder.CreateTokenBinding(closeIconButton, IconButton.IconWidthProperty,
-            DesignTokenKey.IconSizeSM);
+            SharedTokenKey.IconSizeSM);
         DockPanel.SetDock(closeIconButton, Dock.Right);
         headerContainer.Children.Add(closeIconButton);
         headerContainer.Children.Add(headerTitle);
@@ -169,7 +169,7 @@ internal class NotificationCardTheme : BaseControlTheme
             TextWrapping = TextWrapping.Wrap
         };
         TokenResourceBinder.CreateTokenBinding(contentPresenter, Layoutable.MarginProperty,
-            NotificationTokenResourceKey.NotificationContentMargin);
+            NotificationTokenKey.NotificationContentMargin);
         CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty,
             ContentControl.ContentProperty);
         CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentTemplateProperty,
@@ -189,7 +189,7 @@ internal class NotificationCardTheme : BaseControlTheme
         CreateTemplateParentBinding(progressBar, Visual.IsVisibleProperty,
             NotificationCard.EffectiveShowProgressProperty);
         TokenResourceBinder.CreateTokenBinding(progressBar, Layoutable.MarginProperty,
-            NotificationTokenResourceKey.NotificationProgressMargin);
+            NotificationTokenKey.NotificationProgressMargin);
         Grid.SetColumn(progressBar, 0);
         Grid.SetRow(progressBar, 1);
         Grid.SetColumnSpan(progressBar, 2);
@@ -214,7 +214,7 @@ internal class NotificationCardTheme : BaseControlTheme
             var marginGhostDecoratorStyle =
                 new Style(selector => selector.Nesting().Template().Name(MarginGhostDecoratorPart));
             marginGhostDecoratorStyle.Add(Layoutable.MarginProperty,
-                NotificationTokenResourceKey.NotificationTopMargin);
+                NotificationTokenKey.NotificationTopMargin);
             topLeftStyle.Add(marginGhostDecoratorStyle);
         }
         commonStyle.Add(topLeftStyle);
@@ -225,7 +225,7 @@ internal class NotificationCardTheme : BaseControlTheme
             var marginGhostDecoratorStyle =
                 new Style(selector => selector.Nesting().Template().Name(MarginGhostDecoratorPart));
             marginGhostDecoratorStyle.Add(Layoutable.MarginProperty,
-                NotificationTokenResourceKey.NotificationTopMargin);
+                NotificationTokenKey.NotificationTopMargin);
             topCenterStyle.Add(marginGhostDecoratorStyle);
         }
         commonStyle.Add(topCenterStyle);
@@ -236,7 +236,7 @@ internal class NotificationCardTheme : BaseControlTheme
             var marginGhostDecoratorStyle =
                 new Style(selector => selector.Nesting().Template().Name(MarginGhostDecoratorPart));
             marginGhostDecoratorStyle.Add(Layoutable.MarginProperty,
-                NotificationTokenResourceKey.NotificationTopMargin);
+                NotificationTokenKey.NotificationTopMargin);
             topRightStyle.Add(marginGhostDecoratorStyle);
         }
         commonStyle.Add(topRightStyle);
@@ -247,7 +247,7 @@ internal class NotificationCardTheme : BaseControlTheme
             var marginGhostDecoratorStyle =
                 new Style(selector => selector.Nesting().Template().Name(MarginGhostDecoratorPart));
             marginGhostDecoratorStyle.Add(Layoutable.MarginProperty,
-                NotificationTokenResourceKey.NotificationBottomMargin);
+                NotificationTokenKey.NotificationBottomMargin);
             bottomLeftStyle.Add(marginGhostDecoratorStyle);
         }
         commonStyle.Add(bottomLeftStyle);
@@ -258,7 +258,7 @@ internal class NotificationCardTheme : BaseControlTheme
             var marginGhostDecoratorStyle =
                 new Style(selector => selector.Nesting().Template().Name(MarginGhostDecoratorPart));
             marginGhostDecoratorStyle.Add(Layoutable.MarginProperty,
-                NotificationTokenResourceKey.NotificationBottomMargin);
+                NotificationTokenKey.NotificationBottomMargin);
             bottomCenterStyle.Add(marginGhostDecoratorStyle);
         }
         commonStyle.Add(bottomCenterStyle);
@@ -269,18 +269,18 @@ internal class NotificationCardTheme : BaseControlTheme
             var marginGhostDecoratorStyle =
                 new Style(selector => selector.Nesting().Template().Name(MarginGhostDecoratorPart));
             marginGhostDecoratorStyle.Add(Layoutable.MarginProperty,
-                NotificationTokenResourceKey.NotificationBottomMargin);
+                NotificationTokenKey.NotificationBottomMargin);
             bottomRightStyle.Add(marginGhostDecoratorStyle);
         }
         commonStyle.Add(bottomRightStyle);
 
-        commonStyle.Add(Layoutable.WidthProperty, NotificationTokenResourceKey.NotificationWidth);
+        commonStyle.Add(Layoutable.WidthProperty, NotificationTokenKey.NotificationWidth);
 
         var frameDecoratorStyle = new Style(selector => selector.Nesting().Template().Name(FrameDecoratorPart));
-        frameDecoratorStyle.Add(Decorator.PaddingProperty, NotificationTokenResourceKey.NotificationPadding);
-        frameDecoratorStyle.Add(Border.BoxShadowProperty, DesignTokenKey.BoxShadows);
-        frameDecoratorStyle.Add(Border.BackgroundProperty, NotificationTokenResourceKey.NotificationBg);
-        frameDecoratorStyle.Add(Border.CornerRadiusProperty, DesignTokenKey.BorderRadiusLG);
+        frameDecoratorStyle.Add(Decorator.PaddingProperty, NotificationTokenKey.NotificationPadding);
+        frameDecoratorStyle.Add(Border.BoxShadowProperty, SharedTokenKey.BoxShadows);
+        frameDecoratorStyle.Add(Border.BackgroundProperty, NotificationTokenKey.NotificationBg);
+        frameDecoratorStyle.Add(Border.CornerRadiusProperty, SharedTokenKey.BorderRadiusLG);
         commonStyle.Add(frameDecoratorStyle);
 
         var closedStyle = new Style(selector =>
@@ -294,30 +294,30 @@ internal class NotificationCardTheme : BaseControlTheme
     private void BuildHeaderStyle()
     {
         var titleStyle = new Style(selector => selector.Nesting().Template().Name(HeaderTitlePart));
-        titleStyle.Add(ContentPresenter.LineHeightProperty, DesignTokenKey.FontHeightLG);
-        titleStyle.Add(ContentPresenter.FontSizeProperty, DesignTokenKey.FontSizeLG);
-        titleStyle.Add(ContentPresenter.ForegroundProperty, DesignTokenKey.ColorTextHeading);
+        titleStyle.Add(ContentPresenter.LineHeightProperty, SharedTokenKey.FontHeightLG);
+        titleStyle.Add(ContentPresenter.FontSizeProperty, SharedTokenKey.FontSizeLG);
+        titleStyle.Add(ContentPresenter.ForegroundProperty, SharedTokenKey.ColorTextHeading);
         Add(titleStyle);
 
         var headerContainer = new Style(selector => selector.Nesting().Template().Name(HeaderContainerPart));
-        headerContainer.Add(Layoutable.MarginProperty, NotificationTokenResourceKey.HeaderMargin);
+        headerContainer.Add(Layoutable.MarginProperty, NotificationTokenKey.HeaderMargin);
         Add(headerContainer);
     }
 
     private void BuildContentStyle()
     {
         var contentStyle = new Style(selector => selector.Nesting().Template().Name(ContentPart));
-        contentStyle.Add(ContentPresenter.ForegroundProperty, DesignTokenKey.ColorText);
-        contentStyle.Add(ContentPresenter.FontSizeProperty, DesignTokenKey.FontSize);
-        contentStyle.Add(ContentPresenter.LineHeightProperty, DesignTokenKey.FontHeight);
+        contentStyle.Add(ContentPresenter.ForegroundProperty, SharedTokenKey.ColorText);
+        contentStyle.Add(ContentPresenter.FontSizeProperty, SharedTokenKey.FontSize);
+        contentStyle.Add(ContentPresenter.LineHeightProperty, SharedTokenKey.FontHeight);
         Add(contentStyle);
     }
 
     protected override void BuildInstanceStyles(Control control)
     {
         var iconStyle = new Style(selector => selector.Name(IconContentPart).Child().OfType<Icon>());
-        iconStyle.Add(Layoutable.WidthProperty, NotificationTokenResourceKey.NotificationIconSize);
-        iconStyle.Add(Layoutable.HeightProperty, NotificationTokenResourceKey.NotificationIconSize);
+        iconStyle.Add(Layoutable.WidthProperty, NotificationTokenKey.NotificationIconSize);
+        iconStyle.Add(Layoutable.HeightProperty, NotificationTokenKey.NotificationIconSize);
         control.Styles.Add(iconStyle);
     }
 }

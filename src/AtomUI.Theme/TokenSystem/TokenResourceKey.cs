@@ -2,9 +2,9 @@
 
 public readonly struct TokenResourceKey : IEquatable<TokenResourceKey>
 {
-    public const string DefaultResourceCatalog = $"{ResourceCatalogConstants.Root}.{ResourceCatalogConstants.Token}";
+    public const string CatalogSeparator = ":";
 
-    public TokenResourceKey(string value, string catalog = DefaultResourceCatalog)
+    public TokenResourceKey(string value, string? catalog = null)
     {
         Value   = value;
         Catalog = catalog;
@@ -12,7 +12,7 @@ public readonly struct TokenResourceKey : IEquatable<TokenResourceKey>
 
     public string Value { get; }
 
-    public string Catalog { get; }
+    public string? Catalog { get; }
 
     public bool Equals(TokenResourceKey other)
     {
@@ -61,11 +61,20 @@ public readonly struct TokenResourceKey : IEquatable<TokenResourceKey>
 
     public override string ToString()
     {
-        return $"{Catalog}:{Value}";
+        return QualifiedKey();
     }
 
     public string UnQualifiedKey()
     {
+        return Value;
+    }
+    
+    public string QualifiedKey()
+    {
+        if (Catalog != null)
+        {
+            return $"{Catalog}:{Value}";
+        }
         return Value;
     }
 }

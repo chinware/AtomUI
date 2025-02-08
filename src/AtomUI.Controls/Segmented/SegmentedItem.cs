@@ -101,11 +101,11 @@ public class SegmentedItem : ContentControl, ISelectable
         if (Icon is not null)
         {
             TokenResourceBinder.CreateTokenBinding(Icon, Icon.NormalFilledBrushProperty,
-                SegmentedTokenResourceKey.ItemColor);
+                SegmentedTokenKey.ItemColor);
             TokenResourceBinder.CreateTokenBinding(Icon, Icon.ActiveFilledBrushProperty,
-                SegmentedTokenResourceKey.ItemHoverColor);
+                SegmentedTokenKey.ItemHoverColor);
             TokenResourceBinder.CreateTokenBinding(Icon, Icon.SelectedFilledBrushProperty,
-                SegmentedTokenResourceKey.ItemSelectedColor);
+                SegmentedTokenKey.ItemSelectedColor);
             UIStructureUtils.SetTemplateParent(Icon, this);
         }
     }

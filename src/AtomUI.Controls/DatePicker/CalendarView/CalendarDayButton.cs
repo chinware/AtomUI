@@ -179,9 +179,9 @@ internal sealed class CalendarDayButton : AvaloniaButton
         Transitions ??= new Transitions
         {
             AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty,
-                DesignTokenKey.MotionDurationFast),
+                SharedTokenKey.MotionDurationFast),
             AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty,
-                DesignTokenKey.MotionDurationFast)
+                SharedTokenKey.MotionDurationFast)
         };
     }
 
@@ -273,7 +273,7 @@ internal sealed class CalendarDayButton : AvaloniaButton
     {
         base.OnAttachedToVisualTree(e);
         TokenResourceBinder.CreateSharedTokenBinding(this, BorderThicknessProperty,
-            DesignTokenKey.BorderThickness, BindingPriority.Template,
+            SharedTokenKey.BorderThickness, BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this));
     }
 }

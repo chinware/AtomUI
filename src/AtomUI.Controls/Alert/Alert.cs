@@ -124,7 +124,7 @@ public class Alert : TemplatedControl
     
     private void HandleTemplateApplied(INameScope scope)
     {
-        TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty, DesignTokenKey.BorderThickness,
+        TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty, SharedTokenKey.BorderThickness,
             BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this));
         SetupCloseButton();
@@ -147,9 +147,9 @@ public class Alert : TemplatedControl
         {
             CloseIcon = AntDesignIconPackage.CloseOutlined();
             TokenResourceBinder.CreateTokenBinding(CloseIcon, Icon.NormalFilledBrushProperty,
-                DesignTokenKey.ColorIcon);
+                SharedTokenKey.ColorIcon);
             TokenResourceBinder.CreateTokenBinding(CloseIcon, Icon.ActiveFilledBrushProperty,
-                DesignTokenKey.ColorIconHover);
+                SharedTokenKey.ColorIconHover);
         }
     }
 

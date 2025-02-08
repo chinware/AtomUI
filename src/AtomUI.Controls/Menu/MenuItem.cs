@@ -92,10 +92,10 @@ public class MenuItem : AvaloniaMenuItem
         {
             if (Icon is not null && Icon is IconPkg.Icon icon)
             {
-                TokenResourceBinder.CreateTokenBinding(icon, WidthProperty, MenuTokenResourceKey.ItemIconSize);
-                TokenResourceBinder.CreateTokenBinding(icon, HeightProperty, MenuTokenResourceKey.ItemIconSize);
+                TokenResourceBinder.CreateTokenBinding(icon, WidthProperty, MenuTokenKey.ItemIconSize);
+                TokenResourceBinder.CreateTokenBinding(icon, HeightProperty, MenuTokenKey.ItemIconSize);
                 TokenResourceBinder.CreateTokenBinding(icon, IconPkg.Icon.NormalFilledBrushProperty,
-                    MenuTokenResourceKey.ItemColor);
+                    MenuTokenKey.ItemColor);
             }
         }
         else if (e.Property == ToggleTypeProperty)

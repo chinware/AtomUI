@@ -41,13 +41,13 @@ internal class ScrollBarThumbTheme : BaseControlTheme
     protected override void BuildStyles()
     {
         var commonStyle = new Style(selector => selector.Nesting());
-        commonStyle.Add(ScrollBarThumb.BackgroundProperty, ScrollBarTokenResourceKey.ThumbBg);
+        commonStyle.Add(ScrollBarThumb.BackgroundProperty, ScrollBarTokenKey.ThumbBg);
         var frameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
-        frameStyle.Add(Border.CornerRadiusProperty, ScrollBarTokenResourceKey.ThumbCornerRadius);
+        frameStyle.Add(Border.CornerRadiusProperty, ScrollBarTokenKey.ThumbCornerRadius);
         commonStyle.Add(frameStyle);
         
         var hoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
-        hoverStyle.Add(ScrollBarThumb.BackgroundProperty, ScrollBarTokenResourceKey.ThumbHoverBg);
+        hoverStyle.Add(ScrollBarThumb.BackgroundProperty, ScrollBarTokenKey.ThumbHoverBg);
         commonStyle.Add(hoverStyle);
         Add(commonStyle);
     }

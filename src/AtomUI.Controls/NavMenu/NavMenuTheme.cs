@@ -48,7 +48,7 @@ internal class NavMenuTheme : BaseControlTheme
                 BindingMode.Default,
                 new FuncValueConverter<NavMenuMode, bool>(v => v == NavMenuMode.Horizontal));
             TokenResourceBinder.CreateSharedTokenBinding(horizontalLine, Rectangle.FillProperty,
-                DesignTokenKey.ColorBorderSecondary);
+                SharedTokenKey.ColorBorderSecondary);
 
             var border = new Border
             {
@@ -73,13 +73,13 @@ internal class NavMenuTheme : BaseControlTheme
     {
         var commonStyle = new Style(selector => selector.Nesting());
 
-        commonStyle.Add(TemplatedControl.BorderBrushProperty, DesignTokenKey.ColorBorderSecondary);
+        commonStyle.Add(TemplatedControl.BorderBrushProperty, SharedTokenKey.ColorBorderSecondary);
 
         var horizontalStyle = new Style(selector => selector.Nesting().Class(NavMenu.HorizontalModePC));
-        horizontalStyle.Add(NavMenu.BackgroundProperty, DesignTokenKey.ColorBgContainer);
+        horizontalStyle.Add(NavMenu.BackgroundProperty, SharedTokenKey.ColorBgContainer);
         horizontalStyle.Add(NavMenu.HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
         horizontalStyle.Add(NavMenu.VerticalAlignmentProperty, VerticalAlignment.Top);
-        horizontalStyle.Add(NavMenu.HeightProperty, NavMenuTokenResourceKey.MenuHorizontalHeight);
+        horizontalStyle.Add(NavMenu.HeightProperty, NavMenuTokenKey.MenuHorizontalHeight);
         {
             var itemPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ItemsPresenterPart));
             itemPresenterStyle.Add(ItemsPresenter.ItemsPanelProperty, new FuncTemplate<Panel?>(() => new StackPanel
@@ -93,12 +93,12 @@ internal class NavMenuTheme : BaseControlTheme
 
         var verticalOrInlineStyle = new Style(selector => Selectors.Or(selector.Nesting().Class(NavMenu.VerticalModePC),
             selector.Nesting().Class(NavMenu.InlineModePC)));
-        verticalOrInlineStyle.Add(NavMenu.PaddingProperty, NavMenuTokenResourceKey.VerticalMenuContentPadding);
+        verticalOrInlineStyle.Add(NavMenu.PaddingProperty, NavMenuTokenKey.VerticalMenuContentPadding);
         verticalOrInlineStyle.Add(NavMenu.HorizontalAlignmentProperty, HorizontalAlignment.Left);
         verticalOrInlineStyle.Add(NavMenu.VerticalAlignmentProperty, VerticalAlignment.Stretch);
-        verticalOrInlineStyle.Add(NavMenu.BackgroundProperty, DesignTokenKey.ColorBgContainer);
+        verticalOrInlineStyle.Add(NavMenu.BackgroundProperty, SharedTokenKey.ColorBgContainer);
         var darkStyle = new Style(selector => selector.Nesting().Class(NavMenu.DarkStylePC));
-        darkStyle.Add(NavMenu.BackgroundProperty, NavMenuTokenResourceKey.DarkItemBg);
+        darkStyle.Add(NavMenu.BackgroundProperty, NavMenuTokenKey.DarkItemBg);
         verticalOrInlineStyle.Add(darkStyle);
 
         {
@@ -111,7 +111,7 @@ internal class NavMenuTheme : BaseControlTheme
 
             var itemsPanelStyle = new Style(selector =>
                 selector.Nesting().Template().Name(ItemsPresenterPart).Child().OfType<StackPanel>());
-            itemsPanelStyle.Add(StackPanel.SpacingProperty, NavMenuTokenResourceKey.VerticalItemsPanelSpacing);
+            itemsPanelStyle.Add(StackPanel.SpacingProperty, NavMenuTokenKey.VerticalItemsPanelSpacing);
             verticalOrInlineStyle.Add(itemsPanelStyle);
         }
 

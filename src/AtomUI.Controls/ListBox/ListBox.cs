@@ -62,7 +62,7 @@ public class ListBox : AvaloniaListBox
     {
         base.OnApplyTemplate(e);
         TokenResourceBinder.CreateSharedResourceBinding(this, BorderThicknessProperty,
-            DesignTokenKey.BorderThickness,
+            SharedTokenKey.BorderThickness,
             BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this));
     }

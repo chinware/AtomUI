@@ -78,7 +78,7 @@ internal class DotBadgeAdornerTheme : BaseControlTheme
     {
         var commonStyle = new Style(selector => selector.Nesting());
         commonStyle.Add(DotBadgeAdorner.ClipToBoundsProperty, false);
-        commonStyle.Add(DotBadgeAdorner.BadgeDotColorProperty, BadgeTokenResourceKey.BadgeColor);
+        commonStyle.Add(DotBadgeAdorner.BadgeDotColorProperty, BadgeTokenKey.BadgeColor);
         var inAdornerStyle = new Style(selector => selector.Nesting().PropertyEquals(DotBadgeAdorner.IsAdornerModeProperty, true));
         var layoutStyle = new Style(selector => selector.Nesting().Template().Name(RootLayoutPart));
         layoutStyle.Add(DockPanel.HorizontalAlignmentProperty, HorizontalAlignment.Right);
@@ -91,13 +91,13 @@ internal class DotBadgeAdornerTheme : BaseControlTheme
         labelStyle.Add(Label.VerticalAlignmentProperty, VerticalAlignment.Center);
         labelStyle.Add(Label.HorizontalContentAlignmentProperty, HorizontalAlignment.Center);
         labelStyle.Add(Label.VerticalContentAlignmentProperty, VerticalAlignment.Center);
-        labelStyle.Add(Label.MarginProperty, BadgeTokenResourceKey.DotBadgeLabelMargin);
+        labelStyle.Add(Label.MarginProperty, BadgeTokenKey.DotBadgeLabelMargin);
         commonStyle.Add(labelStyle);
 
         var indicatorStyle = new Style(selector => selector.Nesting().Template().Name(IndicatorMotionActorPart));
 
-        indicatorStyle.Add(MotionActorControl.WidthProperty, BadgeTokenResourceKey.DotSize);
-        indicatorStyle.Add(MotionActorControl.HeightProperty, BadgeTokenResourceKey.DotSize);
+        indicatorStyle.Add(MotionActorControl.WidthProperty, BadgeTokenKey.DotSize);
+        indicatorStyle.Add(MotionActorControl.HeightProperty, BadgeTokenKey.DotSize);
         commonStyle.Add(indicatorStyle);
 
         Add(commonStyle);

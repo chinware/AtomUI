@@ -115,26 +115,26 @@ internal class GroupBoxTheme : BaseControlTheme
     protected override void BuildStyles()
     {
         var commonStyle = new Style(selector => selector.Nesting());
-        commonStyle.Add(TemplatedControl.BackgroundProperty, DesignTokenKey.ColorBgContainer);
-        commonStyle.Add(TemplatedControl.BorderBrushProperty, DesignTokenKey.ColorBorder);
-        commonStyle.Add(TemplatedControl.CornerRadiusProperty, DesignTokenKey.BorderRadius);
-        commonStyle.Add(GroupBox.HeaderTitleColorProperty, DesignTokenKey.ColorText);
-        commonStyle.Add(GroupBox.HeaderFontSizeProperty, DesignTokenKey.FontSize);
+        commonStyle.Add(TemplatedControl.BackgroundProperty, SharedTokenKey.ColorBgContainer);
+        commonStyle.Add(TemplatedControl.BorderBrushProperty, SharedTokenKey.ColorBorder);
+        commonStyle.Add(TemplatedControl.CornerRadiusProperty, SharedTokenKey.BorderRadius);
+        commonStyle.Add(GroupBox.HeaderTitleColorProperty, SharedTokenKey.ColorText);
+        commonStyle.Add(GroupBox.HeaderFontSizeProperty, SharedTokenKey.FontSize);
 
         var headerContainerStyle = new Style(selector => selector.Nesting().Template().Name(HeaderContainerPart));
-        headerContainerStyle.Add(Layoutable.MarginProperty, GroupBoxTokenResourceKey.HeaderContainerMargin);
+        headerContainerStyle.Add(Layoutable.MarginProperty, GroupBoxTokenKey.HeaderContainerMargin);
         commonStyle.Add(headerContainerStyle);
 
         var headerContentStyle = new Style(selector => selector.Nesting().Template().Name(HeaderContentPart));
-        headerContentStyle.Add(ContentPresenter.PaddingProperty, GroupBoxTokenResourceKey.HeaderContentPadding);
+        headerContentStyle.Add(ContentPresenter.PaddingProperty, GroupBoxTokenKey.HeaderContentPadding);
         commonStyle.Add(headerContentStyle);
 
         var headerIconStyle = new Style(selector => selector.Nesting().Template().Name(HeaderIconPart));
-        headerIconStyle.Add(Layoutable.MarginProperty, GroupBoxTokenResourceKey.HeaderIconMargin);
+        headerIconStyle.Add(Layoutable.MarginProperty, GroupBoxTokenKey.HeaderIconMargin);
         commonStyle.Add(headerIconStyle);
 
         var contentStyle = new Style(selector => selector.Nesting().Template().Name(ContentPresenterPart));
-        contentStyle.Add(ContentPresenter.PaddingProperty, GroupBoxTokenResourceKey.ContentPadding);
+        contentStyle.Add(ContentPresenter.PaddingProperty, GroupBoxTokenKey.ContentPadding);
         commonStyle.Add(contentStyle);
         Add(commonStyle);
 
@@ -174,8 +174,8 @@ internal class GroupBoxTheme : BaseControlTheme
     protected override void BuildInstanceStyles(Control control)
     {
         var iconStyle = new Style(selector => selector.Name(HeaderIconPart).Descendant().OfType<Icon>());
-        iconStyle.Add(Layoutable.WidthProperty, DesignTokenKey.IconSizeLG);
-        iconStyle.Add(Layoutable.HeightProperty, DesignTokenKey.IconSizeLG);
+        iconStyle.Add(Layoutable.WidthProperty, SharedTokenKey.IconSizeLG);
+        iconStyle.Add(Layoutable.HeightProperty, SharedTokenKey.IconSizeLG);
         iconStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Center);
         control.Styles.Add(iconStyle);
     }

@@ -48,12 +48,12 @@ internal class VerticalNavMenuTheme : BaseNavMenuTheme
 
         var verticalOrInlineStyle = new Style(selector => Selectors.Or(selector.Nesting().Class(NavMenu.VerticalModePC),
             selector.Nesting().Class(NavMenu.InlineModePC)));
-        verticalOrInlineStyle.Add(NavMenu.PaddingProperty, NavMenuTokenResourceKey.VerticalMenuContentPadding);
+        verticalOrInlineStyle.Add(NavMenu.PaddingProperty, NavMenuTokenKey.VerticalMenuContentPadding);
         verticalOrInlineStyle.Add(NavMenu.HorizontalAlignmentProperty, HorizontalAlignment.Left);
         verticalOrInlineStyle.Add(NavMenu.VerticalAlignmentProperty, VerticalAlignment.Stretch);
-        verticalOrInlineStyle.Add(NavMenu.BackgroundProperty, DesignTokenKey.ColorBgContainer);
+        verticalOrInlineStyle.Add(NavMenu.BackgroundProperty, SharedTokenKey.ColorBgContainer);
         var darkStyle = new Style(selector => selector.Nesting().Class(NavMenu.DarkStylePC));
-        darkStyle.Add(NavMenu.BackgroundProperty, NavMenuTokenResourceKey.DarkItemBg);
+        darkStyle.Add(NavMenu.BackgroundProperty, NavMenuTokenKey.DarkItemBg);
         verticalOrInlineStyle.Add(darkStyle);
 
         {
@@ -66,7 +66,7 @@ internal class VerticalNavMenuTheme : BaseNavMenuTheme
 
             var itemsPanelStyle = new Style(selector =>
                 selector.Nesting().Template().Name(ItemsPresenterPart).Child().OfType<StackPanel>());
-            itemsPanelStyle.Add(StackPanel.SpacingProperty, NavMenuTokenResourceKey.VerticalItemsPanelSpacing);
+            itemsPanelStyle.Add(StackPanel.SpacingProperty, NavMenuTokenKey.VerticalItemsPanelSpacing);
             verticalOrInlineStyle.Add(itemsPanelStyle);
         }
 

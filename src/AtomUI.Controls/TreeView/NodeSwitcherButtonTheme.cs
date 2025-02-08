@@ -131,8 +131,8 @@ internal class NodeSwitcherButtonTheme : BaseControlTheme
         base.BuildStyles();
         
         var commonStyle = new Style(selector => selector.Nesting());
-        commonStyle.Add(TemplatedControl.BackgroundProperty, DesignTokenKey.ColorTransparent);
-        commonStyle.Add(TemplatedControl.CornerRadiusProperty, DesignTokenKey.BorderRadius);
+        commonStyle.Add(TemplatedControl.BackgroundProperty, SharedTokenKey.ColorTransparent);
+        commonStyle.Add(TemplatedControl.CornerRadiusProperty, SharedTokenKey.BorderRadius);
         
         var checkStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Checked)
             .PropertyEquals(NodeSwitcherButton.IconModeProperty, NodeSwitcherButtonIconMode.Rotation));
@@ -156,7 +156,7 @@ internal class NodeSwitcherButtonTheme : BaseControlTheme
                 iconStyle.Add(Icon.IconModeProperty, IconMode.Active);
                 hoverStyle.Add(iconStyle);
             }
-            hoverStyle.Add(TemplatedControl.BackgroundProperty, TreeViewTokenResourceKey.NodeHoverBg);
+            hoverStyle.Add(TemplatedControl.BackgroundProperty, TreeViewTokenKey.NodeHoverBg);
             enabledStyle.Add(hoverStyle);
 
             var checkedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Selected));

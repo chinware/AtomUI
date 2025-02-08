@@ -65,8 +65,8 @@ internal class AbstractProgressBarTheme : BaseControlTheme
     {
         var enabledStyle =
             new Style(selector => selector.Nesting().PropertyEquals(InputElement.IsEnabledProperty, true));
-        enabledStyle.Add(TemplatedControl.ForegroundProperty, DesignTokenKey.ColorTextLabel);
-        enabledStyle.Add(AbstractProgressBar.GrooveBrushProperty, ProgressBarTokenResourceKey.RemainingColor);
+        enabledStyle.Add(TemplatedControl.ForegroundProperty, SharedTokenKey.ColorTextLabel);
+        enabledStyle.Add(AbstractProgressBar.GrooveBrushProperty, ProgressBarTokenKey.RemainingColor);
         Add(enabledStyle);
     }
 
@@ -89,7 +89,7 @@ internal class AbstractProgressBarTheme : BaseControlTheme
             var infoLabelStyle = new Style(selector => selector.Nesting().Template().OfType<LayoutTransformControl>());
             infoLabelStyle.Add(Visual.IsVisibleProperty, false);
 
-            exceptionStatusStyle.Add(AbstractProgressBar.IndicatorBarBrushProperty, DesignTokenKey.ColorError);
+            exceptionStatusStyle.Add(AbstractProgressBar.IndicatorBarBrushProperty, SharedTokenKey.ColorError);
 
             exceptionStatusStyle.Add(infoLabelStyle);
         }
@@ -112,7 +112,7 @@ internal class AbstractProgressBarTheme : BaseControlTheme
             var infoLabelStyle = new Style(selector => selector.Nesting().Template().OfType<LayoutTransformControl>());
             infoLabelStyle.Add(Visual.IsVisibleProperty, false);
 
-            successStatusStyle.Add(AbstractProgressBar.IndicatorBarBrushProperty, DesignTokenKey.ColorSuccess);
+            successStatusStyle.Add(AbstractProgressBar.IndicatorBarBrushProperty, SharedTokenKey.ColorSuccess);
 
             successStatusStyle.Add(infoLabelStyle);
         }
@@ -137,7 +137,7 @@ internal class AbstractProgressBarTheme : BaseControlTheme
             }
             {
                 var completedStyle = new Style(selector => selector.Nesting().Class(AbstractProgressBar.CompletedPC));
-                completedStyle.Add(AbstractProgressBar.IndicatorBarBrushProperty, DesignTokenKey.ColorSuccess);
+                completedStyle.Add(AbstractProgressBar.IndicatorBarBrushProperty, SharedTokenKey.ColorSuccess);
                 var successIconStyle = new Style(selector =>
                     selector.Nesting().Template().OfType<Icon>().Name(SuccessCompletedIconPart));
                 successIconStyle.Add(Visual.IsVisibleProperty, true);
@@ -146,7 +146,7 @@ internal class AbstractProgressBarTheme : BaseControlTheme
             }
 
             normalOrActiveStatusStyle.Add(AbstractProgressBar.IndicatorBarBrushProperty,
-                ProgressBarTokenResourceKey.DefaultColor);
+                ProgressBarTokenKey.DefaultColor);
         }
         Add(normalOrActiveStatusStyle);
     }
@@ -163,10 +163,10 @@ internal class AbstractProgressBarTheme : BaseControlTheme
     private void BuildDisabledStyle()
     {
         var disableStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Disabled));
-        disableStyle.Add(AbstractProgressBar.GrooveBrushProperty, DesignTokenKey.ColorBgContainerDisabled);
+        disableStyle.Add(AbstractProgressBar.GrooveBrushProperty, SharedTokenKey.ColorBgContainerDisabled);
         disableStyle.Add(AbstractProgressBar.IndicatorBarBrushProperty,
-            DesignTokenKey.ControlItemBgActiveDisabled);
-        disableStyle.Add(TemplatedControl.ForegroundProperty, DesignTokenKey.ColorTextDisabled);
+            SharedTokenKey.ControlItemBgActiveDisabled);
+        disableStyle.Add(TemplatedControl.ForegroundProperty, SharedTokenKey.ColorTextDisabled);
         var statusIconStyle = new Style(selector => selector.Nesting().Template().OfType<Icon>());
         statusIconStyle.Add(Icon.IconModeProperty, IconMode.Disabled);
         disableStyle.Add(statusIconStyle);

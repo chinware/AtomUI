@@ -146,7 +146,7 @@ public class Collapse : SelectingItemsControl
     {
         base.OnApplyTemplate(e);
         TokenResourceBinder.CreateSharedResourceBinding(this, BorderThicknessProperty,
-            DesignTokenKey.BorderThickness,
+            SharedTokenKey.BorderThickness,
             BindingPriority.Template, new RenderScaleAwareThicknessConfigure(this));
         SetupEffectiveBorderThickness();
         SetupSelectionMode();

@@ -56,24 +56,24 @@ internal class ComboBoxItemTheme : BaseControlTheme
     private void BuildCommonStyle()
     {
         var commonStyle = new Style(selector => selector.Nesting());
-        commonStyle.Add(TemplatedControl.FontSizeProperty, DesignTokenKey.FontSize);
-        commonStyle.Add(Layoutable.MarginProperty, ComboBoxTokenResourceKey.ItemMargin);
+        commonStyle.Add(TemplatedControl.FontSizeProperty, SharedTokenKey.FontSize);
+        commonStyle.Add(Layoutable.MarginProperty, ComboBoxTokenKey.ItemMargin);
 
         {
             var contentPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ContentPresenterPart));
-            contentPresenterStyle.Add(ContentPresenter.ForegroundProperty, ComboBoxTokenResourceKey.ItemColor);
-            contentPresenterStyle.Add(ContentPresenter.BackgroundProperty, ComboBoxTokenResourceKey.ItemBgColor);
-            contentPresenterStyle.Add(Layoutable.MinHeightProperty, DesignTokenKey.ControlHeight);
-            contentPresenterStyle.Add(ContentPresenter.PaddingProperty, ComboBoxTokenResourceKey.ItemPadding);
-            contentPresenterStyle.Add(ContentPresenter.CornerRadiusProperty, DesignTokenKey.BorderRadiusSM);
+            contentPresenterStyle.Add(ContentPresenter.ForegroundProperty, ComboBoxTokenKey.ItemColor);
+            contentPresenterStyle.Add(ContentPresenter.BackgroundProperty, ComboBoxTokenKey.ItemBgColor);
+            contentPresenterStyle.Add(Layoutable.MinHeightProperty, SharedTokenKey.ControlHeight);
+            contentPresenterStyle.Add(ContentPresenter.PaddingProperty, ComboBoxTokenKey.ItemPadding);
+            contentPresenterStyle.Add(ContentPresenter.CornerRadiusProperty, SharedTokenKey.BorderRadiusSM);
             commonStyle.Add(contentPresenterStyle);
         }
 
         var hoveredStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
         {
             var contentPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ContentPresenterPart));
-            contentPresenterStyle.Add(ContentPresenter.ForegroundProperty, ComboBoxTokenResourceKey.ItemHoverColor);
-            contentPresenterStyle.Add(ContentPresenter.BackgroundProperty, ComboBoxTokenResourceKey.ItemHoverBgColor);
+            contentPresenterStyle.Add(ContentPresenter.ForegroundProperty, ComboBoxTokenKey.ItemHoverColor);
+            contentPresenterStyle.Add(ContentPresenter.BackgroundProperty, ComboBoxTokenKey.ItemHoverBgColor);
             hoveredStyle.Add(contentPresenterStyle);
         }
         commonStyle.Add(hoveredStyle);
@@ -81,9 +81,9 @@ internal class ComboBoxItemTheme : BaseControlTheme
         var selectedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Selected));
         {
             var contentPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ContentPresenterPart));
-            contentPresenterStyle.Add(ContentPresenter.ForegroundProperty, ComboBoxTokenResourceKey.ItemSelectedColor);
+            contentPresenterStyle.Add(ContentPresenter.ForegroundProperty, ComboBoxTokenKey.ItemSelectedColor);
             contentPresenterStyle.Add(ContentPresenter.BackgroundProperty,
-                ComboBoxTokenResourceKey.ItemSelectedBgColor);
+                ComboBoxTokenKey.ItemSelectedBgColor);
             selectedStyle.Add(contentPresenterStyle);
         }
         commonStyle.Add(selectedStyle);
@@ -94,7 +94,7 @@ internal class ComboBoxItemTheme : BaseControlTheme
     {
         var disabledStyle         = new Style(selector => selector.Nesting().Class(StdPseudoClass.Disabled));
         var contentPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ContentPresenterPart));
-        contentPresenterStyle.Add(ContentPresenter.ForegroundProperty, DesignTokenKey.ColorTextDisabled);
+        contentPresenterStyle.Add(ContentPresenter.ForegroundProperty, SharedTokenKey.ColorTextDisabled);
         disabledStyle.Add(contentPresenterStyle);
         Add(disabledStyle);
     }

@@ -31,9 +31,9 @@ internal class AbstractCircleProgressTheme : AbstractProgressBarTheme
         
         exceptionCompletedIcon.RegisterInNameScope(scope);
         TokenResourceBinder.CreateSharedTokenBinding(exceptionCompletedIcon, Icon.NormalFilledBrushProperty,
-            DesignTokenKey.ColorError);
+            SharedTokenKey.ColorError);
         TokenResourceBinder.CreateSharedTokenBinding(exceptionCompletedIcon, Icon.DisabledFilledBrushProperty,
-            DesignTokenKey.ControlItemBgActiveDisabled);
+            SharedTokenKey.ControlItemBgActiveDisabled);
 
         var successCompletedIcon = AntDesignIconPackage.CheckOutlined();
         successCompletedIcon.Name                = SuccessCompletedIconPart;
@@ -42,9 +42,9 @@ internal class AbstractCircleProgressTheme : AbstractProgressBarTheme
         
         successCompletedIcon.RegisterInNameScope(scope);
         TokenResourceBinder.CreateSharedTokenBinding(successCompletedIcon, Icon.NormalFilledBrushProperty,
-            DesignTokenKey.ColorSuccess);
+            SharedTokenKey.ColorSuccess);
         TokenResourceBinder.CreateSharedTokenBinding(successCompletedIcon, Icon.DisabledFilledBrushProperty,
-            DesignTokenKey.ControlItemBgActiveDisabled);
+            SharedTokenKey.ControlItemBgActiveDisabled);
 
         container.Children.Add(exceptionCompletedIcon);
         container.Children.Add(successCompletedIcon);
@@ -56,9 +56,9 @@ internal class AbstractCircleProgressTheme : AbstractProgressBarTheme
 
         var commonStyle = new Style(selector => selector.Nesting());
         commonStyle.Add(AbstractCircleProgress.CircleMinimumTextFontSizeProperty,
-            ProgressBarTokenResourceKey.CircleMinimumTextFontSize);
+            ProgressBarTokenKey.CircleMinimumTextFontSize);
         commonStyle.Add(AbstractCircleProgress.CircleMinimumIconSizeProperty,
-            ProgressBarTokenResourceKey.CircleMinimumIconSize);
+            ProgressBarTokenKey.CircleMinimumIconSize);
         {
             var labelStyle = new Style(selector => selector.Nesting().Template().OfType<Label>());
             labelStyle.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Center);

@@ -426,7 +426,7 @@ public class Button : AvaloniaButton, ISizeTypeAware, IWaveAdornerInfoProvider
     {
         if (Shape == ButtonShape.Circle)
         {
-            TokenResourceBinder.CreateTokenBinding(this, PaddingProperty, ButtonTokenResourceKey.CirclePadding);
+            TokenResourceBinder.CreateTokenBinding(this, PaddingProperty, ButtonTokenKey.CirclePadding);
         }
     }
 
@@ -525,7 +525,7 @@ public class Button : AvaloniaButton, ISizeTypeAware, IWaveAdornerInfoProvider
     {
         base.OnAttachedToVisualTree(e);
         TokenResourceBinder.CreateSharedTokenBinding(this, BorderThicknessProperty,
-            DesignTokenKey.BorderThickness,
+            SharedTokenKey.BorderThickness,
             BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this));
         SetupEffectiveBorderThickness();
@@ -566,67 +566,67 @@ public class Button : AvaloniaButton, ISizeTypeAware, IWaveAdornerInfoProvider
 
     private void SetupIconBrush()
     {
-        var normalFilledBrushKey   = ButtonTokenResourceKey.DefaultColor;
-        var selectedFilledBrushKey = ButtonTokenResourceKey.DefaultActiveColor;
-        var activeFilledBrushKey   = ButtonTokenResourceKey.DefaultHoverColor;
-        var disabledFilledBrushKey = DesignTokenKey.ColorTextDisabled;
+        var normalFilledBrushKey   = ButtonTokenKey.DefaultColor;
+        var selectedFilledBrushKey = ButtonTokenKey.DefaultActiveColor;
+        var activeFilledBrushKey   = ButtonTokenKey.DefaultHoverColor;
+        var disabledFilledBrushKey = SharedTokenKey.ColorTextDisabled;
         if (ButtonType == ButtonType.Default)
         {
             if (IsGhost)
             {
-                normalFilledBrushKey   = DesignTokenKey.ColorTextLightSolid;
-                selectedFilledBrushKey = DesignTokenKey.ColorPrimaryActive;
-                activeFilledBrushKey   = DesignTokenKey.ColorPrimaryHover;
+                normalFilledBrushKey   = SharedTokenKey.ColorTextLightSolid;
+                selectedFilledBrushKey = SharedTokenKey.ColorPrimaryActive;
+                activeFilledBrushKey   = SharedTokenKey.ColorPrimaryHover;
             }
 
             if (IsDanger)
             {
-                normalFilledBrushKey   = DesignTokenKey.ColorError;
-                selectedFilledBrushKey = DesignTokenKey.ColorErrorActive;
-                activeFilledBrushKey   = DesignTokenKey.ColorErrorBorderHover;
+                normalFilledBrushKey   = SharedTokenKey.ColorError;
+                selectedFilledBrushKey = SharedTokenKey.ColorErrorActive;
+                activeFilledBrushKey   = SharedTokenKey.ColorErrorBorderHover;
             }
         }
         else if (ButtonType == ButtonType.Primary)
         {
-            normalFilledBrushKey   = ButtonTokenResourceKey.PrimaryColor;
-            selectedFilledBrushKey = ButtonTokenResourceKey.PrimaryColor;
-            activeFilledBrushKey   = ButtonTokenResourceKey.PrimaryColor;
+            normalFilledBrushKey   = ButtonTokenKey.PrimaryColor;
+            selectedFilledBrushKey = ButtonTokenKey.PrimaryColor;
+            activeFilledBrushKey   = ButtonTokenKey.PrimaryColor;
             if (IsGhost)
             {
-                normalFilledBrushKey   = DesignTokenKey.ColorPrimary;
-                selectedFilledBrushKey = DesignTokenKey.ColorPrimaryActive;
-                activeFilledBrushKey   = DesignTokenKey.ColorPrimaryHover;
+                normalFilledBrushKey   = SharedTokenKey.ColorPrimary;
+                selectedFilledBrushKey = SharedTokenKey.ColorPrimaryActive;
+                activeFilledBrushKey   = SharedTokenKey.ColorPrimaryHover;
                 if (IsDanger)
                 {
-                    normalFilledBrushKey   = DesignTokenKey.ColorError;
-                    selectedFilledBrushKey = DesignTokenKey.ColorErrorActive;
-                    activeFilledBrushKey   = DesignTokenKey.ColorErrorBorderHover;
+                    normalFilledBrushKey   = SharedTokenKey.ColorError;
+                    selectedFilledBrushKey = SharedTokenKey.ColorErrorActive;
+                    activeFilledBrushKey   = SharedTokenKey.ColorErrorBorderHover;
                 }
             }
         }
         else if (ButtonType == ButtonType.Text)
         {
-            normalFilledBrushKey   = ButtonTokenResourceKey.DefaultColor;
-            selectedFilledBrushKey = ButtonTokenResourceKey.DefaultColor;
-            activeFilledBrushKey   = ButtonTokenResourceKey.DefaultColor;
+            normalFilledBrushKey   = ButtonTokenKey.DefaultColor;
+            selectedFilledBrushKey = ButtonTokenKey.DefaultColor;
+            activeFilledBrushKey   = ButtonTokenKey.DefaultColor;
             if (IsDanger)
             {
-                normalFilledBrushKey   = DesignTokenKey.ColorError;
-                selectedFilledBrushKey = DesignTokenKey.ColorErrorActive;
-                activeFilledBrushKey   = DesignTokenKey.ColorErrorBorderHover;
+                normalFilledBrushKey   = SharedTokenKey.ColorError;
+                selectedFilledBrushKey = SharedTokenKey.ColorErrorActive;
+                activeFilledBrushKey   = SharedTokenKey.ColorErrorBorderHover;
             }
         }
         else if (ButtonType == ButtonType.Link)
         {
-            normalFilledBrushKey   = DesignTokenKey.ColorLink;
-            selectedFilledBrushKey = DesignTokenKey.ColorLinkActive;
-            activeFilledBrushKey   = DesignTokenKey.ColorLinkHover;
+            normalFilledBrushKey   = SharedTokenKey.ColorLink;
+            selectedFilledBrushKey = SharedTokenKey.ColorLinkActive;
+            activeFilledBrushKey   = SharedTokenKey.ColorLinkHover;
 
             if (IsDanger)
             {
-                normalFilledBrushKey   = DesignTokenKey.ColorError;
-                selectedFilledBrushKey = DesignTokenKey.ColorErrorActive;
-                activeFilledBrushKey   = DesignTokenKey.ColorErrorHover;
+                normalFilledBrushKey   = SharedTokenKey.ColorError;
+                selectedFilledBrushKey = SharedTokenKey.ColorErrorActive;
+                activeFilledBrushKey   = SharedTokenKey.ColorErrorHover;
             }
         }
 

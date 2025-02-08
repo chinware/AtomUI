@@ -271,7 +271,7 @@ internal class TimePickerPresenter : PickerPresenterBase
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        TokenResourceBinder.CreateSharedTokenBinding(this, BorderThicknessProperty, DesignTokenKey.BorderThickness, BindingPriority.Template,
+        TokenResourceBinder.CreateSharedTokenBinding(this, BorderThicknessProperty, SharedTokenKey.BorderThickness, BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this, thickness => new Thickness(0, thickness.Top, 0, 0)));
         if (_timeView is not null)
         {

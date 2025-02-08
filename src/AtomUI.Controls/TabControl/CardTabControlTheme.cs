@@ -56,11 +56,11 @@ internal class CardTabControlTheme : BaseTabControlTheme
         var addTabIcon = AntDesignIconPackage.PlusOutlined();
 
         TokenResourceBinder.CreateTokenBinding(addTabIcon, Icon.NormalFilledBrushProperty,
-            TabControlTokenResourceKey.ItemColor);
+            TabControlTokenKey.ItemColor);
         TokenResourceBinder.CreateTokenBinding(addTabIcon, Icon.ActiveFilledBrushProperty,
-            TabControlTokenResourceKey.ItemHoverColor);
+            TabControlTokenKey.ItemHoverColor);
         TokenResourceBinder.CreateTokenBinding(addTabIcon, Icon.DisabledFilledBrushProperty,
-            DesignTokenKey.ColorTextDisabled);
+            SharedTokenKey.ColorTextDisabled);
 
         var addTabButton = new IconButton
         {
@@ -70,9 +70,9 @@ internal class CardTabControlTheme : BaseTabControlTheme
         };
         DockPanel.SetDock(addTabButton, Dock.Right);
         TokenResourceBinder.CreateSharedResourceBinding(addTabButton, IconButton.IconHeightProperty,
-            DesignTokenKey.IconSize);
+            SharedTokenKey.IconSize);
         TokenResourceBinder.CreateSharedResourceBinding(addTabButton, IconButton.IconWidthProperty,
-            DesignTokenKey.IconSize);
+            SharedTokenKey.IconSize);
         CreateTemplateParentBinding(addTabButton, TemplatedControl.BorderThicknessProperty,
             CardTabControl.CardBorderThicknessProperty);
         CreateTemplateParentBinding(addTabButton, TemplatedControl.CornerRadiusProperty,
@@ -80,7 +80,7 @@ internal class CardTabControlTheme : BaseTabControlTheme
         CreateTemplateParentBinding(addTabButton, Visual.IsVisibleProperty, CardTabControl.IsShowAddTabButtonProperty);
 
         TokenResourceBinder.CreateSharedResourceBinding(addTabButton, TemplatedControl.BorderBrushProperty,
-            DesignTokenKey.ColorBorderSecondary);
+            SharedTokenKey.ColorBorderSecondary);
 
         addTabButton.RegisterInNameScope(scope);
 
@@ -120,10 +120,10 @@ internal class CardTabControlTheme : BaseTabControlTheme
             var itemPresenterPanelStyle = new Style(selector =>
                 selector.Nesting().Template().Name(ItemsPresenterPart).Child().OfType<StackPanel>());
             itemPresenterPanelStyle.Add(StackPanel.OrientationProperty, Orientation.Horizontal);
-            itemPresenterPanelStyle.Add(StackPanel.SpacingProperty, TabControlTokenResourceKey.CardGutter);
+            itemPresenterPanelStyle.Add(StackPanel.SpacingProperty, TabControlTokenKey.CardGutter);
 
             var addTabButtonStyle = new Style(selector => selector.Nesting().Template().Name(AddTabButtonPart));
-            addTabButtonStyle.Add(Layoutable.MarginProperty, TabControlTokenResourceKey.AddTabButtonMarginHorizontal);
+            addTabButtonStyle.Add(Layoutable.MarginProperty, TabControlTokenKey.AddTabButtonMarginHorizontal);
             topStyle.Add(addTabButtonStyle);
 
             topStyle.Add(itemPresenterPanelStyle);
@@ -141,11 +141,11 @@ internal class CardTabControlTheme : BaseTabControlTheme
             var itemPresenterPanelStyle = new Style(selector =>
                 selector.Nesting().Template().Name(ItemsPresenterPart).Child().OfType<StackPanel>());
             itemPresenterPanelStyle.Add(StackPanel.OrientationProperty, Orientation.Vertical);
-            itemPresenterPanelStyle.Add(StackPanel.SpacingProperty, TabControlTokenResourceKey.CardGutter);
+            itemPresenterPanelStyle.Add(StackPanel.SpacingProperty, TabControlTokenKey.CardGutter);
             rightStyle.Add(itemPresenterPanelStyle);
 
             var addTabButtonStyle = new Style(selector => selector.Nesting().Template().Name(AddTabButtonPart));
-            addTabButtonStyle.Add(Layoutable.MarginProperty, TabControlTokenResourceKey.AddTabButtonMarginVertical);
+            addTabButtonStyle.Add(Layoutable.MarginProperty, TabControlTokenKey.AddTabButtonMarginVertical);
             rightStyle.Add(addTabButtonStyle);
 
             commonStyle.Add(rightStyle);
@@ -161,11 +161,11 @@ internal class CardTabControlTheme : BaseTabControlTheme
             var itemPresenterPanelStyle = new Style(selector =>
                 selector.Nesting().Template().Name(ItemsPresenterPart).Child().OfType<StackPanel>());
             itemPresenterPanelStyle.Add(StackPanel.OrientationProperty, Orientation.Horizontal);
-            itemPresenterPanelStyle.Add(StackPanel.SpacingProperty, TabControlTokenResourceKey.CardGutter);
+            itemPresenterPanelStyle.Add(StackPanel.SpacingProperty, TabControlTokenKey.CardGutter);
             bottomStyle.Add(itemPresenterPanelStyle);
 
             var addTabButtonStyle = new Style(selector => selector.Nesting().Template().Name(AddTabButtonPart));
-            addTabButtonStyle.Add(Layoutable.MarginProperty, TabControlTokenResourceKey.AddTabButtonMarginHorizontal);
+            addTabButtonStyle.Add(Layoutable.MarginProperty, TabControlTokenKey.AddTabButtonMarginHorizontal);
             bottomStyle.Add(addTabButtonStyle);
 
             commonStyle.Add(bottomStyle);
@@ -181,11 +181,11 @@ internal class CardTabControlTheme : BaseTabControlTheme
             var itemPresenterPanelStyle = new Style(selector =>
                 selector.Nesting().Template().Name(ItemsPresenterPart).Child().OfType<StackPanel>());
             itemPresenterPanelStyle.Add(StackPanel.OrientationProperty, Orientation.Vertical);
-            itemPresenterPanelStyle.Add(StackPanel.SpacingProperty, TabControlTokenResourceKey.CardGutter);
+            itemPresenterPanelStyle.Add(StackPanel.SpacingProperty, TabControlTokenKey.CardGutter);
             leftStyle.Add(itemPresenterPanelStyle);
 
             var addTabButtonStyle = new Style(selector => selector.Nesting().Template().Name(AddTabButtonPart));
-            addTabButtonStyle.Add(Layoutable.MarginProperty, TabControlTokenResourceKey.AddTabButtonMarginVertical);
+            addTabButtonStyle.Add(Layoutable.MarginProperty, TabControlTokenKey.AddTabButtonMarginVertical);
             leftStyle.Add(addTabButtonStyle);
 
             commonStyle.Add(leftStyle);

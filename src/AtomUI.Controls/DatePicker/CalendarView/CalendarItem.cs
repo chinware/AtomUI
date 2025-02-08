@@ -1125,7 +1125,7 @@ internal class CalendarItem : TemplatedControl
     {
         base.OnAttachedToVisualTree(e);
         TokenResourceBinder.CreateSharedTokenBinding(this, BorderThicknessProperty,
-            DesignTokenKey.BorderThickness, BindingPriority.Template,
+            SharedTokenKey.BorderThickness, BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this, thickness => new Thickness(0, 0, 0, thickness.Bottom)));
         var inputManager = AvaloniaLocator.Current.GetService<IInputManager>()!;
         _pointerPositionDisposable = inputManager.Process.Subscribe(DetectPointerPosition);

@@ -58,24 +58,24 @@ internal class MenuTheme : BaseControlTheme
     {
         var commonStyle = new Style(selector => selector.Nesting());
         commonStyle.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Left);
-        commonStyle.Add(TemplatedControl.BackgroundProperty, MenuTokenResourceKey.MenuBgColor);
-        commonStyle.Add(TemplatedControl.BorderBrushProperty, DesignTokenKey.ColorBorder);
+        commonStyle.Add(TemplatedControl.BackgroundProperty, MenuTokenKey.MenuBgColor);
+        commonStyle.Add(TemplatedControl.BorderBrushProperty, SharedTokenKey.ColorBorder);
         var largeSizeType =
             new Style(selector => selector.Nesting().PropertyEquals(Menu.SizeTypeProperty, SizeType.Large));
-        largeSizeType.Add(Layoutable.MinHeightProperty, DesignTokenKey.ControlHeightLG);
-        largeSizeType.Add(TemplatedControl.CornerRadiusProperty, DesignTokenKey.BorderRadius);
+        largeSizeType.Add(Layoutable.MinHeightProperty, SharedTokenKey.ControlHeightLG);
+        largeSizeType.Add(TemplatedControl.CornerRadiusProperty, SharedTokenKey.BorderRadius);
         commonStyle.Add(largeSizeType);
 
         var middleSizeType =
             new Style(selector => selector.Nesting().PropertyEquals(Menu.SizeTypeProperty, SizeType.Middle));
-        middleSizeType.Add(Layoutable.MinHeightProperty, DesignTokenKey.ControlHeight);
-        middleSizeType.Add(TemplatedControl.CornerRadiusProperty, DesignTokenKey.BorderRadius);
+        middleSizeType.Add(Layoutable.MinHeightProperty, SharedTokenKey.ControlHeight);
+        middleSizeType.Add(TemplatedControl.CornerRadiusProperty, SharedTokenKey.BorderRadius);
         commonStyle.Add(middleSizeType);
 
         var smallSizeType =
             new Style(selector => selector.Nesting().PropertyEquals(Menu.SizeTypeProperty, SizeType.Small));
-        smallSizeType.Add(Layoutable.MinHeightProperty, DesignTokenKey.ControlHeightSM);
-        smallSizeType.Add(TemplatedControl.CornerRadiusProperty, DesignTokenKey.BorderRadiusSM);
+        smallSizeType.Add(Layoutable.MinHeightProperty, SharedTokenKey.ControlHeightSM);
+        smallSizeType.Add(TemplatedControl.CornerRadiusProperty, SharedTokenKey.BorderRadiusSM);
         commonStyle.Add(smallSizeType);
         Add(commonStyle);
     }

@@ -41,11 +41,11 @@ internal class RangeInfoPickerInputTheme : InfoPickerInputTheme
         arrowIcon.Name = RangePickerArrowPart;
 
         TokenResourceBinder.CreateSharedTokenBinding(arrowIcon, Layoutable.HeightProperty,
-            DesignTokenKey.IconSize);
+            SharedTokenKey.IconSize);
         TokenResourceBinder.CreateSharedTokenBinding(arrowIcon, Layoutable.WidthProperty,
-            DesignTokenKey.IconSize);
+            SharedTokenKey.IconSize);
         TokenResourceBinder.CreateSharedTokenBinding(arrowIcon, Icon.NormalFilledBrushProperty,
-            DesignTokenKey.ColorTextQuaternary);
+            SharedTokenKey.ColorTextQuaternary);
 
         var rangeStartTextBox = BuildPickerTextBox(InfoInputBoxPart);
         
@@ -96,7 +96,7 @@ internal class RangeInfoPickerInputTheme : InfoPickerInputTheme
         var commonStyle = new Style(selector => selector.Nesting());
 
         var arrowStyle = new Style(selector => selector.Nesting().Template().Name(RangePickerArrowPart));
-        arrowStyle.Add(Layoutable.MarginProperty, InfoPickerInputTokenResourceKey.RangePickerArrowMargin);
+        arrowStyle.Add(Layoutable.MarginProperty, InfoPickerInputTokenKey.RangePickerArrowMargin);
 
         commonStyle.Add(arrowStyle);
 
@@ -108,7 +108,7 @@ internal class RangeInfoPickerInputTheme : InfoPickerInputTheme
     {
         {
             var indicatorStyle = new Style(selector => selector.Nesting().Template().Name(RangePickerIndicatorPart));
-            indicatorStyle.Add(Layoutable.HeightProperty, InfoPickerInputTokenResourceKey.RangePickerIndicatorThickness);
+            indicatorStyle.Add(Layoutable.HeightProperty, InfoPickerInputTokenKey.RangePickerIndicatorThickness);
             commonStyle.Add(indicatorStyle);
         }
 
@@ -117,7 +117,7 @@ internal class RangeInfoPickerInputTheme : InfoPickerInputTheme
 
         {
             var indicatorStyle = new Style(selector => selector.Nesting().Template().Name(RangePickerIndicatorPart));
-            indicatorStyle.Add(Shape.FillProperty, DesignTokenKey.ColorPrimary);
+            indicatorStyle.Add(Shape.FillProperty, SharedTokenKey.ColorPrimary);
 
             defaultStyle.Add(indicatorStyle);
         }
@@ -128,7 +128,7 @@ internal class RangeInfoPickerInputTheme : InfoPickerInputTheme
 
         {
             var indicatorStyle = new Style(selector => selector.Nesting().Template().Name(RangePickerIndicatorPart));
-            indicatorStyle.Add(Shape.FillProperty, DesignTokenKey.ColorError);
+            indicatorStyle.Add(Shape.FillProperty, SharedTokenKey.ColorError);
             errorStyle.Add(indicatorStyle);
         }
 
@@ -139,7 +139,7 @@ internal class RangeInfoPickerInputTheme : InfoPickerInputTheme
 
         {
             var indicatorStyle = new Style(selector => selector.Nesting().Template().Name(RangePickerIndicatorPart));
-            indicatorStyle.Add(Shape.FillProperty, DesignTokenKey.ColorWarning);
+            indicatorStyle.Add(Shape.FillProperty, SharedTokenKey.ColorWarning);
             warningStyle.Add(indicatorStyle);
         }
 

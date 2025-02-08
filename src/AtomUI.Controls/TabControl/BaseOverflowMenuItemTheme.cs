@@ -65,7 +65,7 @@ internal class BaseOverflowMenuItemTheme : BaseControlTheme
 
             Grid.SetColumn(itemTextPresenter, 0);
             TokenResourceBinder.CreateTokenBinding(itemTextPresenter, Layoutable.MarginProperty,
-                MenuTokenResourceKey.ItemMargin);
+                MenuTokenKey.ItemMargin);
             CreateTemplateParentBinding(itemTextPresenter, ContentPresenter.ContentProperty,
                 HeaderedSelectingItemsControl.HeaderProperty);
             CreateTemplateParentBinding(itemTextPresenter, ContentPresenter.ContentTemplateProperty,
@@ -87,14 +87,14 @@ internal class BaseOverflowMenuItemTheme : BaseControlTheme
 
             CreateTemplateParentBinding(closeButton, Visual.IsVisibleProperty, BaseOverflowMenuItem.IsClosableProperty);
             TokenResourceBinder.CreateSharedTokenBinding(menuCloseIcon, Icon.NormalFilledBrushProperty,
-                DesignTokenKey.ColorIcon);
+                SharedTokenKey.ColorIcon);
             TokenResourceBinder.CreateSharedTokenBinding(menuCloseIcon, Icon.ActiveFilledBrushProperty,
-                DesignTokenKey.ColorIconHover);
+                SharedTokenKey.ColorIconHover);
 
             TokenResourceBinder.CreateSharedTokenBinding(menuCloseIcon, Layoutable.WidthProperty,
-                DesignTokenKey.IconSizeSM);
+                SharedTokenKey.IconSizeSM);
             TokenResourceBinder.CreateSharedTokenBinding(menuCloseIcon, Layoutable.HeightProperty,
-                DesignTokenKey.IconSizeSM);
+                SharedTokenKey.IconSizeSM);
 
             Grid.SetColumn(menuCloseIcon, 4);
             closeButton.RegisterInNameScope(scope);
@@ -117,22 +117,22 @@ internal class BaseOverflowMenuItemTheme : BaseControlTheme
 
     private void BuildCommonStyle(Style commonStyle)
     {
-        commonStyle.Add(TemplatedControl.ForegroundProperty, MenuTokenResourceKey.ItemColor);
+        commonStyle.Add(TemplatedControl.ForegroundProperty, MenuTokenKey.ItemColor);
         {
             var borderStyle = new Style(selector => selector.Nesting().Template().Name(ItemDecoratorPart));
-            borderStyle.Add(Layoutable.MinHeightProperty, MenuTokenResourceKey.ItemHeight);
-            borderStyle.Add(Decorator.PaddingProperty, MenuTokenResourceKey.ItemPaddingInline);
-            borderStyle.Add(Border.BackgroundProperty, MenuTokenResourceKey.ItemBg);
-            borderStyle.Add(Border.CornerRadiusProperty, MenuTokenResourceKey.ItemBorderRadius);
+            borderStyle.Add(Layoutable.MinHeightProperty, MenuTokenKey.ItemHeight);
+            borderStyle.Add(Decorator.PaddingProperty, MenuTokenKey.ItemPaddingInline);
+            borderStyle.Add(Border.BackgroundProperty, MenuTokenKey.ItemBg);
+            borderStyle.Add(Border.CornerRadiusProperty, MenuTokenKey.ItemBorderRadius);
             commonStyle.Add(borderStyle);
         }
 
         // Hover 状态
         var hoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
-        hoverStyle.Add(TemplatedControl.ForegroundProperty, MenuTokenResourceKey.ItemHoverColor);
+        hoverStyle.Add(TemplatedControl.ForegroundProperty, MenuTokenKey.ItemHoverColor);
         {
             var borderStyle = new Style(selector => selector.Nesting().Template().Name(ItemDecoratorPart));
-            borderStyle.Add(Border.BackgroundProperty, MenuTokenResourceKey.ItemHoverBg);
+            borderStyle.Add(Border.BackgroundProperty, MenuTokenKey.ItemHoverBg);
             hoverStyle.Add(borderStyle);
         }
         commonStyle.Add(hoverStyle);
@@ -141,7 +141,7 @@ internal class BaseOverflowMenuItemTheme : BaseControlTheme
     private void BuildDisabledStyle()
     {
         var disabledStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Disabled));
-        disabledStyle.Add(TemplatedControl.ForegroundProperty, MenuTokenResourceKey.ItemDisabledColor);
+        disabledStyle.Add(TemplatedControl.ForegroundProperty, MenuTokenKey.ItemDisabledColor);
         Add(disabledStyle);
     }
 }

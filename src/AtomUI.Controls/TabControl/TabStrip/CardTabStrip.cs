@@ -112,9 +112,9 @@ public class CardTabStrip : BaseTabStrip
     {
         base.OnApplyTemplate(e);
         TokenResourceBinder.CreateTokenBinding(this, CardBorderThicknessProperty,
-            DesignTokenKey.BorderThickness, BindingPriority.Template,
+            SharedTokenKey.BorderThickness, BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this));
-        TokenResourceBinder.CreateTokenBinding(this, CardSizeProperty, TabControlTokenResourceKey.CardSize);
+        TokenResourceBinder.CreateTokenBinding(this, CardSizeProperty, TabControlTokenKey.CardSize);
         _addTabButton          = e.NameScope.Find<IconButton>(CardTabStripTheme.AddTabButtonPart);
         _itemsPresenter        = e.NameScope.Find<ItemsPresenter>(BaseTabStripTheme.ItemsPresenterPart);
         if (_addTabButton is not null)
@@ -148,17 +148,17 @@ public class CardTabStrip : BaseTabStrip
         if (SizeType == SizeType.Large)
         {
             TokenResourceBinder.CreateSharedResourceBinding(this, CardBorderRadiusSizeProperty,
-                DesignTokenKey.BorderRadiusLG);
+                SharedTokenKey.BorderRadiusLG);
         }
         else if (SizeType == SizeType.Middle)
         {
             TokenResourceBinder.CreateSharedResourceBinding(this, CardBorderRadiusSizeProperty,
-                DesignTokenKey.BorderRadius);
+                SharedTokenKey.BorderRadius);
         }
         else
         {
             TokenResourceBinder.CreateSharedResourceBinding(this, CardBorderRadiusSizeProperty,
-                DesignTokenKey.BorderRadiusSM);
+                SharedTokenKey.BorderRadiusSM);
         }
     }
 

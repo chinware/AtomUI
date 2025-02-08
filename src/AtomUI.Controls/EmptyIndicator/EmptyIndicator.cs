@@ -114,13 +114,13 @@ public partial class EmptyIndicator : TemplatedControl
 
     private void SetupTokenBindings()
     {
-        TokenResourceBinder.CreateTokenBinding(this, ColorFillTokenProperty, DesignTokenKey.ColorFill);
+        TokenResourceBinder.CreateTokenBinding(this, ColorFillTokenProperty, SharedTokenKey.ColorFill);
         TokenResourceBinder.CreateTokenBinding(this, ColorFillTertiaryTokenProperty,
-            DesignTokenKey.ColorFillTertiary);
+            SharedTokenKey.ColorFillTertiary);
         TokenResourceBinder.CreateTokenBinding(this, ColorFillQuaternaryTokenProperty,
-            DesignTokenKey.ColorFillQuaternary);
+            SharedTokenKey.ColorFillQuaternary);
         TokenResourceBinder.CreateTokenBinding(this, ColorBgContainerTokenProperty,
-            DesignTokenKey.ColorBgContainer);
+            SharedTokenKey.ColorBgContainer);
     }
 
     private void SetupImage()

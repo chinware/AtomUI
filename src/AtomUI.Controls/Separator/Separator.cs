@@ -184,7 +184,7 @@ public class Separator : AvaloniaSeparator
     
     private void SetupTokenBindings()
     {
-        TokenResourceBinder.CreateTokenBinding(this, LineWidthProperty, DesignTokenKey.LineWidth);
+        TokenResourceBinder.CreateTokenBinding(this, LineWidthProperty, SharedTokenKey.LineWidth);
     }
 
     // 当为水平分隔线的时候，我们设置最小的高度，当为垂直分割线的时候我们设置一个合适宽度

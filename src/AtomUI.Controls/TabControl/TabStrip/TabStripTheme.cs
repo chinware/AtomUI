@@ -54,7 +54,7 @@ internal class TabStripTheme : BaseTabStripTheme
         };
         border.RegisterInNameScope(scope);
         TokenResourceBinder.CreateTokenBinding(border, Border.BackgroundProperty,
-            TabControlTokenResourceKey.InkBarColor);
+            TabControlTokenKey.InkBarColor);
 
         layout.Children.Add(itemsPresenter);
         layout.Children.Add(border);
@@ -75,7 +75,7 @@ internal class TabStripTheme : BaseTabStripTheme
 
             var itemPresenterPanelStyle = new Style(selector =>
                 selector.Nesting().Template().Name(ItemsPresenterPart).Child().OfType<StackPanel>());
-            itemPresenterPanelStyle.Add(StackPanel.SpacingProperty, TabControlTokenResourceKey.HorizontalItemGutter);
+            itemPresenterPanelStyle.Add(StackPanel.SpacingProperty, TabControlTokenKey.HorizontalItemGutter);
             itemPresenterPanelStyle.Add(StackPanel.OrientationProperty, Orientation.Horizontal);
 
             topStyle.Add(itemPresenterPanelStyle);
@@ -96,7 +96,7 @@ internal class TabStripTheme : BaseTabStripTheme
             var itemPresenterPanelStyle = new Style(selector =>
                 selector.Nesting().Template().Name(ItemsPresenterPart).Child().OfType<StackPanel>());
             itemPresenterPanelStyle.Add(StackPanel.OrientationProperty, Orientation.Vertical);
-            itemPresenterPanelStyle.Add(StackPanel.SpacingProperty, TabControlTokenResourceKey.VerticalItemGutter);
+            itemPresenterPanelStyle.Add(StackPanel.SpacingProperty, TabControlTokenKey.VerticalItemGutter);
             rightStyle.Add(itemPresenterPanelStyle);
 
             var indicatorStyle = new Style(selector => selector.Nesting().Template().Name(SelectedItemIndicatorPart));
@@ -112,7 +112,7 @@ internal class TabStripTheme : BaseTabStripTheme
 
             var itemPresenterPanelStyle = new Style(selector =>
                 selector.Nesting().Template().Name(ItemsPresenterPart).Child().OfType<StackPanel>());
-            itemPresenterPanelStyle.Add(StackPanel.SpacingProperty, TabControlTokenResourceKey.HorizontalItemGutter);
+            itemPresenterPanelStyle.Add(StackPanel.SpacingProperty, TabControlTokenKey.HorizontalItemGutter);
             itemPresenterPanelStyle.Add(StackPanel.OrientationProperty, Orientation.Horizontal);
             bottomStyle.Add(itemPresenterPanelStyle);
 
@@ -130,7 +130,7 @@ internal class TabStripTheme : BaseTabStripTheme
             var itemPresenterPanelStyle = new Style(selector =>
                 selector.Nesting().Template().Name(ItemsPresenterPart).Child().OfType<StackPanel>());
             itemPresenterPanelStyle.Add(StackPanel.OrientationProperty, Orientation.Vertical);
-            itemPresenterPanelStyle.Add(StackPanel.SpacingProperty, TabControlTokenResourceKey.VerticalItemGutter);
+            itemPresenterPanelStyle.Add(StackPanel.SpacingProperty, TabControlTokenKey.VerticalItemGutter);
             leftStyle.Add(itemPresenterPanelStyle);
 
             var indicatorStyle = new Style(selector => selector.Nesting().Template().Name(SelectedItemIndicatorPart));

@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Reflection;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.TokenSystem;
 using Avalonia.Controls;
@@ -37,6 +38,7 @@ public class Theme : ITheme
     internal ResourceDictionary ThemeResource => ResourceDictionary;
     public bool IsDarkMode { get; protected set; }
     public bool IsActivated => Activated;
+    
     public DesignToken SharedToken => _sharedToken;
 
     static Theme()
@@ -128,10 +130,11 @@ public class Theme : ITheme
                 // 如果没有修改就使用全局的
                 entry.Value.AssignSharedToken(_sharedToken);
             }
-
+            
             foreach (var entry in controlTokenConfig)
             {
                 var tokenId          = entry.Key;
+                var catalog          = entry.Value.Catalog;
                 var controlTokenInfo = entry.Value;
                 if (!ControlTokens.ContainsKey(tokenId))
                 {
@@ -142,7 +145,7 @@ public class Theme : ITheme
                 var controlAliasToken = (DesignToken)_sharedToken.Clone();
                 controlAliasToken.LoadConfig(controlTokenInfo.Tokens);
 
-                if (controlTokenInfo.UseAlgorithm)
+                if (controlTokenInfo.EnableAlgorithm)
                 {
                     ThemeVariantCalculator?.Calculate(controlAliasToken);
                     controlAliasToken.CalculateAliasTokenValues();
@@ -223,7 +226,15 @@ public class Theme : ITheme
             var obj = Activator.CreateInstance(tokenType);
             if (obj is AbstractControlDesignToken controlToken)
             {
-                ControlTokens.Add(controlToken.Id, controlToken);
+                var attr = tokenType.GetCustomAttribute<ControlDesignTokenAttribute>();
+                Debug.Assert(attr != null);
+                var qualifiedPrefix = "";
+                if (!string.IsNullOrEmpty(attr.ResourceCatalog))
+                {
+                    qualifiedPrefix += $"{attr.ResourceCatalog}{TokenResourceKey.CatalogSeparator}";
+                }
+                
+                ControlTokens.Add($"{qualifiedPrefix}{controlToken.Id}", controlToken);
             }
         }
     }

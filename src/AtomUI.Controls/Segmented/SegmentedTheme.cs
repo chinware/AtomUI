@@ -47,11 +47,11 @@ internal class SegmentedTheme : BaseControlTheme
     protected override void BuildStyles()
     {
         var commonStyle = new Style(selector => selector.Nesting());
-        commonStyle.Add(TemplatedControl.PaddingProperty, SegmentedTokenResourceKey.TrackPadding);
-        commonStyle.Add(TemplatedControl.BackgroundProperty, SegmentedTokenResourceKey.TrackBg);
+        commonStyle.Add(TemplatedControl.PaddingProperty, SegmentedTokenKey.TrackPadding);
+        commonStyle.Add(TemplatedControl.BackgroundProperty, SegmentedTokenKey.TrackBg);
         commonStyle.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Left);
-        commonStyle.Add(Segmented.SelectedThumbBgProperty, SegmentedTokenResourceKey.ItemSelectedBg);
-        commonStyle.Add(Segmented.SelectedThumbBoxShadowsProperty, DesignTokenKey.BoxShadowsTertiary);
+        commonStyle.Add(Segmented.SelectedThumbBgProperty, SegmentedTokenKey.ItemSelectedBg);
+        commonStyle.Add(Segmented.SelectedThumbBoxShadowsProperty, SharedTokenKey.BoxShadowsTertiary);
         var expandingStyle =
             new Style(selector => selector.Nesting().PropertyEquals(Segmented.IsExpandingProperty, true));
         expandingStyle.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
@@ -65,20 +65,20 @@ internal class SegmentedTheme : BaseControlTheme
     {
         var largeSizeTypeStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(Segmented.SizeTypeProperty, SizeType.Large));
-        largeSizeTypeStyle.Add(TemplatedControl.CornerRadiusProperty, DesignTokenKey.BorderRadiusLG);
-        largeSizeTypeStyle.Add(Segmented.SelectedThumbCornerRadiusProperty, DesignTokenKey.BorderRadius);
+        largeSizeTypeStyle.Add(TemplatedControl.CornerRadiusProperty, SharedTokenKey.BorderRadiusLG);
+        largeSizeTypeStyle.Add(Segmented.SelectedThumbCornerRadiusProperty, SharedTokenKey.BorderRadius);
         Add(largeSizeTypeStyle);
 
         var middleSizeTypeStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(Segmented.SizeTypeProperty, SizeType.Middle));
-        middleSizeTypeStyle.Add(TemplatedControl.CornerRadiusProperty, DesignTokenKey.BorderRadius);
-        middleSizeTypeStyle.Add(Segmented.SelectedThumbCornerRadiusProperty, DesignTokenKey.BorderRadiusSM);
+        middleSizeTypeStyle.Add(TemplatedControl.CornerRadiusProperty, SharedTokenKey.BorderRadius);
+        middleSizeTypeStyle.Add(Segmented.SelectedThumbCornerRadiusProperty, SharedTokenKey.BorderRadiusSM);
         Add(middleSizeTypeStyle);
 
         var smallSizeTypeStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(Segmented.SizeTypeProperty, SizeType.Small));
-        smallSizeTypeStyle.Add(TemplatedControl.CornerRadiusProperty, DesignTokenKey.BorderRadiusSM);
-        smallSizeTypeStyle.Add(Segmented.SelectedThumbCornerRadiusProperty, DesignTokenKey.BorderRadiusXS);
+        smallSizeTypeStyle.Add(TemplatedControl.CornerRadiusProperty, SharedTokenKey.BorderRadiusSM);
+        smallSizeTypeStyle.Add(Segmented.SelectedThumbCornerRadiusProperty, SharedTokenKey.BorderRadiusXS);
         Add(smallSizeTypeStyle);
     }
 }

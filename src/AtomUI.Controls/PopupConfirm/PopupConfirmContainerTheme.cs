@@ -44,9 +44,9 @@ internal class PopupConfirmContainerTheme : BaseControlTheme
             var content = BuildContent(popupConfirmContainer, scope);
             mainLayout.Children.Add(content);
             TokenResourceBinder.CreateTokenBinding(mainLayout, Layoutable.MinWidthProperty,
-                PopupConfirmTokenResourceKey.PopupMinWidth);
+                PopupConfirmTokenKey.PopupMinWidth);
             TokenResourceBinder.CreateTokenBinding(mainLayout, Layoutable.MinHeightProperty,
-                PopupConfirmTokenResourceKey.PopupMinHeight);
+                PopupConfirmTokenKey.PopupMinHeight);
             BuildInstanceStyles(popupConfirmContainer);
             return mainLayout;
         });
@@ -124,10 +124,10 @@ internal class PopupConfirmContainerTheme : BaseControlTheme
         };
 
         TokenResourceBinder.CreateTokenBinding(cancelButton, Layoutable.MarginProperty,
-            PopupConfirmTokenResourceKey.ButtonContainerMargin);
+            PopupConfirmTokenKey.ButtonContainerMargin);
         cancelButton.RegisterInNameScope(scope);
         TokenResourceBinder.CreateTokenBinding(cancelButton, Layoutable.MarginProperty,
-            PopupConfirmTokenResourceKey.ButtonMargin);
+            PopupConfirmTokenKey.ButtonMargin);
         CreateTemplateParentBinding(cancelButton, Button.TextProperty, PopupConfirmContainer.CancelTextProperty);
         CreateTemplateParentBinding(cancelButton, Visual.IsVisibleProperty,
             PopupConfirmContainer.IsShowCancelButtonProperty);
@@ -142,10 +142,10 @@ internal class PopupConfirmContainerTheme : BaseControlTheme
             Height              = double.NaN
         };
         TokenResourceBinder.CreateTokenBinding(okButton, Layoutable.MarginProperty,
-            PopupConfirmTokenResourceKey.ButtonContainerMargin);
+            PopupConfirmTokenKey.ButtonContainerMargin);
         okButton.RegisterInNameScope(scope);
         TokenResourceBinder.CreateTokenBinding(okButton, Layoutable.MarginProperty,
-            PopupConfirmTokenResourceKey.ButtonMargin);
+            PopupConfirmTokenKey.ButtonMargin);
         CreateTemplateParentBinding(okButton, Button.TextProperty, PopupConfirmContainer.OkTextProperty);
         CreateTemplateParentBinding(okButton, Button.ButtonTypeProperty, PopupConfirmContainer.OkButtonTypeProperty);
         buttonLayout.Children.Add(okButton);
@@ -156,8 +156,8 @@ internal class PopupConfirmContainerTheme : BaseControlTheme
     {
         {
             var iconStyle = new Style(selector => selector.Name(IconContentPart).Child().OfType<Icon>());
-            iconStyle.Add(Layoutable.WidthProperty, DesignTokenKey.IconSizeLG);
-            iconStyle.Add(Layoutable.HeightProperty, DesignTokenKey.IconSizeLG);
+            iconStyle.Add(Layoutable.WidthProperty, SharedTokenKey.IconSizeLG);
+            iconStyle.Add(Layoutable.HeightProperty, SharedTokenKey.IconSizeLG);
             iconStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Top);
             control.Styles.Add(iconStyle);
         }
@@ -165,21 +165,21 @@ internal class PopupConfirmContainerTheme : BaseControlTheme
                                                     .PropertyEquals(PopupConfirmContainer.ConfirmStatusProperty,
                                                         PopupConfirmStatus.Info)
                                                     .Descendant().Name(IconContentPart).Child().OfType<Icon>());
-        infoStatusStyle.Add(Icon.NormalFilledBrushProperty, DesignTokenKey.ColorPrimary);
+        infoStatusStyle.Add(Icon.NormalFilledBrushProperty, SharedTokenKey.ColorPrimary);
         control.Styles.Add(infoStatusStyle);
 
         var warningStatusStyle = new Style(selector => selector
                                                        .PropertyEquals(PopupConfirmContainer.ConfirmStatusProperty,
                                                            PopupConfirmStatus.Warning)
                                                        .Descendant().Name(IconContentPart).Child().OfType<Icon>());
-        warningStatusStyle.Add(Icon.NormalFilledBrushProperty, DesignTokenKey.ColorWarning);
+        warningStatusStyle.Add(Icon.NormalFilledBrushProperty, SharedTokenKey.ColorWarning);
         control.Styles.Add(warningStatusStyle);
 
         var errorStatusStyle = new Style(selector => selector
                                                      .PropertyEquals(PopupConfirmContainer.ConfirmStatusProperty,
                                                          PopupConfirmStatus.Error)
                                                      .Descendant().Name(IconContentPart).Child().OfType<Icon>());
-        errorStatusStyle.Add(Icon.NormalFilledBrushProperty, DesignTokenKey.ColorError);
+        errorStatusStyle.Add(Icon.NormalFilledBrushProperty, SharedTokenKey.ColorError);
         control.Styles.Add(errorStatusStyle);
     }
 
@@ -188,17 +188,17 @@ internal class PopupConfirmContainerTheme : BaseControlTheme
         var commonStyle = new Style(selector => selector.Nesting());
 
         var iconContentPresenter = new Style(selector => selector.Nesting().Template().Name(IconContentPart));
-        iconContentPresenter.Add(Layoutable.MarginProperty, PopupConfirmTokenResourceKey.IconMargin);
+        iconContentPresenter.Add(Layoutable.MarginProperty, PopupConfirmTokenKey.IconMargin);
         commonStyle.Add(iconContentPresenter);
 
         var titleStyle = new Style(selector => selector.Nesting().Template().Name(TitlePart));
-        titleStyle.Add(Layoutable.MarginProperty, PopupConfirmTokenResourceKey.TitleMargin);
-        titleStyle.Add(TextBlock.ForegroundProperty, DesignTokenKey.ColorTextHeading);
+        titleStyle.Add(Layoutable.MarginProperty, PopupConfirmTokenKey.TitleMargin);
+        titleStyle.Add(TextBlock.ForegroundProperty, SharedTokenKey.ColorTextHeading);
         titleStyle.Add(TextBlock.FontWeightProperty, FontWeight.SemiBold);
         commonStyle.Add(titleStyle);
 
         var contentStyle = new Style(selector => selector.Nesting().Template().Name(ContentPart));
-        contentStyle.Add(Layoutable.MarginProperty, PopupConfirmTokenResourceKey.ContentContainerMargin);
+        contentStyle.Add(Layoutable.MarginProperty, PopupConfirmTokenKey.ContentContainerMargin);
         commonStyle.Add(contentStyle);
 
         Add(commonStyle);

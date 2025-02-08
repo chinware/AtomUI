@@ -47,17 +47,17 @@ internal class NavMenuItemTheme : BaseNavMenuItemTheme
         };
 
         TokenResourceBinder.CreateTokenBinding(popup, Popup.MarginToAnchorProperty,
-            NavMenuTokenResourceKey.TopLevelItemPopupMarginToAnchor);
+            NavMenuTokenKey.TopLevelItemPopupMarginToAnchor);
         TokenResourceBinder.CreateTokenBinding(border, Border.CornerRadiusProperty,
-            NavMenuTokenResourceKey.MenuPopupBorderRadius);
+            NavMenuTokenKey.MenuPopupBorderRadius);
         TokenResourceBinder.CreateTokenBinding(border, Layoutable.MinWidthProperty,
-            NavMenuTokenResourceKey.MenuPopupMinWidth);
+            NavMenuTokenKey.MenuPopupMinWidth);
         TokenResourceBinder.CreateTokenBinding(border, Layoutable.MaxWidthProperty,
-            NavMenuTokenResourceKey.MenuPopupMaxWidth);
+            NavMenuTokenKey.MenuPopupMaxWidth);
         TokenResourceBinder.CreateTokenBinding(border, Layoutable.MaxHeightProperty,
-            NavMenuTokenResourceKey.MenuPopupMaxHeight);
+            NavMenuTokenKey.MenuPopupMaxHeight);
         TokenResourceBinder.CreateTokenBinding(border, Decorator.PaddingProperty,
-            NavMenuTokenResourceKey.MenuPopupContentPadding);
+            NavMenuTokenKey.MenuPopupContentPadding);
 
         var scrollViewer = new MenuScrollViewer();
         var itemsPresenter = new ItemsPresenter
@@ -72,9 +72,9 @@ internal class NavMenuItemTheme : BaseNavMenuItemTheme
         popup.Child = border;
 
         TokenResourceBinder.CreateTokenBinding(popup, Popup.MarginToAnchorProperty,
-            NavMenuTokenResourceKey.TopLevelItemPopupMarginToAnchor);
+            NavMenuTokenKey.TopLevelItemPopupMarginToAnchor);
         TokenResourceBinder.CreateTokenBinding(popup, Popup.MaskShadowsProperty,
-            NavMenuTokenResourceKey.MenuPopupBoxShadows);
+            NavMenuTokenKey.MenuPopupBoxShadows);
         CreateTemplateParentBinding(popup, Popup.IsOpenProperty,
             NavMenuItem.IsSubMenuOpenProperty, BindingMode.TwoWay);
 
@@ -86,12 +86,12 @@ internal class NavMenuItemTheme : BaseNavMenuItemTheme
         base.BuildStyles();
         var itemsPanelStyle = new Style(selector =>
             selector.Nesting().Template().Name(ItemsPresenterPart).Child().OfType<StackPanel>());
-        itemsPanelStyle.Add(StackPanel.SpacingProperty, NavMenuTokenResourceKey.VerticalItemsPanelSpacing);
+        itemsPanelStyle.Add(StackPanel.SpacingProperty, NavMenuTokenKey.VerticalItemsPanelSpacing);
         Add(itemsPanelStyle);
 
         {
             var popupFrameStyle = new Style(selector => selector.Nesting().Template().Name(PopupFramePart));
-            popupFrameStyle.Add(Border.BackgroundProperty, DesignTokenKey.ColorBgContainer);
+            popupFrameStyle.Add(Border.BackgroundProperty, SharedTokenKey.ColorBgContainer);
             Add(popupFrameStyle);
         }
 
@@ -99,7 +99,7 @@ internal class NavMenuItemTheme : BaseNavMenuItemTheme
             new Style(selector => selector.Nesting().PropertyEquals(NavMenuItem.IsDarkStyleProperty, true));
         {
             var popupFrameStyle = new Style(selector => selector.Nesting().Template().Name(PopupFramePart));
-            popupFrameStyle.Add(Border.BackgroundProperty, NavMenuTokenResourceKey.DarkItemBg);
+            popupFrameStyle.Add(Border.BackgroundProperty, NavMenuTokenKey.DarkItemBg);
             darkCommonStyle.Add(popupFrameStyle);
         }
         Add(darkCommonStyle);

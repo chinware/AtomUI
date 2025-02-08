@@ -59,7 +59,7 @@ internal abstract class BaseNavMenuTheme : BaseControlTheme
     protected override void BuildStyles()
     {
         var commonStyle = new Style(selector => selector.Nesting());
-        commonStyle.Add(TemplatedControl.BorderBrushProperty, DesignTokenKey.ColorBorderSecondary);
+        commonStyle.Add(TemplatedControl.BorderBrushProperty, SharedTokenKey.ColorBorderSecondary);
         Add(commonStyle);
     }
 }

@@ -294,7 +294,7 @@ public class TimelineItem : ContentControl
         if (IsLast || isPendingItem)
         {
             TokenResourceBinder.CreateSharedTokenBinding(this, Layoutable.MinHeightProperty,
-                TimelineTokenResourceKey.LastItemContentMinHeight);
+                TimelineTokenKey.LastItemContentMinHeight);
         }
 
         if (Color.StartsWith("#"))
@@ -318,32 +318,32 @@ public class TimelineItem : ContentControl
                 if (_dotPart is not null && _dotPart.NormalFilledBrush is null)
                 {
                     TokenResourceBinder.CreateSharedTokenBinding(_dotPart, Icon.NormalFilledBrushProperty,
-                        DesignTokenKey.ColorPrimary);
+                        SharedTokenKey.ColorPrimary);
                 }
 
                 if (_splitHeadPart is not null)
                 {
                     TokenResourceBinder.CreateSharedTokenBinding(_splitHeadPart, Border.BorderBrushProperty,
-                        DesignTokenKey.ColorPrimary);
+                        SharedTokenKey.ColorPrimary);
                 }
             }
         }
         else
         {
-            var tokenText = DesignTokenKey.ColorSuccess;
+            var tokenText = SharedTokenKey.ColorSuccess;
             switch (Color)
             {
                 case "blue":
-                    tokenText = DesignTokenKey.ColorPrimary;
+                    tokenText = SharedTokenKey.ColorPrimary;
                     break;
                 case "green":
-                    tokenText = DesignTokenKey.ColorSuccess;
+                    tokenText = SharedTokenKey.ColorSuccess;
                     break;
                 case "red":
-                    tokenText = DesignTokenKey.ColorError;
+                    tokenText = SharedTokenKey.ColorError;
                     break;
                 case "gray":
-                    tokenText = DesignTokenKey.ColorTextDisabled;
+                    tokenText = SharedTokenKey.ColorTextDisabled;
                     break;
             }
             if (_dotPart is not null && _dotPart.NormalFilledBrush is null)

@@ -30,31 +30,31 @@ internal class TextButtonTheme : BaseButtonTheme
     {
         var enabledStyle = new Style(selector => selector.Nesting());
         // 正常状态
-        enabledStyle.Add(TemplatedControl.BackgroundProperty, DesignTokenKey.ColorTransparent);
-        enabledStyle.Add(TemplatedControl.ForegroundProperty, ButtonTokenResourceKey.DefaultColor);
+        enabledStyle.Add(TemplatedControl.BackgroundProperty, SharedTokenKey.ColorTransparent);
+        enabledStyle.Add(TemplatedControl.ForegroundProperty, ButtonTokenKey.DefaultColor);
 
         // 正常 hover
         {
             var hoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
-            hoverStyle.Add(TemplatedControl.BackgroundProperty, ButtonTokenResourceKey.TextHoverBg);
+            hoverStyle.Add(TemplatedControl.BackgroundProperty, ButtonTokenKey.TextHoverBg);
             enabledStyle.Add(hoverStyle);
         }
         // 正常按下
         {
             var pressedStyle = new Style(selector =>
                 selector.Nesting().Class(StdPseudoClass.PointerOver).Class(StdPseudoClass.Pressed));
-            pressedStyle.Add(TemplatedControl.BackgroundProperty, DesignTokenKey.ColorBgTextActive);
+            pressedStyle.Add(TemplatedControl.BackgroundProperty, SharedTokenKey.ColorBgTextActive);
             enabledStyle.Add(pressedStyle);
         }
 
         // 危险按钮状态
         var dangerStyle = new Style(selector => selector.Nesting().PropertyEquals(Button.IsDangerProperty, true));
-        dangerStyle.Add(TemplatedControl.ForegroundProperty, DesignTokenKey.ColorError);
+        dangerStyle.Add(TemplatedControl.ForegroundProperty, SharedTokenKey.ColorError);
 
         // 危险状态 hover
         {
             var hoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
-            hoverStyle.Add(TemplatedControl.BackgroundProperty, DesignTokenKey.ColorErrorBgHover);
+            hoverStyle.Add(TemplatedControl.BackgroundProperty, SharedTokenKey.ColorErrorBgHover);
             dangerStyle.Add(hoverStyle);
         }
 
@@ -62,7 +62,7 @@ internal class TextButtonTheme : BaseButtonTheme
         {
             var pressedStyle = new Style(selector =>
                 selector.Nesting().Class(StdPseudoClass.PointerOver).Class(StdPseudoClass.Pressed));
-            pressedStyle.Add(TemplatedControl.BackgroundProperty, DesignTokenKey.ColorErrorBgActive);
+            pressedStyle.Add(TemplatedControl.BackgroundProperty, SharedTokenKey.ColorErrorBgActive);
             dangerStyle.Add(pressedStyle);
         }
         enabledStyle.Add(dangerStyle);
@@ -73,7 +73,7 @@ internal class TextButtonTheme : BaseButtonTheme
     private void BuildDisabledStyle()
     {
         var disabledStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Disabled));
-        disabledStyle.Add(TemplatedControl.ForegroundProperty, DesignTokenKey.ColorTextDisabled);
+        disabledStyle.Add(TemplatedControl.ForegroundProperty, SharedTokenKey.ColorTextDisabled);
         Add(disabledStyle);
     }
 }

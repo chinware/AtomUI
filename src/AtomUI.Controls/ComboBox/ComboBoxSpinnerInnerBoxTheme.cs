@@ -45,14 +45,14 @@ internal class ComboBoxSpinnerInnerBoxTheme : AddOnDecoratedInnerBoxTheme
         {
             var innerBoxDecoratorStyle =
                 new Style(selector => selector.Nesting().Template().Name(InnerBoxDecoratorPart));
-            innerBoxDecoratorStyle.Add(Border.BackgroundProperty, DesignTokenKey.ColorTransparent);
+            innerBoxDecoratorStyle.Add(Border.BackgroundProperty, SharedTokenKey.ColorTransparent);
             notFilledStyle.Add(innerBoxDecoratorStyle);
         }
         var hoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
         {
             var innerBoxDecoratorStyle =
                 new Style(selector => selector.Nesting().Template().Name(InnerBoxDecoratorPart));
-            innerBoxDecoratorStyle.Add(Border.BackgroundProperty, DesignTokenKey.ColorFillTertiary);
+            innerBoxDecoratorStyle.Add(Border.BackgroundProperty, SharedTokenKey.ColorFillTertiary);
             hoverStyle.Add(innerBoxDecoratorStyle);
             notFilledStyle.Add(hoverStyle);
         }

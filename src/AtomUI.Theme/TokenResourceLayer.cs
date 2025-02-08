@@ -9,9 +9,11 @@ internal class TokenResourceLayer : Styles, ITokenResourceLayer
     private IThemeVariantCalculator? _themeVariantCalculator;
     
     public DesignToken SharedToken { get; protected set; }
+    
     public Dictionary<string, IControlDesignToken> ControlTokens { get; protected set; }
     
     public IList<string> Algorithms { get; protected set; }
+    
     public bool IsDarkMode { get; protected set; }
 
     public TokenResourceLayer()
@@ -23,7 +25,6 @@ internal class TokenResourceLayer : Styles, ITokenResourceLayer
 
     public void Calculate()
     {
-        
     }
 
     public void MountTokenResources(ThemeConfigProvider themeConfigProvider)

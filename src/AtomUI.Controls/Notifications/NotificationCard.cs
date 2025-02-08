@@ -209,7 +209,7 @@ public class NotificationCard : ContentControl
             SetupNotificationIcon();
             UpdateNotificationType();
         }
-        TokenResourceBinder.CreateSharedTokenBinding(this, OpenCloseMotionDurationProperty, DesignTokenKey.MotionDurationMid);
+        TokenResourceBinder.CreateSharedTokenBinding(this, OpenCloseMotionDurationProperty, SharedTokenKey.MotionDurationMid);
         _progressBar = e.NameScope.Find<NotificationProgressBar>(NotificationCardTheme.ProgressBarPart);
         _closeButton = e.NameScope.Find<IconButton>(NotificationCardTheme.CloseButtonPart);
         _motionActor = e.NameScope.Find<MotionActorControl>(NotificationCardTheme.MotionActorPart);
@@ -409,22 +409,22 @@ public class NotificationCard : ContentControl
         if (NotificationType == NotificationType.Error)
         {
             TokenResourceBinder.CreateSharedTokenBinding(icon, Icon.NormalFilledBrushProperty,
-                DesignTokenKey.ColorError);
+                SharedTokenKey.ColorError);
         }
         else if (NotificationType == NotificationType.Information)
         {
             TokenResourceBinder.CreateSharedTokenBinding(icon, Icon.NormalFilledBrushProperty,
-                DesignTokenKey.ColorPrimary);
+                SharedTokenKey.ColorPrimary);
         }
         else if (NotificationType == NotificationType.Success)
         {
             TokenResourceBinder.CreateSharedTokenBinding(icon, Icon.NormalFilledBrushProperty,
-                DesignTokenKey.ColorSuccess);
+                SharedTokenKey.ColorSuccess);
         }
         else if (NotificationType == NotificationType.Warning)
         {
             TokenResourceBinder.CreateSharedTokenBinding(icon, Icon.NormalFilledBrushProperty,
-                DesignTokenKey.ColorWarning);
+                SharedTokenKey.ColorWarning);
         }
     }
 
@@ -437,9 +437,9 @@ public class NotificationCard : ContentControl
                 Text = content
             };
             TokenResourceBinder.CreateSharedTokenBinding(textBlock, SelectableTextBlock.SelectionBrushProperty,
-                DesignTokenKey.SelectionBackground);
+                SharedTokenKey.SelectionBackground);
             TokenResourceBinder.CreateSharedTokenBinding(textBlock,
-                SelectableTextBlock.SelectionForegroundBrushProperty, DesignTokenKey.SelectionForeground);
+                SelectableTextBlock.SelectionForegroundBrushProperty, SharedTokenKey.SelectionForeground);
             Content = textBlock;
         }
     }

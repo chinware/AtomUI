@@ -102,9 +102,9 @@ internal class ComboBoxTheme : BaseControlTheme
         var decreaseButtonIcon = AntDesignIconPackage.DownOutlined();
 
         TokenResourceBinder.CreateSharedTokenBinding(decreaseButtonIcon, Icon.ActiveFilledBrushProperty,
-            ButtonSpinnerTokenResourceKey.HandleHoverColor);
+            ButtonSpinnerTokenKey.HandleHoverColor);
         TokenResourceBinder.CreateSharedTokenBinding(decreaseButtonIcon, Icon.SelectedFilledBrushProperty,
-            DesignTokenKey.ColorPrimaryActive);
+            SharedTokenKey.ColorPrimaryActive);
 
         var openButton = new IconButton
         {
@@ -118,11 +118,11 @@ internal class ComboBoxTheme : BaseControlTheme
         openButton.RegisterInNameScope(scope);
 
         TokenResourceBinder.CreateTokenBinding(openButton, Layoutable.WidthProperty,
-            ComboBoxTokenResourceKey.OpenIndicatorWidth);
+            ComboBoxTokenKey.OpenIndicatorWidth);
         TokenResourceBinder.CreateTokenBinding(openButton, IconButton.IconWidthProperty,
-            DesignTokenKey.IconSizeSM);
+            SharedTokenKey.IconSizeSM);
         TokenResourceBinder.CreateTokenBinding(openButton, IconButton.IconHeightProperty,
-            DesignTokenKey.IconSizeSM);
+            SharedTokenKey.IconSizeSM);
 
         spinnerHandleDecorator.Child   = openButton;
         spinnerInnerBox.SpinnerContent = spinnerHandleDecorator;
@@ -180,11 +180,11 @@ internal class ComboBoxTheme : BaseControlTheme
         var border = new Border();
 
         TokenResourceBinder.CreateTokenBinding(border, Border.BackgroundProperty,
-            DesignTokenKey.ColorBgContainer);
+            SharedTokenKey.ColorBgContainer);
         TokenResourceBinder.CreateTokenBinding(border, Border.CornerRadiusProperty,
-            ComboBoxTokenResourceKey.PopupBorderRadius);
+            ComboBoxTokenKey.PopupBorderRadius);
         TokenResourceBinder.CreateTokenBinding(border, Decorator.PaddingProperty,
-            ComboBoxTokenResourceKey.PopupContentPadding);
+            ComboBoxTokenKey.PopupContentPadding);
 
         var scrollViewer = new MenuScrollViewer();
         var itemsPresenter = new ItemsPresenter
@@ -199,9 +199,9 @@ internal class ComboBoxTheme : BaseControlTheme
         popup.Child = border;
 
         TokenResourceBinder.CreateTokenBinding(popup, Popup.MarginToAnchorProperty,
-            ComboBoxTokenResourceKey.PopupMarginToAnchor);
+            ComboBoxTokenKey.PopupMarginToAnchor);
         TokenResourceBinder.CreateTokenBinding(popup, Popup.MaskShadowsProperty,
-            ComboBoxTokenResourceKey.PopupBoxShadows);
+            ComboBoxTokenKey.PopupBoxShadows);
         CreateTemplateParentBinding(popup, Layoutable.MaxHeightProperty,
             Avalonia.Controls.ComboBox.MaxDropDownHeightProperty);
         CreateTemplateParentBinding(popup, Avalonia.Controls.Primitives.Popup.IsOpenProperty,
@@ -216,10 +216,10 @@ internal class ComboBoxTheme : BaseControlTheme
         var largeStyle =
             new Style(selector =>
                 selector.Nesting().PropertyEquals(AddOnDecoratedBox.SizeTypeProperty, SizeType.Large));
-        largeStyle.Add(TextElement.FontSizeProperty, DesignTokenKey.FontSizeLG);
+        largeStyle.Add(TextElement.FontSizeProperty, SharedTokenKey.FontSizeLG);
         {
             var spinnerInnerBox = new Style(selector => selector.Nesting().Template().Name(SpinnerInnerBoxPart));
-            spinnerInnerBox.Add(TemplatedControl.FontSizeProperty, DesignTokenKey.FontSizeLG);
+            spinnerInnerBox.Add(TemplatedControl.FontSizeProperty, SharedTokenKey.FontSizeLG);
             largeStyle.Add(spinnerInnerBox);
         }
         commonStyle.Add(largeStyle);
@@ -227,10 +227,10 @@ internal class ComboBoxTheme : BaseControlTheme
         var middleStyle =
             new Style(
                 selector => selector.Nesting().PropertyEquals(AddOnDecoratedBox.SizeTypeProperty, SizeType.Middle));
-        middleStyle.Add(TemplatedControl.CornerRadiusProperty, DesignTokenKey.BorderRadius);
+        middleStyle.Add(TemplatedControl.CornerRadiusProperty, SharedTokenKey.BorderRadius);
         {
             var spinnerInnerBox = new Style(selector => selector.Nesting().Template().Name(SpinnerInnerBoxPart));
-            spinnerInnerBox.Add(TemplatedControl.FontSizeProperty, DesignTokenKey.FontSize);
+            spinnerInnerBox.Add(TemplatedControl.FontSizeProperty, SharedTokenKey.FontSize);
             middleStyle.Add(spinnerInnerBox);
         }
         commonStyle.Add(middleStyle);
@@ -238,10 +238,10 @@ internal class ComboBoxTheme : BaseControlTheme
         var smallStyle =
             new Style(selector =>
                 selector.Nesting().PropertyEquals(AddOnDecoratedBox.SizeTypeProperty, SizeType.Small));
-        smallStyle.Add(TemplatedControl.CornerRadiusProperty, DesignTokenKey.BorderRadiusSM);
+        smallStyle.Add(TemplatedControl.CornerRadiusProperty, SharedTokenKey.BorderRadiusSM);
         {
             var spinnerInnerBox = new Style(selector => selector.Nesting().Template().Name(SpinnerInnerBoxPart));
-            spinnerInnerBox.Add(TemplatedControl.FontSizeProperty, DesignTokenKey.FontSizeSM);
+            spinnerInnerBox.Add(TemplatedControl.FontSizeProperty, SharedTokenKey.FontSizeSM);
             smallStyle.Add(spinnerInnerBox);
         }
         commonStyle.Add(smallStyle);
@@ -260,7 +260,7 @@ internal class ComboBoxTheme : BaseControlTheme
             var errorStyle = new Style(selector => selector.Nesting().Class(AddOnDecoratedBox.ErrorPC));
             var contentPresenter =
                 new Style(selector => selector.Nesting().Template().Name(SelectedContentPresenterPart));
-            contentPresenter.Add(ContentPresenter.ForegroundProperty, DesignTokenKey.ColorErrorText);
+            contentPresenter.Add(ContentPresenter.ForegroundProperty, SharedTokenKey.ColorErrorText);
             errorStyle.Add(contentPresenter);
             borderlessStyle.Add(errorStyle);
         }
@@ -269,7 +269,7 @@ internal class ComboBoxTheme : BaseControlTheme
             var warningStyle = new Style(selector => selector.Nesting().Class(AddOnDecoratedBox.WarningPC));
             var contentPresenter =
                 new Style(selector => selector.Nesting().Template().Name(SelectedContentPresenterPart));
-            contentPresenter.Add(ContentPresenter.ForegroundProperty, DesignTokenKey.ColorWarningText);
+            contentPresenter.Add(ContentPresenter.ForegroundProperty, SharedTokenKey.ColorWarningText);
             warningStyle.Add(contentPresenter);
             borderlessStyle.Add(warningStyle);
         }
@@ -286,7 +286,7 @@ internal class ComboBoxTheme : BaseControlTheme
 
             var contentPresenter =
                 new Style(selector => selector.Nesting().Template().Name(SelectedContentPresenterPart));
-            contentPresenter.Add(ContentPresenter.ForegroundProperty, DesignTokenKey.ColorErrorText);
+            contentPresenter.Add(ContentPresenter.ForegroundProperty, SharedTokenKey.ColorErrorText);
             errorStyle.Add(contentPresenter);
             filledStyle.Add(errorStyle);
         }
@@ -295,7 +295,7 @@ internal class ComboBoxTheme : BaseControlTheme
             var warningStyle = new Style(selector => selector.Nesting().Class(AddOnDecoratedBox.WarningPC));
             var contentPresenter =
                 new Style(selector => selector.Nesting().Template().Name(SelectedContentPresenterPart));
-            contentPresenter.Add(ContentPresenter.ForegroundProperty, DesignTokenKey.ColorWarningText);
+            contentPresenter.Add(ContentPresenter.ForegroundProperty, SharedTokenKey.ColorWarningText);
             warningStyle.Add(contentPresenter);
             filledStyle.Add(warningStyle);
         }

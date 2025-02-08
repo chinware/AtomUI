@@ -80,17 +80,17 @@ internal class SplitButtonTheme : BaseControlTheme
     {
         var largeSizeStyle =
             new Style(selector => selector.Nesting().PropertyEquals(Button.SizeTypeProperty, SizeType.Large));
-        largeSizeStyle.Add(TemplatedControl.CornerRadiusProperty, DesignTokenKey.BorderRadiusLG);
+        largeSizeStyle.Add(TemplatedControl.CornerRadiusProperty, SharedTokenKey.BorderRadiusLG);
         Add(largeSizeStyle);
 
         var middleSizeStyle =
             new Style(selector => selector.Nesting().PropertyEquals(Button.SizeTypeProperty, SizeType.Middle));
-        middleSizeStyle.Add(TemplatedControl.CornerRadiusProperty, DesignTokenKey.BorderRadius);
+        middleSizeStyle.Add(TemplatedControl.CornerRadiusProperty, SharedTokenKey.BorderRadius);
         Add(middleSizeStyle);
 
         var smallSizeStyle =
             new Style(selector => selector.Nesting().PropertyEquals(Button.SizeTypeProperty, SizeType.Small));
-        smallSizeStyle.Add(TemplatedControl.CornerRadiusProperty, DesignTokenKey.BorderRadiusSM);
+        smallSizeStyle.Add(TemplatedControl.CornerRadiusProperty, SharedTokenKey.BorderRadiusSM);
         Add(smallSizeStyle);
     }
 

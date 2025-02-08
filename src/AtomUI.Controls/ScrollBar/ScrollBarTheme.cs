@@ -150,16 +150,16 @@ internal class ScrollBarTheme : BaseControlTheme
     protected override void BuildStyles()
     {
         var verticalStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Vertical));
-        verticalStyle.Add(ScrollBar.WidthProperty, ScrollBarTokenResourceKey.ScrollBarThickness);
+        verticalStyle.Add(ScrollBar.WidthProperty, ScrollBarTokenKey.ScrollBarThickness);
         {
             var frameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
-            frameStyle.Add(ScrollBarThumb.MarginProperty, ScrollBarTokenResourceKey.ContentVPadding);
+            frameStyle.Add(ScrollBarThumb.MarginProperty, ScrollBarTokenKey.ContentVPadding);
             verticalStyle.Add(frameStyle);
         }
         {
             var thumbStyle = new Style(selector => selector.Nesting().Template().Name(ThumbPart));
-            thumbStyle.Add(ScrollBarThumb.MinHeightProperty, ScrollBarTokenResourceKey.ScrollBarThickness);
-            thumbStyle.Add(ScrollBarThumb.WidthProperty, ScrollBarTokenResourceKey.ThumbThickness);
+            thumbStyle.Add(ScrollBarThumb.MinHeightProperty, ScrollBarTokenKey.ScrollBarThickness);
+            thumbStyle.Add(ScrollBarThumb.WidthProperty, ScrollBarTokenKey.ThumbThickness);
             verticalStyle.Add(thumbStyle);
         }
         Add(verticalStyle);
@@ -167,16 +167,16 @@ internal class ScrollBarTheme : BaseControlTheme
         var horizontalStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Horizontal));
         {
             var frameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
-            frameStyle.Add(ScrollBarThumb.MarginProperty, ScrollBarTokenResourceKey.ContentHPadding);
+            frameStyle.Add(ScrollBarThumb.MarginProperty, ScrollBarTokenKey.ContentHPadding);
             horizontalStyle.Add(frameStyle);
         }
         {
             var thumbStyle = new Style(selector => selector.Nesting().Template().Name(ThumbPart));
-            thumbStyle.Add(ScrollBarThumb.MinWidthProperty, ScrollBarTokenResourceKey.ScrollBarThickness);
-            thumbStyle.Add(ScrollBarThumb.HeightProperty, ScrollBarTokenResourceKey.ThumbThickness);
+            thumbStyle.Add(ScrollBarThumb.MinWidthProperty, ScrollBarTokenKey.ScrollBarThickness);
+            thumbStyle.Add(ScrollBarThumb.HeightProperty, ScrollBarTokenKey.ThumbThickness);
             horizontalStyle.Add(thumbStyle);
         }
-        horizontalStyle.Add(ScrollBar.HeightProperty, ScrollBarTokenResourceKey.ScrollBarThickness);
+        horizontalStyle.Add(ScrollBar.HeightProperty, ScrollBarTokenKey.ScrollBarThickness);
         Add(horizontalStyle);
     }
 }

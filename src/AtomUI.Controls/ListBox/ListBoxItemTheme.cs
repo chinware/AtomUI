@@ -62,20 +62,20 @@ internal class ListBoxItemTheme : BaseControlTheme
     private void BuildCommonStyle()
     {
         var commonStyle = new Style(selector => selector.Nesting());
-        commonStyle.Add(ListBoxItem.MarginProperty, ListBoxTokenResourceKey.ItemMargin);
-        commonStyle.Add(ListBoxItem.ForegroundProperty, ListBoxTokenResourceKey.ItemColor);
-        commonStyle.Add(ListBoxItem.BackgroundProperty, ListBoxTokenResourceKey.ItemBgColor);
+        commonStyle.Add(ListBoxItem.MarginProperty, ListBoxTokenKey.ItemMargin);
+        commonStyle.Add(ListBoxItem.ForegroundProperty, ListBoxTokenKey.ItemColor);
+        commonStyle.Add(ListBoxItem.BackgroundProperty, ListBoxTokenKey.ItemBgColor);
 
         var disabledItemHoverStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(ListBoxItem.DisabledItemHoverEffectProperty, false).Class(StdPseudoClass.PointerOver));
-        disabledItemHoverStyle.Add(ListBoxItem.ForegroundProperty, ListBoxTokenResourceKey.ItemHoverColor);
-        disabledItemHoverStyle.Add(ListBoxItem.BackgroundProperty, ListBoxTokenResourceKey.ItemHoverBgColor);
+        disabledItemHoverStyle.Add(ListBoxItem.ForegroundProperty, ListBoxTokenKey.ItemHoverColor);
+        disabledItemHoverStyle.Add(ListBoxItem.BackgroundProperty, ListBoxTokenKey.ItemHoverBgColor);
         
         commonStyle.Add(disabledItemHoverStyle);
 
         var selectedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Selected));
-        selectedStyle.Add(ListBoxItem.ForegroundProperty, ListBoxTokenResourceKey.ItemSelectedColor);
-        selectedStyle.Add(ListBoxItem.BackgroundProperty, ListBoxTokenResourceKey.ItemSelectedBgColor);
+        selectedStyle.Add(ListBoxItem.ForegroundProperty, ListBoxTokenKey.ItemSelectedColor);
+        selectedStyle.Add(ListBoxItem.BackgroundProperty, ListBoxTokenKey.ItemSelectedBgColor);
         commonStyle.Add(selectedStyle);
         Add(commonStyle);
     }
@@ -84,25 +84,25 @@ internal class ListBoxItemTheme : BaseControlTheme
     {
         var largeStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(ListBoxItem.SizeTypeProperty, SizeType.Large));
-        largeStyle.Add(TemplatedControl.CornerRadiusProperty, DesignTokenKey.BorderRadius);
-        largeStyle.Add(Layoutable.MinHeightProperty, DesignTokenKey.ControlHeightLG);
-        largeStyle.Add(TemplatedControl.PaddingProperty, ListBoxTokenResourceKey.ItemPaddingLG);
+        largeStyle.Add(TemplatedControl.CornerRadiusProperty, SharedTokenKey.BorderRadius);
+        largeStyle.Add(Layoutable.MinHeightProperty, SharedTokenKey.ControlHeightLG);
+        largeStyle.Add(TemplatedControl.PaddingProperty, ListBoxTokenKey.ItemPaddingLG);
 
         Add(largeStyle);
 
         var middleStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(ListBoxItem.SizeTypeProperty, SizeType.Middle));
-        middleStyle.Add(TemplatedControl.CornerRadiusProperty, DesignTokenKey.BorderRadiusSM);
-        middleStyle.Add(Layoutable.MinHeightProperty, DesignTokenKey.ControlHeight);
-        middleStyle.Add(TemplatedControl.PaddingProperty, ListBoxTokenResourceKey.ItemPadding);
+        middleStyle.Add(TemplatedControl.CornerRadiusProperty, SharedTokenKey.BorderRadiusSM);
+        middleStyle.Add(Layoutable.MinHeightProperty, SharedTokenKey.ControlHeight);
+        middleStyle.Add(TemplatedControl.PaddingProperty, ListBoxTokenKey.ItemPadding);
 
         Add(middleStyle);
 
         var smallStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(ListBoxItem.SizeTypeProperty, SizeType.Small));
-        smallStyle.Add(TemplatedControl.CornerRadiusProperty, DesignTokenKey.BorderRadiusXS);
-        smallStyle.Add(Layoutable.MinHeightProperty, DesignTokenKey.ControlHeightSM);
-        smallStyle.Add(TemplatedControl.PaddingProperty, ListBoxTokenResourceKey.ItemPaddingSM);
+        smallStyle.Add(TemplatedControl.CornerRadiusProperty, SharedTokenKey.BorderRadiusXS);
+        smallStyle.Add(Layoutable.MinHeightProperty, SharedTokenKey.ControlHeightSM);
+        smallStyle.Add(TemplatedControl.PaddingProperty, ListBoxTokenKey.ItemPaddingSM);
         Add(smallStyle);
     }
 
@@ -110,7 +110,7 @@ internal class ListBoxItemTheme : BaseControlTheme
     {
         var disabledStyle         = new Style(selector => selector.Nesting().Class(StdPseudoClass.Disabled));
         var contentPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ContentPresenterPart));
-        contentPresenterStyle.Add(ContentPresenter.ForegroundProperty, DesignTokenKey.ColorTextDisabled);
+        contentPresenterStyle.Add(ContentPresenter.ForegroundProperty, SharedTokenKey.ColorTextDisabled);
         disabledStyle.Add(contentPresenterStyle);
         Add(disabledStyle);
     }

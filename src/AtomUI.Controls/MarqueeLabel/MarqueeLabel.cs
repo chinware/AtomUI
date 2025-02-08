@@ -123,8 +123,8 @@ public class MarqueeLabel : TextBlock
 
     private void SetupTokenBindings()
     {
-        TokenResourceBinder.CreateTokenBinding(this, CycleSpaceProperty, MarqueeLabelTokenResourceKey.CycleSpace);
-        TokenResourceBinder.CreateTokenBinding(this, MoveSpeedProperty, MarqueeLabelTokenResourceKey.DefaultSpeed);
+        TokenResourceBinder.CreateTokenBinding(this, CycleSpaceProperty, MarqueeLabelTokenKey.CycleSpace);
+        TokenResourceBinder.CreateTokenBinding(this, MoveSpeedProperty, MarqueeLabelTokenKey.DefaultSpeed);
     }
 
     private void HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)

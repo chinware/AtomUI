@@ -101,13 +101,13 @@ public class TabStripItem : AvaloniaTabStripItem, ICustomHitTest
             if (Icon.ThemeType != IconThemeType.TwoTone)
             {
                 TokenResourceBinder.CreateTokenBinding(Icon, Icon.NormalFilledBrushProperty,
-                    TabControlTokenResourceKey.ItemColor);
+                    TabControlTokenKey.ItemColor);
                 TokenResourceBinder.CreateTokenBinding(Icon, Icon.ActiveFilledBrushProperty,
-                    TabControlTokenResourceKey.ItemHoverColor);
+                    TabControlTokenKey.ItemHoverColor);
                 TokenResourceBinder.CreateTokenBinding(Icon, Icon.SelectedFilledBrushProperty,
-                    TabControlTokenResourceKey.ItemSelectedColor);
+                    TabControlTokenKey.ItemSelectedColor);
                 TokenResourceBinder.CreateTokenBinding(Icon, Icon.DisabledFilledBrushProperty,
-                    DesignTokenKey.ColorTextDisabled);
+                    SharedTokenKey.ColorTextDisabled);
             }
 
             if (_contentLayout is not null)
@@ -123,9 +123,9 @@ public class TabStripItem : AvaloniaTabStripItem, ICustomHitTest
         {
             CloseIcon = AntDesignIconPackage.CloseOutlined();
             TokenResourceBinder.CreateSharedResourceBinding(CloseIcon, WidthProperty,
-                DesignTokenKey.IconSizeSM);
+                SharedTokenKey.IconSizeSM);
             TokenResourceBinder.CreateSharedResourceBinding(CloseIcon, HeightProperty,
-                DesignTokenKey.IconSizeSM);
+                SharedTokenKey.IconSizeSM);
         }
 
         CloseIcon.SetValue(VerticalAlignmentProperty, VerticalAlignment.Center);
@@ -134,11 +134,11 @@ public class TabStripItem : AvaloniaTabStripItem, ICustomHitTest
         if (CloseIcon.ThemeType != IconThemeType.TwoTone)
         {
             TokenResourceBinder.CreateTokenBinding(CloseIcon, Icon.NormalFilledBrushProperty,
-                DesignTokenKey.ColorIcon);
+                SharedTokenKey.ColorIcon);
             TokenResourceBinder.CreateTokenBinding(CloseIcon, Icon.ActiveFilledBrushProperty,
-                DesignTokenKey.ColorIconHover);
+                SharedTokenKey.ColorIconHover);
             TokenResourceBinder.CreateTokenBinding(CloseIcon, Icon.DisabledFilledBrushProperty,
-                DesignTokenKey.ColorTextDisabled);
+                SharedTokenKey.ColorTextDisabled);
         }
     }
 

@@ -48,13 +48,13 @@ internal class LoadingIndicatorTheme : BaseControlTheme
         var commonStyle = new Style(selector => selector.Nesting());
         commonStyle.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Left);
         commonStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Top);
-        commonStyle.Add(TemplatedControl.FontSizeProperty, DesignTokenKey.FontSize);
+        commonStyle.Add(TemplatedControl.FontSizeProperty, SharedTokenKey.FontSize);
         commonStyle.Add(LoadingIndicator.MotionEasingCurveProperty, new LinearEasing());
-        commonStyle.Add(LoadingIndicator.MotionDurationProperty, LoadingIndicatorTokenResourceKey.IndicatorDuration);
-        commonStyle.Add(LoadingIndicator.DotBgBrushProperty, DesignTokenKey.ColorPrimary);
-        commonStyle.Add(LoadingIndicator.IndicatorTextMarginProperty, DesignTokenKey.MarginXXS);
+        commonStyle.Add(LoadingIndicator.MotionDurationProperty, LoadingIndicatorTokenKey.IndicatorDuration);
+        commonStyle.Add(LoadingIndicator.DotBgBrushProperty, SharedTokenKey.ColorPrimary);
+        commonStyle.Add(LoadingIndicator.IndicatorTextMarginProperty, SharedTokenKey.MarginXXS);
         var loadingTextStyle = new Style(selector => selector.Nesting().Template().OfType<TextBlock>());
-        loadingTextStyle.Add(TextBlock.ForegroundProperty, DesignTokenKey.ColorPrimary);
+        loadingTextStyle.Add(TextBlock.ForegroundProperty, SharedTokenKey.ColorPrimary);
         commonStyle.Add(loadingTextStyle);
         BuildDotSizeStyle(commonStyle);
         BuildCustomIconStyle();
@@ -98,17 +98,17 @@ internal class LoadingIndicatorTheme : BaseControlTheme
     {
         var largeSizeStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(LoadingIndicator.SizeTypeProperty, SizeType.Large));
-        largeSizeStyle.Add(LoadingIndicator.DotSizeProperty, LoadingIndicatorTokenResourceKey.DotSizeLG);
+        largeSizeStyle.Add(LoadingIndicator.DotSizeProperty, LoadingIndicatorTokenKey.DotSizeLG);
         commonStyle.Add(largeSizeStyle);
 
         var middleSizeStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(LoadingIndicator.SizeTypeProperty, SizeType.Middle));
-        middleSizeStyle.Add(LoadingIndicator.DotSizeProperty, LoadingIndicatorTokenResourceKey.DotSize);
+        middleSizeStyle.Add(LoadingIndicator.DotSizeProperty, LoadingIndicatorTokenKey.DotSize);
         commonStyle.Add(middleSizeStyle);
 
         var smallSizeStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(LoadingIndicator.SizeTypeProperty, SizeType.Small));
-        smallSizeStyle.Add(LoadingIndicator.DotSizeProperty, LoadingIndicatorTokenResourceKey.DotSizeSM);
+        smallSizeStyle.Add(LoadingIndicator.DotSizeProperty, LoadingIndicatorTokenKey.DotSizeSM);
         commonStyle.Add(smallSizeStyle);
     }
 }

@@ -112,9 +112,9 @@ public class CardTabControl : BaseTabControl
     {
         base.OnApplyTemplate(e);
         TokenResourceBinder.CreateTokenBinding(this, CardBorderThicknessProperty,
-            DesignTokenKey.BorderThickness, BindingPriority.Template,
+            SharedTokenKey.BorderThickness, BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this));
-        TokenResourceBinder.CreateTokenBinding(this, CardSizeProperty, TabControlTokenResourceKey.CardSize);
+        TokenResourceBinder.CreateTokenBinding(this, CardSizeProperty, TabControlTokenKey.CardSize);
         HandleTemplateApplied(e.NameScope);
     }
 
@@ -153,17 +153,17 @@ public class CardTabControl : BaseTabControl
         if (SizeType == SizeType.Large)
         {
             TokenResourceBinder.CreateSharedResourceBinding(this, CardBorderRadiusSizeProperty,
-                DesignTokenKey.BorderRadiusLG);
+                SharedTokenKey.BorderRadiusLG);
         }
         else if (SizeType == SizeType.Middle)
         {
             TokenResourceBinder.CreateSharedResourceBinding(this, CardBorderRadiusSizeProperty,
-                DesignTokenKey.BorderRadius);
+                SharedTokenKey.BorderRadius);
         }
         else
         {
             TokenResourceBinder.CreateSharedResourceBinding(this, CardBorderRadiusSizeProperty,
-                DesignTokenKey.BorderRadiusSM);
+                SharedTokenKey.BorderRadiusSM);
         }
     }
 

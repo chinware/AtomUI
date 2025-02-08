@@ -79,18 +79,18 @@ internal class CheckBoxTheme : BaseControlTheme
         commonStyle.Add(CheckBox.HorizontalAlignmentProperty, HorizontalAlignment.Left);
         
         var labelTextStyle = new Style(selector => selector.Nesting().Template().Name(LabelTextPart));
-        labelTextStyle.Add(ContentPresenter.MarginProperty, CheckBoxTokenResourceKey.TextMargin);
+        labelTextStyle.Add(ContentPresenter.MarginProperty, CheckBoxTokenKey.TextMargin);
         commonStyle.Add(labelTextStyle);
         
         Add(commonStyle);
         
         var disableStyle =
             new Style(selector => selector.Nesting().PropertyEquals(InputElement.IsEnabledProperty, false));
-        disableStyle.Add(TemplatedControl.ForegroundProperty, DesignTokenKey.ColorTextDisabled);
+        disableStyle.Add(TemplatedControl.ForegroundProperty, SharedTokenKey.ColorTextDisabled);
         Add(disableStyle);
         var enabledStyle =
             new Style(selector => selector.Nesting().PropertyEquals(InputElement.IsEnabledProperty, true));
-        enabledStyle.Add(TemplatedControl.ForegroundProperty, DesignTokenKey.ColorText);
+        enabledStyle.Add(TemplatedControl.ForegroundProperty, SharedTokenKey.ColorText);
         Add(enabledStyle);
     }
 
@@ -98,12 +98,12 @@ internal class CheckBoxTheme : BaseControlTheme
     {
         {
             var indicatorStyle = new Style(selector => selector.Nesting().Template().Name(IndicatorPart));
-            indicatorStyle.Add(CheckBoxIndicator.SizeProperty, CheckBoxTokenResourceKey.CheckIndicatorSize);
-            indicatorStyle.Add(CheckBoxIndicator.WidthProperty, CheckBoxTokenResourceKey.CheckIndicatorSize);
-            indicatorStyle.Add(CheckBoxIndicator.HeightProperty, CheckBoxTokenResourceKey.CheckIndicatorSize);
-            indicatorStyle.Add(CheckBoxIndicator.CornerRadiusProperty, DesignTokenKey.BorderRadiusSM);
-            indicatorStyle.Add(CheckBoxIndicator.TristateMarkSizeProperty, CheckBoxTokenResourceKey.IndicatorTristateMarkSize);
-            indicatorStyle.Add(CheckBoxIndicator.TristateMarkBrushProperty, DesignTokenKey.ColorPrimary);
+            indicatorStyle.Add(CheckBoxIndicator.SizeProperty, CheckBoxTokenKey.CheckIndicatorSize);
+            indicatorStyle.Add(CheckBoxIndicator.WidthProperty, CheckBoxTokenKey.CheckIndicatorSize);
+            indicatorStyle.Add(CheckBoxIndicator.HeightProperty, CheckBoxTokenKey.CheckIndicatorSize);
+            indicatorStyle.Add(CheckBoxIndicator.CornerRadiusProperty, SharedTokenKey.BorderRadiusSM);
+            indicatorStyle.Add(CheckBoxIndicator.TristateMarkSizeProperty, CheckBoxTokenKey.IndicatorTristateMarkSize);
+            indicatorStyle.Add(CheckBoxIndicator.TristateMarkBrushProperty, SharedTokenKey.ColorPrimary);
             Add(indicatorStyle);
         }
         
@@ -112,15 +112,15 @@ internal class CheckBoxTheme : BaseControlTheme
         {
             {
                 var indicatorStyle = new Style(selector => selector.Nesting().Template().Name(IndicatorPart));
-                indicatorStyle.Add(CheckBoxIndicator.BackgroundProperty, DesignTokenKey.ColorBgContainerDisabled);
-                indicatorStyle.Add(CheckBoxIndicator.BorderBrushProperty, DesignTokenKey.ColorBorder);
+                indicatorStyle.Add(CheckBoxIndicator.BackgroundProperty, SharedTokenKey.ColorBgContainerDisabled);
+                indicatorStyle.Add(CheckBoxIndicator.BorderBrushProperty, SharedTokenKey.ColorBorder);
                 disableStyle.Add(indicatorStyle);
             }
             var checkedStyle =
                 new Style(selector => selector.Nesting().PropertyEquals(ToggleButton.IsCheckedProperty, true));
             {
                 var indicatorStyle = new Style(selector => selector.Nesting().Template().Name(IndicatorPart));
-                indicatorStyle.Add(CheckBoxIndicator.CheckedMarkBrushProperty, DesignTokenKey.ColorTextDisabled);
+                indicatorStyle.Add(CheckBoxIndicator.CheckedMarkBrushProperty, SharedTokenKey.ColorTextDisabled);
                 checkedStyle.Add(indicatorStyle);
             }
             disableStyle.Add(checkedStyle);
@@ -129,7 +129,7 @@ internal class CheckBoxTheme : BaseControlTheme
                 new Style(selector => selector.Nesting().PropertyEquals(ToggleButton.IsCheckedProperty, null));
             {
                 var indicatorStyle = new Style(selector => selector.Nesting().Template().Name(IndicatorPart));
-                indicatorStyle.Add(CheckBoxIndicator.TristateMarkBrushProperty, DesignTokenKey.ColorTextDisabled);
+                indicatorStyle.Add(CheckBoxIndicator.TristateMarkBrushProperty, SharedTokenKey.ColorTextDisabled);
                 indeterminateStyle.Add(indicatorStyle);
             }
             disableStyle.Add(indeterminateStyle);
@@ -143,25 +143,25 @@ internal class CheckBoxTheme : BaseControlTheme
         {
             {
                 var indicatorStyle = new Style(selector => selector.Nesting().Template().Name(IndicatorPart));
-                indicatorStyle.Add(CheckBoxIndicator.BackgroundProperty, DesignTokenKey.ColorBgContainer);
-                indicatorStyle.Add(CheckBoxIndicator.CheckedMarkBrushProperty, DesignTokenKey.ColorBgContainer);
-                indicatorStyle.Add(CheckBoxIndicator.BorderBrushProperty, DesignTokenKey.ColorBorder);
+                indicatorStyle.Add(CheckBoxIndicator.BackgroundProperty, SharedTokenKey.ColorBgContainer);
+                indicatorStyle.Add(CheckBoxIndicator.CheckedMarkBrushProperty, SharedTokenKey.ColorBgContainer);
+                indicatorStyle.Add(CheckBoxIndicator.BorderBrushProperty, SharedTokenKey.ColorBorder);
                 enabledStyle.Add(indicatorStyle);
             }
             
             var checkedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Checked));
             {
                 var indicatorStyle = new Style(selector => selector.Nesting().Template().Name(IndicatorPart));
-                indicatorStyle.Add(CheckBoxIndicator.BackgroundProperty, DesignTokenKey.ColorPrimary);
-                indicatorStyle.Add(CheckBoxIndicator.BorderBrushProperty, DesignTokenKey.ColorPrimary);
+                indicatorStyle.Add(CheckBoxIndicator.BackgroundProperty, SharedTokenKey.ColorPrimary);
+                indicatorStyle.Add(CheckBoxIndicator.BorderBrushProperty, SharedTokenKey.ColorPrimary);
                 checkedStyle.Add(indicatorStyle);
             }
             
             var checkedHoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
             {
                 var indicatorStyle = new Style(selector => selector.Nesting().Template().Name(IndicatorPart));
-                indicatorStyle.Add(CheckBoxIndicator.BackgroundProperty, DesignTokenKey.ColorPrimaryHover);
-                indicatorStyle.Add(CheckBoxIndicator.BorderBrushProperty, DesignTokenKey.ColorPrimaryHover);
+                indicatorStyle.Add(CheckBoxIndicator.BackgroundProperty, SharedTokenKey.ColorPrimaryHover);
+                indicatorStyle.Add(CheckBoxIndicator.BorderBrushProperty, SharedTokenKey.ColorPrimaryHover);
                 checkedHoverStyle.Add(indicatorStyle);
             }
             checkedStyle.Add(checkedHoverStyle);
@@ -170,7 +170,7 @@ internal class CheckBoxTheme : BaseControlTheme
             var unCheckedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
             {
                 var indicatorStyle = new Style(selector => selector.Nesting().Template().Name(IndicatorPart));
-                indicatorStyle.Add(CheckBoxIndicator.BorderBrushProperty, DesignTokenKey.ColorPrimaryHover);
+                indicatorStyle.Add(CheckBoxIndicator.BorderBrushProperty, SharedTokenKey.ColorPrimaryHover);
                 checkedHoverStyle.Add(indicatorStyle);
             }
             enabledStyle.Add(unCheckedStyle);
@@ -179,7 +179,7 @@ internal class CheckBoxTheme : BaseControlTheme
                 selector.Nesting().Class($"{StdPseudoClass.Indeterminate}{StdPseudoClass.PointerOver}"));
             {
                 var indicatorStyle = new Style(selector => selector.Nesting().Template().Name(IndicatorPart));
-                indicatorStyle.Add(CheckBoxIndicator.BorderBrushProperty, DesignTokenKey.ColorPrimaryHover);
+                indicatorStyle.Add(CheckBoxIndicator.BorderBrushProperty, SharedTokenKey.ColorPrimaryHover);
                 checkedHoverStyle.Add(indicatorStyle);
             }
             enabledStyle.Add(indeterminateStyle);

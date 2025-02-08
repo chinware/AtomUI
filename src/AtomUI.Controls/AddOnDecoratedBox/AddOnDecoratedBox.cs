@@ -217,18 +217,18 @@ public class AddOnDecoratedBox : ContentControl
     {
         if (SizeType == SizeType.Large)
         {
-            TokenResourceBinder.CreateSharedTokenBinding(icon, WidthProperty, DesignTokenKey.IconSizeLG);
-            TokenResourceBinder.CreateSharedTokenBinding(icon, HeightProperty, DesignTokenKey.IconSizeLG);
+            TokenResourceBinder.CreateSharedTokenBinding(icon, WidthProperty, SharedTokenKey.IconSizeLG);
+            TokenResourceBinder.CreateSharedTokenBinding(icon, HeightProperty, SharedTokenKey.IconSizeLG);
         }
         else if (SizeType == SizeType.Middle)
         {
-            TokenResourceBinder.CreateSharedTokenBinding(icon, WidthProperty, DesignTokenKey.IconSize);
-            TokenResourceBinder.CreateSharedTokenBinding(icon, HeightProperty, DesignTokenKey.IconSize);
+            TokenResourceBinder.CreateSharedTokenBinding(icon, WidthProperty, SharedTokenKey.IconSize);
+            TokenResourceBinder.CreateSharedTokenBinding(icon, HeightProperty, SharedTokenKey.IconSize);
         }
         else
         {
-            TokenResourceBinder.CreateSharedTokenBinding(icon, WidthProperty, DesignTokenKey.IconSizeSM);
-            TokenResourceBinder.CreateSharedTokenBinding(icon, HeightProperty, DesignTokenKey.IconSizeSM);
+            TokenResourceBinder.CreateSharedTokenBinding(icon, WidthProperty, SharedTokenKey.IconSizeSM);
+            TokenResourceBinder.CreateSharedTokenBinding(icon, HeightProperty, SharedTokenKey.IconSizeSM);
         }
     }
 
@@ -273,7 +273,7 @@ public class AddOnDecoratedBox : ContentControl
     {
         base.OnAttachedToVisualTree(e);
         TokenResourceBinder.CreateSharedResourceBinding(this, BorderThicknessProperty,
-            DesignTokenKey.BorderThickness,
+            SharedTokenKey.BorderThickness,
             BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this));
     }

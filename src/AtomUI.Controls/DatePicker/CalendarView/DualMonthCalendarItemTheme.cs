@@ -58,7 +58,7 @@ internal class DualMonthCalendarItemTheme : CalendarItemTheme
         BindUtils.RelayBind(monthViewLayout, Visual.IsVisibleProperty, monthView, Visual.IsVisibleProperty);
         
         TokenResourceBinder.CreateTokenBinding(monthView, Layoutable.MarginProperty,
-            DatePickerTokenResourceKey.RangeCalendarSpacing, BindingPriority.Template,
+            DatePickerTokenKey.RangeCalendarSpacing, BindingPriority.Template,
             v =>
             {
                 if (v is double dval)

@@ -83,28 +83,28 @@ internal class CountBadgeAdornerTheme : BaseControlTheme
         commonStyle.Add(inAdornerStyle);
         {
             var indicatorStyle = new Style(selector => selector.Nesting().Template().Name(BadgeIndicatorPart));
-            indicatorStyle.Add(Border.HeightProperty, BadgeTokenResourceKey.IndicatorHeight);
-            indicatorStyle.Add(Border.MinWidthProperty, BadgeTokenResourceKey.IndicatorHeight);
-            indicatorStyle.Add(Border.CornerRadiusProperty, BadgeTokenResourceKey.CountBadgeCornerRadius);
+            indicatorStyle.Add(Border.HeightProperty, BadgeTokenKey.IndicatorHeight);
+            indicatorStyle.Add(Border.MinWidthProperty, BadgeTokenKey.IndicatorHeight);
+            indicatorStyle.Add(Border.CornerRadiusProperty, BadgeTokenKey.CountBadgeCornerRadius);
             commonStyle.Add(indicatorStyle);
         
             var badgeTextStyle = new Style(selector => selector.Nesting().Template().Name(BadgeTextPart));
-            badgeTextStyle.Add(TextBlock.ForegroundProperty, BadgeTokenResourceKey.BadgeTextColor);
-            badgeTextStyle.Add(TextBlock.FontSizeProperty, BadgeTokenResourceKey.TextFontSize);
-            badgeTextStyle.Add(TextBlock.PaddingProperty, BadgeTokenResourceKey.CountBadgeTextPadding);
+            badgeTextStyle.Add(TextBlock.ForegroundProperty, BadgeTokenKey.BadgeTextColor);
+            badgeTextStyle.Add(TextBlock.FontSizeProperty, BadgeTokenKey.TextFontSize);
+            badgeTextStyle.Add(TextBlock.PaddingProperty, BadgeTokenKey.CountBadgeTextPadding);
             commonStyle.Add(badgeTextStyle);
         }
         
         var smallSizeStyle = new Style(selector => selector.Nesting().PropertyEquals(CountBadgeAdorner.SizeProperty, CountBadgeSize.Small));
         {
             var indicatorStyle = new Style(selector => selector.Nesting().Template().Name(BadgeIndicatorPart));
-            indicatorStyle.Add(Border.HeightProperty, BadgeTokenResourceKey.IndicatorHeightSM);
-            indicatorStyle.Add(Border.MinWidthProperty, BadgeTokenResourceKey.IndicatorHeightSM);
-            indicatorStyle.Add(Border.CornerRadiusProperty, BadgeTokenResourceKey.CountBadgeCornerRadiusSM);
+            indicatorStyle.Add(Border.HeightProperty, BadgeTokenKey.IndicatorHeightSM);
+            indicatorStyle.Add(Border.MinWidthProperty, BadgeTokenKey.IndicatorHeightSM);
+            indicatorStyle.Add(Border.CornerRadiusProperty, BadgeTokenKey.CountBadgeCornerRadiusSM);
             smallSizeStyle.Add(indicatorStyle);
         
             var badgeTextStyle = new Style(selector => selector.Nesting().Template().Name(BadgeTextPart));
-            badgeTextStyle.Add(TextBlock.FontSizeProperty, BadgeTokenResourceKey.TextFontSizeSM);
+            badgeTextStyle.Add(TextBlock.FontSizeProperty, BadgeTokenKey.TextFontSizeSM);
             smallSizeStyle.Add(badgeTextStyle);
         }
         commonStyle.Add(smallSizeStyle);

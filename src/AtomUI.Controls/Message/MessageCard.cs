@@ -188,7 +188,7 @@ public class MessageCard : TemplatedControl
             SetupMessageIcon();
             UpdateMessageType();
         }
-        TokenResourceBinder.CreateSharedTokenBinding(this, OpenCloseMotionDurationProperty, DesignTokenKey.MotionDurationMid);
+        TokenResourceBinder.CreateSharedTokenBinding(this, OpenCloseMotionDurationProperty, SharedTokenKey.MotionDurationMid);
         _motionActor           = e.NameScope.Find<MotionActorControl>(MessageCardTheme.MotionActorPart);
         ApplyShowMotion();
     }
@@ -254,23 +254,23 @@ public class MessageCard : TemplatedControl
         if (MessageType == MessageType.Error)
         {
             TokenResourceBinder.CreateSharedTokenBinding(Icon, Icon.NormalFilledBrushProperty,
-                DesignTokenKey.ColorError);
+                SharedTokenKey.ColorError);
         }
         else if (MessageType == MessageType.Information ||
                  MessageType == MessageType.Loading)
         {
             TokenResourceBinder.CreateSharedTokenBinding(Icon, Icon.NormalFilledBrushProperty,
-                DesignTokenKey.ColorPrimary);
+                SharedTokenKey.ColorPrimary);
         }
         else if (MessageType == MessageType.Success)
         {
             TokenResourceBinder.CreateSharedTokenBinding(Icon, Icon.NormalFilledBrushProperty,
-                DesignTokenKey.ColorSuccess);
+                SharedTokenKey.ColorSuccess);
         }
         else if (MessageType == MessageType.Warning)
         {
             TokenResourceBinder.CreateSharedTokenBinding(Icon, Icon.NormalFilledBrushProperty,
-                DesignTokenKey.ColorWarning);
+                SharedTokenKey.ColorWarning);
         }
     }
 

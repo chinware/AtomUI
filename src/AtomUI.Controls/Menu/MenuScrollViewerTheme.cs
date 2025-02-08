@@ -48,9 +48,9 @@ internal class MenuScrollViewerTheme : BaseControlTheme
             CreateTemplateParentBinding(scrollUpButton, Button.CommandProperty,
                 nameof(MenuScrollViewer.LineUp));
             TokenResourceBinder.CreateTokenBinding(scrollUpButton, IconButton.IconWidthProperty,
-                MenuTokenResourceKey.ScrollButtonIconSize);
+                MenuTokenKey.ScrollButtonIconSize);
             TokenResourceBinder.CreateTokenBinding(scrollUpButton, IconButton.IconHeightProperty,
-                MenuTokenResourceKey.ScrollButtonIconSize);
+                MenuTokenKey.ScrollButtonIconSize);
             DockPanel.SetDock(scrollUpButton, Dock.Top);
             var scrollDownButton = new IconButton
             {
@@ -64,9 +64,9 @@ internal class MenuScrollViewerTheme : BaseControlTheme
             CreateTemplateParentBinding(scrollDownButton, Avalonia.Controls.Button.CommandProperty,
                 nameof(MenuScrollViewer.LineDown));
             TokenResourceBinder.CreateTokenBinding(scrollDownButton, IconButton.IconWidthProperty,
-                MenuTokenResourceKey.ScrollButtonIconSize);
+                MenuTokenKey.ScrollButtonIconSize);
             TokenResourceBinder.CreateTokenBinding(scrollDownButton, IconButton.IconHeightProperty,
-                MenuTokenResourceKey.ScrollButtonIconSize);
+                MenuTokenKey.ScrollButtonIconSize);
             DockPanel.SetDock(scrollDownButton, Dock.Bottom);
 
             var scrollViewContent = CreateScrollContentPresenter(viewer);
@@ -116,16 +116,16 @@ internal class MenuScrollViewerTheme : BaseControlTheme
     {
         {
             var iconButtonStyle = new Style(selector => selector.Nesting().Template().OfType<IconButton>());
-            iconButtonStyle.Add(TemplatedControl.PaddingProperty, MenuTokenResourceKey.ScrollButtonPadding);
-            iconButtonStyle.Add(Layoutable.MarginProperty, MenuTokenResourceKey.ScrollButtonMargin);
-            iconButtonStyle.Add(TemplatedControl.BackgroundProperty, DesignTokenKey.ColorTransparent);
+            iconButtonStyle.Add(TemplatedControl.PaddingProperty, MenuTokenKey.ScrollButtonPadding);
+            iconButtonStyle.Add(Layoutable.MarginProperty, MenuTokenKey.ScrollButtonMargin);
+            iconButtonStyle.Add(TemplatedControl.BackgroundProperty, SharedTokenKey.ColorTransparent);
             Add(iconButtonStyle);
         }
 
         {
             var iconButtonStyle = new Style(selector =>
                 selector.Nesting().Template().OfType<IconButton>().Class(StdPseudoClass.PointerOver));
-            iconButtonStyle.Add(TemplatedControl.BackgroundProperty, MenuTokenResourceKey.ItemHoverBg);
+            iconButtonStyle.Add(TemplatedControl.BackgroundProperty, MenuTokenKey.ItemHoverBg);
             Add(iconButtonStyle);
         }
     }

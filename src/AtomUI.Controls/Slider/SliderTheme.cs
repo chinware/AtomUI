@@ -95,10 +95,10 @@ internal class SliderTheme : BaseControlTheme
     private void BuildSliderTrackStyle(Style sliderStyle)
     {
         var sliderTrackStyle = new Style(selector => selector.Nesting().Template().OfType<SliderTrack>());
-        sliderTrackStyle.Add(SliderTrack.TrackGrooveBrushProperty, SliderTokenResourceKey.RailBg);
-        sliderTrackStyle.Add(SliderTrack.TrackBarBrushProperty, SliderTokenResourceKey.TrackBg);
-        sliderTrackStyle.Add(SliderTrack.MarkBorderBrushProperty, SliderTokenResourceKey.MarkBorderColor);
-        sliderTrackStyle.Add(SliderTrack.MarkBorderActiveBrushProperty, SliderTokenResourceKey.MarkBorderColorActive);
+        sliderTrackStyle.Add(SliderTrack.TrackGrooveBrushProperty, SliderTokenKey.RailBg);
+        sliderTrackStyle.Add(SliderTrack.TrackBarBrushProperty, SliderTokenKey.TrackBg);
+        sliderTrackStyle.Add(SliderTrack.MarkBorderBrushProperty, SliderTokenKey.MarkBorderColor);
+        sliderTrackStyle.Add(SliderTrack.MarkBorderActiveBrushProperty, SliderTokenKey.MarkBorderColorActive);
         sliderStyle.Add(sliderTrackStyle);
 
         var sliderStyleHover = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
@@ -106,25 +106,25 @@ internal class SliderTheme : BaseControlTheme
                                                .Nesting().Template().OfType<SliderThumb>()
                                                .PropertyEquals(InputElement.IsFocusedProperty, false)
                                                .Not(x => x.Class(StdPseudoClass.PointerOver)));
-        thumbStyle.Add(TemplatedControl.BorderBrushProperty, SliderTokenResourceKey.ThumbCircleBorderHoverColor);
+        thumbStyle.Add(TemplatedControl.BorderBrushProperty, SliderTokenKey.ThumbCircleBorderHoverColor);
         sliderStyleHover.Add(thumbStyle);
         sliderStyle.Add(sliderStyleHover);
 
         var sliderTrackHorizontalStyle = new Style(selector =>
             selector.Nesting().Template().OfType<SliderTrack>().Class(StdPseudoClass.Horizontal));
-        sliderTrackHorizontalStyle.Add(SliderTrack.PaddingProperty, SliderTokenResourceKey.SliderPaddingHorizontal);
+        sliderTrackHorizontalStyle.Add(SliderTrack.PaddingProperty, SliderTokenKey.SliderPaddingHorizontal);
         sliderStyle.Add(sliderTrackHorizontalStyle);
 
         var sliderTrackVerticalStyle = new Style(selector =>
             selector.Nesting().Template().OfType<SliderTrack>().Class(StdPseudoClass.Vertical));
-        sliderTrackVerticalStyle.Add(SliderTrack.PaddingProperty, SliderTokenResourceKey.SliderPaddingVertical);
+        sliderTrackVerticalStyle.Add(SliderTrack.PaddingProperty, SliderTokenKey.SliderPaddingVertical);
         sliderStyle.Add(sliderTrackVerticalStyle);
 
         var sliderTrackHoverStyle = new Style(selector =>
             selector.Nesting().Template().OfType<SliderTrack>().Class(StdPseudoClass.PointerOver));
-        sliderTrackHoverStyle.Add(SliderTrack.TrackGrooveBrushProperty, SliderTokenResourceKey.RailHoverBg);
-        sliderTrackHoverStyle.Add(SliderTrack.TrackBarBrushProperty, SliderTokenResourceKey.TrackHoverBg);
-        sliderTrackHoverStyle.Add(SliderTrack.MarkBorderBrushProperty, SliderTokenResourceKey.MarkBorderColorHover);
+        sliderTrackHoverStyle.Add(SliderTrack.TrackGrooveBrushProperty, SliderTokenKey.RailHoverBg);
+        sliderTrackHoverStyle.Add(SliderTrack.TrackBarBrushProperty, SliderTokenKey.TrackHoverBg);
+        sliderTrackHoverStyle.Add(SliderTrack.MarkBorderBrushProperty, SliderTokenKey.MarkBorderColorHover);
         sliderTrackHoverStyle.Add(InputElement.CursorProperty, new Cursor(StandardCursorType.Hand));
         sliderStyle.Add(sliderTrackHoverStyle);
     }
@@ -134,14 +134,14 @@ internal class SliderTheme : BaseControlTheme
         var disabledStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Disabled));
 
         var sliderTrackStyle = new Style(selector => selector.Nesting().Template().OfType<SliderTrack>());
-        sliderTrackStyle.Add(SliderTrack.TrackBarBrushProperty, SliderTokenResourceKey.TrackBgDisabled);
+        sliderTrackStyle.Add(SliderTrack.TrackBarBrushProperty, SliderTokenKey.TrackBgDisabled);
         sliderTrackStyle.Add(SliderTrack.MarkBorderActiveBrushProperty,
-            SliderTokenResourceKey.ThumbCircleBorderColorDisabled);
+            SliderTokenKey.ThumbCircleBorderColorDisabled);
         sliderTrackStyle.Add(SliderTrack.MarkBorderBrushProperty,
-            SliderTokenResourceKey.ThumbCircleBorderColorDisabled);
+            SliderTokenKey.ThumbCircleBorderColorDisabled);
         disabledStyle.Add(sliderTrackStyle);
         var thumbStyle = new Style(selector => selector.Nesting().Template().OfType<SliderThumb>());
-        thumbStyle.Add(TemplatedControl.BorderBrushProperty, SliderTokenResourceKey.ThumbCircleBorderColorDisabled);
+        thumbStyle.Add(TemplatedControl.BorderBrushProperty, SliderTokenKey.ThumbCircleBorderColorDisabled);
         disabledStyle.Add(thumbStyle);
         sliderStyle.Add(disabledStyle);
     }

@@ -157,7 +157,7 @@ public class AddOnDecoratedInnerBox : ContentControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        TokenResourceBinder.CreateSharedResourceBinding(this, MarginXSTokenProperty, DesignTokenKey.MarginXS);
+        TokenResourceBinder.CreateSharedResourceBinding(this, MarginXSTokenProperty, SharedTokenKey.MarginXS);
         _leftAddOnLayout  = e.NameScope.Find<StackPanel>(AddOnDecoratedInnerBoxTheme.LeftAddOnLayoutPart);
         _rightAddOnLayout = e.NameScope.Find<StackPanel>(AddOnDecoratedInnerBoxTheme.RightAddOnLayoutPart);
         _clearButton      = e.NameScope.Find<IconButton>(AddOnDecoratedInnerBoxTheme.ClearButtonPart);

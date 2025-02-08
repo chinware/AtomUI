@@ -13,7 +13,7 @@ internal class ButtonToken : AbstractControlDesignToken
     /// <summary>
     /// 文字字重
     /// </summary>
-    public int FontWeight { get; set; }
+    public double FontWeight { get; set; }
 
     /// <summary>
     /// 默认按钮阴影

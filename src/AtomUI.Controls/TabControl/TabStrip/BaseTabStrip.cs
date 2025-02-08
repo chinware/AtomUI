@@ -75,7 +75,7 @@ public abstract class BaseTabStrip : AvaloniaTabStrip, ISizeTypeAware
         if (_frameDecorator is not null)
         {
             TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
-                DesignTokenKey.BorderThickness, BindingPriority.Template,
+                SharedTokenKey.BorderThickness, BindingPriority.Template,
                 new RenderScaleAwareThicknessConfigure(this));
         }
     }

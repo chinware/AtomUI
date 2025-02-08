@@ -50,8 +50,8 @@ internal class DotBadgeIndicator : Control
         base.ApplyTemplate();
         BuildBoxShadow();
         
-        TokenResourceBinder.CreateTokenBinding(this, BadgeShadowSizeProperty, BadgeTokenResourceKey.BadgeShadowSize);
-        TokenResourceBinder.CreateTokenBinding(this, BadgeShadowColorProperty, BadgeTokenResourceKey.BadgeShadowColor);
+        TokenResourceBinder.CreateTokenBinding(this, BadgeShadowSizeProperty, BadgeTokenKey.BadgeShadowSize);
+        TokenResourceBinder.CreateTokenBinding(this, BadgeShadowColorProperty, BadgeTokenKey.BadgeShadowColor);
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)

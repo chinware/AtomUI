@@ -132,15 +132,15 @@ internal class DatePickerPresenterTheme : BaseControlTheme
     protected override void BuildStyles()
     {
         var buttonsFrameStyle = new Style(selector => selector.Nesting().Template().Name(ButtonsFramePart));
-        buttonsFrameStyle.Add(Border.BorderBrushProperty, DesignTokenKey.ColorBorderSecondary);
+        buttonsFrameStyle.Add(Border.BorderBrushProperty, SharedTokenKey.ColorBorderSecondary);
         Add(buttonsFrameStyle);
 
         var buttonsPanelStyle = new Style(selector => selector.Nesting().Template().Name(ButtonsLayoutPart));
-        buttonsPanelStyle.Add(Panel.MarginProperty, DatePickerTokenResourceKey.ButtonsPanelMargin);
+        buttonsPanelStyle.Add(Panel.MarginProperty, DatePickerTokenKey.ButtonsPanelMargin);
         Add(buttonsPanelStyle);
 
         var timeViewStyle = new Style(selector => selector.Nesting().Template().Name(TimeViewPart));
-        timeViewStyle.Add(TimePicker.PaddingProperty, DatePickerTokenResourceKey.PanelContentPadding);
+        timeViewStyle.Add(TimePicker.PaddingProperty, DatePickerTokenKey.PanelContentPadding);
         Add(timeViewStyle);
     }
 }

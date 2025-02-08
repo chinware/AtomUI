@@ -30,9 +30,9 @@ internal class AbstractLineProgressTheme : AbstractProgressBarTheme
         
         exceptionCompletedIcon.RegisterInNameScope(scope);
         TokenResourceBinder.CreateSharedTokenBinding(exceptionCompletedIcon, Icon.NormalFilledBrushProperty,
-            DesignTokenKey.ColorError);
+            SharedTokenKey.ColorError);
         TokenResourceBinder.CreateSharedTokenBinding(exceptionCompletedIcon, Icon.DisabledFilledBrushProperty,
-            DesignTokenKey.ControlItemBgActiveDisabled);
+            SharedTokenKey.ControlItemBgActiveDisabled);
         
         var successCompletedIcon = AntDesignIconPackage.CheckCircleFilled();
         successCompletedIcon.Name                = SuccessCompletedIconPart;
@@ -40,9 +40,9 @@ internal class AbstractLineProgressTheme : AbstractProgressBarTheme
         
         successCompletedIcon.RegisterInNameScope(scope);
         TokenResourceBinder.CreateSharedTokenBinding(successCompletedIcon, Icon.NormalFilledBrushProperty,
-            DesignTokenKey.ColorSuccess);
+            SharedTokenKey.ColorSuccess);
         TokenResourceBinder.CreateSharedTokenBinding(successCompletedIcon, Icon.DisabledFilledBrushProperty,
-            DesignTokenKey.ControlItemBgActiveDisabled);
+            SharedTokenKey.ControlItemBgActiveDisabled);
 
         container.Children.Add(exceptionCompletedIcon);
         container.Children.Add(successCompletedIcon);
@@ -53,9 +53,9 @@ internal class AbstractLineProgressTheme : AbstractProgressBarTheme
         base.BuildStyles();
         var commonStyle = new Style(selector => selector.Nesting());
         commonStyle.Add(AbstractLineProgress.LineProgressPaddingProperty,
-            ProgressBarTokenResourceKey.LineProgressPadding);
+            ProgressBarTokenKey.LineProgressPadding);
         commonStyle.Add(AbstractLineProgress.LineExtraInfoMarginProperty,
-            ProgressBarTokenResourceKey.LineExtraInfoMargin);
+            ProgressBarTokenKey.LineExtraInfoMargin);
         Add(commonStyle);
         BuildSizeTypeStyle();
     }
@@ -65,45 +65,45 @@ internal class AbstractLineProgressTheme : AbstractProgressBarTheme
         var largeSizeTypeStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(AbstractProgressBar.EffectiveSizeTypeProperty, SizeType.Large));
         largeSizeTypeStyle.Add(AbstractLineProgress.LineInfoIconSizeProperty,
-            ProgressBarTokenResourceKey.LineInfoIconSize);
+            ProgressBarTokenKey.LineInfoIconSize);
         // icon
         {
             var completedIconsStyle = new Style(selector => selector.Nesting().Template().OfType<Icon>());
-            completedIconsStyle.Add(Layoutable.WidthProperty, ProgressBarTokenResourceKey.LineInfoIconSize);
-            completedIconsStyle.Add(Layoutable.HeightProperty, ProgressBarTokenResourceKey.LineInfoIconSize);
+            completedIconsStyle.Add(Layoutable.WidthProperty, ProgressBarTokenKey.LineInfoIconSize);
+            completedIconsStyle.Add(Layoutable.HeightProperty, ProgressBarTokenKey.LineInfoIconSize);
             largeSizeTypeStyle.Add(completedIconsStyle);
         }
-        largeSizeTypeStyle.Add(TemplatedControl.FontSizeProperty, DesignTokenKey.FontSize);
+        largeSizeTypeStyle.Add(TemplatedControl.FontSizeProperty, SharedTokenKey.FontSize);
 
         Add(largeSizeTypeStyle);
 
         var middleTypeStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(AbstractProgressBar.EffectiveSizeTypeProperty, SizeType.Middle));
         middleTypeStyle.Add(AbstractLineProgress.LineInfoIconSizeProperty,
-            ProgressBarTokenResourceKey.LineInfoIconSize);
+            ProgressBarTokenKey.LineInfoIconSize);
         // icon
         {
             var completedIconsStyle = new Style(selector => selector.Nesting().Template().OfType<Icon>());
-            completedIconsStyle.Add(Layoutable.WidthProperty, ProgressBarTokenResourceKey.LineInfoIconSizeSM);
-            completedIconsStyle.Add(Layoutable.HeightProperty, ProgressBarTokenResourceKey.LineInfoIconSizeSM);
+            completedIconsStyle.Add(Layoutable.WidthProperty, ProgressBarTokenKey.LineInfoIconSizeSM);
+            completedIconsStyle.Add(Layoutable.HeightProperty, ProgressBarTokenKey.LineInfoIconSizeSM);
             middleTypeStyle.Add(completedIconsStyle);
         }
 
-        middleTypeStyle.Add(TemplatedControl.FontSizeProperty, DesignTokenKey.FontSizeSM);
+        middleTypeStyle.Add(TemplatedControl.FontSizeProperty, SharedTokenKey.FontSizeSM);
         Add(middleTypeStyle);
 
         var smallTypeStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(AbstractProgressBar.EffectiveSizeTypeProperty, SizeType.Small));
         smallTypeStyle.Add(AbstractLineProgress.LineInfoIconSizeProperty,
-            ProgressBarTokenResourceKey.LineInfoIconSizeSM);
+            ProgressBarTokenKey.LineInfoIconSizeSM);
         // icon
         {
             var completedIconsStyle = new Style(selector => selector.Nesting().Template().OfType<Icon>());
-            completedIconsStyle.Add(Layoutable.WidthProperty, ProgressBarTokenResourceKey.LineInfoIconSizeSM);
-            completedIconsStyle.Add(Layoutable.HeightProperty, ProgressBarTokenResourceKey.LineInfoIconSizeSM);
+            completedIconsStyle.Add(Layoutable.WidthProperty, ProgressBarTokenKey.LineInfoIconSizeSM);
+            completedIconsStyle.Add(Layoutable.HeightProperty, ProgressBarTokenKey.LineInfoIconSizeSM);
             smallTypeStyle.Add(completedIconsStyle);
         }
-        smallTypeStyle.Add(TemplatedControl.FontSizeProperty, DesignTokenKey.FontSizeSM);
+        smallTypeStyle.Add(TemplatedControl.FontSizeProperty, SharedTokenKey.FontSizeSM);
         Add(smallTypeStyle);
     }
 }

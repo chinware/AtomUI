@@ -49,7 +49,7 @@ internal class BaseTabScrollViewerTheme : BaseControlTheme
             menuIndicatorIcon.VerticalAlignment   = VerticalAlignment.Center;
 
             TokenResourceBinder.CreateTokenBinding(menuIndicatorIcon, Icon.NormalFilledBrushProperty,
-                DesignTokenKey.ColorTextSecondary);
+                SharedTokenKey.ColorTextSecondary);
 
             var menuIndicator = new IconButton
             {
@@ -57,9 +57,9 @@ internal class BaseTabScrollViewerTheme : BaseControlTheme
                 Icon = menuIndicatorIcon
             };
             TokenResourceBinder.CreateTokenBinding(menuIndicator, IconButton.IconWidthProperty,
-                DesignTokenKey.IconSize);
+                SharedTokenKey.IconSize);
             TokenResourceBinder.CreateTokenBinding(menuIndicator, IconButton.IconHeightProperty,
-                DesignTokenKey.IconSize);
+                SharedTokenKey.IconSize);
             menuIndicator.RegisterInNameScope(scope);
 
             var scrollViewContent = CreateScrollContentPresenter();
@@ -136,18 +136,18 @@ internal class BaseTabScrollViewerTheme : BaseControlTheme
                 new Style(selector => selector.Nesting().Template().Name(ScrollMenuIndicatorPart));
             menuIndicatorStyle.Add(DockPanel.DockProperty, Dock.Right);
             menuIndicatorStyle.Add(TemplatedControl.PaddingProperty,
-                TabControlTokenResourceKey.MenuIndicatorPaddingHorizontal);
+                TabControlTokenKey.MenuIndicatorPaddingHorizontal);
 
             var startEdgeIndicatorStyle =
                 new Style(selector => selector.Nesting().Template().Name(ScrollStartEdgeIndicatorPart));
-            startEdgeIndicatorStyle.Add(Layoutable.WidthProperty, TabControlTokenResourceKey.MenuEdgeThickness);
+            startEdgeIndicatorStyle.Add(Layoutable.WidthProperty, TabControlTokenKey.MenuEdgeThickness);
             startEdgeIndicatorStyle.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Left);
             startEdgeIndicatorStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Stretch);
             topPlacementStyle.Add(startEdgeIndicatorStyle);
 
             var endEdgeIndicatorStyle =
                 new Style(selector => selector.Nesting().Template().Name(ScrollEndEdgeIndicatorPart));
-            endEdgeIndicatorStyle.Add(Layoutable.WidthProperty, TabControlTokenResourceKey.MenuEdgeThickness);
+            endEdgeIndicatorStyle.Add(Layoutable.WidthProperty, TabControlTokenKey.MenuEdgeThickness);
             endEdgeIndicatorStyle.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Right);
             endEdgeIndicatorStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Stretch);
 
@@ -170,18 +170,18 @@ internal class BaseTabScrollViewerTheme : BaseControlTheme
                 new Style(selector => selector.Nesting().Template().Name(ScrollMenuIndicatorPart));
             menuIndicatorStyle.Add(DockPanel.DockProperty, Dock.Bottom);
             menuIndicatorStyle.Add(TemplatedControl.PaddingProperty,
-                TabControlTokenResourceKey.MenuIndicatorPaddingVertical);
+                TabControlTokenKey.MenuIndicatorPaddingVertical);
 
             var startEdgeIndicatorStyle =
                 new Style(selector => selector.Nesting().Template().Name(ScrollStartEdgeIndicatorPart));
-            startEdgeIndicatorStyle.Add(Layoutable.HeightProperty, TabControlTokenResourceKey.MenuEdgeThickness);
+            startEdgeIndicatorStyle.Add(Layoutable.HeightProperty, TabControlTokenKey.MenuEdgeThickness);
             startEdgeIndicatorStyle.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
             startEdgeIndicatorStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Top);
             rightPlacementStyle.Add(startEdgeIndicatorStyle);
 
             var endEdgeIndicatorStyle =
                 new Style(selector => selector.Nesting().Template().Name(ScrollEndEdgeIndicatorPart));
-            endEdgeIndicatorStyle.Add(Layoutable.HeightProperty, TabControlTokenResourceKey.MenuEdgeThickness);
+            endEdgeIndicatorStyle.Add(Layoutable.HeightProperty, TabControlTokenKey.MenuEdgeThickness);
             endEdgeIndicatorStyle.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
             endEdgeIndicatorStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Bottom);
             rightPlacementStyle.Add(endEdgeIndicatorStyle);
@@ -203,18 +203,18 @@ internal class BaseTabScrollViewerTheme : BaseControlTheme
                 new Style(selector => selector.Nesting().Template().Name(ScrollMenuIndicatorPart));
             menuIndicatorStyle.Add(DockPanel.DockProperty, Dock.Right);
             menuIndicatorStyle.Add(TemplatedControl.PaddingProperty,
-                TabControlTokenResourceKey.MenuIndicatorPaddingHorizontal);
+                TabControlTokenKey.MenuIndicatorPaddingHorizontal);
 
             var startEdgeIndicatorStyle =
                 new Style(selector => selector.Nesting().Template().Name(ScrollStartEdgeIndicatorPart));
-            startEdgeIndicatorStyle.Add(Layoutable.WidthProperty, TabControlTokenResourceKey.MenuEdgeThickness);
+            startEdgeIndicatorStyle.Add(Layoutable.WidthProperty, TabControlTokenKey.MenuEdgeThickness);
             startEdgeIndicatorStyle.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Left);
             startEdgeIndicatorStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Stretch);
             bottomPlacementStyle.Add(startEdgeIndicatorStyle);
 
             var endEdgeIndicatorStyle =
                 new Style(selector => selector.Nesting().Template().Name(ScrollEndEdgeIndicatorPart));
-            endEdgeIndicatorStyle.Add(Layoutable.WidthProperty, TabControlTokenResourceKey.MenuEdgeThickness);
+            endEdgeIndicatorStyle.Add(Layoutable.WidthProperty, TabControlTokenKey.MenuEdgeThickness);
             endEdgeIndicatorStyle.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Right);
             endEdgeIndicatorStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Stretch);
             bottomPlacementStyle.Add(endEdgeIndicatorStyle);
@@ -236,18 +236,18 @@ internal class BaseTabScrollViewerTheme : BaseControlTheme
                 new Style(selector => selector.Nesting().Template().Name(ScrollMenuIndicatorPart));
             menuIndicatorStyle.Add(DockPanel.DockProperty, Dock.Bottom);
             menuIndicatorStyle.Add(TemplatedControl.PaddingProperty,
-                TabControlTokenResourceKey.MenuIndicatorPaddingVertical);
+                TabControlTokenKey.MenuIndicatorPaddingVertical);
 
             var startEdgeIndicatorStyle =
                 new Style(selector => selector.Nesting().Template().Name(ScrollStartEdgeIndicatorPart));
-            startEdgeIndicatorStyle.Add(Layoutable.HeightProperty, TabControlTokenResourceKey.MenuEdgeThickness);
+            startEdgeIndicatorStyle.Add(Layoutable.HeightProperty, TabControlTokenKey.MenuEdgeThickness);
             startEdgeIndicatorStyle.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
             startEdgeIndicatorStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Top);
             leftPlacementStyle.Add(startEdgeIndicatorStyle);
 
             var endEdgeIndicatorStyle =
                 new Style(selector => selector.Nesting().Template().Name(ScrollEndEdgeIndicatorPart));
-            endEdgeIndicatorStyle.Add(Layoutable.HeightProperty, TabControlTokenResourceKey.MenuEdgeThickness);
+            endEdgeIndicatorStyle.Add(Layoutable.HeightProperty, TabControlTokenKey.MenuEdgeThickness);
             endEdgeIndicatorStyle.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
             endEdgeIndicatorStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Bottom);
             leftPlacementStyle.Add(endEdgeIndicatorStyle);

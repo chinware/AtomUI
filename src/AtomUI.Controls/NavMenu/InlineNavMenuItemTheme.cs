@@ -62,7 +62,7 @@ internal class InlineNavMenuItemTheme : BaseNavMenuItemTheme
             Name = ChildItemsLayoutTransformPart,
         };
         TokenResourceBinder.CreateTokenBinding(childItemsLayoutTransform, MotionActorControl.MarginProperty,
-            NavMenuTokenResourceKey.VerticalItemsPanelSpacing, BindingPriority.Template,
+            NavMenuTokenKey.VerticalItemsPanelSpacing, BindingPriority.Template,
             (v) =>
             {
                 if (v is double dval)
@@ -111,7 +111,7 @@ internal class InlineNavMenuItemTheme : BaseNavMenuItemTheme
 
         var itemsPanelStyle = new Style(selector =>
             selector.Nesting().Template().Name(ChildItemsPresenterPart).Child().OfType<StackPanel>());
-        itemsPanelStyle.Add(StackPanel.SpacingProperty, NavMenuTokenResourceKey.VerticalItemsPanelSpacing);
+        itemsPanelStyle.Add(StackPanel.SpacingProperty, NavMenuTokenKey.VerticalItemsPanelSpacing);
         Add(itemsPanelStyle);
     }
 

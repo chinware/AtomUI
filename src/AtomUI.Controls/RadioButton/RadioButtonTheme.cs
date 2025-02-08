@@ -81,11 +81,11 @@ internal class RadioButtonTheme : BaseControlTheme
 
         var disableStyle =
             new Style(selector => selector.Nesting().PropertyEquals(InputElement.IsEnabledProperty, false));
-        disableStyle.Add(TemplatedControl.ForegroundProperty, DesignTokenKey.ColorTextDisabled);
+        disableStyle.Add(TemplatedControl.ForegroundProperty, SharedTokenKey.ColorTextDisabled);
         commonStyle.Add(disableStyle);
 
         var labelTextStyle = new Style(selector => selector.Nesting().Template().Name(LabelTextPart));
-        labelTextStyle.Add(ContentPresenter.MarginProperty, RadioButtonTokenResourceKey.TextMargin);
+        labelTextStyle.Add(ContentPresenter.MarginProperty, RadioButtonTokenKey.TextMargin);
         commonStyle.Add(labelTextStyle);
 
         Add(commonStyle);
@@ -97,21 +97,21 @@ internal class RadioButtonTheme : BaseControlTheme
     {
         {
             var indicatorStyle = new Style(selector => selector.Nesting().Template().Name(IndicatorPart));
-            indicatorStyle.Add(RadioIndicator.RadioSizeProperty, RadioButtonTokenResourceKey.RadioSize);
-            indicatorStyle.Add(RadioIndicator.WidthProperty, RadioButtonTokenResourceKey.RadioSize);
-            indicatorStyle.Add(RadioIndicator.HeightProperty, RadioButtonTokenResourceKey.RadioSize);
-            indicatorStyle.Add(RadioIndicator.DotSizeValueProperty, RadioButtonTokenResourceKey.DotSize);
-            indicatorStyle.Add(RadioIndicator.DotPaddingProperty, RadioButtonTokenResourceKey.DotPadding);
+            indicatorStyle.Add(RadioIndicator.RadioSizeProperty, RadioButtonTokenKey.RadioSize);
+            indicatorStyle.Add(RadioIndicator.WidthProperty, RadioButtonTokenKey.RadioSize);
+            indicatorStyle.Add(RadioIndicator.HeightProperty, RadioButtonTokenKey.RadioSize);
+            indicatorStyle.Add(RadioIndicator.DotSizeValueProperty, RadioButtonTokenKey.DotSize);
+            indicatorStyle.Add(RadioIndicator.DotPaddingProperty, RadioButtonTokenKey.DotPadding);
             Add(indicatorStyle);
         }
         var disableStyle =
             new Style(selector => selector.Nesting().PropertyEquals(InputElement.IsEnabledProperty, false));
         {
             var indicatorStyle = new Style(selector => selector.Nesting().Template().Name(IndicatorPart));
-            indicatorStyle.Add(RadioIndicator.RadioBackgroundProperty, DesignTokenKey.ColorBgContainerDisabled);
-            indicatorStyle.Add(RadioIndicator.RadioBorderBrushProperty, DesignTokenKey.ColorBorder);
+            indicatorStyle.Add(RadioIndicator.RadioBackgroundProperty, SharedTokenKey.ColorBgContainerDisabled);
+            indicatorStyle.Add(RadioIndicator.RadioBorderBrushProperty, SharedTokenKey.ColorBorder);
             indicatorStyle.Add(RadioIndicator.RadioInnerBackgroundProperty,
-                RadioButtonTokenResourceKey.DotColorDisabled);
+                RadioButtonTokenKey.DotColorDisabled);
             disableStyle.Add(indicatorStyle);
         }
         Add(disableStyle);
@@ -121,16 +121,16 @@ internal class RadioButtonTheme : BaseControlTheme
         {
             {
                 var indicatorStyle = new Style(selector => selector.Nesting().Template().Name(IndicatorPart));
-                indicatorStyle.Add(RadioIndicator.RadioInnerBackgroundProperty, RadioButtonTokenResourceKey.RadioColor);
-                indicatorStyle.Add(RadioIndicator.RadioBorderBrushProperty, DesignTokenKey.ColorBorder);
+                indicatorStyle.Add(RadioIndicator.RadioInnerBackgroundProperty, RadioButtonTokenKey.RadioColor);
+                indicatorStyle.Add(RadioIndicator.RadioBorderBrushProperty, SharedTokenKey.ColorBorder);
                 enabledStyle.Add(indicatorStyle);
             }
 
             var checkedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Checked));
             {
                 var indicatorStyle = new Style(selector => selector.Nesting().Template().Name(IndicatorPart));
-                indicatorStyle.Add(RadioIndicator.RadioBorderBrushProperty, DesignTokenKey.ColorPrimary);
-                indicatorStyle.Add(RadioIndicator.RadioBackgroundProperty, DesignTokenKey.ColorPrimary);
+                indicatorStyle.Add(RadioIndicator.RadioBorderBrushProperty, SharedTokenKey.ColorPrimary);
+                indicatorStyle.Add(RadioIndicator.RadioBackgroundProperty, SharedTokenKey.ColorPrimary);
                 checkedStyle.Add(indicatorStyle);
             }
             enabledStyle.Add(checkedStyle);
@@ -139,13 +139,13 @@ internal class RadioButtonTheme : BaseControlTheme
                 new Style(selector => selector.Nesting().Not(x => x.Nesting().Class(StdPseudoClass.Checked)));
             {
                 var indicatorStyle = new Style(selector => selector.Nesting().Template().Name(IndicatorPart));
-                indicatorStyle.Add(RadioIndicator.RadioBackgroundProperty, DesignTokenKey.ColorBgContainer);
+                indicatorStyle.Add(RadioIndicator.RadioBackgroundProperty, SharedTokenKey.ColorBgContainer);
                 unCheckedStyle.Add(indicatorStyle);
             }
             var unCheckedHoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
             {
                 var indicatorStyle = new Style(selector => selector.Nesting().Template().Name(IndicatorPart));
-                indicatorStyle.Add(RadioIndicator.RadioBorderBrushProperty, DesignTokenKey.ColorPrimary);
+                indicatorStyle.Add(RadioIndicator.RadioBorderBrushProperty, SharedTokenKey.ColorPrimary);
                 unCheckedHoverStyle.Add(indicatorStyle);
             }
             unCheckedStyle.Add(unCheckedHoverStyle);

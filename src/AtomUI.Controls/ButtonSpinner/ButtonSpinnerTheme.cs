@@ -104,14 +104,14 @@ internal class ButtonSpinnerTheme : BaseControlTheme
         spinnerHandleDecorator.Child = spinnerLayout;
 
         TokenResourceBinder.CreateTokenBinding(spinnerLayout, Layoutable.WidthProperty,
-            ButtonSpinnerTokenResourceKey.HandleWidth);
+            ButtonSpinnerTokenKey.HandleWidth);
         
         var increaseButtonIcon = AntDesignIconPackage.UpOutlined();
 
         TokenResourceBinder.CreateSharedTokenBinding(increaseButtonIcon, Icon.ActiveFilledBrushProperty,
-            ButtonSpinnerTokenResourceKey.HandleHoverColor);
+            ButtonSpinnerTokenKey.HandleHoverColor);
         TokenResourceBinder.CreateSharedTokenBinding(increaseButtonIcon, Icon.SelectedFilledBrushProperty,
-            DesignTokenKey.ColorPrimaryActive);
+            SharedTokenKey.ColorPrimaryActive);
 
         var increaseButton = new IconButton
         {
@@ -128,22 +128,22 @@ internal class ButtonSpinnerTheme : BaseControlTheme
         increaseButton.SetCurrentValue(TemplatedControl.BackgroundProperty, new SolidColorBrush(Colors.Transparent));
         {
             var handleButtonStyle = new Style(selector => selector.Class(StdPseudoClass.Pressed));
-            handleButtonStyle.Add(TemplatedControl.BackgroundProperty, ButtonSpinnerTokenResourceKey.HandleActiveBg);
+            handleButtonStyle.Add(TemplatedControl.BackgroundProperty, ButtonSpinnerTokenKey.HandleActiveBg);
             increaseButton.Styles.Add(handleButtonStyle);
         }
 
         TokenResourceBinder.CreateTokenBinding(increaseButton, IconButton.IconWidthProperty,
-            ButtonSpinnerTokenResourceKey.HandleIconSize);
+            ButtonSpinnerTokenKey.HandleIconSize);
         TokenResourceBinder.CreateTokenBinding(increaseButton, IconButton.IconHeightProperty,
-            ButtonSpinnerTokenResourceKey.HandleIconSize);
+            ButtonSpinnerTokenKey.HandleIconSize);
         increaseButton.RegisterInNameScope(scope);
 
         var decreaseButtonIcon = AntDesignIconPackage.DownOutlined();
 
         TokenResourceBinder.CreateSharedTokenBinding(decreaseButtonIcon, Icon.ActiveFilledBrushProperty,
-            ButtonSpinnerTokenResourceKey.HandleHoverColor);
+            ButtonSpinnerTokenKey.HandleHoverColor);
         TokenResourceBinder.CreateSharedTokenBinding(decreaseButtonIcon, Icon.SelectedFilledBrushProperty,
-            DesignTokenKey.ColorPrimaryActive);
+            SharedTokenKey.ColorPrimaryActive);
 
         var decreaseButton = new IconButton
         {
@@ -160,14 +160,14 @@ internal class ButtonSpinnerTheme : BaseControlTheme
         decreaseButton.SetCurrentValue(TemplatedControl.BackgroundProperty, new SolidColorBrush(Colors.Transparent));
         {
             var handleButtonStyle = new Style(selector => selector.Class(StdPseudoClass.Pressed));
-            handleButtonStyle.Add(TemplatedControl.BackgroundProperty, ButtonSpinnerTokenResourceKey.HandleActiveBg);
+            handleButtonStyle.Add(TemplatedControl.BackgroundProperty, ButtonSpinnerTokenKey.HandleActiveBg);
             decreaseButton.Styles.Add(handleButtonStyle);
         }
         decreaseButton.RegisterInNameScope(scope);
         TokenResourceBinder.CreateTokenBinding(decreaseButton, IconButton.IconWidthProperty,
-            ButtonSpinnerTokenResourceKey.HandleIconSize);
+            ButtonSpinnerTokenKey.HandleIconSize);
         TokenResourceBinder.CreateTokenBinding(decreaseButton, IconButton.IconHeightProperty,
-            ButtonSpinnerTokenResourceKey.HandleIconSize);
+            ButtonSpinnerTokenKey.HandleIconSize);
 
         spinnerLayout.Children.Add(increaseButton);
         spinnerLayout.Children.Add(decreaseButton);
@@ -183,19 +183,19 @@ internal class ButtonSpinnerTheme : BaseControlTheme
         var largeStyle =
             new Style(selector =>
                 selector.Nesting().PropertyEquals(AddOnDecoratedBox.SizeTypeProperty, SizeType.Large));
-        largeStyle.Add(TemplatedControl.CornerRadiusProperty, DesignTokenKey.BorderRadiusLG);
+        largeStyle.Add(TemplatedControl.CornerRadiusProperty, SharedTokenKey.BorderRadiusLG);
         commonStyle.Add(largeStyle);
 
         var middleStyle =
             new Style(
                 selector => selector.Nesting().PropertyEquals(AddOnDecoratedBox.SizeTypeProperty, SizeType.Middle));
-        middleStyle.Add(TemplatedControl.CornerRadiusProperty, DesignTokenKey.BorderRadius);
+        middleStyle.Add(TemplatedControl.CornerRadiusProperty, SharedTokenKey.BorderRadius);
         commonStyle.Add(middleStyle);
 
         var smallStyle =
             new Style(selector =>
                 selector.Nesting().PropertyEquals(AddOnDecoratedBox.SizeTypeProperty, SizeType.Small));
-        smallStyle.Add(TemplatedControl.CornerRadiusProperty, DesignTokenKey.BorderRadiusSM);
+        smallStyle.Add(TemplatedControl.CornerRadiusProperty, SharedTokenKey.BorderRadiusSM);
         commonStyle.Add(smallStyle);
 
         Add(commonStyle);

@@ -67,9 +67,9 @@ internal class NotificationProgressBar : Control
     {
         base.OnAttachedToLogicalTree(e);
         TokenResourceBinder.CreateTokenBinding(this, ProgressIndicatorThicknessProperty,
-            NotificationTokenResourceKey.NotificationProgressHeight);
+            NotificationTokenKey.NotificationProgressHeight);
         TokenResourceBinder.CreateTokenBinding(this, ProgressIndicatorBrushProperty,
-            NotificationTokenResourceKey.NotificationProgressBg);
+            NotificationTokenKey.NotificationProgressBg);
     }
 
     public override void Render(DrawingContext context)

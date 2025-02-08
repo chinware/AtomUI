@@ -143,29 +143,29 @@ internal class TimelineItemTheme : BaseControlTheme
     {
         // 分割线样式
         var splitLineborderStyle = new Style(selector => selector.Nesting().Template().Name(SplitLineBorderPart));
-        splitLineborderStyle.Add(Layoutable.WidthProperty, TimelineTokenResourceKey.TailWidth);
+        splitLineborderStyle.Add(Layoutable.WidthProperty, TimelineTokenKey.TailWidth);
         Add(splitLineborderStyle);
         
         var lineStyle = new Style(selector => selector.Nesting().Template().Child().OfType<Rectangle>());
-        lineStyle.Add(Shape.StrokeProperty, TimelineTokenResourceKey.TailColor);
-        lineStyle.Add(Layoutable.WidthProperty, TimelineTokenResourceKey.TailWidth);
-        lineStyle.Add(Shape.StrokeThicknessProperty, TimelineTokenResourceKey.TailWidth);
+        lineStyle.Add(Shape.StrokeProperty, TimelineTokenKey.TailColor);
+        lineStyle.Add(Layoutable.WidthProperty, TimelineTokenKey.TailWidth);
+        lineStyle.Add(Shape.StrokeThicknessProperty, TimelineTokenKey.TailWidth);
 
         Add(lineStyle);
         
         // 内容样式
         var contentPresenterStyle =
             new Style(selector => selector.Nesting().Template().Name(ItemsContentPresenterPart));
-        contentPresenterStyle.Add(ContentPresenter.FontSizeProperty, TimelineTokenResourceKey.FontSize);
-        contentPresenterStyle.Add(ContentPresenter.PaddingProperty, TimelineTokenResourceKey.ItemPaddingBottom);
+        contentPresenterStyle.Add(ContentPresenter.FontSizeProperty, TimelineTokenKey.FontSize);
+        contentPresenterStyle.Add(ContentPresenter.PaddingProperty, TimelineTokenKey.ItemPaddingBottom);
 
         var contentPresenterLeftStyle =
             new Style(selector => selector.Nesting().Template().Name(ItemsContentPresenterPart));
-        contentPresenterLeftStyle.Add(Layoutable.MarginProperty, TimelineTokenResourceKey.RightMargin);
+        contentPresenterLeftStyle.Add(Layoutable.MarginProperty, TimelineTokenKey.RightMargin);
 
         var contentPresenterRightStyle =
             new Style(selector => selector.Nesting().Template().Name(ItemsContentPresenterPart));
-        contentPresenterRightStyle.Add(Layoutable.MarginProperty, TimelineTokenResourceKey.LeftMargin);
+        contentPresenterRightStyle.Add(Layoutable.MarginProperty, TimelineTokenKey.LeftMargin);
 
         var contentLeftStyle  = new Style(selector => selector.Nesting().Class(TimelineItem.ContentLeftPC));
         var contentRightStyle = new Style(selector => selector.Nesting().Not(x => x.Class(TimelineItem.ContentLeftPC)));
@@ -179,14 +179,14 @@ internal class TimelineItemTheme : BaseControlTheme
 
         // 标签样式
         var labelStyle = new Style(selector => selector.Nesting().Template().Name(LabelPart));
-        labelStyle.Add(TextBlock.FontSizeProperty, TimelineTokenResourceKey.FontSize);
+        labelStyle.Add(TextBlock.FontSizeProperty, TimelineTokenKey.FontSize);
 
         var labelLeftStyle = new Style(selector =>
             selector.Nesting().Class(TimelineItem.LabelLeftPC).Template().Name(LabelPart));
         var labelRightStyle = new Style(selector =>
             selector.Nesting().Not(x => x.Class(TimelineItem.LabelLeftPC)).Template().Name(LabelPart));
-        labelLeftStyle.Add(TextBlock.PaddingProperty, TimelineTokenResourceKey.RightMargin);
-        labelRightStyle.Add(TextBlock.PaddingProperty, TimelineTokenResourceKey.LeftMargin);
+        labelLeftStyle.Add(TextBlock.PaddingProperty, TimelineTokenKey.RightMargin);
+        labelRightStyle.Add(TextBlock.PaddingProperty, TimelineTokenKey.LeftMargin);
 
         Add(labelStyle);
         Add(labelLeftStyle);

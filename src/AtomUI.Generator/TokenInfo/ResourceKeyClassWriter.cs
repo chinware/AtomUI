@@ -14,7 +14,7 @@ public class ResourceKeyClassWriter
     {
         _context    = context;
         _tokenInfo  = tokenInfo;
-        _usingInfos = new List<string>();
+        _usingInfos = new ();
         SetupUsingInfos();
     }
 
@@ -37,7 +37,7 @@ public class ResourceKeyClassWriter
             SyntaxFactory.Token(SyntaxKind.StaticKeyword)
         };
         var classSyntax = SyntaxFactory.ClassDeclaration(className)
-                                       .AddModifiers(modifiers.ToArray());
+            .AddModifiers(modifiers.ToArray());
         return classSyntax;
     }
 
@@ -57,30 +57,33 @@ public class ResourceKeyClassWriter
                 SyntaxKind.StringLiteralExpression,
                 SyntaxFactory.Literal($"{value}")));
 
-        var nsArgument = SyntaxFactory.Argument(
-            SyntaxFactory.LiteralExpression(
-                SyntaxKind.StringLiteralExpression,
-                SyntaxFactory.Literal($"{tokenName.ResourceCatalog}")));
+        var argumentTokenList = new List<SyntaxNodeOrToken>();
+        argumentTokenList.Add(argument);
+
+        if (!string.IsNullOrEmpty(tokenName.ResourceCatalog))
+        {
+            var nsArgument = SyntaxFactory.Argument(
+                SyntaxFactory.LiteralExpression(
+                    SyntaxKind.StringLiteralExpression,
+                    SyntaxFactory.Literal($"{tokenName.ResourceCatalog}")));
+            argumentTokenList.Add(SyntaxFactory.Token(SyntaxKind.CommaToken));
+            argumentTokenList.Add(nsArgument);
+        }
 
         var resourceKeyInstanceExpr = SyntaxFactory.ObjectCreationExpression(resourceKeyType)
-                                                   .WithArgumentList(SyntaxFactory.ArgumentList(
-                                                       SyntaxFactory.SeparatedList<ArgumentSyntax>(
-                                                           new SyntaxNodeOrToken[]
-                                                           {
-                                                               argument,
-                                                               SyntaxFactory.Token(SyntaxKind.CommaToken),
-                                                               nsArgument
-                                                           })));
+            .WithArgumentList(SyntaxFactory.ArgumentList(
+                SyntaxFactory.SeparatedList<ArgumentSyntax>(
+                    argumentTokenList.ToArray())));
 
         var fieldSyntax = SyntaxFactory.FieldDeclaration(SyntaxFactory.VariableDeclaration(resourceKeyType)
-                                                                      .WithVariables(
-                                                                          SyntaxFactory.SingletonSeparatedList(
-                                                                              SyntaxFactory
-                                                                                  .VariableDeclarator(tokenName.Name)
-                                                                                  .WithInitializer(
-                                                                                      SyntaxFactory.EqualsValueClause(
-                                                                                          resourceKeyInstanceExpr)))))
-                                       .AddModifiers(modifiers.ToArray());
+                .WithVariables(
+                    SyntaxFactory.SingletonSeparatedList(
+                        SyntaxFactory
+                            .VariableDeclarator(tokenName.Name)
+                            .WithInitializer(
+                                SyntaxFactory.EqualsValueClause(
+                                    resourceKeyInstanceExpr)))))
+            .AddModifiers(modifiers.ToArray());
         return fieldSyntax;
     }
 
@@ -99,7 +102,7 @@ public class ResourceKeyClassWriter
     {
         var className = controlTokenInfo.ControlName;
         var tokenId   = className.Replace("Token", "");
-        className = className + "ResourceKey";
+        className += "Key";
 
         var controlClassSyntax = BuildClassSyntax(className);
         var resourceKeyFields  = new List<MemberDeclarationSyntax>();
@@ -114,10 +117,10 @@ public class ResourceKeyClassWriter
 
     private ClassDeclarationSyntax BuildDesignResourceKeyClassSyntax()
     {
-        var globalClassSyntax = BuildClassSyntax("DesignTokenKey");
+        var sharedClassSyntax = BuildClassSyntax("SharedTokenKey");
         // 添加全局的 Token 定义
-        AddDesignResourceKeyField(ref globalClassSyntax);
-        return globalClassSyntax;
+        AddDesignResourceKeyField(ref sharedClassSyntax);
+        return sharedClassSyntax;
     }
 
     private CompilationUnitSyntax BuildCompilationUnitSyntax()

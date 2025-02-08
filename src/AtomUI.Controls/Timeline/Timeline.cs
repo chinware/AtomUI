@@ -95,7 +95,7 @@ public class Timeline : ItemsControl
         addPendingItem();
 
         TokenResourceBinder.CreateSharedTokenBinding(this, BorderThicknessProperty,
-            DesignTokenKey.BorderThickness,
+            SharedTokenKey.BorderThickness,
             BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this));
     }

@@ -125,7 +125,7 @@ internal class RadioIndicator : Control, IWaveAdornerInfoProvider
         CollectStyleState();
         RadioDotEffectSize = CalculateDotSize(IsEnabled, IsChecked.HasValue && IsChecked.Value);
         TokenResourceBinder.CreateSharedResourceBinding(this, RadioBorderThicknessProperty,
-            DesignTokenKey.BorderThickness, BindingPriority.Template,
+            SharedTokenKey.BorderThickness, BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this));
 
         Transitions ??= new Transitions
@@ -133,7 +133,7 @@ internal class RadioIndicator : Control, IWaveAdornerInfoProvider
             AnimationUtils.CreateTransition<SolidColorBrushTransition>(RadioBorderBrushProperty),
             AnimationUtils.CreateTransition<DoubleTransition>(RadioDotEffectSizeProperty),
             AnimationUtils.CreateTransition<SolidColorBrushTransition>(RadioBackgroundProperty,
-                DesignTokenKey.MotionDurationFast)
+                SharedTokenKey.MotionDurationFast)
         };
     }
 

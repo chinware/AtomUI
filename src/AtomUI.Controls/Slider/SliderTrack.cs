@@ -370,13 +370,13 @@ public class SliderTrack : Control
     public override void ApplyTemplate()
     {
         base.ApplyTemplate();
-        TokenResourceBinder.CreateTokenBinding(this, SliderTrackSizeProperty, SliderTokenResourceKey.SliderTrackSize);
-        TokenResourceBinder.CreateTokenBinding(this, SliderMarkSizeProperty, SliderTokenResourceKey.MarkSize);
-        TokenResourceBinder.CreateTokenBinding(this, SliderRailSizeProperty, SliderTokenResourceKey.RailSize);
+        TokenResourceBinder.CreateTokenBinding(this, SliderTrackSizeProperty, SliderTokenKey.SliderTrackSize);
+        TokenResourceBinder.CreateTokenBinding(this, SliderMarkSizeProperty, SliderTokenKey.MarkSize);
+        TokenResourceBinder.CreateTokenBinding(this, SliderRailSizeProperty, SliderTokenKey.RailSize);
         TokenResourceBinder.CreateTokenBinding(this, MarkBackgroundBrushProperty,
-            DesignTokenKey.ColorBgElevated);
+            SharedTokenKey.ColorBgElevated);
         TokenResourceBinder.CreateTokenBinding(this, MarkBorderThicknessProperty,
-            SliderTokenResourceKey.ThumbCircleBorderThickness);
+            SliderTokenKey.ThumbCircleBorderThickness);
 
         HandleRangeModeChanged();
         CalculateMaxMarkSize();
@@ -440,11 +440,11 @@ public class SliderTrack : Control
     {
         if (IsEnabled)
         {
-            TokenResourceBinder.CreateSharedTokenBinding(this, MarkLabelBrushProperty, DesignTokenKey.ColorText);
+            TokenResourceBinder.CreateSharedTokenBinding(this, MarkLabelBrushProperty, SharedTokenKey.ColorText);
         }
         else
         {
-            TokenResourceBinder.CreateSharedTokenBinding(this, MarkLabelBrushProperty, DesignTokenKey.ColorTextDisabled);
+            TokenResourceBinder.CreateSharedTokenBinding(this, MarkLabelBrushProperty, SharedTokenKey.ColorTextDisabled);
         }
     }
 

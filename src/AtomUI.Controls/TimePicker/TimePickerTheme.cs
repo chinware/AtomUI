@@ -23,7 +23,7 @@ internal class TimePickerTheme : InfoPickerInputTheme
     {
         base.BuildStyles();
         var commonStyle = new Style(selector => selector.Nesting());
-        commonStyle.Add(TimePicker.MinWidthProperty, TimePickerTokenResourceKey.PickerInputMinWidth);
+        commonStyle.Add(TimePicker.MinWidthProperty, TimePickerTokenKey.PickerInputMinWidth);
         
         Add(commonStyle);
     }

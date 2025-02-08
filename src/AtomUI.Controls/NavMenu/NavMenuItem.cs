@@ -578,7 +578,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
 
         _isEmbeddedInMenu = parent?.FindLogicalAncestorOfType<INavMenu>(true) != null;
         TokenResourceBinder.CreateTokenBinding(this, InlineItemIndentUnitProperty,
-            NavMenuTokenResourceKey.InlineItemIndentUnit);
+            NavMenuTokenKey.InlineItemIndentUnit);
     }
 
     /// <inheritdoc />
@@ -689,7 +689,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         }
 
         _horizontalFrame = e.NameScope.Find<Border>(TopLevelHorizontalNavMenuItemTheme.FramePart);
-        TokenResourceBinder.CreateTokenBinding(this, PopupMinWidthProperty, NavMenuTokenResourceKey.MenuPopupMinWidth);
+        TokenResourceBinder.CreateTokenBinding(this, PopupMinWidthProperty, NavMenuTokenKey.MenuPopupMinWidth);
         SetupItemIcon();
         if (Mode == NavMenuMode.Inline)
         {
@@ -701,7 +701,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
             }
 
             TokenResourceBinder.CreateSharedTokenBinding(this, OpenCloseMotionDurationProperty,
-                DesignTokenKey.MotionDurationSlow);
+                SharedTokenKey.MotionDurationSlow);
         }
 
         Transitions ??= new Transitions()
@@ -912,31 +912,31 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         {
             BindUtils.RelayBind(this, IsEnabledProperty, menuItemIcon, Icon.IsEnabledProperty);
             TokenResourceBinder.CreateTokenBinding(menuItemIcon, Icon.WidthProperty,
-                NavMenuTokenResourceKey.ItemIconSize);
+                NavMenuTokenKey.ItemIconSize);
             TokenResourceBinder.CreateTokenBinding(menuItemIcon, Icon.HeightProperty,
-                NavMenuTokenResourceKey.ItemIconSize);
+                NavMenuTokenKey.ItemIconSize);
 
             if (IsDarkStyle)
             {
                 TokenResourceBinder.CreateTokenBinding(menuItemIcon, Icon.NormalFilledBrushProperty,
-                    NavMenuTokenResourceKey.DarkItemColor);
+                    NavMenuTokenKey.DarkItemColor);
                 TokenResourceBinder.CreateTokenBinding(menuItemIcon, Icon.SelectedFilledBrushProperty,
-                    NavMenuTokenResourceKey.DarkItemSelectedColor);
+                    NavMenuTokenKey.DarkItemSelectedColor);
                 TokenResourceBinder.CreateTokenBinding(menuItemIcon, Icon.ActiveFilledBrushProperty,
-                    NavMenuTokenResourceKey.DarkItemHoverColor);
+                    NavMenuTokenKey.DarkItemHoverColor);
                 TokenResourceBinder.CreateTokenBinding(menuItemIcon, Icon.DisabledFilledBrushProperty,
-                    NavMenuTokenResourceKey.DarkItemDisabledColor);
+                    NavMenuTokenKey.DarkItemDisabledColor);
             }
             else
             {
                 TokenResourceBinder.CreateTokenBinding(menuItemIcon, Icon.NormalFilledBrushProperty,
-                    NavMenuTokenResourceKey.ItemColor);
+                    NavMenuTokenKey.ItemColor);
                 TokenResourceBinder.CreateTokenBinding(menuItemIcon, Icon.SelectedFilledBrushProperty,
-                    NavMenuTokenResourceKey.ItemSelectedColor);
+                    NavMenuTokenKey.ItemSelectedColor);
                 TokenResourceBinder.CreateTokenBinding(menuItemIcon, Icon.ActiveFilledBrushProperty,
-                    NavMenuTokenResourceKey.ItemHoverColor);
+                    NavMenuTokenKey.ItemHoverColor);
                 TokenResourceBinder.CreateTokenBinding(menuItemIcon, Icon.DisabledFilledBrushProperty,
-                    NavMenuTokenResourceKey.ItemDisabledColor);
+                    NavMenuTokenKey.ItemDisabledColor);
             }
         }
     }

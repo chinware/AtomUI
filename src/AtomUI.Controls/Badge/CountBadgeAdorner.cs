@@ -157,10 +157,10 @@ internal class CountBadgeAdorner : TemplatedControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        TokenResourceBinder.CreateTokenBinding(this, BadgeShadowSizeProperty, BadgeTokenResourceKey.BadgeShadowSize);
-        TokenResourceBinder.CreateTokenBinding(this, BadgeShadowColorProperty, BadgeTokenResourceKey.BadgeShadowColor);
-        TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, DesignTokenKey.MotionDurationMid);
-        TokenResourceBinder.CreateTokenBinding(this, BadgeColorProperty, BadgeTokenResourceKey.BadgeColor);
+        TokenResourceBinder.CreateTokenBinding(this, BadgeShadowSizeProperty, BadgeTokenKey.BadgeShadowSize);
+        TokenResourceBinder.CreateTokenBinding(this, BadgeShadowColorProperty, BadgeTokenKey.BadgeShadowColor);
+        TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, SharedTokenKey.MotionDurationMid);
+        TokenResourceBinder.CreateTokenBinding(this, BadgeColorProperty, BadgeTokenKey.BadgeColor);
         _indicatorMotionActor = e.NameScope.Get<MotionActorControl>(CountBadgeAdornerTheme.IndicatorMotionActorPart);
         if (_needInitialHide)
         {

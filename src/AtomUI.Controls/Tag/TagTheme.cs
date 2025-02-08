@@ -25,13 +25,13 @@ internal class TagTheme : BaseControlTheme
 
     protected override void BuildStyles()
     {
-        this.Add(TemplatedControl.BackgroundProperty, TagTokenResourceKey.DefaultBg);
-        this.Add(TemplatedControl.ForegroundProperty, TagTokenResourceKey.DefaultColor);
-        this.Add(TemplatedControl.FontSizeProperty, TagTokenResourceKey.TagFontSize);
-        this.Add(TemplatedControl.PaddingProperty, TagTokenResourceKey.TagPadding);
-        this.Add(TemplatedControl.BorderBrushProperty, DesignTokenKey.ColorBorder);
-        this.Add(TemplatedControl.CornerRadiusProperty, DesignTokenKey.BorderRadiusSM);
-        this.Add(Tag.TagTextPaddingInlineProperty, TagTokenResourceKey.TagTextPaddingInline);
+        this.Add(TemplatedControl.BackgroundProperty, TagTokenKey.DefaultBg);
+        this.Add(TemplatedControl.ForegroundProperty, TagTokenKey.DefaultColor);
+        this.Add(TemplatedControl.FontSizeProperty, TagTokenKey.TagFontSize);
+        this.Add(TemplatedControl.PaddingProperty, TagTokenKey.TagPadding);
+        this.Add(TemplatedControl.BorderBrushProperty, SharedTokenKey.ColorBorder);
+        this.Add(TemplatedControl.CornerRadiusProperty, SharedTokenKey.BorderRadiusSM);
+        this.Add(Tag.TagTextPaddingInlineProperty, TagTokenKey.TagTextPaddingInline);
     }
 
     protected override IControlTemplate BuildControlTemplate()
@@ -69,11 +69,11 @@ internal class TagTheme : BaseControlTheme
             closeBtn.RegisterInNameScope(scope);
 
             TokenResourceBinder.CreateTokenBinding(closeBtn, IconButton.IconWidthProperty,
-                DesignTokenKey.IconSizeXS);
+                SharedTokenKey.IconSizeXS);
             TokenResourceBinder.CreateTokenBinding(closeBtn, IconButton.IconHeightProperty,
-                DesignTokenKey.IconSizeXS);
+                SharedTokenKey.IconSizeXS);
             TokenResourceBinder.CreateTokenBinding(textBlock, Layoutable.HeightProperty,
-                TagTokenResourceKey.TagLineHeight);
+                TagTokenKey.TagLineHeight);
 
             CreateTemplateParentBinding(closeBtn, Visual.IsVisibleProperty, Tag.IsClosableProperty);
             CreateTemplateParentBinding(closeBtn, IconButton.IconProperty, Tag.CloseIconProperty);

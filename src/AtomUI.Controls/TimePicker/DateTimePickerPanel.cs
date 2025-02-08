@@ -588,7 +588,7 @@ internal class DateTimePickerPanel : Panel, ILogicalScrollable
             };
             
             TokenResourceBinder.CreateTokenBinding(item, TemplatedControl.PaddingProperty,
-                TimePickerTokenResourceKey.ItemPadding, BindingPriority.LocalValue);
+                TimePickerTokenKey.ItemPadding, BindingPriority.LocalValue);
             children.Add(item);
         }
 

@@ -79,40 +79,40 @@ internal class CalendarDayButtonTheme : BaseControlTheme
 
         commonStyle.Add(Avalonia.Controls.Button.ClickModeProperty, ClickMode.Release);
         commonStyle.Add(InputElement.CursorProperty, new Cursor(StandardCursorType.Hand));
-        commonStyle.Add(TemplatedControl.BackgroundProperty, DesignTokenKey.ColorTransparent);
-        commonStyle.Add(TemplatedControl.ForegroundProperty, DesignTokenKey.ColorTextLabel);
-        commonStyle.Add(TemplatedControl.CornerRadiusProperty, DesignTokenKey.BorderRadiusSM);
-        commonStyle.Add(TemplatedControl.BorderBrushProperty, DesignTokenKey.ColorTransparent);
+        commonStyle.Add(TemplatedControl.BackgroundProperty, SharedTokenKey.ColorTransparent);
+        commonStyle.Add(TemplatedControl.ForegroundProperty, SharedTokenKey.ColorTextLabel);
+        commonStyle.Add(TemplatedControl.CornerRadiusProperty, SharedTokenKey.BorderRadiusSM);
+        commonStyle.Add(TemplatedControl.BorderBrushProperty, SharedTokenKey.ColorTransparent);
         commonStyle.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
         commonStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Stretch);
         commonStyle.Add(ContentControl.HorizontalContentAlignmentProperty, HorizontalAlignment.Center);
         commonStyle.Add(ContentControl.VerticalContentAlignmentProperty, VerticalAlignment.Center);
-        commonStyle.Add(TemplatedControl.FontSizeProperty, DesignTokenKey.FontSize);
-        commonStyle.Add(Layoutable.WidthProperty, DatePickerTokenResourceKey.CellWidth);
-        commonStyle.Add(Layoutable.HeightProperty, DatePickerTokenResourceKey.CellHeight);
-        commonStyle.Add(Layoutable.MarginProperty, DatePickerTokenResourceKey.CellMargin);
+        commonStyle.Add(TemplatedControl.FontSizeProperty, SharedTokenKey.FontSize);
+        commonStyle.Add(Layoutable.WidthProperty, DatePickerTokenKey.CellWidth);
+        commonStyle.Add(Layoutable.HeightProperty, DatePickerTokenKey.CellHeight);
+        commonStyle.Add(Layoutable.MarginProperty, DatePickerTokenKey.CellMargin);
 
         var contentStyle = new Style(selector => selector.Nesting().Template().Name(ContentPart));
-        contentStyle.Add(ContentPresenter.LineHeightProperty, DatePickerTokenResourceKey.CellLineHeight);
+        contentStyle.Add(ContentPresenter.LineHeightProperty, DatePickerTokenKey.CellLineHeight);
         commonStyle.Add(contentStyle);
 
         var hoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
-        hoverStyle.Add(TemplatedControl.BackgroundProperty, DatePickerTokenResourceKey.CellHoverBg);
+        hoverStyle.Add(TemplatedControl.BackgroundProperty, DatePickerTokenKey.CellHoverBg);
         commonStyle.Add(hoverStyle);
 
         var inactiveStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.InActive));
-        inactiveStyle.Add(TemplatedControl.ForegroundProperty, DesignTokenKey.ColorTextDisabled);
+        inactiveStyle.Add(TemplatedControl.ForegroundProperty, SharedTokenKey.ColorTextDisabled);
         commonStyle.Add(inactiveStyle);
 
         var todayStyle = new Style(selector => selector.Nesting().Class(BaseCalendarDayButton.TodayPC));
-        todayStyle.Add(TemplatedControl.BorderBrushProperty, DesignTokenKey.ColorPrimary);
+        todayStyle.Add(TemplatedControl.BorderBrushProperty, SharedTokenKey.ColorPrimary);
         commonStyle.Add(todayStyle);
 
         var selectedStyle = new Style(selector =>
             selector.Nesting().Class(StdPseudoClass.Selected)
                     .Not(selector1 => selector1.Nesting().Class(StdPseudoClass.InActive)));
-        selectedStyle.Add(TemplatedControl.BackgroundProperty, DesignTokenKey.ColorPrimary);
-        selectedStyle.Add(TemplatedControl.ForegroundProperty, DesignTokenKey.ColorWhite);
+        selectedStyle.Add(TemplatedControl.BackgroundProperty, SharedTokenKey.ColorPrimary);
+        selectedStyle.Add(TemplatedControl.ForegroundProperty, SharedTokenKey.ColorWhite);
         selectedStyle.Add(TemplatedControl.BorderThicknessProperty, new Thickness(0));
         commonStyle.Add(selectedStyle);
 

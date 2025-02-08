@@ -20,13 +20,15 @@ internal class ThemeDefinitionReader
     private const string AlgorithmsElementName = "Algorithms";
     private const string SharedTokensElementName = "SharedTokens";
     private const string ControlTokensElementName = "ControlTokens";
-    private const string ControlTokenElementName = "ControlToken";
-    private const string TokenElementName = "Token";
 
+    private const string TokenElementName = "Token";
     private const string NameAttrName = "Name";
-    private const string IdAttrName = "Id";
-    private const string AlgorithmAttrName = "Algorithm";
     private const string ValueAttrName = "Value";
+    
+    private const string ControlTokenElementName = "ControlToken";
+    private const string IdAttrName = "Id";
+    private const string CatalogName = "Catalog";
+    private const string AlgorithmAttrName = "EnableAlgorithm";
 
     public ThemeDefinitionReader(Theme theme)
     {
@@ -180,8 +182,14 @@ internal class ThemeDefinitionReader
                 useAlgorithm = true;
             }
         }
+        
+        var catalogAttr = reader.GetAttribute(CatalogName);
 
-        _currentControlToken.UseAlgorithm = useAlgorithm;
+        if (catalogAttr is not null)
+        {
+            _currentControlToken.Catalog = catalogAttr.Trim();
+        }
+        _currentControlToken.EnableAlgorithm = useAlgorithm;
     }
 
     private void HandleStartTokenElement(XmlReader reader)

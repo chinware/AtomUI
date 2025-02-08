@@ -138,15 +138,15 @@ internal class RibbonBadgeAdorner : Control
     private void BuildStyles()
     {
         var commonStyle = new Style(selector => selector.OfType<RibbonBadgeAdorner>());
-        commonStyle.Add(RibbonColorProperty, DesignTokenKey.ColorPrimary);
-        commonStyle.Add(CornerRadiusProperty, DesignTokenKey.BorderRadiusSM);
-        commonStyle.Add(BadgeRibbonOffsetProperty, BadgeTokenResourceKey.BadgeRibbonOffset);
-        commonStyle.Add(BadgeRibbonCornerTransformProperty, BadgeTokenResourceKey.BadgeRibbonCornerTransform);
-        commonStyle.Add(BadgeRibbonCornerDarkenAmountProperty, BadgeTokenResourceKey.BadgeRibbonCornerDarkenAmount);
+        commonStyle.Add(RibbonColorProperty, SharedTokenKey.ColorPrimary);
+        commonStyle.Add(CornerRadiusProperty, SharedTokenKey.BorderRadiusSM);
+        commonStyle.Add(BadgeRibbonOffsetProperty, BadgeTokenKey.BadgeRibbonOffset);
+        commonStyle.Add(BadgeRibbonCornerTransformProperty, BadgeTokenKey.BadgeRibbonCornerTransform);
+        commonStyle.Add(BadgeRibbonCornerDarkenAmountProperty, BadgeTokenKey.BadgeRibbonCornerDarkenAmount);
         var labelStyle = new Style(selector => selector.Nesting().Child().OfType<TextBlock>());
-        labelStyle.Add(TextBlock.ForegroundProperty, DesignTokenKey.ColorTextLightSolid);
-        labelStyle.Add(TextBlock.LineHeightProperty, BadgeTokenResourceKey.BadgeFontHeight);
-        labelStyle.Add(TextBlock.PaddingProperty, BadgeTokenResourceKey.BadgeRibbonTextPadding);
+        labelStyle.Add(TextBlock.ForegroundProperty, SharedTokenKey.ColorTextLightSolid);
+        labelStyle.Add(TextBlock.LineHeightProperty, BadgeTokenKey.BadgeFontHeight);
+        labelStyle.Add(TextBlock.PaddingProperty, BadgeTokenKey.BadgeRibbonTextPadding);
         commonStyle.Add(labelStyle);
         Styles.Add(commonStyle);
     }

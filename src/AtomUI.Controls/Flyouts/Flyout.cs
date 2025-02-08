@@ -128,9 +128,9 @@ public class Flyout : PopupFlyoutBase
     public Flyout()
     {
         TokenResourceBinder.CreateSharedTokenBinding(this, MotionDurationTokenProperty,
-            DesignTokenKey.MotionDurationMid);
+            SharedTokenKey.MotionDurationMid);
         TokenResourceBinder.CreateSharedTokenBinding(this, MaskShadowsProperty,
-            DesignTokenKey.BoxShadowsSecondary);
+            SharedTokenKey.BoxShadowsSecondary);
     }
 
     private void HandlePopupPropertyChanged(AvaloniaPropertyChangedEventArgs args)

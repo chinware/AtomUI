@@ -98,12 +98,12 @@ internal class ArrowDecoratedBoxTheme : BaseControlTheme
     protected override void BuildStyles()
     {
         var commonStyle = new Style(selector => selector.Nesting());
-        commonStyle.Add(TemplatedControl.ForegroundProperty, DesignTokenKey.ColorText);
-        commonStyle.Add(TemplatedControl.BackgroundProperty, DesignTokenKey.ColorBgContainer);
-        commonStyle.Add(Layoutable.MinHeightProperty, DesignTokenKey.ControlHeight);
-        commonStyle.Add(TemplatedControl.PaddingProperty, ArrowDecoratedBoxTokenResourceKey.Padding);
-        commonStyle.Add(ArrowDecoratedBox.ArrowSizeProperty, ArrowDecoratedBoxTokenResourceKey.ArrowSize);
-        commonStyle.Add(TemplatedControl.CornerRadiusProperty, DesignTokenKey.BorderRadius);
+        commonStyle.Add(TemplatedControl.ForegroundProperty, SharedTokenKey.ColorText);
+        commonStyle.Add(TemplatedControl.BackgroundProperty, SharedTokenKey.ColorBgContainer);
+        commonStyle.Add(Layoutable.MinHeightProperty, SharedTokenKey.ControlHeight);
+        commonStyle.Add(TemplatedControl.PaddingProperty, ArrowDecoratedBoxTokenKey.Padding);
+        commonStyle.Add(ArrowDecoratedBox.ArrowSizeProperty, ArrowDecoratedBoxTokenKey.ArrowSize);
+        commonStyle.Add(TemplatedControl.CornerRadiusProperty, SharedTokenKey.BorderRadius);
         BuildArrowDirectionStyle(commonStyle);
         Add(commonStyle);
     }
@@ -111,7 +111,7 @@ internal class ArrowDecoratedBoxTheme : BaseControlTheme
     private void BuildArrowDirectionStyle(Style commonStyle)
     {
         var arrowIndicatorStyle = new Style(selector => selector.Nesting().Template().Name(ArrowIndicatorPart));
-        arrowIndicatorStyle.Add(ArrowIndicator.ArrowSizeProperty, ArrowDecoratedBoxTokenResourceKey.ArrowSize);
+        arrowIndicatorStyle.Add(ArrowIndicator.ArrowSizeProperty, ArrowDecoratedBoxTokenKey.ArrowSize);
         commonStyle.Add(arrowIndicatorStyle);
         
         var topDirectionStyle = new Style(selector => selector.Nesting().PropertyEquals(ArrowDecoratedBox.ArrowDirectionProperty, Direction.Top));

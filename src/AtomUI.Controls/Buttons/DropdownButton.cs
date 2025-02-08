@@ -165,11 +165,11 @@ public class DropdownButton : Button
     {
         _openIndicatorIcon = AntDesignIconPackage.DownOutlined();
 
-        TokenResourceBinder.CreateSharedTokenBinding(_openIndicatorIcon, Icon.WidthProperty, DesignTokenKey.IconSizeSM);
-        TokenResourceBinder.CreateSharedTokenBinding(_openIndicatorIcon, Icon.HeightProperty, DesignTokenKey.IconSizeSM);
+        TokenResourceBinder.CreateSharedTokenBinding(_openIndicatorIcon, Icon.WidthProperty, SharedTokenKey.IconSizeSM);
+        TokenResourceBinder.CreateSharedTokenBinding(_openIndicatorIcon, Icon.HeightProperty, SharedTokenKey.IconSizeSM);
 
         base.OnApplyTemplate(e);
-        TokenResourceBinder.CreateSharedTokenBinding(this, MarginToAnchorProperty, DesignTokenKey.MarginXXS);
+        TokenResourceBinder.CreateSharedTokenBinding(this, MarginToAnchorProperty, SharedTokenKey.MarginXXS);
         SetupFlyoutProperties();
         if (IsShowIndicator)
         {

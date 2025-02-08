@@ -57,7 +57,7 @@ internal class CollapseItemTheme : BaseControlTheme
             };
             motionActor.Child = contentPresenter;
             TokenResourceBinder.CreateSharedTokenBinding(contentPresenter, ContentPresenter.BorderBrushProperty,
-                DesignTokenKey.ColorBorder);
+                SharedTokenKey.ColorBorder);
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty,
                 ContentControl.ContentProperty);
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentTemplateProperty,
@@ -85,7 +85,7 @@ internal class CollapseItemTheme : BaseControlTheme
         DockPanel.SetDock(headerDecorator, Dock.Top);
 
         TokenResourceBinder.CreateSharedTokenBinding(headerDecorator, Border.BorderBrushProperty,
-            DesignTokenKey.ColorBorder);
+            SharedTokenKey.ColorBorder);
         CreateTemplateParentBinding(headerDecorator, Border.BorderThicknessProperty,
             CollapseItem.HeaderBorderThicknessProperty);
 
@@ -106,9 +106,9 @@ internal class CollapseItemTheme : BaseControlTheme
             VerticalAlignment = VerticalAlignment.Center
         };
         TokenResourceBinder.CreateSharedTokenBinding(expandButton, IconButton.IconWidthProperty,
-            DesignTokenKey.IconSize);
+            SharedTokenKey.IconSize);
         TokenResourceBinder.CreateSharedTokenBinding(expandButton, IconButton.IconHeightProperty,
-            DesignTokenKey.IconSize);
+            SharedTokenKey.IconSize);
         expandButton.RegisterInNameScope(scope);
         expandButton.Transitions = new Transitions();
         expandButton.Transitions.Add(
@@ -170,18 +170,18 @@ internal class CollapseItemTheme : BaseControlTheme
     {
         var commonStyle    = new Style(selector => selector.Nesting());
         var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));
-        decoratorStyle.Add(Border.BackgroundProperty, CollapseTokenResourceKey.HeaderBg);
+        decoratorStyle.Add(Border.BackgroundProperty, CollapseTokenKey.HeaderBg);
         commonStyle.Add(decoratorStyle);
 
         var headerPresenter = new Style(selector => selector.Nesting().Template().Name(HeaderPresenterPart));
-        headerPresenter.Add(ContentPresenter.ForegroundProperty, DesignTokenKey.ColorTextHeading);
+        headerPresenter.Add(ContentPresenter.ForegroundProperty, SharedTokenKey.ColorTextHeading);
         commonStyle.Add(headerPresenter);
 
         // ExpandIcon 
         var expandIconStyle =
             new Style(selector => selector.Nesting().Template().Name(ExpandButtonPart).Descendant().OfType<Icon>());
-        expandIconStyle.Add(Layoutable.WidthProperty, DesignTokenKey.IconSizeSM);
-        expandIconStyle.Add(Layoutable.HeightProperty, DesignTokenKey.IconSizeSM);
+        expandIconStyle.Add(Layoutable.WidthProperty, SharedTokenKey.IconSizeSM);
+        expandIconStyle.Add(Layoutable.HeightProperty, SharedTokenKey.IconSizeSM);
         commonStyle.Add(expandIconStyle);
 
         Add(commonStyle);
@@ -206,16 +206,16 @@ internal class CollapseItemTheme : BaseControlTheme
             new Style(selector => selector.Nesting().PropertyEquals(CollapseItem.SizeTypeProperty, SizeType.Large));
         {
             var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));
-            decoratorStyle.Add(Decorator.PaddingProperty, CollapseTokenResourceKey.CollapseHeaderPaddingLG);
-            decoratorStyle.Add(TextElement.FontSizeProperty, DesignTokenKey.FontSizeLG);
-            decoratorStyle.Add(TextBlock.LineHeightProperty, DesignTokenKey.FontHeightLG);
+            decoratorStyle.Add(Decorator.PaddingProperty, CollapseTokenKey.CollapseHeaderPaddingLG);
+            decoratorStyle.Add(TextElement.FontSizeProperty, SharedTokenKey.FontSizeLG);
+            decoratorStyle.Add(TextBlock.LineHeightProperty, SharedTokenKey.FontHeightLG);
             largeSizeStyle.Add(decoratorStyle);
         }
 
         {
             var contentPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ContentPresenterPart));
             contentPresenterStyle.Add(ContentPresenter.PaddingProperty,
-                CollapseTokenResourceKey.CollapseContentPaddingLG);
+                CollapseTokenKey.CollapseContentPaddingLG);
             largeSizeStyle.Add(contentPresenterStyle);
         }
 
@@ -225,15 +225,15 @@ internal class CollapseItemTheme : BaseControlTheme
             new Style(selector => selector.Nesting().PropertyEquals(CollapseItem.SizeTypeProperty, SizeType.Middle));
         {
             var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));
-            decoratorStyle.Add(Decorator.PaddingProperty, CollapseTokenResourceKey.HeaderPadding);
-            decoratorStyle.Add(TextElement.FontSizeProperty, DesignTokenKey.FontSize);
-            decoratorStyle.Add(TextBlock.LineHeightProperty, DesignTokenKey.FontHeight);
+            decoratorStyle.Add(Decorator.PaddingProperty, CollapseTokenKey.HeaderPadding);
+            decoratorStyle.Add(TextElement.FontSizeProperty, SharedTokenKey.FontSize);
+            decoratorStyle.Add(TextBlock.LineHeightProperty, SharedTokenKey.FontHeight);
             middleSizeStyle.Add(decoratorStyle);
         }
 
         {
             var contentPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ContentPresenterPart));
-            contentPresenterStyle.Add(ContentPresenter.PaddingProperty, CollapseTokenResourceKey.ContentPadding);
+            contentPresenterStyle.Add(ContentPresenter.PaddingProperty, CollapseTokenKey.ContentPadding);
             middleSizeStyle.Add(contentPresenterStyle);
         }
         Add(middleSizeStyle);
@@ -242,16 +242,16 @@ internal class CollapseItemTheme : BaseControlTheme
             new Style(selector => selector.Nesting().PropertyEquals(CollapseItem.SizeTypeProperty, SizeType.Small));
         {
             var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));
-            decoratorStyle.Add(Decorator.PaddingProperty, CollapseTokenResourceKey.CollapseHeaderPaddingSM);
-            decoratorStyle.Add(TextElement.FontSizeProperty, DesignTokenKey.FontSize);
-            decoratorStyle.Add(TextBlock.LineHeightProperty, DesignTokenKey.FontHeight);
+            decoratorStyle.Add(Decorator.PaddingProperty, CollapseTokenKey.CollapseHeaderPaddingSM);
+            decoratorStyle.Add(TextElement.FontSizeProperty, SharedTokenKey.FontSize);
+            decoratorStyle.Add(TextBlock.LineHeightProperty, SharedTokenKey.FontHeight);
             smallSizeStyle.Add(decoratorStyle);
         }
 
         {
             var contentPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ContentPresenterPart));
             contentPresenterStyle.Add(ContentPresenter.PaddingProperty,
-                CollapseTokenResourceKey.CollapseContentPaddingSM);
+                CollapseTokenKey.CollapseContentPaddingSM);
             smallSizeStyle.Add(contentPresenterStyle);
         }
 
@@ -287,7 +287,7 @@ internal class CollapseItemTheme : BaseControlTheme
         {
             var expandButtonStyle = new Style(selector => selector.Nesting().Template().Name(ExpandButtonPart));
             expandButtonStyle.Add(Grid.ColumnProperty, 0);
-            expandButtonStyle.Add(Layoutable.MarginProperty, CollapseTokenResourceKey.LeftExpandButtonMargin);
+            expandButtonStyle.Add(Layoutable.MarginProperty, CollapseTokenKey.LeftExpandButtonMargin);
             startPositionStyle.Add(expandButtonStyle);
         }
         Add(startPositionStyle);
@@ -298,7 +298,7 @@ internal class CollapseItemTheme : BaseControlTheme
         {
             var expandButtonStyle = new Style(selector => selector.Nesting().Template().Name(ExpandButtonPart));
             expandButtonStyle.Add(Grid.ColumnProperty, 3);
-            expandButtonStyle.Add(Layoutable.MarginProperty, CollapseTokenResourceKey.RightExpandButtonMargin);
+            expandButtonStyle.Add(Layoutable.MarginProperty, CollapseTokenKey.RightExpandButtonMargin);
             endPositionStyle.Add(expandButtonStyle);
         }
         Add(endPositionStyle);
@@ -309,7 +309,7 @@ internal class CollapseItemTheme : BaseControlTheme
         var borderlessStyle =
             new Style(selector => selector.Nesting().PropertyEquals(CollapseItem.IsBorderlessProperty, true));
         var contentPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ContentPresenterPart));
-        contentPresenterStyle.Add(ContentPresenter.BackgroundProperty, CollapseTokenResourceKey.HeaderBg);
+        contentPresenterStyle.Add(ContentPresenter.BackgroundProperty, CollapseTokenKey.HeaderBg);
         borderlessStyle.Add(contentPresenterStyle);
         Add(borderlessStyle);
     }
@@ -319,7 +319,7 @@ internal class CollapseItemTheme : BaseControlTheme
         var ghostStyle =
             new Style(selector => selector.Nesting().PropertyEquals(CollapseItem.IsGhostStyleProperty, true));
         var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));
-        decoratorStyle.Add(Border.BackgroundProperty, CollapseTokenResourceKey.ContentBg);
+        decoratorStyle.Add(Border.BackgroundProperty, CollapseTokenKey.ContentBg);
         ghostStyle.Add(decoratorStyle);
         Add(ghostStyle);
     }
@@ -328,10 +328,10 @@ internal class CollapseItemTheme : BaseControlTheme
     {
         var disabledStyle =
             new Style(selector => selector.Nesting().Class(StdPseudoClass.Disabled));
-        disabledStyle.Add(TemplatedControl.ForegroundProperty, DesignTokenKey.ColorTextDisabled);
+        disabledStyle.Add(TemplatedControl.ForegroundProperty, SharedTokenKey.ColorTextDisabled);
         var headerContentPresenterStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart)
                                                                         .Descendant().OfType<ContentPresenter>());
-        headerContentPresenterStyle.Add(ContentPresenter.ForegroundProperty, DesignTokenKey.ColorTextDisabled);
+        headerContentPresenterStyle.Add(ContentPresenter.ForegroundProperty, SharedTokenKey.ColorTextDisabled);
         disabledStyle.Add(headerContentPresenterStyle);
 
         Add(disabledStyle);
@@ -341,8 +341,8 @@ internal class CollapseItemTheme : BaseControlTheme
     {
         var addOnContentStyle = new Style(selector => selector.Nesting().Template().Name(AddOnContentPresenterPart)
                                                               .Descendant().OfType<Icon>());
-        addOnContentStyle.Add(Layoutable.WidthProperty, DesignTokenKey.IconSize);
-        addOnContentStyle.Add(Layoutable.HeightProperty, DesignTokenKey.IconSize);
+        addOnContentStyle.Add(Layoutable.WidthProperty, SharedTokenKey.IconSize);
+        addOnContentStyle.Add(Layoutable.HeightProperty, SharedTokenKey.IconSize);
         Add(addOnContentStyle);
     }
 }

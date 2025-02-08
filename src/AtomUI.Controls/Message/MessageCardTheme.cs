@@ -82,7 +82,7 @@ internal class MessageCardTheme : BaseControlTheme
             ObjectConverters.IsNotNull);
         CreateTemplateParentBinding(iconContent, ContentPresenter.ContentProperty, MessageCard.IconProperty);
         TokenResourceBinder.CreateTokenBinding(iconContent, Layoutable.MarginProperty,
-            MessageTokenResourceKey.MessageIconMargin);
+            MessageTokenKey.MessageIconMargin);
 
         headerLayout.Children.Add(iconContent);
 
@@ -91,9 +91,9 @@ internal class MessageCardTheme : BaseControlTheme
             Name = MessagePart
         };
         TokenResourceBinder.CreateSharedTokenBinding(message, SelectableTextBlock.SelectionBrushProperty,
-            DesignTokenKey.SelectionBackground);
+            SharedTokenKey.SelectionBackground);
         TokenResourceBinder.CreateSharedTokenBinding(message, SelectableTextBlock.SelectionForegroundBrushProperty,
-            DesignTokenKey.SelectionForeground);
+            SharedTokenKey.SelectionForeground);
 
         CreateTemplateParentBinding(message, TextBlock.TextProperty, MessageCard.MessageProperty);
         headerLayout.Children.Add(message);
@@ -115,14 +115,14 @@ internal class MessageCardTheme : BaseControlTheme
 
         var marginGhostDecoratorStyle =
             new Style(selector => selector.Nesting().Template().Name(MarginGhostDecoratorPart));
-        marginGhostDecoratorStyle.Add(Layoutable.MarginProperty, MessageTokenResourceKey.MessageTopMargin);
+        marginGhostDecoratorStyle.Add(Layoutable.MarginProperty, MessageTokenKey.MessageTopMargin);
         commonStyle.Add(marginGhostDecoratorStyle);
 
         var frameDecoratorStyle = new Style(selector => selector.Nesting().Template().Name(FrameDecoratorPart));
-        frameDecoratorStyle.Add(Decorator.PaddingProperty, MessageTokenResourceKey.ContentPadding);
-        frameDecoratorStyle.Add(Border.BoxShadowProperty, DesignTokenKey.BoxShadows);
-        frameDecoratorStyle.Add(Border.BackgroundProperty, MessageTokenResourceKey.ContentBg);
-        frameDecoratorStyle.Add(Border.CornerRadiusProperty, DesignTokenKey.BorderRadiusLG);
+        frameDecoratorStyle.Add(Decorator.PaddingProperty, MessageTokenKey.ContentPadding);
+        frameDecoratorStyle.Add(Border.BoxShadowProperty, SharedTokenKey.BoxShadows);
+        frameDecoratorStyle.Add(Border.BackgroundProperty, MessageTokenKey.ContentBg);
+        frameDecoratorStyle.Add(Border.CornerRadiusProperty, SharedTokenKey.BorderRadiusLG);
         commonStyle.Add(frameDecoratorStyle);
 
         var closedStyle =
@@ -136,17 +136,17 @@ internal class MessageCardTheme : BaseControlTheme
     private void BuildContentStyle()
     {
         var titleStyle = new Style(selector => selector.Nesting().Template().Name(MessagePart));
-        titleStyle.Add(ContentPresenter.LineHeightProperty, DesignTokenKey.FontHeight);
-        titleStyle.Add(ContentPresenter.FontSizeProperty, DesignTokenKey.FontSize);
-        titleStyle.Add(ContentPresenter.ForegroundProperty, DesignTokenKey.ColorText);
+        titleStyle.Add(ContentPresenter.LineHeightProperty, SharedTokenKey.FontHeight);
+        titleStyle.Add(ContentPresenter.FontSizeProperty, SharedTokenKey.FontSize);
+        titleStyle.Add(ContentPresenter.ForegroundProperty, SharedTokenKey.ColorText);
         Add(titleStyle);
     }
 
     protected override void BuildInstanceStyles(Control control)
     {
         var iconStyle = new Style(selector => selector.Name(IconContentPart).Child().OfType<Icon>());
-        iconStyle.Add(Layoutable.WidthProperty, MessageTokenResourceKey.MessageIconSize);
-        iconStyle.Add(Layoutable.HeightProperty, MessageTokenResourceKey.MessageIconSize);
+        iconStyle.Add(Layoutable.WidthProperty, MessageTokenKey.MessageIconSize);
+        iconStyle.Add(Layoutable.HeightProperty, MessageTokenKey.MessageIconSize);
         control.Styles.Add(iconStyle);
     }
 }

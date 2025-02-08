@@ -44,19 +44,19 @@ internal class ToggleSwitchTheme : BaseControlTheme
 
     protected override void BuildStyles()
     {
-        this.Add(TemplatedControl.ForegroundProperty, DesignTokenKey.ColorTextLightSolid);
-        this.Add(ToggleSwitch.TrackPaddingProperty, ToggleSwitchTokenResourceKey.TrackPadding);
+        this.Add(TemplatedControl.ForegroundProperty, SharedTokenKey.ColorTextLightSolid);
+        this.Add(ToggleSwitch.TrackPaddingProperty, ToggleSwitchTokenKey.TrackPadding);
         BuildSizeTypeStyle();
         BuildCommonStyle();
 
         var disabledStyle =
             new Style(selector => selector.Nesting().PropertyEquals(InputElement.IsEnabledProperty, false));
-        disabledStyle.Add(ToggleSwitch.SwitchOpacityProperty, ToggleSwitchTokenResourceKey.SwitchDisabledOpacity);
+        disabledStyle.Add(ToggleSwitch.SwitchOpacityProperty, ToggleSwitchTokenKey.SwitchDisabledOpacity);
         Add(disabledStyle);
 
         var loadingStyle =
             new Style(selector => selector.Nesting().PropertyEquals(ToggleSwitch.IsLoadingProperty, true));
-        loadingStyle.Add(ToggleSwitch.SwitchOpacityProperty, ToggleSwitchTokenResourceKey.SwitchDisabledOpacity);
+        loadingStyle.Add(ToggleSwitch.SwitchOpacityProperty, ToggleSwitchTokenKey.SwitchDisabledOpacity);
         Add(loadingStyle);
     }
 
@@ -69,20 +69,20 @@ internal class ToggleSwitchTheme : BaseControlTheme
         
         var checkedStyle =
             new Style(selector => selector.Nesting().PropertyEquals(ToggleButton.IsCheckedProperty, true));
-        checkedStyle.Add(ToggleSwitch.GrooveBackgroundProperty, ToggleSwitchTokenResourceKey.SwitchColor);
+        checkedStyle.Add(ToggleSwitch.GrooveBackgroundProperty, ToggleSwitchTokenKey.SwitchColor);
         {
             var hoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
-            hoverStyle.Add(ToggleSwitch.GrooveBackgroundProperty, DesignTokenKey.ColorPrimaryHover);
+            hoverStyle.Add(ToggleSwitch.GrooveBackgroundProperty, SharedTokenKey.ColorPrimaryHover);
             checkedStyle.Add(hoverStyle);
         }
         commonStyle.Add(checkedStyle);
 
         var unCheckedStyle =
             new Style(selector => selector.Nesting().PropertyEquals(ToggleButton.IsCheckedProperty, false));
-        unCheckedStyle.Add(ToggleSwitch.GrooveBackgroundProperty, DesignTokenKey.ColorTextQuaternary);
+        unCheckedStyle.Add(ToggleSwitch.GrooveBackgroundProperty, SharedTokenKey.ColorTextQuaternary);
         {
             var hoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
-            hoverStyle.Add(ToggleSwitch.GrooveBackgroundProperty, DesignTokenKey.ColorTextTertiary);
+            hoverStyle.Add(ToggleSwitch.GrooveBackgroundProperty, SharedTokenKey.ColorTextTertiary);
             unCheckedStyle.Add(hoverStyle);
         }
         commonStyle.Add(unCheckedStyle);
@@ -93,61 +93,61 @@ internal class ToggleSwitchTheme : BaseControlTheme
     {
         var smallSizeStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(ToggleSwitch.SizeTypeProperty, SizeType.Small));
-        smallSizeStyle.Add(TemplatedControl.FontSizeProperty, ToggleSwitchTokenResourceKey.ExtraInfoFontSizeSM);
+        smallSizeStyle.Add(TemplatedControl.FontSizeProperty, ToggleSwitchTokenKey.ExtraInfoFontSizeSM);
         {
             var knobSizeStyle = new Style(selector => selector.Nesting().Template().OfType<SwitchKnob>());
-            knobSizeStyle.Add(SwitchKnob.KnobSizeProperty, ToggleSwitchTokenResourceKey.HandleSizeSM);
-            knobSizeStyle.Add(SwitchKnob.OriginKnobSizeProperty, ToggleSwitchTokenResourceKey.HandleSizeSM);
+            knobSizeStyle.Add(SwitchKnob.KnobSizeProperty, ToggleSwitchTokenKey.HandleSizeSM);
+            knobSizeStyle.Add(SwitchKnob.OriginKnobSizeProperty, ToggleSwitchTokenKey.HandleSizeSM);
             smallSizeStyle.Add(knobSizeStyle);
         }
-        smallSizeStyle.Add(ToggleSwitch.InnerMaxMarginProperty, ToggleSwitchTokenResourceKey.InnerMaxMarginSM);
-        smallSizeStyle.Add(ToggleSwitch.InnerMinMarginProperty, ToggleSwitchTokenResourceKey.InnerMinMarginSM);
-        smallSizeStyle.Add(ToggleSwitch.TrackHeightProperty, ToggleSwitchTokenResourceKey.TrackHeightSM);
-        smallSizeStyle.Add(ToggleSwitch.TrackMinWidthProperty, ToggleSwitchTokenResourceKey.TrackMinWidthSM);
-        smallSizeStyle.Add(ToggleSwitch.IconSizeProperty, ToggleSwitchTokenResourceKey.IconSizeSM);
+        smallSizeStyle.Add(ToggleSwitch.InnerMaxMarginProperty, ToggleSwitchTokenKey.InnerMaxMarginSM);
+        smallSizeStyle.Add(ToggleSwitch.InnerMinMarginProperty, ToggleSwitchTokenKey.InnerMinMarginSM);
+        smallSizeStyle.Add(ToggleSwitch.TrackHeightProperty, ToggleSwitchTokenKey.TrackHeightSM);
+        smallSizeStyle.Add(ToggleSwitch.TrackMinWidthProperty, ToggleSwitchTokenKey.TrackMinWidthSM);
+        smallSizeStyle.Add(ToggleSwitch.IconSizeProperty, ToggleSwitchTokenKey.IconSizeSM);
 
         Add(smallSizeStyle);
 
         var middleSizeStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(ToggleSwitch.SizeTypeProperty, SizeType.Middle));
-        middleSizeStyle.Add(TemplatedControl.FontSizeProperty, ToggleSwitchTokenResourceKey.ExtraInfoFontSize);
+        middleSizeStyle.Add(TemplatedControl.FontSizeProperty, ToggleSwitchTokenKey.ExtraInfoFontSize);
         {
             var knobSizeStyle = new Style(selector => selector.Nesting().Template().OfType<SwitchKnob>());
-            knobSizeStyle.Add(SwitchKnob.KnobSizeProperty, ToggleSwitchTokenResourceKey.HandleSize);
-            knobSizeStyle.Add(SwitchKnob.OriginKnobSizeProperty, ToggleSwitchTokenResourceKey.HandleSize);
+            knobSizeStyle.Add(SwitchKnob.KnobSizeProperty, ToggleSwitchTokenKey.HandleSize);
+            knobSizeStyle.Add(SwitchKnob.OriginKnobSizeProperty, ToggleSwitchTokenKey.HandleSize);
             middleSizeStyle.Add(knobSizeStyle);
         }
-        middleSizeStyle.Add(ToggleSwitch.InnerMaxMarginProperty, ToggleSwitchTokenResourceKey.InnerMaxMargin);
-        middleSizeStyle.Add(ToggleSwitch.InnerMinMarginProperty, ToggleSwitchTokenResourceKey.InnerMinMargin);
-        middleSizeStyle.Add(ToggleSwitch.TrackHeightProperty, ToggleSwitchTokenResourceKey.TrackHeight);
-        middleSizeStyle.Add(ToggleSwitch.TrackMinWidthProperty, ToggleSwitchTokenResourceKey.TrackMinWidth);
-        middleSizeStyle.Add(ToggleSwitch.IconSizeProperty, ToggleSwitchTokenResourceKey.IconSize);
+        middleSizeStyle.Add(ToggleSwitch.InnerMaxMarginProperty, ToggleSwitchTokenKey.InnerMaxMargin);
+        middleSizeStyle.Add(ToggleSwitch.InnerMinMarginProperty, ToggleSwitchTokenKey.InnerMinMargin);
+        middleSizeStyle.Add(ToggleSwitch.TrackHeightProperty, ToggleSwitchTokenKey.TrackHeight);
+        middleSizeStyle.Add(ToggleSwitch.TrackMinWidthProperty, ToggleSwitchTokenKey.TrackMinWidth);
+        middleSizeStyle.Add(ToggleSwitch.IconSizeProperty, ToggleSwitchTokenKey.IconSize);
         Add(middleSizeStyle);
 
         var largeSizeStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(ToggleSwitch.SizeTypeProperty, SizeType.Large));
-        largeSizeStyle.Add(TemplatedControl.FontSizeProperty, ToggleSwitchTokenResourceKey.ExtraInfoFontSize);
+        largeSizeStyle.Add(TemplatedControl.FontSizeProperty, ToggleSwitchTokenKey.ExtraInfoFontSize);
         {
             var knobSizeStyle = new Style(selector => selector.Nesting().Template().OfType<SwitchKnob>());
-            knobSizeStyle.Add(SwitchKnob.KnobSizeProperty, ToggleSwitchTokenResourceKey.HandleSize);
-            knobSizeStyle.Add(SwitchKnob.OriginKnobSizeProperty, ToggleSwitchTokenResourceKey.HandleSize);
+            knobSizeStyle.Add(SwitchKnob.KnobSizeProperty, ToggleSwitchTokenKey.HandleSize);
+            knobSizeStyle.Add(SwitchKnob.OriginKnobSizeProperty, ToggleSwitchTokenKey.HandleSize);
             largeSizeStyle.Add(knobSizeStyle);
         }
-        largeSizeStyle.Add(ToggleSwitch.InnerMaxMarginProperty, ToggleSwitchTokenResourceKey.InnerMaxMargin);
-        largeSizeStyle.Add(ToggleSwitch.InnerMinMarginProperty, ToggleSwitchTokenResourceKey.InnerMinMargin);
-        largeSizeStyle.Add(ToggleSwitch.TrackHeightProperty, ToggleSwitchTokenResourceKey.TrackHeight);
-        largeSizeStyle.Add(ToggleSwitch.TrackMinWidthProperty, ToggleSwitchTokenResourceKey.TrackMinWidth);
-        largeSizeStyle.Add(ToggleSwitch.IconSizeProperty, ToggleSwitchTokenResourceKey.IconSize);
+        largeSizeStyle.Add(ToggleSwitch.InnerMaxMarginProperty, ToggleSwitchTokenKey.InnerMaxMargin);
+        largeSizeStyle.Add(ToggleSwitch.InnerMinMarginProperty, ToggleSwitchTokenKey.InnerMinMargin);
+        largeSizeStyle.Add(ToggleSwitch.TrackHeightProperty, ToggleSwitchTokenKey.TrackHeight);
+        largeSizeStyle.Add(ToggleSwitch.TrackMinWidthProperty, ToggleSwitchTokenKey.TrackMinWidth);
+        largeSizeStyle.Add(ToggleSwitch.IconSizeProperty, ToggleSwitchTokenKey.IconSize);
         Add(largeSizeStyle);
 
         {
             var switchKnobStyle = new Style(selector => selector.Nesting().Template().OfType<SwitchKnob>());
-            switchKnobStyle.Add(SwitchKnob.KnobBackgroundColorProperty, ToggleSwitchTokenResourceKey.HandleBg);
-            switchKnobStyle.Add(SwitchKnob.KnobBoxShadowProperty, ToggleSwitchTokenResourceKey.HandleShadow);
-            switchKnobStyle.Add(SwitchKnob.LoadIndicatorBrushProperty, DesignTokenKey.ColorTextQuaternary);
+            switchKnobStyle.Add(SwitchKnob.KnobBackgroundColorProperty, ToggleSwitchTokenKey.HandleBg);
+            switchKnobStyle.Add(SwitchKnob.KnobBoxShadowProperty, ToggleSwitchTokenKey.HandleShadow);
+            switchKnobStyle.Add(SwitchKnob.LoadIndicatorBrushProperty, SharedTokenKey.ColorTextQuaternary);
             var checkedStyle =
                 new Style(selector => selector.Nesting().PropertyEquals(SwitchKnob.IsCheckedStateProperty, true));
-            checkedStyle.Add(SwitchKnob.LoadIndicatorBrushProperty, ToggleSwitchTokenResourceKey.SwitchColor);
+            checkedStyle.Add(SwitchKnob.LoadIndicatorBrushProperty, ToggleSwitchTokenKey.SwitchColor);
             switchKnobStyle.Add(checkedStyle);
             Add(switchKnobStyle);
         }

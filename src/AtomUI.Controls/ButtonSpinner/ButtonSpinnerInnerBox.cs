@@ -130,12 +130,12 @@ internal class ButtonSpinnerInnerBox : AddOnDecoratedInnerBox, ICustomHitTest
     {
         _handleContentPresenter = e.NameScope.Find<ContentPresenter>(ButtonSpinnerInnerBoxTheme.SpinnerHandlePart);
         TokenResourceBinder.CreateSharedTokenBinding(this, SpinnerBorderThicknessProperty,
-            DesignTokenKey.BorderThickness, BindingPriority.Template,
+            SharedTokenKey.BorderThickness, BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this));
         TokenResourceBinder.CreateSharedTokenBinding(this, SpinnerBorderBrushProperty,
-            DesignTokenKey.ColorBorder);
+            SharedTokenKey.ColorBorder);
         TokenResourceBinder.CreateTokenBinding(this, SpinnerHandleWidthTokenProperty,
-            ButtonSpinnerTokenResourceKey.HandleWidth);
+            ButtonSpinnerTokenKey.HandleWidth);
         base.OnApplyTemplate(e);
     }
 

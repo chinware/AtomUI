@@ -173,28 +173,28 @@ internal class TreeViewItemTheme : BaseControlTheme
     private void BuildCommonStyle()
     {
         var commonStyle = new Style(selector => selector.Nesting());
-        commonStyle.Add(TreeViewItem.EffectiveNodeCornerRadiusProperty, DesignTokenKey.BorderRadius);
-        commonStyle.Add(TemplatedControl.BorderBrushProperty, DesignTokenKey.ColorBorder);
-        commonStyle.Add(TemplatedControl.BorderThicknessProperty, DesignTokenKey.BorderThickness);
-        commonStyle.Add(TreeViewItem.EffectiveNodeBgProperty, DesignTokenKey.ColorTransparent);
+        commonStyle.Add(TreeViewItem.EffectiveNodeCornerRadiusProperty, SharedTokenKey.BorderRadius);
+        commonStyle.Add(TemplatedControl.BorderBrushProperty, SharedTokenKey.ColorBorder);
+        commonStyle.Add(TemplatedControl.BorderThicknessProperty, SharedTokenKey.BorderThickness);
+        commonStyle.Add(TreeViewItem.EffectiveNodeBgProperty, SharedTokenKey.ColorTransparent);
         var frameDecoratorStyle = new Style(selector => selector.Nesting().Template().Name(FrameDecoratorPart));
-        frameDecoratorStyle.Add(Layoutable.HeightProperty, TreeViewTokenResourceKey.TitleHeight);
-        frameDecoratorStyle.Add(Layoutable.MarginProperty, TreeViewTokenResourceKey.TreeItemMargin);
+        frameDecoratorStyle.Add(Layoutable.HeightProperty, TreeViewTokenKey.TitleHeight);
+        frameDecoratorStyle.Add(Layoutable.MarginProperty, TreeViewTokenKey.TreeItemMargin);
         commonStyle.Add(frameDecoratorStyle);
 
         // 节点 Icon 的大小
         var treeItemIconStyle = new Style(selector =>
             selector.Nesting().Template().Name(IconPresenterPart).Descendant().OfType<Icon>());
-        treeItemIconStyle.Add(Layoutable.WidthProperty, DesignTokenKey.IconSize);
-        treeItemIconStyle.Add(Layoutable.HeightProperty, DesignTokenKey.IconSize);
-        treeItemIconStyle.Add(Layoutable.MarginProperty, TreeViewTokenResourceKey.TreeNodeIconMargin);
+        treeItemIconStyle.Add(Layoutable.WidthProperty, SharedTokenKey.IconSize);
+        treeItemIconStyle.Add(Layoutable.HeightProperty, SharedTokenKey.IconSize);
+        treeItemIconStyle.Add(Layoutable.MarginProperty, TreeViewTokenKey.TreeNodeIconMargin);
         commonStyle.Add(treeItemIconStyle);
 
         // 设置 NodeHoverMode 为 Block 的情况
         {
             var headerPresenterStyle = new Style(selector => selector.Nesting().Template().Name(HeaderPresenterPart));
             headerPresenterStyle.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Left);
-            headerPresenterStyle.Add(Layoutable.MarginProperty, TreeViewTokenResourceKey.TreeItemHeaderMargin);
+            headerPresenterStyle.Add(Layoutable.MarginProperty, TreeViewTokenKey.TreeItemHeaderMargin);
             commonStyle.Add(headerPresenterStyle);
         }
 
@@ -205,8 +205,8 @@ internal class TreeViewItemTheme : BaseControlTheme
         {
             var headerPresenterStyle = new Style(selector => selector.Nesting().Template().Name(HeaderPresenterPart));
             headerPresenterStyle.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
-            headerPresenterStyle.Add(ContentPresenter.BackgroundProperty, DesignTokenKey.ColorTransparent);
-            headerPresenterStyle.Add(ContentPresenter.FontSizeProperty, DesignTokenKey.FontSize);
+            headerPresenterStyle.Add(ContentPresenter.BackgroundProperty, SharedTokenKey.ColorTransparent);
+            headerPresenterStyle.Add(ContentPresenter.FontSizeProperty, SharedTokenKey.FontSize);
             blockNodeHoverModeStyle.Add(headerPresenterStyle);
         }
         enabledStyle.Add(blockNodeHoverModeStyle);
@@ -214,16 +214,16 @@ internal class TreeViewItemTheme : BaseControlTheme
         // header 样式
         {
             var headerPresenterStyle = new Style(selector => selector.Nesting().Template().Name(HeaderPresenterPart));
-            headerPresenterStyle.Add(ContentPresenter.PaddingProperty, TreeViewTokenResourceKey.TreeItemHeaderPadding);
+            headerPresenterStyle.Add(ContentPresenter.PaddingProperty, TreeViewTokenKey.TreeItemHeaderPadding);
             commonStyle.Add(headerPresenterStyle);
         }
 
         var hoverStyle = new Style(selector => selector.Nesting().Class(TreeViewItem.TreeNodeHoverPC));
-        hoverStyle.Add(TreeViewItem.EffectiveNodeBgProperty, TreeViewTokenResourceKey.NodeHoverBg);
+        hoverStyle.Add(TreeViewItem.EffectiveNodeBgProperty, TreeViewTokenKey.NodeHoverBg);
         enabledStyle.Add(hoverStyle);
 
         var selectedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Selected));
-        selectedStyle.Add(TreeViewItem.EffectiveNodeBgProperty, TreeViewTokenResourceKey.NodeSelectedBg);
+        selectedStyle.Add(TreeViewItem.EffectiveNodeBgProperty, TreeViewTokenKey.NodeSelectedBg);
         enabledStyle.Add(selectedStyle);
 
         commonStyle.Add(enabledStyle);
@@ -235,8 +235,8 @@ internal class TreeViewItemTheme : BaseControlTheme
     {
         {
             var switcherButtonStyle = new Style(selector => selector.Nesting().Template().Name(NodeSwitcherButtonPart));
-            switcherButtonStyle.Add(Layoutable.HeightProperty, TreeViewTokenResourceKey.TitleHeight);
-            switcherButtonStyle.Add(Layoutable.WidthProperty, TreeViewTokenResourceKey.TitleHeight);
+            switcherButtonStyle.Add(Layoutable.HeightProperty, TreeViewTokenKey.TitleHeight);
+            switcherButtonStyle.Add(Layoutable.WidthProperty, TreeViewTokenKey.TitleHeight);
             switcherButtonStyle.Add(InputElement.CursorProperty, new Cursor(StandardCursorType.Hand));
             Add(switcherButtonStyle);
         }
@@ -267,7 +267,7 @@ internal class TreeViewItemTheme : BaseControlTheme
             selector.Nesting().PropertyEquals(TreeViewItem.IsCheckboxVisibleProperty, true));
         {
             var switcherButtonStyle = new Style(selector => selector.Nesting().Template().Name(NodeSwitcherButtonPart));
-            switcherButtonStyle.Add(Layoutable.MarginProperty, TreeViewTokenResourceKey.TreeNodeSwitcherMargin);
+            switcherButtonStyle.Add(Layoutable.MarginProperty, TreeViewTokenKey.TreeNodeSwitcherMargin);
             checkboxVisibleStyle.Add(switcherButtonStyle);
         }
         Add(checkboxVisibleStyle);
@@ -277,7 +277,7 @@ internal class TreeViewItemTheme : BaseControlTheme
     {
         var disabledStyle        = new Style(selector => selector.Nesting().Class(StdPseudoClass.Disabled));
         var headerPresenterStyle = new Style(selector => selector.Nesting().Template().Name(HeaderPresenterPart));
-        headerPresenterStyle.Add(ContentPresenter.ForegroundProperty, DesignTokenKey.ColorTextDisabled);
+        headerPresenterStyle.Add(ContentPresenter.ForegroundProperty, SharedTokenKey.ColorTextDisabled);
         
         disabledStyle.Add(headerPresenterStyle);
         
@@ -297,7 +297,7 @@ internal class TreeViewItemTheme : BaseControlTheme
         var draggingStyle =
             new Style(selector => selector.Nesting().PropertyEquals(TreeViewItem.IsDraggingProperty, true));
         var frameDecoratorStyle = new Style(selector => selector.Nesting().Template().Name(FrameDecoratorPart));
-        frameDecoratorStyle.Add(Border.BorderBrushProperty, DesignTokenKey.ColorPrimary);
+        frameDecoratorStyle.Add(Border.BorderBrushProperty, SharedTokenKey.ColorPrimary);
         draggingStyle.Add(frameDecoratorStyle);
         Add(draggingStyle);
     }

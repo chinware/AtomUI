@@ -37,17 +37,17 @@ internal class MenuFlyoutPresenterTheme : BaseControlTheme
                 MenuFlyoutPresenter.ArrowPositionProperty);
 
             TokenResourceBinder.CreateTokenBinding(arrowDecorator, TemplatedControl.BackgroundProperty,
-                MenuTokenResourceKey.MenuBgColor);
+                MenuTokenKey.MenuBgColor);
             TokenResourceBinder.CreateTokenBinding(arrowDecorator, Layoutable.MinWidthProperty,
-                MenuTokenResourceKey.MenuPopupMinWidth);
+                MenuTokenKey.MenuPopupMinWidth);
             TokenResourceBinder.CreateTokenBinding(arrowDecorator, Layoutable.MaxWidthProperty,
-                MenuTokenResourceKey.MenuPopupMaxWidth);
+                MenuTokenKey.MenuPopupMaxWidth);
             TokenResourceBinder.CreateTokenBinding(arrowDecorator, Layoutable.MinHeightProperty,
-                MenuTokenResourceKey.MenuPopupMinHeight);
+                MenuTokenKey.MenuPopupMinHeight);
             TokenResourceBinder.CreateTokenBinding(arrowDecorator, Layoutable.MaxHeightProperty,
-                MenuTokenResourceKey.MenuPopupMaxHeight);
+                MenuTokenKey.MenuPopupMaxHeight);
             TokenResourceBinder.CreateTokenBinding(arrowDecorator, TemplatedControl.PaddingProperty,
-                MenuTokenResourceKey.MenuPopupContentPadding);
+                MenuTokenKey.MenuPopupContentPadding);
 
             var scrollViewer = new MenuScrollViewer
             {
@@ -74,6 +74,6 @@ internal class MenuFlyoutPresenterTheme : BaseControlTheme
     protected override void BuildStyles()
     {
         this.Add(TemplatedControl.BackgroundProperty, new SolidColorBrush(Colors.Transparent));
-        this.Add(TemplatedControl.CornerRadiusProperty, MenuTokenResourceKey.MenuPopupBorderRadius);
+        this.Add(TemplatedControl.CornerRadiusProperty, MenuTokenKey.MenuPopupBorderRadius);
     }
 }

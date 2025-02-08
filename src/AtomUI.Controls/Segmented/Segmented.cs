@@ -191,7 +191,7 @@ public class Segmented : SelectingItemsControl
             {
                 AnimationUtils.CreateTransition<PointTransition>(SelectedThumbPosProperty),
                 AnimationUtils.CreateTransition<SizeTransition>(SelectedThumbSizeProperty,
-                    DesignTokenKey.MotionDurationFast)
+                    SharedTokenKey.MotionDurationFast)
             };
         }
 
