@@ -6,7 +6,6 @@ using Avalonia.Controls.Templates;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Metadata;
-// ReSharper disable VirtualMemberCallInConstructor
 
 namespace AtomUI.Controls;
 

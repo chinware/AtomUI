@@ -4,7 +4,7 @@ public class TokenSetter
 {
     public string Key { get; set; } = string.Empty;
 
-    public object? Value { get; set; }
+    public string Value { get; set; } = string.Empty;
 
     public string? Catalog { get; set; }
 
@@ -12,7 +12,7 @@ public class TokenSetter
     {
     }
 
-    public TokenSetter(string? catalog, string key, object? value)
+    public TokenSetter(string? catalog, string key, string value)
     {
         Catalog = catalog;
         Key     = key;

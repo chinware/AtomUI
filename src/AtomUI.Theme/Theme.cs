@@ -119,9 +119,6 @@ public class Theme : ITheme
             _sharedToken.ColorTextBase = ThemeVariantCalculator?.ColorTextBase;
 
             _sharedToken.CalculateAliasTokenValues();
-
-            // TODO 先用算法，然后再设置配置文件中的值，不知道合理不
-            _sharedToken.LoadConfig(sharedTokenConfig);
             _sharedToken.BuildResourceDictionary(ResourceDictionary);
 
             CollectControlTokens();
@@ -133,11 +130,8 @@ public class Theme : ITheme
 
             foreach (var entry in controlTokenConfig)
             {
-                var tokenId           = entry.Key;
-                var catalog           = entry.Value.Catalog;
-                var qualifiedTokenKey = GenerateTokenQualifiedKey(tokenId, catalog);
                 var controlTokenInfo  = entry.Value;
-                if (!ControlTokens.ContainsKey(qualifiedTokenKey))
+                if (!ControlTokens.ContainsKey(entry.Key))
                 {
                     continue;
                 }
@@ -151,7 +145,7 @@ public class Theme : ITheme
                     copiedSharedToken.CalculateAliasTokenValues();
                 }
 
-                var controlToken = (ControlTokens[qualifiedTokenKey] as AbstractControlDesignToken)!;
+                var controlToken = (ControlTokens[entry.Key] as AbstractControlDesignToken)!;
                 controlToken.AssignSharedToken(copiedSharedToken);
                 controlToken.SetHasCustomTokenConfig(true);
                 controlToken.SetCustomTokens(controlTokenInfo.Tokens.Keys.ToList());
@@ -208,7 +202,7 @@ public class Theme : ITheme
         return tokenInfos;
     }
 
-    protected void CheckAlgorithmNames(IList<string> algorithms)
+    internal static void CheckAlgorithmNames(IList<string> algorithms)
     {
         foreach (var algorithm in algorithms)
         {
@@ -220,7 +214,7 @@ public class Theme : ITheme
         }
     }
 
-    protected IThemeVariantCalculator CreateThemeVariantCalculator(string algorithmId, IThemeVariantCalculator? baseAlgorithm)
+    internal static IThemeVariantCalculator CreateThemeVariantCalculator(string algorithmId, IThemeVariantCalculator? baseAlgorithm)
     {
         IThemeVariantCalculator calculator;
         if (algorithmId == DefaultThemeVariantCalculator.ID)
@@ -260,7 +254,7 @@ public class Theme : ITheme
         }
     }
 
-    private string GenerateTokenQualifiedKey(string tokenId, string? catalog)
+    internal static string GenerateTokenQualifiedKey(string tokenId, string? catalog)
     {
         var qualifiedPrefix = "";
         if (!string.IsNullOrEmpty(catalog))

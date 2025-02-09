@@ -236,7 +236,6 @@ public class Button : AvaloniaButton, ISizeTypeAware, IWaveAdornerInfoProvider
     public Button()
     {
         _controlTokenResourceRegister = new ControlTokenResourceRegister(this, ButtonToken.ID);
-        _controlTokenResourceRegister.RegisterResources();
     }
 
     protected override Size MeasureOverride(Size availableSize)
@@ -268,6 +267,7 @@ public class Button : AvaloniaButton, ISizeTypeAware, IWaveAdornerInfoProvider
         base.OnAttachedToLogicalTree(e);
         if (!_initialized)
         {
+            _controlTokenResourceRegister.RegisterResources();
             SetupControlTheme();
             if (Text is null && Content is string content)
             {

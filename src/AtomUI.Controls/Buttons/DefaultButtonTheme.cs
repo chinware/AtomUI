@@ -14,7 +14,7 @@ internal class DefaultButtonTheme : BaseButtonTheme
     {
     }
 
-    public override string? ThemeResourceKey()
+    public override string ThemeResourceKey()
     {
         return ID;
     }

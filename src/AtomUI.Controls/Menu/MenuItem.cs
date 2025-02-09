@@ -1,5 +1,4 @@
 ﻿using AtomUI.Data;
-using AtomUI.IconPkg.AntDesign;
 using AtomUI.Media;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;

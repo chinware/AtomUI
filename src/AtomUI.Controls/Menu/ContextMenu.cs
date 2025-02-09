@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Reflection;
 using AtomUI.Reflection;
-using AtomUI.Theme.Styling;
 using Avalonia.Input;
 using Avalonia.Media;
 

@@ -1,5 +1,7 @@
 using System.Diagnostics;
+using AtomUI.Theme.TokenSystem;
 using Avalonia.Controls;
+using Avalonia.Styling;
 
 namespace AtomUI.Theme;
 
@@ -30,7 +32,7 @@ public class ControlTokenResourceRegister
             _target.Resources.MergedDictionaries.Remove(_resourceDictionary);
         }
 
-        var controlToken = theme.GetControlToken(_tokenId, _resourceCatalog);
+        var controlToken = FindControlToken() ?? theme.GetControlToken(_tokenId, _resourceCatalog);
         Debug.Assert(controlToken != null);
         _resourceDictionary = new ResourceDictionary();
         foreach (var entry in controlToken.GetSharedResourceDeltaDictionary())
@@ -39,5 +41,25 @@ public class ControlTokenResourceRegister
         }
      
         _target.Resources.MergedDictionaries.Add(_resourceDictionary);
+    }
+
+    private IControlDesignToken? FindControlToken()
+    {
+        IControlDesignToken? token = null;
+        var current = _target;
+        while (current != null)
+        {
+            if (current is IThemeConfigProvider configProvider)
+            {
+                token = configProvider.GetControlToken(_tokenId, _resourceCatalog);
+                if (token != null)
+                {
+                    break;
+                }
+            }
+            current = (current as IStyleHost).StylingParent as Control;
+        }
+        
+        return token;
     }
 }
