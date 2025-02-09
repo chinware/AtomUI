@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using AtomUI.Theme.TokenSystem;
 using Avalonia.Controls;
 using Avalonia.Styling;
@@ -6,7 +7,7 @@ namespace AtomUI.Theme.Utils;
 
 internal static class TokenFinderUtils
 {
-    public static DesignToken? FindSharedToken(Control control)
+    public static DesignToken FindSharedToken(Control control)
     {
         DesignToken? token   = null;
         var          current = control;
@@ -24,10 +25,8 @@ internal static class TokenFinderUtils
         if (token is null)
         {
             var theme = ThemeManager.Current.ActivatedTheme;
-            if (theme is not null)
-            {
-                token = theme.SharedToken;
-            }
+            Debug.Assert(theme != null);
+            token = theme.SharedToken;
         }
         return token;
     }

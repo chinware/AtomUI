@@ -1,4 +1,4 @@
-using AtomUI.Theme;
+using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
@@ -9,7 +9,7 @@ using Avalonia.Threading;
 
 namespace AtomUI.Controls.Utils;
 
-internal class WaveSpiritAdorner : Control
+internal class WaveSpiritAdorner : Control, IDisposable
 {
     public static Dictionary<Control, WaveSpiritAdorner> _adornerCache;
     public bool IsPlaying { get; private set; }
@@ -111,10 +111,11 @@ internal class WaveSpiritAdorner : Control
 
     private readonly AbstractWavePainter _wavePainter;
 
-    public WaveSpiritAdorner(WaveType waveType, Color? waveColor = null)
+    public WaveSpiritAdorner(Control targetControl, WaveType waveType, Color? waveColor = null)
     {
-        var theme       = ThemeManager.Current.ActivatedTheme!;
-        var sharedToken = theme.SharedToken;
+        _targetControl                 =  targetControl;
+        _targetControl.PropertyChanged += HandleTargetControlChanged;
+        var sharedToken = TokenFinderUtils.FindSharedToken(_targetControl!);
         if (waveType == WaveType.CircleWave)
         {
             _wavePainter = new CircleWavePainter();
@@ -183,20 +184,6 @@ internal class WaveSpiritAdorner : Control
         }
     }
 
-    public void AttachTo(Control targetControl)
-    {
-        _targetControl                 =  targetControl;
-        _targetControl.PropertyChanged += HandleTargetControlChanged;
-    }
-
-    public void DetachFromTarget()
-    {
-        if (_targetControl is not null)
-        {
-            _targetControl.PropertyChanged -= HandleTargetControlChanged;
-        }
-    }
-
     public sealed override void Render(DrawingContext context)
     {
         // TODO 有时候会被合成器触发渲染
@@ -245,7 +232,7 @@ internal class WaveSpiritAdorner : Control
 
         var              sizeAnimation    = new Animation();
         var              opacityAnimation = new Animation();
-        AvaloniaProperty targetProperty   = default!;
+        AvaloniaProperty targetProperty;
         if (_wavePainter.WaveType == WaveType.CircleWave)
         {
             targetProperty = LastWaveRadiusProperty;
@@ -265,7 +252,7 @@ internal class WaveSpiritAdorner : Control
         var opacityAnimationTask = opacityAnimation.RunAsync(this, _cancellationTokenSource.Token);
         IsPlaying = true;
         var adorner = this;
-        Dispatcher.UIThread.Post(async () =>
+        Dispatcher.UIThread.InvokeAsync(async () =>
         {
             await Task.WhenAll(sizeAnimationTask, opacityAnimationTask);
             IsPlaying = false;
@@ -287,8 +274,7 @@ internal class WaveSpiritAdorner : Control
             return;
         }
 
-        adorner = new WaveSpiritAdorner(waveType, waveColor);
-        adorner.AttachTo(target);
+        adorner = new WaveSpiritAdorner(target, waveType, waveColor);
 
         AdornerLayer.SetAdornedElement(adorner, target);
         AdornerLayer.SetIsClipEnabled(adorner, false);
@@ -301,6 +287,15 @@ internal class WaveSpiritAdorner : Control
         {
             adornerLayer.Children.Remove(adorner);
             _adornerCache.Remove(target);
+            adorner.Dispose();
         };
+    }
+
+    public void Dispose()
+    {
+        if (_targetControl is not null)
+        {
+            _targetControl.PropertyChanged -= HandleTargetControlChanged;
+        }
     }
 }
