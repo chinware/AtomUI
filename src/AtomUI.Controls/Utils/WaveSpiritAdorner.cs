@@ -205,7 +205,7 @@ internal class WaveSpiritAdorner : Control
             return;
         }
 
-        object currentSize = default!;
+        object currentSize;
         if (_wavePainter.WaveType == WaveType.CircleWave)
         {
             currentSize = LastWaveRadius;

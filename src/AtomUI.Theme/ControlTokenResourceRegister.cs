@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using AtomUI.Theme.TokenSystem;
+using AtomUI.Theme.Utils;
 using Avalonia.Controls;
 using Avalonia.Styling;
 
@@ -21,18 +22,12 @@ public class ControlTokenResourceRegister
 
     public void RegisterResources()
     {
-        var theme = ThemeManager.Current.ActivatedTheme;
-        if (theme == null)
-        {
-            return;
-        }
-
         if (_resourceDictionary != null)
         {
             _target.Resources.MergedDictionaries.Remove(_resourceDictionary);
         }
 
-        var controlToken = FindControlToken() ?? theme.GetControlToken(_tokenId, _resourceCatalog);
+        var controlToken = TokenFinderUtils.FindControlToken(_target, _tokenId, _resourceCatalog);
         Debug.Assert(controlToken != null);
         _resourceDictionary = new ResourceDictionary();
         foreach (var entry in controlToken.GetSharedResourceDeltaDictionary())

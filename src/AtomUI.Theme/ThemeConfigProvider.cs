@@ -18,16 +18,16 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
 
     public static readonly StyledProperty<Control?> ContentProperty =
         AvaloniaProperty.Register<ThemeConfigProvider, Control?>(nameof(Content));
-    
+
     public static readonly StyledProperty<List<string>> AlgorithmsProperty =
         AvaloniaProperty.Register<ThemeConfigProvider, List<string>>(nameof(Algorithms));
-    
+
     public static readonly StyledProperty<List<TokenSetter>> SharedTokenSettersProperty =
         AvaloniaProperty.Register<ThemeConfigProvider, List<TokenSetter>>(nameof(SharedTokenSetters));
-    
+
     public static readonly StyledProperty<List<ControlTokenInfoSetter>> ControlTokenInfoSettersProperty =
         AvaloniaProperty.Register<ThemeConfigProvider, List<ControlTokenInfoSetter>>(nameof(ControlTokenInfoSetters));
-    
+
     [Content]
     public Control? Content
     {
@@ -40,13 +40,13 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
         get => GetValue(AlgorithmsProperty);
         set => SetValue(AlgorithmsProperty, value);
     }
-    
+
     public List<TokenSetter> SharedTokenSetters
     {
         get => GetValue(SharedTokenSettersProperty);
         set => SetValue(SharedTokenSettersProperty, value);
     }
-    
+
     public List<ControlTokenInfoSetter> ControlTokenInfoSetters
     {
         get => GetValue(ControlTokenInfoSettersProperty);
@@ -55,19 +55,19 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
 
     public DesignToken SharedToken => _sharedToken;
     public bool IsDarkMode { get; protected set; } = false;
-    
+
     public Dictionary<string, IControlDesignToken> ControlTokens => _controlTokens;
     public ThemeVariant ThemeVariant => _themeVariant;
 
     #endregion
 
     #region 内部属性定义
-    
+
     private List<string> _algorithms;
     private ThemeVariant _themeVariant;
     private DesignToken _sharedToken;
     private Dictionary<string, IControlDesignToken> _controlTokens;
-    
+
     #endregion
 
     private bool _needCalculateTokenResources = true;
@@ -80,10 +80,13 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
 
     public ThemeConfigProvider()
     {
-        _algorithms              = new List<string>();
-        _themeVariant            = ThemeVariant.Default;
-        _controlTokens           = new Dictionary<string, IControlDesignToken>();
-        _sharedToken             = new DesignToken();
+        _algorithms             = new List<string>();
+        _themeVariant           = ThemeVariant.Default;
+        _controlTokens          = new Dictionary<string, IControlDesignToken>();
+        _sharedToken            = new DesignToken();
+        Algorithms              = new List<string>();
+        SharedTokenSetters      = new List<TokenSetter>();
+        ControlTokenInfoSetters = new List<ControlTokenInfoSetter>();
     }
 
     private void ContentChanged(AvaloniaPropertyChangedEventArgs e)
@@ -129,7 +132,7 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
             _algorithms.Remove(DefaultThemeVariantCalculator.ID);
             _algorithms.Insert(0, DefaultThemeVariantCalculator.ID);
         }
-        
+
         if (_algorithms.Contains(DarkThemeVariantCalculator.ID))
         {
             IsDarkMode    = true;
@@ -140,7 +143,7 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
             IsDarkMode    = false;
             _themeVariant = ThemeVariant.Light;
         }
-        
+
         IThemeVariantCalculator? baseCalculator = null;
         IThemeVariantCalculator? calculator     = null;
         foreach (var algorithmId in _algorithms)
@@ -148,6 +151,7 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
             calculator     = AtomUITheme.CreateThemeVariantCalculator(algorithmId, baseCalculator);
             baseCalculator = calculator;
         }
+
         Debug.Assert(calculator != null);
 
         var sharedTokenConfig = new Dictionary<string, string>();
@@ -155,17 +159,18 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
         {
             sharedTokenConfig.Add(tokenSetter.Key, tokenSetter.Value);
         }
+
         _sharedToken.LoadConfig(sharedTokenConfig);
         calculator.Calculate(_sharedToken);
-        
+
         // 交付最终的基础色
         _sharedToken.ColorBgBase   = calculator.ColorBgBase;
         _sharedToken.ColorTextBase = calculator.ColorTextBase;
         _sharedToken.CalculateAliasTokenValues();
-        
+
         var resourceDictionary = new ResourceDictionary();
         _sharedToken.BuildResourceDictionary(resourceDictionary);
-        
+
         CollectControlTokens();
         foreach (var entry in ControlTokens)
         {
@@ -179,13 +184,14 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
             var key = AtomUITheme.GenerateTokenQualifiedKey(controlTokenInfoSetter.TokenId,
                 controlTokenInfoSetter.Catalog);
             var configInfo = new ControlTokenConfigInfo();
-            configInfo.Catalog = controlTokenInfoSetter.Catalog;
-            configInfo.TokenId = controlTokenInfoSetter.TokenId;
+            configInfo.Catalog         = controlTokenInfoSetter.Catalog;
+            configInfo.TokenId         = controlTokenInfoSetter.TokenId;
             configInfo.EnableAlgorithm = controlTokenInfoSetter.EnableAlgorithm;
             foreach (var setter in controlTokenInfoSetter.Setters)
             {
                 configInfo.Tokens.Add(setter.Key, setter.Value);
             }
+
             controlTokenConfig.Add(key, configInfo);
         }
 
@@ -199,16 +205,16 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
             {
                 continue;
             }
-        
+
             var copiedSharedToken = (DesignToken)_sharedToken.Clone();
             copiedSharedToken.LoadConfig(ExtraSharedTokenInfos(controlTokenInfo));
-        
+
             if (controlTokenInfo.EnableAlgorithm)
             {
                 calculator.Calculate(copiedSharedToken);
                 copiedSharedToken.CalculateAliasTokenValues();
             }
-        
+
             var controlToken = (ControlTokens[qualifiedTokenKey] as AbstractControlDesignToken)!;
             controlToken.AssignSharedToken(copiedSharedToken);
             controlToken.SetHasCustomTokenConfig(true);
@@ -227,14 +233,14 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
             {
                 controlToken.LoadConfig(controlTokenConfig[qualifiedTokenKey].Tokens);
             }
-        
+
             controlToken.BuildResourceDictionary(resourceDictionary);
             if (controlToken.HasCustomTokenConfig())
             {
                 controlToken.BuildSharedResourceDeltaDictionary(_sharedToken);
             }
         }
-        
+
         Resources.ThemeDictionaries.Add(_themeVariant, resourceDictionary);
     }
 
@@ -259,7 +265,7 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
 
         return tokenInfos;
     }
-    
+
     protected void CollectControlTokens()
     {
         _controlTokens.Clear();
