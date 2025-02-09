@@ -1,5 +1,7 @@
-﻿using System.Reflection;
+﻿using System.Diagnostics;
+using System.Reflection;
 using Avalonia.Controls;
+using Avalonia.Logging;
 using Avalonia.Media;
 
 namespace AtomUI.Theme.TokenSystem;
@@ -33,28 +35,33 @@ public abstract class AbstractDesignToken : IDesignToken
         try
         {
             var type = GetType();
-            var tokenProperties =
-                type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
-            foreach (var property in tokenProperties)
+            var tokenPropertyMap =
+                type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy)
+                    .ToDictionary(p => p.Name);
+            foreach (var tokenInfo in tokenConfigInfo)
             {
-                var tokenName = property.Name;
-                if (tokenConfigInfo.ContainsKey(tokenName))
+                var tokenName = tokenInfo.Key;
+                if (!tokenPropertyMap.ContainsKey(tokenInfo.Key))
                 {
-                    var propertyType = property.PropertyType;
-                    if (_valueConverters.ContainsKey(propertyType))
+                    var logger = Logger.TryGet(LogEventLevel.Warning, AtomUILogArea.Theme);
+                    logger?.Log(this, $"Token property: '{tokenInfo.Key}' found in token {type.Name}.'");
+                    continue;
+                }
+                var property     = tokenPropertyMap[tokenName];
+                var propertyType = property.PropertyType;
+                if (_valueConverters.ContainsKey(propertyType))
+                {
+                    property.SetValue(this, _valueConverters[propertyType].Convert(tokenConfigInfo[tokenName]));
+                }
+                else
+                {
+                    try
                     {
-                        property.SetValue(this, _valueConverters[propertyType].Convert(tokenConfigInfo[tokenName]));
+                        property.SetValue(tokenName, tokenConfigInfo[tokenName]);
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        try
-                        {
-                            property.SetValue(tokenName, tokenConfigInfo[tokenName]);
-                        }
-                        catch (Exception ex)
-                        {
-                            throw new InvalidOperationException($"Unable to set token property: {tokenName}, maybe value type mismatch.", ex);
-                        }
+                        throw new InvalidOperationException($"Unable to set token property: {tokenName}, maybe value type mismatch.", ex);
                     }
                 }
             }

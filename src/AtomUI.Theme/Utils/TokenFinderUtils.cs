@@ -60,4 +60,28 @@ internal static class TokenFinderUtils
 
         return token;
     }
+
+    public static ThemeVariant FindThemeVariant(Control control)
+    {
+        ThemeVariant? themeVariant = null;
+        var           current      = control;
+        while (current != null)
+        {
+            if (current is IThemeConfigProvider configProvider)
+            {
+                themeVariant = configProvider.ThemeVariant;
+                break;
+            }
+
+            current = (current as IStyleHost).StylingParent as Control;
+        }
+
+        if (themeVariant is null)
+        {
+            var theme = ThemeManager.Current.ActivatedTheme;
+            Debug.Assert(theme != null);
+            themeVariant = theme.ThemeVariant;
+        }
+        return themeVariant;
+    }
 }

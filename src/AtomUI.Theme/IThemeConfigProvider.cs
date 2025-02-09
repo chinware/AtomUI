@@ -1,4 +1,5 @@
 using AtomUI.Theme.TokenSystem;
+using Avalonia.Styling;
 
 namespace AtomUI.Theme;
 
@@ -9,4 +10,5 @@ public interface IThemeConfigProvider
     IControlDesignToken? GetControlToken(string tokenId, string? catalog = null);
     List<string> Algorithms { get; }
     bool IsDarkMode { get; }
+    ThemeVariant ThemeVariant { get; }
 }

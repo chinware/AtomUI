@@ -83,7 +83,7 @@ public abstract class AbstractControlDesignToken : AbstractDesignToken, IControl
                 }
             }
 
-            _sharedResourceDeltaDictionary.Add(name, localSharedTokenValue);
+            _sharedResourceDeltaDictionary.Add(new TokenResourceKey(name), localSharedTokenValue);
         }
     }
 

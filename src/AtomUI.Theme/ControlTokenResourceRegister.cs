@@ -11,7 +11,7 @@ public class ControlTokenResourceRegister
     private Control _target;
     private string _tokenId;
     private string? _resourceCatalog;
-    private IResourceDictionary? _resourceDictionary;
+    private ResourceDictionary? _resourceDictionary;
     
     public ControlTokenResourceRegister(Control target, string tokenId, string? resourceCatalog = null)
     {
@@ -34,8 +34,9 @@ public class ControlTokenResourceRegister
         {
             _resourceDictionary.Add(entry.Key, entry.Value);
         }
-     
-        _target.Resources.MergedDictionaries.Add(_resourceDictionary);
+
+        var themeVariant = TokenFinderUtils.FindThemeVariant(_target);
+        _target.Resources.ThemeDictionaries.Add(themeVariant, _resourceDictionary);
     }
 
     private IControlDesignToken? FindControlToken()

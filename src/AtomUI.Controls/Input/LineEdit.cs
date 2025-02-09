@@ -1,6 +1,8 @@
 ﻿using AtomUI.Controls.Utils;
+using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
 
@@ -27,6 +29,27 @@ public class LineEdit : TextBox
     }
 
     #endregion
+
+    #region 内部属性定义
+
+    private ControlTokenResourceRegister _controlTokenResourceRegister;
+    private bool _initialized;
+    #endregion
+
+    public LineEdit()
+    {
+        _controlTokenResourceRegister = new ControlTokenResourceRegister(this, LineEditToken.ID);
+    }
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        if (!_initialized)
+        {
+            _controlTokenResourceRegister.RegisterResources();
+            _initialized = true;
+        }
+    }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {

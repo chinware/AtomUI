@@ -1,3 +1,4 @@
+using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Animation;
@@ -115,7 +116,59 @@ internal class WaveSpiritAdorner : Control, IDisposable
     {
         _targetControl                 =  targetControl;
         _targetControl.PropertyChanged += HandleTargetControlChanged;
-        var sharedToken = TokenFinderUtils.FindSharedToken(_targetControl!);
+        var sharedToken  = TokenFinderUtils.FindSharedToken(_targetControl!);
+        var themeVariant = TokenFinderUtils.FindThemeVariant(_targetControl);
+
+        CornerRadius? borderRadius = null;
+        // 获取相关值
+        {
+            if (_targetControl.TryGetResource(SharedTokenKey.BorderRadius, themeVariant, out var value))
+            {
+                if (value is CornerRadius cornerRadius)
+                {
+                    borderRadius = cornerRadius;
+                }
+            }
+        }
+
+        borderRadius ??= sharedToken.BorderRadius;
+        
+        TimeSpan? motionDurationSlow = null;
+        {
+            if (_targetControl.TryGetResource(SharedTokenKey.MotionDurationSlow, themeVariant, out var value))
+            {
+                if (value is TimeSpan timeSpan)
+                {
+                    motionDurationSlow = timeSpan;
+                }
+            }
+        }
+        motionDurationSlow ??= sharedToken.MotionDurationSlow;
+        
+        double? waveStartOpacity = null;
+        {
+            if (_targetControl.TryGetResource(SharedTokenKey.WaveStartOpacity, themeVariant, out var value))
+            {
+                if (value is double dvalue)
+                {
+                    waveStartOpacity = dvalue;
+                }
+            }
+        }
+        waveStartOpacity ??= sharedToken.WaveStartOpacity;
+
+        double? waveAnimationRange = null;
+        {
+            if (_targetControl.TryGetResource(SharedTokenKey.WaveAnimationRange, themeVariant, out var value))
+            {
+                if (value is double dvalue)
+                {
+                    waveAnimationRange = dvalue;
+                }
+            }
+        }
+        waveAnimationRange ??= sharedToken.WaveAnimationRange;
+        
         if (waveType == WaveType.CircleWave)
         {
             _wavePainter = new CircleWavePainter();
@@ -127,24 +180,34 @@ internal class WaveSpiritAdorner : Control, IDisposable
         else
         {
             var roundWavePainter = new RoundRectWavePainter();
-            roundWavePainter.CornerRadius = sharedToken.BorderRadius;
+            roundWavePainter.CornerRadius = borderRadius.Value;
             _wavePainter                  = roundWavePainter;
         }
-
-        var motionDurationSlow = sharedToken.MotionDurationSlow;
+        
         _wavePainter.SizeEasingCurve       = new CubicEaseOut();
         _wavePainter.OpacityEasingCurve    = new CubicEaseOut();
-        _wavePainter.OriginOpacity         = Math.Clamp(sharedToken.WaveStartOpacity, 0.0, 1.0);
-        _wavePainter.SizeMotionDuration    = motionDurationSlow;
-        _wavePainter.OpacityMotionDuration = motionDurationSlow.Add(TimeSpan.FromMilliseconds(50));
-        _wavePainter.WaveRange             = Math.Min(sharedToken.WaveAnimationRange, 8);
+        _wavePainter.OriginOpacity         = Math.Clamp(waveStartOpacity.Value, 0.0, 1.0);
+        _wavePainter.SizeMotionDuration    = motionDurationSlow.Value;
+        _wavePainter.OpacityMotionDuration = motionDurationSlow.Value.Add(TimeSpan.FromMilliseconds(50));
+        _wavePainter.WaveRange             = Math.Min(waveAnimationRange.Value, 8);
         if (waveColor is not null)
         {
             _wavePainter.WaveColor = waveColor.Value;
         }
         else
         {
-            _wavePainter.WaveColor = sharedToken.ColorPrimary;
+            Color? colorPrimary = null;
+            {
+                if (_targetControl.TryGetResource(SharedTokenKey.ColorPrimary, themeVariant, out var value))
+                {
+                    if (value is Color color)
+                    {
+                        colorPrimary = color;
+                    }
+                }
+            }
+            colorPrimary           ??= sharedToken.ColorPrimary;
+            _wavePainter.WaveColor =   colorPrimary.Value;
         }
 
         LayoutUpdated += HandleLayoutUpdated;

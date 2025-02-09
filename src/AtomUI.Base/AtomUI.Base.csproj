@@ -17,6 +17,7 @@
     <ItemGroup>
         <InternalsVisibleTo Include="AtomUI"/>
         <InternalsVisibleTo Include="AtomUI.Controls"/>
+        <InternalsVisibleTo Include="AtomUI.Theme"/>
     </ItemGroup>
 
     <ItemGroup>

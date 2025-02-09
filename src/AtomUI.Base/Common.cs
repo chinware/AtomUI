@@ -60,3 +60,10 @@ public enum ColorNameFormat
     HexRgb,
     HexArgb
 }
+
+internal static class AtomUILogArea
+{
+    public const string Theme = "Theme";
+    public const string Control = "Control";
+    public const string System = "System";
+}

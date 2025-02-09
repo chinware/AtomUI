@@ -1,9 +1,12 @@
+using Avalonia.Metadata;
+
 namespace AtomUI.Theme;
 
 public class ControlTokenInfoSetter
 {
     public bool EnableAlgorithm { get; set; } = false;
     
+    [Content]
     public List<TokenSetter> Setters { get; set; } = new ();
 
     public string? Catalog { get; set; }
