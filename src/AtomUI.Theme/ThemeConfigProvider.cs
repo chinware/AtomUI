@@ -62,8 +62,7 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
     #endregion
 
     #region 内部属性定义
-
-    private List<string> _algorithms;
+    
     private ThemeVariant _themeVariant;
     private DesignToken _sharedToken;
     private Dictionary<string, IControlDesignToken> _controlTokens;
@@ -80,7 +79,6 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
 
     public ThemeConfigProvider()
     {
-        _algorithms             = new List<string>();
         _themeVariant           = ThemeVariant.Default;
         _controlTokens          = new Dictionary<string, IControlDesignToken>();
         _sharedToken            = new DesignToken();
@@ -121,19 +119,19 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
 
     private void CalculateTokenResources()
     {
-        AtomUITheme.CheckAlgorithmNames(_algorithms);
-        if (!_algorithms.Contains(DefaultThemeVariantCalculator.ID))
+        AtomUITheme.CheckAlgorithmNames(Algorithms);
+        if (!Algorithms.Contains(DefaultThemeVariantCalculator.ID))
         {
-            _algorithms.Insert(0, DefaultThemeVariantCalculator.ID);
+            Algorithms.Insert(0, DefaultThemeVariantCalculator.ID);
         }
-        else if (_algorithms.Contains(DefaultThemeVariantCalculator.ID) &&
-                 _algorithms[0] != DefaultThemeVariantCalculator.ID)
+        else if (Algorithms.Contains(DefaultThemeVariantCalculator.ID) &&
+                 Algorithms[0] != DefaultThemeVariantCalculator.ID)
         {
-            _algorithms.Remove(DefaultThemeVariantCalculator.ID);
-            _algorithms.Insert(0, DefaultThemeVariantCalculator.ID);
+            Algorithms.Remove(DefaultThemeVariantCalculator.ID);
+            Algorithms.Insert(0, DefaultThemeVariantCalculator.ID);
         }
 
-        if (_algorithms.Contains(DarkThemeVariantCalculator.ID))
+        if (Algorithms.Contains(DarkThemeVariantCalculator.ID))
         {
             IsDarkMode    = true;
             _themeVariant = ThemeVariant.Dark;
@@ -146,7 +144,7 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
 
         IThemeVariantCalculator? baseCalculator = null;
         IThemeVariantCalculator? calculator     = null;
-        foreach (var algorithmId in _algorithms)
+        foreach (var algorithmId in Algorithms)
         {
             calculator     = AtomUITheme.CreateThemeVariantCalculator(algorithmId, baseCalculator);
             baseCalculator = calculator;
@@ -241,7 +239,7 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
             }
         }
 
-        Resources.ThemeDictionaries.Add(_themeVariant, resourceDictionary);
+        Resources.MergedDictionaries.Add(resourceDictionary);
     }
 
     private IDictionary<string, string> ExtraSharedTokenInfos(ControlTokenConfigInfo controlTokenConfigInfo)

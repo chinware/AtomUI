@@ -90,7 +90,6 @@ internal class TextBoxTheme : BaseControlTheme
         var watermark = new TextBlock
         {
             Name    = WatermarkPart,
-            Opacity = 0.5
         };
         CreateTemplateParentBinding(watermark, Layoutable.HorizontalAlignmentProperty,
             TextBox.HorizontalContentAlignmentProperty);
@@ -179,6 +178,11 @@ internal class TextBoxTheme : BaseControlTheme
             new Style(selector => selector.Nesting().PropertyEquals(TextBox.SizeTypeProperty, SizeType.Small));
         smallStyle.Add(TextBox.LineHeightProperty, SharedTokenKey.FontHeightSM);
         commonStyle.Add(smallStyle);
+        
+        // 水印文字的样式
+        var watermarkStyle = new Style(selector => selector.Nesting().Template().Name(WatermarkPart));
+        watermarkStyle.Add(TextBox.ForegroundProperty, SharedTokenKey.ColorTextPlaceholder);
+        commonStyle.Add(watermarkStyle);
 
         Add(commonStyle);
     }
@@ -186,6 +190,7 @@ internal class TextBoxTheme : BaseControlTheme
     private void BuildFixedStyle()
     {
         this.Add(TextBox.SelectionBrushProperty, SharedTokenKey.SelectionBackground);
+        this.Add(TextBox.CaretBrushProperty, SharedTokenKey.ColorText);
         this.Add(TextBox.SelectionForegroundBrushProperty,
             SharedTokenKey.SelectionForeground);
         this.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Center);
