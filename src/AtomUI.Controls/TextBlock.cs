@@ -1,6 +1,7 @@
 using AtomUI.Theme.Data;
+using AtomUI.Theme.Styling;
 using Avalonia;
-using Avalonia.Controls;
+using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
@@ -14,7 +15,17 @@ public class TextBlock : AvaloniaTextBlock
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        
+        TokenResourceBinder.CreateTokenBinding(this, LineHeightProperty, SharedTokenKey.LineHeight,
+            BindingPriority.Template,
+            o =>
+            {
+                if (o is double dvalue)
+                {
+                    return dvalue * FontSize;
+                }
+
+                return o;
+            });
     }
 
     protected override Size MeasureOverride(Size availableSize)

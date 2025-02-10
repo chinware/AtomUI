@@ -134,12 +134,12 @@ public class Popup : AvaloniaPopup
         offsetY -= marginToAnchorOffset.Y;
 
         HorizontalOffset = offsetX;
-        VerticalOffset = offsetY;
+        VerticalOffset   = offsetY;
 
         _compositeDisposable?.Dispose();
         _selfLightDismissDisposable?.Dispose();
         _firstDetected = true;
-        _shadowLayer = null;
+        _shadowLayer   = null;
     }
 
     private void HandleOpened(object? sender, EventArgs? args)
@@ -193,6 +193,7 @@ public class Popup : AvaloniaPopup
         {
             return;
         }
+
         if (IsDetectMouseClickEnabled)
         {
             if (args is RawPointerEventArgs pointerEventArgs)
@@ -228,7 +229,7 @@ public class Popup : AvaloniaPopup
         if (placementTarget is not null)
         {
             var popupRoot = Host as PopupRoot;
-            var toplevel = TopLevel.GetTopLevel(popupRoot?.ParentTopLevel);
+            var toplevel  = TopLevel.GetTopLevel(popupRoot?.ParentTopLevel);
             if (toplevel is null)
             {
                 throw new InvalidOperationException(
@@ -236,7 +237,7 @@ public class Popup : AvaloniaPopup
             }
 
             _compositeDisposable = new CompositeDisposable();
-            _shadowLayer = new PopupShadowLayer(toplevel);
+            _shadowLayer         = new PopupShadowLayer(toplevel);
             _compositeDisposable?.Add(BindUtils.RelayBind(this, MaskShadowsProperty, _shadowLayer!));
             _compositeDisposable?.Add(BindUtils.RelayBind(this, OpacityProperty, _shadowLayer!));
             _shadowLayer.AttachToTarget(this);
@@ -244,17 +245,17 @@ public class Popup : AvaloniaPopup
     }
 
     internal (bool, bool) CalculateFlipInfo(Size translatedSize, Rect anchorRect, PopupAnchor anchor,
-        PopupGravity gravity,
-        Point offset)
+                                            PopupGravity gravity,
+                                            Point offset)
     {
         var bounds = GetBounds(anchorRect);
         return CalculateFlipInfo(bounds, translatedSize, anchorRect, anchor, gravity, offset);
     }
 
     internal static (bool, bool) CalculateFlipInfo(Rect bounds, Size translatedSize, Rect anchorRect,
-        PopupAnchor anchor,
-        PopupGravity gravity,
-        Point offset)
+                                                   PopupAnchor anchor,
+                                                   PopupGravity gravity,
+                                                   Point offset)
     {
         var result = (false, false);
 
@@ -302,12 +303,12 @@ public class Popup : AvaloniaPopup
         }
 
         var parentGeometry = _managedPopupPositioner.ParentClientAreaScreenGeometry;
-        var screens = _managedPopupPositioner.Screens;
+        var screens        = _managedPopupPositioner.Screens;
         return GetBounds(anchorRect, parentGeometry, screens);
     }
 
     private static Rect GetBounds(Rect anchorRect, Rect parentGeometry,
-        IReadOnlyList<ManagedPopupPositionerScreenInfo> screens)
+                                  IReadOnlyList<ManagedPopupPositionerScreenInfo> screens)
     {
         var targetScreen = screens.FirstOrDefault(s => s.Bounds.ContainsExclusive(anchorRect.TopLeft))
                            ?? screens.FirstOrDefault(s => s.Bounds.Intersects(anchorRect))
@@ -334,19 +335,19 @@ public class Popup : AvaloniaPopup
         var offsetY = VerticalOffset;
         var marginToAnchorOffset =
             PopupUtils.CalculateMarginToAnchorOffset(Placement, MarginToAnchor, PlacementAnchor, PlacementGravity);
-        offsetX += marginToAnchorOffset.X;
-        offsetY += marginToAnchorOffset.Y;
-        HorizontalOffset = offsetX;
-        VerticalOffset = offsetY;
+        offsetX          += marginToAnchorOffset.X;
+        offsetY          += marginToAnchorOffset.Y;
+        HorizontalOffset =  offsetX;
+        VerticalOffset   =  offsetY;
 
         var direction = PopupUtils.GetDirection(Placement);
-        var topLevel = TopLevel.GetTopLevel(placementTarget)!;
+        var topLevel  = TopLevel.GetTopLevel(placementTarget)!;
 
         if (Placement != PlacementMode.Center && Placement != PlacementMode.Pointer)
         {
             // 计算是否 flip
             var parameters = new PopupPositionerParameters();
-            var offset = new Point(HorizontalOffset, VerticalOffset);
+            var offset     = new Point(HorizontalOffset, VerticalOffset);
             parameters.ConfigurePosition(topLevel,
                 placementTarget,
                 Placement,
@@ -382,13 +383,13 @@ public class Popup : AvaloniaPopup
                 offset * scaling);
             if (flipInfo.Item1 || flipInfo.Item2)
             {
-                var flipPlacement = GetFlipPlacement(Placement);
+                var flipPlacement        = GetFlipPlacement(Placement);
                 var flipAnchorAndGravity = PopupUtils.GetAnchorAndGravity(flipPlacement);
                 var flipOffset = PopupUtils.CalculateMarginToAnchorOffset(flipPlacement, MarginToAnchor,
                     PlacementAnchor, PlacementGravity);
 
-                Placement = flipPlacement;
-                PlacementAnchor = flipAnchorAndGravity.Item1;
+                Placement        = flipPlacement;
+                PlacementAnchor  = flipAnchorAndGravity.Item1;
                 PlacementGravity = flipAnchorAndGravity.Item2;
 
                 // 这里有个问题，目前需要重新看看，就是 X 轴 和 Y 轴会不会同时被反转呢？
@@ -465,8 +466,8 @@ public class Popup : AvaloniaPopup
         // TODO 暂时只支持 WindowBase popup
         popupRoot.Hide();
         var popupOffset = popupRoot.PlatformImpl!.Position;
-        var topLevel = TopLevel.GetTopLevel(placementTarget);
-        var scaling = 1.0;
+        var topLevel    = TopLevel.GetTopLevel(placementTarget);
+        var scaling     = 1.0;
         if (topLevel is WindowBase windowBase)
         {
             scaling = windowBase.DesktopScaling;
@@ -520,11 +521,11 @@ public class Popup : AvaloniaPopup
 
         var motion = new ZoomBigOutMotion(MotionDuration);
 
-        var popupRoot = (Host as PopupRoot)!;
-        var popupOffset = popupRoot.PlatformImpl!.Position;
-        var offset = new Point(popupOffset.X, popupOffset.Y);
+        var popupRoot       = (Host as PopupRoot)!;
+        var popupOffset     = popupRoot.PlatformImpl!.Position;
+        var offset          = new Point(popupOffset.X, popupOffset.Y);
         var placementTarget = GetEffectivePlacementTarget();
-        var topLevel = TopLevel.GetTopLevel(placementTarget);
+        var topLevel        = TopLevel.GetTopLevel(placementTarget);
 
         var scaling = 1.0;
 
@@ -543,7 +544,7 @@ public class Popup : AvaloniaPopup
         }, () =>
         {
             _closeAnimating = false;
-            _isNeedFlip = true;
+            _isNeedFlip     = true;
             Close();
             if (closed is not null)
             {
@@ -564,8 +565,8 @@ internal class ManagedPopupPositionerInfo
 
     public IReadOnlyList<ManagedPopupPositionerScreenInfo> Screens =>
         _parent.Screens.All
-            .Select(s => new ManagedPopupPositionerScreenInfo(s.Bounds.ToRect(1), s.WorkingArea.ToRect(1)))
-            .ToArray();
+               .Select(s => new ManagedPopupPositionerScreenInfo(s.Bounds.ToRect(1), s.WorkingArea.ToRect(1)))
+               .ToArray();
 
     public Rect ParentClientAreaScreenGeometry
     {
@@ -573,7 +574,7 @@ internal class ManagedPopupPositionerInfo
         {
             // Popup positioner operates with abstract coordinates, but in our case they are pixel ones
             var point = _parent.PointToScreen(default);
-            var size = _parent.ClientSize * Scaling;
+            var size  = _parent.ClientSize * Scaling;
             return new Rect(point.X, point.Y, size.Width, size.Height);
         }
     }
