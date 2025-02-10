@@ -245,8 +245,7 @@ public abstract class AbstractProgressBar : RangeBase,
     }
 
     #endregion
-
-    protected ControlStyleState _styleState;
+    
     protected LayoutTransformControl? _layoutTransformLabel;
     protected Label? _percentageLabel;
     protected Icon? _successCompletedIcon;
@@ -317,7 +316,6 @@ public abstract class AbstractProgressBar : RangeBase,
         _percentageLabel = scope.Find<Label>(AbstractProgressBarTheme.PercentageLabelPart);
         _exceptionCompletedIcon = scope.Find<Icon>(AbstractProgressBarTheme.ExceptionCompletedIconPart);
         _successCompletedIcon = scope.Find<Icon>(AbstractProgressBarTheme.SuccessCompletedIconPart);
-        CollectStyleState();
         SetupTokenBindings();
         NotifySetupUI();
     }
@@ -376,12 +374,7 @@ public abstract class AbstractProgressBar : RangeBase,
         NotifySetupTransitions(ref transitions);
         Transitions = transitions;
     }
-
-    void CollectStyleState()
-    {
-        ControlStateUtils.InitCommonState(this, ref _styleState);
-    }
-
+    
     private void SetupTokenBindings()
     {
         ApplyIndicatorBarBackgroundStyleConfig();
@@ -408,12 +401,6 @@ public abstract class AbstractProgressBar : RangeBase,
             {
                 NotifyHandleExtraInfoVisibility();
             }
-        }
-
-        if (e.Property == IsEnabledProperty ||
-            e.Property == PercentageProperty)
-        {
-            CollectStyleState();
         }
 
         if (e.Property == ValueProperty)
