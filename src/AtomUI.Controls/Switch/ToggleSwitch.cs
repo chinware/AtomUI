@@ -2,7 +2,6 @@ using AtomUI.Controls.Switch;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.Media;
-using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
@@ -189,7 +188,6 @@ public class ToggleSwitch : ToggleButton,
     #endregion
 
     private const double STRETCH_FACTOR = 1.3d;
-    private ControlStyleState _styleState;
     private Canvas? _togglePanel;
 
     private SwitchKnob? _switchKnob;
@@ -376,7 +374,6 @@ public class ToggleSwitch : ToggleButton,
         OnContent  = onControl;
 
         HandleLoadingState(IsLoading);
-        CollectStyleState();
     }
 
     public sealed override void Render(DrawingContext context)
@@ -449,32 +446,6 @@ public class ToggleSwitch : ToggleButton,
         }
     }
 
-    private void CollectStyleState()
-    {
-        ControlStateUtils.InitCommonState(this, ref _styleState);
-        switch (IsChecked)
-        {
-            case true:
-                _styleState |= ControlStyleState.On;
-                break;
-            case false:
-                _styleState |= ControlStyleState.Off;
-                break;
-            default:
-                _styleState |= ControlStyleState.Indeterminate;
-                break;
-        }
-
-        if (IsPressed)
-        {
-            _styleState |= ControlStyleState.Sunken;
-        }
-        else
-        {
-            _styleState |= ControlStyleState.Raised;
-        }
-    }
-
     private void HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
     {
         if (e.Property == IsLoadingProperty)
@@ -512,7 +483,6 @@ public class ToggleSwitch : ToggleButton,
             e.Property == IsCheckedProperty ||
             e.Property == IsEnabledProperty)
         {
-            CollectStyleState();
             if (e.Property == IsCheckedProperty)
             {
                 CalculateElementsOffset(Bounds.Size);
