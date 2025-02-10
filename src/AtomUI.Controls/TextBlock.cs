@@ -1,6 +1,8 @@
+using AtomUI.Theme.Data;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 
 namespace AtomUI.Controls;
@@ -9,6 +11,11 @@ using AvaloniaTextBlock = Avalonia.Controls.TextBlock;
 
 public class TextBlock : AvaloniaTextBlock
 {
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+    }
+
     protected override Size MeasureOverride(Size availableSize)
     {
         var size = base.MeasureOverride(availableSize);

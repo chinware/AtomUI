@@ -187,14 +187,14 @@ public class StepsProgressBar : AbstractLineProgress
         double fontSize   = default;
         double fontSizeSM = default;
         {
-            if (TokenResourceUtils.FindSharedTokenResource(SharedTokenKey.FontSize) is double value)
+            if (TokenResourceUtils.FindTokenResource(this, SharedTokenKey.FontSize) is double value)
             {
                 fontSize = value;
             }
         }
 
         {
-            if (TokenResourceUtils.FindSharedTokenResource(SharedTokenKey.FontSizeSM) is double value)
+            if (TokenResourceUtils.FindTokenResource(this, SharedTokenKey.FontSizeSM) is double value)
             {
                 fontSizeSM = value;
             }

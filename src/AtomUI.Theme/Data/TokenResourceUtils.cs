@@ -12,7 +12,7 @@ public static class TokenResourceUtils
     {
         if (themeVariant is null)
         {
-            themeVariant = (control as IThemeVariantHost).ActualThemeVariant;
+            themeVariant = TokenFinderUtils.FindThemeVariant(control);
         }
 
         if (control.TryFindResource(resourceKey, themeVariant, out var value))
@@ -23,7 +23,7 @@ public static class TokenResourceUtils
         return AvaloniaProperty.UnsetValue;
     }
 
-    public static object? FindSharedTokenResource(TokenResourceKey resourceKey, ThemeVariant? themeVariant = null)
+    public static object? FindApplicationTokenResource(TokenResourceKey resourceKey, ThemeVariant? themeVariant = null)
     {
         var application = Application.Current;
         if (application is null)
