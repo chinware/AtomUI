@@ -55,8 +55,7 @@ public class MarqueeLabel : TextBlock
     }
 
     #endregion
-    
-    private ControlStyleState _styleState;
+
     private CancellationTokenSource? _cancellationTokenSource;
     private bool _initialized;
     private Animation? _animation;
@@ -96,7 +95,6 @@ public class MarqueeLabel : TextBlock
         {
             HorizontalAlignment = HorizontalAlignment.Stretch;
             TextWrapping        = TextWrapping.NoWrap;
-            CollectStyleState();
             SetupTokenBindings();
             _initialized = true;
         }
@@ -115,11 +113,6 @@ public class MarqueeLabel : TextBlock
         return 4 * Math.Max(1, distance / MoveSpeed * 1000);
     }
 
-    private void CollectStyleState()
-    {
-        ControlStateUtils.InitCommonState(this, ref _styleState);
-    }
-
     private void SetupTokenBindings()
     {
         TokenResourceBinder.CreateTokenBinding(this, CycleSpaceProperty, MarqueeLabelTokenKey.CycleSpace);
@@ -132,8 +125,7 @@ public class MarqueeLabel : TextBlock
         {
             if (e.Property == IsPointerOverProperty)
             {
-                CollectStyleState();
-                if (_styleState.HasFlag(ControlStyleState.MouseOver))
+                if (IsPointerOver)
                 {
                     _pivotOffsetStartValue = PivotOffset;
                     HandleCleanupMarqueeAnimation();

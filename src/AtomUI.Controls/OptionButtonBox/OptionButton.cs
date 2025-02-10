@@ -198,7 +198,7 @@ public class OptionButton : AvaloniaRadioButton,
             e.Property == IsPressedProperty ||
             e.Property == IsCheckedProperty)
         {
-            if (e.Property == IsPressedProperty && e.OldValue as bool? == false)
+            if (e.Property == IsPressedProperty && e.OldValue as bool? == true)
             {
                 WaveSpiritAdorner.ShowWaveAdorner(this, WaveType.RoundRectWave);
             }
