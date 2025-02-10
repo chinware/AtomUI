@@ -128,6 +128,14 @@ internal class CheckBoxIndicator : Control, IWaveAdornerInfoProvider
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
+        TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+            SharedTokenKey.BorderThickness, BindingPriority.Template,
+            new RenderScaleAwareThicknessConfigure(this));
+    }
+
+    public override void ApplyTemplate()
+    {
+        base.ApplyTemplate();
         Transitions ??= new Transitions
         {
             AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty),
@@ -136,11 +144,8 @@ internal class CheckBoxIndicator : Control, IWaveAdornerInfoProvider
             AnimationUtils.CreateTransition<DoubleTransition>(CheckedMarkEffectSizeProperty,
                 SharedTokenKey.MotionDurationMid, new BackEaseOut())
         };
-        TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
-            SharedTokenKey.BorderThickness, BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this));
     }
-    
+
     private void UpdatePseudoClasses()
     {
         PseudoClasses.Set(StdPseudoClass.Checked, IsChecked.HasValue && IsChecked.Value);

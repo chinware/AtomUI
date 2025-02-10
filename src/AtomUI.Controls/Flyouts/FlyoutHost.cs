@@ -155,14 +155,6 @@ public class FlyoutHost : Control
         _flyoutStateHelper = new FlyoutStateHelper();
     }
 
-    // public override void ApplyTemplate()
-    // {
-    //     // TODO 需要审查到底是否合适
-    //     base.ApplyTemplate();
-    //     TokenResourceBinder.CreateTokenBinding(this, MarginToAnchorProperty, SharedTokenKey.MarginXXS);
-    //     SetupFlyoutProperties();
-    // }
-
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);

@@ -7,6 +7,7 @@ using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 
 namespace AtomUI.Controls;
@@ -106,8 +107,7 @@ internal class RadioIndicator : Control, IWaveAdornerInfoProvider
     }
 
     private IPen? _cachedPen;
-    private ControlStyleState _styleState;
-
+    
     static RadioIndicator()
     {
         AffectsRender<RadioIndicator>(
@@ -119,15 +119,19 @@ internal class RadioIndicator : Control, IWaveAdornerInfoProvider
             RadioDotEffectSizeProperty);
     }
 
-    public override void ApplyTemplate()
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        base.ApplyTemplate();
-        CollectStyleState();
+        base.OnAttachedToLogicalTree(e);
         RadioDotEffectSize = CalculateDotSize(IsEnabled, IsChecked.HasValue && IsChecked.Value);
         TokenResourceBinder.CreateTokenBinding(this, RadioBorderThicknessProperty,
             SharedTokenKey.BorderThickness, BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this));
+    }
 
+    public override void ApplyTemplate()
+    {
+        base.ApplyTemplate();
+        
         Transitions ??= new Transitions
         {
             AnimationUtils.CreateTransition<SolidColorBrushTransition>(RadioBorderBrushProperty),
@@ -144,33 +148,25 @@ internal class RadioIndicator : Control, IWaveAdornerInfoProvider
             e.Property == IsCheckedProperty ||
             e.Property == IsEnabledProperty)
         {
-            CollectStyleState();
+            UpdatePseudoClasses();
             if (VisualRoot is not null)
             {
                 RadioDotEffectSize = CalculateDotSize(IsEnabled, IsChecked.HasValue && IsChecked.Value);
             }
 
             if (e.Property == IsCheckedProperty &&
-                _styleState.HasFlag(ControlStyleState.Enabled) &&
-                _styleState.HasFlag(ControlStyleState.On))
+                !PseudoClasses.Contains(StdPseudoClass.Disabled) &&
+                PseudoClasses.Contains(StdPseudoClass.Checked))
             {
                 WaveSpiritAdorner.ShowWaveAdorner(this, WaveType.CircleWave);
             }
         }
     }
 
-    private void CollectStyleState()
+    private void UpdatePseudoClasses()
     {
-        ControlStateUtils.InitCommonState(this, ref _styleState);
-
-        if (IsChecked.HasValue && IsChecked.Value)
-        {
-            _styleState |= ControlStyleState.On;
-        }
-        else
-        {
-            _styleState |= ControlStyleState.Off;
-        }
+        PseudoClasses.Set(StdPseudoClass.Checked, IsChecked.HasValue && IsChecked.Value);
+        PseudoClasses.Set(StdPseudoClass.UnChecked, (IsChecked.HasValue && !IsChecked.Value) || !IsChecked.HasValue);
     }
 
     private double CalculateDotSize(bool isEnabled, bool isChecked)
