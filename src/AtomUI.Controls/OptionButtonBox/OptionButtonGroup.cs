@@ -1,6 +1,5 @@
 using System.Collections.Specialized;
 using AtomUI.Controls.Utils;
-using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Collections;
@@ -87,8 +86,7 @@ public class OptionButtonGroup : TemplatedControl, ISizeTypeAware
     #endregion
 
     [Content] public OptionButtons Options { get; } = new();
-
-    private ControlStyleState _styleState;
+    
     private StackPanel? _layout;
     private readonly BorderRenderHelper _borderRenderHelper = new();
 
@@ -226,12 +224,6 @@ public class OptionButtonGroup : TemplatedControl, ISizeTypeAware
         ApplyButtonSizeConfig();
         ApplyButtonStyleConfig();
         _layout?.Children.AddRange(Options);
-        CollectStyleState();
-    }
-
-    private void CollectStyleState()
-    {
-        ControlStateUtils.InitCommonState(this, ref _styleState);
     }
 
     private void HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)

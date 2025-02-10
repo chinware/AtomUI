@@ -1,6 +1,5 @@
 using AtomUI.Controls.Utils;
 using AtomUI.Media;
-using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Animation;
@@ -113,7 +112,6 @@ public class OptionButton : AvaloniaRadioButton,
 
     #endregion
     
-    private ControlStyleState _styleState;
     private CornerRadius? _originCornerRadius;
     private readonly BorderRenderHelper _borderRenderHelper;
 
@@ -159,7 +157,6 @@ public class OptionButton : AvaloniaRadioButton,
 
         Cursor = new Cursor(StandardCursorType.Hand);
         HandleSizeTypeChanged();
-        CollectStyleState();
         SetupTransitions();
     }
 
@@ -195,37 +192,15 @@ public class OptionButton : AvaloniaRadioButton,
         Transitions = transitions;
     }
 
-    private void CollectStyleState()
-    {
-        ControlStateUtils.InitCommonState(this, ref _styleState);
-        if (IsPressed)
-        {
-            _styleState |= ControlStyleState.Sunken;
-        }
-        else
-        {
-            _styleState |= ControlStyleState.Raised;
-        }
-
-        if (IsChecked.HasValue && IsChecked.Value)
-        {
-            _styleState |= ControlStyleState.Selected;
-        }
-    }
-
     private void HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
     {
         if (e.Property == IsPointerOverProperty ||
             e.Property == IsPressedProperty ||
             e.Property == IsCheckedProperty)
         {
-            CollectStyleState();
-            if (e.Property == IsPressedProperty)
+            if (e.Property == IsPressedProperty && e.OldValue as bool? == false)
             {
-                if (_styleState.HasFlag(ControlStyleState.Raised))
-                {
-                    WaveSpiritAdorner.ShowWaveAdorner(this, WaveType.RoundRectWave);
-                }
+                WaveSpiritAdorner.ShowWaveAdorner(this, WaveType.RoundRectWave);
             }
         }
 
@@ -315,5 +290,4 @@ public class OptionButton : AvaloniaRadioButton,
             BorderBrush,
             default);
     }
-    
 }
