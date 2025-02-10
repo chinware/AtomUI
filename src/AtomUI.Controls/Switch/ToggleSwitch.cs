@@ -116,6 +116,12 @@ public class ToggleSwitch : ToggleButton,
     internal static readonly StyledProperty<Point> KnobOffsetProperty
         = AvaloniaProperty.Register<ToggleSwitch, Point>(nameof(KnobOffset));
 
+    internal static readonly StyledProperty<Rect> KnobRectProperty
+        = AvaloniaProperty.Register<ToggleSwitch, Rect>(nameof(KnobRect));
+
+    public static readonly StyledProperty<Size> KnobSizeProperty
+        = AvaloniaProperty.Register<SwitchKnob, Size>(nameof(KnobSize));
+
     internal double InnerMaxMargin
     {
         get => GetValue(InnerMaxMarginProperty);
@@ -158,6 +164,18 @@ public class ToggleSwitch : ToggleButton,
         set => SetValue(KnobOffsetProperty, value);
     }
 
+    internal Rect KnobRect
+    {
+        get => GetValue(KnobRectProperty);
+        set => SetValue(KnobRectProperty, value);
+    }
+
+    public Size KnobSize
+    {
+        get => GetValue(KnobSizeProperty);
+        set => SetValue(KnobSizeProperty, value);
+    }
+
     internal static readonly StyledProperty<Point> OnContentOffsetProperty
         = AvaloniaProperty.Register<ToggleSwitch, Point>(nameof(OnContentOffset));
 
@@ -197,7 +215,7 @@ public class ToggleSwitch : ToggleButton,
         AffectsMeasure<ToggleSwitch>(SizeTypeProperty);
         AffectsArrange<ToggleSwitch>(
             IsPressedProperty,
-            KnobOffsetProperty,
+            KnobRectProperty,
             OnContentOffsetProperty,
             OffContentOffsetProperty);
         AffectsRender<ToggleSwitch>(GrooveBackgroundProperty,
@@ -213,7 +231,7 @@ public class ToggleSwitch : ToggleButton,
     {
         Transitions ??= new Transitions
         {
-            AnimationUtils.CreateTransition<PointTransition>(KnobOffsetProperty),
+            AnimationUtils.CreateTransition<RectTransition>(KnobRectProperty),
             AnimationUtils.CreateTransition<PointTransition>(OnContentOffsetProperty),
             AnimationUtils.CreateTransition<PointTransition>(OffContentOffsetProperty),
             AnimationUtils.CreateTransition<SolidColorBrushTransition>(GrooveBackgroundProperty),
@@ -244,6 +262,10 @@ public class ToggleSwitch : ToggleButton,
         switchWidth =  Math.Max(switchWidth, trackMinWidth);
         var targetSize = new Size(switchWidth, switchHeight);
         CalculateElementsOffset(targetSize);
+        if (_switchKnob is not null)
+        {
+            _switchKnob.Measure(KnobRect.Size);
+        }
         return targetSize;
     }
 
@@ -251,11 +273,8 @@ public class ToggleSwitch : ToggleButton,
     {
         if (_switchKnob is not null)
         {
-            Canvas.SetLeft(_switchKnob, KnobOffset.X);
-            Canvas.SetTop(_switchKnob, KnobOffset.Y);
+            _switchKnob.Arrange(KnobRect);
         }
-
-        base.ArrangeOverride(finalSize);
         AdjustExtraInfoOffset();
         return finalSize;
     }
@@ -278,38 +297,25 @@ public class ToggleSwitch : ToggleButton,
     private void AdjustOffsetOnPressed()
     {
         var handleRect = HandleRect();
-        KnobOffset = handleRect.TopLeft;
-        var handleSize = _switchKnob?.OriginKnobSize.Width ?? 0d;
-        var delta      = handleRect.Width - handleSize;
+        var handleSize = KnobSize.Width;
 
         var contentOffsetDelta = handleSize * (STRETCH_FACTOR - 1);
 
         if (IsChecked.HasValue && IsChecked.Value)
         {
             // 点击的时候如果是选中，需要调整坐标
-            KnobOffset      = new Point(KnobOffset.X - delta, KnobOffset.Y);
             OnContentOffset = new Point(OnContentOffset.X - contentOffsetDelta, OffContentOffset.Y);
         }
         else
         {
             OffContentOffset = new Point(OffContentOffset.X + contentOffsetDelta, OffContentOffset.Y);
         }
-
-        var handleWidth = handleSize * STRETCH_FACTOR;
-        if (_switchKnob is not null)
-        {
-            _switchKnob.KnobSize = new Size(handleWidth, handleSize);
-        }
+        
+        KnobRect = handleRect;
     }
 
     private void AdjustOffsetOnReleased()
     {
-        var handleSize = _switchKnob?.OriginKnobSize.Width ?? 0d;
-        if (_switchKnob is not null)
-        {
-            _switchKnob.KnobSize = new Size(handleSize, handleSize);
-        }
-
         CalculateElementsOffset(Bounds.Size);
     }
 
@@ -379,7 +385,7 @@ public class ToggleSwitch : ToggleButton,
     public sealed override void Render(DrawingContext context)
     {
         using var state = context.PushOpacity(SwitchOpacity);
-        context.DrawPilledRect(GrooveBackground, null, GrooveRect());
+        context.DrawPilledRect(GrooveBackground, null, new Rect(0, 0, Bounds.Width, Bounds.Height));
     }
 
     public bool HitTest(Point point)
@@ -418,7 +424,6 @@ public class ToggleSwitch : ToggleButton,
             var label = new TextBlock
             {
                 Text = offStr,
-                VerticalAlignment = VerticalAlignment.Center,
             };
             result = label;
         }
@@ -429,8 +434,7 @@ public class ToggleSwitch : ToggleButton,
     private void CalculateElementsOffset(Size controlSize)
     {
         var isChecked  = IsChecked.HasValue && IsChecked.Value;
-        var handleRect = HandleRect(isChecked, controlSize);
-        KnobOffset = handleRect.TopLeft;
+        KnobRect = HandleRect(isChecked, controlSize);
 
         var onExtraInfoRect  = ExtraInfoRect(true, controlSize);
         var offExtraInfoRect = ExtraInfoRect(false, controlSize);
@@ -519,9 +523,14 @@ public class ToggleSwitch : ToggleButton,
     {
         double handlePosX;
         double handlePosY;
-        var    handleSize = _switchKnob?.OriginKnobSize.Width ?? 0d;
+        var    handleSize = KnobSize.Width;
         var    offsetX    = TrackPadding;
         var    offsetY    = TrackPadding;
+        if (IsPressed)
+        {
+            handleSize *= STRETCH_FACTOR;
+        }
+
         if (!isChecked)
         {
             handlePosX = offsetX;
@@ -529,16 +538,12 @@ public class ToggleSwitch : ToggleButton,
         }
         else
         {
-            if (IsPressed)
-            {
-                handleSize *= STRETCH_FACTOR;
-            }
-
+        
             handlePosX = controlSize.Width - offsetX - handleSize;
             handlePosY = offsetY;
         }
 
-        return new Rect(handlePosX, handlePosY, handleSize, handleSize);
+        return new Rect(handlePosX, handlePosY, handleSize, KnobSize.Height);
     }
 
     private Rect ExtraInfoRect(bool isChecked, Size controlSize)

@@ -5,6 +5,7 @@ using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
+using Avalonia.Media.TextFormatting;
 
 namespace AtomUI.Controls;
 
@@ -12,6 +13,8 @@ using AvaloniaTextBlock = Avalonia.Controls.TextBlock;
 
 public class TextBlock : AvaloniaTextBlock
 {
+    private TextMetrics _textMetrics;
+    
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
@@ -26,6 +29,21 @@ public class TextBlock : AvaloniaTextBlock
 
                 return o;
             });
+        CalculateTextMetrics();
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (VisualRoot is not null)
+        {
+            if (change.Property == FontSizeProperty || 
+                change.Property == FontFamilyProperty || 
+                change.Property == FontStyleProperty)
+            {
+                CalculateTextMetrics();
+            }
+        }
     }
 
     protected override Size MeasureOverride(Size availableSize)
@@ -45,11 +63,19 @@ public class TextBlock : AvaloniaTextBlock
 
         return size;
     }
+
+    private void CalculateTextMetrics()
+    {
+        var typeface    = new Typeface(FontFamily, FontStyle, FontWeight);
+        if (FontManager.Current.TryGetGlyphTypeface(typeface, out var glyphTypeface))
+        {
+            _textMetrics = new TextMetrics(glyphTypeface, FontSize);
+        }
+    }
     
     protected override void RenderTextLayout(DrawingContext context, Point origin)
     {
         var textHeight = TextLayout.Height;
-        var textWidth = TextLayout.Width;
         var top = origin.Y;
         var left = TextLayout.OverhangLeading;
         if (TextLayout.TextLines.Count == 1)
@@ -59,7 +85,7 @@ public class TextBlock : AvaloniaTextBlock
                 switch (VerticalAlignment)
                 {
                     case VerticalAlignment.Center:
-                        top += (Bounds.Height - textHeight) / 2 + (TextLayout.Extent - TextLayout.Baseline) / 4;
+                        top += _textMetrics.Descent / 2;
                         break;
     
                     case VerticalAlignment.Bottom:

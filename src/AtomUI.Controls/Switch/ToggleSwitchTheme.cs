@@ -66,7 +66,7 @@ internal class ToggleSwitchTheme : BaseControlTheme
         commonStyle.Add(ToggleSwitch.SwitchOpacityProperty, 1d);
         commonStyle.Add(ToggleSwitch.HorizontalAlignmentProperty, HorizontalAlignment.Left);
         commonStyle.Add(ToggleSwitch.VerticalAlignmentProperty, VerticalAlignment.Top);
-        
+
         var checkedStyle =
             new Style(selector => selector.Nesting().PropertyEquals(ToggleButton.IsCheckedProperty, true));
         checkedStyle.Add(ToggleSwitch.GrooveBackgroundProperty, ToggleSwitchTokenKey.SwitchColor);
@@ -94,12 +94,7 @@ internal class ToggleSwitchTheme : BaseControlTheme
         var smallSizeStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(ToggleSwitch.SizeTypeProperty, SizeType.Small));
         smallSizeStyle.Add(TemplatedControl.FontSizeProperty, ToggleSwitchTokenKey.ExtraInfoFontSizeSM);
-        {
-            var knobSizeStyle = new Style(selector => selector.Nesting().Template().OfType<SwitchKnob>());
-            knobSizeStyle.Add(SwitchKnob.KnobSizeProperty, ToggleSwitchTokenKey.HandleSizeSM);
-            knobSizeStyle.Add(SwitchKnob.OriginKnobSizeProperty, ToggleSwitchTokenKey.HandleSizeSM);
-            smallSizeStyle.Add(knobSizeStyle);
-        }
+        smallSizeStyle.Add(ToggleSwitch.KnobSizeProperty, ToggleSwitchTokenKey.HandleSizeSM);
         smallSizeStyle.Add(ToggleSwitch.InnerMaxMarginProperty, ToggleSwitchTokenKey.InnerMaxMarginSM);
         smallSizeStyle.Add(ToggleSwitch.InnerMinMarginProperty, ToggleSwitchTokenKey.InnerMinMarginSM);
         smallSizeStyle.Add(ToggleSwitch.TrackHeightProperty, ToggleSwitchTokenKey.TrackHeightSM);
@@ -111,12 +106,7 @@ internal class ToggleSwitchTheme : BaseControlTheme
         var middleSizeStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(ToggleSwitch.SizeTypeProperty, SizeType.Middle));
         middleSizeStyle.Add(TemplatedControl.FontSizeProperty, ToggleSwitchTokenKey.ExtraInfoFontSize);
-        {
-            var knobSizeStyle = new Style(selector => selector.Nesting().Template().OfType<SwitchKnob>());
-            knobSizeStyle.Add(SwitchKnob.KnobSizeProperty, ToggleSwitchTokenKey.HandleSize);
-            knobSizeStyle.Add(SwitchKnob.OriginKnobSizeProperty, ToggleSwitchTokenKey.HandleSize);
-            middleSizeStyle.Add(knobSizeStyle);
-        }
+        middleSizeStyle.Add(ToggleSwitch.KnobSizeProperty, ToggleSwitchTokenKey.HandleSize);
         middleSizeStyle.Add(ToggleSwitch.InnerMaxMarginProperty, ToggleSwitchTokenKey.InnerMaxMargin);
         middleSizeStyle.Add(ToggleSwitch.InnerMinMarginProperty, ToggleSwitchTokenKey.InnerMinMargin);
         middleSizeStyle.Add(ToggleSwitch.TrackHeightProperty, ToggleSwitchTokenKey.TrackHeight);
@@ -127,12 +117,7 @@ internal class ToggleSwitchTheme : BaseControlTheme
         var largeSizeStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(ToggleSwitch.SizeTypeProperty, SizeType.Large));
         largeSizeStyle.Add(TemplatedControl.FontSizeProperty, ToggleSwitchTokenKey.ExtraInfoFontSize);
-        {
-            var knobSizeStyle = new Style(selector => selector.Nesting().Template().OfType<SwitchKnob>());
-            knobSizeStyle.Add(SwitchKnob.KnobSizeProperty, ToggleSwitchTokenKey.HandleSize);
-            knobSizeStyle.Add(SwitchKnob.OriginKnobSizeProperty, ToggleSwitchTokenKey.HandleSize);
-            largeSizeStyle.Add(knobSizeStyle);
-        }
+        largeSizeStyle.Add(ToggleSwitch.KnobSizeProperty, ToggleSwitchTokenKey.HandleSize);
         largeSizeStyle.Add(ToggleSwitch.InnerMaxMarginProperty, ToggleSwitchTokenKey.InnerMaxMargin);
         largeSizeStyle.Add(ToggleSwitch.InnerMinMarginProperty, ToggleSwitchTokenKey.InnerMinMargin);
         largeSizeStyle.Add(ToggleSwitch.TrackHeightProperty, ToggleSwitchTokenKey.TrackHeight);
