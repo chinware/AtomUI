@@ -8,6 +8,7 @@ using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 
 namespace AtomUI.Controls;
@@ -103,8 +104,7 @@ internal class CheckBoxIndicator : Control, IWaveAdornerInfoProvider
         get => GetValue(CornerRadiusProperty);
         set => SetValue(CornerRadiusProperty, value);
     }
-
-    private ControlStyleState _styleState;
+    
     private readonly BorderRenderHelper _borderRenderHelper;
 
     static CheckBoxIndicator()
@@ -125,9 +125,9 @@ internal class CheckBoxIndicator : Control, IWaveAdornerInfoProvider
         _borderRenderHelper = new BorderRenderHelper();
     }
 
-    public override void ApplyTemplate()
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        base.ApplyTemplate();
+        base.OnAttachedToLogicalTree(e);
         Transitions ??= new Transitions
         {
             AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty),
@@ -140,22 +140,12 @@ internal class CheckBoxIndicator : Control, IWaveAdornerInfoProvider
             SharedTokenKey.BorderThickness, BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this));
     }
-
-    private void CollectStyleState()
+    
+    private void UpdatePseudoClasses()
     {
-        ControlStateUtils.InitCommonState(this, ref _styleState);
-        switch (IsChecked)
-        {
-            case true:
-                _styleState |= ControlStyleState.On;
-                break;
-            case false:
-                _styleState |= ControlStyleState.Off;
-                break;
-            default:
-                _styleState |= ControlStyleState.Indeterminate;
-                break;
-        }
+        PseudoClasses.Set(StdPseudoClass.Checked, IsChecked.HasValue && IsChecked.Value);
+        PseudoClasses.Set(StdPseudoClass.UnChecked, IsChecked.HasValue && !IsChecked.Value);
+        PseudoClasses.Set(StdPseudoClass.Indeterminate, !IsChecked.HasValue);
     }
     
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
@@ -165,11 +155,11 @@ internal class CheckBoxIndicator : Control, IWaveAdornerInfoProvider
             e.Property == IsCheckedProperty ||
             e.Property == IsEnabledProperty)
         {
-            CollectStyleState();
+            UpdatePseudoClasses();
             SetupIndicatorCheckedMarkEffectSize();
             if (e.Property == IsCheckedProperty &&
-                _styleState.HasFlag(ControlStyleState.Enabled) &&
-                _styleState.HasFlag(ControlStyleState.On))
+                !PseudoClasses.Contains(StdPseudoClass.Disabled) &&
+                PseudoClasses.Contains(StdPseudoClass.Checked))
             {
                 WaveSpiritAdorner.ShowWaveAdorner(this, WaveType.RoundRectWave);
             }
@@ -177,31 +167,31 @@ internal class CheckBoxIndicator : Control, IWaveAdornerInfoProvider
 
         if (e.Property == SizeProperty)
         {
-            CollectStyleState();
+            UpdatePseudoClasses();
             SetupIndicatorCheckedMarkEffectSize();
         }
     }
     
     private void SetupIndicatorCheckedMarkEffectSize()
     {
-        if (_styleState.HasFlag(ControlStyleState.Enabled))
+        if (!PseudoClasses.Contains(StdPseudoClass.Disabled))
         {
-            if (_styleState.HasFlag(ControlStyleState.On))
+            if (PseudoClasses.Contains(StdPseudoClass.Checked))
             {
                 CheckedMarkEffectSize = Size;
             }
-            else if (_styleState.HasFlag(ControlStyleState.Off))
+            else if (PseudoClasses.Contains(StdPseudoClass.UnChecked))
             {
                 CheckedMarkEffectSize = Size * 0.7;
             }
-            else if (_styleState.HasFlag(ControlStyleState.Indeterminate))
+            else if (PseudoClasses.Contains(StdPseudoClass.Indeterminate))
             {
                 CheckedMarkEffectSize = Size * 0.7;
             }
         }
         else
         {
-            if (_styleState.HasFlag(ControlStyleState.On))
+            if (PseudoClasses.Contains(StdPseudoClass.Checked))
             {
                 CheckedMarkEffectSize = Size;
             }
@@ -221,7 +211,7 @@ internal class CheckBoxIndicator : Control, IWaveAdornerInfoProvider
                 BorderBrush,
                 new BoxShadows());
         }
-        if (_styleState.HasFlag(ControlStyleState.On))
+        if (PseudoClasses.Contains(StdPseudoClass.Checked))
         {
             var checkMarkGeometry =
                 CommonShapeBuilder.BuildCheckMark(new Size(CheckedMarkEffectSize,
@@ -229,7 +219,7 @@ internal class CheckBoxIndicator : Control, IWaveAdornerInfoProvider
             var checkMarkPen = new Pen(CheckedMarkBrush, 2);
             context.DrawGeometry(null, checkMarkPen, checkMarkGeometry);
         }
-        else if (_styleState.HasFlag(ControlStyleState.Indeterminate))
+        else if (PseudoClasses.Contains(StdPseudoClass.Indeterminate))
         {
             var deltaSize = (Size - TristateMarkSize) / 2.0;
             var offsetX   = deltaSize;
