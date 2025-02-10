@@ -75,7 +75,6 @@ public class Popup : AvaloniaPopup
     private PopupShadowLayer? _shadowLayer;
     private CompositeDisposable? _compositeDisposable;
     private IDisposable? _selfLightDismissDisposable;
-    private bool _initialized;
     private ManagedPopupPositionerInfo? _managedPopupPositioner;
     private bool _isNeedFlip = true;
     private bool _openAnimating;
@@ -102,14 +101,8 @@ public class Popup : AvaloniaPopup
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        if (!_initialized)
-        {
-            TokenResourceBinder.CreateTokenBinding(this, MaskShadowsProperty,
-                SharedTokenKey.BoxShadowsSecondary);
-            TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty,
-                SharedTokenKey.MotionDurationMid);
-            _initialized = true;
-        }
+        TokenResourceBinder.CreateTokenBinding(this, MaskShadowsProperty, SharedTokenKey.BoxShadowsSecondary);
+        TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, SharedTokenKey.MotionDurationMid);
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)

@@ -7,6 +7,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Layout;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Metadata;
 using Avalonia.Styling;
@@ -127,9 +128,9 @@ public class Flyout : PopupFlyoutBase
 
     public Flyout()
     {
-        TokenResourceBinder.CreateTokenBinding(this, MotionDurationTokenProperty,
+        TokenResourceBinder.CreateGlobalTokenBinding(this, MotionDurationTokenProperty,
             SharedTokenKey.MotionDurationMid);
-        TokenResourceBinder.CreateTokenBinding(this, MaskShadowsProperty,
+        TokenResourceBinder.CreateGlobalTokenBinding(this, MaskShadowsProperty,
             SharedTokenKey.BoxShadowsSecondary);
     }
 

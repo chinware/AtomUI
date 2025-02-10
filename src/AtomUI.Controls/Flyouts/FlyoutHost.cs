@@ -155,16 +155,20 @@ public class FlyoutHost : Control
         _flyoutStateHelper = new FlyoutStateHelper();
     }
 
-    public override void ApplyTemplate()
-    {
-        base.ApplyTemplate();
-        TokenResourceBinder.CreateTokenBinding(this, MarginToAnchorProperty, SharedTokenKey.MarginXXS);
-        SetupFlyoutProperties();
-    }
+    // public override void ApplyTemplate()
+    // {
+    //     // TODO 需要审查到底是否合适
+    //     base.ApplyTemplate();
+    //     TokenResourceBinder.CreateTokenBinding(this, MarginToAnchorProperty, SharedTokenKey.MarginXXS);
+    //     SetupFlyoutProperties();
+    // }
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
+        TokenResourceBinder.CreateTokenBinding(this, MarginToAnchorProperty, SharedTokenKey.MarginXXS);
+        SetupFlyoutProperties();
+        
         BindUtils.RelayBind(this, AnchorTargetProperty, _flyoutStateHelper, FlyoutStateHelper.AnchorTargetProperty);
         BindUtils.RelayBind(this, FlyoutProperty, _flyoutStateHelper, FlyoutStateHelper.FlyoutProperty);
         BindUtils.RelayBind(this, MouseEnterDelayProperty, _flyoutStateHelper,
