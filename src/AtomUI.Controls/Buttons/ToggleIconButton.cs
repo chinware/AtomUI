@@ -1,7 +1,6 @@
 ﻿using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.IconPkg;
-using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
@@ -50,8 +49,6 @@ public class ToggleIconButton : ToggleButton
     }
 
     #endregion
-
-    private ControlStyleState _styleState;
 
     static ToggleIconButton()
     {
@@ -102,18 +99,17 @@ public class ToggleIconButton : ToggleButton
             else if (change.Property == IsPressedProperty ||
                      change.Property == IsPointerOverProperty)
             {
-                CollectStyleState();
                 var icon = IsChecked.HasValue && IsChecked.Value ? CheckedIcon : UnCheckedIcon;
                 if (icon is not null)
                 {
-                    if (_styleState.HasFlag(ControlStyleState.Enabled))
+                    if (!PseudoClasses.Contains(StdPseudoClass.Disabled))
                     {
                         icon.IconMode = IconMode.Normal;
-                        if (_styleState.HasFlag(ControlStyleState.Sunken))
+                        if (PseudoClasses.Contains(StdPseudoClass.Pressed))
                         {
                             icon.IconMode = IconMode.Selected;
                         }
-                        else if (_styleState.HasFlag(ControlStyleState.MouseOver))
+                        else if (PseudoClasses.Contains(StdPseudoClass.PointerOver))
                         {
                             icon.IconMode = IconMode.Active;
                         }
@@ -148,20 +144,7 @@ public class ToggleIconButton : ToggleButton
             Content = UnCheckedIcon;
         }
     }
-
-    private void CollectStyleState()
-    {
-        ControlStateUtils.InitCommonState(this, ref _styleState);
-        if (IsPressed)
-        {
-            _styleState |= ControlStyleState.Sunken;
-        }
-        else
-        {
-            _styleState |= ControlStyleState.Raised;
-        }
-    }
-
+    
     public bool HitTest(Point point)
     {
         return NotifyHistTest(point);

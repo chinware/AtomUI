@@ -210,8 +210,7 @@ public class Button : AvaloniaButton, ISizeTypeAware, IWaveAdornerInfoProvider
     }
 
     #endregion
-
-    protected ControlStyleState _styleState;
+    
     private bool _initialized;
     private Icon? _loadingIcon;
     private ControlTokenResourceRegister _controlTokenResourceRegister;
@@ -333,11 +332,11 @@ public class Button : AvaloniaButton, ISizeTypeAware, IWaveAdornerInfoProvider
             e.Property == IsPressedProperty ||
             e.Property == IsEnabledProperty)
         {
-            CollectStyleState();
             ApplyIconModeStyleConfig();
             if (e.Property == IsPressedProperty)
             {
-                if (!IsLoading && _styleState.HasFlag(ControlStyleState.Raised) &&
+                if (!IsLoading &&
+                    (e.OldValue as bool? == true) &&
                     (ButtonType == ButtonType.Primary || ButtonType == ButtonType.Default))
                 {
                     WaveType waveType = default;
@@ -438,19 +437,6 @@ public class Button : AvaloniaButton, ISizeTypeAware, IWaveAdornerInfoProvider
         }
     }
 
-    private void CollectStyleState()
-    {
-        ControlStateUtils.InitCommonState(this, ref _styleState);
-        if (IsPressed)
-        {
-            _styleState |= ControlStyleState.Sunken;
-        }
-        else
-        {
-            _styleState |= ControlStyleState.Raised;
-        }
-    }
-
     private void SetupTransitions()
     {
         if (Transitions is null)
@@ -493,7 +479,6 @@ public class Button : AvaloniaButton, ISizeTypeAware, IWaveAdornerInfoProvider
 
     private void HandleTemplateApplied(INameScope scope)
     {
-        CollectStyleState();
         ApplyShapeStyleConfig();
         ApplyIconModeStyleConfig();
         UpdatePseudoClasses();
@@ -508,13 +493,13 @@ public class Button : AvaloniaButton, ISizeTypeAware, IWaveAdornerInfoProvider
             return;
         }
 
-        if (_styleState.HasFlag(ControlStyleState.Enabled))
+        if (!PseudoClasses.Contains(StdPseudoClass.Disabled))
         {
-            if (_styleState.HasFlag(ControlStyleState.Sunken))
+            if (PseudoClasses.Contains(StdPseudoClass.Pressed))
             {
                 Icon.IconMode = IconMode.Selected;
             }
-            else if (_styleState.HasFlag(ControlStyleState.MouseOver))
+            else if (PseudoClasses.Contains(StdPseudoClass.PointerOver))
             {
                 Icon.IconMode = IconMode.Active;
             }

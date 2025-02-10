@@ -71,8 +71,6 @@ public class IconButton : AvaloniaButton, ICustomHitTest
 
     #endregion
 
-    private ControlStyleState _styleState;
-
     static IconButton()
     {
         AffectsMeasure<IconButton>(IconProperty);
@@ -128,17 +126,16 @@ public class IconButton : AvaloniaButton, ICustomHitTest
 
     private void SetupIconMode()
     {
-        CollectStyleState();
         if (Icon is not null)
         {
-            if (_styleState.HasFlag(ControlStyleState.Enabled))
+            if (!PseudoClasses.Contains(StdPseudoClass.Disabled))
             {
                 Icon.IconMode = IconMode.Normal;
-                if (_styleState.HasFlag(ControlStyleState.Sunken))
+                if (PseudoClasses.Contains(StdPseudoClass.Pressed))
                 {
                     Icon.IconMode = IconMode.Selected;
                 }
-                else if (_styleState.HasFlag(ControlStyleState.MouseOver))
+                else if (PseudoClasses.Contains(StdPseudoClass.PointerOver))
                 {
                     Icon.IconMode = IconMode.Active;
                 }
@@ -149,20 +146,7 @@ public class IconButton : AvaloniaButton, ICustomHitTest
             }
         }
     }
-
-    private void CollectStyleState()
-    {
-        ControlStateUtils.InitCommonState(this, ref _styleState);
-        if (IsPressed)
-        {
-            _styleState |= ControlStyleState.Sunken;
-        }
-        else
-        {
-            _styleState |= ControlStyleState.Raised;
-        }
-    }
-
+    
     public bool HitTest(Point point)
     {
         return true;

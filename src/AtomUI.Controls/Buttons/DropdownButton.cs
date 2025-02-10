@@ -300,13 +300,13 @@ public class DropdownButton : Button
     {
         if (_openIndicatorIcon is not null)
         {
-            if (_styleState.HasFlag(ControlStyleState.Enabled))
+            if (!PseudoClasses.Contains(StdPseudoClass.Disabled))
             {
-                if (_styleState.HasFlag(ControlStyleState.Sunken))
+                if (PseudoClasses.Contains(StdPseudoClass.Pressed))
                 {
                     _openIndicatorIcon.IconMode = IconMode.Selected;
                 }
-                else if (_styleState.HasFlag(ControlStyleState.MouseOver))
+                else if (PseudoClasses.Contains(StdPseudoClass.PointerOver))
                 {
                     _openIndicatorIcon.IconMode = IconMode.Active;
                 }
