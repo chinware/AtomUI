@@ -14,6 +14,7 @@ public class TextBlock : AvaloniaTextBlock
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
+        
     }
 
     protected override Size MeasureOverride(Size availableSize)

@@ -23,7 +23,7 @@ public static class TokenResourceUtils
         return AvaloniaProperty.UnsetValue;
     }
 
-    public static object? FindApplicationTokenResource(TokenResourceKey resourceKey, ThemeVariant? themeVariant = null)
+    public static object? FindGlobalTokenResource(TokenResourceKey resourceKey, ThemeVariant? themeVariant = null)
     {
         var application = Application.Current;
         if (application is null)

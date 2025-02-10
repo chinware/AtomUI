@@ -57,15 +57,15 @@ internal class PickerClearUpButtonTheme : BaseControlTheme
             Icon = closeIcon
         };
 
-        TokenResourceBinder.CreateSharedTokenBinding(clearButton, IconButton.IconHeightProperty,
+        TokenResourceBinder.CreateTokenBinding(clearButton, IconButton.IconHeightProperty,
             SharedTokenKey.IconSize);
-        TokenResourceBinder.CreateSharedTokenBinding(clearButton, IconButton.IconWidthProperty,
+        TokenResourceBinder.CreateTokenBinding(clearButton, IconButton.IconWidthProperty,
             SharedTokenKey.IconSize);
-        TokenResourceBinder.CreateSharedTokenBinding(closeIcon, Icon.NormalFilledBrushProperty,
+        TokenResourceBinder.CreateTokenBinding(closeIcon, Icon.NormalFilledBrushProperty,
             SharedTokenKey.ColorTextQuaternary);
-        TokenResourceBinder.CreateSharedTokenBinding(closeIcon, Icon.ActiveFilledBrushProperty,
+        TokenResourceBinder.CreateTokenBinding(closeIcon, Icon.ActiveFilledBrushProperty,
             SharedTokenKey.ColorTextTertiary);
-        TokenResourceBinder.CreateSharedTokenBinding(closeIcon, Icon.SelectedFilledBrushProperty,
+        TokenResourceBinder.CreateTokenBinding(closeIcon, Icon.SelectedFilledBrushProperty,
             SharedTokenKey.ColorText);
 
         clearButton.RegisterInNameScope(scope);

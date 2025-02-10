@@ -103,9 +103,9 @@ internal class MenuItemTheme : BaseControlTheme
             CreateTemplateParentBinding(iconPresenter, ContentControl.ContentProperty, MenuItem.IconProperty);
             TokenResourceBinder.CreateTokenBinding(iconPresenter, Layoutable.MarginProperty,
                 MenuTokenKey.ItemMargin);
-            TokenResourceBinder.CreateSharedTokenBinding(iconPresenter, Layoutable.WidthProperty,
+            TokenResourceBinder.CreateTokenBinding(iconPresenter, Layoutable.WidthProperty,
                 MenuTokenKey.ItemIconSize);
-            TokenResourceBinder.CreateSharedTokenBinding(iconPresenter, Layoutable.HeightProperty,
+            TokenResourceBinder.CreateTokenBinding(iconPresenter, Layoutable.HeightProperty,
                 MenuTokenKey.ItemIconSize);
 
             var itemTextPresenter = new ContentPresenter
@@ -149,9 +149,9 @@ internal class MenuItemTheme : BaseControlTheme
             menuIndicatorIcon.HorizontalAlignment = HorizontalAlignment.Right;
             menuIndicatorIcon.VerticalAlignment   = VerticalAlignment.Center;
             
-            TokenResourceBinder.CreateSharedTokenBinding(menuIndicatorIcon, Layoutable.WidthProperty,
+            TokenResourceBinder.CreateTokenBinding(menuIndicatorIcon, Layoutable.WidthProperty,
                 SharedTokenKey.IconSizeXS);
-            TokenResourceBinder.CreateSharedTokenBinding(menuIndicatorIcon, Layoutable.HeightProperty,
+            TokenResourceBinder.CreateTokenBinding(menuIndicatorIcon, Layoutable.HeightProperty,
                 SharedTokenKey.IconSizeXS);
             Grid.SetColumn(menuIndicatorIcon, 4);
             menuIndicatorIcon.RegisterInNameScope(scope);

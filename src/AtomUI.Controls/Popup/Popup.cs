@@ -104,9 +104,9 @@ public class Popup : AvaloniaPopup
         base.OnAttachedToLogicalTree(e);
         if (!_initialized)
         {
-            TokenResourceBinder.CreateSharedTokenBinding(this, MaskShadowsProperty,
+            TokenResourceBinder.CreateTokenBinding(this, MaskShadowsProperty,
                 SharedTokenKey.BoxShadowsSecondary);
-            TokenResourceBinder.CreateSharedTokenBinding(this, MotionDurationProperty,
+            TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty,
                 SharedTokenKey.MotionDurationMid);
             _initialized = true;
         }

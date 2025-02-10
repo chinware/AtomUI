@@ -124,7 +124,7 @@ internal class RadioIndicator : Control, IWaveAdornerInfoProvider
         base.ApplyTemplate();
         CollectStyleState();
         RadioDotEffectSize = CalculateDotSize(IsEnabled, IsChecked.HasValue && IsChecked.Value);
-        TokenResourceBinder.CreateSharedResourceBinding(this, RadioBorderThicknessProperty,
+        TokenResourceBinder.CreateTokenBinding(this, RadioBorderThicknessProperty,
             SharedTokenKey.BorderThickness, BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this));
 

@@ -177,7 +177,7 @@ public class Expander : AvaloniaExpander
         _headerDecorator = e.NameScope.Find<Border>(ExpanderTheme.HeaderDecoratorPart);
         _expandButton    = e.NameScope.Find<IconButton>(ExpanderTheme.ExpandButtonPart);
         TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, SharedTokenKey.MotionDurationSlow);
-        TokenResourceBinder.CreateSharedResourceBinding(this, BorderThicknessProperty,
+        TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
             SharedTokenKey.BorderThickness,
             BindingPriority.Template, new RenderScaleAwareThicknessConfigure(this));
         SetupEffectiveBorderThickness();
@@ -270,7 +270,7 @@ public class Expander : AvaloniaExpander
         if (ExpandIcon is null)
         {
             ExpandIcon = AntDesignIconPackage.RightOutlined();
-            TokenResourceBinder.CreateSharedTokenBinding(ExpandIcon, Icon.DisabledFilledBrushProperty,
+            TokenResourceBinder.CreateTokenBinding(ExpandIcon, Icon.DisabledFilledBrushProperty,
                 SharedTokenKey.ColorTextDisabled);
         }
 

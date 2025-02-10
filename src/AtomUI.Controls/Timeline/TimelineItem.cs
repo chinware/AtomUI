@@ -293,7 +293,7 @@ public class TimelineItem : ContentControl
 
         if (IsLast || isPendingItem)
         {
-            TokenResourceBinder.CreateSharedTokenBinding(this, Layoutable.MinHeightProperty,
+            TokenResourceBinder.CreateTokenBinding(this, Layoutable.MinHeightProperty,
                 TimelineTokenKey.LastItemContentMinHeight);
         }
 
@@ -317,45 +317,45 @@ public class TimelineItem : ContentControl
             {
                 if (_dotPart is not null && _dotPart.NormalFilledBrush is null)
                 {
-                    TokenResourceBinder.CreateSharedTokenBinding(_dotPart, Icon.NormalFilledBrushProperty,
+                    TokenResourceBinder.CreateTokenBinding(_dotPart, Icon.NormalFilledBrushProperty,
                         SharedTokenKey.ColorPrimary);
                 }
 
                 if (_splitHeadPart is not null)
                 {
-                    TokenResourceBinder.CreateSharedTokenBinding(_splitHeadPart, Border.BorderBrushProperty,
+                    TokenResourceBinder.CreateTokenBinding(_splitHeadPart, Border.BorderBrushProperty,
                         SharedTokenKey.ColorPrimary);
                 }
             }
         }
         else
         {
-            var tokenText = SharedTokenKey.ColorSuccess;
+            var colorTokenKey = SharedTokenKey.ColorSuccess;
             switch (Color)
             {
                 case "blue":
-                    tokenText = SharedTokenKey.ColorPrimary;
+                    colorTokenKey = SharedTokenKey.ColorPrimary;
                     break;
                 case "green":
-                    tokenText = SharedTokenKey.ColorSuccess;
+                    colorTokenKey = SharedTokenKey.ColorSuccess;
                     break;
                 case "red":
-                    tokenText = SharedTokenKey.ColorError;
+                    colorTokenKey = SharedTokenKey.ColorError;
                     break;
                 case "gray":
-                    tokenText = SharedTokenKey.ColorTextDisabled;
+                    colorTokenKey = SharedTokenKey.ColorTextDisabled;
                     break;
             }
             if (_dotPart is not null && _dotPart.NormalFilledBrush is null)
             {
-                TokenResourceBinder.CreateSharedTokenBinding(_dotPart, Icon.NormalFilledBrushProperty,
-                    tokenText);
+                TokenResourceBinder.CreateTokenBinding(_dotPart, Icon.NormalFilledBrushProperty,
+                    colorTokenKey);
             }
 
             if (_splitHeadPart is not null)
             {
-                TokenResourceBinder.CreateSharedTokenBinding(_splitHeadPart, Border.BorderBrushProperty,
-                    tokenText);
+                TokenResourceBinder.CreateTokenBinding(_splitHeadPart, Border.BorderBrushProperty,
+                    colorTokenKey);
             }
         }
     }

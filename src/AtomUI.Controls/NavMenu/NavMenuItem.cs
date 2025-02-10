@@ -700,7 +700,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
                 _childItemsLayoutTransform.SetCurrentValue(MotionActorControl.IsVisibleProperty, IsSubMenuOpen);
             }
 
-            TokenResourceBinder.CreateSharedTokenBinding(this, OpenCloseMotionDurationProperty,
+            TokenResourceBinder.CreateTokenBinding(this, OpenCloseMotionDurationProperty,
                 SharedTokenKey.MotionDurationSlow);
         }
 
@@ -1199,7 +1199,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
             if (Mode == NavMenuMode.Inline)
             {
                 _itemContainerThemeDisposable =
-                    TokenResourceBinder.CreateSharedResourceBinding(this, ItemContainerThemeProperty,
+                    TokenResourceBinder.CreateTokenBinding(this, ItemContainerThemeProperty,
                         InlineNavMenuItemTheme.ID);
             }
         }

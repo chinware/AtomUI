@@ -105,9 +105,9 @@ public class TabItem : AvaloniaTabItem, ICustomHitTest
         if (CloseIcon is null)
         {
             CloseIcon = AntDesignIconPackage.CloseOutlined();
-            TokenResourceBinder.CreateSharedResourceBinding(CloseIcon, WidthProperty,
+            TokenResourceBinder.CreateTokenBinding(CloseIcon, WidthProperty,
                 SharedTokenKey.IconSizeSM);
-            TokenResourceBinder.CreateSharedResourceBinding(CloseIcon, HeightProperty,
+            TokenResourceBinder.CreateTokenBinding(CloseIcon, HeightProperty,
                 SharedTokenKey.IconSizeSM);
         }
 

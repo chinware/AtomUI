@@ -1,7 +1,6 @@
 ﻿using AtomUI.Controls.Utils;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
-using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -15,37 +14,37 @@ namespace AtomUI.Controls;
 internal class TimePickerPresenter : PickerPresenterBase
 {
     #region 公共属性定义
-    
+
     public static readonly StyledProperty<bool> IsNeedConfirmProperty =
         TimePicker.IsNeedConfirmProperty.AddOwner<TimePickerPresenter>();
-    
+
     public static readonly StyledProperty<bool> IsShowNowProperty =
         TimePicker.IsShowNowProperty.AddOwner<TimePickerPresenter>();
-    
+
     public static readonly StyledProperty<int> MinuteIncrementProperty =
         TimePicker.MinuteIncrementProperty.AddOwner<TimePickerPresenter>();
 
     public static readonly StyledProperty<int> SecondIncrementProperty =
         TimePicker.SecondIncrementProperty.AddOwner<TimePickerPresenter>();
-    
+
     public static readonly StyledProperty<ClockIdentifierType> ClockIdentifierProperty =
         TimePicker.ClockIdentifierProperty.AddOwner<TimePickerPresenter>();
 
     public static readonly StyledProperty<TimeSpan?> SelectedTimeProperty =
         TimePicker.SelectedTimeProperty.AddOwner<TimePickerPresenter>();
-    
+
     public bool IsNeedConfirm
     {
         get => GetValue(IsNeedConfirmProperty);
         set => SetValue(IsNeedConfirmProperty, value);
     }
-    
+
     public bool IsShowNow
     {
         get => GetValue(IsShowNowProperty);
         set => SetValue(IsShowNowProperty, value);
     }
-    
+
     public int MinuteIncrement
     {
         get => GetValue(MinuteIncrementProperty);
@@ -57,38 +56,39 @@ internal class TimePickerPresenter : PickerPresenterBase
         get => GetValue(SecondIncrementProperty);
         set => SetValue(SecondIncrementProperty, value);
     }
-    
+
     public ClockIdentifierType ClockIdentifier
     {
         get => GetValue(ClockIdentifierProperty);
         set => SetValue(ClockIdentifierProperty, value);
     }
-    
+
     public TimeSpan? SelectedTime
     {
         get => GetValue(SelectedTimeProperty);
         set => SetValue(SelectedTimeProperty, value);
     }
-    
+
     #endregion
-    
+
     #region 内部属性定义
 
     internal static readonly DirectProperty<TimePickerPresenter, bool> ButtonsPanelVisibleProperty =
         AvaloniaProperty.RegisterDirect<TimePickerPresenter, bool>(nameof(ButtonsPanelVisible),
             o => o.ButtonsPanelVisible,
             (o, v) => o.ButtonsPanelVisible = v);
-    
+
     public static readonly StyledProperty<TimeSpan?> TempSelectedTimeProperty =
         AvaloniaProperty.Register<TimePickerPresenter, TimeSpan?>(nameof(TempSelectedTime));
 
     private bool _buttonsPanelVisible = true;
+
     internal bool ButtonsPanelVisible
     {
         get => _buttonsPanelVisible;
         set => SetAndRaise(ButtonsPanelVisibleProperty, ref _buttonsPanelVisible, value);
     }
-    
+
     public TimeSpan? TempSelectedTime
     {
         get => GetValue(TempSelectedTimeProperty);
@@ -96,21 +96,21 @@ internal class TimePickerPresenter : PickerPresenterBase
     }
 
     #endregion
-    
+
     #region 公共事件定义
-    
+
     /// <summary>
     /// 当前 Pointer 选中的日期和时间的变化事件
     /// </summary>
     public event EventHandler<TimeSelectedEventArgs>? HoverTimeChanged;
-    
+
     /// <summary>
     /// 当前是否处于选择中状态
     /// </summary>
     public event EventHandler<ChoosingStatusEventArgs>? ChoosingStatueChanged;
 
     #endregion
-    
+
     private IDisposable? _choosingStateDisposable;
     private Button? _nowButton;
     private Button? _confirmButton;
@@ -141,7 +141,7 @@ internal class TimePickerPresenter : PickerPresenterBase
 
         base.OnKeyDown(e);
     }
-    
+
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
@@ -158,7 +158,7 @@ internal class TimePickerPresenter : PickerPresenterBase
             }
         }
     }
-    
+
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
@@ -195,7 +195,7 @@ internal class TimePickerPresenter : PickerPresenterBase
             };
         }
     }
-    
+
     private void SetupButtonStatus()
     {
         if (_nowButton is null || _confirmButton is null)
@@ -204,22 +204,22 @@ internal class TimePickerPresenter : PickerPresenterBase
         }
 
         _confirmButton.IsVisible = IsNeedConfirm;
-        
+
         if (IsShowNow)
         {
             if (!IsNeedConfirm)
             {
-                _nowButton.HorizontalAlignment   = HorizontalAlignment.Center;
+                _nowButton.HorizontalAlignment = HorizontalAlignment.Center;
             }
             else
             {
-                _nowButton.HorizontalAlignment   = HorizontalAlignment.Left;
+                _nowButton.HorizontalAlignment = HorizontalAlignment.Left;
             }
         }
         else
         {
-            _nowButton.IsVisible             = false;
-            _nowButton.HorizontalAlignment   = HorizontalAlignment.Left;
+            _nowButton.IsVisible           = false;
+            _nowButton.HorizontalAlignment = HorizontalAlignment.Left;
         }
 
         ButtonsPanelVisible = _nowButton.IsVisible || _confirmButton.IsVisible;
@@ -233,7 +233,7 @@ internal class TimePickerPresenter : PickerPresenterBase
             OnConfirmed();
         }
     }
-    
+
     private void HandleConfirmButtonClicked(object? sender, RoutedEventArgs args)
     {
         if (TempSelectedTime is not null)
@@ -242,7 +242,7 @@ internal class TimePickerPresenter : PickerPresenterBase
             OnConfirmed();
         }
     }
-    
+
     private void HandleTimeViewHoverChanged(object? sender, TimeSelectedEventArgs args)
     {
         HoverTimeChanged?.Invoke(this, new TimeSelectedEventArgs(args.Time));
@@ -256,22 +256,23 @@ internal class TimePickerPresenter : PickerPresenterBase
             OnConfirmed();
         }
     }
-    
+
     private void HandleTimeViewTempTimeSelected(object? sender, TimeSelectedEventArgs args)
     {
         TempSelectedTime = args.Time;
     }
-    
+
     protected override void OnConfirmed()
     {
         ChoosingStatueChanged?.Invoke(this, new ChoosingStatusEventArgs(false));
         base.OnConfirmed();
     }
-    
+
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        TokenResourceBinder.CreateSharedTokenBinding(this, BorderThicknessProperty, SharedTokenKey.BorderThickness, BindingPriority.Template,
+        TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty, SharedTokenKey.BorderThickness,
+            BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this, thickness => new Thickness(0, thickness.Top, 0, 0)));
         if (_timeView is not null)
         {

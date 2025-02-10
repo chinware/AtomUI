@@ -346,7 +346,7 @@ public class CollapseItem : HeaderedContentControl, ISelectable
         if (ExpandIcon is null)
         {
             ExpandIcon = AntDesignIconPackage.RightOutlined();
-            TokenResourceBinder.CreateSharedTokenBinding(ExpandIcon, Icon.DisabledFilledBrushProperty,
+            TokenResourceBinder.CreateTokenBinding(ExpandIcon, Icon.DisabledFilledBrushProperty,
                 SharedTokenKey.ColorTextDisabled);
         }
 

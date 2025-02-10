@@ -59,7 +59,7 @@ public class Timeline : ItemsControl
     }
 
     #endregion
-    
+
     private TimelineItem? _pendingItem;
 
     static Timeline()
@@ -94,7 +94,7 @@ public class Timeline : ItemsControl
         OnReversePropertyChanged();
         addPendingItem();
 
-        TokenResourceBinder.CreateSharedTokenBinding(this, BorderThicknessProperty,
+        TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
             SharedTokenKey.BorderThickness,
             BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this));
@@ -107,19 +107,18 @@ public class Timeline : ItemsControl
         {
             OnReversePropertyChanged();
         }
-        
+
         if (change.Property == ItemCountProperty && VisualRoot is not null)
         {
             OnItemCountPropertyChanged();
         }
-        
+
         if (change.Property == PendingProperty && VisualRoot is not null)
         {
             OnPendingPropertyChanged();
         }
-        
     }
-    
+
     private void OnPendingPropertyChanged()
     {
         foreach (var item in Items)
@@ -130,6 +129,7 @@ public class Timeline : ItemsControl
                 break;
             }
         }
+
         addPendingItem();
     }
 
@@ -139,23 +139,23 @@ public class Timeline : ItemsControl
         {
             if (_pendingItem is null)
             {
-                _pendingItem     = new TimelineItem();
+                _pendingItem = new TimelineItem();
                 var textBlock = new TextBlock();
 
                 if (PendingIcon is null)
                 {
-                    PendingIcon = AntDesignIconPackage.LoadingOutlined();
-                    PendingIcon.Width = 10;
-                    PendingIcon.Height = 10;
-                    PendingIcon.LoadingAnimation = IconAnimation.Spin;
-                    PendingIcon.VerticalAlignment = VerticalAlignment.Top;
+                    PendingIcon                     = AntDesignIconPackage.LoadingOutlined();
+                    PendingIcon.Width               = 10;
+                    PendingIcon.Height              = 10;
+                    PendingIcon.LoadingAnimation    = IconAnimation.Spin;
+                    PendingIcon.VerticalAlignment   = VerticalAlignment.Top;
                     PendingIcon.HorizontalAlignment = HorizontalAlignment.Center;
                 }
 
                 _pendingItem.DotIcon   = PendingIcon;
                 _pendingItem.IsPending = true;
                 _pendingItem.Content   = textBlock;
-                BindUtils.RelayBind(this, PendingProperty, textBlock, TextBlock.TextProperty);   
+                BindUtils.RelayBind(this, PendingProperty, textBlock, TextBlock.TextProperty);
             }
 
             if (Reverse)
@@ -168,7 +168,7 @@ public class Timeline : ItemsControl
             }
         }
     }
-    
+
     private void OnItemCountPropertyChanged()
     {
     }
@@ -186,6 +186,7 @@ public class Timeline : ItemsControl
                 timelineItem.Index = Items.IndexOf(item);
             }
         }
+
         foreach (var item in items)
         {
             if (item is TimelineItem timelineItem)
@@ -194,5 +195,4 @@ public class Timeline : ItemsControl
             }
         }
     }
-    
 }

@@ -54,7 +54,7 @@ internal class CollapseItemTheme : BaseControlTheme
                 Name = ContentPresenterPart
             };
             motionActor.Child = contentPresenter;
-            TokenResourceBinder.CreateSharedTokenBinding(contentPresenter, ContentPresenter.BorderBrushProperty,
+            TokenResourceBinder.CreateTokenBinding(contentPresenter, ContentPresenter.BorderBrushProperty,
                 SharedTokenKey.ColorBorder);
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty,
                 ContentControl.ContentProperty);
@@ -82,7 +82,7 @@ internal class CollapseItemTheme : BaseControlTheme
         };
         DockPanel.SetDock(headerDecorator, Dock.Top);
 
-        TokenResourceBinder.CreateSharedTokenBinding(headerDecorator, Border.BorderBrushProperty,
+        TokenResourceBinder.CreateTokenBinding(headerDecorator, Border.BorderBrushProperty,
             SharedTokenKey.ColorBorder);
         CreateTemplateParentBinding(headerDecorator, Border.BorderThicknessProperty,
             CollapseItem.HeaderBorderThicknessProperty);
@@ -103,9 +103,9 @@ internal class CollapseItemTheme : BaseControlTheme
             Name              = ExpandButtonPart,
             VerticalAlignment = VerticalAlignment.Center
         };
-        TokenResourceBinder.CreateSharedTokenBinding(expandButton, IconButton.IconWidthProperty,
+        TokenResourceBinder.CreateTokenBinding(expandButton, IconButton.IconWidthProperty,
             SharedTokenKey.IconSize);
-        TokenResourceBinder.CreateSharedTokenBinding(expandButton, IconButton.IconHeightProperty,
+        TokenResourceBinder.CreateTokenBinding(expandButton, IconButton.IconHeightProperty,
             SharedTokenKey.IconSize);
         expandButton.RegisterInNameScope(scope);
         expandButton.Transitions = new Transitions();

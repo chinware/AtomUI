@@ -472,7 +472,7 @@ public class TreeViewItem : AvaloniaTreeItem
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        TokenResourceBinder.CreateSharedResourceBinding(this, DragFrameBorderThicknessProperty,
+        TokenResourceBinder.CreateTokenBinding(this, DragFrameBorderThicknessProperty,
             SharedTokenKey.BorderThickness,
             BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this));
@@ -638,41 +638,41 @@ public class TreeViewItem : AvaloniaTreeItem
     {
         if (SwitcherExpandIcon is not null)
         {
-            TokenResourceBinder.CreateSharedResourceBinding(SwitcherExpandIcon, WidthProperty,
+            TokenResourceBinder.CreateTokenBinding(SwitcherExpandIcon, WidthProperty,
                 SharedTokenKey.IconSize);
-            TokenResourceBinder.CreateSharedResourceBinding(SwitcherExpandIcon, HeightProperty,
+            TokenResourceBinder.CreateTokenBinding(SwitcherExpandIcon, HeightProperty,
                 SharedTokenKey.IconSize);
         }
 
         if (SwitcherCollapseIcon is not null)
         {
-            TokenResourceBinder.CreateSharedResourceBinding(SwitcherCollapseIcon, WidthProperty,
+            TokenResourceBinder.CreateTokenBinding(SwitcherCollapseIcon, WidthProperty,
                 SharedTokenKey.IconSize);
-            TokenResourceBinder.CreateSharedResourceBinding(SwitcherCollapseIcon, HeightProperty,
+            TokenResourceBinder.CreateTokenBinding(SwitcherCollapseIcon, HeightProperty,
                 SharedTokenKey.IconSize);
         }
 
         if (SwitcherRotationIcon is not null)
         {
-            TokenResourceBinder.CreateSharedResourceBinding(SwitcherRotationIcon, WidthProperty,
+            TokenResourceBinder.CreateTokenBinding(SwitcherRotationIcon, WidthProperty,
                 SharedTokenKey.IconSizeXS);
-            TokenResourceBinder.CreateSharedResourceBinding(SwitcherRotationIcon, HeightProperty,
+            TokenResourceBinder.CreateTokenBinding(SwitcherRotationIcon, HeightProperty,
                 SharedTokenKey.IconSizeXS);
         }
 
         if (SwitcherLoadingIcon is not null)
         {
-            TokenResourceBinder.CreateSharedResourceBinding(SwitcherLoadingIcon, WidthProperty,
+            TokenResourceBinder.CreateTokenBinding(SwitcherLoadingIcon, WidthProperty,
                 SharedTokenKey.IconSize);
-            TokenResourceBinder.CreateSharedResourceBinding(SwitcherLoadingIcon, HeightProperty,
+            TokenResourceBinder.CreateTokenBinding(SwitcherLoadingIcon, HeightProperty,
                 SharedTokenKey.IconSize);
         }
 
         if (SwitcherLeafIcon is not null)
         {
-            TokenResourceBinder.CreateSharedResourceBinding(SwitcherLeafIcon, WidthProperty,
+            TokenResourceBinder.CreateTokenBinding(SwitcherLeafIcon, WidthProperty,
                 SharedTokenKey.IconSize);
-            TokenResourceBinder.CreateSharedResourceBinding(SwitcherLeafIcon, HeightProperty,
+            TokenResourceBinder.CreateTokenBinding(SwitcherLeafIcon, HeightProperty,
                 SharedTokenKey.IconSize);
         }
     }

@@ -28,7 +28,7 @@ public class Menu : AvaloniaMenu, ISizeTypeAware
         base.OnAttachedToLogicalTree(e);
         if (ItemContainerTheme is null)
         {
-            TokenResourceBinder.CreateSharedResourceBinding(this, ItemContainerThemeProperty, TopLevelMenuItemTheme.ID);
+            TokenResourceBinder.CreateTokenBinding(this, ItemContainerThemeProperty, TopLevelMenuItemTheme.ID);
         }
     }
 

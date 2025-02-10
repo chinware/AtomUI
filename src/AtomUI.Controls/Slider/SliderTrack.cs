@@ -440,11 +440,11 @@ public class SliderTrack : Control
     {
         if (IsEnabled)
         {
-            TokenResourceBinder.CreateSharedTokenBinding(this, MarkLabelBrushProperty, SharedTokenKey.ColorText);
+            TokenResourceBinder.CreateTokenBinding(this, MarkLabelBrushProperty, SharedTokenKey.ColorText);
         }
         else
         {
-            TokenResourceBinder.CreateSharedTokenBinding(this, MarkLabelBrushProperty, SharedTokenKey.ColorTextDisabled);
+            TokenResourceBinder.CreateTokenBinding(this, MarkLabelBrushProperty, SharedTokenKey.ColorTextDisabled);
         }
     }
 

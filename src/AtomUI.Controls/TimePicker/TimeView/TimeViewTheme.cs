@@ -83,7 +83,7 @@ internal class TimeViewTheme : BaseControlTheme
 
         CreateTemplateParentBinding(separator, Layoutable.HeightProperty, TimeView.SpacerThicknessProperty);
         CreateTemplateParentBinding(separator, Visual.IsVisibleProperty, TimeView.IsShowHeaderProperty);
-        TokenResourceBinder.CreateSharedTokenBinding(separator, Shape.FillProperty,
+        TokenResourceBinder.CreateTokenBinding(separator, Shape.FillProperty,
             SharedTokenKey.ColorBorderSecondary);
         rootLayout.Children.Add(separator);
         Grid.SetRow(separator, 1);
@@ -140,7 +140,7 @@ internal class TimeViewTheme : BaseControlTheme
         };
         firstSpacer.RegisterInNameScope(scope);
         CreateTemplateParentBinding(firstSpacer, Layoutable.WidthProperty, TimeView.SpacerThicknessProperty);
-        TokenResourceBinder.CreateSharedTokenBinding(firstSpacer, Shape.FillProperty,
+        TokenResourceBinder.CreateTokenBinding(firstSpacer, Shape.FillProperty,
             SharedTokenKey.ColorBorderSecondary);
         Grid.SetColumn(firstSpacer, 1);
         pickerContainer.Children.Add(firstSpacer);
@@ -180,7 +180,7 @@ internal class TimeViewTheme : BaseControlTheme
         CreateTemplateParentBinding(secondSpacer, Layoutable.WidthProperty,
             TimeView.SpacerThicknessProperty);
         secondSpacer.RegisterInNameScope(scope);
-        TokenResourceBinder.CreateSharedTokenBinding(secondSpacer, Shape.FillProperty,
+        TokenResourceBinder.CreateTokenBinding(secondSpacer, Shape.FillProperty,
             SharedTokenKey.ColorBorderSecondary);
         Grid.SetColumn(secondSpacer, 3);
         pickerContainer.Children.Add(secondSpacer);
@@ -221,7 +221,7 @@ internal class TimeViewTheme : BaseControlTheme
         thirdSpacer.RegisterInNameScope(scope);
         Grid.SetColumn(thirdSpacer, 5);
         pickerContainer.Children.Add(thirdSpacer);
-        TokenResourceBinder.CreateSharedTokenBinding(thirdSpacer, Shape.FillProperty,
+        TokenResourceBinder.CreateTokenBinding(thirdSpacer, Shape.FillProperty,
             SharedTokenKey.ColorBorderSecondary);
 
         var periodHost = new Panel

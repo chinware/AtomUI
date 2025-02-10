@@ -254,7 +254,7 @@ public class NavMenu : NavMenuBase
     {
         base.OnAttachedToVisualTree(e);
         InteractionHandler?.Attach(this);
-        TokenResourceBinder.CreateSharedTokenBinding(this, HorizontalBorderThicknessProperty, SharedTokenKey.LineWidth,
+        TokenResourceBinder.CreateTokenBinding(this, HorizontalBorderThicknessProperty, SharedTokenKey.LineWidth,
             BindingPriority.Template,
             new RenderScaleAwareDoubleConfigure(this));
     }
@@ -309,7 +309,7 @@ public class NavMenu : NavMenuBase
             {
                 resourceKey = TopLevelHorizontalNavMenuItemTheme.ID;
             }
-            TokenResourceBinder.CreateSharedResourceBinding(this, ItemContainerThemeProperty, resourceKey);
+            TokenResourceBinder.CreateGlobalResourceBinding(this, ItemContainerThemeProperty, resourceKey);
         }
     }
 

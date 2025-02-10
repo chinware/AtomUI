@@ -294,9 +294,9 @@ public class TreeView : AvaloniaTreeView
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        TokenResourceBinder.CreateSharedResourceBinding(this, DragIndicatorLineWidthProperty,
+        TokenResourceBinder.CreateTokenBinding(this, DragIndicatorLineWidthProperty,
             TreeViewTokenKey.DragIndicatorLineWidth);
-        TokenResourceBinder.CreateSharedResourceBinding(this, DragIndicatorBrushProperty,
+        TokenResourceBinder.CreateTokenBinding(this, DragIndicatorBrushProperty,
             SharedTokenKey.ColorPrimary);
     }
 

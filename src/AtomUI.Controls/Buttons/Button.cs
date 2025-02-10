@@ -532,7 +532,7 @@ public class Button : AvaloniaButton, ISizeTypeAware, IWaveAdornerInfoProvider
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        TokenResourceBinder.CreateSharedTokenBinding(this, BorderThicknessProperty,
+        TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
             SharedTokenKey.BorderThickness,
             BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this));

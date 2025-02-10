@@ -40,11 +40,11 @@ internal class RangeInfoPickerInputTheme : InfoPickerInputTheme
         var arrowIcon = AntDesignIconPackage.SwapRightOutlined();
         arrowIcon.Name = RangePickerArrowPart;
 
-        TokenResourceBinder.CreateSharedTokenBinding(arrowIcon, Layoutable.HeightProperty,
+        TokenResourceBinder.CreateTokenBinding(arrowIcon, Layoutable.HeightProperty,
             SharedTokenKey.IconSize);
-        TokenResourceBinder.CreateSharedTokenBinding(arrowIcon, Layoutable.WidthProperty,
+        TokenResourceBinder.CreateTokenBinding(arrowIcon, Layoutable.WidthProperty,
             SharedTokenKey.IconSize);
-        TokenResourceBinder.CreateSharedTokenBinding(arrowIcon, Icon.NormalFilledBrushProperty,
+        TokenResourceBinder.CreateTokenBinding(arrowIcon, Icon.NormalFilledBrushProperty,
             SharedTokenKey.ColorTextQuaternary);
 
         var rangeStartTextBox = BuildPickerTextBox(InfoInputBoxPart);

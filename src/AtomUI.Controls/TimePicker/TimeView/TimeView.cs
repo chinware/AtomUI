@@ -163,7 +163,7 @@ internal class TimeView : TemplatedControl
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        TokenResourceBinder.CreateSharedTokenBinding(this, SpacerThicknessProperty, SharedTokenKey.LineWidth,
+        TokenResourceBinder.CreateTokenBinding(this, SpacerThicknessProperty, SharedTokenKey.LineWidth,
             BindingPriority.Template,
             new RenderScaleAwareDoubleConfigure(this));
         var inputManager = AvaloniaLocator.Current.GetService<IInputManager>()!;
@@ -237,7 +237,7 @@ internal class TimeView : TemplatedControl
         _periodSelector = e.NameScope.Get<DateTimePickerPanel>(TimeViewTheme.PeriodSelectorPart);
         SetupPickerSelectorContainerHeight();
         
-        TokenResourceBinder.CreateSharedTokenBinding(this, ItemHeightProperty, TimePickerTokenKey.ItemHeight);
+        TokenResourceBinder.CreateTokenBinding(this, ItemHeightProperty, TimePickerTokenKey.ItemHeight);
 
         _spacer3 = e.NameScope.Get<Rectangle>(TimeViewTheme.ThirdSpacerPart);
         InitPicker();

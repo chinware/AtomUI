@@ -165,11 +165,11 @@ public class DropdownButton : Button
     {
         _openIndicatorIcon = AntDesignIconPackage.DownOutlined();
 
-        TokenResourceBinder.CreateSharedTokenBinding(_openIndicatorIcon, Icon.WidthProperty, SharedTokenKey.IconSizeSM);
-        TokenResourceBinder.CreateSharedTokenBinding(_openIndicatorIcon, Icon.HeightProperty, SharedTokenKey.IconSizeSM);
+        TokenResourceBinder.CreateTokenBinding(_openIndicatorIcon, Icon.WidthProperty, SharedTokenKey.IconSizeSM);
+        TokenResourceBinder.CreateTokenBinding(_openIndicatorIcon, Icon.HeightProperty, SharedTokenKey.IconSizeSM);
 
         base.OnApplyTemplate(e);
-        TokenResourceBinder.CreateSharedTokenBinding(this, MarginToAnchorProperty, SharedTokenKey.MarginXXS);
+        TokenResourceBinder.CreateTokenBinding(this, MarginToAnchorProperty, SharedTokenKey.MarginXXS);
         SetupFlyoutProperties();
         if (IsShowIndicator)
         {
@@ -285,13 +285,13 @@ public class DropdownButton : Button
     {
         if (_openIndicatorIcon is not null)
         {
-            TokenResourceBinder.CreateSharedTokenBinding(_openIndicatorIcon, Icon.NormalFilledBrushProperty,
+            TokenResourceBinder.CreateTokenBinding(_openIndicatorIcon, Icon.NormalFilledBrushProperty,
                 normalFilledBrushKey);
-            TokenResourceBinder.CreateSharedTokenBinding(_openIndicatorIcon, Icon.SelectedFilledBrushProperty,
+            TokenResourceBinder.CreateTokenBinding(_openIndicatorIcon, Icon.SelectedFilledBrushProperty,
                 selectedFilledBrushKey);
-            TokenResourceBinder.CreateSharedTokenBinding(_openIndicatorIcon, Icon.ActiveFilledBrushProperty,
+            TokenResourceBinder.CreateTokenBinding(_openIndicatorIcon, Icon.ActiveFilledBrushProperty,
                 activeFilledBrushKey);
-            TokenResourceBinder.CreateSharedTokenBinding(_openIndicatorIcon, Icon.DisabledFilledBrushProperty,
+            TokenResourceBinder.CreateTokenBinding(_openIndicatorIcon, Icon.DisabledFilledBrushProperty,
                 disabledFilledBrushKey);
         }
     }

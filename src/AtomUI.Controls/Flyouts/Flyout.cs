@@ -127,9 +127,9 @@ public class Flyout : PopupFlyoutBase
 
     public Flyout()
     {
-        TokenResourceBinder.CreateSharedTokenBinding(this, MotionDurationTokenProperty,
+        TokenResourceBinder.CreateTokenBinding(this, MotionDurationTokenProperty,
             SharedTokenKey.MotionDurationMid);
-        TokenResourceBinder.CreateSharedTokenBinding(this, MaskShadowsProperty,
+        TokenResourceBinder.CreateTokenBinding(this, MaskShadowsProperty,
             SharedTokenKey.BoxShadowsSecondary);
     }
 

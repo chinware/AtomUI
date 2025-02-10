@@ -41,35 +41,35 @@ public static class TokenResourceBinder
         return target.Bind(targetProperty, target.GetResourceObservable(resourceKey, converter), priority);
     }
 
-    public static IDisposable CreateSharedTokenBinding(AvaloniaObject target,
+    public static IDisposable CreateGlobalTokenBinding(AvaloniaObject target,
         AvaloniaProperty targetProperty,
         TokenResourceKey resourceKey,
         BindingPriority priority = BindingPriority.Template,
         Func<object?, object?>? converter = null)
     {
-        return target.Bind(targetProperty, GetSharedTokenResourceObservable(resourceKey, null, converter), priority);
+        return target.Bind(targetProperty, GetGlobalTokenResourceObservable(resourceKey, null, converter), priority);
     }
 
-    public static IDisposable CreateSharedResourceBinding(AvaloniaObject target,
+    public static IDisposable CreateGlobalResourceBinding(AvaloniaObject target,
         AvaloniaProperty targetProperty,
         object resourceKey,
         BindingPriority priority = BindingPriority.Template,
         Func<object?, object?>? converter = null)
     {
-        return target.Bind(targetProperty, GetSharedResourceObservable(resourceKey, null, converter), priority);
+        return target.Bind(targetProperty, GetGlobalResourceObservable(resourceKey, null, converter), priority);
     }
 
     /// <summary>
     /// 直接在 resource dictionary 中查找，忽略本地覆盖的值
     /// </summary>
-    public static IObservable<object?> GetSharedTokenResourceObservable(TokenResourceKey resourceKey,
+    public static IObservable<object?> GetGlobalTokenResourceObservable(TokenResourceKey resourceKey,
         ThemeVariant? themeVariant = null,
         Func<object?, object?>? converter = null)
     {
-        return GetSharedResourceObservable(resourceKey, themeVariant, converter);
+        return GetGlobalResourceObservable(resourceKey, themeVariant, converter);
     }
 
-    public static IObservable<object?> GetSharedResourceObservable(object resourceKey,
+    public static IObservable<object?> GetGlobalResourceObservable(object resourceKey,
         ThemeVariant? themeVariant = null,
         Func<object?, object?>? converter = null)
     {

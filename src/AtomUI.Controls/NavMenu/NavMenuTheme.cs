@@ -47,7 +47,7 @@ internal class NavMenuTheme : BaseControlTheme
             CreateTemplateParentBinding(horizontalLine, Rectangle.IsVisibleProperty, NavMenu.ModeProperty,
                 BindingMode.Default,
                 new FuncValueConverter<NavMenuMode, bool>(v => v == NavMenuMode.Horizontal));
-            TokenResourceBinder.CreateSharedTokenBinding(horizontalLine, Rectangle.FillProperty,
+            TokenResourceBinder.CreateTokenBinding(horizontalLine, Rectangle.FillProperty,
                 SharedTokenKey.ColorBorderSecondary);
 
             var border = new Border

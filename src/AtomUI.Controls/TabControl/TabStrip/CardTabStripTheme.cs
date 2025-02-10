@@ -57,9 +57,9 @@ internal class CardTabStripTheme : BaseTabStripTheme
         TokenResourceBinder.CreateTokenBinding(addTabIcon, Icon.DisabledFilledBrushProperty,
             SharedTokenKey.ColorTextDisabled);
 
-        TokenResourceBinder.CreateSharedResourceBinding(addTabIcon, Layoutable.WidthProperty,
+        TokenResourceBinder.CreateTokenBinding(addTabIcon, Layoutable.WidthProperty,
             SharedTokenKey.IconSize);
-        TokenResourceBinder.CreateSharedResourceBinding(addTabIcon, Layoutable.HeightProperty,
+        TokenResourceBinder.CreateTokenBinding(addTabIcon, Layoutable.HeightProperty,
             SharedTokenKey.IconSize);
 
         var addTabButton = new IconButton
@@ -75,7 +75,7 @@ internal class CardTabStripTheme : BaseTabStripTheme
             CardTabStrip.CardBorderRadiusProperty);
         CreateTemplateParentBinding(addTabButton, Visual.IsVisibleProperty, CardTabStrip.IsShowAddTabButtonProperty);
 
-        TokenResourceBinder.CreateSharedResourceBinding(addTabButton, TemplatedControl.BorderBrushProperty,
+        TokenResourceBinder.CreateTokenBinding(addTabButton, TemplatedControl.BorderBrushProperty,
             SharedTokenKey.ColorBorderSecondary);
 
         addTabButton.RegisterInNameScope(scope);
