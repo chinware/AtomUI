@@ -5,42 +5,42 @@ namespace AtomUI.Theme.TokenSystem;
 [GlobalDesignToken]
 public partial class DesignToken
 {
-     /// <summary>
-   /// 内容区域背景色（悬停）
-   /// 控制内容区域背景色在鼠标悬停时的样式。
-   /// </summary>
-   public Color ColorFillContentHover { get; set; }
+    /// <summary>
+    /// 内容区域背景色（悬停）
+    /// 控制内容区域背景色在鼠标悬停时的样式。
+    /// </summary>
+    public Color ColorFillContentHover { get; set; }
 
-   /// <summary>
-   /// 替代背景色
-   /// 控制元素替代背景色。
-   /// </summary>
-   public Color ColorFillAlter { get; set; }
+    /// <summary>
+    /// 替代背景色
+    /// 控制元素替代背景色。
+    /// </summary>
+    public Color ColorFillAlter { get; set; }
 
-   /// <summary>
-   /// 内容区域背景色
-   /// 控制内容区域的背景色。
-   /// </summary>
-   public Color ColorFillContent { get; set; }
+    /// <summary>
+    /// 内容区域背景色
+    /// 控制内容区域的背景色。
+    /// </summary>
+    public Color ColorFillContent { get; set; }
 
-   /// <summary>
-   /// 容器禁用态下的背景色
-   /// 控制容器在禁用状态下的背景色。
-   /// </summary>
-   public Color ColorBgContainerDisabled { get; set; }
+    /// <summary>
+    /// 容器禁用态下的背景色
+    /// 控制容器在禁用状态下的背景色。
+    /// </summary>
+    public Color ColorBgContainerDisabled { get; set; }
 
-   /// <summary>
-   /// 文本悬停态背景色
-   /// 控制文本在悬停状态下的背景色。
-   /// </summary>
-   public Color ColorBgTextHover { get; set; }
+    /// <summary>
+    /// 文本悬停态背景色
+    /// 控制文本在悬停状态下的背景色。
+    /// </summary>
+    public Color ColorBgTextHover { get; set; }
 
-   /// <summary>
-   /// 文本激活态背景色
-   /// 控制文本在激活状态下的背景色。
-   /// </summary>
-   public Color ColorBgTextActive { get; set; }
-   
+    /// <summary>
+    /// 文本激活态背景色
+    /// 控制文本在激活状态下的背景色。
+    /// </summary>
+    public Color ColorBgTextActive { get; set; }
+
     /// <summary>
     /// 背景边框颜色
     /// 控制元素背景边框的颜色。
@@ -52,7 +52,7 @@ public partial class DesignToken
     /// 用于作为分割线的颜色，此颜色和 colorBorderSecondary 的颜色一致，但是用的是透明色。
     /// </summary>
     public Color ColorSplit { get; set; }
-    
+
     /// <summary>
     /// 占位文本颜色
     /// 控制占位文本的颜色。
@@ -189,7 +189,7 @@ public partial class DesignToken
     /// 控制组件项在禁用状态下的激活背景颜色
     /// </summary>
     public Color ControlItemBgActiveDisabled { get; set; } // Note. It also is a color
-    
+
     /// <summary>
     /// 线条宽度(聚焦态)
     /// </summary>
@@ -290,7 +290,7 @@ public partial class DesignToken
     /// 控制内容元素垂直内间距，适用于小屏幕设备。
     /// </summary>
     public double PaddingContentVerticalSM { get; set; }
-    
+
     /// <summary>
     /// 外边距 XXS
     /// 控制元素外边距，最小尺寸。

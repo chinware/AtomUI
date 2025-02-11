@@ -8,13 +8,12 @@ namespace AtomUI.Theme.TokenSystem;
 
 public partial class DesignToken : AbstractDesignToken
 {
-     /// <summary>
+    /// <summary>
     /// 现在这里的实现是写死的主色，后面是不是可以读取配置
     /// </summary>
     private readonly IDictionary<PresetColorType, PresetPrimaryColor> _defaultPresetColors;
-     
-    [NotTokenDefinition]
-    public IDictionary<PresetPrimaryColor, ColorMap> ColorPalettes { get; set; }
+
+    [NotTokenDefinition] public IDictionary<PresetPrimaryColor, ColorMap> ColorPalettes { get; set; }
 
     public DesignToken()
     {
@@ -61,12 +60,12 @@ public partial class DesignToken : AbstractDesignToken
         BorderRadius     = new CornerRadius(6);
         ColorTransparent = Colors.Transparent;
     }
-    
+
     public PresetPrimaryColor GetPresetPrimaryColor(PresetColorType colorType)
     {
         return _defaultPresetColors[colorType];
     }
-    
+
     public void SetColorPalette(PresetPrimaryColor primaryColor, ColorMap colorMap)
     {
         ColorPalettes[primaryColor] = colorMap;
@@ -91,27 +90,18 @@ public partial class DesignToken : AbstractDesignToken
         var screenLG  = 992;
         var screenXL  = 1200;
         var screenXXL = 1600;
-        
-        // Motion
-        if (!EnableMotion)
-        {
-            MotionDurationFast     = TimeSpan.FromMilliseconds(0);
-            MotionDurationMid      = TimeSpan.FromMilliseconds(0);
-            MotionDurationSlow     = TimeSpan.FromMilliseconds(0);
-            MotionDurationVerySlow = TimeSpan.FromMilliseconds(0);
-        }
-        
+
         // setup alias token
         // ============== Background ============== //
         ColorFillContent         = ColorFillSecondary;
         ColorFillContentHover    = ColorFill;
         ColorFillAlter           = ColorFillQuaternary;
         ColorBgContainerDisabled = ColorFillTertiary;
-        
+
         // ============== Split ============== //
         ColorBorderBg = ColorBgContainer;
         ColorSplit    = ColorUtils.AlphaColor(ColorBorderSecondary, ColorBgContainer);
-        
+
         // ============== Text ============== //
         ColorTextPlaceholder = ColorTextQuaternary;
         ColorTextDisabled    = ColorTextQuaternary;
@@ -122,48 +112,48 @@ public partial class DesignToken : AbstractDesignToken
         ColorHighlight       = ColorError;
         ColorBgTextHover     = ColorFillSecondary;
         ColorBgTextActive    = ColorFill;
-        
+
         ColorIcon      = ColorTextTertiary;
         ColorIconHover = ColorText;
-        
+
         ColorErrorOutline   = ColorUtils.AlphaColor(ColorErrorBg, ColorBgContainer);
         ColorWarningOutline = ColorUtils.AlphaColor(ColorWarningBg, ColorBgContainer);
-        
+
         // Font
         FontSizeIcon = FontSizeSM;
-        
+
         // icon
         IconSizeXS = (int)FontSizeSM - 2;
         IconSizeSM = (int)FontSizeSM;
         IconSize   = (int)FontSize;
         IconSizeLG = (int)FontSizeLG;
-        
+
         // Line
         LineWidthFocus     = LineWidth * 2;
         WaveAnimationRange = LineWidth * 6;
         WaveStartOpacity   = 0.4;
-        
+
         // Control
         ControlOutlineWidth = LineWidth * 2;
-        
+
         // Checkbox size and expand icon size
         ControlInteractiveSize = ControlHeight / 2;
-        
+
         ControlItemBgHover          = ColorFillTertiary;
         ControlItemBgActive         = ColorPrimaryBg;
         ControlItemBgActiveHover    = ColorPrimaryBgHover;
         ControlItemBgActiveDisabled = ColorFill;
         ColorControlOutline         = ColorUtils.AlphaColor(ColorPrimaryBg, ColorBgContainer);
-        
+
         FontWeightStrong    = 600;
         OpacityLoading      = 0.65;
         LinkDecoration      = null;
         LinkHoverDecoration = null;
         LinkFocusDecoration = null;
-        
+
         ControlPadding   = 12;
         ControlPaddingSM = 8;
-        
+
         PaddingXXS = SizeXXS;
         PaddingXS  = SizeXS;
         PaddingSM  = SizeSM;
@@ -171,7 +161,7 @@ public partial class DesignToken : AbstractDesignToken
         PaddingMD  = SizeMD;
         PaddingLG  = SizeLG;
         PaddingXL  = SizeXL;
-        
+
         PaddingContentHorizontalLG = SizeLG;
         PaddingContentVerticalLG   = SizeMS;
         PaddingContentHorizontal   = SizeMS;
@@ -179,7 +169,7 @@ public partial class DesignToken : AbstractDesignToken
         PaddingContentHorizontalSM = SizeSM;
         PaddingContentHorizontalXS = SizeXS;
         PaddingContentVerticalSM   = SizeXS;
-        
+
         MarginXXS = SizeXXS;
         MarginXS  = SizeXS;
         MarginSM  = SizeSM;
@@ -188,7 +178,7 @@ public partial class DesignToken : AbstractDesignToken
         MarginLG  = SizeLG;
         MarginXL  = SizeXL;
         MarginXXL = SizeXXL;
-        
+
         ScreenXS     = screenXS;
         ScreenXSMin  = screenXS;
         ScreenXSMax  = screenSM - 1;
@@ -206,7 +196,7 @@ public partial class DesignToken : AbstractDesignToken
         ScreenXLMax  = screenXXL - 1;
         ScreenXXL    = screenXXL;
         ScreenXXLMin = screenXXL;
-        
+
         BoxShadows = new BoxShadows(new BoxShadow
         {
             OffsetX = 0,
@@ -233,7 +223,7 @@ public partial class DesignToken : AbstractDesignToken
                 Color   = ColorUtils.FromRgbF(0.05, 0, 0, 0)
             }
         });
-        
+
         BoxShadowsSecondary = new BoxShadows(new BoxShadow
         {
             OffsetX = 0,
@@ -260,7 +250,7 @@ public partial class DesignToken : AbstractDesignToken
                 Color   = ColorUtils.FromRgbF(0.07, 0, 0, 0)
             }
         });
-        
+
         BoxShadowsTertiary = new BoxShadows(new BoxShadow
         {
             OffsetX = 0,
