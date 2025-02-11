@@ -1,5 +1,7 @@
 ﻿using AtomUI.Data;
+using AtomUI.Theme;
 using AtomUI.Theme.Palette;
+using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -18,7 +20,9 @@ public enum DotBadgeStatus
     Warning
 }
 
-public class DotBadge : Control
+public class DotBadge : Control,
+                        IControlSharedTokenResourcesHost,
+                        IAnimationAwareControl
 {
     #region 公共属性定义
 
@@ -42,6 +46,12 @@ public class DotBadge : Control
 
     public static readonly StyledProperty<bool> BadgeIsVisibleProperty =
         AvaloniaProperty.Register<DotBadge, bool>(nameof(BadgeIsVisible));
+    
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AvaloniaProperty.Register<DotBadge, bool>(nameof(IsMotionEnabled), true);
+
+    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
+        = AvaloniaProperty.Register<DotBadge, bool>(nameof(IsWaveAnimationEnabled), true);
 
     public string? DotColor
     {
@@ -79,6 +89,26 @@ public class DotBadge : Control
         get => GetValue(BadgeIsVisibleProperty);
         set => SetValue(BadgeIsVisibleProperty, value);
     }
+    
+    public bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
+    }
+
+    public bool IsWaveAnimationEnabled
+    {
+        get => GetValue(IsWaveAnimationEnabledProperty);
+        set => SetValue(IsWaveAnimationEnabledProperty, value);
+    }
+
+    #endregion
+    
+    #region 内部属性定义
+    
+    Control IControlSharedTokenResourcesHost.HostControl => this;
+    string IControlSharedTokenResourcesHost.TokenId => BadgeToken.ID;
+    Control IAnimationAwareControl.PropertyBindTarget => this;
 
     #endregion
 
@@ -91,6 +121,12 @@ public class DotBadge : Control
         AffectsRender<DotBadge>(DotColorProperty, StatusProperty);
         HorizontalAlignmentProperty.OverrideDefaultValue<DotBadge>(HorizontalAlignment.Left);
         VerticalAlignmentProperty.OverrideDefaultValue<DotBadge>(VerticalAlignment.Top);
+    }
+
+    public DotBadge()
+    {
+        this.RegisterResources();
+        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
     }
 
     private DotBadgeAdorner CreateDotBadgeAdorner()
@@ -122,17 +158,29 @@ public class DotBadge : Control
             }
 
             dotBadgeAdorner.ApplyToTarget(_adornerLayer, this);
+        } 
+        else
+        {
+            IsVisible = true;
         }
     }
-    
+
     private void HideAdorner(bool enableMotion)
     {
         // 这里需要抛出异常吗？
-        if ( _dotBadgeAdorner is null)
+        if (_dotBadgeAdorner is null)
         {
             return;
         }
+
         _dotBadgeAdorner.DetachFromTarget(_adornerLayer, enableMotion);
+        if (!enableMotion)
+        {
+            if (DecoratedTarget is null)
+            {
+                IsVisible = false;
+            }
+        }
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
@@ -140,7 +188,7 @@ public class DotBadge : Control
         base.OnDetachedFromVisualTree(e);
         HideAdorner(false);
     }
-    
+
     private void SetupTokenBindings()
     {
         if (_dotBadgeAdorner is not null)
@@ -148,6 +196,8 @@ public class DotBadge : Control
             BindUtils.RelayBind(this, StatusProperty, _dotBadgeAdorner, DotBadgeAdorner.StatusProperty);
             BindUtils.RelayBind(this, TextProperty, _dotBadgeAdorner, DotBadgeAdorner.TextProperty);
             BindUtils.RelayBind(this, OffsetProperty, _dotBadgeAdorner, DotBadgeAdorner.OffsetProperty);
+            BindUtils.RelayBind(this, IsMotionEnabledProperty, _dotBadgeAdorner, DotBadgeAdorner.IsMotionEnabledProperty);
+            BindUtils.RelayBind(this, IsWaveAnimationEnabledProperty, _dotBadgeAdorner, DotBadgeAdorner.IsWaveAnimationEnabledProperty);
         }
     }
 
@@ -196,7 +246,7 @@ public class DotBadge : Control
             }
             else
             {
-                HideAdorner(true);
+                HideAdorner(IsMotionEnabled);
             }
         }
 
@@ -232,5 +282,4 @@ public class DotBadge : Control
             _dotBadgeAdorner!.BadgeDotColor = new SolidColorBrush(color);
         }
     }
-    
 }

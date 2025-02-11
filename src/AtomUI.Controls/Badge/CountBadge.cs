@@ -204,10 +204,7 @@ public class CountBadge : Control,
         }
         else
         {
-            if (DecoratedTarget is null)
-            {
-                IsVisible = true;
-            }
+            IsVisible = true;
             badgeAdorner.ApplyToTarget(null, this);
         }
     }

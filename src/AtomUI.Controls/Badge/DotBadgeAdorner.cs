@@ -80,12 +80,30 @@ internal class DotBadgeAdorner : TemplatedControl
         AvaloniaProperty.Register<DotBadgeAdorner, TimeSpan>(
             nameof(MotionDuration));
 
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AvaloniaProperty.Register<DotBadgeAdorner, bool>(nameof(IsMotionEnabled), true);
+
+    internal static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
+        = AvaloniaProperty.Register<DotBadgeAdorner, bool>(nameof(IsWaveAnimationEnabled), true);
+    
     internal TimeSpan MotionDuration
     {
         get => GetValue(MotionDurationProperty);
         set => SetValue(MotionDurationProperty, value);
     }
 
+    internal bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
+    }
+
+    internal bool IsWaveAnimationEnabled
+    {
+        get => GetValue(IsWaveAnimationEnabledProperty);
+        set => SetValue(IsWaveAnimationEnabledProperty, value);
+    }
+    
     #endregion
 
     private MotionActorControl? _indicatorMotionActor;
@@ -201,11 +219,21 @@ internal class DotBadgeAdorner : TemplatedControl
         AdornerLayer.SetAdornedElement(this, adorned);
         AdornerLayer.SetIsClipEnabled(this, false);
         adornerLayer.Children.Add(this);
+        
+        if (IsMotionEnabled)
+        {
+            _motionCancellationTokenSource?.Cancel();
+            _motionCancellationTokenSource = new CancellationTokenSource();
 
-        _motionCancellationTokenSource?.Cancel();
-        _motionCancellationTokenSource = new CancellationTokenSource();
-
-        ApplyShowMotion();
+            ApplyShowMotion();
+        }
+        else
+        {
+            if (_indicatorMotionActor is not null)
+            {
+                _indicatorMotionActor.IsVisible = true;
+            }
+        }
     }
 
     internal void DetachFromTarget(AdornerLayer? adornerLayer, bool enableMotion = true)
