@@ -6,6 +6,7 @@ using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.TokenSystem;
+using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
@@ -38,7 +39,11 @@ public enum ButtonShape
 // TODO 目前不能动态切换 ButtonType
 
 [PseudoClasses(IconOnlyPC, LoadingPC)]
-public class Button : AvaloniaButton, ISizeTypeAware, IWaveAdornerInfoProvider
+public class Button : AvaloniaButton, 
+                      ISizeTypeAware, 
+                      IWaveAdornerInfoProvider,
+                      IAnimationAwareControl,
+                      IControlSharedTokenResourcesHost
 {
     public const string IconOnlyPC = ":icononly";
     public const string LoadingPC = ":loading";
@@ -71,6 +76,12 @@ public class Button : AvaloniaButton, ISizeTypeAware, IWaveAdornerInfoProvider
 
     public static readonly StyledProperty<bool> IsIconVisibleProperty
         = AvaloniaProperty.Register<Button, bool>(nameof(IsIconVisible), true);
+
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AvaloniaProperty.Register<Button, bool>(nameof(IsMotionEnabled), true);
+
+    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
+        = AvaloniaProperty.Register<Button, bool>(nameof(IsWaveAnimationEnabled), true);
 
     public ButtonType ButtonType
     {
@@ -125,6 +136,20 @@ public class Button : AvaloniaButton, ISizeTypeAware, IWaveAdornerInfoProvider
         get => GetValue(IsIconVisibleProperty);
         set => SetValue(IsIconVisibleProperty, value);
     }
+
+    public bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
+    }
+
+    public bool IsWaveAnimationEnabled
+    {
+        get => GetValue(IsWaveAnimationEnabledProperty);
+        set => SetValue(IsWaveAnimationEnabledProperty, value);
+    }
+
+    Control IAnimationAwareControl.PropertyBindTarget => this;
 
     #endregion
 
@@ -208,13 +233,15 @@ public class Button : AvaloniaButton, ISizeTypeAware, IWaveAdornerInfoProvider
         get => GetValue(EffectiveBorderThicknessProperty);
         set => SetValue(EffectiveBorderThicknessProperty, value);
     }
+    
+    Control IControlSharedTokenResourcesHost.HostControl => this;
+    string IControlSharedTokenResourcesHost.TokenId => ButtonToken.ID;
 
     #endregion
-    
+
     private bool _initialized;
     private Icon? _loadingIcon;
-    private ControlTokenResourceRegister _controlTokenResourceRegister;
-    
+
     static Button()
     {
         AffectsMeasure<Button>(SizeTypeProperty,
@@ -234,7 +261,8 @@ public class Button : AvaloniaButton, ISizeTypeAware, IWaveAdornerInfoProvider
 
     public Button()
     {
-        _controlTokenResourceRegister = new ControlTokenResourceRegister(this, ButtonToken.ID);
+        this.RegisterResources();
+        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
     }
 
     protected override Size MeasureOverride(Size availableSize)
@@ -266,7 +294,6 @@ public class Button : AvaloniaButton, ISizeTypeAware, IWaveAdornerInfoProvider
         base.OnAttachedToLogicalTree(e);
         if (!_initialized)
         {
-            _controlTokenResourceRegister.RegisterResources();
             SetupControlTheme();
             if (Text is null && Content is string content)
             {
@@ -321,6 +348,7 @@ public class Button : AvaloniaButton, ISizeTypeAware, IWaveAdornerInfoProvider
                     };
                 }
             }
+
             _initialized = true;
         }
     }
@@ -336,6 +364,7 @@ public class Button : AvaloniaButton, ISizeTypeAware, IWaveAdornerInfoProvider
             if (e.Property == IsPressedProperty)
             {
                 if (!IsLoading &&
+                    IsWaveAnimationEnabled &&
                     (e.OldValue as bool? == true) &&
                     (ButtonType == ButtonType.Primary || ButtonType == ButtonType.Default))
                 {
@@ -406,6 +435,11 @@ public class Button : AvaloniaButton, ISizeTypeAware, IWaveAdornerInfoProvider
             {
                 SetupIconBrush();
             }
+            else if (e.Property == IsMotionEnabledProperty ||
+                     e.Property == IsWaveAnimationEnabledProperty)
+            {
+                SetupTransitions();
+            }
         }
     }
 
@@ -439,33 +473,40 @@ public class Button : AvaloniaButton, ISizeTypeAware, IWaveAdornerInfoProvider
 
     private void SetupTransitions()
     {
-        if (Transitions is null)
+        if (IsMotionEnabled)
         {
-            var transitions = new Transitions();
-            if (ButtonType == ButtonType.Primary)
+            if (Transitions is null)
             {
-                transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty));
-                if (IsGhost)
+                var transitions = new Transitions();
+                if (ButtonType == ButtonType.Primary)
+                {
+                    transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty));
+                    if (IsGhost)
+                    {
+                        transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(BorderBrushProperty));
+                        transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty));
+                    }
+                }
+                else if (ButtonType == ButtonType.Default)
                 {
                     transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(BorderBrushProperty));
                     transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty));
                 }
+                else if (ButtonType == ButtonType.Text)
+                {
+                    transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty));
+                }
+                else if (ButtonType == ButtonType.Link)
+                {
+                    transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty));
+                }
+                Transitions = transitions;
             }
-            else if (ButtonType == ButtonType.Default)
-            {
-                transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(BorderBrushProperty));
-                transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty));
-            }
-            else if (ButtonType == ButtonType.Text)
-            {
-                transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty));
-            }
-            else if (ButtonType == ButtonType.Link)
-            {
-                transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty));
-            }
-
-            Transitions = transitions;
+        }
+        else
+        {
+            Transitions?.Clear();
+            Transitions = null;
         }
     }
 
