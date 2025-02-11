@@ -2,6 +2,7 @@ using AtomUI.Controls.Switch;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.Media;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
@@ -10,6 +11,7 @@ using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Rendering;
+using AnimationUtils = AtomUI.Controls.Utils.AnimationUtils;
 
 namespace AtomUI.Controls;
 
@@ -113,15 +115,21 @@ public class ToggleSwitch : ToggleButton,
         = AvaloniaProperty.Register<ToggleSwitch, double>(nameof(TrackPadding));
 
     // 这几个属性跟动画相关
-    internal static readonly StyledProperty<Point> KnobOffsetProperty
-        = AvaloniaProperty.Register<ToggleSwitch, Point>(nameof(KnobOffset));
-
     internal static readonly StyledProperty<Rect> KnobRectProperty
         = AvaloniaProperty.Register<ToggleSwitch, Rect>(nameof(KnobRect));
 
     public static readonly StyledProperty<Size> KnobSizeProperty
-        = AvaloniaProperty.Register<SwitchKnob, Size>(nameof(KnobSize));
+        = AvaloniaProperty.Register<ToggleSwitch, Size>(nameof(KnobSize));
 
+    internal static readonly StyledProperty<Rect> KnobMovingRectProperty
+        = AvaloniaProperty.Register<ToggleSwitch, Rect>(nameof(KnobMovingRect));
+    
+    internal static readonly StyledProperty<Point> OnContentOffsetProperty
+        = AvaloniaProperty.Register<ToggleSwitch, Point>(nameof(OnContentOffset));
+
+    internal static readonly StyledProperty<Point> OffContentOffsetProperty
+        = AvaloniaProperty.Register<ToggleSwitch, Point>(nameof(OffContentOffset));
+    
     internal double InnerMaxMargin
     {
         get => GetValue(InnerMaxMarginProperty);
@@ -158,12 +166,6 @@ public class ToggleSwitch : ToggleButton,
         set => SetValue(TrackPaddingProperty, value);
     }
 
-    internal Point KnobOffset
-    {
-        get => GetValue(KnobOffsetProperty);
-        set => SetValue(KnobOffsetProperty, value);
-    }
-
     internal Rect KnobRect
     {
         get => GetValue(KnobRectProperty);
@@ -175,18 +177,18 @@ public class ToggleSwitch : ToggleButton,
         get => GetValue(KnobSizeProperty);
         set => SetValue(KnobSizeProperty, value);
     }
-
-    internal static readonly StyledProperty<Point> OnContentOffsetProperty
-        = AvaloniaProperty.Register<ToggleSwitch, Point>(nameof(OnContentOffset));
-
+    
+    internal Rect KnobMovingRect
+    {
+        get => GetValue(KnobMovingRectProperty);
+        set => SetValue(KnobMovingRectProperty, value);
+    }
+    
     internal Point OnContentOffset
     {
         get => GetValue(OnContentOffsetProperty);
         set => SetValue(OnContentOffsetProperty, value);
     }
-
-    internal static readonly StyledProperty<Point> OffContentOffsetProperty
-        = AvaloniaProperty.Register<ToggleSwitch, Point>(nameof(OffContentOffset));
 
     internal Point OffContentOffset
     {
@@ -207,7 +209,7 @@ public class ToggleSwitch : ToggleButton,
 
     private const double STRETCH_FACTOR = 1.3d;
     private Canvas? _togglePanel;
-
+    private bool _isCheckedChanged = false;
     private SwitchKnob? _switchKnob;
 
     static ToggleSwitch()
@@ -216,6 +218,7 @@ public class ToggleSwitch : ToggleButton,
         AffectsArrange<ToggleSwitch>(
             IsPressedProperty,
             KnobRectProperty,
+            KnobMovingRectProperty,
             OnContentOffsetProperty,
             OffContentOffsetProperty);
         AffectsRender<ToggleSwitch>(GrooveBackgroundProperty,
@@ -224,14 +227,14 @@ public class ToggleSwitch : ToggleButton,
 
     public ToggleSwitch()
     {
-        LayoutUpdated += HandleLayoutUpdated;
+        LayoutUpdated       += HandleLayoutUpdated;
     }
 
     private void HandleLayoutUpdated(object? sender, EventArgs args)
     {
         Transitions ??= new Transitions
         {
-            AnimationUtils.CreateTransition<RectTransition>(KnobRectProperty),
+            AnimationUtils.CreateTransition<RectTransition>(KnobMovingRectProperty),
             AnimationUtils.CreateTransition<PointTransition>(OnContentOffsetProperty),
             AnimationUtils.CreateTransition<PointTransition>(OffContentOffsetProperty),
             AnimationUtils.CreateTransition<SolidColorBrushTransition>(GrooveBackgroundProperty),
@@ -241,6 +244,7 @@ public class ToggleSwitch : ToggleButton,
 
     protected override Size MeasureOverride(Size availableSize)
     {
+        base.MeasureOverride(availableSize);
         double extraInfoWidth = 0;
 
         if (OffContent is Layoutable offLayoutable)
@@ -273,8 +277,16 @@ public class ToggleSwitch : ToggleButton,
     {
         if (_switchKnob is not null)
         {
-            _switchKnob.Arrange(KnobRect);
+            if (!_isCheckedChanged)
+            {
+                _switchKnob.Arrange(KnobRect);
+            }
+            else
+            {
+                _switchKnob.Arrange(KnobMovingRect);
+            }
         }
+        
         AdjustExtraInfoOffset();
         return finalSize;
     }
@@ -283,21 +295,19 @@ public class ToggleSwitch : ToggleButton,
     {
         if (OffContent is Control offControl)
         {
-            Canvas.SetLeft(offControl, OffContentOffset.X);
-            Canvas.SetTop(offControl, OffContentOffset.Y);
+            offControl.Arrange(new Rect(new Point(OffContentOffset.X, OffContentOffset.Y), offControl.DesiredSize));
         }
 
         if (OnContent is Control onControl)
         {
-            Canvas.SetLeft(onControl, OnContentOffset.X);
-            Canvas.SetTop(onControl, OnContentOffset.Y);
+            onControl.Arrange(new Rect(new Point(OnContentOffset.X, OnContentOffset.Y), onControl.DesiredSize));
         }
     }
 
     private void AdjustOffsetOnPressed()
     {
         var handleRect = HandleRect();
-        var handleSize = KnobSize.Width;
+        var handleSize = handleRect.Width;
 
         var contentOffsetDelta = handleSize * (STRETCH_FACTOR - 1);
 
@@ -310,13 +320,23 @@ public class ToggleSwitch : ToggleButton,
         {
             OffContentOffset = new Point(OffContentOffset.X + contentOffsetDelta, OffContentOffset.Y);
         }
-        
-        KnobRect = handleRect;
+
+        if (_switchKnob is not null)
+        {
+            _switchKnob.KnobSize = new Size(handleSize, KnobSize.Height);
+        }
+        KnobRect       = handleRect;
+        KnobMovingRect = KnobRect;
     }
 
     private void AdjustOffsetOnReleased()
     {
         CalculateElementsOffset(Bounds.Size);
+        
+        if (_switchKnob is not null)
+        {
+            _switchKnob.KnobSize = KnobSize;
+        }
     }
 
     protected override void OnPointerPressed(PointerPressedEventArgs e)
@@ -324,6 +344,11 @@ public class ToggleSwitch : ToggleButton,
         if (!IsLoading)
         {
             base.OnPointerPressed(e);
+            if (!MathUtils.AreClose(KnobMovingRect.X,  KnobRect.X))
+            {
+                return;
+            }
+            _isCheckedChanged = false;
             AdjustOffsetOnPressed();
         }
     }
@@ -341,7 +366,58 @@ public class ToggleSwitch : ToggleButton,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
         base.OnPropertyChanged(e);
-        HandlePropertyChangedForStyle(e);
+        if (e.Property == IsLoadingProperty)
+        {
+            HandleLoadingState(IsLoading);
+        }
+        else if (e.Property == OffContentProperty || e.Property == OnContentProperty)
+        {
+            if (VisualRoot is not null)
+            {
+                if (e.OldValue is Control oldChild)
+                {
+                    _togglePanel?.Children.Remove(oldChild);
+                }
+
+                var newControl = SetupContent(e.NewValue);
+
+                if (e.Property == OffContentProperty)
+                {
+                    OffContent = newControl;
+                }
+                else
+                {
+                    OnContent = newControl;
+                }
+
+                if (newControl is not null)
+                {
+                    _togglePanel?.Children.Add(newControl);
+                }
+            }
+        }
+
+        if ((e.Property == IsPointerOverProperty && !IsLoading) ||
+            e.Property == IsCheckedProperty ||
+            e.Property == IsEnabledProperty)
+        {
+            if (e.Property == IsCheckedProperty)
+            {
+                CalculateElementsOffset(Bounds.Size);
+                WaveSpiritAdorner.ShowWaveAdorner(this, WaveType.PillWave);
+            }
+        } else if (e.Property == KnobSizeProperty)
+        {
+            if (_switchKnob is not null)
+            {
+                _switchKnob.KnobSize = KnobSize;
+            }
+        }
+
+        if (e.Property == IsCheckedProperty)
+        {
+            _isCheckedChanged = true;
+        }
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -354,6 +430,10 @@ public class ToggleSwitch : ToggleButton,
     {
         _togglePanel = scope.Find<Canvas>(ToggleSwitchTheme.MainContainerPart);
         _switchKnob  = scope.Find<SwitchKnob>(ToggleSwitchTheme.SwitchKnobPart);
+        if (_switchKnob is not null)
+        {
+            _switchKnob.KnobSize = KnobSize;
+        }
 
         if (!IsLoading)
         {
@@ -412,7 +492,7 @@ public class ToggleSwitch : ToggleButton,
             {
                 if (iconControl.ThemeType != IconThemeType.TwoTone)
                 {
-                    iconControl.NormalFilledBrush ??= Foreground;
+                    iconControl.NormalFilledBrush = Foreground;
                 }
             }
 
@@ -434,7 +514,8 @@ public class ToggleSwitch : ToggleButton,
     private void CalculateElementsOffset(Size controlSize)
     {
         var isChecked  = IsChecked.HasValue && IsChecked.Value;
-        KnobRect = HandleRect(isChecked, controlSize);
+        KnobRect       = HandleRect(isChecked, controlSize);
+        KnobMovingRect = KnobRect;
 
         var onExtraInfoRect  = ExtraInfoRect(true, controlSize);
         var offExtraInfoRect = ExtraInfoRect(false, controlSize);
@@ -447,51 +528,6 @@ public class ToggleSwitch : ToggleButton,
         {
             OffContentOffset = offExtraInfoRect.TopLeft;
             OnContentOffset  = new Point(-offExtraInfoRect.Width, offExtraInfoRect.Top);
-        }
-    }
-
-    private void HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
-    {
-        if (e.Property == IsLoadingProperty)
-        {
-            HandleLoadingState(IsLoading);
-        }
-        else if (e.Property == OffContentProperty || e.Property == OnContentProperty)
-        {
-            if (VisualRoot is not null)
-            {
-                if (e.OldValue is Control oldChild)
-                {
-                    _togglePanel?.Children.Remove(oldChild);
-                }
-
-                var newControl = SetupContent(e.NewValue);
-
-                if (e.Property == OffContentProperty)
-                {
-                    OffContent = newControl;
-                }
-                else
-                {
-                    OnContent = newControl;
-                }
-
-                if (newControl is not null)
-                {
-                    _togglePanel?.Children.Add(newControl);
-                }
-            }
-        }
-
-        if ((e.Property == IsPointerOverProperty && !IsLoading) ||
-            e.Property == IsCheckedProperty ||
-            e.Property == IsEnabledProperty)
-        {
-            if (e.Property == IsCheckedProperty)
-            {
-                CalculateElementsOffset(Bounds.Size);
-                WaveSpiritAdorner.ShowWaveAdorner(this, WaveType.PillWave);
-            }
         }
     }
 

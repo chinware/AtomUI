@@ -21,7 +21,6 @@ internal class SwitchKnob : Control
     
     public static readonly StyledProperty<IBrush?> KnobBackgroundColorProperty
         = AvaloniaProperty.Register<SwitchKnob, IBrush?>(nameof(KnobBackgroundColor));
-    
         
     public static readonly StyledProperty<BoxShadow> KnobBoxShadowProperty
         = AvaloniaProperty.Register<SwitchKnob, BoxShadow>(nameof(KnobBoxShadow));
@@ -53,6 +52,12 @@ internal class SwitchKnob : Control
     
     internal static readonly StyledProperty<IBrush?> LoadIndicatorBrushProperty
         = AvaloniaProperty.Register<SwitchKnob, IBrush?>(nameof(LoadIndicatorBrush));
+    
+    internal static readonly StyledProperty<Size> KnobSizeProperty
+        = AvaloniaProperty.Register<SwitchKnob, Size>(nameof(KnobSize));
+    
+    internal static readonly StyledProperty<double> KnobRenderWidthProperty
+        = AvaloniaProperty.Register<SwitchKnob, double>(nameof(KnobRenderWidth));
 
     internal int Rotation
     {
@@ -64,6 +69,18 @@ internal class SwitchKnob : Control
     {
         get => GetValue(LoadIndicatorBrushProperty);
         set => SetValue(LoadIndicatorBrushProperty, value);
+    }
+    
+    internal Size KnobSize
+    {
+        get => GetValue(KnobSizeProperty);
+        set => SetValue(KnobSizeProperty, value);
+    }
+    
+    internal double KnobRenderWidth
+    {
+        get => GetValue(KnobRenderWidthProperty);
+        set => SetValue(KnobRenderWidthProperty, value);
     }
     
     #endregion
@@ -93,7 +110,22 @@ internal class SwitchKnob : Control
     static SwitchKnob()
     {
         AffectsRender<SwitchKnob>(
-            RotationProperty);
+            RotationProperty, KnobRenderWidthProperty);
+        AffectsMeasure<SwitchKnob>(KnobSizeProperty);
+    }
+    
+    public SwitchKnob()
+    {
+        LayoutUpdated += HandleLayoutUpdated;
+        UseLayoutRounding = false;
+    }
+
+    private void HandleLayoutUpdated(object? sender, EventArgs args)
+    {
+        Transitions ??= new Transitions
+        {
+            AnimationUtils.CreateTransition<DoubleTransition>(KnobRenderWidthProperty),
+        };
     }
 
     public sealed override void ApplyTemplate()
@@ -178,7 +210,16 @@ internal class SwitchKnob : Control
 
     protected override Size MeasureOverride(Size availableSize)
     {
-        return availableSize;
+        return KnobSize;
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == KnobSizeProperty)
+        {
+            KnobRenderWidth = KnobSize.Width;
+        }
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -208,23 +249,31 @@ internal class SwitchKnob : Control
 
     public sealed override void Render(DrawingContext context)
     {
-        if (MathUtils.AreClose(Bounds.Width, Bounds.Height))
+        var offsetX = 0d;
+        var offsetY = 0d;
+        if (IsCheckedState)
         {
-            context.DrawEllipse(KnobBackgroundColor, null, new Rect(0, 0, Bounds.Width, Bounds.Height));
+            offsetX = Bounds.Width - KnobRenderWidth;
+        }
+
+        var targetRect = new Rect(offsetX, offsetY, KnobRenderWidth, Bounds.Height);
+        if (MathUtils.AreClose(KnobRenderWidth, DesiredSize.Height))
+        {
+            context.DrawEllipse(KnobBackgroundColor, null, targetRect);
         }
         else
         {
-            context.DrawPilledRect(KnobBackgroundColor, null, new Rect(0, 0, Bounds.Width, Bounds.Height));
+            context.DrawPilledRect(KnobBackgroundColor, null, targetRect);
         }
 
         if (_isLoading)
         {
             var delta           = 2.5;
-            var loadingRectSize = Bounds.Size.Deflate(new Thickness(delta));
+            var loadingRectSize = targetRect.Size.Deflate(new Thickness(delta));
             var loadingRect = new Rect(new Point(-loadingRectSize.Width / 2, -loadingRectSize.Height / 2),
                 loadingRectSize);
             var       pen                     = new Pen(LoadIndicatorBrush, 1, null, PenLineCap.Round);
-            var       translateToCenterMatrix = Matrix.CreateTranslation(Bounds.Center.X, Bounds.Center.Y);
+            var       translateToCenterMatrix = Matrix.CreateTranslation(targetRect.Center.X, targetRect.Center.Y);
             var       rotationMatrix          = Matrix.CreateRotation(Rotation * Math.PI / 180);
             using var translateToCenterState  = context.PushTransform(translateToCenterMatrix);
             using var rotationMatrixState     = context.PushTransform(rotationMatrix);
