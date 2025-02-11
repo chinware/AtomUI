@@ -1,4 +1,6 @@
-﻿using AtomUI.Media;
+﻿using AtomUI.Controls;
+using AtomUI.Media;
+using AtomUI.Theme.Utils;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
@@ -11,7 +13,9 @@ using Avalonia.Styling;
 
 namespace AtomUI.IconPkg;
 
-public sealed class Icon : Control, ICustomHitTest
+public class Icon : Control,
+                    ICustomHitTest,
+                    IAnimationAwareControl
 {
     public static readonly StyledProperty<IconInfo?> IconInfoProperty =
         AvaloniaProperty.Register<Icon, IconInfo?>(nameof(IconInfo));
@@ -55,7 +59,13 @@ public sealed class Icon : Control, ICustomHitTest
             nameof(FillAnimationDuration), TimeSpan.FromMilliseconds(300));
 
     public static readonly StyledProperty<IconMode> IconModeProperty =
-        AvaloniaProperty.Register<Icon, IconMode>(nameof(IconMode), IconMode.Normal);
+        AvaloniaProperty.Register<Icon, IconMode>(nameof(IconMode));
+
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AvaloniaProperty.Register<Icon, bool>(nameof(IsMotionEnabled), true);
+
+    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
+        = AvaloniaProperty.Register<Icon, bool>(nameof(IsWaveAnimationEnabled), true);
 
     public IconInfo? IconInfo
     {
@@ -127,6 +137,18 @@ public sealed class Icon : Control, ICustomHitTest
         get => GetValue(LoadingAnimationProperty);
         set => SetValue(LoadingAnimationProperty, value);
     }
+    
+    public bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
+    }
+
+    public bool IsWaveAnimationEnabled
+    {
+        get => GetValue(IsWaveAnimationEnabledProperty);
+        set => SetValue(IsWaveAnimationEnabledProperty, value);
+    }
 
     #region 内部属性定义
 
@@ -139,7 +161,7 @@ public sealed class Icon : Control, ICustomHitTest
         get => GetValue(AngleAnimationRotateProperty);
         set => SetValue(AngleAnimationRotateProperty, value);
     }
-    
+
     internal static readonly StyledProperty<IBrush?> FilledBrushProperty
         = AvaloniaProperty.Register<Icon, IBrush?>(
             nameof(FilledBrush));
@@ -154,6 +176,8 @@ public sealed class Icon : Control, ICustomHitTest
     }
 
     #endregion
+
+    Control IAnimationAwareControl.PropertyBindTarget => this;
 
     private Animation? _animation;
     private CancellationTokenSource? _animationCancellationTokenSource;
@@ -177,6 +201,7 @@ public sealed class Icon : Control, ICustomHitTest
         RenderTransform       = new RotateTransform();
         _sourceGeometriesData = new List<Geometry>();
         _transforms           = new List<Matrix>();
+        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
     }
 
     public override void ApplyTemplate()
@@ -184,10 +209,22 @@ public sealed class Icon : Control, ICustomHitTest
         base.ApplyTemplate();
         BuildSourceRenderData();
         SetupFilledBrush();
-        Transitions ??= new Transitions
+        SetupTransitions();
+    }
+
+    private void SetupTransitions()
+    {
+        if (IsMotionEnabled)
         {
-            AnimationUtils.CreateTransition<SolidColorBrushTransition>(FilledBrushProperty, FillAnimationDuration)
-        };
+            Transitions ??= new Transitions
+            {
+                AnimationUtils.CreateTransition<SolidColorBrushTransition>(FilledBrushProperty, FillAnimationDuration)
+            };   
+        }
+        else
+        {
+            Transitions = null;
+        }
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -226,6 +263,10 @@ public sealed class Icon : Control, ICustomHitTest
                      change.Property == IconInfoProperty)
             {
                 SetupFilledBrush();
+            }
+            else if (change.Property == IsMotionEnabledProperty)
+            {
+                SetupTransitions();
             }
         }
     }
@@ -491,7 +532,7 @@ public sealed class Icon : Control, ICustomHitTest
                 {
                     fillBrush = FilledBrush;
                 }
-                
+
                 using var state = context.PushTransform(_transforms[i]);
                 context.DrawGeometry(fillBrush, null, renderedGeometry);
             }
