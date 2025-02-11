@@ -83,9 +83,6 @@ public class AddOnDecoratedBox : ContentControl,
         get => GetValue(StatusProperty);
         set => SetValue(StatusProperty, value);
     }
-
-    Control IControlSharedTokenResourcesHost.HostControl => this;
-    string IControlSharedTokenResourcesHost.TokenId => ButtonToken.ID;
     
     #endregion
 
@@ -156,6 +153,9 @@ public class AddOnDecoratedBox : ContentControl,
         set => SetAndRaise(RightAddOnBorderThicknessProperty, ref _rightAddOnBorderThickness, value);
     }
 
+    Control IControlSharedTokenResourcesHost.HostControl => this;
+    string IControlSharedTokenResourcesHost.TokenId => AddOnDecoratedBoxToken.ID;
+    
     #endregion
 
     protected Control? _leftAddOnPresenter;

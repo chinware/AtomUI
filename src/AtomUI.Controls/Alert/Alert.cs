@@ -103,7 +103,7 @@ public class Alert : TemplatedControl,
     #region 内部属性定义
 
     Control IControlSharedTokenResourcesHost.HostControl => this;
-    string IControlSharedTokenResourcesHost.TokenId => ButtonToken.ID;
+    string IControlSharedTokenResourcesHost.TokenId => AlertToken.ID;
 
     #endregion
 

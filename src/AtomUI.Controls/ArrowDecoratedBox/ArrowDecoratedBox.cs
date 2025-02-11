@@ -1,4 +1,6 @@
-﻿using Avalonia;
+﻿using AtomUI.Theme;
+using AtomUI.Theme.Utils;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Layout;
@@ -76,7 +78,9 @@ public enum ArrowPosition
     RightEdgeAlignedBottom
 }
 
-public class ArrowDecoratedBox : ContentControl, IShadowMaskInfoProvider
+public class ArrowDecoratedBox : ContentControl, 
+                                 IShadowMaskInfoProvider,
+                                 IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
 
@@ -130,6 +134,9 @@ public class ArrowDecoratedBox : ContentControl, IShadowMaskInfoProvider
         set => SetValue(ArrowDirectionProperty, value);
     }
     
+    Control IControlSharedTokenResourcesHost.HostControl => this;
+    string IControlSharedTokenResourcesHost.TokenId => ArrowDecoratedBoxToken.ID;
+    
     #endregion
 
     // 指针最顶点位置
@@ -142,6 +149,11 @@ public class ArrowDecoratedBox : ContentControl, IShadowMaskInfoProvider
     {
         AffectsMeasure<ArrowDecoratedBox>(IsShowArrowProperty);
         AffectsArrange<ArrowDecoratedBox>(ArrowDirectionProperty, ArrowPositionProperty);
+    }
+
+    public ArrowDecoratedBox()
+    {
+        this.RegisterResources();
     }
 
     public static Direction GetDirection(ArrowPosition arrowPosition)
