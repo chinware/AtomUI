@@ -1,7 +1,9 @@
 ﻿using AtomUI.Data;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Palette;
 using AtomUI.Theme.Styling;
+using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -16,7 +18,9 @@ public enum CountBadgeSize
     Small
 }
 
-public class CountBadge : Control
+public class CountBadge : Control,
+                          IControlSharedTokenResourcesHost,
+                          IAnimationAwareControl
 {
     #region 公共属性定义
 
@@ -46,6 +50,12 @@ public class CountBadge : Control
 
     public static readonly StyledProperty<bool> BadgeIsVisibleProperty =
         AvaloniaProperty.Register<CountBadge, bool>(nameof(BadgeIsVisible), true);
+    
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AvaloniaProperty.Register<CountBadge, bool>(nameof(IsMotionEnabled), true);
+
+    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
+        = AvaloniaProperty.Register<CountBadge, bool>(nameof(IsWaveAnimationEnabled), true);
     
     public string? BadgeColor
     {
@@ -96,6 +106,18 @@ public class CountBadge : Control
         set => SetValue(BadgeIsVisibleProperty, value);
     }
     
+    public bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
+    }
+
+    public bool IsWaveAnimationEnabled
+    {
+        get => GetValue(IsWaveAnimationEnabledProperty);
+        set => SetValue(IsWaveAnimationEnabledProperty, value);
+    }
+    
     #endregion
 
     #region 内部属性定义
@@ -109,6 +131,10 @@ public class CountBadge : Control
         get => GetValue(MotionDurationProperty);
         set => SetValue(MotionDurationProperty, value);
     }
+    
+    Control IControlSharedTokenResourcesHost.HostControl => this;
+    string IControlSharedTokenResourcesHost.TokenId => BadgeToken.ID;
+    Control IAnimationAwareControl.PropertyBindTarget => this;
 
     #endregion
     
@@ -123,6 +149,12 @@ public class CountBadge : Control
             OverflowCountProperty,
             SizeProperty);
         AffectsRender<CountBadge>(BadgeColorProperty, OffsetProperty);
+    }
+
+    public CountBadge()
+    {
+        this.RegisterResources();
+        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
     }
     
     public sealed override void ApplyTemplate()
@@ -172,6 +204,10 @@ public class CountBadge : Control
         }
         else
         {
+            if (DecoratedTarget is null)
+            {
+                IsVisible = true;
+            }
             badgeAdorner.ApplyToTarget(null, this);
         }
     }
@@ -184,6 +220,13 @@ public class CountBadge : Control
             return;
         }
         _badgeAdorner.DetachFromTarget(_adornerLayer, enableMotion);
+        if (!enableMotion)
+        {
+            if (DecoratedTarget is null)
+            {
+                IsVisible = false;
+            }
+        }
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -209,6 +252,8 @@ public class CountBadge : Control
             BindUtils.RelayBind(this, SizeProperty, _badgeAdorner, CountBadgeAdorner.SizeProperty);
             BindUtils.RelayBind(this, OverflowCountProperty, _badgeAdorner, CountBadgeAdorner.OverflowCountProperty);
             BindUtils.RelayBind(this, CountProperty, _badgeAdorner, CountBadgeAdorner.CountProperty);
+            BindUtils.RelayBind(this, IsMotionEnabledProperty, _badgeAdorner, CountBadgeAdorner.IsMotionEnabledProperty);
+            BindUtils.RelayBind(this, IsWaveAnimationEnabledProperty, _badgeAdorner, CountBadgeAdorner.IsWaveAnimationEnabledProperty);
         }
 
         TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, SharedTokenKey.MotionDurationSlow);
@@ -245,7 +290,7 @@ public class CountBadge : Control
             }
             else
             {
-                HideAdorner(true);
+                HideAdorner(IsMotionEnabled);
             }
         }
 

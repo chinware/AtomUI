@@ -5,6 +5,7 @@ using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 
 namespace AtomUI.Controls;
@@ -27,18 +28,6 @@ internal class CountBadgeAdorner : TemplatedControl
     public static readonly StyledProperty<CountBadgeSize> SizeProperty =
         AvaloniaProperty.Register<CountBadgeAdorner, CountBadgeSize>(
             nameof(Size));
-    
-    internal static readonly StyledProperty<int> CountProperty =
-        AvaloniaProperty.Register<CountBadgeAdorner, int>(
-            nameof(Count));
-    
-    internal static readonly StyledProperty<IBrush?> BadgeShadowColorProperty =
-        AvaloniaProperty.Register<CountBadgeAdorner, IBrush?>(
-            nameof(BadgeShadowColor));
-
-    internal static readonly StyledProperty<double> BadgeShadowSizeProperty =
-        AvaloniaProperty.Register<CountBadgeAdorner, double>(
-            nameof(BadgeShadowSize));
 
     public IBrush? BadgeColor
     {
@@ -70,18 +59,6 @@ internal class CountBadgeAdorner : TemplatedControl
         set => SetValue(CountProperty, value);
     }
     
-    public IBrush? BadgeShadowColor
-    {
-        get => GetValue(BadgeShadowColorProperty);
-        set => SetValue(BadgeShadowColorProperty, value);
-    }
-
-    public double BadgeShadowSize
-    {
-        get => GetValue(BadgeShadowSizeProperty);
-        set => SetValue(BadgeShadowSizeProperty, value);
-    }
-    
     #endregion
 
     #region 内部属性定义
@@ -110,6 +87,24 @@ internal class CountBadgeAdorner : TemplatedControl
             o => o.MotionDuration,
             (o, v) => o.MotionDuration = v);
     
+    internal static readonly StyledProperty<int> CountProperty =
+        AvaloniaProperty.Register<CountBadgeAdorner, int>(
+            nameof(Count));
+    
+    internal static readonly StyledProperty<IBrush?> BadgeShadowColorProperty =
+        AvaloniaProperty.Register<CountBadgeAdorner, IBrush?>(
+            nameof(BadgeShadowColor));
+
+    internal static readonly StyledProperty<double> BadgeShadowSizeProperty =
+        AvaloniaProperty.Register<CountBadgeAdorner, double>(
+            nameof(BadgeShadowSize));
+    
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AvaloniaProperty.Register<CountBadgeAdorner, bool>(nameof(IsMotionEnabled), true);
+
+    internal static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
+        = AvaloniaProperty.Register<CountBadgeAdorner, bool>(nameof(IsWaveAnimationEnabled), true);
+    
     private bool _isAdornerMode;
 
     internal bool IsAdornerMode
@@ -119,24 +114,48 @@ internal class CountBadgeAdorner : TemplatedControl
     }
     
     private BoxShadows _boxShadow;
-    public BoxShadows BoxShadow
+    internal BoxShadows BoxShadow
     {
         get => _boxShadow;
         set => SetAndRaise(BoxShadowProperty, ref _boxShadow, value);
     }
     
     private string? _countText;
-    public string? CountText
+    internal string? CountText
     {
         get => _countText;
         set => SetAndRaise(CountTextProperty, ref _countText, value);
     }
     
     private TimeSpan _motionDuration;
-    public TimeSpan MotionDuration
+    internal TimeSpan MotionDuration
     {
         get => _motionDuration;
         set => SetAndRaise(MotionDurationProperty, ref _motionDuration, value);
+    }
+    
+    internal IBrush? BadgeShadowColor
+    {
+        get => GetValue(BadgeShadowColorProperty);
+        set => SetValue(BadgeShadowColorProperty, value);
+    }
+
+    internal double BadgeShadowSize
+    {
+        get => GetValue(BadgeShadowSizeProperty);
+        set => SetValue(BadgeShadowSizeProperty, value);
+    }
+    
+    internal bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
+    }
+
+    internal bool IsWaveAnimationEnabled
+    {
+        get => GetValue(IsWaveAnimationEnabledProperty);
+        set => SetValue(IsWaveAnimationEnabledProperty, value);
     }
 
     #endregion
@@ -157,16 +176,21 @@ internal class CountBadgeAdorner : TemplatedControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        TokenResourceBinder.CreateTokenBinding(this, BadgeShadowSizeProperty, BadgeTokenKey.BadgeShadowSize);
-        TokenResourceBinder.CreateTokenBinding(this, BadgeShadowColorProperty, BadgeTokenKey.BadgeShadowColor);
-        TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, SharedTokenKey.MotionDurationMid);
-        TokenResourceBinder.CreateTokenBinding(this, BadgeColorProperty, BadgeTokenKey.BadgeColor);
         _indicatorMotionActor = e.NameScope.Get<MotionActorControl>(CountBadgeAdornerTheme.IndicatorMotionActorPart);
         if (_needInitialHide)
         {
             _indicatorMotionActor.IsVisible = false;
             _needInitialHide                = false;
         }
+    }
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        TokenResourceBinder.CreateTokenBinding(this, BadgeShadowSizeProperty, BadgeTokenKey.BadgeShadowSize);
+        TokenResourceBinder.CreateTokenBinding(this, BadgeShadowColorProperty, BadgeTokenKey.BadgeShadowColor);
+        TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, SharedTokenKey.MotionDurationMid);
+        TokenResourceBinder.CreateTokenBinding(this, BadgeColorProperty, BadgeTokenKey.BadgeColor);
         BuildBoxShadow();
         BuildCountText();
     }
@@ -267,10 +291,20 @@ internal class CountBadgeAdorner : TemplatedControl
             adornerLayer.Children.Add(this);
         }
         
-        _motionCancellationTokenSource?.Cancel();
-        _motionCancellationTokenSource  = new CancellationTokenSource();
-        
-        ApplyShowMotion();
+        if (IsMotionEnabled)
+        {
+            _motionCancellationTokenSource?.Cancel();
+            _motionCancellationTokenSource  = new CancellationTokenSource();
+            ApplyShowMotion();
+        }
+        else
+        {
+            if (_indicatorMotionActor is not null)
+            {
+                _indicatorMotionActor.IsVisible = true;
+            }
+        }
+
     }
 
     internal void DetachFromTarget(AdornerLayer? adornerLayer, bool enableMotion = true)
