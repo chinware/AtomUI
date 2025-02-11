@@ -11,8 +11,14 @@ internal static class ControlSharedTokenResourcesHostExtensions
     {
         host.HostControl.AttachedToLogicalTree += (object? sender, LogicalTreeAttachmentEventArgs args) =>
         {
+            // 对于控件就添加一次
             if (sender is Control control)
             {
+                var themeVariant = TokenFinderUtils.FindThemeVariant(control);
+                if (control.Resources.ThemeDictionaries.ContainsKey(themeVariant))
+                {
+                    return;
+                }
                 var resourceDictionary = new ResourceDictionary();
                 var controlToken = TokenFinderUtils.FindControlToken(host.HostControl, host.TokenId, host.ResourceCatalog);
                 Debug.Assert(controlToken != null);
@@ -21,7 +27,7 @@ internal static class ControlSharedTokenResourcesHostExtensions
                     resourceDictionary.Add(entry.Key, entry.Value);
                 }
         
-                var themeVariant = TokenFinderUtils.FindThemeVariant(control);
+          
                 control.Resources.ThemeDictionaries.Add(themeVariant, resourceDictionary);
             }
         };

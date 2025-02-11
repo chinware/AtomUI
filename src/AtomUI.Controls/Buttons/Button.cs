@@ -301,7 +301,7 @@ public class Button : AvaloniaButton,
                 Content = null;
             }
 
-            PseudoClasses.Set(IconOnlyPC, Icon is not null && Text is null);
+            UpdatePseudoClasses();
             if (ButtonType == ButtonType.Default)
             {
                 if (IsDanger)

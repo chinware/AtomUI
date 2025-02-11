@@ -46,24 +46,6 @@ public class TextBlock : AvaloniaTextBlock
         }
     }
 
-    protected override Size MeasureOverride(Size availableSize)
-    {
-        var size = base.MeasureOverride(availableSize);
-        if (TextLayout.TextLines.Count == 1)
-        {
-            var height = size.Height;
-            var width = size.Width;
-            if (VerticalAlignment == VerticalAlignment.Center)
-            {
-                height += (TextLayout.Extent - TextLayout.Baseline) / 2;
-            }
-
-            return new Size(width, height);
-        }
-
-        return size;
-    }
-
     private void CalculateTextMetrics()
     {
         var typeface    = new Typeface(FontFamily, FontStyle, FontWeight);
@@ -85,7 +67,7 @@ public class TextBlock : AvaloniaTextBlock
                 case VerticalAlignment.Center:
                     top += _textMetrics.Descent / 2;
                     break;
-    
+            
                 case VerticalAlignment.Bottom:
                     top += Bounds.Height - textHeight;
                     break;
