@@ -2,6 +2,7 @@
 using AtomUI.Data;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
+using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -11,7 +12,8 @@ using Avalonia.Controls.Primitives;
 namespace AtomUI.Controls;
 
 [TemplatePart(AddOnDecoratedInnerBoxTheme.ContentPresenterPart, typeof(ContentPresenter), IsRequired = true)]
-public class AddOnDecoratedInnerBox : ContentControl
+public class AddOnDecoratedInnerBox : ContentControl,
+                                      IAnimationAwareControl
 {
     #region 公共属性定义
 
@@ -32,6 +34,12 @@ public class AddOnDecoratedInnerBox : ContentControl
 
     public static readonly StyledProperty<bool> IsClearButtonVisibleProperty =
         AvaloniaProperty.Register<AddOnDecoratedInnerBox, bool>(nameof(IsClearButtonVisible));
+    
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AvaloniaProperty.Register<AddOnDecoratedInnerBox, bool>(nameof(IsMotionEnabled), true);
+
+    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
+        = AvaloniaProperty.Register<AddOnDecoratedInnerBox, bool>(nameof(IsWaveAnimationEnabled), true);
 
     public SizeType SizeType
     {
@@ -69,6 +77,18 @@ public class AddOnDecoratedInnerBox : ContentControl
         set => SetValue(IsClearButtonVisibleProperty, value);
     }
 
+    public bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
+    }
+
+    public bool IsWaveAnimationEnabled
+    {
+        get => GetValue(IsWaveAnimationEnabledProperty);
+        set => SetValue(IsWaveAnimationEnabledProperty, value);
+    }
+    
     #endregion
 
     #region 内部属性定义
@@ -120,12 +140,19 @@ public class AddOnDecoratedInnerBox : ContentControl
         get => _contentPresenterMargin;
         set => SetAndRaise(ContentPresenterMarginProperty, ref _contentPresenterMargin, value);
     }
+    
+    Control IAnimationAwareControl.PropertyBindTarget => this;
 
     #endregion
 
     private StackPanel? _leftAddOnLayout;
     private StackPanel? _rightAddOnLayout;
     private IconButton? _clearButton;
+
+    public AddOnDecoratedInnerBox()
+    {
+        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
+    }
 
     protected virtual void NotifyClearButtonClicked()
     {

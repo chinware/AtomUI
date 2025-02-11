@@ -56,11 +56,6 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
         var innerBoxDecorator = new Border
         {
             Name = InnerBoxDecoratorPart,
-            Transitions = new Transitions
-            {
-                AnimationUtils.CreateTransition<SolidColorBrushTransition>(Border.BorderBrushProperty),
-                AnimationUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty)
-            }
         };
 
         innerBoxDecorator.RegisterInNameScope(scope);
@@ -224,9 +219,23 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
     {
         var commonStyle = new Style(selector => selector.Nesting());
 
-        var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(InnerBoxDecoratorPart));
-        decoratorStyle.Add(Visual.ZIndexProperty, AddOnDecoratedBoxTheme.NormalZIndex);
-        commonStyle.Add(decoratorStyle);
+        {
+            var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(InnerBoxDecoratorPart));
+            decoratorStyle.Add(Visual.ZIndexProperty, AddOnDecoratedBoxTheme.NormalZIndex);
+            commonStyle.Add(decoratorStyle);
+        }
+        
+        {
+            var transitionsStyle = new Style(selector => selector.Nesting().PropertyEquals(AddOnDecoratedInnerBox.IsMotionEnabledProperty, true));
+            var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(InnerBoxDecoratorPart));
+            decoratorStyle.Add(new Setter(Border.TransitionsProperty, new Transitions
+            {
+                AnimationUtils.CreateTransition<SolidColorBrushTransition>(Border.BorderBrushProperty),
+                AnimationUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty)
+            }));
+            transitionsStyle.Add(decoratorStyle);
+            commonStyle.Add(transitionsStyle);
+        }
 
         var largeStyle =
             new Style(selector =>

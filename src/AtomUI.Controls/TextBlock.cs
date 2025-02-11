@@ -62,17 +62,20 @@ public class TextBlock : AvaloniaTextBlock
         var left = TextLayout.OverhangLeading;
         if (TextLayout.TextLines.Count == 1)
         {
-            switch (VerticalAlignment)
+            if (Bounds.Height >= textHeight)
             {
-                case VerticalAlignment.Center:
-                    top += _textMetrics.Descent / 2;
-                    break;
+                switch (VerticalAlignment)
+                {
+                    case VerticalAlignment.Center:
+                        top += _textMetrics.Descent / 2;
+                        break;
             
-                case VerticalAlignment.Bottom:
-                    top += Bounds.Height - textHeight;
-                    break;
+                    case VerticalAlignment.Bottom:
+                        top += Bounds.Height - textHeight;
+                        break;
+                }
             }
-            
+
             if (HorizontalAlignment == HorizontalAlignment.Center)
             {
                 left += (TextLayout.OverhangLeading + TextLayout.OverhangTrailing) / 2;

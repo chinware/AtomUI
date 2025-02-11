@@ -1,7 +1,9 @@
 ﻿using AtomUI.Data;
 using AtomUI.IconPkg;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
+using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -28,7 +30,8 @@ public enum AddOnDecoratedStatus
 [TemplatePart(AddOnDecoratedBoxTheme.LeftAddOnPart, typeof(ContentPresenter))]
 [TemplatePart(AddOnDecoratedBoxTheme.RightAddOnPart, typeof(ContentPresenter))]
 [TemplatePart(AddOnDecoratedBoxTheme.InnerBoxContentPart, typeof(ContentPresenter), IsRequired = true)]
-public class AddOnDecoratedBox : ContentControl
+public class AddOnDecoratedBox : ContentControl,
+                                 IControlSharedTokenResourcesHost
 {
     public const string ErrorPC = ":error";
     public const string WarningPC = ":warning";
@@ -81,6 +84,9 @@ public class AddOnDecoratedBox : ContentControl
         set => SetValue(StatusProperty, value);
     }
 
+    Control IControlSharedTokenResourcesHost.HostControl => this;
+    string IControlSharedTokenResourcesHost.TokenId => ButtonToken.ID;
+    
     #endregion
 
     #region 内部属性定义
@@ -159,6 +165,11 @@ public class AddOnDecoratedBox : ContentControl
     {
         AffectsRender<AddOnDecoratedBox>(BorderBrushProperty, BackgroundProperty);
         AffectsMeasure<AddOnDecoratedBox>(LeftAddOnProperty, RightAddOnProperty);
+    }
+
+    public AddOnDecoratedBox()
+    {
+        this.RegisterResources();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
