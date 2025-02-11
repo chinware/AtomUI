@@ -203,9 +203,9 @@ internal class ComboBoxTheme : BaseControlTheme
         TokenResourceBinder.CreateTokenBinding(popup, Popup.MaskShadowsProperty,
             ComboBoxTokenKey.PopupBoxShadows);
         CreateTemplateParentBinding(popup, Layoutable.MaxHeightProperty,
-            Avalonia.Controls.ComboBox.MaxDropDownHeightProperty);
+            ComboBox.MaxDropDownHeightProperty);
         CreateTemplateParentBinding(popup, Avalonia.Controls.Primitives.Popup.IsOpenProperty,
-            Avalonia.Controls.ComboBox.IsDropDownOpenProperty, BindingMode.TwoWay);
+            ComboBox.IsDropDownOpenProperty, BindingMode.TwoWay);
 
         return popup;
     }

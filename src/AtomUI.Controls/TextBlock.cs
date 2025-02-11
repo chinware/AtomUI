@@ -80,18 +80,15 @@ public class TextBlock : AvaloniaTextBlock
         var left = TextLayout.OverhangLeading;
         if (TextLayout.TextLines.Count == 1)
         {
-            if (textHeight < Bounds.Height)
+            switch (VerticalAlignment)
             {
-                switch (VerticalAlignment)
-                {
-                    case VerticalAlignment.Center:
-                        top += _textMetrics.Descent / 2;
-                        break;
+                case VerticalAlignment.Center:
+                    top += _textMetrics.Descent / 2;
+                    break;
     
-                    case VerticalAlignment.Bottom:
-                        top += Bounds.Height - textHeight;
-                        break;
-                }
+                case VerticalAlignment.Bottom:
+                    top += Bounds.Height - textHeight;
+                    break;
             }
             
             if (HorizontalAlignment == HorizontalAlignment.Center)

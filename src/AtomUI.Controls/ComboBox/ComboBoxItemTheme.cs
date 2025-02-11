@@ -2,11 +2,14 @@
 using AtomUI.Media;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
+using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
+using Avalonia.Data.Converters;
 using Avalonia.Layout;
 using Avalonia.Styling;
 
@@ -36,7 +39,21 @@ internal class ComboBoxItemTheme : BaseControlTheme
             };
 
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty,
-                ContentControl.ContentProperty);
+                ContentControl.ContentProperty, BindingMode.Default, new FuncValueConverter<object?, object?>(
+                    o =>
+                    {
+                        if (o is string str)
+                        {
+                            return new TextBlock()
+                            {
+                                Padding = new Thickness(0, 1, 0, 0),
+                                Text              = str,
+                                VerticalAlignment = VerticalAlignment.Center
+                            };
+                        }
+
+                        return o;
+                    }));
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentTemplateProperty,
                 ContentControl.ContentTemplateProperty);
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.HorizontalContentAlignmentProperty,
@@ -63,7 +80,7 @@ internal class ComboBoxItemTheme : BaseControlTheme
             var contentPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ContentPresenterPart));
             contentPresenterStyle.Add(ContentPresenter.ForegroundProperty, ComboBoxTokenKey.ItemColor);
             contentPresenterStyle.Add(ContentPresenter.BackgroundProperty, ComboBoxTokenKey.ItemBgColor);
-            contentPresenterStyle.Add(Layoutable.MinHeightProperty, SharedTokenKey.ControlHeight);
+            contentPresenterStyle.Add(Layoutable.HeightProperty, SharedTokenKey.ControlHeight);
             contentPresenterStyle.Add(ContentPresenter.PaddingProperty, ComboBoxTokenKey.ItemPadding);
             contentPresenterStyle.Add(ContentPresenter.CornerRadiusProperty, SharedTokenKey.BorderRadiusSM);
             commonStyle.Add(contentPresenterStyle);
