@@ -2,6 +2,8 @@
 <Theme Name="Daybreak Blue Light">
     <Algorithms>DefaultAlgorithm</Algorithms>
     <SharedTokens>
+        <Token Name="EnableMotion" Value="false"/>
+        <Token Name="EnableWaveAnimation" Value="false"/>
     </SharedTokens>
     <ControlTokens>
     </ControlTokens>

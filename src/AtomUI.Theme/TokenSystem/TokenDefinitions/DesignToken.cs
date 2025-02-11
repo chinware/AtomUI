@@ -93,7 +93,7 @@ public partial class DesignToken : AbstractDesignToken
         var screenXXL = 1600;
         
         // Motion
-        if (!Motion)
+        if (!EnableMotion)
         {
             MotionDurationFast     = TimeSpan.FromMilliseconds(0);
             MotionDurationMid      = TimeSpan.FromMilliseconds(0);

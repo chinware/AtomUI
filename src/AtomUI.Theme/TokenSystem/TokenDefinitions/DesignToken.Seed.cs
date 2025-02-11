@@ -142,7 +142,6 @@ public partial class DesignToken
     public double OpacityImage { get; set; } = 1.0;
 
     //  ----------   motion   ---------- //
-    // TODO: 缺一个懂 motion 的人来收敛 Motion 相关的 Token
     /// <summary>
     /// 动画时长变化单位
     /// 用于控制动画时长的变化单位
@@ -157,13 +156,22 @@ public partial class DesignToken
     //  ----------   Style   ---------- //
     /// <summary>
     /// 线框风格
+    /// 
     /// 用于将组件的视觉效果变为线框化，如果需要使用 V4 的效果，需要开启配置项
     /// </summary>
     public bool Wireframe { get; set; } = false;
 
     /// <summary>
     /// 动画风格
+    /// 
     /// 用于配置动画效果，为 `false` 时则关闭动画
     /// </summary>
-    public bool Motion { get; set; } = true;
+    public bool EnableMotion { get; set; } = true;
+    
+    /// <summary>
+    /// 是否开启波浪动画
+    ///
+    /// 按钮，单选按钮等点击后的波浪动画效果
+    /// </summary>
+    public bool EnableWaveAnimation { get; set; } = true;
 }

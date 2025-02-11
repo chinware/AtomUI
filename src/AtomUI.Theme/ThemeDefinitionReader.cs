@@ -120,7 +120,7 @@ internal class ThemeDefinitionReader
         }
         else
         {
-            EmitErrorMsg(reader, $"Element tag: {string.Join('.', _currentElementNames)} not supported.");
+            EmitErrorMsg(reader, $"Element tag: {string.Join('.', _currentElementNames.Reverse())} not supported.");
         }
     }
 

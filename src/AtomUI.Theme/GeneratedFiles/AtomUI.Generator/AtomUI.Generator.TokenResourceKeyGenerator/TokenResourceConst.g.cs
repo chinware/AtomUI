@@ -202,7 +202,8 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey MotionUnit = new TokenResourceKey("MotionUnit");
         public static readonly TokenResourceKey MotionBase = new TokenResourceKey("MotionBase");
         public static readonly TokenResourceKey Wireframe = new TokenResourceKey("Wireframe");
-        public static readonly TokenResourceKey Motion = new TokenResourceKey("Motion");
+        public static readonly TokenResourceKey EnableMotion = new TokenResourceKey("EnableMotion");
+        public static readonly TokenResourceKey EnableWaveAnimation = new TokenResourceKey("EnableWaveAnimation");
         public static readonly TokenResourceKey SizeXXL = new TokenResourceKey("SizeXXL");
         public static readonly TokenResourceKey SizeXL = new TokenResourceKey("SizeXL");
         public static readonly TokenResourceKey SizeLG = new TokenResourceKey("SizeLG");
