@@ -1,14 +1,18 @@
 ﻿using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.IconPkg;
+using AtomUI.Theme;
+using AtomUI.Theme.Utils;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Layout;
 
 namespace AtomUI.Controls;
 
-public class ToggleIconButton : ToggleButton
+public class ToggleIconButton : ToggleButton,
+                                IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
 
@@ -49,17 +53,26 @@ public class ToggleIconButton : ToggleButton
     }
 
     #endregion
+    
+    #region 内部属性定义
+    
+    Control IControlSharedTokenResourcesHost.HostControl => this;
+    string IControlSharedTokenResourcesHost.TokenId => ButtonToken.ID;
+    
+    #endregion
 
     static ToggleIconButton()
     {
         AffectsMeasure<ToggleIconButton>(CheckedIconProperty);
         AffectsMeasure<ToggleIconButton>(UnCheckedIconProperty);
         AffectsMeasure<ToggleIconButton>(IsCheckedProperty);
+        
+        CursorProperty.OverrideDefaultValue<ToggleIconButton>(new Cursor(StandardCursorType.Hand));
     }
 
     public ToggleIconButton()
     {
-        SetCurrentValue(CursorProperty, new Cursor(StandardCursorType.Hand));
+        this.RegisterResources();
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)

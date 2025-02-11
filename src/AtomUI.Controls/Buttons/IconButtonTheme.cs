@@ -31,10 +31,6 @@ internal class IconButtonTheme : BaseControlTheme
             var iconContent = new ContentPresenter
             {
                 Name = IconContentPart,
-                Transitions = new Transitions
-                {
-                    AnimationUtils.CreateTransition<SolidColorBrushTransition>(ContentPresenter.BackgroundProperty)
-                }
             };
             CreateTemplateParentBinding(iconContent, ContentPresenter.CornerRadiusProperty,
                 TemplatedControl.CornerRadiusProperty);
@@ -51,6 +47,16 @@ internal class IconButtonTheme : BaseControlTheme
             var contentStyle = new Style(selector => selector.Nesting().Template().Name(IconContentPart));
             contentStyle.Add(ContentPresenter.BackgroundProperty, SharedTokenKey.ColorTransparent);
             Add(contentStyle);
+        }
+        {
+            var enableMotionStyle = new Style(selector => selector.Nesting().PropertyEquals(IconButton.IsMotionEnabledProperty, true));
+            var contentStyle = new Style(selector => selector.Nesting().Template().Name(IconContentPart));
+            contentStyle.Add(ContentPresenter.TransitionsProperty, new Transitions()
+            {
+                AnimationUtils.CreateTransition<SolidColorBrushTransition>(ContentPresenter.BackgroundProperty)
+            });
+            enableMotionStyle.Add(contentStyle);
+            Add(enableMotionStyle);
         }
         var enableHoverBgStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(IconButton.IsEnableHoverEffectProperty, true)

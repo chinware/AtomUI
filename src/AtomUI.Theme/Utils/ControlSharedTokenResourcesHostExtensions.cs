@@ -26,7 +26,6 @@ internal static class ControlSharedTokenResourcesHostExtensions
                 {
                     resourceDictionary.Add(entry.Key, entry.Value);
                 }
-        
           
                 control.Resources.ThemeDictionaries.Add(themeVariant, resourceDictionary);
             }

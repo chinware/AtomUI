@@ -1,6 +1,8 @@
 using AtomUI.Data;
 using AtomUI.IconPkg;
+using AtomUI.Theme;
 using AtomUI.Theme.Styling;
+using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -11,7 +13,9 @@ namespace AtomUI.Controls;
 
 using AvaloniaButton = Avalonia.Controls.Button;
 
-public class IconButton : AvaloniaButton, ICustomHitTest
+public class IconButton : AvaloniaButton,
+                          ICustomHitTest,
+                          IAnimationAwareControl
 {
     #region 公共属性定义
 
@@ -32,6 +36,12 @@ public class IconButton : AvaloniaButton, ICustomHitTest
 
     public static readonly StyledProperty<bool> IsEnableHoverEffectProperty
         = AvaloniaProperty.Register<IconButton, bool>(nameof(IsEnableHoverEffect));
+    
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AvaloniaProperty.Register<IconButton, bool>(nameof(IsMotionEnabled), true);
+
+    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
+        = AvaloniaProperty.Register<IconButton, bool>(nameof(IsWaveAnimationEnabled), true);
 
     public Icon? Icon
     {
@@ -69,16 +79,35 @@ public class IconButton : AvaloniaButton, ICustomHitTest
         set => SetValue(IsEnableHoverEffectProperty, value);
     }
 
+    public bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
+    }
+
+    public bool IsWaveAnimationEnabled
+    {
+        get => GetValue(IsWaveAnimationEnabledProperty);
+        set => SetValue(IsWaveAnimationEnabledProperty, value);
+    }
+    
+    #endregion
+
+    #region 内部属性定义
+
+    Control IAnimationAwareControl.PropertyBindTarget => this;
+
     #endregion
 
     static IconButton()
     {
         AffectsMeasure<IconButton>(IconProperty);
+        CursorProperty.OverrideDefaultValue<IconButton>(new Cursor(StandardCursorType.Hand));
     }
 
     public IconButton()
     {
-        Cursor = new Cursor(StandardCursorType.Hand);
+        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)

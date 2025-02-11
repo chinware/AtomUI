@@ -3,8 +3,10 @@ using AtomUI.Data;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.Input;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
+using AtomUI.Theme.Utils;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -24,7 +26,10 @@ namespace AtomUI.Controls;
 
 [TemplatePart(SplitButtonTheme.PrimaryButtonPart, typeof(Button))]
 [TemplatePart(SplitButtonTheme.SecondaryButtonPart, typeof(Button))]
-public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
+public class SplitButton : ContentControl, 
+                           ICommandSource, 
+                           ISizeTypeAware,
+                           IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
 
@@ -239,6 +244,9 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
         set => SetAndRaise(EffectiveButtonTypeProperty, ref _effectiveButtonType, value);
     }
 
+    Control IControlSharedTokenResourcesHost.HostControl => this;
+    string IControlSharedTokenResourcesHost.TokenId => ButtonToken.ID;
+    
     #endregion
 
     private Button? _primaryButton;
@@ -265,6 +273,7 @@ public class SplitButton : ContentControl, ICommandSource, ISizeTypeAware
     public SplitButton()
     {
         _flyoutStateHelper = new FlyoutStateHelper();
+        this.RegisterResources();
     }
 
     internal virtual bool InternalIsChecked => false;
