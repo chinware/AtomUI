@@ -1,7 +1,9 @@
 ﻿using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
+using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -18,11 +20,12 @@ public enum AlertType
     Error
 }
 
-public class Alert : TemplatedControl
+public class Alert : TemplatedControl,
+                     IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
 
-     public static readonly StyledProperty<AlertType> TypeProperty =
+    public static readonly StyledProperty<AlertType> TypeProperty =
         AvaloniaProperty.Register<Alert, AlertType>(nameof(Type));
 
     public static readonly StyledProperty<bool> IsShowIconProperty =
@@ -97,6 +100,13 @@ public class Alert : TemplatedControl
 
     #endregion
 
+    #region 内部属性定义
+
+    Control IControlSharedTokenResourcesHost.HostControl => this;
+    string IControlSharedTokenResourcesHost.TokenId => ButtonToken.ID;
+
+    #endregion
+
     static Alert()
     {
         AffectsMeasure<Segmented>(IsClosableProperty,
@@ -110,6 +120,11 @@ public class Alert : TemplatedControl
         AffectsRender<Segmented>(TypeProperty);
     }
 
+    public Alert()
+    {
+        this.RegisterResources();
+    }
+
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
         base.OnPropertyChanged(e);
@@ -121,7 +136,7 @@ public class Alert : TemplatedControl
         base.OnApplyTemplate(e);
         HandleTemplateApplied(e.NameScope);
     }
-    
+
     private void HandleTemplateApplied(INameScope scope)
     {
         TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty, SharedTokenKey.BorderThickness,
@@ -152,5 +167,4 @@ public class Alert : TemplatedControl
                 SharedTokenKey.ColorIconHover);
         }
     }
-
 }
