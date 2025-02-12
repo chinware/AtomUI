@@ -58,29 +58,28 @@ public class TextBlock : AvaloniaTextBlock
     protected override void RenderTextLayout(DrawingContext context, Point origin)
     {
         var textHeight = TextLayout.Height;
-        var top = origin.Y;
-        var left = TextLayout.OverhangLeading;
+        var left       = origin.X;
+        var top        = origin.Y;
         if (TextLayout.TextLines.Count == 1)
         {
+            
             if (Bounds.Height >= textHeight)
             {
+                var scale   = LayoutHelper.GetLayoutScale(this);
+                var padding = LayoutHelper.RoundLayoutThickness(Padding, scale, scale);
                 switch (VerticalAlignment)
                 {
                     case VerticalAlignment.Center:
-                        top += _textMetrics.Descent / 2;
-                        break;
-            
-                    case VerticalAlignment.Bottom:
-                        top += Bounds.Height - textHeight;
+                        top = (DesiredSize.Height - _textMetrics.LineHeight - padding.Top - padding.Bottom) / 2 - _textMetrics.Descent;
                         break;
                 }
             }
-
+            
             if (HorizontalAlignment == HorizontalAlignment.Center)
             {
                 left += (TextLayout.OverhangLeading + TextLayout.OverhangTrailing) / 2;
             }
         }
-        TextLayout.Draw(context, origin + new Point(left, top));
+        TextLayout.Draw(context, new Point(left, top));
     }
 }

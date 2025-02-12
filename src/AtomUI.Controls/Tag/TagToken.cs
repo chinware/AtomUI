@@ -25,7 +25,7 @@ internal class TagToken : AbstractControlDesignToken
     public double TagIconSize { get; set; }
     public double TagCloseIconSize { get; set; }
     public Thickness TagPadding { get; set; }
-    public double TagTextPaddingInline { get; set; }
+    public Thickness TagTextPaddingInline { get; set; }
     public Color TagBorderlessBg { get; set; }
 
     public TagToken()
@@ -40,11 +40,11 @@ internal class TagToken : AbstractControlDesignToken
         TagLineHeight    = SharedToken.LineHeightSM * TagFontSize;
         TagCloseIconSize = SharedToken.IconSizeXS;
         TagIconSize      = SharedToken.FontSizeIcon;
-        TagPadding       = new Thickness(8, 0); // Fixed padding.
+        TagPadding       = new Thickness(SharedToken.SizeXS, 0);
         // TODO 这个地方需要看看
         DefaultBg            = ColorUtils.OnBackground(SharedToken.ColorFillQuaternary, SharedToken.ColorBgContainer);
         TagBorderlessBg      = DefaultBg;
         DefaultColor         = SharedToken.ColorText;
-        TagTextPaddingInline = SharedToken.PaddingXXS;
+        TagTextPaddingInline = new Thickness(SharedToken.PaddingXXS, 0);
     }
 }

@@ -105,10 +105,10 @@ public class Tag : TemplatedControl
 
     #region 内部属性定义
 
-    internal static readonly StyledProperty<double> TagTextPaddingInlineProperty
-        = AvaloniaProperty.Register<Tag, double>(nameof(TagTextPaddingInline));
+    internal static readonly StyledProperty<Thickness> TagTextPaddingInlineProperty
+        = AvaloniaProperty.Register<Tag, Thickness>(nameof(TagTextPaddingInline));
 
-    internal double TagTextPaddingInline
+    internal Thickness TagTextPaddingInline
     {
         get => GetValue(TagTextPaddingInlineProperty);
         set => SetValue(TagTextPaddingInlineProperty, value);
@@ -153,7 +153,6 @@ public class Tag : TemplatedControl
 
     private void HandleTemplateApplied(INameScope scope)
     {
-        _layoutPanel          = scope.Find<Canvas>(TagTheme.MainContainerPart);
         _closeButton          = scope.Find<IconButton>(TagTheme.CloseButtonPart);
         _textBlock            = scope.Find<TextBlock>(TagTheme.TagTextLabelPart);
         _iconContentPresenter = scope.Find<ContentPresenter>(TagTheme.IconPart);
@@ -167,72 +166,7 @@ public class Tag : TemplatedControl
         SetupTagIcon();
         SetupTokenBindings();
     }
-
-    protected override Size MeasureOverride(Size availableSize)
-    {
-        base.MeasureOverride(availableSize);
-        var targetWidth  = 0d;
-        var targetHeight = 0d;
-        if (_layoutPanel is not null)
-        {
-            foreach (var child in _layoutPanel.Children)
-            {
-                targetWidth  += child.DesiredSize.Width;
-                targetHeight =  Math.Max(targetHeight, child.DesiredSize.Height);
-            }
-        }
-
-        if (Icon is not null)
-        {
-            targetWidth += TagTextPaddingInline;
-        }
-
-        if (IsClosable && _closeButton is not null)
-        {
-            targetWidth += TagTextPaddingInline;
-        }
-
-        targetWidth += Padding.Left + Padding.Right;
-        return new Size(targetWidth, targetHeight);
-    }
-
-    protected override Size ArrangeOverride(Size finalSize)
-    {
-        if (_closeButton is not null)
-        {
-            var offsetX = finalSize.Width - Padding.Right - _closeButton.DesiredSize.Width;
-            var offsetY = (finalSize.Height - _closeButton.DesiredSize.Height) / 2;
-            Canvas.SetLeft(_closeButton, offsetX);
-            Canvas.SetTop(_closeButton, offsetY);
-        }
-
-        // icon
-        if (_iconContentPresenter is not null)
-        {
-            var offsetX = Padding.Left;
-            var offsetY = (finalSize.Height - _iconContentPresenter.DesiredSize.Height) / 2;
-            Canvas.SetLeft(_iconContentPresenter, offsetX);
-            Canvas.SetTop(_iconContentPresenter, offsetY);
-        }
-
-        // 文字
-        if (_textBlock is not null)
-        {
-            var offsetX = Padding.Left;
-            if (Icon is not null)
-            {
-                offsetX += Icon.DesiredSize.Width + TagTextPaddingInline;
-            }
-
-            // 这个时候已经算好了
-            var offsetY = (finalSize.Height - _textBlock.Height) / 2;
-            Canvas.SetLeft(_textBlock, offsetX);
-            Canvas.SetTop(_textBlock, offsetY);
-        }
-
-        return base.ArrangeOverride(finalSize);
-    }
-
+    
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
         base.OnPropertyChanged(e);
@@ -423,17 +357,5 @@ public class Tag : TemplatedControl
                 Icon.NormalFilledBrush = Foreground;
             }
         }
-    }
-
-    public override void Render(DrawingContext context)
-    {
-        _borderRenderHelper.Render(context,
-            Bounds.Size,
-            BorderThickness,
-            CornerRadius,
-            BackgroundSizing,
-            Background,
-            BorderBrush,
-            default);
     }
 }

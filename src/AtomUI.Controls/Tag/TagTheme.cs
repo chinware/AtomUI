@@ -13,7 +13,8 @@ namespace AtomUI.Controls;
 [ControlThemeProvider]
 internal class TagTheme : BaseControlTheme
 {
-    public const string MainContainerPart = "PART_MainContainer";
+    public const string ElementsLayoutPart = "PART_ElementsLayout";
+    public const string FramePart = "PART_Frame";
     public const string IconPart = "PART_Icon";
     public const string CloseButtonPart = "PART_CloseButton";
     public const string TagTextLabelPart = "PART_TagTextLabel";
@@ -25,12 +26,13 @@ internal class TagTheme : BaseControlTheme
 
     protected override void BuildStyles()
     {
-        this.Add(TemplatedControl.BackgroundProperty, TagTokenKey.DefaultBg);
-        this.Add(TemplatedControl.ForegroundProperty, TagTokenKey.DefaultColor);
-        this.Add(TemplatedControl.FontSizeProperty, TagTokenKey.TagFontSize);
-        this.Add(TemplatedControl.PaddingProperty, TagTokenKey.TagPadding);
-        this.Add(TemplatedControl.BorderBrushProperty, SharedTokenKey.ColorBorder);
-        this.Add(TemplatedControl.CornerRadiusProperty, SharedTokenKey.BorderRadiusSM);
+        this.Add(Tag.BackgroundProperty, TagTokenKey.DefaultBg);
+        this.Add(Tag.ForegroundProperty, TagTokenKey.DefaultColor);
+        this.Add(Tag.FontSizeProperty, TagTokenKey.TagFontSize);
+        this.Add(Tag.PaddingProperty, TagTokenKey.TagPadding);
+        this.Add(Tag.BorderBrushProperty, SharedTokenKey.ColorBorder);
+        this.Add(Tag.CornerRadiusProperty, SharedTokenKey.BorderRadiusSM);
+        this.Add(Tag.HeightProperty, TagTokenKey.TagLineHeight);
         this.Add(Tag.TagTextPaddingInlineProperty, TagTokenKey.TagTextPaddingInline);
     }
 
@@ -38,49 +40,70 @@ internal class TagTheme : BaseControlTheme
     {
         return new FuncControlTemplate<Tag>((tag, scope) =>
         {
-            var layout = new Canvas
+            var rootLayout = new Panel();
+
+            var frameDecorator = new Border()
             {
-                Name = MainContainerPart
+                Name = FramePart
             };
+            CreateTemplateParentBinding(frameDecorator, Border.BackgroundProperty, Tag.BackgroundProperty);
+            CreateTemplateParentBinding(frameDecorator, Border.BorderBrushProperty, Tag.BorderBrushProperty);
+            CreateTemplateParentBinding(frameDecorator, Border.CornerRadiusProperty, Tag.CornerRadiusProperty);
+            CreateTemplateParentBinding(frameDecorator, Border.BorderThicknessProperty, Tag.BorderThicknessProperty);
             
-            layout.RegisterInNameScope(scope);
+            rootLayout.Children.Add(frameDecorator);
+            
+            var elementsLayout = new Grid
+            {
+                Name = ElementsLayoutPart,
+                ColumnDefinitions =
+                {
+                    new ColumnDefinition(GridLength.Auto),
+                    new ColumnDefinition(GridLength.Star),
+                    new ColumnDefinition(GridLength.Auto)
+                }
+            };
+            CreateTemplateParentBinding(elementsLayout, Grid.MarginProperty, Tag.PaddingProperty);
+            elementsLayout.RegisterInNameScope(scope);
+            rootLayout.Children.Add(elementsLayout);
             
             var iconContentPresenter = new ContentPresenter()
             {
                 Name = IconPart
             };
+            Grid.SetColumn(iconContentPresenter, 0);
             iconContentPresenter.RegisterInNameScope(scope);
             CreateTemplateParentBinding(iconContentPresenter, ContentPresenter.ContentProperty, Tag.IconProperty);
-            layout.Children.Add(iconContentPresenter);
+            elementsLayout.Children.Add(iconContentPresenter);
 
             var textBlock = new TextBlock
             {
                 Name              = TagTextLabelPart,
-                VerticalAlignment = VerticalAlignment.Center
+                VerticalAlignment = VerticalAlignment.Center,
             };
+            Grid.SetColumn(textBlock, 1);
             textBlock.RegisterInNameScope(scope);
             CreateTemplateParentBinding(textBlock, TextBlock.TextProperty, Tag.TagTextProperty);
-            layout.Children.Add(textBlock);
+            CreateTemplateParentBinding(textBlock, TextBlock.PaddingProperty, Tag.TagTextPaddingInlineProperty);
+            elementsLayout.Children.Add(textBlock);
 
             var closeBtn = new IconButton
             {
                 Name = CloseButtonPart
             };
             closeBtn.RegisterInNameScope(scope);
-
+            Grid.SetColumn(closeBtn, 2);
             TokenResourceBinder.CreateTokenBinding(closeBtn, IconButton.IconWidthProperty,
                 SharedTokenKey.IconSizeXS);
             TokenResourceBinder.CreateTokenBinding(closeBtn, IconButton.IconHeightProperty,
                 SharedTokenKey.IconSizeXS);
-            TokenResourceBinder.CreateTokenBinding(textBlock, Layoutable.HeightProperty,
-                TagTokenKey.TagLineHeight);
 
             CreateTemplateParentBinding(closeBtn, Visual.IsVisibleProperty, Tag.IsClosableProperty);
             CreateTemplateParentBinding(closeBtn, IconButton.IconProperty, Tag.CloseIconProperty);
 
-            layout.Children.Add(closeBtn);
+            elementsLayout.Children.Add(closeBtn);
 
-            return layout;
+            return rootLayout;
         });
     }
 }
