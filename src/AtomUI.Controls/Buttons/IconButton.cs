@@ -1,7 +1,5 @@
 using AtomUI.Data;
 using AtomUI.IconPkg;
-using AtomUI.Theme;
-using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -102,12 +100,12 @@ public class IconButton : AvaloniaButton,
     static IconButton()
     {
         AffectsMeasure<IconButton>(IconProperty);
-        CursorProperty.OverrideDefaultValue<IconButton>(new Cursor(StandardCursorType.Hand));
     }
 
     public IconButton()
     {
         this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
+        Cursor = new Cursor(StandardCursorType.Hand);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)

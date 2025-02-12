@@ -86,6 +86,7 @@ internal class ButtonSpinnerTheme : BaseControlTheme
         CreateTemplateParentBinding(spinnerInnerBox, ButtonSpinnerInnerBox.ButtonSpinnerLocationProperty,
             Avalonia.Controls.ButtonSpinner.ButtonSpinnerLocationProperty);
 
+        var decoratorLayout = new Panel();
         var spinnerHandleDecorator = new Border
         {
             Name             = SpinnerHandleDecoratorPart,
@@ -94,14 +95,15 @@ internal class ButtonSpinnerTheme : BaseControlTheme
         };
 
         spinnerHandleDecorator.RegisterInNameScope(scope);
+        decoratorLayout.Children.Add(spinnerHandleDecorator);
 
         var spinnerLayout = new UniformGrid
         {
             Columns = 1,
             Rows    = 2
         };
-
-        spinnerHandleDecorator.Child = spinnerLayout;
+        
+        decoratorLayout.Children.Add(spinnerLayout);
 
         TokenResourceBinder.CreateTokenBinding(spinnerLayout, Layoutable.WidthProperty,
             ButtonSpinnerTokenKey.HandleWidth);
@@ -120,10 +122,6 @@ internal class ButtonSpinnerTheme : BaseControlTheme
             VerticalAlignment   = VerticalAlignment.Stretch,
             HorizontalAlignment = HorizontalAlignment.Stretch,
             BackgroundSizing    = BackgroundSizing.InnerBorderEdge,
-            Transitions = new Transitions
-            {
-                AnimationUtils.CreateTransition<SolidColorBrushTransition>(TemplatedControl.BackgroundProperty)
-            }
         };
         increaseButton.SetCurrentValue(TemplatedControl.BackgroundProperty, new SolidColorBrush(Colors.Transparent));
         {
@@ -151,11 +149,7 @@ internal class ButtonSpinnerTheme : BaseControlTheme
             Icon                = decreaseButtonIcon,
             VerticalAlignment   = VerticalAlignment.Stretch,
             HorizontalAlignment = HorizontalAlignment.Stretch,
-            BackgroundSizing    = BackgroundSizing.InnerBorderEdge,
-            Transitions = new Transitions
-            {
-                AnimationUtils.CreateTransition<SolidColorBrushTransition>(TemplatedControl.BackgroundProperty)
-            }
+            BackgroundSizing    = BackgroundSizing.InnerBorderEdge
         };
         decreaseButton.SetCurrentValue(TemplatedControl.BackgroundProperty, new SolidColorBrush(Colors.Transparent));
         {
@@ -172,7 +166,7 @@ internal class ButtonSpinnerTheme : BaseControlTheme
         spinnerLayout.Children.Add(increaseButton);
         spinnerLayout.Children.Add(decreaseButton);
 
-        spinnerInnerBox.SpinnerContent = spinnerHandleDecorator;
+        spinnerInnerBox.SpinnerContent = decoratorLayout;
 
         return spinnerInnerBox;
     }
@@ -197,6 +191,15 @@ internal class ButtonSpinnerTheme : BaseControlTheme
                 selector.Nesting().PropertyEquals(AddOnDecoratedBox.SizeTypeProperty, SizeType.Small));
         smallStyle.Add(TemplatedControl.CornerRadiusProperty, SharedTokenKey.BorderRadiusSM);
         commonStyle.Add(smallStyle);
+        
+        var isEnableMotionStyle = new Style(selector => selector.Nesting().PropertyEquals(ButtonSpinner.IsMotionEnabledProperty, true));
+        var iconStyle = new Style(selector => selector.Nesting().Nesting().OfType<IconButton>());
+        iconStyle.Add(IconButton.TransitionsProperty, new Transitions()
+        {
+            AnimationUtils.CreateTransition<SolidColorBrushTransition>(TemplatedControl.BackgroundProperty)
+        });
+        isEnableMotionStyle.Add(iconStyle);
+        commonStyle.Add(isEnableMotionStyle);
 
         Add(commonStyle);
     }

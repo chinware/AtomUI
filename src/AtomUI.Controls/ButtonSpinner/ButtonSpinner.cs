@@ -1,4 +1,6 @@
-﻿using Avalonia;
+﻿using AtomUI.Theme;
+using AtomUI.Theme.Utils;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 
@@ -6,7 +8,9 @@ namespace AtomUI.Controls;
 
 using AvaloniaButtonSpinner = Avalonia.Controls.ButtonSpinner;
 
-public class ButtonSpinner : AvaloniaButtonSpinner
+public class ButtonSpinner : AvaloniaButtonSpinner,
+                             IAnimationAwareControl,
+                             IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
 
@@ -30,6 +34,12 @@ public class ButtonSpinner : AvaloniaButtonSpinner
 
     public static readonly StyledProperty<AddOnDecoratedStatus> StatusProperty =
         AddOnDecoratedBox.StatusProperty.AddOwner<ButtonSpinner>();
+    
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AvaloniaProperty.Register<ButtonSpinner, bool>(nameof(IsMotionEnabled), true);
+
+    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
+        = AvaloniaProperty.Register<ButtonSpinner, bool>(nameof(IsWaveAnimationEnabled), true);
 
     public object? LeftAddOn
     {
@@ -72,11 +82,37 @@ public class ButtonSpinner : AvaloniaButtonSpinner
         get => GetValue(StatusProperty);
         set => SetValue(StatusProperty, value);
     }
+    
+    public bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
+    }
+
+    public bool IsWaveAnimationEnabled
+    {
+        get => GetValue(IsWaveAnimationEnabledProperty);
+        set => SetValue(IsWaveAnimationEnabledProperty, value);
+    }
+
+    #endregion
+
+    #region 内部属性定义
+
+    Control IControlSharedTokenResourcesHost.HostControl => this;
+    string IControlSharedTokenResourcesHost.TokenId => ButtonSpinnerToken.ID;
+    Control IAnimationAwareControl.PropertyBindTarget => this;
 
     #endregion
 
     private Border? _spinnerHandleDecorator;
     private ButtonSpinnerDecoratedBox? _decoratedBox;
+
+    public ButtonSpinner()
+    {
+        this.RegisterResources();
+        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
+    }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {

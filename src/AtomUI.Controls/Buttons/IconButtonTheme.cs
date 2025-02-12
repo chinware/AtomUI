@@ -9,6 +9,7 @@ using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Layout;
+using Avalonia.Media;
 using Avalonia.Styling;
 
 namespace AtomUI.Controls;
@@ -34,6 +35,8 @@ internal class IconButtonTheme : BaseControlTheme
             };
             CreateTemplateParentBinding(iconContent, ContentPresenter.CornerRadiusProperty,
                 TemplatedControl.CornerRadiusProperty);
+            CreateTemplateParentBinding(iconContent, ContentPresenter.BackgroundProperty,
+                TemplatedControl.BackgroundProperty);
             CreateTemplateParentBinding(iconContent, ContentPresenter.ContentProperty, IconButton.IconProperty);
             CreateTemplateParentBinding(iconContent, ContentPresenter.PaddingProperty,
                 TemplatedControl.PaddingProperty);

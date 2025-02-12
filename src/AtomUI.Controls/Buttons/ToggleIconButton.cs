@@ -66,13 +66,12 @@ public class ToggleIconButton : ToggleButton,
         AffectsMeasure<ToggleIconButton>(CheckedIconProperty);
         AffectsMeasure<ToggleIconButton>(UnCheckedIconProperty);
         AffectsMeasure<ToggleIconButton>(IsCheckedProperty);
-        
-        CursorProperty.OverrideDefaultValue<ToggleIconButton>(new Cursor(StandardCursorType.Hand));
     }
 
     public ToggleIconButton()
     {
         this.RegisterResources();
+        Cursor = new Cursor(StandardCursorType.Hand);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
