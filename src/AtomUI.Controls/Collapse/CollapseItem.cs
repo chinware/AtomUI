@@ -108,6 +108,11 @@ public class CollapseItem : HeaderedContentControl, ISelectable
         AvaloniaProperty.RegisterDirect<CollapseItem, TimeSpan>(nameof(MotionDuration),
             o => o.MotionDuration,
             (o, v) => o.MotionDuration = v);
+    
+    internal static readonly DirectProperty<CollapseItem, bool> IsMotionEnabledProperty
+        = AvaloniaProperty.RegisterDirect<CollapseItem, bool>(nameof(IsMotionEnabled), 
+            o => o.IsMotionEnabled,
+            (o, v) => o.IsMotionEnabled = v);
 
     private SizeType _sizeType;
 
@@ -172,6 +177,14 @@ public class CollapseItem : HeaderedContentControl, ISelectable
         get => _motionDuration;
         set => SetAndRaise(MotionDurationProperty, ref _motionDuration, value);
     }
+    
+    private bool _isMotionEnabled = true;
+
+    internal bool IsMotionEnabled
+    {
+        get => _isMotionEnabled;
+        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
+    }
 
     #endregion
 
@@ -183,7 +196,7 @@ public class CollapseItem : HeaderedContentControl, ISelectable
         DataContextProperty.Changed.AddClassHandler<CollapseItem>((x, e) => x.UpdateHeader(e));
     }
 
-    private bool _enableAnimation = true;
+    private bool _tempAnimationDisabled = false;
     private MotionActorControl? _motionActor;
     private Border? _headerDecorator;
     private IconButton? _expandButton;
@@ -231,9 +244,9 @@ public class CollapseItem : HeaderedContentControl, ISelectable
         _expandButton    = e.NameScope.Find<IconButton>(CollapseItemTheme.ExpandButtonPart);
         TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, SharedTokenKey.MotionDurationSlow);
         SetupIconButton();
-        _enableAnimation = false;
+        _tempAnimationDisabled = true;
         HandleSelectedChanged();
-        _enableAnimation = true;
+        _tempAnimationDisabled = false;
         if (_expandButton is not null)
         {
             _expandButton.Click += (sender, args) => { IsSelected = !IsSelected; };
@@ -302,7 +315,7 @@ public class CollapseItem : HeaderedContentControl, ISelectable
             return;
         }
 
-        if (!_enableAnimation)
+        if (!_isMotionEnabled || _tempAnimationDisabled)
         {
             _motionActor.IsVisible = true;
             return;
@@ -326,7 +339,7 @@ public class CollapseItem : HeaderedContentControl, ISelectable
             return;
         }
 
-        if (!_enableAnimation)
+        if (!_isMotionEnabled || _tempAnimationDisabled)
         {
             _motionActor.IsVisible = false;
             return;

@@ -76,10 +76,6 @@ internal class CollapseItemTheme : BaseControlTheme
             Name = HeaderDecoratorPart
         };
         headerDecorator.RegisterInNameScope(scope);
-        headerDecorator.Transitions = new Transitions
-        {
-            AnimationUtils.CreateTransition<ThicknessTransition>(Border.BorderThicknessProperty)
-        };
         DockPanel.SetDock(headerDecorator, Dock.Top);
 
         TokenResourceBinder.CreateTokenBinding(headerDecorator, Border.BorderBrushProperty,
@@ -108,9 +104,6 @@ internal class CollapseItemTheme : BaseControlTheme
         TokenResourceBinder.CreateTokenBinding(expandButton, IconButton.IconHeightProperty,
             SharedTokenKey.IconSize);
         expandButton.RegisterInNameScope(scope);
-        expandButton.Transitions = new Transitions();
-        expandButton.Transitions.Add(
-            AnimationUtils.CreateTransition<TransformOperationsTransition>(Visual.RenderTransformProperty));
         CreateTemplateParentBinding(expandButton, IconButton.IconProperty, CollapseItem.ExpandIconProperty);
         CreateTemplateParentBinding(expandButton, Visual.IsVisibleProperty, CollapseItem.IsShowExpandIconProperty);
         CreateTemplateParentBinding(expandButton, InputElement.IsEnabledProperty, InputElement.IsEnabledProperty);
@@ -167,20 +160,44 @@ internal class CollapseItemTheme : BaseControlTheme
     private void BuildCommonStyle()
     {
         var commonStyle    = new Style(selector => selector.Nesting());
-        var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));
-        decoratorStyle.Add(Border.BackgroundProperty, CollapseTokenKey.HeaderBg);
-        commonStyle.Add(decoratorStyle);
+        {
+            var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));
+            decoratorStyle.Add(Border.BackgroundProperty, CollapseTokenKey.HeaderBg);
+            commonStyle.Add(decoratorStyle);
+        }
 
         var headerPresenter = new Style(selector => selector.Nesting().Template().Name(HeaderPresenterPart));
         headerPresenter.Add(ContentPresenter.ForegroundProperty, SharedTokenKey.ColorTextHeading);
         commonStyle.Add(headerPresenter);
 
-        // ExpandIcon 
-        var expandIconStyle =
-            new Style(selector => selector.Nesting().Template().Name(ExpandButtonPart).Descendant().OfType<Icon>());
-        expandIconStyle.Add(Layoutable.WidthProperty, SharedTokenKey.IconSizeSM);
-        expandIconStyle.Add(Layoutable.HeightProperty, SharedTokenKey.IconSizeSM);
-        commonStyle.Add(expandIconStyle);
+        {
+            // ExpandIcon 
+            var expandIconStyle =
+                new Style(selector => selector.Nesting().Template().Name(ExpandButtonPart).Descendant().OfType<Icon>());
+            expandIconStyle.Add(Layoutable.WidthProperty, SharedTokenKey.IconSizeSM);
+            expandIconStyle.Add(Layoutable.HeightProperty, SharedTokenKey.IconSizeSM);
+            commonStyle.Add(expandIconStyle);
+        }
+        
+        // 动画相关
+        var isMotionEnabledStyle = new Style(selector => selector.Nesting().PropertyEquals(CollapseItem.IsMotionEnabledProperty, true));
+        {
+            var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));
+            decoratorStyle.Add(Border.TransitionsProperty, new Transitions
+            {
+                AnimationUtils.CreateTransition<ThicknessTransition>(Border.BorderThicknessProperty)
+            });
+            isMotionEnabledStyle.Add(decoratorStyle);
+            
+            var expandIconStyle =
+                new Style(selector => selector.Nesting().Template().Name(ExpandButtonPart));
+            expandIconStyle.Add(IconButton.TransitionsProperty, new Transitions()
+            {
+                AnimationUtils.CreateTransition<TransformOperationsTransition>(Visual.RenderTransformProperty)
+            });
+            isMotionEnabledStyle.Add(expandIconStyle);
+        }
+        commonStyle.Add(isMotionEnabledStyle);
 
         Add(commonStyle);
     }
