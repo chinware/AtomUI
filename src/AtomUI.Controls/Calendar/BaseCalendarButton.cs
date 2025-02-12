@@ -18,13 +18,17 @@ namespace AtomUI.Controls;
 [PseudoClasses(StdPseudoClass.Selected, StdPseudoClass.InActive, BtnFocusedPC)]
 internal class BaseCalendarButton : AvaloniaButton
 {
-    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<BaseCalendarButton, bool>(nameof(IsMotionEnabled), true);
+    internal static readonly DirectProperty<BaseCalendarButton, bool> IsMotionEnabledProperty
+        = AvaloniaProperty.RegisterDirect<BaseCalendarButton, bool>(nameof(IsMotionEnabled), 
+            o => o.IsMotionEnabled,
+            (o, v) => o.IsMotionEnabled = v);
 
-    public bool IsMotionEnabled
+    private bool _isMotionEnabled = true;
+
+    internal bool IsMotionEnabled
     {
-        get => GetValue(IsMotionEnabledProperty);
-        set => SetValue(IsMotionEnabledProperty, value);
+        get => _isMotionEnabled;
+        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
     }
 
     private const string BtnFocusedPC = ":btnfocused";

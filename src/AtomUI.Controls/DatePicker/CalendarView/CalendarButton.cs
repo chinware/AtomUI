@@ -1,6 +1,7 @@
 ﻿using AtomUI.Controls.Utils;
 using AtomUI.Media;
 using AtomUI.Theme.Styling;
+using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -18,6 +19,19 @@ namespace AtomUI.Controls.CalendarView;
 internal sealed class CalendarButton : AvaloniaButton
 {
     internal const string BtnFocusedPC = ":btnfocused";
+    
+    internal static readonly DirectProperty<CalendarButton, bool> IsMotionEnabledProperty
+        = AvaloniaProperty.RegisterDirect<CalendarButton, bool>(nameof(IsMotionEnabled), 
+            o => o.IsMotionEnabled,
+            (o, v) => o.IsMotionEnabled = v);
+
+    private bool _isMotionEnabled = true;
+
+    internal bool IsMotionEnabled
+    {
+        get => _isMotionEnabled;
+        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
+    }
     
     /// <summary>
     /// Gets or sets the Calendar associated with this button.
@@ -108,13 +122,24 @@ internal sealed class CalendarButton : AvaloniaButton
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         SetPseudoClasses();
-        Transitions ??= new Transitions
-        {
-            AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty,
-                SharedTokenKey.MotionDurationFast)
-        };
     }
 
+    private void SetupTransitions()
+    {
+        if (IsMotionEnabled)
+        {
+            Transitions ??= new Transitions
+            {
+                AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty,
+                    SharedTokenKey.MotionDurationFast)
+            };
+        }
+        else
+        {
+            Transitions = null;
+        }
+    }
+    
     /// <summary>
     /// Sets PseudoClasses based on current state.
     /// </summary>
@@ -190,6 +215,15 @@ internal sealed class CalendarButton : AvaloniaButton
         if (e.InitialPressMouseButton == MouseButton.Left)
         {
             CalendarLeftMouseButtonUp?.Invoke(this, e);
+        }
+    }
+    
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == IsMotionEnabledProperty)
+        {
+            SetupTransitions();
         }
     }
 }

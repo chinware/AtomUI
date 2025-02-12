@@ -250,7 +250,6 @@ public class CountBadge : Control,
             BindUtils.RelayBind(this, OverflowCountProperty, _badgeAdorner, CountBadgeAdorner.OverflowCountProperty);
             BindUtils.RelayBind(this, CountProperty, _badgeAdorner, CountBadgeAdorner.CountProperty);
             BindUtils.RelayBind(this, IsMotionEnabledProperty, _badgeAdorner, CountBadgeAdorner.IsMotionEnabledProperty);
-            BindUtils.RelayBind(this, IsWaveAnimationEnabledProperty, _badgeAdorner, CountBadgeAdorner.IsWaveAnimationEnabledProperty);
         }
 
         TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, SharedTokenKey.MotionDurationSlow);

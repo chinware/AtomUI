@@ -47,11 +47,15 @@ internal class CheckBoxIndicator : Control, IWaveAdornerInfoProvider
     public static readonly StyledProperty<CornerRadius> CornerRadiusProperty =
         Border.CornerRadiusProperty.AddOwner<CheckBoxIndicator>();
     
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<CheckBoxIndicator, bool>(nameof(IsMotionEnabled), true);
+    internal static readonly DirectProperty<CheckBoxIndicator, bool> IsMotionEnabledProperty
+        = AvaloniaProperty.RegisterDirect<CheckBoxIndicator, bool>(nameof(IsMotionEnabled), 
+            o => o.IsMotionEnabled,
+            (o, v) => o.IsMotionEnabled = v);
     
-    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<CheckBoxIndicator, bool>(nameof(IsWaveAnimationEnabled), true);
+    internal static readonly DirectProperty<CheckBoxIndicator, bool> IsWaveAnimationEnabledProperty
+        = AvaloniaProperty.RegisterDirect<CheckBoxIndicator, bool>(nameof(IsWaveAnimationEnabled), 
+            o => o.IsWaveAnimationEnabled,
+            (o, v) => o.IsWaveAnimationEnabled = v);
 
     public bool? IsChecked
     {
@@ -113,18 +117,22 @@ internal class CheckBoxIndicator : Control, IWaveAdornerInfoProvider
         set => SetValue(CornerRadiusProperty, value);
     }
     
-    public bool IsMotionEnabled
-    {
-        get => GetValue(IsMotionEnabledProperty);
-        set => SetValue(IsMotionEnabledProperty, value);
-    }
+    private bool _isMotionEnabled = true;
 
-    public bool IsWaveAnimationEnabled
+    internal bool IsMotionEnabled
     {
-        get => GetValue(IsWaveAnimationEnabledProperty);
-        set => SetValue(IsWaveAnimationEnabledProperty, value);
+        get => _isMotionEnabled;
+        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
     }
     
+    private bool _isWaveAnimationEnabled = true;
+
+    internal bool IsWaveAnimationEnabled
+    {
+        get => _isWaveAnimationEnabled;
+        set => SetAndRaise(IsWaveAnimationEnabledProperty, ref _isWaveAnimationEnabled, value);
+    }
+
     #endregion
     
     private readonly BorderRenderHelper _borderRenderHelper;

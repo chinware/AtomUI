@@ -80,6 +80,7 @@ public enum ArrowPosition
 
 public class ArrowDecoratedBox : ContentControl, 
                                  IShadowMaskInfoProvider,
+                                 IAnimationAwareControl,
                                  IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
@@ -90,6 +91,12 @@ public class ArrowDecoratedBox : ContentControl,
     public static readonly StyledProperty<ArrowPosition> ArrowPositionProperty =
         AvaloniaProperty.Register<ArrowDecoratedBox, ArrowPosition>(
             nameof(ArrowPosition), ArrowPosition.Bottom);
+    
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AvaloniaProperty.Register<ArrowDecoratedBox, bool>(nameof(IsMotionEnabled), true);
+
+    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
+        = AvaloniaProperty.Register<ArrowDecoratedBox, bool>(nameof(IsWaveAnimationEnabled), true);
     
     /// <summary>
     /// 是否显示指示箭头
@@ -107,6 +114,18 @@ public class ArrowDecoratedBox : ContentControl,
     {
         get => GetValue(ArrowPositionProperty);
         set => SetValue(ArrowPositionProperty, value);
+    }
+    
+    public bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
+    }
+
+    public bool IsWaveAnimationEnabled
+    {
+        get => GetValue(IsWaveAnimationEnabledProperty);
+        set => SetValue(IsWaveAnimationEnabledProperty, value);
     }
 
     #endregion
@@ -136,6 +155,7 @@ public class ArrowDecoratedBox : ContentControl,
     
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ArrowDecoratedBoxToken.ID;
+    Control IAnimationAwareControl.PropertyBindTarget => this;
     
     #endregion
 
@@ -154,6 +174,7 @@ public class ArrowDecoratedBox : ContentControl,
     public ArrowDecoratedBox()
     {
         this.RegisterResources();
+        this.BindAnimationProperties(IsMotionEnabledProperty, IsMotionEnabledProperty);
     }
 
     public static Direction GetDirection(ArrowPosition arrowPosition)

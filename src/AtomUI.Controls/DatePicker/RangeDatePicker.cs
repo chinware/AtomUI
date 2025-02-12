@@ -3,7 +3,9 @@ using AtomUI.Controls.CalendarView;
 using AtomUI.Controls.Internal;
 using AtomUI.Controls.TimePickerLang;
 using AtomUI.Data;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
+using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -11,7 +13,8 @@ using Avalonia.Data;
 
 namespace AtomUI.Controls;
 
-public class RangeDatePicker : RangeInfoPickerInput
+public class RangeDatePicker : RangeInfoPickerInput,
+                               IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
     
@@ -104,12 +107,26 @@ public class RangeDatePicker : RangeInfoPickerInput
     
     #endregion
     
+    #region 内部属性定义
+
+    string IControlSharedTokenResourcesHost.TokenId => DatePickerToken.ID;
+    Control IControlSharedTokenResourcesHost.HostControl => this;
+    
+    #endregion
+    
     private RangeDatePickerPresenter? _pickerPresenter;
     private bool? _isNeedConfirmedBackup;
+
+    public RangeDatePicker()
+    {
+        this.RegisterResources();
+    }
     
     protected override Flyout CreatePickerFlyout()
     {
-        return new RangeDatePickerFlyout();
+        var flyout = new RangeDatePickerFlyout();
+        BindUtils.RelayBind(this, RangeStartSelectedDateProperty, flyout, RangeDatePickerFlyout.IsMotionEnabledProperty);
+        return flyout;
     }
     
     public override void Clear()
@@ -146,6 +163,7 @@ public class RangeDatePicker : RangeInfoPickerInput
             return;
         }
         presenter.NotifyRepairReverseRange(true);
+        BindUtils.RelayBind(this, IsMotionEnabledProperty, presenter, RangeDatePickerPresenter.IsMotionEnabledProperty);
         BindUtils.RelayBind(this, RangeStartSelectedDateProperty, presenter, RangeDatePickerPresenter.SelectedDateTimeProperty);
         BindUtils.RelayBind(this, RangeEndSelectedDateProperty, presenter, RangeDatePickerPresenter.SecondarySelectedDateTimeProperty);
         BindUtils.RelayBind(this, ClockIdentifierProperty, presenter, RangeDatePickerPresenter.ClockIdentifierProperty);

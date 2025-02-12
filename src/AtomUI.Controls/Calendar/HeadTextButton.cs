@@ -20,12 +20,6 @@ internal class HeadTextButton : AvaloniaButton
         set => SetValue(IsMotionEnabledProperty, value);
     }
     
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        base.OnApplyTemplate(e);
-        SetupTransitions();
-    }
-    
     private void SetupTransitions()
     {
         if (IsMotionEnabled)
@@ -45,12 +39,9 @@ internal class HeadTextButton : AvaloniaButton
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (VisualRoot != null)
+        if (change.Property == IsMotionEnabledProperty)
         {
-            if (change.Property == IsMotionEnabledProperty)
-            {
-                SetupTransitions();
-            }
+            SetupTransitions();
         }
     }
 }

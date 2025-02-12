@@ -120,7 +120,6 @@ public class Tag : TemplatedControl
     private bool _hasColorSet;
     private static readonly Dictionary<PresetColorType, TagCalcColor> _presetColorMap;
     private static readonly Dictionary<TagStatus, TagStatusCalcColor> _statusColorMap;
-    private Canvas? _layoutPanel;
     private TextBlock? _textBlock;
     private ContentPresenter? _iconContentPresenter;
     private IconButton? _closeButton;

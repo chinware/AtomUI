@@ -71,7 +71,7 @@ public abstract class InfoPickerInput : TemplatedControl,
 
     public static readonly StyledProperty<Brush?> InputTextBrushProperty =
         AvaloniaProperty.Register<InfoPickerInput, Brush?>(nameof(InputTextBrush));
-    
+
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
         = AvaloniaProperty.Register<InfoPickerInput, bool>(nameof(IsMotionEnabled), true);
 
@@ -167,7 +167,7 @@ public abstract class InfoPickerInput : TemplatedControl,
         get => GetValue(InputTextBrushProperty);
         set => SetValue(InputTextBrushProperty, value);
     }
-    
+
     public bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
@@ -192,7 +192,7 @@ public abstract class InfoPickerInput : TemplatedControl,
         get => GetValue(TextProperty);
         set => SetValue(TextProperty, value);
     }
-    
+
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => InfoPickerInputToken.ID;
     Control IAnimationAwareControl.PropertyBindTarget => this;

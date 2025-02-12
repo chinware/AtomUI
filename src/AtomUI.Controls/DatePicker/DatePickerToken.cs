@@ -150,8 +150,8 @@ internal class DatePickerToken : AbstractControlDesignToken
         HeaderPadding               = new Thickness(0, 0, 0, SharedToken.PaddingSM);
         CellLineHeight              = CellHeight - 2; // 不知道为啥设置成一样，或者不设置文字有些靠下
         RangeCalendarSpacing        = 20;
-        PickerInputMinWidth         = 100;
-        PickerInputWithTimeMinWidth = 160;
+        PickerInputMinWidth         = 120;
+        PickerInputWithTimeMinWidth = 205;
         ButtonsPanelMargin          = new Thickness(0, SharedToken.MarginXS, 0, 0);
     }
 }

@@ -197,7 +197,6 @@ public class DotBadge : Control,
             BindUtils.RelayBind(this, TextProperty, _dotBadgeAdorner, DotBadgeAdorner.TextProperty);
             BindUtils.RelayBind(this, OffsetProperty, _dotBadgeAdorner, DotBadgeAdorner.OffsetProperty);
             BindUtils.RelayBind(this, IsMotionEnabledProperty, _dotBadgeAdorner, DotBadgeAdorner.IsMotionEnabledProperty);
-            BindUtils.RelayBind(this, IsWaveAnimationEnabledProperty, _dotBadgeAdorner, DotBadgeAdorner.IsWaveAnimationEnabledProperty);
         }
     }
 

@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Globalization;
 using AtomUI.Collections.Pooled;
+using AtomUI.Data;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -63,6 +64,11 @@ internal class CalendarItem : TemplatedControl
         AvaloniaProperty.RegisterDirect<CalendarItem, bool>(nameof(IsMonthViewMode),
             o => o.IsMonthViewMode,
             (o, v) => o.IsMonthViewMode = v);
+    
+    internal static readonly DirectProperty<CalendarItem, bool> IsMotionEnabledProperty
+        = AvaloniaProperty.RegisterDirect<CalendarItem, bool>(nameof(IsMotionEnabled), 
+            o => o.IsMotionEnabled,
+            (o, v) => o.IsMotionEnabled = v);
 
     private bool _isMonthViewMode = true;
 
@@ -73,6 +79,14 @@ internal class CalendarItem : TemplatedControl
     {
         get => _isMonthViewMode;
         set => SetAndRaise(IsMonthViewModeProperty, ref _isMonthViewMode, value);
+    }
+    
+    private bool _isMotionEnabled = true;
+
+    internal bool IsMotionEnabled
+    {
+        get => _isMotionEnabled;
+        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
     }
 
     /// <summary>
@@ -243,6 +257,8 @@ internal class CalendarItem : TemplatedControl
                     if (Owner != null)
                     {
                         month.Owner = Owner;
+                        BindUtils.RelayBind(Owner, Calendar.IsMotionEnabledProperty, month,
+                            CalendarButton.IsMotionEnabledProperty);
                     }
 
                     month.SetValue(Grid.RowProperty, i);
@@ -297,6 +313,8 @@ internal class CalendarItem : TemplatedControl
                 if (Owner != null)
                 {
                     cell.Owner = Owner;
+                    BindUtils.RelayBind(Owner, Calendar.IsMotionEnabledProperty, cell,
+                        CalendarDayButton.IsMotionEnabledProperty);
                 }
 
                 cell.SetValue(Grid.RowProperty, i);

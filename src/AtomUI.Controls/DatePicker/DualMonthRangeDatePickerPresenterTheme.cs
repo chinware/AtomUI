@@ -22,6 +22,7 @@ internal class DualMonthRangeDatePickerPresenterTheme : DatePickerPresenterTheme
         {
             Name = CalendarViewPart,
         };
+        CreateTemplateParentBinding(calendarView, DualMonthRangeCalendar.IsMotionEnabledProperty, DualMonthRangeDatePickerPresenter.IsMotionEnabledProperty);
         CreateTemplateParentBinding(calendarView, DualMonthRangeCalendar.SelectedDateProperty, DualMonthRangeDatePickerPresenter.SelectedDateTimeProperty);
         CreateTemplateParentBinding(calendarView, DualMonthRangeCalendar.SecondarySelectedDateProperty, DualMonthRangeDatePickerPresenter.SecondarySelectedDateTimeProperty);
         calendarView.RegisterInNameScope(scope);

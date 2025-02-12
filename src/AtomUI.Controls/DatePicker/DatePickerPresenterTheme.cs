@@ -70,6 +70,7 @@ internal class DatePickerPresenterTheme : BaseControlTheme
             Name = CalendarViewPart,
         };
         CreateTemplateParentBinding(calendarView, PickerCalendar.SelectedDateProperty, DatePickerPresenter.SelectedDateTimeProperty);
+        CreateTemplateParentBinding(calendarView, PickerCalendar.IsMotionEnabledProperty, DatePickerPresenter.IsMotionEnabledProperty);
         calendarView.RegisterInNameScope(scope);
         calendarLayout.Children.Add(calendarView);
 

@@ -50,7 +50,7 @@ internal class CalendarTheme : BaseControlTheme
             Name                = CalendarItemPart,
             HorizontalAlignment = HorizontalAlignment.Stretch
         };
-
+        CreateTemplateParentBinding(calendarItem, CalendarItem.IsMotionEnabledProperty, Calendar.IsMotionEnabledProperty);
         calendarItem.RegisterInNameScope(scope);
         return calendarItem;
     }

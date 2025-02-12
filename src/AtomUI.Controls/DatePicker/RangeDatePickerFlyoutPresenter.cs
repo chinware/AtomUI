@@ -1,4 +1,5 @@
-﻿using Avalonia;
+﻿using AtomUI.Data;
+using Avalonia;
 using Avalonia.Controls.Primitives;
 
 namespace AtomUI.Controls;
@@ -48,6 +49,9 @@ internal class RangeDatePickerFlyoutPresenter : FlyoutPresenter
         {
             DatePickerPresenter = new DualMonthRangeDatePickerPresenter();
         }
+
+        BindUtils.RelayBind(this, IsMotionEnabledProperty, DatePickerPresenter,
+            RangeDatePickerPresenter.IsMotionEnabledProperty);
 
         Content = DatePickerPresenter;
     }

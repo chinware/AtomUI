@@ -99,11 +99,10 @@ internal class CountBadgeAdorner : TemplatedControl
         AvaloniaProperty.Register<CountBadgeAdorner, double>(
             nameof(BadgeShadowSize));
     
-    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<CountBadgeAdorner, bool>(nameof(IsMotionEnabled), true);
-
-    internal static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<CountBadgeAdorner, bool>(nameof(IsWaveAnimationEnabled), true);
+    internal static readonly DirectProperty<CountBadgeAdorner, bool> IsMotionEnabledProperty
+        = AvaloniaProperty.RegisterDirect<CountBadgeAdorner, bool>(nameof(IsMotionEnabled), 
+            o => o.IsMotionEnabled,
+            (o, v) => o.IsMotionEnabled = v);
     
     private bool _isAdornerMode;
 
@@ -146,18 +145,14 @@ internal class CountBadgeAdorner : TemplatedControl
         set => SetValue(BadgeShadowSizeProperty, value);
     }
     
+    private bool _isMotionEnabled = true;
+
     internal bool IsMotionEnabled
     {
-        get => GetValue(IsMotionEnabledProperty);
-        set => SetValue(IsMotionEnabledProperty, value);
+        get => _isMotionEnabled;
+        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
     }
-
-    internal bool IsWaveAnimationEnabled
-    {
-        get => GetValue(IsWaveAnimationEnabledProperty);
-        set => SetValue(IsWaveAnimationEnabledProperty, value);
-    }
-
+    
     #endregion
     
     private MotionActorControl? _indicatorMotionActor;

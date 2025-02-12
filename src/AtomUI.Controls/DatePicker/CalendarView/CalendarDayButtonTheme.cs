@@ -28,24 +28,26 @@ internal class CalendarDayButtonTheme : BaseControlTheme
         {
             var contentPresenter = new ContentPresenter
             {
-                Name = ContentPart,
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Stretch,
+                Name                       = ContentPart,
+                HorizontalAlignment        = HorizontalAlignment.Stretch,
+                VerticalAlignment          = VerticalAlignment.Stretch,
                 HorizontalContentAlignment = HorizontalAlignment.Center,
-                VerticalContentAlignment = VerticalAlignment.Center,
+                VerticalContentAlignment   = VerticalAlignment.Center,
             };
-            
+
             var buttonLabel = new TextBlock
             {
                 HorizontalAlignment = HorizontalAlignment.Center,
-                VerticalAlignment = VerticalAlignment.Center,
+                VerticalAlignment   = VerticalAlignment.Center,
             };
-            
+
             contentPresenter.Content = buttonLabel;
-            BindUtils.RelayBind(calendarDayButton, CalendarDayButton.ContentProperty, buttonLabel, TextBlock.TextProperty,
+            BindUtils.RelayBind(calendarDayButton, CalendarDayButton.ContentProperty, buttonLabel,
+                TextBlock.TextProperty,
                 input => input?.ToString());
-            BindUtils.RelayBind(contentPresenter, ContentPresenter.ForegroundProperty, buttonLabel, TextBlock.ForegroundProperty);
-            
+            BindUtils.RelayBind(contentPresenter, ContentPresenter.ForegroundProperty, buttonLabel,
+                TextBlock.ForegroundProperty);
+
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.PaddingProperty,
                 TemplatedControl.PaddingProperty);
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.ForegroundProperty,

@@ -3,14 +3,17 @@ using AtomUI.Controls.CalendarView;
 using AtomUI.Controls.Internal;
 using AtomUI.Controls.TimePickerLang;
 using AtomUI.Data;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
+using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 
 namespace AtomUI.Controls;
 
-public class DatePicker : InfoPickerInput
+public class DatePicker : InfoPickerInput,
+                          IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
 
@@ -80,6 +83,18 @@ public class DatePicker : InfoPickerInput
     }
     
     #endregion
+
+    #region 内部属性定义
+
+    string IControlSharedTokenResourcesHost.TokenId => DatePickerToken.ID;
+    Control IControlSharedTokenResourcesHost.HostControl => this;
+    
+    #endregion
+
+    public DatePicker()
+    {
+        this.RegisterResources();
+    }
     
     private DatePickerPresenter? _pickerPresenter;
     
@@ -145,7 +160,9 @@ public class DatePicker : InfoPickerInput
     
     protected override Flyout CreatePickerFlyout()
     {
-        return new DatePickerFlyout();
+        var flyout = new DatePickerFlyout();
+        BindUtils.RelayBind(this, IsMotionEnabledProperty, flyout, DatePickerFlyout.IsMotionEnabledProperty);
+        return flyout;
     }
     
     protected override void NotifyFlyoutPresenterCreated(Control flyoutPresenter)
@@ -167,6 +184,7 @@ public class DatePicker : InfoPickerInput
             return;
         }
         
+        BindUtils.RelayBind(this, IsMotionEnabledProperty, presenter, DatePickerPresenter.IsMotionEnabledProperty);
         BindUtils.RelayBind(this, SelectedDateTimeProperty, presenter, DatePickerPresenter.SelectedDateTimeProperty);
         BindUtils.RelayBind(this, IsNeedConfirmProperty, presenter, DatePickerPresenter.IsNeedConfirmProperty);
         BindUtils.RelayBind(this, IsShowNowProperty, presenter, DatePickerPresenter.IsShowNowProperty);

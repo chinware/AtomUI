@@ -82,6 +82,19 @@ internal class DatePickerPresenter : PickerPresenterBase
     
     public static readonly StyledProperty<TimeSpan?> TempSelectedTimeProperty =
         AvaloniaProperty.Register<DatePickerPresenter, TimeSpan?>(nameof(TempSelectedTime));
+    
+    internal static readonly DirectProperty<DatePickerPresenter, bool> IsMotionEnabledProperty
+        = AvaloniaProperty.RegisterDirect<DatePickerPresenter, bool>(nameof(IsMotionEnabled), 
+            o => o.IsMotionEnabled,
+            (o, v) => o.IsMotionEnabled = v);
+    
+    private bool _isMotionEnabled = true;
+
+    internal bool IsMotionEnabled
+    {
+        get => _isMotionEnabled;
+        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
+    }
 
     private bool _buttonsPanelVisible = true;
     internal bool ButtonsPanelVisible

@@ -27,6 +27,7 @@ internal class TimedRangeDatePickerPresenterTheme : DatePickerPresenterTheme
         {
             Name = CalendarViewPart,
         };
+        CreateTemplateParentBinding(calendarView, RangeCalendar.IsMotionEnabledProperty, TimedRangeDatePickerPresenter.IsMotionEnabledProperty);
         CreateTemplateParentBinding(calendarView, RangeCalendar.SelectedDateProperty, TimedRangeDatePickerPresenter.SelectedDateTimeProperty);
         CreateTemplateParentBinding(calendarView, RangeCalendar.SecondarySelectedDateProperty, TimedRangeDatePickerPresenter.SecondarySelectedDateTimeProperty);
         calendarView.RegisterInNameScope(scope);

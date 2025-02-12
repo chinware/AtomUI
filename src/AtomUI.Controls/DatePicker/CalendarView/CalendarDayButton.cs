@@ -26,6 +26,19 @@ internal sealed class CalendarDayButton : AvaloniaButton
     internal const string TodayPC = ":today";
     internal const string BlackoutPC = ":blackout";
     internal const string DayfocusedPC = ":dayfocused";
+    
+    internal static readonly DirectProperty<CalendarDayButton, bool> IsMotionEnabledProperty
+        = AvaloniaProperty.RegisterDirect<CalendarDayButton, bool>(nameof(IsMotionEnabled), 
+            o => o.IsMotionEnabled,
+            (o, v) => o.IsMotionEnabled = v);
+
+    private bool _isMotionEnabled = true;
+
+    internal bool IsMotionEnabled
+    {
+        get => _isMotionEnabled;
+        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
+    }
 
     /// <summary>
     /// Gets or sets the Calendar associated with this button.
@@ -176,13 +189,24 @@ internal sealed class CalendarDayButton : AvaloniaButton
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         SetPseudoClasses();
-        Transitions ??= new Transitions
+    }
+
+    private void SetupTransitions()
+    {
+        if (IsMotionEnabled)
         {
-            AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty,
-                SharedTokenKey.MotionDurationFast),
-            AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty,
-                SharedTokenKey.MotionDurationFast)
-        };
+            Transitions ??= new Transitions
+            {
+                AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty,
+                    SharedTokenKey.MotionDurationFast),
+                AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty,
+                    SharedTokenKey.MotionDurationFast)
+            };
+        }
+        else
+        {
+            Transitions = null;
+        }
     }
 
     private void SetPseudoClasses()
@@ -275,5 +299,14 @@ internal sealed class CalendarDayButton : AvaloniaButton
         TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
             SharedTokenKey.BorderThickness, BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this));
+    }
+    
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == IsMotionEnabledProperty)
+        {
+            SetupTransitions();
+        }
     }
 }
