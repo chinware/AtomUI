@@ -49,7 +49,7 @@ public class TabControl : BaseTabControl
 
     private void HandleLayoutUpdated(object? sender, EventArgs args)
     {
-        if (_selectedIndicator?.Transitions is not null)
+        if (_selectedIndicator is not null)
         {
             _selectedIndicator.Transitions = new Transitions
             {

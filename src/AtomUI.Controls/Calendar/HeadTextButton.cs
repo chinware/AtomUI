@@ -3,7 +3,7 @@ using AtomUI.Media;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Animation;
-using Avalonia.Controls.Primitives;
+using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
 
@@ -19,7 +19,13 @@ internal class HeadTextButton : AvaloniaButton
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
     }
-    
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        SetupTransitions();
+    }
+
     private void SetupTransitions()
     {
         if (IsMotionEnabled)

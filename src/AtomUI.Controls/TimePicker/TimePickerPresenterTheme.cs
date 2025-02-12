@@ -60,6 +60,7 @@ internal class TimePickerPresenterTheme : BaseControlTheme
             Name = TimeViewPart,
             IsShowHeader = false
         };
+        CreateTemplateParentBinding(timeView, TimeView.IsMotionEnabledProperty, TimePickerPresenter.IsMotionEnabledProperty);
         CreateTemplateParentBinding(timeView, TimeView.MinuteIncrementProperty, TimePickerPresenter.MinuteIncrementProperty);
         CreateTemplateParentBinding(timeView, TimeView.SecondIncrementProperty, TimePickerPresenter.SecondIncrementProperty);
         CreateTemplateParentBinding(timeView, TimeView.SelectedTimeProperty, TimePickerPresenter.SelectedTimeProperty);

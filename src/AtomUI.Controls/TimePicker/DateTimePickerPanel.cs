@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using AtomUI.Controls.TimePickerLang;
+using AtomUI.Data;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
@@ -125,6 +126,21 @@ internal class DateTimePickerPanel : Panel, ILogicalScrollable
 
     #endregion
 
+    #region 内部属性定义
+    internal static readonly DirectProperty<DateTimePickerPanel, bool> IsMotionEnabledProperty
+        = AvaloniaProperty.RegisterDirect<DateTimePickerPanel, bool>(nameof(IsMotionEnabled),
+            o => o.IsMotionEnabled,
+            (o, v) => o.IsMotionEnabled = v);
+    
+    private bool _isMotionEnabled = true;
+
+    internal bool IsMotionEnabled
+    {
+        get => _isMotionEnabled;
+        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
+    }
+    #endregion
+    
     #region 内部事件定义
 
     internal event EventHandler<CellHoverEventArgs>? CellHovered;
@@ -411,7 +427,6 @@ internal class DateTimePickerPanel : Panel, ILogicalScrollable
         {
             UpdateItems();
             RaiseScrollInvalidated(EventArgs.Empty);
-            EnableCellHoverAnimation();
             _hasInit = true;
         }
 
@@ -575,9 +590,9 @@ internal class DateTimePickerPanel : Panel, ILogicalScrollable
                 Focusable                  = false,
                 CornerRadius               = new CornerRadius(0),
                 SizeType                   = SizeType.Middle,
-                DisabledItemHoverAnimation = true,
                 Cursor = new Cursor(StandardCursorType.Hand)
             };
+            BindUtils.RelayBind(this, IsMotionEnabledProperty, item, ListBoxItem.IsMotionEnabledProperty);
             item.PointerEntered += (sender, args) =>
             {
                 if (sender is ListBoxItem target)
@@ -752,13 +767,13 @@ internal class DateTimePickerPanel : Panel, ILogicalScrollable
         }
     }
 
-    private void EnableCellHoverAnimation()
-    {
-        var children = Children;
-        for (var i = 0; i < children.Count; i++)
-        {
-            var item = (ListBoxItem)children[i];
-            item.DisabledItemHoverAnimation = false;
-        }
-    }
+    // private void EnableCellHoverAnimation()
+    // {
+    //     var children = Children;
+    //     for (var i = 0; i < children.Count; i++)
+    //     {
+    //         var item = (ListBoxItem)children[i];
+    //         item.DisabledItemHoverAnimation = false;
+    //     }
+    // }
 }

@@ -1,7 +1,6 @@
 ﻿using AtomUI.Controls.Utils;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
-using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -10,7 +9,6 @@ using Avalonia.Controls.Shapes;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Input.Raw;
-using TimeSpan = System.TimeSpan;
 
 namespace AtomUI.Controls;
 
@@ -110,6 +108,11 @@ internal class TimeView : TemplatedControl
     
     internal static readonly StyledProperty<bool> IsPointerInSelectorProperty =
         AvaloniaProperty.Register<TimeView, bool>(nameof(IsPointerInSelector), false);
+    
+    internal static readonly DirectProperty<TimeView, bool> IsMotionEnabledProperty
+        = AvaloniaProperty.RegisterDirect<TimeView, bool>(nameof(IsMotionEnabled), 
+            o => o.IsMotionEnabled,
+            (o, v) => o.IsMotionEnabled = v);
 
     private double _spacerWidth;
 
@@ -130,6 +133,14 @@ internal class TimeView : TemplatedControl
     {
         get => _itemHeight;
         set => SetAndRaise(ItemHeightProperty, ref _itemHeight, value);
+    }
+    
+    private bool _isMotionEnabled = true;
+
+    internal bool IsMotionEnabled
+    {
+        get => _isMotionEnabled;
+        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
     }
 
     #endregion

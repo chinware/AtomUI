@@ -46,16 +46,6 @@ internal class CheckBoxIndicator : Control, IWaveAdornerInfoProvider
 
     public static readonly StyledProperty<CornerRadius> CornerRadiusProperty =
         Border.CornerRadiusProperty.AddOwner<CheckBoxIndicator>();
-    
-    internal static readonly DirectProperty<CheckBoxIndicator, bool> IsMotionEnabledProperty
-        = AvaloniaProperty.RegisterDirect<CheckBoxIndicator, bool>(nameof(IsMotionEnabled), 
-            o => o.IsMotionEnabled,
-            (o, v) => o.IsMotionEnabled = v);
-    
-    internal static readonly DirectProperty<CheckBoxIndicator, bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.RegisterDirect<CheckBoxIndicator, bool>(nameof(IsWaveAnimationEnabled), 
-            o => o.IsWaveAnimationEnabled,
-            (o, v) => o.IsWaveAnimationEnabled = v);
 
     public bool? IsChecked
     {
@@ -116,7 +106,21 @@ internal class CheckBoxIndicator : Control, IWaveAdornerInfoProvider
         get => GetValue(CornerRadiusProperty);
         set => SetValue(CornerRadiusProperty, value);
     }
-    
+
+    #endregion
+
+    #region 内部属性定义
+
+    internal static readonly DirectProperty<CheckBoxIndicator, bool> IsMotionEnabledProperty
+        = AvaloniaProperty.RegisterDirect<CheckBoxIndicator, bool>(nameof(IsMotionEnabled),
+            o => o.IsMotionEnabled,
+            (o, v) => o.IsMotionEnabled = v);
+
+    internal static readonly DirectProperty<CheckBoxIndicator, bool> IsWaveAnimationEnabledProperty
+        = AvaloniaProperty.RegisterDirect<CheckBoxIndicator, bool>(nameof(IsWaveAnimationEnabled),
+            o => o.IsWaveAnimationEnabled,
+            (o, v) => o.IsWaveAnimationEnabled = v);
+
     private bool _isMotionEnabled = true;
 
     internal bool IsMotionEnabled
@@ -124,7 +128,7 @@ internal class CheckBoxIndicator : Control, IWaveAdornerInfoProvider
         get => _isMotionEnabled;
         set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
     }
-    
+
     private bool _isWaveAnimationEnabled = true;
 
     internal bool IsWaveAnimationEnabled
@@ -134,7 +138,7 @@ internal class CheckBoxIndicator : Control, IWaveAdornerInfoProvider
     }
 
     #endregion
-    
+
     private readonly BorderRenderHelper _borderRenderHelper;
 
     static CheckBoxIndicator()

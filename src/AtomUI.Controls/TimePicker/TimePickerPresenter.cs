@@ -94,6 +94,19 @@ internal class TimePickerPresenter : PickerPresenterBase
         get => GetValue(TempSelectedTimeProperty);
         set => SetValue(TempSelectedTimeProperty, value);
     }
+    
+    internal static readonly DirectProperty<TimePickerPresenter, bool> IsMotionEnabledProperty
+        = AvaloniaProperty.RegisterDirect<TimePickerPresenter, bool>(nameof(IsMotionEnabled), 
+            o => o.IsMotionEnabled,
+            (o, v) => o.IsMotionEnabled = v);
+    
+    private bool _isMotionEnabled = true;
+
+    internal bool IsMotionEnabled
+    {
+        get => _isMotionEnabled;
+        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
+    }
 
     #endregion
 

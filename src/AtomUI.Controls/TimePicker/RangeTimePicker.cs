@@ -1,6 +1,8 @@
 ﻿using AtomUI.Controls.Internal;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
+using AtomUI.Theme;
+using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -8,7 +10,8 @@ using Avalonia.Data;
 
 namespace AtomUI.Controls;
 
-public class RangeTimePicker : RangeInfoPickerInput
+public class RangeTimePicker : RangeInfoPickerInput,
+                               IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
 
@@ -101,7 +104,20 @@ public class RangeTimePicker : RangeInfoPickerInput
     
     #endregion
     
+    #region 内部属性定义
+
+    Control IControlSharedTokenResourcesHost.HostControl => this;
+    
+    string IControlSharedTokenResourcesHost.TokenId => TimePickerToken.ID;
+
+    #endregion
+    
     private TimePickerPresenter? _pickerPresenter;
+
+    public RangeTimePicker()
+    {
+        this.RegisterResources();
+    }
     
     /// <summary>
     /// 清除时间选择器的值，不考虑默认值

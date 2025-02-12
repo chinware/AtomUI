@@ -143,8 +143,7 @@ internal class CalendarItemTheme : BaseControlTheme
 
         var headerButton = new HeadTextButton
         {
-            Name = headerButtonName,
-            IsMotionEnabled = false
+            Name = headerButtonName
         };
         CreateTemplateParentBinding(headerButton, HeadTextButton.IsMotionEnabledProperty,
             CalendarItem.IsMotionEnabledProperty);
