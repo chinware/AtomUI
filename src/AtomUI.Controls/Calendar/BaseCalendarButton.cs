@@ -1,6 +1,7 @@
 ﻿using AtomUI.Controls.Utils;
 using AtomUI.Media;
 using AtomUI.Theme.Styling;
+using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -17,6 +18,15 @@ namespace AtomUI.Controls;
 [PseudoClasses(StdPseudoClass.Selected, StdPseudoClass.InActive, BtnFocusedPC)]
 internal class BaseCalendarButton : AvaloniaButton
 {
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AvaloniaProperty.Register<BaseCalendarButton, bool>(nameof(IsMotionEnabled), true);
+
+    public bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
+    }
+
     private const string BtnFocusedPC = ":btnfocused";
 
     /// <summary>
@@ -103,11 +113,23 @@ internal class BaseCalendarButton : AvaloniaButton
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         SetPseudoClasses();
-        Transitions ??= new Transitions
+        SetupTransitions();
+    }
+
+    private void SetupTransitions()
+    {
+        if (IsMotionEnabled)
         {
-            AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty,
-                SharedTokenKey.MotionDurationFast)
-        };
+            Transitions ??= new Transitions
+            {
+                AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty,
+                    SharedTokenKey.MotionDurationFast)
+            };
+        }
+        else
+        {
+            Transitions = null;
+        }
     }
 
     /// <summary>
@@ -185,6 +207,18 @@ internal class BaseCalendarButton : AvaloniaButton
         if (e.InitialPressMouseButton == MouseButton.Left)
         {
             CalendarLeftMouseButtonUp?.Invoke(this, e);
+        }
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (VisualRoot != null)
+        {
+            if (change.Property == IsMotionEnabledProperty)
+            {
+                SetupTransitions();
+            }
         }
     }
 }

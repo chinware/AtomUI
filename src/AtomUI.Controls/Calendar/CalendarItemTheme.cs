@@ -49,7 +49,7 @@ internal class CalendarItemTheme : BaseControlTheme
                 Name          = ItemRootLayoutPart,
                 LastChildFill = true
             };
-            BuildHeader(rootLayout, scope);
+            BuildHeader(calendarItem, rootLayout, scope);
             BuildContentView(rootLayout, scope);
 
             BuildDayTitleTemplate(calendarItem);
@@ -64,7 +64,7 @@ internal class CalendarItemTheme : BaseControlTheme
         calendarItem.DayTitleTemplate = new DayTitleTemplate();
     }
 
-    protected virtual void BuildHeader(DockPanel layout, INameScope scope)
+    protected virtual void BuildHeader(CalendarItem calendarItem, DockPanel layout, INameScope scope)
     {
         var headerLayout = new Grid
         {

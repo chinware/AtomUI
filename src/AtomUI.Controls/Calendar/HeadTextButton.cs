@@ -1,6 +1,7 @@
 ﻿using AtomUI.Controls.Utils;
 using AtomUI.Media;
 using AtomUI.Theme.Styling;
+using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls.Primitives;
 
@@ -10,13 +11,46 @@ using AvaloniaButton = Avalonia.Controls.Button;
 
 internal class HeadTextButton : AvaloniaButton
 {
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AvaloniaProperty.Register<HeadTextButton, bool>(nameof(IsMotionEnabled), true);
+    
+    public bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
+    }
+    
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        Transitions ??= new Transitions
+        SetupTransitions();
+    }
+    
+    private void SetupTransitions()
+    {
+        if (IsMotionEnabled)
         {
-            AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty,
-                SharedTokenKey.MotionDurationFast)
-        };
+            Transitions ??= new Transitions
+            {
+                AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty,
+                    SharedTokenKey.MotionDurationFast)
+            };
+        }
+        else
+        {
+            Transitions = null;
+        }
+    }
+    
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (VisualRoot != null)
+        {
+            if (change.Property == IsMotionEnabledProperty)
+            {
+                SetupTransitions();
+            }
+        }
     }
 }

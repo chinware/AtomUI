@@ -26,6 +26,15 @@ internal class BaseCalendarDayButton : AvaloniaButton
     internal const string TodayPC = ":today";
     internal const string BlackoutPC = ":blackout";
     internal const string DayfocusedPC = ":dayfocused";
+    
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AvaloniaProperty.Register<BaseCalendarDayButton, bool>(nameof(IsMotionEnabled), true);
+    
+    public bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
+    }
 
     /// <summary>
     /// Default content for the CalendarDayButton.
@@ -171,11 +180,23 @@ internal class BaseCalendarDayButton : AvaloniaButton
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         SetPseudoClasses();
-        Transitions ??= new Transitions
+        SetupTransitions();
+    }
+    
+    private void SetupTransitions()
+    {
+        if (IsMotionEnabled)
         {
-            AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty,
-                SharedTokenKey.MotionDurationFast)
-        };
+            Transitions ??= new Transitions
+            {
+                AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty,
+                    SharedTokenKey.MotionDurationFast)
+            };
+        }
+        else
+        {
+            Transitions = null;
+        }
     }
 
     private void SetPseudoClasses()
@@ -268,5 +289,17 @@ internal class BaseCalendarDayButton : AvaloniaButton
         TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
             SharedTokenKey.BorderThickness, BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this));
+    }
+    
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (VisualRoot != null)
+        {
+            if (change.Property == IsMotionEnabledProperty)
+            {
+                SetupTransitions();
+            }
+        }
     }
 }

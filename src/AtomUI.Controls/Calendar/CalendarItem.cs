@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Globalization;
 using AtomUI.Collections.Pooled;
+using AtomUI.Data;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -33,8 +34,8 @@ internal class CalendarItem : TemplatedControl
     internal const int NumberOfDaysPerWeek = 7;
 
     protected readonly System.Globalization.Calendar _calendar = new GregorianCalendar();
-    
-        #region 公共属性定义
+
+    #region 公共属性定义
 
     public static readonly StyledProperty<IBrush?> HeaderBackgroundProperty =
         Calendar.HeaderBackgroundProperty.AddOwner<CalendarItem>();
@@ -271,6 +272,8 @@ internal class CalendarItem : TemplatedControl
                     if (Owner != null)
                     {
                         cell.Owner = Owner;
+                        BindUtils.RelayBind(Owner, Calendar.IsMotionEnabledProperty, cell,
+                            BaseCalendarDayButton.IsMotionEnabledProperty);
                     }
 
                     cell.SetValue(Grid.RowProperty, i);
@@ -303,6 +306,8 @@ internal class CalendarItem : TemplatedControl
 
                     if (Owner != null)
                     {
+                        BindUtils.RelayBind(Owner, Calendar.IsMotionEnabledProperty, month,
+                            BaseCalendarButton.IsMotionEnabledProperty);
                         month.Owner = Owner;
                     }
 
@@ -337,6 +342,10 @@ internal class CalendarItem : TemplatedControl
         if (Owner != null)
         {
             UpdateDisabled(Owner.IsEnabled);
+            if (HeaderButton != null)
+            {
+                BindUtils.RelayBind(Owner, Calendar.IsMotionEnabledProperty, HeaderButton, HeadTextButton.IsMotionEnabledProperty);
+            }
         }
 
         PopulateGrids();
@@ -1309,5 +1318,4 @@ internal class CalendarItem : TemplatedControl
     {
         PseudoClasses.Set(CalendarDisabledPC, !isEnabled);
     }
-    
 }

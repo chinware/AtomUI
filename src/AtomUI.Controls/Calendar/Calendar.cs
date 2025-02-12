@@ -5,9 +5,10 @@
 
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
-using AtomUI.Utils;
+using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -224,8 +225,383 @@ public class CalendarModeChangedEventArgs : RoutedEventArgs
 /// </remarks>
 [TemplatePart(CalendarTheme.CalendarItemPart, typeof(CalendarItem))]
 [TemplatePart(CalendarTheme.RootPart, typeof(Panel))]
-public class Calendar : TemplatedControl
+public class Calendar : TemplatedControl,
+                        IAnimationAwareControl,
+                        IControlSharedTokenResourcesHost
 {
+    
+    #region 公共属性定义
+
+    public static readonly StyledProperty<DayOfWeek> FirstDayOfWeekProperty =
+        AvaloniaProperty.Register<Calendar, DayOfWeek>(
+            nameof(FirstDayOfWeek),
+            DateTimeHelper.GetCurrentDateFormat().FirstDayOfWeek);
+    
+    public static readonly StyledProperty<bool> IsTodayHighlightedProperty =
+        AvaloniaProperty.Register<Calendar, bool>(
+            nameof(IsTodayHighlighted),
+            true);
+    
+    public static readonly StyledProperty<IBrush?> HeaderBackgroundProperty =
+        AvaloniaProperty.Register<Calendar, IBrush?>(nameof(HeaderBackground));
+    
+    public static readonly StyledProperty<CalendarMode> DisplayModeProperty =
+        AvaloniaProperty.Register<Calendar, CalendarMode>(
+            nameof(DisplayMode),
+            validate: IsValidDisplayMode);
+    
+    public static readonly StyledProperty<CalendarSelectionMode> SelectionModeProperty =
+        AvaloniaProperty.Register<Calendar, CalendarSelectionMode>(
+            nameof(SelectionMode));
+    
+    public static readonly StyledProperty<DateTime?> SelectedDateProperty =
+        AvaloniaProperty.Register<Calendar, DateTime?>(nameof(SelectedDate),
+            defaultBindingMode: BindingMode.TwoWay);
+    
+    public static readonly StyledProperty<DateTime> DisplayDateProperty =
+        AvaloniaProperty.Register<Calendar, DateTime>(nameof(DisplayDate),
+            defaultBindingMode: BindingMode.TwoWay);
+    
+    public static readonly StyledProperty<DateTime?> DisplayDateStartProperty =
+        AvaloniaProperty.Register<Calendar, DateTime?>(nameof(DisplayDateStart),
+            defaultBindingMode: BindingMode.TwoWay);
+    
+    public static readonly StyledProperty<DateTime?> DisplayDateEndProperty =
+        AvaloniaProperty.Register<Calendar, DateTime?>(nameof(DisplayDateEnd),
+            defaultBindingMode: BindingMode.TwoWay);
+    
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AvaloniaProperty.Register<Calendar, bool>(nameof(IsMotionEnabled), true);
+
+    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
+        = AvaloniaProperty.Register<Calendar, bool>(nameof(IsWaveAnimationEnabled), true);
+
+    /// <summary>
+    /// Gets or sets the day that is considered the beginning of the week.
+    /// </summary>
+    /// <value>
+    /// A <see cref="T:System.DayOfWeek" /> representing the beginning of
+    /// the week. The default is <see cref="F:System.DayOfWeek.Sunday" />.
+    /// </value>
+    public DayOfWeek FirstDayOfWeek
+    {
+        get => GetValue(FirstDayOfWeekProperty);
+        set => SetValue(FirstDayOfWeekProperty, value);
+    }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the current date is
+    /// highlighted.
+    /// </summary>
+    /// <value>
+    /// True if the current date is highlighted; otherwise, false. The
+    /// default is true.
+    /// </value>
+    public bool IsTodayHighlighted
+    {
+        get => GetValue(IsTodayHighlightedProperty);
+        set => SetValue(IsTodayHighlightedProperty, value);
+    }
+
+    public IBrush? HeaderBackground
+    {
+        get => GetValue(HeaderBackgroundProperty);
+        set => SetValue(HeaderBackgroundProperty, value);
+    }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the calendar is displayed in
+    /// months, years, or decades.
+    /// </summary>
+    /// <value>
+    /// A value indicating what length of time the
+    /// <see cref="T:System.Windows.Controls.Calendar" /> should display.
+    /// </value>
+    public CalendarMode DisplayMode
+    {
+        get => GetValue(DisplayModeProperty);
+        set => SetValue(DisplayModeProperty, value);
+    }
+
+    /// <summary>
+    /// Gets or sets a value that indicates what kind of selections are
+    /// allowed.
+    /// </summary>
+    /// <value>
+    /// A value that indicates the current selection mode. The default is
+    /// <see cref="F:System.Windows.Controls.CalendarSelectionMode.SingleDate" />.
+    /// </value>
+    /// <remarks>
+    /// <para>
+    /// This property determines whether the Calendar allows no selection,
+    /// selection of a single date, or selection of multiple dates.  The
+    /// selection mode is specified with the CalendarSelectionMode
+    /// enumeration.
+    /// </para>
+    /// <para>
+    /// When this property is changed, all selected dates will be cleared.
+    /// </para>
+    /// </remarks>
+    public CalendarSelectionMode SelectionMode
+    {
+        get => GetValue(SelectionModeProperty);
+        set => SetValue(SelectionModeProperty, value);
+    }
+
+    /// <summary>
+    /// Gets or sets the currently selected date.
+    /// </summary>
+    /// <value>The date currently selected. The default is null.</value>
+    /// <exception cref="T:System.ArgumentOutOfRangeException">
+    /// The given date is outside the range specified by
+    /// <see cref="P:System.Windows.Controls.Calendar.DisplayDateStart" />
+    /// and <see cref="P:System.Windows.Controls.Calendar.DisplayDateEnd" />
+    /// -or-
+    /// The given date is in the
+    /// <see cref="P:System.Windows.Controls.Calendar.BlackoutDates" />
+    /// collection.
+    /// </exception>
+    /// <exception cref="T:System.InvalidOperationException">
+    /// If set to anything other than null when
+    /// <see cref="P:System.Windows.Controls.Calendar.SelectionMode" /> is
+    /// set to
+    /// <see cref="F:System.Windows.Controls.CalendarSelectionMode.None" />.
+    /// </exception>
+    /// <remarks>
+    /// Use this property when SelectionMode is set to SingleDate.  In other
+    /// modes, this property will always be the first date in SelectedDates.
+    /// </remarks>
+    public DateTime? SelectedDate
+    {
+        get => GetValue(SelectedDateProperty);
+        set => SetValue(SelectedDateProperty, value);
+    }
+
+    /// <summary>
+    /// Gets or sets the date to display.
+    /// </summary>
+    /// <value>The date to display.</value>
+    /// <exception cref="T:System.ArgumentOutOfRangeException">
+    /// The given date is not in the range specified by
+    /// <see cref="P:System.Windows.Controls.Calendar.DisplayDateStart" />
+    /// and
+    /// <see cref="P:System.Windows.Controls.Calendar.DisplayDateEnd" />.
+    /// </exception>
+    /// <remarks>
+    /// <para>
+    /// This property allows the developer to specify a date to display.  If
+    /// this property is a null reference (Nothing in Visual Basic),
+    /// SelectedDate is displayed.  If SelectedDate is also a null reference
+    /// (Nothing in Visual Basic), Today is displayed.  The default is
+    /// Today.
+    /// </para>
+    /// <para>
+    /// To set this property in XAML, use a date specified in the format
+    /// yyyy/mm/dd.  The mm and dd components must always consist of two
+    /// characters, with a leading zero if necessary.  For instance, the
+    /// month of May should be specified as 05.
+    /// </para>
+    /// </remarks>
+    public DateTime DisplayDate
+    {
+        get => GetValue(DisplayDateProperty);
+        set => SetValue(DisplayDateProperty, value);
+    }
+
+    /// <summary>
+    /// Gets a collection of selected dates.
+    /// </summary>
+    /// <value>
+    /// A <see cref="T:System.Windows.Controls.SelectedDatesCollection" />
+    /// object that contains the currently selected dates. The default is an
+    /// empty collection.
+    /// </value>
+    /// <remarks>
+    /// Dates can be added to the collection either individually or in a
+    /// range using the AddRange method.  Depending on the value of the
+    /// SelectionMode property, adding a date or range to the collection may
+    /// cause it to be cleared.  The following table lists how
+    /// CalendarSelectionMode affects the SelectedDates property.
+    /// CalendarSelectionMode   Description
+    /// None                    No selections are allowed.  SelectedDate
+    /// cannot be set and no values can be added
+    /// to SelectedDates.
+    /// SingleDate              Only a single date can be selected,
+    /// either by setting SelectedDate or the
+    /// first value in SelectedDates.  AddRange
+    /// cannot be used.
+    /// SingleRange             A single range of dates can be selected.
+    /// Setting SelectedDate, adding a date
+    /// individually to SelectedDates, or using
+    /// AddRange will clear all previous values
+    /// from SelectedDates.
+    /// MultipleRange           Multiple non-contiguous ranges of dates
+    /// can be selected. Adding a date
+    /// individually to SelectedDates or using
+    /// AddRange will not clear SelectedDates.
+    /// Setting SelectedDate will still clear
+    /// SelectedDates, but additional dates or
+    /// range can then be added.  Adding a range
+    /// that includes some dates that are
+    /// already selected or overlaps with
+    /// another range results in the union of
+    /// the ranges and does not cause an
+    /// exception.
+    /// </remarks>
+    public SelectedDatesCollection SelectedDates { get; }
+
+    /// <summary>
+    /// Gets or sets the first date to be displayed.
+    /// </summary>
+    /// <value>The first date to display.</value>
+    /// <remarks>
+    /// To set this property in XAML, use a date specified in the format
+    /// yyyy/mm/dd.  The mm and dd components must always consist of two
+    /// characters, with a leading zero if necessary.  For instance, the
+    /// month of May should be specified as 05.
+    /// </remarks>
+    public DateTime? DisplayDateStart
+    {
+        get => GetValue(DisplayDateStartProperty);
+        set => SetValue(DisplayDateStartProperty, value);
+    }
+
+    /// <summary>
+    /// Gets or sets the last date to be displayed.
+    /// </summary>
+    /// <value>The last date to display.</value>
+    /// <remarks>
+    /// To set this property in XAML, use a date specified in the format
+    /// yyyy/mm/dd.  The mm and dd components must always consist of two
+    /// characters, with a leading zero if necessary.  For instance, the
+    /// month of May should be specified as 05.
+    /// </remarks>
+    public DateTime? DisplayDateEnd
+    {
+        get => GetValue(DisplayDateEndProperty);
+        set => SetValue(DisplayDateEndProperty, value);
+    }
+    
+    public bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
+    }
+
+    public bool IsWaveAnimationEnabled
+    {
+        get => GetValue(IsWaveAnimationEnabledProperty);
+        set => SetValue(IsWaveAnimationEnabledProperty, value);
+    }
+
+    #endregion
+
+    #region 内部属性定义
+
+    internal CalendarDayButton? FocusButton { get; set; }
+    internal CalendarButton? FocusCalendarButton { get; set; }
+
+    internal Panel? Root { get; set; }
+
+    internal CalendarItem? MonthControl
+    {
+        get
+        {
+            if (Root != null && Root.Children.Count > 0)
+            {
+                return Root.Children[0] as CalendarItem;
+            }
+
+            return null;
+        }
+    }
+
+    internal Collection<DateTime> RemovedItems { get; set; }
+    internal DateTime? LastSelectedDateInternal { get; set; }
+
+    internal DateTime? LastSelectedDate
+    {
+        get => LastSelectedDateInternal;
+
+        set
+        {
+            LastSelectedDateInternal = value;
+
+            if (SelectionMode == CalendarSelectionMode.None)
+            {
+                if (FocusButton != null)
+                {
+                    FocusButton.IsCurrent = false;
+                }
+
+                FocusButton = FindDayButtonFromDay(LastSelectedDate!.Value);
+                if (FocusButton != null)
+                {
+                    FocusButton.IsCurrent = HasFocusInternal;
+                }
+            }
+        }
+    }
+
+    internal DateTime SelectedMonth
+    {
+        get => _selectedMonth;
+
+        set
+        {
+            var monthDifferenceStart = DateTimeHelper.CompareYearMonth(value, DisplayDateRangeStart);
+            var monthDifferenceEnd   = DateTimeHelper.CompareYearMonth(value, DisplayDateRangeEnd);
+
+            if (monthDifferenceStart >= 0 && monthDifferenceEnd <= 0)
+            {
+                _selectedMonth = DateTimeHelper.DiscardDayTime(value);
+            }
+            else
+            {
+                if (monthDifferenceStart < 0)
+                {
+                    _selectedMonth = DateTimeHelper.DiscardDayTime(DisplayDateRangeStart);
+                }
+                else
+                {
+                    Debug.Assert(monthDifferenceEnd > 0, "monthDifferenceEnd should be greater than 0!");
+                    _selectedMonth = DateTimeHelper.DiscardDayTime(DisplayDateRangeEnd);
+                }
+            }
+        }
+    }
+
+    internal DateTime SelectedYear
+    {
+        get => _selectedYear;
+
+        set
+        {
+            if (value.Year < DisplayDateRangeStart.Year)
+            {
+                _selectedYear = DisplayDateRangeStart;
+            }
+            else
+            {
+                if (value.Year > DisplayDateRangeEnd.Year)
+                {
+                    _selectedYear = DisplayDateRangeEnd;
+                }
+                else
+                {
+                    _selectedYear = value;
+                }
+            }
+        }
+    }
+
+    internal DateTime DisplayDateInternal { get; set; }
+    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IControlSharedTokenResourcesHost.HostControl => this;
+    string IControlSharedTokenResourcesHost.TokenId => CalendarToken.ID;
+
+    #endregion
+    
     internal const int RowsPerMonth = 7;
     internal const int ColumnsPerMonth = 7;
     internal const int RowsPerYear = 3;
@@ -260,6 +636,8 @@ public class Calendar : TemplatedControl
     /// </summary>
     public Calendar()
     {
+        this.RegisterResources();
+        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
         SetCurrentValue(DisplayDateProperty, DateTime.Today);
         UpdateDisplayDate(this, DisplayDate, DateTime.MinValue);
         BlackoutDates = new CalendarBlackoutDatesCollection(this);
@@ -1873,355 +2251,5 @@ public class Calendar : TemplatedControl
             BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this));
     }
-
-    #region 公共属性定义
-
-    public static readonly StyledProperty<DayOfWeek> FirstDayOfWeekProperty =
-        AvaloniaProperty.Register<Calendar, DayOfWeek>(
-            nameof(FirstDayOfWeek),
-            DateTimeHelper.GetCurrentDateFormat().FirstDayOfWeek);
-
-    /// <summary>
-    /// Gets or sets the day that is considered the beginning of the week.
-    /// </summary>
-    /// <value>
-    /// A <see cref="T:System.DayOfWeek" /> representing the beginning of
-    /// the week. The default is <see cref="F:System.DayOfWeek.Sunday" />.
-    /// </value>
-    public DayOfWeek FirstDayOfWeek
-    {
-        get => GetValue(FirstDayOfWeekProperty);
-        set => SetValue(FirstDayOfWeekProperty, value);
-    }
-
-    public static readonly StyledProperty<bool> IsTodayHighlightedProperty =
-        AvaloniaProperty.Register<Calendar, bool>(
-            nameof(IsTodayHighlighted),
-            true);
-
-    /// <summary>
-    /// Gets or sets a value indicating whether the current date is
-    /// highlighted.
-    /// </summary>
-    /// <value>
-    /// True if the current date is highlighted; otherwise, false. The
-    /// default is true.
-    /// </value>
-    public bool IsTodayHighlighted
-    {
-        get => GetValue(IsTodayHighlightedProperty);
-        set => SetValue(IsTodayHighlightedProperty, value);
-    }
-
-    public static readonly StyledProperty<IBrush?> HeaderBackgroundProperty =
-        AvaloniaProperty.Register<Calendar, IBrush?>(nameof(HeaderBackground));
-
-    public IBrush? HeaderBackground
-    {
-        get => GetValue(HeaderBackgroundProperty);
-        set => SetValue(HeaderBackgroundProperty, value);
-    }
-
-    public static readonly StyledProperty<CalendarMode> DisplayModeProperty =
-        AvaloniaProperty.Register<Calendar, CalendarMode>(
-            nameof(DisplayMode),
-            validate: IsValidDisplayMode);
-
-    /// <summary>
-    /// Gets or sets a value indicating whether the calendar is displayed in
-    /// months, years, or decades.
-    /// </summary>
-    /// <value>
-    /// A value indicating what length of time the
-    /// <see cref="T:System.Windows.Controls.Calendar" /> should display.
-    /// </value>
-    public CalendarMode DisplayMode
-    {
-        get => GetValue(DisplayModeProperty);
-        set => SetValue(DisplayModeProperty, value);
-    }
-
-    public static readonly StyledProperty<CalendarSelectionMode> SelectionModeProperty =
-        AvaloniaProperty.Register<Calendar, CalendarSelectionMode>(
-            nameof(SelectionMode));
-
-    /// <summary>
-    /// Gets or sets a value that indicates what kind of selections are
-    /// allowed.
-    /// </summary>
-    /// <value>
-    /// A value that indicates the current selection mode. The default is
-    /// <see cref="F:System.Windows.Controls.CalendarSelectionMode.SingleDate" />.
-    /// </value>
-    /// <remarks>
-    /// <para>
-    /// This property determines whether the Calendar allows no selection,
-    /// selection of a single date, or selection of multiple dates.  The
-    /// selection mode is specified with the CalendarSelectionMode
-    /// enumeration.
-    /// </para>
-    /// <para>
-    /// When this property is changed, all selected dates will be cleared.
-    /// </para>
-    /// </remarks>
-    public CalendarSelectionMode SelectionMode
-    {
-        get => GetValue(SelectionModeProperty);
-        set => SetValue(SelectionModeProperty, value);
-    }
-
-    public static readonly StyledProperty<DateTime?> SelectedDateProperty =
-        AvaloniaProperty.Register<Calendar, DateTime?>(nameof(SelectedDate),
-            defaultBindingMode: BindingMode.TwoWay);
-
-    /// <summary>
-    /// Gets or sets the currently selected date.
-    /// </summary>
-    /// <value>The date currently selected. The default is null.</value>
-    /// <exception cref="T:System.ArgumentOutOfRangeException">
-    /// The given date is outside the range specified by
-    /// <see cref="P:System.Windows.Controls.Calendar.DisplayDateStart" />
-    /// and <see cref="P:System.Windows.Controls.Calendar.DisplayDateEnd" />
-    /// -or-
-    /// The given date is in the
-    /// <see cref="P:System.Windows.Controls.Calendar.BlackoutDates" />
-    /// collection.
-    /// </exception>
-    /// <exception cref="T:System.InvalidOperationException">
-    /// If set to anything other than null when
-    /// <see cref="P:System.Windows.Controls.Calendar.SelectionMode" /> is
-    /// set to
-    /// <see cref="F:System.Windows.Controls.CalendarSelectionMode.None" />.
-    /// </exception>
-    /// <remarks>
-    /// Use this property when SelectionMode is set to SingleDate.  In other
-    /// modes, this property will always be the first date in SelectedDates.
-    /// </remarks>
-    public DateTime? SelectedDate
-    {
-        get => GetValue(SelectedDateProperty);
-        set => SetValue(SelectedDateProperty, value);
-    }
-
-    public static readonly StyledProperty<DateTime> DisplayDateProperty =
-        AvaloniaProperty.Register<Calendar, DateTime>(nameof(DisplayDate),
-            defaultBindingMode: BindingMode.TwoWay);
-
-    /// <summary>
-    /// Gets or sets the date to display.
-    /// </summary>
-    /// <value>The date to display.</value>
-    /// <exception cref="T:System.ArgumentOutOfRangeException">
-    /// The given date is not in the range specified by
-    /// <see cref="P:System.Windows.Controls.Calendar.DisplayDateStart" />
-    /// and
-    /// <see cref="P:System.Windows.Controls.Calendar.DisplayDateEnd" />.
-    /// </exception>
-    /// <remarks>
-    /// <para>
-    /// This property allows the developer to specify a date to display.  If
-    /// this property is a null reference (Nothing in Visual Basic),
-    /// SelectedDate is displayed.  If SelectedDate is also a null reference
-    /// (Nothing in Visual Basic), Today is displayed.  The default is
-    /// Today.
-    /// </para>
-    /// <para>
-    /// To set this property in XAML, use a date specified in the format
-    /// yyyy/mm/dd.  The mm and dd components must always consist of two
-    /// characters, with a leading zero if necessary.  For instance, the
-    /// month of May should be specified as 05.
-    /// </para>
-    /// </remarks>
-    public DateTime DisplayDate
-    {
-        get => GetValue(DisplayDateProperty);
-        set => SetValue(DisplayDateProperty, value);
-    }
-
-    /// <summary>
-    /// Gets a collection of selected dates.
-    /// </summary>
-    /// <value>
-    /// A <see cref="T:System.Windows.Controls.SelectedDatesCollection" />
-    /// object that contains the currently selected dates. The default is an
-    /// empty collection.
-    /// </value>
-    /// <remarks>
-    /// Dates can be added to the collection either individually or in a
-    /// range using the AddRange method.  Depending on the value of the
-    /// SelectionMode property, adding a date or range to the collection may
-    /// cause it to be cleared.  The following table lists how
-    /// CalendarSelectionMode affects the SelectedDates property.
-    /// CalendarSelectionMode   Description
-    /// None                    No selections are allowed.  SelectedDate
-    /// cannot be set and no values can be added
-    /// to SelectedDates.
-    /// SingleDate              Only a single date can be selected,
-    /// either by setting SelectedDate or the
-    /// first value in SelectedDates.  AddRange
-    /// cannot be used.
-    /// SingleRange             A single range of dates can be selected.
-    /// Setting SelectedDate, adding a date
-    /// individually to SelectedDates, or using
-    /// AddRange will clear all previous values
-    /// from SelectedDates.
-    /// MultipleRange           Multiple non-contiguous ranges of dates
-    /// can be selected. Adding a date
-    /// individually to SelectedDates or using
-    /// AddRange will not clear SelectedDates.
-    /// Setting SelectedDate will still clear
-    /// SelectedDates, but additional dates or
-    /// range can then be added.  Adding a range
-    /// that includes some dates that are
-    /// already selected or overlaps with
-    /// another range results in the union of
-    /// the ranges and does not cause an
-    /// exception.
-    /// </remarks>
-    public SelectedDatesCollection SelectedDates { get; }
-
-    public static readonly StyledProperty<DateTime?> DisplayDateStartProperty =
-        AvaloniaProperty.Register<Calendar, DateTime?>(nameof(DisplayDateStart),
-            defaultBindingMode: BindingMode.TwoWay);
-
-    /// <summary>
-    /// Gets or sets the first date to be displayed.
-    /// </summary>
-    /// <value>The first date to display.</value>
-    /// <remarks>
-    /// To set this property in XAML, use a date specified in the format
-    /// yyyy/mm/dd.  The mm and dd components must always consist of two
-    /// characters, with a leading zero if necessary.  For instance, the
-    /// month of May should be specified as 05.
-    /// </remarks>
-    public DateTime? DisplayDateStart
-    {
-        get => GetValue(DisplayDateStartProperty);
-        set => SetValue(DisplayDateStartProperty, value);
-    }
-
-    public static readonly StyledProperty<DateTime?> DisplayDateEndProperty =
-        AvaloniaProperty.Register<Calendar, DateTime?>(nameof(DisplayDateEnd),
-            defaultBindingMode: BindingMode.TwoWay);
-
-    /// <summary>
-    /// Gets or sets the last date to be displayed.
-    /// </summary>
-    /// <value>The last date to display.</value>
-    /// <remarks>
-    /// To set this property in XAML, use a date specified in the format
-    /// yyyy/mm/dd.  The mm and dd components must always consist of two
-    /// characters, with a leading zero if necessary.  For instance, the
-    /// month of May should be specified as 05.
-    /// </remarks>
-    public DateTime? DisplayDateEnd
-    {
-        get => GetValue(DisplayDateEndProperty);
-        set => SetValue(DisplayDateEndProperty, value);
-    }
-
-    #endregion
-
-    #region 内部属性定义
-
-    internal CalendarDayButton? FocusButton { get; set; }
-    internal CalendarButton? FocusCalendarButton { get; set; }
-
-    internal Panel? Root { get; set; }
-
-    internal CalendarItem? MonthControl
-    {
-        get
-        {
-            if (Root != null && Root.Children.Count > 0)
-            {
-                return Root.Children[0] as CalendarItem;
-            }
-
-            return null;
-        }
-    }
-
-    internal Collection<DateTime> RemovedItems { get; set; }
-    internal DateTime? LastSelectedDateInternal { get; set; }
-
-    internal DateTime? LastSelectedDate
-    {
-        get => LastSelectedDateInternal;
-
-        set
-        {
-            LastSelectedDateInternal = value;
-
-            if (SelectionMode == CalendarSelectionMode.None)
-            {
-                if (FocusButton != null)
-                {
-                    FocusButton.IsCurrent = false;
-                }
-
-                FocusButton = FindDayButtonFromDay(LastSelectedDate!.Value);
-                if (FocusButton != null)
-                {
-                    FocusButton.IsCurrent = HasFocusInternal;
-                }
-            }
-        }
-    }
-
-    internal DateTime SelectedMonth
-    {
-        get => _selectedMonth;
-
-        set
-        {
-            var monthDifferenceStart = DateTimeHelper.CompareYearMonth(value, DisplayDateRangeStart);
-            var monthDifferenceEnd   = DateTimeHelper.CompareYearMonth(value, DisplayDateRangeEnd);
-
-            if (monthDifferenceStart >= 0 && monthDifferenceEnd <= 0)
-            {
-                _selectedMonth = DateTimeHelper.DiscardDayTime(value);
-            }
-            else
-            {
-                if (monthDifferenceStart < 0)
-                {
-                    _selectedMonth = DateTimeHelper.DiscardDayTime(DisplayDateRangeStart);
-                }
-                else
-                {
-                    Debug.Assert(monthDifferenceEnd > 0, "monthDifferenceEnd should be greater than 0!");
-                    _selectedMonth = DateTimeHelper.DiscardDayTime(DisplayDateRangeEnd);
-                }
-            }
-        }
-    }
-
-    internal DateTime SelectedYear
-    {
-        get => _selectedYear;
-
-        set
-        {
-            if (value.Year < DisplayDateRangeStart.Year)
-            {
-                _selectedYear = DisplayDateRangeStart;
-            }
-            else
-            {
-                if (value.Year > DisplayDateRangeEnd.Year)
-                {
-                    _selectedYear = DisplayDateRangeEnd;
-                }
-                else
-                {
-                    _selectedYear = value;
-                }
-            }
-        }
-    }
-
-    internal DateTime DisplayDateInternal { get; set; }
-
-    #endregion
+    
 }
