@@ -1,6 +1,8 @@
 ﻿using AtomUI.Data;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
+using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Diagnostics;
@@ -15,7 +17,9 @@ using Avalonia.Media;
 namespace AtomUI.Controls.Internal;
 
 [PseudoClasses(FlyoutOpenPC)]
-public abstract class InfoPickerInput : TemplatedControl
+public abstract class InfoPickerInput : TemplatedControl,
+                                        IAnimationAwareControl,
+                                        IControlSharedTokenResourcesHost
 {
     internal const string FlyoutOpenPC = ":flyout-open";
     internal const string ChoosingPC = ":choosing";
@@ -61,12 +65,18 @@ public abstract class InfoPickerInput : TemplatedControl
 
     public static readonly StyledProperty<int> MouseLeaveDelayProperty =
         FlyoutStateHelper.MouseLeaveDelayProperty.AddOwner<InfoPickerInput>();
-    
+
     public static readonly StyledProperty<bool> IsReadOnlyProperty =
         TextBox.IsReadOnlyProperty.AddOwner<InfoPickerInput>();
 
     public static readonly StyledProperty<Brush?> InputTextBrushProperty =
         AvaloniaProperty.Register<InfoPickerInput, Brush?>(nameof(InputTextBrush));
+    
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AvaloniaProperty.Register<InfoPickerInput, bool>(nameof(IsMotionEnabled), true);
+
+    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
+        = AvaloniaProperty.Register<InfoPickerInput, bool>(nameof(IsWaveAnimationEnabled), true);
 
     public object? LeftAddOn
     {
@@ -85,7 +95,7 @@ public abstract class InfoPickerInput : TemplatedControl
         get => GetValue(InnerLeftContentProperty);
         set => SetValue(InnerLeftContentProperty, value);
     }
-    
+
     public SizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
@@ -145,7 +155,7 @@ public abstract class InfoPickerInput : TemplatedControl
         get => GetValue(MouseLeaveDelayProperty);
         set => SetValue(MouseLeaveDelayProperty, value);
     }
-    
+
     public bool IsReadOnly
     {
         get => GetValue(IsReadOnlyProperty);
@@ -158,21 +168,37 @@ public abstract class InfoPickerInput : TemplatedControl
         set => SetValue(InputTextBrushProperty, value);
     }
     
+    public bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
+    }
+
+    public bool IsWaveAnimationEnabled
+    {
+        get => GetValue(IsWaveAnimationEnabledProperty);
+        set => SetValue(IsWaveAnimationEnabledProperty, value);
+    }
+
     #endregion
 
     #region 内部属性定义
 
     internal static readonly StyledProperty<string?> TextProperty =
         AvaloniaProperty.Register<TextBlock, string?>(nameof(Text));
-    
+
     protected string? Text
     {
         get => GetValue(TextProperty);
         set => SetValue(TextProperty, value);
     }
+    
+    Control IControlSharedTokenResourcesHost.HostControl => this;
+    string IControlSharedTokenResourcesHost.TokenId => InfoPickerInputToken.ID;
+    Control IAnimationAwareControl.PropertyBindTarget => this;
 
     #endregion
-    
+
     private protected AddOnDecoratedBox? _decoratedBox;
     private protected PickerClearUpButton? _pickerClearUpButton;
     private protected readonly FlyoutStateHelper _flyoutStateHelper;
@@ -181,18 +207,20 @@ public abstract class InfoPickerInput : TemplatedControl
     private IDisposable? _clearUpButtonDetectDisposable;
     protected AddOnDecoratedInnerBox? _pickerInnerBox;
     protected TextBox? _infoInputBox;
-    
+
     private protected bool _isFlyoutOpen;
     private protected bool _isChoosing;
-    
+
     static InfoPickerInput()
     {
         HorizontalAlignmentProperty.OverrideDefaultValue<InfoPickerInput>(HorizontalAlignment.Left);
         VerticalAlignmentProperty.OverrideDefaultValue<InfoPickerInput>(VerticalAlignment.Top);
     }
-    
+
     public InfoPickerInput()
     {
+        this.RegisterResources();
+        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
         _flyoutStateHelper = new FlyoutStateHelper
         {
             TriggerType = FlyoutTriggerType.Click
@@ -209,36 +237,36 @@ public abstract class InfoPickerInput : TemplatedControl
     {
         _infoInputBox?.Clear();
     }
-    
+
     public void ClosePickerFlyout()
     {
         _flyoutStateHelper.HideFlyout(true);
     }
-    
+
     private void HandleFlyoutAboutToShow(object? sender, EventArgs args)
     {
         _currentValidSelected = false;
         NotifyFlyoutAboutToShow();
     }
-    
+
     protected virtual void NotifyFlyoutAboutToShow()
     {
     }
-    
+
     private void HandleFlyoutAboutToClose(object? sender, EventArgs args)
     {
         NotifyFlyoutAboutToClose(_currentValidSelected);
     }
-    
+
     protected virtual void NotifyFlyoutAboutToClose(bool selectedIsValid)
     {
     }
-    
+
     private void HandleFlyoutOpened(object? sender, EventArgs args)
     {
         NotifyFlyoutOpened();
     }
-    
+
     protected virtual void NotifyFlyoutOpened()
     {
     }
@@ -264,7 +292,7 @@ public abstract class InfoPickerInput : TemplatedControl
 
         return false;
     }
-    
+
     protected virtual bool FlyoutOpenPredicate(Point position)
     {
         if (!IsEnabled)
@@ -284,7 +312,7 @@ public abstract class InfoPickerInput : TemplatedControl
             {
                 return false;
             }
-        
+
             var targetWidth  = _pickerInnerBox.Bounds.Width;
             var targetHeight = _pickerInnerBox.Bounds.Height;
             var startOffsetX = pos.Value.X;
@@ -298,7 +326,7 @@ public abstract class InfoPickerInput : TemplatedControl
                     startOffsetX = leftContentPos.Value.X + leftContent.Bounds.Width;
                 }
             }
-        
+
             if (_pickerClearUpButton is Control rightContent)
             {
                 var rightContentPos = rightContent.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(this)!);
@@ -307,7 +335,7 @@ public abstract class InfoPickerInput : TemplatedControl
                     endOffsetX = rightContentPos.Value.X;
                 }
             }
-        
+
             targetWidth = endOffsetX - startOffsetX;
             var bounds = new Rect(new Point(startOffsetX, offsetY), new Size(targetWidth, targetHeight));
             if (bounds.Contains(position))
@@ -335,12 +363,10 @@ public abstract class InfoPickerInput : TemplatedControl
                 _isFlyoutOpen = false;
                 UpdatePseudoClasses();
             };
-            _pickerFlyout.PresenterCreated += (sender, args) =>
-            {
-                NotifyFlyoutPresenterCreated(args.Presenter);
-            };
+            _pickerFlyout.PresenterCreated += (sender, args) => { NotifyFlyoutPresenterCreated(args.Presenter); };
             _flyoutStateHelper.Flyout      =  _pickerFlyout;
         }
+
         _decoratedBox        = e.NameScope.Get<AddOnDecoratedBox>(InfoPickerInputTheme.DecoratedBoxPart);
         _pickerInnerBox      = e.NameScope.Get<AddOnDecoratedInnerBox>(InfoPickerInputTheme.PickerInnerPart);
         _infoInputBox        = e.NameScope.Get<TextBox>(InfoPickerInputTheme.InfoInputBoxPart);
@@ -348,12 +374,9 @@ public abstract class InfoPickerInput : TemplatedControl
 
         if (_pickerClearUpButton is not null)
         {
-            _pickerClearUpButton.ClearRequest += (sender, args) =>
-            {
-                NotifyClearButtonClicked();
-            };
+            _pickerClearUpButton.ClearRequest += (sender, args) => { NotifyClearButtonClicked(); };
         }
-        
+
         _flyoutStateHelper.AnchorTarget = _pickerInnerBox;
         TokenResourceBinder.CreateTokenBinding(this, MarginToAnchorProperty, SharedTokenKey.MarginXXS);
         SetupFlyoutProperties();
@@ -367,7 +390,7 @@ public abstract class InfoPickerInput : TemplatedControl
     protected virtual void NotifyFlyoutPresenterCreated(Control flyoutPresenter)
     {
     }
-    
+
     protected virtual void SetupFlyoutProperties()
     {
         if (_pickerFlyout is not null)
@@ -380,13 +403,13 @@ public abstract class InfoPickerInput : TemplatedControl
     }
 
     protected abstract Flyout CreatePickerFlyout();
-    
+
     protected virtual void UpdatePseudoClasses()
     {
         PseudoClasses.Set(FlyoutOpenPC, _isFlyoutOpen);
         PseudoClasses.Set(ChoosingPC, _isChoosing);
     }
-    
+
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
@@ -395,7 +418,7 @@ public abstract class InfoPickerInput : TemplatedControl
         BindUtils.RelayBind(this, MouseLeaveDelayProperty, _flyoutStateHelper,
             FlyoutStateHelper.MouseLeaveDelayProperty);
     }
-    
+
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
@@ -406,7 +429,7 @@ public abstract class InfoPickerInput : TemplatedControl
             _clearUpButtonDetectDisposable = inputManager.Process.Subscribe(DetectClearUpButtonState);
         }
     }
-    
+
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
@@ -414,7 +437,7 @@ public abstract class InfoPickerInput : TemplatedControl
         _clearUpButtonDetectDisposable?.Dispose();
         _clearUpButtonDetectDisposable = null;
     }
-    
+
     private void DetectClearUpButtonState(RawInputEventArgs args)
     {
         if (IsEnabled)

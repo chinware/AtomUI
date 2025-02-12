@@ -88,16 +88,36 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
         _secondaryInfoInputBox = e.NameScope.Get<TextBox>(RangeInfoPickerInputTheme.SecondaryInfoInputBoxPart);
         _rangePickerIndicator  = e.NameScope.Get<Rectangle>(RangeTimePickerTheme.RangePickerIndicatorPart);
         
-        _rangePickerIndicator.Transitions ??= new Transitions
+        SetupTransitions();
+    }
+
+    private void SetupTransitions()
+    {
+        if (IsMotionEnabled)
         {
-            AnimationUtils.CreateTransition<DoubleTransition>(OpacityProperty),
-            AnimationUtils.CreateTransition<DoubleTransition>(OpacityProperty)
-        };
+            if (_rangePickerIndicator != null)
+            {
+                _rangePickerIndicator.Transitions ??= new Transitions
+                {
+                    AnimationUtils.CreateTransition<DoubleTransition>(OpacityProperty),
+                    AnimationUtils.CreateTransition<DoubleTransition>(OpacityProperty)
+                };
+            }
         
-        Transitions ??= new Transitions
+            Transitions ??= new Transitions
+            {
+                AnimationUtils.CreateTransition<DoubleTransition>(PickerIndicatorOffsetXProperty)
+            };
+        }
+        else
         {
-            AnimationUtils.CreateTransition<DoubleTransition>(PickerIndicatorOffsetXProperty)
-        };
+            if (_rangePickerIndicator != null)
+            {
+                _rangePickerIndicator.Transitions = null;
+            }
+
+            Transitions = null;
+        }
     }
     
     protected override bool FlyoutOpenPredicate(Point position)
@@ -227,6 +247,11 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
         if (change.Property == RangeActivatedPartProperty)
         {
             HandleRangeActivatedPartChanged();
+        }
+
+        if (VisualRoot != null)
+        {
+            SetupTransitions();
         }
     }
     
