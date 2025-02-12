@@ -1,4 +1,6 @@
 ﻿using AtomUI.Data;
+using AtomUI.Theme;
+using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -8,7 +10,9 @@ namespace AtomUI.Controls;
 
 using AvaloniaComboBox = Avalonia.Controls.ComboBox;
 
-public class ComboBox : AvaloniaComboBox
+public class ComboBox : AvaloniaComboBox,
+                        IAnimationAwareControl,
+                        IControlSharedTokenResourcesHost
 {
     public const string ErrorPC = ":error";
     public const string WarningPC = ":warning";
@@ -31,13 +35,19 @@ public class ComboBox : AvaloniaComboBox
         AddOnDecoratedBox.StatusProperty.AddOwner<ComboBox>();
 
     public static readonly StyledProperty<object?> InnerLeftContentProperty
-        = Avalonia.Controls.TextBox.InnerLeftContentProperty.AddOwner<ComboBox>();
+        = TextBox.InnerLeftContentProperty.AddOwner<ComboBox>();
 
     public static readonly StyledProperty<object?> InnerRightContentProperty
-        = Avalonia.Controls.TextBox.InnerRightContentProperty.AddOwner<ComboBox>();
+        = TextBox.InnerRightContentProperty.AddOwner<ComboBox>();
 
     public static readonly StyledProperty<bool> IsEnableClearButtonProperty =
         TextBox.IsEnableClearButtonProperty.AddOwner<ComboBox>();
+
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AvaloniaProperty.Register<ComboBox, bool>(nameof(IsMotionEnabled), true);
+
+    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
+        = AvaloniaProperty.Register<ComboBox, bool>(nameof(IsWaveAnimationEnabled), true);
 
     public object? LeftAddOn
     {
@@ -87,12 +97,38 @@ public class ComboBox : AvaloniaComboBox
         set => SetValue(IsEnableClearButtonProperty, value);
     }
 
+    public bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
+    }
+
+    public bool IsWaveAnimationEnabled
+    {
+        get => GetValue(IsWaveAnimationEnabledProperty);
+        set => SetValue(IsWaveAnimationEnabledProperty, value);
+    }
+
+    #endregion
+
+    #region 内部属性定义
+
+    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IControlSharedTokenResourcesHost.HostControl => this;
+    string IControlSharedTokenResourcesHost.TokenId => ComboBoxToken.ID;
+
     #endregion
 
     static ComboBox()
     {
         HorizontalAlignmentProperty.OverrideDefaultValue<ComboBox>(HorizontalAlignment.Left);
         VerticalAlignmentProperty.OverrideDefaultValue<ComboBox>(VerticalAlignment.Top);
+    }
+
+    public ComboBox()
+    {
+        this.RegisterResources();
+        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
     }
 
     private IconButton? _openIndicatorButton;
@@ -132,6 +168,7 @@ public class ComboBox : AvaloniaComboBox
         if (container is ComboBoxItem comboBoxItem)
         {
             BindUtils.RelayBind(this, SizeTypeProperty, comboBoxItem, ComboBoxItem.SizeTypeProperty);
+            BindUtils.RelayBind(this, IsMotionEnabledProperty, comboBoxItem, ComboBoxItem.IsMotionEnabledProperty);
         }
     }
 

@@ -52,7 +52,7 @@ public class Collapse : SelectingItemsControl,
 
     public static readonly StyledProperty<CollapseExpandIconPosition> ExpandIconPositionProperty =
         AvaloniaProperty.Register<Collapse, CollapseExpandIconPosition>(nameof(ExpandIconPosition));
-    
+
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
         = AvaloniaProperty.Register<Collapse, bool>(nameof(IsMotionEnabled), true);
 
@@ -94,7 +94,7 @@ public class Collapse : SelectingItemsControl,
         get => GetValue(ExpandIconPositionProperty);
         set => SetValue(ExpandIconPositionProperty, value);
     }
-    
+
     public bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
@@ -106,7 +106,7 @@ public class Collapse : SelectingItemsControl,
         get => GetValue(IsWaveAnimationEnabledProperty);
         set => SetValue(IsWaveAnimationEnabledProperty, value);
     }
-    
+
     #endregion
 
     #region 内部属性定义
@@ -129,7 +129,7 @@ public class Collapse : SelectingItemsControl,
         {
             Orientation = Orientation.Vertical
         });
-    
+
     Control IAnimationAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => CollapseToken.ID;
@@ -206,7 +206,7 @@ public class Collapse : SelectingItemsControl,
             SetupCollapseBorderThickness(collapseItem, index);
         }
     }
-    
+
     protected override void ContainerIndexChangedOverride(Control container, int oldIndex, int newIndex)
     {
         if (container is CollapseItem collapseItem)

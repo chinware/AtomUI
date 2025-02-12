@@ -33,11 +33,6 @@ internal class ComboBoxItemTheme : BaseControlTheme
                 Name = ContentPresenterPart
             };
 
-            contentPresenter.Transitions = new Transitions
-            {
-                AnimationUtils.CreateTransition<SolidColorBrushTransition>(ContentPresenter.BackgroundProperty)
-            };
-
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty,
                 ContentControl.ContentProperty, BindingMode.Default, new FuncValueConverter<object?, object?>(
                     o =>
@@ -51,7 +46,6 @@ internal class ComboBoxItemTheme : BaseControlTheme
                                 VerticalAlignment = VerticalAlignment.Center
                             };
                         }
-
                         return o;
                     }));
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentTemplateProperty,
@@ -75,6 +69,17 @@ internal class ComboBoxItemTheme : BaseControlTheme
         var commonStyle = new Style(selector => selector.Nesting());
         commonStyle.Add(TemplatedControl.FontSizeProperty, SharedTokenKey.FontSize);
         commonStyle.Add(Layoutable.MarginProperty, ComboBoxTokenKey.ItemMargin);
+
+        {
+            var isMotionEnabledStyle = new Style(selector => selector.Nesting().PropertyEquals(ComboBoxItem.IsMotionEnabledProperty, true));
+            var contentPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ContentPresenterPart));
+            contentPresenterStyle.Add(ContentPresenter.TransitionsProperty, new Transitions
+            {
+                AnimationUtils.CreateTransition<SolidColorBrushTransition>(ContentPresenter.BackgroundProperty)
+            });
+            isMotionEnabledStyle.Add(contentPresenterStyle);
+            commonStyle.Add(isMotionEnabledStyle);
+        }
 
         {
             var contentPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ContentPresenterPart));
