@@ -50,6 +50,8 @@ internal class CheckBoxTheme : BaseControlTheme
             };
             
             DockPanel.SetDock(indicator, Dock.Left);
+            CreateTemplateParentBinding(indicator, CheckBoxIndicator.IsMotionEnabledProperty, CheckBox.IsMotionEnabledProperty);
+            CreateTemplateParentBinding(indicator, CheckBoxIndicator.IsWaveAnimationEnabledProperty, CheckBox.IsWaveAnimationEnabledProperty);
             CreateTemplateParentBinding(indicator, CheckBoxIndicator.IsEnabledProperty, CheckBox.IsEnabledProperty);
             CreateTemplateParentBinding(indicator, CheckBoxIndicator.IsCheckedProperty, CheckBox.IsCheckedProperty);
             layout.Children.Add(indicator);

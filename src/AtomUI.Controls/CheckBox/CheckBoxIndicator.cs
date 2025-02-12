@@ -15,12 +15,14 @@ namespace AtomUI.Controls;
 
 internal class CheckBoxIndicator : Control, IWaveAdornerInfoProvider
 {
-    public static readonly StyledProperty<bool?> IsCheckedProperty = 
+    #region 公共属性定义
+
+    public static readonly StyledProperty<bool?> IsCheckedProperty =
         ToggleButton.IsCheckedProperty.AddOwner<CheckBoxIndicator>();
-    
+
     public static readonly StyledProperty<double> SizeProperty =
         AvaloniaProperty.Register<CheckBoxIndicator, double>(nameof(Size));
-    
+
     public static readonly StyledProperty<IBrush?> BorderBrushProperty =
         Border.BorderBrushProperty.AddOwner<CheckBoxIndicator>();
 
@@ -45,6 +47,12 @@ internal class CheckBoxIndicator : Control, IWaveAdornerInfoProvider
     public static readonly StyledProperty<CornerRadius> CornerRadiusProperty =
         Border.CornerRadiusProperty.AddOwner<CheckBoxIndicator>();
     
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AvaloniaProperty.Register<CheckBoxIndicator, bool>(nameof(IsMotionEnabled), true);
+    
+    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
+        = AvaloniaProperty.Register<CheckBoxIndicator, bool>(nameof(IsWaveAnimationEnabled), true);
+
     public bool? IsChecked
     {
         get => GetValue(IsCheckedProperty);
@@ -56,7 +64,7 @@ internal class CheckBoxIndicator : Control, IWaveAdornerInfoProvider
         get => GetValue(SizeProperty);
         set => SetValue(SizeProperty, value);
     }
-    
+
     public IBrush? BorderBrush
     {
         get => GetValue(BorderBrushProperty);
@@ -105,6 +113,20 @@ internal class CheckBoxIndicator : Control, IWaveAdornerInfoProvider
         set => SetValue(CornerRadiusProperty, value);
     }
     
+    public bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
+    }
+
+    public bool IsWaveAnimationEnabled
+    {
+        get => GetValue(IsWaveAnimationEnabledProperty);
+        set => SetValue(IsWaveAnimationEnabledProperty, value);
+    }
+    
+    #endregion
+    
     private readonly BorderRenderHelper _borderRenderHelper;
 
     static CheckBoxIndicator()
@@ -136,14 +158,26 @@ internal class CheckBoxIndicator : Control, IWaveAdornerInfoProvider
     public override void ApplyTemplate()
     {
         base.ApplyTemplate();
-        Transitions ??= new Transitions
+        SetupTransitions();
+    }
+
+    private void SetupTransitions()
+    {
+        if (IsMotionEnabled)
         {
-            AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty),
-            AnimationUtils.CreateTransition<SolidColorBrushTransition>(BorderBrushProperty),
-            AnimationUtils.CreateTransition<SolidColorBrushTransition>(TristateMarkBrushProperty),
-            AnimationUtils.CreateTransition<DoubleTransition>(CheckedMarkEffectSizeProperty,
-                SharedTokenKey.MotionDurationMid, new BackEaseOut())
-        };
+            Transitions ??= new Transitions
+            {
+                AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty),
+                AnimationUtils.CreateTransition<SolidColorBrushTransition>(BorderBrushProperty),
+                AnimationUtils.CreateTransition<SolidColorBrushTransition>(TristateMarkBrushProperty),
+                AnimationUtils.CreateTransition<DoubleTransition>(CheckedMarkEffectSizeProperty,
+                    SharedTokenKey.MotionDurationMid, new BackEaseOut())
+            };
+        }
+        else
+        {
+            Transitions = null;
+        }
     }
 
     private void UpdatePseudoClasses()
@@ -152,7 +186,7 @@ internal class CheckBoxIndicator : Control, IWaveAdornerInfoProvider
         PseudoClasses.Set(StdPseudoClass.UnChecked, IsChecked.HasValue && !IsChecked.Value);
         PseudoClasses.Set(StdPseudoClass.Indeterminate, !IsChecked.HasValue);
     }
-    
+
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
         base.OnPropertyChanged(e);
@@ -163,6 +197,7 @@ internal class CheckBoxIndicator : Control, IWaveAdornerInfoProvider
             UpdatePseudoClasses();
             SetupIndicatorCheckedMarkEffectSize();
             if (e.Property == IsCheckedProperty &&
+                IsWaveAnimationEnabled &&
                 !PseudoClasses.Contains(StdPseudoClass.Disabled) &&
                 PseudoClasses.Contains(StdPseudoClass.Checked))
             {
@@ -175,8 +210,13 @@ internal class CheckBoxIndicator : Control, IWaveAdornerInfoProvider
             UpdatePseudoClasses();
             SetupIndicatorCheckedMarkEffectSize();
         }
+
+        if (VisualRoot != null)
+        {
+            SetupTransitions();
+        }
     }
-    
+
     private void SetupIndicatorCheckedMarkEffectSize()
     {
         if (!PseudoClasses.Contains(StdPseudoClass.Disabled))
@@ -202,11 +242,11 @@ internal class CheckBoxIndicator : Control, IWaveAdornerInfoProvider
             }
         }
     }
-    
+
     public sealed override void Render(DrawingContext context)
     {
-        var penWidth      = BorderThickness.Top;
-        var borderRadius  = GeometryUtils.CornerRadiusScalarValue(CornerRadius);
+        var penWidth     = BorderThickness.Top;
+        var borderRadius = GeometryUtils.CornerRadiusScalarValue(CornerRadius);
         {
             _borderRenderHelper.Render(context, Bounds.Size,
                 new Thickness(penWidth),
@@ -234,7 +274,7 @@ internal class CheckBoxIndicator : Control, IWaveAdornerInfoProvider
             context.FillRectangle(TristateMarkBrush!, indicatorTristateRect);
         }
     }
-    
+
     public Rect WaveGeometry()
     {
         return new Rect(Bounds.Size);
