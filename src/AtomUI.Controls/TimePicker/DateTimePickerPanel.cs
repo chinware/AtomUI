@@ -1,9 +1,7 @@
 ﻿using System.Diagnostics;
 using AtomUI.Controls.TimePickerLang;
-using AtomUI.Data;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
-using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
@@ -44,6 +42,7 @@ public struct CellHoverInfo
 internal class CellHoverEventArgs : EventArgs
 {
     public CellHoverInfo? CellHoverInfo { get; }
+
     public CellHoverEventArgs(CellHoverInfo? hoverInfo)
     {
         CellHoverInfo = hoverInfo;
@@ -53,6 +52,7 @@ internal class CellHoverEventArgs : EventArgs
 internal class CellDbClickedEventArgs : EventArgs
 {
     public bool IsSelected { get; }
+
     public CellDbClickedEventArgs(bool isSelected)
     {
         IsSelected = isSelected;
@@ -86,7 +86,7 @@ internal class DateTimePickerPanel : Panel, ILogicalScrollable
     /// </summary>
     public static readonly StyledProperty<bool> ShouldLoopProperty =
         AvaloniaProperty.Register<DateTimePickerPanel, bool>(nameof(ShouldLoop));
-    
+
     /// <summary>
     /// Gets or sets the height of each item
     /// </summary>
@@ -95,7 +95,7 @@ internal class DateTimePickerPanel : Panel, ILogicalScrollable
         get => GetValue(ItemHeightProperty);
         set => SetValue(ItemHeightProperty, value);
     }
-    
+
     /// <summary>
     /// Gets or sets what this panel displays in date or time units
     /// </summary>
@@ -127,11 +127,12 @@ internal class DateTimePickerPanel : Panel, ILogicalScrollable
     #endregion
 
     #region 内部属性定义
+
     internal static readonly DirectProperty<DateTimePickerPanel, bool> IsMotionEnabledProperty
         = AvaloniaProperty.RegisterDirect<DateTimePickerPanel, bool>(nameof(IsMotionEnabled),
             o => o.IsMotionEnabled,
             (o, v) => o.IsMotionEnabled = v);
-    
+
     private bool _isMotionEnabled = true;
 
     internal bool IsMotionEnabled
@@ -139,8 +140,9 @@ internal class DateTimePickerPanel : Panel, ILogicalScrollable
         get => _isMotionEnabled;
         set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
     }
+
     #endregion
-    
+
     #region 内部事件定义
 
     internal event EventHandler<CellHoverEventArgs>? CellHovered;
@@ -179,7 +181,7 @@ internal class DateTimePickerPanel : Panel, ILogicalScrollable
         BackgroundProperty.OverrideDefaultValue<DateTimePickerPanel>(Brushes.Transparent);
         AffectsMeasure<DateTimePickerPanel>(ItemHeightProperty);
     }
-    
+
     /// <summary>
     /// Gets or sets the minimum value
     /// </summary>
@@ -427,6 +429,7 @@ internal class DateTimePickerPanel : Panel, ILogicalScrollable
         {
             UpdateItems();
             RaiseScrollInvalidated(EventArgs.Empty);
+            EnableCellHoverAnimation();
             _hasInit = true;
         }
 
@@ -590,9 +593,9 @@ internal class DateTimePickerPanel : Panel, ILogicalScrollable
                 Focusable                  = false,
                 CornerRadius               = new CornerRadius(0),
                 SizeType                   = SizeType.Middle,
-                Cursor = new Cursor(StandardCursorType.Hand)
+                Cursor                     = new Cursor(StandardCursorType.Hand),
+                IsMotionEnabled            = false
             };
-            BindUtils.RelayBind(this, IsMotionEnabledProperty, item, ListBoxItem.IsMotionEnabledProperty);
             item.PointerEntered += (sender, args) =>
             {
                 if (sender is ListBoxItem target)
@@ -601,7 +604,7 @@ internal class DateTimePickerPanel : Panel, ILogicalScrollable
                     CellHovered?.Invoke(this, new CellHoverEventArgs(new CellHoverInfo(PanelType, cellValue)));
                 }
             };
-            
+
             TokenResourceBinder.CreateTokenBinding(item, TemplatedControl.PaddingProperty,
                 TimePickerTokenKey.ItemPadding, BindingPriority.LocalValue);
             children.Add(item);
@@ -644,7 +647,7 @@ internal class DateTimePickerPanel : Panel, ILogicalScrollable
             {
                 VerticalAlignment   = VerticalAlignment.Center,
                 HorizontalAlignment = HorizontalAlignment.Center,
-                IsHitTestVisible = false
+                IsHitTestVisible    = false
             };
             textBlock.Text  =  FormatContent(first, panelType);
             item.Content    =  textBlock;
@@ -719,14 +722,14 @@ internal class DateTimePickerPanel : Panel, ILogicalScrollable
             e.Handled     = true;
         }
     }
-    
+
     private void HandleItemDoubleTapped(object? sender, TappedEventArgs e)
     {
         if (e.Source is Visual source &&
             GetItemFromSource(source) is ListBoxItem listBoxItem)
         {
             CellDbClicked?.Invoke(this, new CellDbClickedEventArgs(listBoxItem.IsSelected));
-            e.Handled     = true;
+            e.Handled = true;
         }
     }
 
@@ -767,13 +770,25 @@ internal class DateTimePickerPanel : Panel, ILogicalScrollable
         }
     }
 
-    // private void EnableCellHoverAnimation()
-    // {
-    //     var children = Children;
-    //     for (var i = 0; i < children.Count; i++)
-    //     {
-    //         var item = (ListBoxItem)children[i];
-    //         item.DisabledItemHoverAnimation = false;
-    //     }
-    // }
+    private void EnableCellHoverAnimation()
+    {
+        var children = Children;
+        for (var i = 0; i < children.Count; i++)
+        {
+            var item = (ListBoxItem)children[i];
+            item.IsMotionEnabled = IsMotionEnabled;
+        }
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (VisualRoot != null)
+        {
+            if (change.Property == IsMotionEnabledProperty)
+            {
+                EnableCellHoverAnimation();
+            }
+        }
+    }
 }
