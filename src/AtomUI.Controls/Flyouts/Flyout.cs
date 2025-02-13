@@ -168,9 +168,10 @@ public class Flyout : PopupFlyoutBase
     {
         var presenter = new FlyoutPresenter
         {
-            [!ContentControl.ContentProperty] = this[!ContentProperty]
+            [!FlyoutPresenter.ContentProperty]         = this[!ContentProperty],
+            [!FlyoutPresenter.IsMotionEnabledProperty] = this[!IsMotionEnabledProperty],
+            [!FlyoutPresenter.IsShowArrowProperty]     = this[!IsShowArrowEffectiveProperty],
         };
-        BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, presenter, IsShowArrowProperty);
         CalculateShowArrowEffective();
         SetupArrowPosition(Popup, presenter);
         return presenter;
@@ -180,11 +181,10 @@ public class Flyout : PopupFlyoutBase
     {
         base.NotifyPopupCreated(popup);
         BindUtils.RelayBind(this, PlacementProperty, popup, Popup.PlacementProperty);
-        BindUtils.RelayBind(this, PlacementAnchorProperty, popup,
-            Popup.PlacementAnchorProperty);
-        BindUtils.RelayBind(this, PlacementGravityProperty, popup,
-            Popup.PlacementGravityProperty);
+        BindUtils.RelayBind(this, PlacementAnchorProperty, popup, Popup.PlacementAnchorProperty);
+        BindUtils.RelayBind(this, PlacementGravityProperty, popup, Popup.PlacementGravityProperty);
         BindUtils.RelayBind(this, MaskShadowsProperty, popup, Popup.MaskShadowsProperty);
+        BindUtils.RelayBind(this, IsMotionEnabledProperty, popup, Popup.IsMotionEnabledProperty);
         SetupArrowPosition(popup);
     }
 
@@ -345,7 +345,7 @@ public class Flyout : PopupFlyoutBase
         }
 
         IsOpen = true;
-        Dispatcher.UIThread.Invoke(() =>
+        Dispatcher.UIThread.InvokeAsync(() =>
         {
             Popup.OpenAnimation(() =>
             {
@@ -376,7 +376,7 @@ public class Flyout : PopupFlyoutBase
         }
 
         IsOpen = false;
-        Dispatcher.UIThread.Invoke(() => { Popup.CloseAnimation(HandlePopupClosed); });
+        Dispatcher.UIThread.InvokeAsync(() => { Popup.CloseAnimation(HandlePopupClosed); });
         return true;
     }
 

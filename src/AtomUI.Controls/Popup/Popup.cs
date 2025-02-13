@@ -3,6 +3,7 @@ using AtomUI.Data;
 using AtomUI.MotionScene;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
+using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Diagnostics;
@@ -19,8 +20,11 @@ namespace AtomUI.Controls;
 
 using AvaloniaPopup = Avalonia.Controls.Primitives.Popup;
 
-public class Popup : AvaloniaPopup
+public class Popup : AvaloniaPopup,
+                     IAnimationAwareControl
 {
+    #region 公共属性定义
+
     public event EventHandler<PopupFlippedEventArgs>? PositionFlipped;
 
     public static readonly StyledProperty<BoxShadows> MaskShadowsProperty =
@@ -36,10 +40,13 @@ public class Popup : AvaloniaPopup
         AvaloniaProperty.RegisterDirect<Popup, bool>(nameof(IsFlipped),
             o => o.IsFlipped,
             (o, v) => o.IsFlipped = v);
+    
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AvaloniaProperty.Register<Popup, bool>(nameof(IsMotionEnabled), true);
 
-    internal static readonly StyledProperty<bool> IsDetectMouseClickEnabledProperty =
-        AvaloniaProperty.Register<Popup, bool>(nameof(IsDetectMouseClickEnabled), true);
-
+    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
+        = AvaloniaProperty.Register<Popup, bool>(nameof(IsWaveAnimationEnabled), true);
+    
     public BoxShadows MaskShadows
     {
         get => GetValue(MaskShadowsProperty);
@@ -58,11 +65,6 @@ public class Popup : AvaloniaPopup
         set => SetValue(MotionDurationProperty, value);
     }
 
-    internal bool IsDetectMouseClickEnabled
-    {
-        get => GetValue(IsDetectMouseClickEnabledProperty);
-        set => SetValue(IsDetectMouseClickEnabledProperty, value);
-    }
 
     private bool _isFlipped;
 
@@ -71,6 +73,35 @@ public class Popup : AvaloniaPopup
         get => _isFlipped;
         private set => SetAndRaise(IsFlippedProperty, ref _isFlipped, value);
     }
+
+    public bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
+    }
+
+    public bool IsWaveAnimationEnabled
+    {
+        get => GetValue(IsWaveAnimationEnabledProperty);
+        set => SetValue(IsWaveAnimationEnabledProperty, value);
+    }
+    
+    #endregion
+
+    #region 内部属性定义
+    
+    internal static readonly StyledProperty<bool> IsDetectMouseClickEnabledProperty =
+        AvaloniaProperty.Register<Popup, bool>(nameof(IsDetectMouseClickEnabled), true);
+    
+    internal bool IsDetectMouseClickEnabled
+    {
+        get => GetValue(IsDetectMouseClickEnabledProperty);
+        set => SetValue(IsDetectMouseClickEnabledProperty, value);
+    }
+
+    Control IAnimationAwareControl.PropertyBindTarget => this;
+
+    #endregion
 
     private PopupShadowLayer? _shadowLayer;
     private CompositeDisposable? _compositeDisposable;
@@ -94,6 +125,7 @@ public class Popup : AvaloniaPopup
 
     public Popup()
     {
+        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
         Closed += HandleClosed;
         Opened += HandleOpened;
     }
@@ -448,12 +480,16 @@ public class Popup : AvaloniaPopup
             return;
         }
 
+        if (!IsMotionEnabled)
+        {
+            Open();
+            opened?.Invoke();
+            return;
+        }
         _openAnimating = true;
-
         var placementTarget = GetEffectivePlacementTarget();
-
         Open();
-
+        
         var popupRoot = (Host as PopupRoot)!;
         // 获取 popup 的具体位置，这个就是非常准确的位置，还有大小
         // TODO 暂时只支持 WindowBase popup
@@ -478,10 +514,7 @@ public class Popup : AvaloniaPopup
         {
             CreateShadowLayer();
             popupRoot.Show();
-            if (opened is not null)
-            {
-                opened();
-            }
+            opened?.Invoke();
 
             _openAnimating = false;
             if (RequestCloseWhereAnimationCompleted)
@@ -507,6 +540,15 @@ public class Popup : AvaloniaPopup
 
         if (!IsOpen)
         {
+            return;
+        }
+
+        if (!IsMotionEnabled)
+        {
+            HideShadowLayer();
+            _isNeedFlip = true;
+            Close();
+            closed?.Invoke();
             return;
         }
 
@@ -539,10 +581,7 @@ public class Popup : AvaloniaPopup
             _closeAnimating = false;
             _isNeedFlip     = true;
             Close();
-            if (closed is not null)
-            {
-                closed();
-            }
+            closed?.Invoke();
         });
     }
 }

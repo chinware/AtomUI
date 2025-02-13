@@ -1,4 +1,6 @@
-﻿using Avalonia;
+﻿using AtomUI.Theme;
+using AtomUI.Theme.Utils;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Platform;
 using Avalonia.Controls.Primitives;
@@ -6,7 +8,10 @@ using Avalonia.Interactivity;
 
 namespace AtomUI.Controls;
 
-public class MenuFlyoutPresenter : MenuBase, IShadowMaskInfoProvider
+public class MenuFlyoutPresenter : MenuBase,
+                                   IShadowMaskInfoProvider,
+                                   IAnimationAwareControl,
+                                   IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
 
@@ -17,9 +22,15 @@ public class MenuFlyoutPresenter : MenuBase, IShadowMaskInfoProvider
         ArrowDecoratedBox.ArrowPositionProperty.AddOwner<MenuFlyoutPresenter>();
 
     public static readonly RoutedEvent<FlyoutMenuItemClickedEventArgs> MenuItemClickedEvent =
-        RoutedEvent.Register<DropdownButton, FlyoutMenuItemClickedEventArgs>(
+        RoutedEvent.Register<MenuFlyoutPresenter, FlyoutMenuItemClickedEventArgs>(
             nameof(MenuItemClicked),
             RoutingStrategies.Bubble);
+    
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AvaloniaProperty.Register<MenuFlyoutPresenter, bool>(nameof(IsMotionEnabled), true);
+
+    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
+        = AvaloniaProperty.Register<MenuFlyoutPresenter, bool>(nameof(IsWaveAnimationEnabled), true);
 
     /// <summary>
     /// 是否显示指示箭头
@@ -38,6 +49,18 @@ public class MenuFlyoutPresenter : MenuBase, IShadowMaskInfoProvider
         get => GetValue(ArrowPositionProperty);
         set => SetValue(ArrowPositionProperty, value);
     }
+    
+    public bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
+    }
+
+    public bool IsWaveAnimationEnabled
+    {
+        get => GetValue(IsWaveAnimationEnabledProperty);
+        set => SetValue(IsWaveAnimationEnabledProperty, value);
+    }
 
     public event EventHandler<FlyoutMenuItemClickedEventArgs>? MenuItemClicked
     {
@@ -49,16 +72,28 @@ public class MenuFlyoutPresenter : MenuBase, IShadowMaskInfoProvider
 
     #endregion
 
+    #region 内部属性定义
+
+    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IControlSharedTokenResourcesHost.HostControl => this;
+    string IControlSharedTokenResourcesHost.TokenId => MenuToken.ID;
+
+    #endregion
+
     private ArrowDecoratedBox? _arrowDecoratedBox;
 
     public MenuFlyoutPresenter()
         : base(new DefaultMenuInteractionHandler(true))
     {
+        this.RegisterResources();
+        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
     }
 
     public MenuFlyoutPresenter(IMenuInteractionHandler menuInteractionHandler)
         : base(menuInteractionHandler)
     {
+        this.RegisterResources();
+        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
     }
 
     public override void Close()

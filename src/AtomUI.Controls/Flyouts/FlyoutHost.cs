@@ -1,6 +1,8 @@
 ﻿using AtomUI.Data;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
+using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives.PopupPositioning;
@@ -17,7 +19,8 @@ public enum FlyoutTriggerType
     Click
 }
 
-public class FlyoutHost : Control
+public class FlyoutHost : Control,
+                          IAnimationAwareControl
 {
     #region 公共属性定义
 
@@ -56,6 +59,12 @@ public class FlyoutHost : Control
 
     public static readonly StyledProperty<PopupGravity> PlacementGravityProperty =
         Avalonia.Controls.Primitives.Popup.PlacementGravityProperty.AddOwner<FlyoutHost>();
+    
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AvaloniaProperty.Register<FlyoutHost, bool>(nameof(IsMotionEnabled), true);
+
+    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
+        = AvaloniaProperty.Register<FlyoutHost, bool>(nameof(IsWaveAnimationEnabled), true);
 
     /// <summary>
     /// 距离 anchor 的边距，根据垂直和水平进行设置
@@ -140,6 +149,24 @@ public class FlyoutHost : Control
         get => GetValue(MouseLeaveDelayProperty);
         set => SetValue(MouseLeaveDelayProperty, value);
     }
+    
+    public bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
+    }
+
+    public bool IsWaveAnimationEnabled
+    {
+        get => GetValue(IsWaveAnimationEnabledProperty);
+        set => SetValue(IsWaveAnimationEnabledProperty, value);
+    }
+
+    #endregion
+
+    #region 内部属性定义
+
+    Control IAnimationAwareControl.PropertyBindTarget => this;
 
     #endregion
 
@@ -153,6 +180,7 @@ public class FlyoutHost : Control
     public FlyoutHost()
     {
         _flyoutStateHelper = new FlyoutStateHelper();
+        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
     }
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -197,6 +225,7 @@ public class FlyoutHost : Control
             BindUtils.RelayBind(this, IsShowArrowProperty, Flyout);
             BindUtils.RelayBind(this, IsPointAtCenterProperty, Flyout);
             BindUtils.RelayBind(this, MarginToAnchorProperty, Flyout);
+            BindUtils.RelayBind(this, IsMotionEnabledProperty, Flyout, PopupFlyoutBase.IsMotionEnabledProperty);
             Flyout.IsDetectMouseClickEnabled = false;
         }
     }
