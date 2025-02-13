@@ -67,7 +67,7 @@ public abstract class BaseControlTheme : ControlTheme
     }
 
     protected static IDisposable CreateTemplateParentBinding<T>(
-        AvaloniaObject target, 
+        AvaloniaObject target,
         StyledProperty<T> property,
         AvaloniaProperty parentProperty,
         BindingMode mode = BindingMode.Default,
@@ -81,7 +81,7 @@ public abstract class BaseControlTheme : ControlTheme
     }
 
     protected static IDisposable CreateTemplateParentBinding<T>(
-        AvaloniaObject target, 
+        AvaloniaObject target,
         DirectPropertyBase<T> property,
         AvaloniaProperty parentProperty,
         BindingMode mode = BindingMode.Default,
@@ -89,13 +89,13 @@ public abstract class BaseControlTheme : ControlTheme
     {
         return target.Bind(property, new TemplateBinding(parentProperty)
         {
-            Mode           = mode,
-            Converter      = converter
+            Mode      = mode,
+            Converter = converter
         }, BindingPriority.Template);
     }
-    
+
     protected static IDisposable CreateTemplateParentBinding(
-        AvaloniaObject target, 
+        AvaloniaObject target,
         AvaloniaProperty property,
         AvaloniaProperty parentProperty,
         BindingMode mode = BindingMode.Default,
@@ -107,43 +107,49 @@ public abstract class BaseControlTheme : ControlTheme
             Converter = converter
         }, BindingPriority.Template);
     }
-    
-        protected static IDisposable CreateTemplateParentBinding(AvaloniaObject target, AvaloniaProperty property,
+
+    protected static IDisposable CreateTemplateParentBinding(AvaloniaObject target, AvaloniaProperty property,
                                                              string templateParentPath,
                                                              BindingMode mode = BindingMode.Default,
+                                                             BindingPriority priority = BindingPriority.Template,
                                                              IValueConverter? converter = null)
     {
         return target.Bind(property, new Binding(templateParentPath)
         {
             RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent),
             Mode           = mode,
-            Converter      = converter
+            Converter      = converter,
+            Priority       = priority
         });
     }
 
     protected static IDisposable CreateTemplateParentBinding<T>(AvaloniaObject target, StyledProperty<T> property,
                                                                 string templateParentPath,
                                                                 BindingMode mode = BindingMode.Default,
+                                                                BindingPriority priority = BindingPriority.Template,
                                                                 IValueConverter? converter = null)
     {
         return target.Bind(property, new Binding(templateParentPath)
         {
             RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent),
             Mode           = mode,
-            Converter      = converter
+            Converter      = converter,
+            Priority       = priority
         });
     }
 
     protected static IDisposable CreateTemplateParentBinding<T>(AvaloniaObject target, DirectPropertyBase<T> property,
                                                                 string templateParentPath,
                                                                 BindingMode mode = BindingMode.Default,
+                                                                BindingPriority priority = BindingPriority.Template,
                                                                 IValueConverter? converter = null)
     {
         return target.Bind(property, new Binding(templateParentPath)
         {
             RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent),
             Mode           = mode,
-            Converter      = converter
+            Converter      = converter,
+            Priority       = priority
         });
     }
 }

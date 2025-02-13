@@ -1,10 +1,14 @@
 ﻿using AtomUI.Controls.Utils;
+using AtomUI.Theme;
+using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 
 namespace AtomUI.Controls;
 
-public class LineEdit : TextBox
+public class LineEdit : TextBox,
+                        IAnimationAwareControl,
+                        IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
 
@@ -14,6 +18,12 @@ public class LineEdit : TextBox
     public static readonly StyledProperty<object?> RightAddOnProperty =
         AvaloniaProperty.Register<LineEdit, object?>(nameof(RightAddOn));
 
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AvaloniaProperty.Register<LineEdit, bool>(nameof(IsMotionEnabled), true);
+
+    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
+        = AvaloniaProperty.Register<LineEdit, bool>(nameof(IsWaveAnimationEnabled), true);
+    
     public object? LeftAddOn
     {
         get => GetValue(LeftAddOnProperty);
@@ -26,7 +36,33 @@ public class LineEdit : TextBox
         set => SetValue(RightAddOnProperty, value);
     }
 
+    public bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
+    }
+
+    public bool IsWaveAnimationEnabled
+    {
+        get => GetValue(IsWaveAnimationEnabledProperty);
+        set => SetValue(IsWaveAnimationEnabledProperty, value);
+    }
+    
     #endregion
+
+    #region 内部属性定义
+
+    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IControlSharedTokenResourcesHost.HostControl => this;
+    string IControlSharedTokenResourcesHost.TokenId => LineEditToken.ID;
+
+    #endregion
+
+    public LineEdit()
+    {
+        this.RegisterResources();
+        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
+    }
     
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {

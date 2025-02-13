@@ -1,5 +1,6 @@
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Data;
 using Avalonia.Layout;
@@ -14,22 +15,40 @@ using AvaloniaTextBlock = Avalonia.Controls.TextBlock;
 public class TextBlock : AvaloniaTextBlock
 {
     private TextMetrics _textMetrics;
+
+    #region 内部属性定义
+
+    internal static readonly DirectProperty<TextBlock, double> LineHeightTokenValueProperty =
+        AvaloniaProperty.RegisterDirect<TextBlock, double>(nameof(LineHeightTokenValue),
+            o => o.LineHeightTokenValue,
+            (o, v) => o.LineHeightTokenValue = v);
+
+    private double _lineHeightTokenValue;
+
+    internal double LineHeightTokenValue
+    {
+        get => _lineHeightTokenValue;
+        set => SetAndRaise(LineHeightTokenValueProperty, ref _lineHeightTokenValue, value);
+    }
+    
+    #endregion
     
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        TokenResourceBinder.CreateTokenBinding(this, LineHeightProperty, SharedTokenKey.LineHeight,
-            BindingPriority.Template,
-            o =>
-            {
-                if (o is double dvalue)
-                {
-                    return dvalue * FontSize;
-                }
-
-                return o;
-            });
+        TokenResourceBinder.CreateTokenBinding(this, LineHeightTokenValueProperty, SharedTokenKey.LineHeightLG);
         CalculateTextMetrics();
+        SetupLineHeight();
+    }
+
+    private void SetupLineHeight()
+    {
+        var lineHeight = _lineHeightTokenValue * FontSize;
+        if (MathUtils.AreClose(lineHeight, 0))
+        {
+            lineHeight = FontSize;
+        }
+        SetValue(LineHeightProperty, lineHeight, BindingPriority.Template);
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -43,6 +62,12 @@ public class TextBlock : AvaloniaTextBlock
             {
                 CalculateTextMetrics();
             }
+        }
+
+        if (change.Property == FontSizeProperty ||
+            change.Property == LineHeightTokenValueProperty)
+        {
+            SetupLineHeight();
         }
     }
 
@@ -62,7 +87,6 @@ public class TextBlock : AvaloniaTextBlock
         var top        = origin.Y;
         if (TextLayout.TextLines.Count == 1)
         {
-            
             if (Bounds.Height >= textHeight)
             {
                 var scale   = LayoutHelper.GetLayoutScale(this);
@@ -70,7 +94,7 @@ public class TextBlock : AvaloniaTextBlock
                 switch (VerticalAlignment)
                 {
                     case VerticalAlignment.Center:
-                        top = (DesiredSize.Height - _textMetrics.LineHeight - padding.Top - padding.Bottom) / 2 - _textMetrics.Descent;
+                        top = (Bounds.Height - _textMetrics.LineHeight - padding.Top - padding.Bottom) / 2 - _textMetrics.Descent;
                         break;
                 }
             }

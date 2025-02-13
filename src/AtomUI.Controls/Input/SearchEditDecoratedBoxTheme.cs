@@ -4,6 +4,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
 using Avalonia.Media;
 using Avalonia.Styling;
 
@@ -25,16 +26,20 @@ internal class SearchEditDecoratedBoxTheme : AddOnDecoratedBoxTheme
             Name             = RightAddOnPart,
             Focusable        = false,
             Icon             = searchIcon,
-            BackgroundSizing = BackgroundSizing.OuterBorderEdge
+            BackgroundSizing = BackgroundSizing.OuterBorderEdge,
         };
 
         searchButton.RegisterInNameScope(scope);
         CreateTemplateParentBinding(searchButton, Button.TextProperty, SearchEditDecoratedBox.SearchButtonTextProperty);
         CreateTemplateParentBinding(searchButton, Button.SizeTypeProperty, AddOnDecoratedBox.SizeTypeProperty);
         CreateTemplateParentBinding(searchButton, TemplatedControl.BorderThicknessProperty,
-            AddOnDecoratedBox.RightAddOnBorderThicknessProperty);
+            nameof(AddOnDecoratedBox.RightAddOnBorderThickness),
+            BindingMode.Default,
+            BindingPriority.LocalValue);
         CreateTemplateParentBinding(searchButton, TemplatedControl.CornerRadiusProperty,
-            AddOnDecoratedBox.RightAddOnCornerRadiusProperty);
+            nameof(AddOnDecoratedBox.RightAddOnCornerRadius),
+            BindingMode.Default,
+            BindingPriority.LocalValue);
 
         layout.Children.Add(searchButton);
         Grid.SetColumn(searchButton, 2);
