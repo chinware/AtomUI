@@ -123,9 +123,6 @@ internal class ExpanderTheme : BaseControlTheme
             SharedTokenKey.IconSize);
 
         expandButton.RegisterInNameScope(scope);
-        expandButton.Transitions = new Transitions();
-        expandButton.Transitions.Add(
-            AnimationUtils.CreateTransition<TransformOperationsTransition>(Visual.RenderTransformProperty));
         CreateTemplateParentBinding(expandButton, IconButton.IconProperty, Expander.ExpandIconProperty);
         CreateTemplateParentBinding(expandButton, Visual.IsVisibleProperty, Expander.IsShowExpandIconProperty);
         CreateTemplateParentBinding(expandButton, InputElement.IsEnabledProperty, InputElement.IsEnabledProperty);
@@ -206,6 +203,18 @@ internal class ExpanderTheme : BaseControlTheme
         expandIconStyle.Add(Layoutable.WidthProperty, SharedTokenKey.IconSizeSM);
         expandIconStyle.Add(Layoutable.HeightProperty, SharedTokenKey.IconSizeSM);
         commonStyle.Add(expandIconStyle);
+
+        {
+            // 打开关闭指示按钮的动画
+            var isMotionEnabledStyle = new Style(selector => selector.Nesting().PropertyEquals(Expander.IsMotionEnabledProperty, true));
+            var expandIconButtonStyle = new Style(selector => selector.Nesting().Template().Name(ExpandButtonPart));
+            expandIconButtonStyle.Add(IconButton.TransitionsProperty, new Transitions()
+            {
+                AnimationUtils.CreateTransition<TransformOperationsTransition>(Visual.RenderTransformProperty)
+            });
+            isMotionEnabledStyle.Add(expandIconButtonStyle);
+            commonStyle.Add(isMotionEnabledStyle);
+        }
 
         // 设置打开状态
         var expandedStyle = new Style(selector =>

@@ -2,8 +2,10 @@
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.MotionScene;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
+using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
@@ -28,7 +30,9 @@ public enum ExpanderIconPosition
     End
 }
 
-public class Expander : AvaloniaExpander
+public class Expander : AvaloniaExpander,
+                        IAnimationAwareControl,
+                        IControlSharedTokenResourcesHost
 {
     public const string ExpandedPC = ":expanded";
     public const string ExpandUpPC = ":up";
@@ -65,6 +69,12 @@ public class Expander : AvaloniaExpander
     public static readonly StyledProperty<ExpanderIconPosition> ExpandIconPositionProperty =
         AvaloniaProperty.Register<Expander, ExpanderIconPosition>(nameof(ExpandIconPosition));
 
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AvaloniaProperty.Register<Expander, bool>(nameof(IsMotionEnabled), true);
+
+    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
+        = AvaloniaProperty.Register<Expander, bool>(nameof(IsWaveAnimationEnabled), true);
+    
     public SizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
@@ -118,6 +128,18 @@ public class Expander : AvaloniaExpander
         get => GetValue(ExpandIconPositionProperty);
         set => SetValue(ExpandIconPositionProperty, value);
     }
+    
+    public bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
+    }
+
+    public bool IsWaveAnimationEnabled
+    {
+        get => GetValue(IsWaveAnimationEnabledProperty);
+        set => SetValue(IsWaveAnimationEnabledProperty, value);
+    }
 
     #endregion
 
@@ -161,14 +183,24 @@ public class Expander : AvaloniaExpander
         get => _effectiveBorderThickness;
         set => SetAndRaise(EffectiveBorderThicknessProperty, ref _effectiveBorderThickness, value);
     }
+    
+    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IControlSharedTokenResourcesHost.HostControl => this;
+    string IControlSharedTokenResourcesHost.TokenId => ExpanderToken.ID;
 
     #endregion
+
+    public Expander()
+    {
+        this.RegisterResources();
+        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
+    }
 
     private MotionActorControl? _motionActor;
     private Border? _headerDecorator;
     private IconButton? _expandButton;
     private bool _animating;
-    private bool _enableAnimation = true;
+    private bool _tempAnimationDisabled = false;
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
@@ -183,9 +215,9 @@ public class Expander : AvaloniaExpander
         SetupEffectiveBorderThickness();
         SetupExpanderBorderThickness();
         SetupIconButton();
-        _enableAnimation = false;
+        _tempAnimationDisabled = true;
         HandleExpandedChanged();
-        _enableAnimation = true;
+        _tempAnimationDisabled = false;
         if (_expandButton is not null)
         {
             _expandButton.Click += (sender, args) =>
@@ -318,7 +350,7 @@ public class Expander : AvaloniaExpander
             return;
         }
 
-        if (!_enableAnimation)
+        if (!IsMotionEnabled || _tempAnimationDisabled)
         {
             _motionActor.IsVisible = true;
             return;
@@ -339,7 +371,7 @@ public class Expander : AvaloniaExpander
             return;
         }
 
-        if (!_enableAnimation)
+        if (!IsMotionEnabled || _tempAnimationDisabled)
         {
             _motionActor.IsVisible = false;
             return;
