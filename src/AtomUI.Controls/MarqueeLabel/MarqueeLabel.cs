@@ -1,8 +1,11 @@
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
+using AtomUI.Theme.Utils;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
+using Avalonia.Controls;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Styling;
@@ -10,7 +13,8 @@ using Avalonia.Threading;
 
 namespace AtomUI.Controls;
 
-public class MarqueeLabel : SingleLineText
+public class MarqueeLabel : SingleLineText,
+                            IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
 
@@ -53,6 +57,9 @@ public class MarqueeLabel : SingleLineText
         get => GetValue(PivotOffsetProperty);
         set => SetValue(PivotOffsetProperty, value);
     }
+    
+    Control IControlSharedTokenResourcesHost.HostControl => this;
+    string IControlSharedTokenResourcesHost.TokenId => MarqueeLabelToken.ID;
 
     #endregion
 
@@ -67,6 +74,11 @@ public class MarqueeLabel : SingleLineText
     static MarqueeLabel()
     {
         AffectsRender<MarqueeLabel>(PivotOffsetProperty, CycleSpaceProperty, MoveSpeedProperty);
+    }
+
+    public MarqueeLabel()
+    {
+        this.RegisterResources();
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)

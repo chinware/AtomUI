@@ -1,6 +1,8 @@
 ﻿using AtomUI.Media;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
+using AtomUI.Theme.Utils;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -20,7 +22,8 @@ public enum SeparatorTitlePosition
     Center
 }
 
-public class Separator : AvaloniaSeparator
+public class Separator : AvaloniaSeparator,
+                         IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
 
@@ -158,8 +161,11 @@ public class Separator : AvaloniaSeparator
         set => SetValue(VerticalMarginInlineProperty, value);
     }
 
+    Control IControlSharedTokenResourcesHost.HostControl => this;
+    string IControlSharedTokenResourcesHost.TokenId => SeparatorToken.ID;
+
     #endregion
-    
+
     private Label? _titleLabel;
     private const double SEPARATOR_LINE_MIN_PROPORTION = 0.25;
     private double _currentEdgeDistance;
@@ -175,13 +181,18 @@ public class Separator : AvaloniaSeparator
             IsDashedLineProperty);
     }
 
+    public Separator()
+    {
+        this.RegisterResources();
+    }
+
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
         _titleLabel = e.NameScope.Find<Label>(SeparatorTheme.TitlePart);
         SetupTokenBindings();
     }
-    
+
     private void SetupTokenBindings()
     {
         TokenResourceBinder.CreateTokenBinding(this, LineWidthProperty, SharedTokenKey.LineWidth);
@@ -249,7 +260,7 @@ public class Separator : AvaloniaSeparator
                 // 字过多
                 titleWidth = Math.Max(finalSize.Width - lineMinWidth, lineMinWidth);
             }
-            
+
             // 处理完成之后，字的宽度一定在 width 范围内
             // 计算位置
             if (TitlePosition == SeparatorTitlePosition.Left)
@@ -298,6 +309,7 @@ public class Separator : AvaloniaSeparator
                     new Size(titleWidth, finalSize.Height));
             }
         }
+
         return titleRect;
     }
 
