@@ -1,3 +1,4 @@
+using AtomUI.Controls.Internal;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
@@ -120,7 +121,7 @@ public class Tag : TemplatedControl
     private bool _hasColorSet;
     private static readonly Dictionary<PresetColorType, TagCalcColor> _presetColorMap;
     private static readonly Dictionary<TagStatus, TagStatusCalcColor> _statusColorMap;
-    private TextBlock? _textBlock;
+    private SingleLineText? _lineText;
     private ContentPresenter? _iconContentPresenter;
     private IconButton? _closeButton;
     private readonly BorderRenderHelper _borderRenderHelper;
@@ -153,7 +154,7 @@ public class Tag : TemplatedControl
     private void HandleTemplateApplied(INameScope scope)
     {
         _closeButton          = scope.Find<IconButton>(TagTheme.CloseButtonPart);
-        _textBlock            = scope.Find<TextBlock>(TagTheme.TagTextLabelPart);
+        _lineText            = scope.Find<SingleLineText>(TagTheme.TagTextLabelPart);
         _iconContentPresenter = scope.Find<ContentPresenter>(TagTheme.IconPart);
 
         if (TagColor is not null)

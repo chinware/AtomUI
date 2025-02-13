@@ -20,6 +20,9 @@ internal class SingleLineText : Control
 
     public static readonly StyledProperty<Thickness> PaddingProperty =
         Decorator.PaddingProperty.AddOwner<SingleLineText>();
+    
+    public static readonly StyledProperty<double> FontSizeProperty =
+        TextElement.FontSizeProperty.AddOwner<SingleLineText>();
 
     public static readonly StyledProperty<FontFamily> FontFamilyProperty =
         TextElement.FontFamilyProperty.AddOwner<SingleLineText>();
@@ -38,6 +41,13 @@ internal class SingleLineText : Control
 
     public static readonly StyledProperty<double> BaselineOffsetProperty =
         AvaloniaProperty.Register<SingleLineText, double>(nameof(BaselineOffset));
+    
+    public static readonly AttachedProperty<double> LineHeightProperty =
+        AvaloniaProperty.RegisterAttached<SingleLineText, Control, double>(
+            nameof(LineHeight),
+            double.NaN,
+            validate: IsValidLineHeight,
+            inherits: true);
 
     public static readonly StyledProperty<double> LetterSpacingProperty =
         AvaloniaProperty.Register<SingleLineText, double>(
@@ -63,7 +73,7 @@ internal class SingleLineText : Control
         TextElement.FontFeaturesProperty.AddOwner<SingleLineText>();
     
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        AvaloniaProperty.Register<Button, SizeType>(nameof(SizeType), SizeType.Middle);
+        AvaloniaProperty.Register<SingleLineText, SizeType>(nameof(SizeType), SizeType.Middle);
     
     public TextLayout TextLayout => _textLayout ??= CreateTextLayout(Text);
 
@@ -84,6 +94,12 @@ internal class SingleLineText : Control
     {
         get => GetValue(TextProperty);
         set => SetValue(TextProperty, value);
+    }
+    
+    public double FontSize
+    {
+        get => GetValue(FontSizeProperty);
+        set => SetValue(FontSizeProperty, value);
     }
 
     public FontFamily FontFamily
@@ -150,8 +166,14 @@ internal class SingleLineText : Control
 
     public double BaselineOffset
     {
-        get => (double)GetValue(BaselineOffsetProperty);
+        get => GetValue(BaselineOffsetProperty);
         set => SetValue(BaselineOffsetProperty, value);
+    }
+    
+    public double LineHeight
+    {
+        get => GetValue(LineHeightProperty);
+        set => SetValue(LineHeightProperty, value);
     }
     
     public SizeType SizeType
@@ -161,36 +183,9 @@ internal class SingleLineText : Control
     }
 
     #endregion
-
-    #region 内部属性定义
-
-    internal static readonly StyledProperty<double> FontSizeProperty =
-        AvaloniaProperty.Register<SingleLineText, double>(
-            nameof(FontSize),
-            12);
-
-    internal static readonly StyledProperty<double> LineHeightProperty =
-        AvaloniaProperty.Register<SingleLineText, double>(
-            nameof(LineHeight),
-            double.NaN,
-            validate: IsValidLineHeight);
-    
-    protected double FontSize
-    {
-        get => GetValue(FontSizeProperty);
-        set => SetValue(FontSizeProperty, value);
-    }
-    
-    protected double LineHeight
-    {
-        get => GetValue(LineHeightProperty);
-        set => SetValue(LineHeightProperty, value);
-    }
-
-    #endregion
     
     private TextLayout? _textLayout;
-    protected Size _constraint = new(double.NaN, double.NaN);
+    private Size _constraint = new(double.NaN, double.NaN);
     
     static SingleLineText()
     {
@@ -199,13 +194,7 @@ internal class SingleLineText : Control
     }
 
     private static bool IsValidLineHeight(double lineHeight) => double.IsNaN(lineHeight) || lineHeight > 0;
-
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        SetupSizeTypeBindings();
-    }
-
+    
     public sealed override void Render(DrawingContext context)
     {
         RenderCore(context);
@@ -222,16 +211,16 @@ internal class SingleLineText : Control
         var padding    = LayoutHelper.RoundLayoutThickness(Padding, scale, scale);
         var top        = padding.Top;
         var textHeight = TextLayout.Height;
-        if (Bounds.Height < textHeight)
+        if (Bounds.Height >= textHeight)
         {
             switch (VerticalAlignment)
             {
                 case VerticalAlignment.Center:
-                    top += (Bounds.Height - textHeight) / 2;
+                    top += (Bounds.Height - textHeight + TextLayout.OverhangTrailing) / 2;
                     break;
 
                 case VerticalAlignment.Bottom:
-                    top += (Bounds.Height - textHeight);
+                    top += Bounds.Height - textHeight;
                     break;
             }
         }
@@ -242,21 +231,6 @@ internal class SingleLineText : Control
     protected virtual void RenderTextLayout(DrawingContext context, Point origin)
     {
         TextLayout.Draw(context, origin + new Point(TextLayout.OverhangLeading, 0));
-    }
-
-    private bool _clearTextInternal;
-
-    internal void ClearTextInternal()
-    {
-        _clearTextInternal = true;
-        try
-        {
-            SetCurrentValue(TextProperty, null);
-        }
-        finally
-        {
-            _clearTextInternal = false;
-        }
     }
 
     protected virtual TextLayout CreateTextLayout(string? text)
@@ -271,7 +245,7 @@ internal class SingleLineText : Control
 
         var paragraphProperties = new GenericTextParagraphProperties(FlowDirection,
             IsMeasureValid ? TextAlignment : TextAlignment.Left, true, false,
-            defaultProperties, TextWrapping.NoWrap, LineHeight * FontSize, 0, LetterSpacing);
+            defaultProperties, TextWrapping.NoWrap, LineHeight, 0, LetterSpacing);
 
         ITextSource textSource;
 
@@ -320,14 +294,13 @@ internal class SingleLineText : Control
             _textLayout?.Dispose();
             _textLayout = null;
             _constraint = deflatedSize;
-
-            //Force arrange so text will be properly alligned.
+            //Force arrange so text will be properly aligned.
             InvalidateArrange();
         }
         
         //This implicitly recreated the TextLayout with a new constraint if we previously reset it.
         var textLayout = TextLayout;
-        var size = LayoutHelper.RoundLayoutSizeUp(new Size(textLayout.TextLines.First().Width, textLayout.Height).Inflate(padding),
+        var size = LayoutHelper.RoundLayoutSizeUp(new Size(textLayout.TextLines.First().Width, textLayout.Height + textLayout.OverhangTrailing / 2).Inflate(padding),
             1, 1);
         return size;
     }
@@ -368,35 +341,8 @@ internal class SingleLineText : Control
         {
             InvalidateTextLayout();
         }
-
-        if (VisualRoot != null)
-        {
-            if (change.Property == SizeTypeProperty)
-            {
-                SetupSizeTypeBindings();
-            }
-        }
     }
-
-    private void SetupSizeTypeBindings()
-    {
-        if (SizeType == SizeType.Large)
-        {
-            TokenResourceBinder.CreateTokenBinding(this, FontSizeProperty, SharedTokenKey.FontSizeLG);
-            TokenResourceBinder.CreateTokenBinding(this, LineHeightProperty, SharedTokenKey.LineHeightLG);
-        }
-        else if (SizeType == SizeType.Middle)
-        {
-            TokenResourceBinder.CreateTokenBinding(this, FontSizeProperty, SharedTokenKey.FontSize);
-            TokenResourceBinder.CreateTokenBinding(this, LineHeightProperty, SharedTokenKey.LineHeight);
-        }
-        else
-        {
-            TokenResourceBinder.CreateTokenBinding(this, FontSizeProperty, SharedTokenKey.FontSizeSM);
-            TokenResourceBinder.CreateTokenBinding(this, LineHeightProperty, SharedTokenKey.LineHeightSM);
-        }
-    }
-
+    
     protected readonly record struct SimpleTextSource : ITextSource
     {
         private readonly string _text;

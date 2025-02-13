@@ -1,12 +1,13 @@
-﻿using AtomUI.Theme;
+﻿using AtomUI.Controls.Internal;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
-using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Layout;
+using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
@@ -22,18 +23,6 @@ internal class TagTheme : BaseControlTheme
     public TagTheme()
         : base(typeof(Tag))
     {
-    }
-
-    protected override void BuildStyles()
-    {
-        this.Add(Tag.BackgroundProperty, TagTokenKey.DefaultBg);
-        this.Add(Tag.ForegroundProperty, TagTokenKey.DefaultColor);
-        this.Add(Tag.FontSizeProperty, TagTokenKey.TagFontSize);
-        this.Add(Tag.PaddingProperty, TagTokenKey.TagPadding);
-        this.Add(Tag.BorderBrushProperty, SharedTokenKey.ColorBorder);
-        this.Add(Tag.CornerRadiusProperty, SharedTokenKey.BorderRadiusSM);
-        this.Add(Tag.HeightProperty, TagTokenKey.TagLineHeight);
-        this.Add(Tag.TagTextPaddingInlineProperty, TagTokenKey.TagTextPaddingInline);
     }
 
     protected override IControlTemplate BuildControlTemplate()
@@ -76,16 +65,16 @@ internal class TagTheme : BaseControlTheme
             CreateTemplateParentBinding(iconContentPresenter, ContentPresenter.ContentProperty, Tag.IconProperty);
             elementsLayout.Children.Add(iconContentPresenter);
 
-            var textBlock = new TextBlock
+            var lineText = new SingleLineText()
             {
                 Name              = TagTextLabelPart,
                 VerticalAlignment = VerticalAlignment.Center,
             };
-            Grid.SetColumn(textBlock, 1);
-            textBlock.RegisterInNameScope(scope);
-            CreateTemplateParentBinding(textBlock, TextBlock.TextProperty, Tag.TagTextProperty);
-            CreateTemplateParentBinding(textBlock, TextBlock.PaddingProperty, Tag.TagTextPaddingInlineProperty);
-            elementsLayout.Children.Add(textBlock);
+            Grid.SetColumn(lineText, 1);
+            lineText.RegisterInNameScope(scope);
+            CreateTemplateParentBinding(lineText, SingleLineText.TextProperty, Tag.TagTextProperty);
+            CreateTemplateParentBinding(lineText, SingleLineText.PaddingProperty, Tag.TagTextPaddingInlineProperty);
+            elementsLayout.Children.Add(lineText);
 
             var closeBtn = new IconButton
             {
@@ -105,5 +94,20 @@ internal class TagTheme : BaseControlTheme
 
             return rootLayout;
         });
+    }
+    
+    protected override void BuildStyles()
+    {
+        this.Add(Tag.BackgroundProperty, TagTokenKey.DefaultBg);
+        this.Add(Tag.ForegroundProperty, TagTokenKey.DefaultColor);
+        this.Add(Tag.FontSizeProperty, TagTokenKey.TagFontSize);
+        this.Add(Tag.PaddingProperty, TagTokenKey.TagPadding);
+        this.Add(Tag.BorderBrushProperty, SharedTokenKey.ColorBorder);
+        this.Add(Tag.CornerRadiusProperty, SharedTokenKey.BorderRadiusSM);
+        this.Add(Tag.TagTextPaddingInlineProperty, TagTokenKey.TagTextPaddingInline);
+
+        var lineTextStyle = new Style(selector => selector.Nesting().Template().Name(TagTextLabelPart));
+        lineTextStyle.Add(SingleLineText.LineHeightProperty, TagTokenKey.TagLineHeight);
+        Add(lineTextStyle);
     }
 }

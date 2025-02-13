@@ -1,4 +1,5 @@
-﻿using AtomUI.IconPkg;
+﻿using AtomUI.Controls.Internal;
+using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
@@ -47,13 +48,14 @@ internal abstract class BaseButtonTheme : BaseControlTheme
             };
             CreateTemplateParentBinding(iconPresenter, ContentPresenter.ContentProperty, Button.IconProperty);
 
-            var labelText = new TextBlock
+            var labelText = new SingleLineText
             {
                 Name              = LabelPart,
                 VerticalAlignment = VerticalAlignment.Center
             };
 
-            CreateTemplateParentBinding(labelText, TextBlock.TextProperty, Button.TextProperty);
+            CreateTemplateParentBinding(labelText, SingleLineText.SizeTypeProperty, Button.SizeTypeProperty);
+            CreateTemplateParentBinding(labelText, SingleLineText.TextProperty, Button.TextProperty);
             labelText.RegisterInNameScope(scope);
 
             var mainInfoLayout = new StackPanel

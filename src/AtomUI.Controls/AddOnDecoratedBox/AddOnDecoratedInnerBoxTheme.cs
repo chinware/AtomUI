@@ -244,7 +244,7 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
 
         {
             var innerBoxContentStyle = new Style(selector => selector.Nesting().Template().Name(ContentPresenterPart));
-            innerBoxContentStyle.Add(TextBlock.LineHeightProperty, SharedTokenKey.FontHeightLG);
+            innerBoxContentStyle.Add(ContentPresenter.LineHeightProperty, SharedTokenKey.FontHeightLG);
             innerBoxContentStyle.Add(Layoutable.MinHeightProperty, SharedTokenKey.FontHeightLG);
             largeStyle.Add(innerBoxContentStyle);
         }
@@ -262,7 +262,7 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
         middleStyle.Add(AddOnDecoratedInnerBox.InnerBoxPaddingProperty, AddOnDecoratedBoxTokenKey.Padding);
         {
             var innerBoxContentStyle = new Style(selector => selector.Nesting().Template().Name(ContentPresenterPart));
-            innerBoxContentStyle.Add(TextBlock.LineHeightProperty, SharedTokenKey.FontHeight);
+            innerBoxContentStyle.Add(ContentPresenter.LineHeightProperty, SharedTokenKey.FontHeight);
             innerBoxContentStyle.Add(Layoutable.MinHeightProperty, SharedTokenKey.FontHeight);
             middleStyle.Add(innerBoxContentStyle);
         }
