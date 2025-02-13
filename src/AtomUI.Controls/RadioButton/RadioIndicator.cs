@@ -14,6 +14,8 @@ namespace AtomUI.Controls;
 
 internal class RadioIndicator : Control, IWaveAdornerInfoProvider
 {
+    #region 公共属性定义
+
     public static readonly StyledProperty<bool?> IsCheckedProperty =
         ToggleButton.IsCheckedProperty.AddOwner<CheckBoxIndicator>();
 
@@ -39,11 +41,11 @@ internal class RadioIndicator : Control, IWaveAdornerInfoProvider
         AvaloniaProperty.Register<RadioIndicator, double>(nameof(RadioDotEffectSize));
 
     public static readonly StyledProperty<double> DotSizeValueProperty =
-        AvaloniaProperty.Register<RadioButton, double>(
+        AvaloniaProperty.Register<RadioIndicator, double>(
             nameof(DotSizeValue));
 
     public static readonly StyledProperty<double> DotPaddingProperty =
-        AvaloniaProperty.Register<RadioButton, double>(
+        AvaloniaProperty.Register<RadioIndicator, double>(
             nameof(DotPadding));
 
     public bool? IsChecked
@@ -106,8 +108,40 @@ internal class RadioIndicator : Control, IWaveAdornerInfoProvider
         set => SetValue(DotPaddingProperty, value);
     }
 
+    #endregion
+
+    #region 内部属性定义
+
+    internal static readonly DirectProperty<RadioIndicator, bool> IsMotionEnabledProperty
+        = AvaloniaProperty.RegisterDirect<RadioIndicator, bool>(nameof(IsMotionEnabled),
+            o => o.IsMotionEnabled,
+            (o, v) => o.IsMotionEnabled = v);
+
+    internal static readonly DirectProperty<RadioIndicator, bool> IsWaveAnimationEnabledProperty
+        = AvaloniaProperty.RegisterDirect<RadioIndicator, bool>(nameof(IsWaveAnimationEnabled),
+            o => o.IsWaveAnimationEnabled,
+            (o, v) => o.IsWaveAnimationEnabled = v);
+
+    private bool _isMotionEnabled = true;
+
+    internal bool IsMotionEnabled
+    {
+        get => _isMotionEnabled;
+        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
+    }
+
+    private bool _isWaveAnimationEnabled = true;
+
+    internal bool IsWaveAnimationEnabled
+    {
+        get => _isWaveAnimationEnabled;
+        set => SetAndRaise(IsWaveAnimationEnabledProperty, ref _isWaveAnimationEnabled, value);
+    }
+
+    #endregion
+
     private IPen? _cachedPen;
-    
+
     static RadioIndicator()
     {
         AffectsRender<RadioIndicator>(
@@ -131,14 +165,25 @@ internal class RadioIndicator : Control, IWaveAdornerInfoProvider
     public override void ApplyTemplate()
     {
         base.ApplyTemplate();
-        
-        Transitions ??= new Transitions
+        SetupTransitions();
+    }
+    
+    private void SetupTransitions()
+    {
+        if (IsMotionEnabled)
         {
-            AnimationUtils.CreateTransition<SolidColorBrushTransition>(RadioBorderBrushProperty),
-            AnimationUtils.CreateTransition<DoubleTransition>(RadioDotEffectSizeProperty),
-            AnimationUtils.CreateTransition<SolidColorBrushTransition>(RadioBackgroundProperty,
-                SharedTokenKey.MotionDurationFast)
-        };
+            Transitions ??= new Transitions
+            {
+                AnimationUtils.CreateTransition<SolidColorBrushTransition>(RadioBorderBrushProperty),
+                AnimationUtils.CreateTransition<DoubleTransition>(RadioDotEffectSizeProperty),
+                AnimationUtils.CreateTransition<SolidColorBrushTransition>(RadioBackgroundProperty,
+                    SharedTokenKey.MotionDurationFast)
+            };
+        }
+        else
+        {
+            Transitions = null;
+        }
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
@@ -155,11 +200,17 @@ internal class RadioIndicator : Control, IWaveAdornerInfoProvider
             }
 
             if (e.Property == IsCheckedProperty &&
+                IsWaveAnimationEnabled &&
                 !PseudoClasses.Contains(StdPseudoClass.Disabled) &&
                 PseudoClasses.Contains(StdPseudoClass.Checked))
             {
                 WaveSpiritAdorner.ShowWaveAdorner(this, WaveType.CircleWave);
             }
+        }
+        
+        if (e.Property == IsMotionEnabledProperty)
+        {
+            SetupTransitions();
         }
     }
 

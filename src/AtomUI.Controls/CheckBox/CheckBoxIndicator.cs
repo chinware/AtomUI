@@ -223,7 +223,7 @@ internal class CheckBoxIndicator : Control, IWaveAdornerInfoProvider
             SetupIndicatorCheckedMarkEffectSize();
         }
 
-        if (VisualRoot != null)
+        if (e.Property == IsMotionEnabledProperty)
         {
             SetupTransitions();
         }

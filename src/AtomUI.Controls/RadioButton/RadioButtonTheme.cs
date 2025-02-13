@@ -51,20 +51,22 @@ internal class RadioButtonTheme : BaseControlTheme
                 VerticalAlignment = VerticalAlignment.Center
             };
             DockPanel.SetDock(indicator, Dock.Left);
+            CreateTemplateParentBinding(indicator, RadioIndicator.IsMotionEnabledProperty, RadioButton.IsMotionEnabledProperty);
+            CreateTemplateParentBinding(indicator, RadioIndicator.IsWaveAnimationEnabledProperty, RadioButton.IsWaveAnimationEnabledProperty);
             CreateTemplateParentBinding(indicator, RadioIndicator.IsEnabledProperty, RadioButton.IsEnabledProperty);
             CreateTemplateParentBinding(indicator, RadioIndicator.IsCheckedProperty, RadioButton.IsCheckedProperty);
             layout.Children.Add(indicator);
 
-            var labelText = new TextBlock
+            var labelText = new SingleLineText()
             {
                 Name = LabelTextPart,
                 VerticalAlignment = VerticalAlignment.Center,
             };
 
-            CreateTemplateParentBinding(labelText, TextBlock.TextProperty, RadioButton.ContentProperty, BindingMode.Default,
+            CreateTemplateParentBinding(labelText, SingleLineText.TextProperty, RadioButton.ContentProperty, BindingMode.Default,
                 new FuncValueConverter<object?, string?>(content => content?.ToString()));
-            CreateTemplateParentBinding(labelText, TextBlock.FontSizeProperty, RadioButton.FontSizeProperty);
-            CreateTemplateParentBinding(labelText, TextBlock.IsVisibleProperty, RadioButton.ContentProperty,
+            CreateTemplateParentBinding(labelText, SingleLineText.FontSizeProperty, RadioButton.FontSizeProperty);
+            CreateTemplateParentBinding(labelText, SingleLineText.IsVisibleProperty, RadioButton.ContentProperty,
                 BindingMode.Default, ObjectConverters.IsNotNull);
 
             layout.Children.Add(labelText);
