@@ -3,7 +3,6 @@ using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
-using Avalonia.Controls;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Styling;
@@ -11,7 +10,7 @@ using Avalonia.Threading;
 
 namespace AtomUI.Controls;
 
-public class MarqueeLabel : TextBlock
+public class MarqueeLabel : SingleLineText
 {
     #region 公共属性定义
 
@@ -95,7 +94,6 @@ public class MarqueeLabel : TextBlock
         if (!_initialized)
         {
             HorizontalAlignment = HorizontalAlignment.Stretch;
-            TextWrapping        = TextWrapping.NoWrap;
             SetupTokenBindings();
             _initialized = true;
         }

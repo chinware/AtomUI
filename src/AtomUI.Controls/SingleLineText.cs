@@ -1,17 +1,14 @@
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Documents;
 using Avalonia.Layout;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Media.TextFormatting;
 using Avalonia.Metadata;
 
-namespace AtomUI.Controls.Internal;
+namespace AtomUI.Controls;
 
-internal class SingleLineText : Control
+public class SingleLineText : Control
 {
     #region 公共属性定义
 

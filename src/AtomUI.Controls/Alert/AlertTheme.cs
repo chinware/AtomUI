@@ -181,7 +181,7 @@ internal class AlertTheme : BaseControlTheme
                 Mode = RelativeSourceMode.TemplatedParent
             }
         });
-        BindUtils.RelayBind(alert, Alert.MessageProperty, label, TextBlock.TextProperty);
+        BindUtils.RelayBind(alert, Alert.MessageProperty, label, MarqueeLabel.TextProperty);
         return label;
     }
 
