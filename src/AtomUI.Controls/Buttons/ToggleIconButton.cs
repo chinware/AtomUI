@@ -6,6 +6,7 @@ using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Layout;
 
@@ -90,13 +91,13 @@ public class ToggleIconButton : ToggleButton,
         ApplyIconToContent();
     }
 
-    protected virtual void ConfigureIcon(Icon Icon)
+    protected virtual void ConfigureIcon(Icon icon)
     {
-        Icon.SetCurrentValue(HorizontalAlignmentProperty, HorizontalAlignment.Center);
-        Icon.SetCurrentValue(VerticalAlignmentProperty, VerticalAlignment.Center);
-        UIStructureUtils.SetTemplateParent(Icon, this);
-        BindUtils.RelayBind(this, IconWidthProperty, Icon, WidthProperty);
-        BindUtils.RelayBind(this, IconHeightProperty, Icon, HeightProperty);
+        icon.SetValue(HorizontalAlignmentProperty, HorizontalAlignment.Center, BindingPriority.Template);
+        icon.SetValue(VerticalAlignmentProperty, VerticalAlignment.Center, BindingPriority.Template);
+        UIStructureUtils.SetTemplateParent(icon, this);
+        BindUtils.RelayBind(this, IconWidthProperty, icon, WidthProperty);
+        BindUtils.RelayBind(this, IconHeightProperty, icon, HeightProperty);
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

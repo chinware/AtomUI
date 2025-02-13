@@ -57,6 +57,11 @@ public class LineEdit : TextBox,
     string IControlSharedTokenResourcesHost.TokenId => LineEditToken.ID;
 
     #endregion
+    
+    static LineEdit()
+    {
+        PasswordCharProperty.OverrideDefaultValue<LineEdit>('•');
+    }
 
     public LineEdit()
     {
