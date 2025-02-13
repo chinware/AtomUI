@@ -1,6 +1,8 @@
 ﻿using AtomUI.Media;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
+using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -15,7 +17,8 @@ public enum PresetEmptyImage
     Default
 }
 
-public partial class EmptyIndicator : TemplatedControl
+public partial class EmptyIndicator : TemplatedControl,
+                                      IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
 
@@ -74,7 +77,13 @@ public partial class EmptyIndicator : TemplatedControl
     }
 
     #endregion
-   
+    
+    #region 内部属性定义
+
+    string IControlSharedTokenResourcesHost.TokenId => EmptyIndicatorToken.ID;
+    Control IControlSharedTokenResourcesHost.HostControl => this;
+    
+    #endregion
     
     private Avalonia.Svg.Svg? _svg;
 
@@ -87,25 +96,30 @@ public partial class EmptyIndicator : TemplatedControl
             IsShowDescriptionProperty);
     }
 
+    public EmptyIndicator()
+    {
+        this.RegisterResources();
+    }
+
     private void CheckImageSource()
     {
-        var imageSettedCount = 0;
+        var imageSetCount = 0;
         if (PresetImage is not null)
         {
-            imageSettedCount++;
+            imageSetCount++;
         }
 
         if (ImagePath is not null)
         {
-            imageSettedCount++;
+            imageSetCount++;
         }
 
         if (ImageSource is not null)
         {
-            imageSettedCount++;
+            imageSetCount++;
         }
 
-        if (imageSettedCount > 1)
+        if (imageSetCount > 1)
         {
             throw new ApplicationException(
                 "ImagePath, ImageSource and PresetEmptyImage cannot be set at the same time.");

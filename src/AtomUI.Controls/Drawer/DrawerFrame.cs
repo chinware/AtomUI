@@ -110,7 +110,7 @@ public abstract class DrawerFrame : TemplatedControl
         grid2.RowDefinitions.Add(new RowDefinition(GridLength.Auto));
         grid2.RowDefinitions.Add(new RowDefinition(GridLength.Star));
         
-        this.VisualChildren.Add(grid2);
+        VisualChildren.Add(grid2);
         ((ISetLogicalParent)grid2).SetParent(this);
     }
 
