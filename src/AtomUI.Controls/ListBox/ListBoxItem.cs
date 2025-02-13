@@ -11,17 +11,16 @@ using AvaloniaListBoxItem = Avalonia.Controls.ListBoxItem;
 public class ListBoxItem : AvaloniaListBoxItem
 {
     #region 内部属性定义
-
     internal static readonly DirectProperty<ListBoxItem, SizeType> SizeTypeProperty =
         AvaloniaProperty.RegisterDirect<ListBoxItem, SizeType>(nameof(SizeType),
             o => o.SizeType,
             (o, v) => o.SizeType = v);
-    
+
     internal static readonly DirectProperty<ListBoxItem, bool> IsMotionEnabledProperty
         = AvaloniaProperty.RegisterDirect<ListBoxItem, bool>(nameof(IsMotionEnabled),
             o => o.IsMotionEnabled,
             (o, v) => o.IsMotionEnabled = v);
-    
+
     internal static readonly DirectProperty<ListBoxItem, bool> DisabledItemHoverEffectProperty =
         AvaloniaProperty.RegisterDirect<ListBoxItem, bool>(nameof(DisabledItemHoverEffect),
             o => o.DisabledItemHoverEffect,
@@ -34,7 +33,7 @@ public class ListBoxItem : AvaloniaListBoxItem
         get => _sizeType;
         set => SetAndRaise(SizeTypeProperty, ref _sizeType, value);
     }
-    
+
     private bool _isMotionEnabled = true;
 
     internal bool IsMotionEnabled
@@ -52,7 +51,7 @@ public class ListBoxItem : AvaloniaListBoxItem
     }
 
     #endregion
-    
+
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);

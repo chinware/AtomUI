@@ -4,7 +4,7 @@ using Avalonia.Controls.Primitives;
 
 namespace AtomUI.Controls;
 
-public class LoadingIndicatorAdorner : TemplatedControl
+internal class LoadingIndicatorAdorner : TemplatedControl
 {
     private LoadingIndicator? _loadingIndicator;
 

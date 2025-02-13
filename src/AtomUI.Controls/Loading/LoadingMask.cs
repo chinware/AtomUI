@@ -9,7 +9,7 @@ using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
-public class LoadingMask : AvaloniaObject, IDisposable
+internal class LoadingMask : AvaloniaObject, IDisposable
 {
     #region 公共属性定义
 

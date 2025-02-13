@@ -1,5 +1,7 @@
 ﻿using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
+using AtomUI.Theme;
+using AtomUI.Theme.Utils;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
@@ -12,7 +14,9 @@ using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
-public class LoadingIndicator : TemplatedControl, ISizeTypeAware
+public class LoadingIndicator : TemplatedControl,
+                                IControlSharedTokenResourcesHost,
+                                ISizeTypeAware
 {
     #region 公共属性定义
 
@@ -117,6 +121,9 @@ public class LoadingIndicator : TemplatedControl, ISizeTypeAware
         get => _indicatorAngle;
         set => SetAndRaise(IndicatorAngleProperty, ref _indicatorAngle, value);
     }
+    
+    Control IControlSharedTokenResourcesHost.HostControl => this;
+    string IControlSharedTokenResourcesHost.TokenId => LoadingIndicatorToken.ID;
 
     #endregion
 
@@ -140,6 +147,11 @@ public class LoadingIndicator : TemplatedControl, ISizeTypeAware
             IsShowLoadingMsgProperty,
             CustomIndicatorIconProperty);
         AffectsRender<LoadingIndicator>(IndicatorAngleProperty);
+    }
+
+    public LoadingIndicator()
+    {
+        this.RegisterResources();
     }
     
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)

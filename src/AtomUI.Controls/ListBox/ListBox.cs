@@ -17,7 +17,6 @@ public class ListBox : AvaloniaListBox,
                        IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
-
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
         AvaloniaProperty.Register<ListBox, SizeType>(nameof(SizeType), SizeType.Middle);
 
@@ -53,7 +52,6 @@ public class ListBox : AvaloniaListBox,
         get => GetValue(IsWaveAnimationEnabledProperty);
         set => SetValue(IsWaveAnimationEnabledProperty, value);
     }
-    
     #endregion
     
     #region 内部属性定义
@@ -61,7 +59,7 @@ public class ListBox : AvaloniaListBox,
     Control IAnimationAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ListBoxToken.ID;
-
+    
     #endregion
 
     public ListBox()
