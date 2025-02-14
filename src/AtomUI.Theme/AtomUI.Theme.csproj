@@ -1,8 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<Import Project="$(MSBuildThisFileDirectory)..\..\build\Common.props"/>
-    <Import Project="$(MSBuildThisFileDirectory)..\..\build\PackageMetaInfo.props"/>
-
     <PropertyGroup>
         <TargetFramework>$(AtomUICurrentTargetFramework)</TargetFramework>
         <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>

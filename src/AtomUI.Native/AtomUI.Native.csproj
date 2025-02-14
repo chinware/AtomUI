@@ -1,7 +1,5 @@
 ﻿<Project>
     <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk"/>
-    <Import Project="$(MSBuildThisFileDirectory)../../build/Common.props"/>
-    <Import Project="$(MSBuildThisFileDirectory)../../build/PackageMetaInfo.props"/>
     <Import Project="$(MSBuildThisFileDirectory)../../build/AtomUINativePackageInfo.props"/>
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
