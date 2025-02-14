@@ -6,6 +6,7 @@ using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Palette;
 using AtomUI.Theme.Styling;
+using AtomUI.Theme.Utils;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -41,7 +42,8 @@ internal struct TagStatusCalcColor
     public Color BorderColor { get; set; }
 }
 
-public class Tag : TemplatedControl
+public class Tag : TemplatedControl,
+                   IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
 
@@ -114,6 +116,9 @@ public class Tag : TemplatedControl
         get => GetValue(TagTextPaddingInlineProperty);
         set => SetValue(TagTextPaddingInlineProperty, value);
     }
+    
+    Control IControlSharedTokenResourcesHost.HostControl => this;
+    string IControlSharedTokenResourcesHost.TokenId => TagToken.ID;
 
     #endregion
 
@@ -141,6 +146,7 @@ public class Tag : TemplatedControl
     public Tag()
     {
         _borderRenderHelper = new BorderRenderHelper();
+        this.RegisterResources();
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)

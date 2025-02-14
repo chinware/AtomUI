@@ -1,4 +1,5 @@
 ﻿using AtomUI.Reflection;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Palette;
 using AtomUI.Theme.Styling;
@@ -14,7 +15,9 @@ using Avalonia.Media;
 namespace AtomUI.Controls;
 
 [PseudoClasses(StdPseudoClass.Open)]
-public class ToolTip : TemplatedControl, IShadowMaskInfoProvider
+public class ToolTip : TemplatedControl,
+                       IShadowMaskInfoProvider,
+                       IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
 
@@ -182,6 +185,9 @@ public class ToolTip : TemplatedControl, IShadowMaskInfoProvider
         get => _flipPlacement;
         set => SetAndRaise(FlipPlacementProperty, ref _flipPlacement, value);
     }
+    
+    Control IControlSharedTokenResourcesHost.HostControl => this;
+    string IControlSharedTokenResourcesHost.TokenId => ToolTipToken.ID;
 
     #endregion
 
