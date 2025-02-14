@@ -6,6 +6,7 @@ using Avalonia.Controls;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
+using Avalonia.Media.Immutable;
 using Avalonia.Styling;
 
 namespace AtomUI.Controls;
@@ -41,8 +42,8 @@ internal class RibbonBadgeAdorner : Control
         AvaloniaProperty.Register<RibbonBadgeAdorner, int>(
             nameof(BadgeRibbonCornerDarkenAmount));
 
-    internal static readonly StyledProperty<Transform?> BadgeRibbonCornerTransformProperty =
-        AvaloniaProperty.Register<RibbonBadgeAdorner, Transform?>(
+    internal static readonly StyledProperty<ImmutableTransform?> BadgeRibbonCornerTransformProperty =
+        AvaloniaProperty.Register<RibbonBadgeAdorner, ImmutableTransform?>(
             nameof(BadgeRibbonCornerTransform));
 
     internal static readonly DirectProperty<RibbonBadgeAdorner, bool> IsAdornerModeProperty =
@@ -101,7 +102,7 @@ internal class RibbonBadgeAdorner : Control
         set => SetValue(BadgeRibbonCornerDarkenAmountProperty, value);
     }
 
-    internal Transform? BadgeRibbonCornerTransform
+    internal ImmutableTransform? BadgeRibbonCornerTransform
     {
         get => GetValue(BadgeRibbonCornerTransformProperty);
         set => SetValue(BadgeRibbonCornerTransformProperty, value);
@@ -209,7 +210,7 @@ internal class RibbonBadgeAdorner : Control
 
     public override void Render(DrawingContext context)
     {
-        var backgroundBrush = RibbonColor as SolidColorBrush;
+        var backgroundBrush = RibbonColor as ISolidColorBrush;
         {
             var       textRect = GetTextRect();
             using var state    = context.PushTransform(Matrix.CreateTranslation(textRect.X, textRect.Y));
@@ -318,7 +319,7 @@ internal class RibbonBadgeAdorner : Control
             var transforms = new TransformGroup();
             if (BadgeRibbonCornerTransform is not null)
             {
-                transforms.Children.Add(BadgeRibbonCornerTransform);
+                transforms.Children.Add(new MatrixTransform(BadgeRibbonCornerTransform.Value));
             }
 
             if (Placement == RibbonBadgePlacement.Start)

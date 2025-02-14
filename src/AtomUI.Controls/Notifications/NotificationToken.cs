@@ -57,7 +57,7 @@ internal class NotificationToken : AbstractControlDesignToken
     /// <summary>
     /// 提醒框进度条背景色
     /// </summary>
-    public IBrush? NotificationProgressBg { get; set; }
+    public IImmutableBrush? NotificationProgressBg { get; set; }
 
     /// <summary>
     /// 提醒框进度条高度
@@ -108,7 +108,7 @@ internal class NotificationToken : AbstractControlDesignToken
                 new() { Color = SharedToken.ColorPrimaryHover, Offset = 0 },
                 new() { Color = SharedToken.ColorPrimary, Offset      = 1 }
             }
-        };
+        }.ToImmutable();
         NotificationWidth      = 384;
         HeaderMargin           = new Thickness(0, 0, 0, SharedToken.MarginXS);
         NotificationIconMargin = new Thickness(0, 0, SharedToken.MarginSM, 0);

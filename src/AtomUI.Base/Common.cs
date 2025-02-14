@@ -47,9 +47,12 @@ public enum SizeType
 
 // 文本修饰信息定义
 // 类似 CSS text-decoration
-public class TextDecorationInfo
+public record struct TextDecorationInfo
 {
-    public Color Color { get; set; }
+    public TextDecorationInfo()
+    {}
+    
+    public Color Color { get; set; } = Colors.Gray;
     public TextDecorationLine LineType { get; set; } = TextDecorationLine.None;
     public LineStyle LineStyle { get; set; } = LineStyle.Solid;
     public int Thickness { get; set; } = 1;

@@ -152,10 +152,10 @@ public partial class EmptyIndicator : TemplatedControl,
             }
             else
             {
-                var colorFill           = ((SolidColorBrush)_colorFillToken!).Color;
-                var colorFillTertiary   = ((SolidColorBrush)_colorFillTertiary!).Color;
-                var colorFillQuaternary = ((SolidColorBrush)_colorFillQuaternary!).Color;
-                var colorBgContainer    = ((SolidColorBrush)_colorBgContainer!).Color;
+                var colorFill           = ((ISolidColorBrush)_colorFillToken!).Color;
+                var colorFillTertiary   = ((ISolidColorBrush)_colorFillTertiary!).Color;
+                var colorFillQuaternary = ((ISolidColorBrush)_colorFillQuaternary!).Color;
+                var colorBgContainer    = ((ISolidColorBrush)_colorBgContainer!).Color;
                 var borderColor         = ColorUtils.OnBackground(colorFill, colorBgContainer);
                 var shadowColor         = ColorUtils.OnBackground(colorFillTertiary, colorBgContainer);
                 var contentColor        = ColorUtils.OnBackground(colorFillQuaternary, colorBgContainer);

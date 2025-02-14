@@ -2,6 +2,7 @@
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Data.Converters;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Styling;
@@ -145,7 +146,10 @@ internal class ProgressBarTheme : AbstractLineProgressTheme
         var rotationStyle = new Style(selector =>
             selector.Nesting().Class(AbstractLineProgress.VerticalPC).Class(ProgressBar.PercentLabelInnerPC));
         var layoutControl = new Style(selector => selector.Nesting().Template().OfType<LayoutTransformControl>());
-        layoutControl.Add(LayoutTransformControl.LayoutTransformProperty, new RotateTransform(90));
+        layoutControl.Add(LayoutTransformControl.LayoutTransformProperty, new SetterValueFactory<RotateTransform>(() =>
+        {
+            return new RotateTransform(90);
+        }));
         rotationStyle.Add(layoutControl);
         Add(rotationStyle);
     }

@@ -3,6 +3,7 @@ using System.Reflection;
 using Avalonia.Controls;
 using Avalonia.Logging;
 using Avalonia.Media;
+using Avalonia.Media.Immutable;
 
 namespace AtomUI.Theme.TokenSystem;
 
@@ -88,7 +89,7 @@ public abstract class AbstractDesignToken : IDesignToken
             if ((property.PropertyType == typeof(Color) || property.PropertyType == typeof(Color?)) && 
                 tokenValue is not null)
             {
-                tokenValue = new SolidColorBrush((Color)tokenValue);
+                tokenValue = new ImmutableSolidColorBrush((Color)tokenValue);
             }
 
             dictionary[new TokenResourceKey(tokenName, tokenResourceNamespace)] = tokenValue;

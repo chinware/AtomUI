@@ -151,7 +151,7 @@ internal abstract class BaseTabScrollViewer : ScrollViewer
         {
             GradientStops =
             {
-                new GradientStop((_edgeShadowStartColor as SolidColorBrush)!.Color, 0),
+                new GradientStop((_edgeShadowStartColor as ISolidColorBrush)!.Color, 0),
                 new GradientStop(Colors.Transparent, 1)
             }
         };

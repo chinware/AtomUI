@@ -619,8 +619,8 @@ public class ProgressBar : AbstractLineProgress
         {
             // 根据当前的 Stroke 笔刷计算可读性
             // 但是渐变笔刷就麻烦了，暂时不支持吧
-            var colorTextLabel      = (ColorTextLabel as SolidColorBrush)!.Color;
-            var colorTextLightSolid = (ColorTextLightSolid as SolidColorBrush)!.Color;
+            var colorTextLabel      = (ColorTextLabel as ISolidColorBrush)!.Color;
+            var colorTextLightSolid = (ColorTextLightSolid as ISolidColorBrush)!.Color;
             var colors              = new List<Color> { colorTextLabel, colorTextLightSolid };
             if (MathUtils.AreClose(Value, 0))
             {

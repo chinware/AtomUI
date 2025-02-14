@@ -200,7 +200,7 @@ internal class CountBadgeAdorner : TemplatedControl
                 OffsetY = 0,
                 Blur    = 0,
                 Spread  = BadgeShadowSize,
-                Color   = ((SolidColorBrush)BadgeShadowColor).Color
+                Color   = ((ISolidColorBrush)BadgeShadowColor).Color
             });
         }
     }

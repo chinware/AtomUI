@@ -1,6 +1,7 @@
 ﻿using AtomUI.Theme.TokenSystem;
 using Avalonia;
 using Avalonia.Media;
+using Avalonia.Media.Immutable;
 
 namespace AtomUI.Controls;
 
@@ -59,7 +60,7 @@ internal class BadgeToken : AbstractControlDesignToken
     public Color BadgeShadowColor { get; set; }
     public TimeSpan BadgeProcessingDuration { get; set; }
     public Point BadgeRibbonOffset { get; set; }
-    public Transform? BadgeRibbonCornerTransform { get; set; }
+    public ImmutableTransform? BadgeRibbonCornerTransform { get; set; }
     public int BadgeRibbonCornerDarkenAmount { get; set; }
     public Thickness BadgeRibbonTextPadding { get; set; }
     public Thickness DotBadgeLabelMargin { get; set; }
@@ -91,7 +92,7 @@ internal class BadgeToken : AbstractControlDesignToken
         BadgeProcessingDuration = TimeSpan.FromMilliseconds(1200);
         BadgeRibbonOffset       = new Point(SharedToken.MarginXS, SharedToken.MarginXS);
 
-        BadgeRibbonCornerTransform    = new ScaleTransform(1, 0.75);
+        BadgeRibbonCornerTransform    = new ScaleTransform(1, 0.75).ToImmutable();
         BadgeRibbonCornerDarkenAmount = 15;
         BadgeRibbonTextPadding        = new Thickness(SharedToken.PaddingXS, 0);
         DotBadgeLabelMargin           = new Thickness(SharedToken.MarginXS, 0, 0, 0);

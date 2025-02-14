@@ -69,8 +69,8 @@ public abstract class InfoPickerInput : TemplatedControl,
     public static readonly StyledProperty<bool> IsReadOnlyProperty =
         TextBox.IsReadOnlyProperty.AddOwner<InfoPickerInput>();
 
-    public static readonly StyledProperty<Brush?> InputTextBrushProperty =
-        AvaloniaProperty.Register<InfoPickerInput, Brush?>(nameof(InputTextBrush));
+    public static readonly StyledProperty<IBrush?> InputTextBrushProperty =
+        AvaloniaProperty.Register<InfoPickerInput, IBrush?>(nameof(InputTextBrush));
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
         = AvaloniaProperty.Register<InfoPickerInput, bool>(nameof(IsMotionEnabled), true);
@@ -162,7 +162,7 @@ public abstract class InfoPickerInput : TemplatedControl,
         set => SetValue(IsReadOnlyProperty, value);
     }
 
-    public Brush? InputTextBrush
+    public IBrush? InputTextBrush
     {
         get => GetValue(InputTextBrushProperty);
         set => SetValue(InputTextBrushProperty, value);

@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using AtomUI.Utils;
 using Avalonia;
+using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Platform;
 using Avalonia.Styling;

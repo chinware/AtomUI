@@ -13,6 +13,13 @@ internal static class StyleExtensions
         return style;
     }
 
+    public static StyleBase Add<T>(this StyleBase style, AvaloniaProperty targetProperty, Func<T?> valueFactory)
+        where T : class
+    {
+        style.Add(new Setter(targetProperty, new SetterValueFactory<T>(valueFactory)));
+        return style;
+    }
+
     public static StyleBase Add(this StyleBase style, AvaloniaProperty targetProperty, TokenResourceKey resourceKey)
     {
         style.Add(new Setter(targetProperty, new DynamicResourceExtension(resourceKey.QualifiedKey())));
