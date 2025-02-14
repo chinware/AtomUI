@@ -2,6 +2,8 @@ using AtomUI.Controls.Switch;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.Media;
+using AtomUI.Theme;
+using AtomUI.Theme.Utils;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
@@ -18,7 +20,9 @@ namespace AtomUI.Controls;
 public class ToggleSwitch : ToggleButton,
                             ISizeTypeAware,
                             ICustomHitTest,
-                            IWaveAdornerInfoProvider
+                            IWaveAdornerInfoProvider,
+                            IAnimationAwareControl,
+                            IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
 
@@ -52,6 +56,12 @@ public class ToggleSwitch : ToggleButton,
     /// </summary>
     public static readonly StyledProperty<bool> IsLoadingProperty =
         AvaloniaProperty.Register<Button, bool>(nameof(IsLoading));
+    
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AvaloniaProperty.Register<Button, bool>(nameof(IsMotionEnabled), true);
+
+    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
+        = AvaloniaProperty.Register<Button, bool>(nameof(IsWaveAnimationEnabled), true);
 
     /// <summary>
     /// Gets or Sets the Content that is displayed when in the On State.
@@ -91,6 +101,18 @@ public class ToggleSwitch : ToggleButton,
         get => GetValue(GrooveBackgroundProperty);
         set => SetValue(GrooveBackgroundProperty, value);
     }
+    
+    public bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
+    }
+
+    public bool IsWaveAnimationEnabled
+    {
+        get => GetValue(IsWaveAnimationEnabledProperty);
+        set => SetValue(IsWaveAnimationEnabledProperty, value);
+    }
 
     #endregion
 
@@ -129,6 +151,9 @@ public class ToggleSwitch : ToggleButton,
 
     internal static readonly StyledProperty<Point> OffContentOffsetProperty
         = AvaloniaProperty.Register<ToggleSwitch, Point>(nameof(OffContentOffset));
+    
+    internal static readonly StyledProperty<double> SwitchOpacityProperty
+        = AvaloniaProperty.Register<ToggleSwitch, double>(nameof(SwitchOpacity), 1d);
     
     internal double InnerMaxMargin
     {
@@ -196,15 +221,16 @@ public class ToggleSwitch : ToggleButton,
         set => SetValue(OffContentOffsetProperty, value);
     }
 
-    internal static readonly StyledProperty<double> SwitchOpacityProperty
-        = AvaloniaProperty.Register<ToggleSwitch, double>(nameof(SwitchOpacity), 1d);
-
     internal double SwitchOpacity
     {
         get => GetValue(SwitchOpacityProperty);
         set => SetValue(SwitchOpacityProperty, value);
     }
 
+    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IControlSharedTokenResourcesHost.HostControl => this;
+    string IControlSharedTokenResourcesHost.TokenId => ToggleSwitchToken.ID;
+    
     #endregion
 
     private const double STRETCH_FACTOR = 1.3d;
@@ -227,19 +253,28 @@ public class ToggleSwitch : ToggleButton,
 
     public ToggleSwitch()
     {
-        LayoutUpdated       += HandleLayoutUpdated;
+        LayoutUpdated += HandleLayoutUpdated;
+        this.RegisterResources();
+        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
     }
 
     private void HandleLayoutUpdated(object? sender, EventArgs args)
     {
-        Transitions ??= new Transitions
+        if (IsMotionEnabled)
         {
-            AnimationUtils.CreateTransition<RectTransition>(KnobMovingRectProperty),
-            AnimationUtils.CreateTransition<PointTransition>(OnContentOffsetProperty),
-            AnimationUtils.CreateTransition<PointTransition>(OffContentOffsetProperty),
-            AnimationUtils.CreateTransition<SolidColorBrushTransition>(GrooveBackgroundProperty),
-            AnimationUtils.CreateTransition<DoubleTransition>(SwitchOpacityProperty)
-        };
+            Transitions ??= new Transitions
+            {
+                AnimationUtils.CreateTransition<RectTransition>(KnobMovingRectProperty),
+                AnimationUtils.CreateTransition<PointTransition>(OnContentOffsetProperty),
+                AnimationUtils.CreateTransition<PointTransition>(OffContentOffsetProperty),
+                AnimationUtils.CreateTransition<SolidColorBrushTransition>(GrooveBackgroundProperty),
+                AnimationUtils.CreateTransition<DoubleTransition>(SwitchOpacityProperty)
+            };
+        }
+        else
+        {
+            Transitions = null;
+        }
     }
 
     protected override Size MeasureOverride(Size availableSize)
@@ -423,11 +458,7 @@ public class ToggleSwitch : ToggleButton,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        HandleTemplateApplied(e.NameScope);
-    }
-
-    private void HandleTemplateApplied(INameScope scope)
-    {
+        var scope = e.NameScope;
         _togglePanel = scope.Find<Canvas>(ToggleSwitchTheme.MainContainerPart);
         _switchKnob  = scope.Find<SwitchKnob>(ToggleSwitchTheme.SwitchKnobPart);
         if (_switchKnob is not null)
@@ -481,7 +512,7 @@ public class ToggleSwitch : ToggleButton,
 
     private Control? SetupContent(object? content)
     {
-        Control? result = default;
+        Control? result = null;
         if (content is Control offControl)
         {
             if (content is TemplatedControl templatedControl)

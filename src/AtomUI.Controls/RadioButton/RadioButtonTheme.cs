@@ -45,7 +45,7 @@ internal class RadioButtonTheme : BaseControlTheme
                 LastChildFill = true
             };
 
-            var indicator = new RadioIndicator()
+            var indicator = new RadioIndicator
             {
                 Name = IndicatorPart,
                 VerticalAlignment = VerticalAlignment.Center

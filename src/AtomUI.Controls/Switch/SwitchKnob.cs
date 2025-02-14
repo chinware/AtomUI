@@ -58,6 +58,11 @@ internal class SwitchKnob : Control
     
     internal static readonly StyledProperty<double> KnobRenderWidthProperty
         = AvaloniaProperty.Register<SwitchKnob, double>(nameof(KnobRenderWidth));
+    
+    internal static readonly DirectProperty<SwitchKnob, bool> IsMotionEnabledProperty
+        = AvaloniaProperty.RegisterDirect<SwitchKnob, bool>(nameof(IsMotionEnabled),
+            o => o.IsMotionEnabled,
+            (o, v) => o.IsMotionEnabled = v);
 
     internal int Rotation
     {
@@ -81,6 +86,14 @@ internal class SwitchKnob : Control
     {
         get => GetValue(KnobRenderWidthProperty);
         set => SetValue(KnobRenderWidthProperty, value);
+    }
+    
+    private bool _isMotionEnabled = true;
+
+    internal bool IsMotionEnabled
+    {
+        get => _isMotionEnabled;
+        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
     }
     
     #endregion
@@ -122,10 +135,17 @@ internal class SwitchKnob : Control
 
     private void HandleLayoutUpdated(object? sender, EventArgs args)
     {
-        Transitions ??= new Transitions
+        if (IsMotionEnabled)
         {
-            AnimationUtils.CreateTransition<DoubleTransition>(KnobRenderWidthProperty),
-        };
+            Transitions ??= new Transitions
+            {
+                AnimationUtils.CreateTransition<DoubleTransition>(KnobRenderWidthProperty),
+            };
+        }
+        else
+        {
+            Transitions = null;
+        }
     }
 
     public sealed override void ApplyTemplate()

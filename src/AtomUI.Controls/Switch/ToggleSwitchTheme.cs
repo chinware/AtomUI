@@ -33,7 +33,8 @@ internal class ToggleSwitchTheme : BaseControlTheme
             {
                 Name = SwitchKnobPart
             };
-            CreateTemplateParentBinding(switchKnob, SwitchKnob.IsCheckedStateProperty, ToggleButton.IsCheckedProperty);
+            CreateTemplateParentBinding(switchKnob, SwitchKnob.IsMotionEnabledProperty, ToggleSwitch.IsMotionEnabledProperty);
+            CreateTemplateParentBinding(switchKnob, SwitchKnob.IsCheckedStateProperty, ToggleSwitch.IsCheckedProperty);
             switchKnob.RegisterInNameScope(scope);
 
             layout.Children.Add(switchKnob);
