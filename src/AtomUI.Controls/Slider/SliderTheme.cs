@@ -29,6 +29,8 @@ internal class SliderTheme : BaseControlTheme
             {
                 Name = StartThumbPart
             };
+            CreateTemplateParentBinding(startSliderThumb, SliderThumb.IsMotionEnabledProperty,
+                Slider.IsMotionEnabledProperty);
             ToolTip.SetPlacement(startSliderThumb, PlacementMode.Top);
             ToolTip.SetShowDelay(startSliderThumb, 0);
             startSliderThumb.RegisterInNameScope(scope);
@@ -37,6 +39,9 @@ internal class SliderTheme : BaseControlTheme
             {
                 Name = EndThumbPart
             };
+            CreateTemplateParentBinding(endSliderThumb, SliderThumb.IsMotionEnabledProperty,
+                Slider.IsMotionEnabledProperty);
+            
             endSliderThumb.RegisterInNameScope(scope);
             ToolTip.SetPlacement(endSliderThumb, PlacementMode.Top);
             ToolTip.SetShowDelay(endSliderThumb, 0);
@@ -48,6 +53,8 @@ internal class SliderTheme : BaseControlTheme
                 EndSliderThumb   = endSliderThumb
             };
 
+            CreateTemplateParentBinding(sliderTrack, SliderTrack.IsMotionEnabledProperty,
+                Slider.IsMotionEnabledProperty);
             CreateTemplateParentBinding(sliderTrack, SliderTrack.IsEnabledProperty,
                 Slider.IsEnabledProperty);
             CreateTemplateParentBinding(sliderTrack, SliderTrack.IsDirectionReversedProperty,

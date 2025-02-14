@@ -1,5 +1,7 @@
 ﻿using System.Globalization;
 using AtomUI.Input;
+using AtomUI.Theme;
+using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Automation;
 using Avalonia.Automation.Peers;
@@ -85,30 +87,34 @@ public record SliderMark(string Label, double Value)
 /// </summary>
 [TemplatePart(SliderTheme.TrackPart, typeof(SliderTrack))]
 [PseudoClasses(StdPseudoClass.Vertical, StdPseudoClass.Horizontal, StdPseudoClass.Pressed)]
-public class Slider : RangeBase
+public class Slider : RangeBase,
+                      IAnimationAwareControl,
+                      IControlSharedTokenResourcesHost
 {
-   /// <summary>
-   /// Defines the <see cref="Orientation" /> property.
-   /// </summary>
-   public static readonly StyledProperty<Orientation> OrientationProperty =
+    #region 公共属性定义
+
+        /// <summary>
+    /// Defines the <see cref="Orientation" /> property.
+    /// </summary>
+    public static readonly StyledProperty<Orientation> OrientationProperty =
         ScrollBar.OrientationProperty.AddOwner<Slider>();
 
-   /// <summary>
-   /// Defines the <see cref="IsDirectionReversed" /> property.
-   /// </summary>
-   public static readonly StyledProperty<bool> IsDirectionReversedProperty =
+    /// <summary>
+    /// Defines the <see cref="IsDirectionReversed" /> property.
+    /// </summary>
+    public static readonly StyledProperty<bool> IsDirectionReversedProperty =
         SliderTrack.IsDirectionReversedProperty.AddOwner<Slider>();
 
-   /// <summary>
-   /// Defines the <see cref="IsSnapToTickEnabled" /> property.
-   /// </summary>
-   public static readonly StyledProperty<bool> IsSnapToTickEnabledProperty =
+    /// <summary>
+    /// Defines the <see cref="IsSnapToTickEnabled" /> property.
+    /// </summary>
+    public static readonly StyledProperty<bool> IsSnapToTickEnabledProperty =
         AvaloniaProperty.Register<Slider, bool>(nameof(IsSnapToTickEnabled));
 
-   /// <summary>
-   /// Defines the <see cref="TickFrequency" /> property.
-   /// </summary>
-   public static readonly StyledProperty<double> TickFrequencyProperty =
+    /// <summary>
+    /// Defines the <see cref="TickFrequency" /> property.
+    /// </summary>
+    public static readonly StyledProperty<double> TickFrequencyProperty =
         AvaloniaProperty.Register<Slider, double>(nameof(TickFrequency));
 
     public static readonly StyledProperty<SliderRangeValue> RangeValueProperty =
@@ -197,6 +203,33 @@ public class Slider : RangeBase
         set => SetValue(IncludedProperty, value);
     }
 
+    #endregion
+
+    #region 内部属性定义
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AvaloniaProperty.Register<Slider, bool>(nameof(IsMotionEnabled), true);
+
+    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
+        = AvaloniaProperty.Register<Slider, bool>(nameof(IsWaveAnimationEnabled), true);
+
+    public bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
+    }
+
+    public bool IsWaveAnimationEnabled
+    {
+        get => GetValue(IsWaveAnimationEnabledProperty);
+        set => SetValue(IsWaveAnimationEnabledProperty, value);
+    }
+    
+    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IControlSharedTokenResourcesHost.HostControl => this;
+    string IControlSharedTokenResourcesHost.TokenId => SliderToken.ID;
+    
+    #endregion
+
     // Slider required parts
     private bool _isFocusEngaged;
     private SliderThumb? _graspedThumb;
@@ -222,15 +255,7 @@ public class Slider : RangeBase
         ValueProperty.OverrideMetadata<Slider>(new StyledPropertyMetadata<double>(enableDataValidation: true));
         AutomationProperties.ControlTypeOverrideProperty.OverrideDefaultValue<Slider>(AutomationControlType.Slider);
     }
-
-    /// <summary>
-    /// Instantiates a new instance of the <see cref="Slider" /> class.
-    /// </summary>
-    public Slider()
-    {
-        UpdatePseudoClasses(Orientation);
-    }
-
+    
     /// <summary>
     /// Gets a value indicating whether the <see cref="Slider" /> is currently being dragged.
     /// </summary>
@@ -240,6 +265,16 @@ public class Slider : RangeBase
     /// Gets the <see cref="SliderTrack" /> part of the <see cref="Slider" />.
     /// </summary>
     protected SliderTrack? SliderTrack { get; private set; }
+    
+    /// <summary>
+    /// Instantiates a new instance of the <see cref="Slider" /> class.
+    /// </summary>
+    public Slider()
+    {
+        this.RegisterResources();
+        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
+        UpdatePseudoClasses(Orientation);
+    }
 
     /// <inheritdoc />
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -671,7 +706,7 @@ public class Slider : RangeBase
         {
             var previous = Minimum;
             var next     = Maximum;
-            
+
             if (MathUtilities.GreaterThan(TickFrequency, 0.0))
             {
                 previous = Minimum + Math.Round((value - Minimum) / TickFrequency) * TickFrequency;

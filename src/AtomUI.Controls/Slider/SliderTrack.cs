@@ -220,11 +220,15 @@ public class SliderTrack : Control
         AvaloniaProperty.Register<SliderTrack, Thickness>(nameof(MarkBorderThickness));
 
     internal static readonly RoutedEvent<PointerPressedEventArgs> TrailPressedEvent =
-        RoutedEvent.Register<SliderThumb, PointerPressedEventArgs>(nameof(TrailPressed), RoutingStrategies.Bubble);
+        RoutedEvent.Register<SliderTrack, PointerPressedEventArgs>(nameof(TrailPressed), RoutingStrategies.Bubble);
 
     internal static readonly RoutedEvent<PointerReleasedEventArgs> TrailReleasedEvent =
-        RoutedEvent.Register<SliderThumb, PointerReleasedEventArgs>(nameof(TrailReleased), RoutingStrategies.Bubble);
+        RoutedEvent.Register<SliderTrack, PointerReleasedEventArgs>(nameof(TrailReleased), RoutingStrategies.Bubble);
     
+    internal static readonly DirectProperty<SliderTrack, bool> IsMotionEnabledProperty
+        = AvaloniaProperty.RegisterDirect<SliderTrack, bool>(nameof(IsMotionEnabled),
+            o => o.IsMotionEnabled,
+            (o, v) => o.IsMotionEnabled = v);
     
     internal double SliderTrackSize
     {
@@ -272,6 +276,14 @@ public class SliderTrack : Control
     {
         get => GetValue(MarkBorderThicknessProperty);
         set => SetValue(MarkBorderThicknessProperty, value);
+    }
+    
+    private bool _isMotionEnabled = true;
+
+    internal bool IsMotionEnabled
+    {
+        get => _isMotionEnabled;
+        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
     }
     
     #endregion
@@ -380,13 +392,23 @@ public class SliderTrack : Control
 
         HandleRangeModeChanged();
         CalculateMaxMarkSize();
+    }
 
-        Transitions ??= new Transitions()
+    private void SetupTransitions()
+    {
+        if (IsMotionEnabled)
         {
-            AnimationUtils.CreateTransition<SolidColorBrushTransition>(TrackGrooveBrushProperty),
-            AnimationUtils.CreateTransition<SolidColorBrushTransition>(TrackBarBrushProperty),
-            AnimationUtils.CreateTransition<SolidColorBrushTransition>(MarkBorderBrushProperty)
-        };
+            Transitions ??= new Transitions()
+            {
+                AnimationUtils.CreateTransition<SolidColorBrushTransition>(TrackGrooveBrushProperty),
+                AnimationUtils.CreateTransition<SolidColorBrushTransition>(TrackBarBrushProperty),
+                AnimationUtils.CreateTransition<SolidColorBrushTransition>(MarkBorderBrushProperty)
+            };
+        }
+        else
+        {
+            Transitions = null;
+        }
     }
 
     private void HandleRangeModeChanged()
@@ -433,6 +455,7 @@ public class SliderTrack : Control
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
+        SetupTransitions();
         SetupMarkLabelBrush();
     }
 
@@ -708,10 +731,15 @@ public class SliderTrack : Control
             {
                 CalculateMaxMarkSize();
             }
-        } else if (change.Property == IsEnabledProperty)
+        }
+        else if (change.Property == IsEnabledProperty)
         {
             SetupMarkLabelBrush();
             CalculateMaxMarkSize(true);
+        }
+        else if (change.Property == IsMotionEnabledProperty)
+        {
+            SetupTransitions();
         }
     }
 

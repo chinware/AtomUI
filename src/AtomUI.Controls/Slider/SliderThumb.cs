@@ -8,6 +8,7 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 
 namespace AtomUI.Controls;
@@ -17,6 +18,8 @@ public class SliderThumb : TemplatedControl
 {
     internal const int FocusZIndex = 1000;
     internal const int NormalZIndex = 100;
+
+    #region 公共属性定义
 
     public static readonly RoutedEvent<VectorEventArgs> DragStartedEvent =
         RoutedEvent.Register<SliderThumb, VectorEventArgs>(nameof(DragStarted), RoutingStrategies.Bubble);
@@ -36,6 +39,25 @@ public class SliderThumb : TemplatedControl
     public static readonly StyledProperty<double> ThumbCircleSizeProperty =
         AvaloniaProperty.Register<SliderThumb, double>(nameof(ThumbCircleSize));
 
+    #endregion
+
+    #region 内部属性定义
+
+    internal static readonly DirectProperty<SliderThumb, bool> IsMotionEnabledProperty
+        = AvaloniaProperty.RegisterDirect<SliderThumb, bool>(nameof(IsMotionEnabled),
+            o => o.IsMotionEnabled,
+            (o, v) => o.IsMotionEnabled = v);
+    
+    private bool _isMotionEnabled = true;
+
+    internal bool IsMotionEnabled
+    {
+        get => _isMotionEnabled;
+        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
+    }
+
+    #endregion
+
     private Point? _lastPoint;
 
     static SliderThumb()
@@ -52,12 +74,7 @@ public class SliderThumb : TemplatedControl
 
     public SliderThumb()
     {
-        var transitions = new Transitions();
-        transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(OutlineBrushProperty));
-        transitions.Add(AnimationUtils.CreateTransition<ThicknessTransition>(OutlineThicknessProperty,
-            SharedTokenKey.MotionDurationFast));
-        transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(BorderBrushProperty));
-        Transitions = transitions;
+       
     }
 
     public event EventHandler<VectorEventArgs>? DragStarted
@@ -94,6 +111,39 @@ public class SliderThumb : TemplatedControl
     {
         get => GetValue(ThumbCircleSizeProperty);
         set => SetValue(ThumbCircleSizeProperty, value);
+    }
+
+    private void SetupTransitions()
+    {
+        if (IsMotionEnabled)
+        {
+            Transitions ??= new Transitions()
+            {
+                AnimationUtils.CreateTransition<SolidColorBrushTransition>(OutlineBrushProperty),
+                AnimationUtils.CreateTransition<ThicknessTransition>(OutlineThicknessProperty,
+                    SharedTokenKey.MotionDurationFast),
+                AnimationUtils.CreateTransition<SolidColorBrushTransition>(BorderBrushProperty)
+            };
+        }
+        else
+        {
+            Transitions = null;
+        }
+    }
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        SetupTransitions();
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == IsMotionEnabledProperty)
+        {
+            SetupTransitions();
+        }
     }
 
     internal void AdjustDrag(Vector v)
