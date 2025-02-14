@@ -1,10 +1,14 @@
-﻿using Avalonia;
+﻿using AtomUI.Theme;
+using Avalonia;
+using Avalonia.Controls;
 
 namespace AtomUI.Controls;
 
 using AvaloniaNumericUpDown = Avalonia.Controls.NumericUpDown;
 
-public class NumericUpDown : AvaloniaNumericUpDown
+public class NumericUpDown : AvaloniaNumericUpDown,
+                             IAnimationAwareControl,
+                             IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
 
@@ -25,6 +29,12 @@ public class NumericUpDown : AvaloniaNumericUpDown
 
     public static readonly StyledProperty<bool> IsEnableClearButtonProperty =
         TextBox.IsEnableClearButtonProperty.AddOwner<NumericUpDown>();
+    
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AvaloniaProperty.Register<NumericUpDown, bool>(nameof(IsMotionEnabled), true);
+
+    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
+        = AvaloniaProperty.Register<NumericUpDown, bool>(nameof(IsWaveAnimationEnabled), true);
 
     public object? LeftAddOn
     {
@@ -61,6 +71,26 @@ public class NumericUpDown : AvaloniaNumericUpDown
         get => GetValue(IsEnableClearButtonProperty);
         set => SetValue(IsEnableClearButtonProperty, value);
     }
+    
+    public bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
+    }
 
+    public bool IsWaveAnimationEnabled
+    {
+        get => GetValue(IsWaveAnimationEnabledProperty);
+        set => SetValue(IsWaveAnimationEnabledProperty, value);
+    }
+
+    #endregion
+    
+    #region 内部属性定义
+
+    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IControlSharedTokenResourcesHost.HostControl => this;
+    string IControlSharedTokenResourcesHost.TokenId => NumericUpDownToken.ID;
+    
     #endregion
 }
