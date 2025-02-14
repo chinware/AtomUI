@@ -1,11 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
-    <Import Project="$(MSBuildThisFileDirectory)../../build/Common.props"/>
-    <Import Project="$(MSBuildThisFileDirectory)../../build/PackageMetaInfo.props"/>
+    
     <Import Project="$(MSBuildThisFileDirectory)../../build/AtomUINativePackageInfo.props"/>
 
     <PropertyGroup>
-        <TargetFramework>$(AtomUICurrentTargetFramework)</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <RootNamespace>AtomUI</RootNamespace>

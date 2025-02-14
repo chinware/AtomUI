@@ -1,10 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
-    <PropertyGroup>
-        <TargetFramework>$(AtomUICurrentTargetFramework)</TargetFramework>
-        <RootNamespace>AtomUI.IconPkg</RootNamespace>
-    </PropertyGroup>
-
     <ItemGroup>
         <PackageReference Include="Avalonia"/>
     </ItemGroup>
