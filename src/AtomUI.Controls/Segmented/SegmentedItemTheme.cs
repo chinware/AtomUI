@@ -61,7 +61,18 @@ internal class SegmentedItemTheme : BaseControlTheme
                 VerticalContentAlignment   = VerticalAlignment.Center
             };
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty,
-                ContentControl.ContentProperty);
+                ContentControl.ContentProperty, BindingMode.Default, new FuncValueConverter<object?, object?>(content =>
+                {
+                    if (content is string text)
+                    {
+                        return new SingleLineText()
+                        {
+                            Text = text,
+                            VerticalAlignment = VerticalAlignment.Center,
+                        };
+                    }
+                    return content;
+                }));
             CreateTemplateParentBinding(contentPresenter, Visual.IsVisibleProperty, ContentControl.ContentProperty,
                 BindingMode.Default,
                 ObjectConverters.IsNotNull);

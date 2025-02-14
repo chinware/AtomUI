@@ -22,7 +22,7 @@ internal enum NodeSwitcherButtonIconMode
 
 internal class NodeSwitcherButton : ToggleButton
 {
-    #region 公共属性
+    #region 公共属性定义
     
     public static readonly StyledProperty<Icon?> ExpandIconProperty
         = AvaloniaProperty.Register<NodeSwitcherButton, Icon?>(nameof(ExpandIcon));
@@ -111,6 +111,11 @@ internal class NodeSwitcherButton : ToggleButton
             nameof(CollapseIconVisible),
             o => o.CollapseIconVisible,
             (o, v) => o.CollapseIconVisible = v);
+    
+    internal static readonly DirectProperty<NodeSwitcherButton, bool> IsMotionEnabledProperty
+        = AvaloniaProperty.RegisterDirect<NodeSwitcherButton, bool>(nameof(IsMotionEnabled),
+            o => o.IsMotionEnabled,
+            (o, v) => o.IsMotionEnabled = v);
 
     internal bool IsLeafIconVisible
     {
@@ -139,6 +144,14 @@ internal class NodeSwitcherButton : ToggleButton
         get => _collapseIconVisible;
         set => SetAndRaise(CollapseIconVisibleProperty, ref _collapseIconVisible, value);
     }
+    
+    private bool _isMotionEnabled = true;
+
+    internal bool IsMotionEnabled
+    {
+        get => _isMotionEnabled;
+        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
+    }
 
     #endregion
 
@@ -159,12 +172,24 @@ internal class NodeSwitcherButton : ToggleButton
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        SetupIconVisibility(IsChecked ?? false);
         base.OnApplyTemplate(e);
-        Transitions ??= new Transitions
+        SetupIconVisibility(IsChecked ?? false);
+        SetupTransitions();
+    }
+
+    private void SetupTransitions()
+    {
+        if (IsMotionEnabled)
         {
-            AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty)
-        };
+            Transitions ??= new Transitions
+            {
+                AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty)
+            };
+        }
+        else
+        {
+            Transitions = null;
+        }
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -185,6 +210,10 @@ internal class NodeSwitcherButton : ToggleButton
         {
             var isChecked = (bool?)change.NewValue ?? false;
             SetupIconVisibility(isChecked);
+        }
+        else if (change.Property == IconModeProperty)
+        {
+            SetupTransitions();
         }
     }
 

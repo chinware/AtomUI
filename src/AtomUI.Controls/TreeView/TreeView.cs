@@ -1,7 +1,9 @@
 ﻿using AtomUI.Controls.Utils;
 using AtomUI.Data;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
+using AtomUI.Theme.Utils;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -25,7 +27,9 @@ public enum TreeItemHoverMode
 }
 
 [PseudoClasses(DraggablePC)]
-public class TreeView : AvaloniaTreeView
+public class TreeView : AvaloniaTreeView,
+                        IAnimationAwareControl,
+                        IControlSharedTokenResourcesHost
 {
     public const string DraggablePC = ":draggable";
 
@@ -48,6 +52,12 @@ public class TreeView : AvaloniaTreeView
 
     public static readonly StyledProperty<bool> IsShowLeafIconProperty =
         AvaloniaProperty.Register<TreeView, bool>(nameof(IsShowLeafIcon));
+    
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AvaloniaProperty.Register<TreeView, bool>(nameof(IsMotionEnabled), true);
+
+    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
+        = AvaloniaProperty.Register<TreeView, bool>(nameof(IsWaveAnimationEnabled), true);
 
     public bool IsDraggable
     {
@@ -85,6 +95,17 @@ public class TreeView : AvaloniaTreeView
         set => SetValue(IsShowLeafIconProperty, value);
     }
 
+    public bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
+    }
+
+    public bool IsWaveAnimationEnabled
+    {
+        get => GetValue(IsWaveAnimationEnabledProperty);
+        set => SetValue(IsWaveAnimationEnabledProperty, value);
+    }
     public bool IsDefaultExpandAll { get; set; } = false;
 
     #endregion
@@ -142,6 +163,10 @@ public class TreeView : AvaloniaTreeView
         get => _dragIndicatorBrush;
         set => SetAndRaise(DragIndicatorBrushProperty, ref _dragIndicatorBrush, value);
     }
+    
+    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IControlSharedTokenResourcesHost.HostControl => this;
+    string IControlSharedTokenResourcesHost.TokenId => TreeViewToken.ID;
 
     #endregion
 
@@ -160,6 +185,8 @@ public class TreeView : AvaloniaTreeView
 
     public TreeView()
     {
+        this.RegisterResources();
+        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
         UpdatePseudoClasses();
         DefaultCheckedItems = new List<TreeViewItem>();
     }
@@ -271,6 +298,7 @@ public class TreeView : AvaloniaTreeView
         if (container is TreeViewItem treeViewItem)
         {
             treeViewItem.OwnerTreeView = this;
+            BindUtils.RelayBind(this, IsMotionEnabledProperty, treeViewItem, TreeViewItem.IsMotionEnabledProperty);
             BindUtils.RelayBind(this, NodeHoverModeProperty, treeViewItem, TreeViewItem.NodeHoverModeProperty);
             BindUtils.RelayBind(this, IsShowLineProperty, treeViewItem, TreeViewItem.IsShowLineProperty);
             BindUtils.RelayBind(this, IsShowIconProperty, treeViewItem, TreeViewItem.IsShowIconProperty);

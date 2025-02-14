@@ -76,6 +76,8 @@ internal class TreeViewItemTheme : BaseControlTheme
                 Focusable = false
             };
             nodeSwitcherButton.RegisterInNameScope(scope);
+            CreateTemplateParentBinding(nodeSwitcherButton, NodeSwitcherButton.IsMotionEnabledProperty,
+                TreeViewItem.IsMotionEnabledProperty);
             CreateTemplateParentBinding(nodeSwitcherButton, NodeSwitcherButton.CollapseIconProperty,
                 TreeViewItem.SwitcherCollapseIconProperty);
             CreateTemplateParentBinding(nodeSwitcherButton, NodeSwitcherButton.ExpandIconProperty,

@@ -189,6 +189,11 @@ public class TreeViewItem : AvaloniaTreeItem
 
     internal static readonly StyledProperty<CornerRadius> EffectiveNodeCornerRadiusProperty
         = AvaloniaProperty.Register<TreeViewItem, CornerRadius>(nameof(EffectiveNodeCornerRadius));
+    
+    internal static readonly DirectProperty<TreeViewItem, bool> IsMotionEnabledProperty
+        = AvaloniaProperty.RegisterDirect<TreeViewItem, bool>(nameof(IsMotionEnabled),
+            o => o.IsMotionEnabled,
+            (o, v) => o.IsMotionEnabled = v);
 
     private double _titleHeight;
 
@@ -280,6 +285,14 @@ public class TreeViewItem : AvaloniaTreeItem
     {
         get => GetValue(EffectiveNodeCornerRadiusProperty);
         set => SetValue(EffectiveNodeCornerRadiusProperty, value);
+    }
+    
+    private bool _isMotionEnabled = true;
+
+    internal bool IsMotionEnabled
+    {
+        get => _isMotionEnabled;
+        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
     }
 
     internal TreeView? OwnerTreeView { get; set; }
@@ -397,6 +410,10 @@ public class TreeViewItem : AvaloniaTreeItem
         {
             SetupSwitcherButtonIconMode();
         }
+        else if (change.Property == IsMotionEnabledProperty)
+        {
+            SetupTransitions();
+        }
     }
 
     private void SetupSwitcherButtonIconMode()
@@ -506,11 +523,22 @@ public class TreeViewItem : AvaloniaTreeItem
 
         IsLeaf = ItemCount == 0;
         SetupCheckBoxEnabled();
+        SetupTransitions();
+    }
 
-        Transitions ??= new Transitions
+    private void SetupTransitions()
+    {
+        if (IsMotionEnabled)
         {
-            AnimationUtils.CreateTransition<SolidColorBrushTransition>(EffectiveNodeBgProperty)
-        };
+            Transitions ??= new Transitions
+            {
+                AnimationUtils.CreateTransition<SolidColorBrushTransition>(EffectiveNodeBgProperty)
+            };
+        }
+        else
+        {
+            Transitions = null;
+        }
     }
 
     private void CalculateEffectiveBgRect()

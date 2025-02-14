@@ -436,7 +436,7 @@ public class ToggleSwitch : ToggleButton,
             e.Property == IsCheckedProperty ||
             e.Property == IsEnabledProperty)
         {
-            if (e.Property == IsCheckedProperty)
+            if (e.Property == IsCheckedProperty && IsWaveAnimationEnabled)
             {
                 CalculateElementsOffset(Bounds.Size);
                 WaveSpiritAdorner.ShowWaveAdorner(this, WaveType.PillWave);

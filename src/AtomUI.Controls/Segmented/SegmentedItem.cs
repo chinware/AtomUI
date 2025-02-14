@@ -77,6 +77,7 @@ public class SegmentedItem : ContentControl, ISelectable
     {
         base.OnAttachedToLogicalTree(e);
         Debug.Assert(Parent is Segmented, "SegmentedItem's Parent must be Segmented Control.");
+        SetupTransitions();
     }
 
     protected override void OnPointerReleased(PointerReleasedEventArgs e)
@@ -104,21 +105,31 @@ public class SegmentedItem : ContentControl, ISelectable
         if (change.Property == IconProperty)
         {
             SetupItemIcon();
+        } 
+        else if (change.Property == IsMotionEnabledProperty)
+        {
+            SetupTransitions();    
         }
     }
 
     private void SetupTransitions()
     {
-        Transitions ??= new Transitions
+        if (IsMotionEnabled)
         {
-            AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty)
-        };
+            Transitions ??= new Transitions
+            {
+                AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty)
+            };
+        }
+        else
+        {
+            Transitions = null;
+        }
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        
         SetupItemIcon();
     }
 
