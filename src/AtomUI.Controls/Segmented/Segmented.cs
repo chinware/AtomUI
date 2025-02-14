@@ -1,6 +1,8 @@
 ﻿using AtomUI.Controls.Utils;
 using AtomUI.Data;
+using AtomUI.Theme;
 using AtomUI.Theme.Styling;
+using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
@@ -14,7 +16,9 @@ using Avalonia.Media;
 namespace AtomUI.Controls;
 
 [TemplatePart(SegmentedTheme.ItemsPresenterPart, typeof(ItemsPresenter))]
-public class Segmented : SelectingItemsControl
+public class Segmented : SelectingItemsControl,
+                         IAnimationAwareControl,
+                         IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
 
@@ -23,6 +27,12 @@ public class Segmented : SelectingItemsControl
 
     public static readonly StyledProperty<bool> IsExpandingProperty =
         AvaloniaProperty.Register<Segmented, bool>(nameof(IsExpanding));
+    
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AvaloniaProperty.Register<Segmented, bool>(nameof(IsMotionEnabled), true);
+
+    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
+        = AvaloniaProperty.Register<Segmented, bool>(nameof(IsWaveAnimationEnabled), true);
 
     public SizeType SizeType
     {
@@ -34,6 +44,18 @@ public class Segmented : SelectingItemsControl
     {
         get => GetValue(IsExpandingProperty);
         set => SetValue(IsExpandingProperty, value);
+    }
+    
+    public bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
+    }
+
+    public bool IsWaveAnimationEnabled
+    {
+        get => GetValue(IsWaveAnimationEnabledProperty);
+        set => SetValue(IsWaveAnimationEnabledProperty, value);
     }
 
     #endregion
@@ -87,6 +109,10 @@ public class Segmented : SelectingItemsControl
         get => GetValue(SelectedThumbPosProperty);
         set => SetValue(SelectedThumbPosProperty, value);
     }
+    
+    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IControlSharedTokenResourcesHost.HostControl => this;
+    string IControlSharedTokenResourcesHost.TokenId => SegmentedToken.ID;
 
     #endregion
 
@@ -104,6 +130,8 @@ public class Segmented : SelectingItemsControl
 
     public Segmented()
     {
+        this.RegisterResources();
+        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
         SelectionChanged += HandleSelectionChanged;
         SelectionMode    =  SelectionMode.Single;
     }
@@ -170,9 +198,10 @@ public class Segmented : SelectingItemsControl
     protected override void PrepareContainerForItemOverride(Control container, object? item, int index)
     {
         base.PrepareContainerForItemOverride(container, item, index);
-        if (container is SegmentedItem segmentedItemX)
+        if (container is SegmentedItem segmentedItem)
         {
-            BindUtils.RelayBind(this, SizeTypeProperty, segmentedItemX, SegmentedItem.SizeTypeProperty);
+            BindUtils.RelayBind(this, SizeTypeProperty, segmentedItem, SegmentedItem.SizeTypeProperty);
+            BindUtils.RelayBind(this, IsMotionEnabledProperty, segmentedItem, SegmentedItem.IsMotionEnabledProperty);
         }
     }
 
@@ -187,6 +216,16 @@ public class Segmented : SelectingItemsControl
         if (Transitions is null)
         {
             SetupSelectedThumbRect();
+            SetupTransitions();
+        }
+
+        return finalSize;
+    }
+
+    private void SetupTransitions()
+    {
+        if (IsMotionEnabled)
+        {
             Transitions = new Transitions
             {
                 AnimationUtils.CreateTransition<PointTransition>(SelectedThumbPosProperty),
@@ -194,8 +233,10 @@ public class Segmented : SelectingItemsControl
                     SharedTokenKey.MotionDurationFast)
             };
         }
-
-        return finalSize;
+        else
+        {
+            Transitions = null;
+        }
     }
 
     internal bool UpdateSelectionFromPointerEvent(Control source, PointerEventArgs e)
@@ -214,5 +255,14 @@ public class Segmented : SelectingItemsControl
         context.DrawRectangle(SelectedThumbBg, null,
             new RoundedRect(new Rect(SelectedThumbPos, SelectedThumbSize), SelectedThumbCornerRadius),
             SelectedThumbBoxShadows);
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == IsMotionEnabledProperty)
+        {
+            SetupTransitions();
+        }
     }
 }

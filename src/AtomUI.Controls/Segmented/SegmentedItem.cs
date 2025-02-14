@@ -1,4 +1,5 @@
-﻿using AtomUI.Controls.Utils;
+﻿using System.Diagnostics;
+using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.Media;
 using AtomUI.Theme.Data;
@@ -10,6 +11,7 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Mixins;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
+using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
 
@@ -43,12 +45,25 @@ public class SegmentedItem : ContentControl, ISelectable
     internal static readonly StyledProperty<SizeType> SizeTypeProperty =
         Segmented.SizeTypeProperty.AddOwner<SegmentedItem>();
 
+    internal static readonly DirectProperty<SegmentedItem, bool> IsMotionEnabledProperty
+        = AvaloniaProperty.RegisterDirect<SegmentedItem, bool>(nameof(IsMotionEnabled),
+            o => o.IsMotionEnabled,
+            (o, v) => o.IsMotionEnabled = v);
+    
     internal SizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);
     }
 
+    private bool _isMotionEnabled = true;
+
+    internal bool IsMotionEnabled
+    {
+        get => _isMotionEnabled;
+        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
+    }
+    
     #endregion
 
     static SegmentedItem()
@@ -56,6 +71,12 @@ public class SegmentedItem : ContentControl, ISelectable
         SelectableMixin.Attach<SegmentedItem>(IsSelectedProperty);
         PressedMixin.Attach<SegmentedItem>();
         FocusableProperty.OverrideDefaultValue<SegmentedItem>(true);
+    }
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        Debug.Assert(Parent is Segmented, "SegmentedItem's Parent must be Segmented Control.");
     }
 
     protected override void OnPointerReleased(PointerReleasedEventArgs e)
@@ -86,13 +107,18 @@ public class SegmentedItem : ContentControl, ISelectable
         }
     }
 
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    private void SetupTransitions()
     {
-        base.OnApplyTemplate(e);
         Transitions ??= new Transitions
         {
             AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty)
         };
+    }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        
         SetupItemIcon();
     }
 
