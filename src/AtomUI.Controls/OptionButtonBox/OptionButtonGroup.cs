@@ -1,19 +1,19 @@
-using System.Collections.Specialized;
+using System.Diagnostics;
 using AtomUI.Controls.Utils;
+using AtomUI.Data;
+using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
-using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Controls.Templates;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
-using Avalonia.Metadata;
 
 namespace AtomUI.Controls;
-
-using ButtonSizeType = SizeType;
-using OptionButtons = AvaloniaList<OptionButton>;
 
 public class OptionCheckedChangedEventArgs : RoutedEventArgs
 {
@@ -28,136 +28,208 @@ public class OptionCheckedChangedEventArgs : RoutedEventArgs
     public int Index { get; }
 }
 
-public class OptionButtonGroup : TemplatedControl, ISizeTypeAware
+public class OptionButtonGroup : SelectingItemsControl,
+                                  ISizeTypeAware,
+                                  IAnimationAwareControl,
+                                  IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
 
-    public static readonly StyledProperty<ButtonSizeType> SizeTypeProperty =
-        AvaloniaProperty.Register<OptionButtonGroup, ButtonSizeType>(nameof(SizeType), ButtonSizeType.Middle);
-
+    public static readonly StyledProperty<SizeType> SizeTypeProperty =
+        AvaloniaProperty.Register<OptionButtonGroup, SizeType>(nameof(SizeType), SizeType.Middle);
+    
     public static readonly StyledProperty<OptionButtonStyle> ButtonStyleProperty =
         AvaloniaProperty.Register<OptionButtonGroup, OptionButtonStyle>(nameof(SizeType));
 
-    public static readonly DirectProperty<OptionButtonGroup, OptionButton?> SelectedOptionProperty =
-        AvaloniaProperty.RegisterDirect<OptionButtonGroup, OptionButton?>(nameof(SelectedOption),
-            o => o.SelectedOption,
-            (o, v) => o.SelectedOption = v);
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AvaloniaProperty.Register<OptionButtonGroup, bool>(nameof(IsMotionEnabled), true);
 
-    internal static readonly StyledProperty<IBrush?> SelectedOptionBorderColorProperty =
-        AvaloniaProperty.Register<Button, IBrush?>(nameof(SelectedOptionBorderColor));
-
+    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
+        = AvaloniaProperty.Register<OptionButtonGroup, bool>(nameof(IsWaveAnimationEnabled), true);
+    
     public static readonly RoutedEvent<OptionCheckedChangedEventArgs> OptionCheckedChangedEvent =
-        RoutedEvent.Register<SelectingItemsControl, OptionCheckedChangedEventArgs>(
+        RoutedEvent.Register<OptionButtonGroup, OptionCheckedChangedEventArgs>(
             nameof(OptionCheckedChanged),
             RoutingStrategies.Bubble);
 
-    public event EventHandler<OptionCheckedChangedEventArgs>? OptionCheckedChanged
-    {
-        add => AddHandler(OptionCheckedChangedEvent, value);
-        remove => RemoveHandler(OptionCheckedChangedEvent, value);
-    }
-
-    public ButtonSizeType SizeType
+    public SizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);
     }
-
+    
     public OptionButtonStyle ButtonStyle
     {
         get => GetValue(ButtonStyleProperty);
         set => SetValue(ButtonStyleProperty, value);
     }
 
-    private OptionButton? _optionButton;
-
-    public OptionButton? SelectedOption
+    public bool IsMotionEnabled
     {
-        get => _optionButton;
-        set => SetAndRaise(SelectedOptionProperty, ref _optionButton, value);
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
     }
 
+    public bool IsWaveAnimationEnabled
+    {
+        get => GetValue(IsWaveAnimationEnabledProperty);
+        set => SetValue(IsWaveAnimationEnabledProperty, value);
+    }
+
+    public event EventHandler<OptionCheckedChangedEventArgs>? OptionCheckedChanged
+    {
+        add => AddHandler(OptionCheckedChangedEvent, value);
+        remove => RemoveHandler(OptionCheckedChangedEvent, value);
+    }
+    
+    #endregion
+
+    #region 内部属性定义
+
+    internal static readonly DirectProperty<OptionButtonGroup, Thickness> EffectiveBorderThicknessProperty =
+        AvaloniaProperty.RegisterDirect<OptionButtonGroup, Thickness>(nameof(EffectiveBorderThickness),
+            o => o.EffectiveBorderThickness,
+            (o, v) => o.EffectiveBorderThickness = v);
+    
+    internal static readonly StyledProperty<IBrush?> SelectedOptionBorderColorProperty =
+        AvaloniaProperty.Register<OptionButtonGroup, IBrush?>(nameof(SelectedOptionBorderColor));
+
+    private Thickness _effectiveBorderThickness;
+
+    internal Thickness EffectiveBorderThickness
+    {
+        get => _effectiveBorderThickness;
+        set => SetAndRaise(EffectiveBorderThicknessProperty, ref _effectiveBorderThickness, value);
+    }
+    
     internal IBrush? SelectedOptionBorderColor
     {
         get => GetValue(SelectedOptionBorderColorProperty);
         set => SetValue(SelectedOptionBorderColorProperty, value);
     }
 
+    private static readonly FuncTemplate<Panel?> DefaultPanel =
+        new(() => new StackPanel
+        {
+            Orientation = Orientation.Horizontal
+        });
+
+    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IControlSharedTokenResourcesHost.HostControl => this;
+    string IControlSharedTokenResourcesHost.TokenId => OptionButtonToken.ID;
+
     #endregion
 
-    [Content] public OptionButtons Options { get; } = new();
-    
-    private StackPanel? _layout;
     private readonly BorderRenderHelper _borderRenderHelper = new();
-
+    
     static OptionButtonGroup()
     {
+        SelectionModeProperty.OverrideDefaultValue<OptionButtonGroup>(SelectionMode.Single | SelectionMode.AlwaysSelected);
+        ItemsPanelProperty.OverrideDefaultValue<OptionButtonGroup>(DefaultPanel);
+        AffectsRender<OptionButtonGroup>(SelectionModeProperty);
+        
         AffectsMeasure<OptionButtonGroup>(SizeTypeProperty);
-        AffectsRender<OptionButtonGroup>(SelectedOptionProperty, SelectedOptionBorderColorProperty,
-            ButtonStyleProperty);
+        AffectsRender<OptionButtonGroup>(SelectedOptionBorderColorProperty,
+            ButtonStyleProperty, SelectedItemProperty);
     }
 
     public OptionButtonGroup()
     {
-        Options.CollectionChanged += OptionsChanged;
-    }
-
-    protected virtual void OptionsChanged(object? sender, NotifyCollectionChangedEventArgs e)
-    {
-        switch (e.Action)
+        this.RegisterResources();
+        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
+        if (this is IChildIndexProvider childIndexProvider)
         {
-            case NotifyCollectionChangedAction.Add:
-                var newOptions = e.NewItems!.OfType<OptionButton>().ToList();
-                ApplyInButtonGroupFlag(newOptions, true);
-                _layout?.Children.AddRange(newOptions);
-                break;
-
-            case NotifyCollectionChangedAction.Move:
-                _layout?.Children.MoveRange(e.OldStartingIndex, e.OldItems!.Count, e.NewStartingIndex);
-                break;
-
-            case NotifyCollectionChangedAction.Remove:
-                var removedOptions = e.OldItems!.OfType<OptionButton>().ToList();
-                ApplyInButtonGroupFlag(removedOptions, false);
-                _layout?.Children.RemoveAll(removedOptions);
-                break;
-
-            case NotifyCollectionChangedAction.Replace:
-                for (var i = 0; i < e.OldItems!.Count; ++i)
-                {
-                    var index    = i + e.OldStartingIndex;
-                    var oldChild = (OptionButton)e.OldItems![i]!;
-                    oldChild.InOptionGroup = false;
-                    var child = (OptionButton)e.NewItems![i]!;
-                    child.InOptionGroup = true;
-                    if (_layout is not null)
-                    {
-                        _layout.Children[index] = child;
-                    }
-                }
-
-                break;
-
-            case NotifyCollectionChangedAction.Reset:
-                throw new NotSupportedException();
+            childIndexProvider.ChildIndexChanged += (sender, args) =>
+            {
+                UpdateOptionButtonsPosition();
+            };
         }
-
-        UpdateOptionButtonsPosition();
-        InvalidateMeasureOnOptionsChanged();
     }
 
+    protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
+    {
+        return new OptionButton();
+    }
+    
+    protected override void OnGotFocus(GotFocusEventArgs e)
+    {
+        base.OnGotFocus(e);
+
+        if (e.NavigationMethod == NavigationMethod.Directional && e.Source is OptionButton)
+        {
+            e.Handled = UpdateSelectionFromEventSource(e.Source);
+        }
+    }
+    
+    protected override void PrepareContainerForItemOverride(Control element, object? item, int index)
+    {
+        base.PrepareContainerForItemOverride(element, item, index);
+        if (item is OptionButton optionButton)
+        {
+            BindUtils.RelayBind(this, SizeTypeProperty, optionButton, OptionButton.SizeTypeProperty);
+            BindUtils.RelayBind(this, ButtonStyleProperty, optionButton, OptionButton.ButtonStyleProperty);
+            BindUtils.RelayBind(this, IsEnabledProperty, optionButton, OptionButton.IsEnabledProperty);
+            BindUtils.RelayBind(this, IsMotionEnabledProperty, optionButton, OptionButton.IsMotionEnabledProperty);
+
+            optionButton.IsCheckedChanged += HandleOptionButtonChecked;
+
+            if (optionButton.IsChecked.HasValue && optionButton.IsChecked.Value)
+            {
+                UpdateSelectionFromEventSource(optionButton);
+                RaiseEvent(new OptionCheckedChangedEventArgs(OptionCheckedChangedEvent, optionButton,
+                    index));
+                Console.WriteLine($"{index}-{SelectedIndex}");
+            }
+        }
+    }
+
+    private void HandleOptionButtonChecked(object? sender, RoutedEventArgs args)
+    {
+        if (sender is OptionButton optionButton && optionButton.IsChecked.HasValue && optionButton.IsChecked.Value)
+        {
+            UpdateSelectionFromEventSource(args.Source);
+            RaiseEvent(new OptionCheckedChangedEventArgs(OptionCheckedChangedEvent, optionButton,
+                SelectedIndex));
+        }
+    }
+
+    protected override bool NeedsContainerOverride(object? item, int index, out object? recycleKey)
+    {
+        return NeedsContainer<OptionButton>(item, out recycleKey);
+    }
+
+    protected override void ContainerIndexChangedOverride(Control container, int oldIndex, int newIndex)
+    {
+        if (container is OptionButton optionButton)
+        {
+            if (newIndex == 0)
+            {
+                optionButton.GroupPositionTrait = OptionButtonPositionTrait.First;
+            }
+            else if (newIndex == ItemCount - 1)
+            {
+                optionButton.GroupPositionTrait = OptionButtonPositionTrait.Last;
+            }
+            else
+            {
+                optionButton.GroupPositionTrait = OptionButtonPositionTrait.Middle;
+            }
+        }
+    }
+    
     private void UpdateOptionButtonsPosition()
     {
-        for (var i = 0; i < Options.Count; i++)
+        for (var i = 0; i < Items.Count; i++)
         {
-            var button = Options[i];
-            if (Options.Count > 1)
+            var button = Items[i] as OptionButton;
+            Debug.Assert(button != null);
+            if (Items.Count > 1)
             {
                 if (i == 0)
                 {
                     button.GroupPositionTrait = OptionButtonPositionTrait.First;
                 }
-                else if (i == Options.Count - 1)
+                else if (i == Items.Count - 1)
                 {
                     button.GroupPositionTrait = OptionButtonPositionTrait.Last;
                 }
@@ -169,119 +241,35 @@ public class OptionButtonGroup : TemplatedControl, ISizeTypeAware
         }
     }
 
-    private void ApplyInButtonGroupFlag(List<OptionButton> buttons, bool inGroup)
-    {
-        for (var i = 0; i < buttons.Count; i++)
-        {
-            var button = buttons[i];
-            button.InOptionGroup = inGroup;
-            if (inGroup)
-            {
-                button.IsCheckedChanged += HandleOptionSelected;
-            }
-            else
-            {
-                button.IsCheckedChanged   -= HandleOptionSelected;
-                button.GroupPositionTrait =  OptionButtonPositionTrait.OnlyOne;
-            }
-        }
-    }
-
-    private void HandleOptionSelected(object? sender, RoutedEventArgs args)
-    {
-        if (sender is OptionButton optionButton)
-        {
-            if (optionButton.IsChecked.HasValue && optionButton.IsChecked.Value)
-            {
-                SelectedOption = optionButton;
-                RaiseEvent(new OptionCheckedChangedEventArgs(OptionCheckedChangedEvent, optionButton,
-                    Options.IndexOf(optionButton)));
-            }
-        }
-    }
-
-    private protected virtual void InvalidateMeasureOnOptionsChanged()
-    {
-        InvalidateMeasure();
-    }
-
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
-    {
-        base.OnPropertyChanged(e);
-        HandlePropertyChangedForStyle(e);
-    }
-
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        base.OnApplyTemplate(e);
-        HandleTemplateApplied(e.NameScope);
-    }
-
-    private void HandleTemplateApplied(INameScope scope)
-    {
-        _layout             = scope.Find<StackPanel>(OptionButtonGroupTheme.MainContainerPart);
-        HorizontalAlignment = HorizontalAlignment.Left;
-        ApplyButtonSizeConfig();
-        ApplyButtonStyleConfig();
-        _layout?.Children.AddRange(Options);
-    }
-
-    private void HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
-    {
-        if (e.Property == SizeTypeProperty)
-        {
-            ApplyButtonSizeConfig();
-        }
-        else if (e.Property == ButtonStyleProperty)
-        {
-            ApplyButtonStyleConfig();
-        }
-    }
-
-    private void ApplyButtonSizeConfig()
-    {
-        foreach (var optionButton in Options)
-        {
-            optionButton.SizeType = SizeType;
-        }
-    }
-
-    private void ApplyButtonStyleConfig()
-    {
-        foreach (var optionButton in Options)
-        {
-            optionButton.ButtonStyle = ButtonStyle;
-        }
-    }
-
     public override void Render(DrawingContext context)
     {
         var borderThickness =
             BorderUtils.BuildRenderScaleAwareThickness(BorderThickness, VisualRoot?.RenderScaling ?? 1.0);
         _borderRenderHelper.Render(context,
             new Size(DesiredSize.Width, DesiredSize.Height),
-            borderThickness,
+            new Thickness(1),
             CornerRadius,
             BackgroundSizing.CenterBorder,
             null,
             BorderBrush,
             new BoxShadows());
-        for (var i = 0; i < Options.Count; ++i)
+        for (var i = 0; i < ItemCount; ++i)
         {
-            var optionButton = Options[i];
+            var optionButton = ContainerFromIndex(i);
+            Debug.Assert(optionButton != null);
             if (ButtonStyle == OptionButtonStyle.Solid)
             {
-                if (i <= Options.Count - 2)
+                if (i <= ItemCount - 2)
                 {
-                    var nextOption = Options[i + 1];
-                    if (nextOption == SelectedOption || optionButton == SelectedOption)
+                    var nextOption = ContainerFromIndex(i + 1);
+                    if (nextOption == SelectedItem || optionButton == SelectedItem)
                     {
                         continue;
                     }
                 }
             }
-
-            if (i != Options.Count - 1)
+        
+            if (i != ItemCount - 1)
             {
                 var offsetX    = optionButton.Bounds.Right - borderThickness.Left / 2;
                 var startPoint = new Point(offsetX, 0);
@@ -292,10 +280,10 @@ public class OptionButtonGroup : TemplatedControl, ISizeTypeAware
                 });
                 context.DrawLine(new Pen(BorderBrush, borderThickness.Left), startPoint, endPoint);
             }
-
+        
             if (ButtonStyle == OptionButtonStyle.Outline)
             {
-                if (optionButton.IsEnabled && optionButton.IsChecked.HasValue && optionButton.IsChecked.Value)
+                if (optionButton.IsEnabled && optionButton == SelectedItem)
                 {
                     // 绘制选中边框
                     var offsetX = optionButton.Bounds.X;
@@ -305,7 +293,7 @@ public class OptionButtonGroup : TemplatedControl, ISizeTypeAware
                         offsetX -= borderThickness.Left;
                         width   += borderThickness.Left;
                     }
-
+        
                     var       translationMatrix = Matrix.CreateTranslation(offsetX, 0);
                     using var state             = context.PushTransform(translationMatrix);
                     var       cornerRadius      = new CornerRadius(0);
@@ -313,11 +301,11 @@ public class OptionButtonGroup : TemplatedControl, ISizeTypeAware
                     {
                         cornerRadius = new CornerRadius(CornerRadius.TopLeft, 0, 0, CornerRadius.BottomLeft);
                     }
-                    else if (i == Options.Count - 1)
+                    else if (i == ItemCount - 1)
                     {
                         cornerRadius = new CornerRadius(0, CornerRadius.TopRight, CornerRadius.BottomRight, 0);
                     }
-
+        
                     _borderRenderHelper.Render(context,
                         new Size(width, DesiredSize.Height),
                         borderThickness,

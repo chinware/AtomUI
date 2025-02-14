@@ -3,7 +3,6 @@ using AtomUI.Media;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Animation;
-using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Media;
@@ -11,7 +10,6 @@ using Avalonia.Media;
 namespace AtomUI.Controls;
 
 using AvaloniaRadioButton = Avalonia.Controls.RadioButton;
-using ButtonSizeType = SizeType;
 
 public enum OptionButtonStyle
 {
@@ -45,8 +43,8 @@ public class OptionButton : AvaloniaRadioButton,
 {
     #region 公共属性定义
 
-    public static readonly StyledProperty<ButtonSizeType> SizeTypeProperty =
-        AvaloniaProperty.Register<OptionButton, ButtonSizeType>(nameof(SizeType), ButtonSizeType.Middle);
+    public static readonly StyledProperty<SizeType> SizeTypeProperty =
+        AvaloniaProperty.Register<OptionButton, SizeType>(nameof(SizeType), SizeType.Middle);
 
     public static readonly StyledProperty<OptionButtonStyle> ButtonStyleProperty =
         AvaloniaProperty.Register<OptionButton, OptionButtonStyle>(nameof(ButtonStyle));
@@ -54,20 +52,7 @@ public class OptionButton : AvaloniaRadioButton,
     public static readonly StyledProperty<string?> TextProperty
         = AvaloniaProperty.Register<OptionButton, string?>(nameof(Text));
 
-    internal static readonly DirectProperty<OptionButton, bool> InOptionGroupProperty =
-        AvaloniaProperty.RegisterDirect<OptionButton, bool>(
-            nameof(InOptionGroup),
-            o => o.InOptionGroup,
-            (o, v) => o.InOptionGroup = v);
-
-    private static readonly DirectProperty<OptionButton, OptionButtonPositionTrait> GroupPositionTraitProperty =
-        AvaloniaProperty.RegisterDirect<OptionButton, OptionButtonPositionTrait>(
-            nameof(GroupPositionTrait),
-            o => o.GroupPositionTrait,
-            (o, v) => o.GroupPositionTrait = v,
-            OptionButtonPositionTrait.OnlyOne);
-
-    public ButtonSizeType SizeType
+    public SizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);
@@ -89,15 +74,24 @@ public class OptionButton : AvaloniaRadioButton,
 
     #region 内部属性定义
 
-    private bool _inOptionGroup;
+    internal static readonly DirectProperty<OptionButton, OptionButtonPositionTrait> GroupPositionTraitProperty =
+        AvaloniaProperty.RegisterDirect<OptionButton, OptionButtonPositionTrait>(
+            nameof(GroupPositionTrait),
+            o => o.GroupPositionTrait,
+            (o, v) => o.GroupPositionTrait = v,
+            OptionButtonPositionTrait.OnlyOne);
 
-    /// <summary>
-    /// 是否在 Group 中渲染
-    /// </summary>
-    internal bool InOptionGroup
+    internal static readonly DirectProperty<OptionButton, bool> IsMotionEnabledProperty
+        = AvaloniaProperty.RegisterDirect<OptionButton, bool>(nameof(IsMotionEnabled),
+            o => o.IsMotionEnabled,
+            (o, v) => o.IsMotionEnabled = v);
+
+    private bool _isMotionEnabled = true;
+
+    internal bool IsMotionEnabled
     {
-        get => _inOptionGroup;
-        set => SetAndRaise(InOptionGroupProperty, ref _inOptionGroup, value);
+        get => _isMotionEnabled;
+        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
     }
 
     private OptionButtonPositionTrait _groupPositionTrait = OptionButtonPositionTrait.OnlyOne;
@@ -111,19 +105,20 @@ public class OptionButton : AvaloniaRadioButton,
     internal event EventHandler<OptionButtonPointerEventArgs>? OptionButtonPointerEvent;
 
     #endregion
-    
+
     private CornerRadius? _originCornerRadius;
     private readonly BorderRenderHelper _borderRenderHelper;
 
     static OptionButton()
     {
-        AffectsMeasure<OptionButton>(SizeTypeProperty, ButtonStyleProperty, InOptionGroupProperty);
+        AffectsMeasure<OptionButton>(SizeTypeProperty, ButtonStyleProperty);
         AffectsRender<OptionButton>(IsCheckedProperty, CornerRadiusProperty, ForegroundProperty, BackgroundProperty);
     }
 
     public OptionButton()
     {
         _borderRenderHelper = new BorderRenderHelper();
+        Cursor              = new Cursor(StandardCursorType.Hand);
     }
 
     protected override Size MeasureOverride(Size availableSize)
@@ -139,23 +134,33 @@ public class OptionButton : AvaloniaRadioButton,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
         base.OnPropertyChanged(e);
-        HandlePropertyChangedForStyle(e);
+        if (e.Property == IsPointerOverProperty ||
+            e.Property == IsPressedProperty ||
+            e.Property == IsCheckedProperty)
+        {
+            if (e.Property == IsPressedProperty && e.OldValue as bool? == true)
+            {
+                WaveSpiritAdorner.ShowWaveAdorner(this, WaveType.RoundRectWave);
+            }
+        }
+
+        if (e.Property == GroupPositionTraitProperty)
+        {
+            if (_originCornerRadius.HasValue)
+            {
+                CornerRadius = BuildCornerRadius(GroupPositionTrait, _originCornerRadius!.Value);
+            }
+        }
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        HandleTemplateApplied(e.NameScope);
-    }
-
-    private void HandleTemplateApplied(INameScope scope)
-    {
         if (Text is null && Content is string content)
         {
             Text = content;
         }
 
-        Cursor = new Cursor(StandardCursorType.Hand);
         HandleSizeTypeChanged();
         SetupTransitions();
     }
@@ -190,27 +195,6 @@ public class OptionButton : AvaloniaRadioButton,
 
         transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty));
         Transitions = transitions;
-    }
-
-    private void HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
-    {
-        if (e.Property == IsPointerOverProperty ||
-            e.Property == IsPressedProperty ||
-            e.Property == IsCheckedProperty)
-        {
-            if (e.Property == IsPressedProperty && e.OldValue as bool? == true)
-            {
-                WaveSpiritAdorner.ShowWaveAdorner(this, WaveType.RoundRectWave);
-            }
-        }
-
-        if (e.Property == GroupPositionTraitProperty)
-        {
-            if (_originCornerRadius.HasValue)
-            {
-                CornerRadius = BuildCornerRadius(GroupPositionTrait, _originCornerRadius!.Value);
-            }
-        }
     }
 
     private CornerRadius BuildCornerRadius(OptionButtonPositionTrait positionTrait, CornerRadius cornerRadius)

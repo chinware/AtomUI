@@ -1,6 +1,7 @@
-﻿using AtomUI.Theme;
+using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using Avalonia.Controls;
+using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Layout;
@@ -11,53 +12,71 @@ namespace AtomUI.Controls;
 [ControlThemeProvider]
 internal class OptionButtonGroupTheme : BaseControlTheme
 {
-    public const string MainContainerPart = "PART_MainContainer";
-
-    public OptionButtonGroupTheme()
-        : base(typeof(OptionButtonGroup))
+    public const string FrameDecoratorPart = "PART_FrameDecorator";
+    public const string ItemsPresenterPart = "PART_ItemsPresenter";
+    
+    public OptionButtonGroupTheme() : base(typeof(OptionButtonGroup))
     {
     }
-
-    protected override IControlTemplate? BuildControlTemplate()
+    
+    protected override IControlTemplate BuildControlTemplate()
     {
         return new FuncControlTemplate<OptionButtonGroup>((group, scope) =>
         {
-            var layout = new StackPanel
+            var frameDecorator = new Border
             {
-                Name         = MainContainerPart,
-                Orientation  = Orientation.Horizontal,
+                Name         = FrameDecoratorPart,
                 ClipToBounds = true
             };
-            layout.RegisterInNameScope(scope);
-            return layout;
+            var itemsPresenter = new ItemsPresenter
+            {
+                Name = ItemsPresenterPart
+            };
+            itemsPresenter.RegisterInNameScope(scope);
+            frameDecorator.Child = itemsPresenter;
+
+            CreateTemplateParentBinding(itemsPresenter, ItemsPresenter.ItemsPanelProperty,
+                ItemsControl.ItemsPanelProperty);
+            CreateTemplateParentBinding(frameDecorator, Border.BorderThicknessProperty,
+                OptionButtonGroup.EffectiveBorderThicknessProperty);
+            CreateTemplateParentBinding(frameDecorator, Border.BorderBrushProperty,
+                TemplatedControl.BorderBrushProperty);
+            CreateTemplateParentBinding(frameDecorator, Border.CornerRadiusProperty,
+                TemplatedControl.CornerRadiusProperty);
+
+            return frameDecorator;
         });
     }
-
+    
     protected override void BuildStyles()
     {
+        var commonStyle = new Style(selector => selector.Nesting());
+        
         var largeSizeStyle =
             new Style(selector =>
                 selector.Nesting().PropertyEquals(OptionButtonGroup.SizeTypeProperty, SizeType.Large));
         largeSizeStyle.Add(TemplatedControl.CornerRadiusProperty, SharedTokenKey.BorderRadiusLG);
         largeSizeStyle.Add(Layoutable.MaxHeightProperty, SharedTokenKey.ControlHeightLG);
-        Add(largeSizeStyle);
+        commonStyle.Add(largeSizeStyle);
 
         var middleSizeStyle =
             new Style(
                 selector => selector.Nesting().PropertyEquals(OptionButtonGroup.SizeTypeProperty, SizeType.Middle));
         middleSizeStyle.Add(TemplatedControl.CornerRadiusProperty, SharedTokenKey.BorderRadius);
         middleSizeStyle.Add(Layoutable.MaxHeightProperty, SharedTokenKey.ControlHeight);
-        Add(middleSizeStyle);
+        commonStyle.Add(middleSizeStyle);
 
         var smallSizeStyle =
             new Style(selector =>
                 selector.Nesting().PropertyEquals(OptionButtonGroup.SizeTypeProperty, SizeType.Small));
         smallSizeStyle.Add(TemplatedControl.CornerRadiusProperty, SharedTokenKey.BorderRadiusSM);
         smallSizeStyle.Add(Layoutable.MaxHeightProperty, SharedTokenKey.ControlHeightSM);
-        Add(smallSizeStyle);
+        commonStyle.Add(smallSizeStyle);
 
-        this.Add(TemplatedControl.BorderBrushProperty, SharedTokenKey.ColorBorder);
-        this.Add(OptionButtonGroup.SelectedOptionBorderColorProperty, SharedTokenKey.ColorPrimary);
-        this.Add(TemplatedControl.BorderThicknessProperty, SharedTokenKey.BorderThickness);
+        commonStyle.Add(TemplatedControl.BorderBrushProperty, SharedTokenKey.ColorBorder);
+        commonStyle.Add(OptionButtonGroup.SelectedOptionBorderColorProperty, SharedTokenKey.ColorPrimary);
+        commonStyle.Add(TemplatedControl.BorderThicknessProperty, SharedTokenKey.BorderThickness);
+        
+        Add(commonStyle);
     }
 }

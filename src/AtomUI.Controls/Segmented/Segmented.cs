@@ -13,7 +13,7 @@ using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
-[TemplatePart(CollapseTheme.ItemsPresenterPart, typeof(ItemsPresenter))]
+[TemplatePart(SegmentedTheme.ItemsPresenterPart, typeof(ItemsPresenter))]
 public class Segmented : SelectingItemsControl
 {
     #region 公共属性定义

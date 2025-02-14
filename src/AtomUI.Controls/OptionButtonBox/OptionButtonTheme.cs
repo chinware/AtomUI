@@ -1,4 +1,4 @@
-﻿using AtomUI.Theme;
+using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
@@ -6,7 +6,11 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Layout;
+using Avalonia.Media;
 using Avalonia.Styling;
+using ExCSS;
+using HorizontalAlignment = Avalonia.Layout.HorizontalAlignment;
+using VerticalAlignment = Avalonia.Layout.VerticalAlignment;
 
 namespace AtomUI.Controls;
 
@@ -18,7 +22,7 @@ internal class OptionButtonTheme : BaseControlTheme
     {
     }
 
-    protected override IControlTemplate? BuildControlTemplate()
+    protected override IControlTemplate BuildControlTemplate()
     {
         return new FuncControlTemplate<OptionButton>((button, scope) =>
         {
@@ -29,7 +33,7 @@ internal class OptionButtonTheme : BaseControlTheme
                 VerticalAlignment   = VerticalAlignment.Center,
                 HorizontalAlignment = HorizontalAlignment.Center
             };
-            var label = new Label
+            var label = new SingleLineText
             {
                 Padding             = new Thickness(0),
                 VerticalAlignment   = VerticalAlignment.Center,
@@ -37,7 +41,7 @@ internal class OptionButtonTheme : BaseControlTheme
             };
 
             stackPanel.Children.Add(label);
-            CreateTemplateParentBinding(label, ContentControl.ContentProperty, OptionButton.TextProperty);
+            CreateTemplateParentBinding(label, SingleLineText.TextProperty, OptionButton.TextProperty);
             return stackPanel;
         });
     }
@@ -86,11 +90,7 @@ internal class OptionButtonTheme : BaseControlTheme
     {
         var outlineStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(OptionButton.ButtonStyleProperty, OptionButtonStyle.Outline));
-        outlineStyle.Add(TemplatedControl.BorderThicknessProperty, SharedTokenKey.BorderThickness);
-        var inOptionGroupStyle = new Style(selector =>
-            selector.Nesting().PropertyEquals(OptionButton.InOptionGroupProperty, true));
-        inOptionGroupStyle.Add(TemplatedControl.BorderThicknessProperty, new Thickness(0));
-        outlineStyle.Add(inOptionGroupStyle);
+        outlineStyle.Add(TemplatedControl.BorderThicknessProperty, new Thickness(0));
         BuildOutlineEnabledStyle(outlineStyle);
         BuildOutlineDisabledStyle(outlineStyle);
         Add(outlineStyle);
@@ -126,12 +126,8 @@ internal class OptionButtonTheme : BaseControlTheme
         {
             var unCheckedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.UnChecked));
             unCheckedStyle.Add(TemplatedControl.ForegroundProperty, SharedTokenKey.ColorText);
-            unCheckedStyle.Add(TemplatedControl.BackgroundProperty, SharedTokenKey.ColorBgContainer);
-            var inOptionGroupStyle = new Style(selector =>
-                selector.Nesting().PropertyEquals(OptionButton.InOptionGroupProperty, true));
-            inOptionGroupStyle.Add(TemplatedControl.BackgroundProperty, SharedTokenKey.ColorTransparent);
-
-            unCheckedStyle.Add(inOptionGroupStyle);
+            // unCheckedStyle.Add(TemplatedControl.BackgroundProperty, SharedTokenKey.ColorBgContainer);
+            unCheckedStyle.Add(TemplatedControl.BackgroundProperty, SharedTokenKey.ColorTransparent);
 
             // Hover 状态
             var hoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
@@ -170,19 +166,14 @@ internal class OptionButtonTheme : BaseControlTheme
     {
         var enabledStyle =
             new Style(selector => selector.Nesting().PropertyEquals(InputElement.IsEnabledProperty, true));
+        enabledStyle.Add(TemplatedControl.BackgroundProperty, Brushes.Transparent);
 
         // 选中状态
         {
             var checkedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Checked));
             checkedStyle.Add(TemplatedControl.BorderBrushProperty, SharedTokenKey.ColorPrimary);
             checkedStyle.Add(TemplatedControl.ForegroundProperty, SharedTokenKey.ColorPrimary);
-            checkedStyle.Add(TemplatedControl.BackgroundProperty, OptionButtonTokenKey.ButtonBackground);
-            var inOptionGroupStyle = new Style(selector =>
-                selector.Nesting().PropertyEquals(OptionButton.InOptionGroupProperty, true));
-            inOptionGroupStyle.Add(TemplatedControl.BackgroundProperty, SharedTokenKey.ColorTransparent);
-
-            checkedStyle.Add(inOptionGroupStyle);
-
+            
             enabledStyle.Add(checkedStyle);
             outlineStyle.Add(enabledStyle);
         }
@@ -190,12 +181,6 @@ internal class OptionButtonTheme : BaseControlTheme
         {
             enabledStyle.Add(TemplatedControl.BorderBrushProperty, SharedTokenKey.ColorBorder);
             enabledStyle.Add(TemplatedControl.ForegroundProperty, OptionButtonTokenKey.ButtonColor);
-            enabledStyle.Add(TemplatedControl.BackgroundProperty, OptionButtonTokenKey.ButtonCheckedBackground);
-
-            var inOptionGroupStyle = new Style(selector =>
-                selector.Nesting().PropertyEquals(OptionButton.InOptionGroupProperty, true));
-            inOptionGroupStyle.Add(TemplatedControl.BackgroundProperty, SharedTokenKey.ColorTransparent);
-            enabledStyle.Add(inOptionGroupStyle);
         }
 
         // Hover 状态
