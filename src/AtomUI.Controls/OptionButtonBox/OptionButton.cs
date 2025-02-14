@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using AtomUI.Controls.Utils;
 using AtomUI.Media;
 using AtomUI.Theme.Utils;
@@ -5,6 +6,7 @@ using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 
 namespace AtomUI.Controls;
@@ -85,6 +87,11 @@ public class OptionButton : AvaloniaRadioButton,
         = AvaloniaProperty.RegisterDirect<OptionButton, bool>(nameof(IsMotionEnabled),
             o => o.IsMotionEnabled,
             (o, v) => o.IsMotionEnabled = v);
+    
+    internal static readonly DirectProperty<OptionButton, bool> IsWaveAnimationEnabledProperty
+        = AvaloniaProperty.RegisterDirect<OptionButton, bool>(nameof(IsWaveAnimationEnabled),
+            o => o.IsWaveAnimationEnabled,
+            (o, v) => o.IsWaveAnimationEnabled = v);
 
     private bool _isMotionEnabled = true;
 
@@ -92,6 +99,14 @@ public class OptionButton : AvaloniaRadioButton,
     {
         get => _isMotionEnabled;
         set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
+    }
+    
+    private bool _isWaveAnimationEnabled = true;
+
+    internal bool IsWaveAnimationEnabled
+    {
+        get => _isWaveAnimationEnabled;
+        set => SetAndRaise(IsWaveAnimationEnabledProperty, ref _isWaveAnimationEnabled, value);
     }
 
     private OptionButtonPositionTrait _groupPositionTrait = OptionButtonPositionTrait.OnlyOne;
@@ -131,6 +146,13 @@ public class OptionButton : AvaloniaRadioButton,
         return new Size(targetWidth, targetHeight);
     }
 
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        SetupTransitions();
+        Debug.Assert(Parent is OptionButtonGroup, "OptionButton parent must be type of OptionButtonGroup");
+    }
+
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
         base.OnPropertyChanged(e);
@@ -138,7 +160,7 @@ public class OptionButton : AvaloniaRadioButton,
             e.Property == IsPressedProperty ||
             e.Property == IsCheckedProperty)
         {
-            if (e.Property == IsPressedProperty && e.OldValue as bool? == true)
+            if (e.Property == IsPressedProperty && e.OldValue as bool? == true && IsWaveAnimationEnabled)
             {
                 WaveSpiritAdorner.ShowWaveAdorner(this, WaveType.RoundRectWave);
             }
@@ -150,6 +172,10 @@ public class OptionButton : AvaloniaRadioButton,
             {
                 CornerRadius = BuildCornerRadius(GroupPositionTrait, _originCornerRadius!.Value);
             }
+        } 
+        else if (e.Property == IsMotionEnabledProperty)
+        {
+            SetupTransitions();
         }
     }
 
@@ -162,7 +188,6 @@ public class OptionButton : AvaloniaRadioButton,
         }
 
         HandleSizeTypeChanged();
-        SetupTransitions();
     }
 
     private void HandleSizeTypeChanged()
@@ -183,18 +208,25 @@ public class OptionButton : AvaloniaRadioButton,
 
     private void SetupTransitions()
     {
-        var transitions = new Transitions();
-        if (ButtonStyle == OptionButtonStyle.Solid)
+        if (IsMotionEnabled)
         {
-            transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty));
-        }
-        else if (ButtonStyle == OptionButtonStyle.Outline)
-        {
-            transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(BorderBrushProperty));
-        }
+            var transitions = new Transitions();
+            if (ButtonStyle == OptionButtonStyle.Solid)
+            {
+                transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty));
+            }
+            else if (ButtonStyle == OptionButtonStyle.Outline)
+            {
+                transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(BorderBrushProperty));
+            }
 
-        transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty));
-        Transitions = transitions;
+            transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty));
+            Transitions = transitions;
+        }
+        else
+        {
+            Transitions = null;
+        }
     }
 
     private CornerRadius BuildCornerRadius(OptionButtonPositionTrait positionTrait, CornerRadius cornerRadius)

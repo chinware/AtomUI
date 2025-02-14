@@ -29,15 +29,15 @@ public class OptionCheckedChangedEventArgs : RoutedEventArgs
 }
 
 public class OptionButtonGroup : SelectingItemsControl,
-                                  ISizeTypeAware,
-                                  IAnimationAwareControl,
-                                  IControlSharedTokenResourcesHost
+                                 ISizeTypeAware,
+                                 IAnimationAwareControl,
+                                 IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
         AvaloniaProperty.Register<OptionButtonGroup, SizeType>(nameof(SizeType), SizeType.Middle);
-    
+
     public static readonly StyledProperty<OptionButtonStyle> ButtonStyleProperty =
         AvaloniaProperty.Register<OptionButtonGroup, OptionButtonStyle>(nameof(SizeType));
 
@@ -46,7 +46,7 @@ public class OptionButtonGroup : SelectingItemsControl,
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
         = AvaloniaProperty.Register<OptionButtonGroup, bool>(nameof(IsWaveAnimationEnabled), true);
-    
+
     public static readonly RoutedEvent<OptionCheckedChangedEventArgs> OptionCheckedChangedEvent =
         RoutedEvent.Register<OptionButtonGroup, OptionCheckedChangedEventArgs>(
             nameof(OptionCheckedChanged),
@@ -57,7 +57,7 @@ public class OptionButtonGroup : SelectingItemsControl,
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);
     }
-    
+
     public OptionButtonStyle ButtonStyle
     {
         get => GetValue(ButtonStyleProperty);
@@ -81,7 +81,7 @@ public class OptionButtonGroup : SelectingItemsControl,
         add => AddHandler(OptionCheckedChangedEvent, value);
         remove => RemoveHandler(OptionCheckedChangedEvent, value);
     }
-    
+
     #endregion
 
     #region 内部属性定义
@@ -90,7 +90,7 @@ public class OptionButtonGroup : SelectingItemsControl,
         AvaloniaProperty.RegisterDirect<OptionButtonGroup, Thickness>(nameof(EffectiveBorderThickness),
             o => o.EffectiveBorderThickness,
             (o, v) => o.EffectiveBorderThickness = v);
-    
+
     internal static readonly StyledProperty<IBrush?> SelectedOptionBorderColorProperty =
         AvaloniaProperty.Register<OptionButtonGroup, IBrush?>(nameof(SelectedOptionBorderColor));
 
@@ -101,7 +101,7 @@ public class OptionButtonGroup : SelectingItemsControl,
         get => _effectiveBorderThickness;
         set => SetAndRaise(EffectiveBorderThicknessProperty, ref _effectiveBorderThickness, value);
     }
-    
+
     internal IBrush? SelectedOptionBorderColor
     {
         get => GetValue(SelectedOptionBorderColorProperty);
@@ -121,13 +121,14 @@ public class OptionButtonGroup : SelectingItemsControl,
     #endregion
 
     private readonly BorderRenderHelper _borderRenderHelper = new();
-    
+
     static OptionButtonGroup()
     {
-        SelectionModeProperty.OverrideDefaultValue<OptionButtonGroup>(SelectionMode.Single | SelectionMode.AlwaysSelected);
+        SelectionModeProperty.OverrideDefaultValue<OptionButtonGroup>(SelectionMode.Single |
+                                                                      SelectionMode.AlwaysSelected);
         ItemsPanelProperty.OverrideDefaultValue<OptionButtonGroup>(DefaultPanel);
         AffectsRender<OptionButtonGroup>(SelectionModeProperty);
-        
+
         AffectsMeasure<OptionButtonGroup>(SizeTypeProperty);
         AffectsRender<OptionButtonGroup>(SelectedOptionBorderColorProperty,
             ButtonStyleProperty, SelectedItemProperty);
@@ -139,10 +140,7 @@ public class OptionButtonGroup : SelectingItemsControl,
         this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
         if (this is IChildIndexProvider childIndexProvider)
         {
-            childIndexProvider.ChildIndexChanged += (sender, args) =>
-            {
-                UpdateOptionButtonsPosition();
-            };
+            childIndexProvider.ChildIndexChanged += (sender, args) => { UpdateOptionButtonsPosition(); };
         }
     }
 
@@ -150,7 +148,7 @@ public class OptionButtonGroup : SelectingItemsControl,
     {
         return new OptionButton();
     }
-    
+
     protected override void OnGotFocus(GotFocusEventArgs e)
     {
         base.OnGotFocus(e);
@@ -160,7 +158,7 @@ public class OptionButtonGroup : SelectingItemsControl,
             e.Handled = UpdateSelectionFromEventSource(e.Source);
         }
     }
-    
+
     protected override void PrepareContainerForItemOverride(Control element, object? item, int index)
     {
         base.PrepareContainerForItemOverride(element, item, index);
@@ -168,21 +166,27 @@ public class OptionButtonGroup : SelectingItemsControl,
         {
             BindUtils.RelayBind(this, SizeTypeProperty, optionButton, OptionButton.SizeTypeProperty);
             BindUtils.RelayBind(this, ButtonStyleProperty, optionButton, OptionButton.ButtonStyleProperty);
-            BindUtils.RelayBind(this, IsEnabledProperty, optionButton, OptionButton.IsEnabledProperty);
             BindUtils.RelayBind(this, IsMotionEnabledProperty, optionButton, OptionButton.IsMotionEnabledProperty);
+            BindUtils.RelayBind(this, IsWaveAnimationEnabledProperty, optionButton, OptionButton.IsWaveAnimationEnabledProperty);
 
             optionButton.IsCheckedChanged += HandleOptionButtonChecked;
-
+        }
+    }
+    
+    protected override void ContainerForItemPreparedOverride(Control container, object? item, int index)
+    {
+        base.ContainerForItemPreparedOverride(container, item, index);
+        if (container is OptionButton optionButton)
+        {
             if (optionButton.IsChecked.HasValue && optionButton.IsChecked.Value)
             {
                 UpdateSelectionFromEventSource(optionButton);
                 RaiseEvent(new OptionCheckedChangedEventArgs(OptionCheckedChangedEvent, optionButton,
                     index));
-                Console.WriteLine($"{index}-{SelectedIndex}");
             }
         }
     }
-
+    
     private void HandleOptionButtonChecked(object? sender, RoutedEventArgs args)
     {
         if (sender is OptionButton optionButton && optionButton.IsChecked.HasValue && optionButton.IsChecked.Value)
@@ -216,7 +220,7 @@ public class OptionButtonGroup : SelectingItemsControl,
             }
         }
     }
-    
+
     private void UpdateOptionButtonsPosition()
     {
         for (var i = 0; i < Items.Count; i++)
@@ -268,7 +272,7 @@ public class OptionButtonGroup : SelectingItemsControl,
                     }
                 }
             }
-        
+
             if (i != ItemCount - 1)
             {
                 var offsetX    = optionButton.Bounds.Right - borderThickness.Left / 2;
@@ -280,7 +284,7 @@ public class OptionButtonGroup : SelectingItemsControl,
                 });
                 context.DrawLine(new Pen(BorderBrush, borderThickness.Left), startPoint, endPoint);
             }
-        
+
             if (ButtonStyle == OptionButtonStyle.Outline)
             {
                 if (optionButton.IsEnabled && optionButton == SelectedItem)
@@ -293,7 +297,7 @@ public class OptionButtonGroup : SelectingItemsControl,
                         offsetX -= borderThickness.Left;
                         width   += borderThickness.Left;
                     }
-        
+
                     var       translationMatrix = Matrix.CreateTranslation(offsetX, 0);
                     using var state             = context.PushTransform(translationMatrix);
                     var       cornerRadius      = new CornerRadius(0);
@@ -305,7 +309,7 @@ public class OptionButtonGroup : SelectingItemsControl,
                     {
                         cornerRadius = new CornerRadius(0, CornerRadius.TopRight, CornerRadius.BottomRight, 0);
                     }
-        
+
                     _borderRenderHelper.Render(context,
                         new Size(width, DesiredSize.Height),
                         borderThickness,

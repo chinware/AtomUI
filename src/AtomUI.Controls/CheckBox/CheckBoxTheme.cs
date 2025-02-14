@@ -173,16 +173,16 @@ internal class CheckBoxTheme : BaseControlTheme
             {
                 var indicatorStyle = new Style(selector => selector.Nesting().Template().Name(IndicatorPart));
                 indicatorStyle.Add(CheckBoxIndicator.BorderBrushProperty, SharedTokenKey.ColorPrimaryHover);
-                checkedHoverStyle.Add(indicatorStyle);
+                unCheckedStyle.Add(indicatorStyle);
             }
             enabledStyle.Add(unCheckedStyle);
             
             var indeterminateStyle = new Style(selector =>
-                selector.Nesting().Class($"{StdPseudoClass.Indeterminate}{StdPseudoClass.PointerOver}"));
+                selector.Nesting().Class($"{StdPseudoClass.Indeterminate} {StdPseudoClass.PointerOver}"));
             {
                 var indicatorStyle = new Style(selector => selector.Nesting().Template().Name(IndicatorPart));
                 indicatorStyle.Add(CheckBoxIndicator.BorderBrushProperty, SharedTokenKey.ColorPrimaryHover);
-                checkedHoverStyle.Add(indicatorStyle);
+                indeterminateStyle.Add(indicatorStyle);
             }
             enabledStyle.Add(indeterminateStyle);
         }
