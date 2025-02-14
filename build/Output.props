@@ -1,8 +1,7 @@
 <Project>
     <PropertyGroup>
-
         <PackageOutputPath>$(MSBuildThisFileDirectory)..\output\Nuget\</PackageOutputPath>
         <OutputPath>$(MSBuildThisFileDirectory)..\output\Bin\$(Configuration)\</OutputPath>
-
+        <BaseIntermediateOutputPath>$(MSBuildThisFileDirectory)..\output\obj\$(Configuration)\$(TargetFramework)\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
     </PropertyGroup>
 </Project>
