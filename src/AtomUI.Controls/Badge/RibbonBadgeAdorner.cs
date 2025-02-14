@@ -110,7 +110,7 @@ internal class RibbonBadgeAdorner : Control
     #endregion
     
     private bool _initialized;
-    private TextBlock? _textBlock;
+    private SingleLineText? _labelText;
     private Geometry? _cornerGeometry;
     private readonly BorderRenderHelper _borderRenderHelper;
 
@@ -143,10 +143,10 @@ internal class RibbonBadgeAdorner : Control
         commonStyle.Add(BadgeRibbonOffsetProperty, BadgeTokenKey.BadgeRibbonOffset);
         commonStyle.Add(BadgeRibbonCornerTransformProperty, BadgeTokenKey.BadgeRibbonCornerTransform);
         commonStyle.Add(BadgeRibbonCornerDarkenAmountProperty, BadgeTokenKey.BadgeRibbonCornerDarkenAmount);
-        var labelStyle = new Style(selector => selector.Nesting().Child().OfType<TextBlock>());
-        labelStyle.Add(TextBlock.ForegroundProperty, SharedTokenKey.ColorTextLightSolid);
-        labelStyle.Add(TextBlock.LineHeightProperty, BadgeTokenKey.BadgeFontHeight);
-        labelStyle.Add(TextBlock.PaddingProperty, BadgeTokenKey.BadgeRibbonTextPadding);
+        var labelStyle = new Style(selector => selector.Nesting().Child().OfType<SingleLineText>());
+        labelStyle.Add(SingleLineText.ForegroundProperty, SharedTokenKey.ColorTextLightSolid);
+        labelStyle.Add(SingleLineText.LineHeightProperty, BadgeTokenKey.BadgeFontHeight);
+        labelStyle.Add(SingleLineText.PaddingProperty, BadgeTokenKey.BadgeRibbonTextPadding);
         commonStyle.Add(labelStyle);
         Styles.Add(commonStyle);
     }
@@ -158,14 +158,14 @@ internal class RibbonBadgeAdorner : Control
         {
             HorizontalAlignment = HorizontalAlignment.Left;
             VerticalAlignment   = VerticalAlignment.Top;
-            _textBlock = new TextBlock
+            _labelText = new SingleLineText()
             {
                 Text                = Text,
                 HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment   = VerticalAlignment.Center
             };
-            ((ISetLogicalParent)_textBlock).SetParent(this);
-            VisualChildren.Add(_textBlock);
+            ((ISetLogicalParent)_labelText).SetParent(this);
+            VisualChildren.Add(_labelText);
             BuildCornerGeometry();
             _initialized = true;
         }
@@ -187,9 +187,9 @@ internal class RibbonBadgeAdorner : Control
 
     protected override Size ArrangeOverride(Size finalSize)
     {
-        if (_textBlock is not null)
+        if (_labelText is not null)
         {
-            _textBlock.Arrange(GetTextRect());
+            _labelText.Arrange(GetTextRect());
         }
 
         return finalSize;
@@ -243,7 +243,7 @@ internal class RibbonBadgeAdorner : Control
 
     private Rect GetTextRect()
     {
-        if (_textBlock is null)
+        if (_labelText is null)
         {
             return default;
         }
@@ -255,7 +255,7 @@ internal class RibbonBadgeAdorner : Control
             offsetY += BadgeRibbonOffset.Y;
             if (Placement == RibbonBadgePlacement.End)
             {
-                offsetX = DesiredSize.Width - _textBlock.DesiredSize.Width + BadgeRibbonOffset.X;
+                offsetX = DesiredSize.Width - _labelText.DesiredSize.Width + BadgeRibbonOffset.X;
             }
             else
             {
@@ -263,7 +263,7 @@ internal class RibbonBadgeAdorner : Control
             }
         }
 
-        return new Rect(new Point(offsetX, offsetY), _textBlock.DesiredSize);
+        return new Rect(new Point(offsetX, offsetY), _labelText.DesiredSize);
     }
 
     private Rect GetCornerRect()

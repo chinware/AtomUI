@@ -60,13 +60,13 @@ internal class CountBadgeAdornerTheme : BaseControlTheme
 
     private void BuildBadgeText(Panel layout, INameScope scope)
     {
-        var badgeText = new TextBlock()
+        var badgeText = new SingleLineText()
         {
             Name = BadgeTextPart,
             VerticalAlignment = VerticalAlignment.Center,
             HorizontalAlignment = HorizontalAlignment.Center
         };
-        CreateTemplateParentBinding(badgeText, TextBlock.TextProperty, CountBadgeAdorner.CountTextProperty);
+        CreateTemplateParentBinding(badgeText, SingleLineText.TextProperty, CountBadgeAdorner.CountTextProperty);
         layout.Children.Add(badgeText);
         badgeText.RegisterInNameScope(scope);
     }
@@ -89,9 +89,9 @@ internal class CountBadgeAdornerTheme : BaseControlTheme
             commonStyle.Add(indicatorStyle);
         
             var badgeTextStyle = new Style(selector => selector.Nesting().Template().Name(BadgeTextPart));
-            badgeTextStyle.Add(TextBlock.ForegroundProperty, BadgeTokenKey.BadgeTextColor);
-            badgeTextStyle.Add(TextBlock.FontSizeProperty, BadgeTokenKey.TextFontSize);
-            badgeTextStyle.Add(TextBlock.PaddingProperty, BadgeTokenKey.CountBadgeTextPadding);
+            badgeTextStyle.Add(SingleLineText.ForegroundProperty, BadgeTokenKey.BadgeTextColor);
+            badgeTextStyle.Add(SingleLineText.FontSizeProperty, BadgeTokenKey.TextFontSize);
+            badgeTextStyle.Add(SingleLineText.PaddingProperty, BadgeTokenKey.CountBadgeTextPadding);
             commonStyle.Add(badgeTextStyle);
         }
         
