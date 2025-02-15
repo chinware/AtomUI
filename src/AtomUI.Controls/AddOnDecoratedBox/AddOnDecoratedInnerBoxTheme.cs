@@ -228,11 +228,12 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
         {
             var transitionsStyle = new Style(selector => selector.Nesting().PropertyEquals(AddOnDecoratedInnerBox.IsMotionEnabledProperty, true));
             var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(InnerBoxDecoratorPart));
-            decoratorStyle.Add(new Setter(Border.TransitionsProperty, new Transitions
+            
+            decoratorStyle.Add(new Setter(Border.TransitionsProperty, new SetterValueFactory<Transitions>(() => new Transitions
             {
                 AnimationUtils.CreateTransition<SolidColorBrushTransition>(Border.BorderBrushProperty),
                 AnimationUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty)
-            }));
+            })));
             transitionsStyle.Add(decoratorStyle);
             commonStyle.Add(transitionsStyle);
         }
@@ -317,8 +318,7 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
             {
                 var innerBoxDecoratorStyle =
                     new Style(selector => selector.Nesting().Template().Name(InnerBoxDecoratorPart));
-                innerBoxDecoratorStyle.Add(Border.BorderBrushProperty,
-                    AddOnDecoratedBoxTokenKey.HoverBorderColor);
+                innerBoxDecoratorStyle.Add(Border.BorderBrushProperty, AddOnDecoratedBoxTokenKey.HoverBorderColor);
                 hoverStyle.Add(innerBoxDecoratorStyle);
             }
 
@@ -328,8 +328,7 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
             {
                 var innerBoxDecoratorStyle =
                     new Style(selector => selector.Nesting().Template().Name(InnerBoxDecoratorPart));
-                innerBoxDecoratorStyle.Add(Border.BorderBrushProperty,
-                    AddOnDecoratedBoxTokenKey.ActiveBorderColor);
+                innerBoxDecoratorStyle.Add(Border.BorderBrushProperty, AddOnDecoratedBoxTokenKey.ActiveBorderColor);
                 focusStyle.Add(innerBoxDecoratorStyle);
             }
             outlineStyle.Add(focusStyle);
@@ -431,8 +430,7 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
             {
                 var innerBoxDecoratorStyle =
                     new Style(selector => selector.Nesting().Template().Name(InnerBoxDecoratorPart));
-                innerBoxDecoratorStyle.Add(Border.BorderBrushProperty,
-                    AddOnDecoratedBoxTokenKey.ActiveBorderColor);
+                innerBoxDecoratorStyle.Add(Border.BorderBrushProperty, AddOnDecoratedBoxTokenKey.ActiveBorderColor);
                 innerBoxDecoratorStyle.Add(Border.BackgroundProperty, SharedTokenKey.ColorTransparent);
                 focusStyle.Add(innerBoxDecoratorStyle);
             }

@@ -139,13 +139,7 @@ internal class AlertTheme : BaseControlTheme
         {
             Name = InfoIconPart
         };
-        infoIcon.Bind(Visual.IsVisibleProperty, new Binding("IsShowIcon")
-        {
-            RelativeSource = new RelativeSource
-            {
-                Mode = RelativeSourceMode.TemplatedParent
-            }
-        });
+        CreateTemplateParentBinding(infoIcon, Visual.IsVisibleProperty, Alert.IsShowIconProperty);
         Grid.SetRow(infoIcon, 0);
         Grid.SetColumn(infoIcon, 0);
         return infoIcon;
@@ -174,13 +168,7 @@ internal class AlertTheme : BaseControlTheme
             HorizontalAlignment = HorizontalAlignment.Stretch,
             Padding             = new Thickness(0)
         };
-        label.Bind(Visual.IsVisibleProperty, new Binding("IsMessageMarqueEnabled")
-        {
-            RelativeSource = new RelativeSource
-            {
-                Mode = RelativeSourceMode.TemplatedParent
-            }
-        });
+        CreateTemplateParentBinding(label, Visual.IsVisibleProperty, Alert.IsMessageMarqueEnabledProperty);
         BindUtils.RelayBind(alert, Alert.MessageProperty, label, MarqueeLabel.TextProperty);
         return label;
     }
@@ -343,7 +331,7 @@ internal class AlertTheme : BaseControlTheme
             var successStyle = new Style(selector =>
                 selector.Nesting().PropertyEquals(Alert.TypeProperty, AlertType.Success));
             var infoIconStyle = new Style(selector => infoIconSelector);
-            infoIconStyle.Add(Icon.IconInfoProperty, AntDesignIconPackage.Current.GetIconInfo(AntDesignIconKind.CheckCircleFilled));
+            infoIconStyle.Add(Icon.IconInfoProperty, new SetterValueFactory<IconInfo>(() => AntDesignIconPackage.Current.GetIconInfo(AntDesignIconKind.CheckCircleFilled)));
             infoIconStyle.Add(Icon.NormalFilledBrushProperty, SharedTokenKey.ColorSuccess);
             successStyle.Add(infoIconStyle);
             Add(successStyle);

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis;
@@ -60,7 +61,7 @@ public class IconPackageGenerator : IIncrementalGenerator
         initContext.RegisterSourceOutput(mergeInfo, (ctx, mergeInfo) =>
         {
             var packageName = mergeInfo.Left.Name;
-            var fileInfos   = mergeInfo.Right;
+            var fileInfos   = mergeInfo.Right.Sort((info1, info2) => string.Compare(info1.ThemeType, info2.ThemeType, StringComparison.InvariantCulture));
             GenerateIconKind(packageName, fileInfos, ctx);
             GenerateIconPackage(packageName, fileInfos, ctx);
         });
@@ -131,7 +132,7 @@ public class IconPackageGenerator : IIncrementalGenerator
             sourceText.Append(
                 $"        _iconInfoPool.Add((int){packageName}IconKind.{info.Name}{info.ThemeType}, ");
             
-            sourceText.Append("new Lazy<IconInfo>(() => new IconInfo(");
+            sourceText.Append("() => new IconInfo(");
             sourceText.Append($"\"{info.Name}{info.ThemeType}\", ");
             if (info.ThemeType == "TwoTone")
             {
@@ -167,7 +168,46 @@ public class IconPackageGenerator : IIncrementalGenerator
                 }
             }
 
-            sourceText.Append("})));\n");
+            sourceText.Append("}));\n");
+        }
+        
+        // 生成 Range 设置代码
+        var ranges = new Dictionary<string, List<int>>();
+        for (var i = 0; i < fileInfos.Length; ++i)
+        {
+            var themeType = fileInfos[i].ThemeType;
+            if (!ranges.ContainsKey(themeType))
+            {
+                var rangeInfo = new List<int>()
+                {
+                    -1, -1
+                };
+                ranges.Add(themeType, rangeInfo);
+            }
+            
+            var range = ranges[themeType];
+            Debug.Assert(range != null);
+            var currentValue = i + 1;
+            var min          = range![0];
+            var max          = range[1];
+            if (min == -1)
+            {
+                min = currentValue;
+            }
+            else
+            {
+                min = Math.Min(min, currentValue);
+            }
+            max      = Math.Max(max, currentValue);
+            range[0] = min;
+            range[1] = max;
+        }
+
+        foreach (var rangeInfo in ranges)
+        {
+            var themeType = rangeInfo.Key!;
+            var range = rangeInfo.Value;
+            sourceText.Append($"        IconThemeRanges.Add(IconThemeType.{themeType}, ({range[0]}, {range[1]}));\n");
         }
 
         sourceText.AppendLine("    }");
