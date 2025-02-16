@@ -7,7 +7,6 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
-using Avalonia.Input;
 using Avalonia.Layout;
 
 namespace AtomUI.Controls;
@@ -72,7 +71,6 @@ public class ToggleIconButton : ToggleButton,
     public ToggleIconButton()
     {
         this.RegisterResources();
-        Cursor = new Cursor(StandardCursorType.Hand);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)

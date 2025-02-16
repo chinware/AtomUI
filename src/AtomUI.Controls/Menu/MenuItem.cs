@@ -9,7 +9,6 @@ using Avalonia.Controls.Converters;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
-using Avalonia.Input;
 using Avalonia.Layout;
 using AnimationUtils = AtomUI.Utils.AnimationUtils;
 
@@ -48,7 +47,6 @@ public class MenuItem : AvaloniaMenuItem
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        Cursor              = new Cursor(StandardCursorType.Hand);
         HorizontalAlignment = HorizontalAlignment.Stretch;
         HandleTemplateApplied(e.NameScope);
     }

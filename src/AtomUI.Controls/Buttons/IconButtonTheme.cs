@@ -8,8 +8,8 @@ using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Input;
 using Avalonia.Layout;
-using Avalonia.Media;
 using Avalonia.Styling;
 
 namespace AtomUI.Controls;
@@ -46,10 +46,12 @@ internal class IconButtonTheme : BaseControlTheme
 
     protected override void BuildStyles()
     {
+        var commonStyle = new Style(selector => selector.Nesting());
+        commonStyle.Add(IconButton.CursorProperty, new SetterValueFactory<Cursor>(() => new Cursor(StandardCursorType.Hand)));
         {
             var contentStyle = new Style(selector => selector.Nesting().Template().Name(IconContentPart));
             contentStyle.Add(ContentPresenter.BackgroundProperty, SharedTokenKey.ColorTransparent);
-            Add(contentStyle);
+            commonStyle.Add(contentStyle);
         }
         {
             var enableMotionStyle = new Style(selector => selector.Nesting().PropertyEquals(IconButton.IsMotionEnabledProperty, true));
@@ -59,7 +61,7 @@ internal class IconButtonTheme : BaseControlTheme
                 AnimationUtils.CreateTransition<SolidColorBrushTransition>(ContentPresenter.BackgroundProperty)
             }));
             enableMotionStyle.Add(contentStyle);
-            Add(enableMotionStyle);
+            commonStyle.Add(enableMotionStyle);
         }
         var enableHoverBgStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(IconButton.IsEnableHoverEffectProperty, true)
@@ -67,10 +69,10 @@ internal class IconButtonTheme : BaseControlTheme
         {
             var contentStyle = new Style(selector => selector.Nesting().Template().Name(IconContentPart));
             contentStyle.Add(ContentPresenter.BackgroundProperty, SharedTokenKey.ColorBgTextHover);
-            Add(contentStyle);
             enableHoverBgStyle.Add(contentStyle);
         }
-        Add(enableHoverBgStyle);
+        commonStyle.Add(enableHoverBgStyle);
+        Add(commonStyle);
     }
 
     protected override void BuildInstanceStyles(Control control)

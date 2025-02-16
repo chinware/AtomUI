@@ -133,7 +133,6 @@ public class OptionButton : AvaloniaRadioButton,
     public OptionButton()
     {
         _borderRenderHelper = new BorderRenderHelper();
-        Cursor              = new Cursor(StandardCursorType.Hand);
     }
 
     protected override Size MeasureOverride(Size availableSize)

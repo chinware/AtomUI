@@ -248,6 +248,7 @@ internal class MenuItemTheme : BaseControlTheme
     private void BuildCommonStyle(Style commonStyle)
     {
         commonStyle.Add(TemplatedControl.ForegroundProperty, MenuTokenKey.ItemColor);
+        commonStyle.Add(TemplatedControl.CursorProperty, new SetterValueFactory<Cursor>(() => new Cursor(StandardCursorType.Hand)));
         {
             var keyGestureStyle = new Style(selector => selector.Nesting().Template().Name(InputGestureTextPart));
             keyGestureStyle.Add(SingleLineText.ForegroundProperty, MenuTokenKey.KeyGestureColor);

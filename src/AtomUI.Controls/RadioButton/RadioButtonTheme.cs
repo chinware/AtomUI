@@ -78,7 +78,7 @@ internal class RadioButtonTheme : BaseControlTheme
     protected override void BuildStyles()
     {
         var commonStyle = new Style(selector => selector.Nesting());
-        commonStyle.Add(RadioButton.CursorProperty, new Cursor(StandardCursorType.Hand));
+        commonStyle.Add(RadioButton.CursorProperty, new SetterValueFactory<Cursor>(() => new Cursor(StandardCursorType.Hand)));
         commonStyle.Add(RadioButton.HorizontalAlignmentProperty, HorizontalAlignment.Left);
 
         var disableStyle =

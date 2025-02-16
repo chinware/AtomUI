@@ -43,6 +43,7 @@ internal class ToggleIconButtonTheme : BaseControlTheme
     {
         var enabledStyle =
             new Style(selector => selector.Nesting().PropertyEquals(InputElement.IsEnabledProperty, true));
+        enabledStyle.Add(ToggleIconButton.CursorProperty, new SetterValueFactory<Cursor>(() => new Cursor(StandardCursorType.Hand)));
         {
             {
                 var iconStyle = new Style(selector => selector.Nesting().Template().OfType<Icon>());

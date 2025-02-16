@@ -1,12 +1,9 @@
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
-using AtomUI.IconPkg.AntDesign;
 using AtomUI.Media;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls.Primitives;
-using Avalonia.Data;
-using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Media;
 
@@ -166,7 +163,6 @@ internal class NodeSwitcherButton : ToggleButton
 
     public NodeSwitcherButton()
     {
-        SetCurrentValue(CursorProperty, new Cursor(StandardCursorType.Hand));
         _borderRenderHelper = new BorderRenderHelper();
     }
 

@@ -1,5 +1,4 @@
-﻿using AtomUI.Controls.Internal;
-using AtomUI.IconPkg;
+﻿using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
@@ -120,7 +119,7 @@ internal abstract class BaseButtonTheme : BaseControlTheme
     {
         this.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Left);
         this.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Bottom);
-        this.Add(InputElement.CursorProperty, new Cursor(StandardCursorType.Hand));
+        this.Add(InputElement.CursorProperty, new SetterValueFactory<Cursor>(() => new Cursor(StandardCursorType.Hand)));
         this.Add(Button.DefaultShadowProperty, ButtonTokenKey.DefaultShadow);
         this.Add(Button.PrimaryShadowProperty, ButtonTokenKey.PrimaryShadow);
         this.Add(Button.DangerShadowProperty, ButtonTokenKey.DangerShadow);

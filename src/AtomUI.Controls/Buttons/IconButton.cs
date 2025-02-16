@@ -1,10 +1,10 @@
 using AtomUI.Data;
 using AtomUI.IconPkg;
+using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.Input;
 using Avalonia.Rendering;
 
 namespace AtomUI.Controls;
@@ -13,7 +13,8 @@ using AvaloniaButton = Avalonia.Controls.Button;
 
 public class IconButton : AvaloniaButton,
                           ICustomHitTest,
-                          IAnimationAwareControl
+                          IAnimationAwareControl,
+                          IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
 
@@ -94,6 +95,8 @@ public class IconButton : AvaloniaButton,
     #region 内部属性定义
 
     Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IControlSharedTokenResourcesHost.HostControl => this;
+    string IControlSharedTokenResourcesHost.TokenId => ButtonToken.ID;
 
     #endregion
 
@@ -104,8 +107,8 @@ public class IconButton : AvaloniaButton,
 
     public IconButton()
     {
+        this.RegisterResources();
         this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
-        Cursor = new Cursor(StandardCursorType.Hand);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)

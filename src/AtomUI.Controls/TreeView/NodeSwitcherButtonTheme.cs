@@ -1,5 +1,4 @@
 using AtomUI.IconPkg;
-using AtomUI.IconPkg.AntDesign;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using Avalonia.Controls;
@@ -131,6 +130,7 @@ internal class NodeSwitcherButtonTheme : BaseControlTheme
         base.BuildStyles();
         
         var commonStyle = new Style(selector => selector.Nesting());
+        commonStyle.Add(NodeSwitcherButton.CursorProperty, new SetterValueFactory<Cursor>(() => new Cursor(StandardCursorType.Hand)));
         commonStyle.Add(TemplatedControl.BackgroundProperty, Brushes.Transparent);
         commonStyle.Add(TemplatedControl.CornerRadiusProperty, SharedTokenKey.BorderRadius);
         

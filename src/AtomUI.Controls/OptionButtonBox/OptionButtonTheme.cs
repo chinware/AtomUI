@@ -8,7 +8,6 @@ using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Styling;
-using ExCSS;
 using HorizontalAlignment = Avalonia.Layout.HorizontalAlignment;
 using VerticalAlignment = Avalonia.Layout.VerticalAlignment;
 
@@ -72,6 +71,8 @@ internal class OptionButtonTheme : BaseControlTheme
         smallSizeStyle.Add(TemplatedControl.CornerRadiusProperty, SharedTokenKey.BorderRadiusSM);
 
         Add(smallSizeStyle);
+
+        this.Add(OptionButton.CursorProperty, new SetterValueFactory<Cursor>(() => new Cursor(StandardCursorType.Arrow)));
 
         BuildSolidStyle();
         BuildOutlineStyle();
