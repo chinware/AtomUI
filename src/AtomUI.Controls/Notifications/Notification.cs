@@ -4,7 +4,8 @@ using AtomUI.IconPkg;
 
 namespace AtomUI.Controls;
 
-public class Notification : INotification, INotifyPropertyChanged
+public class Notification : INotification, 
+                            INotifyPropertyChanged
 {
     private string _title;
     private object? _content;

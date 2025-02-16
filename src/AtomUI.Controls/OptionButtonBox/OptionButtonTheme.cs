@@ -72,7 +72,7 @@ internal class OptionButtonTheme : BaseControlTheme
 
         Add(smallSizeStyle);
 
-        this.Add(OptionButton.CursorProperty, new SetterValueFactory<Cursor>(() => new Cursor(StandardCursorType.Arrow)));
+        this.Add(OptionButton.CursorProperty, new SetterValueFactory<Cursor>(() => new Cursor(StandardCursorType.Hand)));
 
         BuildSolidStyle();
         BuildOutlineStyle();

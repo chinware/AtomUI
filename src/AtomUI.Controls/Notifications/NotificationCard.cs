@@ -1,10 +1,11 @@
 ﻿using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.MotionScene;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
+using AtomUI.Theme.Utils;
 using Avalonia;
-using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -16,7 +17,9 @@ using Avalonia.LogicalTree;
 namespace AtomUI.Controls;
 
 [PseudoClasses(ErrorPC, InformationPC, SuccessPC, WarningPC)]
-public class NotificationCard : ContentControl
+public class NotificationCard : ContentControl,
+                                IAnimationAwareControl,
+                                IControlSharedTokenResourcesHost
 {
     public const string ErrorPC = ":error";
     public const string InformationPC = ":information";
@@ -48,6 +51,12 @@ public class NotificationCard : ContentControl
     /// </summary>
     public static readonly StyledProperty<NotificationType> NotificationTypeProperty =
         AvaloniaProperty.Register<NotificationCard, NotificationType>(nameof(NotificationType));
+    
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AvaloniaProperty.Register<NotificationCard, bool>(nameof(IsMotionEnabled), true);
+
+    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
+        = AvaloniaProperty.Register<NotificationCard, bool>(nameof(IsWaveAnimationEnabled), true);
 
     /// <summary>
     /// Defines the <see cref="NotificationClosed" /> event.
@@ -114,6 +123,18 @@ public class NotificationCard : ContentControl
         add => AddHandler(NotificationClosedEvent, value);
         remove => RemoveHandler(NotificationClosedEvent, value);
     }
+    
+    public bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
+    }
+
+    public bool IsWaveAnimationEnabled
+    {
+        get => GetValue(IsWaveAnimationEnabledProperty);
+        set => SetValue(IsWaveAnimationEnabledProperty, value);
+    }
 
     #endregion
 
@@ -158,6 +179,10 @@ public class NotificationCard : ContentControl
         set => SetAndRaise(OpenCloseMotionDurationProperty, ref _openCloseMotionDuration, value);
     }
     
+    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IControlSharedTokenResourcesHost.HostControl => this;
+    string IControlSharedTokenResourcesHost.TokenId => NotificationToken.ID;
+    
     #endregion
     
     /// <summary>
@@ -177,6 +202,8 @@ public class NotificationCard : ContentControl
     /// </summary>
     public NotificationCard(WindowNotificationManager manager)
     {
+        this.RegisterResources();
+        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
         UpdateNotificationType();
         ClipToBounds         = false;
         _notificationManager = manager;
@@ -242,33 +269,36 @@ public class NotificationCard : ContentControl
             return;
         }
 
-        AbstractMotion? motion = default;
-        if (Position == NotificationPosition.TopLeft || Position == NotificationPosition.BottomLeft)
+        if (IsMotionEnabled)
         {
-            motion = new MoveLeftInMotion(AnimationMaxOffsetX, _openCloseMotionDuration, new CubicEaseOut(),
-                FillMode.Forward);
-        }
-        else if (Position == NotificationPosition.TopRight || Position == NotificationPosition.BottomRight)
-        {
-            motion = new MoveRightInMotion(AnimationMaxOffsetX, _openCloseMotionDuration, new CubicEaseOut(),
-                FillMode.Forward);
-        }
-        else if (Position == NotificationPosition.TopCenter)
-        {
-            motion = new MoveUpInMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseOut(),
-                FillMode.Forward);
+            AbstractMotion? motion;
+            if (Position == NotificationPosition.TopLeft || Position == NotificationPosition.BottomLeft)
+            {
+                motion = new MoveLeftInMotion(AnimationMaxOffsetX, _openCloseMotionDuration, new CubicEaseOut());
+            }
+            else if (Position == NotificationPosition.TopRight || Position == NotificationPosition.BottomRight)
+            {
+                motion = new MoveRightInMotion(AnimationMaxOffsetX, _openCloseMotionDuration, new CubicEaseOut());
+            }
+            else if (Position == NotificationPosition.TopCenter)
+            {
+                motion = new MoveUpInMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseOut());
+            }
+            else
+            {
+                motion = new MoveDownInMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseOut());
+            }
+        
+            _motionActor.IsVisible = false;
+            MotionInvoker.Invoke(_motionActor, motion, () =>
+            {
+                _motionActor.IsVisible = true;
+            });
         }
         else
         {
-            motion = new MoveDownInMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseOut(),
-                FillMode.Forward);
-        }
-        
-        _motionActor.IsVisible = false;
-        MotionInvoker.Invoke(_motionActor, motion, () =>
-        {
             _motionActor.IsVisible = true;
-        });
+        }
     }
     
     private void ApplyHideMotion()
@@ -277,32 +307,36 @@ public class NotificationCard : ContentControl
         {
             return;
         }
-        AbstractMotion? motion = default;
-        if (Position == NotificationPosition.TopLeft || Position == NotificationPosition.BottomLeft)
+
+        if (IsMotionEnabled)
         {
-            motion = new MoveLeftOutMotion(AnimationMaxOffsetX, _openCloseMotionDuration, new CubicEaseIn(),
-                FillMode.Forward);
-        }
-        else if (Position == NotificationPosition.TopRight || Position == NotificationPosition.BottomRight)
-        {
-            motion = new MoveRightOutMotion(AnimationMaxOffsetX, _openCloseMotionDuration, new CubicEaseIn(),
-                FillMode.Forward);
-        }
-        else if (Position == NotificationPosition.TopCenter)
-        {
-            motion = new MoveUpOutMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseIn(),
-                FillMode.Forward);
+            AbstractMotion? motion;
+            if (Position == NotificationPosition.TopLeft || Position == NotificationPosition.BottomLeft)
+            {
+                motion = new MoveLeftOutMotion(AnimationMaxOffsetX, _openCloseMotionDuration, new CubicEaseIn());
+            }
+            else if (Position == NotificationPosition.TopRight || Position == NotificationPosition.BottomRight)
+            {
+                motion = new MoveRightOutMotion(AnimationMaxOffsetX, _openCloseMotionDuration, new CubicEaseIn());
+            }
+            else if (Position == NotificationPosition.TopCenter)
+            {
+                motion = new MoveUpOutMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseIn());
+            }
+            else
+            {
+                motion = new MoveDownOutMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseIn());
+            }
+        
+            MotionInvoker.Invoke(_motionActor, motion, null, () =>
+            {
+                IsClosed = true;
+            });
         }
         else
         {
-            motion = new MoveDownOutMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseIn(),
-                FillMode.Forward);
-        }
-        
-        MotionInvoker.Invoke(_motionActor, motion, null, () =>
-        {
             IsClosed = true;
-        });
+        }
     }
 
     private void HandleCloseButtonClose(object? sender, EventArgs args)

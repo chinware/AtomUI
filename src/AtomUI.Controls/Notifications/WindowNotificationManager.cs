@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Specialized;
 using AtomUI.Data;
+using AtomUI.Theme;
+using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -13,7 +15,10 @@ namespace AtomUI.Controls;
 
 [TemplatePart(WindowNotificationManagerTheme.ItemsPart, typeof(Panel))]
 [PseudoClasses(TopLeftPC, TopRightPC, BottomLeftPC, BottomRightPC, TopCenterPC, BottomCenterPC)]
-public class WindowNotificationManager : TemplatedControl, INotificationManager
+public class WindowNotificationManager : TemplatedControl, 
+                                         INotificationManager,
+                                         IAnimationAwareControl,
+                                         IControlSharedTokenResourcesHost
 {
     public const string TopLeftPC = ":topleft";
     public const string TopRightPC = ":topright";
@@ -27,9 +32,16 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager
     private readonly DispatcherTimer _cardExpiredTimer;
     private readonly DispatcherTimer _cleanupTimer;
 
+    #region 公共属性定义
     public static readonly StyledProperty<NotificationPosition> PositionProperty =
         AvaloniaProperty.Register<WindowNotificationManager, NotificationPosition>(
             nameof(Position), NotificationPosition.TopRight);
+    
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AvaloniaProperty.Register<WindowNotificationManager, bool>(nameof(IsMotionEnabled), true);
+
+    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
+        = AvaloniaProperty.Register<WindowNotificationManager, bool>(nameof(IsWaveAnimationEnabled), true);
 
     public static readonly StyledProperty<int> MaxItemsProperty =
         AvaloniaProperty.Register<WindowNotificationManager, int>(nameof(MaxItems), 5);
@@ -54,6 +66,35 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager
         get => GetValue(IsPauseOnHoverProperty);
         set => SetValue(IsPauseOnHoverProperty, value);
     }
+    
+    public bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
+    }
+
+    public bool IsWaveAnimationEnabled
+    {
+        get => GetValue(IsWaveAnimationEnabledProperty);
+        set => SetValue(IsWaveAnimationEnabledProperty, value);
+    }
+    
+    #endregion
+    
+    
+    #region 内部属性定义
+
+    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IControlSharedTokenResourcesHost.HostControl => this;
+    string IControlSharedTokenResourcesHost.TokenId => NotificationToken.ID;
+
+    #endregion
+    
+    static WindowNotificationManager()
+    {
+        HorizontalAlignmentProperty.OverrideDefaultValue<WindowNotificationManager>(HorizontalAlignment.Stretch);
+        VerticalAlignmentProperty.OverrideDefaultValue<WindowNotificationManager>(VerticalAlignment.Stretch);
+    }
 
     public WindowNotificationManager(TopLevel? host) : this()
     {
@@ -65,6 +106,8 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager
 
     public WindowNotificationManager()
     {
+        this.RegisterResources();
+        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
         UpdatePseudoClasses(Position);
         _cardExpiredTimer      =  new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(50), Tag = this };
         _cardExpiredTimer.Tick += HandleCardExpiredTimer;
@@ -73,17 +116,11 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager
         _cleanupQueue          =  new Queue<NotificationCard>();
     }
 
-    static WindowNotificationManager()
-    {
-        HorizontalAlignmentProperty.OverrideDefaultValue<WindowNotificationManager>(HorizontalAlignment.Stretch);
-        VerticalAlignmentProperty.OverrideDefaultValue<WindowNotificationManager>(VerticalAlignment.Stretch);
-    }
-
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
 
-        var itemsControl = e.NameScope.Find<Panel>("PART_Items");
+        var itemsControl = e.NameScope.Find<Panel>(WindowNotificationManagerTheme.ItemsPart);
         _items = itemsControl?.Children;
         if (itemsControl is not null)
         {
