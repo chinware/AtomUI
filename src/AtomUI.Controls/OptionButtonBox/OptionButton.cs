@@ -87,7 +87,7 @@ public class OptionButton : AvaloniaRadioButton,
         = AvaloniaProperty.RegisterDirect<OptionButton, bool>(nameof(IsMotionEnabled),
             o => o.IsMotionEnabled,
             (o, v) => o.IsMotionEnabled = v);
-    
+
     internal static readonly DirectProperty<OptionButton, bool> IsWaveAnimationEnabledProperty
         = AvaloniaProperty.RegisterDirect<OptionButton, bool>(nameof(IsWaveAnimationEnabled),
             o => o.IsWaveAnimationEnabled,
@@ -100,7 +100,7 @@ public class OptionButton : AvaloniaRadioButton,
         get => _isMotionEnabled;
         set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
     }
-    
+
     private bool _isWaveAnimationEnabled = true;
 
     internal bool IsWaveAnimationEnabled
@@ -171,7 +171,7 @@ public class OptionButton : AvaloniaRadioButton,
             {
                 CornerRadius = BuildCornerRadius(GroupPositionTrait, _originCornerRadius!.Value);
             }
-        } 
+        }
         else if (e.Property == IsMotionEnabledProperty)
         {
             SetupTransitions();

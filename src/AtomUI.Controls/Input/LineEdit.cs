@@ -1,5 +1,4 @@
 ﻿using AtomUI.Controls.Utils;
-using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -7,8 +6,7 @@ using Avalonia.Controls;
 namespace AtomUI.Controls;
 
 public class LineEdit : TextBox,
-                        IAnimationAwareControl,
-                        IControlSharedTokenResourcesHost
+                        IAnimationAwareControl
 {
     #region 公共属性定义
 
@@ -53,14 +51,11 @@ public class LineEdit : TextBox,
     #region 内部属性定义
 
     Control IAnimationAwareControl.PropertyBindTarget => this;
-    Control IControlSharedTokenResourcesHost.HostControl => this;
-    string IControlSharedTokenResourcesHost.TokenId => LineEditToken.ID;
 
     #endregion
 
     public LineEdit()
     {
-        this.RegisterResources();
         this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
     }
     

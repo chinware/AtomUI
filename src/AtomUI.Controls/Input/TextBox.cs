@@ -1,4 +1,6 @@
 ﻿using AtomUI.Controls.Utils;
+using AtomUI.Theme;
+using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -7,7 +9,8 @@ namespace AtomUI.Controls;
 
 using AvaloniaTextBox = Avalonia.Controls.TextBox;
 
-public class TextBox : AvaloniaTextBox
+public class TextBox : AvaloniaTextBox,
+                       IControlSharedTokenResourcesHost
 {
     public const string ErrorPC = ":error";
     public const string WarningPC = ":warning";
@@ -88,12 +91,20 @@ public class TextBox : AvaloniaTextBox
         get => _embedMode;
         set => SetAndRaise(EmbedModeProperty, ref _embedMode, value);
     }
+    
+    Control IControlSharedTokenResourcesHost.HostControl => this;
+    string IControlSharedTokenResourcesHost.TokenId => LineEditToken.ID;
 
     #endregion
 
     static TextBox()
     {
         AffectsRender<TextBox>(BorderBrushProperty, BackgroundProperty);
+    }
+
+    public TextBox()
+    {
+        this.RegisterResources();
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
