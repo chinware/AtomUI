@@ -1,8 +1,10 @@
 ﻿using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.MotionScene;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
+using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
@@ -13,14 +15,16 @@ using Avalonia.Interactivity;
 namespace AtomUI.Controls;
 
 [PseudoClasses(ErrorPC, InformationPC, SuccessPC, WarningPC, LoadingPC)]
-public class MessageCard : TemplatedControl
+public class MessageCard : TemplatedControl,
+                           IAnimationAwareControl,
+                           IControlSharedTokenResourcesHost
 {
     public const string ErrorPC = ":error";
     public const string InformationPC = ":information";
     public const string SuccessPC = ":success";
     public const string WarningPC = ":warning";
     public const string LoadingPC = ":loading";
-    
+
     internal const double AnimationMaxOffsetY = 100d;
 
     #region 公共属性定义
@@ -53,7 +57,13 @@ public class MessageCard : TemplatedControl
         = AvaloniaProperty.Register<MessageCard, Icon?>(nameof(Icon));
 
     public static readonly StyledProperty<string> MessageProperty =
-        AvaloniaProperty.Register<NotificationCard, string>(nameof(Message));
+        AvaloniaProperty.Register<MessageCard, string>(nameof(Message));
+    
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AvaloniaProperty.Register<MessageCard, bool>(nameof(IsMotionEnabled), true);
+
+    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
+        = AvaloniaProperty.Register<MessageCard, bool>(nameof(IsWaveAnimationEnabled), true);
 
     /// <summary>
     /// Determines if the notification is already closing.
@@ -102,6 +112,18 @@ public class MessageCard : TemplatedControl
         get => GetValue(MessageProperty);
         set => SetValue(MessageProperty, value);
     }
+    
+    public bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
+    }
+
+    public bool IsWaveAnimationEnabled
+    {
+        get => GetValue(IsWaveAnimationEnabledProperty);
+        set => SetValue(IsWaveAnimationEnabledProperty, value);
+    }
 
     #endregion
 
@@ -109,15 +131,20 @@ public class MessageCard : TemplatedControl
 
     internal static readonly DirectProperty<MessageCard, TimeSpan> OpenCloseMotionDurationProperty =
         AvaloniaProperty.RegisterDirect<MessageCard, TimeSpan>(nameof(OpenCloseMotionDuration),
-            o => o.OpenCloseMotionDuration, 
+            o => o.OpenCloseMotionDuration,
             (o, v) => o.OpenCloseMotionDuration = v);
-    
+
     private TimeSpan _openCloseMotionDuration;
+
     internal TimeSpan OpenCloseMotionDuration
     {
         get => _openCloseMotionDuration;
         set => SetAndRaise(OpenCloseMotionDurationProperty, ref _openCloseMotionDuration, value);
     }
+    
+    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IControlSharedTokenResourcesHost.HostControl => this;
+    string IControlSharedTokenResourcesHost.TokenId => MessageToken.ID;
 
     #endregion
 
@@ -129,6 +156,8 @@ public class MessageCard : TemplatedControl
     /// </summary>
     public MessageCard()
     {
+        this.RegisterResources();
+        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
         UpdateMessageType();
         ClipToBounds = false;
     }
@@ -188,8 +217,9 @@ public class MessageCard : TemplatedControl
             SetupMessageIcon();
             UpdateMessageType();
         }
+
         TokenResourceBinder.CreateTokenBinding(this, OpenCloseMotionDurationProperty, SharedTokenKey.MotionDurationMid);
-        _motionActor           = e.NameScope.Find<MotionActorControl>(MessageCardTheme.MotionActorPart);
+        _motionActor = e.NameScope.Find<MotionActorControl>(MessageCardTheme.MotionActorPart);
         ApplyShowMotion();
     }
 
@@ -197,12 +227,16 @@ public class MessageCard : TemplatedControl
     {
         if (_motionActor is not null)
         {
-            _motionActor.IsVisible = false;
-            var motion = new MoveUpInMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseOut());
-            MotionInvoker.Invoke(_motionActor, motion, () =>
+            if (IsMotionEnabled)
+            {
+                _motionActor.IsVisible = false;
+                var motion = new MoveUpInMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseOut());
+                MotionInvoker.Invoke(_motionActor, motion, () => { _motionActor.IsVisible = true; });
+            }
+            else
             {
                 _motionActor.IsVisible = true;
-            });
+            }
         }
     }
 
@@ -210,14 +244,18 @@ public class MessageCard : TemplatedControl
     {
         if (_motionActor is not null)
         {
-            var motion = new MoveUpOutMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseIn());
-            MotionInvoker.Invoke(_motionActor, motion, null, () =>
+            if (IsMotionEnabled)
+            {
+                var motion = new MoveUpOutMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseIn());
+                MotionInvoker.Invoke(_motionActor, motion, null, () => { IsClosed = true; });
+            }
+            else
             {
                 IsClosed = true;
-            });
+            }
         }
     }
-    
+
     private void UpdateMessageType()
     {
         switch (MessageType)
@@ -249,27 +287,27 @@ public class MessageCard : TemplatedControl
         }
     }
 
-    private void SetupMessageIconColor(Icon Icon)
+    private void SetupMessageIconColor(Icon icon)
     {
         if (MessageType == MessageType.Error)
         {
-            TokenResourceBinder.CreateTokenBinding(Icon, Icon.NormalFilledBrushProperty,
+            TokenResourceBinder.CreateTokenBinding(icon, Icon.NormalFilledBrushProperty,
                 SharedTokenKey.ColorError);
         }
         else if (MessageType == MessageType.Information ||
                  MessageType == MessageType.Loading)
         {
-            TokenResourceBinder.CreateTokenBinding(Icon, Icon.NormalFilledBrushProperty,
+            TokenResourceBinder.CreateTokenBinding(icon, Icon.NormalFilledBrushProperty,
                 SharedTokenKey.ColorPrimary);
         }
         else if (MessageType == MessageType.Success)
         {
-            TokenResourceBinder.CreateTokenBinding(Icon, Icon.NormalFilledBrushProperty,
+            TokenResourceBinder.CreateTokenBinding(icon, Icon.NormalFilledBrushProperty,
                 SharedTokenKey.ColorSuccess);
         }
         else if (MessageType == MessageType.Warning)
         {
-            TokenResourceBinder.CreateTokenBinding(Icon, Icon.NormalFilledBrushProperty,
+            TokenResourceBinder.CreateTokenBinding(icon, Icon.NormalFilledBrushProperty,
                 SharedTokenKey.ColorWarning);
         }
     }

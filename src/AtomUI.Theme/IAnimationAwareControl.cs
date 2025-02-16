@@ -4,7 +4,7 @@ namespace AtomUI.Controls;
 
 public interface IAnimationAwareControl
 {
-    bool IsMotionEnabled { get; set; }
-    bool IsWaveAnimationEnabled { get; set; }
+    bool IsMotionEnabled { get; }
+    bool IsWaveAnimationEnabled { get; }
     Control PropertyBindTarget { get; }
 }

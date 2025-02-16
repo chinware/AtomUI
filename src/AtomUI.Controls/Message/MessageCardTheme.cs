@@ -95,7 +95,7 @@ internal class MessageCardTheme : BaseControlTheme
         TokenResourceBinder.CreateTokenBinding(message, SelectableTextBlock.SelectionForegroundBrushProperty,
             SharedTokenKey.SelectionForeground);
 
-        CreateTemplateParentBinding(message, TextBlock.TextProperty, MessageCard.MessageProperty);
+        CreateTemplateParentBinding(message, SelectableTextBlock.TextProperty, MessageCard.MessageProperty);
         headerLayout.Children.Add(message);
         return headerLayout;
     }

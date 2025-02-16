@@ -1,4 +1,7 @@
 ﻿using System.Collections;
+using AtomUI.Data;
+using AtomUI.Theme;
+using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -10,16 +13,25 @@ using Avalonia.VisualTree;
 namespace AtomUI.Controls;
 
 [TemplatePart(WindowNotificationManagerTheme.ItemsPart, typeof(Panel))]
-public class WindowMessageManager : TemplatedControl, IMessageManager
+public class WindowMessageManager : TemplatedControl,
+                                    IMessageManager,
+                                    IAnimationAwareControl,
+                                    IControlSharedTokenResourcesHost
 {
-    private IList? _items;
+    #region 公共属性定义
 
     /// <summary>
     /// Defines the <see cref="Position" /> property.
     /// </summary>
     public static readonly StyledProperty<NotificationPosition> PositionProperty =
-        AvaloniaProperty.Register<WindowNotificationManager, NotificationPosition>(
+        AvaloniaProperty.Register<WindowMessageManager, NotificationPosition>(
             nameof(Position), NotificationPosition.TopRight);
+
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AvaloniaProperty.Register<WindowMessageManager, bool>(nameof(IsMotionEnabled), true);
+
+    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
+        = AvaloniaProperty.Register<WindowMessageManager, bool>(nameof(IsWaveAnimationEnabled), true);
 
     /// <summary>
     /// Defines which corner of the screen notifications can be displayed in.
@@ -46,12 +58,38 @@ public class WindowMessageManager : TemplatedControl, IMessageManager
         set => SetValue(MaxItemsProperty, value);
     }
 
+    public bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
+    }
+
+    public bool IsWaveAnimationEnabled
+    {
+        get => GetValue(IsWaveAnimationEnabledProperty);
+        set => SetValue(IsWaveAnimationEnabledProperty, value);
+    }
+
+    #endregion
+
+    #region 内部属性定义
+
+    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IControlSharedTokenResourcesHost.HostControl => this;
+    string IControlSharedTokenResourcesHost.TokenId => MessageToken.ID;
+
+    #endregion
+
+    private IList? _items;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="WindowNotificationManager" /> class.
     /// </summary>
     /// <param name="host">The TopLevel that will host the control.</param>
     public WindowMessageManager(TopLevel? host)
     {
+        this.RegisterResources();
+        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
         if (host is not null)
         {
             InstallFromTopLevel(host);
@@ -90,13 +128,15 @@ public class WindowMessageManager : TemplatedControl, IMessageManager
             Message     = message.Content,
             MessageType = message.Type
         };
+        BindUtils.RelayBind(this, IsMotionEnabledProperty, messageControl, MessageCard.IsMotionEnabledProperty);
+        BindUtils.RelayBind(this, IsWaveAnimationEnabledProperty, messageControl, MessageCard.IsWaveAnimationEnabledProperty);
 
         // Add style classes if any
         if (classes != null)
         {
-            foreach (var @class in classes)
+            foreach (var cls in classes)
             {
-                messageControl.Classes.Add(@class);
+                messageControl.Classes.Add(cls);
             }
         }
 
