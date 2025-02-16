@@ -19,6 +19,23 @@ public class MenuScrollViewer : AvaloniaScrollViewer
     private IconButton? _scrollDownButton;
     private ScrollContentPresenter? _scrollViewContent;
 
+    #region 内部属性定义
+
+    internal static readonly DirectProperty<MenuScrollViewer, bool> IsMotionEnabledProperty
+        = AvaloniaProperty.RegisterDirect<MenuScrollViewer, bool>(nameof(IsMotionEnabled),
+            o => o.IsMotionEnabled,
+            (o, v) => o.IsMotionEnabled = v);
+
+    private bool _isMotionEnabled = true;
+
+    internal bool IsMotionEnabled
+    {
+        get => _isMotionEnabled;
+        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
+    }
+
+    #endregion
+    
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);

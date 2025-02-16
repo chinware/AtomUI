@@ -1,4 +1,5 @@
 ﻿using AtomUI.Data;
+using AtomUI.IconPkg;
 using AtomUI.Media;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -33,6 +34,23 @@ public class MenuItem : AvaloniaMenuItem
     }
 
     #endregion
+
+    #region 内部属性定义
+
+    internal static readonly DirectProperty<MenuItem, bool> IsMotionEnabledProperty
+        = AvaloniaProperty.RegisterDirect<MenuItem, bool>(nameof(IsMotionEnabled), 
+            o => o.IsMotionEnabled,
+            (o, v) => o.IsMotionEnabled = v);
+    
+    private bool _isMotionEnabled = true;
+
+    internal bool IsMotionEnabled
+    {
+        get => _isMotionEnabled;
+        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
+    }
+
+    #endregion
     
     private ContentPresenter? _topLevelContentPresenter;
     private ContentControl? _togglePresenter;
@@ -48,22 +66,7 @@ public class MenuItem : AvaloniaMenuItem
     {
         base.OnApplyTemplate(e);
         HorizontalAlignment = HorizontalAlignment.Stretch;
-        HandleTemplateApplied(e.NameScope);
-    }
-
-    private void SetupTransitions()
-    {
-        if (_topLevelContentPresenter is not null && _topLevelContentPresenter.Transitions is null)
-        {
-            var transitions = new Transitions();
-            transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty));
-            transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty));
-            _topLevelContentPresenter.Transitions = transitions;
-        }
-    }
-
-    private void HandleTemplateApplied(INameScope scope)
-    {
+        var scope = e.NameScope;
         if (IsTopLevel)
         {
             _topLevelContentPresenter = scope.Find<ContentPresenter>(TopLevelMenuItemTheme.HeaderPresenterPart);
@@ -77,6 +80,25 @@ public class MenuItem : AvaloniaMenuItem
         SetupTransitions();
         UpdatePseudoClasses();
     }
+
+    private void SetupTransitions()
+    {
+        if (_topLevelContentPresenter is not null)
+        {
+            if (IsMotionEnabled)
+            {
+                _topLevelContentPresenter.Transitions ??= new Transitions
+                {
+                    AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty),
+                    AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty)
+                };
+            }
+            else
+            {
+                _topLevelContentPresenter.Transitions = null;
+            }
+        }
+    }
     
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
@@ -87,7 +109,7 @@ public class MenuItem : AvaloniaMenuItem
         }
         else if (e.Property == IconProperty)
         {
-            if (Icon is not null && Icon is IconPkg.Icon icon)
+            if (Icon is Icon icon)
             {
                 TokenResourceBinder.CreateTokenBinding(icon, WidthProperty, MenuTokenKey.ItemIconSize);
                 TokenResourceBinder.CreateTokenBinding(icon, HeightProperty, MenuTokenKey.ItemIconSize);
@@ -98,6 +120,10 @@ public class MenuItem : AvaloniaMenuItem
         else if (e.Property == ToggleTypeProperty)
         {
             HandleToggleTypeChanged();
+        }
+        else if (e.Property == IsMotionEnabledProperty)
+        {
+            SetupTransitions();
         }
     }
 
@@ -135,5 +161,16 @@ public class MenuItem : AvaloniaMenuItem
     private void UpdatePseudoClasses()
     {
         PseudoClasses.Set(TopLevelPC, IsTopLevel);
+    }
+    
+    protected override void PrepareContainerForItemOverride(Control container, object? item, int index)
+    {
+        if (container is MenuItem menuItem)
+        {
+            BindUtils.RelayBind(this, SizeTypeProperty, menuItem, SizeTypeProperty);
+            BindUtils.RelayBind(this, IsMotionEnabledProperty, menuItem, IsMotionEnabledProperty);
+        }
+
+        base.PrepareContainerForItemOverride(container, item, index);
     }
 }

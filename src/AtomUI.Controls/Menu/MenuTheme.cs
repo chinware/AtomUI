@@ -44,10 +44,8 @@ internal class MenuTheme : BaseControlTheme
             };
             CreateTemplateParentBinding(border, Decorator.PaddingProperty, TemplatedControl.PaddingProperty);
             CreateTemplateParentBinding(border, Border.BackgroundProperty, TemplatedControl.BackgroundProperty);
-            CreateTemplateParentBinding(border, Border.BackgroundSizingProperty,
-                TemplatedControl.BackgroundSizingProperty);
-            CreateTemplateParentBinding(border, Border.BorderThicknessProperty,
-                TemplatedControl.BorderThicknessProperty);
+            CreateTemplateParentBinding(border, Border.BackgroundSizingProperty, TemplatedControl.BackgroundSizingProperty);
+            CreateTemplateParentBinding(border, Border.BorderThicknessProperty, TemplatedControl.BorderThicknessProperty);
             CreateTemplateParentBinding(border, Border.BorderBrushProperty, TemplatedControl.BorderBrushProperty);
             CreateTemplateParentBinding(border, Border.CornerRadiusProperty, TemplatedControl.CornerRadiusProperty);
             return border;

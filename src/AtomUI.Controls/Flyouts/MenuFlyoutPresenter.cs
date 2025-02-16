@@ -1,4 +1,5 @@
-﻿using AtomUI.Theme;
+﻿using AtomUI.Data;
+using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -208,6 +209,16 @@ public class MenuFlyoutPresenter : MenuBase,
         }
 
         return Bounds;
+    }
+    
+    protected override void PrepareContainerForItemOverride(Control container, object? item, int index)
+    {
+        if (container is MenuItem menuItem)
+        {
+            BindUtils.RelayBind(this, IsMotionEnabledProperty, menuItem, MenuItem.IsMotionEnabledProperty);
+        }
+
+        base.PrepareContainerForItemOverride(container, item, index);
     }
 }
 

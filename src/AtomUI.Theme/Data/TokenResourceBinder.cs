@@ -22,6 +22,16 @@ public static class TokenResourceBinder
     {
         return target.Bind(targetProperty, new DynamicResourceExtension(resourceKey));
     }
+    
+    public static IDisposable CreateTokenBinding(AvaloniaObject target,
+                                                 AvaloniaProperty targetProperty,
+                                                 Control context,
+                                                 TokenResourceKey resourceKey,
+                                                 BindingPriority priority = BindingPriority.Template,
+                                                 Func<object?, object?>? converter = null)
+    {
+        return target.Bind(targetProperty, context.GetResourceObservable(resourceKey, converter), priority);
+    }
 
     public static IDisposable CreateTokenBinding(Control target,
         AvaloniaProperty targetProperty,

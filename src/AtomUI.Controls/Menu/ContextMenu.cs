@@ -1,17 +1,53 @@
 ﻿using System.ComponentModel;
 using System.Reflection;
+using AtomUI.Data;
 using AtomUI.Reflection;
+using AtomUI.Theme;
+using AtomUI.Theme.Utils;
+using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Input;
-using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
 using AvaloniaContextMenu = Avalonia.Controls.ContextMenu;
 
-public class ContextMenu : AvaloniaContextMenu
+public class ContextMenu : AvaloniaContextMenu,
+                           IAnimationAwareControl,
+                           IControlSharedTokenResourcesHost
 {
     private static readonly FieldInfo PopupFieldInfo;
     private static readonly EventInfo ClosingEventInfo;
+
+    #region 公共属性定义
+
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AvaloniaProperty.Register<ContextMenu, bool>(nameof(IsMotionEnabled), true);
+
+    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
+        = AvaloniaProperty.Register<ContextMenu, bool>(nameof(IsWaveAnimationEnabled), true);
+    
+    public bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
+    }
+
+    public bool IsWaveAnimationEnabled
+    {
+        get => GetValue(IsWaveAnimationEnabledProperty);
+        set => SetValue(IsWaveAnimationEnabledProperty, value);
+    }
+
+    #endregion
+
+    #region 内部属性定义
+    
+    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IControlSharedTokenResourcesHost.HostControl => this;
+    string IControlSharedTokenResourcesHost.TokenId => MenuToken.ID;
+
+    #endregion
 
     static ContextMenu()
     {
@@ -22,7 +58,8 @@ public class ContextMenu : AvaloniaContextMenu
 
     public ContextMenu()
     {
-        Background   = new SolidColorBrush(Colors.Transparent);
+        this.RegisterResources();
+        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
         // 我们在这里有一次初始化的机会
         var popup = new Popup
         {
@@ -30,9 +67,9 @@ public class ContextMenu : AvaloniaContextMenu
             IsLightDismissEnabled          = true,
             OverlayDismissEventPassThrough = true
         };
+        BindUtils.RelayBind(this, IsMotionEnabledProperty, popup, Popup.IsMotionEnabledProperty);
         popup.Opened += CreateEventHandler("PopupOpened");
         popup.Closed += CreateEventHandler<EventArgs>("PopupClosed");
-        // popup.Closing += PopupClosing;
 
         var closingEventAddMethod = ClosingEventInfo.GetAddMethod(true);
         closingEventAddMethod?.Invoke(popup, new object?[] { CreateEventHandler<CancelEventArgs>("PopupClosing") });
@@ -61,5 +98,15 @@ public class ContextMenu : AvaloniaContextMenu
         }
 
         return null;
+    }
+    
+    protected override void PrepareContainerForItemOverride(Control container, object? item, int index)
+    {
+        if (container is MenuItem menuItem)
+        {
+            BindUtils.RelayBind(this, IsMotionEnabledProperty, menuItem, MenuItem.IsMotionEnabledProperty);
+        }
+
+        base.PrepareContainerForItemOverride(container, item, index);
     }
 }

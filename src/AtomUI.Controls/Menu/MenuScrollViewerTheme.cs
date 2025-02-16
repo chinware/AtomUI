@@ -32,9 +32,6 @@ internal class MenuScrollViewerTheme : BaseControlTheme
     {
         return new FuncControlTemplate<MenuScrollViewer>((viewer, scope) =>
         {
-            var transitions = new Transitions();
-            transitions.Add(
-                AnimationUtils.CreateTransition<SolidColorBrushTransition>(TemplatedControl.BackgroundProperty));
             var dockPanel = new DockPanel();
             var scrollUpButton = new IconButton
             {
@@ -42,7 +39,6 @@ internal class MenuScrollViewerTheme : BaseControlTheme
                 Icon = AntDesignIconPackage.UpOutlined(),
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment   = VerticalAlignment.Center,
-                Transitions         = transitions,
                 RenderTransform     = null
             };
             CreateTemplateParentBinding(scrollUpButton, Button.CommandProperty, nameof(MenuScrollViewer.LineUp));
@@ -57,7 +53,6 @@ internal class MenuScrollViewerTheme : BaseControlTheme
                 Icon = AntDesignIconPackage.DownOutlined(),
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment   = VerticalAlignment.Center,
-                Transitions         = transitions,
                 RenderTransform     = null
             };
             CreateTemplateParentBinding(scrollDownButton, Avalonia.Controls.Button.CommandProperty,
@@ -126,6 +121,17 @@ internal class MenuScrollViewerTheme : BaseControlTheme
                 selector.Nesting().Template().OfType<IconButton>().Class(StdPseudoClass.PointerOver));
             iconButtonStyle.Add(TemplatedControl.BackgroundProperty, MenuTokenKey.ItemHoverBg);
             Add(iconButtonStyle);
+        }
+        {
+            // 动画设置
+            var isMotionEnabledStyle = new Style(selector => selector.Nesting().PropertyEquals(MenuScrollViewer.IsMotionEnabledProperty, true));
+            var iconButtonStyle = new Style(selector => selector.Nesting().Template().OfType<IconButton>());
+            iconButtonStyle.Add(IconButton.TransitionsProperty, new SetterValueFactory<Transitions>(() => new Transitions()
+            {
+                AnimationUtils.CreateTransition<SolidColorBrushTransition>(TemplatedControl.BackgroundProperty)
+            }));
+            isMotionEnabledStyle.Add(iconButtonStyle);
+            Add(isMotionEnabledStyle);
         }
     }
 }

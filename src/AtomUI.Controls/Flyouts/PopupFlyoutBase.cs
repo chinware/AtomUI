@@ -2,6 +2,8 @@
 using System.Reflection;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
+using AtomUI.Theme.Data;
+using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Diagnostics;
@@ -620,5 +622,14 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
     internal void ClearUpPopupChild()
     {
         Popup.Child = null;
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == TargetProperty && Target != null)
+        {
+            TokenResourceBinder.CreateTokenBinding(this, IsMotionEnabledProperty, Target, SharedTokenKey.EnableMotion);
+        }
     }
 }

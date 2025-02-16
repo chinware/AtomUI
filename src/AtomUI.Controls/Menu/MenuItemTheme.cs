@@ -48,10 +48,6 @@ internal class MenuItemTheme : BaseControlTheme
                 Name = ItemDecoratorPart
             };
 
-            var transitions = new Transitions();
-            transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty));
-            container.Transitions = transitions;
-
             var layout = new Grid
             {
                 Name = MainContainerPart,
@@ -158,12 +154,12 @@ internal class MenuItemTheme : BaseControlTheme
                 MenuItem.KeyGestureConverter);
 
             inputGestureText.RegisterInNameScope(scope);
-            
+
             var menuIndicatorIcon = AntDesignIconPackage.RightOutlined();
             menuIndicatorIcon.Name                = MenuIndicatorIconPart;
             menuIndicatorIcon.HorizontalAlignment = HorizontalAlignment.Right;
             menuIndicatorIcon.VerticalAlignment   = VerticalAlignment.Center;
-            
+
             TokenResourceBinder.CreateTokenBinding(menuIndicatorIcon, Layoutable.WidthProperty,
                 SharedTokenKey.IconSizeXS);
             TokenResourceBinder.CreateTokenBinding(menuIndicatorIcon, Layoutable.HeightProperty,
@@ -248,7 +244,8 @@ internal class MenuItemTheme : BaseControlTheme
     private void BuildCommonStyle(Style commonStyle)
     {
         commonStyle.Add(TemplatedControl.ForegroundProperty, MenuTokenKey.ItemColor);
-        commonStyle.Add(TemplatedControl.CursorProperty, new SetterValueFactory<Cursor>(() => new Cursor(StandardCursorType.Hand)));
+        commonStyle.Add(TemplatedControl.CursorProperty,
+            new SetterValueFactory<Cursor>(() => new Cursor(StandardCursorType.Hand)));
         {
             var keyGestureStyle = new Style(selector => selector.Nesting().Template().Name(InputGestureTextPart));
             keyGestureStyle.Add(SingleLineText.ForegroundProperty, MenuTokenKey.KeyGestureColor);
@@ -270,6 +267,18 @@ internal class MenuItemTheme : BaseControlTheme
             var borderStyle = new Style(selector => selector.Nesting().Template().Name(ItemDecoratorPart));
             borderStyle.Add(Border.BackgroundProperty, MenuTokenKey.ItemHoverBg);
             hoverStyle.Add(borderStyle);
+        }
+        
+        // 动画设置
+        {
+            var isMotionEnabledStyle = new Style(selector => selector.Nesting().PropertyEquals(MenuItem.IsMotionEnabledProperty, true));
+            var borderStyle = new Style(selector => selector.Nesting().Template().Name(ItemDecoratorPart));
+            borderStyle.Add(Border.TransitionsProperty, new SetterValueFactory<Transitions>(() => new Transitions()
+            {
+                AnimationUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty)
+            }));
+            isMotionEnabledStyle.Add(borderStyle);
+            commonStyle.Add(isMotionEnabledStyle);
         }
         commonStyle.Add(hoverStyle);
     }

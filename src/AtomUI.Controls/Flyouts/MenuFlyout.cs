@@ -77,7 +77,8 @@ public class MenuFlyout : Flyout
             [!ItemsControl.ItemContainerThemeProperty] = this[!ItemContainerThemeProperty],
             MenuFlyout                                 = new WeakReference<MenuFlyout>(this)
         };
-        BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, presenter, IsShowArrowProperty);
+        BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, presenter, MenuFlyoutPresenter.IsShowArrowProperty);
+        BindUtils.RelayBind(this, IsMotionEnabledProperty, presenter, MenuFlyoutPresenter.IsMotionEnabledProperty);
         SetupArrowPosition(Popup, presenter);
         CalculateShowArrowEffective();
 
