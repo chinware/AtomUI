@@ -55,7 +55,6 @@ internal class BaseNavMenuItemTheme : BaseControlTheme
                 AnimationUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty),
                 AnimationUtils.CreateTransition<SolidColorBrushTransition>(TemplatedControl.ForegroundProperty)
             },
-            
         };
         headerFrame.RegisterInNameScope(scope);
         headerFrame.Child = BuildMenuItemInfoGrid(navMenuItem, scope);
@@ -121,7 +120,7 @@ internal class BaseNavMenuItemTheme : BaseControlTheme
 
         itemTextPresenter.RegisterInNameScope(scope);
 
-        var inputGestureText = new TextBlock
+        var inputGestureText = new SingleLineText()
         {
             Name                = InputGestureTextPart,
             HorizontalAlignment = HorizontalAlignment.Right,
@@ -132,7 +131,7 @@ internal class BaseNavMenuItemTheme : BaseControlTheme
         TokenResourceBinder.CreateTokenBinding(inputGestureText, Layoutable.MarginProperty,
             NavMenuTokenKey.ItemMargin);
         CreateTemplateParentBinding(inputGestureText,
-            TextBlock.TextProperty,
+            SingleLineText.TextProperty,
             NavMenuItem.InputGestureProperty,
             BindingMode.Default,
             NavMenuItem.KeyGestureConverter);
@@ -185,12 +184,12 @@ internal class BaseNavMenuItemTheme : BaseControlTheme
         commonStyle.Add(TemplatedControl.ForegroundProperty, NavMenuTokenKey.ItemColor);
         {
             var keyGestureStyle = new Style(selector => selector.Nesting().Template().Name(InputGestureTextPart));
-            keyGestureStyle.Add(TextBlock.ForegroundProperty, NavMenuTokenKey.KeyGestureColor);
+            keyGestureStyle.Add(SingleLineText.ForegroundProperty, NavMenuTokenKey.KeyGestureColor);
             commonStyle.Add(keyGestureStyle);
         }
         {
             var borderStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));
-            borderStyle.Add(Border.CursorProperty, new Cursor(StandardCursorType.Hand));
+            borderStyle.Add(Border.CursorProperty, new SetterValueFactory<Cursor>(() => new Cursor(StandardCursorType.Hand)));
             borderStyle.Add(Border.MinHeightProperty, NavMenuTokenKey.ItemHeight);
             borderStyle.Add(Border.PaddingProperty, NavMenuTokenKey.ItemContentPadding);
             borderStyle.Add(Border.BackgroundProperty, NavMenuTokenKey.ItemBg);

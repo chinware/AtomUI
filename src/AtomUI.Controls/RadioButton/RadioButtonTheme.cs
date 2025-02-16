@@ -112,8 +112,7 @@ internal class RadioButtonTheme : BaseControlTheme
             var indicatorStyle = new Style(selector => selector.Nesting().Template().Name(IndicatorPart));
             indicatorStyle.Add(RadioIndicator.RadioBackgroundProperty, SharedTokenKey.ColorBgContainerDisabled);
             indicatorStyle.Add(RadioIndicator.RadioBorderBrushProperty, SharedTokenKey.ColorBorder);
-            indicatorStyle.Add(RadioIndicator.RadioInnerBackgroundProperty,
-                RadioButtonTokenKey.DotColorDisabled);
+            indicatorStyle.Add(RadioIndicator.RadioInnerBackgroundProperty, RadioButtonTokenKey.DotColorDisabled);
             disableStyle.Add(indicatorStyle);
         }
         Add(disableStyle);

@@ -10,6 +10,7 @@ using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Layout;
+using Avalonia.Media;
 using Avalonia.Media.Transformation;
 using Avalonia.Styling;
 
@@ -120,9 +121,13 @@ internal class InlineNavMenuItemTheme : BaseNavMenuItemTheme
         {
             var menuIndicatorStyle =
                 new Style(selector => selector.Nesting().Template().Name(MenuIndicatorIconLayoutPart));
-            var transformOptions = new TransformOperations.Builder(1);
-            transformOptions.AppendRotate(MathUtils.Deg2Rad(90));
-            menuIndicatorStyle.Add(Border.RenderTransformProperty, transformOptions.Build());
+          
+            menuIndicatorStyle.Add(Border.RenderTransformProperty, new SetterValueFactory<ITransform>(() =>
+            {
+                var transformOptions = new TransformOperations.Builder(1);
+                transformOptions.AppendRotate(MathUtils.Deg2Rad(90));
+                return transformOptions.Build();
+            }));
             menuIndicatorStyle.Add(Visual.IsVisibleProperty, true);
             Add(menuIndicatorStyle);
         }
@@ -130,9 +135,13 @@ internal class InlineNavMenuItemTheme : BaseNavMenuItemTheme
         {
             var menuIndicatorStyle =
                 new Style(selector => selector.Nesting().Template().Name(MenuIndicatorIconLayoutPart));
-            var transformOptions = new TransformOperations.Builder(1);
-            transformOptions.AppendRotate(MathUtils.Deg2Rad(-90));
-            menuIndicatorStyle.Add(Border.RenderTransformProperty, transformOptions.Build());
+            
+            menuIndicatorStyle.Add(Border.RenderTransformProperty, new SetterValueFactory<ITransform>(() =>
+            {
+                var transformOptions = new TransformOperations.Builder(1);
+                transformOptions.AppendRotate(MathUtils.Deg2Rad(-90));
+                return transformOptions.Build();
+            }));
             openSubMenuStyle.Add(menuIndicatorStyle);
         }
         Add(openSubMenuStyle);

@@ -341,7 +341,7 @@ internal class AlertTheme : BaseControlTheme
             var infoStyle = new Style(selector =>
                 selector.Nesting().PropertyEquals(Alert.TypeProperty, AlertType.Info));
             var infoIconStyle = new Style(selector => infoIconSelector);
-            infoIconStyle.Add(Icon.IconInfoProperty, AntDesignIconPackage.Current.GetIconInfo(AntDesignIconKind.InfoCircleFilled));
+            infoIconStyle.Add(Icon.IconInfoProperty, new SetterValueFactory<IconInfo>(() => AntDesignIconPackage.Current.GetIconInfo(AntDesignIconKind.InfoCircleFilled)));
             infoIconStyle.Add(Icon.NormalFilledBrushProperty, SharedTokenKey.ColorPrimary);
             infoStyle.Add(infoIconStyle);
             Add(infoStyle);
@@ -351,7 +351,7 @@ internal class AlertTheme : BaseControlTheme
             var warningStyle = new Style(selector =>
                 selector.Nesting().PropertyEquals(Alert.TypeProperty, AlertType.Warning));
             var infoIconStyle = new Style(selector => infoIconSelector);
-            infoIconStyle.Add(Icon.IconInfoProperty, AntDesignIconPackage.Current.GetIconInfo(AntDesignIconKind.ExclamationCircleFilled));
+            infoIconStyle.Add(Icon.IconInfoProperty, new SetterValueFactory<IconInfo>(() => AntDesignIconPackage.Current.GetIconInfo(AntDesignIconKind.ExclamationCircleFilled)));
             infoIconStyle.Add(Icon.NormalFilledBrushProperty, SharedTokenKey.ColorWarning);
             warningStyle.Add(infoIconStyle);
             Add(warningStyle);
@@ -361,7 +361,7 @@ internal class AlertTheme : BaseControlTheme
             var errorStyle = new Style(selector =>
                 selector.Nesting().PropertyEquals(Alert.TypeProperty, AlertType.Error));
             var infoIconStyle = new Style(selector => infoIconSelector);
-            infoIconStyle.Add(Icon.IconInfoProperty, AntDesignIconPackage.Current.GetIconInfo(AntDesignIconKind.CloseCircleFilled));
+            infoIconStyle.Add(Icon.IconInfoProperty, new SetterValueFactory<IconInfo>(() => AntDesignIconPackage.Current.GetIconInfo(AntDesignIconKind.CloseCircleFilled)));
             infoIconStyle.Add(Icon.NormalFilledBrushProperty, SharedTokenKey.ColorError);
             errorStyle.Add(infoIconStyle);
             Add(errorStyle);

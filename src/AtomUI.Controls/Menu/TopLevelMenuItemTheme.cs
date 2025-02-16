@@ -6,8 +6,10 @@ using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
+using Avalonia.Data.Converters;
 using Avalonia.Input;
 using Avalonia.Layout;
+using Avalonia.Media;
 using Avalonia.Styling;
 
 namespace AtomUI.Controls;
@@ -45,7 +47,21 @@ internal class TopLevelMenuItemTheme : BaseControlTheme
 
             // TODO 后面需要评估一下，能直接绑定到对象，是否还需要这样通过模板绑定
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty,
-                HeaderedSelectingItemsControl.HeaderProperty);
+                HeaderedSelectingItemsControl.HeaderProperty,
+                BindingMode.Default, new FuncValueConverter<object?, object?>(
+                    o =>
+                    {
+                        if (o is string str)
+                        {
+                            return new SingleLineText()
+                            {
+                                Text              = str,
+                                VerticalAlignment = VerticalAlignment.Center
+                            };
+                        }
+
+                        return o;
+                    }));
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentTemplateProperty,
                 HeaderedSelectingItemsControl.HeaderTemplateProperty);
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.CornerRadiusProperty,
@@ -129,13 +145,13 @@ internal class TopLevelMenuItemTheme : BaseControlTheme
     {
         var commonStyle =
             new Style(selector => selector.Nesting().PropertyEquals(InputElement.IsEnabledProperty, true));
-        commonStyle.Add(TemplatedControl.BackgroundProperty, SharedTokenKey.ColorTransparent);
+        commonStyle.Add(TemplatedControl.BackgroundProperty, Brushes.Transparent);
 
         // 正常状态
         {
             var contentPresenterStyle = new Style(selector =>
                 selector.Nesting().Template().OfType<ContentPresenter>().Name(HeaderPresenterPart));
-            contentPresenterStyle.Add(ContentPresenter.BackgroundProperty, SharedTokenKey.ColorTransparent);
+            contentPresenterStyle.Add(ContentPresenter.BackgroundProperty, Brushes.Transparent);
             commonStyle.Add(contentPresenterStyle);
         }
 
@@ -148,7 +164,7 @@ internal class TopLevelMenuItemTheme : BaseControlTheme
                 MenuTokenKey.TopLevelItemHoverBg);
             contentPresenterHoverStyle.Add(ContentPresenter.ForegroundProperty,
                 MenuTokenKey.TopLevelItemHoverColor);
-            contentPresenterHoverStyle.Add(InputElement.CursorProperty, new Cursor(StandardCursorType.Hand));
+            contentPresenterHoverStyle.Add(InputElement.CursorProperty, new SetterValueFactory<Cursor>(() => new Cursor(StandardCursorType.Hand)));
             hoverStyle.Add(contentPresenterHoverStyle);
         }
         commonStyle.Add(hoverStyle);
@@ -163,7 +179,7 @@ internal class TopLevelMenuItemTheme : BaseControlTheme
                 MenuTokenKey.TopLevelItemHoverBg);
             contentPresenterHoverStyle.Add(ContentPresenter.ForegroundProperty,
                 MenuTokenKey.TopLevelItemHoverColor);
-            contentPresenterHoverStyle.Add(InputElement.CursorProperty, new Cursor(StandardCursorType.Hand));
+            contentPresenterHoverStyle.Add(InputElement.CursorProperty, new SetterValueFactory<Cursor>(() => new Cursor(StandardCursorType.Hand)));
             openedStyle.Add(contentPresenterHoverStyle);
         }
 

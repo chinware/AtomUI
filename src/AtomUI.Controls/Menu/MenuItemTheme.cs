@@ -11,6 +11,7 @@ using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
+using Avalonia.Data.Converters;
 using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Media;
@@ -120,13 +121,27 @@ internal class MenuItemTheme : BaseControlTheme
             TokenResourceBinder.CreateTokenBinding(itemTextPresenter, Layoutable.MarginProperty,
                 MenuTokenKey.ItemMargin);
             CreateTemplateParentBinding(itemTextPresenter, ContentPresenter.ContentProperty,
-                HeaderedSelectingItemsControl.HeaderProperty);
+                HeaderedSelectingItemsControl.HeaderProperty,
+                BindingMode.Default, new FuncValueConverter<object?, object?>(
+                    o =>
+                    {
+                        if (o is string str)
+                        {
+                            return new SingleLineText()
+                            {
+                                Text              = str,
+                                VerticalAlignment = VerticalAlignment.Center
+                            };
+                        }
+
+                        return o;
+                    }));
             CreateTemplateParentBinding(itemTextPresenter, ContentPresenter.ContentTemplateProperty,
                 HeaderedSelectingItemsControl.HeaderTemplateProperty);
 
             itemTextPresenter.RegisterInNameScope(scope);
 
-            var inputGestureText = new TextBlock
+            var inputGestureText = new SingleLineText()
             {
                 Name                = InputGestureTextPart,
                 HorizontalAlignment = HorizontalAlignment.Right,
@@ -137,7 +152,7 @@ internal class MenuItemTheme : BaseControlTheme
             TokenResourceBinder.CreateTokenBinding(inputGestureText, Layoutable.MarginProperty,
                 MenuTokenKey.ItemMargin);
             CreateTemplateParentBinding(inputGestureText,
-                TextBlock.TextProperty,
+                SingleLineText.TextProperty,
                 Avalonia.Controls.MenuItem.InputGestureProperty,
                 BindingMode.Default,
                 MenuItem.KeyGestureConverter);
@@ -235,7 +250,7 @@ internal class MenuItemTheme : BaseControlTheme
         commonStyle.Add(TemplatedControl.ForegroundProperty, MenuTokenKey.ItemColor);
         {
             var keyGestureStyle = new Style(selector => selector.Nesting().Template().Name(InputGestureTextPart));
-            keyGestureStyle.Add(TextBlock.ForegroundProperty, MenuTokenKey.KeyGestureColor);
+            keyGestureStyle.Add(SingleLineText.ForegroundProperty, MenuTokenKey.KeyGestureColor);
             commonStyle.Add(keyGestureStyle);
         }
         {

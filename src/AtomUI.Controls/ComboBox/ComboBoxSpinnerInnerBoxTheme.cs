@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Templates;
 using Avalonia.Layout;
+using Avalonia.Media;
 using Avalonia.Styling;
 
 namespace AtomUI.Controls;
@@ -45,7 +46,7 @@ internal class ComboBoxSpinnerInnerBoxTheme : AddOnDecoratedInnerBoxTheme
         {
             var innerBoxDecoratorStyle =
                 new Style(selector => selector.Nesting().Template().Name(InnerBoxDecoratorPart));
-            innerBoxDecoratorStyle.Add(Border.BackgroundProperty, SharedTokenKey.ColorTransparent);
+            innerBoxDecoratorStyle.Add(Border.BackgroundProperty, Brushes.Transparent);
             notFilledStyle.Add(innerBoxDecoratorStyle);
         }
         var hoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));

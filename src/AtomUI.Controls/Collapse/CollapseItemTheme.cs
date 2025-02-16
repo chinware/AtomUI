@@ -11,8 +11,11 @@ using Avalonia.Controls.Documents;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
+using Avalonia.Data.Converters;
 using Avalonia.Input;
 using Avalonia.Layout;
+using Avalonia.Media;
 using Avalonia.Media.Transformation;
 using Avalonia.Styling;
 
@@ -57,7 +60,21 @@ internal class CollapseItemTheme : BaseControlTheme
             TokenResourceBinder.CreateTokenBinding(contentPresenter, ContentPresenter.BorderBrushProperty,
                 SharedTokenKey.ColorBorder);
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty,
-                ContentControl.ContentProperty);
+                ContentControl.ContentProperty,
+                BindingMode.Default, new FuncValueConverter<object?, object?>(
+                    o =>
+                    {
+                        if (o is string str)
+                        {
+                            return new SingleLineText()
+                            {
+                                Text              = str,
+                                VerticalAlignment = VerticalAlignment.Center
+                            };
+                        }
+
+                        return o;
+                    }));
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentTemplateProperty,
                 ContentControl.ContentTemplateProperty);
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.BorderThicknessProperty,
@@ -183,18 +200,18 @@ internal class CollapseItemTheme : BaseControlTheme
         var isMotionEnabledStyle = new Style(selector => selector.Nesting().PropertyEquals(CollapseItem.IsMotionEnabledProperty, true));
         {
             var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));
-            decoratorStyle.Add(Border.TransitionsProperty, new Transitions
+            decoratorStyle.Add(Border.TransitionsProperty, new SetterValueFactory<Transitions>(() => new Transitions
             {
                 AnimationUtils.CreateTransition<ThicknessTransition>(Border.BorderThicknessProperty)
-            });
+            }));
             isMotionEnabledStyle.Add(decoratorStyle);
             
             var expandIconStyle =
                 new Style(selector => selector.Nesting().Template().Name(ExpandButtonPart));
-            expandIconStyle.Add(IconButton.TransitionsProperty, new Transitions()
+            expandIconStyle.Add(IconButton.TransitionsProperty, new SetterValueFactory<Transitions>(() => new Transitions()
             {
                 AnimationUtils.CreateTransition<TransformOperationsTransition>(Visual.RenderTransformProperty)
-            });
+            }));
             isMotionEnabledStyle.Add(expandIconStyle);
         }
         commonStyle.Add(isMotionEnabledStyle);
@@ -207,9 +224,13 @@ internal class CollapseItemTheme : BaseControlTheme
         var selectedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Selected));
         // Expand Button
         var expandButtonStyle = new Style(selector => selector.Nesting().Template().Name(ExpandButtonPart));
-        var transformOptions  = new TransformOperations.Builder(1);
-        transformOptions.AppendRotate(MathUtils.Deg2Rad(90));
-        expandButtonStyle.Add(Visual.RenderTransformProperty, transformOptions.Build());
+        
+        expandButtonStyle.Add(Visual.RenderTransformProperty, new SetterValueFactory<ITransform>(() =>
+        {
+            var transformOptions  = new TransformOperations.Builder(1);
+            transformOptions.AppendRotate(MathUtils.Deg2Rad(90));
+            return transformOptions.Build();
+        }));
 
         selectedStyle.Add(expandButtonStyle);
         Add(selectedStyle);
@@ -223,7 +244,7 @@ internal class CollapseItemTheme : BaseControlTheme
             var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));
             decoratorStyle.Add(Decorator.PaddingProperty, CollapseTokenKey.CollapseHeaderPaddingLG);
             decoratorStyle.Add(TextElement.FontSizeProperty, SharedTokenKey.FontSizeLG);
-            decoratorStyle.Add(TextBlock.LineHeightProperty, SharedTokenKey.FontHeightLG);
+            decoratorStyle.Add(SingleLineText.LineHeightProperty, SharedTokenKey.FontHeightLG);
             largeSizeStyle.Add(decoratorStyle);
         }
 
@@ -242,7 +263,7 @@ internal class CollapseItemTheme : BaseControlTheme
             var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));
             decoratorStyle.Add(Decorator.PaddingProperty, CollapseTokenKey.HeaderPadding);
             decoratorStyle.Add(TextElement.FontSizeProperty, SharedTokenKey.FontSize);
-            decoratorStyle.Add(TextBlock.LineHeightProperty, SharedTokenKey.FontHeight);
+            decoratorStyle.Add(SingleLineText.LineHeightProperty, SharedTokenKey.FontHeight);
             middleSizeStyle.Add(decoratorStyle);
         }
 
@@ -280,7 +301,7 @@ internal class CollapseItemTheme : BaseControlTheme
                                                                          CollapseItem.TriggerTypeProperty,
                                                                          CollapseTriggerType.Header));
         var headerDecoratorStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));
-        headerDecoratorStyle.Add(InputElement.CursorProperty, new Cursor(StandardCursorType.Hand));
+        headerDecoratorStyle.Add(InputElement.CursorProperty, new SetterValueFactory<Cursor>(() => new Cursor(StandardCursorType.Hand)));
         headerTriggerHandleStyle.Add(headerDecoratorStyle);
         Add(headerTriggerHandleStyle);
 
@@ -288,7 +309,7 @@ internal class CollapseItemTheme : BaseControlTheme
             new Style(selector => selector.Nesting()
                                           .PropertyEquals(CollapseItem.TriggerTypeProperty, CollapseTriggerType.Icon));
         var expandIconStyle = new Style(selector => selector.Nesting().Template().Name(ExpandButtonPart));
-        expandIconStyle.Add(InputElement.CursorProperty, new Cursor(StandardCursorType.Hand));
+        expandIconStyle.Add(InputElement.CursorProperty, new SetterValueFactory<Cursor>(() => new Cursor(StandardCursorType.Hand)));
         iconTriggerHandleStyle.Add(expandIconStyle);
         Add(iconTriggerHandleStyle);
     }

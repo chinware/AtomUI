@@ -5,6 +5,8 @@ using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
+using Avalonia.Data.Converters;
 using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Styling;
@@ -44,8 +46,20 @@ internal class CalendarButtonTheme : BaseControlTheme
                 TemplatedControl.BorderThicknessProperty);
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.FontSizeProperty,
                 TemplatedControl.FontSizeProperty);
-            CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty,
-                ContentControl.ContentProperty);
+            CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty, ContentControl.ContentProperty, 
+                BindingMode.Default, new FuncValueConverter<object?, object?>(
+                o =>
+                {
+                    if (o is string str)
+                    {
+                        return new SingleLineText()
+                        {
+                            Text              = str,
+                            VerticalAlignment = VerticalAlignment.Center
+                        };
+                    }
+                    return o;
+                }));
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentTemplateProperty,
                 ContentControl.ContentTemplateProperty);
             CreateTemplateParentBinding(contentPresenter, Layoutable.HorizontalAlignmentProperty,
@@ -66,7 +80,7 @@ internal class CalendarButtonTheme : BaseControlTheme
         var commonStyle = new Style(selector => selector.Nesting());
 
         commonStyle.Add(Avalonia.Controls.Button.ClickModeProperty, ClickMode.Release);
-        commonStyle.Add(InputElement.CursorProperty, new Cursor(StandardCursorType.Hand));
+        commonStyle.Add(InputElement.CursorProperty, new SetterValueFactory<Cursor>(() => new Cursor(StandardCursorType.Hand)));
         commonStyle.Add(TemplatedControl.BackgroundProperty, SharedTokenKey.ColorTransparent);
         commonStyle.Add(TemplatedControl.ForegroundProperty, SharedTokenKey.ColorTextLabel);
         commonStyle.Add(TemplatedControl.CornerRadiusProperty, SharedTokenKey.BorderRadiusSM);

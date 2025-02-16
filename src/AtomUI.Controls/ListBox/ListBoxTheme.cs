@@ -34,10 +34,8 @@ internal class ListBoxTheme : BaseControlTheme
             };
             CreateTemplateParentBinding(frameBorder, Border.BackgroundProperty, TemplatedControl.BackgroundProperty);
             CreateTemplateParentBinding(frameBorder, Border.BorderBrushProperty, TemplatedControl.BorderBrushProperty);
-            CreateTemplateParentBinding(frameBorder, Border.BorderThicknessProperty,
-                TemplatedControl.BorderThicknessProperty);
-            CreateTemplateParentBinding(frameBorder, Border.CornerRadiusProperty,
-                TemplatedControl.CornerRadiusProperty);
+            CreateTemplateParentBinding(frameBorder, Border.BorderThicknessProperty, TemplatedControl.BorderThicknessProperty);
+            CreateTemplateParentBinding(frameBorder, Border.CornerRadiusProperty, TemplatedControl.CornerRadiusProperty);
 
             var itemsPresenter = BuildItemsPresenter(listBox, scope);
             var scrollViewer   = BuildScrollViewer(listBox, scope);

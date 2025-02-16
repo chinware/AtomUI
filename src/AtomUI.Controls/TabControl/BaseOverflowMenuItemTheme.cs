@@ -11,6 +11,8 @@ using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
+using Avalonia.Data.Converters;
 using Avalonia.Layout;
 using Avalonia.Styling;
 
@@ -67,7 +69,21 @@ internal class BaseOverflowMenuItemTheme : BaseControlTheme
             TokenResourceBinder.CreateTokenBinding(itemTextPresenter, Layoutable.MarginProperty,
                 MenuTokenKey.ItemMargin);
             CreateTemplateParentBinding(itemTextPresenter, ContentPresenter.ContentProperty,
-                HeaderedSelectingItemsControl.HeaderProperty);
+                HeaderedSelectingItemsControl.HeaderProperty,
+                BindingMode.Default, new FuncValueConverter<object?, object?>(
+                    o =>
+                    {
+                        if (o is string str)
+                        {
+                            return new SingleLineText()
+                            {
+                                Text              = str,
+                                VerticalAlignment = VerticalAlignment.Center
+                            };
+                        }
+
+                        return o;
+                    }));
             CreateTemplateParentBinding(itemTextPresenter, ContentPresenter.ContentTemplateProperty,
                 HeaderedSelectingItemsControl.HeaderTemplateProperty);
 

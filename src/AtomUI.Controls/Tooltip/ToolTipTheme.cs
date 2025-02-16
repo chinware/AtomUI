@@ -30,12 +30,11 @@ internal class ToolTipTheme : BaseControlTheme
             };
             if (tip.Content is string text)
             {
-                arrowDecoratedBox.Content = new TextBlock
+                arrowDecoratedBox.Content = new SingleLineText()
                 {
                     Text                = text,
                     VerticalAlignment   = VerticalAlignment.Center,
                     HorizontalAlignment = HorizontalAlignment.Center,
-                    TextWrapping        = TextWrapping.Wrap
                 };
             }
             else if (tip.Content is Control control)

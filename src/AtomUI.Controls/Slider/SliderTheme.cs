@@ -21,7 +21,7 @@ internal class SliderTheme : BaseControlTheme
     {
     }
 
-    protected override IControlTemplate? BuildControlTemplate()
+    protected override IControlTemplate BuildControlTemplate()
     {
         return new FuncControlTemplate<Slider>((slider, scope) =>
         {
@@ -132,7 +132,7 @@ internal class SliderTheme : BaseControlTheme
         sliderTrackHoverStyle.Add(SliderTrack.TrackGrooveBrushProperty, SliderTokenKey.RailHoverBg);
         sliderTrackHoverStyle.Add(SliderTrack.TrackBarBrushProperty, SliderTokenKey.TrackHoverBg);
         sliderTrackHoverStyle.Add(SliderTrack.MarkBorderBrushProperty, SliderTokenKey.MarkBorderColorHover);
-        sliderTrackHoverStyle.Add(InputElement.CursorProperty, new Cursor(StandardCursorType.Hand));
+        sliderTrackHoverStyle.Add(InputElement.CursorProperty, new SetterValueFactory<Cursor>(() => new Cursor(StandardCursorType.Hand)));
         sliderStyle.Add(sliderTrackHoverStyle);
     }
 
@@ -142,10 +142,8 @@ internal class SliderTheme : BaseControlTheme
 
         var sliderTrackStyle = new Style(selector => selector.Nesting().Template().OfType<SliderTrack>());
         sliderTrackStyle.Add(SliderTrack.TrackBarBrushProperty, SliderTokenKey.TrackBgDisabled);
-        sliderTrackStyle.Add(SliderTrack.MarkBorderActiveBrushProperty,
-            SliderTokenKey.ThumbCircleBorderColorDisabled);
-        sliderTrackStyle.Add(SliderTrack.MarkBorderBrushProperty,
-            SliderTokenKey.ThumbCircleBorderColorDisabled);
+        sliderTrackStyle.Add(SliderTrack.MarkBorderActiveBrushProperty, SliderTokenKey.ThumbCircleBorderColorDisabled);
+        sliderTrackStyle.Add(SliderTrack.MarkBorderBrushProperty, SliderTokenKey.ThumbCircleBorderColorDisabled);
         disabledStyle.Add(sliderTrackStyle);
         var thumbStyle = new Style(selector => selector.Nesting().Template().OfType<SliderThumb>());
         thumbStyle.Add(TemplatedControl.BorderBrushProperty, SliderTokenKey.ThumbCircleBorderColorDisabled);

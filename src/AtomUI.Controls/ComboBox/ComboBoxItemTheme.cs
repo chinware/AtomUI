@@ -26,7 +26,7 @@ internal class ComboBoxItemTheme : BaseControlTheme
 
     protected override IControlTemplate BuildControlTemplate()
     {
-        return new FuncControlTemplate<ComboBoxItem>((listBoxItem, scope) =>
+        return new FuncControlTemplate<ComboBoxItem>((comboBoxItem, scope) =>
         {
             var contentPresenter = new ContentPresenter
             {
@@ -39,9 +39,8 @@ internal class ComboBoxItemTheme : BaseControlTheme
                     {
                         if (o is string str)
                         {
-                            return new TextBlock()
+                            return new SingleLineText()
                             {
-                                Padding = new Thickness(0, 1, 0, 0),
                                 Text              = str,
                                 VerticalAlignment = VerticalAlignment.Center
                             };
@@ -73,10 +72,10 @@ internal class ComboBoxItemTheme : BaseControlTheme
         {
             var isMotionEnabledStyle = new Style(selector => selector.Nesting().PropertyEquals(ComboBoxItem.IsMotionEnabledProperty, true));
             var contentPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ContentPresenterPart));
-            contentPresenterStyle.Add(ContentPresenter.TransitionsProperty, new Transitions
+            contentPresenterStyle.Add(ContentPresenter.TransitionsProperty, new SetterValueFactory<Transitions>(() => new Transitions
             {
                 AnimationUtils.CreateTransition<SolidColorBrushTransition>(ContentPresenter.BackgroundProperty)
-            });
+            }));
             isMotionEnabledStyle.Add(contentPresenterStyle);
             commonStyle.Add(isMotionEnabledStyle);
         }

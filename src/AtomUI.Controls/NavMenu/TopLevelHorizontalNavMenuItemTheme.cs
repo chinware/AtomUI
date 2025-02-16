@@ -92,7 +92,21 @@ internal class TopLevelHorizontalNavMenuItemTheme : BaseControlTheme
     
             // TODO 后面需要评估一下，能直接绑定到对象，是否还需要这样通过模板绑定
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty,
-                HeaderedSelectingItemsControl.HeaderProperty);
+                HeaderedSelectingItemsControl.HeaderProperty, BindingMode.Default,
+                new FuncValueConverter<object?, object?>(
+                    o =>
+                    {
+                        if (o is string str)
+                        {
+                            return new SingleLineText()
+                            {
+                                Text              = str,
+                                VerticalAlignment = VerticalAlignment.Center
+                            };
+                        }
+
+                        return o;
+                    }));
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentTemplateProperty,
                 HeaderedSelectingItemsControl.HeaderTemplateProperty);
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.CornerRadiusProperty,
@@ -185,8 +199,8 @@ internal class TopLevelHorizontalNavMenuItemTheme : BaseControlTheme
     {
         var commonStyle =
             new Style(selector => selector.Nesting());
-        commonStyle.Add(TemplatedControl.BackgroundProperty, SharedTokenKey.ColorTransparent);
-        commonStyle.Add(NavMenuItem.CursorProperty, new Cursor(StandardCursorType.Hand));
+        commonStyle.Add(TemplatedControl.BackgroundProperty, Brushes.Transparent);
+        commonStyle.Add(NavMenuItem.CursorProperty, new SetterValueFactory<Cursor>(() => new Cursor(StandardCursorType.Hand)));
         commonStyle.Add(TemplatedControl.FontSizeProperty, SharedTokenKey.FontSize);
         {
             var frameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
@@ -207,7 +221,7 @@ internal class TopLevelHorizontalNavMenuItemTheme : BaseControlTheme
     {
         {
             var indicatorStyle = new Style(selector => selector.Nesting().Template().Name(ActiveIndicatorPart));
-            indicatorStyle.Add(Rectangle.FillProperty, new SolidColorBrush(Colors.Transparent));
+            indicatorStyle.Add(Rectangle.FillProperty, Brushes.Transparent);
             commonStyle.Add(indicatorStyle);
         }
         var hoverStyle = new Style(selector => Selectors.Or(selector.Nesting().Class(StdPseudoClass.PointerOver),

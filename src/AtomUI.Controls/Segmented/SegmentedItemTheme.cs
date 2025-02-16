@@ -93,7 +93,7 @@ internal class SegmentedItemTheme : BaseControlTheme
         // 没有被选择的正常状态
         var enabledStyle =
             new Style(selector => selector.Nesting().PropertyEquals(InputElement.IsEnabledProperty, true));
-        enabledStyle.Add(InputElement.CursorProperty, new Cursor(StandardCursorType.Hand));
+        enabledStyle.Add(InputElement.CursorProperty, new SetterValueFactory<Cursor>(() => new Cursor(StandardCursorType.Hand)));
 
         // 选中状态
         var selectedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Selected));

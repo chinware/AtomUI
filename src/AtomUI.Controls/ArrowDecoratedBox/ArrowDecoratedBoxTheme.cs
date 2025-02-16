@@ -128,7 +128,7 @@ internal class ArrowDecoratedBoxTheme : BaseControlTheme
         var rightDirectionStyle = new Style(selector => selector.Nesting().PropertyEquals(ArrowDecoratedBox.ArrowDirectionProperty, Direction.Right));
         {
             var arrowIndicatorLayoutStyle = new Style(selector => selector.Nesting().Template().Name(ArrowIndicatorLayoutPart));
-            arrowIndicatorLayoutStyle.Add(LayoutTransformControl.LayoutTransformProperty, new RotateTransform(90));
+            arrowIndicatorLayoutStyle.Add(LayoutTransformControl.LayoutTransformProperty, new SetterValueFactory<RotateTransform>(() => new RotateTransform(90)));
             rightDirectionStyle.Add(arrowIndicatorLayoutStyle);
         }
         {
@@ -140,7 +140,7 @@ internal class ArrowDecoratedBoxTheme : BaseControlTheme
         var bottomDirectionStyle = new Style(selector => selector.Nesting().PropertyEquals(ArrowDecoratedBox.ArrowDirectionProperty, Direction.Bottom));
         {
             var arrowIndicatorLayoutStyle = new Style(selector => selector.Nesting().Template().Name(ArrowIndicatorLayoutPart));
-            arrowIndicatorLayoutStyle.Add(LayoutTransformControl.LayoutTransformProperty, new RotateTransform(180));
+            arrowIndicatorLayoutStyle.Add(LayoutTransformControl.LayoutTransformProperty, new SetterValueFactory<RotateTransform>(() => new RotateTransform(180)));
             bottomDirectionStyle.Add(arrowIndicatorLayoutStyle);
         }
         {
@@ -152,7 +152,7 @@ internal class ArrowDecoratedBoxTheme : BaseControlTheme
         var leftDirectionStyle = new Style(selector => selector.Nesting().PropertyEquals(ArrowDecoratedBox.ArrowDirectionProperty, Direction.Left));
         {
             var arrowIndicatorLayoutStyle = new Style(selector => selector.Nesting().Template().Name(ArrowIndicatorLayoutPart));
-            arrowIndicatorLayoutStyle.Add(LayoutTransformControl.LayoutTransformProperty, new RotateTransform(-90));
+            arrowIndicatorLayoutStyle.Add(LayoutTransformControl.LayoutTransformProperty, new SetterValueFactory<RotateTransform>(() => new RotateTransform(-90)));
             leftDirectionStyle.Add(arrowIndicatorLayoutStyle);
         }
         {

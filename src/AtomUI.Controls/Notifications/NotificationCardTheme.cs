@@ -30,7 +30,6 @@ internal class NotificationCardTheme : BaseControlTheme
     public const string ProgressBarPart = "PART_ProgressBar";
     public const string MarginGhostDecoratorPart = "PART_MarginGhostDecorator";
     
-
     public NotificationCardTheme()
         : base(typeof(NotificationCard))
     {

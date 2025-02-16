@@ -142,9 +142,9 @@ internal class TimelineItemTheme : BaseControlTheme
     protected override void BuildStyles()
     {
         // 分割线样式
-        var splitLineborderStyle = new Style(selector => selector.Nesting().Template().Name(SplitLineBorderPart));
-        splitLineborderStyle.Add(Layoutable.WidthProperty, TimelineTokenKey.TailWidth);
-        Add(splitLineborderStyle);
+        var splitLineBorderStyle = new Style(selector => selector.Nesting().Template().Name(SplitLineBorderPart));
+        splitLineBorderStyle.Add(Layoutable.WidthProperty, TimelineTokenKey.TailWidth);
+        Add(splitLineBorderStyle);
         
         var lineStyle = new Style(selector => selector.Nesting().Template().Child().OfType<Rectangle>());
         lineStyle.Add(Shape.StrokeProperty, TimelineTokenKey.TailColor);

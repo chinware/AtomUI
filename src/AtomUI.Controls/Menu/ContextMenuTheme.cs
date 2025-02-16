@@ -62,7 +62,7 @@ internal class ContextMenuTheme : BaseControlTheme
 
     protected override void BuildStyles()
     {
-        this.Add(TemplatedControl.BackgroundProperty, new SolidColorBrush(Colors.Transparent));
+        this.Add(TemplatedControl.BackgroundProperty, Brushes.Transparent);
         this.Add(TemplatedControl.CornerRadiusProperty, MenuTokenKey.MenuPopupBorderRadius);
     }
 }

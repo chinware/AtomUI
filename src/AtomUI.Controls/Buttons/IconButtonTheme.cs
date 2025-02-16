@@ -54,10 +54,10 @@ internal class IconButtonTheme : BaseControlTheme
         {
             var enableMotionStyle = new Style(selector => selector.Nesting().PropertyEquals(IconButton.IsMotionEnabledProperty, true));
             var contentStyle = new Style(selector => selector.Nesting().Template().Name(IconContentPart));
-            contentStyle.Add(ContentPresenter.TransitionsProperty, new Transitions()
+            contentStyle.Add(ContentPresenter.TransitionsProperty, new SetterValueFactory<Transitions>(() => new Transitions()
             {
                 AnimationUtils.CreateTransition<SolidColorBrushTransition>(ContentPresenter.BackgroundProperty)
-            });
+            }));
             enableMotionStyle.Add(contentStyle);
             Add(enableMotionStyle);
         }

@@ -123,7 +123,7 @@ internal class ButtonSpinnerTheme : BaseControlTheme
             HorizontalAlignment = HorizontalAlignment.Stretch,
             BackgroundSizing    = BackgroundSizing.InnerBorderEdge,
         };
-        increaseButton.SetCurrentValue(TemplatedControl.BackgroundProperty, new SolidColorBrush(Colors.Transparent));
+        increaseButton.SetCurrentValue(TemplatedControl.BackgroundProperty, Brushes.Transparent);
         {
             var handleButtonStyle = new Style(selector => selector.Class(StdPseudoClass.Pressed));
             handleButtonStyle.Add(TemplatedControl.BackgroundProperty, ButtonSpinnerTokenKey.HandleActiveBg);
@@ -151,7 +151,7 @@ internal class ButtonSpinnerTheme : BaseControlTheme
             HorizontalAlignment = HorizontalAlignment.Stretch,
             BackgroundSizing    = BackgroundSizing.InnerBorderEdge
         };
-        decreaseButton.SetCurrentValue(TemplatedControl.BackgroundProperty, new SolidColorBrush(Colors.Transparent));
+        decreaseButton.SetCurrentValue(TemplatedControl.BackgroundProperty, Brushes.Transparent);
         {
             var handleButtonStyle = new Style(selector => selector.Class(StdPseudoClass.Pressed));
             handleButtonStyle.Add(TemplatedControl.BackgroundProperty, ButtonSpinnerTokenKey.HandleActiveBg);
@@ -194,10 +194,10 @@ internal class ButtonSpinnerTheme : BaseControlTheme
         
         var isEnableMotionStyle = new Style(selector => selector.Nesting().PropertyEquals(ButtonSpinner.IsMotionEnabledProperty, true));
         var iconStyle = new Style(selector => selector.Nesting().Nesting().OfType<IconButton>());
-        iconStyle.Add(IconButton.TransitionsProperty, new Transitions()
+        iconStyle.Add(IconButton.TransitionsProperty, new SetterValueFactory<Transitions>(() => new Transitions()
         {
             AnimationUtils.CreateTransition<SolidColorBrushTransition>(TemplatedControl.BackgroundProperty)
-        });
+        }));
         isEnableMotionStyle.Add(iconStyle);
         commonStyle.Add(isEnableMotionStyle);
 

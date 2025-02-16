@@ -68,7 +68,7 @@ internal class TimeViewTheme : BaseControlTheme
 
     private void BuildHeader(Grid rootLayout, INameScope scope)
     {
-        var headerText = new TextBlock
+        var headerText = new SingleLineText()
         {
             Name = HeaderTextPart
         };
@@ -260,11 +260,11 @@ internal class TimeViewTheme : BaseControlTheme
     {
         var commonStyle     = new Style(selector => selector.Nesting());
         var headerTextStyle = new Style(selector => selector.Nesting().Template().Name(HeaderTextPart));
-        headerTextStyle.Add(TextBlock.HeightProperty, TimePickerTokenKey.ItemHeight);
-        headerTextStyle.Add(TextBlock.HorizontalAlignmentProperty, HorizontalAlignment.Center);
-        headerTextStyle.Add(TextBlock.VerticalAlignmentProperty, VerticalAlignment.Center);
-        headerTextStyle.Add(TextBlock.FontWeightProperty, FontWeight.SemiBold);
-        headerTextStyle.Add(TextBlock.MarginProperty, TimePickerTokenKey.HeaderMargin);
+        headerTextStyle.Add(SingleLineText.HeightProperty, TimePickerTokenKey.ItemHeight);
+        headerTextStyle.Add(SingleLineText.HorizontalAlignmentProperty, HorizontalAlignment.Center);
+        headerTextStyle.Add(SingleLineText.VerticalAlignmentProperty, VerticalAlignment.Center);
+        headerTextStyle.Add(SingleLineText.FontWeightProperty, FontWeight.SemiBold);
+        headerTextStyle.Add(SingleLineText.MarginProperty, TimePickerTokenKey.HeaderMargin);
 
         var hourHostStyle = new Style(selector => selector.Nesting().Template().Name(HourHostPart));
         hourHostStyle.Add(Panel.WidthProperty, TimePickerTokenKey.ItemWidth);

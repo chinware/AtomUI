@@ -135,8 +135,7 @@ internal class BaseTabScrollViewerTheme : BaseControlTheme
             var menuIndicatorStyle =
                 new Style(selector => selector.Nesting().Template().Name(ScrollMenuIndicatorPart));
             menuIndicatorStyle.Add(DockPanel.DockProperty, Dock.Right);
-            menuIndicatorStyle.Add(TemplatedControl.PaddingProperty,
-                TabControlTokenKey.MenuIndicatorPaddingHorizontal);
+            menuIndicatorStyle.Add(TemplatedControl.PaddingProperty, TabControlTokenKey.MenuIndicatorPaddingHorizontal);
 
             var startEdgeIndicatorStyle =
                 new Style(selector => selector.Nesting().Template().Name(ScrollStartEdgeIndicatorPart));
@@ -169,8 +168,7 @@ internal class BaseTabScrollViewerTheme : BaseControlTheme
             var menuIndicatorStyle =
                 new Style(selector => selector.Nesting().Template().Name(ScrollMenuIndicatorPart));
             menuIndicatorStyle.Add(DockPanel.DockProperty, Dock.Bottom);
-            menuIndicatorStyle.Add(TemplatedControl.PaddingProperty,
-                TabControlTokenKey.MenuIndicatorPaddingVertical);
+            menuIndicatorStyle.Add(TemplatedControl.PaddingProperty, TabControlTokenKey.MenuIndicatorPaddingVertical);
 
             var startEdgeIndicatorStyle =
                 new Style(selector => selector.Nesting().Template().Name(ScrollStartEdgeIndicatorPart));
@@ -199,11 +197,9 @@ internal class BaseTabScrollViewerTheme : BaseControlTheme
             var contentPresenterStyle =
                 new Style(selector => selector.Nesting().Template().Name(ScrollViewContentPart));
             contentPresenterStyle.Add(DockPanel.DockProperty, Dock.Left);
-            var menuIndicatorStyle =
-                new Style(selector => selector.Nesting().Template().Name(ScrollMenuIndicatorPart));
+            var menuIndicatorStyle = new Style(selector => selector.Nesting().Template().Name(ScrollMenuIndicatorPart));
             menuIndicatorStyle.Add(DockPanel.DockProperty, Dock.Right);
-            menuIndicatorStyle.Add(TemplatedControl.PaddingProperty,
-                TabControlTokenKey.MenuIndicatorPaddingHorizontal);
+            menuIndicatorStyle.Add(TemplatedControl.PaddingProperty, TabControlTokenKey.MenuIndicatorPaddingHorizontal);
 
             var startEdgeIndicatorStyle =
                 new Style(selector => selector.Nesting().Template().Name(ScrollStartEdgeIndicatorPart));
@@ -235,8 +231,7 @@ internal class BaseTabScrollViewerTheme : BaseControlTheme
             var menuIndicatorStyle =
                 new Style(selector => selector.Nesting().Template().Name(ScrollMenuIndicatorPart));
             menuIndicatorStyle.Add(DockPanel.DockProperty, Dock.Bottom);
-            menuIndicatorStyle.Add(TemplatedControl.PaddingProperty,
-                TabControlTokenKey.MenuIndicatorPaddingVertical);
+            menuIndicatorStyle.Add(TemplatedControl.PaddingProperty, TabControlTokenKey.MenuIndicatorPaddingVertical);
 
             var startEdgeIndicatorStyle =
                 new Style(selector => selector.Nesting().Template().Name(ScrollStartEdgeIndicatorPart));

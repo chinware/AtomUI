@@ -131,12 +131,12 @@ internal class NodeSwitcherButtonTheme : BaseControlTheme
         base.BuildStyles();
         
         var commonStyle = new Style(selector => selector.Nesting());
-        commonStyle.Add(TemplatedControl.BackgroundProperty, SharedTokenKey.ColorTransparent);
+        commonStyle.Add(TemplatedControl.BackgroundProperty, Brushes.Transparent);
         commonStyle.Add(TemplatedControl.CornerRadiusProperty, SharedTokenKey.BorderRadius);
         
         var checkStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Checked)
             .PropertyEquals(NodeSwitcherButton.IconModeProperty, NodeSwitcherButtonIconMode.Rotation));
-        checkStyle.Add(NodeSwitcherButton.RenderTransformProperty, new RotateTransform(90));
+        checkStyle.Add(NodeSwitcherButton.RenderTransformProperty, new SetterValueFactory<ITransform>(() => new RotateTransform(90)));
         commonStyle.Add(checkStyle);
         
         Add(commonStyle);

@@ -8,8 +8,10 @@ using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
+using Avalonia.Data.Converters;
 using Avalonia.Input;
 using Avalonia.Layout;
+using Avalonia.Media;
 using Avalonia.Styling;
 
 namespace AtomUI.Controls;
@@ -140,7 +142,21 @@ internal class TreeViewItemTheme : BaseControlTheme
             CreateTemplateParentBinding(contentPresenter, InputElement.IsEnabledProperty,
                 InputElement.IsEnabledProperty);
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty,
-                HeaderedItemsControl.HeaderProperty);
+                HeaderedItemsControl.HeaderProperty,
+                BindingMode.Default, new FuncValueConverter<object?, object?>(
+                    o =>
+                    {
+                        if (o is string str)
+                        {
+                            return new SingleLineText()
+                            {
+                                Text              = str,
+                                VerticalAlignment = VerticalAlignment.Center
+                            };
+                        }
+
+                        return o;
+                    }));
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentTemplateProperty,
                 HeaderedItemsControl.HeaderTemplateProperty);
             contentPresenter.RegisterInNameScope(scope);
@@ -178,7 +194,7 @@ internal class TreeViewItemTheme : BaseControlTheme
         commonStyle.Add(TreeViewItem.EffectiveNodeCornerRadiusProperty, SharedTokenKey.BorderRadius);
         commonStyle.Add(TemplatedControl.BorderBrushProperty, SharedTokenKey.ColorBorder);
         commonStyle.Add(TemplatedControl.BorderThicknessProperty, SharedTokenKey.BorderThickness);
-        commonStyle.Add(TreeViewItem.EffectiveNodeBgProperty, SharedTokenKey.ColorTransparent);
+        commonStyle.Add(TreeViewItem.EffectiveNodeBgProperty, Brushes.Transparent);
         var frameDecoratorStyle = new Style(selector => selector.Nesting().Template().Name(FrameDecoratorPart));
         frameDecoratorStyle.Add(Layoutable.HeightProperty, TreeViewTokenKey.TitleHeight);
         frameDecoratorStyle.Add(Layoutable.MarginProperty, TreeViewTokenKey.TreeItemMargin);
@@ -207,7 +223,7 @@ internal class TreeViewItemTheme : BaseControlTheme
         {
             var headerPresenterStyle = new Style(selector => selector.Nesting().Template().Name(HeaderPresenterPart));
             headerPresenterStyle.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
-            headerPresenterStyle.Add(ContentPresenter.BackgroundProperty, SharedTokenKey.ColorTransparent);
+            headerPresenterStyle.Add(ContentPresenter.BackgroundProperty, Brushes.Transparent);
             headerPresenterStyle.Add(ContentPresenter.FontSizeProperty, SharedTokenKey.FontSize);
             blockNodeHoverModeStyle.Add(headerPresenterStyle);
         }
@@ -239,7 +255,7 @@ internal class TreeViewItemTheme : BaseControlTheme
             var switcherButtonStyle = new Style(selector => selector.Nesting().Template().Name(NodeSwitcherButtonPart));
             switcherButtonStyle.Add(Layoutable.HeightProperty, TreeViewTokenKey.TitleHeight);
             switcherButtonStyle.Add(Layoutable.WidthProperty, TreeViewTokenKey.TitleHeight);
-            switcherButtonStyle.Add(InputElement.CursorProperty, new Cursor(StandardCursorType.Hand));
+            switcherButtonStyle.Add(InputElement.CursorProperty, new SetterValueFactory<Cursor>(() => new Cursor(StandardCursorType.Hand)));
             Add(switcherButtonStyle);
         }
 
@@ -247,7 +263,7 @@ internal class TreeViewItemTheme : BaseControlTheme
             new Style(selector => selector.Nesting().PropertyEquals(TreeViewItem.IsLeafProperty, true));
         {
             var switcherButtonStyle = new Style(selector => selector.Nesting().Template().Name(NodeSwitcherButtonPart));
-            switcherButtonStyle.Add(InputElement.CursorProperty, new Cursor(StandardCursorType.Arrow));
+            switcherButtonStyle.Add(InputElement.CursorProperty, new SetterValueFactory<Cursor>(() => new Cursor(StandardCursorType.Arrow)));
             leafSwitcherButtonStyle.Add(switcherButtonStyle);
         }
         Add(leafSwitcherButtonStyle);

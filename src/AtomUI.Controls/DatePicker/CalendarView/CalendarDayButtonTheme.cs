@@ -35,7 +35,7 @@ internal class CalendarDayButtonTheme : BaseControlTheme
                 VerticalContentAlignment   = VerticalAlignment.Center,
             };
 
-            var buttonLabel = new TextBlock
+            var buttonLabel = new SingleLineText
             {
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment   = VerticalAlignment.Center,
@@ -80,7 +80,7 @@ internal class CalendarDayButtonTheme : BaseControlTheme
         var commonStyle = new Style(selector => selector.Nesting());
 
         commonStyle.Add(Avalonia.Controls.Button.ClickModeProperty, ClickMode.Release);
-        commonStyle.Add(InputElement.CursorProperty, new Cursor(StandardCursorType.Hand));
+        commonStyle.Add(InputElement.CursorProperty, new SetterValueFactory<Cursor>(() => new Cursor(StandardCursorType.Hand)));
         commonStyle.Add(TemplatedControl.BackgroundProperty, SharedTokenKey.ColorTransparent);
         commonStyle.Add(TemplatedControl.ForegroundProperty, SharedTokenKey.ColorTextLabel);
         commonStyle.Add(TemplatedControl.CornerRadiusProperty, SharedTokenKey.BorderRadiusSM);

@@ -25,19 +25,19 @@ internal class LoadingIndicatorTheme : BaseControlTheme
     {
         return new FuncControlTemplate<LoadingIndicator>((indicator, scope) =>
         {
-            var textBlock = new TextBlock
+            var loadingText = new SingleLineText()
             {
                 Name                = LoadingTextPart,
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment   = VerticalAlignment.Center,
             };
-            CreateTemplateParentBinding(textBlock, TextBlock.TextProperty, LoadingIndicator.LoadingMsgProperty);
-            textBlock.RegisterInNameScope(scope);
+            CreateTemplateParentBinding(loadingText, SingleLineText.TextProperty, LoadingIndicator.LoadingMsgProperty);
+            loadingText.RegisterInNameScope(scope);
             var mainContainer = new Canvas
             {
                 Name = MainContainerPart
             };
-            mainContainer.Children.Add(textBlock);
+            mainContainer.Children.Add(loadingText);
             mainContainer.RegisterInNameScope(scope);
             return mainContainer;
         });
@@ -49,12 +49,12 @@ internal class LoadingIndicatorTheme : BaseControlTheme
         commonStyle.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Left);
         commonStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Top);
         commonStyle.Add(TemplatedControl.FontSizeProperty, SharedTokenKey.FontSize);
-        commonStyle.Add(LoadingIndicator.MotionEasingCurveProperty, new LinearEasing());
+        commonStyle.Add(LoadingIndicator.MotionEasingCurveProperty, new SetterValueFactory<Easing>(() => new LinearEasing()));
         commonStyle.Add(LoadingIndicator.MotionDurationProperty, LoadingIndicatorTokenKey.IndicatorDuration);
         commonStyle.Add(LoadingIndicator.DotBgBrushProperty, SharedTokenKey.ColorPrimary);
         commonStyle.Add(LoadingIndicator.IndicatorTextMarginProperty, SharedTokenKey.MarginXXS);
-        var loadingTextStyle = new Style(selector => selector.Nesting().Template().OfType<TextBlock>());
-        loadingTextStyle.Add(TextBlock.ForegroundProperty, SharedTokenKey.ColorPrimary);
+        var loadingTextStyle = new Style(selector => selector.Nesting().Template().OfType<SingleLineText>());
+        loadingTextStyle.Add(SingleLineText.ForegroundProperty, SharedTokenKey.ColorPrimary);
         commonStyle.Add(loadingTextStyle);
         BuildDotSizeStyle(commonStyle);
         BuildCustomIconStyle();

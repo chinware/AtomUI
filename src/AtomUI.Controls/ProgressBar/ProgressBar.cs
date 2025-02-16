@@ -10,8 +10,9 @@ using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
-public record PercentPosition
+public record struct PercentPosition
 {
+    public PercentPosition() {}
     public bool IsInner { get; set; } = false;
     public LinePercentAlignment Alignment { get; set; } = LinePercentAlignment.End;
 }

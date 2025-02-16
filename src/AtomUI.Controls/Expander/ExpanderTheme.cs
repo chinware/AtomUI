@@ -11,6 +11,8 @@ using Avalonia.Controls.Documents;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
+using Avalonia.Data.Converters;
 using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Media;
@@ -139,7 +141,20 @@ internal class ExpanderTheme : BaseControlTheme
         };
         Grid.SetColumn(headerPresenter, 1);
         CreateTemplateParentBinding(headerPresenter, ContentPresenter.ContentProperty,
-            HeaderedContentControl.HeaderProperty);
+            HeaderedContentControl.HeaderProperty,
+            BindingMode.Default, new FuncValueConverter<object?, object?>(
+                o =>
+                {
+                    if (o is string str)
+                    {
+                        return new SingleLineText()
+                        {
+                            Text              = str,
+                            VerticalAlignment = VerticalAlignment.Center
+                        };
+                    }
+                    return o;
+                }));
         CreateTemplateParentBinding(headerPresenter, ContentPresenter.ContentTemplateProperty,
             HeaderedContentControl.HeaderTemplateProperty);
         headerPresenter.RegisterInNameScope(scope);
@@ -208,10 +223,10 @@ internal class ExpanderTheme : BaseControlTheme
             // 打开关闭指示按钮的动画
             var isMotionEnabledStyle = new Style(selector => selector.Nesting().PropertyEquals(Expander.IsMotionEnabledProperty, true));
             var expandIconButtonStyle = new Style(selector => selector.Nesting().Template().Name(ExpandButtonPart));
-            expandIconButtonStyle.Add(IconButton.TransitionsProperty, new Transitions()
+            expandIconButtonStyle.Add(IconButton.TransitionsProperty, new SetterValueFactory<Transitions>(() => new Transitions()
             {
                 AnimationUtils.CreateTransition<TransformOperationsTransition>(Visual.RenderTransformProperty)
-            });
+            }));
             isMotionEnabledStyle.Add(expandIconButtonStyle);
             commonStyle.Add(isMotionEnabledStyle);
         }
@@ -290,7 +305,7 @@ internal class ExpanderTheme : BaseControlTheme
             var headerLayoutTransformStyle =
                 new Style(selector => selector.Nesting().Template().Name(HeaderLayoutTransformPart));
             headerLayoutTransformStyle.Add(DockPanel.DockProperty, Dock.Right);
-            headerLayoutTransformStyle.Add(LayoutTransformControl.LayoutTransformProperty, new RotateTransform(90));
+            headerLayoutTransformStyle.Add(LayoutTransformControl.LayoutTransformProperty, new SetterValueFactory<ITransform>(() => new RotateTransform(90)));
             leftStyle.Add(headerLayoutTransformStyle);
         }
         Add(leftStyle);
@@ -303,7 +318,7 @@ internal class ExpanderTheme : BaseControlTheme
         {
             var headerLayoutTransformStyle =
                 new Style(selector => selector.Nesting().Template().Name(HeaderLayoutTransformPart));
-            headerLayoutTransformStyle.Add(LayoutTransformControl.LayoutTransformProperty, new RotateTransform(90));
+            headerLayoutTransformStyle.Add(LayoutTransformControl.LayoutTransformProperty, new SetterValueFactory<ITransform>(() => new RotateTransform(90)));
             headerLayoutTransformStyle.Add(DockPanel.DockProperty, Dock.Left);
             rightStyle.Add(headerLayoutTransformStyle);
         }
@@ -318,9 +333,13 @@ internal class ExpanderTheme : BaseControlTheme
         {
             // Expand Button
             var expandButtonStyle = new Style(selector => selector.Nesting().Template().Name(ExpandButtonPart));
-            var transformOptions  = new TransformOperations.Builder(1);
-            transformOptions.AppendRotate(MathUtils.Deg2Rad(-90));
-            expandButtonStyle.Add(Visual.RenderTransformProperty, transformOptions.Build());
+           
+            expandButtonStyle.Add(Visual.RenderTransformProperty, new SetterValueFactory<ITransform>(() =>
+            {
+                var transformOptions  = new TransformOperations.Builder(1);
+                transformOptions.AppendRotate(MathUtils.Deg2Rad(-90));
+                return transformOptions.Build();
+            }));
 
             upStyle.Add(expandButtonStyle);
         }
@@ -331,9 +350,13 @@ internal class ExpanderTheme : BaseControlTheme
         {
             // Expand Button
             var expandButtonStyle = new Style(selector => selector.Nesting().Template().Name(ExpandButtonPart));
-            var transformOptions  = new TransformOperations.Builder(1);
-            transformOptions.AppendRotate(MathUtils.Deg2Rad(90));
-            expandButtonStyle.Add(Visual.RenderTransformProperty, transformOptions.Build());
+   
+            expandButtonStyle.Add(Visual.RenderTransformProperty, new SetterValueFactory<ITransform>(() =>
+            {
+                var transformOptions  = new TransformOperations.Builder(1);
+                transformOptions.AppendRotate(MathUtils.Deg2Rad(90));
+                return transformOptions.Build();
+            }));
 
             downStyle.Add(expandButtonStyle);
         }
@@ -344,9 +367,13 @@ internal class ExpanderTheme : BaseControlTheme
         {
             // Expand Button
             var expandButtonStyle = new Style(selector => selector.Nesting().Template().Name(ExpandButtonPart));
-            var transformOptions  = new TransformOperations.Builder(1);
-            transformOptions.AppendRotate(MathUtils.Deg2Rad(90));
-            expandButtonStyle.Add(Visual.RenderTransformProperty, transformOptions.Build());
+
+            expandButtonStyle.Add(Visual.RenderTransformProperty, new SetterValueFactory<ITransform>(() =>
+            {
+                var transformOptions  = new TransformOperations.Builder(1);
+                transformOptions.AppendRotate(MathUtils.Deg2Rad(90));
+                return transformOptions.Build();
+            }));
 
             leftStyle.Add(expandButtonStyle);
         }
@@ -356,9 +383,13 @@ internal class ExpanderTheme : BaseControlTheme
         {
             // Expand Button
             var expandButtonStyle = new Style(selector => selector.Nesting().Template().Name(ExpandButtonPart));
-            var transformOptions  = new TransformOperations.Builder(1);
-            transformOptions.AppendRotate(MathUtils.Deg2Rad(-90));
-            expandButtonStyle.Add(Visual.RenderTransformProperty, transformOptions.Build());
+            
+            expandButtonStyle.Add(Visual.RenderTransformProperty, new SetterValueFactory<ITransform>(() =>
+            {
+                var transformOptions  = new TransformOperations.Builder(1);
+                transformOptions.AppendRotate(MathUtils.Deg2Rad(-90));
+                return transformOptions.Build();
+            }));
 
             rightStyle.Add(expandButtonStyle);
         }
@@ -375,7 +406,7 @@ internal class ExpanderTheme : BaseControlTheme
             var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));
             decoratorStyle.Add(Decorator.PaddingProperty, ExpanderTokenKey.HeaderPaddingLG);
             decoratorStyle.Add(TextElement.FontSizeProperty, SharedTokenKey.FontSizeLG);
-            decoratorStyle.Add(TextBlock.LineHeightProperty, SharedTokenKey.FontHeightLG);
+            decoratorStyle.Add(SingleLineText.LineHeightProperty, SharedTokenKey.FontHeightLG);
             largeSizeStyle.Add(decoratorStyle);
         }
 
@@ -393,7 +424,7 @@ internal class ExpanderTheme : BaseControlTheme
             var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));
             decoratorStyle.Add(Decorator.PaddingProperty, ExpanderTokenKey.HeaderPadding);
             decoratorStyle.Add(TextElement.FontSizeProperty, SharedTokenKey.FontSize);
-            decoratorStyle.Add(TextBlock.LineHeightProperty, SharedTokenKey.FontHeight);
+            decoratorStyle.Add(SingleLineText.LineHeightProperty, SharedTokenKey.FontHeight);
             middleSizeStyle.Add(decoratorStyle);
         }
 
@@ -410,7 +441,7 @@ internal class ExpanderTheme : BaseControlTheme
             var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));
             decoratorStyle.Add(Decorator.PaddingProperty, ExpanderTokenKey.HeaderPaddingSM);
             decoratorStyle.Add(TextElement.FontSizeProperty, SharedTokenKey.FontSize);
-            decoratorStyle.Add(TextBlock.LineHeightProperty, SharedTokenKey.FontHeight);
+            decoratorStyle.Add(SingleLineText.LineHeightProperty, SharedTokenKey.FontHeight);
             smallSizeStyle.Add(decoratorStyle);
         }
 
@@ -428,14 +459,14 @@ internal class ExpanderTheme : BaseControlTheme
         var headerTriggerHandleStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(Expander.TriggerTypeProperty, ExpanderTriggerType.Header));
         var headerDecoratorStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));
-        headerDecoratorStyle.Add(InputElement.CursorProperty, new Cursor(StandardCursorType.Hand));
+        headerDecoratorStyle.Add(InputElement.CursorProperty, new SetterValueFactory<Cursor>(() => new Cursor(StandardCursorType.Hand)));
         headerTriggerHandleStyle.Add(headerDecoratorStyle);
         Add(headerTriggerHandleStyle);
 
         var iconTriggerHandleStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(Expander.TriggerTypeProperty, ExpanderTriggerType.Icon));
         var expandIconStyle = new Style(selector => selector.Nesting().Template().Name(ExpandButtonPart));
-        expandIconStyle.Add(InputElement.CursorProperty, new Cursor(StandardCursorType.Hand));
+        expandIconStyle.Add(InputElement.CursorProperty, new SetterValueFactory<Cursor>(() => new Cursor(StandardCursorType.Hand)));
         iconTriggerHandleStyle.Add(expandIconStyle);
         Add(iconTriggerHandleStyle);
     }

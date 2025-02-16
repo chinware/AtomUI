@@ -100,7 +100,7 @@ internal class CalendarItemTheme : BaseControlTheme
 
     protected virtual void NotifyBuildHeaderItems(UniformGrid headerLayout, INameScope scope)
     {
-        BuildHeaderItem(headerLayout, 
+        BuildHeaderItem(headerLayout,
             PreviousButtonPart,
             PreviousMonthButtonPart,
             HeaderButtonPart,

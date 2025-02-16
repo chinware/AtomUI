@@ -46,7 +46,7 @@ internal class HeadTextButtonTheme : BaseControlTheme
         commonStyle.Add(TemplatedControl.BackgroundProperty, SharedTokenKey.ColorTransparent);
         commonStyle.Add(TemplatedControl.FontWeightProperty, FontWeight.SemiBold);
         commonStyle.Add(TemplatedControl.FontSizeProperty, SharedTokenKey.FontSize);
-        commonStyle.Add(InputElement.CursorProperty, new Cursor(StandardCursorType.Hand));
+        commonStyle.Add(InputElement.CursorProperty, new SetterValueFactory<Cursor>(() => new Cursor(StandardCursorType.Hand)));
 
         var hoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
         hoverStyle.Add(TemplatedControl.ForegroundProperty, SharedTokenKey.ColorPrimary);

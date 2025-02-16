@@ -78,22 +78,22 @@ internal class GroupBoxTheme : BaseControlTheme
                 GroupBox.HeaderIconProperty);
             headerContentLayout.Children.Add(headerIconContentPresenter);
 
-            var headerTextBlock = new TextBlock
+            var headerText = new SingleLineText()
             {
                 Name                = HeaderPresenterPart,
                 HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment   = VerticalAlignment.Center
             };
 
-            CreateTemplateParentBinding(headerTextBlock, TextBlock.TextProperty, GroupBox.HeaderTitleProperty);
-            CreateTemplateParentBinding(headerTextBlock, TextBlock.FontSizeProperty, GroupBox.HeaderFontSizeProperty);
-            CreateTemplateParentBinding(headerTextBlock, TextBlock.ForegroundProperty,
+            CreateTemplateParentBinding(headerText, SingleLineText.TextProperty, GroupBox.HeaderTitleProperty);
+            CreateTemplateParentBinding(headerText, SingleLineText.FontSizeProperty, GroupBox.HeaderFontSizeProperty);
+            CreateTemplateParentBinding(headerText, SingleLineText.ForegroundProperty,
                 GroupBox.HeaderTitleColorProperty);
-            CreateTemplateParentBinding(headerTextBlock, TextBlock.FontStyleProperty, GroupBox.HeaderFontStyleProperty);
-            CreateTemplateParentBinding(headerTextBlock, TextBlock.FontWeightProperty,
+            CreateTemplateParentBinding(headerText, SingleLineText.FontStyleProperty, GroupBox.HeaderFontStyleProperty);
+            CreateTemplateParentBinding(headerText, SingleLineText.FontWeightProperty,
                 GroupBox.HeaderFontWeightProperty);
 
-            headerContentLayout.Children.Add(headerTextBlock);
+            headerContentLayout.Children.Add(headerText);
 
             mainLayout.Children.Add(headerContainer);
 

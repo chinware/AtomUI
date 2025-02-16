@@ -79,6 +79,72 @@ public partial class EmptyIndicator : TemplatedControl,
     #endregion
     
     #region 内部属性定义
+    
+    internal static readonly StyledProperty<double> DescriptionMarginProperty =
+        AvaloniaProperty.Register<EmptyIndicator, double>(
+            nameof(DescriptionMargin));
+    
+    private static readonly DirectProperty<EmptyIndicator, IBrush?> ColorFillProperty =
+        AvaloniaProperty.RegisterDirect<EmptyIndicator, IBrush?>(
+            nameof(_colorFill),
+            o => o._colorFill,
+            (o, v) => o._colorFill = v);
+    
+    private static readonly DirectProperty<EmptyIndicator, IBrush?> ColorFillTertiaryProperty =
+        AvaloniaProperty.RegisterDirect<EmptyIndicator, IBrush?>(
+            nameof(_colorFillTertiary),
+            o => o._colorFillTertiary,
+            (o, v) => o._colorFillTertiary = v);
+    
+    private static readonly DirectProperty<EmptyIndicator, IBrush?> ColorFillQuaternaryProperty =
+        AvaloniaProperty.RegisterDirect<EmptyIndicator, IBrush?>(
+            nameof(_colorFillQuaternary),
+            o => o._colorFillQuaternary,
+            (o, v) => o._colorFillQuaternary = v);
+    
+    private static readonly DirectProperty<EmptyIndicator, IBrush?> ColorBgContainerProperty =
+        AvaloniaProperty.RegisterDirect<EmptyIndicator, IBrush?>(
+            nameof(_colorBgContainer),
+            o => o._colorBgContainer,
+            (o, v) => o._colorBgContainer = v);
+
+    internal double DescriptionMargin
+    {
+        get => GetValue(DescriptionMarginProperty);
+        set => SetValue(DescriptionMarginProperty, value);
+    }
+    
+    private IBrush? _colorFill;
+
+    internal IBrush? ColorFill
+    {
+        get => _colorFill;
+        set => SetAndRaise(ColorFillProperty, ref _colorFill, value);
+    }
+    
+    private IBrush? _colorFillTertiary;
+    
+    internal IBrush? ColorFillTertiary
+    {
+        get => _colorFillTertiary;
+        set => SetAndRaise(ColorFillTertiaryProperty, ref _colorFillTertiary, value);
+    }
+    
+    private IBrush? _colorFillQuaternary;
+    
+    internal IBrush? ColorFillQuaternary
+    {
+        get => _colorFillQuaternary;
+        set => SetAndRaise(ColorFillQuaternaryProperty, ref _colorFillQuaternary, value);
+    }
+    
+    private IBrush? _colorBgContainer;
+    internal IBrush? ColorBgContainer
+    {
+        get => _colorBgContainer;
+        set => SetAndRaise(ColorBgContainerProperty, ref _colorBgContainer, value);
+    }
+    
 
     string IControlSharedTokenResourcesHost.TokenId => EmptyIndicatorToken.ID;
     Control IControlSharedTokenResourcesHost.HostControl => this;
@@ -93,7 +159,11 @@ public partial class EmptyIndicator : TemplatedControl,
             ImagePathProperty,
             ImageSourceProperty,
             DescriptionProperty,
-            IsShowDescriptionProperty);
+            IsShowDescriptionProperty,
+            ColorFillProperty,
+            ColorFillTertiaryProperty,
+            ColorFillQuaternaryProperty,
+            ColorBgContainerProperty);
     }
 
     public EmptyIndicator()
@@ -128,13 +198,28 @@ public partial class EmptyIndicator : TemplatedControl,
 
     private void SetupTokenBindings()
     {
-        TokenResourceBinder.CreateTokenBinding(this, ColorFillTokenProperty, SharedTokenKey.ColorFill);
-        TokenResourceBinder.CreateTokenBinding(this, ColorFillTertiaryTokenProperty,
+        TokenResourceBinder.CreateTokenBinding(this, ColorFillProperty, SharedTokenKey.ColorFill);
+        TokenResourceBinder.CreateTokenBinding(this, ColorFillTertiaryProperty,
             SharedTokenKey.ColorFillTertiary);
-        TokenResourceBinder.CreateTokenBinding(this, ColorFillQuaternaryTokenProperty,
+        TokenResourceBinder.CreateTokenBinding(this, ColorFillQuaternaryProperty,
             SharedTokenKey.ColorFillQuaternary);
-        TokenResourceBinder.CreateTokenBinding(this, ColorBgContainerTokenProperty,
+        TokenResourceBinder.CreateTokenBinding(this, ColorBgContainerProperty,
             SharedTokenKey.ColorBgContainer);
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (VisualRoot != null)
+        {
+            if (change.Property == ColorFillProperty ||
+                change.Property == ColorFillTertiaryProperty ||
+                change.Property == ColorFillQuaternaryProperty ||
+                change.Property == ColorBgContainerProperty)
+            {
+                SetupImage();
+            }
+        }
     }
 
     private void SetupImage()
@@ -152,10 +237,10 @@ public partial class EmptyIndicator : TemplatedControl,
             }
             else
             {
-                var colorFill           = ((ISolidColorBrush)_colorFillToken!).Color;
-                var colorFillTertiary   = ((ISolidColorBrush)_colorFillTertiary!).Color;
-                var colorFillQuaternary = ((ISolidColorBrush)_colorFillQuaternary!).Color;
-                var colorBgContainer    = ((ISolidColorBrush)_colorBgContainer!).Color;
+                var colorFill           = ((ISolidColorBrush)ColorFill!).Color;
+                var colorFillTertiary   = ((ISolidColorBrush)ColorFillTertiary!).Color;
+                var colorFillQuaternary = ((ISolidColorBrush)ColorFillQuaternary!).Color;
+                var colorBgContainer    = ((ISolidColorBrush)ColorBgContainer!).Color;
                 var borderColor         = ColorUtils.OnBackground(colorFill, colorBgContainer);
                 var shadowColor         = ColorUtils.OnBackground(colorFillTertiary, colorBgContainer);
                 var contentColor        = ColorUtils.OnBackground(colorFillQuaternary, colorBgContainer);

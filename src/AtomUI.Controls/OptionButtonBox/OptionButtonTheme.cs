@@ -126,8 +126,7 @@ internal class OptionButtonTheme : BaseControlTheme
         {
             var unCheckedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.UnChecked));
             unCheckedStyle.Add(TemplatedControl.ForegroundProperty, SharedTokenKey.ColorText);
-            // unCheckedStyle.Add(TemplatedControl.BackgroundProperty, SharedTokenKey.ColorBgContainer);
-            unCheckedStyle.Add(TemplatedControl.BackgroundProperty, SharedTokenKey.ColorTransparent);
+            unCheckedStyle.Add(TemplatedControl.BackgroundProperty, Brushes.Transparent);
 
             // Hover 状态
             var hoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));

@@ -31,10 +31,8 @@ internal class SliderThumbTheme : BaseControlTheme
 
         var hoverOrFocusStyle = new Style(selector => Selectors.Or(selector.Nesting().Class(StdPseudoClass.PointerOver),
             selector.Nesting().Class(StdPseudoClass.Focus)));
-        hoverOrFocusStyle.Add(TemplatedControl.BorderThicknessProperty,
-            SliderTokenKey.ThumbCircleBorderThicknessHover);
-        hoverOrFocusStyle.Add(TemplatedControl.BorderBrushProperty,
-            SliderTokenKey.ThumbCircleBorderActiveColor);
+        hoverOrFocusStyle.Add(TemplatedControl.BorderThicknessProperty, SliderTokenKey.ThumbCircleBorderThicknessHover);
+        hoverOrFocusStyle.Add(TemplatedControl.BorderBrushProperty, SliderTokenKey.ThumbCircleBorderActiveColor);
         hoverOrFocusStyle.Add(SliderThumb.ThumbCircleSizeProperty, SliderTokenKey.ThumbCircleSizeHover);
         hoverOrFocusStyle.Add(SliderThumb.OutlineThicknessProperty, SliderTokenKey.ThumbOutlineThickness);
         commonStyle.Add(hoverOrFocusStyle);

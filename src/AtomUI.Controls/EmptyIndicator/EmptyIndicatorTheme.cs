@@ -23,7 +23,7 @@ internal class EmptyIndicatorTheme : BaseControlTheme
     {
     }
 
-    protected override IControlTemplate? BuildControlTemplate()
+    protected override IControlTemplate BuildControlTemplate()
     {
         return new FuncControlTemplate<EmptyIndicator>((indicator, scope) =>
         {

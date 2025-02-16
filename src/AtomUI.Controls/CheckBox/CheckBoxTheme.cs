@@ -77,7 +77,7 @@ internal class CheckBoxTheme : BaseControlTheme
         BuildIndicatorStyle();
 
         var commonStyle = new Style(selector => selector.Nesting());
-        commonStyle.Add(CheckBox.CursorProperty, new Cursor(StandardCursorType.Hand));
+        commonStyle.Add(CheckBox.CursorProperty, new SetterValueFactory<Cursor>(()=> new Cursor(StandardCursorType.Hand)));
         commonStyle.Add(CheckBox.HorizontalAlignmentProperty, HorizontalAlignment.Left);
         
         var labelTextStyle = new Style(selector => selector.Nesting().Template().Name(LabelTextPart));

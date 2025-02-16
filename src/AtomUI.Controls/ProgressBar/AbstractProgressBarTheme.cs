@@ -22,7 +22,7 @@ internal class AbstractProgressBarTheme : BaseControlTheme
     {
     }
 
-    protected override IControlTemplate? BuildControlTemplate()
+    protected override IControlTemplate BuildControlTemplate()
     {
         return new FuncControlTemplate<AbstractProgressBar>((bar, scope) =>
         {
@@ -90,7 +90,6 @@ internal class AbstractProgressBarTheme : BaseControlTheme
             infoLabelStyle.Add(Visual.IsVisibleProperty, false);
 
             exceptionStatusStyle.Add(AbstractProgressBar.IndicatorBarBrushProperty, SharedTokenKey.ColorError);
-
             exceptionStatusStyle.Add(infoLabelStyle);
         }
         Add(exceptionStatusStyle);
@@ -164,8 +163,7 @@ internal class AbstractProgressBarTheme : BaseControlTheme
     {
         var disableStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Disabled));
         disableStyle.Add(AbstractProgressBar.GrooveBrushProperty, SharedTokenKey.ColorBgContainerDisabled);
-        disableStyle.Add(AbstractProgressBar.IndicatorBarBrushProperty,
-            SharedTokenKey.ControlItemBgActiveDisabled);
+        disableStyle.Add(AbstractProgressBar.IndicatorBarBrushProperty, SharedTokenKey.ControlItemBgActiveDisabled);
         disableStyle.Add(TemplatedControl.ForegroundProperty, SharedTokenKey.ColorTextDisabled);
         var statusIconStyle = new Style(selector => selector.Nesting().Template().OfType<Icon>());
         statusIconStyle.Add(Icon.IconModeProperty, IconMode.Disabled);

@@ -45,8 +45,7 @@ internal class MenuScrollViewerTheme : BaseControlTheme
                 Transitions         = transitions,
                 RenderTransform     = null
             };
-            CreateTemplateParentBinding(scrollUpButton, Button.CommandProperty,
-                nameof(MenuScrollViewer.LineUp));
+            CreateTemplateParentBinding(scrollUpButton, Button.CommandProperty, nameof(MenuScrollViewer.LineUp));
             TokenResourceBinder.CreateTokenBinding(scrollUpButton, IconButton.IconWidthProperty,
                 MenuTokenKey.ScrollButtonIconSize);
             TokenResourceBinder.CreateTokenBinding(scrollUpButton, IconButton.IconHeightProperty,

@@ -7,6 +7,8 @@ using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
+using Avalonia.Data.Converters;
 using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Styling;
@@ -55,7 +57,21 @@ internal class BaseTabItemTheme : BaseControlTheme
         };
         containerLayout.Children.Add(contentPresenter);
         CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty,
-            HeaderedContentControl.HeaderProperty);
+            HeaderedContentControl.HeaderProperty,
+            BindingMode.Default, new FuncValueConverter<object?, object?>(
+                o =>
+                {
+                    if (o is string str)
+                    {
+                        return new SingleLineText()
+                        {
+                            Text              = str,
+                            VerticalAlignment = VerticalAlignment.Center
+                        };
+                    }
+
+                    return o;
+                }));
         CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentTemplateProperty,
             HeaderedContentControl.HeaderTemplateProperty);
 
@@ -77,7 +93,8 @@ internal class BaseTabItemTheme : BaseControlTheme
     protected override void BuildStyles()
     {
         var commonStyle = new Style(selector => selector.Nesting());
-        commonStyle.Add(InputElement.CursorProperty, new Cursor(StandardCursorType.Hand));
+        commonStyle.Add(InputElement.CursorProperty,
+            new SetterValueFactory<Cursor>(() => new Cursor(StandardCursorType.Hand)));
         commonStyle.Add(TemplatedControl.ForegroundProperty, TabControlTokenKey.ItemColor);
 
         // Icon 一些通用属性

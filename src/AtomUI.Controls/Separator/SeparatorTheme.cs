@@ -33,13 +33,10 @@ internal class SeparatorTheme : BaseControlTheme
                 Padding                    = new Thickness(0)
             };
             CreateTemplateParentBinding(titleLabel, ContentControl.ContentProperty, Separator.TitleProperty);
-            CreateTemplateParentBinding(titleLabel, TemplatedControl.FontSizeProperty,
-                TemplatedControl.FontSizeProperty);
+            CreateTemplateParentBinding(titleLabel, TemplatedControl.FontSizeProperty, TemplatedControl.FontSizeProperty);
             CreateTemplateParentBinding(titleLabel, TemplatedControl.ForegroundProperty, Separator.TitleColorProperty);
-            CreateTemplateParentBinding(titleLabel, TemplatedControl.FontStyleProperty,
-                TemplatedControl.FontStyleProperty);
-            CreateTemplateParentBinding(titleLabel, TemplatedControl.FontWeightProperty,
-                TemplatedControl.FontWeightProperty);
+            CreateTemplateParentBinding(titleLabel, TemplatedControl.FontStyleProperty, TemplatedControl.FontStyleProperty);
+            CreateTemplateParentBinding(titleLabel, TemplatedControl.FontWeightProperty, TemplatedControl.FontWeightProperty);
             titleLabel.RegisterInNameScope(scope);
             return titleLabel;
         });

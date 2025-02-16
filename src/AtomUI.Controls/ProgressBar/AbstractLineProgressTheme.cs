@@ -52,10 +52,8 @@ internal class AbstractLineProgressTheme : AbstractProgressBarTheme
     {
         base.BuildStyles();
         var commonStyle = new Style(selector => selector.Nesting());
-        commonStyle.Add(AbstractLineProgress.LineProgressPaddingProperty,
-            ProgressBarTokenKey.LineProgressPadding);
-        commonStyle.Add(AbstractLineProgress.LineExtraInfoMarginProperty,
-            ProgressBarTokenKey.LineExtraInfoMargin);
+        commonStyle.Add(AbstractLineProgress.LineProgressPaddingProperty, ProgressBarTokenKey.LineProgressPadding);
+        commonStyle.Add(AbstractLineProgress.LineExtraInfoMarginProperty, ProgressBarTokenKey.LineExtraInfoMargin);
         Add(commonStyle);
         BuildSizeTypeStyle();
     }
@@ -64,8 +62,7 @@ internal class AbstractLineProgressTheme : AbstractProgressBarTheme
     {
         var largeSizeTypeStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(AbstractProgressBar.EffectiveSizeTypeProperty, SizeType.Large));
-        largeSizeTypeStyle.Add(AbstractLineProgress.LineInfoIconSizeProperty,
-            ProgressBarTokenKey.LineInfoIconSize);
+        largeSizeTypeStyle.Add(AbstractLineProgress.LineInfoIconSizeProperty, ProgressBarTokenKey.LineInfoIconSize);
         // icon
         {
             var completedIconsStyle = new Style(selector => selector.Nesting().Template().OfType<Icon>());
@@ -79,8 +76,7 @@ internal class AbstractLineProgressTheme : AbstractProgressBarTheme
 
         var middleTypeStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(AbstractProgressBar.EffectiveSizeTypeProperty, SizeType.Middle));
-        middleTypeStyle.Add(AbstractLineProgress.LineInfoIconSizeProperty,
-            ProgressBarTokenKey.LineInfoIconSize);
+        middleTypeStyle.Add(AbstractLineProgress.LineInfoIconSizeProperty, ProgressBarTokenKey.LineInfoIconSize);
         // icon
         {
             var completedIconsStyle = new Style(selector => selector.Nesting().Template().OfType<Icon>());
@@ -94,8 +90,7 @@ internal class AbstractLineProgressTheme : AbstractProgressBarTheme
 
         var smallTypeStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(AbstractProgressBar.EffectiveSizeTypeProperty, SizeType.Small));
-        smallTypeStyle.Add(AbstractLineProgress.LineInfoIconSizeProperty,
-            ProgressBarTokenKey.LineInfoIconSizeSM);
+        smallTypeStyle.Add(AbstractLineProgress.LineInfoIconSizeProperty, ProgressBarTokenKey.LineInfoIconSizeSM);
         // icon
         {
             var completedIconsStyle = new Style(selector => selector.Nesting().Template().OfType<Icon>());
