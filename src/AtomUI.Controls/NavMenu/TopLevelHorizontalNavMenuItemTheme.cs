@@ -128,11 +128,7 @@ internal class TopLevelHorizontalNavMenuItemTheme : BaseControlTheme
             {
                 Name = ActiveIndicatorPart,
                 VerticalAlignment = VerticalAlignment.Bottom,
-                HorizontalAlignment = HorizontalAlignment.Center,
-                Transitions = new Transitions()
-                {
-                    AnimationUtils.CreateTransition<SolidColorBrushTransition>(Rectangle.FillProperty)
-                }
+                HorizontalAlignment = HorizontalAlignment.Center
             };
             CreateTemplateParentBinding(activeIndicator, Rectangle.HeightProperty, NavMenuItem.ActiveBarHeightProperty);
             CreateTemplateParentBinding(activeIndicator, Rectangle.WidthProperty, NavMenuItem.EffectiveActiveBarWidthProperty);
@@ -219,6 +215,17 @@ internal class TopLevelHorizontalNavMenuItemTheme : BaseControlTheme
     
     private void BuildActiveIndicatorStyle(Style commonStyle)
     {
+        {
+            // 动画设置
+            var isMotionEnabledStyle = new Style(selector => selector.Nesting().PropertyEquals(NavMenuItem.IsMotionEnabledProperty, true));
+            var indicatorStyle = new Style(selector => selector.Nesting().Template().Name(ActiveIndicatorPart));
+            indicatorStyle.Add(Rectangle.TransitionsProperty, new SetterValueFactory<Transitions>(() => new Transitions()
+            {
+                AnimationUtils.CreateTransition<SolidColorBrushTransition>(Rectangle.FillProperty)
+            }));
+            isMotionEnabledStyle.Add(indicatorStyle);
+            commonStyle.Add(isMotionEnabledStyle);
+        }
         {
             var indicatorStyle = new Style(selector => selector.Nesting().Template().Name(ActiveIndicatorPart));
             indicatorStyle.Add(Rectangle.FillProperty, Brushes.Transparent);

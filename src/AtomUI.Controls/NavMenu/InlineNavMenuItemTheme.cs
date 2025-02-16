@@ -38,11 +38,7 @@ internal class InlineNavMenuItemTheme : BaseNavMenuItemTheme
         var indicatorIcon = base.BuildMenuIndicatorIcon(scope);
         var menuIndicatorIconPresenter = new Border()
         {
-            Name = MenuIndicatorIconLayoutPart,
-            Transitions = new Transitions()
-            {
-                AnimationUtils.CreateTransition<TransformOperationsTransition>(ContentPresenter.RenderTransformProperty)
-            }
+            Name = MenuIndicatorIconLayoutPart
         };
         menuIndicatorIconPresenter.Child = indicatorIcon;
         menuIndicatorIconPresenter.RegisterInNameScope(scope);
@@ -118,6 +114,18 @@ internal class InlineNavMenuItemTheme : BaseNavMenuItemTheme
 
     private void BuildMenuIndicatorStyle()
     {
+        {
+            // 动画设置
+            var isMotionEnabledStyle = new Style(selector => selector.Nesting().PropertyEquals(NavMenuItem.IsMotionEnabledProperty, true));
+            var menuIndicatorStyle =
+                new Style(selector => selector.Nesting().Template().Name(MenuIndicatorIconLayoutPart));
+            menuIndicatorStyle.Add(Border.TransitionsProperty, new SetterValueFactory<Transitions>(() => new Transitions()
+            {
+                AnimationUtils.CreateTransition<TransformOperationsTransition>(ContentPresenter.RenderTransformProperty)
+            }));
+            isMotionEnabledStyle.Add(menuIndicatorStyle);
+            Add(isMotionEnabledStyle);
+        }
         {
             var menuIndicatorStyle =
                 new Style(selector => selector.Nesting().Template().Name(MenuIndicatorIconLayoutPart));

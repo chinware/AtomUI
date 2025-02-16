@@ -1,4 +1,6 @@
-﻿using Avalonia;
+﻿using AtomUI.Theme;
+using AtomUI.Theme.Utils;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
@@ -8,7 +10,11 @@ using Avalonia.Rendering;
 
 namespace AtomUI.Controls;
 
-public abstract class NavMenuBase : SelectingItemsControl, IFocusScope, INavMenu
+public abstract class NavMenuBase : SelectingItemsControl, 
+                                    IFocusScope, 
+                                    INavMenu,
+                                    IAnimationAwareControl,
+                                    IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
 
@@ -19,6 +25,12 @@ public abstract class NavMenuBase : SelectingItemsControl, IFocusScope, INavMenu
         AvaloniaProperty.RegisterDirect<NavMenuBase, bool>(
             nameof(IsOpen),
             o => o.IsOpen);
+    
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AvaloniaProperty.Register<NavMenuBase, bool>(nameof(IsMotionEnabled), true);
+
+    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
+        = AvaloniaProperty.Register<NavMenuBase, bool>(nameof(IsWaveAnimationEnabled), true);
 
     private bool _isOpen;
 
@@ -29,6 +41,18 @@ public abstract class NavMenuBase : SelectingItemsControl, IFocusScope, INavMenu
     {
         get => _isOpen;
         protected set => SetAndRaise(IsOpenProperty, ref _isOpen, value);
+    }
+    
+    public bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
+    }
+
+    public bool IsWaveAnimationEnabled
+    {
+        get => GetValue(IsWaveAnimationEnabledProperty);
+        set => SetValue(IsWaveAnimationEnabledProperty, value);
     }
 
     #endregion
@@ -66,6 +90,14 @@ public abstract class NavMenuBase : SelectingItemsControl, IFocusScope, INavMenu
     }
 
     #endregion
+    
+    #region 内部属性定义
+    
+    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IControlSharedTokenResourcesHost.HostControl => this;
+    string IControlSharedTokenResourcesHost.TokenId => NavMenuToken.ID;
+
+    #endregion
 
     INavMenuInteractionHandler? INavMenu.InteractionHandler => InteractionHandler;
     
@@ -88,6 +120,12 @@ public abstract class NavMenuBase : SelectingItemsControl, IFocusScope, INavMenu
     /// Gets the interaction handler for the menu.
     /// </summary>
     protected internal INavMenuInteractionHandler? InteractionHandler { get; protected set; }
+
+    public NavMenuBase()
+    {
+        this.RegisterResources();
+        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
+    }
 
     /// <summary>
     /// Closes the menu.

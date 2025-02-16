@@ -225,6 +225,7 @@ public class NavMenu : NavMenuBase
             }
             BindUtils.RelayBind(this, ModeProperty, navMenuItem, NavMenuItem.ModeProperty);
             BindUtils.RelayBind(this, IsDarkStyleProperty, navMenuItem, NavMenuItem.IsDarkStyleProperty);
+            BindUtils.RelayBind(this, IsMotionEnabledProperty, navMenuItem, NavMenuItem.IsMotionEnabledProperty);
         }
 
     }

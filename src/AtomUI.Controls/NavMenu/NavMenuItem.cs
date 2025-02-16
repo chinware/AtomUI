@@ -288,7 +288,12 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         AvaloniaProperty.RegisterDirect<NavMenuItem, bool>(nameof(IsDarkStyle),
             o => o.IsDarkStyle,
             (o, v) => o.IsDarkStyle = v);
-
+    
+    internal static readonly DirectProperty<NavMenuItem, bool> IsMotionEnabledProperty
+        = AvaloniaProperty.RegisterDirect<NavMenuItem, bool>(nameof(IsMotionEnabled), 
+            o => o.IsMotionEnabled,
+            (o, v) => o.IsMotionEnabled = v);
+    
     internal double ActiveBarWidth
     {
         get => GetValue(ActiveBarWidthProperty);
@@ -355,6 +360,14 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     {
         get => _isDarkStyle;
         set => SetAndRaise(IsDarkStyleProperty, ref _isDarkStyle, value);
+    }
+    
+    private bool _isMotionEnabled = true;
+
+    internal bool IsMotionEnabled
+    {
+        get => _isMotionEnabled;
+        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
     }
 
     #endregion
@@ -439,7 +452,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
 
     #region 私有事件定义
 
-    private EventHandler? _canExecuteChangeHandler = default;
+    private EventHandler? _canExecuteChangeHandler = null;
 
     private EventHandler CanExecuteChangedHandler => _canExecuteChangeHandler ??= new(CanExecuteChanged);
 
@@ -703,11 +716,22 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
             TokenResourceBinder.CreateTokenBinding(this, OpenCloseMotionDurationProperty,
                 SharedTokenKey.MotionDurationSlow);
         }
+        SetupTransitions();
+    }
 
-        Transitions ??= new Transitions()
+    private void SetupTransitions()
+    {
+        if (IsMotionEnabled)
         {
-            AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty)
-        };
+            Transitions ??= new Transitions()
+            {
+                AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty)
+            };
+        }
+        else
+        {
+            Transitions = null;
+        }
     }
 
     private void HandleHeaderFrameEnter(object? sender, PointerEventArgs args)
@@ -891,6 +915,10 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         else if (change.Property == ItemCountProperty)
         {
             HasSubMenu = ItemCount > 0;
+        }
+        else if (change.Property == IsMotionEnabledProperty)
+        {
+            SetupTransitions();
         }
 
         if (change.Property == BoundsProperty ||
@@ -1093,16 +1121,23 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     {
         if (_childItemsLayoutTransform is not null)
         {
-            if (_animating)
+            if (IsMotionEnabled)
             {
-                return;
-            }
+                if (_animating)
+                {
+                    return;
+                }
 
-            _animating = true;
-            var motion = new SlideUpInMotion(_openCloseMotionDuration, new CubicEaseOut());
-            MotionInvoker.Invoke(_childItemsLayoutTransform, motion,
-                () => { _childItemsLayoutTransform.SetCurrentValue(IsVisibleProperty, true); },
-                () => { _animating = false; });
+                _animating = true;
+                var motion = new SlideUpInMotion(_openCloseMotionDuration, new CubicEaseOut());
+                MotionInvoker.Invoke(_childItemsLayoutTransform, motion,
+                    () => { _childItemsLayoutTransform.IsVisible = true; },
+                    () => { _animating                           = false; });
+            }
+            else
+            {
+                _childItemsLayoutTransform.IsVisible = true;
+            }
         }
     }
 
@@ -1110,18 +1145,25 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     {
         if (_childItemsLayoutTransform is not null)
         {
-            if (_animating)
+            if (IsMotionEnabled)
             {
-                return;
-            }
+                if (_animating)
+                {
+                    return;
+                }
 
-            _animating = true;
-            var motion = new SlideUpOutMotion(_openCloseMotionDuration, new CubicEaseIn());
-            MotionInvoker.Invoke(_childItemsLayoutTransform, motion, null, () =>
+                _animating = true;
+                var motion = new SlideUpOutMotion(_openCloseMotionDuration, new CubicEaseIn());
+                MotionInvoker.Invoke(_childItemsLayoutTransform, motion, null, () =>
+                {
+                    _childItemsLayoutTransform.IsVisible = false;
+                    _animating                           = false;
+                });
+            }
+            else
             {
-                _childItemsLayoutTransform.SetCurrentValue(IsVisibleProperty, false);
-                _animating = false;
-            });
+                _childItemsLayoutTransform.IsVisible = false;
+            }
         }
     }
 
@@ -1212,6 +1254,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         {
             BindUtils.RelayBind(this, ModeProperty, navMenuItem, ModeProperty);
             BindUtils.RelayBind(this, IsDarkStyleProperty, navMenuItem, IsDarkStyleProperty);
+            BindUtils.RelayBind(this, IsMotionEnabledProperty, navMenuItem, IsMotionEnabledProperty);
         }
     }
 
@@ -1266,4 +1309,5 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         var targetRect = new Rect(offset, targetFrame.Bounds.Size);
         return targetRect.Contains(point);
     }
+    
 }

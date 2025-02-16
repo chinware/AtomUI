@@ -49,12 +49,7 @@ internal class BaseNavMenuItemTheme : BaseControlTheme
     {
         var headerFrame = new Border
         {
-            Name = HeaderDecoratorPart,
-            Transitions = new Transitions()
-            {
-                AnimationUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty),
-                AnimationUtils.CreateTransition<SolidColorBrushTransition>(TemplatedControl.ForegroundProperty)
-            },
+            Name = HeaderDecoratorPart
         };
         headerFrame.RegisterInNameScope(scope);
         headerFrame.Child = BuildMenuItemInfoGrid(navMenuItem, scope);
@@ -195,6 +190,18 @@ internal class BaseNavMenuItemTheme : BaseControlTheme
             borderStyle.Add(Border.BackgroundProperty, NavMenuTokenKey.ItemBg);
             borderStyle.Add(Border.CornerRadiusProperty, NavMenuTokenKey.ItemBorderRadius);
             commonStyle.Add(borderStyle);
+        }
+        {
+            // 动画设置
+            var isMotionEnabledStyle = new Style(selector => selector.Nesting().PropertyEquals(NavMenuItem.IsMotionEnabledProperty, true));
+            var borderStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));
+            borderStyle.Add(Border.TransitionsProperty, new SetterValueFactory<Transitions>(() => new Transitions()
+            {
+                AnimationUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty),
+                AnimationUtils.CreateTransition<SolidColorBrushTransition>(TemplatedControl.ForegroundProperty)
+            }));
+            isMotionEnabledStyle.Add(borderStyle);
+            commonStyle.Add(isMotionEnabledStyle);
         }
 
         // Hover 状态

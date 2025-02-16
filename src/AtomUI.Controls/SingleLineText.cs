@@ -37,19 +37,13 @@ public class SingleLineText : Control
         TextElement.ForegroundProperty.AddOwner<SingleLineText>();
 
     public static readonly StyledProperty<double> BaselineOffsetProperty =
-        AvaloniaProperty.Register<SingleLineText, double>(nameof(BaselineOffset));
+        TextBlock.BaselineOffsetProperty.AddOwner<SingleLineText>();
     
     public static readonly AttachedProperty<double> LineHeightProperty =
-        AvaloniaProperty.RegisterAttached<SingleLineText, Control, double>(
-            nameof(LineHeight),
-            double.NaN,
-            validate: IsValidLineHeight,
-            inherits: true);
+        TextBlock.LineHeightProperty.AddOwner<SingleLineText>();
 
     public static readonly StyledProperty<double> LetterSpacingProperty =
-        AvaloniaProperty.Register<SingleLineText, double>(
-            nameof(LetterSpacing),
-            0);
+        TextBlock.LineSpacingProperty.AddOwner<SingleLineText>();
 
     public static readonly StyledProperty<string?> TextProperty =
         AvaloniaProperty.Register<SingleLineText, string?>(nameof(Text));
