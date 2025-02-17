@@ -208,6 +208,7 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
     {
         BindUtils.RelayBind(this, MarginToAnchorProperty, popup);
         BindUtils.RelayBind(this, IsDetectMouseClickEnabledProperty, popup, Popup.IsDetectMouseClickEnabledProperty);
+        BindUtils.RelayBind(this, IsMotionEnabledProperty, popup, Popup.IsMotionEnabledProperty);
     }
 
     protected internal virtual void NotifyPositionPopup(bool showAtPointer)

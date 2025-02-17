@@ -479,7 +479,6 @@ public class Popup : AvaloniaPopup,
         {
             return;
         }
-
         if (!IsMotionEnabled)
         {
             Open();

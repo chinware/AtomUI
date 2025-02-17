@@ -163,7 +163,7 @@ internal class TimeView : TemplatedControl
     private Grid? _pickerSelectorContainer;
     private Rectangle? _spacer3;
     private Panel? _periodHost;
-    private TextBlock? _headerText;
+    private SingleLineText? _headerText;
     private DateTimePickerPanel? _hourSelector;
     private DateTimePickerPanel? _minuteSelector;
     private DateTimePickerPanel? _secondSelector;
@@ -240,7 +240,7 @@ internal class TimeView : TemplatedControl
 
         _pickerSelectorContainer = e.NameScope.Get<Grid>(TimeViewTheme.PickerSelectorContainerPart);
         _periodHost              = e.NameScope.Get<Panel>(TimeViewTheme.PeriodHostPart);
-        _headerText              = e.NameScope.Get<TextBlock>(TimeViewTheme.HeaderTextPart);
+        _headerText              = e.NameScope.Get<SingleLineText>(TimeViewTheme.HeaderTextPart);
 
         _hourSelector   = e.NameScope.Get<DateTimePickerPanel>(TimeViewTheme.HourSelectorPart);
         _minuteSelector = e.NameScope.Get<DateTimePickerPanel>(TimeViewTheme.MinuteSelectorPart);

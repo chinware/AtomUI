@@ -125,7 +125,7 @@ public class RangeDatePicker : RangeInfoPickerInput,
     protected override Flyout CreatePickerFlyout()
     {
         var flyout = new RangeDatePickerFlyout();
-        BindUtils.RelayBind(this, RangeStartSelectedDateProperty, flyout, RangeDatePickerFlyout.IsMotionEnabledProperty);
+        BindUtils.RelayBind(this, IsMotionEnabledProperty, flyout, RangeDatePickerFlyout.IsMotionEnabledProperty);
         return flyout;
     }
     

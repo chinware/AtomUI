@@ -43,10 +43,10 @@ internal class CalendarDayButtonTheme : BaseControlTheme
 
             contentPresenter.Content = buttonLabel;
             BindUtils.RelayBind(calendarDayButton, CalendarDayButton.ContentProperty, buttonLabel,
-                TextBlock.TextProperty,
+                SingleLineText.TextProperty,
                 input => input?.ToString());
             BindUtils.RelayBind(contentPresenter, ContentPresenter.ForegroundProperty, buttonLabel,
-                TextBlock.ForegroundProperty);
+                SingleLineText.ForegroundProperty);
 
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.PaddingProperty,
                 TemplatedControl.PaddingProperty);
