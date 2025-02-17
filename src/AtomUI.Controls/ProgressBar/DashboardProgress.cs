@@ -18,6 +18,8 @@ public class DashboardProgress : AbstractCircleProgress
     public const double MIN_GAP_DEGREE = 0;
     public const double MAX_GAP_DEGREE = 295;
 
+    #region 公共属性定义
+
     public static readonly StyledProperty<DashboardGapPosition> DashboardGapPositionProperty =
         AvaloniaProperty.Register<DashboardProgress, DashboardGapPosition>(
             nameof(DashboardGapPosition), DashboardGapPosition.Bottom);
@@ -39,6 +41,8 @@ public class DashboardProgress : AbstractCircleProgress
         set => SetValue(GapDegreeProperty, value);
     }
 
+    #endregion
+    
     private Rect _currentGrooveRect;
     private (double, double) _anglePair;
 

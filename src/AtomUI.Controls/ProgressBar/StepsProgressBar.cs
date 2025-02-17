@@ -15,21 +15,24 @@ public class StepsProgressBar : AbstractLineProgress
     protected const double SMALL_CHUNK_WIDTH = 2;
     protected const double DEFAULT_CHUNK_SPACE = 2;
 
+    #region 公共属性定义
+
     public static readonly StyledProperty<LinePercentAlignment> PercentPositionProperty =
-        AvaloniaProperty.Register<ProgressBar, LinePercentAlignment>(nameof(PercentPosition), LinePercentAlignment.End);
+        AvaloniaProperty.Register<StepsProgressBar, LinePercentAlignment>(nameof(PercentPosition),
+            LinePercentAlignment.End);
 
     public static readonly StyledProperty<List<IBrush>?> StepsStrokeBrushProperty =
-        AvaloniaProperty.Register<ProgressBar, List<IBrush>?>(nameof(StepsStrokeBrush));
+        AvaloniaProperty.Register<StepsProgressBar, List<IBrush>?>(nameof(StepsStrokeBrush));
 
     public static readonly StyledProperty<int> StepsProperty =
-        AvaloniaProperty.Register<ProgressBar, int>(nameof(Steps), 1, coerce: (o, v) => Math.Max(v, 1));
+        AvaloniaProperty.Register<StepsProgressBar, int>(nameof(Steps), 1, coerce: (o, v) => Math.Max(v, 1));
 
     public static readonly StyledProperty<double> ChunkWidthProperty =
-        AvaloniaProperty.Register<ProgressBar, double>(nameof(ChunkWidth), double.NaN,
+        AvaloniaProperty.Register<StepsProgressBar, double>(nameof(ChunkWidth), double.NaN,
             coerce: (o, v) => Math.Max(v, 1));
 
     public static readonly StyledProperty<double> ChunkHeightProperty =
-        AvaloniaProperty.Register<ProgressBar, double>(nameof(ChunkHeight), double.NaN,
+        AvaloniaProperty.Register<StepsProgressBar, double>(nameof(ChunkHeight), double.NaN,
             coerce: (o, v) => Math.Max(v, 1));
 
     public LinePercentAlignment PercentPosition
@@ -61,6 +64,8 @@ public class StepsProgressBar : AbstractLineProgress
         get => GetValue(ChunkHeightProperty);
         set => SetValue(ChunkHeightProperty, value);
     }
+
+    #endregion
 
     static StepsProgressBar()
     {

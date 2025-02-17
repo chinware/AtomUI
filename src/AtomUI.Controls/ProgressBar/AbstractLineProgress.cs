@@ -27,6 +27,23 @@ public abstract class AbstractLineProgress : AbstractProgressBar
     public const string VerticalPC = ":vertical";
     public const string HorizontalPC = ":horizontal";
 
+    #region 公共属性定义
+    /// <summary>
+    /// Defines the <see cref="Orientation" /> property.
+    /// </summary>
+    public static readonly StyledProperty<Orientation> OrientationProperty =
+        AvaloniaProperty.Register<AbstractLineProgress, Orientation>(nameof(Orientation));
+
+    /// <summary>
+    /// Gets or sets the orientation of the <see cref="ProgressBar" />.
+    /// </summary>
+    public Orientation Orientation
+    {
+        get => GetValue(OrientationProperty);
+        set => SetValue(OrientationProperty, value);
+    }
+    #endregion
+    
     #region 内部属性定义
 
     internal static readonly StyledProperty<double> LineProgressPaddingProperty =
@@ -60,21 +77,6 @@ public abstract class AbstractLineProgress : AbstractProgressBar
     }
 
     #endregion
-
-    /// <summary>
-    /// Defines the <see cref="Orientation" /> property.
-    /// </summary>
-    public static readonly StyledProperty<Orientation> OrientationProperty =
-        AvaloniaProperty.Register<AbstractProgressBar, Orientation>(nameof(Orientation));
-
-    /// <summary>
-    /// Gets or sets the orientation of the <see cref="ProgressBar" />.
-    /// </summary>
-    public Orientation Orientation
-    {
-        get => GetValue(OrientationProperty);
-        set => SetValue(OrientationProperty, value);
-    }
 
     internal Dictionary<SizeType, SizeTypeThresholdValue> _sizeTypeThresholdValue;
     protected Size _extraInfoSize = Size.Infinity;

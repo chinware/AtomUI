@@ -18,10 +18,10 @@ public abstract class AbstractCircleProgress : AbstractProgressBar
     #region 公共属性定义
 
     public static readonly StyledProperty<int> StepCountProperty =
-        AvaloniaProperty.Register<ProgressBar, int>(nameof(StepCount), coerce: (o, v) => Math.Max(v, 0));
+        AvaloniaProperty.Register<AbstractCircleProgress, int>(nameof(StepCount), coerce: (o, v) => Math.Max(v, 0));
 
     public static readonly StyledProperty<double> StepGapProperty =
-        AvaloniaProperty.Register<ProgressBar, double>(nameof(StepGap), 2, coerce: (o, v) => Math.Max(v, 0));
+        AvaloniaProperty.Register<AbstractCircleProgress, double>(nameof(StepGap), 2, coerce: (o, v) => Math.Max(v, 0));
 
     public int StepCount
     {

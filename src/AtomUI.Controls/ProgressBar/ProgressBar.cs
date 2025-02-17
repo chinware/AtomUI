@@ -1,3 +1,4 @@
+using AtomUI.Data;
 using AtomUI.Media;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -5,6 +6,7 @@ using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
+using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.Media;
 
@@ -614,7 +616,7 @@ public class ProgressBar : AbstractLineProgress
     {
         if (!PercentPosition.IsInner)
         {
-            _percentageLabel!.Foreground = Foreground;
+            BindUtils.RelayBind(this, ForegroundProperty, _percentageLabel!, Label.ForegroundProperty);
         }
         else
         {
@@ -630,7 +632,7 @@ public class ProgressBar : AbstractLineProgress
                     var mostReadable = ColorUtils.MostReadable(grooveBrush.Color, colors);
                     if (mostReadable.HasValue)
                     {
-                        _percentageLabel!.Foreground = new SolidColorBrush(mostReadable.Value);
+                        _percentageLabel?.SetValue(Label.ForegroundProperty, new SolidColorBrush(mostReadable.Value), BindingPriority.Template);
                     }
                 }
             }
@@ -641,7 +643,7 @@ public class ProgressBar : AbstractLineProgress
                     var mostReadable = ColorUtils.MostReadable(indicatorBarBrush.Color, colors);
                     if (mostReadable.HasValue)
                     {
-                        _percentageLabel!.Foreground = new SolidColorBrush(mostReadable.Value);
+                        _percentageLabel?.SetValue(Label.ForegroundProperty, new SolidColorBrush(mostReadable.Value), BindingPriority.Template);
                     }
                 }
             }

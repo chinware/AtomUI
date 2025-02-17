@@ -1,8 +1,11 @@
 ﻿using AtomUI.Controls.PopupConfirmLang;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
+using AtomUI.Theme.Utils;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Interactivity;
 
@@ -15,7 +18,8 @@ public enum PopupConfirmStatus
     Error
 }
 
-public class PopupConfirm : FlyoutHost
+public class PopupConfirm : FlyoutHost,
+                            IControlSharedTokenResourcesHost
 {
     #region 公共属性属性
 
@@ -48,13 +52,13 @@ public class PopupConfirm : FlyoutHost
             PopupConfirmStatus.Warning);
 
     public static readonly RoutedEvent<RoutedEventArgs> CancelledEvent =
-        RoutedEvent.Register<Button, RoutedEventArgs>(nameof(Cancelled), RoutingStrategies.Bubble);
+        RoutedEvent.Register<PopupConfirm, RoutedEventArgs>(nameof(Cancelled), RoutingStrategies.Bubble);
 
     public static readonly RoutedEvent<RoutedEventArgs> ConfirmedEvent =
-        RoutedEvent.Register<Button, RoutedEventArgs>(nameof(Confirmed), RoutingStrategies.Bubble);
+        RoutedEvent.Register<PopupConfirm, RoutedEventArgs>(nameof(Confirmed), RoutingStrategies.Bubble);
 
     public static readonly RoutedEvent<PopupConfirmClickEventArgs> PopupClickEvent =
-        RoutedEvent.Register<Button, PopupConfirmClickEventArgs>(nameof(PopupClick), RoutingStrategies.Bubble);
+        RoutedEvent.Register<PopupConfirm, PopupConfirmClickEventArgs>(nameof(PopupClick), RoutingStrategies.Bubble);
 
     public string OkText
     {
@@ -130,14 +134,22 @@ public class PopupConfirm : FlyoutHost
 
     #endregion
 
+    #region 内部属性定义
+    
+    Control IControlSharedTokenResourcesHost.HostControl => this;
+    string IControlSharedTokenResourcesHost.TokenId => PopupConfirmToken.ID;
+
+    #endregion
+
+    public PopupConfirm()
+    {
+        this.RegisterResources();
+    }
+
     public sealed override void ApplyTemplate()
     {
-        if (Flyout is null)
-        {
-            Flyout = new PopupConfirmFlyout(this);
-        }
-
-        Icon ??= AntDesignIconPackage.ExclamationCircleFilled();
+        Flyout ??= new PopupConfirmFlyout(this);
+        Icon   ??= AntDesignIconPackage.ExclamationCircleFilled();
 
         LanguageResourceBinder.CreateBinding(this, OkTextProperty, PopupConfirmLangResourceKey.OkText);
         LanguageResourceBinder.CreateBinding(this, CancelTextProperty, PopupConfirmLangResourceKey.CancelText);

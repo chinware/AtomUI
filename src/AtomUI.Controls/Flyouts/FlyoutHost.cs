@@ -52,13 +52,13 @@ public class FlyoutHost : Control,
         FlyoutControl.IsPointAtCenterProperty.AddOwner<FlyoutHost>();
 
     public static readonly StyledProperty<PlacementMode> PlacementProperty =
-        Avalonia.Controls.Primitives.Popup.PlacementProperty.AddOwner<FlyoutHost>();
+        Popup.PlacementProperty.AddOwner<FlyoutHost>();
 
     public static readonly StyledProperty<PopupAnchor> PlacementAnchorProperty =
-        Avalonia.Controls.Primitives.Popup.PlacementAnchorProperty.AddOwner<FlyoutHost>();
+        Popup.PlacementAnchorProperty.AddOwner<FlyoutHost>();
 
     public static readonly StyledProperty<PopupGravity> PlacementGravityProperty =
-        Avalonia.Controls.Primitives.Popup.PlacementGravityProperty.AddOwner<FlyoutHost>();
+        Popup.PlacementGravityProperty.AddOwner<FlyoutHost>();
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
         = AvaloniaProperty.Register<FlyoutHost, bool>(nameof(IsMotionEnabled), true);
@@ -187,7 +187,6 @@ public class FlyoutHost : Control,
     {
         base.OnAttachedToLogicalTree(e);
         TokenResourceBinder.CreateTokenBinding(this, MarginToAnchorProperty, SharedTokenKey.MarginXXS);
-        SetupFlyoutProperties();
         
         BindUtils.RelayBind(this, AnchorTargetProperty, _flyoutStateHelper, FlyoutStateHelper.AnchorTargetProperty);
         BindUtils.RelayBind(this, FlyoutProperty, _flyoutStateHelper, FlyoutStateHelper.FlyoutProperty);
@@ -227,6 +226,18 @@ public class FlyoutHost : Control,
             BindUtils.RelayBind(this, MarginToAnchorProperty, Flyout);
             BindUtils.RelayBind(this, IsMotionEnabledProperty, Flyout, PopupFlyoutBase.IsMotionEnabledProperty);
             Flyout.IsDetectMouseClickEnabled = false;
+        }
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == FlyoutProperty)
+        {
+            if (Flyout is not null)
+            {
+                SetupFlyoutProperties();
+            }
         }
     }
 

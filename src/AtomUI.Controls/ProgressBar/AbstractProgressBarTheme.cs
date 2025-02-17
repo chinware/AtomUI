@@ -7,6 +7,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Layout;
+using Avalonia.Media;
 using Avalonia.Styling;
 
 namespace AtomUI.Controls;
@@ -168,6 +169,7 @@ internal class AbstractProgressBarTheme : BaseControlTheme
         var statusIconStyle = new Style(selector => selector.Nesting().Template().OfType<Icon>());
         statusIconStyle.Add(Icon.IconModeProperty, IconMode.Disabled);
         disableStyle.Add(statusIconStyle);
+        
         Add(disableStyle);
     }
 }

@@ -128,7 +128,7 @@ public class LoadingIndicator : TemplatedControl,
     #endregion
 
     private Animation? _animation;
-    private TextBlock? _loadingText;
+    private SingleLineText? _loadingText;
     private Canvas? _mainContainer;
     private RenderInfo? _renderInfo;
     private CancellationTokenSource? _cancellationTokenSource;
@@ -184,7 +184,7 @@ public class LoadingIndicator : TemplatedControl,
     private void HandleTemplateApplied(INameScope scope)
     {
         _mainContainer = scope.Find<Canvas>(LoadingIndicatorTheme.MainContainerPart);
-        _loadingText   = scope.Find<TextBlock>(LoadingIndicatorTheme.LoadingTextPart);
+        _loadingText   = scope.Find<SingleLineText>(LoadingIndicatorTheme.LoadingTextPart);
 
         SetupCustomIndicator();
     }

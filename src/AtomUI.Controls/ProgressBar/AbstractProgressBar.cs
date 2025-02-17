@@ -1,7 +1,9 @@
 using AtomUI.IconPkg;
 using AtomUI.Media;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
+using AtomUI.Theme.Utils;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
@@ -25,7 +27,9 @@ public enum ProgressStatus
 
 [PseudoClasses(IndeterminatePC)]
 public abstract class AbstractProgressBar : RangeBase,
-                                            ISizeTypeAware
+                                            ISizeTypeAware,
+                                            IAnimationAwareControl,
+                                            IControlSharedTokenResourcesHost
 {
     protected const double LARGE_STROKE_THICKNESS = 8;
     protected const double MIDDLE_STROKE_THICKNESS = 6;
@@ -34,7 +38,7 @@ public abstract class AbstractProgressBar : RangeBase,
     public const string IndeterminatePC = ":indeterminate";
     public const string CompletedPC = ":completed";
 
-    #region 公共属性
+    #region 公共属性定义
 
     /// <summary>
     /// Defines the <see cref="IsIndeterminate" /> property.
@@ -79,13 +83,19 @@ public abstract class AbstractProgressBar : RangeBase,
         AvaloniaProperty.Register<AbstractProgressBar, IBrush?>(nameof(IndicatorBarBrush));
 
     public static readonly StyledProperty<double> IndicatorThicknessProperty =
-        AvaloniaProperty.Register<ProgressBar, double>(nameof(IndicatorThickness), double.NaN);
+        AvaloniaProperty.Register<AbstractProgressBar, double>(nameof(IndicatorThickness), double.NaN);
 
     public static readonly StyledProperty<double> SuccessThresholdProperty =
-        AvaloniaProperty.Register<ProgressBar, double>(nameof(SuccessThreshold), double.NaN);
+        AvaloniaProperty.Register<AbstractProgressBar, double>(nameof(SuccessThreshold), double.NaN);
 
     public static readonly StyledProperty<IBrush?> SuccessThresholdBrushProperty =
-        AvaloniaProperty.Register<ProgressBar, IBrush?>(nameof(SuccessThresholdBrush));
+        AvaloniaProperty.Register<AbstractProgressBar, IBrush?>(nameof(SuccessThresholdBrush));
+    
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AvaloniaProperty.Register<AbstractProgressBar, bool>(nameof(IsMotionEnabled), true);
+
+    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
+        = AvaloniaProperty.Register<AbstractProgressBar, bool>(nameof(IsWaveAnimationEnabled), true);
 
     /// <summary>
     /// Gets or sets a value indicating whether the progress bar shows the actual value or a generic,
@@ -177,10 +187,22 @@ public abstract class AbstractProgressBar : RangeBase,
         get => GetValue(SuccessThresholdProperty);
         set => SetValue(SuccessThresholdProperty, value);
     }
+    
+    public bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
+    }
+
+    public bool IsWaveAnimationEnabled
+    {
+        get => GetValue(IsWaveAnimationEnabledProperty);
+        set => SetValue(IsWaveAnimationEnabledProperty, value);
+    }
 
     #endregion
 
-    #region 内部属性
+    #region 内部属性定义
 
     internal static readonly DirectProperty<AbstractProgressBar, SizeType> EffectiveSizeTypeProperty =
         AvaloniaProperty.RegisterDirect<AbstractProgressBar, SizeType>(nameof(EffectiveSizeType),
@@ -196,13 +218,13 @@ public abstract class AbstractProgressBar : RangeBase,
         AvaloniaProperty.Register<AbstractProgressBar, IBrush?>(nameof(GrooveBrush));
 
     internal static readonly StyledProperty<bool> PercentLabelVisibleProperty =
-        AvaloniaProperty.Register<ProgressBar, bool>(nameof(PercentLabelVisible), true);
+        AvaloniaProperty.Register<AbstractProgressBar, bool>(nameof(PercentLabelVisible), true);
 
     internal static readonly StyledProperty<bool> StatusIconVisibleProperty =
-        AvaloniaProperty.Register<ProgressBar, bool>(nameof(StatusIconVisible), true);
+        AvaloniaProperty.Register<AbstractProgressBar, bool>(nameof(StatusIconVisible), true);
 
     internal static readonly StyledProperty<bool> IsCompletedProperty =
-        AvaloniaProperty.Register<ProgressBar, bool>(nameof(IsCompleted));
+        AvaloniaProperty.Register<AbstractProgressBar, bool>(nameof(IsCompleted));
 
     private SizeType _effectiveSizeType;
 
@@ -244,8 +266,12 @@ public abstract class AbstractProgressBar : RangeBase,
         set => SetValue(IsCompletedProperty, value);
     }
 
-    #endregion
+    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IControlSharedTokenResourcesHost.HostControl => this;
+    string IControlSharedTokenResourcesHost.TokenId => ProgressBarToken.ID;
     
+    #endregion
+
     protected LayoutTransformControl? _layoutTransformLabel;
     protected Label? _percentageLabel;
     protected Icon? _successCompletedIcon;
@@ -269,6 +295,8 @@ public abstract class AbstractProgressBar : RangeBase,
 
     public AbstractProgressBar()
     {
+        this.RegisterResources();
+        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
         _effectiveSizeType = SizeType;
     }
 
@@ -283,13 +311,15 @@ public abstract class AbstractProgressBar : RangeBase,
             e.Property == ProgressTextFormatProperty)
         {
             UpdateProgress();
-        }
-
-        if (e.Property == IsIndeterminateProperty)
+        } 
+        else if (e.Property == IsIndeterminateProperty)
         {
             UpdatePseudoClasses();
         }
-
+        else if (e.Property == IsMotionEnabledProperty)
+        {
+            SetupTransitions();
+        }
         HandlePropertyChangedForStyle(e);
     }
 
@@ -364,17 +394,27 @@ public abstract class AbstractProgressBar : RangeBase,
 
     private void SetupTransitions()
     {
-        var transitions = new Transitions();
+        if (IsMotionEnabled)
+        {
+            var transitions = new Transitions
+            {
+                AnimationUtils.CreateTransition<DoubleTransition>(ValueProperty,
+                    SharedTokenKey.MotionDurationVerySlow, new ExponentialEaseOut()),
+                AnimationUtils.CreateTransition<SolidColorBrushTransition>(IndicatorBarBrushProperty,
+                    SharedTokenKey.MotionDurationFast),
+                AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty,
+                SharedTokenKey.MotionDurationFast)
+            };
 
-        transitions.Add(AnimationUtils.CreateTransition<DoubleTransition>(ValueProperty,
-            SharedTokenKey.MotionDurationVerySlow, new ExponentialEaseOut()));
-        transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(IndicatorBarBrushProperty,
-            SharedTokenKey.MotionDurationFast));
-
-        NotifySetupTransitions(ref transitions);
-        Transitions = transitions;
+            NotifySetupTransitions(ref transitions);
+            Transitions = transitions;
+        }
+        else
+        {
+            Transitions = null;
+        }
     }
-    
+
     private void SetupTokenBindings()
     {
         ApplyIndicatorBarBackgroundStyleConfig();
@@ -465,5 +505,5 @@ public abstract class AbstractProgressBar : RangeBase,
     protected virtual void NotifyPrepareDrawingContext(DrawingContext context)
     {
     }
-    
+
 }
