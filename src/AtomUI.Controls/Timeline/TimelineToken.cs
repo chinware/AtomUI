@@ -31,19 +31,9 @@ internal class TimelineToken : AbstractControlDesignToken
    public double DotBorderWidth { get; set; }
 
    /// <summary>
-   /// 列表项文字选中颜色
-   /// </summary>
-   public Color ItemSelectedColor { get; set; }
-
-   /// <summary>
    /// 节点背景色
    /// </summary>
    public Color DotBg { get; set; }
-
-   /// <summary>
-   /// 列表项背景色
-   /// </summary>
-   public Color ItemBgColor { get; set; }
 
    /// <summary>
    /// 时间项下间距
@@ -84,7 +74,6 @@ internal class TimelineToken : AbstractControlDesignToken
    {
       base.CalculateFromAlias();
       
-
       TailColor = SharedToken.ColorSplit;
       TailWidth = SharedToken.LineWidthBold;
       DotBorderWidth = SharedToken.Wireframe
@@ -100,6 +89,5 @@ internal class TimelineToken : AbstractControlDesignToken
       FontSize                 = SharedToken.FontSize;
       ItemHeadSize             = 10;
       CustomHeadSize           = SharedToken.FontSize;
-
    }
 }

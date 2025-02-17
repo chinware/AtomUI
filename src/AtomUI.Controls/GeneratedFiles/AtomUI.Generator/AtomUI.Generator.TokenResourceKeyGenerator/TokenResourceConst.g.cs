@@ -666,9 +666,7 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey TailColor = new TokenResourceKey("Timeline.TailColor");
         public static readonly TokenResourceKey TailWidth = new TokenResourceKey("Timeline.TailWidth");
         public static readonly TokenResourceKey DotBorderWidth = new TokenResourceKey("Timeline.DotBorderWidth");
-        public static readonly TokenResourceKey ItemSelectedColor = new TokenResourceKey("Timeline.ItemSelectedColor");
         public static readonly TokenResourceKey DotBg = new TokenResourceKey("Timeline.DotBg");
-        public static readonly TokenResourceKey ItemBgColor = new TokenResourceKey("Timeline.ItemBgColor");
         public static readonly TokenResourceKey ItemPaddingBottom = new TokenResourceKey("Timeline.ItemPaddingBottom");
         public static readonly TokenResourceKey RightMargin = new TokenResourceKey("Timeline.RightMargin");
         public static readonly TokenResourceKey LeftMargin = new TokenResourceKey("Timeline.LeftMargin");

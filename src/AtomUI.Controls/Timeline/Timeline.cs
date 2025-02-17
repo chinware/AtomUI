@@ -1,6 +1,7 @@
 using AtomUI.Data;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -18,7 +19,8 @@ public enum TimeLineMode
     Alternate
 }
 
-public class Timeline : ItemsControl
+public class Timeline : ItemsControl,
+                        IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
 
@@ -32,7 +34,7 @@ public class Timeline : ItemsControl
         AvaloniaProperty.Register<Timeline, bool>(nameof(Reverse), false);
 
     public static readonly StyledProperty<Icon?> PendingIconProperty =
-        AvaloniaProperty.Register<Alert, Icon?>(nameof(PendingIcon));
+        AvaloniaProperty.Register<Timeline, Icon?>(nameof(PendingIcon));
 
     public TimeLineMode Mode
     {
@@ -49,7 +51,7 @@ public class Timeline : ItemsControl
     public bool Reverse
     {
         get => GetValue(ReverseProperty);
-        set { SetValue(ReverseProperty, value); }
+        set => SetValue(ReverseProperty, value);
     }
 
     public Icon? PendingIcon
@@ -57,6 +59,13 @@ public class Timeline : ItemsControl
         get => GetValue(PendingIconProperty);
         set => SetValue(PendingIconProperty, value);
     }
+
+    #endregion
+
+    #region 内部属性定义
+
+    Control IControlSharedTokenResourcesHost.HostControl => this;
+    string IControlSharedTokenResourcesHost.TokenId => TimelineToken.ID;
 
     #endregion
 

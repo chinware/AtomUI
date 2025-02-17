@@ -33,23 +33,6 @@ internal class BaseOverflowMenuItem : MenuItem
 
     #endregion
 
-    #region 内部属性定义
-
-    internal static readonly DirectProperty<BaseOverflowMenuItem, bool> IsMotionEnabledProperty
-        = AvaloniaProperty.RegisterDirect<BaseOverflowMenuItem, bool>(nameof(IsMotionEnabled), 
-            o => o.IsMotionEnabled,
-            (o, v) => o.IsMotionEnabled = v);
-    
-    private bool _isMotionEnabled = true;
-
-    internal bool IsMotionEnabled
-    {
-        get => _isMotionEnabled;
-        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
-    }
-
-    #endregion
-
     private IconButton? _iconButton;
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
