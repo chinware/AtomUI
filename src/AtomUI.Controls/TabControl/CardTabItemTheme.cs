@@ -27,12 +27,6 @@ internal class CardTabItemTheme : BaseTabItemTheme
     protected override void NotifyBuildControlTemplate(TabItem tabItem, INameScope scope, Border container)
     {
         base.NotifyBuildControlTemplate(tabItem, scope, container);
-
-        container.Transitions ??= new Transitions
-        {
-            AnimationUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty)
-        };
-
         CreateTemplateParentBinding(container, Border.BorderThicknessProperty,
             TemplatedControl.BorderThicknessProperty);
         CreateTemplateParentBinding(container, Border.CornerRadiusProperty, TemplatedControl.CornerRadiusProperty);
@@ -50,6 +44,18 @@ internal class CardTabItemTheme : BaseTabItemTheme
             decoratorStyle.Add(Border.BackgroundProperty, TabControlTokenKey.CardBg);
             decoratorStyle.Add(Border.BorderBrushProperty, SharedTokenKey.ColorBorderSecondary);
             commonStyle.Add(decoratorStyle);
+        }
+        {
+            // 动画设置
+            var isMotionEnabledStyle =
+                new Style(selector => selector.Nesting().PropertyEquals(TabItem.IsMotionEnabledProperty, true));
+            var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(DecoratorPart));
+            decoratorStyle.Add(Border.TransitionsProperty, new SetterValueFactory<Transitions>(() => new Transitions
+            {
+                AnimationUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty)
+            }));
+            isMotionEnabledStyle.Add(decoratorStyle);
+            commonStyle.Add(isMotionEnabledStyle);
         }
 
         // 选中

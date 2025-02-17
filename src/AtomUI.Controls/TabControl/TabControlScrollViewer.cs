@@ -1,8 +1,6 @@
-﻿using Avalonia;
+﻿using AtomUI.Data;
 using Avalonia.Controls;
-using Avalonia.Controls.Diagnostics;
 using Avalonia.Controls.Primitives;
-using Avalonia.Input.Raw;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
 
@@ -94,6 +92,7 @@ internal class TabControlScrollViewer : BaseTabScrollViewer
                             TabItem    = tabItem,
                             IsClosable = tabItem.IsClosable
                         };
+                        BindUtils.RelayBind(TabControl, AtomUI.Controls.TabControl.IsMotionEnabledProperty, menuItem, BaseOverflowMenuItem.IsMotionEnabledProperty);
                         menuItem.Click    += HandleMenuItemClicked;
                         menuItem.CloseTab += HandleCloseTabRequest;
                         _menuFlyout.Items.Add(menuItem);

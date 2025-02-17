@@ -1,4 +1,5 @@
 ﻿using AtomUI.Controls.Utils;
+using AtomUI.Data;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -49,15 +50,27 @@ public class TabControl : BaseTabControl
 
     private void HandleLayoutUpdated(object? sender, EventArgs args)
     {
+        SetupTransitions();
+        // 只需要执行一次
+        LayoutUpdated -= HandleLayoutUpdated;
+    }
+
+    private void SetupTransitions()
+    {
         if (_selectedIndicator is not null)
         {
-            _selectedIndicator.Transitions = new Transitions
+            if (IsMotionEnabled)
             {
-                AnimationUtils.CreateTransition<TransformOperationsTransition>(RenderTransformProperty,
-                    SharedTokenKey.MotionDurationSlow, new ExponentialEaseOut())
-            };
-            // 只需要执行一次
-            LayoutUpdated -= HandleLayoutUpdated;
+                _selectedIndicator.Transitions ??= new Transitions
+                {
+                    AnimationUtils.CreateTransition<TransformOperationsTransition>(RenderTransformProperty,
+                        SharedTokenKey.MotionDurationSlow, new ExponentialEaseOut())
+                };
+            }
+            else
+            {
+                _selectedIndicator.Transitions = null;
+            }
         }
     }
 
@@ -124,6 +137,7 @@ public class TabControl : BaseTabControl
         if (container is TabItem tabItem)
         {
             tabItem.Shape = TabSharp.Line;
+            BindUtils.RelayBind(this, IsMotionEnabledProperty, tabItem, TabItem.IsMotionEnabledProperty);
         }
     }
 
@@ -135,5 +149,14 @@ public class TabControl : BaseTabControl
 
         TokenResourceBinder.CreateTokenBinding(this, SelectedIndicatorThicknessProperty,
             SharedTokenKey.LineWidthBold);
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == IsMotionEnabledProperty)
+        {
+            SetupTransitions();
+        }
     }
 }

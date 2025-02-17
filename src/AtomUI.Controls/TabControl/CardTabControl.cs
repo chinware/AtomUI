@@ -103,8 +103,9 @@ public class CardTabControl : BaseTabControl
         if (container is TabItem tabItem)
         {
             tabItem.Shape = TabSharp.Card;
-            BindUtils.RelayBind(this, CardBorderRadiusProperty, tabItem, CornerRadiusProperty);
-            BindUtils.RelayBind(this, CardBorderThicknessProperty, tabItem, BorderThicknessProperty);
+            BindUtils.RelayBind(this, CardBorderRadiusProperty, tabItem, TabItem.CornerRadiusProperty);
+            BindUtils.RelayBind(this, CardBorderThicknessProperty, tabItem, TabItem.BorderThicknessProperty);
+            BindUtils.RelayBind(this, IsMotionEnabledProperty, tabItem, TabItem.IsMotionEnabledProperty);
         }
     }
 

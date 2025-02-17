@@ -39,9 +39,6 @@ internal class BaseOverflowMenuItemTheme : BaseControlTheme
             {
                 Name = ItemDecoratorPart
             };
-            var transitions = new Transitions();
-            transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty));
-            container.Transitions = transitions;
 
             var layout = new Grid
             {
@@ -141,6 +138,18 @@ internal class BaseOverflowMenuItemTheme : BaseControlTheme
             borderStyle.Add(Border.BackgroundProperty, MenuTokenKey.ItemBg);
             borderStyle.Add(Border.CornerRadiusProperty, MenuTokenKey.ItemBorderRadius);
             commonStyle.Add(borderStyle);
+        }
+        {
+            // 动画设置
+            var isMotionEnabledStyle =
+                new Style(selector => selector.Nesting().PropertyEquals(BaseOverflowMenuItem.IsMotionEnabledProperty, true));
+            var borderStyle = new Style(selector => selector.Nesting().Template().Name(ItemDecoratorPart));
+            borderStyle.Add(Border.TransitionsProperty, new SetterValueFactory<Transitions>(() => new Transitions()
+            {
+                AnimationUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty)
+            }));
+            isMotionEnabledStyle.Add(borderStyle);
+            commonStyle.Add(isMotionEnabledStyle);
         }
 
         // Hover 状态

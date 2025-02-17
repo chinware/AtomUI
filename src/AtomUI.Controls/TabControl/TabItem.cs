@@ -57,6 +57,11 @@ public class TabItem : AvaloniaTabItem, ICustomHitTest
 
     internal static readonly StyledProperty<TabSharp> ShapeProperty =
         AvaloniaProperty.Register<TabItem, TabSharp>(nameof(Shape));
+    
+    internal static readonly DirectProperty<TabItem, bool> IsMotionEnabledProperty
+        = AvaloniaProperty.RegisterDirect<TabItem, bool>(nameof(IsMotionEnabled), 
+            o => o.IsMotionEnabled,
+            (o, v) => o.IsMotionEnabled = v);
 
     public SizeType SizeType
     {
@@ -68,6 +73,14 @@ public class TabItem : AvaloniaTabItem, ICustomHitTest
     {
         get => GetValue(ShapeProperty);
         set => SetValue(ShapeProperty, value);
+    }
+    
+    private bool _isMotionEnabled = true;
+
+    internal bool IsMotionEnabled
+    {
+        get => _isMotionEnabled;
+        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
     }
 
     #endregion
@@ -139,14 +152,26 @@ public class TabItem : AvaloniaTabItem, ICustomHitTest
         SetupItemIcon();
         SetupCloseIcon();
 
-        Transitions ??= new Transitions()
-        {
-            AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty)
-        };
+        SetupTransitions();
 
         if (_closeButton is not null)
         {
             _closeButton.Click += HandleCloseRequest;
+        }
+    }
+
+    private void SetupTransitions()
+    {
+        if (IsMotionEnabled)
+        {
+            Transitions ??= new Transitions()
+            {
+                AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty)
+            };
+        }
+        else
+        {
+            Transitions = null;
         }
     }
 
@@ -202,11 +227,14 @@ public class TabItem : AvaloniaTabItem, ICustomHitTest
             }
 
             SetupCloseIcon();
-        }
-
-        if (change.Property == ShapeProperty)
+        } 
+        else if (change.Property == ShapeProperty)
         {
             HandleShapeChanged();
+        }
+        else if (change.Property == IsMotionEnabledProperty)
+        {
+            SetupTransitions();
         }
     }
 

@@ -27,14 +27,6 @@ internal class CardTabStripItemTheme : BaseTabStripItemTheme
     protected override void NotifyBuildControlTemplate(TabStripItem stripItem, INameScope scope, Border container)
     {
         base.NotifyBuildControlTemplate(stripItem, scope, container);
-
-        if (container.Transitions is null)
-        {
-            var transitions = new Transitions();
-            transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty));
-            container.Transitions = transitions;
-        }
-
         CreateTemplateParentBinding(container, Border.BorderThicknessProperty,
             TemplatedControl.BorderThicknessProperty);
         CreateTemplateParentBinding(container, Border.CornerRadiusProperty, TemplatedControl.CornerRadiusProperty);
@@ -54,6 +46,19 @@ internal class CardTabStripItemTheme : BaseTabStripItemTheme
             commonStyle.Add(decoratorStyle);
         }
 
+        {
+            // 动画设置
+            var isMotionEnabledStyle =
+                new Style(selector => selector.Nesting().PropertyEquals(TabStripItem.IsMotionEnabledProperty, true));
+            var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(DecoratorPart));
+            decoratorStyle.Add(Border.TransitionsProperty, new SetterValueFactory<Transitions>(() => new Transitions
+            {
+                AnimationUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty)
+            }));
+            isMotionEnabledStyle.Add(decoratorStyle);
+            commonStyle.Add(isMotionEnabledStyle);
+        }
+        
         // 选中
         var selectedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Selected));
         {

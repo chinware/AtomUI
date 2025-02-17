@@ -1,6 +1,8 @@
 ﻿using AtomUI.Data;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
+using AtomUI.Theme.Utils;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -14,7 +16,10 @@ namespace AtomUI.Controls;
 
 using AvaloniaTabStrip = Avalonia.Controls.Primitives.TabStrip;
 
-public abstract class BaseTabStrip : AvaloniaTabStrip, ISizeTypeAware
+public abstract class BaseTabStrip : AvaloniaTabStrip, 
+                                     ISizeTypeAware,
+                                     IAnimationAwareControl,
+                                     IControlSharedTokenResourcesHost
 {
     public const string TopPC = ":top";
     public const string RightPC = ":right";
@@ -35,6 +40,12 @@ public abstract class BaseTabStrip : AvaloniaTabStrip, ISizeTypeAware
     public static readonly StyledProperty<bool> TabAlignmentCenterProperty =
         AvaloniaProperty.Register<BaseTabStrip, bool>(nameof(TabAlignmentCenter));
 
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AvaloniaProperty.Register<BaseTabStrip, bool>(nameof(IsMotionEnabled), true);
+
+    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
+        = AvaloniaProperty.Register<BaseTabStrip, bool>(nameof(IsWaveAnimationEnabled), true);
+    
     public SizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
@@ -52,6 +63,25 @@ public abstract class BaseTabStrip : AvaloniaTabStrip, ISizeTypeAware
         get => GetValue(TabAlignmentCenterProperty);
         set => SetValue(TabAlignmentCenterProperty, value);
     }
+    
+    public bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
+    }
+
+    public bool IsWaveAnimationEnabled
+    {
+        get => GetValue(IsWaveAnimationEnabledProperty);
+        set => SetValue(IsWaveAnimationEnabledProperty, value);
+    }
+
+    #endregion
+    
+    #region 内部属性定义
+    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IControlSharedTokenResourcesHost.HostControl => this;
+    string IControlSharedTokenResourcesHost.TokenId => TabControlToken.ID;
 
     #endregion
 
@@ -61,6 +91,12 @@ public abstract class BaseTabStrip : AvaloniaTabStrip, ISizeTypeAware
     {
         ItemsPanelProperty.OverrideDefaultValue<BaseTabStrip>(DefaultPanel);
         AffectsRender<BaseTabStrip>(TabStripPlacementProperty);
+    }
+
+    public BaseTabStrip()
+    {
+        this.RegisterResources();
+        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -87,6 +123,7 @@ public abstract class BaseTabStrip : AvaloniaTabStrip, ISizeTypeAware
         {
             tabStripItem.TabStripPlacement = TabStripPlacement;
             BindUtils.RelayBind(this, SizeTypeProperty, tabStripItem, TabStripItem.SizeTypeProperty);
+            BindUtils.RelayBind(this, IsMotionEnabledProperty, tabStripItem, TabStripItem.IsMotionEnabledProperty);
         }
     }
 

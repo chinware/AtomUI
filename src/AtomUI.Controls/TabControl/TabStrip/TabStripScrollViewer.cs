@@ -1,4 +1,5 @@
-﻿using Avalonia.Controls;
+﻿using AtomUI.Data;
+using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
@@ -74,6 +75,7 @@ internal class TabStripScrollViewer : BaseTabScrollViewer
                                 TabStripItem = tabStripItem,
                                 IsClosable   = tabStripItem.IsClosable
                             };
+                            BindUtils.RelayBind(TabStrip, AtomUI.Controls.TabStrip.IsMotionEnabledProperty, menuItem, BaseOverflowMenuItem.IsMotionEnabledProperty);
                             menuItem.Click    += HandleMenuItemClicked;
                             menuItem.CloseTab += HandleCloseTabRequest;
                             _menuFlyout.Items.Add(menuItem);

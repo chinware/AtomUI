@@ -1,7 +1,8 @@
 ﻿using AtomUI.Data;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
-using AtomUI.Utils;
+using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -14,7 +15,9 @@ namespace AtomUI.Controls;
 
 using AvaloniaTabControl = Avalonia.Controls.TabControl;
 
-public class BaseTabControl : AvaloniaTabControl
+public class BaseTabControl : AvaloniaTabControl,
+                              IAnimationAwareControl,
+                              IControlSharedTokenResourcesHost
 {
     public const string TopPC = ":top";
     public const string RightPC = ":right";
@@ -32,6 +35,12 @@ public class BaseTabControl : AvaloniaTabControl
     public static readonly StyledProperty<bool> TabAlignmentCenterProperty =
         AvaloniaProperty.Register<BaseTabControl, bool>(nameof(TabAlignmentCenter));
 
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AvaloniaProperty.Register<BaseTabControl, bool>(nameof(IsMotionEnabled), true);
+
+    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
+        = AvaloniaProperty.Register<BaseTabControl, bool>(nameof(IsWaveAnimationEnabled), true);
+
     public SizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
@@ -42,6 +51,18 @@ public class BaseTabControl : AvaloniaTabControl
     {
         get => GetValue(TabAlignmentCenterProperty);
         set => SetValue(TabAlignmentCenterProperty, value);
+    }
+
+    public bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
+    }
+
+    public bool IsWaveAnimationEnabled
+    {
+        get => GetValue(IsWaveAnimationEnabledProperty);
+        set => SetValue(IsWaveAnimationEnabledProperty, value);
     }
 
     #endregion
@@ -74,6 +95,10 @@ public class BaseTabControl : AvaloniaTabControl
         set => SetAndRaise(TabStripMarginProperty, ref _tabStripMargin, value);
     }
 
+    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IControlSharedTokenResourcesHost.HostControl => this;
+    string IControlSharedTokenResourcesHost.TokenId => TabControlToken.ID;
+
     #endregion
 
     private Border? _frameDecorator;
@@ -84,6 +109,12 @@ public class BaseTabControl : AvaloniaTabControl
     static BaseTabControl()
     {
         ItemsPanelProperty.OverrideDefaultValue<BaseTabControl>(DefaultPanel);
+    }
+
+    public BaseTabControl()
+    {
+        this.RegisterResources();
+        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
