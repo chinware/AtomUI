@@ -1,362 +1,196 @@
+using System.Diagnostics;
 using AtomUI.IconPkg;
-using AtomUI.Theme.Styling;
-using AtomUI.Theme.Data;
 using Avalonia;
-using Avalonia.Collections;
 using Avalonia.Controls;
-using Avalonia.Controls.Presenters;
-using Avalonia.Controls.Primitives;
-using Avalonia.Controls.Shapes;
-using Avalonia.Layout;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
 public class TimelineItem : ContentControl
 {
-    internal const string PendingNodePC = ":pending";
-    internal const string ContentLeftPC = ":ContentLeft";
-    internal const string LabelLeftPC = ":labelLeft";
-
+    public const string OrderOddPC = "order-odd";
+    public const string OrderEvenPC = "order-even";
+    public const string OrderFirstPC = "order-first";
+    public const string OrderLastPC = "order-last";
+    public const string PendingItemPC = "pending-item";
+        
     #region 公共属性定义
 
     public static readonly StyledProperty<string?> LabelProperty =
         AvaloniaProperty.Register<TimelineItem, string?>(nameof(Label));
-
-    public static readonly StyledProperty<Icon?> DotIconProperty =
-        AvaloniaProperty.Register<Alert, Icon?>(nameof(DotIcon));
-
-    public static readonly StyledProperty<string> ColorProperty =
-        AvaloniaProperty.Register<TimelineItem, string>(nameof(Color), "blue");
-
+    
+    public static readonly StyledProperty<Icon?> IndicatorIconProperty =
+        AvaloniaProperty.Register<TimelineItem, Icon?>(nameof(IndicatorIcon));
+    
+    public static readonly StyledProperty<IBrush?> IndicatorColorProperty =
+        AvaloniaProperty.Register<TimelineItem, IBrush?>(nameof(IndicatorColor));
+    
     public string? Label
     {
         get => GetValue(LabelProperty);
         set => SetValue(LabelProperty, value);
     }
 
-    public Icon? DotIcon
+    public Icon? IndicatorIcon
     {
-        get => GetValue(DotIconProperty);
-        set => SetValue(DotIconProperty, value);
+        get => GetValue(IndicatorIconProperty);
+        set => SetValue(IndicatorIconProperty, value);
     }
-
-    public string Color
+    
+    public IBrush? IndicatorColor
     {
-        get => GetValue(ColorProperty);
-        set => SetValue(ColorProperty, value);
+        get => GetValue(IndicatorColorProperty);
+        set => SetValue(IndicatorColorProperty, value);
     }
-
     #endregion
 
     #region 内部属性定义
-
-    internal static readonly StyledProperty<int> IndexProperty =
-        AvaloniaProperty.Register<TimelineItem, int>(nameof(Index), 0);
     
-    internal static readonly StyledProperty<int> CountProperty =
-        AvaloniaProperty.Register<TimelineItem, int>(nameof(Count), 0);
-
-    internal static readonly StyledProperty<TimeLineMode> ModeProperty =
-        AvaloniaProperty.Register<TimelineItem, TimeLineMode>(nameof(Mode), TimeLineMode.Left);
-
-    internal static readonly StyledProperty<bool> HasLabelProperty =
-        AvaloniaProperty.Register<TimelineItem, bool>(nameof(HasLabel), false);
-
-    internal static readonly StyledProperty<bool> IsLastProperty =
-        AvaloniaProperty.Register<TimelineItem, bool>(nameof(IsLast), false);
-
-    internal static readonly StyledProperty<bool> ReverseProperty =
-        AvaloniaProperty.Register<TimelineItem, bool>(nameof(Reverse), false);
-
-    internal static readonly StyledProperty<bool> IsPendingProperty =
-        AvaloniaProperty.Register<TimelineItem, bool>(nameof(IsPending), false);
-
-    internal static readonly StyledProperty<HorizontalAlignment> ContentTextAlignProperty =
-        AvaloniaProperty.Register<TimelineItem, HorizontalAlignment>(nameof(ContentTextAlign),
-            HorizontalAlignment.Left);
-
-    internal static readonly StyledProperty<HorizontalAlignment> LabelTextAlignProperty =
-        AvaloniaProperty.Register<TimelineItem, HorizontalAlignment>(nameof(LabelTextAlign), HorizontalAlignment.Left);
-
-    internal int Index
-    {
-        get => GetValue(IndexProperty);
-        set => SetValue(IndexProperty, value);
-    }
+    internal static readonly DirectProperty<TimelineItem, TimeLineMode> ModeProperty
+        = AvaloniaProperty.RegisterDirect<TimelineItem, TimeLineMode>(nameof(Mode), 
+            o => o.Mode,
+            (o, v) => o.Mode = v);
     
-    internal int Count
-    {
-        get => GetValue(CountProperty);
-        set => SetValue(CountProperty, value);
-    }
+    internal static readonly DirectProperty<TimelineItem, bool> IsOddProperty
+        = AvaloniaProperty.RegisterDirect<TimelineItem, bool>(nameof(IsOdd), 
+            o => o.IsOdd,
+            (o, v) => o.IsOdd = v);
+    
+    internal static readonly DirectProperty<TimelineItem, bool> IsFirstProperty
+        = AvaloniaProperty.RegisterDirect<TimelineItem, bool>(nameof(IsFirst), 
+            o => o.IsFirst,
+            (o, v) => o.IsFirst = v);
+    
+    internal static readonly DirectProperty<TimelineItem, bool> IsLastProperty
+        = AvaloniaProperty.RegisterDirect<TimelineItem, bool>(nameof(IsLast), 
+            o => o.IsLast,
+            (o, v) => o.IsLast = v);
+    
+    internal static readonly DirectProperty<TimelineItem, bool> NextIsPendingProperty
+        = AvaloniaProperty.RegisterDirect<TimelineItem, bool>(nameof(NextIsPending), 
+            o => o.NextIsPending,
+            (o, v) => o.NextIsPending = v);
+    
+    internal static readonly DirectProperty<TimelineItem, bool> IsReverseProperty
+        = AvaloniaProperty.RegisterDirect<TimelineItem, bool>(nameof(IsReverse), 
+            o => o.IsReverse,
+            (o, v) => o.IsReverse = v);
+    
+    internal static readonly DirectProperty<TimelineItem, bool> IsPendingProperty
+        = AvaloniaProperty.RegisterDirect<TimelineItem, bool>(nameof(IsPending), 
+            o => o.IsPending,
+            (o, v) => o.IsPending = v);
+    
+    internal static readonly DirectProperty<TimelineItem, bool> IsLabelLayoutProperty
+        = AvaloniaProperty.RegisterDirect<TimelineItem, bool>(nameof(IsLabelLayout), 
+            o => o.IsLabelLayout,
+            (o, v) => o.IsLabelLayout = v);
+        
+    private TimeLineMode _mode = TimeLineMode.Left;
 
     internal TimeLineMode Mode
     {
-        get => GetValue(ModeProperty);
-        set => SetValue(ModeProperty, value);
+        get => _mode;
+        set => SetAndRaise(ModeProperty, ref _mode, value);
     }
+    
+    private bool _isOdd;
 
-    internal bool HasLabel
+    internal bool IsOdd
     {
-        get => GetValue(HasLabelProperty);
-        set => SetValue(HasLabelProperty, value);
+        get => _isOdd;
+        set => SetAndRaise(IsOddProperty, ref _isOdd, value);
     }
+    
+    private bool _isFirst;
+
+    internal bool IsFirst
+    {
+        get => _isFirst;
+        set => SetAndRaise(IsFirstProperty, ref _isFirst, value);
+    }
+    
+    private bool _isLast;
 
     internal bool IsLast
     {
-        get => GetValue(IsLastProperty);
-        set => SetValue(IsLastProperty, value);
+        get => _isLast;
+        set => SetAndRaise(IsLastProperty, ref _isLast, value);
+    }
+    
+    private bool _nextIsPending;
+
+    internal bool NextIsPending
+    {
+        get => _nextIsPending;
+        set => SetAndRaise(NextIsPendingProperty, ref _nextIsPending, value);
     }
 
-    internal bool Reverse
+    private bool _isReverse = false;
+
+    internal bool IsReverse
     {
-        get => GetValue(ReverseProperty);
-        set => SetValue(ReverseProperty, value);
+        get => _isReverse;
+        set => SetAndRaise(IsReverseProperty, ref _isReverse, value);
     }
+    
+    private bool _isPending = false;
 
     internal bool IsPending
     {
-        get => GetValue(IsPendingProperty);
-        set => SetValue(IsPendingProperty, value);
+        get => _isPending;
+        set => SetAndRaise(IsPendingProperty, ref _isPending, value);
     }
+    
+    private bool _isLabelLayout = false;
 
-    internal HorizontalAlignment ContentTextAlign
+    internal bool IsLabelLayout
     {
-        get => GetValue(ContentTextAlignProperty);
-        set => SetValue(ContentTextAlignProperty, value);
-    }
-
-    internal HorizontalAlignment LabelTextAlign
-    {
-        get => GetValue(LabelTextAlignProperty);
-        set => SetValue(LabelTextAlignProperty, value);
+        get => _isLabelLayout;
+        set => SetAndRaise(IsLabelLayoutProperty, ref _isLabelLayout, value);
     }
 
     #endregion
-    
-    protected internal int LabelIndex = 0;
-    protected internal int SplitIndex = 1;
-    protected internal int ContentIndex = 2;
 
-    private Grid? _gridContainer;
-    private DockPanel? _splitPanel;
-    private TextBlock? _labelBlock;
-    private ContentPresenter? _itemsContentPresenter;
-    private Border? _splitHeadPart;
-    private Icon? _dotPart;
-
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    static TimelineItem()
     {
-        base.OnPropertyChanged(change);
+        AffectsArrange<TimelineItem>(ModeProperty);
+        AffectsMeasure<TimelineItem>(IsReverseProperty);
+    }
 
-        if (change.Property == ModeProperty || change.Property == CountProperty || change.Property == IndexProperty)
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        Debug.Assert(Parent is Timeline, "TimelineItem's parent must be a timeline control.");
+    }
+
+    internal void NotifyVisualIndexChanged(Timeline timeline, int newIndex)
+    {
+        IsOdd         = newIndex % 2 != 0;
+        IsFirst       = newIndex == 0;
+        IsLast        = newIndex == timeline.ItemCount - 1;
+        NextIsPending = false;
+        if (timeline.PendingItemReference != null && timeline.PendingItemReference.TryGetTarget(out var pendingItem))
         {
-            UpdateAll();
+            if (this == pendingItem)
+            {
+                var previousItemIndex = newIndex - 1;
+                if (timeline.ContainerFromIndex(previousItemIndex) is TimelineItem previousItem)
+                {
+                    previousItem.NextIsPending = true;
+                }
+            }
         }
-    }
-
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        base.OnApplyTemplate(e);
-
-        HandleTemplateApplied(e.NameScope);
-    }
-
-    private void HandleTemplateApplied(INameScope scope)
-    {
-        _gridContainer         = scope.Find<Grid>(TimelineItemTheme.GridPart);
-        _splitPanel            = scope.Find<DockPanel>(TimelineItemTheme.SplitPanelPart);
-        _labelBlock            = scope.Find<TextBlock>(TimelineItemTheme.LabelPart);
-        _itemsContentPresenter = scope.Find<ContentPresenter>(TimelineItemTheme.ItemsContentPresenterPart);
-        _splitHeadPart         = scope.Find<Border>(TimelineItemTheme.SplitHeadPart);
-        _dotPart               = scope.Find<Icon>(TimelineItemTheme.DotPart);
-        
-        UpdateAll();
-    }
-
-    protected void UpdateAll()
-    {
-        CalculateIndex();
-        SetupShowInfo();
         UpdatePseudoClasses();
     }
 
-    protected void UpdatePseudoClasses()
+    private void UpdatePseudoClasses()
     {
-        PseudoClasses.Set(PendingNodePC, IsPending);
-        PseudoClasses.Set(ContentLeftPC, ContentIndex == 0);
-        PseudoClasses.Set(LabelLeftPC, LabelIndex == 0);
-    }
-
-    private void CalculateIndex()
-    {
-        if (VisualRoot is null || _gridContainer is null)
-        {
-            return;
-        }
-
-        if (Parent is Timeline timeline)
-        {
-            Index    = timeline.Items.IndexOf(this);
-            IsLast   = Index == timeline.Items.Count - 1;
-            HasLabel = false;
-            
-            foreach (var child in timeline.Items)
-            {
-                if (child is TimelineItem item)
-                {
-                    if (!string.IsNullOrEmpty(item.Label))
-                    {
-                        HasLabel = true;
-                        break;
-                    }
-                }
-            }
-            
-        }
-
-        SplitIndex       = 1;
-        LabelTextAlign   = HorizontalAlignment.Right;
-        ContentTextAlign = HorizontalAlignment.Left;
-        if (Mode == TimeLineMode.Right || (Mode == TimeLineMode.Alternate && Index % 2 == 1))
-        {
-            LabelIndex       = 2;
-            ContentIndex     = 0;
-            LabelTextAlign   = HorizontalAlignment.Left;
-            ContentTextAlign = HorizontalAlignment.Right;
-        }
-        else
-        {
-            LabelIndex       = 0;
-            ContentIndex     = 2;
-            LabelTextAlign   = HorizontalAlignment.Right;
-            ContentTextAlign = HorizontalAlignment.Left;
-        }
-
-        _gridContainer.ColumnDefinitions[0].Width = GridLength.Star;
-        _gridContainer.ColumnDefinitions[2].Width = GridLength.Star;
-
-        if (!HasLabel)
-        {
-            if (Mode == TimeLineMode.Left)
-            {
-                LabelIndex       = 0;
-                ContentIndex     = 2;
-                ContentTextAlign = HorizontalAlignment.Left;
-            }
-
-            if (Mode == TimeLineMode.Right)
-            {
-                LabelIndex       = 2;
-                ContentIndex     = 0;
-                ContentTextAlign = HorizontalAlignment.Right;
-            }
-
-            _gridContainer.ColumnDefinitions[LabelIndex].Width = new GridLength(0);
-        }
-    }
-    
-    private void SetupShowInfo()
-    {
-        if (_splitPanel is null || _itemsContentPresenter is null || _labelBlock is null || _gridContainer is null)
-        {
-            return;
-        }
-
-        Grid.SetColumn(_labelBlock, LabelIndex);
-        Grid.SetColumn(_itemsContentPresenter, ContentIndex);
-        Grid.SetColumn(_splitPanel, SplitIndex);
-        
-        var dot           = _splitPanel.Children[0];
-        var border        = _splitPanel.Children[1] as Border;
-        var rect          = border?.Child as Rectangle;
-        var isPendingItem = false;
-        MinHeight            = 0;
-        
-        if (Parent is Timeline timeline && !String.IsNullOrEmpty(timeline.Pending) && rect is not null &&
-            border is not null)
-        {
-            rect.StrokeDashArray = null;
-            
-            isPendingItem = Reverse && Index == 0 || !Reverse && timeline.ItemCount - 2 == Index;
-            if (isPendingItem)
-            {
-                rect.StrokeDashArray = new AvaloniaList<double> { 0, 2 };
-            }
-        }
-        
-        if (rect is not null)
-        {
-            rect.IsVisible = !IsLast;
-        }
-
-        if (IsLast || isPendingItem)
-        {
-            TokenResourceBinder.CreateTokenBinding(this, Layoutable.MinHeightProperty,
-                TimelineTokenKey.LastItemContentMinHeight);
-        }
-
-        if (Color.StartsWith("#"))
-        {
-            try
-            {
-                var color = Avalonia.Media.Color.Parse(Color);
-                var brush = new SolidColorBrush(color);
-                if (_dotPart is not null && _dotPart.NormalFilledBrush is null)
-                {
-                    _dotPart.NormalFilledBrush = brush;
-                }
-
-                if (_splitHeadPart is not null)
-                {
-                    _splitHeadPart.BorderBrush = brush;
-                }
-            }
-            catch (Exception)
-            {
-                if (_dotPart is not null && _dotPart.NormalFilledBrush is null)
-                {
-                    TokenResourceBinder.CreateTokenBinding(_dotPart, Icon.NormalFilledBrushProperty,
-                        SharedTokenKey.ColorPrimary);
-                }
-
-                if (_splitHeadPart is not null)
-                {
-                    TokenResourceBinder.CreateTokenBinding(_splitHeadPart, Border.BorderBrushProperty,
-                        SharedTokenKey.ColorPrimary);
-                }
-            }
-        }
-        else
-        {
-            var colorTokenKey = SharedTokenKey.ColorSuccess;
-            switch (Color)
-            {
-                case "blue":
-                    colorTokenKey = SharedTokenKey.ColorPrimary;
-                    break;
-                case "green":
-                    colorTokenKey = SharedTokenKey.ColorSuccess;
-                    break;
-                case "red":
-                    colorTokenKey = SharedTokenKey.ColorError;
-                    break;
-                case "gray":
-                    colorTokenKey = SharedTokenKey.ColorTextDisabled;
-                    break;
-            }
-            if (_dotPart is not null && _dotPart.NormalFilledBrush is null)
-            {
-                TokenResourceBinder.CreateTokenBinding(_dotPart, Icon.NormalFilledBrushProperty,
-                    colorTokenKey);
-            }
-
-            if (_splitHeadPart is not null)
-            {
-                TokenResourceBinder.CreateTokenBinding(_splitHeadPart, Border.BorderBrushProperty,
-                    colorTokenKey);
-            }
-        }
+        PseudoClasses.Set(OrderOddPC, IsOdd);
+        PseudoClasses.Set(OrderEvenPC, !IsOdd);
+        PseudoClasses.Set(OrderFirstPC, IsFirst);
+        PseudoClasses.Set(OrderLastPC, IsLast);
+        PseudoClasses.Set(PendingItemPC, IsPending);
     }
 }

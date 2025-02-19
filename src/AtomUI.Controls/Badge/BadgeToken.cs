@@ -74,7 +74,7 @@ internal class BadgeToken : AbstractControlDesignToken
     {
         base.CalculateFromAlias();
         var lineWidth = SharedToken.LineWidth;
-        IndicatorHeight   = Math.Round(SharedToken.FontSize * SharedToken.LineHeight) - 2 * lineWidth;
+        IndicatorHeight   = Math.Round(SharedToken.FontSize * SharedToken.LineHeightRatio) - 2 * lineWidth;
         IndicatorHeightSM = SharedToken.FontSize;
         DotSize           = SharedToken.FontSizeSM / 2;
         TextFontSize      = SharedToken.FontSizeSM;

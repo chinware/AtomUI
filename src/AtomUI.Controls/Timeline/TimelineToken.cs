@@ -7,87 +7,92 @@ namespace AtomUI.Controls;
 [ControlDesignToken]
 internal class TimelineToken : AbstractControlDesignToken
 {
-   public const string ID = "Timeline";
+    public const string ID = "Timeline";
 
-   public TimelineToken()
-      : this(ID) { }
+    public TimelineToken()
+        : this(ID)
+    {
+    }
 
-   protected TimelineToken(string id)
-      : base(id) { }
+    protected TimelineToken(string id)
+        : base(id)
+    {
+    }
 
-   /// <summary>
-   /// Timeline 轨迹颜色
-   /// </summary>
-   public Color TailColor { get; set; }
+    /// <summary>
+    /// Timeline 轨迹颜色
+    /// </summary>
+    public Color IndicatorTailColor { get; set; }
 
-   /// <summary>
-   /// 轨迹宽度
-   /// </summary>
-   public double TailWidth { get; set; }
+    /// <summary>
+    /// 轨迹宽度
+    /// </summary>
+    public double IndicatorTailWidth { get; set; }
 
-   /// <summary>
-   /// 节点边框宽度
-   /// </summary>
-   public double DotBorderWidth { get; set; }
+    /// <summary>
+    /// 时间项内间距
+    /// </summary>
+    public Thickness ItemPaddingBottom { get; set; }
 
-   /// <summary>
-   /// 节点背景色
-   /// </summary>
-   public Color DotBg { get; set; }
+    /// <summary>
+    /// 时间项下大内间距
+    /// </summary>
+    public Thickness ItemPaddingBottomLG { get; set; }
+    
+    /// <summary>
+    /// 最后一个Item的Content最小高度
+    /// </summary>
+    public double LastItemContentMinHeight { get; set; }
 
-   /// <summary>
-   /// 时间项下间距
-   /// </summary>
-   public Thickness ItemPaddingBottom { get; set; }
-   
-   /// <summary>
-   /// right margin
-   /// </summary>
-   public Thickness RightMargin { get; set; }
-   
-   /// <summary>
-   /// left margin
-   /// </summary>
-   public Thickness LeftMargin { get; set; }
-   
-   /// <summary>
-   /// 最后一个Item的Content最小高度
-   /// </summary>
-   public double LastItemContentMinHeight { get; set; }
-   
-   /// <summary>
-   /// 字体大小
-   /// </summary>
-   public double FontSize { get; set; }
-   
-   /// <summary>
-   /// item head size
-   /// </summary>
-   public double ItemHeadSize { get; set; }
-   
-   /// <summary>
-   /// custom head size
-   /// </summary>
-   public double CustomHeadSize { get; set; }
-   
-   internal override void CalculateFromAlias()
-   {
-      base.CalculateFromAlias();
-      
-      TailColor = SharedToken.ColorSplit;
-      TailWidth = SharedToken.LineWidthBold;
-      DotBorderWidth = SharedToken.Wireframe
-         ? SharedToken.LineWidthBold
-         : SharedToken.LineWidth * 3;
-      DotBg = SharedToken.ColorBgContainer;
-      ItemPaddingBottom = new Thickness(0, 0, 0, SharedToken.Padding * 1.25);
-      
-      LeftMargin = new Thickness(SharedToken.Margin, 0, 0, 0);
-      RightMargin = new Thickness(0, 0, SharedToken.MarginSM, 0);
+    /// <summary>
+    /// 节点指示器的宽度
+    /// </summary>
+    public double IndicatorWidth { get; set; }
 
-      LastItemContentMinHeight = SharedToken.ControlHeightLG * 1.2;
-      FontSize                 = SharedToken.FontSize;
-      ItemHeadSize             = 10;
-      CustomHeadSize           = SharedToken.FontSize;
-   }
+    /// <summary>
+    /// 节点指示器内置圆形大小
+    /// </summary>
+    public double IndicatorDotSize { get; set; }
+    
+    /// <summary>
+    /// 指示器在最左边的外边距
+    /// </summary>
+    public Thickness IndicatorLeftModeMargin { get; set; }
+    
+    /// <summary>
+    /// 指示器在最右边的外边距
+    /// </summary>
+    public Thickness IndicatorRightModeMargin { get; set; }
+    
+    /// <summary>
+    /// 指示器在中间的外边距
+    /// </summary>
+    public Thickness IndicatorMiddleModeMargin { get; set; }
+
+    /// <summary>
+    /// 节点边框宽度
+    /// </summary>
+    public double IndicatorDotBorderWidth { get; set; }
+
+    internal override void CalculateFromAlias()
+    {
+        base.CalculateFromAlias();
+
+        IndicatorTailColor = SharedToken.ColorSplit;
+        IndicatorTailWidth = SharedToken.LineWidthBold;
+
+        IndicatorDotBorderWidth = SharedToken.Wireframe
+            ? SharedToken.LineWidthBold
+            : SharedToken.LineWidth * 3;
+        ItemPaddingBottom   = new Thickness(0, 0, 0, SharedToken.Padding * 1.25);
+        ItemPaddingBottomLG = ItemPaddingBottom * 2;
+        
+        IndicatorLeftModeMargin  = new Thickness(0, 0, SharedToken.Margin, 0);
+        IndicatorRightModeMargin = new Thickness(SharedToken.Margin, 0, 0, 0);
+        IndicatorMiddleModeMargin = new Thickness(SharedToken.Margin, 0);
+
+        LastItemContentMinHeight = SharedToken.ControlHeightLG * 1.2;
+        IndicatorWidth           = SharedToken.SizeMS;
+        IndicatorDotSize         = 8;
+    }
 }

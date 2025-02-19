@@ -1,4 +1,5 @@
-﻿using AtomUI.Theme;
+﻿using AtomUI.Data;
+using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
@@ -21,22 +22,27 @@ internal class SegmentedTheme : BaseControlTheme
 
     protected override IControlTemplate BuildControlTemplate()
     {
-        return new FuncControlTemplate<Segmented>((collapse, scope) =>
+        return new FuncControlTemplate<Segmented>((segmented, scope) =>
         {
             var frameDecorator = new Border
             {
                 Name         = FrameDecoratorPart,
                 ClipToBounds = true
             };
+            // TODO 需要观察是否会有内存泄漏
             var itemsPresenter = new ItemsPresenter
             {
-                Name = ItemsPresenterPart
+                Name = ItemsPresenterPart,
+                ItemsPanel = new FuncTemplate<Panel?>(() =>
+                {
+                    var panel = new SegmentedStackPanel();
+                    BindUtils.RelayBind(segmented, Segmented.IsExpandingProperty, panel, SegmentedStackPanel.IsExpandingProperty);
+                    return panel;
+                })
             };
             itemsPresenter.RegisterInNameScope(scope);
             frameDecorator.Child = itemsPresenter;
-
-            CreateTemplateParentBinding(itemsPresenter, ItemsPresenter.ItemsPanelProperty,
-                ItemsControl.ItemsPanelProperty);
+            
             CreateTemplateParentBinding(frameDecorator, Border.CornerRadiusProperty,
                 TemplatedControl.CornerRadiusProperty);
             CreateTemplateParentBinding(frameDecorator, Decorator.PaddingProperty, TemplatedControl.PaddingProperty);

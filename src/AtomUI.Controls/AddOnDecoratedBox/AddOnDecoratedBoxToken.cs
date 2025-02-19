@@ -114,8 +114,8 @@ internal class AddOnDecoratedBoxToken : AbstractControlDesignToken
         base.CalculateFromAlias();
         var fontSize     = SharedToken.FontSize;
         var fontSizeLG   = SharedToken.FontSizeLG;
-        var lineHeight   = SharedToken.LineHeight;
-        var lineHeightLG = SharedToken.LineHeightLG;
+        var lineHeight   = SharedToken.LineHeightRatio;
+        var lineHeightLG = SharedToken.LineHeightRatioLG;
         var lineWidth    = SharedToken.LineWidth;
         Padding = new Thickness(SharedToken.PaddingSM - lineWidth,
             Math.Round((SharedToken.ControlHeight - fontSize * lineHeight) / 2 * 10) / 10 - lineWidth);

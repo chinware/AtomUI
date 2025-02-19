@@ -162,7 +162,7 @@ internal class TabControlToken : AbstractControlDesignToken
     internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
-        var lineHeight = SharedToken.LineHeight;
+        var lineHeight = SharedToken.LineHeightRatio;
         var lineWidth  = SharedToken.LineWidth;
 
         CardBg = SharedToken.ColorFillAlter;

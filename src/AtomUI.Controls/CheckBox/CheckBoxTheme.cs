@@ -61,8 +61,7 @@ internal class CheckBoxTheme : BaseControlTheme
                 Name = LabelTextPart,
                 VerticalAlignment = VerticalAlignment.Center,
             };
-            CreateTemplateParentBinding(labelText, SingleLineText.TextProperty, CheckBox.ContentProperty, BindingMode.Default,
-                new FuncValueConverter<object?, string?>(content => content?.ToString()));
+            CreateTemplateParentBinding(labelText, SingleLineText.TextProperty, CheckBox.ContentProperty);
             CreateTemplateParentBinding(labelText, SingleLineText.FontSizeProperty, CheckBox.FontSizeProperty);
             CreateTemplateParentBinding(labelText, SingleLineText.IsVisibleProperty, CheckBox.ContentProperty,
                 BindingMode.Default, ObjectConverters.IsNotNull);

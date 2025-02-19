@@ -92,7 +92,7 @@ internal class NotificationToken : AbstractControlDesignToken
         NotificationContentMargin = new Thickness(0, 0, 0, SharedToken.PaddingMD);
         NotificationPadding = new Thickness(SharedToken.PaddingLG, SharedToken.PaddingMD, SharedToken.PaddingLG, 0);
         NotificationBg = SharedToken.ColorBgElevated;
-        NotificationIconSize = SharedToken.FontSizeLG * SharedToken.LineHeightLG;
+        NotificationIconSize = SharedToken.FontSizeLG * SharedToken.LineHeightRatioLG;
         NotificationCloseButtonSize = SharedToken.ControlHeightLG * 0.55;
         NotificationMarginBottom = new Thickness(0, 0, 0, SharedToken.Margin);
         NotificationTopMargin = new Thickness(SharedToken.MarginLG, SharedToken.MarginLG, SharedToken.MarginLG, 0);

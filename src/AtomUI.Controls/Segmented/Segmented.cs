@@ -125,7 +125,6 @@ public class Segmented : SelectingItemsControl,
         AffectsRender<Segmented>(SelectedThumbCornerRadiusProperty, SelectedThumbBgProperty,
             SelectedThumbBoxShadowsProperty,
             SelectedThumbSizeProperty, SelectedThumbPosProperty);
-        ItemsPanelProperty.OverrideDefaultValue<Segmented>(DefaultPanel);
     }
 
     public Segmented()
@@ -154,7 +153,7 @@ public class Segmented : SelectingItemsControl,
                 }
             }
         }
-
+        
         if (!hasDefaultSelected)
         {
             SelectedIndex = 0;
@@ -207,11 +206,6 @@ public class Segmented : SelectingItemsControl,
 
     protected override Size ArrangeOverride(Size finalSize)
     {
-        if (Presenter?.Panel is SegmentedStackPanel segmentedStackPanel)
-        {
-            segmentedStackPanel.IsExpanding = IsExpanding;
-        }
-
         base.ArrangeOverride(finalSize);
         if (Transitions is null)
         {

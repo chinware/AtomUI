@@ -663,17 +663,17 @@ namespace AtomUI.Theme.Styling
 
     public static class TimelineTokenKey
     {
-        public static readonly TokenResourceKey TailColor = new TokenResourceKey("Timeline.TailColor");
-        public static readonly TokenResourceKey TailWidth = new TokenResourceKey("Timeline.TailWidth");
-        public static readonly TokenResourceKey DotBorderWidth = new TokenResourceKey("Timeline.DotBorderWidth");
-        public static readonly TokenResourceKey DotBg = new TokenResourceKey("Timeline.DotBg");
+        public static readonly TokenResourceKey IndicatorTailColor = new TokenResourceKey("Timeline.IndicatorTailColor");
+        public static readonly TokenResourceKey IndicatorTailWidth = new TokenResourceKey("Timeline.IndicatorTailWidth");
         public static readonly TokenResourceKey ItemPaddingBottom = new TokenResourceKey("Timeline.ItemPaddingBottom");
-        public static readonly TokenResourceKey RightMargin = new TokenResourceKey("Timeline.RightMargin");
-        public static readonly TokenResourceKey LeftMargin = new TokenResourceKey("Timeline.LeftMargin");
+        public static readonly TokenResourceKey ItemPaddingBottomLG = new TokenResourceKey("Timeline.ItemPaddingBottomLG");
         public static readonly TokenResourceKey LastItemContentMinHeight = new TokenResourceKey("Timeline.LastItemContentMinHeight");
-        public static readonly TokenResourceKey FontSize = new TokenResourceKey("Timeline.FontSize");
-        public static readonly TokenResourceKey ItemHeadSize = new TokenResourceKey("Timeline.ItemHeadSize");
-        public static readonly TokenResourceKey CustomHeadSize = new TokenResourceKey("Timeline.CustomHeadSize");
+        public static readonly TokenResourceKey IndicatorWidth = new TokenResourceKey("Timeline.IndicatorWidth");
+        public static readonly TokenResourceKey IndicatorDotSize = new TokenResourceKey("Timeline.IndicatorDotSize");
+        public static readonly TokenResourceKey IndicatorLeftModeMargin = new TokenResourceKey("Timeline.IndicatorLeftModeMargin");
+        public static readonly TokenResourceKey IndicatorRightModeMargin = new TokenResourceKey("Timeline.IndicatorRightModeMargin");
+        public static readonly TokenResourceKey IndicatorMiddleModeMargin = new TokenResourceKey("Timeline.IndicatorMiddleModeMargin");
+        public static readonly TokenResourceKey IndicatorDotBorderWidth = new TokenResourceKey("Timeline.IndicatorDotBorderWidth");
     }
 
     public static class TimePickerTokenKey

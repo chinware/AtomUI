@@ -53,17 +53,17 @@ public partial class DesignToken
     /// <summary>
     /// 文本行高
     /// </summary>
-    public double LineHeight { get; set; }
+    public double LineHeightRatio { get; set; }
 
     /// <summary>
     /// 大型文本行高
     /// </summary>
-    public double LineHeightLG { get; set; }
+    public double LineHeightRatioLG { get; set; }
 
     /// <summary>
     /// 小型文本行高
     /// </summary>
-    public double LineHeightSM { get; set; }
+    public double LineHeightRatioSM { get; set; }
 
     // TextHeight
     /// <summary>

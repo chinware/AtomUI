@@ -163,9 +163,9 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey FontSizeHeading3 = new TokenResourceKey("FontSizeHeading3");
         public static readonly TokenResourceKey FontSizeHeading4 = new TokenResourceKey("FontSizeHeading4");
         public static readonly TokenResourceKey FontSizeHeading5 = new TokenResourceKey("FontSizeHeading5");
-        public static readonly TokenResourceKey LineHeight = new TokenResourceKey("LineHeight");
-        public static readonly TokenResourceKey LineHeightLG = new TokenResourceKey("LineHeightLG");
-        public static readonly TokenResourceKey LineHeightSM = new TokenResourceKey("LineHeightSM");
+        public static readonly TokenResourceKey LineHeightRatio = new TokenResourceKey("LineHeightRatio");
+        public static readonly TokenResourceKey LineHeightRatioLG = new TokenResourceKey("LineHeightRatioLG");
+        public static readonly TokenResourceKey LineHeightRatioSM = new TokenResourceKey("LineHeightRatioSM");
         public static readonly TokenResourceKey FontHeight = new TokenResourceKey("FontHeight");
         public static readonly TokenResourceKey FontHeightSM = new TokenResourceKey("FontHeightSM");
         public static readonly TokenResourceKey FontHeightLG = new TokenResourceKey("FontHeightLG");

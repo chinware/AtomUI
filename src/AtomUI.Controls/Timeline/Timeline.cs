@@ -1,14 +1,12 @@
+using System.Collections.Specialized;
 using AtomUI.Data;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.Theme;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
+using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
-using Avalonia.Data;
-using Avalonia.Layout;
+using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
 
@@ -27,11 +25,11 @@ public class Timeline : ItemsControl,
     public static readonly StyledProperty<TimeLineMode> ModeProperty =
         AvaloniaProperty.Register<Timeline, TimeLineMode>(nameof(Mode), TimeLineMode.Left);
 
-    public static readonly StyledProperty<string> PendingProperty =
-        AvaloniaProperty.Register<Timeline, string>(nameof(Pending), "");
+    public static readonly StyledProperty<object?> PendingProperty =
+        AvaloniaProperty.Register<Timeline, object?>(nameof(Pending));
 
-    public static readonly StyledProperty<bool> ReverseProperty =
-        AvaloniaProperty.Register<Timeline, bool>(nameof(Reverse), false);
+    public static readonly StyledProperty<bool> IsReverseProperty =
+        AvaloniaProperty.Register<Timeline, bool>(nameof(IsReverse), false);
 
     public static readonly StyledProperty<Icon?> PendingIconProperty =
         AvaloniaProperty.Register<Timeline, Icon?>(nameof(PendingIcon));
@@ -42,16 +40,16 @@ public class Timeline : ItemsControl,
         set => SetValue(ModeProperty, value);
     }
 
-    public string Pending
+    public object? Pending
     {
         get => GetValue(PendingProperty);
         set => SetValue(PendingProperty, value);
     }
 
-    public bool Reverse
+    public bool IsReverse
     {
-        get => GetValue(ReverseProperty);
-        set => SetValue(ReverseProperty, value);
+        get => GetValue(IsReverseProperty);
+        set => SetValue(IsReverseProperty, value);
     }
 
     public Icon? PendingIcon
@@ -67,17 +65,83 @@ public class Timeline : ItemsControl,
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => TimelineToken.ID;
 
-    #endregion
+    internal WeakReference<TimelineItem>? PendingItemReference => _pendingItemReference;
+    private WeakReference<TimelineItem>? _pendingItemReference;
 
-    private TimelineItem? _pendingItem;
+    #endregion
 
     static Timeline()
     {
+        AffectsMeasure<Timeline>(ModeProperty);
+        AffectsArrange<Timeline>(IsReverseProperty);
+    }
+    
+    public Timeline()
+    {
+        this.RegisterResources();
+        Items.CollectionChanged += HandleItemsChanged;
+    }
+
+    private void HandleItemsChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        var isLabelLayout = false;
+        foreach (var item in Items)
+        {
+            if (item is TimelineItem timelineItem)
+            {
+                if (timelineItem.Label is not null)
+                {
+                    isLabelLayout = true;
+                }
+            }
+        }
+
+        foreach (var item in Items)
+        {
+            if (item is TimelineItem timelineItem)
+            {
+                timelineItem.IsLabelLayout = isLabelLayout;
+            }
+        }
     }
 
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
     {
-        return new TimelineItem();
+        return new TimelineItem()
+        {
+            IsPending = false
+        };
+    }
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        SetupPendingItem();
+    }
+
+    private void SetupPendingItem()
+    {
+        if (Pending != null)
+        {
+            if (_pendingItemReference != null)
+            {
+                if (_pendingItemReference.TryGetTarget(out var item))
+                {
+                    Items.Remove(item);
+                }
+            }
+
+            var icon = PendingIcon ?? AntDesignIconPackage.LoadingOutlined();
+            icon.LoadingAnimation = IconAnimation.Spin;
+            var pendingTimelineItem = new TimelineItem()
+            {
+                Content       = Pending,
+                IndicatorIcon = icon,
+                IsPending     = true
+            };
+            _pendingItemReference = new WeakReference<TimelineItem>(pendingTimelineItem);
+            Items.Add(pendingTimelineItem);
+        }
     }
 
     protected override bool NeedsContainerOverride(object? item, int index, out object? recycleKey)
@@ -91,116 +155,55 @@ public class Timeline : ItemsControl,
         if (element is TimelineItem timelineItem)
         {
             BindUtils.RelayBind(this, ModeProperty, timelineItem, TimelineItem.ModeProperty);
-            BindUtils.RelayBind(this, ReverseProperty, timelineItem, TimelineItem.ReverseProperty);
-            BindUtils.RelayBind(this, ItemCountProperty, timelineItem, TimelineItem.CountProperty);
+            BindUtils.RelayBind(this, IsReverseProperty, timelineItem, TimelineItem.IsReverseProperty);
         }
     }
 
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    protected override void ContainerForItemPreparedOverride(Control container, object? item, int index)
     {
-        base.OnApplyTemplate(e);
+        base.ContainerForItemPreparedOverride(container, item, index);
+        if (container is TimelineItem timelineItem)
+        {
+            var idx = IsReverse ? ItemCount - 1 - index : index;
+            timelineItem.NotifyVisualIndexChanged(this, idx);
+        }
+    }
 
-        OnReversePropertyChanged();
-        addPendingItem();
-
-        TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
-            SharedTokenKey.BorderThickness,
-            BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this));
+    protected override void ContainerIndexChangedOverride(Control container, int oldIndex, int newIndex)
+    {
+        base.ContainerIndexChangedOverride(container, oldIndex, newIndex);
+        if (container is TimelineItem timelineItem)
+        {
+            var idx = IsReverse ? ItemCount - 1 - newIndex : newIndex;
+            timelineItem.NotifyVisualIndexChanged(this, idx);
+        }
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == ReverseProperty && VisualRoot is not null)
+        if (change.Property == PendingProperty || change.Property == PendingIconProperty)
         {
-            OnReversePropertyChanged();
+            SetupPendingItem();
         }
 
-        if (change.Property == ItemCountProperty && VisualRoot is not null)
+        if (VisualRoot != null)
         {
-            OnItemCountPropertyChanged();
-        }
-
-        if (change.Property == PendingProperty && VisualRoot is not null)
-        {
-            OnPendingPropertyChanged();
-        }
-    }
-
-    private void OnPendingPropertyChanged()
-    {
-        foreach (var item in Items)
-        {
-            if (item is TimelineItem timelineItem && timelineItem.IsPending)
+            if (change.Property == IsReverseProperty)
             {
-                Items.Remove(item);
-                break;
-            }
-        }
-
-        addPendingItem();
-    }
-
-    private void addPendingItem()
-    {
-        if (!String.IsNullOrEmpty(Pending))
-        {
-            if (_pendingItem is null)
-            {
-                _pendingItem = new TimelineItem();
-                var textBlock = new TextBlock();
-
-                if (PendingIcon is null)
-                {
-                    PendingIcon                     = AntDesignIconPackage.LoadingOutlined();
-                    PendingIcon.Width               = 10;
-                    PendingIcon.Height              = 10;
-                    PendingIcon.LoadingAnimation    = IconAnimation.Spin;
-                    PendingIcon.VerticalAlignment   = VerticalAlignment.Top;
-                    PendingIcon.HorizontalAlignment = HorizontalAlignment.Center;
-                }
-
-                _pendingItem.DotIcon   = PendingIcon;
-                _pendingItem.IsPending = true;
-                _pendingItem.Content   = textBlock;
-                BindUtils.RelayBind(this, PendingProperty, textBlock, TextBlock.TextProperty);
-            }
-
-            if (Reverse)
-            {
-                Items.Insert(0, _pendingItem);
-            }
-            else
-            {
-                Items.Add(_pendingItem);
+                NotifyItemsVisualIndex();
             }
         }
     }
 
-    private void OnItemCountPropertyChanged()
+    private void NotifyItemsVisualIndex()
     {
-    }
-
-    private void OnReversePropertyChanged()
-    {
-        var items = Items.Cast<object>().ToList();
-        items.Reverse();
-        Items.Clear();
-        foreach (var item in items)
+        for (int i = 0; i < ItemCount; i++)
         {
-            Items.Add(item);
-            if (item is TimelineItem timelineItem)
+            if (ContainerFromIndex(i) is TimelineItem timelineItem)
             {
-                timelineItem.Index = Items.IndexOf(item);
-            }
-        }
-
-        foreach (var item in items)
-        {
-            if (item is TimelineItem timelineItem)
-            {
-                timelineItem.Index = Items.IndexOf(item);
+                var idx = IsReverse ? ItemCount - 1 - i : i;
+                timelineItem.NotifyVisualIndexChanged(this, idx);
             }
         }
     }

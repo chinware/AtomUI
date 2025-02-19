@@ -86,9 +86,9 @@ internal static class CalculatorUtils
         designToken.FontSizeHeading4 = fontSizes[3];
         designToken.FontSizeHeading5 = fontSizes[2];
 
-        designToken.LineHeight   = lineHeight;
-        designToken.LineHeightLG = lineHeightLG;
-        designToken.LineHeightSM = lineHeightSM;
+        designToken.LineHeightRatio   = lineHeight;
+        designToken.LineHeightRatioLG = lineHeightLG;
+        designToken.LineHeightRatioSM = lineHeightSM;
 
         designToken.FontHeight   = Math.Round(lineHeight * fontSizeMD);
         designToken.FontHeightLG = Math.Round(lineHeightLG * fontSizeLG);
