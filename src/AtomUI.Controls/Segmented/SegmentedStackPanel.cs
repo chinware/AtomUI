@@ -5,14 +5,18 @@ namespace AtomUI.Controls;
 
 internal class SegmentedStackPanel : Panel
 {
+    #region 公共属性定义
+
     public static readonly StyledProperty<bool> IsExpandingProperty =
-        AvaloniaProperty.Register<Segmented, bool>(nameof(IsExpanding));
+        AvaloniaProperty.Register<SegmentedStackPanel, bool>(nameof(IsExpanding));
 
     public bool IsExpanding
     {
         get => GetValue(IsExpandingProperty);
         set => SetValue(IsExpandingProperty, value);
     }
+    
+    #endregion
 
     protected override Size MeasureOverride(Size availableSize)
     {

@@ -116,9 +116,6 @@ public class Segmented : SelectingItemsControl,
 
     #endregion
 
-    private static readonly FuncTemplate<Panel?> DefaultPanel =
-        new(() => new SegmentedStackPanel());
-
     static Segmented()
     {
         AffectsMeasure<Segmented>(IsExpandingProperty, SizeTypeProperty);
