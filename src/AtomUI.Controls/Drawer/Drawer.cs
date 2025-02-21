@@ -141,7 +141,7 @@ public class Drawer : TemplatedControl
         }
         
         var layer = this.GetLayer();
-        layer?.BeginRemovingAdorner(_container, 1000, () => IsOpen == false);
+        layer?.BeginRemovingAdorner(_container, TimeSpan.FromMilliseconds(1000), () => IsOpen == false);
         _container.SetIsClosing(true);
     }
 

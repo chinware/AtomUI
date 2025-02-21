@@ -301,7 +301,7 @@ public class TreeViewItem : AvaloniaTreeItem
 
     private bool _initialized;
     private ContentPresenter? _headerPresenter;
-    private Border? _frameDecorator;
+    private Border? _Frame;
     private ContentPresenter? _iconPresenter;
     private NodeSwitcherButton? _switcherButton;
     private Rect _effectiveBgRect;
@@ -498,15 +498,15 @@ public class TreeViewItem : AvaloniaTreeItem
         SetNodeSwitcherIcons();
         _headerPresenter = e.NameScope.Find<ContentPresenter>(TreeViewItemTheme.HeaderPresenterPart);
         _iconPresenter   = e.NameScope.Find<ContentPresenter>(TreeViewItemTheme.IconPresenterPart);
-        _frameDecorator  = e.NameScope.Find<Border>(TreeViewItemTheme.FrameDecoratorPart);
+        _Frame  = e.NameScope.Find<Border>(TreeViewItemTheme.FramePart);
         _switcherButton  = e.NameScope.Find<NodeSwitcherButton>(TreeViewItemTheme.NodeSwitcherButtonPart);
         
         SetupSwitcherButtonIconMode();
 
-        if (_frameDecorator is not null)
+        if (_Frame is not null)
         {
-            _frameDecorator.PointerEntered += HandleFrameDecoratorEntered;
-            _frameDecorator.PointerExited  += HandleFrameDecoratorExited;
+            _Frame.PointerEntered += HandleFrameEntered;
+            _Frame.PointerExited  += HandleFrameExited;
         }
 
         if (_headerPresenter is not null)
@@ -543,7 +543,7 @@ public class TreeViewItem : AvaloniaTreeItem
 
     private void CalculateEffectiveBgRect()
     {
-        if (_frameDecorator is null)
+        if (_Frame is null)
         {
             return;
         }
@@ -557,13 +557,13 @@ public class TreeViewItem : AvaloniaTreeItem
             {
                 offset       = _iconPresenter.TranslatePoint(new Point(0, 0), this) ?? default;
                 targetWidth  = _iconPresenter.Bounds.Width + _headerPresenter?.Bounds.Width ?? 0d;
-                targetHeight = _frameDecorator.Bounds.Height;
+                targetHeight = _Frame.Bounds.Height;
             }
             else if (_headerPresenter is not null)
             {
                 offset       = _headerPresenter.TranslatePoint(new Point(0, 0), this) ?? default;
                 targetWidth  = _headerPresenter.Bounds.Width;
-                targetHeight = _frameDecorator.Bounds.Height;
+                targetHeight = _Frame.Bounds.Height;
             }
         }
 
@@ -717,7 +717,7 @@ public class TreeViewItem : AvaloniaTreeItem
         }
     }
 
-    private void HandleFrameDecoratorEntered(object? sender, PointerEventArgs? args)
+    private void HandleFrameEntered(object? sender, PointerEventArgs? args)
     {
         if (NodeHoverMode != TreeItemHoverMode.WholeLine)
         {
@@ -727,7 +727,7 @@ public class TreeViewItem : AvaloniaTreeItem
         PseudoClasses.Set(TreeNodeHoverPC, true);
     }
 
-    private void HandleFrameDecoratorExited(object? sender, PointerEventArgs args)
+    private void HandleFrameExited(object? sender, PointerEventArgs args)
     {
         if (NodeHoverMode != TreeItemHoverMode.WholeLine)
         {
@@ -796,9 +796,9 @@ public class TreeViewItem : AvaloniaTreeItem
                 includeChildren ? Bounds.Height : _headerPresenter?.Bounds.Height ?? default));
     }
 
-    internal Thickness FrameDecoratorMargin()
+    internal Thickness FrameMargin()
     {
-        return _frameDecorator?.Margin ?? default;
+        return _Frame?.Margin ?? default;
     }
 
     internal bool IsInDragBounds(Point point)
@@ -823,6 +823,6 @@ public class TreeViewItem : AvaloniaTreeItem
 
     internal DragPreviewAdorner BuildPreviewAdorner()
     {
-        return new DragPreviewAdorner(_frameDecorator!);
+        return new DragPreviewAdorner(_Frame!);
     }
 }

@@ -37,7 +37,7 @@ internal class MoveDownInMotion : AbstractMotion
             var transformSetter = new Setter
             {
                 Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildTranslateScaleAndTransform(1.0, 0.01, 0.0, Offset)
+                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, Offset)
             };
             startFrame.Setters.Add(transformSetter);
         }
@@ -174,7 +174,7 @@ internal class MoveDownOutMotion : AbstractMotion
             var transformSetter = new Setter
             {
                 Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildTranslateScaleAndTransform(1.0, 0.0, 0.0, Offset)
+                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, Offset)
             };
             endFrame.Setters.Add(transformSetter);
         }
@@ -312,13 +312,6 @@ internal class MoveUpOutMotion : AbstractMotion
             };
             startFrame.Setters.Add(opacitySetter);
 
-            var translateYSetter = new Setter
-            {
-                Property = TranslateTransform.YProperty,
-                Value    = 0.0
-            };
-            startFrame.Setters.Add(translateYSetter);
-
             var transformSetter = new Setter
             {
                 Property = MotionActorControl.MotionTransformProperty,
@@ -366,7 +359,7 @@ internal class MoveUpOutMotion : AbstractMotion
             var transformSetter = new Setter
             {
                 Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildTranslateScaleAndTransform(1.0, 0.0, 0.0, -Offset)
+                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, -Offset)
             };
 
             endFrame.Setters.Add(transformSetter);
@@ -414,7 +407,7 @@ internal class MoveLeftInMotion : AbstractMotion
             var transformSetter = new Setter
             {
                 Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildTranslateScaleAndTransform(1.0, 0.01, -Offset, 0.0)
+                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, -Offset, 0.0)
             };
 
             startFrame.Setters.Add(transformSetter);
@@ -552,7 +545,7 @@ internal class MoveLeftOutMotion : AbstractMotion
             var transformSetter = new Setter
             {
                 Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildTranslateScaleAndTransform(1.0, 0.0, -Offset, 0.0)
+                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, -Offset, 0.0)
             };
             endFrame.Setters.Add(transformSetter);
         }
@@ -600,7 +593,7 @@ internal class MoveRightInMotion : AbstractMotion
             var transformSetter = new Setter
             {
                 Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildTranslateScaleAndTransform(1.0, 0.01, Offset, 0.0)
+                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, Offset, 0.0)
             };
             startFrame.Setters.Add(transformSetter);
         }
@@ -736,7 +729,7 @@ internal class MoveRightOutMotion : AbstractMotion
             var transformSetter = new Setter
             {
                 Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildTranslateScaleAndTransform(1.0, 0.0, Offset, 0.0)
+                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, Offset, 0.0)
             };
             endFrame.Setters.Add(transformSetter);
         }

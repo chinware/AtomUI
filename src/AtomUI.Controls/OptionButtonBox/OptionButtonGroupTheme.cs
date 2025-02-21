@@ -12,7 +12,7 @@ namespace AtomUI.Controls;
 [ControlThemeProvider]
 internal class OptionButtonGroupTheme : BaseControlTheme
 {
-    public const string FrameDecoratorPart = "PART_FrameDecorator";
+    public const string FramePart = "PART_Frame";
     public const string ItemsPresenterPart = "PART_ItemsPresenter";
     
     public OptionButtonGroupTheme() : base(typeof(OptionButtonGroup))
@@ -23,9 +23,9 @@ internal class OptionButtonGroupTheme : BaseControlTheme
     {
         return new FuncControlTemplate<OptionButtonGroup>((group, scope) =>
         {
-            var frameDecorator = new Border
+            var Frame = new Border
             {
-                Name         = FrameDecoratorPart,
+                Name         = FramePart,
                 ClipToBounds = true
             };
             var itemsPresenter = new ItemsPresenter
@@ -33,18 +33,18 @@ internal class OptionButtonGroupTheme : BaseControlTheme
                 Name = ItemsPresenterPart
             };
             itemsPresenter.RegisterInNameScope(scope);
-            frameDecorator.Child = itemsPresenter;
+            Frame.Child = itemsPresenter;
 
             CreateTemplateParentBinding(itemsPresenter, ItemsPresenter.ItemsPanelProperty,
                 ItemsControl.ItemsPanelProperty);
-            CreateTemplateParentBinding(frameDecorator, Border.BorderThicknessProperty,
+            CreateTemplateParentBinding(Frame, Border.BorderThicknessProperty,
                 OptionButtonGroup.EffectiveBorderThicknessProperty);
-            CreateTemplateParentBinding(frameDecorator, Border.BorderBrushProperty,
+            CreateTemplateParentBinding(Frame, Border.BorderBrushProperty,
                 TemplatedControl.BorderBrushProperty);
-            CreateTemplateParentBinding(frameDecorator, Border.CornerRadiusProperty,
+            CreateTemplateParentBinding(Frame, Border.CornerRadiusProperty,
                 TemplatedControl.CornerRadiusProperty);
 
-            return frameDecorator;
+            return Frame;
         });
     }
     

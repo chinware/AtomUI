@@ -145,7 +145,7 @@ public partial class DesignToken : AbstractDesignToken
         ControlItemBgActiveDisabled = ColorFill;
         ColorControlOutline         = ColorUtils.AlphaColor(ColorPrimaryBg, ColorBgContainer);
 
-        FontWeightStrong    = 600;
+        FontWeightStrong    = FontWeight.SemiBold;
         OpacityLoading      = 0.65;
         LinkDecoration      = null;
         LinkHoverDecoration = null;
@@ -204,9 +204,7 @@ public partial class DesignToken : AbstractDesignToken
             Blur    = 16,
             Spread  = 0,
             Color   = ColorUtils.FromRgbF(0.08, 0, 0, 0)
-        }, new[]
-        {
-            new BoxShadow
+        }, [new BoxShadow
             {
                 OffsetX = 0,
                 OffsetY = 3,
@@ -221,8 +219,7 @@ public partial class DesignToken : AbstractDesignToken
                 Blur    = 28,
                 Spread  = 8,
                 Color   = ColorUtils.FromRgbF(0.05, 0, 0, 0)
-            }
-        });
+            }]);
 
         BoxShadowsSecondary = new BoxShadows(new BoxShadow
         {
@@ -231,9 +228,7 @@ public partial class DesignToken : AbstractDesignToken
             Blur    = 16,
             Spread  = 0,
             Color   = ColorUtils.FromRgbF(0.10, 0, 0, 0)
-        }, new[]
-        {
-            new BoxShadow
+        }, [new BoxShadow
             {
                 OffsetX = 0,
                 OffsetY = 3,
@@ -248,8 +243,7 @@ public partial class DesignToken : AbstractDesignToken
                 Blur    = 28,
                 Spread  = 8,
                 Color   = ColorUtils.FromRgbF(0.07, 0, 0, 0)
-            }
-        });
+            }]);
 
         BoxShadowsTertiary = new BoxShadows(new BoxShadow
         {
@@ -258,9 +252,7 @@ public partial class DesignToken : AbstractDesignToken
             Blur    = 2,
             Spread  = 0,
             Color   = ColorUtils.FromRgbF(0.03, 0, 0, 0)
-        }, new[]
-        {
-            new BoxShadow
+        }, [new BoxShadow
             {
                 OffsetX = 0,
                 OffsetY = 1,
@@ -275,7 +267,6 @@ public partial class DesignToken : AbstractDesignToken
                 Blur    = 4,
                 Spread  = 0,
                 Color   = ColorUtils.FromRgbF(0.02, 0, 0, 0)
-            }
-        });
+            }]);
     }
 }

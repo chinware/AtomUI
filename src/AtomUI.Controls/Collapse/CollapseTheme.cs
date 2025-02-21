@@ -11,7 +11,7 @@ namespace AtomUI.Controls;
 [ControlThemeProvider]
 internal class CollapseTheme : BaseControlTheme
 {
-    public const string FrameDecoratorPart = "PART_FrameDecorator";
+    public const string FramePart = "PART_Frame";
     public const string ItemsPresenterPart = "PART_ItemsPresenter";
 
     public CollapseTheme() : base(typeof(Collapse))
@@ -22,9 +22,9 @@ internal class CollapseTheme : BaseControlTheme
     {
         return new FuncControlTemplate<Collapse>((collapse, scope) =>
         {
-            var frameDecorator = new Border
+            var Frame = new Border
             {
-                Name         = FrameDecoratorPart,
+                Name         = FramePart,
                 ClipToBounds = true
             };
             var itemsPresenter = new ItemsPresenter
@@ -32,18 +32,18 @@ internal class CollapseTheme : BaseControlTheme
                 Name = ItemsPresenterPart
             };
             itemsPresenter.RegisterInNameScope(scope);
-            frameDecorator.Child = itemsPresenter;
+            Frame.Child = itemsPresenter;
 
             CreateTemplateParentBinding(itemsPresenter, ItemsPresenter.ItemsPanelProperty,
                 ItemsControl.ItemsPanelProperty);
-            CreateTemplateParentBinding(frameDecorator, Border.BorderThicknessProperty,
+            CreateTemplateParentBinding(Frame, Border.BorderThicknessProperty,
                 Collapse.EffectiveBorderThicknessProperty);
-            CreateTemplateParentBinding(frameDecorator, Border.BorderBrushProperty,
+            CreateTemplateParentBinding(Frame, Border.BorderBrushProperty,
                 TemplatedControl.BorderBrushProperty);
-            CreateTemplateParentBinding(frameDecorator, Border.CornerRadiusProperty,
+            CreateTemplateParentBinding(Frame, Border.CornerRadiusProperty,
                 TemplatedControl.CornerRadiusProperty);
 
-            return frameDecorator;
+            return Frame;
         });
     }
 

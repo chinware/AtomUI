@@ -31,7 +31,7 @@ internal class SlideUpInMotion : AbstractMotion
             var scaleYSetter = new Setter
             {
                 Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildScaleYTransform(0.01) // // 不知道为啥设置成 0.0, 子元素渲染不正常
+                Value    = BuildScaleYTransform(0.01) // 不知道为啥设置成 0.0, 子元素渲染不正常
             };
             startFrame.Setters.Add(scaleYSetter);
         }
@@ -225,7 +225,7 @@ internal class SlideDownOutMotion : AbstractMotion
             var scaleYSetter = new Setter
             {
                 Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildScaleYTransform(0.0)
+                Value    = BuildScaleYTransform(0.8)
             };
             endFrame.Setters.Add(scaleYSetter);
         }
@@ -341,7 +341,7 @@ internal class SlideLeftOutMotion : AbstractMotion
             var scaleXSetter = new Setter
             {
                 Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildScaleXTransform(0.0)
+                Value    = BuildScaleXTransform(0.8)
             };
             endFrame.Setters.Add(scaleXSetter);
         }
@@ -358,64 +358,6 @@ internal class SlideRightInMotion : AbstractMotion
                               Easing? easing = null,
                               FillMode fillMode = FillMode.Forward)
         : base(duration, easing ?? new CubicEaseOut(), fillMode)
-    {
-    }
-
-    protected override void Configure()
-    {
-        var animation = CreateAnimation();
-        var startFrame = new KeyFrame
-        {
-            Cue = new Cue(0.0)
-        };
-        {
-            var opacitySetter = new Setter
-            {
-                Property = Visual.OpacityProperty,
-                Value    = 1.0
-            };
-            startFrame.Setters.Add(opacitySetter);
-
-            var scaleXSetter = new Setter
-            {
-                Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildScaleXTransform(1.0)
-            };
-            startFrame.Setters.Add(scaleXSetter);
-        }
-        animation.Children.Add(startFrame);
-
-        var endFrame = new KeyFrame
-        {
-            Cue = new Cue(1.0)
-        };
-        {
-            var opacitySetter = new Setter
-            {
-                Property = Visual.OpacityProperty,
-                Value    = 0.0
-            };
-            endFrame.Setters.Add(opacitySetter);
-            var scaleXSetter = new Setter
-            {
-                Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildScaleXTransform(0.0)
-            };
-            endFrame.Setters.Add(scaleXSetter);
-        }
-        animation.Children.Add(endFrame);
-        RenderTransformOrigin = new RelativePoint(1.0, 0.0, RelativeUnit.Relative);
-
-        Animations.Add(animation);
-    }
-}
-
-internal class SlideRightOutMotion : AbstractMotion
-{
-    public SlideRightOutMotion(TimeSpan duration,
-                               Easing? easing = null,
-                               FillMode fillMode = FillMode.Forward)
-        : base(duration, easing ?? new CubicEaseIn(), fillMode)
     {
     }
 
@@ -458,6 +400,64 @@ internal class SlideRightOutMotion : AbstractMotion
             {
                 Property = MotionActorControl.MotionTransformProperty,
                 Value    = BuildScaleXTransform(1.0)
+            };
+            endFrame.Setters.Add(scaleXSetter);
+        }
+        animation.Children.Add(endFrame);
+        RenderTransformOrigin = new RelativePoint(1.0, 0.0, RelativeUnit.Relative);
+
+        Animations.Add(animation);
+    }
+}
+
+internal class SlideRightOutMotion : AbstractMotion
+{
+    public SlideRightOutMotion(TimeSpan duration,
+                               Easing? easing = null,
+                               FillMode fillMode = FillMode.Forward)
+        : base(duration, easing ?? new CubicEaseIn(), fillMode)
+    {
+    }
+
+    protected override void Configure()
+    {
+        var animation = CreateAnimation();
+        var startFrame = new KeyFrame
+        {
+            Cue = new Cue(0.0)
+        };
+        {
+            var opacitySetter = new Setter
+            {
+                Property = Visual.OpacityProperty,
+                Value    = 1.0
+            };
+            startFrame.Setters.Add(opacitySetter);
+
+            var scaleXSetter = new Setter
+            {
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildScaleXTransform(1.0)
+            };
+            startFrame.Setters.Add(scaleXSetter);
+        }
+        animation.Children.Add(startFrame);
+
+        var endFrame = new KeyFrame
+        {
+            Cue = new Cue(1.0)
+        };
+        {
+            var opacitySetter = new Setter
+            {
+                Property = Visual.OpacityProperty,
+                Value    = 0.0
+            };
+            endFrame.Setters.Add(opacitySetter);
+            var scaleXSetter = new Setter
+            {
+                Property = MotionActorControl.MotionTransformProperty,
+                Value    = BuildScaleXTransform(0.8)
             };
             endFrame.Setters.Add(scaleXSetter);
         }

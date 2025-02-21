@@ -13,6 +13,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Input;
+using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
 
@@ -202,16 +203,21 @@ public class Expander : AvaloniaExpander,
     private bool _animating;
     private bool _tempAnimationDisabled = false;
 
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, SharedTokenKey.MotionDurationSlow);
+        TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+            SharedTokenKey.BorderThickness,
+            BindingPriority.Template, new RenderScaleAwareThicknessConfigure(this));
+    }
+
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
         _motionActor     = e.NameScope.Find<MotionActorControl>(ExpanderTheme.ContentMotionActorPart);
         _headerDecorator = e.NameScope.Find<Border>(ExpanderTheme.HeaderDecoratorPart);
         _expandButton    = e.NameScope.Find<IconButton>(ExpanderTheme.ExpandButtonPart);
-        TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, SharedTokenKey.MotionDurationSlow);
-        TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
-            SharedTokenKey.BorderThickness,
-            BindingPriority.Template, new RenderScaleAwareThicknessConfigure(this));
         SetupEffectiveBorderThickness();
         SetupExpanderBorderThickness();
         SetupIconButton();

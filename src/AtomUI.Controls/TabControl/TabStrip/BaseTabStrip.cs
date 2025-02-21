@@ -85,7 +85,7 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
 
     #endregion
 
-    private Border? _frameDecorator;
+    private Border? _Frame;
 
     static BaseTabStrip()
     {
@@ -102,13 +102,13 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _frameDecorator = e.NameScope.Find<Border>(BaseTabStripTheme.FrameDecoratorPart);
+        _Frame = e.NameScope.Find<Border>(BaseTabStripTheme.FramePart);
         SetupBorderBinding();
     }
 
     private void SetupBorderBinding()
     {
-        if (_frameDecorator is not null)
+        if (_Frame is not null)
         {
             TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
                 SharedTokenKey.BorderThickness, BindingPriority.Template,

@@ -50,28 +50,41 @@ internal class IconButtonTheme : BaseControlTheme
         commonStyle.Add(IconButton.CursorProperty, new SetterValueFactory<Cursor>(() => new Cursor(StandardCursorType.Hand)));
         {
             var contentStyle = new Style(selector => selector.Nesting().Template().Name(IconContentPart));
-            contentStyle.Add(ContentPresenter.BackgroundProperty, SharedTokenKey.ColorTransparent);
+            contentStyle.Add(ContentPresenter.BackgroundProperty, SharedTokenKey.ColorBgContainer);
             commonStyle.Add(contentStyle);
         }
         {
-            var enableMotionStyle = new Style(selector => selector.Nesting().PropertyEquals(IconButton.IsMotionEnabledProperty, true));
+            var isMotionEnabledStyle = new Style(selector => selector.Nesting().PropertyEquals(IconButton.IsMotionEnabledProperty, true));
             var contentStyle = new Style(selector => selector.Nesting().Template().Name(IconContentPart));
             contentStyle.Add(ContentPresenter.TransitionsProperty, new SetterValueFactory<Transitions>(() => new Transitions()
             {
                 AnimationUtils.CreateTransition<SolidColorBrushTransition>(ContentPresenter.BackgroundProperty)
             }));
-            enableMotionStyle.Add(contentStyle);
-            commonStyle.Add(enableMotionStyle);
+            isMotionEnabledStyle.Add(contentStyle);
+            commonStyle.Add(isMotionEnabledStyle);
         }
-        var enableHoverBgStyle = new Style(selector =>
-            selector.Nesting().PropertyEquals(IconButton.IsEnableHoverEffectProperty, true)
-                    .Class(StdPseudoClass.PointerOver));
+
+        var enableHoverStyle = new Style(selector =>
+            selector.Nesting().PropertyEquals(IconButton.IsEnableHoverEffectProperty, true));
         {
-            var contentStyle = new Style(selector => selector.Nesting().Template().Name(IconContentPart));
-            contentStyle.Add(ContentPresenter.BackgroundProperty, SharedTokenKey.ColorBgTextHover);
-            enableHoverBgStyle.Add(contentStyle);
+            var hoverBgStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
+            {
+                var contentStyle = new Style(selector => selector.Nesting().Template().Name(IconContentPart));
+                contentStyle.Add(ContentPresenter.BackgroundProperty, SharedTokenKey.ColorBgTextHover);
+                hoverBgStyle.Add(contentStyle);
+            }
+            enableHoverStyle.Add(hoverBgStyle);
+            
+            var pressedBgStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Pressed));
+            {
+                var contentStyle = new Style(selector => selector.Nesting().Template().Name(IconContentPart));
+                contentStyle.Add(ContentPresenter.BackgroundProperty, SharedTokenKey.ColorBgTextActive);
+                pressedBgStyle.Add(contentStyle);
+            }
+            enableHoverStyle.Add(pressedBgStyle);
         }
-        commonStyle.Add(enableHoverBgStyle);
+        
+        commonStyle.Add(enableHoverStyle);
         Add(commonStyle);
     }
 

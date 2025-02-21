@@ -34,7 +34,9 @@ internal class ComboBoxItemTheme : BaseControlTheme
             };
 
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty,
-                ContentControl.ContentProperty, BindingMode.Default, new FuncValueConverter<object?, object?>(
+                ContentControl.ContentProperty,
+                BindingMode.Default,
+                new FuncValueConverter<object?, object?>(
                     o =>
                     {
                         if (o is string str)

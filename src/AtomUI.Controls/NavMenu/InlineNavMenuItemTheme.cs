@@ -95,7 +95,8 @@ internal class InlineNavMenuItemTheme : BaseNavMenuItemTheme
             Indent = navMenuItem.InlineItemIndentUnit
         };
         CreateTemplateParentBinding(infoGrid, Grid.MarginProperty,
-            NavMenuItem.LevelProperty, BindingMode.OneWay,
+            NavMenuItem.LevelProperty, 
+            BindingMode.OneWay,
             indentConverter);
 
         return infoGrid;

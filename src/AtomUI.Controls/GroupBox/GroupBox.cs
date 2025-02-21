@@ -99,7 +99,7 @@ public class GroupBox : ContentControl,
 
     private readonly BorderRenderHelper _borderRenderHelper;
     private Control? _headerContentContainer;
-    private Border? _frameDecorator;
+    private Border? _Frame;
     private Rect _borderBounds;
 
     static GroupBox()
@@ -126,7 +126,7 @@ public class GroupBox : ContentControl,
     {
         base.OnApplyTemplate(e);
         _headerContentContainer = e.NameScope.Find<Decorator>(GroupBoxTheme.HeaderContentPart);
-        _frameDecorator         = e.NameScope.Find<Border>(GroupBoxTheme.FrameDecoratorPart);
+        _Frame         = e.NameScope.Find<Border>(GroupBoxTheme.FramePart);
         if (HeaderIcon is not null)
         {
             TokenResourceBinder.CreateTokenBinding(HeaderIcon, Icon.NormalFilledBrushProperty,
@@ -136,12 +136,12 @@ public class GroupBox : ContentControl,
 
     protected override Size MeasureOverride(Size availableSize)
     {
-        return LayoutHelper.MeasureChild(_frameDecorator, availableSize, default, BorderThickness);
+        return LayoutHelper.MeasureChild(_Frame, availableSize, default, BorderThickness);
     }
 
     protected override Size ArrangeOverride(Size finalSize)
     {
-        var size = LayoutHelper.ArrangeChild(_frameDecorator, finalSize, Padding, BorderThickness);
+        var size = LayoutHelper.ArrangeChild(_Frame, finalSize, Padding, BorderThickness);
         if (_headerContentContainer is not null)
         {
             var headerOffset = _headerContentContainer.TranslatePoint(new Point(0, 0), this) ?? default;

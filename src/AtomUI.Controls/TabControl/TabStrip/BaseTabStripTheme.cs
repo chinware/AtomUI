@@ -10,7 +10,7 @@ namespace AtomUI.Controls;
 
 internal class BaseTabStripTheme : BaseControlTheme
 {
-    public const string FrameDecoratorPart = "PART_FrameDecorator";
+    public const string FramePart = "PART_Frame";
     public const string ItemsPresenterPart = "PART_ItemsPresenter";
     public const string TabsContainerPart = "PART_TabsContainer";
     public const string AlignWrapperPart = "PART_AlignWrapper";
@@ -23,13 +23,13 @@ internal class BaseTabStripTheme : BaseControlTheme
     {
         return new FuncControlTemplate<BaseTabStrip>((strip, scope) =>
         {
-            var frameDecorator = new Border
+            var Frame = new Border
             {
-                Name = FrameDecoratorPart
+                Name = FramePart
             };
-            frameDecorator.RegisterInNameScope(scope);
-            NotifyBuildControlTemplate(strip, scope, frameDecorator);
-            return frameDecorator;
+            Frame.RegisterInNameScope(scope);
+            NotifyBuildControlTemplate(strip, scope, Frame);
+            return Frame;
         });
     }
 

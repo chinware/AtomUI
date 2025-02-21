@@ -34,7 +34,7 @@ public class AtomLayer : Canvas
         return element.GetValue(BoundsAnchorProperty);
     }
 
-    private static void SetBoundsAnchor(Visual element, Visual? value)
+    public static void SetBoundsAnchor(Visual element, Visual? value)
     {
         element.SetValue(BoundsAnchorProperty, value);
     }
@@ -132,14 +132,14 @@ public class AtomLayer : Canvas
             AddChild(adorner);
             return;
         }
-
+        
         MonitorTargetBounds(target);
 
         target.AttachedToVisualTree   -= OnTargetOnAttachedToVisualTree;
         target.DetachedFromVisualTree -= OnTargetOnDetachedFromVisualTree;
         target.AttachedToVisualTree   += OnTargetOnAttachedToVisualTree;
         target.DetachedFromVisualTree += OnTargetOnDetachedFromVisualTree;
-
+        
         SetTarget(adorner, target);
         AddChild(adorner);
         UpdateLocation(target, adorner);
@@ -160,10 +160,10 @@ public class AtomLayer : Canvas
         RemoveChild(adorner);
     }
 
-    public async void BeginRemovingAdorner(Control adorner, int millisecondsToConfirm, Func<bool> confirm)
+    public async Task BeginRemovingAdorner(Control adorner, TimeSpan millisecondsToConfirm, Func<bool>? confirm = null)
     {
         await Task.Delay(millisecondsToConfirm);
-        if (confirm())
+        if ((confirm != null && confirm()) || confirm == null)
         {
             RemoveChild(adorner);
         }
@@ -242,7 +242,7 @@ public class AtomLayer : Canvas
         {
             return;
         }
-
+        
         var adorners = new List<Control>();
         for (var i = 0; i < _detachedAdorners.Count; i++)
         {
@@ -253,7 +253,7 @@ public class AtomLayer : Canvas
                 _detachedAdorners.RemoveAt(i--);
             }
         }
-
+        
         adorners = adorners.Where(a => Children.Contains(a) == false && GetTarget(a) == target).ToList();
         foreach (var adorner in adorners)
         {
@@ -340,4 +340,5 @@ public class AtomLayer : Canvas
     }
 
     #endregion
+    
 }

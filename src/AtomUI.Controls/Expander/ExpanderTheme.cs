@@ -24,7 +24,7 @@ namespace AtomUI.Controls;
 [ControlThemeProvider]
 internal class ExpanderTheme : BaseControlTheme
 {
-    public const string FrameDecoratorPart = "PART_FrameDecorator";
+    public const string FramePart = "PART_Frame";
     public const string MainLayoutPart = "PART_MainLayout";
     public const string ExpandButtonPart = "PART_ExpandButton";
     public const string HeaderLayoutTransformPart = "PART_HeaderLayoutTransform";
@@ -43,13 +43,13 @@ internal class ExpanderTheme : BaseControlTheme
     {
         return new FuncControlTemplate<Expander>((expander, scope) =>
         {
-            var frameDecorator = new Border
+            var Frame = new Border
             {
-                Name         = FrameDecoratorPart,
+                Name         = FramePart,
                 ClipToBounds = true
             };
 
-            CreateTemplateParentBinding(frameDecorator, Border.BorderThicknessProperty,
+            CreateTemplateParentBinding(Frame, Border.BorderThicknessProperty,
                 Expander.EffectiveBorderThicknessProperty);
 
             var mainLayout = new DockPanel
@@ -59,7 +59,7 @@ internal class ExpanderTheme : BaseControlTheme
             };
 
             BuildHeader(mainLayout, scope);
-            var motionActor = new MotionActorControl()
+            var motionActor = new MotionActorControl
             {
                 Name         = ContentMotionActorPart,
                 ClipToBounds = true
@@ -81,8 +81,8 @@ internal class ExpanderTheme : BaseControlTheme
             motionActor.RegisterInNameScope(scope);
             contentPresenter.RegisterInNameScope(scope);
 
-            frameDecorator.Child = mainLayout;
-            return frameDecorator;
+            Frame.Child = mainLayout;
+            return Frame;
         });
     }
 
@@ -142,7 +142,8 @@ internal class ExpanderTheme : BaseControlTheme
         Grid.SetColumn(headerPresenter, 1);
         CreateTemplateParentBinding(headerPresenter, ContentPresenter.ContentProperty,
             HeaderedContentControl.HeaderProperty,
-            BindingMode.Default, new FuncValueConverter<object?, object?>(
+            BindingMode.Default,
+            new FuncValueConverter<object?, object?>(
                 o =>
                 {
                     if (o is string str)
@@ -196,10 +197,10 @@ internal class ExpanderTheme : BaseControlTheme
     {
         var commonStyle = new Style(selector => selector.Nesting());
 
-        var frameDecoratorStyle = new Style(selector => selector.Nesting().Template().Name(FrameDecoratorPart));
-        frameDecoratorStyle.Add(Border.BorderBrushProperty, SharedTokenKey.ColorBorder);
-        frameDecoratorStyle.Add(Border.CornerRadiusProperty, ExpanderTokenKey.ExpanderBorderRadius);
-        commonStyle.Add(frameDecoratorStyle);
+        var FrameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
+        FrameStyle.Add(Border.BorderBrushProperty, SharedTokenKey.ColorBorder);
+        FrameStyle.Add(Border.CornerRadiusProperty, ExpanderTokenKey.ExpanderBorderRadius);
+        commonStyle.Add(FrameStyle);
 
         {
             var headerDecoratorStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));

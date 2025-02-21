@@ -84,7 +84,8 @@ internal class AddOnDecoratedBoxTheme : BaseControlTheme
             AddOnDecoratedBox.LeftAddOnCornerRadiusProperty);
         CreateTemplateParentBinding(leftAddOnContentPresenter, Visual.IsVisibleProperty,
             AddOnDecoratedBox.LeftAddOnProperty,
-            BindingMode.Default, ObjectConverters.IsNotNull);
+            BindingMode.Default,
+            ObjectConverters.IsNotNull);
         leftAddOnContentPresenter.RegisterInNameScope(scope);
 
         TokenResourceBinder.CreateTokenBinding(leftAddOnContentPresenter, ContentPresenter.BackgroundProperty,
@@ -127,7 +128,8 @@ internal class AddOnDecoratedBoxTheme : BaseControlTheme
             AddOnDecoratedBox.RightAddOnCornerRadiusProperty);
         CreateTemplateParentBinding(rightAddOnContentPresenter, Visual.IsVisibleProperty,
             AddOnDecoratedBox.RightAddOnProperty,
-            BindingMode.Default, ObjectConverters.IsNotNull);
+            BindingMode.Default, 
+            ObjectConverters.IsNotNull);
 
         TokenResourceBinder.CreateTokenBinding(rightAddOnContentPresenter, ContentPresenter.BackgroundProperty,
             AddOnDecoratedBoxTokenKey.AddonBg);

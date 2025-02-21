@@ -13,7 +13,7 @@ namespace AtomUI.Controls;
 [ControlThemeProvider]
 internal class SegmentedTheme : BaseControlTheme
 {
-    public const string FrameDecoratorPart = "PART_FrameDecorator";
+    public const string FramePart = "PART_Frame";
     public const string ItemsPresenterPart = "PART_ItemsPresenter";
 
     public SegmentedTheme() : base(typeof(Segmented))
@@ -24,9 +24,9 @@ internal class SegmentedTheme : BaseControlTheme
     {
         return new FuncControlTemplate<Segmented>((segmented, scope) =>
         {
-            var frameDecorator = new Border
+            var Frame = new Border
             {
-                Name         = FrameDecoratorPart,
+                Name         = FramePart,
                 ClipToBounds = true
             };
             // TODO 需要观察是否会有内存泄漏
@@ -41,12 +41,12 @@ internal class SegmentedTheme : BaseControlTheme
                 })
             };
             itemsPresenter.RegisterInNameScope(scope);
-            frameDecorator.Child = itemsPresenter;
+            Frame.Child = itemsPresenter;
             
-            CreateTemplateParentBinding(frameDecorator, Border.CornerRadiusProperty,
+            CreateTemplateParentBinding(Frame, Border.CornerRadiusProperty,
                 TemplatedControl.CornerRadiusProperty);
-            CreateTemplateParentBinding(frameDecorator, Decorator.PaddingProperty, TemplatedControl.PaddingProperty);
-            return frameDecorator;
+            CreateTemplateParentBinding(Frame, Decorator.PaddingProperty, TemplatedControl.PaddingProperty);
+            return Frame;
         });
     }
 

@@ -37,10 +37,10 @@ public class IconButton : AvaloniaButton,
         = AvaloniaProperty.Register<IconButton, bool>(nameof(IsEnableHoverEffect));
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<IconButton, bool>(nameof(IsMotionEnabled), true);
+        = AvaloniaProperty.Register<IconButton, bool>(nameof(IsMotionEnabled));
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<IconButton, bool>(nameof(IsWaveAnimationEnabled), true);
+        = AvaloniaProperty.Register<IconButton, bool>(nameof(IsWaveAnimationEnabled));
 
     public Icon? Icon
     {
@@ -160,7 +160,6 @@ public class IconButton : AvaloniaButton,
         {
             if (!PseudoClasses.Contains(StdPseudoClass.Disabled))
             {
-                Icon.IconMode = IconMode.Normal;
                 if (PseudoClasses.Contains(StdPseudoClass.Pressed))
                 {
                     Icon.IconMode = IconMode.Selected;
@@ -168,6 +167,10 @@ public class IconButton : AvaloniaButton,
                 else if (PseudoClasses.Contains(StdPseudoClass.PointerOver))
                 {
                     Icon.IconMode = IconMode.Active;
+                }
+                else
+                {
+                    Icon.IconMode = IconMode.Normal;
                 }
             }
             else

@@ -12,7 +12,7 @@ namespace AtomUI.Controls;
 [ControlThemeProvider]
 internal class ListBoxTheme : BaseControlTheme
 {
-    public const string FrameDecoratorPart = "PART_FrameDecorator";
+    public const string FramePart = "PART_Frame";
     public const string ScrollViewerPart = "PART_ScrollViewer";
     public const string ItemsPresenterPart = "PART_ItemsPresenter";
 
@@ -30,7 +30,7 @@ internal class ListBoxTheme : BaseControlTheme
         {
             var frameBorder = new Border
             {
-                Name = FrameDecoratorPart
+                Name = FramePart
             };
             CreateTemplateParentBinding(frameBorder, Border.BackgroundProperty, TemplatedControl.BackgroundProperty);
             CreateTemplateParentBinding(frameBorder, Border.BorderBrushProperty, TemplatedControl.BorderBrushProperty);
@@ -118,7 +118,7 @@ internal class ListBoxTheme : BaseControlTheme
     {
         var commonStyle = new Style(selector => selector.Nesting());
         commonStyle.Add(Border.BorderBrushProperty, SharedTokenKey.ColorBorder);
-        var frameStyle = new Style(selector => selector.Nesting().Template().Name(FrameDecoratorPart));
+        var frameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
         frameStyle.Add(Decorator.PaddingProperty, ListBoxTokenKey.ContentPadding);
         frameStyle.Add(Border.BackgroundProperty, SharedTokenKey.ColorBgContainer);
         commonStyle.Add(frameStyle);

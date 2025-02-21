@@ -20,7 +20,7 @@ namespace AtomUI.Controls;
 [ControlThemeProvider]
 internal class NotificationCardTheme : BaseControlTheme
 {
-    public const string FrameDecoratorPart = "PART_FrameDecorator";
+    public const string FramePart = "PART_Frame";
     public const string IconContentPart = "PART_IconContent";
     public const string HeaderContainerPart = "PART_HeaderContainer";
     public const string HeaderTitlePart = "PART_HeaderTitle";
@@ -53,12 +53,12 @@ internal class NotificationCardTheme : BaseControlTheme
                 Name = MarginGhostDecoratorPart
             };
 
-            var frameDecorator = new Border
+            var Frame = new Border
             {
-                Name = FrameDecoratorPart
+                Name = FramePart
             };
 
-            marginGhostDecorator.Child = frameDecorator;
+            marginGhostDecorator.Child = Frame;
 
             var mainLayout = new Grid
             {
@@ -75,11 +75,11 @@ internal class NotificationCardTheme : BaseControlTheme
                 }
             };
 
-            frameDecorator.Child = mainLayout;
+            Frame.Child = mainLayout;
             BuildHeader(mainLayout, scope);
             BuildContent(mainLayout, scope);
             BuildProgressBar(mainLayout, scope);
-            frameDecorator.RegisterInNameScope(scope);
+            Frame.RegisterInNameScope(scope);
 
             motionActor.Child = marginGhostDecorator;
             return motionActor;
@@ -275,12 +275,12 @@ internal class NotificationCardTheme : BaseControlTheme
 
         commonStyle.Add(Layoutable.WidthProperty, NotificationTokenKey.NotificationWidth);
 
-        var frameDecoratorStyle = new Style(selector => selector.Nesting().Template().Name(FrameDecoratorPart));
-        frameDecoratorStyle.Add(Decorator.PaddingProperty, NotificationTokenKey.NotificationPadding);
-        frameDecoratorStyle.Add(Border.BoxShadowProperty, SharedTokenKey.BoxShadows);
-        frameDecoratorStyle.Add(Border.BackgroundProperty, NotificationTokenKey.NotificationBg);
-        frameDecoratorStyle.Add(Border.CornerRadiusProperty, SharedTokenKey.BorderRadiusLG);
-        commonStyle.Add(frameDecoratorStyle);
+        var FrameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
+        FrameStyle.Add(Decorator.PaddingProperty, NotificationTokenKey.NotificationPadding);
+        FrameStyle.Add(Border.BoxShadowProperty, SharedTokenKey.BoxShadows);
+        FrameStyle.Add(Border.BackgroundProperty, NotificationTokenKey.NotificationBg);
+        FrameStyle.Add(Border.CornerRadiusProperty, SharedTokenKey.BorderRadiusLG);
+        commonStyle.Add(FrameStyle);
 
         var closedStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(NotificationCard.IsClosedProperty, true));

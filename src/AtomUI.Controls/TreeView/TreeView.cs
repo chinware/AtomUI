@@ -651,7 +651,7 @@ public class TreeView : AvaloniaTreeView,
         var   offsetY = position.Y;
         Point startPoint = default;
         Point endPoint = default;
-        var   offsetYDelta = effectiveDropTarget.FrameDecoratorMargin().Bottom + DragIndicatorLineWidth / 3;
+        var   offsetYDelta = effectiveDropTarget.FrameMargin().Bottom + DragIndicatorLineWidth / 3;
 
         var minOffsetY = DragIndicatorLineWidth / 2;
         var maxOffsetY = Bounds.Height - DragIndicatorLineWidth / 2;

@@ -43,7 +43,8 @@ internal class PickerClearUpButtonTheme : BaseControlTheme
         };
         CreateTemplateParentBinding(iconContent, ContentPresenter.ContentProperty, PickerClearUpButton.IconProperty);
         CreateTemplateParentBinding(iconContent, Visual.IsVisibleProperty,
-            PickerClearUpButton.IsInClearModeProperty, BindingMode.Default,
+            PickerClearUpButton.IsInClearModeProperty,
+            BindingMode.Default,
             BoolConverters.Not);
         layout.Children.Add(iconContent);
     }

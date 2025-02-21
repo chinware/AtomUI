@@ -41,7 +41,7 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
         return new FuncControlTemplate<AddOnDecoratedInnerBox>((decoratedBox, scope) =>
         {
             var frameLayout = new Panel();
-            BuildFrameDecorator(frameLayout, decoratedBox, scope);
+            BuildFrame(frameLayout, decoratedBox, scope);
             NotifyBuildExtraChild(frameLayout, decoratedBox, scope);
             return frameLayout;
         });
@@ -51,7 +51,7 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
     {
     }
 
-    protected virtual void BuildFrameDecorator(Panel layout, AddOnDecoratedInnerBox decoratedBox, INameScope scope)
+    protected virtual void BuildFrame(Panel layout, AddOnDecoratedInnerBox decoratedBox, INameScope scope)
     {
         var innerBoxDecorator = new Border
         {

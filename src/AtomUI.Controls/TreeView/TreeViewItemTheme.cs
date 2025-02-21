@@ -19,7 +19,7 @@ namespace AtomUI.Controls;
 [ControlThemeProvider]
 internal class TreeViewItemTheme : BaseControlTheme
 {
-    public const string FrameDecoratorPart = "PART_FrameDecorator";
+    public const string FramePart = "PART_Frame";
     public const string ItemsPresenterPart = "PART_ItemsPresenter";
     public const string ItemsLayoutPart = "PART_ItemsLayoutPart";
     public const string HeaderPresenterPart = "PART_HeaderPresenter";
@@ -41,14 +41,14 @@ internal class TreeViewItemTheme : BaseControlTheme
             {
                 Orientation = Orientation.Vertical
             };
-            var frameDecorator = new Border
+            var Frame = new Border
             {
-                Name      = FrameDecoratorPart,
+                Name      = FramePart,
                 Focusable = true
             };
-            CreateTemplateParentBinding(frameDecorator, Border.BorderThicknessProperty,
+            CreateTemplateParentBinding(Frame, Border.BorderThicknessProperty,
                 TreeViewItem.DragFrameBorderThicknessProperty);
-            frameDecorator.RegisterInNameScope(scope);
+            Frame.RegisterInNameScope(scope);
 
             var treeItemLayout = new Grid
             {
@@ -69,7 +69,8 @@ internal class TreeViewItemTheme : BaseControlTheme
             };
 
             CreateTemplateParentBinding(treeItemLayout, Layoutable.MarginProperty,
-                Avalonia.Controls.TreeViewItem.LevelProperty, BindingMode.OneWay,
+                Avalonia.Controls.TreeViewItem.LevelProperty, 
+                BindingMode.OneWay,
                 indentConverter);
 
             var nodeSwitcherButton = new NodeSwitcherButton
@@ -143,7 +144,8 @@ internal class TreeViewItemTheme : BaseControlTheme
                 InputElement.IsEnabledProperty);
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty,
                 HeaderedItemsControl.HeaderProperty,
-                BindingMode.Default, new FuncValueConverter<object?, object?>(
+                BindingMode.Default,
+                new FuncValueConverter<object?, object?>(
                     o =>
                     {
                         if (o is string str)
@@ -163,7 +165,7 @@ internal class TreeViewItemTheme : BaseControlTheme
             Grid.SetColumn(contentPresenter, 3);
             treeItemLayout.Children.Add(contentPresenter);
 
-            frameDecorator.Child = treeItemLayout;
+            Frame.Child = treeItemLayout;
             var itemsPresenter = new ItemsPresenter
             {
                 Name      = ItemsPresenterPart,
@@ -174,7 +176,7 @@ internal class TreeViewItemTheme : BaseControlTheme
                 ItemsControl.ItemsPanelProperty);
             CreateTemplateParentBinding(itemsPresenter, Visual.IsVisibleProperty,
                 Avalonia.Controls.TreeViewItem.IsExpandedProperty);
-            stackPanel.Children.Add(frameDecorator);
+            stackPanel.Children.Add(Frame);
             stackPanel.Children.Add(itemsPresenter);
             return stackPanel;
         });
@@ -195,10 +197,10 @@ internal class TreeViewItemTheme : BaseControlTheme
         commonStyle.Add(TemplatedControl.BorderBrushProperty, SharedTokenKey.ColorBorder);
         commonStyle.Add(TemplatedControl.BorderThicknessProperty, SharedTokenKey.BorderThickness);
         commonStyle.Add(TreeViewItem.EffectiveNodeBgProperty, Brushes.Transparent);
-        var frameDecoratorStyle = new Style(selector => selector.Nesting().Template().Name(FrameDecoratorPart));
-        frameDecoratorStyle.Add(Layoutable.HeightProperty, TreeViewTokenKey.TitleHeight);
-        frameDecoratorStyle.Add(Layoutable.MarginProperty, TreeViewTokenKey.TreeItemMargin);
-        commonStyle.Add(frameDecoratorStyle);
+        var FrameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
+        FrameStyle.Add(Layoutable.HeightProperty, TreeViewTokenKey.TitleHeight);
+        FrameStyle.Add(Layoutable.MarginProperty, TreeViewTokenKey.TreeItemMargin);
+        commonStyle.Add(FrameStyle);
 
         // 节点 Icon 的大小
         var treeItemIconStyle = new Style(selector =>
@@ -314,9 +316,9 @@ internal class TreeViewItemTheme : BaseControlTheme
     {
         var draggingStyle =
             new Style(selector => selector.Nesting().PropertyEquals(TreeViewItem.IsDraggingProperty, true));
-        var frameDecoratorStyle = new Style(selector => selector.Nesting().Template().Name(FrameDecoratorPart));
-        frameDecoratorStyle.Add(Border.BorderBrushProperty, SharedTokenKey.ColorPrimary);
-        draggingStyle.Add(frameDecoratorStyle);
+        var FrameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
+        FrameStyle.Add(Border.BorderBrushProperty, SharedTokenKey.ColorPrimary);
+        draggingStyle.Add(FrameStyle);
         Add(draggingStyle);
     }
 }

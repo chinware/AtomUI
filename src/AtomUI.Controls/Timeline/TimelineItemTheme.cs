@@ -60,7 +60,8 @@ internal class TimelineItemTheme : BaseControlTheme
                 Name = ContentPresenterPart,
             };
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty, TimelineItem.ContentProperty,
-                BindingMode.Default, new FuncValueConverter<object?, object?>(o =>
+                BindingMode.Default, 
+                new FuncValueConverter<object?, object?>(o =>
                 {
                     if (o is string text)
                     {

@@ -45,6 +45,8 @@
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.RangeDatePickerFlyoutPresenterTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.RangeDatePickerTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.TimedRangeDatePickerPresenterTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.DrawerContainerTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.DrawerInfoContainerTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.EmptyIndicatorTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.ExpanderTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.MenuFlyoutPresenterTheme());

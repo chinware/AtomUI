@@ -12,7 +12,7 @@ namespace AtomUI.Controls;
 [ControlThemeProvider]
 internal class TimelineTheme : BaseControlTheme
 {
-    public const string FrameDecoratorPart = "PART_FrameDecorator";
+    public const string FramePart = "PART_Frame";
     public const string ScrollViewerPart = "PART_ScrollViewer";
     public const string ItemsPresenterPart = "PART_ItemsPresenter";
 
@@ -24,23 +24,23 @@ internal class TimelineTheme : BaseControlTheme
     {
         return new FuncControlTemplate<Timeline>((timeline, scope) =>
         {
-            var frameDecorator = new Border()
+            var Frame = new Border()
             {
-                Name = FrameDecoratorPart
+                Name = FramePart
             };
          
             var itemsPresenter = BuildItemsPresenter(timeline, scope);
             var scrollViewer   = BuildScrollViewer(timeline, scope);
             
-            CreateTemplateParentBinding(frameDecorator, Border.CornerRadiusProperty, TemplatedControl.CornerRadiusProperty);
-            CreateTemplateParentBinding(frameDecorator, Border.BorderBrushProperty, TemplatedControl.BorderBrushProperty);
-            CreateTemplateParentBinding(frameDecorator, Border.BackgroundProperty, TemplatedControl.BackgroundProperty);
-            CreateTemplateParentBinding(frameDecorator, Decorator.PaddingProperty, TemplatedControl.PaddingProperty);
+            CreateTemplateParentBinding(Frame, Border.CornerRadiusProperty, TemplatedControl.CornerRadiusProperty);
+            CreateTemplateParentBinding(Frame, Border.BorderBrushProperty, TemplatedControl.BorderBrushProperty);
+            CreateTemplateParentBinding(Frame, Border.BackgroundProperty, TemplatedControl.BackgroundProperty);
+            CreateTemplateParentBinding(Frame, Decorator.PaddingProperty, TemplatedControl.PaddingProperty);
 
             scrollViewer.Content = itemsPresenter;
-            frameDecorator.Child = scrollViewer;
+            Frame.Child = scrollViewer;
 
-            return frameDecorator;
+            return Frame;
         });
     }
     

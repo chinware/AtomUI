@@ -21,7 +21,7 @@ internal class GroupBoxTheme : BaseControlTheme
     public const string HeaderContentPart = "PART_HeaderContentLayout";
     public const string ContentPresenterPart = "PART_ContentPresenter";
     public const string HeaderIconPart = "PART_HeaderIcon";
-    public const string FrameDecoratorPart = "PART_FrameDecorator";
+    public const string FramePart = "PART_Frame";
 
     public GroupBoxTheme()
         : base(typeof(GroupBox))
@@ -33,13 +33,13 @@ internal class GroupBoxTheme : BaseControlTheme
         return new FuncControlTemplate<GroupBox>((groupBox, scope) =>
         {
             BuildInstanceStyles(groupBox);
-            var frameDecorator = new Border
+            var Frame = new Border
             {
-                Name = FrameDecoratorPart
+                Name = FramePart
             };
-            CreateTemplateParentBinding(frameDecorator, Border.CornerRadiusProperty,
+            CreateTemplateParentBinding(Frame, Border.CornerRadiusProperty,
                 TemplatedControl.CornerRadiusProperty);
-            frameDecorator.RegisterInNameScope(scope);
+            Frame.RegisterInNameScope(scope);
             var mainLayout = new DockPanel
             {
                 LastChildFill = true
@@ -107,8 +107,8 @@ internal class GroupBoxTheme : BaseControlTheme
                 ContentControl.ContentTemplateProperty);
 
             mainLayout.Children.Add(contentPresenter);
-            frameDecorator.Child = mainLayout;
-            return frameDecorator;
+            Frame.Child = mainLayout;
+            return Frame;
         });
     }
 

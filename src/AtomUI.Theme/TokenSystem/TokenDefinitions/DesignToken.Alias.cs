@@ -156,7 +156,7 @@ public partial class DesignToken
     /// 标题类组件（如 h1、h2、h3）或选中项的字体粗细
     /// 控制标题类组件（如 h1、h2、h3）或选中项的字体粗细。
     /// </summary>
-    public double FontWeightStrong { get; set; }
+    public FontWeight FontWeightStrong { get; set; }
 
     // Control
     /// <summary>

@@ -58,7 +58,8 @@ internal class BaseTabItemTheme : BaseControlTheme
         containerLayout.Children.Add(contentPresenter);
         CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty,
             HeaderedContentControl.HeaderProperty,
-            BindingMode.Default, new FuncValueConverter<object?, object?>(
+            BindingMode.Default,
+            new FuncValueConverter<object?, object?>(
                 o =>
                 {
                     if (o is string str)

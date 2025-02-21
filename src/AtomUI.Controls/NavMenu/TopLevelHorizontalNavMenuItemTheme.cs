@@ -92,7 +92,8 @@ internal class TopLevelHorizontalNavMenuItemTheme : BaseControlTheme
     
             // TODO 后面需要评估一下，能直接绑定到对象，是否还需要这样通过模板绑定
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty,
-                HeaderedSelectingItemsControl.HeaderProperty, BindingMode.Default,
+                HeaderedSelectingItemsControl.HeaderProperty,
+                BindingMode.Default,
                 new FuncValueConverter<object?, object?>(
                     o =>
                     {

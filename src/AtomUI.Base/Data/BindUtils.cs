@@ -31,7 +31,7 @@ public static class BindUtils
         {
             Source   = source,
             Property = sourceProperty,
-            Priority = BindingPriority.Inherited,
+            Priority = BindingPriority.LocalValue,
             Mode     = mode
         };
         return target.Bind(targetProperty, descriptor);

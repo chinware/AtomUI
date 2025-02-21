@@ -10,6 +10,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
 using Avalonia.Input.GestureRecognizers;
 using Avalonia.Layout;
 using Avalonia.Styling;
@@ -41,7 +42,7 @@ internal class MenuScrollViewerTheme : BaseControlTheme
                 VerticalAlignment   = VerticalAlignment.Center,
                 RenderTransform     = null
             };
-            CreateTemplateParentBinding(scrollUpButton, Button.CommandProperty, nameof(MenuScrollViewer.LineUp));
+            CreateTemplateParentBinding(scrollUpButton, Button.CommandProperty, nameof(MenuScrollViewer.LineUp), BindingPriority.Template);
             TokenResourceBinder.CreateTokenBinding(scrollUpButton, IconButton.IconWidthProperty,
                 MenuTokenKey.ScrollButtonIconSize);
             TokenResourceBinder.CreateTokenBinding(scrollUpButton, IconButton.IconHeightProperty,
@@ -56,7 +57,7 @@ internal class MenuScrollViewerTheme : BaseControlTheme
                 RenderTransform     = null
             };
             CreateTemplateParentBinding(scrollDownButton, Avalonia.Controls.Button.CommandProperty,
-                nameof(MenuScrollViewer.LineDown));
+                nameof(MenuScrollViewer.LineDown), BindingPriority.Template);
             TokenResourceBinder.CreateTokenBinding(scrollDownButton, IconButton.IconWidthProperty,
                 MenuTokenKey.ScrollButtonIconSize);
             TokenResourceBinder.CreateTokenBinding(scrollDownButton, IconButton.IconHeightProperty,

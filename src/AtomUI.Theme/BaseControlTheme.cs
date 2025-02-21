@@ -110,8 +110,8 @@ public abstract class BaseControlTheme : ControlTheme
 
     protected static IDisposable CreateTemplateParentBinding(AvaloniaObject target, AvaloniaProperty property,
                                                              string templateParentPath,
+                                                             BindingPriority priority,
                                                              BindingMode mode = BindingMode.Default,
-                                                             BindingPriority priority = BindingPriority.Template,
                                                              IValueConverter? converter = null)
     {
         return target.Bind(property, new Binding(templateParentPath)
@@ -125,8 +125,8 @@ public abstract class BaseControlTheme : ControlTheme
 
     protected static IDisposable CreateTemplateParentBinding<T>(AvaloniaObject target, StyledProperty<T> property,
                                                                 string templateParentPath,
+                                                                BindingPriority priority,
                                                                 BindingMode mode = BindingMode.Default,
-                                                                BindingPriority priority = BindingPriority.Template,
                                                                 IValueConverter? converter = null)
     {
         return target.Bind(property, new Binding(templateParentPath)
@@ -140,8 +140,8 @@ public abstract class BaseControlTheme : ControlTheme
 
     protected static IDisposable CreateTemplateParentBinding<T>(AvaloniaObject target, DirectPropertyBase<T> property,
                                                                 string templateParentPath,
+                                                                BindingPriority priority,
                                                                 BindingMode mode = BindingMode.Default,
-                                                                BindingPriority priority = BindingPriority.Template,
                                                                 IValueConverter? converter = null)
     {
         return target.Bind(property, new Binding(templateParentPath)
@@ -151,5 +151,32 @@ public abstract class BaseControlTheme : ControlTheme
             Converter      = converter,
             Priority       = priority
         });
+    }
+    
+    protected static IDisposable CreateTemplateParentBinding(AvaloniaObject target, AvaloniaProperty property,
+                                                             AvaloniaProperty parentProperty,
+                                                             BindingPriority priority,
+                                                             BindingMode mode = BindingMode.Default,
+                                                             IValueConverter? converter = null)
+    {
+        return CreateTemplateParentBinding(target, property, parentProperty.Name, priority, mode, converter);
+    }
+    
+    protected static IDisposable CreateTemplateParentBinding<T>(AvaloniaObject target, StyledProperty<T> property,
+                                                                AvaloniaProperty parentProperty,
+                                                                BindingPriority priority,
+                                                                BindingMode mode = BindingMode.Default,
+                                                                IValueConverter? converter = null)
+    {
+        return CreateTemplateParentBinding(target, property, parentProperty.Name, priority, mode, converter);
+    }
+    
+    protected static IDisposable CreateTemplateParentBinding<T>(AvaloniaObject target, DirectPropertyBase<T> property,
+                                                                AvaloniaProperty parentProperty,
+                                                                BindingPriority priority,
+                                                                BindingMode mode = BindingMode.Default,
+                                                                IValueConverter? converter = null)
+    {
+        return CreateTemplateParentBinding(target, property, parentProperty.Name, priority, mode, converter);
     }
 }

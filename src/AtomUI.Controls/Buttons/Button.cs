@@ -149,8 +149,6 @@ public class Button : AvaloniaButton,
         set => SetValue(IsWaveAnimationEnabledProperty, value);
     }
 
-    Control IAnimationAwareControl.PropertyBindTarget => this;
-
     #endregion
 
     #region 内部属性定义
@@ -234,6 +232,7 @@ public class Button : AvaloniaButton,
         set => SetValue(EffectiveBorderThicknessProperty, value);
     }
     
+    Control IAnimationAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ButtonToken.ID;
 

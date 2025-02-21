@@ -67,7 +67,8 @@ internal class BaseOverflowMenuItemTheme : BaseControlTheme
                 MenuTokenKey.ItemMargin);
             CreateTemplateParentBinding(itemTextPresenter, ContentPresenter.ContentProperty,
                 HeaderedSelectingItemsControl.HeaderProperty,
-                BindingMode.Default, new FuncValueConverter<object?, object?>(
+                BindingMode.Default,
+                new FuncValueConverter<object?, object?>(
                     o =>
                     {
                         if (o is string str)

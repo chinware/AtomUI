@@ -64,7 +64,8 @@ internal class CheckBoxTheme : BaseControlTheme
             CreateTemplateParentBinding(labelText, SingleLineText.TextProperty, CheckBox.ContentProperty);
             CreateTemplateParentBinding(labelText, SingleLineText.FontSizeProperty, CheckBox.FontSizeProperty);
             CreateTemplateParentBinding(labelText, SingleLineText.IsVisibleProperty, CheckBox.ContentProperty,
-                BindingMode.Default, ObjectConverters.IsNotNull);
+                BindingMode.Default,
+                ObjectConverters.IsNotNull);
             layout.Children.Add(labelText);
             frame.Child = layout;
             return frame;

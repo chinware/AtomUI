@@ -81,7 +81,8 @@ internal class NodeSwitcherButtonTheme : BaseControlTheme
             CreateTemplateParentBinding(rotationIconPresenter, ContentPresenter.ContentProperty,
                 NodeSwitcherButton.RotationIconProperty);
             CreateTemplateParentBinding(rotationIconPresenter, ContentPresenter.IsVisibleProperty,
-                NodeSwitcherButton.IconModeProperty, BindingMode.Default, new FuncValueConverter<NodeSwitcherButtonIconMode, bool>(iconMode =>
+                NodeSwitcherButton.IconModeProperty, BindingMode.Default, 
+                new FuncValueConverter<NodeSwitcherButtonIconMode, bool>(iconMode =>
                 {
                     return iconMode == NodeSwitcherButtonIconMode.Rotation;
                 }));
@@ -97,7 +98,9 @@ internal class NodeSwitcherButtonTheme : BaseControlTheme
             CreateTemplateParentBinding(loadingIconPresenter, ContentPresenter.ContentProperty,
                 NodeSwitcherButton.LoadingIconProperty);
             CreateTemplateParentBinding(loadingIconPresenter, ContentPresenter.IsVisibleProperty,
-                NodeSwitcherButton.IconModeProperty, BindingMode.Default, new FuncValueConverter<NodeSwitcherButtonIconMode, bool>(iconMode =>
+                NodeSwitcherButton.IconModeProperty, 
+                BindingMode.Default, 
+                new FuncValueConverter<NodeSwitcherButtonIconMode, bool>(iconMode =>
                 {
                     return iconMode == NodeSwitcherButtonIconMode.Loading;
                 }));

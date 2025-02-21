@@ -58,7 +58,9 @@ internal class BaseTabStripItemTheme : BaseControlTheme
         containerLayout.Children.Add(contentPresenter);
         CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty, ContentControl.ContentProperty);
         CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentTemplateProperty,
-            ContentControl.ContentTemplateProperty, BindingMode.Default, new FuncValueConverter<object?, object?>(
+            ContentControl.ContentTemplateProperty, 
+            BindingMode.Default, 
+            new FuncValueConverter<object?, object?>(
                 o =>
                 {
                     if (o is string str)

@@ -33,12 +33,10 @@ internal class SearchEditDecoratedBoxTheme : AddOnDecoratedBoxTheme
         CreateTemplateParentBinding(searchButton, Button.TextProperty, SearchEditDecoratedBox.SearchButtonTextProperty);
         CreateTemplateParentBinding(searchButton, Button.SizeTypeProperty, AddOnDecoratedBox.SizeTypeProperty);
         CreateTemplateParentBinding(searchButton, TemplatedControl.BorderThicknessProperty,
-            nameof(AddOnDecoratedBox.RightAddOnBorderThickness),
-            BindingMode.Default,
+            AddOnDecoratedBox.RightAddOnBorderThicknessProperty,
             BindingPriority.LocalValue);
         CreateTemplateParentBinding(searchButton, TemplatedControl.CornerRadiusProperty,
-            nameof(AddOnDecoratedBox.RightAddOnCornerRadius),
-            BindingMode.Default,
+            AddOnDecoratedBox.RightAddOnCornerRadiusProperty,
             BindingPriority.LocalValue);
 
         layout.Children.Add(searchButton);

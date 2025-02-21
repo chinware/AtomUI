@@ -17,7 +17,7 @@ namespace AtomUI.Controls;
 [ControlThemeProvider]
 internal class MessageCardTheme : BaseControlTheme
 {
-    public const string FrameDecoratorPart = "PART_FrameDecorator";
+    public const string FramePart = "PART_Frame";
     public const string IconContentPart = "PART_IconContent";
     public const string HeaderContainerPart = "PART_HeaderContainer";
     public const string MessagePart = "PART_Message";
@@ -48,17 +48,17 @@ internal class MessageCardTheme : BaseControlTheme
                 ClipToBounds = false
             };
 
-            var frameDecorator = new Border
+            var Frame = new Border
             {
-                Name = FrameDecoratorPart
+                Name = FramePart
             };
 
-            marginGhostDecorator.Child = frameDecorator;
+            marginGhostDecorator.Child = Frame;
 
             var header = BuildContent(scope);
-            frameDecorator.Child = header;
+            Frame.Child = header;
 
-            frameDecorator.RegisterInNameScope(scope);
+            Frame.RegisterInNameScope(scope);
 
             motionActor.Child = marginGhostDecorator;
             return motionActor;
@@ -118,12 +118,12 @@ internal class MessageCardTheme : BaseControlTheme
         marginGhostDecoratorStyle.Add(Layoutable.MarginProperty, MessageTokenKey.MessageTopMargin);
         commonStyle.Add(marginGhostDecoratorStyle);
 
-        var frameDecoratorStyle = new Style(selector => selector.Nesting().Template().Name(FrameDecoratorPart));
-        frameDecoratorStyle.Add(Decorator.PaddingProperty, MessageTokenKey.ContentPadding);
-        frameDecoratorStyle.Add(Border.BoxShadowProperty, SharedTokenKey.BoxShadows);
-        frameDecoratorStyle.Add(Border.BackgroundProperty, MessageTokenKey.ContentBg);
-        frameDecoratorStyle.Add(Border.CornerRadiusProperty, SharedTokenKey.BorderRadiusLG);
-        commonStyle.Add(frameDecoratorStyle);
+        var FrameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
+        FrameStyle.Add(Decorator.PaddingProperty, MessageTokenKey.ContentPadding);
+        FrameStyle.Add(Border.BoxShadowProperty, SharedTokenKey.BoxShadows);
+        FrameStyle.Add(Border.BackgroundProperty, MessageTokenKey.ContentBg);
+        FrameStyle.Add(Border.CornerRadiusProperty, SharedTokenKey.BorderRadiusLG);
+        commonStyle.Add(FrameStyle);
 
         var closedStyle =
             new Style(selector => selector.Nesting().PropertyEquals(MessageCard.IsClosedProperty, true));

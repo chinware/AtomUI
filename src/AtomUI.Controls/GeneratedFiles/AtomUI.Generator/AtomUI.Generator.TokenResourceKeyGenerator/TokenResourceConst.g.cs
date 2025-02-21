@@ -219,6 +219,22 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey ButtonsPanelMargin = new TokenResourceKey("DatePicker.ButtonsPanelMargin");
     }
 
+    public static class DrawerTokenKey
+    {
+        public static readonly TokenResourceKey BoxShadowDrawerLeft = new TokenResourceKey("Drawer.BoxShadowDrawerLeft");
+        public static readonly TokenResourceKey BoxShadowDrawerRight = new TokenResourceKey("Drawer.BoxShadowDrawerRight");
+        public static readonly TokenResourceKey BoxShadowDrawerUp = new TokenResourceKey("Drawer.BoxShadowDrawerUp");
+        public static readonly TokenResourceKey BoxShadowDrawerDown = new TokenResourceKey("Drawer.BoxShadowDrawerDown");
+        public static readonly TokenResourceKey HeaderMargin = new TokenResourceKey("Drawer.HeaderMargin");
+        public static readonly TokenResourceKey FooterPadding = new TokenResourceKey("Drawer.FooterPadding");
+        public static readonly TokenResourceKey MiddleSize = new TokenResourceKey("Drawer.MiddleSize");
+        public static readonly TokenResourceKey LargeSize = new TokenResourceKey("Drawer.LargeSize");
+        public static readonly TokenResourceKey SmallSize = new TokenResourceKey("Drawer.SmallSize");
+        public static readonly TokenResourceKey CloseIconPadding = new TokenResourceKey("Drawer.CloseIconPadding");
+        public static readonly TokenResourceKey CloseIconMargin = new TokenResourceKey("Drawer.CloseIconMargin");
+        public static readonly TokenResourceKey ContentPadding = new TokenResourceKey("Drawer.ContentPadding");
+    }
+
     public static class EmptyIndicatorTokenKey
     {
         public static readonly TokenResourceKey EmptyImgHeight = new TokenResourceKey("EmptyIndicator.EmptyImgHeight");

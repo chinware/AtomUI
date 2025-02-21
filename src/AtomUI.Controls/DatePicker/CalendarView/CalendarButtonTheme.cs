@@ -47,7 +47,8 @@ internal class CalendarButtonTheme : BaseControlTheme
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.FontSizeProperty,
                 TemplatedControl.FontSizeProperty);
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty, ContentControl.ContentProperty, 
-                BindingMode.Default, new FuncValueConverter<object?, object?>(
+                BindingMode.Default, 
+                new FuncValueConverter<object?, object?>(
                 o =>
                 {
                     if (o is string str)

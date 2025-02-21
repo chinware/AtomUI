@@ -11,7 +11,7 @@ namespace AtomUI.Controls;
 internal class TreeViewTheme : BaseControlTheme
 {
     public const string ItemsPresenterPart = "PART_ItemsPresenter";
-    public const string FrameDecoratorPart = "PART_FrameDecorator";
+    public const string FramePart = "PART_Frame";
 
     public TreeViewTheme()
         : base(typeof(TreeView))
@@ -22,9 +22,9 @@ internal class TreeViewTheme : BaseControlTheme
     {
         return new FuncControlTemplate<TreeView>((view, scope) =>
         {
-            var frameDecorator = new Border
+            var Frame = new Border
             {
-                Name = FrameDecoratorPart
+                Name = FramePart
             };
             var scrollViewer = new ScrollViewer();
 
@@ -48,8 +48,8 @@ internal class TreeViewTheme : BaseControlTheme
                 ItemsPresenter.ItemsPanelProperty);
             itemsPresenter.RegisterInNameScope(scope);
             scrollViewer.Content = itemsPresenter;
-            frameDecorator.Child = scrollViewer;
-            return frameDecorator;
+            Frame.Child = scrollViewer;
+            return Frame;
         });
     }
 }

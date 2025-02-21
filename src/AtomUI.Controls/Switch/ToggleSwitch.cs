@@ -240,7 +240,7 @@ public class ToggleSwitch : ToggleButton,
 
     static ToggleSwitch()
     {
-        AffectsMeasure<ToggleSwitch>(SizeTypeProperty);
+        AffectsMeasure<ToggleSwitch>(SizeTypeProperty, IsCheckedProperty);
         AffectsArrange<ToggleSwitch>(
             IsPressedProperty,
             KnobRectProperty,
@@ -606,7 +606,6 @@ public class ToggleSwitch : ToggleButton,
         }
         else
         {
-        
             handlePosX = controlSize.Width - offsetX - handleSize;
             handlePosY = offsetY;
         }
