@@ -36,21 +36,21 @@ internal static class UIStructureUtils
         ((ISetLogicalParent)control).SetParent(parent);
     }
 
-    public static void ClearVisualParentRecursive(Visual control, Control? parent)
+    public static void ClearVisualParentRecursive(Visual control)
     {
         SetVisualParent(control, null);
         foreach (var child in control.GetVisualChildren())
         {
-            ClearVisualParentRecursive(child, parent);
+            ClearVisualParentRecursive(child);
         }
     }
 
-    public static void ClearLogicalParentRecursive(ILogical control, Control? parent)
+    public static void ClearLogicalParentRecursive(ILogical control)
     {
-        ((ISetLogicalParent)control).SetParent(parent);
+        ((ISetLogicalParent)control).SetParent(null);
         foreach (var child in control.GetLogicalChildren())
         {
-            ClearLogicalParentRecursive(child, parent);
+            ClearLogicalParentRecursive(child);
         }
     }
 

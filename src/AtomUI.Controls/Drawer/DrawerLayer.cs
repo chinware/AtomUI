@@ -1,14 +1,18 @@
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Reflection;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
+using Avalonia.Controls.Templates;
+using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
-internal class DrawerLayer : Canvas
+public class DrawerLayer : Canvas
 {
     private const int DrawerLayerZIndex = int.MaxValue - 1000;
 
@@ -22,6 +26,15 @@ internal class DrawerLayer : Canvas
 
     public static readonly AttachedProperty<Control?> DrawerContainerProperty =
         AvaloniaProperty.RegisterAttached<DrawerLayer, Visual, Control?>("DrawerContainer");
+    
+    public static readonly StyledProperty<Visual?> LayerHostProperty = AvaloniaProperty
+        .Register<DrawerLayer, Visual?>(nameof(LayerHost));
+    
+    public Visual? LayerHost
+    {
+        get => GetValue(LayerHostProperty);
+        set => SetValue(LayerHostProperty, value);
+    }
 
     #endregion
 
@@ -50,25 +63,48 @@ internal class DrawerLayer : Canvas
         Children.CollectionChanged += ChildrenCollectionChanged;
     }
 
-    public static Visual? GetAttachTargetElement(Visual drawerContainer)
+    public static Visual? GetAttachTargetElement(Visual control)
     {
-        return drawerContainer.GetValue(AttachTargetElementProperty);
+        return control.GetValue(AttachTargetElementProperty);
     }
 
-    public static void SetAttachTargetElement(Visual drawerContainer, Visual? attachTarget)
+    public static void SetAttachTargetElement(Visual control, Visual? attachTarget)
     {
-        drawerContainer.SetValue(AttachTargetElementProperty, attachTarget);
+        control.SetValue(AttachTargetElementProperty, attachTarget);
     }
 
-    public static DrawerLayer GetDrawerLayer(Visual visual)
+    public static DrawerLayer? GetDrawerLayer(Visual visual)
     {
-        var layer = visual.FindAncestorOfType<VisualLayerManager>()?.GetVisualChildren()
-                          .FirstOrDefault(c => c is DrawerLayer) as DrawerLayer;
-        if (layer == null)
+        Layoutable? layerHost = visual.FindAncestorOfType<ScrollContentPresenter>(true);
+        var attachTarget = GetAttachTargetElement(visual);
+        if (layerHost != null && attachTarget != null)
         {
-            layer = new DrawerLayer();
-            AddLayerToVisualLayerManager(visual, layer, DrawerLayerZIndex);
+            while (layerHost != null && layerHost.IsVisualAncestorOf(attachTarget) == false)
+            {
+                layerHost = layerHost.FindAncestorOfType<ScrollContentPresenter>();
+            }
         }
+
+        if (layerHost is ScrollContentPresenter scrollContentPresenter)
+        {
+            scrollContentPresenter.PropertyChanged += (sender, args) =>
+            {
+                if (args.Property == ScrollContentPresenter.OffsetProperty)
+                {
+                    Console.WriteLine($"{attachTarget?.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(visual)!)}");
+                }
+            };
+        }
+        layerHost ??= visual.FindAncestorOfType<VisualLayerManager>();
+        layerHost ??= TopLevel.GetTopLevel(visual);
+        
+        if (layerHost == null)
+        {
+            return null;
+        }
+        
+        var layer = layerHost.GetVisualChildren().FirstOrDefault(c => c is DrawerLayer) as DrawerLayer;
+        layer ??= InjectLayer(layerHost);
 
         return layer;
     }
@@ -180,9 +216,8 @@ internal class DrawerLayer : Canvas
             }
             info.Subscription = attachTarget.GetObservable(BoundsProperty).Subscribe(x =>
             {
-                var attachTargetToplevel = TopLevel.GetTopLevel(attachTarget);
-                var translationMatrix = attachTargetToplevel != null
-                    ? attachTarget.TransformToVisual(attachTargetToplevel) ?? Matrix.Identity
+                var translationMatrix = LayerHost != null
+                    ? attachTarget.TransformToVisual(LayerHost) ?? Matrix.Identity
                     : Matrix.Identity;
                 info.Bounds = new TransformedBounds(new Rect(attachTarget.DesiredSize), new Rect(attachTarget.DesiredSize),
                     translationMatrix);
@@ -316,6 +351,70 @@ internal class DrawerLayer : Canvas
         {
             AddLayerMethodInfo.Invoke(visualLayerManager, [layer, zindex]);
         }
+    }
+    
+    private static void AddLayerToVisualLayerManager(VisualLayerManager visualLayerManager, Control layer, int zindex)
+    {
+        AddLayerMethodInfo.Invoke(visualLayerManager, [layer, zindex]);
+    }
+    
+    private static DrawerLayer InjectLayer(Layoutable layerHost)
+    {
+        var drawerLayer = layerHost.FindDescendantOfType<DrawerLayer>();
+        if (drawerLayer != null)
+        {
+            return drawerLayer;
+        }
+        
+        drawerLayer = new DrawerLayer
+        {
+            HorizontalAlignment = HorizontalAlignment.Stretch,
+            VerticalAlignment   = VerticalAlignment.Stretch,
+            ZIndex = DrawerLayerZIndex
+        };
+
+        drawerLayer.LayerHost = layerHost;
+        if (layerHost is VisualLayerManager visualLayerManager)
+        {
+            AddLayerToVisualLayerManager(visualLayerManager, drawerLayer, visualLayerManager.ZIndex);
+        }
+        else if (layerHost is ScrollContentPresenter scrollContentPresenter)
+        {
+            if (scrollContentPresenter.Content is Control controlContent)
+            {
+                // 直接内容控件
+                scrollContentPresenter.Content = null;
+                scrollContentPresenter.UpdateChild();
+                var panel = new Panel
+                {
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                    VerticalAlignment = VerticalAlignment.Stretch,
+                };
+                panel.Children.Add(controlContent);
+                panel.Children.Add(drawerLayer);
+                scrollContentPresenter.Content = panel;
+            }
+            else if (scrollContentPresenter.Content != null && scrollContentPresenter.ContentTemplate != null)
+            {
+                // 模版处理
+                var injectTemplate = new FuncDataTemplate<object?>((o, scope) =>
+                {
+                    var originControl = scrollContentPresenter.ContentTemplate.Build(o);
+                    var panel = new Panel
+                    {
+                        HorizontalAlignment = HorizontalAlignment.Stretch,
+                        VerticalAlignment   = VerticalAlignment.Stretch,
+                    };
+                    Debug.Assert(originControl != null);
+                    panel.Children.Add(originControl);
+                    panel.Children.Add(drawerLayer);
+                    return panel;
+                });
+                scrollContentPresenter.ContentTemplate = injectTemplate;
+            }
+        }
+    
+        return drawerLayer;
     }
 
     private class AttachTargetElementInfo

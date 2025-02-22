@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using AtomUI.Controls.Primitives;
 using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
@@ -250,9 +249,19 @@ public class DrawerX : Control,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == IsOpenProperty)
+        if (VisualRoot != null)
         {
-            HandleIsOpenChanged();
+            if (change.Property == IsOpenProperty)
+            {
+                HandleIsOpenChanged();
+            }
+        }
+        if (change.Property == OpenOnProperty)
+        {
+            if (OpenOn != null)
+            {
+                DrawerLayer.SetAttachTargetElement(this, OpenOn);
+            }
         }
     }
 
@@ -270,9 +279,10 @@ public class DrawerX : Control,
 
     private void Open()
     {
-        CreateDrawerContainer();
         var layer = DrawerLayer.GetDrawerLayer(this);
         Debug.Assert(layer != null);
+        NotifyBeforeOpen(layer);
+        CreateDrawerContainer();
         Debug.Assert(_container != null);
         _container.Open(layer);
     }
@@ -281,13 +291,13 @@ public class DrawerX : Control,
     {
         var layer = DrawerLayer.GetDrawerLayer(this);
         Debug.Assert(layer != null);
+        NotifyBeforeClose(layer);
         Debug.Assert(_container != null);
         _container.Close(layer);
     }
     
     private void CreateDrawerContainer()
     {
-  
         if (_container is null)
         {
             _container = new DrawerContainerX()
@@ -307,6 +317,37 @@ public class DrawerX : Control,
             BindUtils.RelayBind(this, IsMotionEnabledProperty, _container, DrawerContainerX.IsMotionEnabledProperty);
             BindUtils.RelayBind(this, CloseWhenClickOnMaskProperty, _container, DrawerContainerX.CloseWhenClickOnMaskProperty);
         }
+    }
+
+    protected internal virtual void NotifyBeforeOpen(DrawerLayer layer)
+    {
+        var      current = Parent;
+        while (current != null && current.GetType() != typeof(DrawerLayer))
+        {
+            if (current is DrawerContainerX container)
+            {
+                if (container.Drawer != null && container.Drawer.TryGetTarget(out var drawer))
+                {
+                    drawer.NotifyChildDrawerAboutToOpen(this);
+                }
+            }
+            
+            current = current.Parent;
+        }
+    }
+
+    internal void NotifyChildDrawerAboutToOpen(DrawerX childDrawer)
+    {
+        Console.WriteLine(childDrawer);
+        if (_container != null)
+        {
+            _container.Background = Brushes.Brown;
+        }
+    }
+
+    protected internal virtual void NotifyBeforeClose(DrawerLayer layer)
+    {
+        
     }
     
     protected internal virtual void NotifyOpened()
