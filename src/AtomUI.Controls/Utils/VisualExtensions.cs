@@ -22,4 +22,22 @@ public static class VisualExtensions
         }
         return null;
     }
+    
+    public static bool HasChild(this Visual? visual, Visual searchedChild)
+    {
+        if (visual == null)
+        {
+            return false;
+        }
+           
+        IEnumerable<Visual> visualChildren = visual.GetVisualChildren();
+        foreach (var child in visualChildren)
+        {
+            if (child == searchedChild)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 }

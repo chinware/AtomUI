@@ -331,7 +331,7 @@ public class Drawer : Control,
 
     private void Open()
     {
-        var layer = ScopeAwareAdornerLayer.GetDrawerLayer(this);
+        var layer = ScopeAwareAdornerLayer.GetLayer(this);
         Debug.Assert(layer != null);
         NotifyBeforeOpen(layer);
         CreateDrawerContainer();
@@ -341,7 +341,7 @@ public class Drawer : Control,
 
     private void Close()
     {
-        var layer = ScopeAwareAdornerLayer.GetDrawerLayer(this);
+        var layer = ScopeAwareAdornerLayer.GetLayer(this);
         Debug.Assert(layer != null);
         NotifyBeforeClose(layer);
         Debug.Assert(_container != null);

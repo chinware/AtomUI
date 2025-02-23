@@ -9,6 +9,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Layout;
 using Avalonia.Media;
+using Avalonia.Threading;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls.Primitives;
@@ -71,7 +72,7 @@ public class ScopeAwareAdornerLayer : Canvas
         control.SetValue(AdornedElementProperty, adorned);
     }
 
-    public static ScopeAwareAdornerLayer? GetDrawerLayer(Visual visual)
+    public static ScopeAwareAdornerLayer? GetLayer(Visual visual)
     {
         Layoutable? layerHost = visual.FindAncestorOfType<ScrollContentPresenter>(true);
         var         adorned   = GetAdornedElement(visual);
@@ -196,9 +197,10 @@ public class ScopeAwareAdornerLayer : Canvas
             info.Subscription = adorned.GetObservable(BoundsProperty).Subscribe(x =>
             {
                 Debug.Assert(LayerHost != null);
-                double offsetX           = 0d;
-                double offsetY           = 0d;
-                var    relateToHostPoint = adorned.TranslatePoint(new Point(0, 0), LayerHost) ?? new Point(0, 0);
+                double offsetX = 0d;
+                double offsetY = 0d;
+
+                var relateToHostPoint = adorned.TranslatePoint(new Point(0, 0), LayerHost) ?? new Point(0, 0);
                 if (LayerHost is ScrollContentPresenter scrollContentPresenter)
                 {
                     offsetX = scrollContentPresenter.Offset.X;
@@ -210,8 +212,10 @@ public class ScopeAwareAdornerLayer : Canvas
                 var translationMatrix = LayerHost != null
                     ? Matrix.CreateTranslation(offsetX, offsetY)
                     : Matrix.Identity;
-                info.Bounds = new TransformedBounds(new Rect(adorned.DesiredSize),
-                    new Rect(adorned.DesiredSize),
+                var adornedWidth  = Math.Max(adorned.Bounds.Width, adorned.DesiredSize.Width);
+                var adornedHeight = Math.Max(adorned.Bounds.Height, adorned.DesiredSize.Height);
+                info.Bounds = new TransformedBounds(new Rect(new Size(adornedWidth, adornedHeight)),
+                    new Rect(new Size(adornedWidth, adornedHeight)),
                     translationMatrix);
                 InvalidateMeasure();
             });
@@ -269,7 +273,7 @@ public class ScopeAwareAdornerLayer : Canvas
 
     private static void Attach(Visual visual, Control adorner)
     {
-        var layer = ScopeAwareAdornerLayer.GetDrawerLayer(visual);
+        var layer = ScopeAwareAdornerLayer.GetLayer(visual);
         AddVisualAdorner(visual, adorner, layer);
         visual.SetValue(SavedAdornerLayerProperty, layer);
     }

@@ -4,37 +4,37 @@ using AtomUI.Controls.Primitives;
 using AtomUI.Controls.Utils;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Layout;
 using Avalonia.Media;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
 public sealed class Watermark : Control
 {
-    public static WatermarkGlyph? GetGlyph(Visual element)
+    public static WatermarkGlyph? GetGlyph(Layoutable element)
     {
         return element.GetValue(GlyphProperty);
     }
 
-    public static void SetGlyph(Visual element, WatermarkGlyph? value)
+    public static void SetGlyph(Layoutable element, WatermarkGlyph? value)
     {
         element.SetValue(GlyphProperty, value);
     }
 
     public static readonly AttachedProperty<WatermarkGlyph?> GlyphProperty = AvaloniaProperty
-        .RegisterAttached<Watermark, Visual, WatermarkGlyph?>("Glyph");
+        .RegisterAttached<Watermark, Layoutable, WatermarkGlyph?>("Glyph");
 
-    public Visual Target { get; }
+    public Layoutable Target { get; }
 
     private WatermarkGlyph? Glyph { get; }
 
     static Watermark()
     {
         IsHitTestVisibleProperty.OverrideMetadata<Watermark>(new StyledPropertyMetadata<bool>(false));
-        GlyphProperty.Changed.AddClassHandler<Visual>(OnGlyphChanged);
+        GlyphProperty.Changed.AddClassHandler<Layoutable>(OnGlyphChanged);
     }
 
-    private Watermark(Visual target, WatermarkGlyph? glyph)
+    private Watermark(Layoutable target, WatermarkGlyph? glyph)
     {
         Target = target;
         Glyph  = glyph;
@@ -45,53 +45,69 @@ public sealed class Watermark : Control
         }
     }
 
-    private static void OnGlyphChanged(Visual target, AvaloniaPropertyChangedEventArgs arg)
+    private static void OnGlyphChanged(Layoutable target, AvaloniaPropertyChangedEventArgs arg)
     {
-        if (target.IsAttachedToVisualTree())
+        if (target.IsArrangeValid)
         {
             InstallWatermark(target);
         }
-        else
-        {
-            target.AttachedToVisualTree += TargetOnAttachedToVisualTree;
-        }
+        target.LayoutUpdated += HandleTargetLayoutUpdated;
     }
 
-    private static void TargetOnAttachedToVisualTree(object? sender, VisualTreeAttachmentEventArgs e)
+    private static void HandleTargetLayoutUpdated(object? sender, EventArgs e)
     {
-        if (sender is not Visual target)
+        if (sender is not Layoutable target)
         {
             return;
         }
-
-        target.AttachedToVisualTree -= TargetOnAttachedToVisualTree;
-
+        target.LayoutUpdated -= HandleTargetLayoutUpdated;
         InstallWatermark(target);
     }
 
-    private static void InstallWatermark(Visual target)
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        UnInstallWatermark(this);
+    }
+
+    private static void InstallWatermark(Layoutable target)
     {
         if (CheckLayer(target, out var layer) == false)
         {
             return;
         }
 
-        var watermark = layer.GetAdorner<Watermark>(target);
+        var watermark = ScopeAwareAdornerLayer.GetAdorner(target);
         if (watermark != null)
         {
             return;
         }
 
         watermark = new Watermark(target, GetGlyph(target));
-        layer.AddAdorner(target, watermark);
+        ScopeAwareAdornerLayer.SetAdornedElement(watermark, target);
+        layer.Children.Add(watermark);
     }
 
-    private static bool CheckLayer(Visual target, [NotNullWhen(true)] out AtomLayer? layer)
+    private static void UnInstallWatermark(Visual target)
     {
-        layer = target.GetLayer();
+        if (CheckLayer(target, out var layer) == false)
+        {
+            return;
+        }
+        var watermark = ScopeAwareAdornerLayer.GetAdorner(target);
+        if (watermark == null)
+        {
+            return;
+        }
+        layer.Children.Remove(watermark);
+    }
+
+    private static bool CheckLayer(Visual target, [NotNullWhen(true)] out ScopeAwareAdornerLayer? layer)
+    {
+        layer = ScopeAwareAdornerLayer.GetLayer(target);
         if (layer == null)
         {
-            Trace.WriteLine($"Can not get AxLayer for {target} to show a watermark.");
+            Trace.WriteLine($"Can not get ScopeAwareAdornerLayer for {target} to show a watermark.");
         }
 
         return layer != null;
