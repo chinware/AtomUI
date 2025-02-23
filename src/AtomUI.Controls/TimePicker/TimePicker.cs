@@ -1,6 +1,7 @@
 ﻿using AtomUI.Controls.Internal;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
+using AtomUI.Media;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
@@ -19,21 +20,22 @@ public class TimePicker : InfoPickerInput,
                           IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
-    
+
     public static readonly StyledProperty<bool> IsNeedConfirmProperty =
         AvaloniaProperty.Register<TimePicker, bool>(nameof(IsNeedConfirm));
-    
+
     public static readonly StyledProperty<bool> IsShowNowProperty =
         AvaloniaProperty.Register<TimePicker, bool>(nameof(IsShowNow), true);
-    
+
     public static readonly StyledProperty<int> MinuteIncrementProperty =
         AvaloniaProperty.Register<TimePicker, int>(nameof(MinuteIncrement), 1, coerce: CoerceMinuteIncrement);
 
     public static readonly StyledProperty<int> SecondIncrementProperty =
         AvaloniaProperty.Register<TimePicker, int>(nameof(SecondIncrement), 1, coerce: CoerceSecondIncrement);
-    
+
     public static readonly StyledProperty<ClockIdentifierType> ClockIdentifierProperty =
-        AvaloniaProperty.Register<TimePicker, ClockIdentifierType>(nameof(ClockIdentifier), ClockIdentifierType.HourClock12);
+        AvaloniaProperty.Register<TimePicker, ClockIdentifierType>(nameof(ClockIdentifier),
+            ClockIdentifierType.HourClock12);
 
     public static readonly StyledProperty<TimeSpan?> SelectedTimeProperty =
         AvaloniaProperty.Register<TimePicker, TimeSpan?>(nameof(SelectedTime),
@@ -42,19 +44,19 @@ public class TimePicker : InfoPickerInput,
     public static readonly StyledProperty<TimeSpan?> DefaultTimeProperty =
         AvaloniaProperty.Register<TimePicker, TimeSpan?>(nameof(DefaultTime),
             enableDataValidation: true);
-    
+
     public bool IsNeedConfirm
     {
         get => GetValue(IsNeedConfirmProperty);
         set => SetValue(IsNeedConfirmProperty, value);
     }
-    
+
     public bool IsShowNow
     {
         get => GetValue(IsShowNowProperty);
         set => SetValue(IsShowNowProperty, value);
     }
-    
+
     public int MinuteIncrement
     {
         get => GetValue(MinuteIncrementProperty);
@@ -89,24 +91,42 @@ public class TimePicker : InfoPickerInput,
 
     #region 内部属性定义
 
+    internal static readonly DirectProperty<TimePicker, double> PreferredWidthProperty
+        = AvaloniaProperty.RegisterDirect<TimePicker, double>(nameof(PreferredWidth),
+            o => o.PreferredWidth,
+            (o, v) => o.PreferredWidth = v);
+
+    private double _preferredWidth;
+
+    internal double PreferredWidth
+    {
+        get => _preferredWidth;
+        set => SetAndRaise(PreferredWidthProperty, ref _preferredWidth, value);
+    }
+
     Control IControlSharedTokenResourcesHost.HostControl => this;
-    
+
     string IControlSharedTokenResourcesHost.TokenId => TimePickerToken.ID;
 
     #endregion
-    
+
     private TimePickerPresenter? _pickerPresenter;
+
+    static TimePicker()
+    {
+        AffectsMeasure<TimePicker>(PreferredWidthProperty);
+    }
 
     public TimePicker()
     {
         this.RegisterResources();
     }
-    
+
     protected override Flyout CreatePickerFlyout()
     {
         return new TimePickerFlyout();
     }
-    
+
     protected override void NotifyFlyoutPresenterCreated(Control flyoutPresenter)
     {
         if (flyoutPresenter is TimePickerFlyoutPresenter timePickerFlyoutPresenter)
@@ -118,13 +138,14 @@ public class TimePicker : InfoPickerInput,
             };
         }
     }
-    
+
     private void ConfigurePickerPresenter(TimePickerPresenter? presenter)
     {
         if (presenter is null)
         {
             return;
         }
+
         BindUtils.RelayBind(this, IsMotionEnabledProperty, presenter, TimePickerPresenter.IsMotionEnabledProperty);
         BindUtils.RelayBind(this, MinuteIncrementProperty, presenter, TimePickerPresenter.MinuteIncrementProperty);
         BindUtils.RelayBind(this, SecondIncrementProperty, presenter, TimePickerPresenter.SecondIncrementProperty);
@@ -133,18 +154,18 @@ public class TimePicker : InfoPickerInput,
         BindUtils.RelayBind(this, IsNeedConfirmProperty, presenter, TimePickerPresenter.IsNeedConfirmProperty);
         BindUtils.RelayBind(this, IsShowNowProperty, presenter, TimePickerPresenter.IsShowNowProperty);
     }
-    
+
     protected override void NotifyFlyoutOpened()
     {
         base.NotifyFlyoutOpened();
         if (_pickerPresenter is not null)
         {
             _pickerPresenter.ChoosingStatueChanged += HandleChoosingStatueChanged;
-            _pickerPresenter.HoverTimeChanged  += HandleHoverTimeChanged;
+            _pickerPresenter.HoverTimeChanged      += HandleHoverTimeChanged;
             _pickerPresenter.Confirmed             += HandleConfirmed;
         }
     }
-    
+
     protected override void NotifyFlyoutAboutToClose(bool selectedIsValid)
     {
         base.NotifyFlyoutAboutToClose(selectedIsValid);
@@ -155,7 +176,7 @@ public class TimePicker : InfoPickerInput,
             _pickerPresenter.Confirmed             -= HandleConfirmed;
         }
     }
-    
+
     private void HandleChoosingStatueChanged(object? sender, ChoosingStatusEventArgs args)
     {
         _isChoosing = args.IsChoosing;
@@ -165,13 +186,13 @@ public class TimePicker : InfoPickerInput,
             ClearHoverSelectedInfo();
         }
     }
-    
+
     private void ClearHoverSelectedInfo()
     {
         Text = DateTimeUtils.FormatTimeSpan(SelectedTime,
             ClockIdentifier == ClockIdentifierType.HourClock12);
     }
-    
+
     private void HandleHoverTimeChanged(object? sender, TimeSelectedEventArgs args)
     {
         if (args.Time.HasValue)
@@ -184,7 +205,7 @@ public class TimePicker : InfoPickerInput,
             Text = null;
         }
     }
-    
+
     private void HandleConfirmed(object? sender, EventArgs args)
     {
         SelectedTime = _pickerPresenter?.SelectedTime;
@@ -207,12 +228,12 @@ public class TimePicker : InfoPickerInput,
     {
         SelectedTime = DefaultTime;
     }
-    
+
     protected override bool ShowClearButtonPredicate()
     {
         return SelectedTime is not null;
     }
-    
+
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
@@ -221,8 +242,16 @@ public class TimePicker : InfoPickerInput,
             Text = DateTimeUtils.FormatTimeSpan(SelectedTime,
                 ClockIdentifier == ClockIdentifierType.HourClock12);
         }
+        else if (change.Property == FontSizeProperty ||
+                 change.Property == FontFamilyProperty ||
+                 change.Property == FontFamilyProperty ||
+                 change.Property == FontStyleProperty ||
+                 change.Property == ClockIdentifierProperty)
+        {
+            CalculatePreferredWidth();
+        }
     }
-    
+
     private static int CoerceMinuteIncrement(AvaloniaObject sender, int value)
     {
         if (value < 1 || value > 59)
@@ -242,14 +271,39 @@ public class TimePicker : InfoPickerInput,
 
         return value;
     }
-    
+
+    private void CalculatePreferredWidth()
+    {
+        var text = DateTimeUtils.FormatTimeSpan(TimeSpan.Zero,
+            ClockIdentifier == ClockIdentifierType.HourClock12);
+        PreferredWidth = TextUtils.CalculateTextSize(text, FontSize, FontFamily, FontStyle, FontWeight).Width;
+    }
+
+    protected override Size MeasureOverride(Size availableSize)
+    {
+        var size   = base.MeasureOverride(availableSize);
+        var width  = size.Width;
+        var height = size.Height;
+        if (_pickerInnerBox is not null)
+        {
+            if (_pickerInnerBox.RightAddOnContent is Control rightAddOnContent)
+            {
+                width = Math.Max(width,
+                    PreferredWidth + rightAddOnContent.DesiredSize.Width +
+                    _pickerInnerBox.EffectiveInnerBoxPadding.Left + _pickerInnerBox.EffectiveInnerBoxPadding.Right);
+            }
+        }
+
+        return new Size(width, height);
+    }
+
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
+
         if (DefaultTime is not null && SelectedTime is null)
         {
             SelectedTime = DefaultTime;
         }
     }
-    
 }

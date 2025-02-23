@@ -138,7 +138,11 @@ internal class InfoPickerInputTheme : BaseControlTheme
     
     protected override void BuildStyles()
     {
-        base.BuildStyles();
+        var commonStyle = new Style(selector => selector.Nesting());
+
+        commonStyle.Add(InfoPickerInput.HorizontalAlignmentProperty, HorizontalAlignment.Left);
+        commonStyle.Add(InfoPickerInput.VerticalAlignmentProperty, VerticalAlignment.Top);
+        
         var enableStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(InfoPickerInput.IsEnabledProperty, true));
         enableStyle.Add(InfoPickerInput.InputTextBrushProperty, SharedTokenKey.ColorText);
@@ -147,11 +151,12 @@ internal class InfoPickerInputTheme : BaseControlTheme
         choosingStyle.Add(InfoPickerInput.InputTextBrushProperty, SharedTokenKey.ColorTextTertiary);
         enableStyle.Add(choosingStyle);
         
-        Add(enableStyle);
+        commonStyle.Add(enableStyle);
         
         var disabledStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(InfoPickerInput.IsEnabledProperty, false));
         disabledStyle.Add(InfoPickerInput.InputTextBrushProperty, SharedTokenKey.ColorTextDisabled);
-        Add(disabledStyle);
+        commonStyle.Add(disabledStyle);
+        Add(commonStyle);
     }
 }

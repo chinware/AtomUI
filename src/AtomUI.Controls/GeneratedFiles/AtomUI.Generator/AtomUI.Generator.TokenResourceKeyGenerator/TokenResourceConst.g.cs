@@ -701,7 +701,6 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey ButtonsMargin = new TokenResourceKey("TimePicker.ButtonsMargin");
         public static readonly TokenResourceKey RangePickerArrowMargin = new TokenResourceKey("TimePicker.RangePickerArrowMargin");
         public static readonly TokenResourceKey RangePickerIndicatorThickness = new TokenResourceKey("TimePicker.RangePickerIndicatorThickness");
-        public static readonly TokenResourceKey PickerInputMinWidth = new TokenResourceKey("TimePicker.PickerInputMinWidth");
         public static readonly TokenResourceKey HeaderMargin = new TokenResourceKey("TimePicker.HeaderMargin");
     }
 

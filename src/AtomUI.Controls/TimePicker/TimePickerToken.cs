@@ -42,11 +42,6 @@ internal class TimePickerToken : AbstractControlDesignToken
     /// 选择指示器厚度
     /// </summary>
     public double RangePickerIndicatorThickness { get; set; }
-    
-    /// <summary>
-    /// 时间选择器最小的宽度
-    /// </summary>
-    public double PickerInputMinWidth { get; set; }
 
     /// <summary>
     /// Header 头内间距
@@ -62,7 +57,6 @@ internal class TimePickerToken : AbstractControlDesignToken
         ButtonsMargin                 = new Thickness(0, SharedToken.MarginXS, 0, 0);
         RangePickerArrowMargin        = new Thickness(SharedToken.MarginXS, 0);
         RangePickerIndicatorThickness = SharedToken.LineWidthFocus;
-        PickerInputMinWidth           = 120;
         HeaderMargin                  = new Thickness(0, 0, 0, 3);
     }
 }
