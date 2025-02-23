@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using AtomUI.Controls.Primitives;
 using AtomUI.MotionScene;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -218,11 +219,11 @@ internal class DrawerContainer : ContentControl
         TokenResourceBinder.CreateTokenBinding(this, BackgroundProperty, SharedTokenKey.ColorTransparent);
     }
 
-    internal void Open(DrawerLayer layer)
+    internal void Open(ScopeAwareAdornerLayer layer)
     {
         if (Drawer != null && Drawer.TryGetTarget(out var drawer))
         {
-            DrawerLayer.SetAttachTargetElement(this, drawer.OpenOn);
+            ScopeAwareAdornerLayer.SetAdornedElement(this, drawer.OpenOn);
             layer.Children.Add(this);
             Dispatcher.UIThread.Post(() =>
             {
@@ -256,7 +257,7 @@ internal class DrawerContainer : ContentControl
         }
     }
 
-    internal void Close(DrawerLayer layer)
+    internal void Close(ScopeAwareAdornerLayer layer)
     {
         if (Drawer != null && Drawer.TryGetTarget(out var drawer))
         {

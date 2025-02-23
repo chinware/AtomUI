@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using AtomUI.Controls.Primitives;
 using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
@@ -15,8 +16,8 @@ using Avalonia.VisualTree;
 namespace AtomUI.Controls;
 
 public class Drawer : Control,
-                       IAnimationAwareControl,
-                       IControlSharedTokenResourcesHost
+                      IAnimationAwareControl,
+                      IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
 
@@ -61,7 +62,7 @@ public class Drawer : Control,
 
     public static readonly StyledProperty<SizeType> DialogSizeTypeProperty =
         AvaloniaProperty.Register<Drawer, SizeType>(nameof(DialogSizeType), SizeType.Small);
-    
+
     public static readonly StyledProperty<double> DialogSizeProperty =
         AvaloniaProperty.Register<Drawer, double>(nameof(DialogSize));
 
@@ -161,7 +162,7 @@ public class Drawer : Control,
         get => GetValue(DialogSizeTypeProperty);
         set => SetValue(DialogSizeTypeProperty, value);
     }
-    
+
     public double DialogSize
     {
         get => GetValue(DialogSizeProperty);
@@ -210,7 +211,7 @@ public class Drawer : Control,
         this.RegisterResources();
         this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
     }
-    
+
     public static Drawer? GetDrawer(Visual element)
     {
         var container = element.FindAncestorOfType<DrawerContainer>();
@@ -246,7 +247,7 @@ public class Drawer : Control,
                 }
             });
         }
-        
+
         TokenResourceBinder.CreateTokenBinding(this, PushOffsetPercentProperty, DrawerTokenKey.PushOffsetPercent);
         SetupDialogSizeTypeBindings();
     }
@@ -270,8 +271,8 @@ public class Drawer : Control,
     private Drawer? FindParentDrawer()
     {
         Drawer? target  = null;
-        var      current = Parent;
-        while (current != null && current.GetType() != typeof(DrawerLayer))
+        var     current = Parent;
+        while (current != null && current.GetType() != typeof(ScopeAwareAdornerLayer))
         {
             if (current is DrawerContainer container)
             {
@@ -311,7 +312,7 @@ public class Drawer : Control,
         {
             if (OpenOn != null)
             {
-                DrawerLayer.SetAttachTargetElement(this, OpenOn);
+                ScopeAwareAdornerLayer.SetAdornedElement(this, OpenOn);
             }
         }
     }
@@ -330,7 +331,7 @@ public class Drawer : Control,
 
     private void Open()
     {
-        var layer = DrawerLayer.GetDrawerLayer(this);
+        var layer = ScopeAwareAdornerLayer.GetDrawerLayer(this);
         Debug.Assert(layer != null);
         NotifyBeforeOpen(layer);
         CreateDrawerContainer();
@@ -340,7 +341,7 @@ public class Drawer : Control,
 
     private void Close()
     {
-        var layer = DrawerLayer.GetDrawerLayer(this);
+        var layer = ScopeAwareAdornerLayer.GetDrawerLayer(this);
         Debug.Assert(layer != null);
         NotifyBeforeClose(layer);
         Debug.Assert(_container != null);
@@ -373,10 +374,10 @@ public class Drawer : Control,
         }
     }
 
-    protected internal virtual void NotifyBeforeOpen(DrawerLayer layer)
+    protected internal virtual void NotifyBeforeOpen(ScopeAwareAdornerLayer layer)
     {
         var current = Parent;
-        while (current != null && current.GetType() != typeof(DrawerLayer))
+        while (current != null && current.GetType() != typeof(ScopeAwareAdornerLayer))
         {
             if (current is DrawerContainer container)
             {
@@ -400,10 +401,10 @@ public class Drawer : Control,
         _container?.NotifyChildDrawerAboutToClose(childDrawer);
     }
 
-    protected internal virtual void NotifyBeforeClose(DrawerLayer layer)
+    protected internal virtual void NotifyBeforeClose(ScopeAwareAdornerLayer layer)
     {
         var current = Parent;
-        while (current != null && current.GetType() != typeof(DrawerLayer))
+        while (current != null && current.GetType() != typeof(ScopeAwareAdornerLayer))
         {
             if (current is DrawerContainer container)
             {
