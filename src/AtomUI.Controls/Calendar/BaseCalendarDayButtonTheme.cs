@@ -36,16 +36,16 @@ internal class BaseCalendarDayButtonTheme : BaseControlTheme
                 VerticalContentAlignment = VerticalAlignment.Center,
             };
 
-            var buttonLabel = new TextBlock()
+            var buttonLabel = new SingleLineText()
             {
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center,
             };
             
             contentPresenter.Content = buttonLabel;
-            BindUtils.RelayBind(calendarDayButton, BaseCalendarDayButton.ContentProperty, buttonLabel, TextBlock.TextProperty,
+            BindUtils.RelayBind(calendarDayButton, BaseCalendarDayButton.ContentProperty, buttonLabel, SingleLineText.TextProperty,
                 input => input?.ToString());
-            BindUtils.RelayBind(contentPresenter, ContentPresenter.ForegroundProperty, buttonLabel, TextBlock.ForegroundProperty);
+            BindUtils.RelayBind(contentPresenter, ContentPresenter.ForegroundProperty, buttonLabel, SingleLineText.ForegroundProperty);
 
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.PaddingProperty,
                 TemplatedControl.PaddingProperty);
