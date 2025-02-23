@@ -74,6 +74,11 @@ internal class DrawerToken : AbstractControlDesignToken
     /// 内容内间距
     /// </summary>
     public Thickness ContentPadding { get; set; }
+    
+    /// <summary>
+    /// 子 Drawer push 的 Offset 比率
+    /// </summary>
+    public double PushOffsetPercent { get; set; }
 
     internal override void CalculateFromAlias()
     {
@@ -183,13 +188,14 @@ internal class DrawerToken : AbstractControlDesignToken
             }
         ]);
 
-        SmallSize        = 378;
-        MiddleSize       = 520;
-        LargeSize        = 736;
-        HeaderMargin     = new Thickness(SharedToken.MarginLG, SharedToken.Margin);
-        FooterPadding    = new Thickness(SharedToken.Padding, SharedToken.PaddingXS);
-        CloseIconPadding = new Thickness(SharedToken.PaddingXXS);
-        CloseIconMargin  = new Thickness(0, 0, SharedToken.MarginXS, 0);
-        ContentPadding   = new Thickness(SharedToken.PaddingLG);
+        SmallSize         = 378;
+        MiddleSize        = 520;
+        LargeSize         = 736;
+        HeaderMargin      = new Thickness(SharedToken.MarginLG, SharedToken.Margin);
+        FooterPadding     = new Thickness(SharedToken.Padding, SharedToken.PaddingXS);
+        CloseIconPadding  = new Thickness(SharedToken.PaddingXXS);
+        CloseIconMargin   = new Thickness(0, 0, SharedToken.MarginXS, 0);
+        ContentPadding    = new Thickness(SharedToken.PaddingLG);
+        PushOffsetPercent = 0.4;
     }
 }

@@ -233,6 +233,7 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey CloseIconPadding = new TokenResourceKey("Drawer.CloseIconPadding");
         public static readonly TokenResourceKey CloseIconMargin = new TokenResourceKey("Drawer.CloseIconMargin");
         public static readonly TokenResourceKey ContentPadding = new TokenResourceKey("Drawer.ContentPadding");
+        public static readonly TokenResourceKey PushOffsetPercent = new TokenResourceKey("Drawer.PushOffsetPercent");
     }
 
     public static class EmptyIndicatorTokenKey

@@ -1,33 +1,92 @@
-using AtomUI.Controls.Primitives;
+using System.Diagnostics;
+using AtomUI.Data;
+using AtomUI.Theme;
+using AtomUI.Theme.Data;
+using AtomUI.Theme.Styling;
+using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
+using Avalonia.Controls.Templates;
 using Avalonia.Data;
-using Avalonia.Media;
+using Avalonia.LogicalTree;
 using Avalonia.Metadata;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
-public class Drawer : TemplatedControl
+public class Drawer : Control,
+                       IAnimationAwareControl,
+                       IControlSharedTokenResourcesHost
 {
-    public static Drawer? GetDrawer(Visual element)
-    {
-        var container = element.FindAncestorOfType<DrawerContainer>();
-        return container?.Drawer;
-    }
+    #region 公共属性定义
 
-    #region Properties
+    public static readonly StyledProperty<object?> ContentProperty =
+        AvaloniaProperty.Register<Drawer, object?>(nameof(Content));
+
+    public static readonly StyledProperty<IDataTemplate?> ContentTemplateProperty =
+        AvaloniaProperty.Register<Drawer, IDataTemplate?>(nameof(ContentTemplate));
+
+    public static readonly StyledProperty<bool> IsOpenProperty = AvaloniaProperty
+        .Register<Drawer, bool>(nameof(IsOpen), false, false, BindingMode.TwoWay);
+
+    public static readonly StyledProperty<DrawerPlacement> PlacementProperty = AvaloniaProperty
+        .Register<Drawer, DrawerPlacement>(nameof(Placement), DrawerPlacement.Right);
+
+    public static readonly StyledProperty<Visual?> OpenOnProperty = AvaloniaProperty
+        .Register<Drawer, Visual?>(nameof(OpenOn));
+
+    public static readonly StyledProperty<bool> IsShowMaskProperty = AvaloniaProperty
+        .Register<Drawer, bool>(nameof(IsShowMask), true);
+
+    public static readonly StyledProperty<bool> IsShowCloseButtonProperty = AvaloniaProperty
+        .Register<Drawer, bool>(nameof(IsShowCloseButton), true);
+
+    public static readonly StyledProperty<bool> CloseWhenClickOnMaskProperty = AvaloniaProperty
+        .Register<Drawer, bool>(nameof(CloseWhenClickOnMask), true);
+
+    public static readonly StyledProperty<string> TitleProperty = AvaloniaProperty
+        .Register<Drawer, string>(nameof(Title));
+
+    public static readonly StyledProperty<object?> FooterProperty =
+        AvaloniaProperty.Register<Drawer, object?>(nameof(Footer));
+
+    public static readonly StyledProperty<IDataTemplate?> FooterTemplateProperty =
+        AvaloniaProperty.Register<Drawer, IDataTemplate?>(nameof(FooterTemplate));
+
+    public static readonly StyledProperty<object?> ExtraProperty =
+        AvaloniaProperty.Register<Drawer, object?>(nameof(Extra));
+
+    public static readonly StyledProperty<IDataTemplate?> ExtraTemplateProperty =
+        AvaloniaProperty.Register<Drawer, IDataTemplate?>(nameof(ExtraTemplate));
+
+    public static readonly StyledProperty<SizeType> DialogSizeTypeProperty =
+        AvaloniaProperty.Register<Drawer, SizeType>(nameof(DialogSizeType), SizeType.Small);
+    
+    public static readonly StyledProperty<double> DialogSizeProperty =
+        AvaloniaProperty.Register<Drawer, double>(nameof(DialogSize));
+
+    public static readonly StyledProperty<double> PushOffsetPercentProperty =
+        AvaloniaProperty.Register<Drawer, double>(nameof(PushOffsetPercent));
+
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AvaloniaProperty.Register<Drawer, bool>(nameof(IsMotionEnabled));
+
+    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
+        = AvaloniaProperty.Register<Drawer, bool>(nameof(IsWaveAnimationEnabled), true);
 
     [Content]
-    public Control? Content
+    [DependsOn(nameof(ContentTemplate))]
+    public object? Content
     {
         get => GetValue(ContentProperty);
         set => SetValue(ContentProperty, value);
     }
 
-    public static readonly StyledProperty<Control?> ContentProperty = AvaloniaProperty
-        .Register<Drawer, Control?>(nameof(Content));
+    public IDataTemplate? ContentTemplate
+    {
+        get => GetValue(ContentTemplateProperty);
+        set => SetValue(ContentTemplateProperty, value);
+    }
 
     public bool IsOpen
     {
@@ -35,25 +94,11 @@ public class Drawer : TemplatedControl
         set => SetValue(IsOpenProperty, value);
     }
 
-    public static readonly StyledProperty<bool> IsOpenProperty = AvaloniaProperty
-        .Register<Drawer, bool>(nameof(IsOpen), false, false, BindingMode.TwoWay);
-
     public DrawerPlacement Placement
     {
         get => GetValue(PlacementProperty);
         set => SetValue(PlacementProperty, value);
     }
-
-    public static readonly StyledProperty<DrawerPlacement> PlacementProperty = AvaloniaProperty
-        .Register<Drawer, DrawerPlacement>(nameof(Placement), DrawerPlacement.Right);
-
-    public DrawerOpenMode OpenMode
-    {
-        get => GetValue(OpenModeProperty);
-        set => SetValue(OpenModeProperty, value);
-    }
-    public static readonly StyledProperty<DrawerOpenMode> OpenModeProperty = AvaloniaProperty
-        .Register<Drawer, DrawerOpenMode>(nameof(OpenMode), DrawerOpenMode.Overlay);
 
     public Visual? OpenOn
     {
@@ -61,17 +106,17 @@ public class Drawer : TemplatedControl
         set => SetValue(OpenOnProperty, value);
     }
 
-    public static readonly StyledProperty<Visual?> OpenOnProperty = AvaloniaProperty
-        .Register<Drawer, Visual?>(nameof(OpenOn));
-
-    public bool ShowMask
+    public bool IsShowMask
     {
-        get => GetValue(ShowMaskProperty);
-        set => SetValue(ShowMaskProperty, value);
+        get => GetValue(IsShowMaskProperty);
+        set => SetValue(IsShowMaskProperty, value);
     }
 
-    public static readonly StyledProperty<bool> ShowMaskProperty = AvaloniaProperty
-        .Register<Drawer, bool>(nameof(ShowMask), true);
+    public bool IsShowCloseButton
+    {
+        get => GetValue(IsShowCloseButtonProperty);
+        set => SetValue(IsShowCloseButtonProperty, value);
+    }
 
     public bool CloseWhenClickOnMask
     {
@@ -79,71 +124,306 @@ public class Drawer : TemplatedControl
         set => SetValue(CloseWhenClickOnMaskProperty, value);
     }
 
-    public static readonly StyledProperty<bool> CloseWhenClickOnMaskProperty = AvaloniaProperty
-        .Register<Drawer, bool>(nameof(CloseWhenClickOnMask), true);
+    public string Title
+    {
+        get => GetValue(TitleProperty);
+        set => SetValue(TitleProperty, value);
+    }
+
+    [DependsOn(nameof(FooterTemplate))]
+    public object? Footer
+    {
+        get => GetValue(FooterProperty);
+        set => SetValue(FooterProperty, value);
+    }
+
+    public IDataTemplate? FooterTemplate
+    {
+        get => GetValue(FooterTemplateProperty);
+        set => SetValue(FooterTemplateProperty, value);
+    }
+
+    [DependsOn(nameof(ExtraTemplate))]
+    public object? Extra
+    {
+        get => GetValue(ExtraProperty);
+        set => SetValue(ExtraProperty, value);
+    }
+
+    public IDataTemplate? ExtraTemplate
+    {
+        get => GetValue(ExtraTemplateProperty);
+        set => SetValue(ExtraTemplateProperty, value);
+    }
+
+    public SizeType DialogSizeType
+    {
+        get => GetValue(DialogSizeTypeProperty);
+        set => SetValue(DialogSizeTypeProperty, value);
+    }
+    
+    public double DialogSize
+    {
+        get => GetValue(DialogSizeProperty);
+        set => SetValue(DialogSizeProperty, value);
+    }
+
+    public double PushOffsetPercent
+    {
+        get => GetValue(PushOffsetPercentProperty);
+        set => SetValue(PushOffsetPercentProperty, value);
+    }
+
+    public bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
+    }
+
+    public bool IsWaveAnimationEnabled
+    {
+        get => GetValue(IsWaveAnimationEnabledProperty);
+        set => SetValue(IsWaveAnimationEnabledProperty, value);
+    }
 
     #endregion
 
-    #region Ctor
+    #region 公共事件定义
 
-    static Drawer()
-    {
-        IsOpenProperty.Changed.AddClassHandler<Drawer>(OnIsOpenChanged);
-    }
+    public event EventHandler? Opened;
+    public event EventHandler? Closed;
+
+    #endregion
+
+    #region 内部属性定义
+
+    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IControlSharedTokenResourcesHost.HostControl => this;
+    string IControlSharedTokenResourcesHost.TokenId => DrawerToken.ID;
+
+    #endregion
+
+    private DrawerContainer? _container;
 
     public Drawer()
     {
-        this[!AtomLayer.BoundsAnchorProperty] = this[!OpenOnProperty];
+        this.RegisterResources();
+        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
+    }
+    
+    public static Drawer? GetDrawer(Visual element)
+    {
+        var container = element.FindAncestorOfType<DrawerContainer>();
+        if (container?.Drawer != null && container.Drawer.TryGetTarget(out var drawer))
+        {
+            return drawer;
+        }
+
+        return null;
     }
 
-    #endregion
-
-    #region Open & Close
-
-    private DrawerContainer? _container;
-    private Border?          _element;
-
-    private static void OnIsOpenChanged(Drawer drawer, AvaloniaPropertyChangedEventArgs arg)
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        if (drawer.IsOpen)
+        base.OnAttachedToLogicalTree(e);
+        var parentDrawer = FindParentDrawer();
+        if (parentDrawer != null)
         {
-            drawer.Open();
+            BindUtils.RelayBind(parentDrawer, OpenOnProperty, this, OpenOnProperty, BindingMode.Default,
+                BindingPriority.Template);
+            BindUtils.RelayBind(parentDrawer, IsMotionEnabledProperty, this, IsMotionEnabledProperty,
+                BindingMode.Default, BindingPriority.Template);
+            BindUtils.RelayBind(parentDrawer, IsWaveAnimationEnabledProperty, this, IsWaveAnimationEnabledProperty,
+                BindingMode.Default, BindingPriority.Template);
         }
         else
         {
-            drawer.Close();
+            Bind(OpenOnProperty, new Binding()
+            {
+                Priority = BindingPriority.Template,
+                RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor)
+                {
+                    AncestorType = typeof(TopLevel),
+                }
+            });
+        }
+        
+        TokenResourceBinder.CreateTokenBinding(this, PushOffsetPercentProperty, DrawerTokenKey.PushOffsetPercent);
+        SetupDialogSizeTypeBindings();
+    }
+
+    private void SetupDialogSizeTypeBindings()
+    {
+        if (DialogSizeType == SizeType.Large)
+        {
+            TokenResourceBinder.CreateTokenBinding(this, DialogSizeProperty, DrawerTokenKey.LargeSize);
+        }
+        else if (DialogSizeType == SizeType.Middle)
+        {
+            TokenResourceBinder.CreateTokenBinding(this, DialogSizeProperty, DrawerTokenKey.MiddleSize);
+        }
+        else
+        {
+            TokenResourceBinder.CreateTokenBinding(this, DialogSizeProperty, DrawerTokenKey.SmallSize);
+        }
+    }
+
+    private Drawer? FindParentDrawer()
+    {
+        Drawer? target  = null;
+        var      current = Parent;
+        while (current != null && current.GetType() != typeof(DrawerLayer))
+        {
+            if (current is DrawerContainer container)
+            {
+                if (container.Drawer != null && container.Drawer.TryGetTarget(out var drawer))
+                {
+                    target = drawer;
+                }
+            }
+
+            if (target != null)
+            {
+                break;
+            }
+
+            current = current.Parent;
+        }
+
+        return target;
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (VisualRoot != null)
+        {
+            if (change.Property == IsOpenProperty)
+            {
+                HandleIsOpenChanged();
+            }
+            else if (change.Property == DialogSizeTypeProperty)
+            {
+                SetupDialogSizeTypeBindings();
+            }
+        }
+
+        if (change.Property == OpenOnProperty)
+        {
+            if (OpenOn != null)
+            {
+                DrawerLayer.SetAttachTargetElement(this, OpenOn);
+            }
+        }
+    }
+
+    private void HandleIsOpenChanged()
+    {
+        if (IsOpen)
+        {
+            Open();
+        }
+        else
+        {
+            Close();
         }
     }
 
     private void Open()
     {
-        var layer = this.GetLayer();
-        if (layer == null)
-        {
-            return;
-        }
-        
-        _element ??= new Border()
-        {
-            Child      = Content,
-            Background = Brushes.White,
-        };
-        _container ??= new DrawerContainer(this, _element);
-        _container.SetIsClosing(false);
-        layer.AddAdorner(this, _container);
+        var layer = DrawerLayer.GetDrawerLayer(this);
+        Debug.Assert(layer != null);
+        NotifyBeforeOpen(layer);
+        CreateDrawerContainer();
+        Debug.Assert(_container != null);
+        _container.Open(layer);
     }
 
     private void Close()
     {
-        if (_container == null)
-        {
-            return;
-        }
-        
-        var layer = this.GetLayer();
-        layer?.BeginRemovingAdorner(_container, TimeSpan.FromMilliseconds(1000), () => IsOpen == false);
-        _container.SetIsClosing(true);
+        var layer = DrawerLayer.GetDrawerLayer(this);
+        Debug.Assert(layer != null);
+        NotifyBeforeClose(layer);
+        Debug.Assert(_container != null);
+        _container.Close(layer);
     }
 
-    #endregion
+    private void CreateDrawerContainer()
+    {
+        if (_container is null)
+        {
+            _container = new DrawerContainer()
+            {
+                Drawer = new WeakReference<Drawer>(this)
+            };
+            BindUtils.RelayBind(this, ContentProperty, _container, DrawerContainer.ContentProperty);
+            BindUtils.RelayBind(this, ContentTemplateProperty, _container, DrawerContainer.ContentTemplateProperty);
+            BindUtils.RelayBind(this, FooterProperty, _container, DrawerContainer.FooterProperty);
+            BindUtils.RelayBind(this, FooterTemplateProperty, _container, DrawerContainer.FooterTemplateProperty);
+            BindUtils.RelayBind(this, ExtraProperty, _container, DrawerContainer.ExtraProperty);
+            BindUtils.RelayBind(this, ExtraTemplateProperty, _container, DrawerContainer.ExtraTemplateProperty);
+            BindUtils.RelayBind(this, DialogSizeProperty, _container, DrawerContainer.DialogSizeProperty);
+            BindUtils.RelayBind(this, PlacementProperty, _container, DrawerContainer.PlacementProperty);
+            BindUtils.RelayBind(this, TitleProperty, _container, DrawerContainer.TitleProperty);
+            BindUtils.RelayBind(this, IsShowMaskProperty, _container, DrawerContainer.IsShowMaskProperty);
+            BindUtils.RelayBind(this, IsMotionEnabledProperty, _container, DrawerContainer.IsMotionEnabledProperty);
+            BindUtils.RelayBind(this, CloseWhenClickOnMaskProperty, _container,
+                DrawerContainer.CloseWhenClickOnMaskProperty);
+            BindUtils.RelayBind(this, PushOffsetPercentProperty, _container,
+                DrawerContainer.PushOffsetPercentProperty);
+        }
+    }
+
+    protected internal virtual void NotifyBeforeOpen(DrawerLayer layer)
+    {
+        var current = Parent;
+        while (current != null && current.GetType() != typeof(DrawerLayer))
+        {
+            if (current is DrawerContainer container)
+            {
+                if (container.Drawer != null && container.Drawer.TryGetTarget(out var drawer))
+                {
+                    drawer.NotifyChildDrawerAboutToOpen(this);
+                }
+            }
+
+            current = current.Parent;
+        }
+    }
+
+    internal void NotifyChildDrawerAboutToOpen(Drawer childDrawer)
+    {
+        _container?.NotifyChildDrawerAboutToOpen(childDrawer);
+    }
+
+    internal void NotifyChildDrawerAboutToClose(Drawer childDrawer)
+    {
+        _container?.NotifyChildDrawerAboutToClose(childDrawer);
+    }
+
+    protected internal virtual void NotifyBeforeClose(DrawerLayer layer)
+    {
+        var current = Parent;
+        while (current != null && current.GetType() != typeof(DrawerLayer))
+        {
+            if (current is DrawerContainer container)
+            {
+                if (container.Drawer != null && container.Drawer.TryGetTarget(out var drawer))
+                {
+                    drawer.NotifyChildDrawerAboutToClose(this);
+                }
+            }
+
+            current = current.Parent;
+        }
+    }
+
+    protected internal virtual void NotifyOpened()
+    {
+        Opened?.Invoke(this, EventArgs.Empty);
+    }
+
+    protected internal virtual void NotifyClosed()
+    {
+        Closed?.Invoke(this, EventArgs.Empty);
+    }
 }

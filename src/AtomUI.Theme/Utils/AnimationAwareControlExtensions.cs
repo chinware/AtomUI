@@ -27,7 +27,7 @@ public static class AnimationAwareControlExtensions
             }
         };
         
-        // // 如果被强行指定，那么在 resource 中记录下来，这样就屏蔽全局的
+        // 如果被强行指定，那么在 resource 中记录下来，这样就屏蔽全局的
         bindTarget.PropertyChanged += HandlePropertyChanged;
     }
 
@@ -64,6 +64,11 @@ public static class AnimationAwareControlExtensions
                     else
                     {
                         resourceKey = SharedTokenKey.EnableWaveAnimation;
+                    }
+
+                    if (resourceDictionary.ContainsKey(resourceKey))
+                    {
+                        resourceDictionary.Remove(resourceKey);
                     }
                     resourceDictionary.Add(resourceKey, newValue);
                 }

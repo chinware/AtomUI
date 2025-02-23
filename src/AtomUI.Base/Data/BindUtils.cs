@@ -5,9 +5,12 @@ namespace AtomUI.Data;
 
 public static class BindUtils
 {
-    public static IDisposable RelayBind(AvaloniaObject source, AvaloniaProperty sourceProperty, AvaloniaObject target,
+    public static IDisposable RelayBind(AvaloniaObject source, 
+                                        AvaloniaProperty sourceProperty, 
+                                        AvaloniaObject target,
                                         AvaloniaProperty? targetProperty = null,
-                                        BindingMode mode = BindingMode.Default)
+                                        BindingMode mode = BindingMode.Default,
+                                        BindingPriority priority = BindingPriority.LocalValue)
     {
         targetProperty ??= sourceProperty;
         var registry = AvaloniaPropertyRegistry.Instance;
@@ -31,7 +34,7 @@ public static class BindUtils
         {
             Source   = source,
             Property = sourceProperty,
-            Priority = BindingPriority.LocalValue,
+            Priority = priority,
             Mode     = mode
         };
         return target.Bind(targetProperty, descriptor);
@@ -42,7 +45,7 @@ public static class BindUtils
                                                           AvaloniaObject target,
                                                           AvaloniaProperty<TResult> targetProperty,
                                                           Func<TSource, TResult> converter,
-                                                          BindingPriority priority = BindingPriority.Template)
+                                                          BindingPriority priority = BindingPriority.LocalValue)
     {
         var registry = AvaloniaPropertyRegistry.Instance;
         if (!registry.IsRegistered(source.GetType(), sourceProperty))

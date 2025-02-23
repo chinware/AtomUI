@@ -1,6 +1,7 @@
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Reflection;
+using AtomUI.Controls.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
@@ -20,9 +21,6 @@ public class DrawerLayer : Canvas
 
     public static readonly AttachedProperty<Control?> AttachTargetElementProperty =
         AvaloniaProperty.RegisterAttached<DrawerLayer, Visual, Control?>("AttachTargetElement");
-
-    public static readonly AttachedProperty<bool> IsClipEnabledProperty =
-        AvaloniaProperty.RegisterAttached<DrawerLayer, Visual, bool>("IsClipEnabled", true);
 
     public static readonly AttachedProperty<Control?> DrawerContainerProperty =
         AvaloniaProperty.RegisterAttached<DrawerLayer, Visual, Control?>("DrawerContainer");
@@ -84,17 +82,7 @@ public class DrawerLayer : Canvas
                 layerHost = layerHost.FindAncestorOfType<ScrollContentPresenter>();
             }
         }
-
-        if (layerHost is ScrollContentPresenter scrollContentPresenter)
-        {
-            scrollContentPresenter.PropertyChanged += (sender, args) =>
-            {
-                if (args.Property == ScrollContentPresenter.OffsetProperty)
-                {
-                    Console.WriteLine($"{attachTarget?.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(visual)!)}");
-                }
-            };
-        }
+        
         layerHost ??= visual.FindAncestorOfType<VisualLayerManager>();
         layerHost ??= TopLevel.GetTopLevel(visual);
         
@@ -107,16 +95,6 @@ public class DrawerLayer : Canvas
         layer ??= InjectLayer(layerHost);
 
         return layer;
-    }
-
-    public static bool GetIsClipEnabled(Visual drawerContainer)
-    {
-        return drawerContainer.GetValue(IsClipEnabledProperty);
-    }
-
-    public static void SetIsClipEnabled(Visual drawerContainer, bool isClipEnabled)
-    {
-        drawerContainer.SetValue(IsClipEnabledProperty, isClipEnabled);
     }
 
     public static Control? GetDrawerContainer(Visual visual)
@@ -158,13 +136,12 @@ public class DrawerLayer : Canvas
             if (child is AvaloniaObject ao)
             {
                 var info          = ao.GetValue(AttachTargetElementInfoProperty);
-                var isClipEnabled = ao.GetValue(IsClipEnabledProperty);
 
                 if (info != null && info.Bounds.HasValue)
                 {
                     child.RenderTransform       = new MatrixTransform(info.Bounds.Value.Transform);
                     child.RenderTransformOrigin = new RelativePoint(new Point(0, 0), RelativeUnit.Absolute);
-                    UpdateClip(child, info.Bounds.Value, isClipEnabled);
+                    UpdateClip(child, info.Bounds.Value);
                     child.Arrange(info.Bounds.Value.Bounds);
                 }
                 else
@@ -186,7 +163,6 @@ public class DrawerLayer : Canvas
                 {
                     UpdateAttachTargetElement(i, i.GetValue(AttachTargetElementProperty));
                 }
-
                 break;
         }
 
@@ -216,8 +192,19 @@ public class DrawerLayer : Canvas
             }
             info.Subscription = attachTarget.GetObservable(BoundsProperty).Subscribe(x =>
             {
+                Debug.Assert(LayerHost != null);
+                double offsetX = 0d;
+                double offsetY = 0d;
+                var relateToHostPoint = attachTarget.TranslatePoint(new Point(0, 0), LayerHost) ?? new Point(0, 0);
+                if (LayerHost is ScrollContentPresenter scrollContentPresenter)
+                {
+                    offsetX = scrollContentPresenter.Offset.X;
+                    offsetY = scrollContentPresenter.Offset.Y;
+                }
+                offsetX += relateToHostPoint.X;
+                offsetY += relateToHostPoint.Y;
                 var translationMatrix = LayerHost != null
-                    ? attachTarget.TransformToVisual(LayerHost) ?? Matrix.Identity
+                    ? Matrix.CreateTranslation(offsetX, offsetY)
                     : Matrix.Identity;
                 info.Bounds = new TransformedBounds(new Rect(attachTarget.DesiredSize), new Rect(attachTarget.DesiredSize),
                     translationMatrix);
@@ -226,14 +213,8 @@ public class DrawerLayer : Canvas
         }
     }
 
-    private void UpdateClip(Control control, TransformedBounds bounds, bool isEnabled)
+    private void UpdateClip(Control control, TransformedBounds bounds)
     {
-        if (!isEnabled)
-        {
-            control.Clip = null;
-
-            return;
-        }
 
         if (!(control.Clip is RectangleGeometry clip))
         {
@@ -242,7 +223,7 @@ public class DrawerLayer : Canvas
         }
 
         var clipBounds = bounds.Bounds;
-        
+
         clip.Rect = clipBounds;
     }
 
@@ -360,7 +341,7 @@ public class DrawerLayer : Canvas
     
     private static DrawerLayer InjectLayer(Layoutable layerHost)
     {
-        var drawerLayer = layerHost.FindDescendantOfType<DrawerLayer>();
+        var drawerLayer = FindDrawerLayer(layerHost);
         if (drawerLayer != null)
         {
             return drawerLayer;
@@ -382,6 +363,7 @@ public class DrawerLayer : Canvas
         {
             if (scrollContentPresenter.Content is Control controlContent)
             {
+                var oldOffset = scrollContentPresenter.Offset;
                 // 直接内容控件
                 scrollContentPresenter.Content = null;
                 scrollContentPresenter.UpdateChild();
@@ -393,6 +375,11 @@ public class DrawerLayer : Canvas
                 panel.Children.Add(controlContent);
                 panel.Children.Add(drawerLayer);
                 scrollContentPresenter.Content = panel;
+                var scrollViewer = scrollContentPresenter.FindAncestorOfType<ScrollViewer>();
+                if (scrollViewer != null)
+                {
+                    scrollViewer.Offset = oldOffset;
+                }
             }
             else if (scrollContentPresenter.Content != null && scrollContentPresenter.ContentTemplate != null)
             {
@@ -415,6 +402,26 @@ public class DrawerLayer : Canvas
         }
     
         return drawerLayer;
+    }
+
+    private static DrawerLayer? FindDrawerLayer(Layoutable layerHost)
+    {
+        if (layerHost is ScrollContentPresenter scrollContentPresenter)
+        {
+            // 在 Panel 下面
+            var panel = scrollContentPresenter.FindChildOfType<Panel>();
+            if (panel is not null)
+            {
+                return panel.FindChildOfType<DrawerLayer>();
+            }
+        } 
+        else if (layerHost is VisualLayerManager visualLayerManager)
+        {
+            // 直接就在下面
+            visualLayerManager.FindChildOfType<DrawerLayer>();
+        }
+
+        return null;
     }
 
     private class AttachTargetElementInfo

@@ -25,13 +25,13 @@ internal class DrawerInfoContainerTheme : BaseControlTheme
     public const string HeaderTextPart = "PART_HeaderText";
     public const string ExtraContentPresenterPart = "PART_ExtraContentPresenter";
 
-    public DrawerInfoContainerTheme() : base(typeof(DrawerInfoContainerX))
+    public DrawerInfoContainerTheme() : base(typeof(DrawerInfoContainer))
     {
     }
 
     protected override IControlTemplate BuildControlTemplate()
     {
-        return new FuncControlTemplate<DrawerInfoContainerX>((drawerInfoContainer, scope) =>
+        return new FuncControlTemplate<DrawerInfoContainer>((drawerInfoContainer, scope) =>
         {
             var rootLayout = new Panel()
             {
@@ -66,22 +66,22 @@ internal class DrawerInfoContainerTheme : BaseControlTheme
             {
                 Name = InfoContainerPart,
             };
-            CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty, DrawerInfoContainerX.ContentProperty);
-            CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentTemplateProperty, DrawerInfoContainerX.ContentTemplateProperty);
+            CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty, DrawerInfoContainer.ContentProperty);
+            CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentTemplateProperty, DrawerInfoContainer.ContentTemplateProperty);
             Grid.SetRow(contentPresenter, 2);
             infoLayout.Children.Add(contentPresenter);
             
             var footerSeparator = new Separator();
             Grid.SetRow(footerSeparator, 3);
             infoLayout.Children.Add(footerSeparator);
-            CreateTemplateParentBinding(footerSeparator, Separator.IsVisibleProperty, DrawerInfoContainerX.HasFooterProperty);
+            CreateTemplateParentBinding(footerSeparator, Separator.IsVisibleProperty, DrawerInfoContainer.HasFooterProperty);
             var footerPresenter = new ContentPresenter
             {
                 Name = InfoFooterPart
             };
-            CreateTemplateParentBinding(footerPresenter, ContentPresenter.IsVisibleProperty, DrawerInfoContainerX.HasFooterProperty);
-            CreateTemplateParentBinding(footerPresenter, ContentPresenter.ContentProperty, DrawerInfoContainerX.FooterProperty);
-            CreateTemplateParentBinding(footerPresenter, ContentPresenter.ContentTemplateProperty, DrawerInfoContainerX.FooterTemplateProperty);
+            CreateTemplateParentBinding(footerPresenter, ContentPresenter.IsVisibleProperty, DrawerInfoContainer.HasFooterProperty);
+            CreateTemplateParentBinding(footerPresenter, ContentPresenter.ContentProperty, DrawerInfoContainer.FooterProperty);
+            CreateTemplateParentBinding(footerPresenter, ContentPresenter.ContentTemplateProperty, DrawerInfoContainer.FooterTemplateProperty);
             Grid.SetRow(footerPresenter, 4);
             infoLayout.Children.Add(footerPresenter);
             
@@ -119,9 +119,9 @@ internal class DrawerInfoContainerTheme : BaseControlTheme
         };
         closeButton.RegisterInNameScope(scope);
         Grid.SetColumn(closeButton, 0);
-        CreateTemplateParentBinding(closeButton, IconButton.IsMotionEnabledProperty, DrawerInfoContainerX.IsMotionEnabledProperty, 
+        CreateTemplateParentBinding(closeButton, IconButton.IsMotionEnabledProperty, DrawerInfoContainer.IsMotionEnabledProperty, 
             BindingPriority.LocalValue);
-        CreateTemplateParentBinding(closeButton, IconButton.IsVisibleProperty, DrawerInfoContainerX.IsShowCloseButtonProperty);
+        CreateTemplateParentBinding(closeButton, IconButton.IsVisibleProperty, DrawerInfoContainer.IsShowCloseButtonProperty);
         headerLayout.Children.Add(closeButton);
 
         var headerText = new TextBlock
@@ -130,7 +130,7 @@ internal class DrawerInfoContainerTheme : BaseControlTheme
             HorizontalAlignment = HorizontalAlignment.Left,
             VerticalAlignment = VerticalAlignment.Center,
         };
-        CreateTemplateParentBinding(headerText, TextBlock.TextProperty, DrawerInfoContainerX.TitleProperty);
+        CreateTemplateParentBinding(headerText, TextBlock.TextProperty, DrawerInfoContainer.TitleProperty);
         Grid.SetColumn(headerText, 1);
         headerLayout.Children.Add(headerText);
 
@@ -140,9 +140,9 @@ internal class DrawerInfoContainerTheme : BaseControlTheme
             HorizontalContentAlignment = HorizontalAlignment.Left,
             VerticalContentAlignment = VerticalAlignment.Top,
         };
-        CreateTemplateParentBinding(extraContentPresenter, ContentPresenter.IsVisibleProperty, DrawerInfoContainerX.HasExtraProperty);
-        CreateTemplateParentBinding(extraContentPresenter, ContentPresenter.ContentProperty, DrawerInfoContainerX.ExtraProperty);
-        CreateTemplateParentBinding(extraContentPresenter, ContentPresenter.ContentTemplateProperty, DrawerInfoContainerX.ExtraTemplateProperty);
+        CreateTemplateParentBinding(extraContentPresenter, ContentPresenter.IsVisibleProperty, DrawerInfoContainer.HasExtraProperty);
+        CreateTemplateParentBinding(extraContentPresenter, ContentPresenter.ContentProperty, DrawerInfoContainer.ExtraProperty);
+        CreateTemplateParentBinding(extraContentPresenter, ContentPresenter.ContentTemplateProperty, DrawerInfoContainer.ExtraTemplateProperty);
         Grid.SetColumn(extraContentPresenter, 2);
         headerLayout.Children.Add(extraContentPresenter);
     }
@@ -150,12 +150,12 @@ internal class DrawerInfoContainerTheme : BaseControlTheme
     protected override void BuildStyles()
     {
         base.BuildStyles();
-        this.Add(DrawerInfoContainerX.ClipToBoundsProperty, false);
+        this.Add(DrawerInfoContainer.ClipToBoundsProperty, false);
         var frameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
         frameStyle.Add(Border.BackgroundProperty, SharedTokenKey.ColorBgContainer);
         Add(frameStyle);
         BuildShadowsStyle();
-        BuildSizeTypeStyle();
+        BuildDialogSizeStyle();
         BuildHeaderStyle();
         BuildContentStyle();
         BuildFooterStyle();
@@ -164,7 +164,7 @@ internal class DrawerInfoContainerTheme : BaseControlTheme
     private void BuildShadowsStyle()
     {
         var topPlacementStyle = new Style(selector =>
-            selector.Nesting().PropertyEquals(DrawerInfoContainerX.PlacementProperty, DrawerPlacement.Top));
+            selector.Nesting().PropertyEquals(DrawerInfoContainer.PlacementProperty, DrawerPlacement.Top));
         {
             var frameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
             frameStyle.Add(Border.BoxShadowProperty, DrawerTokenKey.BoxShadowDrawerUp);
@@ -173,7 +173,7 @@ internal class DrawerInfoContainerTheme : BaseControlTheme
       
         Add(topPlacementStyle);
         var rightPlacementStyle = new Style(selector =>
-            selector.Nesting().PropertyEquals(DrawerInfoContainerX.PlacementProperty, DrawerPlacement.Right));
+            selector.Nesting().PropertyEquals(DrawerInfoContainer.PlacementProperty, DrawerPlacement.Right));
         {
             var frameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
             frameStyle.Add(Border.BoxShadowProperty, DrawerTokenKey.BoxShadowDrawerRight);
@@ -181,7 +181,7 @@ internal class DrawerInfoContainerTheme : BaseControlTheme
         }
         Add(rightPlacementStyle);
         var bottomPlacementStyle = new Style(selector =>
-            selector.Nesting().PropertyEquals(DrawerInfoContainerX.PlacementProperty, DrawerPlacement.Bottom));
+            selector.Nesting().PropertyEquals(DrawerInfoContainer.PlacementProperty, DrawerPlacement.Bottom));
         {
             var frameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
             frameStyle.Add(Border.BoxShadowProperty, DrawerTokenKey.BoxShadowDrawerDown);
@@ -189,96 +189,64 @@ internal class DrawerInfoContainerTheme : BaseControlTheme
         }
         Add(bottomPlacementStyle);
         var leftPlacementStyle = new Style(selector =>
-            selector.Nesting().PropertyEquals(DrawerInfoContainerX.PlacementProperty, DrawerPlacement.Left));
+            selector.Nesting().PropertyEquals(DrawerInfoContainer.PlacementProperty, DrawerPlacement.Left));
         {
             var frameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
             frameStyle.Add(Border.BoxShadowProperty, DrawerTokenKey.BoxShadowDrawerLeft);
-            bottomPlacementStyle.Add(frameStyle);
+            leftPlacementStyle.Add(frameStyle);
         }
         Add(leftPlacementStyle);
     }
 
-    private void BuildSizeTypeStyle()
+    private void BuildDialogSizeStyle()
     {
-        var smallSizeStyle = new Style(selector => selector.Nesting().PropertyEquals(DrawerInfoContainerX.SizeTypeProperty, SizeType.Small));
-
+        // 摆放位置样式
+        // TODO Error 这样直接设置 Binding 所有的该对样公用一个会不会内存泄漏
+        // TODO review memory leak
+        var topPlacementStyle = new Style(selector =>
+            selector.Nesting().PropertyEquals(DrawerInfoContainer.PlacementProperty, DrawerPlacement.Top));
+        topPlacementStyle.Add(DrawerInfoContainer.VerticalAlignmentProperty, VerticalAlignment.Top);
+        topPlacementStyle.Add(DrawerInfoContainer.HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
+        topPlacementStyle.Add(DrawerInfoContainer.HeightProperty, new Binding()
         {
-            // 摆放位置样式
-            var topPlacementStyle = new Style(selector => selector.Nesting().PropertyEquals(DrawerInfoContainerX.PlacementProperty, DrawerPlacement.Top));
-            topPlacementStyle.Add(DrawerInfoContainerX.VerticalAlignmentProperty, VerticalAlignment.Top);
-            topPlacementStyle.Add(DrawerInfoContainerX.HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
-            topPlacementStyle.Add(DrawerInfoContainerX.HeightProperty, DrawerTokenKey.SmallSize);
-            smallSizeStyle.Add(topPlacementStyle);
-            var rightPlacementStyle = new Style(selector => selector.Nesting().PropertyEquals(DrawerInfoContainerX.PlacementProperty, DrawerPlacement.Right));
-            rightPlacementStyle.Add(DrawerInfoContainerX.VerticalAlignmentProperty, VerticalAlignment.Stretch);
-            rightPlacementStyle.Add(DrawerInfoContainerX.HorizontalAlignmentProperty, HorizontalAlignment.Right);
-            rightPlacementStyle.Add(DrawerInfoContainerX.WidthProperty, DrawerTokenKey.SmallSize);
-            smallSizeStyle.Add(rightPlacementStyle);
-            var bottomPlacementStyle = new Style(selector => selector.Nesting().PropertyEquals(DrawerInfoContainerX.PlacementProperty, DrawerPlacement.Bottom));
-            bottomPlacementStyle.Add(DrawerInfoContainerX.VerticalAlignmentProperty, VerticalAlignment.Bottom);
-            bottomPlacementStyle.Add(DrawerInfoContainerX.HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
-            bottomPlacementStyle.Add(DrawerInfoContainerX.HeightProperty, DrawerTokenKey.SmallSize);
-            smallSizeStyle.Add(bottomPlacementStyle);
-            var leftPlacementStyle = new Style(selector => selector.Nesting().PropertyEquals(DrawerInfoContainerX.PlacementProperty, DrawerPlacement.Left));
-            leftPlacementStyle.Add(DrawerInfoContainerX.VerticalAlignmentProperty, VerticalAlignment.Stretch);
-            leftPlacementStyle.Add(DrawerInfoContainerX.HorizontalAlignmentProperty, HorizontalAlignment.Left);
-            leftPlacementStyle.Add(DrawerInfoContainerX.WidthProperty, DrawerTokenKey.SmallSize);
-            smallSizeStyle.Add(leftPlacementStyle);
-        }
-        
-        Add(smallSizeStyle);
-        
-        var middleSizeStyle = new Style(selector => selector.Nesting().PropertyEquals(DrawerInfoContainerX.SizeTypeProperty, SizeType.Middle));
+            Path           = DrawerInfoContainer.DialogSizeProperty.Name,
+            Mode           = BindingMode.Default,
+            RelativeSource = new RelativeSource(RelativeSourceMode.Self)
+        });
+        Add(topPlacementStyle);
+        var rightPlacementStyle = new Style(selector =>
+            selector.Nesting().PropertyEquals(DrawerInfoContainer.PlacementProperty, DrawerPlacement.Right));
+        rightPlacementStyle.Add(DrawerInfoContainer.VerticalAlignmentProperty, VerticalAlignment.Stretch);
+        rightPlacementStyle.Add(DrawerInfoContainer.HorizontalAlignmentProperty, HorizontalAlignment.Right);
+        rightPlacementStyle.Add(DrawerInfoContainer.WidthProperty, new Binding()
         {
-            // 摆放位置样式
-            var topPlacementStyle = new Style(selector => selector.Nesting().PropertyEquals(DrawerInfoContainerX.PlacementProperty, DrawerPlacement.Top));
-            topPlacementStyle.Add(DrawerInfoContainerX.VerticalAlignmentProperty, VerticalAlignment.Top);
-            topPlacementStyle.Add(DrawerInfoContainerX.HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
-            topPlacementStyle.Add(DrawerInfoContainerX.HeightProperty, DrawerTokenKey.MiddleSize);
-            middleSizeStyle.Add(topPlacementStyle);
-            var rightPlacementStyle = new Style(selector => selector.Nesting().PropertyEquals(DrawerInfoContainerX.PlacementProperty, DrawerPlacement.Right));
-            rightPlacementStyle.Add(DrawerInfoContainerX.VerticalAlignmentProperty, VerticalAlignment.Stretch);
-            rightPlacementStyle.Add(DrawerInfoContainerX.HorizontalAlignmentProperty, HorizontalAlignment.Right);
-            rightPlacementStyle.Add(DrawerInfoContainerX.WidthProperty, DrawerTokenKey.MiddleSize);
-            middleSizeStyle.Add(rightPlacementStyle);
-            var bottomPlacementStyle = new Style(selector => selector.Nesting().PropertyEquals(DrawerInfoContainerX.PlacementProperty, DrawerPlacement.Bottom));
-            bottomPlacementStyle.Add(DrawerInfoContainerX.VerticalAlignmentProperty, VerticalAlignment.Bottom);
-            bottomPlacementStyle.Add(DrawerInfoContainerX.HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
-            bottomPlacementStyle.Add(DrawerInfoContainerX.HeightProperty, DrawerTokenKey.MiddleSize);
-            middleSizeStyle.Add(bottomPlacementStyle);
-            var leftPlacementStyle = new Style(selector => selector.Nesting().PropertyEquals(DrawerInfoContainerX.PlacementProperty, DrawerPlacement.Left));
-            leftPlacementStyle.Add(DrawerInfoContainerX.VerticalAlignmentProperty, VerticalAlignment.Stretch);
-            leftPlacementStyle.Add(DrawerInfoContainerX.HorizontalAlignmentProperty, HorizontalAlignment.Left);
-            leftPlacementStyle.Add(DrawerInfoContainerX.WidthProperty, DrawerTokenKey.MiddleSize);
-            middleSizeStyle.Add(leftPlacementStyle);
-        }
-        Add(middleSizeStyle);
-        
-        var largeSizeStyle = new Style(selector => selector.Nesting().PropertyEquals(DrawerInfoContainerX.SizeTypeProperty, SizeType.Large));
+            Path           = DrawerInfoContainer.DialogSizeProperty.Name,
+            Mode           = BindingMode.Default,
+            RelativeSource = new RelativeSource(RelativeSourceMode.Self)
+        });
+        Add(rightPlacementStyle);
+        var bottomPlacementStyle = new Style(selector =>
+            selector.Nesting().PropertyEquals(DrawerInfoContainer.PlacementProperty, DrawerPlacement.Bottom));
+        bottomPlacementStyle.Add(DrawerInfoContainer.VerticalAlignmentProperty, VerticalAlignment.Bottom);
+        bottomPlacementStyle.Add(DrawerInfoContainer.HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
+        bottomPlacementStyle.Add(DrawerInfoContainer.HeightProperty, new Binding()
         {
-            // 摆放位置样式
-            var topPlacementStyle = new Style(selector => selector.Nesting().PropertyEquals(DrawerInfoContainerX.PlacementProperty, DrawerPlacement.Top));
-            topPlacementStyle.Add(DrawerInfoContainerX.VerticalAlignmentProperty, VerticalAlignment.Top);
-            topPlacementStyle.Add(DrawerInfoContainerX.HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
-            topPlacementStyle.Add(DrawerInfoContainerX.HeightProperty, DrawerTokenKey.LargeSize);
-            largeSizeStyle.Add(topPlacementStyle);
-            var rightPlacementStyle = new Style(selector => selector.Nesting().PropertyEquals(DrawerInfoContainerX.PlacementProperty, DrawerPlacement.Right));
-            rightPlacementStyle.Add(DrawerInfoContainerX.VerticalAlignmentProperty, VerticalAlignment.Stretch);
-            rightPlacementStyle.Add(DrawerInfoContainerX.HorizontalAlignmentProperty, HorizontalAlignment.Right);
-            rightPlacementStyle.Add(DrawerInfoContainerX.WidthProperty, DrawerTokenKey.LargeSize);
-            largeSizeStyle.Add(rightPlacementStyle);
-            var bottomPlacementStyle = new Style(selector => selector.Nesting().PropertyEquals(DrawerInfoContainerX.PlacementProperty, DrawerPlacement.Bottom));
-            bottomPlacementStyle.Add(DrawerInfoContainerX.VerticalAlignmentProperty, VerticalAlignment.Bottom);
-            bottomPlacementStyle.Add(DrawerInfoContainerX.HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
-            bottomPlacementStyle.Add(DrawerInfoContainerX.HeightProperty, DrawerTokenKey.LargeSize);
-            largeSizeStyle.Add(bottomPlacementStyle);
-            var leftPlacementStyle = new Style(selector => selector.Nesting().PropertyEquals(DrawerInfoContainerX.PlacementProperty, DrawerPlacement.Left));
-            leftPlacementStyle.Add(DrawerInfoContainerX.VerticalAlignmentProperty, VerticalAlignment.Stretch);
-            leftPlacementStyle.Add(DrawerInfoContainerX.HorizontalAlignmentProperty, HorizontalAlignment.Left);
-            leftPlacementStyle.Add(DrawerInfoContainerX.WidthProperty, DrawerTokenKey.LargeSize);
-            largeSizeStyle.Add(leftPlacementStyle);
-        }
-        Add(largeSizeStyle);
+            Path           = DrawerInfoContainer.DialogSizeProperty.Name,
+            Mode           = BindingMode.Default,
+            RelativeSource = new RelativeSource(RelativeSourceMode.Self)
+        });
+        Add(bottomPlacementStyle);
+        var leftPlacementStyle = new Style(selector =>
+            selector.Nesting().PropertyEquals(DrawerInfoContainer.PlacementProperty, DrawerPlacement.Left));
+        leftPlacementStyle.Add(DrawerInfoContainer.VerticalAlignmentProperty, VerticalAlignment.Stretch);
+        leftPlacementStyle.Add(DrawerInfoContainer.HorizontalAlignmentProperty, HorizontalAlignment.Left);
+        leftPlacementStyle.Add(DrawerInfoContainer.WidthProperty, new Binding()
+        {
+            Path           = DrawerInfoContainer.DialogSizeProperty.Name,
+            Mode           = BindingMode.Default,
+            RelativeSource = new RelativeSource(RelativeSourceMode.Self)
+        });
+        Add(leftPlacementStyle);
     }
 
     private void BuildHeaderStyle()

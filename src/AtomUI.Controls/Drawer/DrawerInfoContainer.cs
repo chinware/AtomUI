@@ -1,68 +1,72 @@
+using AtomUI.Controls.Utils;
 using Avalonia;
+using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.LogicalTree;
+using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
-internal class DrawerInfoContainerX : HeaderedContentControl
+internal class DrawerInfoContainer : HeaderedContentControl
 {
     #region 内部属性定义
     
-    internal static readonly DirectProperty<DrawerInfoContainerX, DrawerPlacement> PlacementProperty
-        = AvaloniaProperty.RegisterDirect<DrawerInfoContainerX, DrawerPlacement>(nameof(Placement),
+    internal static readonly DirectProperty<DrawerInfoContainer, DrawerPlacement> PlacementProperty
+        = AvaloniaProperty.RegisterDirect<DrawerInfoContainer, DrawerPlacement>(nameof(Placement),
             o => o.Placement,
             (o, v) => o.Placement = v);
     
-    internal static readonly DirectProperty<DrawerInfoContainerX, bool> IsShowCloseButtonProperty
-        = AvaloniaProperty.RegisterDirect<DrawerInfoContainerX, bool>(nameof(IsShowCloseButton),
+    internal static readonly DirectProperty<DrawerInfoContainer, bool> IsShowCloseButtonProperty
+        = AvaloniaProperty.RegisterDirect<DrawerInfoContainer, bool>(nameof(IsShowCloseButton),
             o => o.IsShowCloseButton,
             (o, v) => o.IsShowCloseButton = v);
     
-    internal static readonly DirectProperty<DrawerInfoContainerX, string> TitleProperty
-        = AvaloniaProperty.RegisterDirect<DrawerInfoContainerX, string>(nameof(Title),
+    internal static readonly DirectProperty<DrawerInfoContainer, string> TitleProperty
+        = AvaloniaProperty.RegisterDirect<DrawerInfoContainer, string>(nameof(Title),
             o => o.Title,
             (o, v) => o.Title = v);
     
-    internal static readonly DirectProperty<DrawerInfoContainerX, object?> FooterProperty
-        = AvaloniaProperty.RegisterDirect<DrawerInfoContainerX, object?>(nameof(Footer),
+    internal static readonly DirectProperty<DrawerInfoContainer, object?> FooterProperty
+        = AvaloniaProperty.RegisterDirect<DrawerInfoContainer, object?>(nameof(Footer),
             o => o.Footer,
             (o, v) => o.Footer = v);
     
-    internal static readonly DirectProperty<DrawerInfoContainerX, IDataTemplate?> FooterTemplateProperty
-        = AvaloniaProperty.RegisterDirect<DrawerInfoContainerX, IDataTemplate?>(nameof(FooterTemplate),
+    internal static readonly DirectProperty<DrawerInfoContainer, IDataTemplate?> FooterTemplateProperty
+        = AvaloniaProperty.RegisterDirect<DrawerInfoContainer, IDataTemplate?>(nameof(FooterTemplate),
             o => o.FooterTemplate,
             (o, v) => o.FooterTemplate = v);
     
-    internal static readonly DirectProperty<DrawerInfoContainerX, object?> ExtraProperty
-        = AvaloniaProperty.RegisterDirect<DrawerInfoContainerX, object?>(nameof(Extra),
+    internal static readonly DirectProperty<DrawerInfoContainer, object?> ExtraProperty
+        = AvaloniaProperty.RegisterDirect<DrawerInfoContainer, object?>(nameof(Extra),
             o => o.Extra,
             (o, v) => o.Extra = v);
     
-    internal static readonly DirectProperty<DrawerInfoContainerX, IDataTemplate?> ExtraTemplateProperty
-        = AvaloniaProperty.RegisterDirect<DrawerInfoContainerX, IDataTemplate?>(nameof(ExtraTemplate),
+    internal static readonly DirectProperty<DrawerInfoContainer, IDataTemplate?> ExtraTemplateProperty
+        = AvaloniaProperty.RegisterDirect<DrawerInfoContainer, IDataTemplate?>(nameof(ExtraTemplate),
             o => o.ExtraTemplate,
             (o, v) => o.ExtraTemplate = v);
     
-    internal static readonly DirectProperty<DrawerInfoContainerX, SizeType> SizeTypeProperty
-        = AvaloniaProperty.RegisterDirect<DrawerInfoContainerX, SizeType>(nameof(SizeType),
-            o => o.SizeType,
-            (o, v) => o.SizeType = v);
+    internal static readonly DirectProperty<DrawerInfoContainer, double> DialogSizeProperty
+        = AvaloniaProperty.RegisterDirect<DrawerInfoContainer, double>(nameof(DialogSize),
+            o => o.DialogSize,
+            (o, v) => o.DialogSize = v);
 
-    internal static readonly DirectProperty<DrawerInfoContainerX, bool> HasFooterProperty
-        = AvaloniaProperty.RegisterDirect<DrawerInfoContainerX, bool>(nameof(HasFooter),
+    internal static readonly DirectProperty<DrawerInfoContainer, bool> HasFooterProperty
+        = AvaloniaProperty.RegisterDirect<DrawerInfoContainer, bool>(nameof(HasFooter),
             o => o.HasFooter,
             (o, v) => o.HasFooter = v);
 
-    internal static readonly DirectProperty<DrawerInfoContainerX, bool> HasExtraProperty
-        = AvaloniaProperty.RegisterDirect<DrawerInfoContainerX, bool>(nameof(HasExtra),
+    internal static readonly DirectProperty<DrawerInfoContainer, bool> HasExtraProperty
+        = AvaloniaProperty.RegisterDirect<DrawerInfoContainer, bool>(nameof(HasExtra),
             o => o.HasExtra,
             (o, v) => o.HasExtra = v);
     
-    internal static readonly DirectProperty<DrawerInfoContainerX, bool> IsMotionEnabledProperty
-        = AvaloniaProperty.RegisterDirect<DrawerInfoContainerX, bool>(nameof(IsMotionEnabled),
+    internal static readonly DirectProperty<DrawerInfoContainer, bool> IsMotionEnabledProperty
+        = AvaloniaProperty.RegisterDirect<DrawerInfoContainer, bool>(nameof(IsMotionEnabled),
             o => o.IsMotionEnabled,
             (o, v) => o.IsMotionEnabled = v);
 
@@ -122,14 +126,14 @@ internal class DrawerInfoContainerX : HeaderedContentControl
         set => SetAndRaise(ExtraTemplateProperty, ref _extraTemplate, value);
     }
     
-    private SizeType _sizeType;
+    private double _dialogSize;
 
-    internal SizeType SizeType
+    internal double DialogSize
     {
-        get => _sizeType;
-        set => SetAndRaise(SizeTypeProperty, ref _sizeType, value);
+        get => _dialogSize;
+        set => SetAndRaise(DialogSizeProperty, ref _dialogSize, value);
     }
-
+    
     private bool _hasFooter;
 
     internal bool HasFooter
@@ -159,6 +163,27 @@ internal class DrawerInfoContainerX : HeaderedContentControl
     internal event EventHandler? CloseRequested;
     private IconButton? _closeButton;
 
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        SetupTransitions();
+    }
+
+    private void SetupTransitions()
+    {
+        if (IsMotionEnabled)
+        {
+            Transitions ??= new Transitions()
+            {
+                AnimationUtils.CreateTransition<TransformOperationsTransition>(DrawerInfoContainer.RenderTransformProperty)
+            };
+        }
+        else
+        {
+            Transitions = null;
+        }
+    }
+
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
@@ -169,6 +194,10 @@ internal class DrawerInfoContainerX : HeaderedContentControl
         else if (change.Property == ExtraProperty || change.Property == ExtraTemplateProperty)
         {
             HasExtra = Extra != null || ExtraTemplate != null;
+        }
+        else if (change.Property == IsMotionEnabledProperty)
+        {
+            SetupTransitions();
         }
     }
 
