@@ -5,7 +5,7 @@ using Avalonia.Styling;
 
 namespace AtomUI.MotionScene;
 
-internal class CollapseMotion : AbstractMotion
+public class CollapseMotion : AbstractMotion
 {
     public Direction Direction { get; }
 
@@ -108,7 +108,7 @@ internal class CollapseMotion : AbstractMotion
     }
 }
 
-internal class ExpandMotion : AbstractMotion
+public class ExpandMotion : AbstractMotion
 {
     public Direction Direction { get; }
 

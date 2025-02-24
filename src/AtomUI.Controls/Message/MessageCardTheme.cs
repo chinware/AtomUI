@@ -22,7 +22,6 @@ internal class MessageCardTheme : BaseControlTheme
     public const string HeaderContainerPart = "PART_HeaderContainer";
     public const string MessagePart = "PART_Message";
     public const string MotionActorPart = "PART_MotionActor";
-    public const string MarginGhostDecoratorPart = "PART_MarginGhostDecorator";
 
     public MessageCardTheme()
         : base(typeof(MessageCard))
@@ -41,26 +40,17 @@ internal class MessageCardTheme : BaseControlTheme
             };
             motionActor.RegisterInNameScope(scope);
 
-            // 防止关闭的时候抖动，如果直接设置到 MessageCard，layoutTransformControl没有办法平滑处理
-            var marginGhostDecorator = new Border
-            {
-                Name         = MarginGhostDecoratorPart,
-                ClipToBounds = false
-            };
-
-            var Frame = new Border
+            var frame = new Border
             {
                 Name = FramePart
             };
-
-            marginGhostDecorator.Child = Frame;
-
+            
             var header = BuildContent(scope);
-            Frame.Child = header;
+            frame.Child = header;
 
-            Frame.RegisterInNameScope(scope);
+            frame.RegisterInNameScope(scope);
 
-            motionActor.Child = marginGhostDecorator;
+            motionActor.Child = frame;
             return motionActor;
         });
     }
@@ -113,17 +103,13 @@ internal class MessageCardTheme : BaseControlTheme
 
         commonStyle.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Center);
 
-        var marginGhostDecoratorStyle =
-            new Style(selector => selector.Nesting().Template().Name(MarginGhostDecoratorPart));
-        marginGhostDecoratorStyle.Add(Layoutable.MarginProperty, MessageTokenKey.MessageTopMargin);
-        commonStyle.Add(marginGhostDecoratorStyle);
-
-        var FrameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
-        FrameStyle.Add(Decorator.PaddingProperty, MessageTokenKey.ContentPadding);
-        FrameStyle.Add(Border.BoxShadowProperty, SharedTokenKey.BoxShadows);
-        FrameStyle.Add(Border.BackgroundProperty, MessageTokenKey.ContentBg);
-        FrameStyle.Add(Border.CornerRadiusProperty, SharedTokenKey.BorderRadiusLG);
-        commonStyle.Add(FrameStyle);
+        var frameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
+        frameStyle.Add(Layoutable.MarginProperty, MessageTokenKey.MessageTopMargin);
+        frameStyle.Add(Decorator.PaddingProperty, MessageTokenKey.ContentPadding);
+        frameStyle.Add(Border.BoxShadowProperty, SharedTokenKey.BoxShadows);
+        frameStyle.Add(Border.BackgroundProperty, MessageTokenKey.ContentBg);
+        frameStyle.Add(Border.CornerRadiusProperty, SharedTokenKey.BorderRadiusLG);
+        commonStyle.Add(frameStyle);
 
         var closedStyle =
             new Style(selector => selector.Nesting().PropertyEquals(MessageCard.IsClosedProperty, true));

@@ -7,7 +7,7 @@ using Avalonia.Threading;
 
 namespace AtomUI.MotionScene;
 
-internal class AbstractMotion : IMotion
+public class AbstractMotion : IMotion
 {
     public bool IsRunning { get; }
 

@@ -30,16 +30,16 @@ internal class TagTheme : BaseControlTheme
         {
             var rootLayout = new Panel();
 
-            var Frame = new Border()
+            var frame = new Border()
             {
                 Name = FramePart
             };
-            CreateTemplateParentBinding(Frame, Border.BackgroundProperty, Tag.BackgroundProperty);
-            CreateTemplateParentBinding(Frame, Border.BorderBrushProperty, Tag.BorderBrushProperty);
-            CreateTemplateParentBinding(Frame, Border.CornerRadiusProperty, Tag.CornerRadiusProperty);
-            CreateTemplateParentBinding(Frame, Border.BorderThicknessProperty, Tag.BorderThicknessProperty);
+            CreateTemplateParentBinding(frame, Border.BackgroundProperty, Tag.BackgroundProperty);
+            CreateTemplateParentBinding(frame, Border.BorderBrushProperty, Tag.BorderBrushProperty);
+            CreateTemplateParentBinding(frame, Border.CornerRadiusProperty, Tag.CornerRadiusProperty);
+            CreateTemplateParentBinding(frame, Border.BorderThicknessProperty, Tag.BorderThicknessProperty);
             
-            rootLayout.Children.Add(Frame);
+            rootLayout.Children.Add(frame);
             
             var elementsLayout = new Grid
             {

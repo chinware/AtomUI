@@ -6,7 +6,7 @@ using Avalonia.Media.Transformation;
 
 namespace AtomUI.MotionScene;
 
-internal class MotionActorControl : Decorator
+public class MotionActorControl : Decorator
 {
     #region 公共属性定义
 

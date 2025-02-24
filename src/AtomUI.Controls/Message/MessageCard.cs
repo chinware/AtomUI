@@ -246,7 +246,7 @@ public class MessageCard : TemplatedControl,
         {
             if (IsMotionEnabled)
             {
-                var motion = new MoveUpOutMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseIn());
+                var motion = new NotificationMoveUpOutMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseIn());
                 MotionInvoker.Invoke(_motionActor, motion, null, () => { IsClosed = true; });
             }
             else

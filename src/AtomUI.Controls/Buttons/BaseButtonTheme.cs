@@ -96,22 +96,22 @@ internal abstract class BaseButtonTheme : BaseControlTheme
             rootLayout.Children.Add(extraContentPresenter);
             rootLayout.Children.Add(mainInfoLayout);
 
-            var Frame = new Border();
+            var frame = new Border();
 
-            CreateTemplateParentBinding(Frame, Decorator.PaddingProperty, TemplatedControl.PaddingProperty);
-            CreateTemplateParentBinding(Frame, Border.BorderThicknessProperty,
+            CreateTemplateParentBinding(frame, Decorator.PaddingProperty, TemplatedControl.PaddingProperty);
+            CreateTemplateParentBinding(frame, Border.BorderThicknessProperty,
                 Button.EffectiveBorderThicknessProperty);
-            CreateTemplateParentBinding(Frame, Border.BorderBrushProperty,
+            CreateTemplateParentBinding(frame, Border.BorderBrushProperty,
                 TemplatedControl.BorderBrushProperty);
-            CreateTemplateParentBinding(Frame, Border.BackgroundProperty, TemplatedControl.BackgroundProperty);
-            CreateTemplateParentBinding(Frame, Border.BackgroundSizingProperty,
+            CreateTemplateParentBinding(frame, Border.BackgroundProperty, TemplatedControl.BackgroundProperty);
+            CreateTemplateParentBinding(frame, Border.BackgroundSizingProperty,
                 TemplatedControl.BackgroundSizingProperty);
-            CreateTemplateParentBinding(Frame, Border.CornerRadiusProperty,
+            CreateTemplateParentBinding(frame, Border.CornerRadiusProperty,
                 TemplatedControl.CornerRadiusProperty);
 
-            Frame.Child = rootLayout;
+            frame.Child = rootLayout;
 
-            return Frame;
+            return frame;
         });
     }
 

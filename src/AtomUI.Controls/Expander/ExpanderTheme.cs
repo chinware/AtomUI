@@ -43,13 +43,13 @@ internal class ExpanderTheme : BaseControlTheme
     {
         return new FuncControlTemplate<Expander>((expander, scope) =>
         {
-            var Frame = new Border
+            var frame = new Border
             {
                 Name         = FramePart,
                 ClipToBounds = true
             };
 
-            CreateTemplateParentBinding(Frame, Border.BorderThicknessProperty,
+            CreateTemplateParentBinding(frame, Border.BorderThicknessProperty,
                 Expander.EffectiveBorderThicknessProperty);
 
             var mainLayout = new DockPanel
@@ -81,8 +81,8 @@ internal class ExpanderTheme : BaseControlTheme
             motionActor.RegisterInNameScope(scope);
             contentPresenter.RegisterInNameScope(scope);
 
-            Frame.Child = mainLayout;
-            return Frame;
+            frame.Child = mainLayout;
+            return frame;
         });
     }
 
@@ -197,10 +197,10 @@ internal class ExpanderTheme : BaseControlTheme
     {
         var commonStyle = new Style(selector => selector.Nesting());
 
-        var FrameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
-        FrameStyle.Add(Border.BorderBrushProperty, SharedTokenKey.ColorBorder);
-        FrameStyle.Add(Border.CornerRadiusProperty, ExpanderTokenKey.ExpanderBorderRadius);
-        commonStyle.Add(FrameStyle);
+        var frameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
+        frameStyle.Add(Border.BorderBrushProperty, SharedTokenKey.ColorBorder);
+        frameStyle.Add(Border.CornerRadiusProperty, ExpanderTokenKey.ExpanderBorderRadius);
+        commonStyle.Add(frameStyle);
 
         {
             var headerDecoratorStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));
