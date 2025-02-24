@@ -274,19 +274,19 @@ public class NotificationCard : ContentControl,
             AbstractMotion? motion;
             if (Position == NotificationPosition.TopLeft || Position == NotificationPosition.BottomLeft)
             {
-                motion = new MoveLeftInMotion(AnimationMaxOffsetX, _openCloseMotionDuration, new CubicEaseOut());
+                motion = new NotificationMoveLeftInMotion(Position == NotificationPosition.TopLeft, AnimationMaxOffsetX, _openCloseMotionDuration, new CubicEaseOut());
             }
             else if (Position == NotificationPosition.TopRight || Position == NotificationPosition.BottomRight)
             {
-                motion = new MoveRightInMotion(AnimationMaxOffsetX, _openCloseMotionDuration, new CubicEaseOut());
+                motion = new NotificationMoveRightInMotion(Position == NotificationPosition.TopRight, AnimationMaxOffsetX, _openCloseMotionDuration, new CubicEaseOut());
             }
             else if (Position == NotificationPosition.TopCenter)
             {
-                motion = new MoveUpInMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseOut());
+                motion = new NotificationMoveUpInMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseOut());
             }
             else
             {
-                motion = new MoveDownInMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseOut());
+                motion = new NotificationMoveDownInMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseOut());
             }
         
             _motionActor.IsVisible = false;
@@ -313,19 +313,19 @@ public class NotificationCard : ContentControl,
             AbstractMotion? motion;
             if (Position == NotificationPosition.TopLeft || Position == NotificationPosition.BottomLeft)
             {
-                motion = new MoveLeftOutMotion(AnimationMaxOffsetX, _openCloseMotionDuration, new CubicEaseIn());
+                motion = new NotificationMoveLeftOutMotion(AnimationMaxOffsetX, _openCloseMotionDuration, new CubicEaseIn());
             }
             else if (Position == NotificationPosition.TopRight || Position == NotificationPosition.BottomRight)
             {
-                motion = new MoveRightOutMotion(AnimationMaxOffsetX, _openCloseMotionDuration, new CubicEaseIn());
+                motion = new NotificationMoveRightOutMotion(AnimationMaxOffsetX, _openCloseMotionDuration, new CubicEaseIn());
             }
             else if (Position == NotificationPosition.TopCenter)
             {
-                motion = new MoveUpOutMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseIn());
+                motion = new NotificationMoveUpOutMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseIn());
             }
             else
             {
-                motion = new MoveDownOutMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseIn());
+                motion = new NotificationMoveDownOutMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseIn());
             }
         
             MotionInvoker.Invoke(_motionActor, motion, null, () =>

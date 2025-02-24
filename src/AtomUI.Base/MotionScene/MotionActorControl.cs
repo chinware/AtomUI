@@ -14,7 +14,7 @@ internal class MotionActorControl : Decorator
         AvaloniaProperty.Register<MotionActorControl, TransformOperations?>(nameof(MotionTransform));
 
     public static readonly StyledProperty<bool> UseRenderTransformProperty =
-        AvaloniaProperty.Register<LayoutTransformControl, bool>(nameof(UseRenderTransform));
+        AvaloniaProperty.Register<MotionActorControl, bool>(nameof(UseRenderTransform));
 
     public TransformOperations? MotionTransform
     {
@@ -38,7 +38,7 @@ internal class MotionActorControl : Decorator
     public event EventHandler? Completed;
 
     #endregion
-    
+
     /// <summary>
     /// RenderTransform/MatrixTransform applied to MotionTransformRoot.
     /// </summary>
@@ -65,7 +65,7 @@ internal class MotionActorControl : Decorator
     /// Actual DesiredSize of Child element (the value it returned from its MeasureOverride method).
     /// </summary>
     private Size _childActualSize;
-    
+
     /// <summary>
     /// 动画是否在
     /// </summary>
@@ -406,7 +406,7 @@ internal class MotionActorControl : Decorator
     {
         return (a.Width + AcceptableDelta < b.Width) || (a.Height + AcceptableDelta < b.Height);
     }
-    
+
     internal virtual void NotifyMotionPreStart()
     {
         PreStart?.Invoke(this, EventArgs.Empty);

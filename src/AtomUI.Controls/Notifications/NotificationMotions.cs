@@ -1,18 +1,19 @@
-﻿using Avalonia;
+using AtomUI.MotionScene;
+using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Styling;
 
-namespace AtomUI.MotionScene;
+namespace AtomUI.Controls;
 
-internal class MoveDownInMotion : AbstractMotion
+internal class NotificationMoveDownInMotion : AbstractMotion
 {
     public double Offset { get; }
 
-    public MoveDownInMotion(double offset,
-                            TimeSpan duration,
-                            Easing? easing = null,
-                            FillMode fillMode = FillMode.Forward)
+    public NotificationMoveDownInMotion(double offset,
+                                        TimeSpan duration,
+                                        Easing? easing = null,
+                                        FillMode fillMode = FillMode.Forward)
         : base(duration, easing ?? new QuinticEaseOut(), fillMode)
     {
         Offset = offset;
@@ -36,7 +37,7 @@ internal class MoveDownInMotion : AbstractMotion
             var transformSetter = new Setter
             {
                 Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, Offset)
+                Value    = BuildTranslateScaleAndTransform(1.0, 0.01, 0.0, Offset)
             };
             startFrame.Setters.Add(transformSetter);
         }
@@ -50,14 +51,14 @@ internal class MoveDownInMotion : AbstractMotion
             var opacitySetter = new Setter
             {
                 Property = Visual.OpacityProperty,
-                Value    = 0.1
+                Value    = 0.8
             };
             middleFrame.Setters.Add(opacitySetter);
 
             var transformSetter = new Setter
             {
                 Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, Offset / 4)
+                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, Offset)
             };
             middleFrame.Setters.Add(transformSetter);
         }
@@ -99,14 +100,14 @@ internal class MoveDownInMotion : AbstractMotion
     }
 }
 
-internal class MoveDownOutMotion : AbstractMotion
+internal class NotificationMoveDownOutMotion : AbstractMotion
 {
     public double Offset { get; }
 
-    public MoveDownOutMotion(double offset,
-                             TimeSpan duration,
-                             Easing? easing = null,
-                             FillMode fillMode = FillMode.Forward)
+    public NotificationMoveDownOutMotion(double offset,
+                                         TimeSpan duration,
+                                         Easing? easing = null,
+                                         FillMode fillMode = FillMode.Forward)
         : base(duration, easing ?? new QuinticEaseIn(), fillMode)
     {
         Offset = offset;
@@ -139,20 +140,20 @@ internal class MoveDownOutMotion : AbstractMotion
 
         var middleFrame = new KeyFrame
         {
-            Cue = new Cue(0.8)
+            Cue = new Cue(0.2)
         };
         {
             var opacitySetter = new Setter
             {
                 Property = Visual.OpacityProperty,
-                Value    = 0.1
+                Value    = 0.2
             };
             middleFrame.Setters.Add(opacitySetter);
 
             var transformSetter = new Setter
             {
                 Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, Offset / 4)
+                Value    = BuildTranslateScaleAndTransform(1.0, 0.2, 0.0, Offset / 4)
             };
             middleFrame.Setters.Add(transformSetter);
         }
@@ -173,7 +174,7 @@ internal class MoveDownOutMotion : AbstractMotion
             var transformSetter = new Setter
             {
                 Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, Offset)
+                Value    = BuildTranslateScaleAndTransform(1.0, 0.0, 0.0, Offset)
             };
             endFrame.Setters.Add(transformSetter);
         }
@@ -189,14 +190,14 @@ internal class MoveDownOutMotion : AbstractMotion
     }
 }
 
-internal class MoveUpInMotion : AbstractMotion
+internal class NotificationMoveUpInMotion : AbstractMotion
 {
     public double Offset { get; }
 
-    public MoveUpInMotion(double offset,
-                          TimeSpan duration,
-                          Easing? easing = null,
-                          FillMode fillMode = FillMode.Forward)
+    public NotificationMoveUpInMotion(double offset,
+                                      TimeSpan duration,
+                                      Easing? easing = null,
+                                      FillMode fillMode = FillMode.Forward)
         : base(duration, easing ?? new QuinticEaseOut(), fillMode)
     {
         Offset = offset;
@@ -234,14 +235,14 @@ internal class MoveUpInMotion : AbstractMotion
             var opacitySetter = new Setter
             {
                 Property = Visual.OpacityProperty,
-                Value    = 0.1
+                Value    = 0.8
             };
             middleFrame.Setters.Add(opacitySetter);
 
             var transformSetter = new Setter
             {
                 Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, -Offset / 4)
+                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, -Offset)
             };
             middleFrame.Setters.Add(transformSetter);
         }
@@ -283,14 +284,14 @@ internal class MoveUpInMotion : AbstractMotion
     }
 }
 
-internal class MoveUpOutMotion : AbstractMotion
+internal class NotificationMoveUpOutMotion : AbstractMotion
 {
     public double Offset { get; }
 
-    public MoveUpOutMotion(double offset,
-                           TimeSpan duration,
-                           Easing? easing = null,
-                           FillMode fillMode = FillMode.Forward)
+    public NotificationMoveUpOutMotion(double offset,
+                                       TimeSpan duration,
+                                       Easing? easing = null,
+                                       FillMode fillMode = FillMode.Forward)
         : base(duration, easing ?? new QuinticEaseIn(), fillMode)
     {
         Offset = offset;
@@ -323,20 +324,20 @@ internal class MoveUpOutMotion : AbstractMotion
 
         var middleFrame = new KeyFrame
         {
-            Cue = new Cue(0.8)
+            Cue = new Cue(0.2)
         };
         {
             var opacitySetter = new Setter
             {
                 Property = Visual.OpacityProperty,
-                Value    = 0.1
+                Value    = 0.2
             };
             middleFrame.Setters.Add(opacitySetter);
 
             var transformSetter = new Setter
             {
                 Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, -Offset / 4)
+                Value    = BuildTranslateScaleAndTransform(1.0, 0.2, 0.0, -Offset / 4)
             };
 
             middleFrame.Setters.Add(transformSetter);
@@ -358,7 +359,7 @@ internal class MoveUpOutMotion : AbstractMotion
             var transformSetter = new Setter
             {
                 Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, -Offset)
+                Value    = BuildTranslateScaleAndTransform(1.0, 0.0, 0.0, -Offset)
             };
 
             endFrame.Setters.Add(transformSetter);
@@ -375,16 +376,19 @@ internal class MoveUpOutMotion : AbstractMotion
     }
 }
 
-internal class MoveLeftInMotion : AbstractMotion
+internal class NotificationMoveLeftInMotion : AbstractMotion
 {
     public double Offset { get; }
+    public bool IsTop { get; }
 
-    public MoveLeftInMotion(double offset,
-                            TimeSpan duration,
-                            Easing? easing = null,
-                            FillMode fillMode = FillMode.Forward)
+    public NotificationMoveLeftInMotion(bool isTop,
+                                        double offset,
+                                        TimeSpan duration,
+                                        Easing? easing = null,
+                                        FillMode fillMode = FillMode.Forward)
         : base(duration, easing ?? new QuinticEaseOut(), fillMode)
     {
+        IsTop  = isTop;
         Offset = offset;
     }
 
@@ -406,7 +410,7 @@ internal class MoveLeftInMotion : AbstractMotion
             var transformSetter = new Setter
             {
                 Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, -Offset, 0.0)
+                Value    = BuildTranslateScaleAndTransform(1.0, 0.01, -Offset, 0.0)
             };
 
             startFrame.Setters.Add(transformSetter);
@@ -428,7 +432,7 @@ internal class MoveLeftInMotion : AbstractMotion
             var transformSetter = new Setter
             {
                 Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, -Offset / 2, 0.0)
+                Value    = BuildTranslateScaleAndTransform(1.0, IsTop ? 0.3 : 1.0, -Offset, 0.0)
             };
 
             middleFrame.Setters.Add(transformSetter);
@@ -472,14 +476,14 @@ internal class MoveLeftInMotion : AbstractMotion
     }
 }
 
-internal class MoveLeftOutMotion : AbstractMotion
+internal class NotificationMoveLeftOutMotion : AbstractMotion
 {
     public double Offset { get; }
 
-    public MoveLeftOutMotion(double offset,
-                             TimeSpan duration,
-                             Easing? easing = null,
-                             FillMode fillMode = FillMode.Forward)
+    public NotificationMoveLeftOutMotion(double offset,
+                                         TimeSpan duration,
+                                         Easing? easing = null,
+                                         FillMode fillMode = FillMode.Forward)
         : base(duration, easing ?? new QuinticEaseIn(), fillMode)
     {
         Offset = offset;
@@ -511,19 +515,19 @@ internal class MoveLeftOutMotion : AbstractMotion
 
         var middleFrame = new KeyFrame
         {
-            Cue = new Cue(0.8)
+            Cue = new Cue(0.2)
         };
         {
             var opacitySetter = new Setter
             {
                 Property = Visual.OpacityProperty,
-                Value    = 0.1
+                Value    = 1.0
             };
             middleFrame.Setters.Add(opacitySetter);
             var transformSetter = new Setter
             {
                 Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, -Offset / 2, 0.0)
+                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, -Offset, 0.0)
             };
             middleFrame.Setters.Add(transformSetter);
         }
@@ -544,7 +548,7 @@ internal class MoveLeftOutMotion : AbstractMotion
             var transformSetter = new Setter
             {
                 Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, -Offset, 0.0)
+                Value    = BuildTranslateScaleAndTransform(1.0, 0.0, -Offset, 0.0)
             };
             endFrame.Setters.Add(transformSetter);
         }
@@ -560,16 +564,19 @@ internal class MoveLeftOutMotion : AbstractMotion
     }
 }
 
-internal class MoveRightInMotion : AbstractMotion
+internal class NotificationMoveRightInMotion : AbstractMotion
 {
     public double Offset { get; }
+    public bool IsTop { get; }
 
-    public MoveRightInMotion(double offset,
-                             TimeSpan duration,
-                             Easing? easing = null,
-                             FillMode fillMode = FillMode.Forward)
+    public NotificationMoveRightInMotion(bool isTop,
+                                         double offset,
+                                         TimeSpan duration,
+                                         Easing? easing = null,
+                                         FillMode fillMode = FillMode.Forward)
         : base(duration, easing ?? new QuinticEaseOut(), fillMode)
     {
+        IsTop  = isTop;
         Offset = offset;
     }
 
@@ -592,7 +599,7 @@ internal class MoveRightInMotion : AbstractMotion
             var transformSetter = new Setter
             {
                 Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, Offset, 0.0)
+                Value    = BuildTranslateScaleAndTransform(1.0, 0.01, Offset, 0.0)
             };
             startFrame.Setters.Add(transformSetter);
         }
@@ -613,7 +620,7 @@ internal class MoveRightInMotion : AbstractMotion
             var transformSetter = new Setter
             {
                 Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, Offset / 2, 0.0)
+                Value    = BuildTranslateScaleAndTransform(1.0, IsTop ? 0.3 : 1.0, Offset, 0.0)
             };
             middleFrame.Setters.Add(transformSetter);
         }
@@ -655,14 +662,14 @@ internal class MoveRightInMotion : AbstractMotion
     }
 }
 
-internal class MoveRightOutMotion : AbstractMotion
+internal class NotificationMoveRightOutMotion : AbstractMotion
 {
     public double Offset { get; }
 
-    public MoveRightOutMotion(double offset,
-                              TimeSpan duration,
-                              Easing? easing = null,
-                              FillMode fillMode = FillMode.Forward)
+    public NotificationMoveRightOutMotion(double offset,
+                                          TimeSpan duration,
+                                          Easing? easing = null,
+                                          FillMode fillMode = FillMode.Forward)
         : base(duration, easing ?? new QuinticEaseIn(), fillMode)
     {
         Offset = offset;
@@ -694,7 +701,7 @@ internal class MoveRightOutMotion : AbstractMotion
 
         var middleFrame = new KeyFrame
         {
-            Cue = new Cue(0.8)
+            Cue = new Cue(0.2)
         };
         {
             var opacitySetter = new Setter
@@ -707,7 +714,7 @@ internal class MoveRightOutMotion : AbstractMotion
             var transformSetter = new Setter
             {
                 Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, Offset / 2, 0.0)
+                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, Offset, 0.0)
             };
             middleFrame.Setters.Add(transformSetter);
         }
@@ -728,7 +735,7 @@ internal class MoveRightOutMotion : AbstractMotion
             var transformSetter = new Setter
             {
                 Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, Offset, 0.0)
+                Value    = BuildTranslateScaleAndTransform(1.0, 0.0, Offset, 0.0)
             };
             endFrame.Setters.Add(transformSetter);
         }

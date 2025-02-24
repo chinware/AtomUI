@@ -43,22 +43,15 @@ internal class NotificationCardTheme : BaseControlTheme
             var motionActor = new MotionActorControl()
             {
                 Name         = MotionActorPart,
-                ClipToBounds = false
+                ClipToBounds = false,
+                UseRenderTransform = false
             };
             motionActor.RegisterInNameScope(scope);
-
-            // 防止关闭的时候抖动，如果直接设置到 NotificationCard，layoutTransformControl没有办法平滑处理
-            var marginGhostDecorator = new Border
-            {
-                Name = MarginGhostDecoratorPart
-            };
-
-            var Frame = new Border
+            
+            var frame = new Border
             {
                 Name = FramePart
             };
-
-            marginGhostDecorator.Child = Frame;
 
             var mainLayout = new Grid
             {
@@ -75,13 +68,13 @@ internal class NotificationCardTheme : BaseControlTheme
                 }
             };
 
-            Frame.Child = mainLayout;
+            frame.Child = mainLayout;
             BuildHeader(mainLayout, scope);
             BuildContent(mainLayout, scope);
             BuildProgressBar(mainLayout, scope);
-            Frame.RegisterInNameScope(scope);
+            frame.RegisterInNameScope(scope);
 
-            motionActor.Child = marginGhostDecorator;
+            motionActor.Child = frame;
             return motionActor;
         });
     }
@@ -210,77 +203,79 @@ internal class NotificationCardTheme : BaseControlTheme
             selector.Nesting().PropertyEquals(NotificationCard.PositionProperty, NotificationPosition.TopLeft));
 
         {
-            var marginGhostDecoratorStyle =
-                new Style(selector => selector.Nesting().Template().Name(MarginGhostDecoratorPart));
-            marginGhostDecoratorStyle.Add(Layoutable.MarginProperty,
+            var frameStyle =
+                new Style(selector => selector.Nesting().Template().Name(FramePart));
+            frameStyle.Add(Layoutable.MarginProperty,
                 NotificationTokenKey.NotificationTopMargin);
-            topLeftStyle.Add(marginGhostDecoratorStyle);
+            topLeftStyle.Add(frameStyle);
         }
         commonStyle.Add(topLeftStyle);
 
         var topCenterStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(NotificationCard.PositionProperty, NotificationPosition.TopCenter));
         {
-            var marginGhostDecoratorStyle =
-                new Style(selector => selector.Nesting().Template().Name(MarginGhostDecoratorPart));
-            marginGhostDecoratorStyle.Add(Layoutable.MarginProperty,
+            var frameStyle =
+                new Style(selector => selector.Nesting().Template().Name(FramePart));
+            frameStyle.Add(Layoutable.MarginProperty,
                 NotificationTokenKey.NotificationTopMargin);
-            topCenterStyle.Add(marginGhostDecoratorStyle);
+            topCenterStyle.Add(frameStyle);
         }
         commonStyle.Add(topCenterStyle);
 
         var topRightStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(NotificationCard.PositionProperty, NotificationPosition.TopRight));
         {
-            var marginGhostDecoratorStyle =
-                new Style(selector => selector.Nesting().Template().Name(MarginGhostDecoratorPart));
-            marginGhostDecoratorStyle.Add(Layoutable.MarginProperty,
+            var frameStyle =
+                new Style(selector => selector.Nesting().Template().Name(FramePart));
+            frameStyle.Add(Layoutable.MarginProperty,
                 NotificationTokenKey.NotificationTopMargin);
-            topRightStyle.Add(marginGhostDecoratorStyle);
+            topRightStyle.Add(frameStyle);
         }
         commonStyle.Add(topRightStyle);
 
         var bottomLeftStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(NotificationCard.PositionProperty, NotificationPosition.BottomLeft));
         {
-            var marginGhostDecoratorStyle =
-                new Style(selector => selector.Nesting().Template().Name(MarginGhostDecoratorPart));
-            marginGhostDecoratorStyle.Add(Layoutable.MarginProperty,
+            var frameStyle =
+                new Style(selector => selector.Nesting().Template().Name(FramePart));
+            frameStyle.Add(Layoutable.MarginProperty,
                 NotificationTokenKey.NotificationBottomMargin);
-            bottomLeftStyle.Add(marginGhostDecoratorStyle);
+            bottomLeftStyle.Add(frameStyle);
         }
         commonStyle.Add(bottomLeftStyle);
 
         var bottomCenterStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(NotificationCard.PositionProperty, NotificationPosition.BottomCenter));
         {
-            var marginGhostDecoratorStyle =
-                new Style(selector => selector.Nesting().Template().Name(MarginGhostDecoratorPart));
-            marginGhostDecoratorStyle.Add(Layoutable.MarginProperty,
+            var frameStyle =
+                new Style(selector => selector.Nesting().Template().Name(FramePart));
+            frameStyle.Add(Layoutable.MarginProperty,
                 NotificationTokenKey.NotificationBottomMargin);
-            bottomCenterStyle.Add(marginGhostDecoratorStyle);
+            bottomCenterStyle.Add(frameStyle);
         }
         commonStyle.Add(bottomCenterStyle);
 
         var bottomRightStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(NotificationCard.PositionProperty, NotificationPosition.BottomRight));
         {
-            var marginGhostDecoratorStyle =
-                new Style(selector => selector.Nesting().Template().Name(MarginGhostDecoratorPart));
-            marginGhostDecoratorStyle.Add(Layoutable.MarginProperty,
+            var frameStyle =
+                new Style(selector => selector.Nesting().Template().Name(FramePart));
+            frameStyle.Add(Layoutable.MarginProperty,
                 NotificationTokenKey.NotificationBottomMargin);
-            bottomRightStyle.Add(marginGhostDecoratorStyle);
+            bottomRightStyle.Add(frameStyle);
         }
         commonStyle.Add(bottomRightStyle);
 
         commonStyle.Add(Layoutable.WidthProperty, NotificationTokenKey.NotificationWidth);
 
-        var FrameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
-        FrameStyle.Add(Decorator.PaddingProperty, NotificationTokenKey.NotificationPadding);
-        FrameStyle.Add(Border.BoxShadowProperty, SharedTokenKey.BoxShadows);
-        FrameStyle.Add(Border.BackgroundProperty, NotificationTokenKey.NotificationBg);
-        FrameStyle.Add(Border.CornerRadiusProperty, SharedTokenKey.BorderRadiusLG);
-        commonStyle.Add(FrameStyle);
+        {
+            var frameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
+            frameStyle.Add(Decorator.PaddingProperty, NotificationTokenKey.NotificationPadding);
+            frameStyle.Add(Border.BoxShadowProperty, SharedTokenKey.BoxShadows);
+            frameStyle.Add(Border.BackgroundProperty, NotificationTokenKey.NotificationBg);
+            frameStyle.Add(Border.CornerRadiusProperty, SharedTokenKey.BorderRadiusLG);
+            commonStyle.Add(frameStyle);
+        }
 
         var closedStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(NotificationCard.IsClosedProperty, true));
