@@ -278,7 +278,7 @@ public class SliderTrack : Control
         set => SetValue(MarkBorderThicknessProperty, value);
     }
     
-    private bool _isMotionEnabled = true;
+    private bool _isMotionEnabled;
 
     internal bool IsMotionEnabled
     {

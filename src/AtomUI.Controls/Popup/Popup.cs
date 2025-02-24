@@ -42,10 +42,10 @@ public class Popup : AvaloniaPopup,
             (o, v) => o.IsFlipped = v);
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<Popup, bool>(nameof(IsMotionEnabled), true);
+        = AvaloniaProperty.Register<Popup, bool>(nameof(IsMotionEnabled));
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<Popup, bool>(nameof(IsWaveAnimationEnabled), true);
+        = AvaloniaProperty.Register<Popup, bool>(nameof(IsWaveAnimationEnabled));
     
     public BoxShadows MaskShadows
     {

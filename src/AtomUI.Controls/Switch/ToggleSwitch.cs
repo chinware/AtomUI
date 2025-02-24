@@ -58,10 +58,10 @@ public class ToggleSwitch : ToggleButton,
         AvaloniaProperty.Register<Button, bool>(nameof(IsLoading));
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<Button, bool>(nameof(IsMotionEnabled), true);
+        = AvaloniaProperty.Register<Button, bool>(nameof(IsMotionEnabled));
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<Button, bool>(nameof(IsWaveAnimationEnabled), true);
+        = AvaloniaProperty.Register<Button, bool>(nameof(IsWaveAnimationEnabled));
 
     /// <summary>
     /// Gets or Sets the Content that is displayed when in the On State.

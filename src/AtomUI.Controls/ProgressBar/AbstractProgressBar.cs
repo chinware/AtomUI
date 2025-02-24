@@ -92,10 +92,10 @@ public abstract class AbstractProgressBar : RangeBase,
         AvaloniaProperty.Register<AbstractProgressBar, IBrush?>(nameof(SuccessThresholdBrush));
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<AbstractProgressBar, bool>(nameof(IsMotionEnabled), true);
+        = AvaloniaProperty.Register<AbstractProgressBar, bool>(nameof(IsMotionEnabled));
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<AbstractProgressBar, bool>(nameof(IsWaveAnimationEnabled), true);
+        = AvaloniaProperty.Register<AbstractProgressBar, bool>(nameof(IsWaveAnimationEnabled));
 
     /// <summary>
     /// Gets or sets a value indicating whether the progress bar shows the actual value or a generic,

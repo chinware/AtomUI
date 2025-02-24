@@ -287,7 +287,7 @@ public class TreeViewItem : AvaloniaTreeItem
         set => SetValue(EffectiveNodeCornerRadiusProperty, value);
     }
     
-    private bool _isMotionEnabled = true;
+    private bool _isMotionEnabled;
 
     internal bool IsMotionEnabled
     {

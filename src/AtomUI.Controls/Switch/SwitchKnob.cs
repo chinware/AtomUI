@@ -88,7 +88,7 @@ internal class SwitchKnob : Control
         set => SetValue(KnobRenderWidthProperty, value);
     }
     
-    private bool _isMotionEnabled = true;
+    private bool _isMotionEnabled;
 
     internal bool IsMotionEnabled
     {

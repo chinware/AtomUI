@@ -271,10 +271,10 @@ public class Calendar : TemplatedControl,
             defaultBindingMode: BindingMode.TwoWay);
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<Calendar, bool>(nameof(IsMotionEnabled), true);
+        = AvaloniaProperty.Register<Calendar, bool>(nameof(IsMotionEnabled));
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<Calendar, bool>(nameof(IsWaveAnimationEnabled), true);
+        = AvaloniaProperty.Register<Calendar, bool>(nameof(IsWaveAnimationEnabled));
 
     /// <summary>
     /// Gets or sets the day that is considered the beginning of the week.

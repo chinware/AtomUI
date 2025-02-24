@@ -42,10 +42,10 @@ public class OptionButtonGroup : SelectingItemsControl,
         AvaloniaProperty.Register<OptionButtonGroup, OptionButtonStyle>(nameof(SizeType));
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<OptionButtonGroup, bool>(nameof(IsMotionEnabled), true);
+        = AvaloniaProperty.Register<OptionButtonGroup, bool>(nameof(IsMotionEnabled));
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<OptionButtonGroup, bool>(nameof(IsWaveAnimationEnabled), true);
+        = AvaloniaProperty.Register<OptionButtonGroup, bool>(nameof(IsWaveAnimationEnabled));
 
     public static readonly RoutedEvent<OptionCheckedChangedEventArgs> OptionCheckedChangedEvent =
         RoutedEvent.Register<OptionButtonGroup, OptionCheckedChangedEventArgs>(

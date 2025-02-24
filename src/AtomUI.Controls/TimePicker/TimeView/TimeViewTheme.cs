@@ -129,6 +129,7 @@ internal class TimeViewTheme : BaseControlTheme
             hourSelector.RegisterInNameScope(scope);
             TokenResourceBinder.CreateTokenBinding(hourSelector, DateTimePickerPanel.ItemHeightProperty,
                 TimePickerTokenKey.ItemHeight);
+            CreateTemplateParentBinding(hourSelector, DateTimePickerPanel.IsMotionEnabledProperty, TimeView.IsMotionEnabledProperty);
             scrollViewer.Content = hourSelector;
             hourHost.Children.Add(scrollViewer);
         }
@@ -168,6 +169,7 @@ internal class TimeViewTheme : BaseControlTheme
             minuteSelector.RegisterInNameScope(scope);
             TokenResourceBinder.CreateTokenBinding(minuteSelector, DateTimePickerPanel.ItemHeightProperty,
                 TimePickerTokenKey.ItemHeight);
+            CreateTemplateParentBinding(minuteSelector, DateTimePickerPanel.IsMotionEnabledProperty, TimeView.IsMotionEnabledProperty);
             scrollViewer.Content = minuteSelector;
             minuteHost.Children.Add(scrollViewer);
         }
@@ -208,6 +210,7 @@ internal class TimeViewTheme : BaseControlTheme
             secondSelector.RegisterInNameScope(scope);
             TokenResourceBinder.CreateTokenBinding(secondSelector, DateTimePickerPanel.ItemHeightProperty,
                 TimePickerTokenKey.ItemHeight);
+            CreateTemplateParentBinding(secondSelector, DateTimePickerPanel.IsMotionEnabledProperty, TimeView.IsMotionEnabledProperty);
             scrollViewer.Content = secondSelector;
             secondHost.Children.Add(scrollViewer);
         }
@@ -247,6 +250,7 @@ internal class TimeViewTheme : BaseControlTheme
             periodSelector.RegisterInNameScope(scope);
             TokenResourceBinder.CreateTokenBinding(periodSelector, DateTimePickerPanel.ItemHeightProperty,
                 TimePickerTokenKey.ItemHeight);
+            CreateTemplateParentBinding(periodSelector, DateTimePickerPanel.IsMotionEnabledProperty, TimeView.IsMotionEnabledProperty);
             scrollViewer.Content = periodSelector;
             periodHost.Children.Add(scrollViewer);
         }

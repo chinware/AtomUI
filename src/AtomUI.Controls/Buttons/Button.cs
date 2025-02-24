@@ -78,10 +78,10 @@ public class Button : AvaloniaButton,
         = AvaloniaProperty.Register<Button, bool>(nameof(IsIconVisible), true);
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<Button, bool>(nameof(IsMotionEnabled), true);
+        = AvaloniaProperty.Register<Button, bool>(nameof(IsMotionEnabled));
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<Button, bool>(nameof(IsWaveAnimationEnabled), true);
+        = AvaloniaProperty.Register<Button, bool>(nameof(IsWaveAnimationEnabled));
 
     public ButtonType ButtonType
     {

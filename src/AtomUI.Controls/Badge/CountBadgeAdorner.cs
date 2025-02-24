@@ -145,7 +145,7 @@ internal class CountBadgeAdorner : TemplatedControl
         set => SetValue(BadgeShadowSizeProperty, value);
     }
     
-    private bool _isMotionEnabled = true;
+    private bool _isMotionEnabled;
 
     internal bool IsMotionEnabled
     {

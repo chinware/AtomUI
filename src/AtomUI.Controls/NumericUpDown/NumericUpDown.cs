@@ -31,10 +31,10 @@ public class NumericUpDown : AvaloniaNumericUpDown,
         TextBox.IsEnableClearButtonProperty.AddOwner<NumericUpDown>();
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<NumericUpDown, bool>(nameof(IsMotionEnabled), true);
+        = AvaloniaProperty.Register<NumericUpDown, bool>(nameof(IsMotionEnabled));
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<NumericUpDown, bool>(nameof(IsWaveAnimationEnabled), true);
+        = AvaloniaProperty.Register<NumericUpDown, bool>(nameof(IsWaveAnimationEnabled));
 
     public object? LeftAddOn
     {

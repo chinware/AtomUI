@@ -28,10 +28,10 @@ public class MenuFlyoutPresenter : MenuBase,
             RoutingStrategies.Bubble);
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<MenuFlyoutPresenter, bool>(nameof(IsMotionEnabled), true);
+        = AvaloniaProperty.Register<MenuFlyoutPresenter, bool>(nameof(IsMotionEnabled));
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<MenuFlyoutPresenter, bool>(nameof(IsWaveAnimationEnabled), true);
+        = AvaloniaProperty.Register<MenuFlyoutPresenter, bool>(nameof(IsWaveAnimationEnabled));
 
     /// <summary>
     /// 是否显示指示箭头

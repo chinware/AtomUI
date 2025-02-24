@@ -56,7 +56,7 @@ public class SegmentedItem : ContentControl, ISelectable
         set => SetValue(SizeTypeProperty, value);
     }
 
-    private bool _isMotionEnabled = true;
+    private bool _isMotionEnabled;
 
     internal bool IsMotionEnabled
     {

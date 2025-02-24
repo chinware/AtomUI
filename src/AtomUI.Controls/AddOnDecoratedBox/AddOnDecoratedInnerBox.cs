@@ -36,10 +36,10 @@ public class AddOnDecoratedInnerBox : ContentControl,
         AvaloniaProperty.Register<AddOnDecoratedInnerBox, bool>(nameof(IsClearButtonVisible));
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<AddOnDecoratedInnerBox, bool>(nameof(IsMotionEnabled), true);
+        = AvaloniaProperty.Register<AddOnDecoratedInnerBox, bool>(nameof(IsMotionEnabled));
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<AddOnDecoratedInnerBox, bool>(nameof(IsWaveAnimationEnabled), true);
+        = AvaloniaProperty.Register<AddOnDecoratedInnerBox, bool>(nameof(IsWaveAnimationEnabled));
 
     public SizeType SizeType
     {

@@ -100,7 +100,7 @@ internal class TimePickerPresenter : PickerPresenterBase
             o => o.IsMotionEnabled,
             (o, v) => o.IsMotionEnabled = v);
     
-    private bool _isMotionEnabled = true;
+    private bool _isMotionEnabled;
 
     internal bool IsMotionEnabled
     {

@@ -91,7 +91,7 @@ internal class DotBadgeAdorner : TemplatedControl
         set => SetValue(MotionDurationProperty, value);
     }
     
-    private bool _isMotionEnabled = true;
+    private bool _isMotionEnabled;
 
     internal bool IsMotionEnabled
     {

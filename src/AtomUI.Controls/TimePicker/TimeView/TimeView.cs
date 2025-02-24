@@ -135,7 +135,7 @@ internal class TimeView : TemplatedControl
         set => SetAndRaise(ItemHeightProperty, ref _itemHeight, value);
     }
     
-    private bool _isMotionEnabled = true;
+    private bool _isMotionEnabled;
 
     internal bool IsMotionEnabled
     {
@@ -393,7 +393,6 @@ internal class TimeView : TemplatedControl
         {
             SetupPickerSelectorContainerHeight();
         }
-
     }
 
     private void SyncTimeValueToPanel(TimeSpan time)

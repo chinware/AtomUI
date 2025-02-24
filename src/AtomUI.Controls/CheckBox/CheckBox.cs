@@ -16,10 +16,10 @@ public class CheckBox : AvaloniaCheckBox,
     #region 公共属性定义
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<CheckBox, bool>(nameof(IsMotionEnabled), true);
+        = AvaloniaProperty.Register<CheckBox, bool>(nameof(IsMotionEnabled));
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<CheckBox, bool>(nameof(IsWaveAnimationEnabled), true);
+        = AvaloniaProperty.Register<CheckBox, bool>(nameof(IsWaveAnimationEnabled));
     
     public bool IsMotionEnabled
     {

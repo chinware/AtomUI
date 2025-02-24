@@ -53,10 +53,10 @@ public class NotificationCard : ContentControl,
         AvaloniaProperty.Register<NotificationCard, NotificationType>(nameof(NotificationType));
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<NotificationCard, bool>(nameof(IsMotionEnabled), true);
+        = AvaloniaProperty.Register<NotificationCard, bool>(nameof(IsMotionEnabled));
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<NotificationCard, bool>(nameof(IsWaveAnimationEnabled), true);
+        = AvaloniaProperty.Register<NotificationCard, bool>(nameof(IsWaveAnimationEnabled));
 
     /// <summary>
     /// Defines the <see cref="NotificationClosed" /> event.

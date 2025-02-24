@@ -93,7 +93,7 @@ public class OptionButton : AvaloniaRadioButton,
             o => o.IsWaveAnimationEnabled,
             (o, v) => o.IsWaveAnimationEnabled = v);
 
-    private bool _isMotionEnabled = true;
+    private bool _isMotionEnabled;
 
     internal bool IsMotionEnabled
     {

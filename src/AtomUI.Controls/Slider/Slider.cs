@@ -207,10 +207,10 @@ public class Slider : RangeBase,
 
     #region 内部属性定义
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<Slider, bool>(nameof(IsMotionEnabled), true);
+        = AvaloniaProperty.Register<Slider, bool>(nameof(IsMotionEnabled));
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<Slider, bool>(nameof(IsWaveAnimationEnabled), true);
+        = AvaloniaProperty.Register<Slider, bool>(nameof(IsWaveAnimationEnabled));
 
     public bool IsMotionEnabled
     {

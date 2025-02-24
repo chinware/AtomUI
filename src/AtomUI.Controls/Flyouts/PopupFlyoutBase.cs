@@ -79,7 +79,7 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
         Avalonia.Controls.Primitives.Popup.PlacementConstraintAdjustmentProperty.AddOwner<PopupFlyoutBase>();
    
    public static readonly StyledProperty<bool> IsMotionEnabledProperty
-       = AvaloniaProperty.Register<PopupFlyoutBase, bool>(nameof(IsMotionEnabled), true);
+       = AvaloniaProperty.Register<PopupFlyoutBase, bool>(nameof(IsMotionEnabled));
 
     public double MarginToAnchor
     {

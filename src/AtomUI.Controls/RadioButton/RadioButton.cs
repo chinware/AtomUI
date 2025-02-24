@@ -16,10 +16,10 @@ public class RadioButton : AvaloniaRadioButton,
     #region 公共属性定义
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<RadioButton, bool>(nameof(IsMotionEnabled), true);
+        = AvaloniaProperty.Register<RadioButton, bool>(nameof(IsMotionEnabled));
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<RadioButton, bool>(nameof(IsWaveAnimationEnabled), true);
+        = AvaloniaProperty.Register<RadioButton, bool>(nameof(IsWaveAnimationEnabled));
     
     public bool IsMotionEnabled
     {

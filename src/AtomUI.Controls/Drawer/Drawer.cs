@@ -73,7 +73,7 @@ public class Drawer : Control,
         = AvaloniaProperty.Register<Drawer, bool>(nameof(IsMotionEnabled));
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<Drawer, bool>(nameof(IsWaveAnimationEnabled), true);
+        = AvaloniaProperty.Register<Drawer, bool>(nameof(IsWaveAnimationEnabled));
 
     [Content]
     [DependsOn(nameof(ContentTemplate))]

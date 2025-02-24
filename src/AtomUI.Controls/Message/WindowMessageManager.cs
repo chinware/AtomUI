@@ -28,10 +28,10 @@ public class WindowMessageManager : TemplatedControl,
             nameof(Position), NotificationPosition.TopRight);
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<WindowMessageManager, bool>(nameof(IsMotionEnabled), true);
+        = AvaloniaProperty.Register<WindowMessageManager, bool>(nameof(IsMotionEnabled));
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<WindowMessageManager, bool>(nameof(IsWaveAnimationEnabled), true);
+        = AvaloniaProperty.Register<WindowMessageManager, bool>(nameof(IsWaveAnimationEnabled));
 
     /// <summary>
     /// Defines which corner of the screen notifications can be displayed in.

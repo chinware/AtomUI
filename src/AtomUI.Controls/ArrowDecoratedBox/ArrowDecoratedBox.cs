@@ -93,10 +93,10 @@ public class ArrowDecoratedBox : ContentControl,
             nameof(ArrowPosition), ArrowPosition.Bottom);
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<ArrowDecoratedBox, bool>(nameof(IsMotionEnabled), true);
+        = AvaloniaProperty.Register<ArrowDecoratedBox, bool>(nameof(IsMotionEnabled));
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<ArrowDecoratedBox, bool>(nameof(IsWaveAnimationEnabled), true);
+        = AvaloniaProperty.Register<ArrowDecoratedBox, bool>(nameof(IsWaveAnimationEnabled));
     
     /// <summary>
     /// 是否显示指示箭头

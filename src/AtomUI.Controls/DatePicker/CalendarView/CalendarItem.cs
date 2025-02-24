@@ -81,7 +81,7 @@ internal class CalendarItem : TemplatedControl
         set => SetAndRaise(IsMonthViewModeProperty, ref _isMonthViewMode, value);
     }
     
-    private bool _isMotionEnabled = true;
+    private bool _isMotionEnabled;
 
     internal bool IsMotionEnabled
     {

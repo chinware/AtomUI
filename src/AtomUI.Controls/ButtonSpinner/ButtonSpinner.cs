@@ -36,10 +36,10 @@ public class ButtonSpinner : AvaloniaButtonSpinner,
         AddOnDecoratedBox.StatusProperty.AddOwner<ButtonSpinner>();
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<ButtonSpinner, bool>(nameof(IsMotionEnabled), true);
+        = AvaloniaProperty.Register<ButtonSpinner, bool>(nameof(IsMotionEnabled));
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<ButtonSpinner, bool>(nameof(IsWaveAnimationEnabled), true);
+        = AvaloniaProperty.Register<ButtonSpinner, bool>(nameof(IsWaveAnimationEnabled));
 
     public object? LeftAddOn
     {

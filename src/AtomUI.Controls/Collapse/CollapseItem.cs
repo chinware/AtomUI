@@ -178,7 +178,7 @@ public class CollapseItem : HeaderedContentControl, ISelectable
         set => SetAndRaise(MotionDurationProperty, ref _motionDuration, value);
     }
     
-    private bool _isMotionEnabled = true;
+    private bool _isMotionEnabled;
 
     internal bool IsMotionEnabled
     {

@@ -121,7 +121,7 @@ internal class CheckBoxIndicator : Control, IWaveAdornerInfoProvider
             o => o.IsWaveAnimationEnabled,
             (o, v) => o.IsWaveAnimationEnabled = v);
 
-    private bool _isMotionEnabled = true;
+    private bool _isMotionEnabled;
 
     internal bool IsMotionEnabled
     {

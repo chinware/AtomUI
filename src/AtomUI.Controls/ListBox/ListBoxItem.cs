@@ -34,7 +34,7 @@ public class ListBoxItem : AvaloniaListBoxItem
         set => SetAndRaise(SizeTypeProperty, ref _sizeType, value);
     }
 
-    private bool _isMotionEnabled = true;
+    private bool _isMotionEnabled;
 
     internal bool IsMotionEnabled
     {

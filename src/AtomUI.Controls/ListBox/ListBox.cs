@@ -24,10 +24,10 @@ public class ListBox : AvaloniaListBox,
         AvaloniaProperty.Register<ListBox, bool>(nameof(DisabledItemHoverEffect));
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<ListBox, bool>(nameof(IsMotionEnabled), true);
+        = AvaloniaProperty.Register<ListBox, bool>(nameof(IsMotionEnabled));
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<ListBox, bool>(nameof(IsWaveAnimationEnabled), true);
+        = AvaloniaProperty.Register<ListBox, bool>(nameof(IsWaveAnimationEnabled));
 
     public SizeType SizeType
     {

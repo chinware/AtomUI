@@ -38,6 +38,7 @@ internal class TimedRangeDatePickerPresenterTheme : DatePickerPresenterTheme
             Name              = TimeViewPart,
             VerticalAlignment = VerticalAlignment.Top,
         };
+        CreateTemplateParentBinding(timeView, TimeView.IsMotionEnabledProperty, TimedRangeDatePickerPresenter.IsMotionEnabledProperty);
         CreateTemplateParentBinding(timeView, TimeView.ClockIdentifierProperty, TimedRangeDatePickerPresenter.ClockIdentifierProperty);
         CreateTemplateParentBinding(timeView, TimeView.IsVisibleProperty, TimedRangeDatePickerPresenter.IsShowTimeProperty);
         timeView.RegisterInNameScope(scope);

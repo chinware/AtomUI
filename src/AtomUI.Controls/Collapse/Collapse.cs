@@ -54,10 +54,10 @@ public class Collapse : SelectingItemsControl,
         AvaloniaProperty.Register<Collapse, CollapseExpandIconPosition>(nameof(ExpandIconPosition));
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<Collapse, bool>(nameof(IsMotionEnabled), true);
+        = AvaloniaProperty.Register<Collapse, bool>(nameof(IsMotionEnabled));
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<Collapse, bool>(nameof(IsWaveAnimationEnabled), true);
+        = AvaloniaProperty.Register<Collapse, bool>(nameof(IsWaveAnimationEnabled));
 
     public SizeType SizeType
     {

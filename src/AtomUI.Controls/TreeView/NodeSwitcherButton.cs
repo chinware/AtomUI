@@ -142,7 +142,7 @@ internal class NodeSwitcherButton : ToggleButton
         set => SetAndRaise(CollapseIconVisibleProperty, ref _collapseIconVisible, value);
     }
     
-    private bool _isMotionEnabled = true;
+    private bool _isMotionEnabled;
 
     internal bool IsMotionEnabled
     {

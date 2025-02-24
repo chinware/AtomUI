@@ -75,7 +75,7 @@ public class TabItem : AvaloniaTabItem, ICustomHitTest
         set => SetValue(ShapeProperty, value);
     }
     
-    private bool _isMotionEnabled = true;
+    private bool _isMotionEnabled;
 
     internal bool IsMotionEnabled
     {

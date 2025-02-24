@@ -17,10 +17,10 @@ public class LineEdit : TextBox,
         AvaloniaProperty.Register<LineEdit, object?>(nameof(RightAddOn));
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<LineEdit, bool>(nameof(IsMotionEnabled), true);
+        = AvaloniaProperty.Register<LineEdit, bool>(nameof(IsMotionEnabled));
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<LineEdit, bool>(nameof(IsWaveAnimationEnabled), true);
+        = AvaloniaProperty.Register<LineEdit, bool>(nameof(IsWaveAnimationEnabled));
     
     public object? LeftAddOn
     {

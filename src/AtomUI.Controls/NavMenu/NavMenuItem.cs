@@ -362,7 +362,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         set => SetAndRaise(IsDarkStyleProperty, ref _isDarkStyle, value);
     }
     
-    private bool _isMotionEnabled = true;
+    private bool _isMotionEnabled;
 
     internal bool IsMotionEnabled
     {
