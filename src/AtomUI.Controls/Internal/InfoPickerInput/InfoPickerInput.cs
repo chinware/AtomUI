@@ -185,12 +185,25 @@ public abstract class InfoPickerInput : TemplatedControl,
     #region 内部属性定义
 
     internal static readonly StyledProperty<string?> TextProperty =
-        AvaloniaProperty.Register<TextBlock, string?>(nameof(Text));
+        AvaloniaProperty.Register<InfoPickerInput, string?>(nameof(Text));
 
     protected string? Text
     {
         get => GetValue(TextProperty);
         set => SetValue(TextProperty, value);
+    }
+    
+    internal static readonly DirectProperty<InfoPickerInput, double> PreferredInputWidthProperty
+        = AvaloniaProperty.RegisterDirect<InfoPickerInput, double>(nameof(PreferredInputWidth),
+            o => o.PreferredInputWidth,
+            (o, v) => o.PreferredInputWidth = v);
+    
+    private double _preferredInputWidth = double.NaN;
+
+    internal double PreferredInputWidth
+    {
+        get => _preferredInputWidth;
+        set => SetAndRaise(PreferredInputWidthProperty, ref _preferredInputWidth, value);
     }
 
     Control IControlSharedTokenResourcesHost.HostControl => this;
@@ -215,6 +228,7 @@ public abstract class InfoPickerInput : TemplatedControl,
     {
         HorizontalAlignmentProperty.OverrideDefaultValue<InfoPickerInput>(HorizontalAlignment.Left);
         VerticalAlignmentProperty.OverrideDefaultValue<InfoPickerInput>(VerticalAlignment.Top);
+        AffectsMeasure<InfoPickerInput>(PreferredInputWidthProperty, SizeTypeProperty);
     }
 
     public InfoPickerInput()
@@ -470,4 +484,5 @@ public abstract class InfoPickerInput : TemplatedControl,
     {
         return false;
     }
+    
 }

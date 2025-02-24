@@ -39,6 +39,7 @@ internal class RangeInfoPickerInputTheme : InfoPickerInputTheme
 
         var arrowIcon = AntDesignIconPackage.SwapRightOutlined();
         arrowIcon.Name = RangePickerArrowPart;
+        arrowIcon.RegisterInNameScope(scope);
 
         TokenResourceBinder.CreateTokenBinding(arrowIcon, Layoutable.HeightProperty,
             SharedTokenKey.IconSize);

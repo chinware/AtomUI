@@ -70,21 +70,6 @@ internal class AddOnDecoratedBoxToken : AbstractControlDesignToken
     public Color ActiveBg { get; set; }
 
     /// <summary>
-    /// 字体大小
-    /// </summary>
-    public double FontSize { get; set; }
-
-    /// <summary>
-    /// 大号字体大小
-    /// </summary>
-    public double FontSizeLG { get; set; }
-
-    /// <summary>
-    /// 小号字体大小
-    /// </summary>
-    public double FontSizeSM { get; set; }
-
-    /// <summary>
     /// AddOn 内边距
     /// </summary>
     public Thickness AddOnPadding { get; set; }
@@ -148,9 +133,6 @@ internal class AddOnDecoratedBoxToken : AbstractControlDesignToken
         };
         HoverBg    = SharedToken.ColorBgContainer;
         ActiveBg   = SharedToken.ColorTransparent;
-        FontSize   = SharedToken.FontSize;
-        FontSizeLG = SharedToken.FontSizeLG;
-        FontSizeSM = SharedToken.FontSizeSM;
 
         LeftInnerAddOnMargin  = new Thickness(0, 0, SharedToken.MarginXXS, 0);
         RightInnerAddOnMargin = new Thickness(SharedToken.MarginXXS, 0, 0, 0);

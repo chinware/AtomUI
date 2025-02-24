@@ -15,9 +15,6 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey WarningActiveShadow = new TokenResourceKey("AddOnDecoratedBox.WarningActiveShadow");
         public static readonly TokenResourceKey HoverBg = new TokenResourceKey("AddOnDecoratedBox.HoverBg");
         public static readonly TokenResourceKey ActiveBg = new TokenResourceKey("AddOnDecoratedBox.ActiveBg");
-        public static readonly TokenResourceKey FontSize = new TokenResourceKey("AddOnDecoratedBox.FontSize");
-        public static readonly TokenResourceKey FontSizeLG = new TokenResourceKey("AddOnDecoratedBox.FontSizeLG");
-        public static readonly TokenResourceKey FontSizeSM = new TokenResourceKey("AddOnDecoratedBox.FontSizeSM");
         public static readonly TokenResourceKey AddOnPadding = new TokenResourceKey("AddOnDecoratedBox.AddOnPadding");
         public static readonly TokenResourceKey AddOnPaddingSM = new TokenResourceKey("AddOnDecoratedBox.AddOnPaddingSM");
         public static readonly TokenResourceKey AddOnPaddingLG = new TokenResourceKey("AddOnDecoratedBox.AddOnPaddingLG");

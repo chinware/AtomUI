@@ -161,8 +161,7 @@ internal class AddOnDecoratedBoxTheme : BaseControlTheme
             addOnStyle.Add(ContentPresenter.PaddingProperty, AddOnDecoratedBoxTokenKey.PaddingLG);
             largeStyle.Add(addOnStyle);
         }
-
-        largeStyle.Add(TemplatedControl.FontSizeProperty, AddOnDecoratedBoxTokenKey.FontSizeLG);
+        
         largeStyle.Add(TemplatedControl.CornerRadiusProperty, SharedTokenKey.BorderRadiusLG);
         commonStyle.Add(largeStyle);
 
@@ -175,8 +174,7 @@ internal class AddOnDecoratedBoxTheme : BaseControlTheme
             addOnStyle.Add(ContentPresenter.PaddingProperty, AddOnDecoratedBoxTokenKey.Padding);
             middleStyle.Add(addOnStyle);
         }
-
-        middleStyle.Add(TemplatedControl.FontSizeProperty, AddOnDecoratedBoxTokenKey.FontSize);
+        
         middleStyle.Add(TemplatedControl.CornerRadiusProperty, SharedTokenKey.BorderRadius);
         commonStyle.Add(middleStyle);
 
@@ -189,8 +187,7 @@ internal class AddOnDecoratedBoxTheme : BaseControlTheme
             addOnStyle.Add(ContentPresenter.PaddingProperty, AddOnDecoratedBoxTokenKey.PaddingSM);
             smallStyle.Add(addOnStyle);
         }
-
-        smallStyle.Add(TemplatedControl.FontSizeProperty, AddOnDecoratedBoxTokenKey.FontSizeSM);
+        
         smallStyle.Add(TemplatedControl.CornerRadiusProperty, SharedTokenKey.BorderRadiusSM);
         commonStyle.Add(smallStyle);
 

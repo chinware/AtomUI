@@ -1,6 +1,7 @@
 ﻿using AtomUI.Controls.Internal;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
+using AtomUI.Media;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
@@ -109,10 +110,28 @@ public class RangeTimePicker : RangeInfoPickerInput,
     Control IControlSharedTokenResourcesHost.HostControl => this;
     
     string IControlSharedTokenResourcesHost.TokenId => TimePickerToken.ID;
+    
+    internal static readonly DirectProperty<RangeTimePicker, double> PreferredWidthProperty
+        = AvaloniaProperty.RegisterDirect<RangeTimePicker, double>(nameof(PreferredWidth),
+            o => o.PreferredWidth,
+            (o, v) => o.PreferredWidth = v);
+
+    private double _preferredWidth;
+
+    internal double PreferredWidth
+    {
+        get => _preferredWidth;
+        set => SetAndRaise(PreferredWidthProperty, ref _preferredWidth, value);
+    }
 
     #endregion
     
     private TimePickerPresenter? _pickerPresenter;
+    
+    static RangeTimePicker()
+    {
+        AffectsMeasure<RangeTimePicker>(PreferredWidthProperty);
+    }
 
     public RangeTimePicker()
     {
@@ -288,7 +307,15 @@ public class RangeTimePicker : RangeInfoPickerInput,
         {
             HandleRangeActivatedPartChanged();
         }
-
+        else if (change.Property == FontSizeProperty ||
+                 change.Property == FontFamilyProperty ||
+                 change.Property == FontFamilyProperty ||
+                 change.Property == FontStyleProperty ||
+                 change.Property == ClockIdentifierProperty)
+        {
+            CalculatePreferredWidth();
+        }
+        
         if (VisualRoot is not null)
         {
             if (change.Property == RangeStartSelectedTimeProperty)
@@ -316,6 +343,23 @@ public class RangeTimePicker : RangeInfoPickerInput,
                 }
             }
         }
+    }
+    
+    private void CalculatePreferredWidth()
+    {
+        var text = DateTimeUtils.FormatTimeSpan(TimeSpan.Zero,
+            ClockIdentifier == ClockIdentifierType.HourClock12);
+        var preferredInputWidth = TextUtils.CalculateTextSize(text, FontSize, FontFamily, FontStyle, FontWeight).Width;
+        if (Watermark != null)
+        {
+            preferredInputWidth = Math.Max(preferredInputWidth, TextUtils.CalculateTextSize(Watermark, FontSize, FontFamily, FontStyle, FontWeight).Width);
+        }
+
+        if (SecondaryWatermark != null)
+        {
+            preferredInputWidth = Math.Max(preferredInputWidth, TextUtils.CalculateTextSize(SecondaryWatermark, FontSize, FontFamily, FontStyle, FontWeight).Width);
+        }
+        PreferredInputWidth = preferredInputWidth;
     }
     
     protected void ResetRangeStartTimeValue()
@@ -392,6 +436,34 @@ public class RangeTimePicker : RangeInfoPickerInput,
                 _pickerPresenter.SelectedTime = null;
             }
         }
+    }
+    
+    protected override Size MeasureOverride(Size availableSize)
+    {
+        var size   = base.MeasureOverride(availableSize);
+        var width  = size.Width;
+        var height = size.Height;
+        if (_pickerInnerBox is not null)
+        {
+            var preferredWidth = 0d;
+            if (_pickerInnerBox.RightAddOnContent is Control rightAddOnContent)
+            {
+                preferredWidth += PreferredWidth + rightAddOnContent.DesiredSize.Width +
+                                 _pickerInnerBox.EffectiveInnerBoxPadding.Left +
+                                 _pickerInnerBox.EffectiveInnerBoxPadding.Right;
+            }
+
+            if (_rangePickerArrow is not null)
+            {
+                preferredWidth += _rangePickerArrow.DesiredSize.Width;
+            }
+
+            preferredWidth += PreferredWidth;
+
+            width = Math.Max(width, preferredWidth);
+        }
+
+        return new Size(width, height);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)

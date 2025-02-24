@@ -106,20 +106,21 @@ internal class InfoPickerInputTheme : BaseControlTheme
         return decoratedBox;
     }
 
-    protected TextBox BuildPickerTextBox(string name)
+    protected virtual TextBox BuildPickerTextBox(string name)
     {
         var pickerTextBox = new TextBox
         {
-            Name                     = name,
-            VerticalContentAlignment = VerticalAlignment.Center,
-            VerticalAlignment        = VerticalAlignment.Stretch,
-            HorizontalAlignment      = HorizontalAlignment.Stretch,
-            BorderThickness          = new Thickness(0),
-            TextWrapping             = TextWrapping.NoWrap,
-            AcceptsReturn            = false,
-            EmbedMode                = true,
-            IsEnableClearButton      = false,
-            IsEnableRevealButton     = false
+            Name                       = name,
+            HorizontalContentAlignment = HorizontalAlignment.Stretch,
+            VerticalContentAlignment   = VerticalAlignment.Center,
+            VerticalAlignment          = VerticalAlignment.Stretch,
+            HorizontalAlignment        = HorizontalAlignment.Stretch,
+            BorderThickness            = new Thickness(0),
+            TextWrapping               = TextWrapping.NoWrap,
+            AcceptsReturn              = false,
+            EmbedMode                  = true,
+            IsEnableClearButton        = false,
+            IsEnableRevealButton       = false,
         };
 
         BindUtils.RelayBind(this, DataValidationErrors.ErrorsProperty, pickerTextBox,
@@ -143,6 +144,8 @@ internal class InfoPickerInputTheme : BaseControlTheme
         commonStyle.Add(InfoPickerInput.HorizontalAlignmentProperty, HorizontalAlignment.Left);
         commonStyle.Add(InfoPickerInput.VerticalAlignmentProperty, VerticalAlignment.Top);
         
+        BuildFontSizeStyle(commonStyle);
+        
         var enableStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(InfoPickerInput.IsEnabledProperty, true));
         enableStyle.Add(InfoPickerInput.InputTextBrushProperty, SharedTokenKey.ColorText);
@@ -157,6 +160,27 @@ internal class InfoPickerInputTheme : BaseControlTheme
             selector.Nesting().PropertyEquals(InfoPickerInput.IsEnabledProperty, false));
         disabledStyle.Add(InfoPickerInput.InputTextBrushProperty, SharedTokenKey.ColorTextDisabled);
         commonStyle.Add(disabledStyle);
+        
         Add(commonStyle);
+    }
+
+    protected virtual void BuildFontSizeStyle(Style commonStyle)
+    {
+        // 设置字体
+        var largeStyle =
+            new Style(selector =>
+                selector.Nesting().PropertyEquals(InfoPickerInput.SizeTypeProperty, SizeType.Large));
+        largeStyle.Add(InfoPickerInput.FontSizeProperty, SharedTokenKey.FontSizeLG);
+        commonStyle.Add(largeStyle);
+        var middleStyle =
+            new Style(
+                selector => selector.Nesting().PropertyEquals(InfoPickerInput.SizeTypeProperty, SizeType.Middle));
+        middleStyle.Add(InfoPickerInput.FontSizeProperty, SharedTokenKey.FontSize);
+        commonStyle.Add(middleStyle);
+        var smallStyle =
+            new Style(selector =>
+                selector.Nesting().PropertyEquals(InfoPickerInput.SizeTypeProperty, SizeType.Small));
+        smallStyle.Add(InfoPickerInput.FontSizeProperty, SharedTokenKey.FontSizeSM);
+        commonStyle.Add(smallStyle);
     }
 }

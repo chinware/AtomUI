@@ -17,4 +17,11 @@ internal class TimePickerTheme : InfoPickerInputTheme
     {
         return AntDesignIconPackage.ClockCircleOutlined();
     }
+
+    protected override TextBox BuildPickerTextBox(string name)
+    {
+        var pickerTextBox = base.BuildPickerTextBox(name);
+        CreateTemplateParentBinding(pickerTextBox, TextBox.WidthProperty, InfoPickerInput.PreferredInputWidthProperty);
+        return pickerTextBox;
+    }
 }

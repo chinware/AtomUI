@@ -108,12 +108,12 @@ internal class TextBoxTheme : BaseControlTheme
 
         var textPresenter = new TextPresenter
         {
-            Name = TextPresenterPart
+            Name = TextPresenterPart,
         };
 
-        CreateTemplateParentBinding(textPresenter, Layoutable.HorizontalAlignmentProperty,
+        CreateTemplateParentBinding(textPresenter, TextPresenter.HorizontalAlignmentProperty,
             TextBox.HorizontalContentAlignmentProperty);
-        CreateTemplateParentBinding(textPresenter, Layoutable.VerticalAlignmentProperty,
+        CreateTemplateParentBinding(textPresenter, TextPresenter.VerticalAlignmentProperty,
             TextBox.VerticalContentAlignmentProperty);
         CreateTemplateParentBinding(textPresenter, TextPresenter.CaretBlinkIntervalProperty,
             TextBox.CaretBlinkIntervalProperty);

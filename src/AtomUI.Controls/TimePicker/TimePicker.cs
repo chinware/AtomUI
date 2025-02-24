@@ -34,8 +34,7 @@ public class TimePicker : InfoPickerInput,
         AvaloniaProperty.Register<TimePicker, int>(nameof(SecondIncrement), 1, coerce: CoerceSecondIncrement);
 
     public static readonly StyledProperty<ClockIdentifierType> ClockIdentifierProperty =
-        AvaloniaProperty.Register<TimePicker, ClockIdentifierType>(nameof(ClockIdentifier),
-            ClockIdentifierType.HourClock12);
+        AvaloniaProperty.Register<TimePicker, ClockIdentifierType>(nameof(ClockIdentifier));
 
     public static readonly StyledProperty<TimeSpan?> SelectedTimeProperty =
         AvaloniaProperty.Register<TimePicker, TimeSpan?>(nameof(SelectedTime),
@@ -91,19 +90,6 @@ public class TimePicker : InfoPickerInput,
 
     #region 内部属性定义
 
-    internal static readonly DirectProperty<TimePicker, double> PreferredWidthProperty
-        = AvaloniaProperty.RegisterDirect<TimePicker, double>(nameof(PreferredWidth),
-            o => o.PreferredWidth,
-            (o, v) => o.PreferredWidth = v);
-
-    private double _preferredWidth;
-
-    internal double PreferredWidth
-    {
-        get => _preferredWidth;
-        set => SetAndRaise(PreferredWidthProperty, ref _preferredWidth, value);
-    }
-
     Control IControlSharedTokenResourcesHost.HostControl => this;
 
     string IControlSharedTokenResourcesHost.TokenId => TimePickerToken.ID;
@@ -111,12 +97,7 @@ public class TimePicker : InfoPickerInput,
     #endregion
 
     private TimePickerPresenter? _pickerPresenter;
-
-    static TimePicker()
-    {
-        AffectsMeasure<TimePicker>(PreferredWidthProperty);
-    }
-
+    
     public TimePicker()
     {
         this.RegisterResources();
@@ -276,27 +257,14 @@ public class TimePicker : InfoPickerInput,
     {
         var text = DateTimeUtils.FormatTimeSpan(TimeSpan.Zero,
             ClockIdentifier == ClockIdentifierType.HourClock12);
-        PreferredWidth = TextUtils.CalculateTextSize(text, FontSize, FontFamily, FontStyle, FontWeight).Width;
-    }
-
-    protected override Size MeasureOverride(Size availableSize)
-    {
-        var size   = base.MeasureOverride(availableSize);
-        var width  = size.Width;
-        var height = size.Height;
-        if (_pickerInnerBox is not null)
+        var preferredInputWidth = TextUtils.CalculateTextSize(text, FontSize, FontFamily, FontStyle, FontWeight).Width;
+        if (Watermark != null)
         {
-            if (_pickerInnerBox.RightAddOnContent is Control rightAddOnContent)
-            {
-                width = Math.Max(width,
-                    PreferredWidth + rightAddOnContent.DesiredSize.Width +
-                    _pickerInnerBox.EffectiveInnerBoxPadding.Left + _pickerInnerBox.EffectiveInnerBoxPadding.Right);
-            }
+            preferredInputWidth = Math.Max(preferredInputWidth, TextUtils.CalculateTextSize(Watermark, FontSize, FontFamily, FontStyle, FontWeight).Width);
         }
-
-        return new Size(width, height);
+        PreferredInputWidth = preferredInputWidth;
     }
-
+    
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
