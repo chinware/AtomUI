@@ -211,8 +211,6 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey HeaderMargin = new TokenResourceKey("DatePicker.HeaderMargin");
         public static readonly TokenResourceKey HeaderPadding = new TokenResourceKey("DatePicker.HeaderPadding");
         public static readonly TokenResourceKey RangeCalendarSpacing = new TokenResourceKey("DatePicker.RangeCalendarSpacing");
-        public static readonly TokenResourceKey PickerInputMinWidth = new TokenResourceKey("DatePicker.PickerInputMinWidth");
-        public static readonly TokenResourceKey PickerInputWithTimeMinWidth = new TokenResourceKey("DatePicker.PickerInputWithTimeMinWidth");
         public static readonly TokenResourceKey ButtonsPanelMargin = new TokenResourceKey("DatePicker.ButtonsPanelMargin");
     }
 

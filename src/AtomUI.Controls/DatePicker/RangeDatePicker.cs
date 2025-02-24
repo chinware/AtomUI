@@ -3,6 +3,7 @@ using AtomUI.Controls.CalendarView;
 using AtomUI.Controls.Internal;
 using AtomUI.Controls.TimePickerLang;
 using AtomUI.Data;
+using AtomUI.Media;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Utils;
@@ -108,6 +109,19 @@ public class RangeDatePicker : RangeInfoPickerInput,
     #endregion
     
     #region 内部属性定义
+    
+    internal static readonly DirectProperty<RangeDatePicker, double> PreferredWidthProperty
+        = AvaloniaProperty.RegisterDirect<RangeDatePicker, double>(nameof(PreferredWidth),
+            o => o.PreferredWidth,
+            (o, v) => o.PreferredWidth = v);
+
+    private double _preferredWidth;
+
+    internal double PreferredWidth
+    {
+        get => _preferredWidth;
+        set => SetAndRaise(PreferredWidthProperty, ref _preferredWidth, value);
+    }
 
     string IControlSharedTokenResourcesHost.TokenId => DatePickerToken.ID;
     Control IControlSharedTokenResourcesHost.HostControl => this;
@@ -339,7 +353,8 @@ public class RangeDatePicker : RangeInfoPickerInput,
         if (change.Property == RangeActivatedPartProperty)
         {
             HandleRangeActivatedPartChanged();
-        } else if (change.Property == IsShowTimeProperty)
+        } 
+        else if (change.Property == IsShowTimeProperty)
         {
             if (IsShowTime)
             {
@@ -353,6 +368,17 @@ public class RangeDatePicker : RangeInfoPickerInput,
                     IsNeedConfirm = _isNeedConfirmedBackup.Value;
                 }
             }
+        }
+        else if (change.Property == FontSizeProperty ||
+                 change.Property == FontFamilyProperty ||
+                 change.Property == FontFamilyProperty ||
+                 change.Property == FontStyleProperty ||
+                 change.Property == ClockIdentifierProperty ||
+                 change.Property == MinWidthProperty ||
+                 change.Property == WidthProperty ||
+                 change.Property == MaxWidthProperty)
+        {
+            CalculatePreferredWidth();
         }
 
         if (VisualRoot is not null)
@@ -379,6 +405,39 @@ public class RangeDatePicker : RangeInfoPickerInput,
                     ResetRangeEndDateValue();
                 }
             }
+        }
+    }
+    
+    private void CalculatePreferredWidth()
+    {
+        if (!double.IsNaN(Width))
+        {
+            PreferredInputWidth = double.NaN;
+        }
+        else
+        {
+            var text                = FormatDateTime(DateTime.Today);
+            var preferredInputWidth = TextUtils.CalculateTextSize(text, FontSize, FontFamily, FontStyle, FontWeight).Width;
+            if (Watermark != null)
+            {
+                preferredInputWidth = Math.Max(preferredInputWidth, TextUtils.CalculateTextSize(Watermark, FontSize, FontFamily, FontStyle, FontWeight).Width);
+            }
+
+            if (SecondaryWatermark != null)
+            {
+                preferredInputWidth = Math.Max(preferredInputWidth, TextUtils.CalculateTextSize(SecondaryWatermark, FontSize, FontFamily, FontStyle, FontWeight).Width);
+            }
+            
+            if (!double.IsNaN(MinWidth))
+            {
+                preferredInputWidth = Math.Max(MinWidth, preferredInputWidth);
+            }
+
+            if (!double.IsNaN(MaxWidth))
+            {
+                preferredInputWidth = Math.Min(MaxWidth, preferredInputWidth);
+            }
+            PreferredInputWidth = preferredInputWidth;
         }
     }
     
@@ -466,4 +525,31 @@ public class RangeDatePicker : RangeInfoPickerInput,
         return RangeStartSelectedDate is not null || RangeEndSelectedDate is not null;
     }
     
+    protected override Size MeasureOverride(Size availableSize)
+    {
+        var size   = base.MeasureOverride(availableSize);
+        var width  = size.Width;
+        var height = size.Height;
+        if (_pickerInnerBox is not null)
+        {
+            var preferredWidth = 0d;
+            if (_pickerInnerBox.RightAddOnContent is Control rightAddOnContent)
+            {
+                preferredWidth += PreferredWidth + rightAddOnContent.DesiredSize.Width +
+                                  _pickerInnerBox.EffectiveInnerBoxPadding.Left +
+                                  _pickerInnerBox.EffectiveInnerBoxPadding.Right;
+            }
+
+            if (_rangePickerArrow is not null)
+            {
+                preferredWidth += _rangePickerArrow.DesiredSize.Width;
+            }
+
+            preferredWidth += PreferredWidth;
+
+            width = Math.Max(width, preferredWidth);
+        }
+
+        return new Size(width, height);
+    }
 }

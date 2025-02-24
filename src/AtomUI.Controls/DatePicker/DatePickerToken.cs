@@ -111,16 +111,6 @@ internal class DatePickerToken : AbstractControlDesignToken
     public double RangeCalendarSpacing { get; set; }
     
     /// <summary>
-    /// 日期选择器最小的宽度
-    /// </summary>
-    public double PickerInputMinWidth { get; set; }
-    
-    /// <summary>
-    /// 日期选择器最小的宽度 (ShowTime 为 True)
-    /// </summary>
-    public double PickerInputWithTimeMinWidth { get; set; }
-    
-    /// <summary>
     /// 按钮区域面板外间距
     /// </summary>
     public Thickness ButtonsPanelMargin { get; set; }
@@ -150,8 +140,6 @@ internal class DatePickerToken : AbstractControlDesignToken
         HeaderPadding               = new Thickness(0, 0, 0, SharedToken.PaddingSM);
         CellLineHeight              = CellHeight - 2; // 不知道为啥设置成一样，或者不设置文字有些靠下
         RangeCalendarSpacing        = 20;
-        PickerInputMinWidth         = 120;
-        PickerInputWithTimeMinWidth = 205;
         ButtonsPanelMargin          = new Thickness(0, SharedToken.MarginXS, 0, 0);
     }
 }

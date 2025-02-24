@@ -3,6 +3,7 @@ using AtomUI.Controls.CalendarView;
 using AtomUI.Controls.Internal;
 using AtomUI.Controls.TimePickerLang;
 using AtomUI.Data;
+using AtomUI.Media;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Utils;
@@ -20,23 +21,23 @@ public class DatePicker : InfoPickerInput,
     public static readonly StyledProperty<DateTime?> SelectedDateTimeProperty =
         AvaloniaProperty.Register<DatePicker, DateTime?>(nameof(SelectedDateTime),
             enableDataValidation: true);
-    
+
     public static readonly StyledProperty<DateTime?> DefaultDateTimeProperty =
         AvaloniaProperty.Register<DatePicker, DateTime?>(nameof(DefaultDateTime),
             enableDataValidation: true);
 
-    public static readonly StyledProperty<string?> FormatProperty = 
+    public static readonly StyledProperty<string?> FormatProperty =
         AvaloniaProperty.Register<DatePicker, string?>(nameof(Format));
-    
+
     public static readonly StyledProperty<bool> IsShowTimeProperty =
         AvaloniaProperty.Register<DatePicker, bool>(nameof(IsShowTime), false);
-    
+
     public static readonly StyledProperty<bool> IsNeedConfirmProperty =
         AvaloniaProperty.Register<DatePicker, bool>(nameof(IsNeedConfirm));
-    
+
     public static readonly StyledProperty<bool> IsShowNowProperty =
         AvaloniaProperty.Register<DatePicker, bool>(nameof(IsShowNow), true);
-    
+
     public static readonly StyledProperty<ClockIdentifierType> ClockIdentifierProperty =
         TimePicker.ClockIdentifierProperty.AddOwner<DatePicker>();
 
@@ -45,59 +46,59 @@ public class DatePicker : InfoPickerInput,
         get => GetValue(SelectedDateTimeProperty);
         set => SetValue(SelectedDateTimeProperty, value);
     }
-    
+
     public DateTime? DefaultDateTime
     {
         get => GetValue(DefaultDateTimeProperty);
         set => SetValue(DefaultDateTimeProperty, value);
     }
-    
+
     public string? Format
     {
         get => GetValue(FormatProperty);
         set => SetValue(FormatProperty, value);
     }
-    
+
     public bool IsShowTime
     {
         get => GetValue(IsShowTimeProperty);
         set => SetValue(IsShowTimeProperty, value);
     }
-    
+
     public bool IsNeedConfirm
     {
         get => GetValue(IsNeedConfirmProperty);
         set => SetValue(IsNeedConfirmProperty, value);
     }
-    
+
     public bool IsShowNow
     {
         get => GetValue(IsShowNowProperty);
         set => SetValue(IsShowNowProperty, value);
     }
-    
+
     public ClockIdentifierType ClockIdentifier
     {
         get => GetValue(ClockIdentifierProperty);
         set => SetValue(ClockIdentifierProperty, value);
     }
-    
+
     #endregion
 
     #region 内部属性定义
 
     string IControlSharedTokenResourcesHost.TokenId => DatePickerToken.ID;
     Control IControlSharedTokenResourcesHost.HostControl => this;
-    
+
     #endregion
 
     public DatePicker()
     {
         this.RegisterResources();
     }
-    
+
     private DatePickerPresenter? _pickerPresenter;
-    
+
     /// <summary>
     /// 清除时间选择器的值，不考虑默认值
     /// </summary>
@@ -125,7 +126,6 @@ public class DatePicker : InfoPickerInput,
         var format = "yyyy-MM-dd";
         if (IsShowTime)
         {
-           
             if (ClockIdentifier == ClockIdentifierType.HourClock12)
             {
                 format = $"{format} hh:mm:ss tt";
@@ -138,7 +138,7 @@ public class DatePicker : InfoPickerInput,
 
         return format;
     }
-    
+
     protected string FormatDateTime(DateTime? dateTime)
     {
         if (dateTime is null)
@@ -157,14 +157,14 @@ public class DatePicker : InfoPickerInput,
 
         return dateTime.Value.ToString(format);
     }
-    
+
     protected override Flyout CreatePickerFlyout()
     {
         var flyout = new DatePickerFlyout();
         BindUtils.RelayBind(this, IsMotionEnabledProperty, flyout, DatePickerFlyout.IsMotionEnabledProperty);
         return flyout;
     }
-    
+
     protected override void NotifyFlyoutPresenterCreated(Control flyoutPresenter)
     {
         if (flyoutPresenter is DatePickerFlyoutPresenter datePickerFlyoutPresenter)
@@ -183,7 +183,7 @@ public class DatePicker : InfoPickerInput,
         {
             return;
         }
-        
+
         BindUtils.RelayBind(this, IsMotionEnabledProperty, presenter, DatePickerPresenter.IsMotionEnabledProperty);
         BindUtils.RelayBind(this, SelectedDateTimeProperty, presenter, DatePickerPresenter.SelectedDateTimeProperty);
         BindUtils.RelayBind(this, IsNeedConfirmProperty, presenter, DatePickerPresenter.IsNeedConfirmProperty);
@@ -191,18 +191,18 @@ public class DatePicker : InfoPickerInput,
         BindUtils.RelayBind(this, IsShowTimeProperty, presenter, DatePickerPresenter.IsShowTimeProperty);
         BindUtils.RelayBind(this, ClockIdentifierProperty, presenter, DatePickerPresenter.ClockIdentifierProperty);
     }
-    
+
     protected override void NotifyFlyoutOpened()
     {
         base.NotifyFlyoutOpened();
         if (_pickerPresenter is not null)
         {
             _pickerPresenter.ChoosingStatueChanged += HandleChoosingStatueChanged;
-            _pickerPresenter.HoverDateTimeChanged += HandleHoverDateTimeChanged;
-            _pickerPresenter.Confirmed += HandleConfirmed;
+            _pickerPresenter.HoverDateTimeChanged  += HandleHoverDateTimeChanged;
+            _pickerPresenter.Confirmed             += HandleConfirmed;
         }
     }
-    
+
     protected override void NotifyFlyoutAboutToClose(bool selectedIsValid)
     {
         base.NotifyFlyoutAboutToClose(selectedIsValid);
@@ -223,7 +223,7 @@ public class DatePicker : InfoPickerInput,
             ClearHoverSelectedInfo();
         }
     }
-    
+
     private void HandleHoverDateTimeChanged(object? sender, DateSelectedEventArgs args)
     {
         if (args.Date.HasValue)
@@ -235,7 +235,7 @@ public class DatePicker : InfoPickerInput,
             Text = null;
         }
     }
-    
+
     private void HandleConfirmed(object? sender, EventArgs args)
     {
         SelectedDateTime = _pickerPresenter?.SelectedDateTime;
@@ -254,6 +254,7 @@ public class DatePicker : InfoPickerInput,
         {
             SelectedDateTime = DefaultDateTime;
         }
+
         Text = FormatDateTime(SelectedDateTime);
     }
 
@@ -263,6 +264,46 @@ public class DatePicker : InfoPickerInput,
         if (change.Property == SelectedDateTimeProperty)
         {
             Text = FormatDateTime(SelectedDateTime);
+        }
+        else if (change.Property == FontSizeProperty ||
+                 change.Property == FontFamilyProperty ||
+                 change.Property == FontFamilyProperty ||
+                 change.Property == FontStyleProperty ||
+                 change.Property == ClockIdentifierProperty ||
+                 change.Property == MinWidthProperty ||
+                 change.Property == WidthProperty ||
+                 change.Property == MaxWidthProperty)
+        {
+            CalculatePreferredWidth();
+        }
+    }
+
+    private void CalculatePreferredWidth()
+    {
+        if (!double.IsNaN(Width))
+        {
+            PreferredInputWidth = double.NaN;
+        }
+        else
+        {
+            var text                = FormatDateTime(DateTime.Today);
+            var preferredInputWidth = TextUtils.CalculateTextSize(text, FontSize, FontFamily, FontStyle, FontWeight).Width;
+            if (Watermark != null)
+            {
+                preferredInputWidth = Math.Max(preferredInputWidth,
+                    TextUtils.CalculateTextSize(Watermark, FontSize, FontFamily, FontStyle, FontWeight).Width);
+            }
+
+            if (!double.IsNaN(MinWidth))
+            {
+                preferredInputWidth = Math.Max(MinWidth, preferredInputWidth);
+            }
+
+            if (!double.IsNaN(MaxWidth))
+            {
+                preferredInputWidth = Math.Min(MaxWidth, preferredInputWidth);
+            }
+            PreferredInputWidth = preferredInputWidth;
         }
     }
 

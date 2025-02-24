@@ -311,7 +311,10 @@ public class RangeTimePicker : RangeInfoPickerInput,
                  change.Property == FontFamilyProperty ||
                  change.Property == FontFamilyProperty ||
                  change.Property == FontStyleProperty ||
-                 change.Property == ClockIdentifierProperty)
+                 change.Property == ClockIdentifierProperty ||
+                 change.Property == MinWidthProperty ||
+                 change.Property == WidthProperty ||
+                 change.Property == MaxWidthProperty)
         {
             CalculatePreferredWidth();
         }
@@ -347,19 +350,35 @@ public class RangeTimePicker : RangeInfoPickerInput,
     
     private void CalculatePreferredWidth()
     {
-        var text = DateTimeUtils.FormatTimeSpan(TimeSpan.Zero,
-            ClockIdentifier == ClockIdentifierType.HourClock12);
-        var preferredInputWidth = TextUtils.CalculateTextSize(text, FontSize, FontFamily, FontStyle, FontWeight).Width;
-        if (Watermark != null)
+        if (!double.IsNaN(Width))
         {
-            preferredInputWidth = Math.Max(preferredInputWidth, TextUtils.CalculateTextSize(Watermark, FontSize, FontFamily, FontStyle, FontWeight).Width);
+            PreferredInputWidth = double.NaN;
         }
+        else
+        {
+            var text = DateTimeUtils.FormatTimeSpan(TimeSpan.Zero,
+                ClockIdentifier == ClockIdentifierType.HourClock12);
+            var preferredInputWidth = TextUtils.CalculateTextSize(text, FontSize, FontFamily, FontStyle, FontWeight).Width;
+            if (Watermark != null)
+            {
+                preferredInputWidth = Math.Max(preferredInputWidth, TextUtils.CalculateTextSize(Watermark, FontSize, FontFamily, FontStyle, FontWeight).Width);
+            }
 
-        if (SecondaryWatermark != null)
-        {
-            preferredInputWidth = Math.Max(preferredInputWidth, TextUtils.CalculateTextSize(SecondaryWatermark, FontSize, FontFamily, FontStyle, FontWeight).Width);
+            if (SecondaryWatermark != null)
+            {
+                preferredInputWidth = Math.Max(preferredInputWidth, TextUtils.CalculateTextSize(SecondaryWatermark, FontSize, FontFamily, FontStyle, FontWeight).Width);
+            }
+            if (!double.IsNaN(MinWidth))
+            {
+                preferredInputWidth = Math.Max(MinWidth, preferredInputWidth);
+            }
+
+            if (!double.IsNaN(MaxWidth))
+            {
+                preferredInputWidth = Math.Min(MaxWidth, preferredInputWidth);
+            }
+            PreferredInputWidth = preferredInputWidth;
         }
-        PreferredInputWidth = preferredInputWidth;
     }
     
     protected void ResetRangeStartTimeValue()

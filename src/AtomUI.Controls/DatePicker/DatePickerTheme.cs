@@ -23,13 +23,17 @@ internal class DatePickerTheme : InfoPickerInputTheme
     {
         base.BuildStyles();
         var commonStyle = new Style(selector => selector.Nesting());
-        commonStyle.Add(DatePicker.MinWidthProperty, DatePickerTokenKey.PickerInputMinWidth);
-
         var withTimeStyle =
             new Style(selector => selector.Nesting().PropertyEquals(DatePicker.IsShowTimeProperty, true));
-        withTimeStyle.Add(DatePicker.MinWidthProperty, DatePickerTokenKey.PickerInputWithTimeMinWidth);
         commonStyle.Add(withTimeStyle);
-        
         Add(commonStyle);
     }
+    
+    protected override TextBox BuildPickerTextBox(string name)
+    {
+        var pickerTextBox = base.BuildPickerTextBox(name);
+        CreateTemplateParentBinding(pickerTextBox, TextBox.WidthProperty, InfoPickerInput.PreferredInputWidthProperty);
+        return pickerTextBox;
+    }
+    
 }
