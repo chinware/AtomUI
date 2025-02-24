@@ -177,6 +177,7 @@ public class TreeView : AvaloniaTreeView,
     private TreeViewItem? _currentDragOver; // 这个不是目标节点，有可能是在父节点上拖动
     private TreeViewItem? _dropTargetNode; // 目标释放节点
     private DropTargetInfo? _dropTargetInfo;
+    internal bool IsExpandAllProcess { get; set; } = false;
 
     static TreeView()
     {
@@ -193,6 +194,7 @@ public class TreeView : AvaloniaTreeView,
 
     public void ExpandAll()
     {
+        IsExpandAllProcess = true;
         foreach (var item in Items)
         {
             if (item is TreeViewItem treeItem)
@@ -200,6 +202,7 @@ public class TreeView : AvaloniaTreeView,
                 ExpandSubTree(treeItem);
             }
         }
+        IsExpandAllProcess = false;
     }
 
     public void CheckedSubTree(TreeViewItem item)
@@ -851,20 +854,20 @@ public class TreeView : AvaloniaTreeView,
         // 先判断是否展开
         if (item.Level > 0)
         {
-            var isExpaned   = true;
+            var isExpanded   = true;
             var currentItem = item.Parent as TreeViewItem;
             while (currentItem is not null)
             {
                 if (!currentItem.IsExpanded)
                 {
-                    isExpaned = false;
+                    isExpanded = false;
                     break;
                 }
 
                 currentItem = currentItem.Parent as TreeViewItem;
             }
 
-            if (!isExpaned)
+            if (!isExpanded)
             {
                 return false;
             }

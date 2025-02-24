@@ -101,7 +101,7 @@ public class BaseTabControl : AvaloniaTabControl,
 
     #endregion
 
-    private Border? _Frame;
+    private Border? _frame;
     private Panel? _alignWrapper;
     private Point _tabStripBorderStartPoint;
     private Point _tabStripBorderEndPoint;
@@ -120,7 +120,7 @@ public class BaseTabControl : AvaloniaTabControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _Frame = e.NameScope.Find<Border>(BaseTabControlTheme.FramePart);
+        _frame = e.NameScope.Find<Border>(BaseTabControlTheme.FramePart);
         _alignWrapper   = e.NameScope.Find<Panel>(BaseTabControlTheme.AlignWrapperPart);
         SetupBorderBinding();
         HandlePlacementChanged();
@@ -128,7 +128,7 @@ public class BaseTabControl : AvaloniaTabControl,
 
     private void SetupBorderBinding()
     {
-        if (_Frame is not null)
+        if (_frame is not null)
         {
             TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
                 SharedTokenKey.BorderThickness, BindingPriority.Template,

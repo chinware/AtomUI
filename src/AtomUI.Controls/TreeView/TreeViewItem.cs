@@ -2,11 +2,13 @@
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.Media;
+using AtomUI.MotionScene;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Animation;
+using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
@@ -194,6 +196,11 @@ public class TreeViewItem : AvaloniaTreeItem
         = AvaloniaProperty.RegisterDirect<TreeViewItem, bool>(nameof(IsMotionEnabled),
             o => o.IsMotionEnabled,
             (o, v) => o.IsMotionEnabled = v);
+    
+    internal static readonly DirectProperty<TreeViewItem, TimeSpan> MotionDurationProperty =
+        AvaloniaProperty.RegisterDirect<TreeViewItem, TimeSpan>(nameof(MotionDuration),
+            o => o.MotionDuration,
+            (o, v) => o.MotionDuration = v);
 
     private double _titleHeight;
 
@@ -294,14 +301,25 @@ public class TreeViewItem : AvaloniaTreeItem
         get => _isMotionEnabled;
         set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
     }
+    
+    private TimeSpan _motionDuration;
+
+    internal TimeSpan MotionDuration
+    {
+        get => _motionDuration;
+        set => SetAndRaise(MotionDurationProperty, ref _motionDuration, value);
+    }
 
     internal TreeView? OwnerTreeView { get; set; }
-
+    private bool _animating;
+    private bool _tempAnimationDisabled = false;
+    
     #endregion
 
     private bool _initialized;
     private ContentPresenter? _headerPresenter;
-    private Border? _Frame;
+    private MotionActorControl? _itemsPresenterMotionActor;
+    private Border? _frame;
     private ContentPresenter? _iconPresenter;
     private NodeSwitcherButton? _switcherButton;
     private Rect _effectiveBgRect;
@@ -327,10 +345,11 @@ public class TreeViewItem : AvaloniaTreeItem
         base.OnAttachedToLogicalTree(e);
         if (!_initialized)
         {
+            TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, SharedTokenKey.MotionDurationSlow);
             TokenResourceBinder.CreateTokenBinding(this, TitleHeightProperty, TreeViewTokenKey.TitleHeight);
+            OwnerTreeView = this.GetLogicalAncestors().OfType<TreeView>().FirstOrDefault<TreeView>();
             if (IsChecked.HasValue && IsChecked.Value)
             {
-                OwnerTreeView = this.FindLogicalAncestorOfType<TreeView>();
                 // 注册到 TreeView
                 OwnerTreeView?.DefaultCheckedItems.Add(this);
             }
@@ -382,6 +401,10 @@ public class TreeViewItem : AvaloniaTreeItem
             {
                 CreateNodeSwitcherDefaultIcons();
                 SetNodeSwitcherIcons();
+            }
+            else if (change.Property == IsExpandedProperty)
+            {
+                HandleExpandedChanged();
             }
         }
 
@@ -444,6 +467,72 @@ public class TreeViewItem : AvaloniaTreeItem
             }
         }
     }
+    
+    private void HandleExpandedChanged()
+    {
+        if (IsExpanded)
+        {
+            ExpandChildren();
+        }
+        else
+        {
+            CollapseChildren();
+        }
+    }
+    
+    private void ExpandChildren()
+    {
+        
+        if (_itemsPresenterMotionActor is null || 
+            _animating || 
+            OwnerTreeView is null)
+        {
+            return;
+        }
+        
+        if (!IsMotionEnabled || OwnerTreeView.IsExpandAllProcess || _tempAnimationDisabled)
+        {
+            _itemsPresenterMotionActor.IsVisible = true;
+            return;
+        }
+
+        _animating = true;
+        var motion = new ExpandMotion(Direction.Top,
+            MotionDuration,
+            new CubicEaseOut());
+        MotionInvoker.Invoke(_itemsPresenterMotionActor, motion, null,
+            () =>
+            {
+                _itemsPresenterMotionActor.IsVisible = true;
+                _animating                           = false;
+            });
+    }
+
+    private void CollapseChildren()
+    {
+        if (_itemsPresenterMotionActor is null || 
+            _animating || 
+            OwnerTreeView is null)
+        {
+            return;
+        }
+
+        if (!IsMotionEnabled || OwnerTreeView.IsExpandAllProcess || _tempAnimationDisabled)
+        {
+            _itemsPresenterMotionActor.IsVisible = false;
+            return;
+        }
+
+        _animating = true;
+        var motion = new CollapseMotion(Direction.Top,
+            MotionDuration,
+            new CubicEaseIn());
+        MotionInvoker.Invoke(_itemsPresenterMotionActor, motion, null, () =>
+        {
+            _itemsPresenterMotionActor.IsVisible = false;
+            _animating = false;
+        });
+    }
 
     private void CreateNodeSwitcherDefaultIcons()
     {
@@ -498,15 +587,16 @@ public class TreeViewItem : AvaloniaTreeItem
         SetNodeSwitcherIcons();
         _headerPresenter = e.NameScope.Find<ContentPresenter>(TreeViewItemTheme.HeaderPresenterPart);
         _iconPresenter   = e.NameScope.Find<ContentPresenter>(TreeViewItemTheme.IconPresenterPart);
-        _Frame  = e.NameScope.Find<Border>(TreeViewItemTheme.FramePart);
+        _frame  = e.NameScope.Find<Border>(TreeViewItemTheme.FramePart);
         _switcherButton  = e.NameScope.Find<NodeSwitcherButton>(TreeViewItemTheme.NodeSwitcherButtonPart);
+        _itemsPresenterMotionActor = e.NameScope.Find<MotionActorControl>(TreeViewItemTheme.ItemsPresenterMotionActorPart);
         
         SetupSwitcherButtonIconMode();
 
-        if (_Frame is not null)
+        if (_frame is not null)
         {
-            _Frame.PointerEntered += HandleFrameEntered;
-            _Frame.PointerExited  += HandleFrameExited;
+            _frame.PointerEntered += HandleFrameEntered;
+            _frame.PointerExited  += HandleFrameExited;
         }
 
         if (_headerPresenter is not null)
@@ -521,7 +611,11 @@ public class TreeViewItem : AvaloniaTreeItem
             _iconPresenter.PointerExited  += HandleHeaderPresenterExited;
         }
 
-        IsLeaf = ItemCount == 0;
+        
+        IsLeaf                 = ItemCount == 0;
+        _tempAnimationDisabled = true;
+        HandleExpandedChanged();
+        _tempAnimationDisabled = false;
         SetupCheckBoxEnabled();
         SetupTransitions();
     }
@@ -543,7 +637,7 @@ public class TreeViewItem : AvaloniaTreeItem
 
     private void CalculateEffectiveBgRect()
     {
-        if (_Frame is null)
+        if (_frame is null)
         {
             return;
         }
@@ -556,14 +650,14 @@ public class TreeViewItem : AvaloniaTreeItem
             if (_iconPresenter is not null && _iconPresenter.IsVisible)
             {
                 offset       = _iconPresenter.TranslatePoint(new Point(0, 0), this) ?? default;
-                targetWidth  = _iconPresenter.Bounds.Width + _headerPresenter?.Bounds.Width ?? 0d;
-                targetHeight = _Frame.Bounds.Height;
+                targetWidth  = _iconPresenter.DesiredSize.Width + _headerPresenter?.DesiredSize.Width ?? 0d;
+                targetHeight = _frame.Bounds.Height;
             }
             else if (_headerPresenter is not null)
             {
                 offset       = _headerPresenter.TranslatePoint(new Point(0, 0), this) ?? default;
-                targetWidth  = _headerPresenter.Bounds.Width;
-                targetHeight = _Frame.Bounds.Height;
+                targetWidth  = _headerPresenter.DesiredSize.Width;
+                targetHeight = _frame.Bounds.Height;
             }
         }
 
@@ -798,7 +892,7 @@ public class TreeViewItem : AvaloniaTreeItem
 
     internal Thickness FrameMargin()
     {
-        return _Frame?.Margin ?? default;
+        return _frame?.Margin ?? default;
     }
 
     internal bool IsInDragBounds(Point point)
@@ -823,6 +917,6 @@ public class TreeViewItem : AvaloniaTreeItem
 
     internal DragPreviewAdorner BuildPreviewAdorner()
     {
-        return new DragPreviewAdorner(_Frame!);
+        return new DragPreviewAdorner(_frame!);
     }
 }

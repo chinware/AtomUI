@@ -1,4 +1,5 @@
 ﻿using AtomUI.IconPkg;
+using AtomUI.MotionScene;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -21,6 +22,7 @@ internal class TreeViewItemTheme : BaseControlTheme
 {
     public const string FramePart = "PART_Frame";
     public const string ItemsPresenterPart = "PART_ItemsPresenter";
+    public const string ItemsPresenterMotionActorPart = "PART_ItemsPresenterMotionActor";
     public const string ItemsLayoutPart = "PART_ItemsLayoutPart";
     public const string HeaderPresenterPart = "PART_HeaderPresenter";
     public const string IconPresenterPart = "PART_IconPresenter";
@@ -41,14 +43,14 @@ internal class TreeViewItemTheme : BaseControlTheme
             {
                 Orientation = Orientation.Vertical
             };
-            var Frame = new Border
+            var frame = new Border
             {
                 Name      = FramePart,
                 Focusable = true
             };
-            CreateTemplateParentBinding(Frame, Border.BorderThicknessProperty,
+            CreateTemplateParentBinding(frame, Border.BorderThicknessProperty,
                 TreeViewItem.DragFrameBorderThicknessProperty);
-            Frame.RegisterInNameScope(scope);
+            frame.RegisterInNameScope(scope);
 
             var treeItemLayout = new Grid
             {
@@ -165,19 +167,27 @@ internal class TreeViewItemTheme : BaseControlTheme
             Grid.SetColumn(contentPresenter, 3);
             treeItemLayout.Children.Add(contentPresenter);
 
-            Frame.Child = treeItemLayout;
+            frame.Child = treeItemLayout;
+            
+            var itemsPresenterMotionActor = new MotionActorControl
+            {
+                Name         = ItemsPresenterMotionActorPart,
+                ClipToBounds = true,
+                IsVisible = false
+            };
+            itemsPresenterMotionActor.RegisterInNameScope(scope);
+            
             var itemsPresenter = new ItemsPresenter
             {
                 Name      = ItemsPresenterPart,
                 Focusable = false
             };
+            itemsPresenterMotionActor.Child = itemsPresenter;
             itemsPresenter.RegisterInNameScope(scope);
             CreateTemplateParentBinding(itemsPresenter, ItemsPresenter.ItemsPanelProperty,
                 ItemsControl.ItemsPanelProperty);
-            CreateTemplateParentBinding(itemsPresenter, Visual.IsVisibleProperty,
-                Avalonia.Controls.TreeViewItem.IsExpandedProperty);
-            stackPanel.Children.Add(Frame);
-            stackPanel.Children.Add(itemsPresenter);
+            stackPanel.Children.Add(frame);
+            stackPanel.Children.Add(itemsPresenterMotionActor);
             return stackPanel;
         });
     }
@@ -197,10 +207,10 @@ internal class TreeViewItemTheme : BaseControlTheme
         commonStyle.Add(TemplatedControl.BorderBrushProperty, SharedTokenKey.ColorBorder);
         commonStyle.Add(TemplatedControl.BorderThicknessProperty, SharedTokenKey.BorderThickness);
         commonStyle.Add(TreeViewItem.EffectiveNodeBgProperty, Brushes.Transparent);
-        var FrameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
-        FrameStyle.Add(Layoutable.HeightProperty, TreeViewTokenKey.TitleHeight);
-        FrameStyle.Add(Layoutable.MarginProperty, TreeViewTokenKey.TreeItemMargin);
-        commonStyle.Add(FrameStyle);
+        var frameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
+        frameStyle.Add(Layoutable.HeightProperty, TreeViewTokenKey.TitleHeight);
+        frameStyle.Add(Layoutable.MarginProperty, TreeViewTokenKey.TreeItemMargin);
+        commonStyle.Add(frameStyle);
 
         // 节点 Icon 的大小
         var treeItemIconStyle = new Style(selector =>
@@ -316,9 +326,9 @@ internal class TreeViewItemTheme : BaseControlTheme
     {
         var draggingStyle =
             new Style(selector => selector.Nesting().PropertyEquals(TreeViewItem.IsDraggingProperty, true));
-        var FrameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
-        FrameStyle.Add(Border.BorderBrushProperty, SharedTokenKey.ColorPrimary);
-        draggingStyle.Add(FrameStyle);
+        var frameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
+        frameStyle.Add(Border.BorderBrushProperty, SharedTokenKey.ColorPrimary);
+        draggingStyle.Add(frameStyle);
         Add(draggingStyle);
     }
 }
