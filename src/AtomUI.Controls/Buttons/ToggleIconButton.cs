@@ -93,7 +93,7 @@ public class ToggleIconButton : ToggleButton,
     {
         icon.SetValue(HorizontalAlignmentProperty, HorizontalAlignment.Center, BindingPriority.Template);
         icon.SetValue(VerticalAlignmentProperty, VerticalAlignment.Center, BindingPriority.Template);
-        UIStructureUtils.SetTemplateParent(icon, this);
+        VisualAndLogicalUtils.SetTemplateParent(icon, this);
         BindUtils.RelayBind(this, IconWidthProperty, icon, WidthProperty);
         BindUtils.RelayBind(this, IconHeightProperty, icon, HeightProperty);
     }

@@ -224,7 +224,7 @@ public class ZoomBigOutMotion : AbstractMotion
             var opacitySetter = new Setter
             {
                 Property = Visual.OpacityProperty,
-                Value    = 0.0
+                Value    = 0.2
             };
             endFrame.Setters.Add(opacitySetter);
 

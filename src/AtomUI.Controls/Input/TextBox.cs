@@ -136,12 +136,12 @@ public class TextBox : AvaloniaTextBox,
         {
             if (change.OldValue is Control oldControl)
             {
-                UIStructureUtils.SetTemplateParent(oldControl, null);
+                VisualAndLogicalUtils.SetTemplateParent(oldControl, null);
             }
 
             if (change.NewValue is Control newControl)
             {
-                UIStructureUtils.SetTemplateParent(newControl, this);
+                VisualAndLogicalUtils.SetTemplateParent(newControl, this);
             }
         }
     }

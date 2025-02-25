@@ -49,7 +49,7 @@ internal class ShadowRenderer : Control
     static ShadowRenderer()
     {
         AffectsMeasure<ShadowRenderer>(ShadowsProperty);
-        MaskContentBackgroundProperty.OverrideDefaultValue<ShadowRenderer>(new SolidColorBrush(Colors.White));
+        MaskContentBackgroundProperty.OverrideDefaultValue<ShadowRenderer>(new SolidColorBrush(Colors.Transparent));
     }
 
     public sealed override void ApplyTemplate()

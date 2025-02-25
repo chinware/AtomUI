@@ -42,11 +42,9 @@ public static class TypeExtension
         BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public |
                              BindingFlags.FlattenHierarchy)
     {
-        PropertyInfo? info;
-
-        if (!type.TryGetPropertyInfo(name, out info, flags))
+        if (!type.TryGetPropertyInfo(name, out var info, flags))
         {
-            throw new NotSupportedException($"Can not find the '{name}' from type '{type}'. We can not reflect it.");
+            throw new MissingMemberException($"Can not find the '{name}' from type '{type}'. We can not reflect it.");
         }
 
         return info;
@@ -57,10 +55,9 @@ public static class TypeExtension
                                                                      BindingFlags.Public |
                                                                      BindingFlags.FlattenHierarchy)
     {
-        FieldInfo? info;
-        if (!type.TryGetFieldInfo(name, out info, flags))
+        if (!type.TryGetFieldInfo(name, out var info, flags))
         {
-            throw new NotSupportedException($"Can not find the '{name}' from type '{type}'. We can not reflect it.");
+            throw new MissingFieldException($"Can not find the '{name}' from type '{type}'. We can not reflect it.");
         }
 
         return info;
@@ -71,10 +68,9 @@ public static class TypeExtension
                                                                        BindingFlags.Public |
                                                                        BindingFlags.FlattenHierarchy)
     {
-        MethodInfo? info;
-        if (!type.TryGetMethodInfo(name, out info, flags))
+        if (!type.TryGetMethodInfo(name, out var info, flags))
         {
-            throw new NotSupportedException($"Can not find the '{name}' from type '{type}'. We can not reflect it.");
+            throw new MissingMethodException($"Can not find the '{name}' from type '{type}'. We can not reflect it.");
         }
 
         return info;

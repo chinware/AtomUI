@@ -5,7 +5,7 @@ namespace AtomUI.Native;
 
 internal static class WindowUtils
 {
-    public static void SetWindowIgnoreMouseEvents(WindowBase window, bool flag)
+    public static void SetWindowIgnoreMouseEvents(this WindowBase window, bool flag)
     {
         var windowHandle = window.PlatformImpl?.Handle?.Handle;
         if (windowHandle is not null)
@@ -15,7 +15,7 @@ internal static class WindowUtils
         }
     }
 
-    public static bool GetWindowIgnoreMouseEvents(WindowBase window)
+    public static bool GetWindowIgnoreMouseEvents(this WindowBase window)
     {
         var windowHandle = window.PlatformImpl?.Handle?.Handle;
         if (windowHandle is not null)

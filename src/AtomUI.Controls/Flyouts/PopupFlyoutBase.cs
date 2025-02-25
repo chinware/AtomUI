@@ -353,7 +353,7 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
         {
             Popup.PlacementTarget = Target = placementTarget;
             ((ISetLogicalParent)Popup).SetParent(placementTarget);
-            UIStructureUtils.SetTemplateParent(Popup, placementTarget.TemplatedParent);
+            VisualAndLogicalUtils.SetTemplateParent(Popup, placementTarget.TemplatedParent);
         }
 
         if (Popup.Child == null)

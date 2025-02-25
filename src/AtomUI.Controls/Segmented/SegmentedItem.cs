@@ -143,7 +143,7 @@ public class SegmentedItem : ContentControl, ISelectable
                 SegmentedTokenKey.ItemHoverColor);
             TokenResourceBinder.CreateTokenBinding(Icon, Icon.SelectedFilledBrushProperty,
                 SegmentedTokenKey.ItemSelectedColor);
-            UIStructureUtils.SetTemplateParent(Icon, this);
+            VisualAndLogicalUtils.SetTemplateParent(Icon, this);
         }
     }
 }

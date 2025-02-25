@@ -2,9 +2,9 @@
 
 namespace AtomUI.Controls;
 
-public interface IShadowDecorator
-{
-    public BoxShadows MaskShadows { get; set; }
-    public void AttachToTarget(Popup host);
-    public void DetachedFromTarget(Popup host);
+internal interface IShadowDecorator
+{ 
+    BoxShadows MaskShadows { get; set; }
+    void Open();
+    void Close();
 }

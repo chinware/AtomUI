@@ -2,8 +2,15 @@
 
 namespace AtomUI.Controls;
 
-public interface IShadowMaskInfoProvider
+internal interface IShadowMaskInfoProvider
 {
-    public CornerRadius GetMaskCornerRadius();
-    public Rect GetMaskBounds();
+    CornerRadius GetMaskCornerRadius();
+    Rect GetMaskBounds();
+}
+
+internal interface IArrowAwareShadowMaskInfoProvider : IShadowMaskInfoProvider
+{
+    bool IsShowArrow { get; }
+    ArrowPosition ArrowPosition { get; }
+    Rect ArrowIndicatorBounds { get; }
 }

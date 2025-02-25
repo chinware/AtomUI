@@ -79,7 +79,7 @@ public enum ArrowPosition
 }
 
 public class ArrowDecoratedBox : ContentControl, 
-                                 IShadowMaskInfoProvider,
+                                 IArrowAwareShadowMaskInfoProvider,
                                  IAnimationAwareControl,
                                  IControlSharedTokenResourcesHost
 {
@@ -157,6 +157,8 @@ public class ArrowDecoratedBox : ContentControl,
     string IControlSharedTokenResourcesHost.TokenId => ArrowDecoratedBoxToken.ID;
     Control IAnimationAwareControl.PropertyBindTarget => this;
     
+    public Rect ArrowIndicatorBounds { get; private set; }
+    
     #endregion
 
     // 指针最顶点位置
@@ -164,11 +166,11 @@ public class ArrowDecoratedBox : ContentControl,
     internal (double, double) ArrowVertexPoint => GetArrowVertexPoint();
     private Border? _contentDecorator;
     private Control? _arrowIndicatorLayout;
+    private ArrowIndicator? _arrowIndicator;
 
     static ArrowDecoratedBox()
     {
-        AffectsMeasure<ArrowDecoratedBox>(IsShowArrowProperty);
-        AffectsArrange<ArrowDecoratedBox>(ArrowDirectionProperty, ArrowPositionProperty);
+        AffectsMeasure<ArrowDecoratedBox>(IsShowArrowProperty, ArrowDirectionProperty, ArrowPositionProperty);
     }
 
     public ArrowDecoratedBox()
@@ -230,6 +232,7 @@ public class ArrowDecoratedBox : ContentControl,
         base.OnApplyTemplate(e);
         _contentDecorator     = e.NameScope.Get<Border>(ArrowDecoratedBoxTheme.ContentDecoratorPart);
         _arrowIndicatorLayout = e.NameScope.Get<Control>(ArrowDecoratedBoxTheme.ArrowIndicatorLayoutPart);
+        _arrowIndicator       = e.NameScope.Get<ArrowIndicator>(ArrowDecoratedBoxTheme.ArrowIndicatorPart);
         ArrowDirection        = GetDirection(ArrowPosition);
     }
 
@@ -381,5 +384,10 @@ public class ArrowDecoratedBox : ContentControl,
             }
         }
         _arrowIndicatorLayout.Arrange(new Rect(new Point(offsetX, offsetY), size));
+        if (_arrowIndicator != null)
+        {
+            ArrowIndicatorBounds = _arrowIndicator.Bounds;
+        }
+
     }
 }

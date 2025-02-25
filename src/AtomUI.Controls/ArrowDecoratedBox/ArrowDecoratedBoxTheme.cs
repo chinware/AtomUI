@@ -52,6 +52,7 @@ internal class ArrowDecoratedBoxTheme : BaseControlTheme
             {
                 Name = ArrowIndicatorPart
             };
+            arrowIndicator.RegisterInNameScope(scope);
             CreateTemplateParentBinding(arrowIndicator, ArrowIndicator.FilledColorProperty, ArrowDecoratedBox.BackgroundProperty);
             
             arrowIndicatorLayout.Child = arrowIndicator;

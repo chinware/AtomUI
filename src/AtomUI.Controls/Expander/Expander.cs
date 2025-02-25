@@ -246,7 +246,7 @@ public class Expander : AvaloniaExpander,
             var oldExpandIcon = change.GetOldValue<Icon?>();
             if (oldExpandIcon is not null)
             {
-                UIStructureUtils.SetTemplateParent(oldExpandIcon, null);
+                VisualAndLogicalUtils.SetTemplateParent(oldExpandIcon, null);
             }
 
             SetupIconButton();
@@ -255,12 +255,12 @@ public class Expander : AvaloniaExpander,
         {
             if (change.OldValue is Control oldControl)
             {
-                UIStructureUtils.SetTemplateParent(oldControl, null);
+                VisualAndLogicalUtils.SetTemplateParent(oldControl, null);
             }
 
             if (change.NewValue is Control newControl)
             {
-                UIStructureUtils.SetTemplateParent(newControl, this);
+                VisualAndLogicalUtils.SetTemplateParent(newControl, this);
             }
         }
 
@@ -312,7 +312,7 @@ public class Expander : AvaloniaExpander,
                 SharedTokenKey.ColorTextDisabled);
         }
 
-        UIStructureUtils.SetTemplateParent(ExpandIcon, this);
+        VisualAndLogicalUtils.SetTemplateParent(ExpandIcon, this);
     }
 
     protected override void OnPointerPressed(PointerPressedEventArgs e)

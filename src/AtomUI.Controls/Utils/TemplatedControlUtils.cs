@@ -12,7 +12,7 @@ public static class TemplatedControlUtils
    /// <param name="templatedParent">The templated parent to apply.</param>
    internal static void ApplyTemplatedParent(StyledElement control, AvaloniaObject? templatedParent)
     {
-        UIStructureUtils.SetTemplateParent(control, templatedParent);
+        VisualAndLogicalUtils.SetTemplateParent(control, templatedParent);
         var logicalChildren = control.GetLogicalChildren();
         foreach (var child in logicalChildren)
         {
