@@ -1,4 +1,6 @@
-﻿using AtomUI.Theme;
+﻿using System.ComponentModel;
+using System.Diagnostics;
+using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -167,6 +169,7 @@ public class ArrowDecoratedBox : ContentControl,
     private Border? _contentDecorator;
     private Control? _arrowIndicatorLayout;
     private ArrowIndicator? _arrowIndicator;
+    private bool _arrowPlacementFlipped = false;
 
     static ArrowDecoratedBox()
     {
@@ -210,6 +213,19 @@ public class ArrowDecoratedBox : ContentControl,
         {
             ArrowDirection = GetDirection(ArrowPosition);
         }
+        else if (e.Property == ArrowDirectionProperty)
+        {
+            // 因为属性更新比布局更新快，我们计算 GetMaskBounds 时候等不及布局更新就要计算坐标了
+            var oldDirection = e.GetOldValue<Direction>();
+            var newDirection = e.GetNewValue<Direction>();
+            if ((oldDirection == Direction.Left && newDirection == Direction.Right) ||
+                (oldDirection == Direction.Right && newDirection == Direction.Left) ||
+                (oldDirection == Direction.Top && newDirection == Direction.Bottom) ||
+                (oldDirection == Direction.Bottom && newDirection == Direction.Top))
+            {
+                _arrowPlacementFlipped = true;
+            }
+        }
     }
 
     public CornerRadius GetMaskCornerRadius()
@@ -219,10 +235,27 @@ public class ArrowDecoratedBox : ContentControl,
 
     public Rect GetMaskBounds()
     {
-        Rect targetRect = default;
-        if (_contentDecorator is not null)
+        Debug.Assert(_arrowIndicatorLayout != null && _contentDecorator != null);
+        var targetRect = _contentDecorator.Bounds;
+        var arrowSize = _arrowIndicatorLayout.DesiredSize;
+        if (_arrowPlacementFlipped)
         {
-            targetRect = _contentDecorator.Bounds;
+            if (ArrowDirection == Direction.Top)
+            {
+                targetRect = targetRect.WithY(targetRect.Y + arrowSize.Height);
+            }
+            else if (ArrowDirection == Direction.Bottom)
+            {
+                targetRect = targetRect.WithY(targetRect.Y - arrowSize.Height);
+            }
+            else if (ArrowDirection == Direction.Left)
+            {
+                targetRect = targetRect.WithX(targetRect.X + arrowSize.Width);
+            }
+            else
+            {
+                targetRect = targetRect.WithX(targetRect.X - arrowSize.Width);
+            }
         }
         return targetRect;
     }
@@ -389,5 +422,7 @@ public class ArrowDecoratedBox : ContentControl,
             ArrowIndicatorBounds = _arrowIndicator.Bounds;
         }
 
+        _arrowPlacementFlipped = false;
     }
+    
 }
