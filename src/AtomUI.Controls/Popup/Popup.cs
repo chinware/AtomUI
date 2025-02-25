@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
-using System.Reactive.Disposables;
+using System.Runtime.CompilerServices;
+using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.MotionScene;
 using AtomUI.Reflection;
@@ -107,9 +108,9 @@ public class Popup : AvaloniaPopup,
     private PopupShadowLayer? _shadowLayer;
 
     private IDisposable? _selfLightDismissDisposable;
-    
+
     private IManagedPopupPositionerPopup? _managedPopupPositionerX;
-    private bool _isNeedFlip = true;
+    private bool _isNeedDetectFlip = true;
     private bool _openAnimating;
     private bool _closeAnimating;
 
@@ -139,7 +140,7 @@ public class Popup : AvaloniaPopup,
         TokenResourceBinder.CreateTokenBinding(this, MaskShadowsProperty, SharedTokenKey.BoxShadowsSecondary);
         TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, SharedTokenKey.MotionDurationFast);
     }
-    
+
     protected Control? GetEffectivePlacementTarget()
     {
         return PlacementTarget ?? this.FindLogicalAncestorOfType<Control>();
@@ -154,10 +155,10 @@ public class Popup : AvaloniaPopup,
             PopupUtils.CalculateMarginToAnchorOffset(Placement, MarginToAnchor, PlacementAnchor, PlacementGravity);
         offsetX -= marginToAnchorOffset.X;
         offsetY -= marginToAnchorOffset.Y;
-        
+
         HorizontalOffset = offsetX;
         VerticalOffset   = offsetY;
-        
+
         _selfLightDismissDisposable?.Dispose();
         _firstDetected = true;
     }
@@ -180,7 +181,7 @@ public class Popup : AvaloniaPopup,
         var placementTarget = GetEffectivePlacementTarget();
         if (placementTarget is not null)
         {
-            if (_isNeedFlip)
+            if (_isNeedDetectFlip)
             {
                 if (Placement != PlacementMode.Pointer && Placement != PlacementMode.Center)
                 {
@@ -241,7 +242,8 @@ public class Popup : AvaloniaPopup,
         {
             return;
         }
-        _shadowLayer         = new PopupShadowLayer(this);
+
+        _shadowLayer = new PopupShadowLayer(this);
         BindUtils.RelayBind(this, MaskShadowsProperty, _shadowLayer);
         BindUtils.RelayBind(this, OpacityProperty, _shadowLayer);
     }
@@ -371,6 +373,7 @@ public class Popup : AvaloniaPopup,
             {
                 popupSize = Child.DesiredSize;
             }
+
             Debug.Assert(_managedPopupPositionerX != null);
             var scaling = _managedPopupPositionerX.Scaling;
             var anchorRect = new Rect(
@@ -383,15 +386,16 @@ public class Popup : AvaloniaPopup,
                 parameters.Anchor,
                 parameters.Gravity,
                 offset * scaling);
+   
             if (flipInfo.Item1 || flipInfo.Item2)
             {
-                var flipPlacement        = GetFlipPlacement(Placement);
+                var flipPlacement        = GetFlipPlacement(Placement, flipInfo.Item1, flipInfo.Item2);
                 var flipAnchorAndGravity = PopupUtils.GetAnchorAndGravity(flipPlacement);
                 var flipOffset = PopupUtils.CalculateMarginToAnchorOffset(flipPlacement,
                     MarginToAnchor,
                     PlacementAnchor,
                     PlacementGravity);
-                
+
                 Placement        = flipPlacement;
                 PlacementAnchor  = flipAnchorAndGravity.Item1;
                 PlacementGravity = flipAnchorAndGravity.Item2;
@@ -413,30 +417,47 @@ public class Popup : AvaloniaPopup,
             {
                 IsFlipped = false;
             }
-
+            
             PositionFlipped?.Invoke(this, new PopupFlippedEventArgs(IsFlipped));
         }
     }
 
-    protected static PlacementMode GetFlipPlacement(PlacementMode placement)
+    protected static PlacementMode GetFlipPlacement(PlacementMode placement, bool isHorizontalFlipped,
+                                                    bool isVerticalFlipped)
     {
         return placement switch
         {
-            PlacementMode.Left => PlacementMode.Right,
-            PlacementMode.LeftEdgeAlignedTop => PlacementMode.RightEdgeAlignedTop,
-            PlacementMode.LeftEdgeAlignedBottom => PlacementMode.RightEdgeAlignedBottom,
+            PlacementMode.Left => isHorizontalFlipped ? PlacementMode.Right : PlacementMode.Left,
+            PlacementMode.LeftEdgeAlignedTop => isHorizontalFlipped
+                ? PlacementMode.RightEdgeAlignedTop
+                : PlacementMode.LeftEdgeAlignedTop,
+            PlacementMode.LeftEdgeAlignedBottom => isHorizontalFlipped
+                ? PlacementMode.RightEdgeAlignedBottom
+                : PlacementMode.LeftEdgeAlignedBottom,
 
-            PlacementMode.Top => PlacementMode.Bottom,
-            PlacementMode.TopEdgeAlignedLeft => PlacementMode.BottomEdgeAlignedLeft,
-            PlacementMode.TopEdgeAlignedRight => PlacementMode.BottomEdgeAlignedRight,
+            PlacementMode.Top => isVerticalFlipped ? PlacementMode.Bottom : PlacementMode.Top,
+            PlacementMode.TopEdgeAlignedLeft => isVerticalFlipped
+                ? PlacementMode.BottomEdgeAlignedLeft
+                : PlacementMode.TopEdgeAlignedLeft,
+            PlacementMode.TopEdgeAlignedRight => isVerticalFlipped
+                ? PlacementMode.BottomEdgeAlignedRight
+                : PlacementMode.TopEdgeAlignedRight,
 
-            PlacementMode.Right => PlacementMode.Left,
-            PlacementMode.RightEdgeAlignedTop => PlacementMode.LeftEdgeAlignedTop,
-            PlacementMode.RightEdgeAlignedBottom => PlacementMode.LeftEdgeAlignedBottom,
+            PlacementMode.Right => isHorizontalFlipped ? PlacementMode.Left : PlacementMode.Right,
+            PlacementMode.RightEdgeAlignedTop => isHorizontalFlipped
+                ? PlacementMode.LeftEdgeAlignedTop
+                : PlacementMode.RightEdgeAlignedTop,
+            PlacementMode.RightEdgeAlignedBottom => isHorizontalFlipped
+                ? PlacementMode.LeftEdgeAlignedBottom
+                : PlacementMode.RightEdgeAlignedBottom,
 
-            PlacementMode.Bottom => PlacementMode.Top,
-            PlacementMode.BottomEdgeAlignedLeft => PlacementMode.TopEdgeAlignedLeft,
-            PlacementMode.BottomEdgeAlignedRight => PlacementMode.TopEdgeAlignedRight,
+            PlacementMode.Bottom => isVerticalFlipped ? PlacementMode.Top : PlacementMode.Bottom,
+            PlacementMode.BottomEdgeAlignedLeft => isVerticalFlipped
+                ? PlacementMode.TopEdgeAlignedLeft
+                : PlacementMode.BottomEdgeAlignedLeft,
+            PlacementMode.BottomEdgeAlignedRight => isVerticalFlipped
+                ? PlacementMode.TopEdgeAlignedRight
+                : PlacementMode.BottomEdgeAlignedRight,
 
             _ => throw new ArgumentOutOfRangeException(nameof(placement), placement, "Invalid value for PlacementMode")
         };
@@ -450,7 +471,7 @@ public class Popup : AvaloniaPopup,
         {
             return;
         }
-        
+
         if (!IsMotionEnabled)
         {
             Open();
@@ -463,7 +484,7 @@ public class Popup : AvaloniaPopup,
         Open();
         var popupRoot = Host as PopupRoot;
         Debug.Assert(popupRoot != null);
-        
+
         // 获取 popup 的具体位置，这个就是非常准确的位置，还有大小
         // TODO 暂时只支持 WindowBase popup
         popupRoot.Hide();
@@ -476,17 +497,18 @@ public class Popup : AvaloniaPopup,
         }
 
         var offset = new Point(popupOffset.X, popupOffset.Y);
-
-        // 调度动画
-        var motion = new ZoomBigInMotion(MotionDuration);
-
+        
+        var motion      = new ZoomBigInMotion(MotionDuration);
         var motionActor = new PopupMotionActor(MaskShadows, offset, scaling, Child ?? popupRoot);
+        
         motionActor.SceneParent = topLevel;
 
         MotionInvoker.InvokeInPopupLayer(motionActor, motion, null, () =>
         {
             _shadowLayer?.Open();
+                
             popupRoot.Show();
+            Console.WriteLine(popupRoot.PlatformImpl!.Position);
             opened?.Invoke();
             _openAnimating = false;
             if (RequestCloseWhereAnimationCompleted)
@@ -499,6 +521,7 @@ public class Popup : AvaloniaPopup,
 
     public void CloseAnimation(Action? closed = null)
     {
+        return;
         if (_closeAnimating)
         {
             return;
@@ -518,7 +541,7 @@ public class Popup : AvaloniaPopup,
         if (!IsMotionEnabled)
         {
             _shadowLayer?.Close();
-            _isNeedFlip = true;
+            _isNeedDetectFlip = true;
             Close();
             closed?.Invoke();
             return;
@@ -551,7 +574,7 @@ public class Popup : AvaloniaPopup,
         }, () =>
         {
             _closeAnimating = false;
-            _isNeedFlip     = true;
+            _isNeedDetectFlip     = true;
             Close();
             closed?.Invoke();
         });
