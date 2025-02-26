@@ -100,7 +100,7 @@ internal class SegmentedItemTheme : BaseControlTheme
         // 选中状态
         var selectedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Selected));
         selectedStyle.Add(TemplatedControl.ForegroundProperty, SegmentedTokenKey.ItemSelectedColor);
-        selectedStyle.Add(TemplatedControl.BackgroundProperty, SharedTokenKey.ColorTransparent);
+        selectedStyle.Add(TemplatedControl.BackgroundProperty, SegmentedTokenKey.ItemSelectedBg);
         enabledStyle.Add(selectedStyle);
 
         // 没有被选中的状态
