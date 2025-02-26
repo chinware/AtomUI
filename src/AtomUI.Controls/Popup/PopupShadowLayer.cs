@@ -185,6 +185,10 @@ internal class PopupShadowLayer : AvaloniaObject, IShadowDecorator
             // 尝试手动
             CreateShadowRenderer();
         }
+        else
+        {
+            ConfigureShadowRenderer();
+        }
         
         popupHost.SetChild(Child);
         ((ISetLogicalParent)popupHost).SetParent(_target);
