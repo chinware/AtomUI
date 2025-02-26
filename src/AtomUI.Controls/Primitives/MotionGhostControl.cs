@@ -1,139 +1,99 @@
-﻿using AtomUI.Media;
-using AtomUI.MotionScene;
+﻿using AtomUI.Controls.Utils;
+using AtomUI.Media;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Layout;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 
 namespace AtomUI.Controls.Primitives;
 
-// TODO 这个类的实例只在动画过程中存在，所以是否需要处理属性变化对重绘的需求需要再评估，暂时先不处理
-internal class MotionGhostControl : Control, INotifyCaptureGhostBitmap
+/// <summary>
+/// 只在动画过程中使用且不能改变属性，所以在这里使用了自动属性
+/// </summary>
+internal class MotionGhostControl : Control
 {
-    public static readonly StyledProperty<BoxShadows> ShadowsProperty =
-        Border.BoxShadowProperty.AddOwner<MotionGhostControl>();
-
-    public static readonly StyledProperty<CornerRadius> MaskCornerRadiusProperty =
-        Border.CornerRadiusProperty.AddOwner<MotionGhostControl>();
+    #region 公共属性定义
 
     /// <summary>
     /// 渲染的阴影值，一般在探测失败的时候使用
     /// </summary>
-    public BoxShadows Shadows
-    {
-        get => GetValue(ShadowsProperty);
-        set => SetValue(ShadowsProperty, value);
-    }
+    public BoxShadows Shadows { get; }
 
     /// <summary>
     /// mask 的圆角大小，一般在探测失败的时候使用
     /// </summary>
-    public CornerRadius MaskCornerRadius
-    {
-        get => GetValue(MaskCornerRadiusProperty);
-        set => SetValue(MaskCornerRadiusProperty, value);
-    }
+    public CornerRadius MaskCornerRadius { get; }
 
-    protected bool _initialized;
+    public Point MaskOffset { get; }
+
+    public Size MaskSize { get; }
+
+    public Size MotionTargetSize { get; }
+
+    #endregion
+
     protected Canvas? _layout;
-    protected Control _motionTarget;
-    protected RenderTargetBitmap? _ghostBitmap;
-    protected RenderTargetBitmap? _contentBitmap;
-    protected Size _motionTargetSize;
-    protected Point _maskOffset;
-    protected Size _maskSize;
+    protected MotionTargetBitmapControl _motionTargetBitmapControl;
 
-    static MotionGhostControl()
+    public MotionGhostControl(RenderTargetBitmap motionTargetBitmap,
+                              Size motionTargetSize,
+                              Size maskSize,
+                              Point maskOffset,
+                              CornerRadius maskCornerRadius,
+                              BoxShadows shadows)
     {
-        AffectsMeasure<ShadowRenderer>(ShadowsProperty);
-        AffectsRender<ShadowRenderer>(MaskCornerRadiusProperty);
+        MotionTargetSize = motionTargetSize;
+
+        MaskOffset       = maskOffset;
+        MaskSize         = maskSize;
+        MaskCornerRadius = maskCornerRadius;
+
+        Shadows = shadows;
+
+        _motionTargetBitmapControl = new MotionTargetBitmapControl(motionTargetBitmap)
+        {
+            Width  = MotionTargetSize.Width,
+            Height = MotionTargetSize.Height
+        };
     }
 
-    public MotionGhostControl(Control motionTarget, BoxShadows fallbackShadows = default)
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        _motionTarget = motionTarget;
-        if (_motionTarget.DesiredSize == default)
-        {
-            _motionTargetSize = LayoutHelper.MeasureChild(_motionTarget, Size.Infinity, new Thickness());
-        }
-        else
-        {
-            _motionTargetSize = _motionTarget.DesiredSize;
-        }
+        base.OnAttachedToLogicalTree(e);
+        IsHitTestVisible = false;
 
-        _maskOffset = default;
-        _maskSize   = _motionTargetSize;
+        _layout = new Canvas();
+        LogicalChildren.Add(_layout);
+        VisualChildren.Add(_layout);
 
-        Shadows = fallbackShadows;
-        DetectMotionTargetInfo();
         var shadowThickness = Shadows.Thickness();
-        Width  = _motionTargetSize.Width + shadowThickness.Left + shadowThickness.Right;
-        Height = _motionTargetSize.Height + shadowThickness.Top + shadowThickness.Bottom;
-    }
+        var offsetX         = shadowThickness.Left;
+        var offsetY         = shadowThickness.Top;
 
-    private void DetectMotionTargetInfo()
-    {
-        CornerRadius cornerRadius = default;
-        if (_motionTarget is IShadowMaskInfoProvider shadowMaskInfoProvider)
+        var shadowRenderers = BuildShadowRenderers(Shadows);
+
+        foreach (var renderer in shadowRenderers)
         {
-            cornerRadius = shadowMaskInfoProvider.GetMaskCornerRadius();
-            var maskBounds = shadowMaskInfoProvider.GetMaskBounds();
-            _maskOffset = maskBounds.Position;
-            _maskSize   = maskBounds.Size;
-        }
-        else if (_motionTarget is Border bordered)
-        {
-            cornerRadius = bordered.CornerRadius;
-        }
-        else if (_motionTarget is TemplatedControl templatedControl)
-        {
-            cornerRadius = templatedControl.CornerRadius;
+            _layout.Children.Add(renderer);
         }
 
-        // 探测出来的是最准确的，优先级高
-        if (cornerRadius != default)
+        var border = new Border
         {
-            MaskCornerRadius = cornerRadius;
-        }
-    }
+            Width      = MotionTargetSize.Width,
+            Height     = MotionTargetSize.Height,
+        };
 
-    public sealed override void ApplyTemplate()
-    {
-        base.ApplyTemplate();
-        if (!_initialized)
-        {
-            IsHitTestVisible = false;
+        _layout.Children.Add(border);
+        _layout.Children.Add(_motionTargetBitmapControl);
 
-            _layout = new Canvas();
-            VisualChildren.Add(_layout);
-            ((ISetLogicalParent)_layout).SetParent(this);
+        Canvas.SetLeft(_motionTargetBitmapControl, offsetX);
+        Canvas.SetTop(_motionTargetBitmapControl, offsetY);
 
-            var shadowThickness = Shadows.Thickness();
-            var offsetX         = shadowThickness.Left;
-            var offsetY         = shadowThickness.Top;
-
-            var shadowRenderers = BuildShadowRenderers(Shadows);
-
-            foreach (var renderer in shadowRenderers)
-            {
-                _layout.Children.Add(renderer);
-            }
-
-            var border = new Border
-            {
-                Width  = _motionTarget.DesiredSize.Width,
-                Height = _motionTarget.DesiredSize.Height
-            };
-
-            _layout.Children.Add(border);
-
-            Canvas.SetLeft(border, offsetX);
-            Canvas.SetTop(border, offsetY);
-
-            _initialized = true;
-        }
+        Canvas.SetLeft(border, offsetX);
+        Canvas.SetTop(border, offsetY);
     }
 
     /// <summary>
@@ -147,8 +107,8 @@ internal class MotionGhostControl : Control, INotifyCaptureGhostBitmap
         var offsetX   = thickness.Left;
         var offsetY   = thickness.Top;
 
-        offsetX += _maskOffset.X;
-        offsetY += _maskOffset.Y;
+        offsetX += MaskOffset.X;
+        offsetY += MaskOffset.Y;
         // 不知道这里为啥不行
         var renderers = new List<Control>();
         for (var i = 0; i < shadows.Count; ++i)
@@ -158,8 +118,8 @@ internal class MotionGhostControl : Control, INotifyCaptureGhostBitmap
                 BorderThickness = new Thickness(0),
                 BoxShadow       = new BoxShadows(shadows[i]),
                 CornerRadius    = MaskCornerRadius,
-                Width           = _maskSize.Width,
-                Height          = _maskSize.Height
+                Width           = MaskSize.Width,
+                Height          = MaskSize.Height
             };
             Canvas.SetLeft(renderer, offsetX);
             Canvas.SetTop(renderer, offsetY);
@@ -172,55 +132,62 @@ internal class MotionGhostControl : Control, INotifyCaptureGhostBitmap
     protected override Size MeasureOverride(Size availableSize)
     {
         base.MeasureOverride(availableSize);
-        var  shadowThickness = Shadows.Thickness();
-        Size motionTargetSize;
-        if (_motionTarget.DesiredSize == default)
+        return MotionTargetSize.Inflate(Shadows.Thickness());
+    }
+}
+
+internal static class MotionGhostControlUtils
+{
+    public static MotionGhostControl BuildMotionGhost(Control motionTarget, BoxShadows maskShadows)
+    {
+        CornerRadius cornerRadius = default;
+        Point        maskOffset   = default;
+        Size         maskSize     = default;
+        if (motionTarget is IShadowMaskInfoProvider shadowMaskInfoProvider)
         {
-            motionTargetSize = LayoutHelper.MeasureChild(_motionTarget, Size.Infinity, new Thickness());
+            cornerRadius = shadowMaskInfoProvider.GetMaskCornerRadius();
+            var maskBounds = shadowMaskInfoProvider.GetMaskBounds();
+            maskOffset = maskBounds.Position;
+            maskSize   = maskBounds.Size;
+        }
+        else if (motionTarget is Border bordered)
+        {
+            cornerRadius = bordered.CornerRadius;
+        }
+        else if (motionTarget is TemplatedControl templatedControl)
+        {
+            cornerRadius = templatedControl.CornerRadius;
+        }
+
+        Size targetSize = default;
+        if (motionTarget.DesiredSize == default)
+        {
+            targetSize = LayoutHelper.MeasureChild(motionTarget, Size.Infinity, new Thickness());
         }
         else
         {
-            motionTargetSize = _motionTarget.DesiredSize;
+            targetSize = motionTarget.DesiredSize;
         }
 
-        return motionTargetSize.Inflate(shadowThickness);
+        var motionTargetBitmap = motionTarget.CaptureCurrentBitmap();
+
+        return new MotionGhostControl(motionTargetBitmap, targetSize, maskSize, maskOffset, cornerRadius, maskShadows);
+    }
+}
+
+internal class MotionTargetBitmapControl : Control
+{
+    protected RenderTargetBitmap _contentBitmap;
+
+    public MotionTargetBitmapControl(RenderTargetBitmap motionTargetBitmap)
+    {
+        _contentBitmap = motionTargetBitmap;
     }
 
     public override void Render(DrawingContext context)
     {
         var scaling = TopLevel.GetTopLevel(this)?.RenderScaling ?? 1.0;
-        if (_ghostBitmap is not null && _contentBitmap is not null)
-        {
-            context.DrawImage(_ghostBitmap, new Rect(new Point(0, 0), DesiredSize * scaling),
-                new Rect(new Point(0, 0), DesiredSize));
-            var shadowThickness = Shadows.Thickness();
-            var offsetX         = shadowThickness.Left;
-            var offsetY         = shadowThickness.Top;
-            context.DrawImage(_contentBitmap, new Rect(new Point(0, 0), _motionTargetSize * scaling),
-                new Rect(new Point(offsetX, offsetY), _motionTargetSize));
-        }
-    }
-
-    public void NotifyCaptureGhostBitmap()
-    {
-        if (_ghostBitmap is null)
-        {
-            var scaling = TopLevel.GetTopLevel(this)?.RenderScaling ?? 1.0;
-            _ghostBitmap = new RenderTargetBitmap(
-                new PixelSize((int)(DesiredSize.Width * scaling), (int)(DesiredSize.Height * scaling)),
-                new Vector(96 * scaling, 96 * scaling));
-            _contentBitmap = new RenderTargetBitmap(
-                new PixelSize((int)(_motionTargetSize.Width * scaling), (int)(_motionTargetSize.Height * scaling)),
-                new Vector(96 * scaling, 96 * scaling));
-            _ghostBitmap.Render(this);
-            _contentBitmap.Render(_motionTarget);
-            _layout!.Children.Clear();
-        }
-    }
-
-    public void NotifyClearGhostBitmap()
-    {
-        _ghostBitmap = null;
-        InvalidateVisual();
+        context.DrawImage(_contentBitmap, new Rect(new Point(0, 0), DesiredSize * scaling),
+            new Rect(new Point(0, 0), DesiredSize));
     }
 }

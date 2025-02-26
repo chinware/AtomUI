@@ -44,7 +44,6 @@ internal static class MotionInvoker
         Action? completedAction = null,
         CancellationToken cancellationToken = default)
     {
-        actor.BuildGhost();
         var sceneLayer = PrepareSceneLayer(motion, actor);
         var compositeDisposable = new CompositeDisposable();
         compositeDisposable.Add(Disposable.Create(sceneLayer, (state) =>

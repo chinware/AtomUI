@@ -9,11 +9,11 @@ internal class SceneMotionActorControl : MotionActorControl
     public event EventHandler? SceneShowed;
 
     #region 公共属性定义
-
+    
     /// <summary>
-    /// 动画实体
+    /// 动画实体大小
     /// </summary>
-    public Control MotionTarget { get; set; }
+    public Size MotionTargetSize { get; }
 
     #endregion
     
@@ -28,14 +28,12 @@ internal class SceneMotionActorControl : MotionActorControl
     
     protected Control? _ghost;
 
-    public SceneMotionActorControl(Control motionTarget)
+    public SceneMotionActorControl(Control motionGhost, Size motionTargetSize)
     {
-        MotionTarget = motionTarget;
+        _ghost             = motionGhost;
+        Child              = motionGhost;
+        MotionTargetSize   = motionTargetSize;
         UseRenderTransform = true;
-    }
-    
-    internal virtual void BuildGhost()
-    {
     }
     
     public Control GetAnimatableGhost()
@@ -90,18 +88,6 @@ internal class SceneMotionActorControl : MotionActorControl
 
     internal virtual void NotifySceneLayerHostWinOpened()
     {
-        if (_ghost is INotifyCaptureGhostBitmap captureGhost)
-        {
-            captureGhost.NotifyCaptureGhostBitmap();
-        }
     }
-
-    internal override void NotifyMotionCompleted()
-    {
-        base.NotifyMotionCompleted();
-        if (_ghost is INotifyCaptureGhostBitmap notifyCaptureGhostBitmap)
-        {
-            notifyCaptureGhostBitmap.NotifyClearGhostBitmap();
-        }
-    }
+    
 }

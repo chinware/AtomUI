@@ -1,4 +1,6 @@
 using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Media.Imaging;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls.Utils;

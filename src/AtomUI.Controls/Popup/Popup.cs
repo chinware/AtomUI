@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using AtomUI.Controls.Utils;
+using AtomUI.Controls.Primitives;
 using AtomUI.Data;
+using AtomUI.Media;
 using AtomUI.MotionScene;
 using AtomUI.Reflection;
 using AtomUI.Theme.Data;
@@ -484,10 +484,7 @@ public class Popup : AvaloniaPopup,
         Open();
         var popupRoot = Host as PopupRoot;
         Debug.Assert(popupRoot != null);
-
-        // 获取 popup 的具体位置，这个就是非常准确的位置，还有大小
-        // TODO 暂时只支持 WindowBase popup
-        popupRoot.Hide();
+      
         var popupOffset = popupRoot.PlatformImpl!.Position;
         var topLevel    = TopLevel.GetTopLevel(placementTarget);
         var scaling     = 1.0;
@@ -497,23 +494,36 @@ public class Popup : AvaloniaPopup,
         }
 
         var offset = new Point(popupOffset.X, popupOffset.Y);
+
+        var maskShadowsThickness              = MaskShadows.Thickness();
+        var motionActorOffset = new Point(offset.X - maskShadowsThickness.Left * scaling, offset.Y - maskShadowsThickness.Top * scaling);
+
+        var motionTarget = Child ?? popupRoot;
+        var motion       = new ZoomBigInMotion(MotionDuration);
+        var motionActor = new PopupMotionActor(motionActorOffset,
+            MotionGhostControlUtils.BuildMotionGhost(Child ?? popupRoot, MaskShadows),
+            motionTarget.DesiredSize);
         
-        var motion      = new ZoomBigInMotion(MotionDuration);
-        var motionActor = new PopupMotionActor(MaskShadows, offset, scaling, Child ?? popupRoot);
+        // 获取 popup 的具体位置，这个就是非常准确的位置，还有大小
+        // TODO 暂时只支持 WindowBase popup
+        popupRoot.Hide();
         
         motionActor.SceneParent = topLevel;
 
-        MotionInvoker.InvokeInPopupLayer(motionActor, motion, null, () =>
+        Dispatcher.UIThread.Post(() =>
         {
-            _shadowLayer?.Open();
-            popupRoot.Show();
-            opened?.Invoke();
-            _openAnimating = false;
-            if (RequestCloseWhereAnimationCompleted)
+            MotionInvoker.InvokeInPopupLayer(motionActor, motion, null, () =>
             {
-                RequestCloseWhereAnimationCompleted = false;
-                Dispatcher.UIThread.InvokeAsync(() => { CloseAnimation(); });
-            }
+                _shadowLayer?.Open();
+                popupRoot.Show();
+                opened?.Invoke();
+                _openAnimating = false;
+                if (RequestCloseWhereAnimationCompleted)
+                {
+                    RequestCloseWhereAnimationCompleted = false;
+                    Dispatcher.UIThread.InvokeAsync(() => { CloseAnimation(); });
+                }
+            });
         });
     }
 
@@ -560,20 +570,29 @@ public class Popup : AvaloniaPopup,
         {
             scaling = windowBase.DesktopScaling;
         }
-
-        var motionActor = new PopupMotionActor(MaskShadows, offset, scaling, Child ?? popupRoot);
+        
+        var maskShadowsThickness              = MaskShadows.Thickness();
+        var motionActorOffset = new Point(offset.X - maskShadowsThickness.Left * scaling, offset.Y - maskShadowsThickness.Top * scaling);
+        
+        var motionTarget = Child ?? popupRoot;
+        var motionActor = new PopupMotionActor(motionActorOffset, MotionGhostControlUtils.BuildMotionGhost(Child ?? popupRoot, MaskShadows),
+            motionTarget.DesiredSize);
+        
         motionActor.SceneParent = topLevel;
 
-        MotionInvoker.InvokeInPopupLayer(motionActor, motion, () =>
+        Dispatcher.UIThread.Post(() =>
         {
-            popupRoot.Hide();
-            _shadowLayer?.Close();
-        }, () =>
-        {
-            _closeAnimating = false;
-            _isNeedDetectFlip     = true;
-            Close();
-            closed?.Invoke();
+            MotionInvoker.InvokeInPopupLayer(motionActor, motion, () =>
+            {
+                popupRoot.Hide();
+                _shadowLayer?.Close();
+            }, () =>
+            {
+                _closeAnimating   = false;
+                _isNeedDetectFlip = true;
+                Close();
+                closed?.Invoke();
+            });
         });
     }
 }
