@@ -304,7 +304,6 @@ public class ArrowDecoratedBox : ContentControl,
         {
             ArrangeArrow(finalSize);
         }
-        Console.WriteLine("ArrangeOverride");
         return size;
     }
 

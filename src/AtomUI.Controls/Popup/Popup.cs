@@ -506,9 +506,7 @@ public class Popup : AvaloniaPopup,
         MotionInvoker.InvokeInPopupLayer(motionActor, motion, null, () =>
         {
             _shadowLayer?.Open();
-                
             popupRoot.Show();
-            Console.WriteLine(popupRoot.PlatformImpl!.Position);
             opened?.Invoke();
             _openAnimating = false;
             if (RequestCloseWhereAnimationCompleted)
@@ -521,7 +519,6 @@ public class Popup : AvaloniaPopup,
 
     public void CloseAnimation(Action? closed = null)
     {
-        return;
         if (_closeAnimating)
         {
             return;

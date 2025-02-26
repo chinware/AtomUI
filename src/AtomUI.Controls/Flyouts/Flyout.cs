@@ -157,11 +157,9 @@ public class Flyout : PopupFlyoutBase
         if (flyoutPresenter is not null)
         {
             var arrowPosition = PopupUtils.CalculateArrowPosition(placement, anchor, gravity);
-            Console.WriteLine($"SetupArrowPosition-{arrowPosition}-{placement}-{anchor}-{gravity}");
             if (arrowPosition.HasValue)
             {
                 flyoutPresenter.ArrowPosition = arrowPosition.Value;
-                Console.WriteLine($"{RuntimeHelpers.GetHashCode(flyoutPresenter)}");
             }
         }
     }

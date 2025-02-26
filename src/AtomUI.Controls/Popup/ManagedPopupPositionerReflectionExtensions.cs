@@ -5,7 +5,7 @@ using Avalonia.Controls.Primitives.PopupPositioning;
 
 namespace AtomUI.Controls;
 
-internal static class ManagedPopupPositionerReflectionUtils
+internal static class ManagedPopupPositionerReflectionExtensions
 {
     #region 反射信息定义
 
