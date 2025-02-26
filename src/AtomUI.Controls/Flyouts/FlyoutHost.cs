@@ -1,5 +1,4 @@
 ﻿using AtomUI.Data;
-using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
@@ -218,12 +217,12 @@ public class FlyoutHost : Control,
     {
         if (Flyout is not null)
         {
-            BindUtils.RelayBind(this, PlacementProperty, Flyout);
-            BindUtils.RelayBind(this, PlacementAnchorProperty, Flyout);
-            BindUtils.RelayBind(this, PlacementGravityProperty, Flyout);
-            BindUtils.RelayBind(this, IsShowArrowProperty, Flyout);
-            BindUtils.RelayBind(this, IsPointAtCenterProperty, Flyout);
-            BindUtils.RelayBind(this, MarginToAnchorProperty, Flyout);
+            BindUtils.RelayBind(this, PlacementProperty, Flyout, FlyoutControl.PlacementProperty);
+            BindUtils.RelayBind(this, PlacementAnchorProperty, Flyout, FlyoutControl.PlacementAnchorProperty);
+            BindUtils.RelayBind(this, PlacementGravityProperty, Flyout, FlyoutControl.PlacementGravityProperty);
+            BindUtils.RelayBind(this, IsShowArrowProperty, Flyout, FlyoutControl.IsShowArrowProperty);
+            BindUtils.RelayBind(this, IsPointAtCenterProperty, Flyout, FlyoutControl.IsPointAtCenterProperty);
+            BindUtils.RelayBind(this, MarginToAnchorProperty, Flyout, PopupFlyoutBase.MarginToAnchorProperty);
             BindUtils.RelayBind(this, IsMotionEnabledProperty, Flyout, PopupFlyoutBase.IsMotionEnabledProperty);
             Flyout.IsDetectMouseClickEnabled = false;
         }

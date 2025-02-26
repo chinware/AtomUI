@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
@@ -92,7 +93,7 @@ public class ArrowDecoratedBox : ContentControl,
 
     public static readonly StyledProperty<ArrowPosition> ArrowPositionProperty =
         AvaloniaProperty.Register<ArrowDecoratedBox, ArrowPosition>(
-            nameof(ArrowPosition), ArrowPosition.Bottom);
+            nameof(ArrowPosition));
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
         = AvaloniaProperty.Register<ArrowDecoratedBox, bool>(nameof(IsMotionEnabled));
@@ -173,7 +174,8 @@ public class ArrowDecoratedBox : ContentControl,
 
     static ArrowDecoratedBox()
     {
-        AffectsMeasure<ArrowDecoratedBox>(IsShowArrowProperty, ArrowDirectionProperty, ArrowPositionProperty);
+        AffectsMeasure<ArrowDecoratedBox>(IsShowArrowProperty, ArrowDirectionProperty);
+        AffectsArrange<ArrowDecoratedBox>(ArrowPositionProperty);
     }
 
     public ArrowDecoratedBox()
@@ -302,6 +304,7 @@ public class ArrowDecoratedBox : ContentControl,
         {
             ArrangeArrow(finalSize);
         }
+        Console.WriteLine("ArrangeOverride");
         return size;
     }
 
