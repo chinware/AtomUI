@@ -111,6 +111,8 @@ public class Popup : AvaloniaPopup,
 
     private IManagedPopupPositionerPopup? _managedPopupPositionerX;
     private bool _isNeedDetectFlip = true;
+    // 在翻转之后或者恢复正常，会有属性的变动，在变动之后捕捉动画需要等一个事件循环，保证布局已经生效
+    private bool _isNeedWaitFlipSync = false;
     private bool _openAnimating;
     private bool _closeAnimating;
 
@@ -480,14 +482,29 @@ public class Popup : AvaloniaPopup,
         }
 
         _openAnimating = true;
-        var placementTarget = GetEffectivePlacementTarget();
         Open();
+        
         var popupRoot = Host as PopupRoot;
         Debug.Assert(popupRoot != null);
-      
-        var popupOffset = popupRoot.PlatformImpl!.Position;
-        var topLevel    = TopLevel.GetTopLevel(placementTarget);
-        var scaling     = 1.0;
+        if (_isNeedWaitFlipSync)
+        {
+            popupRoot.Opacity = 0.0;
+            Dispatcher.UIThread.Post(() =>
+            {
+                popupRoot.Opacity = 1.0;
+                RunOpenAnimation(popupRoot, opened);
+            });
+            return;
+        }
+        RunOpenAnimation(popupRoot, opened);
+    }
+
+    private void RunOpenAnimation(PopupRoot popupRoot, Action? opened = null)
+    {
+        var placementTarget = GetEffectivePlacementTarget();
+        var popupOffset     = popupRoot.PlatformImpl!.Position;
+        var topLevel        = TopLevel.GetTopLevel(placementTarget);
+        var scaling         = 1.0;
         if (topLevel is WindowBase windowBase)
         {
             scaling = windowBase.DesktopScaling;
@@ -517,6 +534,7 @@ public class Popup : AvaloniaPopup,
                 _shadowLayer?.Open();
                 popupRoot.Show();
                 opened?.Invoke();
+                _isNeedWaitFlipSync = false;
                 _openAnimating = false;
                 if (RequestCloseWhereAnimationCompleted)
                 {
@@ -594,6 +612,15 @@ public class Popup : AvaloniaPopup,
                 closed?.Invoke();
             });
         });
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == IsFlippedProperty)
+        {
+            _isNeedWaitFlipSync = true;
+        }
     }
 }
 
