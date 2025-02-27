@@ -1,4 +1,6 @@
-﻿using AtomUI.Theme;
+﻿using AtomUI.Data;
+using AtomUI.Theme;
+using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
@@ -25,21 +27,21 @@ internal class ToolTipTheme : BaseControlTheme
         {
             var arrowDecoratedBox = new ArrowDecoratedBox
             {
-                Name = ToolTipContainerPart
+                Name = ToolTipContainerPart,
             };
-
             CreateTemplateParentBinding(arrowDecoratedBox, ArrowDecoratedBox.ContentProperty, ToolTip.ContentProperty, BindingPriority.Template,
                 BindingMode.Default, new FuncValueConverter<object?, object?>(o =>
                 {
-                    if (o is string text)
+                    if (o is string str)
                     {
-                        return new SingleLineText
+                        var text = new SingleLineText
                         {
-                            Text                = text,
-                            VerticalAlignment   = VerticalAlignment.Center,
+                            Text                = str,
+                            VerticalAlignment   = VerticalAlignment.Stretch,
                             HorizontalAlignment = HorizontalAlignment.Center,
-                            LineHeight = double.NaN, // 防止有继承属性干扰
                         };
+                        TokenResourceBinder.CreateTokenBinding(text, SingleLineText.HeightProperty, SharedTokenKey.FontSize);
+                        return text;
                     }
 
                     return o;
@@ -53,10 +55,6 @@ internal class ToolTipTheme : BaseControlTheme
 
     protected override void BuildStyles()
     {
-        // this.Add(ToolTipX.ShadowsProperty, ToolTipTokenKey.ToolTipShadows);
-        // this.Add(ToolTipX.DefaultMarginToAnchorProperty, ToolTipTokenKey.MarginToAnchor);
-        // this.Add(ToolTipX.MotionDurationProperty, ToolTipTokenKey.ToolTipMotionDuration);
-
         var arrowDecoratedBoxStyle = new Style(selector => selector.Nesting().Template().OfType<ArrowDecoratedBox>());
         arrowDecoratedBoxStyle.Add(TemplatedControl.FontSizeProperty, SharedTokenKey.FontSize);
         arrowDecoratedBoxStyle.Add(Layoutable.MaxWidthProperty, ToolTipTokenKey.ToolTipMaxWidth);

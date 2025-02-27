@@ -186,12 +186,7 @@ public class Popup : AvaloniaPopup,
                     AdjustPopupHostPosition(placementTarget);
                 }
             }
-
-            if (!_openAnimating)
-            {
-                _shadowLayer?.Open();
-            }
-
+            
             // 如果没有启动，我们使用自己的处理函数，一般是为了增加我们自己的动画效果
             if (!IsLightDismissEnabled)
             {
@@ -470,6 +465,7 @@ public class Popup : AvaloniaPopup,
         }
         if (!IsMotionEnabled)
         {
+            _shadowLayer?.Open();
             Open();
             opened?.Invoke();
             return;
