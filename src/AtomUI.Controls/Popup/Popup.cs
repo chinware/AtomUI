@@ -532,7 +532,7 @@ public class Popup : AvaloniaPopup,
                 if (RequestCloseWhereAnimationCompleted)
                 {
                     RequestCloseWhereAnimationCompleted = false;
-                    Dispatcher.UIThread.InvokeAsync(() => { Close(); });
+                    Dispatcher.UIThread.InvokeAsync(() => { MotionAwareClose(); });
                 }
             });
         });

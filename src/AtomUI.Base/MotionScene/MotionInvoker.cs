@@ -38,17 +38,21 @@ internal static class MotionInvoker
         actor.NotifySceneShowed();
         actor.IsVisible = false;
 
-        Dispatcher.UIThread.InvokeAsync(async () =>
+        // 等待一个事件循环，让动画窗口置顶
+        Dispatcher.UIThread.Post(() =>
         {
-            // 主要等待正常窗体显示出来再隐藏对话层，不然感觉会闪屏
-            await motion.RunAsync(actor, aboutToStart, () =>
+            Dispatcher.UIThread.InvokeAsync(async () =>
             {
-                if (completedAction is not null)
+                // 主要等待正常窗体显示出来再隐藏对话层，不然感觉会闪屏
+                await motion.RunAsync(actor, aboutToStart, () =>
                 {
-                    completedAction();
-                }
-            }, cancellationToken);
-            compositeDisposable.Dispose();
+                    if (completedAction is not null)
+                    {
+                        completedAction();
+                    }
+                }, cancellationToken);
+                compositeDisposable.Dispose();
+            });
         });
     }
 

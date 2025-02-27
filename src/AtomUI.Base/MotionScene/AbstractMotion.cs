@@ -29,18 +29,16 @@ public class AbstractMotion : IMotion
                                CancellationToken cancellationToken = default)
     {
         Configure();
+        
         await Dispatcher.UIThread.InvokeAsync(async () =>
         {
+            actor.IsVisible = true;
             using var originRestore = new RenderTransformOriginRestore(actor);
             actor.RenderTransformOrigin = RenderTransformOrigin;
             actor.NotifyMotionPreStart();
             NotifyPreStart();
-            if (aboutToStart is not null)
-            {
-                aboutToStart();
-            }
-
-            actor.IsVisible = true;
+            aboutToStart?.Invoke();
+      
             foreach (var animation in Animations)
             {
                 await animation.RunAsync(actor, cancellationToken);
@@ -48,10 +46,7 @@ public class AbstractMotion : IMotion
 
             actor.NotifyMotionCompleted();
             NotifyCompleted();
-            if (completedAction is not null)
-            {
-                completedAction();
-            }
+            completedAction?.Invoke();
         });
     }
 
