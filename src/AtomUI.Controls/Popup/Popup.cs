@@ -226,10 +226,7 @@ public class Popup : AvaloniaPopup,
                     {
                         if (popupHostProvider.PopupHost != pointerEventArgs.Root)
                         {
-                            Dispatcher.UIThread.InvokeAsync(async () =>
-                            {
-                                await CloseAsync();
-                            });
+                            MotionAwareClose();
                         }
                     }
                 }
@@ -464,24 +461,20 @@ public class Popup : AvaloniaPopup,
         };
     }
 
-    public async Task OpenAsync()
+    public void MotionAwareOpen(Action? opened = null)
     {
         // AbstractPopup is currently open
         if (IsOpen || _openAnimating || _closeAnimating)
         {
-            await Task.CompletedTask;
+            return;
         }
-
         if (!IsMotionEnabled)
         {
             Open();
-            await Task.CompletedTask;
+            opened?.Invoke();
+            return;
         }
-
         _openAnimating = true;
-        
-        var tsc = new TaskCompletionSource();
-        
         Open();
         
         var popupRoot = Host as PopupRoot;
@@ -492,17 +485,14 @@ public class Popup : AvaloniaPopup,
             Dispatcher.UIThread.Post(() =>
             {
                 popupRoot.Opacity = 1.0;
-                RunOpenAnimation(popupRoot, tsc);
+                RunOpenAnimation(popupRoot, opened);
             });
+            return;
         }
-        else
-        {
-            RunOpenAnimation(popupRoot, tsc);
-        }
-        await tsc.Task;
+        RunOpenAnimation(popupRoot, opened);
     }
     
-    private void RunOpenAnimation(PopupRoot popupRoot, TaskCompletionSource tsc)
+    private void RunOpenAnimation(PopupRoot popupRoot, Action? opened = null)
     {
         var placementTarget = GetEffectivePlacementTarget();
         var popupOffset     = popupRoot.PlatformImpl!.Position;
@@ -536,34 +526,34 @@ public class Popup : AvaloniaPopup,
             {
                 _shadowLayer?.Open();
                 popupRoot.Show();
+                opened?.Invoke();
                 _isNeedWaitFlipSync = false;
-                _openAnimating = false;
+                _openAnimating      = false;
                 if (RequestCloseWhereAnimationCompleted)
                 {
                     RequestCloseWhereAnimationCompleted = false;
-                    Dispatcher.UIThread.InvokeAsync(async () => { await CloseAsync(); });
+                    Dispatcher.UIThread.InvokeAsync(() => { Close(); });
                 }
-                tsc.SetResult();
             });
         });
     }
 
-    public async Task CloseAsync()
+    public void MotionAwareClose(Action? closed = null)
     {
         if (_closeAnimating)
         {
-            await Task.CompletedTask;
+            return;
         }
 
         if (_openAnimating)
         {
             RequestCloseWhereAnimationCompleted = true;
-            await Task.CompletedTask;
+            return;
         }
 
         if (!IsOpen)
         {
-            await Task.CompletedTask;
+            return;
         }
 
         if (!IsMotionEnabled)
@@ -571,11 +561,11 @@ public class Popup : AvaloniaPopup,
             _shadowLayer?.Close();
             _isNeedDetectFlip = true;
             Close();
-            await Task.CompletedTask;
+            closed?.Invoke();
+            return;
         }
 
         _closeAnimating = true;
-        var tsc = new TaskCompletionSource();
 
         var motion = new ZoomBigOutMotion(MotionDuration);
 
@@ -600,22 +590,20 @@ public class Popup : AvaloniaPopup,
             motionTarget.DesiredSize);
         
         motionActor.SceneParent = topLevel;
-
         Dispatcher.UIThread.Post(() =>
         {
             MotionInvoker.InvokeInPopupLayer(motionActor, motion, () =>
             {
                 _shadowLayer?.Close();
-                popupRoot.Hide();
+                popupRoot.Opacity = 0;
             }, () =>
             {
                 _closeAnimating   = false;
                 _isNeedDetectFlip = true;
                 Close();
-                tsc.SetResult();
+                closed?.Invoke();
             });
         });
-        await tsc.Task;
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

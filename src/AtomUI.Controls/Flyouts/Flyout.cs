@@ -346,10 +346,12 @@ public class Flyout : PopupFlyoutBase
         }
 
         IsOpen = true;
-        Dispatcher.UIThread.InvokeAsync(async () =>
+        Dispatcher.UIThread.InvokeAsync(() =>
         {
-            await Popup.OpenAsync();
-            HandlePopupOpened(placementTarget);
+            Popup.MotionAwareOpen(() =>
+            {
+                HandlePopupOpened(placementTarget);
+            });
         });
         return true;
     }
@@ -375,11 +377,7 @@ public class Flyout : PopupFlyoutBase
         }
 
         IsOpen = false;
-        Dispatcher.UIThread.InvokeAsync(async () =>
-        {
-            await Popup.CloseAsync();
-            HandlePopupClosed();
-        });
+        Dispatcher.UIThread.InvokeAsync(() => { Popup.MotionAwareClose(HandlePopupClosed); });
         return true;
     }
 

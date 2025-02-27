@@ -17,32 +17,11 @@ internal static class MotionInvoker
         });
     }
     
-    public static async Task InvokeAsync(MotionActorControl actor,
-                                         AbstractMotion motion,
-                                         Action? aboutToStart = null,
-                                         Action? completedAction = null,
-                                         CancellationToken cancellationToken = default)
-    {
-        await motion.RunAsync(actor, aboutToStart, completedAction, cancellationToken);
-    }
-    
     public static void InvokeInPopupLayer(SceneMotionActorControl actor,
                                           AbstractMotion motion,
                                           Action? aboutToStart = null,
                                           Action? completedAction = null,
                                           CancellationToken cancellationToken = default)
-    {
-        Dispatcher.UIThread.Invoke(async () =>
-        {
-            await InvokeInPopupLayerAsync(actor, motion, aboutToStart, completedAction, cancellationToken);
-        });
-    }
-
-    public static async Task InvokeInPopupLayerAsync(SceneMotionActorControl actor,
-                                                     AbstractMotion motion,
-                                                     Action? aboutToStart = null,
-                                                     Action? completedAction = null,
-                                                     CancellationToken cancellationToken = default)
     {
         var sceneLayer          = PrepareSceneLayer(motion, actor);
         var compositeDisposable = new CompositeDisposable();
@@ -59,10 +38,9 @@ internal static class MotionInvoker
         actor.NotifySceneShowed();
         actor.IsVisible = false;
 
-        await Dispatcher.UIThread.InvokeAsync(async () =>
+        Dispatcher.UIThread.InvokeAsync(async () =>
         {
             // 主要等待正常窗体显示出来再隐藏对话层，不然感觉会闪屏
-            await Task.Delay(TimeSpan.FromMilliseconds(100), cancellationToken);
             await motion.RunAsync(actor, aboutToStart, () =>
             {
                 if (completedAction is not null)

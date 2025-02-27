@@ -397,11 +397,8 @@ public class ToolTip : ContentControl,
         {
             TemplateApplied += DeferSetupArrowDecoratedBox;
         }
-
-        Dispatcher.UIThread.InvokeAsync(async () =>
-        {
-            await _popup.OpenAsync();
-        });
+        
+        _popup.MotionAwareOpen();
     }
 
     private void DeferSetupArrowDecoratedBox(object? sender, TemplateAppliedEventArgs args)
@@ -460,21 +457,20 @@ public class ToolTip : ContentControl,
             var args = new RoutedEventArgs(ToolTipClosingEvent);
             adornedControl.RaiseEvent(args);
         }
-
-        Dispatcher.UIThread.InvokeAsync(async () =>
+        
+        if (_popup is not null)
         {
-            if (_popup is not null)
+            _popup.MotionAwareClose(() =>
             {
-                await _popup.CloseAsync();
                 _popup.SetPopupParent(null);
                 _popup.PlacementTarget = null;
                 if (_popup is IPopupHostProvider popupHostProvider)
                 {
                     popupHostProvider.PopupHostChanged -= HandlePopupHostChanged;
                 }
-            }
-            _subscriptions?.Dispose();
-        });
+                _subscriptions?.Dispose();
+            });
+        }
     }
 
     private void SetToolTipColor(Control control)
