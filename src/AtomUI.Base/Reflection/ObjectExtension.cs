@@ -53,6 +53,16 @@ public static class ObjectExtension
         return false;
     }
 
+    public static T? GetPropertyOrThrow<T>(this object source, PropertyInfo info)
+    {
+        var obj = info.GetValue(source);
+        if (obj is T propertyOrThrow)
+        {
+            return propertyOrThrow;
+        }
+        throw new Exception($"Get Property {info.Name} value failed.");
+    }
+
     public static T? GetPropertyOrThrow<T>(this object source, string name,
                                            BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic |
                                                                 BindingFlags.Public | BindingFlags.FlattenHierarchy)

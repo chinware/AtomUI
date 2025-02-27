@@ -19,6 +19,7 @@ namespace AtomUI.Controls;
 public class FlyoutPresenterCreatedEventArgs : EventArgs
 {
     public Control Presenter { get; }
+
     public FlyoutPresenterCreatedEventArgs(Control presenter)
     {
         Presenter = presenter;
@@ -33,60 +34,60 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
     #region 公共属性定义
 
     /// <summary>
-   /// 距离 anchor 的边距，根据垂直和水平进行设置
-   /// 但是对某些组合无效，比如跟随鼠标的情况
-   /// 还有些 anchor 和 gravity 的组合也没有用
-   /// </summary>
-   public static readonly StyledProperty<double> MarginToAnchorProperty =
+    /// 距离 anchor 的边距，根据垂直和水平进行设置
+    /// 但是对某些组合无效，比如跟随鼠标的情况
+    /// 还有些 anchor 和 gravity 的组合也没有用
+    /// </summary>
+    public static readonly StyledProperty<double> MarginToAnchorProperty =
         Popup.MarginToAnchorProperty.AddOwner<PopupFlyoutBase>();
 
-   /// <inheritdoc cref="Popup.PlacementProperty" />
-   public static readonly StyledProperty<PlacementMode> PlacementProperty =
+    /// <inheritdoc cref="Popup.PlacementProperty" />
+    public static readonly StyledProperty<PlacementMode> PlacementProperty =
         Avalonia.Controls.Primitives.Popup.PlacementProperty.AddOwner<PopupFlyoutBase>();
 
-   /// <inheritdoc cref="Popup.HorizontalOffsetProperty" />
-   public static readonly StyledProperty<double> HorizontalOffsetProperty =
+    /// <inheritdoc cref="Popup.HorizontalOffsetProperty" />
+    public static readonly StyledProperty<double> HorizontalOffsetProperty =
         Avalonia.Controls.Primitives.Popup.HorizontalOffsetProperty.AddOwner<PopupFlyoutBase>();
 
-   /// <inheritdoc cref="Popup.VerticalOffsetProperty" />
-   public static readonly StyledProperty<double> VerticalOffsetProperty =
+    /// <inheritdoc cref="Popup.VerticalOffsetProperty" />
+    public static readonly StyledProperty<double> VerticalOffsetProperty =
         Avalonia.Controls.Primitives.Popup.VerticalOffsetProperty.AddOwner<PopupFlyoutBase>();
 
-   /// <inheritdoc cref="Popup.PlacementAnchorProperty" />
-   public static readonly StyledProperty<PopupAnchor> PlacementAnchorProperty =
+    /// <inheritdoc cref="Popup.PlacementAnchorProperty" />
+    public static readonly StyledProperty<PopupAnchor> PlacementAnchorProperty =
         Avalonia.Controls.Primitives.Popup.PlacementAnchorProperty.AddOwner<PopupFlyoutBase>();
 
-   /// <inheritdoc cref="Popup.PlacementAnchorProperty" />
-   public static readonly StyledProperty<PopupGravity> PlacementGravityProperty =
+    /// <inheritdoc cref="Popup.PlacementAnchorProperty" />
+    public static readonly StyledProperty<PopupGravity> PlacementGravityProperty =
         Avalonia.Controls.Primitives.Popup.PlacementGravityProperty.AddOwner<PopupFlyoutBase>();
 
-   /// <summary>
-   /// Defines the <see cref="ShowMode" /> property
-   /// </summary>
-   public static readonly StyledProperty<FlyoutShowMode> ShowModeProperty =
+    /// <summary>
+    /// Defines the <see cref="ShowMode" /> property
+    /// </summary>
+    public static readonly StyledProperty<FlyoutShowMode> ShowModeProperty =
         AvaloniaProperty.Register<PopupFlyoutBase, FlyoutShowMode>(nameof(ShowMode));
 
-   /// <summary>
-   /// Defines the <see cref="OverlayInputPassThroughElement" /> property
-   /// </summary>
-   public static readonly StyledProperty<IInputElement?> OverlayInputPassThroughElementProperty =
+    /// <summary>
+    /// Defines the <see cref="OverlayInputPassThroughElement" /> property
+    /// </summary>
+    public static readonly StyledProperty<IInputElement?> OverlayInputPassThroughElementProperty =
         Avalonia.Controls.Primitives.Popup.OverlayInputPassThroughElementProperty.AddOwner<PopupFlyoutBase>();
 
-   /// <summary>
-   /// Defines the <see cref="PlacementConstraintAdjustment" /> property
-   /// </summary>
-   public static readonly StyledProperty<PopupPositionerConstraintAdjustment> PlacementConstraintAdjustmentProperty =
+    /// <summary>
+    /// Defines the <see cref="PlacementConstraintAdjustment" /> property
+    /// </summary>
+    public static readonly StyledProperty<PopupPositionerConstraintAdjustment> PlacementConstraintAdjustmentProperty =
         Avalonia.Controls.Primitives.Popup.PlacementConstraintAdjustmentProperty.AddOwner<PopupFlyoutBase>();
-   
-   public static readonly StyledProperty<bool> IsMotionEnabledProperty
-       = AvaloniaProperty.Register<PopupFlyoutBase, bool>(nameof(IsMotionEnabled));
+
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AvaloniaProperty.Register<PopupFlyoutBase, bool>(nameof(IsMotionEnabled));
 
     public double MarginToAnchor
     {
         get => GetValue(MarginToAnchorProperty);
         set => SetValue(MarginToAnchorProperty, value);
     }
-    
+
     /// <inheritdoc cref="Popup.Placement" />
     public PlacementMode Placement
     {
@@ -147,7 +148,7 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
         get => GetValue(PlacementConstraintAdjustmentProperty);
         set => SetValue(PlacementConstraintAdjustmentProperty, value);
     }
-    
+
     public bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
@@ -160,7 +161,7 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
 
     internal static readonly StyledProperty<bool> IsDetectMouseClickEnabledProperty =
         AvaloniaProperty.Register<Flyout, bool>(nameof(IsDetectMouseClickEnabled), true);
-    
+
     internal bool IsDetectMouseClickEnabled
     {
         get => GetValue(IsDetectMouseClickEnabledProperty);
@@ -284,6 +285,7 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
                 return false;
             }
         }
+
         IsOpen       = false;
         Popup.IsOpen = false;
 
@@ -304,8 +306,8 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
 
         if (Target != null)
         {
-            Target.DetachedFromVisualTree -= PlacementTarget_DetachedFromVisualTree;
-            Target.KeyUp                  -= OnPlacementTargetOrPopupKeyUp;
+            Target.DetachedFromVisualTree -= HandlePlacementTargetDetachedFromVisualTree;
+            Target.KeyUp                  -= HandlePlacementTargetOrPopupKeyUp;
         }
 
         OnClosed();
@@ -377,8 +379,8 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
     {
         OnOpened();
 
-        placementTarget.DetachedFromVisualTree += PlacementTarget_DetachedFromVisualTree;
-        placementTarget.KeyUp                  += OnPlacementTargetOrPopupKeyUp;
+        placementTarget.DetachedFromVisualTree += HandlePlacementTargetDetachedFromVisualTree;
+        placementTarget.KeyUp                  += HandlePlacementTargetOrPopupKeyUp;
 
         if (ShowMode == FlyoutShowMode.Standard)
         {
@@ -400,7 +402,7 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
         }
     }
 
-    private void PlacementTarget_DetachedFromVisualTree(object? sender, VisualTreeAttachmentEventArgs e)
+    private void HandlePlacementTargetDetachedFromVisualTree(object? sender, VisualTreeAttachmentEventArgs e)
     {
         _ = HideCore(false);
     }
@@ -494,9 +496,9 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
         // popup.Closing += OnPopupClosing;
         var handler               = new EventHandler<CancelEventArgs>(OnPopupClosing);
         var closingEventAddMethod = ClosingEventInfo.GetAddMethod(true);
-        closingEventAddMethod?.Invoke(popup, new object?[] { handler });
+        closingEventAddMethod?.Invoke(popup, [handler]);
 
-        popup.KeyUp += OnPlacementTargetOrPopupKeyUp;
+        popup.KeyUp += HandlePlacementTargetOrPopupKeyUp;
         NotifyPopupCreated(popup);
         return popup;
     }
@@ -524,7 +526,7 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
     }
 
     // This method is handling both popup logical tree and target logical tree.
-    private void OnPlacementTargetOrPopupKeyUp(object? sender, KeyEventArgs e)
+    private void HandlePlacementTargetOrPopupKeyUp(object? sender, KeyEventArgs e)
     {
         if (!e.Handled
             && IsOpen

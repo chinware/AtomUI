@@ -302,19 +302,19 @@ public class Slider : RangeBase,
             {
                 if (SliderTrack.StartSliderThumb is not null)
                 {
-                    ToolTip.SetTip(SliderTrack.StartSliderThumb, FormatValue(Value));
+                    Avalonia.Controls.ToolTip.SetTip(SliderTrack.StartSliderThumb, FormatValue(Value));
                 }
             }
             else
             {
                 if (SliderTrack.StartSliderThumb is not null)
                 {
-                    ToolTip.SetTip(SliderTrack.StartSliderThumb, FormatValue(RangeValue.StartValue));
+                    Avalonia.Controls.ToolTip.SetTip(SliderTrack.StartSliderThumb, FormatValue(RangeValue.StartValue));
                 }
 
                 if (SliderTrack.EndSliderThumb is not null)
                 {
-                    ToolTip.SetTip(SliderTrack.EndSliderThumb, FormatValue(RangeValue.EndValue));
+                    Avalonia.Controls.ToolTip.SetTip(SliderTrack.EndSliderThumb, FormatValue(RangeValue.EndValue));
                 }
             }
         }
@@ -616,24 +616,24 @@ public class Slider : RangeBase,
             {
                 if (SliderTrack.StartSliderThumb is not null)
                 {
-                    ToolTip.SetPlacement(SliderTrack.StartSliderThumb, PlacementMode.Top);
+                    Avalonia.Controls.ToolTip.SetPlacement(SliderTrack.StartSliderThumb, PlacementMode.Top);
                 }
 
                 if (SliderTrack.EndSliderThumb is not null)
                 {
-                    ToolTip.SetPlacement(SliderTrack.EndSliderThumb, PlacementMode.Top);
+                    Avalonia.Controls.ToolTip.SetPlacement(SliderTrack.EndSliderThumb, PlacementMode.Top);
                 }
             }
             else
             {
                 if (SliderTrack.StartSliderThumb is not null)
                 {
-                    ToolTip.SetPlacement(SliderTrack.StartSliderThumb, PlacementMode.Right);
+                    Avalonia.Controls.ToolTip.SetPlacement(SliderTrack.StartSliderThumb, PlacementMode.Right);
                 }
 
                 if (SliderTrack.EndSliderThumb is not null)
                 {
-                    ToolTip.SetPlacement(SliderTrack.EndSliderThumb, PlacementMode.Right);
+                    Avalonia.Controls.ToolTip.SetPlacement(SliderTrack.EndSliderThumb, PlacementMode.Right);
                 }
             }
         }
@@ -653,7 +653,7 @@ public class Slider : RangeBase,
         {
             if (SliderTrack is not null && SliderTrack.StartSliderThumb is not null)
             {
-                ToolTip.SetTip(SliderTrack.StartSliderThumb, FormatValue(Value));
+                Avalonia.Controls.ToolTip.SetTip(SliderTrack.StartSliderThumb, FormatValue(Value));
             }
         }
         else if (change.Property == RangeValueProperty)
@@ -662,12 +662,12 @@ public class Slider : RangeBase,
             {
                 if (SliderTrack.StartSliderThumb is not null)
                 {
-                    ToolTip.SetTip(SliderTrack.StartSliderThumb, FormatValue(RangeValue.StartValue));
+                    Avalonia.Controls.ToolTip.SetTip(SliderTrack.StartSliderThumb, FormatValue(RangeValue.StartValue));
                 }
 
                 if (SliderTrack.EndSliderThumb is not null)
                 {
-                    ToolTip.SetTip(SliderTrack.EndSliderThumb, FormatValue(RangeValue.EndValue));
+                    Avalonia.Controls.ToolTip.SetTip(SliderTrack.EndSliderThumb, FormatValue(RangeValue.EndValue));
                 }
             }
         }

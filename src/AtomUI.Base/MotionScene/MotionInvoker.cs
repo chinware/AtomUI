@@ -16,21 +16,21 @@ internal static class MotionInvoker
             await motion.RunAsync(actor, aboutToStart, completedAction, cancellationToken);
         });
     }
-
+    
     public static async Task InvokeAsync(MotionActorControl actor,
-        AbstractMotion motion,
-        Action? aboutToStart = null,
-        Action? completedAction = null,
-        CancellationToken cancellationToken = default)
+                                         AbstractMotion motion,
+                                         Action? aboutToStart = null,
+                                         Action? completedAction = null,
+                                         CancellationToken cancellationToken = default)
     {
         await motion.RunAsync(actor, aboutToStart, completedAction, cancellationToken);
     }
-
+    
     public static void InvokeInPopupLayer(SceneMotionActorControl actor,
-        AbstractMotion motion,
-        Action? aboutToStart = null,
-        Action? completedAction = null,
-        CancellationToken cancellationToken = default)
+                                          AbstractMotion motion,
+                                          Action? aboutToStart = null,
+                                          Action? completedAction = null,
+                                          CancellationToken cancellationToken = default)
     {
         Dispatcher.UIThread.Invoke(async () =>
         {
@@ -39,12 +39,12 @@ internal static class MotionInvoker
     }
 
     public static async Task InvokeInPopupLayerAsync(SceneMotionActorControl actor,
-        AbstractMotion motion,
-        Action? aboutToStart = null,
-        Action? completedAction = null,
-        CancellationToken cancellationToken = default)
+                                                     AbstractMotion motion,
+                                                     Action? aboutToStart = null,
+                                                     Action? completedAction = null,
+                                                     CancellationToken cancellationToken = default)
     {
-        var sceneLayer = PrepareSceneLayer(motion, actor);
+        var sceneLayer          = PrepareSceneLayer(motion, actor);
         var compositeDisposable = new CompositeDisposable();
         compositeDisposable.Add(Disposable.Create(sceneLayer, (state) =>
         {

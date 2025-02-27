@@ -1,8 +1,9 @@
 ﻿using System.Reactive.Disposables;
+using AtomUI.Controls.Utils;
 using AtomUI.MotionScene;
-using AtomUI.Reflection;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Input.Raw;
 using Avalonia.Threading;
@@ -28,8 +29,8 @@ internal sealed class ToolTipService : IDisposable
         var inputManager = AvaloniaLocator.Current.GetService<IInputManager>()!;
         _subscriptions = new CompositeDisposable(
             inputManager.Process.Subscribe(HandleInputManagerOnProcess),
-            ToolTip.ServiceEnabledProperty.Changed.Subscribe(ServiceEnabledChanged),
-            ToolTip.TipProperty.Changed.Subscribe(TipChanged));
+            ToolTip.ServiceEnabledProperty.Changed.Subscribe(HandleServiceEnabledChanged),
+            ToolTip.TipProperty.Changed.Subscribe(HandleTipChanged));
     }
 
     public void Dispose()
@@ -59,9 +60,7 @@ internal sealed class ToolTipService : IDisposable
             {
                 case RawPointerEventType.Move:
                     var inputHitTestResult =
-                        pointerEventArgs
-                            .GetPropertyOrThrow<(IInputElement? element, IInputElement? firstEnabledAncestor)>(
-                                "InputHitTestResult");
+                        pointerEventArgs.GetInputHitTestResult();
                     Update(pointerEventArgs.Root, inputHitTestResult.element as Visual);
                     break;
                 case RawPointerEventType.LeaveWindow
@@ -96,12 +95,12 @@ internal sealed class ToolTipService : IDisposable
     public void Update(IInputRoot root, Visual? candidateToolTipHost)
     {
         var currentToolTip = _tipControl?.GetValue(ToolTip.ToolTipProperty);
-        if (root is SceneLayer || root is PopupShadowLayer)
+        if (root is SceneLayer || root is PopupRoot)
         {
             return;
         }
 
-        if (root == currentToolTip?.GetVisualRoot())
+        if (root == currentToolTip?.PopupHost?.HostedVisualTreeRoot)
         {
             // Don't update while the pointer is over a tooltip
             return;
@@ -109,9 +108,9 @@ internal sealed class ToolTipService : IDisposable
 
         while (candidateToolTipHost != null)
         {
-            if (candidateToolTipHost ==
-                currentToolTip) // when OverlayPopupHost is in use, the tooltip is in the same window as the host control
+            if (candidateToolTipHost == currentToolTip)
             {
+                // when OverlayPopupHost is in use, the tooltip is in the same window as the host control
                 return;
             }
 
@@ -143,7 +142,7 @@ internal sealed class ToolTipService : IDisposable
         _tipControl = newControl;
     }
 
-    private void ServiceEnabledChanged(AvaloniaPropertyChangedEventArgs<bool> args)
+    private void HandleServiceEnabledChanged(AvaloniaPropertyChangedEventArgs<bool> args)
     {
         if (args.Sender == _tipControl && !ToolTip.GetServiceEnabled(_tipControl))
         {
@@ -155,7 +154,7 @@ internal sealed class ToolTipService : IDisposable
     /// called when the <see cref="ToolTip.TipProperty" /> property changes on a control.
     /// </summary>
     /// <param name="e">The event args.</param>
-    private void TipChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleTipChanged(AvaloniaPropertyChangedEventArgs e)
     {
         var control = (Control)e.Sender;
 
@@ -215,17 +214,17 @@ internal sealed class ToolTipService : IDisposable
         }
     }
 
-    private void ToolTipClosed(object? sender, EventArgs e)
+    private void HandleToolTipClosed(object? sender, EventArgs e)
     {
         _lastTipCloseTime = DateTime.UtcNow.Ticks;
         if (sender is ToolTip toolTip)
         {
-            toolTip.Closed        -= ToolTipClosed;
-            toolTip.PointerExited -= ToolTipPointerExited;
+            toolTip.Closed        -= HandleToolTipClosed;
+            toolTip.PointerExited -= HandleToolTipPointerExited;
         }
     }
 
-    private void ToolTipPointerExited(object? sender, PointerEventArgs e)
+    private void HandleToolTipPointerExited(object? sender, PointerEventArgs e)
     {
         // The pointer has exited the tooltip. Close the tooltip unless the current tooltip source is still the
         // adorned control.
@@ -257,8 +256,8 @@ internal sealed class ToolTipService : IDisposable
 
             if (control.GetValue(ToolTip.ToolTipProperty) is { } tooltip)
             {
-                tooltip.Closed        += ToolTipClosed;
-                tooltip.PointerExited += ToolTipPointerExited;
+                tooltip.Closed        += HandleToolTipClosed;
+                tooltip.PointerExited += HandleToolTipPointerExited;
             }
         }
     }

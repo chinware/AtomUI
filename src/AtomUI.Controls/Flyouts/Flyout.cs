@@ -154,6 +154,7 @@ public class Flyout : PopupFlyoutBase
         var anchor    = popup.PlacementAnchor;
         var gravity   = popup.PlacementGravity;
 
+        // TODO 可以改进成绑定，可以参考 Tooltip 的做法
         if (flyoutPresenter is not null)
         {
             var arrowPosition = PopupUtils.CalculateArrowPosition(placement, anchor, gravity);
@@ -345,12 +346,10 @@ public class Flyout : PopupFlyoutBase
         }
 
         IsOpen = true;
-        Dispatcher.UIThread.InvokeAsync(() =>
+        Dispatcher.UIThread.InvokeAsync(async () =>
         {
-            Popup.OpenAnimation(() =>
-            {
-                HandlePopupOpened(placementTarget);
-            });
+            await Popup.OpenAsync();
+            HandlePopupOpened(placementTarget);
         });
         return true;
     }
@@ -376,7 +375,11 @@ public class Flyout : PopupFlyoutBase
         }
 
         IsOpen = false;
-        Dispatcher.UIThread.InvokeAsync(() => { Popup.CloseAnimation(HandlePopupClosed); });
+        Dispatcher.UIThread.InvokeAsync(async () =>
+        {
+            await Popup.CloseAsync();
+            HandlePopupClosed();
+        });
         return true;
     }
 

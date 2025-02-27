@@ -1,11 +1,10 @@
-﻿using AtomUI.Data;
-using AtomUI.Theme;
+﻿using AtomUI.Theme;
 using AtomUI.Theme.Styling;
-using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
+using Avalonia.Data.Converters;
 using Avalonia.Layout;
-using Avalonia.Media;
 using Avalonia.Styling;
 
 namespace AtomUI.Controls;
@@ -28,21 +27,25 @@ internal class ToolTipTheme : BaseControlTheme
             {
                 Name = ToolTipContainerPart
             };
-            if (tip.Content is string text)
-            {
-                arrowDecoratedBox.Content = new SingleLineText()
-                {
-                    Text                = text,
-                    VerticalAlignment   = VerticalAlignment.Center,
-                    HorizontalAlignment = HorizontalAlignment.Center,
-                };
-            }
-            else if (tip.Content is Control control)
-            {
-                arrowDecoratedBox.Content = control;
-            }
 
-            BindUtils.RelayBind(tip, ToolTip.IsShowArrowEffectiveProperty, arrowDecoratedBox, ArrowDecoratedBox.IsShowArrowProperty);
+            CreateTemplateParentBinding(arrowDecoratedBox, ArrowDecoratedBox.ContentProperty, ToolTip.ContentProperty, BindingPriority.Template,
+                BindingMode.Default, new FuncValueConverter<object?, object?>(o =>
+                {
+                    if (o is string text)
+                    {
+                        return new SingleLineText
+                        {
+                            Text                = text,
+                            VerticalAlignment   = VerticalAlignment.Center,
+                            HorizontalAlignment = HorizontalAlignment.Center,
+                            LineHeight = double.NaN, // 防止有继承属性干扰
+                        };
+                    }
+
+                    return o;
+                }));
+            CreateTemplateParentBinding(arrowDecoratedBox, ArrowDecoratedBox.ContentTemplateProperty, ToolTip.ContentTemplateProperty);
+            
             arrowDecoratedBox.RegisterInNameScope(scope);
             return arrowDecoratedBox;
         });
@@ -50,10 +53,9 @@ internal class ToolTipTheme : BaseControlTheme
 
     protected override void BuildStyles()
     {
-        this.Add(ToolTip.ShadowsProperty, ToolTipTokenKey.ToolTipShadows);
-        this.Add(ToolTip.DefaultMarginToAnchorProperty, ToolTipTokenKey.MarginToAnchor);
-        this.Add(ToolTip.MotionDurationProperty, ToolTipTokenKey.ToolTipMotionDuration);
-        this.Add(TemplatedControl.BackgroundProperty, SharedTokenKey.ColorTransparent);
+        // this.Add(ToolTipX.ShadowsProperty, ToolTipTokenKey.ToolTipShadows);
+        // this.Add(ToolTipX.DefaultMarginToAnchorProperty, ToolTipTokenKey.MarginToAnchor);
+        // this.Add(ToolTipX.MotionDurationProperty, ToolTipTokenKey.ToolTipMotionDuration);
 
         var arrowDecoratedBoxStyle = new Style(selector => selector.Nesting().Template().OfType<ArrowDecoratedBox>());
         arrowDecoratedBoxStyle.Add(TemplatedControl.FontSizeProperty, SharedTokenKey.FontSize);

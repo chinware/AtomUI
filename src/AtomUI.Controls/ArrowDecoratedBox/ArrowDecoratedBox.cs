@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
+﻿using System.Diagnostics;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
@@ -176,6 +174,7 @@ public class ArrowDecoratedBox : ContentControl,
     {
         AffectsMeasure<ArrowDecoratedBox>(IsShowArrowProperty, ArrowDirectionProperty);
         AffectsArrange<ArrowDecoratedBox>(ArrowPositionProperty);
+        AffectsRender<ArrowDecoratedBox>(BackgroundProperty);
     }
 
     public ArrowDecoratedBox()
@@ -261,7 +260,7 @@ public class ArrowDecoratedBox : ContentControl,
         }
         return targetRect;
     }
-
+    
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
@@ -426,5 +425,4 @@ public class ArrowDecoratedBox : ContentControl,
 
         _arrowPlacementFlipped = false;
     }
-    
 }

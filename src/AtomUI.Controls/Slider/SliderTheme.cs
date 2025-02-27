@@ -31,8 +31,8 @@ internal class SliderTheme : BaseControlTheme
             };
             CreateTemplateParentBinding(startSliderThumb, SliderThumb.IsMotionEnabledProperty,
                 Slider.IsMotionEnabledProperty);
-            ToolTip.SetPlacement(startSliderThumb, PlacementMode.Top);
-            ToolTip.SetShowDelay(startSliderThumb, 0);
+            Avalonia.Controls.ToolTip.SetPlacement(startSliderThumb, PlacementMode.Top);
+            Avalonia.Controls.ToolTip.SetShowDelay(startSliderThumb, 0);
             startSliderThumb.RegisterInNameScope(scope);
 
             var endSliderThumb = new SliderThumb
@@ -43,8 +43,8 @@ internal class SliderTheme : BaseControlTheme
                 Slider.IsMotionEnabledProperty);
             
             endSliderThumb.RegisterInNameScope(scope);
-            ToolTip.SetPlacement(endSliderThumb, PlacementMode.Top);
-            ToolTip.SetShowDelay(endSliderThumb, 0);
+            Avalonia.Controls.ToolTip.SetPlacement(endSliderThumb, PlacementMode.Top);
+            Avalonia.Controls.ToolTip.SetShowDelay(endSliderThumb, 0);
 
             var sliderTrack = new SliderTrack
             {
