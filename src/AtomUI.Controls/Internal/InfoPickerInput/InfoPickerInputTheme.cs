@@ -122,9 +122,8 @@ internal class InfoPickerInputTheme : BaseControlTheme
             IsEnableClearButton        = false,
             IsEnableRevealButton       = false,
         };
-
-        BindUtils.RelayBind(this, DataValidationErrors.ErrorsProperty, pickerTextBox,
-            DataValidationErrors.ErrorsProperty);
+        
+        CreateTemplateParentBinding(pickerTextBox, DataValidationErrors.ErrorsProperty, DataValidationErrors.ErrorsProperty);
         CreateTemplateParentBinding(pickerTextBox, TextBox.ForegroundProperty, InfoPickerInput.InputTextBrushProperty);
         CreateTemplateParentBinding(pickerTextBox, TextBox.SizeTypeProperty, InfoPickerInput.SizeTypeProperty);
         CreateTemplateParentBinding(pickerTextBox, TextBox.IsReadOnlyProperty,

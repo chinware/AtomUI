@@ -66,7 +66,8 @@ internal class NumericUpDownTheme : BaseControlTheme
             AcceptsReturn            = false,
             EmbedMode                = true
         };
-        BindUtils.RelayBind(numericUpDown, DataValidationErrors.ErrorsProperty, textBox, DataValidationErrors.ErrorsProperty);
+
+        CreateTemplateParentBinding(textBox, DataValidationErrors.ErrorsProperty, DataValidationErrors.ErrorsProperty);
         CreateTemplateParentBinding(textBox, TextBox.SizeTypeProperty, NumericUpDown.SizeTypeProperty);
         CreateTemplateParentBinding(textBox, Avalonia.Controls.TextBox.IsReadOnlyProperty,
             Avalonia.Controls.NumericUpDown.IsReadOnlyProperty);

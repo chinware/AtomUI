@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel;
 using System.Reactive.Disposables;
-using System.Runtime.CompilerServices;
 using AtomUI.Data;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -126,14 +125,6 @@ public class Flyout : PopupFlyoutBase
         IsShowArrowProperty.OverrideDefaultValue<Flyout>(false);
     }
 
-    public Flyout()
-    {
-        TokenResourceBinder.CreateGlobalTokenBinding(this, MotionDurationTokenProperty,
-            SharedTokenKey.MotionDurationMid);
-        TokenResourceBinder.CreateGlobalTokenBinding(this, MaskShadowsProperty,
-            SharedTokenKey.BoxShadowsSecondary);
-    }
-
     private void HandlePopupPropertyChanged(AvaloniaPropertyChangedEventArgs args)
     {
         SetupArrowPosition(Popup);
@@ -210,11 +201,15 @@ public class Flyout : PopupFlyoutBase
         {
             CompositeDisposable.Add(PopupControl.IsFlippedProperty.Changed.Subscribe(HandlePopupPropertyChanged));
         }
+
+        CompositeDisposable.Add(TokenResourceBinder.CreateGlobalTokenBinding(this, MotionDurationTokenProperty,
+            SharedTokenKey.MotionDurationMid));
+        CompositeDisposable.Add(TokenResourceBinder.CreateGlobalTokenBinding(this, MaskShadowsProperty,
+            SharedTokenKey.BoxShadowsSecondary));
     }
 
     protected override void OnClosed()
     {
-        base.OnClosed();
         CompositeDisposable?.Dispose();
     }
 
@@ -348,10 +343,7 @@ public class Flyout : PopupFlyoutBase
         IsOpen = true;
         Dispatcher.UIThread.InvokeAsync(() =>
         {
-            Popup.MotionAwareOpen(() =>
-            {
-                HandlePopupOpened(placementTarget);
-            });
+            Popup.MotionAwareOpen(() => { HandlePopupOpened(placementTarget); });
         });
         return true;
     }
