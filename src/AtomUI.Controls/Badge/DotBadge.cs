@@ -1,4 +1,5 @@
-﻿using AtomUI.Data;
+﻿using AtomUI.Controls.Utils;
+using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Palette;
 using AtomUI.Theme.Utils;
@@ -207,14 +208,14 @@ public class DotBadge : Control,
             if (DecoratedTarget is null)
             {
                 _dotBadgeAdorner.IsAdornerMode = false;
-                ((ISetLogicalParent)_dotBadgeAdorner).SetParent(this);
+                _dotBadgeAdorner.SetLogicalParent(this);
                 VisualChildren.Add(_dotBadgeAdorner);
             }
             else
             {
                 _dotBadgeAdorner.IsAdornerMode = true;
                 VisualChildren.Add(DecoratedTarget);
-                ((ISetLogicalParent)DecoratedTarget).SetParent(this);
+                DecoratedTarget.SetLogicalParent(this);
             }
         }
     }

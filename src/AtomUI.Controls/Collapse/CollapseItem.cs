@@ -273,12 +273,12 @@ public class CollapseItem : HeaderedContentControl, ISelectable
         {
             if (change.OldValue is Control oldControl)
             {
-                VisualAndLogicalUtils.SetTemplateParent(oldControl, null);
+                oldControl.SetTemplatedParent(null);
             }
 
             if (change.NewValue is Control newControl)
             {
-                VisualAndLogicalUtils.SetTemplateParent(newControl, this);
+                newControl.SetTemplatedParent(this);
             }
         }
         else if (change.Property == ExpandIconProperty)
@@ -286,7 +286,7 @@ public class CollapseItem : HeaderedContentControl, ISelectable
             var oldExpandIcon = change.GetOldValue<Icon?>();
             if (oldExpandIcon is not null)
             {
-                VisualAndLogicalUtils.SetTemplateParent(oldExpandIcon, null);
+                oldExpandIcon.SetTemplatedParent(null);
             }
 
             SetupIconButton();
@@ -363,7 +363,7 @@ public class CollapseItem : HeaderedContentControl, ISelectable
                 SharedTokenKey.ColorTextDisabled);
         }
 
-        VisualAndLogicalUtils.SetTemplateParent(ExpandIcon, this);
+        ExpandIcon.SetTemplatedParent(this);
     }
 
     internal bool IsPointInHeaderBounds(Point position)

@@ -296,7 +296,7 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
 
     protected void HandlePopupClosed()
     {
-        ((ISetLogicalParent)Popup).SetParent(null);
+        Popup.SetLogicalParent(null);
 
         // Ensure this isn't active
         _transientDisposable?.Dispose();
@@ -348,14 +348,14 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
 
         if (Popup.Parent != null && Popup.Parent != placementTarget)
         {
-            ((ISetLogicalParent)Popup).SetParent(null);
+            Popup.SetLogicalParent(null);
         }
 
         if (Popup.Parent == null || Popup.PlacementTarget != placementTarget)
         {
             Popup.PlacementTarget = Target = placementTarget;
-            ((ISetLogicalParent)Popup).SetParent(placementTarget);
-            VisualAndLogicalUtils.SetTemplateParent(Popup, placementTarget.TemplatedParent);
+            Popup.SetLogicalParent(placementTarget);
+            Popup.SetTemplatedParent(placementTarget.TemplatedParent);
         }
 
         if (Popup.Child == null)

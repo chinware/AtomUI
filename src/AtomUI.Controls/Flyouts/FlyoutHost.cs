@@ -1,4 +1,5 @@
-﻿using AtomUI.Data;
+﻿using AtomUI.Controls.Utils;
+using AtomUI.Data;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
@@ -196,7 +197,7 @@ public class FlyoutHost : Control,
         BindUtils.RelayBind(this, TriggerProperty, _flyoutStateHelper, FlyoutStateHelper.TriggerTypeProperty);
         if (AnchorTarget is not null)
         {
-            ((ISetLogicalParent)AnchorTarget).SetParent(this);
+            AnchorTarget.SetLogicalParent(this);
             VisualChildren.Add(AnchorTarget);
         }
     }

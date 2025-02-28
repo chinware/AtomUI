@@ -1,4 +1,5 @@
-﻿using AtomUI.Data;
+﻿using AtomUI.Controls.Utils;
+using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Palette;
 using AtomUI.Theme.Utils;
@@ -109,14 +110,14 @@ public class RibbonBadge : Control,
             if (DecoratedTarget is null)
             {
                 VisualChildren.Add(_ribbonBadgeAdorner);
-                ((ISetLogicalParent)_ribbonBadgeAdorner).SetParent(this);
+                _ribbonBadgeAdorner.SetLogicalParent(this);
                 _ribbonBadgeAdorner.IsAdornerMode = false;
             }
             else if (DecoratedTarget is not null)
             {
                 _ribbonBadgeAdorner.IsAdornerMode = true;
                 VisualChildren.Add(DecoratedTarget);
-                ((ISetLogicalParent)DecoratedTarget).SetParent(this);
+                DecoratedTarget.SetLogicalParent(this);
             }
         }
     }

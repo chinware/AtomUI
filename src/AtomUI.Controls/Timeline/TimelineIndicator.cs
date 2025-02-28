@@ -1,3 +1,4 @@
+using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -231,14 +232,14 @@ internal class TimelineIndicator : Control
 
         if (oldChild != null)
         {
-            ((ISetLogicalParent)oldChild).SetParent(null);
+            oldChild.SetLogicalParent(null);
             LogicalChildren.Clear();
             VisualChildren.Remove(oldChild);
         }
 
         if (newChild != null)
         {
-            ((ISetLogicalParent)newChild).SetParent(this);
+            newChild.SetLogicalParent(this);
             TokenResourceBinder.CreateTokenBinding(newChild, Icon.WidthProperty, TimelineTokenKey.IndicatorWidth);
             TokenResourceBinder.CreateTokenBinding(newChild, Icon.HeightProperty, TimelineTokenKey.IndicatorWidth);
             VisualChildren.Add(newChild);

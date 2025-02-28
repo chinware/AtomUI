@@ -294,7 +294,7 @@ public class ScopeAwareAdornerLayer : Canvas
 
         SetAdornedElement(adorner, visual);
 
-        ((ISetLogicalParent)adorner).SetParent(visual);
+        adorner.SetLogicalParent(visual);
         layer.Children.Add(adorner);
     }
 
@@ -306,7 +306,7 @@ public class ScopeAwareAdornerLayer : Canvas
         }
 
         layer.Children.Remove(adorner);
-        ((ISetLogicalParent)adorner).SetParent(null);
+        adorner.SetLogicalParent(null);
     }
 
     private static void VisualOnAttachedToVisualTree(object? sender, VisualTreeAttachmentEventArgs e)

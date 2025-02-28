@@ -92,7 +92,7 @@ public class TabItem : AvaloniaTabItem, ICustomHitTest
     {
         if (Icon is not null)
         {
-            VisualAndLogicalUtils.SetTemplateParent(Icon, this);
+            Icon.SetTemplatedParent(this);
             Icon.Name = BaseTabItemTheme.ItemIconPart;
             if (Icon.ThemeType != IconThemeType.TwoTone)
             {
@@ -126,7 +126,7 @@ public class TabItem : AvaloniaTabItem, ICustomHitTest
 
         CloseIcon.SetValue(VerticalAlignmentProperty, VerticalAlignment.Center);
 
-        VisualAndLogicalUtils.SetTemplateParent(CloseIcon, this);
+        CloseIcon.SetTemplatedParent(this);
         if (CloseIcon.ThemeType != IconThemeType.TwoTone)
         {
             TokenResourceBinder.CreateTokenBinding(CloseIcon, Icon.NormalFilledBrushProperty,
@@ -211,7 +211,7 @@ public class TabItem : AvaloniaTabItem, ICustomHitTest
                 var oldIcon = change.GetOldValue<Icon?>();
                 if (oldIcon != null)
                 {
-                    VisualAndLogicalUtils.SetTemplateParent(oldIcon, null);
+                    oldIcon.SetTemplatedParent(null);
                 }
 
                 SetupItemIcon();
@@ -223,7 +223,7 @@ public class TabItem : AvaloniaTabItem, ICustomHitTest
             var oldIcon = change.GetOldValue<Icon?>();
             if (oldIcon != null)
             {
-                VisualAndLogicalUtils.SetTemplateParent(oldIcon, null);
+                oldIcon.SetTemplatedParent(null);
             }
 
             SetupCloseIcon();

@@ -1,4 +1,5 @@
-﻿using AtomUI.Data;
+﻿using AtomUI.Controls.Utils;
+using AtomUI.Data;
 using AtomUI.IconPkg;
 using Avalonia;
 using Avalonia.Animation.Easings;
@@ -138,7 +139,7 @@ public class LoadingMaskHost : Control
         {
             if (MaskTarget is not null)
             {
-                ((ISetLogicalParent)MaskTarget).SetParent(this);
+                MaskTarget.SetLogicalParent(this);
                 VisualChildren.Add(MaskTarget);
             }
 

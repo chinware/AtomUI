@@ -1,3 +1,4 @@
+using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.IconPkg;
 using AtomUI.Theme;
@@ -128,7 +129,7 @@ public class IconButton : AvaloniaButton,
                 var oldIcon = e.GetOldValue<Icon?>();
                 if (oldIcon is not null)
                 {
-                    ((ISetLogicalParent)oldIcon).SetParent(null);
+                    oldIcon.SetLogicalParent(null);
                 }
 
                 SetupIcon();

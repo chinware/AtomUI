@@ -10,6 +10,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Primitives.PopupPositioning;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
@@ -170,7 +171,7 @@ internal class PopupShadowLayer : AvaloniaObject, IShadowDecorator
         }
         
         popupHost.SetChild(Child);
-        ((ISetLogicalParent)popupHost).SetParent(_target);
+        ((ILogical)popupHost).SetLogicalParent(_target);
         
         UpdateLayoutHostPositionAndSize(popupHost);
 
@@ -209,7 +210,7 @@ internal class PopupShadowLayer : AvaloniaObject, IShadowDecorator
             state.popupHost.SetChild(null);
             state.popupHost.Hide();
 
-            ((ISetLogicalParent)state.popupHost).SetParent(null);
+            ((ILogical)state.popupHost).SetLogicalParent(null);
             _managedPopupPositionerPopup = null;
             state.popupHost.Dispose();
         });

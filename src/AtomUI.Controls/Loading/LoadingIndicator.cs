@@ -228,7 +228,7 @@ public class LoadingIndicator : TemplatedControl,
     {
         if (CustomIndicatorIcon is not null)
         {
-            VisualAndLogicalUtils.SetTemplateParent(CustomIndicatorIcon, this);
+            CustomIndicatorIcon.SetTemplatedParent(this);
             _mainContainer?.Children.Insert(0, CustomIndicatorIcon);
         }
     }

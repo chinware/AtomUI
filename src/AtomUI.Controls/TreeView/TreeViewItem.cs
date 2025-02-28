@@ -421,12 +421,12 @@ public class TreeViewItem : AvaloniaTreeItem
         {
             if (change.OldValue is Icon oldIcon)
             {
-                VisualAndLogicalUtils.SetTemplateParent(oldIcon, null);
+                oldIcon.SetTemplatedParent(null);
             }
 
             if (change.NewValue is Icon newIcon)
             {
-                VisualAndLogicalUtils.SetTemplateParent(newIcon, this);
+                newIcon.SetTemplatedParent(this);
             }
         } 
         else if (change.Property == IsLoadingProperty || change.Property == IsLeafProperty)

@@ -1,4 +1,5 @@
-﻿using AtomUI.Data;
+﻿using AtomUI.Controls.Utils;
+using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Palette;
@@ -261,14 +262,14 @@ public class CountBadge : Control,
         {
             if (DecoratedTarget is null)
             {
-                ((ISetLogicalParent)_badgeAdorner).SetParent(this);
+                _badgeAdorner.SetLogicalParent(this);
                 VisualChildren.Add(_badgeAdorner);
                 _badgeAdorner.IsAdornerMode = false;
             }
             else if (DecoratedTarget is not null)
             {
                 _badgeAdorner.IsAdornerMode = true;
-                ((ISetLogicalParent)DecoratedTarget).SetParent(this);
+                DecoratedTarget.SetLogicalParent(this);
                 VisualChildren.Add(DecoratedTarget);
             }
         }

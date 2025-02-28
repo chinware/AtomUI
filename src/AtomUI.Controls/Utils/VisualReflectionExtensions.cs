@@ -47,4 +47,22 @@ internal static class VisualReflectionExtensions
         Debug.Assert(children != null);
         return children;
     }
+    
+    public static int IndexOfVisualChildren(this Visual visual, Visual child)
+    {
+        var children = visual.GetVisualChildrenList();
+        return children.IndexOf(child);
+    }
+    
+    public static void AddToVisualChildren(this Visual visual, Visual child)
+    {
+        var children = visual.GetVisualChildrenList();
+        children.Add(child);
+    }
+
+    public static void InsertToVisualChildren(this Visual visual, int index, Control child)
+    {
+        var children = visual.GetVisualChildrenList();
+        children.Insert(index, child);
+    }
 }

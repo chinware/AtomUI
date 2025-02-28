@@ -165,7 +165,7 @@ internal class RibbonBadgeAdorner : Control
                 HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment   = VerticalAlignment.Center
             };
-            ((ISetLogicalParent)_labelText).SetParent(this);
+            _labelText.SetLogicalParent(this);
             VisualChildren.Add(_labelText);
             BuildCornerGeometry();
             _initialized = true;
