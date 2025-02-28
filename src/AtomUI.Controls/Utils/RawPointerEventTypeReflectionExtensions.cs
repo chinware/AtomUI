@@ -8,7 +8,7 @@ namespace AtomUI.Controls.Utils;
 internal static class RawPointerEventTypeReflectionExtensions
 {
     #region 反射信息定义
-    private static readonly Lazy<PropertyInfo> InputHitTestResultPropertyInfo = new Lazy<PropertyInfo>(
+    private static readonly Lazy<PropertyInfo> InputHitTestResultPropertyInfo = new Lazy<PropertyInfo>(() => 
         typeof(RawPointerEventArgs).GetPropertyInfoOrThrow("InputHitTestResult",
             BindingFlags.Instance | BindingFlags.NonPublic));
     #endregion

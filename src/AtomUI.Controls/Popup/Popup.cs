@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.ComponentModel;
+using System.Diagnostics;
 using AtomUI.Controls.Primitives;
 using AtomUI.Data;
 using AtomUI.Media;
@@ -109,7 +110,9 @@ public class Popup : AvaloniaPopup,
     private IDisposable? _selfLightDismissDisposable;
 
     private IManagedPopupPositionerPopup? _managedPopupPositioner;
+
     private bool _isNeedDetectFlip = true;
+
     // 在翻转之后或者恢复正常，会有属性的变动，在变动之后捕捉动画需要等一个事件循环，保证布局已经生效
     private bool _isNeedWaitFlipSync = false;
     private bool _openAnimating;
@@ -159,7 +162,7 @@ public class Popup : AvaloniaPopup,
 
         HorizontalOffset = offsetX;
         VerticalOffset   = offsetY;
-        
+
         _selfLightDismissDisposable?.Dispose();
         _shadowLayer?.Close();
         _firstDetected = true;
@@ -167,6 +170,7 @@ public class Popup : AvaloniaPopup,
 
     private void HandleOpened(object? sender, EventArgs? args)
     {
+        Console.WriteLine("HandleOpened");
         if (Host is PopupRoot popupRoot)
         {
             var popupPositioner = popupRoot.PlatformImpl?.PopupPositioner;
@@ -186,7 +190,12 @@ public class Popup : AvaloniaPopup,
                     AdjustPopupHostPosition(placementTarget);
                 }
             }
-            
+
+            if (!_openAnimating)
+            {
+                _shadowLayer?.Open();
+            }
+
             // 如果没有启动，我们使用自己的处理函数，一般是为了增加我们自己的动画效果
             if (!IsLightDismissEnabled)
             {
@@ -379,7 +388,7 @@ public class Popup : AvaloniaPopup,
                 parameters.Anchor,
                 parameters.Gravity,
                 offset * scaling);
-   
+
             if (flipInfo.Item1 || flipInfo.Item2)
             {
                 var flipPlacement        = GetFlipPlacement(Placement, flipInfo.Item1, flipInfo.Item2);
@@ -410,7 +419,7 @@ public class Popup : AvaloniaPopup,
             {
                 IsFlipped = false;
             }
-            
+
             PositionFlipped?.Invoke(this, new PopupFlippedEventArgs(IsFlipped));
         }
     }
@@ -463,6 +472,7 @@ public class Popup : AvaloniaPopup,
         {
             return;
         }
+
         if (!IsMotionEnabled)
         {
             _shadowLayer?.Open();
@@ -470,9 +480,10 @@ public class Popup : AvaloniaPopup,
             opened?.Invoke();
             return;
         }
+
         _openAnimating = true;
         Open();
-        
+
         var popupRoot = Host as PopupRoot;
         Debug.Assert(popupRoot != null);
         if (_isNeedWaitFlipSync)
@@ -485,9 +496,10 @@ public class Popup : AvaloniaPopup,
             });
             return;
         }
+
         RunOpenAnimation(popupRoot, opened);
     }
-    
+
     private void RunOpenAnimation(PopupRoot popupRoot, Action? opened = null)
     {
         var placementTarget = GetEffectivePlacementTarget();
@@ -501,19 +513,20 @@ public class Popup : AvaloniaPopup,
 
         var offset = new Point(popupOffset.X, popupOffset.Y);
 
-        var maskShadowsThickness              = MaskShadows.Thickness();
-        var motionActorOffset = new Point(offset.X - maskShadowsThickness.Left * scaling, offset.Y - maskShadowsThickness.Top * scaling);
+        var maskShadowsThickness = MaskShadows.Thickness();
+        var motionActorOffset = new Point(offset.X - maskShadowsThickness.Left * scaling,
+            offset.Y - maskShadowsThickness.Top * scaling);
 
         var motionTarget = Child ?? popupRoot;
         var motion       = new ZoomBigInMotion(MotionDuration);
         var motionActor = new PopupMotionActor(motionActorOffset,
             MotionGhostControlUtils.BuildMotionGhost(Child ?? popupRoot, MaskShadows),
             motionTarget.DesiredSize);
-        
+
         // 获取 popup 的具体位置，这个就是非常准确的位置，还有大小
         // TODO 暂时只支持 WindowBase popup
         popupRoot.Hide();
-        
+
         motionActor.SceneParent = topLevel;
 
         Dispatcher.UIThread.Post(() =>
@@ -577,14 +590,16 @@ public class Popup : AvaloniaPopup,
         {
             scaling = windowBase.DesktopScaling;
         }
-        
-        var maskShadowsThickness              = MaskShadows.Thickness();
-        var motionActorOffset = new Point(offset.X - maskShadowsThickness.Left * scaling, offset.Y - maskShadowsThickness.Top * scaling);
-        
+
+        var maskShadowsThickness = MaskShadows.Thickness();
+        var motionActorOffset = new Point(offset.X - maskShadowsThickness.Left * scaling,
+            offset.Y - maskShadowsThickness.Top * scaling);
+
         var motionTarget = Child ?? popupRoot;
-        var motionActor = new PopupMotionActor(motionActorOffset, MotionGhostControlUtils.BuildMotionGhost(Child ?? popupRoot, MaskShadows),
+        var motionActor = new PopupMotionActor(motionActorOffset,
+            MotionGhostControlUtils.BuildMotionGhost(Child ?? popupRoot, MaskShadows),
             motionTarget.DesiredSize);
-        
+
         motionActor.SceneParent = topLevel;
         Dispatcher.UIThread.Post(() =>
         {
@@ -608,6 +623,22 @@ public class Popup : AvaloniaPopup,
         if (change.Property == IsFlippedProperty)
         {
             _isNeedWaitFlipSync = true;
+        }
+    }
+
+    internal readonly struct IgnoreIsOpenScope : IDisposable
+    {
+        private readonly Popup _owner;
+
+        public IgnoreIsOpenScope(Popup owner)
+        {
+            _owner = owner;
+            _owner.SetIgnoreIsOpenChanged(true);
+        }
+
+        public void Dispose()
+        {
+            _owner.SetIgnoreIsOpenChanged(false);
         }
     }
 }

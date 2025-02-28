@@ -12,6 +12,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Media;
 using Avalonia.Threading;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -58,27 +59,6 @@ internal class PopupShadowLayer : AvaloniaObject, IShadowDecorator
     public PopupShadowLayer(Popup target)
     {
         _target = target;
-        // if (target is IPopupHostProvider popupHostProvider)
-        // {
-        //     popupHostProvider.PopupHostChanged += host =>
-        //     {
-        //         if (host is PopupRoot popupRoot)
-        //         {
-        //             popupRoot.PositionChanged += (sender, args) =>
-        //             {
-        //                 Console.WriteLine(args.Point);
-        //             };
-        //         }
-        //     };
-        // }
-    
-        // if (_target.Host is PopupRoot targetPopupRoot)
-        // {
-        //     targetPopupRoot.PositionChanged += (sender, args) =>
-        //     {
-        //         Console.WriteLine(args.Point);
-        //     };
-        // }
     }
 
     private void HandleTargetPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
@@ -165,7 +145,7 @@ internal class PopupShadowLayer : AvaloniaObject, IShadowDecorator
             return;
         }
         
-        var popupHost = OverlayPopupHost.CreatePopupHost(_target.PlacementTarget!, DependencyResolver.Instance);
+        var popupHost = OverlayPopupHost.CreatePopupHost(_target.PlacementTarget ?? _target.GetVisualParent()!, DependencyResolver.Instance);
         popupHost.Topmost = false;
         NotifyPopupHostCreated(popupHost);
         if (popupHost is PopupRoot popupRoot)
