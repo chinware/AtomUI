@@ -936,7 +936,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
 
     private void SetupItemIcon()
     {
-        if (Icon is not null && Icon is Icon menuItemIcon)
+        if (Icon is Icon menuItemIcon)
         {
             BindUtils.RelayBind(this, IsEnabledProperty, menuItemIcon, Icon.IsEnabledProperty);
             TokenResourceBinder.CreateTokenBinding(menuItemIcon, Icon.WidthProperty,

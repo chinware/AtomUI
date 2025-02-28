@@ -170,7 +170,6 @@ public class Popup : AvaloniaPopup,
 
     private void HandleOpened(object? sender, EventArgs? args)
     {
-        Console.WriteLine("HandleOpened");
         if (Host is PopupRoot popupRoot)
         {
             var popupPositioner = popupRoot.PlatformImpl?.PopupPositioner;
