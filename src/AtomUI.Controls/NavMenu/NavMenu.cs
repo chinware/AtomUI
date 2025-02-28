@@ -325,10 +325,12 @@ public class NavMenu : NavMenuBase
         }
     }
 
-    private void ClearSelectionRecursively(NavMenuItem item)
+    internal static void ClearSelectionRecursively(NavMenuItem item, bool skipSelf = false)
     {
-        
-        item.IsSelected = false;
+        if (!skipSelf)
+        {
+            item.IsSelected = false;
+        }
         foreach (var childItem in item.Items)
         {
             if (childItem is NavMenuItem navMenuItem)

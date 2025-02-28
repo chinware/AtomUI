@@ -304,7 +304,9 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
         }
 
         if (_root is TopLevel tl && tl.PlatformImpl != null)
+        {
             tl.PlatformImpl.LostFocus -= TopLevelLostPlatformFocus;
+        }
 
         _inputManagerSubscription?.Dispose();
 

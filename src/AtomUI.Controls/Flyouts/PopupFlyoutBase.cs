@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel;
-using System.Reflection;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.Theme.Data;
@@ -192,12 +191,12 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
     private PixelRect? _enlargePopupRectScreenPixelRect;
     private IDisposable? _transientDisposable;
     private Action<IPopupHost?>? _popupHostChangedHandler;
-    private static readonly EventInfo ClosingEventInfo;
+    // private static readonly EventInfo ClosingEventInfo;
 
     static PopupFlyoutBase()
     {
         Control.ContextFlyoutProperty.Changed.Subscribe(OnContextFlyoutPropertyChanged);
-        ClosingEventInfo = typeof(Popup).GetEvent("Closing", BindingFlags.NonPublic | BindingFlags.Instance)!;
+        // ClosingEventInfo = typeof(Popup).GetEvent("Closing", BindingFlags.NonPublic | BindingFlags.Instance)!;
     }
 
     public PopupFlyoutBase()
@@ -492,11 +491,7 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
 
         popup.Opened += OnPopupOpened;
         popup.Closed += OnPopupClosed;
-        // 通过反射设置
-        // popup.Closing += OnPopupClosing;
-        var handler               = new EventHandler<CancelEventArgs>(OnPopupClosing);
-        var closingEventAddMethod = ClosingEventInfo.GetAddMethod(true);
-        closingEventAddMethod?.Invoke(popup, [handler]);
+        popup.AddClosingEventHandler(OnPopupClosing);
 
         popup.KeyUp += HandlePlacementTargetOrPopupKeyUp;
         NotifyPopupCreated(popup);
