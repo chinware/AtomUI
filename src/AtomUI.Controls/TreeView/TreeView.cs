@@ -220,7 +220,7 @@ public class TreeView : AvaloniaTreeView,
         item.IsChecked = true;
         if (item.Presenter?.Panel == null && this.GetVisualRoot() is ILayoutRoot visualRoot)
         {
-            var layoutManager = LayoutUtils.GetLayoutManager(visualRoot);
+            var layoutManager = visualRoot.GetLayoutManager();
             layoutManager.ExecuteLayoutPass();
         }
 
@@ -253,7 +253,7 @@ public class TreeView : AvaloniaTreeView,
         item.IsChecked = false;
         if (item.Presenter?.Panel == null && this.GetVisualRoot() is ILayoutRoot visualRoot)
         {
-            var layoutManager = LayoutUtils.GetLayoutManager(visualRoot);
+            var layoutManager = visualRoot.GetLayoutManager();
             layoutManager.ExecuteLayoutPass();
         }
 
