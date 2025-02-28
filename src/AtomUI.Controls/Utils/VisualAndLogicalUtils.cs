@@ -9,15 +9,12 @@ namespace AtomUI.Controls.Utils;
 
 internal static class VisualAndLogicalUtils
 {
-    private static readonly MethodInfo SetVisualParentMethodInfo;
     private static readonly PropertyInfo LogicalChildrenInfo;
     private static readonly PropertyInfo VisualChildrenInfo;
     private static readonly PropertyInfo TemplateParentInfo;
 
     static VisualAndLogicalUtils()
     {
-        SetVisualParentMethodInfo =
-            typeof(Visual).GetMethod("SetVisualParent", BindingFlags.Instance | BindingFlags.NonPublic)!;
         LogicalChildrenInfo =
             typeof(StyledElement).GetProperty("LogicalChildren", BindingFlags.Instance | BindingFlags.NonPublic)!;
         VisualChildrenInfo =
@@ -26,32 +23,9 @@ internal static class VisualAndLogicalUtils
             typeof(StyledElement).GetProperty("TemplatedParent", BindingFlags.Instance | BindingFlags.Public)!;
     }
 
-    public static void SetVisualParent(Visual control, Control? parent)
-    {
-        SetVisualParentMethodInfo.Invoke(control, new object?[] { parent });
-    }
-
     public static void SetLogicalParent(ILogical control, ILogical? parent)
     {
         ((ISetLogicalParent)control).SetParent(parent);
-    }
-
-    public static void ClearVisualParentRecursive(Visual control)
-    {
-        SetVisualParent(control, null);
-        foreach (var child in control.GetVisualChildren())
-        {
-            ClearVisualParentRecursive(child);
-        }
-    }
-
-    public static void ClearLogicalParentRecursive(ILogical control)
-    {
-        ((ISetLogicalParent)control).SetParent(null);
-        foreach (var child in control.GetLogicalChildren())
-        {
-            ClearLogicalParentRecursive(child);
-        }
     }
 
     public static void AddToLogicalChildren(StyledElement parent, Control child)
