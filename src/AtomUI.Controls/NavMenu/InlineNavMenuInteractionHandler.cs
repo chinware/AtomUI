@@ -1,5 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 
 namespace AtomUI.Controls;
@@ -61,11 +62,15 @@ internal class InlineNavMenuInteractionHandler : INavMenuInteractionHandler
             }
             else
             {
-                if (NavMenu is NavMenu navMenu)
+                // 判断当前选中的是不是自己
+                if (item.Parent is SelectingItemsControl selectingItemsControl && !ReferenceEquals(selectingItemsControl.SelectedItem, item))
                 {
-                    navMenu.ClearSelection();
+                    if (NavMenu is NavMenu navMenu)
+                    {
+                        navMenu.ClearSelection();
+                    }
+                    item.SelectItemRecursively();
                 }
-                item?.SelectItemRecursively();
             }
             
             e.Handled = true;

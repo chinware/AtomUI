@@ -49,7 +49,7 @@ internal class BaseNavMenuItemTheme : BaseControlTheme
     {
         var headerFrame = new Border
         {
-            Name = HeaderDecoratorPart
+            Name = HeaderDecoratorPart,
         };
         headerFrame.RegisterInNameScope(scope);
         headerFrame.Child = BuildMenuItemInfoGrid(navMenuItem, scope);
@@ -227,6 +227,7 @@ internal class BaseNavMenuItemTheme : BaseControlTheme
             headerDecoratorStyle.Add(Border.BackgroundProperty, NavMenuTokenKey.ItemBg);
             hasNoSubMenuStyle.Add(headerDecoratorStyle);
         }
+
         // Hover 效果
         {
             var headerDecoratorStyle = new Style(selector =>

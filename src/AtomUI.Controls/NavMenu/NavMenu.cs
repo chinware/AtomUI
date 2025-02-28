@@ -297,7 +297,7 @@ public class NavMenu : NavMenuBase
     {
         if (ItemContainerTheme is null || force)
         {
-            var resourceKey = string.Empty; 
+            string resourceKey; 
             if (Mode == NavMenuMode.Vertical)
             {
                 resourceKey = VerticalNavMenuItemTheme.ID;
@@ -327,6 +327,7 @@ public class NavMenu : NavMenuBase
 
     private void ClearSelectionRecursively(NavMenuItem item)
     {
+        
         item.IsSelected = false;
         foreach (var childItem in item.Items)
         {
