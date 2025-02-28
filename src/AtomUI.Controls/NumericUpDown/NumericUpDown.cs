@@ -1,4 +1,5 @@
 ﻿using AtomUI.Theme;
+using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 
@@ -93,4 +94,10 @@ public class NumericUpDown : AvaloniaNumericUpDown,
     string IControlSharedTokenResourcesHost.TokenId => NumericUpDownToken.ID;
     
     #endregion
+
+    public NumericUpDown()
+    {
+        this.RegisterResources();
+        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
+    }
 }

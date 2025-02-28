@@ -26,8 +26,8 @@ internal class NumericUpDownTheme : BaseControlTheme
         {
             var buttonSpinner = BuildButtonSpinner(numericUpDown, scope);
             var textBlock     = BuildTextBox(numericUpDown, scope);
-            buttonSpinner.Content = textBlock;
-
+             buttonSpinner.Content = textBlock;
+            
             return buttonSpinner;
         });
     }
@@ -66,8 +66,7 @@ internal class NumericUpDownTheme : BaseControlTheme
             AcceptsReturn            = false,
             EmbedMode                = true
         };
-
-        BindUtils.RelayBind(this, DataValidationErrors.ErrorsProperty, textBox, DataValidationErrors.ErrorsProperty);
+        BindUtils.RelayBind(numericUpDown, DataValidationErrors.ErrorsProperty, textBox, DataValidationErrors.ErrorsProperty);
         CreateTemplateParentBinding(textBox, TextBox.SizeTypeProperty, NumericUpDown.SizeTypeProperty);
         CreateTemplateParentBinding(textBox, Avalonia.Controls.TextBox.IsReadOnlyProperty,
             Avalonia.Controls.NumericUpDown.IsReadOnlyProperty);
