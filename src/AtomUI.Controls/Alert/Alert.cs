@@ -1,4 +1,5 @@
-﻿using AtomUI.IconPkg;
+﻿using System.Reactive.Disposables;
+using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
@@ -8,6 +9,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
+using Avalonia.LogicalTree;
 using Avalonia.Metadata;
 
 namespace AtomUI.Controls;
@@ -21,7 +23,8 @@ public enum AlertType
 }
 
 public class Alert : TemplatedControl,
-                     IControlSharedTokenResourcesHost
+                     IControlSharedTokenResourcesHost,
+                     ITokenResourceConsumer
 {
     #region 公共属性定义
 
@@ -105,7 +108,11 @@ public class Alert : TemplatedControl,
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => AlertToken.ID;
 
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+
     #endregion
+
+    private CompositeDisposable? _tokenBindingsDisposable;
 
     static Alert()
     {
@@ -131,17 +138,25 @@ public class Alert : TemplatedControl,
         HandlePropertyChangedForStyle(e);
     }
 
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        _tokenBindingsDisposable = new CompositeDisposable();
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+            SharedTokenKey.BorderThickness,
+            BindingPriority.Template,
+            new RenderScaleAwareThicknessConfigure(this)));
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
+    }
+
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        HandleTemplateApplied(e.NameScope);
-    }
-
-    private void HandleTemplateApplied(INameScope scope)
-    {
-        TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty, SharedTokenKey.BorderThickness,
-            BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this));
         SetupCloseButton();
     }
 
@@ -161,10 +176,12 @@ public class Alert : TemplatedControl,
         if (CloseIcon is null)
         {
             CloseIcon = AntDesignIconPackage.CloseOutlined();
-            TokenResourceBinder.CreateTokenBinding(CloseIcon, Icon.NormalFilledBrushProperty,
-                SharedTokenKey.ColorIcon);
-            TokenResourceBinder.CreateTokenBinding(CloseIcon, Icon.ActiveFilledBrushProperty,
-                SharedTokenKey.ColorIconHover);
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(CloseIcon,
+                Icon.NormalFilledBrushProperty,
+                SharedTokenKey.ColorIcon));
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(CloseIcon,
+                Icon.ActiveFilledBrushProperty,
+                SharedTokenKey.ColorIconHover));
         }
     }
 }

@@ -13,8 +13,6 @@ using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Styling;
-using HorizontalAlignment = Avalonia.Layout.HorizontalAlignment;
-using VerticalAlignment = Avalonia.Layout.VerticalAlignment;
 
 namespace AtomUI.Controls;
 
@@ -63,7 +61,7 @@ internal class AlertTheme : BaseControlTheme
 
             mainLayout.Children.Add(infoStack);
 
-            var closeBtn = CreateCloseButton(scope);
+            var closeBtn = CreateCloseButton(alert, scope);
             mainLayout.Children.Add(closeBtn);
 
             var infoIcon = CreateInfoIcon(scope);
@@ -111,19 +109,19 @@ internal class AlertTheme : BaseControlTheme
         return borderContainer;
     }
 
-    private IconButton CreateCloseButton(INameScope scope)
+    private IconButton CreateCloseButton(Alert alert, INameScope scope)
     {
         var closeBtn = new IconButton
         {
             Name = CloseBtnPart
         };
 
-        TokenResourceBinder.CreateTokenBinding(closeBtn, IconButton.IconWidthProperty,
-            SharedTokenKey.IconSizeSM);
-        TokenResourceBinder.CreateTokenBinding(closeBtn, IconButton.IconHeightProperty,
-            SharedTokenKey.IconSizeSM);
-        TokenResourceBinder.CreateTokenBinding(closeBtn, Layoutable.MarginProperty,
-            AlertTokenKey.ExtraElementMargin);
+        alert.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(closeBtn, IconButton.IconWidthProperty,
+            SharedTokenKey.IconSizeSM));
+        alert.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(closeBtn, IconButton.IconHeightProperty,
+            SharedTokenKey.IconSizeSM));
+        alert.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(closeBtn, Layoutable.MarginProperty,
+            AlertTokenKey.ExtraElementMargin));
 
         CreateTemplateParentBinding(closeBtn, Visual.IsVisibleProperty, Alert.IsClosableProperty);
         CreateTemplateParentBinding(closeBtn, IconButton.IconProperty, Alert.CloseIconProperty);
@@ -184,7 +182,7 @@ internal class AlertTheme : BaseControlTheme
             Padding                    = new Thickness(0),
             IsVisible                  = !string.IsNullOrEmpty(alert.Description)
         };
-        TokenResourceBinder.CreateTokenBinding(descriptionLabel, Layoutable.MarginProperty,
+        alert.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(descriptionLabel, Layoutable.MarginProperty,
             SharedTokenKey.MarginXS, BindingPriority.Template,
             o =>
             {
@@ -192,9 +190,8 @@ internal class AlertTheme : BaseControlTheme
                 {
                     return new Thickness(0, value, 0, 0);
                 }
-
                 return o;
-            });
+            }));
         BindUtils.RelayBind(alert, Alert.DescriptionProperty, descriptionLabel, ContentControl.ContentProperty);
         TextBlock.SetTextWrapping(descriptionLabel, TextWrapping.Wrap);
         return descriptionLabel;

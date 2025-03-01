@@ -12,7 +12,6 @@ using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.LogicalTree;
-using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
